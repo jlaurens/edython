@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Blockly Demo: Fixed Blockly</title>
+  <script src="../../lib/blockly/blockly_compressed.js"></script>
+  <script src="../../lib/blockly/blocks_compressed.js"></script>
+  <script src="../../lib/blockly/msg/js/en.js"></script>
+  <script>
+      goog.style.getPageOffset = function(el) {
+    var doc = goog.dom.getOwnerDocument(el);
+    // TODO(gboyer): Update the jsdoc in a way that doesn't break the universe.
+    goog.asserts.assertObject(el, 'Parameter is required');
+
+    // NOTE(arv): If element is hidden (display none or disconnected or any the
+    // ancestors are hidden) we get (0,0) by default but we still do the
+    // accumulation of scroll position.
+
+    // TODO(arv): Should we check if the node is disconnected and in that case
+    //            return (0,0)?
+
+    var pos = new goog.math.Coordinate(0, 0);
+    var viewportElement = goog.style.getClientViewportElement(doc);
+    if (el == viewportElement) {
+      // viewport is always at 0,0 as that defined the coordinate system for this
+      // function - this avoids special case checks in the code below
+      return pos;
+    }
+
+    var box = goog.style.getBoundingClientRect_(el);
+    // Must add the scroll coordinates in to get the absolute page offset
+    // of element since getBoundingClientRect returns relative coordinates to
+    // the viewport.
+    var scrollCoord = goog.dom.getDomHelper(doc).getDocumentScroll();
+    pos.x = box.left + scrollCoord.x;
+    pos.y = box.top + scrollCoord.y;
+  console.log('scrollCoord:'+scrollCoord.x+','+scrollCoord.y);
+  console.log('box:'+box.left+','+box.top);
+  console.log('pos:'+pos.x+','+pos.y);
+    return pos;
+  };
+</script>
+</head>
+<body>
+  <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+  <xml id="toolbox" style="display: none">
+    <block type="text">
+      <field name="TEXT">abc</field>
+    </block>
+  </xml>
+  <script>
+    var demoWorkspace = Blockly.inject('blocklyDiv',
+        {media: '../../lib/blockly/media/',
+         toolbox: document.getElementById('toolbox')});
+  </script>
+</body>
+</html>

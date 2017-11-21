@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>SVG class experiments</title>
+  <script>
+</script>
+<style>
+  .icon-mark {
+    fill: red;
+  }
+  .icon .icon-mark {
+    fill: blue;
+  }
+  .checkbox .icon-mark {
+    fill: green;
+  }
+  .checked.icon-mark {
+    fill: orange;
+  }
+</style>
+</head>
+<body>
+  <div class="options" >
+    <div class="menuitem selected">
+      <div class="checkbox" style="display: inline;">
+        <svg class="icon" height="16" width="16" style="">
+          <rect class="icon-mark" x="3" y="3" height="10" width="10" style=""></rect>
+        </svg>
+      </div>end = ...
+    </div>
+    <div class="menuitem selected">
+      <div class="checkbox" style="display: inline;">
+        <svg class="icon" height="16" width="16" style="">
+          <rect class="icon-mark checked" x="3" y="3" height="10" width="10" style=""></rect>
+        </svg>
+      </div>Orange by .checked.icon-mark
+    </div>
+    <div class="menuitem">
+      <div class="checkbox" style="display: inline;">
+        <svg class="icon" height="16" width="16" style="">
+          <rect class="icon-mark" x="3" y="3" height="10" width="10" style=""></rect>
+        </svg>
+      </div>Filled green by .icon-mark
+    </div>
+    <div class="menuitem ezp-option-selected">
+      <div class="checkbox" style="display: inline;">
+        <svg class="icon" height="16" width="16" style="">
+          <rect class="icon-mark" x="3" y="3" height="10" width="10" style="fill:red;"></rect>
+        </svg>
+      </div>Filled red by element style
+    </div>
+  </div>
+</body>
+</html>

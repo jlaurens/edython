@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Blockly Demo: Values</title>
+      <script src="../../../blockly/blockly_uncompressed.js"></script>
+      <script src="../../../blockly/blocks_compressed.js"></script>
+      <script src="../../../blockly/msg/js/en.js"></script>
+      <script src="../../ezp/ezp.js"></script>
+      <script src="../../ezp/block.js"></script>
+      <script src="../../ezp/delegate.js"></script>
+      <script src="../../ezp/block_svg.js"></script>
+      <script src="../../ezp/delegate_svg.js"></script>
+      <script src="../../ezp/delegate_svg_val.js"></script>
+      <script src="../../ezp/field_textinput.js"></script>
+      <script src="../../ezp/field_label.js"></script>
+      <script src="../../ezp/rendered_connection.js"></script>
+      <script src="../../ezp_blockly/core/workspace.js"></script>
+      <script src="../../ezp_blockly/core/workspace_svg.js"></script>
+      <style>
+        .blocklyPath.blocklySelected {
+          stroke: #fc3;
+          stroke-width: 3px;
+          fill: none;
+        }
+      </style>
+      </head>
+  <body>
+    
+    
+    <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+    
+    <xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
+      <category name="EZP">
+        <block type="val_text">
+          <field name="TEXT">Hello !</field>
+        </block>
+        <block type="ezp_val_text">
+          <field name="TEXT">|ÀHello !</field>
+        </block>
+        <block type="ezp_val_minus">
+          <field name="ARG"/>
+        </block>
+        <block type="ezp_val_minus_abc">
+          <field name="ARG"/>
+        </block>
+        <block type="ezp_val_any">
+          <field name="TEXT">! olleH</field>
+        </block>
+      </category>
+    </xml>
+    <script>
+      EZP.setup();
+      var ___ = EZP;
+      Blockly.Blocks['val_text'] = {
+        init: function() {
+          this.appendDummyInput()
+          .appendField(new Blockly.FieldLabel("\""));
+          this.appendDummyInput()
+          .appendField(new Blockly.FieldTextInput(""), "TEXT");
+          this.appendDummyInput()
+          .appendField(new Blockly.FieldLabel("\""));
+          this.setInputsInline(true);
+          this.setOutput(true, "type_string");
+          this.setColour(230);
+          this.setTooltip("");
+          this.setHelpUrl("");
+        }
+      };
+    Blockly.Blocks['ezp_val_text'] = {
+      init: function() {
+        this.appendDummyInput()
+        .appendField(new ___.FieldLabel('"'));
+        this.appendDummyInput()
+        .appendField(new ___.FieldTextInput(""), "TEXT");
+        this.appendDummyInput()
+        .appendField(new ___.FieldLabel('"'));
+        this.setInputsInline(true);
+        this.setOutput(true, "ezp_type_string");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+      }
+    };
+    Blockly.Blocks['ezp_val_any'] = {
+      init: function() {
+        this.appendDummyInput()
+        .appendField(new ___.FieldTextInput("1+1"), "ARG");
+        this.setInputsInline(true);
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+      }
+    };
+    Blockly.Blocks['ezp_val_minus'] = {
+      init: function() {
+        this.appendDummyInput().appendField(new ___.FieldLabel("("));
+        this.appendDummyInput().appendField(new ___.FieldLabel("-"));
+        this.appendDummyInput().appendField(new ___.FieldLabel("("));
+        this.appendValueInput("ARG").setCheck(null);
+        this.appendDummyInput().appendField(new ___.FieldLabel(")"));
+        this.appendDummyInput().appendField(new ___.FieldLabel(")"));
+        this.setInputsInline(true);
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+      }
+    };
+    Blockly.Blocks['ezp_val_minus_abc'] = {
+      init: function() {
+        this.appendDummyInput().appendField(new ___.FieldLabel("À"));
+        this.appendDummyInput().appendField(new ___.FieldLabel("q"));
+        this.appendDummyInput().appendField(new ___.FieldLabel("HH"));
+        this.appendValueInput("ARG").setCheck(null);
+        this.appendDummyInput().appendField(new ___.FieldLabel("HH"));
+        this.appendDummyInput().appendField(new ___.FieldLabel("ÀqHHX"));
+        this.setInputsInline(true);
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+      }
+    };
+    var demoWorkspace = Blockly.inject('blocklyDiv',
+                                       {media: '../../media/',
+                                       toolbox: document.getElementById('toolbox')});
+      </script>
+    
+  </body>
+</html>

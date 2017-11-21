@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Blockly Demo: Fixed Blockly</title>
+      <script src="../../../blockly/blockly_uncompressed.js"></script>
+      <script src="../../../blockly/blocks_compressed.js"></script>
+      <script src="../../../blockly/msg/js/en.js"></script>
+      <script src="ezp.js"></script>
+      <style>
+        body {
+          background-color: #fff;
+          font-family: sans-serif;
+        }
+      h1 {
+        font-weight: normal;
+        font-size: 140%;
+      }
+      </style>
+  </head>
+  <body>
+    <h1><a href="https://developers.google.com/blockly/">Blockly</a> &gt;
+      <a href="../index.html">Demos</a> &gt; Fixed Blockly</h1>
+    
+    <p>This is a simple demo of injecting Blockly into a fixed-sized 'div' element.</p>
+    
+    <p>&rarr; More info on <a href="https://developers.google.com/blockly/guides/configure-blockly/web/fixed-size">injecting fixed-sized Blockly</a>&hellip;</p>
+    
+    <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+    
+    <xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
+      <category name="EZP">
+        <block type="ezp_val_text">
+          <field name="TEXT">Hello !</field>
+        </block>
+      </category>
+    </xml>
+    <script>
+      Blockly.Blocks['ezp_val_text'] = {
+        init: function() {
+          this.appendDummyInput()
+          .appendField("\"");
+          this.appendDummyInput()
+          .appendField(new Blockly.FieldTextInput("Hello !"), "TEXT");
+          this.appendDummyInput()
+          .appendField("\"");
+          this.setInputsInline(true);
+          this.setOutput(true, "ezp_type_string");
+          this.setColour(230);
+          this.setTooltip("");
+          this.setHelpUrl("");
+        }
+      };
+    
+    var demoWorkspace = Blockly.inject('blocklyDiv',
+                                       {media: '../../media/',
+                                       toolbox: document.getElementById('toolbox')});
+      </script>
+    
+  </body>
+</html>

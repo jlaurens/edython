@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>getDocumentScroll Test</title>
+  <script src="../../lib/closure-library/closure/goog/base.js"></script>
+  <script>
+    goog.require('goog.dom');
+    function myClick(el) {
+      var doc = goog.dom.getOwnerDocument(el);
+      var s = goog.dom.getDomHelper(doc).getDocumentScroll()
+      console.log(s.x+','+s.y);
+    }
+  </script>
+</head>
+<body>
+  On OSX, Zoom in by pinching out. Each time you click on the square,
+  a new "0,0" should read in the javascript console.
+  This is not the case with some Chromium < 64.0.3269.0 - 516200
+  (some version downloaded on 2017/03/02)
+  <div
+  style="left: 100px; top: 100px; height: 100px; width: 100px; background:red;"
+  onclick="myClick(this)"></div>
+</body>
+</html>

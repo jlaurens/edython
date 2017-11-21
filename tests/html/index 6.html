@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ezPython: dropdown menu true/false</title>
+      <script src="../../../blockly/blockly_uncompressed.js"></script>
+      <script src="../../../blockly/blocks_compressed.js"></script>
+      <script src="../../../blockly/msg/js/en.js"></script>
+      <script src="../../ezp/ezp.js"></script>
+      <script src="../../ezp/delegate.js"></script>
+      <script src="../../ezp/block.js"></script>
+      <script src="../../ezp_blockly/core/workspace.js"></script>
+      <script src="../../ezp/delegate_svg.js"></script>
+      <script src="../../ezp/delegate_svg_val.js"></script>
+      <script src="../../ezp/delegate_svg_stt.js"></script>
+      <script src="../../ezp/delegate_svg_grp.js"></script>
+      <script src="../../ezp/block_svg.js"></script>
+      <script src="../../ezp_blockly/core/workspace_svg.js"></script>
+      <script src="../../ezp/field_label.js"></script>
+      <script src="../../ezp/field_textinput.js"></script>
+      <script src="../../ezp/field_dropdown.js"></script>
+      <script src="../../ezp/rendered_connection.js"></script>
+      <style>
+        .blocklyPath.blocklySelected {
+          stroke: #fc3;
+          stroke-width: 3px;
+          fill: none;
+        }
+      .blocklyHighlightedConnectionPath {
+        stroke: none;
+        fill: #fc3;
+      },
+      </style>
+      </head>
+  <body>
+    
+    
+    <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+    
+    <xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
+      <category name="EZP">
+        <block type="ezp_grp"></block>
+        <block type="ezp_val_bool"></block>
+        <block type="controls_if"></block>
+        <block type="ezp_stt_print">
+          <value name="ITEM0">
+            <block type="ezp_val_text">
+              <field name="TEXT">Bonjour !</field>
+            </block>
+          </value>
+        </block>
+        <block type="ezp_val_text">
+          <field name="TEXT">Bonjour !</field>
+        </block>
+        <block type="ezp_stt_print"></block>
+        <block type="ezp_stt"></block>
+        <block type="text_print">
+          <value name="TEXT">
+            <shadow type="text">
+              <field name="TEXT">abc</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="text_print">
+          <value name="TEXT">
+            <shadow type="text">
+              <field name="TEXT">def</field>
+            </shadow>
+          </value>
+        </block>
+      </category>
+    </xml>
+    <script>
+      EZP.setup();
+      var ___ = EZP;
+      Blockly.Blocks['ezp_val_any'] = {
+        init: function() {
+          this.appendDummyInput()
+          .appendField(new ___.FieldTextInput("1+1"), "ARG");
+          this.setInputsInline(true);
+          this.setOutput(true, null);
+          this.setColour(230);
+          this.setTooltip("");
+          this.setHelpUrl("");
+        }
+      };
+    Blockly.Blocks['ezp_stt'] = {
+      init: function() {
+        this.appendDummyInput().appendField(new ___.FieldLabel('statement'));
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+      }
+    };
+    Blockly.Blocks['ezp_stt_print'] = {
+      init: function() {
+        this.appendDummyInput().appendField(new ___.FieldLabel('print'));
+        this.appendDummyInput().appendField(new ___.FieldLabel('('));
+        this.appendValueInput("ITEM0");
+        this.appendDummyInput().appendField(new ___.FieldLabel(')'));
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+      }
+    };
+    Blockly.Blocks['ezp_val_text'] = {
+      init: function() {
+        this.appendDummyInput().appendField(new ___.FieldLabel('"'));
+        this.appendDummyInput().appendField(new ___.FieldTextInput(""), "TEXT");
+        this.appendDummyInput().appendField(new ___.FieldLabel('"'));
+        this.setInputsInline(true);
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+      }
+    };
+    Blockly.Blocks['ezp_grp'] = {
+      init: function() {
+        this.appendDummyInput().appendField("Group");
+        this.appendStatementInput("DO").setCheck(null);
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+      }
+    };
+    Blockly.Blocks['ezp_val_bool'] = {
+      init: function() {
+        this.appendDummyInput()
+        .appendField(new ___.FieldDropdown([["True","TRUE"], ["False","FALSE"]]), "YORN");
+        this.setOutput(true, "ezp_bool_type");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+      }
+    };
+    var demoWorkspace = Blockly.inject('blocklyDiv',
+                                             {media: '../../media/',
+                                             toolbox: document.getElementById('toolbox')});
+      </script>
+    
+  </body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ezPython: blocks</title>
+      <script src="../../lib/blockly/blockly_uncompressed.js"></script>
+      <script src="../../lib/blockly/blocks_compressed.js"></script>
+      <script src="../../lib/blockly/msg/js/en.js"></script>
+      <script src="../../lib/ezp/core/ezp.js"></script>
+      <script src="../../lib/ezp/core/ui.js"></script>
+      <script src="../../lib/ezp/blockly/block.js"></script>
+      <script src="../../lib/ezp/blockly/blocks.js"></script>
+      <script src="../../lib/ezp/blockly/delegate.js"></script>
+      <script src="../../lib/ezp/blockly/workspace.js"></script>
+      <script src="../../lib/ezp/blockly/block_svg.js"></script>
+      <script src="../../lib/ezp/blockly/delegate_svg.js"></script>
+      <script src="../../lib/ezp/blockly/delegate_svg_val.js"></script>
+      <script src="../../lib/ezp/blockly/delegate_svg_stt.js"></script>
+      <script src="../../lib/ezp/blockly/delegate_svg_grp.js"></script>
+      <script src="../../lib/ezp/blockly/workspace_svg.js"></script>
+      <script src="../../lib/ezp/blockly/field_label.js"></script>
+      <script src="../../lib/ezp/blockly/field_textinput.js"></script>
+      <script src="../../lib/ezp/blockly/field_dropdown.js"></script>
+      <script src="../../lib/ezp/blockly/rendered_connection.js"></script>
+      <script src="../../lib/ezp/blockly/consistency.js"></script>
+      <script src="../js/test-blocks.js"></script>
+      <link rel="stylesheet" type="text/css" href="../../lib/ezp/css/ezp.css">
+    </head>
+  <body>
+
+    <div id="ezpDiv" style="height: 480px; width: 600px;"></div>
+
+    <xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
+      <category name="EZP">
+        <block type="ezp_val_range_tester1"></block>
+        <!--block type="ezp_val_tuple"></block>
+        <block type="ezp_val_tuple_xtd"></block-->
+        <block type="ezp_val_range_tester2"></block>
+        <block type="ezp_val_range"></block>
+        <block type="ezp_grp"></block>
+        <block type="ezp_val_bool"></block>
+        <block type="controls_if"></block>
+        <block type="ezp_stt_print">
+          <value name="ITEM0">
+            <block type="ezp_val_text">
+              <field name="TEXT">Bonjour !</field>
+            </block>
+          </value>
+        </block>
+        <block type="ezp_val_text">
+          <field name="TEXT">Bonjour !</field>
+        </block>
+        <block type="ezp_stt_print"></block>
+        <block type="ezp_stt"></block>
+        <block type="text_print">
+          <value name="TEXT">
+            <shadow type="text">
+              <field name="TEXT">abc</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="text_print">
+          <value name="TEXT">
+            <shadow type="text">
+              <field name="TEXT">def</field>
+            </shadow>
+          </value>
+        </block>
+
+      </category>
+    </xml>
+    <script>
+      EZP.setup();
+      var demoWorkspace = Blockly.inject('ezpDiv',
+                                       {media: '../../lib/blockly/media/',
+                                       toolbox: document.getElementById('toolbox')});
+      </script>
+
+  </body>
+</html>
