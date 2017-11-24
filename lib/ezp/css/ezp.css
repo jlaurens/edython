@@ -1,6 +1,3 @@
-.ezp_no_options .ezp-menuitem {
-  padding: 4px 6px;
-}
 .ezp_no_options .ezp-menuitem-checkbox {
   display: none;
 }
@@ -40,20 +37,6 @@
   filter: alpha(opacity=30);
 }
 
-/* State: hover. */
-.blocklyWidgetDiv .ezp-menuitem-highlight,
-.blocklyWidgetDiv .ezp-menuitem-hover {
-  background-color: #d6e9f8;
-   /* Use an explicit top and bottom border so that the selection is visible
-    * in high contrast mode. */
-  border-color: #d6e9f8;
-  border-style: dotted;
-  border-width: 1px 0;
-  padding-bottom: 0px;
-  padding-top: 0px;
-}
-
-
 /* Keyboard shortcut ("accelerator") style. */
 .blocklyWidgetDiv .ezp-menuitem-accel {
   color: #999;
@@ -87,4 +70,36 @@
 
 .ezp-block.hidden {
   display: none;
+}
+
+.ezp-print-block-menu {
+  background: #fff;
+  border-color: #ccc #666 #666 #ccc;
+  border-style: solid;
+  border-width: 1px;
+  cursor: default;
+  /*font: normal 13px Arial, sans-serif;*/
+  margin: 0;
+  outline: none;
+  /*padding: 4px 0;*/
+  /*position: absolute; Ouaille ?*/
+  z-index: 20000; /* Arbitrary, but some apps depend on it... */
+}
+
+.ezp-key-value-menuitem-hover {
+  background-color: #d6e9f8;
+/*  border-color: #d6e9f8;
+  border-style: dotted;
+  border-width: 1px 0;*/
+}
+
+.ezp-menu-icon {
+  opacity: 0.05;
+  -moz-opacity: 0.05;
+  filter: alpha(opacity=5);
+}
+.ezp-menu-icon:hover {
+  opacity: 0.3;
+  -moz-opacity: 0.3;
+  filter: alpha(opacity=30);
 }
