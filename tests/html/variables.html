@@ -39,6 +39,8 @@
     <xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
       <category name="0">
         <block type="ezp_stt_print"></block>
+        <block type="ezp_val_get"></block>
+        <block type="ezp_stt_set"></block>
       </category>
       <category name="1">
         <block type="ezp_stt"></block>
@@ -55,7 +57,9 @@
       </category>
     </xml>
     <xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks" style="display:none">
-      <variables></variables>
+      <variables>
+        <variable type="" id="y#8;6IN`^wBJRkAKfH[J">sdf</variable>
+      </variables>
       <block type="ezp_grp_if" id="_Tx)})C]ZjiQn$!Q,8[z" x="138" y="13">
         <value name="TEST">
           <block type="ezp_val" id="ojgWp{{p3m:9*AJp1cH!">
@@ -86,13 +90,16 @@
           </block>
         </statement>
       </block>
+      <block type="ezp_stt_set" id="twWsV2W{hc!RC4@VQh,a" x="138" y="188">
+        <field name="VAR" id="y#8;6IN`^wBJRkAKfH[J" variabletype="">sdf</field>
+      </block>
+      <block type="ezp_val_get" id="A5_LkFj|vif=lvT.CZFP" x="137" y="237">
+        <field name="VAR" id="y#8;6IN`^wBJRkAKfH[J" variabletype="">sdf</field>
+      </block>
     </xml>
     <script>
-      /* TODO: Change toolbox XML ID if necessary. Can export toolbox XML from Workspace Factory. */
-      var toolbox = document.getElementById("toolbox");
-
       var options = {
-      	toolbox : toolbox,
+      	toolbox : document.getElementById("toolbox"),
       	collapse : true,
       	comments : false,
       	disable : true,
@@ -107,20 +114,11 @@
       	sounds : true,
       	oneBasedIndex : true
       };
-
       /* Inject your workspace */
       var workspace = Blockly.inject('ezpDiv', options);
-
       EZP.setup(workspace);
-
-      /* Load Workspace Blocks from XML to workspace. Remove all code below if no blocks to load */
-
-      /* TODO: Change workspace blocks XML ID if necessary. Can export workspace blocks XML from Workspace Factory. */
       var workspaceBlocks = document.getElementById("workspaceBlocks");
-
-      /* Load blocks to workspace. */
       Blockly.Xml.domToWorkspace(workspaceBlocks,workspace);
-
       </script>
 
   </body>
