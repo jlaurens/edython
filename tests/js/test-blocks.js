@@ -23,11 +23,10 @@
  */
 'use strict';
 
-goog.provide('EZP.TestBlocks');
+goog.provide('ezP.TestBlocks');
 
 goog.require('Blockly.Block');
 
-var ___ = EZP;
 Blockly.Blocks['ezp_val_tuple_xtd'] = {
 init: function() {
   this.appendDummyInput().appendField("/");

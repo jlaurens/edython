@@ -61,9 +61,9 @@
     <script>
       Blockly.Blocks['ezp_val_text_no-select'] = {
       init: function() {
-        this.appendDummyInput().appendField(new EZP.FieldLabel('"'));
-        this.appendDummyInput().appendField(new EZP.FieldTextInput(""), "TEXT");
-        this.appendDummyInput().appendField(new EZP.FieldLabel('"'));
+        this.appendDummyInput().appendField(new ezP.FieldLabel('"'));
+        this.appendDummyInput().appendField(new ezP.FieldTextInput(""), "TEXT");
+        this.appendDummyInput().appendField(new ezP.FieldLabel('"'));
         this.setInputsInline(true);
         this.setOutput(true, null);
         this.setTooltip("");
@@ -73,12 +73,12 @@
       };
       Blockly.Blocks['ezp_stt_print_1'] = {
       init: function() {
-        this.appendDummyInput().appendField(new EZP.FieldLabel('print'));
-        this.appendValueInput("FILE").appendField(new EZP.FieldLabel(',file = '));
-        this.appendDummyInput("OPTIONS").appendField(new EZP.PrintFieldDropdown([
-            ['end = ...', EZP.PrintFieldDropdown.END],
-            ['sep = ...', EZP.PrintFieldDropdown.SEP],
-            ['file = ...', EZP.PrintFieldDropdown.FILE]]));
+        this.appendDummyInput().appendField(new ezP.FieldLabel('print'));
+        this.appendValueInput("FILE").appendField(new ezP.FieldLabel(',file = '));
+        this.appendDummyInput("OPTIONS").appendField(new ezP.PrintFieldDropdown([
+            ['end = ...', ezP.PrintFieldDropdown.END],
+            ['sep = ...', ezP.PrintFieldDropdown.SEP],
+            ['file = ...', ezP.PrintFieldDropdown.FILE]]));
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
@@ -88,7 +88,7 @@
       }
       };
 
-      EZP.setup();
+      ezP.setup();
       var demoWorkspace = Blockly.inject('ezpDiv',
                                        {media: '../../lib/blockly/media/',
                                        toolbox: document.getElementById('toolbox')});

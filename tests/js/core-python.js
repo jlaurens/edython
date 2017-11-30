@@ -1,3 +1,3 @@
 QUnit.test( "Python test", function( assert ) {
-  assert.ok( EZP.Python, "Passed!" );
+  assert.ok( ezP.Python, "Passed!" );
 });

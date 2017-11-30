@@ -1,12 +1,12 @@
 QUnit.test( "Python keyword test", function( assert ) {
-  assert.ok( EZP.Python.isKeyword("in"), "Passed!" );
+  assert.ok( ezP.Python.isKeyword("in"), "Passed!" );
 });
 QUnit.test( "Python keyword test", function( assert ) {
-  assert.ok( !EZP.Python.isKeyword("ni"), "Passed!" );
+  assert.ok( !ezP.Python.isKeyword("ni"), "Passed!" );
 });
 QUnit.test( "Python keyword test", function( assert ) {
-  assert.ok( EZP.Python.isKeyword("elif"), "Passed!" );
+  assert.ok( ezP.Python.isKeyword("elif"), "Passed!" );
 });
 QUnit.test( "Python keyword test", function( assert ) {
-  assert.ok( !EZP.Python.isKeyword("elfi"), "Passed!" );
+  assert.ok( !ezP.Python.isKeyword("elfi"), "Passed!" );
 });
