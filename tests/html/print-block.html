@@ -75,10 +75,10 @@
       init: function() {
         this.appendDummyInput().appendField(new ezP.FieldLabel('print'));
         this.appendValueInput("FILE").appendField(new ezP.FieldLabel(',file = '));
-        this.appendDummyInput("OPTIONS").appendField(new ezP.PrintFieldDropdown([
-            ['end = ...', ezP.PrintFieldDropdown.END],
-            ['sep = ...', ezP.PrintFieldDropdown.SEP],
-            ['file = ...', ezP.PrintFieldDropdown.FILE]]));
+        this.appendDummyInput("OPTIONS").appendField(new ezP.FieldPrintOptions([
+            ['end = ...', ezP.FieldPrintOptions.END],
+            ['sep = ...', ezP.FieldPrintOptions.SEP],
+            ['file = ...', ezP.FieldPrintOptions.FILE]]));
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);

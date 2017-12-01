@@ -23,6 +23,7 @@
       <script src="../../lib/ezp/blockly/block.js"></script>
       <script src="../../lib/ezp/blockly/ezp/delegate.js"></script>
       <script src="../../lib/ezp/blockly/block_svg.js"></script>
+      <script src="../../lib/ezp/blockly/xml.js"></script>
       <script src="../../lib/ezp/blockly/ezp/delegate_svg.js"></script>
       <script src="../../lib/ezp/blockly/ezp/delegate_svg_val.js"></script>
       <script src="../../lib/ezp/blockly/ezp/delegate_svg_stt.js"></script>
@@ -34,7 +35,7 @@
       <script src="../../lib/ezp/blockly/field_label.js"></script>
       <script src="../../lib/ezp/blockly/field_textinput.js"></script>
       <script src="../../lib/ezp/blockly/field_dropdown.js"></script>
-      <script src="../../lib/ezp/blockly/ezp/print_field_dropdown.js"></script>
+      <script src="../../lib/ezp/blockly/ezp/field_print_options.js"></script>
       <script src="../../lib/ezp/blockly/field_variable.js"></script>
       <script src="../../lib/ezp/blockly/blocks.js"></script>
       <script src="../../lib/ezp/blockly/rendered_connection.js"></script>
@@ -47,7 +48,13 @@
 
     <xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
       <category name="0">
-        <block type="ezp_stt_print"></block>
+        <block type="ezp_stt_print" state="SEP">
+          <value name="FILE">
+            <shadow type="ezp_val_text">
+              <field name="TEXT">/foo/bar.txt</field>
+            </shadow>
+          </value>
+        </block>
         <block type="ezp_val_get"></block>
         <block type="ezp_stt_set"></block>
       </category>
