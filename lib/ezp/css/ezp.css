@@ -72,7 +72,7 @@
   z-index: 20000; /* Arbitrary, but some apps depend on it... */
 }
 
-.ezp-print-block-menu {
+.ezp-print-block-menu, .ezp-options-menu {
   background: #fff;
   border-color: #ccc #666 #666 #ccc;
   border-style: solid;
@@ -106,7 +106,7 @@
   cursor: pointer;
 }
 
-.ezp-menuitem, .ezp-submenu, .ezp-menuitem-var {
+.ezp-menuitem, .ezp-submenu, .ezp-menuitem-code, .ezp-menuitem-var {
   color: #000;
   font: normal 13px Arial, sans-serif;
   list-style: none;
@@ -127,7 +127,8 @@
 /* If a menu doesn't have checkable items or items with icons, remove padding. */
 .ezp-nocheckbox.ezp-menuitem,
 .ezp-nocheckbox.ezp-submenu,
-.ezp-nocheckbox.ezp-menuitem-var ,
+.ezp-nocheckbox.ezp-menuitem-code,
+.ezp-nocheckbox.ezp-menuitem-var,
 .ezp-menu-noicon .ezp-menuitem {
   padding-left: 8px;
 }
@@ -138,10 +139,12 @@
  */
 .ezp-noaccel.ezp-menuitem,
 .ezp-noaccel.ezp-submenu,
+.ezp-noaccel.ezp-menuitem-code,
 .ezp-noaccel.ezp-menuitem-var {
   padding-right: 20px;
 }
 
+.ezp-nosubmenu .ezp-noaccel.ezp-menuitem-code,
 .ezp-nosubmenu .ezp-noaccel.ezp-menuitem-var {
   padding-right: 8px;
 }

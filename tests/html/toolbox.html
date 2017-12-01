@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ezPython: blocks</title>
+      <script src="../../lib/blockly/blockly_uncompressed.js"></script>
+      <script src="../../lib/closure-library/closure/goog/ui/submenu.js"></script>
+      <script src="../../lib/closure-library/closure/goog/ui/popupmenu.js"></script>
+      <script src="../../lib/blockly/blocks_compressed.js"></script>
+      <script src="../../lib/blockly/msg/js/fr.js"></script>
+      <script src="../../lib/ezp/core/ezp.js"></script>
+      <script src="../../lib/ezp/msg/js/base.js"></script>
+      <script src="../../lib/ezp/core/ui.js"></script>
+      <script src="../../lib/ezp/closure/menurenderer.js"></script>
+      <script src="../../lib/ezp/closure/menu.js"></script>
+      <script src="../../lib/ezp/closure/popupmenu.js"></script>
+      <script src="../../lib/ezp/closure/menuitemrenderer.js"></script>
+      <script src="../../lib/ezp/closure/menuitem.js"></script>
+      <script src="../../lib/ezp/closure/submenu.js"></script>
+      <script src="../../lib/ezp/closure/submenurenderer.js"></script>
+      <script src="../../lib/ezp/blockly/ezp/constants.js"></script>
+      <script src="../../lib/ezp/blockly/ezp/ezphelper.js"></script>
+      <script src="../../lib/ezp/blockly/block.js"></script>
+      <script src="../../lib/ezp/blockly/ezp/delegate.js"></script>
+      <script src="../../lib/ezp/blockly/block_svg.js"></script>
+      <script src="../../lib/ezp/blockly/xml.js"></script>
+      <script src="../../lib/ezp/blockly/ezp/delegate_svg.js"></script>
+      <script src="../../lib/ezp/blockly/ezp/delegate_svg_val.js"></script>
+      <script src="../../lib/ezp/blockly/ezp/delegate_svg_stt.js"></script>
+      <script src="../../lib/ezp/blockly/ezp/delegate_svg_grp.js"></script>
+      <script src="../../lib/ezp/blockly/variables.js"></script>
+      <script src="../../lib/ezp/blockly/ezp/variables_menu.js"></script>
+      <script src="../../lib/ezp/blockly/workspace.js"></script>
+      <script src="../../lib/ezp/blockly/workspace_svg.js"></script>
+      <script src="../../lib/ezp/blockly/field_label.js"></script>
+      <script src="../../lib/ezp/blockly/field_textinput.js"></script>
+      <script src="../../lib/ezp/blockly/field_dropdown.js"></script>
+      <script src="../../lib/ezp/blockly/ezp/field_options.js"></script>
+      <script src="../../lib/ezp/blockly/ezp/field_code_options.js"></script>
+      <script src="../../lib/ezp/blockly/ezp/field_print_options.js"></script>
+      <script src="../../lib/ezp/blockly/field_variable.js"></script>
+      <script src="../../lib/ezp/blockly/blocks.js"></script>
+      <script src="../../lib/ezp/blockly/rendered_connection.js"></script>
+      <script src="../js/test-blocks.js"></script>
+      <link rel="stylesheet" type="text/css" href="../../lib/ezp/css/ezp.css">
+    </head>
+  <body>
+
+    <div id="ezpDiv" style="height: 480px; width: 600px;"></div>
+
+    <xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
+      <category name="0">
+        <block type="ezp_val_bool">
+          <field name="FORTORN">None</field>
+        </block>
+        <block type="ezp_stt_print">
+          <value name="SEP">
+            <shadow type="ezp_val_text">
+              <field name="TEXT">,</field>
+            </shadow>
+          </value>
+          <value name="END">
+            <shadow type="ezp_val_text">
+              <field name="TEXT">;</field>
+            </shadow>
+          </value>
+          <value name="FILE">
+            <shadow type="ezp_val_text">
+              <field name="TEXT">/foo/bar.txt</field>
+            </shadow>
+          </value>
+          <value name="FLUSH">
+            <shadow type="ezp_val_bool">
+              <field name="FORTORN">False</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="ezp_val_get"></block>
+        <block type="ezp_stt_set"></block>
+      </category>
+      <category name="1">
+        <block type="ezp_stt"></block>
+      </category>
+      <category name="if">
+        <block type="ezp_grp"></block>
+        <block type="ezp_grp_if"></block>
+        <block type="ezp_grp_elif"></block>
+        <block type="ezp_grp_else"></block>
+        <block type="ezp_grp_for"></block>
+        <block type="ezp_grp_while"></block>
+        <block type="ezp_val"></block>
+        <block type="ezp_stt"></block>
+      </category>
+    </xml>
+    <xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks" style="display:none">
+      <variables>
+        <variable type="" id="y#8;6IN`^wBJRkAKfH[J">sdf</variable>
+      </variables>
+      <block type="ezp_grp_if" id="_Tx)})C]ZjiQn$!Q,8[z" x="138" y="13">
+        <value name="TEST">
+          <block type="ezp_val" id="ojgWp{{p3m:9*AJp1cH!">
+            <field name="ARG">1+1</field>
+          </block>
+        </value>
+        <statement name="DO">
+          <block type="ezp_stt_print" id="vwMj~,4J6~(j3[!vu8KW">
+            <value name="TUPLE_0_0">
+              <shadow type="ezp_val_text" id="IAat=(1dDkPAZI@eMn@0">
+                <field name="TEXT">Bonjour !</field>
+              </shadow>
+            </value>
+            <next>
+              <block type="ezp_stt" id="ZO(egF+,V(+u)of!pXP2">
+                <field name="STT">Do it right !</field>
+                <next>
+                  <block type="ezp_stt_print" id="9sw#ASa!37ga!){Jh3W]">
+                    <value name="TUPLE_0_0">
+                      <block type="ezp_val_text" id="7h13aW1lXrp[BB)P)XmS">
+                        <field name="TEXT">Bonjour !</field>
+                      </block>
+                    </value>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+      </block>
+      <block type="ezp_stt_set" id="twWsV2W{hc!RC4@VQh,a" x="138" y="188">
+        <field name="VAR" id="y#8;6IN`^wBJRkAKfH[J" variabletype="">sdf</field>
+      </block>
+      <block type="ezp_val_get" id="A5_LkFj|vif=lvT.CZFP" x="137" y="237">
+        <field name="VAR" id="y#8;6IN`^wBJRkAKfH[J" variabletype="">sdf</field>
+      </block>
+    </xml>
+    <script>
+      var options = {
+      	toolbox : document.getElementById("toolbox"),
+      	collapse : true,
+      	comments : false,
+      	disable : true,
+      	maxBlocks : Infinity,
+      	trashcan : false,
+      	horizontalLayout : false,
+      	toolboxPosition : 'start',
+      	css : true,
+      	media : '../../lib/blockly/media/',
+      	rtl : false,
+      	scrollbars : true,
+      	sounds : true,
+      	oneBasedIndex : true
+      };
+      /* Inject your workspace */
+      var workspace = Blockly.inject('ezpDiv', options);
+      ezP.setup(workspace);
+      var workspaceBlocks = document.getElementById("workspaceBlocks");
+      Blockly.Xml.domToWorkspace(workspaceBlocks,workspace);
+      </script>
+      <button id="bar2" style="position:absolute;left: 300px;top:330px;">Button</button>
+      <script>
+        var pm = new ezP.PopupMenu();
+        pm.render(document.body);
+        pm.addItem(new ezP.MenuItem('One'));
+        pm.addItem(new ezP.MenuItem('Two'));
+        pm.addItem(new ezP.MenuItem('Three'));
+        pm.addItem(new ezP.MenuItem('Four'));
+        pm.addItem(new ezP.MenuItem('Five'));
+        pm.addItem(new ezP.MenuItem('Six'));
+        pm.addItem(new ezP.MenuItem('Seven'));
+
+        //pm.attach(document.getElementById('foo'), null, null);
+
+        pm.attach(
+            document.getElementById('bar2'),
+            goog.positioning.Corner.BOTTOM_LEFT,
+            goog.positioning.Corner.TOP_LEFT);
+
+      </script>
+      <!-- TEST for closure popups: START -->
+  </body>
+</html>
