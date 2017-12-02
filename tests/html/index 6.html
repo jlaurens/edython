@@ -40,7 +40,7 @@
     <xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
       <category name="EZP">
         <block type="ezp_grp"></block>
-        <block type="ezp_val_bool"></block>
+        <block type="ezp_val_tfn"></block>
         <block type="controls_if"></block>
         <block type="ezp_stt_print">
           <value name="ITEM0">
@@ -133,7 +133,7 @@
         this.setHelpUrl("");
       }
     };
-    Blockly.Blocks['ezp_val_bool'] = {
+    Blockly.Blocks['ezp_val_tfn'] = {
       init: function() {
         this.appendDummyInput()
         .appendField(new ___.FieldDropdown([["True","TRUE"], ["False","FALSE"]]), "YORN");

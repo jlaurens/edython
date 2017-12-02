@@ -50,8 +50,11 @@
 
     <xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
       <category name="0">
-        <block type="ezp_val_bool">
-          <field name="FORTORN">None</field>
+        <block type="ezp_val_tfn">
+          <field name="TFN">None</field>
+        </block>
+        <block type="ezp_stt_bcp">
+          <field name="BCP">pass</field>
         </block>
         <block type="ezp_stt_print">
           <value name="SEP">
@@ -70,8 +73,8 @@
             </shadow>
           </value>
           <value name="FLUSH">
-            <shadow type="ezp_val_bool">
-              <field name="FORTORN">False</field>
+            <shadow type="ezp_val_tfn">
+              <field name="TFN">False</field>
             </shadow>
           </value>
         </block>
