@@ -32,7 +32,7 @@ init: function() {
   this.appendDummyInput().appendField("/");
   this.appendDummyInput().appendField("*");
   this.appendDummyInput().appendField("M");
-  this.appendValueInput("ITEM0").setCheck(null);
+  this.appendValueInput("TUPLE_0_0").setCheck(null);
   this.appendDummyInput().appendField("M");
   this.appendDummyInput().appendField("*/");
   this.setInputsInline(true);
@@ -42,14 +42,10 @@ init: function() {
   this.setHelpUrl("");
 }
 };
-Blockly.Blocks['ezp_val_range'] = {
+Blockly.Blocks[ezP.Const.val.RANGE] = {
 init: function() {
   this.appendDummyInput().appendField("range(");
-  this.appendValueInput("ITEM0").setCheck(null);
-  this.appendValueInput("ITEM1").setCheck(null);
-  this.appendValueInput("ITEM2").setCheck(null);
-  this.appendValueInput("ITEM3").setCheck(null);
-  this.appendValueInput("ITEM4").setCheck(null);
+  this.appendValueInput("TUPLE_0_0").setCheck(null);
   this.appendDummyInput().appendField(")");
   this.setInputsInline(true);
   this.setOutput(true, null);
@@ -61,9 +57,9 @@ init: function() {
 Blockly.Blocks['ezp_val_range_tester1'] = {
 init: function() {
   this.appendLabeledInput("group 0: (");
-  this.appendTupleInput();
-  this.appendTupleInput();
-  this.appendTupleInput();
+  this.appendValueInput();
+  this.appendValueInput();
+  this.appendValueInput();
   this.appendLabeledInput(")");
   this.setInputsInline(true);
   this.setOutput(true, null);
@@ -75,17 +71,17 @@ init: function() {
 Blockly.Blocks['ezp_val_range_tester2'] = {
 init: function() {
   this.appendLabeledInput("group 0: (");
-  this.appendTupleInput();
+  this.appendValueInput();
   this.appendLabeledInput(") group 1: (");
-  this.appendTupleInput();
-  this.appendTupleInput();
+  this.appendValueInput();
+  this.appendValueInput();
   this.appendLabeledInput(") group 2: (");
-  this.appendTupleInput();
-  this.appendTupleInput();
-  this.appendTupleInput();
-  this.appendTupleInput();
-  this.appendTupleInput();
-  this.appendTupleInput();
+  this.appendValueInput();
+  this.appendValueInput();
+  this.appendValueInput();
+  this.appendValueInput();
+  this.appendValueInput();
+  this.appendValueInput();
   this.appendLabeledInput(")");
   this.setInputsInline(true);
   this.setOutput(true, null);

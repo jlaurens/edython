@@ -36,12 +36,11 @@
       <script src="../../lib/ezp/blockly/field_textinput.js"></script>
       <script src="../../lib/ezp/blockly/field_dropdown.js"></script>
       <script src="../../lib/ezp/blockly/ezp/field_options.js"></script>
-      <script src="../../lib/ezp/blockly/ezp/field_code_options.js"></script>
-      <script src="../../lib/ezp/blockly/ezp/field_print_options.js"></script>
+      <script src="../../lib/ezp/blockly/ezp/field_options_code.js"></script>
+      <script src="../../lib/ezp/blockly/ezp/field_options_print.js"></script>
       <script src="../../lib/ezp/blockly/field_variable.js"></script>
       <script src="../../lib/ezp/blockly/blocks.js"></script>
       <script src="../../lib/ezp/blockly/rendered_connection.js"></script>
-      <script src="../js/test-blocks.js"></script>
       <link rel="stylesheet" type="text/css" href="../../lib/ezp/css/ezp.css">
     </head>
   <body>
@@ -55,6 +54,15 @@
         </block>
         <block type="ezp_stt_bcp">
           <field name="BCP">pass</field>
+        </block>
+        <block type="ezp_val_tuple">
+          <value name="TUPLE_0_0">
+            <block type="ezp_val_any">
+              <field name="ARG">MON TUPLE</field>
+            </block>
+          </value>
+        </block>
+        <block type="ezp_val_range">
         </block>
         <block type="ezp_stt_print">
           <value name="SEP">
@@ -82,17 +90,39 @@
         <block type="ezp_stt_set"></block>
       </category>
       <category name="1">
-        <block type="ezp_stt"></block>
+        <block type="ezp_stt_any"></block>
       </category>
       <category name="if">
         <block type="ezp_grp"></block>
         <block type="ezp_grp_if"></block>
         <block type="ezp_grp_elif"></block>
         <block type="ezp_grp_else"></block>
-        <block type="ezp_grp_for"></block>
+        <block type="ezp_val_range">
+          <value name="TUPLE_0_0">
+            <block type="ezp_val_any">
+              <field name="ARG">1+1</field>
+            </block>
+          </value>
+        </block>
+        <block type="ezp_grp_for">
+          <value name="VAR">
+            <block type="ezp_val_get">
+              <field name="VAR">i</field>
+            </block>
+          </value>
+          <value name="SET">
+            <block type="ezp_val_range">
+              <value name="TUPLE_0_0">
+                <block type="ezp_val_any">
+                  <field name="ARG">1+1</field>
+                </block>
+              </value>
+            </block>
+          </value>
+        </block>
         <block type="ezp_grp_while"></block>
-        <block type="ezp_val"></block>
-        <block type="ezp_stt"></block>
+        <block type="ezp_val_any"></block>
+        <block type="ezp_stt_any"></block>
       </category>
     </xml>
     <xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks" style="display:none">
@@ -101,7 +131,7 @@
       </variables>
       <block type="ezp_grp_if" id="_Tx)})C]ZjiQn$!Q,8[z" x="138" y="13">
         <value name="TEST">
-          <block type="ezp_val" id="ojgWp{{p3m:9*AJp1cH!">
+          <block type="ezp_val_any" id="ojgWp{{p3m:9*AJp1cH!">
             <field name="ARG">1+1</field>
           </block>
         </value>
@@ -113,7 +143,7 @@
               </shadow>
             </value>
             <next>
-              <block type="ezp_stt" id="ZO(egF+,V(+u)of!pXP2">
+              <block type="ezp_stt_any" id="ZO(egF+,V(+u)of!pXP2">
                 <field name="STT">Do it right !</field>
                 <next>
                   <block type="ezp_stt_print" id="9sw#ASa!37ga!){Jh3W]">
@@ -136,9 +166,48 @@
         <field name="VAR" id="y#8;6IN`^wBJRkAKfH[J" variabletype="">sdf</field>
       </block>
     </xml>
+    <xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox1" style="display: none;">
+    </xml>
+    <xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks1" style="display:none">
+      <variables>
+        <variable type="" id="y#8;6IN`^wBJRkAKfH[J">sdf</variable>
+      </variables>
+      <block type="ezp_val_not" x="138" y="128">
+        <value name="ARG">
+          <block type="ezp_val_any">
+            <field name="ARG">ARG</field>
+          </block>
+        </value>
+      </block>
+      <block type="ezp_stt_set" id="twWsV2W{hc!RC4@VQh,a" x="138" y="188">
+        <field name="VAR" id="y#8;6IN`^wBJRkAKfH[J" variabletype="">sdf</field>
+      </block>
+      <block type="ezp_val_tuple" x="138" y="158">
+        <value name="TUPLE_0_0">
+          <block type="ezp_val_any">
+            <field name="ARG">TUPLE</field>
+          </block>
+        </value>
+      </block>
+    </xml>
+    <xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks2" style="display:none">
+      <block type="ezp_val_cmpr" x="150" y="120">
+        <field name="CMPR" code="==" />
+      </block>
+      <block type="ezp_val_get" x="150" y="150">
+        <field name="VAR">sdf</field>
+      </block>
+      <block type="ezp_stt_print" id="vwMj~,4J6~(j3[!vu8KW">
+        <value name="TUPLE_0_0">
+          <shadow type="ezp_val_text" id="IAat=(1dDkPAZI@eMn@0">
+            <field name="TEXT">Bonjour !</field>
+          </shadow>
+        </value>
+      </block>
+    </xml>
     <script>
       var options = {
-      	toolbox : document.getElementById("toolbox"),
+      	toolbox : document.getElementById("toolbox1"),
       	collapse : true,
       	comments : false,
       	disable : true,
@@ -156,28 +225,8 @@
       /* Inject your workspace */
       var workspace = Blockly.inject('ezpDiv', options);
       ezP.setup(workspace);
-      var workspaceBlocks = document.getElementById("workspaceBlocks");
+      var workspaceBlocks = document.getElementById("workspaceBlocks2");
       Blockly.Xml.domToWorkspace(workspaceBlocks,workspace);
-      </script>
-      <button id="bar2" style="position:absolute;left: 300px;top:330px;">Button</button>
-      <script>
-        var pm = new ezP.PopupMenu();
-        pm.render(document.body);
-        pm.addItem(new ezP.MenuItem('One'));
-        pm.addItem(new ezP.MenuItem('Two'));
-        pm.addItem(new ezP.MenuItem('Three'));
-        pm.addItem(new ezP.MenuItem('Four'));
-        pm.addItem(new ezP.MenuItem('Five'));
-        pm.addItem(new ezP.MenuItem('Six'));
-        pm.addItem(new ezP.MenuItem('Seven'));
-
-        //pm.attach(document.getElementById('foo'), null, null);
-
-        pm.attach(
-            document.getElementById('bar2'),
-            goog.positioning.Corner.BOTTOM_LEFT,
-            goog.positioning.Corner.TOP_LEFT);
-
       </script>
       <!-- TEST for closure popups: START -->
   </body>
