@@ -4,6 +4,9 @@
     <meta charset="utf-8">
       <title>ezPython: blocks</title>
       <script src="../../lib/blockly/blockly_uncompressed.js"></script>
+      <script src="../../lib/closure-library/closure/goog/structs/map.js"></script>
+      <script src="../../lib/closure-library/closure/goog/ui/modalpopup.js"></script>
+      <script src="../../lib/closure-library/closure/goog/ui/dialog.js"></script>
       <script src="../../lib/closure-library/closure/goog/ui/submenu.js"></script>
       <script src="../../lib/closure-library/closure/goog/ui/popupmenu.js"></script>
       <script src="../../lib/blockly/blocks_compressed.js"></script>
@@ -27,7 +30,9 @@
       <script src="../../lib/ezp/blockly/ezp/delegate_svg.js"></script>
       <script src="../../lib/ezp/blockly/ezp/delegate_svg_val.js"></script>
       <script src="../../lib/ezp/blockly/ezp/delegate_svg_stt.js"></script>
+      <script src="../../lib/ezp/blockly/ezp/delegate_svg_ctl.js"></script>
       <script src="../../lib/ezp/blockly/ezp/delegate_svg_grp.js"></script>
+      <script src="../../lib/ezp/blockly/ezp/delegate_svg_prc.js"></script>
       <script src="../../lib/ezp/blockly/variables.js"></script>
       <script src="../../lib/ezp/blockly/ezp/variables_menu.js"></script>
       <script src="../../lib/ezp/blockly/workspace.js"></script>
@@ -42,6 +47,8 @@
       <script src="../../lib/ezp/blockly/ezp/blocks-val.js"></script>
       <script src="../../lib/ezp/blockly/ezp/blocks-stt.js"></script>
       <script src="../../lib/ezp/blockly/ezp/blocks-grp.js"></script>
+      <script src="../../lib/ezp/blockly/ezp/blocks-ctl.js"></script>
+      <script src="../../lib/ezp/blockly/ezp/blocks-prc.js"></script>
       <script src="../../lib/ezp/blockly/ezp/blocks-xtd.js"></script>
       <script src="../../lib/ezp/blockly/rendered_connection.js"></script>
       <link rel="stylesheet" type="text/css" href="../../lib/ezp/css/ezp.css">
@@ -121,7 +128,12 @@
       </category>
       <category name="STT">
         <block type="ezp_stt_set">
-          <field name="VAR" value="i"/>
+          <value name="RHS">
+            <shadow type="ezp_val_any">
+              <field name="VAL" value="1+1"/>
+            </shadow>
+          </value>
+          <field name="VAR" value="ijk"/>
         </block>
         <block type="ezp_stt_print">
           <value name="TUPLE_0_0">
@@ -272,17 +284,19 @@
             </block>
           </value>
         </block>
+        <block type="ezp_stt_any">
+          <field name="STT" value="Do it right !"/>
+        </block>
+        <block type="ezp_stt_bcp">
+          <field name="BCP" value="pass"/>
+        </block>
+        <block type="ezp_grp_any">
+          <field name="STT" value="Do it right !"/>
+        </block>
       </category>
-      <block type="ezp_stt_any">
-        <field name="STT" value="Do it right !"/>
-      </block>
-      <block type="ezp_stt_bcp">
-        <field name="BCP" value="pass"/>
-      </block>
-      <block type="ezp_grp_any">
-        <field name="STT" value="Do it right !"/>
-      </block>
       <category name="XTD">
+        <block type="ezp_ctl_main"></block>
+        <block type="ezp_prc_def"></block>
         <block type="ezp_grp_with">
           <value name="STT">
             <shadow type="ezp_val_any">
