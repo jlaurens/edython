@@ -1,3 +1,7 @@
+body {
+  margin:0px;
+}
+
 .ezp_no_options .ezp-menuitem-checkbox, .ezp-hidden {
   display: none;
 }
