@@ -42,7 +42,7 @@ init: function() {
   this.setHelpUrl("");
 }
 };
-Blockly.Blocks[ezP.Const.val.RANGE] = {
+Blockly.Blocks[ezP.Const.Val.RANGE] = {
 init: function() {
   this.appendDummyInput().appendField("range(");
   this.appendValueInput("TUPLE_0_0").setCheck(null);

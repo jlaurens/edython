@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>ezPython: blocks</title>
+  <script src="../../lib/blockly/blockly_uncompressed.js"></script>
+  <script src="../../lib/closure-library/closure/goog/structs/map.js"></script>
+  <script src="../../lib/closure-library/closure/goog/ui/modalpopup.js"></script>
+  <script src="../../lib/closure-library/closure/goog/ui/dialog.js"></script>
+  <script src="../../lib/closure-library/closure/goog/ui/submenu.js"></script>
+  <script src="../../lib/closure-library/closure/goog/ui/popupmenu.js"></script>
+  <script src="../../lib/blockly/blocks_compressed.js"></script>
+  <script src="../../lib/blockly/python_compressed.js"></script>
+  <script src="../../lib/blockly/msg/js/fr.js"></script>
+  <script src="../../lib/ezp/core/ezp.js"></script>
+  <script src="../../lib/ezp/msg/js/base.js"></script>
+  <script src="../../lib/ezp/core/ui.js"></script>
+  <script src="../../lib/ezp/closure/menurenderer.js"></script>
+  <script src="../../lib/ezp/closure/menu.js"></script>
+  <script src="../../lib/ezp/closure/popupmenu.js"></script>
+  <script src="../../lib/ezp/closure/menuitemrenderer.js"></script>
+  <script src="../../lib/ezp/closure/menuitem.js"></script>
+  <script src="../../lib/ezp/closure/submenu.js"></script>
+  <script src="../../lib/ezp/closure/submenurenderer.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/constants.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/ezphelper.js"></script>
+  <script src="../../lib/ezp/blockly/block.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/delegate.js"></script>
+  <script src="../../lib/ezp/blockly/block_svg.js"></script>
+  <script src="../../lib/ezp/blockly/xml.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/delegate_svg.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/delegate_svg_val.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/delegate_svg_stt.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/delegate_svg_ctl.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/delegate_svg_grp.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/delegate_svg_prc.js"></script>
+  <script src="../../lib/ezp/blockly/variables.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/variables_menu.js"></script>
+  <script src="../../lib/ezp/blockly/workspace.js"></script>
+  <script src="../../lib/ezp/blockly/workspace_svg.js"></script>
+  <script src="../../lib/ezp/blockly/field_label.js"></script>
+  <script src="../../lib/ezp/blockly/field_textinput.js"></script>
+  <script src="../../lib/ezp/blockly/field_dropdown.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/field_options.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/field_options_code.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/field_options_print.js"></script>
+  <script src="../../lib/ezp/blockly/field_variable.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/blocks-val.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/blocks-stt.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/blocks-grp.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/blocks-ctl.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/blocks-prc.js"></script>
+  <script src="../../lib/ezp/blockly/ezp/blocks-xtd.js"></script>
+  <script src="../../lib/ezp/blockly/rendered_connection.js"></script>
+  <script src="../../lib/ezp/blockly/python/val.js"></script>
+  <script src="../../lib/ezp/blockly/python/stt.js"></script>
+  <script src="../../lib/ezp/blockly/python/grp.js"></script>
+  <link rel="stylesheet" type="text/css" href="../../lib/ezp/css/ezp.css">
+</head>
+
+<body>
+  <div style="text-align: center">
+    <button onclick="generate()">Generate Python &#10548;</button>
+  </div>
+  <div style="width:40%;float:right;">
+    <textarea rows="40" cols="50" id="ezp_code_output" readonly=""></textarea>
+  </div>
+  <div id="ezp_div" style="height: 480px; width: 600px;"></div>
+
+  <xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
+    <category name="VAL">
+      <block type="ezp_val_get">
+        <field name="VAR" value="i" />
+      </block>
+      <block type="ezp_val_any">
+        <field name="ANY" value="1+1" />
+      </block>
+      <block type="ezp_val_text">
+        <field name="TEXT" value="Bonjour !" />
+      </block>
+      <block type="ezp_val_tfn">
+        <field name="TFN" value="None" />
+      </block>
+      <block type="ezp_val_op">
+        <value name="LHS">
+          <shadow type="ezp_val_any">
+            <field name="ANY" value="1" />
+          </shadow>
+          <block type="ezp_val_get">
+            <field name="VAR" value="i" />
+          </block>
+        </value>
+        <value name="RHS">
+          <shadow type="ezp_val_any">
+            <field name="ANY" value="1" />
+          </shadow>
+        </value>
+        <field name="OP" value="+" />
+      </block>
+      <block type="ezp_val_bool">
+        <value name="LHS">
+          <block type="ezp_val_get">
+            <field name="VAR" value="i" />
+          </block>
+          <shadow type="ezp_val_any">
+            <field name="ANY" value="1+1" />
+          </shadow>
+        </value>
+        <value name="RHS">
+          <shadow type="ezp_val_any">
+            <field name="ANY" value="1+1" />
+          </shadow>
+        </value>
+        <field name="OP" value="==" />
+      </block>
+      <block type="ezp_val_unry">
+        <value name="ANY">
+          <shadow type="ezp_val_any">
+            <field name="ANY" value="1" />
+          </shadow>
+        </value>
+        <field name="OP" value="not" />
+      </block>
+      <block type="ezp_val_tuple">
+        <value name="TUPLE_0_0">
+          <block type="ezp_val_any">
+            <field name="ANY" value="TUPLE" />
+          </block>
+        </value>
+      </block>
+      <block type="ezp_val_range">
+        <value name="TUPLE_0_0">
+          <block type="ezp_val_any">
+            <field name="ANY" value="RANGE" />
+          </block>
+        </value>
+      </block>
+    </category>
+    <category name="STT">
+      <block type="ezp_stt_set">
+        <value name="RHS">
+          <shadow type="ezp_val_any">
+            <field name="ANY" value="1+1" />
+          </shadow>
+        </value>
+        <field name="VAR" value="i" />
+      </block>
+      <block type="ezp_stt_print">
+        <value name="TUPLE_0_0">
+          <block type="ezp_val_text">
+            <field name="TEXT" value="Bonjour !" />
+          </block>
+        </value>
+        <value name="SEP">
+          <shadow type="ezp_val_text">
+            <field name="TEXT" value="," />
+          </shadow>
+        </value>
+        <value name="END">
+          <shadow type="ezp_val_text">
+            <field name="TEXT" value=";" />
+          </shadow>
+        </value>
+        <value name="FILE">
+          <shadow type="ezp_val_text">
+            <field name="TEXT" value="/foo/bar.txt" />
+          </shadow>
+        </value>
+        <value name="FLUSH">
+          <shadow type="ezp_val_tfn">
+            <field name="TFN" value="False" />
+          </shadow>
+        </value>
+      </block>
+      <block type="ezp_grp_if">
+        <value name="COND">
+          <shadow type="ezp_val_bool">
+            <value name="LHS">
+              <shadow type="ezp_val_any">
+                <field name="ANY" value="2" />
+              </shadow>
+            </value>
+            <value name="RHS">
+              <shadow type="ezp_val_any">
+                <field name="ANY" value="1+1" />
+              </shadow>
+            </value>
+            <field name="OP" value="==" />
+          </shadow>
+          <block type="ezp_val_bool">
+            <value name="LHS">
+              <block type="ezp_val_get">
+                <field name="VAR" value="i" />
+              </block>
+              <shadow type="ezp_val_any">
+                <field name="ANY" value="1+1" />
+              </shadow>
+            </value>
+            <value name="RHS">
+              <shadow type="ezp_val_any">
+                <field name="ANY" value="1+1" />
+              </shadow>
+            </value>
+            <field name="OP" value="==" />
+          </block>
+        </value>
+      </block>
+      <block type="ezp_grp_elif">
+        <value name="COND">
+          <shadow type="ezp_val_bool">
+            <value name="LHS">
+              <shadow type="ezp_val_any">
+                <field name="ANY" value="2" />
+              </shadow>
+            </value>
+            <value name="RHS">
+              <shadow type="ezp_val_any">
+                <field name="ANY" value="1+1" />
+              </shadow>
+            </value>
+            <field name="OP" value="==" />
+          </shadow>
+          <block type="ezp_val_bool">
+            <value name="LHS">
+              <block type="ezp_val_get">
+                <field name="VAR" value="sdf" />
+              </block>
+              <shadow type="ezp_val_any">
+                <field name="ANY" value="1+1" />
+              </shadow>
+            </value>
+            <value name="RHS">
+              <shadow type="ezp_val_any">
+                <field name="ANY" value="1+1" />
+              </shadow>
+            </value>
+            <field name="OP" value="==" />
+          </block>
+        </value>
+      </block>
+      <block type="ezp_grp_else"></block>
+      <block type="ezp_grp_while">
+        <value name="COND">
+          <shadow type="ezp_val_bool">
+            <value name="LHS">
+              <shadow type="ezp_val_any">
+                <field name="ANY" value="2" />
+              </shadow>
+            </value>
+            <value name="RHS">
+              <shadow type="ezp_val_any">
+                <field name="ANY" value="1+1" />
+              </shadow>
+            </value>
+            <field name="OP" value="==" />
+          </shadow>
+          <block type="ezp_val_bool">
+            <value name="LHS">
+              <block type="ezp_val_get">
+                <field name="VAR" value="i" />
+              </block>
+              <shadow type="ezp_val_any">
+                <field name="ANY" value="1+1" />
+              </shadow>
+            </value>
+            <value name="RHS">
+              <shadow type="ezp_val_any">
+                <field name="ANY" value="1+1" />
+              </shadow>
+            </value>
+            <field name="OP" value="==" />
+          </block>
+        </value>
+      </block>
+      <block type="ezp_grp_for">
+        <value name="TGT">
+          <shadow type="ezp_val_any">
+            <field name="ANY" value="i" />
+          </shadow>
+          <block type="ezp_val_get">
+            <field name="VAR" value="i" />
+          </block>
+        </value>
+        <value name="LST">
+          <shadow type="ezp_val_any">
+            <field name="ANY" value="range(end)" />
+          </shadow>
+          <block type="ezp_val_range">
+            <value name="TUPLE_0_0">
+              <block type="ezp_val_any">
+                <field name="ANY" value="1+1" />
+              </block>
+            </value>
+          </block>
+        </value>
+      </block>
+      <block type="ezp_stt_any">
+        <field name="STT" value="Do it right !" />
+      </block>
+      <block type="ezp_stt_bcp">
+        <field name="BCP" value="pass" />
+      </block>
+      <block type="ezp_grp_any">
+        <field name="STT" value="Do it right !" />
+      </block>
+    </category>
+    <category name="XTD">
+      <block type="ezp_ctl_main"></block>
+      <block type="ezp_prc_def"></block>
+      <block type="ezp_grp_with">
+        <value name="STT">
+          <shadow type="ezp_val_any">
+            <field name="ANY" value="statement" />
+          </shadow>
+        </value>
+        <value name="VAR">
+          <shadow type="ezp_val_any">
+            <field name="ANY" value="i" />
+          </shadow>
+          <block type="ezp_val_get">
+            <field name="VAR" value="i" />
+          </block>
+        </value>
+      </block>
+    </category>
+    <category name="0">
+      <block type="ezp_val_tuple">
+        <value name="TUPLE_0_0">
+          <block type="ezp_val_any">
+            <field name="ANY">MON TUPLE</field>
+          </block>
+        </value>
+      </block>
+      <block type="ezp_val_get"></block>
+      <block type="ezp_stt_set"></block>
+    </category>
+  </xml>
+  <xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks" style="display:none">
+    <variables>
+      <variable type="" id="y#8;6IN`^wBJRkAKfH[J">sdf</variable>
+    </variables>
+    <block type="ezp_grp_if" id="_Tx)})C]ZjiQn$!Q,8[z" x="138" y="13">
+      <value name="COND">
+        <block type="ezp_val_any" id="ojgWp{{p3m:9*AJp1cH!">
+          <field name="ANY">1+1</field>
+        </block>
+      </value>
+      <statement name="DO">
+        <block type="ezp_stt_print" id="vwMj~,4J6~(j3[!vu8KW">
+          <value name="TUPLE_0_0">
+            <shadow type="ezp_val_text" id="IAat=(1dDkPAZI@eMn@0">
+              <field name="TEXT">Bonjour !</field>
+            </shadow>
+          </value>
+          <next>
+            <block type="ezp_stt_any" id="ZO(egF+,V(+u)of!pXP2">
+              <field name="STT">Do it right !</field>
+              <next>
+                <block type="ezp_stt_print" id="9sw#ASa!37ga!){Jh3W]">
+                  <value name="TUPLE_0_0">
+                    <block type="ezp_val_text" id="7h13aW1lXrp[BB)P)XmS">
+                      <field name="TEXT">Bonjour !</field>
+                    </block>
+                  </value>
+                </block>
+              </next>
+            </block>
+          </next>
+        </block>
+      </statement>
+    </block>
+    <block type="ezp_stt_set" id="twWsV2W{hc!RC4@VQh,a" x="138" y="188">
+      <field name="VAR" id="y#8;6IN`^wBJRkAKfH[J" value="sdf" />
+    </block>
+    <block type="ezp_val_get" id="A5_LkFj|vif=lvT.CZFP" x="137" y="237">
+      <field name="VAR" id="y#8;6IN`^wBJRkAKfH[J" value="sdf" />
+    </block>
+  </xml>
+  <xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox1" style="display: none;">
+  </xml>
+  <xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks1" style="display:none">
+    <variables>
+      <variable type="" id="y#8;6IN`^wBJRkAKfH[J">sdf</variable>
+    </variables>
+    <block type="ezp_val_not" x="138" y="128">
+      <value name="VAL">
+        <block type="ezp_val_any">
+          <field name="ANY" value="ANY" />
+        </block>
+      </value>
+    </block>
+    <block type="ezp_stt_set" id="twWsV2W{hc!RC4@VQh,a" x="138" y="188">
+      <field name="VAR" id="y#8;6IN`^wBJRkAKfH[J" value="sdf" />
+    </block>
+    <block type="ezp_val_tuple" x="138" y="158">
+      <value name="TUPLE_0_0">
+        <block type="ezp_val_any">
+          <field name="ANY">TUPLE</field>
+        </block>
+      </value>
+    </block>
+  </xml>
+  <xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks2" style="display:none">
+    <block type="ezp_val_tuple" x="50" y="50">
+        <value name="TUPLE_0_0">
+          <block type="ezp_val_any">
+            <field name="ANY" value="TUPLE_0_0" />
+          </block>
+        </value>
+      </block>
+    </xml>
+  <xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks3" style="display:none">
+    <block type="ezp_val_get" x="50" y="50">
+      <field name="VAR" value="sdf" />
+    </block>
+    <block type="ezp_val_any" x="50" y="100">
+      <field name="ANY" value="2+2" />
+    </block>
+    <block type="ezp_val_text" x="50" y="150">
+      <field name="TEXT" value="Hello World!" />
+    </block>
+    <block type="ezp_val_tfn" x="50" y="200">
+      <field name="TFN" value="False" />
+    </block>
+    <block type="ezp_val_op" x="50" y="250">
+      <value name="LHS">
+        <block type="ezp_val_get">
+          <field name="VAR" value="i" />
+        </block>
+      </value>
+      <value name="RHS">
+        <block type="ezp_val_any">
+          <field name="ANY" value="1+1" />
+        </block>
+      </value>
+      <field name="OP" value="//" />
+    </block>
+    <block type="ezp_val_unry" x="50" y="300">
+      <value name="ANY">
+        <block type="ezp_val_any">
+          <field name="ANY" value="1+1" />
+        </block>
+      </value>
+      <field name="OP" value="-" />
+    </block>
+    <block type="ezp_val_bool" x="50" y="350">
+      <value name="LHS">
+        <block type="ezp_val_get">
+          <field name="VAR" value="i" />
+        </block>
+      </value>
+      <value name="RHS">
+        <block type="ezp_val_any">
+          <field name="ANY" value="1+1" />
+        </block>
+      </value>
+      <field name="OP" value="or" />
+    </block>
+    <block type="ezp_val_tuple" x="50" y="400">
+      <value name="TUPLE_0_0">
+        <block type="ezp_val_any">
+          <field name="ANY" value="i+2+3" />
+        </block>
+      </value>
+      <value name="TUPLE_0_1">
+        <block type="ezp_val_any">
+          <field name="ANY" value="4+5+6" />
+        </block>
+      </value>
+    </block>
+    <block type="ezp_val_range" x="50" y="450">
+      <value name="TUPLE_0_0">
+        <block type="ezp_val_any">
+          <field name="ANY" value="start" />
+        </block>
+      </value>
+      <value name="TUPLE_0_1">
+        <block type="ezp_val_any">
+          <field name="ANY" value="end" />
+        </block>
+      </value>
+    </block>
+  </xml>
+  <script>
+    var options = {
+      toolbox: document.getElementById("toolbox"),
+      collapse: true,
+      comments: false,
+      disable: true,
+      maxBlocks: Infinity,
+      trashcan: false,
+      horizontalLayout: false,
+      toolboxPosition: 'start',
+      css: true,
+      media: '../../lib/blockly/media/',
+      rtl: false,
+      scrollbars: true,
+      sounds: true,
+      oneBasedIndex: true
+    };
+    /* Inject your workspace */
+    var workspace = Blockly.inject('ezp_div', options);
+    ezP.setup(workspace);
+    var workspaceBlocks = document.getElementById("workspaceBlocks2");
+    //Blockly.Xml.domToWorkspace(workspaceBlocks, workspace);
+    /*var b = workspace.newBlock(ezP.Const.Stt.SET);
+    b.initSvg();
+    b.moveBy(50,100);
+    b.render();*/
+    var b = workspace.newBlock(ezP.Const.Grp.FOR);
+    b.initSvg();
+    b.moveBy(50,150);
+    b.render();
+    function generate() {
+      var code = Blockly.Python.workspaceToCode(workspace);
+      document.getElementById('ezp_code_output').value = code;
+    }
+  </script>
+  <!-- TEST for closure popups: START -->
+</body>
+
+</html>
