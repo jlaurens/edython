@@ -4,4 +4,4 @@
 !/src/fonts/README.md
 /node_modules
 !/node_modules/README.md
-/sandbox
+/sandbox/**
