@@ -286,6 +286,7 @@ body {
   padding: 4px;
   position: absolute;
   font-family: arial, sans-serif;
+  z-index: 100;
 }
 
 .ezp-modal-dialog a,

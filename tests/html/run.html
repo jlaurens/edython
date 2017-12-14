@@ -56,8 +56,6 @@
   <script src="../../lib/ezp/blockly/python/val.js"></script>
   <script src="../../lib/ezp/blockly/python/stt.js"></script>
   <script src="../../lib/ezp/blockly/python/grp.js"></script>
-  <script src="../../lib/ezp/blockly/python/prc.js"></script>
-  <script src="../../lib/ezp/blockly/python/ctl.js"></script>
   <link rel="stylesheet" type="text/css" href="../../lib/ezp/css/ezp.css">
 </head>
 
@@ -66,7 +64,7 @@
     <button onclick="generate()">Generate Python &#10548;</button>
   </div>
   <div style="width:40%;float:right;">
-    <textarea rows="40" cols="50" id="ezp_code_output" readonly=""></textarea>
+    <textarea rows="20" cols="50" id="ezp_code_output" readonly=""></textarea>
   </div>
   <div id="ezp_div" style="height: 480px; width: 600px;"></div>
 
@@ -404,7 +402,7 @@
     </block>
   </xml>
   <xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks2" style="display:none">
-    <block type="ezp_val_tuple" x="50" y="50">
+    <block type="ezp_stt_print" x="50" y="50">
         <value name="TUPLE_0_0">
           <block type="ezp_val_any">
             <field name="ANY" value="TUPLE_0_0" />
@@ -505,15 +503,7 @@
     var workspace = Blockly.inject('ezp_div', options);
     ezP.setup(workspace);
     var workspaceBlocks = document.getElementById("workspaceBlocks2");
-    //Blockly.Xml.domToWorkspace(workspaceBlocks, workspace);
-    /*var b = workspace.newBlock(ezP.Const.Stt.SET);
-    b.initSvg();
-    b.moveBy(50,100);
-    b.render();*/
-    var b = workspace.newBlock(ezP.Const.Grp.FOR);
-    b.initSvg();
-    b.moveBy(50,150);
-    b.render();
+    Blockly.Xml.domToWorkspace(workspaceBlocks, workspace);
     function generate() {
       var code = Blockly.Python.workspaceToCode(workspace);
       document.getElementById('ezp_code_output').value = code;
