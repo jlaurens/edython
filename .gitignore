@@ -1,2 +1,6 @@
 /fonts/**
 !/fonts/README.md
+/src/fonts/**
+!/src/fonts/README.md
+/node_modules
+!/node_modules/README.md

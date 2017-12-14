@@ -1,0 +1,36 @@
+    #ezp-main .split {
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    #ezp-main .gutter {
+      background-color: rgb(240, 240, 240);
+      background-repeat: no-repeat;
+      background-position: 50%;
+    }
+
+    #ezp-main .gutter.gutter-horizontal {
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+      cursor: ew-resize;
+    }
+
+    #ezp-main .gutter.gutter-vertical {
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=');
+      cursor: ns-resize;
+    }
+
+    #ezp-main .split.split-horizontal,
+    .gutter.gutter-horizontal {
+      height: 100%;
+      float: left;
+    }
+
+    #ezp-main.container {
+      width: 100%;
+      max-width: 100%;
+      padding: 0;
+    }
+  

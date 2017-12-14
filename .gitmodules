@@ -1,6 +1,6 @@
 [submodule "lib/closure-library"]
-	path = lib/closure-library
+	path = src/lib/closure-library
 	url = https://github.com/google/closure-library
 [submodule "lib/blockly"]
-	path = lib/blockly
+	path = src/lib/blockly
 	url = https://github.com/google/blockly
