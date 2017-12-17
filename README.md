@@ -1,6 +1,6 @@
 # ezpython
 
-> python made easy with blockly and brython
+> Python made easy with Bmockly and Brython
 
 #### Build Setup
 
