@@ -15,8 +15,7 @@ Vue.config.productionTip = false
 
 window.ezP.Vue = {
   getBus: function () {
-    var bus
-    return bus || (bus = new Vue())
+    return this.bus_ || (this.bus_ = new Vue())
   }
 }
 /* eslint-disable no-new */

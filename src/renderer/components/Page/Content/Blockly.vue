@@ -6,6 +6,8 @@
 
 <script>
   import BlocklyWorkspace from './Blockly/Workspace'
+  import fs from 'fs'
+  import path from 'path'
 
   export default {
     name: 'content-blockly',
@@ -14,6 +16,7 @@
     },
     methods: {
       resize (e) {
+        console.log('RESIZE!!!!!!!!!!!!!')
         // Compute the absolute coordinates and dimensions of blocklyArea.
         var blocklyArea = document.getElementById('content-blockly')
         var element = blocklyArea
@@ -34,11 +37,12 @@
       }
     },
     mounted: function () {
+      window.ezP.Vue.getBus().$on('size-did-change', this.resize)
+      window.addEventListener('resize', this.resize, false)
       this.$nextTick(function () {
         // Code that will run only after the
         // entire view has been rendered
         this.options = {
-          toolbox: window.document.getElementById('blockly-toolbox'),
           collapse: true,
           comments: false,
           disable: true,
@@ -53,11 +57,16 @@
           sounds: true,
           oneBasedIndex: true
         }
-        var blocklyDiv = document.getElementById('blockly-workspace')
+        var fileContents = fs.readFileSync(path.join(__static, '/blockly/toolbar.xml'), 'utf8')
+        var dom = window.Blockly.Xml.textToDom(fileContents)
+        this.options.toolbox = dom
+        let blocklyDiv = document.getElementById('blockly-workspace')
         window.ezP.workspace = window.Blockly.inject(blocklyDiv, this.options)
         window.ezP.setup(window.ezP.workspace)
+        fileContents = fs.readFileSync(path.join(__static, '/blockly/workspace.xml'), 'utf8')
+        dom = window.Blockly.Xml.textToDom(fileContents)
+        window.Blockly.Xml.domToWorkspace(dom, window.ezP.workspace)
         this.resize()
-
         var b = window.ezP.workspace.newBlock(window.ezP.Const.Grp.FOR)
         b.initSvg()
         b.moveBy(50, 150)
@@ -66,8 +75,6 @@
           var code = window.Blockly.Python.workspaceToCode(window.ezP.workspace)
           window.document.getElementById('ezp_code_output').value = code
         } */
-        window.ezP.Vue.getBus().$on('size-did-change', this.resize)
-        window.addEventListener('resize', this.resize, false)
       })
     }
   }
@@ -85,11 +92,16 @@
   #blockly-workspace {
     position: absolute;
   }
+
   .blocklyMainBackground {
     /* stroke-width: 1; */
     stroke: none;
   }
+
   .blocklySvg {
     background-color: transparent;
+  }
+  .blocklyToolboxDiv {
+    border-radius: 8px 0 0 8px;
   }
 </style>

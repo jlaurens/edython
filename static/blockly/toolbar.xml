@@ -1,0 +1,270 @@
+  
+<xml 
+  xmlns="http://www.w3.org/1999/xhtml" id="blockly-toolbox-data" style="display: none;">
+  <category name="VAL">
+    <block type="ezp_val_get">
+      <field name="VAR" value="i" />
+    </block>
+    <block type="ezp_val_any">
+      <field name="ANY" value="1+1" />
+    </block>
+    <block type="ezp_val_text">
+      <field name="TEXT" value="Bonjour !" />
+    </block>
+    <block type="ezp_val_tfn">
+      <field name="TFN" value="None" />
+    </block>
+    <block type="ezp_val_op">
+      <value name="LHS">
+        <shadow type="ezp_val_any">
+          <field name="ANY" value="1" />
+        </shadow>
+        <block type="ezp_val_get">
+          <field name="VAR" value="i" />
+        </block>
+      </value>
+      <value name="RHS">
+        <shadow type="ezp_val_any">
+          <field name="ANY" value="1" />
+        </shadow>
+      </value>
+      <field name="OP" value="+" />
+    </block>
+    <block type="ezp_val_bool">
+      <value name="LHS">
+        <block type="ezp_val_get">
+          <field name="VAR" value="i" />
+        </block>
+        <shadow type="ezp_val_any">
+          <field name="ANY" value="1+1" />
+        </shadow>
+      </value>
+      <value name="RHS">
+        <shadow type="ezp_val_any">
+          <field name="ANY" value="1+1" />
+        </shadow>
+      </value>
+      <field name="OP" value="==" />
+    </block>
+    <block type="ezp_val_unry">
+      <value name="ANY">
+        <shadow type="ezp_val_any">
+          <field name="ANY" value="1" />
+        </shadow>
+      </value>
+      <field name="OP" value="not" />
+    </block>
+    <block type="ezp_val_tuple">
+      <value name="TUPLE_0_0">
+        <block type="ezp_val_any">
+          <field name="ANY" value="TUPLE" />
+        </block>
+      </value>
+    </block>
+    <block type="ezp_val_range">
+      <value name="TUPLE_0_0">
+        <block type="ezp_val_any">
+          <field name="ANY" value="RANGE" />
+        </block>
+      </value>
+    </block>
+  </category>
+  <category name="STT">
+    <block type="ezp_stt_set">
+      <value name="RHS">
+        <shadow type="ezp_val_any">
+          <field name="ANY" value="1+1" />
+        </shadow>
+      </value>
+      <field name="VAR" value="i" />
+    </block>
+    <block type="ezp_stt_print">
+      <value name="TUPLE_0_0">
+        <block type="ezp_val_text">
+          <field name="TEXT" value="Bonjour !" />
+        </block>
+      </value>
+      <value name="SEP">
+        <shadow type="ezp_val_text">
+          <field name="TEXT" value="," />
+        </shadow>
+      </value>
+      <value name="END">
+        <shadow type="ezp_val_text">
+          <field name="TEXT" value=";" />
+        </shadow>
+      </value>
+      <value name="FILE">
+        <shadow type="ezp_val_text">
+          <field name="TEXT" value="/foo/bar.txt" />
+        </shadow>
+      </value>
+      <value name="FLUSH">
+        <shadow type="ezp_val_tfn">
+          <field name="TFN" value="False" />
+        </shadow>
+      </value>
+    </block>
+    <block type="ezp_grp_if">
+      <value name="COND">
+        <shadow type="ezp_val_bool">
+          <value name="LHS">
+            <shadow type="ezp_val_any">
+              <field name="ANY" value="2" />
+            </shadow>
+          </value>
+          <value name="RHS">
+            <shadow type="ezp_val_any">
+              <field name="ANY" value="1+1" />
+            </shadow>
+          </value>
+          <field name="OP" value="==" />
+        </shadow>
+        <block type="ezp_val_bool">
+          <value name="LHS">
+            <block type="ezp_val_get">
+              <field name="VAR" value="i" />
+            </block>
+            <shadow type="ezp_val_any">
+              <field name="ANY" value="1+1" />
+            </shadow>
+          </value>
+          <value name="RHS">
+            <shadow type="ezp_val_any">
+              <field name="ANY" value="1+1" />
+            </shadow>
+          </value>
+          <field name="OP" value="==" />
+        </block>
+      </value>
+    </block>
+    <block type="ezp_grp_elif">
+      <value name="COND">
+        <shadow type="ezp_val_bool">
+          <value name="LHS">
+            <shadow type="ezp_val_any">
+              <field name="ANY" value="2" />
+            </shadow>
+          </value>
+          <value name="RHS">
+            <shadow type="ezp_val_any">
+              <field name="ANY" value="1+1" />
+            </shadow>
+          </value>
+          <field name="OP" value="==" />
+        </shadow>
+        <block type="ezp_val_bool">
+          <value name="LHS">
+            <block type="ezp_val_get">
+              <field name="VAR" value="sdf" />
+            </block>
+            <shadow type="ezp_val_any">
+              <field name="ANY" value="1+1" />
+            </shadow>
+          </value>
+          <value name="RHS">
+            <shadow type="ezp_val_any">
+              <field name="ANY" value="1+1" />
+            </shadow>
+          </value>
+          <field name="OP" value="==" />
+        </block>
+      </value>
+    </block>
+    <block type="ezp_grp_else"></block>
+    <block type="ezp_grp_while">
+      <value name="COND">
+        <shadow type="ezp_val_bool">
+          <value name="LHS">
+            <shadow type="ezp_val_any">
+              <field name="ANY" value="2" />
+            </shadow>
+          </value>
+          <value name="RHS">
+            <shadow type="ezp_val_any">
+              <field name="ANY" value="1+1" />
+            </shadow>
+          </value>
+          <field name="OP" value="==" />
+        </shadow>
+        <block type="ezp_val_bool">
+          <value name="LHS">
+            <block type="ezp_val_get">
+              <field name="VAR" value="i" />
+            </block>
+            <shadow type="ezp_val_any">
+              <field name="ANY" value="1+1" />
+            </shadow>
+          </value>
+          <value name="RHS">
+            <shadow type="ezp_val_any">
+              <field name="ANY" value="1+1" />
+            </shadow>
+          </value>
+          <field name="OP" value="==" />
+        </block>
+      </value>
+    </block>
+    <block type="ezp_grp_for">
+      <value name="TGT">
+        <shadow type="ezp_val_any">
+          <field name="ANY" value="i" />
+        </shadow>
+        <block type="ezp_val_get">
+          <field name="VAR" value="i" />
+        </block>
+      </value>
+      <value name="LST">
+        <shadow type="ezp_val_any">
+          <field name="ANY" value="range(end)" />
+        </shadow>
+        <block type="ezp_val_range">
+          <value name="TUPLE_0_0">
+            <block type="ezp_val_any">
+              <field name="ANY" value="1+1" />
+            </block>
+          </value>
+        </block>
+      </value>
+    </block>
+    <block type="ezp_stt_any">
+      <field name="STT" value="Do it right !" />
+    </block>
+    <block type="ezp_stt_bcp">
+      <field name="BCP" value="pass" />
+    </block>
+    <block type="ezp_grp_any">
+      <field name="STT" value="Do it right !" />
+    </block>
+  </category>
+  <category name="XTD">
+    <block type="ezp_ctl_main"></block>
+    <block type="ezp_prc_def"></block>
+    <block type="ezp_grp_with">
+      <value name="STT">
+        <shadow type="ezp_val_any">
+          <field name="ANY" value="statement" />
+        </shadow>
+      </value>
+      <value name="VAR">
+        <shadow type="ezp_val_any">
+          <field name="ANY" value="i" />
+        </shadow>
+        <block type="ezp_val_get">
+          <field name="VAR" value="i" />
+        </block>
+      </value>
+    </block>
+  </category>
+  <category name="0">
+    <block type="ezp_val_tuple">
+      <value name="TUPLE_0_0">
+        <block type="ezp_val_any">
+          <field name="ANY">MON TUPLE</field>
+        </block>
+      </value>
+    </block>
+    <block type="ezp_val_get"></block>
+    <block type="ezp_stt_set"></block>
+  </category>
+</xml>

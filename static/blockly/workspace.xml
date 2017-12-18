@@ -1,20 +1,10 @@
-<template>
-  <xml xmlns="http://www.w3.org/1999/xhtml" id="blockly-workspace-data" style="display:none">
-    <block type="ezp_val_tuple" x="50" y="50">
-      <value name="TUPLE_0_0">
-        <block type="ezp_val_any">
-          <field name="ANY" value="TUPLE_0_0" />
-        </block>
-      </value>
-    </block>
-  </xml>
-</template>
-
-<script>
-  export default {
-    name: 'blockly-workspace-data'
-  }
-</script>
-
-<style>
-</style>
+<xml 
+  xmlns="http://www.w3.org/1999/xhtml" id="blockly-workspace-data" style="display:none">
+  <block type="ezp_val_tuple" x="50" y="50">
+    <value name="TUPLE_0_0">
+      <block type="ezp_val_any">
+        <field name="ANY" value="TUPLE_0_0" />
+      </block>
+    </value>
+  </block>
+</xml>
