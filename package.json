@@ -56,10 +56,12 @@
     }
   },
   "dependencies": {
-    "vue": "^2.3.3",
     "axios": "^0.16.1",
+    "brython": "^3.3.5",
+    "vue": "^2.3.3",
     "vue-electron": "^1.0.6",
     "vue-router": "^2.5.3",
+    "vue-split-panel": "^1.0.2",
     "vuex": "^2.3.1"
   },
   "devDependencies": {
