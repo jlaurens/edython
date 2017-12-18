@@ -13,6 +13,6 @@
 <style>
   #toolbar-center {
     display: inline;
-    height: 32px;
+    height: 100%;
   }
 </style>

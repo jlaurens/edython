@@ -1,7 +1,7 @@
 <template>
-  <Split id="page-content">
+  <Split id="page-content" @onDrag="onDrag">
     <SplitArea :size="50">
-      <content-workspace></content-workspace>
+      <content-blockly></content-blockly>
     </SplitArea>
     <SplitArea :size="50">
       <content-panels></content-panels>
@@ -10,13 +10,18 @@
 </template>
 
 <script>
-  import ContentWorkspace from './Content/Workspace'
+  import ContentBlockly from './Content/Blockly'
   import ContentPanels from './Content/Panels'
 
   export default {
     name: 'page-content',
+    methods: {
+      onDrag (size) {
+        window.ezP.Vue.getBus().$emit('size-did-change', size)
+      }
+    },
     components: {
-      'content-workspace': ContentWorkspace,
+      'content-blockly': ContentBlockly,
       'content-panels': ContentPanels
     }
   }

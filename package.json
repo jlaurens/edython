@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "author": "jlaurens <jerome.laurens@u-bourgogne.fr>",
   "description": "Python made easy with Bmockly and Brython",
-  "license": null,
+  "license": "CeCILL-B",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
@@ -23,7 +23,7 @@
   },
   "build": {
     "productName": "ezpython",
-    "appId": "org.simulatedgreg.electron-vue",
+    "appId": "fr.u-bourgogne.ezpython",
     "directories": {
       "output": "build"
     },

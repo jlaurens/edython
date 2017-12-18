@@ -1,18 +1,18 @@
 <template>
-  <div id="content-workspace">
-    Workspace
+  <div id="blockly-workspace">
   </div>
 </template>
 
 <script>
   export default {
-    name: 'content-workspace'
+    name: 'blockly-workspace'
   }
 </script>
 
 <style>
-  #content-workspace {
-    padding: 8px;
+  #blockly-workspace {
+    margin: 0;
+    padding: 0;
     border-radius: 8px;
     background-color: white;
     height: 100%;

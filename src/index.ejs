@@ -1,22 +1,82 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>ezpython</title>
-    <% if (htmlWebpackPlugin.options.nodeModules) { %>
-      <!-- Add `node_modules/` to global paths so `require` works properly in development -->
-      <script>
-        require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')
-      </script>
-    <% } %>
-  </head>
-  <body>
-    <div id="app"></div>
-    <!-- Set `__static` path to static files in production -->
-    <script>
-      if (process.env.NODE_ENV !== 'development') window.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
-    </script>
 
-    <!-- webpack builds are automatically injected -->
-  </body>
+<head>
+  <meta charset="utf-8">
+  <title>ezpython</title>
+  <% if (htmlWebpackPlugin.options.nodeModules) { %>
+    <!-- Add `node_modules/` to global paths so `require` works properly in development -->
+    <script>
+      require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')
+    </script>
+    <% } %>
+      <script src="src/lib/blockly/blockly_uncompressed.js"></script>
+      <script src="src/lib/closure-library/closure/goog/structs/map.js"></script>
+      <script src="src/lib/closure-library/closure/goog/ui/modalpopup.js"></script>
+      <script src="src/lib/closure-library/closure/goog/ui/dialog.js"></script>
+      <script src="src/lib/closure-library/closure/goog/ui/submenu.js"></script>
+      <script src="src/lib/closure-library/closure/goog/ui/popupmenu.js"></script>
+      <script src="src/lib/blockly/blocks_compressed.js"></script>
+      <script src="src/lib/blockly/python_compressed.js"></script>
+      <script src="src/lib/blockly/msg/js/fr.js"></script>
+      <script src="src/lib/ezp/core/ezp.js"></script>
+      <script src="src/lib/ezp/msg/js/base.js"></script>
+      <script src="src/lib/ezp/core/ui.js"></script>
+      <script src="src/lib/ezp/closure/menurenderer.js"></script>
+      <script src="src/lib/ezp/closure/menu.js"></script>
+      <script src="src/lib/ezp/closure/popupmenu.js"></script>
+      <script src="src/lib/ezp/closure/menuitemrenderer.js"></script>
+      <script src="src/lib/ezp/closure/menuitem.js"></script>
+      <script src="src/lib/ezp/closure/submenu.js"></script>
+      <script src="src/lib/ezp/closure/submenurenderer.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/constants.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/ezphelper.js"></script>
+      <script src="src/lib/ezp/blockly/block.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/delegate.js"></script>
+      <script src="src/lib/ezp/blockly/block_svg.js"></script>
+      <script src="src/lib/ezp/blockly/xml.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/delegate_svg.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/delegate_svg_val.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/delegate_svg_stt.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/delegate_svg_ctl.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/delegate_svg_grp.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/delegate_svg_prc.js"></script>
+      <script src="src/lib/ezp/blockly/variables.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/variables_menu.js"></script>
+      <script src="src/lib/ezp/blockly/workspace.js"></script>
+      <script src="src/lib/ezp/blockly/workspace_svg.js"></script>
+      <script src="src/lib/ezp/blockly/field_label.js"></script>
+      <script src="src/lib/ezp/blockly/field_textinput.js"></script>
+      <script src="src/lib/ezp/blockly/field_dropdown.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/field_options.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/field_options_code.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/field_options_print.js"></script>
+      <script src="src/lib/ezp/blockly/field_variable.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/blocks-val.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/blocks-stt.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/blocks-grp.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/blocks-ctl.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/blocks-prc.js"></script>
+      <script src="src/lib/ezp/blockly/ezp/blocks-xtd.js"></script>
+      <script src="src/lib/ezp/blockly/rendered_connection.js"></script>
+      <script src="src/lib/ezp/blockly/python/val.js"></script>
+      <script src="src/lib/ezp/blockly/python/stt.js"></script>
+      <script src="src/lib/ezp/blockly/python/grp.js"></script>
+      <script src="src/lib/ezp/blockly/python/prc.js"></script>
+      <script src="src/lib/ezp/blockly/python/ctl.js"></script>
+      <link rel="stylesheet" type="text/css" href="src/lib/ezp/css/ezp.css">
+</head>
+
+<body>
+  <div id="app"></div>
+  <!-- Set `__static` path to static files in production -->
+  <script>
+    if (process.env.NODE_ENV !== 'development') window.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+  </script>
+  <!-- webpack builds are automatically injected -->
+  <script>
+    console.log(document.getElementById('content-workspace'));
+  </script>
+</body>
+
 </html>
