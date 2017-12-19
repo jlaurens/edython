@@ -1,0 +1,64 @@
+
+> ezpython@0.0.0 build:dir /Volumes/Users/ezPython/github/ezPython
+> node .electron-vue/build.js && electron-builder --dir
+
+
+  lets-build
+
+[?25l  - building main process
+  - building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  \ building main process
+  \ building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  | building main process
+  | building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  / building main process
+  / building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  - building main process
+  - building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  \ building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  | building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  / building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  - building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  \ building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  | building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  / building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  - building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  \ building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  | building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  / building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  - building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  \ building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  | building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  / building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  - building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  \ building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  | building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  / building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  - building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  \ building renderer process
+[?25l[1000D[K[1A[1000D[K[1A[1000D[K  ✔ building main process
+  | building renderer process
+
+   ERROR  failed to build renderer process
+[?25h

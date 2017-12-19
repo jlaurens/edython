@@ -1,0 +1,173 @@
+Last login: Sun Dec 17 09:11:37 on ttys006
+JLaurens-3:~ enseignants$ ls
+AT.postflight.11712	Dropbox			Public
+AnacondaProjects	Library			Untitled.ipynb
+Applications		Mail			Untitled1.ipynb
+Desktop			Movies			eclipse
+Documents		Music			epsilonwriter
+Downloads		Pictures		global.js
+JLaurens-3:~ enseignants$ cd /Volumes/Users/ezPython/github/ezPython
+JLaurens-3:ezPython enseignants$ ls
+Licence_CeCILL-B_V1-en.html	gfx
+Licence_CeCILL-B_V1-fr.html	node_modules
+README-dev.md			package-lock.json
+README.md			package.json
+appveyor.yml			sandbox
+build				src
+build.log			static
+dist				test
+fonts
+JLaurens-3:ezPython enseignants$ date -u; npm run build:dir; date -u
+Mar 19 déc 2017 18:35:31 UTC
+
+> ezpython@0.0.0 build:dir /Volumes/Users/ezPython/github/ezPython
+> node .electron-vue/build.js && electron-builder --dir
+
+
+ ___              __                       
+/\_ \       __   /\ \__     ____           
+\//\ \    / ,.`\ \ \ ,_\   / ,__\  _______ 
+  \_\ \_ /\  __/  \ \ \/  /\__, `\/\______\
+  /\____\\ \____\  \ \ \_ \/\____/\/______/
+  \/____/ \/____/   \ \__\ \/___/          
+                     \/__/                 
+
+ __                       ___       __    
+/\ \       __  __   __   /\_ \     /\ \   
+\ \ \____ /\ \/\ \ /\_\  \//\ \    \_\ \  
+ \ \  ,. \\ \ \_\ \\/\ \   \_\ \_ /\ ,. \ 
+  \ \____/ \ \____/ \ \ \  /\____\\ \____\
+   \/___/   \/___/   \/_/  \/____/ \/___ /
+                                          
+
+  ✔ building main process
+  ✔ building main process
+  \ building renderer process
+
+   ERROR  failed to build renderer process
+
+    Hash: 2ce59092d91e1c6e1fd2
+    Version: webpack 3.10.0
+    Time: 466384ms
+          Asset     Size  Chunks  Chunk Names
+    renderer.js  1.11 MB       0  renderer
+     styles.css  10.3 kB       0  renderer
+      [18] ./node_modules/vue/dist/vue.esm.js 287 kB {0} [built]
+      [60] ./src/renderer/main.js 2.79 kB {0} [built]
+     [177] ./src/lib/ezp/blockly/xml.js 9.78 kB {0} [built]
+     [195] ./src/lib/ezp/blockly/ezp/blocks-val.js 3.57 kB {0} [built]
+     [196] ./src/lib/ezp/blockly/ezp/blocks-stt.js 2.55 kB {0} [built]
+     [197] ./src/lib/ezp/blockly/ezp/blocks-grp.js 3.37 kB {0} [built]
+     [198] ./src/lib/ezp/blockly/ezp/blocks-ctl.js 544 bytes {0} [built]
+     [199] ./src/lib/ezp/blockly/ezp/blocks-prc.js 1.61 kB {0} [built]
+     [200] ./src/lib/ezp/blockly/ezp/blocks-xtd.js 920 bytes {0} [built]
+     [201] ./src/lib/ezp/blockly/rendered_connection.js 3.58 kB {0} [built]
+     [202] ./src/lib/ezp/blockly/python/val.js 2.81 kB {0} [built]
+     [203] ./src/lib/ezp/blockly/python/stt.js 1.22 kB {0} [built]
+     [204] ./src/lib/ezp/blockly/python/grp.js 2.5 kB {0} [built]
+     [205] ./src/lib/ezp/blockly/python/prc.js 1.04 kB {0} [built]
+     [206] ./src/lib/ezp/blockly/python/ctl.js 161 bytes {0} [built]
+        + 209 hidden modules
+    
+    ERROR in ./node_modules/css-loader!./node_modules/extract-text-webpack-plugin/dist/loader.js?{"omit":1,"remove":true}!./node_modules/style-loader!./node_modules/css-loader!./src/lib/ezp/css/ezp.css
+    Module build failed: Unknown word (1:1)
+    
+    > 1 | // removed by extract-text-webpack-plugin
+        | ^
+    
+     @ ./node_modules/css-loader!./node_modules/extract-text-webpack-plugin/dist/loader.js?{"omit":1,"remove":true}!./node_modules/style-loader!./node_modules/css-loader!./src/lib/ezp/css/ezp.css
+     @ ./src/lib/ezp/css/ezp.css
+     @ ./src/renderer/main.js
+    
+    ERROR in ./node_modules/css-loader!./node_modules/extract-text-webpack-plugin/dist/loader.js?{"omit":1,"remove":true}!./node_modules/style-loader!./node_modules/css-loader!./src/lib/ezp/css/ezp.css
+    Module build failed: Unknown word (5:1)
+    
+      3 | // load the styles
+      4 | var content = require("!!../../../../node_modules/css-loader/index.js!./ezp.css");
+    > 5 | if(typeof content === 'string') content = [[module.id, content, '']];
+        | ^
+      6 | // Prepare cssTransformation
+      7 | var transform;
+      8 | 
+    
+     @ ./src/lib/ezp/css/ezp.css 4:14-251 18:2-22:4 19:20-257
+     @ ./src/renderer/main.js
+    
+    ERROR in ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/renderer/components/Page/Content/Blockly.vue
+    Module not found: Error: Can't resolve 'row-loader' in '/Volumes/Users/ezPython/github/ezPython'
+     @ ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/renderer/components/Page/Content/Blockly.vue 5:0-79
+     @ ./src/renderer/components/Page/Content/Blockly.vue
+     @ ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/renderer/components/Page/Content.vue
+     @ ./src/renderer/components/Page/Content.vue
+     @ ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/renderer/components/Page.vue
+     @ ./src/renderer/components/Page.vue
+     @ ./src/renderer/router/index.js
+     @ ./src/renderer/main.js
+    
+    ERROR in ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/renderer/components/Page/Content/Blockly.vue
+    Module not found: Error: Can't resolve 'row-loader' in '/Volumes/Users/ezPython/github/ezPython'
+     @ ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/renderer/components/Page/Content/Blockly.vue 7:0-83
+     @ ./src/renderer/components/Page/Content/Blockly.vue
+     @ ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/renderer/components/Page/Content.vue
+     @ ./src/renderer/components/Page/Content.vue
+     @ ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/renderer/components/Page.vue
+     @ ./src/renderer/components/Page.vue
+     @ ./src/renderer/router/index.js
+     @ ./src/renderer/main.js
+    Child html-webpack-plugin for "index.html":
+             Asset    Size  Chunks  Chunk Names
+        index.html  568 kB       0  
+           [0] ./node_modules/html-webpack-plugin/lib/loader.js!./src/index.ejs 1.3 kB {0} [built]
+           [1] ./node_modules/lodash/lodash.js 540 kB {0} [built]
+           [2] (webpack)/buildin/module.js 517 bytes {0} [built]
+    Child extract-text-webpack-plugin node_modules/extract-text-webpack-plugin/dist node_modules/css-loader/index.js?minimize!node_modules/vue-loader/lib/style-compiler/index.js?{"vue":true,"id":"data-v-cdc4e462","scoped":false,"hasInlineConfig":false}!node_modules/vue-loader/lib/selector.js?type=styles&index=0!src/renderer/App.vue:
+           [0] ./node_modules/css-loader?minimize!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-cdc4e462","scoped":false,"hasInlineConfig":false}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/renderer/App.vue 239 bytes {0} [built]
+           [1] ./node_modules/css-loader/lib/css-base.js 2.26 kB {0} [built]
+    Child extract-text-webpack-plugin node_modules/extract-text-webpack-plugin/dist node_modules/css-loader/index.js?minimize!node_modules/vue-loader/lib/style-compiler/index.js?{"vue":true,"id":"data-v-c5ec84a2","scoped":false,"hasInlineConfig":false}!node_modules/vue-loader/lib/selector.js?type=styles&index=0!src/renderer/components/Page.vue:
+           [0] ./node_modules/css-loader?minimize!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-c5ec84a2","scoped":false,"hasInlineConfig":false}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/renderer/components/Page.vue 200 bytes {0} [built]
+           [1] ./node_modules/css-loader/lib/css-base.js 2.26 kB {0} [built]
+    Child extract-text-webpack-plugin node_modules/extract-text-webpack-plugin/dist node_modules/css-loader/index.js?minimize!node_modules/vue-loader/lib/style-compiler/index.js?{"vue":true,"id":"data-v-cf494884","scoped":false,"hasInlineConfig":false}!node_modules/vue-loader/lib/selector.js?type=styles&index=0!src/renderer/components/Page/Content.vue:
+           [0] ./node_modules/css-loader?minimize!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-cf494884","scoped":false,"hasInlineConfig":false}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/renderer/components/Page/Content.vue 243 bytes {0} [built]
+           [1] ./node_modules/css-loader/lib/css-base.js 2.26 kB {0} [built]
+    Child extract-text-webpack-plugin node_modules/extract-text-webpack-plugin/dist node_modules/css-loader/index.js?minimize!node_modules/vue-loader/lib/style-compiler/index.js?{"vue":true,"id":"data-v-42b2b1c8","scoped":false,"hasInlineConfig":false}!node_modules/vue-loader/lib/selector.js?type=styles&index=0!src/renderer/components/Page/Toolbar.vue:
+           [0] ./node_modules/css-loader?minimize!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-42b2b1c8","scoped":false,"hasInlineConfig":false}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/renderer/components/Page/Toolbar.vue 211 bytes {0} [built]
+           [1] ./node_modules/css-loader/lib/css-base.js 2.26 kB {0} [built]
+    Child extract-text-webpack-plugin node_modules/extract-text-webpack-plugin/dist node_modules/css-loader/index.js?minimize!node_modules/vue-loader/lib/style-compiler/index.js?{"vue":true,"id":"data-v-0588b760","scoped":false,"hasInlineConfig":false}!node_modules/vue-loader/lib/selector.js?type=styles&index=0!src/renderer/components/Page/Content/Panels.vue:
+           [0] ./node_modules/css-loader?minimize!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-0588b760","scoped":false,"hasInlineConfig":false}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/renderer/components/Page/Content/Panels.vue 255 bytes {0} [built]
+           [1] ./node_modules/css-loader/lib/css-base.js 2.26 kB {0} [built]
+    Child extract-text-webpack-plugin node_modules/extract-text-webpack-plugin/dist node_modules/css-loader/index.js?minimize!node_modules/vue-loader/lib/style-compiler/index.js?{"vue":true,"id":"data-v-187c5ba7","scoped":false,"hasInlineConfig":false}!node_modules/vue-loader/lib/selector.js?type=styles&index=0!src/renderer/components/Page/Content/Blockly.vue:
+           [0] ./node_modules/css-loader?minimize!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-187c5ba7","scoped":false,"hasInlineConfig":false}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/renderer/components/Page/Content/Blockly.vue 421 bytes {0} [built]
+           [1] ./node_modules/css-loader/lib/css-base.js 2.26 kB {0} [built]
+    Child extract-text-webpack-plugin node_modules/extract-text-webpack-plugin/dist node_modules/css-loader/index.js?minimize!node_modules/vue-loader/lib/style-compiler/index.js?{"vue":true,"id":"data-v-812f76a6","scoped":false,"hasInlineConfig":false}!node_modules/vue-loader/lib/selector.js?type=styles&index=0!src/renderer/components/Page/Toolbar/Right.vue:
+           [0] ./node_modules/css-loader?minimize!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-812f76a6","scoped":false,"hasInlineConfig":false}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/renderer/components/Page/Toolbar/Right.vue 217 bytes {0} [built]
+           [1] ./node_modules/css-loader/lib/css-base.js 2.26 kB {0} [built]
+    Child extract-text-webpack-plugin node_modules/extract-text-webpack-plugin/dist node_modules/css-loader/index.js?minimize!node_modules/vue-loader/lib/style-compiler/index.js?{"vue":true,"id":"data-v-65e2d512","scoped":false,"hasInlineConfig":false}!node_modules/vue-loader/lib/selector.js?type=styles&index=0!src/renderer/components/Page/Toolbar/Center.vue:
+           [0] ./node_modules/css-loader?minimize!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-65e2d512","scoped":false,"hasInlineConfig":false}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/renderer/components/Page/Toolbar/Center.vue 218 bytes {0} [built]
+           [1] ./node_modules/css-loader/lib/css-base.js 2.26 kB {0} [built]
+    Child extract-text-webpack-plugin node_modules/extract-text-webpack-plugin/dist node_modules/css-loader/index.js?minimize!node_modules/vue-loader/lib/style-compiler/index.js?{"vue":true,"id":"data-v-5eff5708","scoped":false,"hasInlineConfig":false}!node_modules/vue-loader/lib/selector.js?type=styles&index=0!src/renderer/components/Page/Toolbar/Left.vue:
+           [0] ./node_modules/css-loader?minimize!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-5eff5708","scoped":false,"hasInlineConfig":false}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/renderer/components/Page/Toolbar/Left.vue 216 bytes {0} [built]
+           [1] ./node_modules/css-loader/lib/css-base.js 2.26 kB {0} [built]
+    Child extract-text-webpack-plugin node_modules/extract-text-webpack-plugin/dist node_modules/css-loader/index.js?minimize!node_modules/vue-loader/lib/style-compiler/index.js?{"vue":true,"id":"data-v-18deffe0","scoped":false,"hasInlineConfig":false}!node_modules/vue-loader/lib/selector.js?type=styles&index=0!src/renderer/components/Page/Content/Blockly/Workspace.vue:
+           [0] ./node_modules/css-loader?minimize!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-18deffe0","scoped":false,"hasInlineConfig":false}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/renderer/components/Page/Content/Blockly/Workspace.vue 268 bytes {0} [built]
+           [1] ./node_modules/css-loader/lib/css-base.js 2.26 kB {0} [built]
+    Child extract-text-webpack-plugin node_modules/extract-text-webpack-plugin/dist node_modules/css-loader/index.js!node_modules/extract-text-webpack-plugin/dist/loader.js??ref--8-0!node_modules/style-loader/index.js!node_modules/css-loader/index.js!src/lib/ezp/css/ezp.css:
+           [0] ./node_modules/css-loader!./node_modules/extract-text-webpack-plugin/dist/loader.js?{"omit":1,"remove":true}!./node_modules/style-loader!./node_modules/css-loader!./src/lib/ezp/css/ezp.css 172 bytes {0} [built]
+           [1] ./node_modules/css-loader/lib/css-base.js 2.26 kB {0} [built]
+    Child extract-text-webpack-plugin node_modules/extract-text-webpack-plugin/dist node_modules/css-loader/index.js!src/lib/ezp/css/ezp.css:
+           [0] ./node_modules/css-loader!./src/lib/ezp/css/ezp.css 4.86 kB {0} [built]
+           [1] ./node_modules/css-loader/lib/css-base.js 2.26 kB {0} [built]
+           [2] ./src/lib/ezp/img/close.png 4.88 kB {0} [built]
+
+
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! ezpython@0.0.0 build:dir: `node .electron-vue/build.js && electron-builder --dir`
+npm ERR! Exit status 1
+npm ERR! 
+npm ERR! Failed at the ezpython@0.0.0 build:dir script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /Users/jlaurens/.npm/_logs/2017-12-19T18_43_21_376Z-debug.log
+Mar 19 déc 2017 18:43:21 UTC
+JLaurens-3:ezPython enseignants$ 

@@ -30,17 +30,11 @@ let webConfig = {
       },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader'
-        })
+        use: 'raw-loader'
       },
       {
         test: /\.xml$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: 'row-loader'
-        })
+        use: 'raw-loader'
       },
       {
         test: /\.html$/,

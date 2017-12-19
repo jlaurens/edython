@@ -10,7 +10,7 @@ import VueSplit from 'vue-split-panel'
 
 Vue.use(VueSplit)
 
-// require('blockly/blockly_compressed.js') 7 minutes compilation
+// require('blockly/blockly_compressed.js')
 require('goog/base.js')
 require('goog/structs/map.js')
 require('goog/ui/modalpopup.js')

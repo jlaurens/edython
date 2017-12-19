@@ -6,13 +6,9 @@
 
 <script>
   import BlocklyWorkspace from './Blockly/Workspace'
-  // eslint-disable-next-line import/no-webpack-loader-syntax
-  import toolbarData from 'raw-loader!../../../../../static/blockly/toolbar.xml'
-  // eslint-disable-next-line import/no-webpack-loader-syntax
-  import workspaceData from 'raw-loader!../../../../../static/blockly/workspace.xml'
-  // import fs from 'fs'
-  // import path from 'path'
-
+  const toolbarData = require('assets/blockly/toolbar.xml')
+  const workspaceData = require('assets/blockly/workspace.xml')
+  
   export default {
     name: 'content-blockly',
     components: {
@@ -61,6 +57,7 @@
           sounds: true,
           oneBasedIndex: true
         }
+        // toolbarData: module.exports = "blablabla"
         var dom = window.Blockly.Xml.textToDom(toolbarData)
         self.options.toolbox = dom
         let blocklyDiv = document.getElementById('blockly-workspace')
