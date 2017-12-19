@@ -6,8 +6,8 @@
 
 <script>
   import BlocklyWorkspace from './Blockly/Workspace'
-  import fs from 'fs'
-  import path from 'path'
+  // import fs from 'fs'
+  // import path from 'path'
 
   export default {
     name: 'content-blockly',
@@ -16,7 +16,6 @@
     },
     methods: {
       resize (e) {
-        console.log('RESIZE!!!!!!!!!!!!!')
         // Compute the absolute coordinates and dimensions of blocklyArea.
         var blocklyArea = document.getElementById('content-blockly')
         var element = blocklyArea
@@ -39,10 +38,11 @@
     mounted: function () {
       window.ezP.Vue.getBus().$on('size-did-change', this.resize)
       window.addEventListener('resize', this.resize, false)
+      var self = this
       this.$nextTick(function () {
         // Code that will run only after the
         // entire view has been rendered
-        this.options = {
+        self.options = {
           collapse: true,
           comments: false,
           disable: true,
@@ -57,19 +57,27 @@
           sounds: true,
           oneBasedIndex: true
         }
+        /*
         var fileContents = fs.readFileSync(path.join(__static, '/blockly/toolbar.xml'), 'utf8')
         var dom = window.Blockly.Xml.textToDom(fileContents)
-        this.options.toolbox = dom
+        self.options.toolbox = dom
+        */
         let blocklyDiv = document.getElementById('blockly-workspace')
-        window.ezP.workspace = window.Blockly.inject(blocklyDiv, this.options)
+        window.ezP.workspace = window.Blockly.inject(blocklyDiv, self.options)
         window.ezP.setup(window.ezP.workspace)
+        /*
         fileContents = fs.readFileSync(path.join(__static, '/blockly/workspace.xml'), 'utf8')
         dom = window.Blockly.Xml.textToDom(fileContents)
         window.Blockly.Xml.domToWorkspace(dom, window.ezP.workspace)
-        this.resize()
+        */
+        self.resize()
         var b = window.ezP.workspace.newBlock(window.ezP.Const.Grp.FOR)
         b.initSvg()
         b.moveBy(50, 150)
+        b.render()
+        b = window.ezP.workspace.newBlock(window.ezP.Const.Val.GET)
+        b.initSvg()
+        b.moveBy(50, 100)
         b.render()
         /* function generate () {
           var code = window.Blockly.Python.workspaceToCode(window.ezP.workspace)

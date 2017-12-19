@@ -1,30 +1,18 @@
 /**
- * @license
  * ezPython
  *
  * Copyright 2017 Jérôme LAURENS.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * License CeCILL-B
  */
-
 /**
  * @fileoverview BlockSvg delegates for ezPython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
-'use strict';
+'use strict'
 
-goog.provide('ezP.DelegateSvg.Control');
-goog.require('ezP.DelegateSvg.Statement');
+goog.provide('ezP.DelegateSvg.Control')
+goog.require('ezP.DelegateSvg.Statement')
 
 /**
  * Class for a DelegateSvg, control block.
@@ -34,73 +22,70 @@ goog.require('ezP.DelegateSvg.Statement');
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Control = function(prototypeName)  {
-  ezP.DelegateSvg.Control.superClass_.constructor.call(this, prototypeName);
-};
-goog.inherits(ezP.DelegateSvg.Control, ezP.DelegateSvg);
-ezP.DelegateSvg.Manager.register(ezP.Const.Ctl.DEFAULT, ezP.DelegateSvg.Control);
+ezP.DelegateSvg.Control = function (prototypeName) {
+  ezP.DelegateSvg.Control.superClass_.constructor.call(this, prototypeName)
+}
+goog.inherits(ezP.DelegateSvg.Control, ezP.DelegateSvg)
+ezP.DelegateSvg.Manager.register(ezP.Const.Ctl.DEFAULT, ezP.DelegateSvg.Control)
 
 /**
  * Control block path.
  * @param {!Blockly.Block} block.
  * @private
  */
-ezP.DelegateSvg.Control.prototype.playPathDef_ = function(block, cursorX) {
+ezP.DelegateSvg.Control.prototype.playPathDef_ = function (block, cursorX) {
   /* eslint-disable indent */
-  var w = block.width;
-  var h = block.height;
-  var r = ezP.Style.Path.radius();
-  var lh = ezP.Font.lineHeight()/2;
-  var ratio = 1.5;
-  var blh = lh*ratio;
-  var y = lh * Math.sqrt(1-(ratio/2)**2);
-  var d = cursorX+ezP.Font.space+blh/2;
-  var steps = ['m '+(d+2*y/Math.sqrt(3))+','+y];
-  steps.push('l '+(-Math.sqrt(3)*y)+','+y);
-  steps.push('l 0,'+(-2*y)+' z');
-  return steps.join(' ');
-}  /* eslint-enable indent */
+  var lh = ezP.Font.lineHeight() / 2
+  var ratio = 1.5
+  var blh = lh * ratio
+  var y = lh * Math.sqrt(1 - (ratio / 2) ** 2)
+  var d = cursorX + ezP.Font.space + blh / 2
+  var steps = ['m ' + (d + 2 * y / Math.sqrt(3)) + ',' + y]
+  steps.push('l ' + (-Math.sqrt(3) * y) + ',' + y)
+  steps.push('l 0,' + (-2 * y) + ' z')
+  return steps.join(' ')
+} /* eslint-enable indent */
 
 /**
  * Control block path.
  * @param {!Blockly.Block} block.
  * @private
  */
-ezP.DelegateSvg.Control.prototype.controlPathDef_ = function(block) {
+ezP.DelegateSvg.Control.prototype.controlPathDef_ = function (block) {
   /* eslint-disable indent */
-  var w = block.width;
-  var h = block.height;
-  var r = ezP.Style.Path.radius();
-  var d = ezP.Font.space;
-  var steps = ['m '+d+',0'];
-  var lh = ezP.Font.lineHeight()/2;
-  var blh = lh*1.5;
-  steps.push('a '+lh+', '+lh+' 0 0 1 '+blh+',0');
-  steps.push('a '+lh+', '+lh+' 0 1 1 '+(-blh)+',0');
-  steps.push('m '+blh+',0');
-  steps.push('h '+ (w-blh-d));
-  steps.push('v '+ h);
-  var a = ' a '+r+', '+r+' 0 0 1 ';
-  var c8n = block.nextConnection;
+  var w = block.width
+  var h = block.height
+  var r = ezP.Style.Path.radius()
+  var d = ezP.Font.space
+  var steps = ['m ' + d + ',0']
+  var lh = ezP.Font.lineHeight() / 2
+  var blh = lh * 1.5
+  steps.push('a ' + lh + ', ' + lh + ' 0 0 1 ' + blh + ',0')
+  steps.push('a ' + lh + ', ' + lh + ' 0 1 1 ' + (-blh) + ',0')
+  steps.push('m ' + blh + ',0')
+  steps.push('h ' + (w - blh - d))
+  steps.push('v ' + h)
+  var a = ' a ' + r + ', ' + r + ' 0 0 1 '
+  var c8n = block.nextConnection
   if (c8n && c8n.isConnected()) {
-    steps.push('h '+(-w));
+    steps.push('h ' + (-w))
   } else {
-    steps.push('h '+(-w+r) + a+(-r)+','+(-r));
-    h -= r;
+    steps.push('h ' + (-w + r) + a + (-r) + ',' + (-r))
+    h -= r
   }
-  steps.push('v '+(-h+r)+ a+r+','+(-r));
-  steps.push('h '+(d-r));
-  return steps.join(' ');
-}  /* eslint-enable indent */
+  steps.push('v ' + (-h + r) + a + r + ',' + (-r))
+  steps.push('h ' + (d - r))
+  return steps.join(' ')
+} /* eslint-enable indent */
 
 ezP.DelegateSvg.Control.prototype.shapePathDef_ =
   ezP.DelegateSvg.Control.prototype.contourPathDef_ =
     ezP.DelegateSvg.Control.prototype.highlightedPathDef_ =
-      ezP.DelegateSvg.Control.prototype.controlPathDef_;
+      ezP.DelegateSvg.Control.prototype.controlPathDef_
 
-ezP.DelegateSvg.Control.prototype.willRender_ = function(block) {
-  ezP.DelegateSvg.Control.superClass_.willRender_.call(this,block);
-  block.width = Math.max(block.width, 2*ezP.Font.tabWidth);
+ezP.DelegateSvg.Control.prototype.willRender_ = function (block) {
+  ezP.DelegateSvg.Control.superClass_.willRender_.call(this, block)
+  block.width = Math.max(block.width, 2 * ezP.Font.tabWidth)
 }
 
 /**
@@ -109,49 +94,49 @@ ezP.DelegateSvg.Control.prototype.willRender_ = function(block) {
  * @extends {Blockly.Block}
  * @constructor
  */
-ezP.DelegateSvg.Control.prototype.init = function(block)  {
-  ezP.DelegateSvg.Statement.superClass_.init.call(this,block);
+ezP.DelegateSvg.Control.prototype.init = function (block) {
+  ezP.DelegateSvg.Statement.superClass_.init.call(this, block)
   this.svgPathPlay_ = Blockly.utils.createSvgElement('path',
-    {'class': 'ezp-path-play'}, block.svgGroup_);
-  this.svgPathPlay_.setAttribute('d',this.playPathDef_(block, 0));
+    {'class': 'ezp-path-play'}, block.svgGroup_)
+  this.svgPathPlay_.setAttribute('d', this.playPathDef_(block, 0))
   this.mouseDownWrapper_ =
     Blockly.bindEventWithChecks_(this.svgPathPlay_, 'mousedown', this,
-    function(event) {
-      if (!block.nextConnection.isConnected()) {
-        var dialogModal = new goog.ui.Dialog('ezp-modal-dialog', true);
-        dialogModal.setTextContent(ezP.Msg.CONNECT_MAIN_BLOCK_DLG_CONTENT);
-        dialogModal.setTitle(ezP.Msg.CONNECT_MAIN_BLOCK_DLG_TITLE);
-        dialogModal.setButtonSet(goog.ui.Dialog.ButtonSet.createOk());
-        goog.events.listen(dialogModal, goog.ui.Dialog.EventType.SELECT, function(e) {});
-        dialogModal.setVisible(true);
-      }
-      console.log("Start executing "+block.id);
-    });
-  goog.dom.insertSiblingAfter(this.svgPathPlay_,this.svgPathContour_);
-};
+      function (event) {
+        if (!block.nextConnection.isConnected()) {
+          var dialogModal = new goog.ui.Dialog('ezp-modal-dialog', true)
+          dialogModal.setTextContent(ezP.Msg.CONNECT_MAIN_BLOCK_DLG_CONTENT)
+          dialogModal.setTitle(ezP.Msg.CONNECT_MAIN_BLOCK_DLG_TITLE)
+          dialogModal.setButtonSet(goog.ui.Dialog.ButtonSet.createOk())
+          goog.events.listen(dialogModal, goog.ui.Dialog.EventType.SELECT, function (e) {})
+          dialogModal.setVisible(true)
+        }
+        console.log('Start executing ' + block.id)
+      })
+  goog.dom.insertSiblingAfter(this.svgPathPlay_, this.svgPathContour_)
+}
 
 /**
  * Deletes or nulls out any references to COM objects, DOM nodes, or other
  * disposable objects...
  * @protected
  */
-ezP.DelegateSvg.Control.prototype.disposeInternal = function() {
-  goog.dom.removeNode(this.svgPathPlay_);
-  this.svgPathPlay_ = undefined;
+ezP.DelegateSvg.Control.prototype.disposeInternal = function () {
+  goog.dom.removeNode(this.svgPathPlay_)
+  this.svgPathPlay_ = undefined
   if (this.mouseDownWrapper_) {
-    Blockly.unbindEvent_(this.mouseDownWrapper_);
-    this.mouseDownWrapper_ = null;
+    Blockly.unbindEvent_(this.mouseDownWrapper_)
+    this.mouseDownWrapper_ = null
   }
-  ezP.DelegateSvg.superClass_.disposeInternal.call(this);
-};
+  ezP.DelegateSvg.superClass_.disposeInternal.call(this)
+}
 
 /**
  * Render one input of value block.
  * @param io.
  * @private
  */
-ezP.DelegateSvg.Control.prototype.renderDrawInput_ = function(io) {
-};
+ezP.DelegateSvg.Control.prototype.renderDrawInput_ = function (io) {
+}
 
 /**
  * Render the leading # character for commented statement blocks.
@@ -159,5 +144,5 @@ ezP.DelegateSvg.Control.prototype.renderDrawInput_ = function(io) {
  * @param io.
  * @private
  */
-ezP.DelegateSvg.Control.prototype.renderDrawSharp_ = function(io) {
-};
+ezP.DelegateSvg.Control.prototype.renderDrawSharp_ = function (io) {
+}

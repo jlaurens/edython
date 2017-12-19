@@ -1,133 +1,133 @@
 body {
-  margin:0px;
+  margin:0px
 }
 
 .ezp_no_options .ezp-menuitem-checkbox, .ezp-hidden {
-  display: none;
+  display: none
 }
 
 .blocklyWidgetDiv .ezp-menuitem {
-  color: #000;
-  list-style: none;
-  margin: 0;
+  color: #000
+  list-style: none
+  margin: 0
    /* 28px on the left for icon or checkbox; 7em on the right for shortcut. */
   /*padding: 4px 6px 4px 28px;*/
-  white-space: nowrap;
+  white-space: nowrap
 }
 
 /* State: disabled. */
 .blocklyWidgetDiv .ezp-menuitem-disabled .ezp-menuitem-accel,
 .blocklyWidgetDiv .ezp-menuitem-disabled .ezp-menuitem-content {
-  color: #ccc !important;
+  color: #ccc !important
 }
 
 .blocklyWidgetDiv .ezp-menuitem-disabled .ezp-menuitem-icon {
-  opacity: 0.3;
-  -moz-opacity: 0.3;
-  filter: alpha(opacity=30);
+  opacity: 0.3
+  -moz-opacity: 0.3
+  filter: alpha(opacity=30)
 }
 
 /* Keyboard shortcut ("accelerator") style. */
 .blocklyWidgetDiv .ezp-menuitem-accel {
-  color: #999;
+  color: #999
    /* Keyboard shortcuts are untranslated; always left-to-right. */
    /* #noflip */
-  direction: ltr;
-  left: auto;
-  padding: 0 6px;
-  position: absolute;
-  right: 0;
-  text-align: right;
+  direction: ltr
+  left: auto
+  padding: 0 6px
+  position: absolute
+  right: 0
+  text-align: right
 }
 
 /* Mnemonic styles. */
 .blocklyWidgetDiv .ezp-menuitem-mnemonic-hint {
-  text-decoration: underline;
+  text-decoration: underline
 }
 
 .blocklyWidgetDiv .ezp-menuitem-mnemonic-separator {
-  color: #999;
-  font-size: 12px;
-  padding-left: 4px;
+  color: #999
+  font-size: 12px
+  padding-left: 4px
 }
 .ezp-checkbox-icon-mark{
-  stroke: none;
-  fill: white;
+  stroke: none
+  fill: white
 }
 .ezp-checkbox-icon-mark.ezp-checked {
-  fill: black;
+  fill: black
 }
 
 .ezp-block.hidden {
-  display: none;
+  display: none
 }
 
 .ezp-menu {
-  background: #fff;
-  border-color: #ccc #666 #666 #ccc;
-  border-style: solid;
-  border-width: 1px;
-  cursor: default;
-  font: normal 13px Arial, sans-serif;
-  margin: 0;
-  outline: none;
-  padding: 0;
-  position: absolute;
+  background: #fff
+  border-color: #ccc #666 #666 #ccc
+  border-style: solid
+  border-width: 1px
+  cursor: default
+  font: normal 13px Arial, sans-serif
+  margin: 0
+  outline: none
+  padding: 0
+  position: absolute
   z-index: 20000; /* Arbitrary, but some apps depend on it... */
 }
 
 .ezp-print-block-menu, .ezp-options-menu, .ezp_options_code-menu {
-  background: #fff;
-  border-color: #ccc #666 #666 #ccc;
-  border-style: solid;
-  border-width: 1px;
-  cursor: default;
+  background: #fff
+  border-color: #ccc #666 #666 #ccc
+  border-style: solid
+  border-width: 1px
+  cursor: default
   /*font: normal 13px Arial, sans-serif;*/
-  margin: 0;
-  outline: none;
+  margin: 0
+  outline: none
   /*padding: 4px 0;*/
   /*position: absolute; Ouaille ?*/
   z-index: 20000; /* Arbitrary, but some apps depend on it... */
 }
 
 .ezp-key-value-menuitem-hover {
-  background-color: #d6e9f8;
-/*  border-color: #d6e9f8;
-  border-style: dotted;
+  background-color: #d6e9f8
+/*  border-color: #d6e9f8
+  border-style: dotted
   border-width: 1px 0;*/
 }
 
 .ezp-menu-icon,
 .ezp-path-play {
-  opacity: 0.05;
-  -moz-opacity: 0.05;
-  filter: alpha(opacity=5);
+  opacity: 0.05
+  -moz-opacity: 0.05
+  filter: alpha(opacity=5)
 }
 .ezp-selected .ezp-menu-icon,
 .ezp-menu-icon:hover,
 .ezp-path-play:hover {
-  opacity: 0.3;
-  -moz-opacity: 0.3;
-  filter: alpha(opacity=30);
-  cursor: pointer;
+  opacity: 0.3
+  -moz-opacity: 0.3
+  filter: alpha(opacity=30)
+  cursor: pointer
 }
 
 .ezp-menuitem, .ezp-submenu, .ezp-menuitem-code, .ezp-menuitem-var {
-  color: #000;
-  font: normal 13px Arial, sans-serif;
-  list-style: none;
-  margin: 0;
+  color: #000
+  font: normal 13px Arial, sans-serif
+  list-style: none
+  margin: 0
   /* 28px on the left for icon or checkbox; 7em on the right for shortcut. */
-  padding: 4px 7em 4px 28px;
-  white-space: nowrap;
+  padding: 4px 7em 4px 28px
+  white-space: nowrap
 }
 
 /* BiDi override for the resting state. */
 /* @noflip */
 .ezp-menuitem.ezp-menuitem-rtl {
   /* Flip left/right padding for BiDi. */
-  padding-left: 7em;
-  padding-right: 28px;
+  padding-left: 7em
+  padding-right: 28px
 }
 
 /* If a menu doesn't have checkable items or items with icons, remove padding. */
@@ -136,7 +136,7 @@ body {
 .ezp-nocheckbox.ezp-menuitem-code,
 .ezp-nocheckbox.ezp-menuitem-var,
 .ezp-menu-noicon .ezp-menuitem {
-  padding-left: 8px;
+  padding-left: 8px
 }
 
 /*
@@ -147,17 +147,17 @@ body {
 .ezp-noaccel.ezp-submenu,
 .ezp-noaccel.ezp-menuitem-code,
 .ezp-noaccel.ezp-menuitem-var {
-  padding-right: 20px;
+  padding-right: 20px
 }
 
 .ezp-nosubmenu .ezp-noaccel.ezp-menuitem-code,
 .ezp-nosubmenu .ezp-noaccel.ezp-menuitem-var {
-  padding-right: 8px;
+  padding-right: 8px
 }
 
 .ezp-menuitem-content {
-  color: #000;
-  font: normal 13px Arial, sans-serif;
+  color: #000
+  font: normal 13px Arial, sans-serif
 }
 
 /* State: disabled. */
@@ -165,38 +165,38 @@ body {
 .ezp-menuitem-disabled .ezp-menuitem-content ,
 .ezp-submenu-disabled .ezp-submenu-content ,
 .ezp-submenu-disabled .ezp-submenu-arrow {
-  color: #ccc !important;
+  color: #ccc !important
 }
 .ezp-menuitem-disabled .ezp-menuitem-icon {
-  opacity: 0.3;
-  -moz-opacity: 0.3;
-  filter: alpha(opacity=30);
+  opacity: 0.3
+  -moz-opacity: 0.3
+  filter: alpha(opacity=30)
 }
 
 /* State: hover. */
 .ezp-menuitem-highlight,
 .ezp-submenu-highlight,
 .ezp-menuitem-hover {
-  background-color: #d6e9f8;
+  background-color: #d6e9f8
   /* Use an explicit top and bottom border so that the selection is visible
    * in high contrast mode. */
-  border-color: #d6e9f8;
-  border-style: dotted;
-  border-width: 1px 0;
-  padding-bottom: 3px;
-  padding-top: 3px;
+  border-color: #d6e9f8
+  border-style: dotted
+  border-width: 1px 0
+  padding-bottom: 3px
+  padding-top: 3px
 }
 
 /* State: selected/checked. */
 .ezp-menuitem-checkbox,
 .ezp-menuitem-icon {
-  background-repeat: no-repeat;
-  height: 16px;
-  left: 6px;
-  position: absolute;
-  right: auto;
-  vertical-align: middle;
-  width: 16px;
+  background-repeat: no-repeat
+  height: 16px
+  left: 6px
+  position: absolute
+  right: auto
+  vertical-align: middle
+  width: 16px
 }
 
 /* BiDi override for the selected/checked state. */
@@ -204,147 +204,147 @@ body {
 .ezp-menuitem-rtl .ezp-menuitem-checkbox,
 .ezp-menuitem-rtl .ezp-menuitem-icon {
   /* Flip left/right positioning. */
-  left: auto;
-  right: 6px;
+  left: auto
+  right: 6px
 }
 
 .ezp-option-selected .ezp-menuitem-checkbox,
 .ezp-option-selected .ezp-menuitem-icon {
   /* Client apps may override the URL at which they serve the sprite. */
-  background: url(//ssl.gstatic.com/editor/editortoolbar.png) no-repeat -512px 0;
+  background: url(//ssl.gstatic.com/editor/editortoolbar.png) no-repeat -512px 0
 }
 
 /* Keyboard shortcut ("accelerator") style. */
 .ezp-menuitem-accel {
-  color: #999;
+  color: #999
   /* Keyboard shortcuts are untranslated; always left-to-right. */
-  /* @noflip */ direction: ltr;
-  left: auto;
-  padding: 0 6px;
-  position: absolute;
-  right: 0;
-  text-align: right;
+  /* @noflip */ direction: ltr
+  left: auto
+  padding: 0 6px
+  position: absolute
+  right: 0
+  text-align: right
 }
 
 /* BiDi override for shortcut style. */
 /* @noflip */
 .ezp-menuitem-rtl .ezp-menuitem-accel {
   /* Flip left/right positioning and text alignment. */
-  left: 0;
-  right: auto;
-  text-align: left;
+  left: 0
+  right: auto
+  text-align: left
 }
 
 /* Mnemonic styles. */
 .ezp-menuitem-mnemonic-hint {
-  text-decoration: underline;
+  text-decoration: underline
 }
 
 .ezp-menuitem-mnemonic-separator {
-  color: #999;
-  font-size: 12px;
-  padding-left: 4px;
+  color: #999
+  font-size: 12px
+  padding-left: 4px
 }
 
 .ezp-submenu-arrow {
-  color: #000;
-  left: auto;
-  padding-right: 4px;
-  position: absolute;
-  right: 0;
-  text-align: right;
-  opacity: 0.3;
-  -moz-opacity: 0.3;
-  filter: alpha(opacity=30);
+  color: #000
+  left: auto
+  padding-right: 4px
+  position: absolute
+  right: 0
+  text-align: right
+  opacity: 0.3
+  -moz-opacity: 0.3
+  filter: alpha(opacity=30)
 }
 
 /* BiDi override. */
 /* @noflip */
 .ezp-menuitem-rtl .ezp-submenu-arrow {
-  text-align: left;
-  left: 0;
-  right: auto;
-  padding-left: 6px;
+  text-align: left
+  left: 0
+  right: auto
+  padding-left: 6px
 }
 
 /* State: disabled. */
 .ezp-menuitem-disabled .ezp-submenu-arrow {
-  color: #ccc;
+  color: #ccc
 }
 
 .ezp-menuitem-content {
-  padding: 0;
+  padding: 0
 }
 
 .ezp-modal-dialog {
-  width: 400px;
-  background: #fff;
-  border: 0.5px solid #ccc;
-  border-radius: 12px;
-  outline : none;
-  color: #000;
-  padding: 4px;
-  position: absolute;
-  font-family: arial, sans-serif;
-  z-index: 100;
+  width: 400px
+  background: #fff
+  border: 0.5px solid #ccc
+  border-radius: 12px
+  outline : none
+  color: #000
+  padding: 4px
+  position: absolute
+  font-family: arial, sans-serif
+  z-index: 100
 }
 
 .ezp-modal-dialog a,
 .ezp-modal-dialog a:link,
 .ezp-modal-dialog a:visited  {
-  color: #06c;
-  cursor: pointer;
+  color: #06c
+  cursor: pointer
 }
 
 .ezp-modal-dialog-bg {
-  background: #666;
-  left: 0;
-  position: absolute;
-  top: 0;
+  background: #666
+  left: 0
+  position: absolute
+  top: 0
 }
 
 .ezp-modal-dialog-title {
-  color: #000;
-  cursor: pointer;
-  font-size: 120%;
-  font-weight: bold;
-  text-align:center;
+  color: #000
+  cursor: pointer
+  font-size: 120%
+  font-weight: bold
+  text-align:center
 
   /* Add padding on the right to ensure the close button has room. */
-  padding: 8px 31px 8px 8px;
+  padding: 8px 31px 8px 8px
 
-  position: relative;
+  position: relative
   _zoom: 1; /* Ensures proper width in IE6 RTL. */
 }
 
 .ezp-modal-dialog-title-close {
   /* Client apps may override the URL at which they serve the sprite. */
-  background: #fff url(../img/close.png) no-repeat 0 0;
-  background-size: 100% auto;
-  cursor: default;
-  height: 15px;
-  position: absolute;
-  right: 10px;
-  top: 8px;
-  width: 15px;
-  vertical-align: middle;
+  background: #fff url(../img/close.png) no-repeat 0 0
+  background-size: 100% auto
+  cursor: default
+  height: 15px
+  position: absolute
+  right: 10px
+  top: 8px
+  width: 15px
+  vertical-align: middle
 }
 .ezp-modal-dialog-content {
-  background-color: #fff;
-  padding: 8px;
-  padding-bottom:40px;
+  background-color: #fff
+  padding: 8px
+  padding-bottom:40px
 }
 .ezp-modal-dialog-buttons {
-  position: absolute;
-  right:8px;
-  bottom:8px;
-  padding: 4px;
+  position: absolute
+  right:8px
+  bottom:8px
+  padding: 4px
 }
 .ezp-modal-dialog button.goog-buttonset-default {
-  padding: 4px 8px;
-  border-color: #666;
-  border-radius: 6px;
-  font-weight: bold;
-  font-family: arial, sans-serif;
-  font-size: 13px;
+  padding: 4px 8px
+  border-color: #666
+  border-radius: 6px
+  font-weight: bold
+  font-family: arial, sans-serif
+  font-size: 13px
 }

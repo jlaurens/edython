@@ -1,76 +1,64 @@
 /**
- * @license
  * ezPython
  *
  * Copyright 2017 Jérôme LAURENS.
  *
- * Licensed under the Apache License, Version 2.0 (the 'License');
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an 'AS IS' BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * License CeCILL-B
  */
-
 /**
  * @fileoverview Blocks for ezPython. Procedures (main and def).
  * Those blocks have no connection.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
-'use strict';
+'use strict'
 
-goog.provide('ezP.Blocks.prc');
+goog.provide('ezP.Blocks.prc')
 
-goog.require('Blockly.Block');
-goog.require('ezP.Const');
-goog.require('ezP.FieldLabel');
-goog.require('ezP.FieldTextInput');
-goog.require('ezP.FieldOptionsCode');
-goog.require('ezP.FieldPrintOptions');
-goog.require('ezP.FieldVariable');
+goog.require('Blockly.Block')
+goog.require('ezP.Const')
+goog.require('ezP.FieldLabel')
+goog.require('ezP.FieldTextInput')
+goog.require('ezP.FieldOptionsCode')
+goog.require('ezP.FieldPrintOptions')
+goog.require('ezP.FieldVariable')
 
 Blockly.Blocks[ezP.Const.Prc.ANY] = {
-  init: function() {
-    this.appendDummyInput().appendField(new ezP.FieldTextInput(''), 'STT');
-    this.appendStatementInput('DO').setCheck(ezP.Check.stt.after_any);
-    this.setInputsInline(true);
-    this.setTooltip('');
-    this.setHelpUrl('');
+  init: function () {
+    this.appendDummyInput().appendField(new ezP.FieldTextInput(''), 'STT')
+    this.appendStatementInput('DO').setCheck(ezP.Check.stt.after_any)
+    this.setInputsInline(true)
+    this.setTooltip('')
+    this.setHelpUrl('')
   }
-};
-Blockly.Blocks[ezP.Const.Prc.MAIN] = Blockly.Blocks[ezP.Const.Prc.ANY];
+}
+Blockly.Blocks[ezP.Const.Prc.MAIN] = Blockly.Blocks[ezP.Const.Prc.ANY]
 
 Blockly.Blocks[ezP.Const.Prc.DEF] = {
-  init: function() {
+  init: function () {
     this.appendDummyInput()
-        .appendField(new ezP.FieldLabel('def '))
-        .appendField(new ezP.FieldTextInput(''), ezP.Const.Field.DEF);
+      .appendField(new ezP.FieldLabel('def '))
+      .appendField(new ezP.FieldTextInput(''), ezP.Const.Field.DEF)
     this.appendDummyInput()
-        .appendField(new ezP.FieldLabel(':'));
-    this.appendStatementInput('DO').setCheck(ezP.Check.stt.after_any);
-    this.setTooltip('');
-    this.setHelpUrl('');
+      .appendField(new ezP.FieldLabel(':'))
+    this.appendStatementInput('DO').setCheck(ezP.Check.stt.after_any)
+    this.setTooltip('')
+    this.setHelpUrl('')
   }
-};
+}
 
 Blockly.Blocks[ezP.Const.Prc.CLASS] = {
-  init: function() {
+  init: function () {
     this.appendDummyInput()
-        .appendField(new ezP.FieldLabel('def '))
-        .appendField(new ezP.FieldTextInput(''), ezP.Const.Field.CLASS);
+      .appendField(new ezP.FieldLabel('def '))
+      .appendField(new ezP.FieldTextInput(''), ezP.Const.Field.CLASS)
     this.appendDummyInput()
-        .appendField(new ezP.FieldLabel('('))
-        .appendField(new ezP.FieldTextInput(''), ezP.Const.Field.NCSTR)
-        .appendField(new ezP.FieldLabel(')'));
+      .appendField(new ezP.FieldLabel('('))
+      .appendField(new ezP.FieldTextInput(''), ezP.Const.Field.NCSTR)
+      .appendField(new ezP.FieldLabel(')'))
     this.appendDummyInput()
-        .appendField(new ezP.FieldLabel(':'));
-    this.appendStatementInput('DO').setCheck(ezP.Check.stt.after_any);
-    this.setTooltip('');
-    this.setHelpUrl('');
+      .appendField(new ezP.FieldLabel(':'))
+    this.appendStatementInput('DO').setCheck(ezP.Check.stt.after_any)
+    this.setTooltip('')
+    this.setHelpUrl('')
   }
-};
+}

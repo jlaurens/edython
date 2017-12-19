@@ -105,7 +105,10 @@ let webConfig = {
   resolve: {
     alias: {
       '@': path.join(__dirname, '../src/renderer'),
-      'vue$': 'vue/dist/vue.esm.js'
+      'vue$': 'vue/dist/vue.esm.js',
+      'blockly': path.resolve(__dirname, '../src/lib/blockly/'),
+      'goog': path.resolve(__dirname, '../src/lib/closure-library/closure/goog/'),
+      'ezp': path.resolve(__dirname, '../src/lib/ezp/')
     },
     extensions: ['.js', '.vue', '.json', '.css']
   },

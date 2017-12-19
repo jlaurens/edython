@@ -1,6 +1,6 @@
 // Copyright 2007 The Closure Library Authors. All Rights Reserved.
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed under the Apache License, Version 2.0 (the "License")
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -24,25 +24,24 @@
  * ezP: 'goog' changed to 'ezP' in class names.
  */
 
-goog.provide('ezP.Menu');
+goog.provide('ezP.Menu')
 
-goog.require('goog.ui.Menu');
-goog.require('ezP.MenuRenderer');
-
+goog.require('goog.ui.Menu')
+goog.require('ezP.MenuRenderer')
 
 // TODO(robbyw): Reverse constructor argument order for consistency.
 /**
  * A basic menu class.
- * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
- * @param {goog.ui.MenuRenderer=} opt_renderer Renderer used to render or
+ * @param {goog.dom.DomHelper=} optDomHelper Optional DOM helper.
+ * @param {goog.ui.MenuRenderer=} optRenderer Renderer used to render or
  *     decorate the container; defaults to {@link goog.ui.MenuRenderer}.
  * @constructor
  * @extends {goog.ui.Container}
  */
-ezP.Menu = function(opt_domHelper, opt_renderer) {
+ezP.Menu = function (optDomHelper, optRenderer) {
   ezP.Menu.superClass_.constructor.call(
-      this, opt_domHelper,
-      opt_renderer || ezP.MenuRenderer.getInstance());
-};
-goog.inherits(ezP.Menu, goog.ui.Menu);
-goog.tagUnsealableClass(ezP.Menu);
+    this, optDomHelper,
+    optRenderer || ezP.MenuRenderer.getInstance())
+}
+goog.inherits(ezP.Menu, goog.ui.Menu)
+goog.tagUnsealableClass(ezP.Menu)

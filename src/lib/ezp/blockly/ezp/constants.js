@@ -1,37 +1,25 @@
 /**
- * @license
  * ezPython
  *
  * Copyright 2017 Jérôme LAURENS.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * License CeCILL-B
  */
-
 /**
  * @fileoverview Constants for ezPython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
-'use strict';
+'use strict'
 
 /**
  * @name ezP.Const
  * @namespace
  **/
-goog.provide('ezP.Const');
+goog.provide('ezP.Const')
 
-goog.require('ezP');
+goog.require('ezP')
 
-ezP.Const = ezP.Const || {};
+ezP.Const = ezP.Const || {}
 
 ezP.Const.Val = {
   DEFAULT: 'ezp_val',
@@ -45,7 +33,7 @@ ezP.Const.Val = {
   TUPLE: 'ezp_val_tuple',
   RANGE: 'ezp_val_range',
   MINUS: 'ezp_val_minus'
-};
+}
 
 ezP.Const.Stt = {
   DEFAULT: 'ezp_stt',
@@ -53,7 +41,7 @@ ezP.Const.Stt = {
   SET: 'ezp_stt_set',
   PRINT: 'ezp_stt_print',
   BCP: 'ezp_stt_bcp'
-};
+}
 
 ezP.Const.Grp = {
   DEFAULT: 'ezp_grp',
@@ -64,19 +52,19 @@ ezP.Const.Grp = {
   FOR: 'ezp_grp_for',
   WHILE: 'ezp_grp_while',
   WITH: 'ezp_grp_with'
-};
+}
 
 ezP.Const.Prc = {
   DEFAULT: 'ezp_prc',
   ANY: 'ezp_prc_any',
   DEF: 'ezp_prc_def',
   CLASS: 'ezp_prc_class'
-};
+}
 
 ezP.Const.Ctl = {
   DEFAULT: 'ezp_ctl',
   MAIN: 'ezp_ctl_main'
-};
+}
 
 ezP.Const.Field = {
   VAR: 'VAR',
@@ -105,12 +93,12 @@ ezP.Const.Input = {
   DO: 'DO'
 }
 // Connection types
-ezP.Check = ezP.Check || {};
+ezP.Check = ezP.Check || {}
 
 ezP.Check.val = {
   require_any: [0],
   provide_any: [0]
-};
+}
 
 /*
 In the first column the statement before.
@@ -133,36 +121,36 @@ ezP.Check.type = {
   if_elif_bounded: 2,
   if_else: 3,
   loop_else: 4
-};
+}
 ezP.Check.stt = {
   none: [-1],
   after_any: [ezP.Check.type.any_all],
   before_any: [ezP.Check.type.any_all],
   after_if: [ezP.Check.type.any_all,
-  ezP.Check.type.if_elif,
-  ezP.Check.type.if_else],
+    ezP.Check.type.if_elif,
+    ezP.Check.type.if_else],
   before_if: [ezP.Check.type.any_all],
   after_elif: [ezP.Check.type.any_all,
-  ezP.Check.type.if_elif,
-  ezP.Check.type.if_else],
+    ezP.Check.type.if_elif,
+    ezP.Check.type.if_else],
   before_elif: [ezP.Check.type.if_elif],
   after_else: [ezP.Check.type.any_all],
   before_else: [ezP.Check.type.if_else,
-  ezP.Check.type.loop_else],
+    ezP.Check.type.loop_else],
   before_if_else: [ezP.Check.type.if_else],
   before_loop_else: [ezP.Check.type.loop_else],
   after_loop: [ezP.Check.type.any_all,
-  ezP.Check.type.loop_else],
+    ezP.Check.type.loop_else],
   before_loop: [ezP.Check.type.any_all]
-};
+}
 
 ezP.Op = {
   Unary: {
-    displayOp: function(op) {
-      if (op == 'not') {
-        return op + ' ';
-    }
-    return op;
+    displayOp: function (op) {
+      if (op === 'not') {
+        return op + ' '
+      }
+      return op
     },
     getOrder: function (op) {
       return {
@@ -170,15 +158,15 @@ ezP.Op = {
         '-': Blockly.Python.ORDER_UNARY_SIGN,
         '~': Blockly.Python.ORDER_BITWISE_NOT,
         'not': Blockly.Python.ORDER_LOGICAL_NOT
-      }[op];
+      }[op]
     }
   },
   Binary: {
-    displayOp: function(op) {
-      if (true /*['and', 'or', 'in', 'not in', 'is', 'is not'].indexOf(op) >=0*/) {
-        return ' ' + op + ' ';
-      }
-      return op;
+    displayOp: function (op) {
+      /* if (true ['and', 'or', 'in', 'not in', 'is', 'is not'].indexOf(op) >=0) {
+        return ' ' + op + ' '
+      } */
+      return ' ' + op + ' '
     },
     getOrder: function (op) {
       return {
@@ -201,13 +189,13 @@ ezP.Op = {
         '>': Blockly.Python.ORDER_RELATIONAL,
         '>=': Blockly.Python.ORDER_RELATIONAL,
         '!=': Blockly.Python.ORDER_RELATIONAL,
-        '==': Blockly.Python.ORDER_RELATIONAL,
+        '===': Blockly.Python.ORDER_RELATIONAL,
         '<>': Blockly.Python.ORDER_RELATIONAL,
         'in': Blockly.Python.ORDER_RELATIONAL,
         'not in': Blockly.Python.ORDER_RELATIONAL,
         'is': Blockly.Python.ORDER_RELATIONAL,
         'is not': Blockly.Python.ORDER_RELATIONAL
-      }[op];
+      }[op]
     }
   }
-};
+}

@@ -1,34 +1,22 @@
 /**
- * @license
  * ezPython
  *
  * Copyright 2017 Jérôme LAURENS.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * License CeCILL-B
  */
-
 /**
  * @fileoverview Block for ezPython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
-'use strict';
+'use strict'
 
-goog.provide('ezP.Block');
-goog.require('Blockly.Block');
-goog.require('ezP');
-goog.forwardDeclare('ezP.Delegate');
+goog.provide('ezP.Block')
+goog.require('Blockly.Block')
+goog.require('ezP')
+goog.forwardDeclare('ezP.Delegate')
 
-goog.provide('ezP.Delegate');
+goog.provide('ezP.Delegate')
 
 /**
  * Class for a block.
@@ -37,35 +25,35 @@ goog.provide('ezP.Delegate');
  * @param {!Blockly.Workspace} workspace The block's workspace.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
- * @param {string=} opt_id Optional ID.  Use this ID if provided, otherwise
+ * @param {string=} optId Optional ID.  Use this ID if provided, otherwise
  *     create a new id.
  * @extends {Blockly.Block}
  * @constructor
  */
-ezP.Block = function(workspace, prototypeName, opt_id)  {
+ezP.Block = function (workspace, prototypeName, optId) {
   if (!this.ezp) {
-    this.ezp = ezP.Delegate.Manager.create(prototypeName);
+    this.ezp = ezP.Delegate.Manager.create(prototypeName)
     if (this.ezp) {
-      this.registerDisposable(this.ezp);
+      this.registerDisposable(this.ezp)
     }
   }
-  ezP.Block.superClass_.constructor.call(this, workspace, prototypeName, opt_id);
+  ezP.Block.superClass_.constructor.call(this, workspace, prototypeName, optId)
   if (this.ezp) {
-    this.ezp.init(this);
+    this.ezp.init(this)
   }
-};
-goog.inherits(ezP.Block, Blockly.Block);
+}
+goog.inherits(ezP.Block, Blockly.Block)
 
 /**
  * Dispose the delagate too.
  * @param {number|string} colour HSV hue value, or #RRGGBB string.
  */
-ezP.Block.prototype.dispose = function() {
+ezP.Block.prototype.dispose = function () {
   if (this.ezp) {
-    this.ezp.deinit(this);
+    this.ezp.deinit(this)
   }
-  ezP.Block.superClass_.dispose.call(this);
-};
+  ezP.Block.superClass_.dispose.call(this)
+}
 
 /**
  * Interpolate a message description onto the block.
@@ -76,138 +64,138 @@ ezP.Block.prototype.dispose = function() {
  *     how should it be aligned?
  * @private
  */
-ezP.Block.prototype.interpolate_ = function(message, args, lastDummyAlign) {
-  var tokens = Blockly.utils.tokenizeInterpolation(message);
+ezP.Block.prototype.interpolate_ = function (message, args, lastDummyAlign) {
+  var tokens = Blockly.utils.tokenizeInterpolation(message)
   // Interpolate the arguments.  Build a list of elements.
-  var indexDup = [];
-  var indexCount = 0;
-  var elements = [];
+  var indexDup = []
+  var indexCount = 0
+  var elements = []
   for (var i = 0; i < tokens.length; i++) {
-    var token = tokens[i];
-    if (typeof token == 'number') {
+    var token = tokens[i]
+    if (typeof token === 'number') {
       if (token <= 0 || token > args.length) {
-        throw new Error('Block \"' + this.type + '\": ' +
-                        'Message index %' + token + ' out of range.');
+        throw new Error('Block "' + this.type + '": ' +
+                        'Message index %' + token + ' out of range.')
       }
       if (indexDup[token]) {
-        throw new Error('Block \"' + this.type + '\": ' +
-                        'Message index %' + token + ' duplicated.');
+        throw new Error('Block "' + this.type + '": ' +
+                        'Message index %' + token + ' duplicated.')
       }
-      indexDup[token] = true;
-      indexCount++;
-      elements.push(args[token - 1]);
+      indexDup[token] = true
+      indexCount++
+      elements.push(args[token - 1])
     } else {
-      token = token.trim();
+      token = token.trim()
       if (token) {
-        elements.push(token);
+        elements.push(token)
       }
     }
   }
-  if(indexCount != args.length) {
-    throw new Error('Block \"' + this.type + '\": ' +
-                    'Message does not reference all ' + args.length + ' arg(s).');
+  if (indexCount !== args.length) {
+    throw new Error('Block "' + this.type + '": ' +
+                    'Message does not reference all ' + args.length + ' arg(s).')
   }
   // Add last dummy input if needed.
-  if (elements.length && (typeof elements[elements.length - 1] == 'string' ||
+  if (elements.length && (typeof elements[elements.length - 1] === 'string' ||
                           goog.string.startsWith(elements[elements.length - 1]['type'],
-                                                 'field_'))) {
-                            var dummyInput = {type: 'input_dummy'};
-                            if (lastDummyAlign) {
-                              dummyInput['align'] = lastDummyAlign;
-                            }
-                            elements.push(dummyInput);
-                          }
+                            'field_'))) {
+    var dummyInput = {type: 'input_dummy'}
+    if (lastDummyAlign) {
+      dummyInput['align'] = lastDummyAlign
+    }
+    elements.push(dummyInput)
+  }
   // Lookup of alignment constants.
   var alignmentLookup = {
     'LEFT': Blockly.ALIGN_LEFT,
     'RIGHT': Blockly.ALIGN_RIGHT,
     'CENTRE': Blockly.ALIGN_CENTRE
-  };
+  }
   // Populate block with inputs and fields.
-  var fieldStack = [];
-  for (var i = 0; i < elements.length; i++) {
-    var element = elements[i];
-    if (typeof element == 'string') {
-      fieldStack.push([element, undefined]);
+  var fieldStack = []
+  for (i = 0; i < elements.length; i++) {
+    var element = elements[i]
+    if (typeof element === 'string') {
+      fieldStack.push([element, undefined])
     } else {
-      var field = null;
-      var input = null;
+      var field = null
+      var input = null
       do {
-        var altRepeat = false;
-        if (typeof element == 'string') {
-          field = new ezP.FieldLabel(element);
+        var altRepeat = false
+        if (typeof element === 'string') {
+          field = new ezP.FieldLabel(element)
         } else {
           switch (element['type']) {
-            case 'input_value':
-              input = this.appendValueInput(element['name']);
-              break;
-            case 'input_statement':
-              input = this.appendStatementInput(element['name']);
-              break;
-            case 'input_dummy':
-              input = this.appendDummyInput(element['name']);
-              break;
-            case 'field_label':
-              field = Blockly.Block.newFieldLabelFromJson_(element);
-              break;
-            case 'field_input':
-              field = ezP.Block.newFieldTextInputFromJson_(element);
-              break;
-            case 'field_angle':
-              field = new Blockly.FieldAngle(element['angle']);
-              break;
-            case 'field_checkbox':
-              field = new Blockly.FieldCheckbox(
-                                                element['checked'] ? 'TRUE' : 'FALSE');
-              break;
-            case 'field_colour':
-              field = new Blockly.FieldColour(element['colour']);
-              break;
-            case 'field_variable':
-              field = Blockly.Block.newFieldVariableFromJson_(element);
-              break;
-            case 'field_dropdown':
-              field = new Blockly.FieldDropdown(element['options']);
-              break;
-            case 'field_image':
-              field = Blockly.Block.newFieldImageFromJson_(element);
-              break;
-            case 'field_number':
-              field = new Blockly.FieldNumber(element['value'],
-                                              element['min'], element['max'], element['precision']);
-              break;
-            case 'field_date':
-              if (Blockly.FieldDate) {
-                field = new Blockly.FieldDate(element['date']);
-                break;
-              }
-              // Fall through if FieldDate is not compiled in.
-            default:
-              // Unknown field.
-              if (element['alt']) {
-                element = element['alt'];
-                altRepeat = true;
-              }
+          case 'input_value':
+            input = this.appendValueInput(element['name'])
+            break
+          case 'input_statement':
+            input = this.appendStatementInput(element['name'])
+            break
+          case 'input_dummy':
+            input = this.appendDummyInput(element['name'])
+            break
+          case 'field_label':
+            field = Blockly.Block.newFieldLabelFromJson_(element)
+            break
+          case 'field_input':
+            field = ezP.Block.newFieldTextInputFromJson_(element)
+            break
+          case 'field_angle':
+            field = new Blockly.FieldAngle(element['angle'])
+            break
+          case 'field_checkbox':
+            field = new Blockly.FieldCheckbox(
+              element['checked'] ? 'TRUE' : 'FALSE')
+            break
+          case 'field_colour':
+            field = new Blockly.FieldColour(element['colour'])
+            break
+          case 'field_variable':
+            field = Blockly.Block.newFieldVariableFromJson_(element)
+            break
+          case 'field_dropdown':
+            field = new Blockly.FieldDropdown(element['options'])
+            break
+          case 'field_image':
+            field = Blockly.Block.newFieldImageFromJson_(element)
+            break
+          case 'field_number':
+            field = new Blockly.FieldNumber(element['value'],
+              element['min'], element['max'], element['precision'])
+            break
+          case 'field_date':
+            if (Blockly.FieldDate) {
+              field = new Blockly.FieldDate(element['date'])
+              break
+            }
+            // Fall through if FieldDate is not compiled in.
+          default:
+            // Unknown field.
+            if (element['alt']) {
+              element = element['alt']
+              altRepeat = true
+            }
           }
         }
-      } while (altRepeat);
+      } while (altRepeat)
       if (field) {
-        fieldStack.push([field, element['name']]);
+        fieldStack.push([field, element['name']])
       } else if (input) {
         if (element['check']) {
-          input.setCheck(element['check']);
+          input.setCheck(element['check'])
         }
         if (element['align']) {
-          input.setAlign(alignmentLookup[element['align']]);
+          input.setAlign(alignmentLookup[element['align']])
         }
         for (var j = 0; j < fieldStack.length; j++) {
-          input.appendField(fieldStack[j][0], fieldStack[j][1]);
+          input.appendField(fieldStack[j][0], fieldStack[j][1])
         }
-        fieldStack.length = 0;
+        fieldStack.length = 0
       }
     }
   }
-};
+}
 
 /**
  * Helper function to construct a FieldTextInput from a JSON arg object,
@@ -217,22 +205,22 @@ ezP.Block.prototype.interpolate_ = function(message, args, lastDummyAlign) {
  * @returns {!Blockly.FieldTextInput} The new text input.
  * @private
  */
-ezP.Block.newFieldTextInputFromJson_ = function(options) {
-  var text = Blockly.utils.replaceMessageReferences(options['text']);
-  var field = new ezP.FieldTextInput(text, options['class']);
-  if (typeof options['spellcheck'] == 'boolean') {
-    field.setSpellcheck(options['spellcheck']);
+ezP.Block.newFieldTextInputFromJson_ = function (options) {
+  var text = Blockly.utils.replaceMessageReferences(options['text'])
+  var field = new ezP.FieldTextInput(text, options['class'])
+  if (typeof options['spellcheck'] === 'boolean') {
+    field.setSpellcheck(options['spellcheck'])
   }
-  return field;
-};
+  return field
+}
 
 /**
  * Append a tuple item value input row.
  * @return {!Blockly.Input} The input object created.
  */
-ezP.Block.prototype.tupleConsolidateEZP_ = function() {
+ezP.Block.prototype.tupleConsolidateEZP_ = function () {
   if (this.ezp) {
-    this.ezp.tupleConsolidate(block);
+    this.ezp.tupleConsolidate(this)
   }
 }
 
@@ -246,13 +234,13 @@ ezP.Block.prototype.tupleConsolidateEZP_ = function() {
  * @private
  * @override
  */
-ezP.Block.prototype.appendInput_ = function(type, name) {
-  var input = ezP.Block.superClass_.appendInput_.call(this,type,name);
-  if (type == Blockly.INPUT_VALUE && name.match(/^(?:TUPLE|S7R)_\d+_\d+$/g)) {
-    input.ezpTuple = input.ezpTuple || {};
+ezP.Block.prototype.appendInput_ = function (type, name) {
+  var input = ezP.Block.superClass_.appendInput_.call(this, type, name)
+  if (type === Blockly.INPUT_VALUE && name.match(/^(?:TUPLE|S7R)_\d+_\d+$/g)) {
+    input.ezpTuple = input.ezpTuple || {}
   }
-  return input;
-};
+  return input
+}
 
 /**
  * The default implementation forwards to super then
@@ -260,10 +248,10 @@ ezP.Block.prototype.appendInput_ = function(type, name) {
  * @param {boolean} hidden True if connections are hidden.
  * @override
  */
-ezP.Block.prototype.setConnectionsHidden = function(hidden) {
-  ezP.Block.superClass_.setConnectionsHidden.call(this,hidden);
-  this.ezp.setConnectionsHidden(this,hidden);
-};
+ezP.Block.prototype.setConnectionsHidden = function (hidden) {
+  ezP.Block.superClass_.setConnectionsHidden.call(this, hidden)
+  this.ezp.setConnectionsHidden(this, hidden)
+}
 
 /**
  * Return all variables referenced by this block.
@@ -271,17 +259,17 @@ ezP.Block.prototype.setConnectionsHidden = function(hidden) {
  * only FieldVariable's are considered.
  * @return {!Array.<string>} List of variable names.
  */
-ezP.Block.prototype.getVars = function() {
-  var vars = [];
-  for (var i = 0, input; input = this.inputList[i]; i++) {
-    for (var j = 0, field; field = input.fieldRow[j]; j++) {
+ezP.Block.prototype.getVars = function () {
+  var vars = []
+  for (var i = 0, input; (input = this.inputList[i]); i++) {
+    for (var j = 0, field; (field = input.fieldRow[j]); j++) {
       if (field instanceof ezP.FieldVariable) {
-        vars.push(field.getText());
+        vars.push(field.getText())
       }
     }
   }
-  return vars;
-};
+  return vars
+}
 
 /**
  * Notification that a variable is renaming.
@@ -289,16 +277,16 @@ ezP.Block.prototype.getVars = function() {
  * @param {string} oldName Previous name of variable.
  * @param {string} newName Renamed variable.
  */
-ezP.Block.prototype.renameVar = function(oldName, newName) {
-  for (var i = 0, input; input = this.inputList[i]; i++) {
-    for (var j = 0, field; field = input.fieldRow[j]; j++) {
+ezP.Block.prototype.renameVar = function (oldName, newName) {
+  for (var i = 0, input; (input = this.inputList[i]); i++) {
+    for (var j = 0, field; (field = input.fieldRow[j]); j++) {
       if (field instanceof ezP.FieldVariable &&
           Blockly.Names.equals(oldName, field.getText())) {
-        field.setText(newName);
+        field.setText(newName)
       }
     }
   }
-};
+}
 
 /**
  * Notification of a variable replacement.
@@ -306,13 +294,13 @@ ezP.Block.prototype.renameVar = function(oldName, newName) {
  * @param {string} oldVarId Previous variable.
  * @param {string} newVarId Replacement variable.
  */
-ezP.Block.prototype.replaceVarId = function(oldVarId, newVarId) {
-  for (var i = 0, input; input = this.inputList[i]; i++) {
-    for (var j = 0, field; field = input.fieldRow[j]; j++) {
+ezP.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
+  for (var i = 0, input; (input = this.inputList[i]); i++) {
+    for (var j = 0, field; (field = input.fieldRow[j]); j++) {
       if (field instanceof ezP.FieldVariable &&
           Blockly.Names.equals(oldVarId, field.getValue())) {
-        field.setValue(newVarId);
+        field.setValue(newVarId)
       }
     }
   }
-};
+}
