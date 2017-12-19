@@ -6,6 +6,10 @@
 
 <script>
   import BlocklyWorkspace from './Blockly/Workspace'
+  // eslint-disable-next-line import/no-webpack-loader-syntax
+  import toolbarData from 'raw-loader!../../../../../static/blockly/toolbar.xml'
+  // eslint-disable-next-line import/no-webpack-loader-syntax
+  import workspaceData from 'raw-loader!../../../../../static/blockly/workspace.xml'
   // import fs from 'fs'
   // import path from 'path'
 
@@ -57,19 +61,13 @@
           sounds: true,
           oneBasedIndex: true
         }
-        /*
-        var fileContents = fs.readFileSync(path.join(__static, '/blockly/toolbar.xml'), 'utf8')
-        var dom = window.Blockly.Xml.textToDom(fileContents)
+        var dom = window.Blockly.Xml.textToDom(toolbarData)
         self.options.toolbox = dom
-        */
         let blocklyDiv = document.getElementById('blockly-workspace')
         window.ezP.workspace = window.Blockly.inject(blocklyDiv, self.options)
         window.ezP.setup(window.ezP.workspace)
-        /*
-        fileContents = fs.readFileSync(path.join(__static, '/blockly/workspace.xml'), 'utf8')
-        dom = window.Blockly.Xml.textToDom(fileContents)
+        dom = window.Blockly.Xml.textToDom(workspaceData)
         window.Blockly.Xml.domToWorkspace(dom, window.ezP.workspace)
-        */
         self.resize()
         var b = window.ezP.workspace.newBlock(window.ezP.Const.Grp.FOR)
         b.initSvg()

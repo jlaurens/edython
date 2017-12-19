@@ -7,6 +7,7 @@ import store from './store'
 
 // using ES6 modules
 import VueSplit from 'vue-split-panel'
+
 Vue.use(VueSplit)
 
 // require('blockly/blockly_compressed.js') 7 minutes compilation
@@ -25,6 +26,7 @@ require('blockly/msg/js/fr.js')
 require('ezp/core/ezp.js')
 require('ezp/msg/js/base.js')
 require('ezp/core/ui.js')
+require('ezp/css/ezp.css')
 
 require('ezp/closure/menurenderer.js')
 require('ezp/closure/menu.js')

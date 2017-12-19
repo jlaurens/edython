@@ -49,6 +49,13 @@ let rendererConfig = {
         })
       },
       {
+        test: /\.xml$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'row-loader'
+        })
+      },
+      {
         test: /\.html$/,
         use: 'vue-html-loader'
       },
@@ -83,6 +90,13 @@ let rendererConfig = {
             name: 'imgs/[name]--[folder].[ext]'
           }
         }
+      },
+      {
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        })
       },
       {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
@@ -136,7 +150,8 @@ let rendererConfig = {
       'vue$': 'vue/dist/vue.esm.js',
       'blockly': path.resolve(__dirname, '../src/lib/blockly/'),
       'goog': path.resolve(__dirname, '../src/lib/closure-library/closure/goog/'),
-      'ezp': path.resolve(__dirname, '../src/lib/ezp/')
+      'ezp': path.resolve(__dirname, '../src/lib/ezp/'),
+      'assets': path.resolve(__dirname, '../static/') 
     },
     extensions: ['.js', '.vue', '.json', '.css', '.node']
   },

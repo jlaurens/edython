@@ -17,9 +17,13 @@
  *
  */
 
+console.log('ezP.SubMenuRenderer')
 goog.provide('ezP.SubMenuRenderer')
 
 goog.require('goog.ui.SubMenuRenderer')
+console.log('goog: ' + goog)
+console.log('goog.ui: ' + goog.ui)
+console.log('goog.ui.SubMenuRenderer: ' + goog.ui.SubMenuRenderer)
 
 //
 // goog.require('goog.a11y.aria')
