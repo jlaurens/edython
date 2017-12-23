@@ -8,14 +8,14 @@
   import BlocklyWorkspace from './Blockly/Workspace'
   const toolbarData = require('assets/blockly/toolbar.xml')
   const workspaceData = require('assets/blockly/workspace.xml')
-  
+
   export default {
     name: 'content-blockly',
     components: {
       'blockly-workspace': BlocklyWorkspace
     },
     methods: {
-      resize (e) {
+      resize: function (e) {
         // Compute the absolute coordinates and dimensions of blocklyArea.
         var blocklyArea = document.getElementById('content-blockly')
         var element = blocklyArea
@@ -32,53 +32,59 @@
         blocklyDiv.style.top = y + 'px'
         blocklyDiv.style.width = blocklyArea.offsetWidth + 'px'
         blocklyDiv.style.height = blocklyArea.offsetHeight + 'px'
-        window.Blockly.svgResize(window.ezP.workspace)
+        if (window.Blockly) {
+          window.Blockly.svgResize(window.ezP.workspace)
+        }
       }
     },
     mounted: function () {
-      window.ezP.Vue.getBus().$on('size-did-change', this.resize)
+      var ezP = window.ezP
+      ezP.Vue.getBus().$on('size-did-change', this.resize)
       window.addEventListener('resize', this.resize, false)
-      var self = this
-      this.$nextTick(function () {
-        // Code that will run only after the
-        // entire view has been rendered
-        self.options = {
-          collapse: true,
-          comments: false,
-          disable: true,
-          maxBlocks: Infinity,
-          trashcan: false,
-          horizontalLayout: false,
-          toolboxPosition: 'start',
-          css: true,
-          media: 'src/lib/blockly/media/',
-          rtl: false,
-          scrollbars: true,
-          sounds: true,
-          oneBasedIndex: true
-        }
-        // toolbarData: module.exports = "blablabla"
-        var dom = window.Blockly.Xml.textToDom(toolbarData)
-        self.options.toolbox = dom
-        let blocklyDiv = document.getElementById('blockly-workspace')
-        window.ezP.workspace = window.Blockly.inject(blocklyDiv, self.options)
-        window.ezP.setup(window.ezP.workspace)
-        dom = window.Blockly.Xml.textToDom(workspaceData)
-        window.Blockly.Xml.domToWorkspace(dom, window.ezP.workspace)
-        self.resize()
-        var b = window.ezP.workspace.newBlock(window.ezP.Const.Grp.FOR)
-        b.initSvg()
-        b.moveBy(50, 150)
-        b.render()
-        b = window.ezP.workspace.newBlock(window.ezP.Const.Val.GET)
-        b.initSvg()
-        b.moveBy(50, 100)
-        b.render()
-        /* function generate () {
-          var code = window.Blockly.Python.workspaceToCode(window.ezP.workspace)
-          window.document.getElementById('ezp_code_output').value = code
-        } */
-      })
+      var Blockly = window.Blockly
+      if (Blockly) {
+        var self = this
+        this.$nextTick(function () {
+          // Code that will run only after the
+          // entire view has been rendered
+          self.options = {
+            collapse: true,
+            comments: false,
+            disable: true,
+            maxBlocks: Infinity,
+            trashcan: false,
+            horizontalLayout: false,
+            toolboxPosition: 'start',
+            css: true,
+            media: 'src/lib/blockly/media/',
+            rtl: false,
+            scrollbars: true,
+            sounds: true,
+            oneBasedIndex: true
+          }
+          // toolbarData: module.exports = "blablabla"
+          var dom = Blockly.Xml.textToDom(toolbarData)
+          self.options.toolbox = dom
+          let blocklyDiv = document.getElementById('blockly-workspace')
+          ezP.workspace = Blockly.inject(blocklyDiv, self.options)
+          ezP.setup(ezP.workspace)
+          dom = Blockly.Xml.textToDom(workspaceData)
+          Blockly.Xml.domToWorkspace(dom, ezP.workspace)
+          self.resize()
+          var b = ezP.workspace.newBlock(ezP.Const.Grp.FOR)
+          b.initSvg()
+          b.moveBy(50, 150)
+          b.render()
+          b = ezP.workspace.newBlock(ezP.Const.Val.GET)
+          b.initSvg()
+          b.moveBy(50, 100)
+          b.render()
+          /* function generate () {
+            var code = Blockly.Python.workspaceToCode(ezP.workspace)
+            window.document.getElementById('ezp_code_output').value = code
+          } */
+        })
+      }
     }
   }
 </script>
@@ -104,6 +110,7 @@
   .blocklySvg {
     background-color: transparent;
   }
+
   .blocklyToolboxDiv {
     border-radius: 8px 0 0 8px;
   }

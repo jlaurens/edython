@@ -11,7 +11,8 @@
  */
 'use strict'
 
-goog.require('ezP.DelegateSvg')
+goog.provide('ezP.DelegateSvg')
+goog.require('ezP.Delegate')
 goog.require('ezP.BlockSvg')
 
 /**

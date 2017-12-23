@@ -10,14 +10,16 @@
       require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')
     </script>
     <% } %>
-      <script src="src/lib/blockly/blockly_uncompressed.js"></script>
-</head>
+    <script src="lib/blockly/blockly_compressed.js"></script>
+    <script src="lib/ezp/ezp_compressed.js"></script>
+  </head>
 
 <body>
   <div id="app"></div>
   <!-- Set `__static` path to static files in production -->
   <script>
-    if (process.env.NODE_ENV !== 'development') window.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+    window.BlocklyProxy = window.Blockly
+    if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'development') window.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
   </script>
   <!-- webpack builds are automatically injected -->
 </body>

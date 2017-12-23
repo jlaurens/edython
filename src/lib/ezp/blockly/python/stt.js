@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('ezP.Python.ezp-stt')
+goog.provide('ezP.Python.ezp_stt')
 
-goog.require('ezP.Python.ezp-val')
+goog.require('ezP.Python.ezp_val')
 
 Blockly.Python[ezP.Const.Stt.SET] = function (block) {
   var RHS = ezP.Python.valueToCode(block, ezP.Const.Input.RHS,

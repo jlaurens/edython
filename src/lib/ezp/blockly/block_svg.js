@@ -12,12 +12,10 @@
 'use strict'
 
 goog.provide('ezP.BlockSvg')
-goog.provide('ezP.DelegateSvg')
+goog.forwardDeclare('ezP.DelegateSvg')
 
 goog.require('ezP.Block')
 goog.require('Blockly.BlockSvg')
-
-ezP.BlockSvg.CORNER_RADIUS = 3
 
 ezP.inherits(Blockly.BlockSvg, ezP.Block)
 
@@ -93,6 +91,8 @@ ezP.BlockSvg = function (workspace, prototypeName, optId) {
     workspace, prototypeName, optId)
 }
 goog.inherits(ezP.BlockSvg, Blockly.BlockSvg)
+
+ezP.BlockSvg.CORNER_RADIUS = 3
 
 /**
  * Render the block.
@@ -215,7 +215,7 @@ ezP.BlockSvg.connectionUiStep_ = function (ripple, start, workspaceScale) {
   if (percent > 1) {
     goog.dom.removeNode(ripple)
   } else {
-    ripple.style.opacity = 8 * percent ** 2 * (1 - percent) ** 2
+    ripple.style.opacity = 8 * Math.pow(percent, 2) * Math.pow(1-percent,2)
     Blockly.BlockSvg.disconnectUiStop_.pid_ = setTimeout(
       ezP.BlockSvg.connectionUiStep_, 10, ripple, start, workspaceScale)
   }

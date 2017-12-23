@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('ezP.Python.ezp-val')
+goog.provide('ezP.Python.ezp_val')
 
 goog.require('Blockly.Python')
 goog.require('ezP.Const')

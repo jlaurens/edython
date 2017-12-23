@@ -11,6 +11,7 @@
  */
 'use strict'
 
+goog.provide('ezP.Delegate')
 goog.provide('ezP.TupleConsolidator')
 
 goog.require('ezP.Helper')

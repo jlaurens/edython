@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('ezP.Python.ezp-grp')
+goog.provide('ezP.Python.ezp_grp')
 
-goog.require('ezP.Python.ezp-stt')
+goog.require('ezP.Python.ezp_stt')
 
 Blockly.Python[ezP.Const.Grp.ANY] = function (block) {
   var STT = block.getField(ezP.Const.Field.STT).getText()

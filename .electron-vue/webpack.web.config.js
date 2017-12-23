@@ -97,7 +97,19 @@ let webConfig = {
       'process.env.IS_WEB': 'true'
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin(),
+    new CopyWebpackPlugin([
+      { from: path.resolve(__dirname, '../src/lib/blockly/blockly_accessible_compressed.js'),
+      to: path.resolve(__dirname, '../dist/web/lib/blockly/blockly_accessible_compressed.js')
+    }], {debug: 'debug'}),
+    new CopyWebpackPlugin([
+      { from: path.resolve(__dirname, '../src/lib/blockly/blockly_compressed.js'),
+      to: path.resolve(__dirname, '../dist/web/lib/blockly/blockly_compressed.js')
+    }], {debug: 'debug'}),
+    new CopyWebpackPlugin([
+      { from: path.resolve(__dirname, '../src/lib/ezp/ezp_compressed.js'),
+      to: path.resolve(__dirname, '../dist/web/lib/ezp/ezp_compressed.js')
+    }], {debug: 'debug'})
   ],
   output: {
     filename: '[name].js',
@@ -108,7 +120,6 @@ let webConfig = {
       '@': path.join(__dirname, '../src/renderer'),
       'vue$': 'vue/dist/vue.esm.js',
       'blockly': path.resolve(__dirname, '../src/lib/blockly/'),
-      'goog': path.resolve(__dirname, '../src/lib/closure-library/closure/goog/'),
       'ezp': path.resolve(__dirname, '../src/lib/ezp/'),
       'assets': path.resolve(__dirname, '../static/') 
     },

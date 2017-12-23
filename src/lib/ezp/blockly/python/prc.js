@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('ezP.Python.ezp-prc')
+goog.provide('ezP.Python.ezp_prc')
 
-goog.require('ezP.Python.ezp-grp')
+goog.require('ezP.Python.ezp_grp')
 
 Blockly.Python[ezP.Const.Prc.DEF] = function (block) {
   var DEF = ezP.Python.valueToCode(block, ezP.Const.Field.DEF,

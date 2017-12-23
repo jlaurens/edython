@@ -19,23 +19,6 @@ goog.provide('ezP.SubMenu')
 goog.require('goog.ui.SubMenu')
 goog.require('ezP.MenuRenderer')
 
-//
-// goog.provide('goog.ui.SubMenu')
-//
-// goog.require('goog.Timer')
-// goog.require('goog.asserts')
-// goog.require('goog.dom')
-// goog.require('goog.dom.classlist')
-// goog.require('goog.events.KeyCodes')
-// goog.require('goog.positioning.AnchoredViewportPosition')
-// goog.require('goog.positioning.Corner')
-// goog.require('goog.style')
-// goog.require('goog.ui.Component')
-// goog.require('goog.ui.Menu')
-// goog.require('goog.ui.MenuItem')
-// goog.require('goog.ui.SubMenuRenderer')
-// goog.require('goog.ui.registry')
-
 /**
  * Class representing a submenu that can be added as an item to other menus.
  *
@@ -79,7 +62,7 @@ ezP.SubMenu.prototype.setSubMenuVisible_ = function (visible) {
   if (visible !== this.menuIsVisible_) {
     goog.dom.classlist.enable(
       goog.asserts.assert(this.getElement()),
-      goog.getCssName(subMenu.getRenderer().getCssClass(), 'open'), visible)
+      subMenu.getRenderer().getCssClass() + '-open', visible)
   }
   if (visible !== subMenu.isVisible()) {
     if (visible) {

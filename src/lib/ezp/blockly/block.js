@@ -16,8 +16,6 @@ goog.require('Blockly.Block')
 goog.require('ezP')
 goog.forwardDeclare('ezP.Delegate')
 
-goog.provide('ezP.Delegate')
-
 /**
  * Class for a block.
  * Not normally called directly, workspace.newBlock() is preferred.

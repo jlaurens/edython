@@ -65,13 +65,13 @@ goog.tagUnsealableClass(ezP.MenuItem)
  * @private
  */
 ezP.MenuItem.MNEMONIC_WRAPPER_CLASS_ =
-    goog.getCssName(ezP.MenuItemRenderer.CSS_CLASS, 'mnemonic-separator')
+    ezP.MenuItemRenderer.CSS_CLASS + '-mnemonic-separator'
 
 /**
  * The class set on an element that contains a keyboard accelerator hint.
  * @type {string}
  */
-goog.ui.MenuItem.ACCELERATOR_CLASS = goog.getCssName(ezP.MenuItemRenderer.CSS_CLASS, 'accel')
+goog.ui.MenuItem.ACCELERATOR_CLASS = ezP.MenuItemRenderer.CSS_CLASS + '-accel'
 
 /**
  * Returns the text caption of the component while ignoring accelerators.

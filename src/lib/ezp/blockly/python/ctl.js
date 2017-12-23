@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('ezP.Python.ezp-ctl')
+goog.provide('ezP.Python.ezp_ctl')
 
-goog.require('ezP.Python.ezp-stt')
+goog.require('ezP.Python.ezp_stt')
 
 Blockly.Python[ezP.Const.Ctl.MAIN] = function (block) {
   return ''

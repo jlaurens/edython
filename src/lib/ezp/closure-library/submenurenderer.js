@@ -21,20 +21,6 @@ console.log('ezP.SubMenuRenderer')
 goog.provide('ezP.SubMenuRenderer')
 
 goog.require('goog.ui.SubMenuRenderer')
-console.log('goog: ' + goog)
-console.log('goog.ui: ' + goog.ui)
-console.log('goog.ui.SubMenuRenderer: ' + goog.ui.SubMenuRenderer)
-
-//
-// goog.require('goog.a11y.aria')
-// goog.require('goog.a11y.aria.State')
-// goog.require('goog.asserts')
-// goog.require('goog.dom')
-// goog.require('goog.dom.TagName')
-// goog.require('goog.dom.classlist')
-// goog.require('goog.style')
-// goog.require('goog.ui.Menu')
-// goog.require('goog.ui.MenuItemRenderer')
 
 /**
  * Default renderer for {@link goog.ui.SubMenu}s.  Each item has the following
@@ -152,7 +138,7 @@ ezP.SubMenuRenderer.prototype.setContent = function (element, content) {
   if (arrowElement && contentElement.lastChild !== arrowElement &&
        goog.dom.classlist.contains(
          /** @type {!Element} */ (arrowElement),
-         goog.getCssName(this.getCssClass(), 'arrow'))) {
+         this.getCssClass() + '-arrow')) {
     contentElement.appendChild(arrowElement)
   }
 }
@@ -174,7 +160,7 @@ goog.ui.SubMenuRenderer.prototype.initializeDom = function (control) {
   goog.ui.SubMenuRenderer.superClass_.initializeDom.call(this, subMenu)
   var element = subMenu.getContentElement()
   var arrow = subMenu.getDomHelper().getElementsByTagNameAndClass(
-    goog.dom.TagName.SPAN, goog.getCssName(this.getCssClass(), 'arrow'),
+    goog.dom.TagName.SPAN, this.getCssClass() + '-arrow',
     element)[0]
   goog.ui.SubMenuRenderer.setArrowTextContent_(subMenu, arrow)
   if (arrow !== element.lastChild) {
@@ -196,7 +182,7 @@ goog.ui.SubMenuRenderer.prototype.initializeDom = function (control) {
   */
 goog.ui.SubMenuRenderer.prototype.addArrow_ = function (subMenu, element) {
   var arrow = subMenu.getDomHelper().createDom(goog.dom.TagName.SPAN)
-  arrow.className = goog.getCssName(this.getCssClass(), 'arrow')
+  arrow.className = this.getCssClass() + 'arrow'
   goog.ui.SubMenuRenderer.setArrowTextContent_(subMenu, arrow)
   this.getContentElement(element).appendChild(arrow)
 }

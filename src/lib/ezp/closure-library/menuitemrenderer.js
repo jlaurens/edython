@@ -59,7 +59,7 @@ ezP.Style.setControlRendererCssClass = (function () {
   }
   return function (renderer, cssClass) {
     goog.addSingletonGetter(renderer)
-    renderer.CSS_CLASS = goog.getCssName(cssClass)
+    renderer.CSS_CLASS = cssClass
     renderer.prototype.getCssClass = function () { return cssClass }
     var args = [].slice.call(arguments)
     var i = 2
@@ -74,7 +74,7 @@ ezP.Style.setControlRendererCssClass = (function () {
       while (name && typeof name === 'string') {
         dict = args[i++]
         if (dict && typeof dict === 'object') {
-          helper(goog.getCssName(cssClass, name), dict)
+          helper(cssClass + '-' + name, dict)
           name = args[i++]
           continue
         }

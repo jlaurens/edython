@@ -1,6 +1,7 @@
 .DS_Store
 dist/electron/*
 dist/web/*
+!/dist/web/Readme.md
 build/*
 !build/icons
 coverage
@@ -16,3 +17,4 @@ thumbs.db
 /node_modules
 !/node_modules/README.md
 /sandbox/**
+/src/lib/ezp/scripts/build
