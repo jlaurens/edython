@@ -141,6 +141,43 @@ ezP.DelegateSvg.Statement.prototype.renderDrawInput_ = function (io) {
 }
 
 /**
+ * Class for a DelegateSvg, del statement block...
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Statement.Tupled = function (prototypeName) {
+  ezP.DelegateSvg.Statement.Tupled.superClass_.constructor.call(this, prototypeName)
+}
+goog.inherits(ezP.DelegateSvg.Statement.Tupled, ezP.DelegateSvg.Statement)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Stt.DEL, ezP.DelegateSvg.Statement.Tupled)
+ezP.DelegateSvg.Manager.register(ezP.Const.Stt.GNL, ezP.DelegateSvg.Statement.Tupled)
+
+/**
+ * Will render the block.
+ * @param {!Blockly.Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Statement.Tupled.prototype.willRender_ = function (block) {
+  this.tupleConsolidate(block)
+  ezP.DelegateSvg.Statement.Tupled.superClass_.willRender_.call(this, block)
+}
+
+/**
+ * Render one input of value block.
+ * @param io.
+ * @private
+ */
+ezP.DelegateSvg.Statement.Tupled.prototype.renderDrawInput_ = function (io) {
+  this.renderDrawDummyInput_(io) ||
+    this.renderDrawTupleInput_(io) ||
+      this.renderDrawValueInput_(io)
+}
+
+/**
  * Class for a DelegateSvg, print statement block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.

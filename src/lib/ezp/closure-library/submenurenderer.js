@@ -17,7 +17,6 @@
  *
  */
 
-console.log('ezP.SubMenuRenderer')
 goog.provide('ezP.SubMenuRenderer')
 
 goog.require('goog.ui.SubMenuRenderer')
@@ -182,7 +181,7 @@ goog.ui.SubMenuRenderer.prototype.initializeDom = function (control) {
   */
 goog.ui.SubMenuRenderer.prototype.addArrow_ = function (subMenu, element) {
   var arrow = subMenu.getDomHelper().createDom(goog.dom.TagName.SPAN)
-  arrow.className = this.getCssClass() + 'arrow'
+  arrow.className = this.getCssClass() + '-arrow'
   goog.ui.SubMenuRenderer.setArrowTextContent_(subMenu, arrow)
   this.getContentElement(element).appendChild(arrow)
 }

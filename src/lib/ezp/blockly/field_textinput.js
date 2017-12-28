@@ -149,9 +149,8 @@ ezP.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
  */
 ezP.FieldTextInput.prototype.widgetDispose_ = function () {
   var thisField = this
-  var superDispose = ezP.FieldTextInput.superClass_.widgetDispose_.call
   return function () {
-    superDispose(thisField)
+    ezP.FieldTextInput.superClass_.widgetDispose_.call(thisField)
     Blockly.WidgetDiv.DIV.style.fontFamily = ''
   }
 }
@@ -160,14 +159,16 @@ ezP.FieldTextInput.prototype.widgetDispose_ = function () {
  * Resize the editor and the underlying block to fit the text.
  * @private
  */
-Blockly.FieldTextInput.prototype.resizeEditor_ = function () {
-  var div = Blockly.WidgetDiv.DIV
-  var bBox = this.fieldGroup_.getBBox()
-  div.style.width = bBox.width * this.workspace_.scale + 'px'
-  div.style.height = bBox.height * this.workspace_.scale + 'px'
-  var xy = this.getAbsoluteXY_()
-  div.style.left = (xy.x - ezP.EditorOffset.x) + 'px'
-  div.style.top = (xy.y - ezP.EditorOffset.y) + 'px'
+ezP.FieldTextInput.prototype.resizeEditor_ = function () {
+  if (this.fieldGroup_) {
+    var div = Blockly.WidgetDiv.DIV
+    var bBox = this.fieldGroup_.getBBox()
+    div.style.width = bBox.width * this.workspace_.scale + 'px'
+    div.style.height = bBox.height * this.workspace_.scale + 'px'
+    var xy = this.getAbsoluteXY_()
+    div.style.left = (xy.x - ezP.EditorOffset.x) + 'px'
+    div.style.top = (xy.y - ezP.EditorOffset.y) + 'px'
+  }
 }
 
 ezP.FieldCodeInput = function (text, optValidator) {

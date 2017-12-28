@@ -97,7 +97,7 @@ Blockly.Blocks[ezP.Const.Val.BOOL] = {
       .appendField(new ezP.FieldLabel(' '))
       .appendField(new ezP.FieldDropdownCode(
         [['<', '<'], ['>', '>'], ['<=', '<='], ['>=', '>='],
-          ['===', '==='], ['===', '!='], ['===', '==='], ['!==', '!=='],
+          ['==', '=='], ['!=', '!='], ['===', '==='], ['!==', '!=='],
           ['and', 'and'], ['or', 'or'],
           ['is', 'is'], ['is not', 'is not'],
           ['in', 'in'], ['not in', 'not in']]), ezP.Const.Field.OP)
@@ -110,6 +110,18 @@ Blockly.Blocks[ezP.Const.Val.BOOL] = {
 Blockly.Blocks[ezP.Const.Val.TUPLE] = {
   init: function () {
     this.appendValueInput('TUPLE_0_0').setCheck(null)
+    this.setInputsInline(true)
+    this.setOutput(true, null)
+    this.setTooltip('')
+    this.setHelpUrl('')
+  }
+}
+Blockly.Blocks[ezP.Const.Val.PARENTH] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField(new ezP.FieldLabel('('))
+    this.appendValueInput('TUPLE_0_0').setCheck(null)
+    this.appendDummyInput().appendField(new ezP.FieldLabel(')'))
     this.setInputsInline(true)
     this.setOutput(true, null)
     this.setTooltip('')

@@ -12,64 +12,12 @@
 'use strict'
 
 goog.provide('ezP.BlockSvg')
-goog.forwardDeclare('ezP.DelegateSvg')
 
 goog.require('ezP.Block')
+goog.require('ezP.DelegateSvg')
 goog.require('Blockly.BlockSvg')
 
 ezP.inherits(Blockly.BlockSvg, ezP.Block)
-
-/**
- * Class for a DelegateSvg.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg = function (prototypeName) {
-  ezP.DelegateSvg.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg, ezP.Delegate)
-
-ezP.DelegateSvg.Manager = (function () {
-  var me = {}
-  var Ctors = {}
-  /**
-   * DelegateSvg creator.
-   * @param {?string} prototypeName Name of the language object containing
-   */
-  me.create = function (prototypeName) {
-    var Ctor = Ctors[prototypeName]
-    if (Ctor !== undefined) {
-      return new Ctor(prototypeName)
-    }
-    var Ks = prototypeName.split('_')
-    if (Ks[0] === 'ezp') {
-      while (Ks.length > 1) {
-        Ks.splice(-1, 1)
-        var name = Ks.join('_')
-        Ctor = Ctors[name]
-        if (Ctor !== undefined) {
-          Ctors[prototypeName] = Ctor
-          return new Ctor(prototypeName)
-        }
-      }
-      Ctors[prototypeName] = ezP.DelegateSvg
-      return new ezP.DelegateSvg(prototypeName)
-    }
-    return undefined
-  }
-  /**
-   * Delegate registrator.
-   * @param {?string} prototypeName Name of the language object containing
-   * @param {Object} constructor
-   */
-  me.register = function (prototypeName, Ctor) {
-    Ctors[prototypeName] = Ctor
-  }
-  return me
-}())
 
 /**
  * Class for a block's SVG representation.

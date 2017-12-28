@@ -15,7 +15,7 @@ goog.provide('ezP.Delegate')
 goog.provide('ezP.TupleConsolidator')
 
 goog.require('ezP.Helper')
-goog.require('ezP.Block')
+goog.forwardDeclare('ezP.Block')
 
 /**
  * Class for a Block Delegate.

@@ -32,7 +32,12 @@ ezP.Const.Val = {
   BOOL: 'ezp_val_bool',
   TUPLE: 'ezp_val_tuple',
   RANGE: 'ezp_val_range',
-  MINUS: 'ezp_val_minus'
+  MINUS: 'ezp_val_minus',
+  PARENTH: 'ezp_val_parenth',//NYI
+  COMP: 'ezp_val_comp',//NYI
+  COMP_FOR: 'ezp_val_comp_for',//NYI
+  COMP_IF: 'ezp_val_comp_if',//NYI
+  LITERAL: 'ezp_val_literal',//NYI
 }
 
 ezP.Const.Stt = {
@@ -40,7 +45,9 @@ ezP.Const.Stt = {
   ANY: 'ezp_stt_any',
   SET: 'ezp_stt_set',
   PRINT: 'ezp_stt_print',
-  BCP: 'ezp_stt_bcp'
+  BCP: 'ezp_stt_bcp',
+  GNL: 'ezp_stt_gnl',
+  DEL: 'ezp_stt_del'
 }
 
 ezP.Const.Grp = {
@@ -74,6 +81,7 @@ ezP.Const.Field = {
   OP: 'OP',
   STT: 'STT',
   BCP: 'BCP',
+  GNL: 'GNL',
   DEF: 'DEF',
   CLASS: 'CLASS',
   NCSTR: 'NCSTR'

@@ -48,3 +48,15 @@ Blockly.Python[ezP.Const.Stt.BCP] = function (block) {
   var BCP = block.getField(ezP.Const.Field.BCP).getText()
   return BCP.length ? BCP : 'MISSING_STATEMENT' + '\n'
 }
+
+Blockly.Python[ezP.Const.Stt.GNL] = function (block) {
+  var code = Blockly.Python[ezP.Const.Val.TUPLE](block)[0]
+  var GNL = block.getField(ezP.Const.Field.GNL).getText()
+  return GNL.length ? GNL + ' ' + code : 'MISSING_STATEMENT' + '\n'
+}
+
+Blockly.Python[ezP.Const.Stt.DEL] = function (block) {
+  var code = Blockly.Python[ezP.Const.Val.TUPLE](block)[0]
+  return 'del ' + code
+}
+

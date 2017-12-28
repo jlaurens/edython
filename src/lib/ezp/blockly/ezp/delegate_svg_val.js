@@ -99,6 +99,7 @@ ezP.DelegateSvg.Value.Tuple = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Value.Tuple, ezP.DelegateSvg.Value)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Val.TUPLE, ezP.DelegateSvg.Value.Tuple)
+ezP.DelegateSvg.Manager.register(ezP.Const.Val.PARENTH, ezP.DelegateSvg.Value.Tuple)
 
 /**
  * Will render the block.

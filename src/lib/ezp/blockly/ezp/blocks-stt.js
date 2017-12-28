@@ -75,7 +75,32 @@ Blockly.Blocks[ezP.Const.Stt.BCP] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldOptions(
-        [['break', 'break'], ['continue', 'continue'], ['pass', 'pass']]), 'BCP')
+        [['break', 'break'], ['continue', 'continue'], ['pass', 'pass']]), ezP.Const.Field.BCP)
+    this.setPreviousStatement(true, null)
+    this.setNextStatement(true, null)
+    this.setTooltip('')
+    this.setHelpUrl('')
+  }
+}
+
+Blockly.Blocks[ezP.Const.Stt.GNL] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField(new ezP.FieldOptions(
+        [['global', 'global'], ['nonlocal', 'nonlocal']]), ezP.Const.Field.GNL)
+    this.appendValueInput('TUPLE_0_0')
+    this.setPreviousStatement(true, null)
+    this.setNextStatement(true, null)
+    this.setTooltip('')
+    this.setHelpUrl('')
+  }
+}
+
+Blockly.Blocks[ezP.Const.Stt.DEL] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField(new ezP.FieldLabel('del'))
+    this.appendValueInput('TUPLE_0_0')
     this.setPreviousStatement(true, null)
     this.setNextStatement(true, null)
     this.setTooltip('')
