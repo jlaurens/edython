@@ -141,3 +141,33 @@ Blockly.Blocks[ezP.Const.Val.RANGE] = {
     this.setHelpUrl('')
   }
 }
+Blockly.Blocks[ezP.Const.Val.COMP] = {
+  init: function () {
+    this.appendValueInput(ezP.Const.Input.XPR).setCheck(null)
+    this.appendValueInput(ezP.Const.Input.TGT).setCheck(ezP.Check.val.require_any).appendField(new ezP.FieldLabel('for'))
+    this.appendValueInput(ezP.Const.Input.LST).setCheck(ezP.Check.val.require_any).appendField(new ezP.FieldLabel('in'))
+    this.setInputsInline(true)
+    this.setOutput(true, null)
+    this.setTooltip('')
+    this.setHelpUrl('')
+  }
+}
+Blockly.Blocks[ezP.Const.Val.COMPFOR] = {
+  init: function () {
+    this.appendValueInput(ezP.Const.Input.TGT).setCheck(ezP.Check.val.require_any).appendField(new ezP.FieldLabel('for'))
+    this.appendValueInput(ezP.Const.Input.LST).setCheck(ezP.Check.val.require_any).appendField(new ezP.FieldLabel('in'))
+    this.setInputsInline(true)
+    this.setOutput(true, null)
+    this.setTooltip('')
+    this.setHelpUrl('')
+  }
+}
+Blockly.Blocks[ezP.Const.Val.COMPIF] = {
+  init: function () {
+    this.appendValueInput(ezP.Const.Input.COND).appendField(new ezP.FieldLabel('if'))
+    this.setInputsInline(true)
+    this.setOutput(true, null)
+    this.setTooltip('')
+    this.setHelpUrl('')
+  }
+}

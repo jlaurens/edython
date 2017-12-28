@@ -341,7 +341,8 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
     canDummy: true,
     canValue: true,
     canStatement: true,
-    canTuple: true
+    canTuple: true,
+    canForif: true
   }
   if (block.outputConnection) {
     io.cursorX = ezP.Font.space

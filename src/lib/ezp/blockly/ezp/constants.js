@@ -33,11 +33,11 @@ ezP.Const.Val = {
   TUPLE: 'ezp_val_tuple',
   RANGE: 'ezp_val_range',
   MINUS: 'ezp_val_minus',
-  PARENTH: 'ezp_val_parenth',//NYI
-  COMP: 'ezp_val_comp',//NYI
-  COMP_FOR: 'ezp_val_comp_for',//NYI
-  COMP_IF: 'ezp_val_comp_if',//NYI
-  LITERAL: 'ezp_val_literal',//NYI
+  PARENTH: 'ezp_val_parenth', // NYI
+  COMP: 'ezp_val_comp', // NYI
+  COMPFOR: 'ezp_val_compfor', // NYI
+  COMPIF: 'ezp_val_compif', // NYI
+  LITERAL: 'ezp_val_literal', // NYI
 }
 
 ezP.Const.Stt = {
@@ -98,6 +98,7 @@ ezP.Const.Input = {
   COND: 'COND',
   TGT: 'TGT',
   LST: 'LST',
+  XPR: 'XPR',// = ANY?
   DO: 'DO'
 }
 // Connection types
