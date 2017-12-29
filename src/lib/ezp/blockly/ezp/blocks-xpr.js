@@ -15,13 +15,14 @@ goog.provide('ezP.Blocks.val')
 
 goog.require('Blockly.Block')
 goog.require('ezP.Const')
+goog.require('ezP.Type')
 goog.require('ezP.FieldLabel')
 goog.require('ezP.FieldTextInput')
 goog.require('ezP.FieldDropdown')
 goog.require('ezP.FieldOptionsCode')
 goog.require('ezP.FieldVariable')
 
-Blockly.Blocks[ezP.Const.Val.GET] = {
+Blockly.Blocks[ezP.Const.Xpr.GET] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldVariable('item'), ezP.Const.Field.VAR)
@@ -31,7 +32,7 @@ Blockly.Blocks[ezP.Const.Val.GET] = {
     this.setHelpUrl('')
   }
 }
-Blockly.Blocks[ezP.Const.Val.ANY] = {
+Blockly.Blocks[ezP.Const.Xpr.ANY] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldTextInput('1+1'), ezP.Const.Field.ANY)
@@ -41,7 +42,7 @@ Blockly.Blocks[ezP.Const.Val.ANY] = {
     this.setHelpUrl('')
   }
 }
-Blockly.Blocks[ezP.Const.Val.TEXT] = {
+Blockly.Blocks[ezP.Const.Xpr.TEXT] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldLabel('"'))
@@ -53,7 +54,7 @@ Blockly.Blocks[ezP.Const.Val.TEXT] = {
     this.setHelpUrl('')
   }
 }
-Blockly.Blocks[ezP.Const.Val.TFN] = {
+Blockly.Blocks[ezP.Const.Xpr.TFN] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldOptions(
@@ -63,7 +64,7 @@ Blockly.Blocks[ezP.Const.Val.TFN] = {
     this.setHelpUrl('')
   }
 }
-Blockly.Blocks[ezP.Const.Val.OP] = {
+Blockly.Blocks[ezP.Const.Xpr.OP] = {
   init: function () {
     this.appendValueInput(ezP.Const.Input.LHS)
     this.appendDummyInput()
@@ -79,7 +80,7 @@ Blockly.Blocks[ezP.Const.Val.OP] = {
     this.setHelpUrl('')
   }
 }
-Blockly.Blocks[ezP.Const.Val.UNRY] = {
+Blockly.Blocks[ezP.Const.Xpr.UNRY] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldDropdownCode(
@@ -90,7 +91,7 @@ Blockly.Blocks[ezP.Const.Val.UNRY] = {
     this.setHelpUrl('')
   }
 }
-Blockly.Blocks[ezP.Const.Val.BOOL] = {
+Blockly.Blocks[ezP.Const.Xpr.BOOL] = {
   init: function () {
     this.appendValueInput(ezP.Const.Input.LHS)
     this.appendDummyInput()
@@ -107,7 +108,7 @@ Blockly.Blocks[ezP.Const.Val.BOOL] = {
     this.setHelpUrl('')
   }
 }
-Blockly.Blocks[ezP.Const.Val.TUPLE] = {
+Blockly.Blocks[ezP.Const.Xpr.TUPLE] = {
   init: function () {
     this.appendValueInput('TUPLE_0_0').setCheck(null)
     this.setInputsInline(true)
@@ -116,7 +117,18 @@ Blockly.Blocks[ezP.Const.Val.TUPLE] = {
     this.setHelpUrl('')
   }
 }
-Blockly.Blocks[ezP.Const.Val.PARENTH] = {
+Blockly.Blocks[ezP.Const.Xpr.star_or_expr] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField(new ezP.FieldLabel('*'))
+    this.appendValueInput(ezP.Const.Input.XPR).setCheck(ezP.Type.Xpr.Require.or_expr)
+    this.setInputsInline(true)
+    this.setOutput(true, ezP.Type.Xpr.Provide.star_or_expr)
+    this.setTooltip('')
+    this.setHelpUrl('')
+  }
+}
+Blockly.Blocks[ezP.Const.Xpr.parenth_form] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldLabel('('))
@@ -128,7 +140,7 @@ Blockly.Blocks[ezP.Const.Val.PARENTH] = {
     this.setHelpUrl('')
   }
 }
-Blockly.Blocks[ezP.Const.Val.RANGE] = {
+Blockly.Blocks[ezP.Const.Xpr.RANGE] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldLabel('range'))
@@ -141,33 +153,63 @@ Blockly.Blocks[ezP.Const.Val.RANGE] = {
     this.setHelpUrl('')
   }
 }
-Blockly.Blocks[ezP.Const.Val.COMP] = {
+Blockly.Blocks[ezP.Const.Xpr.comprehension] = {
   init: function () {
-    this.appendValueInput(ezP.Const.Input.XPR).setCheck(null)
-    this.appendValueInput(ezP.Const.Input.TGT).setCheck(ezP.Check.val.require_any).appendField(new ezP.FieldLabel('for'))
-    this.appendValueInput(ezP.Const.Input.LST).setCheck(ezP.Check.val.require_any).appendField(new ezP.FieldLabel('in'))
+    this.appendValueInput(ezP.Const.Input.XPR)
+      .setCheck(ezP.Type.Xpr.Require.expression)
+    this.appendValueInput(ezP.Const.Input.TGT)
+      .setCheck(ezP.Type.Xpr.Require.target_list)
+      .appendField(new ezP.FieldLabel('for'))
+    this.appendValueInput(ezP.Const.Input.LST)
+      .setCheck(ezP.Type.Xpr.Require.or_test)
+      .appendField(new ezP.FieldLabel('in'))
     this.setInputsInline(true)
-    this.setOutput(true, null)
+    this.setOutput(true, ezP.Type.Xpr.Provide.comprehension)
     this.setTooltip('')
     this.setHelpUrl('')
   }
 }
-Blockly.Blocks[ezP.Const.Val.COMPFOR] = {
+Blockly.Blocks[ezP.Const.Xpr.comp_for] = {
   init: function () {
-    this.appendValueInput(ezP.Const.Input.TGT).setCheck(ezP.Check.val.require_any).appendField(new ezP.FieldLabel('for'))
-    this.appendValueInput(ezP.Const.Input.LST).setCheck(ezP.Check.val.require_any).appendField(new ezP.FieldLabel('in'))
+    this.appendValueInput(ezP.Const.Input.TGT)
+      .setCheck(ezP.Type.Xpr.Require.any)
+      .appendField(new ezP.FieldLabel('for'))
+    this.appendValueInput(ezP.Const.Input.LST)
+      .setCheck(ezP.Type.Xpr.Require.any)
+      .appendField(new ezP.FieldLabel('in'))
     this.setInputsInline(true)
-    this.setOutput(true, null)
+    this.setOutput(true, ezP.Type.Xpr.Provide.comp_for)
     this.setTooltip('')
     this.setHelpUrl('')
   }
 }
-Blockly.Blocks[ezP.Const.Val.COMPIF] = {
+Blockly.Blocks[ezP.Const.Xpr.comp_if] = {
   init: function () {
-    this.appendValueInput(ezP.Const.Input.COND).appendField(new ezP.FieldLabel('if'))
+    this.appendValueInput(ezP.Const.Input.COND)
+      .setCheck(ezP.Type.Xpr.Require.expression_nocond)
+      .appendField(new ezP.FieldLabel('if'))
     this.setInputsInline(true)
-    this.setOutput(true, null)
+    this.setOutput(true, ezP.Type.Xpr.Provide.comp_if)
     this.setTooltip('')
     this.setHelpUrl('')
   }
 }
+Blockly.Blocks[ezP.Const.Xpr.parameter_list] = {
+  init: function () {
+    this.appendValueInput('S7P_0').setCheck(ezP.Type.Xpr.Require.defparameter)
+    this.appendValueInput('*ARG')
+      .setCheck(ezP.Type.Xpr.Require.parameter)
+      .appendField(new ezP.FieldLabel('*'))
+    this.appendValueInput('SKV_0').setCheck(ezP.Type.Xpr.Require.defparameter)
+    this.appendValueInput('**KVARG')
+      .setCheck(ezP.Type.Xpr.Require.parameter)
+      .appendField(new ezP.FieldLabel('**'))
+    this.appendDummyInput(ezP.Const.Input.OPTIONS)
+      .appendField(new ezP.FieldParameterListOptions())
+    this.setInputsInline(true)
+    this.setOutput(true, ezP.Type.Xpr.Provide.parameter_list)
+    this.setTooltip('')
+    this.setHelpUrl('')
+  }
+}
+    

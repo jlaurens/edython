@@ -4,7 +4,7 @@
 
 var $jscomp=$jscomp||{};
 $jscomp.scope={};
-var COMPILED=!0,goog=goog||{};
+var comprehensionILED=!0,goog=goog||{};
 goog.global=this;
 goog.isDef=function(a){return void 0!==a};
 goog.isString=function(a){return"string"==typeof a};
@@ -19,20 +19,20 @@ a.length&&(d=a.shift());
 )!a.length&&goog.isDef(b)?c[d]=b:c=c[d]&&c[d]!==Object.prototype[d]?c[d]:c[d]={}};
 
 goog.define=function(a,b){var c=b;
-COMPILED||(goog.global.CLOSURE_UNCOMPILED_DEFINES&&void 0===goog.global.CLOSURE_UNCOMPILED_DEFINES.nodeType&&Object.prototype.hasOwnProperty.call(goog.global.CLOSURE_UNCOMPILED_DEFINES,a)?c=goog.global.CLOSURE_UNCOMPILED_DEFINES[a]:goog.global.CLOSURE_DEFINES&&void 0===goog.global.CLOSURE_DEFINES.nodeType&&Object.prototype.hasOwnProperty.call(goog.global.CLOSURE_DEFINES,a)&&(c=goog.global.CLOSURE_DEFINES[a]));
+comprehensionILED||(goog.global.CLOSURE_UNcomprehensionILED_DEFINES&&void 0===goog.global.CLOSURE_UNcomprehensionILED_DEFINES.nodeType&&Object.prototype.hasOwnProperty.call(goog.global.CLOSURE_UNcomprehensionILED_DEFINES,a)?c=goog.global.CLOSURE_UNcomprehensionILED_DEFINES[a]:goog.global.CLOSURE_DEFINES&&void 0===goog.global.CLOSURE_DEFINES.nodeType&&Object.prototype.hasOwnProperty.call(goog.global.CLOSURE_DEFINES,a)&&(c=goog.global.CLOSURE_DEFINES[a]));
 goog.exportPath_(a,c)};
 goog.DEBUG=!0;
 goog.LOCALE="en";
 
 goog.TRUSTED_SITE=!0;
-goog.STRICT_MODE_COMPATIBLE=!1;
-goog.DISALLOW_TEST_ONLY_CODE=COMPILED&&!goog.DEBUG;
+goog.STRICT_MODE_comprehensionATIBLE=!1;
+goog.DISALLOW_TEST_ONLY_CODE=comprehensionILED&&!goog.DEBUG;
 goog.ENABLE_CHROME_APP_SAFE_SCRIPT_LOADING=!1;
 goog.provide=function(a){if(goog.isInModuleLoader_())throw Error("goog.provide can not be used within a goog.module.");
-if(!COMPILED&&goog.isProvided_(a))throw Error('Namespace "'+a+'" already declared.');
+if(!comprehensionILED&&goog.isProvided_(a))throw Error('Namespace "'+a+'" already declared.');
 goog.constructNamespace_(a)};
 
-goog.constructNamespace_=function(a,b){if(!COMPILED){delete goog.implicitNamespaces_[a];
+goog.constructNamespace_=function(a,b){if(!comprehensionILED){delete goog.implicitNamespaces_[a];
 for(var c=a;
 (c=c.substring(0,c.lastIndexOf(".")))&&!goog.getObjectByName(c);
 )goog.implicitNamespaces_[c]=!0}goog.exportPath_(a,b)};
@@ -43,22 +43,22 @@ if(!goog.isInModuleLoader_())throw Error("Module "+a+" has been loaded incorrect
 if(goog.moduleLoaderState_.moduleName)throw Error("goog.module may only be called once per module.");
 
 goog.moduleLoaderState_.moduleName=a;
-if(!COMPILED){if(goog.isProvided_(a))throw Error('Namespace "'+a+'" already declared.');
+if(!comprehensionILED){if(goog.isProvided_(a))throw Error('Namespace "'+a+'" already declared.');
 delete goog.implicitNamespaces_[a]}};
 goog.module.get=function(a){return goog.module.getInternal_(a)};
-goog.module.getInternal_=function(a){if(!COMPILED){if(a in goog.loadedModules_)return goog.loadedModules_[a];
+goog.module.getInternal_=function(a){if(!comprehensionILED){if(a in goog.loadedModules_)return goog.loadedModules_[a];
 if(!goog.implicitNamespaces_[a])return a=goog.getObjectByName(a),null!=a?a:null}return null};
 goog.moduleLoaderState_=null;
 
 goog.isInModuleLoader_=function(){return null!=goog.moduleLoaderState_};
-goog.module.declareLegacyNamespace=function(){if(!COMPILED&&!goog.isInModuleLoader_())throw Error("goog.module.declareLegacyNamespace must be called from within a goog.module");
-if(!COMPILED&&!goog.moduleLoaderState_.moduleName)throw Error("goog.module must be called prior to goog.module.declareLegacyNamespace.");
+goog.module.declareLegacyNamespace=function(){if(!comprehensionILED&&!goog.isInModuleLoader_())throw Error("goog.module.declareLegacyNamespace must be called from within a goog.module");
+if(!comprehensionILED&&!goog.moduleLoaderState_.moduleName)throw Error("goog.module must be called prior to goog.module.declareLegacyNamespace.");
 goog.moduleLoaderState_.declareLegacyNamespace=!0};
 
 goog.setTestOnly=function(a){if(goog.DISALLOW_TEST_ONLY_CODE)throw a=a||"",Error("Importing test-only code into non-debug environment"+(a?": "+a:"."));
 };
 goog.forwardDeclare=function(a){};
-COMPILED||(goog.isProvided_=function(a){return a in goog.loadedModules_||!goog.implicitNamespaces_[a]&&goog.isDefAndNotNull(goog.getObjectByName(a))},goog.implicitNamespaces_={"goog.module":!0});
+comprehensionILED||(goog.isProvided_=function(a){return a in goog.loadedModules_||!goog.implicitNamespaces_[a]&&goog.isDefAndNotNull(goog.getObjectByName(a))},goog.implicitNamespaces_={"goog.module":!0});
 
 goog.getObjectByName=function(a,b){for(var c=a.split("."),d=b||goog.global,e=0;
 e<c.length;
@@ -72,7 +72,7 @@ goog.ENABLE_DEBUG_LOADER=!0;
 goog.logToConsole_=function(a){goog.global.console&&goog.global.console.error(a)};
 
 goog.require=function(a){goog.ENABLE_DEBUG_LOADER&&goog.debugLoader_&&goog.getLoader_().earlyProcessLoad(a);
-if(!COMPILED){if(goog.isProvided_(a)){if(goog.isInModuleLoader_())return goog.module.getInternal_(a)}else if(goog.ENABLE_DEBUG_LOADER){var b=goog.moduleLoaderState_;
+if(!comprehensionILED){if(goog.isProvided_(a)){if(goog.isInModuleLoader_())return goog.module.getInternal_(a)}else if(goog.ENABLE_DEBUG_LOADER){var b=goog.moduleLoaderState_;
 goog.moduleLoaderState_=null;
 try{var c=goog.getLoader_();
 c?c.load(a):goog.logToConsole_("Could not load "+a+" because there is no debug loader.")}finally{goog.moduleLoaderState_=b}}return null}};
@@ -89,7 +89,7 @@ goog.instantiatedSingletons_=[];
 goog.LOAD_MODULE_USING_EVAL=!0;
 goog.SEAL_MODULE_EXPORTS=goog.DEBUG;
 goog.loadedModules_={};
-goog.DEPENDENCIES_ENABLED=!COMPILED&&goog.ENABLE_DEBUG_LOADER;
+goog.DEPENDENCIES_ENABLED=!comprehensionILED&&goog.ENABLE_DEBUG_LOADER;
 
 goog.TRANSPILE="detect";
 goog.TRANSPILER="transpile.js";
@@ -207,7 +207,7 @@ return goog.global.CLOSURE_CSS_NAME_MAP_FN?goog.global.CLOSURE_CSS_NAME_MAP_FN(d
 
 goog.setCssNameMapping=function(a,b){goog.cssNameMapping_=a;
 goog.cssNameMappingStyle_=b};
-!COMPILED&&goog.global.CLOSURE_CSS_NAME_MAPPING&&(goog.cssNameMapping_=goog.global.CLOSURE_CSS_NAME_MAPPING);
+!comprehensionILED&&goog.global.CLOSURE_CSS_NAME_MAPPING&&(goog.cssNameMapping_=goog.global.CLOSURE_CSS_NAME_MAPPING);
 goog.getMsg=function(a,b){b&&(a=a.replace(/\{\$([^}]+)}/g,function(a,d){return null!=b&&d in b?b[d]:a}));
 return a};
 goog.getMsgWithFallback=function(a,b){return a};
@@ -224,7 +224,7 @@ e++)d[e-2]=arguments[e];
 return b.prototype[c].apply(a,d)}};
 
 goog.base=function(a,b,c){var d=arguments.callee.caller;
-if(goog.STRICT_MODE_COMPATIBLE||goog.DEBUG&&!d)throw Error("arguments.caller not defined.  goog.base() cannot be used with strict mode code. See http://www.ecma-international.org/ecma-262/5.1/#sec-C");
+if(goog.STRICT_MODE_comprehensionATIBLE||goog.DEBUG&&!d)throw Error("arguments.caller not defined.  goog.base() cannot be used with strict mode code. See http://www.ecma-international.org/ecma-262/5.1/#sec-C");
 if(d.superClass_){for(var e=Array(arguments.length-1),f=1;
 f<arguments.length;
 f++)e[f-1]=arguments[f];
@@ -243,7 +243,7 @@ throw Error("goog.base called from a method of one name to a method of a differe
 };
 goog.scope=function(a){if(goog.isInModuleLoader_())throw Error("goog.scope is not supported within a goog.module.");
 a.call(goog.global)};
-COMPILED||(goog.global.COMPILED=COMPILED);
+comprehensionILED||(goog.global.comprehensionILED=comprehensionILED);
 
 goog.defineClass=function(a,b){var c=b.constructor,d=b.statics;
 c&&c!=Object.prototype.constructor||(c=function(){throw Error("cannot instantiate an interface (no constructor defined).");
@@ -270,7 +270,7 @@ goog.defineClass.applyProperties_=function(a,b){for(var c in b)Object.prototype.
 for(var d=0;
 d<goog.defineClass.OBJECT_PROTOTYPE_FIELDS_.length;
 d++)c=goog.defineClass.OBJECT_PROTOTYPE_FIELDS_[d],Object.prototype.hasOwnProperty.call(b,c)&&(a[c]=b[c])};
-goog.tagUnsealableClass=function(a){!COMPILED&&goog.defineClass.SEAL_CLASS_INSTANCES&&(a.prototype[goog.UNSEALABLE_CONSTRUCTOR_PROPERTY_]=!0)};
+goog.tagUnsealableClass=function(a){!comprehensionILED&&goog.defineClass.SEAL_CLASS_INSTANCES&&(a.prototype[goog.UNSEALABLE_CONSTRUCTOR_PROPERTY_]=!0)};
 goog.UNSEALABLE_CONSTRUCTOR_PROPERTY_="goog_defineClass_legacy_unsealable";
 
 goog.DEPENDENCIES_ENABLED&&(goog.inHtmlDocument_=function(){var a=goog.global.document;
@@ -328,7 +328,7 @@ g++)f.nameToPath[e]=a,f.loadFlags[a]=d;
 for(d=0;
 b=c[d];
 d++)a in f.requires||(f.requires[a]={}),f.requires[a][b]=!0},goog.DebugLoader.prototype.importScript_=function(a,b){(goog.global.CLOSURE_IMPORT_SCRIPT||goog.bind(this.writeScriptTag_,this))(a,b)&&(this.dependencies_.written[a]=
-!0)},goog.DebugLoader.prototype.importProcessedScript_=function(a,b,c){this.importScript_("",'goog.debugLoader_.retrieveAndExec_("'+a+'", '+b+", "+c+");")},goog.DebugLoader.prototype.retrieveAndExec_=function(a,b,c){if(!COMPILED){var d=a;a=this.normalizePath(a);var e=goog.global.CLOSURE_IMPORT_SCRIPT||goog.bind(this.writeScriptTag_,this),f=this.loadFileSync(a);if(null==f)throw Error('Load of "'+a+'" failed');c&&(f=this.getTranspiler().transpile(f,a));f=b?this.wrapModule_(a,f):f+("\n//# sourceURL="+a);
+!0)},goog.DebugLoader.prototype.importProcessedScript_=function(a,b,c){this.importScript_("",'goog.debugLoader_.retrieveAndExec_("'+a+'", '+b+", "+c+");")},goog.DebugLoader.prototype.retrieveAndExec_=function(a,b,c){if(!comprehensionILED){var d=a;a=this.normalizePath(a);var e=goog.global.CLOSURE_IMPORT_SCRIPT||goog.bind(this.writeScriptTag_,this),f=this.loadFileSync(a);if(null==f)throw Error('Load of "'+a+'" failed');c&&(f=this.getTranspiler().transpile(f,a));f=b?this.wrapModule_(a,f):f+("\n//# sourceURL="+a);
 goog.DebugLoader.IS_OLD_IE_&&this.oldIeWaiting_?(this.dependencies_.deferred[d]=f,this.queuedModules_.push(d)):e(a,f)}},goog.DebugLoader.prototype.wrapModule_=function(a,b){return goog.LOAD_MODULE_USING_EVAL&&goog.isDef(goog.global.JSON)?"goog.loadModule("+goog.global.JSON.stringify(b+"\n//# sourceURL="+a+"\n")+");":'goog.loadModule(function(exports) {"use strict";'+b+"\n;return exports});\n//# sourceURL="+a+"\n"},goog.DebugLoader.prototype.loadQueuedModules_=function(){var a=this.queuedModules_.length;
 
 if(0<a){var b=this.queuedModules_;
@@ -2071,7 +2071,7 @@ goog.math.Size.prototype.scaleToFit=function(a){a=this.aspectRatio()>a.aspectRat
 return this.scale(a)};
 goog.dom.ASSUME_QUIRKS_MODE=!1;
 goog.dom.ASSUME_STANDARDS_MODE=!1;
-goog.dom.COMPAT_MODE_KNOWN_=goog.dom.ASSUME_QUIRKS_MODE||goog.dom.ASSUME_STANDARDS_MODE;
+goog.dom.comprehensionAT_MODE_KNOWN_=goog.dom.ASSUME_QUIRKS_MODE||goog.dom.ASSUME_STANDARDS_MODE;
 goog.dom.getDomHelper=function(a){return a?new goog.dom.DomHelper(goog.dom.getOwnerDocument(a)):goog.dom.defaultDomHelper_||(goog.dom.defaultDomHelper_=new goog.dom.DomHelper)};
 goog.dom.getDocument=function(){return document};
 goog.dom.getElement=function(a){return goog.dom.getElementHelper_(document,a)};
@@ -2197,7 +2197,7 @@ b.firstChild;
 return c};
 
 goog.dom.isCss1CompatMode=function(){return goog.dom.isCss1CompatMode_(document)};
-goog.dom.isCss1CompatMode_=function(a){return goog.dom.COMPAT_MODE_KNOWN_?goog.dom.ASSUME_STANDARDS_MODE:"CSS1Compat"==a.compatMode};
+goog.dom.isCss1CompatMode_=function(a){return goog.dom.comprehensionAT_MODE_KNOWN_?goog.dom.ASSUME_STANDARDS_MODE:"CSS1Compat"==a.compatMode};
 goog.dom.canHaveChildren=function(a){if(a.nodeType!=goog.dom.NodeType.ELEMENT)return!1;
 switch(a.tagName){case "APPLET":case "AREA":case "BASE":case "BR":case "COL":case "COMMAND":case "EMBED":case "FRAME":case "HR":case "IMG":case "INPUT":case "IFRAME":case "ISINDEX":case "KEYGEN":case "LINK":case "NOFRAMES":case "NOSCRIPT":case "META":case "OBJECT":case "PARAM":case "SCRIPT":case "SOURCE":case "STYLE":case "TRACK":case "WBR":return!1}return!0};
 
@@ -3142,7 +3142,7 @@ ORIENTATIONCHANGE:"orientationchange",READYSTATECHANGE:"readystatechange",RESIZE
 SOURCEENDED:"sourceended",SOURCECLOSED:"sourceclosed",ABORT:"abort",UPDATE:"update",UPDATESTART:"updatestart",UPDATEEND:"updateend",HASHCHANGE:"hashchange",PAGEHIDE:"pagehide",PAGESHOW:"pageshow",POPSTATE:"popstate",COPY:"copy",PASTE:"paste",CUT:"cut",BEFORECOPY:"beforecopy",BEFORECUT:"beforecut",BEFOREPASTE:"beforepaste",ONLINE:"online",OFFLINE:"offline",MESSAGE:"message",CONNECT:"connect",INSTALL:"install",ACTIVATE:"activate",FETCH:"fetch",FOREIGNFETCH:"foreignfetch",MESSAGEERROR:"messageerror",
 STATECHANGE:"statechange",UPDATEFOUND:"updatefound",CONTROLLERCHANGE:"controllerchange",ANIMATIONSTART:goog.events.getVendorPrefixedName_("AnimationStart"),ANIMATIONEND:goog.events.getVendorPrefixedName_("AnimationEnd"),ANIMATIONITERATION:goog.events.getVendorPrefixedName_("AnimationIteration"),TRANSITIONEND:goog.events.getVendorPrefixedName_("TransitionEnd"),POINTERDOWN:"pointerdown",POINTERUP:"pointerup",POINTERCANCEL:"pointercancel",POINTERMOVE:"pointermove",POINTEROVER:"pointerover",POINTEROUT:"pointerout",
 POINTERENTER:"pointerenter",POINTERLEAVE:"pointerleave",GOTPOINTERCAPTURE:"gotpointercapture",LOSTPOINTERCAPTURE:"lostpointercapture",MSGESTURECHANGE:"MSGestureChange",MSGESTUREEND:"MSGestureEnd",MSGESTUREHOLD:"MSGestureHold",MSGESTURESTART:"MSGestureStart",MSGESTURETAP:"MSGestureTap",MSGOTPOINTERCAPTURE:"MSGotPointerCapture",MSINERTIASTART:"MSInertiaStart",MSLOSTPOINTERCAPTURE:"MSLostPointerCapture",MSPOINTERCANCEL:"MSPointerCancel",MSPOINTERDOWN:"MSPointerDown",MSPOINTERENTER:"MSPointerEnter",MSPOINTERHOVER:"MSPointerHover",
-MSPOINTERLEAVE:"MSPointerLeave",MSPOINTERMOVE:"MSPointerMove",MSPOINTEROUT:"MSPointerOut",MSPOINTEROVER:"MSPointerOver",MSPOINTERUP:"MSPointerUp",TEXT:"text",TEXTINPUT:goog.userAgent.IE?"textinput":"textInput",COMPOSITIONSTART:"compositionstart",COMPOSITIONUPDATE:"compositionupdate",COMPOSITIONEND:"compositionend",BEFOREINPUT:"beforeinput",EXIT:"exit",LOADABORT:"loadabort",LOADCOMMIT:"loadcommit",LOADREDIRECT:"loadredirect",LOADSTART:"loadstart",LOADSTOP:"loadstop",RESPONSIVE:"responsive",SIZECHANGED:"sizechanged",
+MSPOINTERLEAVE:"MSPointerLeave",MSPOINTERMOVE:"MSPointerMove",MSPOINTEROUT:"MSPointerOut",MSPOINTEROVER:"MSPointerOver",MSPOINTERUP:"MSPointerUp",TEXT:"text",TEXTINPUT:goog.userAgent.IE?"textinput":"textInput",comprehensionOSITIONSTART:"compositionstart",comprehensionOSITIONUPDATE:"compositionupdate",comprehensionOSITIONEND:"compositionend",BEFOREINPUT:"beforeinput",EXIT:"exit",LOADABORT:"loadabort",LOADCOMMIT:"loadcommit",LOADREDIRECT:"loadredirect",LOADSTART:"loadstart",LOADSTOP:"loadstop",RESPONSIVE:"responsive",SIZECHANGED:"sizechanged",
 UNRESPONSIVE:"unresponsive",VISIBILITYCHANGE:"visibilitychange",STORAGE:"storage",DOMSUBTREEMODIFIED:"DOMSubtreeModified",DOMNODEINSERTED:"DOMNodeInserted",DOMNODEREMOVED:"DOMNodeRemoved",DOMNODEREMOVEDFROMDOCUMENT:"DOMNodeRemovedFromDocument",DOMNODEINSERTEDINTODOCUMENT:"DOMNodeInsertedIntoDocument",DOMATTRMODIFIED:"DOMAttrModified",DOMCHARACTERDATAMODIFIED:"DOMCharacterDataModified",BEFOREPRINT:"beforeprint",AFTERPRINT:"afterprint",BEFOREINSTALLPROMPT:"beforeinstallprompt",APPINSTALLED:"appinstalled"};
 
 goog.events.getPointerFallbackEventName_=function(a,b,c){return goog.events.BrowserFeature.POINTER_EVENTS?a:goog.events.BrowserFeature.MSPOINTER_EVENTS?b:c};
@@ -3677,10 +3677,10 @@ return b};
 goog.a11y={};
 goog.a11y.aria={};
 
-goog.a11y.aria.Role={ALERT:"alert",ALERTDIALOG:"alertdialog",APPLICATION:"application",ARTICLE:"article",BANNER:"banner",BUTTON:"button",CHECKBOX:"checkbox",COLUMNHEADER:"columnheader",COMBOBOX:"combobox",COMPLEMENTARY:"complementary",CONTENTINFO:"contentinfo",DEFINITION:"definition",DIALOG:"dialog",DIRECTORY:"directory",DOCUMENT:"document",FORM:"form",GRID:"grid",GRIDCELL:"gridcell",GROUP:"group",HEADING:"heading",IMG:"img",LINK:"link",LIST:"list",LISTBOX:"listbox",LISTITEM:"listitem",LOG:"log",
+goog.a11y.aria.Role={ALERT:"alert",ALERTDIALOG:"alertdialog",APPLICATION:"application",ARTICLE:"article",BANNER:"banner",BUTTON:"button",CHECKBOX:"checkbox",COLUMNHEADER:"columnheader",COMBOBOX:"combobox",comprehensionLEMENTARY:"complementary",CONTENTINFO:"contentinfo",DEFINITION:"definition",DIALOG:"dialog",DIRECTORY:"directory",DOCUMENT:"document",FORM:"form",GRID:"grid",GRIDCELL:"gridcell",GROUP:"group",HEADING:"heading",IMG:"img",LINK:"link",LIST:"list",LISTBOX:"listbox",LISTITEM:"listitem",LOG:"log",
 MAIN:"main",MARQUEE:"marquee",MATH:"math",MENU:"menu",MENUBAR:"menubar",MENU_ITEM:"menuitem",MENU_ITEM_CHECKBOX:"menuitemcheckbox",MENU_ITEM_RADIO:"menuitemradio",NAVIGATION:"navigation",NOTE:"note",OPTION:"option",PRESENTATION:"presentation",PROGRESSBAR:"progressbar",RADIO:"radio",RADIOGROUP:"radiogroup",REGION:"region",ROW:"row",ROWGROUP:"rowgroup",ROWHEADER:"rowheader",SCROLLBAR:"scrollbar",SEARCH:"search",SEPARATOR:"separator",SLIDER:"slider",SPINBUTTON:"spinbutton",STATUS:"status",TAB:"tab",
 TAB_LIST:"tablist",TAB_PANEL:"tabpanel",TEXTBOX:"textbox",TEXTINFO:"textinfo",TIMER:"timer",TOOLBAR:"toolbar",TOOLTIP:"tooltip",TREE:"tree",TREEGRID:"treegrid",TREEITEM:"treeitem"};
-goog.a11y.aria.State={ACTIVEDESCENDANT:"activedescendant",ATOMIC:"atomic",AUTOCOMPLETE:"autocomplete",BUSY:"busy",CHECKED:"checked",COLINDEX:"colindex",CONTROLS:"controls",DESCRIBEDBY:"describedby",DISABLED:"disabled",DROPEFFECT:"dropeffect",EXPANDED:"expanded",FLOWTO:"flowto",GRABBED:"grabbed",HASPOPUP:"haspopup",HIDDEN:"hidden",INVALID:"invalid",LABEL:"label",LABELLEDBY:"labelledby",LEVEL:"level",LIVE:"live",MULTILINE:"multiline",MULTISELECTABLE:"multiselectable",ORIENTATION:"orientation",OWNS:"owns",
+goog.a11y.aria.State={ACTIVEDESCENDANT:"activedescendant",ATOMIC:"atomic",AUTOcomprehensionLETE:"autocomplete",BUSY:"busy",CHECKED:"checked",COLINDEX:"colindex",CONTROLS:"controls",DESCRIBEDBY:"describedby",DISABLED:"disabled",DROPEFFECT:"dropeffect",EXPANDED:"expanded",FLOWTO:"flowto",GRABBED:"grabbed",HASPOPUP:"haspopup",HIDDEN:"hidden",INVALID:"invalid",LABEL:"label",LABELLEDBY:"labelledby",LEVEL:"level",LIVE:"live",MULTILINE:"multiline",MULTISELECTABLE:"multiselectable",ORIENTATION:"orientation",OWNS:"owns",
 POSINSET:"posinset",PRESSED:"pressed",READONLY:"readonly",RELEVANT:"relevant",REQUIRED:"required",ROWINDEX:"rowindex",SELECTED:"selected",SETSIZE:"setsize",SORT:"sort",VALUEMAX:"valuemax",VALUEMIN:"valuemin",VALUENOW:"valuenow",VALUETEXT:"valuetext"};
 goog.a11y.aria.AutoCompleteValues={INLINE:"inline",LIST:"list",BOTH:"both",NONE:"none"};
 goog.a11y.aria.DropEffectValues={COPY:"copy",MOVE:"move",LINK:"link",EXECUTE:"execute",POPUP:"popup",NONE:"none"};
@@ -3698,7 +3698,7 @@ goog.a11y.aria.PressedValues={TRUE:"true",FALSE:"false",MIXED:"mixed",UNDEFINED:
 goog.a11y.aria.SelectedValues={TRUE:"true",FALSE:"false",UNDEFINED:"undefined"};
 goog.a11y.aria.datatables={};
 
-goog.a11y.aria.datatables.getDefaultValuesMap=function(){goog.a11y.aria.DefaultStateValueMap_||(goog.a11y.aria.DefaultStateValueMap_=goog.object.create(goog.a11y.aria.State.ATOMIC,!1,goog.a11y.aria.State.AUTOCOMPLETE,"none",goog.a11y.aria.State.DROPEFFECT,"none",goog.a11y.aria.State.HASPOPUP,!1,goog.a11y.aria.State.LIVE,"off",goog.a11y.aria.State.MULTILINE,!1,goog.a11y.aria.State.MULTISELECTABLE,!1,goog.a11y.aria.State.ORIENTATION,"vertical",goog.a11y.aria.State.READONLY,!1,goog.a11y.aria.State.RELEVANT,
+goog.a11y.aria.datatables.getDefaultValuesMap=function(){goog.a11y.aria.DefaultStateValueMap_||(goog.a11y.aria.DefaultStateValueMap_=goog.object.create(goog.a11y.aria.State.ATOMIC,!1,goog.a11y.aria.State.AUTOcomprehensionLETE,"none",goog.a11y.aria.State.DROPEFFECT,"none",goog.a11y.aria.State.HASPOPUP,!1,goog.a11y.aria.State.LIVE,"off",goog.a11y.aria.State.MULTILINE,!1,goog.a11y.aria.State.MULTISELECTABLE,!1,goog.a11y.aria.State.ORIENTATION,"vertical",goog.a11y.aria.State.READONLY,!1,goog.a11y.aria.State.RELEVANT,
 "additions text",goog.a11y.aria.State.REQUIRED,!1,goog.a11y.aria.State.SORT,"none",goog.a11y.aria.State.BUSY,!1,goog.a11y.aria.State.DISABLED,!1,goog.a11y.aria.State.HIDDEN,!1,goog.a11y.aria.State.INVALID,"false"));
 return goog.a11y.aria.DefaultStateValueMap_};
 goog.a11y.aria.ARIA_PREFIX_="aria-";
@@ -5276,9 +5276,9 @@ goog.Thenable=function(){};
 goog.Thenable.prototype.then=function(a,b,c){};
 goog.Thenable.IMPLEMENTED_BY_PROP="$goog_Thenable";
 goog.Thenable.addImplementation=function(a){a.prototype.then=a.prototype.then;
-COMPILED?a.prototype[goog.Thenable.IMPLEMENTED_BY_PROP]=!0:a.prototype.$goog_Thenable=!0};
+comprehensionILED?a.prototype[goog.Thenable.IMPLEMENTED_BY_PROP]=!0:a.prototype.$goog_Thenable=!0};
 goog.Thenable.isImplementedBy=function(a){if(!a)return!1;
-try{return COMPILED?!!a[goog.Thenable.IMPLEMENTED_BY_PROP]:!!a.$goog_Thenable}catch(b){return!1}};
+try{return comprehensionILED?!!a[goog.Thenable.IMPLEMENTED_BY_PROP]:!!a.$goog_Thenable}catch(b){return!1}};
 goog.async={};
 goog.async.FreeList=function(a,b,c){this.limit_=c;
 this.create_=a;
@@ -6147,7 +6147,7 @@ Blockly.ContextMenu.currentBlock=this}};
 ezP.BlockSvg.prototype.updateDisabled=function(){this.render()};
 ezP.BlockSvg.prototype.updateColour=function(){};
 ezP.Const=ezP.Const||{};
-ezP.Const.Val={DEFAULT:"ezp_val",ANY:"ezp_val_any",GET:"ezp_val_get",TEXT:"ezp_val_text",TFN:"ezp_val_tfn",OP:"ezp_val_op",UNRY:"ezp_val_unry",BOOL:"ezp_val_bool",TUPLE:"ezp_val_tuple",RANGE:"ezp_val_range",MINUS:"ezp_val_minus"};
+ezP.Const.Val={DEFAULT:"ezp_xpr",ANY:"ezp_xpr_any",GET:"ezp_xpr_get",TEXT:"ezp_xpr_text",TFN:"ezp_xpr_tfn",OP:"ezp_xpr_op",UNRY:"ezp_xpr_unry",BOOL:"ezp_xpr_bool",TUPLE:"ezp_xpr_tuple",RANGE:"ezp_xpr_range",MINUS:"ezp_xpr_minus"};
 ezP.Const.Stt={DEFAULT:"ezp_stt",ANY:"ezp_stt_any",SET:"ezp_stt_set",PRINT:"ezp_stt_print",BCP:"ezp_stt_bcp"};
 
 ezP.Const.Grp={DEFAULT:"ezp_grp",ANY:"ezp_grp_any",IF:"ezp_grp_if",ELIF:"ezp_grp_elif",ELSE:"ezp_grp_else",FOR:"ezp_grp_for",WHILE:"ezp_grp_while",WITH:"ezp_grp_with"};
@@ -6156,12 +6156,12 @@ ezP.Const.Ctl={DEFAULT:"ezp_ctl",MAIN:"ezp_ctl_main"};
 ezP.Const.Field={VAR:"VAR",ANY:"ANY",TEXT:"TEXT",TFN:"TFN",OP:"OP",STT:"STT",BCP:"BCP",DEF:"DEF",CLASS:"CLASS",NCSTR:"NCSTR"};
 
 ezP.Const.Input={ANY:"ANY",LHS:"LHS",RHS:"RHS",SEP:"SEP",END:"END",FILE:"FILE",FLUSH:"FLUSH",OPTIONS:"OPTIONS",COND:"COND",TGT:"TGT",LST:"LST",DO:"DO"};
-ezP.Check=ezP.Check||{};
-ezP.Check.val={require_any:[0],provide_any:[0]};
-ezP.Check.type={any_all:0,if_elif:1,if_elif_bounded:2,if_else:3,loop_else:4};
+ezP.Type=ezP.Type||{};
+ezP.Type.Val={require_any:[0],provide_any:[0]};
+ezP.Type.type={any_all:0,if_elif:1,if_elif_bounded:2,if_else:3,loop_else:4};
 
-ezP.Check.stt={none:[-1],after_any:[ezP.Check.type.any_all],before_any:[ezP.Check.type.any_all],after_if:[ezP.Check.type.any_all,ezP.Check.type.if_elif,ezP.Check.type.if_else],before_if:[ezP.Check.type.any_all],after_elif:[ezP.Check.type.any_all,ezP.Check.type.if_elif,ezP.Check.type.if_else],before_elif:[ezP.Check.type.if_elif],after_else:[ezP.Check.type.any_all],before_else:[ezP.Check.type.if_else,ezP.Check.type.loop_else],before_if_else:[ezP.Check.type.if_else],before_loop_else:[ezP.Check.type.loop_else],
-after_loop:[ezP.Check.type.any_all,ezP.Check.type.loop_else],before_loop:[ezP.Check.type.any_all]};
+ezP.Type.stt={none:[-1],after_any:[ezP.Type.type.any_all],before_any:[ezP.Type.type.any_all],after_if:[ezP.Type.type.any_all,ezP.Type.type.if_elif,ezP.Type.type.if_else],before_if:[ezP.Type.type.any_all],after_elif:[ezP.Type.type.any_all,ezP.Type.type.if_elif,ezP.Type.type.if_else],before_elif:[ezP.Type.type.if_elif],after_else:[ezP.Type.type.any_all],before_else:[ezP.Type.type.if_else,ezP.Type.type.loop_else],before_if_else:[ezP.Type.type.if_else],before_loop_else:[ezP.Type.type.loop_else],
+after_loop:[ezP.Type.type.any_all,ezP.Type.type.loop_else],before_loop:[ezP.Type.type.any_all]};
 
 ezP.Op={Unary:{displayOp:function(a){return"not"===a?a+" ":a},getOrder:function(a){return{"+":Blockly.Python.ORDER_UNARY_SIGN,"-":Blockly.Python.ORDER_UNARY_SIGN,"~":Blockly.Python.ORDER_BITWISE_NOT,not:Blockly.Python.ORDER_LOGICAL_NOT}[a]}},Binary:{displayOp:function(a){return" "+a+" "},getOrder:function(a){return{"+":Blockly.Python.ORDER_ADDITIVE,"-":Blockly.Python.ORDER_ADDITIVE,"*":Blockly.Python.ORDER_MULTIPLICATIVE,"**":Blockly.Python.ORDER_EXPONENTIATION,"/":Blockly.Python.ORDER_MULTIPLICATIVE,
 "//":Blockly.Python.ORDER_MULTIPLICATIVE,"%":Blockly.Python.ORDER_MULTIPLICATIVE,"&":Blockly.Python.ORDER_BITWISE_AND,"|":Blockly.Python.ORDER_BITWISE_OR,"^":Blockly.Python.ORDER_BITWISE_XOR,"<<":Blockly.Python.ORDER_BITWISE_SHIFT,">>":Blockly.Python.ORDER_BITWISE_SHIFT,and:Blockly.Python.ORDER_LOGICAL_AND,or:Blockly.Python.ORDER_LOGICAL_OR,"<":Blockly.Python.ORDER_RELATIONAL,"<=":Blockly.Python.ORDER_RELATIONAL,">":Blockly.Python.ORDER_RELATIONAL,">=":Blockly.Python.ORDER_RELATIONAL,"!=":Blockly.Python.ORDER_RELATIONAL,
@@ -6749,61 +6749,61 @@ ezP.FieldPrintOptions.prototype.addSelect=function(){this.imageElement_&&Blockly
 ezP.FieldPrintOptions.prototype.removeSelect=function(){this.imageElement_&&Blockly.utils.removeClass(this.imageElement_,"ezp-selected")};
 ezP.Blocks.grp={};
 Blockly.Blocks[ezP.Const.Grp.ANY]={init:function(){this.appendDummyInput().appendField(new ezP.FieldCodeInput(""),"STT").appendField(new ezP.FieldLabel(":"),"STT");
-this.appendStatementInput("DO").setCheck(ezP.Check.stt.after_any);
+this.appendStatementInput("DO").setCheck(ezP.Type.Stt.Check.after_any);
 this.setInputsInline(!0);
-this.setPreviousStatement(!0,ezP.Check.stt.before_any);
-this.setNextStatement(!0,ezP.Check.stt.after_any);
+this.setPreviousStatement(!0,ezP.Type.Stt.Check.before_any);
+this.setNextStatement(!0,ezP.Type.Stt.Check.after_any);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
 Blockly.Blocks[ezP.Const.Grp.IF]={init:function(){this.appendValueInput("COND").appendField(new ezP.FieldLabel("if"));
 this.appendDummyInput().appendField(new ezP.FieldLabel(":"));
-this.appendStatementInput("DO").setCheck(ezP.Check.stt.after_any);
+this.appendStatementInput("DO").setCheck(ezP.Type.Stt.Check.after_any);
 this.setInputsInline(!0);
-this.setPreviousStatement(!0,ezP.Check.stt.before_if);
-this.setNextStatement(!0,ezP.Check.stt.after_if);
+this.setPreviousStatement(!0,ezP.Type.Stt.Check.before_if);
+this.setNextStatement(!0,ezP.Type.Stt.Check.after_if);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
 Blockly.Blocks[ezP.Const.Grp.ELIF]={init:function(){this.appendValueInput("COND").appendField(new ezP.FieldLabel("elif"));
 this.appendDummyInput().appendField(new ezP.FieldLabel(":"));
-this.appendStatementInput("DO").setCheck(ezP.Check.stt.after_any);
+this.appendStatementInput("DO").setCheck(ezP.Type.Stt.Check.after_any);
 this.setInputsInline(!0);
-this.setPreviousStatement(!0,ezP.Check.stt.before_elif);
-this.setNextStatement(!0,ezP.Check.stt.after_elif);
+this.setPreviousStatement(!0,ezP.Type.Stt.Check.before_elif);
+this.setNextStatement(!0,ezP.Type.Stt.Check.after_elif);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
 Blockly.Blocks[ezP.Const.Grp.ELSE]={init:function(){this.appendDummyInput().appendField(new ezP.FieldLabel("else:"));
-this.appendStatementInput("DO").setCheck(ezP.Check.stt.after_any);
+this.appendStatementInput("DO").setCheck(ezP.Type.Stt.Check.after_any);
 this.setInputsInline(!0);
-this.setPreviousStatement(!0,ezP.Check.stt.before_else);
-this.setNextStatement(!0,ezP.Check.stt.after_else);
+this.setPreviousStatement(!0,ezP.Type.Stt.Check.before_else);
+this.setNextStatement(!0,ezP.Type.Stt.Check.after_else);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Grp.WHILE]={init:function(){this.appendValueInput("COND").setCheck(ezP.Check.val.require_any).appendField(new ezP.FieldLabel("while"));
+Blockly.Blocks[ezP.Const.Grp.WHILE]={init:function(){this.appendValueInput("COND").setCheck(ezP.Type.Xpr.Require.any).appendField(new ezP.FieldLabel("while"));
 this.appendDummyInput().appendField(new ezP.FieldLabel(":"));
-this.appendStatementInput("DO").setCheck(ezP.Check.stt.after_any);
+this.appendStatementInput("DO").setCheck(ezP.Type.Stt.Check.after_any);
 this.setInputsInline(!0);
-this.setPreviousStatement(!0,ezP.Check.stt.before_loop);
-this.setNextStatement(!0,ezP.Check.stt.after_loop);
+this.setPreviousStatement(!0,ezP.Type.Stt.Check.before_loop);
+this.setNextStatement(!0,ezP.Type.Stt.Check.after_loop);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Grp.FOR]={init:function(){this.appendValueInput(ezP.Const.Input.TGT).setCheck(ezP.Check.val.require_any).appendField(new ezP.FieldLabel("for"));
-this.appendValueInput(ezP.Const.Input.LST).setCheck(ezP.Check.val.require_any).appendField(new ezP.FieldLabel("in"));
+Blockly.Blocks[ezP.Const.Grp.FOR]={init:function(){this.appendValueInput(ezP.Const.Input.TGT).setCheck(ezP.Type.Xpr.Require.any).appendField(new ezP.FieldLabel("for"));
+this.appendValueInput(ezP.Const.Input.LST).setCheck(ezP.Type.Xpr.Require.any).appendField(new ezP.FieldLabel("in"));
 this.appendDummyInput().appendField(new ezP.FieldLabel(":"));
-this.appendStatementInput(ezP.Const.Input.DO).setCheck(ezP.Check.stt.after_any);
+this.appendStatementInput(ezP.Const.Input.DO).setCheck(ezP.Type.Stt.Check.after_any);
 this.setInputsInline(!0);
-this.setPreviousStatement(!0,ezP.Check.stt.before_loop);
+this.setPreviousStatement(!0,ezP.Type.Stt.Check.before_loop);
 
-this.setNextStatement(!0,ezP.Check.stt.after_loop);
+this.setNextStatement(!0,ezP.Type.Stt.Check.after_loop);
 this.setTooltip("");
 this.setHelpUrl("")}};
 ezP.Blocks.prc={};
 Blockly.Blocks[ezP.Const.Prc.ANY]={init:function(){this.appendDummyInput().appendField(new ezP.FieldTextInput(""),"STT");
-this.appendStatementInput("DO").setCheck(ezP.Check.stt.after_any);
+this.appendStatementInput("DO").setCheck(ezP.Type.Stt.Check.after_any);
 this.setInputsInline(!0);
 this.setTooltip("");
 this.setHelpUrl("")}};
@@ -6811,14 +6811,14 @@ Blockly.Blocks[ezP.Const.Prc.MAIN]=Blockly.Blocks[ezP.Const.Prc.ANY];
 
 Blockly.Blocks[ezP.Const.Prc.DEF]={init:function(){this.appendDummyInput().appendField(new ezP.FieldLabel("def ")).appendField(new ezP.FieldTextInput(""),ezP.Const.Field.DEF);
 this.appendDummyInput().appendField(new ezP.FieldLabel(":"));
-this.appendStatementInput("DO").setCheck(ezP.Check.stt.after_any);
+this.appendStatementInput("DO").setCheck(ezP.Type.Stt.Check.after_any);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
 Blockly.Blocks[ezP.Const.Prc.CLASS]={init:function(){this.appendDummyInput().appendField(new ezP.FieldLabel("def ")).appendField(new ezP.FieldTextInput(""),ezP.Const.Field.CLASS);
 this.appendDummyInput().appendField(new ezP.FieldLabel("(")).appendField(new ezP.FieldTextInput(""),ezP.Const.Field.NCSTR).appendField(new ezP.FieldLabel(")"));
 this.appendDummyInput().appendField(new ezP.FieldLabel(":"));
-this.appendStatementInput("DO").setCheck(ezP.Check.stt.after_any);
+this.appendStatementInput("DO").setCheck(ezP.Type.Stt.Check.after_any);
 this.setTooltip("");
 this.setHelpUrl("")}};
 ezP.Blocks.stt={};
@@ -6833,8 +6833,8 @@ this.setHelpUrl("")}};
 Blockly.Blocks[ezP.Const.Stt.ANY]={init:function(){this.appendDummyInput().appendField(new ezP.FieldCodeInput(""),"STT");
 this.setInputsInline(!0);
 this.setOutput(!1,null);
-this.setPreviousStatement(!0,ezP.Check.stt.before_any);
-this.setNextStatement(!0,ezP.Check.stt.after_any);
+this.setPreviousStatement(!0,ezP.Type.Stt.Check.before_any);
+this.setNextStatement(!0,ezP.Type.Stt.Check.after_any);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
@@ -6848,8 +6848,8 @@ this.appendValueInput(ezP.Const.Input.FLUSH).appendField(new ezP.FieldLabel(", f
 this.appendDummyInput().appendField(new ezP.FieldLabel(")"));
 this.appendDummyInput(ezP.Const.Input.OPTIONS).appendField(new ezP.FieldPrintOptions([["end = \u2026",ezP.Const.Input.END],["sep = \u2026",ezP.Const.Input.SEP],["file = \u2026",ezP.Const.Input.FILE],["flush = \u2026",ezP.Const.Input.FLUSH]]));
 this.setInputsInline(!0);
-this.setPreviousStatement(!0,ezP.Check.stt.before_any);
-this.setNextStatement(!0,ezP.Check.stt.after_any);
+this.setPreviousStatement(!0,ezP.Type.Stt.Check.before_any);
+this.setNextStatement(!0,ezP.Type.Stt.Check.after_any);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
@@ -6859,55 +6859,55 @@ this.setNextStatement(!0,null);
 this.setTooltip("");
 this.setHelpUrl("")}};
 ezP.Blocks.val={};
-Blockly.Blocks[ezP.Const.Val.GET]={init:function(){this.appendDummyInput().appendField(new ezP.FieldVariable("item"),ezP.Const.Field.VAR);
+Blockly.Blocks[ezP.Const.Xpr.GET]={init:function(){this.appendDummyInput().appendField(new ezP.FieldVariable("item"),ezP.Const.Field.VAR);
 this.setInputsInline(!0);
 this.setOutput(!0,null);
 this.setTooltip("");
 this.setHelpUrl("")}};
-Blockly.Blocks[ezP.Const.Val.ANY]={init:function(){this.appendDummyInput().appendField(new ezP.FieldTextInput("1+1"),ezP.Const.Field.ANY);
-this.setInputsInline(!0);
-this.setOutput(!0,null);
-this.setTooltip("");
-this.setHelpUrl("")}};
-
-Blockly.Blocks[ezP.Const.Val.TEXT]={init:function(){this.appendDummyInput().appendField(new ezP.FieldLabel('"')).appendField(new ezP.FieldTextInput(""),ezP.Const.Field.TEXT).appendField(new ezP.FieldLabel('"'));
+Blockly.Blocks[ezP.Const.Xpr.ANY]={init:function(){this.appendDummyInput().appendField(new ezP.FieldTextInput("1+1"),ezP.Const.Field.ANY);
 this.setInputsInline(!0);
 this.setOutput(!0,null);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Val.TFN]={init:function(){this.appendDummyInput().appendField(new ezP.FieldOptions([["True","True"],["False","False"],["None","None"]]),ezP.Const.Field.TFN);
+Blockly.Blocks[ezP.Const.Xpr.TEXT]={init:function(){this.appendDummyInput().appendField(new ezP.FieldLabel('"')).appendField(new ezP.FieldTextInput(""),ezP.Const.Field.TEXT).appendField(new ezP.FieldLabel('"'));
+this.setInputsInline(!0);
+this.setOutput(!0,null);
+this.setTooltip("");
+this.setHelpUrl("")}};
+
+Blockly.Blocks[ezP.Const.Xpr.TFN]={init:function(){this.appendDummyInput().appendField(new ezP.FieldOptions([["True","True"],["False","False"],["None","None"]]),ezP.Const.Field.TFN);
 this.setOutput(!0);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Val.OP]={init:function(){this.appendValueInput(ezP.Const.Input.LHS);
+Blockly.Blocks[ezP.Const.Xpr.OP]={init:function(){this.appendValueInput(ezP.Const.Input.LHS);
 this.appendDummyInput().appendField(new ezP.FieldLabel(" ")).appendField(new ezP.FieldDropdownCode([["+","+"],["-","-"],["*","*"],["**","**"],["/","/"],["//","//"],["%","%"],["&","&"],["|","|"],["^","^"],["<<","<<"],[">>",">>"]]),ezP.Const.Field.OP);
 this.appendValueInput(ezP.Const.Input.RHS);
 this.setOutput(!0);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Val.UNRY]={init:function(){this.appendDummyInput().appendField(new ezP.FieldDropdownCode([["+","+"],["-","-"],["not","not "],["~","~"]]),"OP");
+Blockly.Blocks[ezP.Const.Xpr.UNRY]={init:function(){this.appendDummyInput().appendField(new ezP.FieldDropdownCode([["+","+"],["-","-"],["not","not "],["~","~"]]),"OP");
 this.appendValueInput(ezP.Const.Input.ANY);
 this.setOutput(!0);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Val.BOOL]={init:function(){this.appendValueInput(ezP.Const.Input.LHS);
+Blockly.Blocks[ezP.Const.Xpr.BOOL]={init:function(){this.appendValueInput(ezP.Const.Input.LHS);
 this.appendDummyInput().appendField(new ezP.FieldLabel(" ")).appendField(new ezP.FieldDropdownCode([["<","<"],[">",">"],["<=","<="],[">=",">="],["===","==="],["===","!="],["===","==="],["!==","!=="],["and","and"],["or","or"],["is","is"],["is not","is not"],["in","in"],["not in","not in"]]),ezP.Const.Field.OP);
 this.appendValueInput(ezP.Const.Input.RHS);
 this.setOutput(!0);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Val.TUPLE]={init:function(){this.appendValueInput("TUPLE_0_0").setCheck(null);
+Blockly.Blocks[ezP.Const.Xpr.TUPLE]={init:function(){this.appendValueInput("TUPLE_0_0").setCheck(null);
 this.setInputsInline(!0);
 this.setOutput(!0,null);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Val.RANGE]={init:function(){this.appendDummyInput().appendField(new ezP.FieldLabel("range")).appendField(new ezP.FieldLabel("("));
+Blockly.Blocks[ezP.Const.Xpr.RANGE]={init:function(){this.appendDummyInput().appendField(new ezP.FieldLabel("range")).appendField(new ezP.FieldLabel("("));
 this.appendValueInput("TUPLE_0_0").setCheck(null);
 this.appendDummyInput().appendField(new ezP.FieldLabel(")"));
 this.setInputsInline(!0);
@@ -6917,11 +6917,11 @@ this.setHelpUrl("")}};
 ezP.Blocks.xtd={};
 
 Blockly.Blocks[ezP.Const.Grp.WITH]={init:function(){this.appendDummyInput().appendField(new ezP.FieldLabel("with"));
-this.appendValueInput("STT").setCheck(ezP.Check.val.require_any);
+this.appendValueInput("STT").setCheck(ezP.Type.Xpr.Require.any);
 this.appendDummyInput().appendField(new ezP.FieldLabel("as"));
-this.appendValueInput("VAR").setCheck(ezP.Check.val.require_any);
+this.appendValueInput("VAR").setCheck(ezP.Type.Xpr.Require.any);
 this.appendDummyInput().appendField(new ezP.FieldLabel(":"));
-this.appendStatementInput("DO").setCheck(ezP.Check.stt.after_any);
+this.appendStatementInput("DO").setCheck(ezP.Type.Stt.Check.after_any);
 this.setInputsInline(!0);
 this.setPreviousStatement(!0);
 this.setNextStatement(!0);
@@ -7462,7 +7462,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Grp.ELSE,ezP.DelegateSvg.Group.Bounde
 
 ezP.DelegateSvg.Group.Bounded.prototype.init=function(a){ezP.DelegateSvg.Group.Bounded.superClass_.init.call(this,a);
 this.svgPathDotted_=Blockly.utils.createSvgElement("path",{d:"M "+ezP.Padding.h()+",0 h "+(ezP.Font.tabWidth-ezP.Padding.h())},a.svgGroup_);
-a.nextConnection.check_=ezP.Check.stt.none};
+a.nextConnection.check_=ezP.Type.Stt.Check.none};
 ezP.DelegateSvg.Group.Bounded.prototype.disposeInternal=function(){goog.dom.removeNode(this.svgPathDotted_);
 this.svgPathDotted_=void 0;
 ezP.DelegateSvg.Group.Bounded.superClass_.disposeInternal.call(this)};
@@ -7476,23 +7476,23 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Prc.DEF,ezP.DelegateSvg.Proc);
 ezP.DelegateSvg.Manager.register(ezP.Const.Prc.CLASS,ezP.DelegateSvg.Proc);
 ezP.DelegateSvg.Value=function(a){ezP.DelegateSvg.Value.superClass_.constructor.call(this,a)};
 goog.inherits(ezP.DelegateSvg.Value,ezP.DelegateSvg);
-ezP.DelegateSvg.Manager.register(ezP.Const.Val.DEFAULT,ezP.DelegateSvg.Value);
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.DEFAULT,ezP.DelegateSvg.Value);
 ezP.DelegateSvg.Value.prototype.shapePathDef_=ezP.DelegateSvg.Value.prototype.contourPathDef_=ezP.DelegateSvg.Value.prototype.highlightedPathDef_=ezP.DelegateSvg.Value.prototype.valuePathDef_;
 
 ezP.DelegateSvg.Value.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)||this.renderDrawValueInput_(a)};
 ezP.DelegateSvg.Value.Text=function(a){ezP.DelegateSvg.Value.Text.superClass_.constructor.call(this,a)};
 goog.inherits(ezP.DelegateSvg.Value.Text,ezP.DelegateSvg.Value);
 ezP.DelegateSvg.Value.Text.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)};
-ezP.DelegateSvg.Manager.register(ezP.Const.Val.TEXT,ezP.DelegateSvg.Value.Text);
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.TEXT,ezP.DelegateSvg.Value.Text);
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Val.ANY,ezP.DelegateSvg.Value.Text);
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.ANY,ezP.DelegateSvg.Value.Text);
 ezP.DelegateSvg.Value.Input=function(a){ezP.DelegateSvg.Value.Input.superClass_.constructor.call(this,a)};
 goog.inherits(ezP.DelegateSvg.Value.Input,ezP.DelegateSvg.Value);
-ezP.DelegateSvg.Manager.register(ezP.Const.Val.MINUS,ezP.DelegateSvg.Value.Input);
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.MINUS,ezP.DelegateSvg.Value.Input);
 ezP.DelegateSvg.Value.Tuple=function(a){ezP.DelegateSvg.Value.Tuple.superClass_.constructor.call(this,a)};
 goog.inherits(ezP.DelegateSvg.Value.Tuple,ezP.DelegateSvg.Value);
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Val.TUPLE,ezP.DelegateSvg.Value.Tuple);
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.TUPLE,ezP.DelegateSvg.Value.Tuple);
 ezP.DelegateSvg.Value.Tuple.prototype.willRender_=function(a){ezP.DelegateSvg.Value.Tuple.superClass_.willRender_.call(this,a);
 this.tupleConsolidate(a)};
 ezP.DelegateSvg.Value.Tuple.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)||this.renderDrawTupleInput_(a)};
@@ -7500,7 +7500,7 @@ ezP.DelegateSvg.Value.Tuple.prototype.getInput=function(a,b){return this.getInpu
 
 ezP.DelegateSvg.Value.Range=function(a){ezP.DelegateSvg.Value.Range.superClass_.constructor.call(this,a)};
 goog.inherits(ezP.DelegateSvg.Value.Range,ezP.DelegateSvg.Value.Tuple);
-ezP.DelegateSvg.Manager.register(ezP.Const.Val.RANGE,ezP.DelegateSvg.Value.Range);
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.RANGE,ezP.DelegateSvg.Value.Range);
 ezP.DelegateSvg.Value.Range.prototype.getInputTupleMax=function(a,b){return b?0:3};
 ezP.FieldOptions=function(a,b){ezP.FieldOptions.superClass_.constructor.call(this,a,b)};
 goog.inherits(ezP.FieldOptions,Blockly.FieldDropdown);
@@ -7566,40 +7566,40 @@ return a};
 
 ezP.FieldOptions.prototype.deserializeXml=function(a){this.setValue(a.getAttribute("value")||"")};
 ezP.Python={};
-ezP.Python.ezp_val={};
+ezP.Python.ezp_xpr={};
 Blockly.Python.INDENT="    ";
 Blockly.Python.finish=function(a){return a};
 ezP.Python.valueToCode=function(a,b,c){a=Blockly.Python.valueToCode(a,b,c);
 return"("!==a.slice(0,1)||")"!==a.slice(-1)||(b=a.slice(1,a.length-1),b.match(/[+\-*/%@<>&|^~=!()[]{},:;@ ]/g))?a:b};
-Blockly.Python[ezP.Const.Val.GET]=function(a){return[a.getField(ezP.Const.Field.VAR).getText(),Blockly.Python.ORDER_ATOMIC]};
+Blockly.Python[ezP.Const.Xpr.GET]=function(a){return[a.getField(ezP.Const.Field.VAR).getText(),Blockly.Python.ORDER_ATOMIC]};
 
-Blockly.Python[ezP.Const.Val.ANY]=function(a){return[a.getFieldValue(ezP.Const.Field.ANY),Blockly.Python.ORDER_NONE]};
-Blockly.Python[ezP.Const.Val.TEXT]=function(a){return[Blockly.Python.quote_(a.getFieldValue(ezP.Const.Field.TEXT)),Blockly.Python.ORDER_ATOMIC]};
-Blockly.Python[ezP.Const.Val.TFN]=function(a){return[a.getFieldValue(ezP.Const.Field.TFN),Blockly.Python.ORDER_ATOMIC]};
+Blockly.Python[ezP.Const.Xpr.ANY]=function(a){return[a.getFieldValue(ezP.Const.Field.ANY),Blockly.Python.ORDER_NONE]};
+Blockly.Python[ezP.Const.Xpr.TEXT]=function(a){return[Blockly.Python.quote_(a.getFieldValue(ezP.Const.Field.TEXT)),Blockly.Python.ORDER_ATOMIC]};
+Blockly.Python[ezP.Const.Xpr.TFN]=function(a){return[a.getFieldValue(ezP.Const.Field.TFN),Blockly.Python.ORDER_ATOMIC]};
 
-Blockly.Python[ezP.Const.Val.OP]=function(a){var b=a.getFieldValue(ezP.Const.Field.OP),c=ezP.Op.Binary.getOrder(b),d=ezP.Python.valueToCode(a,ezP.Const.Input.LHS,c||Blockly.Python.ORDER_ATOMIC)||"MISSING_LHS";
+Blockly.Python[ezP.Const.Xpr.OP]=function(a){var b=a.getFieldValue(ezP.Const.Field.OP),c=ezP.Op.Binary.getOrder(b),d=ezP.Python.valueToCode(a,ezP.Const.Input.LHS,c||Blockly.Python.ORDER_ATOMIC)||"MISSING_LHS";
 a=ezP.Python.valueToCode(a,ezP.Const.Input.RHS,c||Blockly.Python.ORDER_ATOMIC)||"MISSING_RHS";
 return[d+ezP.Op.Binary.displayOp(b)+a,c||Blockly.Python.ORDER_NONE]};
 
-Blockly.Python[ezP.Const.Val.UNRY]=function(a){var b=a.getFieldValue(ezP.Const.Field.OP),c=ezP.Op.Unary.getOrder(b);
+Blockly.Python[ezP.Const.Xpr.UNRY]=function(a){var b=a.getFieldValue(ezP.Const.Field.OP),c=ezP.Op.Unary.getOrder(b);
 a=ezP.Python.valueToCode(a,ezP.Const.Input.ANY,c||Blockly.Python.ORDER_NONE)||"MISSING_ANY";
 return[ezP.Op.Unary.displayOp(b)+a,c]};
-Blockly.Python[ezP.Const.Val.BOOL]=Blockly.Python[ezP.Const.Val.OP];
+Blockly.Python[ezP.Const.Xpr.BOOL]=Blockly.Python[ezP.Const.Xpr.OP];
 
-Blockly.Python[ezP.Const.Val.TUPLE]=function(a){for(var b=a.ezp.getInputTupleMax(a,0),c=[],d=0;
+Blockly.Python[ezP.Const.Xpr.TUPLE]=function(a){for(var b=a.ezp.getInputTupleMax(a,0),c=[],d=0;
 !b||d<b;
 ){var e="TUPLE_0_"+d;
 if(Blockly.Block.prototype.getInput.call(a,e)){var f=ezP.Python.valueToCode(a,e,Blockly.Python.ORDER_COLLECTION);
 c.push(f.length?f:"MISSING_"+e);
 ++d}else break}return[c.join(", "),Blockly.Python.ORDER_COLLECTION]};
-Blockly.Python[ezP.Const.Val.RANGE]=function(a){return["range("+Blockly.Python[ezP.Const.Val.TUPLE](a)[0]+")",Blockly.Python.ORDER_FUNCTION_CALL]};
+Blockly.Python[ezP.Const.Xpr.RANGE]=function(a){return["range("+Blockly.Python[ezP.Const.Xpr.TUPLE](a)[0]+")",Blockly.Python.ORDER_FUNCTION_CALL]};
 ezP.Python.ezp_stt={};
 Blockly.Python[ezP.Const.Stt.SET]=function(a){var b=ezP.Python.valueToCode(a,ezP.Const.Input.RHS,Blockly.Python.ORDER_NONE)||"None";
 return a.getField(ezP.Const.Field.VAR).getText()+" = "+b+"\n"};
 Blockly.Python[ezP.Const.Stt.ANY]=function(a){a=a.getField(ezP.Const.Field.STT).getText();
 return a.length?a:"MISSING_STATEMENT\n"};
 
-Blockly.Python[ezP.Const.Stt.PRINT]=function(a){var b=Blockly.Python[ezP.Const.Val.TUPLE](a)[0],c=a.ezp;
+Blockly.Python[ezP.Const.Stt.PRINT]=function(a){var b=Blockly.Python[ezP.Const.Xpr.TUPLE](a)[0],c=a.ezp;
 if(c){c=c.getPrintState_(a);
 b=[b];
 for(var d in c)if(c[d]){var e=ezP.Python.valueToCode(a,d,Blockly.Python.ORDER_COLLECTION);
@@ -7658,14 +7658,14 @@ a?a.highlightConnection(this):Blockly.RenderedConnection.superClass_.highlight.c
 ezP.Connection.prototype.connect=function(a){if(this.isSuperior())var b=this,c=a;
 else b=a,c=this;
 var d=c.sourceBlock_.nextConnection;
-c.check_===ezP.Check.stt.before_else&&(b.check_===ezP.Check.stt.after_if?c.check_=ezP.Check.stt.before_if_else:b.check_===ezP.Check.stt.after_loop&&(c.check_=ezP.Check.stt.before_loop_else));
-c.check_===ezP.Check.stt.before_else?d.check_=ezP.Check.stt.after_else:c.check_===ezP.Check.stt.before_elif?d.check_=ezP.Check.stt.after_elif:c.check_===ezP.Check.stt.before_if_else?
-d.check_=ezP.Check.stt.after_else:c.check_===ezP.Check.stt.before_loop_else&&(d.check_=ezP.Check.stt.after_else);
+c.check_===ezP.Type.Stt.Check.before_else&&(b.check_===ezP.Type.Stt.Check.after_if?c.check_=ezP.Type.Stt.Check.before_if_else:b.check_===ezP.Type.Stt.Check.after_loop&&(c.check_=ezP.Type.Stt.Check.before_loop_else));
+c.check_===ezP.Type.Stt.Check.before_else?d.check_=ezP.Type.Stt.Check.after_else:c.check_===ezP.Type.Stt.Check.before_elif?d.check_=ezP.Type.Stt.Check.after_elif:c.check_===ezP.Type.Stt.Check.before_if_else?
+d.check_=ezP.Type.Stt.Check.after_else:c.check_===ezP.Type.Stt.Check.before_loop_else&&(d.check_=ezP.Type.Stt.Check.after_else);
 ezP.Connection.superClass_.connect.call(this,a)};
 
 ezP.Connection.prototype.disconnect=function(){var a=this.targetConnection,b=this.isSuperior()?a:this,c=b.sourceBlock_.nextConnection;
-setTimeout(function(){b.check_!==ezP.Check.stt.before_else&&b.check_!==ezP.Check.stt.before_if_else&&b.check_!==ezP.Check.stt.before_loop_else&&b.check_!==ezP.Check.stt.before_elif||!c||c.isConnected()||c.setCheck(ezP.Check.stt.none);
-b.check_!==ezP.Check.stt.before_if_else&&b.check_!==ezP.Check.stt.before_loop_else||b.setCheck(ezP.Check.stt.before_else)},3*Blockly.BUMP_DELAY/
+setTimeout(function(){b.check_!==ezP.Type.Stt.Check.before_else&&b.check_!==ezP.Type.Stt.Check.before_if_else&&b.check_!==ezP.Type.Stt.Check.before_loop_else&&b.check_!==ezP.Type.Stt.Check.before_elif||!c||c.isConnected()||c.setCheck(ezP.Type.Stt.Check.none);
+b.check_!==ezP.Type.Stt.Check.before_if_else&&b.check_!==ezP.Type.Stt.Check.before_loop_else||b.setCheck(ezP.Type.Stt.Check.before_else)},3*Blockly.BUMP_DELAY/
 2);
 ezP.Connection.superClass_.disconnect.call(this)};
 

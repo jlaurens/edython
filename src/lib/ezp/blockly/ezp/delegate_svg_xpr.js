@@ -28,7 +28,7 @@ ezP.DelegateSvg.Value = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Value, ezP.DelegateSvg)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Val.DEFAULT, ezP.DelegateSvg.Value)
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.DEFAULT, ezP.DelegateSvg.Value)
 
 ezP.DelegateSvg.Value.prototype.shapePathDef_ =
   ezP.DelegateSvg.Value.prototype.contourPathDef_ =
@@ -67,8 +67,8 @@ ezP.DelegateSvg.Value.Text.prototype.renderDrawInput_ = function (io) {
   this.renderDrawDummyInput_(io)
 }
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Val.TEXT, ezP.DelegateSvg.Value.Text)
-ezP.DelegateSvg.Manager.register(ezP.Const.Val.ANY, ezP.DelegateSvg.Value.Text)
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.TEXT, ezP.DelegateSvg.Value.Text)
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.ANY, ezP.DelegateSvg.Value.Text)
 
 /**
  * Class for a DelegateSvg, one input value block.
@@ -83,7 +83,7 @@ ezP.DelegateSvg.Value.Input = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Value.Input, ezP.DelegateSvg.Value)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Val.MINUS, ezP.DelegateSvg.Value.Input)
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.MINUS, ezP.DelegateSvg.Value.Input)
 
 /**
  * Class for a DelegateSvg, tuple value block.
@@ -98,8 +98,8 @@ ezP.DelegateSvg.Value.Tuple = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Value.Tuple, ezP.DelegateSvg.Value)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Val.TUPLE, ezP.DelegateSvg.Value.Tuple)
-ezP.DelegateSvg.Manager.register(ezP.Const.Val.PARENTH, ezP.DelegateSvg.Value.Tuple)
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.TUPLE, ezP.DelegateSvg.Value.Tuple)
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.parenth_form, ezP.DelegateSvg.Value.Tuple)
 
 /**
  * Will render the block.
@@ -144,7 +144,7 @@ ezP.DelegateSvg.Value.Range = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Value.Range, ezP.DelegateSvg.Value.Tuple)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Val.RANGE, ezP.DelegateSvg.Value.Range)
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.RANGE, ezP.DelegateSvg.Value.Range)
 
 /**
  * @param {!Block} block.
@@ -169,7 +169,7 @@ ezP.DelegateSvg.Value.Comprehension = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Value.Comprehension, ezP.DelegateSvg.Value)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Val.COMP, ezP.DelegateSvg.Value.Comprehension)
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.comprehension, ezP.DelegateSvg.Value.Comprehension)
 
 /**
  * Will render the block.
@@ -178,10 +178,10 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Val.COMP, ezP.DelegateSvg.Value.Compr
  */
 ezP.DelegateSvg.Value.Comprehension.prototype.willRender_ = function (block) {
   ezP.DelegateSvg.Value.Comprehension.superClass_.willRender_.call(this, block)
-  this.comprehensionConsolidate(block)
+  this.forifConsolidate(block)
 }
 
-ezP.DelegateSvg.Value.Comprehension.prototype.comprehensionConsolidate = function (block) {
+ezP.DelegateSvg.Value.Comprehension.prototype.forifConsolidate = function (block) {
   var C = this.comprehensionConsolidator
   if (!C) {
     C = this.comprehensionConsolidator = new ezP.DelegateSvg.Value.Comprehension.Consolidator_()
@@ -257,6 +257,7 @@ ezP.DelegateSvg.Value.Comprehension.Consolidator_ = function () {
   var doFinalizeSeparator = function (extreme) {
     forif.n = n
     input.name = 'S7R_' + n
+    input.setCheck(ezP.Type.Xpr.Require.forif)
     forif.isSeparator = c8n.isSeparatorEZP = true
     c8n.setHidden(false)
     if (extreme) {
@@ -269,6 +270,7 @@ ezP.DelegateSvg.Value.Comprehension.Consolidator_ = function () {
   var doFinalizePlaceholder = function () {
     forif.n = n
     input.name = 'FORIF_' + n++
+    input.setCheck(ezP.Type.Xpr.Require.forif)
     forif.isSeparator = c8n.isSeparatorEZP = false
   }
   var doGroup = function () {
@@ -399,4 +401,68 @@ ezP.DelegateSvg.Value.Comprehension.prototype.renderDrawForifInput_ = function (
     io.cursorX += pw.width
   }
   return true
+}
+
+/**
+ * Fetches the named input object, forwards to getInputForif_.
+ * @param {!Blockly.Block} block.
+ * @param {string} name The name of the input.
+ * @return {Blockly.Input} The input object, or null if input does not exist.
+ */
+ezP.DelegateSvg.Value.Comprehension.prototype.getInput = function (block, name) {
+  var input = this.getInputForif_(block, name)
+  return input === null
+    ? ezP.DelegateSvg.Value.Comprehension.superClass_.getInput.call(this, block, name)
+    : input
+}
+
+/**
+ * Fetches the named input object.
+ * @param {!Blockly.Block} block.
+ * @param {string} name The name of the input.
+ * @return {Blockly.Input} The input object, or null if input does not exist.
+ * The undefined return value for the default block getInput implementation.
+ */
+ezP.DelegateSvg.Value.Comprehension.prototype.getInputForif_ = function (block, name) {
+  if (!name.length) {
+    return null
+  }
+  var L = name.split('_')
+  if (L.length !== 2 || L[0] !== 'FORIF') {
+    return null
+  }
+  var n = parseInt(L[1])
+  if (isNaN(n)) {
+    return null
+  }
+  this.forifConsolidate(block)
+  var list = block.inputList
+  var i = 2
+  var input
+  while ((input = list[i])) {
+    var forif = input.ezpForif
+    if (!forif) {
+      ++i
+      continue
+    }
+    var already = 0
+    do {
+      if (!forif.isSeparator) {
+        if (forif.n === n) {
+          return input
+        }
+        ++already
+      }
+    } while ((input = list[++i]) && (forif = input.ezpForif))
+    var c8n = block.makeConnection_(Blockly.INPUT_VALUE)
+    input = new Blockly.Input(Blockly.INPUT_VALUE, 'S7R_' + (n + 1), block, c8n)
+    forif = input.ezpForif = {n: n + 1, isSeparator: true}
+    list.splice(i, 0, input)
+    c8n = block.makeConnection_(Blockly.INPUT_VALUE)
+    input = new Blockly.Input(Blockly.INPUT_VALUE, name, block, c8n)
+    forif = input.ezpForif = {n: n}
+    list.splice(i, 0, input)
+    return input
+  }
+  return null
 }

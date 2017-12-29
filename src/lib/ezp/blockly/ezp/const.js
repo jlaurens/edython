@@ -21,23 +21,24 @@ goog.require('ezP')
 
 ezP.Const = ezP.Const || {}
 
-ezP.Const.Val = {
-  DEFAULT: 'ezp_val',
-  ANY: 'ezp_val_any',
-  GET: 'ezp_val_get',
-  TEXT: 'ezp_val_text',
-  TFN: 'ezp_val_tfn',
-  OP: 'ezp_val_op',
-  UNRY: 'ezp_val_unry',
-  BOOL: 'ezp_val_bool',
-  TUPLE: 'ezp_val_tuple',
-  RANGE: 'ezp_val_range',
-  MINUS: 'ezp_val_minus',
-  PARENTH: 'ezp_val_parenth', // NYI
-  COMP: 'ezp_val_comp', // NYI
-  COMPFOR: 'ezp_val_compfor', // NYI
-  COMPIF: 'ezp_val_compif', // NYI
-  LITERAL: 'ezp_val_literal', // NYI
+ezP.Const.Xpr = {
+  DEFAULT: 'ezp_xpr',
+  ANY: 'ezp_xpr_any',
+  GET: 'ezp_xpr_get',
+  TEXT: 'ezp_xpr_text',
+  TFN: 'ezp_xpr_tfn',
+  OP: 'ezp_xpr_op',
+  UNRY: 'ezp_xpr_unry',
+  BOOL: 'ezp_xpr_bool',
+  TUPLE: 'ezp_xpr_tuple',
+  RANGE: 'ezp_xpr_range',
+  MINUS: 'ezp_xpr_minus',
+  parenth_form: 'ezp_xpr_parenth',
+  star_or_expr: 'ezp_xpr_star_or_expr',
+  comprehension: 'ezp_xpr_comprehension',
+  comp_for: 'ezp_xpr_comp_for',
+  comp_if: 'ezp_xpr_comp_if',
+  LITERAL: 'ezp_xpr_literal', // NYI
 }
 
 ezP.Const.Stt = {
@@ -99,58 +100,8 @@ ezP.Const.Input = {
   TGT: 'TGT',
   LST: 'LST',
   XPR: 'XPR',// = ANY?
+  VAR: 'VAR',
   DO: 'DO'
-}
-// Connection types
-ezP.Check = ezP.Check || {}
-
-ezP.Check.val = {
-  require_any: [0],
-  provide_any: [0]
-}
-
-/*
-In the first column the statement before.
-X means that the statement is forbidden
-for example, there must not be 2 consecutive else clauses.
-        any   if    elif  else  loop
-any     O     O     X     X     O
-if      O     O     O     O     O
-elif    O     O     O     O     O
-else    O     O     X     X     O
-loop    O     O     X     O     O
-*/
-/* bounded means elif and else groups
- * any means everything else,
- * loop means for or while
- * all means everything. */
-ezP.Check.type = {
-  any_all: 0,
-  if_elif: 1,
-  if_elif_bounded: 2,
-  if_else: 3,
-  loop_else: 4
-}
-ezP.Check.stt = {
-  none: [-1],
-  after_any: [ezP.Check.type.any_all],
-  before_any: [ezP.Check.type.any_all],
-  after_if: [ezP.Check.type.any_all,
-    ezP.Check.type.if_elif,
-    ezP.Check.type.if_else],
-  before_if: [ezP.Check.type.any_all],
-  after_elif: [ezP.Check.type.any_all,
-    ezP.Check.type.if_elif,
-    ezP.Check.type.if_else],
-  before_elif: [ezP.Check.type.if_elif],
-  after_else: [ezP.Check.type.any_all],
-  before_else: [ezP.Check.type.if_else,
-    ezP.Check.type.loop_else],
-  before_if_else: [ezP.Check.type.if_else],
-  before_loop_else: [ezP.Check.type.loop_else],
-  after_loop: [ezP.Check.type.any_all,
-    ezP.Check.type.loop_else],
-  before_loop: [ezP.Check.type.any_all]
 }
 
 ezP.Op = {

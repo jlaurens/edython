@@ -15,6 +15,7 @@ goog.provide('ezP.Blocks.stt')
 
 goog.require('Blockly.Block')
 goog.require('ezP.Const')
+goog.require('ezP.Type')
 goog.require('ezP.FieldLabel')
 goog.require('ezP.FieldTextInput')
 goog.require('ezP.FieldDropdown')
@@ -41,8 +42,8 @@ Blockly.Blocks[ezP.Const.Stt.ANY] = {
     this.appendDummyInput().appendField(new ezP.FieldCodeInput(''), 'STT')
     this.setInputsInline(true)
     this.setOutput(false, null)
-    this.setPreviousStatement(true, ezP.Check.stt.before_any)
-    this.setNextStatement(true, ezP.Check.stt.after_any)
+    this.setPreviousStatement(true, ezP.Type.Stt.Check.before_any)
+    this.setNextStatement(true, ezP.Type.Stt.Check.after_any)
     this.setTooltip('')
     this.setHelpUrl('')
   }
@@ -64,8 +65,8 @@ Blockly.Blocks[ezP.Const.Stt.PRINT] = {
       ['file = …', ezP.Const.Input.FILE],
       ['flush = …', ezP.Const.Input.FLUSH]]))
     this.setInputsInline(true)
-    this.setPreviousStatement(true, ezP.Check.stt.before_any)
-    this.setNextStatement(true, ezP.Check.stt.after_any)
+    this.setPreviousStatement(true, ezP.Type.Stt.Check.before_any)
+    this.setNextStatement(true, ezP.Type.Stt.Check.after_any)
     this.setTooltip('')
     this.setHelpUrl('')
   }
