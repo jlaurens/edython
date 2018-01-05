@@ -25,6 +25,7 @@ ezP.Type = ezP.Type || {}
 ezP.Type.Xpr = {
   any_all: '0',
   expression: '0',
+  identifier: '0.1',
   forif: '1',
   star_or_xpr: '2', // “*” or_expr
   comprehension: '3',
@@ -32,6 +33,11 @@ ezP.Type.Xpr = {
   comp_if: '5',
   or_test: '6',
   lambda_expr_nocond: '7',
+  parameter_positional: '8.1',
+  parameter_1_star: '8.2',
+  parameter_keyed: '8.3',
+  parameter_2_stars: '8.4',
+  TUPLE: '9',
 }
 
 ezP.Type.Xpr.Provide = {
@@ -40,6 +46,11 @@ ezP.Type.Xpr.Provide = {
   comprehension: [ezP.Type.Xpr.comprehension],
   comp_for: [ezP.Type.Xpr.comp_for],
   comp_if: [ezP.Type.Xpr.comp_if],
+  get: [ezP.Type.Xpr.identifier,
+    ezP.Type.Xpr.parameter_positional,
+    ezP.Type.Xpr.parameter_1_star,
+    ezP.Type.Xpr.parameter_keyed,
+    ezP.Type.Xpr.parameter_2_stars],
 }
 
 ezP.Type.Xpr.Require = {

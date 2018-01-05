@@ -103,7 +103,7 @@ ezP.DelegateSvg.prototype.init = function (block) {
 ezP.DelegateSvg.prototype.deinit = function (block) {
   var menu = block.workspace.ezp.menuVariable
   var ezp = menu.ezp
-  if (ezp.listener && ezp.listener.sourceBlock_ === block) {
+  if (ezp.listeningBlock === block) {
     menu.setVisible(false, true)
   }
 }
@@ -342,7 +342,8 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
     canValue: true,
     canStatement: true,
     canTuple: true,
-    canForif: true
+    canForif: true,
+    canParameterList: true
   }
   if (block.outputConnection) {
     io.cursorX = ezP.Font.space
@@ -699,3 +700,149 @@ ezP.StatementBlockEnumerator = function (block) {
   }
   return me
 }
+
+ezP.DUPLICATE_BLOCK_ID = 'DUPLICATE_BLOCK'
+ezP.REMOVE_COMMENT_ID = 'REMOVE_COMMENT'
+ezP.ADD_COMMENT_ID = 'ADD_COMMENT'
+ezP.EXPAND_BLOCK_ID = 'EXPAND_BLOCK'
+ezP.COLLAPSE_BLOCK_ID = 'COLLAPSE_BLOCK'
+ezP.TOGGLE_ENABLE_BLOCK_ID = 'TOGGLE_ENABLE_BLOCK'
+ezP.DELETE_BLOCK_ID = 'DELETE_BLOCK'
+ezP.HELP_ID = 'HELP'
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!goo.ui.Menu} menu The menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.prototype.populateContextMenu_ = function (block, menu) {
+  var menuItem
+  if (block.isDeletable() && block.isMovable() && !block.isInFlyout) {
+    // Option to duplicate this block.
+    menuItem = new ezP.MenuItem(
+      Blockly.Msg.DUPLICATE_BLOCK,
+      [ezP.DUPLICATE_BLOCK_ID])
+    menu.addChild(menuItem, true)
+    if (block.getDescendants().length > block.workspace.remainingCapacity()) {
+      menuItem.setEnabled(false);
+    }
+  }
+  if (block.isEditable() && !block.collapsed_ &&
+    block.workspace.options.comments) {
+    // Option to add/remove a comment.
+    if (block.comment) {
+      menuItem = new ezP.MenuItem(
+        Blockly.Msg.REMOVE_COMMENT,
+        [ezP.REMOVE_COMMENT_ID])
+    } else {
+      menuItem = new ezP.MenuItem(
+        Blockly.Msg.ADD_COMMENT,
+        [ezP.ADD_COMMENT_ID])
+    }
+    menuItem.setEnabled(false && !goog.userAgent.IE && !block.outputConnection)
+    menu.addChild(menuItem, true)
+  }
+  if (block.workspace.options.collapse) {
+    if (block.collapsed_) {
+      menuItem = new ezP.MenuItem(
+        Blockly.Msg.EXPAND_BLOCK,
+        [ezP.EXPAND_BLOCK_ID])
+      menuItem.setEnabled(true)
+    } else {
+      menuItem = new ezP.MenuItem(
+        Blockly.Msg.COLLAPSE_BLOCK,
+        [ezP.COLLAPSE_BLOCK_ID])
+      menuItem.setEnabled(block.getStatementCount() > 2)
+    }
+    menu.addChild(menuItem, true)
+  }
+  if (block.workspace.options.disable) {
+    menuItem = new ezP.MenuItem(
+      block.disabled
+        ? Blockly.Msg.ENABLE_BLOCK : Blockly.Msg.DISABLE_BLOCK,
+      [ezP.TOGGLE_ENABLE_BLOCK_ID])
+    menuItem.setEnabled(!block.outputConnection)
+    menu.addChild(menuItem, true)
+  }
+  if (block.isDeletable() && block.isMovable() && !block.isInFlyout) {
+    // Count the number of blocks that are nested in this block.
+    var descendantCount = block.getDescendants().length
+    var nextBlock = block.getNextBlock()
+    if (nextBlock) {
+      // Blocks in the current stack would survive this block's deletion.
+      descendantCount -= nextBlock.getDescendants().length
+    }
+    menuItem = new ezP.MenuItem(
+      descendantCount === 1 ? Blockly.Msg.DELETE_BLOCK
+        : Blockly.Msg.DELETE_X_BLOCKS.replace('%1', String(descendantCount)),
+      [ezP.DELETE_BLOCK_ID])
+    menuItem.setEnabled(true)
+    menu.addChild(menuItem, true)
+  }
+  // help
+  var url = goog.isFunction(block.helpUrl) ? block.helpUrl() : block.helpUrl
+  menuItem = new ezP.MenuItem(
+    Blockly.Msg.HELP,
+    [ezP.HELP_ID])
+  menuItem.setEnabled(!!url)
+  menu.addChild(menuItem, true)
+
+  menu.render()
+  goog.events.listenOnce(menu, 'action', function (event) {
+    setTimeout(function () {
+      block.ezp.onActionMenuEvent(block, menu, event)
+    }, 100)// TODO be sure that this 100 is suffisant
+  })
+}
+
+/**
+ * Show the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!Event} e Mouse event.
+ * @private
+ */
+ezP.DelegateSvg.prototype.showContextMenu_ = function (block, e) {
+  var menu = new ezP.PopupMenu()
+  this.populateContextMenu_(block, menu)
+  var bBox = block.ezp.svgPathShape_.getBBox()
+  var scaledHeight = bBox.height * block.workspace.scale
+  var xy = goog.style.getPageOffset(block.svgGroup_)
+  menu.showMenu(block.svgGroup_, xy.x, xy.y + scaledHeight+2)
+}
+
+/**
+ * Handle the selection of an item in the context dropdown menu.
+ * @param {!goog.ui.Menu} menu The Menu component clicked.
+ * @param {!Blockly.Block} block The Menu component clicked.
+ * @param {!goog....} event The event containing as target
+ * the MenuItem selected within menu.
+ */
+ezP.DelegateSvg.prototype.onActionMenuEvent = function (block, menu, event) {
+  console.log(event.target)
+  var workspace = block.workspace
+  var model = event.target.getModel()
+  var action = model[0]
+  if (action === ezP.DUPLICATE_BLOCK_ID) {
+    Blockly.duplicate_(block);
+  } else if (action === ezP.REMOVE_COMMENT_ID) {
+    block.setCommentText(null)
+  } else if (action === ezP.ADD_COMMENT_ID) {
+    block.setCommentText('')
+  } else if (action === ezP.EXPAND_BLOCK_ID) {
+    block.setCollapsed(false)
+  } else if (action === ezP.COLLAPSE_BLOCK_ID) {
+    block.setCollapsed(true)
+  } else if (action === ezP.TOGGLE_ENABLE_BLOCK_ID) {
+    block.setDisabled(!block.disabled)
+  } else if (action === ezP.DELETE_BLOCK_ID) {
+    Blockly.Events.setGroup(true)
+    block.dispose(true, true)
+    Blockly.Events.setGroup(false)
+  } else if (action === ezP.HELP_ID) {
+    block.showHelp_()
+  } else {
+    console.log('Unknown action ' + action)
+  }
+}
+

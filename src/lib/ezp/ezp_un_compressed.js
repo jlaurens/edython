@@ -6551,7 +6551,7 @@ Blockly.utils.addClass(c.getMenu().getElement(),"ezp-nosubmenu");
 var d=this;
 goog.events.listen(this,"action",function(a){setTimeout(function(){ezP.Variables.onActionMenuEvent(d,a)},100)})};
 
-ezP.Variables.Menu.prototype.updateWithListener=function(a){goog.asserts.assert(a&&a.getText,"Bad ezP.Variables.Menu listener.");
+ezP.Variables.Menu.prototype.updateWithListeningBlock=function(a){goog.asserts.assert(a&&a.getText,"Bad ezP.Variables.Menu listener.");
 var b=this.ezp,c=a.getText(),d=[].concat(b.workspace.getAllVariables());
 d.sort(Blockly.VariableModel.compareByName);
 for(var e=1<d.length,f=0,g=0,h,k,l=b.subMenu;
@@ -6630,7 +6630,7 @@ if(0===a.length)throw a=this.getText(),Error("'variableTypes' of field variable 
 return a};
 ezP.setup.register(function(){ezP.Style.insertCssRuleAt(".ezp-variable-name{"+ezP.Font.style+"}")});
 
-ezP.FieldVariable.prototype.showEditor_=function(){var a=this.sourceBlock_.workspace.ezp.menuVariable.updateWithListener(this),b=this.getScaledBBox_();
+ezP.FieldVariable.prototype.showEditor_=function(){var a=this.sourceBlock_.workspace.ezp.menuVariable.updateWithListeningBlock(this),b=this.getScaledBBox_();
 b.left=b.left-12+5;
 b.top-=5;
 b.bottom+=3;
@@ -7474,34 +7474,34 @@ goog.inherits(ezP.DelegateSvg.Proc,ezP.DelegateSvg.Group);
 ezP.DelegateSvg.Manager.register(ezP.Const.Prc.DEFAULT,ezP.DelegateSvg.Proc);
 ezP.DelegateSvg.Manager.register(ezP.Const.Prc.DEF,ezP.DelegateSvg.Proc);
 ezP.DelegateSvg.Manager.register(ezP.Const.Prc.CLASS,ezP.DelegateSvg.Proc);
-ezP.DelegateSvg.Value=function(a){ezP.DelegateSvg.Value.superClass_.constructor.call(this,a)};
-goog.inherits(ezP.DelegateSvg.Value,ezP.DelegateSvg);
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.DEFAULT,ezP.DelegateSvg.Value);
-ezP.DelegateSvg.Value.prototype.shapePathDef_=ezP.DelegateSvg.Value.prototype.contourPathDef_=ezP.DelegateSvg.Value.prototype.highlightedPathDef_=ezP.DelegateSvg.Value.prototype.valuePathDef_;
+ezP.DelegateSvg.Xpr=function(a){ezP.DelegateSvg.Xpr.superClass_.constructor.call(this,a)};
+goog.inherits(ezP.DelegateSvg.Xpr,ezP.DelegateSvg);
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.DEFAULT,ezP.DelegateSvg.Xpr);
+ezP.DelegateSvg.Xpr.prototype.shapePathDef_=ezP.DelegateSvg.Xpr.prototype.contourPathDef_=ezP.DelegateSvg.Xpr.prototype.highlightedPathDef_=ezP.DelegateSvg.Xpr.prototype.valuePathDef_;
 
-ezP.DelegateSvg.Value.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)||this.renderDrawValueInput_(a)};
-ezP.DelegateSvg.Value.Text=function(a){ezP.DelegateSvg.Value.Text.superClass_.constructor.call(this,a)};
-goog.inherits(ezP.DelegateSvg.Value.Text,ezP.DelegateSvg.Value);
-ezP.DelegateSvg.Value.Text.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)};
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.TEXT,ezP.DelegateSvg.Value.Text);
+ezP.DelegateSvg.Xpr.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)||this.renderDrawValueInput_(a)};
+ezP.DelegateSvg.Xpr.Text=function(a){ezP.DelegateSvg.Xpr.Text.superClass_.constructor.call(this,a)};
+goog.inherits(ezP.DelegateSvg.Xpr.Text,ezP.DelegateSvg.Xpr);
+ezP.DelegateSvg.Xpr.Text.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)};
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.TEXT,ezP.DelegateSvg.Xpr.Text);
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.ANY,ezP.DelegateSvg.Value.Text);
-ezP.DelegateSvg.Value.Input=function(a){ezP.DelegateSvg.Value.Input.superClass_.constructor.call(this,a)};
-goog.inherits(ezP.DelegateSvg.Value.Input,ezP.DelegateSvg.Value);
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.MINUS,ezP.DelegateSvg.Value.Input);
-ezP.DelegateSvg.Value.Tuple=function(a){ezP.DelegateSvg.Value.Tuple.superClass_.constructor.call(this,a)};
-goog.inherits(ezP.DelegateSvg.Value.Tuple,ezP.DelegateSvg.Value);
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.ANY,ezP.DelegateSvg.Xpr.Text);
+ezP.DelegateSvg.Xpr.Input=function(a){ezP.DelegateSvg.Xpr.Input.superClass_.constructor.call(this,a)};
+goog.inherits(ezP.DelegateSvg.Xpr.Input,ezP.DelegateSvg.Xpr);
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.MINUS,ezP.DelegateSvg.Xpr.Input);
+ezP.DelegateSvg.Xpr.Tuple=function(a){ezP.DelegateSvg.Xpr.Tuple.superClass_.constructor.call(this,a)};
+goog.inherits(ezP.DelegateSvg.Xpr.Tuple,ezP.DelegateSvg.Xpr);
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.TUPLE,ezP.DelegateSvg.Value.Tuple);
-ezP.DelegateSvg.Value.Tuple.prototype.willRender_=function(a){ezP.DelegateSvg.Value.Tuple.superClass_.willRender_.call(this,a);
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.TUPLE,ezP.DelegateSvg.Xpr.Tuple);
+ezP.DelegateSvg.Xpr.Tuple.prototype.willRender_=function(a){ezP.DelegateSvg.Xpr.Tuple.superClass_.willRender_.call(this,a);
 this.tupleConsolidate(a)};
-ezP.DelegateSvg.Value.Tuple.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)||this.renderDrawTupleInput_(a)};
-ezP.DelegateSvg.Value.Tuple.prototype.getInput=function(a,b){return this.getInputTuple_(a,b)};
+ezP.DelegateSvg.Xpr.Tuple.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)||this.renderDrawTupleInput_(a)};
+ezP.DelegateSvg.Xpr.Tuple.prototype.getInput=function(a,b){return this.getInputTuple_(a,b)};
 
-ezP.DelegateSvg.Value.Range=function(a){ezP.DelegateSvg.Value.Range.superClass_.constructor.call(this,a)};
-goog.inherits(ezP.DelegateSvg.Value.Range,ezP.DelegateSvg.Value.Tuple);
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.RANGE,ezP.DelegateSvg.Value.Range);
-ezP.DelegateSvg.Value.Range.prototype.getInputTupleMax=function(a,b){return b?0:3};
+ezP.DelegateSvg.Xpr.Range=function(a){ezP.DelegateSvg.Xpr.Range.superClass_.constructor.call(this,a)};
+goog.inherits(ezP.DelegateSvg.Xpr.Range,ezP.DelegateSvg.Xpr.Tuple);
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.RANGE,ezP.DelegateSvg.Xpr.Range);
+ezP.DelegateSvg.Xpr.Range.prototype.getInputTupleMax=function(a,b){return b?0:3};
 ezP.FieldOptions=function(a,b){ezP.FieldOptions.superClass_.constructor.call(this,a,b)};
 goog.inherits(ezP.FieldOptions,Blockly.FieldDropdown);
 ezP.FieldOptions.CSS_CLASS="ezp_options";

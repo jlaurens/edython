@@ -186,48 +186,13 @@ ezP.setup.register(function () {
  * @private
  */
 ezP.FieldVariable.prototype.showEditor_ = function () {
-  var menu = this.sourceBlock_.workspace.ezp.menuVariable.updateWithListener(this)
+  var menu = this.sourceBlock_.workspace.ezp.menuVariable.updateWithListeningBlock(this)
   var bbox = this.getScaledBBox_()
   bbox.left = bbox.left - 12 + 1 + 4// JL Change like in field_variable showEditor
   bbox.top = bbox.top - 5
   bbox.bottom = bbox.bottom + 3
   // TODO: change that dimensions
   menu.showMenu(this.menuIcon_, bbox.left, bbox.bottom)
-}
-
-/**
- * Show the inline free-text editor on top of the text.
- * @param {boolean=} optQuietInput True if editor should be created without
- *     focus.  Defaults to false.
- * @private
- */
-ezP.FieldVariable.prototype.showVarNameEditor = function (optQuietInput) {
-  this.workspace_ = this.sourceBlock_.workspace
-  var quietInput = optQuietInput || false
-  if (!quietInput && (goog.userAgent.MOBILE || goog.userAgent.ANDROID ||
-                      goog.userAgent.IPAD)) {
-    this.showVarNamePromptEditor_()
-  } else {
-    this.isEditingVariableName_ = true
-    this.showVarNameInlineEditor_(quietInput)
-  }
-}
-
-/**
- * Create and show a text input editor that is a prompt (usually a popup).
- * Mobile browsers have issues with in-line textareas (focus and keyboards).
- * @private
- */
-ezP.FieldVariable.prototype.showVarNamePromptEditor_ = function () {
-  var fieldText = this
-  var prompt = ezP.Msg.RENAME_VARIABLE_TITLE.replace('%1', this.text_)
-  Blockly.prompt(prompt, this.text_,
-    function (newValue) {
-      if (fieldText.sourceBlock_) {
-        newValue = fieldText.callValidator(newValue)
-      }
-      fieldText.setValue(newValue)
-    })
 }
 
 /**
@@ -246,15 +211,6 @@ ezP.FieldVariable.prototype.onFinishEditing_ = function (newText) {
     workspace.renameVariableById(this.getValue(), newText)
   }
 }
-
-/**
- * Create and show a text input editor that sits directly over the text input.
- * @param {boolean} quietInput True if editor should be created without
- *     focus.
- * @private
- */
-ezP.FieldVariable.prototype.showVarNameInlineEditor_ =
-  ezP.FieldTextInput.prototype.showInlineEditor_
 
 /**
  * Validates a change.  Does nothing.  Subclasses may override this.

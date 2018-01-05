@@ -13,6 +13,7 @@
 
 goog.provide('ezP.DelegateSvg.Statement')
 goog.require('ezP.DelegateSvg')
+goog.require('ezP.ContextMenu')
 
 /**
  * Class for a DelegateSvg, statement block.
@@ -363,4 +364,23 @@ ezP.DelegateSvg.Statement.Print.prototype.fromDom = function (block, element) {
       state[x] = true
     }
   }
+}
+/**
+ * Show the context menu for this block.
+ * @param {!Event} e Mouse event.
+ * @private
+ */
+ezP.DelegateSvg.Statement.Print.prototype.showContextMenu_ = function (block, e) {
+  var menu = new ezP.ContextMenu(block)
+  var bBox = block.ezp.svgPathShape_.getBBox()
+  var scaledHeight = bBox.height * block.workspace.scale
+  var scaledWidth = bBox.width * block.workspace.scale
+  var xy = goog.style.getPageOffset(block.ezp.svgPathShape_)
+  var bbox = {
+    top: xy.y,
+    bottom: xy.y + scaledHeight,
+    left: xy.x,
+    right: xy.x + scaledWidth
+  };
+  menu.showMenu(block.ezp.svgPathShape_, bbox.left, bbox.bottom + 2)
 }

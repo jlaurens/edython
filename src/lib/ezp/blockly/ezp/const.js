@@ -38,6 +38,9 @@ ezP.Const.Xpr = {
   comprehension: 'ezp_xpr_comprehension',
   comp_for: 'ezp_xpr_comp_for',
   comp_if: 'ezp_xpr_comp_if',
+  parameter: 'ezp_xpr_parameter',
+  defparameter: 'ezp_xpr_defparameter',
+  parameter_list: 'ezp_xpr_parameter_list',
   LITERAL: 'ezp_xpr_literal', // NYI
 }
 
@@ -76,6 +79,10 @@ ezP.Const.Ctl = {
 
 ezP.Const.Field = {
   VAR: 'VAR',
+  STARS: 'STARS',
+  ID: 'ID',
+  ANN: 'ANN',
+  DFT: 'DFT',
   ANY: 'ANY',
   TEXT: 'TEXT',
   TFN: 'TFN',
@@ -101,7 +108,10 @@ ezP.Const.Input = {
   LST: 'LST',
   XPR: 'XPR',// = ANY?
   VAR: 'VAR',
-  DO: 'DO'
+  ANN: 'ANN',
+  DO: 'DO',
+  DFT: 'DFT',
+  ID: 'ID'
 }
 
 ezP.Op = {

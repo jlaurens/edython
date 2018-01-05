@@ -6,7 +6,7 @@
  * License CeCILL-B
  */
 /**
- * @fileoverview Variables extsnions.
+ * @fileoverview Variables extensions.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'

@@ -375,3 +375,27 @@ ezP.BlockSvg.prototype.updateDisabled = function () {
 ezP.BlockSvg.prototype.updateColour = function () {
 
 }
+
+/**
+ * Show the context menu for this block.
+ * @param {!Event} e Mouse event.
+ * @private
+ */
+ezP.BlockSvg.prototype.showContextMenu_ = function (e) {
+  if (this.workspace.options.readOnly || !this.contextMenu) {
+    return
+  }
+  if (this.ezp.showContextMenu_) {
+    this.ezp.showContextMenu_(this, e);
+  } else {
+    ezP.BlockSvg.superClass_.showContextMenu_.call(tjhis, e);
+  }
+}
+
+/**
+ * Customize the context menu.
+ * @override
+ */
+ezP.BlockSvg.prototype.customContextMenu = function(menuOptions) {
+  this.ezp.customContextMenu(this, menuOptions)
+}

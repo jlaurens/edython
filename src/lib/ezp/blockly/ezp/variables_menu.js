@@ -79,11 +79,13 @@ ezP.Variables.Menu.prototype.init = function () {
 }
 
 /**
- * Init the menu.
+ * Init update menu.
  */
-ezP.Variables.Menu.prototype.updateWithListener = function (listener) {
+ezP.Variables.Menu.prototype.updateWithListeningBlock = function (block) {
+  var listener = block.ezp.fieldIdentifier
   goog.asserts.assert(listener && listener.getText, 'Bad ezP.Variables.Menu listener.')
   var ezp = this.ezp
+  ezp.listeningBlock = block
   var name = listener.getText()
   var allVs = [].concat(ezp.workspace.getAllVariables())
   allVs.sort(Blockly.VariableModel.compareByName)
@@ -127,7 +129,7 @@ ezP.Variables.Menu.prototype.updateWithListener = function (listener) {
     }
     break
   }
-  ezp.listener = listener
+  ezp.listeningBlock = block
   ezp.deleteItem.setEnabled(ezP.Variables.isThereAnUnusedVariable(ezp.workspace))
   ezp.subMenu.setEnabled(visible)
   ezp.separator.enableClassName('ezp-hidden', !visible)
@@ -163,27 +165,29 @@ ezP.Variables.replaceVarId = function (workspace, oldVarId, newVarId) {
  * the MenuItem selected within menu.
  */
 ezP.Variables.onActionMenuEvent = function (menu, event) {
-  var listener = menu.ezp.listener
-  var workspace = listener.sourceBlock_.workspace
+  var block = menu.ezp.listeningBlock
+  var listener = block.ezp.fieldIdentifier
+  var workspace = block.workspace
   var model = event.target.getModel()
   var action = model[0]
   var VM = model[1]
   if (action === ezP.CHANGE_VARIABLE_ID) {
-    listener.setValue(VM.getId())
+    listener.setValue(VM.name)
   } else if (action === ezP.RENAME_VARIABLE_ID) {
     // Rename variable.
     listener.showVarNameEditor()
   } else if (action === ezP.REPLACE_VARIABLE_ID) {
     // Replace variable.
-    var oldVarId = listener.getValue()
+    var oldVarId = workspace.getVariable(listener.getValue()).getId()
     var newVarId = VM.getId()
     ezP.Variables.replaceVarId(workspace, oldVarId, newVarId)
+    listener.setValue(VM.name)
   } else if (action === ezP.DELETE_UNUSED_VARIABLES_ID) {
     ezP.Variables.deleteUnusedVariables(workspace)
   } else if (action === ezP.NEW_VARIABLE_ID) {
     // Create new variable.
     VM = ezP.Variables.createDummyVariable(workspace)
-    listener.setValue(VM.getId())
+    listener.setValue(VM.name)
     setTimeout(function () {
       listener.showVarNameEditor()
     }, 10)

@@ -22,12 +22,16 @@ goog.require('ezP.FieldDropdown')
 goog.require('ezP.FieldOptionsCode')
 goog.require('ezP.FieldVariable')
 
+goog.require('ezP.FieldVariable.Identifier')
+goog.require('ezP.FieldVariable.Annotation')
+goog.require('ezP.FieldVariable.Default')
+
+
 Blockly.Blocks[ezP.Const.Xpr.GET] = {
   init: function () {
-    this.appendDummyInput()
-      .appendField(new ezP.FieldVariable('item'), ezP.Const.Field.VAR)
+    this.ezp.initBlock(this)
     this.setInputsInline(true)
-    this.setOutput(true, null)
+    this.setOutput(true, ezP.Type.Xpr.Provide.get)
     this.setTooltip('')
     this.setHelpUrl('')
   }
@@ -112,7 +116,7 @@ Blockly.Blocks[ezP.Const.Xpr.TUPLE] = {
   init: function () {
     this.appendValueInput('TUPLE_0_0').setCheck(null)
     this.setInputsInline(true)
-    this.setOutput(true, null)
+    this.setOutput(true, ezP.Type.Xpr.TUPLE)
     this.setTooltip('')
     this.setHelpUrl('')
   }
@@ -194,22 +198,14 @@ Blockly.Blocks[ezP.Const.Xpr.comp_if] = {
     this.setHelpUrl('')
   }
 }
+
 Blockly.Blocks[ezP.Const.Xpr.parameter_list] = {
   init: function () {
-    this.appendValueInput('S7P_0').setCheck(ezP.Type.Xpr.Require.defparameter)
-    this.appendValueInput('*ARG')
-      .setCheck(ezP.Type.Xpr.Require.parameter)
-      .appendField(new ezP.FieldLabel('*'))
-    this.appendValueInput('SKV_0').setCheck(ezP.Type.Xpr.Require.defparameter)
-    this.appendValueInput('**KVARG')
-      .setCheck(ezP.Type.Xpr.Require.parameter)
-      .appendField(new ezP.FieldLabel('**'))
-    this.appendDummyInput(ezP.Const.Input.OPTIONS)
-      .appendField(new ezP.FieldParameterListOptions())
+    this.ezp.initBlock(this)
     this.setInputsInline(true)
     this.setOutput(true, ezP.Type.Xpr.Provide.parameter_list)
     this.setTooltip('')
     this.setHelpUrl('')
   }
 }
-    
+   

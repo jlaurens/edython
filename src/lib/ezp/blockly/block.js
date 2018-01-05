@@ -43,7 +43,7 @@ ezP.Block = function (workspace, prototypeName, optId) {
 goog.inherits(ezP.Block, Blockly.Block)
 
 /**
- * Dispose the delagate too.
+ * Dispose the delegate too.
  * @param {number|string} colour HSV hue value, or #RRGGBB string.
  */
 ezP.Block.prototype.dispose = function () {
