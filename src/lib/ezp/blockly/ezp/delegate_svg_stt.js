@@ -210,18 +210,8 @@ ezP.DelegateSvg.Statement.Print.prototype.setConnectionsHidden = function (block
  * @private
  */
 ezP.DelegateSvg.Statement.Print.prototype.updateKeyValueInputHidden_ = function (block) {
-  var helper = this.isInputVisibilityHelper
-  if (!helper) {
-    var x = block.getInput('OPTIONS').fieldRow
-    for (var _ = 0; (helper = x[_++]);) {
-      if (helper.isInputVisible) {
-        this.isInputVisibilityHelper = helper
-        break
-      }
-    }
-  }
-  for (_ = 0; (x = block.inputList[_++]);) {
-    var yorn = helper.isInputVisible(x)
+  for (var _ = 0, x; (x = block.inputList[_++]);) {
+    var yorn = this.isInputVisible(x)
     if (yorn) {
       x.setVisible(true)
     } else if (yorn === false) {
@@ -273,7 +263,7 @@ ezP.DelegateSvg.Statement.Print.prototype.renderDrawInput_ = function (io) {
  */
 ezP.DelegateSvg.Statement.Print.prototype.didRenderDrawTupleInput_ = function (io) {
   if (io.input.ezpTuple.isSeparator) {
-    io.separatorC8n = io.input.connection
+    io.separatorC6n = io.input.connection
   }
   return true
 }
@@ -284,39 +274,20 @@ ezP.DelegateSvg.Statement.Print.prototype.didRenderDrawTupleInput_ = function (i
  * @private
  */
 ezP.DelegateSvg.Statement.Print.prototype.willRenderDrawValueInput_ = function (io) {
-  if (io.separatorC8n) {
+  if (io.separatorC6n) {
     var state = this.getPrintState_()
     for (var x in state) {
       if (state[x]) {
         var pw = this.carretPathDefWidth_(io.cursorX)
         var w = pw.width
-        io.separatorC8n.setOffsetInBlock(io.cursorX + w / 2, 0)
+        io.separatorC6n.setOffsetInBlock(io.cursorX + w / 2, 0)
         io.cursorX -= w
         break
       }
     }
-    delete io.separatorC8n
+    delete io.separatorC6n
   }
   return true
-}
-
-/**
- * Get the print state from the first PrintFieldDropown.
- * @param {!Blockly.Block} block.
- */
-ezP.DelegateSvg.Statement.Print.prototype.getPrintState_ = function (block) {
-  if (this.printState_) {
-    return this.printState_
-  }
-  for (var i = 0, input; (input = block.inputList[i]); i++) {
-    for (var j = 0, field; (field = input.fieldRow[j]); j++) {
-      if (field instanceof ezP.FieldPrintOptions) {
-        this.printState_ = field.getState_()
-        return this.printState
-      }
-    }
-  }
-  throw Error('A print block must have a print options field.')
 }
 
 /**
@@ -365,22 +336,87 @@ ezP.DelegateSvg.Statement.Print.prototype.fromDom = function (block, element) {
     }
   }
 }
+ezP.Msg.PRINT_OPTION_END = ezP.Msg.PRINT_OPTION_END || 'end = …'
+ezP.Msg.PRINT_OPTION_SEP = ezP.Msg.PRINT_OPTION_SEP || 'sep = …'
+ezP.Msg.PRINT_OPTION_FILE = ezP.Msg.PRINT_OPTION_FILE || 'file = …'
+ezP.Msg.PRINT_OPTION_FLUSH = ezP.Msg.PRINT_OPTION_FLUSH || 'flush = …'
+
 /**
- * Show the context menu for this block.
- * @param {!Event} e Mouse event.
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!goo.ui.Menu} menu The menu to populate.
  * @private
  */
-ezP.DelegateSvg.Statement.Print.prototype.showContextMenu_ = function (block, e) {
-  var menu = new ezP.ContextMenu(block)
-  var bBox = block.ezp.svgPathShape_.getBBox()
-  var scaledHeight = bBox.height * block.workspace.scale
-  var scaledWidth = bBox.width * block.workspace.scale
-  var xy = goog.style.getPageOffset(block.ezp.svgPathShape_)
-  var bbox = {
-    top: xy.y,
-    bottom: xy.y + scaledHeight,
-    left: xy.x,
-    right: xy.x + scaledWidth
-  };
-  menu.showMenu(block.ezp.svgPathShape_, bbox.left, bbox.bottom + 2)
+ezP.DelegateSvg.Statement.Print.prototype.populateContextMenu_ = function (block, menu) {
+  var renderer = ezP.KeyValueMenuItemRenderer.getInstance()
+  var options = [
+    [ezP.Msg.PRINT_OPTION_END, ezP.Const.Input.END],
+    [ezP.Msg.PRINT_OPTION_SEP, ezP.Const.Input.SEP],
+    [ezP.Msg.PRINT_OPTION_FILE, ezP.Const.Input.FILE],
+    [ezP.Msg.PRINT_OPTION_FLUSH, ezP.Const.Input.FLUSH]]
+  for (var i = 0; i < options.length; i++) {
+    var content = options[i][0] // Human-readable text or image.
+    var value = options[i][1] // Language-neutral value.
+    var menuItem = new goog.ui.MenuItem(content, undefined, undefined, renderer)
+    menuItem.setValue(value)
+    menuItem.setCheckable(true)
+    menuItem.setChecked(this.getPrintState_()[value])
+    menu.addChild(menuItem, true)
+  }
+  menu.addChild(new ezP.Separator(), true)
+  ezP.DelegateSvg.Statement.Print.superClass_.populateContextMenu_.call(this, block, menu)
+}
+
+/**
+ * Handle the selection of an item in the context dropdown menu.
+ * @param {!goog.ui.Menu} menu The Menu component clicked.
+ * @param {!Blockly.Block} block The Menu component clicked.
+ * @param {!goog....} event The event containing as target
+ * the MenuItem selected within menu.
+ */
+ezP.DelegateSvg.Statement.Print.prototype.onActionMenuEvent = function (block, menu, event) {
+  var workspace = block.workspace
+  var action = event.target.getModel()
+  var state = this.getPrintState_()
+  switch (action) {
+    case ezP.Const.Input.END:
+    case ezP.Const.Input.SEP:
+    case ezP.Const.Input.FILE:
+    case ezP.Const.Input.FLUSH:
+      state[action] = !state[action]
+      setTimeout(function () {
+        block.render()
+      }, 100)
+      return
+    default:
+      ezP.DelegateSvg.Statement.Print.superClass_.onActionMenuEvent.call(this, block, menu, event)
+      return
+  }
+}
+
+/**
+* The lazy print state for the given block.
+* This stores the state and visibility of optional input fields.
+* @param {!Blockly.Block} block A block.
+*/
+ezP.DelegateSvg.Statement.Print.prototype.getPrintState_ = function (block) {
+  return this.printState_ || (this.printState_ = {})
+}
+
+/**
+ * Whether an input is visible, according to its internal state.
+ * @param {!Block.Input} input.
+ * @return yorn
+ */
+ezP.DelegateSvg.Statement.Print.prototype.isInputVisible = function (input) {
+  var state = this.getPrintState_()
+  switch (input.name) {
+    case ezP.Const.Input.END:
+    case ezP.Const.Input.SEP:
+    case ezP.Const.Input.FILE:
+    case ezP.Const.Input.FLUSH:
+      return state[input.name] === true
+    default:
+      return undefined
+  }
 }

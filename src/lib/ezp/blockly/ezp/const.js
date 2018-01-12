@@ -33,14 +33,20 @@ ezP.Const.Xpr = {
   TUPLE: 'ezp_xpr_tuple',
   RANGE: 'ezp_xpr_range',
   MINUS: 'ezp_xpr_minus',
-  parenth_form: 'ezp_xpr_parenth',
-  star_or_expr: 'ezp_xpr_star_or_expr',
+  parenth_form: 'ezp_xpr_parenth_form',
+  list_display: 'ezp_xpr_list_display',
+  set_display: 'ezp_xpr_set_display',
+  dict_display: 'ezp_xpr_dict_display',
+// in progress
+  starred_item: 'ezp_xpr_starred_item',
   comprehension: 'ezp_xpr_comprehension',
   comp_for: 'ezp_xpr_comp_for',
   comp_if: 'ezp_xpr_comp_if',
+  star_or_expr: 'ezp_xpr_star_or_expr',
   parameter: 'ezp_xpr_parameter',
   defparameter: 'ezp_xpr_defparameter',
   parameter_list: 'ezp_xpr_parameter_list',
+  atom: 'ezp_xpr_atom',
   LITERAL: 'ezp_xpr_literal', // NYI
 }
 

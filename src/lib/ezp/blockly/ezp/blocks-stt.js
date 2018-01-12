@@ -20,7 +20,6 @@ goog.require('ezP.FieldLabel')
 goog.require('ezP.FieldTextInput')
 goog.require('ezP.FieldDropdown')
 goog.require('ezP.FieldOptionsCode')
-goog.require('ezP.FieldPrintOptions')
 goog.require('ezP.FieldVariable')
 
 Blockly.Blocks[ezP.Const.Stt.SET] = {
@@ -59,11 +58,6 @@ Blockly.Blocks[ezP.Const.Stt.PRINT] = {
     this.appendValueInput(ezP.Const.Input.FILE).appendField(new ezP.FieldLabel(', file ='))
     this.appendValueInput(ezP.Const.Input.FLUSH).appendField(new ezP.FieldLabel(', flush ='))
     this.appendDummyInput().appendField(new ezP.FieldLabel(')'))
-    this.appendDummyInput(ezP.Const.Input.OPTIONS).appendField(new ezP.FieldPrintOptions([
-      ['end = …', ezP.Const.Input.END],
-      ['sep = …', ezP.Const.Input.SEP],
-      ['file = …', ezP.Const.Input.FILE],
-      ['flush = …', ezP.Const.Input.FLUSH]]))
     this.setInputsInline(true)
     this.setPreviousStatement(true, ezP.Type.Stt.Check.before_any)
     this.setNextStatement(true, ezP.Type.Stt.Check.after_any)

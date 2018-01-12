@@ -20,7 +20,6 @@ goog.require('ezP.Type')
 goog.require('ezP.FieldLabel')
 goog.require('ezP.FieldTextInput')
 goog.require('ezP.FieldOptionsCode')
-goog.require('ezP.FieldPrintOptions')
 goog.require('ezP.FieldVariable')
 
 Blockly.Blocks[ezP.Const.Prc.ANY] = {

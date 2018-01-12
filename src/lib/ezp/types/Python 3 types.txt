@@ -1,0 +1,168 @@
+
+6. Expressions
+6.1. Arithmetic conversions
+6.2. Atoms
+atom      ::=  identifier | literal | enclosure
+enclosure ::=  parenth_form | list_display | dict_display | set_display | generator_expression | yield_atom
+6.2.1. Identifiers (Names)
+#identifier   ::=  xid_start xid_continue*
+identifier   ::=  identifier_
+#id_start     ::=  <all characters in general categories Lu, Ll, Lt, Lm, Lo, Nl, the underscore, and characters with the Other_ID_Start property>
+#id_continue  ::=  <all characters in id_start, plus characters in the categories Mn, Mc, Nd, Pc and others with the Other_ID_Continue property>
+#xid_start    ::=  <all characters in id_start whose NFKC normalization is in "id_start xid_continue*">
+#xid_continue ::=  <all characters in id_continue whose NFKC normalization is in "id_continue*">
+6.2.2. Literals
+#literal ::=  stringliteral | bytesliteral | integer | floatnumber | imagnumber
+literal ::=  literal_
+#stringliteral   ::=  [stringprefix](shortstring | longstring)
+#stringprefix    ::=  "r" | "u" | "R" | "U" | "f" | "F" | "fr" | "Fr" | "fR" | "FR" | "rf" | "rF" | "Rf" | "RF"
+#shortstring     ::=  "'" shortstringitem* "'" | '"' shortstringitem* '"'
+#longstring      ::=  "'''" longstringitem* "'''" | '"""' longstringitem* '"""'
+#shortstringitem ::=  shortstringchar | stringescapeseq
+#longstringitem  ::=  longstringchar | stringescapeseq
+#shortstringchar ::=  <any source character except "\" or newline or the quote>
+#longstringchar  ::=  <any source character except "\">
+#stringescapeseq ::=  "\" <any source character>
+#bytesliteral   ::=  bytesprefix(shortbytes | longbytes)
+#bytesprefix    ::=  "b" | "B" | "br" | "Br" | "bR" | "BR" | "rb" | "rB" | "Rb" | "RB"
+#shortbytes     ::=  "'" shortbytesitem* "'" | '"' shortbytesitem* '"'
+#longbytes      ::=  "'''" longbytesitem* "'''" | '"""' longbytesitem* '"""'
+#shortbytesitem ::=  shortbyteschar | bytesescapeseq
+#longbytesitem  ::=  longbyteschar | bytesescapeseq
+#shortbyteschar ::=  <any ASCII character except "\" or newline or the quote>
+#longbyteschar  ::=  <any ASCII character except "\">
+#bytesescapeseq ::=  "\" <any ASCII character>
+#integer      ::=  decinteger | bininteger | octinteger | hexinteger
+#decinteger   ::=  nonzerodigit (["_"] digit)* | "0"+ (["_"] "0")*
+#bininteger   ::=  "0" ("b" | "B") (["_"] bindigit)+
+#octinteger   ::=  "0" ("o" | "O") (["_"] octdigit)+
+#hexinteger   ::=  "0" ("x" | "X") (["_"] hexdigit)+
+#nonzerodigit ::=  "1"..."9"
+#digit        ::=  "0"..."9"
+#bindigit     ::=  "0" | "1"
+#octdigit     ::=  "0"..."7"
+#hexdigit     ::=  digit | "a"..."f" | "A"..."F"
+#floatnumber   ::=  pointfloat | exponentfloat
+#pointfloat    ::=  [digitpart] fraction | digitpart "."
+#exponentfloat ::=  (digitpart | pointfloat) exponent
+#digitpart     ::=  digit (["_"] digit)*
+#fraction      ::=  "." digitpart
+#exponent      ::=  ("e" | "E") ["+" | "-"] digitpart
+#imagnumber ::=  (floatnumber | digitpart) ("j" | "J")
+6.2.3. Parenthesized forms
+parenth_form ::=  "(" [starred_expression] ")"
+6.2.4. Displays for lists, sets and dictionaries
+comprehension ::=  expression comp_for
+comp_for      ::=  [ASYNC] "for" target_list "in" or_test [comp_iter]
+comp_iter     ::=  comp_for | comp_if
+comp_if       ::=  "if" expression_nocond [comp_iter]
+6.2.5. List displays
+#list_display ::=  "[" [starred_list | comprehension] "]"
+list_display ::=  "[" [list_display_] "]"
+display_slc_ ::=  starred_list | comprehension
+6.2.6. Set displays
+#set_display ::=  "{" (starred_list | comprehension) "}"
+set_display ::=  "{" display_slc_ "}"
+6.2.7. Dictionary displays
+#dict_display       ::=  "{" [key_datum_list | dict_comprehension] "}"
+dict_display       ::=  "{" [dict_display_] "}"
+dict_display_       ::=  key_datum_list | dict_comprehension
+key_datum_list     ::=  key_datum ("," key_datum)* [","]
+#key_datum          ::=  expression ":" expression | "**" or_expr
+key_datum          ::=  key_datum_kv | key_datum_kvargs
+key_datum_kv       ::=  expression ":" expression
+key_datum_kvargs     ::=  "**" or_expr
+dict_comprehension ::=  expression ":" expression comp_for
+6.2.8. Generator expressions
+generator_expression ::=  "(" expression comp_for ")"
+6.2.9. Yield expressions
+yield_atom       ::=  "(" yield_expression ")"
+#yield_expression ::=  "yield" [expression_list | "from" expression]
+yield_expression ::=  yield_expression_list | yield_expression_from
+yield_expression_list ::=  "yield" expression_list
+yield_expression_from ::=  "yield" "from" expression
+6.3. Primaries
+primary ::=  atom | attributeref | subscription | slicing | call
+6.3.1. Attribute references
+attributeref ::=  primary "." identifier
+6.3.2. Subscriptions
+subscription ::=  primary "[" expression_list "]"
+6.3.3. Slicings
+slicing      ::=  primary "[" slice_list "]"
+slice_list   ::=  slice_item ("," slice_item)* [","]
+slice_item   ::=  expression | proper_slice
+proper_slice ::=  [lower_bound] ":" [upper_bound] [ ":" [stride] ]
+lower_bound  ::=  expression
+upper_bound  ::=  expression
+stride       ::=  expression
+6.3.4. Calls
+call                 ::=  primary "(" [argument_list [","] | comprehension] ")"
+argument_list        ::=  positional_arguments ["," starred_and_keywords] ["," keywords_arguments] | starred_and_keywords ["," keywords_arguments] | keywords_arguments
+positional_arguments ::=  ["*"] expression ("," ["*"] expression)*
+starred_and_keywords ::=  ("*" expression | keyword_item) ("," "*" expression | "," keyword_item)*
+keywords_arguments   ::=  (keyword_item | "**" expression) ("," keyword_item | "," "**" expression)*
+keyword_item         ::=  identifier "=" expression
+An optional trailing comma may be present after the positional and keyword arguments but does not affect the semantics.
+6.4. Await expression
+await_expr ::=  "await" primary
+6.5. The power operator
+#power ::=  ( await_expr | primary ) ["**" u_expr]
+power ::=  await_expr | primary | power_expr_
+power_expr_ ::=  (await_expr | primary ) "**" u_expr
+6.6. Unary arithmetic and bitwise operations
+#u_expr ::=  power | "-" u_expr | "+" u_expr | "~" u_expr
+u_expr ::=  power | u_expr_
+u_expr_ ::=   "-" u_expr | "+" u_expr | "~" u_expr
+6.7. Binary arithmetic operations
+#m_expr ::=  u_expr | m_expr "*" u_expr | m_expr "@" m_expr | m_expr "//" u_expr| m_expr "/" u_expr | m_expr "%" u_expr
+m_expr ::=  u_expr | m_expr_
+m_expr_ ::=  m_expr "*" u_expr | m_expr "@" m_expr | m_expr "//" u_expr| m_expr "/" u_expr | m_expr "%" u_expr
+#a_expr ::=  m_expr | a_expr "+" m_expr | a_expr "-" m_expr
+a_expr ::=  m_expr | a_expr_
+a_expr_ ::=  a_expr "+" m_expr | a_expr "-" m_expr
+6.8. Shifting operations
+#shift_expr ::=  a_expr | shift_expr ( "<<" | ">>" ) a_expr
+shift_expr ::=  a_expr | shift_expr_
+shift_expr_ ::=  shift_expr ( "<<" | ">>" ) a_expr
+6.9. Binary bitwise operations
+#and_expr ::=  shift_expr | and_expr "&" shift_expr
+and_expr ::=  shift_expr | and_expr_
+and_expr_ ::=  and_expr "&" shift_expr
+#xor_expr ::=  and_expr | xor_expr "^" and_expr
+xor_expr ::=  and_expr | xor_expr_
+xor_expr_ ::=  xor_expr "^" and_expr
+#or_expr  ::=  xor_expr | or_expr "|" xor_expr
+or_expr  ::=  xor_expr | or_expr_
+or_expr_  ::=  or_expr "|" xor_expr
+6.10. Comparisons
+# comparison    ::=  or_expr ( comp_operator or_expr )*
+comparison    ::=  or_expr | comparison_
+comparison_    ::=  or_expr comp_operator or_expr ( comp_operator or_expr )*
+#comp_operator ::=  "<" | ">" | "==" | ">=" | "<=" | "!=" | "is" ["not"] | ["not"] "in"
+6.11. Boolean operations
+#or_test  ::=  and_test | or_test "or" and_test
+or_test  ::=  and_test | or_test_
+or_test_  ::=  or_test "or" and_test
+#and_test ::=  not_test | and_test "and" not_test
+and_test ::=  not_test | and_test_
+and_test_ ::=  and_test "and" not_test
+#not_test ::=  comparison | "not" not_test
+not_test ::=  comparison | not_test_
+not_test_ ::=  "not" not_test
+6.12. Conditional expressions
+#conditional_expression ::=  or_test ["if" or_test "else" expression]
+conditional_expression ::=  or_test | conditional_expression_
+conditional_expression_ ::=  or_test "if" or_test "else" expression
+expression             ::=  conditional_expression | lambda_expr
+expression_nocond      ::=  or_test | lambda_expr_nocond
+6.13. Lambdas
+lambda_expr        ::=  "lambda" [parameter_list]: expression
+lambda_expr_nocond ::=  "lambda" [parameter_list]: expression_nocond
+6.14. Expression lists
+expression_list    ::=  expression ( "," expression )* [","]
+starred_list       ::=  starred_item ( "," starred_item )* [","]
+#starred_expression ::=  expression | ( starred_item "," )* [starred_item]
+starred_expression ::=  ( starred_item "," )* [starred_item]
+#starred_item       ::=  expression | "*" or_expr
+starred_item       ::=  expression | starred_item_
+starred_item_       ::=  "*" or_expr

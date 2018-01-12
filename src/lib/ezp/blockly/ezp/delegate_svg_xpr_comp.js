@@ -253,6 +253,7 @@ ezP.DelegateSvg.Xpr.Comprehension.prototype.renderDrawForifInput_ = function (io
     var pw = this.carretPathDefWidth_(io.cursorX)
     var w = pw.width
     c8n.setOffsetInBlock(io.cursorX + w / 2, 0)
+    io.steps.push(pw.d)
     io.cursorX += w
   } else {
     pw = this.placeHolderPathDefWidth_(io.cursorX)

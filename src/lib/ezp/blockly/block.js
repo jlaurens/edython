@@ -234,8 +234,12 @@ ezP.Block.prototype.tupleConsolidateEZP_ = function () {
  */
 ezP.Block.prototype.appendInput_ = function (type, name) {
   var input = ezP.Block.superClass_.appendInput_.call(this, type, name)
-  if (type === Blockly.INPUT_VALUE && name.match(/^(?:TUPLE|S7R)_\d+_\d+$/g)) {
-    input.ezpTuple = input.ezpTuple || {}
+  if (type === Blockly.INPUT_VALUE) {
+    if (name.match(/^(?:TUPLE|S7R)_(?:\d|\*)+_(?:\d|\*)+$/g)) {
+      input.ezpTuple = input.ezpTuple || {}
+    } else if (name.match(/^(?:ITEM|S7R)_(?:\d|\*)+$/g)) {
+      input.ezpListData = input.ezpListData || {}
+    }
   }
   return input
 }

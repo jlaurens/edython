@@ -26,6 +26,29 @@ goog.require('ezP.FieldVariable.Identifier')
 goog.require('ezP.FieldVariable.Annotation')
 goog.require('ezP.FieldVariable.Default')
 
+Blockly.Blocks[ezP.Const.Xpr.parenth_form] = {
+  init: function () {
+    this.ezp.initBlock(this)
+  }
+}
+
+Blockly.Blocks[ezP.Const.Xpr.list_display] = {
+  init: function () {
+    this.ezp.initBlock(this)
+  }
+}
+
+Blockly.Blocks[ezP.Const.Xpr.set_display] = {
+  init: function () {
+    this.ezp.initBlock(this)
+  }
+}
+
+Blockly.Blocks[ezP.Const.Xpr.dict_display] = {
+  init: function () {
+    this.ezp.initBlock(this)
+  }
+}
 
 Blockly.Blocks[ezP.Const.Xpr.GET] = {
   init: function () {
@@ -36,16 +59,18 @@ Blockly.Blocks[ezP.Const.Xpr.GET] = {
     this.setHelpUrl('')
   }
 }
+
 Blockly.Blocks[ezP.Const.Xpr.ANY] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldTextInput('1+1'), ezP.Const.Field.ANY)
     this.setInputsInline(true)
-    this.setOutput(true, null)
+    this.setOutput(true, ezP.Type.Xpr.Provide.any)
     this.setTooltip('')
     this.setHelpUrl('')
   }
 }
+
 Blockly.Blocks[ezP.Const.Xpr.TEXT] = {
   init: function () {
     this.appendDummyInput()
@@ -58,6 +83,7 @@ Blockly.Blocks[ezP.Const.Xpr.TEXT] = {
     this.setHelpUrl('')
   }
 }
+
 Blockly.Blocks[ezP.Const.Xpr.TFN] = {
   init: function () {
     this.appendDummyInput()
@@ -68,6 +94,7 @@ Blockly.Blocks[ezP.Const.Xpr.TFN] = {
     this.setHelpUrl('')
   }
 }
+
 Blockly.Blocks[ezP.Const.Xpr.OP] = {
   init: function () {
     this.appendValueInput(ezP.Const.Input.LHS)
@@ -84,6 +111,7 @@ Blockly.Blocks[ezP.Const.Xpr.OP] = {
     this.setHelpUrl('')
   }
 }
+
 Blockly.Blocks[ezP.Const.Xpr.UNRY] = {
   init: function () {
     this.appendDummyInput()
@@ -95,6 +123,7 @@ Blockly.Blocks[ezP.Const.Xpr.UNRY] = {
     this.setHelpUrl('')
   }
 }
+
 Blockly.Blocks[ezP.Const.Xpr.BOOL] = {
   init: function () {
     this.appendValueInput(ezP.Const.Input.LHS)
@@ -112,6 +141,7 @@ Blockly.Blocks[ezP.Const.Xpr.BOOL] = {
     this.setHelpUrl('')
   }
 }
+
 Blockly.Blocks[ezP.Const.Xpr.TUPLE] = {
   init: function () {
     this.appendValueInput('TUPLE_0_0').setCheck(null)
@@ -121,6 +151,7 @@ Blockly.Blocks[ezP.Const.Xpr.TUPLE] = {
     this.setHelpUrl('')
   }
 }
+
 Blockly.Blocks[ezP.Const.Xpr.star_or_expr] = {
   init: function () {
     this.appendDummyInput()
@@ -132,18 +163,7 @@ Blockly.Blocks[ezP.Const.Xpr.star_or_expr] = {
     this.setHelpUrl('')
   }
 }
-Blockly.Blocks[ezP.Const.Xpr.parenth_form] = {
-  init: function () {
-    this.appendDummyInput()
-      .appendField(new ezP.FieldLabel('('))
-    this.appendValueInput('TUPLE_0_0').setCheck(null)
-    this.appendDummyInput().appendField(new ezP.FieldLabel(')'))
-    this.setInputsInline(true)
-    this.setOutput(true, null)
-    this.setTooltip('')
-    this.setHelpUrl('')
-  }
-}
+
 Blockly.Blocks[ezP.Const.Xpr.RANGE] = {
   init: function () {
     this.appendDummyInput()
@@ -157,6 +177,7 @@ Blockly.Blocks[ezP.Const.Xpr.RANGE] = {
     this.setHelpUrl('')
   }
 }
+
 Blockly.Blocks[ezP.Const.Xpr.comprehension] = {
   init: function () {
     this.appendValueInput(ezP.Const.Input.XPR)
@@ -173,6 +194,7 @@ Blockly.Blocks[ezP.Const.Xpr.comprehension] = {
     this.setHelpUrl('')
   }
 }
+
 Blockly.Blocks[ezP.Const.Xpr.comp_for] = {
   init: function () {
     this.appendValueInput(ezP.Const.Input.TGT)
@@ -187,6 +209,7 @@ Blockly.Blocks[ezP.Const.Xpr.comp_for] = {
     this.setHelpUrl('')
   }
 }
+
 Blockly.Blocks[ezP.Const.Xpr.comp_if] = {
   init: function () {
     this.appendValueInput(ezP.Const.Input.COND)

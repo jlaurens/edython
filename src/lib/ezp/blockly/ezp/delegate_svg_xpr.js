@@ -46,6 +46,18 @@ ezP.DelegateSvg.Xpr.prototype.renderDrawInput_ = function (io) {
 }
 
 /**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Xpr.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Xpr.superClass_.initBlock.call(this, block)
+  block.setOutput(true, null)
+}
+
+/**
  * Class for a DelegateSvg, quoted string value block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
@@ -100,7 +112,6 @@ ezP.DelegateSvg.Xpr.Tuple = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Xpr.Tuple, ezP.DelegateSvg.Xpr)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.TUPLE, ezP.DelegateSvg.Xpr.Tuple)
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.parenth_form, ezP.DelegateSvg.Xpr.Tuple)
 
 /**
  * Will render the block.

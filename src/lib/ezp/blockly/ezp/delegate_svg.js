@@ -62,6 +62,7 @@ ezP.DelegateSvg.Manager = (function () {
    * @param {Object} constructor
    */
   me.register = function (prototypeName, Ctor) {
+    // console.log(prototypeName+' -> '+Ctor)
     Ctors[prototypeName] = Ctor
   }
   return me
@@ -329,6 +330,32 @@ ezP.DelegateSvg.prototype.didChangeSize_ = function (block) {
 }
 
 /**
+ * The right padding of a block.
+ * @param {!Blockly.Block} block.
+ * @private
+ */
+ezP.DelegateSvg.prototype.paddingRight = function (block) {
+  if (block.outputConnection) {
+    return ezP.Font.space
+  } else {
+    return ezP.Padding.r()
+  }  
+}
+
+/**
+ * The left padding of a block.
+ * @param {!Blockly.Block} block.
+ * @private
+ */
+ezP.DelegateSvg.prototype.paddingLeft = function (block) {
+  if (block.outputConnection) {
+    return ezP.Font.space
+  } else {
+    return ezP.Padding.l()
+  }  
+}
+
+/**
  * Render the inputs of the block.
  * @param {!Blockly.Block} block.
  * @private
@@ -342,13 +369,12 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
     canValue: true,
     canStatement: true,
     canTuple: true,
+    canList: true,
     canForif: true,
     canParameterList: true
   }
-  if (block.outputConnection) {
-    io.cursorX = ezP.Font.space
-  } else {
-    io.cursorX = ezP.Padding.l()
+  io.cursorX = this.paddingLeft(block)
+  if (!block.outputConnection) {
     this.renderDrawSharp_(io)
   }
   for (var _ = 0; (io.input = block.inputList[_]); _++) {
@@ -356,11 +382,7 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
       this.renderDrawInput_(io)
     }
   }
-  if (block.outputConnection) {
-    io.cursorX += ezP.Font.space
-  } else {
-    io.cursorX += ezP.Padding.r()
-  }
+  io.cursorX += this.paddingRight(block)
   this.minWidth = block.width = Math.max(block.width, io.cursorX)
   return io.steps.join(' ')
 }
@@ -394,7 +416,9 @@ ezP.DelegateSvg.prototype.renderDrawFields_ = function (io) {
   for (var _ = 0, field; (field = io.input.fieldRow[_]); ++_) {
     var root = field.getSvgRoot()
     if (root) {
-      root.setAttribute('transform', 'translate(' + io.cursorX +
+      var ezp = field.ezpFieldData
+      var x_shift = ezp? ezp.x_shift || 0: 0
+      root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
         ', ' + ezP.Padding.t() + ')')
       io.cursorX += field.getSize().width
     }
@@ -525,11 +549,15 @@ ezP.DelegateSvg.prototype.outPathDef_ = function () {
  */
 ezP.DelegateSvg.prototype.carretPathDefWidth_ = function (cursorX) {
   /* eslint-disable indent */
-  var h = ezP.Font.lineHeight()
-  var r = ezP.Style.Path.Selected.width / 2
-  var a = ' a ' + r + ',' + r + ' 0 0 0 '
-  var d = 'M ' + (cursorX + r) + ',0 ' + a + (-2 * r) + ',0 v ' + h + a + (2 * r) + ',0 z'
-  return {width: 2 * r, d: d}
+  var size = {width:ezP.Font.space, height: ezP.Font.lineHeight()}
+  var p = ezP.Padding.h()
+  var r = (p ** 2 + size.height ** 2 / 4) / 2 / p
+  var dy = ezP.Padding.v() + ezP.Font.descent / 2
+  var a = ' a ' + r + ', ' + r + ' 0 0 1 0,'
+  var h = size.height + 2 * ezP.Margin.V
+  var d = 'M ' + (cursorX + size.width/2) +
+  ',' + (ezP.Margin.V + dy) + a + (h - 2 * dy) + a + (-h + 2 * dy) + ' z'
+  return {width: size.width, d: d}
 } /* eslint-enable indent */
 
 /**
@@ -803,7 +831,7 @@ ezP.DelegateSvg.prototype.populateContextMenu_ = function (block, menu) {
  * @private
  */
 ezP.DelegateSvg.prototype.showContextMenu_ = function (block, e) {
-  var menu = new ezP.PopupMenu()
+  var menu = new ezP.PopupMenu(undefined, block.ezp.ContextMenuRenderer)
   this.populateContextMenu_(block, menu)
   var bBox = block.ezp.svgPathShape_.getBBox()
   var scaledHeight = bBox.height * block.workspace.scale
@@ -846,3 +874,15 @@ ezP.DelegateSvg.prototype.onActionMenuEvent = function (block, menu, event) {
   }
 }
 
+/**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.prototype.initBlock = function(block) {
+  block.setInputsInline(true)
+  block.setTooltip('')
+  block.setHelpUrl('')
+}
