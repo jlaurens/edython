@@ -23,6 +23,8 @@ goog.require('ezP.DelegateSvg')
  * Main entry: consolidate
  */
 ezP.DelegateSvg.ListConsolidator = function() {
+  this.canBeVoid = true
+  this.defaultSep = ','
 }
 
 /**
@@ -111,16 +113,9 @@ ezP.DelegateSvg.ListConsolidator.prototype.doFinalizeSeparator = function (io, e
       io.input.fieldRow.shift().dispose()
     }
   } else if (!io.input.fieldRow.length) {
-    io.input.appendField(new ezP.FieldLabel(io.sep || ','))
+    io.input.appendField(new ezP.FieldLabel(io.sep || this.defaultSep))
   }
   io.input.setCheck(this.getCheck(io))
-}
-
-/**
- * Whether the list can be void
- */
-ezP.DelegateSvg.ListConsolidator.prototype.canBeVoid = function(io) {
-  return true
 }
 
 /**
@@ -169,7 +164,7 @@ ezP.DelegateSvg.ListConsolidator.prototype.cleanup = function(io) {
     io.i = io.placeholder
     this.setupIO(io)
     this.disposeFromStartToI(io)
-    if (this.canBeVoid(io)) {
+    if (this.canBeVoid) {
       this.doFinalizeSeparator(io, true)
     } else {
       this.doFinalizePlaceholder(io)          
@@ -182,7 +177,7 @@ ezP.DelegateSvg.ListConsolidator.prototype.cleanup = function(io) {
     if (io.end === io.start) {
       this.insertPlaceholderAtI(io)
     }
-    if (this.canBeVoid(io)) {
+    if (this.canBeVoid) {
       this.doFinalizeSeparator(io, true)
     } else {
       this.doFinalizePlaceholder(io)          
@@ -260,7 +255,7 @@ ezP.DelegateSvg.ListConsolidator.prototype.consolidate = function(block) {
     if (!!io.ezp) {
       // group bounds and connected connections
       io.n = 0
-      io.sep = io.ezp.sep || ','
+      io.sep = io.ezp.sep || this.defaultSep
       io.start = io.i
       io.connected = 0
       this.walk(io)
@@ -277,15 +272,9 @@ ezP.DelegateSvg.ListConsolidator.prototype.consolidate = function(block) {
  */
 ezP.DelegateSvg.NonVoidListConsolidator = function () {
   ezP.DelegateSvg.NonVoidListConsolidator.superClass_.constructor.call(this)
+  this.canBeVoid = false
 }
 goog.inherits(ezP.DelegateSvg.NonVoidListConsolidator, ezP.DelegateSvg.ListConsolidator)
-
-/**
- * Whether the list can be void
- */
-ezP.DelegateSvg.NonVoidListConsolidator.prototype.canBeVoid = function(io) {
-  return false
-}
 
 /**
  * List consolidator for list_display and set_display.
@@ -326,7 +315,8 @@ ezP.DelegateSvg.ListDisplayConsolidator.prototype.one_step = function(io) {
 }
 
 /**
- * Make special things when a comprehension is connected
+ * Once the whole list has been managed,
+ * there might be unwanted things.
  */
 ezP.DelegateSvg.ListDisplayConsolidator.prototype.cleanup = function(io) {
   if (io.comprehension !== undefined) {
@@ -354,3 +344,33 @@ ezP.DelegateSvg.DictDisplayConsolidator = function() {
   this.require_with_comprehension = ezP.T3.Require.comprehensive_key_datum_list
 }
 goog.inherits(ezP.DelegateSvg.DictDisplayConsolidator, ezP.DelegateSvg.ListDisplayConsolidator)
+
+/**
+ * List consolidator for comprehension.
+ * Remove empty place holders, add separators
+ * Main entry: consolidate
+ */
+ezP.DelegateSvg.ComprehensionConsolidator = function() {
+  ezP.DelegateSvg.ComprehensionConsolidator.superClass_.constructor.call(this)
+  this.canBeVoid = true
+  this.defaultSep = ''
+}
+goog.inherits(ezP.DelegateSvg.ComprehensionConsolidator, ezP.DelegateSvg.ListConsolidator)
+
+/**
+ * Returns the required types for the current input.
+ * @param {!Object} io parameter.
+ */
+ezP.DelegateSvg.ComprehensionConsolidator.prototype.getCheck = function (io) {
+  return ezP.T3.Require.comp_iter
+}
+
+/**
+ * Separators are always extreme.
+ * @param {!Object} io parameter.
+ * @param {!Bool} extreme parameter.
+ */
+ezP.DelegateSvg.ComprehensionConsolidator.prototype.doFinalizeSeparator = function (io, extreme) {
+  ezP.DelegateSvg.ComprehensionConsolidator.superClass_.doFinalizeSeparator.call(this, io, true)
+}
+

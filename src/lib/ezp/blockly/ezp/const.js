@@ -101,6 +101,8 @@ ezP.Const.Field = {
   NCSTR: 'NCSTR'
 }
 ezP.Const.Input = {
+  FOR: 'FOR',
+  IN: 'IN',
   ANY: 'ANY',
   LHS: 'LHS',
   RHS: 'RHS',

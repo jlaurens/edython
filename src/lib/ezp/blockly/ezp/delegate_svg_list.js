@@ -26,7 +26,7 @@ goog.require('ezP.DelegateSvg.Xpr')
  */
 ezP.DelegateSvg.List = function (prototypeName) {
   ezP.DelegateSvg.List.superClass_.constructor.call(this, prototypeName)
-  this.consolidatorClass = ezP.DelegateSvg.ListConsolidator
+  this.consolidator = new ezP.DelegateSvg.ListConsolidator()
 }
 goog.inherits(ezP.DelegateSvg.List, ezP.DelegateSvg.Xpr)
 
@@ -130,7 +130,7 @@ ezP.DelegateSvg.List.prototype.getInput = function (block, name) {
     var c8n = block.makeConnection_(Blockly.INPUT_VALUE)
     input = new Blockly.Input(Blockly.INPUT_VALUE, 'S7R_' + (n + 1), block, c8n)
     input.ezpListData = {n: n + 1, sep: sep, isSeparator: true}
-    input.appendField(new Blockly.FieldLabel(sep || ','))
+    input.appendField(new Blockly.FieldLabel(sep || this.consolidator.defaultSep))
     list.splice(i, 0, input)
     c8n = block.makeConnection_(Blockly.INPUT_VALUE)
     input = new Blockly.Input(Blockly.INPUT_VALUE, name, block, c8n)
@@ -147,11 +147,7 @@ ezP.DelegateSvg.List.prototype.getInput = function (block, name) {
  * @param {!Block} block.
  */
 ezP.DelegateSvg.List.prototype.consolidate = function (block) {
-  var C = this.consolidator
-  if (!C) {
-    C = this.consolidator = new this.consolidatorClass()
-  }
-  C.consolidate(block)
+  this.consolidator.consolidate(block)
 }
 
 /**
@@ -216,7 +212,7 @@ ezP.DelegateSvg.List.parenth_form.prototype.paddingLeft = function (block) {
  */
 ezP.DelegateSvg.List.list_display = function (prototypeName) {
   ezP.DelegateSvg.List.list_display.superClass_.constructor.call(this, prototypeName)
-  this.consolidatorClass = ezP.DelegateSvg.ListDisplayConsolidator
+  this.consolidator = new ezP.DelegateSvg.ListDisplayConsolidator()
 }
 goog.inherits(ezP.DelegateSvg.List.list_display, ezP.DelegateSvg.List)
 
@@ -303,7 +299,8 @@ ezP.DelegateSvg.List.set_display.prototype.initBlock = function(block) {
  */
 ezP.DelegateSvg.List.dict_display = function (prototypeName) {
   ezP.DelegateSvg.List.dict_display.superClass_.constructor.call(this, prototypeName)
-  this.consolidatorClass = ezP.DelegateSvg.DictDisplayConsolidator
+  
+  this.consolidator = new ezP.DelegateSvg.DictDisplayConsolidator()
 }
 goog.inherits(ezP.DelegateSvg.List.dict_display, ezP.DelegateSvg.List.set_display)
 

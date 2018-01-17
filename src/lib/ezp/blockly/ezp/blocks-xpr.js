@@ -50,6 +50,14 @@ Blockly.Blocks[ezP.Const.Xpr.dict_display] = {
   }
 }
 
+Blockly.Blocks[ezP.Const.Xpr.comprehension] = {
+  init: function () {
+    this.ezp.initBlock(this)
+  }
+}
+
+
+
 Blockly.Blocks[ezP.Const.Xpr.GET] = {
   init: function () {
     this.ezp.initBlock(this)
@@ -173,23 +181,6 @@ Blockly.Blocks[ezP.Const.Xpr.RANGE] = {
     this.appendDummyInput().appendField(new ezP.FieldLabel(')'))
     this.setInputsInline(true)
     this.setOutput(true, null)
-    this.setTooltip('')
-    this.setHelpUrl('')
-  }
-}
-
-Blockly.Blocks[ezP.Const.Xpr.comprehension] = {
-  init: function () {
-    this.appendValueInput(ezP.Const.Input.XPR)
-      .setCheck(ezP.Type.Xpr.Require.expression)
-    this.appendValueInput(ezP.Const.Input.TGT)
-      .setCheck(ezP.Type.Xpr.Require.target_list)
-      .appendField(new ezP.FieldLabel('for'))
-    this.appendValueInput(ezP.Const.Input.LST)
-      .setCheck(ezP.Type.Xpr.Require.or_test)
-      .appendField(new ezP.FieldLabel('in'))
-    this.setInputsInline(true)
-    this.setOutput(true, ezP.Type.Xpr.Provide.comprehension)
     this.setTooltip('')
     this.setHelpUrl('')
   }
