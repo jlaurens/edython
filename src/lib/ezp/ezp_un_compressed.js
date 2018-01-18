@@ -6976,7 +6976,7 @@ e=d.ezpTuple={}},B=function(a){e.grp=f;
 e.n=g;
 e.sep=h;
 d.name="S7R_"+f+"_"+g;
-e.isSeparator=p.isSeparatorEZP=!0;
+e.isSeparator=p.ezpData.s7r_=!0;
 p.setHidden(t);
 if(a)for(e.hidden=t;
 d.fieldRow.length;
@@ -6985,7 +6985,7 @@ else d.fieldRow.length||d.appendField(new ezP.FieldLabel(h||","))},y=function(){
 e.n=g;
 e.sep=h;
 d.name="TUPLE_"+f+"_"+g++;
-e.isSeparator=p.isSeparatorEZP=!1},C=function(){g=0;
+e.isSeparator=p.ezpData.s7r_=!1},C=function(){g=0;
 h=e.sep||",";
 m=0;
 k=c;
@@ -7224,7 +7224,7 @@ c+=2*ezP.Margin.V;
 return{width:b,d:"M "+(a+b-d)+","+(ezP.Margin.V+f)+e+(c-2*f)+"h -"+(b-2*d)+e+(-c+2*f)+" z"}};
 
 ezP.DelegateSvg.prototype.highlightConnection=function(a){var b=a.sourceBlock_;
-if(a.type===Blockly.INPUT_VALUE)var c=a.isConnected()?this.valuePathDef_(a.targetBlock()):a.isSeparatorEZP?this.carretPathDefWidth_(0).d:this.placeHolderPathDefWidth_(0).d;
+if(a.type===Blockly.INPUT_VALUE)var c=a.isConnected()?this.valuePathDef_(a.targetBlock()):a.ezpData.s7r_?this.carretPathDefWidth_(0).d:this.placeHolderPathDefWidth_(0).d;
 else if(a.type===Blockly.OUTPUT_VALUE)c=this.valuePathDef_(b);
 else{c=ezP.Style.Path.Selected.width/2;
 var d=" a "+c+","+c+" 0 0 1 0,";
@@ -7246,9 +7246,9 @@ if(a)for(goog.asserts.assert(k<=a,"Limit overruled "+[k,a]),e=g;
 (f=d[e])&&e<h&&f.type!==Blockly.DUMMY_INPUT;
 e+=2){var l=f.connection;
 k<a?goog.asserts.assert(f.activeConnectionEZP&&
-l&&l.isSeparatorEZP&&!l.isConnected(),"Bad separator at "+[e,d.length,f.activeConnectionEZP,l,l.isSeparatorEZP,!l.isConnected()]):goog.asserts.assert(!l&&!f.activeConnectionEZP,"Bad separator at "+[e,d.length,l,!f.activeConnectionEZP])}else for(e=g;
+l&&l.ezpData.s7r_&&!l.isConnected(),"Bad separator at "+[e,d.length,f.activeConnectionEZP,l,l.ezpData.s7r_,!l.isConnected()]):goog.asserts.assert(!l&&!f.activeConnectionEZP,"Bad separator at "+[e,d.length,l,!f.activeConnectionEZP])}else for(e=g;
 (f=d[e])&&e<h&&f.type!==Blockly.DUMMY_INPUT;
-e+=2)l=f.connection,goog.asserts.assert(l.isSeparatorEZP&&!l.isConnected(),"Bad separator at "+[e,d.length,l.isSeparatorEZP,!l.isConnected()]);
+e+=2)l=f.connection,goog.asserts.assert(l.ezpData.s7r_&&!l.isConnected(),"Bad separator at "+[e,d.length,l.ezpData.s7r_,!l.isConnected()]);
 for(e=g+1;
 f=d[e];
 e+=2){if(f.type===Blockly.DUMMY_INPUT){for(;
@@ -7256,7 +7256,7 @@ f=d[++e];
 )goog.asserts.assert(f.type===
 Blockly.DUMMY_INPUT,"No DUMMY_INPUT at "+e+"<"+d.length);
 break}l=f.connection;
-goog.asserts.assert(!l.isSeparatorEZP&&(c||l.isConnected()),"Bad input value at "+[e,d.length,!l.isSeparatorEZP,l.isConnected()])}}catch(m){throw m;
+goog.asserts.assert(!l.ezpData.s7r_&&(c||l.isConnected()),"Bad input value at "+[e,d.length,!l.ezpData.s7r_,l.isConnected()])}}catch(m){throw m;
 }console.log(b)};
 
 ezP.StatementBlockEnumerator=function(a){var b,c=[a],d,e=[0],f,g,h={next:function(){h.next=h.next_;
@@ -7324,14 +7324,14 @@ ezP.DelegateSvg.Statement.Print.prototype.getInput=function(a,b){var c=this.getI
 return null===c?ezP.DelegateSvg.Statement.Print.superClass_.getInput.call(this,a,b):c};
 
 ezP.DelegateSvg.Statement.Print.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)||this.renderDrawTupleInput_(a)&&this.didRenderDrawTupleInput_(a)||this.willRenderDrawValueInput_(a)&&this.renderDrawValueInput_(a)};
-ezP.DelegateSvg.Statement.Print.prototype.didRenderDrawTupleInput_=function(a){a.input.ezpTuple.isSeparator&&(a.separatorC6n=a.input.connection);
+ezP.DelegateSvg.Statement.Print.prototype.didRenderDrawTupleInput_=function(a){a.input.ezpTuple.isSeparator&&(a.separatorC8n=a.input.connection);
 return!0};
 
-ezP.DelegateSvg.Statement.Print.prototype.willRenderDrawValueInput_=function(a){if(a.separatorC6n){var b=this.getPrintState_(),c;
+ezP.DelegateSvg.Statement.Print.prototype.willRenderDrawValueInput_=function(a){if(a.separatorC8n){var b=this.getPrintState_(),c;
 for(c in b)if(b[c]){b=this.carretPathDefWidth_(a.cursorX).width;
-a.separatorC6n.setOffsetInBlock(a.cursorX+b/2,0);
+a.separatorC8n.setOffsetInBlock(a.cursorX+b/2,0);
 a.cursorX-=b;
-break}delete a.separatorC6n}return!0};
+break}delete a.separatorC8n}return!0};
 
 ezP.DelegateSvg.Statement.Print.prototype.getPrintState_=function(a){if(this.printState_)return this.printState_;
 for(var b=0,c;
@@ -7648,7 +7648,7 @@ a.length||(a=Blockly.Python.prefixLines("MISSING_STATEMENT\n",Blockly.Python.IND
 return"class "+(b.length?b:"MISSING_CLASS")+"("+(c.length?c:"MISSING_NCSTR")+"):\n"+a};
 ezP.RenderedConnection={};
 ezP.Connection=function(a,b){ezP.Connection.superClass_.constructor.call(this,a,b);
-this.isSeparatorEZP=!1};
+this.ezpData.s7r_=!1};
 goog.inherits(ezP.Connection,Blockly.Connection);
 ezP.inherits(Blockly.RenderedConnection,ezP.Connection);
 ezP.Connection.prototype.highlight=Blockly.RenderedConnection.prototype.highlight;

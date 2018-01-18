@@ -1,0 +1,25 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+</head>
+<body>  
+<pre>
+target ::= identifier
+  | parenth_target_list
+  | bracket_target_list
+  | attributeref
+  | subscription
+  | slicing
+  | starred_target
+bracket_target_list ::= &quot;[&quot; void_target_list &quot;]&quot;
+parenth_target_list ::= &quot;(&quot; void_target_list &quot;)&quot;
+starred_target ::= starred
+starred_item ::= starred
+starred_expression ::= starred
+starred ::= "*" something
+</pre>
+</body>
+</html>

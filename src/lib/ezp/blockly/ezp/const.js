@@ -37,11 +37,15 @@ ezP.Const.Xpr = {
   list_display: 'ezp_xpr_list_display',
   set_display: 'ezp_xpr_set_display',
   dict_display: 'ezp_xpr_dict_display',
-// in progress
-  starred_item: 'ezp_xpr_starred_item',
   comprehension: 'ezp_xpr_comprehension',
+  generator_expression: 'ezp_xpr_generator_expression',
+  target_list: 'ezp_xpr_target_list',
+  // in progress
   comp_for: 'ezp_xpr_comp_for',
   comp_if: 'ezp_xpr_comp_if',
+  yield_expression_from: 'ezp_xpr_yield_expression_from',
+  yield_expression_list: 'ezp_xpr_yield_expression_list',
+  starred_item: 'ezp_xpr_starred_item',
   star_or_expr: 'ezp_xpr_star_or_expr',
   parameter: 'ezp_xpr_parameter',
   defparameter: 'ezp_xpr_defparameter',
@@ -103,6 +107,8 @@ ezP.Const.Field = {
 ezP.Const.Input = {
   FOR: 'FOR',
   IN: 'IN',
+  COMPREHENSION: 'COMP',
+  // IN PROGRESS
   ANY: 'ANY',
   LHS: 'LHS',
   RHS: 'RHS',
@@ -119,7 +125,7 @@ ezP.Const.Input = {
   ANN: 'ANN',
   DO: 'DO',
   DFT: 'DFT',
-  ID: 'ID'
+  ID: 'ID',
 }
 
 ezP.Op = {

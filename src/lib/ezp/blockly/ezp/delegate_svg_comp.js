@@ -31,10 +31,13 @@ goog.inherits(ezP.DelegateSvg.Xpr.Comprehension, ezP.DelegateSvg.List)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.comprehension, ezP.DelegateSvg.Xpr.Comprehension)
 
+
 /**
  * Initialize the block.
  * Called by the block's init method.
  * For ezPython.
+ * The FOR value is a connection to a sealed block
+ * This connection will be sent far away to prevent block (dis)connection.
  * @param {!Block} block.
  * @private
  */
@@ -42,9 +45,10 @@ ezP.DelegateSvg.Xpr.Comprehension.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Xpr.Comprehension.superClass_.initBlock.call(this, block)
   block.appendValueInput(ezP.Const.Input.XPR)
     .setCheck(ezP.T3.Require.expression)
-  block.appendValueInput(ezP.Const.Input.FOR)
-    .setCheck(ezP.Type.Xpr.Require.target_list)
+  var input = block.appendValueInput(ezP.Const.Input.FOR)
+    .setCheck(ezP.Type.Xpr.target_list)
     .appendField(new ezP.FieldLabel('for'))
+  input.connection.ezpData = {sealed_: true}
   this.inputIN = block.appendValueInput(ezP.Const.Input.IN)
     .setCheck(ezP.T3.Require.or_test)
     .appendField(new ezP.FieldLabel('in'))
@@ -148,4 +152,39 @@ ezP.DelegateSvg.Xpr.Comprehension.prototype.renderDrawListInput_ = function (io)
     return true
   }
   return ezP.DelegateSvg.Xpr.Comprehension.superClass_.renderDrawListInput_.call(this, io)
+}
+
+/**
+ * Class for a DelegateSvg, generator expression block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Xpr.GeneratorExpression = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.GeneratorExpression.superClass_.constructor.call(this, prototypeName)
+}
+goog.inherits(ezP.DelegateSvg.Xpr.GeneratorExpression, ezP.DelegateSvg.Xpr)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.generator_expression, ezP.DelegateSvg.Xpr.GeneratorExpression)
+
+/**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Xpr.GeneratorExpression.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Xpr.GeneratorExpression.superClass_.initBlock.call(this, block)
+  block.appendValueInput(ezP.Const.Input.COMPREHENSION)
+    .setCheck(ezP.T3.Require.comprehension)
+    .appendField(new ezP.FieldLabel('('))
+    .ezpData = {sealed_: true}
+  block.appendDummyInput().appendField(new ezP.FieldLabel(')'))
+  block.setInputsInline(true)
+  block.setOutput(true, ezP.T3.generator_expression)
+  block.setTooltip('')
+  block.setHelpUrl('')
 }

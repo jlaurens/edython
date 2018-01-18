@@ -65,8 +65,44 @@ ezP.DelegateSvg.Manager = (function () {
     // console.log(prototypeName+' -> '+Ctor)
     Ctors[prototypeName] = Ctor
   }
+  me.display = function() {
+    for (var k in Object.keys(Ctors)) {
+      console.log(''+k+'->'+Ctors[k])
+    }
+  }
   return me
 }())
+
+/**
+ * This is the shape used to draw the outline of a block
+ * @private
+ */
+ezP.DelegateSvg.prototype.svgPathShape_ = undefined
+
+/**
+ * This is the shape used to draw the background of a block
+ * @private
+ */
+ezP.DelegateSvg.prototype.svgPathContour_ = undefined
+
+/**
+ * This is the shape used to draw a collapsed block.
+ * Background or outline ?
+ * @private
+ */
+ezP.DelegateSvg.prototype.svgPathCollapsed_ = undefined
+
+/**
+ * This is the shape used to draw a block...
+ * @private
+ */
+ezP.DelegateSvg.prototype.svgPathInline_ = undefined
+
+/**
+ * This is the shape used to draw an highlighted block contour.
+ * @private
+ */
+ezP.DelegateSvg.prototype.svgPathHighlight_ = undefined
 
 /**
  * Initialize a block.
@@ -77,10 +113,13 @@ ezP.DelegateSvg.Manager = (function () {
 ezP.DelegateSvg.prototype.init = function (block) {
   ezP.DelegateSvg.superClass_.init.call(this, block)
   goog.dom.removeNode(block.svgPath_)
+  delete block.svgPath_
   block.svgPath_ = undefined
   goog.dom.removeNode(block.svgPathLight_)
+  delete block.svgPathLight_
   block.svgPathLight_ = undefined
   goog.dom.removeNode(block.svgPathDark_)
+  delete block.svgPathDark_
   block.svgPathDark_ = undefined
   this.svgPathShape_ = Blockly.utils.createSvgElement('path', {}, block.svgGroup_)
   this.svgPathContour_ = Blockly.utils.createSvgElement('path', {}, block.svgGroup_)
@@ -89,8 +128,6 @@ ezP.DelegateSvg.prototype.init = function (block) {
     {'class': 'ezp-path-contour'}, block.svgGroup_)
   this.svgPathHighlight_ = Blockly.utils.createSvgElement('path',
     {'class': 'ezp-path-selected'}, null)
-  this.svgDottedLine_ = Blockly.utils.createSvgElement('line',
-    {'class': 'ezp-path-dotted'}, null)
   Blockly.utils.addClass(/** @type {!Element} */ (block.svgGroup_),
     'ezp-block')
 }
@@ -125,8 +162,6 @@ ezP.DelegateSvg.prototype.disposeInternal = function () {
   this.svgPathInline_ = undefined
   goog.dom.removeNode(this.svgPathHighlight_)
   this.svgPathHighlight_ = undefined
-  goog.dom.removeNode(this.svgDottedLine_)
-  this.svgDottedLine_ = undefined
   ezP.DelegateSvg.superClass_.disposeInternal.call(this)
 }
 
@@ -167,6 +202,14 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
 }
 
 /**
+ * Whether the block is sealed to its parent.
+ * The sealed status is decided at init time.
+ * The corresponding input.ezpData.sealed_ is set to true.
+ * @private
+ */
+ezP.DelegateSvg.prototype.sealed_ = undefined
+
+/**
  * Will draw the block. Default implementation does nothing.
  * The print statement needs some preparation before drawing.
  * @param {!Block} block.
@@ -174,31 +217,43 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
  */
 ezP.DelegateSvg.prototype.willRender_ = function (block) {
   if (block.isShadow()) {
-    Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathShape_),
+    if (this.svgPathShape_) {
+      Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathShape_),
       'ezp-path-shadow-shape')
-    Blockly.utils.removeClass(/** @type {!Element} */ (this.svgPathShape_),
+      Blockly.utils.removeClass(/** @type {!Element} */ (this.svgPathShape_),
       'ezp-path-shape')
-    Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathContour_),
+    }
+    if (this.svgPathContour_) {
+      Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathContour_),
       'ezp-path-shadow-contour')
-    Blockly.utils.removeClass(/** @type {!Element} */ (this.svgPathContour_),
+      Blockly.utils.removeClass(/** @type {!Element} */ (this.svgPathContour_),
       'ezp-path-contour')
-    Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathCollapsed_),
+    }
+    if (this.svgPathCollapsed_) {
+      Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathCollapsed_),
       'ezp-path-shadow-collapsed')
-    Blockly.utils.removeClass(/** @type {!Element} */ (this.svgPathCollapsed_),
+      Blockly.utils.removeClass(/** @type {!Element} */ (this.svgPathCollapsed_),
       'ezp-path-collapsed')
+    }
   } else {
-    Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathShape_),
+    if (this.svgPathShape_) {
+      Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathShape_),
       'ezp-path-shape')
-    Blockly.utils.removeClass(/** @type {!Element} */ (this.svgPathShape_),
+      Blockly.utils.removeClass(/** @type {!Element} */ (this.svgPathShape_),
       'ezp-path-shadow-shape')
-    Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathContour_),
+    }
+    if (this.svgPathContour_) {
+      Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathContour_),
       'ezp-path-contour')
-    Blockly.utils.removeClass(/** @type {!Element} */ (this.svgPathContour_),
-      'ezp-path-shadow-contour')
-    Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathCollapsed_),
+      Blockly.utils.removeClass(/** @type {!Element} */ (this.svgPathContour_),
+        'ezp-path-shadow-contour')
+    }
+    if (this.svgPathCollapsed_) {
+      Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathCollapsed_),
       'ezp-path-collapsed')
-    Blockly.utils.removeClass(/** @type {!Element} */ (this.svgPathCollapsed_),
+      Blockly.utils.removeClass(/** @type {!Element} */ (this.svgPathCollapsed_),
       'ezp-path-shadow-collapsed')
+    }
   }
 }
 /**
@@ -217,7 +272,7 @@ ezP.DelegateSvg.prototype.didRender_ = function (block) {
  */
 ezP.DelegateSvg.prototype.layoutConnections_ = function (block) {
   if (block.outputConnection) {
-    block.outputConnection.setOffsetInBlock(0, 0)
+    block.outputConnection.setOffsetInBlock(this.sealed_? -100:0, 0)
   } else {
     if (block.previousConnection) {
       block.previousConnection.setOffsetInBlock(0, 0)
@@ -318,15 +373,22 @@ ezP.DelegateSvg.prototype.alignRightEdges_ = function (block) {
  * @param {!ezP.Block} block.
  * @private
  */
+ezP.DelegateSvg.prototype.updatePath_ = function (block, path, def) {
+  if (!!path) {
+    path.setAttribute('d', def.call(this,block))
+  }
+}
+
+/**
+ * Compute the paths of the block depending on its size.
+ * @param {!ezP.Block} block.
+ * @private
+ */
 ezP.DelegateSvg.prototype.didChangeSize_ = function (block) {
-  var d = this.shapePathDef_(block)
-  this.svgPathShape_.setAttribute('d', d)
-  d = this.highlightedPathDef_(block)
-  this.svgPathHighlight_.setAttribute('d', d)
-  d = this.contourPathDef_(block)
-  this.svgPathContour_.setAttribute('d', d)
-  d = this.collapsedPathDef_(block)
-  this.svgPathCollapsed_.setAttribute('d', d)
+  this.updatePath_(block, this.svgPathShape_, this.shapePathDef_)
+  this.updatePath_(block, this.svgPathHighlight_, this.highlightedPathDef_)
+  this.updatePath_(block, this.svgPathContour_, this.contourPathDef_)
+  this.updatePath_(block, this.svgPathCollapsed_, this.collapsedPathDef_)
 }
 
 /**
@@ -335,7 +397,9 @@ ezP.DelegateSvg.prototype.didChangeSize_ = function (block) {
  * @private
  */
 ezP.DelegateSvg.prototype.paddingRight = function (block) {
-  if (block.outputConnection) {
+  if (this.sealed_) {
+    return 0
+  } else if (block.outputConnection) {
     return ezP.Font.space
   } else {
     return ezP.Padding.r()
@@ -348,7 +412,9 @@ ezP.DelegateSvg.prototype.paddingRight = function (block) {
  * @private
  */
 ezP.DelegateSvg.prototype.paddingLeft = function (block) {
-  if (block.outputConnection) {
+  if (this.sealed_) {
+    return 0
+  } else if (block.outputConnection) {
     return ezP.Font.space
   } else {
     return ezP.Padding.l()
@@ -486,17 +552,28 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   if (!io.canValue || io.input.type !== Blockly.INPUT_VALUE) {
     return false
   }
-  var c8n = io.input.connection
   this.renderDrawFields_(io)
+  var c8n = io.input.connection
   if (c8n) {
-    c8n.setOffsetInBlock(io.cursorX, 0)
-    if (c8n.isConnected()) {
-      var target = c8n.targetBlock()
+    var ezp = c8n.ezpData
+    var sealed = !!ezp && ezp.sealed_
+    c8n.setOffsetInBlock(sealed? io.cursorX-100: io.cursorX, 0)
+    var target = c8n.targetBlock()
+    if (!!target) {
       var root = target.getSvgRoot()
-      if (root) {
+      if (!!root) {
         var bBox = target.getHeightWidth()
         root.setAttribute('transform', 'translate(' + io.cursorX + ', 0)')
         io.cursorX += bBox.width
+        target.ezp.sealed_ = sealed
+        if (sealed && !!target.ezp.svgPathContour_) {
+          goog.dom.removeNode(target.ezp.svgPathShape_)
+          delete target.ezp.svgPathShape_
+          target.ezp.svgPathShape_ = undefined
+          goog.dom.removeNode(target.ezp.svgPathContour_)
+          delete target.ezp.svgPathContour_
+          target.ezp.svgPathContour_ = undefined
+        }
         target.render()
       }
     } else {
@@ -589,7 +666,7 @@ ezP.DelegateSvg.prototype.highlightConnection = function (c8n) {
   if (c8n.type === Blockly.INPUT_VALUE) {
     if (c8n.isConnected()) {
       steps = this.valuePathDef_(c8n.targetBlock())
-    } else if (c8n.isSeparatorEZP) {
+    } else if (c8n.ezpData.s7r_) {
       steps = this.carretPathDefWidth_(0).d
     } else {
       steps = this.placeHolderPathDefWidth_(0).d
@@ -652,7 +729,7 @@ ezP.DelegateSvg.prototype.assertBlockInputTuple__ = function (block, comment, ig
         }
         var c8n = input.connection
         if (n < max) {
-          goog.asserts.assert(input.activeConnectionEZP && c8n && c8n.isSeparatorEZP && !c8n.isConnected(), 'Bad separator at ' + [i, list.length, input.activeConnectionEZP, c8n, c8n.isSeparatorEZP, !c8n.isConnected()])
+          goog.asserts.assert(input.activeConnectionEZP && c8n && c8n.ezpData.s7r_ && !c8n.isConnected(), 'Bad separator at ' + [i, list.length, input.activeConnectionEZP, c8n, c8n.ezpData.s7r_, !c8n.isConnected()])
         } else {
           goog.asserts.assert(!c8n && !input.activeConnectionEZP, 'Bad separator at ' + [i, list.length, c8n, !input.activeConnectionEZP])
         }
@@ -663,7 +740,7 @@ ezP.DelegateSvg.prototype.assertBlockInputTuple__ = function (block, comment, ig
           break
         }
         c8n = input.connection
-        goog.asserts.assert(c8n.isSeparatorEZP && !c8n.isConnected(), 'Bad separator at ' + [i, list.length, c8n.isSeparatorEZP, !c8n.isConnected()])
+        goog.asserts.assert(c8n.ezpData.s7r_ && !c8n.isConnected(), 'Bad separator at ' + [i, list.length, c8n.ezpData.s7r_, !c8n.isConnected()])
       }
     }
     for (i = first + 1; (input = list[i]); i += 2) {
@@ -674,7 +751,7 @@ ezP.DelegateSvg.prototype.assertBlockInputTuple__ = function (block, comment, ig
         break
       }
       c8n = input.connection
-      goog.asserts.assert(!c8n.isSeparatorEZP && (ignore || c8n.isConnected()), 'Bad input value at ' + [i, list.length, !c8n.isSeparatorEZP, c8n.isConnected()])
+      goog.asserts.assert(!c8n.ezpData.s7r_ && (ignore || c8n.isConnected()), 'Bad input value at ' + [i, list.length, !c8n.ezpData.s7r_, c8n.isConnected()])
     }
   } catch (e) {
     throw e
@@ -826,17 +903,22 @@ ezP.DelegateSvg.prototype.populateContextMenu_ = function (block, menu) {
 
 /**
  * Show the context menu for the given block.
+ * Only blocks with a svgShape_ have a context menu.
+ * Sealed blocks won't have a context menu,
+ * only the parent block will have.
  * @param {!Blockly.Block} block The block.
  * @param {!Event} e Mouse event.
  * @private
  */
 ezP.DelegateSvg.prototype.showContextMenu_ = function (block, e) {
-  var menu = new ezP.PopupMenu(undefined, block.ezp.ContextMenuRenderer)
-  this.populateContextMenu_(block, menu)
-  var bBox = block.ezp.svgPathShape_.getBBox()
-  var scaledHeight = bBox.height * block.workspace.scale
-  var xy = goog.style.getPageOffset(block.svgGroup_)
-  menu.showMenu(block.svgGroup_, xy.x, xy.y + scaledHeight+2)
+  if (this.svgPathShape_) {
+    var menu = new ezP.PopupMenu(undefined, this.ContextMenuRenderer)
+    this.populateContextMenu_(block, menu)
+    var bBox = this.svgPathShape_.getBBox()
+    var scaledHeight = bBox.height * block.workspace.scale
+    var xy = goog.style.getPageOffset(block.svgGroup_)
+    menu.showMenu(block.svgGroup_, xy.x, xy.y + scaledHeight+2)
+    }
 }
 
 /**

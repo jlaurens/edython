@@ -1,0 +1,20 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<body>
+<pre>
+positional_arguments ::=  positional_argument ("," positional_argument)*
+positional_argument = expression | starred_expression
+starred_expression ::= "*" expression
+starred_and_keywords ::=  starred_and_keyword
+  ("," starred_and_keyword)*
+starred_and_keyword ::=  starred_expression | keyword_item
+keywords_arguments ::=  keywords_argument
+  ("," keywords_argument)*
+keywords_argument ::= keyword_item | double_starred_expression
+double_starred_expression ::= "**" expression
+</pre>
+</body>
+</html>

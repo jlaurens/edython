@@ -56,6 +56,36 @@ Blockly.Blocks[ezP.Const.Xpr.comprehension] = {
   }
 }
 
+Blockly.Blocks[ezP.Const.Xpr.generator_expression] = {
+  init: function () {
+    this.ezp.initBlock(this)
+  }
+}
+
+Blockly.Blocks[ezP.Const.Xpr.target_list] = {
+  init: function () {
+    this.ezp.initBlock(this)
+  }
+}
+
+
+
+
+
+
+Blockly.Blocks[ezP.Const.Xpr.yield_expression_from] = {
+  init: function () {
+    this.ezp.initBlock(this)
+  }
+}
+
+Blockly.Blocks[ezP.Const.Xpr.yield_expression_list] = {
+  init: function () {
+    this.ezp.initBlock(this)
+  }
+}
+
+
 
 
 Blockly.Blocks[ezP.Const.Xpr.GET] = {

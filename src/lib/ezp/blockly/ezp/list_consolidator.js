@@ -68,7 +68,7 @@ ezP.DelegateSvg.ListConsolidator.prototype.doFinalizePlaceholder = function (io)
   io.ezp.n = io.n
   io.ezp.sep = io.sep
   io.input.name = 'ITEM_' + io.n++
-  io.ezp.isSeparator = io.c8n.isSeparatorEZP = false
+  io.ezp.isSeparator = io.c8n.ezpData.s7r_ = false
   io.input.setCheck(this.getCheck(io))
 }
 
@@ -107,7 +107,7 @@ ezP.DelegateSvg.ListConsolidator.prototype.doFinalizeSeparator = function (io, e
   io.ezp.n = io.n
   io.ezp.sep = io.sep
   io.input.name = 'S7R_' + io.n
-  io.ezp.isSeparator = io.c8n.isSeparatorEZP = true
+  io.ezp.isSeparator = io.c8n.ezpData.s7r_ = true
   if (extreme) {
     while (io.input.fieldRow.length) {
       io.input.fieldRow.shift().dispose()
@@ -372,5 +372,26 @@ ezP.DelegateSvg.ComprehensionConsolidator.prototype.getCheck = function (io) {
  */
 ezP.DelegateSvg.ComprehensionConsolidator.prototype.doFinalizeSeparator = function (io, extreme) {
   ezP.DelegateSvg.ComprehensionConsolidator.superClass_.doFinalizeSeparator.call(this, io, true)
+}
+
+
+/**
+ * List consolidator for target_list.
+ * Remove empty place holders, add separators
+ * Main entry: consolidate
+ */
+ezP.DelegateSvg.TargetConsolidator = function() {
+  ezP.DelegateSvg.TargetConsolidator.superClass_.constructor.call(this)
+  this.canBeVoid = false
+  this.defaultSep = ','
+}
+goog.inherits(ezP.DelegateSvg.TargetConsolidator, ezP.DelegateSvg.ListConsolidator)
+
+/**
+ * Returns the required types for the current input.
+ * @param {!Object} io parameter.
+ */
+ezP.DelegateSvg.TargetConsolidator.prototype.getCheck = function (io) {
+  return ezP.T3.Require.target_list
 }
 

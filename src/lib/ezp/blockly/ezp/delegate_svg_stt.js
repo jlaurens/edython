@@ -263,7 +263,7 @@ ezP.DelegateSvg.Statement.Print.prototype.renderDrawInput_ = function (io) {
  */
 ezP.DelegateSvg.Statement.Print.prototype.didRenderDrawTupleInput_ = function (io) {
   if (io.input.ezpTuple.isSeparator) {
-    io.separatorC6n = io.input.connection
+    io.separatorC8n = io.input.connection
   }
   return true
 }
@@ -274,18 +274,18 @@ ezP.DelegateSvg.Statement.Print.prototype.didRenderDrawTupleInput_ = function (i
  * @private
  */
 ezP.DelegateSvg.Statement.Print.prototype.willRenderDrawValueInput_ = function (io) {
-  if (io.separatorC6n) {
+  if (io.separatorC8n) {
     var state = this.getPrintState_()
     for (var x in state) {
       if (state[x]) {
         var pw = this.carretPathDefWidth_(io.cursorX)
         var w = pw.width
-        io.separatorC6n.setOffsetInBlock(io.cursorX + w / 2, 0)
+        io.separatorC8n.setOffsetInBlock(io.cursorX + w / 2, 0)
         io.cursorX -= w
         break
       }
     }
-    delete io.separatorC6n
+    delete io.separatorC8n
   }
   return true
 }

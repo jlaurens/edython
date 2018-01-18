@@ -29,7 +29,7 @@ goog.require('ezP.Type')
  */
 ezP.Connection = function (source, type) {
   ezP.Connection.superClass_.constructor.call(this, source, type)
-  this.isSeparatorEZP = false
+  this.ezpData = {}
 }
 goog.inherits(ezP.Connection, Blockly.Connection)
 
@@ -158,4 +158,21 @@ Blockly.RenderedConnection.prototype.bumpAwayFrom_ = function (staticConnection)
   }
   rootBlock.moveBy(dx, dy)
   selected || rootBlock.removeSelect()
+}
+
+/**
+ * Check if the two connections can be dragged to connect to each other.
+ * A sealed connection is never allowed.
+ * @param {!Blockly.Connection} candidate A nearby connection to check.
+ * @param {number} maxRadius The maximum radius allowed for connections, in
+ *     workspace units.
+ * @return {boolean} True if the connection is allowed, false otherwise.
+ */
+ezP.Connection.prototype.isConnectionAllowed = function(candidate,
+  maxRadius) {
+if (this.ezpData.sealed_ || candidate.ezpData.sealed_) {
+  return false
+}
+return ezP.Connection.superClass_.isConnectionAllowed.call(this,
+  candidate)
 }

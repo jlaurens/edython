@@ -70,7 +70,14 @@ Blockly.Blocks['ezp_xpr_fake_or_test'] = {
 Blockly.Blocks['ezp_xpr_fake_target_list'] = {
   init: function () {
     this.appendDummyInput().appendField(new ezP.FieldLabel('target_list'))
-    this.setOutput(true, ezP.T3.Require.target_list)
+    this.setOutput(true, ezP.T3.target_list)
+  }
+}
+
+Blockly.Blocks['ezp_xpr_fake_target'] = {
+  init: function () {
+    this.appendDummyInput().appendField(new ezP.FieldLabel('target'))
+    this.setOutput(true, ezP.T3.target)
   }
 }
 
@@ -80,3 +87,30 @@ Blockly.Blocks['ezp_xpr_fake_expression'] = {
     this.setOutput(true, ezP.T3.Require.expression)
   }
 }
+
+Blockly.Blocks['ezp_xpr_fake_identifier'] = {
+  init: function () {
+    this.appendDummyInput().appendField(new ezP.FieldLabel('identifier'))
+    this.setOutput(true, ezP.T3.identifier)
+  }
+}
+
+Blockly.Blocks['ezp_xpr_fake_with_sealed'] = {
+  init: function () {
+    this.ezp.initBlock(this)
+  }
+}
+
+Blockly.Blocks['ezp_xpr_fake_sealed'] = {
+  init: function () {
+    this.ezp.initBlock(this)
+  }
+}
+
+Blockly.Blocks['ezp_xpr_fake'] = {
+  init: function () {
+    this.appendDummyInput().appendField(new ezP.FieldLabel('any'))
+    this.setOutput(true, null)
+  }
+}
+

@@ -65,13 +65,29 @@ ezP.BlockSvg.prototype.getInput = function (name) {
 
 /**
  * Select this block.  Highlight it visually.
+ * Sealed blocks are not selectable.
+ */
+ezP.BlockSvg.prototype.select = function() {
+  if (this.ezp.sealed_ && this.getParent()) {
+    // Shadow blocks should not be selected.
+    this.getParent().select();
+    return;
+  }
+  ezP.BlockSvg.superClass_.select.call(this)
+}
+
+/**
+ * Select this block.  Highlight it visually.
  */
 ezP.BlockSvg.prototype.addSelect = function () {
-  if (this.ezp.svgPathHighlight_.parentNode) {
-    return
+  if (!this.sealed_) {
+    if (!this.ezp.svgPathHighlight_ ||
+      this.ezp.svgPathHighlight_.parentNode) {
+      return
+    }
+    Blockly.utils.addClass(this.svgGroup_, 'ezp-selected')
+    this.svgGroup_.appendChild(this.ezp.svgPathHighlight_)
   }
-  Blockly.utils.addClass(this.svgGroup_, 'ezp-selected')
-  this.svgGroup_.appendChild(this.ezp.svgPathHighlight_)
   for (var _ = 0, input; (input = this.inputList[_++]);) {
     for (var __ = 0, field; (field = input.fieldRow[__++]);) {
       var addSelect = field.addSelect
@@ -86,10 +102,14 @@ ezP.BlockSvg.prototype.addSelect = function () {
  * Unselect this block.  Remove its highlighting.
  */
 ezP.BlockSvg.prototype.removeSelect = function () {
-  if (!this.ezp.svgPathHighlight_.parentNode) {
-    return
+  if (!this.sealed_) {
+    if (!this.ezp.svgPathHighlight_
+      || !this.ezp.svgPathHighlight_.parentNode) {
+      return
+    }
+    Blockly.utils.removeClass(this.svgGroup_, 'ezp-selected')
+    goog.dom.removeNode(this.ezp.svgPathHighlight_)
   }
-  Blockly.utils.removeClass(this.svgGroup_, 'ezp-selected')
   for (var _ = 0, input; (input = this.inputList[_++]);) {
     for (var __ = 0, field; (field = input.fieldRow[__++]);) {
       var removeSelect = field.removeSelect
@@ -98,7 +118,6 @@ ezP.BlockSvg.prototype.removeSelect = function () {
       }
     }
   }
-  goog.dom.removeNode(this.ezp.svgPathHighlight_)
 }
 
 /**

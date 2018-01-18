@@ -80,25 +80,25 @@ class Xprs:
     re1 = re.compile(r'\s*\|\s*')
     re2 = re.compile(r'^\s*([a-z_]+)\s*$')
 
-    def __init__(self, path):
+    def __init__(self, *paths):
         self.all = {}
-        self.path = path
-        with path.open() as f:
-            data = f.read()
-            parser = MyHTMLParser()
-            parser.feed(data)
-            lines = data.split('\n')
-            n = 0
-            matcher = re.compile(r"\b(\S*)\s*::=\s*(.*)")
-            for x in parser.get_pre_pos_data():
-                data = x[0].replace('\n ','')
-                data = re.sub(r' +', ' ', data)
-                for l in data.splitlines():
-                    m = matcher.match(l)
-                    if m and m.group(1) != 'name':
-                        t = Xpr(n, m.group(1), m.group(2))
-                        self.all[t.name] = t
-                        n += 1
+        matcher = re.compile(r"\b(\S*?)(_stmt|_statement)?\s*::=\s*(.*)")
+        for path in paths:
+            print('Parsing:', path)
+            with path.open() as f:
+                data = f.read()
+                parser = MyHTMLParser()
+                parser.feed(data)
+                n = 0
+                for x in parser.get_pre_pos_data():
+                    data = x[0].replace('\n ','')
+                    data = re.sub(r' +', ' ', data)
+                    for l in data.splitlines():
+                        m = matcher.match(l)
+                        if m and m.group(1) != 'name' and not m.group(2):
+                            t = Xpr(n, m.group(1), m.group(3))
+                            self.all[t.name] = t
+                            n += 1
 
     def __repr__(self):
         return repr(self.__dict__)
@@ -249,6 +249,35 @@ class Xprs:
     def print_provide_tree(self, filter = None):
         self.provide_root.deep_print(filter=filter, sep='<-')
 
+
+    def print_T3(self):
+        Ts = sorted(self.all.values(), key=lambda t: (t.n, t.name))
+        i = 0
+        for t in Ts:
+            t.short_name = str(i)
+            i += 1
+        print('ezP.T3 = {')
+        for t in Ts:
+            print(' ', t.name, ': "', t.short_name, '",', sep='')
+        print('}\n')
+        print('ezP.T3.Require = {')
+        for t in Ts:
+            if len(t.deep_require):
+                print(' ', t.name, ': [', sep='')
+                for tt in sorted((tt for tt in t.deep_require), key=lambda t: (t.n, t.name)):
+                    print('    ezP.T3.', tt.name, ',', sep='')
+                print(' ],')
+        print('}\n')
+        print('ezP.T3.Provide = {')
+        for t in Ts:
+            if len(t.deep_provide):
+                print(' ', t.name, ': [', sep='')
+                for tt in sorted((tt for tt in t.deep_provide), key=lambda t: (t.n, t.name)):
+                    print('    ezP.T3.', tt.name, ',', sep='')
+                print(' ],')
+        print('}\n')
+
+
 class Node:
     def __init__(self, parent = None, type = None):
         self.parent = parent
@@ -283,97 +312,18 @@ class Node:
         for c in self.children.values():
             c.deep_print(filter, sep = sep)
 
-    def print_T3(self):
-        Ts = sorted(self.all.values(), key=lambda t: (t.n, t.name))
-        i = 0
-        for t in Ts:
-            t.short_name = str(i)
-            i += 1
-        print('ezP.T3 = {')
-        for t in Ts:
-            print(' ', t.name, ': "', t.short_name, '",', sep='')
-        print('}\n')
-        print('ezP.T3.Require = {')
-        for t in Ts:
-            if len(t.deep_require):
-                print(' ', t.name, ': [', sep='')
-                for tt in sorted((tt for tt in t.deep_require), key=lambda t: (t.n, t.name)):
-                    print('    ezP.T3.', tt.name, ',', sep='')
-                print(' ],')
-        print('}\n')
-        print('ezP.T3.Provide = {')
-        for t in Ts:
-            if len(t.deep_provide):
-                print(' ', t.name, ': [', sep='')
-                for tt in sorted((tt for tt in t.deep_provide), key=lambda t: (t.n, t.name)):
-                    print('    ezP.T3.', tt.name, ',', sep='')
-                print(' ],')
-        print('}\n')
-
 
 if __name__ != "main":
-    path = pathlib.Path(__file__).parent / 'Expressions.html'
+    path = pathlib.Path(__file__).parent / 'expressions.html'
     print(path)
-    types = Xprs(path)
+    path2 = pathlib.Path(__file__).parent / 'simple_stmts.html'
+    print(path2)
+    path3 = pathlib.Path(__file__).parent / 'simple_stmts_xtd.html'
+    print(path3)
+    types = Xprs(path, path2, path3)
+    #types = Xprs(path3)
     print('# Make the require and the provide')
     types.make_shallow()
     print('# Make the deep')
     types.make_deep()
-    print('PROVIDE')
-    for t in types:
-        print(t.name, '->', ', '.join(tt.name for tt in t.provide))
-    print('REQUIRE')
-    for t in types:
-        print(t.name, '<-', ', '.join(tt.name for tt in t.require))
-
-
-    exit(0)
-
-    required = set()
-    for t in types:
-        required |= set(t.deep_require)
-        print('required', t.name, len(required), list(tt.name for tt in required))
-    provided = set()
-    for t in types:
-        provided |= set(t.deep_provide)
-        print('provided', t.name, len(provided), list(tt.name for tt in provided))
-    used = required | provided
-    print('required:', len(required))
-    print('\n'.join(t.name + (': wrapper' if t.wrapper else '') for t in required))
-    print('used:',
-          len([t for t in used if not t.wrapper]),
-          len([t for t in used if t.wrapper]),
-          len([t for t in used if t.one_shot]))
-    print('\n'.join(t.name for t in used if not t.wrapper))
-    print('one_shot:',[t.name for t in used if t.one_shot])
-    print('wrapper:',[t.name for t in used if t.wrapper])
-    print('# Make the require tree')
-    types.make_require_tree()
-    types.print_require_tree()
-    print('# Make the provide tree')
-    types.make_provide_tree()
-    types.print_provide_tree()
-
-
-
-    exit(0)
-    print('# Remove unnecessary')
-    #types.remove_type('atom')
-    #types.remove_type('enclosure')
-    print('# Print the provide')
-    #types.print_provide()
-    print('# Print the require')
-    #types.print_require()
-    for t in types:
-        print(t.name, ':=', t.definition)
-        print(t.name, '::=', t.short_definition)
-        print(t.name, '<-', ', '.join(tt.name for tt in t.deep_require))
-        print(t.name, '->', ', '.join(tt.name for tt in t.deep_provide))
-    exit(0)
-    print('# Make the require tree')
-    types.make_require_tree()
-    types.print_require_tree()
-    print('# Make the provide tree')
-    types.make_provide_tree()
-    types.print_provide_tree()
-    print('\n\n\nCore expression types:')
+    types.print_T3()

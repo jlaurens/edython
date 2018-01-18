@@ -305,3 +305,34 @@ ezP.DelegateSvg.List.dict_display = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.List.dict_display, ezP.DelegateSvg.List.set_display)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.dict_display, ezP.DelegateSvg.List.dict_display)
+
+
+/**
+ * Class for a DelegateSvg, target_list block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.List.target = function (prototypeName) {
+  ezP.DelegateSvg.List.target.superClass_.constructor.call(this, prototypeName)
+  this.consolidator = new ezP.DelegateSvg.TargetConsolidator()
+}
+goog.inherits(ezP.DelegateSvg.List.target, ezP.DelegateSvg.List)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.target_list, ezP.DelegateSvg.List.target)
+
+/**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.List.target.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.List.target.superClass_.initBlock.call(this, block)
+  block.appendValueInput('ITEM_0')
+  block.setOutput(true, ezP.T3.target_list)
+}

@@ -198,7 +198,7 @@ ezP.TupleConsolidator_ = function () {
     tuple.n = n
     tuple.sep = sep
     input.name = 'S7R_' + grp + '_' + n
-    tuple.isSeparator = c8n.isSeparatorEZP = true
+    tuple.isSeparator = c8n.ezpData.s7r_ = true
     c8n.setHidden(hidden)
     if (extreme) {
       tuple.hidden = hidden
@@ -214,7 +214,7 @@ ezP.TupleConsolidator_ = function () {
     tuple.n = n
     tuple.sep = sep
     input.name = 'TUPLE_' + grp + '_' + n++
-    tuple.isSeparator = c8n.isSeparatorEZP = false
+    tuple.isSeparator = c8n.ezpData.s7r_ = false
   }
   var doGroup = function () {
     // group bounds and connected
@@ -438,7 +438,7 @@ ezP.Delegate.prototype.toDom = function (block, element) {
  * Final tune up depending on the block.
  * Default implementation does nothing.
  * @param {!Blockly.Block} block.
- * @param {!Element} hidden True if connections are hidden.
+ * @param {!Element} hidden a dom element.
  */
 ezP.Delegate.prototype.fromDom = function (block, element) {
 }

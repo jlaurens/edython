@@ -82,7 +82,7 @@ Blockly.Xml.blockToDom = function (block, optNoId) {
     var empty = true
     if (input.type === Blockly.DUMMY_INPUT) {
       continue
-    } else {
+    } else if (input.connection) {
       var childBlock = input.connection.targetBlock()
       if (input.type === Blockly.INPUT_VALUE) {
         container = goog.dom.createDom('value')

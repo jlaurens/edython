@@ -18,3 +18,4 @@ thumbs.db
 !/node_modules/README.md
 /sandbox/**
 /src/lib/ezp/scripts/build
+/**/.idea

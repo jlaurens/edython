@@ -105,7 +105,7 @@ ezP.DelegateSvg.Xpr.ParameterList.Consolidator_ = function () {
   var doFinalizeSeparator = function (K, n, extreme) {
     inputData.n = n
     input.name = (n? K + n: K)
-    inputData.isSeparator = c8n.isSeparatorEZP = true
+    inputData.isSeparator = c8n.ezpData.s7r_ = true
     c8n.setHidden(false)
     if (extreme) {
       while (input.fieldRow.length) {
@@ -118,7 +118,7 @@ ezP.DelegateSvg.Xpr.ParameterList.Consolidator_ = function () {
   var doFinalizePlaceholder = function (K, n) {
     inputData.n = n
     input.name = (n? K + n: K)
-    inputData.isSeparator = c8n.isSeparatorEZP = false
+    inputData.isSeparator = c8n.ezpData.s7r_ = false
   }
   function doOther() {
     if (c8n.targetBlock().ezp.isOneStar) {
@@ -199,7 +199,7 @@ ezP.DelegateSvg.Xpr.ParameterList.Consolidator_ = function () {
       i = 0
       getCurrent()
       inputData.n = n = 0
-      inputData.isSeparator = c8n.isSeparatorEZP = false
+      inputData.isSeparator = c8n.ezpData.s7r_ = false
       input.name = 'ARG_' + n
       input.setCheck(ezP.Type.Xpr.Require.parameterList)
       c8n.setHidden(false)  
