@@ -60,6 +60,17 @@ ezP.DelegateSvg.Xpr.Comprehension.prototype.initBlock = function(block) {
 }
 
 /**
+ * Create a sealed node for the comprehension if necessary.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Xpr.Comprehension.prototype.completeSealed = function (block) {
+  this.completeSealedInput(block,
+    this.inputFOR,
+    ezP.Const.Xpr.target_list)
+}
+
+/**
  * Render list inputs only.
  * @param io.
  * @private
@@ -186,3 +197,15 @@ ezP.DelegateSvg.Xpr.GeneratorExpression.prototype.initBlock = function(block) {
   block.setTooltip('')
   block.setHelpUrl('')
 }
+
+/**
+ * Create a sealed node for the comprehension if necessary.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Xpr.GeneratorExpression.prototype.completeSealed = function (block) {
+  this.completeSealedInput(block,
+    this.inputCOMPREHENSION,
+    ezP.Const.Xpr.comprehension)
+}
+

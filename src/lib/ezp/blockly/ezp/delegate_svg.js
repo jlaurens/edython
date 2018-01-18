@@ -210,24 +210,12 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
 ezP.DelegateSvg.prototype.sealed_ = undefined
 
 /**
- * If the sealed connections are not connected,
- * create a node for it.
- * The default implementation does nothing.
- * Subclassers will evntually create appropriate new nodes
- * and connect it to any sealed connection.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.prototype.completeSealed = function (block) {
-}
-/**
  * Will draw the block. Default implementation does nothing.
  * The print statement needs some preparation before drawing.
  * @param {!Block} block.
  * @private
  */
 ezP.DelegateSvg.prototype.willRender_ = function (block) {
-  this.completeSealed(block)
   if (block.isShadow()) {
     if (this.svgPathShape_) {
       Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathShape_),
@@ -498,7 +486,10 @@ ezP.DelegateSvg.prototype.renderDrawFields_ = function (io) {
       var x_shift = ezp? ezp.x_shift || 0: 0
       root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
         ', ' + ezP.Padding.t() + ')')
-      io.cursorX += field.getSize().width
+      var size = field.getSize()
+      io.cursorX += size.width
+    } else {
+      console.log('Field with no root: did you ...initSvg()?')
     }
   }
 }
@@ -979,4 +970,44 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   block.setInputsInline(true)
   block.setTooltip('')
   block.setHelpUrl('')
+}
+
+/**
+ * Final tune up depending on the block.
+ * Default implementation does nothing.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} hidden a dom element.
+ */
+ezP.DelegateSvg.prototype.fromDom = function (block, element) {
+  ezP.DelegateSvg.superClass_.fromDom.call(this, block, element)
+  this.completeSealed(block)
+}
+
+
+/**
+ * If the sealed connections are not connected,
+ * create a node for it.
+ * The default implementation does nothing.
+ * Subclassers will evntually create appropriate new nodes
+ * and connect it to any sealed connection.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.prototype.completeSealed = function (block) {
+}
+
+/**
+ * Complete the .
+ * @param {!Block} block.
+ * @param {!Input} input.
+ * @param {!String} prototypeName.
+ * @private
+ */
+ezP.DelegateSvg.prototype.completeSealedInput = function (block, input, prototypeName) {
+  if (!this.ignoreCompleteSealed && !input.connection.isConnected()) {
+    var target = block.workspace.newBlock(prototypeName)
+    goog.asserts.assert(target, 'completeSealed failed: '+ prototypeName);
+    target.initSvg();
+    input.connection.connect(target.outputConnection)
+  }
 }
