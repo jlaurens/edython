@@ -45,10 +45,9 @@ ezP.DelegateSvg.Xpr.Comprehension.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Xpr.Comprehension.superClass_.initBlock.call(this, block)
   block.appendValueInput(ezP.Const.Input.XPR)
     .setCheck(ezP.T3.Require.expression)
-  var input = block.appendValueInput(ezP.Const.Input.FOR)
+  this.inputFOR = block.appendSealedValueInput(ezP.Const.Input.FOR)
     .setCheck(ezP.Type.Xpr.target_list)
     .appendField(new ezP.FieldLabel('for'))
-  input.connection.ezpData = {sealed_: true}
   this.inputIN = block.appendValueInput(ezP.Const.Input.IN)
     .setCheck(ezP.T3.Require.or_test)
     .appendField(new ezP.FieldLabel('in'))
@@ -178,10 +177,9 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.generator_expression, ezP.Delegat
  */
 ezP.DelegateSvg.Xpr.GeneratorExpression.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Xpr.GeneratorExpression.superClass_.initBlock.call(this, block)
-  block.appendValueInput(ezP.Const.Input.COMPREHENSION)
+  this.inputCOMPREHENSION = block.appendSealedValueInput(ezP.Const.Input.COMPREHENSION)
     .setCheck(ezP.T3.Require.comprehension)
     .appendField(new ezP.FieldLabel('('))
-    .ezpData = {sealed_: true}
   block.appendDummyInput().appendField(new ezP.FieldLabel(')'))
   block.setInputsInline(true)
   block.setOutput(true, ezP.T3.generator_expression)

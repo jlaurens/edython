@@ -306,3 +306,17 @@ ezP.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
     }
   }
 }
+
+/**
+ * Shortcut for appending a sealed value input row.
+ * Just add a 'true' ezpData.sealed_ attribute to the connection.
+ * @param {string} name Language-neutral identifier which may used to find this
+ *     input again.  Should be unique to this block.
+ * @return {!Blockly.Input} The input object created.
+ */
+ezP.Block.prototype.appendSealedValueInput = function(name) {
+  var input = this.appendValueInput(name)
+  input.connection.ezpData = {sealed_: true}
+  return input
+};
+

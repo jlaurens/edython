@@ -210,12 +210,24 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
 ezP.DelegateSvg.prototype.sealed_ = undefined
 
 /**
+ * If the sealed connections are not connected,
+ * create a node for it.
+ * The default implementation does nothing.
+ * Subclassers will evntually create appropriate new nodes
+ * and connect it to any sealed connection.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.prototype.completeSealed = function (block) {
+}
+/**
  * Will draw the block. Default implementation does nothing.
  * The print statement needs some preparation before drawing.
  * @param {!Block} block.
  * @private
  */
 ezP.DelegateSvg.prototype.willRender_ = function (block) {
+  this.completeSealed(block)
   if (block.isShadow()) {
     if (this.svgPathShape_) {
       Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathShape_),

@@ -418,3 +418,18 @@ ezP.BlockSvg.prototype.showContextMenu_ = function (e) {
 ezP.BlockSvg.prototype.customContextMenu = function(menuOptions) {
   this.ezp.customContextMenu(this, menuOptions)
 }
+/**
+ * Handle a mouse-down on an SVG block.
+ * If the block is sealed to its parent, forwards to the parent.
+ * This is used to prevent a dragging operation of a sealed block.
+ * @param {!Event} e Mouse down event or touch start event.
+ * @private
+ */
+ezP.BlockSvg.prototype.onMouseDown_ = function(e) {
+  if (this.ezp.sealed_) {
+    this.getParent().onMouseDown_(e)
+  } else {
+    ezP.BlockSvg.superClass_.onMouseDown_.call(this, e)
+  }
+};
+
