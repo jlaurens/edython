@@ -12,12 +12,12 @@
 'use strict'
 
 /**
- * @name ezP.Const
+ * @name ezP.Type
  * @namespace
  **/
 goog.provide('ezP.Type')
 
-goog.require('ezP')
+goog.require('ezP.T3')
 
 // Connection types
 ezP.Type = ezP.Type || {}

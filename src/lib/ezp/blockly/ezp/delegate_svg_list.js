@@ -151,7 +151,7 @@ ezP.DelegateSvg.List.prototype.consolidate = function (block) {
 }
 
 /**
- * Class for a DelegateSvg, value block.
+ * Class for a DelegateSvg, parenth_form.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
@@ -181,7 +181,7 @@ ezP.DelegateSvg.List.parenth_form.prototype.initBlock = function(block) {
   var field = new ezP.FieldLabel(')')
   field.ezpFieldData = {x_shift: -ezP.Font.space/4}
   block.appendDummyInput().appendField(field)
-  block.setOutput(true, ezP.T3.primary)
+  block.setOutput(true, ezP.T3.parenth_form)
 }
 
 /**
@@ -335,4 +335,35 @@ ezP.DelegateSvg.List.target.prototype.initBlock = function(block) {
   ezP.DelegateSvg.List.target.superClass_.initBlock.call(this, block)
   block.appendValueInput('ITEM_0')
   block.setOutput(true, ezP.T3.target_list)
+}
+
+
+/**
+ * Class for a DelegateSvg, expression_list block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.List.expression = function (prototypeName) {
+  ezP.DelegateSvg.List.expression.superClass_.constructor.call(this, prototypeName)
+  this.consolidator = new ezP.DelegateSvg.ExpressionConsolidator()
+}
+goog.inherits(ezP.DelegateSvg.List.expression, ezP.DelegateSvg.List)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.expression_list, ezP.DelegateSvg.List.expression)
+
+/**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.List.expression.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.List.target.superClass_.initBlock.call(this, block)
+  block.appendValueInput('ITEM_0')
+  block.setOutput(true, ezP.T3.expression_list)
 }

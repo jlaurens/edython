@@ -57,6 +57,32 @@ ezP.DelegateSvg.Xpr.prototype.initBlock = function(block) {
   block.setOutput(true, null)
 }
 
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Xpr.yield_expression_from = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.yield_expression_from.superClass_.constructor.call(this, prototypeName)
+}
+goog.inherits(ezP.DelegateSvg.Xpr.yield_expression_from, ezP.DelegateSvg.Xpr)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.yield_expression_from, ezP.DelegateSvg.Xpr.yield_expression_from)
+
+/**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Xpr.yield_expression_from.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Xpr.yield_expression_from.superClass_.initBlock.call(this, block)
+  block.appendValueInput(ezP.Const.Input.XPR)
+    .setCheck(ezP.T3.Require.expression)
+    .appendField(new ezP.FieldLabel('yield from'))
+  block.setOutput(true, ezP.T3.Provide.yield_expression_from)
+}
+
 /**
  * Class for a DelegateSvg, quoted string value block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
@@ -82,6 +108,16 @@ ezP.DelegateSvg.Xpr.Text.prototype.renderDrawInput_ = function (io) {
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.TEXT, ezP.DelegateSvg.Xpr.Text)
 ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.ANY, ezP.DelegateSvg.Xpr.Text)
+
+/**
+ * Render one input of value block.
+ * Default implementation just renders a dummy input.
+ * @param io.
+ * @private
+ */
+ezP.DelegateSvg.Xpr.Text.prototype.renderDrawInput_ = function (io) {
+  this.renderDrawDummyInput_(io)
+}
 
 /**
  * Class for a DelegateSvg, one input value block.

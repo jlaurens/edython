@@ -172,12 +172,12 @@ ezP.DelegateSvg.Xpr.Comprehension.prototype.renderDrawListInput_ = function (io)
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.GeneratorExpression = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.GeneratorExpression.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Xpr.generator_expression = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.generator_expression.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.GeneratorExpression, ezP.DelegateSvg.Xpr)
+goog.inherits(ezP.DelegateSvg.Xpr.generator_expression, ezP.DelegateSvg.Xpr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.generator_expression, ezP.DelegateSvg.Xpr.GeneratorExpression)
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.generator_expression, ezP.DelegateSvg.Xpr.generator_expression)
 
 /**
  * Initialize the block.
@@ -186,8 +186,8 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.generator_expression, ezP.Delegat
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.GeneratorExpression.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.GeneratorExpression.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Xpr.generator_expression.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Xpr.generator_expression.superClass_.initBlock.call(this, block)
   this.inputCOMPREHENSION = block.appendSealedValueInput(ezP.Const.Input.COMPREHENSION)
     .setCheck(ezP.T3.Require.comprehension)
     .appendField(new ezP.FieldLabel('('))
@@ -203,9 +203,40 @@ ezP.DelegateSvg.Xpr.GeneratorExpression.prototype.initBlock = function(block) {
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.GeneratorExpression.prototype.completeSealed = function (block) {
+ezP.DelegateSvg.Xpr.generator_expression.prototype.completeSealed = function (block) {
   this.completeSealedInput(block,
     this.inputCOMPREHENSION,
     ezP.Const.Xpr.comprehension)
 }
 
+/**
+ * Class for a DelegateSvg, comp_for block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Xpr.comp_for = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.comp_for.superClass_.constructor.call(this, prototypeName)
+}
+goog.inherits(ezP.DelegateSvg.Xpr.comp_for, ezP.DelegateSvg.Xpr)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.comp_for, ezP.DelegateSvg.Xpr.comp_for)
+
+/**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Xpr.comp_for.prototype.initBlock = function(block) {
+  this.appendValueInput(ezP.Const.Input.TGT)
+    .setCheck(ezP.T3.Require.target_list)
+    .appendField(new ezP.FieldLabel('for'))
+  this.appendValueInput(ezP.Const.Input.LST)
+    .setCheck(ezP.T3.Require.or_test)
+    .appendField(new ezP.FieldLabel('in'))
+  this.setOutput(true, ezP.Type.Xpr.Provide.comp_for)
+}

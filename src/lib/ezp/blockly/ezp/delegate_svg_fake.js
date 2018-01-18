@@ -38,6 +38,7 @@ goog.inherits(ezP.DelegateSvg.Fake.WithSealed, ezP.DelegateSvg.Fake)
 ezP.DelegateSvg.Manager.register('ezp_xpr_fake_with_sealed', ezP.DelegateSvg.Fake.WithSealed)
 
 ezP.DelegateSvg.Fake.WithSealed.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Fake.WithSealed.superClass_.initBlock.call(this, block)
   var input = block.appendValueInput('FAKE').appendField(new ezP.FieldLabel('with sealed'))
   input.ezpData = {sealed_: true}
   block.setOutput(true, null)
@@ -51,6 +52,7 @@ goog.inherits(ezP.DelegateSvg.Fake.Sealed, ezP.DelegateSvg.Fake)
 ezP.DelegateSvg.Manager.register('ezp_xpr_fake_sealed', ezP.DelegateSvg.Fake.Sealed)
 
 ezP.DelegateSvg.Fake.Sealed.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Fake.Sealed.superClass_.initBlock.call(this, block)
   block.appendDummyInput().appendField(new ezP.FieldLabel('sealed'))
   block.setOutput(true, null)
 }

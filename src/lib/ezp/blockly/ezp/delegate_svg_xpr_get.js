@@ -38,6 +38,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.GET, ezP.DelegateSvg.Xpr.Get)
  * @private
  */
 ezP.DelegateSvg.Xpr.Get.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Xpr.Get.superClass_.initBlock.call(this, block)
   this.fieldStars = new ezP.FieldLabel('*')
   this.inputStars = block.appendDummyInput()
     .appendField(this.fieldStars, ezP.Const.Field.STARS)

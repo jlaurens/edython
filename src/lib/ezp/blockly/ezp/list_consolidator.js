@@ -395,3 +395,23 @@ ezP.DelegateSvg.TargetConsolidator.prototype.getCheck = function (io) {
   return ezP.T3.Require.target_list
 }
 
+/**
+ * List consolidator for target_list.
+ * Remove empty place holders, add separators
+ * Main entry: consolidate
+ */
+ezP.DelegateSvg.ExpressionConsolidator = function() {
+  ezP.DelegateSvg.ExpressionConsolidator.superClass_.constructor.call(this)
+  this.canBeVoid = false
+  this.defaultSep = ','
+}
+goog.inherits(ezP.DelegateSvg.ExpressionConsolidator, ezP.DelegateSvg.ListConsolidator)
+
+/**
+ * Returns the required types for the current input.
+ * @param {!Object} io parameter.
+ */
+ezP.DelegateSvg.TargetConsolidator.prototype.getCheck = function (io) {
+  return ezP.T3.Require.expression
+}
+

@@ -68,6 +68,55 @@ Blockly.Blocks[ezP.Const.Xpr.target_list] = {
   }
 }
 
+Blockly.Blocks[ezP.Const.Xpr.yield_atom] = {
+  init: function () {
+    this.ezp.initBlock(this)
+  }
+}
+
+Blockly.Blocks[ezP.Const.Xpr.yield_expression_list] = {
+  init: function () {
+    this.ezp.initBlock(this)
+  }
+}
+
+Blockly.Blocks[ezP.Const.Xpr.yield_expression_from] = {
+  init: function () {
+    this.ezp.initBlock(this)
+  }
+}
+
+Blockly.Blocks[ezP.Const.Xpr.expression_list] = {
+  init: function () {
+    this.ezp.initBlock(this)
+  }
+}
+
+Blockly.Blocks[ezP.Const.Xpr.target_list] = {
+  init: function () {
+    this.ezp.initBlock(this)
+  }
+}
+
+
+
+Blockly.Blocks[ezP.Const.Xpr.comp_for] = {
+  init: function () {
+  }
+}
+
+Blockly.Blocks[ezP.Const.Xpr.comp_if] = {
+  init: function () {
+    this.appendValueInput(ezP.Const.Input.COND)
+      .setCheck(ezP.Type.Xpr.Require.expression_nocond)
+      .appendField(new ezP.FieldLabel('if'))
+    this.setInputsInline(true)
+    this.setOutput(true, ezP.Type.Xpr.Provide.comp_if)
+    this.setTooltip('')
+    this.setHelpUrl('')
+  }
+}
+
 
 
 
@@ -215,34 +264,6 @@ Blockly.Blocks[ezP.Const.Xpr.RANGE] = {
     this.setHelpUrl('')
   }
 }
-
-Blockly.Blocks[ezP.Const.Xpr.comp_for] = {
-  init: function () {
-    this.appendValueInput(ezP.Const.Input.TGT)
-      .setCheck(ezP.Type.Xpr.Require.any)
-      .appendField(new ezP.FieldLabel('for'))
-    this.appendValueInput(ezP.Const.Input.LST)
-      .setCheck(ezP.Type.Xpr.Require.any)
-      .appendField(new ezP.FieldLabel('in'))
-    this.setInputsInline(true)
-    this.setOutput(true, ezP.Type.Xpr.Provide.comp_for)
-    this.setTooltip('')
-    this.setHelpUrl('')
-  }
-}
-
-Blockly.Blocks[ezP.Const.Xpr.comp_if] = {
-  init: function () {
-    this.appendValueInput(ezP.Const.Input.COND)
-      .setCheck(ezP.Type.Xpr.Require.expression_nocond)
-      .appendField(new ezP.FieldLabel('if'))
-    this.setInputsInline(true)
-    this.setOutput(true, ezP.Type.Xpr.Provide.comp_if)
-    this.setTooltip('')
-    this.setHelpUrl('')
-  }
-}
-
 Blockly.Blocks[ezP.Const.Xpr.parameter_list] = {
   init: function () {
     this.ezp.initBlock(this)

@@ -40,11 +40,14 @@ ezP.Const.Xpr = {
   comprehension: 'ezp_xpr_comprehension',
   generator_expression: 'ezp_xpr_generator_expression',
   target_list: 'ezp_xpr_target_list',
+  yield_atom: 'ezp_xpr_yield_atom',
+  yield_expression_from: 'ezp_xpr_yield_expression_from',
+  yield_expression_list: 'ezp_xpr_yield_expression_list',
+  expression_list: 'ezp_xpr_expression_list',
   // in progress
   comp_for: 'ezp_xpr_comp_for',
   comp_if: 'ezp_xpr_comp_if',
-  yield_expression_from: 'ezp_xpr_yield_expression_from',
-  yield_expression_list: 'ezp_xpr_yield_expression_list',
+
   starred_item: 'ezp_xpr_starred_item',
   star_or_expr: 'ezp_xpr_star_or_expr',
   parameter: 'ezp_xpr_parameter',

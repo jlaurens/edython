@@ -1,6 +1,6 @@
 import pathlib
 import re
-
+import datetime
 import html.parser
 
 class MyHTMLParser(html.parser.HTMLParser):
@@ -83,20 +83,23 @@ class Xprs:
     def __init__(self, *paths):
         self.all = {}
         matcher = re.compile(r"\b(\S*?)(_stmt|_statement)?\s*::=\s*(.*)")
+        n = 0
         for path in paths:
             print('Parsing:', path)
             with path.open() as f:
                 data = f.read()
                 parser = MyHTMLParser()
                 parser.feed(data)
-                n = 0
                 for x in parser.get_pre_pos_data():
                     data = x[0].replace('\n ','')
                     data = re.sub(r' +', ' ', data)
                     for l in data.splitlines():
                         m = matcher.match(l)
                         if m and m.group(1) != 'name' and not m.group(2):
-                            t = Xpr(n, m.group(1), m.group(3))
+                            nn = n
+                            if m.group(1) in self.all:
+                                nn = self.all[m.group(1)].n
+                            t = Xpr(nn, m.group(1), m.group(3))
                             self.all[t.name] = t
                             n += 1
 
@@ -249,34 +252,106 @@ class Xprs:
     def print_provide_tree(self, filter = None):
         self.provide_root.deep_print(filter=filter, sep='<-')
 
-
-    def print_T3(self):
+    def print_T3(self, f):
         Ts = sorted(self.all.values(), key=lambda t: (t.n, t.name))
         i = 0
         for t in Ts:
             t.short_name = str(i)
             i += 1
-        print('ezP.T3 = {')
+        print("""/**
+ * ezPython
+ *
+ * Copyright 2017 Jérôme LAURENS.
+ *
+ * License CeCILL-B
+ */
+/**
+ * @fileoverview Constants for ezPython.
+ * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
+ */
+'use strict'
+
+/**
+ * @name ezP.T3
+ * @namespace
+ **/
+
+goog.provide('ezP.T3')
+
+goog.require('ezP')
+
+ezP.T3 = {
+""", file=f)
         for t in Ts:
-            print(' ', t.name, ': "', t.short_name, '",', sep='')
-        print('}\n')
-        print('ezP.T3.Require = {')
+            print('  {:<25} /*   ::= {:<50} */ : "{}",'.format(t.name, t.definition, t.short_name), file=f)
+        print('}\n', file=f)
+        print('ezP.T3.Require = {', file=f)
         for t in Ts:
             if len(t.deep_require):
-                print(' ', t.name, ': [', sep='')
+                print(' ', t.name, ': [', sep='', file=f)
                 for tt in sorted((tt for tt in t.deep_require), key=lambda t: (t.n, t.name)):
-                    print('    ezP.T3.', tt.name, ',', sep='')
-                print(' ],')
-        print('}\n')
-        print('ezP.T3.Provide = {')
+                    print('    ezP.T3.', tt.name, ',', sep='', file=f)
+                print(' ],', file=f)
+        print('}\n', file=f)
+        print('ezP.T3.Provide = {', file=f)
         for t in Ts:
             if len(t.deep_provide):
-                print(' ', t.name, ': [', sep='')
+                print(' ', t.name, ': [', sep='', file=f)
                 for tt in sorted((tt for tt in t.deep_provide), key=lambda t: (t.n, t.name)):
-                    print('    ezP.T3.', tt.name, ',', sep='')
-                print(' ],')
-        print('}\n')
+                    print('    ezP.T3.', tt.name, ',', sep='', file=f)
+                print(' ],', file=f)
+        print('}\n', file=f)
 
+    def get_T3_data(self):
+        l = []
+        Ts = sorted(self.all.values(), key=lambda t: (t.n, t.name))
+        i = 0
+        for t in Ts:
+            t.short_name = str(i)
+            i += 1
+        l.append("""/**
+ * ezPython
+ *
+ * Copyright 2017 Jérôme LAURENS.
+ *
+ * License CeCILL-B
+ */
+/**
+ * @fileoverview Constants for ezPython.
+ * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
+ */
+'use strict'
+
+/**
+ * @name ezP.T3
+ * @namespace
+ **/
+
+goog.provide('ezP.T3')
+
+goog.require('ezP')
+
+ezP.T3 = {""")
+        for t in Ts:
+            l.append('  {:<25} /*   ::= {:<50} */ : "{}",'.format(t.name, t.definition, t.short_name))
+        l.append('}\n')
+        l.append('ezP.T3.Require = {')
+        for t in Ts:
+            if len(t.deep_require):
+                l.append(' {}: ['.format(t.name))
+                for tt in sorted((tt for tt in t.deep_require), key=lambda t: (t.n, t.name)):
+                    l.append('    ezP.T3.{},'.format(tt.name))
+                l.append(' ],')
+        l.append('}\n')
+        l.append('ezP.T3.Provide = {')
+        for t in Ts:
+            if len(t.deep_provide):
+                l.append(' {}: ['.format(t.name))
+                for tt in sorted((tt for tt in t.deep_provide), key=lambda t: (t.n, t.name)):
+                    l.append('    ezP.T3.{},'.format(tt.name))
+                l.append(' ],')
+        l.append('}\n')
+        return '\n'.join(l)
 
 class Node:
     def __init__(self, parent = None, type = None):
@@ -314,16 +389,21 @@ class Node:
 
 
 if __name__ != "main":
-    path = pathlib.Path(__file__).parent / 'expressions.html'
-    print(path)
-    path2 = pathlib.Path(__file__).parent / 'simple_stmts.html'
+    # do not change the order of the path arguments
+    path1 = pathlib.Path(__file__).parent / 'expressions.html'
+    print(path1)
+    path2 = pathlib.Path(__file__).parent / 'expressions_xtd.html'
     print(path2)
-    path3 = pathlib.Path(__file__).parent / 'simple_stmts_xtd.html'
+    path3 = pathlib.Path(__file__).parent / 'simple_stmts.html'
     print(path3)
-    types = Xprs(path, path2, path3)
+    path4 = pathlib.Path(__file__).parent / 'simple_stmts_xtd.html'
+    print(path4)
+    types = Xprs(path1, path2, path3, path4)
     #types = Xprs(path3)
     print('# Make the require and the provide')
     types.make_shallow()
     print('# Make the deep')
     types.make_deep()
-    types.print_T3()
+    print(types.get_T3_data())
+    out = pathlib.Path(__file__).parent / 'T3.js'
+    out.write_text('// This file was generated by "python types.py" on {}\n\n'.format(datetime.datetime.utcnow())+types.get_T3_data())

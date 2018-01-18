@@ -16,10 +16,13 @@ target ::= identifier
   | starred_target
 bracket_target_list ::= &quot;[&quot; void_target_list &quot;]&quot;
 parenth_target_list ::= &quot;(&quot; void_target_list &quot;)&quot;
-starred_target ::= starred
-starred_item ::= starred
-starred_expression ::= starred
-starred ::= "*" something
+starred_target ::= "*" target
+starred_expression ::= "*" expression
+starred_concrete ::= "*" something
 </pre>
+starred_target ::= starred_concrete
+starred_item ::= starred_concrete
+starred_expression ::= starred_concrete
+starred_concrete ::= "*" something
 </body>
 </html>

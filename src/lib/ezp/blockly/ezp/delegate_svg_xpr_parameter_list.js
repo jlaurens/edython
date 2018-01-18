@@ -38,6 +38,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.parameter_list, ezP.DelegateSvg.X
  * @private
  */
 ezP.DelegateSvg.Xpr.ParameterList.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Xpr.ParameterList.superClass_.initBlock.call(this, block)
   this.parameterListConsolidate(block)
 }
 
