@@ -302,3 +302,22 @@ ezP.DelegateSvg.Xpr.key_datum_list_comprehensive = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Xpr.key_datum_list_comprehensive, ezP.DelegateSvg.List)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.key_datum_list_comprehensive, ezP.DelegateSvg.Xpr.key_datum_list_comprehensive)
+
+
+/**
+ * Class for a DelegateSvg, comp_iter_list block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Xpr.comp_iter_list = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.comp_iter_list.superClass_.constructor.call(this, prototypeName)
+  this.consolidator = new ezP.ListConsolidator(ezP.T3.Require.comp_iter,true,'')
+  this.outputType = ezP.T3.comp_iter_list
+}
+goog.inherits(ezP.DelegateSvg.Xpr.comp_iter_list, ezP.DelegateSvg.List)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.comp_iter_list, ezP.DelegateSvg.Xpr.comp_iter_list)

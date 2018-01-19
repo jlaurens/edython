@@ -50,9 +50,10 @@ ezP.Const.Xpr = {
   key_datum_concrete: 'ezp_xpr_key_datum_concrete',
   double_starred_or_expr: 'ezp_xpr_double_starred_or_expr',
   key_datum_list_comprehensive: 'ezp_xpr_key_datum_list_comprehensive',
-  // in progress
   comp_for: 'ezp_xpr_comp_for',
   comp_if: 'ezp_xpr_comp_if',
+  comp_iter_list: 'ezp_xpr_comp_iter_list',
+  // in progress
 
   star_or_expr: 'ezp_xpr_star_or_expr',
   parameter: 'ezp_xpr_parameter',
@@ -115,8 +116,11 @@ ezP.Const.Field = {
 ezP.Const.Input = {
   FOR: 'FOR',
   IN: 'IN',
+  IF: 'IF',
+  FORIN: 'FORIN',
+  ITER: 'ITER',
   COMPREHENSION: 'COMP',
-  ITEM: 'ITEM', /* used delimited blocks */
+  ITEM: 'ITEM', /* used by delimited blocks */
   LIST: 'LIST',
   KEY: 'KEY',
   DATUM: 'DATUM',

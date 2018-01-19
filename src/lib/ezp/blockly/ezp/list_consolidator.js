@@ -116,7 +116,7 @@ ezP.ListConsolidator.prototype.doFinalizeSeparator = function (io, extreme) {
   io.ezp.sep = io.sep
   io.input.name = 'S7R_' + io.n
   io.ezp.isSeparator = io.c8n.ezpData.s7r_ = true
-  if (extreme) {
+  if (extreme || io.ezp.sep.length == 0) {
     while (io.input.fieldRow.length) {
       io.input.fieldRow.shift().dispose()
     }
@@ -329,23 +329,4 @@ ezP.ListConsolidator.Comprehensive.prototype.cleanup = function(io) {
   } else {
     ezP.ListConsolidator.Comprehensive.superClass_.cleanup.call(this, io)
   }
-}
-
-/**
- * List consolidator for comprehension.
- * Remove empty place holders, add separators
- * Main entry: consolidate
- */
-ezP.ListConsolidator.Comprehension = function() {
-  ezP.ListConsolidator.Comprehension.superClass_.constructor.call(this, ezP.T3.Require.comp_iter, true, '')
-}
-goog.inherits(ezP.ListConsolidator.Comprehension, ezP.ListConsolidator)
-
-/**
- * Separators are always extreme.
- * @param {!Object} io parameter.
- * @param {!Bool} extreme parameter.
- */
-ezP.ListConsolidator.Comprehension.prototype.doFinalizeSeparator = function (io, extreme) {
-  ezP.ListConsolidator.Comprehension.superClass_.doFinalizeSeparator.call(this, io, true)
 }

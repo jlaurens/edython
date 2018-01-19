@@ -77,31 +77,71 @@ class Xpr:
         return repr(self.__dict__)
 
 class Xprs:
+    re0 = re.compile(r"\b(\S*?)(_stmt|_statement)?\s*::=\s*(.*)")
     re1 = re.compile(r'\s*\|\s*')
     re2 = re.compile(r'^\s*([a-z_]+)\s*$')
+    re3 = re.compile(r'\s*([a-z_]+)\s*\|\s*(.*)\s*$')
+    re4 = re.compile(r'^\s*"(\*+)"\s*([a-z_]+)\s*$')
 
     def __init__(self, *paths):
         self.all = {}
-        matcher = re.compile(r"\b(\S*?)(_stmt|_statement)?\s*::=\s*(.*)")
-        n = 0
+        self.n = 0
         for path in paths:
-            print('Parsing:', path)
-            with path.open() as f:
-                data = f.read()
-                parser = MyHTMLParser()
-                parser.feed(data)
-                for x in parser.get_pre_pos_data():
-                    data = x[0].replace('\n ','')
-                    data = re.sub(r' +', ' ', data)
-                    for l in data.splitlines():
-                        m = matcher.match(l)
-                        if m and m.group(1) != 'name' and not m.group(2):
-                            nn = n
-                            if m.group(1) in self.all:
-                                nn = self.all[m.group(1)].n
-                            t = Xpr(nn, m.group(1), m.group(3))
-                            self.all[t.name] = t
-                            n += 1
+            self.read(path)
+            self.make_concrete()
+
+    def read(self, path):
+        print('Parsing:', path)
+        with path.open() as f:
+            data = f.read()
+            parser = MyHTMLParser()
+            parser.feed(data)
+            for x in parser.get_pre_pos_data():
+                data = x[0].replace('\n ','')
+                data = re.sub(r' +', ' ', data)
+                for l in data.splitlines():
+                    m = Xprs.re0.match(l)
+                    if m and m.group(1) != 'name' and not m.group(2):
+                        nn = self.n
+                        if m.group(1) in self.all:
+                            nn = self.all[m.group(1)].n
+                        t = Xpr(nn, m.group(1), m.group(3))
+                        self.all[t.name] = t
+                        self.n += 1
+
+    def make_concrete(self):
+        more = {}
+        for t in self:
+            definition = t.definition
+            cs = Xprs.re1.split(definition)[1:]
+            if len(cs) > 0:
+                cs = [x for x in cs if Xprs.re2.match(x)]
+                if len(cs) == 0:
+                    m = Xprs.re3.match(t.definition)
+                    if m:
+                        alias_def = m.group(1)
+                        def_concrete = m.group(2)
+                        def_guessed = '{} | {}'.format(alias_def, def_concrete)
+                        if def_guessed == t.definition:
+                            mm = Xprs.re4.match(def_concrete)
+                            if mm:
+                                if len(mm.group(1)) == 1:
+                                    name_concrete = 'starred_' + mm.group(2)
+                                elif len(mm.group(1)) == 2:
+                                    name_concrete = 'double_starred_' + mm.group(2)
+                                elif len(mm.group(1)) == 3:
+                                    name_concrete = 'triple_starred_' + mm.group(2)
+                                else:
+                                    name_concrete = 'multi_starred_' + mm.group(2)
+                            else:
+                                name_concrete = t.name + '_concrete'
+                            def_new = '{} | {}'.format(alias_def, name_concrete)
+                            print(t.name, t.definition, def_new, sep= ' ::= ')
+                            print(name_concrete, def_concrete, sep=' ::= ')
+                            t.definition = def_new
+                            tt = Xpr(t.n, name_concrete, def_concrete)
+                            more[tt.name] = tt
+        self.all.update(more)
 
     def __repr__(self):
         return repr(self.__dict__)
@@ -253,7 +293,6 @@ class Xprs:
         self.provide_root.deep_print(filter=filter, sep='<-')
 
     def get_T3_data(self, **kwargs):
-        print(kwargs)
         l = []
         Ts = sorted(self.all.values(), key=lambda t: (t.n, t.name))
         i = 0
@@ -340,7 +379,6 @@ class Node:
 
 
 if __name__ != "main":
-    # do not change the order of the path arguments
     path1 = pathlib.Path(__file__).parent / 'expressions.html'
     print(path1)
     path2 = pathlib.Path(__file__).parent / 'expressions_xtd.html'
@@ -349,6 +387,7 @@ if __name__ != "main":
     print(path3)
     path4 = pathlib.Path(__file__).parent / 'simple_stmts_xtd.html'
     print(path4)
+    # do not change the order of the path arguments
     types = Xprs(path1, path2, path3, path4)
     #types = Xprs(path3)
     print('# Make the require and the provide')

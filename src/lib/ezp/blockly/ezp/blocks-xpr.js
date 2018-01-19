@@ -43,8 +43,11 @@ var Ks = [
   ezP.Const.Xpr.key_datum_concrete,
   ezP.Const.Xpr.double_starred_or_expr,
   ezP.Const.Xpr.key_datum_list_comprehensive,
-  // IN PROGRESS
   ezP.Const.Xpr.comp_for,
+  ezP.Const.Xpr.comp_if,
+  ezP.Const.Xpr.comp_iter_list,
+  ezP.Const.Xpr.generator_expression,
+  // IN PROGRESS
     
 ]
 var O = {
@@ -55,22 +58,6 @@ var O = {
 for (var _ = 0, K; K = Ks[_]; ++_) {
   Blockly.Blocks[K] = O
 }
-
-Blockly.Blocks[ezP.Const.Xpr.comp_if] = {
-  init: function () {
-    this.appendValueInput(ezP.Const.Input.COND)
-      .setCheck(ezP.Type.Xpr.Require.expression_nocond)
-      .appendField(new ezP.FieldLabel('if'))
-    this.setInputsInline(true)
-    this.setOutput(true, ezP.Type.Xpr.Provide.comp_if)
-    this.setTooltip('')
-    this.setHelpUrl('')
-  }
-}
-
-
-
-
 
 
 Blockly.Blocks[ezP.Const.Xpr.yield_expression_from] = {

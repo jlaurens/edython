@@ -5,6 +5,9 @@
 <html>
 <body>
 <pre>
+comp_iter_list ::= (comp_iter) *
+</pre>
+<pre>
 starred_list_comprehensive ::= starred_item | comprehension
 </pre>
 <pre>
@@ -32,42 +35,14 @@ keywords_argument ::= keyword_item | double_starred_expression
 double_starred_expression ::= "**" expression
 </pre>
 <pre>
-u_expr ::=  power | u_expr_concrete
-u_expr_concrete ::= "-" u_expr | "+" u_expr | "~" u_expr
-m_expr ::=  u_expr | m_expr_concrete
-m_expr_concrete ::= m_expr "*" u_expr | m_expr "@" m_expr | m_expr "//" u_expr| m_expr "/" u_expr | m_expr "%" u_expr
-a_expr ::=  m_expr | a_expr_concrete
-a_expr_concrete ::= a_expr "+" m_expr | a_expr "-" m_expr
-shift_expr ::=  a_expr | shift_expr_concrete
-shift_expr_concrete ::= shift_expr ( "&lt;&lt;" | "&gt;&gt;" ) a_expr
-and_expr ::=  shift_expr | and_expr_concrete
-and_expr_concrete ::= and_expr "&amp;" shift_expr
-xor_expr ::=  and_expr | xor_expr_concrete
-xor_expr_concrete ::= xor_expr "^" and_expr
-or_expr  ::=  xor_expr | or_expr_concrete
-or_expr_concrete ::= or_expr "|" xor_expr
 </pre>
 <pre>
 comparison ::=  or_expr | comparison_list
 comparison_list ::=  or_expr comp_operator or_expr ( comp_operator or_expr )*
 </pre> 
 <pre>
-or_test  ::=  and_test | or_test_concrete
-or_test_concrete  ::= or_test "or" and_test
-and_test ::=  not_test | and_test_concrete
-and_test_concrete ::= and_test "and" not_test
-not_test ::=  comparison | not_test_concrete
-not_test_concrete ::= "not" not_test
-</pre> 
-<pre>
 conditional_expression ::=  or_test | conditional_expression_concrete
 conditional_expression_concrete ::=  or_test "if" or_test "else" expression
 </pre> 
-<pre>
-starred_expression ::=  expression | starred_expression_concrete
-starred_expression_concrete ::=  ( starred_item "," )* [starred_item]
-starred_item ::=  expression | starred_or_expr
-starred_or_expr ::= "*" or_expr
-</pre>
 </body>
 </html>

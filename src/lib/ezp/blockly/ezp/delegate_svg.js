@@ -980,7 +980,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
  */
 ezP.DelegateSvg.prototype.fromDom = function (block, element) {
   ezP.DelegateSvg.superClass_.fromDom.call(this, block, element)
-  this.completeSealed(block)
+  this.completeSealed_(block)
 }
 
 
@@ -997,6 +997,20 @@ ezP.DelegateSvg.prototype.completeSealed = function (block) {
 }
 
 /**
+ * If the sealed connections are not connected,
+ * create a node for it.
+ * The default implementation does nothing.
+ * Subclassers will evntually create appropriate new nodes
+ * and connect it to any sealed connection.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.prototype.completeSealed_ = function (block) {
+  ezP.DelegateSvg.sealedFireWall = 100
+  this.completeSealed(block)
+}
+
+/**
  * Complete the .
  * @param {!Block} block.
  * @param {!Input} input.
@@ -1005,9 +1019,16 @@ ezP.DelegateSvg.prototype.completeSealed = function (block) {
  */
 ezP.DelegateSvg.prototype.completeSealedInput = function (block, input, prototypeName) {
   if (!this.ignoreCompleteSealed && !input.connection.isConnected()) {
-    var target = block.workspace.newBlock(prototypeName)
-    goog.asserts.assert(target, 'completeSealed failed: '+ prototypeName);
-    target.initSvg();
-    input.connection.connect(target.outputConnection)
+    if (ezP.DelegateSvg.sealedFireWall > 0) {
+      --ezP.DelegateSvg.sealedFireWall
+      var target = block.workspace.newBlock(prototypeName)
+      goog.asserts.assert(target, 'completeSealed failed: '+ prototypeName);
+      target.initSvg();
+      input.connection.connect(target.outputConnection)
+      target.ezp.completeSealed(target)
+    } else {
+      console.log('Maximum value reached in completeSealedInput')
+      this.ignoreCompleteSealed = true
+    }
   }
 }

@@ -153,3 +153,22 @@ ezP.DelegateSvg.Xpr.dict_display = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Xpr.dict_display, ezP.DelegateSvg.Xpr.Delimited)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.dict_display, ezP.DelegateSvg.Xpr.dict_display)
+
+/**
+ * Class for a DelegateSvg, generator expression block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Xpr.generator_expression = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.generator_expression.superClass_.constructor.call(this, prototypeName)
+  this.leftDelimiter = '('
+  this.rightDelimiter = ')'
+  this.outputType = ezP.T3.generator_expression
+  this.sealedPrototypeName = ezP.Const.Xpr.comprehension
+}
+goog.inherits(ezP.DelegateSvg.Xpr.generator_expression, ezP.DelegateSvg.Xpr.Delimited)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.generator_expression, ezP.DelegateSvg.Xpr.generator_expression)
