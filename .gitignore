@@ -1,7 +1,7 @@
 .DS_Store
+!.gitkeep
 dist/electron/*
 dist/web/*
-!/dist/web/Readme.md
 build/*
 !build/icons
 coverage
@@ -9,13 +9,12 @@ node_modules/
 npm-debug.log
 npm-debug.log.*
 thumbs.db
-!.gitkeep
 /fonts/**
-!/fonts/README.md
 /src/fonts/**
-!/src/fonts/README.md
 /node_modules
-!/node_modules/README.md
 /sandbox/**
 /src/lib/ezp/scripts/build
 /**/.idea
+/**/.command
+!/**/README.md
+!/**/Readme.md

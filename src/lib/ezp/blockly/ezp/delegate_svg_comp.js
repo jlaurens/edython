@@ -25,7 +25,7 @@ goog.require('ezP.DelegateSvg.List')
  */
 ezP.DelegateSvg.Xpr.Comprehension = function (prototypeName) {
   ezP.DelegateSvg.Xpr.Comprehension.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.DelegateSvg.ComprehensionConsolidator()
+  this.consolidator = new ezP.ListConsolidator.Comprehension()
 }
 goog.inherits(ezP.DelegateSvg.Xpr.Comprehension, ezP.DelegateSvg.List)
 

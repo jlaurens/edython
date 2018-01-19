@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.ListConsolidator')
+goog.provide('ezP.ListConsolidator')
 
 goog.require('ezP.Const')
 goog.require('ezP.Type')
@@ -21,18 +21,26 @@ goog.require('ezP.DelegateSvg')
  * List consolidator.
  * Remove empty place holders, add separators
  * Main entry: consolidate
+ * @param {!Array} require, an array of required types, in general one of the ezp.T3.Required....
+ * @param {Bool} canBeVoid, whether the list can be void. Non void lists will display a large placeholder.
+ * @param {String} defaultSep, the separator between the list items
  */
-ezP.DelegateSvg.ListConsolidator = function() {
-  this.canBeVoid = true
-  this.defaultSep = ','
+ezP.ListConsolidator = function(require, canBeVoid, defaultSep) {
+  this.require = require
+  this.canBeVoid = canBeVoid
+  this.defaultSep = defaultSep
 }
+
+ezP.ListConsolidator.require = undefined
+ezP.ListConsolidator.canBeVoid = true
+ezP.ListConsolidator.defaultSep = ','
 
 /**
  * Setup the io parameter dictionary.
  * Called when the input list has changed and or the index has changed.
  * @param {!Object} io parameter.
  */
-ezP.DelegateSvg.ListConsolidator.prototype.setupIO = function (io) {
+ezP.ListConsolidator.prototype.setupIO = function (io) {
   if ((io.input = io.list[io.i])) {
     io.ezp = io.input.ezpListData
     io.c8n = io.input.connection
@@ -46,7 +54,7 @@ ezP.DelegateSvg.ListConsolidator.prototype.setupIO = function (io) {
  * Advance to the next input. Returns false when at end.
  * @param {!Object} io parameter.
  */
-ezP.DelegateSvg.ListConsolidator.prototype.nextInput = function (io) {
+ezP.ListConsolidator.prototype.nextInput = function (io) {
   ++io.i
   this.setupIO(io)
   return !!io.input
@@ -56,15 +64,15 @@ ezP.DelegateSvg.ListConsolidator.prototype.nextInput = function (io) {
  * Returns the required types for the current input.
  * @param {!Object} io parameter.
  */
-ezP.DelegateSvg.ListConsolidator.prototype.getCheck = function (io) {
-  return ezP.T3.Require.starred_item
+ezP.ListConsolidator.prototype.getCheck = function (io) {
+  return this.require
 }
 
 /**
  * Finalize the current input as a placeholder.
  * @param {!Object} io parameter.
  */
-ezP.DelegateSvg.ListConsolidator.prototype.doFinalizePlaceholder = function (io) {
+ezP.ListConsolidator.prototype.doFinalizePlaceholder = function (io) {
   io.ezp.n = io.n
   io.ezp.sep = io.sep
   io.input.name = 'ITEM_' + io.n++
@@ -76,25 +84,25 @@ ezP.DelegateSvg.ListConsolidator.prototype.doFinalizePlaceholder = function (io)
  * Get the next input. Returns null when at end.
  * @param {!Object} io parameter.
  */
-ezP.DelegateSvg.ListConsolidator.prototype.disposeAtI = function (io, i) {
+ezP.ListConsolidator.prototype.disposeAtI = function (io, i) {
   io.list[i].dispose()
   io.list.splice(i, 1)
   --io.end
 }
-ezP.DelegateSvg.ListConsolidator.prototype.disposeFromIToEnd = function (io) {
+ezP.ListConsolidator.prototype.disposeFromIToEnd = function (io) {
   while (io.i < io.end) {
     this.disposeAtI(io, io.i)
   }
   this.setupIO(io)
 }
-ezP.DelegateSvg.ListConsolidator.prototype.disposeFromStartToI = function (io) {
+ezP.ListConsolidator.prototype.disposeFromStartToI = function (io) {
   while (io.start < io.i) {
     this.disposeAtI(io, io.start)
     --io.i
   }
   this.setupIO(io)
 }
-ezP.DelegateSvg.ListConsolidator.prototype.insertPlaceholderAtI = function (io) {
+ezP.ListConsolidator.prototype.insertPlaceholderAtI = function (io) {
   var c8n = io.block.makeConnection_(Blockly.INPUT_VALUE)
   var input = new Blockly.Input(Blockly.INPUT_VALUE, 'ITEM_*', io.block, c8n)
   input.ezpListData = {}
@@ -103,7 +111,7 @@ ezP.DelegateSvg.ListConsolidator.prototype.insertPlaceholderAtI = function (io) 
   this.setupIO(io)
 }
 
-ezP.DelegateSvg.ListConsolidator.prototype.doFinalizeSeparator = function (io, extreme) {
+ezP.ListConsolidator.prototype.doFinalizeSeparator = function (io, extreme) {
   io.ezp.n = io.n
   io.ezp.sep = io.sep
   io.input.name = 'S7R_' + io.n
@@ -121,7 +129,7 @@ ezP.DelegateSvg.ListConsolidator.prototype.doFinalizeSeparator = function (io, e
 /**
  * Whether the list can be void
  */
-ezP.DelegateSvg.ListConsolidator.prototype.no_more_ezp = function(io) {
+ezP.ListConsolidator.prototype.no_more_ezp = function(io) {
   do {
     if (!!io.ezp) {
       this.disposeFromIToEnd(io)
@@ -132,7 +140,7 @@ ezP.DelegateSvg.ListConsolidator.prototype.no_more_ezp = function(io) {
 /**
  * Whether the list can be void
  */
-ezP.DelegateSvg.ListConsolidator.prototype.cleanup = function(io) {
+ezP.ListConsolidator.prototype.cleanup = function(io) {
   io.n = 0
   io.i = io.start
   this.setupIO(io)
@@ -190,7 +198,7 @@ ezP.DelegateSvg.ListConsolidator.prototype.cleanup = function(io) {
 /**
  * Take appropriate actions depending on the current input
  */
-ezP.DelegateSvg.ListConsolidator.prototype.one_step = function(io) {
+ezP.ListConsolidator.prototype.one_step = function(io) {
   if (io.c8n.isConnected()) {
     ++io.connected
     io.removePrevious = io.ezp.isSeparator = false
@@ -227,7 +235,7 @@ ezP.DelegateSvg.ListConsolidator.prototype.one_step = function(io) {
 /**
  * Walk through the input list
  */
-ezP.DelegateSvg.ListConsolidator.prototype.walk = function(io) {
+ezP.ListConsolidator.prototype.walk = function(io) {
   io.removePrevious = false
   do {
     this.one_step(io)
@@ -244,7 +252,7 @@ ezP.DelegateSvg.ListConsolidator.prototype.walk = function(io) {
  * List consolidator.
  * Removes empty place holders
  */
-ezP.DelegateSvg.ListConsolidator.prototype.consolidate = function(block) {
+ezP.ListConsolidator.prototype.consolidate = function(block) {
   var io = {
     block: block,
     i: 0,
@@ -265,39 +273,30 @@ ezP.DelegateSvg.ListConsolidator.prototype.consolidate = function(block) {
 }
 
 /**
- * List consolidator.
- * Remove empty place holders, add separators
- * Main entry: consolidate
- * The list must no be void.
- */
-ezP.DelegateSvg.NonVoidListConsolidator = function () {
-  ezP.DelegateSvg.NonVoidListConsolidator.superClass_.constructor.call(this)
-  this.canBeVoid = false
-}
-goog.inherits(ezP.DelegateSvg.NonVoidListConsolidator, ezP.DelegateSvg.ListConsolidator)
-
-/**
  * List consolidator for list_display and set_display.
  * Remove empty place holders, add separators
  * Main entry: consolidate
  */
-ezP.DelegateSvg.ListDisplayConsolidator = function() {
-  ezP.DelegateSvg.ListDisplayConsolidator.superClass_.constructor.call(this)
-  this.comprehension = ezP.T3.comprehension
-  this.require = ezP.T3.Require.starred_list
-  this.require_with_comprehension = ezP.T3.Require.comprehensive_starred_list
+ezP.ListConsolidator.Comprehensive = function(require, comprehension, comprehensive, canBeVoid = true, defaultSep = ',') {
+  ezP.ListConsolidator.Comprehensive.superClass_.constructor.call(this, require, canBeVoid, defaultSep)
+  this.comprehension = comprehension
+  this.require_comprehensive = comprehensive
 }
-goog.inherits(ezP.DelegateSvg.ListDisplayConsolidator, ezP.DelegateSvg.ListConsolidator)
+goog.inherits(ezP.ListConsolidator.Comprehensive, ezP.ListConsolidator)
+
+ezP.ListConsolidator.Comprehensive.prototype.comprehension = undefined
+ezP.ListConsolidator.Comprehensive.prototype.require_comprehensive = undefined
 
 /**
  * Returns the required types for the current input.
  * @param {!Object} io parameter.
  */
-ezP.DelegateSvg.ListDisplayConsolidator.prototype.getCheck = function (io) {
-  if (io.comprehension || io.list.length < 5) {
-    return this.require_with_comprehension
-  } else if (io.list.length == 5 && io.i == 2) {
-    return this.require_with_comprehension
+ezP.ListConsolidator.Comprehensive.prototype.getCheck = function (io) {
+  console.log(io)
+  if (io.comprehension || io.end < io.start + 2) {
+    return this.require_comprehensive
+  } else if (io.end == io.start + 3 && io.i == io.start + 1) {
+    return this.require_comprehensive
   } else {
     return this.require
   }
@@ -306,8 +305,8 @@ ezP.DelegateSvg.ListDisplayConsolidator.prototype.getCheck = function (io) {
 /**
  * Take appropriate actions depending on the current input
  */
-ezP.DelegateSvg.ListDisplayConsolidator.prototype.one_step = function(io) {
-  ezP.DelegateSvg.ListDisplayConsolidator.superClass_.one_step.call(this, io)
+ezP.ListConsolidator.Comprehensive.prototype.one_step = function(io) {
+  ezP.ListConsolidator.Comprehensive.superClass_.one_step.call(this, io)
   var target = io.c8n.targetConnection
   if (target && target.check_.indexOf(this.comprehension) != -1) {
     io.comprehension = io.i
@@ -318,7 +317,7 @@ ezP.DelegateSvg.ListDisplayConsolidator.prototype.one_step = function(io) {
  * Once the whole list has been managed,
  * there might be unwanted things.
  */
-ezP.DelegateSvg.ListDisplayConsolidator.prototype.cleanup = function(io) {
+ezP.ListConsolidator.Comprehensive.prototype.cleanup = function(io) {
   if (io.comprehension !== undefined) {
     io.n = 0
     io.i = io.comprehension
@@ -328,90 +327,25 @@ ezP.DelegateSvg.ListDisplayConsolidator.prototype.cleanup = function(io) {
     this.nextInput(io)
     // this.disposeFromIToEnd(io)
   } else {
-    ezP.DelegateSvg.ListDisplayConsolidator.superClass_.cleanup.call(this, io)
+    ezP.ListConsolidator.Comprehensive.superClass_.cleanup.call(this, io)
   }
 }
-
-/**
- * List consolidator for dict_display.
- * Remove empty place holders, add separators
- * Main entry: consolidate
- */
-ezP.DelegateSvg.DictDisplayConsolidator = function() {
-  ezP.DelegateSvg.DictDisplayConsolidator.superClass_.constructor.call(this)
-  this.comprehension = ezP.T3.dict_comprehension
-  this.require = ezP.T3.Require.key_datum_list
-  this.require_with_comprehension = ezP.T3.Require.comprehensive_key_datum_list
-}
-goog.inherits(ezP.DelegateSvg.DictDisplayConsolidator, ezP.DelegateSvg.ListDisplayConsolidator)
 
 /**
  * List consolidator for comprehension.
  * Remove empty place holders, add separators
  * Main entry: consolidate
  */
-ezP.DelegateSvg.ComprehensionConsolidator = function() {
-  ezP.DelegateSvg.ComprehensionConsolidator.superClass_.constructor.call(this)
-  this.canBeVoid = true
-  this.defaultSep = ''
+ezP.ListConsolidator.Comprehension = function() {
+  ezP.ListConsolidator.Comprehension.superClass_.constructor.call(this, ezP.T3.Require.comp_iter, true, '')
 }
-goog.inherits(ezP.DelegateSvg.ComprehensionConsolidator, ezP.DelegateSvg.ListConsolidator)
-
-/**
- * Returns the required types for the current input.
- * @param {!Object} io parameter.
- */
-ezP.DelegateSvg.ComprehensionConsolidator.prototype.getCheck = function (io) {
-  return ezP.T3.Require.comp_iter
-}
+goog.inherits(ezP.ListConsolidator.Comprehension, ezP.ListConsolidator)
 
 /**
  * Separators are always extreme.
  * @param {!Object} io parameter.
  * @param {!Bool} extreme parameter.
  */
-ezP.DelegateSvg.ComprehensionConsolidator.prototype.doFinalizeSeparator = function (io, extreme) {
-  ezP.DelegateSvg.ComprehensionConsolidator.superClass_.doFinalizeSeparator.call(this, io, true)
+ezP.ListConsolidator.Comprehension.prototype.doFinalizeSeparator = function (io, extreme) {
+  ezP.ListConsolidator.Comprehension.superClass_.doFinalizeSeparator.call(this, io, true)
 }
-
-
-/**
- * List consolidator for target_list.
- * Remove empty place holders, add separators
- * Main entry: consolidate
- */
-ezP.DelegateSvg.TargetConsolidator = function() {
-  ezP.DelegateSvg.TargetConsolidator.superClass_.constructor.call(this)
-  this.canBeVoid = false
-  this.defaultSep = ','
-}
-goog.inherits(ezP.DelegateSvg.TargetConsolidator, ezP.DelegateSvg.ListConsolidator)
-
-/**
- * Returns the required types for the current input.
- * @param {!Object} io parameter.
- */
-ezP.DelegateSvg.TargetConsolidator.prototype.getCheck = function (io) {
-  return ezP.T3.Require.target_list
-}
-
-/**
- * List consolidator for target_list.
- * Remove empty place holders, add separators
- * Main entry: consolidate
- */
-ezP.DelegateSvg.ExpressionConsolidator = function() {
-  ezP.DelegateSvg.ExpressionConsolidator.superClass_.constructor.call(this)
-  this.canBeVoid = false
-  this.defaultSep = ','
-}
-goog.inherits(ezP.DelegateSvg.ExpressionConsolidator, ezP.DelegateSvg.ListConsolidator)
-
-/**
- * Returns the required types for the current input.
- * @param {!Object} io parameter.
- */
-ezP.DelegateSvg.TargetConsolidator.prototype.getCheck = function (io) {
-  return ezP.T3.Require.expression
-}
-

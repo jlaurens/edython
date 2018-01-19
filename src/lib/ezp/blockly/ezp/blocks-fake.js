@@ -18,82 +18,30 @@ goog.require('ezP.Const')
 goog.require('ezP.Type')
 goog.require('ezP.FieldLabel')
 
-Blockly.Blocks['ezp_xpr_fake_comprehension'] = {
-  init: function () {
-    this.appendDummyInput().appendField(new ezP.FieldLabel('comprehension'))
-    this.setOutput(true, [ezP.T3.comprehension])
+var make_fake = function(key, label, type) {
+  Blockly.Blocks[key] = {
+    init: function () {
+      this.appendDummyInput().appendField(new ezP.FieldLabel(label))
+      this.setOutput(true, [type])
+    }
   }
 }
 
-Blockly.Blocks['ezp_xpr_fake_dict_comprehension'] = {
-  init: function () {
-    this.appendDummyInput().appendField(new ezP.FieldLabel('dict_comprehension'))
-    this.setOutput(true, [ezP.T3.dict_comprehension])
-  }
-}
-
-Blockly.Blocks['ezp_xpr_fake_atom'] = {
-  init: function () {
-    this.appendDummyInput().appendField(new ezP.FieldLabel('atom'))
-    this.setOutput(true, ezP.T3.atom)
-  }
-}
-
-Blockly.Blocks['ezp_xpr_fake_key_datum'] = {
-  init: function () {
-    this.appendDummyInput().appendField(new ezP.FieldLabel('key_datum'))
-    this.setOutput(true, ezP.T3.key_datum)
-  }
-}
-
-Blockly.Blocks['ezp_xpr_fake_comp_for'] = {
-  init: function () {
-    this.appendDummyInput().appendField(new ezP.FieldLabel('comp_for'))
-    this.setOutput(true, ezP.T3.comp_for)
-  }
-}
-
-Blockly.Blocks['ezp_xpr_fake_comp_if'] = {
-  init: function () {
-    this.appendDummyInput().appendField(new ezP.FieldLabel('comp_if'))
-    this.setOutput(true, ezP.T3.comp_if)
-  }
-}
-
-Blockly.Blocks['ezp_xpr_fake_or_test'] = {
-  init: function () {
-    this.appendDummyInput().appendField(new ezP.FieldLabel('or_test'))
-    this.setOutput(true, ezP.T3.Require.or_test)
-  }
-}
-
-Blockly.Blocks['ezp_xpr_fake_target_list'] = {
-  init: function () {
-    this.appendDummyInput().appendField(new ezP.FieldLabel('target_list'))
-    this.setOutput(true, ezP.T3.target_list)
-  }
-}
-
-Blockly.Blocks['ezp_xpr_fake_target'] = {
-  init: function () {
-    this.appendDummyInput().appendField(new ezP.FieldLabel('target'))
-    this.setOutput(true, ezP.T3.target)
-  }
-}
-
-Blockly.Blocks['ezp_xpr_fake_expression'] = {
-  init: function () {
-    this.appendDummyInput().appendField(new ezP.FieldLabel('expression'))
-    this.setOutput(true, ezP.T3.Require.expression)
-  }
-}
-
-Blockly.Blocks['ezp_xpr_fake_identifier'] = {
-  init: function () {
-    this.appendDummyInput().appendField(new ezP.FieldLabel('identifier'))
-    this.setOutput(true, ezP.T3.identifier)
-  }
-}
+make_fake('ezp_xpr_fake_comprehension','comprehension',ezP.T3.comprehension)
+make_fake('ezp_xpr_fake_dict_comprehension','dict_comprehension',ezP.T3.dict_comprehension)
+make_fake('ezp_xpr_fake_atom','atom',ezP.T3.atom)
+make_fake('ezp_xpr_fake_key_datum','key_datum',ezP.T3.key_datum)
+make_fake('ezp_xpr_fake_key_datum_concrete','key_datum_concrete',ezP.T3.key_datum_concrete)
+make_fake('ezp_xpr_fake_starred_or_expr','starred_or_expr',ezP.T3.starred_or_expr)
+make_fake('ezp_xpr_fake_comp_for','comp_for',ezP.T3.comp_for)
+make_fake('ezp_xpr_fake_comp_if','comp_if',ezP.T3.comp_if)
+make_fake('ezp_xpr_fake_or_test','or_test',ezP.T3.Require.or_test)
+make_fake('ezp_xpr_fake_target_list','target_list',ezP.T3.target_list)
+make_fake('ezp_xpr_fake_target','target',ezP.T3.target)
+make_fake('ezp_xpr_fake_expression','expression',ezP.T3.Require.expression)
+make_fake('ezp_xpr_fake_expression','expression',ezP.T3.Require.expression)
+make_fake('ezp_xpr_fake_identifier','identifier',ezP.T3.identifier)
+make_fake('ezp_xpr_fake','any',null)
 
 Blockly.Blocks['ezp_xpr_fake_with_sealed'] = {
   init: function () {
@@ -107,10 +55,4 @@ Blockly.Blocks['ezp_xpr_fake_sealed'] = {
   }
 }
 
-Blockly.Blocks['ezp_xpr_fake'] = {
-  init: function () {
-    this.appendDummyInput().appendField(new ezP.FieldLabel('any'))
-    this.setOutput(true, null)
-  }
-}
 

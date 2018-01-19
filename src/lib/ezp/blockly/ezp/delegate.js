@@ -442,3 +442,19 @@ ezP.Delegate.prototype.toDom = function (block, element) {
  */
 ezP.Delegate.prototype.fromDom = function (block, element) {
 }
+/**
+ * Same as Block's getDescendants except that it
+ * includes this block in the list only when not sealed.
+ * @param {!Blockly.Block} block.
+ * @return {!Array.<!Blockly.Block>} Flattened array of blocks.
+ */
+ezP.Delegate.prototype.getUnsealedDescendants = function(block) {
+  var blocks = [];
+  if (!this.sealed_) {
+    blocks.push(block)
+  }
+  for (var child, x = 0; child = block.childBlocks_[x]; x++) {
+    blocks.push.apply(blocks, child.ezp.getUnsealedDescendants(child))
+  }
+  return blocks;
+};

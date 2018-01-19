@@ -875,11 +875,11 @@ ezP.DelegateSvg.prototype.populateContextMenu_ = function (block, menu) {
   }
   if (block.isDeletable() && block.isMovable() && !block.isInFlyout) {
     // Count the number of blocks that are nested in this block.
-    var descendantCount = block.getDescendants().length
+    var descendantCount = block.ezp.getUnsealedDescendants(block).length
     var nextBlock = block.getNextBlock()
     if (nextBlock) {
       // Blocks in the current stack would survive this block's deletion.
-      descendantCount -= nextBlock.getDescendants().length
+      descendantCount -= nextBlock.ezp.getUnsealedDescendants(nextBlock).length
     }
     menuItem = new ezP.MenuItem(
       descendantCount === 1 ? Blockly.Msg.DELETE_BLOCK

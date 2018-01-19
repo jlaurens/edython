@@ -44,11 +44,16 @@ ezP.Const.Xpr = {
   yield_expression_from: 'ezp_xpr_yield_expression_from',
   yield_expression_list: 'ezp_xpr_yield_expression_list',
   expression_list: 'ezp_xpr_expression_list',
+  starred_list_comprehensive: 'ezp_xpr_starred_list_comprehensive',
+  non_void_starred_list_comprehensive: 'ezp_xpr_non_void_starred_list_comprehensive',
+  starred_or_expr: 'ezp_xpr_starred_or_expr',
+  key_datum_concrete: 'ezp_xpr_key_datum_concrete',
+  double_starred_or_expr: 'ezp_xpr_double_starred_or_expr',
+  key_datum_list_comprehensive: 'ezp_xpr_key_datum_list_comprehensive',
   // in progress
   comp_for: 'ezp_xpr_comp_for',
   comp_if: 'ezp_xpr_comp_if',
 
-  starred_item: 'ezp_xpr_starred_item',
   star_or_expr: 'ezp_xpr_star_or_expr',
   parameter: 'ezp_xpr_parameter',
   defparameter: 'ezp_xpr_defparameter',
@@ -111,6 +116,11 @@ ezP.Const.Input = {
   FOR: 'FOR',
   IN: 'IN',
   COMPREHENSION: 'COMP',
+  ITEM: 'ITEM', /* used delimited blocks */
+  LIST: 'LIST',
+  KEY: 'KEY',
+  DATUM: 'DATUM',
+  XPR: 'XPR',// = ANY? NO!
   // IN PROGRESS
   ANY: 'ANY',
   LHS: 'LHS',
@@ -122,8 +132,7 @@ ezP.Const.Input = {
   OPTIONS: 'OPTIONS',
   COND: 'COND',
   TGT: 'TGT',
-  LST: 'LST',
-  XPR: 'XPR',// = ANY?
+  LST: 'LST',// TODO: Change that to 'LIST'
   VAR: 'VAR',
   ANN: 'ANN',
   DO: 'DO',

@@ -26,83 +26,34 @@ goog.require('ezP.FieldVariable.Identifier')
 goog.require('ezP.FieldVariable.Annotation')
 goog.require('ezP.FieldVariable.Default')
 
-Blockly.Blocks[ezP.Const.Xpr.parenth_form] = {
+var Ks = [
+  ezP.Const.Xpr.parenth_form,
+  ezP.Const.Xpr.list_display,
+  ezP.Const.Xpr.expression_list,
+  ezP.Const.Xpr.set_display,ezP.Const.Xpr.dict_display,
+  ezP.Const.Xpr.comprehension,
+  ezP.Const.Xpr.generator_expression,
+  ezP.Const.Xpr.target_list,
+  ezP.Const.Xpr.yield_atom,
+  ezP.Const.Xpr.yield_expression_from,
+  ezP.Const.Xpr.expression_list,
+  ezP.Const.Xpr.starred_list_comprehensive,
+  ezP.Const.Xpr.non_void_starred_list_comprehensive,
+  ezP.Const.Xpr.starred_or_expr,
+  ezP.Const.Xpr.key_datum_concrete,
+  ezP.Const.Xpr.double_starred_or_expr,
+  ezP.Const.Xpr.key_datum_list_comprehensive,
+  // IN PROGRESS
+  ezP.Const.Xpr.comp_for,
+    
+]
+var O = {
   init: function () {
     this.ezp.initBlock(this)
   }
 }
-
-Blockly.Blocks[ezP.Const.Xpr.list_display] = {
-  init: function () {
-    this.ezp.initBlock(this)
-  }
-}
-
-Blockly.Blocks[ezP.Const.Xpr.set_display] = {
-  init: function () {
-    this.ezp.initBlock(this)
-  }
-}
-
-Blockly.Blocks[ezP.Const.Xpr.dict_display] = {
-  init: function () {
-    this.ezp.initBlock(this)
-  }
-}
-
-Blockly.Blocks[ezP.Const.Xpr.comprehension] = {
-  init: function () {
-    this.ezp.initBlock(this)
-  }
-}
-
-Blockly.Blocks[ezP.Const.Xpr.generator_expression] = {
-  init: function () {
-    this.ezp.initBlock(this)
-  }
-}
-
-Blockly.Blocks[ezP.Const.Xpr.target_list] = {
-  init: function () {
-    this.ezp.initBlock(this)
-  }
-}
-
-Blockly.Blocks[ezP.Const.Xpr.yield_atom] = {
-  init: function () {
-    this.ezp.initBlock(this)
-  }
-}
-
-Blockly.Blocks[ezP.Const.Xpr.yield_expression_list] = {
-  init: function () {
-    this.ezp.initBlock(this)
-  }
-}
-
-Blockly.Blocks[ezP.Const.Xpr.yield_expression_from] = {
-  init: function () {
-    this.ezp.initBlock(this)
-  }
-}
-
-Blockly.Blocks[ezP.Const.Xpr.expression_list] = {
-  init: function () {
-    this.ezp.initBlock(this)
-  }
-}
-
-Blockly.Blocks[ezP.Const.Xpr.target_list] = {
-  init: function () {
-    this.ezp.initBlock(this)
-  }
-}
-
-
-
-Blockly.Blocks[ezP.Const.Xpr.comp_for] = {
-  init: function () {
-  }
+for (var _ = 0, K; K = Ks[_]; ++_) {
+  Blockly.Blocks[K] = O
 }
 
 Blockly.Blocks[ezP.Const.Xpr.comp_if] = {

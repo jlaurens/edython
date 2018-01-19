@@ -13,7 +13,7 @@
 
 goog.provide('ezP.DelegateSvg.List')
 
-goog.require('ezP.DelegateSvg.ListConsolidator')
+goog.require('ezP.ListConsolidator')
 goog.require('ezP.DelegateSvg.Xpr')
 
 /**
@@ -26,7 +26,6 @@ goog.require('ezP.DelegateSvg.Xpr')
  */
 ezP.DelegateSvg.List = function (prototypeName) {
   ezP.DelegateSvg.List.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.DelegateSvg.ListConsolidator()
 }
 goog.inherits(ezP.DelegateSvg.List, ezP.DelegateSvg.Xpr)
 
@@ -150,20 +149,8 @@ ezP.DelegateSvg.List.prototype.consolidate = function (block) {
   this.consolidator.consolidate(block)
 }
 
-/**
- * Class for a DelegateSvg, parenth_form.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.List.parenth_form = function (prototypeName) {
-  ezP.DelegateSvg.List.parenth_form.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.List.parenth_form, ezP.DelegateSvg.List)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.parenth_form, ezP.DelegateSvg.List.parenth_form)
+ezP.DelegateSvg.List.prototype.outputType = undefined
+ezP.DelegateSvg.List.prototype.consolidator = undefined
 
 /**
  * Initialize the block.
@@ -172,140 +159,11 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.parenth_form, ezP.DelegateSvg.Lis
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.List.parenth_form.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.List.parenth_form.superClass_.initBlock.call(this, block)
-  var field = new ezP.FieldLabel('(')
-  field.ezpFieldData = {x_shift: ezP.Font.space/4}
-  block.appendDummyInput().appendField(field)
+ezP.DelegateSvg.List.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.List.superClass_.initBlock.call(this, block)
   block.appendValueInput('ITEM_0')
-  var field = new ezP.FieldLabel(')')
-  field.ezpFieldData = {x_shift: -ezP.Font.space/4}
-  block.appendDummyInput().appendField(field)
-  block.setOutput(true, ezP.T3.parenth_form)
+  block.setOutput(true, this.outputType)
 }
-
-/**
- * The right padding of a block.
- * @param {!Blockly.Block} block.
- * @private
- */
-ezP.DelegateSvg.List.parenth_form.prototype.paddingRight = function (block) {
-  return 0 
-}
-
-/**
- * The left padding of a block.
- * @param {!Blockly.Block} block.
- * @private
- */
-ezP.DelegateSvg.List.parenth_form.prototype.paddingLeft = function (block) {
-  return 0 
-}
-
-/**
- * Class for a DelegateSvg, value block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.List.list_display = function (prototypeName) {
-  ezP.DelegateSvg.List.list_display.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.DelegateSvg.ListDisplayConsolidator()
-}
-goog.inherits(ezP.DelegateSvg.List.list_display, ezP.DelegateSvg.List)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.list_display, ezP.DelegateSvg.List.list_display)
-
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.List.list_display.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.List.list_display.superClass_.initBlock.call(this, block)
-  var field = new ezP.FieldLabel('[')
-  field.ezpFieldData = {x_shift: ezP.Font.space/4}
-  block.appendDummyInput().appendField(field)
-  block.appendValueInput('ITEM_0')
-  var field = new ezP.FieldLabel(']')
-  field.ezpFieldData = {x_shift: -ezP.Font.space/4}
-  block.appendDummyInput().appendField(field)
-  block.setOutput(true, ezP.T3.primary)
-}
-
-/**
- * The right padding of a block.
- * @param {!Blockly.Block} block.
- * @private
- */
-ezP.DelegateSvg.List.list_display.prototype.paddingRight = function (block) {
-  return 0 
-}
-
-/**
- * The left padding of a block.
- * @param {!Blockly.Block} block.
- * @private
- */
-ezP.DelegateSvg.List.list_display.prototype.paddingLeft = function (block) {
-  return 0 
-}
-
-/**
- * Class for a DelegateSvg, set display block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.List.set_display = function (prototypeName) {
-  ezP.DelegateSvg.List.set_display.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.List.set_display, ezP.DelegateSvg.List.list_display)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.set_display, ezP.DelegateSvg.List.set_display)
-
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.List.set_display.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.List.list_display.superClass_.initBlock.call(this, block)
-  var field = new ezP.FieldLabel('{')
-  field.ezpFieldData = {x_shift: ezP.Font.space/4}
-  block.appendDummyInput().appendField(field)
-  block.appendValueInput('ITEM_0')
-  var field = new ezP.FieldLabel('}')
-  field.ezpFieldData = {x_shift: -ezP.Font.space/4}
-  block.appendDummyInput().appendField(field)
-  block.setOutput(true, ezP.T3.primary)
-}
-
-/**
- * Class for a DelegateSvg, dict display block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.List.dict_display = function (prototypeName) {
-  ezP.DelegateSvg.List.dict_display.superClass_.constructor.call(this, prototypeName)
-  
-  this.consolidator = new ezP.DelegateSvg.DictDisplayConsolidator()
-}
-goog.inherits(ezP.DelegateSvg.List.dict_display, ezP.DelegateSvg.List.set_display)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.dict_display, ezP.DelegateSvg.List.dict_display)
-
 
 /**
  * Class for a DelegateSvg, target_list block.
@@ -318,25 +176,12 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.dict_display, ezP.DelegateSvg.Lis
  */
 ezP.DelegateSvg.List.target = function (prototypeName) {
   ezP.DelegateSvg.List.target.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.DelegateSvg.TargetConsolidator()
+  this.consolidator = new ezP.ListConsolidator(ezP.T3.Require.target_list, false, ',')
+  this.outputType = ezP.T3.target_list
 }
 goog.inherits(ezP.DelegateSvg.List.target, ezP.DelegateSvg.List)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.target_list, ezP.DelegateSvg.List.target)
-
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.List.target.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.List.target.superClass_.initBlock.call(this, block)
-  block.appendValueInput('ITEM_0')
-  block.setOutput(true, ezP.T3.target_list)
-}
-
 
 /**
  * Class for a DelegateSvg, expression_list block.
@@ -349,21 +194,111 @@ ezP.DelegateSvg.List.target.prototype.initBlock = function(block) {
  */
 ezP.DelegateSvg.List.expression = function (prototypeName) {
   ezP.DelegateSvg.List.expression.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.DelegateSvg.ExpressionConsolidator()
+  this.consolidator = new ezP.ListConsolidator(ezP.T3.Require.expression, false, ',')
+  this.outputType = ezP.T3.expression_list
 }
 goog.inherits(ezP.DelegateSvg.List.expression, ezP.DelegateSvg.List)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.expression_list, ezP.DelegateSvg.List.expression)
 
 /**
- * Initialize the block.
- * Called by the block's init method.
+ * Class for a DelegateSvg, starred_list block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
- * @param {!Block} block.
- * @private
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
  */
-ezP.DelegateSvg.List.expression.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.List.target.superClass_.initBlock.call(this, block)
-  block.appendValueInput('ITEM_0')
-  block.setOutput(true, ezP.T3.expression_list)
+ezP.DelegateSvg.List.starred = function (prototypeName) {
+  ezP.DelegateSvg.List.starred.superClass_.constructor.call(this, prototypeName)
+  this.consolidator = new ezP.ListConsolidator(ezP.T3.Require.starred_item, false, ',')
+  this.outputType = ezP.T3.starred_list
 }
+goog.inherits(ezP.DelegateSvg.List.starred, ezP.DelegateSvg.List)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.expression_list, ezP.DelegateSvg.List.expression)
+
+/**
+ * Class for a DelegateSvg, key_datum_list block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.List.key_datum = function (prototypeName) {
+  ezP.DelegateSvg.List.key_datum.superClass_.constructor.call(this, prototypeName)
+  this.consolidator = new ezP.ListConsolidator(ezP.T3.Require.key_datum,true,',')
+  this.outputType = ezP.T3.key_datum_list
+}
+goog.inherits(ezP.DelegateSvg.List.key_datum, ezP.DelegateSvg.List)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.key_datum_list, ezP.DelegateSvg.List.key_datum)
+
+/**
+ * Class for a DelegateSvg, starred_list_comprehensive block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Xpr.starred_list_comprehensive = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.starred_list_comprehensive.superClass_.constructor.call(this, prototypeName)
+  this.consolidator = new ezP.ListConsolidator.Comprehensive(
+    ezP.T3.Require.starred_list,
+    ezP.T3.comprehension,
+    ezP.T3.Require.starred_list_comprehensive,
+    true,',')
+  this.outputType = ezP.T3.starred_list_comprehensive
+}
+goog.inherits(ezP.DelegateSvg.Xpr.starred_list_comprehensive, ezP.DelegateSvg.List)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.starred_list_comprehensive, ezP.DelegateSvg.Xpr.starred_list_comprehensive)
+
+/**
+ * Class for a DelegateSvg, non_void_starred_list_comprehensive block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Xpr.non_void_starred_list_comprehensive = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.non_void_starred_list_comprehensive.superClass_.constructor.call(this, prototypeName)
+  this.consolidator = new ezP.ListConsolidator.Comprehensive(
+    ezP.T3.Require.starred_list,
+    ezP.T3.comprehension,
+    ezP.T3.Require.starred_list_comprehensive,
+    false,',')
+  this.outputType = ezP.T3.non_void_starred_list_comprehensive
+}
+goog.inherits(ezP.DelegateSvg.Xpr.non_void_starred_list_comprehensive, ezP.DelegateSvg.List)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.non_void_starred_list_comprehensive, ezP.DelegateSvg.Xpr.non_void_starred_list_comprehensive)
+
+/**
+ * Class for a DelegateSvg, key_datum_list_comprehensive block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Xpr.key_datum_list_comprehensive = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.key_datum_list_comprehensive.superClass_.constructor.call(this, prototypeName)
+  this.consolidator = new ezP.ListConsolidator.Comprehensive(
+    ezP.T3.Require.key_datum_list,
+    ezP.T3.dict_comprehension,
+    ezP.T3.Require.key_datum_list_comprehensive,
+    true,',')
+  this.outputType = ezP.T3.key_datum_list_comprehensive
+}
+goog.inherits(ezP.DelegateSvg.Xpr.key_datum_list_comprehensive, ezP.DelegateSvg.List)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.key_datum_list_comprehensive, ezP.DelegateSvg.Xpr.key_datum_list_comprehensive)

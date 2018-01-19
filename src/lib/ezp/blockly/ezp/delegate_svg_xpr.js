@@ -46,30 +46,29 @@ ezP.DelegateSvg.Xpr.prototype.renderDrawInput_ = function (io) {
 }
 
 /**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
+ * Render the leading # character for collapsed statement blocks.
+ * Statement subclasses must override it.
+ * @param io.
  * @private
  */
-ezP.DelegateSvg.Xpr.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.superClass_.initBlock.call(this, block)
-  block.setOutput(true, null)
+ezP.DelegateSvg.Xpr.prototype.renderDrawSharp_ = function (io) {
+  return
 }
 
 /**
- * Class for a DelegateSvg, yield_atom.
+ * Class for a DelegateSvg, quoted string value block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.yield_atom = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.yield_atom.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Xpr.key_datum_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.key_datum_concrete.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.yield_atom, ezP.DelegateSvg.Xpr)
+goog.inherits(ezP.DelegateSvg.Xpr.key_datum_concrete, ezP.DelegateSvg.Xpr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.yield_atom, ezP.DelegateSvg.Xpr.yield_atom)
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.key_datum_concrete, ezP.DelegateSvg.Xpr.key_datum_concrete)
 
 /**
  * Initialize the block.
@@ -78,96 +77,30 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.yield_atom, ezP.DelegateSvg.Xpr.y
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.yield_atom.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.yield_atom.superClass_.initBlock.call(this, block)
-  var field = new ezP.FieldLabel('(')
-  field.ezpFieldData = {x_shift: ezP.Font.space/4}
-  block.appendValueInput(ezP.Const.Input.XPR)
-    .setCheck(ezP.T3.Require.yield_expression)
-    .appendField(field)
-  field = new ezP.FieldLabel(')')
-  field.ezpFieldData = {x_shift: -ezP.Font.space/4}
-  block.appendDummyInput()
-    .appendField(field)
-  block.setOutput(true, ezP.T3.Provide.yield_atom)
-}
-
-/**
- * The right padding of a block.
- * @param {!Blockly.Block} block.
- * @private
- */
-ezP.DelegateSvg.Xpr.yield_atom.prototype.paddingRight = function (block) {
-  return 0 
-}
-
-/**
- * The left padding of a block.
- * @param {!Blockly.Block} block.
- * @private
- */
-ezP.DelegateSvg.Xpr.yield_atom.prototype.paddingLeft = function (block) {
-  return 0 
-}
-
-
-/**
- * Class for a DelegateSvg, yield_expression_list.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Xpr.yield_expression_list = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.yield_expression_list.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Xpr.yield_expression_list, ezP.DelegateSvg.Xpr)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.yield_expression_list, ezP.DelegateSvg.Xpr.yield_expression_list)
-
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Xpr.yield_expression_list.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.yield_expression_list.superClass_.initBlock.call(this, block)
-  this.inputXPR = block.appendSealedValueInput(ezP.Const.Input.XPR)
-    .setCheck(ezP.T3.Require.expression_list)
-    .appendField(new ezP.FieldLabel('yield'))
-  block.setOutput(true, ezP.T3.Provide.yield_atom)
-}
-
-/**
- * Class for a DelegateSvg, yield_expression_from.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Xpr.yield_expression_from = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.yield_expression_from.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Xpr.yield_expression_from, ezP.DelegateSvg.Xpr)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.yield_expression_from, ezP.DelegateSvg.Xpr.yield_expression_from)
-
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Xpr.yield_expression_from.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.yield_expression_from.superClass_.initBlock.call(this, block)
-  block.appendValueInput(ezP.Const.Input.XPR)
+ezP.DelegateSvg.Xpr.key_datum_concrete.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Xpr.Delimited.superClass_.initBlock.call(this, block)
+  block.appendValueInput(ezP.Const.Input.KEY)
     .setCheck(ezP.T3.Require.expression)
-    .appendField(new ezP.FieldLabel('yield from'))
-  block.setOutput(true, ezP.T3.Provide.yield_expression_from)
+  block.appendValueInput(ezP.Const.Input.DATUM)
+    .setCheck(ezP.T3.Require.expression)
+    .appendField(new ezP.FieldLabel(':'))
+  block.setOutput(true, ezP.T3.key_datum_concrete)
 }
+
+/**
+ * Class for a DelegateSvg, quoted string value block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Xpr.double_starred_or_expr = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.double_starred_or_expr.superClass_.constructor.call(this, prototypeName)
+}
+goog.inherits(ezP.DelegateSvg.Xpr.double_starred_or_expr, ezP.DelegateSvg.Xpr)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.key_datum_concrete, ezP.DelegateSvg.Xpr.key_datum_concrete)
 
 /**
  * Class for a DelegateSvg, quoted string value block.
