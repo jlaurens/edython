@@ -63,7 +63,6 @@ goog.inherits(ezP.DelegateSvg.Xpr.starred_or_expr, ezP.DelegateSvg.Xpr.Prefixed)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.starred_or_expr, ezP.DelegateSvg.Xpr.starred_or_expr)
 
-
 /**
  * Class for a DelegateSvg, '**...' block.
  * For ezPython.
@@ -81,3 +80,19 @@ goog.inherits(ezP.DelegateSvg.Xpr.double_starred_or_expr, ezP.DelegateSvg.Xpr.Pr
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.double_starred_or_expr, ezP.DelegateSvg.Xpr.double_starred_or_expr)
 
+/**
+ * Class for a DelegateSvg, yield_from.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Xpr.yield_from = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.yield_from.superClass_.constructor.call(this, prototypeName)
+  this.prefix = 'from'
+  this.checkTypes = ezP.T3.Require.expression
+  this.outputType = ezP.T3.yield_from
+}
+goog.inherits(ezP.DelegateSvg.Xpr.yield_from, ezP.DelegateSvg.Xpr.Prefixed)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.yield_from, ezP.DelegateSvg.Xpr.yield_from)

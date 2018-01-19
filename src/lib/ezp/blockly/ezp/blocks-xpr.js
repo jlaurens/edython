@@ -30,13 +30,16 @@ var Ks = [
   ezP.Const.Xpr.parenth_form,
   ezP.Const.Xpr.list_display,
   ezP.Const.Xpr.expression_list,
-  ezP.Const.Xpr.set_display,ezP.Const.Xpr.dict_display,
+  ezP.Const.Xpr.set_display,
+  ezP.Const.Xpr.dict_display,
   ezP.Const.Xpr.comprehension,
   ezP.Const.Xpr.generator_expression,
   ezP.Const.Xpr.target_list,
   ezP.Const.Xpr.yield_atom,
-  ezP.Const.Xpr.yield_expression_from,
+  ezP.Const.Xpr.yield_expression,
+  ezP.Const.Xpr.yield_from,
   ezP.Const.Xpr.expression_list,
+  ezP.Const.Xpr.expression_or_from_list,
   ezP.Const.Xpr.starred_list_comprehensive,
   ezP.Const.Xpr.non_void_starred_list_comprehensive,
   ezP.Const.Xpr.starred_or_expr,
@@ -55,25 +58,11 @@ var O = {
     this.ezp.initBlock(this)
   }
 }
-for (var _ = 0, K; K = Ks[_]; ++_) {
-  Blockly.Blocks[K] = O
+for (var i = 0; i<Ks.length; ++i) {
+  var K = Ks[i]
+  goog.asserts.assert(K, 'Undefined K: '+i)
+  Blockly.Blocks[Ks[i]] = O
 }
-
-
-Blockly.Blocks[ezP.Const.Xpr.yield_expression_from] = {
-  init: function () {
-    this.ezp.initBlock(this)
-  }
-}
-
-Blockly.Blocks[ezP.Const.Xpr.yield_expression_list] = {
-  init: function () {
-    this.ezp.initBlock(this)
-  }
-}
-
-
-
 
 Blockly.Blocks[ezP.Const.Xpr.GET] = {
   init: function () {

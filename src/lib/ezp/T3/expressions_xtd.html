@@ -20,9 +20,9 @@ key_datum_concrete ::=  expression ":" expression
 double_starred_or_expr ::=  "**" or_expr
 </pre>
 <pre>
-yield_expression ::=  yield_expression_list | yield_expression_from
-yield_expression_list ::=  "yield" expression_list_or_void
-yield_expression_from ::=  "yield from" expression
+yield_expression ::=  "yield" expression_or_from_list
+expression_or_from_list ::= expression | yield_from
+yield_from ::= "from" expression
 </pre>
 <pre>
 positional_arguments ::=  positional_argument ("," positional_argument)*

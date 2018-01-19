@@ -200,15 +200,29 @@ ezP.ListConsolidator.prototype.cleanup = function(io) {
  */
 ezP.ListConsolidator.prototype.one_step = function(io) {
   if (io.c8n.isConnected()) {
+    // count the number of connected blocks
     ++io.connected
+    // No need to remove the previous separator
+    // this input is not a separator
     io.removePrevious = io.ezp.isSeparator = false
+    io.removeSeparators = false
   } else {
     if (io.removePrevious) {
+      // remove the previous input
       this.disposeAtI(io, --io.i)
     }
     if (io.ezp.isSeparator) {
-      io.removePrevious = true
+      if (io.removeSeparators) {
+        this.disposeAtI(io, io.i--)
+      } else {
+        // this is a separator, will eventually removed on next step
+        // Also remove any forthcoming separator
+        io.removeSeparators = io.removePrevious = true
+      }
     } else if (io.placeholder === undefined) {
+      // If we delete input that were connected, things go wrong
+      // I do not remember what exactly, may be related to undo management
+      // This input is not connected, it will become a separator
       // remove separators before
       while (io.i > io.start) {
         if (!io.list[io.i - 1].ezpListData.isSeparator) {
@@ -216,6 +230,9 @@ ezP.ListConsolidator.prototype.one_step = function(io) {
         }
         this.disposeAtI(io, --io.i)
       }
+      // remove separator
+      io.removeSeparators = true
+      // this is the placeholder recorded
       io.placeholder = io.i
       io.removePrevious = false
       io.ezp.isSeparator = true
@@ -227,7 +244,10 @@ ezP.ListConsolidator.prototype.one_step = function(io) {
         }
         this.disposeAtI(io, --io.i)
       }
+      // This is a regular input, not a separator
+      // but it will be changed to a separator
       io.removePrevious = io.ezp.isSeparator = true
+      io.removeSeparators = true
     }
   }
 }
@@ -276,27 +296,28 @@ ezP.ListConsolidator.prototype.consolidate = function(block) {
  * List consolidator for list_display and set_display.
  * Remove empty place holders, add separators
  * Main entry: consolidate
- */
-ezP.ListConsolidator.Comprehensive = function(require, comprehension, comprehensive, canBeVoid = true, defaultSep = ',') {
-  ezP.ListConsolidator.Comprehensive.superClass_.constructor.call(this, require, canBeVoid, defaultSep)
-  this.comprehension = comprehension
-  this.require_comprehensive = comprehensive
-}
-goog.inherits(ezP.ListConsolidator.Comprehensive, ezP.ListConsolidator)
+ * @param {!String} single, the required type for a single element....
 
-ezP.ListConsolidator.Comprehensive.prototype.comprehension = undefined
-ezP.ListConsolidator.Comprehensive.prototype.require_comprehensive = undefined
+ */
+ezP.ListConsolidator.Singled = function(require, single, require_all, canBeVoid = true, defaultSep = ',') {
+  ezP.ListConsolidator.Singled.superClass_.constructor.call(this, require, canBeVoid, defaultSep)
+  this.single = single
+  this.require_all = require_all
+}
+goog.inherits(ezP.ListConsolidator.Singled, ezP.ListConsolidator)
+
+ezP.ListConsolidator.Singled.prototype.single = undefined
+ezP.ListConsolidator.Singled.prototype.require_all = undefined
 
 /**
  * Returns the required types for the current input.
  * @param {!Object} io parameter.
  */
-ezP.ListConsolidator.Comprehensive.prototype.getCheck = function (io) {
-  console.log(io)
-  if (io.comprehension || io.end < io.start + 2) {
-    return this.require_comprehensive
+ezP.ListConsolidator.Singled.prototype.getCheck = function (io) {
+  if (io.single || io.end < io.start + 2) {
+    return this.require_all
   } else if (io.end == io.start + 3 && io.i == io.start + 1) {
-    return this.require_comprehensive
+    return this.require_all
   } else {
     return this.require
   }
@@ -305,11 +326,11 @@ ezP.ListConsolidator.Comprehensive.prototype.getCheck = function (io) {
 /**
  * Take appropriate actions depending on the current input
  */
-ezP.ListConsolidator.Comprehensive.prototype.one_step = function(io) {
-  ezP.ListConsolidator.Comprehensive.superClass_.one_step.call(this, io)
+ezP.ListConsolidator.Singled.prototype.one_step = function(io) {
+  ezP.ListConsolidator.Singled.superClass_.one_step.call(this, io)
   var target = io.c8n.targetConnection
-  if (target && target.check_.indexOf(this.comprehension) != -1) {
-    io.comprehension = io.i
+  if (target && target.check_.indexOf(this.single) != -1) {
+    io.single = io.i
   }
 }
 
@@ -317,16 +338,16 @@ ezP.ListConsolidator.Comprehensive.prototype.one_step = function(io) {
  * Once the whole list has been managed,
  * there might be unwanted things.
  */
-ezP.ListConsolidator.Comprehensive.prototype.cleanup = function(io) {
-  if (io.comprehension !== undefined) {
+ezP.ListConsolidator.Singled.prototype.cleanup = function(io) {
+  if (io.single !== undefined) {
     io.n = 0
-    io.i = io.comprehension
+    io.i = io.single
     this.setupIO(io)
     this.doFinalizePlaceholder(io)
     this.disposeFromStartToI(io)
     this.nextInput(io)
     // this.disposeFromIToEnd(io)
   } else {
-    ezP.ListConsolidator.Comprehensive.superClass_.cleanup.call(this, io)
+    ezP.ListConsolidator.Singled.superClass_.cleanup.call(this, io)
   }
 }

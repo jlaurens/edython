@@ -391,33 +391,34 @@ ezP.DelegateSvg.prototype.didChangeSize_ = function (block) {
   this.updatePath_(block, this.svgPathCollapsed_, this.collapsedPathDef_)
 }
 
-/**
- * The right padding of a block.
- * @param {!Blockly.Block} block.
- * @private
- */
-ezP.DelegateSvg.prototype.paddingRight = function (block) {
-  if (this.sealed_) {
-    return 0
-  } else if (block.outputConnection) {
-    return ezP.Font.space
-  } else {
-    return ezP.Padding.r()
-  }  
-}
 
 /**
  * The left padding of a block.
  * @param {!Blockly.Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.paddingLeft = function (block) {
+ezP.DelegateSvg.prototype.getPaddingLeft = function (block) {
   if (this.sealed_) {
     return 0
   } else if (block.outputConnection) {
     return ezP.Font.space
   } else {
     return ezP.Padding.l()
+  }  
+}
+
+/**
+ * The right padding of a block.
+ * @param {!Blockly.Block} block.
+ * @private
+ */
+ezP.DelegateSvg.prototype.getPaddingRight = function (block) {
+  if (this.sealed_) {
+    return 0
+  } else if (block.outputConnection) {
+    return ezP.Font.space
+  } else {
+    return ezP.Padding.r()
   }  
 }
 
@@ -439,7 +440,7 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
     canForif: true,
     canParameterList: true
   }
-  io.cursorX = this.paddingLeft(block)
+  io.cursorX = this.getPaddingLeft(block)
   if (!block.outputConnection) {
     this.renderDrawSharp_(io)
   }
@@ -448,7 +449,7 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
       this.renderDrawInput_(io)
     }
   }
-  io.cursorX += this.paddingRight(block)
+  io.cursorX += this.getPaddingRight(block)
   this.minWidth = block.width = Math.max(block.width, io.cursorX)
   return io.steps.join(' ')
 }
@@ -480,16 +481,18 @@ ezP.DelegateSvg.prototype.renderDrawInput_ = function (io) {
  */
 ezP.DelegateSvg.prototype.renderDrawFields_ = function (io) {
   for (var _ = 0, field; (field = io.input.fieldRow[_]); ++_) {
-    var root = field.getSvgRoot()
-    if (root) {
-      var ezp = field.ezpFieldData
-      var x_shift = ezp? ezp.x_shift || 0: 0
-      root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
-        ', ' + ezP.Padding.t() + ')')
-      var size = field.getSize()
-      io.cursorX += size.width
-    } else {
-      console.log('Field with no root: did you ...initSvg()?')
+    if (field.getText().length>0) {
+      var root = field.getSvgRoot()
+      if (root) {
+        var ezp = field.ezpFieldData
+        var x_shift = ezp? ezp.x_shift || 0: 0
+        root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
+          ', ' + ezP.Padding.t() + ')')
+        var size = field.getSize()
+        io.cursorX += size.width
+      } else {
+        console.log('Field with no root: did you ...initSvg()?')
+      }
     }
   }
 }
