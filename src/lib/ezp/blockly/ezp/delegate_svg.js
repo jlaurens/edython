@@ -499,13 +499,13 @@ ezP.DelegateSvg.prototype.renderDrawFields_ = function (io) {
     if (field.getText().length>0) {
       var root = field.getSvgRoot()
       if (root) {
+        root.removeAttribute('display') // must be done early
         var ezp = field.ezpFieldData
         var x_shift = ezp && !io.block.ezp.sealed_? ezp.x_shift || 0: 0
         root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
           ', ' + ezP.Padding.t() + ')')
         var size = field.getSize()
         io.cursorX += size.width
-        root.removeAttribute('display')
     } else {
         console.log('Field with no root: did you ...initSvg()?')
       }
@@ -599,7 +599,9 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
         target.render()
       }
     } else {
-      var pw = this.placeHolderPathDefWidth_(io.cursorX)
+      var pw = io.input.connection.ezpData.optional_?
+        this.carretPathDefWidth_(io.cursorX):
+        this.placeHolderPathDefWidth_(io.cursorX)
       io.steps.push(pw.d)
       io.cursorX += pw.width
     }
@@ -688,7 +690,7 @@ ezP.DelegateSvg.prototype.highlightConnection = function (c8n) {
   if (c8n.type === Blockly.INPUT_VALUE) {
     if (c8n.isConnected()) {
       steps = this.valuePathDef_(c8n.targetBlock())
-    } else if (c8n.ezpData.s7r_) {
+    } else if (c8n.ezpData.s7r_ || c8n.ezpData.optional_) {
       steps = this.carretPathDefWidth_(0).d
     } else {
       steps = this.placeHolderPathDefWidth_(0).d
@@ -913,6 +915,13 @@ ezP.DelegateSvg.prototype.populateContextMenu_ = function (block, menu) {
     Blockly.Msg.HELP,
     [ezP.HELP_ID])
   menuItem.setEnabled(!!url)
+  menu.addChild(menuItem, true)
+  menu.addChild(new ezP.Separator(), true)
+  
+  menuItem = new ezP.MenuItem(
+    this.pythonType,
+    [])
+  menuItem.setEnabled(false)
   menu.addChild(menuItem, true)
 
   menu.render()

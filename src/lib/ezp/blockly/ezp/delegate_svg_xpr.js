@@ -111,14 +111,20 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.proper_slice, ezP.DelegateSvg.Xpr
  */
 ezP.DelegateSvg.Xpr.proper_slice.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Xpr.Delimited.superClass_.initBlock.call(this, block)
-  block.appendValueInput(ezP.Const.Input.LOWER_BOUND)
+  var input = block.appendValueInput(ezP.Const.Input.LOWER_BOUND)
     .setCheck(ezP.T3.Require.expression)
-  block.appendValueInput(ezP.Const.Input.UPPER_BOUND)
+  // mark the connection as optional
+  // it means that an unconnected placeholder is short
+  input.connection.ezpData.optional_ = true
+  input = block.appendValueInput(ezP.Const.Input.UPPER_BOUND)
     .setCheck(ezP.T3.Require.expression)
     .appendField(new ezP.FieldLabel(':'))
-  this.inputSTRIDE = block.appendValueInput(ezP.Const.Input.STRIDE)
+  input.connection.ezpData.optional_ = true
+  this.inputSTRIDE = input = block.appendValueInput(ezP.Const.Input.STRIDE)
     .setCheck(ezP.T3.Require.expression)
     .appendField(new ezP.FieldLabel(':'))
+  input.connection.ezpData.optional_ = true
+  input.ezpData.disabled_ = true
   block.setOutput(true, ezP.T3.proper_slice)
 }
 
@@ -135,6 +141,7 @@ ezP.DelegateSvg.Xpr.proper_slice.prototype.populateContextMenu_ = function (bloc
   var menuItem = new ezP.MenuItem(
     unused? ezP.Msg.USE_PROPER_SLICING_STRIDE: ezP.Msg.UNUSE_PROPER_SLICING_STRIDE,
     [ezP.USE_PROPER_SLICING_STRIDE_ID])
+  menuItem.setEnabled(!this.inputSTRIDE.connection.isConnected())
   menu.addChild(menuItem, true)
   menu.addChild(new ezP.Separator(), true)
   ezP.DelegateSvg.Xpr.proper_slice.superClass_.populateContextMenu_.call(this,block, menu)
