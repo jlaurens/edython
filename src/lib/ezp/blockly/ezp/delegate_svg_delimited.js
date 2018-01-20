@@ -43,11 +43,11 @@ ezP.DelegateSvg.Xpr.Delimited.prototype.sealedPrototypeName = undefined
 ezP.DelegateSvg.Xpr.Delimited.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Xpr.Delimited.superClass_.initBlock.call(this, block)
   this.leftField = new ezP.FieldLabel(this.leftDelimiter)
-  this.leftField.ezpFieldData = {x_shift: ezP.Font.space/4}
+  this.leftField.ezpFieldData = {x_shift: -ezP.Font.space/6}
   this.inputITEM = block.appendSealedValueInput(ezP.Const.Input.ITEM)
     .appendField(this.leftField)
   this.rightField = new ezP.FieldLabel(this.rightDelimiter)
-  this.rightField.ezpFieldData = {x_shift: -ezP.Font.space/4}
+  this.rightField.ezpFieldData = {x_shift: +ezP.Font.space/6}
   block.appendDummyInput().appendField(this.rightField)
   block.setOutput(true, this.outputType)
 }
@@ -74,7 +74,7 @@ ezP.DelegateSvg.Xpr.Delimited.prototype.completeSealed = function (block) {
 ezP.DelegateSvg.Xpr.parenth_form = function (prototypeName) {
   ezP.DelegateSvg.Xpr.parenth_form.superClass_.constructor.call(this, prototypeName)
   this.outputType = ezP.T3.parenth_form
-  this.sealedPrototypeName = ezP.Const.Xpr.starred_list
+  this.sealedPrototypeName = ezP.Const.Xpr.starred_expression_list
 }
 goog.inherits(ezP.DelegateSvg.Xpr.parenth_form, ezP.DelegateSvg.Xpr.Delimited)
 
@@ -209,3 +209,22 @@ ezP.DelegateSvg.Xpr.yield_expression.prototype.initBlock = function(block) {
   this.leftField.ezpFieldData = {x_shift: 0}
   this.rightField.ezpFieldData = {x_shift: 0}
 }
+
+/**
+ * Class for a DelegateSvg, 'yield ...' block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Xpr.display_slice_list = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.display_slice_list.superClass_.constructor.call(this, prototypeName)
+  this.leftDelimiter = '['
+  this.rightDelimiter = ']'
+  this.outputType = ezP.T3.display_slice_list
+  this.sealedPrototypeName = ezP.Const.Xpr.slice_list
+}
+goog.inherits(ezP.DelegateSvg.Xpr.display_slice_list, ezP.DelegateSvg.Xpr.Delimited)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.display_slice_list, ezP.DelegateSvg.Xpr.display_slice_list)
+

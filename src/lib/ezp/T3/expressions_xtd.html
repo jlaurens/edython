@@ -5,6 +5,10 @@
 <html>
 <body>
 <pre>
+parenth_form ::=  "(" starred_expression_list ")"
+starred_expression_list ::=  [starred_expression]
+</pre>
+<pre>
 comp_iter_list ::= (comp_iter) *
 </pre>
 <pre>
@@ -23,6 +27,13 @@ double_starred_or_expr ::=  "**" or_expr
 yield_expression ::=  "yield" expression_or_from_list
 expression_or_from_list ::= expression | yield_from
 yield_from ::= "from" expression
+</pre>
+<pre>
+dot_identifier ::= "." identifier
+</pre>
+<pre>
+slicing      ::=  primary display_slice_list
+display_slice_list ::=  "[" slice_list "]"
 </pre>
 <pre>
 positional_arguments ::=  positional_argument ("," positional_argument)*

@@ -446,7 +446,22 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
   }
   for (var _ = 0; (io.input = block.inputList[_]); _++) {
     if (io.input.isVisible()) {
-      this.renderDrawInput_(io)
+      goog.asserts.assert(io.input.ezpData, 'Input with no ezpData '+io.input.name+' in block '+block.type)
+      io.inputDisabled = io.input.ezpData.disabled_
+      if (io.inputDisabled) {
+        for (var __ = 0, field; (field = io.input.fieldRow[__]); ++__) {
+          if (field.getText().length>0) {
+            var root = field.getSvgRoot()
+            if (root) {
+              root.setAttribute('display', 'none')
+            } else {
+              console.log('Field with no root: did you ...initSvg()?')
+            }
+          }
+        }
+      } else {
+        this.renderDrawInput_(io)
+      }
     }
   }
   io.cursorX += this.getPaddingRight(block)
@@ -485,12 +500,13 @@ ezP.DelegateSvg.prototype.renderDrawFields_ = function (io) {
       var root = field.getSvgRoot()
       if (root) {
         var ezp = field.ezpFieldData
-        var x_shift = ezp? ezp.x_shift || 0: 0
+        var x_shift = ezp && !io.block.ezp.sealed_? ezp.x_shift || 0: 0
         root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
           ', ' + ezP.Padding.t() + ')')
         var size = field.getSize()
         io.cursorX += size.width
-      } else {
+        root.removeAttribute('display')
+    } else {
         console.log('Field with no root: did you ...initSvg()?')
       }
     }
@@ -1021,12 +1037,14 @@ ezP.DelegateSvg.prototype.completeSealed_ = function (block) {
  * @private
  */
 ezP.DelegateSvg.prototype.completeSealedInput = function (block, input, prototypeName) {
-  if (!this.ignoreCompleteSealed && !input.connection.isConnected()) {
+  if (!!input && !this.ignoreCompleteSealed && !input.connection.isConnected()) {
+    goog.asserts.assert(prototypeName, 'Missing sealing prototype name in block '+block.type)
     if (ezP.DelegateSvg.sealedFireWall > 0) {
       --ezP.DelegateSvg.sealedFireWall
       var target = block.workspace.newBlock(prototypeName)
       goog.asserts.assert(target, 'completeSealed failed: '+ prototypeName);
       target.initSvg();
+      target.ezp.sealed_ = true
       input.connection.connect(target.outputConnection)
       target.ezp.completeSealed(target)
     } else {
@@ -1035,3 +1053,32 @@ ezP.DelegateSvg.prototype.completeSealedInput = function (block, input, prototyp
     }
   }
 }
+
+/**
+ * Complete the .
+ * @param {!Block} block.
+ * @param {!Input} input.
+ * @param {!String} prototypeName.
+ * @private
+ */
+ezP.DelegateSvg.prototype.setInputDisabled = function (block, name, newValue) {
+  var input = block.getInput(name)
+  if (input) {
+    var oldValue = input.ezpData.disabled_
+    newValue = !!newValue
+    if (!oldValue == !newValue) {
+      return
+    }
+    if (Blockly.Events.isEnabled()) {
+      Blockly.Events.fire(new Blockly.Events.BlockChange(
+        block, ezP.Const.Event.input_disable, name, oldValue, newValue));
+    }
+    input.ezpData.disabled_ = newValue
+    setTimeout(function(){
+      block.render()
+    }, 100)
+  } else {
+    console.log('Unable to dis/enable non existing input named '+name)
+  }
+}
+

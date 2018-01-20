@@ -34,6 +34,7 @@ ezP.Const.Xpr = {
   RANGE: 'ezp_xpr_range',
   MINUS: 'ezp_xpr_minus',
   parenth_form: 'ezp_xpr_parenth_form',
+  starred_expression_list: 'ezp_xpr_starred_expression_list',
   list_display: 'ezp_xpr_list_display',
   set_display: 'ezp_xpr_set_display',
   dict_display: 'ezp_xpr_dict_display',
@@ -54,6 +55,12 @@ ezP.Const.Xpr = {
   comp_for: 'ezp_xpr_comp_for',
   comp_if: 'ezp_xpr_comp_if',
   comp_iter_list: 'ezp_xpr_comp_iter_list',
+  attributeref: 'ezp_xpr_attributeref',
+  dot_identifier: 'ezp_xpr_dot_identifier',
+  slicing: 'ezp_xpr_slicing',
+  display_slice_list: 'ezp_xpr_display_slice_list',
+  slice_list: 'ezp_xpr_slice_list',
+  proper_slice: 'ezp_xpr_proper_slice',
   // in progress
 
   star_or_expr: 'ezp_xpr_star_or_expr',
@@ -122,9 +129,14 @@ ezP.Const.Input = {
   ITER: 'ITER',
   COMPREHENSION: 'COMP',
   ITEM: 'ITEM', /* used by delimited blocks */
+  PRIMARY: 'PRIMARY',
+  SECONDARY: 'SECONDARY',
   LIST: 'LIST',
   KEY: 'KEY',
   DATUM: 'DATUM',
+  LOWER_BOUND: 'LOWER_BOUND',
+  UPPER_BOUND: 'UPPER_BOUND',
+  STRIDE: 'STRIDE',
   XPR: 'XPR',// = ANY? NO!
   // IN PROGRESS
   ANY: 'ANY',
@@ -199,4 +211,8 @@ ezP.Op = {
       }[op]
     }
   }
+}
+
+ezP.Const.Event = {
+  input_disable: 'ezp_input_disable',
 }

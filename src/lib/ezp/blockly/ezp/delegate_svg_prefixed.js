@@ -96,3 +96,20 @@ ezP.DelegateSvg.Xpr.yield_from = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Xpr.yield_from, ezP.DelegateSvg.Xpr.Prefixed)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.yield_from, ezP.DelegateSvg.Xpr.yield_from)
+
+/**
+* Class for a DelegateSvg, dot_identifier.
+* For ezPython.
+* @param {?string} prototypeName Name of the language object containing
+*     type-specific functions for this block.
+* @constructor
+*/
+ezP.DelegateSvg.Xpr.dot_identifier = function (prototypeName) {
+ ezP.DelegateSvg.Xpr.dot_identifier.superClass_.constructor.call(this, prototypeName)
+ this.prefix = '.'
+ this.checkTypes = ezP.T3.identifier
+ this.outputType = ezP.T3.dot_identifier
+}
+goog.inherits(ezP.DelegateSvg.Xpr.dot_identifier, ezP.DelegateSvg.Xpr.Prefixed)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.dot_identifier, ezP.DelegateSvg.Xpr.dot_identifier)

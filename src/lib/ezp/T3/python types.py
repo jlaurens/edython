@@ -48,7 +48,7 @@ class Xpr:
     def __init__(self, n, name, definition):
         """
         n is the line number,
-        name is the expression name: proper_slicing, m_expr, and_test...
+        name is the expression name: proper_slice, m_expr, and_test...
         definition is the rhs in the ... ::= ... line
         """
         self.n = n

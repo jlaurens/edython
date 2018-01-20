@@ -28,6 +28,8 @@ goog.require('ezP.FieldVariable.Default')
 
 var Ks = [
   ezP.Const.Xpr.parenth_form,
+  ezP.Const.Xpr.starred_expression_list,
+  ezP.Const.Xpr.starred_or_expr,
   ezP.Const.Xpr.list_display,
   ezP.Const.Xpr.expression_list,
   ezP.Const.Xpr.set_display,
@@ -42,7 +44,6 @@ var Ks = [
   ezP.Const.Xpr.expression_or_from_list,
   ezP.Const.Xpr.starred_list_comprehensive,
   ezP.Const.Xpr.non_void_starred_list_comprehensive,
-  ezP.Const.Xpr.starred_or_expr,
   ezP.Const.Xpr.key_datum_concrete,
   ezP.Const.Xpr.double_starred_or_expr,
   ezP.Const.Xpr.key_datum_list_comprehensive,
@@ -50,8 +51,14 @@ var Ks = [
   ezP.Const.Xpr.comp_if,
   ezP.Const.Xpr.comp_iter_list,
   ezP.Const.Xpr.generator_expression,
+  ezP.Const.Xpr.attributeref,
+  ezP.Const.Xpr.dot_identifier,
+  ezP.Const.Xpr.slicing,
+  ezP.Const.Xpr.display_slice_list,
+  ezP.Const.Xpr.slice_list,
+  ezP.Const.Xpr.proper_slice,
   // IN PROGRESS
-    
+
 ]
 var O = {
   init: function () {

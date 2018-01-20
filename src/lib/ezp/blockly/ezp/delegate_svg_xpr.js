@@ -56,7 +56,7 @@ ezP.DelegateSvg.Xpr.prototype.renderDrawSharp_ = function (io) {
 }
 
 /**
- * Class for a DelegateSvg, quoted string value block.
+ * Class for a DelegateSvg, key_datum_concrete block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
@@ -78,7 +78,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.key_datum_concrete, ezP.DelegateS
  * @private
  */
 ezP.DelegateSvg.Xpr.key_datum_concrete.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.Delimited.superClass_.initBlock.call(this, block)
+  ezP.DelegateSvg.Xpr.key_datum_concrete.superClass_.initBlock.call(this, block)
   block.appendValueInput(ezP.Const.Input.KEY)
     .setCheck(ezP.T3.Require.expression)
   block.appendValueInput(ezP.Const.Input.DATUM)
@@ -88,19 +88,79 @@ ezP.DelegateSvg.Xpr.key_datum_concrete.prototype.initBlock = function(block) {
 }
 
 /**
- * Class for a DelegateSvg, quoted string value block.
+ * Class for a DelegateSvg, proper_slice block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.double_starred_or_expr = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.double_starred_or_expr.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Xpr.proper_slice = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.proper_slice.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.double_starred_or_expr, ezP.DelegateSvg.Xpr)
+goog.inherits(ezP.DelegateSvg.Xpr.proper_slice, ezP.DelegateSvg.Xpr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.key_datum_concrete, ezP.DelegateSvg.Xpr.key_datum_concrete)
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.proper_slice, ezP.DelegateSvg.Xpr.proper_slice)
+
+/**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Xpr.proper_slice.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Xpr.Delimited.superClass_.initBlock.call(this, block)
+  block.appendValueInput(ezP.Const.Input.LOWER_BOUND)
+    .setCheck(ezP.T3.Require.expression)
+  block.appendValueInput(ezP.Const.Input.UPPER_BOUND)
+    .setCheck(ezP.T3.Require.expression)
+    .appendField(new ezP.FieldLabel(':'))
+  this.inputSTRIDE = block.appendValueInput(ezP.Const.Input.STRIDE)
+    .setCheck(ezP.T3.Require.expression)
+    .appendField(new ezP.FieldLabel(':'))
+  block.setOutput(true, ezP.T3.proper_slice)
+}
+
+ezP.USE_PROPER_SLICING_STRIDE_ID = 'USE_PROPER_SLICING_STRIDE'
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!goo.ui.Menu} menu The menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Xpr.proper_slice.prototype.populateContextMenu_ = function (block, menu) {
+  var unused = this.inputSTRIDE.ezpData.disabled_
+  var menuItem = new ezP.MenuItem(
+    unused? ezP.Msg.USE_PROPER_SLICING_STRIDE: ezP.Msg.UNUSE_PROPER_SLICING_STRIDE,
+    [ezP.USE_PROPER_SLICING_STRIDE_ID])
+  menu.addChild(menuItem, true)
+  menu.addChild(new ezP.Separator(), true)
+  ezP.DelegateSvg.Xpr.proper_slice.superClass_.populateContextMenu_.call(this,block, menu)
+}
+
+/**
+ * Handle the selection of an item in the context dropdown menu.
+ * @param {!Blockly.Block} block, owner of the delegate.
+ * @param {!goog.ui.Menu} menu The Menu clicked.
+ * @param {!goog....} event The event containing as target
+ * the MenuItem selected within menu.
+ */
+ezP.DelegateSvg.Xpr.proper_slice.prototype.onActionMenuEvent = function (block, menu, event) {
+  var action = event.target.getModel()
+  if (action == ezP.USE_PROPER_SLICING_STRIDE_ID) {
+    var input = this.inputSTRIDE
+    this.setInputDisabled(block, input.name, !input.ezpData.disabled_)
+    return
+  }
+  ezP.DelegateSvg.Statement.Print.superClass_.onActionMenuEvent.call(this, block, menu, event)
+  return
+}
+
+
+
+
 
 /**
  * Class for a DelegateSvg, quoted string value block.

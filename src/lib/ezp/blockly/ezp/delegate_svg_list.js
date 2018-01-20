@@ -13,7 +13,7 @@
 
 goog.provide('ezP.DelegateSvg.List')
 
-goog.require('ezP.ListConsolidator')
+goog.require('ezP.Consolidator.List')
 goog.require('ezP.DelegateSvg.Xpr')
 
 /**
@@ -59,7 +59,7 @@ ezP.DelegateSvg.List.prototype.renderDrawListInput_ = function (io) {
   if (!io.canList) {
     return false
   }
-  var ezp = io.input.ezpListData
+  var ezp = io.input.ezpData
   if (!ezp) {
     return false
   }
@@ -112,7 +112,7 @@ ezP.DelegateSvg.List.prototype.getInput = function (block, name) {
   var i = 0
   var input
   while ((input = list[i])) {
-    var ezp = input.ezpListData
+    var ezp = input.ezpData
     if (!ezp) {
       ++i
       continue
@@ -128,12 +128,12 @@ ezP.DelegateSvg.List.prototype.getInput = function (block, name) {
     } while ((input = list[++i]) && (ezp = input.ezp))
     var c8n = block.makeConnection_(Blockly.INPUT_VALUE)
     input = new Blockly.Input(Blockly.INPUT_VALUE, 'S7R_' + (n + 1), block, c8n)
-    input.ezpListData = {n: n + 1, sep: sep, isSeparator: true}
+    goog.mixin(input.ezpData,{n: n + 1, sep: sep, isSeparator: true})
     input.appendField(new Blockly.FieldLabel(sep || this.consolidator.defaultSep))
     list.splice(i, 0, input)
     c8n = block.makeConnection_(Blockly.INPUT_VALUE)
     input = new Blockly.Input(Blockly.INPUT_VALUE, name, block, c8n)
-    input.ezpListData = {n: n, sep: sep}
+    goog.mixin(input.ezpData, {n: n, sep: sep})
     list.splice(i, 0, input)
     return input
   }
@@ -176,7 +176,7 @@ ezP.DelegateSvg.List.prototype.initBlock = function(block) {
  */
 ezP.DelegateSvg.List.target = function (prototypeName) {
   ezP.DelegateSvg.List.target.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.ListConsolidator(ezP.T3.Require.target_list, false, ',')
+  this.consolidator = new ezP.Consolidator.List(ezP.T3.Require.target_list, false, ',')
   this.outputType = ezP.T3.target_list
 }
 goog.inherits(ezP.DelegateSvg.List.target, ezP.DelegateSvg.List)
@@ -194,7 +194,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.target_list, ezP.DelegateSvg.List
  */
 ezP.DelegateSvg.List.expression = function (prototypeName) {
   ezP.DelegateSvg.List.expression.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.ListConsolidator(ezP.T3.Require.expression, false, ',')
+  this.consolidator = new ezP.Consolidator.List(ezP.T3.Require.expression, false, ',')
   this.outputType = ezP.T3.expression_list
 }
 goog.inherits(ezP.DelegateSvg.List.expression, ezP.DelegateSvg.List)
@@ -202,7 +202,7 @@ goog.inherits(ezP.DelegateSvg.List.expression, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.expression_list, ezP.DelegateSvg.List.expression)
 
 /**
- * Class for a DelegateSvg, starred_list block.
+ * Class for a DelegateSvg, starred_expression_list block.
  * This block may be sealed.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
@@ -210,14 +210,14 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.expression_list, ezP.DelegateSvg.
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.starred = function (prototypeName) {
-  ezP.DelegateSvg.List.starred.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.ListConsolidator(ezP.T3.Require.starred_item, false, ',')
-  this.outputType = ezP.T3.starred_list
+ezP.DelegateSvg.Xpr.starred_expression_list = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.starred_expression_list.superClass_.constructor.call(this, prototypeName)
+  this.consolidator = new ezP.Consolidator.List(ezP.T3.Require.starred_item, true, ',')
+  this.outputType = ezP.T3.starred_expression_list
 }
-goog.inherits(ezP.DelegateSvg.List.starred, ezP.DelegateSvg.List)
+goog.inherits(ezP.DelegateSvg.Xpr.starred_expression_list, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.expression_list, ezP.DelegateSvg.List.expression)
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.starred_expression_list, ezP.DelegateSvg.Xpr.starred_expression_list)
 
 /**
  * Class for a DelegateSvg, key_datum_list block.
@@ -230,7 +230,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.expression_list, ezP.DelegateSvg.
  */
 ezP.DelegateSvg.List.key_datum = function (prototypeName) {
   ezP.DelegateSvg.List.key_datum.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.ListConsolidator(ezP.T3.Require.key_datum,true,',')
+  this.consolidator = new ezP.Consolidator.List(ezP.T3.Require.key_datum,true,',')
   this.outputType = ezP.T3.key_datum_list
 }
 goog.inherits(ezP.DelegateSvg.List.key_datum, ezP.DelegateSvg.List)
@@ -248,7 +248,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.key_datum_list, ezP.DelegateSvg.L
  */
 ezP.DelegateSvg.Xpr.starred_list_comprehensive = function (prototypeName) {
   ezP.DelegateSvg.Xpr.starred_list_comprehensive.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.ListConsolidator.Singled(
+  this.consolidator = new ezP.Consolidator.List.Singled(
     ezP.T3.Require.starred_list,
     ezP.T3.comprehension,
     ezP.T3.Require.starred_list_comprehensive,
@@ -270,7 +270,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.starred_list_comprehensive, ezP.D
  */
 ezP.DelegateSvg.Xpr.non_void_starred_list_comprehensive = function (prototypeName) {
   ezP.DelegateSvg.Xpr.non_void_starred_list_comprehensive.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.ListConsolidator.Singled(
+  this.consolidator = new ezP.Consolidator.List.Singled(
     ezP.T3.Require.starred_list,
     ezP.T3.comprehension,
     ezP.T3.Require.starred_list_comprehensive,
@@ -292,7 +292,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.non_void_starred_list_comprehensi
  */
 ezP.DelegateSvg.Xpr.key_datum_list_comprehensive = function (prototypeName) {
   ezP.DelegateSvg.Xpr.key_datum_list_comprehensive.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.ListConsolidator.Singled(
+  this.consolidator = new ezP.Consolidator.List.Singled(
     ezP.T3.Require.key_datum_list,
     ezP.T3.dict_comprehension,
     ezP.T3.Require.key_datum_list_comprehensive,
@@ -315,7 +315,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.key_datum_list_comprehensive, ezP
  */
 ezP.DelegateSvg.Xpr.comp_iter_list = function (prototypeName) {
   ezP.DelegateSvg.Xpr.comp_iter_list.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.ListConsolidator(ezP.T3.Require.comp_iter,true,'')
+  this.consolidator = new ezP.Consolidator.List(ezP.T3.Require.comp_iter,true,'')
   this.outputType = ezP.T3.comp_iter_list
 }
 goog.inherits(ezP.DelegateSvg.Xpr.comp_iter_list, ezP.DelegateSvg.List)
@@ -333,7 +333,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.comp_iter_list, ezP.DelegateSvg.X
  */
 ezP.DelegateSvg.Xpr.expression_or_from_list = function (prototypeName) {
   ezP.DelegateSvg.Xpr.expression_or_from_list.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.ListConsolidator.Singled(
+  this.consolidator = new ezP.Consolidator.List.Singled(
     ezP.T3.Require.expression_list,
     ezP.T3.yield_from,
     ezP.T3.Require.expression_or_from_list,
@@ -343,3 +343,22 @@ ezP.DelegateSvg.Xpr.expression_or_from_list = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Xpr.expression_or_from_list, ezP.DelegateSvg.List)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.expression_or_from_list, ezP.DelegateSvg.Xpr.expression_or_from_list)
+
+
+/**
+ * Class for a DelegateSvg, slice_list block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Xpr.slice_list = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.slice_list.superClass_.constructor.call(this, prototypeName)
+  this.consolidator = new ezP.Consolidator.List(ezP.T3.Require.slice_item, false, ',')
+  this.outputType = ezP.T3.slice_list
+}
+goog.inherits(ezP.DelegateSvg.Xpr.slice_list, ezP.DelegateSvg.List)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.slice_list, ezP.DelegateSvg.Xpr.slice_list)

@@ -53,9 +53,9 @@ ezP.DelegateSvg.Xpr.ParameterList.prototype.willRender_ = function (block) {
 }
 
 ezP.DelegateSvg.Xpr.ParameterList.prototype.parameterListConsolidate = function (block) {
-  var C = this.parameterListConsolidator
+  var C = this.parameterConsolidator.List
   if (!C) {
-    C = this.parameterListConsolidator = new ezP.DelegateSvg.Xpr.ParameterList.Consolidator_()
+    C = this.parameterConsolidator.List = new ezP.DelegateSvg.Xpr.ParameterList.Consolidator_()
   }
   C(block)
 }

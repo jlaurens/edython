@@ -6,16 +6,34 @@
  * License CeCILL-B
  */
 /**
- * @fileoverview List consolidator for list blocks, for ezPython.
+ * @fileoverview Consolidators for various list blocks and proper_slice, for ezPython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('ezP.ListConsolidator')
+goog.provide('ezP.Consolidator.List')
 
 goog.require('ezP.Const')
 goog.require('ezP.Type')
 goog.require('ezP.DelegateSvg')
+
+
+/**
+ * Consolidator. Fake abstract class, just here for the record and namespace.
+ * Any dynamic block must be consolidated.
+ * A dynamic block changes its inputs while alive.
+ * Default constructor does nothing
+ * Main entry: consolidate
+ */
+ezP.Consolidator = function() {
+}
+
+/**
+ * Main and unique entry point.
+ * Removes empty place holders
+ * @param {!Block} block, to be consolidated....
+ */
+ezP.Consolidator.prototype.consolidate = undefined
 
 /**
  * List consolidator.
@@ -25,24 +43,29 @@ goog.require('ezP.DelegateSvg')
  * @param {Bool} canBeVoid, whether the list can be void. Non void lists will display a large placeholder.
  * @param {String} defaultSep, the separator between the list items
  */
-ezP.ListConsolidator = function(require, canBeVoid, defaultSep) {
+ezP.Consolidator.List = function(require, canBeVoid, defaultSep) {
+  goog.asserts.assert(require, 'Lists must type check their items.')
   this.require = require
-  this.canBeVoid = canBeVoid
-  this.defaultSep = defaultSep
+  if (canBeVoid) {
+    this.canBeVoid = canBeVoid
+  }
+  if (defaultSep) {
+    this.defaultSep = defaultSep
+  }
 }
 
-ezP.ListConsolidator.require = undefined
-ezP.ListConsolidator.canBeVoid = true
-ezP.ListConsolidator.defaultSep = ','
+ezP.Consolidator.List.prototype.require = undefined
+ezP.Consolidator.List.prototype.canBeVoid = true
+ezP.Consolidator.List.prototype.defaultSep = ','
 
 /**
  * Setup the io parameter dictionary.
  * Called when the input list has changed and or the index has changed.
  * @param {!Object} io parameter.
  */
-ezP.ListConsolidator.prototype.setupIO = function (io) {
+ezP.Consolidator.List.prototype.setupIO = function (io) {
   if ((io.input = io.list[io.i])) {
-    io.ezp = io.input.ezpListData
+    io.ezp = io.input.ezpData
     io.c8n = io.input.connection
     goog.asserts.assert(!io.ezp || !!io.c8n, 'List items must have a connection')
   } else {
@@ -54,7 +77,7 @@ ezP.ListConsolidator.prototype.setupIO = function (io) {
  * Advance to the next input. Returns false when at end.
  * @param {!Object} io parameter.
  */
-ezP.ListConsolidator.prototype.nextInput = function (io) {
+ezP.Consolidator.List.prototype.nextInput = function (io) {
   ++io.i
   this.setupIO(io)
   return !!io.input
@@ -64,7 +87,7 @@ ezP.ListConsolidator.prototype.nextInput = function (io) {
  * Returns the required types for the current input.
  * @param {!Object} io parameter.
  */
-ezP.ListConsolidator.prototype.getCheck = function (io) {
+ezP.Consolidator.List.prototype.getCheck = function (io) {
   return this.require
 }
 
@@ -72,7 +95,7 @@ ezP.ListConsolidator.prototype.getCheck = function (io) {
  * Finalize the current input as a placeholder.
  * @param {!Object} io parameter.
  */
-ezP.ListConsolidator.prototype.doFinalizePlaceholder = function (io) {
+ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io) {
   io.ezp.n = io.n
   io.ezp.sep = io.sep
   io.input.name = 'ITEM_' + io.n++
@@ -84,34 +107,34 @@ ezP.ListConsolidator.prototype.doFinalizePlaceholder = function (io) {
  * Get the next input. Returns null when at end.
  * @param {!Object} io parameter.
  */
-ezP.ListConsolidator.prototype.disposeAtI = function (io, i) {
+ezP.Consolidator.List.prototype.disposeAtI = function (io, i) {
   io.list[i].dispose()
   io.list.splice(i, 1)
   --io.end
 }
-ezP.ListConsolidator.prototype.disposeFromIToEnd = function (io) {
+ezP.Consolidator.List.prototype.disposeFromIToEnd = function (io) {
   while (io.i < io.end) {
     this.disposeAtI(io, io.i)
   }
   this.setupIO(io)
 }
-ezP.ListConsolidator.prototype.disposeFromStartToI = function (io) {
+ezP.Consolidator.List.prototype.disposeFromStartToI = function (io) {
   while (io.start < io.i) {
     this.disposeAtI(io, io.start)
     --io.i
   }
   this.setupIO(io)
 }
-ezP.ListConsolidator.prototype.insertPlaceholderAtI = function (io) {
+ezP.Consolidator.List.prototype.insertPlaceholderAtI = function (io) {
   var c8n = io.block.makeConnection_(Blockly.INPUT_VALUE)
   var input = new Blockly.Input(Blockly.INPUT_VALUE, 'ITEM_*', io.block, c8n)
-  input.ezpListData = {}
+  input.ezpData = {}
   io.list.splice(io.i, 0, input)
   ++io.end
   this.setupIO(io)
 }
 
-ezP.ListConsolidator.prototype.doFinalizeSeparator = function (io, extreme) {
+ezP.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme) {
   io.ezp.n = io.n
   io.ezp.sep = io.sep
   io.input.name = 'S7R_' + io.n
@@ -129,7 +152,7 @@ ezP.ListConsolidator.prototype.doFinalizeSeparator = function (io, extreme) {
 /**
  * Whether the list can be void
  */
-ezP.ListConsolidator.prototype.no_more_ezp = function(io) {
+ezP.Consolidator.List.prototype.no_more_ezp = function(io) {
   do {
     if (!!io.ezp) {
       this.disposeFromIToEnd(io)
@@ -140,7 +163,7 @@ ezP.ListConsolidator.prototype.no_more_ezp = function(io) {
 /**
  * Whether the list can be void
  */
-ezP.ListConsolidator.prototype.cleanup = function(io) {
+ezP.Consolidator.List.prototype.cleanup = function(io) {
   io.n = 0
   io.i = io.start
   this.setupIO(io)
@@ -198,7 +221,7 @@ ezP.ListConsolidator.prototype.cleanup = function(io) {
 /**
  * Take appropriate actions depending on the current input
  */
-ezP.ListConsolidator.prototype.one_step = function(io) {
+ezP.Consolidator.List.prototype.one_step = function(io) {
   if (io.c8n.isConnected()) {
     // count the number of connected blocks
     ++io.connected
@@ -225,7 +248,7 @@ ezP.ListConsolidator.prototype.one_step = function(io) {
       // This input is not connected, it will become a separator
       // remove separators before
       while (io.i > io.start) {
-        if (!io.list[io.i - 1].ezpListData.isSeparator) {
+        if (!io.list[io.i - 1].ezpData.isSeparator) {
           break
         }
         this.disposeAtI(io, --io.i)
@@ -239,7 +262,7 @@ ezP.ListConsolidator.prototype.one_step = function(io) {
     } else {
       // remove separators before, but keep the placeholder
       while (io.i > io.placeholder) {
-        if (!io.list[io.i - 1].ezpListData.isSeparator) {
+        if (!io.list[io.i - 1].ezpData.isSeparator) {
           break
         }
         this.disposeAtI(io, --io.i)
@@ -255,13 +278,13 @@ ezP.ListConsolidator.prototype.one_step = function(io) {
 /**
  * Walk through the input list
  */
-ezP.ListConsolidator.prototype.walk = function(io) {
+ezP.Consolidator.List.prototype.walk = function(io) {
   io.removePrevious = false
   do {
     this.one_step(io)
   } while (this.nextInput(io) && !!io.ezp)
   io.end = io.i // this group has index [start, end[
-  // if we find a further input with ezpListData
+  // if we find a further input with ezpData
   // delete it and everything thereafter
   this.no_more_ezp(io)
   // then cleanup
@@ -271,8 +294,9 @@ ezP.ListConsolidator.prototype.walk = function(io) {
 /**
  * List consolidator.
  * Removes empty place holders
+ * @param {!Block} block, to be consolidated....
  */
-ezP.ListConsolidator.prototype.consolidate = function(block) {
+ezP.Consolidator.List.prototype.consolidate = function(block) {
   var io = {
     block: block,
     i: 0,
@@ -297,23 +321,22 @@ ezP.ListConsolidator.prototype.consolidate = function(block) {
  * Remove empty place holders, add separators
  * Main entry: consolidate
  * @param {!String} single, the required type for a single element....
-
  */
-ezP.ListConsolidator.Singled = function(require, single, require_all, canBeVoid = true, defaultSep = ',') {
-  ezP.ListConsolidator.Singled.superClass_.constructor.call(this, require, canBeVoid, defaultSep)
+ezP.Consolidator.List.Singled = function(require, single, require_all, canBeVoid = true, defaultSep = ',') {
+  ezP.Consolidator.List.Singled.superClass_.constructor.call(this, require, canBeVoid, defaultSep)
   this.single = single
   this.require_all = require_all
 }
-goog.inherits(ezP.ListConsolidator.Singled, ezP.ListConsolidator)
+goog.inherits(ezP.Consolidator.List.Singled, ezP.Consolidator.List)
 
-ezP.ListConsolidator.Singled.prototype.single = undefined
-ezP.ListConsolidator.Singled.prototype.require_all = undefined
+ezP.Consolidator.List.Singled.prototype.single = undefined
+ezP.Consolidator.List.Singled.prototype.require_all = undefined
 
 /**
  * Returns the required types for the current input.
  * @param {!Object} io parameter.
  */
-ezP.ListConsolidator.Singled.prototype.getCheck = function (io) {
+ezP.Consolidator.List.Singled.prototype.getCheck = function (io) {
   if (io.single || io.end < io.start + 2) {
     return this.require_all
   } else if (io.end == io.start + 3 && io.i == io.start + 1) {
@@ -326,8 +349,8 @@ ezP.ListConsolidator.Singled.prototype.getCheck = function (io) {
 /**
  * Take appropriate actions depending on the current input
  */
-ezP.ListConsolidator.Singled.prototype.one_step = function(io) {
-  ezP.ListConsolidator.Singled.superClass_.one_step.call(this, io)
+ezP.Consolidator.List.Singled.prototype.one_step = function(io) {
+  ezP.Consolidator.List.Singled.superClass_.one_step.call(this, io)
   var target = io.c8n.targetConnection
   if (target && target.check_.indexOf(this.single) != -1) {
     io.single = io.i
@@ -338,7 +361,7 @@ ezP.ListConsolidator.Singled.prototype.one_step = function(io) {
  * Once the whole list has been managed,
  * there might be unwanted things.
  */
-ezP.ListConsolidator.Singled.prototype.cleanup = function(io) {
+ezP.Consolidator.List.Singled.prototype.cleanup = function(io) {
   if (io.single !== undefined) {
     io.n = 0
     io.i = io.single
@@ -348,6 +371,6 @@ ezP.ListConsolidator.Singled.prototype.cleanup = function(io) {
     this.nextInput(io)
     // this.disposeFromIToEnd(io)
   } else {
-    ezP.ListConsolidator.Singled.superClass_.cleanup.call(this, io)
+    ezP.Consolidator.List.Singled.superClass_.cleanup.call(this, io)
   }
 }

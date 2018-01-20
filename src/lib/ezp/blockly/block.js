@@ -54,165 +54,6 @@ ezP.Block.prototype.dispose = function () {
 }
 
 /**
- * Interpolate a message description onto the block.
- * @param {string} message Text contains interpolation tokens (%1, %2, ...)
- *     that match with fields or inputs defined in the args array.
- * @param {!Array} args Array of arguments to be interpolated.
- * @param {string=} lastDummyAlign If a dummy input is added at the end,
- *     how should it be aligned?
- * @private
- */
-ezP.Block.prototype.interpolate_ = function (message, args, lastDummyAlign) {
-  var tokens = Blockly.utils.tokenizeInterpolation(message)
-  // Interpolate the arguments.  Build a list of elements.
-  var indexDup = []
-  var indexCount = 0
-  var elements = []
-  for (var i = 0; i < tokens.length; i++) {
-    var token = tokens[i]
-    if (typeof token === 'number') {
-      if (token <= 0 || token > args.length) {
-        throw new Error('Block "' + this.type + '": ' +
-                        'Message index %' + token + ' out of range.')
-      }
-      if (indexDup[token]) {
-        throw new Error('Block "' + this.type + '": ' +
-                        'Message index %' + token + ' duplicated.')
-      }
-      indexDup[token] = true
-      indexCount++
-      elements.push(args[token - 1])
-    } else {
-      token = token.trim()
-      if (token) {
-        elements.push(token)
-      }
-    }
-  }
-  if (indexCount !== args.length) {
-    throw new Error('Block "' + this.type + '": ' +
-                    'Message does not reference all ' + args.length + ' arg(s).')
-  }
-  // Add last dummy input if needed.
-  if (elements.length && (typeof elements[elements.length - 1] === 'string' ||
-                          goog.string.startsWith(elements[elements.length - 1]['type'],
-                            'field_'))) {
-    var dummyInput = {type: 'input_dummy'}
-    if (lastDummyAlign) {
-      dummyInput['align'] = lastDummyAlign
-    }
-    elements.push(dummyInput)
-  }
-  // Lookup of alignment constants.
-  var alignmentLookup = {
-    'LEFT': Blockly.ALIGN_LEFT,
-    'RIGHT': Blockly.ALIGN_RIGHT,
-    'CENTRE': Blockly.ALIGN_CENTRE
-  }
-  // Populate block with inputs and fields.
-  var fieldStack = []
-  for (i = 0; i < elements.length; i++) {
-    var element = elements[i]
-    if (typeof element === 'string') {
-      fieldStack.push([element, undefined])
-    } else {
-      var field = null
-      var input = null
-      do {
-        var altRepeat = false
-        if (typeof element === 'string') {
-          field = new ezP.FieldLabel(element)
-        } else {
-          switch (element['type']) {
-          case 'input_value':
-            input = this.appendValueInput(element['name'])
-            break
-          case 'input_statement':
-            input = this.appendStatementInput(element['name'])
-            break
-          case 'input_dummy':
-            input = this.appendDummyInput(element['name'])
-            break
-          case 'field_label':
-            field = Blockly.Block.newFieldLabelFromJson_(element)
-            break
-          case 'field_input':
-            field = ezP.Block.newFieldTextInputFromJson_(element)
-            break
-          case 'field_angle':
-            field = new Blockly.FieldAngle(element['angle'])
-            break
-          case 'field_checkbox':
-            field = new Blockly.FieldCheckbox(
-              element['checked'] ? 'TRUE' : 'FALSE')
-            break
-          case 'field_colour':
-            field = new Blockly.FieldColour(element['colour'])
-            break
-          case 'field_variable':
-            field = Blockly.Block.newFieldVariableFromJson_(element)
-            break
-          case 'field_dropdown':
-            field = new Blockly.FieldDropdown(element['options'])
-            break
-          case 'field_image':
-            field = Blockly.Block.newFieldImageFromJson_(element)
-            break
-          case 'field_number':
-            field = new Blockly.FieldNumber(element['value'],
-              element['min'], element['max'], element['precision'])
-            break
-          case 'field_date':
-            if (Blockly.FieldDate) {
-              field = new Blockly.FieldDate(element['date'])
-              break
-            }
-            // Fall through if FieldDate is not compiled in.
-          default:
-            // Unknown field.
-            if (element['alt']) {
-              element = element['alt']
-              altRepeat = true
-            }
-          }
-        }
-      } while (altRepeat)
-      if (field) {
-        fieldStack.push([field, element['name']])
-      } else if (input) {
-        if (element['check']) {
-          input.setCheck(element['check'])
-        }
-        if (element['align']) {
-          input.setAlign(alignmentLookup[element['align']])
-        }
-        for (var j = 0; j < fieldStack.length; j++) {
-          input.appendField(fieldStack[j][0], fieldStack[j][1])
-        }
-        fieldStack.length = 0
-      }
-    }
-  }
-}
-
-/**
- * Helper function to construct a FieldTextInput from a JSON arg object,
- * dereferencing any string table references.
- * @param {!Object} options A JSON object with options (text, class, and
- *                          spellcheck).
- * @returns {!Blockly.FieldTextInput} The new text input.
- * @private
- */
-ezP.Block.newFieldTextInputFromJson_ = function (options) {
-  var text = Blockly.utils.replaceMessageReferences(options['text'])
-  var field = new ezP.FieldTextInput(text, options['class'])
-  if (typeof options['spellcheck'] === 'boolean') {
-    field.setSpellcheck(options['spellcheck'])
-  }
-  return field
-}
-
-/**
  * Append a tuple item value input row.
  * @return {!Blockly.Input} The input object created.
  */
@@ -234,11 +75,10 @@ ezP.Block.prototype.tupleConsolidateEZP_ = function () {
  */
 ezP.Block.prototype.appendInput_ = function (type, name) {
   var input = ezP.Block.superClass_.appendInput_.call(this, type, name)
+  input.ezpData = {}
   if (type === Blockly.INPUT_VALUE) {
     if (name.match(/^(?:TUPLE|S7R)_(?:\d|\*)+_(?:\d|\*)+$/g)) {
       input.ezpTuple = input.ezpTuple || {}
-    } else if (name.match(/^(?:ITEM|S7R)_(?:\d|\*)+$/g)) {
-      input.ezpListData = input.ezpListData || {}
     }
   }
   return input
@@ -320,3 +160,18 @@ ezP.Block.prototype.appendSealedValueInput = function(name) {
   return input
 };
 
+/**
+ * Set whether this block returns a value.
+ * No null opt_check for expression blocks
+ * @param {boolean} newBoolean True if there is an output.
+ * @param {string|Array.<string>|null|undefined} opt_check Returned type or list
+ *     of returned types.  Null or undefined if any type could be returned
+ *     (e.g. variable get).
+ */
+ezP.Block.prototype.setOutput = function(newBoolean, opt_check) {
+  if (newBoolean) {
+    goog.asserts.assert(!!opt_check || !this.type.startsWith('ezp_xpr_') || this.type.startsWith('ezp_xpr_fake'),
+      'ezP output connection must be types for '+this.type)
+  }
+  ezP.Block.superClass_.setOutput.call(this, newBoolean, opt_check)
+};

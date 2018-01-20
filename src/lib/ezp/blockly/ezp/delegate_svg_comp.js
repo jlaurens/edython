@@ -13,7 +13,7 @@
 
 goog.provide('ezP.DelegateSvg.Xpr.Comprehension')
 
-goog.require('ezP.DelegateSvg.List')
+goog.require('ezP.DelegateSvg.Xpr')
 
 /**
  * Class for a DelegateSvg, comprehension value block.
@@ -64,6 +64,7 @@ ezP.DelegateSvg.Xpr.Comprehension.prototype.completeSealed = function (block) {
     ezP.Const.Xpr.comp_iter_list)
   }
 
+
 /**
  * Class for a DelegateSvg, comp_for block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
@@ -96,7 +97,6 @@ ezP.DelegateSvg.Xpr.comp_for.prototype.initBlock = function(block) {
     .appendField(new ezP.FieldLabel('in'))
   block.setOutput(true, ezP.T3.comp_for)
 }
-
 
 /**
  * Class for a DelegateSvg, comp_if block.
