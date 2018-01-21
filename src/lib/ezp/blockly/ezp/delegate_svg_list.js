@@ -75,7 +75,7 @@ ezP.DelegateSvg.List.prototype.renderDrawListInput_ = function (io) {
       io.cursorX += bBox.width
       target.render()
     }
-  } else if (ezp.isSeparator) {
+  } else if (ezp.s7r_) {
     var pw = this.carretPathDefWidth_(io.cursorX)
     var w = pw.width
     c8n.setOffsetInBlock(io.cursorX, 0)
@@ -118,7 +118,7 @@ ezP.DelegateSvg.List.prototype.getInput = function (block, name) {
       continue
     }
     do {
-      if (!ezp.isSeparator) {
+      if (!ezp.s7r_) {
         if (ezp.n === n) {
           return input
         }
@@ -128,11 +128,13 @@ ezP.DelegateSvg.List.prototype.getInput = function (block, name) {
     } while ((input = list[++i]) && (ezp = input.ezp))
     var c8n = block.makeConnection_(Blockly.INPUT_VALUE)
     input = new Blockly.Input(Blockly.INPUT_VALUE, 'S7R_' + (n + 1), block, c8n)
-    goog.mixin(input.ezpData,{n: n + 1, sep: sep, isSeparator: true})
+    ezP.setupEzpData(input)
+    goog.mixin(input.ezpData,{n: n + 1, sep: sep, s7r_: true})
     input.appendField(new Blockly.FieldLabel(sep || this.consolidator.defaultSep))
     list.splice(i, 0, input)
     c8n = block.makeConnection_(Blockly.INPUT_VALUE)
     input = new Blockly.Input(Blockly.INPUT_VALUE, name, block, c8n)
+    ezP.setupEzpData(input)
     goog.mixin(input.ezpData, {n: n, sep: sep})
     list.splice(i, 0, input)
     return input
@@ -362,3 +364,21 @@ ezP.DelegateSvg.Xpr.slice_list = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Xpr.slice_list, ezP.DelegateSvg.List)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.slice_list, ezP.DelegateSvg.Xpr.slice_list)
+
+/**
+ * Class for a DelegateSvg, argument_list block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Xpr.argument_list = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.argument_list.superClass_.constructor.call(this, prototypeName)
+  this.consolidator = new ezP.Consolidator.List.Argument()
+  this.outputType = ezP.T3.argument_list
+}
+goog.inherits(ezP.DelegateSvg.Xpr.argument_list, ezP.DelegateSvg.List)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.argument_list, ezP.DelegateSvg.Xpr.argument_list)

@@ -19,6 +19,7 @@ goog.require('ezP.Type')
 goog.require('ezP.FieldLabel')
 
 var make_fake = function(key, label, type) {
+  goog.asserts.assert(type, 'Cannot make a fake block with no type.')
   Blockly.Blocks[key] = {
     init: function () {
       this.appendDummyInput().appendField(new ezP.FieldLabel(label))
@@ -41,7 +42,9 @@ make_fake('ezp_xpr_fake_target','target',ezP.T3.target)
 make_fake('ezp_xpr_fake_expression','expression',ezP.T3.Require.expression)
 make_fake('ezp_xpr_fake_expression','expression',ezP.T3.Require.expression)
 make_fake('ezp_xpr_fake_identifier','identifier',ezP.T3.identifier)
-make_fake('ezp_xpr_fake','any',null)
+make_fake('ezp_xpr_fake_starred_expression','*expression',ezP.T3.starred_expression)
+make_fake('ezp_xpr_fake_keyword_item','key = value',ezP.T3.keyword_item)
+make_fake('ezp_xpr_fake_double_starred_expression','**expression',ezP.T3.double_starred_expression)
 
 Blockly.Blocks['ezp_xpr_fake_with_sealed'] = {
   init: function () {

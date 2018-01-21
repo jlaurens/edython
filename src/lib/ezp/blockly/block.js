@@ -13,7 +13,7 @@
 
 goog.provide('ezP.Block')
 goog.require('Blockly.Block')
-goog.require('ezP')
+goog.require('ezP.Input')
 goog.forwardDeclare('ezP.Delegate')
 
 /**
@@ -75,10 +75,12 @@ ezP.Block.prototype.tupleConsolidateEZP_ = function () {
  */
 ezP.Block.prototype.appendInput_ = function (type, name) {
   var input = ezP.Block.superClass_.appendInput_.call(this, type, name)
-  input.ezpData = {}
+  ezP.Input.setupEzpData(input)
   if (type === Blockly.INPUT_VALUE) {
     if (name.match(/^(?:TUPLE|S7R)_(?:\d|\*)+_(?:\d|\*)+$/g)) {
       input.ezpTuple = input.ezpTuple || {}
+    } else if (name.match(/^(?:ITEM|S7R)_(?:\d|\*)+$/g)) {
+      input.ezpData.listed_ = true
     }
   }
   return input

@@ -60,7 +60,7 @@ ezP.DelegateSvg.Xpr.VSPair.prototype.completeSealed = function (block) {
   this.completeSealedInput(block,
     this.inputSECONDARY,
     this.secondaryPrototypeName)
-  }
+}
 
 /**
  * Class for a DelegateSvg, attributeref.
@@ -102,3 +102,62 @@ goog.inherits(ezP.DelegateSvg.Xpr.slicing, ezP.DelegateSvg.Xpr.VSPair)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.slicing, ezP.DelegateSvg.Xpr.slicing)
 
+/**
+ * Class for a DelegateSvg, value+'('sealed')' pair.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Xpr.VSDelimitedPair = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.VSDelimitedPair.superClass_.constructor.call(this, prototypeName)
+}
+goog.inherits(ezP.DelegateSvg.Xpr.VSDelimitedPair, ezP.DelegateSvg.Xpr.VSPair)
+
+ezP.DelegateSvg.Xpr.VSDelimitedPair.prototype.leftDelimiter = undefined
+ezP.DelegateSvg.Xpr.VSDelimitedPair.prototype.rightDelimiter = undefined
+
+/**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
+ * The FOR value is a connection to a sealed block
+ * This connection will be sent far away to prevent block (dis)connection.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Xpr.VSDelimitedPair.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Xpr.VSDelimitedPair.superClass_.initBlock.call(this, block)
+  this.leftField = new ezP.FieldLabel(this.leftDelimiter)
+  this.leftField.ezpFieldData = {x_shift: -ezP.Font.space/6}
+  this.inputSECONDARY.appendField(this.leftField)
+  this.rightField = new ezP.FieldLabel(this.rightDelimiter)
+  this.rightField.ezpFieldData = {x_shift: +ezP.Font.space/6}
+  block.appendDummyInput().appendField(this.rightField)
+}
+
+/**
+ * Class for a DelegateSvg, call block.
+ * As call is already a reserved message in javascript,
+ * we use call_block instead.
+ * Due to the ambibuity, it is implemented only once for both.
+ * Slicing is richer.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Xpr.call_block =  function (prototypeName) {
+  ezP.DelegateSvg.Xpr.call_block.superClass_.constructor.call(this, prototypeName)
+  this.primaryCheck = ezP.T3.Require.primary
+  this.secondaryCheck = ezP.T3.argument_list
+  this.outputType = ezP.T3.call
+  this.secondaryPrototypeName = ezP.Const.Xpr.argument_list
+  this.leftDelimiter = '('
+  this.rightDelimiter = ')'
+}
+goog.inherits(ezP.DelegateSvg.Xpr.call_block, ezP.DelegateSvg.Xpr.VSDelimitedPair)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.call, ezP.DelegateSvg.Xpr.call_block)

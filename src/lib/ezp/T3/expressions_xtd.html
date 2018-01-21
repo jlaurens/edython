@@ -36,6 +36,7 @@ slicing      ::=  primary display_slice_list
 display_slice_list ::=  "[" slice_list "]"
 </pre>
 <pre>
+argument_list_comprehensive ::= argument_list | comprehension
 positional_arguments ::=  positional_argument ("," positional_argument)*
 positional_argument ::= expression | starred_expression
 starred_expression ::= "*" expression
@@ -44,6 +45,10 @@ starred_and_keyword ::=  starred_expression | keyword_item
 keywords_arguments ::=  keywords_argument ("," keywords_argument)*
 keywords_argument ::= keyword_item | double_starred_expression
 double_starred_expression ::= "**" expression
+any_argument_but_double_starred_expression ::= expression | starred_expression | keyword_item
+any_argument_but_expression ::=  starred_expression | keyword_item | double_starred_expression
+any_argument ::= expression | starred_expression | keyword_item | double_starred_expression
+any_argument_comprehensive ::= any_argument | comprehension
 </pre>
 <pre>
 </pre>
