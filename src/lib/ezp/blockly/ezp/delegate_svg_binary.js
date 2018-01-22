@@ -52,6 +52,76 @@ ezP.DelegateSvg.Xpr.Binary.prototype.initBlock = function(block) {
 }
 
 /**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!goo.ui.Menu} menu The menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Xpr.Binary.prototype.populateContextMenu_ = function (block, menu) {
+  var old = this.fieldOperator.getText()
+  var F = function(op) {
+    var menuItem = new ezP.MenuItem('... '+op+' ...',[ezP.USE_BINARY_OPERATOR_ID, op])
+    menuItem.setEnabled(old != op)
+    menu.addChild(menuItem, true)
+  }
+  for (var i = 0; i<this.operators.length; i++) {
+    F(this.operators[i])
+  }
+  menu.addChild(new ezP.Separator(), true)
+  ezP.DelegateSvg.Xpr.Binary.superClass_.populateContextMenu_.call(this,block, menu)
+}
+
+/**
+ * Handle the selection of an item in the context dropdown menu.
+ * @param {!Blockly.Block} block, owner of the delegate.
+ * @param {!goog.ui.Menu} menu The Menu clicked.
+ * @param {!goog....} event The event containing as target
+ * the MenuItem selected within menu.
+ */
+ezP.DelegateSvg.Xpr.Binary.prototype.onActionMenuEvent = function (block, menu, event) {
+  var model = event.target.getModel()
+  var action = model[0]
+  var op = model[1]
+  if (action == ezP.USE_BINARY_OPERATOR_ID) {
+    if (goog.array.indexOf(this.operators, op)<0) {
+      return
+    }
+    this.fieldOperator.setValue(op)
+    return
+  }
+  ezP.DelegateSvg.Xpr.Binary.superClass_.onActionMenuEvent.call(this, block, menu, event)
+  return
+}
+
+/**
+ * Final tune up depending on the block.
+ * Default implementation does nothing.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} hidden True if connections are hidden.
+ * @override
+ */
+ezP.DelegateSvg.Xpr.Binary.prototype.toDom = function (block, element) {
+  element.setAttribute('operator', this.fieldOperator.getText())
+}
+
+/**
+ * Final tune up depending on the block.
+ * Default implementation does nothing.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} hidden True if connections are hidden.
+ * @override
+ */
+ezP.DelegateSvg.Xpr.Binary.prototype.fromDom = function (block, element) {
+  this.prefix = element.getAttribute('operator')
+  if (goog.array.indexOf(this.operators, this.prefix)<0) {
+    this.prefix = this.operators[0]
+  }
+  if (this.fieldOperator) {
+    this.fieldOperator.setValue(this.prefix)
+  }
+}
+
+/**
  * Class for a DelegateSvg, m_expr_concrete block.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
@@ -120,7 +190,8 @@ ezP.DelegateSvg.Xpr.m_expr_concrete.prototype.populateContextMenu_ = function (b
   F('//')
   F('%')
   menu.addChild(new ezP.Separator(), true)
-  ezP.DelegateSvg.Xpr.m_expr_concrete.superClass_.populateContextMenu_.call(this,block, menu)
+  // Bypass the parent
+  ezP.DelegateSvg.Xpr.Binary.superClass_.populateContextMenu_.call(this,block, menu)
 }
 
 /**
@@ -142,33 +213,46 @@ ezP.DelegateSvg.Xpr.m_expr_concrete.prototype.onActionMenuEvent = function (bloc
     this.inputRHS.setCheck(op == '@'? this.checkTypesLHS: this.checkTypesRHS)
     return
   }
-  ezP.DelegateSvg.Xpr.m_expr_concrete.superClass_.onActionMenuEvent.call(this, block, menu, event)
+  // Bypass the parent
+  ezP.DelegateSvg.Xpr.Binary.superClass_.onActionMenuEvent.call(this, block, menu, event)
   return
-}
-/**
- * Final tune up depending on the block.
- * Default implementation does nothing.
- * @param {!Blockly.Block} block.
- * @param {!Element} hidden True if connections are hidden.
- * @override
- */
-ezP.DelegateSvg.Xpr.m_expr_concrete.prototype.toDom = function (block, element) {
-  element.setAttribute('operator', this.fieldOperator.getText())
 }
 
 /**
- * Final tune up depending on the block.
- * Default implementation does nothing.
- * @param {!Blockly.Block} block.
- * @param {!Element} hidden True if connections are hidden.
- * @override
+ * Class for a DelegateSvg, a_expr_concrete block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
  */
-ezP.DelegateSvg.Xpr.m_expr_concrete.prototype.fromDom = function (block, element) {
-  this.prefix = element.getAttribute('operator')
-  if (goog.array.indexOf(this.operators, this.prefix)<0) {
-    this.prefix = this.operators[0]
-  }
-  if (this.fieldOperator) {
-    this.fieldOperator.setValue(this.prefix)
-  }
+ezP.DelegateSvg.Xpr.a_expr_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.a_expr_concrete.superClass_.constructor.call(this, prototypeName)
+  this.operator = '+'
+  this.operators = ['+', '-']
+  this.checkTypesLHS = ezP.T3.Require.a_expr
+  this.checkTypesRHS = ezP.T3.Require.m_expr
+  this.outputType = ezP.T3.a_expr_concrete
 }
+goog.inherits(ezP.DelegateSvg.Xpr.a_expr_concrete, ezP.DelegateSvg.Xpr.Binary)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.a_expr_concrete, ezP.DelegateSvg.Xpr.a_expr_concrete)
+
+/**
+ * Class for a DelegateSvg, shift_expr_concrete block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Xpr.shift_expr_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.shift_expr_concrete.superClass_.constructor.call(this, prototypeName)
+  this.operator = '<<'
+  this.operators = ['<<', '>>']
+  this.checkTypesLHS = ezP.T3.Require.shift_expr
+  this.checkTypesRHS = ezP.T3.Require.a_expr
+  this.outputType = ezP.T3.shift_expr_concrete
+}
+goog.inherits(ezP.DelegateSvg.Xpr.shift_expr_concrete, ezP.DelegateSvg.Xpr.Binary)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.shift_expr_concrete, ezP.DelegateSvg.Xpr.shift_expr_concrete)
+

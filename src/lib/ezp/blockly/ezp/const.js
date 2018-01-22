@@ -66,6 +66,8 @@ ezP.Const.Xpr = {
   await_expr: 'ezp_xpr_await_expr',
   u_expr_concrete: 'ezp_xpr_u_expr_concrete',
   m_expr_concrete: 'ezp_xpr_m_expr_concrete',
+  a_expr_concrete: 'ezp_xpr_a_expr_concrete',
+  shift_expr_concrete: 'ezp_xpr_shift_expr_concrete',
   // in progress
 
   star_or_expr: 'ezp_xpr_star_or_expr',
