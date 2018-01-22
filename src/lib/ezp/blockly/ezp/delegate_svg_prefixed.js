@@ -40,9 +40,10 @@ ezP.DelegateSvg.Xpr.Prefixed.prototype.outputType = undefined
  */
 ezP.DelegateSvg.Xpr.Prefixed.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Xpr.Delimited.superClass_.initBlock.call(this, block)
+  this.prefixField = new ezP.FieldLabel(this.prefix)
   block.appendValueInput(ezP.Const.Input.XPR)
     .setCheck(this.checkTypes)
-    .appendField(new ezP.FieldLabel(this.prefix))
+    .appendField(this.prefixField)
   block.setOutput(true, this.outputType)
 }
 
@@ -109,12 +110,12 @@ ezP.DelegateSvg.Xpr.dot_identifier = function (prototypeName) {
   this.prefix = '.'
   this.checkTypes = ezP.T3.identifier
   this.outputType = ezP.T3.dot_identifier
- }
- goog.inherits(ezP.DelegateSvg.Xpr.dot_identifier, ezP.DelegateSvg.Xpr.Prefixed)
- 
- ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.dot_identifier, ezP.DelegateSvg.Xpr.dot_identifier)
+}
+goog.inherits(ezP.DelegateSvg.Xpr.dot_identifier, ezP.DelegateSvg.Xpr.Prefixed)
 
- /**
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.dot_identifier, ezP.DelegateSvg.Xpr.dot_identifier)
+
+/**
 * Class for a DelegateSvg, await_expr.
 * For ezPython.
 * @param {?string} prototypeName Name of the language object containing
@@ -122,12 +123,82 @@ ezP.DelegateSvg.Xpr.dot_identifier = function (prototypeName) {
 * @constructor
 */
 ezP.DelegateSvg.Xpr.await_expr = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.dot_identifier.superClass_.constructor.call(this, prototypeName)
+  ezP.DelegateSvg.Xpr.await_expr.superClass_.constructor.call(this, prototypeName)
   this.prefix = 'await'
   this.checkTypes = ezP.T3.Require.primary
   this.outputType = ezP.T3.await_expr
- }
- goog.inherits(ezP.DelegateSvg.Xpr.await_expr, ezP.DelegateSvg.Xpr.Prefixed)
- 
- ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.await_expr, ezP.DelegateSvg.Xpr.await_expr)
- 
+}
+goog.inherits(ezP.DelegateSvg.Xpr.await_expr, ezP.DelegateSvg.Xpr.Prefixed)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.await_expr, ezP.DelegateSvg.Xpr.await_expr)
+
+/**
+* Class for a DelegateSvg, await_expr.
+* For ezPython.
+* @param {?string} prototypeName Name of the language object containing
+*     type-specific functions for this block.
+* @constructor
+*/
+ezP.DelegateSvg.Xpr.u_expr = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.u_expr.superClass_.constructor.call(this, prototypeName)
+  this.prefix = '-'
+  this.checkTypes = ezP.T3.Require.power
+  this.outputType = ezP.T3.u_expr
+}
+goog.inherits(ezP.DelegateSvg.Xpr.u_expr, ezP.DelegateSvg.Xpr.Prefixed)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.u_expr, ezP.DelegateSvg.Xpr.u_expr)
+
+ezP.USE_UNARY_PLUS_OPERATOR_ID  = 'USE_UNARY_ADD_OPERATOR'
+ezP.USE_UNARY_MINUS_OPERATOR_ID = 'USE_UNARY_MINUS_OPERATOR'
+ezP.USE_UNARY_TILDE_OPERATOR_ID = 'USE_UNARY_TILDE_OPERATOR'
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!goo.ui.Menu} menu The menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Xpr.u_expr.prototype.populateContextMenu_ = function (block, menu) {
+  var old = this.prefixField.getText()
+  var menuItem = new ezP.MenuItem(
+    '+...',
+    [ezP.USE_UNARY_PLUS_OPERATOR_ID])
+  menuItem.setEnabled(old != '+')
+  menu.addChild(menuItem, true)
+  menuItem = new ezP.MenuItem(
+    '-...',
+    [ezP.USE_UNARY_MINUS_OPERATOR_ID])
+  menuItem.setEnabled(old != '-')
+  menu.addChild(menuItem, true)
+  menuItem = new ezP.MenuItem(
+    '~...',
+    [ezP.USE_UNARY_TILDE_OPERATOR_ID])
+  menuItem.setEnabled(old != '~')
+  menu.addChild(menuItem, true)
+  menu.addChild(new ezP.Separator(), true)
+  ezP.DelegateSvg.Xpr.u_expr.superClass_.populateContextMenu_.call(this,block, menu)
+}
+
+/**
+ * Handle the selection of an item in the context dropdown menu.
+ * @param {!Blockly.Block} block, owner of the delegate.
+ * @param {!goog.ui.Menu} menu The Menu clicked.
+ * @param {!goog....} event The event containing as target
+ * the MenuItem selected within menu.
+ */
+ezP.DelegateSvg.Xpr.u_expr.prototype.onActionMenuEvent = function (block, menu, event) {
+  var action = event.target.getModel()
+  if (action == ezP.USE_UNARY_PLUS_OPERATOR_ID) {
+    this.prefixField.setValue('+')
+    return
+  } else if (action == ezP.USE_UNARY_MINUS_OPERATOR_ID) {
+    this.prefixField.setValue('-')
+    return
+  } else if (action == ezP.USE_UNARY_TILDE_OPERATOR_ID) {
+    this.prefixField.setValue('~')
+    return
+  }
+  ezP.DelegateSvg.Xpr.u_expr.superClass_.onActionMenuEvent.call(this, block, menu, event)
+  return
+}

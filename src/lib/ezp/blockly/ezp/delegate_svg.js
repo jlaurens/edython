@@ -1065,7 +1065,7 @@ ezP.DelegateSvg.prototype.completeSealedInput = function (block, input, prototyp
 }
 
 /**
- * Complete the .
+ * Set the enable/disable status of the given block.
  * @param {!Block} block.
  * @param {!Input} input.
  * @param {!String} prototypeName.
@@ -1091,4 +1091,3 @@ ezP.DelegateSvg.prototype.setInputDisabled = function (block, name, newValue) {
     console.log('Unable to dis/enable non existing input named '+name)
   }
 }
-

@@ -161,7 +161,7 @@ ezP.DelegateSvg.Xpr.proper_slice.prototype.onActionMenuEvent = function (block, 
     this.setInputDisabled(block, input.name, !input.ezpData.disabled_)
     return
   }
-  ezP.DelegateSvg.Statement.Print.superClass_.onActionMenuEvent.call(this, block, menu, event)
+  ezP.DelegateSvg.Xpr.proper_slice.superClass_.onActionMenuEvent.call(this, block, menu, event)
   return
 }
 

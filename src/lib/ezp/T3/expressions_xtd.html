@@ -51,6 +51,9 @@ any_argument ::= expression | starred_expression | keyword_item | double_starred
 any_argument_comprehensive ::= any_argument | comprehension
 </pre>
 <pre>
+power ::= await_or_primary | power_concrete
+power_concrete ::= await_or_primary "**" u_expr
+await_or_primary ::= await_expr | primary
 </pre>
 <pre>
 comparison ::=  or_expr | comparison_list
