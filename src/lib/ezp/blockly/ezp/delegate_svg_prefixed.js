@@ -39,11 +39,11 @@ ezP.DelegateSvg.Xpr.Prefixed.prototype.outputType = undefined
  * @private
  */
 ezP.DelegateSvg.Xpr.Prefixed.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.Delimited.superClass_.initBlock.call(this, block)
-  this.prefixField = new ezP.FieldLabel(this.prefix)
+  ezP.DelegateSvg.Xpr.Prefixed.superClass_.initBlock.call(this, block)
+  this.fieldPrefix = new ezP.FieldLabel(this.prefix)
   block.appendValueInput(ezP.Const.Input.XPR)
     .setCheck(this.checkTypes)
-    .appendField(this.prefixField)
+    .appendField(this.fieldPrefix)
   block.setOutput(true, this.outputType)
 }
 
@@ -55,7 +55,7 @@ ezP.DelegateSvg.Xpr.Prefixed.prototype.initBlock = function(block) {
  * @constructor
  */
 ezP.DelegateSvg.Xpr.starred_or_expr = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.double_starred_or_expr.superClass_.constructor.call(this, prototypeName)
+  ezP.DelegateSvg.Xpr.starred_or_expr.superClass_.constructor.call(this, prototypeName)
   this.prefix = '*'
   this.checkTypes = ezP.T3.Require.expression
   this.outputType = ezP.T3.starred_or_expr
@@ -139,19 +139,18 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.await_expr, ezP.DelegateSvg.Xpr.a
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Xpr.u_expr = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.u_expr.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Xpr.u_expr_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.u_expr_concrete.superClass_.constructor.call(this, prototypeName)
   this.prefix = '-'
+  this.operators = ['+', '-', '~']
   this.checkTypes = ezP.T3.Require.power
-  this.outputType = ezP.T3.u_expr
+  this.outputType = ezP.T3.u_expr_concrete
 }
-goog.inherits(ezP.DelegateSvg.Xpr.u_expr, ezP.DelegateSvg.Xpr.Prefixed)
+goog.inherits(ezP.DelegateSvg.Xpr.u_expr_concrete, ezP.DelegateSvg.Xpr.Prefixed)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.u_expr, ezP.DelegateSvg.Xpr.u_expr)
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.u_expr_concrete, ezP.DelegateSvg.Xpr.u_expr_concrete)
 
-ezP.USE_UNARY_PLUS_OPERATOR_ID  = 'USE_UNARY_ADD_OPERATOR'
-ezP.USE_UNARY_MINUS_OPERATOR_ID = 'USE_UNARY_MINUS_OPERATOR'
-ezP.USE_UNARY_TILDE_OPERATOR_ID = 'USE_UNARY_TILDE_OPERATOR'
+ezP.USE_UNARY_OPERATOR_ID  = 'USE_UNARY_OPERATOR'
 
 /**
  * Populate the context menu for the given block.
@@ -159,25 +158,18 @@ ezP.USE_UNARY_TILDE_OPERATOR_ID = 'USE_UNARY_TILDE_OPERATOR'
  * @param {!goo.ui.Menu} menu The menu to populate.
  * @private
  */
-ezP.DelegateSvg.Xpr.u_expr.prototype.populateContextMenu_ = function (block, menu) {
-  var old = this.prefixField.getText()
-  var menuItem = new ezP.MenuItem(
-    '+...',
-    [ezP.USE_UNARY_PLUS_OPERATOR_ID])
-  menuItem.setEnabled(old != '+')
-  menu.addChild(menuItem, true)
-  menuItem = new ezP.MenuItem(
-    '-...',
-    [ezP.USE_UNARY_MINUS_OPERATOR_ID])
-  menuItem.setEnabled(old != '-')
-  menu.addChild(menuItem, true)
-  menuItem = new ezP.MenuItem(
-    '~...',
-    [ezP.USE_UNARY_TILDE_OPERATOR_ID])
-  menuItem.setEnabled(old != '~')
-  menu.addChild(menuItem, true)
+ezP.DelegateSvg.Xpr.u_expr_concrete.prototype.populateContextMenu_ = function (block, menu) {
+  var old = this.fieldPrefix.getText()
+  var F = function(op) {
+    var menuItem = new ezP.MenuItem(op+'...',[ezP.USE_UNARY_OPERATOR_ID, op])
+    menuItem.setEnabled(old != op)
+    menu.addChild(menuItem, true)
+  }
+  F('+')
+  F('-')
+  F('~')
   menu.addChild(new ezP.Separator(), true)
-  ezP.DelegateSvg.Xpr.u_expr.superClass_.populateContextMenu_.call(this,block, menu)
+  ezP.DelegateSvg.Xpr.u_expr_concrete.superClass_.populateContextMenu_.call(this,block, menu)
 }
 
 /**
@@ -187,18 +179,45 @@ ezP.DelegateSvg.Xpr.u_expr.prototype.populateContextMenu_ = function (block, men
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Xpr.u_expr.prototype.onActionMenuEvent = function (block, menu, event) {
-  var action = event.target.getModel()
-  if (action == ezP.USE_UNARY_PLUS_OPERATOR_ID) {
-    this.prefixField.setValue('+')
-    return
-  } else if (action == ezP.USE_UNARY_MINUS_OPERATOR_ID) {
-    this.prefixField.setValue('-')
-    return
-  } else if (action == ezP.USE_UNARY_TILDE_OPERATOR_ID) {
-    this.prefixField.setValue('~')
+ezP.DelegateSvg.Xpr.u_expr_concrete.prototype.onActionMenuEvent = function (block, menu, event) {
+  var model = event.target.getModel()
+  var action = model[0]
+  var op = model[1]
+  if (action == ezP.USE_UNARY_OPERATOR_ID) {
+    if (goog.array.indexOf(this.operators, op)<0) {
+      return
+    }
+    this.fieldPrefix.setValue(op)
     return
   }
-  ezP.DelegateSvg.Xpr.u_expr.superClass_.onActionMenuEvent.call(this, block, menu, event)
+  ezP.DelegateSvg.Xpr.u_expr_concrete.superClass_.onActionMenuEvent.call(this, block, menu, event)
   return
+}
+
+/**
+ * Final tune up depending on the block.
+ * Default implementation does nothing.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} hidden True if connections are hidden.
+ * @override
+ */
+ezP.DelegateSvg.Xpr.u_expr_concrete.prototype.toDom = function (block, element) {
+  element.setAttribute('operator', this.fieldPrefix.getText())
+}
+
+/**
+ * Final tune up depending on the block.
+ * Default implementation does nothing.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} hidden True if connections are hidden.
+ * @override
+ */
+ezP.DelegateSvg.Xpr.u_expr_concrete.prototype.fromDom = function (block, element) {
+  this.prefix = element.getAttribute('operator')
+  if (goog.array.indexOf(this.operators, this.prefix)<0) {
+    this.prefix = this.operators[1]
+  }
+  if (this.fieldPrefix) {
+    this.fieldPrefix.setValue(this.prefix)
+  }
 }

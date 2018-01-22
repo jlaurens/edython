@@ -64,7 +64,8 @@ ezP.Const.Xpr = {
   call: 'ezp_xpr_call',
   argument_list: 'ezp_xpr_argument_list',
   await_expr: 'ezp_xpr_await_expr',
-  u_expr: 'ezp_xpr_u_expr',
+  u_expr_concrete: 'ezp_xpr_u_expr_concrete',
+  m_expr_concrete: 'ezp_xpr_m_expr_concrete',
   // in progress
 
   star_or_expr: 'ezp_xpr_star_or_expr',
@@ -142,10 +143,10 @@ ezP.Const.Input = {
   UPPER_BOUND: 'UPPER_BOUND',
   STRIDE: 'STRIDE',
   XPR: 'XPR',// = ANY? NO!
-  // IN PROGRESS
-  ANY: 'ANY',
   LHS: 'LHS',
   RHS: 'RHS',
+  // IN PROGRESS
+  ANY: 'ANY',
   SEP: 'SEP',
   END: 'END',
   FILE: 'FILE',
