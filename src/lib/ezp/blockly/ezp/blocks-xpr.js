@@ -59,6 +59,7 @@ var Ks = [
   ezP.Const.Xpr.proper_slice,
   ezP.Const.Xpr.call,
   ezP.Const.Xpr.argument_list,
+  ezP.Const.Xpr.await_expr,
   // IN PROGRESS
 
 ]

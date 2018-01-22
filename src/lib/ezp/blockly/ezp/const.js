@@ -63,6 +63,7 @@ ezP.Const.Xpr = {
   proper_slice: 'ezp_xpr_proper_slice',
   call: 'ezp_xpr_call',
   argument_list: 'ezp_xpr_argument_list',
+  await_expr: 'ezp_xpr_await_expr',
   // in progress
 
   star_or_expr: 'ezp_xpr_star_or_expr',

@@ -105,11 +105,29 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.yield_from, ezP.DelegateSvg.Xpr.y
 * @constructor
 */
 ezP.DelegateSvg.Xpr.dot_identifier = function (prototypeName) {
- ezP.DelegateSvg.Xpr.dot_identifier.superClass_.constructor.call(this, prototypeName)
- this.prefix = '.'
- this.checkTypes = ezP.T3.identifier
- this.outputType = ezP.T3.dot_identifier
-}
-goog.inherits(ezP.DelegateSvg.Xpr.dot_identifier, ezP.DelegateSvg.Xpr.Prefixed)
+  ezP.DelegateSvg.Xpr.dot_identifier.superClass_.constructor.call(this, prototypeName)
+  this.prefix = '.'
+  this.checkTypes = ezP.T3.identifier
+  this.outputType = ezP.T3.dot_identifier
+ }
+ goog.inherits(ezP.DelegateSvg.Xpr.dot_identifier, ezP.DelegateSvg.Xpr.Prefixed)
+ 
+ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.dot_identifier, ezP.DelegateSvg.Xpr.dot_identifier)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.dot_identifier, ezP.DelegateSvg.Xpr.dot_identifier)
+ /**
+* Class for a DelegateSvg, await_expr.
+* For ezPython.
+* @param {?string} prototypeName Name of the language object containing
+*     type-specific functions for this block.
+* @constructor
+*/
+ezP.DelegateSvg.Xpr.await_expr = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.dot_identifier.superClass_.constructor.call(this, prototypeName)
+  this.prefix = 'await'
+  this.checkTypes = ezP.T3.Require.primary
+  this.outputType = ezP.T3.await_expr
+ }
+ goog.inherits(ezP.DelegateSvg.Xpr.await_expr, ezP.DelegateSvg.Xpr.Prefixed)
+ 
+ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.await_expr, ezP.DelegateSvg.Xpr.await_expr)
+ 
