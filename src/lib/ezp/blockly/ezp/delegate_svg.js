@@ -950,7 +950,21 @@ ezP.DelegateSvg.prototype.showContextMenu_ = function (block, e) {
     var xy = goog.style.getPageOffset(block.svgGroup_)
     menu.showMenu(block.svgGroup_, xy.x, xy.y + scaledHeight+2)
     }
-}
+  }
+
+  /**
+   * Handle the selection of an item in the context dropdown menu.
+   * Subclassers may not call the inherited implementation.
+   * The default implementation returns false,
+   * thus passing the control to onActionMenuEvent.
+   * @param {!goog.ui.Menu} menu The Menu component clicked.
+   * @param {!Blockly.Block} block The Menu component clicked.
+   * @param {!goog....} event The event containing as target
+   * @return {boolean} whether the event has been handle.
+   */
+  ezP.DelegateSvg.prototype.handleActionMenuEvent = function (block, menu, event) {
+    return false
+  }
 
 /**
  * Handle the selection of an item in the context dropdown menu.
@@ -960,7 +974,9 @@ ezP.DelegateSvg.prototype.showContextMenu_ = function (block, e) {
  * the MenuItem selected within menu.
  */
 ezP.DelegateSvg.prototype.onActionMenuEvent = function (block, menu, event) {
-  console.log(event.target)
+  if (this.handleActionMenuEvent(block, menu, event)) {
+    return
+  }
   var workspace = block.workspace
   var model = event.target.getModel()
   var action = model[0]

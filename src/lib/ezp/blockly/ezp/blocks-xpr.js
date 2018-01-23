@@ -60,10 +60,16 @@ var Ks = [
   ezP.Const.Xpr.call,
   ezP.Const.Xpr.argument_list,
   ezP.Const.Xpr.await_expr,
-  ezP.Const.Xpr.u_expr_concrete,
-  ezP.Const.Xpr.m_expr_concrete,
-  ezP.Const.Xpr.a_expr_concrete,
-  ezP.Const.Xpr.shift_expr_concrete,
+  // ezP.Const.Xpr.u_expr_concrete,
+  // ezP.Const.Xpr.m_expr_concrete,
+  // ezP.Const.Xpr.a_expr_concrete,
+  // ezP.Const.Xpr.shift_expr_concrete,
+  // ezP.Const.Xpr.and_expr_concrete,
+  ezP.Const.Xpr.unary_concrete,
+  ezP.Const.Xpr.algebra_concrete,
+  ezP.Const.Xpr.bitwise_concrete,
+  ezP.Const.Xpr.boolean_concrete,
+  ezP.Const.Xpr.comparison_concrete,
   // IN PROGRESS
 
 ]
