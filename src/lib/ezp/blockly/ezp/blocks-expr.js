@@ -63,6 +63,7 @@ var Ks = [
   ezP.Const.Expr.conditional_expression_concrete,
   ezP.Const.Expr.lambda_expr,
   ezP.Const.Expr.lambda_expr_nocond,
+  ezP.Const.Expr.assignment_expression,
   // IN PROGRESS
 
 ]

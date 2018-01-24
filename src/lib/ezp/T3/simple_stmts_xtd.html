@@ -5,7 +5,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 </head>
-<body>  
+<body>
+assignment_stmt ::=  (target_list "=")+ (starred_expression | yield_expression)
+target_list     ::=  target ("," target)* [","]
+target          ::=  identifier
+                     | "(" [target_list] ")"
+                     | "[" [target_list] "]"
+                     | attributeref
+                     | subscription
+                     | slicing
+                     | "*" target
+<pre>
+assignment_expression ::=  target_list "=" assigned_expression
+assigned_expression ::= starred_expression | yield_expression | assignment_expression
+assignment_stmt ::= assignment_expression
+</pre>
 <pre>
 target ::= identifier
   | parenth_target_list
@@ -16,9 +30,9 @@ target ::= identifier
   | starred_target
 bracket_target_list ::= &quot;[&quot; void_target_list &quot;]&quot;
 parenth_target_list ::= &quot;(&quot; void_target_list &quot;)&quot;
-starred_target ::= "*" target
-starred_expression ::= "*" expression
-starred_concrete ::= "*" something
+target_starred ::= "*" target
+expression_starred ::= "*" expression
+something_starred ::= "*" something
 </pre>
 starred_target ::= starred_concrete
 starred_item ::= starred_concrete

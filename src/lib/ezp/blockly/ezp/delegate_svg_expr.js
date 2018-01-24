@@ -190,6 +190,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.conditional_expression_concrete,
  * @private
  */
 ezP.DelegateSvg.Expr.conditional_expression_concrete.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Expr.conditional_expression_concrete.superClass_.initBlock.call(this, block)
   block.appendValueInput(ezP.Const.Input.EXPR)
     .setCheck(ezP.T3.Require.or_test)
   block.appendValueInput(ezP.Const.Input.IF)
@@ -199,6 +200,59 @@ ezP.DelegateSvg.Expr.conditional_expression_concrete.prototype.initBlock = funct
     .setCheck(ezP.T3.Require.expression)
     .appendField(new ezP.FieldLabel('else'))
 }
+
+/**
+ * Class for a DelegateSvg, assignment_expression block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.assignment_expression = function (prototypeName) {
+  ezP.DelegateSvg.Expr.assignment_expression.superClass_.constructor.call(this, prototypeName)
+  this.outputType = ezP.T3.assignment_expression
+}
+goog.inherits(ezP.DelegateSvg.Expr.assignment_expression, ezP.DelegateSvg.Expr)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.assignment_expression, ezP.DelegateSvg.Expr.assignment_expression)
+
+/**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Expr.assignment_expression.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Expr.assignment_expression.superClass_.initBlock.call(this, block)
+  this.inputLIST = block.appendSealedValueInput(ezP.Const.Input.LIST)
+  block.appendValueInput(ezP.Const.Input.RHS)
+    .setCheck(ezP.T3.Require.assigned_expression)
+    .appendField(new ezP.FieldLabel('='))
+}
+
+/**
+ * Create a sealed node for the comprehension if necessary.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Expr.assignment_expression.prototype.completeSealed = function (block) {
+  this.completeSealedInput(block,
+    this.inputLIST,
+    ezP.Const.Expr.target_list)
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /**

@@ -49,10 +49,10 @@ ezP.Consolidator.prototype.consolidate = undefined
 ezP.Consolidator.List = function(require, canBeVoid, defaultSep) {
   goog.asserts.assert(require, 'Lists must type check their items.')
   this.require = require
-  if (canBeVoid) {
+  if (canBeVoid !== undefined) {
     this.canBeVoid = canBeVoid
   }
-  if (defaultSep) {
+  if (defaultSep !== undefined) {
     this.defaultSep = defaultSep
   }
 }

@@ -24,7 +24,8 @@ ezP.Const = ezP.Const || {}
 ezP.Const.Stmt = {
   // in progress
   expression_stmt: 'ezp_stmt_expression_stmt',
-
+  assignment_stmt: 'ezp_stmt_assignment_stmt',
+  
 
 
   DEFAULT: 'ezp_stmt',
@@ -83,6 +84,7 @@ ezP.Const.Expr = {
   conditional_expression_concrete: 'ezp_expr_conditional_expression_concrete',
   lambda_expr: 'ezp_expr_lambda_expr',
   lambda_expr_nocond: 'ezp_expr_lambda_expr_nocond',
+  assignment_expression: 'ezp_expr_assignment_expression',
   // in progress
 
   star_or_expr: 'ezp_expr_star_or_expr',
@@ -159,6 +161,7 @@ ezP.Const.Input = {
   PRIMARY: 'PRIMARY',
   SECONDARY: 'SECONDARY',
   LIST: 'LIST',
+  WRAP: 'WRAP',
   KEY: 'KEY',
   DATUM: 'DATUM',
   LOWER_BOUND: 'LOWER_BOUND',

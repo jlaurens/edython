@@ -18,6 +18,7 @@ goog.require('Blockly.Blocks')
 
 var Ks = [
   ezP.Const.Stmt.expression_stmt,
+  ezP.Const.Stmt.assignment_stmt,
   // IN PROGRESS
 ]
 var O = {
