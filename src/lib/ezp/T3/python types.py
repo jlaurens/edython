@@ -360,8 +360,12 @@ if __name__ != "main":
     print(path3)
     path4 = pathlib.Path(__file__).parent / 'simple_stmts_xtd.html'
     print(path4)
+    path5 = pathlib.Path(__file__).parent / 'compound_stmts.html'
+    print(path5)
+    path6 = pathlib.Path(__file__).parent / 'compound_stmts_xtd.html'
+    print(path6)
     # do not change the order of the path arguments
-    types = Xprs(path1, path2, path3, path4)
+    types = Xprs(path1, path2, path3, path4, path5, path6)
     #types = Xprs(path3)
     print('# Make the require and the provide')
     types.make_shallow()

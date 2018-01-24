@@ -63,6 +63,7 @@ ezP.Const.Xpr = {
   proper_slice: 'ezp_xpr_proper_slice',
   call: 'ezp_xpr_call',
   argument_list: 'ezp_xpr_argument_list',
+  parameter_list: 'ezp_xpr_parameter_list',
   await_expr: 'ezp_xpr_await_expr',
   // u_expr_concrete: 'ezp_xpr_u_expr_concrete',
   // m_expr_concrete: 'ezp_xpr_m_expr_concrete',
@@ -74,12 +75,12 @@ ezP.Const.Xpr = {
   bitwise_concrete: 'ezp_xpr_bitwise_concrete',
   boolean_concrete: 'ezp_xpr_boolean_concrete',
   comparison_concrete: 'ezp_xpr_comparison_concrete',
+  conditional_expression_concrete: 'ezp_xpr_conditional_expression_concrete',
   // in progress
 
   star_or_expr: 'ezp_xpr_star_or_expr',
   parameter: 'ezp_xpr_parameter',
   defparameter: 'ezp_xpr_defparameter',
-  parameter_list: 'ezp_xpr_parameter_list',
   atom: 'ezp_xpr_atom',
   LITERAL: 'ezp_xpr_literal', // NYI
 }
@@ -138,6 +139,7 @@ ezP.Const.Input = {
   FOR: 'FOR',
   IN: 'IN',
   IF: 'IF',
+  ELSE: 'ELSE',
   FORIN: 'FORIN',
   ITER: 'ITER',
   COMPREHENSION: 'COMP',

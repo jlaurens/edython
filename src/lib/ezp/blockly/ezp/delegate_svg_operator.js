@@ -396,8 +396,8 @@ ezP.DelegateSvg.Xpr.boolean_concrete = function (prototypeName) {
   this.operator = 'or'
   this.operators = ['or', 'and']
   this.operatorData = {
-    'or': {'LABEL':'... or ...', 'OUT': ezP.T3.boolean_concrete, 'RHS': ezP.T3.Require.and_test, 'LHS': ezP.T3.Require.or_test},
-    'and': {'LABEL':'... and ...', 'OUT': ezP.T3.boolean_concrete, 'RHS': ezP.T3.Require.not_test, 'LHS': ezP.T3.Require.and_test},
+    'or': {'LABEL':'... or ...', 'OUT': ezP.T3.or_test_concrete, 'RHS': ezP.T3.Require.and_test, 'LHS': ezP.T3.Require.or_test},
+    'and': {'LABEL':'... and ...', 'OUT': ezP.T3.and_test_concrete, 'RHS': ezP.T3.Require.not_test, 'LHS': ezP.T3.Require.and_test},
   }
 }
 goog.inherits(ezP.DelegateSvg.Xpr.boolean_concrete, ezP.DelegateSvg.Xpr.Binary)

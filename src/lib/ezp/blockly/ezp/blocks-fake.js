@@ -45,6 +45,9 @@ make_fake('ezp_xpr_fake_identifier','identifier',ezP.T3.identifier)
 make_fake('ezp_xpr_fake_starred_expression','*expression',ezP.T3.starred_expression)
 make_fake('ezp_xpr_fake_keyword_item','key = value',ezP.T3.keyword_item)
 make_fake('ezp_xpr_fake_double_starred_expression','**expression',ezP.T3.double_starred_expression)
+make_fake('ezp_xpr_fake_parameter_default','parameter=default',ezP.T3.parameter_default)
+make_fake('ezp_xpr_fake_parameter_starred','*parameter',ezP.T3.parameter_starred)
+make_fake('ezp_xpr_fake_parameter_double_starred','**parameter',ezP.T3.parameter_double_starred)
 
 Blockly.Blocks['ezp_xpr_fake_with_sealed'] = {
   init: function () {

@@ -166,7 +166,39 @@ ezP.DelegateSvg.Xpr.proper_slice.prototype.onActionMenuEvent = function (block, 
 }
 
 
+/**
+ * Class for a DelegateSvg, conditional_expression_concrete block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Xpr.conditional_expression_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.conditional_expression_concrete.superClass_.constructor.call(this, prototypeName)
+}
+goog.inherits(ezP.DelegateSvg.Xpr.conditional_expression_concrete, ezP.DelegateSvg.Xpr)
 
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.conditional_expression_concrete, ezP.DelegateSvg.Xpr.conditional_expression_concrete)
+
+/**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Xpr.conditional_expression_concrete.prototype.initBlock = function(block) {
+  block.appendValueInput(ezP.Const.Input.XPR)
+    .setCheck(ezP.T3.Require.or_test)
+  block.appendValueInput(ezP.Const.Input.IF)
+    .setCheck(ezP.T3.Require.or_test)
+    .appendField(new ezP.FieldLabel('if'))
+  block.appendValueInput(ezP.Const.Input.ELSE)
+    .setCheck(ezP.T3.Require.expression)
+    .appendField(new ezP.FieldLabel('else'))
+  block.setOutput(true, ezP.T3.conditional_expression_concrete)
+}
 
 
 /**
@@ -289,3 +321,4 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.RANGE, ezP.DelegateSvg.Xpr.Range)
 ezP.DelegateSvg.Xpr.Range.prototype.getInputTupleMax = function (block, grp) {
   return grp ? 0 : 3
 }
+

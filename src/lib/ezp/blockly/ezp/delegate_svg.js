@@ -438,7 +438,6 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
     canTuple: true,
     canList: true,
     canForif: true,
-    canParameterList: true
   }
   io.cursorX = this.getPaddingLeft(block)
   if (!block.outputConnection) {

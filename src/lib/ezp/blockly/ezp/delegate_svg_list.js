@@ -382,3 +382,22 @@ ezP.DelegateSvg.Xpr.argument_list = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Xpr.argument_list, ezP.DelegateSvg.List)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.argument_list, ezP.DelegateSvg.Xpr.argument_list)
+
+
+/**
+ * Class for a DelegateSvg, parameter_list block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Xpr.parameter_list = function (prototypeName) {
+  ezP.DelegateSvg.Xpr.parameter_list.superClass_.constructor.call(this, prototypeName)
+  this.consolidator = new ezP.Consolidator.List.Parameter()
+  this.outputType = ezP.T3.parameter_list
+}
+goog.inherits(ezP.DelegateSvg.Xpr.parameter_list, ezP.DelegateSvg.List)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.parameter_list, ezP.DelegateSvg.Xpr.parameter_list)

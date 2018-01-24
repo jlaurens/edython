@@ -472,7 +472,6 @@ ezP.Consolidator.List.Argument.Type = {
   starred_expression: 'starred_expression',
   keyword_item: 'keyword_item',
   double_starred_expression: 'double_starred_expression',
-  unexpected: 'unexpected',
 }
 
 /**
@@ -586,8 +585,6 @@ ezP.Consolidator.List.Argument.prototype.one_step = function(io) {
         io.first_double_starred = io.input
       }
       break
-    case ezP.Consolidator.List.Argument.Type.unexpected:
-      break
   }
 }
 /**
@@ -672,3 +669,213 @@ ezP.Consolidator.List.Argument.prototype.getCheck = function (io) {
     return ezP.T3.keyword_item
   }
 }
+
+/**
+ * List consolidator for parameter list.
+ * A parameter list contains 3 kinds of objects
+ * 1) parameters as identifiers, (possibly annotated or defaulted)
+ * 2) '*' identifier
+ * 3) '**' identifier
+ * Here are the rules
+ * A) The starred identifiers must appear only once at most.
+ * B) The single starred must appear before the double starred, if any
+ * C) The double starred must be the last one if any
+ * D) Citing the documentation:
+ *    If a parameter has a default value,
+ *    all following parameters up until the “*”
+ *    must also have a default value...
+ */
+ezP.Consolidator.List.Parameter = function() {
+  ezP.Consolidator.List.Parameter.superClass_.constructor.call(this, ezP.T3.Require.primary, true, ',')
+}
+goog.inherits(ezP.Consolidator.List.Parameter, ezP.Consolidator.List)
+
+/**
+ * Prepare io, just before walking through the input list.
+ * Subclassers may add their own stuff to io.
+ * @param {Object} io, parameters....
+ */
+ezP.Consolidator.List.Parameter.prototype.prepareToWalk = function(io) {
+  ezP.Consolidator.List.Parameter.superClass_.prepareToWalk.call(this, io)
+  io.first_parameter_starred = undefined
+  io.first_parameter_double_starred = undefined
+  io.first_parameter_default = undefined
+  io.errors = 0
+}
+
+ezP.Consolidator.List.Parameter.Type = {
+  unconnected: 'unconnected',
+  parameter: 'parameter',
+  parameter_default: 'parameter_default',
+  parameter_starred: 'parameter_starred',
+  parameter_double_starred: 'parameter_double_starred',
+}
+
+/**
+ * Whether the input corresponds to an identifier...
+ * @param {Object} io, parameters....
+ */
+ezP.Consolidator.List.Parameter.prototype.getCheckType = function(io) {
+  var target = io.c8n.targetBlock()
+  if (!target) {
+    return ezP.Consolidator.List.Parameter.Type.unconnected
+  }
+  var check = target.outputConnection.check_
+  if (goog.array.contains(check,ezP.T3.parameter_starred)) {
+    return ezP.Consolidator.List.Parameter.Type.parameter_starred
+  } else if (goog.array.contains(check,ezP.T3.parameter_double_starred)) {
+    return ezP.Consolidator.List.Parameter.Type.parameter_double_starred
+  } else if (goog.array.contains(check,ezP.T3.parameter_default)) {
+    return ezP.Consolidator.List.Parameter.Type.parameter_default
+  } else {
+    return ezP.Consolidator.List.Parameter.Type.parameter
+  }
+}
+
+/**
+ * Call the inherited method, then records the various first_... indices
+ */
+ezP.Consolidator.List.Parameter.prototype.one_step = function(io) {
+  // inherit
+  ezP.Consolidator.List.Parameter.superClass_.one_step.call(this, io)
+  // move input around if necessary
+  io.ezp.parameter_type_ = this.getCheckType(io)
+  io.ezp.error_ = false
+  if (io.ezp.parameter_type_ == ezP.Consolidator.List.Parameter.Type.unconnected) {
+    return
+  }
+  var i = undefined
+  switch(io.ezp.parameter_type_) {
+    case ezP.Consolidator.List.Parameter.Type.parameter_double_starred:
+      if (!io.first_parameter_double_starred) {
+        io.first_parameter_double_starred = io.input
+      }
+      break
+    case ezP.Consolidator.List.Parameter.Type.parameter_starred:
+      if (!io.first_parameter_starred) {
+        // this is an error
+        io.first_parameter_starred = io.input
+      }
+      break
+    case ezP.Consolidator.List.Parameter.Type.parameter_default:
+      if (!io.first_parameter_default) {
+        io.first_parameter_default = io.input
+      }
+      break
+  }
+}
+/**
+ * Once the whole list has been managed,
+ * there might be unwanted things.
+ */
+ezP.Consolidator.List.Parameter.prototype.cleanup = function(io) {
+  ezP.Consolidator.List.Parameter.superClass_.cleanup.call(this, io)
+  // first remove all the extra ** parameters
+  var i = io.list.indexOf(io.first_parameter_double_starred)
+  if (i>=0) {
+    io.i = i+2
+    while (io.i < io.end) {
+      this.setupIO(io)
+      if (io.ezp.parameter_type_ == ezP.Consolidator.List.Parameter.Type.parameter_double_starred) {
+        this.disposeAtI(io, io.i)
+        this.setupIO(io)
+        if (io.ezp.s7r_) {
+          this.disposeAtI(io, io.i)
+        } else {
+          ++io.i
+        }
+      } else {
+        ++io.i
+      }
+    }
+    // move this parameter to the end of the list and remove a space
+    io.i = i
+    this.setupIO(io)
+    this.disposeAtI(io, i+1)
+    if (i+1<io.end) {
+      // we did not remove the last separator, so this ** parameter is not last
+      this.disposeAtI(io, i)
+      io.list.splice(io.end, 0, io.input)  
+    }
+    // Now this is the last, with no separator afterwards
+  }
+  // Now remove any extra * parameter
+  i = io.list.indexOf(io.first_parameter_starred)
+  if (i>=0) {
+    io.i = i+2
+    while (io.i < io.end) {
+      this.setupIO(io)
+      if (io.ezp.parameter_type_ == ezP.Consolidator.List.Parameter.Type.parameter_starred) {
+        this.disposeAtI(io, io.i)
+        this.setupIO(io)
+        if (io.ezp.s7r_) {
+          this.disposeAtI(io, io.i)
+        } else {
+          ++io.i
+        }
+      } else {
+        ++io.i
+      }
+    }
+  }
+  // now force default values 
+  io.i = io.list.indexOf(io.first_parameter_default)
+  if (io.i>=0) {
+    while( io.i < i) {
+      this.setupIO(io)
+      if (io.ezp.parameter_type_ == ezP.Consolidator.List.Parameter.Type.parameter) {
+        var target = io.c8n.targetBlock()
+        target.ezp.missing_default_value_error_ = true
+        // TODO: ask the block to change its own nature
+        console.log('Missing defaut value at index:', io.i)
+      }
+      ++io.i
+    }
+  }
+  // Debug: are the connections consistent ?
+  for (io.i = io.start; io.i < io.list.length; ++io.i) {
+    this.setupIO(io)
+    console.log('Input: ', io.i)
+    var target = io.c8n.targetBlock()
+    if (target) {
+      var required = this.getCheck(io)
+      var types = target.outputConnection.check_
+      var OK = false
+      for (i = 0; i < types.length; ++i) {
+        var type = types[i]
+        if (goog.array.contains(required, type)) {
+          OK = true
+          break
+        }
+      }
+      if (!OK) {
+        console.log('BAD CONNECTION')
+        console.log('required', required)
+        console.log('provided', required)
+        }
+    }    
+  }
+}
+
+/**
+ * Returns the required types for the current input.
+ * This does not suppose that the list of input has been completely consolidated
+ * @param {!Object} io parameter.
+ */
+ezP.Consolidator.List.Parameter.prototype.getCheck = function (io) {
+  var can_starred = !io.first_parameter_starred || io.first_parameter_starred == io.input
+  var can_double_starred = (!io.first_parameter_double_starred && io.i == io.end-1) || io.first_parameter_double_starred == io.input
+  console.log(io.i, can_starred, can_double_starred)
+  if (can_double_starred) {
+    if (can_starred) {
+      return ezP.T3.Require.parameter_any
+    } else {
+      return ezP.T3.Require.parameter_no_single_starred
+    }
+  } else if (can_starred) {
+    return ezP.T3.Require.parameter_no_double_starred
+  } else {
+    return ezP.T3.Require.parameter_no_starred
+  }
+}
+

@@ -1,0 +1,37 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+</head>
+<body>
+If a parameter has a default value, all following parameters up until the “*” must also have a default value — this is a syntactic restriction that is not expressed by the grammar.
+
+parameter_list ::=  parameter_list_1 | parameter_list_2| parameter_list_starargs
+parameter_list_1 ::= defparameter ("," defparameter)*
+parameter_list_2 ::= defparameter ("," defparameter)* "," parameter_list_starargs
+
+parameter_list_starargs ::=  "*" [parameter] ("," defparameter)* ["," ["**" parameter [","]]]
+                             | parameter_list_starargs_b
+parameter_list_starargs_a ::=  "*" [parameter] ("," defparameter)* ["," ["**" parameter [","]]]
+parameter_list_starargs_b ::=  "**" parameter [","]
+
+parameter_list          ::=  defparameter ("," defparameter)* ["," [parameter_list_starargs]]
+                             | parameter_list_starargs
+parameter_list_starargs ::=  "*" [parameter] ("," defparameter)* ["," ["**" parameter [","]]]
+                             | "**" parameter [","]
+<pre>
+parameter               ::=  identifier | parameter_annotated
+parameter_annotated      ::=  identifier ":" expression
+defparameter            ::=  parameter | parameter_default
+parameter_default   ::=  parameter "=" expression
+parameter_starred ::= "*" [parameter]
+parameter_double_starred ::= "**" parameter
+parameter_any ::= parameter | parameter_default | parameter_starred | parameter_double_starred
+parameter_no_single_starred ::= parameter | parameter_default | parameter_double_starred
+parameter_no_double_starred ::= parameter | parameter_default | parameter_starred
+parameter_no_starred ::= parameter | parameter_default
+</pre>
+</body>
+</html>

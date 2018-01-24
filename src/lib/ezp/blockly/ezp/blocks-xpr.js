@@ -59,6 +59,7 @@ var Ks = [
   ezP.Const.Xpr.proper_slice,
   ezP.Const.Xpr.call,
   ezP.Const.Xpr.argument_list,
+  ezP.Const.Xpr.parameter_list,
   ezP.Const.Xpr.await_expr,
   // ezP.Const.Xpr.u_expr_concrete,
   // ezP.Const.Xpr.m_expr_concrete,
@@ -70,6 +71,7 @@ var Ks = [
   ezP.Const.Xpr.bitwise_concrete,
   ezP.Const.Xpr.boolean_concrete,
   ezP.Const.Xpr.comparison_concrete,
+  ezP.Const.Xpr.conditional_expression_concrete,
   // IN PROGRESS
 
 ]
@@ -207,15 +209,6 @@ Blockly.Blocks[ezP.Const.Xpr.RANGE] = {
     this.appendDummyInput().appendField(new ezP.FieldLabel(')'))
     this.setInputsInline(true)
     this.setOutput(true, null)
-    this.setTooltip('')
-    this.setHelpUrl('')
-  }
-}
-Blockly.Blocks[ezP.Const.Xpr.parameter_list] = {
-  init: function () {
-    this.ezp.initBlock(this)
-    this.setInputsInline(true)
-    this.setOutput(true, ezP.Type.Xpr.Provide.parameter_list)
     this.setTooltip('')
     this.setHelpUrl('')
   }
