@@ -164,7 +164,6 @@ ezP.DelegateSvg.List.prototype.consolidator = undefined
 ezP.DelegateSvg.List.prototype.initBlock = function(block) {
   ezP.DelegateSvg.List.superClass_.initBlock.call(this, block)
   block.appendValueInput('ITEM_0')
-  block.setOutput(true, this.outputType)
 }
 
 /**
@@ -204,7 +203,7 @@ goog.inherits(ezP.DelegateSvg.List.expression, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register(ezP.Const.Expr.expression_list, ezP.DelegateSvg.List.expression)
 
 /**
- * Class for a DelegateSvg, starred_expression_list block.
+ * Class for a DelegateSvg, starred_item_list block.
  * This block may be sealed.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
@@ -212,14 +211,14 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.expression_list, ezP.DelegateSvg
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.starred_expression_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.starred_expression_list.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.starred_item_list = function (prototypeName) {
+  ezP.DelegateSvg.Expr.starred_item_list.superClass_.constructor.call(this, prototypeName)
   this.consolidator = new ezP.Consolidator.List(ezP.T3.Require.starred_item, true, ',')
-  this.outputType = ezP.T3.starred_expression_list
+  this.outputType = ezP.T3.starred_item_list
 }
-goog.inherits(ezP.DelegateSvg.Expr.starred_expression_list, ezP.DelegateSvg.List)
+goog.inherits(ezP.DelegateSvg.Expr.starred_item_list, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.starred_expression_list, ezP.DelegateSvg.Expr.starred_expression_list)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.starred_item_list, ezP.DelegateSvg.Expr.starred_item_list)
 
 /**
  * Class for a DelegateSvg, key_datum_list block.

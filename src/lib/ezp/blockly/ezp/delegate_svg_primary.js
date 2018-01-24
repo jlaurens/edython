@@ -48,7 +48,6 @@ ezP.DelegateSvg.Expr.VSPair.prototype.initBlock = function(block) {
     .setCheck(this.primaryCheck)
   this.inputSECONDARY = block.appendSealedValueInput(ezP.Const.Input.SECONDARY)
     .setCheck(this.secondaryCheck)
-  block.setOutput(true, this.outputType)
 }
 
 /**

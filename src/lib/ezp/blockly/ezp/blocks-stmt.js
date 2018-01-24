@@ -11,7 +11,26 @@
  */
 'use strict'
 
-goog.provide('ezP.Blocks.stt')
+goog.provide('ezP.Blocks.stmt')
+
+goog.require('ezP.Const')
+goog.require('Blockly.Blocks')
+
+var Ks = [
+  ezP.Const.Stmt.expression_stmt,
+  // IN PROGRESS
+]
+var O = {
+  init: function () {
+    this.ezp.initBlock(this)
+  }
+}
+for (var i = 0; i<Ks.length; ++i) {
+  var K = Ks[i]
+  goog.asserts.assert(K, 'Undefined Stmt K: '+i)
+  Blockly.Blocks[Ks[i]] = O
+}
+
 
 goog.require('Blockly.Block')
 goog.require('ezP.Const')

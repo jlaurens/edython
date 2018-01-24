@@ -25,6 +25,7 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Expr.Comprehension = function (prototypeName) {
   ezP.DelegateSvg.Expr.Comprehension.superClass_.constructor.call(this, prototypeName)
+  this.outputType = ezP.T3.comprehension
 }
 goog.inherits(ezP.DelegateSvg.Expr.Comprehension, ezP.DelegateSvg.Expr)
 
@@ -41,13 +42,12 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.comprehension, ezP.DelegateSvg.E
  */
 ezP.DelegateSvg.Expr.Comprehension.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.Comprehension.superClass_.initBlock.call(this, block)
-  block.appendValueInput(ezP.Const.Input.XPR)
+  block.appendValueInput(ezP.Const.Input.EXPR)
     .setCheck(ezP.T3.Require.expression)
   this.inputFORIN = block.appendSealedValueInput(ezP.Const.Input.FORIN)
     .setCheck(ezP.T3.comp_for)
   this.inputITER = block.appendSealedValueInput(ezP.Const.Input.ITER)
     .setCheck(ezP.T3.comp_iter_list)
-  block.setOutput(true, ezP.T3.comprehension)
 }
 
 /**
@@ -75,6 +75,7 @@ ezP.DelegateSvg.Expr.Comprehension.prototype.completeSealed = function (block) {
  */
 ezP.DelegateSvg.Expr.comp_for = function (prototypeName) {
   ezP.DelegateSvg.Expr.comp_for.superClass_.constructor.call(this, prototypeName)
+  this.outputType = ezP.T3.comp_for
 }
 goog.inherits(ezP.DelegateSvg.Expr.comp_for, ezP.DelegateSvg.Expr)
 
@@ -95,7 +96,6 @@ ezP.DelegateSvg.Expr.comp_for.prototype.initBlock = function(block) {
   block.appendValueInput(ezP.Const.Input.IN)
     .setCheck(ezP.T3.Require.or_test)
     .appendField(new ezP.FieldLabel('in'))
-  block.setOutput(true, ezP.T3.comp_for)
 }
 
 /**
@@ -108,6 +108,7 @@ ezP.DelegateSvg.Expr.comp_for.prototype.initBlock = function(block) {
  */
 ezP.DelegateSvg.Expr.comp_if = function (prototypeName) {
   ezP.DelegateSvg.Expr.comp_if.superClass_.constructor.call(this, prototypeName)
+  this.outputType = ezP.T3.comp_if
 }
 goog.inherits(ezP.DelegateSvg.Expr.comp_if, ezP.DelegateSvg.Expr)
 
@@ -125,5 +126,4 @@ ezP.DelegateSvg.Expr.comp_if.prototype.initBlock = function(block) {
   block.appendValueInput(ezP.Const.Input.IF)
     .setCheck(ezP.T3.Require.expression_nocond)
     .appendField(new ezP.FieldLabel('if'))
-  block.setOutput(true, ezP.T3.comp_if)
 }

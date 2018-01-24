@@ -49,7 +49,6 @@ ezP.DelegateSvg.Expr.Delimited.prototype.initBlock = function(block) {
   this.rightField = new ezP.FieldLabel(this.rightDelimiter)
   this.rightField.ezpFieldData = {x_shift: +ezP.Font.space/6}
   block.appendDummyInput().appendField(this.rightField)
-  block.setOutput(true, this.outputType)
 }
 
 /**
@@ -74,7 +73,7 @@ ezP.DelegateSvg.Expr.Delimited.prototype.completeSealed = function (block) {
 ezP.DelegateSvg.Expr.parenth_form = function (prototypeName) {
   ezP.DelegateSvg.Expr.parenth_form.superClass_.constructor.call(this, prototypeName)
   this.outputType = ezP.T3.parenth_form
-  this.sealedPrototypeName = ezP.Const.Expr.starred_expression_list
+  this.sealedPrototypeName = ezP.Const.Expr.starred_item_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.parenth_form, ezP.DelegateSvg.Expr.Delimited)
 

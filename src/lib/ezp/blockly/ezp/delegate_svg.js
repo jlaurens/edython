@@ -1002,6 +1002,8 @@ ezP.DelegateSvg.prototype.onActionMenuEvent = function (block, menu, event) {
   }
 }
 
+ezP.DelegateSvg.prototype.outputType = undefined
+
 /**
  * Initialize the block.
  * Called by the block's init method.
@@ -1013,6 +1015,9 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   block.setInputsInline(true)
   block.setTooltip('')
   block.setHelpUrl('')
+  if (this.outputType) {
+    block.setOutput(true, this.outputType)
+  }
 }
 
 /**

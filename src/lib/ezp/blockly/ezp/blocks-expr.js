@@ -13,25 +13,14 @@
 
 goog.provide('ezP.Blocks.val')
 
-goog.require('Blockly.Block')
-goog.require('ezP.Const')
-goog.require('ezP.Type')
-goog.require('ezP.FieldLabel')
-goog.require('ezP.FieldTextInput')
-goog.require('ezP.FieldDropdown')
-goog.require('ezP.FieldOptionsCode')
-goog.require('ezP.FieldVariable')
-
-goog.require('ezP.FieldVariable.Identifier')
-goog.require('ezP.FieldVariable.Annotation')
-goog.require('ezP.FieldVariable.Default')
+goog.require('Blockly.Blocks')
 
 var Ks = [
   ezP.Const.Expr.parenth_form,
-  ezP.Const.Expr.starred_expression_list,
-  ezP.Const.Expr.starred_or_expr,
+  ezP.Const.Expr.starred_item_list,
+  ezP.Const.Expr.or_expr_starred,
   ezP.Const.Expr.list_display,
-  ezP.Const.Expr.expression_list,
+  ezP.Const.Expr.starred_item_list,
   ezP.Const.Expr.set_display,
   ezP.Const.Expr.dict_display,
   ezP.Const.Expr.comprehension,
@@ -45,7 +34,7 @@ var Ks = [
   ezP.Const.Expr.starred_list_comprehensive,
   ezP.Const.Expr.non_void_starred_list_comprehensive,
   ezP.Const.Expr.key_datum_concrete,
-  ezP.Const.Expr.double_starred_or_expr,
+  ezP.Const.Expr.or_expr_double_starred,
   ezP.Const.Expr.key_datum_list_comprehensive,
   ezP.Const.Expr.comp_for,
   ezP.Const.Expr.comp_if,
@@ -87,6 +76,19 @@ for (var i = 0; i<Ks.length; ++i) {
   goog.asserts.assert(K, 'Undefined K: '+i)
   Blockly.Blocks[Ks[i]] = O
 }
+
+goog.require('Blockly.Block')
+goog.require('ezP.Const')
+goog.require('ezP.Type')
+goog.require('ezP.FieldLabel')
+goog.require('ezP.FieldTextInput')
+goog.require('ezP.FieldDropdown')
+goog.require('ezP.FieldOptionsCode')
+goog.require('ezP.FieldVariable')
+
+goog.require('ezP.FieldVariable.Identifier')
+goog.require('ezP.FieldVariable.Annotation')
+goog.require('ezP.FieldVariable.Default')
 
 Blockly.Blocks[ezP.Const.Expr.GET] = {
   init: function () {
@@ -194,7 +196,7 @@ Blockly.Blocks[ezP.Const.Expr.star_or_expr] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldLabel('*'))
-    this.appendValueInput(ezP.Const.Input.XPR).setCheck(ezP.Type.Expr.Require.or_expr)
+    this.appendValueInput(ezP.Const.Input.EXPR).setCheck(ezP.Type.Expr.Require.or_expr)
     this.setInputsInline(true)
     this.setOutput(true, ezP.Type.Expr.Provide.star_or_expr)
     this.setTooltip('')

@@ -65,6 +65,7 @@ ezP.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
  */
 ezP.DelegateSvg.Expr.key_datum_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.key_datum_concrete.superClass_.constructor.call(this, prototypeName)
+  this.outputType = ezP.T3.key_datum_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.key_datum_concrete, ezP.DelegateSvg.Expr)
 
@@ -84,7 +85,6 @@ ezP.DelegateSvg.Expr.key_datum_concrete.prototype.initBlock = function(block) {
   block.appendValueInput(ezP.Const.Input.DATUM)
     .setCheck(ezP.T3.Require.expression)
     .appendField(new ezP.FieldLabel(':'))
-  block.setOutput(true, ezP.T3.key_datum_concrete)
 }
 
 /**
@@ -97,6 +97,7 @@ ezP.DelegateSvg.Expr.key_datum_concrete.prototype.initBlock = function(block) {
  */
 ezP.DelegateSvg.Expr.proper_slice = function (prototypeName) {
   ezP.DelegateSvg.Expr.proper_slice.superClass_.constructor.call(this, prototypeName)
+  this.outputType = ezP.T3.proper_slice
 }
 goog.inherits(ezP.DelegateSvg.Expr.proper_slice, ezP.DelegateSvg.Expr)
 
@@ -125,7 +126,6 @@ ezP.DelegateSvg.Expr.proper_slice.prototype.initBlock = function(block) {
     .appendField(new ezP.FieldLabel(':'))
   input.connection.ezpData.optional_ = true
   input.ezpData.disabled_ = true
-  block.setOutput(true, ezP.T3.proper_slice)
 }
 
 ezP.USE_PROPER_SLICING_STRIDE_ID = 'USE_PROPER_SLICING_STRIDE'
@@ -176,6 +176,7 @@ ezP.DelegateSvg.Expr.proper_slice.prototype.onActionMenuEvent = function (block,
  */
 ezP.DelegateSvg.Expr.conditional_expression_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.conditional_expression_concrete.superClass_.constructor.call(this, prototypeName)
+  this.outputType = ezP.T3.conditional_expression_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.conditional_expression_concrete, ezP.DelegateSvg.Expr)
 
@@ -189,7 +190,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.conditional_expression_concrete,
  * @private
  */
 ezP.DelegateSvg.Expr.conditional_expression_concrete.prototype.initBlock = function(block) {
-  block.appendValueInput(ezP.Const.Input.XPR)
+  block.appendValueInput(ezP.Const.Input.EXPR)
     .setCheck(ezP.T3.Require.or_test)
   block.appendValueInput(ezP.Const.Input.IF)
     .setCheck(ezP.T3.Require.or_test)
@@ -197,7 +198,6 @@ ezP.DelegateSvg.Expr.conditional_expression_concrete.prototype.initBlock = funct
   block.appendValueInput(ezP.Const.Input.ELSE)
     .setCheck(ezP.T3.Require.expression)
     .appendField(new ezP.FieldLabel('else'))
-  block.setOutput(true, ezP.T3.conditional_expression_concrete)
 }
 
 

@@ -26,7 +26,7 @@ Blockly.Blocks[ezP.Const.Grp.WITH] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldLabel('with'))
-    this.appendValueInput(ezP.Const.Input.XPR)
+    this.appendValueInput(ezP.Const.Input.EXPR)
       .setCheck(ezP.Type.Expr.Require.any)
     this.appendDummyInput()
       .appendField(new ezP.FieldLabel('as'))

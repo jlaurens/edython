@@ -184,7 +184,7 @@ goog.inherits(ezP.DelegateSvg.Expr.Unary, ezP.DelegateSvg.Expr.Operator)
 ezP.DelegateSvg.Expr.Unary.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.Unary.superClass_.initBlock.call(this, block)
   this.fieldOperator = new ezP.FieldLabel('')
-  this.inputXPR = block.appendValueInput(ezP.Const.Input.XPR)
+  this.inputXPR = block.appendValueInput(ezP.Const.Input.EXPR)
     .appendField(this.fieldOperator)
   this.changeOperator(block, this.operator)
 }

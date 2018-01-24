@@ -482,9 +482,9 @@ ezP.Consolidator.List.Argument.Type = {
   unconnected: 'unconnected',
   comprehension: 'comprehension',
   expression: 'expression',
-  starred_expression: 'starred_expression',
+  expression_starred: 'expression_starred',
   keyword_item: 'keyword_item',
-  double_starred_expression: 'double_starred_expression',
+  expression_double_starred: 'expression_double_starred',
 }
 
 /**
@@ -499,12 +499,12 @@ ezP.Consolidator.List.Argument.prototype.getCheckType = function(io) {
   var check = target.outputConnection.check_
   if (goog.array.contains(check,ezP.T3.comprehension)) {
     return ezP.Consolidator.List.Argument.Type.comprehension
-  } else if (goog.array.contains(check,ezP.T3.starred_expression)) {
-    return ezP.Consolidator.List.Argument.Type.starred_expression
+  } else if (goog.array.contains(check,ezP.T3.expression_starred)) {
+    return ezP.Consolidator.List.Argument.Type.expression_starred
   } else if (goog.array.contains(check,ezP.T3.keyword_item)) {
     return ezP.Consolidator.List.Argument.Type.keyword_item
-  } else if (goog.array.contains(check,ezP.T3.double_starred_expression)) {
-    return ezP.Consolidator.List.Argument.Type.double_starred_expression
+  } else if (goog.array.contains(check,ezP.T3.expression_double_starred)) {
+    return ezP.Consolidator.List.Argument.Type.expression_double_starred
   } else {
     return ezP.Consolidator.List.Argument.Type.expression
   }
@@ -567,7 +567,7 @@ ezP.Consolidator.List.Argument.prototype.one_step = function(io) {
         io.last_expression = io.last_positional = io.input
       }
       break
-      case ezP.Consolidator.List.Argument.Type.starred_expression:
+      case ezP.Consolidator.List.Argument.Type.expression_starred:
       if (io.first_double_starred) {
         io.last_positional = io.first_double_starred
         // there are at least 2 connected inputs
@@ -590,7 +590,7 @@ ezP.Consolidator.List.Argument.prototype.one_step = function(io) {
         io.first_keyword_or_double_starred = io.input
       }
     break
-    case ezP.Consolidator.List.Argument.Type.double_starred_expression: 
+    case ezP.Consolidator.List.Argument.Type.expression_double_starred: 
       if (!io.first_keyword_or_double_starred) {
         io.first_keyword_or_double_starred = io.input
         io.first_double_starred = io.input
@@ -651,8 +651,8 @@ ezP.Consolidator.List.Argument.prototype.getCheck = function (io) {
       return ezP.T3.Require.any_argument
     } else if (can_keyword) {
       // everything but double starred
-      // console.log('Check: '+io.i+' -> any_argument_but_double_starred_expression')
-      return ezP.T3.Require.any_argument_but_double_starred_expression
+      // console.log('Check: '+io.i+' -> any_argument_but_expression_double_starred')
+      return ezP.T3.Require.any_argument_but_expression_double_starred
     } else {
       return ezP.T3.Require.positional_argument
     }
@@ -667,7 +667,7 @@ ezP.Consolidator.List.Argument.prototype.getCheck = function (io) {
       return ezP.T3.Require.starred_and_keyword
     } else {
       // only starred
-      return ezP.T3.starred_expression
+      return ezP.T3.expression_starred
     }
   } else if (can_double_starred) {
     if (can_keyword) {
@@ -675,7 +675,7 @@ ezP.Consolidator.List.Argument.prototype.getCheck = function (io) {
       return ezP.T3.Require.keywords_argument
     } else {
       // only can_double_starred
-      return ezP.T3.double_starred_expression
+      return ezP.T3.expression_double_starred
     }
   } else /* if (can_keyword) */ {
     // keyword only

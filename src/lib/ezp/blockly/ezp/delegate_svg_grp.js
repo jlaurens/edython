@@ -13,7 +13,7 @@
 
 goog.provide('ezP.DelegateSvg.Group')
 
-goog.require('ezP.DelegateSvg.Statement')
+goog.require('ezP.DelegateSvg.Stmt')
 
 /**
  * Class for a DelegateSvg, statement block.
@@ -26,7 +26,7 @@ goog.require('ezP.DelegateSvg.Statement')
 ezP.DelegateSvg.Group = function (prototypeName) {
   ezP.DelegateSvg.Group.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Group, ezP.DelegateSvg.Statement)
+goog.inherits(ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Manager.register(ezP.Const.Grp.DEFAULT, ezP.DelegateSvg.Group)
 
 /**

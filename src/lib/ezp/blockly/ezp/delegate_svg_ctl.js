@@ -12,7 +12,7 @@
 'use strict'
 
 goog.provide('ezP.DelegateSvg.Control')
-goog.require('ezP.DelegateSvg.Statement')
+goog.require('ezP.DelegateSvg.Stmt')
 
 /**
  * Class for a DelegateSvg, control block.

@@ -21,20 +21,25 @@ goog.require('ezP')
 
 ezP.Const = ezP.Const || {}
 
+ezP.Const.Stmt = {
+  // in progress
+  expression_stmt: 'ezp_stmt_expression_stmt',
+
+
+
+  DEFAULT: 'ezp_stmt',
+  ANY: 'ezp_stmt_any',
+  SET: 'ezp_stmt_set',
+  PRINT: 'ezp_stmt_print',
+  BCP: 'ezp_stmt_bcp',
+  GNL: 'ezp_stmt_gnl',
+  DEL: 'ezp_stmt_del'
+
+}
+
 ezP.Const.Expr = {
-  DEFAULT: 'ezp_expr',
-  ANY: 'ezp_expr_any',
-  GET: 'ezp_expr_get',
-  TEXT: 'ezp_expr_text',
-  TFN: 'ezp_expr_tfn',
-  OP: 'ezp_expr_op',
-  UNRY: 'ezp_expr_unry',
-  BOOL: 'ezp_expr_bool',
-  TUPLE: 'ezp_expr_tuple',
-  RANGE: 'ezp_expr_range',
-  MINUS: 'ezp_expr_minus',
   parenth_form: 'ezp_expr_parenth_form',
-  starred_expression_list: 'ezp_expr_starred_expression_list',
+  starred_item_list: 'ezp_expr_starred_item_list',
   list_display: 'ezp_expr_list_display',
   set_display: 'ezp_expr_set_display',
   dict_display: 'ezp_expr_dict_display',
@@ -48,9 +53,9 @@ ezP.Const.Expr = {
   expression_list: 'ezp_expr_expression_list',
   starred_list_comprehensive: 'ezp_expr_starred_list_comprehensive',
   non_void_starred_list_comprehensive: 'ezp_expr_non_void_starred_list_comprehensive',
-  starred_or_expr: 'ezp_expr_starred_or_expr',
+  or_expr_starred: 'ezp_expr_starred_or_expr',
   key_datum_concrete: 'ezp_expr_key_datum_concrete',
-  double_starred_or_expr: 'ezp_expr_double_starred_or_expr',
+  or_expr_double_starred: 'ezp_expr_double_starred_or_expr',
   key_datum_list_comprehensive: 'ezp_expr_key_datum_list_comprehensive',
   comp_for: 'ezp_expr_comp_for',
   comp_if: 'ezp_expr_comp_if',
@@ -85,17 +90,22 @@ ezP.Const.Expr = {
   defparameter: 'ezp_expr_defparameter',
   atom: 'ezp_expr_atom',
   LITERAL: 'ezp_expr_literal', // NYI
+  DEFAULT: 'ezp_expr',
+  ANY: 'ezp_expr_any',
+  GET: 'ezp_expr_get',
+  TEXT: 'ezp_expr_text',
+  TFN: 'ezp_expr_tfn',
+  OP: 'ezp_expr_op',
+  UNRY: 'ezp_expr_unry',
+  BOOL: 'ezp_expr_bool',
+  TUPLE: 'ezp_expr_tuple',
+  RANGE: 'ezp_expr_range',
+  MINUS: 'ezp_expr_minus',
+
 }
 
-ezP.Const.Stmt = {
-  DEFAULT: 'ezp_stmt',
-  ANY: 'ezp_stmt_any',
-  SET: 'ezp_stmt_set',
-  PRINT: 'ezp_stmt_print',
-  BCP: 'ezp_stmt_bcp',
-  GNL: 'ezp_stmt_gnl',
-  DEL: 'ezp_stmt_del'
-}
+// Alias
+ezP.Const.Expr.starred_expression = ezP.Const.Expr.starred_item_list
 
 ezP.Const.Grp = {
   DEFAULT: 'ezp_grp',
@@ -154,7 +164,7 @@ ezP.Const.Input = {
   LOWER_BOUND: 'LOWER_BOUND',
   UPPER_BOUND: 'UPPER_BOUND',
   STRIDE: 'STRIDE',
-  XPR: 'XPR',// = ANY? NO!
+  EXPR: 'EXPR',// = ANY? NO!
   LHS: 'LHS',
   RHS: 'RHS',
   // IN PROGRESS

@@ -44,10 +44,9 @@ ezP.DelegateSvg.Lambda.prototype.initBlock = function(block) {
   this.inputLIST = block.appendSealedValueInput(ezP.Const.Input.LIST)
     .setCheck(ezP.T3.parameter_list)
     .appendField(new ezP.FieldLabel('lambda'))
-  block.appendValueInput(ezP.Const.Input.XPR)
+  block.appendValueInput(ezP.Const.Input.EXPR)
     .setCheck(this.expressionType)
     .appendField(new ezP.FieldLabel(':'))
-  block.setOutput(true, this.outputType)
 }
 
 /**
