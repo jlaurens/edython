@@ -30,7 +30,7 @@ goog.inherits(ezP.DelegateSvg.Expr.Delimited, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Expr.Delimited.prototype.leftDelimiter = '('
 ezP.DelegateSvg.Expr.Delimited.prototype.rightDelimiter = ')'
-ezP.DelegateSvg.Expr.Delimited.prototype.outputType = undefined
+ezP.DelegateSvg.Expr.Delimited.prototype.outputCheck = undefined
 ezP.DelegateSvg.Expr.Delimited.prototype.sealedPrototypeName = undefined
 
 /**
@@ -72,7 +72,7 @@ ezP.DelegateSvg.Expr.Delimited.prototype.completeSealed = function (block) {
  */
 ezP.DelegateSvg.Expr.parenth_form = function (prototypeName) {
   ezP.DelegateSvg.Expr.parenth_form.superClass_.constructor.call(this, prototypeName)
-  this.outputType = ezP.T3.parenth_form
+  this.outputCheck = ezP.T3.parenth_form
   this.sealedPrototypeName = ezP.Const.Expr.starred_item_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.parenth_form, ezP.DelegateSvg.Expr.Delimited)
@@ -90,7 +90,7 @@ ezP.DelegateSvg.Expr.list_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.list_display.superClass_.constructor.call(this, prototypeName)
   this.leftDelimiter = '['
   this.rightDelimiter = ']'
-  this.outputType = ezP.T3.list_display
+  this.outputCheck = ezP.T3.list_display
   this.sealedPrototypeName = ezP.Const.Expr.starred_list_comprehensive
 }
 goog.inherits(ezP.DelegateSvg.Expr.list_display, ezP.DelegateSvg.Expr.Delimited)
@@ -108,7 +108,7 @@ ezP.DelegateSvg.Expr.set_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.set_display.superClass_.constructor.call(this, prototypeName)
   this.leftDelimiter = '{'
   this.rightDelimiter = '}'
-  this.outputType = ezP.T3.set_display
+  this.outputCheck = ezP.T3.set_display
   this.sealedPrototypeName = ezP.Const.Expr.non_void_starred_list_comprehensive
 }
 goog.inherits(ezP.DelegateSvg.Expr.set_display, ezP.DelegateSvg.Expr.Delimited)
@@ -124,7 +124,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.set_display, ezP.DelegateSvg.Exp
  */
 ezP.DelegateSvg.Expr.dict_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.dict_display.superClass_.constructor.call(this, prototypeName)
-  this.outputType = ezP.T3.dict_display
+  this.outputCheck = ezP.T3.dict_display
   this.sealedPrototypeName = ezP.Const.Expr.key_datum_list_comprehensive
 }
 goog.inherits(ezP.DelegateSvg.Expr.dict_display, ezP.DelegateSvg.Expr.Delimited)
@@ -141,7 +141,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.dict_display, ezP.DelegateSvg.Ex
  */
 ezP.DelegateSvg.Expr.generator_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.generator_expression.superClass_.constructor.call(this, prototypeName)
-  this.outputType = ezP.T3.generator_expression
+  this.outputCheck = ezP.T3.generator_expression
   this.sealedPrototypeName = ezP.Const.Expr.comprehension
 }
 goog.inherits(ezP.DelegateSvg.Expr.generator_expression, ezP.DelegateSvg.Expr.Delimited)
@@ -158,7 +158,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.generator_expression, ezP.Delega
  */
 ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_atom.superClass_.constructor.call(this, prototypeName)
-  this.outputType = ezP.T3.yield_atom
+  this.outputCheck = ezP.T3.yield_atom
   this.sealedPrototypeName = ezP.Const.Expr.yield_expression
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_atom, ezP.DelegateSvg.Expr.Delimited)
@@ -189,7 +189,7 @@ ezP.DelegateSvg.Expr.yield_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_expression.superClass_.constructor.call(this, prototypeName)
   this.leftDelimiter = 'yield'
   this.rightDelimiter = ''
-  this.outputType = ezP.T3.yield_expression
+  this.outputCheck = ezP.T3.yield_expression
   this.sealedPrototypeName = ezP.Const.Expr.expression_or_from_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_expression, ezP.DelegateSvg.Expr.Delimited)
@@ -220,7 +220,7 @@ ezP.DelegateSvg.Expr.display_slice_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.display_slice_list.superClass_.constructor.call(this, prototypeName)
   this.leftDelimiter = '['
   this.rightDelimiter = ']'
-  this.outputType = ezP.T3.display_slice_list
+  this.outputCheck = ezP.T3.display_slice_list
   this.sealedPrototypeName = ezP.Const.Expr.slice_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.display_slice_list, ezP.DelegateSvg.Expr.Delimited)

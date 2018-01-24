@@ -25,7 +25,7 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Expr.Comprehension = function (prototypeName) {
   ezP.DelegateSvg.Expr.Comprehension.superClass_.constructor.call(this, prototypeName)
-  this.outputType = ezP.T3.comprehension
+  this.outputCheck = ezP.T3.comprehension
 }
 goog.inherits(ezP.DelegateSvg.Expr.Comprehension, ezP.DelegateSvg.Expr)
 
@@ -75,7 +75,7 @@ ezP.DelegateSvg.Expr.Comprehension.prototype.completeSealed = function (block) {
  */
 ezP.DelegateSvg.Expr.comp_for = function (prototypeName) {
   ezP.DelegateSvg.Expr.comp_for.superClass_.constructor.call(this, prototypeName)
-  this.outputType = ezP.T3.comp_for
+  this.outputCheck = ezP.T3.comp_for
 }
 goog.inherits(ezP.DelegateSvg.Expr.comp_for, ezP.DelegateSvg.Expr)
 
@@ -108,7 +108,7 @@ ezP.DelegateSvg.Expr.comp_for.prototype.initBlock = function(block) {
  */
 ezP.DelegateSvg.Expr.comp_if = function (prototypeName) {
   ezP.DelegateSvg.Expr.comp_if.superClass_.constructor.call(this, prototypeName)
-  this.outputType = ezP.T3.comp_if
+  this.outputCheck = ezP.T3.comp_if
 }
 goog.inherits(ezP.DelegateSvg.Expr.comp_if, ezP.DelegateSvg.Expr)
 

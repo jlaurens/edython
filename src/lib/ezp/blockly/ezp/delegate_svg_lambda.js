@@ -30,7 +30,7 @@ ezP.DelegateSvg.Lambda = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Lambda, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.List.prototype.expressionType = undefined
-ezP.DelegateSvg.List.prototype.outputType = undefined
+ezP.DelegateSvg.List.prototype.outputCheck = undefined
 
 /**
  * Initialize the block.
@@ -71,7 +71,7 @@ ezP.DelegateSvg.Lambda.prototype.completeSealed = function (block) {
 ezP.DelegateSvg.Expr.lambda_expr = function (prototypeName) {
   ezP.DelegateSvg.Expr.lambda_expr.superClass_.constructor.call(this, prototypeName)
   this.expressionType = ezP.T3.Require.expression
-  this.outputType = ezP.T3.lambda_expr
+  this.outputCheck = ezP.T3.lambda_expr
 }
 goog.inherits(ezP.DelegateSvg.Expr.lambda_expr, ezP.DelegateSvg.Lambda)
 
@@ -88,7 +88,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.lambda_expr, ezP.DelegateSvg.Exp
 ezP.DelegateSvg.Expr.lambda_expr_nocond = function (prototypeName) {
   ezP.DelegateSvg.Expr.lambda_expr_nocond.superClass_.constructor.call(this, prototypeName)
   this.expressionType = ezP.T3.Require.expression_nocond
-  this.outputType = ezP.T3.lambda_expr_nocond
+  this.outputCheck = ezP.T3.lambda_expr_nocond
 }
 goog.inherits(ezP.DelegateSvg.Expr.lambda_expr_nocond, ezP.DelegateSvg.Lambda)
 

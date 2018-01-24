@@ -12,8 +12,11 @@
 'use strict'
 
 goog.provide('ezP.DelegateSvg.Stmt')
-goog.require('ezP.DelegateSvg')
+
 goog.require('ezP.ContextMenu')
+goog.require('ezP.DelegateSvg.List')
+goog.require('ezP.DelegateSvg.Expr')
+goog.require('ezP.DelegateSvg.Expr.Operator')
 
 /**
  * Class for a DelegateSvg, statement block.
@@ -25,6 +28,8 @@ goog.require('ezP.ContextMenu')
  */
 ezP.DelegateSvg.Stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.superClass_.constructor.call(this, prototypeName)
+  this.previousStatementCheck = null
+  this.nextStatementCheck = null
 }
 goog.inherits(ezP.DelegateSvg.Stmt, ezP.DelegateSvg)
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.DEFAULT, ezP.DelegateSvg.Stmt)
@@ -141,21 +146,58 @@ ezP.DelegateSvg.Stmt.prototype.renderDrawInput_ = function (io) {
     this.renderDrawValueInput_(io)
 }
 
-
 /**
- * Class for a DelegateSvg, statement wrapping an expression .
+ * Class for a DelegateSvg, annotated_assignment_stmt.
+ * Python 3.6 feature.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Wrapper = function (prototypeName) {
-  ezP.DelegateSvg.Wrapper.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Stmt.annotated_assignment_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.annotated_assignment_stmt.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Wrapper, ezP.DelegateSvg.Stmt)
+goog.inherits(ezP.DelegateSvg.Stmt.annotated_assignment_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Wrapper.prototype.wrappedType = undefined
-ezP.DelegateSvg.Wrapper.prototype.wrappedPrototype = undefined
+ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.annotated_assignment_stmt, ezP.DelegateSvg.Stmt.annotated_assignment_stmt)
+
+//annotated_assignment_stmt ::=  augtarget ":" expression ["=" expression]
+/**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.annotated_assignment_stmt.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Stmt.annotated_assignment_stmt.superClass_.initBlock.call(this, block)
+  block.appendValueInput(ezP.Const.Input.TARGET)
+    .setCheck(ezP.T3.Require.augtarget)
+    block.appendValueInput(ezP.Const.Input.ANNOTATED)
+    .setCheck(ezP.T3.Require.expression)
+    .appendField(new ezP.FieldLabel(':'))
+  block.appendValueInput(ezP.Const.Input.ASSIGNED)
+    .setCheck(ezP.T3.Require.expression)
+    .appendField(new ezP.FieldLabel('='))
+}
+
+
+// assert_stmt ::=  "assert" expression ["," expression]
+
+
+/**
+ * Class for a DelegateSvg, assert_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.assert_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.assert_stmt.superClass_.constructor.call(this, prototypeName)
+}
+goog.inherits(ezP.DelegateSvg.Stmt.assert_stmt, ezP.DelegateSvg.Stmt)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.assert_stmt, ezP.DelegateSvg.Stmt.assert_stmt)
 
 /**
  * Initialize the block.
@@ -164,62 +206,16 @@ ezP.DelegateSvg.Wrapper.prototype.wrappedPrototype = undefined
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Wrapper.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Wrapper.superClass_.initBlock.call(this, block)
-  this.inputWRAP = block.appendSealedValueInput(ezP.Const.Input.WRAP)
-    .setCheck(this.wrappedType)
+ezP.DelegateSvg.Stmt.assert_stmt.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Stmt.assert_stmt.superClass_.initBlock.call(this, block)
+  block.appendValueInput(ezP.Const.Input.TARGET)
+    .setCheck(ezP.T3.Require.expression)
+    .appendField(new ezP.FieldLabel('assert'))
+  this.inputOPTION = block.appendValueInput(ezP.Const.Input.OPTION)
+    .setCheck(ezP.T3.Require.expression)
+    .appendField(new ezP.FieldLabel(','))
+  this.inputOPTION.connection.ezpData.optional_ = true
 }
-
-/**
- * Create a sealed node for the expression list.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Wrapper.prototype.completeSealed = function (block) {
-  this.completeSealedInput(block,
-    this.inputWRAP,
-    this.wrappedPrototype)
-}
-
-/**
- * Class for a DelegateSvg, expression_stmt.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Stmt.expression_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.expression_stmt.superClass_.constructor.call(this, prototypeName)
-  this.wrapperType = ezP.T3.starred_item_list
-  this.wrappedPrototype =ezP.Const.Expr.starred_item_list
-}
-goog.inherits(ezP.DelegateSvg.Stmt.expression_stmt, ezP.DelegateSvg.Wrapper)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.expression_stmt, ezP.DelegateSvg.Stmt.expression_stmt)
-
-
-/**
- * Class for a DelegateSvg, assignment_stmt.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Stmt.assignment_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.assignment_stmt.superClass_.constructor.call(this, prototypeName)
-  this.wrapperType = ezP.T3.assignment_expression
-  this.wrappedPrototype = ezP.Const.Expr.assignment_expression
-}
-goog.inherits(ezP.DelegateSvg.Stmt.assignment_stmt, ezP.DelegateSvg.Wrapper)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.assignment_stmt, ezP.DelegateSvg.Stmt.assignment_stmt)
-
-
-
-
-
-
-
 
 
 

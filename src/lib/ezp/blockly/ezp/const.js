@@ -22,10 +22,13 @@ goog.require('ezP')
 ezP.Const = ezP.Const || {}
 
 ezP.Const.Stmt = {
-  // in progress
   expression_stmt: 'ezp_stmt_expression_stmt',
   assignment_stmt: 'ezp_stmt_assignment_stmt',
-  
+  augmented_assignment_stmt: 'ezp_stmt_augmented_assignment_stmt',
+  annotated_assignment_stmt: 'ezp_stmt_annotated_assignment_stmt',
+  assert_stmt: 'ezp_stmt_assert_stmt',
+  // in progress
+
 
 
   DEFAULT: 'ezp_stmt',
@@ -85,6 +88,7 @@ ezP.Const.Expr = {
   lambda_expr: 'ezp_expr_lambda_expr',
   lambda_expr_nocond: 'ezp_expr_lambda_expr_nocond',
   assignment_expression: 'ezp_expr_assignment_expression',
+  augmented_assignment_expression: 'ezp_expr_augmented_assignment_expression',
   // in progress
 
   star_or_expr: 'ezp_expr_star_or_expr',
@@ -168,8 +172,12 @@ ezP.Const.Input = {
   UPPER_BOUND: 'UPPER_BOUND',
   STRIDE: 'STRIDE',
   EXPR: 'EXPR',// = ANY? NO!
+  TARGET: 'TARGET',
+  ANNOTATED: 'ANNOTATED',
+  ASSIGNED: 'ASSIGNED',
   LHS: 'LHS',
   RHS: 'RHS',
+  OPTION: 'OPTION',
   // IN PROGRESS
   ANY: 'ANY',
   SEP: 'SEP',

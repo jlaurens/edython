@@ -21,6 +21,12 @@ assigned_expression ::= starred_expression | yield_expression | assignment_expre
 assignment_stmt ::= assignment_expression
 </pre>
 <pre>
+augmented_assignment_stmt ::=  augmented_assignment_expression
+augmented_assignment_expression ::=  augtarget augop aug_assigned
+aug_assigned ::= expression_list | yield_expression
+</pre>
+augmented_assignment_stmt ::=  augtarget augop (expression_list | yield_expression)
+<pre>
 target ::= identifier
   | parenth_target_list
   | bracket_target_list

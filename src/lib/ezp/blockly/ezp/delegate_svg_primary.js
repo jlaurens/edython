@@ -30,7 +30,7 @@ goog.inherits(ezP.DelegateSvg.Expr.VSPair, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Expr.VSPair.prototype.primaryCheck = undefined
 ezP.DelegateSvg.Expr.VSPair.prototype.secondaryCheck = undefined
-ezP.DelegateSvg.Expr.VSPair.prototype.outputType = undefined
+ezP.DelegateSvg.Expr.VSPair.prototype.outputCheck = undefined
 ezP.DelegateSvg.Expr.VSPair.prototype.secondaryPrototypeName = undefined
 
 /**
@@ -73,7 +73,7 @@ ezP.DelegateSvg.Expr.attributeref = function (prototypeName) {
   ezP.DelegateSvg.Expr.attributeref.superClass_.constructor.call(this, prototypeName)
   this.primaryCheck = ezP.T3.Require.primary
   this.secondaryCheck = ezP.T3.dot_identifier
-  this.outputType = ezP.T3.attributeref
+  this.outputCheck = ezP.T3.attributeref
   this.secondaryPrototypeName = ezP.Const.Expr.dot_identifier
 }
 goog.inherits(ezP.DelegateSvg.Expr.attributeref, ezP.DelegateSvg.Expr.VSPair)
@@ -94,7 +94,7 @@ ezP.DelegateSvg.Expr.subscription = ezP.DelegateSvg.Expr.slicing = function (pro
   ezP.DelegateSvg.Expr.slicing.superClass_.constructor.call(this, prototypeName)
   this.primaryCheck = ezP.T3.Require.primary
   this.secondaryCheck = ezP.T3.display_slice_list
-  this.outputType = ezP.T3.slicing
+  this.outputCheck = ezP.T3.slicing
   this.secondaryPrototypeName = ezP.Const.Expr.display_slice_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.slicing, ezP.DelegateSvg.Expr.VSPair)
@@ -152,7 +152,7 @@ ezP.DelegateSvg.Expr.call_block =  function (prototypeName) {
   ezP.DelegateSvg.Expr.call_block.superClass_.constructor.call(this, prototypeName)
   this.primaryCheck = ezP.T3.Require.primary
   this.secondaryCheck = ezP.T3.argument_list
-  this.outputType = ezP.T3.call
+  this.outputCheck = ezP.T3.call
   this.secondaryPrototypeName = ezP.Const.Expr.argument_list
   this.leftDelimiter = '('
   this.rightDelimiter = ')'

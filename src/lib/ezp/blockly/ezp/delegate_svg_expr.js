@@ -65,7 +65,7 @@ ezP.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
  */
 ezP.DelegateSvg.Expr.key_datum_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.key_datum_concrete.superClass_.constructor.call(this, prototypeName)
-  this.outputType = ezP.T3.key_datum_concrete
+  this.outputCheck = ezP.T3.key_datum_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.key_datum_concrete, ezP.DelegateSvg.Expr)
 
@@ -97,7 +97,7 @@ ezP.DelegateSvg.Expr.key_datum_concrete.prototype.initBlock = function(block) {
  */
 ezP.DelegateSvg.Expr.proper_slice = function (prototypeName) {
   ezP.DelegateSvg.Expr.proper_slice.superClass_.constructor.call(this, prototypeName)
-  this.outputType = ezP.T3.proper_slice
+  this.outputCheck = ezP.T3.proper_slice
 }
 goog.inherits(ezP.DelegateSvg.Expr.proper_slice, ezP.DelegateSvg.Expr)
 
@@ -176,7 +176,7 @@ ezP.DelegateSvg.Expr.proper_slice.prototype.onActionMenuEvent = function (block,
  */
 ezP.DelegateSvg.Expr.conditional_expression_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.conditional_expression_concrete.superClass_.constructor.call(this, prototypeName)
-  this.outputType = ezP.T3.conditional_expression_concrete
+  this.outputCheck = ezP.T3.conditional_expression_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.conditional_expression_concrete, ezP.DelegateSvg.Expr)
 
@@ -199,47 +199,6 @@ ezP.DelegateSvg.Expr.conditional_expression_concrete.prototype.initBlock = funct
   block.appendValueInput(ezP.Const.Input.ELSE)
     .setCheck(ezP.T3.Require.expression)
     .appendField(new ezP.FieldLabel('else'))
-}
-
-/**
- * Class for a DelegateSvg, assignment_expression block.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.assignment_expression = function (prototypeName) {
-  ezP.DelegateSvg.Expr.assignment_expression.superClass_.constructor.call(this, prototypeName)
-  this.outputType = ezP.T3.assignment_expression
-}
-goog.inherits(ezP.DelegateSvg.Expr.assignment_expression, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.assignment_expression, ezP.DelegateSvg.Expr.assignment_expression)
-
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.assignment_expression.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Expr.assignment_expression.superClass_.initBlock.call(this, block)
-  this.inputLIST = block.appendSealedValueInput(ezP.Const.Input.LIST)
-  block.appendValueInput(ezP.Const.Input.RHS)
-    .setCheck(ezP.T3.Require.assigned_expression)
-    .appendField(new ezP.FieldLabel('='))
-}
-
-/**
- * Create a sealed node for the comprehension if necessary.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.assignment_expression.prototype.completeSealed = function (block) {
-  this.completeSealedInput(block,
-    this.inputLIST,
-    ezP.Const.Expr.target_list)
 }
 
 

@@ -29,7 +29,7 @@ goog.inherits(ezP.DelegateSvg.Expr.Prefixed, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Expr.Prefixed.prototype.operator = undefined
 ezP.DelegateSvg.Expr.Prefixed.prototype.checkTypes = undefined
-ezP.DelegateSvg.Expr.Prefixed.prototype.outputType = undefined
+ezP.DelegateSvg.Expr.Prefixed.prototype.outputCheck = undefined
 
 /**
  * Initialize the block.
@@ -57,7 +57,7 @@ ezP.DelegateSvg.Expr.or_expr_starred = function (prototypeName) {
   ezP.DelegateSvg.Expr.or_expr_starred.superClass_.constructor.call(this, prototypeName)
   this.operator = '*'
   this.checkTypes = ezP.T3.Require.expression
-  this.outputType = ezP.T3.or_expr_starred
+  this.outputCheck = ezP.T3.or_expr_starred
 }
 goog.inherits(ezP.DelegateSvg.Expr.or_expr_starred, ezP.DelegateSvg.Expr.Prefixed)
 
@@ -74,7 +74,7 @@ ezP.DelegateSvg.Expr.or_expr_double_starred = function (prototypeName) {
   ezP.DelegateSvg.Expr.or_expr_double_starred.superClass_.constructor.call(this, prototypeName)
   this.operator = '**'
   this.checkTypes = ezP.T3.Require.expression
-  this.outputType = ezP.T3.or_expr_double_starred
+  this.outputCheck = ezP.T3.or_expr_double_starred
 }
 goog.inherits(ezP.DelegateSvg.Expr.or_expr_double_starred, ezP.DelegateSvg.Expr.Prefixed)
 
@@ -91,7 +91,7 @@ ezP.DelegateSvg.Expr.yield_from = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_from.superClass_.constructor.call(this, prototypeName)
   this.operator = 'from'
   this.checkTypes = ezP.T3.Require.expression
-  this.outputType = ezP.T3.yield_from
+  this.outputCheck = ezP.T3.yield_from
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_from, ezP.DelegateSvg.Expr.Prefixed)
 
@@ -108,7 +108,7 @@ ezP.DelegateSvg.Expr.dot_identifier = function (prototypeName) {
   ezP.DelegateSvg.Expr.dot_identifier.superClass_.constructor.call(this, prototypeName)
   this.operator = '.'
   this.checkTypes = ezP.T3.identifier
-  this.outputType = ezP.T3.dot_identifier
+  this.outputCheck = ezP.T3.dot_identifier
 }
 goog.inherits(ezP.DelegateSvg.Expr.dot_identifier, ezP.DelegateSvg.Expr.Prefixed)
 
@@ -125,7 +125,7 @@ ezP.DelegateSvg.Expr.await_expr = function (prototypeName) {
   ezP.DelegateSvg.Expr.await_expr.superClass_.constructor.call(this, prototypeName)
   this.operator = 'await'
   this.checkTypes = ezP.T3.Require.primary
-  this.outputType = ezP.T3.await_expr
+  this.outputCheck = ezP.T3.await_expr
 }
 goog.inherits(ezP.DelegateSvg.Expr.await_expr, ezP.DelegateSvg.Expr.Prefixed)
 

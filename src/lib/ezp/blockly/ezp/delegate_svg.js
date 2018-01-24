@@ -493,19 +493,23 @@ ezP.DelegateSvg.prototype.renderDrawInput_ = function (io) {
  * @param io An input/output record.
  * @private
  */
-ezP.DelegateSvg.prototype.renderDrawFields_ = function (io) {
+ezP.DelegateSvg.prototype.renderDrawFields_ = function (io, hide = false) {
   for (var _ = 0, field; (field = io.input.fieldRow[_]); ++_) {
     if (field.getText().length>0) {
       var root = field.getSvgRoot()
       if (root) {
-        root.removeAttribute('display') // must be done early
-        var ezp = field.ezpFieldData
-        var x_shift = ezp && !io.block.ezp.sealed_? ezp.x_shift || 0: 0
-        root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
-          ', ' + ezP.Padding.t() + ')')
-        var size = field.getSize()
-        io.cursorX += size.width
-    } else {
+        if (hide) {
+          root.setAttribute('display', 'none')
+        } else {
+          root.removeAttribute('display') // must be done early
+          var ezp = field.ezpFieldData
+          var x_shift = ezp && !io.block.ezp.sealed_? ezp.x_shift || 0: 0
+          root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
+            ', ' + ezP.Padding.t() + ')')
+          var size = field.getSize()
+          io.cursorX += size.width
+        }
+      } else {
         console.log('Field with no root: did you ...initSvg()?')
       }
     }
@@ -573,13 +577,13 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   if (!io.canValue || io.input.type !== Blockly.INPUT_VALUE) {
     return false
   }
-  this.renderDrawFields_(io)
   var c8n = io.input.connection
   if (c8n) {
     var ezp = c8n.ezpData
+    var target = c8n.targetBlock()
+    this.renderDrawFields_(io, !target && ezp.optional_)
     var sealed = !!ezp && ezp.sealed_
     c8n.setOffsetInBlock(sealed? io.cursorX-100: io.cursorX, 0)
-    var target = c8n.targetBlock()
     if (!!target) {
       var root = target.getSvgRoot()
       if (!!root) {
@@ -598,7 +602,7 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
         target.render()
       }
     } else {
-      var pw = io.input.connection.ezpData.optional_?
+      var pw = ezp.optional_?
         this.carretPathDefWidth_(io.cursorX):
         this.placeHolderPathDefWidth_(io.cursorX)
       io.steps.push(pw.d)
@@ -1002,7 +1006,9 @@ ezP.DelegateSvg.prototype.onActionMenuEvent = function (block, menu, event) {
   }
 }
 
-ezP.DelegateSvg.prototype.outputType = undefined
+ezP.DelegateSvg.prototype.outputCheck = undefined
+ezP.DelegateSvg.prototype.nextStatementCheck = undefined
+ezP.DelegateSvg.prototype.previousStatementCheck = undefined
 
 /**
  * Initialize the block.
@@ -1015,8 +1021,15 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   block.setInputsInline(true)
   block.setTooltip('')
   block.setHelpUrl('')
-  if (this.outputType) {
-    block.setOutput(true, this.outputType)
+  if (this.outputCheck !== undefined) {
+    block.setOutput(true, this.outputCheck)
+  } else {
+    if (this.nextStatementCheck !== undefined) {
+      block.setNextStatement(true, this.nextStatementCheck)
+    }
+    if (this.previousStatementCheck !== undefined) {
+      block.setPreviousStatement(true, this.previousStatementCheck)
+    }
   }
 }
 

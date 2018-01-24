@@ -392,7 +392,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.comparison_concrete, ezP.Delegat
  * @constructor
  */
 ezP.DelegateSvg.Expr.boolean_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Expr.comparison_concrete.superClass_.constructor.call(this, prototypeName)
+  ezP.DelegateSvg.Expr.boolean_concrete.superClass_.constructor.call(this, prototypeName)
   this.operator = 'or'
   this.operators = ['or', 'and']
   this.operatorData = {
