@@ -208,3 +208,31 @@ goog.inherits(ezP.DelegateSvg.Stmt.augmented_assignment_stmt, ezP.DelegateSvg.Wr
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.augmented_assignment_stmt, ezP.DelegateSvg.Stmt.augmented_assignment_stmt)
 
+
+/**
+ * Class for a DelegateSvg, del_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.del_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.del_stmt.superClass_.constructor.call(this, prototypeName)
+  this.wrapperType = ezP.T3.target_list
+  this.wrappedPrototype = ezP.Const.Expr.target_list
+}
+goog.inherits(ezP.DelegateSvg.Stmt.del_stmt, ezP.DelegateSvg.Wrap)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.del_stmt, ezP.DelegateSvg.Stmt.del_stmt)
+
+/**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.del_stmt.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Stmt.del_stmt.superClass_.initBlock.call(this, block)
+  this.inputWRAP.appendField(new ezP.FieldLabel('del'))
+}

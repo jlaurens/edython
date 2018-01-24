@@ -25,6 +25,7 @@ var Ks = [
   ezP.Const.Stmt.pass_stmt,
   ezP.Const.Stmt.continue_stmt,
   ezP.Const.Stmt.break_stmt,
+  ezP.Const.Stmt.del_stmt,
   // IN PROGRESS
 ]
 var O = {
