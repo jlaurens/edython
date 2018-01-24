@@ -63,21 +63,21 @@ ezP.Connection.prototype.connect = function (otherConnection) {
     inferior = this
   }
   var next = inferior.sourceBlock_.nextConnection
-  if (inferior.check_ === ezP.Type.Stt.Check.before_else) {
-    if (superior.check_ === ezP.Type.Stt.Check.after_if) {
-      inferior.check_ = ezP.Type.Stt.Check.before_if_else
-    } else if (superior.check_ === ezP.Type.Stt.Check.after_loop) {
-      inferior.check_ = ezP.Type.Stt.Check.before_loop_else
+  if (inferior.check_ === ezP.Type.Stmt.Check.before_else) {
+    if (superior.check_ === ezP.Type.Stmt.Check.after_if) {
+      inferior.check_ = ezP.Type.Stmt.Check.before_if_else
+    } else if (superior.check_ === ezP.Type.Stmt.Check.after_loop) {
+      inferior.check_ = ezP.Type.Stmt.Check.before_loop_else
     }
   }
-  if (inferior.check_ === ezP.Type.Stt.Check.before_else) {
-    next.check_ = ezP.Type.Stt.Check.after_else
-  } else if (inferior.check_ === ezP.Type.Stt.Check.before_elif) {
-    next.check_ = ezP.Type.Stt.Check.after_elif
-  } else if (inferior.check_ === ezP.Type.Stt.Check.before_if_else) {
-    next.check_ = ezP.Type.Stt.Check.after_else
-  } else if (inferior.check_ === ezP.Type.Stt.Check.before_loop_else) {
-    next.check_ = ezP.Type.Stt.Check.after_else
+  if (inferior.check_ === ezP.Type.Stmt.Check.before_else) {
+    next.check_ = ezP.Type.Stmt.Check.after_else
+  } else if (inferior.check_ === ezP.Type.Stmt.Check.before_elif) {
+    next.check_ = ezP.Type.Stmt.Check.after_elif
+  } else if (inferior.check_ === ezP.Type.Stmt.Check.before_if_else) {
+    next.check_ = ezP.Type.Stmt.Check.after_else
+  } else if (inferior.check_ === ezP.Type.Stmt.Check.before_loop_else) {
+    next.check_ = ezP.Type.Stmt.Check.after_else
   }
   ezP.Connection.superClass_.connect.call(this, otherConnection)
 }
@@ -95,17 +95,17 @@ ezP.Connection.prototype.disconnect = function () {
   }
   var next = inferior.sourceBlock_.nextConnection
   setTimeout(function () {
-    if (inferior.check_ === ezP.Type.Stt.Check.before_else ||
-        inferior.check_ === ezP.Type.Stt.Check.before_if_else ||
-        inferior.check_ === ezP.Type.Stt.Check.before_loop_else ||
-        inferior.check_ === ezP.Type.Stt.Check.before_elif) {
+    if (inferior.check_ === ezP.Type.Stmt.Check.before_else ||
+        inferior.check_ === ezP.Type.Stmt.Check.before_if_else ||
+        inferior.check_ === ezP.Type.Stmt.Check.before_loop_else ||
+        inferior.check_ === ezP.Type.Stmt.Check.before_elif) {
       if (next && !next.isConnected()) {
-        next.setCheck(ezP.Type.Stt.Check.none)
+        next.setCheck(ezP.Type.Stmt.Check.none)
       }
     }
-    if (inferior.check_ === ezP.Type.Stt.Check.before_if_else ||
-        inferior.check_ === ezP.Type.Stt.Check.before_loop_else) {
-      inferior.setCheck(ezP.Type.Stt.Check.before_else)
+    if (inferior.check_ === ezP.Type.Stmt.Check.before_if_else ||
+        inferior.check_ === ezP.Type.Stmt.Check.before_loop_else) {
+      inferior.setCheck(ezP.Type.Stmt.Check.before_else)
     }
   }, 3 * Blockly.BUMP_DELAY / 2)
   ezP.Connection.superClass_.disconnect.call(this)

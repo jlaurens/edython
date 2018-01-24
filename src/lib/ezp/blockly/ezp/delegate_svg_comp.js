@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Xpr.Comprehension')
+goog.provide('ezP.DelegateSvg.Expr.Comprehension')
 
-goog.require('ezP.DelegateSvg.Xpr')
+goog.require('ezP.DelegateSvg.Expr')
 
 /**
  * Class for a DelegateSvg, comprehension value block.
@@ -23,12 +23,12 @@ goog.require('ezP.DelegateSvg.Xpr')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.Comprehension = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.Comprehension.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.Comprehension = function (prototypeName) {
+  ezP.DelegateSvg.Expr.Comprehension.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.Comprehension, ezP.DelegateSvg.Xpr)
+goog.inherits(ezP.DelegateSvg.Expr.Comprehension, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.comprehension, ezP.DelegateSvg.Xpr.Comprehension)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.comprehension, ezP.DelegateSvg.Expr.Comprehension)
 
 /**
  * Initialize the block.
@@ -39,8 +39,8 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.comprehension, ezP.DelegateSvg.Xp
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.Comprehension.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.Comprehension.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Expr.Comprehension.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Expr.Comprehension.superClass_.initBlock.call(this, block)
   block.appendValueInput(ezP.Const.Input.XPR)
     .setCheck(ezP.T3.Require.expression)
   this.inputFORIN = block.appendSealedValueInput(ezP.Const.Input.FORIN)
@@ -55,13 +55,13 @@ ezP.DelegateSvg.Xpr.Comprehension.prototype.initBlock = function(block) {
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.Comprehension.prototype.completeSealed = function (block) {
+ezP.DelegateSvg.Expr.Comprehension.prototype.completeSealed = function (block) {
   this.completeSealedInput(block,
     this.inputFORIN,
-    ezP.Const.Xpr.comp_for)
+    ezP.Const.Expr.comp_for)
   this.completeSealedInput(block,
     this.inputITER,
-    ezP.Const.Xpr.comp_iter_list)
+    ezP.Const.Expr.comp_iter_list)
 }
 
 
@@ -73,12 +73,12 @@ ezP.DelegateSvg.Xpr.Comprehension.prototype.completeSealed = function (block) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.comp_for = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.comp_for.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.comp_for = function (prototypeName) {
+  ezP.DelegateSvg.Expr.comp_for.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.comp_for, ezP.DelegateSvg.Xpr)
+goog.inherits(ezP.DelegateSvg.Expr.comp_for, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.comp_for, ezP.DelegateSvg.Xpr.comp_for)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.comp_for, ezP.DelegateSvg.Expr.comp_for)
 
 /**
  * Initialize the block.
@@ -87,8 +87,8 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.comp_for, ezP.DelegateSvg.Xpr.com
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.comp_for.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.comp_for.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Expr.comp_for.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Expr.comp_for.superClass_.initBlock.call(this, block)
   block.appendValueInput(ezP.Const.Input.FOR)
     .setCheck(ezP.T3.Require.target_list)
     .appendField(new ezP.FieldLabel('for'))
@@ -106,12 +106,12 @@ ezP.DelegateSvg.Xpr.comp_for.prototype.initBlock = function(block) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.comp_if = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.comp_if.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.comp_if = function (prototypeName) {
+  ezP.DelegateSvg.Expr.comp_if.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.comp_if, ezP.DelegateSvg.Xpr)
+goog.inherits(ezP.DelegateSvg.Expr.comp_if, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.comp_if, ezP.DelegateSvg.Xpr.comp_if)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.comp_if, ezP.DelegateSvg.Expr.comp_if)
 
 /**
  * Initialize the block.
@@ -120,8 +120,8 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.comp_if, ezP.DelegateSvg.Xpr.comp
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.comp_if.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.comp_if.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Expr.comp_if.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Expr.comp_if.superClass_.initBlock.call(this, block)
   block.appendValueInput(ezP.Const.Input.IF)
     .setCheck(ezP.T3.Require.expression_nocond)
     .appendField(new ezP.FieldLabel('if'))

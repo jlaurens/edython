@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('ezP.Python.ezp_xpr')
+goog.provide('ezP.Python.ezp_expr')
 
 goog.require('Blockly.Python')
 goog.require('ezP.Const')
@@ -32,27 +32,27 @@ ezP.Python.valueToCode = function (block, name, outerOrder) {
   return code
 }
 
-Blockly.Python[ezP.Const.Xpr.GET] = function (block) {
+Blockly.Python[ezP.Const.Expr.GET] = function (block) {
   var code = block.getField(ezP.Const.Field.VAR).getText()
   return [code, Blockly.Python.ORDER_ATOMIC]
 }
 
-Blockly.Python[ezP.Const.Xpr.ANY] = function (block) {
+Blockly.Python[ezP.Const.Expr.ANY] = function (block) {
   var code = block.getFieldValue(ezP.Const.Field.ANY)
   return [code, Blockly.Python.ORDER_NONE]
 }
 
-Blockly.Python[ezP.Const.Xpr.TEXT] = function (block) {
+Blockly.Python[ezP.Const.Expr.TEXT] = function (block) {
   var code = Blockly.Python.quote_(block.getFieldValue(ezP.Const.Field.TEXT))
   return [code, Blockly.Python.ORDER_ATOMIC]
 }
 
-Blockly.Python[ezP.Const.Xpr.TFN] = function (block) {
+Blockly.Python[ezP.Const.Expr.TFN] = function (block) {
   var code = block.getFieldValue(ezP.Const.Field.TFN)
   return [code, Blockly.Python.ORDER_ATOMIC]
 }
 
-Blockly.Python[ezP.Const.Xpr.OP] = function (block) {
+Blockly.Python[ezP.Const.Expr.OP] = function (block) {
   var op = block.getFieldValue(ezP.Const.Field.OP)
   var order = ezP.Op.Binary.getOrder(op)
   var lhs = ezP.Python.valueToCode(block, ezP.Const.Input.LHS,
@@ -62,7 +62,7 @@ Blockly.Python[ezP.Const.Xpr.OP] = function (block) {
   return [lhs + ezP.Op.Binary.displayOp(op) + rhs, order || Blockly.Python.ORDER_NONE]
 }
 
-Blockly.Python[ezP.Const.Xpr.UNRY] = function (block) {
+Blockly.Python[ezP.Const.Expr.UNRY] = function (block) {
   var op = block.getFieldValue(ezP.Const.Field.OP)
   var order = ezP.Op.Unary.getOrder(op)
   var any = ezP.Python.valueToCode(block, ezP.Const.Input.ANY,
@@ -70,9 +70,9 @@ Blockly.Python[ezP.Const.Xpr.UNRY] = function (block) {
   return [ezP.Op.Unary.displayOp(op) + any, order]
 }
 
-Blockly.Python[ezP.Const.Xpr.BOOL] = Blockly.Python[ezP.Const.Xpr.OP]
+Blockly.Python[ezP.Const.Expr.BOOL] = Blockly.Python[ezP.Const.Expr.OP]
 
-Blockly.Python[ezP.Const.Xpr.TUPLE] = function (block) {
+Blockly.Python[ezP.Const.Expr.TUPLE] = function (block) {
   var ezp = block.ezp
   var max = ezp.getInputTupleMax(block, 0)
   var l = []
@@ -91,7 +91,7 @@ Blockly.Python[ezP.Const.Xpr.TUPLE] = function (block) {
   return [l.join(', '), Blockly.Python.ORDER_COLLECTION]
 }
 
-Blockly.Python[ezP.Const.Xpr.RANGE] = function (block) {
-  var code = Blockly.Python[ezP.Const.Xpr.TUPLE](block)
+Blockly.Python[ezP.Const.Expr.RANGE] = function (block) {
+  var code = Blockly.Python[ezP.Const.Expr.TUPLE](block)
   return ['range(' + code[0] + ')', Blockly.Python.ORDER_FUNCTION_CALL]
 }

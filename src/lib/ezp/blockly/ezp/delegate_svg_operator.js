@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Xpr.Operator')
+goog.provide('ezP.DelegateSvg.Expr.Operator')
 
-goog.require('ezP.DelegateSvg.Xpr')
+goog.require('ezP.DelegateSvg.Expr')
 
 /**
  * Class for a DelegateSvg, [...] op ... block.
@@ -24,16 +24,16 @@ goog.require('ezP.DelegateSvg.Xpr')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.Operator = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.Operator.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.Operator = function (prototypeName) {
+  ezP.DelegateSvg.Expr.Operator.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.Operator, ezP.DelegateSvg.Xpr)
+goog.inherits(ezP.DelegateSvg.Expr.Operator, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Xpr.Operator.prototype.operator = undefined
-ezP.DelegateSvg.Xpr.Operator.prototype.operators = undefined
-ezP.DelegateSvg.Xpr.Operator.prototype.operatorData = undefined
-ezP.DelegateSvg.Xpr.Operator.prototype.operatorDidChange = undefined
-ezP.DelegateSvg.Xpr.Operator.prototype.canChangeOperator = undefined
+ezP.DelegateSvg.Expr.Operator.prototype.operator = undefined
+ezP.DelegateSvg.Expr.Operator.prototype.operators = undefined
+ezP.DelegateSvg.Expr.Operator.prototype.operatorData = undefined
+ezP.DelegateSvg.Expr.Operator.prototype.operatorDidChange = undefined
+ezP.DelegateSvg.Expr.Operator.prototype.canChangeOperator = undefined
 
 /**
  * Change the operator of the block. Undo friendly.
@@ -42,7 +42,7 @@ ezP.DelegateSvg.Xpr.Operator.prototype.canChangeOperator = undefined
  * @param {!Block} block.
  * @param {!String} op is the new operator.
  */
-ezP.DelegateSvg.Xpr.Operator.prototype.changeOperator = function(block, newValue) {
+ezP.DelegateSvg.Expr.Operator.prototype.changeOperator = function(block, newValue) {
   if (this.operators.indexOf(newValue)<0) {
     // do nothing, this op is not known
     return
@@ -68,7 +68,7 @@ ezP.DelegateSvg.Xpr.Operator.prototype.changeOperator = function(block, newValue
  * @param {!Input} input.
  * @param {!Array} required, an array of required types.
  */
-ezP.DelegateSvg.Xpr.Operator.checkInput = function(input, required) {
+ezP.DelegateSvg.Expr.Operator.checkInput = function(input, required) {
   var target = input.connection.targetBlock()
   if (target) {
     var check = target.outputConnection.check_
@@ -90,7 +90,7 @@ ezP.USE_OPERATOR_ID  = 'USE_OPERATOR'
  * @param {!goo.ui.Menu} menu The menu to populate.
  * @private
  */
-ezP.DelegateSvg.Xpr.Operator.prototype.populateContextMenu_ = function (block, menu) {
+ezP.DelegateSvg.Expr.Operator.prototype.populateContextMenu_ = function (block, menu) {
   var value = this.fieldOperator.getValue()
   var ezp = this
   var F = function(op) {
@@ -105,7 +105,7 @@ ezP.DelegateSvg.Xpr.Operator.prototype.populateContextMenu_ = function (block, m
     F(this.operators[i])
   }
   menu.addChild(new ezP.Separator(), true)
-  ezP.DelegateSvg.Xpr.Operator.superClass_.populateContextMenu_.call(this,block, menu)
+  ezP.DelegateSvg.Expr.Operator.superClass_.populateContextMenu_.call(this,block, menu)
 }
 
 /**
@@ -115,7 +115,7 @@ ezP.DelegateSvg.Xpr.Operator.prototype.populateContextMenu_ = function (block, m
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Xpr.Operator.prototype.handleActionMenuEvent = function (block, menu, event) {
+ezP.DelegateSvg.Expr.Operator.prototype.handleActionMenuEvent = function (block, menu, event) {
   var model = event.target.getModel()
   var action = model[0]
   var op = model[1]
@@ -138,7 +138,7 @@ ezP.DelegateSvg.Xpr.Operator.prototype.handleActionMenuEvent = function (block, 
  * @param {!Element} hidden True if connections are hidden.
  * @override
  */
-ezP.DelegateSvg.Xpr.Operator.prototype.toDom = function (block, element) {
+ezP.DelegateSvg.Expr.Operator.prototype.toDom = function (block, element) {
   element.setAttribute('operator', this.fieldOperator.getText())
 }
 
@@ -149,7 +149,7 @@ ezP.DelegateSvg.Xpr.Operator.prototype.toDom = function (block, element) {
  * @param {!Element} hidden True if connections are hidden.
  * @override
  */
-ezP.DelegateSvg.Xpr.Operator.prototype.fromDom = function (block, element) {
+ezP.DelegateSvg.Expr.Operator.prototype.fromDom = function (block, element) {
   var operator = element.getAttribute('operator')
   if (this.operators.indexOf(operator)<0) {
     operator = this.operator
@@ -169,10 +169,10 @@ ezP.DelegateSvg.Xpr.Operator.prototype.fromDom = function (block, element) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.Unary = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.Unary.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.Unary = function (prototypeName) {
+  ezP.DelegateSvg.Expr.Unary.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.Unary, ezP.DelegateSvg.Xpr.Operator)
+goog.inherits(ezP.DelegateSvg.Expr.Unary, ezP.DelegateSvg.Expr.Operator)
 
 /**
  * Initialize the block.
@@ -181,8 +181,8 @@ goog.inherits(ezP.DelegateSvg.Xpr.Unary, ezP.DelegateSvg.Xpr.Operator)
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.Unary.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.Unary.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Expr.Unary.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Expr.Unary.superClass_.initBlock.call(this, block)
   this.fieldOperator = new ezP.FieldLabel('')
   this.inputXPR = block.appendValueInput(ezP.Const.Input.XPR)
     .appendField(this.fieldOperator)
@@ -195,7 +195,7 @@ ezP.DelegateSvg.Xpr.Unary.prototype.initBlock = function(block) {
  * @param {!Block} block.
  * @param {!String} op is the new operator.
  */
-ezP.DelegateSvg.Xpr.Unary.prototype.operatorDidChange = function(block) {
+ezP.DelegateSvg.Expr.Unary.prototype.operatorDidChange = function(block) {
   var value = this.fieldOperator.getValue()
   var data = this.operatorData[value]
   this.inputXPR.setCheck(data['XPR'])
@@ -208,13 +208,13 @@ ezP.DelegateSvg.Xpr.Unary.prototype.operatorDidChange = function(block) {
  * @param {!Block} block.
  * @param {!String} op is the new operator.
  */
-ezP.DelegateSvg.Xpr.Unary.prototype.canChangeOperator = function(block, op) {
+ezP.DelegateSvg.Expr.Unary.prototype.canChangeOperator = function(block, op) {
   if (this.operators.indexOf(op)<0) {
     // this op is not known
     return false
   }
   var data = this.operatorData[op]
-  return ezP.DelegateSvg.Xpr.Operator.checkInput(this.inputXPR, data['XPR']) 
+  return ezP.DelegateSvg.Expr.Operator.checkInput(this.inputXPR, data['XPR']) 
 }
 
 
@@ -227,8 +227,8 @@ ezP.DelegateSvg.Xpr.Unary.prototype.canChangeOperator = function(block, op) {
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Xpr.unary_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.unary_concrete.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.unary_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.unary_concrete.superClass_.constructor.call(this, prototypeName)
   this.operator = '-'
   this.operators = ['+', '-', '~', 'not']
   this.operatorData = {
@@ -238,9 +238,9 @@ ezP.DelegateSvg.Xpr.unary_concrete = function (prototypeName) {
     'not': {'LABEL':'not ...', 'OUT': ezP.T3.not_test_concrete, 'XPR': ezP.T3.Require.not_test},
   }
 }
-goog.inherits(ezP.DelegateSvg.Xpr.unary_concrete, ezP.DelegateSvg.Xpr.Unary)
+goog.inherits(ezP.DelegateSvg.Expr.unary_concrete, ezP.DelegateSvg.Expr.Unary)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.unary_concrete, ezP.DelegateSvg.Xpr.unary_concrete)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.unary_concrete, ezP.DelegateSvg.Expr.unary_concrete)
 
 
 /**
@@ -251,10 +251,10 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.unary_concrete, ezP.DelegateSvg.X
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.Binary = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.Binary.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.Binary = function (prototypeName) {
+  ezP.DelegateSvg.Expr.Binary.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.Binary, ezP.DelegateSvg.Xpr.Operator)
+goog.inherits(ezP.DelegateSvg.Expr.Binary, ezP.DelegateSvg.Expr.Operator)
 
 /**
  * Initialize the block.
@@ -263,8 +263,8 @@ goog.inherits(ezP.DelegateSvg.Xpr.Binary, ezP.DelegateSvg.Xpr.Operator)
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.Binary.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.Binary.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Expr.Binary.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Expr.Binary.superClass_.initBlock.call(this, block)
   this.inputLHS = block.appendValueInput(ezP.Const.Input.LHS)
   this.fieldOperator = new ezP.FieldLabel('')
   this.inputRHS = block.appendValueInput(ezP.Const.Input.RHS)
@@ -278,7 +278,7 @@ ezP.DelegateSvg.Xpr.Binary.prototype.initBlock = function(block) {
  * @param {!Block} block.
  * @param {!String} op is the new operator.
  */
-ezP.DelegateSvg.Xpr.Binary.prototype.operatorDidChange = function(block) {
+ezP.DelegateSvg.Expr.Binary.prototype.operatorDidChange = function(block) {
   var value = this.fieldOperator.getValue()
   var data = this.operatorData[value]
   block.setOutput(true, data['OUT'])  
@@ -292,14 +292,14 @@ ezP.DelegateSvg.Xpr.Binary.prototype.operatorDidChange = function(block) {
  * @param {!Block} block.
  * @param {!String} op is the new operator.
  */
-ezP.DelegateSvg.Xpr.Binary.prototype.canChangeOperator = function(block, op) {
+ezP.DelegateSvg.Expr.Binary.prototype.canChangeOperator = function(block, op) {
   if (this.operators.indexOf(op)<0) {
     // this op is not known
     return false
   }
   var data = this.operatorData[op]
-  return ezP.DelegateSvg.Xpr.Operator.checkInput(this.inputLHS, data['LHS'])
-  || ezP.DelegateSvg.Xpr.Operator.checkInput(this.inputRHS, data['RHS'])
+  return ezP.DelegateSvg.Expr.Operator.checkInput(this.inputLHS, data['LHS'])
+  || ezP.DelegateSvg.Expr.Operator.checkInput(this.inputRHS, data['RHS'])
 }
 
 /**
@@ -310,8 +310,8 @@ ezP.DelegateSvg.Xpr.Binary.prototype.canChangeOperator = function(block, op) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.algebra_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.algebra_concrete.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.algebra_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.algebra_concrete.superClass_.constructor.call(this, prototypeName)
   this.operator = '+'
   this.operators = ['+', '-', '*', '//', '/', '%', '@']
   this.operatorData = {
@@ -324,9 +324,9 @@ ezP.DelegateSvg.Xpr.algebra_concrete = function (prototypeName) {
     '-': {'LABEL':'... - ...', 'OUT': ezP.T3.a_expr_concrete, 'RHS': ezP.T3.Require.m_expr, 'LHS': ezP.T3.Require.a_expr},
   }
 }
-goog.inherits(ezP.DelegateSvg.Xpr.algebra_concrete, ezP.DelegateSvg.Xpr.Binary)
+goog.inherits(ezP.DelegateSvg.Expr.algebra_concrete, ezP.DelegateSvg.Expr.Binary)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.algebra_concrete, ezP.DelegateSvg.Xpr.algebra_concrete)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.algebra_concrete, ezP.DelegateSvg.Expr.algebra_concrete)
 
 /**
  * Class for a DelegateSvg, bitwise binary operation block.
@@ -336,8 +336,8 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.algebra_concrete, ezP.DelegateSvg
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.bitwise_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.bitwise_concrete.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.bitwise_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.bitwise_concrete.superClass_.constructor.call(this, prototypeName)
   this.operator = '&'
   this.operators = ['<<', '>>', '&', '^', '|']
   this.operatorData = {
@@ -348,9 +348,9 @@ ezP.DelegateSvg.Xpr.bitwise_concrete = function (prototypeName) {
     '|': {'LABEL':'... | ...', 'OUT': ezP.T3.or_expr_concrete, 'RHS': ezP.T3.Require.xor_expr, 'LHS': ezP.T3.Require.or_expr},
   }
 }
-goog.inherits(ezP.DelegateSvg.Xpr.bitwise_concrete, ezP.DelegateSvg.Xpr.Binary)
+goog.inherits(ezP.DelegateSvg.Expr.bitwise_concrete, ezP.DelegateSvg.Expr.Binary)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.bitwise_concrete, ezP.DelegateSvg.Xpr.bitwise_concrete)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.bitwise_concrete, ezP.DelegateSvg.Expr.bitwise_concrete)
 
 /**
  * Class for a DelegateSvg, comparison_concrete block.
@@ -362,8 +362,8 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.bitwise_concrete, ezP.DelegateSvg
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.comparison_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.comparison_concrete.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.comparison_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.comparison_concrete.superClass_.constructor.call(this, prototypeName)
   this.operator = '<'
   this.operators = ['<', '>', '==', '>=', '<=', '!=', 'is', 'is not', 'in', 'not in']
   this.operatorData = {
@@ -379,9 +379,9 @@ ezP.DelegateSvg.Xpr.comparison_concrete = function (prototypeName) {
     'not in': {'LABEL':'... not in ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
   }
 }
-goog.inherits(ezP.DelegateSvg.Xpr.comparison_concrete, ezP.DelegateSvg.Xpr.Binary)
+goog.inherits(ezP.DelegateSvg.Expr.comparison_concrete, ezP.DelegateSvg.Expr.Binary)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.comparison_concrete, ezP.DelegateSvg.Xpr.comparison_concrete)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.comparison_concrete, ezP.DelegateSvg.Expr.comparison_concrete)
 
 /**
  * Class for a DelegateSvg, boolean_concrete block.
@@ -391,8 +391,8 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.comparison_concrete, ezP.Delegate
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.boolean_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.comparison_concrete.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.boolean_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.comparison_concrete.superClass_.constructor.call(this, prototypeName)
   this.operator = 'or'
   this.operators = ['or', 'and']
   this.operatorData = {
@@ -400,6 +400,6 @@ ezP.DelegateSvg.Xpr.boolean_concrete = function (prototypeName) {
     'and': {'LABEL':'... and ...', 'OUT': ezP.T3.and_test_concrete, 'RHS': ezP.T3.Require.not_test, 'LHS': ezP.T3.Require.and_test},
   }
 }
-goog.inherits(ezP.DelegateSvg.Xpr.boolean_concrete, ezP.DelegateSvg.Xpr.Binary)
+goog.inherits(ezP.DelegateSvg.Expr.boolean_concrete, ezP.DelegateSvg.Expr.Binary)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.boolean_concrete, ezP.DelegateSvg.Xpr.boolean_concrete)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.boolean_concrete, ezP.DelegateSvg.Expr.boolean_concrete)

@@ -13,7 +13,7 @@
 
 goog.provide('ezP.Python.ezp_ctl')
 
-goog.require('ezP.Python.ezp_stt')
+goog.require('ezP.Python.ezp_stmt')
 
 Blockly.Python[ezP.Const.Ctl.MAIN] = function (block) {
   return ''

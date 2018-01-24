@@ -22,7 +22,7 @@ goog.require('ezP.FieldDropdown')
 goog.require('ezP.FieldOptionsCode')
 goog.require('ezP.FieldVariable')
 
-Blockly.Blocks[ezP.Const.Stt.SET] = {
+Blockly.Blocks[ezP.Const.Stmt.SET] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldVariable(), ezP.Const.Field.VAR)
@@ -36,18 +36,18 @@ Blockly.Blocks[ezP.Const.Stt.SET] = {
     this.setHelpUrl('')
   }
 }
-Blockly.Blocks[ezP.Const.Stt.ANY] = {
+Blockly.Blocks[ezP.Const.Stmt.ANY] = {
   init: function () {
     this.appendDummyInput().appendField(new ezP.FieldCodeInput(''), 'STT')
     this.setInputsInline(true)
     this.setOutput(false, null)
-    this.setPreviousStatement(true, ezP.Type.Stt.Check.before_any)
-    this.setNextStatement(true, ezP.Type.Stt.Check.after_any)
+    this.setPreviousStatement(true, ezP.Type.Stmt.Check.before_any)
+    this.setNextStatement(true, ezP.Type.Stmt.Check.after_any)
     this.setTooltip('')
     this.setHelpUrl('')
   }
 }
-Blockly.Blocks[ezP.Const.Stt.PRINT] = {
+Blockly.Blocks[ezP.Const.Stmt.PRINT] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldLabel('print'))
@@ -59,14 +59,14 @@ Blockly.Blocks[ezP.Const.Stt.PRINT] = {
     this.appendValueInput(ezP.Const.Input.FLUSH).appendField(new ezP.FieldLabel(', flush ='))
     this.appendDummyInput().appendField(new ezP.FieldLabel(')'))
     this.setInputsInline(true)
-    this.setPreviousStatement(true, ezP.Type.Stt.Check.before_any)
-    this.setNextStatement(true, ezP.Type.Stt.Check.after_any)
+    this.setPreviousStatement(true, ezP.Type.Stmt.Check.before_any)
+    this.setNextStatement(true, ezP.Type.Stmt.Check.after_any)
     this.setTooltip('')
     this.setHelpUrl('')
   }
 }
 
-Blockly.Blocks[ezP.Const.Stt.BCP] = {
+Blockly.Blocks[ezP.Const.Stmt.BCP] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldOptions(
@@ -78,7 +78,7 @@ Blockly.Blocks[ezP.Const.Stt.BCP] = {
   }
 }
 
-Blockly.Blocks[ezP.Const.Stt.GNL] = {
+Blockly.Blocks[ezP.Const.Stmt.GNL] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldOptions(
@@ -91,7 +91,7 @@ Blockly.Blocks[ezP.Const.Stt.GNL] = {
   }
 }
 
-Blockly.Blocks[ezP.Const.Stt.DEL] = {
+Blockly.Blocks[ezP.Const.Stmt.DEL] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldLabel('del'))

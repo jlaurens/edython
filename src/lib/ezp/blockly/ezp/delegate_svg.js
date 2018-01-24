@@ -1069,7 +1069,7 @@ ezP.DelegateSvg.prototype.completeSealedInput = function (block, input, prototyp
       goog.asserts.assert(target, 'completeSealed failed: '+ prototypeName);
       target.initSvg();
       target.ezp.sealed_ = true
-      goog.asserts.assert(target.outputConnection, 'Did you declare an Xpr block typed '+target.type)
+      goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed '+target.type)
       input.connection.connect(target.outputConnection)
       target.ezp.completeSealed(target)
     } else {

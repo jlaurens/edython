@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Xpr')
+goog.provide('ezP.DelegateSvg.Expr')
 
 goog.require('ezP.DelegateSvg')
 
@@ -23,24 +23,24 @@ goog.require('ezP.DelegateSvg')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr = function (prototypeName) {
+  ezP.DelegateSvg.Expr.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr, ezP.DelegateSvg)
+goog.inherits(ezP.DelegateSvg.Expr, ezP.DelegateSvg)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.DEFAULT, ezP.DelegateSvg.Xpr)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.DEFAULT, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Xpr.prototype.shapePathDef_ =
-  ezP.DelegateSvg.Xpr.prototype.contourPathDef_ =
-    ezP.DelegateSvg.Xpr.prototype.highlightedPathDef_ =
-      ezP.DelegateSvg.Xpr.prototype.valuePathDef_
+ezP.DelegateSvg.Expr.prototype.shapePathDef_ =
+  ezP.DelegateSvg.Expr.prototype.contourPathDef_ =
+    ezP.DelegateSvg.Expr.prototype.highlightedPathDef_ =
+      ezP.DelegateSvg.Expr.prototype.valuePathDef_
 
 /**
  * Render one input of value block.
  * @param io.
  * @private
  */
-ezP.DelegateSvg.Xpr.prototype.renderDrawInput_ = function (io) {
+ezP.DelegateSvg.Expr.prototype.renderDrawInput_ = function (io) {
   this.renderDrawDummyInput_(io) ||
     this.renderDrawValueInput_(io)
 }
@@ -51,7 +51,7 @@ ezP.DelegateSvg.Xpr.prototype.renderDrawInput_ = function (io) {
  * @param io.
  * @private
  */
-ezP.DelegateSvg.Xpr.prototype.renderDrawSharp_ = function (io) {
+ezP.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
   return
 }
 
@@ -63,12 +63,12 @@ ezP.DelegateSvg.Xpr.prototype.renderDrawSharp_ = function (io) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.key_datum_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.key_datum_concrete.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.key_datum_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.key_datum_concrete.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.key_datum_concrete, ezP.DelegateSvg.Xpr)
+goog.inherits(ezP.DelegateSvg.Expr.key_datum_concrete, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.key_datum_concrete, ezP.DelegateSvg.Xpr.key_datum_concrete)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.key_datum_concrete, ezP.DelegateSvg.Expr.key_datum_concrete)
 
 /**
  * Initialize the block.
@@ -77,8 +77,8 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.key_datum_concrete, ezP.DelegateS
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.key_datum_concrete.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.key_datum_concrete.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Expr.key_datum_concrete.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Expr.key_datum_concrete.superClass_.initBlock.call(this, block)
   block.appendValueInput(ezP.Const.Input.KEY)
     .setCheck(ezP.T3.Require.expression)
   block.appendValueInput(ezP.Const.Input.DATUM)
@@ -95,12 +95,12 @@ ezP.DelegateSvg.Xpr.key_datum_concrete.prototype.initBlock = function(block) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.proper_slice = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.proper_slice.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.proper_slice = function (prototypeName) {
+  ezP.DelegateSvg.Expr.proper_slice.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.proper_slice, ezP.DelegateSvg.Xpr)
+goog.inherits(ezP.DelegateSvg.Expr.proper_slice, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.proper_slice, ezP.DelegateSvg.Xpr.proper_slice)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.proper_slice, ezP.DelegateSvg.Expr.proper_slice)
 
 /**
  * Initialize the block.
@@ -109,8 +109,8 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.proper_slice, ezP.DelegateSvg.Xpr
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.proper_slice.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.Delimited.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Expr.proper_slice.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Expr.Delimited.superClass_.initBlock.call(this, block)
   var input = block.appendValueInput(ezP.Const.Input.LOWER_BOUND)
     .setCheck(ezP.T3.Require.expression)
   // mark the connection as optional
@@ -136,7 +136,7 @@ ezP.USE_PROPER_SLICING_STRIDE_ID = 'USE_PROPER_SLICING_STRIDE'
  * @param {!goo.ui.Menu} menu The menu to populate.
  * @private
  */
-ezP.DelegateSvg.Xpr.proper_slice.prototype.populateContextMenu_ = function (block, menu) {
+ezP.DelegateSvg.Expr.proper_slice.prototype.populateContextMenu_ = function (block, menu) {
   var unused = this.inputSTRIDE.ezpData.disabled_
   var menuItem = new ezP.MenuItem(
     unused? ezP.Msg.USE_PROPER_SLICING_STRIDE: ezP.Msg.UNUSE_PROPER_SLICING_STRIDE,
@@ -144,7 +144,7 @@ ezP.DelegateSvg.Xpr.proper_slice.prototype.populateContextMenu_ = function (bloc
   menuItem.setEnabled(!this.inputSTRIDE.connection.isConnected())
   menu.addChild(menuItem, true)
   menu.addChild(new ezP.Separator(), true)
-  ezP.DelegateSvg.Xpr.proper_slice.superClass_.populateContextMenu_.call(this,block, menu)
+  ezP.DelegateSvg.Expr.proper_slice.superClass_.populateContextMenu_.call(this,block, menu)
 }
 
 /**
@@ -154,14 +154,14 @@ ezP.DelegateSvg.Xpr.proper_slice.prototype.populateContextMenu_ = function (bloc
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Xpr.proper_slice.prototype.onActionMenuEvent = function (block, menu, event) {
+ezP.DelegateSvg.Expr.proper_slice.prototype.onActionMenuEvent = function (block, menu, event) {
   var action = event.target.getModel()
   if (action == ezP.USE_PROPER_SLICING_STRIDE_ID) {
     var input = this.inputSTRIDE
     this.setInputDisabled(block, input.name, !input.ezpData.disabled_)
     return
   }
-  ezP.DelegateSvg.Xpr.proper_slice.superClass_.onActionMenuEvent.call(this, block, menu, event)
+  ezP.DelegateSvg.Expr.proper_slice.superClass_.onActionMenuEvent.call(this, block, menu, event)
   return
 }
 
@@ -174,12 +174,12 @@ ezP.DelegateSvg.Xpr.proper_slice.prototype.onActionMenuEvent = function (block, 
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.conditional_expression_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.conditional_expression_concrete.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.conditional_expression_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.conditional_expression_concrete.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.conditional_expression_concrete, ezP.DelegateSvg.Xpr)
+goog.inherits(ezP.DelegateSvg.Expr.conditional_expression_concrete, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.conditional_expression_concrete, ezP.DelegateSvg.Xpr.conditional_expression_concrete)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.conditional_expression_concrete, ezP.DelegateSvg.Expr.conditional_expression_concrete)
 
 /**
  * Initialize the block.
@@ -188,7 +188,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.conditional_expression_concrete, 
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.conditional_expression_concrete.prototype.initBlock = function(block) {
+ezP.DelegateSvg.Expr.conditional_expression_concrete.prototype.initBlock = function(block) {
   block.appendValueInput(ezP.Const.Input.XPR)
     .setCheck(ezP.T3.Require.or_test)
   block.appendValueInput(ezP.Const.Input.IF)
@@ -209,10 +209,10 @@ ezP.DelegateSvg.Xpr.conditional_expression_concrete.prototype.initBlock = functi
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.Text = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.Text.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.Text = function (prototypeName) {
+  ezP.DelegateSvg.Expr.Text.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.Text, ezP.DelegateSvg.Xpr)
+goog.inherits(ezP.DelegateSvg.Expr.Text, ezP.DelegateSvg.Expr)
 
 /**
  * Render one input of value block.
@@ -220,12 +220,12 @@ goog.inherits(ezP.DelegateSvg.Xpr.Text, ezP.DelegateSvg.Xpr)
  * @param io.
  * @private
  */
-ezP.DelegateSvg.Xpr.Text.prototype.renderDrawInput_ = function (io) {
+ezP.DelegateSvg.Expr.Text.prototype.renderDrawInput_ = function (io) {
   this.renderDrawDummyInput_(io)
 }
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.TEXT, ezP.DelegateSvg.Xpr.Text)
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.ANY, ezP.DelegateSvg.Xpr.Text)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.TEXT, ezP.DelegateSvg.Expr.Text)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.ANY, ezP.DelegateSvg.Expr.Text)
 
 /**
  * Render one input of value block.
@@ -233,7 +233,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.ANY, ezP.DelegateSvg.Xpr.Text)
  * @param io.
  * @private
  */
-ezP.DelegateSvg.Xpr.Text.prototype.renderDrawInput_ = function (io) {
+ezP.DelegateSvg.Expr.Text.prototype.renderDrawInput_ = function (io) {
   this.renderDrawDummyInput_(io)
 }
 
@@ -245,12 +245,12 @@ ezP.DelegateSvg.Xpr.Text.prototype.renderDrawInput_ = function (io) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.Input = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.Input.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.Input = function (prototypeName) {
+  ezP.DelegateSvg.Expr.Input.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.Input, ezP.DelegateSvg.Xpr)
+goog.inherits(ezP.DelegateSvg.Expr.Input, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.MINUS, ezP.DelegateSvg.Xpr.Input)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.MINUS, ezP.DelegateSvg.Expr.Input)
 
 /**
  * Class for a DelegateSvg, tuple value block.
@@ -260,20 +260,20 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.MINUS, ezP.DelegateSvg.Xpr.Input)
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.Tuple = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.Tuple.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.Tuple = function (prototypeName) {
+  ezP.DelegateSvg.Expr.Tuple.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.Tuple, ezP.DelegateSvg.Xpr)
+goog.inherits(ezP.DelegateSvg.Expr.Tuple, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.TUPLE, ezP.DelegateSvg.Xpr.Tuple)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.TUPLE, ezP.DelegateSvg.Expr.Tuple)
 
 /**
  * Will render the block.
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.Tuple.prototype.willRender_ = function (block) {
-  ezP.DelegateSvg.Xpr.Tuple.superClass_.willRender_.call(this, block)
+ezP.DelegateSvg.Expr.Tuple.prototype.willRender_ = function (block) {
+  ezP.DelegateSvg.Expr.Tuple.superClass_.willRender_.call(this, block)
   this.tupleConsolidate(block)
 }
 
@@ -282,7 +282,7 @@ ezP.DelegateSvg.Xpr.Tuple.prototype.willRender_ = function (block) {
  * @param io.
  * @private
  */
-ezP.DelegateSvg.Xpr.Tuple.prototype.renderDrawInput_ = function (io) {
+ezP.DelegateSvg.Expr.Tuple.prototype.renderDrawInput_ = function (io) {
   this.renderDrawDummyInput_(io) ||
   this.renderDrawTupleInput_(io)
 }
@@ -293,7 +293,7 @@ ezP.DelegateSvg.Xpr.Tuple.prototype.renderDrawInput_ = function (io) {
  * @param {string} name The name of the input.
  * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
  */
-ezP.DelegateSvg.Xpr.Tuple.prototype.getInput = function (block, name) {
+ezP.DelegateSvg.Expr.Tuple.prototype.getInput = function (block, name) {
   return this.getInputTuple_(block, name)
 }
 
@@ -305,12 +305,12 @@ ezP.DelegateSvg.Xpr.Tuple.prototype.getInput = function (block, name) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.Range = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.Range.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.Range = function (prototypeName) {
+  ezP.DelegateSvg.Expr.Range.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.Range, ezP.DelegateSvg.Xpr.Tuple)
+goog.inherits(ezP.DelegateSvg.Expr.Range, ezP.DelegateSvg.Expr.Tuple)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.RANGE, ezP.DelegateSvg.Xpr.Range)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.RANGE, ezP.DelegateSvg.Expr.Range)
 
 /**
  * @param {!Block} block.
@@ -318,7 +318,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.RANGE, ezP.DelegateSvg.Xpr.Range)
  * @return {Number} The max number of inputs. null for unlimited.
  * @private
  */
-ezP.DelegateSvg.Xpr.Range.prototype.getInputTupleMax = function (block, grp) {
+ezP.DelegateSvg.Expr.Range.prototype.getInputTupleMax = function (block, grp) {
   return grp ? 0 : 3
 }
 

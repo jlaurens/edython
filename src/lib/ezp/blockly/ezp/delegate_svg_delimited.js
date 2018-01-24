@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Xpr.Delimited')
+goog.provide('ezP.DelegateSvg.Expr.Delimited')
 
-goog.require('ezP.DelegateSvg.Xpr')
+goog.require('ezP.DelegateSvg.Expr')
 
 /**
  * Abstract class for a DelegateSvg, delimited value block like
@@ -23,15 +23,15 @@ goog.require('ezP.DelegateSvg.Xpr')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.Delimited = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.Delimited.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.Delimited = function (prototypeName) {
+  ezP.DelegateSvg.Expr.Delimited.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.Delimited, ezP.DelegateSvg.Xpr)
+goog.inherits(ezP.DelegateSvg.Expr.Delimited, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Xpr.Delimited.prototype.leftDelimiter = '('
-ezP.DelegateSvg.Xpr.Delimited.prototype.rightDelimiter = ')'
-ezP.DelegateSvg.Xpr.Delimited.prototype.outputType = undefined
-ezP.DelegateSvg.Xpr.Delimited.prototype.sealedPrototypeName = undefined
+ezP.DelegateSvg.Expr.Delimited.prototype.leftDelimiter = '('
+ezP.DelegateSvg.Expr.Delimited.prototype.rightDelimiter = ')'
+ezP.DelegateSvg.Expr.Delimited.prototype.outputType = undefined
+ezP.DelegateSvg.Expr.Delimited.prototype.sealedPrototypeName = undefined
 
 /**
  * Initialize the block.
@@ -40,8 +40,8 @@ ezP.DelegateSvg.Xpr.Delimited.prototype.sealedPrototypeName = undefined
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.Delimited.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.Delimited.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Expr.Delimited.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Expr.Delimited.superClass_.initBlock.call(this, block)
   this.leftField = new ezP.FieldLabel(this.leftDelimiter)
   this.leftField.ezpFieldData = {x_shift: -ezP.Font.space/6}
   this.inputITEM = block.appendSealedValueInput(ezP.Const.Input.ITEM)
@@ -53,11 +53,11 @@ ezP.DelegateSvg.Xpr.Delimited.prototype.initBlock = function(block) {
 }
 
 /**
- * Create a sealed node for the Xpr.Delimited if necessary.
+ * Create a sealed node for the Expr.Delimited if necessary.
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.Delimited.prototype.completeSealed = function (block) {
+ezP.DelegateSvg.Expr.Delimited.prototype.completeSealed = function (block) {
   this.completeSealedInput(block,
     this.inputITEM,
     this.sealedPrototypeName)
@@ -71,14 +71,14 @@ ezP.DelegateSvg.Xpr.Delimited.prototype.completeSealed = function (block) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.parenth_form = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.parenth_form.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.parenth_form = function (prototypeName) {
+  ezP.DelegateSvg.Expr.parenth_form.superClass_.constructor.call(this, prototypeName)
   this.outputType = ezP.T3.parenth_form
-  this.sealedPrototypeName = ezP.Const.Xpr.starred_expression_list
+  this.sealedPrototypeName = ezP.Const.Expr.starred_expression_list
 }
-goog.inherits(ezP.DelegateSvg.Xpr.parenth_form, ezP.DelegateSvg.Xpr.Delimited)
+goog.inherits(ezP.DelegateSvg.Expr.parenth_form, ezP.DelegateSvg.Expr.Delimited)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.parenth_form, ezP.DelegateSvg.Xpr.parenth_form)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.parenth_form, ezP.DelegateSvg.Expr.parenth_form)
 
 /**
  * Class for a DelegateSvg, list_display block.
@@ -87,16 +87,16 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.parenth_form, ezP.DelegateSvg.Xpr
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.list_display = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.list_display.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.list_display = function (prototypeName) {
+  ezP.DelegateSvg.Expr.list_display.superClass_.constructor.call(this, prototypeName)
   this.leftDelimiter = '['
   this.rightDelimiter = ']'
   this.outputType = ezP.T3.list_display
-  this.sealedPrototypeName = ezP.Const.Xpr.starred_list_comprehensive
+  this.sealedPrototypeName = ezP.Const.Expr.starred_list_comprehensive
 }
-goog.inherits(ezP.DelegateSvg.Xpr.list_display, ezP.DelegateSvg.Xpr.Delimited)
+goog.inherits(ezP.DelegateSvg.Expr.list_display, ezP.DelegateSvg.Expr.Delimited)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.list_display, ezP.DelegateSvg.Xpr.list_display)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.list_display, ezP.DelegateSvg.Expr.list_display)
 
 /**
  * Class for a DelegateSvg, set_display block.
@@ -105,16 +105,16 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.list_display, ezP.DelegateSvg.Xpr
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.set_display = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.set_display.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.set_display = function (prototypeName) {
+  ezP.DelegateSvg.Expr.set_display.superClass_.constructor.call(this, prototypeName)
   this.leftDelimiter = '{'
   this.rightDelimiter = '}'
   this.outputType = ezP.T3.set_display
-  this.sealedPrototypeName = ezP.Const.Xpr.non_void_starred_list_comprehensive
+  this.sealedPrototypeName = ezP.Const.Expr.non_void_starred_list_comprehensive
 }
-goog.inherits(ezP.DelegateSvg.Xpr.set_display, ezP.DelegateSvg.Xpr.Delimited)
+goog.inherits(ezP.DelegateSvg.Expr.set_display, ezP.DelegateSvg.Expr.Delimited)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.set_display, ezP.DelegateSvg.Xpr.set_display)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.set_display, ezP.DelegateSvg.Expr.set_display)
 
 /**
  * Class for a DelegateSvg, dict_display block.
@@ -123,14 +123,14 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.set_display, ezP.DelegateSvg.Xpr.
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.dict_display = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.dict_display.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.dict_display = function (prototypeName) {
+  ezP.DelegateSvg.Expr.dict_display.superClass_.constructor.call(this, prototypeName)
   this.outputType = ezP.T3.dict_display
-  this.sealedPrototypeName = ezP.Const.Xpr.key_datum_list_comprehensive
+  this.sealedPrototypeName = ezP.Const.Expr.key_datum_list_comprehensive
 }
-goog.inherits(ezP.DelegateSvg.Xpr.dict_display, ezP.DelegateSvg.Xpr.Delimited)
+goog.inherits(ezP.DelegateSvg.Expr.dict_display, ezP.DelegateSvg.Expr.Delimited)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.dict_display, ezP.DelegateSvg.Xpr.dict_display)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.dict_display, ezP.DelegateSvg.Expr.dict_display)
 
 /**
  * Class for a DelegateSvg, generator expression block.
@@ -140,14 +140,14 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.dict_display, ezP.DelegateSvg.Xpr
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.generator_expression = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.generator_expression.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.generator_expression = function (prototypeName) {
+  ezP.DelegateSvg.Expr.generator_expression.superClass_.constructor.call(this, prototypeName)
   this.outputType = ezP.T3.generator_expression
-  this.sealedPrototypeName = ezP.Const.Xpr.comprehension
+  this.sealedPrototypeName = ezP.Const.Expr.comprehension
 }
-goog.inherits(ezP.DelegateSvg.Xpr.generator_expression, ezP.DelegateSvg.Xpr.Delimited)
+goog.inherits(ezP.DelegateSvg.Expr.generator_expression, ezP.DelegateSvg.Expr.Delimited)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.generator_expression, ezP.DelegateSvg.Xpr.generator_expression)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.generator_expression, ezP.DelegateSvg.Expr.generator_expression)
 
 
 /**
@@ -157,14 +157,14 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.generator_expression, ezP.Delegat
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.yield_atom = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.yield_atom.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
+  ezP.DelegateSvg.Expr.yield_atom.superClass_.constructor.call(this, prototypeName)
   this.outputType = ezP.T3.yield_atom
-  this.sealedPrototypeName = ezP.Const.Xpr.yield_expression
+  this.sealedPrototypeName = ezP.Const.Expr.yield_expression
 }
-goog.inherits(ezP.DelegateSvg.Xpr.yield_atom, ezP.DelegateSvg.Xpr.Delimited)
+goog.inherits(ezP.DelegateSvg.Expr.yield_atom, ezP.DelegateSvg.Expr.Delimited)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.yield_atom, ezP.DelegateSvg.Xpr.yield_atom)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.yield_atom, ezP.DelegateSvg.Expr.yield_atom)
 
 /**
  * Initialize the block.
@@ -173,8 +173,8 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.yield_atom, ezP.DelegateSvg.Xpr.y
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.yield_atom.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.yield_atom.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Expr.yield_atom.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Expr.yield_atom.superClass_.initBlock.call(this, block)
   this.leftField.ezpFieldData = {x_shift: -ezP.Font.space/4}
   this.rightField.ezpFieldData = {x_shift: ezP.Font.space/4}
 }
@@ -186,16 +186,16 @@ ezP.DelegateSvg.Xpr.yield_atom.prototype.initBlock = function(block) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.yield_expression = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.yield_expression.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.yield_expression = function (prototypeName) {
+  ezP.DelegateSvg.Expr.yield_expression.superClass_.constructor.call(this, prototypeName)
   this.leftDelimiter = 'yield'
   this.rightDelimiter = ''
   this.outputType = ezP.T3.yield_expression
-  this.sealedPrototypeName = ezP.Const.Xpr.expression_or_from_list
+  this.sealedPrototypeName = ezP.Const.Expr.expression_or_from_list
 }
-goog.inherits(ezP.DelegateSvg.Xpr.yield_expression, ezP.DelegateSvg.Xpr.Delimited)
+goog.inherits(ezP.DelegateSvg.Expr.yield_expression, ezP.DelegateSvg.Expr.Delimited)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.yield_expression, ezP.DelegateSvg.Xpr.yield_expression)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.yield_expression, ezP.DelegateSvg.Expr.yield_expression)
 
 /**
  * Initialize the block.
@@ -204,8 +204,8 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.yield_expression, ezP.DelegateSvg
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.yield_expression.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.yield_expression.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Expr.yield_expression.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Expr.yield_expression.superClass_.initBlock.call(this, block)
   this.leftField.ezpFieldData = {x_shift: 0}
   this.rightField.ezpFieldData = {x_shift: 0}
 }
@@ -217,14 +217,14 @@ ezP.DelegateSvg.Xpr.yield_expression.prototype.initBlock = function(block) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.display_slice_list = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.display_slice_list.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.display_slice_list = function (prototypeName) {
+  ezP.DelegateSvg.Expr.display_slice_list.superClass_.constructor.call(this, prototypeName)
   this.leftDelimiter = '['
   this.rightDelimiter = ']'
   this.outputType = ezP.T3.display_slice_list
-  this.sealedPrototypeName = ezP.Const.Xpr.slice_list
+  this.sealedPrototypeName = ezP.Const.Expr.slice_list
 }
-goog.inherits(ezP.DelegateSvg.Xpr.display_slice_list, ezP.DelegateSvg.Xpr.Delimited)
+goog.inherits(ezP.DelegateSvg.Expr.display_slice_list, ezP.DelegateSvg.Expr.Delimited)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.display_slice_list, ezP.DelegateSvg.Xpr.display_slice_list)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.display_slice_list, ezP.DelegateSvg.Expr.display_slice_list)
 

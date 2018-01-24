@@ -14,7 +14,7 @@
 goog.provide('ezP.DelegateSvg.Lambda')
 
 goog.require('ezP.DelegateSvg.List')
-goog.require('ezP.DelegateSvg.Xpr')
+goog.require('ezP.DelegateSvg.Expr')
 
 /**
  * Class for a DelegateSvg, lambda_expr block.
@@ -27,7 +27,7 @@ goog.require('ezP.DelegateSvg.Xpr')
 ezP.DelegateSvg.Lambda = function (prototypeName) {
   ezP.DelegateSvg.Lambda.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Lambda, ezP.DelegateSvg.Xpr)
+goog.inherits(ezP.DelegateSvg.Lambda, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.List.prototype.expressionType = undefined
 ezP.DelegateSvg.List.prototype.outputType = undefined
@@ -58,7 +58,7 @@ ezP.DelegateSvg.Lambda.prototype.initBlock = function(block) {
 ezP.DelegateSvg.Lambda.prototype.completeSealed = function (block) {
   this.completeSealedInput(block,
     this.inputLIST,
-    ezP.Const.Xpr.parameter_list)
+    ezP.Const.Expr.parameter_list)
 }
 
 /**
@@ -69,14 +69,14 @@ ezP.DelegateSvg.Lambda.prototype.completeSealed = function (block) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.lambda_expr = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.lambda_expr.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.lambda_expr = function (prototypeName) {
+  ezP.DelegateSvg.Expr.lambda_expr.superClass_.constructor.call(this, prototypeName)
   this.expressionType = ezP.T3.Require.expression
   this.outputType = ezP.T3.lambda_expr
 }
-goog.inherits(ezP.DelegateSvg.Xpr.lambda_expr, ezP.DelegateSvg.Lambda)
+goog.inherits(ezP.DelegateSvg.Expr.lambda_expr, ezP.DelegateSvg.Lambda)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.lambda_expr, ezP.DelegateSvg.Xpr.lambda_expr)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.lambda_expr, ezP.DelegateSvg.Expr.lambda_expr)
 
 /**
  * Class for a DelegateSvg, lambda_expr_nocond block.
@@ -86,12 +86,12 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.lambda_expr, ezP.DelegateSvg.Xpr.
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.lambda_expr_nocond = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.lambda_expr_nocond.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.lambda_expr_nocond = function (prototypeName) {
+  ezP.DelegateSvg.Expr.lambda_expr_nocond.superClass_.constructor.call(this, prototypeName)
   this.expressionType = ezP.T3.Require.expression_nocond
   this.outputType = ezP.T3.lambda_expr_nocond
 }
-goog.inherits(ezP.DelegateSvg.Xpr.lambda_expr_nocond, ezP.DelegateSvg.Lambda)
+goog.inherits(ezP.DelegateSvg.Expr.lambda_expr_nocond, ezP.DelegateSvg.Lambda)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.lambda_expr_nocond, ezP.DelegateSvg.Xpr.lambda_expr_nocond)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.lambda_expr_nocond, ezP.DelegateSvg.Expr.lambda_expr_nocond)
 

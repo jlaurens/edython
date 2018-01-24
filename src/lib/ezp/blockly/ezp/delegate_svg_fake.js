@@ -12,7 +12,7 @@
 'use strict'
 
 goog.provide('ezP.DelegateSvg.Fake')
-goog.require('ezP.DelegateSvg.Xpr')
+goog.require('ezP.DelegateSvg.Expr')
 goog.forwardDeclare('ezP.BlockSvg')
 
 /**
@@ -26,16 +26,16 @@ goog.forwardDeclare('ezP.BlockSvg')
 ezP.DelegateSvg.Fake = function (prototypeName) {
   ezP.DelegateSvg.Fake.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Fake, ezP.DelegateSvg.Xpr)
+goog.inherits(ezP.DelegateSvg.Fake, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register('ezp_xpr_fake', ezP.DelegateSvg.Fake)
+ezP.DelegateSvg.Manager.register('ezp_expr_fake', ezP.DelegateSvg.Fake)
 
 ezP.DelegateSvg.Fake.WithSealed = function (prototypeName) {
   ezP.DelegateSvg.Fake.WithSealed.superClass_.constructor.call(this, prototypeName)
 }
 goog.inherits(ezP.DelegateSvg.Fake.WithSealed, ezP.DelegateSvg.Fake)
 
-ezP.DelegateSvg.Manager.register('ezp_xpr_fake_with_sealed', ezP.DelegateSvg.Fake.WithSealed)
+ezP.DelegateSvg.Manager.register('ezp_expr_fake_with_sealed', ezP.DelegateSvg.Fake.WithSealed)
 
 ezP.DelegateSvg.Fake.WithSealed.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Fake.WithSealed.superClass_.initBlock.call(this, block)
@@ -49,7 +49,7 @@ ezP.DelegateSvg.Fake.Sealed = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Fake.Sealed, ezP.DelegateSvg.Fake)
 
-ezP.DelegateSvg.Manager.register('ezp_xpr_fake_sealed', ezP.DelegateSvg.Fake.Sealed)
+ezP.DelegateSvg.Manager.register('ezp_expr_fake_sealed', ezP.DelegateSvg.Fake.Sealed)
 
 ezP.DelegateSvg.Fake.Sealed.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Fake.Sealed.superClass_.initBlock.call(this, block)

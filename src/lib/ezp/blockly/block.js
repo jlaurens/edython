@@ -172,7 +172,7 @@ ezP.Block.prototype.appendSealedValueInput = function(name) {
  */
 ezP.Block.prototype.setOutput = function(newBoolean, opt_check) {
   if (newBoolean) {
-    goog.asserts.assert(!!opt_check || !this.type.startsWith('ezp_xpr_') || this.type.startsWith('ezp_xpr_fake'),
+    goog.asserts.assert(!!opt_check || !this.type.startsWith('ezp_expr_') || this.type.startsWith('ezp_expr_fake'),
       'ezP output connection must be types for '+this.type)
   }
   ezP.Block.superClass_.setOutput.call(this, newBoolean, opt_check)

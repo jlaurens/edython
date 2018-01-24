@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Xpr.Get')
+goog.provide('ezP.DelegateSvg.Expr.Get')
 
-goog.require('ezP.DelegateSvg.Xpr')
+goog.require('ezP.DelegateSvg.Expr')
 
 /**
  * Class for a DelegateSvg, get block.
@@ -23,12 +23,12 @@ goog.require('ezP.DelegateSvg.Xpr')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.Get = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.Get.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.Get = function (prototypeName) {
+  ezP.DelegateSvg.Expr.Get.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.Get, ezP.DelegateSvg.Xpr)
+goog.inherits(ezP.DelegateSvg.Expr.Get, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.GET, ezP.DelegateSvg.Xpr.Get)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.GET, ezP.DelegateSvg.Expr.Get)
 
 /**
  * Initialize the block.
@@ -37,8 +37,8 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.GET, ezP.DelegateSvg.Xpr.Get)
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.Get.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.Get.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Expr.Get.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Expr.Get.superClass_.initBlock.call(this, block)
   this.fieldStars = new ezP.FieldLabel('*')
   this.inputStars = block.appendDummyInput()
     .appendField(this.fieldStars, ezP.Const.Field.STARS)
@@ -61,7 +61,7 @@ ezP.DelegateSvg.Xpr.Get.prototype.initBlock = function(block) {
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.Get.prototype.hasStar = function(block) {
+ezP.DelegateSvg.Expr.Get.prototype.hasStar = function(block) {
   return this.hasStar_ !== true
 }
 
@@ -71,8 +71,8 @@ ezP.DelegateSvg.Xpr.Get.prototype.hasStar = function(block) {
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.Get.prototype.willRender_ = function (block) {
-  ezP.DelegateSvg.Xpr.Get.superClass_.willRender_.call(this, block)
+ezP.DelegateSvg.Expr.Get.prototype.willRender_ = function (block) {
+  ezP.DelegateSvg.Expr.Get.superClass_.willRender_.call(this, block)
   var parent = block.getParent()
   if (parent && parent.ezp.getParameterMenu) {
     this.inputStars.setVisible(this.hasStar_ === true)
@@ -91,7 +91,7 @@ ezP.DelegateSvg.Xpr.Get.prototype.willRender_ = function (block) {
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.Get.prototype.customContextMenu = function(block, menuOptions) {
+ezP.DelegateSvg.Expr.Get.prototype.customContextMenu = function(block, menuOptions) {
   console.log('Customized')
   if (menuOptions.length<2) {
     console.log('SMALL');
@@ -124,7 +124,7 @@ if (Blockly.Msg.NEW_VARIABLE.startsWith('Créer')) {
  * @param {!goo.ui.Menu} menu The menu to populate.
  * @private
  */
-ezP.DelegateSvg.Xpr.Get.prototype.populateContextMenu_ = function (block, menu) {
+ezP.DelegateSvg.Expr.Get.prototype.populateContextMenu_ = function (block, menu) {
   var listener = block.ezp.fieldIdentifier
   goog.asserts.assert(listener && listener.getText, 'Bad listener in ...Get...populateContextMenu_.')
   var name = listener.getText()
@@ -164,7 +164,7 @@ ezP.DelegateSvg.Xpr.Get.prototype.populateContextMenu_ = function (block, menu) 
   menu.addChild(new ezP.Separator(), true)
   Blockly.utils.addClass(subMenu.getMenu().getElement(), 'ezp-nosubmenu')
 
-  ezP.DelegateSvg.Xpr.Get.superClass_.populateContextMenu_.call(this,block, menu)
+  ezP.DelegateSvg.Expr.Get.superClass_.populateContextMenu_.call(this,block, menu)
 }
 
 /**
@@ -175,7 +175,7 @@ ezP.DelegateSvg.Xpr.Get.prototype.populateContextMenu_ = function (block, menu) 
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Xpr.Get.prototype.onActionReplaceVariable = function (block, VM) {
+ezP.DelegateSvg.Expr.Get.prototype.onActionReplaceVariable = function (block, VM) {
   var listener = block.ezp.fieldIdentifier
   var oldName = listener.getValue()
   var workspace = block.workspace
@@ -209,7 +209,7 @@ ezP.DelegateSvg.Xpr.Get.prototype.onActionReplaceVariable = function (block, VM)
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Xpr.Get.prototype.onActionMenuEvent = function (block, menu, event) {
+ezP.DelegateSvg.Expr.Get.prototype.onActionMenuEvent = function (block, menu, event) {
   var listener = block.ezp.fieldIdentifier
   var workspace = block.workspace
   var model = event.target.getModel()
@@ -233,6 +233,6 @@ ezP.DelegateSvg.Xpr.Get.prototype.onActionMenuEvent = function (block, menu, eve
       listener.showVarNameEditor()
     }, 10)
   } else {
-    ezP.DelegateSvg.Xpr.Get.superClass_.onActionMenuEvent.call(this, block, menu, event)
+    ezP.DelegateSvg.Expr.Get.superClass_.onActionMenuEvent.call(this, block, menu, event)
   }
 }

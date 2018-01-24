@@ -25,7 +25,7 @@ goog.require('ezP.FieldVariable')
 Blockly.Blocks[ezP.Const.Prc.ANY] = {
   init: function () {
     this.appendDummyInput().appendField(new ezP.FieldTextInput(''), 'STT')
-    this.appendStatementInput('DO').setCheck(ezP.Type.Stt.Check.after_any)
+    this.appendStatementInput('DO').setCheck(ezP.Type.Stmt.Check.after_any)
     this.setInputsInline(true)
     this.setTooltip('')
     this.setHelpUrl('')
@@ -40,7 +40,7 @@ Blockly.Blocks[ezP.Const.Prc.DEF] = {
       .appendField(new ezP.FieldTextInput(''), ezP.Const.Field.DEF)
     this.appendDummyInput()
       .appendField(new ezP.FieldLabel(':'))
-    this.appendStatementInput('DO').setCheck(ezP.Type.Stt.Check.after_any)
+    this.appendStatementInput('DO').setCheck(ezP.Type.Stmt.Check.after_any)
     this.setTooltip('')
     this.setHelpUrl('')
   }
@@ -57,7 +57,7 @@ Blockly.Blocks[ezP.Const.Prc.CLASS] = {
       .appendField(new ezP.FieldLabel(')'))
     this.appendDummyInput()
       .appendField(new ezP.FieldLabel(':'))
-    this.appendStatementInput('DO').setCheck(ezP.Type.Stt.Check.after_any)
+    this.appendStatementInput('DO').setCheck(ezP.Type.Stmt.Check.after_any)
     this.setTooltip('')
     this.setHelpUrl('')
   }

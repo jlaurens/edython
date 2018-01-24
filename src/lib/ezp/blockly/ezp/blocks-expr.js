@@ -27,53 +27,53 @@ goog.require('ezP.FieldVariable.Annotation')
 goog.require('ezP.FieldVariable.Default')
 
 var Ks = [
-  ezP.Const.Xpr.parenth_form,
-  ezP.Const.Xpr.starred_expression_list,
-  ezP.Const.Xpr.starred_or_expr,
-  ezP.Const.Xpr.list_display,
-  ezP.Const.Xpr.expression_list,
-  ezP.Const.Xpr.set_display,
-  ezP.Const.Xpr.dict_display,
-  ezP.Const.Xpr.comprehension,
-  ezP.Const.Xpr.generator_expression,
-  ezP.Const.Xpr.target_list,
-  ezP.Const.Xpr.yield_atom,
-  ezP.Const.Xpr.yield_expression,
-  ezP.Const.Xpr.yield_from,
-  ezP.Const.Xpr.expression_list,
-  ezP.Const.Xpr.expression_or_from_list,
-  ezP.Const.Xpr.starred_list_comprehensive,
-  ezP.Const.Xpr.non_void_starred_list_comprehensive,
-  ezP.Const.Xpr.key_datum_concrete,
-  ezP.Const.Xpr.double_starred_or_expr,
-  ezP.Const.Xpr.key_datum_list_comprehensive,
-  ezP.Const.Xpr.comp_for,
-  ezP.Const.Xpr.comp_if,
-  ezP.Const.Xpr.comp_iter_list,
-  ezP.Const.Xpr.generator_expression,
-  ezP.Const.Xpr.attributeref,
-  ezP.Const.Xpr.dot_identifier,
-  ezP.Const.Xpr.slicing,
-  ezP.Const.Xpr.display_slice_list,
-  ezP.Const.Xpr.slice_list,
-  ezP.Const.Xpr.proper_slice,
-  ezP.Const.Xpr.call,
-  ezP.Const.Xpr.argument_list,
-  ezP.Const.Xpr.parameter_list,
-  ezP.Const.Xpr.await_expr,
-  // ezP.Const.Xpr.u_expr_concrete,
-  // ezP.Const.Xpr.m_expr_concrete,
-  // ezP.Const.Xpr.a_expr_concrete,
-  // ezP.Const.Xpr.shift_expr_concrete,
-  // ezP.Const.Xpr.and_expr_concrete,
-  ezP.Const.Xpr.unary_concrete,
-  ezP.Const.Xpr.algebra_concrete,
-  ezP.Const.Xpr.bitwise_concrete,
-  ezP.Const.Xpr.boolean_concrete,
-  ezP.Const.Xpr.comparison_concrete,
-  ezP.Const.Xpr.conditional_expression_concrete,
-  ezP.Const.Xpr.lambda_expr,
-  ezP.Const.Xpr.lambda_expr_nocond,
+  ezP.Const.Expr.parenth_form,
+  ezP.Const.Expr.starred_expression_list,
+  ezP.Const.Expr.starred_or_expr,
+  ezP.Const.Expr.list_display,
+  ezP.Const.Expr.expression_list,
+  ezP.Const.Expr.set_display,
+  ezP.Const.Expr.dict_display,
+  ezP.Const.Expr.comprehension,
+  ezP.Const.Expr.generator_expression,
+  ezP.Const.Expr.target_list,
+  ezP.Const.Expr.yield_atom,
+  ezP.Const.Expr.yield_expression,
+  ezP.Const.Expr.yield_from,
+  ezP.Const.Expr.expression_list,
+  ezP.Const.Expr.expression_or_from_list,
+  ezP.Const.Expr.starred_list_comprehensive,
+  ezP.Const.Expr.non_void_starred_list_comprehensive,
+  ezP.Const.Expr.key_datum_concrete,
+  ezP.Const.Expr.double_starred_or_expr,
+  ezP.Const.Expr.key_datum_list_comprehensive,
+  ezP.Const.Expr.comp_for,
+  ezP.Const.Expr.comp_if,
+  ezP.Const.Expr.comp_iter_list,
+  ezP.Const.Expr.generator_expression,
+  ezP.Const.Expr.attributeref,
+  ezP.Const.Expr.dot_identifier,
+  ezP.Const.Expr.slicing,
+  ezP.Const.Expr.display_slice_list,
+  ezP.Const.Expr.slice_list,
+  ezP.Const.Expr.proper_slice,
+  ezP.Const.Expr.call,
+  ezP.Const.Expr.argument_list,
+  ezP.Const.Expr.parameter_list,
+  ezP.Const.Expr.await_expr,
+  // ezP.Const.Expr.u_expr_concrete,
+  // ezP.Const.Expr.m_expr_concrete,
+  // ezP.Const.Expr.a_expr_concrete,
+  // ezP.Const.Expr.shift_expr_concrete,
+  // ezP.Const.Expr.and_expr_concrete,
+  ezP.Const.Expr.unary_concrete,
+  ezP.Const.Expr.algebra_concrete,
+  ezP.Const.Expr.bitwise_concrete,
+  ezP.Const.Expr.boolean_concrete,
+  ezP.Const.Expr.comparison_concrete,
+  ezP.Const.Expr.conditional_expression_concrete,
+  ezP.Const.Expr.lambda_expr,
+  ezP.Const.Expr.lambda_expr_nocond,
   // IN PROGRESS
 
 ]
@@ -88,28 +88,28 @@ for (var i = 0; i<Ks.length; ++i) {
   Blockly.Blocks[Ks[i]] = O
 }
 
-Blockly.Blocks[ezP.Const.Xpr.GET] = {
+Blockly.Blocks[ezP.Const.Expr.GET] = {
   init: function () {
     this.ezp.initBlock(this)
     this.setInputsInline(true)
-    this.setOutput(true, ezP.Type.Xpr.Provide.get)
+    this.setOutput(true, ezP.Type.Expr.Provide.get)
     this.setTooltip('')
     this.setHelpUrl('')
   }
 }
 
-Blockly.Blocks[ezP.Const.Xpr.ANY] = {
+Blockly.Blocks[ezP.Const.Expr.ANY] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldTextInput('1+1'), ezP.Const.Field.ANY)
     this.setInputsInline(true)
-    this.setOutput(true, ezP.Type.Xpr.Provide.any)
+    this.setOutput(true, ezP.Type.Expr.Provide.any)
     this.setTooltip('')
     this.setHelpUrl('')
   }
 }
 
-Blockly.Blocks[ezP.Const.Xpr.TEXT] = {
+Blockly.Blocks[ezP.Const.Expr.TEXT] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldLabel('"'))
@@ -122,7 +122,7 @@ Blockly.Blocks[ezP.Const.Xpr.TEXT] = {
   }
 }
 
-Blockly.Blocks[ezP.Const.Xpr.TFN] = {
+Blockly.Blocks[ezP.Const.Expr.TFN] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldOptions(
@@ -133,7 +133,7 @@ Blockly.Blocks[ezP.Const.Xpr.TFN] = {
   }
 }
 
-Blockly.Blocks[ezP.Const.Xpr.OP] = {
+Blockly.Blocks[ezP.Const.Expr.OP] = {
   init: function () {
     this.appendValueInput(ezP.Const.Input.LHS)
     this.appendDummyInput()
@@ -150,7 +150,7 @@ Blockly.Blocks[ezP.Const.Xpr.OP] = {
   }
 }
 
-Blockly.Blocks[ezP.Const.Xpr.UNRY] = {
+Blockly.Blocks[ezP.Const.Expr.UNRY] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldDropdownCode(
@@ -162,7 +162,7 @@ Blockly.Blocks[ezP.Const.Xpr.UNRY] = {
   }
 }
 
-Blockly.Blocks[ezP.Const.Xpr.BOOL] = {
+Blockly.Blocks[ezP.Const.Expr.BOOL] = {
   init: function () {
     this.appendValueInput(ezP.Const.Input.LHS)
     this.appendDummyInput()
@@ -180,29 +180,29 @@ Blockly.Blocks[ezP.Const.Xpr.BOOL] = {
   }
 }
 
-Blockly.Blocks[ezP.Const.Xpr.TUPLE] = {
+Blockly.Blocks[ezP.Const.Expr.TUPLE] = {
   init: function () {
     this.appendValueInput('TUPLE_0_0').setCheck(null)
     this.setInputsInline(true)
-    this.setOutput(true, ezP.Type.Xpr.TUPLE)
+    this.setOutput(true, ezP.Type.Expr.TUPLE)
     this.setTooltip('')
     this.setHelpUrl('')
   }
 }
 
-Blockly.Blocks[ezP.Const.Xpr.star_or_expr] = {
+Blockly.Blocks[ezP.Const.Expr.star_or_expr] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldLabel('*'))
-    this.appendValueInput(ezP.Const.Input.XPR).setCheck(ezP.Type.Xpr.Require.or_expr)
+    this.appendValueInput(ezP.Const.Input.XPR).setCheck(ezP.Type.Expr.Require.or_expr)
     this.setInputsInline(true)
-    this.setOutput(true, ezP.Type.Xpr.Provide.star_or_expr)
+    this.setOutput(true, ezP.Type.Expr.Provide.star_or_expr)
     this.setTooltip('')
     this.setHelpUrl('')
   }
 }
 
-Blockly.Blocks[ezP.Const.Xpr.RANGE] = {
+Blockly.Blocks[ezP.Const.Expr.RANGE] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldLabel('range'))

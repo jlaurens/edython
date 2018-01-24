@@ -6147,8 +6147,8 @@ Blockly.ContextMenu.currentBlock=this}};
 ezP.BlockSvg.prototype.updateDisabled=function(){this.render()};
 ezP.BlockSvg.prototype.updateColour=function(){};
 ezP.Const=ezP.Const||{};
-ezP.Const.Val={DEFAULT:"ezp_xpr",ANY:"ezp_xpr_any",GET:"ezp_xpr_get",TEXT:"ezp_xpr_text",TFN:"ezp_xpr_tfn",OP:"ezp_xpr_op",UNRY:"ezp_xpr_unry",BOOL:"ezp_xpr_bool",TUPLE:"ezp_xpr_tuple",RANGE:"ezp_xpr_range",MINUS:"ezp_xpr_minus"};
-ezP.Const.Stt={DEFAULT:"ezp_stt",ANY:"ezp_stt_any",SET:"ezp_stt_set",PRINT:"ezp_stt_print",BCP:"ezp_stt_bcp"};
+ezP.Const.Val={DEFAULT:"ezp_expr",ANY:"ezp_expr_any",GET:"ezp_expr_get",TEXT:"ezp_expr_text",TFN:"ezp_expr_tfn",OP:"ezp_expr_op",UNRY:"ezp_expr_unry",BOOL:"ezp_expr_bool",TUPLE:"ezp_expr_tuple",RANGE:"ezp_expr_range",MINUS:"ezp_expr_minus"};
+ezP.Const.Stmt={DEFAULT:"ezp_stmt",ANY:"ezp_stmt_any",SET:"ezp_stmt_set",PRINT:"ezp_stmt_print",BCP:"ezp_stmt_bcp"};
 
 ezP.Const.Grp={DEFAULT:"ezp_grp",ANY:"ezp_grp_any",IF:"ezp_grp_if",ELIF:"ezp_grp_elif",ELSE:"ezp_grp_else",FOR:"ezp_grp_for",WHILE:"ezp_grp_while",WITH:"ezp_grp_with"};
 ezP.Const.Prc={DEFAULT:"ezp_prc",ANY:"ezp_prc_any",DEF:"ezp_prc_def",CLASS:"ezp_prc_class"};
@@ -6749,61 +6749,61 @@ ezP.FieldPrintOptions.prototype.addSelect=function(){this.imageElement_&&Blockly
 ezP.FieldPrintOptions.prototype.removeSelect=function(){this.imageElement_&&Blockly.utils.removeClass(this.imageElement_,"ezp-selected")};
 ezP.Blocks.grp={};
 Blockly.Blocks[ezP.Const.Grp.ANY]={init:function(){this.appendDummyInput().appendField(new ezP.FieldCodeInput(""),"STT").appendField(new ezP.FieldLabel(":"),"STT");
-this.appendStatementInput("DO").setCheck(ezP.Type.Stt.Check.after_any);
+this.appendStatementInput("DO").setCheck(ezP.Type.Stmt.Check.after_any);
 this.setInputsInline(!0);
-this.setPreviousStatement(!0,ezP.Type.Stt.Check.before_any);
-this.setNextStatement(!0,ezP.Type.Stt.Check.after_any);
+this.setPreviousStatement(!0,ezP.Type.Stmt.Check.before_any);
+this.setNextStatement(!0,ezP.Type.Stmt.Check.after_any);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
 Blockly.Blocks[ezP.Const.Grp.IF]={init:function(){this.appendValueInput("COND").appendField(new ezP.FieldLabel("if"));
 this.appendDummyInput().appendField(new ezP.FieldLabel(":"));
-this.appendStatementInput("DO").setCheck(ezP.Type.Stt.Check.after_any);
+this.appendStatementInput("DO").setCheck(ezP.Type.Stmt.Check.after_any);
 this.setInputsInline(!0);
-this.setPreviousStatement(!0,ezP.Type.Stt.Check.before_if);
-this.setNextStatement(!0,ezP.Type.Stt.Check.after_if);
+this.setPreviousStatement(!0,ezP.Type.Stmt.Check.before_if);
+this.setNextStatement(!0,ezP.Type.Stmt.Check.after_if);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
 Blockly.Blocks[ezP.Const.Grp.ELIF]={init:function(){this.appendValueInput("COND").appendField(new ezP.FieldLabel("elif"));
 this.appendDummyInput().appendField(new ezP.FieldLabel(":"));
-this.appendStatementInput("DO").setCheck(ezP.Type.Stt.Check.after_any);
+this.appendStatementInput("DO").setCheck(ezP.Type.Stmt.Check.after_any);
 this.setInputsInline(!0);
-this.setPreviousStatement(!0,ezP.Type.Stt.Check.before_elif);
-this.setNextStatement(!0,ezP.Type.Stt.Check.after_elif);
+this.setPreviousStatement(!0,ezP.Type.Stmt.Check.before_elif);
+this.setNextStatement(!0,ezP.Type.Stmt.Check.after_elif);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
 Blockly.Blocks[ezP.Const.Grp.ELSE]={init:function(){this.appendDummyInput().appendField(new ezP.FieldLabel("else:"));
-this.appendStatementInput("DO").setCheck(ezP.Type.Stt.Check.after_any);
+this.appendStatementInput("DO").setCheck(ezP.Type.Stmt.Check.after_any);
 this.setInputsInline(!0);
-this.setPreviousStatement(!0,ezP.Type.Stt.Check.before_else);
-this.setNextStatement(!0,ezP.Type.Stt.Check.after_else);
+this.setPreviousStatement(!0,ezP.Type.Stmt.Check.before_else);
+this.setNextStatement(!0,ezP.Type.Stmt.Check.after_else);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Grp.WHILE]={init:function(){this.appendValueInput("COND").setCheck(ezP.Type.Xpr.Require.any).appendField(new ezP.FieldLabel("while"));
+Blockly.Blocks[ezP.Const.Grp.WHILE]={init:function(){this.appendValueInput("COND").setCheck(ezP.Type.Expr.Require.any).appendField(new ezP.FieldLabel("while"));
 this.appendDummyInput().appendField(new ezP.FieldLabel(":"));
-this.appendStatementInput("DO").setCheck(ezP.Type.Stt.Check.after_any);
+this.appendStatementInput("DO").setCheck(ezP.Type.Stmt.Check.after_any);
 this.setInputsInline(!0);
-this.setPreviousStatement(!0,ezP.Type.Stt.Check.before_loop);
-this.setNextStatement(!0,ezP.Type.Stt.Check.after_loop);
+this.setPreviousStatement(!0,ezP.Type.Stmt.Check.before_loop);
+this.setNextStatement(!0,ezP.Type.Stmt.Check.after_loop);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Grp.FOR]={init:function(){this.appendValueInput(ezP.Const.Input.TGT).setCheck(ezP.Type.Xpr.Require.any).appendField(new ezP.FieldLabel("for"));
-this.appendValueInput(ezP.Const.Input.LST).setCheck(ezP.Type.Xpr.Require.any).appendField(new ezP.FieldLabel("in"));
+Blockly.Blocks[ezP.Const.Grp.FOR]={init:function(){this.appendValueInput(ezP.Const.Input.TGT).setCheck(ezP.Type.Expr.Require.any).appendField(new ezP.FieldLabel("for"));
+this.appendValueInput(ezP.Const.Input.LST).setCheck(ezP.Type.Expr.Require.any).appendField(new ezP.FieldLabel("in"));
 this.appendDummyInput().appendField(new ezP.FieldLabel(":"));
-this.appendStatementInput(ezP.Const.Input.DO).setCheck(ezP.Type.Stt.Check.after_any);
+this.appendStatementInput(ezP.Const.Input.DO).setCheck(ezP.Type.Stmt.Check.after_any);
 this.setInputsInline(!0);
-this.setPreviousStatement(!0,ezP.Type.Stt.Check.before_loop);
+this.setPreviousStatement(!0,ezP.Type.Stmt.Check.before_loop);
 
-this.setNextStatement(!0,ezP.Type.Stt.Check.after_loop);
+this.setNextStatement(!0,ezP.Type.Stmt.Check.after_loop);
 this.setTooltip("");
 this.setHelpUrl("")}};
 ezP.Blocks.prc={};
 Blockly.Blocks[ezP.Const.Prc.ANY]={init:function(){this.appendDummyInput().appendField(new ezP.FieldTextInput(""),"STT");
-this.appendStatementInput("DO").setCheck(ezP.Type.Stt.Check.after_any);
+this.appendStatementInput("DO").setCheck(ezP.Type.Stmt.Check.after_any);
 this.setInputsInline(!0);
 this.setTooltip("");
 this.setHelpUrl("")}};
@@ -6811,18 +6811,18 @@ Blockly.Blocks[ezP.Const.Prc.MAIN]=Blockly.Blocks[ezP.Const.Prc.ANY];
 
 Blockly.Blocks[ezP.Const.Prc.DEF]={init:function(){this.appendDummyInput().appendField(new ezP.FieldLabel("def ")).appendField(new ezP.FieldTextInput(""),ezP.Const.Field.DEF);
 this.appendDummyInput().appendField(new ezP.FieldLabel(":"));
-this.appendStatementInput("DO").setCheck(ezP.Type.Stt.Check.after_any);
+this.appendStatementInput("DO").setCheck(ezP.Type.Stmt.Check.after_any);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
 Blockly.Blocks[ezP.Const.Prc.CLASS]={init:function(){this.appendDummyInput().appendField(new ezP.FieldLabel("def ")).appendField(new ezP.FieldTextInput(""),ezP.Const.Field.CLASS);
 this.appendDummyInput().appendField(new ezP.FieldLabel("(")).appendField(new ezP.FieldTextInput(""),ezP.Const.Field.NCSTR).appendField(new ezP.FieldLabel(")"));
 this.appendDummyInput().appendField(new ezP.FieldLabel(":"));
-this.appendStatementInput("DO").setCheck(ezP.Type.Stt.Check.after_any);
+this.appendStatementInput("DO").setCheck(ezP.Type.Stmt.Check.after_any);
 this.setTooltip("");
 this.setHelpUrl("")}};
 ezP.Blocks.stt={};
-Blockly.Blocks[ezP.Const.Stt.SET]={init:function(){this.appendDummyInput().appendField(new ezP.FieldVariable,ezP.Const.Field.VAR).appendField(new ezP.FieldLabel("="));
+Blockly.Blocks[ezP.Const.Stmt.SET]={init:function(){this.appendDummyInput().appendField(new ezP.FieldVariable,ezP.Const.Field.VAR).appendField(new ezP.FieldLabel("="));
 this.appendValueInput("RHS").setCheck(null);
 this.setInputsInline(!0);
 this.setPreviousStatement(!0,null);
@@ -6830,15 +6830,15 @@ this.setNextStatement(!0,null);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Stt.ANY]={init:function(){this.appendDummyInput().appendField(new ezP.FieldCodeInput(""),"STT");
+Blockly.Blocks[ezP.Const.Stmt.ANY]={init:function(){this.appendDummyInput().appendField(new ezP.FieldCodeInput(""),"STT");
 this.setInputsInline(!0);
 this.setOutput(!1,null);
-this.setPreviousStatement(!0,ezP.Type.Stt.Check.before_any);
-this.setNextStatement(!0,ezP.Type.Stt.Check.after_any);
+this.setPreviousStatement(!0,ezP.Type.Stmt.Check.before_any);
+this.setNextStatement(!0,ezP.Type.Stmt.Check.after_any);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Stt.PRINT]={init:function(){this.appendDummyInput().appendField(new ezP.FieldLabel("print")).appendField(new ezP.FieldLabel("("));
+Blockly.Blocks[ezP.Const.Stmt.PRINT]={init:function(){this.appendDummyInput().appendField(new ezP.FieldLabel("print")).appendField(new ezP.FieldLabel("("));
 this.appendValueInput("TUPLE_0_0");
 this.appendValueInput(ezP.Const.Input.END).appendField(new ezP.FieldLabel(", end ="));
 this.appendValueInput(ezP.Const.Input.SEP).appendField(new ezP.FieldLabel(", sep ="));
@@ -6848,66 +6848,66 @@ this.appendValueInput(ezP.Const.Input.FLUSH).appendField(new ezP.FieldLabel(", f
 this.appendDummyInput().appendField(new ezP.FieldLabel(")"));
 this.appendDummyInput(ezP.Const.Input.OPTIONS).appendField(new ezP.FieldPrintOptions([["end = \u2026",ezP.Const.Input.END],["sep = \u2026",ezP.Const.Input.SEP],["file = \u2026",ezP.Const.Input.FILE],["flush = \u2026",ezP.Const.Input.FLUSH]]));
 this.setInputsInline(!0);
-this.setPreviousStatement(!0,ezP.Type.Stt.Check.before_any);
-this.setNextStatement(!0,ezP.Type.Stt.Check.after_any);
+this.setPreviousStatement(!0,ezP.Type.Stmt.Check.before_any);
+this.setNextStatement(!0,ezP.Type.Stmt.Check.after_any);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Stt.BCP]={init:function(){this.appendDummyInput().appendField(new ezP.FieldOptions([["break","break"],["continue","continue"],["pass","pass"]]),"BCP");
+Blockly.Blocks[ezP.Const.Stmt.BCP]={init:function(){this.appendDummyInput().appendField(new ezP.FieldOptions([["break","break"],["continue","continue"],["pass","pass"]]),"BCP");
 this.setPreviousStatement(!0,null);
 this.setNextStatement(!0,null);
 this.setTooltip("");
 this.setHelpUrl("")}};
 ezP.Blocks.val={};
-Blockly.Blocks[ezP.Const.Xpr.GET]={init:function(){this.appendDummyInput().appendField(new ezP.FieldVariable("item"),ezP.Const.Field.VAR);
+Blockly.Blocks[ezP.Const.Expr.GET]={init:function(){this.appendDummyInput().appendField(new ezP.FieldVariable("item"),ezP.Const.Field.VAR);
 this.setInputsInline(!0);
 this.setOutput(!0,null);
 this.setTooltip("");
 this.setHelpUrl("")}};
-Blockly.Blocks[ezP.Const.Xpr.ANY]={init:function(){this.appendDummyInput().appendField(new ezP.FieldTextInput("1+1"),ezP.Const.Field.ANY);
-this.setInputsInline(!0);
-this.setOutput(!0,null);
-this.setTooltip("");
-this.setHelpUrl("")}};
-
-Blockly.Blocks[ezP.Const.Xpr.TEXT]={init:function(){this.appendDummyInput().appendField(new ezP.FieldLabel('"')).appendField(new ezP.FieldTextInput(""),ezP.Const.Field.TEXT).appendField(new ezP.FieldLabel('"'));
+Blockly.Blocks[ezP.Const.Expr.ANY]={init:function(){this.appendDummyInput().appendField(new ezP.FieldTextInput("1+1"),ezP.Const.Field.ANY);
 this.setInputsInline(!0);
 this.setOutput(!0,null);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Xpr.TFN]={init:function(){this.appendDummyInput().appendField(new ezP.FieldOptions([["True","True"],["False","False"],["None","None"]]),ezP.Const.Field.TFN);
+Blockly.Blocks[ezP.Const.Expr.TEXT]={init:function(){this.appendDummyInput().appendField(new ezP.FieldLabel('"')).appendField(new ezP.FieldTextInput(""),ezP.Const.Field.TEXT).appendField(new ezP.FieldLabel('"'));
+this.setInputsInline(!0);
+this.setOutput(!0,null);
+this.setTooltip("");
+this.setHelpUrl("")}};
+
+Blockly.Blocks[ezP.Const.Expr.TFN]={init:function(){this.appendDummyInput().appendField(new ezP.FieldOptions([["True","True"],["False","False"],["None","None"]]),ezP.Const.Field.TFN);
 this.setOutput(!0);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Xpr.OP]={init:function(){this.appendValueInput(ezP.Const.Input.LHS);
+Blockly.Blocks[ezP.Const.Expr.OP]={init:function(){this.appendValueInput(ezP.Const.Input.LHS);
 this.appendDummyInput().appendField(new ezP.FieldLabel(" ")).appendField(new ezP.FieldDropdownCode([["+","+"],["-","-"],["*","*"],["**","**"],["/","/"],["//","//"],["%","%"],["&","&"],["|","|"],["^","^"],["<<","<<"],[">>",">>"]]),ezP.Const.Field.OP);
 this.appendValueInput(ezP.Const.Input.RHS);
 this.setOutput(!0);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Xpr.UNRY]={init:function(){this.appendDummyInput().appendField(new ezP.FieldDropdownCode([["+","+"],["-","-"],["not","not "],["~","~"]]),"OP");
+Blockly.Blocks[ezP.Const.Expr.UNRY]={init:function(){this.appendDummyInput().appendField(new ezP.FieldDropdownCode([["+","+"],["-","-"],["not","not "],["~","~"]]),"OP");
 this.appendValueInput(ezP.Const.Input.ANY);
 this.setOutput(!0);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Xpr.BOOL]={init:function(){this.appendValueInput(ezP.Const.Input.LHS);
+Blockly.Blocks[ezP.Const.Expr.BOOL]={init:function(){this.appendValueInput(ezP.Const.Input.LHS);
 this.appendDummyInput().appendField(new ezP.FieldLabel(" ")).appendField(new ezP.FieldDropdownCode([["<","<"],[">",">"],["<=","<="],[">=",">="],["===","==="],["===","!="],["===","==="],["!==","!=="],["and","and"],["or","or"],["is","is"],["is not","is not"],["in","in"],["not in","not in"]]),ezP.Const.Field.OP);
 this.appendValueInput(ezP.Const.Input.RHS);
 this.setOutput(!0);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Xpr.TUPLE]={init:function(){this.appendValueInput("TUPLE_0_0").setCheck(null);
+Blockly.Blocks[ezP.Const.Expr.TUPLE]={init:function(){this.appendValueInput("TUPLE_0_0").setCheck(null);
 this.setInputsInline(!0);
 this.setOutput(!0,null);
 this.setTooltip("");
 this.setHelpUrl("")}};
 
-Blockly.Blocks[ezP.Const.Xpr.RANGE]={init:function(){this.appendDummyInput().appendField(new ezP.FieldLabel("range")).appendField(new ezP.FieldLabel("("));
+Blockly.Blocks[ezP.Const.Expr.RANGE]={init:function(){this.appendDummyInput().appendField(new ezP.FieldLabel("range")).appendField(new ezP.FieldLabel("("));
 this.appendValueInput("TUPLE_0_0").setCheck(null);
 this.appendDummyInput().appendField(new ezP.FieldLabel(")"));
 this.setInputsInline(!0);
@@ -6917,11 +6917,11 @@ this.setHelpUrl("")}};
 ezP.Blocks.xtd={};
 
 Blockly.Blocks[ezP.Const.Grp.WITH]={init:function(){this.appendDummyInput().appendField(new ezP.FieldLabel("with"));
-this.appendValueInput("STT").setCheck(ezP.Type.Xpr.Require.any);
+this.appendValueInput("STT").setCheck(ezP.Type.Expr.Require.any);
 this.appendDummyInput().appendField(new ezP.FieldLabel("as"));
-this.appendValueInput("VAR").setCheck(ezP.Type.Xpr.Require.any);
+this.appendValueInput("VAR").setCheck(ezP.Type.Expr.Require.any);
 this.appendDummyInput().appendField(new ezP.FieldLabel(":"));
-this.appendStatementInput("DO").setCheck(ezP.Type.Stt.Check.after_any);
+this.appendStatementInput("DO").setCheck(ezP.Type.Stmt.Check.after_any);
 this.setInputsInline(!0);
 this.setPreviousStatement(!0);
 this.setNextStatement(!0);
@@ -7269,7 +7269,7 @@ if(b=b.getNextBlock())return c.unshift(b),e.unshift(0),b}}};
 return h};
 ezP.DelegateSvg.Statement=function(a){ezP.DelegateSvg.Statement.superClass_.constructor.call(this,a)};
 goog.inherits(ezP.DelegateSvg.Statement,ezP.DelegateSvg);
-ezP.DelegateSvg.Manager.register(ezP.Const.Stt.DEFAULT,ezP.DelegateSvg.Statement);
+ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.DEFAULT,ezP.DelegateSvg.Statement);
 ezP.setup.register(function(){ezP.Style.insertCssRuleAt(".ezp-sharp-group{"+ezP.Font.style+"}")});
 
 ezP.DelegateSvg.Statement.prototype.init=function(a){ezP.DelegateSvg.Statement.superClass_.init.call(this,a);
@@ -7304,7 +7304,7 @@ ezP.DelegateSvg.Statement.prototype.renderDrawInput_=function(a){this.renderDraw
 
 ezP.DelegateSvg.Statement.Print=function(a){ezP.DelegateSvg.Statement.Print.superClass_.constructor.call(this,a)};
 goog.inherits(ezP.DelegateSvg.Statement.Print,ezP.DelegateSvg.Statement);
-ezP.DelegateSvg.Manager.register(ezP.Const.Stt.PRINT,ezP.DelegateSvg.Statement.Print);
+ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.PRINT,ezP.DelegateSvg.Statement.Print);
 ezP.DelegateSvg.Statement.Print.prototype.setConnectionsHidden=function(a,b){ezP.DelegateSvg.Statement.Print.superClass_.setConnectionsHidden.call(a,b);
 this.updateKeyValueInputHidden_(a)};
 
@@ -7462,7 +7462,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Grp.ELSE,ezP.DelegateSvg.Group.Bounde
 
 ezP.DelegateSvg.Group.Bounded.prototype.init=function(a){ezP.DelegateSvg.Group.Bounded.superClass_.init.call(this,a);
 this.svgPathDotted_=Blockly.utils.createSvgElement("path",{d:"M "+ezP.Padding.h()+",0 h "+(ezP.Font.tabWidth-ezP.Padding.h())},a.svgGroup_);
-a.nextConnection.check_=ezP.Type.Stt.Check.none};
+a.nextConnection.check_=ezP.Type.Stmt.Check.none};
 ezP.DelegateSvg.Group.Bounded.prototype.disposeInternal=function(){goog.dom.removeNode(this.svgPathDotted_);
 this.svgPathDotted_=void 0;
 ezP.DelegateSvg.Group.Bounded.superClass_.disposeInternal.call(this)};
@@ -7474,34 +7474,34 @@ goog.inherits(ezP.DelegateSvg.Proc,ezP.DelegateSvg.Group);
 ezP.DelegateSvg.Manager.register(ezP.Const.Prc.DEFAULT,ezP.DelegateSvg.Proc);
 ezP.DelegateSvg.Manager.register(ezP.Const.Prc.DEF,ezP.DelegateSvg.Proc);
 ezP.DelegateSvg.Manager.register(ezP.Const.Prc.CLASS,ezP.DelegateSvg.Proc);
-ezP.DelegateSvg.Xpr=function(a){ezP.DelegateSvg.Xpr.superClass_.constructor.call(this,a)};
-goog.inherits(ezP.DelegateSvg.Xpr,ezP.DelegateSvg);
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.DEFAULT,ezP.DelegateSvg.Xpr);
-ezP.DelegateSvg.Xpr.prototype.shapePathDef_=ezP.DelegateSvg.Xpr.prototype.contourPathDef_=ezP.DelegateSvg.Xpr.prototype.highlightedPathDef_=ezP.DelegateSvg.Xpr.prototype.valuePathDef_;
+ezP.DelegateSvg.Expr=function(a){ezP.DelegateSvg.Expr.superClass_.constructor.call(this,a)};
+goog.inherits(ezP.DelegateSvg.Expr,ezP.DelegateSvg);
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.DEFAULT,ezP.DelegateSvg.Expr);
+ezP.DelegateSvg.Expr.prototype.shapePathDef_=ezP.DelegateSvg.Expr.prototype.contourPathDef_=ezP.DelegateSvg.Expr.prototype.highlightedPathDef_=ezP.DelegateSvg.Expr.prototype.valuePathDef_;
 
-ezP.DelegateSvg.Xpr.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)||this.renderDrawValueInput_(a)};
-ezP.DelegateSvg.Xpr.Text=function(a){ezP.DelegateSvg.Xpr.Text.superClass_.constructor.call(this,a)};
-goog.inherits(ezP.DelegateSvg.Xpr.Text,ezP.DelegateSvg.Xpr);
-ezP.DelegateSvg.Xpr.Text.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)};
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.TEXT,ezP.DelegateSvg.Xpr.Text);
+ezP.DelegateSvg.Expr.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)||this.renderDrawValueInput_(a)};
+ezP.DelegateSvg.Expr.Text=function(a){ezP.DelegateSvg.Expr.Text.superClass_.constructor.call(this,a)};
+goog.inherits(ezP.DelegateSvg.Expr.Text,ezP.DelegateSvg.Expr);
+ezP.DelegateSvg.Expr.Text.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)};
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.TEXT,ezP.DelegateSvg.Expr.Text);
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.ANY,ezP.DelegateSvg.Xpr.Text);
-ezP.DelegateSvg.Xpr.Input=function(a){ezP.DelegateSvg.Xpr.Input.superClass_.constructor.call(this,a)};
-goog.inherits(ezP.DelegateSvg.Xpr.Input,ezP.DelegateSvg.Xpr);
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.MINUS,ezP.DelegateSvg.Xpr.Input);
-ezP.DelegateSvg.Xpr.Tuple=function(a){ezP.DelegateSvg.Xpr.Tuple.superClass_.constructor.call(this,a)};
-goog.inherits(ezP.DelegateSvg.Xpr.Tuple,ezP.DelegateSvg.Xpr);
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.ANY,ezP.DelegateSvg.Expr.Text);
+ezP.DelegateSvg.Expr.Input=function(a){ezP.DelegateSvg.Expr.Input.superClass_.constructor.call(this,a)};
+goog.inherits(ezP.DelegateSvg.Expr.Input,ezP.DelegateSvg.Expr);
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.MINUS,ezP.DelegateSvg.Expr.Input);
+ezP.DelegateSvg.Expr.Tuple=function(a){ezP.DelegateSvg.Expr.Tuple.superClass_.constructor.call(this,a)};
+goog.inherits(ezP.DelegateSvg.Expr.Tuple,ezP.DelegateSvg.Expr);
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.TUPLE,ezP.DelegateSvg.Xpr.Tuple);
-ezP.DelegateSvg.Xpr.Tuple.prototype.willRender_=function(a){ezP.DelegateSvg.Xpr.Tuple.superClass_.willRender_.call(this,a);
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.TUPLE,ezP.DelegateSvg.Expr.Tuple);
+ezP.DelegateSvg.Expr.Tuple.prototype.willRender_=function(a){ezP.DelegateSvg.Expr.Tuple.superClass_.willRender_.call(this,a);
 this.tupleConsolidate(a)};
-ezP.DelegateSvg.Xpr.Tuple.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)||this.renderDrawTupleInput_(a)};
-ezP.DelegateSvg.Xpr.Tuple.prototype.getInput=function(a,b){return this.getInputTuple_(a,b)};
+ezP.DelegateSvg.Expr.Tuple.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)||this.renderDrawTupleInput_(a)};
+ezP.DelegateSvg.Expr.Tuple.prototype.getInput=function(a,b){return this.getInputTuple_(a,b)};
 
-ezP.DelegateSvg.Xpr.Range=function(a){ezP.DelegateSvg.Xpr.Range.superClass_.constructor.call(this,a)};
-goog.inherits(ezP.DelegateSvg.Xpr.Range,ezP.DelegateSvg.Xpr.Tuple);
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.RANGE,ezP.DelegateSvg.Xpr.Range);
-ezP.DelegateSvg.Xpr.Range.prototype.getInputTupleMax=function(a,b){return b?0:3};
+ezP.DelegateSvg.Expr.Range=function(a){ezP.DelegateSvg.Expr.Range.superClass_.constructor.call(this,a)};
+goog.inherits(ezP.DelegateSvg.Expr.Range,ezP.DelegateSvg.Expr.Tuple);
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.RANGE,ezP.DelegateSvg.Expr.Range);
+ezP.DelegateSvg.Expr.Range.prototype.getInputTupleMax=function(a,b){return b?0:3};
 ezP.FieldOptions=function(a,b){ezP.FieldOptions.superClass_.constructor.call(this,a,b)};
 goog.inherits(ezP.FieldOptions,Blockly.FieldDropdown);
 ezP.FieldOptions.CSS_CLASS="ezp_options";
@@ -7566,45 +7566,45 @@ return a};
 
 ezP.FieldOptions.prototype.deserializeXml=function(a){this.setValue(a.getAttribute("value")||"")};
 ezP.Python={};
-ezP.Python.ezp_xpr={};
+ezP.Python.ezp_expr={};
 Blockly.Python.INDENT="    ";
 Blockly.Python.finish=function(a){return a};
 ezP.Python.valueToCode=function(a,b,c){a=Blockly.Python.valueToCode(a,b,c);
 return"("!==a.slice(0,1)||")"!==a.slice(-1)||(b=a.slice(1,a.length-1),b.match(/[+\-*/%@<>&|^~=!()[]{},:;@ ]/g))?a:b};
-Blockly.Python[ezP.Const.Xpr.GET]=function(a){return[a.getField(ezP.Const.Field.VAR).getText(),Blockly.Python.ORDER_ATOMIC]};
+Blockly.Python[ezP.Const.Expr.GET]=function(a){return[a.getField(ezP.Const.Field.VAR).getText(),Blockly.Python.ORDER_ATOMIC]};
 
-Blockly.Python[ezP.Const.Xpr.ANY]=function(a){return[a.getFieldValue(ezP.Const.Field.ANY),Blockly.Python.ORDER_NONE]};
-Blockly.Python[ezP.Const.Xpr.TEXT]=function(a){return[Blockly.Python.quote_(a.getFieldValue(ezP.Const.Field.TEXT)),Blockly.Python.ORDER_ATOMIC]};
-Blockly.Python[ezP.Const.Xpr.TFN]=function(a){return[a.getFieldValue(ezP.Const.Field.TFN),Blockly.Python.ORDER_ATOMIC]};
+Blockly.Python[ezP.Const.Expr.ANY]=function(a){return[a.getFieldValue(ezP.Const.Field.ANY),Blockly.Python.ORDER_NONE]};
+Blockly.Python[ezP.Const.Expr.TEXT]=function(a){return[Blockly.Python.quote_(a.getFieldValue(ezP.Const.Field.TEXT)),Blockly.Python.ORDER_ATOMIC]};
+Blockly.Python[ezP.Const.Expr.TFN]=function(a){return[a.getFieldValue(ezP.Const.Field.TFN),Blockly.Python.ORDER_ATOMIC]};
 
-Blockly.Python[ezP.Const.Xpr.OP]=function(a){var b=a.getFieldValue(ezP.Const.Field.OP),c=ezP.Op.Binary.getOrder(b),d=ezP.Python.valueToCode(a,ezP.Const.Input.LHS,c||Blockly.Python.ORDER_ATOMIC)||"MISSING_LHS";
+Blockly.Python[ezP.Const.Expr.OP]=function(a){var b=a.getFieldValue(ezP.Const.Field.OP),c=ezP.Op.Binary.getOrder(b),d=ezP.Python.valueToCode(a,ezP.Const.Input.LHS,c||Blockly.Python.ORDER_ATOMIC)||"MISSING_LHS";
 a=ezP.Python.valueToCode(a,ezP.Const.Input.RHS,c||Blockly.Python.ORDER_ATOMIC)||"MISSING_RHS";
 return[d+ezP.Op.Binary.displayOp(b)+a,c||Blockly.Python.ORDER_NONE]};
 
-Blockly.Python[ezP.Const.Xpr.UNRY]=function(a){var b=a.getFieldValue(ezP.Const.Field.OP),c=ezP.Op.Unary.getOrder(b);
+Blockly.Python[ezP.Const.Expr.UNRY]=function(a){var b=a.getFieldValue(ezP.Const.Field.OP),c=ezP.Op.Unary.getOrder(b);
 a=ezP.Python.valueToCode(a,ezP.Const.Input.ANY,c||Blockly.Python.ORDER_NONE)||"MISSING_ANY";
 return[ezP.Op.Unary.displayOp(b)+a,c]};
-Blockly.Python[ezP.Const.Xpr.BOOL]=Blockly.Python[ezP.Const.Xpr.OP];
+Blockly.Python[ezP.Const.Expr.BOOL]=Blockly.Python[ezP.Const.Expr.OP];
 
-Blockly.Python[ezP.Const.Xpr.TUPLE]=function(a){for(var b=a.ezp.getInputTupleMax(a,0),c=[],d=0;
+Blockly.Python[ezP.Const.Expr.TUPLE]=function(a){for(var b=a.ezp.getInputTupleMax(a,0),c=[],d=0;
 !b||d<b;
 ){var e="TUPLE_0_"+d;
 if(Blockly.Block.prototype.getInput.call(a,e)){var f=ezP.Python.valueToCode(a,e,Blockly.Python.ORDER_COLLECTION);
 c.push(f.length?f:"MISSING_"+e);
 ++d}else break}return[c.join(", "),Blockly.Python.ORDER_COLLECTION]};
-Blockly.Python[ezP.Const.Xpr.RANGE]=function(a){return["range("+Blockly.Python[ezP.Const.Xpr.TUPLE](a)[0]+")",Blockly.Python.ORDER_FUNCTION_CALL]};
-ezP.Python.ezp_stt={};
-Blockly.Python[ezP.Const.Stt.SET]=function(a){var b=ezP.Python.valueToCode(a,ezP.Const.Input.RHS,Blockly.Python.ORDER_NONE)||"None";
+Blockly.Python[ezP.Const.Expr.RANGE]=function(a){return["range("+Blockly.Python[ezP.Const.Expr.TUPLE](a)[0]+")",Blockly.Python.ORDER_FUNCTION_CALL]};
+ezP.Python.ezp_stmt={};
+Blockly.Python[ezP.Const.Stmt.SET]=function(a){var b=ezP.Python.valueToCode(a,ezP.Const.Input.RHS,Blockly.Python.ORDER_NONE)||"None";
 return a.getField(ezP.Const.Field.VAR).getText()+" = "+b+"\n"};
-Blockly.Python[ezP.Const.Stt.ANY]=function(a){a=a.getField(ezP.Const.Field.STT).getText();
+Blockly.Python[ezP.Const.Stmt.ANY]=function(a){a=a.getField(ezP.Const.Field.STT).getText();
 return a.length?a:"MISSING_STATEMENT\n"};
 
-Blockly.Python[ezP.Const.Stt.PRINT]=function(a){var b=Blockly.Python[ezP.Const.Xpr.TUPLE](a)[0],c=a.ezp;
+Blockly.Python[ezP.Const.Stmt.PRINT]=function(a){var b=Blockly.Python[ezP.Const.Expr.TUPLE](a)[0],c=a.ezp;
 if(c){c=c.getPrintState_(a);
 b=[b];
 for(var d in c)if(c[d]){var e=ezP.Python.valueToCode(a,d,Blockly.Python.ORDER_COLLECTION);
 b.push(d.toLowerCase()+" = "+(e.length?e:"MISSING_OPTION"))}b=b.join(", ")}return"print("+b+")\n"};
-Blockly.Python[ezP.Const.Stt.BCP]=function(a){a=a.getField(ezP.Const.Field.BCP).getText();
+Blockly.Python[ezP.Const.Stmt.BCP]=function(a){a=a.getField(ezP.Const.Field.BCP).getText();
 return a.length?a:"MISSING_STATEMENT\n"};
 ezP.Python.ezp_ctl={};
 Blockly.Python[ezP.Const.Ctl.MAIN]=function(a){return""};
@@ -7658,14 +7658,14 @@ a?a.highlightConnection(this):Blockly.RenderedConnection.superClass_.highlight.c
 ezP.Connection.prototype.connect=function(a){if(this.isSuperior())var b=this,c=a;
 else b=a,c=this;
 var d=c.sourceBlock_.nextConnection;
-c.check_===ezP.Type.Stt.Check.before_else&&(b.check_===ezP.Type.Stt.Check.after_if?c.check_=ezP.Type.Stt.Check.before_if_else:b.check_===ezP.Type.Stt.Check.after_loop&&(c.check_=ezP.Type.Stt.Check.before_loop_else));
-c.check_===ezP.Type.Stt.Check.before_else?d.check_=ezP.Type.Stt.Check.after_else:c.check_===ezP.Type.Stt.Check.before_elif?d.check_=ezP.Type.Stt.Check.after_elif:c.check_===ezP.Type.Stt.Check.before_if_else?
-d.check_=ezP.Type.Stt.Check.after_else:c.check_===ezP.Type.Stt.Check.before_loop_else&&(d.check_=ezP.Type.Stt.Check.after_else);
+c.check_===ezP.Type.Stmt.Check.before_else&&(b.check_===ezP.Type.Stmt.Check.after_if?c.check_=ezP.Type.Stmt.Check.before_if_else:b.check_===ezP.Type.Stmt.Check.after_loop&&(c.check_=ezP.Type.Stmt.Check.before_loop_else));
+c.check_===ezP.Type.Stmt.Check.before_else?d.check_=ezP.Type.Stmt.Check.after_else:c.check_===ezP.Type.Stmt.Check.before_elif?d.check_=ezP.Type.Stmt.Check.after_elif:c.check_===ezP.Type.Stmt.Check.before_if_else?
+d.check_=ezP.Type.Stmt.Check.after_else:c.check_===ezP.Type.Stmt.Check.before_loop_else&&(d.check_=ezP.Type.Stmt.Check.after_else);
 ezP.Connection.superClass_.connect.call(this,a)};
 
 ezP.Connection.prototype.disconnect=function(){var a=this.targetConnection,b=this.isSuperior()?a:this,c=b.sourceBlock_.nextConnection;
-setTimeout(function(){b.check_!==ezP.Type.Stt.Check.before_else&&b.check_!==ezP.Type.Stt.Check.before_if_else&&b.check_!==ezP.Type.Stt.Check.before_loop_else&&b.check_!==ezP.Type.Stt.Check.before_elif||!c||c.isConnected()||c.setCheck(ezP.Type.Stt.Check.none);
-b.check_!==ezP.Type.Stt.Check.before_if_else&&b.check_!==ezP.Type.Stt.Check.before_loop_else||b.setCheck(ezP.Type.Stt.Check.before_else)},3*Blockly.BUMP_DELAY/
+setTimeout(function(){b.check_!==ezP.Type.Stmt.Check.before_else&&b.check_!==ezP.Type.Stmt.Check.before_if_else&&b.check_!==ezP.Type.Stmt.Check.before_loop_else&&b.check_!==ezP.Type.Stmt.Check.before_elif||!c||c.isConnected()||c.setCheck(ezP.Type.Stmt.Check.none);
+b.check_!==ezP.Type.Stmt.Check.before_if_else&&b.check_!==ezP.Type.Stmt.Check.before_loop_else||b.setCheck(ezP.Type.Stmt.Check.before_else)},3*Blockly.BUMP_DELAY/
 2);
 ezP.Connection.superClass_.disconnect.call(this)};
 

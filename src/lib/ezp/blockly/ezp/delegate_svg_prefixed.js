@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Xpr.Prefixed')
+goog.provide('ezP.DelegateSvg.Expr.Prefixed')
 
-goog.require('ezP.DelegateSvg.Xpr')
+goog.require('ezP.DelegateSvg.Expr')
 
 /**
  * Class for a DelegateSvg, '**...' block.
@@ -22,14 +22,14 @@ goog.require('ezP.DelegateSvg.Xpr')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.Prefixed = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.Prefixed.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.Prefixed = function (prototypeName) {
+  ezP.DelegateSvg.Expr.Prefixed.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Xpr.Prefixed, ezP.DelegateSvg.Xpr)
+goog.inherits(ezP.DelegateSvg.Expr.Prefixed, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Xpr.Prefixed.prototype.operator = undefined
-ezP.DelegateSvg.Xpr.Prefixed.prototype.checkTypes = undefined
-ezP.DelegateSvg.Xpr.Prefixed.prototype.outputType = undefined
+ezP.DelegateSvg.Expr.Prefixed.prototype.operator = undefined
+ezP.DelegateSvg.Expr.Prefixed.prototype.checkTypes = undefined
+ezP.DelegateSvg.Expr.Prefixed.prototype.outputType = undefined
 
 /**
  * Initialize the block.
@@ -38,8 +38,8 @@ ezP.DelegateSvg.Xpr.Prefixed.prototype.outputType = undefined
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Xpr.Prefixed.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Xpr.Prefixed.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Expr.Prefixed.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Expr.Prefixed.superClass_.initBlock.call(this, block)
   this.fieldPrefix = new ezP.FieldLabel(this.operator)
   block.appendValueInput(ezP.Const.Input.XPR)
     .setCheck(this.checkTypes)
@@ -54,15 +54,15 @@ ezP.DelegateSvg.Xpr.Prefixed.prototype.initBlock = function(block) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.starred_or_expr = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.starred_or_expr.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.starred_or_expr = function (prototypeName) {
+  ezP.DelegateSvg.Expr.starred_or_expr.superClass_.constructor.call(this, prototypeName)
   this.operator = '*'
   this.checkTypes = ezP.T3.Require.expression
   this.outputType = ezP.T3.starred_or_expr
 }
-goog.inherits(ezP.DelegateSvg.Xpr.starred_or_expr, ezP.DelegateSvg.Xpr.Prefixed)
+goog.inherits(ezP.DelegateSvg.Expr.starred_or_expr, ezP.DelegateSvg.Expr.Prefixed)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.starred_or_expr, ezP.DelegateSvg.Xpr.starred_or_expr)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.starred_or_expr, ezP.DelegateSvg.Expr.starred_or_expr)
 
 /**
  * Class for a DelegateSvg, '**...' block.
@@ -71,15 +71,15 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.starred_or_expr, ezP.DelegateSvg.
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.double_starred_or_expr = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.double_starred_or_expr.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.double_starred_or_expr = function (prototypeName) {
+  ezP.DelegateSvg.Expr.double_starred_or_expr.superClass_.constructor.call(this, prototypeName)
   this.operator = '**'
   this.checkTypes = ezP.T3.Require.expression
   this.outputType = ezP.T3.double_starred_or_expr
 }
-goog.inherits(ezP.DelegateSvg.Xpr.double_starred_or_expr, ezP.DelegateSvg.Xpr.Prefixed)
+goog.inherits(ezP.DelegateSvg.Expr.double_starred_or_expr, ezP.DelegateSvg.Expr.Prefixed)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.double_starred_or_expr, ezP.DelegateSvg.Xpr.double_starred_or_expr)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.double_starred_or_expr, ezP.DelegateSvg.Expr.double_starred_or_expr)
 
 /**
  * Class for a DelegateSvg, yield_from.
@@ -88,15 +88,15 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.double_starred_or_expr, ezP.Deleg
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Xpr.yield_from = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.yield_from.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.yield_from = function (prototypeName) {
+  ezP.DelegateSvg.Expr.yield_from.superClass_.constructor.call(this, prototypeName)
   this.operator = 'from'
   this.checkTypes = ezP.T3.Require.expression
   this.outputType = ezP.T3.yield_from
 }
-goog.inherits(ezP.DelegateSvg.Xpr.yield_from, ezP.DelegateSvg.Xpr.Prefixed)
+goog.inherits(ezP.DelegateSvg.Expr.yield_from, ezP.DelegateSvg.Expr.Prefixed)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.yield_from, ezP.DelegateSvg.Xpr.yield_from)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.yield_from, ezP.DelegateSvg.Expr.yield_from)
 
 /**
 * Class for a DelegateSvg, dot_identifier.
@@ -105,15 +105,15 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.yield_from, ezP.DelegateSvg.Xpr.y
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Xpr.dot_identifier = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.dot_identifier.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.dot_identifier = function (prototypeName) {
+  ezP.DelegateSvg.Expr.dot_identifier.superClass_.constructor.call(this, prototypeName)
   this.operator = '.'
   this.checkTypes = ezP.T3.identifier
   this.outputType = ezP.T3.dot_identifier
 }
-goog.inherits(ezP.DelegateSvg.Xpr.dot_identifier, ezP.DelegateSvg.Xpr.Prefixed)
+goog.inherits(ezP.DelegateSvg.Expr.dot_identifier, ezP.DelegateSvg.Expr.Prefixed)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.dot_identifier, ezP.DelegateSvg.Xpr.dot_identifier)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.dot_identifier, ezP.DelegateSvg.Expr.dot_identifier)
 
 /**
 * Class for a DelegateSvg, await_expr.
@@ -122,12 +122,12 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.dot_identifier, ezP.DelegateSvg.X
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Xpr.await_expr = function (prototypeName) {
-  ezP.DelegateSvg.Xpr.await_expr.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.await_expr = function (prototypeName) {
+  ezP.DelegateSvg.Expr.await_expr.superClass_.constructor.call(this, prototypeName)
   this.operator = 'await'
   this.checkTypes = ezP.T3.Require.primary
   this.outputType = ezP.T3.await_expr
 }
-goog.inherits(ezP.DelegateSvg.Xpr.await_expr, ezP.DelegateSvg.Xpr.Prefixed)
+goog.inherits(ezP.DelegateSvg.Expr.await_expr, ezP.DelegateSvg.Expr.Prefixed)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Xpr.await_expr, ezP.DelegateSvg.Xpr.await_expr)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.await_expr, ezP.DelegateSvg.Expr.await_expr)

@@ -27,7 +27,7 @@ ezP.DelegateSvg.Statement = function (prototypeName) {
   ezP.DelegateSvg.Statement.superClass_.constructor.call(this, prototypeName)
 }
 goog.inherits(ezP.DelegateSvg.Statement, ezP.DelegateSvg)
-ezP.DelegateSvg.Manager.register(ezP.Const.Stt.DEFAULT, ezP.DelegateSvg.Statement)
+ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.DEFAULT, ezP.DelegateSvg.Statement)
 
 ezP.setup.register(function () {
   ezP.Style.insertCssRuleAt('.ezp-sharp-group{' + ezP.Font.style + '}')
@@ -154,8 +154,8 @@ ezP.DelegateSvg.Statement.Tupled = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Statement.Tupled, ezP.DelegateSvg.Statement)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stt.DEL, ezP.DelegateSvg.Statement.Tupled)
-ezP.DelegateSvg.Manager.register(ezP.Const.Stt.GNL, ezP.DelegateSvg.Statement.Tupled)
+ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.DEL, ezP.DelegateSvg.Statement.Tupled)
+ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.GNL, ezP.DelegateSvg.Statement.Tupled)
 
 /**
  * Will render the block.
@@ -191,7 +191,7 @@ ezP.DelegateSvg.Statement.Print = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Statement.Print, ezP.DelegateSvg.Statement)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stt.PRINT, ezP.DelegateSvg.Statement.Print)
+ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.PRINT, ezP.DelegateSvg.Statement.Print)
 
 /**
  * The default implementation does nothing.

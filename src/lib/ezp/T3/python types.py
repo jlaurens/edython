@@ -31,8 +31,8 @@ class MyHTMLParser(html.parser.HTMLParser):
     def get_pre_pos_data(self):
         return self.pre_pos_data
 
-class Xpr:
-    """An Xpr represents a python 3 expression"""
+class Expr:
+    """An Expr represents a python 3 expression"""
     d = {
         '(': 'LPAR',
         ')': 'RPAR',
@@ -64,22 +64,22 @@ class Xpr:
 
     def get_short_definition(self):
         definition = self.definition
-        for k, v in Xpr.d.items():
+        for k, v in Expr.d.items():
             definition = definition.replace('"' + k + '"', v)
         while True:
-            definition, n = Xpr.re_optional_1.subn('OPTIONAL', definition)
+            definition, n = Expr.re_optional_1.subn('OPTIONAL', definition)
             if not n: break
         while True:
-            definition, n = Xpr.re_optional_n.subn('OPTIONAL', definition)
+            definition, n = Expr.re_optional_n.subn('OPTIONAL', definition)
             if not n: break
-        definition = Xpr.re_parenth_1.sub(r'\g<1>', definition)
-        definition = Xpr.re_parenth_2.sub(r'BGROUP \g<1> OR \g<2> EGROUP', definition)
+        definition = Expr.re_parenth_1.sub(r'\g<1>', definition)
+        definition = Expr.re_parenth_2.sub(r'BGROUP \g<1> OR \g<2> EGROUP', definition)
         return definition
 
     def __repr__(self):
         return repr(self.__dict__)
 
-class Xprs:
+class Exprs:
     re0 = re.compile(r"\b(\S*?)(_stmt|_statement)?\s*::=\s*(.*)")
     re1 = re.compile(r'\s*\|\s*')
     re2 = re.compile(r'^\s*([a-z_]+)\s*$')
@@ -103,12 +103,12 @@ class Xprs:
                 data = x[0].replace('\n ','')
                 data = re.sub(r' +', ' ', data)
                 for l in data.splitlines():
-                    m = Xprs.re0.match(l)
+                    m = Exprs.re0.match(l)
                     if m and m.group(1) != 'name' and not m.group(2):
                         nn = self.n
                         if m.group(1) in self.all:
                             nn = self.all[m.group(1)].n
-                        t = Xpr(nn, m.group(1), m.group(3))
+                        t = Expr(nn, m.group(1), m.group(3))
                         self.all[t.name] = t
                         self.n += 1
 
@@ -116,17 +116,17 @@ class Xprs:
         more = {}
         for t in self:
             definition = t.definition
-            cs = Xprs.re1.split(definition)[1:]
+            cs = Exprs.re1.split(definition)[1:]
             if len(cs) > 0:
-                cs = [x for x in cs if Xprs.re2.match(x)]
+                cs = [x for x in cs if Exprs.re2.match(x)]
                 if len(cs) == 0:
-                    m = Xprs.re3.match(t.definition)
+                    m = Exprs.re3.match(t.definition)
                     if m:
                         def_alias = m.group(1)
                         def_concrete = m.group(2)
                         def_guessed = '{} | {}'.format(def_alias, def_concrete)
                         if def_guessed == t.definition:
-                            mm = Xprs.re4.match(def_concrete)
+                            mm = Exprs.re4.match(def_concrete)
                             if mm:
                                 if len(mm.group(1)) == 1:
                                     name_concrete = 'starred_' + mm.group(2)
@@ -140,7 +140,7 @@ class Xprs:
                                 name_concrete = t.name + '_concrete'
                             def_new = '{} | {}'.format(def_alias, name_concrete)
                             t.definition = def_new
-                            tt = Xpr(t.n, name_concrete, def_concrete)
+                            tt = Expr(t.n, name_concrete, def_concrete)
                             more[tt.name] = tt
         self.all.update(more)
 
@@ -157,13 +157,13 @@ class Xprs:
             t.wrapper = True
             require = set()
             definition = t.get_short_definition()
-            cs = Xprs.re1.split(definition)
+            cs = Exprs.re1.split(definition)
             for c in cs:
                 if 'OPTIONAL' in c:
                     t.wrapper = False
                     t.one_shot = False
                     c = c.replace('OPTIONAL', '')
-                m = Xprs.re2.match(c)
+                m = Exprs.re2.match(c)
                 if m:
                     c = m.group(1)
                     try:
@@ -172,7 +172,7 @@ class Xprs:
                         try:
                             tt = more_t[c]
                         except:
-                            tt = more_t[c] = Xpr(-len(self.all)-len(more_t), c, '')
+                            tt = more_t[c] = Expr(-len(self.all)-len(more_t), c, '')
                             tt.require = []
                     require.add(tt)
                 else:
@@ -365,8 +365,8 @@ if __name__ != "main":
     path6 = pathlib.Path(__file__).parent / 'compound_stmts_xtd.html'
     print(path6)
     # do not change the order of the path arguments
-    types = Xprs(path1, path2, path3, path4, path5, path6)
-    #types = Xprs(path3)
+    types = Exprs(path1, path2, path3, path4, path5, path6)
+    #types = Exprs(path3)
     print('# Make the require and the provide')
     types.make_shallow()
     print('# Make the deep')

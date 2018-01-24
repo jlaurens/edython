@@ -22,7 +22,7 @@ goog.require('ezP.T3')
 // Connection types
 ezP.Type = ezP.Type || {}
 
-ezP.Type.Xpr = {
+ezP.Type.Expr = {
   any_all: '0',
   primary: '0.2',
   expression: '0',
@@ -41,30 +41,30 @@ ezP.Type.Xpr = {
   TUPLE: '9',
 }
 
-ezP.Type.Xpr.Provide = {
-  any: [ezP.Type.Xpr.any_all],
-  primary: [ezP.Type.Xpr.primary],
-  star_or_expr: [ezP.Type.Xpr.star_or_xpr],
-  comprehension: [ezP.Type.Xpr.comprehension],
-  comp_for: [ezP.Type.Xpr.comp_for],
-  comp_if: [ezP.Type.Xpr.comp_if],
-  get: [ezP.Type.Xpr.identifier,
-    ezP.Type.Xpr.parameter_positional,
-    ezP.Type.Xpr.parameter_1_star,
-    ezP.Type.Xpr.parameter_keyed,
-    ezP.Type.Xpr.parameter_2_stars],
+ezP.Type.Expr.Provide = {
+  any: [ezP.Type.Expr.any_all],
+  primary: [ezP.Type.Expr.primary],
+  star_or_expr: [ezP.Type.Expr.star_or_xpr],
+  comprehension: [ezP.Type.Expr.comprehension],
+  comp_for: [ezP.Type.Expr.comp_for],
+  comp_if: [ezP.Type.Expr.comp_if],
+  get: [ezP.Type.Expr.identifier,
+    ezP.Type.Expr.parameter_positional,
+    ezP.Type.Expr.parameter_1_star,
+    ezP.Type.Expr.parameter_keyed,
+    ezP.Type.Expr.parameter_2_stars],
 }
 
-ezP.Type.Xpr.Require = {
-  any: [ezP.Type.Xpr.any_all],
-  expression: [ezP.Type.Xpr.any_all],
-  forif: [ezP.Type.Xpr.expression, ezP.Type.Xpr.forif],
-  starred_item: [ezP.Type.Xpr.expression, ezP.Type.Xpr.star_or_xpr],
-  or_expr: [ezP.Type.Xpr.any_all],
-  target_list: [ezP.Type.Xpr.any_all],
-  or_test: [ezP.Type.Xpr.any_all],
-  comp_iter: [ezP.Type.Xpr.any_all, ezP.Type.Xpr.comp_for, ezP.Type.Xpr.comp_if],
-  expression_nocond: [ezP.Type.Xpr.any_all, ezP.Type.Xpr.or_test, ezP.Type.Xpr.lambda_expr_nocond]
+ezP.Type.Expr.Require = {
+  any: [ezP.Type.Expr.any_all],
+  expression: [ezP.Type.Expr.any_all],
+  forif: [ezP.Type.Expr.expression, ezP.Type.Expr.forif],
+  starred_item: [ezP.Type.Expr.expression, ezP.Type.Expr.star_or_xpr],
+  or_expr: [ezP.Type.Expr.any_all],
+  target_list: [ezP.Type.Expr.any_all],
+  or_test: [ezP.Type.Expr.any_all],
+  comp_iter: [ezP.Type.Expr.any_all, ezP.Type.Expr.comp_for, ezP.Type.Expr.comp_if],
+  expression_nocond: [ezP.Type.Expr.any_all, ezP.Type.Expr.or_test, ezP.Type.Expr.lambda_expr_nocond]
 }
 
 /*
@@ -83,33 +83,33 @@ loop    O     O     X     O     O
  * all means everything.
  * See the rendered connection subclass
  **/
-ezP.Type.Stt = {
+ezP.Type.Stmt = {
   any_all: 0,
   if_elif: 1,
   if_elif_bounded: 2,
   if_else: 3,
   loop_else: 4
 }
-ezP.Type.Stt.Check = {
+ezP.Type.Stmt.Check = {
   none: [-1],
-  after_any: [ezP.Type.Stt.any_all],
-  before_any: [ezP.Type.Stt.any_all],
-  after_if: [ezP.Type.Stt.any_all,
-    ezP.Type.Stt.if_elif,
-    ezP.Type.Stt.if_else],
-  before_if: [ezP.Type.Stt.any_all],
-  after_elif: [ezP.Type.Stt.any_all,
-    ezP.Type.Stt.if_elif,
-    ezP.Type.Stt.if_else],
-  before_elif: [ezP.Type.Stt.if_elif],
-  after_else: [ezP.Type.Stt.any_all],
-  before_else: [ezP.Type.Stt.if_else,
-    ezP.Type.Stt.loop_else],
-  before_if_else: [ezP.Type.Stt.if_else],
-  before_loop_else: [ezP.Type.Stt.loop_else],
-  after_loop: [ezP.Type.Stt.any_all,
-    ezP.Type.Stt.loop_else],
-  before_loop: [ezP.Type.Stt.any_all]
+  after_any: [ezP.Type.Stmt.any_all],
+  before_any: [ezP.Type.Stmt.any_all],
+  after_if: [ezP.Type.Stmt.any_all,
+    ezP.Type.Stmt.if_elif,
+    ezP.Type.Stmt.if_else],
+  before_if: [ezP.Type.Stmt.any_all],
+  after_elif: [ezP.Type.Stmt.any_all,
+    ezP.Type.Stmt.if_elif,
+    ezP.Type.Stmt.if_else],
+  before_elif: [ezP.Type.Stmt.if_elif],
+  after_else: [ezP.Type.Stmt.any_all],
+  before_else: [ezP.Type.Stmt.if_else,
+    ezP.Type.Stmt.loop_else],
+  before_if_else: [ezP.Type.Stmt.if_else],
+  before_loop_else: [ezP.Type.Stmt.loop_else],
+  after_loop: [ezP.Type.Stmt.any_all,
+    ezP.Type.Stmt.loop_else],
+  before_loop: [ezP.Type.Stmt.any_all]
 }
 
 ezP.T3.Require.starred_list_comprehensive = ezP.T3.Require.starred_list.slice()
