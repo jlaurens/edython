@@ -27,6 +27,9 @@ ezP.Const.Stmt = {
   augmented_assignment_stmt: 'ezp_stmt_augmented_assignment_stmt',
   annotated_assignment_stmt: 'ezp_stmt_annotated_assignment_stmt',
   assert_stmt: 'ezp_stmt_assert_stmt',
+  pass_stmt: 'ezp_stmt_pass_stmt',
+  continue_stmt: 'ezp_stmt_continue_stmt',
+  break_stmt: 'ezp_stmt_break_stmt',
   // in progress
 
 

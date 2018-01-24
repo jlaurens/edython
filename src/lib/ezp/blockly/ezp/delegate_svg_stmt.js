@@ -182,9 +182,6 @@ ezP.DelegateSvg.Stmt.annotated_assignment_stmt.prototype.initBlock = function(bl
 }
 
 
-// assert_stmt ::=  "assert" expression ["," expression]
-
-
 /**
  * Class for a DelegateSvg, assert_stmt.
  * For ezPython.
@@ -211,12 +208,90 @@ ezP.DelegateSvg.Stmt.assert_stmt.prototype.initBlock = function(block) {
   block.appendValueInput(ezP.Const.Input.TARGET)
     .setCheck(ezP.T3.Require.expression)
     .appendField(new ezP.FieldLabel('assert'))
-  this.inputOPTION = block.appendValueInput(ezP.Const.Input.OPTION)
+  var input = block.appendValueInput(ezP.Const.Input.OPTION)
     .setCheck(ezP.T3.Require.expression)
     .appendField(new ezP.FieldLabel(','))
-  this.inputOPTION.connection.ezpData.optional_ = true
+  input.connection.ezpData.optional_ = true
 }
 
+
+/**
+ * Class for a DelegateSvg, pass_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.pass_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.pass_stmt.superClass_.constructor.call(this, prototypeName)
+}
+goog.inherits(ezP.DelegateSvg.Stmt.pass_stmt, ezP.DelegateSvg.Stmt)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.pass_stmt, ezP.DelegateSvg.Stmt.pass_stmt)
+
+/**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.pass_stmt.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Stmt.pass_stmt.superClass_.initBlock.call(this, block)
+  block.appendDummyInput().appendField(new ezP.FieldLabel('pass'))
+}
+
+/**
+ * Class for a DelegateSvg, break_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.break_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.break_stmt.superClass_.constructor.call(this, prototypeName)
+}
+goog.inherits(ezP.DelegateSvg.Stmt.break_stmt, ezP.DelegateSvg.Stmt)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.break_stmt, ezP.DelegateSvg.Stmt.break_stmt)
+
+/**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.break_stmt.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Stmt.break_stmt.superClass_.initBlock.call(this, block)
+  block.appendDummyInput().appendField(new ezP.FieldLabel('break'))
+}
+
+/**
+ * Class for a DelegateSvg, continue_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.continue_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.continue_stmt.superClass_.constructor.call(this, prototypeName)
+}
+goog.inherits(ezP.DelegateSvg.Stmt.continue_stmt, ezP.DelegateSvg.Stmt)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.continue_stmt, ezP.DelegateSvg.Stmt.continue_stmt)
+
+/**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.continue_stmt.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Stmt.continue_stmt.superClass_.initBlock.call(this, block)
+  block.appendDummyInput().appendField(new ezP.FieldLabel('continue'))
+}
 
 
 

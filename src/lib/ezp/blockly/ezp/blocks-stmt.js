@@ -22,6 +22,9 @@ var Ks = [
   ezP.Const.Stmt.augmented_assignment_stmt,
   ezP.Const.Stmt.annotated_assignment_stmt,
   ezP.Const.Stmt.assert_stmt,
+  ezP.Const.Stmt.pass_stmt,
+  ezP.Const.Stmt.continue_stmt,
+  ezP.Const.Stmt.break_stmt,
   // IN PROGRESS
 ]
 var O = {
