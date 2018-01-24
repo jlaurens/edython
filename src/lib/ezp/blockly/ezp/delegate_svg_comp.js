@@ -62,7 +62,7 @@ ezP.DelegateSvg.Xpr.Comprehension.prototype.completeSealed = function (block) {
   this.completeSealedInput(block,
     this.inputITER,
     ezP.Const.Xpr.comp_iter_list)
-  }
+}
 
 
 /**

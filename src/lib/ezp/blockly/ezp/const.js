@@ -76,6 +76,8 @@ ezP.Const.Xpr = {
   boolean_concrete: 'ezp_xpr_boolean_concrete',
   comparison_concrete: 'ezp_xpr_comparison_concrete',
   conditional_expression_concrete: 'ezp_xpr_conditional_expression_concrete',
+  lambda_expr: 'ezp_xpr_lambda_expr',
+  lambda_expr_nocond: 'ezp_xpr_lambda_expr_nocond',
   // in progress
 
   star_or_expr: 'ezp_xpr_star_or_expr',

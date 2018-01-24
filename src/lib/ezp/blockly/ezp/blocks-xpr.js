@@ -72,6 +72,8 @@ var Ks = [
   ezP.Const.Xpr.boolean_concrete,
   ezP.Const.Xpr.comparison_concrete,
   ezP.Const.Xpr.conditional_expression_concrete,
+  ezP.Const.Xpr.lambda_expr,
+  ezP.Const.Xpr.lambda_expr_nocond,
   // IN PROGRESS
 
 ]

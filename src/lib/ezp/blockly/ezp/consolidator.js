@@ -104,16 +104,30 @@ ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io) {
   io.input.name = 'ITEM_' + io.n++
   io.ezp.s7r_ = io.c8n.ezpData.s7r_ = false
   io.input.setCheck(this.getCheck(io))
+  while (io.input.fieldRow.length) {
+    io.input.fieldRow.shift().dispose()
+  }
 }
 
 /**
- * Get the next input. Returns null when at end.
+ * Dispose of the input at the given index.
+ * No range checking.
  * @param {!Object} io parameter.
  */
 ezP.Consolidator.List.prototype.disposeAtI = function (io, i) {
   io.list[i].dispose()
   io.list.splice(i, 1)
   --io.end
+}
+
+/**
+ * Insert the given input at the given index.
+ * No range checking.
+ * @param {!Object} io parameter.
+ */
+ezP.Consolidator.List.prototype.insertAtI = function (io, i, input) {
+  io.list.splice(i, 0, input)
+  ++io.end
 }
 ezP.Consolidator.List.prototype.disposeFromIToEnd = function (io) {
   while (io.i < io.end) {
@@ -133,8 +147,7 @@ ezP.Consolidator.List.prototype.insertPlaceholderAtI = function (io) {
   var input = new Blockly.Input(Blockly.INPUT_VALUE, 'ITEM_*', io.block, c8n)
   ezP.Input.setupEzpData(input)
   input.ezpData.listed_ = true
-  io.list.splice(io.i, 0, input)
-  ++io.end
+  this.insertAtI(io, io.i, input)
   this.setupIO(io)
 }
 
@@ -165,7 +178,7 @@ ezP.Consolidator.List.prototype.no_more_ezp = function(io) {
   } while (this.nextInput(io))
 }
 /**
- * One of 2 situations at the end
+ * One of 2 situations at the end of this call
  * 1) only one separator input
  * 2) an even number of inputs: separator, connected item, separator, ...
  */
@@ -791,11 +804,12 @@ ezP.Consolidator.List.Parameter.prototype.cleanup = function(io) {
     // move this parameter to the end of the list and remove a space
     io.i = i
     this.setupIO(io)
+    // remove the following separator
     this.disposeAtI(io, i+1)
     if (i+1<io.end) {
       // we did not remove the last separator, so this ** parameter is not last
       this.disposeAtI(io, i)
-      io.list.splice(io.end, 0, io.input)  
+      this.insertAtI(io, i, io.input)
     }
     // Now this is the last, with no separator afterwards
   }
@@ -832,29 +846,6 @@ ezP.Consolidator.List.Parameter.prototype.cleanup = function(io) {
       ++io.i
     }
   }
-  // Debug: are the connections consistent ?
-  for (io.i = io.start; io.i < io.list.length; ++io.i) {
-    this.setupIO(io)
-    console.log('Input: ', io.i)
-    var target = io.c8n.targetBlock()
-    if (target) {
-      var required = this.getCheck(io)
-      var types = target.outputConnection.check_
-      var OK = false
-      for (i = 0; i < types.length; ++i) {
-        var type = types[i]
-        if (goog.array.contains(required, type)) {
-          OK = true
-          break
-        }
-      }
-      if (!OK) {
-        console.log('BAD CONNECTION')
-        console.log('required', required)
-        console.log('provided', required)
-        }
-    }    
-  }
 }
 
 /**
@@ -865,7 +856,6 @@ ezP.Consolidator.List.Parameter.prototype.cleanup = function(io) {
 ezP.Consolidator.List.Parameter.prototype.getCheck = function (io) {
   var can_starred = !io.first_parameter_starred || io.first_parameter_starred == io.input
   var can_double_starred = (!io.first_parameter_double_starred && io.i == io.end-1) || io.first_parameter_double_starred == io.input
-  console.log(io.i, can_starred, can_double_starred)
   if (can_double_starred) {
     if (can_starred) {
       return ezP.T3.Require.parameter_any
