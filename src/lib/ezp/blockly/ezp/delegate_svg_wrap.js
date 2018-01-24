@@ -27,6 +27,7 @@ ezP.DelegateSvg.Wrap = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Wrap, ezP.DelegateSvg.Stmt)
 
+ezP.DelegateSvg.Wrap.prototype.label = undefined
 ezP.DelegateSvg.Wrap.prototype.wrappedType = undefined
 ezP.DelegateSvg.Wrap.prototype.wrappedPrototype = undefined
 
@@ -41,6 +42,9 @@ ezP.DelegateSvg.Wrap.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Wrap.superClass_.initBlock.call(this, block)
   this.inputWRAP = block.appendSealedValueInput(ezP.Const.Input.WRAP)
     .setCheck(this.wrappedType)
+  if (this.label !== undefined) {
+    this.inputWRAP.appendField(new ezP.FieldLabel(this.label))
+  }
 }
 
 /**
@@ -208,7 +212,6 @@ goog.inherits(ezP.DelegateSvg.Stmt.augmented_assignment_stmt, ezP.DelegateSvg.Wr
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.augmented_assignment_stmt, ezP.DelegateSvg.Stmt.augmented_assignment_stmt)
 
-
 /**
  * Class for a DelegateSvg, del_stmt.
  * For ezPython.
@@ -218,6 +221,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.augmented_assignment_stmt, ezP.D
  */
 ezP.DelegateSvg.Stmt.del_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.del_stmt.superClass_.constructor.call(this, prototypeName)
+  this.label = 'del'
   this.wrapperType = ezP.T3.target_list
   this.wrappedPrototype = ezP.Const.Expr.target_list
 }
@@ -225,14 +229,20 @@ goog.inherits(ezP.DelegateSvg.Stmt.del_stmt, ezP.DelegateSvg.Wrap)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.del_stmt, ezP.DelegateSvg.Stmt.del_stmt)
 
+
 /**
- * Initialize the block.
- * Called by the block's init method.
+ * Class for a DelegateSvg, return_stmt.
  * For ezPython.
- * @param {!Block} block.
- * @private
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
  */
-ezP.DelegateSvg.Stmt.del_stmt.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Stmt.del_stmt.superClass_.initBlock.call(this, block)
-  this.inputWRAP.appendField(new ezP.FieldLabel('del'))
+ezP.DelegateSvg.Stmt.return_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.return_stmt.superClass_.constructor.call(this, prototypeName)
+  this.label = 'return'
+  this.wrapperType = ezP.T3.expression_list
+  this.wrappedPrototype = ezP.Const.Expr.expression_list
 }
+goog.inherits(ezP.DelegateSvg.Stmt.return_stmt, ezP.DelegateSvg.Wrap)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.return_stmt, ezP.DelegateSvg.Stmt.return_stmt)

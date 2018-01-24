@@ -31,6 +31,7 @@ ezP.Const.Stmt = {
   continue_stmt: 'ezp_stmt_continue_stmt',
   break_stmt: 'ezp_stmt_break_stmt',
   del_stmt: 'ezp_stmt_del_stmt',
+  return_stmt: 'ezp_stmt_return_stmt',
   // in progress
 
 
