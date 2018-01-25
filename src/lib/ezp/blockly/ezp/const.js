@@ -32,6 +32,8 @@ ezP.Const.Stmt = {
   break_stmt: 'ezp_stmt_break_stmt',
   del_stmt: 'ezp_stmt_del_stmt',
   return_stmt: 'ezp_stmt_return_stmt',
+  yield_stmt: 'ezp_stmt_yield_stmt',
+  raise_stmt: 'ezp_stmt_raise_stmt',
   // in progress
 
 
@@ -142,6 +144,8 @@ ezP.Const.Ctl = {
 }
 
 ezP.Const.Field = {
+  LABEL: 'LABEL',
+  // IN PROGRESS
   VAR: 'VAR',
   STARS: 'STARS',
   ID: 'ID',
@@ -183,6 +187,7 @@ ezP.Const.Input = {
   LHS: 'LHS',
   RHS: 'RHS',
   OPTION: 'OPTION',
+  RAISE: 'RAISE',
   // IN PROGRESS
   ANY: 'ANY',
   SEP: 'SEP',

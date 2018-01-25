@@ -158,7 +158,7 @@ ezP.DelegateSvg.Expr.proper_slice.prototype.onActionMenuEvent = function (block,
   var action = event.target.getModel()
   if (action == ezP.USE_PROPER_SLICING_STRIDE_ID) {
     var input = this.inputSTRIDE
-    this.setInputDisabled(block, input.name, !input.ezpData.disabled_)
+    this.setNamedInputDisabled(block, input.name, !input.ezpData.disabled_)
     return
   }
   ezP.DelegateSvg.Expr.proper_slice.superClass_.onActionMenuEvent.call(this, block, menu, event)

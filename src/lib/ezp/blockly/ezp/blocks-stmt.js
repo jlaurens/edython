@@ -27,6 +27,8 @@ var Ks = [
   ezP.Const.Stmt.break_stmt,
   ezP.Const.Stmt.del_stmt,
   ezP.Const.Stmt.return_stmt,
+  ezP.Const.Stmt.yield_stmt,
+  ezP.Const.Stmt.raise_stmt,
   // IN PROGRESS
 ]
 var O = {

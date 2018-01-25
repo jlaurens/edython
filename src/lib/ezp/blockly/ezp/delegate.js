@@ -75,7 +75,7 @@ ezP.Delegate.Manager = (function () {
 /**
  * The python type of the owning block.
  */
-ezP.Delegate.prototype.pythonType = undefined
+ezP.Delegate.prototype.pythonType_ = undefined
 
 /**
  * Initialize a block.
@@ -86,7 +86,7 @@ ezP.Delegate.prototype.pythonType = undefined
 ezP.Delegate.prototype.init = function (block) {
   var regex = new RegExp("^ezp_\\S+?_(.*)$")
   var m = regex.exec(block.type)
-  this.pythonType = m? m[1]: block.type
+  this.pythonType_ = m? m[1]: block.type
 }
 
 /**

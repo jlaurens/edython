@@ -45,7 +45,7 @@ Blockly.Events.Change.prototype.run = function(forward) {
   var value = forward ? this.newValue : this.oldValue;
   switch (this.element) {
     case ezP.Const.Event.input_disable:
-      block.ezp.setInputDisabled(block, this.name, value)
+      block.ezp.setNamedInputDisabled(block, this.name, value)
       break;
     case ezP.Const.Event.change_operator:
       block.ezp.changeOperator(block, value)

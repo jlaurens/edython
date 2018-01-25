@@ -180,6 +180,7 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
   this.isRendering = true
   this.minWidth = block.width = 0
   block.rendered = true
+  this.prepareInputs_(block)
   this.willRender_(block)
   this.renderDraw_(block)
   this.layoutConnections_(block)
@@ -199,6 +200,17 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
   this.isRendering = false
   Blockly.Field.stopCache()
   // block.workspace.logAllConnections('didRender')
+}
+
+/**
+ * Prepare the inputs.
+ * The default implementation does nothing.
+ * Subclassers may enable/disable an input
+ * depending on the context.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.prototype.prepareInputs_ = function (block) {
 }
 
 /**
@@ -272,7 +284,7 @@ ezP.DelegateSvg.prototype.didRender_ = function (block) {
  */
 ezP.DelegateSvg.prototype.layoutConnections_ = function (block) {
   if (block.outputConnection) {
-    block.outputConnection.setOffsetInBlock(this.sealed_? -100:0, 0)
+    block.outputConnection.setOffsetInBlock(0, 0)
   } else {
     if (block.previousConnection) {
       block.previousConnection.setOffsetInBlock(0, 0)
@@ -493,23 +505,18 @@ ezP.DelegateSvg.prototype.renderDrawInput_ = function (io) {
  * @param io An input/output record.
  * @private
  */
-ezP.DelegateSvg.prototype.renderDrawFields_ = function (io, hide = false) {
+ezP.DelegateSvg.prototype.renderDrawFields_ = function (io) {
   for (var _ = 0, field; (field = io.input.fieldRow[_]); ++_) {
     if (field.getText().length>0) {
       var root = field.getSvgRoot()
       if (root) {
-        if (hide) {
-          root.setAttribute('display', 'none')
-        } else {
-          root.removeAttribute('display') // must be done early
-          var ezp = field.ezpFieldData
-          var x_shift = ezp && !io.block.ezp.sealed_? ezp.x_shift || 0: 0
-          root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
-            ', ' + ezP.Padding.t() + ')')
-          var size = field.getSize()
-          io.cursorX += size.width
-        }
-      } else {
+        var ezp = field.ezpFieldData
+        var x_shift = ezp && !io.block.ezp.sealed_? ezp.x_shift || 0: 0
+        root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
+          ', ' + ezP.Padding.t() + ')')
+        var size = field.getSize()
+        io.cursorX += size.width
+    } else {
         console.log('Field with no root: did you ...initSvg()?')
       }
     }
@@ -581,24 +588,14 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   if (c8n) {
     var ezp = c8n.ezpData
     var target = c8n.targetBlock()
-    this.renderDrawFields_(io, !target && ezp.optional_)
-    var sealed = !!ezp && ezp.sealed_
-    c8n.setOffsetInBlock(sealed? io.cursorX-100: io.cursorX, 0)
+    this.renderDrawFields_(io)
+    c8n.setOffsetInBlock(io.cursorX, 0)
     if (!!target) {
       var root = target.getSvgRoot()
       if (!!root) {
         var bBox = target.getHeightWidth()
         root.setAttribute('transform', 'translate(' + io.cursorX + ', 0)')
         io.cursorX += bBox.width
-        target.ezp.sealed_ = sealed
-        if (sealed && !!target.ezp.svgPathContour_) {
-          goog.dom.removeNode(target.ezp.svgPathShape_)
-          delete target.ezp.svgPathShape_
-          target.ezp.svgPathShape_ = undefined
-          goog.dom.removeNode(target.ezp.svgPathContour_)
-          delete target.ezp.svgPathContour_
-          target.ezp.svgPathContour_ = undefined
-        }
         target.render()
       }
     } else {
@@ -922,7 +919,7 @@ ezP.DelegateSvg.prototype.populateContextMenu_ = function (block, menu) {
   menu.addChild(new ezP.Separator(), true)
   
   menuItem = new ezP.MenuItem(
-    this.pythonType,
+    this.getPythonType(block),
     [])
   menuItem.setEnabled(false)
   menu.addChild(menuItem, true)
@@ -933,6 +930,20 @@ ezP.DelegateSvg.prototype.populateContextMenu_ = function (block, menu) {
       block.ezp.onActionMenuEvent(block, menu, event)
     }, 100)// TODO be sure that this 100 is suffisant
   })
+}
+
+/**
+ * Returns the python type of the block.
+ * This information may be displayed as the last item in the contextual menu.
+ * Sealed will return the parent's answer.
+ * @param {!Blockly.Block} block The block.
+ */
+ezP.DelegateSvg.prototype.getPythonType = function (block) {
+  if (this.sealed_) {
+    var parent = block.getParent()
+    return parent.ezp.getPythonType(parent)
+  }
+  return this.pythonType_
 }
 
 /**
@@ -1087,8 +1098,16 @@ ezP.DelegateSvg.prototype.completeSealedInput = function (block, input, prototyp
       goog.asserts.assert(target, 'completeSealed failed: '+ prototypeName);
       target.initSvg();
       target.ezp.sealed_ = true
+      goog.dom.removeNode(target.ezp.svgPathShape_)
+      delete target.ezp.svgPathShape_
+      target.ezp.svgPathShape_ = undefined
+      goog.dom.removeNode(target.ezp.svgPathContour_)
+      delete target.ezp.svgPathContour_
+      target.ezp.svgPathContour_ = undefined
       goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed '+target.type)
       input.connection.connect(target.outputConnection)
+      input.connection.ezpData.disabled_ = true
+      input.connection.setHidden(true)
       target.ezp.completeSealed(target)
     } else {
       console.log('Maximum value reached in completeSealedInput')
@@ -1098,13 +1117,36 @@ ezP.DelegateSvg.prototype.completeSealedInput = function (block, input, prototyp
 }
 
 /**
+ * Enable/Disable an input.
+ * The default implementation does nothing.
+ * Subclassers may enable/disable an input
+ * depending on the context.
+ * Even input with target may be disabled.
+ * This status is a part of the state of the block.
+ * It survives copy/paste but not undo/redo.
+ * @param {!Block} block.
+ * @param {!Input} input.
+ * @param {!Boolean} enabled.
+ * @private
+ */
+ezP.DelegateSvg.prototype.setInputEnabled = function (block, input, enabled) {
+  if (enabled == !input.disabled_) {
+    return enabled
+  }
+  input.disabled_ = !enabled
+  input.setVisible(enabled)
+  input.connection.hidden_ = !enabled
+  input.connection.setHidden(!enabled)
+}
+
+/**
  * Set the enable/disable status of the given block.
  * @param {!Block} block.
  * @param {!Input} input.
  * @param {!String} prototypeName.
  * @private
  */
-ezP.DelegateSvg.prototype.setInputDisabled = function (block, name, newValue) {
+ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValue) {
   var input = block.getInput(name)
   if (input) {
     var oldValue = input.ezpData.disabled_
@@ -1117,6 +1159,7 @@ ezP.DelegateSvg.prototype.setInputDisabled = function (block, name, newValue) {
         block, ezP.Const.Event.input_disable, name, oldValue, newValue));
     }
     input.ezpData.disabled_ = newValue
+    input.setVisible(!newValue)
     setTimeout(function(){
       block.render()
     }, 100)

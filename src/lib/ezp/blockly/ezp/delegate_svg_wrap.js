@@ -246,3 +246,19 @@ ezP.DelegateSvg.Stmt.return_stmt = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Stmt.return_stmt, ezP.DelegateSvg.Wrap)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.return_stmt, ezP.DelegateSvg.Stmt.return_stmt)
+
+/**
+ * Class for a DelegateSvg, yield_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.yield_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.yield_stmt.superClass_.constructor.call(this, prototypeName)
+  this.wrapperType = ezP.T3.yield_expression
+  this.wrappedPrototype = ezP.Const.Expr.yield_expression
+}
+goog.inherits(ezP.DelegateSvg.Stmt.yield_stmt, ezP.DelegateSvg.Wrap)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.yield_stmt, ezP.DelegateSvg.Stmt.yield_stmt)

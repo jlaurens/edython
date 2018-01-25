@@ -294,6 +294,59 @@ ezP.DelegateSvg.Stmt.continue_stmt.prototype.initBlock = function(block) {
 }
 
 
+/**
+ * Class for a DelegateSvg, raise_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.raise_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.raise_stmt.superClass_.constructor.call(this, prototypeName)
+}
+goog.inherits(ezP.DelegateSvg.Stmt.raise_stmt, ezP.DelegateSvg.Stmt)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.raise_stmt, ezP.DelegateSvg.Stmt.raise_stmt)
+
+/**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.raise_stmt.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Stmt.raise_stmt.superClass_.initBlock.call(this, block)
+  this.inputRAISE = block.appendValueInput(ezP.Const.Input.RAISE)
+    .appendField(new ezP.FieldLabel('raise'))
+    .setCheck(ezP.T3.Require.expression)
+  this.inputEXPR = block.appendValueInput(ezP.Const.Input.EXPR)
+    .setCheck(ezP.T3.Require.expression)
+  this.inputEXPR.connection.ezpData.optional_ = true
+}
+
+/**
+ * Prepare the inputs.
+ * The default implementation does nothing.
+ * Subclassers may enable/disable an input
+ * depending on the context.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.raise_stmt.prototype.prepareInputs_ = function (block) {
+  ezP.DelegateSvg.Stmt.raise_stmt.superClass_.prepareInputs_.call(this, block)
+  var connected = this.inputEXPR.connection.isConnected()
+  this.setInputEnabled(block, this.inputEXPR, this.inputRAISE.connection.isConnected() || connected)
+  if (connected) {
+    if (this.inputEXPR.fieldRow.length == 0) {
+      this.inputEXPR.appendField(new ezP.FieldLabel(','), ezP.Const.Field.LABEL)
+    }
+  } else if (this.inputEXPR.fieldRow.length > 0) {
+    this.inputEXPR.removeField(ezP.Const.Field.LABEL)
+  }
+  this.inputRAISE.connection.ezpData.optional_ = !connected
+}
+
 
 
 
