@@ -173,6 +173,8 @@ ezP.Const.Input = {
   ITEM: 'ITEM', /* used by delimited blocks */
   PRIMARY: 'PRIMARY',
   SECONDARY: 'SECONDARY',
+  FIRST: 'FIRST',
+  SECOND: 'SECOND',
   LIST: 'LIST',
   WRAP: 'WRAP',
   KEY: 'KEY',
@@ -187,7 +189,9 @@ ezP.Const.Input = {
   LHS: 'LHS',
   RHS: 'RHS',
   OPTION: 'OPTION',
+  ASSERT: 'ASSERT',
   RAISE: 'RAISE',
+  FROM: 'FROM',
   // IN PROGRESS
   ANY: 'ANY',
   SEP: 'SEP',
