@@ -128,13 +128,13 @@ ezP.DelegateSvg.List.prototype.getInput = function (block, name) {
     } while ((input = list[++i]) && (ezp = input.ezp))
     var c8n = block.makeConnection_(Blockly.INPUT_VALUE)
     input = new Blockly.Input(Blockly.INPUT_VALUE, 'S7R_' + (n + 1), block, c8n)
-    ezP.setupEzpData(input)
+    ezP.Input.setupEzpData(input)
     goog.mixin(input.ezpData,{n: n + 1, sep: sep, s7r_: true})
     input.appendField(new Blockly.FieldLabel(sep || this.consolidator.defaultSep))
     list.splice(i, 0, input)
     c8n = block.makeConnection_(Blockly.INPUT_VALUE)
     input = new Blockly.Input(Blockly.INPUT_VALUE, name, block, c8n)
-    ezP.setupEzpData(input)
+    ezP.Input.setupEzpData(input)
     goog.mixin(input.ezpData, {n: n, sep: sep})
     list.splice(i, 0, input)
     return input
@@ -148,6 +148,7 @@ ezP.DelegateSvg.List.prototype.getInput = function (block, name) {
  * @param {!Block} block.
  */
 ezP.DelegateSvg.List.prototype.consolidate = function (block) {
+  ezP.DelegateSvg.List.superClass_.consolidate.call(this, block)
   this.consolidator.consolidate(block)
 }
 
@@ -400,3 +401,4 @@ ezP.DelegateSvg.Expr.parameter_list = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.parameter_list, ezP.DelegateSvg.List)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Expr.parameter_list, ezP.DelegateSvg.Expr.parameter_list)
+

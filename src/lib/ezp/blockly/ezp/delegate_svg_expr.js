@@ -136,7 +136,7 @@ ezP.USE_PROPER_SLICING_STRIDE_ID = 'USE_PROPER_SLICING_STRIDE'
  * @param {!goo.ui.Menu} menu The menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.proper_slice.prototype.populateContextMenu_ = function (block, menu) {
+ezP.DelegateSvg.Expr.proper_slice.prototype.populateContextMenuFirst_ = function (block, menu) {
   var unused = this.inputSTRIDE.ezpData.disabled_
   var menuItem = new ezP.MenuItem(
     unused? ezP.Msg.USE_PROPER_SLICING_STRIDE: ezP.Msg.UNUSE_PROPER_SLICING_STRIDE,
@@ -144,7 +144,8 @@ ezP.DelegateSvg.Expr.proper_slice.prototype.populateContextMenu_ = function (blo
   menuItem.setEnabled(!this.inputSTRIDE.connection.isConnected())
   menu.addChild(menuItem, true)
   menu.addChild(new ezP.Separator(), true)
-  ezP.DelegateSvg.Expr.proper_slice.superClass_.populateContextMenu_.call(this,block, menu)
+  ezP.DelegateSvg.Expr.proper_slice.superClass_.populateContextMenuFirst_.call(this,block, menu)
+  return true
 }
 
 /**
@@ -154,17 +155,15 @@ ezP.DelegateSvg.Expr.proper_slice.prototype.populateContextMenu_ = function (blo
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Expr.proper_slice.prototype.onActionMenuEvent = function (block, menu, event) {
+ezP.DelegateSvg.Expr.proper_slice.prototype.handleActionMenuEventFirst = function (block, menu, event) {
   var action = event.target.getModel()
   if (action == ezP.USE_PROPER_SLICING_STRIDE_ID) {
     var input = this.inputSTRIDE
     this.setNamedInputDisabled(block, input.name, !input.ezpData.disabled_)
-    return
+    return true
   }
-  ezP.DelegateSvg.Expr.proper_slice.superClass_.onActionMenuEvent.call(this, block, menu, event)
-  return
+  return ezP.DelegateSvg.Expr.proper_slice.superClass_.handleActionMenuEventFirst.call(this, block, menu, event)
 }
-
 
 /**
  * Class for a DelegateSvg, conditional_expression_concrete block.
@@ -204,6 +203,69 @@ ezP.DelegateSvg.Expr.conditional_expression_concrete.prototype.initBlock = funct
 
 
 
+
+
+
+
+
+/**
+ * Class for a DelegateSvg, two possibly optional values and their labels.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.Two = function (prototypeName) {
+  ezP.DelegateSvg.Expr.Two.superClass_.constructor.call(this, prototypeName)
+}
+goog.inherits(ezP.DelegateSvg.Expr.Two, ezP.DelegateSvg.Expr)
+
+/**
+ * An array : input key, label, check, optional.
+ */
+ezP.DelegateSvg.Expr.Two.prototype.firstData = undefined
+ezP.DelegateSvg.Expr.Two.prototype.secondData = undefined
+
+/**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Expr.Two.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Expr.Two.superClass_.initBlock.call(this, block)
+  this.inputFIRST = block.appendValueInput(this.firstData[0])
+    .setCheck(this.firstData[2])
+  if (this.firstData[1].length) {
+    this.inputFIRST.appendField(new ezP.FieldLabel(this.firstData[1]))
+  }
+  this.inputSECOND = block.appendValueInput(this.secondData[0])
+    .setCheck(this.secondData[2])
+  this.inputSECOND.connection.ezpData.optional_ = this.secondData[3]
+}
+
+/**
+ * Prepare the inputs.
+ * The default implementation does nothing.
+ * Subclassers may enable/disable an input
+ * depending on the context.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Expr.Two.prototype.consolidate = function (block) {
+  ezP.DelegateSvg.Expr.Two.superClass_.consolidate.call(this, block)
+  var connected = this.inputSECOND.connection.isConnected()
+  this.setInputEnabled(block, this.inputSECOND, this.inputFIRST.connection.isConnected() || connected)
+  if (connected) {
+    if (this.inputSECOND.fieldRow.length == 0) {
+      this.inputSECOND.appendField(new ezP.FieldLabel(this.secondData[1]), ezP.Const.Field.LABEL)
+    }
+  } else if (this.inputSECOND.fieldRow.length > 0) {
+    this.inputSECOND.removeField(ezP.Const.Field.LABEL)
+  }
+  this.inputFIRST.connection.ezpData.optional_ = this.firstData[3] && !connected
+}
 
 
 

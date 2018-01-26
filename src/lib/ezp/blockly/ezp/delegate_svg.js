@@ -66,8 +66,10 @@ ezP.DelegateSvg.Manager = (function () {
     Ctors[prototypeName] = Ctor
   }
   me.display = function() {
-    for (var k in Object.keys(Ctors)) {
-      console.log(''+k+'->'+Ctors[k])
+    var keys = Object.keys(Ctors)
+    for (var k=0; k<keys.length; k++) {
+      var prototypeName = keys[k]
+      console.log(''+k+'->'+prototypeName+'->'+Ctors[prototypeName])
     }
   }
   return me
@@ -180,7 +182,7 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
   this.isRendering = true
   this.minWidth = block.width = 0
   block.rendered = true
-  this.prepareInputs_(block)
+  this.consolidate(block)
   this.willRender_(block)
   this.renderDraw_(block)
   this.layoutConnections_(block)
@@ -207,10 +209,11 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
  * The default implementation does nothing.
  * Subclassers may enable/disable an input
  * depending on the context.
+ * List managers will use consolidators to help list management.
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.prepareInputs_ = function (block) {
+ezP.DelegateSvg.prototype.consolidate = function (block) {
 }
 
 /**
@@ -830,193 +833,6 @@ ezP.StatementBlockEnumerator = function (block) {
   return me
 }
 
-ezP.DUPLICATE_BLOCK_ID = 'DUPLICATE_BLOCK'
-ezP.REMOVE_COMMENT_ID = 'REMOVE_COMMENT'
-ezP.ADD_COMMENT_ID = 'ADD_COMMENT'
-ezP.EXPAND_BLOCK_ID = 'EXPAND_BLOCK'
-ezP.COLLAPSE_BLOCK_ID = 'COLLAPSE_BLOCK'
-ezP.TOGGLE_ENABLE_BLOCK_ID = 'TOGGLE_ENABLE_BLOCK'
-ezP.DELETE_BLOCK_ID = 'DELETE_BLOCK'
-ezP.HELP_ID = 'HELP'
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!goo.ui.Menu} menu The menu to populate.
- * @private
- */
-ezP.DelegateSvg.prototype.populateContextMenu_ = function (block, menu) {
-  var menuItem
-  if (block.isDeletable() && block.isMovable() && !block.isInFlyout) {
-    // Option to duplicate this block.
-    menuItem = new ezP.MenuItem(
-      Blockly.Msg.DUPLICATE_BLOCK,
-      [ezP.DUPLICATE_BLOCK_ID])
-    menu.addChild(menuItem, true)
-    if (block.getDescendants().length > block.workspace.remainingCapacity()) {
-      menuItem.setEnabled(false);
-    }
-  }
-  if (block.isEditable() && !block.collapsed_ &&
-    block.workspace.options.comments) {
-    // Option to add/remove a comment.
-    if (block.comment) {
-      menuItem = new ezP.MenuItem(
-        Blockly.Msg.REMOVE_COMMENT,
-        [ezP.REMOVE_COMMENT_ID])
-    } else {
-      menuItem = new ezP.MenuItem(
-        Blockly.Msg.ADD_COMMENT,
-        [ezP.ADD_COMMENT_ID])
-    }
-    menuItem.setEnabled(false && !goog.userAgent.IE && !block.outputConnection)
-    menu.addChild(menuItem, true)
-  }
-  if (block.workspace.options.collapse) {
-    if (block.collapsed_) {
-      menuItem = new ezP.MenuItem(
-        Blockly.Msg.EXPAND_BLOCK,
-        [ezP.EXPAND_BLOCK_ID])
-      menuItem.setEnabled(true)
-    } else {
-      menuItem = new ezP.MenuItem(
-        Blockly.Msg.COLLAPSE_BLOCK,
-        [ezP.COLLAPSE_BLOCK_ID])
-      menuItem.setEnabled(block.getStatementCount() > 2)
-    }
-    menu.addChild(menuItem, true)
-  }
-  if (block.workspace.options.disable) {
-    menuItem = new ezP.MenuItem(
-      block.disabled
-        ? Blockly.Msg.ENABLE_BLOCK : Blockly.Msg.DISABLE_BLOCK,
-      [ezP.TOGGLE_ENABLE_BLOCK_ID])
-    menuItem.setEnabled(!block.outputConnection)
-    menu.addChild(menuItem, true)
-  }
-  if (block.isDeletable() && block.isMovable() && !block.isInFlyout) {
-    // Count the number of blocks that are nested in this block.
-    var descendantCount = block.ezp.getUnsealedDescendants(block).length
-    var nextBlock = block.getNextBlock()
-    if (nextBlock) {
-      // Blocks in the current stack would survive this block's deletion.
-      descendantCount -= nextBlock.ezp.getUnsealedDescendants(nextBlock).length
-    }
-    menuItem = new ezP.MenuItem(
-      descendantCount === 1 ? Blockly.Msg.DELETE_BLOCK
-        : Blockly.Msg.DELETE_X_BLOCKS.replace('%1', String(descendantCount)),
-      [ezP.DELETE_BLOCK_ID])
-    menuItem.setEnabled(true)
-    menu.addChild(menuItem, true)
-  }
-  // help
-  var url = goog.isFunction(block.helpUrl) ? block.helpUrl() : block.helpUrl
-  menuItem = new ezP.MenuItem(
-    Blockly.Msg.HELP,
-    [ezP.HELP_ID])
-  menuItem.setEnabled(!!url)
-  menu.addChild(menuItem, true)
-  menu.addChild(new ezP.Separator(), true)
-  
-  menuItem = new ezP.MenuItem(
-    this.getPythonType(block),
-    [])
-  menuItem.setEnabled(false)
-  menu.addChild(menuItem, true)
-
-  menu.render()
-  goog.events.listenOnce(menu, 'action', function (event) {
-    setTimeout(function () {
-      block.ezp.onActionMenuEvent(block, menu, event)
-    }, 100)// TODO be sure that this 100 is suffisant
-  })
-}
-
-/**
- * Returns the python type of the block.
- * This information may be displayed as the last item in the contextual menu.
- * Sealed will return the parent's answer.
- * @param {!Blockly.Block} block The block.
- */
-ezP.DelegateSvg.prototype.getPythonType = function (block) {
-  if (this.sealed_) {
-    var parent = block.getParent()
-    return parent.ezp.getPythonType(parent)
-  }
-  return this.pythonType_
-}
-
-/**
- * Show the context menu for the given block.
- * Only blocks with a svgShape_ have a context menu.
- * Sealed blocks won't have a context menu,
- * only the parent block will have.
- * @param {!Blockly.Block} block The block.
- * @param {!Event} e Mouse event.
- * @private
- */
-ezP.DelegateSvg.prototype.showContextMenu_ = function (block, e) {
-  if (this.svgPathShape_) {
-    var menu = new ezP.PopupMenu(undefined, this.ContextMenuRenderer)
-    this.populateContextMenu_(block, menu)
-    var bBox = this.svgPathShape_.getBBox()
-    var scaledHeight = bBox.height * block.workspace.scale
-    var xy = goog.style.getPageOffset(block.svgGroup_)
-    menu.showMenu(block.svgGroup_, xy.x, xy.y + scaledHeight+2)
-    }
-  }
-
-  /**
-   * Handle the selection of an item in the context dropdown menu.
-   * Subclassers may not call the inherited implementation.
-   * The default implementation returns false,
-   * thus passing the control to onActionMenuEvent.
-   * @param {!goog.ui.Menu} menu The Menu component clicked.
-   * @param {!Blockly.Block} block The Menu component clicked.
-   * @param {!goog....} event The event containing as target
-   * @return {boolean} whether the event has been handle.
-   */
-  ezP.DelegateSvg.prototype.handleActionMenuEvent = function (block, menu, event) {
-    return false
-  }
-
-/**
- * Handle the selection of an item in the context dropdown menu.
- * @param {!goog.ui.Menu} menu The Menu component clicked.
- * @param {!Blockly.Block} block The Menu component clicked.
- * @param {!goog....} event The event containing as target
- * the MenuItem selected within menu.
- */
-ezP.DelegateSvg.prototype.onActionMenuEvent = function (block, menu, event) {
-  if (this.handleActionMenuEvent(block, menu, event)) {
-    return
-  }
-  var workspace = block.workspace
-  var model = event.target.getModel()
-  var action = model[0]
-  if (action === ezP.DUPLICATE_BLOCK_ID) {
-    Blockly.duplicate_(block);
-  } else if (action === ezP.REMOVE_COMMENT_ID) {
-    block.setCommentText(null)
-  } else if (action === ezP.ADD_COMMENT_ID) {
-    block.setCommentText('')
-  } else if (action === ezP.EXPAND_BLOCK_ID) {
-    block.setCollapsed(false)
-  } else if (action === ezP.COLLAPSE_BLOCK_ID) {
-    block.setCollapsed(true)
-  } else if (action === ezP.TOGGLE_ENABLE_BLOCK_ID) {
-    block.setDisabled(!block.disabled)
-  } else if (action === ezP.DELETE_BLOCK_ID) {
-    Blockly.Events.setGroup(true)
-    block.dispose(true, true)
-    Blockly.Events.setGroup(false)
-  } else if (action === ezP.HELP_ID) {
-    block.showHelp_()
-  } else {
-    console.log('Unknown action ' + action)
-  }
-}
-
 ezP.DelegateSvg.prototype.outputCheck = undefined
 ezP.DelegateSvg.prototype.nextStatementCheck = undefined
 ezP.DelegateSvg.prototype.previousStatementCheck = undefined
@@ -1083,35 +899,58 @@ ezP.DelegateSvg.prototype.completeSealed_ = function (block) {
 }
 
 /**
- * Complete the .
+ * Complete the sealed block.
+ * When created from dom, the connections are established
+ * but the nodes were not created sealed.
+ * @param {!Block} block.
+ * @param {!Input} input.
+ * @param {!String} prototypeName.
+ * @private
+ */
+ezP.DelegateSvg.prototype.makeBlockSealed = function (block) {
+  if (!this.sealed_) {
+    this.sealed_ = true
+    goog.dom.removeNode(this.svgPathShape_)
+    delete this.svgPathShape_
+    this.svgPathShape_ = undefined
+    goog.dom.removeNode(this.svgPathContour_)
+    delete this.svgPathContour_
+    this.svgPathContour_ = undefined
+  }
+}
+
+/**
+ * Complete the sealed block.
+ * When created from dom, the connections are established
+ * but the nodes were not created sealed.
  * @param {!Block} block.
  * @param {!Input} input.
  * @param {!String} prototypeName.
  * @private
  */
 ezP.DelegateSvg.prototype.completeSealedInput = function (block, input, prototypeName) {
-  if (!!input && !this.ignoreCompleteSealed && !input.connection.isConnected()) {
-    goog.asserts.assert(prototypeName, 'Missing sealing prototype name in block '+block.type)
-    if (ezP.DelegateSvg.sealedFireWall > 0) {
-      --ezP.DelegateSvg.sealedFireWall
-      var target = block.workspace.newBlock(prototypeName)
-      goog.asserts.assert(target, 'completeSealed failed: '+ prototypeName);
-      target.initSvg();
-      target.ezp.sealed_ = true
-      goog.dom.removeNode(target.ezp.svgPathShape_)
-      delete target.ezp.svgPathShape_
-      target.ezp.svgPathShape_ = undefined
-      goog.dom.removeNode(target.ezp.svgPathContour_)
-      delete target.ezp.svgPathContour_
-      target.ezp.svgPathContour_ = undefined
-      goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed '+target.type)
-      input.connection.connect(target.outputConnection)
-      input.connection.ezpData.disabled_ = true
-      input.connection.setHidden(true)
+  if (!!input) {
+    var target = input.connection.targetBlock()
+    if (!!target) {
+      target.ezp.makeBlockSealed(target)
       target.ezp.completeSealed(target)
     } else {
-      console.log('Maximum value reached in completeSealedInput')
-      this.ignoreCompleteSealed = true
+      goog.asserts.assert(prototypeName, 'Missing sealing prototype name in block '+block.type)
+      if (ezP.DelegateSvg.sealedFireWall > 0) {
+        --ezP.DelegateSvg.sealedFireWall
+        var target = block.workspace.newBlock(prototypeName)
+        goog.asserts.assert(target, 'completeSealed failed: '+ prototypeName);
+        target.initSvg();
+        target.ezp.makeBlockSealed(target)
+        goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed '+target.type)
+        input.connection.connect(target.outputConnection)
+        input.connection.ezpData.disabled_ = true
+        target.ezp.completeSealed(target)  
+      } else {
+        console.log('Maximum value reached in completeSealedInput')
+        this.ignoreCompleteSealed = true
+        return
+      }
     }
   }
 }

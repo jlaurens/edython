@@ -34,6 +34,7 @@ ezP.Const.Stmt = {
   return_stmt: 'ezp_stmt_return_stmt',
   yield_stmt: 'ezp_stmt_yield_stmt',
   raise_stmt: 'ezp_stmt_raise_stmt',
+  import_stmt: 'ezp_stmt_import_stmt',
   // in progress
 
 
@@ -72,7 +73,7 @@ ezP.Const.Expr = {
   comp_if: 'ezp_expr_comp_if',
   comp_iter_list: 'ezp_expr_comp_iter_list',
   attributeref: 'ezp_expr_attributeref',
-  dot_identifier: 'ezp_expr_dot_identifier',
+  identifier_dotted: 'ezp_expr_identifier_dotted',
   slicing: 'ezp_expr_slicing',
   display_slice_list: 'ezp_expr_display_slice_list',
   slice_list: 'ezp_expr_slice_list',
@@ -96,6 +97,17 @@ ezP.Const.Expr = {
   lambda_expr_nocond: 'ezp_expr_lambda_expr_nocond',
   assignment_expression: 'ezp_expr_assignment_expression',
   augmented_assignment_expression: 'ezp_expr_augmented_assignment_expression',
+  dotted_name: 'ezp_expr_dotted_name',// module ::= dotted_name
+  module: 'ezp_expr_module',// module ::= dotted_name
+  module_void: 'ezp_expr_module_void',
+  module_named: 'ezp_expr_module_named',
+  relative_module: 'ezp_expr_relative_module',
+  from_module_import: 'ezp_expr_from_module_import',
+  from_relative_module_import: 'ezp_expr_from_relative_module_import',
+  import_module: 'ezp_expr_import_module',
+  import: 'ezp_expr_import',
+  identifier_named: 'ezp_expr_identifier_named',
+  identifier_named_list: 'ezp_expr_identifier_named_list',
   // in progress
 
   star_or_expr: 'ezp_expr_star_or_expr',
@@ -145,6 +157,7 @@ ezP.Const.Ctl = {
 
 ezP.Const.Field = {
   LABEL: 'LABEL',
+  DOTS: 'DOTS',
   // IN PROGRESS
   VAR: 'VAR',
   STARS: 'STARS',
@@ -192,6 +205,10 @@ ezP.Const.Input = {
   ASSERT: 'ASSERT',
   RAISE: 'RAISE',
   FROM: 'FROM',
+  MODULE: 'MODULE',
+  IMPORT: 'IMPORT',
+  NAME: 'NAME',
+  IDENTIFIER: 'IDENTIFIER',
   // IN PROGRESS
   ANY: 'ANY',
   SEP: 'SEP',
@@ -268,4 +285,5 @@ ezP.Op = {
 ezP.Const.Event = {
   input_disable: 'ezp_input_disable',
   change_operator: 'ezp_change_operator',
+  change_import_model: 'ezp_change_import_model',
 }

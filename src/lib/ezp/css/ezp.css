@@ -162,8 +162,9 @@ body {
 
 /* State: disabled. */
 .ezp-menuitem-disabled .ezp-menuitem-accel,
-.ezp-menuitem-disabled .ezp-menuitem-content ,
-.ezp-submenu-disabled .ezp-submenu-content ,
+.ezp-menuitem-disabled .ezp-menuitem-content,
+.ezp-menuitem-code-disabled,
+.ezp-submenu-disabled .ezp-submenu-content,
 .ezp-submenu-disabled .ezp-submenu-arrow {
   color: #ccc !important;
 }
@@ -175,6 +176,7 @@ body {
 
 /* State: hover. */
 .ezp-menuitem-highlight,
+.ezp-menuitem-code-highlight,
 .ezp-submenu-highlight,
 .ezp-menuitem-hover {
   background-color: #d6e9f8;

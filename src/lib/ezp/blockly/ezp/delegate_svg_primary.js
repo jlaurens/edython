@@ -72,9 +72,9 @@ ezP.DelegateSvg.Expr.VSPair.prototype.completeSealed = function (block) {
 ezP.DelegateSvg.Expr.attributeref = function (prototypeName) {
   ezP.DelegateSvg.Expr.attributeref.superClass_.constructor.call(this, prototypeName)
   this.primaryCheck = ezP.T3.Require.primary
-  this.secondaryCheck = ezP.T3.dot_identifier
+  this.secondaryCheck = ezP.T3.identifier_dotted
   this.outputCheck = ezP.T3.attributeref
-  this.secondaryPrototypeName = ezP.Const.Expr.dot_identifier
+  this.secondaryPrototypeName = ezP.Const.Expr.identifier_dotted
 }
 goog.inherits(ezP.DelegateSvg.Expr.attributeref, ezP.DelegateSvg.Expr.VSPair)
 

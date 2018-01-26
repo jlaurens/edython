@@ -59,8 +59,11 @@ ezP.BlockSvg.prototype.render = function (optBubble) {
  */
 ezP.BlockSvg.prototype.getInput = function (name) {
   var input = this.ezp.getInput(this, name)
-  return input !== undefined ? input
-    : ezP.BlockSvg.superClass_.getInput.call(this, name)
+  if (!input) {
+    input = ezP.BlockSvg.superClass_.getInput.call(this, name)
+  }
+  ezP.Input.setupEzpData(this, input)
+  return input
 }
 
 /**
@@ -426,7 +429,7 @@ ezP.BlockSvg.prototype.customContextMenu = function(menuOptions) {
  * @private
  */
 ezP.BlockSvg.prototype.onMouseDown_ = function(e) {
-  if (this.ezp.sealed_) {
+  if (this.ezp.sealed_ && this.getParent()) {
     this.getParent().onMouseDown_(e)
   } else {
     ezP.BlockSvg.superClass_.onMouseDown_.call(this, e)

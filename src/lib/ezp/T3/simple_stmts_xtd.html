@@ -40,9 +40,24 @@ target_starred ::= "*" target
 expression_starred ::= "*" expression
 something_starred ::= "*" something
 </pre>
-starred_target ::= starred_concrete
-starred_item ::= starred_concrete
-starred_expression ::= starred_concrete
-starred_concrete ::= "*" something
+<pre>
+from_module_import ::= "from" module "import" "*"
+from_relative_module_import ::= "from" relative_module "import" identifier_named_list
+import_module ::= "import" module ["as" name] ( "," module ["as" name] )*
+import ::= import_module | from_relative_module_import | from_module_import
+module ::= identifier_list
+module_void ::= identifier_void_list
+module_named_list ::= module_named "," ... "," module_named
+module_named ::= module "as" name
+identifier_named_list ::= identifier_named ( "," identifier_named )*
+identifier_named ::= identifier "as" name
+</pre>
+import_stmt     ::=  "import" module ["as" name] ( "," module ["as" name] )*
+                     | "from" relative_module "import" identifier ["as" name] ( "," identifier ["as" name] )*
+                     | "from" relative_module "import" "(" identifier ["as" name] ( "," identifier ["as" name] )* [","] ")"
+                     | "from" module "import" "*"
+module          ::=  (identifier ".")* identifier
+relative_module ::=  "."* module | "."+
+name            ::=  identifier
 </body>
 </html>

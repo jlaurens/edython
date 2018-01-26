@@ -158,7 +158,10 @@ ezP.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
  */
 ezP.Block.prototype.appendSealedValueInput = function(name) {
   var input = this.appendValueInput(name)
-  input.connection.ezpData = {sealed_: true}
+  ezP.Input.setupEzpData(input)
+  input.ezpData.sealed_ = true // redundant
+  input.connection.ezpData.sealed_ = true
+  input.connection.setHidden(true)
   return input
 };
 

@@ -57,6 +57,7 @@ ezP.DelegateSvg.Expr.Delimited.prototype.initBlock = function(block) {
  * @private
  */
 ezP.DelegateSvg.Expr.Delimited.prototype.completeSealed = function (block) {
+  ezP.DelegateSvg.Expr.Delimited.superClass_.completeSealed.call(this, block)
   this.completeSealedInput(block,
     this.inputITEM,
     this.sealedPrototypeName)

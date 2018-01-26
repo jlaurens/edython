@@ -124,9 +124,9 @@ if (Blockly.Msg.NEW_VARIABLE.startsWith('Créer')) {
  * @param {!goo.ui.Menu} menu The menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.Get.prototype.populateContextMenu_ = function (block, menu) {
+ezP.DelegateSvg.Expr.Get.prototype.populateContextMenuFirst_ = function (block, menu) {
   var listener = block.ezp.fieldIdentifier
-  goog.asserts.assert(listener && listener.getText, 'Bad listener in ...Get...populateContextMenu_.')
+  goog.asserts.assert(listener && listener.getText, 'Bad listener in ...Get...populateContextMenuFirst_.')
   var name = listener.getText()
   var allVs = [].concat(block.workspace.getAllVariables())
   allVs.sort(Blockly.VariableModel.compareByName)
@@ -161,10 +161,10 @@ ezP.DelegateSvg.Expr.Get.prototype.populateContextMenu_ = function (block, menu)
     [ezP.DELETE_UNUSED_VARIABLES_ID])
   menuItem.setEnabled(ezP.Variables.isThereAnUnusedVariable(block.workspace))
   menu.addChild(menuItem, true)
-  menu.addChild(new ezP.Separator(), true)
   Blockly.utils.addClass(subMenu.getMenu().getElement(), 'ezp-nosubmenu')
 
-  ezP.DelegateSvg.Expr.Get.superClass_.populateContextMenu_.call(this,block, menu)
+  ezP.DelegateSvg.Expr.Get.superClass_.populateContextMenuFirst_.call(this,block, menu)
+  return true
 }
 
 /**
@@ -209,30 +209,36 @@ ezP.DelegateSvg.Expr.Get.prototype.onActionReplaceVariable = function (block, VM
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Expr.Get.prototype.onActionMenuEvent = function (block, menu, event) {
+ezP.DelegateSvg.Expr.Get.prototype.handleActionMenuEventFirst = function (block, menu, event) {
   var listener = block.ezp.fieldIdentifier
   var workspace = block.workspace
   var model = event.target.getModel()
   var action = model[0]
   var VM = model[1]
-  if (action === ezP.CHANGE_VARIABLE_ID) {
-    listener.setValue(VM.name)
-  } else if (action === ezP.RENAME_VARIABLE_ID) {
-    // Rename variable.
-    listener.showEditor_()
-  } else if (action === ezP.REPLACE_VARIABLE_ID) {
-    // Replace variable.
-    this.onActionReplaceVariable(block, VM)
-  } else if (action === ezP.DELETE_UNUSED_VARIABLES_ID) {
-    ezP.Variables.deleteUnusedVariables(workspace)
-  } else if (action === ezP.NEW_VARIABLE_ID) {
-    // Create new variable.
-    VM = ezP.Variables.createDummyVariable(workspace)
-    listener.setValue(VM.name)
-    setTimeout(function () {
-      listener.showVarNameEditor()
-    }, 10)
-  } else {
-    ezP.DelegateSvg.Expr.Get.superClass_.onActionMenuEvent.call(this, block, menu, event)
+  switch(action) {
+    case ezP.CHANGE_VARIABLE_ID:
+      listener.setValue(VM.name)
+      return true
+    case ezP.RENAME_VARIABLE_ID:
+      // Rename variable.
+      listener.showEditor_()
+      return true
+    case ezP.REPLACE_VARIABLE_ID:
+      // Replace variable.
+      this.onActionReplaceVariable(block, VM)
+      return true
+    case ezP.DELETE_UNUSED_VARIABLES_ID:
+      ezP.Variables.deleteUnusedVariables(workspace)
+      return true
+    case ezP.NEW_VARIABLE_ID:
+      // Create new variable.
+      VM = ezP.Variables.createDummyVariable(workspace)
+      listener.setValue(VM.name)
+      setTimeout(function () {
+        listener.showVarNameEditor()
+      }, 10)
+      return true
+      default:
+        return ezP.DelegateSvg.Expr.Get.superClass_.handleActionMenuEventFirst.call(this, block, menu, event)
   }
 }

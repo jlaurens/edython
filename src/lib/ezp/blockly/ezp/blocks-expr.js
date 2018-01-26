@@ -41,7 +41,7 @@ var Ks = [
   ezP.Const.Expr.comp_iter_list,
   ezP.Const.Expr.generator_expression,
   ezP.Const.Expr.attributeref,
-  ezP.Const.Expr.dot_identifier,
+  ezP.Const.Expr.identifier_dotted,
   ezP.Const.Expr.slicing,
   ezP.Const.Expr.display_slice_list,
   ezP.Const.Expr.slice_list,
@@ -65,18 +65,32 @@ var Ks = [
   ezP.Const.Expr.lambda_expr_nocond,
   ezP.Const.Expr.assignment_expression,
   ezP.Const.Expr.augmented_assignment_expression,
+  ezP.Const.Expr.module,
+  ezP.Const.Expr.module_void,
+  ezP.Const.Expr.module_named,
+  ezP.Const.Expr.relative_module,
+  ezP.Const.Expr.from_module_import,
+  ezP.Const.Expr.from_relative_module_import,
+  ezP.Const.Expr.import_module,
+  ezP.Const.Expr.import,
+  ezP.Const.Expr.identifier_named,
+  ezP.Const.Expr.identifier_named_list,
+
   // IN PROGRESS
 
+  ezP.Const.Expr.dotted_name,
 ]
 var O = {
   init: function () {
     this.ezp.initBlock(this)
   }
 }
+var last = undefined
 for (var i = 0; i<Ks.length; ++i) {
   var K = Ks[i]
-  goog.asserts.assert(K, 'Undefined K: '+i)
-  Blockly.Blocks[Ks[i]] = O
+  goog.asserts.assert(K, 'Undefined K: '+i+'>'+last)
+  Blockly.Blocks[K] = O
+  last = K
 }
 
 goog.require('Blockly.Block')

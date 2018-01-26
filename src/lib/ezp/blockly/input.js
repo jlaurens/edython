@@ -26,9 +26,12 @@ goog.require('Blockly.Input')
  * @param {!Blockly.Input} workspace The block's workspace.
  */
 ezP.Input.setupEzpData = function (input) {
-  input.ezpData = {
-    listed_: false,// consolidator, whether the input belongs to a list
-    s7r_: false,// consolidator, whether the input is a separator
+  if (!input.ezpData) {
+    input.ezpData = {
+      // sealed_: false, // blocks are not sealed
+      // listed_: false,// consolidator, whether the input belongs to a list
+      // s7r_: false,// consolidator, whether the input is a separator
+    }
   }
 }
 

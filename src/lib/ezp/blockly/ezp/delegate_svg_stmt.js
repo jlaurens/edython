@@ -188,16 +188,16 @@ ezP.DelegateSvg.Stmt.annotated_assignment_stmt.prototype.initBlock = function(bl
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.TwoOptionals = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.TwoOptionals.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Stmt.Two = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.Two.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Stmt.TwoOptionals, ezP.DelegateSvg.Stmt)
+goog.inherits(ezP.DelegateSvg.Stmt.Two, ezP.DelegateSvg.Stmt)
 
 /**
- * An array : input key, label, check.
+ * An array : input key, label, check, optional.
  */
-ezP.DelegateSvg.Stmt.TwoOptionals.prototype.firstData = undefined
-ezP.DelegateSvg.Stmt.TwoOptionals.prototype.secondData = undefined
+ezP.DelegateSvg.Stmt.Two.prototype.firstData = undefined
+ezP.DelegateSvg.Stmt.Two.prototype.secondData = undefined
 
 /**
  * Initialize the block.
@@ -206,14 +206,16 @@ ezP.DelegateSvg.Stmt.TwoOptionals.prototype.secondData = undefined
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Stmt.TwoOptionals.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Stmt.TwoOptionals.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Stmt.Two.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Stmt.Two.superClass_.initBlock.call(this, block)
   this.inputFIRST = block.appendValueInput(this.firstData[0])
-    .appendField(new ezP.FieldLabel(this.firstData[1]))
     .setCheck(this.firstData[2])
+  if (this.firstData[1].length) {
+    this.inputFIRST.appendField(new ezP.FieldLabel(this.firstData[1]))
+  }
   this.inputSECOND = block.appendValueInput(this.secondData[0])
     .setCheck(this.secondData[2])
-  this.inputSECOND.connection.ezpData.optional_ = true
+  this.inputSECOND.connection.ezpData.optional_ = this.secondData[3]
 }
 
 /**
@@ -224,8 +226,8 @@ ezP.DelegateSvg.Stmt.TwoOptionals.prototype.initBlock = function(block) {
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Stmt.TwoOptionals.prototype.prepareInputs_ = function (block) {
-  ezP.DelegateSvg.Stmt.TwoOptionals.superClass_.prepareInputs_.call(this, block)
+ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block) {
+  ezP.DelegateSvg.Stmt.Two.superClass_.consolidate.call(this, block)
   var connected = this.inputSECOND.connection.isConnected()
   this.setInputEnabled(block, this.inputSECOND, this.inputFIRST.connection.isConnected() || connected)
   if (connected) {
@@ -235,7 +237,7 @@ ezP.DelegateSvg.Stmt.TwoOptionals.prototype.prepareInputs_ = function (block) {
   } else if (this.inputSECOND.fieldRow.length > 0) {
     this.inputSECOND.removeField(ezP.Const.Field.LABEL)
   }
-  this.inputFIRST.connection.ezpData.optional_ = !connected
+  this.inputFIRST.connection.ezpData.optional_ = this.firstData[3] && !connected
 }
 
 /**
@@ -247,10 +249,10 @@ ezP.DelegateSvg.Stmt.TwoOptionals.prototype.prepareInputs_ = function (block) {
  */
 ezP.DelegateSvg.Stmt.assert_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.assert_stmt.superClass_.constructor.call(this, prototypeName)
-  this.firstData = [ezP.Const.Input.ASSERT, 'assert', ezP.T3.Require.expression]
-  this.secondData = [ezP.Const.Input.EXPR, ',', ezP.T3.Require.expression]
+  this.firstData = [ezP.Const.Input.ASSERT, 'assert', ezP.T3.Require.expression, false]
+  this.secondData = [ezP.Const.Input.EXPR, ',', ezP.T3.Require.expression, true]
 }
-goog.inherits(ezP.DelegateSvg.Stmt.assert_stmt, ezP.DelegateSvg.Stmt.TwoOptionals)
+goog.inherits(ezP.DelegateSvg.Stmt.assert_stmt, ezP.DelegateSvg.Stmt.Two)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.assert_stmt, ezP.DelegateSvg.Stmt.assert_stmt)
 
@@ -335,10 +337,10 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.continue_stmt, ezP.DelegateSvg.S
  */
 ezP.DelegateSvg.Stmt.raise_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.raise_stmt.superClass_.constructor.call(this, prototypeName)
-  this.firstData = [ezP.Const.Input.RAISE, 'raise', ezP.T3.Require.expression]
-  this.secondData = [ezP.Const.Input.FROM, 'from', ezP.T3.Require.expression]
+  this.firstData = [ezP.Const.Input.RAISE, 'raise', ezP.T3.Require.expression, true]
+  this.secondData = [ezP.Const.Input.FROM, 'from', ezP.T3.Require.expression, true]
 }
-goog.inherits(ezP.DelegateSvg.Stmt.raise_stmt, ezP.DelegateSvg.Stmt.TwoOptionals)
+goog.inherits(ezP.DelegateSvg.Stmt.raise_stmt, ezP.DelegateSvg.Stmt.Two)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.raise_stmt, ezP.DelegateSvg.Stmt.raise_stmt)
 
@@ -559,7 +561,7 @@ ezP.Msg.PRINT_OPTION_FLUSH = ezP.Msg.PRINT_OPTION_FLUSH || 'flush = …'
  * @param {!goo.ui.Menu} menu The menu to populate.
  * @private
  */
-ezP.DelegateSvg.Stmt.Print.prototype.populateContextMenu_ = function (block, menu) {
+ezP.DelegateSvg.Stmt.Print.prototype.populateContextMenuFirst_ = function (block, menu) {
   var renderer = ezP.KeyValueMenuItemRenderer.getInstance()
   var options = [
     [ezP.Msg.PRINT_OPTION_END, ezP.Const.Input.END],
@@ -575,8 +577,8 @@ ezP.DelegateSvg.Stmt.Print.prototype.populateContextMenu_ = function (block, men
     menuItem.setChecked(this.getPrintState_()[value])
     menu.addChild(menuItem, true)
   }
-  menu.addChild(new ezP.Separator(), true)
-  ezP.DelegateSvg.Stmt.Print.superClass_.populateContextMenu_.call(this, block, menu)
+  ezP.DelegateSvg.Stmt.Print.superClass_.populateContextMenuFirst_.call(this, block, menu)
+  return true
 }
 
 /**
@@ -586,7 +588,7 @@ ezP.DelegateSvg.Stmt.Print.prototype.populateContextMenu_ = function (block, men
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Stmt.Print.prototype.onActionMenuEvent = function (block, menu, event) {
+ezP.DelegateSvg.Stmt.Print.prototype.handleActionMenuEventFirst = function (block, menu, event) {
   var workspace = block.workspace
   var action = event.target.getModel()
   var state = this.getPrintState_()
@@ -599,10 +601,9 @@ ezP.DelegateSvg.Stmt.Print.prototype.onActionMenuEvent = function (block, menu, 
       setTimeout(function () {
         block.render()
       }, 100)
-      return
+      return true
     default:
-      ezP.DelegateSvg.Stmt.Print.superClass_.onActionMenuEvent.call(this, block, menu, event)
-      return
+      return ezP.DelegateSvg.Stmt.Print.superClass_.handleActionMenuEventFirst.call(this, block, menu, event)
   }
 }
 

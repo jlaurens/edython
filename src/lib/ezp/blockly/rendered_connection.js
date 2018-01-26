@@ -80,6 +80,10 @@ ezP.Connection.prototype.connect = function (otherConnection) {
     next.check_ = ezP.Type.Stmt.Check.after_else
   }
   ezP.Connection.superClass_.connect.call(this, otherConnection)
+  if (superior.ezpData.sealed_) {
+    // this connection should be sealed
+    inferior.sourceBlock_.ezp.makeBlockSealed(inferior)
+  }
 }
 
 /**

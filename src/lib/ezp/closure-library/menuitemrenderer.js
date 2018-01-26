@@ -89,7 +89,7 @@ ezP.Style.setControlRendererCssClass(
   'ezp-menuitem',
   'content',
   {'padding': '4px 6px'},
-  'hover',
+  'hover', // hover or highlight?
   {'background-color': '#d6e9f8'}
 )
 
@@ -103,7 +103,7 @@ ezP.Style.setControlRendererCssClass(
  * @override
  */
 ezP.MenuItemRenderer.prototype.getClassForState = function (state) {
-  return goog.ui.MenuItemRenderer.superClass_.getClassForState.call(
+  return ezP.MenuItemRenderer.superClass_.getClassForState.call(
     this, state)
 }
 
@@ -458,9 +458,6 @@ ezP.Style.setControlRendererCssClass(
   {'background-color': '#d6e9f8'}
 )
 
-ezP.MenuItemCodeRenderer.prototype.getClassForState =
-  ezP.MenuItemRenderer.prototype.getClassForState
-
 /**
  * Adds or removes extra markup and CSS styling to the menu item to make it
  * selectable or non-selectable, depending on the value of the
@@ -500,9 +497,6 @@ ezP.Style.setControlRendererCssClass(
   'hover',
   {'background-color': '#d6e9f8'}
 )
-
-ezP.MenuItemVarRenderer.prototype.getClassForState =
-  ezP.MenuItemRenderer.prototype.getClassForState
 
 /**
  * Renderer for menu separators.
