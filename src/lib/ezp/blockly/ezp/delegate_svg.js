@@ -861,98 +861,19 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
 }
 
 /**
- * Final tune up depending on the block.
- * Default implementation does nothing.
- * @param {!Blockly.Block} block.
- * @param {!Element} hidden a dom element.
- */
-ezP.DelegateSvg.prototype.fromDom = function (block, element) {
-  ezP.DelegateSvg.superClass_.fromDom.call(this, block, element)
-  this.completeSealed_(block)
-}
-
-
-/**
- * If the sealed connections are not connected,
- * create a node for it.
  * The default implementation does nothing.
- * Subclassers will evntually create appropriate new nodes
- * and connect it to any sealed connection.
+ * Subclassers will override this but won't call it.
  * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.prototype.completeSealed = function (block) {
-}
-
-/**
- * If the sealed connections are not connected,
- * create a node for it.
- * The default implementation does nothing.
- * Subclassers will evntually create appropriate new nodes
- * and connect it to any sealed connection.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.prototype.completeSealed_ = function (block) {
-  ezP.DelegateSvg.sealedFireWall = 100
-  this.completeSealed(block)
-}
-
-/**
- * Complete the sealed block.
- * When created from dom, the connections are established
- * but the nodes were not created sealed.
- * @param {!Block} block.
- * @param {!Input} input.
- * @param {!String} prototypeName.
  * @private
  */
 ezP.DelegateSvg.prototype.makeBlockSealed = function (block) {
-  if (!this.sealed_) {
-    this.sealed_ = true
-    goog.dom.removeNode(this.svgPathShape_)
-    delete this.svgPathShape_
-    this.svgPathShape_ = undefined
-    goog.dom.removeNode(this.svgPathContour_)
-    delete this.svgPathContour_
-    this.svgPathContour_ = undefined
-  }
-}
-
-/**
- * Complete the sealed block.
- * When created from dom, the connections are established
- * but the nodes were not created sealed.
- * @param {!Block} block.
- * @param {!Input} input.
- * @param {!String} prototypeName.
- * @private
- */
-ezP.DelegateSvg.prototype.completeSealedInput = function (block, input, prototypeName) {
-  if (!!input) {
-    var target = input.connection.targetBlock()
-    if (!!target) {
-      target.ezp.makeBlockSealed(target)
-      target.ezp.completeSealed(target)
-    } else {
-      goog.asserts.assert(prototypeName, 'Missing sealing prototype name in block '+block.type)
-      if (ezP.DelegateSvg.sealedFireWall > 0) {
-        --ezP.DelegateSvg.sealedFireWall
-        var target = block.workspace.newBlock(prototypeName)
-        goog.asserts.assert(target, 'completeSealed failed: '+ prototypeName);
-        target.initSvg();
-        target.ezp.makeBlockSealed(target)
-        goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed '+target.type)
-        input.connection.connect(target.outputConnection)
-        input.connection.ezpData.disabled_ = true
-        target.ezp.completeSealed(target)  
-      } else {
-        console.log('Maximum value reached in completeSealedInput')
-        this.ignoreCompleteSealed = true
-        return
-      }
-    }
-  }
+  ezP.DelegateSvg.superClass_.makeBlockSealed.call(this, block)
+  goog.dom.removeNode(this.svgPathShape_)
+  delete this.svgPathShape_
+  this.svgPathShape_ = undefined
+  goog.dom.removeNode(this.svgPathContour_)
+  delete this.svgPathContour_
+  this.svgPathContour_ = undefined
 }
 
 /**
