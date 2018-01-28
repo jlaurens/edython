@@ -107,6 +107,31 @@ ezP.DelegateSvg.prototype.svgPathInline_ = undefined
 ezP.DelegateSvg.prototype.svgPathHighlight_ = undefined
 
 /**
+ * Create and initialize the SVG representation of the block.
+ * May be called more than once.
+ * @param {!Blockly.Block} block to be initialized..
+ */
+ezP.DelegateSvg.prototype.initSvg = function(block) {
+};
+
+/**
+ * Create and initialize the SVG representation of the child blocks sealed to the given block.
+ * May be called more than once.
+ * @param {!Blockly.Block} block to be initialized..
+ */
+ezP.DelegateSvg.prototype.initSvgSealed = function(block) {
+  if (this.sealedInputs_) {
+    for (var i = 0; i < this.sealedInputs_.length; i++) {
+      var data = this.sealedInputs_[i]
+      var target = data[0].connection.targetBlock()
+      if (target) {
+        target.initSvg()
+      }
+    }
+  }
+};
+
+/**
  * Initialize a block.
  * @param {!Blockly.Block} block to be initialized..
  * @extends {Blockly.Block}

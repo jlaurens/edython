@@ -40,6 +40,16 @@ ezP.BlockSvg = function (workspace, prototypeName, optId) {
 }
 goog.inherits(ezP.BlockSvg, Blockly.BlockSvg)
 
+/**
+ * Create and initialize the SVG representation of the block.
+ * May be called more than once.
+ */
+ezP.BlockSvg.prototype.initSvg = function() {
+  ezP.BlockSvg.superClass_.initSvg.call(this)
+  this.ezp.initSvg(this)
+  this.ezp.initSvgSealed(this)
+};
+
 ezP.BlockSvg.CORNER_RADIUS = 3
 
 /**
