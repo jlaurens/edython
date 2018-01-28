@@ -541,7 +541,6 @@ ezP.Delegate.prototype.completeSealedInput_ = function (block, input, prototypeN
         --ezP.Delegate.sealedFireWall
         var target = block.workspace.newBlock(prototypeName)
         goog.asserts.assert(target, 'completeSealed_ failed: '+ prototypeName);
-        target.initSvg();
         target.ezp.makeBlockSealed_(target)
         goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed '+target.type)
         input.connection.connect(target.outputConnection)

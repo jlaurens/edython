@@ -111,8 +111,34 @@ ezP.DelegateSvg.prototype.svgPathHighlight_ = undefined
  * May be called more than once.
  * @param {!Blockly.Block} block to be initialized..
  */
-ezP.DelegateSvg.prototype.initSvg = function(block) {
-};
+ezP.DelegateSvg.prototype.preInitSvg = function(block) {
+  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {}, block.svgGroup_)
+  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {}, block.svgGroup_)
+  this.svgPathCollapsed_ = Blockly.utils.createSvgElement('path', {}, block.svgGroup_)
+  this.svgPathInline_ = Blockly.utils.createSvgElement('path',
+    {'class': 'ezp-path-contour'}, block.svgGroup_)
+  this.svgPathHighlight_ = Blockly.utils.createSvgElement('path',
+    {'class': 'ezp-path-selected'}, null)
+  Blockly.utils.addClass(/** @type {!Element} */ (block.svgGroup_),
+    'ezp-block')
+}
+
+/**
+ * Create and initialize the SVG representation of the block.
+ * May be called more than once.
+ * @param {!Blockly.Block} block to be initialized..
+ */
+ezP.DelegateSvg.prototype.postInitSvg = function(block) {
+  goog.dom.removeNode(block.svgPath_)
+  delete block.svgPath_
+  block.svgPath_ = undefined
+  goog.dom.removeNode(block.svgPathLight_)
+  delete block.svgPathLight_
+  block.svgPathLight_ = undefined
+  goog.dom.removeNode(block.svgPathDark_)
+  delete block.svgPathDark_
+  block.svgPathDark_ = undefined
+}
 
 /**
  * Create and initialize the SVG representation of the child blocks sealed to the given block.
@@ -131,33 +157,6 @@ ezP.DelegateSvg.prototype.initSvgSealed = function(block) {
   }
 };
 
-/**
- * Initialize a block.
- * @param {!Blockly.Block} block to be initialized..
- * @extends {Blockly.Block}
- * @constructor
- */
-ezP.DelegateSvg.prototype.init = function (block) {
-  ezP.DelegateSvg.superClass_.init.call(this, block)
-  goog.dom.removeNode(block.svgPath_)
-  delete block.svgPath_
-  block.svgPath_ = undefined
-  goog.dom.removeNode(block.svgPathLight_)
-  delete block.svgPathLight_
-  block.svgPathLight_ = undefined
-  goog.dom.removeNode(block.svgPathDark_)
-  delete block.svgPathDark_
-  block.svgPathDark_ = undefined
-  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {}, block.svgGroup_)
-  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {}, block.svgGroup_)
-  this.svgPathCollapsed_ = Blockly.utils.createSvgElement('path', {}, block.svgGroup_)
-  this.svgPathInline_ = Blockly.utils.createSvgElement('path',
-    {'class': 'ezp-path-contour'}, block.svgGroup_)
-  this.svgPathHighlight_ = Blockly.utils.createSvgElement('path',
-    {'class': 'ezp-path-selected'}, null)
-  Blockly.utils.addClass(/** @type {!Element} */ (block.svgGroup_),
-    'ezp-block')
-}
 
 /**
 * Deinitialize a block. Nothing to do yet.

@@ -45,8 +45,9 @@ goog.inherits(ezP.BlockSvg, Blockly.BlockSvg)
  * May be called more than once.
  */
 ezP.BlockSvg.prototype.initSvg = function() {
+  this.ezp.preInitSvg(this)
   ezP.BlockSvg.superClass_.initSvg.call(this)
-  this.ezp.initSvg(this)
+  this.ezp.postInitSvg(this)
   this.ezp.initSvgSealed(this)
 };
 

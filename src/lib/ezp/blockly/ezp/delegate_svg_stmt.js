@@ -44,8 +44,8 @@ ezP.setup.register(function () {
  * @extends {Blockly.Block}
  * @constructor
  */
-ezP.DelegateSvg.Stmt.prototype.init = function (block) {
-  ezP.DelegateSvg.Stmt.superClass_.init.call(this, block)
+ezP.DelegateSvg.Stmt.prototype.preInitSvg = function (block) {
+  ezP.DelegateSvg.Stmt.superClass_.preInitSvg.call(this, block)
   this.svgSharpGroup_ = Blockly.utils.createSvgElement('g',
     {'class': 'ezp-sharp-group'}, null)
   goog.dom.insertSiblingAfter(this.svgSharpGroup_, this.svgPathContour_)
