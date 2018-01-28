@@ -389,7 +389,7 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.changeImportType = function (block, n
 //      target.unplug()
       target.dispose()
     }
-    this.completeSealedInput(block, this.inputWRAP, newValue)
+    this.completeSealedInput_(block, this.inputWRAP, newValue)
     Blockly.Events.setGroup(false)
   }
 }
