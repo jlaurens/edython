@@ -15,6 +15,7 @@ thumbs.db
 /sandbox/**
 /src/lib/ezp/scripts/build
 /**/.idea
-/**/.command
+/**/*.command
 !/**/README.md
 !/**/Readme.md
+/**/DEBUG.js
