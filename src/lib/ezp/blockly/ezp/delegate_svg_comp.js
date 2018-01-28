@@ -44,26 +44,11 @@ ezP.DelegateSvg.Expr.Comprehension.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.Comprehension.superClass_.initBlock.call(this, block)
   block.appendValueInput(ezP.Const.Input.EXPR)
     .setCheck(ezP.T3.Require.expression)
-  this.inputFORIN = block.appendSealedValueInput(ezP.Const.Input.FORIN)
+  this.inputFORIN = block.appendSealedValueInput(ezP.Const.Input.FORIN, ezP.Const.Expr.comp_for)
     .setCheck(ezP.T3.comp_for)
-  this.inputITER = block.appendSealedValueInput(ezP.Const.Input.ITER)
+  this.inputITER = block.appendSealedValueInput(ezP.Const.Input.ITER, ezP.Const.Expr.comp_iter_list)
     .setCheck(ezP.T3.comp_iter_list)
 }
-
-/**
- * Create a sealed node for the comprehension if necessary.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.Comprehension.prototype.completeSealed = function (block) {
-  this.completeSealedInput(block,
-    this.inputFORIN,
-    ezP.Const.Expr.comp_for)
-  this.completeSealedInput(block,
-    this.inputITER,
-    ezP.Const.Expr.comp_iter_list)
-}
-
 
 /**
  * Class for a DelegateSvg, comp_for block.

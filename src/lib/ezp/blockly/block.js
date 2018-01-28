@@ -156,12 +156,17 @@ ezP.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
  *     input again.  Should be unique to this block.
  * @return {!Blockly.Input} The input object created.
  */
-ezP.Block.prototype.appendSealedValueInput = function(name) {
+ezP.Block.prototype.appendSealedValueInput = function(name, prototypeName) {
+  goog.asserts.assert(prototypeName, 'Missing prototypeName, no block to seal')
   var input = this.appendValueInput(name)
   ezP.Input.setupEzpData(input)
   input.ezpData.sealed_ = true // redundant
   input.connection.ezpData.sealed_ = true
   input.connection.setHidden(true)
+  if (!this.ezp.sealedInputs_) {
+    this.ezp.sealedInputs_ = []
+  }
+  this.ezp.sealedInputs_.push([input, prototypeName])
   return input
 };
 

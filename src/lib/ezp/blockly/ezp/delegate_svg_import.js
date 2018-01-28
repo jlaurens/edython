@@ -86,23 +86,11 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.module_named, ezP.DelegateSvg.Ex
  */
 ezP.DelegateSvg.Expr.module_named.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.module_named.superClass_.initBlock.call(this, block)
-  this.inputMODULE = block.appendValueInput(ezP.Const.Input.MODULE)
+  this.inputMODULE = block.appendSealedValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
     .setCheck(ezP.T3.module)
   this.inputNAME = block.appendValueInput(ezP.Const.Input.NAME)
     .setCheck(ezP.T3.identifier)
     .appendField(new ezP.FieldLabel('as'))
-}
-
-/**
- * Create a sealed node for module_named.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.module_named.prototype.completeSealed = function (block) {
-  ezP.DelegateSvg.Expr.module_named.superClass_.completeSealed.call(this, block)
-  this.completeSealedInput(block,
-    this.inputMODULE,
-    ezP.Const.Expr.module)
 }
 
 /////////////////     identifier_named      ///////////////////
@@ -164,7 +152,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.import_module, ezP.DelegateSvg.E
  */
 ezP.DelegateSvg.Expr.import_module.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.import_module.superClass_.initBlock.call(this, block)
-  this.inputMODULE = block.appendValueInput(ezP.Const.Input.MODULE)
+  this.inputMODULE = block.appendSealedValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
     .setCheck(ezP.T3.module)
     .appendField(new ezP.FieldLabel('import'))
   this.inputNAME = block.appendValueInput(ezP.Const.Input.NAME)
@@ -172,16 +160,35 @@ ezP.DelegateSvg.Expr.import_module.prototype.initBlock = function(block) {
     .appendField(new ezP.FieldLabel('as'))
 }
 
+/////////////////     relative_module      ///////////////////
+
 /**
- * Create a sealed node for import_module.
+* Class for a DelegateSvg, relative_module.
+* For ezPython.
+* @param {?string} prototypeName Name of the language object containing
+*     type-specific functions for this block.
+* @constructor
+*/
+ezP.DelegateSvg.Expr.relative_module = function (prototypeName) {
+  ezP.DelegateSvg.Expr.relative_module.superClass_.constructor.call(this, prototypeName)
+  this.outputCheck = ezP.T3.relative_module
+}
+goog.inherits(ezP.DelegateSvg.Expr.relative_module, ezP.DelegateSvg.Expr)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.relative_module, ezP.DelegateSvg.Expr.relative_module)
+
+/**
+ * Initialize the block.
+ * Called by the block's init method.
+ * For ezPython.
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Expr.import_module.prototype.completeSealed = function (block) {
-  ezP.DelegateSvg.Expr.import_module.superClass_.completeSealed.call(this, block)
-  this.completeSealedInput(block,
-    this.inputMODULE,
-    ezP.Const.Expr.module)
+ezP.DelegateSvg.Expr.relative_module.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Expr.relative_module.superClass_.initBlock.call(this, block)
+  this.inputMODULE = block.appendSealedValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
+    .setCheck(ezP.T3.module)
+    .appendField(new ezP.FieldTextInput('...'), ezP.Const.Field.DOTS)
 }
 
 /////////////////     relative_module      ///////////////////
@@ -210,64 +217,9 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.relative_module, ezP.DelegateSvg
  */
 ezP.DelegateSvg.Expr.relative_module.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.relative_module.superClass_.initBlock.call(this, block)
-  this.inputMODULE = block.appendSealedValueInput(ezP.Const.Input.MODULE)
+  this.inputMODULE = block.appendSealedValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
     .setCheck(ezP.T3.module)
     .appendField(new ezP.FieldTextInput('...'), ezP.Const.Field.DOTS)
-}
-
-/**
- * Create a sealed node for relative_module.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.relative_module.prototype.completeSealed = function (block) {
-  ezP.DelegateSvg.Expr.relative_module.superClass_.completeSealed.call(this, block)
-  this.completeSealedInput(block,
-    this.inputMODULE,
-    ezP.Const.Expr.module)
-}
-
-/////////////////     relative_module      ///////////////////
-
-/**
-* Class for a DelegateSvg, relative_module.
-* For ezPython.
-* @param {?string} prototypeName Name of the language object containing
-*     type-specific functions for this block.
-* @constructor
-*/
-ezP.DelegateSvg.Expr.relative_module = function (prototypeName) {
-  ezP.DelegateSvg.Expr.relative_module.superClass_.constructor.call(this, prototypeName)
-  this.outputCheck = ezP.T3.relative_module
-}
-goog.inherits(ezP.DelegateSvg.Expr.relative_module, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.relative_module, ezP.DelegateSvg.Expr.relative_module)
-
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.relative_module.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Expr.relative_module.superClass_.initBlock.call(this, block)
-  this.inputMODULE = block.appendSealedValueInput(ezP.Const.Input.MODULE)
-    .setCheck(ezP.T3.module)
-    .appendField(new ezP.FieldTextInput('...'), ezP.Const.Field.DOTS)
-}
-
-/**
- * Create a sealed node for relative_module.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.relative_module.prototype.completeSealed = function (block) {
-  ezP.DelegateSvg.Expr.relative_module.superClass_.completeSealed.call(this, block)
-  this.completeSealedInput(block,
-    this.inputMODULE,
-    ezP.Const.Expr.module)
 }
 
 /////////////////     from_module_import      ///////////////////
@@ -298,25 +250,12 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.from_module_import, ezP.Delegate
 ezP.DelegateSvg.Expr.from_module_import.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.from_module_import.superClass_.initBlock.call(this, block)
   // from_module_import ::= "from" module "import *"
-  this.inputMODULE = block.appendSealedValueInput(ezP.Const.Input.MODULE)
+  this.inputMODULE = block.appendSealedValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
     .setCheck(ezP.T3.module)
     .appendField(new ezP.FieldLabel('from'))
   block.appendDummyInput()
     .appendField(new ezP.FieldLabel('import *'))
 }
-
-/**
- * Create a sealed node for from_module_import.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.from_module_import.prototype.completeSealed = function (block) {
-  ezP.DelegateSvg.Expr.from_module_import.superClass_.completeSealed.call(this, block)
-  this.completeSealedInput(block,
-    this.inputMODULE,
-    ezP.Const.Expr.module)
-}
-
 
 /////////////////     identifier_named_list      ///////////////////
 
@@ -366,29 +305,14 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.from_relative_module_import, ezP
 ezP.DelegateSvg.Expr.from_relative_module_import.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.from_relative_module_import.superClass_.initBlock.call(this, block)
   // from_relative_module_import ::= "from" relative_module "import" identifier ["as" name] ( "," identifier ["as" name] )*
-  this.inputMODULE = block.appendSealedValueInput(ezP.Const.Input.MODULE)
+  this.inputMODULE = block.appendSealedValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
     .setCheck(ezP.T3.module)
     .appendField(new ezP.FieldLabel('from'))
     .appendField(new ezP.FieldLabel(' '))
     .appendField(new ezP.FieldTextInput('...'), ezP.Const.Field.DOTS)
-  this.inputIMPORT = block.appendSealedValueInput(ezP.Const.Input.IMPORT)
+  this.inputIMPORT = block.appendSealedValueInput(ezP.Const.Input.IMPORT, ezP.Const.Expr.identifier_named_list)
     .setCheck(ezP.T3.identifier_named_list)
     .appendField(new ezP.FieldLabel('import'))
-}
-
-/**
- * Create a sealed node for from_relative_module_import.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.from_relative_module_import.prototype.completeSealed = function (block) {
-  ezP.DelegateSvg.Expr.from_relative_module_import.superClass_.completeSealed.call(this, block)
-  this.completeSealedInput(block,
-    this.inputMODULE,
-    ezP.Const.Expr.module)
-  this.completeSealedInput(block,
-    this.inputIMPORT,
-    ezP.Const.Expr.identifier_named_list)
 }
 
 /////////////////     import_stmt      ///////////////////

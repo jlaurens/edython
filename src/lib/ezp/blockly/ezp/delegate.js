@@ -481,27 +481,20 @@ ezP.Delegate.prototype.fromDom = function (block, element) {
 /**
  * If the sealed connections are not connected,
  * create a node for it.
- * The default implementation does nothing.
- * Subclassers will evntually create appropriate new nodes
- * and connect it to any sealed connection.
- * @param {!Block} block.
- * @private
- */
-ezP.Delegate.prototype.completeSealed = function (block) {
-}
-
-/**
- * If the sealed connections are not connected,
- * create a node for it.
- * The default implementation does nothing.
+ * The default implementation connects all the blocks from the sealedInputs_ list.
  * Subclassers will evntually create appropriate new nodes
  * and connect it to any sealed connection.
  * @param {!Block} block.
  * @private
  */
 ezP.Delegate.prototype.completeSealed_ = function (block) {
-  ezP.Delegate.sealedFireWall = 100
-  this.completeSealed(block)
+  if (this.sealedInputs_) {
+    ezP.Delegate.sealedFireWall = 100
+    for (var i = 0; i < this.sealedInputs_.length; i++) {
+      var data = this.sealedInputs_[i]
+      this.completeSealedInput_(block, data[0], data[1])
+    }
+  }
 }
 
 /**
@@ -536,26 +529,26 @@ ezP.Delegate.prototype.makeBlockSealed_ = function (block) {
  * @param {!String} prototypeName.
  * @private
  */
-ezP.Delegate.prototype.completeSealedInput = function (block, input, prototypeName) {
+ezP.Delegate.prototype.completeSealedInput_ = function (block, input, prototypeName) {
   if (!!input) {
     var target = input.connection.targetBlock()
     if (!!target) {
       target.ezp.makeBlockSealed_(target)
-      target.ezp.completeSealed(target)
+      target.ezp.completeSealed_(target)
     } else {
       goog.asserts.assert(prototypeName, 'Missing sealing prototype name in block '+block.type)
       if (ezP.Delegate.sealedFireWall > 0) {
         --ezP.Delegate.sealedFireWall
         var target = block.workspace.newBlock(prototypeName)
-        goog.asserts.assert(target, 'completeSealed failed: '+ prototypeName);
+        goog.asserts.assert(target, 'completeSealed_ failed: '+ prototypeName);
         target.initSvg();
         target.ezp.makeBlockSealed_(target)
         goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed '+target.type)
         input.connection.connect(target.outputConnection)
         input.connection.ezpData.disabled_ = true
-        target.ezp.completeSealed(target)  
+        target.ezp.completeSealed_(target)  
       } else {
-        console.log('Maximum value reached in completeSealedInput')
+        console.log('Maximum value reached in completeSealedInput_')
         this.ignoreCompleteSealed = true
         return
       }

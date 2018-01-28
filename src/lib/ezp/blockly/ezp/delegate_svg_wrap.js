@@ -40,22 +40,11 @@ ezP.DelegateSvg.Wrap.prototype.wrappedPrototype = undefined
  */
 ezP.DelegateSvg.Wrap.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Wrap.superClass_.initBlock.call(this, block)
-  this.inputWRAP = block.appendSealedValueInput(ezP.Const.Input.WRAP)
+  this.inputWRAP = block.appendSealedValueInput(ezP.Const.Input.WRAP, this.wrappedPrototype)
     .setCheck(this.wrappedType)
   if (this.label !== undefined) {
     this.inputWRAP.appendField(new ezP.FieldLabel(this.label))
   }
-}
-
-/**
- * Create a sealed node for the expression list.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Wrap.prototype.completeSealed = function (block) {
-  this.completeSealedInput(block,
-    this.inputWRAP,
-    this.wrappedPrototype)
 }
 
 /**
@@ -112,21 +101,10 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.assignment_expression, ezP.Deleg
  */
 ezP.DelegateSvg.Expr.assignment_expression.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.assignment_expression.superClass_.initBlock.call(this, block)
-  this.inputLIST = block.appendSealedValueInput(ezP.Const.Input.LIST)
+  this.inputLIST = block.appendSealedValueInput(ezP.Const.Input.LIST, ezP.Const.Expr.target_list)
   block.appendValueInput(ezP.Const.Input.RHS)
     .setCheck(ezP.T3.Require.assigned_expression)
     .appendField(new ezP.FieldLabel('='))
-}
-
-/**
- * Create a sealed node for the comprehension if necessary.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.assignment_expression.prototype.completeSealed = function (block) {
-  this.completeSealedInput(block,
-    this.inputLIST,
-    ezP.Const.Expr.target_list)
 }
 
 /**

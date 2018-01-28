@@ -46,19 +46,8 @@ ezP.DelegateSvg.Expr.VSPair.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.VSPair.superClass_.initBlock.call(this, block)
   block.appendValueInput(ezP.Const.Input.PRIMARY)
     .setCheck(this.primaryCheck)
-  this.inputSECONDARY = block.appendSealedValueInput(ezP.Const.Input.SECONDARY)
+  this.inputSECONDARY = block.appendSealedValueInput(ezP.Const.Input.SECONDARY, this.secondaryPrototypeName)
     .setCheck(this.secondaryCheck)
-}
-
-/**
- * Create a sealed node for the comprehension if necessary.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.VSPair.prototype.completeSealed = function (block) {
-  this.completeSealedInput(block,
-    this.inputSECONDARY,
-    this.secondaryPrototypeName)
 }
 
 /**

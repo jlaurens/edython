@@ -41,23 +41,12 @@ ezP.DelegateSvg.List.prototype.outputCheck = undefined
  */
 ezP.DelegateSvg.Lambda.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Lambda.superClass_.initBlock.call(this, block)
-  this.inputLIST = block.appendSealedValueInput(ezP.Const.Input.LIST)
+  this.inputLIST = block.appendSealedValueInput(ezP.Const.Input.LIST, ezP.Const.Expr.parameter_list)
     .setCheck(ezP.T3.parameter_list)
     .appendField(new ezP.FieldLabel('lambda'))
   block.appendValueInput(ezP.Const.Input.EXPR)
     .setCheck(this.expressionType)
     .appendField(new ezP.FieldLabel(':'))
-}
-
-/**
- * Create a sealed node for the comprehension if necessary.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Lambda.prototype.completeSealed = function (block) {
-  this.completeSealedInput(block,
-    this.inputLIST,
-    ezP.Const.Expr.parameter_list)
 }
 
 /**

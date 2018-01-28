@@ -44,23 +44,11 @@ ezP.DelegateSvg.Expr.Delimited.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.Delimited.superClass_.initBlock.call(this, block)
   this.leftField = new ezP.FieldLabel(this.leftDelimiter)
   this.leftField.ezpFieldData = {x_shift: -ezP.Font.space/6}
-  this.inputITEM = block.appendSealedValueInput(ezP.Const.Input.ITEM)
+  this.inputITEM = block.appendSealedValueInput(ezP.Const.Input.ITEM, this.sealedPrototypeName)
     .appendField(this.leftField)
   this.rightField = new ezP.FieldLabel(this.rightDelimiter)
   this.rightField.ezpFieldData = {x_shift: +ezP.Font.space/6}
   block.appendDummyInput().appendField(this.rightField)
-}
-
-/**
- * Create a sealed node for the Expr.Delimited if necessary.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.Delimited.prototype.completeSealed = function (block) {
-  ezP.DelegateSvg.Expr.Delimited.superClass_.completeSealed.call(this, block)
-  this.completeSealedInput(block,
-    this.inputITEM,
-    this.sealedPrototypeName)
 }
 
 /**
