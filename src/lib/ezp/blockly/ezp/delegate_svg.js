@@ -215,7 +215,7 @@ ezP.DelegateSvg.prototype.consolidate = function (block) {
 /**
  * Whether the block is sealed to its parent.
  * The sealed status is decided at init time.
- * The corresponding input.ezpData.sealed_ is set to true.
+ * The corresponding input.ezpData.connection.sealed_ is set to true.
  * @private
  */
 ezP.DelegateSvg.prototype.sealed_ = undefined

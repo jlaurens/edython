@@ -40,7 +40,7 @@ ezP.DelegateSvg.Manager.register('ezp_expr_fake_with_sealed', ezP.DelegateSvg.Fa
 ezP.DelegateSvg.Fake.WithSealed.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Fake.WithSealed.superClass_.initBlock.call(this, block)
   var input = block.appendValueInput('FAKE').appendField(new ezP.FieldLabel('with sealed'))
-  input.ezpData.sealed_ = true
+  input.ezpData.connection.sealed_ = true
   block.setOutput(true, null)
 }
 
