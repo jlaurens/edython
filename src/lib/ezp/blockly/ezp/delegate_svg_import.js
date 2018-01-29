@@ -15,7 +15,6 @@ goog.provide('ezP.DelegateSvg.Import')
 
 goog.require('ezP.DelegateSvg.Expr')
 goog.require('ezP.DelegateSvg.Stmt')
-goog.require('ezP.DelegateSvg.Wrap')
 
 /////////////////     dotted_name, module      ///////////////////
 
@@ -326,7 +325,7 @@ ezP.DelegateSvg.Expr.from_relative_module_import.prototype.initBlock = function(
  */
 ezP.DelegateSvg.Stmt.import_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.import_stmt.superClass_.constructor.call(this, prototypeName)
-  this.outputCheck = ezP.T3.import
+  this.wrappedCheck = ezP.T3.import_module
   this.wrappedPrototype = ezP.Const.Expr.import_module
   this.contextMenuData = [
     {'LABEL': 'import module [as ...]', 'TYPE': ezP.Const.Expr.import_module},

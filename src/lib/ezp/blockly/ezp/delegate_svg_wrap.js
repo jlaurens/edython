@@ -15,17 +15,6 @@ goog.provide('ezP.DelegateSvg.Wrap')
 
 goog.require('ezP.ContextMenu')
 goog.require('ezP.DelegateSvg.Stmt')
-/**
- * Class for a DelegateSvg, statement wrapping an expression .
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Wrap = function (prototypeName) {
-  ezP.DelegateSvg.Wrap.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Wrap, ezP.DelegateSvg.Stmt)
 
 /**
  * Class for a DelegateSvg, assignment_expression block.
@@ -66,10 +55,10 @@ ezP.DelegateSvg.Expr.assignment_expression.prototype.initBlock = function(block)
  */
 ezP.DelegateSvg.Stmt.expression_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.expression_stmt.superClass_.constructor.call(this, prototypeName)
-  this.outputCheck = ezP.T3.starred_item_list
+  this.wrappedCheck = ezP.T3.starred_item_list
   this.wrappedPrototype = ezP.Const.Expr.starred_item_list
 }
-goog.inherits(ezP.DelegateSvg.Stmt.expression_stmt, ezP.DelegateSvg.Wrap)
+goog.inherits(ezP.DelegateSvg.Stmt.expression_stmt, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.expression_stmt, ezP.DelegateSvg.Stmt.expression_stmt)
 
@@ -82,10 +71,10 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.expression_stmt, ezP.DelegateSvg
  */
 ezP.DelegateSvg.Stmt.assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.assignment_stmt.superClass_.constructor.call(this, prototypeName)
-  this.outputCheck = ezP.T3.assignment_expression
+  this.wrappedCheck = ezP.T3.assignment_expression
   this.wrappedPrototype = ezP.Const.Expr.assignment_expression
 }
-goog.inherits(ezP.DelegateSvg.Stmt.assignment_stmt, ezP.DelegateSvg.Wrap)
+goog.inherits(ezP.DelegateSvg.Stmt.assignment_stmt, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.assignment_stmt, ezP.DelegateSvg.Stmt.assignment_stmt)
 
@@ -118,6 +107,7 @@ ezP.DelegateSvg.Expr.augmented_assignment_expression = function (prototypeName) 
     '^=': {'LABEL':'... ^= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
     '|=': {'LABEL':'... |= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
   }
+  this.outputCheck = ezP.T3.augmented_assignment_expression
 }
 
 goog.inherits(ezP.DelegateSvg.Expr.augmented_assignment_expression, ezP.DelegateSvg.Expr.Binary)
@@ -133,10 +123,10 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.augmented_assignment_expression,
  */
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.augmented_assignment_stmt.superClass_.constructor.call(this, prototypeName)
-  this.outputCheck = ezP.T3.augmented_assignment_expression
+  this.wrappedCheck = ezP.T3.augmented_assignment_expression
   this.wrappedPrototype = ezP.Const.Expr.augmented_assignment_expression
 }
-goog.inherits(ezP.DelegateSvg.Stmt.augmented_assignment_stmt, ezP.DelegateSvg.Wrap)
+goog.inherits(ezP.DelegateSvg.Stmt.augmented_assignment_stmt, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.augmented_assignment_stmt, ezP.DelegateSvg.Stmt.augmented_assignment_stmt)
 
@@ -149,11 +139,11 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.augmented_assignment_stmt, ezP.D
  */
 ezP.DelegateSvg.Stmt.del_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.del_stmt.superClass_.constructor.call(this, prototypeName)
-  this.label = 'del'
-  this.outputCheck = ezP.T3.target_list
+  this.left = 'del'
+  this.wrappedCheck = ezP.T3.target_list
   this.wrappedPrototype = ezP.Const.Expr.target_list
 }
-goog.inherits(ezP.DelegateSvg.Stmt.del_stmt, ezP.DelegateSvg.Wrap)
+goog.inherits(ezP.DelegateSvg.Stmt.del_stmt, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.del_stmt, ezP.DelegateSvg.Stmt.del_stmt)
 
@@ -167,11 +157,11 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.del_stmt, ezP.DelegateSvg.Stmt.d
  */
 ezP.DelegateSvg.Stmt.return_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.return_stmt.superClass_.constructor.call(this, prototypeName)
-  this.label = 'return'
-  this.outputCheck = ezP.T3.expression_list
+  this.left = 'return'
+  this.wrappedCheck = ezP.T3.expression_list
   this.wrappedPrototype = ezP.Const.Expr.expression_list
 }
-goog.inherits(ezP.DelegateSvg.Stmt.return_stmt, ezP.DelegateSvg.Wrap)
+goog.inherits(ezP.DelegateSvg.Stmt.return_stmt, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.return_stmt, ezP.DelegateSvg.Stmt.return_stmt)
 
@@ -184,9 +174,9 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.return_stmt, ezP.DelegateSvg.Stm
  */
 ezP.DelegateSvg.Stmt.yield_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.yield_stmt.superClass_.constructor.call(this, prototypeName)
-  this.outputCheck = ezP.T3.yield_expression
+  this.wrappedCheck = ezP.T3.yield_expression
   this.wrappedPrototype = ezP.Const.Expr.yield_expression
 }
-goog.inherits(ezP.DelegateSvg.Stmt.yield_stmt, ezP.DelegateSvg.Wrap)
+goog.inherits(ezP.DelegateSvg.Stmt.yield_stmt, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.yield_stmt, ezP.DelegateSvg.Stmt.yield_stmt)
