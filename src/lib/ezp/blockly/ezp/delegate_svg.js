@@ -28,52 +28,9 @@ ezP.DelegateSvg = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg, ezP.Delegate)
 
-ezP.DelegateSvg.Manager = (function () {
-  var me = {}
-  var Ctors = {}
-  /**
-   * DelegateSvg creator.
-   * @param {?string} prototypeName Name of the language object containing
-   */
-  me.create = function (prototypeName) {
-    var Ctor = Ctors[prototypeName]
-    if (Ctor !== undefined) {
-      return new Ctor(prototypeName)
-    }
-    var Ks = prototypeName.split('_')
-    if (Ks[0] === 'ezp') {
-      while (Ks.length > 1) {
-        Ks.splice(-1, 1)
-        var name = Ks.join('_')
-        Ctor = Ctors[name]
-        if (Ctor !== undefined) {
-          Ctors[prototypeName] = Ctor
-          return new Ctor(prototypeName)
-        }
-      }
-      Ctors[prototypeName] = ezP.DelegateSvg
-      return new ezP.DelegateSvg(prototypeName)
-    }
-    return undefined
-  }
-  /**
-   * Delegate registrator.
-   * @param {?string} prototypeName Name of the language object containing
-   * @param {Object} constructor
-   */
-  me.register = function (prototypeName, Ctor) {
-    // console.log(prototypeName+' -> '+Ctor)
-    Ctors[prototypeName] = Ctor
-  }
-  me.display = function() {
-    var keys = Object.keys(Ctors)
-    for (var k=0; k<keys.length; k++) {
-      var prototypeName = keys[k]
-      console.log(''+k+'->'+prototypeName+'->'+Ctors[prototypeName])
-    }
-  }
-  return me
-}())
+ezP.DelegateSvg.Manager = ezP.Delegate.Manager
+
+Blockly.Block.prototype.ezp = ezP.DelegateSvg.Manager.registerDefault(ezP.DelegateSvg)
 
 /**
  * This is the shape used to draw the outline of a block
@@ -107,20 +64,69 @@ ezP.DelegateSvg.prototype.svgPathInline_ = undefined
 ezP.DelegateSvg.prototype.svgPathHighlight_ = undefined
 
 /**
+ * Create and initialize the various paths.
+ * Called once at block creation time.
+ * @param {!Blockly.Block} block to be initialized..
+ */
+ezP.DelegateSvg.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.superClass_.initBlock.call(this, block)
+  this.svgPathInline_ = Blockly.utils.createSvgElement('path',
+    {'class': 'ezp-path-contour'}, null)
+  goog.dom.insertChildAt(block.svgGroup_, this.svgPathInline_, 0)
+  this.svgPathCollapsed_ = Blockly.utils.createSvgElement('path', {}, null)
+  goog.dom.insertChildAt(block.svgGroup_, this.svgPathCollapsed_, 0)
+  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {}, null)
+  goog.dom.insertChildAt(block.svgGroup_, this.svgPathContour_, 0)
+  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {}, null)
+  goog.dom.insertChildAt(block.svgGroup_, this.svgPathShape_, 0)
+  this.svgPathHighlight_ = Blockly.utils.createSvgElement('path',
+    {'class': 'ezp-path-selected'}, null)
+  Blockly.utils.addClass(/** @type {!Element} */ (block.svgGroup_),
+    'ezp-block')
+  // block.setInputsInline(true)
+  block.setTooltip('')
+  block.setHelpUrl('')
+  if (this.outputCheck !== undefined) {
+    block.setOutput(true, this.outputCheck)
+  } else {
+    if (this.nextStatementCheck !== undefined) {
+      block.setNextStatement(true, this.nextStatementCheck)
+    }
+    if (this.previousStatementCheck !== undefined) {
+      block.setPreviousStatement(true, this.previousStatementCheck)
+    }
+  }
+}
+
+/**
+ * Revert operation of initBlock.
+ * @param {!Blockly.Block} block to be initialized..
+ */
+ezP.DelegateSvg.prototype.deinitBlock = function(block) {
+  var menu = block.workspace.ezp.menuVariable
+  var ezp = menu.ezp
+  if (ezp.listeningBlock === block) {
+    menu.setVisible(false, true)
+  }
+  goog.dom.removeNode(this.svgPathShape_)
+  this.svgPathShape_ = undefined
+  goog.dom.removeNode(this.svgPathContour_)
+  this.svgPathContour_ = undefined
+  goog.dom.removeNode(this.svgPathCollapsed_)
+  this.svgPathCollapsed_ = undefined
+  goog.dom.removeNode(this.svgPathInline_)
+  this.svgPathInline_ = undefined
+  goog.dom.removeNode(this.svgPathHighlight_)
+  this.svgPathHighlight_ = undefined
+  ezP.DelegateSvg.superClass_.deinitBlock.call(this, block)
+}
+
+/**
  * Create and initialize the SVG representation of the block.
  * May be called more than once.
  * @param {!Blockly.Block} block to be initialized..
  */
 ezP.DelegateSvg.prototype.preInitSvg = function(block) {
-  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {}, block.svgGroup_)
-  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {}, block.svgGroup_)
-  this.svgPathCollapsed_ = Blockly.utils.createSvgElement('path', {}, block.svgGroup_)
-  this.svgPathInline_ = Blockly.utils.createSvgElement('path',
-    {'class': 'ezp-path-contour'}, block.svgGroup_)
-  this.svgPathHighlight_ = Blockly.utils.createSvgElement('path',
-    {'class': 'ezp-path-selected'}, null)
-  Blockly.utils.addClass(/** @type {!Element} */ (block.svgGroup_),
-    'ezp-block')
 }
 
 /**
@@ -156,40 +162,6 @@ ezP.DelegateSvg.prototype.initSvgSealed = function(block) {
     }
   }
 };
-
-
-/**
-* Deinitialize a block. Nothing to do yet.
-* @param {!Blockly.Block} block to be deinitialized..
-* @extends {Blockly.Block}
-* @constructor
-*/
-ezP.DelegateSvg.prototype.deinit = function (block) {
-  var menu = block.workspace.ezp.menuVariable
-  var ezp = menu.ezp
-  if (ezp.listeningBlock === block) {
-    menu.setVisible(false, true)
-  }
-}
-
-/**
- * Deletes or nulls out any references to COM objects, DOM nodes, or other
- * disposable objects...
- * @protected
- */
-ezP.DelegateSvg.prototype.disposeInternal = function () {
-  goog.dom.removeNode(this.svgPathShape_)
-  this.svgPathShape_ = undefined
-  goog.dom.removeNode(this.svgPathContour_)
-  this.svgPathContour_ = undefined
-  goog.dom.removeNode(this.svgPathCollapsed_)
-  this.svgPathCollapsed_ = undefined
-  goog.dom.removeNode(this.svgPathInline_)
-  this.svgPathInline_ = undefined
-  goog.dom.removeNode(this.svgPathHighlight_)
-  this.svgPathHighlight_ = undefined
-  ezP.DelegateSvg.superClass_.disposeInternal.call(this)
-}
 
 /**
  * Render the block.
@@ -414,7 +386,11 @@ ezP.DelegateSvg.prototype.alignRightEdges_ = function (block) {
  */
 ezP.DelegateSvg.prototype.updatePath_ = function (block, path, def) {
   if (!!path) {
-    path.setAttribute('d', def.call(this,block))
+    if (def) {
+      path.setAttribute('d', def.call(this,block))
+    } else {
+      path.removeAttribute('d')
+    }
   }
 }
 
@@ -424,12 +400,18 @@ ezP.DelegateSvg.prototype.updatePath_ = function (block, path, def) {
  * @private
  */
 ezP.DelegateSvg.prototype.didChangeSize_ = function (block) {
-  this.updatePath_(block, this.svgPathShape_, this.shapePathDef_)
-  this.updatePath_(block, this.svgPathHighlight_, this.highlightedPathDef_)
-  this.updatePath_(block, this.svgPathContour_, this.contourPathDef_)
-  this.updatePath_(block, this.svgPathCollapsed_, this.collapsedPathDef_)
+  if (this.sealed_) {
+    this.updatePath_(block, this.svgPathContour_)
+    this.updatePath_(block, this.svgPathShape_)
+    this.updatePath_(block, this.svgPathHighlight_)
+    this.updatePath_(block, this.svgPathCollapsed_)
+    } else {
+    this.updatePath_(block, this.svgPathContour_, this.contourPathDef_)
+    this.updatePath_(block, this.svgPathShape_, this.shapePathDef_)
+    this.updatePath_(block, this.svgPathHighlight_, this.highlightedPathDef_)
+    this.updatePath_(block, this.svgPathCollapsed_, this.collapsedPathDef_)
+    }
 }
-
 
 /**
  * The left padding of a block.
@@ -862,29 +844,6 @@ ezP.DelegateSvg.prototype.nextStatementCheck = undefined
 ezP.DelegateSvg.prototype.previousStatementCheck = undefined
 
 /**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.prototype.initBlock = function(block) {
-  block.setInputsInline(true)
-  block.setTooltip('')
-  block.setHelpUrl('')
-  if (this.outputCheck !== undefined) {
-    block.setOutput(true, this.outputCheck)
-  } else {
-    if (this.nextStatementCheck !== undefined) {
-      block.setNextStatement(true, this.nextStatementCheck)
-    }
-    if (this.previousStatementCheck !== undefined) {
-      block.setPreviousStatement(true, this.previousStatementCheck)
-    }
-  }
-}
-
-/**
  * The default implementation does nothing.
  * Subclassers will override this but won't call it.
  * @param {!Block} block.
@@ -892,6 +851,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
  */
 ezP.DelegateSvg.prototype.makeBlockSealed = function (block) {
   ezP.DelegateSvg.superClass_.makeBlockSealed.call(this, block)
+  block.initSvg()
   goog.dom.removeNode(this.svgPathShape_)
   delete this.svgPathShape_
   this.svgPathShape_ = undefined

@@ -29,16 +29,9 @@ goog.forwardDeclare('ezP.Delegate')
  * @constructor
  */
 ezP.Block = function (workspace, prototypeName, optId) {
-  if (!this.ezp) {
-    this.ezp = ezP.Delegate.Manager.create(prototypeName)
-    if (this.ezp) {
-      this.registerDisposable(this.ezp)
-    }
-  }
+  this.ezp = ezP.Delegate.Manager.create(prototypeName, this.ezp)
   ezP.Block.superClass_.constructor.call(this, workspace, prototypeName, optId)
-  if (this.ezp) {
-    this.ezp.init(this)
-  }
+  this.ezp.initBlock(this)
 }
 goog.inherits(ezP.Block, Blockly.Block)
 
@@ -48,7 +41,7 @@ goog.inherits(ezP.Block, Blockly.Block)
  */
 ezP.Block.prototype.dispose = function () {
   if (this.ezp) {
-    this.ezp.deinit(this)
+    this.ezp.deinitBlock(this)
   }
   ezP.Block.superClass_.dispose.call(this)
 }

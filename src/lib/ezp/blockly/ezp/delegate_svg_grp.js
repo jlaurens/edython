@@ -269,8 +269,8 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Grp.ELSE, ezP.DelegateSvg.Group.Bound
  * @extends {Blockly.Block}
  * @constructor
  */
-ezP.DelegateSvg.Group.Bounded.prototype.init = function (block) {
-  ezP.DelegateSvg.Group.Bounded.superClass_.init.call(this, block)
+ezP.DelegateSvg.Group.Bounded.prototype.preInitSvg = function (block) {
+  ezP.DelegateSvg.Group.Bounded.superClass_.preInitSvg.call(this, block)
   this.svgPathDotted_ = Blockly.utils.createSvgElement('path',
     {'d': 'M ' + ezP.Padding.h() + ',0 h ' + (ezP.Font.tabWidth - ezP.Padding.h())}, block.svgGroup_)
   block.nextConnection.check_ = ezP.Type.Stmt.Check.none

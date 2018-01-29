@@ -32,17 +32,11 @@ var Ks = [
   ezP.Const.Stmt.import_stmt,
   // IN PROGRESS
 ]
-var O = {
-  init: function () {
-    this.ezp.initBlock(this)
-  }
-}
 for (var i = 0; i<Ks.length; ++i) {
   var K = Ks[i]
   goog.asserts.assert(K, 'Undefined Stmt K: '+i)
-  Blockly.Blocks[Ks[i]] = O
+  Blockly.Blocks[Ks[i]] = {}
 }
-
 
 goog.require('Blockly.Block')
 goog.require('ezP.Const')

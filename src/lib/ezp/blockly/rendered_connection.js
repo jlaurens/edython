@@ -79,11 +79,13 @@ ezP.Connection.prototype.connect = function (otherConnection) {
   } else if (inferior.check_ === ezP.Type.Stmt.Check.before_loop_else) {
     next.check_ = ezP.Type.Stmt.Check.after_else
   }
-  ezP.Connection.superClass_.connect.call(this, otherConnection)
   if (superior.ezpData.sealed_) {
     // this connection should be sealed
-    inferior.sourceBlock_.ezp.makeBlockSealed(inferior)
+    // It must be done before next call because
+    // it must be done before rendering
+    inferior.sourceBlock_.ezp.makeBlockSealed_(inferior.sourceBlock_)
   }
+  ezP.Connection.superClass_.connect.call(this, otherConnection)
 }
 
 /**

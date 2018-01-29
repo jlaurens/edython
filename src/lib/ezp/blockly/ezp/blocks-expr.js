@@ -80,16 +80,11 @@ var Ks = [
 
   ezP.Const.Expr.dotted_name,
 ]
-var O = {
-  init: function () {
-    this.ezp.initBlock(this)
-  }
-}
 var last = undefined
 for (var i = 0; i<Ks.length; ++i) {
   var K = Ks[i]
   goog.asserts.assert(K, 'Undefined K: '+i+'>'+last)
-  Blockly.Blocks[K] = O
+  Blockly.Blocks[K] = {}
   last = K
 }
 

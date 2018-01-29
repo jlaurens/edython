@@ -32,9 +32,6 @@ ezP.inherits(Blockly.BlockSvg, ezP.Block)
  * @constructor
  */
 ezP.BlockSvg = function (workspace, prototypeName, optId) {
-  if (!this.ezp) {
-    this.ezp = ezP.DelegateSvg.Manager.create(prototypeName)
-  }
   ezP.BlockSvg.superClass_.constructor.call(this,
     workspace, prototypeName, optId)
 }
@@ -94,7 +91,7 @@ ezP.BlockSvg.prototype.select = function() {
  * Select this block.  Highlight it visually.
  */
 ezP.BlockSvg.prototype.addSelect = function () {
-  if (!this.sealed_) {
+  if (!this.ezp.sealed_) {
     if (!this.ezp.svgPathHighlight_ ||
       this.ezp.svgPathHighlight_.parentNode) {
       return
@@ -116,7 +113,7 @@ ezP.BlockSvg.prototype.addSelect = function () {
  * Unselect this block.  Remove its highlighting.
  */
 ezP.BlockSvg.prototype.removeSelect = function () {
-  if (!this.sealed_) {
+  if (!this.ezp.sealed_) {
     if (!this.ezp.svgPathHighlight_
       || !this.ezp.svgPathHighlight_.parentNode) {
       return
@@ -145,7 +142,7 @@ ezP.BlockSvg.prototype.setParent = function (newParent) {
       this.svgGroup_ === this.ezp.svgPathHighlight_.parentElement) {
     this.removeSelect()
     this.addSelect()
-  } else if (newParent && newParent.ezp.svgPathHighlight_ &&
+  } else if (newParent &&newParent.ezp.svgPathHighlight_ &&
       newParent.svgGroup_ === newParent.ezp.svgPathHighlight_.parentElement) {
     newParent.removeSelect()
     newParent.addSelect()

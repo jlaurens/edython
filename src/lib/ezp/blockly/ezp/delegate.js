@@ -33,14 +33,19 @@ goog.inherits(ezP.Delegate, ezP.Helper)
  * Delegate manager.
  * @param {?string} prototypeName Name of the language object containing
  */
-ezP.Delegate.Manager = (function () {
+ezP.Delegate.Manager = function () {
   var me = {}
   var Ctors = {}
+  var defaultCtor = undefined
+  var defaultDelegate = undefined
   /**
-   * Delegate creator.
+   * DelegateSvg creator.
    * @param {?string} prototypeName Name of the language object containing
    */
-  me.create = function (prototypeName) {
+  me.create = function (prototypeName, delegate) {
+    if (delegate && delegate !== defaultDelegate) {
+      return delegate
+    }
     var Ctor = Ctors[prototypeName]
     if (Ctor !== undefined) {
       return new Ctor(prototypeName)
@@ -52,14 +57,14 @@ ezP.Delegate.Manager = (function () {
         var name = Ks.join('_')
         Ctor = Ctors[name]
         if (Ctor !== undefined) {
-          Ctor[prototypeName] = Ctor
+          Ctors[prototypeName] = Ctor
           return new Ctor(prototypeName)
         }
       }
-      Ctors[prototypeName] = ezP.Delegate
-      return new ezP.Delegate(prototypeName)
+      Ctors[prototypeName] = defaultCtor
+      return new defaultCtor(prototypeName)
     }
-    return undefined
+    return defaultDelegate
   }
   /**
    * Delegate registrator.
@@ -67,10 +72,25 @@ ezP.Delegate.Manager = (function () {
    * @param {Object} constructor
    */
   me.register = function (prototypeName, Ctor) {
+    // console.log(prototypeName+' -> '+Ctor)
     Ctors[prototypeName] = Ctor
   }
+  me.registerDefault = function (Ctor) {
+    // console.log(prototypeName+' -> '+Ctor)
+    Ctors['ezp_default'] = Ctor
+    return defaultDelegate = new Ctor('ezp_default')
+  }
+  me.display = function() {
+    var keys = Object.keys(Ctors)
+    for (var k=0; k<keys.length; k++) {
+      var prototypeName = keys[k]
+      console.log(''+k+'->'+prototypeName+'->'+Ctors[prototypeName])
+    }
+  }
   return me
-}())
+}()
+
+Blockly.Block.prototype.ezp = ezP.Delegate.Manager.registerDefault(ezP.Delegate)
 
 /**
  * The python type of the owning block.
@@ -83,7 +103,7 @@ ezP.Delegate.prototype.pythonType_ = undefined
  * @extends {Blockly.Block}
  * @constructor
  */
-ezP.Delegate.prototype.init = function (block) {
+ezP.Delegate.prototype.initBlock = function (block) {
   var regex = new RegExp("^ezp_\\S+?_(.*)$")
   var m = regex.exec(block.type)
   this.pythonType_ = m? m[1]: block.type
@@ -95,7 +115,7 @@ ezP.Delegate.prototype.init = function (block) {
 * @extends {Blockly.Block}
 * @constructor
 */
-ezP.Delegate.prototype.deinit = function (block) {
+ezP.Delegate.prototype.deinitBlock = function (block) {
 }
 
 /**
@@ -514,9 +534,9 @@ ezP.Delegate.prototype.makeBlockSealed = function (block) {
  * @private
  */
 ezP.Delegate.prototype.makeBlockSealed_ = function (block) {
-  if (!this.sealed_) {
-    this.sealed_ = true
-    this.makeBlockSealed(block)
+  if (!block.ezp.sealed_) {
+    block.ezp.sealed_ = true
+    block.ezp.makeBlockSealed(block)
   }
 }
 
