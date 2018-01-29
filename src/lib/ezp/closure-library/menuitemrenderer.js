@@ -340,7 +340,7 @@ ezP.KeyValueMenuItemRenderer.prototype.setEnableCheckBoxStructure = function (
     el.style.position = 'relative'
     el.style.width = d + 'px'
     el.style.height = ezP.Font.lineHeight + 'px'
-    el.style.left = (ezP.Padding.h() - d) + 'px'
+    el.style.labelLeft = (ezP.Padding.h() - d) + 'px'
     el.style.top = x + 'px'
     contentElement.insertBefore(el, contentElement.firstChild || null)
     var svg = Blockly.utils.createSvgElement('svg',

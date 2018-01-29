@@ -30,7 +30,6 @@ ezP.DelegateSvg.Lambda = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Lambda, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.List.prototype.expressionType = undefined
-ezP.DelegateSvg.List.prototype.outputCheck = undefined
 
 /**
  * Initialize the block.

@@ -133,6 +133,13 @@ ezP.LOG_BLOCK_XML_ID = 'LOG_BLOCK_XML'
  * @private
  */
 ezP.DelegateSvg.prototype.populateContextMenuLast_ = function (block, menu) {
+  if (this.inputWRAP) {
+    var target = this.inputWRAP.connection.targetBlock()
+    if (target) {
+      target.ezp.populateContextMenuLast_(target, menu)
+      return
+    }
+  }
   var menuItem
   if (block.isDeletable() && block.isMovable() && !block.isInFlyout) {
     // Option to duplicate this block.
@@ -240,26 +247,18 @@ ezP.DelegateSvg.prototype.getPythonType = function (block) {
 
 /**
  * Handle the selection of an item in the context dropdown menu.
- * Subclassers may not call the inherited implementation.
- * The default implementation returns false,
- * thus passing the control to onActionMenuEvent.
- * @param {!goog.ui.Menu} menu The Menu component clicked.
- * @param {!Blockly.Block} block The Menu component clicked.
- * @param {!goog....} event The event containing as target
- * @return {boolean} whether the event has been handle.
- */
-ezP.DelegateSvg.prototype.handleActionMenuEvent = function (block, menu, event) {
-  return false
-}
-
-/**
- * Handle the selection of an item in the context dropdown menu.
  * @param {!goog.ui.Menu} menu The Menu component clicked.
  * @param {!Blockly.Block} block The Menu component clicked.
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
 ezP.DelegateSvg.prototype.onActionMenuEvent = function (block, menu, event) {
+  if (this.inputWRAP) {
+    var target = this.inputWRAP.outConnection.targetBlock()
+    if (target) {
+      return target.ezp.onActionMenuEvent(block, menu, event)
+    }
+  }
   var model = event.target.getModel()
   var action = model[0]
   this.handleActionMenuEventFirst(block, menu, event)

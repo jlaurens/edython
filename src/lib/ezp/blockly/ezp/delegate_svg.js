@@ -64,8 +64,48 @@ ezP.DelegateSvg.prototype.svgPathInline_ = undefined
 ezP.DelegateSvg.prototype.svgPathHighlight_ = undefined
 
 /**
+ * When set, the block has an output,
+ * with that check.
+ */
+ezP.DelegateSvg.prototype.outputCheck = undefined
+ezP.DelegateSvg.prototype.labelLeft = undefined
+ezP.DelegateSvg.prototype.fieldPrefix = undefined
+ezP.DelegateSvg.prototype.wrappedCheck = undefined
+ezP.DelegateSvg.prototype.wrappedPrototype = undefined
+ezP.DelegateSvg.prototype.wrappedLabel = undefined
+ezP.DelegateSvg.prototype.labelRight = undefined
+ezP.DelegateSvg.prototype.fieldSuffix = undefined
+
+/**
  * Create and initialize the various paths.
  * Called once at block creation time.
+ * @param {!Blockly.Block} block to be initialized..
+ * @private
+ */
+ezP.DelegateSvg.prototype.initBlock_ = function(block) {
+  if (this.labelLeft) {
+    this.fieldPrefix = new ezP.FieldLabel(this.labelLeft)
+    block.appendDummyInput().appendField(this.fieldPrefix)
+  }
+  if (this.wrappedPrototype) {
+    this.inputWRAP = block.appendSealedValueInput(ezP.Const.Input.WRAP, this.wrappedPrototype)
+    .setCheck(this.wrappedCheck)
+    if (this.wrappedLabel) {
+      this.fieldWrapped = new ezP.FieldLabel(this.wrappedLabel)
+      this.inputWRAP.appendField(this.fieldWrapped)
+    }
+  }
+  this.initBlock(block)
+  if (this.labelRight) {
+    this.fieldSuffix = new ezP.FieldLabel(this.labelRight)
+    block.appendDummyInput().appendField(this.fieldSuffix)
+  }
+}
+
+/**
+ * Create and initialize the various paths.
+ * Called once at block creation time.
+ * Should not be called directly
  * @param {!Blockly.Block} block to be initialized..
  */
 ezP.DelegateSvg.prototype.initBlock = function(block) {
@@ -86,6 +126,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   // block.setInputsInline(true)
   block.setTooltip('')
   block.setHelpUrl('')
+
   if (this.outputCheck !== undefined) {
     block.setOutput(true, this.outputCheck)
   } else {
@@ -496,7 +537,7 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
  * @private
  */
 ezP.DelegateSvg.prototype.renderDrawSharp_ = function (io) {
-  goog.asserts.assert(false, 'renderDrawSharp_ must be overriden by ' + this)
+  goog.asserts.assert(false, 'renderDrawSharp_ must be overriden by ' + io.block.type)
 }
 
 /**

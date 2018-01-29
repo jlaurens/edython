@@ -35,6 +35,7 @@ ezP.Const.Stmt = {
   yield_stmt: 'ezp_stmt_yield_stmt',
   raise_stmt: 'ezp_stmt_raise_stmt',
   import_stmt: 'ezp_stmt_import_stmt',
+  global_stmt: 'ezp_stmt_global_stmt',
   // in progress
 
 

@@ -30,7 +30,6 @@ goog.inherits(ezP.DelegateSvg.Expr.Delimited, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Expr.Delimited.prototype.leftDelimiter = '('
 ezP.DelegateSvg.Expr.Delimited.prototype.rightDelimiter = ')'
-ezP.DelegateSvg.Expr.Delimited.prototype.outputCheck = undefined
 ezP.DelegateSvg.Expr.Delimited.prototype.sealedPrototypeName = undefined
 
 /**

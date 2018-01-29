@@ -30,7 +30,6 @@ goog.inherits(ezP.DelegateSvg.Expr.VSPair, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Expr.VSPair.prototype.primaryCheck = undefined
 ezP.DelegateSvg.Expr.VSPair.prototype.secondaryCheck = undefined
-ezP.DelegateSvg.Expr.VSPair.prototype.outputCheck = undefined
 ezP.DelegateSvg.Expr.VSPair.prototype.secondaryPrototypeName = undefined
 
 /**
@@ -91,41 +90,6 @@ goog.inherits(ezP.DelegateSvg.Expr.slicing, ezP.DelegateSvg.Expr.VSPair)
 ezP.DelegateSvg.Manager.register(ezP.Const.Expr.slicing, ezP.DelegateSvg.Expr.slicing)
 
 /**
- * Class for a DelegateSvg, value+'('sealed')' pair.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.VSDelimitedPair = function (prototypeName) {
-  ezP.DelegateSvg.Expr.VSDelimitedPair.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Expr.VSDelimitedPair, ezP.DelegateSvg.Expr.VSPair)
-
-ezP.DelegateSvg.Expr.VSDelimitedPair.prototype.leftDelimiter = undefined
-ezP.DelegateSvg.Expr.VSDelimitedPair.prototype.rightDelimiter = undefined
-
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * The FOR value is a connection to a sealed block
- * This connection will be sent far away to prevent block (dis)connection.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.VSDelimitedPair.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Expr.VSDelimitedPair.superClass_.initBlock.call(this, block)
-  this.leftField = new ezP.FieldLabel(this.leftDelimiter)
-  this.leftField.ezpFieldData = {x_shift: -ezP.Font.space/6}
-  this.inputSECONDARY.appendField(this.leftField)
-  this.rightField = new ezP.FieldLabel(this.rightDelimiter)
-  this.rightField.ezpFieldData = {x_shift: +ezP.Font.space/6}
-  block.appendDummyInput().appendField(this.rightField)
-}
-
-/**
  * Class for a DelegateSvg, call block.
  * As call is already a reserved message in javascript,
  * we use call_block instead.
@@ -143,9 +107,9 @@ ezP.DelegateSvg.Expr.call_block =  function (prototypeName) {
   this.secondaryCheck = ezP.T3.argument_list
   this.outputCheck = ezP.T3.call
   this.secondaryPrototypeName = ezP.Const.Expr.argument_list
-  this.leftDelimiter = '('
-  this.rightDelimiter = ')'
+  this.labelLeft = '('
+  this.labelRight = ')'
 }
-goog.inherits(ezP.DelegateSvg.Expr.call_block, ezP.DelegateSvg.Expr.VSDelimitedPair)
+goog.inherits(ezP.DelegateSvg.Expr.call_block, ezP.DelegateSvg.Expr.VSPair)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Expr.call, ezP.DelegateSvg.Expr.call_block)

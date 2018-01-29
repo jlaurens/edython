@@ -158,8 +158,8 @@ ezP.FieldOptions.prototype.onItemSelected = function (menu, menuItem) {
 * @override
 */
 ezP.FieldOptions.prototype.trimOptions_ = function () {
-  this.prefixField = null
-  this.suffixField = null
+  this.leftField = null
+  this.rightField = null
 }
 
 /**

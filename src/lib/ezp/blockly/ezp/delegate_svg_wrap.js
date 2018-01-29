@@ -27,56 +27,6 @@ ezP.DelegateSvg.Wrap = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Wrap, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Wrap.prototype.label = undefined
-ezP.DelegateSvg.Wrap.prototype.wrappedType = undefined
-ezP.DelegateSvg.Wrap.prototype.wrappedPrototype = undefined
-
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Wrap.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Wrap.superClass_.initBlock.call(this, block)
-  this.inputWRAP = block.appendSealedValueInput(ezP.Const.Input.WRAP, this.wrappedPrototype)
-    .setCheck(this.wrappedType)
-  if (this.label !== undefined) {
-    this.inputWRAP.appendField(new ezP.FieldLabel(this.label))
-  }
-}
-
-/**
- * Populate the context menu for the given block.
- * Forwards management to the sealed block
- * @param {!Blockly.Block} block The block.
- * @param {!goo.ui.Menu} menu The menu to populate.
- * @private
- */
-ezP.DelegateSvg.Wrap.prototype.populateContextMenuLast_ = function (block, menu) {
-  var target = this.inputWRAP.connection.targetBlock()
-  if (target) {
-    target.ezp.populateContextMenuLast_(target, menu)
-  } else {
-    ezP.DelegateSvg.Wrap.superClass_.populateContextMenuLast_.call(this,block, menu)
-  }
-}
-
-/**
- * Handle the selection of an item in the context dropdown menu.
- * Forwards management to the sealed block
- * @param {!Blockly.Block} block, owner of the delegate.
- * @param {!goog.ui.Menu} menu The Menu clicked.
- * @param {!goog....} event The event containing as target
- * the MenuItem selected within menu.
- */
-ezP.DelegateSvg.Wrap.prototype.handleActionMenuEvent = function (block, menu, event) {
-  var target = this.inputWRAP.outConnection.targetBlock()
-  return target && target.ezp.handleActionMenuEvent(target, menu, event)
-}
-
-
 /**
  * Class for a DelegateSvg, assignment_expression block.
  * For ezPython.
@@ -116,8 +66,8 @@ ezP.DelegateSvg.Expr.assignment_expression.prototype.initBlock = function(block)
  */
 ezP.DelegateSvg.Stmt.expression_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.expression_stmt.superClass_.constructor.call(this, prototypeName)
-  this.wrapperCheck = ezP.T3.starred_item_list
-  this.wrappedPrototype =ezP.Const.Expr.starred_item_list
+  this.outputCheck = ezP.T3.starred_item_list
+  this.wrappedPrototype = ezP.Const.Expr.starred_item_list
 }
 goog.inherits(ezP.DelegateSvg.Stmt.expression_stmt, ezP.DelegateSvg.Wrap)
 
@@ -132,7 +82,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.expression_stmt, ezP.DelegateSvg
  */
 ezP.DelegateSvg.Stmt.assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.assignment_stmt.superClass_.constructor.call(this, prototypeName)
-  this.wrapperCheck = ezP.T3.assignment_expression
+  this.outputCheck = ezP.T3.assignment_expression
   this.wrappedPrototype = ezP.Const.Expr.assignment_expression
 }
 goog.inherits(ezP.DelegateSvg.Stmt.assignment_stmt, ezP.DelegateSvg.Wrap)
@@ -183,7 +133,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.augmented_assignment_expression,
  */
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.augmented_assignment_stmt.superClass_.constructor.call(this, prototypeName)
-  this.wrapperCheck = ezP.T3.augmented_assignment_expression
+  this.outputCheck = ezP.T3.augmented_assignment_expression
   this.wrappedPrototype = ezP.Const.Expr.augmented_assignment_expression
 }
 goog.inherits(ezP.DelegateSvg.Stmt.augmented_assignment_stmt, ezP.DelegateSvg.Wrap)
@@ -200,7 +150,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.augmented_assignment_stmt, ezP.D
 ezP.DelegateSvg.Stmt.del_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.del_stmt.superClass_.constructor.call(this, prototypeName)
   this.label = 'del'
-  this.wrapperCheck = ezP.T3.target_list
+  this.outputCheck = ezP.T3.target_list
   this.wrappedPrototype = ezP.Const.Expr.target_list
 }
 goog.inherits(ezP.DelegateSvg.Stmt.del_stmt, ezP.DelegateSvg.Wrap)
@@ -218,7 +168,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.del_stmt, ezP.DelegateSvg.Stmt.d
 ezP.DelegateSvg.Stmt.return_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.return_stmt.superClass_.constructor.call(this, prototypeName)
   this.label = 'return'
-  this.wrapperCheck = ezP.T3.expression_list
+  this.outputCheck = ezP.T3.expression_list
   this.wrappedPrototype = ezP.Const.Expr.expression_list
 }
 goog.inherits(ezP.DelegateSvg.Stmt.return_stmt, ezP.DelegateSvg.Wrap)
@@ -234,7 +184,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.return_stmt, ezP.DelegateSvg.Stm
  */
 ezP.DelegateSvg.Stmt.yield_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.yield_stmt.superClass_.constructor.call(this, prototypeName)
-  this.wrapperCheck = ezP.T3.yield_expression
+  this.outputCheck = ezP.T3.yield_expression
   this.wrappedPrototype = ezP.Const.Expr.yield_expression
 }
 goog.inherits(ezP.DelegateSvg.Stmt.yield_stmt, ezP.DelegateSvg.Wrap)

@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Expr.Prefixed')
+goog.provide('ezP.DelegateSvg.Expr.lefted')
 
 goog.require('ezP.DelegateSvg.Expr')
 
@@ -22,28 +22,27 @@ goog.require('ezP.DelegateSvg.Expr')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.Prefixed = function (prototypeName) {
-  ezP.DelegateSvg.Expr.Prefixed.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.lefted = function (prototypeName) {
+  ezP.DelegateSvg.Expr.lefted.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Expr.Prefixed, ezP.DelegateSvg.Expr)
+goog.inherits(ezP.DelegateSvg.Expr.lefted, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Expr.Prefixed.prototype.operator = undefined
-ezP.DelegateSvg.Expr.Prefixed.prototype.checkTypes = undefined
-ezP.DelegateSvg.Expr.Prefixed.prototype.outputCheck = undefined
+ezP.DelegateSvg.Expr.lefted.prototype.operator = undefined
+ezP.DelegateSvg.Expr.lefted.prototype.checkTypes = undefined
+ezP.DelegateSvg.Expr.lefted.prototype.outputCheck = undefined
 
 /**
  * Initialize the block.
  * Called by the block's init method.
+ * No direct call.
  * For ezPython.
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Expr.Prefixed.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Expr.Prefixed.superClass_.initBlock.call(this, block)
-  this.fieldPrefix = new ezP.FieldLabel(this.label)
+ezP.DelegateSvg.Expr.lefted.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Expr.lefted.superClass_.initBlock.call(this, block)
   block.appendValueInput(ezP.Const.Input.EXPR)
     .setCheck(this.checkTypes)
-    .appendField(this.fieldPrefix)
 }
 
 /**
@@ -55,11 +54,11 @@ ezP.DelegateSvg.Expr.Prefixed.prototype.initBlock = function(block) {
  */
 ezP.DelegateSvg.Expr.or_expr_starred = function (prototypeName) {
   ezP.DelegateSvg.Expr.or_expr_starred.superClass_.constructor.call(this, prototypeName)
-  this.label = '*'
+  this.labelLeft = '*'
   this.checkTypes = ezP.T3.Require.expression
   this.outputCheck = ezP.T3.or_expr_starred
 }
-goog.inherits(ezP.DelegateSvg.Expr.or_expr_starred, ezP.DelegateSvg.Expr.Prefixed)
+goog.inherits(ezP.DelegateSvg.Expr.or_expr_starred, ezP.DelegateSvg.Expr.lefted)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Expr.or_expr_starred, ezP.DelegateSvg.Expr.or_expr_starred)
 
@@ -76,7 +75,7 @@ ezP.DelegateSvg.Expr.or_expr_double_starred = function (prototypeName) {
   this.checkTypes = ezP.T3.Require.expression
   this.outputCheck = ezP.T3.or_expr_double_starred
 }
-goog.inherits(ezP.DelegateSvg.Expr.or_expr_double_starred, ezP.DelegateSvg.Expr.Prefixed)
+goog.inherits(ezP.DelegateSvg.Expr.or_expr_double_starred, ezP.DelegateSvg.Expr.lefted)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Expr.or_expr_double_starred, ezP.DelegateSvg.Expr.or_expr_double_starred)
 
@@ -93,7 +92,7 @@ ezP.DelegateSvg.Expr.yield_from = function (prototypeName) {
   this.checkTypes = ezP.T3.Require.expression
   this.outputCheck = ezP.T3.yield_from
 }
-goog.inherits(ezP.DelegateSvg.Expr.yield_from, ezP.DelegateSvg.Expr.Prefixed)
+goog.inherits(ezP.DelegateSvg.Expr.yield_from, ezP.DelegateSvg.Expr.lefted)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Expr.yield_from, ezP.DelegateSvg.Expr.yield_from)
 
@@ -110,7 +109,7 @@ ezP.DelegateSvg.Expr.identifier_dotted = function (prototypeName) {
   this.checkTypes = ezP.T3.identifier
   this.outputCheck = ezP.T3.identifier_dotted
 }
-goog.inherits(ezP.DelegateSvg.Expr.identifier_dotted, ezP.DelegateSvg.Expr.Prefixed)
+goog.inherits(ezP.DelegateSvg.Expr.identifier_dotted, ezP.DelegateSvg.Expr.lefted)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Expr.identifier_dotted, ezP.DelegateSvg.Expr.identifier_dotted)
 
@@ -127,6 +126,6 @@ ezP.DelegateSvg.Expr.await_expr = function (prototypeName) {
   this.checkTypes = ezP.T3.Require.primary
   this.outputCheck = ezP.T3.await_expr
 }
-goog.inherits(ezP.DelegateSvg.Expr.await_expr, ezP.DelegateSvg.Expr.Prefixed)
+goog.inherits(ezP.DelegateSvg.Expr.await_expr, ezP.DelegateSvg.Expr.lefted)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Expr.await_expr, ezP.DelegateSvg.Expr.await_expr)

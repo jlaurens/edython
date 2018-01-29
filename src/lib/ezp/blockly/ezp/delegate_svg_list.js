@@ -152,7 +152,6 @@ ezP.DelegateSvg.List.prototype.consolidate = function (block) {
   this.consolidator.consolidate(block)
 }
 
-ezP.DelegateSvg.List.prototype.outputCheck = undefined
 ezP.DelegateSvg.List.prototype.consolidator = undefined
 
 /**

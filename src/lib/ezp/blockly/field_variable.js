@@ -188,11 +188,11 @@ ezP.setup.register(function () {
 ezP.FieldVariable.prototype.showEditor_ = function () {
   var menu = this.sourceBlock_.workspace.ezp.menuVariable.updateWithListeningBlock(this)
   var bbox = this.getScaledBBox_()
-  bbox.left = bbox.left - 12 + 1 + 4// JL Change like in field_variable showEditor
+  bbox.labelLeft = bbox.labelLeft - 12 + 1 + 4// JL Change like in field_variable showEditor
   bbox.top = bbox.top - 5
   bbox.bottom = bbox.bottom + 3
   // TODO: change that dimensions
-  menu.showMenu(this.menuIcon_, bbox.left, bbox.bottom)
+  menu.showMenu(this.menuIcon_, bbox.labelLeft, bbox.bottom)
 }
 
 /**

@@ -20,7 +20,7 @@ Blockly.Python[ezP.Const.Prc.DEF] = function (block) {
     Blockly.Python.ORDER_NONE)
   var branch = Blockly.Python.statementToCode(block, 'DO')
   if (!branch.length) {
-    branch = Blockly.Python.prefixLines(/** @type {string} */('MISSING_STATEMENT\n'), Blockly.Python.INDENT)
+    branch = Blockly.Python.leftLines(/** @type {string} */('MISSING_STATEMENT\n'), Blockly.Python.INDENT)
   }
   return 'def ' + (DEF.length ? DEF : 'MISSING_DEF') + ':\n' + branch
 }
@@ -32,7 +32,7 @@ Blockly.Python[ezP.Const.Prc.CLASS] = function (block) {
     Blockly.Python.ORDER_NONE)
   var branch = Blockly.Python.statementToCode(block, 'DO')
   if (!branch.length) {
-    branch = Blockly.Python.prefixLines(/** @type {string} */('MISSING_STATEMENT\n'), Blockly.Python.INDENT)
+    branch = Blockly.Python.leftLines(/** @type {string} */('MISSING_STATEMENT\n'), Blockly.Python.INDENT)
   }
   return 'class ' + (CLASS.length ? CLASS : 'MISSING_CLASS') + '(' + (NCSTR.length ? NCSTR : 'MISSING_NCSTR') + '):\n' + branch
 }
