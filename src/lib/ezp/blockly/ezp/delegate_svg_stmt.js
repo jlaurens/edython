@@ -156,30 +156,27 @@ ezP.DelegateSvg.Stmt.prototype.renderDrawInput_ = function (io) {
  */
 ezP.DelegateSvg.Stmt.annotated_assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.annotated_assignment_stmt.superClass_.constructor.call(this, prototypeName)
+  //annotated_assignment_stmt ::=  augtarget ":" expression ["=" expression]
+  this.inputData = {
+    first: {
+      key: ezP.Const.Input.TARGET,
+      check: ezP.T3.Require.augtarget
+    },
+    middle: {
+      key: ezP.Const.Input.ANNOTATED,
+      check: ezP.T3.Require.expression,
+      label: ':'
+    },
+    last: {
+      key: ezP.Const.Input.ASSIGNED,
+      check: ezP.T3.Require.expression,
+      label: '='
+    }
+  }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.annotated_assignment_stmt, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.annotated_assignment_stmt, ezP.DelegateSvg.Stmt.annotated_assignment_stmt)
-
-//annotated_assignment_stmt ::=  augtarget ":" expression ["=" expression]
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Stmt.annotated_assignment_stmt.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Stmt.annotated_assignment_stmt.superClass_.initBlock.call(this, block)
-  block.appendValueInput(ezP.Const.Input.TARGET)
-    .setCheck(ezP.T3.Require.augtarget)
-    block.appendValueInput(ezP.Const.Input.ANNOTATED)
-    .setCheck(ezP.T3.Require.expression)
-    .appendField(new ezP.FieldLabel(':'))
-  block.appendValueInput(ezP.Const.Input.ASSIGNED)
-    .setCheck(ezP.T3.Require.expression)
-    .appendField(new ezP.FieldLabel('='))
-}
 
 /**
  * Class for a DelegateSvg, two optional values and a label.
@@ -193,30 +190,6 @@ ezP.DelegateSvg.Stmt.Two = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.Two, ezP.DelegateSvg.Stmt)
 
-/**
- * An array : input key, label, check, optional.
- */
-ezP.DelegateSvg.Stmt.Two.prototype.firstData = undefined
-ezP.DelegateSvg.Stmt.Two.prototype.secondData = undefined
-
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Stmt.Two.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Stmt.Two.superClass_.initBlock.call(this, block)
-  this.inputFIRST = block.appendValueInput(this.firstData[0])
-    .setCheck(this.firstData[2])
-  if (this.firstData[1].length) {
-    this.inputFIRST.appendField(new ezP.FieldLabel(this.firstData[1]))
-  }
-  this.inputSECOND = block.appendValueInput(this.secondData[0])
-    .setCheck(this.secondData[2])
-  this.inputSECOND.connection.ezpData.optional_ = this.secondData[3]
-}
 
 /**
  * Prepare the inputs.
@@ -228,16 +201,22 @@ ezP.DelegateSvg.Stmt.Two.prototype.initBlock = function(block) {
  */
 ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block) {
   ezP.DelegateSvg.Stmt.Two.superClass_.consolidate.call(this, block)
-  var connected = this.inputSECOND.connection.isConnected()
-  this.setInputEnabled(block, this.inputSECOND, this.inputFIRST.connection.isConnected() || connected)
+  var first = this.inputs.first.input
+  var last  = this.inputs.last.input
+  var connected = last.connection.isConnected()
+  this.setInputEnabled(block, last, first.connection.isConnected() || connected)
   if (connected) {
-    if (this.inputSECOND.fieldRow.length == 0) {
-      this.inputSECOND.appendField(new ezP.FieldLabel(this.secondData[1]), ezP.Const.Field.LABEL)
+    if (last.fieldRow.length == 0) {
+      last.appendField(last.fieldLabel, ezP.Const.Field.LABEL)
     }
-  } else if (this.inputSECOND.fieldRow.length > 0) {
-    this.inputSECOND.removeField(ezP.Const.Field.LABEL)
+  } else if (last.fieldRow.length > 0) {
+    last.removeField(ezP.Const.Field.LABEL)
   }
-  this.inputFIRST.connection.ezpData.optional_ = this.firstData[3] && !connected
+  var ezp = first.connection.ezpData
+  if (!ezp.optional_0) {
+    ezp.optional_0 = [ezp.optional_]
+  }
+  ezp.optional_ = ezp.optional_0[0] && !connected
 }
 
 /**
@@ -249,39 +228,23 @@ ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block) {
  */
 ezP.DelegateSvg.Stmt.assert_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.assert_stmt.superClass_.constructor.call(this, prototypeName)
-  this.firstData = [ezP.Const.Input.ASSERT, 'assert', ezP.T3.Require.expression, false]
-  this.secondData = [ezP.Const.Input.EXPR, ',', ezP.T3.Require.expression, true]
+  this.inputData = {
+    first: {
+      label: 'assert',
+      key: ezP.Const.Input.ASSERT,
+      check: ezP.T3.Require.expression
+    },
+    last: {
+      label: ',',
+      key: ezP.Const.Input.EXPR,
+      check: ezP.T3.Require.expression,
+      optional: true
+    }
+  }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.assert_stmt, ezP.DelegateSvg.Stmt.Two)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.assert_stmt, ezP.DelegateSvg.Stmt.assert_stmt)
-
-
-/**
- * Class for a DelegateSvg, one worder.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Stmt.OneWord = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.OneWord.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Stmt.OneWord, ezP.DelegateSvg.Stmt)
-
-ezP.DelegateSvg.Stmt.OneWord.prototype.label = undefined
-
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Stmt.OneWord.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Stmt.OneWord.superClass_.initBlock.call(this, block)
-  block.appendDummyInput().appendField(new ezP.FieldLabel(this.label))
-}
 
 /**
  * Class for a DelegateSvg, pass_stmt.
@@ -292,9 +255,9 @@ ezP.DelegateSvg.Stmt.OneWord.prototype.initBlock = function(block) {
  */
 ezP.DelegateSvg.Stmt.pass_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.pass_stmt.superClass_.constructor.call(this, prototypeName)
-  this.label = 'pass'
+  this.labelEnd = 'pass'
 }
-goog.inherits(ezP.DelegateSvg.Stmt.pass_stmt, ezP.DelegateSvg.Stmt.OneWord)
+goog.inherits(ezP.DelegateSvg.Stmt.pass_stmt, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.pass_stmt, ezP.DelegateSvg.Stmt.pass_stmt)
 
@@ -307,9 +270,9 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.pass_stmt, ezP.DelegateSvg.Stmt.
  */
 ezP.DelegateSvg.Stmt.break_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.break_stmt.superClass_.constructor.call(this, prototypeName)
-  this.label = 'break'
+  this.labelEnd = 'break'
 }
-goog.inherits(ezP.DelegateSvg.Stmt.break_stmt, ezP.DelegateSvg.Stmt.OneWord)
+goog.inherits(ezP.DelegateSvg.Stmt.break_stmt, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.break_stmt, ezP.DelegateSvg.Stmt.break_stmt)
 
@@ -322,9 +285,9 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.break_stmt, ezP.DelegateSvg.Stmt
  */
 ezP.DelegateSvg.Stmt.continue_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.continue_stmt.superClass_.constructor.call(this, prototypeName)
-  this.label = 'continue'
+  this.labelEnd = 'continue'
 }
-goog.inherits(ezP.DelegateSvg.Stmt.continue_stmt, ezP.DelegateSvg.Stmt.OneWord)
+goog.inherits(ezP.DelegateSvg.Stmt.continue_stmt, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.continue_stmt, ezP.DelegateSvg.Stmt.continue_stmt)
 
@@ -337,8 +300,20 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.continue_stmt, ezP.DelegateSvg.S
  */
 ezP.DelegateSvg.Stmt.raise_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.raise_stmt.superClass_.constructor.call(this, prototypeName)
-  this.firstData = [ezP.Const.Input.RAISE, 'raise', ezP.T3.Require.expression, true]
-  this.secondData = [ezP.Const.Input.FROM, 'from', ezP.T3.Require.expression, true]
+  this.inputData = {
+    first: {
+      label: 'raise',
+      key: ezP.Const.Input.RAISE,
+      check: ezP.T3.Require.expression,
+      optional: true
+    },
+    last: {
+      label: 'from',
+      key: ezP.Const.Input.FROM,
+      check: ezP.T3.Require.expression,
+      optional: true
+    }
+  }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.raise_stmt, ezP.DelegateSvg.Stmt.Two)
 

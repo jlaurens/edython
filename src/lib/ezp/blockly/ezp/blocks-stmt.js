@@ -30,6 +30,8 @@ var Ks = [
   ezP.Const.Stmt.yield_stmt,
   ezP.Const.Stmt.raise_stmt,
   ezP.Const.Stmt.import_stmt,
+  ezP.Const.Stmt.global_stmt,
+  ezP.Const.Stmt.nonlocal_stmt,
   // IN PROGRESS
 ]
 for (var i = 0; i<Ks.length; ++i) {

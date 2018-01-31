@@ -85,7 +85,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.module_named, ezP.DelegateSvg.Ex
  */
 ezP.DelegateSvg.Expr.module_named.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.module_named.superClass_.initBlock.call(this, block)
-  this.inputMODULE = block.appendSealedValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
+  this.inputMODULE = block.appendWrapValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
     .setCheck(ezP.T3.module)
   this.inputNAME = block.appendValueInput(ezP.Const.Input.NAME)
     .setCheck(ezP.T3.identifier)
@@ -151,7 +151,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.import_module, ezP.DelegateSvg.E
  */
 ezP.DelegateSvg.Expr.import_module.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.import_module.superClass_.initBlock.call(this, block)
-  this.inputMODULE = block.appendSealedValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
+  this.inputMODULE = block.appendWrapValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
     .setCheck(ezP.T3.module)
     .appendField(new ezP.FieldLabel('import'))
   this.inputNAME = block.appendValueInput(ezP.Const.Input.NAME)
@@ -185,7 +185,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.relative_module, ezP.DelegateSvg
  */
 ezP.DelegateSvg.Expr.relative_module.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.relative_module.superClass_.initBlock.call(this, block)
-  this.inputMODULE = block.appendSealedValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
+  this.inputMODULE = block.appendWrapValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
     .setCheck(ezP.T3.module)
     .appendField(new ezP.FieldTextInput('...'), ezP.Const.Field.DOTS)
 }
@@ -216,7 +216,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.relative_module, ezP.DelegateSvg
  */
 ezP.DelegateSvg.Expr.relative_module.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.relative_module.superClass_.initBlock.call(this, block)
-  this.inputMODULE = block.appendSealedValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
+  this.inputMODULE = block.appendWrapValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
     .setCheck(ezP.T3.module)
     .appendField(new ezP.FieldTextInput('...'), ezP.Const.Field.DOTS)
 }
@@ -249,7 +249,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.from_module_import, ezP.Delegate
 ezP.DelegateSvg.Expr.from_module_import.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.from_module_import.superClass_.initBlock.call(this, block)
   // from_module_import ::= "from" module "import *"
-  this.inputMODULE = block.appendSealedValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
+  this.inputMODULE = block.appendWrapValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
     .setCheck(ezP.T3.module)
     .appendField(new ezP.FieldLabel('from'))
   block.appendDummyInput()
@@ -304,12 +304,12 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.from_relative_module_import, ezP
 ezP.DelegateSvg.Expr.from_relative_module_import.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.from_relative_module_import.superClass_.initBlock.call(this, block)
   // from_relative_module_import ::= "from" relative_module "import" identifier ["as" name] ( "," identifier ["as" name] )*
-  this.inputMODULE = block.appendSealedValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
+  this.inputMODULE = block.appendWrapValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
     .setCheck(ezP.T3.module)
     .appendField(new ezP.FieldLabel('from'))
     .appendField(new ezP.FieldLabel(' '))
     .appendField(new ezP.FieldTextInput('...'), ezP.Const.Field.DOTS)
-  this.inputIMPORT = block.appendSealedValueInput(ezP.Const.Input.IMPORT, ezP.Const.Expr.identifier_named_list)
+  this.inputIMPORT = block.appendWrapValueInput(ezP.Const.Input.IMPORT, ezP.Const.Expr.identifier_named_list)
     .setCheck(ezP.T3.identifier_named_list)
     .appendField(new ezP.FieldLabel('import'))
 }
@@ -325,20 +325,23 @@ ezP.DelegateSvg.Expr.from_relative_module_import.prototype.initBlock = function(
  */
 ezP.DelegateSvg.Stmt.import_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.import_stmt.superClass_.constructor.call(this, prototypeName)
-  this.wrappedCheck = ezP.T3.import_module
-  this.wrappedPrototype = ezP.Const.Expr.import_module
+  this.inputData = {
+    last: {
+      check: ezP.T3.Require.import_expr,
+      wrap: ezP.Const.Expr.import_module
+    }
+  }
   this.contextMenuData = [
-    {'LABEL': 'import module [as ...]', 'TYPE': ezP.Const.Expr.import_module},
-    {'LABEL': 'from module import *', 'TYPE': ezP.Const.Expr.from_module_import},
-    {'LABEL': 'from module import ... [as ...]', 'TYPE': ezP.Const.Expr.from_relative_module_import},
+    {label: 'import module [as ...]', type: ezP.Const.Expr.import_module},
+    {label: 'from module import *', type: ezP.Const.Expr.from_module_import},
+    {label: 'from module import ... [as ...]', type: ezP.Const.Expr.from_relative_module_import},
   ]
 }
 goog.inherits(ezP.DelegateSvg.Stmt.import_stmt, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.import_stmt, ezP.DelegateSvg.Stmt.import_stmt)
 
-
-ezP.USE_IMPORT_MODEL_ID  = 'USE_IMPORT_MODEL'
+ezP.USE_IMPORT_WRAP_TYPE_ID  = 'USE_IMPORT_WRAP_TYPE'
 
 /**
  * Populate the context menu for the given block.
@@ -347,18 +350,19 @@ ezP.USE_IMPORT_MODEL_ID  = 'USE_IMPORT_MODEL'
  * @private
  */
 ezP.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuMiddle_ = function (block, menu) {
-  var target = this.inputWRAP.connection.targetBlock()
+  var last = this.inputs.last.input
+  var target = last.connection.targetBlock()
   var type = target? target.type: undefined
   var ezp = this
   var renderer = ezP.MenuItemCodeRenderer.getInstance()
   var F = function(data) {
     var menuItem = new ezP.MenuItem(
-      data['LABEL']
-      ,[ezP.USE_IMPORT_MODEL_ID, data['TYPE']],
+      data.label
+      ,[ezP.USE_IMPORT_WRAP_TYPE_ID, data.type],
       null,
       renderer
     )
-    menuItem.setEnabled(data['TYPE'] != type)
+    menuItem.setEnabled(data.type != type)
     menu.addChild(menuItem, true)
   }
   for (var i = 0; i<this.contextMenuData.length; i++) {
@@ -370,13 +374,14 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuMiddle_ = function
 
 /**
  * Handle the selection of an item in the context dropdown menu.
- * Unde compliant.
+ * Undo compliant.
  * @param {!Blockly.Block} block, owner of the delegate.
  * @param {!String} newType
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Stmt.import_stmt.prototype.changeImportType = function (block, newValue) {
-  var target = this.inputWRAP.connection.targetBlock()
+ezP.DelegateSvg.Stmt.import_stmt.prototype.changeImportWrapType = function (block, newValue) {
+  var last = this.inputs.last.input
+  var target = last.connection.targetBlock()
   var oldValue = target? target.type: undefined
   if (newValue != oldValue) {
     Blockly.Events.setGroup(true)
@@ -388,7 +393,7 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.changeImportType = function (block, n
 //      target.unplug()
       target.dispose()
     }
-    this.completeSealedInput_(block, this.inputWRAP, newValue)
+    this.completeWrappedInput_(block, last, newValue)
     Blockly.Events.setGroup(false)
   }
 }
@@ -404,9 +409,9 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.handleActionMenuEventMiddle = functio
   var model = event.target.getModel()
   var action = model[0]
   var new_type = model[1]
-  if (action == ezP.USE_IMPORT_MODEL_ID) {
+  if (action == ezP.USE_IMPORT_WRAP_TYPE_ID) {
     setTimeout(function() {
-      block.ezp.changeImportType(block, new_type)
+      block.ezp.changeImportWrapType(block, new_type)
       block.render()
     }, 100)
     return true

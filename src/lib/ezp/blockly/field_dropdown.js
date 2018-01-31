@@ -143,7 +143,7 @@ ezP.FieldDropdownCode.prototype.createWidget_ = function (menu) {
  */
 ezP.FieldDropdown.prototype.getAnchorDimensions_ = function () {
   var bbox = this.getScaledBBox_()
-  bbox.labelLeft = bbox.labelLeft - 12 + 1 + 4// JL Change like in field_variable showEditor
+  bbox.left = bbox.left - 12 + 1 + 4// JL Change like in field_variable showEditor
   bbox.top = bbox.top - 5
   bbox.bottom = bbox.bottom + 3
   return bbox

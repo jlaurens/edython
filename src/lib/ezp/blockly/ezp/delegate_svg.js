@@ -68,37 +68,69 @@ ezP.DelegateSvg.prototype.svgPathHighlight_ = undefined
  * with that check.
  */
 ezP.DelegateSvg.prototype.outputCheck = undefined
-ezP.DelegateSvg.prototype.labelLeft = undefined
-ezP.DelegateSvg.prototype.fieldPrefix = undefined
-ezP.DelegateSvg.prototype.wrappedCheck = undefined
-ezP.DelegateSvg.prototype.wrappedPrototype = undefined
-ezP.DelegateSvg.prototype.wrappedLabel = undefined
-ezP.DelegateSvg.prototype.labelRight = undefined
-ezP.DelegateSvg.prototype.fieldSuffix = undefined
 
 /**
- * Create and initialize the various paths.
+ * When set, used as the right delimiter.
+ */
+ezP.DelegateSvg.prototype.labelEnd = undefined
+ezP.DelegateSvg.prototype.fieldLabelEnd = undefined
+
+/**
+ * When set, used to create an input value.
+ * three inputs can be created on the fly.
+ * The data is an object with following properties: first, middle, last
+ * each value is an object with properties
+ * - label, optional string
+ * - key, string uniquely identify the input, defaults to ezP.Const.Input.WRAP
+ * - check, [an array of] strings, types to check the connections 
+ * - wrap, optional, the type of the block wrapped by this input
+ * - optional, true/false whether the connection is optional, only when no wrap.
+ */
+
+ezP.DelegateSvg.prototype.inputData = undefined
+
+/**
+ * Create and initialize the various paths,
+ * the first, middle and last inputs if required.
  * Called once at block creation time.
  * @param {!Blockly.Block} block to be initialized..
  * @private
  */
 ezP.DelegateSvg.prototype.initBlock_ = function(block) {
-  if (this.labelLeft) {
-    this.fieldPrefix = new ezP.FieldLabel(this.labelLeft)
-    block.appendDummyInput().appendField(this.fieldPrefix)
-  }
-  if (this.wrappedPrototype) {
-    this.inputWRAP = block.appendSealedValueInput(ezP.Const.Input.WRAP, this.wrappedPrototype)
-    .setCheck(this.wrappedCheck)
-    if (this.wrappedLabel) {
-      this.fieldWrapped = new ezP.FieldLabel(this.wrappedLabel)
-      this.inputWRAP.appendField(this.fieldWrapped)
+  var F = function(D) {
+    var out
+    if (D) {
+      out = {}
+      var k = D.key || ezP.Const.Input.WRAP
+      var v, f
+      if ((v = D.wrap)) {
+        out.input = block.appendWrapValueInput(k, v)
+      } else {
+        out.input = block.appendValueInput(k)
+        if (D.optional) {
+          out.input.connection.ezpData.optional_ = true
+        }
+      }
+      if ((v = D.check)) {
+        out.input.setCheck(v)
+      }
+      if ((v = D.label)) {
+        out.fieldLabel = new ezP.FieldLabel(v)
+        out.input.appendField(out.fieldLabel, ezP.Const.Field.LABEL)
+      }
     }
+    return out
   }
+  var Is = {}
+  for (var K in this.inputData) {
+    Is[K] = F(this.inputData[K])
+  }
+  this.inputData = undefined
+  this.inputs = Is
   this.initBlock(block)
-  if (this.labelRight) {
-    this.fieldSuffix = new ezP.FieldLabel(this.labelRight)
-    block.appendDummyInput().appendField(this.fieldSuffix)
+  if (this.labelEnd) {
+    this.fieldLabelEnd = new ezP.FieldLabel(this.labelEnd)
+    block.appendDummyInput().appendField(this.fieldLabelEnd, ezP.Const.Field.LABEL)
   }
 }
 
@@ -188,14 +220,28 @@ ezP.DelegateSvg.prototype.postInitSvg = function(block) {
 }
 
 /**
+ * When the block is just a wrapper, returns the wrapped target.
+ * @param {!Blockly.Block} block owning the delegate.
+ */
+ezP.DelegateSvg.prototype.getWrappedTargetBlock = function(block) {
+  if (this.inputs.wrap) {
+    return this.inputs.wrap.input.connection.targetBlock()    
+  }
+  if (Object.keys(this.inputs).length === 1 && this.wrappedInputs_ && this.wrappedInputs_.length === 1) {
+    return this.wrappedInputs_[0][0].connection.targetBlock()
+  }
+  return undefined
+}
+
+/**
  * Create and initialize the SVG representation of the child blocks sealed to the given block.
  * May be called more than once.
  * @param {!Blockly.Block} block to be initialized..
  */
-ezP.DelegateSvg.prototype.initSvgSealed = function(block) {
-  if (this.sealedInputs_) {
-    for (var i = 0; i < this.sealedInputs_.length; i++) {
-      var data = this.sealedInputs_[i]
+ezP.DelegateSvg.prototype.initSvgWrap = function(block) {
+  if (this.wrappedInputs_) {
+    for (var i = 0; i < this.wrappedInputs_.length; i++) {
+      var data = this.wrappedInputs_[i]
       var target = data[0].connection.targetBlock()
       if (target) {
         target.initSvg()
@@ -256,10 +302,10 @@ ezP.DelegateSvg.prototype.consolidate = function (block) {
 /**
  * Whether the block is sealed to its parent.
  * The sealed status is decided at init time.
- * The corresponding input.ezpData.connection.sealed_ is set to true.
+ * The corresponding input.ezpData.connection.wrapped_ is set to true.
  * @private
  */
-ezP.DelegateSvg.prototype.sealed_ = undefined
+ezP.DelegateSvg.prototype.wrapped_ = undefined
 
 /**
  * Will draw the block. Default implementation does nothing.
@@ -441,7 +487,7 @@ ezP.DelegateSvg.prototype.updatePath_ = function (block, path, def) {
  * @private
  */
 ezP.DelegateSvg.prototype.didChangeSize_ = function (block) {
-  if (this.sealed_) {
+  if (this.wrapped_) {
     this.updatePath_(block, this.svgPathContour_)
     this.updatePath_(block, this.svgPathShape_)
     this.updatePath_(block, this.svgPathHighlight_)
@@ -460,7 +506,7 @@ ezP.DelegateSvg.prototype.didChangeSize_ = function (block) {
  * @private
  */
 ezP.DelegateSvg.prototype.getPaddingLeft = function (block) {
-  if (this.sealed_) {
+  if (this.wrapped_) {
     return 0
   } else if (block.outputConnection) {
     return ezP.Font.space
@@ -475,7 +521,7 @@ ezP.DelegateSvg.prototype.getPaddingLeft = function (block) {
  * @private
  */
 ezP.DelegateSvg.prototype.getPaddingRight = function (block) {
-  if (this.sealed_) {
+  if (this.wrapped_) {
     return 0
   } else if (block.outputConnection) {
     return ezP.Font.space
@@ -561,7 +607,7 @@ ezP.DelegateSvg.prototype.renderDrawFields_ = function (io) {
       var root = field.getSvgRoot()
       if (root) {
         var ezp = field.ezpFieldData
-        var x_shift = ezp && !io.block.ezp.sealed_? ezp.x_shift || 0: 0
+        var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
         root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
           ', ' + ezP.Padding.t() + ')')
         var size = field.getSize()
@@ -890,8 +936,8 @@ ezP.DelegateSvg.prototype.previousStatementCheck = undefined
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.makeBlockSealed = function (block) {
-  ezP.DelegateSvg.superClass_.makeBlockSealed.call(this, block)
+ezP.DelegateSvg.prototype.makeBlockWrapped = function (block) {
+  ezP.DelegateSvg.superClass_.makeBlockWrapped.call(this, block)
   block.initSvg()
   goog.dom.removeNode(this.svgPathShape_)
   delete this.svgPathShape_

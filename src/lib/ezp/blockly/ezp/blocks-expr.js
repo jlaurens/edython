@@ -14,6 +14,7 @@
 goog.provide('ezP.Blocks.val')
 
 goog.require('Blockly.Blocks')
+goog.require('ezP.Const')
 
 var Ks = [
   ezP.Const.Expr.parenth_form,
@@ -28,9 +29,9 @@ var Ks = [
   ezP.Const.Expr.target_list,
   ezP.Const.Expr.yield_atom,
   ezP.Const.Expr.yield_expression,
-  ezP.Const.Expr.yield_from,
+  ezP.Const.Expr.yield_expression_list,
+  ezP.Const.Expr.yield_from_expression,
   ezP.Const.Expr.expression_list,
-  ezP.Const.Expr.expression_or_from_list,
   ezP.Const.Expr.starred_list_comprehensive,
   ezP.Const.Expr.non_void_starred_list_comprehensive,
   ezP.Const.Expr.key_datum_concrete,
@@ -75,6 +76,7 @@ var Ks = [
   ezP.Const.Expr.import,
   ezP.Const.Expr.identifier_named,
   ezP.Const.Expr.identifier_named_list,
+  ezP.Const.Expr.identifier_list,
 
   // IN PROGRESS
 

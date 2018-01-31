@@ -26,27 +26,23 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Lambda = function (prototypeName) {
   ezP.DelegateSvg.Lambda.superClass_.constructor.call(this, prototypeName)
+  this.inputData = {
+    first: {
+      key: ezP.Const.Input.PARS,
+      label: 'lambda',
+      check: ezP.T3.parameter_list,
+      wrap: ezP.Const.Expr.parameter_list
+    },
+    last: {
+      key: ezP.Const.Input.EXPR,
+      label: ':',
+      check: this.epressionType
+    }
+  }
 }
 goog.inherits(ezP.DelegateSvg.Lambda, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.List.prototype.expressionType = undefined
-
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Lambda.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Lambda.superClass_.initBlock.call(this, block)
-  this.inputLIST = block.appendSealedValueInput(ezP.Const.Input.LIST, ezP.Const.Expr.parameter_list)
-    .setCheck(ezP.T3.parameter_list)
-    .appendField(new ezP.FieldLabel('lambda'))
-  block.appendValueInput(ezP.Const.Input.EXPR)
-    .setCheck(this.expressionType)
-    .appendField(new ezP.FieldLabel(':'))
-}
+ezP.DelegateSvg.Lambda.prototype.expressionType = undefined
 
 /**
  * Class for a DelegateSvg, lambda_expr block.

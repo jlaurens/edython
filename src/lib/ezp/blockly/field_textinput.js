@@ -166,7 +166,7 @@ ezP.FieldTextInput.prototype.resizeEditor_ = function () {
     div.style.width = bBox.width * this.workspace_.scale + 'px'
     div.style.height = bBox.height * this.workspace_.scale + 'px'
     var xy = this.getAbsoluteXY_()
-    div.style.labelLeft = (xy.x - ezP.EditorOffset.x) + 'px'
+    div.style.left = (xy.x - ezP.EditorOffset.x) + 'px'
     div.style.top = (xy.y - ezP.EditorOffset.y) + 'px'
   }
 }

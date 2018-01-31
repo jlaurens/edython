@@ -26,9 +26,9 @@ key_datum_concrete ::=  expression ":" expression
 or_expr_double_starred ::=  "**" or_expr
 </pre>
 <pre>
-yield_expression ::=  "yield" expression_or_from_list
-expression_or_from_list ::= expression | yield_from
-yield_from ::= "from" expression
+yield_expression ::=  yield_expression_list | yield_from_expression
+yield_expression_list ::=  "yield" expression_list
+yield_from_expression ::= "yield from" expression
 </pre>
 <pre>
 identifier_dotted ::= "." identifier

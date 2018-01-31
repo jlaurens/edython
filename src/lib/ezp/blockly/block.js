@@ -144,20 +144,20 @@ ezP.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
 
 /**
  * Shortcut for appending a sealed value input row.
- * Just add a 'true' ezpData.sealed_ attribute to the connection.
+ * Just add a 'true' ezpData.wrapped_ attribute to the connection.
  * @param {string} name Language-neutral identifier which may used to find this
  *     input again.  Should be unique to this block.
  * @return {!Blockly.Input} The input object created.
  */
-ezP.Block.prototype.appendSealedValueInput = function(name, prototypeName) {
+ezP.Block.prototype.appendWrapValueInput = function(name, prototypeName) {
   goog.asserts.assert(prototypeName, 'Missing prototypeName, no block to seal')
   var input = this.appendValueInput(name)
-  input.connection.ezpData.sealed_ = true
+  input.connection.ezpData.wrapped_ = true
   input.connection.setHidden(true)
-  if (!this.ezp.sealedInputs_) {
-    this.ezp.sealedInputs_ = []
+  if (!this.ezp.wrappedInputs_) {
+    this.ezp.wrappedInputs_ = []
   }
-  this.ezp.sealedInputs_.push([input, prototypeName])
+  this.ezp.wrappedInputs_.push([input, prototypeName])
   return input
 };
 

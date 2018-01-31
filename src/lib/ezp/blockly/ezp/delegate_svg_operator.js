@@ -217,9 +217,6 @@ ezP.DelegateSvg.Expr.Unary.prototype.canChangeOperator = function(block, op) {
   return ezP.DelegateSvg.Expr.Operator.checkInput(this.inputXPR, data['XPR']) 
 }
 
-
-
-
 /**
 * Class for a DelegateSvg, unary_concrete.
 * For ezPython.
@@ -232,10 +229,10 @@ ezP.DelegateSvg.Expr.unary_concrete = function (prototypeName) {
   this.operator = '-'
   this.operators = ['+', '-', '~', 'not']
   this.operatorData = {
-    '+': {'LABEL':'+...', 'OUT': ezP.T3.u_expr_concrete, 'XPR': ezP.T3.Require.u_expr},
-    '-': {'LABEL':'-...', 'OUT': ezP.T3.u_expr_concrete, 'XPR': ezP.T3.Require.u_expr},
-    '~': {'LABEL':'~...', 'OUT': ezP.T3.u_expr_concrete, 'XPR': ezP.T3.Require.u_expr},
-    'not': {'LABEL':'not ...', 'OUT': ezP.T3.not_test_concrete, 'XPR': ezP.T3.Require.not_test},
+    '+': {label:'+...', 'OUT': ezP.T3.u_expr_concrete, 'XPR': ezP.T3.Require.u_expr},
+    '-': {label:'-...', 'OUT': ezP.T3.u_expr_concrete, 'XPR': ezP.T3.Require.u_expr},
+    '~': {label:'~...', 'OUT': ezP.T3.u_expr_concrete, 'XPR': ezP.T3.Require.u_expr},
+    'not': {label:'not ...', 'OUT': ezP.T3.not_test_concrete, 'XPR': ezP.T3.Require.not_test},
   }
 }
 goog.inherits(ezP.DelegateSvg.Expr.unary_concrete, ezP.DelegateSvg.Expr.Unary)
@@ -315,13 +312,13 @@ ezP.DelegateSvg.Expr.algebra_concrete = function (prototypeName) {
   this.operator = '+'
   this.operators = ['+', '-', '*', '//', '/', '%', '@']
   this.operatorData = {
-    '*': {'LABEL':'... * ...', 'OUT': ezP.T3.m_expr_concrete, 'RHS': ezP.T3.Require.u_expr, 'LHS': ezP.T3.Require.m_expr},
-    '@': {'LABEL':'... @ ...', 'OUT': ezP.T3.m_expr_concrete, 'RHS': ezP.T3.Require.m_expr, 'LHS': ezP.T3.Require.m_expr},
-    '//': {'LABEL':'... // ...', 'OUT': ezP.T3.m_expr_concrete, 'RHS': ezP.T3.Require.u_expr, 'LHS': ezP.T3.Require.m_expr},
-    '/': {'LABEL':'... / ...', 'OUT': ezP.T3.m_expr_concrete, 'RHS': ezP.T3.Require.u_expr, 'LHS': ezP.T3.Require.m_expr},
-    '%': {'LABEL':'... % ...', 'OUT': ezP.T3.m_expr_concrete, 'RHS': ezP.T3.Require.u_expr, 'LHS': ezP.T3.Require.m_expr},
-    '+': {'LABEL':'... + ...', 'OUT': ezP.T3.a_expr_concrete, 'RHS': ezP.T3.Require.m_expr, 'LHS': ezP.T3.Require.a_expr},
-    '-': {'LABEL':'... - ...', 'OUT': ezP.T3.a_expr_concrete, 'RHS': ezP.T3.Require.m_expr, 'LHS': ezP.T3.Require.a_expr},
+    '*': {label:'... * ...', 'OUT': ezP.T3.m_expr_concrete, 'RHS': ezP.T3.Require.u_expr, 'LHS': ezP.T3.Require.m_expr},
+    '@': {label:'... @ ...', 'OUT': ezP.T3.m_expr_concrete, 'RHS': ezP.T3.Require.m_expr, 'LHS': ezP.T3.Require.m_expr},
+    '//': {label:'... // ...', 'OUT': ezP.T3.m_expr_concrete, 'RHS': ezP.T3.Require.u_expr, 'LHS': ezP.T3.Require.m_expr},
+    '/': {label:'... / ...', 'OUT': ezP.T3.m_expr_concrete, 'RHS': ezP.T3.Require.u_expr, 'LHS': ezP.T3.Require.m_expr},
+    '%': {label:'... % ...', 'OUT': ezP.T3.m_expr_concrete, 'RHS': ezP.T3.Require.u_expr, 'LHS': ezP.T3.Require.m_expr},
+    '+': {label:'... + ...', 'OUT': ezP.T3.a_expr_concrete, 'RHS': ezP.T3.Require.m_expr, 'LHS': ezP.T3.Require.a_expr},
+    '-': {label:'... - ...', 'OUT': ezP.T3.a_expr_concrete, 'RHS': ezP.T3.Require.m_expr, 'LHS': ezP.T3.Require.a_expr},
   }
 }
 goog.inherits(ezP.DelegateSvg.Expr.algebra_concrete, ezP.DelegateSvg.Expr.Binary)
@@ -341,11 +338,11 @@ ezP.DelegateSvg.Expr.bitwise_concrete = function (prototypeName) {
   this.operator = '&'
   this.operators = ['<<', '>>', '&', '^', '|']
   this.operatorData = {
-    '<<': {'LABEL':'... << ...', 'OUT': ezP.T3.shift_expr_concrete, 'RHS': ezP.T3.Require.a_expr, 'LHS': ezP.T3.Require.shift_expr},
-    '>>': {'LABEL':'... >> ...', 'OUT': ezP.T3.shift_expr_concrete, 'RHS': ezP.T3.Require.a_expr, 'LHS': ezP.T3.Require.shift_expr},
-    '&': {'LABEL':'... & ...', 'OUT': ezP.T3.and_expr_concrete, 'RHS': ezP.T3.Require.shift_expr, 'LHS': ezP.T3.Require.and_expr},
-    '^': {'LABEL':'... ^ ...', 'OUT': ezP.T3.xor_expr_concrete, 'RHS': ezP.T3.Require.and_expr, 'LHS': ezP.T3.Require.xor_expr},
-    '|': {'LABEL':'... | ...', 'OUT': ezP.T3.or_expr_concrete, 'RHS': ezP.T3.Require.xor_expr, 'LHS': ezP.T3.Require.or_expr},
+    '<<': {label:'... << ...', 'OUT': ezP.T3.shift_expr_concrete, 'RHS': ezP.T3.Require.a_expr, 'LHS': ezP.T3.Require.shift_expr},
+    '>>': {label:'... >> ...', 'OUT': ezP.T3.shift_expr_concrete, 'RHS': ezP.T3.Require.a_expr, 'LHS': ezP.T3.Require.shift_expr},
+    '&': {label:'... & ...', 'OUT': ezP.T3.and_expr_concrete, 'RHS': ezP.T3.Require.shift_expr, 'LHS': ezP.T3.Require.and_expr},
+    '^': {label:'... ^ ...', 'OUT': ezP.T3.xor_expr_concrete, 'RHS': ezP.T3.Require.and_expr, 'LHS': ezP.T3.Require.xor_expr},
+    '|': {label:'... | ...', 'OUT': ezP.T3.or_expr_concrete, 'RHS': ezP.T3.Require.xor_expr, 'LHS': ezP.T3.Require.or_expr},
   }
 }
 goog.inherits(ezP.DelegateSvg.Expr.bitwise_concrete, ezP.DelegateSvg.Expr.Binary)
@@ -367,16 +364,16 @@ ezP.DelegateSvg.Expr.comparison_concrete = function (prototypeName) {
   this.operator = '<'
   this.operators = ['<', '>', '==', '>=', '<=', '!=', 'is', 'is not', 'in', 'not in']
   this.operatorData = {
-    '<': {'LABEL':'... < ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-    '>': {'LABEL':'... > ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-    '==': {'LABEL':'... == ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-    '<=': {'LABEL':'... <= ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-    '>=': {'LABEL':'... >= ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-    '!=': {'LABEL':'... != ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-    'is': {'LABEL':'... is ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-    'is not': {'LABEL':'... is not ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-    'in': {'LABEL':'... in ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-    'not in': {'LABEL':'... not in ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
+    '<': {label:'... < ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
+    '>': {label:'... > ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
+    '==': {label:'... == ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
+    '<=': {label:'... <= ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
+    '>=': {label:'... >= ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
+    '!=': {label:'... != ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
+    'is': {label:'... is ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
+    'is not': {label:'... is not ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
+    'in': {label:'... in ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
+    'not in': {label:'... not in ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
   }
 }
 goog.inherits(ezP.DelegateSvg.Expr.comparison_concrete, ezP.DelegateSvg.Expr.Binary)
@@ -396,8 +393,8 @@ ezP.DelegateSvg.Expr.boolean_concrete = function (prototypeName) {
   this.operator = 'or'
   this.operators = ['or', 'and']
   this.operatorData = {
-    'or': {'LABEL':'... or ...', 'OUT': ezP.T3.or_test_concrete, 'RHS': ezP.T3.Require.and_test, 'LHS': ezP.T3.Require.or_test},
-    'and': {'LABEL':'... and ...', 'OUT': ezP.T3.and_test_concrete, 'RHS': ezP.T3.Require.not_test, 'LHS': ezP.T3.Require.and_test},
+    'or': {label:'... or ...', 'OUT': ezP.T3.or_test_concrete, 'RHS': ezP.T3.Require.and_test, 'LHS': ezP.T3.Require.or_test},
+    'and': {label:'... and ...', 'OUT': ezP.T3.and_test_concrete, 'RHS': ezP.T3.Require.not_test, 'LHS': ezP.T3.Require.and_test},
   }
 }
 goog.inherits(ezP.DelegateSvg.Expr.boolean_concrete, ezP.DelegateSvg.Expr.Binary)

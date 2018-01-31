@@ -45,7 +45,7 @@ ezP.BlockSvg.prototype.initSvg = function() {
   this.ezp.preInitSvg(this)
   ezP.BlockSvg.superClass_.initSvg.call(this)
   this.ezp.postInitSvg(this)
-  this.ezp.initSvgSealed(this)
+  this.ezp.initSvgWrap(this)
 };
 
 ezP.BlockSvg.CORNER_RADIUS = 3
@@ -76,10 +76,10 @@ ezP.BlockSvg.prototype.getInput = function (name) {
 
 /**
  * Select this block.  Highlight it visually.
- * Sealed blocks are not selectable.
+ * Wrapped blocks are not selectable.
  */
 ezP.BlockSvg.prototype.select = function() {
-  if (this.ezp.sealed_ && this.getParent()) {
+  if (this.ezp.wrapped_ && this.getParent()) {
     // Shadow blocks should not be selected.
     this.getParent().select();
     return;
@@ -91,7 +91,7 @@ ezP.BlockSvg.prototype.select = function() {
  * Select this block.  Highlight it visually.
  */
 ezP.BlockSvg.prototype.addSelect = function () {
-  if (!this.ezp.sealed_) {
+  if (!this.ezp.wrapped_) {
     if (!this.ezp.svgPathHighlight_ ||
       this.ezp.svgPathHighlight_.parentNode) {
       return
@@ -113,7 +113,7 @@ ezP.BlockSvg.prototype.addSelect = function () {
  * Unselect this block.  Remove its highlighting.
  */
 ezP.BlockSvg.prototype.removeSelect = function () {
-  if (!this.ezp.sealed_) {
+  if (!this.ezp.wrapped_) {
     if (!this.ezp.svgPathHighlight_
       || !this.ezp.svgPathHighlight_.parentNode) {
       return
@@ -437,7 +437,7 @@ ezP.BlockSvg.prototype.customContextMenu = function(menuOptions) {
  * @private
  */
 ezP.BlockSvg.prototype.onMouseDown_ = function(e) {
-  if (this.ezp.sealed_ && this.getParent()) {
+  if (this.ezp.wrapped_ && this.getParent()) {
     this.getParent().onMouseDown_(e)
   } else {
     ezP.BlockSvg.superClass_.onMouseDown_.call(this, e)

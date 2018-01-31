@@ -30,29 +30,29 @@ goog.inherits(ezP.DelegateSvg.Fake, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Manager.register('ezp_expr_fake', ezP.DelegateSvg.Fake)
 
-ezP.DelegateSvg.Fake.WithSealed = function (prototypeName) {
-  ezP.DelegateSvg.Fake.WithSealed.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Fake.WithWrapped = function (prototypeName) {
+  ezP.DelegateSvg.Fake.WithWrapped.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Fake.WithSealed, ezP.DelegateSvg.Fake)
+goog.inherits(ezP.DelegateSvg.Fake.WithWrapped, ezP.DelegateSvg.Fake)
 
-ezP.DelegateSvg.Manager.register('ezp_expr_fake_with_sealed', ezP.DelegateSvg.Fake.WithSealed)
+ezP.DelegateSvg.Manager.register('ezp_expr_fake_with_wrapped', ezP.DelegateSvg.Fake.WithWrapped)
 
-ezP.DelegateSvg.Fake.WithSealed.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Fake.WithSealed.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Fake.WithWrapped.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Fake.WithWrapped.superClass_.initBlock.call(this, block)
   var input = block.appendValueInput('FAKE').appendField(new ezP.FieldLabel('with sealed'))
-  input.ezpData.connection.sealed_ = true
+  input.ezpData.connection.wrapped_ = true
   block.setOutput(true, null)
 }
 
-ezP.DelegateSvg.Fake.Sealed = function (prototypeName) {
-  ezP.DelegateSvg.Fake.Sealed.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Fake.Wrapped = function (prototypeName) {
+  ezP.DelegateSvg.Fake.Wrapped.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Fake.Sealed, ezP.DelegateSvg.Fake)
+goog.inherits(ezP.DelegateSvg.Fake.Wrapped, ezP.DelegateSvg.Fake)
 
-ezP.DelegateSvg.Manager.register('ezp_expr_fake_sealed', ezP.DelegateSvg.Fake.Sealed)
+ezP.DelegateSvg.Manager.register('ezp_expr_fake_wrapped', ezP.DelegateSvg.Fake.Wrapped)
 
-ezP.DelegateSvg.Fake.Sealed.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Fake.Sealed.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Fake.Wrapped.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Fake.Wrapped.superClass_.initBlock.call(this, block)
   block.appendDummyInput().appendField(new ezP.FieldLabel('sealed'))
   block.setOutput(true, null)
 }

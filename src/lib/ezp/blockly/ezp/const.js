@@ -36,6 +36,7 @@ ezP.Const.Stmt = {
   raise_stmt: 'ezp_stmt_raise_stmt',
   import_stmt: 'ezp_stmt_import_stmt',
   global_stmt: 'ezp_stmt_global_stmt',
+  nonlocal_stmt: 'ezp_stmt_nonlocal_stmt',
   // in progress
 
 
@@ -60,15 +61,15 @@ ezP.Const.Expr = {
   generator_expression: 'ezp_expr_generator_expression',
   target_list: 'ezp_expr_target_list',
   yield_atom: 'ezp_expr_yield_atom',
-  yield_from: 'ezp_expr_yield_from',
   yield_expression: 'ezp_expr_yield_expression',
-  expression_or_from_list: 'ezp_expr_expression_or_from_list',
+  yield_expression_list: 'ezp_expr_yield_expression_list',
+  yield_from_expression: 'ezp_expr_yield_from_expression',
   expression_list: 'ezp_expr_expression_list',
   starred_list_comprehensive: 'ezp_expr_starred_list_comprehensive',
   non_void_starred_list_comprehensive: 'ezp_expr_non_void_starred_list_comprehensive',
-  or_expr_starred: 'ezp_expr_starred_or_expr',
+  or_expr_starred: 'ezp_expr_or_expr_starred',
   key_datum_concrete: 'ezp_expr_key_datum_concrete',
-  or_expr_double_starred: 'ezp_expr_double_starred_or_expr',
+  or_expr_double_starred: 'ezp_expr_or_expr_double_starred',
   key_datum_list_comprehensive: 'ezp_expr_key_datum_list_comprehensive',
   comp_for: 'ezp_expr_comp_for',
   comp_if: 'ezp_expr_comp_if',
@@ -109,6 +110,7 @@ ezP.Const.Expr = {
   import: 'ezp_expr_import',
   identifier_named: 'ezp_expr_identifier_named',
   identifier_named_list: 'ezp_expr_identifier_named_list',
+  identifier_list: 'ezp_expr_identifier_list',
   // in progress
 
   star_or_expr: 'ezp_expr_star_or_expr',
@@ -187,6 +189,8 @@ ezP.Const.Input = {
   ITEM: 'ITEM', /* used by delimited blocks */
   PRIMARY: 'PRIMARY',
   SECONDARY: 'SECONDARY',
+  SLICE: 'SLICE',
+  ARGS: 'ARGS',
   FIRST: 'FIRST',
   SECOND: 'SECOND',
   LIST: 'LIST',
@@ -197,6 +201,7 @@ ezP.Const.Input = {
   UPPER_BOUND: 'UPPER_BOUND',
   STRIDE: 'STRIDE',
   EXPR: 'EXPR',// = ANY? NO!
+  PARS: 'PARS',
   TARGET: 'TARGET',
   ANNOTATED: 'ANNOTATED',
   ASSIGNED: 'ASSIGNED',

@@ -49,13 +49,13 @@ make_fake('ezp_expr_fake_parameter_default','parameter=default',ezP.T3.parameter
 make_fake('ezp_expr_fake_parameter_starred','*parameter',ezP.T3.parameter_starred)
 make_fake('ezp_expr_fake_parameter_double_starred','**parameter',ezP.T3.parameter_double_starred)
 
-Blockly.Blocks['ezp_expr_fake_with_sealed'] = {
+Blockly.Blocks['ezp_expr_fake_with_wrapped'] = {
   init: function () {
     this.ezp.initBlock(this)
   }
 }
 
-Blockly.Blocks['ezp_expr_fake_sealed'] = {
+Blockly.Blocks['ezp_expr_fake_wrapped'] = {
   init: function () {
     this.ezp.initBlock(this)
   }

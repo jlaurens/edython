@@ -40,7 +40,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.assignment_expression, ezP.Deleg
  */
 ezP.DelegateSvg.Expr.assignment_expression.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.assignment_expression.superClass_.initBlock.call(this, block)
-  this.inputLIST = block.appendSealedValueInput(ezP.Const.Input.LIST, ezP.Const.Expr.target_list)
+  this.inputLIST = block.appendWrapValueInput(ezP.Const.Input.LIST, ezP.Const.Expr.target_list)
   block.appendValueInput(ezP.Const.Input.RHS)
     .setCheck(ezP.T3.Require.assigned_expression)
     .appendField(new ezP.FieldLabel('='))
@@ -93,19 +93,19 @@ ezP.DelegateSvg.Expr.augmented_assignment_expression = function (prototypeName) 
   this.operators = ['+=','-=','*=','@=','/=','//=','%=','**='
  ,'>>=','<<=','&=','^=','|=']
   this.operatorData = {
-    '+=': {'LABEL':'... += ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '-=': {'LABEL':'... -= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '*=': {'LABEL':'... *= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '@=': {'LABEL':'...   = ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '/=': {'LABEL':'... /= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '//=': {'LABEL':'... //= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '%=': {'LABEL':'... %= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '**=': {'LABEL':'... **= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '>>=': {'LABEL':'... >>= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '<<=': {'LABEL':'... <<= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '&=': {'LABEL':'... &= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '^=': {'LABEL':'... ^= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '|=': {'LABEL':'... |= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
+    '+=': {label:'... += ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
+    '-=': {label:'... -= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
+    '*=': {label:'... *= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
+    '@=': {label:'...   = ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
+    '/=': {label:'... /= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
+    '//=': {label:'... //= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
+    '%=': {label:'... %= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
+    '**=': {label:'... **= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
+    '>>=': {label:'... >>= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
+    '<<=': {label:'... <<= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
+    '&=': {label:'... &= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
+    '^=': {label:'... ^= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
+    '|=': {label:'... |= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
   }
   this.outputCheck = ezP.T3.augmented_assignment_expression
 }
@@ -139,14 +139,17 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.augmented_assignment_stmt, ezP.D
  */
 ezP.DelegateSvg.Stmt.del_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.del_stmt.superClass_.constructor.call(this, prototypeName)
-  this.left = 'del'
-  this.wrappedCheck = ezP.T3.target_list
-  this.wrappedPrototype = ezP.Const.Expr.target_list
+  this.inputData = {
+    last: {
+      label: 'del',
+      check: ezP.T3.target_list,
+      wrap: ezP.Const.Expr.target_list
+    }
+  }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.del_stmt, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.del_stmt, ezP.DelegateSvg.Stmt.del_stmt)
-
 
 /**
  * Class for a DelegateSvg, return_stmt.
@@ -157,26 +160,74 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.del_stmt, ezP.DelegateSvg.Stmt.d
  */
 ezP.DelegateSvg.Stmt.return_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.return_stmt.superClass_.constructor.call(this, prototypeName)
-  this.left = 'return'
-  this.wrappedCheck = ezP.T3.expression_list
-  this.wrappedPrototype = ezP.Const.Expr.expression_list
+  this.inputData = {
+    last: {
+      label: 'return',
+      check: ezP.T3.expression_list,
+      wrap: ezP.Const.Expr.expression_list
+    }
+  }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.return_stmt, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.return_stmt, ezP.DelegateSvg.Stmt.return_stmt)
 
 /**
- * Class for a DelegateSvg, yield_stmt.
+ * Class for a DelegateSvg, identifier_list block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.yield_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.yield_stmt.superClass_.constructor.call(this, prototypeName)
-  this.wrappedCheck = ezP.T3.yield_expression
-  this.wrappedPrototype = ezP.Const.Expr.yield_expression
+ezP.DelegateSvg.Expr.identifier_list = function (prototypeName) {
+  ezP.DelegateSvg.Expr.identifier_list.superClass_.constructor.call(this, prototypeName)
+  this.consolidator = new ezP.Consolidator.List(ezP.T3.Require.identifier_list, false, ',')
+  this.outputCheck = ezP.T3.identifier_list
 }
-goog.inherits(ezP.DelegateSvg.Stmt.yield_stmt, ezP.DelegateSvg.Stmt)
+goog.inherits(ezP.DelegateSvg.Expr.identifier_list, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.yield_stmt, ezP.DelegateSvg.Stmt.yield_stmt)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.identifier_list, ezP.DelegateSvg.Expr.identifier_list)
+
+/**
+ * Class for a DelegateSvg, global_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.global_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.global_stmt.superClass_.constructor.call(this, prototypeName)
+  this.inputData = {
+    last: {
+      label: 'global',
+      check: ezP.T3.identifier_list,
+      wrap: ezP.Const.Expr.identifier_list
+    }
+  }
+}
+goog.inherits(ezP.DelegateSvg.Stmt.global_stmt, ezP.DelegateSvg.Stmt)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.global_stmt, ezP.DelegateSvg.Stmt.global_stmt)
+
+/**
+ * Class for a DelegateSvg, nonlocal_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.nonlocal_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.global_stmt.superClass_.constructor.call(this, prototypeName)
+  this.inputData = {
+    last: {
+      label: 'nonlocal',
+      check: ezP.T3.identifier_list,
+      wrap: ezP.Const.Expr.identifier_list
+    }
+  }
+}
+goog.inherits(ezP.DelegateSvg.Stmt.nonlocal_stmt, ezP.DelegateSvg.Stmt)
+
+ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.nonlocal_stmt, ezP.DelegateSvg.Stmt.nonlocal_stmt)

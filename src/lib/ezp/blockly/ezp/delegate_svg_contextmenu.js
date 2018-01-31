@@ -29,7 +29,7 @@ ezP.DelegateSvg.prototype.getContextMenuHandler = function (block) {
 /**
  * Show the context menu for the given block.
  * Only blocks with a svgShape_ have a context menu.
- * Sealed blocks won't have a context menu,
+ * Wrapped blocks won't have a context menu,
  * only the parent block will have.
  * @param {!Blockly.Block} block The block.
  * @param {!Event} e Mouse event.
@@ -103,6 +103,10 @@ ezP.DelegateSvg.prototype.populateContextMenu_ = function (block, menu) {
  * @private
  */
 ezP.DelegateSvg.prototype.populateContextMenuFirst_ = function (block, menu) {
+  var target = this.getWrappedTargetBlock(block)
+  if (target) {
+    return target.ezp.populateContextMenuFirst_(target, menu)
+  }
   return false
 }
 
@@ -113,6 +117,10 @@ ezP.DelegateSvg.prototype.populateContextMenuFirst_ = function (block, menu) {
  * @private
  */
 ezP.DelegateSvg.prototype.populateContextMenuMiddle_ = function (block, menu) {
+  var target = this.getWrappedTargetBlock(block)
+  if (target) {
+    return target.ezp.populateContextMenuMiddle_(target, menu)
+  }
   return false
 }
 
@@ -133,13 +141,11 @@ ezP.LOG_BLOCK_XML_ID = 'LOG_BLOCK_XML'
  * @private
  */
 ezP.DelegateSvg.prototype.populateContextMenuLast_ = function (block, menu) {
-  if (this.inputWRAP) {
-    var target = this.inputWRAP.connection.targetBlock()
-    if (target) {
-      target.ezp.populateContextMenuLast_(target, menu)
-      return
-    }
-  }
+  var target = this.getWrappedTargetBlock(block)
+  if (target) {
+    target.ezp.populateContextMenuLast_(target, menu)
+    return
+}
   var menuItem
   if (block.isDeletable() && block.isMovable() && !block.isInFlyout) {
     // Option to duplicate this block.
@@ -190,20 +196,20 @@ ezP.DelegateSvg.prototype.populateContextMenuLast_ = function (block, menu) {
   }
   if (block.isDeletable() && block.isMovable() && !block.isInFlyout) {
     // Count the number of blocks that are nested in this block.
-    var unsealed = block
+    var unwrapped = block
     var parent = undefined
-    while (unsealed.ezp.sealed_ && (parent = unsealed.getParent())) {
+    while (unwrapped.ezp.wrapped_ && (parent = unwrapped.getParent())) {
       // parent is not '', it may be undefined
-      unsealed = parent
+      unwrapped = parent
       // replace the parent test with an assertion
     }
-    // unsealed is the topmost block or the first unsealed parent
-    var descendantCount = unsealed.ezp.getUnsealedDescendants(unsealed).length
+    // unwrapped is the topmost block or the first unwrapped parent
+    var descendantCount = unwrapped.ezp.getUnsealedDescendants(unwrapped).length
     if (parent === null) {
       // the topmost is itself sealed, this should not occur
       ++descendantCount
     }
-    var nextBlock = unsealed.getNextBlock()
+    var nextBlock = unwrapped.getNextBlock()
     if (nextBlock) {
       // Blocks in the current stack would survive this block's deletion.
       descendantCount -= nextBlock.ezp.getUnsealedDescendants(nextBlock).length
@@ -234,11 +240,11 @@ ezP.DelegateSvg.prototype.populateContextMenuLast_ = function (block, menu) {
 /**
  * Returns the python type of the block.
  * This information may be displayed as the last item in the contextual menu.
- * Sealed will return the parent's answer.
+ * Wrapped blocks will return the parent's answer.
  * @param {!Blockly.Block} block The block.
  */
 ezP.DelegateSvg.prototype.getPythonType = function (block) {
-  if (this.sealed_) {
+  if (this.wrapped_) {
     var parent = block.getParent()
     return parent.ezp.getPythonType(parent)
   }
@@ -250,21 +256,24 @@ ezP.DelegateSvg.prototype.getPythonType = function (block) {
  * @param {!goog.ui.Menu} menu The Menu component clicked.
  * @param {!Blockly.Block} block The Menu component clicked.
  * @param {!goog....} event The event containing as target
- * the MenuItem selected within menu.
+ * @param {Boolean} wrapped, whether block is wrapped in its parent.
  */
-ezP.DelegateSvg.prototype.onActionMenuEvent = function (block, menu, event) {
-  if (this.inputWRAP) {
-    var target = this.inputWRAP.outConnection.targetBlock()
-    if (target) {
-      return target.ezp.onActionMenuEvent(block, menu, event)
-    }
+ezP.DelegateSvg.prototype.onActionMenuEvent = function (block, menu, event, wrapped) {
+  var target = this.getWrappedTargetBlock(block)
+  if (target && target.ezp.onActionMenuEvent(target, menu, event, true)) {
+    return true
   }
   var model = event.target.getModel()
   var action = model[0]
-  this.handleActionMenuEventFirst(block, menu, event)
+  if (this.handleActionMenuEventFirst(block, menu, event)
   || this.handleActionMenuEventMiddle(block, menu, event)
-  || this.handleActionMenuEventLast(block, menu, event)
-  || console.log('Unknown action ' + action)
+  || this.handleActionMenuEventLast(block, menu, event)) {
+    return true
+  }
+  if(!wrapped) {
+    console.log('Unknown action ', action, block.type)
+  }
+  return false
 }
 
 /**
@@ -324,14 +333,14 @@ ezP.DelegateSvg.prototype.handleActionMenuEventLast = function (block, menu, eve
       block.setDisabled(!block.disabled)  
       return true
       case ezP.DELETE_BLOCK_ID:
-      var unsealed = block
+      var unwrapped = block
       var parent
-      while (unsealed.ezp.sealed_ && (parent = unsealed.getParent())) {
-        unsealed = parent
+      while (unwrapped.ezp.wrapped_ && (parent = unwrapped.getParent())) {
+        unwrapped = parent
       }
-      // unsealed is the topmost block or the first unsealed parent
+      // unwrapped is the topmost block or the first unwrapped parent
       Blockly.Events.setGroup(true)
-      unsealed.dispose(true, true)
+      unwrapped.dispose(true, true)
       Blockly.Events.setGroup(false)
       return true
     case ezP.HELP_ID:

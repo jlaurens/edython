@@ -478,7 +478,7 @@ ezP.Delegate.prototype.fromDom = function (block, element) {
  */
 ezP.Delegate.prototype.getUnsealedDescendants = function(block) {
   var blocks = [];
-  if (!this.sealed_) {
+  if (!this.wrapped_) {
     blocks.push(block)
   }
   for (var child, x = 0; child = block.childBlocks_[x]; x++) {
@@ -495,24 +495,24 @@ ezP.Delegate.prototype.getUnsealedDescendants = function(block) {
  * @param {!Element} hidden a dom element.
  */
 ezP.Delegate.prototype.fromDom = function (block, element) {
-  this.completeSealed_(block)
+  this.completeWrapped_(block)
 }
 
 /**
  * If the sealed connections are not connected,
  * create a node for it.
- * The default implementation connects all the blocks from the sealedInputs_ list.
+ * The default implementation connects all the blocks from the wrappedInputs_ list.
  * Subclassers will evntually create appropriate new nodes
  * and connect it to any sealed connection.
  * @param {!Block} block.
  * @private
  */
-ezP.Delegate.prototype.completeSealed_ = function (block) {
-  if (this.sealedInputs_) {
-    ezP.Delegate.sealedFireWall = 100
-    for (var i = 0; i < this.sealedInputs_.length; i++) {
-      var data = this.sealedInputs_[i]
-      this.completeSealedInput_(block, data[0], data[1])
+ezP.Delegate.prototype.completeWrapped_ = function (block) {
+  if (this.wrappedInputs_) {
+    ezP.Delegate.wrappedFireWall = 100
+    for (var i = 0; i < this.wrappedInputs_.length; i++) {
+      var data = this.wrappedInputs_[i]
+      this.completeWrappedInput_(block, data[0], data[1])
     }
   }
 }
@@ -523,7 +523,7 @@ ezP.Delegate.prototype.completeSealed_ = function (block) {
  * @param {!Block} block.
  * @private
  */
-ezP.Delegate.prototype.makeBlockSealed = function (block) {
+ezP.Delegate.prototype.makeBlockWrapped = function (block) {
 }
 
 /**
@@ -533,10 +533,10 @@ ezP.Delegate.prototype.makeBlockSealed = function (block) {
  * @param {!Block} block.
  * @private
  */
-ezP.Delegate.prototype.makeBlockSealed_ = function (block) {
-  if (!block.ezp.sealed_) {
-    block.ezp.sealed_ = true
-    block.ezp.makeBlockSealed(block)
+ezP.Delegate.prototype.makeBlockWrapped_ = function (block) {
+  if (!block.ezp.wrapped_) {
+    block.ezp.wrapped_ = true
+    block.ezp.makeBlockWrapped(block)
   }
 }
 
@@ -549,26 +549,26 @@ ezP.Delegate.prototype.makeBlockSealed_ = function (block) {
  * @param {!String} prototypeName.
  * @private
  */
-ezP.Delegate.prototype.completeSealedInput_ = function (block, input, prototypeName) {
+ezP.Delegate.prototype.completeWrappedInput_ = function (block, input, prototypeName) {
   if (!!input) {
     var target = input.connection.targetBlock()
     if (!!target) {
-      target.ezp.makeBlockSealed_(target)
-      target.ezp.completeSealed_(target)
+      target.ezp.makeBlockWrapped_(target)
+      target.ezp.completeWrapped_(target)
     } else {
       goog.asserts.assert(prototypeName, 'Missing sealing prototype name in block '+block.type)
-      if (ezP.Delegate.sealedFireWall > 0) {
-        --ezP.Delegate.sealedFireWall
+      if (ezP.Delegate.wrappedFireWall > 0) {
+        --ezP.Delegate.wrappedFireWall
         var target = block.workspace.newBlock(prototypeName)
-        goog.asserts.assert(target, 'completeSealed_ failed: '+ prototypeName);
-        target.ezp.makeBlockSealed_(target)
+        goog.asserts.assert(target, 'completeWrapped_ failed: '+ prototypeName);
+        target.ezp.makeBlockWrapped_(target)
         goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed '+target.type)
         input.connection.connect(target.outputConnection)
         input.connection.ezpData.disabled_ = true
-        target.ezp.completeSealed_(target)  
+        target.ezp.completeWrapped_(target)  
       } else {
-        console.log('Maximum value reached in completeSealedInput_')
-        this.ignoreCompleteSealed = true
+        console.log('Maximum value reached in completeWrappedInput_ (circular)')
+        this.ignoreCompleteWrapped = true
         return
       }
     }

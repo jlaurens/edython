@@ -324,29 +324,6 @@ goog.inherits(ezP.DelegateSvg.Expr.comp_iter_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register(ezP.Const.Expr.comp_iter_list, ezP.DelegateSvg.Expr.comp_iter_list)
 
 /**
- * Class for a DelegateSvg, expression_or_from_list block.
- * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.expression_or_from_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.expression_or_from_list.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.Consolidator.List.Singled(
-    ezP.T3.Require.expression_list,
-    ezP.T3.yield_from,
-    ezP.T3.Require.expression_or_from_list,
-    true,',')
-  this.outputCheck = ezP.T3.expression_or_from_list
-}
-goog.inherits(ezP.DelegateSvg.Expr.expression_or_from_list, ezP.DelegateSvg.List)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.expression_or_from_list, ezP.DelegateSvg.Expr.expression_or_from_list)
-
-
-/**
  * Class for a DelegateSvg, slice_list block.
  * This block may be sealed.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.

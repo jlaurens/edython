@@ -79,11 +79,11 @@ ezP.Connection.prototype.connect = function (otherConnection) {
   } else if (inferior.check_ === ezP.Type.Stmt.Check.before_loop_else) {
     next.check_ = ezP.Type.Stmt.Check.after_else
   }
-  if (superior.ezpData.sealed_) {
+  if (superior.ezpData.wrapped_) {
     // this connection should be sealed
     // It must be done before next call because
     // it must be done before rendering
-    inferior.sourceBlock_.ezp.makeBlockSealed_(inferior.sourceBlock_)
+    inferior.sourceBlock_.ezp.makeBlockWrapped_(inferior.sourceBlock_)
   }
   ezP.Connection.superClass_.connect.call(this, otherConnection)
 }
@@ -176,7 +176,7 @@ Blockly.RenderedConnection.prototype.bumpAwayFrom_ = function (staticConnection)
  */
 ezP.Connection.prototype.isConnectionAllowed = function(candidate,
   maxRadius) {
-if (this.ezpData.sealed_ || candidate.ezpData.sealed_) {
+if (this.ezpData.wrapped_ || candidate.ezpData.wrapped_) {
   return false
 }
 return ezP.Connection.superClass_.isConnectionAllowed.call(this,

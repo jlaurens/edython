@@ -66,26 +66,22 @@ ezP.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
 ezP.DelegateSvg.Expr.key_datum_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.key_datum_concrete.superClass_.constructor.call(this, prototypeName)
   this.outputCheck = ezP.T3.key_datum_concrete
+  this.inputData = {
+    first: {
+      key: ezP.Const.Input.KEY,
+      check: ezP.T3.Require.expression
+    },
+    last: {
+      key: ezP.Const.Input.DATUM,
+      check: ezP.T3.Require.expression,
+      label: ':'
+    }
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.key_datum_concrete, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Expr.key_datum_concrete, ezP.DelegateSvg.Expr.key_datum_concrete)
 
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.key_datum_concrete.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Expr.key_datum_concrete.superClass_.initBlock.call(this, block)
-  block.appendValueInput(ezP.Const.Input.KEY)
-    .setCheck(ezP.T3.Require.expression)
-  block.appendValueInput(ezP.Const.Input.DATUM)
-    .setCheck(ezP.T3.Require.expression)
-    .appendField(new ezP.FieldLabel(':'))
-}
 
 /**
  * Class for a DelegateSvg, proper_slice block.
@@ -98,35 +94,29 @@ ezP.DelegateSvg.Expr.key_datum_concrete.prototype.initBlock = function(block) {
 ezP.DelegateSvg.Expr.proper_slice = function (prototypeName) {
   ezP.DelegateSvg.Expr.proper_slice.superClass_.constructor.call(this, prototypeName)
   this.outputCheck = ezP.T3.proper_slice
+  this.inputData = {
+    first: {
+      key: ezP.Const.Input.LOWER_BOUND,
+      check: ezP.T3.Require.expression,
+      optional: true
+    },
+    middle: {
+      label: ':',
+      key: ezP.Const.Input.UPPER_BOUND,
+      check: ezP.T3.Require.expression,
+      optional: true
+    },
+    last: {
+      label: ':',
+      key: ezP.Const.Input.STRIDE,
+      check: ezP.T3.Require.expression,
+      optional: true
+    }
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.proper_slice, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Expr.proper_slice, ezP.DelegateSvg.Expr.proper_slice)
-
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.proper_slice.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Expr.Delimited.superClass_.initBlock.call(this, block)
-  var input = block.appendValueInput(ezP.Const.Input.LOWER_BOUND)
-    .setCheck(ezP.T3.Require.expression)
-  // mark the connection as optional
-  // it means that an unconnected placeholder is short
-  input.connection.ezpData.optional_ = true
-  input = block.appendValueInput(ezP.Const.Input.UPPER_BOUND)
-    .setCheck(ezP.T3.Require.expression)
-    .appendField(new ezP.FieldLabel(':'))
-  input.connection.ezpData.optional_ = true
-  this.inputSTRIDE = input = block.appendValueInput(ezP.Const.Input.STRIDE)
-    .setCheck(ezP.T3.Require.expression)
-    .appendField(new ezP.FieldLabel(':'))
-  input.connection.ezpData.optional_ = true
-  input.ezpData.disabled_ = true
-}
 
 ezP.USE_PROPER_SLICING_STRIDE_ID = 'USE_PROPER_SLICING_STRIDE'
 
@@ -137,11 +127,12 @@ ezP.USE_PROPER_SLICING_STRIDE_ID = 'USE_PROPER_SLICING_STRIDE'
  * @private
  */
 ezP.DelegateSvg.Expr.proper_slice.prototype.populateContextMenuFirst_ = function (block, menu) {
-  var unused = this.inputSTRIDE.ezpData.disabled_
+  var last = this.inputs.last.input
+  var unused = last.ezpData.disabled_
   var menuItem = new ezP.MenuItem(
     unused? ezP.Msg.USE_PROPER_SLICING_STRIDE: ezP.Msg.UNUSE_PROPER_SLICING_STRIDE,
     [ezP.USE_PROPER_SLICING_STRIDE_ID])
-  menuItem.setEnabled(!this.inputSTRIDE.connection.isConnected())
+  menuItem.setEnabled(!last.connection.isConnected())
   menu.addChild(menuItem, true)
   menu.addChild(new ezP.Separator(), true)
   ezP.DelegateSvg.Expr.proper_slice.superClass_.populateContextMenuFirst_.call(this,block, menu)
@@ -158,7 +149,7 @@ ezP.DelegateSvg.Expr.proper_slice.prototype.populateContextMenuFirst_ = function
 ezP.DelegateSvg.Expr.proper_slice.prototype.handleActionMenuEventFirst = function (block, menu, event) {
   var action = event.target.getModel()
   if (action == ezP.USE_PROPER_SLICING_STRIDE_ID) {
-    var input = this.inputSTRIDE
+    var input = this.inputs.last.input
     this.setNamedInputDisabled(block, input.name, !input.ezpData.disabled_)
     return true
   }
@@ -176,96 +167,30 @@ ezP.DelegateSvg.Expr.proper_slice.prototype.handleActionMenuEventFirst = functio
 ezP.DelegateSvg.Expr.conditional_expression_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.conditional_expression_concrete.superClass_.constructor.call(this, prototypeName)
   this.outputCheck = ezP.T3.conditional_expression_concrete
+  this.inputData = {
+    first: {
+      key: ezP.Const.Input.EXPR,
+      check: ezP.T3.Require.or_test
+    },
+    middle: {
+      label: 'if',
+      key: ezP.Const.Input.IF,
+      check: ezP.T3.Require.or_test
+    },
+    last: {
+      label: 'else',
+      key: ezP.Const.Input.ELSE,
+      check: ezP.T3.Require.expression
+    }
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.conditional_expression_concrete, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Manager.register(ezP.Const.Expr.conditional_expression_concrete, ezP.DelegateSvg.Expr.conditional_expression_concrete)
 
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.conditional_expression_concrete.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Expr.conditional_expression_concrete.superClass_.initBlock.call(this, block)
-  block.appendValueInput(ezP.Const.Input.EXPR)
-    .setCheck(ezP.T3.Require.or_test)
-  block.appendValueInput(ezP.Const.Input.IF)
-    .setCheck(ezP.T3.Require.or_test)
-    .appendField(new ezP.FieldLabel('if'))
-  block.appendValueInput(ezP.Const.Input.ELSE)
-    .setCheck(ezP.T3.Require.expression)
-    .appendField(new ezP.FieldLabel('else'))
-}
 
 
 
-
-
-
-
-
-
-/**
- * Class for a DelegateSvg, two possibly optional values and their labels.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.Two = function (prototypeName) {
-  ezP.DelegateSvg.Expr.Two.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Expr.Two, ezP.DelegateSvg.Expr)
-
-/**
- * An array : input key, label, check, optional.
- */
-ezP.DelegateSvg.Expr.Two.prototype.firstData = undefined
-ezP.DelegateSvg.Expr.Two.prototype.secondData = undefined
-
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.Two.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Expr.Two.superClass_.initBlock.call(this, block)
-  this.inputFIRST = block.appendValueInput(this.firstData[0])
-    .setCheck(this.firstData[2])
-  if (this.firstData[1].length) {
-    this.inputFIRST.appendField(new ezP.FieldLabel(this.firstData[1]))
-  }
-  this.inputSECOND = block.appendValueInput(this.secondData[0])
-    .setCheck(this.secondData[2])
-  this.inputSECOND.connection.ezpData.optional_ = this.secondData[3]
-}
-
-/**
- * Prepare the inputs.
- * The default implementation does nothing.
- * Subclassers may enable/disable an input
- * depending on the context.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.Two.prototype.consolidate = function (block) {
-  ezP.DelegateSvg.Expr.Two.superClass_.consolidate.call(this, block)
-  var connected = this.inputSECOND.connection.isConnected()
-  this.setInputEnabled(block, this.inputSECOND, this.inputFIRST.connection.isConnected() || connected)
-  if (connected) {
-    if (this.inputSECOND.fieldRow.length == 0) {
-      this.inputSECOND.appendField(new ezP.FieldLabel(this.secondData[1]), ezP.Const.Field.LABEL)
-    }
-  } else if (this.inputSECOND.fieldRow.length > 0) {
-    this.inputSECOND.removeField(ezP.Const.Field.LABEL)
-  }
-  this.inputFIRST.connection.ezpData.optional_ = this.firstData[3] && !connected
-}
 
 
 
