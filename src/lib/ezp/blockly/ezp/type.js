@@ -55,7 +55,7 @@ ezP.Type.Expr.Provide = {
     ezP.Type.Expr.parameter_2_stars],
 }
 
-ezP.Type.Expr.Require = {
+ezP.Type.Expr.Check = {
   any: [ezP.Type.Expr.any_all],
   expression: [ezP.Type.Expr.any_all],
   forif: [ezP.Type.Expr.expression, ezP.Type.Expr.forif],
@@ -112,8 +112,8 @@ ezP.Type.Stmt.Check = {
   before_loop: [ezP.Type.Stmt.any_all]
 }
 
-ezP.T3.Require.starred_list_comprehensive = ezP.T3.Require.starred_list.slice()
-ezP.T3.Require.starred_list_comprehensive.push(ezP.T3.comprehension)
+ezP.T3.Check.starred_list_comprehensive = ezP.T3.Check.starred_list.slice()
+ezP.T3.Check.starred_list_comprehensive.push(ezP.T3.comprehension)
 
-ezP.T3.Require.key_datum_list_comprehensive = ezP.T3.Require.key_datum_list.slice()
-ezP.T3.Require.key_datum_list_comprehensive.push(ezP.T3.dict_comprehension)
+ezP.T3.Check.key_datum_list_comprehensive = ezP.T3.Check.key_datum_list.slice()
+ezP.T3.Check.key_datum_list_comprehensive.push(ezP.T3.dict_comprehension)

@@ -327,7 +327,7 @@ ezP.DelegateSvg.Stmt.import_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.import_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputData = {
     last: {
-      check: ezP.T3.Require.import_expr,
+      check: ezP.T3.Check.import_expr,
       wrap: ezP.Const.Expr.import_module
     }
   }

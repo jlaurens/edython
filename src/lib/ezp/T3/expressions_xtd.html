@@ -4,11 +4,17 @@
 
 <html>
 <body>
+starred_list ::= starred_item ( ',' starred_item ) * [',']
 <pre>
 starred_expression ::=  starred_item_list
-starred_item_list ::= starred_item | (starred_item,)+ [starred_item]
-starred_item ::=  expression | or_expr_starred
-or_expr_starred ::=  "*" or_expr
+starred_item_list ::= starred_item ("," starred_item )* [ "," ]
+starred_list ::= non_void_starred_item_list
+non_void_starred_item_list ::= starred_item ( ',' starred_item ) * [',']
+starred_item ::=  expression | star_expr
+star_expr ::=  "*" or_expr
+expression_list -> non_void_expression_list
+# starred_expression ::= expression | ( starred_item ',' )* [ starred_item ]
+starred_expression -> non_void_starred_item_list
 </pre>
 <pre>
 comp_iter_list ::= (comp_iter) *
@@ -17,18 +23,18 @@ comp_iter_list ::= (comp_iter) *
 starred_list_comprehensive ::= starred_item | comprehension
 </pre>
 <pre>
-non_void_starred_list_comprehensive ::= starred_item | comprehension
+non_void_star_list_comprehensive ::= starred_item | comprehension
 </pre>
 <pre>
 key_datum_list_comprehensive ::= key_datum | dict_comprehension
-key_datum ::= key_datum_concrete | or_expr_double_starred
+key_datum ::= key_datum_concrete | or_expr_star_star
 key_datum_concrete ::=  expression ":" expression
-or_expr_double_starred ::=  "**" or_expr
+or_expr_star_star ::=  "**" or_expr
 </pre>
 <pre>
 yield_expression ::=  yield_expression_list | yield_from_expression
 yield_expression_list ::=  "yield" expression_list
-yield_from_expression ::= "yield from" expression
+yield_from_expression ::= "yield" "from" expression
 </pre>
 <pre>
 identifier_dotted ::= "." identifier
@@ -39,17 +45,20 @@ display_slice_list ::=  "[" slice_list "]"
 </pre>
 <pre>
 argument_list_comprehensive ::= argument_list | comprehension
-positional_arguments ::=  positional_argument ("," positional_argument)*
-positional_argument ::= expression | expression_starred
-expression_starred ::= "*" expression
-starred_and_keywords ::=  starred_and_keyword ("," starred_and_keyword)*
-starred_and_keyword ::=  expression_starred | keyword_item
-keywords_arguments ::=  keywords_argument ("," keywords_argument)*
-keywords_argument ::= keyword_item | expression_double_starred
-expression_double_starred ::= "**" expression
-any_argument_but_double_starred ::= expression | expression_starred | keyword_item
-any_argument_but_expression ::=  expression_starred | keyword_item | expression_double_starred
-any_argument ::= expression | expression_starred | keyword_item | expression_double_starred
+positional_arguments ::= non_void_positional_argument_list
+non_void_positional_argument_list ::= positional_argument ("," positional_argument)*
+positional_argument ::= expression | expression_star
+expression_star ::= "*" expression
+starred_and_keywords ::=  non_void_starred_and_keyword_list
+non_void_starred_and_keyword_list ::=  starred_and_keyword ("," starred_and_keyword)*
+starred_and_keyword ::=  expression_star | keyword_item
+keyword_arguments ::=  non_void_keyword_argument_list
+non_void_keyword_argument_list ::=  keyword_argument ("," keyword_argument)*
+keyword_argument ::= keyword_item | expression_star_star
+expression_star_star ::= "**" expression
+any_argument_but_star_star ::= expression | expression_star | keyword_item
+any_argument_but_expression ::=  expression_star | keyword_item | expression_star_star
+any_argument ::= expression | expression_star | keyword_item | expression_star_star
 any_argument_comprehensive ::= any_argument | comprehension
 </pre>
 <pre>

@@ -71,7 +71,7 @@ Blockly.Blocks[ezP.Const.Grp.ELSE] = {
 }
 Blockly.Blocks[ezP.Const.Grp.WHILE] = {
   init: function () {
-    this.appendValueInput(ezP.Const.Input.COND).setCheck(ezP.Type.Expr.Require.any).appendField(new ezP.FieldLabel('while'))
+    this.appendValueInput(ezP.Const.Input.COND).setCheck(ezP.Type.Expr.Check.any).appendField(new ezP.FieldLabel('while'))
     this.appendDummyInput().appendField(new ezP.FieldLabel(':'))
     this.appendStatementInput(ezP.Const.Input.DO).setCheck(ezP.Type.Stmt.Check.after_any)
     this.setInputsInline(true)
@@ -83,8 +83,8 @@ Blockly.Blocks[ezP.Const.Grp.WHILE] = {
 }
 Blockly.Blocks[ezP.Const.Grp.FOR] = {
   init: function () {
-    this.appendValueInput(ezP.Const.Input.TGT).setCheck(ezP.Type.Expr.Require.any).appendField(new ezP.FieldLabel('for'))
-    this.appendValueInput(ezP.Const.Input.LST).setCheck(ezP.Type.Expr.Require.any).appendField(new ezP.FieldLabel('in'))
+    this.appendValueInput(ezP.Const.Input.TGT).setCheck(ezP.Type.Expr.Check.any).appendField(new ezP.FieldLabel('for'))
+    this.appendValueInput(ezP.Const.Input.LST).setCheck(ezP.Type.Expr.Check.any).appendField(new ezP.FieldLabel('in'))
     this.appendDummyInput().appendField(new ezP.FieldLabel(':'))
     this.appendStatementInput(ezP.Const.Input.DO).setCheck(ezP.Type.Stmt.Check.after_any)
     this.setInputsInline(true)

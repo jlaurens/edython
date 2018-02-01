@@ -19,7 +19,7 @@ goog.require('ezP.Const')
 var Ks = [
   ezP.Const.Expr.parenth_form,
   ezP.Const.Expr.starred_item_list,
-  ezP.Const.Expr.or_expr_starred,
+  ezP.Const.Expr.or_expr_star,
   ezP.Const.Expr.list_display,
   ezP.Const.Expr.starred_item_list,
   ezP.Const.Expr.set_display,
@@ -35,7 +35,7 @@ var Ks = [
   ezP.Const.Expr.starred_list_comprehensive,
   ezP.Const.Expr.non_void_starred_list_comprehensive,
   ezP.Const.Expr.key_datum_concrete,
-  ezP.Const.Expr.or_expr_double_starred,
+  ezP.Const.Expr.or_expr_star_star,
   ezP.Const.Expr.key_datum_list_comprehensive,
   ezP.Const.Expr.comp_for,
   ezP.Const.Expr.comp_if,
@@ -209,7 +209,7 @@ Blockly.Blocks[ezP.Const.Expr.star_or_expr] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldLabel('*'))
-    this.appendValueInput(ezP.Const.Input.EXPR).setCheck(ezP.Type.Expr.Require.or_expr)
+    this.appendValueInput(ezP.Const.Input.EXPR).setCheck(ezP.Type.Expr.Check.or_expr)
     this.setInputsInline(true)
     this.setOutput(true, ezP.Type.Expr.Provide.star_or_expr)
     this.setTooltip('')

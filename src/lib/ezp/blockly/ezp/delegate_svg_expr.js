@@ -69,11 +69,11 @@ ezP.DelegateSvg.Expr.key_datum_concrete = function (prototypeName) {
   this.inputData = {
     first: {
       key: ezP.Const.Input.KEY,
-      check: ezP.T3.Require.expression
+      check: ezP.T3.Check.expression
     },
     last: {
       key: ezP.Const.Input.DATUM,
-      check: ezP.T3.Require.expression,
+      check: ezP.T3.Check.expression,
       label: ':'
     }
   }
@@ -97,19 +97,19 @@ ezP.DelegateSvg.Expr.proper_slice = function (prototypeName) {
   this.inputData = {
     first: {
       key: ezP.Const.Input.LOWER_BOUND,
-      check: ezP.T3.Require.expression,
+      check: ezP.T3.Check.expression,
       optional: true
     },
     middle: {
       label: ':',
       key: ezP.Const.Input.UPPER_BOUND,
-      check: ezP.T3.Require.expression,
+      check: ezP.T3.Check.expression,
       optional: true
     },
     last: {
       label: ':',
       key: ezP.Const.Input.STRIDE,
-      check: ezP.T3.Require.expression,
+      check: ezP.T3.Check.expression,
       optional: true
     }
   }
@@ -170,17 +170,17 @@ ezP.DelegateSvg.Expr.conditional_expression_concrete = function (prototypeName) 
   this.inputData = {
     first: {
       key: ezP.Const.Input.EXPR,
-      check: ezP.T3.Require.or_test
+      check: ezP.T3.Check.or_test
     },
     middle: {
       label: 'if',
       key: ezP.Const.Input.IF,
-      check: ezP.T3.Require.or_test
+      check: ezP.T3.Check.or_test
     },
     last: {
       label: 'else',
       key: ezP.Const.Input.ELSE,
-      check: ezP.T3.Require.expression
+      check: ezP.T3.Check.expression
     }
   }
 }

@@ -36,26 +36,29 @@ target ::= identifier
   | starred_target
 bracket_target_list ::= &quot;[&quot; void_target_list &quot;]&quot;
 parenth_target_list ::= &quot;(&quot; void_target_list &quot;)&quot;
-target_starred ::= "*" target
-expression_starred ::= "*" expression
-something_starred ::= "*" something
+target_star ::= "*" target
+expression_star ::= "*" expression
+something_star ::= "*" something
 </pre>
 <pre>
 import_expr ::=  import_module | from_relative_module_import | from_module_import
 from_module_import ::= "from" module "import" "*"
 from_relative_module_import ::= "from" relative_module "import" identifier_named_list
-import_module ::= "import" module ["as" name] ( "," module ["as" name] )*
+import_module ::= "import" identifier_named_list
 import ::= import_module | from_relative_module_import | from_module_import
 module ::= identifier_dotted_list
 module_void ::= identifier_void_list
 module_named_list ::= module_named "," ... "," module_named
-module_named ::= module "as" name
+module_named ::= module [ "as" name ]
 identifier_named_list ::= identifier_named ( "," identifier_named )*
 identifier_named ::= identifier "as" name
 </pre>
+global_stmt ::=  "global" identifier ("," identifier)*
+nonlocal_stmt ::=  "nonlocal" identifier ("," identifier)*
 <pre>
 global_stmt ::=  "global" identifier_list
 identifier_list ::= identifier ("," identifier)*
+nonlocal_stmt ::=  "nonlocal" identifier_list
 </pre>
 import_stmt     ::=  "import" module ["as" name] ( "," module ["as" name] )*
                      | "from" relative_module "import" identifier ["as" name] ( "," identifier ["as" name] )*
@@ -64,5 +67,7 @@ import_stmt     ::=  "import" module ["as" name] ( "," module ["as" name] )*
 module          ::=  (identifier ".")* identifier
 relative_module ::=  "."* module | "."+
 name            ::=  identifier
+
+
 </body>
 </html>

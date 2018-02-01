@@ -52,7 +52,7 @@ ezP.DelegateSvg.Expr.yield_from_expression = function (prototypeName) {
   this.inputData = {
     first: {
       label: 'yield from',
-      check: ezP.T3.Require.expression
+      check: ezP.T3.Check.expression
     }
   }
   this.outputCheck = ezP.T3.yield_from_expression
@@ -95,7 +95,7 @@ ezP.DelegateSvg.Expr.yield_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_expression.superClass_.constructor.call(this, prototypeName)
   this.inputData = {
     last: {
-      check: ezP.T3.Require.yield_expression,
+      check: ezP.T3.Check.yield_expression,
       wrap: ezP.Const.Expr.yield_expression_list
     }
   }

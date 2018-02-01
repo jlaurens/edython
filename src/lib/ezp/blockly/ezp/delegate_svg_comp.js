@@ -28,7 +28,7 @@ ezP.DelegateSvg.Expr.Comprehension = function (prototypeName) {
   this.inputData = {
     first: {
       key: ezP.Const.Input.EXPR,
-      check: ezP.T3.Require.expression
+      check: ezP.T3.Check.expression
     },
     middle: {
       key: ezP.Const.Input.FORIN,
@@ -61,12 +61,12 @@ ezP.DelegateSvg.Expr.comp_for = function (prototypeName) {
     first: {
       key: ezP.Const.Input.FOR,
       label: 'for',
-      check: ezP.T3.Require.target_list
+      check: ezP.T3.Check.target_list
     },
     last: {
       key: ezP.Const.Input.IN,
       label: 'in',
-      check: ezP.T3.Require.or_test,
+      check: ezP.T3.Check.or_test,
     }
   }
   this.outputCheck = ezP.T3.comp_for
@@ -89,7 +89,7 @@ ezP.DelegateSvg.Expr.comp_if = function (prototypeName) {
     first: {
       key: ezP.Const.Input.IF,
       label: 'if',
-      check: ezP.T3.Require.expression_nocond
+      check: ezP.T3.Check.expression_nocond
     }
   }
   this.outputCheck = ezP.T3.comp_if

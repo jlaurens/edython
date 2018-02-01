@@ -19,3 +19,4 @@ thumbs.db
 !/**/README.md
 !/**/Readme.md
 /**/DEBUG.js
+/**/__pycache__

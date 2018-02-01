@@ -22,19 +22,19 @@ goog.require('ezP.DelegateSvg.Expr')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.or_expr_starred = function (prototypeName) {
-  ezP.DelegateSvg.Expr.or_expr_starred.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.or_expr_star = function (prototypeName) {
+  ezP.DelegateSvg.Expr.or_expr_star.superClass_.constructor.call(this, prototypeName)
   this.inputData = {
     first: {
       label: '*',
-      check: ezP.T3.Require.or_expr
+      check: ezP.T3.Check.or_expr
     }
   }
-  this.outputCheck = ezP.T3.or_expr_starred
+  this.outputCheck = ezP.T3.or_expr_star
 }
-goog.inherits(ezP.DelegateSvg.Expr.or_expr_starred, ezP.DelegateSvg.Expr)
+goog.inherits(ezP.DelegateSvg.Expr.or_expr_star, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.or_expr_starred, ezP.DelegateSvg.Expr.or_expr_starred)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.or_expr_star, ezP.DelegateSvg.Expr.or_expr_star)
 
 /**
  * Class for a DelegateSvg, '**...' block.
@@ -43,19 +43,19 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.or_expr_starred, ezP.DelegateSvg
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.or_expr_double_starred = function (prototypeName) {
-  ezP.DelegateSvg.Expr.or_expr_double_starred.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.or_expr_star_star = function (prototypeName) {
+  ezP.DelegateSvg.Expr.or_expr_star_star.superClass_.constructor.call(this, prototypeName)
   this.inputData = {
     first: {
       label: '**',
-      check: ezP.T3.Require.or_expr
+      check: ezP.T3.Check.or_expr
     }
   }
-  this.outputCheck = ezP.T3.or_expr_double_starred
+  this.outputCheck = ezP.T3.or_expr_star_star
 }
-goog.inherits(ezP.DelegateSvg.Expr.or_expr_double_starred, ezP.DelegateSvg.Expr)
+goog.inherits(ezP.DelegateSvg.Expr.or_expr_star_star, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.or_expr_double_starred, ezP.DelegateSvg.Expr.or_expr_double_starred)
+ezP.DelegateSvg.Manager.register(ezP.Const.Expr.or_expr_star_star, ezP.DelegateSvg.Expr.or_expr_star_star)
 
 /**
 * Class for a DelegateSvg, identifier_dotted.
@@ -90,7 +90,7 @@ ezP.DelegateSvg.Expr.await_expr = function (prototypeName) {
   this.inputData = {
     first: {
       label: 'await',
-      check: ezP.T3.Require.primary
+      check: ezP.T3.Check.primary
     }
   }
   this.outputCheck = ezP.T3.await_expr

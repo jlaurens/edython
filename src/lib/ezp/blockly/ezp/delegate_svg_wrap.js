@@ -42,7 +42,7 @@ ezP.DelegateSvg.Expr.assignment_expression.prototype.initBlock = function(block)
   ezP.DelegateSvg.Expr.assignment_expression.superClass_.initBlock.call(this, block)
   this.inputLIST = block.appendWrapValueInput(ezP.Const.Input.LIST, ezP.Const.Expr.target_list)
   block.appendValueInput(ezP.Const.Input.RHS)
-    .setCheck(ezP.T3.Require.assigned_expression)
+    .setCheck(ezP.T3.Check.assigned_expression)
     .appendField(new ezP.FieldLabel('='))
 }
 
@@ -93,19 +93,19 @@ ezP.DelegateSvg.Expr.augmented_assignment_expression = function (prototypeName) 
   this.operators = ['+=','-=','*=','@=','/=','//=','%=','**='
  ,'>>=','<<=','&=','^=','|=']
   this.operatorData = {
-    '+=': {label:'... += ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '-=': {label:'... -= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '*=': {label:'... *= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '@=': {label:'...   = ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '/=': {label:'... /= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '//=': {label:'... //= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '%=': {label:'... %= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '**=': {label:'... **= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '>>=': {label:'... >>= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '<<=': {label:'... <<= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '&=': {label:'... &= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '^=': {label:'... ^= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
-    '|=': {label:'... |= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Require.aug_assigned, 'LHS': ezP.T3.Require.augtarget},
+    '+=': {label:'... += ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
+    '-=': {label:'... -= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
+    '*=': {label:'... *= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
+    '@=': {label:'...   = ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
+    '/=': {label:'... /= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
+    '//=': {label:'... //= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
+    '%=': {label:'... %= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
+    '**=': {label:'... **= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
+    '>>=': {label:'... >>= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
+    '<<=': {label:'... <<= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
+    '&=': {label:'... &= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
+    '^=': {label:'... ^= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
+    '|=': {label:'... |= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
   }
   this.outputCheck = ezP.T3.augmented_assignment_expression
 }
@@ -183,7 +183,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.return_stmt, ezP.DelegateSvg.Stm
  */
 ezP.DelegateSvg.Expr.identifier_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.identifier_list.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.Consolidator.List(ezP.T3.Require.identifier_list, false, ',')
+  this.consolidator = new ezP.Consolidator.List(ezP.T3.Check.identifier_list, false, ',')
   this.outputCheck = ezP.T3.identifier_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.identifier_list, ezP.DelegateSvg.List)

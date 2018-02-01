@@ -28,7 +28,7 @@ ezP.DelegateSvg.Expr.attributeref = function (prototypeName) {
   this.inputData = {
     first: {
       key: ezP.Const.Input.PRIMARY,
-      check: ezP.T3.Require.primary
+      check: ezP.T3.Check.primary
     },
     last: {
       key: ezP.Const.Input.SECONDARY,
@@ -57,7 +57,7 @@ ezP.DelegateSvg.Expr.subscription = ezP.DelegateSvg.Expr.slicing = function (pro
   this.inputData = {
     first: {
       key: ezP.Const.Input.PRIMARY,
-      check: ezP.T3.Require.primary
+      check: ezP.T3.Check.primary
     },
     last: {
       key: ezP.Const.Input.SLICE,
@@ -88,7 +88,7 @@ ezP.DelegateSvg.Expr.call_block =  function (prototypeName) {
   this.inputData = {
     first: {
       key: ezP.Const.Input.PRIMARY,
-      check: ezP.T3.Require.primary
+      check: ezP.T3.Check.primary
     },
     last: {
       key: ezP.Const.Input.ARGS,
