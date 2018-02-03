@@ -28,20 +28,20 @@ ezP.DelegateSvg.Expr.Comprehension = function (prototypeName) {
   this.inputData = {
     first: {
       key: ezP.Const.Input.EXPR,
-      check: ezP.T3.Check.expression
+      check: ezP.T3.Expr.Check.expression
     },
     middle: {
       key: ezP.Const.Input.FORIN,
-      check: ezP.T3.comp_for,
+      check: ezP.T3.Expr.comp_for,
       wrap: ezP.Const.Expr.comp_for
     },
     last: {
       key: ezP.Const.Input.ITER,
-      check: ezP.T3.comp_iter_list,
+      check: ezP.T3.Expr.comp_iter_list,
       wrap: ezP.Const.Expr.comp_iter_list
     }
   }
-  this.outputCheck = ezP.T3.comprehension
+  this.outputCheck = ezP.T3.Expr.comprehension
 }
 goog.inherits(ezP.DelegateSvg.Expr.Comprehension, ezP.DelegateSvg.Expr)
 
@@ -61,15 +61,15 @@ ezP.DelegateSvg.Expr.comp_for = function (prototypeName) {
     first: {
       key: ezP.Const.Input.FOR,
       label: 'for',
-      check: ezP.T3.Check.target_list
+      check: ezP.T3.Expr.Check.target_list
     },
     last: {
       key: ezP.Const.Input.IN,
       label: 'in',
-      check: ezP.T3.Check.or_test,
+      check: ezP.T3.Expr.Check.or_test,
     }
   }
-  this.outputCheck = ezP.T3.comp_for
+  this.outputCheck = ezP.T3.Expr.comp_for
 }
 goog.inherits(ezP.DelegateSvg.Expr.comp_for, ezP.DelegateSvg.Expr)
 
@@ -89,10 +89,10 @@ ezP.DelegateSvg.Expr.comp_if = function (prototypeName) {
     first: {
       key: ezP.Const.Input.IF,
       label: 'if',
-      check: ezP.T3.Check.expression_nocond
+      check: ezP.T3.Expr.Check.expression_nocond
     }
   }
-  this.outputCheck = ezP.T3.comp_if
+  this.outputCheck = ezP.T3.Expr.comp_if
 }
 goog.inherits(ezP.DelegateSvg.Expr.comp_if, ezP.DelegateSvg.Expr)
 

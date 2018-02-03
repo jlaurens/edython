@@ -27,10 +27,10 @@ ezP.DelegateSvg.Expr.or_expr_star = function (prototypeName) {
   this.inputData = {
     first: {
       label: '*',
-      check: ezP.T3.Check.or_expr
+      check: ezP.T3.Expr.Check.or_expr
     }
   }
-  this.outputCheck = ezP.T3.or_expr_star
+  this.outputCheck = ezP.T3.Expr.or_expr_star
 }
 goog.inherits(ezP.DelegateSvg.Expr.or_expr_star, ezP.DelegateSvg.Expr)
 
@@ -48,10 +48,10 @@ ezP.DelegateSvg.Expr.or_expr_star_star = function (prototypeName) {
   this.inputData = {
     first: {
       label: '**',
-      check: ezP.T3.Check.or_expr
+      check: ezP.T3.Expr.Check.or_expr
     }
   }
-  this.outputCheck = ezP.T3.or_expr_star_star
+  this.outputCheck = ezP.T3.Expr.or_expr_star_star
 }
 goog.inherits(ezP.DelegateSvg.Expr.or_expr_star_star, ezP.DelegateSvg.Expr)
 
@@ -69,10 +69,10 @@ ezP.DelegateSvg.Expr.identifier_dotted = function (prototypeName) {
   this.inputData = {
     first: {
       label: '.',
-      check: ezP.T3.identifier
+      check: ezP.T3.Expr.identifier
     }
   }
-  this.outputCheck = ezP.T3.identifier_dotted
+  this.outputCheck = ezP.T3.Expr.identifier_dotted
 }
 goog.inherits(ezP.DelegateSvg.Expr.identifier_dotted, ezP.DelegateSvg.Expr)
 
@@ -90,10 +90,10 @@ ezP.DelegateSvg.Expr.await_expr = function (prototypeName) {
   this.inputData = {
     first: {
       label: 'await',
-      check: ezP.T3.Check.primary
+      check: ezP.T3.Expr.Check.primary
     }
   }
-  this.outputCheck = ezP.T3.await_expr
+  this.outputCheck = ezP.T3.Expr.await_expr
 }
 goog.inherits(ezP.DelegateSvg.Expr.await_expr, ezP.DelegateSvg.Expr)
 

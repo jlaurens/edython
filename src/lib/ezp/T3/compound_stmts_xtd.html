@@ -52,7 +52,7 @@ with_stmt ::=  "with" with_item ("," with_item)* ":" suite
 with_item ::=  expression ["as" target]
 
 <pre>
-with_stmt ::=  "with" with_item_list ":" suite
+with_part ::=  "with" with_item_list ":"
 with_item_list ::= with_item ("," with_item)*
 </pre>
 with_item ::=  expression ["as" target]
@@ -81,17 +81,17 @@ parameter_list          ::=  defparameter ("," defparameter)* ["," [parameter_li
                              | parameter_list_starargs
 parameter_list_starargs ::=  "*" [parameter] ("," defparameter)* ["," ["**" parameter [","]]]
                              | "**" parameter [","]
-<pre>
 parameter               ::=  identifier | parameter_annotated
 parameter_annotated      ::=  identifier ":" expression
-defparameter            ::=  parameter | parameter_default
-parameter_default   ::=  parameter "=" expression
+defparameter            ::=  parameter | parameter "=" expression
+<pre>
+parameter_list ::= REMOVE
 parameter_star ::= "*" [parameter]
 parameter_star_star ::= "**" parameter
-parameter_any ::= parameter | parameter_default | parameter_star | parameter_star_star
-parameter_no_single_star ::= parameter | parameter_default | parameter_star_star
-parameter_no_star_star ::= parameter | parameter_default | parameter_star
-parameter_no_star ::= parameter | parameter_default
+parameter_any ::= parameter | defparameter | parameter_star | parameter_star_star
+parameter_no_single_star ::= parameter | defparameter | parameter_star_star
+parameter_no_star_star ::= parameter | defparameter | parameter_star
+parameter_no_star ::= parameter | defparameter
 </pre>
 
 classdef    ::=  [decorators] "class" classname [inheritance] ":" suite
@@ -103,6 +103,12 @@ classdef_part ::=  "class" classname [inheritance] ":"
 classdef ::=
 decorator_part < classdef_part
 </pre>
+
+<pre>
+docstring_def_stmt ::= triple quoted long string at the top of the function or class
+docstring_def_stmt > funcdef_part | classdef_part
+</pre>
+
 
 </body>
 </html>

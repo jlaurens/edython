@@ -4,6 +4,15 @@
 
 <html>
 <body>
+This HTML file is not expected to be rendered.
+The purpose is just to give something similar to the official python documentation at
+https://docs.python.org/3.6/reference/expressions.html
+end next, in order to use the same parser.
+
+What is important is enclosed between pre tags
+Definitions follow the pseudo grammar use in the documentation mentioned above.
+
+
 starred_list ::= starred_item ( ',' starred_item ) * [',']
 <pre>
 starred_expression ::=  starred_item_list
@@ -43,43 +52,31 @@ identifier_dotted ::= "." identifier
 slicing      ::=  primary display_slice_list
 display_slice_list ::=  "[" slice_list "]"
 </pre>
+The argument list is managed by the consolidator
 <pre>
-argument_list_comprehensive ::= argument_list | comprehension
-positional_arguments ::= non_void_positional_argument_list
-non_void_positional_argument_list ::= positional_argument ("," positional_argument)*
-positional_argument ::= expression | expression_star
+argument_list ::= REMOVE
+positional_arguments ::= REMOVE
 expression_star ::= "*" expression
-starred_and_keywords ::=  non_void_starred_and_keyword_list
-non_void_starred_and_keyword_list ::=  starred_and_keyword ("," starred_and_keyword)*
-starred_and_keyword ::=  expression_star | keyword_item
-keyword_arguments ::=  non_void_keyword_argument_list
-non_void_keyword_argument_list ::=  keyword_argument ("," keyword_argument)*
-keyword_argument ::= keyword_item | expression_star_star
 expression_star_star ::= "**" expression
+any_argument ::= expression | expression_star | keyword_item | expression_star_star
 any_argument_but_star_star ::= expression | expression_star | keyword_item
 any_argument_but_expression ::=  expression_star | keyword_item | expression_star_star
-any_argument ::= expression | expression_star | keyword_item | expression_star_star
 any_argument_comprehensive ::= any_argument | comprehension
 </pre>
 <pre>
-power ::= await_or_primary | power_concrete
-power_concrete ::= await_or_primary "**" u_expr
+power ::= await_or_primary [ "**" u_expr ]
 await_or_primary ::= await_expr | primary
 </pre>
 <pre>
 comparison ::=  or_expr | comparison_concrete
 comparison_concrete ::=  comparison comp_operator comparison
-</pre> 
-<pre>
-conditional_expression ::=  or_test | conditional_expression_concrete
-conditional_expression_concrete ::=  or_test "if" or_test "else" expression
 </pre>
+These are auxiliary types used to check connections.
 <pre>
 algebra_concrete ::= m_expr_concrete | a_expr_concrete
 bitwise_concrete ::= shift_expr_concrete | and_expr_concrete | xor_expr_concrete | or_expr_concrete
 boolean_concrete ::= and_test_concrete | or_test_concrete
 unary_concrete ::= u_expr_concrete | not_test_concrete
-not_test
 </pre>
 </body>
 </html>

@@ -47,24 +47,8 @@ ezP.Delegate.Manager = function () {
       return delegate
     }
     var Ctor = Ctors[prototypeName]
-    if (Ctor !== undefined) {
-      return new Ctor(prototypeName)
-    }
-    var Ks = prototypeName.split('_')
-    if (Ks[0] === 'ezp') {
-      while (Ks.length > 1) {
-        Ks.splice(-1, 1)
-        var name = Ks.join('_')
-        Ctor = Ctors[name]
-        if (Ctor !== undefined) {
-          Ctors[prototypeName] = Ctor
-          return new Ctor(prototypeName)
-        }
-      }
-      Ctors[prototypeName] = defaultCtor
-      return new defaultCtor(prototypeName)
-    }
-    return defaultDelegate
+    goog.asserts.assert(Ctor, 'No delegate for '+prototypeName)
+    return new Ctor(prototypeName)
   }
   /**
    * Delegate registrator.

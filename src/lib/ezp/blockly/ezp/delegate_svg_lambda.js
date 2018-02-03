@@ -30,7 +30,7 @@ ezP.DelegateSvg.Lambda = function (prototypeName) {
     first: {
       key: ezP.Const.Input.PARS,
       label: 'lambda',
-      check: ezP.T3.parameter_list,
+      check: ezP.T3.Expr.parameter_list,
       wrap: ezP.Const.Expr.parameter_list
     },
     last: {
@@ -54,8 +54,8 @@ ezP.DelegateSvg.Lambda.prototype.expressionType = undefined
  */
 ezP.DelegateSvg.Expr.lambda_expr = function (prototypeName) {
   ezP.DelegateSvg.Expr.lambda_expr.superClass_.constructor.call(this, prototypeName)
-  this.expressionType = ezP.T3.Check.expression
-  this.outputCheck = ezP.T3.lambda_expr
+  this.expressionType = ezP.T3.Expr.Check.expression
+  this.outputCheck = ezP.T3.Expr.lambda_expr
 }
 goog.inherits(ezP.DelegateSvg.Expr.lambda_expr, ezP.DelegateSvg.Lambda)
 
@@ -71,8 +71,8 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.lambda_expr, ezP.DelegateSvg.Exp
  */
 ezP.DelegateSvg.Expr.lambda_expr_nocond = function (prototypeName) {
   ezP.DelegateSvg.Expr.lambda_expr_nocond.superClass_.constructor.call(this, prototypeName)
-  this.expressionType = ezP.T3.Check.expression_nocond
-  this.outputCheck = ezP.T3.lambda_expr_nocond
+  this.expressionType = ezP.T3.Expr.Check.expression_nocond
+  this.outputCheck = ezP.T3.Expr.lambda_expr_nocond
 }
 goog.inherits(ezP.DelegateSvg.Expr.lambda_expr_nocond, ezP.DelegateSvg.Lambda)
 

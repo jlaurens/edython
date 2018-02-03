@@ -458,7 +458,7 @@ ezP.Consolidator.List.Singled.prototype.cleanup = function(io) {
  * @param {!String} single, the required type for a single element....
  */
 ezP.Consolidator.List.Argument = function() {
-  ezP.Consolidator.List.Argument.superClass_.constructor.call(this, ezP.T3.Check.primary, true, ',')
+  ezP.Consolidator.List.Argument.superClass_.constructor.call(this, ezP.T3.Expr.Check.primary, true, ',')
 }
 goog.inherits(ezP.Consolidator.List.Argument, ezP.Consolidator.List)
 
@@ -497,13 +497,13 @@ ezP.Consolidator.List.Argument.prototype.getCheckType = function(io) {
     return ezP.Consolidator.List.Argument.Type.unconnected
   }
   var check = target.outputConnection.check_
-  if (goog.array.contains(check,ezP.T3.comprehension)) {
+  if (goog.array.contains(check,ezP.T3.Expr.comprehension)) {
     return ezP.Consolidator.List.Argument.Type.comprehension
-  } else if (goog.array.contains(check,ezP.T3.expression_star)) {
+  } else if (goog.array.contains(check,ezP.T3.Expr.expression_star)) {
     return ezP.Consolidator.List.Argument.Type.expression_star
-  } else if (goog.array.contains(check,ezP.T3.keyword_item)) {
+  } else if (goog.array.contains(check,ezP.T3.Expr.keyword_item)) {
     return ezP.Consolidator.List.Argument.Type.keyword_item
-  } else if (goog.array.contains(check,ezP.T3.expression_star_star)) {
+  } else if (goog.array.contains(check,ezP.T3.Expr.expression_star_star)) {
     return ezP.Consolidator.List.Argument.Type.expression_star_star
   } else {
     return ezP.Consolidator.List.Argument.Type.expression
@@ -638,7 +638,7 @@ ezP.Consolidator.List.Argument.prototype.getCheck = function (io) {
   // only one input or a replacement of the unique connected block
   if (io.connected <= 1 && (io.start + 1 == io.end || io.i == io.start+1)) {
     // console.log('Check: '+io.i+' -> any_argument_comprehensive')
-    return ezP.T3.Check.any_argument_comprehensive
+    return ezP.T3.Expr.Check.any_argument_comprehensive
   }
   var can_star = !io.first_star_star || goog.array.indexOf(io.list, io.first_star_star, io.i) >= 0
   var can_expression = can_star && (!io.first_keyword_or_star_star || goog.array.indexOf(io.list, io.first_keyword_or_star_star, io.i) >= 0)
@@ -648,38 +648,38 @@ ezP.Consolidator.List.Argument.prototype.getCheck = function (io) {
     if (can_star_star) {
       // everything, no need to check for starred or keywords
       // console.log('Check: '+io.i+' -> any_argument')
-      return ezP.T3.Check.any_argument
+      return ezP.T3.Expr.Check.any_argument
     } else if (can_keyword) {
       // everything but double starred
       // console.log('Check: '+io.i+' -> any_argument_but_expression_star_star')
-      return ezP.T3.Check.any_argument_but_expression_star_star
+      return ezP.T3.Expr.Check.any_argument_but_expression_star_star
     } else {
-      return ezP.T3.Check.positional_argument
+      return ezP.T3.Expr.Check.positional_argument
     }
   } else if (can_star) {
     if (can_star_star) {
       // everything but expression
       // console.log('Check: '+io.i+' -> any_argument_but_expression')
-      return ezP.T3.Check.any_argument_but_expression
+      return ezP.T3.Expr.Check.any_argument_but_expression
     } else if (can_keyword) {
       // starred and keyword
       // console.log('Check: '+io.i+' -> any_argument_but_expression')
-      return ezP.T3.Check.starred_and_keyword
+      return ezP.T3.Expr.Check.starred_and_keyword
     } else {
       // only starred
-      return ezP.T3.expression_star
+      return ezP.T3.Expr.expression_star
     }
   } else if (can_star_star) {
     if (can_keyword) {
       // double starred and keyword
-      return ezP.T3.Check.keywords_argument
+      return ezP.T3.Expr.Check.keywords_argument
     } else {
       // only can_star_star
-      return ezP.T3.expression_star_star
+      return ezP.T3.Expr.expression_star_star
     }
   } else /* if (can_keyword) */ {
     // keyword only
-    return ezP.T3.keyword_item
+    return ezP.T3.Expr.keyword_item
   }
 }
 
@@ -699,7 +699,7 @@ ezP.Consolidator.List.Argument.prototype.getCheck = function (io) {
  *    must also have a default value...
  */
 ezP.Consolidator.List.Parameter = function() {
-  ezP.Consolidator.List.Parameter.superClass_.constructor.call(this, ezP.T3.Check.primary, true, ',')
+  ezP.Consolidator.List.Parameter.superClass_.constructor.call(this, ezP.T3.Expr.Check.primary, true, ',')
 }
 goog.inherits(ezP.Consolidator.List.Parameter, ezP.Consolidator.List)
 
@@ -734,11 +734,11 @@ ezP.Consolidator.List.Parameter.prototype.getCheckType = function(io) {
     return ezP.Consolidator.List.Parameter.Type.unconnected
   }
   var check = target.outputConnection.check_
-  if (goog.array.contains(check,ezP.T3.parameter_star)) {
+  if (goog.array.contains(check,ezP.T3.Expr.parameter_star)) {
     return ezP.Consolidator.List.Parameter.Type.parameter_star
-  } else if (goog.array.contains(check,ezP.T3.parameter_star_star)) {
+  } else if (goog.array.contains(check,ezP.T3.Expr.parameter_star_star)) {
     return ezP.Consolidator.List.Parameter.Type.parameter_star_star
-  } else if (goog.array.contains(check,ezP.T3.parameter_default)) {
+  } else if (goog.array.contains(check,ezP.T3.Expr.parameter_default)) {
     return ezP.Consolidator.List.Parameter.Type.parameter_default
   } else {
     return ezP.Consolidator.List.Parameter.Type.parameter
@@ -858,14 +858,14 @@ ezP.Consolidator.List.Parameter.prototype.getCheck = function (io) {
   var can_star_star = (!io.first_parameter_star_star && io.i == io.end-1) || io.first_parameter_star_star == io.input
   if (can_star_star) {
     if (can_star) {
-      return ezP.T3.Check.parameter_any
+      return ezP.T3.Expr.Check.parameter_any
     } else {
-      return ezP.T3.Check.parameter_no_single_star
+      return ezP.T3.Expr.Check.parameter_no_single_star
     }
   } else if (can_star) {
-    return ezP.T3.Check.parameter_no_star_star
+    return ezP.T3.Expr.Check.parameter_no_star_star
   } else {
-    return ezP.T3.Check.parameter_no_star
+    return ezP.T3.Expr.Check.parameter_no_star
   }
 }
 

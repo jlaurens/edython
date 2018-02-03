@@ -52,6 +52,15 @@ module_named_list ::= module_named "," ... "," module_named
 module_named ::= module [ "as" name ]
 identifier_named_list ::= identifier_named ( "," identifier_named )*
 identifier_named ::= identifier "as" name
+import_part ::= import_expr
+</pre>
+Extra part types used to manage docstring placement
+The type of the doctring is dynamically generated depending on its position.
+Rule: a docstring part becomes a top docstring if it is followed by import statements
+<pre>
+docstring_top_stmt ::= triple quoted long string at the top of the module
+import_stmt > import_stmt | docstring_top_stmt
+docstring_top_stmt > top_docstring_stmt
 </pre>
 global_stmt ::=  "global" identifier ("," identifier)*
 nonlocal_stmt ::=  "nonlocal" identifier ("," identifier)*

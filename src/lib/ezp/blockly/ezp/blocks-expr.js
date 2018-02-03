@@ -14,7 +14,12 @@
 goog.provide('ezP.Blocks.val')
 
 goog.require('Blockly.Blocks')
-goog.require('ezP.Const')
+goog.require('ezP.T3.All')
+
+for (var i = 0; i < ezP.T3.All.core_expressions.length; ++i) {
+  var t = ezP.T3.All.core_expressions[i]
+  Blockly.Blocks[K] = {}
+}
 
 var Ks = [
   ezP.Const.Expr.parenth_form,

@@ -30,11 +30,11 @@ ezP.DelegateSvg.Expr.yield_expression_list = function (prototypeName) {
   this.inputData = {
     first: {
       label: 'yield',
-      check: ezP.T3.expression_list,
+      check: ezP.T3.Expr.expression_list,
       wrap: ezP.Const.Expr.expression_list
     }
   }
-  this.outputCheck = ezP.T3.yield_expression_list
+  this.outputCheck = ezP.T3.Expr.yield_expression_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_expression_list, ezP.DelegateSvg.Expr)
 
@@ -52,10 +52,10 @@ ezP.DelegateSvg.Expr.yield_from_expression = function (prototypeName) {
   this.inputData = {
     first: {
       label: 'yield from',
-      check: ezP.T3.Check.expression
+      check: ezP.T3.Expr.Check.expression
     }
   }
-  this.outputCheck = ezP.T3.yield_from_expression
+  this.outputCheck = ezP.T3.Expr.yield_from_expression
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_from_expression, ezP.DelegateSvg.Expr)
 
@@ -72,13 +72,13 @@ ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_atom.superClass_.constructor.call(this, prototypeName)
   this.inputData = {
     first: {
-      check: ezP.T3.yield_expression,
+      check: ezP.T3.Expr.yield_expression,
       label: '(',
       wrap: ezP.Const.Expr.yield_expression
     }
   }
   this.labelEnd = ')'
-  this.outputCheck = ezP.T3.yield_atom
+  this.outputCheck = ezP.T3.Expr.yield_atom
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_atom, ezP.DelegateSvg.Expr)
 
@@ -95,11 +95,11 @@ ezP.DelegateSvg.Expr.yield_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_expression.superClass_.constructor.call(this, prototypeName)
   this.inputData = {
     last: {
-      check: ezP.T3.Check.yield_expression,
+      check: ezP.T3.Expr.Check.yield_expression,
       wrap: ezP.Const.Expr.yield_expression_list
     }
   }
-  this.outputCheck = ezP.T3.yield_expression
+  this.outputCheck = ezP.T3.Expr.yield_expression
   this.contextMenuData = [
     {label: 'yield ...', type: ezP.Const.Expr.yield_expression_list},
     {label: 'yield from ...', type: ezP.Const.Expr.yield_from_expression},
@@ -198,7 +198,7 @@ ezP.DelegateSvg.Stmt.yield_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.yield_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputData = {
     last: {
-      check: ezP.T3.yield_expression,
+      check: ezP.T3.Expr.yield_expression,
       wrap: ezP.Const.Expr.yield_expression
     }
   }

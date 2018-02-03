@@ -25,7 +25,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Expr.assignment_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.assignment_expression.superClass_.constructor.call(this, prototypeName)
-  this.outputCheck = ezP.T3.assignment_expression
+  this.outputCheck = ezP.T3.Expr.assignment_expression
 }
 goog.inherits(ezP.DelegateSvg.Expr.assignment_expression, ezP.DelegateSvg.Expr)
 
@@ -42,7 +42,7 @@ ezP.DelegateSvg.Expr.assignment_expression.prototype.initBlock = function(block)
   ezP.DelegateSvg.Expr.assignment_expression.superClass_.initBlock.call(this, block)
   this.inputLIST = block.appendWrapValueInput(ezP.Const.Input.LIST, ezP.Const.Expr.target_list)
   block.appendValueInput(ezP.Const.Input.RHS)
-    .setCheck(ezP.T3.Check.assigned_expression)
+    .setCheck(ezP.T3.Expr.Check.assigned_expression)
     .appendField(new ezP.FieldLabel('='))
 }
 
@@ -55,7 +55,7 @@ ezP.DelegateSvg.Expr.assignment_expression.prototype.initBlock = function(block)
  */
 ezP.DelegateSvg.Stmt.expression_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.expression_stmt.superClass_.constructor.call(this, prototypeName)
-  this.wrappedCheck = ezP.T3.starred_item_list
+  this.wrappedCheck = ezP.T3.Expr.starred_item_list
   this.wrappedPrototype = ezP.Const.Expr.starred_item_list
 }
 goog.inherits(ezP.DelegateSvg.Stmt.expression_stmt, ezP.DelegateSvg.Stmt)
@@ -71,7 +71,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.expression_stmt, ezP.DelegateSvg
  */
 ezP.DelegateSvg.Stmt.assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.assignment_stmt.superClass_.constructor.call(this, prototypeName)
-  this.wrappedCheck = ezP.T3.assignment_expression
+  this.wrappedCheck = ezP.T3.Expr.assignment_expression
   this.wrappedPrototype = ezP.Const.Expr.assignment_expression
 }
 goog.inherits(ezP.DelegateSvg.Stmt.assignment_stmt, ezP.DelegateSvg.Stmt)
@@ -93,21 +93,21 @@ ezP.DelegateSvg.Expr.augmented_assignment_expression = function (prototypeName) 
   this.operators = ['+=','-=','*=','@=','/=','//=','%=','**='
  ,'>>=','<<=','&=','^=','|=']
   this.operatorData = {
-    '+=': {label:'... += ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
-    '-=': {label:'... -= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
-    '*=': {label:'... *= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
-    '@=': {label:'...   = ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
-    '/=': {label:'... /= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
-    '//=': {label:'... //= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
-    '%=': {label:'... %= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
-    '**=': {label:'... **= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
-    '>>=': {label:'... >>= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
-    '<<=': {label:'... <<= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
-    '&=': {label:'... &= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
-    '^=': {label:'... ^= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
-    '|=': {label:'... |= ...', 'OUT': ezP.T3.augmented_assignment_expression, 'RHS': ezP.T3.Check.aug_assigned, 'LHS': ezP.T3.Check.augtarget},
+    '+=': {label:'... += ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
+    '-=': {label:'... -= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
+    '*=': {label:'... *= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
+    '@=': {label:'...   = ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
+    '/=': {label:'... /= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
+    '//=': {label:'... //= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
+    '%=': {label:'... %= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
+    '**=': {label:'... **= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
+    '>>=': {label:'... >>= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
+    '<<=': {label:'... <<= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
+    '&=': {label:'... &= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
+    '^=': {label:'... ^= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
+    '|=': {label:'... |= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
   }
-  this.outputCheck = ezP.T3.augmented_assignment_expression
+  this.outputCheck = ezP.T3.Expr.augmented_assignment_expression
 }
 
 goog.inherits(ezP.DelegateSvg.Expr.augmented_assignment_expression, ezP.DelegateSvg.Expr.Binary)
@@ -123,7 +123,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.augmented_assignment_expression,
  */
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.augmented_assignment_stmt.superClass_.constructor.call(this, prototypeName)
-  this.wrappedCheck = ezP.T3.augmented_assignment_expression
+  this.wrappedCheck = ezP.T3.Expr.augmented_assignment_expression
   this.wrappedPrototype = ezP.Const.Expr.augmented_assignment_expression
 }
 goog.inherits(ezP.DelegateSvg.Stmt.augmented_assignment_stmt, ezP.DelegateSvg.Stmt)
@@ -142,7 +142,7 @@ ezP.DelegateSvg.Stmt.del_stmt = function (prototypeName) {
   this.inputData = {
     last: {
       label: 'del',
-      check: ezP.T3.target_list,
+      check: ezP.T3.Expr.target_list,
       wrap: ezP.Const.Expr.target_list
     }
   }
@@ -163,7 +163,7 @@ ezP.DelegateSvg.Stmt.return_stmt = function (prototypeName) {
   this.inputData = {
     last: {
       label: 'return',
-      check: ezP.T3.expression_list,
+      check: ezP.T3.Expr.expression_list,
       wrap: ezP.Const.Expr.expression_list
     }
   }
@@ -183,8 +183,8 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.return_stmt, ezP.DelegateSvg.Stm
  */
 ezP.DelegateSvg.Expr.identifier_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.identifier_list.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.Consolidator.List(ezP.T3.Check.identifier_list, false, ',')
-  this.outputCheck = ezP.T3.identifier_list
+  this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.identifier_list, false, ',')
+  this.outputCheck = ezP.T3.Expr.identifier_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.identifier_list, ezP.DelegateSvg.List)
 
@@ -202,7 +202,7 @@ ezP.DelegateSvg.Stmt.global_stmt = function (prototypeName) {
   this.inputData = {
     last: {
       label: 'global',
-      check: ezP.T3.identifier_list,
+      check: ezP.T3.Expr.identifier_list,
       wrap: ezP.Const.Expr.identifier_list
     }
   }
@@ -223,7 +223,7 @@ ezP.DelegateSvg.Stmt.nonlocal_stmt = function (prototypeName) {
   this.inputData = {
     last: {
       label: 'nonlocal',
-      check: ezP.T3.identifier_list,
+      check: ezP.T3.Expr.identifier_list,
       wrap: ezP.Const.Expr.identifier_list
     }
   }

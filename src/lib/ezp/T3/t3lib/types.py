@@ -10,7 +10,6 @@ class Types:
 
     """
     re_pipe = re.compile(r'\s*\|\s*')
-    re_identifier_only = re.compile(r'^\s*([a-z_][a-z_\d]*)\s*$')
     re_concrete_candidate = re.compile(r'\s*([a-z_][a-z_\d]*)\s*\|\s*(.*)\s*$')
     re_star_identifier = re.compile(r'^\s*"(\*+)"\s*([a-z_][a-z_\d]*)\s*$')
 
@@ -19,14 +18,17 @@ class Types:
         self.is_before = {}
         self.is_after = {}
         self.n = 0
+        self.lists_made = False
         for path in paths:
             self.read(path)
+        self.make_ignore()
         self.make_lists()
         self.make_concrete()
         self.make_before_after()
         self.make_shallow()
         self.make_alias()
         self.make_deep()
+        self.make_compound()
         self.remove_wrappers()
         self.make_list_require()
 
@@ -38,15 +40,15 @@ class Types:
             yield t
 
     def get_statements(self):
-        for t in (t for t in self if t.is_stmt):
+        for t in (t for t in self if t.is_stmt and not t.ignored):
             yield t
 
     def get_expressions(self):
-        for t in (t for t in self if not t.is_stmt):
+        for t in (t for t in self if not t.is_stmt and not t.ignored):
             yield t
 
     def get_list_expressions(self):
-        for t in (t for t in self if t.is_list):
+        for t in (t for t in self if t.is_list and not t.ignored):
             yield t
 
     def read(self, path):
@@ -58,12 +60,16 @@ class Types:
             for x in parser.get_pre_pos_data():
                 self.digest(x[0])
 
-    def get_type(self, name):
+    def get_type(self, name, create = False):
         if name in self.all:
             return self.all[name]
-        nn = self.n
-        self.n += 1
-        return Type(nn, name)
+        if create:
+            nn = self.n
+            self.n += 1
+            t = Type(nn, name)
+            self.all[t.name] = t
+            return t
+        return None
 
     def digest(self, data):
         data = data.replace('\n ', ' ')
@@ -75,14 +81,9 @@ class Types:
             if m:
                 name, definition = m.group('name'), m.group('definition')
                 if len(definition):
-                    nn = self.n
-                    if name in self.all:
-                        # override the previous definition, keep the same number
-                        nn = self.all[name].n
                     try:
-                        t = Type(nn, name, definition)
-                        self.all[name] = t
-                        self.n += 1
+                        t = self.get_type(name, create=True)
+                        t.setup_definition(definition)
                     except Exception as exc:
                         print(exc)
             else:
@@ -95,6 +96,27 @@ class Types:
                     already = where[name]
                     already.update(re.split(r'\s*\|\s*', what))
 
+    def make_compound(self):
+        while True:
+            for t in self.get_statements():
+                if t.is_compound == None:
+                    try:
+                        ds = t.depends_
+                    except:
+                        ds = t.depends_ = [x for x in re.split(r'[\s|]+', t.get_minimized_definition()) if len(x)]
+                    for k in t.depends_:
+                        try:
+                            type = self.get_type(k)
+                            if type and type.is_compound:
+                                t.is_compound = True
+                                break # this type has changed status
+                        except: pass
+                    else:
+                        continue # this type has not changed status, try the next one
+                    break # this type has changed status
+            else:
+                return # no type has changed status, stop here
+
     def make_concrete(self):
         """
         Automatically creates "concrete" types for declarations like
@@ -104,12 +126,13 @@ class Types:
         foo_concrete ::= an operation
         More to come...
         """
+        self.make_lists()
         more = {}
         for t in self.get_expressions():
             definition = t.definition
             cs = Types.re_pipe.split(definition)[1:]
             if len(cs) > 0:
-                cs = [x for x in cs if Types.re_identifier_only.match(x)]
+                cs = [x for x in cs if Formatter.get_identifier(x)]
                 if len(cs) == 0:
                     m = Types.re_concrete_candidate.match(t.definition)
                     if m:
@@ -130,24 +153,57 @@ class Types:
                             else:
                                 name_concrete = t.name + '_concrete'
                             def_new = '{} | {}'.format(def_alias, name_concrete)
+                            t.original_definition = t.definition
                             t.definition = def_new
+                            t.is_wrapper = True
                             tt = Type(t.n, name_concrete, def_concrete)
                             more[tt.name] = tt
+                            print('**** new concrete type from', t.name, '::=', t.definition, '::=',
+                                  t.original_definition)
+                            print('****', name_concrete, '::=', def_concrete)
                             continue
-            definition = t.definition
-            cs = Types.re_pipe.split(definition)
-            if len(cs)>1 and len([x for x in cs if not Types.re_identifier_only.match(Formatter.minimize(x))]) == 0:
-                ds = []
-                for i in range(len(cs)):
-                    def_concrete = cs[i]
-                    if Types.re_identifier_only.match(def_concrete):
-                        ds.append(def_concrete)
-                    else:
-                        name_concrete = t.name + '_concrete_' + str(i)
-                        ds.append(name_concrete)
-                        tt = Type(t.n, name_concrete, def_concrete)
-                        more[tt.name] = tt
-                t.definition = ' | '.join(ds)
+            if not t.is_wrapper and not t.is_list:
+                cs = Formatter.get_alternate_components(definition)
+                if len(cs)>1:
+                    concretes = []
+                    defs = []
+                    i = 0
+                    for def_concrete in cs:
+                        if Formatter.get_identifier(def_concrete):
+                            defs.append(def_concrete)
+                        else:
+                            name_concrete = t.name + '_concrete_' + str(i)
+                            i += 1
+                            defs.append(name_concrete)
+                            tt = Type(t.n, name_concrete, def_concrete)
+                            concretes.append(tt)
+                    if len(concretes) and len(concretes) < len(defs):
+                        t.original_definition = t.definition
+                        t.definition = ' | '.join(defs)
+                        t.is_wrapper = True
+                        if len(concretes) == 1:
+                            name_concrete = t.name + '_concrete'
+                            t.definition = t.definition.replace(concretes[0].name, name_concrete)
+                            concretes[0].setup_name(name_concrete)
+                        print('**** new concrete type from', t.name, '::=', t.definition, '::=', t.original_definition)
+                        for tt in concretes:
+                            more[tt.name] = tt
+                            tt.etercnoc = t
+                            print('****', tt.name, '::=', tt.definition)
+                        continue
+            identifier, option = Formatter.get_identifier_option(t.definition)
+            if identifier:
+                name_concrete = t.name + '_concrete'
+                def_concrete = re.sub(r' +', ' ', identifier + ' ' + option)
+                def_new = identifier + ' | ' + name_concrete
+                t.original_definition = t.definition
+                t.definition = def_new
+                t.is_wrapper = True
+                tt = Type(t.n, name_concrete, def_concrete)
+                more[tt.name] = tt
+                tt.etercnoc = t
+                print('**** new concrete type from', t.name, '::=', t.definition, '::=', t.original_definition)
+                print('****', name_concrete, '::=', def_concrete)
                 continue
         self.all.update(more)
 
@@ -166,6 +222,9 @@ class Types:
                 print('IGNORED', k, '>', v)
 
     def make_lists(self):
+        if self.lists_made:
+            return
+        self.lists_made = True
         for t in self.get_expressions():
             definition = t.get_normalized_definition()
             m = re.match(r'(\S*)\s*\(\s*(\S*)\s*\1\s*\)\s*\*(?:\s*\[\s*\2\s*\]\s*)?$', definition)
@@ -180,18 +239,17 @@ class Types:
     def make_shallow(self):
         more_t = {}
         for t in self.get_expressions():
-            t.wrapper = True
+            t.is_wrapper = True
             require = set()
             definition = t.get_shortenized_definition()
             cs = Types.re_pipe.split(definition)
             for c in cs:
                 if 'OPTIONAL' in c:
-                    t.wrapper = False
+                    t.is_wrapper = False
                     t.one_shot = False
                 else:
-                    m = Types.re_identifier_only.match(c)
-                    if m:
-                        c = m.group(1)
+                    c = Formatter.get_identifier(c)
+                    if c:
                         try:
                             tt = self.all[c]
                         except:
@@ -202,7 +260,7 @@ class Types:
                                 tt.require = []
                         require.add(tt)
                     else:
-                        t.wrapper = False
+                        t.is_wrapper = False
                         t.one_shot = False
             t.require = list(require)
         self.all.update(more_t)
@@ -284,7 +342,7 @@ class Types:
             del self.all[name]
 
     def remove_wrappers(self):
-        for wrapper in [t for t in self.get_expressions() if t.wrapper]:
+        for wrapper in [t for t in self.get_expressions() if t.is_wrapper]:
             for t in self.get_expressions():
                 try:
                     t.deep_require.remove(wrapper)
@@ -309,6 +367,20 @@ class Types:
                 else:
                     break
 
-    def get_T3_data(self, **kwargs):
-        return Formatter.get_T3_data(self, **kwargs)
+    def make_ignore(self):
+        for t in self:
+            t.ignored = t.definition == 'IGNORE' or t.definition == 'REMOVE'
+            if t.ignored:
+                print('**** IGNORED:', t.name)
 
+    def get_T3_data(self, **kwargs):
+        formatter = Formatter(self, **kwargs)
+        return formatter.get_T3_data()
+
+    def get_T3_all(self):
+        formatter = Formatter(self)
+        return formatter.get_T3_all()
+
+    def get_T3_delegates(self):
+        formatter = Formatter(self)
+        return formatter.get_T3_delegates()

@@ -111,9 +111,3 @@ ezP.Type.Stmt.Check = {
     ezP.Type.Stmt.loop_else],
   before_loop: [ezP.Type.Stmt.any_all]
 }
-
-ezP.T3.Check.starred_list_comprehensive = ezP.T3.Check.starred_list.slice()
-ezP.T3.Check.starred_list_comprehensive.push(ezP.T3.comprehension)
-
-ezP.T3.Check.key_datum_list_comprehensive = ezP.T3.Check.key_datum_list.slice()
-ezP.T3.Check.key_datum_list_comprehensive.push(ezP.T3.dict_comprehension)

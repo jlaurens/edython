@@ -28,15 +28,15 @@ ezP.DelegateSvg.Expr.attributeref = function (prototypeName) {
   this.inputData = {
     first: {
       key: ezP.Const.Input.PRIMARY,
-      check: ezP.T3.Check.primary
+      check: ezP.T3.Expr.Check.primary
     },
     last: {
       key: ezP.Const.Input.SECONDARY,
-      check: ezP.T3.identifier_dotted,
+      check: ezP.T3.Expr.identifier_dotted,
       wrap: ezP.Const.Expr.identifier_dotted
     }
   }
-  this.outputCheck = ezP.T3.attributeref 
+  this.outputCheck = ezP.T3.Expr.attributeref 
 }
 goog.inherits(ezP.DelegateSvg.Expr.attributeref, ezP.DelegateSvg.Expr)
 
@@ -57,15 +57,15 @@ ezP.DelegateSvg.Expr.subscription = ezP.DelegateSvg.Expr.slicing = function (pro
   this.inputData = {
     first: {
       key: ezP.Const.Input.PRIMARY,
-      check: ezP.T3.Check.primary
+      check: ezP.T3.Expr.Check.primary
     },
     last: {
       key: ezP.Const.Input.SLICE,
-      check: ezP.T3.display_slice_list,
+      check: ezP.T3.Expr.display_slice_list,
       wrap: ezP.Const.Expr.display_slice_list
     }
   }
-  this.outputCheck = ezP.T3.slicing
+  this.outputCheck = ezP.T3.Expr.slicing
 }
 goog.inherits(ezP.DelegateSvg.Expr.slicing, ezP.DelegateSvg.Expr)
 
@@ -88,12 +88,12 @@ ezP.DelegateSvg.Expr.call_block =  function (prototypeName) {
   this.inputData = {
     first: {
       key: ezP.Const.Input.PRIMARY,
-      check: ezP.T3.Check.primary
+      check: ezP.T3.Expr.Check.primary
     },
     last: {
       key: ezP.Const.Input.ARGS,
       label: '(',
-      check: ezP.T3.argument_list,
+      check: ezP.T3.Expr.argument_list,
       wrap: ezP.Const.Expr.argument_list
     }
   }

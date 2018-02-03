@@ -160,16 +160,16 @@ ezP.DelegateSvg.Stmt.annotated_assignment_stmt = function (prototypeName) {
   this.inputData = {
     first: {
       key: ezP.Const.Input.TARGET,
-      check: ezP.T3.Check.augtarget
+      check: ezP.T3.Expr.Check.augtarget
     },
     middle: {
       key: ezP.Const.Input.ANNOTATED,
-      check: ezP.T3.Check.expression,
+      check: ezP.T3.Expr.Check.expression,
       label: ':'
     },
     last: {
       key: ezP.Const.Input.ASSIGNED,
-      check: ezP.T3.Check.expression,
+      check: ezP.T3.Expr.Check.expression,
       label: '='
     }
   }
@@ -232,12 +232,12 @@ ezP.DelegateSvg.Stmt.assert_stmt = function (prototypeName) {
     first: {
       label: 'assert',
       key: ezP.Const.Input.ASSERT,
-      check: ezP.T3.Check.expression
+      check: ezP.T3.Expr.Check.expression
     },
     last: {
       label: ',',
       key: ezP.Const.Input.EXPR,
-      check: ezP.T3.Check.expression,
+      check: ezP.T3.Expr.Check.expression,
       optional: true
     }
   }
@@ -304,13 +304,13 @@ ezP.DelegateSvg.Stmt.raise_stmt = function (prototypeName) {
     first: {
       label: 'raise',
       key: ezP.Const.Input.RAISE,
-      check: ezP.T3.Check.expression,
+      check: ezP.T3.Expr.Check.expression,
       optional: true
     },
     last: {
       label: 'from',
       key: ezP.Const.Input.FROM,
-      check: ezP.T3.Check.expression,
+      check: ezP.T3.Expr.Check.expression,
       optional: true
     }
   }

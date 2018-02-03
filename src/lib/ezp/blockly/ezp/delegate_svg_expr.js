@@ -65,15 +65,15 @@ ezP.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
  */
 ezP.DelegateSvg.Expr.key_datum_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.key_datum_concrete.superClass_.constructor.call(this, prototypeName)
-  this.outputCheck = ezP.T3.key_datum_concrete
+  this.outputCheck = ezP.T3.Expr.key_datum_concrete
   this.inputData = {
     first: {
       key: ezP.Const.Input.KEY,
-      check: ezP.T3.Check.expression
+      check: ezP.T3.Expr.Check.expression
     },
     last: {
       key: ezP.Const.Input.DATUM,
-      check: ezP.T3.Check.expression,
+      check: ezP.T3.Expr.Check.expression,
       label: ':'
     }
   }
@@ -93,23 +93,23 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.key_datum_concrete, ezP.Delegate
  */
 ezP.DelegateSvg.Expr.proper_slice = function (prototypeName) {
   ezP.DelegateSvg.Expr.proper_slice.superClass_.constructor.call(this, prototypeName)
-  this.outputCheck = ezP.T3.proper_slice
+  this.outputCheck = ezP.T3.Expr.proper_slice
   this.inputData = {
     first: {
       key: ezP.Const.Input.LOWER_BOUND,
-      check: ezP.T3.Check.expression,
+      check: ezP.T3.Expr.Check.expression,
       optional: true
     },
     middle: {
       label: ':',
       key: ezP.Const.Input.UPPER_BOUND,
-      check: ezP.T3.Check.expression,
+      check: ezP.T3.Expr.Check.expression,
       optional: true
     },
     last: {
       label: ':',
       key: ezP.Const.Input.STRIDE,
-      check: ezP.T3.Check.expression,
+      check: ezP.T3.Expr.Check.expression,
       optional: true
     }
   }
@@ -166,21 +166,21 @@ ezP.DelegateSvg.Expr.proper_slice.prototype.handleActionMenuEventFirst = functio
  */
 ezP.DelegateSvg.Expr.conditional_expression_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.conditional_expression_concrete.superClass_.constructor.call(this, prototypeName)
-  this.outputCheck = ezP.T3.conditional_expression_concrete
+  this.outputCheck = ezP.T3.Expr.conditional_expression_concrete
   this.inputData = {
     first: {
       key: ezP.Const.Input.EXPR,
-      check: ezP.T3.Check.or_test
+      check: ezP.T3.Expr.Check.or_test
     },
     middle: {
       label: 'if',
       key: ezP.Const.Input.IF,
-      check: ezP.T3.Check.or_test
+      check: ezP.T3.Expr.Check.or_test
     },
     last: {
       label: 'else',
       key: ezP.Const.Input.ELSE,
-      check: ezP.T3.Check.expression
+      check: ezP.T3.Expr.Check.expression
     }
   }
 }
