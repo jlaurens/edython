@@ -237,7 +237,7 @@ ezP.DelegateSvg.Expr.unary_concrete = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.unary_concrete, ezP.DelegateSvg.Expr.Unary)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.unary_concrete, ezP.DelegateSvg.Expr.unary_concrete)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.unary_concrete, ezP.DelegateSvg.Expr.unary_concrete)
 
 
 /**
@@ -323,7 +323,7 @@ ezP.DelegateSvg.Expr.algebra_concrete = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.algebra_concrete, ezP.DelegateSvg.Expr.Binary)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.algebra_concrete, ezP.DelegateSvg.Expr.algebra_concrete)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.algebra_concrete, ezP.DelegateSvg.Expr.algebra_concrete)
 
 /**
  * Class for a DelegateSvg, bitwise binary operation block.
@@ -347,7 +347,7 @@ ezP.DelegateSvg.Expr.bitwise_concrete = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.bitwise_concrete, ezP.DelegateSvg.Expr.Binary)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.bitwise_concrete, ezP.DelegateSvg.Expr.bitwise_concrete)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.bitwise_concrete, ezP.DelegateSvg.Expr.bitwise_concrete)
 
 /**
  * Class for a DelegateSvg, comparison_concrete block.
@@ -378,7 +378,7 @@ ezP.DelegateSvg.Expr.comparison_concrete = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.comparison_concrete, ezP.DelegateSvg.Expr.Binary)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.comparison_concrete, ezP.DelegateSvg.Expr.comparison_concrete)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.comparison_concrete, ezP.DelegateSvg.Expr.comparison_concrete)
 
 /**
  * Class for a DelegateSvg, boolean_concrete block.
@@ -399,4 +399,4 @@ ezP.DelegateSvg.Expr.boolean_concrete = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.boolean_concrete, ezP.DelegateSvg.Expr.Binary)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.boolean_concrete, ezP.DelegateSvg.Expr.boolean_concrete)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.boolean_concrete, ezP.DelegateSvg.Expr.boolean_concrete)

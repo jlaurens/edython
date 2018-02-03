@@ -271,9 +271,7 @@ class Formatter:
         self.append('// alias checks')
         for t in self.Ts:
             if t.alias:
-                require = [tt for tt in t.alias.deep_require if not tt.is_wrapper]
-                if len(require):
-                    self.append('ezP.T3.Expr.Check.{} = ezP.T3.Expr.Check.{}'.format(t.name, t.alias.name))
+                self.append('ezP.T3.Expr.Check.{} = ezP.T3.Expr.Check.{}'.format(t.name, t.alias.name))
 
     def feed_special_aliases(self):
         self.append('// special aliases, some types that change naming across the documentation')

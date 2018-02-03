@@ -15,6 +15,8 @@ goog.provide('ezP.Delegate')
 goog.provide('ezP.TupleConsolidator')
 
 goog.require('ezP.Helper')
+
+goog.require('ezP.T3')
 goog.forwardDeclare('ezP.Block')
 
 /**
@@ -58,6 +60,22 @@ ezP.Delegate.Manager = function () {
   me.register = function (prototypeName, Ctor) {
     // console.log(prototypeName+' -> '+Ctor)
     Ctors[prototypeName] = Ctor
+    goog.asserts.assert(me.create(prototypeName), 'Registration failure: '+prototypeName)
+  }
+  me.registerAll = function (keyedPrototypeNames, Ctor, fake) {
+    var k
+    for (k in keyedPrototypeNames) {
+      k = keyedPrototypeNames[k]
+      if (typeof k === 'string' || k instanceof String) {
+//        console.log('Registering', k)
+        me.register(k, Ctor)
+        if (fake) {
+          k = k.replace('ezp_', 'ezp_fake_')
+//          console.log('Registering', k)
+          me.register(k, Ctor)
+        }
+      }
+    }
   }
   me.registerDefault = function (Ctor) {
     // console.log(prototypeName+' -> '+Ctor)
@@ -76,6 +94,11 @@ ezP.Delegate.Manager = function () {
 
 Blockly.Block.prototype.ezp = ezP.Delegate.Manager.registerDefault(ezP.Delegate)
 
+// register this delegate for all the T3 types
+
+ezP.Delegate.Manager.registerAll(ezP.T3.Expr, ezP.Delegate)
+ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.Delegate)
+
 /**
  * The python type of the owning block.
  */
@@ -88,7 +111,7 @@ ezP.Delegate.prototype.pythonType_ = undefined
  * @constructor
  */
 ezP.Delegate.prototype.initBlock = function (block) {
-  var regex = new RegExp("^ezp_\\S+?_(.*)$")
+  var regex = new RegExp("^ezp_(.*)$")
   var m = regex.exec(block.type)
   this.pythonType_ = m? m[1]: block.type
 }

@@ -29,7 +29,7 @@ ezP.DelegateSvg.Expr.assignment_expression = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.assignment_expression, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.assignment_expression, ezP.DelegateSvg.Expr.assignment_expression)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.assignment_expression, ezP.DelegateSvg.Expr.assignment_expression)
 
 /**
  * Initialize the block.
@@ -40,7 +40,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.assignment_expression, ezP.Deleg
  */
 ezP.DelegateSvg.Expr.assignment_expression.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.assignment_expression.superClass_.initBlock.call(this, block)
-  this.inputLIST = block.appendWrapValueInput(ezP.Const.Input.LIST, ezP.Const.Expr.target_list)
+  this.inputLIST = block.appendWrapValueInput(ezP.Const.Input.LIST, ezP.T3.Expr.target_list)
   block.appendValueInput(ezP.Const.Input.RHS)
     .setCheck(ezP.T3.Expr.Check.assigned_expression)
     .appendField(new ezP.FieldLabel('='))
@@ -56,11 +56,11 @@ ezP.DelegateSvg.Expr.assignment_expression.prototype.initBlock = function(block)
 ezP.DelegateSvg.Stmt.expression_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.expression_stmt.superClass_.constructor.call(this, prototypeName)
   this.wrappedCheck = ezP.T3.Expr.starred_item_list
-  this.wrappedPrototype = ezP.Const.Expr.starred_item_list
+  this.wrappedPrototype = ezP.T3.Expr.starred_item_list
 }
 goog.inherits(ezP.DelegateSvg.Stmt.expression_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.expression_stmt, ezP.DelegateSvg.Stmt.expression_stmt)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.expression_stmt, ezP.DelegateSvg.Stmt.expression_stmt)
 
 /**
  * Class for a DelegateSvg, assignment_stmt.
@@ -72,11 +72,11 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.expression_stmt, ezP.DelegateSvg
 ezP.DelegateSvg.Stmt.assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.assignment_stmt.superClass_.constructor.call(this, prototypeName)
   this.wrappedCheck = ezP.T3.Expr.assignment_expression
-  this.wrappedPrototype = ezP.Const.Expr.assignment_expression
+  this.wrappedPrototype = ezP.T3.Expr.assignment_expression
 }
 goog.inherits(ezP.DelegateSvg.Stmt.assignment_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.assignment_stmt, ezP.DelegateSvg.Stmt.assignment_stmt)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.assignment_stmt, ezP.DelegateSvg.Stmt.assignment_stmt)
 
 
 /**
@@ -112,7 +112,7 @@ ezP.DelegateSvg.Expr.augmented_assignment_expression = function (prototypeName) 
 
 goog.inherits(ezP.DelegateSvg.Expr.augmented_assignment_expression, ezP.DelegateSvg.Expr.Binary)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.augmented_assignment_expression, ezP.DelegateSvg.Expr.augmented_assignment_expression)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.augmented_assignment_expression, ezP.DelegateSvg.Expr.augmented_assignment_expression)
 
 /**
  * Class for a DelegateSvg, augmented_assignment_stmt.
@@ -124,11 +124,11 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.augmented_assignment_expression,
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.augmented_assignment_stmt.superClass_.constructor.call(this, prototypeName)
   this.wrappedCheck = ezP.T3.Expr.augmented_assignment_expression
-  this.wrappedPrototype = ezP.Const.Expr.augmented_assignment_expression
+  this.wrappedPrototype = ezP.T3.Expr.augmented_assignment_expression
 }
 goog.inherits(ezP.DelegateSvg.Stmt.augmented_assignment_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.augmented_assignment_stmt, ezP.DelegateSvg.Stmt.augmented_assignment_stmt)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.augmented_assignment_stmt, ezP.DelegateSvg.Stmt.augmented_assignment_stmt)
 
 /**
  * Class for a DelegateSvg, del_stmt.
@@ -143,13 +143,13 @@ ezP.DelegateSvg.Stmt.del_stmt = function (prototypeName) {
     last: {
       label: 'del',
       check: ezP.T3.Expr.target_list,
-      wrap: ezP.Const.Expr.target_list
+      wrap: ezP.T3.Expr.target_list
     }
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.del_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.del_stmt, ezP.DelegateSvg.Stmt.del_stmt)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.del_stmt, ezP.DelegateSvg.Stmt.del_stmt)
 
 /**
  * Class for a DelegateSvg, return_stmt.
@@ -163,14 +163,14 @@ ezP.DelegateSvg.Stmt.return_stmt = function (prototypeName) {
   this.inputData = {
     last: {
       label: 'return',
-      check: ezP.T3.Expr.expression_list,
-      wrap: ezP.Const.Expr.expression_list
+      check: ezP.T3.Expr.non_void_expression_list,
+      wrap: ezP.T3.Expr.non_void_expression_list
     }
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.return_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.return_stmt, ezP.DelegateSvg.Stmt.return_stmt)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.return_stmt, ezP.DelegateSvg.Stmt.return_stmt)
 
 /**
  * Class for a DelegateSvg, identifier_list block.
@@ -188,7 +188,7 @@ ezP.DelegateSvg.Expr.identifier_list = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.identifier_list, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.identifier_list, ezP.DelegateSvg.Expr.identifier_list)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.identifier_list, ezP.DelegateSvg.Expr.identifier_list)
 
 /**
  * Class for a DelegateSvg, global_stmt.
@@ -203,13 +203,13 @@ ezP.DelegateSvg.Stmt.global_stmt = function (prototypeName) {
     last: {
       label: 'global',
       check: ezP.T3.Expr.identifier_list,
-      wrap: ezP.Const.Expr.identifier_list
+      wrap: ezP.T3.Expr.identifier_list
     }
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.global_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.global_stmt, ezP.DelegateSvg.Stmt.global_stmt)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.global_stmt, ezP.DelegateSvg.Stmt.global_stmt)
 
 /**
  * Class for a DelegateSvg, nonlocal_stmt.
@@ -224,10 +224,10 @@ ezP.DelegateSvg.Stmt.nonlocal_stmt = function (prototypeName) {
     last: {
       label: 'nonlocal',
       check: ezP.T3.Expr.identifier_list,
-      wrap: ezP.Const.Expr.identifier_list
+      wrap: ezP.T3.Expr.identifier_list
     }
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.nonlocal_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.nonlocal_stmt, ezP.DelegateSvg.Stmt.nonlocal_stmt)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.nonlocal_stmt, ezP.DelegateSvg.Stmt.nonlocal_stmt)

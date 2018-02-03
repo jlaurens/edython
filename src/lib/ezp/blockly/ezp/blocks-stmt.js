@@ -16,29 +16,22 @@ goog.provide('ezP.Blocks.stmt')
 goog.require('ezP.Const')
 goog.require('Blockly.Blocks')
 
-var Ks = [
-  ezP.Const.Stmt.expression_stmt,
-  ezP.Const.Stmt.assignment_stmt,
-  ezP.Const.Stmt.augmented_assignment_stmt,
-  ezP.Const.Stmt.annotated_assignment_stmt,
-  ezP.Const.Stmt.assert_stmt,
-  ezP.Const.Stmt.pass_stmt,
-  ezP.Const.Stmt.continue_stmt,
-  ezP.Const.Stmt.break_stmt,
-  ezP.Const.Stmt.del_stmt,
-  ezP.Const.Stmt.return_stmt,
-  ezP.Const.Stmt.yield_stmt,
-  ezP.Const.Stmt.raise_stmt,
-  ezP.Const.Stmt.import_stmt,
-  ezP.Const.Stmt.global_stmt,
-  ezP.Const.Stmt.nonlocal_stmt,
-  // IN PROGRESS
-]
-for (var i = 0; i<Ks.length; ++i) {
-  var K = Ks[i]
-  goog.asserts.assert(K, 'Undefined Stmt K: '+i)
-  Blockly.Blocks[Ks[i]] = {}
+for (var i = 0; i < ezP.T3.All.part_statements.length; ++i) {
+  var t = ezP.T3.All.part_statements[i]
+  Blockly.Blocks[t] = {}
 }
+
+for (var i = 0; i < ezP.T3.All.simple_statements.length; ++i) {
+  var t = ezP.T3.All.simple_statements[i]
+  Blockly.Blocks[t] = {}
+}
+
+for (var i = 0; i < ezP.T3.All.compound_statements.length; ++i) {
+  var t = ezP.T3.All.compound_statements[i]
+  Blockly.Blocks[t] = {}
+}
+
+
 
 goog.require('Blockly.Block')
 goog.require('ezP.Const')

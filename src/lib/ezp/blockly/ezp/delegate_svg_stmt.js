@@ -32,7 +32,9 @@ ezP.DelegateSvg.Stmt = function (prototypeName) {
   this.nextStatementCheck = null
 }
 goog.inherits(ezP.DelegateSvg.Stmt, ezP.DelegateSvg)
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.DEFAULT, ezP.DelegateSvg.Stmt)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.DEFAULT, ezP.DelegateSvg.Stmt)
+
+ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.DelegateSvg.Stmt, true)
 
 ezP.setup.register(function () {
   ezP.Style.insertCssRuleAt('.ezp-sharp-group{' + ezP.Font.style + '}')
@@ -176,7 +178,7 @@ ezP.DelegateSvg.Stmt.annotated_assignment_stmt = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.annotated_assignment_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.annotated_assignment_stmt, ezP.DelegateSvg.Stmt.annotated_assignment_stmt)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.annotated_assignment_stmt, ezP.DelegateSvg.Stmt.annotated_assignment_stmt)
 
 /**
  * Class for a DelegateSvg, two optional values and a label.
@@ -244,7 +246,7 @@ ezP.DelegateSvg.Stmt.assert_stmt = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.assert_stmt, ezP.DelegateSvg.Stmt.Two)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.assert_stmt, ezP.DelegateSvg.Stmt.assert_stmt)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.assert_stmt, ezP.DelegateSvg.Stmt.assert_stmt)
 
 /**
  * Class for a DelegateSvg, pass_stmt.
@@ -259,7 +261,7 @@ ezP.DelegateSvg.Stmt.pass_stmt = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.pass_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.pass_stmt, ezP.DelegateSvg.Stmt.pass_stmt)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.pass_stmt, ezP.DelegateSvg.Stmt.pass_stmt)
 
 /**
  * Class for a DelegateSvg, break_stmt.
@@ -274,7 +276,7 @@ ezP.DelegateSvg.Stmt.break_stmt = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.break_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.break_stmt, ezP.DelegateSvg.Stmt.break_stmt)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.break_stmt, ezP.DelegateSvg.Stmt.break_stmt)
 
 /**
  * Class for a DelegateSvg, continue_stmt.
@@ -289,7 +291,7 @@ ezP.DelegateSvg.Stmt.continue_stmt = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.continue_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.continue_stmt, ezP.DelegateSvg.Stmt.continue_stmt)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.continue_stmt, ezP.DelegateSvg.Stmt.continue_stmt)
 
 /**
  * Class for a DelegateSvg, raise_stmt.
@@ -317,7 +319,7 @@ ezP.DelegateSvg.Stmt.raise_stmt = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.raise_stmt, ezP.DelegateSvg.Stmt.Two)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.raise_stmt, ezP.DelegateSvg.Stmt.raise_stmt)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.raise_stmt, ezP.DelegateSvg.Stmt.raise_stmt)
 
 
 
@@ -343,8 +345,8 @@ ezP.DelegateSvg.Stmt.Tupled = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.Tupled, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.DEL, ezP.DelegateSvg.Stmt.Tupled)
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.GNL, ezP.DelegateSvg.Stmt.Tupled)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.DEL, ezP.DelegateSvg.Stmt.Tupled)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.GNL, ezP.DelegateSvg.Stmt.Tupled)
 
 /**
  * Will render the block.
@@ -380,7 +382,7 @@ ezP.DelegateSvg.Stmt.Print = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.Print, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.PRINT, ezP.DelegateSvg.Stmt.Print)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.PRINT, ezP.DelegateSvg.Stmt.Print)
 
 /**
  * The default implementation does nothing.

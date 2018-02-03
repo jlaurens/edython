@@ -182,7 +182,7 @@ ezP.DelegateSvg.List.target = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.List.target, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.target_list, ezP.DelegateSvg.List.target)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.target_list, ezP.DelegateSvg.List.target)
 
 /**
  * Class for a DelegateSvg, expression_list block.
@@ -193,14 +193,14 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.target_list, ezP.DelegateSvg.Lis
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.expression = function (prototypeName) {
-  ezP.DelegateSvg.List.expression.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.non_void_expression_list = function (prototypeName) {
+  ezP.DelegateSvg.Expr.non_void_expression_list.superClass_.constructor.call(this, prototypeName)
   this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.expression, false, ',')
-  this.outputCheck = ezP.T3.Expr.expression_list
+  this.outputCheck = ezP.T3.Expr.non_void_expression_list
 }
-goog.inherits(ezP.DelegateSvg.List.expression, ezP.DelegateSvg.List)
+goog.inherits(ezP.DelegateSvg.Expr.non_void_expression_list, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.expression_list, ezP.DelegateSvg.List.expression)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.non_void_expression_list, ezP.DelegateSvg.Expr.non_void_expression_list)
 
 /**
  * Class for a DelegateSvg, starred_item_list block.
@@ -218,7 +218,7 @@ ezP.DelegateSvg.Expr.starred_item_list = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.starred_item_list, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.starred_item_list, ezP.DelegateSvg.Expr.starred_item_list)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.starred_item_list, ezP.DelegateSvg.Expr.starred_item_list)
 
 /**
  * Class for a DelegateSvg, key_datum_list block.
@@ -236,7 +236,7 @@ ezP.DelegateSvg.List.key_datum = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.List.key_datum, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.key_datum_list, ezP.DelegateSvg.List.key_datum)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.key_datum_list, ezP.DelegateSvg.List.key_datum)
 
 /**
  * Class for a DelegateSvg, starred_list_comprehensive block.
@@ -258,7 +258,7 @@ ezP.DelegateSvg.Expr.starred_list_comprehensive = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.starred_list_comprehensive, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.starred_list_comprehensive, ezP.DelegateSvg.Expr.starred_list_comprehensive)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.starred_list_comprehensive, ezP.DelegateSvg.Expr.starred_list_comprehensive)
 
 /**
  * Class for a DelegateSvg, non_void_starred_list_comprehensive block.
@@ -280,7 +280,7 @@ ezP.DelegateSvg.Expr.non_void_starred_list_comprehensive = function (prototypeNa
 }
 goog.inherits(ezP.DelegateSvg.Expr.non_void_starred_list_comprehensive, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.non_void_starred_list_comprehensive, ezP.DelegateSvg.Expr.non_void_starred_list_comprehensive)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.non_void_starred_list_comprehensive, ezP.DelegateSvg.Expr.non_void_starred_list_comprehensive)
 
 /**
  * Class for a DelegateSvg, key_datum_list_comprehensive block.
@@ -302,7 +302,7 @@ ezP.DelegateSvg.Expr.key_datum_list_comprehensive = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.key_datum_list_comprehensive, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.key_datum_list_comprehensive, ezP.DelegateSvg.Expr.key_datum_list_comprehensive)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.key_datum_list_comprehensive, ezP.DelegateSvg.Expr.key_datum_list_comprehensive)
 
 
 /**
@@ -321,7 +321,7 @@ ezP.DelegateSvg.Expr.comp_iter_list = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.comp_iter_list, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.comp_iter_list, ezP.DelegateSvg.Expr.comp_iter_list)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.comp_iter_list, ezP.DelegateSvg.Expr.comp_iter_list)
 
 /**
  * Class for a DelegateSvg, slice_list block.
@@ -339,7 +339,7 @@ ezP.DelegateSvg.Expr.slice_list = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.slice_list, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.slice_list, ezP.DelegateSvg.Expr.slice_list)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.slice_list, ezP.DelegateSvg.Expr.slice_list)
 
 /**
  * Class for a DelegateSvg, argument_list block.
@@ -357,7 +357,7 @@ ezP.DelegateSvg.Expr.argument_list = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.argument_list, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.argument_list, ezP.DelegateSvg.Expr.argument_list)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.argument_list, ezP.DelegateSvg.Expr.argument_list)
 
 
 /**
@@ -376,5 +376,5 @@ ezP.DelegateSvg.Expr.parameter_list = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.parameter_list, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.parameter_list, ezP.DelegateSvg.Expr.parameter_list)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.parameter_list, ezP.DelegateSvg.Expr.parameter_list)
 

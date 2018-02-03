@@ -6,49 +6,51 @@
  * License CeCILL-B
  */
 /**
- * @fileoverview Blocks for ezPython.
+ * @fileoverview Fake blocks for ezPython.
+ * Creates fake blocks, either expression or statement blocks.
+ * This is essentially for debugging purposes.
+ * All the prototype names are keys in ezP.T3.Expr and
+ * ezP.T3.Stmt.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
 goog.provide('ezP.Blocks.fake')
 
-goog.require('Blockly.Block')
-goog.require('ezP.Const')
-goog.require('ezP.Type')
-goog.require('ezP.FieldLabel')
+goog.require('ezP.T3')
 
-var make_fake = function(key, label, type) {
-  goog.asserts.assert(type, 'Cannot make a fake block with no type.')
-  Blockly.Blocks[key] = {
-    init: function () {
-      this.appendDummyInput().appendField(new ezP.FieldLabel(label))
-      this.setOutput(true, [type])
+var Ks = ezP.T3.Expr
+var k
+var F = function(k) {
+  return function() {
+    this.appendDummyInput()
+      .appendField(new ezP.FieldLabel(k))
+    this.setOutput(true, k)
+  }
+}
+for (k in Ks) {
+  k = Ks[k]
+  if (typeof k === 'string' || k instanceof String) {
+    var prototypeName = k.replace('ezp_', 'ezp_fake_')
+    Blockly.Blocks[prototypeName] = {
+      init: F(k)
     }
   }
 }
-
-for (var i = 0; i < ezP.T3.All.core_expressions.length; ++i) {
-  var t = ezP.T3.All.core_expressions[i]
-  var tt = ezP.Const.Expr[t]
-  if (tt) {
-    console.log('fake', tt)
-    make_fake('ezp_fake_'+t, t, tt)
-  } else {
-    console.log('NO ezP.Const.Expr.', t)
+var Ks = ezP.T3.Stmt
+var F = function(k) {
+  return function() {
+    this.appendDummyInput()
+      .appendField(new ezP.FieldLabel(k))
+    this.setOutput(true, k)
   }
 }
-
-Blockly.Blocks['ezp_fake_with_wrapped'] = {
-  init: function () {
-    this.ezp.initBlock(this)
+for (k in Ks) {
+  k = Ks[k]
+  if (typeof k === 'string' || k instanceof String) {
+    var prototypeName = k.replace('ezp_', 'ezp_fake_')
+    Blockly.Blocks[prototypeName] = {
+      init: F(k)
+    }
   }
 }
-
-Blockly.Blocks['ezp_fake_wrapped'] = {
-  init: function () {
-    this.ezp.initBlock(this)
-  }
-}
-
-

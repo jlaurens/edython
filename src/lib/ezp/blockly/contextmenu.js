@@ -39,7 +39,8 @@ Blockly.ContextMenu.populate_ = function(options, rtl) {
   */
   var menu = new goog.ui.Menu();
     menu.setRightToLeft(rtl);
-    for (var i = 0, option; option = options[i]; i++) {
+    var i = 0, option
+    for (; option = options[i]; i++) {
       if (option instanceof goog.ui.MenuItem) {
         var menuItem = option
         menu.addChild(menuItem, true);

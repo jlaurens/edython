@@ -14,6 +14,7 @@
 goog.provide('ezP.DelegateSvg.Expr')
 
 goog.require('ezP.DelegateSvg')
+goog.require('ezP.T3.All')
 
 /**
  * Class for a DelegateSvg, value block.
@@ -28,7 +29,9 @@ ezP.DelegateSvg.Expr = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr, ezP.DelegateSvg)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.DEFAULT, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.DEFAULT, ezP.DelegateSvg.Expr)
+
+ezP.Delegate.Manager.registerAll(ezP.T3.Expr, ezP.DelegateSvg.Expr, true)
 
 ezP.DelegateSvg.Expr.prototype.shapePathDef_ =
   ezP.DelegateSvg.Expr.prototype.contourPathDef_ =
@@ -80,7 +83,7 @@ ezP.DelegateSvg.Expr.key_datum_concrete = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.key_datum_concrete, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.key_datum_concrete, ezP.DelegateSvg.Expr.key_datum_concrete)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.key_datum_concrete, ezP.DelegateSvg.Expr.key_datum_concrete)
 
 
 /**
@@ -116,7 +119,7 @@ ezP.DelegateSvg.Expr.proper_slice = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.proper_slice, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.proper_slice, ezP.DelegateSvg.Expr.proper_slice)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.proper_slice, ezP.DelegateSvg.Expr.proper_slice)
 
 ezP.USE_PROPER_SLICING_STRIDE_ID = 'USE_PROPER_SLICING_STRIDE'
 
@@ -186,7 +189,7 @@ ezP.DelegateSvg.Expr.conditional_expression_concrete = function (prototypeName) 
 }
 goog.inherits(ezP.DelegateSvg.Expr.conditional_expression_concrete, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.conditional_expression_concrete, ezP.DelegateSvg.Expr.conditional_expression_concrete)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.conditional_expression_concrete, ezP.DelegateSvg.Expr.conditional_expression_concrete)
 
 
 
@@ -224,8 +227,8 @@ ezP.DelegateSvg.Expr.Text.prototype.renderDrawInput_ = function (io) {
   this.renderDrawDummyInput_(io)
 }
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.TEXT, ezP.DelegateSvg.Expr.Text)
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.ANY, ezP.DelegateSvg.Expr.Text)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.TEXT, ezP.DelegateSvg.Expr.Text)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.ANY, ezP.DelegateSvg.Expr.Text)
 
 /**
  * Render one input of value block.
@@ -250,7 +253,7 @@ ezP.DelegateSvg.Expr.Input = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.Input, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.MINUS, ezP.DelegateSvg.Expr.Input)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.MINUS, ezP.DelegateSvg.Expr.Input)
 
 /**
  * Class for a DelegateSvg, tuple value block.
@@ -265,7 +268,7 @@ ezP.DelegateSvg.Expr.Tuple = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.Tuple, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.TUPLE, ezP.DelegateSvg.Expr.Tuple)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.TUPLE, ezP.DelegateSvg.Expr.Tuple)
 
 /**
  * Will render the block.
@@ -310,7 +313,7 @@ ezP.DelegateSvg.Expr.Range = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.Range, ezP.DelegateSvg.Expr.Tuple)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.RANGE, ezP.DelegateSvg.Expr.Range)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.RANGE, ezP.DelegateSvg.Expr.Range)
 
 /**
  * @param {!Block} block.

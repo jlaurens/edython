@@ -28,7 +28,7 @@ ezP.DelegateSvg.Expr.Get = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.Get, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.GET, ezP.DelegateSvg.Expr.Get)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.GET, ezP.DelegateSvg.Expr.Get)
 
 /**
  * Initialize the block.

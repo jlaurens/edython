@@ -34,10 +34,10 @@ ezP.DelegateSvg.Expr.dotted_name = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.dotted_name, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.dotted_name, ezP.DelegateSvg.Expr.dotted_name)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.dotted_name, ezP.DelegateSvg.Expr.dotted_name)
 
 ezP.DelegateSvg.Expr.module = ezP.DelegateSvg.Expr.dotted_name
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.module, ezP.DelegateSvg.Expr.module)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.module, ezP.DelegateSvg.Expr.module)
 
 /////////////////     module_void      ///////////////////
 
@@ -57,7 +57,7 @@ ezP.DelegateSvg.Expr.module_void = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.module_void, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.module_void, ezP.DelegateSvg.Expr.module_void)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.module_void, ezP.DelegateSvg.Expr.module_void)
 
 /////////////////     module_named      ///////////////////
 
@@ -74,7 +74,7 @@ ezP.DelegateSvg.Expr.module_named = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.module_named, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.module_named, ezP.DelegateSvg.Expr.module_named)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.module_named, ezP.DelegateSvg.Expr.module_named)
 
 /**
  * Initialize the block.
@@ -85,7 +85,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.module_named, ezP.DelegateSvg.Ex
  */
 ezP.DelegateSvg.Expr.module_named.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.module_named.superClass_.initBlock.call(this, block)
-  this.inputMODULE = block.appendWrapValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
+  this.inputMODULE = block.appendWrapValueInput(ezP.Const.Input.MODULE, ezP.T3.Expr.module)
     .setCheck(ezP.T3.Expr.module)
   this.inputNAME = block.appendValueInput(ezP.Const.Input.NAME)
     .setCheck(ezP.T3.Expr.identifier)
@@ -107,7 +107,7 @@ ezP.DelegateSvg.Expr.identifier_named = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.identifier_named, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.identifier_named, ezP.DelegateSvg.Expr.identifier_named)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.identifier_named, ezP.DelegateSvg.Expr.identifier_named)
 
 /**
  * Initialize the block.
@@ -140,7 +140,7 @@ ezP.DelegateSvg.Expr.import_module = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.import_module, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.import_module, ezP.DelegateSvg.Expr.import_module)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.import_module, ezP.DelegateSvg.Expr.import_module)
 
 /**
  * Initialize the block.
@@ -151,7 +151,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.import_module, ezP.DelegateSvg.E
  */
 ezP.DelegateSvg.Expr.import_module.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.import_module.superClass_.initBlock.call(this, block)
-  this.inputMODULE = block.appendWrapValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
+  this.inputMODULE = block.appendWrapValueInput(ezP.Const.Input.MODULE, ezP.T3.Expr.module)
     .setCheck(ezP.T3.Expr.module)
     .appendField(new ezP.FieldLabel('import'))
   this.inputNAME = block.appendValueInput(ezP.Const.Input.NAME)
@@ -174,7 +174,7 @@ ezP.DelegateSvg.Expr.relative_module = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.relative_module, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.relative_module, ezP.DelegateSvg.Expr.relative_module)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.relative_module, ezP.DelegateSvg.Expr.relative_module)
 
 /**
  * Initialize the block.
@@ -185,7 +185,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.relative_module, ezP.DelegateSvg
  */
 ezP.DelegateSvg.Expr.relative_module.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.relative_module.superClass_.initBlock.call(this, block)
-  this.inputMODULE = block.appendWrapValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
+  this.inputMODULE = block.appendWrapValueInput(ezP.Const.Input.MODULE, ezP.T3.Expr.module)
     .setCheck(ezP.T3.Expr.module)
     .appendField(new ezP.FieldTextInput('...'), ezP.Const.Field.DOTS)
 }
@@ -205,7 +205,7 @@ ezP.DelegateSvg.Expr.relative_module = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.relative_module, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.relative_module, ezP.DelegateSvg.Expr.relative_module)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.relative_module, ezP.DelegateSvg.Expr.relative_module)
 
 /**
  * Initialize the block.
@@ -216,7 +216,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.relative_module, ezP.DelegateSvg
  */
 ezP.DelegateSvg.Expr.relative_module.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.relative_module.superClass_.initBlock.call(this, block)
-  this.inputMODULE = block.appendWrapValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
+  this.inputMODULE = block.appendWrapValueInput(ezP.Const.Input.MODULE, ezP.T3.Expr.module)
     .setCheck(ezP.T3.Expr.module)
     .appendField(new ezP.FieldTextInput('...'), ezP.Const.Field.DOTS)
 }
@@ -237,7 +237,7 @@ ezP.DelegateSvg.Expr.from_module_import = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.from_module_import, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.from_module_import, ezP.DelegateSvg.Expr.from_module_import)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.from_module_import, ezP.DelegateSvg.Expr.from_module_import)
 
 /**
  * Initialize the block.
@@ -249,7 +249,7 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.from_module_import, ezP.Delegate
 ezP.DelegateSvg.Expr.from_module_import.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.from_module_import.superClass_.initBlock.call(this, block)
   // from_module_import ::= "from" module "import *"
-  this.inputMODULE = block.appendWrapValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
+  this.inputMODULE = block.appendWrapValueInput(ezP.Const.Input.MODULE, ezP.T3.Expr.module)
     .setCheck(ezP.T3.Expr.module)
     .appendField(new ezP.FieldLabel('from'))
   block.appendDummyInput()
@@ -274,7 +274,7 @@ ezP.DelegateSvg.Expr.identifier_named_list = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.identifier_named_list, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.identifier_named_list, ezP.DelegateSvg.Expr.identifier_named_list)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.identifier_named_list, ezP.DelegateSvg.Expr.identifier_named_list)
 
 /////////////////     from_relative_module_import      ///////////////////
 
@@ -292,7 +292,7 @@ ezP.DelegateSvg.Expr.from_relative_module_import = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.from_relative_module_import, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.from_relative_module_import, ezP.DelegateSvg.Expr.from_relative_module_import)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.from_relative_module_import, ezP.DelegateSvg.Expr.from_relative_module_import)
 
 /**
  * Initialize the block.
@@ -304,12 +304,12 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.from_relative_module_import, ezP
 ezP.DelegateSvg.Expr.from_relative_module_import.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.from_relative_module_import.superClass_.initBlock.call(this, block)
   // from_relative_module_import ::= "from" relative_module "import" identifier ["as" name] ( "," identifier ["as" name] )*
-  this.inputMODULE = block.appendWrapValueInput(ezP.Const.Input.MODULE, ezP.Const.Expr.module)
+  this.inputMODULE = block.appendWrapValueInput(ezP.Const.Input.MODULE, ezP.T3.Expr.module)
     .setCheck(ezP.T3.Expr.module)
     .appendField(new ezP.FieldLabel('from'))
     .appendField(new ezP.FieldLabel(' '))
     .appendField(new ezP.FieldTextInput('...'), ezP.Const.Field.DOTS)
-  this.inputIMPORT = block.appendWrapValueInput(ezP.Const.Input.IMPORT, ezP.Const.Expr.identifier_named_list)
+  this.inputIMPORT = block.appendWrapValueInput(ezP.Const.Input.IMPORT, ezP.T3.Expr.identifier_named_list)
     .setCheck(ezP.T3.Expr.identifier_named_list)
     .appendField(new ezP.FieldLabel('import'))
 }
@@ -328,18 +328,18 @@ ezP.DelegateSvg.Stmt.import_stmt = function (prototypeName) {
   this.inputData = {
     last: {
       check: ezP.T3.Expr.Check.import_expr,
-      wrap: ezP.Const.Expr.import_module
+      wrap: ezP.T3.Expr.import_module
     }
   }
   this.contextMenuData = [
-    {label: 'import module [as ...]', type: ezP.Const.Expr.import_module},
-    {label: 'from module import *', type: ezP.Const.Expr.from_module_import},
-    {label: 'from module import ... [as ...]', type: ezP.Const.Expr.from_relative_module_import},
+    {label: 'import module [as ...]', type: ezP.T3.Expr.import_module},
+    {label: 'from module import *', type: ezP.T3.Expr.from_module_import},
+    {label: 'from module import ... [as ...]', type: ezP.T3.Expr.from_relative_module_import},
   ]
 }
 goog.inherits(ezP.DelegateSvg.Stmt.import_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.import_stmt, ezP.DelegateSvg.Stmt.import_stmt)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.import_stmt, ezP.DelegateSvg.Stmt.import_stmt)
 
 ezP.USE_IMPORT_WRAP_TYPE_ID  = 'USE_IMPORT_WRAP_TYPE'
 

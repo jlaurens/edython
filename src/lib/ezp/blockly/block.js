@@ -98,8 +98,10 @@ ezP.Block.prototype.setConnectionsHidden = function (hidden) {
  */
 ezP.Block.prototype.getVars = function () {
   var vars = []
-  for (var i = 0, input; (input = this.inputList[i]); i++) {
-    for (var j = 0, field; (field = input.fieldRow[j]); j++) {
+  var i = 0, input
+  for (; (input = this.inputList[i]); i++) {
+    var j = 0, field
+    for (; (field = input.fieldRow[j]); j++) {
       if (field instanceof ezP.FieldVariable) {
         vars.push(field.getText())
       }
@@ -115,8 +117,10 @@ ezP.Block.prototype.getVars = function () {
  * @param {string} newName Renamed variable.
  */
 ezP.Block.prototype.renameVar = function (oldName, newName) {
-  for (var i = 0, input; (input = this.inputList[i]); i++) {
-    for (var j = 0, field; (field = input.fieldRow[j]); j++) {
+  var i = 0, input
+  for (; (input = this.inputList[i]); i++) {
+    var j = 0, field
+    for (; (field = input.fieldRow[j]); j++) {
       if (field instanceof ezP.FieldVariable &&
           Blockly.Names.equals(oldName, field.getText())) {
         field.setText(newName)
@@ -132,8 +136,10 @@ ezP.Block.prototype.renameVar = function (oldName, newName) {
  * @param {string} newVarId Replacement variable.
  */
 ezP.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
-  for (var i = 0, input; (input = this.inputList[i]); i++) {
-    for (var j = 0, field; (field = input.fieldRow[j]); j++) {
+  var i = 0, input
+  for (; (input = this.inputList[i]); i++) {
+    var j = 0, field
+    for (; (field = input.fieldRow[j]); j++) {
       if (field instanceof ezP.FieldVariable &&
           Blockly.Names.equals(oldVarId, field.getValue())) {
         field.setValue(newVarId)

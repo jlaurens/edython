@@ -33,19 +33,19 @@ ezP.DelegateSvg.Expr.Comprehension = function (prototypeName) {
     middle: {
       key: ezP.Const.Input.FORIN,
       check: ezP.T3.Expr.comp_for,
-      wrap: ezP.Const.Expr.comp_for
+      wrap: ezP.T3.Expr.comp_for
     },
     last: {
       key: ezP.Const.Input.ITER,
       check: ezP.T3.Expr.comp_iter_list,
-      wrap: ezP.Const.Expr.comp_iter_list
+      wrap: ezP.T3.Expr.comp_iter_list
     }
   }
   this.outputCheck = ezP.T3.Expr.comprehension
 }
 goog.inherits(ezP.DelegateSvg.Expr.Comprehension, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.comprehension, ezP.DelegateSvg.Expr.Comprehension)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.comprehension, ezP.DelegateSvg.Expr.Comprehension)
 
 /**
  * Class for a DelegateSvg, comp_for block.
@@ -73,7 +73,7 @@ ezP.DelegateSvg.Expr.comp_for = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.comp_for, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.comp_for, ezP.DelegateSvg.Expr.comp_for)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.comp_for, ezP.DelegateSvg.Expr.comp_for)
 
 /**
  * Class for a DelegateSvg, comp_if block.
@@ -96,4 +96,4 @@ ezP.DelegateSvg.Expr.comp_if = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.comp_if, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.comp_if, ezP.DelegateSvg.Expr.comp_if)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.comp_if, ezP.DelegateSvg.Expr.comp_if)

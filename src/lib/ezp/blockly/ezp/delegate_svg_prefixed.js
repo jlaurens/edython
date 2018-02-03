@@ -34,7 +34,7 @@ ezP.DelegateSvg.Expr.or_expr_star = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.or_expr_star, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.or_expr_star, ezP.DelegateSvg.Expr.or_expr_star)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.or_expr_star, ezP.DelegateSvg.Expr.or_expr_star)
 
 /**
  * Class for a DelegateSvg, '**...' block.
@@ -55,7 +55,7 @@ ezP.DelegateSvg.Expr.or_expr_star_star = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.or_expr_star_star, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.or_expr_star_star, ezP.DelegateSvg.Expr.or_expr_star_star)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.or_expr_star_star, ezP.DelegateSvg.Expr.or_expr_star_star)
 
 /**
 * Class for a DelegateSvg, identifier_dotted.
@@ -76,7 +76,7 @@ ezP.DelegateSvg.Expr.identifier_dotted = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.identifier_dotted, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.identifier_dotted, ezP.DelegateSvg.Expr.identifier_dotted)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.identifier_dotted, ezP.DelegateSvg.Expr.identifier_dotted)
 
 /**
 * Class for a DelegateSvg, await_expr.
@@ -97,4 +97,4 @@ ezP.DelegateSvg.Expr.await_expr = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.await_expr, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.await_expr, ezP.DelegateSvg.Expr.await_expr)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.await_expr, ezP.DelegateSvg.Expr.await_expr)

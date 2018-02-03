@@ -33,14 +33,14 @@ ezP.DelegateSvg.Expr.attributeref = function (prototypeName) {
     last: {
       key: ezP.Const.Input.SECONDARY,
       check: ezP.T3.Expr.identifier_dotted,
-      wrap: ezP.Const.Expr.identifier_dotted
+      wrap: ezP.T3.Expr.identifier_dotted
     }
   }
   this.outputCheck = ezP.T3.Expr.attributeref 
 }
 goog.inherits(ezP.DelegateSvg.Expr.attributeref, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.attributeref, ezP.DelegateSvg.Expr.attributeref)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.attributeref, ezP.DelegateSvg.Expr.attributeref)
 
 /**
  * Class for a DelegateSvg, subscription and slicing.
@@ -62,14 +62,14 @@ ezP.DelegateSvg.Expr.subscription = ezP.DelegateSvg.Expr.slicing = function (pro
     last: {
       key: ezP.Const.Input.SLICE,
       check: ezP.T3.Expr.display_slice_list,
-      wrap: ezP.Const.Expr.display_slice_list
+      wrap: ezP.T3.Expr.display_slice_list
     }
   }
   this.outputCheck = ezP.T3.Expr.slicing
 }
 goog.inherits(ezP.DelegateSvg.Expr.slicing, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.slicing, ezP.DelegateSvg.Expr.slicing)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.slicing, ezP.DelegateSvg.Expr.slicing)
 
 /**
  * Class for a DelegateSvg, call block.
@@ -94,11 +94,11 @@ ezP.DelegateSvg.Expr.call_block =  function (prototypeName) {
       key: ezP.Const.Input.ARGS,
       label: '(',
       check: ezP.T3.Expr.argument_list,
-      wrap: ezP.Const.Expr.argument_list
+      wrap: ezP.T3.Expr.argument_list
     }
   }
   this.labelEnd = ')'
 }
 goog.inherits(ezP.DelegateSvg.Expr.call_block, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.call, ezP.DelegateSvg.Expr.call_block)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.call, ezP.DelegateSvg.Expr.call_block)

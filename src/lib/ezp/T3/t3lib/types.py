@@ -357,7 +357,7 @@ class Types:
     def make_alias(self):
         for t in self:
             if not t.is_stmt and len(t.require) == 1:
-                t.alias = self.get_type(t.require[0].name)
+                t.alias = self.get_type(t.definition)
         for t in self:
             a = t.alias
             while a:

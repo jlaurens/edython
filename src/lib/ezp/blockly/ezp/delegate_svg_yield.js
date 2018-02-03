@@ -30,15 +30,15 @@ ezP.DelegateSvg.Expr.yield_expression_list = function (prototypeName) {
   this.inputData = {
     first: {
       label: 'yield',
-      check: ezP.T3.Expr.expression_list,
-      wrap: ezP.Const.Expr.expression_list
+      check: ezP.T3.Expr.non_void_expression_list,
+      wrap: ezP.T3.Expr.non_void_expression_list
     }
   }
   this.outputCheck = ezP.T3.Expr.yield_expression_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_expression_list, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.yield_expression_list, ezP.DelegateSvg.Expr.yield_expression_list)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.yield_expression_list, ezP.DelegateSvg.Expr.yield_expression_list)
 
 /**
  * Class for a DelegateSvg, 'yield from ...' block.
@@ -59,7 +59,7 @@ ezP.DelegateSvg.Expr.yield_from_expression = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_from_expression, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.yield_from_expression, ezP.DelegateSvg.Expr.yield_from_expression)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.yield_from_expression, ezP.DelegateSvg.Expr.yield_from_expression)
 
 /**
  * Class for a DelegateSvg, '(yield ..., ..., ...)'.
@@ -74,7 +74,7 @@ ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
     first: {
       check: ezP.T3.Expr.yield_expression,
       label: '(',
-      wrap: ezP.Const.Expr.yield_expression
+      wrap: ezP.T3.Expr.yield_expression
     }
   }
   this.labelEnd = ')'
@@ -82,7 +82,7 @@ ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_atom, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.yield_atom, ezP.DelegateSvg.Expr.yield_atom)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.yield_atom, ezP.DelegateSvg.Expr.yield_atom)
 
 /**
  * Class for a DelegateSvg, yield_expression.
@@ -96,19 +96,19 @@ ezP.DelegateSvg.Expr.yield_expression = function (prototypeName) {
   this.inputData = {
     last: {
       check: ezP.T3.Expr.Check.yield_expression,
-      wrap: ezP.Const.Expr.yield_expression_list
+      wrap: ezP.T3.Expr.yield_expression_list
     }
   }
   this.outputCheck = ezP.T3.Expr.yield_expression
   this.contextMenuData = [
-    {label: 'yield ...', type: ezP.Const.Expr.yield_expression_list},
-    {label: 'yield from ...', type: ezP.Const.Expr.yield_from_expression},
+    {label: 'yield ...', type: ezP.T3.Expr.yield_expression_list},
+    {label: 'yield from ...', type: ezP.T3.Expr.yield_from_expression},
   ]
 
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_expression, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.yield_expression, ezP.DelegateSvg.Expr.yield_expression)
+ezP.DelegateSvg.Manager.register(ezP.T3.Expr.yield_expression, ezP.DelegateSvg.Expr.yield_expression)
 
 ezP.USE_YIELD_WRAP_TYPE_ID = 'USE_YIELD_WRAP_TYPE'
 
@@ -199,11 +199,11 @@ ezP.DelegateSvg.Stmt.yield_stmt = function (prototypeName) {
   this.inputData = {
     last: {
       check: ezP.T3.Expr.yield_expression,
-      wrap: ezP.Const.Expr.yield_expression
+      wrap: ezP.T3.Expr.yield_expression
     }
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.yield_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.yield_stmt, ezP.DelegateSvg.Stmt.yield_stmt)
+ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.yield_stmt, ezP.DelegateSvg.Stmt.yield_stmt)
 
