@@ -34,10 +34,10 @@ ezP.DelegateSvg.Expr.dotted_name = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.dotted_name, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.dotted_name, ezP.DelegateSvg.Expr.dotted_name)
+ezP.DelegateSvg.Manager.register('dotted_name')
 
 ezP.DelegateSvg.Expr.module = ezP.DelegateSvg.Expr.dotted_name
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.module, ezP.DelegateSvg.Expr.module)
+ezP.DelegateSvg.Manager.register('module')
 
 /////////////////     module_void      ///////////////////
 
@@ -57,7 +57,7 @@ ezP.DelegateSvg.Expr.module_void = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.module_void, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.module_void, ezP.DelegateSvg.Expr.module_void)
+ezP.DelegateSvg.Manager.register('module_void')
 
 /////////////////     module_named      ///////////////////
 
@@ -74,7 +74,7 @@ ezP.DelegateSvg.Expr.module_named = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.module_named, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.module_named, ezP.DelegateSvg.Expr.module_named)
+ezP.DelegateSvg.Manager.register('module_named')
 
 /**
  * Initialize the block.
@@ -107,7 +107,7 @@ ezP.DelegateSvg.Expr.identifier_named = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.identifier_named, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.identifier_named, ezP.DelegateSvg.Expr.identifier_named)
+ezP.DelegateSvg.Manager.register('identifier_named')
 
 /**
  * Initialize the block.
@@ -140,7 +140,7 @@ ezP.DelegateSvg.Expr.import_module = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.import_module, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.import_module, ezP.DelegateSvg.Expr.import_module)
+ezP.DelegateSvg.Manager.register('import_module')
 
 /**
  * Initialize the block.
@@ -174,7 +174,7 @@ ezP.DelegateSvg.Expr.relative_module = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.relative_module, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.relative_module, ezP.DelegateSvg.Expr.relative_module)
+ezP.DelegateSvg.Manager.register('relative_module')
 
 /**
  * Initialize the block.
@@ -205,7 +205,7 @@ ezP.DelegateSvg.Expr.relative_module = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.relative_module, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.relative_module, ezP.DelegateSvg.Expr.relative_module)
+ezP.DelegateSvg.Manager.register('relative_module')
 
 /**
  * Initialize the block.
@@ -237,7 +237,7 @@ ezP.DelegateSvg.Expr.from_module_import = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.from_module_import, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.from_module_import, ezP.DelegateSvg.Expr.from_module_import)
+ezP.DelegateSvg.Manager.register('from_module_import')
 
 /**
  * Initialize the block.
@@ -274,7 +274,7 @@ ezP.DelegateSvg.Expr.identifier_named_list = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.identifier_named_list, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.identifier_named_list, ezP.DelegateSvg.Expr.identifier_named_list)
+ezP.DelegateSvg.Manager.register('identifier_named_list')
 
 /////////////////     from_relative_module_import      ///////////////////
 
@@ -292,7 +292,7 @@ ezP.DelegateSvg.Expr.from_relative_module_import = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.from_relative_module_import, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.from_relative_module_import, ezP.DelegateSvg.Expr.from_relative_module_import)
+ezP.DelegateSvg.Manager.register('from_relative_module_import')
 
 /**
  * Initialize the block.
@@ -339,7 +339,7 @@ ezP.DelegateSvg.Stmt.import_stmt = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.import_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.import_stmt, ezP.DelegateSvg.Stmt.import_stmt)
+ezP.DelegateSvg.Manager.register('import_stmt')
 
 ezP.USE_IMPORT_WRAP_TYPE_ID  = 'USE_IMPORT_WRAP_TYPE'
 

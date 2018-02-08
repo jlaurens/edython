@@ -152,7 +152,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function(e) {
   var deleteList = [];
   function addDeletableBlocks(block) {
     if (block.isDeletable()) {
-      deleteList = deleteList.concat(this.getUnsealedDescendants(block));
+      deleteList = deleteList.concat(block.ezp.getUnsealedDescendants(block));
     } else {
       var children = block.getChildren();
       for (var i = 0; i < children.length; i++) {
@@ -202,4 +202,56 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function(e) {
   menuOptions.push(deleteOption);
 
   Blockly.ContextMenu.show(e, menuOptions, this.RTL);
-};
+}
+
+/**
+ * Populate a dom element to make a workspace.
+ * @param {!Element} workspaceXMLElementMouse dom element to populate, in general the workspace in the main html file.
+ * @param {!String} type, prototype of the block.
+ * @param {!Object} offset, with x and y attributes
+ * @private
+ */
+Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function(workspaceXMLElement, type, x, y) {
+  var child = goog.dom.createElement('block')
+  child.setAttribute('type', type)
+  child.setAttribute('x', x)
+  child.setAttribute('y', y)
+  goog.dom.appendChild(workspaceXMLElement, child)
+}
+
+/**
+ * Populate a dom element to make a workspace.
+ * Aligns elements in n_col columns.
+ * Blockly will transform these elements in blocks.
+ * This should be replaced by a direct method that creates a block and place it at the right position.
+ * @param {!Element} workspaceXMLElementMouse dom element to populate, in general the workspaceBlocks in the main html file.
+ * @param {!Array} types, list of prototypes.
+ * @param {!Integer} n_col the number of columns to use.
+ * @param {!Object} offset, with x and y attributes
+ * @param {!Object} step, with x and y attributes
+ * @private
+ */
+Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function(workspaceXMLElement, types, n_col, offset, step) {
+  var n = 0
+  var x = offset.x
+  var y = offset.y
+  var i = 0
+  Blockly.Events.setGroup(true)
+  for (; i<types.length; i++) {
+    this.addElementInWorkspaceBlocks(workspaceXMLElement, types[i], x, y)
+    if (++n<n_col) {
+      x += step.x
+      y += step.y
+    } else {
+      n = 0
+      x = offset.x
+      y += step.y
+    }
+  }
+  if (n < n_col) {
+    x = offset.x
+    y += step.y
+  }
+  Blockly.Events.setGroup(false)
+  return {x: x, y: y}
+}

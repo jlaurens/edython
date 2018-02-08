@@ -17,6 +17,7 @@ class Types:
         self.all = {}
         self.is_before = {}
         self.is_after = {}
+        self.lincks = {}
         self.n = 0
         self.lists_made = False
         for path in paths:
@@ -31,6 +32,7 @@ class Types:
         self.make_compound()
         self.remove_wrappers()
         self.make_list_require()
+        self.make_link()
 
     def __repr__(self):
         return repr(self.__dict__)
@@ -76,6 +78,7 @@ class Types:
         data = re.sub(r'  +', ' ', data)
         re_definition = re.compile(r"^\s*(?P<name>[a-zA-Z_][a-zA-Z_\d]*?)\s*::=\s*(?P<definition>.*)\s*$")
         re_stmt_order = re.compile(r"^\s*(\S+)\s*(<|>)\s*(.*)\s*$")
+        re_linck = re.compile(r"^\s*(?P<definition>\S+)\s*->\s*(?P<alias>.*)\s*$")
         for l in data.splitlines():
             m = re_definition.match(l)
             if m:
@@ -95,6 +98,10 @@ class Types:
                         where[name] = set()
                     already = where[name]
                     already.update(re.split(r'\s*\|\s*', what))
+                else:
+                    m = re_linck.match(l)
+                    if m:
+                        self.lincks[m.group('definition')] = m.group('alias')
 
     def make_compound(self):
         while True:
@@ -236,6 +243,15 @@ class Types:
                 elif len(m.group(2)):
                     t.list_require.append(m.group(2))
 
+    def make_link(self):
+        for t in self:
+            try:
+                a = self.lincks[t.name]
+                t.old_name = t.name
+                t.name = a
+                print('**** ALIAS:', t.old_name, '->', t.name)
+            except: pass
+
     def make_shallow(self):
         more_t = {}
         for t in self.get_expressions():
@@ -273,6 +289,8 @@ class Types:
             t.provide = list(t.temp_)
         for t in self:
             del t.temp_
+        for t in self.get_expressions():
+            t.one_shot = t.one_shot and not len(t.require) and len(t.provide) == 1
 
     def make_deep_(self, shallow_key, deep_key, filter):
         for t in self:
@@ -293,8 +311,6 @@ class Types:
             setattr(t, deep_key, list(t.temp_))
         for t in self:
             del t.temp_
-        for t in self.get_expressions():
-            t.one_shot = t.one_shot and not len(t.require) and len(t.provide) == 1
 
     def make_cycle(self):
         for t in self.get_expressions():
@@ -312,6 +328,8 @@ class Types:
             else:
                 t.cycle = []
                 t.cycle_entry = t
+        for t in self.get_expressions():
+            del t.temp_
 
     def make_deep(self):
         self.make_deep_('require', 'deep_require', lambda x: True)
@@ -346,9 +364,6 @@ class Types:
             for t in self.get_expressions():
                 try:
                     t.deep_require.remove(wrapper)
-                except: pass
-                try:
-                    t.deep_provide.remove(wrapper)
                 except: pass
                 try:
                     t.list_require.remove(wrapper)

@@ -50,74 +50,6 @@ Blockly.RenderedConnection.prototype.highlight = function () {
 }
 
 /**
- * For EZP blocks.
- * @param {!Blockly.Connection} otherConnection Connection to compare against.
- * @override
- */
-ezP.Connection.prototype.connect = function (otherConnection) {
-  if (this.isSuperior()) {
-    var superior = this
-    var inferior = otherConnection
-  } else {
-    superior = otherConnection
-    inferior = this
-  }
-  var next = inferior.sourceBlock_.nextConnection
-  if (inferior.check_ === ezP.Type.Stmt.Check.before_else) {
-    if (superior.check_ === ezP.Type.Stmt.Check.after_if) {
-      inferior.check_ = ezP.Type.Stmt.Check.before_if_else
-    } else if (superior.check_ === ezP.Type.Stmt.Check.after_loop) {
-      inferior.check_ = ezP.Type.Stmt.Check.before_loop_else
-    }
-  }
-  if (inferior.check_ === ezP.Type.Stmt.Check.before_else) {
-    next.check_ = ezP.Type.Stmt.Check.after_else
-  } else if (inferior.check_ === ezP.Type.Stmt.Check.before_elif) {
-    next.check_ = ezP.Type.Stmt.Check.after_elif
-  } else if (inferior.check_ === ezP.Type.Stmt.Check.before_if_else) {
-    next.check_ = ezP.Type.Stmt.Check.after_else
-  } else if (inferior.check_ === ezP.Type.Stmt.Check.before_loop_else) {
-    next.check_ = ezP.Type.Stmt.Check.after_else
-  }
-  if (superior.ezpData.wrapped_) {
-    // this connection should be sealed
-    // It must be done before next call because
-    // it must be done before rendering
-    inferior.sourceBlock_.ezp.makeBlockWrapped_(inferior.sourceBlock_)
-  }
-  ezP.Connection.superClass_.connect.call(this, otherConnection)
-}
-
-/**
- * For EZP blocks.
- * @override
- */
-ezP.Connection.prototype.disconnect = function () {
-  var otherConnection = this.targetConnection
-  if (this.isSuperior()) {
-    var inferior = otherConnection
-  } else {
-    inferior = this
-  }
-  var next = inferior.sourceBlock_.nextConnection
-  setTimeout(function () {
-    if (inferior.check_ === ezP.Type.Stmt.Check.before_else ||
-        inferior.check_ === ezP.Type.Stmt.Check.before_if_else ||
-        inferior.check_ === ezP.Type.Stmt.Check.before_loop_else ||
-        inferior.check_ === ezP.Type.Stmt.Check.before_elif) {
-      if (next && !next.isConnected()) {
-        next.setCheck(ezP.Type.Stmt.Check.none)
-      }
-    }
-    if (inferior.check_ === ezP.Type.Stmt.Check.before_if_else ||
-        inferior.check_ === ezP.Type.Stmt.Check.before_loop_else) {
-      inferior.setCheck(ezP.Type.Stmt.Check.before_else)
-    }
-  }, 3 * Blockly.BUMP_DELAY / 2)
-  ezP.Connection.superClass_.disconnect.call(this)
-}
-
-/**
  * Move the block(s) belonging to the connection to a point where they don't
  * visually interfere with the specified connection.
  * @param {!Blockly.Connection} staticConnection The connection to move away
@@ -176,9 +108,61 @@ Blockly.RenderedConnection.prototype.bumpAwayFrom_ = function (staticConnection)
  */
 ezP.Connection.prototype.isConnectionAllowed = function(candidate,
   maxRadius) {
-if (this.ezpData.wrapped_ || candidate.ezpData.wrapped_) {
-  return false
-}
-return ezP.Connection.superClass_.isConnectionAllowed.call(this,
+  if (this.ezpData.wrapped_ || candidate.ezpData.wrapped_) {
+    return false
+  }
+  var yorn = ezP.Connection.superClass_.isConnectionAllowed.call(this,
   candidate)
+  if (yorn) {
+    ezP.Connection.superClass_.isConnectionAllowed.call(this,
+      candidate)
+  }
+  return yorn
+}
+
+/**
+ * Is this connection compatible with another connection with respect to the
+ * value type system.  E.g. square_root("Hello") is not compatible.
+ * @param {!Blockly.Connection} otherConnection Connection to compare against.
+ * @return {boolean} True if the connections share a type.
+ * @private
+ */
+ezP.Connection.prototype.isNextOrPrevious = function() {
+  return this === this.getSourceBlock().nextConnection || this === this.getSourceBlock().previousConnection
+}
+
+/**
+ * Is this connection compatible with another connection with respect to the
+ * value type system.  E.g. square_root("Hello") is not compatible.
+ * @param {!Blockly.Connection} otherConnection Connection to compare against.
+ * @return {boolean} True if the connections share a type.
+ * @private
+ */
+ezP.Connection.prototype.checkType_ = function(otherConnection) {
+  if (this.type === Blockly.NEXT_STATEMENT || this.type === Blockly.PREVIOUS_STATEMENT) {
+    var T = this.getSourceBlock().type
+    if (T.indexOf('ezp_') == 0) {
+      var otherT = otherConnection.getSourceBlock().type
+      if (!this.isNextOrPrevious()) {
+        if (this.check_ && this.check_.indexOf(otherT)<0) {
+          return false
+        }
+        return !otherConnection.check_ || !otherConnection.check_.length
+      }
+      if (!otherConnection.isNextOrPrevious()) {
+        if (otherConnection.check_ && otherConnection.check_.indexOf(T)<0) {
+          return false
+        }
+        return !this.check_ || !this.check_.length
+      }
+      if (this.check_ && this.check_.indexOf(otherT)<0) {
+        return false
+      }
+      if (otherConnection.check_ && otherConnection.check_.indexOf(T)<0) {
+        return false
+      }
+      return true
+    }
+  }
+  return ezP.Connection.superClass_.checkType_.call(this, otherConnection)
 }

@@ -24,8 +24,9 @@ starred_list ::= non_void_starred_item_list
 non_void_starred_item_list ::= starred_item ( ',' starred_item ) * [',']
 starred_item ::=  expression | star_expr
 star_expr ::=  "*" or_expr
-expression_list -> non_void_expression_list
+# expression_list -> non_void_expression_list
 expression_list ::= non_void_expression_list
+optional_expression_list ::= ( expression ',' )* [ expression ]
 </pre>
 <pre>
 comp_iter_list ::= (comp_iter) *
@@ -59,8 +60,10 @@ slicing      ::=  primary display_slice_list
 display_slice_list ::=  "[" slice_list "]"
 </pre>
 The argument list is managed by the consolidator
+'call' is not acceptable for a name because it is a reserved javascript word
 <pre>
-argument_list ::= REMOVE
+call -> call_expr
+call_expr ::=  primary "(" [argument_list [","] | comprehension] ")"
 positional_arguments ::= REMOVE
 expression_star ::= "*" expression
 expression_star_star ::= "**" expression

@@ -25,10 +25,35 @@ goog.forwardDeclare('ezP.BlockSvg')
  */
 ezP.DelegateSvg = function (prototypeName) {
   ezP.DelegateSvg.superClass_.constructor.call(this, prototypeName)
+  this.inputData = {}
 }
 goog.inherits(ezP.DelegateSvg, ezP.Delegate)
 
 ezP.DelegateSvg.Manager = ezP.Delegate.Manager
+
+/**
+ * Handy method to register an expression block.
+ */
+ezP.DelegateSvg.Manager.register = function (key) {
+  var prototypeName = ezP.T3.Expr[key]
+  var Ctor = undefined
+  var available = undefined
+  if (prototypeName) {
+//    console.log('Registering expression', key)
+    Ctor = ezP.DelegateSvg.Expr[key]
+    available = ezP.T3.Expr.Available
+  } else if ((prototypeName = ezP.T3.Stmt[key])) {
+//    console.log('Registering statement', key)
+    Ctor = ezP.DelegateSvg.Stmt[key]
+    available = ezP.T3.Stmt.Available
+  } else {
+    throw "Unknown block ezP.T3.Expr ot ezP.T3.Stmt key: "+key
+  }
+  ezP.DelegateSvg.Manager.registerDelegate(prototypeName, Ctor)
+  available.push(prototypeName)
+  Blockly.Blocks[prototypeName] = {}
+}
+
 
 Blockly.Block.prototype.ezp = ezP.DelegateSvg.Manager.registerDefault(ezP.DelegateSvg)
 
@@ -87,7 +112,9 @@ ezP.DelegateSvg.prototype.fieldLabelEnd = undefined
  * - optional, true/false whether the connection is optional, only when no wrap.
  */
 
+ezP.DelegateSvg.prototype.inputDataKeys = ['first', 'middle', 'last']
 ezP.DelegateSvg.prototype.inputData = undefined
+ezP.DelegateSvg.prototype.statementData = undefined
 
 /**
  * Create and initialize the various paths,
@@ -122,10 +149,19 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
     return out
   }
   var Is = {}
-  for (var K in this.inputData) {
-    Is[K] = F(this.inputData[K])
+  
+  if (Object.keys(this.inputData).length) {
+    var i = 0
+    for (;i < this.inputDataKeys.length; i++) {
+      var K = this.inputDataKeys[i]
+      var f = F(this.inputData[K])
+      if (f) {
+        Is[K] = f
+      }
+    }
+    this.inputDataKeys = undefined
+    this.inputData = undefined
   }
-  this.inputData = undefined
   this.inputs = Is
   this.initBlock(block)
   if (this.labelEnd) {
@@ -161,12 +197,16 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
 
   if (this.outputCheck !== undefined) {
     block.setOutput(true, this.outputCheck)
-  } else {
-    if (this.nextStatementCheck !== undefined) {
-      block.setNextStatement(true, this.nextStatementCheck)
+  } else if (this.statementData) {
+    if (this.statementData.key) {
+      block.appendStatementInput(this.statementData.key)
+        .setCheck(this.statementData.check) // Check ?
     }
-    if (this.previousStatementCheck !== undefined) {
-      block.setPreviousStatement(true, this.previousStatementCheck)
+    if (this.statementData.next) {
+      block.setNextStatement(true, this.statementData.next.check)
+    }
+    if (this.statementData.previous) {
+      block.setPreviousStatement(true, this.statementData.previous.check)
     }
   }
 }
@@ -234,7 +274,7 @@ ezP.DelegateSvg.prototype.getWrappedTargetBlock = function(block) {
 }
 
 /**
- * Create and initialize the SVG representation of the child blocks sealed to the given block.
+ * Create and initialize the SVG representation of the child blocks wrapped in the given block.
  * May be called more than once.
  * @param {!Blockly.Block} block to be initialized..
  */
@@ -497,7 +537,7 @@ ezP.DelegateSvg.prototype.didChangeSize_ = function (block) {
     this.updatePath_(block, this.svgPathShape_, this.shapePathDef_)
     this.updatePath_(block, this.svgPathHighlight_, this.highlightedPathDef_)
     this.updatePath_(block, this.svgPathCollapsed_, this.collapsedPathDef_)
-    }
+  }
 }
 
 /**
@@ -997,4 +1037,31 @@ ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValu
   } else {
     console.log('Unable to dis/enable non existing input named '+name)
   }
+}
+
+/**
+ * Create a new block, with svg background and wrapped blocks.
+ * @param {!WorkspaceSvg} workspace.
+ * @param {!String} prototypeName.
+ * @private
+ */
+ezP.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id = undefined) {
+  var B = workspace.newBlock(prototypeName, id)
+  B.ezp.completeWrapped_(B)
+  B.initSvg()
+  return B
+}
+
+/**
+ * Prepare the block to be displayed in the given workspace.
+ * Nothing implemented yet
+ * @param {!Block} block.
+ * @param {!WorkspaceSvg} workspace.
+ * @param {!Number} x.
+ * @param {!Number} y.
+ * @param {!String} variant.
+ * @private
+ */
+ezP.DelegateSvg.prototype.prepareForWorkspace = function (block, workspace, x, y, variant) {
+  
 }

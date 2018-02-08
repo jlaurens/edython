@@ -180,7 +180,8 @@ class Formatter:
         self.types = types
         self.kwargs = kwargs
         self.T3_data_ = []
-        self.Ts = sorted(types.all.values(), key=lambda t: (t.n, t.name))
+        self.Ts = [t for t in types.all.values() if not t.ignored]
+        self.Ts = sorted(self.Ts, key=lambda t: (t.n, t.name))
         self.debug = not not self.kwargs['debug'] if 'debug' in kwargs else False
         self.setup()
 
@@ -207,7 +208,7 @@ class Formatter:
  * License CeCILL-B
  */
 /**
- * @fileoverview Constants for ezPython.
+ * @fileoverview Type constants for ezPython, used as blocks prototypes.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -328,6 +329,19 @@ class Formatter:
                 pass
         self.append('}\n')
 
+    def feed_statement_any(self):
+        self.append('ezP.T3.Stmt.Any = [')
+        template = '    ezP.T3.Stmt.{},'
+        for t in self.get_statements():
+            self.append(template.format(t.name))
+        self.append(']\n')
+
+    def feed_expression_available(self):
+        self.append('ezP.T3.Expr.Available = []')
+
+    def feed_statement_available(self):
+        self.append('ezP.T3.Stmt.Available = []')
+
     def get_T3_data(self):
         self.append("""/**
          * @name ezP.T3
@@ -335,6 +349,8 @@ class Formatter:
  **/
 
 goog.provide('ezP.T3')
+goog.provide('ezP.T3.Expr')
+goog.provide('ezP.T3.Stmt')
 
 goog.require('ezP')
 
@@ -346,6 +362,8 @@ goog.require('ezP')
         self.append('')
         self.feed_statement_next()
         self.append('')
+        self.feed_statement_available()
+        self.append('')
         self.feed_expressions()
         self.append('')
         self.feed_aliases()
@@ -355,6 +373,8 @@ goog.require('ezP')
         self.feed_expression_checks()
         self.append('')
         self.feed_alias_checks()
+        self.append('')
+        self.feed_expression_available()
         return '\n'.join(self.T3_data_)
 
     def get_T3_all(self):

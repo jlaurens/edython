@@ -23,8 +23,8 @@ goog.require('ezP.DelegateSvg.Expr')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.Comprehension = function (prototypeName) {
-  ezP.DelegateSvg.Expr.Comprehension.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.comprehension = function (prototypeName) {
+  ezP.DelegateSvg.Expr.comprehension.superClass_.constructor.call(this, prototypeName)
   this.inputData = {
     first: {
       key: ezP.Const.Input.EXPR,
@@ -43,9 +43,9 @@ ezP.DelegateSvg.Expr.Comprehension = function (prototypeName) {
   }
   this.outputCheck = ezP.T3.Expr.comprehension
 }
-goog.inherits(ezP.DelegateSvg.Expr.Comprehension, ezP.DelegateSvg.Expr)
+goog.inherits(ezP.DelegateSvg.Expr.comprehension, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.comprehension, ezP.DelegateSvg.Expr.Comprehension)
+ezP.DelegateSvg.Manager.register('comprehension')
 
 /**
  * Class for a DelegateSvg, comp_for block.
@@ -73,7 +73,7 @@ ezP.DelegateSvg.Expr.comp_for = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.comp_for, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.comp_for, ezP.DelegateSvg.Expr.comp_for)
+ezP.DelegateSvg.Manager.register('comp_for')
 
 /**
  * Class for a DelegateSvg, comp_if block.
@@ -96,4 +96,4 @@ ezP.DelegateSvg.Expr.comp_if = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.comp_if, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.comp_if, ezP.DelegateSvg.Expr.comp_if)
+ezP.DelegateSvg.Manager.register('comp_if')

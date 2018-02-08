@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Expr.Operator')
+goog.provide('ezP.DelegateSvg.Operator')
 
 goog.require('ezP.DelegateSvg.Expr')
 
@@ -24,16 +24,16 @@ goog.require('ezP.DelegateSvg.Expr')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.Operator = function (prototypeName) {
-  ezP.DelegateSvg.Expr.Operator.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Operator = function (prototypeName) {
+  ezP.DelegateSvg.Operator.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Expr.Operator, ezP.DelegateSvg.Expr)
+goog.inherits(ezP.DelegateSvg.Operator, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Expr.Operator.prototype.operator = undefined
-ezP.DelegateSvg.Expr.Operator.prototype.operators = undefined
-ezP.DelegateSvg.Expr.Operator.prototype.operatorData = undefined
-ezP.DelegateSvg.Expr.Operator.prototype.operatorDidChange = undefined
-ezP.DelegateSvg.Expr.Operator.prototype.canChangeOperator = undefined
+ezP.DelegateSvg.Operator.prototype.operator = undefined
+ezP.DelegateSvg.Operator.prototype.operators = undefined
+ezP.DelegateSvg.Operator.prototype.operatorData = undefined
+ezP.DelegateSvg.Operator.prototype.operatorDidChange = undefined
+ezP.DelegateSvg.Operator.prototype.canChangeOperator = undefined
 
 /**
  * Change the operator of the block. Undo friendly.
@@ -42,7 +42,7 @@ ezP.DelegateSvg.Expr.Operator.prototype.canChangeOperator = undefined
  * @param {!Block} block.
  * @param {!String} op is the new operator.
  */
-ezP.DelegateSvg.Expr.Operator.prototype.changeOperator = function(block, newValue) {
+ezP.DelegateSvg.Operator.prototype.changeOperator = function(block, newValue) {
   if (this.operators.indexOf(newValue)<0) {
     // do nothing, this op is not known
     return
@@ -68,13 +68,13 @@ ezP.DelegateSvg.Expr.Operator.prototype.changeOperator = function(block, newValu
  * @param {!Input} input.
  * @param {!Array} required, an array of required types.
  */
-ezP.DelegateSvg.Expr.Operator.checkInput = function(input, required) {
+ezP.DelegateSvg.Operator.checkInput = function(input, required) {
   var target = input.connection.targetBlock()
   if (target) {
     var check = target.outputConnection.check_
     for (var i = 0; i < required.length; i++) {
       if (check.indexOf(required[i]) >= 0) {
-        return true
+      return true
       }
     }
     return false
@@ -90,12 +90,12 @@ ezP.USE_OPERATOR_ID  = 'USE_OPERATOR'
  * @param {!goo.ui.Menu} menu The menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.Operator.prototype.populateContextMenuFirst_ = function (block, menu) {
+ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, menu) {
   var value = this.fieldOperator.getValue()
   var ezp = this
   var F = function(op) {
     var menuItem = new ezP.MenuItem(
-      ezp.operatorData[op]['LABEL']
+      ezp.operatorData[op]['label']
       ,[ezP.USE_OPERATOR_ID, op]
     )
     menuItem.setEnabled(value != op && ezp.canChangeOperator(block, op))
@@ -104,7 +104,7 @@ ezP.DelegateSvg.Expr.Operator.prototype.populateContextMenuFirst_ = function (bl
   for (var i = 0; i<this.operators.length; i++) {
     F(this.operators[i])
   }
-  ezP.DelegateSvg.Expr.Operator.superClass_.populateContextMenuFirst_.call(this,block, menu)
+  ezP.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this,block, menu)
   return true
 }
 
@@ -115,7 +115,7 @@ ezP.DelegateSvg.Expr.Operator.prototype.populateContextMenuFirst_ = function (bl
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Expr.Operator.prototype.handleActionMenuEventFirst = function (block, menu, event) {
+ezP.DelegateSvg.Operator.prototype.handleActionMenuEventFirst = function (block, menu, event) {
   var model = event.target.getModel()
   var action = model[0]
   var op = model[1]
@@ -128,7 +128,7 @@ ezP.DelegateSvg.Expr.Operator.prototype.handleActionMenuEventFirst = function (b
     }
     return true
   }
-  return ezP.DelegateSvg.Expr.Operator.superClass_.handleActionMenuEventFirst.call(this, block, menu, event)
+  return ezP.DelegateSvg.Operator.superClass_.handleActionMenuEventFirst.call(this, block, menu, event)
 }
 
 /**
@@ -138,7 +138,7 @@ ezP.DelegateSvg.Expr.Operator.prototype.handleActionMenuEventFirst = function (b
  * @param {!Element} hidden True if connections are hidden.
  * @override
  */
-ezP.DelegateSvg.Expr.Operator.prototype.toDom = function (block, element) {
+ezP.DelegateSvg.Operator.prototype.toDom = function (block, element) {
   element.setAttribute('operator', this.fieldOperator.getText())
 }
 
@@ -149,7 +149,7 @@ ezP.DelegateSvg.Expr.Operator.prototype.toDom = function (block, element) {
  * @param {!Element} hidden True if connections are hidden.
  * @override
  */
-ezP.DelegateSvg.Expr.Operator.prototype.fromDom = function (block, element) {
+ezP.DelegateSvg.Operator.prototype.fromDom = function (block, element) {
   var operator = element.getAttribute('operator')
   if (this.operators.indexOf(operator)<0) {
     operator = this.operator
@@ -172,7 +172,7 @@ ezP.DelegateSvg.Expr.Operator.prototype.fromDom = function (block, element) {
 ezP.DelegateSvg.Expr.Unary = function (prototypeName) {
   ezP.DelegateSvg.Expr.Unary.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Expr.Unary, ezP.DelegateSvg.Expr.Operator)
+goog.inherits(ezP.DelegateSvg.Expr.Unary, ezP.DelegateSvg.Operator)
 
 /**
  * Initialize the block.
@@ -184,7 +184,7 @@ goog.inherits(ezP.DelegateSvg.Expr.Unary, ezP.DelegateSvg.Expr.Operator)
 ezP.DelegateSvg.Expr.Unary.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Expr.Unary.superClass_.initBlock.call(this, block)
   this.fieldOperator = new ezP.FieldLabel('')
-  this.inputXPR = block.appendValueInput(ezP.Const.Input.EXPR)
+  this.inputExpr = block.appendValueInput(ezP.Const.Input.EXPR)
     .appendField(this.fieldOperator)
   this.changeOperator(block, this.operator)
 }
@@ -198,7 +198,7 @@ ezP.DelegateSvg.Expr.Unary.prototype.initBlock = function(block) {
 ezP.DelegateSvg.Expr.Unary.prototype.operatorDidChange = function(block) {
   var value = this.fieldOperator.getValue()
   var data = this.operatorData[value]
-  this.inputXPR.setCheck(data['XPR'])
+  this.inputExpr.setCheck(data['EXPR'])
   block.setOutput(true, data['OUT'])  
 }
 
@@ -214,7 +214,7 @@ ezP.DelegateSvg.Expr.Unary.prototype.canChangeOperator = function(block, op) {
     return false
   }
   var data = this.operatorData[op]
-  return ezP.DelegateSvg.Expr.Operator.checkInput(this.inputXPR, data['XPR']) 
+  return ezP.DelegateSvg.Operator.checkInput(this.inputExpr, data['EXPR']) 
 }
 
 /**
@@ -229,15 +229,15 @@ ezP.DelegateSvg.Expr.unary_concrete = function (prototypeName) {
   this.operator = '-'
   this.operators = ['+', '-', '~', 'not']
   this.operatorData = {
-    '+': {label:'+...', 'OUT': ezP.T3.Expr.u_expr_concrete, 'XPR': ezP.T3.Expr.Check.u_expr},
-    '-': {label:'-...', 'OUT': ezP.T3.Expr.u_expr_concrete, 'XPR': ezP.T3.Expr.Check.u_expr},
-    '~': {label:'~...', 'OUT': ezP.T3.Expr.u_expr_concrete, 'XPR': ezP.T3.Expr.Check.u_expr},
-    'not': {label:'not ...', 'OUT': ezP.T3.Expr.not_test_concrete, 'XPR': ezP.T3.Expr.Check.not_test},
+    '+': {label:'+...', output: ezP.T3.Expr.u_expr_concrete, EXPR: ezP.T3.Expr.Check.u_expr},
+    '-': {label:'-...', output: ezP.T3.Expr.u_expr_concrete, EXPR: ezP.T3.Expr.Check.u_expr},
+    '~': {label:'~...', output: ezP.T3.Expr.u_expr_concrete, EXPR: ezP.T3.Expr.Check.u_expr},
+    'not': {label:'not ...', output: ezP.T3.Expr.not_test_concrete, EXPR: ezP.T3.Expr.Check.not_test},
   }
 }
 goog.inherits(ezP.DelegateSvg.Expr.unary_concrete, ezP.DelegateSvg.Expr.Unary)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.unary_concrete, ezP.DelegateSvg.Expr.unary_concrete)
+ezP.DelegateSvg.Manager.register('unary_concrete')
 
 
 /**
@@ -248,10 +248,10 @@ ezP.DelegateSvg.Manager.register(ezP.T3.Expr.unary_concrete, ezP.DelegateSvg.Exp
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.Binary = function (prototypeName) {
-  ezP.DelegateSvg.Expr.Binary.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Binary = function (prototypeName) {
+  ezP.DelegateSvg.Binary.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Expr.Binary, ezP.DelegateSvg.Expr.Operator)
+goog.inherits(ezP.DelegateSvg.Binary, ezP.DelegateSvg.Operator)
 
 /**
  * Initialize the block.
@@ -260,8 +260,8 @@ goog.inherits(ezP.DelegateSvg.Expr.Binary, ezP.DelegateSvg.Expr.Operator)
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Expr.Binary.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Expr.Binary.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Binary.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Binary.superClass_.initBlock.call(this, block)
   this.inputLHS = block.appendValueInput(ezP.Const.Input.LHS)
   this.fieldOperator = new ezP.FieldLabel('')
   this.inputRHS = block.appendValueInput(ezP.Const.Input.RHS)
@@ -275,12 +275,12 @@ ezP.DelegateSvg.Expr.Binary.prototype.initBlock = function(block) {
  * @param {!Block} block.
  * @param {!String} op is the new operator.
  */
-ezP.DelegateSvg.Expr.Binary.prototype.operatorDidChange = function(block) {
+ezP.DelegateSvg.Binary.prototype.operatorDidChange = function(block) {
   var value = this.fieldOperator.getValue()
   var data = this.operatorData[value]
-  block.setOutput(true, data['OUT'])  
-  this.inputRHS.setCheck(data['RHS'])
-  this.inputLHS.setCheck(data['LHS'])
+  block.setOutput(true, data.output)  
+  this.inputRHS.setCheck(data.rhs)
+  this.inputLHS.setCheck(data.lhs)
 }
 
 /**
@@ -289,14 +289,14 @@ ezP.DelegateSvg.Expr.Binary.prototype.operatorDidChange = function(block) {
  * @param {!Block} block.
  * @param {!String} op is the new operator.
  */
-ezP.DelegateSvg.Expr.Binary.prototype.canChangeOperator = function(block, op) {
+ezP.DelegateSvg.Binary.prototype.canChangeOperator = function(block, op) {
   if (this.operators.indexOf(op)<0) {
     // this op is not known
     return false
   }
   var data = this.operatorData[op]
-  return ezP.DelegateSvg.Expr.Operator.checkInput(this.inputLHS, data['LHS'])
-  || ezP.DelegateSvg.Expr.Operator.checkInput(this.inputRHS, data['RHS'])
+  return ezP.DelegateSvg.Operator.checkInput(this.inputLHS, data['LHS'])
+  || ezP.DelegateSvg.Operator.checkInput(this.inputRHS, data['RHS'])
 }
 
 /**
@@ -312,18 +312,53 @@ ezP.DelegateSvg.Expr.algebra_concrete = function (prototypeName) {
   this.operator = '+'
   this.operators = ['+', '-', '*', '//', '/', '%', '@']
   this.operatorData = {
-    '*': {label:'... * ...', 'OUT': ezP.T3.Expr.m_expr_concrete, 'RHS': ezP.T3.Expr.Check.u_expr, 'LHS': ezP.T3.Expr.Check.m_expr},
-    '@': {label:'... @ ...', 'OUT': ezP.T3.Expr.m_expr_concrete, 'RHS': ezP.T3.Expr.Check.m_expr, 'LHS': ezP.T3.Expr.Check.m_expr},
-    '//': {label:'... // ...', 'OUT': ezP.T3.Expr.m_expr_concrete, 'RHS': ezP.T3.Expr.Check.u_expr, 'LHS': ezP.T3.Expr.Check.m_expr},
-    '/': {label:'... / ...', 'OUT': ezP.T3.Expr.m_expr_concrete, 'RHS': ezP.T3.Expr.Check.u_expr, 'LHS': ezP.T3.Expr.Check.m_expr},
-    '%': {label:'... % ...', 'OUT': ezP.T3.Expr.m_expr_concrete, 'RHS': ezP.T3.Expr.Check.u_expr, 'LHS': ezP.T3.Expr.Check.m_expr},
-    '+': {label:'... + ...', 'OUT': ezP.T3.Expr.a_expr_concrete, 'RHS': ezP.T3.Expr.Check.m_expr, 'LHS': ezP.T3.Expr.Check.a_expr},
-    '-': {label:'... - ...', 'OUT': ezP.T3.Expr.a_expr_concrete, 'RHS': ezP.T3.Expr.Check.m_expr, 'LHS': ezP.T3.Expr.Check.a_expr},
+    '*': {
+      label:'... * ...',
+      output: ezP.T3.Expr.m_expr_concrete,
+      rhs: ezP.T3.Expr.Check.u_expr,
+      lhs: ezP.T3.Expr.Check.m_expr
+    },
+    '@': {
+      label:'... @ ...',
+      output: ezP.T3.Expr.m_expr_concrete,
+      rhs: ezP.T3.Expr.Check.m_expr,
+      lhs: ezP.T3.Expr.Check.m_expr
+    },
+    '//': {
+      label:'... // ...',
+      output: ezP.T3.Expr.m_expr_concrete,
+      rhs: ezP.T3.Expr.Check.u_expr,
+      lhs: ezP.T3.Expr.Check.m_expr
+    },
+    '/': {
+      label:'... / ...',
+      output: ezP.T3.Expr.m_expr_concrete,
+      rhs: ezP.T3.Expr.Check.u_expr,
+      lhs: ezP.T3.Expr.Check.m_expr
+    },
+    '%': {
+      label:'... % ...',
+      output: ezP.T3.Expr.m_expr_concrete,
+      rhs: ezP.T3.Expr.Check.u_expr,
+      lhs: ezP.T3.Expr.Check.m_expr
+    },
+    '+': {
+      label:'... + ...',
+      output: ezP.T3.Expr.a_expr_concrete,
+      rhs: ezP.T3.Expr.Check.m_expr,
+      lhs: ezP.T3.Expr.Check.a_expr
+    },
+    '-': {
+      label:'... - ...',
+      output: ezP.T3.Expr.a_expr_concrete,
+      rhs: ezP.T3.Expr.Check.m_expr,
+      lhs: ezP.T3.Expr.Check.a_expr
+    },
   }
 }
-goog.inherits(ezP.DelegateSvg.Expr.algebra_concrete, ezP.DelegateSvg.Expr.Binary)
+goog.inherits(ezP.DelegateSvg.Expr.algebra_concrete, ezP.DelegateSvg.Binary)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.algebra_concrete, ezP.DelegateSvg.Expr.algebra_concrete)
+ezP.DelegateSvg.Manager.register('algebra_concrete')
 
 /**
  * Class for a DelegateSvg, bitwise binary operation block.
@@ -338,16 +373,41 @@ ezP.DelegateSvg.Expr.bitwise_concrete = function (prototypeName) {
   this.operator = '&'
   this.operators = ['<<', '>>', '&', '^', '|']
   this.operatorData = {
-    '<<': {label:'... << ...', 'OUT': ezP.T3.Expr.shift_expr_concrete, 'RHS': ezP.T3.Expr.Check.a_expr, 'LHS': ezP.T3.Expr.Check.shift_expr},
-    '>>': {label:'... >> ...', 'OUT': ezP.T3.Expr.shift_expr_concrete, 'RHS': ezP.T3.Expr.Check.a_expr, 'LHS': ezP.T3.Expr.Check.shift_expr},
-    '&': {label:'... & ...', 'OUT': ezP.T3.Expr.and_expr_concrete, 'RHS': ezP.T3.Expr.Check.shift_expr, 'LHS': ezP.T3.Expr.Check.and_expr},
-    '^': {label:'... ^ ...', 'OUT': ezP.T3.Expr.xor_expr_concrete, 'RHS': ezP.T3.Expr.Check.and_expr, 'LHS': ezP.T3.Expr.Check.xor_expr},
-    '|': {label:'... | ...', 'OUT': ezP.T3.Expr.or_expr_concrete, 'RHS': ezP.T3.Expr.Check.xor_expr, 'LHS': ezP.T3.Expr.Check.or_expr},
+    '<<': {
+      label:'... << ...',
+      output: ezP.T3.Expr.shift_expr_concrete,
+      rhs: ezP.T3.Expr.Check.a_expr,
+      lhs: ezP.T3.Expr.Check.shift_expr
+    },
+    '>>': {
+      label:'... >> ...',
+      output: ezP.T3.Expr.shift_expr_concrete,
+      rhs: ezP.T3.Expr.Check.a_expr,
+      lhs: ezP.T3.Expr.Check.shift_expr
+    },
+    '&': {
+      label:'... & ...',
+      output: ezP.T3.Expr.and_expr_concrete,
+      rhs: ezP.T3.Expr.Check.shift_expr,
+      lhs: ezP.T3.Expr.Check.and_expr
+    },
+    '^': {
+      label:'... ^ ...',
+      output: ezP.T3.Expr.xor_expr_concrete,
+      rhs: ezP.T3.Expr.Check.and_expr,
+      lhs: ezP.T3.Expr.Check.xor_expr
+    },
+    '|': {
+      label:'... | ...',
+      output: ezP.T3.Expr.or_expr_concrete,
+      rhs: ezP.T3.Expr.Check.xor_expr,
+      lhs: ezP.T3.Expr.Check.or_expr
+    },
   }
 }
-goog.inherits(ezP.DelegateSvg.Expr.bitwise_concrete, ezP.DelegateSvg.Expr.Binary)
+goog.inherits(ezP.DelegateSvg.Expr.bitwise_concrete, ezP.DelegateSvg.Binary)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.bitwise_concrete, ezP.DelegateSvg.Expr.bitwise_concrete)
+ezP.DelegateSvg.Manager.register('bitwise_concrete')
 
 /**
  * Class for a DelegateSvg, comparison_concrete block.
@@ -364,21 +424,71 @@ ezP.DelegateSvg.Expr.comparison_concrete = function (prototypeName) {
   this.operator = '<'
   this.operators = ['<', '>', '==', '>=', '<=', '!=', 'is', 'is not', 'in', 'not in']
   this.operatorData = {
-    '<': {label:'... < ...', 'OUT': ezP.T3.Expr.comparison_concrete, 'RHS': ezP.T3.Expr.Check.comparison, 'LHS': ezP.T3.Expr.Check.comparison},
-    '>': {label:'... > ...', 'OUT': ezP.T3.Expr.comparison_concrete, 'RHS': ezP.T3.Expr.Check.comparison, 'LHS': ezP.T3.Expr.Check.comparison},
-    '==': {label:'... == ...', 'OUT': ezP.T3.Expr.comparison_concrete, 'RHS': ezP.T3.Expr.Check.comparison, 'LHS': ezP.T3.Expr.Check.comparison},
-    '<=': {label:'... <= ...', 'OUT': ezP.T3.Expr.comparison_concrete, 'RHS': ezP.T3.Expr.Check.comparison, 'LHS': ezP.T3.Expr.Check.comparison},
-    '>=': {label:'... >= ...', 'OUT': ezP.T3.Expr.comparison_concrete, 'RHS': ezP.T3.Expr.Check.comparison, 'LHS': ezP.T3.Expr.Check.comparison},
-    '!=': {label:'... != ...', 'OUT': ezP.T3.Expr.comparison_concrete, 'RHS': ezP.T3.Expr.Check.comparison, 'LHS': ezP.T3.Expr.Check.comparison},
-    'is': {label:'... is ...', 'OUT': ezP.T3.Expr.comparison_concrete, 'RHS': ezP.T3.Expr.Check.comparison, 'LHS': ezP.T3.Expr.Check.comparison},
-    'is not': {label:'... is not ...', 'OUT': ezP.T3.Expr.comparison_concrete, 'RHS': ezP.T3.Expr.Check.comparison, 'LHS': ezP.T3.Expr.Check.comparison},
-    'in': {label:'... in ...', 'OUT': ezP.T3.Expr.comparison_concrete, 'RHS': ezP.T3.Expr.Check.comparison, 'LHS': ezP.T3.Expr.Check.comparison},
-    'not in': {label:'... not in ...', 'OUT': ezP.T3.Expr.comparison_concrete, 'RHS': ezP.T3.Expr.Check.comparison, 'LHS': ezP.T3.Expr.Check.comparison},
+    '<': {
+      label:'... < ...',
+      output: ezP.T3.Expr.comparison_concrete,
+      rhs: ezP.T3.Expr.Check.comparison,
+      lhs: ezP.T3.Expr.Check.comparison
+    },
+    '>': {
+      label:'... > ...',
+      output: ezP.T3.Expr.comparison_concrete,
+      rhs: ezP.T3.Expr.Check.comparison,
+      lhs: ezP.T3.Expr.Check.comparison
+    },
+    '==': {
+      label:'... == ...',
+      output: ezP.T3.Expr.comparison_concrete,
+      rhs: ezP.T3.Expr.Check.comparison,
+      lhs: ezP.T3.Expr.Check.comparison
+    },
+    '<=': {
+      label:'... <= ...',
+      output: ezP.T3.Expr.comparison_concrete,
+      rhs: ezP.T3.Expr.Check.comparison,
+      lhs: ezP.T3.Expr.Check.comparison
+    },
+    '>=': {
+      label:'... >= ...',
+      output: ezP.T3.Expr.comparison_concrete,
+      rhs: ezP.T3.Expr.Check.comparison,
+      lhs: ezP.T3.Expr.Check.comparison
+    },
+    '!=': {
+      label:'... != ...',
+      output: ezP.T3.Expr.comparison_concrete,
+      rhs: ezP.T3.Expr.Check.comparison,
+      lhs: ezP.T3.Expr.Check.comparison
+    },
+    'is': {
+      label:'... is ...',
+      output: ezP.T3.Expr.comparison_concrete,
+      rhs: ezP.T3.Expr.Check.comparison,
+      lhs: ezP.T3.Expr.Check.comparison
+    },
+    'is not': {
+      label:'... is not ...',
+      output: ezP.T3.Expr.comparison_concrete,
+      rhs: ezP.T3.Expr.Check.comparison,
+      lhs: ezP.T3.Expr.Check.comparison
+    },
+    'in': {
+      label:'... in ...',
+      output: ezP.T3.Expr.comparison_concrete,
+      rhs: ezP.T3.Expr.Check.comparison,
+      lhs: ezP.T3.Expr.Check.comparison
+    },
+    'not in': {
+      label:'... not in ...',
+      output: ezP.T3.Expr.comparison_concrete,
+      rhs: ezP.T3.Expr.Check.comparison,
+      lhs: ezP.T3.Expr.Check.comparison
+    },
   }
 }
-goog.inherits(ezP.DelegateSvg.Expr.comparison_concrete, ezP.DelegateSvg.Expr.Binary)
+goog.inherits(ezP.DelegateSvg.Expr.comparison_concrete, ezP.DelegateSvg.Binary)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.comparison_concrete, ezP.DelegateSvg.Expr.comparison_concrete)
+ezP.DelegateSvg.Manager.register('comparison_concrete')
 
 /**
  * Class for a DelegateSvg, boolean_concrete block.
@@ -393,10 +503,121 @@ ezP.DelegateSvg.Expr.boolean_concrete = function (prototypeName) {
   this.operator = 'or'
   this.operators = ['or', 'and']
   this.operatorData = {
-    'or': {label:'... or ...', 'OUT': ezP.T3.Expr.or_test_concrete, 'RHS': ezP.T3.Expr.Check.and_test, 'LHS': ezP.T3.Expr.Check.or_test},
-    'and': {label:'... and ...', 'OUT': ezP.T3.Expr.and_test_concrete, 'RHS': ezP.T3.Expr.Check.not_test, 'LHS': ezP.T3.Expr.Check.and_test},
+    'or': {
+      label:'... or ...',
+      output: ezP.T3.Expr.or_test_concrete,
+      rhs: ezP.T3.Expr.Check.and_test,
+      lhs: ezP.T3.Expr.Check.or_test
+    },
+    'and': {
+      label:'... and ...',
+      output: ezP.T3.Expr.and_test_concrete,
+      rhs: ezP.T3.Expr.Check.not_test,
+      lhs: ezP.T3.Expr.Check.and_test
+    },
   }
 }
-goog.inherits(ezP.DelegateSvg.Expr.boolean_concrete, ezP.DelegateSvg.Expr.Binary)
+goog.inherits(ezP.DelegateSvg.Expr.boolean_concrete, ezP.DelegateSvg.Binary)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.boolean_concrete, ezP.DelegateSvg.Expr.boolean_concrete)
+ezP.DelegateSvg.Manager.register('boolean_concrete')
+
+
+/**
+ * Class for a DelegateSvg, augmented_assignment_expression block.
+ * Multiple ops.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.augmented_assignment_expression = function (prototypeName) {
+  ezP.DelegateSvg.Expr.augmented_assignment_expression.superClass_.constructor.call(this, prototypeName)
+  this.operator = '+='
+  this.operators = ['+=','-=','*=','@=','/=','//=','%=','**='
+ ,'>>=','<<=','&=','^=','|=']
+  this.operatorData = {
+    '+=': {
+      label:'... += ...',
+      output: ezP.T3.Expr.augmented_assignment_expression,
+      rhs: ezP.T3.Expr.Check.aug_assigned,
+      lhs: ezP.T3.Expr.Check.augtarget
+    },
+    '-=': {
+      label:'... -= ...',
+      output: ezP.T3.Expr.augmented_assignment_expression,
+      rhs: ezP.T3.Expr.Check.aug_assigned,
+      lhs: ezP.T3.Expr.Check.augtarget
+    },
+    '*=': {
+      label:'... *= ...',
+      output: ezP.T3.Expr.augmented_assignment_expression,
+      rhs: ezP.T3.Expr.Check.aug_assigned,
+      lhs: ezP.T3.Expr.Check.augtarget
+    },
+    '@=': {
+      label:'...   = ...',
+      output: ezP.T3.Expr.augmented_assignment_expression,
+      rhs: ezP.T3.Expr.Check.aug_assigned,
+      lhs: ezP.T3.Expr.Check.augtarget
+    },
+    '/=': {
+      label:'... /= ...',
+      output: ezP.T3.Expr.augmented_assignment_expression,
+      rhs: ezP.T3.Expr.Check.aug_assigned,
+      lhs: ezP.T3.Expr.Check.augtarget
+    },
+    '//=': {
+      label:'... //= ...',
+      output: ezP.T3.Expr.augmented_assignment_expression,
+      rhs: ezP.T3.Expr.Check.aug_assigned,
+      lhs: ezP.T3.Expr.Check.augtarget
+    },
+    '%=': {
+      label:'... %= ...',
+      output: ezP.T3.Expr.augmented_assignment_expression,
+      rhs: ezP.T3.Expr.Check.aug_assigned,
+      lhs: ezP.T3.Expr.Check.augtarget
+    },
+    '**=': {
+      label:'... **= ...',
+      output: ezP.T3.Expr.augmented_assignment_expression,
+      rhs: ezP.T3.Expr.Check.aug_assigned,
+      lhs: ezP.T3.Expr.Check.augtarget
+    },
+    '>>=': {
+      label:'... >>= ...',
+      output: ezP.T3.Expr.augmented_assignment_expression,
+      rhs: ezP.T3.Expr.Check.aug_assigned,
+      lhs: ezP.T3.Expr.Check.augtarget
+    },
+    '<<=': {
+      label:'... <<= ...',
+      output: ezP.T3.Expr.augmented_assignment_expression,
+      rhs: ezP.T3.Expr.Check.aug_assigned,
+      lhs: ezP.T3.Expr.Check.augtarget
+    },
+    '&=': {
+      label:'... &= ...',
+      output: ezP.T3.Expr.augmented_assignment_expression,
+      rhs: ezP.T3.Expr.Check.aug_assigned,
+      lhs: ezP.T3.Expr.Check.augtarget
+    },
+    '^=': {
+      label:'... ^= ...',
+      output: ezP.T3.Expr.augmented_assignment_expression,
+      rhs: ezP.T3.Expr.Check.aug_assigned,
+      lhs: ezP.T3.Expr.Check.augtarget
+    },
+    '|=': {
+      label:'... |= ...',
+      output: ezP.T3.Expr.augmented_assignment_expression,
+      rhs: ezP.T3.Expr.Check.aug_assigned,
+      lhs: ezP.T3.Expr.Check.augtarget
+    },
+  }
+  this.outputCheck = ezP.T3.Expr.augmented_assignment_expression
+}
+
+goog.inherits(ezP.DelegateSvg.Expr.augmented_assignment_expression, ezP.DelegateSvg.Binary)
+
+ezP.DelegateSvg.Manager.register('augmented_assignment_expression')

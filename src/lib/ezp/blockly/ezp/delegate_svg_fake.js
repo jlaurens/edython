@@ -28,14 +28,14 @@ ezP.DelegateSvg.Fake = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Fake, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register('ezp_expr_fake', ezP.DelegateSvg.Fake)
+ezP.DelegateSvg.Manager.registerDelegate('ezp_expr_fake', ezP.DelegateSvg.Fake)
 
 ezP.DelegateSvg.Fake.WithWrapped = function (prototypeName) {
   ezP.DelegateSvg.Fake.WithWrapped.superClass_.constructor.call(this, prototypeName)
 }
 goog.inherits(ezP.DelegateSvg.Fake.WithWrapped, ezP.DelegateSvg.Fake)
 
-ezP.DelegateSvg.Manager.register('ezp_expr_fake_with_wrapped', ezP.DelegateSvg.Fake.WithWrapped)
+ezP.DelegateSvg.Manager.registerDelegate('ezp_expr_fake_with_wrapped', ezP.DelegateSvg.Fake.WithWrapped)
 
 ezP.DelegateSvg.Fake.WithWrapped.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Fake.WithWrapped.superClass_.initBlock.call(this, block)
@@ -49,7 +49,7 @@ ezP.DelegateSvg.Fake.Wrapped = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Fake.Wrapped, ezP.DelegateSvg.Fake)
 
-ezP.DelegateSvg.Manager.register('ezp_expr_fake_wrapped', ezP.DelegateSvg.Fake.Wrapped)
+ezP.DelegateSvg.Manager.registerDelegate('ezp_expr_fake_wrapped', ezP.DelegateSvg.Fake.Wrapped)
 
 ezP.DelegateSvg.Fake.Wrapped.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Fake.Wrapped.superClass_.initBlock.call(this, block)

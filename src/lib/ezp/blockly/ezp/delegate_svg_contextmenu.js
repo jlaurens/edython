@@ -87,6 +87,9 @@ ezP.DelegateSvg.prototype.populateContextMenu_ = function (block, menu) {
   if (this.populateContextMenuMiddle_(block, menu)) {
     menu.addChild(new ezP.Separator(), true)
   }
+  if (this.populateContextMenuPrimary_(block, menu)) {
+    menu.addChild(new ezP.Separator(), true)
+  }
   this.populateContextMenuLast_(block, menu)
 
   goog.events.listenOnce(menu, 'action', function (event) {
@@ -120,6 +123,22 @@ ezP.DelegateSvg.prototype.populateContextMenuMiddle_ = function (block, menu) {
   var target = this.getWrappedTargetBlock(block)
   if (target) {
     return target.ezp.populateContextMenuMiddle_(target, menu)
+  }
+  return false
+}
+
+/**
+ * Populate the context menu for the given block.
+ * The primary part concerns only primary expression blocks.
+ * See the primary delegate for the details.
+ * @param {!Blockly.Block} block The block.
+ * @param {!goo.ui.Menu} menu The menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.prototype.populateContextMenuPrimary_ = function (block, menu) {
+  var target = this.getWrappedTargetBlock(block)
+  if (target) {
+    return target.ezp.populateContextMenuPrimary_(target, menu)
   }
   return false
 }
@@ -267,6 +286,7 @@ ezP.DelegateSvg.prototype.onActionMenuEvent = function (block, menu, event, wrap
   var action = model[0]
   if (this.handleActionMenuEventFirst(block, menu, event)
   || this.handleActionMenuEventMiddle(block, menu, event)
+  || this.handleActionMenuEventPrimary(block, menu, event)
   || this.handleActionMenuEventLast(block, menu, event)) {
     return true
   }
@@ -297,6 +317,18 @@ ezP.DelegateSvg.prototype.handleActionMenuEventFirst = function (block, menu, ev
  * the MenuItem selected within menu.
  */
 ezP.DelegateSvg.prototype.handleActionMenuEventMiddle = function (block, menu, event) {
+  return false
+}
+
+/**
+ * Handle the selection of an item in the primary part of the context dropdown menu.
+ * Default implementation returns false.
+ * @param {!goog.ui.Menu} menu The Menu component clicked.
+ * @param {!Blockly.Block} block The Menu component clicked.
+ * @param {!goog....} event The event containing as target
+ * the MenuItem selected within menu.
+ */
+ezP.DelegateSvg.prototype.handleActionMenuEventPrimary = function (block, menu, event) {
   return false
 }
 

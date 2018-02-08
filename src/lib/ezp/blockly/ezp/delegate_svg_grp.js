@@ -27,7 +27,6 @@ ezP.DelegateSvg.Group = function (prototypeName) {
   ezP.DelegateSvg.Group.superClass_.constructor.call(this, prototypeName)
 }
 goog.inherits(ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register(ezP.Const.Grp.DEFAULT, ezP.DelegateSvg.Group)
 
 /**
  * Whether the block has a previous bounded statement.
@@ -185,7 +184,7 @@ ezP.DelegateSvg.Group.prototype.renderDrawNextStatementInput_ = function (io) {
   if (!io.canStatement || io.input.type !== Blockly.NEXT_STATEMENT) {
     return false
   }
-  io.cursorX = Math.max(2 * ezP.Font.tabWidth, io.cursorX)
+  io.MinMaxCursorX = 2 * ezP.Font.tabWidth
   io.canStatement = false
   var c8n = io.input.connection
       // this must be the last one
@@ -256,12 +255,172 @@ ezP.DelegateSvg.Group.prototype.highlightConnection = function (c8n) {
     c8n.sourceBlock_.getSvgRoot())
 }
 
+/**
+ * Class for a DelegateSvg, if_part block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.if_part = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.if_part.superClass_.constructor.call(this, prototypeName)
+  this.inputData = {
+    first: {
+      label: 'if',
+      check: ezP.T3.Expr.Check.expression,
+      key: ezP.Const.Input.COND,
+    }
+  }
+  this.statementData = {
+    key: ezP.Const.Input.DO,
+    previous: {
+      check: ezP.T3.Stmt.Previous.if_part
+    },
+    next: {
+      check: ezP.T3.Stmt.Next.if_part,
+    }
+  }
+  this.labelEnd = ':'
+}
+goog.inherits(ezP.DelegateSvg.Stmt.if_part, ezP.DelegateSvg.Group)
+ezP.DelegateSvg.Manager.register('if_part')
+
+/**
+ * Class for a DelegateSvg, elif_part block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.elif_part = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.elif_part.superClass_.constructor.call(this, prototypeName)
+  this.inputData = {
+    first: {
+      label: 'elif',
+      check: ezP.T3.Expr.Check.expression,
+      key: ezP.Const.Input.COND,
+    }
+  }
+  this.statementData = {
+    key: ezP.Const.Input.DO,
+    previous: {
+      check: ezP.T3.Stmt.Previous.elif_part
+    },
+    next: {
+      check: ezP.T3.Stmt.Next.elif_part,
+    }
+  }
+  this.labelEnd = ':'
+}
+goog.inherits(ezP.DelegateSvg.Stmt.elif_part, ezP.DelegateSvg.Group)
+ezP.DelegateSvg.Manager.register('elif_part')
+
+/**
+ * Class for a DelegateSvg, else_part block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.else_part = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.else_part.superClass_.constructor.call(this, prototypeName)
+  this.inputData = {
+    first: {
+      label: 'else',
+    }
+  }
+  this.statementData = {
+    key: ezP.Const.Input.DO,
+    previous: {
+      check: ezP.T3.Stmt.Previous.else_part
+    },
+    next: {
+      check: ezP.T3.Stmt.Next.else_part,
+    }
+  }
+  this.labelEnd = ':'
+}
+goog.inherits(ezP.DelegateSvg.Stmt.else_part, ezP.DelegateSvg.Group)
+ezP.DelegateSvg.Manager.register('else_part')
+
+/**
+ * Class for a DelegateSvg, while_part block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.while_part = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.while_part.superClass_.constructor.call(this, prototypeName)
+  this.inputData = {
+    first: {
+      label: 'while',
+      check: ezP.T3.Expr.Check.expression,
+      key: ezP.Const.Input.COND,
+    }
+  }
+  this.statementData = {
+    key: ezP.Const.Input.DO,
+    previous: {
+      check: ezP.T3.Stmt.Previous.while_part
+    },
+    next: {
+      check: ezP.T3.Stmt.Next.while_part,
+    }
+  }
+  this.labelEnd = ':'
+}
+goog.inherits(ezP.DelegateSvg.Stmt.while_part, ezP.DelegateSvg.Group)
+ezP.DelegateSvg.Manager.register('while_part')
+
+/**
+ * Class for a DelegateSvg, for_part block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.for_part = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.for_part.superClass_.constructor.call(this, prototypeName)
+  this.inputData = {
+    first: {
+      label: 'for',
+      wrap: ezP.T3.Expr.target_list,
+      key: ezP.Const.Input.FOR,
+    },
+    middle: {
+      label: 'in',
+      wrap: ezP.T3.Expr.expression_list,
+      key: ezP.Const.Input.IN,
+    }
+  }
+  this.statementData = {
+    key: ezP.Const.Input.DO,
+    previous: {
+      check: ezP.T3.Stmt.Previous.for_part
+    },
+    next: {
+      check: ezP.T3.Stmt.Next.for_part,
+    }
+  }
+  this.labelEnd = ':'
+}
+goog.inherits(ezP.DelegateSvg.Stmt.for_part, ezP.DelegateSvg.Group)
+ezP.DelegateSvg.Manager.register('for_part')
+
+
+
 ezP.DelegateSvg.Group.Bounded = function (prototypeName) {
   ezP.DelegateSvg.Group.Bounded.superClass_.constructor.call(this, prototypeName)
 }
 goog.inherits(ezP.DelegateSvg.Group.Bounded, ezP.DelegateSvg.Group)
-ezP.DelegateSvg.Manager.register(ezP.Const.Grp.ELIF, ezP.DelegateSvg.Group.Bounded)
-ezP.DelegateSvg.Manager.register(ezP.Const.Grp.ELSE, ezP.DelegateSvg.Group.Bounded)
+//ezP.DelegateSvg.Manager.register('ELIF')
+//ezP.DelegateSvg.Manager.register('ELSE')
 
 /**
  * Initialize a block.

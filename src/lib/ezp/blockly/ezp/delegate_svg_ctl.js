@@ -26,7 +26,6 @@ ezP.DelegateSvg.Control = function (prototypeName) {
   ezP.DelegateSvg.Control.superClass_.constructor.call(this, prototypeName)
 }
 goog.inherits(ezP.DelegateSvg.Control, ezP.DelegateSvg)
-ezP.DelegateSvg.Manager.register(ezP.Const.Ctl.DEFAULT, ezP.DelegateSvg.Control)
 
 /**
  * Control block path.

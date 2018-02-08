@@ -27,6 +27,6 @@ ezP.DelegateSvg.Proc = function (prototypeName) {
   ezP.DelegateSvg.Proc.superClass_.constructor.call(this, prototypeName)
 }
 goog.inherits(ezP.DelegateSvg.Proc, ezP.DelegateSvg.Group)
-ezP.DelegateSvg.Manager.register(ezP.Const.Prc.DEFAULT, ezP.DelegateSvg.Proc)
-ezP.DelegateSvg.Manager.register(ezP.Const.Prc.DEF, ezP.DelegateSvg.Proc)
-ezP.DelegateSvg.Manager.register(ezP.Const.Prc.CLASS, ezP.DelegateSvg.Proc)
+//ezP.DelegateSvg.Manager.register('DEFAULT')
+//ezP.DelegateSvg.Manager.register('DEF')
+//ezP.DelegateSvg.Manager.register('CLASS')

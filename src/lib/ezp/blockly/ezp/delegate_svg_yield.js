@@ -38,7 +38,7 @@ ezP.DelegateSvg.Expr.yield_expression_list = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_expression_list, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.yield_expression_list, ezP.DelegateSvg.Expr.yield_expression_list)
+ezP.DelegateSvg.Manager.register('yield_expression_list')
 
 /**
  * Class for a DelegateSvg, 'yield from ...' block.
@@ -59,7 +59,7 @@ ezP.DelegateSvg.Expr.yield_from_expression = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_from_expression, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.yield_from_expression, ezP.DelegateSvg.Expr.yield_from_expression)
+ezP.DelegateSvg.Manager.register('yield_from_expression')
 
 /**
  * Class for a DelegateSvg, '(yield ..., ..., ...)'.
@@ -82,7 +82,7 @@ ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_atom, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.yield_atom, ezP.DelegateSvg.Expr.yield_atom)
+ezP.DelegateSvg.Manager.register('yield_atom')
 
 /**
  * Class for a DelegateSvg, yield_expression.
@@ -108,7 +108,7 @@ ezP.DelegateSvg.Expr.yield_expression = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_expression, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.yield_expression, ezP.DelegateSvg.Expr.yield_expression)
+ezP.DelegateSvg.Manager.register('yield_expression')
 
 ezP.USE_YIELD_WRAP_TYPE_ID = 'USE_YIELD_WRAP_TYPE'
 
@@ -205,5 +205,5 @@ ezP.DelegateSvg.Stmt.yield_stmt = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.yield_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.yield_stmt, ezP.DelegateSvg.Stmt.yield_stmt)
+ezP.DelegateSvg.Manager.register('yield_stmt')
 

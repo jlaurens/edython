@@ -59,7 +59,7 @@ ezP.DelegateSvg.Expr.lambda_expr = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.lambda_expr, ezP.DelegateSvg.Lambda)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.lambda_expr, ezP.DelegateSvg.Expr.lambda_expr)
+ezP.DelegateSvg.Manager.register('lambda_expr')
 
 /**
  * Class for a DelegateSvg, lambda_expr_nocond block.
@@ -76,5 +76,5 @@ ezP.DelegateSvg.Expr.lambda_expr_nocond = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.lambda_expr_nocond, ezP.DelegateSvg.Lambda)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.lambda_expr_nocond, ezP.DelegateSvg.Expr.lambda_expr_nocond)
+ezP.DelegateSvg.Manager.register('lambda_expr_nocond')
 

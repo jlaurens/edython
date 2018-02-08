@@ -28,3 +28,10 @@ goog.require('ezP')
 
 /** @export */ ezP.Msg.USE_PROPER_SLICING_STRIDE = 'pas personnalisé'
 /** @export */ ezP.Msg.UNUSE_PROPER_SLICING_STRIDE = 'pas par défaut'
+
+/** @export */ ezP.Msg.ADD_PRIMARY_ATTRIBUTE = 'Ajouter `.attribute`'
+/** @export */ ezP.Msg.ADD_PRIMARY_SLICING = 'Ajouter `[...]`'
+/** @export */ ezP.Msg.ADD_PRIMARY_CALL = 'Ajouter `(...)`'
+/** @export */ ezP.Msg.REMOVE_PRIMARY_ATTRIBUTE = 'Enlever `.attribute`'
+/** @export */ ezP.Msg.REMOVE_PRIMARY_SLICING = 'Enlever `[...]`'
+/** @export */ ezP.Msg.REMOVE_PRIMARY_CALL = 'Enlever `(...)`'

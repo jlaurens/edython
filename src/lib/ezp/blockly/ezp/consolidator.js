@@ -372,9 +372,15 @@ ezP.Consolidator.List.prototype.consolidate = function(block) {
 
 /**
  * List consolidator for list_display and set_display.
- * Remove empty place holders, add separators
+ * Remove empty place holders, add separators.
+ * Management of lists with one or many items.
+ * When there is only one element of the single type,
+ * there is no room for any other element.
+ * require_all is the union of single and require.
  * Main entry: consolidate
+ * @param {!String} require, the required type for many items
  * @param {!String} single, the required type for a single element....
+ * @param {!String} require_all, the required type for a single element....
  */
 ezP.Consolidator.List.Singled = function(require, single, require_all, canBeVoid = true, defaultSep = ',') {
   ezP.Consolidator.List.Singled.superClass_.constructor.call(this, require, canBeVoid, defaultSep)
@@ -388,6 +394,9 @@ ezP.Consolidator.List.Singled.prototype.require_all = undefined
 
 /**
  * Returns the required types for the current input.
+ * Returns require_all if the list is void
+ * or if there is only one item to be replaced.
+ * In all other situations, return this.require.
  * @param {!Object} io parameter.
  */
 ezP.Consolidator.List.Singled.prototype.getCheck = function (io) {

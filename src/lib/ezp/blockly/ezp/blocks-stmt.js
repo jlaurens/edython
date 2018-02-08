@@ -13,6 +13,8 @@
 
 goog.provide('ezP.Blocks.stmt')
 
+goog.require('ezP.T3')
+goog.require('ezP.T3.All')
 goog.require('ezP.Const')
 goog.require('Blockly.Blocks')
 

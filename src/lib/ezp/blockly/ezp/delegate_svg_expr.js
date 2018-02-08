@@ -29,8 +29,7 @@ ezP.DelegateSvg.Expr = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr, ezP.DelegateSvg)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.DEFAULT, ezP.DelegateSvg.Expr)
-
+// Default delegate for all expression blocks
 ezP.Delegate.Manager.registerAll(ezP.T3.Expr, ezP.DelegateSvg.Expr, true)
 
 ezP.DelegateSvg.Expr.prototype.shapePathDef_ =
@@ -83,7 +82,7 @@ ezP.DelegateSvg.Expr.key_datum_concrete = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.key_datum_concrete, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.key_datum_concrete, ezP.DelegateSvg.Expr.key_datum_concrete)
+ezP.DelegateSvg.Manager.register('key_datum_concrete')
 
 
 /**
@@ -119,7 +118,7 @@ ezP.DelegateSvg.Expr.proper_slice = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.proper_slice, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.proper_slice, ezP.DelegateSvg.Expr.proper_slice)
+ezP.DelegateSvg.Manager.register('proper_slice')
 
 ezP.USE_PROPER_SLICING_STRIDE_ID = 'USE_PROPER_SLICING_STRIDE'
 
@@ -189,139 +188,4 @@ ezP.DelegateSvg.Expr.conditional_expression_concrete = function (prototypeName) 
 }
 goog.inherits(ezP.DelegateSvg.Expr.conditional_expression_concrete, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.conditional_expression_concrete, ezP.DelegateSvg.Expr.conditional_expression_concrete)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- * Class for a DelegateSvg, quoted string value block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.Text = function (prototypeName) {
-  ezP.DelegateSvg.Expr.Text.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Expr.Text, ezP.DelegateSvg.Expr)
-
-/**
- * Render one input of value block.
- * Default implementation just renders a dummy input.
- * @param io.
- * @private
- */
-ezP.DelegateSvg.Expr.Text.prototype.renderDrawInput_ = function (io) {
-  this.renderDrawDummyInput_(io)
-}
-
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.TEXT, ezP.DelegateSvg.Expr.Text)
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.ANY, ezP.DelegateSvg.Expr.Text)
-
-/**
- * Render one input of value block.
- * Default implementation just renders a dummy input.
- * @param io.
- * @private
- */
-ezP.DelegateSvg.Expr.Text.prototype.renderDrawInput_ = function (io) {
-  this.renderDrawDummyInput_(io)
-}
-
-/**
- * Class for a DelegateSvg, one input value block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.Input = function (prototypeName) {
-  ezP.DelegateSvg.Expr.Input.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Expr.Input, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.MINUS, ezP.DelegateSvg.Expr.Input)
-
-/**
- * Class for a DelegateSvg, tuple value block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.Tuple = function (prototypeName) {
-  ezP.DelegateSvg.Expr.Tuple.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Expr.Tuple, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.TUPLE, ezP.DelegateSvg.Expr.Tuple)
-
-/**
- * Will render the block.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.Tuple.prototype.willRender_ = function (block) {
-  ezP.DelegateSvg.Expr.Tuple.superClass_.willRender_.call(this, block)
-  this.tupleConsolidate(block)
-}
-
-/**
- * Render tuple inputs only.
- * @param io.
- * @private
- */
-ezP.DelegateSvg.Expr.Tuple.prototype.renderDrawInput_ = function (io) {
-  this.renderDrawDummyInput_(io) ||
-  this.renderDrawTupleInput_(io)
-}
-
-/**
- * Fetches the named input object, forwards to getInputTuple_.
- * @param {!Block} block.
- * @param {string} name The name of the input.
- * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
- */
-ezP.DelegateSvg.Expr.Tuple.prototype.getInput = function (block, name) {
-  return this.getInputTuple_(block, name)
-}
-
-/**
- * Class for a DelegateSvg, tuple value block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.Range = function (prototypeName) {
-  ezP.DelegateSvg.Expr.Range.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Expr.Range, ezP.DelegateSvg.Expr.Tuple)
-
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.RANGE, ezP.DelegateSvg.Expr.Range)
-
-/**
- * @param {!Block} block.
- * @param {Number} the group of tuples.
- * @return {Number} The max number of inputs. null for unlimited.
- * @private
- */
-ezP.DelegateSvg.Expr.Range.prototype.getInputTupleMax = function (block, grp) {
-  return grp ? 0 : 3
-}
-
+ezP.DelegateSvg.Manager.register('conditional_expression_concrete')

@@ -15,6 +15,7 @@ goog.provide('ezP.Delegate')
 goog.provide('ezP.TupleConsolidator')
 
 goog.require('ezP.Helper')
+goog.require('Blockly.Blocks')
 
 goog.require('ezP.T3')
 goog.forwardDeclare('ezP.Block')
@@ -57,10 +58,30 @@ ezP.Delegate.Manager = function () {
    * @param {?string} prototypeName Name of the language object containing
    * @param {Object} constructor
    */
-  me.register = function (prototypeName, Ctor) {
+  me.registerDelegate = function (prototypeName, Ctor) {
     // console.log(prototypeName+' -> '+Ctor)
     Ctors[prototypeName] = Ctor
     goog.asserts.assert(me.create(prototypeName), 'Registration failure: '+prototypeName)
+  }
+  /**
+   * Handy method to register an expression block.
+   */
+  me.register = function (key) {
+    var prototypeName = ezP.T3.Expr[key]
+    var Ctor = undefined
+    var available = undefined
+    if (prototypeName) {
+      Ctor = ezP.Delegate[key]
+      available = ezP.T3.Expr.Available
+    } else if ((prototypeName = ezP.T3.Stmt[key])) {
+      Ctor = ezP.Delegate[key]
+      available = ezP.T3.Expr.Available
+    } else {
+      throw "Unknown block ezP.T3.Expr ot ezP.T3.Stmt key: "+key
+    }
+    me.registerDelegate(prototypeName, Ctor)
+    available.push(prototypeName)
+    Blockly.Blocks[prototypeName] = {}
   }
   me.registerAll = function (keyedPrototypeNames, Ctor, fake) {
     var k
@@ -68,11 +89,11 @@ ezP.Delegate.Manager = function () {
       k = keyedPrototypeNames[k]
       if (typeof k === 'string' || k instanceof String) {
 //        console.log('Registering', k)
-        me.register(k, Ctor)
+        me.registerDelegate(k, Ctor)
         if (fake) {
           k = k.replace('ezp_', 'ezp_fake_')
 //          console.log('Registering', k)
-          me.register(k, Ctor)
+          me.registerDelegate(k, Ctor)
         }
       }
     }
@@ -563,7 +584,7 @@ ezP.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
       target.ezp.makeBlockWrapped_(target)
       target.ezp.completeWrapped_(target)
     } else {
-      goog.asserts.assert(prototypeName, 'Missing sealing prototype name in block '+block.type)
+      goog.asserts.assert(prototypeName, 'Missing wrapping prototype name in block '+block.type)
       if (ezP.Delegate.wrappedFireWall > 0) {
         --ezP.Delegate.wrappedFireWall
         var target = block.workspace.newBlock(prototypeName)

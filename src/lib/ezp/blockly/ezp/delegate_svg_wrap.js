@@ -29,7 +29,7 @@ ezP.DelegateSvg.Expr.assignment_expression = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.assignment_expression, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.assignment_expression, ezP.DelegateSvg.Expr.assignment_expression)
+ezP.DelegateSvg.Manager.register('assignment_expression')
 
 /**
  * Initialize the block.
@@ -60,7 +60,7 @@ ezP.DelegateSvg.Stmt.expression_stmt = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.expression_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.expression_stmt, ezP.DelegateSvg.Stmt.expression_stmt)
+ezP.DelegateSvg.Manager.register('expression_stmt')
 
 /**
  * Class for a DelegateSvg, assignment_stmt.
@@ -76,43 +76,7 @@ ezP.DelegateSvg.Stmt.assignment_stmt = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.assignment_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.assignment_stmt, ezP.DelegateSvg.Stmt.assignment_stmt)
-
-
-/**
- * Class for a DelegateSvg, augmented_assignment_expression block.
- * Multiple ops.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.augmented_assignment_expression = function (prototypeName) {
-  ezP.DelegateSvg.Expr.augmented_assignment_expression.superClass_.constructor.call(this, prototypeName)
-  this.operator = '+='
-  this.operators = ['+=','-=','*=','@=','/=','//=','%=','**='
- ,'>>=','<<=','&=','^=','|=']
-  this.operatorData = {
-    '+=': {label:'... += ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
-    '-=': {label:'... -= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
-    '*=': {label:'... *= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
-    '@=': {label:'...   = ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
-    '/=': {label:'... /= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
-    '//=': {label:'... //= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
-    '%=': {label:'... %= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
-    '**=': {label:'... **= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
-    '>>=': {label:'... >>= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
-    '<<=': {label:'... <<= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
-    '&=': {label:'... &= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
-    '^=': {label:'... ^= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
-    '|=': {label:'... |= ...', 'OUT': ezP.T3.Expr.augmented_assignment_expression, 'RHS': ezP.T3.Expr.Check.aug_assigned, 'LHS': ezP.T3.Expr.Check.augtarget},
-  }
-  this.outputCheck = ezP.T3.Expr.augmented_assignment_expression
-}
-
-goog.inherits(ezP.DelegateSvg.Expr.augmented_assignment_expression, ezP.DelegateSvg.Expr.Binary)
-
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.augmented_assignment_expression, ezP.DelegateSvg.Expr.augmented_assignment_expression)
+ezP.DelegateSvg.Manager.register('assignment_stmt')
 
 /**
  * Class for a DelegateSvg, augmented_assignment_stmt.
@@ -123,12 +87,16 @@ ezP.DelegateSvg.Manager.register(ezP.T3.Expr.augmented_assignment_expression, ez
  */
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.augmented_assignment_stmt.superClass_.constructor.call(this, prototypeName)
-  this.wrappedCheck = ezP.T3.Expr.augmented_assignment_expression
-  this.wrappedPrototype = ezP.T3.Expr.augmented_assignment_expression
+  this.inputData = {
+    first: {
+      wrap: ezP.T3.Expr.augmented_assignment_expression,
+      check: ezP.T3.Expr.augmented_assignment_expression
+    }
+  }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.augmented_assignment_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.augmented_assignment_stmt, ezP.DelegateSvg.Stmt.augmented_assignment_stmt)
+ezP.DelegateSvg.Manager.register('augmented_assignment_stmt')
 
 /**
  * Class for a DelegateSvg, del_stmt.
@@ -149,7 +117,7 @@ ezP.DelegateSvg.Stmt.del_stmt = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.del_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.del_stmt, ezP.DelegateSvg.Stmt.del_stmt)
+ezP.DelegateSvg.Manager.register('del_stmt')
 
 /**
  * Class for a DelegateSvg, return_stmt.
@@ -160,17 +128,15 @@ ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.del_stmt, ezP.DelegateSvg.Stmt.del_
  */
 ezP.DelegateSvg.Stmt.return_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.return_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
-    last: {
-      label: 'return',
-      check: ezP.T3.Expr.non_void_expression_list,
-      wrap: ezP.T3.Expr.non_void_expression_list
-    }
+  this.inputData.last = {
+    label: 'return',
+    check: ezP.T3.Expr.expression_list,
+    wrap: ezP.T3.Expr.expression_list
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.return_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.return_stmt, ezP.DelegateSvg.Stmt.return_stmt)
+ezP.DelegateSvg.Manager.register('return_stmt')
 
 /**
  * Class for a DelegateSvg, identifier_list block.
@@ -188,7 +154,7 @@ ezP.DelegateSvg.Expr.identifier_list = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.identifier_list, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Expr.identifier_list, ezP.DelegateSvg.Expr.identifier_list)
+ezP.DelegateSvg.Manager.register('identifier_list')
 
 /**
  * Class for a DelegateSvg, global_stmt.
@@ -209,7 +175,7 @@ ezP.DelegateSvg.Stmt.global_stmt = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.global_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.global_stmt, ezP.DelegateSvg.Stmt.global_stmt)
+ezP.DelegateSvg.Manager.register('global_stmt')
 
 /**
  * Class for a DelegateSvg, nonlocal_stmt.
@@ -230,4 +196,4 @@ ezP.DelegateSvg.Stmt.nonlocal_stmt = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.nonlocal_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.T3.Stmt.nonlocal_stmt, ezP.DelegateSvg.Stmt.nonlocal_stmt)
+ezP.DelegateSvg.Manager.register('nonlocal_stmt')

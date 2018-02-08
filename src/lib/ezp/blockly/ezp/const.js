@@ -66,7 +66,7 @@ ezP.Const.Expr = {
   yield_from_expression: 'ezp_expr_yield_from_expression',
   expression_list: 'ezp_expr_expression_list',
   starred_list_comprehensive: 'ezp_expr_starred_list_comprehensive',
-  non_void_starred_list_comprehensive: 'ezp_expr_non_void_starred_list_comprehensive',
+  non_void_starred_item_list_comprehensive: 'ezp_expr_non_void_starred_item_list_comprehensive',
   or_expr_star: 'ezp_expr_or_expr_star',
   key_datum_concrete: 'ezp_expr_key_datum_concrete',
   or_expr_star_star: 'ezp_expr_or_expr_star_star',
