@@ -372,3 +372,21 @@ goog.inherits(ezP.DelegateSvg.Expr.parameter_list, ezP.DelegateSvg.List)
 
 // ezP.DelegateSvg.Manager.register('parameter_list')
 
+/**
+ * Class for a DelegateSvg, with_item_list block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.with_item_list = function (prototypeName) {
+  ezP.DelegateSvg.Expr.with_item_list.superClass_.constructor.call(this, prototypeName)
+  this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.with_item, false, ',')
+  this.outputCheck = ezP.T3.Expr.with_item_list
+}
+goog.inherits(ezP.DelegateSvg.Expr.with_item_list, ezP.DelegateSvg.List)
+
+ezP.DelegateSvg.Manager.register('with_item_list')
+

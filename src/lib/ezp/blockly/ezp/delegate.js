@@ -126,21 +126,36 @@ ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.Delegate)
 ezP.Delegate.prototype.pythonType_ = undefined
 
 /**
+ * The real type of the owning block.
+ * There are fake blocks initially used for debugging purposes.
+ * For a block type ezp_fake_foo, the delegate type is ezp_foo.
+ */
+ezP.Delegate.prototype.type_ = undefined
+
+/**
+ * Set the [python ]type of the delegate according to the type of the block.
+ * @param {!Blockly.Block} block to be initialized..
+ * @constructor
+ */
+ezP.Delegate.prototype.setupType = function (block) {
+  var regex = new RegExp("^ezp_((?:fake_)?(.*))$")
+  var m = regex.exec(block.type)
+  this.pythonType_ = m? m[1]: block.type
+  this.type_ = m? 'ezp_'+m[2]: block.type
+}
+
+/**
  * Initialize a block.
  * @param {!Blockly.Block} block to be initialized..
- * @extends {Blockly.Block}
  * @constructor
  */
 ezP.Delegate.prototype.initBlock = function (block) {
-  var regex = new RegExp("^ezp_(.*)$")
-  var m = regex.exec(block.type)
-  this.pythonType_ = m? m[1]: block.type
+  this.setupType(block)
 }
 
 /**
 * Deinitialize a block. Nothing to do yet.
 * @param {!Blockly.Block} block to be deinitialized..
-* @extends {Blockly.Block}
 * @constructor
 */
 ezP.Delegate.prototype.deinitBlock = function (block) {

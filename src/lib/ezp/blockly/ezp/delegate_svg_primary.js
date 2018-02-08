@@ -140,57 +140,61 @@ ezP.REMOVE_PRIMARY_CALL_ID = 'REMOVE_PRIMARY_CALL'
  * @private
  */
 ezP.DelegateSvg.Expr.prototype.populateContextMenuPrimary_ = function (block, menu) {
-  var menuItem
-  var parent = block.getParent();
-  if (parent) {
-    var c8n = parent.ezp.getPrimaryConnection(parent)
-    if (c8n && c8n.targetBlock() == block) {
-      var c8n = parent.outputConnection
-      if (c8n) {
-        var targetC8n = c8n.targetConnection
-        if (!targetC8n || targetC8n.checkType_(block.outputConnection)) {
-          if (parent.type == ezP.T3.Expr.attributeref) {
-            menuItem = new ezP.MenuItem(
-              ezP.Msg.REMOVE_PRIMARY_ATTRIBUTE,
-              [ezP.REMOVE_PRIMARY_ATTRIBUTE_ID])
-            menu.addChild(menuItem, true)
-            menuItem.setEnabled(true)
-          }
-          if (parent.type == ezP.T3.Expr.slicing) {
-            menuItem = new ezP.MenuItem(
-              ezP.Msg.REMOVE_PRIMARY_SLICING,
-              [ezP.REMOVE_PRIMARY_SLICING_ID])
-            menu.addChild(menuItem, true)
-            menuItem.setEnabled(true)
-          }
-          if (parent.type == ezP.T3.Expr.call_expr) {
-            menuItem = new ezP.MenuItem(
-              ezP.Msg.REMOVE_PRIMARY_CALL,
-              [ezP.REMOVE_PRIMARY_CALL_ID])
-            menu.addChild(menuItem, true)
-            menuItem.setEnabled(true)
+  console.log(this.type_)
+  if (ezP.T3.Expr.Check.primary.indexOf(this.type_)>=0) {
+    var more_blocks = block.getDescendants().length < block.workspace.remainingCapacity() // can I add an attributeref
+    menuItem = new ezP.MenuItem(
+      ezP.Msg.ADD_PRIMARY_ATTRIBUTE,
+      [ezP.ADD_PRIMARY_ATTRIBUTE_ID])
+    menu.addChild(menuItem, true)
+    menuItem.setEnabled(more_blocks)
+    menuItem = new ezP.MenuItem(
+      ezP.Msg.ADD_PRIMARY_SLICING,
+      [ezP.ADD_PRIMARY_SLICING_ID])
+    menu.addChild(menuItem, true)
+    menuItem.setEnabled(more_blocks)
+    menuItem = new ezP.MenuItem(
+      ezP.Msg.ADD_PRIMARY_CALL,
+      [ezP.ADD_PRIMARY_CALL_ID])
+    menu.addChild(menuItem, true)
+    menuItem.setEnabled(more_blocks)
+    var menuItem
+    var parent = block.getParent();
+    if (parent) {
+      var c8n = parent.ezp.getPrimaryConnection(parent)
+      if (c8n && c8n.targetBlock() == block) {
+        var c8n = parent.outputConnection
+        if (c8n) {
+          var targetC8n = c8n.targetConnection
+          if (!targetC8n || targetC8n.checkType_(block.outputConnection)) {
+            if (parent.type == ezP.T3.Expr.attributeref) {
+              menuItem = new ezP.MenuItem(
+                ezP.Msg.REMOVE_PRIMARY_ATTRIBUTE,
+                [ezP.REMOVE_PRIMARY_ATTRIBUTE_ID])
+              menu.addChild(menuItem, true)
+              menuItem.setEnabled(true)
+            }
+            if (parent.type == ezP.T3.Expr.slicing) {
+              menuItem = new ezP.MenuItem(
+                ezP.Msg.REMOVE_PRIMARY_SLICING,
+                [ezP.REMOVE_PRIMARY_SLICING_ID])
+              menu.addChild(menuItem, true)
+              menuItem.setEnabled(true)
+            }
+            if (parent.type == ezP.T3.Expr.call_expr) {
+              menuItem = new ezP.MenuItem(
+                ezP.Msg.REMOVE_PRIMARY_CALL,
+                [ezP.REMOVE_PRIMARY_CALL_ID])
+              menu.addChild(menuItem, true)
+              menuItem.setEnabled(true)
+            }
           }
         }
       }
     }
+    return true
   }
-  var more_blocks = block.getDescendants().length < block.workspace.remainingCapacity() // count UNWRAPPED blocks only
-  menuItem = new ezP.MenuItem(
-    ezP.Msg.ADD_PRIMARY_ATTRIBUTE,
-    [ezP.ADD_PRIMARY_ATTRIBUTE_ID])
-  menu.addChild(menuItem, true)
-  menuItem.setEnabled(more_blocks)
-  menuItem = new ezP.MenuItem(
-    ezP.Msg.ADD_PRIMARY_SLICING,
-    [ezP.ADD_PRIMARY_SLICING_ID])
-  menu.addChild(menuItem, true)
-  menuItem.setEnabled(more_blocks)
-  menuItem = new ezP.MenuItem(
-    ezP.Msg.ADD_PRIMARY_CALL,
-    [ezP.ADD_PRIMARY_CALL_ID])
-  menu.addChild(menuItem, true)
-  menuItem.setEnabled(more_blocks)
-  return true
+  return false
 }
 
 /**

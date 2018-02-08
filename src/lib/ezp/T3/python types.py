@@ -4,6 +4,10 @@ import datetime
 import t3lib as T3
 
 if __name__ != "main":
+#    path0 = pathlib.Path(__file__).parent / 'lexical.html'
+#    print(path0)
+#    path00 = pathlib.Path(__file__).parent / 'lexical_xtd.html'
+#    print(path00)
     path1 = pathlib.Path(__file__).parent / 'expressions.html'
     print(path1)
     path2 = pathlib.Path(__file__).parent / 'expressions_xtd.html'

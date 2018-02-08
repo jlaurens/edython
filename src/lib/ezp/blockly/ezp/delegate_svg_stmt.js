@@ -28,6 +28,11 @@ goog.require('ezP.DelegateSvg.Operator')
  */
 ezP.DelegateSvg.Stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.superClass_.constructor.call(this, prototypeName)
+  this.statementData = {
+    previous: {},
+    next: {},
+  }
+
 }
 goog.inherits(ezP.DelegateSvg.Stmt, ezP.DelegateSvg)
 
@@ -36,9 +41,6 @@ ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.DelegateSvg.Stmt, true)
 ezP.setup.register(function () {
   ezP.Style.insertCssRuleAt('.ezp-sharp-group{' + ezP.Font.style + '}')
 })
-
-ezP.DelegateSvg.Stmt.prototype.previousStatementCheck = null
-ezP.DelegateSvg.Stmt.prototype.nextStatementCheck = null
 
 /**
  * Initialize a block.

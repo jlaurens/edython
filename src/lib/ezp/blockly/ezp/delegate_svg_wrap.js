@@ -157,7 +157,9 @@ goog.inherits(ezP.DelegateSvg.Expr.identifier_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('identifier_list')
 
 /**
- * Class for a DelegateSvg, global_stmt.
+ * Class for a DelegateSvg, global_stmt and nonlocal_stmt.
+ * Both block types have the same delegate.
+ * The only difference is the block type.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
@@ -177,23 +179,55 @@ goog.inherits(ezP.DelegateSvg.Stmt.global_stmt, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Manager.register('global_stmt')
 
-/**
- * Class for a DelegateSvg, nonlocal_stmt.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Stmt.nonlocal_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.global_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
-    last: {
-      label: 'nonlocal',
-      check: ezP.T3.Expr.identifier_list,
-      wrap: ezP.T3.Expr.identifier_list
-    }
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.nonlocal_stmt, ezP.DelegateSvg.Stmt)
+ezP.DelegateSvg.Stmt.nonlocal_stmt = ezP.DelegateSvg.Stmt.global_stmt
 
 ezP.DelegateSvg.Manager.register('nonlocal_stmt')
+
+ezP.GLOBAL_OR_NONLOCAL_ID  = 'GLOBAL_OR_NONLOCAL'
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!goo.ui.Menu} menu The menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, menu) {
+  var value = this.fieldOperator.getValue()
+  var ezp = this
+  var F = function(label, type) {
+    var menuItem = new ezP.MenuItem(
+      label
+      ,[ezP.GLOBAL_OR_NONLOCAL_ID, type]
+    )
+    menuItem.setEnabled(type != block.type)
+    menu.addChild(menuItem, true)
+  }
+  F('global ...', ezP.T3.Stmt.global_stmt)
+  F('nonlocal ...', ezP.T3.Stmt.nonlocal_stmt)
+  ezP.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this,block, menu)
+  return true
+}
+
+/**
+ * Handle the selection of an item in the context dropdown menu.
+ * @param {!Blockly.Block} block, owner of the delegate.
+ * @param {!goog.ui.Menu} menu The Menu clicked.
+ * @param {!goog....} event The event containing as target
+ * the MenuItem selected within menu.
+ */
+ezP.DelegateSvg.Operator.prototype.handleActionMenuEventFirst = function (block, menu, event) {
+  var model = event.target.getModel()
+  var action = model[0]
+  if (action == ezP.GLOBAL_OR_NONLOCAL_ID) {
+    var type = model[1]
+    if (type === ezP.T3.Stmt.global_stmt) {
+      this.inputs.first.fieldLabel.setValue('global')
+    } else {
+      this.inputs.first.fieldLabel.setValue('nonlocal')
+    }
+    block.type = type
+    this.setupType(block)
+    return true
+  }
+  return ezP.DelegateSvg.Operator.superClass_.handleActionMenuEventFirst.call(this, block, menu, event)
+}

@@ -25,6 +25,8 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Group = function (prototypeName) {
   ezP.DelegateSvg.Group.superClass_.constructor.call(this, prototypeName)
+  this.statementData.key = ezP.Const.Input.DO,
+  this.labelEnd = ':'
 }
 goog.inherits(ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
 
@@ -34,15 +36,15 @@ goog.inherits(ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
  * @private
  */
 ezP.Delegate.prototype.hasPreviousBoundedStatement_ = function (block) {
-  if (block.type === ezP.Const.Grp.ELIF || block.type === ezP.Const.Grp.ELSE) {
+  if (block.type === ezP.T3.Stmt.elif_part || block.type === ezP.T3.Stmt.else_part) {
     var c8n = block.previousConnection
     if (c8n) {
       var target = c8n.targetBlock()
       if (target) {
-        return target.type === ezP.Const.Grp.IF ||
-          target.type === ezP.Const.Grp.ELIF ||
-            target.type === ezP.Const.Grp.WHILE ||
-              target.type === ezP.Const.Grp.FOR
+        return target.type === ezP.T3.Stmt.if_part ||
+          target.type === ezP.T3.Stmt.elif_part ||
+            target.type === ezP.T3.Stmt.while_part ||
+              target.type === ezP.T3.Stmt.for_part
       }
     }
   }
@@ -55,15 +57,14 @@ ezP.Delegate.prototype.hasPreviousBoundedStatement_ = function (block) {
  * @private
  */
 ezP.Delegate.prototype.hasNextBoundedStatement_ = function (block) {
-  var c8n = block.nextConnection
-  if (c8n) {
-    var target = c8n.targetBlock()
-    if (target) {
-      return target.type === ezP.Const.Grp.ELIF ||
-        target.type === ezP.Const.Grp.ELSE
-    }
+  try {
+    var target = c8n.targetBlock().nextConnection
+    return target.type === ezP.T3.Stmt.elif_part ||
+    target.type === ezP.T3.Stmt.else_part
   }
-  return false
+  catch (err) {
+    return false
+  }
 }
 /**
  * Block path.
@@ -272,16 +273,8 @@ ezP.DelegateSvg.Stmt.if_part = function (prototypeName) {
       key: ezP.Const.Input.COND,
     }
   }
-  this.statementData = {
-    key: ezP.Const.Input.DO,
-    previous: {
-      check: ezP.T3.Stmt.Previous.if_part
-    },
-    next: {
-      check: ezP.T3.Stmt.Next.if_part,
-    }
-  }
-  this.labelEnd = ':'
+  this.statementData.previous.check = ezP.T3.Stmt.Previous.if_part
+  this.statementData.next.check = ezP.T3.Stmt.Next.if_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.if_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('if_part')
@@ -303,16 +296,8 @@ ezP.DelegateSvg.Stmt.elif_part = function (prototypeName) {
       key: ezP.Const.Input.COND,
     }
   }
-  this.statementData = {
-    key: ezP.Const.Input.DO,
-    previous: {
-      check: ezP.T3.Stmt.Previous.elif_part
-    },
-    next: {
-      check: ezP.T3.Stmt.Next.elif_part,
-    }
-  }
-  this.labelEnd = ':'
+  this.statementData.previous.check = ezP.T3.Stmt.Previous.elif_part
+  this.statementData.next.check = ezP.T3.Stmt.Next.elif_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.elif_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('elif_part')
@@ -332,16 +317,8 @@ ezP.DelegateSvg.Stmt.else_part = function (prototypeName) {
       label: 'else',
     }
   }
-  this.statementData = {
-    key: ezP.Const.Input.DO,
-    previous: {
-      check: ezP.T3.Stmt.Previous.else_part
-    },
-    next: {
-      check: ezP.T3.Stmt.Next.else_part,
-    }
-  }
-  this.labelEnd = ':'
+  this.statementData.previous.check = ezP.T3.Stmt.Previous.else_part
+  this.statementData.next.check = ezP.T3.Stmt.Next.else_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.else_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('else_part')
@@ -363,16 +340,8 @@ ezP.DelegateSvg.Stmt.while_part = function (prototypeName) {
       key: ezP.Const.Input.COND,
     }
   }
-  this.statementData = {
-    key: ezP.Const.Input.DO,
-    previous: {
-      check: ezP.T3.Stmt.Previous.while_part
-    },
-    next: {
-      check: ezP.T3.Stmt.Next.while_part,
-    }
-  }
-  this.labelEnd = ':'
+  this.statementData.previous.check = ezP.T3.Stmt.Previous.while_part
+  this.statementData.next.check = ezP.T3.Stmt.Next.while_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.while_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('while_part')
@@ -399,63 +368,78 @@ ezP.DelegateSvg.Stmt.for_part = function (prototypeName) {
       key: ezP.Const.Input.IN,
     }
   }
-  this.statementData = {
-    key: ezP.Const.Input.DO,
-    previous: {
-      check: ezP.T3.Stmt.Previous.for_part
-    },
-    next: {
-      check: ezP.T3.Stmt.Next.for_part,
-    }
-  }
-  this.labelEnd = ':'
+  this.statementData.previous.check = ezP.T3.Stmt.Previous.for_part
+  this.statementData.next.check = ezP.T3.Stmt.Next.for_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.for_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('for_part')
 
-
-
-ezP.DelegateSvg.Group.Bounded = function (prototypeName) {
-  ezP.DelegateSvg.Group.Bounded.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Group.Bounded, ezP.DelegateSvg.Group)
-//ezP.DelegateSvg.Manager.register('ELIF')
-//ezP.DelegateSvg.Manager.register('ELSE')
-
 /**
- * Initialize a block.
- * @param {!Blockly.Block} block to be initialized..
- * @extends {Blockly.Block}
+ * Class for a DelegateSvg, with_part block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Group.Bounded.prototype.preInitSvg = function (block) {
-  ezP.DelegateSvg.Group.Bounded.superClass_.preInitSvg.call(this, block)
-  this.svgPathDotted_ = Blockly.utils.createSvgElement('path',
-    {'d': 'M ' + ezP.Padding.h() + ',0 h ' + (ezP.Font.tabWidth - ezP.Padding.h())}, block.svgGroup_)
-  block.nextConnection.check_ = ezP.Type.Stmt.Check.none
-}
-
-/**
- * Deletes or nulls out any references to COM objects, DOM nodes, or other
- * disposable objects...
- * @protected
- */
-ezP.DelegateSvg.Group.Bounded.prototype.disposeInternal = function () {
-  goog.dom.removeNode(this.svgPathDotted_)
-  this.svgPathDotted_ = undefined
-  ezP.DelegateSvg.Group.Bounded.superClass_.disposeInternal.call(this)
-}
-
-/**
- * Draw the path of the block.
- * @param {!ezP.Block} block.
- * @private
- */
-ezP.DelegateSvg.Group.Bounded.prototype.renderDraw_ = function (block) {
-  ezP.DelegateSvg.Group.Bounded.superClass_.renderDraw_.call(this, block)
-  if (this.hasPreviousBoundedStatement_(block)) {
-    this.svgPathDotted_.setAttribute('class', 'ezp-path-dotted')
-  } else {
-    this.svgPathDotted_.setAttribute('class', 'ezp-no-path')
+ezP.DelegateSvg.Stmt.with_part = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.with_part.superClass_.constructor.call(this, prototypeName)
+  this.inputData = {
+    first: {
+      label: 'whith',
+      check: ezP.T3.Expr.with_item_list,
+      wrap: ezP.T3.Expr.with_item_list,
+    }
   }
+  this.statementData.previous.check = ezP.T3.Stmt.Previous.with_part
+  this.statementData.next.check = ezP.T3.Stmt.Next.with_part
 }
+goog.inherits(ezP.DelegateSvg.Stmt.with_part, ezP.DelegateSvg.Group)
+ezP.DelegateSvg.Manager.register('with_part')
+
+// bounded blocks are if/elif/else, for/else combinations.
+// A dotted separation would be appropriate to indicate the bound
+// ezP.DelegateSvg.Bounded = function (prototypeName) {
+//   ezP.DelegateSvg.Bounded.superClass_.constructor.call(this, prototypeName)
+// }
+// goog.inherits(ezP.DelegateSvg.Bounded, ezP.DelegateSvg.Group)
+// //ezP.DelegateSvg.Manager.register('ELIF')
+// //ezP.DelegateSvg.Manager.register('ELSE')
+
+// /**
+//  * Initialize a block.
+//  * @param {!Blockly.Block} block to be initialized..
+//  * @extends {Blockly.Block}
+//  * @constructor
+//  */
+// ezP.DelegateSvg.Bounded.prototype.preInitSvg = function (block) {
+//   ezP.DelegateSvg.Bounded.superClass_.preInitSvg.call(this, block)
+//   this.svgPathDotted_ = Blockly.utils.createSvgElement('path',
+//     {'d': 'M ' + ezP.Padding.h() + ',0 h ' + (ezP.Font.tabWidth - ezP.Padding.h())}, block.svgGroup_)
+//   block.nextConnection.check_ = ezP.Type.Stmt.Check.none
+// }
+
+// /**
+//  * Deletes or nulls out any references to COM objects, DOM nodes, or other
+//  * disposable objects...
+//  * @protected
+//  */
+// ezP.DelegateSvg.Bounded.prototype.disposeInternal = function () {
+//   goog.dom.removeNode(this.svgPathDotted_)
+//   this.svgPathDotted_ = undefined
+//   ezP.DelegateSvg.Bounded.superClass_.disposeInternal.call(this)
+// }
+
+// /**
+//  * Draw the path of the block.
+//  * @param {!ezP.Block} block.
+//  * @private
+//  */
+// ezP.DelegateSvg.Bounded.prototype.renderDraw_ = function (block) {
+//   ezP.DelegateSvg.Bounded.superClass_.renderDraw_.call(this, block)
+//   if (this.hasPreviousBoundedStatement_(block)) {
+//     this.svgPathDotted_.setAttribute('class', 'ezp-path-dotted')
+//   } else {
+//     this.svgPathDotted_.setAttribute('class', 'ezp-no-path')
+//   }
+// }

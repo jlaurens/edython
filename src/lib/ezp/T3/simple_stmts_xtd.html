@@ -6,6 +6,9 @@
 <head>
 </head>
 <body>
+<pre>
+main_stmt ::= green flag statement
+</pre>
 assignment_stmt ::=  (target_list "=")+ (starred_expression | yield_expression)
 target_list     ::=  target ("," target)* [","]
 target          ::=  identifier
@@ -65,6 +68,7 @@ docstring_top_stmt > top_docstring_stmt
 global_stmt ::=  "global" identifier ("," identifier)*
 nonlocal_stmt ::=  "nonlocal" identifier ("," identifier)*
 <pre>
+global_or_nonlocal_stmt ::=  global_stmt | nonlocal_stmt
 global_stmt ::=  "global" identifier_list
 identifier_list ::= identifier ("," identifier)*
 nonlocal_stmt ::=  "nonlocal" identifier_list

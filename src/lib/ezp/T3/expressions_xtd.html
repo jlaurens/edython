@@ -29,6 +29,11 @@ expression_list ::= non_void_expression_list
 optional_expression_list ::= ( expression ',' )* [ expression ]
 </pre>
 <pre>
+# literal ::= stringliteral | bytesliteral | integer | floatnumber | imagnumber
+literal ::= stringliteral | numberliteral | imagnumber
+numberliteral ::= bytesliteral | integer | floatnumber | numberliteral_concrete
+</pre>
+<pre>
 comp_iter_list ::= (comp_iter) *
 </pre>
 <pre>

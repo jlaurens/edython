@@ -22,7 +22,7 @@ goog.require('ezP.FieldDropdown')
 goog.require('ezP.FieldOptionsCode')
 goog.require('ezP.FieldVariable')
 
-Blockly.Blocks[ezP.Const.Ctl.MAIN] = {
+Blockly.Blocks[ezP.T3.Stmt.main] = {
   init: function () {
     this.setInputsInline(true)
     this.setPreviousStatement(false)
