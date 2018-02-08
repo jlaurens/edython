@@ -140,7 +140,6 @@ ezP.REMOVE_PRIMARY_CALL_ID = 'REMOVE_PRIMARY_CALL'
  * @private
  */
 ezP.DelegateSvg.Expr.prototype.populateContextMenuPrimary_ = function (block, menu) {
-  console.log(this.type_)
   if (ezP.T3.Expr.Check.primary.indexOf(this.type_)>=0) {
     var more_blocks = block.getDescendants().length < block.workspace.remainingCapacity() // can I add an attributeref
     menuItem = new ezP.MenuItem(

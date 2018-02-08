@@ -167,12 +167,10 @@ ezP.DelegateSvg.Manager.register('identifier_list')
  */
 ezP.DelegateSvg.Stmt.global_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.global_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
-    last: {
-      label: 'global',
-      check: ezP.T3.Expr.identifier_list,
-      wrap: ezP.T3.Expr.identifier_list
-    }
+  this.inputData.first = {
+    label: 'not yet available',
+    check: ezP.T3.Expr.identifier_list,
+    wrap: ezP.T3.Expr.identifier_list
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.global_stmt, ezP.DelegateSvg.Stmt)
@@ -183,6 +181,20 @@ ezP.DelegateSvg.Stmt.nonlocal_stmt = ezP.DelegateSvg.Stmt.global_stmt
 
 ezP.DelegateSvg.Manager.register('nonlocal_stmt')
 
+/**
+ * Set the [python ]type of the delegate according to the type of the block.
+ * @param {!Blockly.Block} block to be initialized..
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.global_stmt.prototype.setupType = function (block) {
+  ezP.DelegateSvg.Stmt.global_stmt.superClass_.setupType.call(this, block)
+  if (block.type === ezP.T3.Stmt.global_stmt) {
+    this.inputs.first.fieldLabel.setValue('global')
+  } else {
+    this.inputs.first.fieldLabel.setValue('nonlocal')
+  }
+}
+
 ezP.GLOBAL_OR_NONLOCAL_ID  = 'GLOBAL_OR_NONLOCAL'
 
 /**
@@ -191,8 +203,8 @@ ezP.GLOBAL_OR_NONLOCAL_ID  = 'GLOBAL_OR_NONLOCAL'
  * @param {!goo.ui.Menu} menu The menu to populate.
  * @private
  */
-ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, menu) {
-  var value = this.fieldOperator.getValue()
+ezP.DelegateSvg.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (block, menu) {
+  var value = this.inputs.first.fieldLabel.getValue()
   var ezp = this
   var F = function(label, type) {
     var menuItem = new ezP.MenuItem(
@@ -204,7 +216,7 @@ ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
   }
   F('global ...', ezP.T3.Stmt.global_stmt)
   F('nonlocal ...', ezP.T3.Stmt.nonlocal_stmt)
-  ezP.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this,block, menu)
+  ezP.DelegateSvg.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this,block, menu)
   return true
 }
 
@@ -215,19 +227,14 @@ ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Operator.prototype.handleActionMenuEventFirst = function (block, menu, event) {
+ezP.DelegateSvg.Stmt.global_stmt.prototype.handleActionMenuEventFirst = function (block, menu, event) {
   var model = event.target.getModel()
   var action = model[0]
   if (action == ezP.GLOBAL_OR_NONLOCAL_ID) {
     var type = model[1]
-    if (type === ezP.T3.Stmt.global_stmt) {
-      this.inputs.first.fieldLabel.setValue('global')
-    } else {
-      this.inputs.first.fieldLabel.setValue('nonlocal')
-    }
     block.type = type
     this.setupType(block)
     return true
   }
-  return ezP.DelegateSvg.Operator.superClass_.handleActionMenuEventFirst.call(this, block, menu, event)
+  return ezP.DelegateSvg.Stmt.global_stmt.superClass_.handleActionMenuEventFirst.call(this, block, menu, event)
 }
