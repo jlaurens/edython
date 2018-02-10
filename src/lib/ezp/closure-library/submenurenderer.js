@@ -75,9 +75,6 @@ ezP.SubMenuRenderer.prototype.createDom = function (control) {
   var element =
     ezP.SubMenuRenderer.superClass_.createDom.call(this, subMenu)
   goog.dom.classlist.remove(element, goog.ui.SubMenuRenderer.CSS_CLASS)
-  goog.dom.classlist.add(element, 'ezp-nocheckbox')
-  goog.dom.classlist.add(element, 'ezp-noaccel')
-
   return element
 }
 

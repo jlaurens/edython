@@ -1,15 +1,28 @@
 /**
- * ezPython
- *
- * Copyright 2017 Jérôme LAURENS.
- *
- * License CeCILL-B
- */
+  * ezPython
+  *
+  * Copyright 2017 Jérôme LAURENS.
+  *
+  * License CeCILL-B
+  */
 /**
- * @fileoverview Renderer for {@link goog.ui.MenuItem}s.
- * Twisted to fit print options and alike.
- * @author attila@google.com (Attila Bodis)
- */
+  * @fileoverview Renderer for {@link goog.ui.MenuItem}s.
+  * Twisted to fit print options and alike.
+  * A menu separator is
+  * <div class="ezp-menuseparator"></div>
+  * and a menu item is
+  * <div class="ezp-menuitem"></div>
+  * <div class="ezp-menuitem">
+  *    <div class="ezp-menuitem-content">
+  *      <div class="ezp-menuitem-code-checkbox" style="display: inline; position: relative; width: 11.9242px; left: -7.92416px; top: 2px;"><svg class="ezp-checkbox-icon" height="11.924164524421593" width="11.924164524421593"><rect class="ezp-checkbox-icon-rect" x="0" y="0" rx="2.5" ry="2.5" height="11.924164524421593" width="11.924164524421593"></rect><rect class="ezp-checkbox-icon-mark ezp-checked" x="2" y="2" rx="2" ry="2" height="7.9241645244215935" width="7.9241645244215935" style="opacity: 0.5;"></rect></svg></div>content</div></div>
+  * 
+  * Known classes for menu items are
+  * ezp-code, for code snippets
+  * ezp-accel, to reserve room for a key shortcut (accelerator)
+  * ezp-checkbox, to reserve room for a checkbox
+  * See the subemnu renderer for submenus.
+  * @author jerome.laurens@u-bourgogne.fr
+  */
 
 goog.provide('ezP.MenuItemRenderer')
 goog.provide('ezP.KeyValueMenuItemRenderer')
@@ -20,29 +33,6 @@ goog.provide('ezP.SeparatorRenderer')
 
 goog.require('goog.ui.MenuItemRenderer')
 goog.require('ezP.Style')
-
-// NB: take a look at goog.ui.ControlRenderer.getCustomRenderer
-
-ezP.MenuItemRenderer = function () {
-  goog.ui.MenuItemRenderer.call(this)
-}
-
-goog.inherits(ezP.MenuItemRenderer, goog.ui.MenuItemRenderer)
-goog.addSingletonGetter(ezP.MenuItemRenderer)
-
-/**
- * Overrides {@link goog.ui.MenuItemRenderer#createDom} by adding extra markup
- * and stying to the menu item's element if it is selectable or checkable.
- * @param {goog.ui.Control} item Menu item to render.
- * @return {Element} Root element for the item.
- * @override
- */
-ezP.MenuItemRenderer.prototype.createDom = function (item) {
-  var element = ezP.MenuItemRenderer.superClass_.createDom.call(this, item)
-  Blockly.utils.addClass(element, 'ezp-nocheckbox')
-  Blockly.utils.addClass(element, 'ezp-noaccel')
-  return element
-}
 
 ezP.Style.setControlRendererCssClass = (function () {
   var helper = function (name, dict) {
@@ -84,6 +74,54 @@ ezP.Style.setControlRendererCssClass = (function () {
   }
 }())
 
+/**
+  * Renderer for menu items separators.
+  * Create the dom element:
+  * <div class="ezp-menuseparator"></div>
+  * @constructor
+  * @extends {goog.ui.MenuSeparatorRenderer}
+  */
+ezP.MenuSeparatorRenderer = function () {
+  goog.ui.MenuSeparatorRenderer.call(this)
+}
+goog.inherits(ezP.MenuSeparatorRenderer, goog.ui.MenuSeparatorRenderer)
+goog.addSingletonGetter(ezP.MenuSeparatorRenderer)
+
+ezP.Style.setControlRendererCssClass(
+  ezP.MenuSeparatorRenderer,
+  'ezp-menuseparator',
+  { 'border-top': '1px solid #ccc',
+    'margin': 0,
+    'padding': 0}
+)
+
+/**
+  * Renderer for menu items.
+  * @constructor
+  * @extends {goog.ui.MenuSeparatorRenderer}
+  */
+
+// NB: take a look at goog.ui.ControlRenderer.getCustomRenderer
+
+ezP.MenuItemRenderer = function () {
+  goog.ui.MenuItemRenderer.call(this)
+}
+
+goog.inherits(ezP.MenuItemRenderer, goog.ui.MenuItemRenderer)
+goog.addSingletonGetter(ezP.MenuItemRenderer)
+
+/**
+  * Overrides {@link goog.ui.MenuItemRenderer#createDom} by adding extra markup
+  * and stying to the menu item's element if it is selectable or checkable.
+  * @param {goog.ui.Control} item Menu item to render.
+  * @return {Element} Root element for the item.
+  * @override
+  */
+ezP.MenuItemRenderer.prototype.createDom = function (item) {
+  var element = ezP.MenuItemRenderer.superClass_.createDom.call(this, item)
+  return element
+}
+
 ezP.Style.setControlRendererCssClass(
   ezP.MenuItemRenderer,
   'ezp-menuitem',
@@ -94,15 +132,15 @@ ezP.Style.setControlRendererCssClass(
 )
 
 /**
- * Takes a single {@link goog.ui.Component.State}, and returns the
- * corresponding CSS class name (null if none).
- * No overriding by goog.ui.MenuItemRenderer.
- * It exists to be used below.
- * @param {goog.ui.Component.State} state Component state.
- * @return {string|undefined} CSS class representing the given state
- *     (undefined if none).
- * @override
- */
+  * Takes a single {@link goog.ui.Component.State}, and returns the
+  * corresponding CSS class name (null if none).
+  * No overriding by goog.ui.MenuItemRenderer.
+  * It exists to be used below.
+  * @param {goog.ui.Component.State} state Component state.
+  * @return {string|undefined} CSS class representing the given state
+  *     (undefined if none).
+  * @override
+  */
 ezP.MenuItemRenderer.prototype.getClassForState = function (state) {
   return ezP.MenuItemRenderer.superClass_.getClassForState.call(
     this, state)
@@ -117,7 +155,7 @@ goog.addSingletonGetter(ezP.KeyValueMenuItemRenderer)
 
 ezP.Style.setControlRendererCssClass(
   ezP.KeyValueMenuItemRenderer,
-  'ezp-key-value-menuitem',
+  'ezp-menuitem-code',
   'content',
   {'padding': '4px 6px 4px ' + (ezP.Font.space + 12) + 'px;'},
   'hover',
@@ -192,14 +230,14 @@ ezP.KeyValueMenuItemRenderer.prototype.getContentElement = function (element) {
 }
 
 /**
- * Overrides {@link goog.ui.ControlRenderer#decorate} by initializing the
- * menu item to checkable based on whether the element to be decorated has
- * extra stying indicating that it should be.
- * @param {goog.ui.Control} item Menu item instance to decorate the element.
- * @param {Element} element Element to decorate.
- * @return {Element} Decorated element.
- * @override
- */
+  * Overrides {@link goog.ui.ControlRenderer#decorate} by initializing the
+  * menu item to checkable based on whether the element to be decorated has
+  * extra stying indicating that it should be.
+  * @param {goog.ui.Control} item Menu item instance to decorate the element.
+  * @param {Element} element Element to decorate.
+  * @return {Element} Decorated element.
+  * @override
+  */
 ezP.KeyValueMenuItemRenderer.prototype.decorate = function (item, element) {
   goog.asserts.assert(element)
   if (!this.hasContentStructure(element)) {
@@ -236,12 +274,12 @@ ezP.KeyValueMenuItemRenderer.prototype.decorate = function (item, element) {
 // }
 
 /**
- * Returns true if the element appears to have a proper menu item structure by
- * checking whether its first child has the appropriate structural class name.
- * @param {Element} element Element to check.
- * @return {boolean} Whether the element appears to have a proper menu item DOM.
- * @protected
- */
+  * Returns true if the element appears to have a proper menu item structure by
+  * checking whether its first child has the appropriate structural class name.
+  * @param {Element} element Element to check.
+  * @return {boolean} Whether the element appears to have a proper menu item DOM.
+  * @protected
+  */
 ezP.KeyValueMenuItemRenderer.prototype.hasContentStructure = function (element) {
   var child = goog.dom.getFirstElementChild(element)
   var contentClassName = this.getCompositeCssClass_(
@@ -314,14 +352,14 @@ ezP.KeyValueMenuItemRenderer.prototype.hasContentStructure = function (element) 
 // }
 
 /**
- * Adds or removes extra markup and CSS styling to the menu item to make it
- * selectable or non-selectable, depending on the value of the
- * {@code selectable} argument.
- * @param {!goog.ui.Control} item Menu item to update.
- * @param {!Element} element Menu item element to update.
- * @param {boolean} enable Whether to add or remove the checkbox structure.
- * @protected
- */
+  * Adds or removes extra markup and CSS styling to the menu item to make it
+  * selectable or non-selectable, depending on the value of the
+  * {@code selectable} argument.
+  * @param {!goog.ui.Control} item Menu item to update.
+  * @param {!Element} element Menu item element to update.
+  * @param {boolean} enable Whether to add or remove the checkbox structure.
+  * @protected
+  */
 ezP.KeyValueMenuItemRenderer.prototype.setEnableCheckBoxStructure = function (
   item, element, enable) {
   this.setAriaRole(element, item.getPreferredAriaRole())
@@ -372,34 +410,34 @@ ezP.KeyValueMenuItemRenderer.prototype.setEnableCheckBoxStructure = function (
 }
 
 /**
- * Takes a single CSS class name which may represent a component state, and
- * returns the corresponding component state (0x00 if none).  Overrides the
- * superclass implementation by treating 'goog-option-selected' as special,
- * for backwards compatibility.
- * @param {string} className CSS class name, possibly representing a component
- *     state.
- * @return {goog.ui.Component.State} state Component state corresponding
- *     to the given CSS class (0x00 if none).
- * @override
- */
+  * Takes a single CSS class name which may represent a component state, and
+  * returns the corresponding component state (0x00 if none).  Overrides the
+  * superclass implementation by treating 'goog-option-selected' as special,
+  * for backwards compatibility.
+  * @param {string} className CSS class name, possibly representing a component
+  *     state.
+  * @return {goog.ui.Component.State} state Component state corresponding
+  *     to the given CSS class (0x00 if none).
+  * @override
+  */
 ezP.KeyValueMenuItemRenderer.prototype.getStateFromClass = function (className) {
   return goog.ui.MenuItemRenderer.superClass_.getStateFromClass.call(
     this, className)
 }
 
 /**
- * Default renderer for {@link goog.ui.MenuItem}s.  Each item has the following
- * structure:
- *
- *    <div class="ezp-menuitem">
- *      <div class="ezp-menuitem-content">
- *        ...(menu item contents)...
- *      </div>
- *    </div>
- *
- * @constructor
- * @extends {goog.ui.ControlRenderer}
- */
+  * Default renderer for {@link goog.ui.MenuItem}s.  Each item has the following
+  * structure:
+  *
+  *    <div class="ezp-menuitem">
+  *      <div class="ezp-menuitem-content">
+  *        ...(menu item contents)...
+  *      </div>
+  *    </div>
+  *
+  * @constructor
+  * @extends {goog.ui.ControlRenderer}
+  */
 
 ezP.NoOptionMenuItemRenderer = function () {
   goog.ui.MenuItemRenderer.call(this)
@@ -416,14 +454,14 @@ ezP.NoOptionMenuItemRenderer.prototype.getClassForState =
   ezP.MenuItemRenderer.prototype.getClassForState
 
 /**
- * Overrides {@link goog.ui.ControlRenderer#decorate} by initializing the
- * menu item to checkable based on whether the element to be decorated has
- * extra stying indicating that it should be.
- * @param {goog.ui.Control} item Menu item instance to decorate the element.
- * @param {Element} element Element to decorate.
- * @return {Element} Decorated element.
- * @override
- */
+  * Overrides {@link goog.ui.ControlRenderer#decorate} by initializing the
+  * menu item to checkable based on whether the element to be decorated has
+  * extra stying indicating that it should be.
+  * @param {goog.ui.Control} item Menu item instance to decorate the element.
+  * @param {Element} element Element to decorate.
+  * @return {Element} Decorated element.
+  * @override
+  */
 ezP.NoOptionMenuItemRenderer.prototype.decorate = function (item, element) {
   goog.asserts.assert(element)
   if (!this.hasContentStructure(element)) {
@@ -435,10 +473,10 @@ ezP.NoOptionMenuItemRenderer.prototype.decorate = function (item, element) {
 }
 
 /**
- * Renderer of a menu item for a variable.
- * @constructor
- * @extends {goog.ui.MenuItemRenderer}
- */
+  * Renderer of a menu item for a variable.
+  * @constructor
+  * @extends {goog.ui.MenuItemRenderer}
+  */
 
 ezP.MenuItemCodeRenderer = function () {
   ezP.MenuItemCodeRenderer.superClass_.constructor.call(this)
@@ -457,28 +495,28 @@ ezP.Style.setControlRendererCssClass(
 )
 
 /**
- * Adds or removes extra markup and CSS styling to the menu item to make it
- * selectable or non-selectable, depending on the value of the
- * {@code selectable} argument.
- * @param {!goog.ui.Control} item Menu item to update.
- * @param {!Element} element Menu item element to update.
- * @param {boolean} enable Whether to add or remove the checkbox structure.
- * @protected
- */
+  * Adds or removes extra markup and CSS styling to the menu item to make it
+  * selectable or non-selectable, depending on the value of the
+  * {@code selectable} argument.
+  * @param {!goog.ui.Control} item Menu item to update.
+  * @param {!Element} element Menu item element to update.
+  * @param {boolean} enable Whether to add or remove the checkbox structure.
+  * @protected
+  */
 ezP.MenuItemCodeRenderer.prototype.setEnableCheckBoxStructure = function (
   item, element, enable) {
   ezP.MenuItemCodeRenderer.superClass_.setEnableCheckBoxStructure.call(this,
     item, element, enable)
-  if (!item.isSupportedState(goog.ui.Component.State.CHECKED)) {
-    Blockly.utils.addClass(element, 'ezp-nocheckbox')
+  if (item.isSupportedState(goog.ui.Component.State.CHECKED)) {
+    Blockly.utils.addClass(element, 'ezp-checkbox')
   }
 }
 
 /**
- * Renderer of a menu item for a variable.
- * @constructor
- * @extends {goog.ui.MenuItemRenderer}
- */
+  * Renderer of a menu item for a variable.
+  * @constructor
+  * @extends {goog.ui.MenuItemRenderer}
+  */
 
 ezP.MenuItemVarRenderer = function () {
   ezP.MenuItemRenderer.call(this)
@@ -494,23 +532,4 @@ ezP.Style.setControlRendererCssClass(
   {'': ezP.Font.style},
   'hover',
   {'background-color': '#d6e9f8'}
-)
-
-/**
- * Renderer for menu separators.
- * @constructor
- * @extends {goog.ui.MenuSeparatorRenderer}
- */
-ezP.MenuSeparatorRenderer = function () {
-  goog.ui.MenuSeparatorRenderer.call(this)
-}
-goog.inherits(ezP.MenuSeparatorRenderer, goog.ui.MenuSeparatorRenderer)
-goog.addSingletonGetter(ezP.MenuSeparatorRenderer)
-
-ezP.Style.setControlRendererCssClass(
-  ezP.MenuSeparatorRenderer,
-  'ezp-menuseparator',
-  { 'border-top': '1px solid #ccc',
-    'margin': 0,
-    'padding': 0}
 )

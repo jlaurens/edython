@@ -59,18 +59,17 @@ import_module ::= "import" non_void_module_named_list
 non_void_module_named_list ::= module_named ( "," module_named )*
 module_named ::= module [ "as" module_name ]
 module ::= module_name | module '.' module_name
-module_name ::= the uasge name of a module
+module_name ::= identifier
 #name            ::=  identifier
 name ::= IGNORE
 
-
-from_relative_module_import ::= "from" relative_module "import" non_void_import_identifier_named_list
+from_relative_module_import ::= "from" relative_module "import" non_void_identifier_named_list
 # relative_module ::=  "."* module | "."+
 relative_module ::=  module | parent_module
 parent_module ::= '.' [relative_module]
-non_void_import_identifier_named_list ::= import_identifier_named ( "," import_identifier_named )*
-import_identifier_named ::= import_identifier "as" import_name
-import_identifier ::= an identifier but not a variable name
+non_void_identifier_named_list ::= identifier_named ( "," identifier_named )*
+identifier_named ::= identifier "as" import_name
+identifier ::= an identifier but not a variable name
 import_name ::= the usage name of an imported identifier
 
 from_module_import ::= "from" module "import" "*"
