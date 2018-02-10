@@ -135,7 +135,6 @@ ezP.DelegateSvg.Stmt.return_stmt = function (prototypeName) {
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.return_stmt, ezP.DelegateSvg.Stmt)
-
 ezP.DelegateSvg.Manager.register('return_stmt')
 
 /**
@@ -167,7 +166,7 @@ ezP.DelegateSvg.Manager.register('identifier_list')
  */
 ezP.DelegateSvg.Stmt.global_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.global_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData.first = {
+  this.inputData.last = {
     label: 'not yet available',
     check: ezP.T3.Expr.identifier_list,
     wrap: ezP.T3.Expr.identifier_list
@@ -189,9 +188,9 @@ ezP.DelegateSvg.Manager.register('nonlocal_stmt')
 ezP.DelegateSvg.Stmt.global_stmt.prototype.setupType = function (block) {
   ezP.DelegateSvg.Stmt.global_stmt.superClass_.setupType.call(this, block)
   if (block.type === ezP.T3.Stmt.global_stmt) {
-    this.inputs.first.fieldLabel.setValue('global')
+    this.inputs.last.fieldLabel.setValue('global')
   } else {
-    this.inputs.first.fieldLabel.setValue('nonlocal')
+    this.inputs.last.fieldLabel.setValue('nonlocal')
   }
 }
 
@@ -204,7 +203,7 @@ ezP.GLOBAL_OR_NONLOCAL_ID  = 'GLOBAL_OR_NONLOCAL'
  * @private
  */
 ezP.DelegateSvg.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (block, menu) {
-  var value = this.inputs.first.fieldLabel.getValue()
+  var value = this.inputs.last.fieldLabel.getValue()
   var ezp = this
   var F = function(label, type) {
     var menuItem = new ezP.MenuItem(

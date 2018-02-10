@@ -145,8 +145,7 @@ ezP.Consolidator.List.prototype.disposeFromStartToI = function (io) {
 ezP.Consolidator.List.prototype.insertPlaceholderAtI = function (io) {
   var c8n = io.block.makeConnection_(Blockly.INPUT_VALUE)
   var input = new Blockly.Input(Blockly.INPUT_VALUE, 'ITEM_*', io.block, c8n)
-  ezP.Input.setupEzpData(input)
-  input.ezpData.listed_ = true
+  ezP.Input.setupEzpData(input, {listed_: true})
   this.insertAtI(io, io.i, input)
   this.setupIO(io)
 }

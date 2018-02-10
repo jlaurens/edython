@@ -58,25 +58,25 @@ goog.inherits(ezP.DelegateSvg.Expr.or_expr_star_star, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('or_expr_star_star')
 
 /**
-* Class for a DelegateSvg, identifier_dotted.
+* Class for a DelegateSvg, dotted_identifier.
 * For ezPython.
 * @param {?string} prototypeName Name of the language object containing
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Expr.identifier_dotted = function (prototypeName) {
-  ezP.DelegateSvg.Expr.identifier_dotted.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.dotted_identifier = function (prototypeName) {
+  ezP.DelegateSvg.Expr.dotted_identifier.superClass_.constructor.call(this, prototypeName)
   this.inputData = {
     first: {
       label: '.',
       check: ezP.T3.Expr.identifier
     }
   }
-  this.outputCheck = ezP.T3.Expr.identifier_dotted
+  this.outputCheck = ezP.T3.Expr.dotted_identifier
 }
-goog.inherits(ezP.DelegateSvg.Expr.identifier_dotted, ezP.DelegateSvg.Expr)
+goog.inherits(ezP.DelegateSvg.Expr.dotted_identifier, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register('identifier_dotted')
+ezP.DelegateSvg.Manager.register('dotted_identifier')
 
 /**
 * Class for a DelegateSvg, await_expr.

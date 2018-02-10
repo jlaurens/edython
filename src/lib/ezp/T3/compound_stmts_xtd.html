@@ -61,9 +61,12 @@ If a parameter has a default value, all following parameters up until the â€œ*â€
 
 <pre>
 funcdef_part ::= "def" funcname "(" [parameter_list] ")" ["->" expression] ":"
-funcdef ::=
-decorator_part ::=  "@" dotted_name ["(" [argument_list [","]] ")"]
-
+funcdef ::= REMOVE
+decorator_part ::=  "@" dotted_funcname [parenth_argument_list]
+dotted_funcname ::= funcname | dotting_identifier '.' dotted_funcname
+dotting_identifier ::= identifier
+decorator ::= REMOVE
+parenth_argument_list ::= "(" [argument_list [","]] ")"
 decorator_part < decorator_part | funcdef_part
 </pre>
 
@@ -94,11 +97,10 @@ parameter_no_star ::= parameter | defparameter
 </pre>
 
 classdef    ::=  [decorators] "class" classname [inheritance] ":" suite
-inheritance ::=  "(" [argument_list] ")"
 classname   ::=  identifier
 
 <pre>
-classdef_part ::=  "class" classname [inheritance] ":"
+classdef_part ::=  "class" classname [parenth_argument_list] ":"
 classdef ::=
 decorator_part < classdef_part
 </pre>

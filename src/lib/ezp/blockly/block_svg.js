@@ -70,7 +70,7 @@ ezP.BlockSvg.prototype.getInput = function (name) {
   if (!input) {
     input = ezP.BlockSvg.superClass_.getInput.call(this, name)
   }
-  ezP.Input.setupEzpData(this, input)
+  ezP.Input.setupEzpData(input)
   return input
 }
 

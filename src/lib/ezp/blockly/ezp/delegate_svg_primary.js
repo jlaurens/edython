@@ -68,8 +68,8 @@ ezP.DelegateSvg.Expr.attributeref = function (prototypeName) {
   ezP.DelegateSvg.Expr.attributeref.superClass_.constructor.call(this, prototypeName)
   this.inputData.last = {
     key: ezP.Const.Input.SECONDARY,
-    check: ezP.T3.Expr.identifier_dotted,
-    wrap: ezP.T3.Expr.identifier_dotted
+    check: ezP.T3.Expr.dotted_identifier,
+    wrap: ezP.T3.Expr.dotted_identifier
   }
   this.outputCheck = ezP.T3.Expr.attributeref 
 }
@@ -142,22 +142,26 @@ ezP.REMOVE_PRIMARY_CALL_ID = 'REMOVE_PRIMARY_CALL'
 ezP.DelegateSvg.Expr.prototype.populateContextMenuPrimary_ = function (block, menu) {
   if (ezP.T3.Expr.Check.primary.indexOf(this.type_)>=0) {
     var more_blocks = block.getDescendants().length < block.workspace.remainingCapacity() // can I add an attributeref
-    menuItem = new ezP.MenuItem(
+    var subMenu = new ezP.SubMenu(ezP.Msg.ADD)
+
+    var menuItem = new ezP.MenuItem(
       ezP.Msg.ADD_PRIMARY_ATTRIBUTE,
       [ezP.ADD_PRIMARY_ATTRIBUTE_ID])
-    menu.addChild(menuItem, true)
+    subMenu.addChild(menuItem, true)
     menuItem.setEnabled(more_blocks)
     menuItem = new ezP.MenuItem(
       ezP.Msg.ADD_PRIMARY_SLICING,
       [ezP.ADD_PRIMARY_SLICING_ID])
-    menu.addChild(menuItem, true)
+    subMenu.addChild(menuItem, true)
     menuItem.setEnabled(more_blocks)
     menuItem = new ezP.MenuItem(
       ezP.Msg.ADD_PRIMARY_CALL,
       [ezP.ADD_PRIMARY_CALL_ID])
-    menu.addChild(menuItem, true)
+    subMenu.addChild(menuItem, true)
     menuItem.setEnabled(more_blocks)
-    var menuItem
+    menu.addChild(subMenu, true)
+    Blockly.utils.addClass(subMenu.getMenu().getElement(), 'ezp-nosubmenu')
+
     var parent = block.getParent();
     if (parent) {
       var c8n = parent.ezp.getPrimaryConnection(parent)

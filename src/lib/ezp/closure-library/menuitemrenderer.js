@@ -97,6 +97,7 @@ ezP.Style.setControlRendererCssClass(
  * Takes a single {@link goog.ui.Component.State}, and returns the
  * corresponding CSS class name (null if none).
  * No overriding by goog.ui.MenuItemRenderer.
+ * It exists to be used below.
  * @param {goog.ui.Component.State} state Component state.
  * @return {string|undefined} CSS class representing the given state
  *     (undefined if none).
@@ -122,9 +123,6 @@ ezP.Style.setControlRendererCssClass(
   'hover',
   {'background-color': '#d6e9f8'}
 )
-
-ezP.KeyValueMenuItemRenderer.prototype.getClassForState =
-  ezP.MenuItemRenderer.prototype.getClassForState
 
 // /**
 //  * Constants for referencing composite CSS classes.
@@ -443,7 +441,7 @@ ezP.NoOptionMenuItemRenderer.prototype.decorate = function (item, element) {
  */
 
 ezP.MenuItemCodeRenderer = function () {
-  ezP.MenuItemRenderer.call(this)
+  ezP.MenuItemCodeRenderer.superClass_.constructor.call(this)
 }
 
 goog.inherits(ezP.MenuItemCodeRenderer, ezP.MenuItemRenderer)

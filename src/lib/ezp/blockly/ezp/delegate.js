@@ -75,7 +75,7 @@ ezP.Delegate.Manager = function () {
       available = ezP.T3.Expr.Available
     } else if ((prototypeName = ezP.T3.Stmt[key])) {
       Ctor = ezP.Delegate[key]
-      available = ezP.T3.Expr.Available
+      available = ezP.T3.Stmt.Available
     } else {
       throw "Unknown block ezP.T3.Expr ot ezP.T3.Stmt key: "+key
     }

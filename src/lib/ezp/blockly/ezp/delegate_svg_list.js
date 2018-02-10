@@ -128,14 +128,12 @@ ezP.DelegateSvg.List.prototype.getInput = function (block, name) {
     } while ((input = list[++i]) && (ezp = input.ezp))
     var c8n = block.makeConnection_(Blockly.INPUT_VALUE)
     input = new Blockly.Input(Blockly.INPUT_VALUE, 'S7R_' + (n + 1), block, c8n)
-    ezP.Input.setupEzpData(input)
-    goog.mixin(input.ezpData,{n: n + 1, sep: sep, s7r_: true})
+    ezP.Input.setupEzpData(input, {n: n + 1, sep: sep, s7r_: true})
     input.appendField(new Blockly.FieldLabel(sep || this.consolidator.defaultSep))
     list.splice(i, 0, input)
     c8n = block.makeConnection_(Blockly.INPUT_VALUE)
     input = new Blockly.Input(Blockly.INPUT_VALUE, name, block, c8n)
-    ezP.Input.setupEzpData(input)
-    goog.mixin(input.ezpData, {n: n, sep: sep})
+    ezP.Input.setupEzpData(input, {n: n, sep: sep})
     list.splice(i, 0, input)
     return input
   }
@@ -164,6 +162,60 @@ ezP.DelegateSvg.List.prototype.consolidator = undefined
 ezP.DelegateSvg.List.prototype.initBlock = function(block) {
   ezP.DelegateSvg.List.superClass_.initBlock.call(this, block)
   block.appendValueInput('ITEM_0')
+}
+
+/**
+ * Clear the list af all items.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.List.prototype.removeItems = function(block) {
+  var list = block.inputList
+  var i = 0
+  var input
+  Blockly.Events.setGroup(true)
+  while ((input = list[i++])) {
+    var c8n = input.connection
+    var target = c8n.targetBlock()
+    if (target) {
+      c8n.disconnect()
+      target.dispose()
+    }
+  }
+  this.consolidate(block)
+  Blockly.Events.setGroup(false)
+}
+
+/**
+ * Returns the item count.
+ * Count the inputs that are not separators.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.List.prototype.getItemCount = function(block) {
+  var list = block.inputList
+  var i = 0
+  var input
+  var count = 0
+  while ((input = list[i++])) {
+    if (!input.ezpData.s7r_) {
+      ++ count
+    }
+  }
+  return count
+}
+
+/**
+ * Returns the item at the given index.
+ * Count the inputs that are not separators.
+ * For ezPython.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.List.prototype.getItemAtIndex = function(block, i) {
+  return this.getInput(block, 'ITEM_'+i)
 }
 
 /**

@@ -146,7 +146,7 @@ goog.inherits(ezP.MenuItem, goog.ui.MenuItem)
 goog.tagUnsealableClass(ezP.MenuItem)
 
 /**
- * Class representing an item for a variable in a menu.
+ * Class representing a piece of code in a menu.
  *
  * @param {goog.ui.ControlContent} content Text caption or DOM structure to
  *     display as the content of the item (use to add icons or styling to
@@ -159,13 +159,31 @@ goog.tagUnsealableClass(ezP.MenuItem)
  * @extends {goog.ui.MenuItem}
  */
 ezP.MenuItemCode = function (content, optModel, optDomHelper, optRenderer) {
-  goog.ui.Control.call(
-    this, content, optRenderer || ezP.MenuItemCodeRenderer.getInstance(),
-    optDomHelper)
-  this.setValue(optModel)
+  goog.ui.MenuItem.call(
+    this, content, optModel,
+    optDomHelper, optRenderer || ezP.MenuItemCodeRenderer.getInstance())
 }
 goog.inherits(ezP.MenuItemCode, goog.ui.MenuItem)
 goog.tagUnsealableClass(ezP.MenuItemCode)
+
+/**
+ * Class representing an item for a variable in a menu.
+ *
+ * @param {goog.ui.ControlContent} content Text caption or DOM structure to
+ *     display as the content of the item (use to add icons or styling to
+ *     menus).
+ * @param {String} action, string identifying the action.
+ * @param {String} value, value associated to the action.
+ * @constructor
+ * @extends {ezP.SimpleMenuItemCode}
+ */
+ezP.SimpleMenuItemCode = function (content, action, value) {
+  ezP.SimpleMenuItemCode.superClass_.constructor.call(
+    this, content, [action, value],
+    undefined, ezP.MenuItemCodeRenderer.getInstance())
+}
+goog.inherits(ezP.SimpleMenuItemCode, ezP.MenuItemCode)
+goog.tagUnsealableClass(ezP.SimpleMenuItemCode)
 
 /**
  * Class representing an item for a variable in a menu.

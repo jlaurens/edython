@@ -27,7 +27,9 @@ goog.require('ezP')
 /** @export */ ezP.Msg.CONNECT_MAIN_BLOCK_DLG_TOOLTIP = 'Exécuter les instructions suivant ce bloc en appuyant sur le bouton.'
 
 /** @export */ ezP.Msg.USE_PROPER_SLICING_STRIDE = 'pas personnalisé'
-/** @export */ ezP.Msg.UNUSE_PROPER_SLICING_STRIDE = 'pas par défaut'
+/** @export */ ezP.Msg.UNUSE_PROPER_SLICING_STRIDE = 'pas de 1'
+
+/** @export */ ezP.Msg.ADD = 'Ajouter'
 
 /** @export */ ezP.Msg.ADD_PRIMARY_ATTRIBUTE = 'Ajouter `.attribute`'
 /** @export */ ezP.Msg.ADD_PRIMARY_SLICING = 'Ajouter `[...]`'

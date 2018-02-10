@@ -25,10 +25,10 @@ ezP.Const.Field = {
   LABEL: 'LABEL',
   DOTS: 'DOTS',
   VALUE: 'VALUE',
+  ID: 'ID',
   // IN PROGRESS
   VAR: 'VAR',
   STARS: 'STARS',
-  ID: 'ID',
   ANN: 'ANN',
   DFT: 'DFT',
   ANY: 'ANY',

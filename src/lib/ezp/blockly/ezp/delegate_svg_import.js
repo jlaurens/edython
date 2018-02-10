@@ -256,10 +256,10 @@ ezP.DelegateSvg.Expr.from_module_import.prototype.initBlock = function(block) {
     .appendField(new ezP.FieldLabel('import *'))
 }
 
-/////////////////     identifier_named_list      ///////////////////
+/////////////////     non_void_identifier_named_list      ///////////////////
 
 /**
- * Class for a DelegateSvg, identifier_named_list block.
+ * Class for a DelegateSvg, non_void_identifier_named_list block.
  * This block may be sealed.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
@@ -267,14 +267,14 @@ ezP.DelegateSvg.Expr.from_module_import.prototype.initBlock = function(block) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.identifier_named_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.identifier_named_list.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.non_void_identifier_named_list = function (prototypeName) {
+  ezP.DelegateSvg.Expr.non_void_identifier_named_list.superClass_.constructor.call(this, prototypeName)
   this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.identifier_named, false, ',')
-  this.outputCheck = ezP.T3.Expr.identifier_named_list
+  this.outputCheck = ezP.T3.Expr.non_void_identifier_named_list
 }
-goog.inherits(ezP.DelegateSvg.Expr.identifier_named_list, ezP.DelegateSvg.List)
+goog.inherits(ezP.DelegateSvg.Expr.non_void_identifier_named_list, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register('identifier_named_list')
+ezP.DelegateSvg.Manager.register('non_void_identifier_named_list')
 
 /////////////////     from_relative_module_import      ///////////////////
 
@@ -309,8 +309,8 @@ ezP.DelegateSvg.Expr.from_relative_module_import.prototype.initBlock = function(
     .appendField(new ezP.FieldLabel('from'))
     .appendField(new ezP.FieldLabel(' '))
     .appendField(new ezP.FieldTextInput('...'), ezP.Const.Field.DOTS)
-  this.inputIMPORT = block.appendWrapValueInput(ezP.Const.Input.IMPORT, ezP.T3.Expr.identifier_named_list)
-    .setCheck(ezP.T3.Expr.identifier_named_list)
+  this.inputIMPORT = block.appendWrapValueInput(ezP.Const.Input.IMPORT, ezP.T3.Expr.non_void_identifier_named_list)
+    .setCheck(ezP.T3.Expr.non_void_identifier_named_list)
     .appendField(new ezP.FieldLabel('import'))
 }
 
@@ -425,7 +425,7 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.handleActionMenuEventMiddle = functio
   <block type="ezp_expr_module" id=")W,+tX/iTf_1~_EJJMp*"></block>
 </value>
 <value name="MODULE">
-  <block type="ezp_expr_identifier_named_list" id="S5ocR;l$.*stXu8j[n3E"></block>
+  <block type="ezp_expr_non_void_identifier_named_list" id="S5ocR;l$.*stXu8j[n3E"></block>
 </value>
 </block>
 */

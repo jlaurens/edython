@@ -33,6 +33,15 @@ for (var i = 0; i < ezP.T3.All.compound_statements.length; ++i) {
   Blockly.Blocks[t] = {}
 }
 
+Blockly.Blocks[ezP.T3.Stmt.main] = {
+  init: function () {
+    this.setInputsInline(true)
+    this.setPreviousStatement(false)
+    this.setNextStatement(true)
+    this.setTooltip(ezP.Msg.CONNECT_MAIN_BLOCK_DLG_TOOLTIP)
+    this.setHelpUrl('')
+  }
+}
 
 
 // goog.require('Blockly.Block')

@@ -14,6 +14,8 @@
 
 goog.provide('ezP.Blocks.prc')
 
+goog.require('ezP.DelegateSvg.Group')
+
 // Blockly.Blocks[ezP.Const.Prc.ANY] = {
 //   init: function () {
 //     this.appendDummyInput().appendField(new ezP.FieldTextInput(''), 'STT')
