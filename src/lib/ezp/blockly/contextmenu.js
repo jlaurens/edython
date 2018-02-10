@@ -36,7 +36,7 @@ Blockly.ContextMenu.populate_ = function(options, rtl) {
     {text: 'Make It So',
      enabled: true,
      callback: Blockly.MakeItSo}
-  */
+ */
   var menu = new goog.ui.Menu();
     menu.setRightToLeft(rtl);
     var i = 0, option
