@@ -80,6 +80,8 @@ ezP.Const.Input = {
   NAME: 'NAME',
   IDENTIFIER: 'IDENTIFIER',
   DO: 'DO',
+  ALIAS: 'ALIAS',
+  SOURCE: 'SOURCE',
   // IN PROGRESS
   ANY: 'ANY',
   SEP: 'SEP',

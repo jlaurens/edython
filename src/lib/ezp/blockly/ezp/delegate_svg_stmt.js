@@ -259,7 +259,7 @@ ezP.DelegateSvg.Manager.register('assert_stmt')
  */
 ezP.DelegateSvg.Stmt.pass_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.pass_stmt.superClass_.constructor.call(this, prototypeName)
-  this.labelEnd = 'pass'
+  this.labelEnd.value = 'pass'
 }
 goog.inherits(ezP.DelegateSvg.Stmt.pass_stmt, ezP.DelegateSvg.Stmt)
 
@@ -274,7 +274,7 @@ ezP.DelegateSvg.Manager.register('pass_stmt')
  */
 ezP.DelegateSvg.Stmt.break_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.break_stmt.superClass_.constructor.call(this, prototypeName)
-  this.labelEnd = 'break'
+  this.labelEnd.value = 'break'
 }
 goog.inherits(ezP.DelegateSvg.Stmt.break_stmt, ezP.DelegateSvg.Stmt)
 
@@ -289,7 +289,7 @@ ezP.DelegateSvg.Manager.register('break_stmt')
  */
 ezP.DelegateSvg.Stmt.continue_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.continue_stmt.superClass_.constructor.call(this, prototypeName)
-  this.labelEnd = 'continue'
+  this.labelEnd.value = 'continue'
 }
 goog.inherits(ezP.DelegateSvg.Stmt.continue_stmt, ezP.DelegateSvg.Stmt)
 

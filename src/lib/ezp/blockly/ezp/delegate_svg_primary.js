@@ -118,7 +118,7 @@ ezP.DelegateSvg.Expr.call_expr =  function (prototypeName) {
     check: ezP.T3.Expr.argument_list,
     wrap: ezP.T3.Expr.argument_list
   }
-  this.labelEnd = ')'
+  this.labelEnd.value = ')'
   this.outputCheck = ezP.T3.Expr.call_expr
 }
 goog.inherits(ezP.DelegateSvg.Expr.call_expr, ezP.DelegateSvg.Primary)
@@ -143,24 +143,22 @@ ezP.DelegateSvg.Expr.prototype.populateContextMenuPrimary_ = function (block, me
   if (ezP.T3.Expr.Check.primary.indexOf(this.type_)>=0) {
     var more_blocks = block.getDescendants().length < block.workspace.remainingCapacity() // can I add an attributeref
     var subMenu = new ezP.SubMenu(ezP.Msg.ADD)
-
-    var menuItem = new ezP.MenuItem(
+    var menuItem = new ezP.MenuItemVar(
       ezP.Msg.ADD_PRIMARY_ATTRIBUTE,
       [ezP.ADD_PRIMARY_ATTRIBUTE_ID])
-    subMenu.addChild(menuItem, true)
+    subMenu.addItem(menuItem)
     menuItem.setEnabled(more_blocks)
-    menuItem = new ezP.MenuItem(
+    menuItem = new ezP.MenuItemVar(
       ezP.Msg.ADD_PRIMARY_SLICING,
       [ezP.ADD_PRIMARY_SLICING_ID])
-    subMenu.addChild(menuItem, true)
+    subMenu.addItem(menuItem)
     menuItem.setEnabled(more_blocks)
-    menuItem = new ezP.MenuItem(
+    menuItem = new ezP.MenuItemVar(
       ezP.Msg.ADD_PRIMARY_CALL,
       [ezP.ADD_PRIMARY_CALL_ID])
-    subMenu.addChild(menuItem, true)
+    subMenu.addItem(menuItem)
     menuItem.setEnabled(more_blocks)
     menu.addChild(subMenu, true)
-    Blockly.utils.addClass(subMenu.getMenu().getElement(), 'ezp-nosubmenu')
 
     var parent = block.getParent();
     if (parent) {

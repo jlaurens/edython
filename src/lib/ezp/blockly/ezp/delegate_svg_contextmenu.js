@@ -52,7 +52,6 @@ ezP.DelegateSvg.sharedContextMenu_ = new ezP.PopupMenu(/*undefined, ContextMenuR
  */
 ezP.DelegateSvg.prototype.getFreshContextMenu_ = function (block, e) {
   if (!ezP.DelegateSvg.sharedContextMenu_.inDocument_) {
-    console.log('Not in document')
     ezP.DelegateSvg.sharedContextMenu_.render()
   }
   ezP.DelegateSvg.sharedContextMenu_.removeChildren(true)

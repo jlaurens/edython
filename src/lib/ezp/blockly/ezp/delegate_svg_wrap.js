@@ -168,6 +168,7 @@ ezP.DelegateSvg.Stmt.global_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.global_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputData.last = {
     label: 'not yet available',
+    css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.identifier_list,
     wrap: ezP.T3.Expr.identifier_list
   }
@@ -206,15 +207,24 @@ ezP.DelegateSvg.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function 
   var value = this.inputs.last.fieldLabel.getValue()
   var ezp = this
   var F = function(label, type) {
+    var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
+        goog.dom.createTextNode(label),
+      ),
+      goog.dom.createTextNode(' '),
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-placeholder',
+        goog.dom.createTextNode('variable'),
+      )
+    )
     var menuItem = new ezP.MenuItem(
-      label
+      content
       ,[ezP.GLOBAL_OR_NONLOCAL_ID, type]
     )
     menuItem.setEnabled(type != block.type)
     menu.addChild(menuItem, true)
   }
-  F('global ...', ezP.T3.Stmt.global_stmt)
-  F('nonlocal ...', ezP.T3.Stmt.nonlocal_stmt)
+  F('global', ezP.T3.Stmt.global_stmt)
+  F('nonlocal', ezP.T3.Stmt.nonlocal_stmt)
   ezP.DelegateSvg.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this,block, menu)
   return true
 }

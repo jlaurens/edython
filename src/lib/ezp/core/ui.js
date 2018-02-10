@@ -129,7 +129,10 @@ ezP.Style.insertCssRuleAt = (function () {
  */
 ezP.setup.register(function () {
   ezP.Style.insertCssRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono.woff')format('woff');font-weight: normal;font-style: normal;}")
-  ezP.Style.insertCssRuleAt('.ezp-block .blocklyText, .ezp-code, .ezp-var{\n' + ezP.Font.style + ';\n}\n')
+  ezP.Style.insertCssRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono-Bold.woff')format('woff');font-weight: bold;font-style: normal;}")
+  ezP.Style.insertCssRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono-Oblique.woff')format('woff');font-weight: normal;font-style: oblique;}")
+  ezP.Style.insertCssRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono-BoldOblique.woff')format('woff');font-weight: bold;font-style: oblique;}")
+  ezP.Style.insertCssRuleAt('.ezp-block .blocklyText, .ezp-code, .ezp-var, .ezp-label{\n' + ezP.Font.style + ';\n}\n')
   ezP.Style.insertCssRuleAt('.ezp-path-selected{stroke: ' + ezP.Style.Path.Selected.colour + ';stroke-width: ' + ezP.Style.Path.Selected.width + 'px;fill: none;}')
   ezP.Style.insertCssRuleAt('.ezp-selected .ezp-path-contour{stroke: ' + ezP.Style.Path.Selected.colour + ';}')
   ezP.Style.insertCssRuleAt('.blocklyHighlightedConnectionPath{stroke: ' + ezP.Style.Path.Selected.colour + ';stroke-width: ' + ezP.Style.Path.Selected.width + 'px;fill: none;}')
@@ -141,6 +144,9 @@ ezP.setup.register(function () {
   ezP.Style.insertCssRuleAt('.ezp-path-shadow-contour, .ezp-path-shadow-collapsed {stroke-width: ' + (ezP.Style.Path.width * 1.2) + 'px;stroke-dasharray:' + ezP.Font.space / 3 + ' ' + ezP.Font.space / 6 + ';}')
   ezP.Style.insertCssRuleAt('.ezp-path-dotted{stroke: ' + ezP.Style.Path.colour + ';stroke-width: ' + (ezP.Style.Path.width * 1.5) + 'px;stroke-linecap:round;stroke-dasharray:0 ' + ezP.Font.space / 2 + ';}')
   ezP.Style.insertCssRuleAt('.ezp-no-path{display:none;}', 5)
+  ezP.Style.insertCssRuleAt('.ezp-code-reserved {font-weight:bold;fill: rgba(0, 84, 147, 0.75);color: rgba(0, 84, 147, 0.75);}')
+  ezP.Style.insertCssRuleAt('.ezp-menuitem-disabled .ezp-code-reserved {color: rgba(0, 84, 147, 0.3);}')
+  ezP.Style.insertCssRuleAt('.ezp-code-placeholder {font-style:oblique;}')
 })
 
 ezP.Style.MenuIcon = {

@@ -26,7 +26,7 @@ goog.require('ezP.DelegateSvg.Stmt')
 ezP.DelegateSvg.Group = function (prototypeName) {
   ezP.DelegateSvg.Group.superClass_.constructor.call(this, prototypeName)
   this.statementData.key = ezP.Const.Input.DO,
-  this.labelEnd = ':'
+  this.labelEnd.value = ':'
 }
 goog.inherits(ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
 

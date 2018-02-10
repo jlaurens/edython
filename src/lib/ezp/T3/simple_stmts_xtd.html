@@ -57,8 +57,10 @@ import_expr ::=  import_module | from_relative_module_import | from_module_impor
 
 import_module ::= "import" non_void_module_named_list
 non_void_module_named_list ::= module_named ( "," module_named )*
-module_named ::= module [ "as" module_name ]
-module ::= module_name | module '.' module_name
+# module_named is not just an identifier, to simplify the UI management
+module_named ::= module "as" module_name
+module ::= module_name | submodule_name
+submodule_name ::= module '.' module_name
 module_name ::= identifier
 #name            ::=  identifier
 name ::= IGNORE

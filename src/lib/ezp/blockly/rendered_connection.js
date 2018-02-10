@@ -166,3 +166,29 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
   }
   return ezP.Connection.superClass_.checkType_.call(this, otherConnection)
 }
+
+/**
+ * Connect this connection to another connection.
+ * This is a hook to force wrapping.
+ * The wrapped block is automatically created,
+ * and disposed off if necessary.
+ * Useful when undeo/redo
+ * @param {!Blockly.Connection} otherConnection Connection to connect to.
+ */
+ezP.Connection.prototype.connect = function(otherConnection) {
+  var orphan = this.isSuperior()?
+  this.targetBlock() : otherConnection.targetBlock()
+  ezP.Connection.superClass_.connect.call(this, otherConnection)
+  var block
+  if (this.ezpData.wrapped_) {
+    block = this.targetBlock()
+    block.ezp.makeBlockWrapped_(block)
+  } else if (otherConnection.ezpData.wrapped_) {
+    block = otherConnection.targetBlock()
+    block.ezp.makeBlockWrapped_(block)
+  }
+  if (orphan) {
+    orphan.dispose(true)
+  }
+};
+

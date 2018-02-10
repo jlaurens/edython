@@ -26,6 +26,7 @@ goog.forwardDeclare('ezP.BlockSvg')
 ezP.DelegateSvg = function (prototypeName) {
   ezP.DelegateSvg.superClass_.constructor.call(this, prototypeName)
   this.inputData = {}
+  this.labelEnd = {}
 }
 goog.inherits(ezP.DelegateSvg, ezP.Delegate)
 
@@ -97,7 +98,6 @@ ezP.DelegateSvg.prototype.outputCheck = undefined
 /**
  * When set, used as the right delimiter.
  */
-ezP.DelegateSvg.prototype.labelEnd = undefined
 ezP.DelegateSvg.prototype.fieldLabelEnd = undefined
 
 /**
@@ -134,16 +134,25 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
         out.input = block.appendWrapValueInput(k, v)
       } else {
         out.input = block.appendValueInput(k)
-        if (D.optional) {
-          out.input.connection.ezpData.optional_ = true
-        }
       }
+      var ezp = out.input.connection.ezpData
+      if (D.optional) {
+        ezp.optional_ = true
+      }
+      ezp.name_ = k
+      ezp.disabled_ = D.disabled && !D.enabled
       if ((v = D.check)) {
         out.input.setCheck(v)
       }
       if ((v = D.label)) {
         out.fieldLabel = new ezP.FieldLabel(v)
         out.input.appendField(out.fieldLabel, ezP.Const.Field.LABEL)
+        if (D.css_class) {
+          out.fieldLabel.ezpData.css_class = D.css_class
+        }
+        if (D.css_style) {
+          out.fieldLabel.ezpData.css_style = D.css_style
+        }
       }
     }
     return out
@@ -164,9 +173,11 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
   }
   this.inputs = Is
   this.initBlock(block)
-  if (this.labelEnd) {
-    this.fieldLabelEnd = new ezP.FieldLabel(this.labelEnd)
+  if (this.labelEnd.value) {
+    this.fieldLabelEnd = new ezP.FieldLabel(this.labelEnd.value)
     block.appendDummyInput().appendField(this.fieldLabelEnd, ezP.Const.Field.LABEL)
+    this.fieldLabelEnd.ezpData.style = this.labelEnd.style
+    this.labelEnd = undefined
   }
 }
 
@@ -301,8 +312,14 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
   if (this.isRendering) {
     return
   }
-  Blockly.Field.startCache()
+  // if (this.wrapped_ && !block.getParent()) {
+  //   console.log('wrapped block with no parent')
+  //   setTimeout(function(){block.dispose()}, 10)
+  //   block.dispose()
+  //   return
+  // }
   this.isRendering = true
+  Blockly.Field.startCache()
   this.minWidth = block.width = 0
   block.rendered = true
   this.consolidate(block)
@@ -1008,6 +1025,47 @@ ezP.DelegateSvg.prototype.setInputEnabled = function (block, input, enabled) {
   input.setVisible(enabled)
   input.connection.hidden_ = !enabled
   input.connection.setHidden(!enabled)
+}
+
+/**
+ * Set the enable/disable status of the given block.
+ * @param {!Block} block.
+ * @param {!Input} input.
+ * @param {!String} prototypeName.
+ * @private
+ */
+ezP.DelegateSvg.prototype.toggleNamedInputDisabled = function (block, name) {
+  var input = block.getInput(name)
+  if (input) {
+    var oldValue = input.ezpData.disabled_
+    var newValue = !oldValue
+    if (Blockly.Events.isEnabled()) {
+      Blockly.Events.fire(new Blockly.Events.BlockChange(
+        block, ezP.Const.Event.input_disable, name, oldValue, newValue));
+    }
+    input.ezpData.disabled_ = newValue
+    var current = this.isRendering
+    this.isRendering = true
+    input.setVisible(!newValue)
+    this.isRendering = current
+    if (input.isVisible()) {
+      for (var __ = 0, field; (field = input.fieldRow[__]); ++__) {
+        if (field.getText().length>0) {
+          var root = field.getSvgRoot()
+          if (root) {
+            root.removeAttribute('display')
+          } else {
+            console.log('Field with no root: did you ...initSvg()?')
+          }
+        }
+      }
+    }
+    setTimeout(function(){
+      block.render()
+    }, 100)
+  } else {
+    console.log('Unable to dis/enable non existing input named '+name)
+  }
 }
 
 /**

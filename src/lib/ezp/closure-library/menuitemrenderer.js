@@ -13,8 +13,8 @@
  * and a menu item is
  * <div class="ezp-menuitem"></div>
  * <div class="ezp-menuitem">
- *   <div class="ezp-content">
- *     <div class="ezp-checkbox">...</div>
+ *   <div class="ezp-menuitem-content">
+ *     <div class="ezp-menuitem-checkbox">...</div>
  *       content
  *     </div>
  *   </div>
@@ -38,6 +38,18 @@ goog.require('goog.ui.MenuItemRenderer')
 goog.require('ezP.Style')
 
 /**
+ * Sets the css class of the control renderer.
+ * Ensures that the style is setup accordingly.
+ * @param {goog.ui.ControlRenderer} renderer
+ * @param {String} cssClass, class name
+ * If the next argument is a dictionary,
+ * a new css rule is created with the cssClass name
+ * and style attributes given in the dictionary.
+ * Other arguments are an alternation of names and dictionaries.
+ * For each such pair, a new css rule is created with the given name
+ * prepended with '{cssClass}-' and style attributes given in the following dictionary.
+ * Calling syntax
+ * setControlRendererCssClass(renderer, cssClass[, style](, name, style)*)
  * 
  */
 ezP.Style.setControlRendererCssClass = (function () {
@@ -70,7 +82,7 @@ ezP.Style.setControlRendererCssClass = (function () {
       while (name && typeof name === 'string') {
         dict = args[i++]
         if (dict && typeof dict === 'object') {
-          helper(cssClass + '-' + name, dict)
+          helper(cssClass + name, dict)
           name = args[i++]
           continue
         }
@@ -168,68 +180,6 @@ ezP.Style.setControlRendererCssClass(
   {'background-color': '#d6e9f8'}
 )
 
-// /**
-//  * Constants for referencing composite CSS classes.
-//  * @enum {number}
-//  * @private
-//  */
-// goog.ui.MenuItemRenderer.CompositeCssClassIndex_ = {
-//   HOVER: 0,
-//   CHECKBOX: 1,
-//   CONTENT: 2
-// }
-//
-
-// /**
-//  * Returns the composite CSS class by using the cached value or by constructing
-//  * the value from the base CSS class and the passed index.
-//  * @param {goog.ui.MenuItemRenderer.CompositeCssClassIndex_} index Index for the
-//  *     CSS class - could be highlight, checkbox or content in usual cases.
-//  * @return {string} The composite CSS class.
-//  * @private
-//  */
-// ezP.KeyValueMenuItemRenderer.prototype.getCompositeCssClass_ = function(index) {
-//   var result = this.classNameCache_[index]
-//   if (!result) {
-//     switch (index) {
-//       case goog.ui.MenuItemRenderer.CompositeCssClassIndex_.HOVER:
-//         result = goog.getCssName(this.getStructuralCssClass(), 'highlight')
-//         break
-//       case goog.ui.MenuItemRenderer.CompositeCssClassIndex_.CHECKBOX:
-//         result = goog.getCssName(this.getStructuralCssClass(), 'checkbox')
-//         break
-//       case goog.ui.MenuItemRenderer.CompositeCssClassIndex_.CONTENT:
-//         result = goog.getCssName(this.getStructuralCssClass(), 'content')
-//         break
-//     }
-//     this.classNameCache_[index] = result
-//   }
-//
-//   return result
-// }
-
-// /** @override */
-// ezP.KeyValueMenuItemRenderer.prototype.getAriaRole = function() {
-//   return goog.a11y.aria.Role.MENU_ITEM
-// }
-
-// /**
-//  * Overrides {@link goog.ui.ControlRenderer#createDom} by adding extra markup
-//  * and stying to the menu item's element if it is selectable or checkable.
-//  * @param {goog.ui.Control} item Menu item to render.
-//  * @return {Element} Root element for the item.
-//  * @override
-//  */
-// ezP.KeyValueMenuItemRenderer.prototype.createDom = function(item) {
-//   var element = item.getDomHelper().createDom(
-//       goog.dom.TagName.DIV, this.getClassNames(item).join(' '),
-//       this.createContent(item.getContent(), item.getDomHelper()))
-//   this.setEnableCheckBoxStructure(
-//       item, element, item.isSupportedState(goog.ui.Component.State.SELECTED) ||
-//           item.isSupportedState(goog.ui.Component.State.CHECKED))
-//   return element
-// }
-
 /** @override */
 ezP.KeyValueMenuItemRenderer.prototype.getContentElement = function (element) {
   return /** @type {Element} */ (element && element.firstChild)
@@ -293,70 +243,6 @@ ezP.KeyValueMenuItemRenderer.prototype.hasContentStructure = function (element) 
   return !!child && goog.dom.classlist.contains(child, contentClassName)
 }
 
-// /**
-//  * Wraps the given text caption or existing DOM node(s) in a structural element
-//  * containing the menu item's contents.
-//  * @param {goog.ui.ControlContent} content Menu item contents.
-//  * @param {goog.dom.DomHelper} dom DOM helper for document interaction.
-//  * @return {Element} Menu item content element.
-//  * @protected
-//  */
-// ezP.KeyValueMenuItemRenderer.prototype.createContent = function(content, dom) {
-//   var contentClassName = this.getCompositeCssClass_(
-//       goog.ui.MenuItemRenderer.CompositeCssClassIndex_.CONTENT)
-//   return dom.createDom(goog.dom.TagName.DIV, contentClassName, content)
-// }
-//
-//
-// /**
-//  * Enables/disables radio button semantics on the menu item.
-//  * @param {goog.ui.Control} item Menu item to update.
-//  * @param {Element} element Menu item element to update (may be null if the
-//  *     item hasn't been rendered yet).
-//  * @param {boolean} selectable Whether the item should be selectable.
-//  */
-// ezP.KeyValueMenuItemRenderer.prototype.setSelectable = function(
-//     item, element, selectable) {
-//   if (item && element) {
-//     this.setEnableCheckBoxStructure(item, element, selectable)
-//   }
-// }
-//
-//
-// /**
-//  * Enables/disables checkbox semantics on the menu item.
-//  * @param {goog.ui.Control} item Menu item to update.
-//  * @param {Element} element Menu item element to update (may be null if the
-//  *     item hasn't been rendered yet).
-//  * @param {boolean} checkable Whether the item should be checkable.
-//  */
-// ezP.KeyValueMenuItemRenderer.prototype.setCheckable = function(
-//     item, element, checkable) {
-//   if (item && element) {
-//     this.setEnableCheckBoxStructure(item, element, checkable)
-//   }
-// }
-//
-//
-// /**
-//  * Determines whether the item contains a checkbox element.
-//  * @param {Element} element Menu item root element.
-//  * @return {boolean} Whether the element contains a checkbox element.
-//  * @protected
-//  */
-// ezP.KeyValueMenuItemRenderer.prototype.hasCheckBoxStructure = function(element) {
-//   var contentElement = this.getContentElement(element)
-//   if (contentElement) {
-//     var child = contentElement.firstChild
-//     var checkboxClassName = this.getCompositeCssClass_(
-//         goog.ui.MenuItemRenderer.CompositeCssClassIndex_.CHECKBOX)
-//     return !!child && goog.dom.isElement(child) &&
-//         goog.dom.classlist.contains(
-//             /** @type {!Element} */ (child), checkboxClassName)
-//   }
-//   return false
-// }
-
 /**
  * Adds or removes extra markup and CSS styling to the menu item to make it
  * selectable or non-selectable, depending on the value of the
@@ -372,6 +258,7 @@ ezP.KeyValueMenuItemRenderer.prototype.setEnableCheckBoxStructure = function (
   this.setAriaStates(item, element)
   var contentElement = this.getContentElement(element)
   if (!item.ezpDomMark) {
+    goog.dom.classlist.add(element, 'ezp-with-checkbox')
     var checkboxClassName = this.getCompositeCssClass_(
       goog.ui.MenuItemRenderer.CompositeCssClassIndex_.CHECKBOX)
     var x = 2
@@ -382,7 +269,7 @@ ezP.KeyValueMenuItemRenderer.prototype.setEnableCheckBoxStructure = function (
     el.style.position = 'relative'
     el.style.width = d + 'px'
     el.style.height = ezP.Font.lineHeight + 'px'
-    el.style.left = (ezP.Padding.h() - d) + 'px'
+    el.style.left = (-ezP.Font.space/2) + 'px'
     el.style.top = x + 'px'
     contentElement.insertBefore(el, contentElement.firstChild || null)
     var svg = Blockly.utils.createSvgElement('svg',
@@ -414,6 +301,8 @@ ezP.KeyValueMenuItemRenderer.prototype.setEnableCheckBoxStructure = function (
     Blockly.utils.removeClass(item.ezpMark, 'ezp-checked')
   }
 }
+
+ezP.Style.insertCssRuleAt('.ezp-menuitem.ezp-with-checkbox, .ezp-menuitem-code.ezp-with-checkbox{padding-left: '+(8+ezP.Font.space/2)+'px;}')
 
 /**
  * Takes a single CSS class name which may represent a component state, and
@@ -494,9 +383,9 @@ goog.addSingletonGetter(ezP.MenuItemCodeRenderer)
 ezP.Style.setControlRendererCssClass(
   ezP.MenuItemCodeRenderer,
   'ezp-menuitem-code',
-  'content',
+  '-content',
   {'': ezP.Font.style},
-  'hover',
+  ':hover',
   {'background-color': '#d6e9f8'}
 )
 
@@ -514,7 +403,7 @@ ezP.MenuItemCodeRenderer.prototype.setEnableCheckBoxStructure = function (
   ezP.MenuItemCodeRenderer.superClass_.setEnableCheckBoxStructure.call(this,
     item, element, enable)
   if (item.isSupportedState(goog.ui.Component.State.CHECKED)) {
-    Blockly.utils.addClass(element, 'ezp-checkbox')
+    goog.dom.classlist.add(element, 'ezp-with-checkbox')
   }
 }
 
@@ -534,8 +423,8 @@ goog.addSingletonGetter(ezP.MenuItemVarRenderer)
 ezP.Style.setControlRendererCssClass(
   ezP.MenuItemVarRenderer,
   'ezp-menuitem-var',
-  'content',
+  '-content',
   {'': ezP.Font.style},
-  'hover',
+  ':hover',
   {'background-color': '#d6e9f8'}
 )

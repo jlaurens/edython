@@ -62,12 +62,17 @@ if (Blockly.Msg.NEW_VARIABLE.startsWith('Créer')) {
  * @private
  */
 ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuFirst_ = function (block, menu) {
-  var menuItem = new ezP.MenuItem(
-    ezP.Msg.RENAME_VARIABLE,
-    [ezP.RENAME_VARIABLE_ID]);
-  menu.addChild(menuItem, true);
-  ezP.DelegateSvg.Expr.identifier.superClass_.populateContextMenuFirst_.call(this, block, menu)
-  return true
+  var answer = false
+  var c8n = block.outputConnection.targetConnection
+  if (!c8n || c8n.ezpData.name_ != ezP.Const.Input.ALIAS) {
+    var menuItem = new ezP.MenuItem(
+      ezP.Msg.RENAME_VARIABLE,
+      [ezP.RENAME_VARIABLE_ID]);
+    menu.addChild(menuItem, true);
+    ezP.DelegateSvg.Expr.identifier.superClass_.populateContextMenuFirst_.call(this, block, menu)
+    answer = true
+  }
+  return ezP.DelegateSvg.Expr.identifier.superClass_.populateContextMenuFirst_.call(this, block, menu) || answer
 }
 
 /**
@@ -95,42 +100,45 @@ ezP.DelegateSvg.Expr.identifier.prototype.handleActionMenuEventFirst = function 
  * @private
  */
 ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuMiddle_ = function (block, menu) {
-  var listener = block.ezp.fieldIdentifier
-  goog.asserts.assert(listener && listener.getText, 'Bad listener in ...Get...populateContextMenuFirst_.')
-  var name = listener.getText()
-  var allVs = [].concat(block.workspace.getAllVariables())
-  allVs.sort(Blockly.VariableModel.compareByName)
-  var visible = allVs.length > 1
-  var j = 0
-  var v
-  var menuItem
-  var subMenu = new ezP.SubMenu(ezP.Msg.REPLACE_VARIABLE)
-  for (var i = 0; v = allVs[i++];) {
-    menuItem = new ezP.MenuItemVar(v.name, [ezP.CHANGE_VARIABLE_ID, v])
+  var answer = false
+  var c8n = block.outputConnection.targetConnection
+  if (!c8n || c8n.ezpData.name_ != ezP.Const.Input.ALIAS) {
+    var listener = block.ezp.fieldIdentifier
+    goog.asserts.assert(listener && listener.getText, 'Bad listener in ...Get...populateContextMenuFirst_.')
+    var name = listener.getText()
+    var allVs = [].concat(block.workspace.getAllVariables())
+    allVs.sort(Blockly.VariableModel.compareByName)
+    var visible = allVs.length > 1
+    var j = 0
+    var v
+    var menuItem
+    var subMenu = new ezP.SubMenu(ezP.Msg.REPLACE_VARIABLE)
+    for (var i = 0; v = allVs[i++];) {
+      menuItem = new ezP.MenuItemVar(v.name, [ezP.CHANGE_VARIABLE_ID, v])
+      menu.addChild(menuItem, true)
+      menuItem.enableClassName('ezp-hidden', !visible || v.name === name)
+      menuItem = new ezP.MenuItemVar(v.name, [ezP.REPLACE_VARIABLE_ID, v])
+      subMenu.addItem(menuItem)
+      menuItem.enableClassName('ezp-hidden', !visible || v.name === name)
+    }
+    if (visible) {
+      menu.addChild(new ezP.Separator(), true)
+    }
+    subMenu.setEnabled(visible)  
+    menu.addChild(subMenu, true)
+    menuItem = new ezP.MenuItem(
+      ezP.Msg.NEW_VARIABLE,
+      [ezP.NEW_VARIABLE_ID])
+      menu.addChild(menuItem, true)
+    menuItem = new ezP.MenuItem(
+      ezP.Msg.DELETE_UNUSED_VARIABLES,
+      [ezP.DELETE_UNUSED_VARIABLES_ID])
+    menuItem.setEnabled(ezP.Variables.isThereAnUnusedVariable(block.workspace))
     menu.addChild(menuItem, true)
-    menuItem.enableClassName('ezp-hidden', !visible || v.name === name)
-    menuItem = new ezP.MenuItemVar(v.name, [ezP.REPLACE_VARIABLE_ID, v])
-    subMenu.addItem(menuItem)
-    menuItem.enableClassName('ezp-hidden', !visible || v.name === name)
+    Blockly.utils.addClass(subMenu.getMenu().getElement(), 'ezp-nosubmenu')
+    answer = true
   }
-  if (visible) {
-    menu.addChild(new ezP.Separator(), true)
-  }
-  subMenu.setEnabled(visible)  
-  menu.addChild(subMenu, true)
-  menuItem = new ezP.MenuItem(
-    ezP.Msg.NEW_VARIABLE,
-    [ezP.NEW_VARIABLE_ID])
-    menu.addChild(menuItem, true)
-  menuItem = new ezP.MenuItem(
-    ezP.Msg.DELETE_UNUSED_VARIABLES,
-    [ezP.DELETE_UNUSED_VARIABLES_ID])
-  menuItem.setEnabled(ezP.Variables.isThereAnUnusedVariable(block.workspace))
-  menu.addChild(menuItem, true)
-  Blockly.utils.addClass(subMenu.getMenu().getElement(), 'ezp-nosubmenu')
-
-  ezP.DelegateSvg.Expr.identifier.superClass_.populateContextMenuMiddle_.call(this,block, menu)
-  return true
+  return ezP.DelegateSvg.Expr.identifier.superClass_.populateContextMenuMiddle_.call(this,block, menu) || answer
 }
 
 /**
@@ -205,7 +213,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.handleActionMenuEventMiddle = function
       }, 10)
       return true
       default:
-        return ezP.DelegateSvg.identifier.superClass_.handleActionMenuEventFirst.call(this, block, menu, event)
+        return ezP.DelegateSvg.Expr.identifier.superClass_.handleActionMenuEventFirst.call(this, block, menu, event)
   }
 }
 

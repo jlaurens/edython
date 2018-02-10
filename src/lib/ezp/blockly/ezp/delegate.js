@@ -570,9 +570,7 @@ ezP.Delegate.prototype.makeBlockWrapped = function (block) {
 }
 
 /**
- * Complete the sealed block.
- * When created from dom, the connections are established
- * but the nodes were not created sealed.
+ * The wrapped blocks are special.
  * @param {!Block} block.
  * @private
  */
@@ -584,7 +582,7 @@ ezP.Delegate.prototype.makeBlockWrapped_ = function (block) {
 }
 
 /**
- * Complete the sealed block.
+ * Complete the wrapped block.
  * When created from dom, the connections are established
  * but the nodes were not created sealed.
  * @param {!Block} block.
