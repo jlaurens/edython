@@ -52,7 +52,7 @@ ezP.Const.Input = {
   COMPREHENSION: 'COMP',
   ITEM: 'ITEM', /* used by delimited blocks */
   PRIMARY: 'PRIMARY',
-  SECONDARY: 'SECONDARY',
+  ATTRIBUTE: 'ATTRIBUTE',
   SLICE: 'SLICE',
   ARGS: 'ARGS',
   FIRST: 'FIRST',
@@ -80,8 +80,9 @@ ezP.Const.Input = {
   NAME: 'NAME',
   IDENTIFIER: 'IDENTIFIER',
   DO: 'DO',
-  ALIAS: 'ALIAS',
+  AS: 'AS',
   SOURCE: 'SOURCE',
+  MODULE: 'MODULE',
   // IN PROGRESS
   ANY: 'ANY',
   SEP: 'SEP',

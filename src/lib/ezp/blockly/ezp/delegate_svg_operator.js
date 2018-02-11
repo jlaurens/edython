@@ -87,10 +87,11 @@ ezP.USE_OPERATOR_ID  = 'USE_OPERATOR'
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!goo.ui.Menu} menu The menu to populate.
+ * @param {!ezP.ContextMenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, menu) {
+ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var menu = mgr.menu
   var value = this.fieldOperator.getValue()
   var ezp = this
   var F = function(op) {
@@ -115,7 +116,7 @@ ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Operator.prototype.handleActionMenuEventFirst = function (block, menu, event) {
+ezP.DelegateSvg.Operator.prototype.handleMenuItemActionFirst = function (block, menu, event) {
   var model = event.target.getModel()
   var action = model[0]
   var op = model[1]
@@ -128,7 +129,7 @@ ezP.DelegateSvg.Operator.prototype.handleActionMenuEventFirst = function (block,
     }
     return true
   }
-  return ezP.DelegateSvg.Operator.superClass_.handleActionMenuEventFirst.call(this, block, menu, event)
+  return ezP.DelegateSvg.Operator.superClass_.handleMenuItemActionFirst.call(this, block, menu, event)
 }
 
 /**
@@ -229,10 +230,26 @@ ezP.DelegateSvg.Expr.unary_concrete = function (prototypeName) {
   this.operator = '-'
   this.operators = ['+', '-', '~', 'not']
   this.operatorData = {
-    '+': {label:'+...', output: ezP.T3.Expr.u_expr_concrete, EXPR: ezP.T3.Expr.Check.u_expr},
-    '-': {label:'-...', output: ezP.T3.Expr.u_expr_concrete, EXPR: ezP.T3.Expr.Check.u_expr},
-    '~': {label:'~...', output: ezP.T3.Expr.u_expr_concrete, EXPR: ezP.T3.Expr.Check.u_expr},
-    'not': {label:'not ...', output: ezP.T3.Expr.not_test_concrete, EXPR: ezP.T3.Expr.Check.not_test},
+    '+': {
+      label:'+...',
+      output: ezP.T3.Expr.u_expr_concrete,
+      EXPR: ezP.T3.Expr.Check.u_expr
+    },
+    '-': {
+      label:'-...',
+      output: ezP.T3.Expr.u_expr_concrete,
+      EXPR: ezP.T3.Expr.Check.u_expr
+    },
+    '~': {
+      label:'~...',
+      output: ezP.T3.Expr.u_expr_concrete,
+      EXPR: ezP.T3.Expr.Check.u_expr
+    },
+    'not': {
+      label:'not ...',
+      output: ezP.T3.Expr.not_test_concrete,
+      EXPR: ezP.T3.Expr.Check.not_test
+    },
   }
 }
 goog.inherits(ezP.DelegateSvg.Expr.unary_concrete, ezP.DelegateSvg.Expr.Unary)

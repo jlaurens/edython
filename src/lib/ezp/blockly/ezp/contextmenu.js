@@ -52,7 +52,7 @@ ezP.ContextMenu.prototype.init = function (block) {
   var menu = this
   goog.events.listenOnce(this, 'action', function (event) {
     setTimeout(function () {
-      block.ezp.onActionMenuEvent(block, menu, event)
+      block.ezp.onMenuItemAction(block, menu, event)
     }, 100)// TODO be sure that this 100 is suffisant
   })
   /*
@@ -79,7 +79,7 @@ ezP.ContextMenu.prototype.init = function (block) {
   var menu = this
   goog.events.listenOnce(this, 'action', function (event) {
     setTimeout(function () {
-      ezP.Variables.onActionMenuEvent(menu, event)
+      ezP.Variables.onMenuItemAction(menu, event)
     }, 100)// TODO be sure that this 100 is suffisant
   })
 

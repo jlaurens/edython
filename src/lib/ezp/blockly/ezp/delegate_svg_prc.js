@@ -73,10 +73,11 @@ ezP.USE_DECORATOR_ID = 'USE_DECORATOR'
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!goo.ui.Menu} menu The menu to populate.
+ * @param {!ezP.ContextMenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-ezP.DelegateSvg.Stmt.decorator_part.prototype.populateContextMenuFirst_ = function (block, menu) {
+ezP.DelegateSvg.Stmt.decorator_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var menu = mgr.Menu
   var dotted_name = this.inputs.first.input.connection.targetBlock()
   goog.asserts.assert(dotted_name, 'The first wrapper input has not been resolved')
   var old = undefined
@@ -107,7 +108,7 @@ ezP.DelegateSvg.Stmt.decorator_part.prototype.populateContextMenuFirst_ = functi
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Stmt.decorator_part.prototype.handleActionMenuEventFirst = function (block, menu, event) {
+ezP.DelegateSvg.Stmt.decorator_part.prototype.handleMenuItemActionFirst = function (block, menu, event) {
   var model = event.target.getModel()
   var action = model[0]
   var value = model[1]
@@ -128,7 +129,7 @@ ezP.DelegateSvg.Stmt.decorator_part.prototype.handleActionMenuEventFirst = funct
     block.render()
     return true
   }
-  return ezP.DelegateSvg.Stmt.decorator_part.superClass_.handleActionMenuEventFirst.call(this, block, menu, event)
+  return ezP.DelegateSvg.Stmt.decorator_part.superClass_.handleMenuItemActionFirst.call(this, block, menu, event)
 }
 
 

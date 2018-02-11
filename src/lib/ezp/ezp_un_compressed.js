@@ -6549,7 +6549,7 @@ this.render();
 this.getElement().id="ezp-variables-menu";
 Blockly.utils.addClass(c.getMenu().getElement(),"ezp-nosubmenu");
 var d=this;
-goog.events.listen(this,"action",function(a){setTimeout(function(){ezP.Variables.onActionMenuEvent(d,a)},100)})};
+goog.events.listen(this,"action",function(a){setTimeout(function(){ezP.Variables.onMenuItemAction(d,a)},100)})};
 
 ezP.Variables.Menu.prototype.updateWithListeningBlock=function(a){goog.asserts.assert(a&&a.getText,"Bad ezP.Variables.Menu listener.");
 var b=this.ezp,c=a.getText(),d=[].concat(b.workspace.getAllVariables());
@@ -6586,7 +6586,7 @@ f++)e[f].replaceVarId(b,c);
 a.deleteVariableInternal_(d);
 Blockly.Events.setGroup(!1)}};
 
-ezP.Variables.onActionMenuEvent=function(a,b){var c=a.ezp.listener,d=c.sourceBlock_.workspace,e=b.target.getModel(),f=e[0];
+ezP.Variables.onMenuItemAction=function(a,b){var c=a.ezp.listener,d=c.sourceBlock_.workspace,e=b.target.getModel(),f=e[0];
 e=e[1];
 if(f===ezP.CHANGE_VARIABLE_ID)c.setValue(e.getId());
 else if(f===ezP.RENAME_VARIABLE_ID)c.showVarNameEditor();

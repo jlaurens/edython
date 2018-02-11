@@ -200,10 +200,11 @@ ezP.GLOBAL_OR_NONLOCAL_ID  = 'GLOBAL_OR_NONLOCAL'
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!goo.ui.Menu} menu The menu to populate.
+ * @param {!ezP.ContetMenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (block, menu) {
+ezP.DelegateSvg.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var menu = mgr.menu
   var value = this.inputs.last.fieldLabel.getValue()
   var ezp = this
   var F = function(label, type) {
@@ -236,7 +237,7 @@ ezP.DelegateSvg.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function 
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Stmt.global_stmt.prototype.handleActionMenuEventFirst = function (block, menu, event) {
+ezP.DelegateSvg.Stmt.global_stmt.prototype.handleMenuItemActionFirst = function (block, menu, event) {
   var model = event.target.getModel()
   var action = model[0]
   if (action == ezP.GLOBAL_OR_NONLOCAL_ID) {
@@ -245,5 +246,5 @@ ezP.DelegateSvg.Stmt.global_stmt.prototype.handleActionMenuEventFirst = function
     this.setupType(block)
     return true
   }
-  return ezP.DelegateSvg.Stmt.global_stmt.superClass_.handleActionMenuEventFirst.call(this, block, menu, event)
+  return ezP.DelegateSvg.Stmt.global_stmt.superClass_.handleMenuItemActionFirst.call(this, block, menu, event)
 }

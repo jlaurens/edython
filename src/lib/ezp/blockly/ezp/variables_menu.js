@@ -73,7 +73,7 @@ ezP.Variables.Menu.prototype.init = function () {
   var menu = this
   goog.events.listen(this, 'action', function (event) {
     setTimeout(function () {
-      ezP.Variables.onActionMenuEvent(menu, event)
+      ezP.Variables.onMenuItemAction(menu, event)
     }, 100)// TODO be sure that this 100 is suffisant
   })
 }
@@ -164,7 +164,7 @@ ezP.Variables.replaceVarId = function (workspace, oldVarId, newVarId) {
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.Variables.onActionMenuEvent = function (menu, event) {
+ezP.Variables.onMenuItemAction = function (menu, event) {
   var block = menu.ezp.listeningBlock
   var listener = block.ezp.fieldIdentifier
   var workspace = block.workspace

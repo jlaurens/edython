@@ -13,7 +13,6 @@
 
 goog.provide('ezP.DelegateSvg.Primary')
 
-goog.require('ezP.DelegateSvg.ContextMenu')
 goog.require('ezP.DelegateSvg.Expr')
 
 /**
@@ -67,7 +66,7 @@ ezP.DelegateSvg.Primary.prototype.getPrimaryConnection = function (block) {
 ezP.DelegateSvg.Expr.attributeref = function (prototypeName) {
   ezP.DelegateSvg.Expr.attributeref.superClass_.constructor.call(this, prototypeName)
   this.inputData.last = {
-    key: ezP.Const.Input.SECONDARY,
+    key: ezP.Const.Input.ATTRIBUTE,
     check: ezP.T3.Expr.dotted_identifier,
     wrap: ezP.T3.Expr.dotted_identifier
   }
@@ -124,12 +123,12 @@ ezP.DelegateSvg.Expr.call_expr =  function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.call_expr, ezP.DelegateSvg.Primary)
 ezP.DelegateSvg.Manager.register('call_expr')
 
-ezP.ADD_PRIMARY_ATTRIBUTE_ID = 'ADD_PRIMARY_ATTRIBUTE'
-ezP.REMOVE_PRIMARY_ATTRIBUTE_ID = 'REMOVE_PRIMARY_ATTRIBUTE'
-ezP.ADD_PRIMARY_SLICING_ID = 'ADD_PRIMARY_SLICING'
-ezP.REMOVE_PRIMARY_SLICING_ID = 'REMOVE_PRIMARY_SLICING'
-ezP.ADD_PRIMARY_CALL_ID = 'ADD_PRIMARY_CALL'
-ezP.REMOVE_PRIMARY_CALL_ID = 'REMOVE_PRIMARY_CALL'
+ezP.PRIMARY_ATTRIBUTE_ADD_ID = 'PRIMARY_ATTRIBUTE_ADD'
+ezP.PRIMARY_ATTRIBUTE_REMOVE_ID = 'PRIMARY_ATTRIBUTE_REMOVE'
+ezP.PRIMARY_SLICING_ADD_ID = 'PRIMARY_SLICING_ADD'
+ezP.PRIMARY_SLICING_REMOVE_ID = 'PRIMARY_SLICING_REMOVE'
+ezP.PRIMARY_CALL_ADD_ID = 'PRIMARY_CALL_ADD'
+ezP.PRIMARY_CALL_REMOVE_ID = 'PRIMARY_CALL_REMOVE'
 
 /**
  * Populate the context menu for the given block.
@@ -139,74 +138,19 @@ ezP.REMOVE_PRIMARY_CALL_ID = 'REMOVE_PRIMARY_CALL'
  * @param {!goo.ui.Menu} menu The menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.prototype.populateContextMenuPrimary_ = function (block, menu) {
-  if (ezP.T3.Expr.Check.primary.indexOf(this.type_)>=0) {
-    var more_blocks = block.getDescendants().length < block.workspace.remainingCapacity() // can I add an attributeref
-    var subMenu = new ezP.SubMenu(ezP.Msg.ADD)
-    var menuItem = new ezP.MenuItemVar(
-      ezP.Msg.ADD_PRIMARY_ATTRIBUTE,
-      [ezP.ADD_PRIMARY_ATTRIBUTE_ID])
-    subMenu.addItem(menuItem)
-    menuItem.setEnabled(more_blocks)
-    menuItem = new ezP.MenuItemVar(
-      ezP.Msg.ADD_PRIMARY_SLICING,
-      [ezP.ADD_PRIMARY_SLICING_ID])
-    subMenu.addItem(menuItem)
-    menuItem.setEnabled(more_blocks)
-    menuItem = new ezP.MenuItemVar(
-      ezP.Msg.ADD_PRIMARY_CALL,
-      [ezP.ADD_PRIMARY_CALL_ID])
-    subMenu.addItem(menuItem)
-    menuItem.setEnabled(more_blocks)
-    menu.addChild(subMenu, true)
-
-    var parent = block.getParent();
-    if (parent) {
-      var c8n = parent.ezp.getPrimaryConnection(parent)
-      if (c8n && c8n.targetBlock() == block) {
-        var c8n = parent.outputConnection
-        if (c8n) {
-          var targetC8n = c8n.targetConnection
-          if (!targetC8n || targetC8n.checkType_(block.outputConnection)) {
-            if (parent.type == ezP.T3.Expr.attributeref) {
-              menuItem = new ezP.MenuItem(
-                ezP.Msg.REMOVE_PRIMARY_ATTRIBUTE,
-                [ezP.REMOVE_PRIMARY_ATTRIBUTE_ID])
-              menu.addChild(menuItem, true)
-              menuItem.setEnabled(true)
-            }
-            if (parent.type == ezP.T3.Expr.slicing) {
-              menuItem = new ezP.MenuItem(
-                ezP.Msg.REMOVE_PRIMARY_SLICING,
-                [ezP.REMOVE_PRIMARY_SLICING_ID])
-              menu.addChild(menuItem, true)
-              menuItem.setEnabled(true)
-            }
-            if (parent.type == ezP.T3.Expr.call_expr) {
-              menuItem = new ezP.MenuItem(
-                ezP.Msg.REMOVE_PRIMARY_CALL,
-                [ezP.REMOVE_PRIMARY_CALL_ID])
-              menu.addChild(menuItem, true)
-              menuItem.setEnabled(true)
-            }
-          }
-        }
-      }
-    }
-    return true
-  }
-  return false
+ezP.DelegateSvg.Expr.prototype.populateContextMenuPrimary_ = function (block, mgr) {
+  return mgr.populatePrimary_(block)
 }
 
 /**
  * Handle the selection of an item in the primary part of the context dropdown menu.
  * Default implementation returns false.
- * @param {!goog.ui.Menu} menu The Menu component clicked.
  * @param {!Blockly.Block} block The Menu component clicked.
+ * @param {!goog.ui.Menu} menu The Menu component clicked.
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Expr.prototype.handleActionMenuEventPrimary = function (block, menu, event) {
+ezP.DelegateSvg.Expr.prototype.handleMenuItemActionPrimary = function (block, menu, event) {
   var workspace = block.workspace
   var model = event.target.getModel()
   var action = model[0]
@@ -223,7 +167,6 @@ ezP.DelegateSvg.Expr.prototype.handleActionMenuEventPrimary = function (block, m
     B.ezp.getPrimaryConnection().connect(block.outputConnection)
     B.render()
     Blockly.Events.setGroup(false)
-
     /*
             var blockX = parseInt(xmlChild.getAttribute('x'), 10);
         var blockY = parseInt(xmlChild.getAttribute('y'), 10);
@@ -237,52 +180,19 @@ var xy = block.getRelativeToSurfaceXY();
     */
 
   }
-  var newBlock
   switch(action) {
-    case ezP.REMOVE_PRIMARY_ATTRIBUTE_ID:
-    case ezP.REMOVE_PRIMARY_SLICING_ID:
-    case ezP.REMOVE_PRIMARY_CALL_ID:
-      var parent = block.outputConnection.targetBlock()
-      if (parent) {
-        Blockly.Events.setGroup(true)
-        var c8n = parent.outputConnection
-        var its_xy = parent.getRelativeToSurfaceXY();
-        var my_xy = block.getRelativeToSurfaceXY();
-        if (c8n) {
-          var targetC8n = c8n.targetConnection
-          if (targetC8n) {
-            if (targetC8n.checkType_(block.outputConnection)) {
-              // The parent block is connected
-              // and the target connection is compatible with the block
-              c8n.disconnect()
-              block.outputConnection.disconnect()
-              parent.dispose()
-              targetC8n.connect(block.outputConnection)
-            } else {
-              // logically unreachable code
-              goog.asserts.assert(false, 'Unreachable code...')
-            }
-          } else {
-            // no problem with an outer connection
-            block.outputConnection.disconnect()
-            parent.dispose()
-            block.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
-          }
-        } else {
-          block.outputConnection.disconnect()
-          parent.dispose()
-          block.moveBy(xy.x, xy.y)    
-        }
-        Blockly.Events.setGroup(false)
-      }
+    case ezP.PRIMARY_ATTRIBUTE_REMOVE_ID:
+    case ezP.PRIMARY_SLICING_REMOVE_ID:
+    case ezP.PRIMARY_CALL_REMOVE_ID:
+      this.bypassAndRemoveParent(block)
       return true
-    case ezP.ADD_PRIMARY_ATTRIBUTE_ID:
+    case ezP.PRIMARY_ATTRIBUTE_ADD_ID:
       makeNewBlock(ezP.T3.Expr.attributeref)
       return true
-    case ezP.ADD_PRIMARY_SLICING_ID:
+    case ezP.PRIMARY_SLICING_ADD_ID:
       makeNewBlock(ezP.T3.Expr.slicing)
       return true
-    case ezP.ADD_PRIMARY_CALL_ID:
+    case ezP.PRIMARY_CALL_ADD_ID:
       makeNewBlock(ezP.T3.Expr.call_expr)
       return true
   }

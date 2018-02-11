@@ -115,10 +115,11 @@ ezP.USE_YIELD_WRAP_TYPE_ID = 'USE_YIELD_WRAP_TYPE'
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!goo.ui.Menu} menu The menu to populate.
+ * @param {!ezP.ContextMenuManager} mgr, mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuMiddle_ = function (block, menu) {
+ezP.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuMiddle_ = function (block, mgr) {
+  var menu = mgr.menu
   var target = this.getWrappedTargetBlock(block)
   var type = target? target.type: undefined
   var ezp = this
@@ -173,7 +174,7 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.changeYieldWrapType = function (
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Expr.yield_expression.prototype.handleActionMenuEventMiddle = function (block, menu, event) {
+ezP.DelegateSvg.Expr.yield_expression.prototype.handleMenuItemActionMiddle = function (block, menu, event) {
   var model = event.target.getModel()
   var action = model[0]
   var new_wrap_type = model[1]
@@ -184,7 +185,7 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.handleActionMenuEventMiddle = fu
     }, 100)
     return true
   }
-  return ezP.DelegateSvg.Expr.yield_expression.superClass_.handleActionMenuEventMiddle.call(this, block, menu, event)
+  return ezP.DelegateSvg.Expr.yield_expression.superClass_.handleMenuItemActionMiddle.call(this, block, menu, event)
 }
 
 /**

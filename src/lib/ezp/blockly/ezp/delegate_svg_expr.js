@@ -58,6 +58,110 @@ ezP.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
 }
 
 /**
+ * Can remove and bypass the parent?
+ * If the parent's output connection is connected,
+ * can connect the block's output connection to it?
+ * The connection cannot always establish.
+ * @param {!Block} block.
+ */
+ezP.DelegateSvg.prototype.canBypassAndRemoveParent = function (block) {
+  var parent = block.outputConnection.targetBlock()
+  if (parent) {
+    var c8n = parent.outputConnection
+    if (!c8n) {
+      return true
+    }
+    if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(block.outputConnection)) {
+      // the parent block has an output connection that can connect to the block's one
+      return true
+    }
+  }
+  return false
+}
+
+/**
+ * Remove and bypass the parent.
+ * If the parent's output connection is connected,
+ * connects the block's output connection to it.
+ * The connection cannot always establish.
+ * @param {!Block} block.
+ */
+ezP.DelegateSvg.prototype.bypassAndRemoveParent = function (block) {
+  var parent = block.outputConnection.targetBlock()
+  if (parent) {
+    Blockly.Events.setGroup(true)
+    var c8n = parent.outputConnection
+    var its_xy = parent.getRelativeToSurfaceXY();
+    var my_xy = block.getRelativeToSurfaceXY();
+    block.outputConnection.disconnect()
+    if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(block.outputConnection)) {
+      // the parent block has an output connection that can connect to the block's one
+      c8n.disconnect()
+      c8n.connect(block.outputConnection)
+    } else {
+      block.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+    }
+    parent.dispose()
+    Blockly.Events.setGroup(false)
+  }
+}
+
+/**
+ * Can insert a parent?
+ * If the block's output connection is connected,
+ * can connect the parent's output to it?
+ * The connection cannot always establish.
+ * @param {!Block} block.
+ * @param {string} prototypeName.
+ * @param {string} inputName, which parent's connection to use
+ */
+ezP.DelegateSvg.prototype.canInsertParent = function(block, prototypeName, inputName) {
+  var B = block.workspace.newBlock(prototypeName)
+  var input = B.getInput(inputName)
+  goog.asserts.assert(input, 'No input named '+inputName)
+  var c8n = input.connection
+  goog.asserts.assert(c8n, 'Unexpected dummy input '+inputName)
+  if (!c8n.checkType_(block.outputConnection)) {
+    return false
+  }
+  var targetC8n = block.outputConnection.targetConnection
+  if (targetC8n && !targetC8n.checkType_(B.outputConnection)) {
+    return false
+  }
+  return true
+}
+
+/**
+ * Insert a parent.
+ * If the block's output connection is connected,
+ * connects the parent's output to it.
+ * The connection cannot always establish.
+ * @param {!Block} block.
+ * @param {string} prototypeName.
+ * @param {string} inputName, which parent's connection to use
+ */
+ezP.DelegateSvg.prototype.insertParent = function(block, prototypeName, inputName) {
+  Blockly.Events.setGroup(true)
+  var B = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
+  var input = B.getInput(inputName)
+  goog.asserts.assert(input, 'No input named '+inputName)
+  var c8n = input.connection
+  goog.asserts.assert(c8n, 'Unexpected dummy input '+inputName)
+  var targetC8n = block.outputConnection.targetConnection
+  if (targetC8n/* && targetC8n.isConnected()*/) {
+    targetC8n.disconnect()
+    targetC8n.connect(B.outputConnection)
+  } else {
+    var its_xy = block.getRelativeToSurfaceXY();
+    var my_xy = B.getRelativeToSurfaceXY();
+    B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+  }
+  c8n.connect(block.outputConnection)
+  B.render()
+  Blockly.Events.setGroup(false)
+}
+
+/**
  * Class for a DelegateSvg, key_datum_concrete block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
@@ -125,10 +229,11 @@ ezP.USE_PROPER_SLICING_STRIDE_ID = 'USE_PROPER_SLICING_STRIDE'
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!goo.ui.Menu} menu The menu to populate.
+ * @param {!ezP.ContextMenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.proper_slice.prototype.populateContextMenuFirst_ = function (block, menu) {
+ezP.DelegateSvg.Expr.proper_slice.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var menu = mgr.menu
   var last = this.inputs.last.input
   var unused = last.ezpData.disabled_
   var menuItem = new ezP.MenuItem(
@@ -148,14 +253,14 @@ ezP.DelegateSvg.Expr.proper_slice.prototype.populateContextMenuFirst_ = function
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Expr.proper_slice.prototype.handleActionMenuEventFirst = function (block, menu, event) {
+ezP.DelegateSvg.Expr.proper_slice.prototype.handleMenuItemActionFirst = function (block, menu, event) {
   var action = event.target.getModel()
   if (action == ezP.USE_PROPER_SLICING_STRIDE_ID) {
     var input = this.inputs.last.input
     this.setNamedInputDisabled(block, input.name, !input.ezpData.disabled_)
     return true
   }
-  return ezP.DelegateSvg.Expr.proper_slice.superClass_.handleActionMenuEventFirst.call(this, block, menu, event)
+  return ezP.DelegateSvg.Expr.proper_slice.superClass_.handleMenuItemActionFirst.call(this, block, menu, event)
 }
 
 /**

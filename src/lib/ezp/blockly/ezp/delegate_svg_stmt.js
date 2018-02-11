@@ -537,10 +537,11 @@ ezP.Msg.PRINT_OPTION_FLUSH = ezP.Msg.PRINT_OPTION_FLUSH || 'flush = …'
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!goo.ui.Menu} menu The menu to populate.
+ * @param {!ezP.ContextMenuManager} mgr, mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Stmt.Print.prototype.populateContextMenuFirst_ = function (block, menu) {
+ezP.DelegateSvg.Stmt.Print.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var menu = mgr.menu
   var renderer = ezP.KeyValueMenuItemRenderer.getInstance()
   var options = [
     [ezP.Msg.PRINT_OPTION_END, ezP.Const.Input.END],
@@ -562,12 +563,12 @@ ezP.DelegateSvg.Stmt.Print.prototype.populateContextMenuFirst_ = function (block
 
 /**
  * Handle the selection of an item in the context dropdown menu.
- * @param {!goog.ui.Menu} menu The Menu component clicked.
  * @param {!Blockly.Block} block The Menu component clicked.
+ * @param {!goog.ui.Menu} menu The Menu component clicked.
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Stmt.Print.prototype.handleActionMenuEventFirst = function (block, menu, event) {
+ezP.DelegateSvg.Stmt.Print.prototype.handleMenuItemActionFirst = function (block, menu, event) {
   var workspace = block.workspace
   var action = event.target.getModel()
   var state = this.getPrintState_()
@@ -582,7 +583,7 @@ ezP.DelegateSvg.Stmt.Print.prototype.handleActionMenuEventFirst = function (bloc
       }, 100)
       return true
     default:
-      return ezP.DelegateSvg.Stmt.Print.superClass_.handleActionMenuEventFirst.call(this, block, menu, event)
+      return ezP.DelegateSvg.Stmt.Print.superClass_.handleMenuItemActionFirst.call(this, block, menu, event)
   }
 }
 

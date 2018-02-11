@@ -55,24 +55,26 @@ name            ::=  identifier
 import ::= IGNORE
 import_expr ::=  import_module | from_relative_module_import | from_module_import
 
-import_module ::= "import" non_void_module_named_list
-non_void_module_named_list ::= module_named ( "," module_named )*
-# module_named is not just an identifier, to simplify the UI management
-module_named ::= module "as" module_name
-module ::= module_name | submodule_name
-submodule_name ::= module '.' module_name
-module_name ::= identifier
-#name            ::=  identifier
+import_module ::= "import" non_void_module_as_list
+non_void_module_as_list ::= module_as ( "," module_as )*
+# module_as is not just an identifier, to simplify the UI management
+# module might represent here an object from a python module
+module_as ::= module ["as" alias_name]
+module ::= module_name ['.' module]
+alias_name ::= identifier
+#name  ::=  identifier
 name ::= IGNORE
+module_name ::= identifier
 
-from_relative_module_import ::= "from" relative_module "import" non_void_identifier_named_list
+from_relative_module_import ::= "from" relative_module "import" non_void_identifier_as_list
 # relative_module ::=  "."* module | "."+
 relative_module ::=  module | parent_module
 parent_module ::= '.' [relative_module]
-non_void_identifier_named_list ::= identifier_named ( "," identifier_named )*
-identifier_named ::= identifier "as" import_name
-identifier ::= an identifier but not a variable name
-import_name ::= the usage name of an imported identifier
+non_void_identifier_as_list ::= identifier_as ( "," identifier_as )*
+identifier_as ::= identifier "as" identifier_alias
+identifier ::= an identifier but not as a variable name here
+identifier_alias ::= identifier
+#the usage name of an imported identifier
 
 from_module_import ::= "from" module "import" "*"
 

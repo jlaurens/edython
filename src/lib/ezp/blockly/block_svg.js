@@ -16,6 +16,7 @@ goog.provide('ezP.BlockSvg')
 goog.require('ezP.Block')
 goog.require('ezP.DelegateSvg')
 goog.require('Blockly.BlockSvg')
+goog.forwardDeclare('ezP.ContextMenuManager')
 
 ezP.inherits(Blockly.BlockSvg, ezP.Block)
 
@@ -278,119 +279,6 @@ ezP.BlockSvg.prototype.setCollapsed = function (collapsed) {
 }
 
 /**
- * Show the context menu for this block.
- * @param {!Event} e Mouse event.
- * @private
- */
-Blockly.BlockSvg.prototype.showContextMenu_ = function (e) {
-  if (this.workspace.options.readOnly || !this.contextMenu) {
-    return
-  }
-  // Save the current block in a variable for use in closures.
-  var block = this
-  var menuOptions = []
-
-  if (this.isDeletable() && this.isMovable() && !block.isInFlyout) {
-    // Option to duplicate this block.
-    var duplicateOption = {
-      text: Blockly.Msg.DUPLICATE_BLOCK,
-      enabled: this.getDescendants().length < this.workspace.remainingCapacity(),
-      callback: function () {
-        Blockly.duplicate_(block)
-      }
-    }
-    menuOptions.push(duplicateOption)
-
-    if (this.isEditable() && !this.collapsed_ &&
-        this.workspace.options.comments) {
-      // Option to add/remove a comment.
-      var commentOption = {enabled: !goog.userAgent.IE && !this.outputConnection}
-      if (this.comment) {
-        commentOption.text = Blockly.Msg.REMOVE_COMMENT
-        commentOption.callback = function () {
-          block.setCommentText(null)
-        }
-      } else {
-        commentOption.text = Blockly.Msg.ADD_COMMENT
-        commentOption.callback = function () {
-          block.setCommentText('')
-        }
-      }
-      menuOptions.push(commentOption)
-    }
-
-    if (this.workspace.options.collapse) {
-      // Option to collapse/expand block.
-      if (this.collapsed_) {
-        var expandOption = {enabled: true}
-        expandOption.text = Blockly.Msg.EXPAND_BLOCK
-        expandOption.callback = function () {
-          block.setCollapsed(false)
-        }
-        menuOptions.push(expandOption)
-      } else {
-        var collapseOption = {enabled: block.getStatementCount() > 2}
-        collapseOption.text = Blockly.Msg.COLLAPSE_BLOCK
-        collapseOption.callback = function () {
-          block.setCollapsed(true)
-        }
-        menuOptions.push(collapseOption)
-      }
-    }
-
-    if (this.workspace.options.disable) {
-      // Option to disable/enable block.
-      var disableOption = {
-        text: this.disabled
-          ? Blockly.Msg.ENABLE_BLOCK : Blockly.Msg.DISABLE_BLOCK,
-        enabled: !block.outputConnection,
-        callback: function () {
-          block.setDisabled(!block.disabled)
-        }
-      }
-      menuOptions.push(disableOption)
-    }
-
-    // Option to delete this block.
-    // Count the number of blocks that are nested in this block.
-    var descendantCount = this.getDescendants().length
-    var nextBlock = this.getNextBlock()
-    if (nextBlock) {
-      // Blocks in the current stack would survive this block's deletion.
-      descendantCount -= nextBlock.getDescendants().length
-    }
-    var deleteOption = {
-      text: descendantCount === 1 ? Blockly.Msg.DELETE_BLOCK
-        : Blockly.Msg.DELETE_X_BLOCKS.replace('%1', String(descendantCount)),
-      enabled: true,
-      callback: function () {
-        Blockly.Events.setGroup(true)
-        block.dispose(true, true)
-        Blockly.Events.setGroup(false)
-      }
-    }
-    menuOptions.push(deleteOption)
-  }
-
-  // Option to get help.
-  var url = goog.isFunction(this.helpUrl) ? this.helpUrl() : this.helpUrl
-  var helpOption = {enabled: !!url}
-  helpOption.text = Blockly.Msg.HELP
-  helpOption.callback = function () {
-    block.showHelp_()
-  }
-  menuOptions.push(helpOption)
-
-  // Allow the block to add or modify menuOptions.
-  if (this.customContextMenu) {
-    this.customContextMenu(menuOptions)
-  }
-
-  Blockly.ContextMenu.show(e, menuOptions, this.RTL)
-  Blockly.ContextMenu.currentBlock = this
-}
-
-/**
  * Enable or disable a block. Noop. Disabled blocks start with '#'.
  * @override
  */
@@ -412,23 +300,13 @@ ezP.BlockSvg.prototype.updateColour = function () {
  * @private
  */
 ezP.BlockSvg.prototype.showContextMenu_ = function (e) {
+  // this part is copied as is from the parent's implementation. Is it relevant ?
   if (this.workspace.options.readOnly || !this.contextMenu) {
     return
   }
-  if (this.ezp.showContextMenu_) {
-    this.ezp.showContextMenu_(this, e);
-  } else {
-    ezP.BlockSvg.superClass_.showContextMenu_.call(tjhis, e);
-  }
+  ezP.ContextMenuManager.shared().showMenu(this, e)
 }
 
-/**
- * Customize the context menu.
- * @override
- */
-ezP.BlockSvg.prototype.customContextMenu = function(menuOptions) {
-  this.ezp.customContextMenu(this, menuOptions)
-}
 /**
  * Handle a mouse-down on an SVG block.
  * If the block is sealed to its parent, forwards to the parent.

@@ -249,7 +249,7 @@ class Types:
                 a = self.lincks[t.name]
                 t.old_name = t.name
                 t.name = a
-                print('**** ALIAS:', t.old_name, '->', t.name)
+                print('**** AS:', t.old_name, '->', t.name)
             except: pass
 
     def make_shallow(self):

@@ -30,10 +30,14 @@ goog.require('ezP')
 /** @export */ ezP.Msg.UNUSE_PROPER_SLICING_STRIDE = 'pas de 1'
 
 /** @export */ ezP.Msg.ADD = 'Ajouter'
+/** @export */ ezP.Msg.REMOVE = 'Enlever'
 
-/** @export */ ezP.Msg.ADD_PRIMARY_ATTRIBUTE = 'Ajouter `.attribute`'
-/** @export */ ezP.Msg.ADD_PRIMARY_SLICING = 'Ajouter `[...]`'
-/** @export */ ezP.Msg.ADD_PRIMARY_CALL = 'Ajouter `(...)`'
-/** @export */ ezP.Msg.REMOVE_PRIMARY_ATTRIBUTE = 'Enlever `.attribute`'
-/** @export */ ezP.Msg.REMOVE_PRIMARY_SLICING = 'Enlever `[...]`'
-/** @export */ ezP.Msg.REMOVE_PRIMARY_CALL = 'Enlever `(...)`'
+/** @export */ ezP.Msg.PRIMARY_ATTRIBUTE_ADD = 'Ajouter `.attribute`'
+/** @export */ ezP.Msg.PRIMARY_SLICING_ADD = 'Ajouter `[...]`'
+/** @export */ ezP.Msg.PRIMARY_CALL_ADD = 'Ajouter `(...)`'
+/** @export */ ezP.Msg.PRIMARY_ATTRIBUTE_REMOVE = 'Enlever `.attribute`'
+/** @export */ ezP.Msg.PRIMARY_SLICING_REMOVE = 'Enlever `[...]`'
+/** @export */ ezP.Msg.PRIMARY_CALL_REMOVE = 'Enlever `(...)`'
+
+/** @export */ ezP.Msg.MODULE_DOT_PREFIX_ADD = 'Ajouter . avant'
+/** @export */ ezP.Msg.MODULE_DOT_PREFIX_REMOVE = 'Enlever . avant'

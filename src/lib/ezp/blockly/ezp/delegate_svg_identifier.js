@@ -58,13 +58,14 @@ if (Blockly.Msg.NEW_VARIABLE.startsWith('Créer')) {
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!goo.ui.Menu} menu The menu to populate.
+ * @param {!ezP.ContextMenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuFirst_ = function (block, menu) {
+ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var menu = mgr.menu
   var answer = false
   var c8n = block.outputConnection.targetConnection
-  if (!c8n || c8n.ezpData.name_ != ezP.Const.Input.ALIAS) {
+  if (!c8n || c8n.ezpData.name_ != ezP.Const.Input.AS) {
     var menuItem = new ezP.MenuItem(
       ezP.Msg.RENAME_VARIABLE,
       [ezP.RENAME_VARIABLE_ID]);
@@ -78,12 +79,12 @@ ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuFirst_ = function (
 /**
  * Handle the selection of an item in the first part of the context dropdown menu.
  * Default implementation returns false.
- * @param {!goog.ui.Menu} menu The Menu component clicked.
  * @param {!Blockly.Block} block The Menu component clicked.
+ * @param {!goog.ui.Menu} menu The Menu component clicked.
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Expr.identifier.prototype.handleActionMenuEventFirst = function (block, menu, event) {
+ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionFirst = function (block, menu, event) {
   var model = event.target.getModel()
   var action = model[0]
   if (action == ezP.RENAME_VARIABLE_ID) {
@@ -96,13 +97,14 @@ ezP.DelegateSvg.Expr.identifier.prototype.handleActionMenuEventFirst = function 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!goo.ui.Menu} menu The menu to populate.
+ * @param {!ezP.ContextMenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuMiddle_ = function (block, menu) {
+ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuMiddle_ = function (block, mgr) {
+  var menu = mgr.menu
   var answer = false
   var c8n = block.outputConnection.targetConnection
-  if (!c8n || c8n.ezpData.name_ != ezP.Const.Input.ALIAS) {
+  if (!c8n || c8n.ezpData.name_ != ezP.Const.Input.AS) {
     var listener = block.ezp.fieldIdentifier
     goog.asserts.assert(listener && listener.getText, 'Bad listener in ...Get...populateContextMenuFirst_.')
     var name = listener.getText()
@@ -145,7 +147,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuMiddle_ = function 
  * Handle the selection of an item in the variables dropdown menu.
  * Special case the 'Rename variable...' and 'Delete variable...' options.
  * In the rename case, prompt the user for a new name.
- * @param {!goog.ui.Menu} menu The Menu component clicked.
+ * @param {!Blockly.Block} block
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
@@ -183,7 +185,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (bl
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Expr.identifier.prototype.handleActionMenuEventMiddle = function (block, menu, event) {
+ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionMiddle = function (block, menu, event) {
   var listener = block.ezp.fieldIdentifier
   var workspace = block.workspace
   var model = event.target.getModel()
@@ -213,7 +215,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.handleActionMenuEventMiddle = function
       }, 10)
       return true
       default:
-        return ezP.DelegateSvg.Expr.identifier.superClass_.handleActionMenuEventFirst.call(this, block, menu, event)
+        return ezP.DelegateSvg.Expr.identifier.superClass_.handleMenuItemActionFirst.call(this, block, menu, event)
   }
 }
 

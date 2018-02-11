@@ -276,7 +276,8 @@ ezP.DelegateSvg.prototype.postInitSvg = function(block) {
  */
 ezP.DelegateSvg.prototype.getWrappedTargetBlock = function(block) {
   if (this.inputs.wrap) {
-    return this.inputs.wrap.input.connection.targetBlock()    
+    var wrapped = this.inputs.wrap.input.connection.targetBlock()
+    return wrapped? wrapper.ezp.getWrappedTargetBlock(wrapped): wrapped
   }
   if (Object.keys(this.inputs).length === 1 && this.wrappedInputs_ && this.wrappedInputs_.length === 1) {
     return this.wrappedInputs_[0][0].connection.targetBlock()
@@ -291,6 +292,7 @@ ezP.DelegateSvg.prototype.getWrappedTargetBlock = function(block) {
  */
 ezP.DelegateSvg.prototype.initSvgWrap = function(block) {
   if (this.wrappedInputs_) {
+    // do not delete this at the end
     for (var i = 0; i < this.wrappedInputs_.length; i++) {
       var data = this.wrappedInputs_[i]
       var target = data[0].connection.targetBlock()
@@ -1122,4 +1124,18 @@ ezP.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id = unde
  */
 ezP.DelegateSvg.prototype.prepareForWorkspace = function (block, workspace, x, y, variant) {
   
+}
+
+/**
+ * Returns the python type of the block.
+ * This information may be displayed as the last item in the contextual menu.
+ * Wrapped blocks will return the parent's answer.
+ * @param {!Blockly.Block} block The block.
+ */
+ezP.DelegateSvg.prototype.getPythonType = function (block) {
+  if (this.wrapped_) {
+    var parent = block.getParent()
+    return parent.ezp.getPythonType(parent)
+  }
+  return this.pythonType_
 }
