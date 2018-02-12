@@ -243,6 +243,10 @@ class Formatter:
         for t in self.get_expressions():
             if t.is_wrapper and not t.alias:
                 self.append(template.format(t.name, t.definition, t.name))
+        self.append('// wrappers, like module_name ::= identifier because module_name is used in some Check array')
+        for t in self.get_expressions():
+            if t.alias and t.is_shallow_required:
+                self.append(template.format(t.name, t.definition, t.name))
         self.append('}')
 
     def feed_statements(self):
@@ -265,13 +269,13 @@ class Formatter:
     def feed_aliases(self):
         self.append('// aliases')
         for t in self.Ts:
-            if t.alias:
+            if t.alias and t.name != t.alias.name:
                 self.append('ezP.T3.Expr.{} = ezP.T3.Expr.{}'.format(t.name, t.alias.name))
 
     def feed_alias_checks(self):
         self.append('// alias checks')
         for t in self.Ts:
-            if t.alias:
+            if t.alias and t.name != t.alias.name:
                 self.append('ezP.T3.Expr.Check.{} = ezP.T3.Expr.Check.{}'.format(t.name, t.alias.name))
 
     def feed_special_aliases(self):
@@ -286,7 +290,7 @@ class Formatter:
         self.append('ezP.T3.Expr.Check = {')
         template = '    ezP.T3.Expr.{},'
         for t in self.get_expressions():
-            if not t.is_list and not t.alias:
+            if not t.is_list and not t.alias and not t.is_shallow:
                 require = [tt for tt in t.deep_require if not tt.is_wrapper]
                 if len(require):
                     self.append('  {}: ['.format(t.name))
@@ -299,6 +303,13 @@ class Formatter:
                 for tt in sorted((tt for tt in t.list_require), key=lambda t: (t.n, t.name)):
                     self.append(template.format(tt.name))
                 self.append('  ],')
+        for t in self.get_expressions():
+            if t.is_shallow:
+                if len(t.require):
+                    self.append('  {}: ['.format(t.name))
+                    for tt in sorted(t.require, key=lambda t: (t.n, t.name)):
+                        self.append(template.format(tt.name))
+                    self.append('  ],')
         self.append('}')
 
     def feed_statement_previous(self):

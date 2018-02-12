@@ -137,7 +137,7 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuMiddle_ = fun
   for (var i = 0; i<this.contextMenuData.length; i++) {
     F(this.contextMenuData[i])
   }
-  ezP.DelegateSvg.Expr.yield_expression.superClass_.populateContextMenuMiddle_.call(this,block, menu)
+  ezP.DelegateSvg.Expr.yield_expression.superClass_.populateContextMenuMiddle_.call(this,block, mgr)
   return true
 }
 

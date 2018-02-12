@@ -34,6 +34,7 @@ class Types:
         self.make_list_require()
         self.make_link()
 
+
     def __repr__(self):
         return repr(self.__dict__)
 
@@ -76,19 +77,20 @@ class Types:
     def digest(self, data):
         data = data.replace('\n ', ' ')
         data = re.sub(r'  +', ' ', data)
-        re_definition = re.compile(r"^\s*(?P<name>[a-zA-Z_][a-zA-Z_\d]*?)\s*::=\s*(?P<definition>.*)\s*$")
+        re_definition = re.compile(r"^\s*(?P<name>[a-zA-Z_][a-zA-Z_\d]*?)\s*(?P<op>::=|!!=|\|\|=)\s*(?P<definition>.*)\s*$")
         re_stmt_order = re.compile(r"^\s*(\S+)\s*(<|>)\s*(.*)\s*$")
         re_linck = re.compile(r"^\s*(?P<definition>\S+)\s*->\s*(?P<alias>.*)\s*$")
         for l in data.splitlines():
             m = re_definition.match(l)
             if m:
-                name, definition = m.group('name'), m.group('definition')
-                if len(definition):
-                    try:
-                        t = self.get_type(name, create=True)
-                        t.setup_definition(definition)
-                    except Exception as exc:
-                        print(exc)
+                name, op, definition = m.group('name'), m.group('op'), m.group('definition')
+                try:
+                    t = self.get_type(name, create=True)
+                    t.setup_definition(definition, op == r'||=')
+                    if (op == '!!='):
+                        t.is_shallow = True
+                except Exception as exc:
+                    print(exc)
             else:
                 m = re_stmt_order.match(l)
                 if m:
@@ -291,6 +293,10 @@ class Types:
             del t.temp_
         for t in self.get_expressions():
             t.one_shot = t.one_shot and not len(t.require) and len(t.provide) == 1
+        for t in self.get_expressions():
+            if t.is_shallow:
+                for tt in t.require:
+                    tt.is_shallow_required = True
 
     def make_deep_(self, shallow_key, deep_key, filter):
         for t in self:
@@ -299,6 +305,7 @@ class Types:
         while once_more:
             once_more = False
             for t in self.get_expressions():
+                if t.is_shallow: continue
                 more = set()
                 for tt in t.temp_:
                     for ttt in tt.temp_:
@@ -308,7 +315,10 @@ class Types:
                 if len(more):
                     t.temp_ |= more
         for t in self.get_expressions():
-            setattr(t, deep_key, list(t.temp_))
+            if t.is_shallow:
+                setattr(t, deep_key, getattr(t, shallow_key))
+            else:
+                setattr(t, deep_key, list(t.temp_))
         for t in self:
             del t.temp_
 
@@ -316,12 +326,14 @@ class Types:
         for t in self.get_expressions():
             t.temp_ = set()
         for t in self.get_expressions():
+            if t.is_shallow: pass
             for tt in self.get_expressions():
-                if not t == tt:
+                if t != tt:
                     if t in tt.deep_provide and tt in t.deep_require:
                         t.temp_.add(tt)
                         tt.temp_.add(t)
         for t in self.get_expressions():
+            if t.is_shallow: pass
             if len(t.temp_):
                 t.cycle = sorted(list(t.temp_), key = lambda x: (-len(x.deep_provide), x.name))
                 t.cycle_entry = t.cycle[0]
@@ -362,6 +374,7 @@ class Types:
     def remove_wrappers(self):
         for wrapper in [t for t in self.get_expressions() if t.is_wrapper]:
             for t in self.get_expressions():
+                if t.is_shallow: continue
                 try:
                     t.deep_require.remove(wrapper)
                 except: pass
@@ -371,8 +384,10 @@ class Types:
 
     def make_alias(self):
         for t in self:
-            if not t.is_stmt and len(t.require) == 1:
-                t.alias = self.get_type(t.definition)
+            if not t.is_stmt and len(t.require) == 1 and not t.is_shallow_required:
+                candidate = self.get_type(t.definition)
+                if candidate.name != t.name:
+                    t.alias = candidate
         for t in self:
             a = t.alias
             while a:

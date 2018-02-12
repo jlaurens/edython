@@ -135,11 +135,27 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
       } else {
         out.input = block.appendValueInput(k)
       }
-      var ezp = out.input.connection.ezpData
+      var ezp = out.input.connection.ezp
+      ezp.name_ = k
+      if (D.plugged) {
+        ezp.plugged_ = D.plugged
+        console.log(k, ezp.plugged_)
+      }
+      if (D.willConnect) {
+        ezp.willConnect = D.willConnect
+      }
+      if (D.didConnect) {
+        ezp.didConnect = D.didConnect
+      }
+      if (D.willDisconnect) {
+        ezp.willDisconnect = D.willDisconnect
+      }
+      if (D.didDisconnect) {
+        ezp.didDisconnect = D.didDisconnect
+      }
       if (D.optional) {
         ezp.optional_ = true
       }
-      ezp.name_ = k
       ezp.disabled_ = D.disabled && !D.enabled
       if ((v = D.check)) {
         out.input.setCheck(v)
@@ -741,7 +757,7 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   }
   var c8n = io.input.connection
   if (c8n) {
-    var ezp = c8n.ezpData
+    var ezp = c8n.ezp
     var target = c8n.targetBlock()
     this.renderDrawFields_(io)
     c8n.setOffsetInBlock(io.cursorX, 0)
@@ -845,7 +861,7 @@ ezP.DelegateSvg.prototype.highlightConnection = function (c8n) {
   if (c8n.type === Blockly.INPUT_VALUE) {
     if (c8n.isConnected()) {
       steps = this.valuePathDef_(c8n.targetBlock())
-    } else if (c8n.ezpData.s7r_ || c8n.ezpData.optional_) {
+    } else if (c8n.ezp.s7r_ || c8n.ezp.optional_) {
       steps = this.carretPathDefWidth_(0).d
     } else {
       steps = this.placeHolderPathDefWidth_(0).d
@@ -908,7 +924,7 @@ ezP.DelegateSvg.prototype.assertBlockInputTuple__ = function (block, comment, ig
         }
         var c8n = input.connection
         if (n < max) {
-          goog.asserts.assert(input.activeConnectionEZP && c8n && c8n.ezpData.s7r_ && !c8n.isConnected(), 'Bad separator at ' + [i, list.length, input.activeConnectionEZP, c8n, c8n.ezpData.s7r_, !c8n.isConnected()])
+          goog.asserts.assert(input.activeConnectionEZP && c8n && c8n.ezp.s7r_ && !c8n.isConnected(), 'Bad separator at ' + [i, list.length, input.activeConnectionEZP, c8n, c8n.ezp.s7r_, !c8n.isConnected()])
         } else {
           goog.asserts.assert(!c8n && !input.activeConnectionEZP, 'Bad separator at ' + [i, list.length, c8n, !input.activeConnectionEZP])
         }
@@ -919,7 +935,7 @@ ezP.DelegateSvg.prototype.assertBlockInputTuple__ = function (block, comment, ig
           break
         }
         c8n = input.connection
-        goog.asserts.assert(c8n.ezpData.s7r_ && !c8n.isConnected(), 'Bad separator at ' + [i, list.length, c8n.ezpData.s7r_, !c8n.isConnected()])
+        goog.asserts.assert(c8n.ezp.s7r_ && !c8n.isConnected(), 'Bad separator at ' + [i, list.length, c8n.ezp.s7r_, !c8n.isConnected()])
       }
     }
     for (i = first + 1; (input = list[i]); i += 2) {
@@ -930,7 +946,7 @@ ezP.DelegateSvg.prototype.assertBlockInputTuple__ = function (block, comment, ig
         break
       }
       c8n = input.connection
-      goog.asserts.assert(!c8n.ezpData.s7r_ && (ignore || c8n.isConnected()), 'Bad input value at ' + [i, list.length, !c8n.ezpData.s7r_, c8n.isConnected()])
+      goog.asserts.assert(!c8n.ezp.s7r_ && (ignore || c8n.isConnected()), 'Bad input value at ' + [i, list.length, !c8n.ezp.s7r_, c8n.isConnected()])
     }
   } catch (e) {
     throw e

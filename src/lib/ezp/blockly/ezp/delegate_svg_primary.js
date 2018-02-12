@@ -27,7 +27,8 @@ ezP.DelegateSvg.Primary = function (prototypeName) {
   ezP.DelegateSvg.Primary.superClass_.constructor.call(this, prototypeName)
   this.inputData.first = {
     key: ezP.Const.Input.PRIMARY,
-    check: ezP.T3.Expr.Check.primary
+    check: ezP.T3.Expr.Check.primary,
+    plugged: ezP.T3.Expr.primary,
   }
 }
 goog.inherits(ezP.DelegateSvg.Primary, ezP.DelegateSvg.Expr)
@@ -66,9 +67,10 @@ ezP.DelegateSvg.Primary.prototype.getPrimaryConnection = function (block) {
 ezP.DelegateSvg.Expr.attributeref = function (prototypeName) {
   ezP.DelegateSvg.Expr.attributeref.superClass_.constructor.call(this, prototypeName)
   this.inputData.last = {
+    label: '.',
     key: ezP.Const.Input.ATTRIBUTE,
-    check: ezP.T3.Expr.dotted_identifier,
-    wrap: ezP.T3.Expr.dotted_identifier
+    check: ezP.T3.Expr.identifier,
+    plugged: ezP.T3.Expr.attribute_identifier,
   }
   this.outputCheck = ezP.T3.Expr.attributeref 
 }
@@ -146,55 +148,10 @@ ezP.DelegateSvg.Expr.prototype.populateContextMenuPrimary_ = function (block, mg
  * Handle the selection of an item in the primary part of the context dropdown menu.
  * Default implementation returns false.
  * @param {!Blockly.Block} block The Menu component clicked.
- * @param {!goog.ui.Menu} menu The Menu component clicked.
+ * @param {!ezP.ConetxtMenuManager} mgr The context menu manager.
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Expr.prototype.handleMenuItemActionPrimary = function (block, menu, event) {
-  var workspace = block.workspace
-  var model = event.target.getModel()
-  var action = model[0]
-  var makeNewBlock = function(prototypeName) {
-    Blockly.Events.setGroup(true)
-    var B = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
-    var xy = block.getRelativeToSurfaceXY();
-    B.moveBy(xy.x, xy.y)
-    var targetC8n = block.outputConnection.targetConnection
-    if (targetC8n) {
-      block.outputConnection.disconnect()
-      targetC8n.connect(B.outputConnection)
-    }
-    B.ezp.getPrimaryConnection().connect(block.outputConnection)
-    B.render()
-    Blockly.Events.setGroup(false)
-    /*
-            var blockX = parseInt(xmlChild.getAttribute('x'), 10);
-        var blockY = parseInt(xmlChild.getAttribute('y'), 10);
-        if (!isNaN(blockX) && !isNaN(blockY)) {
-          block.moveBy(workspace.RTL ? width - blockX : blockX, blockY);
-        }
-var xy = block.getRelativeToSurfaceXY();
-  element.setAttribute('x',
-      Math.round(block.workspace.RTL ? width - xy.x : xy.x));
-  
-    */
-
-  }
-  switch(action) {
-    case ezP.PRIMARY_ATTRIBUTE_REMOVE_ID:
-    case ezP.PRIMARY_SLICING_REMOVE_ID:
-    case ezP.PRIMARY_CALL_REMOVE_ID:
-      this.bypassAndRemoveParent(block)
-      return true
-    case ezP.PRIMARY_ATTRIBUTE_ADD_ID:
-      makeNewBlock(ezP.T3.Expr.attributeref)
-      return true
-    case ezP.PRIMARY_SLICING_ADD_ID:
-      makeNewBlock(ezP.T3.Expr.slicing)
-      return true
-    case ezP.PRIMARY_CALL_ADD_ID:
-      makeNewBlock(ezP.T3.Expr.call_expr)
-      return true
-  }
-  return false
+ezP.DelegateSvg.Expr.prototype.handleMenuItemActionPrimary = function (block, mgr, event) {
+  return mgr.handleActionPrimary(block,event)
 }

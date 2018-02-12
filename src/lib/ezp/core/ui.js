@@ -144,9 +144,9 @@ ezP.setup.register(function () {
   ezP.Style.insertCssRuleAt('.ezp-path-shadow-contour, .ezp-path-shadow-collapsed {stroke-width: ' + (ezP.Style.Path.width * 1.2) + 'px;stroke-dasharray:' + ezP.Font.space / 3 + ' ' + ezP.Font.space / 6 + ';}')
   ezP.Style.insertCssRuleAt('.ezp-path-dotted{stroke: ' + ezP.Style.Path.colour + ';stroke-width: ' + (ezP.Style.Path.width * 1.5) + 'px;stroke-linecap:round;stroke-dasharray:0 ' + ezP.Font.space / 2 + ';}')
   ezP.Style.insertCssRuleAt('.ezp-no-path{display:none;}', 5)
-  ezP.Style.insertCssRuleAt('.ezp-code-reserved {font-family:"DejaVuSansMono";font-weight:bold;fill: rgba(0, 84, 147, 0.75);color: rgba(0, 84, 147, 0.75);}')
+  ezP.Style.insertCssRuleAt('.ezp-code-reserved {font-family:DejaVuSansMono, monospace;font-weight:bold;fill: rgba(0, 84, 147, 0.75);color: rgba(0, 84, 147, 0.75);}')
   ezP.Style.insertCssRuleAt('.ezp-menuitem-disabled .ezp-code-reserved {color: rgba(0, 84, 147, 0.3);}')
-  ezP.Style.insertCssRuleAt('.ezp-code-placeholder {font-family:"DejaVuSansMono";font-style:oblique;}')
+  ezP.Style.insertCssRuleAt('.ezp-code-placeholder {font-family:DejaVuSansMono, monospace;font-style:oblique;}')
 })
 
 ezP.Style.MenuIcon = {

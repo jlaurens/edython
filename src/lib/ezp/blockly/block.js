@@ -158,7 +158,7 @@ ezP.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
 ezP.Block.prototype.appendWrapValueInput = function(name, prototypeName) {
   goog.asserts.assert(prototypeName, 'Missing prototypeName, no block to seal')
   var input = this.appendValueInput(name)
-  input.connection.ezpData.wrapped_ = true
+  input.connection.ezp.wrapped_ = true
   input.connection.setHidden(true)
   if (!this.ezp.wrappedInputs_) {
     this.ezp.wrappedInputs_ = []

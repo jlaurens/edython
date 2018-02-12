@@ -244,6 +244,14 @@ ezP.ContextMenuManager.prototype.populateLast = function (block) {
     [ezP.LOG_BLOCK_XML_ID])
   menuItem.setEnabled(true)
   menu.addChild(menuItem, true)
+
+  if (block.ezp.plugged_) {
+    menuItem = new ezP.MenuItem(
+      block.ezp.plugged_.substring(4),
+      [ezP.LOG_BLOCK_XML_ID])
+    menuItem.setEnabled(false)
+    menu.addChild(menuItem, true)
+  }
 }
 
 /**
@@ -352,7 +360,7 @@ ezP.PARENT_BYPASS_AND_REMOVE_ID = 'PARENT_BYPASS_AND_REMOVE'
  * @param {!goo.ui.Menu} menu The menu to populate.
  * @private
  */
-ezP.ContextMenuManager.prototype.populatePrimary_ = function (block, in_menu) {
+ezP.ContextMenuManager.prototype.populatePrimary_ = function (block) {
   var menu = this.menu
   var ezp = block.ezp
   if (ezP.T3.Expr.Check.primary.indexOf(block.type)>=0) {
@@ -365,7 +373,8 @@ ezP.ContextMenuManager.prototype.populatePrimary_ = function (block, in_menu) {
     var can_attributeref = ezp.canInsertParent(block, ezP.T3.Expr.attributeref, ezP.Const.Input.PRIMARY)
     var can_slicing = ezp.canInsertParent(block, ezP.T3.Expr.slicing, ezP.Const.Input.PRIMARY)
     var can_call_expr = ezp.canInsertParent(block, ezP.T3.Expr.call_expr, ezP.Const.Input.PRIMARY)
-    if (ezp.canBypassAndRemoveParent(block)) {
+    if (block.ezp.plugged_ == ezP.T3.Expr.primary && ezp.canBypassAndRemoveParent(block)) {
+      var target = block.outputConnection.targetBlock()
       // block is the 'primary' of target
       // then we can add both attributeref, slicing or call_expr
       // all of them are acceptable according to python grammar.
@@ -444,4 +453,53 @@ ezP.ContextMenuManager.prototype.handleActionPrimary = function (block, event) {
     return true
   }
   return false
+}
+
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.ContextMenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.ContextMenuManager.prototype.populateVariable_ = function (block) {
+  if (ezP.T3.Expr.Check.not_a_variable.indexOf(block.ezp.plugged_)>=0) {
+    return false
+  }
+  var menu = this.menu
+  var answer = false
+  var listener = block.ezp.fieldIdentifier
+  goog.asserts.assert(listener && listener.getText, 'Bad listener in ...Get...populateContextMenuFirst_.')
+  var name = listener.getText()
+  var allVs = [].concat(block.workspace.getAllVariables())
+  allVs.sort(Blockly.VariableModel.compareByName)
+  var visible = allVs.length > 1
+  var j = 0
+  var v
+  var menuItem
+  var subMenu = new ezP.SubMenu(ezP.Msg.REPLACE_VARIABLE)
+  for (var i = 0; v = allVs[i++];) {
+    menuItem = new ezP.MenuItemVar(v.name, [ezP.CHANGE_VARIABLE_ID, v])
+    menu.addChild(menuItem, true)
+    menuItem.enableClassName('ezp-hidden', !visible || v.name === name)
+    menuItem = new ezP.MenuItemVar(v.name, [ezP.REPLACE_VARIABLE_ID, v])
+    subMenu.addItem(menuItem)
+    menuItem.enableClassName('ezp-hidden', !visible || v.name === name)
+  }
+  if (visible) {
+    menu.addChild(new ezP.Separator(), true)
+  }
+  subMenu.setEnabled(visible)  
+  menu.addChild(subMenu, true)
+  menuItem = new ezP.MenuItem(
+    ezP.Msg.NEW_VARIABLE,
+    [ezP.NEW_VARIABLE_ID])
+    menu.addChild(menuItem, true)
+  menuItem = new ezP.MenuItem(
+    ezP.Msg.DELETE_UNUSED_VARIABLES,
+    [ezP.DELETE_UNUSED_VARIABLES_ID])
+  menuItem.setEnabled(ezP.Variables.isThereAnUnusedVariable(block.workspace))
+  menu.addChild(menuItem, true)
+  Blockly.utils.addClass(subMenu.getMenu().getElement(), 'ezp-nosubmenu')
+  return true
 }

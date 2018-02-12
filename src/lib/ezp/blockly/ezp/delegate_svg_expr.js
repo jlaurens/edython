@@ -64,14 +64,15 @@ ezP.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
  * The connection cannot always establish.
  * @param {!Block} block.
  */
-ezP.DelegateSvg.prototype.canBypassAndRemoveParent = function (block) {
+ezP.DelegateSvg.Expr.prototype.canBypassAndRemoveParent = function (block) {
   var parent = block.outputConnection.targetBlock()
   if (parent) {
     var c8n = parent.outputConnection
     if (!c8n) {
       return true
     }
-    if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(block.outputConnection)) {
+    c8n = c8n.targetConnection
+    if (!c8n || c8n.checkType_(block.outputConnection)) {
       // the parent block has an output connection that can connect to the block's one
       return true
     }
@@ -86,7 +87,7 @@ ezP.DelegateSvg.prototype.canBypassAndRemoveParent = function (block) {
  * The connection cannot always establish.
  * @param {!Block} block.
  */
-ezP.DelegateSvg.prototype.bypassAndRemoveParent = function (block) {
+ezP.DelegateSvg.Expr.prototype.bypassAndRemoveParent = function (block) {
   var parent = block.outputConnection.targetBlock()
   if (parent) {
     Blockly.Events.setGroup(true)

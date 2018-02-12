@@ -32,6 +32,8 @@ class Type:
         self.ignored = False
         self.one_shot = True
         self.is_list = None
+        self.is_shallow = False
+        self.is_shallow_required = False
         self.list_separator = None
         self.list_require = []
         self.alias = None
@@ -48,15 +50,24 @@ class Type:
         self.is_part = not not m.group('is_part')
         self.is_stmt = self.is_part or not not m.group('is_stmt_1') or not not m.group('is_stmt_2')
 
-    def setup_definition(self, definition):
+    def setup_definition(self, definition, append = False):
         if self.definition and len(self.definition):
-            print('****  Overriding the definition of', self.name)
-            print('old ::=', self.definition)
-            print('new ::=', definition)
-        self.definition = definition
-        m = self.__class__.re_compound.match(definition)
+            if append:
+                if len(definition):
+                    candidate = self.definition + ' | ' + definition
+                    print('****  Overriding the definition of', self.name)
+                    print('old ::=', self.definition)
+                    print('new ::=', candidate)
+                else:
+                    return
+            else:
+                candidate = definition
+        else:
+            candidate = definition
+        self.definition = candidate
+        m = self.__class__.re_compound.match(candidate)
         self.is_compound = not not m if m else None
-        if self.__class__.re_statement.match(definition):
+        if self.__class__.re_statement.match(candidate):
             self.is_stmt = True
 
     def get_normalized_definition(self):

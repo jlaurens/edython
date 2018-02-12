@@ -269,7 +269,7 @@ ezP.TupleConsolidator_ = function () {
     tuple.n = n
     tuple.sep = sep
     input.name = 'S7R_' + grp + '_' + n
-    tuple.isSeparator = c8n.ezpData.s7r_ = true
+    tuple.isSeparator = c8n.ezp.s7r_ = true
     c8n.setHidden(hidden)
     if (extreme) {
       tuple.hidden = hidden
@@ -285,7 +285,7 @@ ezP.TupleConsolidator_ = function () {
     tuple.n = n
     tuple.sep = sep
     input.name = 'TUPLE_' + grp + '_' + n++
-    tuple.isSeparator = c8n.ezpData.s7r_ = false
+    tuple.isSeparator = c8n.ezp.s7r_ = false
   }
   var doGroup = function () {
     // group bounds and connected
@@ -605,7 +605,7 @@ ezP.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
         target.ezp.makeBlockWrapped_(target)
         goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed '+target.type)
         input.connection.connect(target.outputConnection)
-        input.connection.ezpData.disabled_ = true
+        input.connection.ezp.disabled_ = true
         target.ezp.completeWrapped_(target)  
       } else {
         console.log('Maximum value reached in completeWrappedInput_ (circular)')
@@ -615,3 +615,72 @@ ezP.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
     }
   }
 }
+
+/**
+ * Will connect this block's connection to another connection.
+ * @param {!Blockly.Block} block
+ * @param {!Blockly.Connection} connection
+ * @param {!Blockly.Connection} childConnection
+ */
+ezP.Delegate.prototype.willConnect = function(block, connection, childConnection) {
+  // console.log('will connect')
+}
+
+/**
+ * Did connect this block's connection to another connection.
+ * @param {!Blockly.Block} block
+ * @param {!Blockly.Connection} connection what was connected in the block
+ * @param {!Blockly.Connection} oldTargetConnection what was previously connected in the block
+ * @param {!Blockly.Connection} oldConnection what was previously connected to the new targetConnection
+ */
+ezP.Delegate.prototype.didConnect = function(block, connection, oldTargetConnection, oldConnection) {
+  // console.log('did connect')
+}
+
+/**
+ * Will disconnect this block's connection.
+ * @param {!Blockly.Block} block
+ * @param {!Blockly.Connection} blockConnection
+ */
+ezP.Delegate.prototype.willDisconnect = function(block, blockConnection) {
+  // console.log('will disconnect')
+}
+
+/**
+ * Did connect this block's connection to another connection.
+ * @param {!Blockly.Block} block
+ * @param {!Blockly.Connection} blockConnection
+ * @param {!Blockly.Connection} oldTargetConnection that was connected to blockConnection
+ */
+ezP.Delegate.prototype.didDisconnect = function(block, blockConnection, oldTargetConnection) {
+  // console.log('did disconnect')
+}
+
+/**
+ * Whether the block is not a variable.
+ * @param {!Blockly.Block} block
+ */
+ezP.Delegate.prototype.isNotAVariable = function(block) {
+  return this.plugged_ && ezP.T3.Expr.Check.not_a_variable.indexOf(this.plugged_)<0
+}
+
+/**
+ * In a connection, the inferior block's delegate may have a plugged_.
+ * This is used for example to distinguish generic blocks such as identifiers.
+ * An identifier is in general a variable name but sometimes it cannot be.
+ * module names are such an example.
+ * @private
+ */
+ezP.Delegate.prototype.plugged_ = undefined
+
+/**
+ * Can remove and bypass the parent?
+ * If the parent's output connection is connected,
+ * can connect the block's output connection to it?
+ * The connection cannot always establish.
+ * @param {!Block} block.
+ */
+ezP.Delegate.prototype.canBypassAndRemoveParent = function (block) {
+  return false
+}
+

@@ -22,9 +22,9 @@ import_module ::= "import" non_void_module_as_list
 non_void_module_as_list ::= module_as ( "," module_as )*
 # module_as is not just an identifier, to simplify the UI management
 # module might represent here an object from a python module
-module_as ::= module ["as" alias_name]
+module_as ::= module ["as" module_alias]
 module ::= module_name ['.' module]
-alias_name ::= identifier
+module_alias ::= identifier
 #name  ::=  identifier
 name ::= IGNORE
 module_name ::= identifier
@@ -44,7 +44,7 @@ ezP.DelegateSvg.Expr._as_concrete = function (prototypeName) {
     first: {
       key: ezP.Const.Input.SOURCE,
     },
-    last: {
+      last: {
       label: 'as',
       css_class: 'ezp-code-reserved',
       key: ezP.Const.Input.AS,
@@ -120,7 +120,7 @@ ezP.DelegateSvg.Expr._as_concrete.prototype.fromDom = function (block, element) 
 
 /**
  * Class for a DelegateSvg, module_as_concrete.
- * module_as ::= module ["as" alias_name]
+ * module_as ::= module ["as" module_alias]
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
@@ -131,6 +131,8 @@ ezP.DelegateSvg.Expr.module_as_concrete = function (prototypeName) {
   this.sourceLabel = 'module'
   this.outputCheck = ezP.T3.Expr.module_as_concrete
   this.inputData.first.check = ezP.T3.Expr.Check.module
+  this.inputData.first.plugged = ezP.T3.Expr.module
+  this.inputData.last.plugged = ezP.T3.Expr.module_alias
 }
 goog.inherits(ezP.DelegateSvg.Expr.module_as_concrete, ezP.DelegateSvg.Expr._as_concrete)
 ezP.DelegateSvg.Manager.register('module_as_concrete')
@@ -149,12 +151,14 @@ ezP.DelegateSvg.Expr.module_concrete = function (prototypeName) {
   this.outputCheck = ezP.T3.Expr.module_concrete
   this.inputData.first = {
     key: ezP.Const.Input.LHS,
-    check: ezP.T3.Expr.module_name
+    check: ezP.T3.Expr.module_name,
+    plugged: ezP.T3.Expr.module_identifier,
   }
   this.inputData.last = {
     label: '.',
     key: ezP.Const.Input.RHS,
-    check: ezP.T3.Expr.Check.module
+    check: ezP.T3.Expr.Check.module,
+    plugged: ezP.T3.Expr.module,
   }
 }
 goog.inherits(ezP.DelegateSvg.Expr.module_concrete, ezP.DelegateSvg.Expr)
@@ -262,29 +266,31 @@ from_relative_module_import ::= "from" relative_module "import" non_void_identif
 # relative_module ::=  "."* module | "."+
 relative_module ::=  module | parent_module
 parent_module ::= '.' [relative_module]
-non_void_identifier_as_list ::= identifier_as ( "," identifier_as )*
-identifier_as ::= identifier "as" import_name
+non_void_identifier_as_list ::= import_identifier_as ( "," import_identifier_as )*
+import_identifier_as ::= identifier "as" import_name
 identifier ::= an identifier but not as a variable name here
 import_name ::= identifier
 */
 
 /**
- * Class for a DelegateSvg, identifier_as.
+ * Class for a DelegateSvg, import_identifier_as.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.identifier_as = function (prototypeName) {
-  ezP.DelegateSvg.Expr.identifier_as.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.import_identifier_as = function (prototypeName) {
+  ezP.DelegateSvg.Expr.import_identifier_as.superClass_.constructor.call(this, prototypeName)
   this.sourceLabel = 'identifier'
   this.inputData.first.check = ezP.T3.Expr.identifier
+  this.inputData.first.plugged = ezP.T3.Expr.import_identifier
+  this.inputData.last.plugged = ezP.T3.Expr.import_alias
 }
-goog.inherits(ezP.DelegateSvg.Expr.identifier_as, ezP.DelegateSvg.Expr._as_concrete)
-ezP.DelegateSvg.Manager.register('identifier_as')
+goog.inherits(ezP.DelegateSvg.Expr.import_identifier_as, ezP.DelegateSvg.Expr._as_concrete)
+ezP.DelegateSvg.Manager.register('import_identifier_as')
 
 /**
- * Class for a DelegateSvg, non_void_identifier_as_list block.
+ * Class for a DelegateSvg, non_void_import_identifier_as_list block.
  * This block may be wrapped.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
@@ -292,13 +298,13 @@ ezP.DelegateSvg.Manager.register('identifier_as')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.non_void_identifier_as_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.non_void_identifier_as_list.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.non_void_identifier_as_list, false, ',')
-  this.outputCheck = ezP.T3.Expr.non_void_identifier_as_list
+ezP.DelegateSvg.Expr.non_void_import_identifier_as_list = function (prototypeName) {
+  ezP.DelegateSvg.Expr.non_void_import_identifier_as_list.superClass_.constructor.call(this, prototypeName)
+  this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.non_void_import_identifier_as_list, false, ',')
+  this.outputCheck = ezP.T3.Expr.non_void_import_identifier_as_list
 }
-goog.inherits(ezP.DelegateSvg.Expr.non_void_identifier_as_list, ezP.DelegateSvg.List)
-ezP.DelegateSvg.Manager.register('non_void_identifier_as_list')
+goog.inherits(ezP.DelegateSvg.Expr.non_void_import_identifier_as_list, ezP.DelegateSvg.List)
+ezP.DelegateSvg.Manager.register('non_void_import_identifier_as_list')
 
 /**
  * Class for a DelegateSvg, parent_module block.
@@ -590,7 +596,7 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuMiddle_ = function
   for (var i = 0; i<this.contextMenuData.length; i++) {
     F(this.contextMenuData[i])
   }
-  ezP.DelegateSvg.Stmt.import_stmt.superClass_.populateContextMenuMiddle_.call(this,block, menu)
+  ezP.DelegateSvg.Stmt.import_stmt.superClass_.populateContextMenuMiddle_.call(this,block, mgr)
   return true
 }
 

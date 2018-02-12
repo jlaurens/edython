@@ -10,7 +10,18 @@ https://docs.python.org/3.6/reference/expressions.html
 end next, in order to use the same parser.
 
 What is important is enclosed between pre tags
-Definitions follow the pseudo grammar use in the documentation mentioned above.
+Definitions follow the pseudo grammar use in the documentation mentioned above with extensions.
+
+when ::= is replaced with !!=, a shallow type is defined.
+A shallow type is generaly a wrapper like 'type1 | type2 | ... | typen' but each type component
+is not resolved and left as is.
+For non shallow types, we will replace each type component that is a wrapper with the wrapped components
+and so on recursively.
+
+This type is a shallow only type used with plugged_.
+<pre>
+not_a_variable !!=
+</pre>
 
 
 starred_list ::= starred_item ( ',' starred_item ) * [',']
@@ -58,7 +69,8 @@ yield_expression_list ::=  "yield" expression_list
 yield_from_expression ::= "yield" "from" expression
 </pre>
 <pre>
-dotted_identifier ::= "." identifier
+attributeref ::= primary "." identifier
+not_a_variable ||= attribute_identifier
 </pre>
 <pre>
 slicing      ::=  primary display_slice_list

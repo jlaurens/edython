@@ -216,7 +216,7 @@ ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block) {
   } else if (last.fieldRow.length > 0) {
     last.removeField(ezP.Const.Field.LABEL)
   }
-  var ezp = first.connection.ezpData
+  var ezp = first.connection.ezp
   if (!ezp.optional_0) {
     ezp.optional_0 = [ezp.optional_]
   }

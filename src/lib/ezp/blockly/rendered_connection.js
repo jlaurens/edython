@@ -18,7 +18,97 @@ goog.require('Blockly.RenderedConnection')
 goog.require('Blockly.Connection')
 
 goog.require('ezP.Const')
-goog.require('ezP.Type')
+goog.require('ezP.T3')
+
+/**
+ * Class for a connection delegate.
+ * @param {Blockly.Connection} connection the connection owning the delegate
+ * @constructor
+ */
+ezP.ConnectionDelegate = function (connection) {
+  this.connection = connection
+}
+
+/**
+ * Whether the connection is a separator.
+ * Used in lists.
+ * @constructor
+ */
+ezP.ConnectionDelegate.prototype.plugged_ = undefined
+
+/**
+ * Whether the connection is a separator.
+ * Used in lists.
+ * @constructor
+ */
+ezP.ConnectionDelegate.prototype.s7r_ = false
+
+/**
+ * Whether the connection is a wrapper.
+ * @constructor
+ */
+ezP.ConnectionDelegate.prototype.wrapped_ = false// must change to wrapper
+
+/**
+ * Whether the connection is otionally connected.
+ * @constructor
+ */
+ezP.ConnectionDelegate.prototype.optional_ = false// must change to wrapper
+
+/**
+ * name of the connection.
+ * See identifier
+ * @constructor
+ */
+ezP.ConnectionDelegate.prototype.name_ = undefined// must change to wrapper
+
+/**
+ * Will connect.
+ * Default implementation does nothing.
+ * This can be overriden at block creation time,
+ * for example in the initBlock function, of in the inputData.
+ * @param {Blockly.Connection} connection the connection owning the delegate
+ * @param {Blockly.Connection} targetConnection
+ */
+ezP.ConnectionDelegate.prototype.willConnect = function(targetConnection) {
+  return
+}
+
+/**
+ * Did connect.
+ * Default implementation does nothing.
+ * This can be overriden at block creation time,
+ * for example in the initBlock function, of in the inputData.
+ * @param {Blockly.Connection} connection  the connection owning the delegate
+ * @param {Blockly.Connection} oldTargetConnection  what was previously connected to connection
+ * @param {Blockly.Connection} oldConnection  what was previously connected to connection.targetConnection
+ */
+ezP.ConnectionDelegate.prototype.didConnect = function(oldTargetConnection, oldConnection) {
+  return
+}
+
+/**
+ * Will connect.
+ * Default implementation does nothing.
+ * This can be overriden at block creation time,
+ * for example in the initBlock function, of in the inputData.
+ * @param {Blockly.Connection} connection the connection owning the delegate
+ */
+ezP.ConnectionDelegate.prototype.willDisconnect = function() {
+  return
+}
+
+/**
+ * Did disconnect.
+ * Default implementation does nothing.
+ * This can be overriden at block creation time,
+ * for example in the initBlock function, of in the inputData.
+ * @param {Blockly.Connection} connection  the connection owning the delegate
+ * @param {Blockly.Connection} oldTargetConnection  what was previously connected to connection
+ */
+ezP.ConnectionDelegate.prototype.didDisconnect = function(connection, oldTargetConnection) {
+  return
+}
 
 /**
  * Class for a connection between blocks that may be rendered on screen.
@@ -29,13 +119,17 @@ goog.require('ezP.Type')
  */
 ezP.Connection = function (source, type) {
   ezP.Connection.superClass_.constructor.call(this, source, type)
-  this.ezpData = {}
+  this.ezp = new ezP.ConnectionDelegate(this)
 }
 goog.inherits(ezP.Connection, Blockly.Connection)
-
 ezP.inherits(Blockly.RenderedConnection, ezP.Connection)
 
 ezP.Connection.prototype.highlight = Blockly.RenderedConnection.prototype.highlight
+
+/**
+ * Every connection has a delegate.
+ */
+ezP.Connection.prototype.ezp = undefined
 
 /**
  * Add highlighting around this connection.
@@ -108,7 +202,7 @@ Blockly.RenderedConnection.prototype.bumpAwayFrom_ = function (staticConnection)
  */
 ezP.Connection.prototype.isConnectionAllowed = function(candidate,
   maxRadius) {
-  if (this.ezpData.wrapped_ || candidate.ezpData.wrapped_) {
+  if (this.ezp.wrapped_ || candidate.ezp.wrapped_) {
     return false
   }
   var yorn = ezP.Connection.superClass_.isConnectionAllowed.call(this,
@@ -168,27 +262,70 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
 }
 
 /**
- * Connect this connection to another connection.
- * This is a hook to force wrapping.
- * The wrapped block is automatically created,
- * and disposed off if necessary.
- * Useful when undeo/redo
- * @param {!Blockly.Connection} otherConnection Connection to connect to.
+ * Connect two connections together.  This is the connection on the superior
+ * block.
+ * Add hooks to allow customization.
+ * @param {!Blockly.Connection} childConnection Connection on inferior block.
+ * @private
  */
-ezP.Connection.prototype.connect = function(otherConnection) {
-  var orphan = this.isSuperior()?
-  this.targetBlock() : otherConnection.targetBlock()
-  ezP.Connection.superClass_.connect.call(this, otherConnection)
-  var block
-  if (this.ezpData.wrapped_) {
-    block = this.targetBlock()
-    block.ezp.makeBlockWrapped_(block)
-  } else if (otherConnection.ezpData.wrapped_) {
-    block = otherConnection.targetBlock()
-    block.ezp.makeBlockWrapped_(block)
+ezP.Connection.prototype.connect_ = function(childConnection) {
+  var block = this.sourceBlock_
+  var oldChildConnection = this.targetConnection
+  var oldParentConnection = childConnection.targetConnection
+  this.ezp.willConnect(this, childConnection)
+  childConnection.ezp.willConnect(childConnection, this)
+  block.ezp.willConnect(block, this, childConnection)
+  var child = childConnection.sourceBlock_
+  child.ezp.willConnect(child, childConnection, this)
+  ezP.Connection.superClass_.connect_.call(this, childConnection)
+  if (this.ezp.plugged_) {
+    child.ezp.plugged_ = this.ezp.plugged_
+    console.log('plugged_ is', child.ezp.plugged_)
   }
-  if (orphan) {
-    orphan.dispose(true)
+  if (this.ezp.wrapped_) {
+    var source = childConnection.sourceBlock_
+    source.ezp.makeBlockWrapped_(source)
   }
-};
+  if (oldChildConnection
+    && childConnection !== oldChildConnection
+    && (source = oldChildConnection.sourceBlock_)
+    && source.ezp.wrapped_) {
+    source.dispose(true)
+  }
+  block.ezp.didConnect(block, this, oldChildConnection, oldParentConnection)
+  child.ezp.didConnect(child, childConnection, oldParentConnection, oldChildConnection)
+  this.ezp.didConnect(this, oldChildConnection, oldParentConnection)
+  childConnection.ezp.didConnect(childConnection, oldParentConnection, oldChildConnection)
+}
 
+/**
+ * Disconnect two blocks that are connected by this connection.
+ * Add hooks to allow customization.
+ * @param {!Blockly.Block} parentBlock The superior block.
+ * @param {!Blockly.Block} childBlock The inferior block.
+ * @private
+ */
+ezP.Connection.prototype.disconnectInternal_ = function(parentBlock,
+  childBlock) {
+  var block = this.sourceBlock_
+  if (block === parentBlock) {
+    var parentConnection = this
+    var childConnection = this.targetConnection
+  } else {
+    var parentConnection = this.targetConnection
+    var childConnection = this
+  }
+  parentConnection.ezp.willDisconnect(parentConnection)
+  childConnection.ezp.willDisconnect(childConnection)
+  parentBlock.ezp.willDisconnect(parentBlock, parentConnection)
+  childBlock.ezp.willDisconnect(childBlock, childConnection)
+  ezP.Connection.superClass_.disconnectInternal_.call(this, parentBlock, childBlock)
+  if (childBlock.ezp.plugged_) {
+    console.log('plugged_ was', childBlock.ezp.plugged_)
+    childBlock.ezp.plugged_ = undefined
+  }
+  parentBlock.ezp.didDisconnect(parentBlock, parentConnection, childConnection)
+  childBlock.ezp.didDisconnect(childBlock, childConnection, parentConnection)
+  parentConnection.ezp.didDisconnect(parentConnection, childConnection)
+  childConnection.ezp.didDisconnect(childConnection, parentConnection)
+}

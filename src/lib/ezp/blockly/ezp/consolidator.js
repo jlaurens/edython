@@ -102,7 +102,7 @@ ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io) {
   io.ezp.n = io.n
   io.ezp.sep = io.sep
   io.input.name = 'ITEM_' + io.n++
-  io.ezp.s7r_ = io.c8n.ezpData.s7r_ = false
+  io.ezp.s7r_ = io.c8n.ezp.s7r_ = false
   io.input.setCheck(this.getCheck(io))
   while (io.input.fieldRow.length) {
     io.input.fieldRow.shift().dispose()
@@ -154,7 +154,7 @@ ezP.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme) {
   io.ezp.n = io.n
   io.ezp.sep = io.sep
   io.input.name = 'S7R_' + io.n
-  io.ezp.s7r_ = io.c8n.ezpData.s7r_ = true
+  io.ezp.s7r_ = io.c8n.ezp.s7r_ = true
   if (extreme || io.ezp.sep.length == 0) {
     while (io.input.fieldRow.length) {
       io.input.fieldRow.shift().dispose()
