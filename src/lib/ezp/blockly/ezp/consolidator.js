@@ -46,7 +46,7 @@ ezP.Consolidator.prototype.consolidate = undefined
  * @param {Bool} canBeVoid, whether the list can be void. Non void lists will display a large placeholder.
  * @param {String} defaultSep, the separator between the list items
  */
-ezP.Consolidator.List = function(require, canBeVoid, defaultSep) {
+ezP.Consolidator.List = function(require, canBeVoid, defaultSep, plugged) {
   goog.asserts.assert(require, 'Lists must type check their items.')
   this.require = require
   if (canBeVoid !== undefined) {
@@ -55,11 +55,13 @@ ezP.Consolidator.List = function(require, canBeVoid, defaultSep) {
   if (defaultSep !== undefined) {
     this.defaultSep = defaultSep
   }
+  this.plugged = plugged
 }
 
 ezP.Consolidator.List.prototype.require = undefined
 ezP.Consolidator.List.prototype.canBeVoid = true
 ezP.Consolidator.List.prototype.defaultSep = ','
+ezP.Consolidator.List.prototype.plugged = undefined
 
 /**
  * Setup the io parameter dictionary.
@@ -104,6 +106,7 @@ ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io) {
   io.input.name = 'ITEM_' + io.n++
   io.ezp.s7r_ = io.c8n.ezp.s7r_ = false
   io.input.setCheck(this.getCheck(io))
+  io.input.connection.ezp.plugged_ = this.plugged
   while (io.input.fieldRow.length) {
     io.input.fieldRow.shift().dispose()
   }
@@ -163,6 +166,7 @@ ezP.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme) {
     io.input.appendField(new ezP.FieldLabel(io.sep || this.defaultSep))
   }
   io.input.setCheck(this.getCheck(io))
+  io.input.connection.ezp.plugged_ = this.plugged
 }
 
 /**

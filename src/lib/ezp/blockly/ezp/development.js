@@ -40,3 +40,16 @@ ezP.DelegateSvg.Expr.import_module.workspaceBlocks = [
   ezP.T3.Expr.identifier,
   ezP.T3.Expr.module_concrete,
 ]
+
+ezP.DelegateSvg.Expr.from_relative_module_import.workspaceBlocks = [
+  ezP.T3.Expr.non_void_import_identifier_as_list,
+  ezP.T3.Expr.from_relative_module_import,
+  ezP.T3.Expr.import_identifier_as_concrete,
+  ezP.T3.Expr.identifier,
+  ezP.T3.Expr.parent_module,
+  ezP.T3.Expr.module_concrete,
+]
+
+ezP.DelegateSvg.Expr.from_module_import.workspaceBlocks = [ezP.T3.Expr.from_module_import].concat(ezP.T3.Expr.Check.module)
+
+ezP.DelegateSvg.Stmt.import_part.workspaceBlocks = [ezP.T3.Stmt.import_part].concat(ezP.DelegateSvg.Expr.import_module.workspaceBlocks).concat(ezP.DelegateSvg.Expr.from_relative_module_import.workspaceBlocks).concat(ezP.DelegateSvg.Expr.from_module_import.workspaceBlocks)

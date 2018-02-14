@@ -229,41 +229,41 @@ class Formatter:
         Feed the T3_data_ with expression types.
         :return:
         """
-        template = '  {:<25} /*   ::= {:<50} */ : "ezp_{}",'
+        template = '  {:<25} /*   ::= {:<50} ({}) */ : "ezp_{}",'
         self.append('ezP.T3.Expr = {')
         self.append('// core expressions')
         for t in self.get_expressions():
             if not t.is_list and not t.is_wrapper:
-                self.append(template.format(t.name, t.definition, t.name))
+                self.append(template.format(t.name, t.definition, t.category, t.name))
         self.append('// lists')
         for t in self.get_expressions():
             if t.is_list:
-                self.append(template.format(t.name, t.definition, t.name))
+                self.append(template.format(t.name, t.definition, t.category, t.name))
         self.append('// wrappers, like starred_item ::=  expression | star_expr')
         for t in self.get_expressions():
             if t.is_wrapper and not t.alias:
-                self.append(template.format(t.name, t.definition, t.name))
+                self.append(template.format(t.name, t.definition, t.category, t.name))
         self.append('// wrappers, like module_name ::= identifier because module_name is used in some Check array')
         for t in self.get_expressions():
             if t.alias and t.is_shallow_required:
-                self.append(template.format(t.name, t.definition, t.name))
+                self.append(template.format(t.name, t.definition, t.category, t.name))
         self.append('}')
 
     def feed_statements(self):
-        template = '  {:<25} /*   ::= {:<50} */ : "ezp_{}",'
+        template = '  {:<25} /*   ::= {:<50} ({}) */ : "ezp_{}",'
         self.append('ezP.T3.Stmt = {')
         self.append('// part statements')
         for t in self.get_statements():
             if t.is_part:
-                self.append(template.format(t.name, t.definition, t.name))
+                self.append(template.format(t.name, t.definition, t.category, t.name))
         self.append('// other simple statements')
         for t in self.get_statements():
             if not t.is_part and not t.is_compound:
-                self.append(template.format(t.name, t.definition, t.name))
+                self.append(template.format(t.name, t.definition, t.category, t.name))
         self.append('// compound statements')
         for t in self.get_statements():
             if t.is_compound:
-                self.append(template.format(t.name, t.definition, t.name))
+                self.append(template.format(t.name, t.definition, t.category, t.name))
         self.append('}')
 
     def feed_aliases(self):

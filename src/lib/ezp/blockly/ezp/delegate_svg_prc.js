@@ -28,7 +28,7 @@ goog.require('ezP.MenuItemCode')
 
 ezP.DelegateSvg.Expr.parenth_argument_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.parenth_argument_list.superClass_.constructor.call(this, prototypeName)
-  this.inputData.first = {
+  this.inputData_.first = {
     label: '(',
     check: ezP.T3.Expr.argument_list,
     wrap: ezP.T3.Expr.argument_list
@@ -50,20 +50,20 @@ ezP.DelegateSvg.Manager.register('parenth_argument_list')
 
 ezP.DelegateSvg.Stmt.decorator_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.decorator_part.superClass_.constructor.call(this, prototypeName)
-  this.inputData.first = {
+  this.inputData_.first = {
     label: '@',
     key: ezP.Const.Input.NAME,
     check: ezP.T3.Expr.dotted_name,
     wrap: ezP.T3.Expr.dotted_name
   }
-  this.inputData.last = {
+  this.inputData_.last = {
     key: ezP.Const.Input.ARGS,
     check: ezP.T3.Expr.parenth_argument_list,
     wrap: ezP.T3.Expr.parenth_argument_list,
     optional: true,
   }
-  this.statementData.previous.check = ezP.T3.Stmt.Previous.decorator_part
-  this.statementData.next.check = ezP.T3.Stmt.Next.decorator_part
+  this.statementData_.previous.check = ezP.T3.Stmt.Previous.decorator_part
+  this.statementData_.next.check = ezP.T3.Stmt.Next.decorator_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.decorator_part, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Manager.register('decorator_part')
@@ -73,7 +73,7 @@ ezP.USE_DECORATOR_ID = 'USE_DECORATOR'
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.ContextMenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
 ezP.DelegateSvg.Stmt.decorator_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
@@ -97,7 +97,7 @@ ezP.DelegateSvg.Stmt.decorator_part.prototype.populateContextMenuFirst_ = functi
   }
   F('staticmethod')
   F('classmethod')
-  ezP.DelegateSvg.Stmt.decorator_part.superClass_.populateContextMenuFirst_.call(this, block, menu)
+  ezP.DelegateSvg.Stmt.decorator_part.superClass_.populateContextMenuFirst_.call(this, block, mgr)
   return true
 }
 
@@ -108,7 +108,7 @@ ezP.DelegateSvg.Stmt.decorator_part.prototype.populateContextMenuFirst_ = functi
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Stmt.decorator_part.prototype.handleMenuItemActionFirst = function (block, menu, event) {
+ezP.DelegateSvg.Stmt.decorator_part.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
   var model = event.target.getModel()
   var action = model[0]
   var value = model[1]
@@ -129,7 +129,7 @@ ezP.DelegateSvg.Stmt.decorator_part.prototype.handleMenuItemActionFirst = functi
     block.render()
     return true
   }
-  return ezP.DelegateSvg.Stmt.decorator_part.superClass_.handleMenuItemActionFirst.call(this, block, menu, event)
+  return ezP.DelegateSvg.Stmt.decorator_part.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
 }
 
 

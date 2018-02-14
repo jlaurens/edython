@@ -16,7 +16,7 @@ goog.provide('ezP.BlockSvg')
 goog.require('ezP.Block')
 goog.require('ezP.DelegateSvg')
 goog.require('Blockly.BlockSvg')
-goog.forwardDeclare('ezP.ContextMenuManager')
+goog.forwardDeclare('ezP.MenuManager')
 
 ezP.inherits(Blockly.BlockSvg, ezP.Block)
 
@@ -71,7 +71,9 @@ ezP.BlockSvg.prototype.getInput = function (name) {
   if (!input) {
     input = ezP.BlockSvg.superClass_.getInput.call(this, name)
   }
-  ezP.Input.setupEzpData(input)
+  if (input) {
+    ezP.Input.setupEzpData(input)
+  }
   return input
 }
 
@@ -304,7 +306,7 @@ ezP.BlockSvg.prototype.showContextMenu_ = function (e) {
   if (this.workspace.options.readOnly || !this.contextMenu) {
     return
   }
-  ezP.ContextMenuManager.shared().showMenu(this, e)
+  ezP.MenuManager.shared().showMenu(this, e)
 }
 
 /**

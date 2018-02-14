@@ -108,61 +108,6 @@ ezP.DelegateSvg.Expr.prototype.bypassAndRemoveParent = function (block) {
 }
 
 /**
- * Can insert a parent?
- * If the block's output connection is connected,
- * can connect the parent's output to it?
- * The connection cannot always establish.
- * @param {!Block} block.
- * @param {string} prototypeName.
- * @param {string} inputName, which parent's connection to use
- */
-ezP.DelegateSvg.prototype.canInsertParent = function(block, prototypeName, inputName) {
-  var B = block.workspace.newBlock(prototypeName)
-  var input = B.getInput(inputName)
-  goog.asserts.assert(input, 'No input named '+inputName)
-  var c8n = input.connection
-  goog.asserts.assert(c8n, 'Unexpected dummy input '+inputName)
-  if (!c8n.checkType_(block.outputConnection)) {
-    return false
-  }
-  var targetC8n = block.outputConnection.targetConnection
-  if (targetC8n && !targetC8n.checkType_(B.outputConnection)) {
-    return false
-  }
-  return true
-}
-
-/**
- * Insert a parent.
- * If the block's output connection is connected,
- * connects the parent's output to it.
- * The connection cannot always establish.
- * @param {!Block} block.
- * @param {string} prototypeName.
- * @param {string} inputName, which parent's connection to use
- */
-ezP.DelegateSvg.prototype.insertParent = function(block, prototypeName, inputName) {
-  Blockly.Events.setGroup(true)
-  var B = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
-  var input = B.getInput(inputName)
-  goog.asserts.assert(input, 'No input named '+inputName)
-  var c8n = input.connection
-  goog.asserts.assert(c8n, 'Unexpected dummy input '+inputName)
-  var targetC8n = block.outputConnection.targetConnection
-  if (targetC8n/* && targetC8n.isConnected()*/) {
-    targetC8n.disconnect()
-    targetC8n.connect(B.outputConnection)
-  } else {
-    var its_xy = block.getRelativeToSurfaceXY();
-    var my_xy = B.getRelativeToSurfaceXY();
-    B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
-  }
-  c8n.connect(block.outputConnection)
-  B.render()
-  Blockly.Events.setGroup(false)
-}
-
-/**
  * Class for a DelegateSvg, key_datum_concrete block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
@@ -173,7 +118,7 @@ ezP.DelegateSvg.prototype.insertParent = function(block, prototypeName, inputNam
 ezP.DelegateSvg.Expr.key_datum_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.key_datum_concrete.superClass_.constructor.call(this, prototypeName)
   this.outputCheck = ezP.T3.Expr.key_datum_concrete
-  this.inputData = {
+  this.inputData_ = {
     first: {
       key: ezP.Const.Input.KEY,
       check: ezP.T3.Expr.Check.expression
@@ -201,7 +146,7 @@ ezP.DelegateSvg.Manager.register('key_datum_concrete')
 ezP.DelegateSvg.Expr.proper_slice = function (prototypeName) {
   ezP.DelegateSvg.Expr.proper_slice.superClass_.constructor.call(this, prototypeName)
   this.outputCheck = ezP.T3.Expr.proper_slice
-  this.inputData = {
+  this.inputData_ = {
     first: {
       key: ezP.Const.Input.LOWER_BOUND,
       check: ezP.T3.Expr.Check.expression,
@@ -225,12 +170,12 @@ goog.inherits(ezP.DelegateSvg.Expr.proper_slice, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Manager.register('proper_slice')
 
-ezP.USE_PROPER_SLICING_STRIDE_ID = 'USE_PROPER_SLICING_STRIDE'
+ezP.TOGGLE_PROPER_SLICING_STRIDE_ID = 'USE_PROPER_SLICING_STRIDE'
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.ContextMenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
 ezP.DelegateSvg.Expr.proper_slice.prototype.populateContextMenuFirst_ = function (block, mgr) {
@@ -239,11 +184,11 @@ ezP.DelegateSvg.Expr.proper_slice.prototype.populateContextMenuFirst_ = function
   var unused = last.ezpData.disabled_
   var menuItem = new ezP.MenuItem(
     unused? ezP.Msg.USE_PROPER_SLICING_STRIDE: ezP.Msg.UNUSE_PROPER_SLICING_STRIDE,
-    [ezP.USE_PROPER_SLICING_STRIDE_ID])
+    {action: ezP.TOGGLE_PROPER_SLICING_STRIDE_ID})
   menuItem.setEnabled(!last.connection.isConnected())
   menu.addChild(menuItem, true)
-  menu.addChild(new ezP.Separator(), true)
-  ezP.DelegateSvg.Expr.proper_slice.superClass_.populateContextMenuFirst_.call(this,block, menu)
+  menu.separate()
+  ezP.DelegateSvg.Expr.proper_slice.superClass_.populateContextMenuFirst_.call(this,block, mgr)
   return true
 }
 
@@ -254,14 +199,14 @@ ezP.DelegateSvg.Expr.proper_slice.prototype.populateContextMenuFirst_ = function
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Expr.proper_slice.prototype.handleMenuItemActionFirst = function (block, menu, event) {
-  var action = event.target.getModel()
-  if (action == ezP.USE_PROPER_SLICING_STRIDE_ID) {
+ezP.DelegateSvg.Expr.proper_slice.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
+  var action = event.target.getModel().action
+  if (action == ezP.TOGGLE_PROPER_SLICING_STRIDE_ID) {
     var input = this.inputs.last.input
     this.setNamedInputDisabled(block, input.name, !input.ezpData.disabled_)
     return true
   }
-  return ezP.DelegateSvg.Expr.proper_slice.superClass_.handleMenuItemActionFirst.call(this, block, menu, event)
+  return ezP.DelegateSvg.Expr.proper_slice.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
 }
 
 /**
@@ -275,7 +220,7 @@ ezP.DelegateSvg.Expr.proper_slice.prototype.handleMenuItemActionFirst = function
 ezP.DelegateSvg.Expr.conditional_expression_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.conditional_expression_concrete.superClass_.constructor.call(this, prototypeName)
   this.outputCheck = ezP.T3.Expr.conditional_expression_concrete
-  this.inputData = {
+  this.inputData_ = {
     first: {
       key: ezP.Const.Input.EXPR,
       check: ezP.T3.Expr.Check.or_test

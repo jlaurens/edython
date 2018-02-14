@@ -24,7 +24,7 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Expr.or_expr_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.or_expr_star.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       label: '*',
       check: ezP.T3.Expr.Check.or_expr
@@ -45,7 +45,7 @@ ezP.DelegateSvg.Manager.register('or_expr_star')
  */
 ezP.DelegateSvg.Expr.or_expr_star_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.or_expr_star_star.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       label: '**',
       check: ezP.T3.Expr.Check.or_expr
@@ -66,7 +66,7 @@ ezP.DelegateSvg.Manager.register('or_expr_star_star')
 */
 ezP.DelegateSvg.Expr.await_expr = function (prototypeName) {
   ezP.DelegateSvg.Expr.await_expr.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       label: 'await',
       check: ezP.T3.Expr.Check.primary

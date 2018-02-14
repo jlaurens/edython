@@ -29,6 +29,7 @@ goog.require('Blockly.FieldTextInput')
 ezP.FieldTextInput = function (text, optValidator) {
   ezP.FieldTextInput.superClass_.constructor.call(this, text,
     optValidator)
+  this.ezpData = {}
 }
 goog.inherits(ezP.FieldTextInput, Blockly.FieldTextInput)
 

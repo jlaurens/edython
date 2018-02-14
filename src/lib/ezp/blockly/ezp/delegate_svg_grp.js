@@ -25,7 +25,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Group = function (prototypeName) {
   ezP.DelegateSvg.Group.superClass_.constructor.call(this, prototypeName)
-  this.statementData.key = ezP.Const.Input.DO,
+  this.statementData_.key = ezP.Const.Input.DO,
   this.labelEnd.value = ':'
 }
 goog.inherits(ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
@@ -266,15 +266,15 @@ ezP.DelegateSvg.Group.prototype.highlightConnection = function (c8n) {
  */
 ezP.DelegateSvg.Stmt.if_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.if_part.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       label: 'if',
       check: ezP.T3.Expr.Check.expression,
       key: ezP.Const.Input.COND,
     }
   }
-  this.statementData.previous.check = ezP.T3.Stmt.Previous.if_part
-  this.statementData.next.check = ezP.T3.Stmt.Next.if_part
+  this.statementData_.previous.check = ezP.T3.Stmt.Previous.if_part
+  this.statementData_.next.check = ezP.T3.Stmt.Next.if_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.if_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('if_part')
@@ -289,15 +289,15 @@ ezP.DelegateSvg.Manager.register('if_part')
  */
 ezP.DelegateSvg.Stmt.elif_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.elif_part.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       label: 'elif',
       check: ezP.T3.Expr.Check.expression,
       key: ezP.Const.Input.COND,
     }
   }
-  this.statementData.previous.check = ezP.T3.Stmt.Previous.elif_part
-  this.statementData.next.check = ezP.T3.Stmt.Next.elif_part
+  this.statementData_.previous.check = ezP.T3.Stmt.Previous.elif_part
+  this.statementData_.next.check = ezP.T3.Stmt.Next.elif_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.elif_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('elif_part')
@@ -312,13 +312,13 @@ ezP.DelegateSvg.Manager.register('elif_part')
  */
 ezP.DelegateSvg.Stmt.else_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.else_part.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       label: 'else',
     }
   }
-  this.statementData.previous.check = ezP.T3.Stmt.Previous.else_part
-  this.statementData.next.check = ezP.T3.Stmt.Next.else_part
+  this.statementData_.previous.check = ezP.T3.Stmt.Previous.else_part
+  this.statementData_.next.check = ezP.T3.Stmt.Next.else_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.else_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('else_part')
@@ -333,15 +333,15 @@ ezP.DelegateSvg.Manager.register('else_part')
  */
 ezP.DelegateSvg.Stmt.while_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.while_part.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       label: 'while',
       check: ezP.T3.Expr.Check.expression,
       key: ezP.Const.Input.COND,
     }
   }
-  this.statementData.previous.check = ezP.T3.Stmt.Previous.while_part
-  this.statementData.next.check = ezP.T3.Stmt.Next.while_part
+  this.statementData_.previous.check = ezP.T3.Stmt.Previous.while_part
+  this.statementData_.next.check = ezP.T3.Stmt.Next.while_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.while_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('while_part')
@@ -356,7 +356,7 @@ ezP.DelegateSvg.Manager.register('while_part')
  */
 ezP.DelegateSvg.Stmt.for_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.for_part.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       label: 'for',
       wrap: ezP.T3.Expr.target_list,
@@ -368,8 +368,8 @@ ezP.DelegateSvg.Stmt.for_part = function (prototypeName) {
       key: ezP.Const.Input.IN,
     }
   }
-  this.statementData.previous.check = ezP.T3.Stmt.Previous.for_part
-  this.statementData.next.check = ezP.T3.Stmt.Next.for_part
+  this.statementData_.previous.check = ezP.T3.Stmt.Previous.for_part
+  this.statementData_.next.check = ezP.T3.Stmt.Next.for_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.for_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('for_part')
@@ -384,15 +384,15 @@ ezP.DelegateSvg.Manager.register('for_part')
  */
 ezP.DelegateSvg.Stmt.with_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.with_part.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       label: 'whith',
       check: ezP.T3.Expr.with_item_list,
       wrap: ezP.T3.Expr.with_item_list,
     }
   }
-  this.statementData.previous.check = ezP.T3.Stmt.Previous.with_part
-  this.statementData.next.check = ezP.T3.Stmt.Next.with_part
+  this.statementData_.previous.check = ezP.T3.Stmt.Previous.with_part
+  this.statementData_.next.check = ezP.T3.Stmt.Next.with_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.with_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('with_part')

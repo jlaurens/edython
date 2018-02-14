@@ -87,7 +87,7 @@ ezP.DelegateSvg.Manager.register('assignment_stmt')
  */
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.augmented_assignment_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       wrap: ezP.T3.Expr.augmented_assignment_expression,
       check: ezP.T3.Expr.augmented_assignment_expression
@@ -107,7 +107,7 @@ ezP.DelegateSvg.Manager.register('augmented_assignment_stmt')
  */
 ezP.DelegateSvg.Stmt.del_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.del_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     last: {
       label: 'del',
       check: ezP.T3.Expr.target_list,
@@ -128,7 +128,7 @@ ezP.DelegateSvg.Manager.register('del_stmt')
  */
 ezP.DelegateSvg.Stmt.return_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.return_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData.last = {
+  this.inputData_.last = {
     label: 'return',
     check: ezP.T3.Expr.expression_list,
     wrap: ezP.T3.Expr.expression_list
@@ -166,7 +166,7 @@ ezP.DelegateSvg.Manager.register('identifier_list')
  */
 ezP.DelegateSvg.Stmt.global_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.global_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData.last = {
+  this.inputData_.last = {
     label: 'not yet available',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.identifier_list,
@@ -226,7 +226,7 @@ ezP.DelegateSvg.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function 
   }
   F('global', ezP.T3.Stmt.global_stmt)
   F('nonlocal', ezP.T3.Stmt.nonlocal_stmt)
-  ezP.DelegateSvg.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this,block, menu)
+  ezP.DelegateSvg.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
   return true
 }
 
@@ -237,7 +237,7 @@ ezP.DelegateSvg.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function 
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Stmt.global_stmt.prototype.handleMenuItemActionFirst = function (block, menu, event) {
+ezP.DelegateSvg.Stmt.global_stmt.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
   var model = event.target.getModel()
   var action = model[0]
   if (action == ezP.GLOBAL_OR_NONLOCAL_ID) {
@@ -246,5 +246,5 @@ ezP.DelegateSvg.Stmt.global_stmt.prototype.handleMenuItemActionFirst = function 
     this.setupType(block)
     return true
   }
-  return ezP.DelegateSvg.Stmt.global_stmt.superClass_.handleMenuItemActionFirst.call(this, block, menu, event)
+  return ezP.DelegateSvg.Stmt.global_stmt.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
 }

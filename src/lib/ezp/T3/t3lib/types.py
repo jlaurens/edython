@@ -19,6 +19,7 @@ class Types:
         self.is_after = {}
         self.lincks = {}
         self.n = 0
+        self.current_category = 'default'
         self.lists_made = False
         for path in paths:
             self.read(path)
@@ -65,11 +66,13 @@ class Types:
 
     def get_type(self, name, create = False):
         if name in self.all:
-            return self.all[name]
+            t = self.all[name]
+            self.current_category = t.category
+            return t
         if create:
             nn = self.n
             self.n += 1
-            t = Type(nn, name)
+            t = Type(nn, name, category = self.current_category)
             self.all[t.name] = t
             return t
         return None
@@ -80,6 +83,8 @@ class Types:
         re_definition = re.compile(r"^\s*(?P<name>[a-zA-Z_][a-zA-Z_\d]*?)\s*(?P<op>::=|!!=|\|\|=)\s*(?P<definition>.*)\s*$")
         re_stmt_order = re.compile(r"^\s*(\S+)\s*(<|>)\s*(.*)\s*$")
         re_linck = re.compile(r"^\s*(?P<definition>\S+)\s*->\s*(?P<alias>.*)\s*$")
+        re_category = re.compile(r"^category:[\s.\d]*(?P<category>[a-zA-Z\s_]*).*$")
+        re_ignore = re.compile(r"^\s*[\d@#.'({].*")
         for l in data.splitlines():
             m = re_definition.match(l)
             if m:
@@ -91,19 +96,29 @@ class Types:
                         t.is_shallow = True
                 except Exception as exc:
                     print(exc)
-            else:
-                m = re_stmt_order.match(l)
-                if m:
-                    name, what, is_before = m.group(1), m.group(3), m.group(2) == '<'
-                    where = self.is_before if is_before else self.is_after
-                    if not name in where:
-                        where[name] = set()
-                    already = where[name]
-                    already.update(re.split(r'\s*\|\s*', what))
-                else:
-                    m = re_linck.match(l)
-                    if m:
-                        self.lincks[m.group('definition')] = m.group('alias')
+                continue
+            m = re_stmt_order.match(l)
+            if m:
+                name, what, is_before = m.group(1), m.group(3), m.group(2) == '<'
+                where = self.is_before if is_before else self.is_after
+                if not name in where:
+                    where[name] = set()
+                already = where[name]
+                already.update(re.split(r'\s*\|\s*', what))
+                continue
+            m = re_linck.match(l)
+            if m:
+                self.lincks[m.group('definition')] = m.group('alias')
+                continue
+            m = re_category.match(l)
+            if m:
+                self.current_category = m.group('category')
+                continue
+            m = re_ignore.match(l)
+            if m:
+                continue
+            if len(l):
+                print('*************************', l)
 
     def make_compound(self):
         while True:
@@ -165,7 +180,7 @@ class Types:
                             t.original_definition = t.definition
                             t.definition = def_new
                             t.is_wrapper = True
-                            tt = Type(t.n, name_concrete, def_concrete)
+                            tt = Type(t.n, name_concrete, def_concrete, category = t.category)
                             more[tt.name] = tt
                             print('**** new concrete type from', t.name, '::=', t.definition, '::=',
                                   t.original_definition)
@@ -184,7 +199,7 @@ class Types:
                             name_concrete = t.name + '_concrete_' + str(i)
                             i += 1
                             defs.append(name_concrete)
-                            tt = Type(t.n, name_concrete, def_concrete)
+                            tt = Type(t.n, name_concrete, def_concrete, category = t.category)
                             concretes.append(tt)
                     if len(concretes) and len(concretes) < len(defs):
                         t.original_definition = t.definition
@@ -208,7 +223,7 @@ class Types:
                 t.original_definition = t.definition
                 t.definition = def_new
                 t.is_wrapper = True
-                tt = Type(t.n, name_concrete, def_concrete)
+                tt = Type(t.n, name_concrete, def_concrete, category = t.category)
                 more[tt.name] = tt
                 tt.etercnoc = t
                 print('**** new concrete type from', t.name, '::=', t.definition, '::=', t.original_definition)
@@ -274,7 +289,7 @@ class Types:
                             try:
                                 tt = more_t[c]
                             except:
-                                tt = more_t[c] = Type(-len(self.all)-len(more_t), c, '')
+                                tt = more_t[c] = Type(-len(self.all)-len(more_t), c, '', category = t.category)
                                 tt.require = []
                         require.add(tt)
                     else:

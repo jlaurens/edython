@@ -329,3 +329,53 @@ ezP.Connection.prototype.disconnectInternal_ = function(parentBlock,
   parentConnection.ezp.didDisconnect(parentConnection, childConnection)
   childConnection.ezp.didDisconnect(childConnection, parentConnection)
 }
+/**
+ * Does the given block have one and only one connection point that will accept
+ * an orphaned block?
+ * @param {!Blockly.Block} block The superior block.
+ * @param {!Blockly.Block} orphanBlock The inferior block.
+ * @return {Blockly.Connection} The suitable connection point on 'block',
+ *     or null.
+ * @private
+ */
+Blockly.Connection.singleConnection_ = function(block, orphanBlock) {
+  var connection = false;
+  for (var i = 0; i < block.inputList.length; i++) {
+    var thisConnection = block.inputList[i].connection;
+    if (thisConnection && thisConnection.type == Blockly.INPUT_VALUE &&
+        orphanBlock.outputConnection.checkType_(thisConnection)) {
+      if (connection) {
+        return null;  // More than one connection.
+      }
+      connection = thisConnection;
+    }
+  }
+  return connection;
+};
+
+Blockly.Connection.singleConnection_original = Blockly.Connection.singleConnection_
+
+/**
+ * Does the given block have one and only one connection point that will accept
+ * an orphaned block?
+ * Returns the first free connection that can accept the orphan
+ * 
+ * @param {!Blockly.Block} block The superior block.
+ * @param {!Blockly.Block} orphanBlock The inferior block.
+ * @return {Blockly.Connection} The suitable connection point on 'block',
+ *     or null.
+ * @private
+ * @override
+ */
+Blockly.Connection.singleConnection_ = function(block, orphanBlock) {
+  for (var i = 0; i < block.inputList.length; i++) {
+    var thisConnection = block.inputList[i].connection;
+    if (thisConnection && thisConnection.type == Blockly.INPUT_VALUE &&
+        orphanBlock.outputConnection.checkType_(thisConnection)) {
+      if (!thisConnection.isConnected()) {
+        return thisConnection;
+      }
+    }
+  }
+  return null;
+};

@@ -131,7 +131,7 @@ ezP.FieldVariable.prototype.setValue = function (value) {
   if (!value) {
     return
   }
-  if (this.isEditingVariableName_) {
+  if (this.isEditingIdentifier_) {
     this.setText(value)
     return
   }
@@ -202,7 +202,7 @@ ezP.FieldVariable.prototype.showEditor_ = function () {
  * @this ezP.FieldVariable
  */
 ezP.FieldVariable.prototype.onFinishEditing_ = function (newText) {
-  this.isEditingVariableName_ = false
+  this.isEditingIdentifier_ = false
   var workspace = this.sourceBlock_.workspace
   var VM = workspace.getVariable(newText)
   if (VM) {

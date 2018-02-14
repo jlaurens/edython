@@ -54,18 +54,18 @@ ezP.Variables.Menu.prototype.init = function () {
   this.addChild(ezp.separator, true)
   var menuItem = new ezP.MenuItem(
     ezP.Msg.RENAME_VARIABLE,
-    [ezP.RENAME_VARIABLE_ID])
+    {action: ezP.RENAME_VARIABLE_ID})
   this.addChild(menuItem, true)
   var subMenu = ezp.subMenu = new ezP.SubMenu(ezP.Msg.REPLACE_VARIABLE)
   this.addChild(subMenu, true)
   this.addChild(new ezP.Separator(), true)
   menuItem = new ezP.MenuItem(
     ezP.Msg.NEW_VARIABLE,
-    [ezP.NEW_VARIABLE_ID])
+    {action: ezP.NEW_VARIABLE_ID})
   this.addChild(menuItem, true)
   menuItem = ezp.deleteItem = new ezP.MenuItem(
     ezP.Msg.DELETE_UNUSED_VARIABLES,
-    [ezP.DELETE_UNUSED_VARIABLES_ID])
+    {action: ezP.DELETE_UNUSED_VARIABLES_ID})
   this.addChild(menuItem, true)
   this.render()
   this.getElement().id = 'ezp-variables-menu'
@@ -169,13 +169,13 @@ ezP.Variables.onMenuItemAction = function (menu, event) {
   var listener = block.ezp.fieldIdentifier
   var workspace = block.workspace
   var model = event.target.getModel()
-  var action = model[0]
-  var VM = model[1]
+  var action = model.action
+  var VM = model.VM
   if (action === ezP.CHANGE_VARIABLE_ID) {
     listener.setValue(VM.name)
   } else if (action === ezP.RENAME_VARIABLE_ID) {
     // Rename variable.
-    listener.showVarNameEditor()
+    listener.showIdentifierEditor()
   } else if (action === ezP.REPLACE_VARIABLE_ID) {
     // Replace variable.
     var oldVarId = workspace.getVariable(listener.getValue()).getId()
@@ -189,7 +189,7 @@ ezP.Variables.onMenuItemAction = function (menu, event) {
     VM = ezP.Variables.createDummyVariable(workspace)
     listener.setValue(VM.name)
     setTimeout(function () {
-      listener.showVarNameEditor()
+      listener.showIdentifierEditor()
     }, 10)
   } else {
     throw Error('Unsupported variables menu action: ' + action)

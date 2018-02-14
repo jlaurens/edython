@@ -27,23 +27,14 @@ goog.require('ezP.FieldVariable')
 ezP.DelegateSvg.Expr.identifier = function (prototypeName) {
   ezP.DelegateSvg.Expr.identifier.superClass_.constructor.call(this, prototypeName)
   this.outputCheck = ezP.T3.Expr.identifier
+  this.inputData_.first = {
+    identifier: 'item',
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.identifier, ezP.DelegateSvg.Expr)
 ezP.Delegate.Manager.register('identifier')
 
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.identifier.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Expr.identifier.superClass_.initBlock.call(this, block)
-  this.fieldIdentifier = new ezP.FieldVariable.Identifier('item')
-  this.inputIdentifier = block.appendDummyInput()
-    .appendField(this.fieldIdentifier, ezP.Const.Field.ID)
-}
+ezP.RENAME_IDENTIFIER_ID = 'RENAME_IDENTIFIER'
 
 ezP.CHANGE_VARIABLE_ID = 'CHANGE_VARIABLE'
 ezP.RENAME_VARIABLE_ID = 'RENAME_VARIABLE'
@@ -58,22 +49,31 @@ if (Blockly.Msg.NEW_VARIABLE.startsWith('Créer')) {
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.ContextMenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Expr.identifier.prototype.setValue = function (block, value) {
+  var field = block.ezp.inputs.first.fieldIdentifier
+  if (field && field.getValue() !== oldName) {
+    field.setValue(value)
+  }
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
 ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var menu = mgr.menu
-  var answer = false
-  block.ezp.isNotAVariable(block)
-  if (ezP.T3.Expr.Check.not_a_variable.indexOf(block.ezp.plugged_)<0) {
-    var menuItem = new ezP.MenuItem(
-      ezP.Msg.RENAME_VARIABLE,
-      [ezP.RENAME_VARIABLE_ID]);
-    menu.addChild(menuItem, true);
-    ezP.DelegateSvg.Expr.identifier.superClass_.populateContextMenuFirst_.call(this, block, menu)
-    answer = true
-  }
-  return ezP.DelegateSvg.Expr.identifier.superClass_.populateContextMenuFirst_.call(this, block, menu) || answer
+  var menuItem = new ezP.MenuItem(
+    ezP.Msg.RENAME,
+    [ezP.RENAME_IDENTIFIER_ID]);
+  mgr.addChild(menuItem, true);
+  mgr.shouldSeparate()
+  ezP.DelegateSvg.Expr.identifier.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return true
 }
 
 /**
@@ -84,20 +84,21 @@ ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuFirst_ = function (
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionFirst = function (block, menu, event) {
+ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
   var model = event.target.getModel()
   var action = model[0]
-  if (action == ezP.RENAME_VARIABLE_ID) {
-    block.ezp.fieldIdentifier.showVarNameEditor()
+  if (action == ezP.RENAME_IDENTIFIER_ID) {
+    block.ezp.inputs.first.fieldIdentifier.showIdentifierEditor()
     return true
   }
-  return false
+  return ezP.DelegateSvg.Expr.identifier.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
+
 }
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.ContextMenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
 ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuMiddle_ = function (block, mgr) {
@@ -114,7 +115,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuMiddle_ = function 
  * the MenuItem selected within menu.
  */
 ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (block, VM) {
-  var listener = block.ezp.fieldIdentifier
+  var listener = block.ezp.inputs.first.fieldIdentifier
   var oldName = listener.getValue()
   var workspace = block.workspace
   var oldVarId = workspace.getVariable(oldName).getId()
@@ -130,7 +131,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (bl
     workspace.deleteVariableInternal_(vm)
     var allBlocks = workspace.getAllBlocks()
     for (var _ = 0, B; B = allBlocks[_++];) {
-      var field = B.ezp.fieldIdentifier
+      var field = block.ezp.inputs.first.fieldIdentifier
       if (field && field.getValue() === oldName) {
         field.setValue(VM.name)
       }
@@ -147,8 +148,8 @@ ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (bl
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionMiddle = function (block, menu, event) {
-  var listener = block.ezp.fieldIdentifier
+ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionMiddle = function (block, mgr, event) {
+  var listener = block.ezp.inputs.first.fieldIdentifier
   var workspace = block.workspace
   var model = event.target.getModel()
   var action = model[0]
@@ -173,23 +174,24 @@ ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionMiddle = function 
       VM = ezP.Variables.createDummyVariable(workspace)
       listener.setValue(VM.name)
       setTimeout(function () {
-        listener.showVarNameEditor()
+        listener.showIdentifierEditor()
       }, 10)
       return true
       default:
-        return ezP.DelegateSvg.Expr.identifier.superClass_.handleMenuItemActionFirst.call(this, block, menu, event)
+        return ezP.DelegateSvg.Expr.identifier.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
   }
 }
 
-ezP.FieldVariable.Identifier.prototype.showVarNameEditor=function(a){this.workspace_=this.sourceBlock_.workspace;
+ezP.FieldIdentifier.prototype.showIdentifierEditor=function(a){this.workspace_=this.sourceBlock_.workspace;
   a=a||!1;
-  !a&&(goog.userAgent.MOBILE||goog.userAgent.ANDROID||goog.userAgent.IPAD)?this.showVarNamePromptEditor_():(this.isEditingVariableName_=!0,this.showVarNameInlineEditor_(a))};
+  !a&&(goog.userAgent.MOBILE||goog.userAgent.ANDROID||goog.userAgent.IPAD)?this.showIdentifierPromptEditor_():(this.isEditingIdentifier_=!0,this.showIdentifierInlineEditor_(a))};
   
-  ezP.FieldVariable.Identifier.prototype.showVarNamePromptEditor_=function(){var a=this,b=ezP.Msg.RENAME_VARIABLE_TITLE.replace("%1",this.text_);
+  ezP.FieldIdentifier.prototype.showIdentifierPromptEditor_=function(){var a=this,b=ezP.Msg.RENAME_IDENTIFIER_TITLE.replace("%1",this.text_);
   Blockly.prompt(b,this.text_,function(b){a.sourceBlock_&&(b=a.callValidator(b));
   a.setValue(b)})};
-  ezP.FieldVariable.prototype.onFinishEditing_=function(a){this.isEditingVariableName_=!1;
+
+  ezP.FieldVariable.prototype.onFinishEditing_=function(a){this.isEditingIdentifier_=!1;
   var b=this.sourceBlock_.workspace,c=b.getVariable(a);
   c?this.setText(c.name):b.renameVariableById(this.getValue(),a)};
-  ezP.FieldVariable.Identifier.prototype.showVarNameInlineEditor_=ezP.FieldTextInput.prototype.showInlineEditor_;
+  ezP.FieldIdentifier.prototype.showIdentifierInlineEditor_=ezP.FieldTextInput.prototype.showInlineEditor_;
   

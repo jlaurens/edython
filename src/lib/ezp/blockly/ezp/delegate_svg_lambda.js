@@ -26,7 +26,7 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Lambda = function (prototypeName) {
   ezP.DelegateSvg.Lambda.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       key: ezP.Const.Input.PARS,
       label: 'lambda',

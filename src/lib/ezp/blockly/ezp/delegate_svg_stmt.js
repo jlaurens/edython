@@ -28,7 +28,7 @@ goog.require('ezP.DelegateSvg.Operator')
  */
 ezP.DelegateSvg.Stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.superClass_.constructor.call(this, prototypeName)
-  this.statementData = {
+  this.statementData_ = {
     previous: {},
     next: {},
   }
@@ -161,7 +161,7 @@ ezP.DelegateSvg.Stmt.prototype.renderDrawInput_ = function (io) {
 ezP.DelegateSvg.Stmt.annotated_assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.annotated_assignment_stmt.superClass_.constructor.call(this, prototypeName)
   //annotated_assignment_stmt ::=  augtarget ":" expression ["=" expression]
-  this.inputData = {
+  this.inputData_ = {
     first: {
       key: ezP.Const.Input.TARGET,
       check: ezP.T3.Expr.Check.augtarget
@@ -232,7 +232,7 @@ ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block) {
  */
 ezP.DelegateSvg.Stmt.assert_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.assert_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       label: 'assert',
       key: ezP.Const.Input.ASSERT,
@@ -304,7 +304,7 @@ ezP.DelegateSvg.Manager.register('continue_stmt')
  */
 ezP.DelegateSvg.Stmt.raise_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.raise_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       label: 'raise',
       key: ezP.Const.Input.RAISE,
@@ -537,7 +537,7 @@ ezP.Msg.PRINT_OPTION_FLUSH = ezP.Msg.PRINT_OPTION_FLUSH || 'flush = …'
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.ContextMenuManager} mgr, mgr.menu is the menu to populate.
+ * @param {!ezP.MenuManager} mgr, mgr.menu is the menu to populate.
  * @private
  */
 ezP.DelegateSvg.Stmt.Print.prototype.populateContextMenuFirst_ = function (block, mgr) {
@@ -557,7 +557,7 @@ ezP.DelegateSvg.Stmt.Print.prototype.populateContextMenuFirst_ = function (block
     menuItem.setChecked(this.getPrintState_()[value])
     menu.addChild(menuItem, true)
   }
-  ezP.DelegateSvg.Stmt.Print.superClass_.populateContextMenuFirst_.call(this, block, menu)
+  ezP.DelegateSvg.Stmt.Print.superClass_.populateContextMenuFirst_.call(this, block, mgr)
   return true
 }
 
@@ -568,7 +568,7 @@ ezP.DelegateSvg.Stmt.Print.prototype.populateContextMenuFirst_ = function (block
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Stmt.Print.prototype.handleMenuItemActionFirst = function (block, menu, event) {
+ezP.DelegateSvg.Stmt.Print.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
   var workspace = block.workspace
   var action = event.target.getModel()
   var state = this.getPrintState_()
@@ -583,7 +583,7 @@ ezP.DelegateSvg.Stmt.Print.prototype.handleMenuItemActionFirst = function (block
       }, 100)
       return true
     default:
-      return ezP.DelegateSvg.Stmt.Print.superClass_.handleMenuItemActionFirst.call(this, block, menu, event)
+      return ezP.DelegateSvg.Stmt.Print.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
   }
 }
 

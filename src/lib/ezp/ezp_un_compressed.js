@@ -6589,11 +6589,11 @@ Blockly.Events.setGroup(!1)}};
 ezP.Variables.onMenuItemAction=function(a,b){var c=a.ezp.listener,d=c.sourceBlock_.workspace,e=b.target.getModel(),f=e[0];
 e=e[1];
 if(f===ezP.CHANGE_VARIABLE_ID)c.setValue(e.getId());
-else if(f===ezP.RENAME_VARIABLE_ID)c.showVarNameEditor();
+else if(f===ezP.RENAME_VARIABLE_ID)c.showIdentifierEditor();
 else if(f===ezP.REPLACE_VARIABLE_ID)f=c.getValue(),e=e.getId(),ezP.Variables.replaceVarId(d,f,e);
 else if(f===ezP.DELETE_UNUSED_VARIABLES_ID)ezP.Variables.deleteUnusedVariables(d);
 else if(f===ezP.NEW_VARIABLE_ID)e=ezP.Variables.createDummyVariable(d),c.setValue(e.getId()),
-setTimeout(function(){c.showVarNameEditor()},10);
+setTimeout(function(){c.showIdentifierEditor()},10);
 else throw Error("Unsupported variables menu action: "+f);
 };
 ezP.Msg={};
@@ -6618,7 +6618,7 @@ this.size_.width+=ezP.Font.space}else this.size_.width=0};
 
 ezP.FieldVariable.prototype.getValue=function(){return this.ezp_varId_};
 
-ezP.FieldVariable.prototype.setValue=function(a){if(a)if(this.isEditingVariableName_)this.setText(a);
+ezP.FieldVariable.prototype.setValue=function(a){if(a)if(this.isEditingIdentifier_)this.setText(a);
 else{var b=a;
 this.sourceBlock_&&(a=this.sourceBlock_.workspace.getVariableById(a)||this.sourceBlock_.workspace.getVariable(a)||this.sourceBlock_.workspace.createVariable(a))&&(Blockly.Events.isEnabled()&&Blockly.Events.fire(new Blockly.Events.BlockChange(this.sourceBlock_,"field",this.name,this.ezp_varId_,a.getId())),this.ezp_varId_=a.getId(),b=a.name);
 this.setText(b)}};
@@ -6635,17 +6635,17 @@ b.labelLeft=b.labelLeft-12+5;
 b.top-=5;
 b.bottom+=3;
 a.showMenu(this.menuIcon_,b.labelLeft,b.bottom)};
-ezP.FieldVariable.prototype.showVarNameEditor=function(a){this.workspace_=this.sourceBlock_.workspace;
+ezP.FieldVariable.prototype.showIdentifierEditor=function(a){this.workspace_=this.sourceBlock_.workspace;
 a=a||!1;
-!a&&(goog.userAgent.MOBILE||goog.userAgent.ANDROID||goog.userAgent.IPAD)?this.showVarNamePromptEditor_():(this.isEditingVariableName_=!0,this.showVarNameInlineEditor_(a))};
+!a&&(goog.userAgent.MOBILE||goog.userAgent.ANDROID||goog.userAgent.IPAD)?this.showIdentifierPromptEditor_():(this.isEditingIdentifier_=!0,this.showIdentifierInlineEditor_(a))};
 
-ezP.FieldVariable.prototype.showVarNamePromptEditor_=function(){var a=this,b=ezP.Msg.RENAME_VARIABLE_TITLE.replace("%1",this.text_);
+ezP.FieldVariable.prototype.showIdentifierPromptEditor_=function(){var a=this,b=ezP.Msg.RENAME_VARIABLE_TITLE.replace("%1",this.text_);
 Blockly.prompt(b,this.text_,function(b){a.sourceBlock_&&(b=a.callValidator(b));
 a.setValue(b)})};
-ezP.FieldVariable.prototype.onFinishEditing_=function(a){this.isEditingVariableName_=!1;
+ezP.FieldVariable.prototype.onFinishEditing_=function(a){this.isEditingIdentifier_=!1;
 var b=this.sourceBlock_.workspace,c=b.getVariable(a);
 c?this.setText(c.name):b.renameVariableById(this.getValue(),a)};
-ezP.FieldVariable.prototype.showVarNameInlineEditor_=ezP.FieldTextInput.prototype.showInlineEditor_;
+ezP.FieldVariable.prototype.showIdentifierInlineEditor_=ezP.FieldTextInput.prototype.showInlineEditor_;
 
 ezP.FieldVariable.prototype.classValidator=function(a){return a};
 ezP.FieldVariable.prototype.validate_=function(){var a=!0;

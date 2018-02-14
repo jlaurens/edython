@@ -43,7 +43,7 @@ target_star ::= "*" target
 expression_star ::= "*" expression
 something_star ::= "*" something
 </pre>
-import_stmt     ::=  "import" module ["as" name] ( "," module ["as" name] )*
+import_part     ::=  "import" module ["as" name] ( "," module ["as" name] )*
                      | "from" relative_module "import" identifier ["as" name] ( "," identifier ["as" name] )*
                      | "from" relative_module "import" "(" identifier ["as" name] ( "," identifier ["as" name] )* [","] ")"
                      | "from" module "import" "*"
@@ -52,7 +52,8 @@ relative_module ::=  "."* module | "."+
 name            ::=  identifier
 
 <pre>
-import ::= IGNORE
+import_part ::= IGNORE
+import_part ::= import_expr
 import_expr ::=  import_module | from_relative_module_import | from_module_import
 
 import_module ::= "import" non_void_module_as_list
@@ -66,22 +67,21 @@ module_alias ::= identifier
 name ::= IGNORE
 module_name ::= identifier
 alias ::= some alias
-not_a_variable ||= module | module_identifier | module_alias
+not_a_variable ||= module | module_as | module_identifier | module_alias
 
 from_relative_module_import ::= "from" relative_module "import" non_void_import_identifier_as_list
 # relative_module ::=  "."* module | "."+
 relative_module ::=  module | parent_module
 parent_module ::= '.' [relative_module]
 non_void_import_identifier_as_list ::= import_identifier_as ( "," import_identifier_as )*
-import_identifier_as ::= import_identifier "as" import_alias
+import_identifier_as ::= import_identifier ["as" import_alias]
 identifier ::=
 import_identifier ::= identifier
 import_alias ::= identifier
 #the usage name of an imported identifier
-not_a_variable ||= import_identifier | import_alias
+not_a_variable ||= import_identifier | import_alias | relative_module | import_identifier_as
 from_module_import ::= "from" module "import" "*"
 
-import_part ::= import_expr
 </pre>
 In *_named, the 'as' part is optional.
 Extra part types used to manage docstring placement
@@ -89,7 +89,7 @@ The type of the doctring is dynamically generated depending on its position.
 Rule: a docstring part becomes a top docstring if it is followed by import statements
 <pre>
 docstring_top_stmt ::= triple quoted long string at the top of the module
-import_stmt > import_stmt | docstring_top_stmt
+import_part > import_part | docstring_top_stmt
 docstring_top_stmt > top_docstring_stmt
 </pre>
 global_stmt ::=  "global" identifier ("," identifier)*

@@ -49,10 +49,10 @@ ezP.ContextMenu.prototype.init = function (block) {
     }
   }
   this.render()
-  var menu = this
+  var mgr = this
   goog.events.listenOnce(this, 'action', function (event) {
     setTimeout(function () {
-      block.ezp.onMenuItemAction(block, menu, event)
+      block.ezp.onMenuItemAction(block, mgr, event)
     }, 100)// TODO be sure that this 100 is suffisant
   })
   /*

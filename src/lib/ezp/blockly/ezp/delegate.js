@@ -30,6 +30,7 @@ goog.forwardDeclare('ezP.Block')
  */
 ezP.Delegate = function (prototypeName) {
   ezP.Delegate.superClass_.constructor.call(this)
+  this.inputData_ = {}
 }
 goog.inherits(ezP.Delegate, ezP.Helper)
 /**
@@ -42,7 +43,7 @@ ezP.Delegate.Manager = function () {
   var defaultCtor = undefined
   var defaultDelegate = undefined
   /**
-   * DelegateSvg creator.
+   * Delegate instance creator.
    * @param {?string} prototypeName Name of the language object containing
    */
   me.create = function (prototypeName, delegate) {
@@ -54,6 +55,13 @@ ezP.Delegate.Manager = function () {
     return new Ctor(prototypeName)
   }
   /**
+   * Get the Delegate constructor for the given prototype name.
+   * @param {?string} prototypeName Name of the language object containing
+   */
+  me.get = function (prototypeName) {
+    return Ctors[prototypeName]
+  }
+  /**
    * Delegate registrator.
    * @param {?string} prototypeName Name of the language object containing
    * @param {Object} constructor
@@ -62,9 +70,25 @@ ezP.Delegate.Manager = function () {
     // console.log(prototypeName+' -> '+Ctor)
     Ctors[prototypeName] = Ctor
     goog.asserts.assert(me.create(prototypeName), 'Registration failure: '+prototypeName)
+    if (!Ctor.prototype.inputData || !Object.keys(Ctor.prototype.inputData).length) {
+      var dlgt = me.create(prototypeName)
+      Ctor.prototype.inputData = dlgt.inputData_
+      Ctor.prototype.outputCheck = dlgt.outputCheck
+      //console.log(prototypeName, Ctor.prototype.inputData)
+      // the input data has been constructed with inheritance support
+      // but this is immutable
+    } else if (!Ctor.prototype.statementData_ || !Object.keys(Ctor.prototype.statementData_).length) {
+      var dlgt = me.create(prototypeName)
+      Ctor.prototype.statementData_ = dlgt.statementData__
+      Ctor.prototype.previousCheck = dlgt.previousCheck
+      Ctor.prototype.nextCheck = dlgt.nextCheck
+      // console.log(prototypeName, Ctor.prototype.statementData_)
+      // the input data has been constructed with inheritance support
+      // but this is immutability design
+    }
   }
   /**
-   * Handy method to register an expression block.
+   * Handy method to register an expression or statement block.
    */
   me.register = function (key) {
     var prototypeName = ezP.T3.Expr[key]

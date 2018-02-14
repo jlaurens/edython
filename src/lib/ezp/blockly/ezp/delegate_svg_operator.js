@@ -87,7 +87,7 @@ ezP.USE_OPERATOR_ID  = 'USE_OPERATOR'
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.ContextMenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
 ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, mgr) {
@@ -105,7 +105,7 @@ ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
   for (var i = 0; i<this.operators.length; i++) {
     F(this.operators[i])
   }
-  ezP.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this,block, menu)
+  ezP.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this,block, mgr)
   return true
 }
 
@@ -116,7 +116,7 @@ ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Operator.prototype.handleMenuItemActionFirst = function (block, menu, event) {
+ezP.DelegateSvg.Operator.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
   var model = event.target.getModel()
   var action = model[0]
   var op = model[1]
@@ -129,7 +129,7 @@ ezP.DelegateSvg.Operator.prototype.handleMenuItemActionFirst = function (block, 
     }
     return true
   }
-  return ezP.DelegateSvg.Operator.superClass_.handleMenuItemActionFirst.call(this, block, menu, event)
+  return ezP.DelegateSvg.Operator.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
 }
 
 /**

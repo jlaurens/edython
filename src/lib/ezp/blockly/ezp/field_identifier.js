@@ -101,7 +101,7 @@ ezP.FieldIdentifier.prototype.deserializeXml = function (xml) {
  */
 ezP.FieldIdentifier.prototype.showPromptEditor_ = function () {
   var fieldText = this
-  var prompt = ezP.Msg.RENAME_VARIABLE_TITLE.replace('%1', this.text_)
+  var prompt = ezP.Msg.RENAME_IDENTIFIER_TITLE.replace('%1', this.text_)
   Blockly.prompt(prompt, this.text_,
     function (newValue) {
       if (fieldText.sourceBlock_) {
@@ -152,36 +152,3 @@ ezP.FieldIdentifier.prototype.showInlineEditor_ = function(optQuietInput) {
   this.savedValue_ = this.getValue()
   ezP.FieldIdentifier.superClass_.showInlineEditor_.call(this, optQuietInput)
 }
-  
-
-/**
- * Class for a variable's annotation field.
- * @param {?string} varname The default name for the variable.  If null,
- *     a unique variable name will be generated.
- * @param {Function=} optValidator A function that is executed when a new
- *     option is selected.  Its sole argument is the new option value.
- * @param {Array.<string>} optVariableTypes A list of the types of variables to
- *     include in the dropdown.
- * @extends {ezP.FieldCodeInput}
- * @constructor
- */
-ezP.FieldVariable.Annotation = function (annotation, optValidator) {
-  ezP.FieldVariable.Annotation.superClass_.constructor.call(this, annotation, optValidator)
-}
-goog.inherits(ezP.FieldVariable.Annotation, ezP.FieldCodeInput)
-
-/**
- * Class for a variable's default field.
- * @param {?string} varname The default name for the variable.  If null,
- *     a unique variable name will be generated.
- * @param {Function=} optValidator A function that is executed when a new
- *     option is selected.  Its sole argument is the new option value.
- * @param {Array.<string>} optVariableTypes A list of the types of variables to
- *     include in the dropdown.
- * @extends {ezP.FieldCodeInput}
- * @constructor
- */
-ezP.FieldVariable.Default = function (def, optValidator) {
-  ezP.FieldVariable.Default.superClass_.constructor.call(this, def, optValidator)
-}
-goog.inherits(ezP.FieldVariable.Default, ezP.FieldCodeInput)

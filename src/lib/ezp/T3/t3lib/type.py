@@ -8,7 +8,7 @@ class Type:
                          r"(?P<is_name>name)|(?P<is_suite>suite)|(?P<is_statement>statement)"
                          r"|"
                          r"(?:"
-                         r"(?P<is_stmt_1>sstmt_|statement_)?"
+                         r"(?P<is_stmt_1>stmt_|statement_)?"
                          r"\S+?"
                          r"(?:(?P<is_stmt_2>_stmt|_statement|def)|(?P<is_part>_part)?)"
                          r")"
@@ -16,13 +16,14 @@ class Type:
     re_compound = re.compile(r"^.*\bsuite\b.*$")
     re_statement = re.compile(r"^.*(?:\bNEWLINE\b|decorator).*$")
 
-    def __init__(self, n, name, definition = ''):
+    def __init__(self, n, name, definition = '', category = 'unknown'):
         """
         n is the line number,
         name is the expression or statement name: proper_slice, m_Type, and_test...
         definition is the rhs in the ... ::= ... line
         """
         self.n = n
+        self.category = category
         self.count = 0
         self.require = []
         self.provide = []
@@ -45,8 +46,8 @@ class Type:
         self.name = name
         self.short_name = None
         m = self.__class__.re_name.match(name)
-        assert m, 'Bad name '+name
-        assert not m.group('is_name') and not m.group('is_suite') and not m.group('is_statement'), 'Bad name too '+name
+        assert m, 'Bad name: '+name
+        assert not m.group('is_name') and not m.group('is_suite') and not m.group('is_statement'), 'Bad name too: '+name
         self.is_part = not not m.group('is_part')
         self.is_stmt = self.is_part or not not m.group('is_stmt_1') or not not m.group('is_stmt_2')
 

@@ -25,7 +25,7 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Expr.comprehension = function (prototypeName) {
   ezP.DelegateSvg.Expr.comprehension.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       key: ezP.Const.Input.EXPR,
       check: ezP.T3.Expr.Check.expression
@@ -57,7 +57,7 @@ ezP.DelegateSvg.Manager.register('comprehension')
  */
 ezP.DelegateSvg.Expr.comp_for = function (prototypeName) {
   ezP.DelegateSvg.Expr.comp_for.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       key: ezP.Const.Input.FOR,
       label: 'for',
@@ -85,7 +85,7 @@ ezP.DelegateSvg.Manager.register('comp_for')
  */
 ezP.DelegateSvg.Expr.comp_if = function (prototypeName) {
   ezP.DelegateSvg.Expr.comp_if.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       key: ezP.Const.Input.IF,
       label: 'if',

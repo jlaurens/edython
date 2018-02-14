@@ -25,7 +25,6 @@ goog.forwardDeclare('ezP.BlockSvg')
  */
 ezP.DelegateSvg = function (prototypeName) {
   ezP.DelegateSvg.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {}
   this.labelEnd = {}
 }
 goog.inherits(ezP.DelegateSvg, ezP.Delegate)
@@ -33,7 +32,8 @@ goog.inherits(ezP.DelegateSvg, ezP.Delegate)
 ezP.DelegateSvg.Manager = ezP.Delegate.Manager
 
 /**
- * Handy method to register an expression block.
+ * Method to register an expression block.
+ * The delegate is searched as a DelegateSvg element
  */
 ezP.DelegateSvg.Manager.register = function (key) {
   var prototypeName = ezP.T3.Expr[key]
@@ -114,51 +114,70 @@ ezP.DelegateSvg.prototype.fieldLabelEnd = undefined
 
 ezP.DelegateSvg.prototype.inputDataKeys = ['first', 'middle', 'last']
 ezP.DelegateSvg.prototype.inputData = undefined
-ezP.DelegateSvg.prototype.statementData = undefined
+ezP.DelegateSvg.prototype.statementData_ = undefined
 
 /**
- * Create and initialize the various paths,
- * the first, middle and last inputs if required.
+ * Create and initialize the first, middle and last inputs if required.
  * Called once at block creation time.
+ * No overriding is considered.
+ * Wraps initBlock such that there is an end label.
  * @param {!Blockly.Block} block to be initialized..
  * @private
  */
 ezP.DelegateSvg.prototype.initBlock_ = function(block) {
-  var F = function(D) {
+  var F = function(K, D) {
     var out
     if (D) {
       out = {}
-      var k = D.key || ezP.Const.Input.WRAP
+      var k = D.key || K
       var v, f
       if ((v = D.wrap)) {
         out.input = block.appendWrapValueInput(k, v)
+      } else if (D.dummy || D.identifier) {
+        out.input = block.appendDummyInput(k)
       } else {
         out.input = block.appendValueInput(k)
       }
-      var ezp = out.input.connection.ezp
-      ezp.name_ = k
-      if (D.plugged) {
-        ezp.plugged_ = D.plugged
-        console.log(k, ezp.plugged_)
-      }
-      if (D.willConnect) {
-        ezp.willConnect = D.willConnect
-      }
-      if (D.didConnect) {
-        ezp.didConnect = D.didConnect
-      }
-      if (D.willDisconnect) {
-        ezp.willDisconnect = D.willDisconnect
-      }
-      if (D.didDisconnect) {
-        ezp.didDisconnect = D.didDisconnect
-      }
-      if (D.optional) {
-        ezp.optional_ = true
-      }
-      ezp.disabled_ = D.disabled && !D.enabled
-      if ((v = D.check)) {
-        out.input.setCheck(v)
+      var c8n = out.input.connection
+      if (c8n) {
+        var ezp = c8n.ezp
+        ezp.name_ = k
+        if (D.plugged) {
+          ezp.plugged_ = D.plugged
+          //console.log(k, ezp.plugged_)
+        }
+        if (D.willConnect) {
+          ezp.willConnect = D.willConnect
+        }
+        if (D.didConnect) {
+          ezp.didConnect = D.didConnect
+        }
+        if (D.willDisconnect) {
+          ezp.willDisconnect = D.willDisconnect
+        }
+        if (D.didDisconnect) {
+          ezp.didDisconnect = D.didDisconnect
+        }
+        if (D.optional) {
+          ezp.optional_ = true
+        }
+        ezp.disabled_ = D.disabled && !D.enabled
+        if ((v = D.check)) {
+          out.input.setCheck(v)
+          if (v.indexOf(ezP.T3.Expr.identifier) >= 0) {
+            ezp.hole_filler = {
+              type: ezP.T3.Expr.identifier,
+              value: D.label_hole,
+            }
+            block.ezp.can_fill_holes = true
+            console.log(block.type)
+          } else if(v.length === 1 && ezP.T3.All.core_expressions.indexOf(v[0])>=0) {
+            ezp.hole_filler = {
+              type: v[0],
+            }
+            block.ezp.can_fill_holes = true
+          }
+        }
       }
       if ((v = D.label)) {
         out.fieldLabel = new ezP.FieldLabel(v)
@@ -170,31 +189,71 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
           out.fieldLabel.ezpData.css_style = D.css_style
         }
       }
+      if ((v = D.identifier)) {
+        out.fieldIdentifier = new ezP.FieldIdentifier(v)
+        out.input.appendField(out.fieldIdentifier, ezP.Const.Field.IDENTIFIER)
+        if (D.label) {
+          out.fieldIdentifier.ezpData.x_shift = ezP.Font.space
+        }
+      }
     }
     return out
   }
   var Is = {}
   
-  if (Object.keys(this.inputData).length) {
+  if (Object.keys(this.inputData_).length) {
     var i = 0
     for (;i < this.inputDataKeys.length; i++) {
       var K = this.inputDataKeys[i]
-      var f = F(this.inputData[K])
+      var f = F(K, this.inputData_[K])
       if (f) {
         Is[K] = f
       }
     }
     this.inputDataKeys = undefined
-    this.inputData = undefined
+    this.inputData_ = undefined
   }
   this.inputs = Is
   this.initBlock(block)
   if (this.labelEnd.value) {
     this.fieldLabelEnd = new ezP.FieldLabel(this.labelEnd.value)
-    block.appendDummyInput().appendField(this.fieldLabelEnd, ezP.Const.Field.LABEL)
-    this.fieldLabelEnd.ezpData.style = this.labelEnd.style
+    block.appendDummyInput(ezP.Const.Input.END).appendField(this.fieldLabelEnd, ezP.Const.Field.LABEL)
+    this.fieldLabelEnd.ezpData.css_style = this.labelEnd.css_style
+    this.fieldLabelEnd.ezpData.css_class = this.labelEnd.css_class
     this.labelEnd = undefined
   }
+}
+
+/**
+ * For each value input that is not optional and accepts an identifier,
+ * create and connect an identifier block.
+ * Called once at block creation time.
+ * Should not be called directly
+ * @param {!Blockly.Block} block to be initialized..
+ */
+ezP.DelegateSvg.prototype.fillHoles = function(block) {
+  Blockly.Events.setGroup(true)
+  var i = 0
+  for (; i < block.inputList.length; ++i) {
+    var c8n = block.inputList[i].connection
+    if (c8n && c8n.type === Blockly.INPUT_VALUE && !c8n.isConnected()) {
+      var filler = c8n.ezp.hole_filler
+      if (filler) {
+        var B
+        try {
+          B = ezP.DelegateSvg.newBlockComplete(block.workspace, filler.type)
+          if (B.ezp.setValue && filler.value) {
+            B.ezp.setValue(B, filler.value)
+          }
+          c8n.connect(B.outputConnection)
+        }
+        catch(err) {
+          console.log(err.message)
+        }
+      }
+    }
+  }
+  Blockly.Events.setGroup(false)
 }
 
 /**
@@ -224,16 +283,16 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
 
   if (this.outputCheck !== undefined) {
     block.setOutput(true, this.outputCheck)
-  } else if (this.statementData) {
-    if (this.statementData.key) {
-      block.appendStatementInput(this.statementData.key)
-        .setCheck(this.statementData.check) // Check ?
+  } else if (this.statementData_) {
+    if (this.statementData_.key) {
+      block.appendStatementInput(this.statementData_.key)
+        .setCheck(this.statementData_.check) // Check ?
     }
-    if (this.statementData.next) {
-      block.setNextStatement(true, this.statementData.next.check)
+    if (this.statementData_.next) {
+      block.setNextStatement(true, this.statementData_.next.check)
     }
-    if (this.statementData.previous) {
-      block.setPreviousStatement(true, this.statementData.previous.check)
+    if (this.statementData_.previous) {
+      block.setPreviousStatement(true, this.statementData_.previous.check)
     }
   }
 }
@@ -1154,4 +1213,64 @@ ezP.DelegateSvg.prototype.getPythonType = function (block) {
     return parent.ezp.getPythonType(parent)
   }
   return this.pythonType_
+}
+
+
+/**
+ * Can insert a parent?
+ * If the block's output connection is connected,
+ * can connect the parent's output to it?
+ * The connection cannot always establish.
+ * @param {!Block} block.
+ * @param {string} prototypeName.
+ * @param {string} inputName, which parent's connection to use
+ */
+ezP.DelegateSvg.prototype.canInsertParent = function(block, prototypeName, inputName) {
+  var can = false
+  Blockly.Events.disable()
+  var B = block.workspace.newBlock(prototypeName)
+  var input = B.getInput(inputName)
+  goog.asserts.assert(input, 'No input named '+inputName)
+  var c8n = input.connection
+  goog.asserts.assert(c8n, 'Unexpected dummy input '+inputName)
+  if (c8n.checkType_(block.outputConnection)) {
+    var targetC8n = block.outputConnection.targetConnection
+    can = !targetC8n || targetC8n.checkType_(B.outputConnection)
+  }
+  B.dispose()
+  Blockly.Events.enable()
+  return can
+}
+
+/**
+ * Insert a parent.
+ * If the block's output connection is connected,
+ * connects the parent's output to it.
+ * The connection cannot always establish.
+ * @param {!Block} block.
+ * @param {string} prototypeName.
+ * @param {string} inputName, which parent's connection to use
+ */
+ezP.DelegateSvg.prototype.insertParent = function(block, prototypeName, inputName) {
+  Blockly.Events.setGroup(true)
+  console.log('insertParent', block.type, prototypeName, inputName)
+  var B = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
+  var input = B.getInput(inputName)
+  goog.asserts.assert(input, 'No input named '+inputName)
+  var c8n = input.connection
+  goog.asserts.assert(c8n, 'Unexpected dummy input '+inputName)
+  var targetC8n = block.outputConnection.targetConnection
+  if (targetC8n/* && targetC8n.isConnected()*/) {
+    targetC8n.disconnect()
+    targetC8n.connect(B.outputConnection)
+  } else {
+    var its_xy = block.getRelativeToSurfaceXY();
+    var my_xy = B.getRelativeToSurfaceXY();
+    B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+  }
+  c8n.connect(block.outputConnection)
+  B.ezp.fillHoles(B)
+  B.render()
+  Blockly.Events.setGroup(false)
+  return B
 }

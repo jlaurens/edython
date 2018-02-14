@@ -27,7 +27,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Expr.yield_expression_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_expression_list.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       label: 'yield',
       check: ezP.T3.Expr.non_void_expression_list,
@@ -49,7 +49,7 @@ ezP.DelegateSvg.Manager.register('yield_expression_list')
  */
 ezP.DelegateSvg.Expr.yield_from_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_from_expression.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       label: 'yield from',
       check: ezP.T3.Expr.Check.expression
@@ -70,7 +70,7 @@ ezP.DelegateSvg.Manager.register('yield_from_expression')
  */
 ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_atom.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     first: {
       check: ezP.T3.Expr.yield_expression,
       label: '(',
@@ -93,7 +93,7 @@ ezP.DelegateSvg.Manager.register('yield_atom')
  */
 ezP.DelegateSvg.Expr.yield_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_expression.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     last: {
       check: ezP.T3.Expr.Check.yield_expression,
       wrap: ezP.T3.Expr.yield_expression_list
@@ -115,7 +115,7 @@ ezP.USE_YIELD_WRAP_TYPE_ID = 'USE_YIELD_WRAP_TYPE'
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.ContextMenuManager} mgr, mgr.menu is the menu to populate.
+ * @param {!ezP.MenuManager} mgr, mgr.menu is the menu to populate.
  * @private
  */
 ezP.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuMiddle_ = function (block, mgr) {
@@ -174,7 +174,7 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.changeYieldWrapType = function (
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Expr.yield_expression.prototype.handleMenuItemActionMiddle = function (block, menu, event) {
+ezP.DelegateSvg.Expr.yield_expression.prototype.handleMenuItemActionMiddle = function (block, mgr, event) {
   var model = event.target.getModel()
   var action = model[0]
   var new_wrap_type = model[1]
@@ -185,7 +185,7 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.handleMenuItemActionMiddle = fun
     }, 100)
     return true
   }
-  return ezP.DelegateSvg.Expr.yield_expression.superClass_.handleMenuItemActionMiddle.call(this, block, menu, event)
+  return ezP.DelegateSvg.Expr.yield_expression.superClass_.handleMenuItemActionMiddle.call(this, block, mgr, event)
 }
 
 /**
@@ -197,7 +197,7 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.handleMenuItemActionMiddle = fun
  */
 ezP.DelegateSvg.Stmt.yield_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.yield_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputData_ = {
     last: {
       check: ezP.T3.Expr.yield_expression,
       wrap: ezP.T3.Expr.yield_expression

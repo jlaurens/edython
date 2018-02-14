@@ -42,7 +42,7 @@ goog.require('ezP.FieldDropdown')
 goog.require('ezP.FieldOptionsCode')
 goog.require('ezP.FieldVariable')
 
-goog.require('ezP.FieldVariable.Identifier')
+goog.require('ezP.FieldIdentifier')
 goog.require('ezP.FieldVariable.Annotation')
 goog.require('ezP.FieldVariable.Default')
 
