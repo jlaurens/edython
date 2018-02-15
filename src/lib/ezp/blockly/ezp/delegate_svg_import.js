@@ -89,12 +89,14 @@ ezP.DelegateSvg.Expr.module_concrete = function (prototypeName) {
     key: ezP.Const.Input.LHS,
     check: ezP.T3.Expr.module_name,
     plugged: ezP.T3.Expr.module_identifier,
+    hole_value: 'module',
   }
   this.inputData_.last = {
     label: '.',
     key: ezP.Const.Input.RHS,
     check: ezP.T3.Expr.Check.module,
     plugged: ezP.T3.Expr.module,
+    hole_value: 'submodule',
   }
 }
 goog.inherits(ezP.DelegateSvg.Expr.module_concrete, ezP.DelegateSvg.Expr)

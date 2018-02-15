@@ -129,15 +129,13 @@ ezP.FieldIdentifier.prototype.onFinishEditing_ = function (newName) {
   var oldName = this.savedValue_
   var workspace = this.sourceBlock_.workspace
   var VM = workspace.getVariable(newName)
-  if (!VM) {
-    goog.asserts.assert(workspace.getVariable(oldName), 'Missing variable')
-    workspace.renameVariable(oldName, newName)
-  }
-  var allBlocks = workspace.getAllBlocks()
-  for (var _ = 0, B; B = allBlocks[_++];) {
-    var field = B.ezp.fieldIdentifier
-    if (field && field.getValue() === oldName) {
-      field.setValue(newName)
+  if (VM) {
+    var allBlocks = workspace.getAllBlocks()
+    for (var _ = 0, B; B = allBlocks[_++];) {
+      var field = B.ezp.fieldIdentifier
+      if (field && field.getValue() === oldName) {
+        field.setValue(newName)
+      }
     }
   }
 }

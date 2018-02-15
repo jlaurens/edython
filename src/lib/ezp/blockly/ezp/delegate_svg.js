@@ -1218,6 +1218,7 @@ ezP.DelegateSvg.prototype.insertParent = function(block, prototypeName, inputNam
   var input = B.getInput(inputName)
   goog.asserts.assert(input, 'No input named '+inputName)
   var c8n = input.connection
+  var holes = ezP.HoleFiller.getDeepHoles(block)
   goog.asserts.assert(c8n, 'Unexpected dummy input '+inputName)
   var targetC8n = block.outputConnection.targetConnection
   if (targetC8n/* && targetC8n.isConnected()*/) {
@@ -1229,7 +1230,15 @@ ezP.DelegateSvg.prototype.insertParent = function(block, prototypeName, inputNam
     B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
   }
   c8n.connect(block.outputConnection)
-  B.ezp.fillHoles(B)
+  var wholes = ezP.HoleFiller.getDeepHoles(B)
+  var i = 0
+  for (; i < holes.length; ++i) {
+    var j = wholes.indexOf(holes[i])
+    if ( j>=0 ) {
+      wholes.splice(j, 1)
+    }
+  }
+  ezP.HoleFiller.fillDeepHoles(B.workspace, wholes)
   B.render()
   Blockly.Events.setGroup(false)
   return B
@@ -1287,9 +1296,11 @@ ezP.HoleFiller.getData = function(check, value) {
 /**
  * Get an array of the deep connections that can be filled.
  * @param {!Block} block.
+ * @param {Array} holes whengiven the is the array to be filled
+ * @return an array of conections, holes if given.
  */
-ezP.HoleFiller.getDeepHoles = function(block) {
-  var holes = []
+ezP.HoleFiller.getDeepHoles = function(block, holes) {
+  var H = holes || []
   var i = 0
   var L = block.inputList
   for (; i < L.length; ++i) {
@@ -1297,13 +1308,13 @@ ezP.HoleFiller.getDeepHoles = function(block) {
     if (c8n && c8n.type === Blockly.INPUT_VALUE && (!c8n.hidden_ || c8n.ezp.wrapped_)) {
       var target = c8n.targetBlock()
       if (target) {
-        holes = holes.concat(ezP.HoleFiller.getDeepHoles(target))
+        ezP.HoleFiller.getDeepHoles(target, H)
       } else if (c8n.ezp.hole_data) {
-        holes.push(c8n)
+        H.push(c8n)
       }
     }
   }
-  return holes
+  return H
 }
 
 /**
