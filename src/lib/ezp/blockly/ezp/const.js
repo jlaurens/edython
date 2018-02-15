@@ -48,7 +48,6 @@ ezP.Const.Input = {
   IN: 'IN',
   IF: 'IF',
   ELSE: 'ELSE',
-  FORIN: 'FORIN',
   ITER: 'ITER',
   COMPREHENSION: 'COMP',
   ITEM: 'ITEM', /* used by delimited blocks */

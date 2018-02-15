@@ -231,6 +231,7 @@ ezP.DelegateSvg.Expr.target_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.target_list.superClass_.constructor.call(this, prototypeName)
   this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.target_list, false, ',')
   this.outputCheck = ezP.T3.Expr.target_list
+  this.hole_value = 'name'
 }
 goog.inherits(ezP.DelegateSvg.Expr.target_list, ezP.DelegateSvg.List)
 
@@ -351,25 +352,6 @@ ezP.DelegateSvg.Expr.key_datum_list_comprehensive = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.key_datum_list_comprehensive, ezP.DelegateSvg.List)
 
 ezP.DelegateSvg.Manager.register('key_datum_list_comprehensive')
-
-
-/**
- * Class for a DelegateSvg, comp_iter_list block.
- * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.comp_iter_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.comp_iter_list.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.comp_iter,true,'')
-  this.outputCheck = ezP.T3.Expr.comp_iter_list
-}
-goog.inherits(ezP.DelegateSvg.Expr.comp_iter_list, ezP.DelegateSvg.List)
-
-ezP.DelegateSvg.Manager.register('comp_iter_list')
 
 /**
  * Class for a DelegateSvg, slice_list block.

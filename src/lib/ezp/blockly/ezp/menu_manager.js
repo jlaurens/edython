@@ -67,7 +67,7 @@ ezP.MenuManager.prototype.separate = function (render = true) {
  */
 ezP.MenuManager.prototype.shouldSeparate = function(yorn = true) {
   this.shouldSeparate_  = !this.didSeparate_ && (this.shouldSeparate_ || yorn)
-  console.log('shouldSeparate_', yorn, this.shouldSeparate_)
+  // console.log('shouldSeparate_', yorn, this.shouldSeparate_)
 }
 
 /**
@@ -75,7 +75,7 @@ ezP.MenuManager.prototype.shouldSeparate = function(yorn = true) {
  */
 ezP.MenuManager.prototype.addChild = function (menuItem, render = true) {
   if (this.shouldSeparate_) {
-    console.log('Did separate')
+    // console.log('Did separate')
     this.separate(render)
   }
   this.menu.addChild(menuItem, render)

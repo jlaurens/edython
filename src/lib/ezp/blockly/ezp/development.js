@@ -53,3 +53,12 @@ ezP.DelegateSvg.Expr.from_relative_module_import.workspaceBlocks = [
 ezP.DelegateSvg.Expr.from_module_import.workspaceBlocks = [ezP.T3.Expr.from_module_import].concat(ezP.T3.Expr.Check.module)
 
 ezP.DelegateSvg.Stmt.import_part.workspaceBlocks = [ezP.T3.Stmt.import_part].concat(ezP.DelegateSvg.Expr.import_module.workspaceBlocks).concat(ezP.DelegateSvg.Expr.from_relative_module_import.workspaceBlocks).concat(ezP.DelegateSvg.Expr.from_module_import.workspaceBlocks)
+
+ezP.DelegateSvg.Expr.comprehension.workspaceBlocks = [
+  ezP.T3.Expr.comprehension,
+  ezP.T3.Expr.identifier,
+  ezP.T3.Expr.comp_for,
+  ezP.T3.Expr.comp_if,
+  ezP.T3.Expr.target_list,
+  ezP.T3.Expr.comp_iter_list,
+]
