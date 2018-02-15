@@ -54,7 +54,7 @@ if (Blockly.Msg.NEW_VARIABLE.startsWith('Créer')) {
  */
 ezP.DelegateSvg.Expr.identifier.prototype.setValue = function (block, value) {
   var field = block.ezp.inputs.first.fieldIdentifier
-  if (field && field.getValue() !== oldName) {
+  if (field && field.getValue() !== value) {
     field.setValue(value)
   }
 }

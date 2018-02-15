@@ -105,8 +105,13 @@ ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io) {
   io.ezp.sep = io.sep
   io.input.name = 'ITEM_' + io.n++
   io.ezp.s7r_ = io.c8n.ezp.s7r_ = false
-  io.input.setCheck(this.getCheck(io))
-  io.input.connection.ezp.plugged_ = this.plugged
+  var check = this.getCheck(io)
+  io.input.setCheck(check)
+  io.c8n.ezp.plugged_ = this.plugged
+  if (!io.connected && !this.canBeVoid && !io.c8n.isConnected()) {
+    io.c8n.ezp.hole_data = ezP.HoleFiller.getData(check, io.block.ezp.hole_value)
+    io.block.ezp.can_fill_holes = io.block.ezp.can_fill_holes || !! io.c8n.ezp.hole_data
+  }
   while (io.input.fieldRow.length) {
     io.input.fieldRow.shift().dispose()
   }

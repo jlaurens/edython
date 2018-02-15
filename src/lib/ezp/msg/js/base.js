@@ -29,7 +29,7 @@ goog.require('ezP')
 /** @export */ ezP.Msg.ADD = 'Ajouter'
 /** @export */ ezP.Msg.REMOVE = 'Enlever'
 
-/** @export */ ezP.Msg.FILL_HOLES = "Compléter"
+/** @export */ ezP.Msg.FILL_DEEP_HOLES = "Compléter"
 
 /** @export */ ezP.Msg.BEFORE = 'avant'
 

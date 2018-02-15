@@ -12,6 +12,8 @@
 'use strict'
 
 goog.provide('ezP.DelegateSvg')
+goog.provide('ezP.HoleFiller')
+
 goog.require('ezP.Delegate')
 goog.forwardDeclare('ezP.BlockSvg')
 
@@ -164,17 +166,7 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
         ezp.disabled_ = D.disabled && !D.enabled
         if ((v = D.check)) {
           out.input.setCheck(v)
-          if (v.indexOf(ezP.T3.Expr.identifier) >= 0) {
-            ezp.hole_filler = {
-              type: ezP.T3.Expr.identifier,
-              value: D.label_hole,
-            }
-            block.ezp.can_fill_holes = true
-            console.log(block.type)
-          } else if(v.length === 1 && ezP.T3.All.core_expressions.indexOf(v[0])>=0) {
-            ezp.hole_filler = {
-              type: v[0],
-            }
+          if (ezp.hole_data = ezP.HoleFiller.getData(v, D.hole_value)) {
             block.ezp.can_fill_holes = true
           }
         }
@@ -222,38 +214,6 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
     this.fieldLabelEnd.ezpData.css_class = this.labelEnd.css_class
     this.labelEnd = undefined
   }
-}
-
-/**
- * For each value input that is not optional and accepts an identifier,
- * create and connect an identifier block.
- * Called once at block creation time.
- * Should not be called directly
- * @param {!Blockly.Block} block to be initialized..
- */
-ezP.DelegateSvg.prototype.fillHoles = function(block) {
-  Blockly.Events.setGroup(true)
-  var i = 0
-  for (; i < block.inputList.length; ++i) {
-    var c8n = block.inputList[i].connection
-    if (c8n && c8n.type === Blockly.INPUT_VALUE && !c8n.isConnected()) {
-      var filler = c8n.ezp.hole_filler
-      if (filler) {
-        var B
-        try {
-          B = ezP.DelegateSvg.newBlockComplete(block.workspace, filler.type)
-          if (B.ezp.setValue && filler.value) {
-            B.ezp.setValue(B, filler.value)
-          }
-          c8n.connect(B.outputConnection)
-        }
-        catch(err) {
-          console.log(err.message)
-        }
-      }
-    }
-  }
-  Blockly.Events.setGroup(false)
 }
 
 /**
@@ -1273,4 +1233,104 @@ ezP.DelegateSvg.prototype.insertParent = function(block, prototypeName, inputNam
   B.render()
   Blockly.Events.setGroup(false)
   return B
+}
+
+/**
+ * Whether the block has holes to fill.
+ * @param {!Block} block.
+ */
+ezP.DelegateSvg.prototype.hasHolesToFill = function(block) {
+  if (this.can_fill_holes) {
+    var i = 0
+    var L = block.inputList
+    for (; i < L.length; ++i) {
+      var c8n = L[i].connection
+      if (c8n && !c8n.isConnected()) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
+/**
+ * Hole filler object for the given check.
+ * @param {!Array} check an array of types.
+ * @param {string} value, text of the identifier if any will fill a hole.
+ * @private
+ */
+ezP.HoleFiller = {}
+
+/**
+ * Get the hole filler object for the given check.
+ * @param {!Array} check an array of types.
+ * @param {objet} value value of the block that will fill the hole, a string for an identifier block.
+ * @private
+ */
+
+ezP.HoleFiller.getData = function(check, value) {
+  var data
+  if (check.indexOf(ezP.T3.Expr.identifier) >= 0) {
+    data = {
+      type: ezP.T3.Expr.identifier,
+      value: value,
+    }
+  } else if(check.length === 1 && ezP.T3.All.core_expressions.indexOf(check[0])>=0) {
+    data = {
+      type: check[0],
+      value: value,
+    }
+  }
+  return data
+}
+
+/**
+ * Get an array of the deep connections that can be filled.
+ * @param {!Block} block.
+ */
+ezP.HoleFiller.getDeepHoles = function(block) {
+  var holes = []
+  var i = 0
+  var L = block.inputList
+  for (; i < L.length; ++i) {
+    var c8n = L[i].connection
+    if (c8n && c8n.type === Blockly.INPUT_VALUE && (!c8n.hidden_ || c8n.ezp.wrapped_)) {
+      var target = c8n.targetBlock()
+      if (target) {
+        holes = holes.concat(ezP.HoleFiller.getDeepHoles(target))
+      } else if (c8n.ezp.hole_data) {
+        holes.push(c8n)
+      }
+    }
+  }
+  return holes
+}
+
+/**
+ * For each value input that is not optional and accepts an identifier,
+ * create and connect an identifier block.
+ * Called once at block creation time.
+ * Should not be called directly
+ * @param {!Blockly.Block} block to be initialized..
+ */
+ezP.HoleFiller.fillDeepHoles = function(workspace, holes) {
+  var i = 0
+  for (; i < holes.length; ++i) {
+    var c8n = holes[i]
+    if (c8n && c8n.type === Blockly.INPUT_VALUE && !c8n.isConnected()) {
+      var data = c8n.ezp.hole_data
+      if (data) {
+        try {
+          var B = ezP.DelegateSvg.newBlockComplete(workspace, data.type)
+          if (B.ezp.setValue && data.value) {
+            B.ezp.setValue(B, data.value)
+          }
+          c8n.connect(B.outputConnection)
+        }
+        catch(err) {
+          console.log(err.message)
+        }
+      }
+    }
+  }
 }

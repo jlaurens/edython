@@ -152,7 +152,7 @@ ezP.TOGGLE_ENABLE_BLOCK_ID = 'TOGGLE_ENABLE_BLOCK'
 ezP.DELETE_BLOCK_ID = 'DELETE_BLOCK'
 ezP.HELP_ID = 'HELP'
 ezP.LOG_BLOCK_XML_ID = 'LOG_BLOCK_XML'
-ezP.FILL_HOLES_ID = 'FILL_HOLES'
+ezP.FILL_DEEP_HOLES_ID = 'FILL_DEEP_HOLES'
 
 /**
  * Populate the context menu for the given block.
@@ -199,13 +199,13 @@ ezP.MenuManager.prototype.populate_insert_remove = function (block) {
  */
 ezP.MenuManager.prototype.populateLast = function (block) {
   var menuItem
-  if (block.ezp.can_fill_holes) {
-    // Option to fill the holes.
-    menuItem = new ezP.MenuItem(
-      ezP.Msg.FILL_HOLES,
-      {action: ezP.FILL_HOLES_ID})
-    this.addChild(menuItem, true)
-  }
+  var holes = ezP.HoleFiller.getDeepHoles(block)
+  menuItem = new ezP.MenuItem(
+    ezP.Msg.FILL_DEEP_HOLES,
+    {action: ezP.FILL_DEEP_HOLES_ID, holes: holes})
+    menuItem.setEnabled(holes.length > 0);
+  this.addChild(menuItem, true)
+
   if (block.isDeletable() && block.isMovable() && !block.isInFlyout) {
     // Option to duplicate this block.
     menuItem = new ezP.MenuItem(
@@ -349,7 +349,12 @@ ezP.MenuManager.prototype.handleActionLast = function (block, event) {
   var model = event.target.getModel()
   switch(model.action) {
     case ezP.DUPLICATE_BLOCK_ID:
-      Blockly.duplicate_(block);
+      Blockly.duplicate_(block)
+      return true
+    case ezP.FILL_DEEP_HOLES_ID:
+      Blockly.Events.setGroup(true)
+      ezP.HoleFiller.fillDeepHoles(block.workspace, model.holes)
+      Blockly.Events.setGroup(false)
       return true
     case ezP.REMOVE_COMMENT_ID:
     block.setCommentText(null)
