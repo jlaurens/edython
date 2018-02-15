@@ -81,12 +81,22 @@ ezP.DelegateSvg.Expr.comprehension.workspaceBlocks = [
 ezP.DelegateSvg.Expr.a_expr_concrete.workspaceBlocks = 
 ezP.DelegateSvg.Expr.m_expr_concrete.workspaceBlocks = 
 ezP.DelegateSvg.Expr.u_expr_concrete.workspaceBlocks = [
+  ezP.T3.Expr.identifier,
   ezP.T3.Expr.a_expr_concrete,
   ezP.T3.Expr.m_expr_concrete,
   ezP.T3.Expr.u_expr_concrete,
-  ezP.T3.Expr.identifier,
 ]
 
+ezP.DelegateSvg.Expr.shift_expr_concrete.workspaceBlocks = 
+ezP.DelegateSvg.Expr.and_expr_concrete.workspaceBlocks = 
+ezP.DelegateSvg.Expr.xor_expr_concrete.workspaceBlocks = 
+ezP.DelegateSvg.Expr.or_expr_concrete.workspaceBlocks = [
+  ezP.T3.Expr.identifier,
+  ezP.T3.Expr.shift_expr_concrete,
+  ezP.T3.Expr.and_expr_concrete,
+  ezP.T3.Expr.xor_expr_concrete,
+  ezP.T3.Expr.or_expr_concrete,
+]
 
 // in progress
 
