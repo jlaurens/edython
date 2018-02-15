@@ -38,6 +38,10 @@ ezP.BlockSvg = function (workspace, prototypeName, optId) {
 }
 goog.inherits(ezP.BlockSvg, Blockly.BlockSvg)
 
+ezP.BlockSvg.prototype.init = function() {
+  this.ezp.initBlock_(this)
+}
+
 /**
  * Create and initialize the SVG representation of the block.
  * May be called more than once.

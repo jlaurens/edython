@@ -93,10 +93,11 @@ ezP.DelegateSvg.Expr.subscription = ezP.DelegateSvg.Expr.slicing = function (pro
     key: ezP.Const.Input.SLICE,
     wrap: ezP.T3.Expr.display_slice_list,
   }
-  this.outputCheck = ezP.T3.Expr.slicing
+  this.outputCheck = [ezP.T3.Expr.subscription, ezP.T3.Expr.slicing]
 }
 goog.inherits(ezP.DelegateSvg.Expr.slicing, ezP.DelegateSvg.Primary)
 ezP.DelegateSvg.Manager.register('slicing')
+ezP.DelegateSvg.Manager.register('subscription')
 
 /**
  * Class for a DelegateSvg, call block.

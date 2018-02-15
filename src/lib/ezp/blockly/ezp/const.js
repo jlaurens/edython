@@ -27,6 +27,7 @@ ezP.Const.Field = {
   VALUE: 'VALUE',
   ID: 'ID',
   IDENTIFIER: 'IDENTIFIER',
+  OP: 'OP',
   // IN PROGRESS
   VAR: 'VAR',
   STARS: 'STARS',
@@ -35,7 +36,6 @@ ezP.Const.Field = {
   ANY: 'ANY',
   TEXT: 'TEXT',
   TFN: 'TFN',
-  OP: 'OP',
   STT: 'STT',
   BCP: 'BCP',
   GNL: 'GNL',

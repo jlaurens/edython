@@ -48,7 +48,7 @@ goog.require('ezP.FieldVariable.Default')
 
 Blockly.Blocks[ezP.T3.Expr.GET] = {
   init: function () {
-    this.ezp.initBlock(this)
+    this.ezp.initBlock_(this)
     this.setInputsInline(true)
     this.setOutput(true, ezP.Type.Expr.Provide.get)
     this.setTooltip('')

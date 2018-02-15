@@ -18,6 +18,8 @@
  **/
 goog.provide('ezP')
 
+goog.provide('ezP.Do')
+
 /**
  * Setup.
  */

@@ -31,7 +31,6 @@ goog.forwardDeclare('ezP.Delegate')
 ezP.Block = function (workspace, prototypeName, optId) {
   this.ezp = ezP.Delegate.Manager.create(prototypeName, this.ezp)
   ezP.Block.superClass_.constructor.call(this, workspace, prototypeName, optId)
-  this.ezp.initBlock_(this)
 }
 goog.inherits(ezP.Block, Blockly.Block)
 

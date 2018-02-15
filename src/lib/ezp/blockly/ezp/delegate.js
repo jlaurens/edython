@@ -171,7 +171,7 @@ ezP.Delegate.prototype.setupType = function (block) {
 /**
  * Initialize a block.
  * @param {!Blockly.Block} block to be initialized..
- * @constructor
+ * For subclassers eventually
  */
 ezP.Delegate.prototype.initBlock = function (block) {
   this.setupType(block)
@@ -524,7 +524,7 @@ ezP.Delegate.prototype.getVars = function (block) {
  * Final tune up depending on the block.
  * Default implementation does nothing.
  * @param {!Blockly.Block} block.
- * @param {!Element} hidden True if connections are hidden.
+ * @param {!Element} element dom element to be completed.
  */
 ezP.Delegate.prototype.toDom = function (block, element) {
 }

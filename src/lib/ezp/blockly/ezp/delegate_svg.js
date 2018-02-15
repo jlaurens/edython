@@ -170,12 +170,14 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
             block.ezp.can_fill_holes = true
           }
         } else if ((v = D.wrap)) {
+          D.check = D.wrap
           out.input.setCheck(v)
         }
       }
       if ((v = D.label)) {
         out.fieldLabel = new ezP.FieldLabel(v)
-        out.input.appendField(out.fieldLabel, ezP.Const.Field.LABEL)
+        out.fieldLabel.ezpData.key = k+'.'+ezP.Const.Field.LABEL
+        out.input.appendField(out.fieldLabel, out.fieldLabel.ezpData.key)
         if (D.css_class) {
           out.fieldLabel.ezpData.css_class = D.css_class
         }
@@ -185,7 +187,8 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
       }
       if ((v = D.identifier)) {
         out.fieldIdentifier = new ezP.FieldIdentifier(v)
-        out.input.appendField(out.fieldIdentifier, ezP.Const.Field.IDENTIFIER)
+        out.fieldIdentifier.ezpData.key = k+'.'+ezP.Const.Field.IDENTIFIER
+        out.input.appendField(out.fieldIdentifier, out.fieldIdentifier.ezpData.key)
         if (D.label) {
           out.fieldIdentifier.ezpData.x_shift = ezP.Font.space
         }
@@ -1273,18 +1276,19 @@ ezP.DelegateSvg.prototype.hasHolesToFill = function(block) {
 ezP.HoleFiller = {}
 
 /**
- * Get the hole filler object for the given check.
+ * Get the hole filler data object for the given check.
  * @param {!Array} check an array of types.
  * @param {objet} value value of the block that will fill the hole, a string for an identifier block.
  * @private
  */
-
 ezP.HoleFiller.getData = function(check, value) {
   var data
   if (check.indexOf(ezP.T3.Expr.identifier) >= 0) {
-    data = {
-      type: ezP.T3.Expr.identifier,
-      value: value,
+    if (value) {
+      data = {
+        type: ezP.T3.Expr.identifier,
+        value: value,
+      }
     }
   } else if(check.length === 1 && ezP.T3.All.core_expressions.indexOf(check[0])>=0) {
     data = {

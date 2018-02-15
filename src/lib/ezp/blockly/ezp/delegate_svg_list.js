@@ -404,7 +404,7 @@ ezP.DelegateSvg.Expr.parameter_list = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.parameter_list, ezP.DelegateSvg.List)
 
-// ezP.DelegateSvg.Manager.register('parameter_list')
+ezP.DelegateSvg.Manager.register('parameter_list')
 
 /**
  * Class for a DelegateSvg, with_item_list block.

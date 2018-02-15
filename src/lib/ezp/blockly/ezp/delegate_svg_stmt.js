@@ -487,7 +487,7 @@ ezP.DelegateSvg.Stmt.Print.prototype.willRenderDrawValueInput_ = function (io) {
  * Final tune up depending on the block.
  * Default implementation does nothing.
  * @param {!Blockly.Block} block.
- * @param {!Element} hidden True if connections are hidden.
+ * @param {!Element} element dom element to be completed.
  * @override
  */
 ezP.DelegateSvg.Stmt.Print.prototype.toDom = function (block, element) {
@@ -511,7 +511,7 @@ ezP.DelegateSvg.Stmt.Print.prototype.toDom = function (block, element) {
  * Final tune up depending on the block.
  * Default implementation does nothing.
  * @param {!Blockly.Block} block.
- * @param {!Element} hidden True if connections are hidden.
+ * @param {!Element} element dom element to be completed.
  * @override
  */
 ezP.DelegateSvg.Stmt.Print.prototype.fromDom = function (block, element) {

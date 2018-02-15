@@ -515,6 +515,13 @@ ezP.MenuManager.prototype.get_movable_parent_menuitem_content = function (type) 
         goog.dom.createTextNode(' alias'),
       )
     )
+    case ezP.T3.Expr.u_expr_concrete:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+        goog.dom.createTextNode('-'),
+      ),
+      goog.dom.createTextNode(' '+ezP.Msg.BEFORE),
+    ) 
     default:
     return 'Parent '+type
   }
@@ -539,7 +546,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, type)
   var mgr = this
   var F = function(K) {
     var d = D[K]
-    if (d) {
+    if (d && !d.wrap) {
       if (check && d.check) {
         var found = false
         for (var _ = 0; _ < d.check.length; ++_) {
@@ -639,6 +646,7 @@ ezP.MenuManager.prototype.populate_remove_parent = function (block, type) {
  */
 ezP.MenuManager.prototype.populate_movable_parent = function (block) {
   var movableParents = [
+    ezP.T3.Expr.u_expr_concrete,
     ezP.T3.Expr.call_expr,
     ezP.T3.Expr.slicing,
     ezP.T3.Expr.attributeref,

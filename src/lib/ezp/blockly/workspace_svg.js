@@ -212,6 +212,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function(e) {
  * @private
  */
 Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function(workspaceXMLElement, type, x, y) {
+  console.log('new workspace element:', type)
   var child = goog.dom.createElement('block')
   child.setAttribute('type', type)
   child.setAttribute('x', x)

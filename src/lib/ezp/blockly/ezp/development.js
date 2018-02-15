@@ -18,6 +18,21 @@ goog.provide('ezP.Development')
 goog.require('ezP.DelegateSvg')
 goog.require('ezP.DelegateSvg.Import')
 
+ezP.Do.arraysMerged = function(/* list of arrays */) {
+  var RA = []
+  for (var i = 0; i < arguments.length; i++) {
+    var Xs = arguments[i]
+    var j = 0
+    for (; j < Xs.length; ++j) {
+      var x = Xs[j]
+      if (RA.indexOf(x) < 0) {
+        RA.push(x)
+      }
+    }
+  }
+  return RA
+}
+
 /**
  * Useful for development purposes only.
  * This is a series of arrays of block prototypes
@@ -61,5 +76,31 @@ ezP.DelegateSvg.Expr.comprehension.workspaceBlocks = [
   ezP.T3.Expr.comp_if,
   ezP.T3.Expr.target_list,
   ezP.T3.Expr.comp_iter_list,
+]
+
+ezP.DelegateSvg.Expr.u_expr_concrete.workspaceBlocks = [
+  ezP.T3.Expr.u_expr_concrete,
+  ezP.T3.Expr.identifier,
+]
+
+
+// in progress
+
+ezP.DelegateSvg.Expr.power_concrete.workspaceBlocks = ezP.Do.arraysMerged([
+  ezP.T3.Expr.power_concrete,
+], ezP.T3.Expr.Check.await_or_primary, ezP.T3.Expr.Check.u_expr)
+
+ezP.DelegateSvg.Expr.conditional_expression_concrete.workspaceBlocks = [
+  ezP.T3.Expr.conditional_expression_concrete,
+].concat(ezP.T3.Expr.Check.or_test).concat(ezP.T3.Expr.Check.expression)
+
+ezP.DelegateSvg.Expr.starred_item_list.workspaceBlocks = [
+  ezP.T3.Expr.starred_item_list,
+] .concat(ezP.T3.Expr.Check.starred_item)
+
+ezP.DelegateSvg.Expr.parenth_form.workspaceBlocks = [
+  ezP.T3.Expr.parenth_form,
+  ezP.T3.Expr.identifier,
+  ezP.T3.Expr.starred_item_list,
 ]
 
