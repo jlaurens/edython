@@ -30,8 +30,7 @@ ezP.DelegateSvg.Expr.yield_expression_list = function (prototypeName) {
   this.inputData_ = {
     first: {
       label: 'yield',
-      check: ezP.T3.Expr.non_void_expression_list,
-      wrap: ezP.T3.Expr.non_void_expression_list
+      wrap: ezP.T3.Expr.non_void_expression_list,
     }
   }
   this.outputCheck = ezP.T3.Expr.yield_expression_list
@@ -72,9 +71,8 @@ ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_atom.superClass_.constructor.call(this, prototypeName)
   this.inputData_ = {
     first: {
-      check: ezP.T3.Expr.yield_expression,
       label: '(',
-      wrap: ezP.T3.Expr.yield_expression
+      wrap: ezP.T3.Expr.yield_expression,
     }
   }
   this.labelEnd.value = ')'
@@ -95,8 +93,7 @@ ezP.DelegateSvg.Expr.yield_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_expression.superClass_.constructor.call(this, prototypeName)
   this.inputData_ = {
     last: {
-      check: ezP.T3.Expr.Check.yield_expression,
-      wrap: ezP.T3.Expr.yield_expression_list
+      wrap: ezP.T3.Expr.yield_expression_list,
     }
   }
   this.outputCheck = ezP.T3.Expr.yield_expression
@@ -199,8 +196,7 @@ ezP.DelegateSvg.Stmt.yield_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.yield_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputData_ = {
     last: {
-      check: ezP.T3.Expr.yield_expression,
-      wrap: ezP.T3.Expr.yield_expression
+      wrap: ezP.T3.Expr.yield_expression,
     }
   }
 }

@@ -387,7 +387,6 @@ ezP.DelegateSvg.Stmt.with_part = function (prototypeName) {
   this.inputData_ = {
     first: {
       label: 'whith',
-      check: ezP.T3.Expr.with_item_list,
       wrap: ezP.T3.Expr.with_item_list,
     }
   }

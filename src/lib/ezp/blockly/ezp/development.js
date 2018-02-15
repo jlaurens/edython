@@ -8,10 +8,7 @@
 
 /**
  * @fileoverview helper for ezPython.
- * In order to avoid name collisions, every subclass of either a
- * closure object or a Blockly object has a minimum of extra properties.
- * All these properties and methods are gathered in the  helper.
- * Block helpers are called delegates.
+ * This file is for development only.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -23,8 +20,11 @@ goog.require('ezP.DelegateSvg.Import')
 
 /**
  * Useful for development purposes only.
- * This is an array of block prototypes
+ * This is a series of arrays of block prototypes
  * related to the given delegate.
+ * in order to load the corresponding blocks in the workspace,
+ * issue the following command in your main html file
+ * ezP.DelegateSvg.(Expr|Stmt).(prototype).workspaceBlocks, 5, offset, step)
  */
 ezP.DelegateSvg.workspaceBlocks = []
 
@@ -62,3 +62,4 @@ ezP.DelegateSvg.Expr.comprehension.workspaceBlocks = [
   ezP.T3.Expr.target_list,
   ezP.T3.Expr.comp_iter_list,
 ]
+

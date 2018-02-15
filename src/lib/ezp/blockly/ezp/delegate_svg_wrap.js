@@ -90,7 +90,6 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt = function (prototypeName) {
   this.inputData_ = {
     first: {
       wrap: ezP.T3.Expr.augmented_assignment_expression,
-      check: ezP.T3.Expr.augmented_assignment_expression
     }
   }
 }
@@ -110,8 +109,7 @@ ezP.DelegateSvg.Stmt.del_stmt = function (prototypeName) {
   this.inputData_ = {
     last: {
       label: 'del',
-      check: ezP.T3.Expr.target_list,
-      wrap: ezP.T3.Expr.target_list
+      wrap: ezP.T3.Expr.target_list,
     }
   }
 }
@@ -130,8 +128,7 @@ ezP.DelegateSvg.Stmt.return_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.return_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputData_.last = {
     label: 'return',
-    check: ezP.T3.Expr.expression_list,
-    wrap: ezP.T3.Expr.expression_list
+    wrap: ezP.T3.Expr.expression_list,
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.return_stmt, ezP.DelegateSvg.Stmt)
@@ -169,8 +166,7 @@ ezP.DelegateSvg.Stmt.global_stmt = function (prototypeName) {
   this.inputData_.last = {
     label: 'not yet available',
     css_class: 'ezp-code-reserved',
-    check: ezP.T3.Expr.identifier_list,
-    wrap: ezP.T3.Expr.identifier_list
+    wrap: ezP.T3.Expr.identifier_list,
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.global_stmt, ezP.DelegateSvg.Stmt)

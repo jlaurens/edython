@@ -30,13 +30,12 @@ ezP.DelegateSvg.Lambda = function (prototypeName) {
     first: {
       key: ezP.Const.Input.PARS,
       label: 'lambda',
-      check: ezP.T3.Expr.parameter_list,
-      wrap: ezP.T3.Expr.parameter_list
+      wrap: ezP.T3.Expr.parameter_list,
     },
     last: {
       key: ezP.Const.Input.EXPR,
       label: ':',
-      check: this.epressionType
+      check: this.expressionType
     }
   }
 }

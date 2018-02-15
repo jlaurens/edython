@@ -29,7 +29,6 @@ ezP.DelegateSvg.Expr.parenth_form = function (prototypeName) {
   this.sealedPrototypeName = ezP.T3.Expr.starred_item_list
   this.inputData_ = {
     first: {
-      check: ezP.T3.Expr.starred_item_list,
       label: '(',
       wrap: ezP.T3.Expr.starred_item_list
     }
@@ -51,7 +50,6 @@ ezP.DelegateSvg.Expr.list_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.list_display.superClass_.constructor.call(this, prototypeName)
   this.inputData_ = {
     first: {
-      check: ezP.T3.Expr.starred_list_comprehensive,
       label: '[',
       wrap: ezP.T3.Expr.starred_list_comprehensive
     }
@@ -73,7 +71,6 @@ ezP.DelegateSvg.Expr.set_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.set_display.superClass_.constructor.call(this, prototypeName)
   this.inputData_ = {
     first: {
-      check: ezP.T3.Expr.non_void_starred_item_list_comprehensive,
       label: '{',
       wrap: ezP.T3.Expr.non_void_starred_item_list_comprehensive
     }
@@ -96,7 +93,6 @@ ezP.DelegateSvg.Expr.dict_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.dict_display.superClass_.constructor.call(this, prototypeName)
   this.inputData_ = {
     first: {
-      check: ezP.T3.Expr.key_datum_list_comprehensive,
       label: '{',
       wrap: ezP.T3.Expr.key_datum_list_comprehensive
     }
@@ -120,7 +116,6 @@ ezP.DelegateSvg.Expr.generator_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.generator_expression.superClass_.constructor.call(this, prototypeName)
   this.inputData_ = {
     first: {
-      check: ezP.T3.Expr.comprehension,
       label: '{',
       wrap: ezP.T3.Expr.comprehension
     }
@@ -143,7 +138,6 @@ ezP.DelegateSvg.Expr.display_slice_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.display_slice_list.superClass_.constructor.call(this, prototypeName)
   this.inputData_ = {
     first: {
-      check: ezP.T3.Expr.slice_list,
       label: '[',
       wrap: ezP.T3.Expr.slice_list
     }

@@ -137,7 +137,6 @@ ezP.DelegateSvg.Expr.import_module = function (prototypeName) {
     css_class: 'ezp-code-reserved',
     key: ezP.Const.Input.IMPORT,
     wrap: ezP.T3.Expr.non_void_module_as_list,
-    check: ezP.T3.Expr.non_void_module_as_list,
   }
 }
 goog.inherits(ezP.DelegateSvg.Expr.import_module, ezP.DelegateSvg.Expr)
@@ -239,7 +238,6 @@ ezP.DelegateSvg.Expr.from_relative_module_import = function (prototypeName) {
     css_class: 'ezp-code-reserved',
     key: ezP.Const.Input.IMPORT,
     wrap: ezP.T3.Expr.non_void_import_identifier_as_list,
-    check: ezP.T3.Expr.non_void_import_identifier_as_list,
   }
 }
 goog.inherits(ezP.DelegateSvg.Expr.from_relative_module_import, ezP.DelegateSvg.Expr)
@@ -287,8 +285,7 @@ ezP.DelegateSvg.Stmt.import_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.import_part.superClass_.constructor.call(this, prototypeName)
   this.inputData_ = {
     last: {
-      check: ezP.T3.Expr.Check.import_expr,
-      wrap: ezP.T3.Expr.import_module
+      wrap: ezP.T3.Expr.import_module,
     }
   }
   this.contextMenuData = [

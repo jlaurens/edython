@@ -169,6 +169,8 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
           if (ezp.hole_data = ezP.HoleFiller.getData(v, D.hole_value)) {
             block.ezp.can_fill_holes = true
           }
+        } else if ((v = D.wrap)) {
+          out.input.setCheck(v)
         }
       }
       if ((v = D.label)) {

@@ -30,8 +30,7 @@ ezP.DelegateSvg.Expr.parenth_argument_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.parenth_argument_list.superClass_.constructor.call(this, prototypeName)
   this.inputData_.first = {
     label: '(',
-    check: ezP.T3.Expr.argument_list,
-    wrap: ezP.T3.Expr.argument_list
+    wrap: ezP.T3.Expr.argument_list,
   }
   this.labelEnd.value = ')'
   this.outputCheck = ezP.T3.Expr.parenth_argument_list
@@ -53,12 +52,10 @@ ezP.DelegateSvg.Stmt.decorator_part = function (prototypeName) {
   this.inputData_.first = {
     label: '@',
     key: ezP.Const.Input.NAME,
-    check: ezP.T3.Expr.dotted_name,
-    wrap: ezP.T3.Expr.dotted_name
+    wrap: ezP.T3.Expr.dotted_name,
   }
   this.inputData_.last = {
     key: ezP.Const.Input.ARGS,
-    check: ezP.T3.Expr.parenth_argument_list,
     wrap: ezP.T3.Expr.parenth_argument_list,
     optional: true,
   }

@@ -33,12 +33,10 @@ ezP.DelegateSvg.Expr.comprehension = function (prototypeName) {
     },
     middle: {
       key: ezP.Const.Input.FOR,
-      check: ezP.T3.Expr.comp_for,
       wrap: ezP.T3.Expr.comp_for,
     },
     last: {
       key: ezP.Const.Input.ITER,
-      check: ezP.T3.Expr.comp_iter_list,
       wrap: ezP.T3.Expr.comp_iter_list,
     }
   }
@@ -62,7 +60,6 @@ ezP.DelegateSvg.Expr.comp_for = function (prototypeName) {
     first: {
       key: ezP.Const.Input.FOR,
       label: 'for',
-      check: ezP.T3.Expr.target_list,
       wrap: ezP.T3.Expr.target_list,
     },
     last: {

@@ -91,8 +91,7 @@ ezP.DelegateSvg.Expr.subscription = ezP.DelegateSvg.Expr.slicing = function (pro
   ezP.DelegateSvg.Expr.slicing.superClass_.constructor.call(this, prototypeName)
   this.inputData_.last = {
     key: ezP.Const.Input.SLICE,
-    check: ezP.T3.Expr.display_slice_list,
-    wrap: ezP.T3.Expr.display_slice_list
+    wrap: ezP.T3.Expr.display_slice_list,
   }
   this.outputCheck = ezP.T3.Expr.slicing
 }
@@ -116,8 +115,7 @@ ezP.DelegateSvg.Expr.call_expr =  function (prototypeName) {
   this.inputData_.last = {
     key: ezP.Const.Input.ARGS,
     label: '(',
-    check: ezP.T3.Expr.argument_list,
-    wrap: ezP.T3.Expr.argument_list
+    wrap: ezP.T3.Expr.argument_list,
   }
   this.labelEnd.value = ')'
   this.outputCheck = ezP.T3.Expr.call_expr
