@@ -98,6 +98,20 @@ ezP.DelegateSvg.Expr.or_expr_concrete.workspaceBlocks = [
   ezP.T3.Expr.or_expr_concrete,
 ]
 
+ezP.DelegateSvg.Expr.number_comparison.workspaceBlocks = 
+ezP.DelegateSvg.Expr.object_comparison.workspaceBlocks = [
+  ezP.T3.Expr.identifier,
+  ezP.T3.Expr.number_comparison,
+  ezP.T3.Expr.object_comparison,
+]
+
+ezP.DelegateSvg.Expr.and_test_concrete.workspaceBlocks = 
+ezP.DelegateSvg.Expr.or_test_concrete.workspaceBlocks = [
+  ezP.T3.Expr.identifier,
+  ezP.T3.Expr.and_test_concrete,
+  ezP.T3.Expr.or_test_concrete,
+]
+
 // in progress
 
 ezP.DelegateSvg.Expr.power_concrete.workspaceBlocks = ezP.Do.arraysMerged([

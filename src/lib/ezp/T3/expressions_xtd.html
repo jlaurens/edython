@@ -94,8 +94,9 @@ power ::= await_or_primary [ "**" u_expr ]
 await_or_primary ::= await_expr | primary
 </pre>
 <pre>
-comparison ::=  or_expr | comparison_concrete
-comparison_concrete ::=  comparison comp_operator comparison
+comparison ::=  or_expr | number_comparison | object_comparison
+number_comparison ::= comparison comp_operator comparison
+object_comparison ::= comparison comp_operator comparison
 </pre>
 These are auxiliary types used to check connections.
 <pre>

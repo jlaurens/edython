@@ -298,7 +298,7 @@ goog.inherits(ezP.DelegateSvg.Expr.or_expr_concrete, ezP.DelegateSvg.Binary)
 ezP.DelegateSvg.Manager.register('or_expr_concrete')
 
 /**
- * Class for a DelegateSvg, comparison_concrete block.
+ * Class for a DelegateSvg, number_comparison block.
  * Multiple ops. This is not a list of comparisons, more like a tree.
  * Maybe we should make a flat version in order to compare the blocks
  * if necessary ever.
@@ -307,108 +307,88 @@ ezP.DelegateSvg.Manager.register('or_expr_concrete')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.comparison_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Expr.comparison_concrete.superClass_.constructor.call(this, prototypeName)
-  this.operator = '<'
-  this.operators = ['<', '>', '==', '>=', '<=', '!=', 'is', 'is not', 'in', 'not in']
-  this.operatorData = {
-    '<': {
-      label:'... < ...',
-      output: ezP.T3.Expr.comparison_concrete,
-      rhs: ezP.T3.Expr.Check.comparison,
-      lhs: ezP.T3.Expr.Check.comparison
-    },
-    '>': {
-      label:'... > ...',
-      output: ezP.T3.Expr.comparison_concrete,
-      rhs: ezP.T3.Expr.Check.comparison,
-      lhs: ezP.T3.Expr.Check.comparison
-    },
-    '==': {
-      label:'... == ...',
-      output: ezP.T3.Expr.comparison_concrete,
-      rhs: ezP.T3.Expr.Check.comparison,
-      lhs: ezP.T3.Expr.Check.comparison
-    },
-    '<=': {
-      label:'... <= ...',
-      output: ezP.T3.Expr.comparison_concrete,
-      rhs: ezP.T3.Expr.Check.comparison,
-      lhs: ezP.T3.Expr.Check.comparison
-    },
-    '>=': {
-      label:'... >= ...',
-      output: ezP.T3.Expr.comparison_concrete,
-      rhs: ezP.T3.Expr.Check.comparison,
-      lhs: ezP.T3.Expr.Check.comparison
-    },
-    '!=': {
-      label:'... != ...',
-      output: ezP.T3.Expr.comparison_concrete,
-      rhs: ezP.T3.Expr.Check.comparison,
-      lhs: ezP.T3.Expr.Check.comparison
-    },
-    'is': {
-      label:'... is ...',
-      output: ezP.T3.Expr.comparison_concrete,
-      rhs: ezP.T3.Expr.Check.comparison,
-      lhs: ezP.T3.Expr.Check.comparison
-    },
-    'is not': {
-      label:'... is not ...',
-      output: ezP.T3.Expr.comparison_concrete,
-      rhs: ezP.T3.Expr.Check.comparison,
-      lhs: ezP.T3.Expr.Check.comparison
-    },
-    'in': {
-      label:'... in ...',
-      output: ezP.T3.Expr.comparison_concrete,
-      rhs: ezP.T3.Expr.Check.comparison,
-      lhs: ezP.T3.Expr.Check.comparison
-    },
-    'not in': {
-      label:'... not in ...',
-      output: ezP.T3.Expr.comparison_concrete,
-      rhs: ezP.T3.Expr.Check.comparison,
-      lhs: ezP.T3.Expr.Check.comparison
-    },
-  }
+ezP.DelegateSvg.Expr.number_comparison = function (prototypeName) {
+  ezP.DelegateSvg.Expr.number_comparison.superClass_.constructor.call(this, prototypeName)
+  this.operators = ['<', '>', '==', '>=', '<=', '!=']
+  this.inputData_.first.check = ezP.T3.Expr.Check.comparison
+  this.inputData_.last.label = '<'
+  this.inputData_.last.check = ezP.T3.Expr.Check.comparison
+  this.outputCheck = ezP.T3.Expr.number_comparison
 }
-goog.inherits(ezP.DelegateSvg.Expr.comparison_concrete, ezP.DelegateSvg.Binary)
-
-ezP.DelegateSvg.Manager.register('comparison_concrete')
+goog.inherits(ezP.DelegateSvg.Expr.number_comparison, ezP.DelegateSvg.Binary)
+ezP.DelegateSvg.Manager.register('number_comparison')
 
 /**
- * Class for a DelegateSvg, boolean_concrete block.
+ * Class for a DelegateSvg, object_comparison block.
+ * Multiple ops. This is not a list of comparisons, more like a tree.
+ * Maybe we should make a flat version in order to compare the blocks
+ * if necessary ever.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.object_comparison = function (prototypeName) {
+  ezP.DelegateSvg.Expr.object_comparison.superClass_.constructor.call(this, prototypeName)
+  this.operators = ['is', 'is not', 'in', 'not in']
+  this.inputData_.first.check = ezP.T3.Expr.Check.comparison
+  this.inputData_.last.label = 'in'
+  this.inputData_.last.css_class = 'ezp-code-reserved'
+  this.inputData_.last.check = ezP.T3.Expr.Check.comparison
+  this.outputCheck = ezP.T3.Expr.object_comparison
+}
+goog.inherits(ezP.DelegateSvg.Expr.object_comparison, ezP.DelegateSvg.Binary)
+ezP.DelegateSvg.Manager.register('object_comparison')
+
+/**
+ * Get the content for the menu item.
+ * @param {!Blockly.Block} block The block.
+ * @param {string} op op is the operator
+ * @private
+ */
+ezP.DelegateSvg.Expr.object_comparison.prototype.getContent = function (block, op) {
+  return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
+    goog.dom.createTextNode(op),
+  )
+}
+
+/**
+ * Class for a DelegateSvg, or_test_concrete block.
  * Multiple ops.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.boolean_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Expr.boolean_concrete.superClass_.constructor.call(this, prototypeName)
-  this.operator = 'or'
-  this.operators = ['or', 'and']
-  this.operatorData = {
-    'or': {
-      label:'... or ...',
-      output: ezP.T3.Expr.or_test_concrete,
-      rhs: ezP.T3.Expr.Check.and_test,
-      lhs: ezP.T3.Expr.Check.or_test
-    },
-    'and': {
-      label:'... and ...',
-      output: ezP.T3.Expr.and_test_concrete,
-      rhs: ezP.T3.Expr.Check.not_test,
-      lhs: ezP.T3.Expr.Check.and_test
-    },
-  }
+ezP.DelegateSvg.Expr.or_test_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.or_test_concrete.superClass_.constructor.call(this, prototypeName)
+  this.inputData_.first.check = ezP.T3.Expr.Check.or_test
+  this.inputData_.last.label = 'or'
+  this.inputData_.last.css_class = 'ezp-code-reserved'
+  this.inputData_.last.check = ezP.T3.Expr.Check.and_test
+  this.outputCheck = ezP.T3.Expr.or_test_concrete
 }
-goog.inherits(ezP.DelegateSvg.Expr.boolean_concrete, ezP.DelegateSvg.Binary)
+goog.inherits(ezP.DelegateSvg.Expr.or_test_concrete, ezP.DelegateSvg.Binary)
+ezP.DelegateSvg.Manager.register('or_test_concrete')
 
-ezP.DelegateSvg.Manager.register('boolean_concrete')
-
+/**
+ * Class for a DelegateSvg, and_test_concrete block.
+ * Multiple ops.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.and_test_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.and_test_concrete.superClass_.constructor.call(this, prototypeName)
+  this.inputData_.first.check = ezP.T3.Expr.Check.and_test
+  this.inputData_.last.label = 'and'
+  this.inputData_.last.css_class = 'ezp-code-reserved'
+  this.inputData_.last.check = ezP.T3.Expr.Check.not_test
+  this.outputCheck = ezP.T3.Expr.and_test_concrete
+}
+goog.inherits(ezP.DelegateSvg.Expr.and_test_concrete, ezP.DelegateSvg.Binary)
+ezP.DelegateSvg.Manager.register('and_test_concrete')
 
 /**
  * Class for a DelegateSvg, augmented_assignment_expression block.
