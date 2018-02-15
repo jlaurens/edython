@@ -78,7 +78,11 @@ ezP.DelegateSvg.Expr.comprehension.workspaceBlocks = [
   ezP.T3.Expr.comp_iter_list,
 ]
 
+ezP.DelegateSvg.Expr.a_expr_concrete.workspaceBlocks = 
+ezP.DelegateSvg.Expr.m_expr_concrete.workspaceBlocks = 
 ezP.DelegateSvg.Expr.u_expr_concrete.workspaceBlocks = [
+  ezP.T3.Expr.a_expr_concrete,
+  ezP.T3.Expr.m_expr_concrete,
   ezP.T3.Expr.u_expr_concrete,
   ezP.T3.Expr.identifier,
 ]
