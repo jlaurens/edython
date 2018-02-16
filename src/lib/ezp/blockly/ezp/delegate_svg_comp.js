@@ -43,7 +43,6 @@ ezP.DelegateSvg.Expr.comprehension = function (prototypeName) {
   this.outputCheck = ezP.T3.Expr.comprehension
 }
 goog.inherits(ezP.DelegateSvg.Expr.comprehension, ezP.DelegateSvg.Expr)
-
 ezP.DelegateSvg.Manager.register('comprehension')
 
 /**
@@ -113,5 +112,23 @@ ezP.DelegateSvg.Expr.comp_iter_list = function (prototypeName) {
   this.outputCheck = ezP.T3.Expr.comp_iter_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.comp_iter_list, ezP.DelegateSvg.List)
-
 ezP.DelegateSvg.Manager.register('comp_iter_list')
+
+/**
+ * Class for a DelegateSvg, comprehension value block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+// dict_comprehension ::= expression ":" expression comp_for
+ezP.DelegateSvg.Expr.dict_comprehension = function (prototypeName) {
+  ezP.DelegateSvg.Expr.dict_comprehension.superClass_.constructor.call(this, prototypeName)
+  this.inputData_.first.wrap =
+  this.inputData_.first.check = ezP.T3.Expr.key_datum_concrete,
+  this.outputCheck = ezP.T3.Expr.dict_comprehension
+}
+goog.inherits(ezP.DelegateSvg.Expr.dict_comprehension, ezP.DelegateSvg.Expr.comprehension)
+ezP.DelegateSvg.Manager.register('dict_comprehension')
+

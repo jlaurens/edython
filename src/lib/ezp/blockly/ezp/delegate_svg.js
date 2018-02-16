@@ -167,6 +167,7 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
         ezp.disabled_ = D.disabled && !D.enabled
         if ((v = D.check)) {
           out.input.setCheck(v)
+          var value = goog.isFunction(D.hole_value)?D.hole_value(block): D.hole_value
           if (ezp.hole_data = ezP.HoleFiller.getData(v, D.hole_value)) {
             block.ezp.can_fill_holes = true
           }

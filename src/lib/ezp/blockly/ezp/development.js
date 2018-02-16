@@ -69,7 +69,19 @@ ezP.DelegateSvg.Expr.from_module_import.workspaceBlocks = [ezP.T3.Expr.from_modu
 
 ezP.DelegateSvg.Stmt.import_part.workspaceBlocks = [ezP.T3.Stmt.import_part].concat(ezP.DelegateSvg.Expr.import_module.workspaceBlocks).concat(ezP.DelegateSvg.Expr.from_relative_module_import.workspaceBlocks).concat(ezP.DelegateSvg.Expr.from_module_import.workspaceBlocks)
 
+ezP.DelegateSvg.Expr.dict_comprehension.workspaceBlocks =
 ezP.DelegateSvg.Expr.comprehension.workspaceBlocks = [
+  ezP.T3.Expr.identifier,
+  ezP.T3.Expr.comp_for,
+  ezP.T3.Expr.comp_if,
+  ezP.T3.Expr.target_list,
+  ezP.T3.Expr.comp_iter_list,
+  ezP.T3.Expr.comprehension,
+  ezP.T3.Expr.key_datum_concrete,
+  ezP.T3.Expr.dict_comprehension,
+]
+
+ezP.DelegateSvg.Expr.dict_comprehension.workspaceBlocks = [
   ezP.T3.Expr.comprehension,
   ezP.T3.Expr.identifier,
   ezP.T3.Expr.comp_for,
@@ -134,9 +146,27 @@ ezP.DelegateSvg.Expr.starred_item_list.workspaceBlocks = [
   ezP.T3.Expr.starred_item_list,
 ] .concat(ezP.T3.Expr.Check.starred_item)
 
-ezP.DelegateSvg.Expr.parenth_form.workspaceBlocks = [
-  ezP.T3.Expr.parenth_form,
+ezP.DelegateSvg.Expr.display_slice_list.workspaceBlocks =
+ezP.DelegateSvg.Expr.generator_expression.workspaceBlocks =
+ezP.DelegateSvg.Expr.dict_display.workspaceBlocks =
+ezP.DelegateSvg.Expr.set_display.workspaceBlocks =
+ezP.DelegateSvg.Expr.parenth_form.workspaceBlocks =
+ezP.Do.arraysMerged(
+[
   ezP.T3.Expr.identifier,
   ezP.T3.Expr.starred_item_list,
-]
+  ezP.T3.Expr.parenth_form,
+  ezP.T3.Expr.non_void_starred_item_list_comprehensive,
+  ezP.T3.Expr.set_display,
+  ezP.T3.Expr.key_datum,
+  ezP.T3.Expr.key_datum_list_comprehensive,
+  ezP.T3.Expr.dict_display,
+],
+ezP.DelegateSvg.Expr.comprehension.workspaceBlocks,
+[
+  ezP.T3.Expr.generator_expression,
+  ezP.T3.Expr.slice_list,
+  ezP.T3.Expr.display_slice_list,
+],
+)
 
