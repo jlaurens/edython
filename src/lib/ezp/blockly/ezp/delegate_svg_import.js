@@ -286,9 +286,9 @@ ezP.DelegateSvg.Stmt.import_part = function (prototypeName) {
     key: ezP.Const.Input.Module,
     wrap: ezP.T3.Expr.import_module,
   }
-  this.contextMenuData = [
+  this.menuData = [
     {
-      label:   goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      content: goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
         goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
           goog.dom.createTextNode('import '),
         ),
@@ -304,7 +304,7 @@ ezP.DelegateSvg.Stmt.import_part = function (prototypeName) {
       type: ezP.T3.Expr.import_module
     },
     {
-      label:   goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      content:   goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
         goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
           goog.dom.createTextNode('from '),
         ),
@@ -323,7 +323,7 @@ ezP.DelegateSvg.Stmt.import_part = function (prototypeName) {
       type: ezP.T3.Expr.from_relative_module_import
     },
     {
-      label:   goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      content:   goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
         goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
           goog.dom.createTextNode('from '),
         ),

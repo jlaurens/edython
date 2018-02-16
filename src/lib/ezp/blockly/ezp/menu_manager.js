@@ -687,6 +687,7 @@ ezP.MenuManager.prototype.populate_wrap_alternate = function (block, key) {
       goog.asserts.assert(target, 'No wrapper in aug_assigned?')
       var F = function(data) {
         var content = goog.isFunction(data.content)? data.content(block): data.content
+        goog.asserts.assert(content, 'content is missing '+block.type+' '+key)
         var menuItem = new ezP.MenuItem(
           content,
           {
