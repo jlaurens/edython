@@ -6524,25 +6524,25 @@ this.ezp.workspace=a;
 this.init()};
 goog.inherits(ezP.Variables.Menu,ezP.PopupMenu);
 goog.tagUnsealableClass(ezP.Variables.Menu);
-ezP.CHANGE_VARIABLE_ID="CHANGE_VARIABLE_ID";
-ezP.RENAME_VARIABLE_ID="RENAME_VARIABLE_ID";
-ezP.REPLACE_VARIABLE_ID="REPLACE_VARIABLE_ID";
-ezP.NEW_VARIABLE_ID="NEW_VARIABLE_ID";
-ezP.DELETE_UNUSED_VARIABLES_ID="DELETE_UNUSED_VARIABLES_ID";
+ezP.ID.CHANGE_VARIABLE="CHANGE_VARIABLE_ID";
+ezP.ID.RENAME_VARIABLE="RENAME_VARIABLE_ID";
+ezP.ID.REPLACE_VARIABLE="REPLACE_VARIABLE_ID";
+ezP.ID.NEW_VARIABLE="NEW_VARIABLE_ID";
+ezP.ID.DELETE_UNUSED_VARIABLES="DELETE_UNUSED_VARIABLES_ID";
 
 Blockly.Msg.NEW_VARIABLE.startsWith("Cr\u00e9er")&&(Blockly.Msg.NEW_VARIABLE=ezP.Msg.NEW_VARIABLE);
 
 ezP.Variables.Menu.prototype.init=function(){var a=this.ezp;
 a.separator=new ezP.Separator;
 this.addChild(a.separator,!0);
-var b=new ezP.MenuItem(ezP.Msg.RENAME_VARIABLE,[ezP.RENAME_VARIABLE_ID]);
+var b=new ezP.MenuItem(ezP.Msg.RENAME_VARIABLE,[ezP.ID.RENAME_VARIABLE]);
 this.addChild(b,!0);
 var c=a.subMenu=new ezP.SubMenu(ezP.Msg.REPLACE_VARIABLE);
 this.addChild(c,!0);
 this.addChild(new ezP.Separator,!0);
-b=new ezP.MenuItem(ezP.Msg.NEW_VARIABLE,[ezP.NEW_VARIABLE_ID]);
+b=new ezP.MenuItem(ezP.Msg.NEW_VARIABLE,[ezP.ID.NEW_VARIABLE]);
 this.addChild(b,!0);
-b=a.deleteItem=new ezP.MenuItem(ezP.Msg.DELETE_UNUSED_VARIABLES,[ezP.DELETE_UNUSED_VARIABLES_ID]);
+b=a.deleteItem=new ezP.MenuItem(ezP.Msg.DELETE_UNUSED_VARIABLES,[ezP.ID.DELETE_UNUSED_VARIABLES]);
 
 this.addChild(b,!0);
 this.render();
@@ -6556,15 +6556,15 @@ var b=this.ezp,c=a.getText(),d=[].concat(b.workspace.getAllVariables());
 d.sort(Blockly.VariableModel.compareByName);
 for(var e=1<d.length,f=0,g=0,h,k,l=b.subMenu;
 ;
-)if(k=this.getChildAt(g),h=d[f++]){if(k===b.separator){do k=new ezP.MenuItemVar(h.name,[ezP.CHANGE_VARIABLE_ID,h]),this.addChildAt(k,g,!0),k.enableClassName("ezp-hidden",!e||h.name===c),k=new ezP.MenuItemVar(h.name,
-[ezP.REPLACE_VARIABLE_ID,h]),l.addItemAt(k,g),k.enableClassName("ezp-hidden",!e||h.name===c),g++;
+)if(k=this.getChildAt(g),h=d[f++]){if(k===b.separator){do k=new ezP.MenuItemVar(h.name,[ezP.ID.CHANGE_VARIABLE,h]),this.addChildAt(k,g,!0),k.enableClassName("ezp-hidden",!e||h.name===c),k=new ezP.MenuItemVar(h.name,
+[ezP.ID.REPLACE_VARIABLE,h]),l.addItemAt(k,g),k.enableClassName("ezp-hidden",!e||h.name===c),g++;
 while(h=d[f++]);
 break}k.setCaption(h.name);
-k.setModel([ezP.CHANGE_VARIABLE_ID,h]);
+k.setModel([ezP.ID.CHANGE_VARIABLE,h]);
 k.enableClassName("ezp-hidden",!e||h.name===c);
 k=l.getItemAt(g);
 k.setCaption(h.name);
-k.setModel([ezP.REPLACE_VARIABLE_ID,h]);
+k.setModel([ezP.ID.REPLACE_VARIABLE,h]);
 k.enableClassName("ezp-hidden",!e||h.name===c);
 ++g}else{for(;
 k!==b.separator;
@@ -6588,11 +6588,11 @@ Blockly.Events.setGroup(!1)}};
 
 ezP.Variables.onMenuItemAction=function(a,b){var c=a.ezp.listener,d=c.sourceBlock_.workspace,e=b.target.getModel(),f=e[0];
 e=e[1];
-if(f===ezP.CHANGE_VARIABLE_ID)c.setValue(e.getId());
-else if(f===ezP.RENAME_VARIABLE_ID)c.showIdentifierEditor();
-else if(f===ezP.REPLACE_VARIABLE_ID)f=c.getValue(),e=e.getId(),ezP.Variables.replaceVarId(d,f,e);
-else if(f===ezP.DELETE_UNUSED_VARIABLES_ID)ezP.Variables.deleteUnusedVariables(d);
-else if(f===ezP.NEW_VARIABLE_ID)e=ezP.Variables.createDummyVariable(d),c.setValue(e.getId()),
+if(f===ezP.ID.CHANGE_VARIABLE)c.setValue(e.getId());
+else if(f===ezP.ID.RENAME_VARIABLE)c.showIdentifierEditor();
+else if(f===ezP.ID.REPLACE_VARIABLE)f=c.getValue(),e=e.getId(),ezP.Variables.replaceVarId(d,f,e);
+else if(f===ezP.ID.DELETE_UNUSED_VARIABLES)ezP.Variables.deleteUnusedVariables(d);
+else if(f===ezP.ID.NEW_VARIABLE)e=ezP.Variables.createDummyVariable(d),c.setValue(e.getId()),
 setTimeout(function(){c.showIdentifierEditor()},10);
 else throw Error("Unsupported variables menu action: "+f);
 };

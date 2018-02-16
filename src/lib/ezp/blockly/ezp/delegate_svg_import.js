@@ -306,7 +306,6 @@ ezP.DelegateSvg.Stmt.import_part = function (prototypeName) {
       type: ezP.T3.Expr.import_module
     },
     {
-      label: 'from module import ... [as ...]',
       label:   goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
         goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
           goog.dom.createTextNode('from '),
@@ -345,7 +344,7 @@ goog.inherits(ezP.DelegateSvg.Stmt.import_part, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Manager.register('import_part')
 
-ezP.USE_IMPORT_WRAP_TYPE_ID  = 'USE_IMPORT_WRAP_TYPE'
+ezP.ID.USE_IMPORT_WRAP_TYPE  = 'USE_IMPORT_WRAP_TYPE'
 
 /**
  * When the block is just a wrapper, returns the wrapped target.
@@ -366,14 +365,13 @@ ezP.DelegateSvg.Stmt.import_part.prototype.populateContextMenuFirst_ = function 
   var last = this.inputs.last.input
   var target = last.connection.targetBlock()
   goog.asserts.assert(target, 'No wrapper in import_part?')
-  var type = target? target.type: undefined
   var ezp = this
   var F = function(data) {
     var menuItem = new ezP.MenuItem(
       data.label
-      ,{action: ezP.USE_IMPORT_WRAP_TYPE_ID, type: data.type},
+      ,{action: ezP.ID.USE_IMPORT_WRAP_TYPE, type: data.type},
     )
-    menuItem.setEnabled(data.type != type)
+    menuItem.setEnabled(data.type != target.type)
     mgr.addChild(menuItem, true)
   }
   for (var i = 0; i<this.contextMenuData.length; i++) {
@@ -420,7 +418,7 @@ ezP.DelegateSvg.Stmt.import_part.prototype.handleMenuItemActionFirst = function 
   var model = event.target.getModel()
   var action = model.action
   var new_type = model.type
-  if (action == ezP.USE_IMPORT_WRAP_TYPE_ID) {
+  if (action == ezP.ID.USE_IMPORT_WRAP_TYPE) {
     setTimeout(function() {
       block.ezp.changeImportWrapType(block, new_type)
       block.render()

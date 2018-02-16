@@ -62,7 +62,26 @@ ezP.Delegate.Manager = function () {
     return Ctors[prototypeName]
   }
   /**
+   * Get the inputData for that prototypeName.
+   * @param {?string} prototypeName Name of the language object containing
+   */
+  me.getInputData = function (prototypeName) {
+    var Ctor = Ctors[prototypeName]
+    return Ctor? Ctor.prototype.inputData: undefined
+  }
+  /**
+   * Get the inputData for that prototypeName.
+   * @param {?string} prototypeName Name of the language object containing
+   */
+  me.getStatementData = function (prototypeName) {
+    var Ctor = Ctors[prototypeName]
+    return Ctor? Ctor.prototype.statementData: undefined
+  }
+  /**
    * Delegate registrator.
+   * 
+   * Computes inputData and statementData
+   * only once from the creation of the delegate.
    * @param {?string} prototypeName Name of the language object containing
    * @param {Object} constructor
    */
@@ -612,6 +631,7 @@ ezP.Delegate.prototype.makeBlockWrapped_ = function (block) {
  * @param {!Block} block.
  * @param {!Input} input.
  * @param {!String} prototypeName.
+ * @return yorn whether a change has been made
  * @private
  */
 ezP.Delegate.prototype.completeWrappedInput_ = function (block, input, prototypeName) {

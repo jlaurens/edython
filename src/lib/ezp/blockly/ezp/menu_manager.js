@@ -58,7 +58,9 @@ ezP.MenuManager.prototype.menu = undefined
  */
 ezP.MenuManager.prototype.separate = function (render = true) {
   this.shouldSeparate_ = false
-  this.menu.addChild(new ezP.Separator(), render)
+  if (this.menu.getChildCount()) {
+    this.menu.addChild(new ezP.Separator(), render)
+  }
   this.didSeparate_ = true
 }
 
@@ -143,16 +145,16 @@ ezP.MenuManager.prototype.showMenu = function (block, e) {
   this.menu.showMenu(block.svgGroup_, xy.x, xy.y + scaledHeight+2)
 }
 
-ezP.DUPLICATE_BLOCK_ID = 'DUPLICATE_BLOCK'
-ezP.REMOVE_COMMENT_ID = 'REMOVE_COMMENT'
-ezP.ADD_COMMENT_ID = 'ADD_COMMENT'
-ezP.EXPAND_BLOCK_ID = 'EXPAND_BLOCK'
-ezP.COLLAPSE_BLOCK_ID = 'COLLAPSE_BLOCK'
-ezP.TOGGLE_ENABLE_BLOCK_ID = 'TOGGLE_ENABLE_BLOCK'
-ezP.DELETE_BLOCK_ID = 'DELETE_BLOCK'
-ezP.HELP_ID = 'HELP'
-ezP.LOG_BLOCK_XML_ID = 'LOG_BLOCK_XML'
-ezP.FILL_DEEP_HOLES_ID = 'FILL_DEEP_HOLES'
+ezP.ID.DUPLICATE_BLOCK = 'DUPLICATE_BLOCK'
+ezP.ID.REMOVE_COMMENT = 'REMOVE_COMMENT'
+ezP.ID.ADD_COMMENT = 'ADD_COMMENT'
+ezP.ID.EXPAND_BLOCK = 'EXPAND_BLOCK'
+ezP.ID.COLLAPSE_BLOCK = 'COLLAPSE_BLOCK'
+ezP.ID.TOGGLE_ENABLE_BLOCK = 'TOGGLE_ENABLE_BLOCK'
+ezP.ID.DELETE_BLOCK = 'DELETE_BLOCK'
+ezP.ID.HELP = 'HELP'
+ezP.ID.LOG_BLOCK_XML = 'LOG_BLOCK_XML'
+ezP.ID.FILL_DEEP_HOLES = 'FILL_DEEP_HOLES'
 
 /**
  * Populate the context menu for the given block.
@@ -202,7 +204,7 @@ ezP.MenuManager.prototype.populateLast = function (block) {
   var holes = ezP.HoleFiller.getDeepHoles(block)
   menuItem = new ezP.MenuItem(
     ezP.Msg.FILL_DEEP_HOLES,
-    {action: ezP.FILL_DEEP_HOLES_ID, holes: holes})
+    {action: ezP.ID.FILL_DEEP_HOLES, holes: holes})
     menuItem.setEnabled(holes.length > 0);
   this.addChild(menuItem, true)
 
@@ -210,7 +212,7 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     // Option to duplicate this block.
     menuItem = new ezP.MenuItem(
       Blockly.Msg.DUPLICATE_BLOCK,
-      {action: ezP.DUPLICATE_BLOCK_ID})
+      {action: ezP.ID.DUPLICATE_BLOCK})
     this.addChild(menuItem, true)
     if (block.getDescendants().length > block.workspace.remainingCapacity()) {
       menuItem.setEnabled(false);
@@ -222,11 +224,11 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     if (block.comment) {
       menuItem = new ezP.MenuItem(
         Blockly.Msg.REMOVE_COMMENT,
-        {action: ezP.REMOVE_COMMENT_ID})
+        {action: ezP.ID.REMOVE_COMMENT})
     } else {
       menuItem = new ezP.MenuItem(
         Blockly.Msg.ADD_COMMENT,
-        {action: ezP.ADD_COMMENT_ID})
+        {action: ezP.ID.ADD_COMMENT})
     }
     menuItem.setEnabled(false && !goog.userAgent.IE && !block.outputConnection)
     this.addChild(menuItem, true)
@@ -235,12 +237,12 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     if (block.collapsed_) {
       menuItem = new ezP.MenuItem(
         Blockly.Msg.EXPAND_BLOCK,
-        {action: ezP.EXPAND_BLOCK_ID})
+        {action: ezP.ID.EXPAND_BLOCK})
       menuItem.setEnabled(true)
     } else {
       menuItem = new ezP.MenuItem(
         Blockly.Msg.COLLAPSE_BLOCK,
-        {action: ezP.COLLAPSE_BLOCK_ID})
+        {action: ezP.ID.COLLAPSE_BLOCK})
       menuItem.setEnabled(block.getStatementCount() > 2)
     }
     this.addChild(menuItem, true)
@@ -249,7 +251,7 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     menuItem = new ezP.MenuItem(
       block.disabled
         ? Blockly.Msg.ENABLE_BLOCK : Blockly.Msg.DISABLE_BLOCK,
-      {action: ezP.TOGGLE_ENABLE_BLOCK_ID})
+      {action: ezP.ID.TOGGLE_ENABLE_BLOCK})
     menuItem.setEnabled(!block.outputConnection)
     this.addChild(menuItem, true)
   }
@@ -276,7 +278,7 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     menuItem = new ezP.MenuItem(
       descendantCount === 1 ? Blockly.Msg.DELETE_BLOCK
         : Blockly.Msg.DELETE_X_BLOCKS.replace('%1', String(descendantCount)),
-      {action: ezP.DELETE_BLOCK_ID})
+      {action: ezP.ID.DELETE_BLOCK})
     menuItem.setEnabled(true)
     this.addChild(menuItem, true)
   }
@@ -284,21 +286,21 @@ ezP.MenuManager.prototype.populateLast = function (block) {
   var url = goog.isFunction(block.helpUrl) ? block.helpUrl() : block.helpUrl
   menuItem = new ezP.MenuItem(
     Blockly.Msg.HELP,
-    {action: ezP.HELP_ID})
+    {action: ezP.ID.HELP})
   menuItem.setEnabled(!!url)
   this.addChild(menuItem, true)
   this.separate()
   
   menuItem = new ezP.MenuItem(
     block.ezp.getPythonType(block),
-    {action: ezP.LOG_BLOCK_XML_ID})
+    {action: ezP.ID.LOG_BLOCK_XML})
   menuItem.setEnabled(true)
   this.addChild(menuItem, true)
 
   if (block.ezp.plugged_) {
     menuItem = new ezP.MenuItem(
       block.ezp.plugged_.substring(4),
-      {action: ezP.LOG_BLOCK_XML_ID})
+      {action: ezP.ID.LOG_BLOCK_XML})
     menuItem.setEnabled(false)
     this.addChild(menuItem, true)
   }
@@ -348,30 +350,30 @@ ezP.MenuManager.prototype.handleActionLast = function (block, event) {
   var workspace = block.workspace
   var model = event.target.getModel()
   switch(model.action) {
-    case ezP.DUPLICATE_BLOCK_ID:
+    case ezP.ID.DUPLICATE_BLOCK:
       Blockly.duplicate_(block)
       return true
-    case ezP.FILL_DEEP_HOLES_ID:
+    case ezP.ID.FILL_DEEP_HOLES:
       Blockly.Events.setGroup(true)
       ezP.HoleFiller.fillDeepHoles(block.workspace, model.holes)
       Blockly.Events.setGroup(false)
       return true
-    case ezP.REMOVE_COMMENT_ID:
+    case ezP.ID.REMOVE_COMMENT:
     block.setCommentText(null)
       return true
-    case ezP.ADD_COMMENT_ID:
+    case ezP.ID.ADD_COMMENT:
       block.setCommentText('')
       return true
-    case ezP.EXPAND_BLOCK_ID:
+    case ezP.ID.EXPAND_BLOCK:
       block.setCollapsed(false)
       return true
-    case ezP.COLLAPSE_BLOCK_ID:
+    case ezP.ID.COLLAPSE_BLOCK:
       block.setCollapsed(true)
       return true
-    case ezP.TOGGLE_ENABLE_BLOCK_ID:
+    case ezP.ID.TOGGLE_ENABLE_BLOCK:
       block.setDisabled(!block.disabled)  
       return true
-    case ezP.DELETE_BLOCK_ID:
+    case ezP.ID.DELETE_BLOCK:
       var unwrapped = block
       var parent
       while (unwrapped.ezp.wrapped_ && (parent = unwrapped.getParent())) {
@@ -382,10 +384,10 @@ ezP.MenuManager.prototype.handleActionLast = function (block, event) {
       unwrapped.dispose(true, true)
       Blockly.Events.setGroup(false)
       return true
-    case ezP.HELP_ID:
+    case ezP.ID.HELP:
       block.showHelp_()
       return true
-    case ezP.LOG_BLOCK_XML_ID:
+    case ezP.ID.LOG_BLOCK_XML:
       var xmlDom = Blockly.Xml.blockToDom(block);
       var xmlText = Blockly.Xml.domToText(xmlDom)
       console.log(xmlText)
@@ -415,10 +417,10 @@ ezP.MenuManager.prototype.populateVariable_ = function (block) {
   var menuItem
   var subMenu = new ezP.SubMenu(ezP.Msg.REPLACE_VARIABLE)
   for (var i = 0; v = allVs[i++];) {
-    menuItem = new ezP.MenuItemVar(v.name, [ezP.CHANGE_VARIABLE_ID, v])
+    menuItem = new ezP.MenuItemVar(v.name, [ezP.ID.CHANGE_VARIABLE, v])
     this.addChild(menuItem, true)
     menuItem.enableClassName('ezp-hidden', !visible || v.name === name)
-    menuItem = new ezP.MenuItemVar(v.name, [ezP.REPLACE_VARIABLE_ID, v])
+    menuItem = new ezP.MenuItemVar(v.name, [ezP.ID.REPLACE_VARIABLE, v])
     subMenu.addItem(menuItem)
     menuItem.enableClassName('ezp-hidden', !visible || v.name === name)
   }
@@ -429,19 +431,19 @@ ezP.MenuManager.prototype.populateVariable_ = function (block) {
   this.addChild(subMenu, true)
   menuItem = new ezP.MenuItem(
     ezP.Msg.NEW_VARIABLE,
-    {action: ezP.NEW_VARIABLE_ID})
+    {action: ezP.ID.NEW_VARIABLE})
   this.addChild(menuItem, true)
   menuItem = new ezP.MenuItem(
     ezP.Msg.DELETE_UNUSED_VARIABLES,
-    {action: ezP.DELETE_UNUSED_VARIABLES_ID})
+    {action: ezP.ID.DELETE_UNUSED_VARIABLES})
   menuItem.setEnabled(ezP.Variables.isThereAnUnusedVariable(block.workspace))
   this.addChild(menuItem, true)
   Blockly.utils.addClass(subMenu.getMenu().getElement(), 'ezp-nosubmenu')
   return true
 }
 
-ezP.PARENT_INSERT_ID = 'PARENT_INSERT'
-ezP.PARENT_REMOVE_ID = 'PARENT_REMOVE'
+ezP.ID.PARENT_INSERT = 'PARENT_INSERT'
+ezP.ID.PARENT_REMOVE = 'PARENT_REMOVE'
 
 /**
  * Handle the selection of an item in the first part of the context dropdown menu.
@@ -455,11 +457,11 @@ ezP.MenuManager.prototype.handleAction_movable_parent = function (block, event) 
   var action = model.action
   var type = model.type
   var actor = model.actor || block
-  if (action === ezP.PARENT_INSERT_ID) {
+  if (action === ezP.ID.PARENT_INSERT) {
     console.log('ezP.MenuManager.prototype.handleAction_movable_parent')
     actor.ezp.insertParent(actor, type, model.key)
     return true
-  } else if (action === ezP.PARENT_REMOVE_ID) {
+  } else if (action === ezP.ID.PARENT_REMOVE) {
     actor.ezp.bypassAndRemoveParent(actor)
   }
   return false
@@ -542,7 +544,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, type)
     return false
   }
   var check = c8n.check_
-  var D = ezP.Delegate.Manager.get(type).prototype.inputData
+  var D = ezP.Delegate.Manager.getInputData(type)
   var mgr = this
   var F = function(K) {
     var d = D[K]
@@ -561,7 +563,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, type)
       }
       var content = mgr.get_movable_parent_menuitem_content(type)
       var MI = new ezP.MenuItem(content, {
-        action: ezP.PARENT_INSERT_ID,
+        action: ezP.ID.PARENT_INSERT,
         type: type,
         key: d.key || K,
         actor: block,
@@ -627,7 +629,7 @@ ezP.MenuManager.prototype.populate_remove_parent = function (block, type) {
       if (child.ezp.canBypassAndRemoveParent(child)) {
         var content = this.get_movable_parent_menuitem_content(parent.type)
         var MI = new ezP.MenuItem(content, {
-          action: ezP.PARENT_REMOVE_ID,
+          action: ezP.ID.PARENT_REMOVE,
           actor: child,
         })
         this.addRemoveChild(MI)
@@ -666,3 +668,67 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
     this.populate_remove_parent(block, type)
   }
 }
+
+ezP.ID.USE_WRAP_TYPE  = 'USE_WRAP_TYPE'
+
+/**
+ * Populate the context menu for the given block.
+ * Only for expressions.
+ * @param {!Blockly.Block} block The block.
+ * @private
+ */
+ezP.MenuManager.prototype.populate_wrap_alternate = function (block, key) {
+  var ezp = block.ezp
+  if (ezp.menuData && ezp.menuData.length > 1) {
+    var menu = this.menu
+    var input = block.getInput(key)
+    if (input && input.connection) {
+      var target = input.connection.targetBlock()
+      goog.asserts.assert(target, 'No wrapper in aug_assigned?')
+      var F = function(data) {
+        var content = goog.isFunction(data.content)? data.content(block): data.content
+        var menuItem = new ezP.MenuItem(
+          content,
+          {
+            actor: block,
+            action: ezP.ID.USE_WRAP_TYPE,
+            key: key,
+            type: data.type,
+          },
+        )
+        menuItem.setEnabled(data.type != target.type)
+        this.addChild(menuItem, true)
+        if (data.css_class) {
+          goog.dom.classlist.add( menuItem.getElement().firstChild, data.css_class) 
+        }
+      }
+      for (var i = 0; i<ezp.menuData.length; i++) {
+        F.call(this, ezp.menuData[i])
+      }
+      return true
+    }
+  }
+  return false
+}
+
+/**
+ * Handle the selection of an item in the context dropdown menu.
+ * The block is not used because the model already contains an actor.
+ * @param {!Blockly.Block} block where the mouse event ocurred, if relevant
+ * @param {!goog....} event The event containing as target
+ * the MenuItem selected within menu.
+ */
+ezP.MenuManager.prototype.handleAction_wrap_alternate = function (block, event) {
+  var model = event.target.getModel()
+  var actor = model.actor || block
+  var action = model.action
+  if (action == ezP.ID.USE_WRAP_TYPE) {
+    setTimeout(function() {
+      block.ezp.changeWrapType(actor, model.key, model.type) // changeWrapType
+      block.render() // maybe useless ?
+    }, 100)
+    return true
+  }
+  return false
+}
+

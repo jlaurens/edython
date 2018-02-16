@@ -438,4 +438,23 @@ goog.require('ezP.T3')
             if t.is_compound:
                 self.append(template.format(t.name))
         self.append(']')
+        self.append('''
+ezP.T3.All.containsStatement = function(prototypeName) {
+  return ezP.T3.All.part_statements.indexOf(prototypeName)>=0
+  || ezP.T3.All.simple_statements.indexOf(prototypeName)>=0
+  || ezP.T3.All.compound_statements.indexOf(prototypeName)>=0
+}
+
+ezP.T3.All.containsExpression = function(prototypeName) {
+  return ezP.T3.All.core_expressions.indexOf(prototypeName)>=0
+  || ezP.T3.All.lists.indexOf(prototypeName)>=0
+  || ezP.T3.All.wrappers.indexOf(prototypeName)>=0
+}
+
+ezP.T3.All.contains = function(type) {
+  return ezP.T3.All.containsStatement(prototypeName)
+  || ezP.T3.All.containsExpression(prototypeName)
+}
+
+''')
         return '\n'.join(self.T3_data_)

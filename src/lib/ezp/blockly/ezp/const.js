@@ -16,10 +16,11 @@
  * @namespace
  **/
 goog.provide('ezP.Const')
+goog.provide('ezP.ID')
 
 goog.require('ezP')
 
-ezP.Const = ezP.Const || {}
+// ezP.Const = ezP.Const || {}
 
 ezP.Const.Field = {
   LABEL: 'LABEL',
@@ -44,6 +45,7 @@ ezP.Const.Field = {
   NCSTR: 'NCSTR'
 }
 ezP.Const.Input = {
+  NAME: 'NAME',
   FOR: 'FOR',
   IN: 'IN',
   IF: 'IF',
@@ -83,6 +85,7 @@ ezP.Const.Input = {
   AS: 'AS',
   SOURCE: 'SOURCE',
   MODULE: 'MODULE',
+  POWER: 'POWER',
   END: 'END',
   // IN PROGRESS
   ANY: 'ANY',

@@ -35,11 +35,11 @@ ezP.Variables.Menu = function (workspace, optDomHelper, optRenderer) {
 goog.inherits(ezP.Variables.Menu, ezP.PopupMenu)
 goog.tagUnsealableClass(ezP.Variables.Menu)
 
-ezP.CHANGE_VARIABLE_ID = 'CHANGE_VARIABLE_ID'
-ezP.RENAME_VARIABLE_ID = 'RENAME_VARIABLE_ID'
-ezP.REPLACE_VARIABLE_ID = 'REPLACE_VARIABLE_ID'
-ezP.NEW_VARIABLE_ID = 'NEW_VARIABLE_ID'
-ezP.DELETE_UNUSED_VARIABLES_ID = 'DELETE_UNUSED_VARIABLES_ID'
+ezP.ID.CHANGE_VARIABLE = 'CHANGE_VARIABLE_ID'
+ezP.ID.RENAME_VARIABLE = 'RENAME_VARIABLE_ID'
+ezP.ID.REPLACE_VARIABLE = 'REPLACE_VARIABLE_ID'
+ezP.ID.NEW_VARIABLE = 'NEW_VARIABLE_ID'
+ezP.ID.DELETE_UNUSED_VARIABLES = 'DELETE_UNUSED_VARIABLES_ID'
 
 if (Blockly.Msg.NEW_VARIABLE.startsWith('Créer')) {
   Blockly.Msg.NEW_VARIABLE = ezP.Msg.NEW_VARIABLE
@@ -54,18 +54,18 @@ ezP.Variables.Menu.prototype.init = function () {
   this.addChild(ezp.separator, true)
   var menuItem = new ezP.MenuItem(
     ezP.Msg.RENAME_VARIABLE,
-    {action: ezP.RENAME_VARIABLE_ID})
+    {action: ezP.ID.RENAME_VARIABLE})
   this.addChild(menuItem, true)
   var subMenu = ezp.subMenu = new ezP.SubMenu(ezP.Msg.REPLACE_VARIABLE)
   this.addChild(subMenu, true)
   this.addChild(new ezP.Separator(), true)
   menuItem = new ezP.MenuItem(
     ezP.Msg.NEW_VARIABLE,
-    {action: ezP.NEW_VARIABLE_ID})
+    {action: ezP.ID.NEW_VARIABLE})
   this.addChild(menuItem, true)
   menuItem = ezp.deleteItem = new ezP.MenuItem(
     ezP.Msg.DELETE_UNUSED_VARIABLES,
-    {action: ezP.DELETE_UNUSED_VARIABLES_ID})
+    {action: ezP.ID.DELETE_UNUSED_VARIABLES})
   this.addChild(menuItem, true)
   this.render()
   this.getElement().id = 'ezp-variables-menu'
@@ -100,10 +100,10 @@ ezP.Variables.Menu.prototype.updateWithListeningBlock = function (block) {
     if ((v = allVs[i++])) {
       if (mi === ezp.separator) {
         do {
-          mi = new ezP.MenuItemVar(v.name, [ezP.CHANGE_VARIABLE_ID, v])
+          mi = new ezP.MenuItemVar(v.name, [ezP.ID.CHANGE_VARIABLE, v])
           this.addChildAt(mi, j, true)
           mi.enableClassName('ezp-hidden', !visible || v.name === name)
-          mi = new ezP.MenuItemVar(v.name, [ezP.REPLACE_VARIABLE_ID, v])
+          mi = new ezP.MenuItemVar(v.name, [ezP.ID.REPLACE_VARIABLE, v])
           subMenu.addItemAt(mi, j)
           mi.enableClassName('ezp-hidden', !visible || v.name === name)
           j++
@@ -111,11 +111,11 @@ ezP.Variables.Menu.prototype.updateWithListeningBlock = function (block) {
         break
       }
       mi.setCaption(v.name)
-      mi.setModel([ezP.CHANGE_VARIABLE_ID, v])
+      mi.setModel([ezP.ID.CHANGE_VARIABLE, v])
       mi.enableClassName('ezp-hidden', !visible || v.name === name)
       mi = subMenu.getItemAt(j)
       mi.setCaption(v.name)
-      mi.setModel([ezP.REPLACE_VARIABLE_ID, v])
+      mi.setModel([ezP.ID.REPLACE_VARIABLE, v])
       mi.enableClassName('ezp-hidden', !visible || v.name === name)
       ++j
       continue
@@ -171,20 +171,20 @@ ezP.Variables.onMenuItemAction = function (menu, event) {
   var model = event.target.getModel()
   var action = model.action
   var VM = model.VM
-  if (action === ezP.CHANGE_VARIABLE_ID) {
+  if (action === ezP.ID.CHANGE_VARIABLE) {
     listener.setValue(VM.name)
-  } else if (action === ezP.RENAME_VARIABLE_ID) {
+  } else if (action === ezP.ID.RENAME_VARIABLE) {
     // Rename variable.
     listener.showIdentifierEditor()
-  } else if (action === ezP.REPLACE_VARIABLE_ID) {
+  } else if (action === ezP.ID.REPLACE_VARIABLE) {
     // Replace variable.
     var oldVarId = workspace.getVariable(listener.getValue()).getId()
     var newVarId = VM.getId()
     ezP.Variables.replaceVarId(workspace, oldVarId, newVarId)
     listener.setValue(VM.name)
-  } else if (action === ezP.DELETE_UNUSED_VARIABLES_ID) {
+  } else if (action === ezP.ID.DELETE_UNUSED_VARIABLES) {
     ezP.Variables.deleteUnusedVariables(workspace)
-  } else if (action === ezP.NEW_VARIABLE_ID) {
+  } else if (action === ezP.ID.NEW_VARIABLE) {
     // Create new variable.
     VM = ezP.Variables.createDummyVariable(workspace)
     listener.setValue(VM.name)

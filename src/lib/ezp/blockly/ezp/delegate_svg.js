@@ -129,9 +129,10 @@ ezP.DelegateSvg.prototype.statementData_ = undefined
 ezP.DelegateSvg.prototype.initBlock_ = function(block) {
   var F = function(K, D) {
     var out
-    if (D) {
+    if (D && Object.keys(D).length) {
       out = {}
-      var k = D.key || K
+      goog.asserts.assert(D.key, 'Every input must have a key '+block.type)
+      var k = D.key
       var v, f
       if ((v = D.wrap)) {
         out.input = block.appendWrapValueInput(k, v)
@@ -169,8 +170,7 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
           if (ezp.hole_data = ezP.HoleFiller.getData(v, D.hole_value)) {
             block.ezp.can_fill_holes = true
           }
-        } else if ((v = D.wrap)) {
-          D.check = D.wrap
+        } else if ((v = D.check = D.wrap)) {
           out.input.setCheck(v)
         }
       }
@@ -645,12 +645,14 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
     canTuple: true,
     canList: true,
     canForif: true,
+    i: 0,
+    length: block.inputList.length,
   }
   io.cursorX = this.getPaddingLeft(block)
   if (!block.outputConnection) {
     this.renderDrawSharp_(io)
   }
-  for (var _ = 0; (io.input = block.inputList[_]); _++) {
+  for (; (io.input = block.inputList[io.i]); io.i++) {
     if (io.input.isVisible()) {
       goog.asserts.assert(io.input.ezpData, 'Input with no ezpData '+io.input.name+' in block '+block.type)
       io.inputDisabled = io.input.ezpData.disabled_
@@ -698,9 +700,11 @@ ezP.DelegateSvg.prototype.renderDrawInput_ = function (io) {
 /**
  * Render the fields of a block input.
  * @param io An input/output record.
+ * @return the delta of io.cursorX
  * @private
  */
 ezP.DelegateSvg.prototype.renderDrawFields_ = function (io) {
+  var here = io.cursorX
   for (var _ = 0, field; (field = io.input.fieldRow[_]); ++_) {
     if (field.getText().length>0) {
       var root = field.getSvgRoot()
@@ -716,6 +720,7 @@ ezP.DelegateSvg.prototype.renderDrawFields_ = function (io) {
       }
     }
   }
+  return here - io.cursorX
 }
 
 /**
@@ -783,11 +788,34 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   if (c8n) {
     var ezp = c8n.ezp
     var target = c8n.targetBlock()
-    this.renderDrawFields_(io)
+    var delta = this.renderDrawFields_(io)
     c8n.setOffsetInBlock(io.cursorX, 0)
     if (!!target) {
       var root = target.getSvgRoot()
       if (!!root) {
+        if (delta) { // insert a space because wrapped blocks are... wrapped
+          // this will change when the locking feature will be implemented
+          var w = target
+          while(w && w.ezp.wrapped_ && w.inputList.length) {
+            var input = w.inputList[0]
+            if (input.fieldRow.length) {
+              var done = false
+              for (var i = 0; i<input.fieldRow.length; ++i) {
+                var value = input.fieldRow[i].getValue()
+                if (value.length) {
+                  io.cursorX += ezP.Font.space
+                  c8n.setOffsetInBlock(io.cursorX, 0)
+                  done = true
+                  break
+                }
+              }
+              if (done) {
+                break
+              }
+            }
+            w = input.connection? input.connection.targetBlock(): undefined
+          }
+        }
         var bBox = target.getHeightWidth()
         root.setAttribute('transform', 'translate(' + io.cursorX + ', 0)')
         io.cursorX += bBox.width
@@ -1350,4 +1378,33 @@ ezP.HoleFiller.fillDeepHoles = function(workspace, holes) {
       }
     }
   }
+}
+
+/**
+ * Change the wrap type of a block.
+ * Undo compliant.
+ * Used in menus.
+ * @param {!Blockly.Block} block owner of the delegate.
+ * @param {!String} key the key of the input holding the connection
+ * @param {!String} newType
+ * @return yorn whether a change has been made
+ * the MenuItem selected within menu.
+ */
+ezP.DelegateSvg.prototype.changeWrapType = function (block, key, newType) {
+  var input = block.getInput(key)
+  if (input) {
+    var target = input.connection.targetBlock()
+    var oldType = target? target.type: undefined
+    if (newType != oldType) {
+      Blockly.Events.setGroup(true)
+      if (target) {
+  //      target.unplug()
+        target.dispose()
+      }
+      this.completeWrappedInput_(block, input, newType)
+      Blockly.Events.setGroup(false)
+      return true
+    }
+  }
+  return false
 }

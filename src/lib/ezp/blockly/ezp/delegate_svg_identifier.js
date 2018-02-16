@@ -28,19 +28,20 @@ ezP.DelegateSvg.Expr.identifier = function (prototypeName) {
   ezP.DelegateSvg.Expr.identifier.superClass_.constructor.call(this, prototypeName)
   this.outputCheck = ezP.T3.Expr.identifier
   this.inputData_.first = {
+    key: ezP.Const.Input.NAME,
     identifier: 'item',
   }
 }
 goog.inherits(ezP.DelegateSvg.Expr.identifier, ezP.DelegateSvg.Expr)
 ezP.Delegate.Manager.register('identifier')
 
-ezP.RENAME_IDENTIFIER_ID = 'RENAME_IDENTIFIER'
+ezP.ID.RENAME_IDENTIFIER = 'RENAME_IDENTIFIER'
 
-ezP.CHANGE_VARIABLE_ID = 'CHANGE_VARIABLE'
-ezP.RENAME_VARIABLE_ID = 'RENAME_VARIABLE'
-ezP.REPLACE_VARIABLE_ID = 'REPLACE_VARIABLE'
-ezP.NEW_VARIABLE_ID = 'NEW_VARIABLE'
-ezP.DELETE_UNUSED_VARIABLES_ID = 'DELETE_UNUSED_VARIABLES'
+ezP.ID.CHANGE_VARIABLE = 'CHANGE_VARIABLE'
+ezP.ID.RENAME_VARIABLE = 'RENAME_VARIABLE'
+ezP.ID.REPLACE_VARIABLE = 'REPLACE_VARIABLE'
+ezP.ID.NEW_VARIABLE = 'NEW_VARIABLE'
+ezP.ID.DELETE_UNUSED_VARIABLES = 'DELETE_UNUSED_VARIABLES'
 
 if (Blockly.Msg.NEW_VARIABLE.startsWith('Créer')) {
   Blockly.Msg.NEW_VARIABLE = ezP.Msg.NEW_VARIABLE
@@ -69,7 +70,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuFirst_ = function (
   var menu = mgr.menu
   var menuItem = new ezP.MenuItem(
     ezP.Msg.RENAME,
-    [ezP.RENAME_IDENTIFIER_ID]);
+    [ezP.ID.RENAME_IDENTIFIER]);
   mgr.addChild(menuItem, true);
   mgr.shouldSeparate()
   ezP.DelegateSvg.Expr.identifier.superClass_.populateContextMenuFirst_.call(this, block, mgr)
@@ -87,7 +88,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuFirst_ = function (
 ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
   var model = event.target.getModel()
   var action = model[0]
-  if (action == ezP.RENAME_IDENTIFIER_ID) {
+  if (action == ezP.ID.RENAME_IDENTIFIER) {
     block.ezp.inputs.first.fieldIdentifier.showIdentifierEditor()
     return true
   }
@@ -155,21 +156,21 @@ ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionMiddle = function 
   var action = model[0]
   var VM = model[1]
   switch(action) {
-    case ezP.CHANGE_VARIABLE_ID:
+    case ezP.ID.CHANGE_VARIABLE:
       listener.setValue(VM.name)
       return true
-    case ezP.RENAME_VARIABLE_ID:
+    case ezP.ID.RENAME_VARIABLE:
       // Rename variable.
       listener.showEditor_()
       return true
-    case ezP.REPLACE_VARIABLE_ID:
+    case ezP.ID.REPLACE_VARIABLE:
       // Replace variable.
       this.onActionReplaceVariable(block, VM)
       return true
-    case ezP.DELETE_UNUSED_VARIABLES_ID:
+    case ezP.ID.DELETE_UNUSED_VARIABLES:
       ezP.Variables.deleteUnusedVariables(workspace)
       return true
-    case ezP.NEW_VARIABLE_ID:
+    case ezP.ID.NEW_VARIABLE:
       // Create new variable.
       VM = ezP.Variables.createDummyVariable(workspace)
       listener.setValue(VM.name)

@@ -65,7 +65,7 @@ ezP.DelegateSvg.Stmt.decorator_part = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Stmt.decorator_part, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Manager.register('decorator_part')
 
-ezP.USE_DECORATOR_ID = 'USE_DECORATOR'
+ezP.ID.USE_DECORATOR = 'USE_DECORATOR'
 
 /**
  * Populate the context menu for the given block.
@@ -87,7 +87,7 @@ ezP.DelegateSvg.Stmt.decorator_part.prototype.populateContextMenuFirst_ = functi
     }
   }
   var F = function(candidate) {
-    var menuItem = new ezP.SimpleMenuItemCode('@'+candidate, ezP.USE_DECORATOR_ID, candidate)
+    var menuItem = new ezP.SimpleMenuItemCode('@'+candidate, ezP.ID.USE_DECORATOR, candidate)
     menuItem.setCheckable(true)
     menuItem.setEnabled(old != candidate)
     menu.addChild(menuItem, true)
@@ -109,7 +109,7 @@ ezP.DelegateSvg.Stmt.decorator_part.prototype.handleMenuItemActionFirst = functi
   var model = event.target.getModel()
   var action = model[0]
   var value = model[1]
-  if (action == ezP.USE_DECORATOR_ID) {
+  if (action == ezP.ID.USE_DECORATOR) {
     var dotted_name = this.inputs.first.input.connection.targetBlock()
     dotted_name.ezp.removeItems(dotted_name)
     var input = dotted_name.ezp.getItemAtIndex(dotted_name, 0)

@@ -175,7 +175,7 @@ goog.inherits(ezP.DelegateSvg.Expr.proper_slice, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Manager.register('proper_slice')
 
-ezP.TOGGLE_PROPER_SLICING_STRIDE_ID = 'USE_PROPER_SLICING_STRIDE'
+ezP.ID.TOGGLE_PROPER_SLICING_STRIDE = 'USE_PROPER_SLICING_STRIDE'
 
 /**
  * Populate the context menu for the given block.
@@ -189,7 +189,7 @@ ezP.DelegateSvg.Expr.proper_slice.prototype.populateContextMenuFirst_ = function
   var unused = last.ezpData.disabled_
   var menuItem = new ezP.MenuItem(
     unused? ezP.Msg.USE_PROPER_SLICING_STRIDE: ezP.Msg.UNUSE_PROPER_SLICING_STRIDE,
-    {action: ezP.TOGGLE_PROPER_SLICING_STRIDE_ID})
+    {action: ezP.ID.TOGGLE_PROPER_SLICING_STRIDE})
   menuItem.setEnabled(!last.connection.isConnected())
   menu.addChild(menuItem, true)
   menu.separate()
@@ -206,7 +206,7 @@ ezP.DelegateSvg.Expr.proper_slice.prototype.populateContextMenuFirst_ = function
  */
 ezP.DelegateSvg.Expr.proper_slice.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
   var action = event.target.getModel().action
-  if (action == ezP.TOGGLE_PROPER_SLICING_STRIDE_ID) {
+  if (action == ezP.ID.TOGGLE_PROPER_SLICING_STRIDE) {
     var input = this.inputs.last.input
     this.setNamedInputDisabled(block, input.name, !input.ezpData.disabled_)
     return true

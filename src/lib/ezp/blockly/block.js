@@ -15,6 +15,7 @@ goog.provide('ezP.Block')
 goog.require('Blockly.Block')
 goog.require('ezP.Input')
 goog.forwardDeclare('ezP.Delegate')
+goog.forwardDeclare('ezP.T3.All')
 
 /**
  * Class for a block.
@@ -149,13 +150,14 @@ ezP.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
 
 /**
  * Shortcut for appending a sealed value input row.
- * Just add a 'true' ezpData.wrapped_ attribute to the connection.
+ * Add a 'true' ezp.wrapped_ attribute to the connection and register the newly created input to be filled later.
  * @param {string} name Language-neutral identifier which may used to find this
  *     input again.  Should be unique to this block.
  * @return {!Blockly.Input} The input object created.
  */
 ezP.Block.prototype.appendWrapValueInput = function(name, prototypeName) {
   goog.asserts.assert(prototypeName, 'Missing prototypeName, no block to seal')
+  goog.asserts.assert(ezP.T3.All.containsExpression(prototypeName), 'Unnown prototypeName, no block to seal '+prototypeName)
   var input = this.appendValueInput(name)
   input.connection.ezp.wrapped_ = true
   input.connection.setHidden(true)

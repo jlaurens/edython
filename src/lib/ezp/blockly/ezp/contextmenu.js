@@ -31,7 +31,7 @@ ezP.ContextMenu = function (block, optDomHelper, optRenderer) {
 goog.inherits(ezP.ContextMenu, ezP.PopupMenu)
 goog.tagUnsealableClass(ezP.ContextMenu)
 
-ezP.DUPLICATE_BLOCK_ID = 'DUPLICATE_BLOCK'
+ezP.ID.DUPLICATE_BLOCK = 'DUPLICATE_BLOCK'
 
 /**
  * Init the menu.
@@ -42,7 +42,7 @@ ezP.ContextMenu.prototype.init = function (block) {
     // Option to duplicate this block.
     var menuItem = new ezP.MenuItem(
       Blockly.Msg.DUPLICATE_BLOCK,
-      [ezP.DUPLICATE_BLOCK_ID])
+      [ezP.ID.DUPLICATE_BLOCK])
     this.addChild(menuItem, true)
     if (block.getDescendants().length > block.workspace.remainingCapacity()) {
       menuItem.setEnabled(false);
@@ -60,18 +60,18 @@ ezP.ContextMenu.prototype.init = function (block) {
   this.addChild(ezp.separator, true)
   var menuItem = new ezP.MenuItem(
     ezP.Msg.RENAME_VARIABLE,
-    [ezP.RENAME_VARIABLE_ID])
+    [ezP.ID.RENAME_VARIABLE])
   this.addChild(menuItem, true)
   var subMenu = ezp.subMenu = new ezP.SubMenu(ezP.Msg.REPLACE_VARIABLE)
   this.addChild(subMenu, true)
   this.addChild(new ezP.Separator(), true)
   menuItem = new ezP.MenuItem(
     ezP.Msg.NEW_VARIABLE,
-    [ezP.NEW_VARIABLE_ID])
+    [ezP.ID.NEW_VARIABLE])
   this.addChild(menuItem, true)
   menuItem = ezp.deleteItem = new ezP.MenuItem(
     ezP.Msg.DELETE_UNUSED_VARIABLES,
-    [ezP.DELETE_UNUSED_VARIABLES_ID])
+    [ezP.ID.DELETE_UNUSED_VARIABLES])
   this.addChild(menuItem, true)
   this.render()
   this.getElement().id = 'ezp-variables-menu'

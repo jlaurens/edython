@@ -191,7 +191,7 @@ ezP.DelegateSvg.Stmt.global_stmt.prototype.setupType = function (block) {
   }
 }
 
-ezP.GLOBAL_OR_NONLOCAL_ID  = 'GLOBAL_OR_NONLOCAL'
+ezP.ID.GLOBAL_OR_NONLOCAL  = 'GLOBAL_OR_NONLOCAL'
 
 /**
  * Populate the context menu for the given block.
@@ -215,7 +215,7 @@ ezP.DelegateSvg.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function 
     )
     var menuItem = new ezP.MenuItem(
       content
-      ,[ezP.GLOBAL_OR_NONLOCAL_ID, type]
+      ,[ezP.ID.GLOBAL_OR_NONLOCAL, type]
     )
     menuItem.setEnabled(type != block.type)
     menu.addChild(menuItem, true)
@@ -236,7 +236,7 @@ ezP.DelegateSvg.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function 
 ezP.DelegateSvg.Stmt.global_stmt.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
   var model = event.target.getModel()
   var action = model[0]
-  if (action == ezP.GLOBAL_OR_NONLOCAL_ID) {
+  if (action == ezP.ID.GLOBAL_OR_NONLOCAL) {
     var type = model[1]
     block.type = type
     this.setupType(block)

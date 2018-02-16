@@ -112,6 +112,14 @@ ezP.DelegateSvg.Expr.or_test_concrete.workspaceBlocks = [
   ezP.T3.Expr.or_test_concrete,
 ]
 
+ezP.DelegateSvg.Expr.augassign_numeric.workspaceBlocks = 
+ezP.DelegateSvg.Expr.augassign_bitwise.workspaceBlocks = [
+  ezP.T3.Expr.identifier,
+  ezP.T3.Expr.augassign_numeric,
+  ezP.T3.Expr.augassign_bitwise,
+  ezP.T3.Expr.aug_assigned,
+]
+
 // in progress
 
 ezP.DelegateSvg.Expr.power_concrete.workspaceBlocks = ezP.Do.arraysMerged([

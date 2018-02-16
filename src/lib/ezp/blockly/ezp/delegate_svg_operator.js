@@ -30,6 +30,7 @@ ezP.DelegateSvg.Operator = function (prototypeName) {
     last: {
       css_class: 'ezp-code',
       key: ezP.Const.Input.RHS,
+      hole_value: 'name',
     },
   }
 }
@@ -56,13 +57,14 @@ ezP.DelegateSvg.Operator.prototype.toDom = function (block, element) {
  * @override
  */
 ezP.DelegateSvg.Operator.prototype.fromDom = function (block, element) {
+  ezP.DelegateSvg.Operator.superClass_.fromDom.call(this, block, element)
   var op = element.getAttribute('operator')
   if (this.operators && this.operators.indexOf(op) >= 0) {
     this.inputs.last.fieldLabel.setValue(op)
   }
 }
 
-ezP.USE_OPERATOR_ID  = 'USE_OPERATOR'
+ezP.ID.USE_OPERATOR  = 'USE_OPERATOR'
 
 /**
  * Get the content for the menu item.
@@ -85,11 +87,15 @@ ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
     var ezp = this
     var F = function(op) {
       var menuItem = new ezP.MenuItem(
-        ezp.getContent(block, op)
-        ,{action: ezP.USE_OPERATOR_ID, operator: op}
+        ezp.getContent(block, op),
+        {
+          action: ezP.ID.USE_OPERATOR,
+          operator: op
+        }
       )
       menuItem.setEnabled(value != op)
       mgr.addChild(menuItem, true)
+      goog.dom.classlist.add(menuItem.getElement().firstChild, 'ezp-code')
     }
     for (var i = 0; i<this.operators.length; i++) {
       F(this.operators[i])
@@ -97,7 +103,7 @@ ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
     ezP.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this, block, mgr)
     return true
   }
-  return false
+  return ezP.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 /**
@@ -111,7 +117,7 @@ ezP.DelegateSvg.Operator.prototype.handleMenuItemActionFirst = function (block, 
   var model = event.target.getModel()
   var action = model.action
   var op = model.operator
-  if (action == ezP.USE_OPERATOR_ID) {
+  if (action == ezP.ID.USE_OPERATOR) {
     if (!this.operators || this.operators.indexOf(op) < 0) {
       return true
     }
@@ -172,6 +178,7 @@ ezP.DelegateSvg.Binary = function (prototypeName) {
   ezP.DelegateSvg.Binary.superClass_.constructor.call(this, prototypeName)
   this.inputData_.first = {
     key: ezP.Const.Input.LHS,
+    hole_value: 'name',
   }
 }
 goog.inherits(ezP.DelegateSvg.Binary, ezP.DelegateSvg.Operator)
@@ -390,105 +397,221 @@ ezP.DelegateSvg.Expr.and_test_concrete = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.and_test_concrete, ezP.DelegateSvg.Binary)
 ezP.DelegateSvg.Manager.register('and_test_concrete')
 
+
 /**
- * Class for a DelegateSvg, augmented_assignment_expression block.
+ * Class for a DelegateSvg, augassign_... block.
  * Multiple ops.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.augmented_assignment_expression = function (prototypeName) {
-  ezP.DelegateSvg.Expr.augmented_assignment_expression.superClass_.constructor.call(this, prototypeName)
-  this.operator = '+='
-  this.operators = ['+=','-=','*=','@=','/=','//=','%=','**='
- ,'>>=','<<=','&=','^=','|=']
-  this.operatorData = {
-    '+=': {
-      label:'... += ...',
-      output: ezP.T3.Expr.augmented_assignment_expression,
-      rhs: ezP.T3.Expr.Check.aug_assigned,
-      lhs: ezP.T3.Expr.Check.augtarget
-    },
-    '-=': {
-      label:'... -= ...',
-      output: ezP.T3.Expr.augmented_assignment_expression,
-      rhs: ezP.T3.Expr.Check.aug_assigned,
-      lhs: ezP.T3.Expr.Check.augtarget
-    },
-    '*=': {
-      label:'... *= ...',
-      output: ezP.T3.Expr.augmented_assignment_expression,
-      rhs: ezP.T3.Expr.Check.aug_assigned,
-      lhs: ezP.T3.Expr.Check.augtarget
-    },
-    '@=': {
-      label:'...   = ...',
-      output: ezP.T3.Expr.augmented_assignment_expression,
-      rhs: ezP.T3.Expr.Check.aug_assigned,
-      lhs: ezP.T3.Expr.Check.augtarget
-    },
-    '/=': {
-      label:'... /= ...',
-      output: ezP.T3.Expr.augmented_assignment_expression,
-      rhs: ezP.T3.Expr.Check.aug_assigned,
-      lhs: ezP.T3.Expr.Check.augtarget
-    },
-    '//=': {
-      label:'... //= ...',
-      output: ezP.T3.Expr.augmented_assignment_expression,
-      rhs: ezP.T3.Expr.Check.aug_assigned,
-      lhs: ezP.T3.Expr.Check.augtarget
-    },
-    '%=': {
-      label:'... %= ...',
-      output: ezP.T3.Expr.augmented_assignment_expression,
-      rhs: ezP.T3.Expr.Check.aug_assigned,
-      lhs: ezP.T3.Expr.Check.augtarget
-    },
-    '**=': {
-      label:'... **= ...',
-      output: ezP.T3.Expr.augmented_assignment_expression,
-      rhs: ezP.T3.Expr.Check.aug_assigned,
-      lhs: ezP.T3.Expr.Check.augtarget
-    },
-    '>>=': {
-      label:'... >>= ...',
-      output: ezP.T3.Expr.augmented_assignment_expression,
-      rhs: ezP.T3.Expr.Check.aug_assigned,
-      lhs: ezP.T3.Expr.Check.augtarget
-    },
-    '<<=': {
-      label:'... <<= ...',
-      output: ezP.T3.Expr.augmented_assignment_expression,
-      rhs: ezP.T3.Expr.Check.aug_assigned,
-      lhs: ezP.T3.Expr.Check.augtarget
-    },
-    '&=': {
-      label:'... &= ...',
-      output: ezP.T3.Expr.augmented_assignment_expression,
-      rhs: ezP.T3.Expr.Check.aug_assigned,
-      lhs: ezP.T3.Expr.Check.augtarget
-    },
-    '^=': {
-      label:'... ^= ...',
-      output: ezP.T3.Expr.augmented_assignment_expression,
-      rhs: ezP.T3.Expr.Check.aug_assigned,
-      lhs: ezP.T3.Expr.Check.augtarget
-    },
-    '|=': {
-      label:'... |= ...',
-      output: ezP.T3.Expr.augmented_assignment_expression,
-      rhs: ezP.T3.Expr.Check.aug_assigned,
-      lhs: ezP.T3.Expr.Check.augtarget
-    },
-  }
-  this.outputCheck = ezP.T3.Expr.augmented_assignment_expression
+ezP.DelegateSvg.AugAssign = function (prototypeName) {
+  ezP.DelegateSvg.AugAssign.superClass_.constructor.call(this, prototypeName)
+  this.inputData_.first.check = ezP.T3.Expr.Check.augtarget
+  this.inputData_.last.wrap = ezP.T3.Expr.aug_assigned
 }
 
-goog.inherits(ezP.DelegateSvg.Expr.augmented_assignment_expression, ezP.DelegateSvg.Binary)
-ezP.DelegateSvg.Manager.register('augmented_assignment_expression')
+goog.inherits(ezP.DelegateSvg.AugAssign, ezP.DelegateSvg.Binary)
 
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.AugAssign.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var yorn
+  var target = this.inputs.last.input.connection.targetBlock()
+  if (target) {
+    var D = ezP.DelegateSvg.Manager.getInputData(target.type)
+    if (yorn = mgr.populate_wrap_alternate(target, D.last.key)) {
+      mgr.shouldSeparate()
+    }
+  }
+  return ezP.DelegateSvg.AugAssign.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
+}
+
+/**
+ * Handle the selection of an item in the context dropdown menu.
+ * @param {!Blockly.Block} block, owner of the delegate.
+ * @param {!ezP.MenuManager} mgr mgr.menu The Menu clicked.
+ * @param {!goog....} event The event containing the target
+ * the MenuItem selected within menu.
+ */
+ezP.DelegateSvg.AugAssign.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
+  return mgr.handleAction_wrap_alternate(block, event) || ezP.DelegateSvg.AugAssign.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
+}
+
+/**
+ * Class for a DelegateSvg, aug_assigned.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.aug_assigned = function (prototypeName) {
+  ezP.DelegateSvg.Expr.aug_assigned.superClass_.constructor.call(this, prototypeName)
+  this.inputData_.last = {
+    key: ezP.Const.Input.WRAP,
+    check: ezP.T3.Expr.Check.aug_assigned,
+    wrap: ezP.T3.Expr.non_void_expression_list,
+  }
+  this.menuData = [
+    {
+      content: function(block) {
+        var parent = block.getParent()
+        var x = '... <<='
+        if (parent) {
+          x = '... ' + parent.ezp.inputs.last.fieldLabel.getValue()
+        }
+        return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+          goog.dom.createTextNode(x),
+          goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
+            goog.dom.createTextNode(' ...'),
+          )
+        )
+      },
+      type: ezP.T3.Expr.non_void_expression_list
+    },
+    {
+      content: function(block) {
+        var parent = block.getParent()
+        var x = '... <<='
+        if (parent) {
+          x = '... ' + parent.ezp.inputs.last.fieldLabel.getValue()
+        }
+        return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+          goog.dom.createTextNode(x),
+          goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
+            goog.dom.createTextNode(' yield'),
+          ),
+          goog.dom.createTextNode(' ...'),
+        )
+      },
+      type: ezP.T3.Expr.yield_expression_list,
+    },
+    {
+      content: function(block) {
+        var parent = block.getParent()
+        var x = '... <<='
+        if (parent) {
+          x = '... ' + parent.ezp.inputs.last.fieldLabel.getValue()
+        }
+        return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+          goog.dom.createTextNode(x),
+          goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
+            goog.dom.createTextNode(' yield from'),
+          ),
+          goog.dom.createTextNode(' ...'),
+        )
+      },
+      type: ezP.T3.Expr.yield_from_expression,
+    },
+  ]
+  this.outputCheck = ezP.T3.Expr.aug_assigned
+}
+goog.inherits(ezP.DelegateSvg.Expr.aug_assigned, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('aug_assigned')
+
+/**
+ * When the block is just a wrapper, returns the wrapped target.
+ * @param {!Blockly.Block} block owning the delegate.
+ */
+ezP.DelegateSvg.Expr.aug_assigned.prototype.getWrappedTargetBlock = function(block) {
+  return block
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Expr.aug_assigned.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  if (mgr.populate_wrap_alternate(block, this.inputData.last.key)) {
+    mgr.shouldSeparate()
+    return true
+  }
+  return false
+}
+
+/**
+ * Handle the selection of an item in the context dropdown menu.
+ * @param {!Blockly.Block} block, owner of the delegate.
+ * @param {!ezP.MenuManager} mgr mgr.menu The Menu clicked.
+ * @param {!goog....} event The event containing the target
+ * the MenuItem selected within menu.
+ */
+ezP.DelegateSvg.Expr.aug_assigned.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
+  return mgr.handleAction_wrap_alternate(block, event)
+  || ezP.DelegateSvg.Expr.aug_assigned.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Class for a DelegateSvg, augassign_numeric block.
+ * Multiple ops.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.augassign_numeric = function (prototypeName) {
+  ezP.DelegateSvg.Expr.augassign_numeric.superClass_.constructor.call(this, prototypeName)
+  this.operators = ['+=','-=','*=','/=','//=','%=','**=','@=']
+  this.inputData_.last.label = '+='
+  this.outputCheck = ezP.T3.Expr.augassign_numeric
+}
+
+goog.inherits(ezP.DelegateSvg.Expr.augassign_numeric, ezP.DelegateSvg.AugAssign)
+ezP.DelegateSvg.Manager.register('augassign_numeric')
+
+/**
+ * Class for a DelegateSvg, augassign_bitwise block.
+ * Multiple ops.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.augassign_bitwise = function (prototypeName) {
+  ezP.DelegateSvg.Expr.augassign_bitwise.superClass_.constructor.call(this, prototypeName)
+  this.operators = [">>=", "<<=", "&=", "^=", "|="]
+  this.inputData_.last.label = '<<='
+  this.outputCheck = ezP.T3.Expr.augassign_bitwise
+}
+
+goog.inherits(ezP.DelegateSvg.Expr.augassign_bitwise, ezP.DelegateSvg.AugAssign)
+ezP.DelegateSvg.Manager.register('augassign_bitwise')
+
+///////// power ////////
 /**
  * Class for a DelegateSvg, power_concrete block.
  * power_concrete ::= await_or_primary "**" u_expr 
@@ -502,10 +625,12 @@ ezP.DelegateSvg.Expr.power_concrete = function (prototypeName) {
   this.outputCheck = ezP.T3.power_concrete
   this.inputData_ = {
     first: {
+      key: ezP.Const.Input.ARG,
       check: ezP.T3.Expr.Check.await_or_primary,
       hole_value: 'name',
     },
     last: {
+      key: ezP.Const.Input.POWER,
       label: '**',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.u_expr,
