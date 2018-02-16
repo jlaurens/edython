@@ -75,10 +75,9 @@ ezP.DelegateSvg.List.prototype.renderDrawListInput_ = function (io) {
       io.cursorX += bBox.width
       target.render()
     }
-  } else if (ezp.s7r_) {
+  } else if (ezp.s7r_ || c8n.ezp.optional_) {
     var pw = this.carretPathDefWidth_(io.cursorX)
     var w = pw.width
-    c8n.setOffsetInBlock(io.cursorX, 0)
     io.steps.push(pw.d)
     io.cursorX += pw.width
   } else {
@@ -382,7 +381,7 @@ ezP.DelegateSvg.Manager.register('slice_list')
  */
 ezP.DelegateSvg.Expr.argument_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.argument_list.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.Consolidator.List.Argument()
+  this.consolidator = new ezP.Consolidator.Arguments()
   this.outputCheck = ezP.T3.Expr.argument_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.argument_list, ezP.DelegateSvg.List)

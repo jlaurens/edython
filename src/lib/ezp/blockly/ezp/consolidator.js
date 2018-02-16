@@ -50,7 +50,7 @@ ezP.Consolidator.List = function(require, canBeVoid, defaultSep, plugged) {
   goog.asserts.assert(require, 'Lists must type check their items.')
   this.require = require
   if (canBeVoid !== undefined) {
-    this.canBeVoid = canBeVoid
+    this.can_be_void = canBeVoid
   }
   if (defaultSep !== undefined) {
     this.defaultSep = defaultSep
@@ -59,7 +59,7 @@ ezP.Consolidator.List = function(require, canBeVoid, defaultSep, plugged) {
 }
 
 ezP.Consolidator.List.prototype.require = undefined
-ezP.Consolidator.List.prototype.canBeVoid = true
+ezP.Consolidator.List.prototype.can_be_void = false
 ezP.Consolidator.List.prototype.defaultSep = ','
 ezP.Consolidator.List.prototype.plugged = undefined
 
@@ -100,15 +100,16 @@ ezP.Consolidator.List.prototype.getCheck = function (io) {
  * Finalize the current input as a placeholder.
  * @param {!Object} io parameter.
  */
-ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io) {
+ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io, optional = false) {
   io.ezp.n = io.n
   io.ezp.sep = io.sep
   io.input.name = 'ITEM_' + io.n++
   io.ezp.s7r_ = io.c8n.ezp.s7r_ = false
   var check = this.getCheck(io)
   io.input.setCheck(check)
+  io.c8n.ezp.optional_ = optional
   io.c8n.ezp.plugged_ = this.plugged
-  if (!io.connected && !this.canBeVoid && !io.c8n.isConnected()) {
+  if (!io.connected && !this.can_be_void && !io.c8n.isConnected()) {
     io.c8n.ezp.hole_data = ezP.HoleFiller.getData(check, io.block.ezp.hole_value)
     io.block.ezp.can_fill_holes = io.block.ezp.can_fill_holes || !! io.c8n.ezp.hole_data
   }
@@ -222,11 +223,7 @@ ezP.Consolidator.List.prototype.cleanup = function(io) {
     io.i = io.placeholder
     this.setupIO(io)
     this.disposeFromStartToI(io)
-    if (this.canBeVoid) {
-      this.doFinalizeSeparator(io, true)
-    } else {
-      this.doFinalizePlaceholder(io)          
-    }
+    this.doFinalizePlaceholder(io, this.can_be_void)
     this.nextInput(io)
     this.disposeFromIToEnd(io)
   } else {
@@ -290,8 +287,17 @@ ezP.Consolidator.List.prototype.one_step = function(io) {
   } else if (io.placeholder === undefined) {
     // If we delete inputs that were connected, things may go wrong
     // I do not remember what exactly, may be related to undo management
-    // This input is not connected, it will become a separator
+    // This input is not connected, it will eventually become a separator
     // remove separators before
+    // the problem:
+    // 1) a list that can be void
+    // 2) only one connected block in the list
+    // 3) drag a new block on the old one
+    // 4) the new block seems connected but is partially bumped away
+    // it is located far from the list, but its svg is still embedded
+    // in the list's one. Despite the new block is far from the list,
+    // moving it around really disconnects it playing the proper sound.
+
     while (io.i > io.start) {
       if (!io.list[io.i - 1].ezpData.s7r_) {
         break
@@ -386,9 +392,13 @@ ezP.Consolidator.List.prototype.consolidate = function(block) {
  * there is no room for any other element.
  * require_all is the union of single and require.
  * Main entry: consolidate
- * @param {!String} require, the required type for many items
- * @param {!String} single, the required type for a single element....
- * @param {!String} require_all, the required type for a single element....
+ * In the list there might be either as many blocks of type require
+ * or only one block of type single.
+ * Both given types must be orthogonal.
+ * There should not exist blocks that provide both types.
+ * @param {!String} require the required type for many items
+ * @param {!String} single the required type for a single element....
+ * @param {!String} require_all the required type for a single element....
  */
 ezP.Consolidator.List.Singled = function(require, single, require_all, canBeVoid = true, defaultSep = ',') {
   ezP.Consolidator.List.Singled.superClass_.constructor.call(this, require, canBeVoid, defaultSep)
@@ -396,9 +406,6 @@ ezP.Consolidator.List.Singled = function(require, single, require_all, canBeVoid
   this.require_all = require_all
 }
 goog.inherits(ezP.Consolidator.List.Singled, ezP.Consolidator.List)
-
-ezP.Consolidator.List.Singled.prototype.single = undefined
-ezP.Consolidator.List.Singled.prototype.require_all = undefined
 
 /**
  * Returns the required types for the current input.
@@ -409,10 +416,14 @@ ezP.Consolidator.List.Singled.prototype.require_all = undefined
  */
 ezP.Consolidator.List.Singled.prototype.getCheck = function (io) {
   if (io.single || io.end < io.start + 2) {
+    // a single block or no block at all
     return this.require_all
   } else if (io.end == io.start + 3 && io.i == io.start + 1) {
+    // there is only one item in the list
+    // and it can be replaced by any kind of block
     return this.require_all
   } else {
+    // blocks of type require are already there
     return this.require
   }
 }
@@ -423,7 +434,7 @@ ezP.Consolidator.List.Singled.prototype.getCheck = function (io) {
 ezP.Consolidator.List.Singled.prototype.one_step = function(io) {
   ezP.Consolidator.List.Singled.superClass_.one_step.call(this, io)
   var target = io.c8n.targetConnection
-  if (target && target.check_.indexOf(this.single) != -1) {
+  if (target && target.check_.indexOf(this.single) >= 0) {
     io.single = io.i
   }
 }
@@ -440,7 +451,7 @@ ezP.Consolidator.List.Singled.prototype.cleanup = function(io) {
     this.doFinalizePlaceholder(io)
     this.disposeFromStartToI(io)
     this.nextInput(io)
-    // this.disposeFromIToEnd(io)
+    this.disposeFromIToEnd(io)
   } else {
     ezP.Consolidator.List.Singled.superClass_.cleanup.call(this, io)
   }
@@ -474,18 +485,18 @@ ezP.Consolidator.List.Singled.prototype.cleanup = function(io) {
  * Main entry: consolidate
  * @param {!String} single, the required type for a single element....
  */
-ezP.Consolidator.List.Argument = function() {
-  ezP.Consolidator.List.Argument.superClass_.constructor.call(this, ezP.T3.Expr.Check.primary, true, ',')
+ezP.Consolidator.Arguments = function() {
+  ezP.Consolidator.Arguments.superClass_.constructor.call(this, ezP.T3.Expr.Check.primary, true, ',')
 }
-goog.inherits(ezP.Consolidator.List.Argument, ezP.Consolidator.List)
+goog.inherits(ezP.Consolidator.Arguments, ezP.Consolidator.List)
 
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
  * @param {Object} io, parameters....
  */
-ezP.Consolidator.List.Argument.prototype.prepareToWalk = function(io) {
-  ezP.Consolidator.List.Argument.superClass_.prepareToWalk.call(this, io)
+ezP.Consolidator.Arguments.prototype.prepareToWalk = function(io) {
+  ezP.Consolidator.Arguments.superClass_.prepareToWalk.call(this, io)
   io.first_connected = undefined
   io.last_comprehension = undefined
   io.first_keyword_or_star_star = undefined
@@ -495,7 +506,7 @@ ezP.Consolidator.List.Argument.prototype.prepareToWalk = function(io) {
   io.errors = 0
 }
 
-ezP.Consolidator.List.Argument.Type = {
+ezP.Consolidator.Arguments.Type = {
   unconnected: 'unconnected',
   comprehension: 'comprehension',
   expression: 'expression',
@@ -508,35 +519,35 @@ ezP.Consolidator.List.Argument.Type = {
  * Whether the input corresponds to a comprehension argument.
  * @param {Object} io, parameters....
  */
-ezP.Consolidator.List.Argument.prototype.getCheckType = function(io) {
+ezP.Consolidator.Arguments.prototype.getCheckType = function(io) {
   var target = io.c8n.targetBlock()
   if (!target) {
-    return ezP.Consolidator.List.Argument.Type.unconnected
+    return ezP.Consolidator.Arguments.Type.unconnected
   }
   var check = target.outputConnection.check_
   if (goog.array.contains(check,ezP.T3.Expr.comprehension)) {
-    return ezP.Consolidator.List.Argument.Type.comprehension
+    return ezP.Consolidator.Arguments.Type.comprehension
   } else if (goog.array.contains(check,ezP.T3.Expr.expression_star)) {
-    return ezP.Consolidator.List.Argument.Type.expression_star
+    return ezP.Consolidator.Arguments.Type.expression_star
   } else if (goog.array.contains(check,ezP.T3.Expr.keyword_item)) {
-    return ezP.Consolidator.List.Argument.Type.keyword_item
+    return ezP.Consolidator.Arguments.Type.keyword_item
   } else if (goog.array.contains(check,ezP.T3.Expr.expression_star_star)) {
-    return ezP.Consolidator.List.Argument.Type.expression_star_star
+    return ezP.Consolidator.Arguments.Type.expression_star_star
   } else {
-    return ezP.Consolidator.List.Argument.Type.expression
+    return ezP.Consolidator.Arguments.Type.expression
   }
 }
 
 /**
  * Call the inherited method, then records the various first_... indices
  */
-ezP.Consolidator.List.Argument.prototype.one_step = function(io) {
+ezP.Consolidator.Arguments.prototype.one_step = function(io) {
   // inherit
-  ezP.Consolidator.List.Argument.superClass_.one_step.call(this, io)
+  ezP.Consolidator.Arguments.superClass_.one_step.call(this, io)
   // move input around if necessary
   io.ezp.argument_type_ = this.getCheckType(io)
   io.ezp.error_ = false
-  if (io.ezp.argument_type_ == ezP.Consolidator.List.Argument.Type.unconnected) {
+  if (io.ezp.argument_type_ == ezP.Consolidator.Arguments.Type.unconnected) {
     return
   }
   if (!this.first_connected) {
@@ -544,7 +555,7 @@ ezP.Consolidator.List.Argument.prototype.one_step = function(io) {
   }
   var i = undefined
   switch(io.ezp.argument_type_) {
-    case ezP.Consolidator.List.Argument.Type.comprehension:
+    case ezP.Consolidator.Arguments.Type.comprehension:
       if (io.last_comprehension) {
         // will insert just after io.last_comprehension
         i = goog.array.indexOf(io.list, io.last_comprehension) + 1
@@ -563,7 +574,7 @@ ezP.Consolidator.List.Argument.prototype.one_step = function(io) {
         io.last_comprehension = io.input
       }
       break
-    case ezP.Consolidator.List.Argument.Type.expression:
+    case ezP.Consolidator.Arguments.Type.expression:
       if (io.first_keyword_or_star_star) {
         // there are at least 2 connected inputs
         // this one should not be there
@@ -584,7 +595,7 @@ ezP.Consolidator.List.Argument.prototype.one_step = function(io) {
         io.last_expression = io.last_positional = io.input
       }
       break
-      case ezP.Consolidator.List.Argument.Type.expression_star:
+      case ezP.Consolidator.Arguments.Type.expression_star:
       if (io.first_star_star) {
         io.last_positional = io.first_star_star
         // there are at least 2 connected inputs
@@ -602,12 +613,12 @@ ezP.Consolidator.List.Argument.prototype.one_step = function(io) {
         io.last_positional = io.input
       }
     break
-    case ezP.Consolidator.List.Argument.Type.keyword_item:
+    case ezP.Consolidator.Arguments.Type.keyword_item:
       if (!io.first_keyword_or_star_star) {
         io.first_keyword_or_star_star = io.input
       }
     break
-    case ezP.Consolidator.List.Argument.Type.expression_star_star: 
+    case ezP.Consolidator.Arguments.Type.expression_star_star: 
       if (!io.first_keyword_or_star_star) {
         io.first_keyword_or_star_star = io.input
         io.first_star_star = io.input
@@ -621,8 +632,8 @@ ezP.Consolidator.List.Argument.prototype.one_step = function(io) {
  * Once the whole list has been managed,
  * there might be unwanted things.
  */
-ezP.Consolidator.List.Argument.prototype.cleanup = function(io) {
-  ezP.Consolidator.List.Argument.superClass_.cleanup.call(this, io)
+ezP.Consolidator.Arguments.prototype.cleanup = function(io) {
+  ezP.Consolidator.Arguments.superClass_.cleanup.call(this, io)
   if (io.last_comprehension) {
     // there must be a unique input
     if (io.connected == 1) {
@@ -650,7 +661,7 @@ ezP.Consolidator.List.Argument.prototype.cleanup = function(io) {
  * Returns the required types for the current input.
  * @param {!Object} io parameter.
  */
-ezP.Consolidator.List.Argument.prototype.getCheck = function (io) {
+ezP.Consolidator.Arguments.prototype.getCheck = function (io) {
   // is it a situation for comprehension ?
   // only one input or a replacement of the unique connected block
   if (io.connected <= 1 && (io.start + 1 == io.end || io.i == io.start+1)) {

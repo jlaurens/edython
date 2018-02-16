@@ -182,6 +182,7 @@ Blockly.RenderedConnection.prototype.bumpAwayFrom_ = function (staticConnection)
     // When reversing a bump due to an uneditable block, bump up.
     dy = -dy
   }
+// Added by JL, I don't remember why...
   if (staticConnection.isConnected()) {
     dx += staticConnection.targetBlock().width
   }

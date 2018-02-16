@@ -116,7 +116,7 @@ ezP.DelegateSvg.prototype.fieldLabelEnd = undefined
 
 ezP.DelegateSvg.prototype.inputDataKeys = ['first', 'middle', 'last']
 ezP.DelegateSvg.prototype.inputData = undefined
-ezP.DelegateSvg.prototype.statementData_ = undefined
+ezP.DelegateSvg.prototype.statementData = undefined
 
 /**
  * Create and initialize the first, middle and last inputs if required.

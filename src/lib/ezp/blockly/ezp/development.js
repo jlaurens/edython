@@ -132,6 +132,18 @@ ezP.DelegateSvg.Expr.augassign_bitwise.workspaceBlocks = [
   ezP.T3.Expr.aug_assigned,
 ]
 
+ezP.DelegateSvg.Expr.optional_expression_list.workspaceBlocks = [
+  ezP.T3.Expr.identifier,
+  ezP.T3.Expr.identifier,
+  ezP.T3.Expr.optional_expression_list,
+]
+
+ezP.DelegateSvg.Expr.key_datum_list_comprehensive.workspaceBlocks = [
+  ezP.T3.Expr.key_datum_concrete,
+  ezP.T3.Expr.dict_comprehension,
+  ezP.T3.Expr.key_datum_list_comprehensive,
+]
+
 // in progress
 
 ezP.DelegateSvg.Expr.power_concrete.workspaceBlocks = ezP.Do.arraysMerged([
@@ -146,6 +158,7 @@ ezP.DelegateSvg.Expr.starred_item_list.workspaceBlocks = [
   ezP.T3.Expr.starred_item_list,
 ] .concat(ezP.T3.Expr.Check.starred_item)
 
+
 ezP.DelegateSvg.Expr.display_slice_list.workspaceBlocks =
 ezP.DelegateSvg.Expr.generator_expression.workspaceBlocks =
 ezP.DelegateSvg.Expr.dict_display.workspaceBlocks =
@@ -158,7 +171,7 @@ ezP.Do.arraysMerged(
   ezP.T3.Expr.parenth_form,
   ezP.T3.Expr.non_void_starred_item_list_comprehensive,
   ezP.T3.Expr.set_display,
-  ezP.T3.Expr.key_datum,
+  ezP.T3.Expr.key_datum_concrete,
   ezP.T3.Expr.key_datum_list_comprehensive,
   ezP.T3.Expr.dict_display,
 ],
