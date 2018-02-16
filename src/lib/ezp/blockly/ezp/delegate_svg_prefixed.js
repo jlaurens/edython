@@ -66,11 +66,10 @@ ezP.DelegateSvg.Manager.register('or_expr_star_star')
 */
 ezP.DelegateSvg.Expr.await_expr = function (prototypeName) {
   ezP.DelegateSvg.Expr.await_expr.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
-    first: {
-      label: 'await',
-      check: ezP.T3.Expr.Check.primary
-    }
+  this.inputData_.first = {
+    key: ezP.Const.Input.EXPR,
+    label: 'await',
+    check: ezP.T3.Expr.Check.primary
   }
   this.outputCheck = ezP.T3.Expr.await_expr
 }

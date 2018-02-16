@@ -55,7 +55,7 @@ ezP.DelegateSvg.Stmt.decorator_part = function (prototypeName) {
     wrap: ezP.T3.Expr.dotted_name,
   }
   this.inputData_.last = {
-    key: ezP.Const.Input.ARGS,
+    key: ezP.Const.Input.LIST,
     wrap: ezP.T3.Expr.parenth_argument_list,
     optional: true,
   }

@@ -56,7 +56,7 @@ ezP.Const.Input = {
   PRIMARY: 'PRIMARY',
   ATTRIBUTE: 'ATTRIBUTE',
   SLICE: 'SLICE',
-  ARGS: 'ARGS',
+  ARG: 'ARG',
   FIRST: 'FIRST',
   SECOND: 'SECOND',
   LIST: 'LIST',

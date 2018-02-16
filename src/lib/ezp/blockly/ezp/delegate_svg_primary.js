@@ -114,7 +114,7 @@ ezP.DelegateSvg.Manager.register('subscription')
 ezP.DelegateSvg.Expr.call_expr =  function (prototypeName) {
   ezP.DelegateSvg.Expr.call_expr.superClass_.constructor.call(this, prototypeName)
   this.inputData_.last = {
-    key: ezP.Const.Input.ARGS,
+    key: ezP.Const.Input.LIST,
     label: '(',
     wrap: ezP.T3.Expr.argument_list,
   }

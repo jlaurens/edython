@@ -339,9 +339,11 @@ ezP.DelegateSvg.Expr.object_comparison = function (prototypeName) {
   ezP.DelegateSvg.Expr.object_comparison.superClass_.constructor.call(this, prototypeName)
   this.operators = ['is', 'is not', 'in', 'not in']
   this.inputData_.first.check = ezP.T3.Expr.Check.comparison
-  this.inputData_.last.label = 'in'
-  this.inputData_.last.css_class = 'ezp-code-reserved'
-  this.inputData_.last.check = ezP.T3.Expr.Check.comparison
+  goog.mixin(this.inputData_.last, {
+    label: 'in',
+    css_class: 'ezp-code-reserved',
+    check: ezP.T3.Expr.Check.comparison,
+  })
   this.outputCheck = ezP.T3.Expr.object_comparison
 }
 goog.inherits(ezP.DelegateSvg.Expr.object_comparison, ezP.DelegateSvg.Binary)

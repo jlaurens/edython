@@ -96,11 +96,9 @@ ezP.DelegateSvg.Manager.register('yield_atom')
  */
 ezP.DelegateSvg.Expr.yield_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_expression.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
-    last: {
-      key: ezP.Const.Input.LIST,
-      wrap: ezP.T3.Expr.yield_expression_list,
-    }
+  this.inputData_.last = {
+    key: ezP.Const.Input.LIST,
+    wrap: ezP.T3.Expr.yield_expression_list,
   }
   this.outputCheck = ezP.T3.Expr.yield_expression
   this.menuData = [
@@ -126,10 +124,7 @@ ezP.DelegateSvg.Expr.yield_expression = function (prototypeName) {
 
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_expression, ezP.DelegateSvg.Expr)
-
 ezP.DelegateSvg.Manager.register('yield_expression')
-
-ezP.ID.USE_YIELD_WRAP_TYPE = 'USE_YIELD_WRAP_TYPE'
 
 /**
  * Populate the context menu for the given block.
@@ -137,27 +132,13 @@ ezP.ID.USE_YIELD_WRAP_TYPE = 'USE_YIELD_WRAP_TYPE'
  * @param {!ezP.MenuManager} mgr, mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuMiddle_ = function (block, mgr) {
-  var menu = mgr.menu
-  var target = this.getWrappedTargetBlock(block)
-  var type = target? target.type: undefined
-  var ezp = this
-  var renderer = ezP.MenuItemCodeRenderer.getInstance()
-  var F = function(data) {
-    var menuItem = new ezP.MenuItem(
-      data.label
-      ,[ezP.ID.USE_YIELD_WRAP_TYPE, data.type],
-      null,
-      renderer
-    )
-    menuItem.setEnabled(data.type != type)
-    menu.addChild(menuItem, true)
+ezP.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var yorn
+  var D = ezP.DelegateSvg.Manager.getInputData(block.type)
+  if (yorn = mgr.populate_wrap_alternate(target, D.last.key)) {
+    mgr.shouldSeparate()
   }
-  for (var i = 0; i<this.contextMenuData.length; i++) {
-    F(this.contextMenuData[i])
-  }
-  ezP.DelegateSvg.Expr.yield_expression.superClass_.populateContextMenuMiddle_.call(this,block, mgr)
-  return true
+  return ezP.DelegateSvg.Expr.yield_expression.superClass_.populateContextMenuFirst_.call(this,block, mgr) || yorn
 }
 
 /**
@@ -193,18 +174,8 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.changeYieldWrapType = function (
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Expr.yield_expression.prototype.handleMenuItemActionMiddle = function (block, mgr, event) {
-  var model = event.target.getModel()
-  var action = model[0]
-  var new_wrap_type = model[1]
-  if (action === ezP.ID.USE_YIELD_WRAP_TYPE) {
-    setTimeout(function() {
-      block.ezp.changeYieldWrapType(block, new_wrap_type)
-      block.render()
-    }, 100)
-    return true
-  }
-  return ezP.DelegateSvg.Expr.yield_expression.superClass_.handleMenuItemActionMiddle.call(this, block, mgr, event)
+ezP.DelegateSvg.Expr.yield_expression.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
+  return mgr.handleAction_wrap_alternate(block, event) || ezP.DelegateSvg.Expr.yield_expression.superClass_.handleMenuItemActionMiddle.call(this, block, mgr, event)
 }
 
 /**
@@ -216,11 +187,9 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.handleMenuItemActionMiddle = fun
  */
 ezP.DelegateSvg.Stmt.yield_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.yield_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
-    last: {
-      key: ezP.Const.Input.EXPR,
-      wrap: ezP.T3.Expr.yield_expression,
-    }
+  this.inputData_.last = {
+    key: ezP.Const.Input.EXPR,
+    wrap: ezP.T3.Expr.yield_expression,
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.yield_stmt, ezP.DelegateSvg.Stmt)
