@@ -75,13 +75,12 @@ ezP.DelegateSvg.List.prototype.renderDrawListInput_ = function (io) {
       io.cursorX += bBox.width
       target.render()
     }
-  } else if (ezp.s7r_ || c8n.ezp.optional_) {
-    var pw = this.carretPathDefWidth_(io.cursorX)
-    var w = pw.width
-    io.steps.push(pw.d)
-    io.cursorX += pw.width
   } else {
-    pw = this.placeHolderPathDefWidth_(io.cursorX)
+    if (ezp.s7r_ || c8n.ezp.optional_) {
+      var pw = this.carretPathDefWidth_(io.cursorX)
+    } else {
+      pw = this.placeHolderPathDefWidth_(io.cursorX)
+    }
     io.steps.push(pw.d)
     io.cursorX += pw.width
   }

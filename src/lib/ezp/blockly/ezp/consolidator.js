@@ -50,7 +50,7 @@ ezP.Consolidator.List = function(require, canBeVoid, defaultSep, plugged) {
   goog.asserts.assert(require, 'Lists must type check their items.')
   this.require = require
   if (canBeVoid !== undefined) {
-    this.can_be_void = canBeVoid
+    this.canBeVoid = canBeVoid
   }
   if (defaultSep !== undefined) {
     this.defaultSep = defaultSep
@@ -59,7 +59,7 @@ ezP.Consolidator.List = function(require, canBeVoid, defaultSep, plugged) {
 }
 
 ezP.Consolidator.List.prototype.require = undefined
-ezP.Consolidator.List.prototype.can_be_void = false
+ezP.Consolidator.List.prototype.canBeVoid = true
 ezP.Consolidator.List.prototype.defaultSep = ','
 ezP.Consolidator.List.prototype.plugged = undefined
 
@@ -109,7 +109,7 @@ ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io, optional =
   io.input.setCheck(check)
   io.c8n.ezp.optional_ = optional
   io.c8n.ezp.plugged_ = this.plugged
-  if (!io.connected && !this.can_be_void && !io.c8n.isConnected()) {
+  if (!io.connected && !this.canBeVoid && !io.c8n.isConnected()) {
     io.c8n.ezp.hole_data = ezP.HoleFiller.getData(check, io.block.ezp.hole_value)
     io.block.ezp.can_fill_holes = io.block.ezp.can_fill_holes || !! io.c8n.ezp.hole_data
   }
@@ -223,7 +223,7 @@ ezP.Consolidator.List.prototype.cleanup = function(io) {
     io.i = io.placeholder
     this.setupIO(io)
     this.disposeFromStartToI(io)
-    this.doFinalizePlaceholder(io, this.can_be_void)
+    this.doFinalizePlaceholder(io, this.canBeVoid)
     this.nextInput(io)
     this.disposeFromIToEnd(io)
   } else {
