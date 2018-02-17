@@ -69,10 +69,30 @@ ezP.DelegateSvg.Expr.await_expr = function (prototypeName) {
   this.inputData_.first = {
     key: ezP.Const.Input.EXPR,
     label: 'await',
+    css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.primary
   }
   this.outputData_.check = ezP.T3.Expr.await_expr
 }
 goog.inherits(ezP.DelegateSvg.Expr.await_expr, ezP.DelegateSvg.Expr)
-
 ezP.DelegateSvg.Manager.register('await_expr')
+
+/**
+* Class for a DelegateSvg, not_test_concrete.
+* For ezPython.
+* @param {?string} prototypeName Name of the language object containing
+*     type-specific functions for this block.
+* @constructor
+*/
+ezP.DelegateSvg.Expr.not_test_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.await_expr.superClass_.constructor.call(this, prototypeName)
+  this.inputData_.first = {
+    key: ezP.Const.Input.EXPR,
+    label: 'not',
+    css_class: 'ezp-code-reserved',
+    check: ezP.T3.Expr.Check.not_test
+  }
+  this.outputData_.check = ezP.T3.Expr.not_test_concrete
+}
+goog.inherits(ezP.DelegateSvg.Expr.not_test_concrete, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('not_test_concrete')
