@@ -33,7 +33,7 @@ ezP.DelegateSvg.Expr.parenth_argument_list = function (prototypeName) {
     wrap: ezP.T3.Expr.argument_list,
   }
   this.labelEnd.value = ')'
-  this.outputCheck = ezP.T3.Expr.parenth_argument_list
+  this.outputData_.check = ezP.T3.Expr.parenth_argument_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.parenth_argument_list, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('parenth_argument_list')

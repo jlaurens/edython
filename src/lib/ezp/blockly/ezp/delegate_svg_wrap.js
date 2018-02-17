@@ -25,7 +25,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Expr.assignment_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.assignment_expression.superClass_.constructor.call(this, prototypeName)
-  this.outputCheck = ezP.T3.Expr.assignment_expression
+  this.outputData_.check = ezP.T3.Expr.assignment_expression
 }
 goog.inherits(ezP.DelegateSvg.Expr.assignment_expression, ezP.DelegateSvg.Expr)
 
@@ -146,7 +146,7 @@ ezP.DelegateSvg.Manager.register('return_stmt')
 ezP.DelegateSvg.Expr.identifier_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.identifier_list.superClass_.constructor.call(this, prototypeName)
   this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.identifier_list, false, ',')
-  this.outputCheck = ezP.T3.Expr.identifier_list
+  this.outputData_.check = ezP.T3.Expr.identifier_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.identifier_list, ezP.DelegateSvg.List)
 

@@ -47,15 +47,15 @@ numberliteral ::= bytesliteral | integer | floatnumber | numberliteral_concrete
 <pre>
 comp_iter_list ::= (comp_iter) *
 </pre>
+list_display ::=  "[" [starred_list | comprehension] "]"
+set_display ::=  "{" (starred_list | comprehension) "}"
 <pre>
-non_void_starred_item_list_comprehensive ::= starred_item | comprehension
-starred_list ::= non_void_starred_item_list
-starred_list_comprehensive -> non_void_starred_item_list_comprehensive
-starred_list_comprehensive ::= non_void_starred_item_list_comprehensive
-</pre>
-<pre>
+list_display ::=  "[" starred_item_list_comprehensive "]"
+starred_item_list_comprehensive ::= starred_item | comprehension
 starred_list -> non_void_starred_item_list
 starred_list ::= non_void_starred_item_list
+set_display ::=  "{" non_void_starred_item_list_comprehensive "}"
+non_void_starred_item_list_comprehensive ::= starred_item | comprehension
 </pre>
 <pre>
 key_datum_list_comprehensive ::= key_datum | dict_comprehension
@@ -97,6 +97,11 @@ await_or_primary ::= await_expr | primary
 comparison ::=  or_expr | number_comparison | object_comparison
 number_comparison ::= comparison comp_operator comparison
 object_comparison ::= comparison comp_operator comparison
+</pre>
+<pre>
+lambda_expr ::= lambda_expression "dynamic with cond"
+lambda_expr_nocond ::= lambda_expression "dynamic without cond"
+lambda_expression ::= "lambda" [parameter_list]: (expression | expression_no_cond)
 </pre>
 These are auxiliary types used to check connections.
 <pre>

@@ -228,7 +228,7 @@ ezP.DelegateSvg.List.prototype.getItemAtIndex = function(block, i) {
 ezP.DelegateSvg.Expr.target_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.target_list.superClass_.constructor.call(this, prototypeName)
   this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.target_list, false, ',')
-  this.outputCheck = ezP.T3.Expr.target_list
+  this.outputData_.check = ezP.T3.Expr.target_list
   this.hole_value = 'name'
 }
 goog.inherits(ezP.DelegateSvg.Expr.target_list, ezP.DelegateSvg.List)
@@ -247,7 +247,7 @@ ezP.DelegateSvg.Manager.register('target_list')
 ezP.DelegateSvg.Expr.optional_expression_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.optional_expression_list.superClass_.constructor.call(this, prototypeName)
   this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.expression, true, ',')
-  this.outputCheck = ezP.T3.Expr.optional_expression_list
+  this.outputData_.check = ezP.T3.Expr.optional_expression_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.optional_expression_list, ezP.DelegateSvg.List)
 
@@ -265,7 +265,7 @@ ezP.DelegateSvg.Manager.register('optional_expression_list')
 ezP.DelegateSvg.Expr.non_void_expression_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.non_void_expression_list.superClass_.constructor.call(this, prototypeName)
   this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.expression, false, ',')
-  this.outputCheck = ezP.T3.Expr.non_void_expression_list
+  this.outputData_.check = ezP.T3.Expr.non_void_expression_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.non_void_expression_list, ezP.DelegateSvg.List)
 
@@ -283,7 +283,7 @@ ezP.DelegateSvg.Manager.register('non_void_expression_list')
 ezP.DelegateSvg.Expr.starred_item_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.starred_item_list.superClass_.constructor.call(this, prototypeName)
   this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.starred_item, true, ',')
-  this.outputCheck = ezP.T3.Expr.starred_item_list
+  this.outputData_.check = ezP.T3.Expr.starred_item_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.starred_item_list, ezP.DelegateSvg.List)
 
@@ -301,11 +301,33 @@ ezP.DelegateSvg.Manager.register('starred_item_list')
 ezP.DelegateSvg.Expr.key_datum_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.key_datum_list.superClass_.constructor.call(this, prototypeName)
   this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.key_datum,true,',')
-  this.outputCheck = ezP.T3.Expr.key_datum_list
+  this.outputData_.check = ezP.T3.Expr.key_datum_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.key_datum_list, ezP.DelegateSvg.List)
 
 ezP.DelegateSvg.Manager.register('key_datum_list')
+
+/**
+ * Class for a DelegateSvg, starred_item_list_comprehensive block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.starred_item_list_comprehensive = function (prototypeName) {
+  ezP.DelegateSvg.Expr.starred_item_list_comprehensive.superClass_.constructor.call(this, prototypeName)
+  this.consolidator = new ezP.Consolidator.List.Singled(
+    ezP.T3.Expr.Check.non_void_starred_item_list,
+    ezP.T3.Expr.comprehension,
+    ezP.T3.Expr.Check.starred_item_list_comprehensive,
+    true,',')
+  this.outputData_.check = ezP.T3.Expr.starred_item_list_comprehensive
+}
+goog.inherits(ezP.DelegateSvg.Expr.starred_item_list_comprehensive, ezP.DelegateSvg.List)
+
+ezP.DelegateSvg.Manager.register('starred_item_list_comprehensive')
 
 /**
  * Class for a DelegateSvg, non_void_starred_item_list_comprehensive block.
@@ -323,7 +345,7 @@ ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive = function (protot
     ezP.T3.Expr.comprehension,
     ezP.T3.Expr.Check.non_void_starred_item_list_comprehensive,
     false,',')
-  this.outputCheck = ezP.T3.Expr.non_void_starred_item_list_comprehensive
+  this.outputData_.check = ezP.T3.Expr.non_void_starred_item_list_comprehensive
 }
 goog.inherits(ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive, ezP.DelegateSvg.List)
 
@@ -345,7 +367,7 @@ ezP.DelegateSvg.Expr.key_datum_list_comprehensive = function (prototypeName) {
     ezP.T3.Expr.dict_comprehension,
     ezP.T3.Expr.Check.key_datum_list_comprehensive,
     true,',')
-  this.outputCheck = ezP.T3.Expr.key_datum_list_comprehensive
+  this.outputData_.check = ezP.T3.Expr.key_datum_list_comprehensive
 }
 goog.inherits(ezP.DelegateSvg.Expr.key_datum_list_comprehensive, ezP.DelegateSvg.List)
 
@@ -363,7 +385,7 @@ ezP.DelegateSvg.Manager.register('key_datum_list_comprehensive')
 ezP.DelegateSvg.Expr.slice_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.slice_list.superClass_.constructor.call(this, prototypeName)
   this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.slice_item, false, ',')
-  this.outputCheck = ezP.T3.Expr.slice_list
+  this.outputData_.check = ezP.T3.Expr.slice_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.slice_list, ezP.DelegateSvg.List)
 
@@ -381,7 +403,7 @@ ezP.DelegateSvg.Manager.register('slice_list')
 ezP.DelegateSvg.Expr.argument_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.argument_list.superClass_.constructor.call(this, prototypeName)
   this.consolidator = new ezP.Consolidator.Arguments()
-  this.outputCheck = ezP.T3.Expr.argument_list
+  this.outputData_.check = ezP.T3.Expr.argument_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.argument_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('argument_list')
@@ -398,7 +420,7 @@ ezP.DelegateSvg.Manager.register('argument_list')
 ezP.DelegateSvg.Expr.parameter_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.parameter_list.superClass_.constructor.call(this, prototypeName)
   this.consolidator = new ezP.Consolidator.List.Parameter()
-  this.outputCheck = ezP.T3.Expr.parameter_list
+  this.outputData_.check = ezP.T3.Expr.parameter_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.parameter_list, ezP.DelegateSvg.List)
 
@@ -416,7 +438,7 @@ ezP.DelegateSvg.Manager.register('parameter_list')
 ezP.DelegateSvg.Expr.with_item_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.with_item_list.superClass_.constructor.call(this, prototypeName)
   this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.with_item, false, ',')
-  this.outputCheck = ezP.T3.Expr.with_item_list
+  this.outputData_.check = ezP.T3.Expr.with_item_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.with_item_list, ezP.DelegateSvg.List)
 

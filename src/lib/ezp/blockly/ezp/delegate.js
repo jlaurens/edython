@@ -33,6 +33,11 @@ ezP.Delegate = function (prototypeName) {
   this.inputData_ = {}
 }
 goog.inherits(ezP.Delegate, ezP.Helper)
+
+ezP.Delegate.prototype.inputData = undefined
+ezP.Delegate.prototype.outputData = undefined
+ezP.Delegate.prototype.statementData = undefined
+
 /**
  * Delegate manager.
  * @param {?string} prototypeName Name of the language object containing
@@ -64,24 +69,37 @@ ezP.Delegate.Manager = function () {
   /**
    * Get the inputData for that prototypeName.
    * @param {?string} prototypeName Name of the language object containing
+   * @return void object if no delegate is registered for that name
    */
   me.getInputData = function (prototypeName) {
     var Ctor = Ctors[prototypeName]
-    return Ctor? Ctor.prototype.inputData: undefined
+    return Ctor? Ctor.prototype.inputData: {}
   }
   /**
-   * Get the inputData for that prototypeName.
+   * Get the outputData for that prototypeName.
    * @param {?string} prototypeName Name of the language object containing
+   * @return void object if no delegate is registered for that name
+   */
+  me.getOutputData = function (prototypeName) {
+    var Ctor = Ctors[prototypeName]
+    return Ctor? Ctor.prototype.outputData: {}
+  }
+  /**
+   * Get the statementData for that prototypeName.
+   * @param {?string} prototypeName Name of the language object containing
+   * @return void object if no delegate is registered for that name
    */
   me.getStatementData = function (prototypeName) {
     var Ctor = Ctors[prototypeName]
-    return Ctor? Ctor.prototype.statementData: undefined
+    return Ctor? Ctor.prototype.statementData: {}
   }
   /**
    * Delegate registrator.
    * 
-   * Computes inputData and statementData
+   * Computes and caches inputData, outputData and statementData
    * only once from the creation of the delegate.
+   * 
+   * The last delegate registered for a given prototype name wins.
    * @param {?string} prototypeName Name of the language object containing
    * @param {Object} constructor
    */
@@ -89,21 +107,21 @@ ezP.Delegate.Manager = function () {
     // console.log(prototypeName+' -> '+Ctor)
     Ctors[prototypeName] = Ctor
     goog.asserts.assert(me.create(prototypeName), 'Registration failure: '+prototypeName)
-    if (!Ctor.prototype.inputData || !Object.keys(Ctor.prototype.inputData).length) {
-      var dlgt = me.create(prototypeName)
-      Ctor.prototype.inputData = dlgt.inputData_
-      Ctor.prototype.outputCheck = dlgt.outputCheck
-      //console.log(prototypeName, Ctor.prototype.inputData)
-      // the input data has been constructed with inheritance support
-      // but this is immutable
-    } else if (!Ctor.prototype.statementData_ || !Object.keys(Ctor.prototype.statementData_).length) {
-      var dlgt = me.create(prototypeName)
-      Ctor.prototype.statementData_ = dlgt.statementData__
-      Ctor.prototype.previousCheck = dlgt.previousCheck
+    // cache all the input, output and statement data at the prototype level
+    // the input data are constructed below with inheritance support
+    // as side effect of manager creation but this is immutability design
+    var dlgt = me.create(prototypeName)
+    var D = dlgt.inputData_
+    if (D && Object.keys(D).length) {
+      Ctor.prototype.inputData = D
+    }
+    if ((D = dlgt.outputData_) && Object.keys(D).length) {
+      Ctor.prototype.outputData = D
+    }
+    if ((D = dlgt.statementData_) && Object.keys(D).length) {
+      Ctor.prototype.statementData = D
+      Ctor.prototype.previousCheck = dlgt.previousCheck// to be removed
       Ctor.prototype.nextCheck = dlgt.nextCheck
-      // console.log(prototypeName, Ctor.prototype.statementData_)
-      // the input data has been constructed with inheritance support
-      // but this is immutability design
     }
   }
   /**
@@ -120,7 +138,7 @@ ezP.Delegate.Manager = function () {
       Ctor = ezP.Delegate[key]
       available = ezP.T3.Stmt.Available
     } else {
-      throw "Unknown block ezP.T3.Expr ot ezP.T3.Stmt key: "+key
+      throw "Unknown block ezP.T3.Expr or ezP.T3.Stmt key: "+key
     }
     me.registerDelegate(prototypeName, Ctor)
     available.push(prototypeName)
@@ -194,6 +212,36 @@ ezP.Delegate.prototype.setupType = function (block) {
  */
 ezP.Delegate.prototype.initBlock = function (block) {
   this.setupType(block)
+  var D = this.outputData_
+  if (D && Object.keys(D).length) {
+    block.setOutput(true, D.check)
+    var ezp = block.outputConnection.ezp
+    if (goog.isFunction(D.willConnect)) {
+      ezp.willConnect = D.willConnect
+    }
+    if (goog.isFunction(D.didConnect)) {
+      ezp.didConnect = D.didConnect
+    }
+    if (goog.isFunction(D.willDisconnect)) {
+      ezp.willDisconnect = D.willDisconnect
+    }
+    if (goog.isFunction(D.didDisconnect)) {
+      ezp.didDisconnect = D.didDisconnect
+    }
+    if (D.do && Object.keys(D.do).length) {
+      goog.mixin(ezp, D.do)
+    }
+  } else if ((D = this.statementData_) && Object.keys(D).length) {
+    if (D.key) {
+      block.appendStatementInput(D.key).setCheck(D.check) // Check ?
+    }
+    if (D.next) {
+      block.setNextStatement(true, D.next.check)
+    }
+    if (D.previous) {
+      block.setPreviousStatement(true, D.previous.check)
+    }
+  }
 }
 
 /**

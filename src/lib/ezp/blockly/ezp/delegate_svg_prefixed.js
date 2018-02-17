@@ -30,7 +30,7 @@ ezP.DelegateSvg.Expr.or_expr_star = function (prototypeName) {
       check: ezP.T3.Expr.Check.or_expr
     }
   }
-  this.outputCheck = ezP.T3.Expr.or_expr_star
+  this.outputData_.check = ezP.T3.Expr.or_expr_star
 }
 goog.inherits(ezP.DelegateSvg.Expr.or_expr_star, ezP.DelegateSvg.Expr)
 
@@ -51,7 +51,7 @@ ezP.DelegateSvg.Expr.or_expr_star_star = function (prototypeName) {
       check: ezP.T3.Expr.Check.or_expr
     }
   }
-  this.outputCheck = ezP.T3.Expr.or_expr_star_star
+  this.outputData_.check = ezP.T3.Expr.or_expr_star_star
 }
 goog.inherits(ezP.DelegateSvg.Expr.or_expr_star_star, ezP.DelegateSvg.Expr)
 
@@ -71,7 +71,7 @@ ezP.DelegateSvg.Expr.await_expr = function (prototypeName) {
     label: 'await',
     check: ezP.T3.Expr.Check.primary
   }
-  this.outputCheck = ezP.T3.Expr.await_expr
+  this.outputData_.check = ezP.T3.Expr.await_expr
 }
 goog.inherits(ezP.DelegateSvg.Expr.await_expr, ezP.DelegateSvg.Expr)
 

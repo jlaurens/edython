@@ -148,7 +148,7 @@ ezP.DelegateSvg.Operator.prototype.handleMenuItemActionFirst = function (block, 
  */
 ezP.DelegateSvg.Expr.u_expr_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.u_expr_concrete.superClass_.constructor.call(this, prototypeName)
-  this.outputCheck = ezP.T3.Expr.u_expr_concrete
+  this.outputData_.check = ezP.T3.Expr.u_expr_concrete
   this.operators = ['-', '+', '~']
   this.inputData_.last.label = '-'
   this.inputData_.last.check = ezP.T3.Expr.Check.u_expr
@@ -207,7 +207,7 @@ ezP.DelegateSvg.Expr.m_expr_concrete = function (prototypeName) {
   this.inputData_.first.check = ezP.T3.Expr.Check.m_expr
   this.inputData_.last.label = '*'
   this.inputData_.last.check = ezP.T3.Expr.Check.u_expr
-  this.outputCheck = ezP.T3.Expr.m_expr_concrete
+  this.outputData_.check = ezP.T3.Expr.m_expr_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.m_expr_concrete, ezP.DelegateSvg.Binary)
 ezP.DelegateSvg.Manager.register('m_expr_concrete')
@@ -226,7 +226,7 @@ ezP.DelegateSvg.Expr.a_expr_concrete = function (prototypeName) {
   this.inputData_.first.check = ezP.T3.Expr.Check.a_expr
   this.inputData_.last.label = '+'
   this.inputData_.last.check = ezP.T3.Expr.Check.m_expr
-  this.outputCheck = ezP.T3.Expr.a_expr_concrete
+  this.outputData_.check = ezP.T3.Expr.a_expr_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.a_expr_concrete, ezP.DelegateSvg.Binary)
 ezP.DelegateSvg.Manager.register('a_expr_concrete')
@@ -245,7 +245,7 @@ ezP.DelegateSvg.Expr.shift_expr_concrete = function (prototypeName) {
   this.inputData_.first.check = ezP.T3.Expr.Check.shift_expr
   this.inputData_.last.label = '<<'
   this.inputData_.last.check = ezP.T3.Expr.Check.a_expr
-  this.outputCheck = ezP.T3.Expr.shift_expr_concrete
+  this.outputData_.check = ezP.T3.Expr.shift_expr_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.shift_expr_concrete, ezP.DelegateSvg.Binary)
 ezP.DelegateSvg.Manager.register('shift_expr_concrete')
@@ -263,7 +263,7 @@ ezP.DelegateSvg.Expr.and_expr_concrete = function (prototypeName) {
   this.inputData_.first.check = ezP.T3.Expr.Check.and_expr
   this.inputData_.last.label = '&'
   this.inputData_.last.check = ezP.T3.Expr.Check.shift_expr
-  this.outputCheck = ezP.T3.Expr.and_expr_concrete
+  this.outputData_.check = ezP.T3.Expr.and_expr_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.and_expr_concrete, ezP.DelegateSvg.Binary)
 ezP.DelegateSvg.Manager.register('and_expr_concrete')
@@ -281,7 +281,7 @@ ezP.DelegateSvg.Expr.xor_expr_concrete = function (prototypeName) {
   this.inputData_.first.check = ezP.T3.Expr.Check.xor_expr
   this.inputData_.last.label = '^'
   this.inputData_.last.check = ezP.T3.Expr.Check.and_expr
-  this.outputCheck = ezP.T3.Expr.xor_expr_concrete
+  this.outputData_.check = ezP.T3.Expr.xor_expr_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.xor_expr_concrete, ezP.DelegateSvg.Binary)
 ezP.DelegateSvg.Manager.register('xor_expr_concrete')
@@ -299,7 +299,7 @@ ezP.DelegateSvg.Expr.or_expr_concrete = function (prototypeName) {
   this.inputData_.first.check = ezP.T3.Expr.Check.or_expr
   this.inputData_.last.label = '|'
   this.inputData_.last.check = ezP.T3.Expr.Check.xor_expr
-  this.outputCheck = ezP.T3.Expr.or_expr_concrete
+  this.outputData_.check = ezP.T3.Expr.or_expr_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.or_expr_concrete, ezP.DelegateSvg.Binary)
 ezP.DelegateSvg.Manager.register('or_expr_concrete')
@@ -320,7 +320,7 @@ ezP.DelegateSvg.Expr.number_comparison = function (prototypeName) {
   this.inputData_.first.check = ezP.T3.Expr.Check.comparison
   this.inputData_.last.label = '<'
   this.inputData_.last.check = ezP.T3.Expr.Check.comparison
-  this.outputCheck = ezP.T3.Expr.number_comparison
+  this.outputData_.check = ezP.T3.Expr.number_comparison
 }
 goog.inherits(ezP.DelegateSvg.Expr.number_comparison, ezP.DelegateSvg.Binary)
 ezP.DelegateSvg.Manager.register('number_comparison')
@@ -344,7 +344,7 @@ ezP.DelegateSvg.Expr.object_comparison = function (prototypeName) {
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.comparison,
   })
-  this.outputCheck = ezP.T3.Expr.object_comparison
+  this.outputData_.check = ezP.T3.Expr.object_comparison
 }
 goog.inherits(ezP.DelegateSvg.Expr.object_comparison, ezP.DelegateSvg.Binary)
 ezP.DelegateSvg.Manager.register('object_comparison')
@@ -375,7 +375,7 @@ ezP.DelegateSvg.Expr.or_test_concrete = function (prototypeName) {
   this.inputData_.last.label = 'or'
   this.inputData_.last.css_class = 'ezp-code-reserved'
   this.inputData_.last.check = ezP.T3.Expr.Check.and_test
-  this.outputCheck = ezP.T3.Expr.or_test_concrete
+  this.outputData_.check = ezP.T3.Expr.or_test_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.or_test_concrete, ezP.DelegateSvg.Binary)
 ezP.DelegateSvg.Manager.register('or_test_concrete')
@@ -394,7 +394,7 @@ ezP.DelegateSvg.Expr.and_test_concrete = function (prototypeName) {
   this.inputData_.last.label = 'and'
   this.inputData_.last.css_class = 'ezp-code-reserved'
   this.inputData_.last.check = ezP.T3.Expr.Check.not_test
-  this.outputCheck = ezP.T3.Expr.and_test_concrete
+  this.outputData_.check = ezP.T3.Expr.and_test_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.and_test_concrete, ezP.DelegateSvg.Binary)
 ezP.DelegateSvg.Manager.register('and_test_concrete')
@@ -511,7 +511,7 @@ ezP.DelegateSvg.Expr.aug_assigned = function (prototypeName) {
       type: ezP.T3.Expr.yield_from_expression,
     },
   ]
-  this.outputCheck = ezP.T3.Expr.aug_assigned
+  this.outputData_.check = ezP.T3.Expr.aug_assigned
 }
 goog.inherits(ezP.DelegateSvg.Expr.aug_assigned, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('aug_assigned')
@@ -589,7 +589,7 @@ ezP.DelegateSvg.Expr.augassign_numeric = function (prototypeName) {
   ezP.DelegateSvg.Expr.augassign_numeric.superClass_.constructor.call(this, prototypeName)
   this.operators = ['+=','-=','*=','/=','//=','%=','**=','@=']
   this.inputData_.last.label = '+='
-  this.outputCheck = ezP.T3.Expr.augassign_numeric
+  this.outputData_.check = ezP.T3.Expr.augassign_numeric
 }
 
 goog.inherits(ezP.DelegateSvg.Expr.augassign_numeric, ezP.DelegateSvg.AugAssign)
@@ -607,7 +607,7 @@ ezP.DelegateSvg.Expr.augassign_bitwise = function (prototypeName) {
   ezP.DelegateSvg.Expr.augassign_bitwise.superClass_.constructor.call(this, prototypeName)
   this.operators = [">>=", "<<=", "&=", "^=", "|="]
   this.inputData_.last.label = '<<='
-  this.outputCheck = ezP.T3.Expr.augassign_bitwise
+  this.outputData_.check = ezP.T3.Expr.augassign_bitwise
 }
 
 goog.inherits(ezP.DelegateSvg.Expr.augassign_bitwise, ezP.DelegateSvg.AugAssign)
@@ -624,7 +624,7 @@ ezP.DelegateSvg.Manager.register('augassign_bitwise')
  */
 ezP.DelegateSvg.Expr.power_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.power_concrete.superClass_.constructor.call(this, prototypeName)
-  this.outputCheck = ezP.T3.power_concrete
+  this.outputData_.check = ezP.T3.power_concrete
   this.inputData_ = {
     first: {
       key: ezP.Const.Input.ARG,

@@ -72,7 +72,7 @@ ezP.DelegateSvg.Expr.attributeref = function (prototypeName) {
     check: ezP.T3.Expr.identifier,
     plugged: ezP.T3.Expr.attribute_identifier,
   }
-  this.outputCheck = ezP.T3.Expr.attributeref 
+  this.outputData_.check = ezP.T3.Expr.attributeref 
 }
 goog.inherits(ezP.DelegateSvg.Expr.attributeref, ezP.DelegateSvg.Primary)
 ezP.DelegateSvg.Manager.register('attributeref')
@@ -93,7 +93,7 @@ ezP.DelegateSvg.Expr.subscription = ezP.DelegateSvg.Expr.slicing = function (pro
     key: ezP.Const.Input.SLICE,
     wrap: ezP.T3.Expr.display_slice_list,
   }
-  this.outputCheck = [ezP.T3.Expr.subscription, ezP.T3.Expr.slicing]
+  this.outputData_.check = [ezP.T3.Expr.subscription, ezP.T3.Expr.slicing]
 }
 goog.inherits(ezP.DelegateSvg.Expr.slicing, ezP.DelegateSvg.Primary)
 ezP.DelegateSvg.Manager.register('slicing')
@@ -119,7 +119,7 @@ ezP.DelegateSvg.Expr.call_expr =  function (prototypeName) {
     wrap: ezP.T3.Expr.argument_list,
   }
   this.labelEnd.value = ')'
-  this.outputCheck = ezP.T3.Expr.call_expr
+  this.outputData_.check = ezP.T3.Expr.call_expr
 }
 goog.inherits(ezP.DelegateSvg.Expr.call_expr, ezP.DelegateSvg.Primary)
 ezP.DelegateSvg.Manager.register('call_expr')

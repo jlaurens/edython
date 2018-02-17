@@ -33,7 +33,7 @@ ezP.DelegateSvg.Expr.yield_expression_list = function (prototypeName) {
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.non_void_expression_list,
   }
-  this.outputCheck = ezP.T3.Expr.yield_expression_list
+  this.outputData_.check = ezP.T3.Expr.yield_expression_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_expression_list, ezP.DelegateSvg.Expr)
 
@@ -54,7 +54,7 @@ ezP.DelegateSvg.Expr.yield_from_expression = function (prototypeName) {
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression
   }
-  this.outputCheck = ezP.T3.Expr.yield_from_expression
+  this.outputData_.check = ezP.T3.Expr.yield_from_expression
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_from_expression, ezP.DelegateSvg.Expr)
 
@@ -75,7 +75,7 @@ ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
     wrap: ezP.T3.Expr.yield_expression,
   }
   this.labelEnd.value = ')'
-  this.outputCheck = ezP.T3.Expr.yield_atom
+  this.outputData_.check = ezP.T3.Expr.yield_atom
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_atom, ezP.DelegateSvg.Expr)
 
@@ -95,7 +95,7 @@ ezP.DelegateSvg.Expr.yield_expression = function (prototypeName) {
     check: ezP.T3.Expr.Check.yield_expression,
     wrap: ezP.T3.Expr.yield_expression_list,
   }
-  this.outputCheck = ezP.T3.Expr.yield_expression
+  this.outputData_.check = ezP.T3.Expr.yield_expression
   this.menuData = [
     {
       content: goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',

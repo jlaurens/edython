@@ -50,7 +50,7 @@ ezP.DelegateSvg.Manager.register = function (key) {
     Ctor = ezP.DelegateSvg.Stmt[key]
     available = ezP.T3.Stmt.Available
   } else {
-    throw "Unknown block ezP.T3.Expr ot ezP.T3.Stmt key: "+key
+    throw "Unknown block ezP.T3.Expr or ezP.T3.Stmt key: "+key
   }
   ezP.DelegateSvg.Manager.registerDelegate(prototypeName, Ctor)
   available.push(prototypeName)
@@ -92,13 +92,8 @@ ezP.DelegateSvg.prototype.svgPathInline_ = undefined
 ezP.DelegateSvg.prototype.svgPathHighlight_ = undefined
 
 /**
- * When set, the block has an output,
- * with that check.
- */
-ezP.DelegateSvg.prototype.outputCheck = undefined
-
-/**
  * When set, used as the right delimiter.
+ * Must be created in a dummy input at the very end.
  */
 ezP.DelegateSvg.prototype.fieldLabelEnd = undefined
 
@@ -113,10 +108,6 @@ ezP.DelegateSvg.prototype.fieldLabelEnd = undefined
  * - wrap, optional, the type of the block wrapped by this input
  * - optional, true/false whether the connection is optional, only when no wrap.
  */
-
-ezP.DelegateSvg.prototype.inputDataKeys = ['first', 'middle', 'last']
-ezP.DelegateSvg.prototype.inputData = undefined
-ezP.DelegateSvg.prototype.statementData = undefined
 
 /**
  * Create and initialize the first, middle and last inputs if required.
@@ -137,7 +128,9 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
         goog.asserts.assert(D.key, 'Every input must have a key '+block.type)
         var k = D.key
         var v, f
-        if ((v = D.wrap)) {
+        if ('wrap' in D) {
+          v = D.wrap
+          goog.asserts.assert(v, 'wrap must exist '+block.type+'.'+K)
           out.input = block.appendWrapValueInput(k, v)
         } else {
           out.input = block.appendValueInput(k)
@@ -150,26 +143,29 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
             ezp.plugged_ = D.plugged
             //console.log(k, ezp.plugged_)
           }
-          if (D.willConnect) {
+          if (goog.isFunction(D.willConnect)) {
             ezp.willConnect = D.willConnect
           }
-          if (D.didConnect) {
+          if (goog.isFunction(D.didConnect)) {
             ezp.didConnect = D.didConnect
           }
-          if (D.willDisconnect) {
+          if (goog.isFunction(D.willDisconnect)) {
             ezp.willDisconnect = D.willDisconnect
           }
-          if (D.didDisconnect) {
+          if (goog.isFunction(D.didDisconnect)) {
             ezp.didDisconnect = D.didDisconnect
           }
-          if (D.optional) {
+          if (D.do && Object.keys(D.do).length) {
+            goog.mixin(ezp, D.do)
+          }
+          if (D.optional) {//svg
             ezp.optional_ = true
           }
           ezp.disabled_ = D.disabled && !D.enabled
           if ((v = D.check)) {
             out.input.setCheck(v)
             var value = goog.isFunction(D.hole_value)?D.hole_value(block): D.hole_value
-            if (ezp.hole_data = ezP.HoleFiller.getData(v, D.hole_value)) {
+            if (ezp.hole_data = ezP.HoleFiller.getData(v, D.hole_value)) {// svg specific
               block.ezp.can_fill_holes = true
             }
           } else if ((v = D.check = D.wrap)) {
@@ -192,7 +188,7 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
         out.fieldIdentifier = new ezP.FieldIdentifier(v)
         out.fieldIdentifier.ezpData.key = k+'.'+ezP.Const.Field.IDENTIFIER
         out.input.appendField(out.fieldIdentifier, out.fieldIdentifier.ezpData.key)
-        if (D.label) {
+        if (D.label) { // this is svg specific
           out.fieldIdentifier.ezpData.x_shift = ezP.Font.space
         }
       }
@@ -202,20 +198,20 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
   var Is = {}
   
   if (Object.keys(this.inputData_).length) {
-    var i = 0
-    for (;i < this.inputDataKeys.length; i++) {
-      var K = this.inputDataKeys[i]
+    var keys = ['first', 'middle', 'last']
+    for (var i = 0, K; K = keys[i++];) {
       var f = F(K, this.inputData_[K])
       if (f) {
         Is[K] = f
       }
     }
-    this.inputDataKeys = undefined
     this.inputData_ = undefined
   }
   this.inputs = Is
+  
   this.initBlock(block)
-  if (this.labelEnd.value) {
+
+  if (this.labelEnd.value) {// this is svg specific
     this.fieldLabelEnd = new ezP.FieldLabel(this.labelEnd.value)
     block.appendDummyInput(ezP.Const.Input.END).appendField(this.fieldLabelEnd, ezP.Const.Field.LABEL)
     this.fieldLabelEnd.ezpData.css_style = this.labelEnd.css_style
@@ -248,21 +244,6 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   // block.setInputsInline(true)
   block.setTooltip('')
   block.setHelpUrl('')
-
-  if (this.outputCheck !== undefined) {
-    block.setOutput(true, this.outputCheck)
-  } else if (this.statementData_) {
-    if (this.statementData_.key) {
-      block.appendStatementInput(this.statementData_.key)
-        .setCheck(this.statementData_.check) // Check ?
-    }
-    if (this.statementData_.next) {
-      block.setNextStatement(true, this.statementData_.next.check)
-    }
-    if (this.statementData_.previous) {
-      block.setPreviousStatement(true, this.statementData_.previous.check)
-    }
-  }
 }
 
 /**
@@ -1056,7 +1037,6 @@ ezP.StatementBlockEnumerator = function (block) {
   return me
 }
 
-ezP.DelegateSvg.prototype.outputCheck = undefined
 ezP.DelegateSvg.prototype.nextStatementCheck = undefined
 ezP.DelegateSvg.prototype.previousStatementCheck = undefined
 

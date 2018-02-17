@@ -26,6 +26,7 @@ goog.require('ezP.T3.All')
  */
 ezP.DelegateSvg.Expr = function (prototypeName) {
   ezP.DelegateSvg.Expr.superClass_.constructor.call(this, prototypeName)
+  this.outputData_ = {}
 }
 goog.inherits(ezP.DelegateSvg.Expr, ezP.DelegateSvg)
 
@@ -117,7 +118,7 @@ ezP.DelegateSvg.Expr.prototype.bypassAndRemoveParent = function (block) {
  */
 ezP.DelegateSvg.Expr.proper_slice = function (prototypeName) {
   ezP.DelegateSvg.Expr.proper_slice.superClass_.constructor.call(this, prototypeName)
-  this.outputCheck = ezP.T3.Expr.proper_slice
+  this.outputData_.check = ezP.T3.Expr.proper_slice
   this.inputData_ = {
     first: {
       key: ezP.Const.Input.LOWER_BOUND,
@@ -194,7 +195,7 @@ ezP.DelegateSvg.Expr.proper_slice.prototype.handleMenuItemActionFirst = function
  */
 ezP.DelegateSvg.Expr.conditional_expression_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.conditional_expression_concrete.superClass_.constructor.call(this, prototypeName)
-  this.outputCheck = ezP.T3.Expr.conditional_expression_concrete
+  this.outputData_.check = ezP.T3.Expr.conditional_expression_concrete
   this.inputData_ = {
     first: {
       key: ezP.Const.Input.EXPR,

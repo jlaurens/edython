@@ -12,15 +12,21 @@ class Types:
     re_pipe = re.compile(r'\s*\|\s*')
     re_concrete_candidate = re.compile(r'\s*([a-z_][a-z_\d]*)\s*\|\s*(.*)\s*$')
     re_star_identifier = re.compile(r'^\s*"(\*+)"\s*([a-z_][a-z_\d]*)\s*$')
+    re_definition = re.compile(r"^\s*(?P<name>[a-zA-Z_][a-zA-Z_\d]*?)\s*(?P<op>::=|!!=|\|\|=)\s*(?P<definition>.*)\s*$")
+    re_stmt_order = re.compile(r"^\s*(\S+)\s*(<|>)\s*(.*)\s*$")
+    re_linck = re.compile(r"^\s*(?P<definition>\S+)\s*->\s*(?P<alias>.*)\s*$")
+    re_category = re.compile(r"^#\s*category\s*:[\s.\d]*(?P<category>[a-zA-Z\s_]*).*$")
+    re_ignore = re.compile(r"^\s*[\d@#.'({].*")
+
+    all = {}
+    is_before = {}
+    is_after = {}
+    lincks = {}
+    n = 0
+    current_category = 'default'
+    lists_made = False
 
     def __init__(self, *paths):
-        self.all = {}
-        self.is_before = {}
-        self.is_after = {}
-        self.lincks = {}
-        self.n = 0
-        self.current_category = 'default'
-        self.lists_made = False
         for path in paths:
             self.read(path)
         self.make_ignore()
@@ -78,15 +84,15 @@ class Types:
         return None
 
     def digest(self, data):
+        """
+        Digest the given data. When possible, recognize a type definition
+        :param data: a string
+        :return: None
+        """
         data = data.replace('\n ', ' ')
         data = re.sub(r'  +', ' ', data)
-        re_definition = re.compile(r"^\s*(?P<name>[a-zA-Z_][a-zA-Z_\d]*?)\s*(?P<op>::=|!!=|\|\|=)\s*(?P<definition>.*)\s*$")
-        re_stmt_order = re.compile(r"^\s*(\S+)\s*(<|>)\s*(.*)\s*$")
-        re_linck = re.compile(r"^\s*(?P<definition>\S+)\s*->\s*(?P<alias>.*)\s*$")
-        re_category = re.compile(r"^category:[\s.\d]*(?P<category>[a-zA-Z\s_]*).*$")
-        re_ignore = re.compile(r"^\s*[\d@#.'({].*")
         for l in data.splitlines():
-            m = re_definition.match(l)
+            m = self.re_definition.match(l)
             if m:
                 name, op, definition = m.group('name'), m.group('op'), m.group('definition')
                 try:
@@ -97,7 +103,7 @@ class Types:
                 except Exception as exc:
                     print(exc)
                 continue
-            m = re_stmt_order.match(l)
+            m = self.re_stmt_order.match(l)
             if m:
                 name, what, is_before = m.group(1), m.group(3), m.group(2) == '<'
                 where = self.is_before if is_before else self.is_after
@@ -106,15 +112,15 @@ class Types:
                 already = where[name]
                 already.update(re.split(r'\s*\|\s*', what))
                 continue
-            m = re_linck.match(l)
+            m = self.re_linck.match(l)
             if m:
                 self.lincks[m.group('definition')] = m.group('alias')
                 continue
-            m = re_category.match(l)
+            m = self.re_category.match(l)
             if m:
                 self.current_category = m.group('category')
                 continue
-            m = re_ignore.match(l)
+            m = self.re_ignore.match(l)
             if m:
                 continue
             if len(l):

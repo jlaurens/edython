@@ -25,7 +25,7 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Expr.parenth_form = function (prototypeName) {
   ezP.DelegateSvg.Expr.parenth_form.superClass_.constructor.call(this, prototypeName)
-  this.outputCheck = ezP.T3.Expr.parenth_form
+  this.outputData_.check = ezP.T3.Expr.parenth_form
   this.inputData_ = {
     last: {
       key: ezP.Const.Input.LIST,
@@ -52,11 +52,11 @@ ezP.DelegateSvg.Expr.list_display = function (prototypeName) {
     first: {
       key: ezP.Const.Input.LIST,
       label: '[',
-      wrap: ezP.T3.Expr.starred_list_comprehensive
+      wrap: ezP.T3.Expr.starred_item_list_comprehensive
     }
   }
   this.labelEnd.value = ']'
-  this.ouputCheck = ezP.T3.Expr.list_display
+  this.outputData_.Check = ezP.T3.Expr.list_display
 }
 goog.inherits(ezP.DelegateSvg.Expr.list_display, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('list_display')
@@ -78,7 +78,7 @@ ezP.DelegateSvg.Expr.set_display = function (prototypeName) {
     }
   }
   this.labelEnd.value = '}'
-  this.outputCheck = ezP.T3.Expr.set_display
+  this.outputData_.check = ezP.T3.Expr.set_display
 }
 goog.inherits(ezP.DelegateSvg.Expr.set_display, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('set_display')
@@ -100,7 +100,7 @@ ezP.DelegateSvg.Expr.dict_display = function (prototypeName) {
     }
   }
   this.labelEnd.value = '}'
-  this.outputCheck = ezP.T3.Expr.dict_display
+  this.outputData_.check = ezP.T3.Expr.dict_display
 }
 goog.inherits(ezP.DelegateSvg.Expr.dict_display, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('dict_display')
@@ -123,7 +123,7 @@ ezP.DelegateSvg.Expr.generator_expression = function (prototypeName) {
     }
   }
   this.labelEnd.value = '}'
-  this.outputCheck = ezP.T3.Expr.generator_expression
+  this.outputData_.check = ezP.T3.Expr.generator_expression
 }
 goog.inherits(ezP.DelegateSvg.Expr.generator_expression, ezP.DelegateSvg.Expr)
 
@@ -146,7 +146,7 @@ ezP.DelegateSvg.Expr.display_slice_list = function (prototypeName) {
     }
   }
   this.labelEnd.value = ']'
-  this.outputCheck = ezP.T3.Expr.display_slice_list
+  this.outputData_.check = ezP.T3.Expr.display_slice_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.display_slice_list, ezP.DelegateSvg.Expr)
 
