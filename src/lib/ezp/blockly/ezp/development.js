@@ -154,6 +154,21 @@ ezP.DelegateSvg.Expr.yield_expression.workspaceBlocks = [
   ezP.T3.Expr.yield_from_expression,
 ]
 
+ezP.DelegateSvg.Stmt.import_part.workspaceBlocks = [
+  ezP.T3.Expr.identifier,
+  ezP.T3.Expr.module_as_concrete,
+  ezP.T3.Expr.module_concrete,
+  ezP.T3.Expr.non_void_module_as_list,
+  ezP.T3.Expr.import_module,
+  ezP.T3.Expr.import_identifier_as_concrete,
+  ezP.T3.Expr.non_void_import_identifier_as_list,
+  ezP.T3.Expr.parent_module,
+  ezP.T3.Expr.from_relative_module_import,
+  ezP.T3.Stmt.import_part,
+  ezP.T3.Expr.from_module_import,
+  ezP.T3.Expr.import_module,
+]
+
 // in progress
 
 ezP.DelegateSvg.Expr.power_concrete.workspaceBlocks = ezP.Do.arraysMerged([

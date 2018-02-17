@@ -257,7 +257,7 @@ ezP.DelegateSvg.Expr.from_module_import = function (prototypeName) {
   ezP.DelegateSvg.Expr.from_module_import.superClass_.constructor.call(this, prototypeName)
   this.outputCheck = ezP.T3.Expr.from_module_import
   this.inputData_.first = {
-    key: ezP.Const.Input.Module,
+    key: ezP.Const.Input.MODULE,
     label: 'from',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.module,
@@ -283,7 +283,8 @@ ezP.DelegateSvg.Manager.register('from_module_import')
 ezP.DelegateSvg.Stmt.import_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.import_part.superClass_.constructor.call(this, prototypeName)
   this.inputData_.last = {
-    key: ezP.Const.Input.Module,
+    key: ezP.Const.Input.MODULE,
+    check: ezP.T3.Expr.Check.import_expr,
     wrap: ezP.T3.Expr.import_module,
   }
   this.menuData = [
@@ -359,50 +360,12 @@ ezP.DelegateSvg.Stmt.import_part.prototype.getWrappedTargetBlock = function(bloc
  * @private
  */
 ezP.DelegateSvg.Stmt.import_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var menu = mgr.menu
-  var last = this.inputs.last.input
-  var target = last.connection.targetBlock()
-  goog.asserts.assert(target, 'No wrapper in import_part?')
-  var ezp = this
-  var F = function(data) {
-    var menuItem = new ezP.MenuItem(
-      data.label
-      ,{action: ezP.ID.USE_IMPORT_WRAP_TYPE, type: data.type},
-    )
-    menuItem.setEnabled(data.type != target.type)
-    mgr.addChild(menuItem, true)
+  var yorn
+  var D = ezP.DelegateSvg.Manager.getInputData(block.type)
+  if (yorn = mgr.populate_wrap_alternate(block, D.last.key)) {
+    mgr.shouldSeparate()
   }
-  for (var i = 0; i<this.contextMenuData.length; i++) {
-    F(this.contextMenuData[i])
-  }
-  ezP.DelegateSvg.Stmt.import_part.superClass_.populateContextMenuFirst_.call(this,block, mgr)
-  return true
-}
-
-/**
- * Handle the selection of an item in the context dropdown menu.
- * Undo compliant.
- * @param {!Blockly.Block} block, owner of the delegate.
- * @param {!String} newType
- * the MenuItem selected within menu.
- */
-ezP.DelegateSvg.Stmt.import_part.prototype.changeImportWrapType = function (block, newValue) {
-  var last = this.inputs.last.input
-  var target = last.connection.targetBlock()
-  var oldValue = target? target.type: undefined
-  if (newValue != oldValue) {
-    Blockly.Events.setGroup(true)
-    // if (Blockly.Events.isEnabled()) {
-    //   Blockly.Events.fire(new Blockly.Events.BlockChange(
-    //     block, ezP.Const.Event.change_import_model, '', oldValue, newValue));
-    // }
-    if (target) {
-//      target.unplug()
-      target.dispose()
-    }
-    this.completeWrappedInput_(block, last, newValue)
-    Blockly.Events.setGroup(false)
-  }
+  return ezP.DelegateSvg.Stmt.import_part.superClass_.populateContextMenuFirst_.call(this,block, mgr) || yorn
 }
 
 /**
@@ -413,15 +376,5 @@ ezP.DelegateSvg.Stmt.import_part.prototype.changeImportWrapType = function (bloc
  * the MenuItem selected within menu.
  */
 ezP.DelegateSvg.Stmt.import_part.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
-  var model = event.target.getModel()
-  var action = model.action
-  var new_type = model.type
-  if (action == ezP.ID.USE_IMPORT_WRAP_TYPE) {
-    setTimeout(function() {
-      block.ezp.changeImportWrapType(block, new_type)
-      block.render()
-    }, 100)
-    return true
-  }
-  return ezP.DelegateSvg.Stmt.import_part.superClass_.handleMenuItemActionMiddle.call(this, block, mgr, event)
+  return mgr.handleAction_wrap_alternate(block, event) || ezP.DelegateSvg.Stmt.import_part.superClass_.handleMenuItemActionMiddle.call(this, block, mgr, event)
 }
