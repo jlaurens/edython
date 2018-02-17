@@ -59,11 +59,13 @@ ezP.DelegateSvg.Expr.comp_for = function (prototypeName) {
     first: {
       key: ezP.Const.Input.FOR,
       label: 'for',
+      css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.target_list,
     },
     last: {
       key: ezP.Const.Input.IN,
       label: 'in',
+      css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.or_test,
       hole_value: 'name',
     }
@@ -88,6 +90,7 @@ ezP.DelegateSvg.Expr.comp_if = function (prototypeName) {
     first: {
       key: ezP.Const.Input.IF,
       label: 'if',
+      css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression_nocond
     }
   }
