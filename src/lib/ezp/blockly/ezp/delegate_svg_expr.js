@@ -108,36 +108,6 @@ ezP.DelegateSvg.Expr.prototype.bypassAndRemoveParent = function (block) {
 }
 
 /**
- * Class for a DelegateSvg, key_datum_concrete block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.key_datum_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Expr.key_datum_concrete.superClass_.constructor.call(this, prototypeName)
-  this.outputCheck = ezP.T3.Expr.key_datum_concrete
-  this.inputData_ = {
-    first: {
-      key: ezP.Const.Input.KEY,
-      check: ezP.T3.Expr.Check.expression,
-      hole_value: 'key',
-    },
-    last: {
-      key: ezP.Const.Input.DATUM,
-      check: ezP.T3.Expr.Check.expression,
-      label: ':',
-      hole_value: 'value',
-    }
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.key_datum_concrete, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register('key_datum_concrete')
-
-
-/**
  * Class for a DelegateSvg, proper_slice block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
@@ -234,11 +204,13 @@ ezP.DelegateSvg.Expr.conditional_expression_concrete = function (prototypeName) 
     middle: {
       label: 'if',
       key: ezP.Const.Input.IF,
+      css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.or_test,
     },
     last: {
       label: 'else',
       key: ezP.Const.Input.ELSE,
+      css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'alternate',
     }

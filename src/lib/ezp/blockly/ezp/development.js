@@ -169,6 +169,24 @@ ezP.DelegateSvg.Stmt.import_part.workspaceBlocks = [
   ezP.T3.Expr.import_module,
 ]
 
+ezP.DelegateSvg.Stmt.if_part.workspaceBlocks =
+ezP.DelegateSvg.Stmt.while_part.workspaceBlocks =
+ezP.DelegateSvg.Stmt.for_part.workspaceBlocks =
+ezP.DelegateSvg.Stmt.with_part.workspaceBlocks = ezP.Do.arraysMerged([
+  ezP.T3.Stmt.if_part,
+  ezP.T3.Stmt.elif_part,
+  ezP.T3.Stmt.else_part,
+  ezP.T3.Stmt.while_part,
+  ezP.T3.Stmt.for_part,
+  ezP.T3.Stmt.with_part,
+  ezP.T3.Expr.identifier,
+  ezP.T3.Expr.target_list,
+  ezP.T3.Expr.expression_list,
+  ezP.T3.Expr.with_item_list,
+],
+ezP.T3.Expr.Check.expression)
+
+
 // in progress
 
 ezP.DelegateSvg.Expr.power_concrete.workspaceBlocks = ezP.Do.arraysMerged([

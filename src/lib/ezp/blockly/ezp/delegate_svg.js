@@ -131,48 +131,50 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
     var out
     if (D && Object.keys(D).length) {
       out = {}
-      goog.asserts.assert(D.key, 'Every input must have a key '+block.type)
-      var k = D.key
-      var v, f
-      if ((v = D.wrap)) {
-        out.input = block.appendWrapValueInput(k, v)
-      } else if (D.dummy || D.identifier) {
+      if (D.dummy || D.identifier) {
         out.input = block.appendDummyInput(k)
       } else {
-        out.input = block.appendValueInput(k)
-      }
-      var c8n = out.input.connection
-      if (c8n) {
-        var ezp = c8n.ezp
-        ezp.name_ = k
-        if (D.plugged) {
-          ezp.plugged_ = D.plugged
-          //console.log(k, ezp.plugged_)
+        goog.asserts.assert(D.key, 'Every input must have a key '+block.type)
+        var k = D.key
+        var v, f
+        if ((v = D.wrap)) {
+          out.input = block.appendWrapValueInput(k, v)
+        } else {
+          out.input = block.appendValueInput(k)
         }
-        if (D.willConnect) {
-          ezp.willConnect = D.willConnect
-        }
-        if (D.didConnect) {
-          ezp.didConnect = D.didConnect
-        }
-        if (D.willDisconnect) {
-          ezp.willDisconnect = D.willDisconnect
-        }
-        if (D.didDisconnect) {
-          ezp.didDisconnect = D.didDisconnect
-        }
-        if (D.optional) {
-          ezp.optional_ = true
-        }
-        ezp.disabled_ = D.disabled && !D.enabled
-        if ((v = D.check)) {
-          out.input.setCheck(v)
-          var value = goog.isFunction(D.hole_value)?D.hole_value(block): D.hole_value
-          if (ezp.hole_data = ezP.HoleFiller.getData(v, D.hole_value)) {
-            block.ezp.can_fill_holes = true
+        var c8n = out.input.connection
+        if (c8n) {
+          var ezp = c8n.ezp
+          ezp.name_ = k
+          if (D.plugged) {
+            ezp.plugged_ = D.plugged
+            //console.log(k, ezp.plugged_)
           }
-        } else if ((v = D.check = D.wrap)) {
-          out.input.setCheck(v)
+          if (D.willConnect) {
+            ezp.willConnect = D.willConnect
+          }
+          if (D.didConnect) {
+            ezp.didConnect = D.didConnect
+          }
+          if (D.willDisconnect) {
+            ezp.willDisconnect = D.willDisconnect
+          }
+          if (D.didDisconnect) {
+            ezp.didDisconnect = D.didDisconnect
+          }
+          if (D.optional) {
+            ezp.optional_ = true
+          }
+          ezp.disabled_ = D.disabled && !D.enabled
+          if ((v = D.check)) {
+            out.input.setCheck(v)
+            var value = goog.isFunction(D.hole_value)?D.hole_value(block): D.hole_value
+            if (ezp.hole_data = ezP.HoleFiller.getData(v, D.hole_value)) {
+              block.ezp.can_fill_holes = true
+            }
+          } else if ((v = D.check = D.wrap)) {
+            out.input.setCheck(v)
+          }
         }
       }
       if ((v = D.label)) {

@@ -132,3 +132,31 @@ ezP.DelegateSvg.Expr.dict_comprehension = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.dict_comprehension, ezP.DelegateSvg.Expr.comprehension)
 ezP.DelegateSvg.Manager.register('dict_comprehension')
 
+/**
+ * Class for a DelegateSvg, key_datum_concrete block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.key_datum_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.key_datum_concrete.superClass_.constructor.call(this, prototypeName)
+  this.outputCheck = ezP.T3.Expr.key_datum_concrete
+  this.inputData_ = {
+    first: {
+      key: ezP.Const.Input.KEY,
+      check: ezP.T3.Expr.Check.expression,
+      hole_value: 'key',
+    },
+    last: {
+      key: ezP.Const.Input.DATUM,
+      check: ezP.T3.Expr.Check.expression,
+      label: ':',
+      hole_value: 'value',
+    }
+  }
+}
+goog.inherits(ezP.DelegateSvg.Expr.key_datum_concrete, ezP.DelegateSvg.Expr)
+
+ezP.DelegateSvg.Manager.register('key_datum_concrete')

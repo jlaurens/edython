@@ -266,12 +266,11 @@ ezP.DelegateSvg.Group.prototype.highlightConnection = function (c8n) {
  */
 ezP.DelegateSvg.Stmt.if_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.if_part.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
-    first: {
-      label: 'if',
-      check: ezP.T3.Expr.Check.expression,
-      key: ezP.Const.Input.COND,
-    }
+  this.inputData_.first = {
+    label: 'if',
+    css_class: 'ezp-code-reserved',
+    check: ezP.T3.Expr.Check.expression,
+    key: ezP.Const.Input.COND,
   }
   this.statementData_.previous.check = ezP.T3.Stmt.Previous.if_part
   this.statementData_.next.check = ezP.T3.Stmt.Next.if_part
@@ -289,12 +288,11 @@ ezP.DelegateSvg.Manager.register('if_part')
  */
 ezP.DelegateSvg.Stmt.elif_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.elif_part.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
-    first: {
-      label: 'elif',
-      check: ezP.T3.Expr.Check.expression,
-      key: ezP.Const.Input.COND,
-    }
+  this.inputData_.first = {
+    label: 'elif',
+    css_class: 'ezp-code-reserved',
+    check: ezP.T3.Expr.Check.expression,
+    key: ezP.Const.Input.COND,
   }
   this.statementData_.previous.check = ezP.T3.Stmt.Previous.elif_part
   this.statementData_.next.check = ezP.T3.Stmt.Next.elif_part
@@ -312,10 +310,10 @@ ezP.DelegateSvg.Manager.register('elif_part')
  */
 ezP.DelegateSvg.Stmt.else_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.else_part.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
-    first: {
-      label: 'else',
-    }
+  this.inputData_.first = {
+    dummy: true,
+    label: 'else',
+    css_class: 'ezp-code-reserved',
   }
   this.statementData_.previous.check = ezP.T3.Stmt.Previous.else_part
   this.statementData_.next.check = ezP.T3.Stmt.Next.else_part
@@ -333,12 +331,11 @@ ezP.DelegateSvg.Manager.register('else_part')
  */
 ezP.DelegateSvg.Stmt.while_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.while_part.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
-    first: {
-      label: 'while',
-      check: ezP.T3.Expr.Check.expression,
-      key: ezP.Const.Input.COND,
-    }
+  this.inputData_.first = {
+    label: 'while',
+    css_class: 'ezp-code-reserved',
+    check: ezP.T3.Expr.Check.expression,
+    key: ezP.Const.Input.COND,
   }
   this.statementData_.previous.check = ezP.T3.Stmt.Previous.while_part
   this.statementData_.next.check = ezP.T3.Stmt.Next.while_part
@@ -359,11 +356,13 @@ ezP.DelegateSvg.Stmt.for_part = function (prototypeName) {
   this.inputData_ = {
     first: {
       label: 'for',
+      css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.target_list,
       key: ezP.Const.Input.FOR,
     },
     middle: {
       label: 'in',
+      css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.expression_list,
       key: ezP.Const.Input.IN,
     }
@@ -386,7 +385,9 @@ ezP.DelegateSvg.Stmt.with_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.with_part.superClass_.constructor.call(this, prototypeName)
   this.inputData_ = {
     first: {
-      label: 'whith',
+      key: ezP.Const.Input.LIST,
+      label: 'with',
+      css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.with_item_list,
     }
   }
@@ -395,50 +396,3 @@ ezP.DelegateSvg.Stmt.with_part = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.with_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('with_part')
-
-// bounded blocks are if/elif/else, for/else combinations.
-// A dotted separation would be appropriate to indicate the bound
-// ezP.DelegateSvg.Bounded = function (prototypeName) {
-//   ezP.DelegateSvg.Bounded.superClass_.constructor.call(this, prototypeName)
-// }
-// goog.inherits(ezP.DelegateSvg.Bounded, ezP.DelegateSvg.Group)
-// //ezP.DelegateSvg.Manager.register('ELIF')
-// //ezP.DelegateSvg.Manager.register('ELSE')
-
-// /**
-//  * Initialize a block.
-//  * @param {!Blockly.Block} block to be initialized..
-//  * @extends {Blockly.Block}
-//  * @constructor
-//  */
-// ezP.DelegateSvg.Bounded.prototype.preInitSvg = function (block) {
-//   ezP.DelegateSvg.Bounded.superClass_.preInitSvg.call(this, block)
-//   this.svgPathDotted_ = Blockly.utils.createSvgElement('path',
-//     {'d': 'M ' + ezP.Padding.h() + ',0 h ' + (ezP.Font.tabWidth - ezP.Padding.h())}, block.svgGroup_)
-//   block.nextConnection.check_ = ezP.Type.Stmt.Check.none
-// }
-
-// /**
-//  * Deletes or nulls out any references to COM objects, DOM nodes, or other
-//  * disposable objects...
-//  * @protected
-//  */
-// ezP.DelegateSvg.Bounded.prototype.disposeInternal = function () {
-//   goog.dom.removeNode(this.svgPathDotted_)
-//   this.svgPathDotted_ = undefined
-//   ezP.DelegateSvg.Bounded.superClass_.disposeInternal.call(this)
-// }
-
-// /**
-//  * Draw the path of the block.
-//  * @param {!ezP.Block} block.
-//  * @private
-//  */
-// ezP.DelegateSvg.Bounded.prototype.renderDraw_ = function (block) {
-//   ezP.DelegateSvg.Bounded.superClass_.renderDraw_.call(this, block)
-//   if (this.hasPreviousBoundedStatement_(block)) {
-//     this.svgPathDotted_.setAttribute('class', 'ezp-path-dotted')
-//   } else {
-//     this.svgPathDotted_.setAttribute('class', 'ezp-no-path')
-//   }
-// }
