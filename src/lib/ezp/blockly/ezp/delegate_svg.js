@@ -188,7 +188,7 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
             ezp.didDisconnect = D.didDisconnect
           }
           if (D.do && Object.keys(D.do).length) {
-            goog.mixin(D.do, ezp)
+            goog.mixin(ezp, D.do)
           }
           if (D.optional) {//svg
             ezp.optional_ = true

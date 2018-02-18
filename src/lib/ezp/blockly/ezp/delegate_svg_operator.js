@@ -124,10 +124,10 @@ ezP.DelegateSvg.Expr.u_expr_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.u_expr_concrete.superClass_.constructor.call(this, prototypeName)
   this.outputData_.check = ezP.T3.Expr.u_expr_concrete
   this.operators = ['-', '+', '~']
-  goog.mixin({
+  goog.mixin(this.inputData_.last, {
     label: this.operators[0],
     check: ezP.T3.Expr.Check.u_expr
-  }, this.inputData_.last)
+  })
 }
 goog.inherits(ezP.DelegateSvg.Expr.u_expr_concrete, ezP.DelegateSvg.Operator)
 ezP.DelegateSvg.Manager.register('u_expr_concrete')
@@ -315,11 +315,11 @@ ezP.DelegateSvg.Expr.object_comparison = function (prototypeName) {
   ezP.DelegateSvg.Expr.object_comparison.superClass_.constructor.call(this, prototypeName)
   this.operators = ['is', 'is not', 'in', 'not in']
   this.inputData_.first.check = ezP.T3.Expr.Check.comparison
-  goog.mixin({
+  goog.mixin(this.inputData_.last, {
     label: 'in',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.comparison,
-  }, this.inputData_.last)
+  })
   this.outputData_.check = ezP.T3.Expr.object_comparison
 }
 goog.inherits(ezP.DelegateSvg.Expr.object_comparison, ezP.DelegateSvg.Binary)
@@ -347,12 +347,12 @@ ezP.DelegateSvg.Expr.object_comparison.prototype.getContent = function (block, o
  */
 ezP.DelegateSvg.Expr.or_test_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.or_test_concrete.superClass_.constructor.call(this, prototypeName)
-  goog.mixin({
+  this.inputData_.first.check = ezP.T3.Expr.Check.or_test
+  goog.mixin(this.inputData_.last, {
     label: 'or',
     css_class: 'ezp-code-reserved',
-    check: ezP.T3.Expr.Check.or_test,
-  }, this.inputData_.first,)
-  this.inputData_.last.check = ezP.T3.Expr.Check.and_test
+    check: ezP.T3.Expr.Check.and_test,
+  })
   this.outputData_.check = ezP.T3.Expr.or_test_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.or_test_concrete, ezP.DelegateSvg.Binary)
@@ -368,12 +368,12 @@ ezP.DelegateSvg.Manager.register('or_test_concrete')
  */
 ezP.DelegateSvg.Expr.and_test_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.and_test_concrete.superClass_.constructor.call(this, prototypeName)
-  goog.mixin({
+  this.inputData_.first.check = ezP.T3.Expr.Check.and_test
+  goog.mixin(this.inputData_.last, {
     label: 'and',
     css_class: 'ezp-code-reserved',
-    check: ezP.T3.Expr.Check.and_test,
-  }, this.inputData_.first)
-  this.inputData_.last.check = ezP.T3.Expr.Check.not_test
+    check: ezP.T3.Expr.Check.not_test,
+  })
   this.outputData_.check = ezP.T3.Expr.and_test_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.and_test_concrete, ezP.DelegateSvg.Binary)

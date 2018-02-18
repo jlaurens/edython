@@ -275,7 +275,7 @@ ezP.Delegate.prototype.initBlock = function (block) {
       ezp.didDisconnect = D.didDisconnect
     }
     if (D.do && Object.keys(D.do).length) {
-      goog.mixin(D.do, ezp)
+      goog.mixin(ezp, D.do)
     }
   } else if ((D = this.statementData_) && Object.keys(D).length) {
     if (D.key) {

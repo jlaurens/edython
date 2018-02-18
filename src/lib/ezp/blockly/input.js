@@ -33,7 +33,7 @@ ezP.Input.setupEzpData = function (input, data) {
       // s7r_: false,// consolidator, whether the input is a separator
     }
     if (data) {
-      goog.mixin(data, input.ezpData)
+      goog.mixin(input.ezpData, data)
       if (input.ezpData.n !== undefined && input.ezpData.sep !== undefined) {
         input.ezpData.listed_ = true
       }
