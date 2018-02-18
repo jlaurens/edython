@@ -12,8 +12,53 @@
 'use strict'
 
 goog.provide('ezP.DelegateSvg.Operator')
+goog.provide('ezP.MixinSvg.Operator')
 
 goog.require('ezP.DelegateSvg.Expr')
+
+// Declare the mixins first
+
+/**
+ * Inits the various input data.
+ * Called by the constructor.
+ * Separated to be mixed in.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.MixinSvg.Operator.initData = function (prototypeName) {
+  this.inputData_ = {
+    last: {
+      key: ezP.Const.Input.RHS,
+      css_class: 'ezp-code',
+      hole_value: 'name',
+    },
+  }
+}
+
+/**
+ * Records the operator as attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.MixinSvg.Operator.toDom = function (block, element) {
+  element.setAttribute('operator', this.inputs.last.fieldLabel.getText())
+}
+
+/**
+ * Set the operator from the attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.MixinSvg.Operator.fromDom = function (block, element) {
+  var op = element.getAttribute('operator')
+  if (this.operators && this.operators.indexOf(op) >= 0) {
+    this.inputs.last.fieldLabel.setValue(op)
+  }
+}
 
 /**
  * Class for a DelegateSvg, [...] op ... block.
@@ -26,45 +71,12 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Operator = function (prototypeName) {
   ezP.DelegateSvg.Operator.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
-    last: {
-      css_class: 'ezp-code',
-      key: ezP.Const.Input.RHS,
-      hole_value: 'name',
-    },
-  }
 }
 goog.inherits(ezP.DelegateSvg.Operator, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Operator.prototype.operators = undefined
 
-/**
- * Final tune up depending on the block.
- * Default implementation does nothing.
- * @param {!Blockly.Block} block.
- * @param {!Element} element dom element to be completed.
- * @override
- */
-ezP.DelegateSvg.Operator.prototype.toDom = function (block, element) {
-  element.setAttribute('operator', this.inputs.last.fieldLabel.getText())
-}
-
-/**
- * Final tune up depending on the block.
- * Default implementation does nothing.
- * @param {!Blockly.Block} block.
- * @param {!Element} element dom element to be completed.
- * @override
- */
-ezP.DelegateSvg.Operator.prototype.fromDom = function (block, element) {
-  ezP.DelegateSvg.Operator.superClass_.fromDom.call(this, block, element)
-  var op = element.getAttribute('operator')
-  if (this.operators && this.operators.indexOf(op) >= 0) {
-    this.inputs.last.fieldLabel.setValue(op)
-  }
-}
-
-ezP.ID.USE_OPERATOR  = 'USE_OPERATOR'
+ezP.MixinSvg(ezP.DelegateSvg.Operator, 'Operator')
 
 /**
  * Get the content for the menu item.
@@ -82,28 +94,8 @@ ezP.DelegateSvg.Operator.prototype.getContent = /* function (block, op) {
  * @private
  */
 ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  if (this.operators && this.operators.length > 1) {
-    var value = this.inputs.last.fieldLabel.getValue()
-    var ezp = this
-    var F = function(op) {
-      var menuItem = new ezP.MenuItem(
-        ezp.getContent(block, op),
-        {
-          action: ezP.ID.USE_OPERATOR,
-          operator: op
-        }
-      )
-      menuItem.setEnabled(value != op)
-      mgr.addChild(menuItem, true)
-      goog.dom.classlist.add(menuItem.getElement().firstChild, 'ezp-code')
-    }
-    for (var i = 0; i<this.operators.length; i++) {
-      F(this.operators[i])
-    }
-    ezP.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this, block, mgr)
-    return true
-  }
-  return ezP.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  var yorn = mgr.populateOperator(block)
+  return ezP.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
 /**
@@ -114,26 +106,8 @@ ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
  * the MenuItem selected within menu.
  */
 ezP.DelegateSvg.Operator.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
-  var model = event.target.getModel()
-  var action = model.action
-  var op = model.operator
-  if (action == ezP.ID.USE_OPERATOR) {
-    if (!this.operators || this.operators.indexOf(op) < 0) {
-      return true
-    }
-    var field = this.inputs.last.fieldLabel
-    var old = field.getValue()
-    if (old == op) {
-      return true
-    }
-    if (Blockly.Events.isEnabled()) {
-      Blockly.Events.fire(new Blockly.Events.BlockChange(
-        block, 'field', field.ezpData.key, old, op));
-    }
-    field.setValue(op)
-    return true
-  }
-  return ezP.DelegateSvg.Operator.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
+  
+  return mgr.handleActionOperator(block, event) || ezP.DelegateSvg.Operator.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
 }
 
 //////////////////////  u_expr_concrete  /////////////////////////
@@ -150,8 +124,10 @@ ezP.DelegateSvg.Expr.u_expr_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.u_expr_concrete.superClass_.constructor.call(this, prototypeName)
   this.outputData_.check = ezP.T3.Expr.u_expr_concrete
   this.operators = ['-', '+', '~']
-  this.inputData_.last.label = '-'
-  this.inputData_.last.check = ezP.T3.Expr.Check.u_expr
+  goog.mixin({
+    label: this.operators[0],
+    check: ezP.T3.Expr.Check.u_expr
+  }, this.inputData_.last)
 }
 goog.inherits(ezP.DelegateSvg.Expr.u_expr_concrete, ezP.DelegateSvg.Operator)
 ezP.DelegateSvg.Manager.register('u_expr_concrete')
@@ -339,11 +315,11 @@ ezP.DelegateSvg.Expr.object_comparison = function (prototypeName) {
   ezP.DelegateSvg.Expr.object_comparison.superClass_.constructor.call(this, prototypeName)
   this.operators = ['is', 'is not', 'in', 'not in']
   this.inputData_.first.check = ezP.T3.Expr.Check.comparison
-  goog.mixin(this.inputData_.last, {
+  goog.mixin({
     label: 'in',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.comparison,
-  })
+  }, this.inputData_.last)
   this.outputData_.check = ezP.T3.Expr.object_comparison
 }
 goog.inherits(ezP.DelegateSvg.Expr.object_comparison, ezP.DelegateSvg.Binary)
@@ -371,9 +347,11 @@ ezP.DelegateSvg.Expr.object_comparison.prototype.getContent = function (block, o
  */
 ezP.DelegateSvg.Expr.or_test_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.or_test_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first.check = ezP.T3.Expr.Check.or_test
-  this.inputData_.last.label = 'or'
-  this.inputData_.last.css_class = 'ezp-code-reserved'
+  goog.mixin({
+    label: 'or',
+    css_class: 'ezp-code-reserved',
+    check: ezP.T3.Expr.Check.or_test,
+  }, this.inputData_.first,)
   this.inputData_.last.check = ezP.T3.Expr.Check.and_test
   this.outputData_.check = ezP.T3.Expr.or_test_concrete
 }
@@ -390,9 +368,11 @@ ezP.DelegateSvg.Manager.register('or_test_concrete')
  */
 ezP.DelegateSvg.Expr.and_test_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.and_test_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first.check = ezP.T3.Expr.Check.and_test
-  this.inputData_.last.label = 'and'
-  this.inputData_.last.css_class = 'ezp-code-reserved'
+  goog.mixin({
+    label: 'and',
+    css_class: 'ezp-code-reserved',
+    check: ezP.T3.Expr.Check.and_test,
+  }, this.inputData_.first)
   this.inputData_.last.check = ezP.T3.Expr.Check.not_test
   this.outputData_.check = ezP.T3.Expr.and_test_concrete
 }

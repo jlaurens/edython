@@ -97,10 +97,10 @@ docstring_top_stmt > top_docstring_stmt
 global_stmt ::=  "global" identifier ("," identifier)*
 nonlocal_stmt ::=  "nonlocal" identifier ("," identifier)*
 <pre>
-global_or_nonlocal_stmt ::=  global_stmt | nonlocal_stmt
-global_stmt ::=  "global" identifier_list
-identifier_list ::= identifier ("," identifier)*
-nonlocal_stmt ::=  "nonlocal" identifier_list
+global_stmt ::= IGNORE
+nonlocal_stmt ::=  IGNORE
+global_nonlocal_stmt ::= ("global"|"nonlocal") non_void_identifier_list
+non_void_identifier_list ::= identifier ("," identifier)*
 </pre>
 
 

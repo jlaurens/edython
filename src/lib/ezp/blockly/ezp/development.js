@@ -195,6 +195,12 @@ ezP.T3.Expr.Check.expression,
 ezP.T3.Expr.Check.expression_nocond,
 )
 
+ezP.DelegateSvg.Stmt.global_nonlocal_stmt.workspaceBlocks =
+[
+  ezP.T3.Stmt.global_nonlocal_stmt,
+  ezP.T3.Expr.non_void_identifier_list,
+  ezP.T3.Expr.identifier,
+]
 
 // in progress
 

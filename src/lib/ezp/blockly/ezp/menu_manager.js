@@ -123,8 +123,8 @@ ezP.MenuManager.prototype.init = function (block, e) {
  * @private
  */
 ezP.MenuManager.prototype.showMenu = function (block, e) {
-  this.init(block, e)
   var target = block && block.ezp.getWrappedTargetBlock(block) || block
+  this.init(target, e)
   this.shouldSeparate(target.ezp.populateContextMenuFirst_(target, this))
   this.shouldSeparate(target.ezp.populateContextMenuMiddle_(target, this))
   target.ezp.populateContextMenuLast_(target, this)
@@ -733,3 +733,64 @@ ezP.MenuManager.prototype.handleAction_wrap_alternate = function (block, event) 
   return false
 }
 
+ezP.ID.USE_OPERATOR  = 'USE_OPERATOR'
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @private
+ */
+ezP.MenuManager.prototype.populateOperator = function (block) {
+  var ezp = block.ezp
+  if (ezp.operators && ezp.operators.length > 1) {
+    var value = ezp.inputs.last.fieldLabel.getValue()
+    var ezp = ezp
+    var F = function(op) {
+      var menuItem = new ezP.MenuItem(
+        ezp.getContent(block, op),
+        {
+          action: ezP.ID.USE_OPERATOR,
+          operator: op
+        }
+      )
+      menuItem.setEnabled(value != op)
+      this.addChild(menuItem, true)
+      goog.dom.classlist.add(menuItem.getElement().firstChild, 'ezp-code')
+    }
+    for (var i = 0; i<ezp.operators.length; i++) {
+      F.call(this, ezp.operators[i])
+    }
+    return true
+  }
+  return false
+}
+
+/**
+ * Handle the selection of an item in the context dropdown menu.
+ * @param {!Blockly.Block} block, owner of the delegate.
+ * @param {!goog....} event The event containing as target
+ * the MenuItem selected within menu.
+ */
+ezP.MenuManager.prototype.handleActionOperator = function (block, event) {
+  var model = event.target.getModel()
+  var action = model.action
+  var op = model.operator
+  var ezp = block.ezp
+  if (action == ezP.ID.USE_OPERATOR) {
+    if (!ezp.operators || ezp.operators.indexOf(op) < 0) {
+      return true
+    }
+    var field = ezp.inputs.last.fieldLabel
+    var old = field.getValue()
+    if (old == op) {
+      return true
+    }
+    if (Blockly.Events.isEnabled()) {
+      Blockly.Events.fire(new Blockly.Events.BlockChange(
+        block, 'field', field.ezpData.key, old, op));
+    }
+    field.setValue(op)
+    return true
+  }
+  return false
+}

@@ -12,10 +12,41 @@
 'use strict'
 
 goog.provide('ezP.DelegateSvg')
+goog.provide('ezP.MixinSvg')
 goog.provide('ezP.HoleFiller')
 
 goog.require('ezP.Delegate')
 goog.forwardDeclare('ezP.BlockSvg')
+
+/**
+ * mixin manager.
+ * Adds mixin contents to constructor's prototype
+ * if not already there.
+ * Using strings as parameters is a facility that
+ * must not be used in case the constructor is meant
+ * to replace an already registered one.
+ * For objects in constructor.mixins, does a mixin
+ * on the constructor's prototype.
+ * Mixins do not play well with inheritance.
+ * For ezPython.
+ * @param {!constructor} constructor is either a constructor or the name of a constructor.
+ */
+ezP.MixinSvg = function (constructor, mixins) {
+  var C = ezP.DelegateSvg.Manager.get(constructor) || constructor
+  var Ms = goog.isArray(mixins)? mixins:
+  mixins? [mixins]: C.mixins
+  if (Ms) {
+    var target = C.prototype
+    for (var i = 0, m; (m = Ms[i++]);) {
+      var source = ezP.MixinSvg[m] || m
+      for (var x in source) {
+        if (!target.hasOwnProperty(x)) {
+          target[x] = source[x]
+        }
+      }
+    }
+  }
+}
 
 /**
  * Class for a DelegateSvg.
@@ -52,7 +83,8 @@ ezP.DelegateSvg.Manager.register = function (key) {
   } else {
     throw "Unknown block ezP.T3.Expr or ezP.T3.Stmt key: "+key
   }
-  ezP.DelegateSvg.Manager.registerDelegate(prototypeName, Ctor)
+  ezP.MixinSvg(Ctor) // before registering
+  ezP.DelegateSvg.Manager.registerDelegate_(prototypeName, Ctor)
   available.push(prototypeName)
   Blockly.Blocks[prototypeName] = {}
 }
@@ -102,10 +134,10 @@ ezP.DelegateSvg.prototype.fieldLabelEnd = undefined
  * three inputs can be created on the fly.
  * The data is an object with following properties: first, middle, last
  * each value is an object with properties
+ * - key, string uniquely identify the value input. When absent, a dummy input is created
  * - label, optional string
- * - key, string uniquely identify the input, defaults to ezP.Const.Input.WRAP
- * - check, [an array of] strings, types to check the connections 
  * - wrap, optional, the type of the block wrapped by this input
+ * - check, [an array of] strings, types to check the connections. When absent, replaced by `wrap` if any.
  * - optional, true/false whether the connection is optional, only when no wrap.
  */
 
@@ -156,7 +188,7 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
             ezp.didDisconnect = D.didDisconnect
           }
           if (D.do && Object.keys(D.do).length) {
-            goog.mixin(ezp, D.do)
+            goog.mixin(D.do, ezp)
           }
           if (D.optional) {//svg
             ezp.optional_ = true

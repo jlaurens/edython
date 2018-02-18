@@ -12,6 +12,7 @@
 'use strict'
 
 goog.provide('ezP.Delegate')
+goog.provide('ezP.Mixin')
 goog.provide('ezP.TupleConsolidator')
 
 goog.require('ezP.Helper')
@@ -19,6 +20,36 @@ goog.require('Blockly.Blocks')
 
 goog.require('ezP.T3')
 goog.forwardDeclare('ezP.Block')
+
+/**
+ * mixin manager.
+ * Adds mixin contents to constructor's prototype
+ * if not already there.
+ * Using strings as parameters is a facility that
+ * must not be used in case the constructor is meant
+ * to replace an already registered one.
+ * For objects in constructor.mixins, does a mixin
+ * on the constructor's prototype
+ * Mixins do not play well with inheritance.
+ * For ezPython.
+ * @param {!constructor} constructor is either a constructor or the name of a constructor.
+ */
+ezP.Mixin = function (constructor) {
+  var C = ezP.Delegate.Manager.get(constructor) || constructor
+  var Ms = goog.isArray(mixins)? mixins:
+  mixins? [mixins]: C.mixins
+  if (Ms) {
+    var target = C.prototype
+    for (var i = 0, m; (m = Ms[i++]);) {
+      var source = ezP.Mixin[m] || m
+      for (var x in source) {
+        if (!target.hasOwnProperty(x)) {
+          target[x] = source[x]
+        }
+      }
+    }
+  }
+}
 
 /**
  * Class for a Block Delegate.
@@ -30,9 +61,22 @@ goog.forwardDeclare('ezP.Block')
  */
 ezP.Delegate = function (prototypeName) {
   ezP.Delegate.superClass_.constructor.call(this)
-  this.inputData_ = {}
+  this.initData()
 }
 goog.inherits(ezP.Delegate, ezP.Helper)
+
+/**
+ * Inits the various input data.
+ * Called by the constructor.
+ * Separated to be mixed in.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.Delegate.prototype.initData = function (prototypeName) {
+  this.inputData_ = {}
+}
 
 ezP.Delegate.prototype.inputData = undefined
 ezP.Delegate.prototype.outputData = undefined
@@ -102,8 +146,9 @@ ezP.Delegate.Manager = function () {
    * The last delegate registered for a given prototype name wins.
    * @param {?string} prototypeName Name of the language object containing
    * @param {Object} constructor
+   * @private
    */
-  me.registerDelegate = function (prototypeName, Ctor) {
+  me.registerDelegate_ = function (prototypeName, Ctor) {
     // console.log(prototypeName+' -> '+Ctor)
     Ctors[prototypeName] = Ctor
     goog.asserts.assert(me.create(prototypeName), 'Registration failure: '+prototypeName)
@@ -140,7 +185,8 @@ ezP.Delegate.Manager = function () {
     } else {
       throw "Unknown block ezP.T3.Expr or ezP.T3.Stmt key: "+key
     }
-    me.registerDelegate(prototypeName, Ctor)
+    ezP.Mixin(Ctor)
+    me.registerDelegate_(prototypeName, Ctor)
     available.push(prototypeName)
     Blockly.Blocks[prototypeName] = {}
   }
@@ -150,11 +196,11 @@ ezP.Delegate.Manager = function () {
       k = keyedPrototypeNames[k]
       if (typeof k === 'string' || k instanceof String) {
 //        console.log('Registering', k)
-        me.registerDelegate(k, Ctor)
+        me.registerDelegate_(k, Ctor)
         if (fake) {
           k = k.replace('ezp_', 'ezp_fake_')
 //          console.log('Registering', k)
-          me.registerDelegate(k, Ctor)
+          me.registerDelegate_(k, Ctor)
         }
       }
     }
@@ -229,7 +275,7 @@ ezP.Delegate.prototype.initBlock = function (block) {
       ezp.didDisconnect = D.didDisconnect
     }
     if (D.do && Object.keys(D.do).length) {
-      goog.mixin(ezp, D.do)
+      goog.mixin(D.do, ezp)
     }
   } else if ((D = this.statementData_) && Object.keys(D).length) {
     if (D.key) {
