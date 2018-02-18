@@ -864,6 +864,9 @@ ezP.ID.DELIMITER_REMOVE = 'DELIMITER_REMOVE'
 
 /**
  * Handle the selection of an item in the first part of the context dropdown menu.
+ * All these delimiters are wrappers, such that
+ * insertion and deletion involve 2 levels,
+ * hence the grandparent...
  * Default implementation returns false.
  * @param {!Blockly.Block} block The Menu component clicked.
  * @param {!goog....} event The event containing as target
@@ -875,7 +878,7 @@ ezP.MenuManager.prototype.handleAction_movable_delimiter = function (block, even
   var type = model.type
   var actor = model.actor || block
   if (action === ezP.ID.DELIMITER_INSERT) {
-    console.log('ezP.MenuManager.prototype.handleAction_movable_parent')
+    console.log('ezP.MenuManager.prototype.handleAction_movable_delimiter')
     actor.ezp.insertGrandParent(actor, type, model.key)
     return true
   } else if (action === ezP.ID.DELIMITER_REMOVE) {
@@ -885,11 +888,11 @@ ezP.MenuManager.prototype.handleAction_movable_delimiter = function (block, even
 }
 
 /**
- * Populate the context menu for the given block.
+ * The menuitem used to populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @private
  */
-ezP.MenuManager.prototype.get_movable_parent_menuitem_content = function (type) {
+ezP.MenuManager.prototype.get_movable_delimiter_menuitem_content = function (type) {
   switch(type) {
     case ezP.T3.Expr.parent_module: 
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -947,41 +950,47 @@ ezP.MenuManager.prototype.get_movable_parent_menuitem_content = function (type) 
  * @param {!string} type the type of the parent to be.
  * @private
  */
-ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, type) {
-  var c8n = block.outputConnection
-  if (!c8n) {
+ezP.MenuManager.prototype.populate_insert_as_top_delimiter = function (block, type) {
+  var outC8n = block.outputConnection
+  if (!outC8n) {
     // this is a statement block
     return false
   }
-  var check = c8n.check_
+  var check = outC8n.check_
   var D = ezP.Delegate.Manager.getInputData(type)
   var mgr = this
   var F = function(K) {
     var d = D[K]
-    if (d && !d.wrap) {
-      if (check && d.check) {
-        var found = false
-        for (var _ = 0; _ < d.check.length; ++_) {
-          if (check.indexOf(d.check[_]) >= 0) {
-            found = true
-            break
-          }
-        }
-        if (!found) {
-          return false
+    if (!d) {
+      return false
+    }
+    var wrap = d.wrap
+    if (!wrap) {
+      return false
+    }
+    var DD = ezP.Delegate.Manager.getInputData(wrap)
+
+    if (check && d.check) {
+      var found = false
+      for (var _ = 0; _ < d.check.length; ++_) {
+        if (check.indexOf(d.check[_]) >= 0) {
+          found = true
+          break
         }
       }
-      var content = mgr.get_movable_parent_menuitem_content(type)
-      var MI = new ezP.MenuItem(content, {
-        action: ezP.ID.PARENT_INSERT,
-        type: type,
-        key: d.key || K,
-        actor: block,
-      })
-      mgr.addInsertChild(MI)
-      return true
+      if (!found) {
+        return false
+      }
     }
-    return false
+    var content = mgr.get_movable_delimiter_menuitem_content(type)
+    var MI = new ezP.MenuItem(content, {
+      action: ezP.ID.DELIMITER_INSERT,
+      type: type,
+      key: d.key || K,
+      actor: block,
+    })
+    mgr.addInsertChild(MI)
+    return true
   }
   return F('first') || F('middle') || F('last')
 }
@@ -995,7 +1004,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, type)
  * @param {!string} type the type of the parent to be.
  * @private
  */
-ezP.MenuManager.prototype.populate_insert_parent = function (block, type, top) {
+ezP.MenuManager.prototype.populate_insert_delimiter = function (block, type, top) {
   // can we insert a block typed type between the block and
   // the target of its output connection
   var child = block

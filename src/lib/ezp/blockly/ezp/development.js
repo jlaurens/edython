@@ -20,16 +20,10 @@ goog.require('ezP.DelegateSvg.Import')
 
 ezP.Do.arraysMerged = function(/* list of arrays */) {
   var RA = []
-  for (var i = 0; i < arguments.length; i++) {
-    var Xs = arguments[i]
-    var j = 0
-    for (; j < Xs.length; ++j) {
-      var x = Xs[j]
-      if (RA.indexOf(x) < 0) {
-        RA.push(x)
-      }
-    }
+  for (var i = 0, Xs; Xs = arguments[i++];) {
+    goog.array.extend(RA,Xs)
   }
+  goog.array.removeDuplicates(RA)
   return RA
 }
 

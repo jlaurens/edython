@@ -42,26 +42,15 @@ ezP.Consolidator.prototype.consolidate = undefined
  * List consolidator.
  * Remove empty place holders, add separators
  * Main entry: consolidate
- * @param {!Array} require, an array of required types, in general one of the ezp.T3.Checkd....
- * @param {Bool} canBeVoid, whether the list can be void. Non void lists will display a large placeholder.
- * @param {String} defaultSep, the separator between the list items
+ * @param {!Object} data, all the data needed
  */
-ezP.Consolidator.List = function(require, canBeVoid, defaultSep, plugged) {
-  goog.asserts.assert(require, 'Lists must type check their items.')
-  this.require = require
-  if (canBeVoid !== undefined) {
-    this.canBeVoid = canBeVoid
+ezP.Consolidator.List = function(data) {
+  if (!data.check && !data.consolidator) {
+    console.log(data)
   }
-  if (defaultSep !== undefined) {
-    this.defaultSep = defaultSep
-  }
-  this.plugged = plugged
+  goog.asserts.assert(data.check || data.consolidator, 'Lists must type check their items or ... ')
+  this.data = data
 }
-
-ezP.Consolidator.List.prototype.require = undefined
-ezP.Consolidator.List.prototype.canBeVoid = true
-ezP.Consolidator.List.prototype.defaultSep = ','
-ezP.Consolidator.List.prototype.plugged = undefined
 
 /**
  * Setup the io parameter dictionary.
@@ -93,7 +82,7 @@ ezP.Consolidator.List.prototype.nextInput = function (io) {
  * @param {!Object} io parameter.
  */
 ezP.Consolidator.List.prototype.getCheck = function (io) {
-  return this.require
+  return this.data.check
 }
 
 /**
@@ -109,7 +98,7 @@ ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io, optional =
   io.input.setCheck(check)
   io.c8n.ezp.optional_ = optional
   io.c8n.ezp.plugged_ = this.plugged
-  if (!io.connected && !this.canBeVoid && !io.c8n.isConnected()) {
+  if (!io.connected && !this.data.empty && !io.c8n.isConnected()) {
     io.c8n.ezp.hole_data = ezP.HoleFiller.getData(check, io.block.ezp.hole_value)
     io.block.ezp.can_fill_holes = io.block.ezp.can_fill_holes || !! io.c8n.ezp.hole_data
   }
@@ -169,10 +158,10 @@ ezP.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme) {
       io.input.fieldRow.shift().dispose()
     }
   } else if (!io.input.fieldRow.length) {
-    io.input.appendField(new ezP.FieldLabel(io.sep || this.defaultSep))
+    io.input.appendField(new ezP.FieldLabel(io.sep || this.data.sep))
   }
   io.input.setCheck(this.getCheck(io))
-  io.input.connection.ezp.plugged_ = this.plugged
+  io.input.connection.ezp.plugged_ = this.data.plugged
 }
 
 /**
@@ -223,7 +212,7 @@ ezP.Consolidator.List.prototype.cleanup = function(io) {
     io.i = io.placeholder
     this.setupIO(io)
     this.disposeFromStartToI(io)
-    this.doFinalizePlaceholder(io, this.canBeVoid)
+    this.doFinalizePlaceholder(io, this.data.empty)
     this.nextInput(io)
     this.disposeFromIToEnd(io)
   } else {
@@ -232,7 +221,7 @@ ezP.Consolidator.List.prototype.cleanup = function(io) {
     if (io.end === io.start) {
       this.insertPlaceholderAtI(io)
     }
-    if (this.canBeVoid) {
+    if (this.data.empty) {
       this.doFinalizeSeparator(io, true)
     } else {
       this.doFinalizePlaceholder(io)          
@@ -353,7 +342,7 @@ ezP.Consolidator.List.prototype.walk = function(io) {
  */
 ezP.Consolidator.List.prototype.prepareToWalk = function(io) {
   io.n = 0
-  io.sep = io.ezp.sep || this.defaultSep
+  io.sep = io.ezp.sep || this.data.sep
   io.start = io.i
   io.connected = 0
   io.s7r_expected = io.list.length>1
@@ -390,41 +379,38 @@ ezP.Consolidator.List.prototype.consolidate = function(block) {
  * Management of lists with one or many items.
  * When there is only one element of the single type,
  * there is no room for any other element.
- * require_all is the union of single and require.
+ * `all` is the union of single and check.
  * Main entry: consolidate
- * In the list there might be either as many blocks of type require
+ * In the list there might be either as many blocks of type check
  * or only one block of type single.
  * Both given types must be orthogonal.
  * There should not exist blocks that provide both types.
- * @param {!String} require the required type for many items
+ * @param {!String} check the required type for many items
  * @param {!String} single the required type for a single element....
- * @param {!String} require_all the required type for a single element....
  */
-ezP.Consolidator.List.Singled = function(require, single, require_all, canBeVoid = true, defaultSep = ',') {
-  ezP.Consolidator.List.Singled.superClass_.constructor.call(this, require, canBeVoid, defaultSep)
-  this.single = single
-  this.require_all = require_all
+ezP.Consolidator.List.Singled = function(data) {
+  ezP.Consolidator.List.Singled.superClass_.constructor.call(data)
 }
 goog.inherits(ezP.Consolidator.List.Singled, ezP.Consolidator.List)
 
 /**
  * Returns the required types for the current input.
- * Returns require_all if the list is void
+ * Returns `all` if the list is void
  * or if there is only one item to be replaced.
- * In all other situations, return this.require.
+ * In all other situations, return this.data.check.
  * @param {!Object} io parameter.
  */
 ezP.Consolidator.List.Singled.prototype.getCheck = function (io) {
   if (io.single || io.end < io.start + 2) {
     // a single block or no block at all
-    return this.require_all
+    return this.data.all
   } else if (io.end == io.start + 3 && io.i == io.start + 1) {
     // there is only one item in the list
     // and it can be replaced by any kind of block
-    return this.require_all
+    return this.data.all
   } else {
-    // blocks of type require are already there
-    return this.require
+    // blocks of type check are already there
+    return this.data.check
   }
 }
 
@@ -434,7 +420,7 @@ ezP.Consolidator.List.Singled.prototype.getCheck = function (io) {
 ezP.Consolidator.List.Singled.prototype.one_step = function(io) {
   ezP.Consolidator.List.Singled.superClass_.one_step.call(this, io)
   var target = io.c8n.targetConnection
-  if (target && target.check_.indexOf(this.single) >= 0) {
+  if (target && target.check_.indexOf(this.data.single) >= 0) {
     io.single = io.i
   }
 }
@@ -486,7 +472,11 @@ ezP.Consolidator.List.Singled.prototype.cleanup = function(io) {
  * @param {!String} single, the required type for a single element....
  */
 ezP.Consolidator.Arguments = function() {
-  ezP.Consolidator.Arguments.superClass_.constructor.call(this, ezP.T3.Expr.Check.primary, true, ',')
+  ezP.Consolidator.Arguments.superClass_.constructor.call(this, {
+    check: ezP.T3.Expr.Check.primary,
+    empty: true,
+    sep: ',',
+  })
 }
 goog.inherits(ezP.Consolidator.Arguments, ezP.Consolidator.List)
 
@@ -726,25 +716,29 @@ ezP.Consolidator.Arguments.prototype.getCheck = function (io) {
  *    all following parameters up until the “*”
  *    must also have a default value...
  */
-ezP.Consolidator.List.Parameter = function() {
-  ezP.Consolidator.List.Parameter.superClass_.constructor.call(this, ezP.T3.Expr.Check.primary, true, ',')
+ezP.Consolidator.Parameters = function() {
+  ezP.Consolidator.Parameters.superClass_.constructor.call(this, {
+    check: ezP.T3.Expr.Check.primary,
+    empty: true,
+    serp: ',',
+  })
 }
-goog.inherits(ezP.Consolidator.List.Parameter, ezP.Consolidator.List)
+goog.inherits(ezP.Consolidator.Parameters, ezP.Consolidator.List)
 
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
  * @param {Object} io, parameters....
  */
-ezP.Consolidator.List.Parameter.prototype.prepareToWalk = function(io) {
-  ezP.Consolidator.List.Parameter.superClass_.prepareToWalk.call(this, io)
+ezP.Consolidator.Parameters.prototype.prepareToWalk = function(io) {
+  ezP.Consolidator.Parameters.superClass_.prepareToWalk.call(this, io)
   io.first_parameter_star = undefined
   io.first_parameter_star_star = undefined
   io.first_parameter_default = undefined
   io.errors = 0
 }
 
-ezP.Consolidator.List.Parameter.Type = {
+ezP.Consolidator.Parameters.Type = {
   unconnected: 'unconnected',
   parameter: 'parameter',
   parameter_default: 'parameter_default',
@@ -756,49 +750,49 @@ ezP.Consolidator.List.Parameter.Type = {
  * Whether the input corresponds to an identifier...
  * @param {Object} io, parameters....
  */
-ezP.Consolidator.List.Parameter.prototype.getCheckType = function(io) {
+ezP.Consolidator.Parameters.prototype.getCheckType = function(io) {
   var target = io.c8n.targetBlock()
   if (!target) {
-    return ezP.Consolidator.List.Parameter.Type.unconnected
+    return ezP.Consolidator.Parameters.Type.unconnected
   }
   var check = target.outputConnection.check_
   if (goog.array.contains(check,ezP.T3.Expr.parameter_star)) {
-    return ezP.Consolidator.List.Parameter.Type.parameter_star
+    return ezP.Consolidator.Parameters.Type.parameter_star
   } else if (goog.array.contains(check,ezP.T3.Expr.parameter_star_star)) {
-    return ezP.Consolidator.List.Parameter.Type.parameter_star_star
+    return ezP.Consolidator.Parameters.Type.parameter_star_star
   } else if (goog.array.contains(check,ezP.T3.Expr.parameter_default)) {
-    return ezP.Consolidator.List.Parameter.Type.parameter_default
+    return ezP.Consolidator.Parameters.Type.parameter_default
   } else {
-    return ezP.Consolidator.List.Parameter.Type.parameter
+    return ezP.Consolidator.Parameters.Type.parameter
   }
 }
 
 /**
  * Call the inherited method, then records the various first_... indices
  */
-ezP.Consolidator.List.Parameter.prototype.one_step = function(io) {
+ezP.Consolidator.Parameters.prototype.one_step = function(io) {
   // inherit
-  ezP.Consolidator.List.Parameter.superClass_.one_step.call(this, io)
+  ezP.Consolidator.Parameters.superClass_.one_step.call(this, io)
   // move input around if necessary
   io.ezp.parameter_type_ = this.getCheckType(io)
   io.ezp.error_ = false
-  if (io.ezp.parameter_type_ == ezP.Consolidator.List.Parameter.Type.unconnected) {
+  if (io.ezp.parameter_type_ == ezP.Consolidator.Parameters.Type.unconnected) {
     return
   }
   var i = undefined
   switch(io.ezp.parameter_type_) {
-    case ezP.Consolidator.List.Parameter.Type.parameter_star_star:
+    case ezP.Consolidator.Parameters.Type.parameter_star_star:
       if (!io.first_parameter_star_star) {
         io.first_parameter_star_star = io.input
       }
       break
-    case ezP.Consolidator.List.Parameter.Type.parameter_star:
+    case ezP.Consolidator.Parameters.Type.parameter_star:
       if (!io.first_parameter_star) {
         // this is an error
         io.first_parameter_star = io.input
       }
       break
-    case ezP.Consolidator.List.Parameter.Type.parameter_default:
+    case ezP.Consolidator.Parameters.Type.parameter_default:
       if (!io.first_parameter_default) {
         io.first_parameter_default = io.input
       }
@@ -809,15 +803,15 @@ ezP.Consolidator.List.Parameter.prototype.one_step = function(io) {
  * Once the whole list has been managed,
  * there might be unwanted things.
  */
-ezP.Consolidator.List.Parameter.prototype.cleanup = function(io) {
-  ezP.Consolidator.List.Parameter.superClass_.cleanup.call(this, io)
+ezP.Consolidator.Parameters.prototype.cleanup = function(io) {
+  ezP.Consolidator.Parameters.superClass_.cleanup.call(this, io)
   // first remove all the extra ** parameters
   var i = io.list.indexOf(io.first_parameter_star_star)
   if (i>=0) {
     io.i = i+2
     while (io.i < io.end) {
       this.setupIO(io)
-      if (io.ezp.parameter_type_ == ezP.Consolidator.List.Parameter.Type.parameter_star_star) {
+      if (io.ezp.parameter_type_ == ezP.Consolidator.Parameters.Type.parameter_star_star) {
         this.disposeAtI(io, io.i)
         this.setupIO(io)
         if (io.ezp.s7r_) {
@@ -847,7 +841,7 @@ ezP.Consolidator.List.Parameter.prototype.cleanup = function(io) {
     io.i = i+2
     while (io.i < io.end) {
       this.setupIO(io)
-      if (io.ezp.parameter_type_ == ezP.Consolidator.List.Parameter.Type.parameter_star) {
+      if (io.ezp.parameter_type_ == ezP.Consolidator.Parameters.Type.parameter_star) {
         this.disposeAtI(io, io.i)
         this.setupIO(io)
         if (io.ezp.s7r_) {
@@ -865,7 +859,7 @@ ezP.Consolidator.List.Parameter.prototype.cleanup = function(io) {
   if (io.i>=0) {
     while( io.i < i) {
       this.setupIO(io)
-      if (io.ezp.parameter_type_ == ezP.Consolidator.List.Parameter.Type.parameter) {
+      if (io.ezp.parameter_type_ == ezP.Consolidator.Parameters.Type.parameter) {
         var target = io.c8n.targetBlock()
         target.ezp.missing_default_value_error_ = true
         // TODO: ask the block to change its own nature
@@ -881,7 +875,7 @@ ezP.Consolidator.List.Parameter.prototype.cleanup = function(io) {
  * This does not suppose that the list of input has been completely consolidated
  * @param {!Object} io parameter.
  */
-ezP.Consolidator.List.Parameter.prototype.getCheck = function (io) {
+ezP.Consolidator.Parameters.prototype.getCheck = function (io) {
   var can_star = !io.first_parameter_star || io.first_parameter_star == io.input
   var can_star_star = (!io.first_parameter_star_star && io.i == io.end-1) || io.first_parameter_star_star == io.input
   if (can_star_star) {

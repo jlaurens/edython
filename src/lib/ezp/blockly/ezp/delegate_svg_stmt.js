@@ -347,7 +347,11 @@ ezP.DelegateSvg.Manager.register('raise_stmt')
  */
 ezP.DelegateSvg.Expr.non_void_identifier_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.non_void_identifier_list.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.non_void_identifier_list, false, ',')
+  this.inputData_.list = {
+    check: ezP.T3.Expr.Check.non_void_identifier_list,
+    empty: false,
+    sep: ',',
+  }
   this.outputData_.check = ezP.T3.Expr.non_void_identifier_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.non_void_identifier_list, ezP.DelegateSvg.List)

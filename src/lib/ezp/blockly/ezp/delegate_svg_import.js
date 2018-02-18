@@ -113,7 +113,11 @@ ezP.DelegateSvg.Manager.register('module_concrete')
  */
 ezP.DelegateSvg.Expr.non_void_module_as_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.non_void_module_as_list.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.non_void_module_as_list, false, ',', ezP.T3.Expr.module_as)
+  this.inputData_.list = {
+    check: ezP.T3.Expr.Check.non_void_module_as_list,
+    empty: false,
+    sep: ',',
+  }
   this.outputData_.check = ezP.T3.Expr.non_void_module_as_list
   this.hole_value = 'module'
 }
@@ -183,9 +187,13 @@ ezP.DelegateSvg.Manager.register('import_identifier_as_concrete')
  */
 ezP.DelegateSvg.Expr.non_void_import_identifier_as_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.non_void_import_identifier_as_list.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.non_void_import_identifier_as_list, false, ',', ezP.T3.Expr.import_identifier_as)
+  this.inputData_.list = {
+    check: ezP.T3.Expr.Check.non_void_import_identifier_as_list,
+    empty: false,
+    sep: ',',
+    hole_value: 'name',
+  }
   this.outputData_.check = ezP.T3.Expr.non_void_import_identifier_as_list
-  this.hole_value = 'name'
 }
 goog.inherits(ezP.DelegateSvg.Expr.non_void_import_identifier_as_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('non_void_import_identifier_as_list')

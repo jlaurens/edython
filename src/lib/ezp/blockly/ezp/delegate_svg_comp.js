@@ -111,7 +111,11 @@ ezP.DelegateSvg.Manager.register('comp_if')
  */
 ezP.DelegateSvg.Expr.comp_iter_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.comp_iter_list.superClass_.constructor.call(this, prototypeName)
-  this.consolidator = new ezP.Consolidator.List(ezP.T3.Expr.Check.comp_iter,true,'')
+  this.inputData_.list = {
+    check: ezP.T3.Expr.Check.comp_iter,
+    empty: true,
+    sep: ',',
+  }
   this.outputData_.check = ezP.T3.Expr.comp_iter_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.comp_iter_list, ezP.DelegateSvg.List)
