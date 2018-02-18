@@ -39,7 +39,7 @@ ezP.BlockSvg = function (workspace, prototypeName, optId) {
 goog.inherits(ezP.BlockSvg, Blockly.BlockSvg)
 
 ezP.BlockSvg.prototype.init = function() {
-  this.ezp.initBlock_(this)
+  this.ezp.initBlock(this)
 }
 
 /**

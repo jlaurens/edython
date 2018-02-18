@@ -652,7 +652,7 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
     ezP.T3.Expr.call_expr,
     ezP.T3.Expr.slicing,
     ezP.T3.Expr.attributeref,
-  ]  
+  ]
   for (var _ = 0, type; (type = movableParents[_]); ++_) {
     this.populate_insert_parent(block, type, true)
     this.populate_remove_parent(block, type)
@@ -793,4 +793,288 @@ ezP.MenuManager.prototype.handleActionOperator = function (block, event) {
     return true
   }
   return false
+}
+
+ezP.ID.USE_OPERATOR  = 'USE_OPERATOR'
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @private
+ */
+ezP.MenuManager.prototype.populateDelimiters = function (block) {
+  var ezp = block.ezp
+  if (ezp.operators && ezp.operators.length > 1) {
+    var value = ezp.inputs.last.fieldLabel.getValue()
+    var ezp = ezp
+    var F = function(op) {
+      var menuItem = new ezP.MenuItem(
+        ezp.getContent(block, op),
+        {
+          action: ezP.ID.USE_OPERATOR,
+          operator: op
+        }
+      )
+      menuItem.setEnabled(value != op)
+      this.addChild(menuItem, true)
+      goog.dom.classlist.add(menuItem.getElement().firstChild, 'ezp-code')
+    }
+    for (var i = 0; i<ezp.operators.length; i++) {
+      F.call(this, ezp.operators[i])
+    }
+    return true
+  }
+  return false
+}
+
+/**
+ * Handle the selection of an item in the context dropdown menu.
+ * @param {!Blockly.Block} block, owner of the delegate.
+ * @param {!goog....} event The event containing as target
+ * the MenuItem selected within menu.
+ */
+ezP.MenuManager.prototype.handleActionDelimiters = function (block, event) {
+  var model = event.target.getModel()
+  var action = model.action
+  var op = model.operator
+  var ezp = block.ezp
+  if (action == ezP.ID.USE_OPERATOR) {
+    if (!ezp.operators || ezp.operators.indexOf(op) < 0) {
+      return true
+    }
+    var field = ezp.inputs.last.fieldLabel
+    var old = field.getValue()
+    if (old == op) {
+      return true
+    }
+    if (Blockly.Events.isEnabled()) {
+      Blockly.Events.fire(new Blockly.Events.BlockChange(
+        block, 'field', field.ezpData.key, old, op));
+    }
+    field.setValue(op)
+    return true
+  }
+  return false
+}
+
+// BELOW IS IN PROGRESS
+
+ezP.ID.DELIMITER_INSERT = 'DELIMITER_INSERT'
+ezP.ID.DELIMITER_REMOVE = 'DELIMITER_REMOVE'
+
+/**
+ * Handle the selection of an item in the first part of the context dropdown menu.
+ * Default implementation returns false.
+ * @param {!Blockly.Block} block The Menu component clicked.
+ * @param {!goog....} event The event containing as target
+ * the MenuItem selected within menu.
+ */
+ezP.MenuManager.prototype.handleAction_movable_delimiter = function (block, event) {
+  var model = event.target.getModel()
+  var action = model.action
+  var type = model.type
+  var actor = model.actor || block
+  if (action === ezP.ID.DELIMITER_INSERT) {
+    console.log('ezP.MenuManager.prototype.handleAction_movable_parent')
+    actor.ezp.insertGrandParent(actor, type, model.key)
+    return true
+  } else if (action === ezP.ID.DELIMITER_REMOVE) {
+    actor.ezp.bypassAndRemoveGrandParent(actor)
+  }
+  return false
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @private
+ */
+ezP.MenuManager.prototype.get_movable_parent_menuitem_content = function (type) {
+  switch(type) {
+    case ezP.T3.Expr.parent_module: 
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+        goog.dom.createTextNode('.'),
+      ),
+      goog.dom.createTextNode(' '+ezP.Msg.BEFORE),
+    )
+    case ezP.T3.Expr.module_concrete:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-placeholder',
+        goog.dom.createTextNode('module'),
+      ),
+      goog.dom.createTextNode('.'),
+    )
+    case ezP.T3.Expr.attributeref:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      goog.dom.createTextNode('.attribute'),
+    )
+    case ezP.T3.Expr.slicing:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      goog.dom.createTextNode('[...]'),
+    )
+    case ezP.T3.Expr.call_expr:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      goog.dom.createTextNode('(...)'),
+    )
+    case ezP.T3.Expr.module_as_concrete:
+    case ezP.T3.Expr.import_identifier_as_concrete:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
+        goog.dom.createTextNode('as'),
+      ),
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-placeholder',
+        goog.dom.createTextNode(' alias'),
+      )
+    )
+    case ezP.T3.Expr.u_expr_concrete:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+        goog.dom.createTextNode('-'),
+      ),
+      goog.dom.createTextNode(' '+ezP.Msg.BEFORE),
+    ) 
+    default:
+    return 'Parent '+type
+  }
+}
+
+/**
+ * Populate the context menu for the given block.
+ * Only for expressions.
+ * type is the type of the to be inserted parent block
+ * @param {!Blockly.Block} block The block.
+ * @param {!string} type the type of the parent to be.
+ * @private
+ */
+ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, type) {
+  var c8n = block.outputConnection
+  if (!c8n) {
+    // this is a statement block
+    return false
+  }
+  var check = c8n.check_
+  var D = ezP.Delegate.Manager.getInputData(type)
+  var mgr = this
+  var F = function(K) {
+    var d = D[K]
+    if (d && !d.wrap) {
+      if (check && d.check) {
+        var found = false
+        for (var _ = 0; _ < d.check.length; ++_) {
+          if (check.indexOf(d.check[_]) >= 0) {
+            found = true
+            break
+          }
+        }
+        if (!found) {
+          return false
+        }
+      }
+      var content = mgr.get_movable_parent_menuitem_content(type)
+      var MI = new ezP.MenuItem(content, {
+        action: ezP.ID.PARENT_INSERT,
+        type: type,
+        key: d.key || K,
+        actor: block,
+      })
+      mgr.addInsertChild(MI)
+      return true
+    }
+    return false
+  }
+  return F('first') || F('middle') || F('last')
+}
+
+/**
+ * Populate the context menu for the given block.
+ * Only for expressions.
+ * type is the type of the to be inserted parent block.
+ * This parent might be inserted up to the top.
+ * @param {!Blockly.Block} block The block.
+ * @param {!string} type the type of the parent to be.
+ * @private
+ */
+ezP.MenuManager.prototype.populate_insert_parent = function (block, type, top) {
+  // can we insert a block typed type between the block and
+  // the target of its output connection
+  var child = block
+  do {
+    var c8n = child.outputConnection
+    if (!c8n) {
+      // this is a statement block
+      break
+    }
+    var targetC8n = c8n.targetConnection
+    if (!targetC8n) {
+      if (top) {
+        this.populate_insert_as_top_parent(child, type)
+      }
+      break
+    }
+    var check = targetC8n.check_
+    if (check && check.indexOf(type) < 0) {
+      // the target connection won't accept block
+      break
+    }
+
+    if (this.populate_insert_as_top_parent(child, type)) {
+      break
+    }
+  } while ((child = child.getParent()))
+}
+
+/**
+ * Populate the context menu for the given block.
+ * Only for expressions.
+ * @param {!Blockly.Block} block The block.
+ * @param {!string} type the type of the parent to be.
+ * @private
+ */
+ezP.MenuManager.prototype.populate_remove_parent = function (block, type) {
+  var child = block
+  var parent
+  while((parent = child.getParent())) {
+    if (parent.type === type) {
+      if (child.ezp.canBypassAndRemoveParent(child)) {
+        var content = this.get_movable_parent_menuitem_content(parent.type)
+        var MI = new ezP.MenuItem(content, {
+          action: ezP.ID.PARENT_REMOVE,
+          actor: child,
+        })
+        this.addRemoveChild(MI)
+      }
+      return
+    }
+    child = parent
+  }
+}
+
+/**
+ * Populate the context menu for the given block.
+ * Only for expressions.
+ * @param {!Blockly.Block} block The block.
+ * @private
+ */
+ezP.MenuManager.prototype.populate_movable_parent = function (block) {
+  var movableParents = [
+    ezP.T3.Expr.u_expr_concrete,
+    ezP.T3.Expr.call_expr,
+    ezP.T3.Expr.slicing,
+    ezP.T3.Expr.attributeref,
+  ]
+  for (var _ = 0, type; (type = movableParents[_]); ++_) {
+    this.populate_insert_parent(block, type, true)
+    this.populate_remove_parent(block, type)
+  }
+  var movableParents = [
+    ezP.T3.Expr.parent_module,
+    ezP.T3.Expr.module_concrete,
+    ezP.T3.Expr.module_as_concrete,
+    ezP.T3.Expr.import_identifier_as_concrete,
+  ]  
+  for (var _ = 0, type; (type = movableParents[_]); ++_) {
+    this.populate_insert_parent(block, type, false)
+    this.populate_remove_parent(block, type)
+  }
 }

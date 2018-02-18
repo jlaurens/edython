@@ -39,8 +39,8 @@ ezP.Delegate.Manager.registerAll(ezP.T3.Expr, ezP.DelegateSvg.Expr, true)
  * @param {!Blockly.Block} block to be initialized..
  * @private
  */
-ezP.DelegateSvg.Literal.prototype.initBlock_ = function(block) {
-  ezP.DelegateSvg.Literal.superClass_.initBlock_.call(this, block)
+ezP.DelegateSvg.Literal.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Literal.superClass_.initBlock.call(this, block)
   block.appendDummyInput()
       .appendField(new ezP.FieldCodeInput(), ezP.Const.Field.VALUE)
 }

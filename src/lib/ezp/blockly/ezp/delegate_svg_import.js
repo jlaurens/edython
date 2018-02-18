@@ -263,9 +263,9 @@ ezP.DelegateSvg.Expr.from_module_import = function (prototypeName) {
     check: ezP.T3.Expr.Check.module,
     hole_value: 'module',
   }
-  this.labelEnd = {
-    value: 'import *',
-    css_class: 'ezp-code-reserved'
+  this.inputData_.last = {
+    label: 'import *',
+    css_class: 'ezp-code-reserved',
   }
 }
 goog.inherits(ezP.DelegateSvg.Expr.from_module_import, ezP.DelegateSvg.Expr)

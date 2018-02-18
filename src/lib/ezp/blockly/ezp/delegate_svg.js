@@ -58,7 +58,6 @@ ezP.MixinSvg = function (constructor, mixins) {
  */
 ezP.DelegateSvg = function (prototypeName) {
   ezP.DelegateSvg.superClass_.constructor.call(this, prototypeName)
-  this.labelEnd = {}
 }
 goog.inherits(ezP.DelegateSvg, ezP.Delegate)
 
@@ -142,22 +141,37 @@ ezP.DelegateSvg.prototype.fieldLabelEnd = undefined
  */
 
 /**
- * Create and initialize the first, middle and last inputs if required.
+ * Create and initialize the various paths.
  * Called once at block creation time.
- * No overriding is considered.
- * Wraps initBlock such that there is an end label.
+ * Should not be called directly
  * @param {!Blockly.Block} block to be initialized..
- * @private
  */
-ezP.DelegateSvg.prototype.initBlock_ = function(block) {
+ezP.DelegateSvg.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.superClass_.initBlock.call(this, block)
+  this.svgPathInline_ = Blockly.utils.createSvgElement('path',
+    {'class': 'ezp-path-contour'}, null)
+  goog.dom.insertChildAt(block.svgGroup_, this.svgPathInline_, 0)
+  this.svgPathCollapsed_ = Blockly.utils.createSvgElement('path', {}, null)
+  goog.dom.insertChildAt(block.svgGroup_, this.svgPathCollapsed_, 0)
+  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {}, null)
+  goog.dom.insertChildAt(block.svgGroup_, this.svgPathContour_, 0)
+  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {}, null)
+  goog.dom.insertChildAt(block.svgGroup_, this.svgPathShape_, 0)
+  this.svgPathHighlight_ = Blockly.utils.createSvgElement('path',
+    {'class': 'ezp-path-selected'}, null)
+  Blockly.utils.addClass(/** @type {!Element} */ (block.svgGroup_),
+    'ezp-block')
+  // block.setInputsInline(true)
+  block.setTooltip('')
+  block.setHelpUrl('')
+
   var F = function(K, D) {
     var out
     if (D && Object.keys(D).length) {
       out = {}
-      if (D.dummy || D.identifier) {
+      if (!D.key || D.dummy || D.identifier) {
         out.input = block.appendDummyInput(k)
       } else {
-        goog.asserts.assert(D.key, 'Every input must have a key '+block.type)
         var k = D.key
         var v, f
         if ('wrap' in D) {
@@ -240,42 +254,6 @@ ezP.DelegateSvg.prototype.initBlock_ = function(block) {
     this.inputData_ = undefined
   }
   this.inputs = Is
-  
-  this.initBlock(block)
-
-  if (this.labelEnd.value) {// this is svg specific
-    this.fieldLabelEnd = new ezP.FieldLabel(this.labelEnd.value)
-    block.appendDummyInput(ezP.Const.Input.END).appendField(this.fieldLabelEnd, ezP.Const.Field.LABEL)
-    this.fieldLabelEnd.ezpData.css_style = this.labelEnd.css_style
-    this.fieldLabelEnd.ezpData.css_class = this.labelEnd.css_class
-    this.labelEnd = undefined
-  }
-}
-
-/**
- * Create and initialize the various paths.
- * Called once at block creation time.
- * Should not be called directly
- * @param {!Blockly.Block} block to be initialized..
- */
-ezP.DelegateSvg.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.superClass_.initBlock.call(this, block)
-  this.svgPathInline_ = Blockly.utils.createSvgElement('path',
-    {'class': 'ezp-path-contour'}, null)
-  goog.dom.insertChildAt(block.svgGroup_, this.svgPathInline_, 0)
-  this.svgPathCollapsed_ = Blockly.utils.createSvgElement('path', {}, null)
-  goog.dom.insertChildAt(block.svgGroup_, this.svgPathCollapsed_, 0)
-  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {}, null)
-  goog.dom.insertChildAt(block.svgGroup_, this.svgPathContour_, 0)
-  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {}, null)
-  goog.dom.insertChildAt(block.svgGroup_, this.svgPathShape_, 0)
-  this.svgPathHighlight_ = Blockly.utils.createSvgElement('path',
-    {'class': 'ezp-path-selected'}, null)
-  Blockly.utils.addClass(/** @type {!Element} */ (block.svgGroup_),
-    'ezp-block')
-  // block.setInputsInline(true)
-  block.setTooltip('')
-  block.setHelpUrl('')
 }
 
 /**

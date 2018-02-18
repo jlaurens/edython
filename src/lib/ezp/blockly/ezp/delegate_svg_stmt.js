@@ -261,7 +261,7 @@ ezP.DelegateSvg.Manager.register('assert_stmt')
  */
 ezP.DelegateSvg.Stmt.pass_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.pass_stmt.superClass_.constructor.call(this, prototypeName)
-  this.labelEnd = {
+  this.inputData_.first = {
     value: 'pass',
     css_class: 'ezp-code-reserved',
   }
@@ -279,7 +279,7 @@ ezP.DelegateSvg.Manager.register('pass_stmt')
  */
 ezP.DelegateSvg.Stmt.break_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.break_stmt.superClass_.constructor.call(this, prototypeName)
-  this.labelEnd = {
+  this.inputData_.first = {
     value: 'break',
     css_class: 'ezp-code-reserved',
   }
@@ -297,7 +297,7 @@ ezP.DelegateSvg.Manager.register('break_stmt')
  */
 ezP.DelegateSvg.Stmt.continue_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.continue_stmt.superClass_.constructor.call(this, prototypeName)
-  this.labelEnd = {
+  this.inputData_.first = {
     value: 'continue',
     css_class: 'ezp-code-reserved',
   }

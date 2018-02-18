@@ -74,7 +74,9 @@ ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
     label: '(',
     wrap: ezP.T3.Expr.yield_expression,
   }
-  this.labelEnd.value = ')'
+  this.inputData_.last = {
+    label: ')',
+  }
   this.outputData_.check = ezP.T3.Expr.yield_atom
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_atom, ezP.DelegateSvg.Expr)

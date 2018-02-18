@@ -113,12 +113,14 @@ ezP.DelegateSvg.Manager.register('subscription')
  */
 ezP.DelegateSvg.Expr.call_expr =  function (prototypeName) {
   ezP.DelegateSvg.Expr.call_expr.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.last = {
+  this.inputData_.first = {
     key: ezP.Const.Input.LIST,
     label: '(',
     wrap: ezP.T3.Expr.argument_list,
   }
-  this.labelEnd.value = ')'
+  this.inputData_.last = {
+    label: ')',
+  }
   this.outputData_.check = ezP.T3.Expr.call_expr
 }
 goog.inherits(ezP.DelegateSvg.Expr.call_expr, ezP.DelegateSvg.Primary)
