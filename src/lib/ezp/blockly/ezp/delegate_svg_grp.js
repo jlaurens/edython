@@ -26,7 +26,7 @@ goog.require('ezP.DelegateSvg.Stmt')
 ezP.DelegateSvg.Group = function (prototypeName) {
   ezP.DelegateSvg.Group.superClass_.constructor.call(this, prototypeName)
   this.statementData_.key = ezP.Const.Input.DO,
-  this.inputData_.last = {
+  this.inputData_.first = {
     label: ':',
   }
 }

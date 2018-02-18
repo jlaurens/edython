@@ -65,9 +65,11 @@ goog.inherits(ezP.DelegateSvg.Expr._as_concrete, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Expr.module_as_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.module_as_concrete.superClass_.constructor.call(this, prototypeName)
   this.outputData_.check = ezP.T3.Expr.module_as_concrete
-  this.inputData_.first.check = ezP.T3.Expr.Check.module
-  this.inputData_.first.hole_value = 'module'
-  this.inputData_.first.plugged = ezP.T3.Expr.module
+  goog.mixin(this.inputData_.first, {
+    check: ezP.T3.Expr.Check.module,
+    hole_value: 'module',
+    plugged: ezP.T3.Expr.module,
+  })
   this.inputData_.last.plugged = ezP.T3.Expr.module_alias
 }
 goog.inherits(ezP.DelegateSvg.Expr.module_as_concrete, ezP.DelegateSvg.Expr._as_concrete)
@@ -136,7 +138,7 @@ ezP.DelegateSvg.Manager.register('non_void_module_as_list')
 ezP.DelegateSvg.Expr.import_module = function (prototypeName) {
   ezP.DelegateSvg.Expr.import_module.superClass_.constructor.call(this, prototypeName)
   this.outputData_.check = ezP.T3.Expr.import_module
-  this.inputData_.last = {
+  this.inputData_.first = {
     label: 'import',
     css_class: 'ezp-code-reserved',
     key: ezP.Const.Input.IMPORT,
@@ -168,9 +170,11 @@ import_name ::= identifier
 ezP.DelegateSvg.Expr.import_identifier_as_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.import_identifier_as_concrete.superClass_.constructor.call(this, prototypeName)
   this.outputData_.check = ezP.T3.Expr.import_identifier_as_concrete
-  this.inputData_.first.check = ezP.T3.Expr.identifier
-  this.inputData_.first.hole_value = 'name'
-  this.inputData_.first.plugged = ezP.T3.Expr.import_identifier
+  goog.mixin(this.inputData_.first, {
+    check: ezP.T3.Expr.identifier,
+    hole_value: 'name',
+    plugged: ezP.T3.Expr.import_identifier,
+  })
   this.inputData_.last.plugged = ezP.T3.Expr.import_alias
 }
 goog.inherits(ezP.DelegateSvg.Expr.import_identifier_as_concrete, ezP.DelegateSvg.Expr._as_concrete)

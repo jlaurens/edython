@@ -496,16 +496,25 @@ ezP.MenuManager.prototype.get_movable_parent_menuitem_content = function (type) 
       goog.dom.createTextNode('.'),
     )
     case ezP.T3.Expr.attributeref:
-    return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       goog.dom.createTextNode('.attribute'),
+    ),
+      goog.dom.createTextNode(' '+ezP.Msg.AFTER),
     )
     case ezP.T3.Expr.slicing:
-    return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      goog.dom.createTextNode('[...]'),
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+        goog.dom.createTextNode('[...]'),
+      ),
+    goog.dom.createTextNode(' '+ezP.Msg.AFTER),
     )
     case ezP.T3.Expr.call_expr:
-    return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      goog.dom.createTextNode('(...)'),
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+        goog.dom.createTextNode('(...)'),
+      ),
+      goog.dom.createTextNode(' '+ezP.Msg.AFTER),
     )
     case ezP.T3.Expr.module_as_concrete:
     case ezP.T3.Expr.import_identifier_as_concrete:
@@ -548,7 +557,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, type)
   var mgr = this
   var F = function(K) {
     var d = D[K]
-    if (d && !d.wrap) {
+    if (d && d.key && !d.wrap) {
       if (check && d.check) {
         var found = false
         for (var _ = 0; _ < d.check.length; ++_) {
@@ -958,7 +967,6 @@ ezP.MenuManager.prototype.populate_insert_as_top_delimiter = function (block, ty
   }
   var check = outC8n.check_
   var D = ezP.Delegate.Manager.getInputData(type)
-  var mgr = this
   var F = function(K) {
     var d = D[K]
     if (!d) {
@@ -968,25 +976,27 @@ ezP.MenuManager.prototype.populate_insert_as_top_delimiter = function (block, ty
     if (!wrap) {
       return false
     }
-    var DD = ezP.Delegate.Manager.getInputData(wrap)
-
-    if (check && d.check) {
-      var found = false
-      for (var _ = 0; _ < d.check.length; ++_) {
-        if (check.indexOf(d.check[_]) >= 0) {
-          found = true
-          break
+    var list = ezP.Delegate.Manager.getInputData(wrap).list
+    if (list) {
+      var listCheck = list.all || list.check
+      if (listCheck) {
+        var found = false
+        for (var _ = 0, c; c = listCheck[_++];) {
+          if (check.indexOf(c) >= 0) {
+            found = true
+            break
+          }
         }
-      }
-      if (!found) {
-        return false
+        if (!found) {
+          return false
+        }
       }
     }
     var content = mgr.get_movable_delimiter_menuitem_content(type)
     var MI = new ezP.MenuItem(content, {
       action: ezP.ID.DELIMITER_INSERT,
       type: type,
-      key: d.key || K,
+      key: K,
       actor: block,
     })
     mgr.addInsertChild(MI)
@@ -1040,7 +1050,7 @@ ezP.MenuManager.prototype.populate_insert_delimiter = function (block, type, top
  * @param {!string} type the type of the parent to be.
  * @private
  */
-ezP.MenuManager.prototype.populate_remove_parent = function (block, type) {
+ezP.MenuManager.prototype.populate_remove_delimiter = function (block, type) {
   var child = block
   var parent
   while((parent = child.getParent())) {
