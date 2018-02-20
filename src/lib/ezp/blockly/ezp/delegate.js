@@ -817,8 +817,9 @@ ezP.Delegate.prototype.plugged_ = undefined
  * can connect the block's output connection to it?
  * The connection cannot always establish.
  * @param {!Block} block.
+ * @param {!Block} other the block to be replaced
  */
-ezP.Delegate.prototype.canBypassAndRemoveParent = function (block) {
+ezP.Delegate.prototype.canReplace = function (block, other) {
   return false
 }
 

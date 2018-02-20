@@ -1237,12 +1237,19 @@ ezP.DelegateSvg.prototype.canInsertParent = function(block, prototypeName, input
  * @param {string} prototypeName.
  * @param {string} inputName, which parent's connection to use
  */
-ezP.DelegateSvg.prototype.insertParent = function(block, prototypeName, inputName) {
+ezP.DelegateSvg.prototype.insertBlockAbove = function(block, prototypeName, inputName) {
   Blockly.Events.setGroup(true)
-  console.log('insertParent', block.type, prototypeName, inputName)
+  console.log('insertBlockAbove', block.type, prototypeName, inputName)
   var B = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
-  var input = B.getInput(inputName)
-  goog.asserts.assert(input, 'No input named '+inputName)
+  if (inputName) {
+    var input = B.getInput(inputName)
+    goog.asserts.assert(input, 'No input named '+inputName)
+  } else {
+    input = B.getInput(ezP.Const.Input.LIST)
+    var list = input.connection.targetBlock()
+    goog.asserts.assert(list, 'Missing list block inside '+block.type)
+    input = list.getInput('ITEM_0')
+  }
   var c8n = input.connection
   var holes = ezP.HoleFiller.getDeepHoles(block)
   goog.asserts.assert(c8n, 'Unexpected dummy input '+inputName)

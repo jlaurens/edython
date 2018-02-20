@@ -35,6 +35,8 @@ goog.require('ezP')
 /** @export */ ezP.Msg.AFTER = 'après'
 /** @export */ ezP.Msg.AROUND = 'autour'
 
+/** @export */ ezP.Msg.AND = 'et'
+
 /** @export */ ezP.Msg.RENAME_VARIABLE = 'Renommer'
 /** @export */ ezP.Msg.REPLACE_VARIABLE = 'Remplacer par'
 /** @export */ ezP.Msg.NEW_VARIABLE = 'Nouvelle variable'

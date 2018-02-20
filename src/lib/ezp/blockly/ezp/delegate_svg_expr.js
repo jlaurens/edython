@@ -64,11 +64,11 @@ ezP.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
  * can connect the block's output connection to it?
  * The connection cannot always establish.
  * @param {!Block} block.
- */
-ezP.DelegateSvg.Expr.prototype.canBypassAndRemoveParent = function (block) {
-  var parent = block.outputConnection.targetBlock()
-  if (parent) {
-    var c8n = parent.outputConnection
+* @param {!Block} other the block to be replaced
+  */
+ezP.DelegateSvg.Expr.prototype.canReplace = function (block, other) {
+  if (other) {
+    var c8n = other.outputConnection
     if (!c8n) {
       return true
     }
@@ -88,22 +88,21 @@ ezP.DelegateSvg.Expr.prototype.canBypassAndRemoveParent = function (block) {
  * The connection cannot always establish.
  * @param {!Block} block.
  */
-ezP.DelegateSvg.Expr.prototype.bypassAndRemoveParent = function (block) {
-  var parent = block.outputConnection.targetBlock()
-  if (parent) {
+ezP.DelegateSvg.Expr.prototype.replace = function (block, other) {
+  if (other) {
     Blockly.Events.setGroup(true)
-    var c8n = parent.outputConnection
-    var its_xy = parent.getRelativeToSurfaceXY();
+    var c8n = other.outputConnection
+    var its_xy = other.getRelativeToSurfaceXY();
     var my_xy = block.getRelativeToSurfaceXY();
     block.outputConnection.disconnect()
     if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(block.outputConnection)) {
-      // the parent block has an output connection that can connect to the block's one
+      // the other block has an output connection that can connect to the block's one
       c8n.disconnect()
       c8n.connect(block.outputConnection)
     } else {
       block.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
     }
-    parent.dispose()
+    other.dispose()
     Blockly.Events.setGroup(false)
   }
 }

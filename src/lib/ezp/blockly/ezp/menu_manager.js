@@ -459,10 +459,15 @@ ezP.MenuManager.prototype.handleAction_movable_parent = function (block, event) 
   var actor = model.actor || block
   if (action === ezP.ID.PARENT_INSERT) {
     console.log('ezP.MenuManager.prototype.handleAction_movable_parent')
-    actor.ezp.insertParent(actor, type, model.key)
+    actor.ezp.insertBlockAbove(actor, type, model.key)
     return true
   } else if (action === ezP.ID.PARENT_REMOVE) {
-    actor.ezp.bypassAndRemoveParent(actor)
+    var other = block.getParent()
+    while (other.ezp.wrapped_) {
+      other = other.getParent()
+    }
+    actor.ezp.replace(actor, other)
+    return true
   }
   return false
 }
@@ -533,6 +538,40 @@ ezP.MenuManager.prototype.get_movable_parent_menuitem_content = function (type) 
       ),
       goog.dom.createTextNode(' '+ezP.Msg.BEFORE),
     ) 
+    case ezP.T3.Expr.parenth_form:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+        goog.dom.createTextNode('('),
+      ),
+      goog.dom.createTextNode(' '+ezP.Msg.AND+' '),
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+        goog.dom.createTextNode(')'),
+      ),
+      goog.dom.createTextNode(' '+ezP.Msg.AROUND),
+    )
+    case ezP.T3.Expr.list_display:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+        goog.dom.createTextNode('['),
+      ),
+      goog.dom.createTextNode(' '+ezP.Msg.AND+' '),
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+        goog.dom.createTextNode(']'),
+      ),
+      goog.dom.createTextNode(' '+ezP.Msg.AROUND),
+    )
+    case ezP.T3.Expr.set_display:
+    case ezP.T3.Expr.dict_display:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+        goog.dom.createTextNode('{'),
+      ),
+      goog.dom.createTextNode(' '+ezP.Msg.AND+' '),
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+        goog.dom.createTextNode('}'),
+      ),
+      goog.dom.createTextNode(' '+ezP.Msg.AROUND),
+    )
     default:
     return 'Parent '+type
   }
@@ -579,6 +618,32 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, type)
       })
       mgr.addInsertChild(MI)
       return true
+    } else if (d && d.wrap) {
+      var list = ezP.Delegate.Manager.getInputData(d.wrap).list
+      if (!list) {
+        return false
+      }
+      var listCheck = list.all || list.check
+      if (listCheck) {
+        var found = false
+        for (var _ = 0, c; c = listCheck[_++];) {
+          if (check.indexOf(c) >= 0) {
+            found = true
+            break
+          }
+        }
+        if (!found) {
+          return false
+        }
+      }
+      var content = mgr.get_movable_parent_menuitem_content(type)
+      var MI = new ezP.MenuItem(content, {
+        action: ezP.ID.PARENT_INSERT,
+        type: type,
+        actor: block,
+      })
+      mgr.addInsertChild(MI)
+      return true  
     }
     return false
   }
@@ -630,16 +695,15 @@ ezP.MenuManager.prototype.populate_insert_parent = function (block, type, top) {
  * @param {!string} type the type of the parent to be.
  * @private
  */
-ezP.MenuManager.prototype.populate_remove_parent = function (block, type) {
+ezP.MenuManager.prototype.populate_replace_parent = function (block, type) {
   var child = block
   var parent
   while((parent = child.getParent())) {
     if (parent.type === type) {
-      if (child.ezp.canBypassAndRemoveParent(child)) {
+      if (block.ezp.canReplace(block, parent)) {
         var content = this.get_movable_parent_menuitem_content(parent.type)
         var MI = new ezP.MenuItem(content, {
           action: ezP.ID.PARENT_REMOVE,
-          actor: child,
         })
         this.addRemoveChild(MI)
       }
@@ -656,27 +720,33 @@ ezP.MenuManager.prototype.populate_remove_parent = function (block, type) {
  * @private
  */
 ezP.MenuManager.prototype.populate_movable_parent = function (block) {
-  var movableParents = [
+  var movable = [
     ezP.T3.Expr.u_expr_concrete,
     ezP.T3.Expr.call_expr,
     ezP.T3.Expr.slicing,
     ezP.T3.Expr.attributeref,
-  ]
-  for (var _ = 0, type; (type = movableParents[_]); ++_) {
+    ezP.T3.Expr.parenth_form,
+    ezP.T3.Expr.list_display,
+    ezP.T3.Expr.set_display,
+    ezP.T3.Expr.dict_display,
+]
+  for (var _ = 0, type; (type = movable[_++]);) {
     this.populate_insert_parent(block, type, true)
-    this.populate_remove_parent(block, type)
+    this.populate_replace_parent(block, type)
   }
-  var movableParents = [
+  var movable = [
     ezP.T3.Expr.parent_module,
     ezP.T3.Expr.module_concrete,
     ezP.T3.Expr.module_as_concrete,
     ezP.T3.Expr.import_identifier_as_concrete,
   ]  
-  for (var _ = 0, type; (type = movableParents[_]); ++_) {
+  for (var _ = 0, type; (type = movable[_++]);) {
     this.populate_insert_parent(block, type, false)
-    this.populate_remove_parent(block, type)
+    this.populate_replace_parent(block, type)
   }
 }
+
+/////////////// WRAP
 
 ezP.ID.USE_WRAP_TYPE  = 'USE_WRAP_TYPE'
 
@@ -712,8 +782,8 @@ ezP.MenuManager.prototype.populate_wrap_alternate = function (block, key) {
           goog.dom.classlist.add( menuItem.getElement().firstChild, data.css_class) 
         }
       }
-      for (var i = 0; i<ezp.menuData.length; i++) {
-        F.call(this, ezp.menuData[i])
+      for (var _ = 0, d; (d = ezp.menuData[_++]);) {
+        F.call(this, d)
       }
       return true
     }
@@ -741,6 +811,8 @@ ezP.MenuManager.prototype.handleAction_wrap_alternate = function (block, event) 
   }
   return false
 }
+
+/////////////// OPERATORS
 
 ezP.ID.USE_OPERATOR  = 'USE_OPERATOR'
 
@@ -802,298 +874,4 @@ ezP.MenuManager.prototype.handleActionOperator = function (block, event) {
     return true
   }
   return false
-}
-
-ezP.ID.USE_OPERATOR  = 'USE_OPERATOR'
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @private
- */
-ezP.MenuManager.prototype.populateDelimiters = function (block) {
-  var ezp = block.ezp
-  if (ezp.operators && ezp.operators.length > 1) {
-    var value = ezp.inputs.last.fieldLabel.getValue()
-    var ezp = ezp
-    var F = function(op) {
-      var menuItem = new ezP.MenuItem(
-        ezp.getContent(block, op),
-        {
-          action: ezP.ID.USE_OPERATOR,
-          operator: op
-        }
-      )
-      menuItem.setEnabled(value != op)
-      this.addChild(menuItem, true)
-      goog.dom.classlist.add(menuItem.getElement().firstChild, 'ezp-code')
-    }
-    for (var i = 0; i<ezp.operators.length; i++) {
-      F.call(this, ezp.operators[i])
-    }
-    return true
-  }
-  return false
-}
-
-/**
- * Handle the selection of an item in the context dropdown menu.
- * @param {!Blockly.Block} block, owner of the delegate.
- * @param {!goog....} event The event containing as target
- * the MenuItem selected within menu.
- */
-ezP.MenuManager.prototype.handleActionDelimiters = function (block, event) {
-  var model = event.target.getModel()
-  var action = model.action
-  var op = model.operator
-  var ezp = block.ezp
-  if (action == ezP.ID.USE_OPERATOR) {
-    if (!ezp.operators || ezp.operators.indexOf(op) < 0) {
-      return true
-    }
-    var field = ezp.inputs.last.fieldLabel
-    var old = field.getValue()
-    if (old == op) {
-      return true
-    }
-    if (Blockly.Events.isEnabled()) {
-      Blockly.Events.fire(new Blockly.Events.BlockChange(
-        block, 'field', field.ezpData.key, old, op));
-    }
-    field.setValue(op)
-    return true
-  }
-  return false
-}
-
-// BELOW IS IN PROGRESS
-
-ezP.ID.DELIMITER_INSERT = 'DELIMITER_INSERT'
-ezP.ID.DELIMITER_REMOVE = 'DELIMITER_REMOVE'
-
-/**
- * Handle the selection of an item in the first part of the context dropdown menu.
- * All these delimiters are wrappers, such that
- * insertion and deletion involve 2 levels,
- * hence the grandparent...
- * Default implementation returns false.
- * @param {!Blockly.Block} block The Menu component clicked.
- * @param {!goog....} event The event containing as target
- * the MenuItem selected within menu.
- */
-ezP.MenuManager.prototype.handleAction_movable_delimiter = function (block, event) {
-  var model = event.target.getModel()
-  var action = model.action
-  var type = model.type
-  var actor = model.actor || block
-  if (action === ezP.ID.DELIMITER_INSERT) {
-    console.log('ezP.MenuManager.prototype.handleAction_movable_delimiter')
-    actor.ezp.insertGrandParent(actor, type, model.key)
-    return true
-  } else if (action === ezP.ID.DELIMITER_REMOVE) {
-    actor.ezp.bypassAndRemoveGrandParent(actor)
-  }
-  return false
-}
-
-/**
- * The menuitem used to populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @private
- */
-ezP.MenuManager.prototype.get_movable_delimiter_menuitem_content = function (type) {
-  switch(type) {
-    case ezP.T3.Expr.parent_module: 
-    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-        goog.dom.createTextNode('.'),
-      ),
-      goog.dom.createTextNode(' '+ezP.Msg.BEFORE),
-    )
-    case ezP.T3.Expr.module_concrete:
-    return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-placeholder',
-        goog.dom.createTextNode('module'),
-      ),
-      goog.dom.createTextNode('.'),
-    )
-    case ezP.T3.Expr.attributeref:
-    return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      goog.dom.createTextNode('.attribute'),
-    )
-    case ezP.T3.Expr.slicing:
-    return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      goog.dom.createTextNode('[...]'),
-    )
-    case ezP.T3.Expr.call_expr:
-    return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      goog.dom.createTextNode('(...)'),
-    )
-    case ezP.T3.Expr.module_as_concrete:
-    case ezP.T3.Expr.import_identifier_as_concrete:
-    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
-        goog.dom.createTextNode('as'),
-      ),
-      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-placeholder',
-        goog.dom.createTextNode(' alias'),
-      )
-    )
-    case ezP.T3.Expr.u_expr_concrete:
-    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-        goog.dom.createTextNode('-'),
-      ),
-      goog.dom.createTextNode(' '+ezP.Msg.BEFORE),
-    ) 
-    default:
-    return 'Parent '+type
-  }
-}
-
-/**
- * Populate the context menu for the given block.
- * Only for expressions.
- * type is the type of the to be inserted parent block
- * @param {!Blockly.Block} block The block.
- * @param {!string} type the type of the parent to be.
- * @private
- */
-ezP.MenuManager.prototype.populate_insert_as_top_delimiter = function (block, type) {
-  var outC8n = block.outputConnection
-  if (!outC8n) {
-    // this is a statement block
-    return false
-  }
-  var check = outC8n.check_
-  var D = ezP.Delegate.Manager.getInputData(type)
-  var F = function(K) {
-    var d = D[K]
-    if (!d) {
-      return false
-    }
-    var wrap = d.wrap
-    if (!wrap) {
-      return false
-    }
-    var list = ezP.Delegate.Manager.getInputData(wrap).list
-    if (list) {
-      var listCheck = list.all || list.check
-      if (listCheck) {
-        var found = false
-        for (var _ = 0, c; c = listCheck[_++];) {
-          if (check.indexOf(c) >= 0) {
-            found = true
-            break
-          }
-        }
-        if (!found) {
-          return false
-        }
-      }
-    }
-    var content = mgr.get_movable_delimiter_menuitem_content(type)
-    var MI = new ezP.MenuItem(content, {
-      action: ezP.ID.DELIMITER_INSERT,
-      type: type,
-      key: K,
-      actor: block,
-    })
-    mgr.addInsertChild(MI)
-    return true
-  }
-  return F('first') || F('middle') || F('last')
-}
-
-/**
- * Populate the context menu for the given block.
- * Only for expressions.
- * type is the type of the to be inserted parent block.
- * This parent might be inserted up to the top.
- * @param {!Blockly.Block} block The block.
- * @param {!string} type the type of the parent to be.
- * @private
- */
-ezP.MenuManager.prototype.populate_insert_delimiter = function (block, type, top) {
-  // can we insert a block typed type between the block and
-  // the target of its output connection
-  var child = block
-  do {
-    var c8n = child.outputConnection
-    if (!c8n) {
-      // this is a statement block
-      break
-    }
-    var targetC8n = c8n.targetConnection
-    if (!targetC8n) {
-      if (top) {
-        this.populate_insert_as_top_parent(child, type)
-      }
-      break
-    }
-    var check = targetC8n.check_
-    if (check && check.indexOf(type) < 0) {
-      // the target connection won't accept block
-      break
-    }
-
-    if (this.populate_insert_as_top_parent(child, type)) {
-      break
-    }
-  } while ((child = child.getParent()))
-}
-
-/**
- * Populate the context menu for the given block.
- * Only for expressions.
- * @param {!Blockly.Block} block The block.
- * @param {!string} type the type of the parent to be.
- * @private
- */
-ezP.MenuManager.prototype.populate_remove_delimiter = function (block, type) {
-  var child = block
-  var parent
-  while((parent = child.getParent())) {
-    if (parent.type === type) {
-      if (child.ezp.canBypassAndRemoveParent(child)) {
-        var content = this.get_movable_parent_menuitem_content(parent.type)
-        var MI = new ezP.MenuItem(content, {
-          action: ezP.ID.PARENT_REMOVE,
-          actor: child,
-        })
-        this.addRemoveChild(MI)
-      }
-      return
-    }
-    child = parent
-  }
-}
-
-/**
- * Populate the context menu for the given block.
- * Only for expressions.
- * @param {!Blockly.Block} block The block.
- * @private
- */
-ezP.MenuManager.prototype.populate_movable_parent = function (block) {
-  var movableParents = [
-    ezP.T3.Expr.u_expr_concrete,
-    ezP.T3.Expr.call_expr,
-    ezP.T3.Expr.slicing,
-    ezP.T3.Expr.attributeref,
-  ]
-  for (var _ = 0, type; (type = movableParents[_]); ++_) {
-    this.populate_insert_parent(block, type, true)
-    this.populate_remove_parent(block, type)
-  }
-  var movableParents = [
-    ezP.T3.Expr.parent_module,
-    ezP.T3.Expr.module_concrete,
-    ezP.T3.Expr.module_as_concrete,
-    ezP.T3.Expr.import_identifier_as_concrete,
-  ]  
-  for (var _ = 0, type; (type = movableParents[_]); ++_) {
-    this.populate_insert_parent(block, type, false)
-    this.populate_remove_parent(block, type)
-  }
 }
