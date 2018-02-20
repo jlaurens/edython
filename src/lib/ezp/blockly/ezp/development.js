@@ -161,6 +161,7 @@ ezP.DelegateSvg.Stmt.import_part.workspaceBlocks = [
   ezP.T3.Stmt.import_part,
   ezP.T3.Expr.from_module_import,
   ezP.T3.Expr.import_module,
+  ezP.T3.Stmt.future_statement,
 ]
 
 ezP.DelegateSvg.Stmt.if_part.workspaceBlocks =
@@ -209,7 +210,6 @@ ezP.DelegateSvg.Expr.conditional_expression_concrete.workspaceBlocks = [
 ezP.DelegateSvg.Expr.starred_item_list.workspaceBlocks = [
   ezP.T3.Expr.starred_item_list,
 ] .concat(ezP.T3.Expr.Check.starred_item)
-
 
 ezP.DelegateSvg.Expr.display_slice_list.workspaceBlocks =
 ezP.DelegateSvg.Expr.generator_expression.workspaceBlocks =

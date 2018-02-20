@@ -466,7 +466,7 @@ ezP.MenuManager.prototype.handleAction_movable_parent = function (block, event) 
     while (other.ezp.wrapped_) {
       other = other.getParent()
     }
-    actor.ezp.replace(actor, other)
+    actor.ezp.replaceBlock(actor, other)
     return true
   }
   return false
@@ -700,7 +700,7 @@ ezP.MenuManager.prototype.populate_replace_parent = function (block, type) {
   var parent
   while((parent = child.getParent())) {
     if (parent.type === type) {
-      if (block.ezp.canReplace(block, parent)) {
+      if (block.ezp.canReplaceBlock(block, parent)) {
         var content = this.get_movable_parent_menuitem_content(parent.type)
         var MI = new ezP.MenuItem(content, {
           action: ezP.ID.PARENT_REMOVE,

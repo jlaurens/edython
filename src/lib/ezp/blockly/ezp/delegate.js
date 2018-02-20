@@ -819,7 +819,7 @@ ezP.Delegate.prototype.plugged_ = undefined
  * @param {!Block} block.
  * @param {!Block} other the block to be replaced
  */
-ezP.Delegate.prototype.canReplace = function (block, other) {
+ezP.Delegate.prototype.canReplaceBlock = function (block, other) {
   return false
 }
 

@@ -26,7 +26,7 @@ goog.require('ezP.DelegateSvg.Stmt')
 ezP.DelegateSvg.Group = function (prototypeName) {
   ezP.DelegateSvg.Group.superClass_.constructor.call(this, prototypeName)
   this.statementData_.key = ezP.Const.Input.DO,
-  this.inputData_.first = {
+  this.inputData_.last = {
     label: ':',
   }
 }
@@ -355,19 +355,17 @@ ezP.DelegateSvg.Manager.register('while_part')
  */
 ezP.DelegateSvg.Stmt.for_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.for_part.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
-    first: {
-      label: 'for',
-      css_class: 'ezp-code-reserved',
-      wrap: ezP.T3.Expr.target_list,
-      key: ezP.Const.Input.FOR,
-    },
-    middle: {
-      label: 'in',
-      css_class: 'ezp-code-reserved',
-      wrap: ezP.T3.Expr.expression_list,
-      key: ezP.Const.Input.IN,
-    }
+  this.inputData_.first = {
+    label: 'for',
+    css_class: 'ezp-code-reserved',
+    wrap: ezP.T3.Expr.target_list,
+    key: ezP.Const.Input.FOR,
+  }
+  this.inputData_.middle = {
+    label: 'in',
+    css_class: 'ezp-code-reserved',
+    wrap: ezP.T3.Expr.expression_list,
+    key: ezP.Const.Input.IN,
   }
   this.statementData_.previous.check = ezP.T3.Stmt.Previous.for_part
   this.statementData_.next.check = ezP.T3.Stmt.Next.for_part
@@ -385,13 +383,11 @@ ezP.DelegateSvg.Manager.register('for_part')
  */
 ezP.DelegateSvg.Stmt.with_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.with_part.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
-    first: {
-      key: ezP.Const.Input.LIST,
-      label: 'with',
-      css_class: 'ezp-code-reserved',
-      wrap: ezP.T3.Expr.with_item_list,
-    }
+  this.inputData_.first = {
+    key: ezP.Const.Input.LIST,
+    label: 'with',
+    css_class: 'ezp-code-reserved',
+    wrap: ezP.T3.Expr.with_item_list,
   }
   this.statementData_.previous.check = ezP.T3.Stmt.Previous.with_part
   this.statementData_.next.check = ezP.T3.Stmt.Next.with_part

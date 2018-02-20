@@ -5,7 +5,7 @@ class Type:
     """A Type represents a python 3 expression or statement"""
 
     re_name = re.compile(r"^\s*(?P<name>"
-                         r"(?P<is_name>name)|(?P<is_suite>suite)|(?P<is_statement>statement)"
+                         r"(?P<is_name>name)|(?P<is_suite>suite)|(?P<is_statement>statement|stmt_list)"
                          r"|"
                          r"(?:"
                          r"(?P<is_stmt_1>stmt_|statement_)?"

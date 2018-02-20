@@ -66,7 +66,7 @@ ezP.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
  * @param {!Block} block.
 * @param {!Block} other the block to be replaced
   */
-ezP.DelegateSvg.Expr.prototype.canReplace = function (block, other) {
+ezP.DelegateSvg.Expr.prototype.canReplaceBlock = function (block, other) {
   if (other) {
     var c8n = other.outputConnection
     if (!c8n) {
@@ -88,7 +88,7 @@ ezP.DelegateSvg.Expr.prototype.canReplace = function (block, other) {
  * The connection cannot always establish.
  * @param {!Block} block.
  */
-ezP.DelegateSvg.Expr.prototype.replace = function (block, other) {
+ezP.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
   if (other) {
     Blockly.Events.setGroup(true)
     var c8n = other.outputConnection

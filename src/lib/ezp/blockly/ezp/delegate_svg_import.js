@@ -390,3 +390,26 @@ ezP.DelegateSvg.Stmt.import_part.prototype.populateContextMenuFirst_ = function 
 ezP.DelegateSvg.Stmt.import_part.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
   return mgr.handleAction_wrap_alternate(block, event) || ezP.DelegateSvg.Stmt.import_part.superClass_.handleMenuItemActionMiddle.call(this, block, mgr, event)
 }
+
+/////////// future
+
+/**
+ * Class for a DelegateSvg, future_statement.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.future_statement = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.future_statement.superClass_.constructor.call(this, prototypeName)
+  this.inputData_.first = {
+    label: 'from __future__ import',
+    css_class: 'ezp-code-reserved',
+    key: ezP.Const.Input.LIST,
+    wrap: ezP.T3.Expr.non_void_import_identifier_as_list,
+  }
+  this.statementData_.previous.check = ezP.T3.Stmt.Previous.future_statement
+  this.statementData_.next.check = ezP.T3.Stmt.Next.future_statement
+}
+goog.inherits(ezP.DelegateSvg.Stmt.future_statement, ezP.DelegateSvg.Stmt)
+ezP.DelegateSvg.Manager.register('future_statement')
