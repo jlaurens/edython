@@ -13,14 +13,14 @@ class Types:
     re_concrete_candidate = re.compile(r'\s*([a-z_][a-z_\d]*)\s*\|\s*(.*)\s*$')
     re_star_identifier = re.compile(r'^\s*"(\*+)"\s*([a-z_][a-z_\d]*)\s*$')
     re_definition = re.compile(r"^\s*(?P<name>[a-zA-Z_][a-zA-Z_\d]*?)\s*(?P<op>::=|!!=|\|\|=)\s*(?P<definition>.*)\s*$")
-    re_stmt_order = re.compile(r"^\s*(\S+)\s*(<|>)\s*(.*)\s*$")
+    re_stmt_order = re.compile(r"^\s*(?P<name>\S+)\s*(?P<order><<<|>>>)\s*(?P<what>.*)\s*$")
     re_linck = re.compile(r"^\s*(?P<definition>\S+)\s*->\s*(?P<alias>.*)\s*$")
     re_category = re.compile(r"^#\s*category\s*:[\s.\d]*(?P<category>[a-zA-Z\s_]*).*$")
     re_ignore = re.compile(r"^\s*[\d@#.'({].*")
 
     all = {}
-    is_before = {}
-    is_after = {}
+    is_above = {}
+    is_below = {}
     lincks = {}
     n = 0
     current_category = 'default'
@@ -40,7 +40,7 @@ class Types:
         self.remove_wrappers()
         self.make_list_require()
         self.make_link()
-
+        self.make_similar_providers()
 
     def __repr__(self):
         return repr(self.__dict__)
@@ -105,12 +105,12 @@ class Types:
                 continue
             m = self.re_stmt_order.match(l)
             if m:
-                name, what, is_before = m.group(1), m.group(3), m.group(2) == '<'
-                where = self.is_before if is_before else self.is_after
+                name = m.group('name')
+                where = self.is_above if m.group('order') == '<<<' else self.is_below
                 if not name in where:
                     where[name] = set()
                 already = where[name]
-                already.update(re.split(r'\s*\|\s*', what))
+                already.update(re.split(r'\s*\|\s*', m.group('what')))
                 continue
             m = self.re_linck.match(l)
             if m:
@@ -238,16 +238,16 @@ class Types:
         self.all.update(more)
 
     def make_before_after(self):
-        for k, v in self.is_before.items():
+        for k, v in self.is_above.items():
             try:
                 t = self.all[k]
-                t.is_before = [self.all[tt] for tt in v if tt in self.all]
+                t.is_above = [self.all[tt] for tt in v if tt in self.all]
             except:
                 print('IGNORED', k, '<', v)
-        for k, v in self.is_after.items():
+        for k, v in self.is_below.items():
             try:
                 t = self.all[k]
-                t.is_after = [self.all[tt] for tt in v if tt in self.all]
+                t.is_below = [self.all[tt] for tt in v if tt in self.all]
             except:
                 print('IGNORED', k, '>', v)
 
@@ -301,7 +301,7 @@ class Types:
                     else:
                         t.is_wrapper = False
                         t.one_shot = False
-            t.require = list(require)
+            t.require = sorted(list(require), key = lambda x: (x.n, x.name))
         self.all.update(more_t)
         for t in self:
             t.temp_ = set()
@@ -309,7 +309,7 @@ class Types:
             for tt in t.require:
                 tt.temp_.add(t)
         for t in self.get_expressions():
-            t.provide = list(t.temp_)
+            t.provide = sorted(list(t.temp_), key = lambda x: (x.n, x.name))
         for t in self:
             del t.temp_
         for t in self.get_expressions():
@@ -423,6 +423,35 @@ class Types:
             t.ignored = t.definition == 'IGNORE' or t.definition == 'REMOVE'
             if t.ignored:
                 print('**** IGNORED:', t.name)
+
+
+    def make_similar_providers(self):
+        '''
+        Find the types that have the same provide list
+        At the end, all expression types have a `similar` attribute
+         filled with expression types with exactly the same `require` list.
+         Of course Any such list contains at least the type of the owner.
+        :return: None
+        '''
+        for t in self.get_expressions():
+            t.temp_ = set()
+        for t in self.get_expressions():
+            for tt in self.get_expressions():
+                if t.provide == tt.provide:
+                    t.temp_.add(tt)
+                    tt.temp_.add(t)
+        for t in self.get_expressions():
+            t.similar = sorted(list(t.temp_), key=lambda x: (x.n, x.name))
+        for t in self.get_expressions():
+            del t.temp_
+        print('**** SIMILAR:')
+        for t in self.get_expressions():
+            if len(t.similar)>1 and t.similar[0] == t:
+                print(t.name, ' ~', end='', sep='')
+                for t in t.similar:
+                    if t != t.similar[0]:
+                        print(' ', t.name, ',', end='', sep='')
+                print()
 
     def get_T3_data(self, **kwargs):
         formatter = Formatter(self, **kwargs)

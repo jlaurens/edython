@@ -306,3 +306,51 @@ ezP.DelegateSvg.Expr.not_test_concrete = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.not_test_concrete, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('not_test_concrete')
+
+/**
+* Class for a DelegateSvg, number litteral.
+* For ezPython.
+* @param {?string} prototypeName Name of the language object containing
+*     type-specific functions for this block.
+* @constructor
+*/
+ezP.DelegateSvg.Expr.numberliteral_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.numberliteral_concrete.superClass_.constructor.call(this, prototypeName)
+  this.inputData_.first = {
+    number: '0'
+  }
+  this.outputData_.check = ezP.T3.Expr.numberliteral_concrete
+}
+goog.inherits(ezP.DelegateSvg.Expr.numberliteral_concrete, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('numberliteral_concrete')
+
+ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.integer, ezP.DelegateSvg.Expr.numberliteral_concrete)
+
+ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.floatnumber, ezP.DelegateSvg.Expr.numberliteral_concrete)
+
+ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.imagnumber, ezP.DelegateSvg.Expr.numberliteral_concrete)
+
+/**
+* Class for a DelegateSvg, string litteral.
+* For ezPython.
+* @param {?string} prototypeName Name of the language object containing
+*     type-specific functions for this block.
+* @constructor
+*/
+ezP.DelegateSvg.Expr.stringliteral = function (prototypeName) {
+  ezP.DelegateSvg.Expr.stringliteral.superClass_.constructor.call(this, prototypeName)
+  this.inputData_ = {
+    first: {
+      dummy: '"'
+    },
+    middle: {
+      string: ''
+    },
+    last: {
+      dummy: '"'
+    },
+  }
+  this.outputData_.check = ezP.T3.Expr.stringliteral
+}
+goog.inherits(ezP.DelegateSvg.Expr.stringliteral, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('stringliteral')

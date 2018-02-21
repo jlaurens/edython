@@ -86,6 +86,10 @@ ezP.Const.Input = {
   MODULE: 'MODULE',
   POWER: 'POWER',
   END: 'END',
+  COMMENT: 'COMMENT',
+  NUMBER: 'NUMBER',
+  STRING: 'STRING',
+  LONG_STRING: 'LONG_STRING',
   // IN PROGRESS
   ANY: 'ANY',
   SEP: 'SEP',

@@ -44,3 +44,8 @@ goog.require('ezP')
 
 /** @export */ ezP.Msg.RENAME_VARIABLE_TITLE = "Renommer la variable '%1' en :"
 
+/** @export */ ezP.Msg.PLACEHOLDER_STRING = "Du texte ici"
+
+/** @export */ ezP.Msg.PLACEHOLDER_COMMENT = "Un commentaire ici"
+
+/** @export */ ezP.Msg.PLACEHOLDER_NUMBER = "0"

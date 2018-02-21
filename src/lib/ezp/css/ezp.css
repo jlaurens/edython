@@ -259,3 +259,12 @@ body {
   font-family: arial, sans-serif;
   font-size: 13px;
 }
+.ezp-html-input {
+  border: none;
+  border-radius: 4px;
+  height: 100%;
+  margin: 0;
+  outline: none;
+  padding: 0 1px;
+  width: 100%
+}

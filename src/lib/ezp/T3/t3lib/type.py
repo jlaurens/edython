@@ -27,6 +27,7 @@ class Type:
         self.count = 0
         self.require = []
         self.provide = []
+        self.similar = []
         self.deep_require = []
         self.deep_provide = []
         self.is_wrapper = False

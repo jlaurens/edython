@@ -197,6 +197,16 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.workspaceBlocks =
   ezP.T3.Expr.identifier,
 ]
 
+ezP.DelegateSvg.Stmt.comment_stmt.workspaceBlocks = [
+  ezP.T3.Stmt.comment_stmt,
+]
+
+ezP.DelegateSvg.Expr.stringliteral.workspaceBlocks = 
+ezP.DelegateSvg.Expr.numberliteral_concrete.workspaceBlocks = [
+  ezP.T3.Expr.stringliteral,
+  ezP.T3.Expr.numberliteral_concrete,
+]
+
 // in progress
 
 ezP.DelegateSvg.Expr.power_concrete.workspaceBlocks = ezP.Do.arraysMerged([

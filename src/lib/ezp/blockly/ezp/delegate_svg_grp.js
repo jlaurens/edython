@@ -313,8 +313,7 @@ ezP.DelegateSvg.Manager.register('elif_part')
 ezP.DelegateSvg.Stmt.else_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.else_part.superClass_.constructor.call(this, prototypeName)
   this.inputData_.first = {
-    dummy: true,
-    label: 'else',
+    dummy: 'else',
     css_class: 'ezp-code-reserved',
   }
   this.statementData_.previous.check = ezP.T3.Stmt.Previous.else_part

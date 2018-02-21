@@ -317,9 +317,9 @@ class Formatter:
         template = '    ezP.T3.Stmt.{},'
         for t in self.get_statements():
             try:
-                if len(t.is_after):
+                if len(t.is_below):
                     self.append('  {}: ['.format(t.name))
-                    for tt in sorted((tt for tt in t.is_after), key=lambda t: (t.n, t.name)):
+                    for tt in sorted((tt for tt in t.is_below), key=lambda t: (t.n, t.name)):
                         self.append(template.format(tt.name))
                     self.append('  ],')
             except:
@@ -331,9 +331,9 @@ class Formatter:
         template = '    ezP.T3.Stmt.{},'
         for t in self.get_statements():
             try:
-                if len(t.is_before):
+                if len(t.is_above):
                     self.append('  {}: ['.format(t.name))
-                    for tt in sorted((tt for tt in t.is_before), key=lambda t: (t.n, t.name)):
+                    for tt in sorted((tt for tt in t.is_above), key=lambda t: (t.n, t.name)):
                         self.append(template.format(tt.name))
                     self.append('  ],')
             except:

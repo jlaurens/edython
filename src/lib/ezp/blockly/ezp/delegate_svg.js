@@ -88,7 +88,6 @@ ezP.DelegateSvg.Manager.register = function (key) {
   Blockly.Blocks[prototypeName] = {}
 }
 
-
 Blockly.Block.prototype.ezp = ezP.DelegateSvg.Manager.registerDefault(ezP.DelegateSvg)
 
 /**
@@ -121,12 +120,6 @@ ezP.DelegateSvg.prototype.svgPathInline_ = undefined
  * @private
  */
 ezP.DelegateSvg.prototype.svgPathHighlight_ = undefined
-
-/**
- * When set, used as the right delimiter.
- * Must be created in a dummy input at the very end.
- */
-ezP.DelegateSvg.prototype.fieldLabelEnd = undefined
 
 /**
  * When set, used to create an input value.
@@ -169,7 +162,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     var out
     if (D && Object.keys(D).length) {
       out = {}
-      if (!D.key || D.dummy || D.identifier) {
+      if (!D.key || D.dummy || D.identifier || D.comment || D.number || D.string || D.longString) {
         out.input = block.appendDummyInput(k)
       } else {
         var k = D.key
@@ -219,9 +212,9 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
           }
         }
       }
-      if ((v = D.label)) {
+      if ((v = D.label) || (v = D.dummy)) {
         out.fieldLabel = new ezP.FieldLabel(v)
-        out.fieldLabel.ezpData.key = k+'.'+ezP.Const.Field.LABEL
+        out.fieldLabel.ezpData.key = K+'.'+ezP.Const.Field.LABEL
         out.input.appendField(out.fieldLabel, out.fieldLabel.ezpData.key)
         if (D.css_class) {
           out.fieldLabel.ezpData.css_class = D.css_class
@@ -232,11 +225,27 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       }
       if ((v = D.identifier)) {
         out.fieldIdentifier = new ezP.FieldIdentifier(v)
-        out.fieldIdentifier.ezpData.key = k+'.'+ezP.Const.Field.IDENTIFIER
+        out.fieldIdentifier.ezpData.key = K+'.'+ezP.Const.Field.IDENTIFIER
         out.input.appendField(out.fieldIdentifier, out.fieldIdentifier.ezpData.key)
         if (D.label) { // this is svg specific
           out.fieldIdentifier.ezpData.x_shift = ezP.Font.space
         }
+      } else if ((v = D.comment) != undefined) {
+        out.fieldCodeComment = new ezP.FieldCodeComment(v)
+        out.fieldCodeComment.ezpData.key = ezP.Const.Input.COMMENT
+        out.input.appendField(out.fieldCodeComment, out.fieldCodeComment.ezpData.key)
+      } else if ((v = D.number) != undefined) {
+        out.fieldCodeNumber = new ezP.FieldCodeNumber(v)
+        out.fieldCodeNumber.ezpData.key = ezP.Const.Input.NUMBER
+        out.input.appendField(out.fieldCodeNumber, out.fieldCodeNumber.ezpData.key)
+      } else if ((v = D.string) != undefined) {
+        out.fieldCodeString = new ezP.FieldCodeString(v)
+        out.fieldCodeString.ezpData.key = ezP.Const.Input.STRING
+        out.input.appendField(out.fieldCodeString, out.fieldCodeString.ezpData.key)
+      } else if ((v = D.longString) != undefined) {
+        out.fieldCodeLongString = new ezP.FieldCodeLongString(v)
+        out.fieldCodeLongString.ezpData.key = ezP.Const.Input.LONG_STRING
+        out.input.appendField(out.fieldCodeLongString, out.fieldCodeLongString.ezpData.key)
       }
     }
     return out
@@ -700,16 +709,19 @@ ezP.DelegateSvg.prototype.renderDrawInput_ = function (io) {
 ezP.DelegateSvg.prototype.renderDrawFields_ = function (io) {
   var here = io.cursorX
   for (var _ = 0, field; (field = io.input.fieldRow[_]); ++_) {
-    if (field.getText().length>0) {
+    if (field.getDisplayText_().length>0) {
       var root = field.getSvgRoot()
       if (root) {
-        var ezp = field.ezpFieldData
+        var ezp = field.ezpData
         var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
         root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
           ', ' + ezP.Padding.t() + ')')
         var size = field.getSize()
         io.cursorX += size.width
-    } else {
+        if (ezp.isEditing) {
+          io.cursorX += ezP.Font.space
+        }
+      } else {
         console.log('Field with no root: did you ...initSvg()?')
       }
     }
