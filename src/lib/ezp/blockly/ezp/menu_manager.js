@@ -915,14 +915,6 @@ ezP.MenuManager.prototype.handleActionOperator = function (block, event) {
       return true
     }
     var field = ezp.inputs.last.fieldLabel
-    var old = field.getValue()
-    if (old == op) {
-      return true
-    }
-    if (Blockly.Events.isEnabled()) {
-      Blockly.Events.fire(new Blockly.Events.BlockChange(
-        block, 'field', field.ezpData.key, old, op));
-    }
     field.setValue(op)
     return true
   }

@@ -13,7 +13,6 @@
 
 goog.provide('ezP.DelegateSvg.Wrap')
 
-goog.require('ezP.ContextMenu')
 goog.require('ezP.DelegateSvg.Stmt')
 
 /**

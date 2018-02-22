@@ -167,6 +167,4 @@ ezP.Op = {
 
 ezP.Const.Event = {
   input_disable: 'ezp_input_disable',
-  change_operator: 'ezp_change_operator',
-  change_import_model: 'ezp_change_import_model',
 }

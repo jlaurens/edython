@@ -13,7 +13,6 @@
 
 goog.provide('ezP.DelegateSvg.Print')
 
-goog.require('ezP.ContextMenu')
 goog.require('ezP.DelegateSvg.Stmt')
 goog.require('ezP.DelegateSvg.List')
 goog.require('ezP.DelegateSvg.Expr')

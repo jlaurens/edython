@@ -33,48 +33,12 @@ for (var i = 0; i < ezP.T3.All.wrappers.length; ++i) {
 
 // What is below will be removed quite soon
 
-goog.require('Blockly.Block')
-goog.require('ezP.Const')
-goog.require('ezP.Type')
-goog.require('ezP.FieldLabel')
-goog.require('ezP.FieldTextInput')
-goog.require('ezP.FieldDropdown')
-goog.require('ezP.FieldOptionsCode')
-goog.require('ezP.FieldVariable')
-
-goog.require('ezP.FieldIdentifier')
-goog.require('ezP.FieldVariable.Annotation')
-goog.require('ezP.FieldVariable.Default')
-
-Blockly.Blocks[ezP.T3.Expr.GET] = {
-  init: function () {
-    this.ezp.initBlock(this)
-    this.setInputsInline(true)
-    this.setOutput(true, ezP.Type.Expr.Provide.get)
-    this.setTooltip('')
-    this.setHelpUrl('')
-  }
-}
-
 Blockly.Blocks[ezP.T3.Expr.ANY] = {
   init: function () {
     this.appendDummyInput()
       .appendField(new ezP.FieldTextInput('1+1'), ezP.Const.Field.ANY)
     this.setInputsInline(true)
     this.setOutput(true, ezP.Type.Expr.Provide.any)
-    this.setTooltip('')
-    this.setHelpUrl('')
-  }
-}
-
-Blockly.Blocks[ezP.T3.Expr.TEXT] = {
-  init: function () {
-    this.appendDummyInput()
-      .appendField(new ezP.FieldLabel('"'))
-      .appendField(new ezP.FieldTextInput(''), ezP.Const.Field.TEXT)
-      .appendField(new ezP.FieldLabel('"'))
-    this.setInputsInline(true)
-    this.setOutput(true, null)
     this.setTooltip('')
     this.setHelpUrl('')
   }

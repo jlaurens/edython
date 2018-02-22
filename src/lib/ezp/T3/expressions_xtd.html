@@ -23,6 +23,12 @@ This type is a shallow only type used with plugged_.
 not_a_variable !!=
 </pre>
 
+atom      ::=  identifier | literal | enclosure
+<pre>
+atom      ::=  identifier | literal | enclosure | builtin_object
+builtin_object ::= 'None' | 'True' | 'False' | 'Ellipsis' | '...' |'NotImplemented'
+</pre>
+
 
 starred_list ::= starred_item ( ',' starred_item ) * [',']
 <pre>

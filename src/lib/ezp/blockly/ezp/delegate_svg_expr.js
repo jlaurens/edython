@@ -351,6 +351,7 @@ ezP.DelegateSvg.Expr.stringliteral = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.stringliteral, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('stringliteral')
+ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.bytesliteral, ezP.DelegateSvg.Expr.stringliteral)
 
 ezP.ID.TOGGLE_QUOTE = 'TOGGLE_QUOTE'
 ezP.ID.STRING_PREFIX_INSERT = 'STRING_PREFIX_INSERT'
@@ -440,12 +441,6 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.handleMenuItemActionFirst = functio
     var newValue = oldValue === "'"? '"': "'"
     var nameEnd = 'last.'+ezP.Const.Field.END
     var fieldEnd = block.getField(nameEnd)
-    if (Blockly.Events.isEnabled()) {
-      Blockly.Events.fire(new Blockly.Events.BlockChange(
-        block, 'field', nameStart, oldValue, newValue))
-        Blockly.Events.fire(new Blockly.Events.BlockChange(
-          block, 'field', nameEnd, oldValue, newValue))
-    }
     fieldStart.setValue(newValue)
     fieldEnd.setValue(newValue)
     Blockly.Events.setGroup(false)
@@ -566,4 +561,87 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.fieldValueDidChange = function(bloc
     block.type = ezP.T3.Expr.stringliteral
   }
   block.ezp.setupType(block)
+}
+
+/**
+* Class for a DelegateSvg, builtin object.
+* For ezPython.
+* @param {?string} prototypeName Name of the language object containing
+*     type-specific functions for this block.
+* @constructor
+*/
+ezP.DelegateSvg.Expr.builtin_object = function (prototypeName) {
+  ezP.DelegateSvg.Expr.builtin_object.superClass_.constructor.call(this, prototypeName)
+  this.values = ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented']
+  this.inputData_.first = {
+    key: ezP.Const.Field.VALUE,
+    label: this.values[0],
+  }
+  this.outputData_.check = ezP.T3.Expr.builtin_object
+}
+goog.inherits(ezP.DelegateSvg.Expr.builtin_object, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('builtin_object')
+
+ezP.ID.BUILTIN_OBJECT_CHANGE = 'BUILTIN_OBJECT_CHANGE'
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var builtin = block.getField(ezP.Const.Field.VALUE).getValue()
+  var value, _ = 0
+  while ((value = this.values[_++])) {
+    var menuItem = new ezP.MenuItem(
+      value,
+      {
+        action: ezP.ID.BUILTIN_OBJECT_CHANGE,
+        value: value,
+      })
+    menuItem.setEnabled(builtin !== value)
+    mgr.addChild(menuItem, true)
+  }
+  mgr.shouldSeparateInsert()
+  ezP.DelegateSvg.Expr.builtin_object.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return true
+}
+
+/**
+ * Handle the selection of an item in the context dropdown menu.
+ * @param {!Blockly.Block} block, owner of the delegate.
+ * @param {!goog.ui.Menu} menu The Menu clicked.
+ * @param {!goog....} event The event containing as target
+ * the MenuItem selected within menu.
+ */
+ezP.DelegateSvg.Expr.builtin_object.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
+  var model = event.target.getModel()
+  var action = model.action
+  if (action === ezP.ID.BUILTIN_OBJECT_CHANGE) {
+    block.getField(ezP.Const.Field.VALUE).setValue(model.value)
+    return true
+  }
+  return ezP.DelegateSvg.Expr.builtin_object.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
+}
+
+/**
+ * Records the operator as attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.DelegateSvg.Expr.builtin_object.prototype.toDom = function (block, element) {
+  element.setAttribute('value', block.getField(ezP.Const.Field.VALUE).getText())
+}
+
+/**
+ * Set the operator from the attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.DelegateSvg.Expr.builtin_object.prototype.fromDom = function (block, element) {
+  var value = element.getAttribute('value')
+  block.getField(ezP.Const.Field.VALUE).setText(value)
 }

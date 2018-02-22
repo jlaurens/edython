@@ -215,8 +215,8 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       var field
       if ((v = D.label) !== undefined || (v = D.dummy) !== undefined) {
         out.fieldLabel = field = new ezP.FieldLabel(v)
-        field.ezpData.key = D.key || K+'.'+ezP.Const.Field.LABEL
-        out.input.appendField(field, field.ezpData.key)
+        k = D.key || K+'.'+ezP.Const.Field.LABEL
+        out.input.appendField(field, k)
         if (D.css_class) {
           field.ezpData.css_class = D.css_class
         }
@@ -226,42 +226,42 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       }
       if ((v = D.start) !== undefined) {
         field = out.input.ezpData.fieldLabelStart = new ezP.FieldLabel(v)
-        field.ezpData.key = K+'.'+ezP.Const.Field.START
+        k = K+'.'+ezP.Const.Field.START
         field.ezpData.css_class = D.css_class
         field.ezpData.css_style = D.css_style
-        out.input.appendField(field, field.ezpData.key)
+        out.input.appendField(field, k)
       }
       if ((v = D.end) !== undefined) {
         field = out.input.ezpData.fieldLabelEnd = new ezP.FieldLabel(v)
-        field.ezpData.key = K+'.'+ezP.Const.Field.END
+        k = K+'.'+ezP.Const.Field.END
         field.ezpData.css_class = D.css_class
         field.ezpData.css_style = D.css_style
         field.ezpData.suffix = true
-        out.input.appendField(field, field.ezpData.key)
+        out.input.appendField(field, k)
       }
       if ((v = D.identifier) !== undefined) {
         field = out.fieldIdentifier = new ezP.FieldIdentifier(v)
-        field.ezpData.key = K+'.'+ezP.Const.Field.IDENTIFIER
-        out.input.appendField(field, field.ezpData.key)
+        k = K+'.'+ezP.Const.Field.IDENTIFIER
+        out.input.appendField(field, k)
         // if (D.label) { // this is svg specific
         //   field.ezpData.x_shift = ezP.Font.space
         // }
       } else if ((v = D.comment) != undefined) {
         field = out.fieldCodeComment = new ezP.FieldCodeComment(v)
-        field.ezpData.key = ezP.Const.Input.COMMENT
-        out.input.appendField(field, field.ezpData.key)
+        k = ezP.Const.Input.COMMENT
+        out.input.appendField(field, k)
       } else if ((v = D.number) != undefined) {
         field = out.fieldCodeNumber = new ezP.FieldCodeNumber(v)
-        field.ezpData.key = ezP.Const.Input.NUMBER
-        out.input.appendField(field, field.ezpData.key)
+        k = ezP.Const.Input.NUMBER
+        out.input.appendField(field, k)
       } else if ((v = D.string) != undefined) {
         field = out.fieldCodeString = new ezP.FieldCodeString(v)
-        field.ezpData.key = ezP.Const.Input.STRING
-        out.input.appendField(field, field.ezpData.key)
+        k = ezP.Const.Input.STRING
+        out.input.appendField(field, k)
       } else if ((v = D.longString) != undefined) {
         field = out.fieldCodeLongString = new ezP.FieldCodeLongString(v)
-        field.ezpData.key = ezP.Const.Input.LONG_STRING
-        out.input.appendField(field, field.ezpData.key)
+        k = ezP.Const.Input.LONG_STRING
+        out.input.appendField(field, k)
       }
     }
     return out

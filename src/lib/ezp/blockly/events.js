@@ -47,12 +47,6 @@ Blockly.Events.Change.prototype.run = function(forward) {
     case ezP.Const.Event.input_disable:
       block.ezp.setNamedInputDisabled(block, this.name, value)
       break;
-    case ezP.Const.Event.change_operator:
-      block.ezp.changeOperator(block, value)
-      break;
-    case ezP.Const.Event.change_import_model:
-      block.ezp.changeImportModel(block, value)
-      break;
     default:
       console.warn('Unknown change type: ' + this.element);
   }

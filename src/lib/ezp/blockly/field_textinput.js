@@ -136,7 +136,6 @@ ezP.FieldTextInput.prototype.showPromptEditor_ = function () {
  * @private
  */
 ezP.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
-  console.log('Blockly.WidgetDiv.show')
   var dispose = this.widgetDispose_()
   Blockly.WidgetDiv.show(this, this.sourceBlock_.RTL, dispose)
   var div = Blockly.WidgetDiv.DIV
@@ -296,7 +295,6 @@ ezP.FieldCodeNumber = function (text) {
           block.outputConnection.setCheck(type)
           block.type = type
           block.ezp.setupType(block)
-          console.log(type)
           return txt
         }
       }
