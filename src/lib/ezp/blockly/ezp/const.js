@@ -24,11 +24,14 @@ goog.require('ezP')
 
 ezP.Const.Field = {
   LABEL: 'LABEL',
+  START: 'START',
+  END: 'END',
   DOTS: 'DOTS',
   VALUE: 'VALUE',
   ID: 'ID',
   IDENTIFIER: 'IDENTIFIER',
   OP: 'OP',
+  PREFIX: 'PREFIX',
   // IN PROGRESS
   VAR: 'VAR',
   STARS: 'STARS',

@@ -29,6 +29,7 @@ ezP.DelegateSvg.Primary = function (prototypeName) {
     key: ezP.Const.Input.PRIMARY,
     check: ezP.T3.Expr.Check.primary,
     plugged: ezP.T3.Expr.primary,
+    hole_value: 'name',
   }
 }
 goog.inherits(ezP.DelegateSvg.Primary, ezP.DelegateSvg.Expr)
@@ -71,6 +72,7 @@ ezP.DelegateSvg.Expr.attributeref = function (prototypeName) {
     key: ezP.Const.Input.ATTRIBUTE,
     check: ezP.T3.Expr.identifier,
     plugged: ezP.T3.Expr.attribute_identifier,
+    hole_value: 'attribute',
   }
   this.outputData_.check = ezP.T3.Expr.attributeref 
 }
@@ -113,13 +115,11 @@ ezP.DelegateSvg.Manager.register('subscription')
  */
 ezP.DelegateSvg.Expr.call_expr =  function (prototypeName) {
   ezP.DelegateSvg.Expr.call_expr.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.middle = {
-    key: ezP.Const.Input.LIST,
-    label: '(',
-    wrap: ezP.T3.Expr.argument_list,
-  }
   this.inputData_.last = {
-    label: ')',
+    key: ezP.Const.Input.LIST,
+    start: '(',
+    wrap: ezP.T3.Expr.argument_list,
+    end: ')',
   }
   this.outputData_.check = ezP.T3.Expr.call_expr
 }

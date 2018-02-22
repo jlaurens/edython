@@ -99,9 +99,11 @@ ezP.FieldTextInput.prototype.cssClass = 'ezp-code'
  */
 ezP.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
   this.ezpData.isEditing = true
+  var block = this.sourceBlock_
+  block.ezp.startEditingField && block.ezp.startEditingField(block, this)
   this.render_()
-  this.sourceBlock_.render()
-  this.workspace_ = this.sourceBlock_.workspace
+  block.render()
+  this.workspace_ = block.workspace
   var quietInput = optQuietInput || false
   if (!quietInput && (goog.userAgent.MOBILE || goog.userAgent.ANDROID ||
                       goog.userAgent.IPAD)) {
@@ -134,7 +136,9 @@ ezP.FieldTextInput.prototype.showPromptEditor_ = function () {
  * @private
  */
 ezP.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
-  Blockly.WidgetDiv.show(this, this.sourceBlock_.RTL, this.widgetDispose_())
+  console.log('Blockly.WidgetDiv.show')
+  var dispose = this.widgetDispose_()
+  Blockly.WidgetDiv.show(this, this.sourceBlock_.RTL, dispose)
   var div = Blockly.WidgetDiv.DIV
   // Create the input.
   var htmlInput =
@@ -168,9 +172,11 @@ ezP.FieldTextInput.prototype.widgetDispose_ = function () {
   var thisField = this
   return function () {
     thisField.ezpData.isEditing = false
-    thisField.validate_()
+    var block = thisField.sourceBlock_
+    block.ezp.endEditingField && block.ezp.endEditingField(block, this)  
+    thisField.callValidator()
     thisField.render_()
-    thisField.sourceBlock_.render()
+    block.render()
     ezP.FieldTextInput.superClass_.widgetDispose_.call(thisField)
     Blockly.WidgetDiv.DIV.style.fontFamily = ''
   }
@@ -239,7 +245,6 @@ ezP.FieldCodeInput.prototype.setValue = function(newValue) {
   if ((this.ezpData.placeholder = !newValue || !newValue.length)) {
     // newValue = this.placeholderText
     this.ezpData.cssClass = 'ezp-code-placeholder'
-    newValue = Blockly.Field.NBSP
   } else {
     this.ezpData.cssClass = undefined
   }   

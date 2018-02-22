@@ -112,14 +112,6 @@ ezP.FieldIdentifier.prototype.showPromptEditor_ = function () {
 }
 
 /**
- * Close the editor, save the results, and dispose of the editable
- * text field's elements.
- * @return {!Function} Closure to call on destruction of the WidgetDiv.
- * @private
- */
-ezP.FieldIdentifier.prototype.widgetDispose_ = Blockly.FieldTextInput.prototype.widgetDispose_
-
-/**
  * Called when focusing away from the text field.
  * @param {string} newName The new variable name.
  * @private

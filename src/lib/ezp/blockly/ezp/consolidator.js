@@ -472,13 +472,15 @@ ezP.Consolidator.List.Singled.prototype.cleanup = function(io) {
  * @param {!String} single, the required type for a single element....
  */
 ezP.Consolidator.Arguments = function() {
-  ezP.Consolidator.Arguments.superClass_.constructor.call(this, {
-    check: ezP.T3.Expr.Check.primary,
-    empty: true,
-    sep: ',',
-  })
+  ezP.Consolidator.Arguments.superClass_.constructor.call(this, ezP.Consolidator.Arguments.data)
 }
 goog.inherits(ezP.Consolidator.Arguments, ezP.Consolidator.List)
+
+ezP.Consolidator.Arguments.data = {
+  check: ezP.T3.Expr.Check.primary,
+  empty: true,
+  sep: ',',
+}
 
 /**
  * Prepare io, just before walking through the input list.
@@ -717,13 +719,16 @@ ezP.Consolidator.Arguments.prototype.getCheck = function (io) {
  *    must also have a default value...
  */
 ezP.Consolidator.Parameters = function() {
-  ezP.Consolidator.Parameters.superClass_.constructor.call(this, {
-    check: ezP.T3.Expr.Check.primary,
-    empty: true,
-    serp: ',',
-  })
+  ezP.Consolidator.Parameters.superClass_.constructor.call(this, ezP.Consolidator.Parameters.data)
 }
 goog.inherits(ezP.Consolidator.Parameters, ezP.Consolidator.List)
+
+ezP.Consolidator.Parameters.data = {
+  check: ezP.T3.Expr.Check.primary,
+  empty: true,
+  sep: ',',
+}
+
 
 /**
  * Prepare io, just before walking through the input list.

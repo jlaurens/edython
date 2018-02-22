@@ -133,7 +133,7 @@ ezP.DelegateSvg.Manager.register('comp_iter_list')
 ezP.DelegateSvg.Expr.dict_comprehension = function (prototypeName) {
   ezP.DelegateSvg.Expr.dict_comprehension.superClass_.constructor.call(this, prototypeName)
   this.inputData_.first.wrap =
-  this.inputData_.first.check = ezP.T3.Expr.key_datum_concrete,
+  ezP.T3.Expr.key_datum_concrete,
   this.outputData_.check = ezP.T3.Expr.dict_comprehension
 }
 goog.inherits(ezP.DelegateSvg.Expr.dict_comprehension, ezP.DelegateSvg.Expr.comprehension)

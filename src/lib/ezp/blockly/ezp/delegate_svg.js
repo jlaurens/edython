@@ -162,7 +162,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     var out
     if (D && Object.keys(D).length) {
       out = {}
-      if (!D.key || D.dummy || D.identifier || D.comment || D.number || D.string || D.longString) {
+      if ((!D.check && !D.wrap) || D.dummy || D.identifier || D.comment || D.number || D.string || D.longString) {
         out.input = block.appendDummyInput(k)
       } else {
         var k = D.key
@@ -212,40 +212,56 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
           }
         }
       }
-      if ((v = D.label) || (v = D.dummy)) {
-        out.fieldLabel = new ezP.FieldLabel(v)
-        out.fieldLabel.ezpData.key = K+'.'+ezP.Const.Field.LABEL
-        out.input.appendField(out.fieldLabel, out.fieldLabel.ezpData.key)
+      var field
+      if ((v = D.label) !== undefined || (v = D.dummy) !== undefined) {
+        out.fieldLabel = field = new ezP.FieldLabel(v)
+        field.ezpData.key = D.key || K+'.'+ezP.Const.Field.LABEL
+        out.input.appendField(field, field.ezpData.key)
         if (D.css_class) {
-          out.fieldLabel.ezpData.css_class = D.css_class
+          field.ezpData.css_class = D.css_class
         }
         if (D.css_style) {
-          out.fieldLabel.ezpData.css_style = D.css_style
+          field.ezpData.css_style = D.css_style
         }
       }
-      if ((v = D.identifier)) {
-        out.fieldIdentifier = new ezP.FieldIdentifier(v)
-        out.fieldIdentifier.ezpData.key = K+'.'+ezP.Const.Field.IDENTIFIER
-        out.input.appendField(out.fieldIdentifier, out.fieldIdentifier.ezpData.key)
-        if (D.label) { // this is svg specific
-          out.fieldIdentifier.ezpData.x_shift = ezP.Font.space
-        }
+      if ((v = D.start) !== undefined) {
+        field = out.input.ezpData.fieldLabelStart = new ezP.FieldLabel(v)
+        field.ezpData.key = K+'.'+ezP.Const.Field.START
+        field.ezpData.css_class = D.css_class
+        field.ezpData.css_style = D.css_style
+        out.input.appendField(field, field.ezpData.key)
+      }
+      if ((v = D.end) !== undefined) {
+        field = out.input.ezpData.fieldLabelEnd = new ezP.FieldLabel(v)
+        field.ezpData.key = K+'.'+ezP.Const.Field.END
+        field.ezpData.css_class = D.css_class
+        field.ezpData.css_style = D.css_style
+        field.ezpData.suffix = true
+        out.input.appendField(field, field.ezpData.key)
+      }
+      if ((v = D.identifier) !== undefined) {
+        field = out.fieldIdentifier = new ezP.FieldIdentifier(v)
+        field.ezpData.key = K+'.'+ezP.Const.Field.IDENTIFIER
+        out.input.appendField(field, field.ezpData.key)
+        // if (D.label) { // this is svg specific
+        //   field.ezpData.x_shift = ezP.Font.space
+        // }
       } else if ((v = D.comment) != undefined) {
-        out.fieldCodeComment = new ezP.FieldCodeComment(v)
-        out.fieldCodeComment.ezpData.key = ezP.Const.Input.COMMENT
-        out.input.appendField(out.fieldCodeComment, out.fieldCodeComment.ezpData.key)
+        field = out.fieldCodeComment = new ezP.FieldCodeComment(v)
+        field.ezpData.key = ezP.Const.Input.COMMENT
+        out.input.appendField(field, field.ezpData.key)
       } else if ((v = D.number) != undefined) {
-        out.fieldCodeNumber = new ezP.FieldCodeNumber(v)
-        out.fieldCodeNumber.ezpData.key = ezP.Const.Input.NUMBER
-        out.input.appendField(out.fieldCodeNumber, out.fieldCodeNumber.ezpData.key)
+        field = out.fieldCodeNumber = new ezP.FieldCodeNumber(v)
+        field.ezpData.key = ezP.Const.Input.NUMBER
+        out.input.appendField(field, field.ezpData.key)
       } else if ((v = D.string) != undefined) {
-        out.fieldCodeString = new ezP.FieldCodeString(v)
-        out.fieldCodeString.ezpData.key = ezP.Const.Input.STRING
-        out.input.appendField(out.fieldCodeString, out.fieldCodeString.ezpData.key)
+        field = out.fieldCodeString = new ezP.FieldCodeString(v)
+        field.ezpData.key = ezP.Const.Input.STRING
+        out.input.appendField(field, field.ezpData.key)
       } else if ((v = D.longString) != undefined) {
-        out.fieldCodeLongString = new ezP.FieldCodeLongString(v)
-        out.fieldCodeLongString.ezpData.key = ezP.Const.Input.LONG_STRING
-        out.input.appendField(out.fieldCodeLongString, out.fieldCodeLongString.ezpData.key)
+        field = out.fieldCodeLongString = new ezP.FieldCodeLongString(v)
+        field.ezpData.key = ezP.Const.Input.LONG_STRING
+        out.input.appendField(field, field.ezpData.key)
       }
     }
     return out
@@ -456,6 +472,7 @@ ezP.DelegateSvg.prototype.willRender_ = function (block) {
     }
   }
 }
+
 /**
  * Did draw the block. Default implementation does nothing.
  * The print statement needs some preparation before drawing.
@@ -670,6 +687,16 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
             }
           }
         }
+        if ((field = io.input.ezpData.fieldLabel)) {
+          if (field.getText().length>0) {
+            var root = field.getSvgRoot()
+            if (root) {
+              root.setAttribute('display', 'none')
+            } else {
+              console.log('Field with no root: did you ...initSvg()?')
+            }
+          }
+        }
       } else {
         this.renderDrawInput_(io)
       }
@@ -706,24 +733,26 @@ ezP.DelegateSvg.prototype.renderDrawInput_ = function (io) {
  * @return the delta of io.cursorX
  * @private
  */
-ezP.DelegateSvg.prototype.renderDrawFields_ = function (io) {
+ezP.DelegateSvg.prototype.renderDrawFields_ = function (io, start) {
   var here = io.cursorX
-  for (var _ = 0, field; (field = io.input.fieldRow[_]); ++_) {
-    if (field.getDisplayText_().length>0) {
-      var root = field.getSvgRoot()
-      if (root) {
-        var ezp = field.ezpData
-        var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
-        root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
-          ', ' + ezP.Padding.t() + ')')
-        var size = field.getSize()
-        io.cursorX += size.width
-        if (ezp.isEditing) {
-          io.cursorX += ezP.Font.space
+  for (var _ = 0; (io.field = io.input.fieldRow[_]); ++_) {
+    if (!!start === !io.field.ezpData.suffix) {
+      if (io.field.isVisible() && io.field.getDisplayText_().length>0) {
+        var root = io.field.getSvgRoot()
+        if (root) {
+          var ezp = io.field.ezpData
+          var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
+          root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
+            ', ' + ezP.Padding.t() + ')')
+          var size = io.field.getSize()
+          io.cursorX += size.width
+          if (ezp.isEditing) {
+            io.cursorX += ezP.Font.space
+          }
+        } else {
+          console.log('Field with no root: did you ...initSvg()?')
         }
-      } else {
-        console.log('Field with no root: did you ...initSvg()?')
-      }
+      }          
     }
   }
   return here - io.cursorX
@@ -738,7 +767,8 @@ ezP.DelegateSvg.prototype.renderDrawDummyInput_ = function (io) {
   if (!io.canDummy || io.input.type !== Blockly.DUMMY_INPUT) {
     return false
   }
-  this.renderDrawFields_(io)
+  this.renderDrawFields_(io, true)
+  this.renderDrawFields_(io, false)
   return true
 }
 
@@ -757,7 +787,7 @@ ezP.DelegateSvg.prototype.renderDrawTupleInput_ = function (io) {
     return false
   }
   var c8n = io.input.connection
-  this.renderDrawFields_(io)
+  this.renderDrawFields_(io, true)
   c8n.setOffsetInBlock(io.cursorX, 0)
   if (c8n.isConnected()) {
     var target = c8n.targetBlock()
@@ -778,6 +808,7 @@ ezP.DelegateSvg.prototype.renderDrawTupleInput_ = function (io) {
     io.steps.push(pw.d)
     io.cursorX += pw.width
   }
+  this.renderDrawFields_(io, false)
   return true
 }
 
@@ -794,7 +825,7 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   if (c8n) {
     var ezp = c8n.ezp
     var target = c8n.targetBlock()
-    var delta = this.renderDrawFields_(io)
+    var delta = this.renderDrawFields_(io, true)
     c8n.setOffsetInBlock(io.cursorX, 0)
     if (!!target) {
       var root = target.getSvgRoot()
@@ -834,6 +865,7 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       io.steps.push(pw.d)
       io.cursorX += pw.width
     }
+    this.renderDrawFields_(io, false)
   }
   return true
 }
@@ -1245,13 +1277,14 @@ ezP.DelegateSvg.prototype.canInsertParent = function(block, prototypeName, input
  * If the block's output connection is connected,
  * connects the parent's output to it.
  * The connection cannot always establish.
+ * The holes are filled.
  * @param {!Block} block.
  * @param {string} prototypeName.
  * @param {string} inputName, which parent's connection to use
+ * @return the created block
  */
 ezP.DelegateSvg.prototype.insertBlockAbove = function(block, prototypeName, inputName) {
   Blockly.Events.setGroup(true)
-  console.log('insertBlockAbove', block.type, prototypeName, inputName)
   var B = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
   if (inputName) {
     var input = B.getInput(inputName)
@@ -1275,15 +1308,20 @@ ezP.DelegateSvg.prototype.insertBlockAbove = function(block, prototypeName, inpu
     B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
   }
   c8n.connect(block.outputConnection)
-  var wholes = ezP.HoleFiller.getDeepHoles(B)
-  var i = 0
-  for (; i < holes.length; ++i) {
-    var j = wholes.indexOf(holes[i])
-    if ( j>=0 ) {
-      wholes.splice(j, 1)
-    }
-  }
-  ezP.HoleFiller.fillDeepHoles(B.workspace, wholes)
+  var holes = ezP.HoleFiller.getDeepHoles(B)
+  // WHAT is the purpose of that ?
+  // Commented out because it is weird and I don't
+  // remember the problem addressed. Maybe duplicates?
+  // var i = 0
+  // while (i < holes.length) {
+  //   var j = holes.indexOf(holes[i])
+  //   if ( j>=0 ) {
+  //     holes.splice(j, 1)
+  //   } else {
+  //     ++i
+  //   }
+  // }
+  ezP.HoleFiller.fillDeepHoles(B.workspace, holes)
   B.render()
   Blockly.Events.setGroup(false)
   return B
@@ -1306,14 +1344,6 @@ ezP.DelegateSvg.prototype.hasHolesToFill = function(block) {
   }
   return false
 }
-
-/**
- * Hole filler object for the given check.
- * @param {!Array} check an array of types.
- * @param {string} value, text of the identifier if any will fill a hole.
- * @private
- */
-ezP.HoleFiller = {}
 
 /**
  * Get the hole filler data object for the given check.
@@ -1347,10 +1377,11 @@ ezP.HoleFiller.getData = function(check, value) {
  */
 ezP.HoleFiller.getDeepHoles = function(block, holes) {
   var H = holes || []
-  var i = 0
+  var i = 0, input
   var L = block.inputList
-  for (; i < L.length; ++i) {
-    var c8n = L[i].connection
+  var input
+  while((input = L[i++])) {
+    var c8n = input.connection
     if (c8n && c8n.type === Blockly.INPUT_VALUE && (!c8n.hidden_ || c8n.ezp.wrapped_)) {
       var target = c8n.targetBlock()
       if (target) {

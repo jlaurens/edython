@@ -63,7 +63,7 @@ ezP.Font = function (ascent) {
     my.space = ascent * 1233 / 1556
     my.totalAscent = ascent * 2048 / 1556
     my.height = my.totalAscent + my.descent
-    my.style = 'font-family:DejaVuSansMono,monospace;font-size:' + ascent + 'pt;fill:black;background:white;'
+    my.style = 'font-family:DejaVuSansMono,monospace;font-size:' + ascent + 'pt;'
     my.tabWidth = 4 * my.space
     return my
   }
@@ -144,12 +144,12 @@ ezP.setup.register(function () {
   ezP.Style.insertCssRuleAt('.ezp-path-shadow-contour, .ezp-path-shadow-collapsed {stroke-width: ' + (ezP.Style.Path.width * 1.2) + 'px;stroke-dasharray:' + ezP.Font.space / 3 + ' ' + ezP.Font.space / 6 + ';}')
   ezP.Style.insertCssRuleAt('.ezp-path-dotted{stroke: ' + ezP.Style.Path.colour + ';stroke-width: ' + (ezP.Style.Path.width * 1.5) + 'px;stroke-linecap:round;stroke-dasharray:0 ' + ezP.Font.space / 2 + ';}')
   ezP.Style.insertCssRuleAt('.ezp-no-path{display:none;}', 5)
-  ezP.Style.insertCssRuleAt('.ezp-code-reserved {font-weight:bold;fill: rgba(0, 84, 147, 0.75);color: rgba(0, 84, 147, 0.75);}')
-  ezP.Style.insertCssRuleAt('.ezp-menuitem-disabled .ezp-code-reserved {color: rgba(0, 84, 147, 0.3);}')
+  ezP.Style.insertCssRuleAt('.ezp-code-reserved {font-weight:bold;color: rgba(0, 84, 147, 0.75);fill: rgba(0, 84, 147, 0.75);}')
+  ezP.Style.insertCssRuleAt('.ezp-menuitem-disabled .ezp-code-reserved {color: rgba(0, 84, 147, 0.3);fill: rgba(0, 84, 147, 0.3);}')
   ezP.Style.insertCssRuleAt('.ezp-code-placeholder, .ezp-code-comment {font-style: oblique;}')
   ezP.Style.insertCssRuleAt('text.ezp-code-comment, .ezp-code-placeholder {fill: rgba(0, 0, 0, 0.4);}')
   ezP.Style.insertCssRuleAt('.ezp-block rect {fill: white;}')
-  ezP.Style.insertCssRuleAt('.ezp-code-error , input.ezp-code-error {fill: red; color: red;}')
+  ezP.Style.insertCssRuleAt('.ezp-code-error , input.ezp-code-error {color: red;}')
 })
 
 ezP.Style.MenuIcon = {

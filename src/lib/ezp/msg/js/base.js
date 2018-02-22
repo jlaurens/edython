@@ -31,9 +31,12 @@ goog.require('ezP')
 
 /** @export */ ezP.Msg.FILL_DEEP_HOLES = "Compléter"
 
+/** @export */ ezP.Msg.AT_THE_LEFT = 'à gauche'
+/** @export */ ezP.Msg.AT_THE_RIGHT = 'à droite'
+/** @export */ ezP.Msg.AROUND = 'autour'
+
 /** @export */ ezP.Msg.BEFORE = 'avant'
 /** @export */ ezP.Msg.AFTER = 'après'
-/** @export */ ezP.Msg.AROUND = 'autour'
 
 /** @export */ ezP.Msg.AND = 'et'
 
@@ -49,3 +52,7 @@ goog.require('ezP')
 /** @export */ ezP.Msg.PLACEHOLDER_COMMENT = "Un commentaire ici"
 
 /** @export */ ezP.Msg.PLACEHOLDER_NUMBER = "0"
+
+/** @export */ ezP.Msg.USE_SINGLE_QUOTE = "'...'"
+
+/** @export */ ezP.Msg.USE_DOUBLE_QUOTES = '"..."'

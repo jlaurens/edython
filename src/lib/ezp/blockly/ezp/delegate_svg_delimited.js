@@ -28,11 +28,9 @@ ezP.DelegateSvg.Expr.parenth_form = function (prototypeName) {
   this.outputData_.check = ezP.T3.Expr.parenth_form
   this.inputData_.first = {
     key: ezP.Const.Input.LIST,
-    label: '(',
-    wrap: ezP.T3.Expr.starred_item_list
-  }
-  this.inputData_.last = {
-    label: ')',
+    start: '(',
+    wrap: ezP.T3.Expr.starred_item_list,
+    end: ')',
   }
 }
 goog.inherits(ezP.DelegateSvg.Expr.parenth_form, ezP.DelegateSvg.Expr)
@@ -50,11 +48,9 @@ ezP.DelegateSvg.Expr.list_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.list_display.superClass_.constructor.call(this, prototypeName)
   this.inputData_.first = {
     key: ezP.Const.Input.LIST,
-    label: '[',
-    wrap: ezP.T3.Expr.starred_item_list_comprehensive
-  }
-  this.inputData_.last = {
-    label: ']',
+    start: '[',
+    wrap: ezP.T3.Expr.starred_item_list_comprehensive,
+    end: ']',
   }
   this.outputData_.Check = ezP.T3.Expr.list_display
 }
@@ -72,11 +68,9 @@ ezP.DelegateSvg.Expr.set_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.set_display.superClass_.constructor.call(this, prototypeName)
   this.inputData_.first = {
     key: ezP.Const.Input.LIST,
-    label: '{',
-    wrap: ezP.T3.Expr.non_void_starred_item_list_comprehensive
-  }
-  this.inputData_.last = {
-    label: '}',
+    start: '{',
+    wrap: ezP.T3.Expr.non_void_starred_item_list_comprehensive,
+    end: '}',
   }
   this.outputData_.check = ezP.T3.Expr.set_display
 }
@@ -94,11 +88,9 @@ ezP.DelegateSvg.Expr.dict_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.dict_display.superClass_.constructor.call(this, prototypeName)
   this.inputData_. first = {
     key: ezP.Const.Input.LIST,
-    label: '{',
-    wrap: ezP.T3.Expr.key_datum_list_comprehensive
-  }
-  this.inputData_.last = {
-    label: '}',
+    start: '{',
+    wrap: ezP.T3.Expr.key_datum_list_comprehensive,
+    end: '}',
   }
   this.outputData_.check = ezP.T3.Expr.dict_display
 }
@@ -117,11 +109,9 @@ ezP.DelegateSvg.Expr.generator_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.generator_expression.superClass_.constructor.call(this, prototypeName)
   this.inputData_.first = {
     key: ezP.Const.Input.COMPREHENSION,
-    label: '{',
-    wrap: ezP.T3.Expr.comprehension
-  }
-  this.inputData_.last = {
-    label: '}',
+    start: '{',
+    wrap: ezP.T3.Expr.comprehension,
+    end: '}',
   }
   this.outputData_.check = ezP.T3.Expr.generator_expression
 }
@@ -140,11 +130,9 @@ ezP.DelegateSvg.Expr.display_slice_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.display_slice_list.superClass_.constructor.call(this, prototypeName)
   this.inputData_.first = {
     key: ezP.Const.Input.LIST,
-    label: '[',
-    wrap: ezP.T3.Expr.slice_list
-  }
-  this.inputData_.last = {
-    label: ']',
+    start: '[',
+    wrap: ezP.T3.Expr.slice_list,
+    end: ']',
   }
   this.outputData_.check = ezP.T3.Expr.display_slice_list
 }

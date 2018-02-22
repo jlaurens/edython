@@ -65,7 +65,7 @@ ezP.DelegateSvg.List.prototype.renderDrawListInput_ = function (io) {
     return false
   }
   var c8n = io.input.connection
-  this.renderDrawFields_(io)
+  this.renderDrawFields_(io, true)
   c8n.setOffsetInBlock(io.cursorX, 0)
   if (c8n.isConnected()) {
     var target = c8n.targetBlock()
@@ -85,6 +85,7 @@ ezP.DelegateSvg.List.prototype.renderDrawListInput_ = function (io) {
     io.steps.push(pw.d)
     io.cursorX += pw.width
   }
+  this.renderDrawFields_(io, false)
   return true
 }
 

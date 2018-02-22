@@ -29,11 +29,9 @@ goog.require('ezP.MenuItemCode')
 ezP.DelegateSvg.Expr.parenth_argument_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.parenth_argument_list.superClass_.constructor.call(this, prototypeName)
   this.inputData_.first = {
-    label: '(',
+    start: '(',
     wrap: ezP.T3.Expr.argument_list,
-  }
-  this.inputData_.last = {
-    label: ')',
+    end: ')',
   }
   this.outputData_.check = ezP.T3.Expr.parenth_argument_list
 }

@@ -25,7 +25,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Group = function (prototypeName) {
   ezP.DelegateSvg.Group.superClass_.constructor.call(this, prototypeName)
-  this.statementData_.key = ezP.Const.Input.DO,
+  this.statementData_.key = ezP.Const.Input.DO
   this.inputData_.last = {
     label: ':',
   }
@@ -313,7 +313,7 @@ ezP.DelegateSvg.Manager.register('elif_part')
 ezP.DelegateSvg.Stmt.else_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.else_part.superClass_.constructor.call(this, prototypeName)
   this.inputData_.first = {
-    dummy: 'else',
+    label: 'else',
     css_class: 'ezp-code-reserved',
   }
   this.statementData_.previous.check = ezP.T3.Stmt.Previous.else_part

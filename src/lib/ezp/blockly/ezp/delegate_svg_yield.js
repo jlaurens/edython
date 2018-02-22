@@ -71,11 +71,9 @@ ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_atom.superClass_.constructor.call(this, prototypeName)
   this.inputData_.first = {
     key: ezP.Const.Input.EXPR,
-    label: '(',
+    start: '(',
     wrap: ezP.T3.Expr.yield_expression,
-  }
-  this.inputData_.last = {
-    label: ')',
+    end: ')',
   }
   this.outputData_.check = ezP.T3.Expr.yield_atom
 }
@@ -94,7 +92,6 @@ ezP.DelegateSvg.Expr.yield_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_expression.superClass_.constructor.call(this, prototypeName)
   this.inputData_.last = {
     key: ezP.Const.Input.LIST,
-    check: ezP.T3.Expr.Check.yield_expression,
     wrap: ezP.T3.Expr.yield_expression_list,
   }
   this.outputData_.check = ezP.T3.Expr.yield_expression
