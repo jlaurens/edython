@@ -396,17 +396,26 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.populateContextMenuFirst_ = functio
     mgr.addInsertChild(item('u', ezP.ID.STRING_PREFIX_INSERT))
     mgr.addInsertChild(item('r', ezP.ID.STRING_PREFIX_INSERT))
     mgr.addInsertChild(item('f', ezP.ID.STRING_PREFIX_INSERT))
+    mgr.addInsertChild(item('b', ezP.ID.STRING_PREFIX_INSERT))
   } else if (prefix === 'u') {
     mgr.addRemoveChild(item('u', ezP.ID.STRING_PREFIX_REMOVE))
   } else if (prefix === 'r') {
     mgr.addInsertChild(item('f', ezP.ID.STRING_PREFIX_INSERT))
+    mgr.addInsertChild(item('b', ezP.ID.STRING_PREFIX_INSERT))
     mgr.addRemoveChild(item('r', ezP.ID.STRING_PREFIX_REMOVE))
   } else if (prefix === 'f') {
     mgr.addInsertChild(item('r', ezP.ID.STRING_PREFIX_INSERT))
     mgr.addRemoveChild(item('f', ezP.ID.STRING_PREFIX_REMOVE))
+  } else if (prefix === 'b') {
+    mgr.addInsertChild(item('r', ezP.ID.STRING_PREFIX_INSERT))
+    mgr.addRemoveChild(item('b', ezP.ID.STRING_PREFIX_REMOVE))
   } else {
     mgr.addRemoveChild(item('r', ezP.ID.STRING_PREFIX_REMOVE))
-    mgr.addRemoveChild(item('f', ezP.ID.STRING_PREFIX_REMOVE))
+    if (['rf', 'fr',].indexOf(prefix.toLowerCase())<0) {
+      mgr.addRemoveChild(item('b', ezP.ID.STRING_PREFIX_REMOVE))
+    } else {
+      mgr.addRemoveChild(item('f', ezP.ID.STRING_PREFIX_REMOVE))
+    }
   }
   mgr.shouldSeparateInsert()
   ezP.DelegateSvg.Expr.stringliteral.superClass_.populateContextMenuFirst_.call(this,block, mgr)
@@ -448,18 +457,18 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.handleMenuItemActionFirst = functio
     switch(oldValue) {
       case 'u': case 'U': return true
       case 'r': case 'R':
-      if (newValue !== 'f') return true
-      newValue = 'rf'
+      if (newValue === 'f') newValue = 'rf'
+      else if (newValue === 'b') newValue = 'rb'
+      else return true
       break
       case 'f': case 'F':
       if (newValue !== 'r') return true
       newValue = 'rf'
       break
-    }
-    if (oldValue === newValue) return true
-    if (Blockly.Events.isEnabled()) {
-      Blockly.Events.fire(new Blockly.Events.BlockChange(
-        block, 'field', ezP.Const.Field.PREFIX, oldValue, newValue))
+      case 'b': case 'B':
+      if (newValue !== 'r') return true
+      newValue = 'rb'
+      break
     }
     field.setValue(newValue)
     return true
@@ -476,13 +485,13 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.handleMenuItemActionFirst = functio
       case 'f': case 'F':
       if (model.key !== 'f') return true
       break
+      case 'b': case 'B':
+      if (model.key !== 'b') return true
+      break
       default:
-      newValue = model.key === 'r'? 'f': 'r'
-    }
-    if (oldValue === newValue) return true
-    if (Blockly.Events.isEnabled()) {
-      Blockly.Events.fire(new Blockly.Events.BlockChange(
-        block, 'field', ezP.Const.Field.PREFIX, oldValue, newValue))
+      if (model.key === 'f' || model.key === 'b') newValue = 'r'
+      else if (['rf', 'fr',].indexOf(oldValue.toLowerCase())<0) newValue = 'b'
+      else newValue = 'f'
     }
     field.setValue(newValue)
     return true
@@ -541,4 +550,20 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.toDom = function (block, element) {
 ezP.DelegateSvg.Expr.stringliteral.prototype.fromDom = function (block, element) {
   var op = element.getAttribute('prefix')
   block.getField(ezP.Const.Field.PREFIX).setText(op)
+}
+
+/**
+ * Set the operator from the attribute.
+ * @param {!Blockly.Block} block the owner of the receiver
+ * @param {!string} name the name of the field that did change
+ * @param {!string} oldValue the value before the change
+ */
+ezP.DelegateSvg.Expr.stringliteral.prototype.fieldValueDidChange = function(block, name, oldValue) {
+  var value = block.getField(name).getText().toLowerCase()
+  if (value === 'b' || value.length !==1 && ['', 'rf', 'fr'].indexOf(value)<0) {
+    block.type = ezP.T3.Expr.bytesliteral
+  } else {
+    block.type = ezP.T3.Expr.stringliteral
+  }
+  block.ezp.setupType(block)
 }
