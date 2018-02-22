@@ -30,27 +30,3 @@ for (var i = 0; i < ezP.T3.All.wrappers.length; ++i) {
   var t = ezP.T3.All.wrappers[i]
   Blockly.Blocks[t] = {}
 }
-
-// What is below will be removed quite soon
-
-Blockly.Blocks[ezP.T3.Expr.ANY] = {
-  init: function () {
-    this.appendDummyInput()
-      .appendField(new ezP.FieldTextInput('1+1'), ezP.Const.Field.ANY)
-    this.setInputsInline(true)
-    this.setOutput(true, ezP.Type.Expr.Provide.any)
-    this.setTooltip('')
-    this.setHelpUrl('')
-  }
-}
-
-Blockly.Blocks[ezP.T3.Expr.TFN] = {
-  init: function () {
-    this.appendDummyInput()
-      .appendField(new ezP.FieldOptions(
-        [['True', 'True'], ['False', 'False'], ['None', 'None']]), ezP.Const.Field.TFN)
-    this.setOutput(true)
-    this.setTooltip('')
-    this.setHelpUrl('')
-  }
-}

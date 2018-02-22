@@ -92,7 +92,7 @@ ezP.DelegateSvg.Manager.register('attributeref')
 ezP.DelegateSvg.Expr.subscription = ezP.DelegateSvg.Expr.slicing = function (prototypeName) {
   ezP.DelegateSvg.Expr.slicing.superClass_.constructor.call(this, prototypeName)
   this.inputData_.last = {
-    key: ezP.Const.Input.SLICE,
+    key: ezP.Const.Input.LIST,
     wrap: ezP.T3.Expr.display_slice_list,
   }
   this.outputData_.check = [ezP.T3.Expr.subscription, ezP.T3.Expr.slicing]

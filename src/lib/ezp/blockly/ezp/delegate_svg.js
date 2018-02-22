@@ -162,7 +162,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     var out
     if (D && Object.keys(D).length) {
       out = {}
-      if ((!D.check && !D.wrap) || D.dummy || D.identifier || D.comment || D.number || D.string || D.longString) {
+      if ((D.check === undefined && D.wrap === undefined) || D.dummy || D.identifier || D.code || D.comment || D.number || D.string || D.longString) {
         out.input = block.appendDummyInput(k)
       } else {
         var k = D.key
@@ -246,21 +246,25 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         // if (D.label) { // this is svg specific
         //   field.ezpData.x_shift = ezP.Font.space
         // }
+      } else if ((v = D.code) != undefined) {
+        field = out.fieldCodeInput = new ezP.FieldCodeInput(v)
+        k = D.key || ezP.Const.Field.CODE
+        out.input.appendField(field, k)
       } else if ((v = D.comment) != undefined) {
         field = out.fieldCodeComment = new ezP.FieldCodeComment(v)
-        k = ezP.Const.Input.COMMENT
+        k = D.key || ezP.Const.Field.COMMENT
         out.input.appendField(field, k)
       } else if ((v = D.number) != undefined) {
         field = out.fieldCodeNumber = new ezP.FieldCodeNumber(v)
-        k = ezP.Const.Input.NUMBER
+        k = D.key || ezP.Const.Field.NUMBER
         out.input.appendField(field, k)
       } else if ((v = D.string) != undefined) {
         field = out.fieldCodeString = new ezP.FieldCodeString(v)
-        k = ezP.Const.Input.STRING
+        k = D.key || ezP.Const.Field.STRING
         out.input.appendField(field, k)
       } else if ((v = D.longString) != undefined) {
         field = out.fieldCodeLongString = new ezP.FieldCodeLongString(v)
-        k = ezP.Const.Input.LONG_STRING
+        k = D.key || ezP.Const.Field.LONG_STRING
         out.input.appendField(field, k)
       }
     }

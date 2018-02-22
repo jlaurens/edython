@@ -645,3 +645,42 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.fromDom = function (block, element
   var value = element.getAttribute('value')
   block.getField(ezP.Const.Field.VALUE).setText(value)
 }
+
+/**
+* Class for a DelegateSvg, any object.
+* For ezPython.
+* @param {?string} prototypeName Name of the language object containing
+*     type-specific functions for this block.
+* @constructor
+*/
+ezP.DelegateSvg.Expr.any = function (prototypeName) {
+  ezP.DelegateSvg.Expr.any.superClass_.constructor.call(this, prototypeName)
+  this.inputData_.first = {
+    key: ezP.Const.Field.CODE,
+    code: '1+1',
+  }
+  this.outputData_.check = null
+}
+goog.inherits(ezP.DelegateSvg.Expr.any, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('any')
+
+/**
+ * Records the operator as attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.DelegateSvg.Expr.any.prototype.toDom = function (block, element) {
+  element.setAttribute('code', block.getField(ezP.Const.Field.CODE).getText())
+}
+
+/**
+ * Set the operator from the attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.DelegateSvg.Expr.any.prototype.fromDom = function (block, element) {
+  var value = element.getAttribute('code')
+  block.getField(ezP.Const.Field.CODE).setText(value)
+}

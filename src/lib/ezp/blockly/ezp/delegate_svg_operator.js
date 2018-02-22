@@ -447,7 +447,6 @@ ezP.DelegateSvg.AugAssign.prototype.handleMenuItemActionFirst = function (block,
 ezP.DelegateSvg.Expr.aug_assigned = function (prototypeName) {
   ezP.DelegateSvg.Expr.aug_assigned.superClass_.constructor.call(this, prototypeName)
   this.inputData_.last = {
-    key: ezP.Const.Input.WRAP,
     check: ezP.T3.Expr.Check.aug_assigned,
     wrap: ezP.T3.Expr.non_void_expression_list,
   }

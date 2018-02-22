@@ -63,9 +63,9 @@ Blockly.Python[ezP.Const.Grp.WHILE] = function (block) {
 }
 
 Blockly.Python[ezP.Const.Grp.FOR] = function (block) {
-  var target = ezP.Python.valueToCode(block, ezP.Const.Input.TGT,
+  var target = ezP.Python.valueToCode(block, ezP.Const.Input.FOR,
     Blockly.Python.ORDER_NONE)
-  var list = ezP.Python.valueToCode(block, ezP.Const.Input.LST,
+  var list = ezP.Python.valueToCode(block, ezP.Const.Input.LIST,
     Blockly.Python.ORDER_NONE)
   var branch = Blockly.Python.statementToCode(block, ezP.Const.Input.DO)
   if (!branch.length) {
