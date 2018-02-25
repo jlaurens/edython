@@ -39,6 +39,7 @@ class Type:
         self.list_separator = None
         self.list_require = []
         self.alias = None
+        self.same_checks = None
         self.setup_name(name)
         self.definition = None
         self.setup_definition(definition)
@@ -71,6 +72,8 @@ class Type:
         self.is_compound = not not m if m else None
         if self.__class__.re_statement.match(candidate):
             self.is_stmt = True
+        if self.name == 'key_datum':
+            print('!!!!!!!!!!!!!!!!!!!', self.name, self.definition)
 
     def get_normalized_definition(self):
         return Formatter.normalize(self.definition)
@@ -81,6 +84,15 @@ class Type:
     def get_minimized_definition(self):
         return Formatter.minimize(self.definition)
 
+    def get_checks(self):
+        L = None
+        if not self.is_list and not self.alias and not self.is_shallow:
+            L = self.deep_require
+        elif self.is_list:
+            L = self.list_require
+        else: # if self.is_shallow:
+            L = self.require
+        return sorted([t for t in L if not t.is_wrapper], key = lambda t: (t.n, t.name))
 
     def __repr__(self):
         return repr(self.__dict__)

@@ -823,3 +823,32 @@ ezP.Delegate.prototype.canReplaceBlock = function (block, other) {
   return false
 }
 
+/**
+ * Remove an input from this block.
+ * @param {!Blockly.Block} block The owner of the delegate.
+ * @param {!Blockly.Input} input the input.
+ * @param {boolean=} opt_quiet True to prevent error if input is not present in block.
+ * @throws {goog.asserts.AssertionError} if the input is not present and
+ *     opt_quiet is not true.
+ */
+Blockly.Block.prototype.removeInput = function(block, input, opt_quiet) {
+  if (input.block === block) {
+    if (input.connection && input.connection.isConnected()) {
+      input.connection.setShadowDom(null);
+      var block = input.connection.targetBlock();
+      if (block.isShadow()) {
+        // Destroy any attached shadow block.
+        block.dispose();
+      } else {
+        // Disconnect any attached normal block.
+        block.unplug();
+      }
+    }
+    input.dispose();
+    this.inputList.splice(i, 1);
+    return;
+  }
+  if (!opt_quiet) {
+    goog.asserts.fail('Input "%s" not found.', name);
+  }
+};

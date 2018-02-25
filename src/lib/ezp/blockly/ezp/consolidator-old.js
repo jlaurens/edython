@@ -16,7 +16,6 @@ goog.provide('ezP.Consolidator.List')
 goog.require('ezP.Const')
 goog.require('ezP.Type')
 goog.require('ezP.Input')
-goog.require('ezP.Do')
 goog.require('ezP.DelegateSvg')
 
 
@@ -41,8 +40,7 @@ ezP.Consolidator.prototype.consolidate = undefined
 
 /**
  * List consolidator.
- * Remove empty place holders, add separators,
- * order non empty place holders.
+ * Remove empty place holders, add separators
  * Main entries: consolidate and getInput.
  * The idea is to create the input elements
  * only when needed.
@@ -56,18 +54,18 @@ ezP.Consolidator.prototype.consolidate = undefined
  * There is in general one 'S7R_...' between 2 'ITEM_...'s,
  * those separators are displayed with a small lentisque,
  * and accept connections.
- * The indices are words ordered lexicographically.
- * Letters are [!-~], id est with ascii code in [33; 126].
- * That makes 94 letters
- * (any printable character except space).
+ * The indices represent the fractional part of
+ * a decimal number in [0; 1[.
+ * The initial list is
+ * 'ITEM_1'
+ * When the first item is connected, this list becomes
+ * 'S7R_0', 'ITEM_1', 'S7R_1'
  * Foreach triple 'S7R_xxx', 'ITEM_yyy', 'S7R_zzz' of consecutive elements of the list, we have
- * xxx < yyy = zzz
+ * 0.xxx < 0.yyy = 0.zzz
  * If we connect 'S7R_xxx', the new list will become
  * 'S7R_xxx', 'ITEM_zzz', 'S7R_zzz', 'ITEM_yyy', 'S7R_yyy'
- * such that xxx < zzz < yyy
- * There are infinitelly many words between xxx and yyy,
- * we choose the one with the smallest number of characters
- * which is close to the arithmetical mean of xxx and yyy.
+ * such that 0.xxx < 0.zzz < 0.yyy
+ * There are many decimal numbers between 0.xxx and 0.yyy, we choose the closest to 0.xxx with the smallest number of digits.
  * @param {!Object} data, all the data needed
  */
 ezP.Consolidator.List = function(data) {
@@ -80,19 +78,13 @@ ezP.Consolidator.List = function(data) {
  * Called when the input list has changed and or the index has changed.
  * @param {!Object} io parameter.
  */
-ezP.Consolidator.List.prototype.setupIO = function (io, i) {
-  io.list = io.block.inputList
-  if (i !== undefined) {
-    io.i = i
-  }
+ezP.Consolidator.List.prototype.setupIO = function (io) {
   if ((io.input = io.list[io.i])) {
     io.ezp = io.input.ezpData
     io.c8n = io.input.connection
     goog.asserts.assert(!io.ezp || !!io.c8n, 'List items must have a connection')
-    return true
   } else {
     io.ezp = io.c8n = null
-    return false
   }
 }
 
@@ -102,31 +94,8 @@ ezP.Consolidator.List.prototype.setupIO = function (io, i) {
  */
 ezP.Consolidator.List.prototype.nextInput = function (io) {
   ++io.i
-  return this.setupIO(io)
-}
-
-ezP.Consolidator.List.prototype.insertPlaceholderAtI = function (io, i) {
-  if (i !== undefined) {
-    io.i = i
-  }
-  var c8n = io.block.makeConnection_(Blockly.INPUT_VALUE)
-  var input = new Blockly.Input(Blockly.INPUT_VALUE, '!', io.block, c8n)
-  ezP.Input.setupEzpData(input)
-  io.list.splice(io.i, 0, input)
-  io.edited = true
   this.setupIO(io)
-  return input
-}
-
-/**
- * Dispose of the input at the given index.
- * No range checking.
- * @param {!Object} io parameter.
- */
-ezP.Consolidator.List.prototype.disposeAtI = function (io) {
-  io.list[io.i].dispose()
-  io.list.splice(io.i, 1)
-  io.edited = true
+  return !!io.input && io.ezp.listed_
 }
 
 /**
@@ -141,14 +110,12 @@ ezP.Consolidator.List.prototype.getCheck = function (io) {
  * Finalize the current input as a placeholder.
  * @param {!Object} io parameter.
  */
-ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = undefined, optional = false) {
+ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io, optional = false) {
   io.ezp.n = io.n
   io.ezp.sep = io.sep
+  io.input.name = 'ITEM_' + io.n++
   io.ezp.s7r_ = io.c8n.ezp.s7r_ = false
   var check = this.getCheck(io)
-  if (name && name.length) {
-    io.input.name = name
-  }
   io.input.setCheck(check)
   io.c8n.ezp.optional_ = optional
   io.c8n.ezp.plugged_ = this.plugged
@@ -161,11 +128,52 @@ ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = und
   }
 }
 
-ezP.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, name) {
-  io.ezp.sep = io.sep
-  if (name && name.length) {
-    io.input.name = name
+/**
+ * Dispose of the input at the given index.
+ * No range checking.
+ * @param {!Object} io parameter.
+ */
+ezP.Consolidator.List.prototype.disposeAtI = function (io, i) {
+  io.list[i].dispose()
+  io.list.splice(i, 1)
+  --io.end
+}
+
+/**
+ * Insert the given input at the given index.
+ * No range checking.
+ * @param {!Object} io parameter.
+ */
+ezP.Consolidator.List.prototype.insertAtI = function (io, i, input) {
+  io.list.splice(i, 0, input)
+  ++io.end
+}
+ezP.Consolidator.List.prototype.disposeFromIToEnd = function (io) {
+  while (io.i < io.end) {
+    this.disposeAtI(io, io.i)
   }
+  this.setupIO(io)
+}
+ezP.Consolidator.List.prototype.disposeFromStartToI = function (io) {
+  while (io.start < io.i) {
+    this.disposeAtI(io, io.start)
+    --io.i
+  }
+  this.setupIO(io)
+}
+ezP.Consolidator.List.prototype.insertPlaceholderAtI = function (io) {
+  var c8n = io.block.makeConnection_(Blockly.INPUT_VALUE)
+  var input = new Blockly.Input(Blockly.INPUT_VALUE, 'ITEM_*', io.block, c8n)
+  ezP.Input.setupEzpData(input, {listed_: true})
+  this.insertAtI(io, io.i, input)
+  this.setupIO(io)
+  return input
+}
+
+ezP.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme) {
+  io.ezp.n = io.n
+  io.ezp.sep = io.sep
+  io.input.name = 'S7R_' + io.n
   io.ezp.s7r_ = io.c8n.ezp.s7r_ = true
   if (extreme || io.ezp.sep.length == 0) {
     while (io.input.fieldRow.length) {
@@ -181,260 +189,6 @@ ezP.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
   }
   io.input.setCheck(this.getCheck(io))
   io.input.connection.ezp.plugged_ = this.data.plugged
-}
-
-/**
- * Consolidate a connected input but the first one.
- * @param {!Object} io parameter.
- * @return yoes if there are more input
- */
-ezP.Consolidator.List.prototype.consolidate_connected = function(io) {
-  // ensure that there is one input after,
-  // which is not connected
-  if (!this.nextInput(io) || io.c8n.targetConnection) {
-    this.insertPlaceholderAtI(io)
-    // this one is connected or missing
-    // we would expect a separator
-  }
-  return this.nextInput(io)
-}
-
-/**
- * Consolidate the first connected input
- * @param {!Object} io parameter.
- * @return yoes if there are more input
- */
-ezP.Consolidator.List.prototype.consolidate_first_connected = function(io) {
-  // the actual input is the first connected
-  // remove whatever precedes it, except the very first separator, if any
-  var j = io.i
-  if (j === 0) {
-    // there is an opening separator missing
-    this.insertPlaceholderAtI(io)
-    this.nextInput(io)
-  } else {
-    this.setupIO(io, 1)
-    while( io.i < j--) {
-      this.disposeAtI(io)
-    }
-  }
-  return this.consolidate_connected(io)
-}
-
-/**
- * Find the next connected input
- * @param {!Object} io parameter.
- */
-ezP.Consolidator.List.prototype.gobble_to_connected = function(io) {
-  // things are different if one of the inputs is connected
-  while (io.ezp) {
-    if (io.c8n.targetConnection) {
-      return true
-    }
-    this.disposeAtI(io)
-    this.setupIO(io)
-  }
-  return false
-}
-/**
- * Find the next connected input
- * @param {!Object} io parameter.
- */
-ezP.Consolidator.List.prototype.walk_to_first_connected = function(io) {
-  this.setupIO(io, 0)
-  // things are different if one of the inputs is connected
-  do {
-    if (!!io.ezp && io.c8n.targetConnection) {
-      io.sep = io.ezp.sep || this.data.sep
-      return true
-    }
-  } while (this.nextInput(io))
-  return false
-}
-
-/**
- * List consolidator.
- * Removes empty place holders
- * @param {!Object} io parameter.
- */
-ezP.Consolidator.List.prototype.consolidate_unconnected = function(io) {
-  // remove any separator up to the first placeholder
-  this.setupIO(io, 0)
-  if (!!io.ezp) {
-    while (true) {
-      if (io.ezp.s7r_) {
-        this.disposeAtI(io)
-        if (this.setupIO(io, 0)) {
-          continue
-        }
-        return
-      }
-      // we found it
-      // remove anything behind
-      if (this.nextInput(io)) {
-        do {
-          this.disposeAtI(io)
-        } while(this.setupIO(io))
-      }
-      // Always finalize at last step
-      --io.i
-      this.setupIO(io)
-      this.doFinalizePlaceholder(io,
-        ezP.Do.Name.middle_name, this.data.empty)
-      return
-    }
-    // unreachable code
-  }
-  // create an input
-  this.insertPlaceholderAtI(io)
-  this.doFinalizePlaceholder(io,
-    ezP.Do.Name.middle_name, this.data.empty)
-}
-
-/**
- * Finalize placeholders and separators.
- * There are at least 3 inputs.
- * @param {!Object} io parameter.
- */
-ezP.Consolidator.List.prototype.doFinalize = function(io) {
-  this.setupIO(io, 0)
-  var previous = ezP.Do.Name.min_name
-  var next = io.list[io.i + 1].name
-  var name = ezP.Do.Name.getBetween(previous, next)
-  this.doFinalizeSeparator(io, true,
-    ezP.Do.Name.min_name)
-  this.nextInput(io)
-  this.doFinalizePlaceholder(io)
-  previous = next
-  while (this.nextInput(io)) {
-    if (io.i === io.list.length - 1) {
-      // last separator
-      next = ezP.Do.Name.max_name
-      name = ezP.Do.Name.getBetween(previous, next)
-      this.doFinalizeSeparator(io, true, name)
-    } else {
-      next = io.list[io.i + 1].name
-      name = ezP.Do.Name.getBetween(previous, next)
-      this.doFinalizeSeparator(io, false, name)
-      previous = next
-      this.nextInput(io)
-      this.doFinalizePlaceholder(io)
-    }
-  }
-}
-
-/**
- * List consolidator.
- * Removes empty place holders
- * @param {!Block} block, to be consolidated....
- */
-ezP.Consolidator.List.prototype.consolidate = function(block) {
-  var io = {
-    block: block,
-  }
-  // things are different if one of the inputs is connected
-  if (this.walk_to_first_connected(io)) {
-    if (this.consolidate_first_connected(io)) {
-      while (this.gobble_to_connected(io)) {
-        this.consolidate_connected(io)
-      }
-    }
-    if (io.edited) {
-      this.doFinalize(io)
-    }
-  } else {
-    this.consolidate_unconnected(io)
-  }
-}
-
-/**
- * Fetches the named input object
- * @param {!Block} block.
- * @param {string} name The name of the input.
- * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
- */
-ezP.Consolidator.List.prototype.getInput = function (block, name) {
-  // name = ezP.Do.Name.getNormalized(name) not here
-  if (!name || !name.length) {
-    return null
-  }
-  this.consolidate(block)
-  var j = -1
-  var io = {
-    block: block,
-    sep: this.data.sep,
-  }
-  this.setupIO(io, 0)
-  do {
-    if (!!io.ezp) {
-      io.sep = io.ezp.sep || io.sep
-      if (!io.ezp.s7r_) {
-        var o = ezP.Do.Name.getOrder(io.input.name, name)
-        if (!o) {
-          return io.input
-        }
-        if (o>0 && j<0) {
-          j = io.i
-        }
-      }
-    }
-  } while (this.nextInput(io))
-  // no input found, create one
-  if (io.list.length == 1) {
-    // there is only one placeholder with no separators
-    // either we insert at 0 or one
-    // anyway we must have separators before and after
-    // In all other cases, the separators are already there
-    this.insertPlaceholderAtI(io, 0)
-    this.insertPlaceholderAtI(io, 2)
-    if (!j) {
-      j = 1
-    }
-  }
-  if (j < 0) {
-    j = io.list.length
-  }
-  this.insertPlaceholderAtI(io, j)
-  var input = this.insertPlaceholderAtI(io)
-  input.name = name
-  this.doFinalize(io)
-  return input
-}
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- * Insert the given input at the given index.
- * No range checking.
- * @param {!Object} io parameter.
- * @param {!Blockly.Input} input.
- * @param {int} i defaults to io.i
- */
-ezP.Consolidator.List.prototype.insertAtI = function (io, input, i) {
-  io.list.splice(i !== undefined? i: io.i, 0, input)
-}
-
-ezP.Consolidator.List.prototype.disposeFromIToEnd = function (io) {
-  while (io.i < io.end) {
-    this.disposeAtI(io, io.i)
-  }
-  this.setupIO(io)
-}
-ezP.Consolidator.List.prototype.disposeFromStartToI = function (io) {
-  while (io.start < io.i) {
-    this.disposeAtI(io, io.start)
-    --io.i
-  }
-  this.setupIO(io)
 }
 
 /**
@@ -455,7 +209,8 @@ ezP.Consolidator.List.prototype.no_more_ezp = function(io) {
  */
 ezP.Consolidator.List.prototype.cleanup = function(io) {
   io.n = 0
-  this.setupIO(io, io.start)
+  io.i = io.start
+  this.setupIO(io)
   if (io.connected) {
     if (!io.ezp.s7r_) {
       this.insertPlaceholderAtI(io)
@@ -481,13 +236,15 @@ ezP.Consolidator.List.prototype.cleanup = function(io) {
       this.setupIO(io)
     }
   } else if (io.placeholder !== undefined) {
-    this.setupIO(io, io.placeholder)
+    io.i = io.placeholder
+    this.setupIO(io)
     this.disposeFromStartToI(io)
     this.doFinalizePlaceholder(io, this.data.empty)
     this.nextInput(io)
     this.disposeFromIToEnd(io)
   } else {
-    this.setupIO(io, io.start)
+    io.i = io.start
+    this.setupIO(io)
     if (io.end === io.start) {
       this.insertPlaceholderAtI(io)
     }
@@ -520,7 +277,7 @@ ezP.Consolidator.List.prototype.one_step = function(io) {
       // restrict to a single element. See the ...Single... subclass below
       // and argument_list too.
       // Whether a separator is desired as first input will be knwon at
-      // the end of the walk only. Subclassers will do things right
+      // the end of the walk
       if (!io.first_connected) {
         io.first_connected = io.input
       }
@@ -593,7 +350,7 @@ ezP.Consolidator.List.prototype.walk = function(io) {
   } while (this.nextInput(io))
   if (io.s7r_expected) {
     this.insertPlaceholderAtI(io)
-    this.doFinalizeSeparator(io, true, ezP.Do.Name.max_name)
+    io.ezp.s7r_ = true
     io.s7r_expected = false
     this.nextInput(io)
   }
@@ -625,97 +382,73 @@ ezP.Consolidator.List.prototype.prepareToWalk = function(io) {
  * Removes empty place holders
  * @param {!Block} block, to be consolidated....
  */
-ezP.Consolidator.List.prototype.walk_to_remove = function(io) {
-  var unconnected = []
-  this.setupIO(io, 0)
-  while (io.ezp) {
-    if (!io.ezp.s7r_ && io.c8n.isConnected()) {
-      unconnected.push(io.input)
-    }
-    this.nextInput(io)
-  }
-
-  this.setupIO(io, 0)
-  var previous = ezP.Do.Name.min_name
-  var unnamed = []
-  while (io.ezp) {
-    if (!io.ezp.s7r_) {
-      if (io.input.name) {
-        if (unnamed.length) {
-          for (var i = 0, input; input = unnamed[i++]; i++) {
-            previous = input.name = ezP.Do.Name.getBetween(previous, io.input.name, i/(unnamed.length+1))
-          }
-          unnamed = []
-        }
-        previous = io.input.name
-      } else {
-        unnamed.push(io.input)
-      }
-    } 
-    this.nextInput(io)
-  }
-  if (unnamed.length) {
-    for (var i = 0, input; input = unnamed[i++]; i++) {
-      previous = input.name = ezP.Do.Name.getBetween(previous, ezP.Do.Name.min_name, i/(unnamed.length+1))
-    }
-  }
-}
-
-/**
- * List consolidator.
- * Removes empty place holders
- * @param {!Block} block, to be consolidated....
- */
-ezP.Consolidator.List.prototype.walk_to_name = function(io) {
-  this.setupIO(io, 0)
-  var previous = ezP.Do.Name.min_name
-  var unnamed = []
-  while (io.ezp) {
-    if (!io.ezp.s7r_) {
-      if (io.input.name) {
-        if (unnamed.length) {
-          for (var i = 0, input; input = unnamed[i++]; i++) {
-            previous = input.name = ezP.Do.Name.getBetween(previous, io.input.name, i/(unnamed.length+1))
-          }
-          unnamed = []
-        }
-        previous = io.input.name
-      } else {
-        unnamed.push(io.input)
-      }
-    } 
-    this.nextInput(io)
-  }
-  if (unnamed.length) {
-    for (var i = 0, input; input = unnamed[i++]; i++) {
-      previous = input.name = ezP.Do.Name.getBetween(previous, ezP.Do.Name.min_name, i/(unnamed.length+1))
-    }
-  }
-}
-
-
-/**
- * List consolidator.
- * Removes empty place holders
- * @param {!Block} block, to be consolidated....
- */
-ezP.Consolidator.List.prototype.consolidateX = function(block) {
+ezP.Consolidator.List.prototype.consolidate = function(block) {
   var io = {
     block: block,
+    i: 0,
   }
-  this.setupIO(io, 0)
+  io.list = io.block.inputList
+  this.setupIO(io)
   do {
     if (!!io.ezp) {
       // group bounds and connected connections
       this.prepareToWalk(io)
-      this.walk_to_remove(io)
-      this.walk_to_name(io)
-      this.walk_to_separate(io)
-      this.walk_to_order(io)
+      this.walk(io)
       return
     }
   } while (this.nextInput(io))
   goog.asserts.assert(false, 'There is absolutely nothing to consolidate.')
+}
+
+/**
+ * Fetches the named input object
+ * @param {!Block} block.
+ * @param {string} name The name of the input.
+ * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
+ */
+ezP.Consolidator.List.prototype.getInput = function (block, name) {
+  if (!name.length) {
+    return null
+  }
+  var L = name.split('_')
+  if (L.length !== 2 || L[0] !== 'ITEM') {
+    return null
+  }
+  var n = parseInt(L[1])
+  if (isNaN(n)) {
+    return null
+  }
+  this.consolidate(block)
+  var io = {
+    block: block,
+    i: 0,
+    name: name,
+  }
+  io.list = io.block.inputList
+  this.setupIO(io)
+  do {
+    if (!!io.ezp && !io.ezp.s7r_ && io.ezp.n === n) {
+      return io.input
+    }
+  } while (this.nextInput(io))
+  this.insertPlaceholderAtI(io)
+  io.ezp.s7r_ = true
+  var input = this.insertPlaceholderAtI(io)
+  if (io.i > 1) {
+    --io.i
+    this.setupIO(io)
+    io.n = io.ezp.n
+    io.sep = io.ezp.sep
+    this.doFinalizeSeparator(io, false)
+    ++io.i
+    this.setupIO(io)
+  }
+  ++io.n
+  this.doFinalizePlaceholder(io)
+  ++io.i
+  ++io.n
+  this.doFinalizeSeparator(io, true)
+    return input
 }
 
 /**
@@ -777,7 +510,8 @@ ezP.Consolidator.List.Singled.prototype.one_step = function(io) {
 ezP.Consolidator.List.Singled.prototype.cleanup = function(io) {
   if (!!io.single) {
     io.n = 0
-    this.setupIO(io, io.single)
+    io.i = io.single
+    this.setupIO(io)
     this.doFinalizePlaceholder(io)
     this.disposeFromStartToI(io)
     this.nextInput(io)
@@ -913,7 +647,8 @@ ezP.Consolidator.Parameters.prototype.cleanup = function(io) {
       }
     }
     // move this parameter to the end of the list and remove a space
-    this.setupIO(io, i)
+    io.i = i
+    this.setupIO(io)
     // remove the following separator
     this.disposeAtI(io, i+1)
     if (i+1<io.end) {

@@ -290,27 +290,17 @@ class Formatter:
         self.append('ezP.T3.Expr.Check = {')
         template = '    ezP.T3.Expr.{},'
         for t in self.get_expressions():
-            if not t.is_list and not t.alias and not t.is_shallow:
-                require = [tt for tt in t.deep_require if not tt.is_wrapper]
-                if len(require):
-                    self.append('  {}: ['.format(t.name))
-                    for tt in sorted(require, key=lambda t: (t.n, t.name)):
-                        self.append(template.format(tt.name))
-                    self.append('  ],')
-        for t in self.get_expressions():
-            if t.is_list and len(t.list_require):
-                self.append('  {}: ['.format(t.name))
-                for tt in sorted((tt for tt in t.list_require), key=lambda t: (t.n, t.name)):
+            checks = t.get_checks()
+            if (not t.alias or t.name == t.alias.name) and not t.same_checks and len(checks):
+                self.append('  {}: [ // count {}'.format(t.name, len(checks)))
+                for tt in sorted(checks, key=lambda t: (t.n, t.name)):
                     self.append(template.format(tt.name))
                 self.append('  ],')
-        for t in self.get_expressions():
-            if t.is_shallow:
-                if len(t.require):
-                    self.append('  {}: ['.format(t.name))
-                    for tt in sorted(t.require, key=lambda t: (t.n, t.name)):
-                        self.append(template.format(tt.name))
-                    self.append('  ],')
         self.append('}')
+        self.append('\n// same checks')
+        for t in self.get_expressions():
+            if t.same_checks:
+                self.append('ezP.T3.Expr.Check.{} = ezP.T3.Expr.Check.{}'.format(t.name, t.same_checks.name))
 
     def feed_statement_previous(self):
         self.append('ezP.T3.Stmt.Previous = {')
@@ -318,7 +308,7 @@ class Formatter:
         for t in self.get_statements():
             try:
                 if len(t.is_below):
-                    self.append('  {}: ['.format(t.name))
+                    self.append('  {}: [ // count {}'.format(t.name, len(t.is_below)))
                     for tt in sorted((tt for tt in t.is_below), key=lambda t: (t.n, t.name)):
                         self.append(template.format(tt.name))
                     self.append('  ],')
@@ -332,7 +322,7 @@ class Formatter:
         for t in self.get_statements():
             try:
                 if len(t.is_above):
-                    self.append('  {}: ['.format(t.name))
+                    self.append('  {}: [ // count {}'.format(t.name, len(t.is_above)))
                     for tt in sorted((tt for tt in t.is_above), key=lambda t: (t.n, t.name)):
                         self.append(template.format(tt.name))
                     self.append('  ],')
@@ -341,7 +331,7 @@ class Formatter:
         self.append('}\n')
 
     def feed_statement_any(self):
-        self.append('ezP.T3.Stmt.Any = [')
+        self.append('ezP.T3.Stmt.Any = [ // count {}'.format(len(self.get_statements())))
         template = '    ezP.T3.Stmt.{},'
         for t in self.get_statements():
             self.append(template.format(t.name))
@@ -355,7 +345,7 @@ class Formatter:
 
     def get_T3_data(self):
         self.append("""/**
-         * @name ezP.T3
+ * @name ezP.T3
  * @namespace
  **/
 
@@ -406,37 +396,38 @@ goog.require('ezP.T3')
         Ts = sorted((t for t in self.get_expressions() if not t.ignored), key=lambda t: t.name)
         self.append('ezP.T3.All = {}')
         template = '    ezP.T3.Expr.{},'
-        self.append('ezP.T3.All.core_expressions = [')
-        for t in Ts:
-            if not t.is_list and not t.is_wrapper:
-                self.append(template.format(t.name))
+        TTs = [t for t in Ts if not t.is_list and not t.is_wrapper]
+        self.append('ezP.T3.All.core_expressions = [ // count {}'.format(len(TTs)))
+        for t in TTs:
+            self.append(template.format(t.name))
         self.append(']')
-        self.append('ezP.T3.All.lists = [')
+        TTs = [t for t in Ts if t.is_list]
+        self.append('ezP.T3.All.lists = [ // count {}'.format(len(TTs)))
         for t in Ts:
             if t.is_list:
                 self.append(template.format(t.name))
         self.append(']')
-        self.append('ezP.T3.All.wrappers = [')
-        for t in Ts:
-            if t.is_wrapper and not t.alias:
-                self.append(template.format(t.name))
+        TTs = [t for t in Ts if t.is_wrapper and not t.alias]
+        self.append('ezP.T3.All.wrappers = [ // count {}'.format(len(TTs)))
+        for t in TTs:
+            self.append(template.format(t.name))
         self.append(']')
         Ts = sorted(self.get_statements(), key=lambda t: t.name)
         template = '    ezP.T3.Stmt.{},'
-        self.append('ezP.T3.All.part_statements = [')
-        for t in Ts:
-            if t.is_part:
-                self.append(template.format(t.name))
+        TTs = [t for t in Ts if t.is_part]
+        self.append('ezP.T3.All.part_statements = [ // count {}'.format(len(TTs)))
+        for t in TTs:
+            self.append(template.format(t.name))
         self.append(']')
-        self.append('ezP.T3.All.simple_statements = [')
-        for t in Ts:
-            if not t.is_part and not t.is_compound:
-                self.append(template.format(t.name))
+        TTs = [t for t in Ts if t.is_part and not t.is_compound]
+        self.append('ezP.T3.All.simple_statements = [ // count {}'.format(len(TTs)))
+        for t in TTs:
+            self.append(template.format(t.name))
         self.append(']')
-        self.append('ezP.T3.All.compound_statements = [')
-        for t in Ts:
-            if t.is_compound:
-                self.append(template.format(t.name))
+        TTs = [t for t in Ts if t.is_compound]
+        self.append('ezP.T3.All.compound_statements = [ // count {}'.format(len(TTs)))
+        for t in TTs:
+            self.append(template.format(t.name))
         self.append(']')
         self.append('''
 ezP.T3.All.containsStatement = function(prototypeName) {

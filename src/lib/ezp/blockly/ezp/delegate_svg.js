@@ -215,7 +215,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       var field
       if ((v = D.label) !== undefined || (v = D.dummy) !== undefined) {
         out.fieldLabel = field = new ezP.FieldLabel(v)
-        k = D.key || K+'.'+ezP.Const.Field.LABEL
+        k = D.key === undefined ? D.key || K+'.'+ezP.Const.Field.LABEL: D.key
         out.input.appendField(field, k)
         if (D.css_class) {
           field.ezpData.css_class = D.css_class
@@ -226,14 +226,14 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       }
       if ((v = D.start) !== undefined) {
         field = out.input.ezpData.fieldLabelStart = new ezP.FieldLabel(v)
-        k = K+'.'+ezP.Const.Field.START
+        k = D.key === undefined ? K+'.'+ezP.Const.Field.START: D.key
         field.ezpData.css_class = D.css_class
         field.ezpData.css_style = D.css_style
         out.input.appendField(field, k)
       }
       if ((v = D.end) !== undefined) {
         field = out.input.ezpData.fieldLabelEnd = new ezP.FieldLabel(v)
-        k = K+'.'+ezP.Const.Field.END
+        k = D.key === undefined ? K+'.'+ezP.Const.Field.END: D.key
         field.ezpData.css_class = D.css_class
         field.ezpData.css_style = D.css_style
         field.ezpData.suffix = true
@@ -241,7 +241,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       }
       if ((v = D.identifier) !== undefined) {
         field = out.fieldIdentifier = new ezP.FieldIdentifier(v)
-        k = K+'.'+ezP.Const.Field.IDENTIFIER
+        k = D.key === undefined ? K+'.'+ezP.Const.Field.IDENTIFIER: D.key
         out.input.appendField(field, k)
         // if (D.label) { // this is svg specific
         //   field.ezpData.x_shift = ezP.Font.space
@@ -1297,7 +1297,7 @@ ezP.DelegateSvg.prototype.insertBlockAbove = function(block, prototypeName, inpu
     input = B.getInput(ezP.Const.Input.LIST)
     var list = input.connection.targetBlock()
     goog.asserts.assert(list, 'Missing list block inside '+block.type)
-    input = list.getInput('ITEM_0')
+    input = list.getInput(ezP.Do.Name.middle_name)
   }
   var c8n = input.connection
   var holes = ezP.HoleFiller.getDeepHoles(block)

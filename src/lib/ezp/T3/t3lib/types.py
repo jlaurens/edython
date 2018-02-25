@@ -41,6 +41,7 @@ class Types:
         self.make_list_require()
         self.make_link()
         self.make_similar_providers()
+        self.make_same_check()
 
     def __repr__(self):
         return repr(self.__dict__)
@@ -184,7 +185,7 @@ class Types:
                                 name_concrete = t.name + '_concrete'
                             def_new = '{} | {}'.format(def_alias, name_concrete)
                             t.original_definition = t.definition
-                            t.definition = def_new
+                            t.setup_definition(def_new)
                             t.is_wrapper = True
                             tt = Type(t.n, name_concrete, def_concrete, category = t.category)
                             more[tt.name] = tt
@@ -209,11 +210,11 @@ class Types:
                             concretes.append(tt)
                     if len(concretes) and len(concretes) < len(defs):
                         t.original_definition = t.definition
-                        t.definition = ' | '.join(defs)
+                        t.setup_definition(' | '.join(defs))
                         t.is_wrapper = True
                         if len(concretes) == 1:
                             name_concrete = t.name + '_concrete'
-                            t.definition = t.definition.replace(concretes[0].name, name_concrete)
+                            t.setup_definition(t.definition.replace(concretes[0].name, name_concrete))
                             concretes[0].setup_name(name_concrete)
                         print('**** new concrete type from', t.name, '::=', t.definition, '::=', t.original_definition)
                         for tt in concretes:
@@ -227,7 +228,7 @@ class Types:
                 def_concrete = re.sub(r' +', ' ', identifier + ' ' + option)
                 def_new = identifier + ' | ' + name_concrete
                 t.original_definition = t.definition
-                t.definition = def_new
+                t.setup_definition(def_new)
                 t.is_wrapper = True
                 tt = Type(t.n, name_concrete, def_concrete, category = t.category)
                 more[tt.name] = tt
@@ -257,14 +258,14 @@ class Types:
         self.lists_made = True
         for t in self.get_expressions():
             definition = t.get_normalized_definition()
-            m = re.match(r'(\S*)\s*\(\s*(\S*)\s*\1\s*\)\s*\*(?:\s*\[\s*\2\s*\]\s*)?$', definition)
+            m = re.match(r'(?P<item>\S*)\s*\(\s*(?P<sep>\S*)\s*\1\s*\)\s*\*(?:\s*\[\s*\2\s*\]\s*)?$', definition)
             t.is_list = not not m
             if t.is_list:
-                if len(m.group(1)):
-                    t.list_require.append(m.group(1))
-                    t.list_separator = m.group(2)
-                elif len(m.group(2)):
-                    t.list_require.append(m.group(2))
+                if len(m.group('item')):
+                    t.list_require.append(m.group('item'))
+                    t.list_separator = m.group('sep')
+                elif len(m.group('sep')):
+                    t.list_require.append(m.group('sep'))
 
     def make_link(self):
         for t in self:
@@ -339,7 +340,7 @@ class Types:
             if t.is_shallow:
                 setattr(t, deep_key, getattr(t, shallow_key))
             else:
-                setattr(t, deep_key, list(t.temp_))
+                setattr(t, deep_key, sorted(list(t.temp_), key=lambda x: (x.n, x.name)))
         for t in self:
             del t.temp_
 
@@ -378,7 +379,7 @@ class Types:
                     require.update(tt.deep_require)
                 else:
                     require.add(tt)
-            t.list_require = list(require)
+            t.list_require = sorted(list(require), key=lambda x: (x.n, x.name))
 
     def remove_type(self, name):
         type = self.all[name]
@@ -424,6 +425,15 @@ class Types:
             if t.ignored:
                 print('**** IGNORED:', t.name)
 
+
+    def make_same_check(self):
+        for t in self.get_expressions():
+            if t.is_list:
+                checks = t.get_checks()
+                if len(checks)>1:
+                    for tt in self.get_expressions():
+                        if t != tt and not tt.same_checks and checks == tt.get_checks():
+                            tt.same_checks = t
 
     def make_similar_providers(self):
         '''

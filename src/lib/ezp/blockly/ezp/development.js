@@ -138,6 +138,14 @@ ezP.DelegateSvg.Expr.key_datum_list_comprehensive.workspaceBlocks = [
   ezP.T3.Expr.key_datum_list_comprehensive,
 ]
 
+ezP.DelegateSvg.Expr.argument_list.workspaceBlocks = ezP.Do.arraysMerged([
+  ezP.T3.Expr.argument_list,
+  ezP.T3.Expr.expression_star,
+  ezP.T3.Expr.expression_star_star,
+  ezP.T3.Expr.keyword_item,
+  ezP.T3.Expr.identifier,
+] , null/*ezP.T3.Expr.Check.expression*/)
+
 ezP.DelegateSvg.Stmt.yield_stmt.workspaceBlocks =
 ezP.DelegateSvg.Expr.yield_expression.workspaceBlocks = [
   ezP.T3.Expr.identifier,

@@ -88,7 +88,9 @@ The argument list is managed by the consolidator
 <pre>
 call -> call_expr
 call_expr ::=  primary "(" [argument_list [","] | comprehension] ")"
-positional_arguments ::= REMOVE
+# positional_arguments ::= REMOVE keep it for print statement
+positional_arguments ::= positional_argument ("," positional_argument)*
+positional_argument ::= expression | expression_star
 expression_star ::= "*" expression
 expression_star_star ::= "**" expression
 any_argument ::= expression | expression_star | keyword_item | expression_star_star

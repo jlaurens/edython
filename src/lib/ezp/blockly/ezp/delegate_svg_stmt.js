@@ -37,10 +37,6 @@ goog.inherits(ezP.DelegateSvg.Stmt, ezP.DelegateSvg)
 
 ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.DelegateSvg.Stmt, true)
 
-ezP.setup.register(function () {
-  ezP.Style.insertCssRuleAt('.ezp-sharp-group{' + ezP.Font.style + '}')
-})
-
 /**
  * Initialize a block.
  * @param {!Blockly.Block} block to be initialized..
@@ -133,7 +129,7 @@ ezP.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
     }
     this.svgSharpGroup_.setAttribute('transform', 'translate(' + (io.cursorX) +
         ', ' + ezP.Padding.t() + ')')
-    io.cursorX += ezP.Font.space
+    io.cursorX += 2*ezP.Font.space
   } else {
     goog.dom.removeChildren(this.svgSharpGroup_)
   }

@@ -90,54 +90,14 @@ ezP.DelegateSvg.List.prototype.renderDrawListInput_ = function (io) {
 }
 
 /**
- * Fetches the named input object, forwards to getInputTuple_.
+ * Fetches the named input object, getInput.
  * @param {!Block} block.
  * @param {string} name The name of the input.
  * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
  */
 ezP.DelegateSvg.List.prototype.getInput = function (block, name) {
-  if (!name.length) {
-    return null
-  }
-  var L = name.split('_')
-  if (L.length !== 2 || L[0] !== 'ITEM') {
-    return null
-  }
-  var n = parseInt(L[1])
-  if (isNaN(n)) {
-    return null
-  }
-  this.consolidate(block)
-  var list = block.inputList
-  var i = 0
-  var input
-  while ((input = list[i])) {
-    var ezp = input.ezpData
-    if (!ezp) {
-      ++i
-      continue
-    }
-    do {
-      if (!ezp.s7r_) {
-        if (ezp.n === n) {
-          return input
-        }
-      } else {
-        var sep = ezp.sep
-      }
-    } while ((input = list[++i]) && (ezp = input.ezp))
-    var c8n = block.makeConnection_(Blockly.INPUT_VALUE)
-    input = new Blockly.Input(Blockly.INPUT_VALUE, 'S7R_' + (n + 1), block, c8n)
-    ezP.Input.setupEzpData(input, {n: n + 1, sep: sep, s7r_: true})
-    input.appendField(new Blockly.FieldLabel(sep || this.consolidator.defaultSep))
-    list.splice(i, 0, input)
-    c8n = block.makeConnection_(Blockly.INPUT_VALUE)
-    input = new Blockly.Input(Blockly.INPUT_VALUE, name, block, c8n)
-    ezP.Input.setupEzpData(input, {n: n, sep: sep})
-    list.splice(i, 0, input)
-    return input
-  }
-  return null
+  this.createConsolidator(block)
+  return this.consolidator.getInput(block, name)
 }
 
 /**
@@ -159,7 +119,7 @@ ezP.DelegateSvg.List.prototype.consolidate_ = function (block) {
  * 
  * @param {!Block} block.
  */
-ezP.DelegateSvg.List.prototype.consolidate = function (block) {
+ezP.DelegateSvg.List.prototype.createConsolidator = function (block) {
   if (!this.consolidator) {
     var D = ezP.DelegateSvg.Manager.getInputData(block.type).list
     goog.asserts.assert(D, 'inputData_.list is missing in '+block.type)
@@ -168,6 +128,17 @@ ezP.DelegateSvg.List.prototype.consolidate = function (block) {
     this.consolidator = new Ctor(D)
     goog.asserts.assert(this.consolidator, 'Could not create the consolidator '+Ctor)
   }
+}
+
+/**
+ * Consolidate the input.
+ * Removes empty place holders.
+ * This must not be overriden.
+ * 
+ * @param {!Block} block.
+ */
+ezP.DelegateSvg.List.prototype.consolidate = function (block) {
+  this.createConsolidator(block)
   this.consolidate = ezP.DelegateSvg.List.prototype.consolidate_
   this.consolidate(block)// this is not recursive
 }
@@ -183,7 +154,7 @@ ezP.DelegateSvg.List.prototype.consolidate = function (block) {
  */
 ezP.DelegateSvg.List.prototype.initBlock = function(block) {
   ezP.DelegateSvg.List.superClass_.initBlock.call(this, block)
-  block.appendValueInput('ITEM_0')
+  block.appendValueInput(ezP.Do.Name.middle_name)
 }
 
 /**
@@ -455,25 +426,6 @@ ezP.DelegateSvg.Expr.slice_list = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.slice_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('slice_list')
 
-/**
- * Class for a DelegateSvg, argument_list block.
- * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.argument_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.argument_list.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.list = {
-    consolidator: ezP.Consolidator.Arguments,
-  }
-  this.outputData_.check = ezP.T3.Expr.argument_list
-}
-goog.inherits(ezP.DelegateSvg.Expr.argument_list, ezP.DelegateSvg.List)
-ezP.DelegateSvg.Manager.register('argument_list')
- 
 /**
  * Class for a DelegateSvg, parameter_list block.
  * This block may be sealed.

@@ -93,12 +93,11 @@ ezP.Const.Input = {
   POWER: 'POWER',
   
   END: 'END',
-  // IN PROGRESS
-  ANY: 'ANY',
   SEP: 'SEP',
-  END: 'END',
   FILE: 'FILE',
   FLUSH: 'FLUSH',
+  // IN PROGRESS
+  ANY: 'ANY',
 
 
   OPTIONS: 'OPTIONS',

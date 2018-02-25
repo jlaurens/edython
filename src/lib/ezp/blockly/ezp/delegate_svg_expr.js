@@ -576,6 +576,7 @@ ezP.DelegateSvg.Expr.builtin_object = function (prototypeName) {
   this.inputData_.first = {
     key: ezP.Const.Field.VALUE,
     label: this.values[0],
+    css_class: 'ezp-code-reserved',
   }
   this.outputData_.check = ezP.T3.Expr.builtin_object
 }
@@ -595,7 +596,9 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = functi
   var value, _ = 0
   while ((value = this.values[_++])) {
     var menuItem = new ezP.MenuItem(
-      value,
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
+        goog.dom.createTextNode(value),
+      ),
       {
         action: ezP.ID.BUILTIN_OBJECT_CHANGE,
         value: value,
