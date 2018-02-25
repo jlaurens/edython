@@ -88,17 +88,48 @@ parameter_list          ::=  defparameter ("," defparameter)* ["," [parameter_li
                              | parameter_list_starargs
 parameter_list_starargs ::=  "*" [parameter] ("," defparameter)* ["," ["**" parameter [","]]]
                              | "**" parameter [","]
-parameter               ::=  identifier | parameter_annotated
-parameter_annotated      ::=  identifier ":" expression
+parameter               ::=  identifier [ ":" expression ]
 defparameter            ::=  parameter | parameter "=" expression
+
+From the grammar
+
+parameters: '(' [typedargslist] ')'
+typedargslist: (tfpdef ['=' test] (',' tfpdef ['=' test])* [',' [
+        '*' [tfpdef] (',' tfpdef ['=' test])* [',' ['**' tfpdef [',']]]
+      | '**' tfpdef [',']]]
+  | '*' [tfpdef] (',' tfpdef ['=' test])* [',' ['**' tfpdef [',']]]
+  | '**' tfpdef [','])
+tfpdef: NAME [':' test]
+varargslist: (vfpdef ['=' test] (',' vfpdef ['=' test])* [',' [
+        '*' [vfpdef] (',' vfpdef ['=' test])* [',' ['**' vfpdef [',']]]
+      | '**' vfpdef [',']]]
+  | '*' [vfpdef] (',' vfpdef ['=' test])* [',' ['**' vfpdef [',']]]
+  | '**' vfpdef [',']
+)
+vfpdef: NAME
+
+modulo [',']
+
+typedargslist:
+tfpdef ['=' test] (',' tfpdef ['=' test])*
+| tfpdef ['=' test] (',' tfpdef ['=' test])* ',' '*' [tfpdef] (',' tfpdef ['=' test])*
+| tfpdef ['=' test] (',' tfpdef ['=' test])* ',' '*' [tfpdef] (',' tfpdef ['=' test])* ',' '**' tfpdef
+| '*' [tfpdef] (',' tfpdef ['=' test])*
+| '*' [tfpdef] (',' tfpdef ['=' test])* ',' '**' tfpdef
+| '**' tfpdef
+
+parameter_list ::=
+| defparameter (',' defparameter)*
+| defparameter (',' defparameter)* ',' '*' [tfpdef] (',' defparameter)*
+| defparameter (',' defparameter)* ',' '*' [tfpdef] (',' defparameter)* ',' '**' tfpdef
+| defparameter (',' defparameter)* ',' '**' tfpdef
+| '**' tfpdef
+
 <pre>
 parameter_list ::=
 parameter_star ::= "*" [parameter]
 parameter_star_star ::= "**" parameter
 parameter_any ::= parameter | defparameter | parameter_star | parameter_star_star
-parameter_no_single_star ::= parameter | defparameter | parameter_star_star
-parameter_no_star_star ::= parameter | defparameter | parameter_star
-parameter_no_star ::= parameter | defparameter
 </pre>
 
 classdef    ::=  [decorators] "class" classname [inheritance] ":" suite

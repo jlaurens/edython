@@ -190,12 +190,20 @@ ezP.DelegateSvg.Stmt.with_part.workspaceBlocks = ezP.Do.arraysMerged([
 ezP.T3.Expr.Check.expression)
 
 ezP.DelegateSvg.Expr.lambda_expression.workspaceBlocks = ezP.Do.arraysMerged([
+  ezP.T3.Expr.parameter_list,
   ezP.T3.Expr.lambda_expression,
+  ezP.T3.Expr.identifier,
+],
+ezP.T3.Expr.Check.parameter_any,
+ezP.T3.Expr.Check.expression,
+ezP.T3.Expr.Check.expression_nocond,
+)
+
+ezP.DelegateSvg.Expr.parameter_list.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Expr.parameter_list,
   ezP.T3.Expr.identifier,
 ],
-ezP.T3.Expr.Check.expression,
-ezP.T3.Expr.Check.expression_nocond,
+ezP.T3.Expr.Check.parameter_any,
 )
 
 ezP.DelegateSvg.Stmt.global_nonlocal_stmt.workspaceBlocks =
@@ -214,6 +222,20 @@ ezP.DelegateSvg.Expr.numberliteral_concrete.workspaceBlocks = [
   ezP.T3.Expr.stringliteral,
   ezP.T3.Expr.numberliteral_concrete,
 ]
+
+ezP.DelegateSvg.Expr.starred_item_list_comprehensive.workspaceBlocks = [
+  ezP.T3.Expr.starred_item_list_comprehensive,
+  ezP.T3.Expr.identifier,
+  ezP.T3.Expr.comprehension,
+]
+
+ezP.DelegateSvg.Expr.list_display.workspaceBlocks = ezP.Do.arraysMerged([
+  ezP.T3.Expr.starred_item_list_comprehensive,
+  ezP.T3.Expr.list_display,
+  ezP.T3.Expr.identifier,
+  ezP.T3.Expr.star_expr,
+  ezP.T3.Expr.comprehension,
+], ezP.T3.Expr.Check.starred_item)
 
 // in progress
 

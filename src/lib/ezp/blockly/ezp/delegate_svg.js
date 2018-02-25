@@ -416,7 +416,6 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
  * depending on the context.
  * List managers will use consolidators to help list management.
  * @param {!Block} block.
- * @private
  */
 ezP.DelegateSvg.prototype.consolidate = function (block) {
 }
@@ -1357,7 +1356,11 @@ ezP.DelegateSvg.prototype.hasHolesToFill = function(block) {
  */
 ezP.HoleFiller.getData = function(check, value) {
   var data
-  if (check.indexOf(ezP.T3.Expr.identifier) >= 0) {
+  if (goog.isFunction(value)) {
+    data = {
+      filler: value,
+    }
+  } else if (check.indexOf(ezP.T3.Expr.identifier) >= 0) {
     if (value) {
       data = {
         type: ezP.T3.Expr.identifier,
@@ -1413,9 +1416,13 @@ ezP.HoleFiller.fillDeepHoles = function(workspace, holes) {
       var data = c8n.ezp.hole_data
       if (data) {
         try {
-          var B = ezP.DelegateSvg.newBlockComplete(workspace, data.type)
-          if (B.ezp.setValue && data.value) {
-            B.ezp.setValue(B, data.value)
+          if (data.filler) {
+            var B = data.filler(workspace)
+          } else {
+            B = ezP.DelegateSvg.newBlockComplete(workspace, data.type)
+            if (B.ezp.setValue && data.value) {
+              B.ezp.setValue(B, data.value)
+            }
           }
           c8n.connect(B.outputConnection)
         }

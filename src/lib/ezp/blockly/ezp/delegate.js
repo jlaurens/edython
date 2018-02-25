@@ -390,7 +390,7 @@ ezP.TupleConsolidator_ = function () {
       --i
     }
   }
-  var insertPlaceholderAtI = function () {
+  var insertPlaceholder = function () {
     c8n = block.makeConnection_(Blockly.INPUT_VALUE)
     input = new Blockly.Input(Blockly.INPUT_VALUE, '_', block, c8n)
     list.splice(i, 0, input)
@@ -398,7 +398,7 @@ ezP.TupleConsolidator_ = function () {
     tuple = input.ezpTuple = {}
   }
   var insertSeparatorAtI = function () {
-    insertPlaceholderAtI()
+    insertPlaceholder()
     tuple.isSeparator = true
   }
   var doFinalizeSeparator = function (extreme) {
@@ -507,7 +507,7 @@ ezP.TupleConsolidator_ = function () {
       disposeFromI(end)
     } else {
       disposeToI(start)
-      insertPlaceholderAtI()
+      insertPlaceholder()
       doFinalizePlaceholder()
       getNext()
     }

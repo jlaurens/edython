@@ -108,8 +108,24 @@ ezP.DelegateSvg.List.prototype.getInput = function (block, name) {
  * @param {!Block} block.
  */
 ezP.DelegateSvg.List.prototype.consolidate_ = function (block) {
+  if (this.consolidating_ || this.will_connect_) {
+    // reentrant flag or wait for the new connection
+    // to be established before consolidating
+    // reentrant is essential because the consolidation
+    // may cause rerendering ad vitam eternam.
+    return
+  }
   ezP.DelegateSvg.List.superClass_.consolidate.call(this, block)
-  this.consolidator.consolidate(block)
+  this.consolidating_ = true
+  try { 
+    this.consolidator.consolidate(block)
+  }
+  catch(err) {
+      throw(err)
+  }
+  finally {
+    this.consolidating_ = false
+  }
 }
 
 /**
@@ -337,6 +353,7 @@ ezP.DelegateSvg.Expr.starred_item_list_comprehensive = function (prototypeName) 
   var D = {
     check: ezP.T3.Expr.Check.non_void_starred_item_list,
     single: ezP.T3.Expr.comprehension,
+    consolidator: ezP.Consolidator.List.Singled,
     empty: true,
     sep: ',',
     hole_value: 'name',
@@ -425,26 +442,6 @@ ezP.DelegateSvg.Expr.slice_list = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.slice_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('slice_list')
-
-/**
- * Class for a DelegateSvg, parameter_list block.
- * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.parameter_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.parameter_list.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.list = {
-    consolidator: ezP.Consolidator.Parameters,
-  }
-  this.outputData_.check = ezP.T3.Expr.parameter_list
-}
-goog.inherits(ezP.DelegateSvg.Expr.parameter_list, ezP.DelegateSvg.List)
-
-ezP.DelegateSvg.Manager.register('parameter_list')
 
 /**
  * Class for a DelegateSvg, with_item_list block.
