@@ -217,6 +217,10 @@ ezP.Consolidator.List.prototype.consolidate_connected = function(io) {
 ezP.Consolidator.List.prototype.consolidate_first_connected = function(io) {
   // the actual input is the first connected
   // remove whatever precedes it, except the very first separator, if any
+  if (!this.consolidate_single(io)) {
+    // nothing more to consolidate
+    return false
+  }
   var j = io.i
   if (j === 0) {
     // there is an opening separator missing
@@ -228,6 +232,16 @@ ezP.Consolidator.List.prototype.consolidate_first_connected = function(io) {
     }
   }
   return this.consolidate_connected(io)
+}
+
+/**
+ * Consolidate the first connected input when expected to be single.
+ * Default implementation return true.
+ * @param {!Object} io parameter.
+ * @return yes exactly if there are more input
+ */
+ezP.Consolidator.List.prototype.consolidate_single = function(io) {
+  return true
 }
 
 /**
@@ -323,6 +337,10 @@ ezP.Consolidator.List.prototype.doCleanup = function(io) {
  */
 ezP.Consolidator.List.prototype.doFinalize = function(io) {
   this.setupIO(io, 0)
+  if (io.list.length === 1) {
+    this.doFinalizePlaceholder(io, undefined, this.data.empty)
+    return
+  }
   var previous = ezP.Do.Name.min_name
   var next = io.list[io.i + 1].name
   var name = ezP.Do.Name.getBetween(previous, next)
@@ -352,9 +370,14 @@ ezP.Consolidator.List.prototype.doFinalize = function(io) {
  * Subclassers may add their own stuff to io.
  * @param {Object} io, parameters....
  */
-ezP.Consolidator.List.prototype.prepareToWalk = function(io) {
-  io.list = io.block.inputList
+ezP.Consolidator.List.prototype.getIO = function(block) {
+  var io = {
+    block: block,
+    list: block.inputList,
+    sep: this.data.sep,
+  }
   this.setupIO(io, 0)
+  return io
 }
 
 /**
@@ -363,10 +386,7 @@ ezP.Consolidator.List.prototype.prepareToWalk = function(io) {
  * @param {!Block} block, to be consolidated....
  */
 ezP.Consolidator.List.prototype.consolidate = function(block) {
-  var io = {
-    block: block,
-  }
-  this.prepareToWalk(io)
+  var io = this.getIO(block)
   // things are different if one of the inputs is connected
   if (this.walk_to_next_connected(io)) {
     if (this.consolidate_first_connected(io)) {
@@ -395,11 +415,7 @@ ezP.Consolidator.List.prototype.getInput = function (block, name) {
   }
   this.consolidate(block)
   var j = -1
-  var io = {
-    block: block,
-    sep: this.data.sep,
-  }
-  this.prepareToWalk(io)
+  var io = this.getIO(block)
   do {
     if (!!io.ezp) {
       io.sep = io.ezp.sep || io.sep
@@ -436,6 +452,34 @@ ezP.Consolidator.List.prototype.getInput = function (block, name) {
   return input
 }
 
+/**
+ * Get the next input compatible with the given type.
+ * Enumerator object.
+ * @param {object} io argument object
+ * @return the next keyword item input, undefined when at end.
+ */
+ezP.Consolidator.List.prototype.nextInputForType = function(io, type) {
+  while (this.nextInput(io)) {
+    var target = io.c8n.targetConnection
+    if (target) {
+      var check = target.check_
+      if (goog.array.contains(check, type)) {
+        return io.input
+      }
+    }
+  }
+  return undefined
+}
+
+/**
+ * Whether the block has an input for the given type.
+ * @param {object} io argument object
+ * @return the next keyword item input, undefined when at end.
+ */
+ezP.Consolidator.List.prototype.hasInputForType = function(block, type) {
+  var io = this.getIO(block)
+  return !!this.nextInputForType(io, type)
+}
 
 /**
  * List consolidator for list_display and set_display.
@@ -493,11 +537,22 @@ ezP.Consolidator.List.Singled.prototype.walk_to_next_connected = function(io, go
 }
 
 /**
- * Cleanup for a single input.
- * @param {!Object} io parameter.
- * @return yes exactly if there is a singled input
+ * Once the whole list has been managed,
+ * there might be unwanted things.
  */
-ezP.Consolidator.List.Singled.prototype.doCleanupSingled = function(io) {
+ezP.Consolidator.List.Singled.prototype.doCleanup = function(io) {
+  ezP.Consolidator.List.Singled.superClass_.doCleanup.call(this, io)
+  this.consolidate_single(io)
+}
+
+
+/**
+ * Consolidate the first connected input
+ * @param {!Object} io parameter.
+ * @return yes exactly if there are more input
+ */
+ezP.Consolidator.List.Singled.prototype.consolidate_single = function(io) {
+  // the actual input is the first connected
   if (io.single) {
     // remove whatever precedes it, even the very first separator
     var j = io.list.indexOf(io.single)
@@ -513,25 +568,3 @@ ezP.Consolidator.List.Singled.prototype.doCleanupSingled = function(io) {
   return false
 }
 
-/**
- * Consolidate the first connected input
- * @param {!Object} io parameter.
- * @return yes exactly if there are more input
- */
-ezP.Consolidator.List.Singled.prototype.consolidate_first_connected = function(io) {
-  // the actual input is the first connected
-  if (this.doCleanupSingled(io)) {
-    return false
-  } else {
-    ezP.Consolidator.List.Singled.superClass_.consolidate_first_connected.call(this, io)
-  }
-}
-
-/**
- * Once the whole list has been managed,
- * there might be unwanted things.
- */
-ezP.Consolidator.List.Singled.prototype.doCleanup = function(io) {
-  ezP.Consolidator.List.Singled.superClass_.doCleanup.call(this, io)
-  this.doCleanupSingled(io)
-}

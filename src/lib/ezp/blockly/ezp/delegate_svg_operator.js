@@ -19,15 +19,16 @@ goog.require('ezP.DelegateSvg.Expr')
 // Declare the mixins first
 
 /**
- * Inits the various input data.
+ * Inits the various input model.
  * Called by the constructor.
  * Separated to be mixed in.
+ * This is not compliant with inheritance.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.MixinSvg.Operator.initData = function (prototypeName) {
+ezP.MixinSvg.Operator.initModel = function (prototypeName) {
   this.inputModel_ = {
     last: {
       key: ezP.Const.Input.RHS,

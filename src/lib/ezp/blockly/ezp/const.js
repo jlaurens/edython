@@ -70,6 +70,7 @@ ezP.Const.Input = {
   WRAP: 'WRAP',
   KEY: 'KEY',
   DATUM: 'DATUM',
+  VALUE: 'VALUE',
   LOWER_BOUND: 'LOWER_BOUND',
   UPPER_BOUND: 'UPPER_BOUND',
   STRIDE: 'STRIDE',

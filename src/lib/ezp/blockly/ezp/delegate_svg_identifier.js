@@ -48,9 +48,20 @@ if (Blockly.Msg.NEW_VARIABLE.startsWith('Créer')) {
 }
 
 /**
- * Populate the context menu for the given block.
+ * Get the value.
  * @param {!Blockly.Block} block The block.
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Expr.identifier.prototype.getValue = function (block) {
+  var field = block.ezp.inputs.first.fieldIdentifier
+  return field.getValue()
+}
+
+/**
+ * Set the value.
+ * @param {!Blockly.Block} block The block.
+ * @param {!string} value the new value.
  * @private
  */
 ezP.DelegateSvg.Expr.identifier.prototype.setValue = function (block, value) {

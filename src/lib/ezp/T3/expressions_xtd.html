@@ -87,15 +87,11 @@ The argument list is managed by the consolidator
 'call' is not acceptable for a name because it is a reserved javascript word
 <pre>
 call -> call_expr
-call_expr ::=  primary "(" [argument_list [","] | comprehension] ")"
-# positional_arguments ::= REMOVE keep it for print statement
-positional_arguments ::= positional_argument ("," positional_argument)*
-positional_argument ::= expression | expression_star
+call_expr ::=  primary "(" argument_list_comprehensive ")"
 expression_star ::= "*" expression
 expression_star_star ::= "**" expression
-argument_list ::= (positional_argument ",")* (keyword_argument ",")*
-keyword_argument ::= keyword_item | expression_star_star
-any_argument ::= positional_arguments | keyword_argument
+argument_any ::= expression | expression_star | expression_star_star | keyword_item
+argument_list_comprehensive ::= argument_list | comprehension
 </pre>
 
 

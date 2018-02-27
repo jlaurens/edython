@@ -61,13 +61,14 @@ ezP.Consolidator.Parameters.prototype.consolidate_connected = function(io) {
 }
 
 /**
- * Prepare io, just before walking through the input list.
+ * Prepare io, just before walking through the input list for example.
  * Subclassers may add their own stuff to io.
- * @param {Object} io, parameters....
+ * @param {!Blockly.block} block owner of the receiver
  */
-ezP.Consolidator.Parameters.prototype.prepareToWalk = function(io) {
-  ezP.Consolidator.Parameters.superClass_.prepareToWalk.call(this, io)
+ezP.Consolidator.Parameters.prototype.getIO = function(block) {
+  var io = ezP.Consolidator.Parameters.superClass_.getIO.call(this, block)
   io.first_star_star = io.first_star = io.first_default = io.last_default = -1
+  return io
 }
 
 /**
@@ -270,7 +271,6 @@ ezP.Consolidator.Parameters.prototype.getCheck = function() {
     return cache[K] = out
   }
 } ()
-
 
 /**
  * Class for a DelegateSvg, parameter_list block.

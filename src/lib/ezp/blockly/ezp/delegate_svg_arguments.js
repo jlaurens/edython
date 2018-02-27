@@ -28,13 +28,13 @@ ezP.DelegateSvg.Expr.keyword_item = function (prototypeName) {
   this.outputModel_.check = ezP.T3.Expr.keyword_item
   this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.LHS,
+      key: ezP.Const.Input.KEY,
       check: ezP.T3.Expr.identifier,
       hole_value: 'key',
     },
     last: {
       label: '=',
-      key: ezP.Const.Input.RHS,
+      key: ezP.Const.Input.VALUE,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'value',
     }
@@ -104,7 +104,7 @@ ezP.DelegateSvg.Manager.register('expression_star_star')
 ezP.Consolidator.Arguments = function() {
   ezP.Consolidator.Arguments.superClass_.constructor.call(this, ezP.Consolidator.Arguments.data)
 }
-goog.inherits(ezP.Consolidator.Arguments, ezP.Consolidator.Singled)
+goog.inherits(ezP.Consolidator.Arguments, ezP.Consolidator.List)
 
 ezP.Consolidator.Arguments.data = {
   check: null,
@@ -115,216 +115,163 @@ ezP.Consolidator.Arguments.data = {
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {Object} io, parameters....
+ * @param {!Blockly.Block} block, owner or the receiver.
  */
-ezP.Consolidator.Arguments.prototype.prepareToWalk = function(io) {
-  ezP.Consolidator.Arguments.superClass_.prepareToWalk.call(this, io)
-  io.first_connected = undefined
-  io.last_comprehension = undefined
-  io.first_keyword_or_star_star = undefined
-  io.first_star_star = undefined
-  io.last_positional = undefined // either expression or starred expression
-  io.last_expression = undefined
-  io.errors = 0
+ezP.Consolidator.Arguments.prototype.getIO = function(block) {
+  var io = ezP.Consolidator.Arguments.superClass_.getIO.call(this, block)
+  io.first_keyword = io.last_positional = io.single = -1
+  return io
 }
 
-ezP.Consolidator.Arguments.Type = {
-  unconnected: 'unconnected',
-  comprehension: 'comprehension',
-  expression: 'expression',
-  expression_star: 'expression_star',
-  keyword_item: 'keyword_item',
-  expression_star_star: 'expression_star_star',
-}
-
-/**
- * Whether the input corresponds to a comprehension argument.
- * @param {Object} io, parameters....
- */
-ezP.Consolidator.Arguments.prototype.getCheckType = function(io) {
-  var target = io.c8n.targetConnection
-  if (!target) {
-    return ezP.Consolidator.Arguments.Type.unconnected
-  }
-  var check = target.check_
-  if (goog.array.contains(check, ezP.T3.Expr.comprehension)) {
-    return ezP.Consolidator.Arguments.Type.comprehension
-  } else if (goog.array.contains(check,ezP.T3.Expr.expression_star)) {
-    return ezP.Consolidator.Arguments.Type.expression_star
-  } else if (goog.array.contains(check,ezP.T3.Expr.keyword_item)) {
-    return ezP.Consolidator.Arguments.Type.keyword_item
-  } else if (goog.array.contains(check,ezP.T3.Expr.expression_star_star)) {
-    return ezP.Consolidator.Arguments.Type.expression_star_star
-  } else {
-    return ezP.Consolidator.Arguments.Type.expression
-  }
-}
-
-/**
- * Call the inherited method, then records the various first_... indices
- */
-ezP.Consolidator.Arguments.prototype.one_step = function(io) {
-  // inherit
-  ezP.Consolidator.Arguments.superClass_.one_step.call(this, io)
-  // move input around if necessary
-  io.ezp.argument_type_ = this.getCheckType(io)
-  io.ezp.error_ = false
-  if (io.ezp.argument_type_ == ezP.Consolidator.Arguments.Type.unconnected) {
-    return
-  }
-  if (!this.first_connected) {
-    this.first_connected = io.input
-  }
-  var i = undefined
-  switch(io.ezp.argument_type_) {
-    case ezP.Consolidator.Arguments.Type.comprehension:
-      if (io.last_comprehension) {
-        // will insert just after io.last_comprehension
-        i = goog.array.indexOf(io.list, io.last_comprehension) + 1
-        io.last_comprehension = io.input
-        // move this input in front, after the last comprehension
-        goog.asserts.assert(i <= io.i, 'Internal inconsistency: '+i+ ' <= '+io.i)
-        if (i < io.i) {
-          // the input is not already located at the expected location
-          // remove io.input from the list
-          io.list.splice(io.i, 1);
-          // insert at io.last_comprehension
-          io.list.splice(i, 0, io.input)
-          this.setupIO(io)
-        }
-      } else {
-        io.last_comprehension = io.input
-      }
-      break
-    case ezP.Consolidator.Arguments.Type.expression:
-      if (io.first_keyword_or_star_star) {
-        // there are at least 2 connected inputs
-        // this one should not be there
-        // it should be just before the first KW or **
-        i = goog.array.indexOf(io.list, io.first_keyword_or_star_star)
-        goog.asserts.assert(i < io.i, 'Internal inconsistency: '+i+ ' < '+io.i)
-        io.last_expression = io.input
-        io.list.splice(io.i, 1);
-        io.list.splice(i, 0, io.input)
-        this.setupIO(io)
-        if (!io.last_positional || goog.array.indexOf(io.list, io.last_positional, i+2)<0) {
-          io.last_positional = io.last_expression
-        }
-      } else {
-        io.last_expression = io.last_positional = io.input
-      }
-      break
-      case ezP.Consolidator.Arguments.Type.expression_star:
-      if (io.first_star_star) {
-        io.last_positional = io.input
-        // there are at least 2 connected inputs
-        // this one should not be there
-        i = goog.array.indexOf(io.list, io.first_star_star)
-        goog.asserts.assert(i < io.i, 'Internal inconsistency: '+i+ ' < '+io.i)
-        io.list.splice(io.i, 1);
-        io.list.splice(i, 0, io.input)
-        this.setupIO(io)
-      } else {
-        io.last_positional = io.input
-      }
-    break
-    case ezP.Consolidator.Arguments.Type.keyword_item:
-      if (!io.first_keyword_or_star_star) {
-        io.first_keyword_or_star_star = io.input
-      }
-    break
-    case ezP.Consolidator.Arguments.Type.expression_star_star: 
-      if (!io.first_keyword_or_star_star) {
-        io.first_keyword_or_star_star = io.input
-        io.first_star_star = io.input
-      } else if (!io.first_star_star) {
-        io.first_star_star = io.input
-      }
-      break
-  }
-}
 /**
  * Once the whole list has been managed,
  * there might be unwanted things.
+ * @param {object} io
  */
-ezP.Consolidator.Arguments.prototype.cleanup = function(io) {
-  ezP.Consolidator.Arguments.superClass_.cleanup.call(this, io)
-  if (io.last_comprehension) {
-    // there must be a unique input
-    if (io.connected == 1) {
-      // one of the normal situations
-      // eventually remove separators after and before
-      var i = goog.array.indexOf(io.list, io.last_comprehension)
-      while (i + 1 < io.end) {
-        this.disposeAtI(io, i + 1)
-      }
-      while (io.start < i--) {
-        this.disposeAtI(io, io.start)
-      }
-      return
+ezP.Consolidator.Arguments.prototype.doCleanup = function () {
+  // preparation: walk through the list of inputs and
+  // find the key inputs
+  var Type = {
+    UNCONNECTED: 0,
+    ARGUMENT: 1,
+    KEYWORD: 2,
+    COMPREHENSION: 3,
+  }
+    /**
+   * Whether the input corresponds to an identifier...
+   * Called when io.input is connected.
+   * @param {Object} io, parameters....
+   */
+  var getCheckType = function(io) {
+    var target = io.c8n.targetConnection
+    if (!target) {
+      return Type.UNCONNECTED
     }
-    // there are too many connected blocks, mark the input as faulty
-    io.n = 0
-    io.i = io.start + 2
-    while (this.nextInput(io)) {
-      io.ezp.error_ = true
+    var check = target.check_
+    if (goog.array.contains(check, ezP.T3.Expr.comprehension)) {
+      io.single = io.i
+      return Type.COMPREHENSION
+    } else if (goog.array.contains(check, ezP.T3.Expr.expression_star_star) || goog.array.contains(check, ezP.T3.Expr.keyword_item)) {
+      return Type.KEYWORD
+    } else {
+      return Type.ARGUMENT
     }
   }
-}
+  var setupFirst = function (io) {
+    io.first_keyword = io.last_positional = io.single = -1
+    this.setupIO(io, 0)
+    while (!!io.ezp&& io.single < 1) {
+      switch ((io.ezp.parameter_type_ = getCheckType(io))) {
+        case Type.ARGUMENT:
+        io.last_positional = io.i
+        break
+        case Type.KEYWORD:
+        if (io.first_keyword < 0) {
+          io.first_keyword = io.i
+        }
+        break
+        case Type.COMPREHENSION:
+        io.single = io.i
+      }
+      this.nextInput(io)
+    }
+  }
+  return function(io) {
+    ezP.Consolidator.Arguments.superClass_.doCleanup.call(this, io)
+    setupFirst.call(this, io)
+    if (io.single >= 0) {
+      // remove whatever comes before and after the io.single
+      this.setupIO(io, 0)
+      while (io.i < io.single--) {
+        this.disposeAtI(io)
+        this.setupIO(io)
+      }
+      this.setupIO(io, 1)
+      while (io.i < io.list.length) {
+        this.disposeAtI(io)
+        this.setupIO(io)
+      }
+    } else
+    // move parameters that are not placed correctly (in ezP sense)
+    if (io.first_keyword>=0) {
+      while (io.first_keyword < io.last_positional) {
+        this.setupIO(io, io.first_keyword + 2)
+        while (io.i <= io.last_positional) {
+          if (io.ezp.parameter_type_ === Type.ARGUMENT) {
+            // move this to io.first_keyword
+            var c8n = io.c8n
+            var target = c8n.targetConnection
+            c8n.disconnect()
+            while (io.i > io.first_keyword) {
+              this.setupIO(io, io.i - 2)
+              var t = io.c8n.targetConnection
+              io.c8n.disconnect()
+              c8n.connect(t)
+              c8n = io.c8n
+            }
+            c8n.connect(target)
+            io.first_keyword += 2
+            this.setupIO(io, io.first_keyword + 2)
+          } else {
+            this.setupIO(io, io.i + 2)
+          }
+        }
+        // io.last_positional = io.first_keyword - 2
+        setupFirst.call(this, io)
+      }
+    }
+  }
+} ()
 
 /**
  * Returns the required types for the current input.
+ * This does not suppose that the list of input has been completely consolidated
  * @param {!Object} io parameter.
  */
-ezP.Consolidator.Arguments.prototype.getCheck = function (io) {
-  // is it a situation for comprehension ?
-  // only one input or a replacement of the unique connected block
-  if (io.connected <= 1 && (io.start + 1 == io.end || io.i == io.start+1)) {
-    // console.log('Check: '+io.i+' -> any_argument_comprehensive')
-    return ezP.T3.Expr.Check.any_argument_comprehensive
-  }
-  var can_star = !io.first_star_star || goog.array.indexOf(io.list, io.first_star_star, io.i) >= 0
-  var can_expression = can_star && (!io.first_keyword_or_star_star || goog.array.indexOf(io.list, io.first_keyword_or_star_star, io.i) >= 0)
-  var can_keyword = (!io.last_expression || goog.array.indexOf(io.list, io.last_expression) <= io.i)
-  var can_star_star = (!io.last_positional || goog.array.indexOf(io.list, io.last_positional) <= io.i)
-  if (can_expression) {
-    if (can_star_star) {
-      // everything, no need to check for starred or keywords
-      // console.log('Check: '+io.i+' -> any_argument')
-      return ezP.T3.Expr.Check.any_argument
-    } else if (can_keyword) {
-      // everything but double starred
-      // console.log('Check: '+io.i+' -> any_argument_but_expression_star_star')
-      return ezP.T3.Expr.Check.any_argument_but_expression_star_star
+ezP.Consolidator.Arguments.prototype.getCheck = function() {
+  var cache = {}
+  return function (io) {
+    var can_positional, can_keyword, can_comprehension
+    if (io.single >= 0 || io.list.length === 1 || io.list.length === 3 && io.i === 1) {
+      can_positional = can_keyword = can_comprehension = true
     } else {
-      return ezP.T3.Expr.Check.positional_argument
+      can_comprehension = false
+      if (io.i <= io.first_keyword) {
+        can_positional = true
+      }
+      if (io.i >= io.last_positional) {
+        can_keyword = true
+      }
     }
-  } else if (can_star) {
-    if (can_star_star) {
-      // everything but expression
-      // console.log('Check: '+io.i+' -> any_argument_but_expression')
-      return ezP.T3.Expr.Check.any_argument_but_expression
-    } else if (can_keyword) {
-      // starred and keyword
-      // console.log('Check: '+io.i+' -> any_argument_but_expression')
-      return ezP.T3.Expr.Check.starred_and_keyword
-    } else {
-      // only starred
-      return ezP.T3.Expr.expression_star
+    var K = 0
+    if (can_positional) {
+      K += 1
     }
-  } else if (can_star_star) {
     if (can_keyword) {
-      // double starred and keyword
-      return ezP.T3.Expr.Check.keywords_argument
-    } else {
-      // only can_star_star
-      return ezP.T3.Expr.expression_star_star
+      K += 2
     }
-  } else /* if (can_keyword) */ {
-    // keyword only
-    return ezP.T3.Expr.keyword_item
+    if (can_comprehension) {
+      K += 4
+    }
+    var out = cache[K]
+    if (out) {
+      return out
+    }
+    out = []
+    if (can_positional) {
+      out = ezP.T3.Expr.Check.expression.slice()
+      out.push(ezP.T3.Expr.expression_star)      
+    }
+    if (can_keyword) {
+      out.push(ezP.T3.Expr.keyword_item)
+      out.push(ezP.T3.Expr.expression_star_star)      
+    }
+    if (can_comprehension) {
+      out.push(ezP.T3.Expr.comprehension)      
+    }
+    return cache[K] = out
   }
-}
+} ()
 
 /**
  * Class for a DelegateSvg, argument_list block.
@@ -338,13 +285,16 @@ ezP.Consolidator.Arguments.prototype.getCheck = function (io) {
 ezP.DelegateSvg.Expr.argument_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.argument_list.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.list = {
-    consolidator: ezP.Consolidator.Arguments,
+    check: ezP.T3.Expr.Check.argument_any,
+    consolidator: ezP.Consolidator.List,
+    empty: true,
+    sep: ',',
+    hole_value: 'name',
   }
   this.outputModel_.check = ezP.T3.Expr.argument_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.argument_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('argument_list')
-
 
 /**
  * Class for a DelegateSvg, starred_item_list_comprehensive block.
@@ -356,21 +306,19 @@ ezP.DelegateSvg.Manager.register('argument_list')
  * @constructor
  */
 ezP.DelegateSvg.Expr.argument_list_comprehensive = function (prototypeName) {
-  ezP.DelegateSvg.Expr.starred_item_list_comprehensive.superClass_.constructor.call(this, prototypeName)
+  ezP.DelegateSvg.Expr.argument_list_comprehensive.superClass_.constructor.call(this, prototypeName)
   var D = {
-    check: ezP.T3.Expr.Check.non_void_starred_item_list,
-    single: ezP.T3.Expr.comprehension,
-    consolidator: ezP.Consolidator.List.Singled,
+    consolidator: ezP.Consolidator.Arguments,
     empty: true,
     sep: ',',
     hole_value: 'name',
   }
-  var RA = goog.array.concat(D.check,D.single)
+  var RA = goog.array.concat(D.check, D.single)
   goog.array.removeDuplicates(RA)
   D.all = RA
   this.inputModel_.list = D
-  this.outputModel_.check = ezP.T3.Expr.starred_item_list_comprehensive
+  this.outputModel_.check = ezP.T3.Expr.argument_list_comprehensive
 }
-goog.inherits(ezP.DelegateSvg.Expr.starred_item_list_comprehensive, ezP.DelegateSvg.List)
+goog.inherits(ezP.DelegateSvg.Expr.argument_list_comprehensive, ezP.DelegateSvg.List)
 
-ezP.DelegateSvg.Manager.register('starred_item_list_comprehensive')
+ezP.DelegateSvg.Manager.register('argument_list_comprehensive')

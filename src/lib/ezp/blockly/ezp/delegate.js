@@ -61,7 +61,7 @@ ezP.Mixin = function (constructor) {
  */
 ezP.Delegate = function (prototypeName) {
   ezP.Delegate.superClass_.constructor.call(this)
-  this.initData()
+  this.initModel()
 }
 goog.inherits(ezP.Delegate, ezP.Helper)
 
@@ -74,7 +74,7 @@ goog.inherits(ezP.Delegate, ezP.Helper)
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.Delegate.prototype.initData = function (prototypeName) {
+ezP.Delegate.prototype.initModel = function (prototypeName) {
   this.inputModel_ = {}
 }
 

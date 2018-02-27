@@ -138,14 +138,6 @@ ezP.DelegateSvg.Expr.key_datum_list_comprehensive.workspaceBlocks = [
   ezP.T3.Expr.key_datum_list_comprehensive,
 ]
 
-ezP.DelegateSvg.Expr.argument_list.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Expr.argument_list,
-  ezP.T3.Expr.expression_star,
-  ezP.T3.Expr.expression_star_star,
-  ezP.T3.Expr.keyword_item,
-  ezP.T3.Expr.identifier,
-] , null/*ezP.T3.Expr.Check.expression*/)
-
 ezP.DelegateSvg.Stmt.yield_stmt.workspaceBlocks =
 ezP.DelegateSvg.Expr.yield_expression.workspaceBlocks = [
   ezP.T3.Expr.identifier,
@@ -206,22 +198,21 @@ ezP.DelegateSvg.Expr.parameter_list.workspaceBlocks = ezP.Do.arraysMerged([
 ezP.T3.Expr.Check.parameter_any,
 )
 
-ezP.DelegateSvg.Expr.argument_list.workspaceBlocks = ezP.Do.arraysMerged([
+ezP.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks = ezP.DelegateSvg.Expr.argument_list.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Expr.argument_list,
+  ezP.T3.Expr.expression_star,
+  ezP.T3.Expr.expression_star_star,
+  ezP.T3.Expr.keyword_item,
   ezP.T3.Expr.identifier,
-  ezP.DelegateSvg.Expr.keyword_item,
-  ezP.DelegateSvg.Expr.expression_star,
-  ezP.DelegateSvg.Expr.expression_star_star,
-],
-ezP.T3.Expr.Check.parameter_any,
-)
+  ezP.T3.Expr.argument_list_comprehensive,
+  ezP.T3.Expr.comprehension,
+] , null/*ezP.T3.Expr.Check.expression*/)
 
 ezP.DelegateSvg.Stmt.print_stmt.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Stmt.print_stmt,
 ],
-ezP.DelegateSvg.Expr.argument_list.workspaceBlocks,
+ezP.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks,
 )
-
 
 ezP.DelegateSvg.Stmt.global_nonlocal_stmt.workspaceBlocks =
 [
