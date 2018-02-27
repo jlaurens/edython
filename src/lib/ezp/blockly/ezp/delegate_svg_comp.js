@@ -25,7 +25,7 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Expr.comprehension = function (prototypeName) {
   ezP.DelegateSvg.Expr.comprehension.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
+  this.inputModel_ = {
     first: {
       key: ezP.Const.Input.EXPR,
       check: ezP.T3.Expr.Check.expression,
@@ -40,7 +40,7 @@ ezP.DelegateSvg.Expr.comprehension = function (prototypeName) {
       wrap: ezP.T3.Expr.comp_iter_list,
     }
   }
-  this.outputData_.check = ezP.T3.Expr.comprehension
+  this.outputModel_.check = ezP.T3.Expr.comprehension
 }
 goog.inherits(ezP.DelegateSvg.Expr.comprehension, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('comprehension')
@@ -55,7 +55,7 @@ ezP.DelegateSvg.Manager.register('comprehension')
  */
 ezP.DelegateSvg.Expr.comp_for = function (prototypeName) {
   ezP.DelegateSvg.Expr.comp_for.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
+  this.inputModel_ = {
     first: {
       key: ezP.Const.Input.FOR,
       label: 'for',
@@ -70,7 +70,7 @@ ezP.DelegateSvg.Expr.comp_for = function (prototypeName) {
       hole_value: 'name',
     }
   }
-  this.outputData_.check = ezP.T3.Expr.comp_for
+  this.outputModel_.check = ezP.T3.Expr.comp_for
 }
 goog.inherits(ezP.DelegateSvg.Expr.comp_for, ezP.DelegateSvg.Expr)
 
@@ -86,7 +86,7 @@ ezP.DelegateSvg.Manager.register('comp_for')
  */
 ezP.DelegateSvg.Expr.comp_if = function (prototypeName) {
   ezP.DelegateSvg.Expr.comp_if.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
+  this.inputModel_ = {
     first: {
       key: ezP.Const.Input.IF,
       label: 'if',
@@ -94,7 +94,7 @@ ezP.DelegateSvg.Expr.comp_if = function (prototypeName) {
       check: ezP.T3.Expr.Check.expression_nocond
     }
   }
-  this.outputData_.check = ezP.T3.Expr.comp_if
+  this.outputModel_.check = ezP.T3.Expr.comp_if
 }
 goog.inherits(ezP.DelegateSvg.Expr.comp_if, ezP.DelegateSvg.Expr)
 
@@ -111,12 +111,12 @@ ezP.DelegateSvg.Manager.register('comp_if')
  */
 ezP.DelegateSvg.Expr.comp_iter_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.comp_iter_list.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.list = {
+  this.inputModel_.list = {
     check: ezP.T3.Expr.Check.comp_iter,
     empty: true,
     sep: ',',
   }
-  this.outputData_.check = ezP.T3.Expr.comp_iter_list
+  this.outputModel_.check = ezP.T3.Expr.comp_iter_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.comp_iter_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('comp_iter_list')
@@ -132,9 +132,9 @@ ezP.DelegateSvg.Manager.register('comp_iter_list')
 // dict_comprehension ::= expression ":" expression comp_for
 ezP.DelegateSvg.Expr.dict_comprehension = function (prototypeName) {
   ezP.DelegateSvg.Expr.dict_comprehension.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first.wrap =
+  this.inputModel_.first.wrap =
   ezP.T3.Expr.key_datum_concrete,
-  this.outputData_.check = ezP.T3.Expr.dict_comprehension
+  this.outputModel_.check = ezP.T3.Expr.dict_comprehension
 }
 goog.inherits(ezP.DelegateSvg.Expr.dict_comprehension, ezP.DelegateSvg.Expr.comprehension)
 ezP.DelegateSvg.Manager.register('dict_comprehension')
@@ -149,8 +149,8 @@ ezP.DelegateSvg.Manager.register('dict_comprehension')
  */
 ezP.DelegateSvg.Expr.key_datum_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.key_datum_concrete.superClass_.constructor.call(this, prototypeName)
-  this.outputData_.check = ezP.T3.Expr.key_datum_concrete
-  this.inputData_ = {
+  this.outputModel_.check = ezP.T3.Expr.key_datum_concrete
+  this.inputModel_ = {
     first: {
       key: ezP.Const.Input.KEY,
       check: ezP.T3.Expr.Check.expression,

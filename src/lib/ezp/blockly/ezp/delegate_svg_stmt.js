@@ -27,7 +27,7 @@ goog.require('ezP.DelegateSvg.Operator')
  */
 ezP.DelegateSvg.Stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.superClass_.constructor.call(this, prototypeName)
-  this.statementData_ = {
+  this.statementModel_ = {
     previous: {},
     next: {},
   }
@@ -157,7 +157,7 @@ ezP.DelegateSvg.Stmt.prototype.renderDrawInput_ = function (io) {
 ezP.DelegateSvg.Stmt.annotated_assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.annotated_assignment_stmt.superClass_.constructor.call(this, prototypeName)
   //annotated_assignment_stmt ::=  augtarget ":" expression ["=" expression]
-  this.inputData_ = {
+  this.inputModel_ = {
     first: {
       key: ezP.Const.Input.TARGET,
       check: ezP.T3.Expr.Check.augtarget
@@ -228,7 +228,7 @@ ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block) {
  */
 ezP.DelegateSvg.Stmt.assert_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.assert_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
+  this.inputModel_ = {
     first: {
       label: 'assert',
       css_class: 'ezp-code-reserved',
@@ -256,7 +256,7 @@ ezP.DelegateSvg.Manager.register('assert_stmt')
  */
 ezP.DelegateSvg.Stmt.pass_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.pass_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     value: 'pass',
     css_class: 'ezp-code-reserved',
   }
@@ -274,7 +274,7 @@ ezP.DelegateSvg.Manager.register('pass_stmt')
  */
 ezP.DelegateSvg.Stmt.break_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.break_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     value: 'break',
     css_class: 'ezp-code-reserved',
   }
@@ -292,7 +292,7 @@ ezP.DelegateSvg.Manager.register('break_stmt')
  */
 ezP.DelegateSvg.Stmt.continue_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.continue_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     value: 'continue',
     css_class: 'ezp-code-reserved',
   }
@@ -310,7 +310,7 @@ ezP.DelegateSvg.Manager.register('continue_stmt')
  */
 ezP.DelegateSvg.Stmt.raise_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.raise_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
+  this.inputModel_ = {
     first: {
       label: 'raise',
       css_class: 'ezp-code-reserved',
@@ -342,12 +342,12 @@ ezP.DelegateSvg.Manager.register('raise_stmt')
  */
 ezP.DelegateSvg.Expr.non_void_identifier_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.non_void_identifier_list.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.list = {
+  this.inputModel_.list = {
     check: ezP.T3.Expr.Check.non_void_identifier_list,
     empty: false,
     sep: ',',
   }
-  this.outputData_.check = ezP.T3.Expr.non_void_identifier_list
+  this.outputModel_.check = ezP.T3.Expr.non_void_identifier_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.non_void_identifier_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('non_void_identifier_list')
@@ -362,7 +362,7 @@ ezP.DelegateSvg.Manager.register('non_void_identifier_list')
 ezP.DelegateSvg.Stmt.global_nonlocal_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.constructor.call(this, prototypeName)
   this.operators = ['global', 'nonlocal']
-  this.inputData_.last = {
+  this.inputModel_.last = {
     key: ezP.Const.Input.LIST,
     label: this.operators[0],
     css_class: 'ezp-code-reserved',
@@ -430,11 +430,11 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.handleMenuItemActionFirst = 
  */
 ezP.DelegateSvg.Stmt.comment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.comment_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     label: '# ',
     css_class: 'ezp-code-reserved',
   }
-  this.inputData_.last = {
+  this.inputModel_.last = {
     comment: 'comment',
   }
 }

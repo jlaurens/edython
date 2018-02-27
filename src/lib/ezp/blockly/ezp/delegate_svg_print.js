@@ -69,7 +69,7 @@ ezP.DelegateSvg.Stmt.Tupled.prototype.renderDrawInput_ = function (io) {
  */
 ezP.DelegateSvg.Stmt.print_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.print_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     start: 'print(',
     key: ezP.Const.Input.LIST,
     wrap: ezP.T3.Expr.argument_list,

@@ -26,8 +26,8 @@ goog.require('ezP.FieldVariable')
  */
 ezP.DelegateSvg.Expr.identifier = function (prototypeName) {
   ezP.DelegateSvg.Expr.identifier.superClass_.constructor.call(this, prototypeName)
-  this.outputData_.check = ezP.T3.Expr.identifier
-  this.inputData_.first = {
+  this.outputModel_.check = ezP.T3.Expr.identifier
+  this.inputModel_.first = {
     key: ezP.Const.Input.NAME,
     identifier: 'item',
   }

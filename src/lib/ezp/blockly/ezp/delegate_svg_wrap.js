@@ -24,7 +24,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Expr.assignment_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.assignment_expression.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
+  this.inputModel_ = {
     first: {
       key: ezP.Const.Input.LHS,
       wrap: ezP.T3.Expr.target_list,
@@ -35,7 +35,7 @@ ezP.DelegateSvg.Expr.assignment_expression = function (prototypeName) {
       check: ezP.T3.Expr.Check.assigned_expression,
     },
   }
-  this.outputData_.check = ezP.T3.Expr.assignment_expression
+  this.outputModel_.check = ezP.T3.Expr.assignment_expression
 }
 goog.inherits(ezP.DelegateSvg.Expr.assignment_expression, ezP.DelegateSvg.Expr)
 
@@ -50,7 +50,7 @@ ezP.DelegateSvg.Manager.register('assignment_expression')
  */
 ezP.DelegateSvg.Stmt.expression_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.expression_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.last = {
+  this.inputModel_.last = {
     key: ezP.Const.Input.LIST,
     wrap: ezP.T3.Expr.non_void_starred_item_list,
   }
@@ -67,7 +67,7 @@ ezP.DelegateSvg.Manager.register('expression_stmt')
  */
 ezP.DelegateSvg.Stmt.assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.assignment_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.last = {
+  this.inputModel_.last = {
     key: ezP.Const.Input.EXPR,
     wrap: ezP.T3.Expr.assignment_expression,
   }
@@ -84,7 +84,7 @@ ezP.DelegateSvg.Manager.register('assignment_stmt')
  */
 ezP.DelegateSvg.Stmt.del_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.del_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.last = {
+  this.inputModel_.last = {
     key: ezP.Const.Input.LIST,
     label: 'del',
     css_class: 'ezp-code-reserved',
@@ -103,7 +103,7 @@ ezP.DelegateSvg.Manager.register('del_stmt')
  */
 ezP.DelegateSvg.Stmt.return_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.return_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.last = {
+  this.inputModel_.last = {
     key: ezP.Const.Input.LIST,
     label: 'return',
     css_class: 'ezp-code-reserved',

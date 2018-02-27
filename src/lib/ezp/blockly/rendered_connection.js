@@ -66,7 +66,7 @@ ezP.ConnectionDelegate.prototype.name_ = undefined// must change to wrapper
  * Will connect.
  * Default implementation does nothing.
  * This can be overriden at block creation time,
- * for example in the initBlock function, of in the inputData.
+ * for example in the initBlock function, of in the inputModel.
  * @param {Blockly.Connection} connection the connection owning the delegate
  * @param {Blockly.Connection} targetConnection
  */
@@ -78,7 +78,7 @@ ezP.ConnectionDelegate.prototype.willConnect = function(targetConnection) {
  * Did connect.
  * Default implementation does nothing.
  * This can be overriden at block creation time,
- * for example in the initBlock function, of in the inputData.
+ * for example in the initBlock function, of in the inputModel.
  * @param {Blockly.Connection} connection  the connection owning the delegate
  * @param {Blockly.Connection} oldTargetConnection  what was previously connected to connection
  * @param {Blockly.Connection} oldConnection  what was previously connected to connection.targetConnection
@@ -91,7 +91,7 @@ ezP.ConnectionDelegate.prototype.didConnect = function(oldTargetConnection, oldC
  * Will connect.
  * Default implementation does nothing.
  * This can be overriden at block creation time,
- * for example in the initBlock function, of in the inputData.
+ * for example in the initBlock function, of in the inputModel.
  * @param {Blockly.Connection} connection the connection owning the delegate
  */
 ezP.ConnectionDelegate.prototype.willDisconnect = function(connection) {
@@ -102,7 +102,7 @@ ezP.ConnectionDelegate.prototype.willDisconnect = function(connection) {
  * Did disconnect.
  * Default implementation does nothing.
  * This can be overriden at block creation time,
- * for example in the initBlock function, of in the inputData.
+ * for example in the initBlock function, of in the inputModel.
  * @param {Blockly.Connection} connection  the connection owning the delegate
  * @param {Blockly.Connection} oldTargetConnection  what was previously connected to connection
  */

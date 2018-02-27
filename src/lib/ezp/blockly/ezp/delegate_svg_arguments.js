@@ -25,8 +25,8 @@ goog.require('ezP.DelegateSvg.List')
  */
 ezP.DelegateSvg.Expr.keyword_item = function (prototypeName) {
   ezP.DelegateSvg.Expr.keyword_item.superClass_.constructor.call(this, prototypeName)
-  this.outputData_.check = ezP.T3.Expr.keyword_item
-  this.inputData_ = {
+  this.outputModel_.check = ezP.T3.Expr.keyword_item
+  this.inputModel_ = {
     first: {
       key: ezP.Const.Input.LHS,
       check: ezP.T3.Expr.identifier,
@@ -54,8 +54,8 @@ ezP.DelegateSvg.Manager.register('keyword_item')
  */
 ezP.DelegateSvg.Expr.expression_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.expression_star.superClass_.constructor.call(this, prototypeName)
-  this.outputData_.check = ezP.T3.Expr.expression_star
-  this.inputData_ = {
+  this.outputModel_.check = ezP.T3.Expr.expression_star
+  this.inputModel_ = {
     first: {
       label: '*',
       key: ezP.Const.Input.EXPR,
@@ -78,8 +78,8 @@ ezP.DelegateSvg.Manager.register('expression_star')
  */
 ezP.DelegateSvg.Expr.expression_star_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.expression_star_star.superClass_.constructor.call(this, prototypeName)
-  this.outputData_.check = ezP.T3.Expr.expression_star_star
-  this.inputData_ = {
+  this.outputModel_.check = ezP.T3.Expr.expression_star_star
+  this.inputModel_ = {
     first: {
       label: '**',
       key: ezP.Const.Input.EXPR,
@@ -94,41 +94,17 @@ ezP.DelegateSvg.Manager.register('expression_star_star')
 
 /**
  * List consolidator for argument list.
- * We do not remove connected blocks as long as they have the correct type.
- * We just move input around in order to have a proper ordering. Moving around is the same as reordering.
+ * Rules are a bit stronger than python requires originally
  * 1) If there is a comprehension, it must be alone.
  * 2) positional arguments come first, id est expression and starred expressions
- * 3) then come starred expressions or keyword items
- * 4) finally come keyword items or double starred expressions
- * Let's explain this in a table,
- * where 'X' stands for expression,
- * '*' stands for starred expression,
- * '**' stands for double starred expression,
- * 'KW' stands for keyword items,
- * |    | KW | ** |
- * |----|----|----|
- * | X  | <  | <  |
- * | *  |    | <  |
- * When there are many inputs, the ordering rules may read
- * a) expressions come before keyword items and double starred expressions
- * b) starred expressions must come before double starred expressions
- * To fulfill these rules, we keep track of
- * - the first keyword item
- * - the first double starred expression
- * If we find a starred expression that is after the first double starred expression,
- * we move it just before it.
- * If we find an expression that is after the fist KW, we move it just before it.
- * If we find an expression that is after the first double starred expression,
- * we move it just before it.
- * It would be more difficult to merge the last 2 management within one test because each movement implies the shift of the first input we compare to.
- * We accept only one comprehension.
+ * 3) then come keyword items or double starred expressions
  * Main entry: consolidate
  * @param {!String} single, the required type for a single element....
  */
 ezP.Consolidator.Arguments = function() {
   ezP.Consolidator.Arguments.superClass_.constructor.call(this, ezP.Consolidator.Arguments.data)
 }
-goog.inherits(ezP.Consolidator.Arguments, ezP.Consolidator.List)
+goog.inherits(ezP.Consolidator.Arguments, ezP.Consolidator.Singled)
 
 ezP.Consolidator.Arguments.data = {
   check: null,
@@ -361,11 +337,40 @@ ezP.Consolidator.Arguments.prototype.getCheck = function (io) {
  */
 ezP.DelegateSvg.Expr.argument_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.argument_list.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.list = {
+  this.inputModel_.list = {
     consolidator: ezP.Consolidator.Arguments,
   }
-  this.outputData_.check = ezP.T3.Expr.argument_list
+  this.outputModel_.check = ezP.T3.Expr.argument_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.argument_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('argument_list')
 
+
+/**
+ * Class for a DelegateSvg, starred_item_list_comprehensive block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.argument_list_comprehensive = function (prototypeName) {
+  ezP.DelegateSvg.Expr.starred_item_list_comprehensive.superClass_.constructor.call(this, prototypeName)
+  var D = {
+    check: ezP.T3.Expr.Check.non_void_starred_item_list,
+    single: ezP.T3.Expr.comprehension,
+    consolidator: ezP.Consolidator.List.Singled,
+    empty: true,
+    sep: ',',
+    hole_value: 'name',
+  }
+  var RA = goog.array.concat(D.check,D.single)
+  goog.array.removeDuplicates(RA)
+  D.all = RA
+  this.inputModel_.list = D
+  this.outputModel_.check = ezP.T3.Expr.starred_item_list_comprehensive
+}
+goog.inherits(ezP.DelegateSvg.Expr.starred_item_list_comprehensive, ezP.DelegateSvg.List)
+
+ezP.DelegateSvg.Manager.register('starred_item_list_comprehensive')

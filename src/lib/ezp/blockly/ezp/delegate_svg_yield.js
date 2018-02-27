@@ -27,13 +27,13 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Expr.yield_expression_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_expression_list.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     key: ezP.Const.Input.LIST,
     label: 'yield',
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.non_void_expression_list,
   }
-  this.outputData_.check = ezP.T3.Expr.yield_expression_list
+  this.outputModel_.check = ezP.T3.Expr.yield_expression_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_expression_list, ezP.DelegateSvg.Expr)
 
@@ -48,13 +48,13 @@ ezP.DelegateSvg.Manager.register('yield_expression_list')
  */
 ezP.DelegateSvg.Expr.yield_from_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_from_expression.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     key: ezP.Const.Input.EXPR,
     label: 'yield from',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression
   }
-  this.outputData_.check = ezP.T3.Expr.yield_from_expression
+  this.outputModel_.check = ezP.T3.Expr.yield_from_expression
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_from_expression, ezP.DelegateSvg.Expr)
 
@@ -69,13 +69,13 @@ ezP.DelegateSvg.Manager.register('yield_from_expression')
  */
 ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_atom.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     key: ezP.Const.Input.EXPR,
     start: '(',
     wrap: ezP.T3.Expr.yield_expression,
     end: ')',
   }
-  this.outputData_.check = ezP.T3.Expr.yield_atom
+  this.outputModel_.check = ezP.T3.Expr.yield_atom
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_atom, ezP.DelegateSvg.Expr)
 
@@ -90,11 +90,11 @@ ezP.DelegateSvg.Manager.register('yield_atom')
  */
 ezP.DelegateSvg.Expr.yield_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_expression.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.last = {
+  this.inputModel_.last = {
     key: ezP.Const.Input.LIST,
     wrap: ezP.T3.Expr.yield_expression_list,
   }
-  this.outputData_.check = ezP.T3.Expr.yield_expression
+  this.outputModel_.check = ezP.T3.Expr.yield_expression
   this.menuData = [
     {
       content: goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
@@ -135,7 +135,7 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.getWrappedTargetBlock = function
  */
 ezP.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var yorn
-  var D = ezP.DelegateSvg.Manager.getInputData(block.type)
+  var D = ezP.DelegateSvg.Manager.getInputModel(block.type)
   if (yorn = mgr.populate_wrap_alternate(block, D.last.key)) {
     mgr.shouldSeparate()
   }
@@ -162,7 +162,7 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.handleMenuItemActionFirst = func
  */
 ezP.DelegateSvg.Stmt.yield_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.yield_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.last = {
+  this.inputModel_.last = {
     key: ezP.Const.Input.EXPR,
     wrap: ezP.T3.Expr.yield_expression,
   }

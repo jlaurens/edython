@@ -75,12 +75,12 @@ goog.inherits(ezP.Delegate, ezP.Helper)
  * @constructor
  */
 ezP.Delegate.prototype.initData = function (prototypeName) {
-  this.inputData_ = {}
+  this.inputModel_ = {}
 }
 
-ezP.Delegate.prototype.inputData = undefined
-ezP.Delegate.prototype.outputData = undefined
-ezP.Delegate.prototype.statementData = undefined
+ezP.Delegate.prototype.inputModel = undefined
+ezP.Delegate.prototype.outputModel = undefined
+ezP.Delegate.prototype.statementModel = undefined
 
 /**
  * Delegate manager.
@@ -111,36 +111,36 @@ ezP.Delegate.Manager = function () {
     return Ctors[prototypeName]
   }
   /**
-   * Get the inputData for that prototypeName.
+   * Get the inputModel for that prototypeName.
    * @param {?string} prototypeName Name of the language object containing
    * @return void object if no delegate is registered for that name
    */
-  me.getInputData = function (prototypeName) {
+  me.getInputModel = function (prototypeName) {
     var Ctor = Ctors[prototypeName]
-    return Ctor? Ctor.prototype.inputData: {}
+    return Ctor? Ctor.prototype.inputModel: {}
   }
   /**
-   * Get the outputData for that prototypeName.
+   * Get the outputModel for that prototypeName.
    * @param {?string} prototypeName Name of the language object containing
    * @return void object if no delegate is registered for that name
    */
-  me.getOutputData = function (prototypeName) {
+  me.getOutputModel = function (prototypeName) {
     var Ctor = Ctors[prototypeName]
-    return Ctor? Ctor.prototype.outputData: {}
+    return Ctor? Ctor.prototype.outputModel: {}
   }
   /**
-   * Get the statementData for that prototypeName.
+   * Get the statementModel for that prototypeName.
    * @param {?string} prototypeName Name of the language object containing
    * @return void object if no delegate is registered for that name
    */
-  me.getStatementData = function (prototypeName) {
+  me.getStatementModel = function (prototypeName) {
     var Ctor = Ctors[prototypeName]
-    return Ctor? Ctor.prototype.statementData: {}
+    return Ctor? Ctor.prototype.statementModel: {}
   }
   /**
    * Delegate registrator.
    * 
-   * Computes and caches inputData, outputData and statementData
+   * Computes and caches inputModel, outputModel and statementModel
    * only once from the creation of the delegate.
    * 
    * The last delegate registered for a given prototype name wins.
@@ -156,15 +156,15 @@ ezP.Delegate.Manager = function () {
     // the input data are constructed below with inheritance support
     // as side effect of manager creation but this is immutability design
     var dlgt = me.create(prototypeName)
-    var D = dlgt.inputData_
+    var D = dlgt.inputModel_
     if (D && Object.keys(D).length) {
-      Ctor.prototype.inputData = D
+      Ctor.prototype.inputModel = D
     }
-    if ((D = dlgt.outputData_) && Object.keys(D).length) {
-      Ctor.prototype.outputData = D
+    if ((D = dlgt.outputModel_) && Object.keys(D).length) {
+      Ctor.prototype.outputModel = D
     }
-    if ((D = dlgt.statementData_) && Object.keys(D).length) {
-      Ctor.prototype.statementData = D
+    if ((D = dlgt.statementModel_) && Object.keys(D).length) {
+      Ctor.prototype.statementModel = D
       Ctor.prototype.previousCheck = dlgt.previousCheck// to be removed
       Ctor.prototype.nextCheck = dlgt.nextCheck
     }
@@ -258,7 +258,7 @@ ezP.Delegate.prototype.setupType = function (block) {
  */
 ezP.Delegate.prototype.initBlock = function (block) {
   this.setupType(block)
-  var D = this.outputData_
+  var D = this.outputModel_
   if (D && Object.keys(D).length) {
     block.setOutput(true, D.check)
     var ezp = block.outputConnection.ezp
@@ -277,7 +277,7 @@ ezP.Delegate.prototype.initBlock = function (block) {
     if (D.do && Object.keys(D.do).length) {
       goog.mixin(ezp, D.do)
     }
-  } else if ((D = this.statementData_) && Object.keys(D).length) {
+  } else if ((D = this.statementModel_) && Object.keys(D).length) {
     if (D.key) {
       block.appendStatementInput(D.key).setCheck(D.check) // Check ?
     }

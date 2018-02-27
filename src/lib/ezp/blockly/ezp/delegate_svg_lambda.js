@@ -27,7 +27,7 @@ goog.require('Blockly.RenderedConnection')
  */
 ezP.DelegateSvg.Expr.lambda_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.lambda_expression.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
+  this.inputModel_ = {
     first: {
       key: ezP.Const.Input.LIST,
       label: 'lambda',
@@ -46,7 +46,7 @@ ezP.DelegateSvg.Expr.lambda_expression = function (prototypeName) {
       },
     }
   }
-  this.outputData_ = {
+  this.outputModel_ = {
     check: [ezP.T3.Expr.lambda_expr, ezP.T3.Expr.lambda_expr_nocond],
     didConnect: function(c8n) {// `this` is c8n.ezp
       c8n.updateLambdaCheck()

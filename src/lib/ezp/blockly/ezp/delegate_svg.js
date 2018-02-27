@@ -272,15 +272,15 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   }
   var Is = {}
   
-  if (Object.keys(this.inputData_).length) {
+  if (Object.keys(this.inputModel_).length) {
     var keys = ['first', 'middle', 'last']
     for (var i = 0, K; K = keys[i++];) {
-      var f = F(K, this.inputData_[K])
+      var f = F(K, this.inputModel_[K])
       if (f) {
         Is[K] = f
       }
     }
-    this.inputData_ = undefined
+    this.inputModel_ = undefined
   }
   this.inputs = Is
 }

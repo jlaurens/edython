@@ -637,7 +637,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
     return false
   }
   var outCheck = c8n.check_
-  var D = ezP.Delegate.Manager.getInputData(parent_type)
+  var D = ezP.Delegate.Manager.getInputModel(parent_type)
   var mgr = this
   var F = function(K) {
     var d = D[K]
@@ -664,7 +664,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
       mgr.addInsertChild(MI)
       return true
     } else if (d && d.wrap) {
-      var list = ezP.Delegate.Manager.getInputData(d.wrap).list
+      var list = ezP.Delegate.Manager.getInputModel(d.wrap).list
       if (!list) {
         return false
       }

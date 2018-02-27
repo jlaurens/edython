@@ -93,11 +93,12 @@ positional_arguments ::= positional_argument ("," positional_argument)*
 positional_argument ::= expression | expression_star
 expression_star ::= "*" expression
 expression_star_star ::= "**" expression
-any_argument ::= expression | expression_star | keyword_item | expression_star_star
-any_argument_but_star_star ::= expression | expression_star | keyword_item
-any_argument_but_expression ::=  expression_star | keyword_item | expression_star_star
-any_argument_comprehensive ::= any_argument | comprehension
+argument_list ::= (positional_argument ",")* (keyword_argument ",")*
+keyword_argument ::= keyword_item | expression_star_star
+any_argument ::= positional_arguments | keyword_argument
 </pre>
+
+
 <pre>
 power ::= await_or_primary [ "**" u_expr ]
 await_or_primary ::= await_expr | primary

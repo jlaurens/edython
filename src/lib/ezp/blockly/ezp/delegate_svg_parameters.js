@@ -283,10 +283,10 @@ ezP.Consolidator.Parameters.prototype.getCheck = function() {
  */
 ezP.DelegateSvg.Expr.parameter_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.parameter_list.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.list = {
+  this.inputModel_.list = {
     consolidator: ezP.Consolidator.Parameters,
   }
-  this.outputData_.check = ezP.T3.Expr.parameter_list
+  this.outputModel_.check = ezP.T3.Expr.parameter_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.parameter_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('parameter_list')
@@ -300,7 +300,7 @@ ezP.DelegateSvg.Manager.register('parameter_list')
  */
 ezP.DelegateSvg.Expr.parameter_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.parameter_star.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     key: ezP.Const.Input.NAME,
     label: '*',
     css_class: 'ezp-code-reserved',
@@ -308,7 +308,7 @@ ezP.DelegateSvg.Expr.parameter_star = function (prototypeName) {
     hole_value: 'name',
     optional: true,
   }
-  this.outputData_.check = ezP.T3.Expr.parameter_star
+  this.outputModel_.check = ezP.T3.Expr.parameter_star
 }
 goog.inherits(ezP.DelegateSvg.Expr.parameter_star, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('parameter_star')
@@ -322,14 +322,14 @@ ezP.DelegateSvg.Manager.register('parameter_star')
  */
 ezP.DelegateSvg.Expr.parameter_star_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.parameter_star_star.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     key: ezP.Const.Input.NAME,
     label: '**',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.parameter,
     hole_value: 'name',
   }
-  this.outputData_.check = ezP.T3.Expr.parameter_star_star
+  this.outputModel_.check = ezP.T3.Expr.parameter_star_star
 }
 goog.inherits(ezP.DelegateSvg.Expr.parameter_star_star, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('parameter_star_star')
@@ -343,18 +343,18 @@ ezP.DelegateSvg.Manager.register('parameter_star_star')
  */
 ezP.DelegateSvg.Expr.parameter_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.parameter_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     key: ezP.Const.Input.NAME,
     check: ezP.T3.Expr.identifier,
     hole_value: 'name',
   }
-  this.inputData_.last = {
+  this.inputModel_.last = {
     key: ezP.Const.Input.EXPR,
     label: ':',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,
   }
-  this.outputData_.check = ezP.T3.Expr.parameter_concrete
+  this.outputModel_.check = ezP.T3.Expr.parameter_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.parameter_concrete, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('parameter_concrete')
@@ -368,18 +368,18 @@ ezP.DelegateSvg.Manager.register('parameter_concrete')
  */
 ezP.DelegateSvg.Expr.defparameter_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.defparameter_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     key: ezP.Const.Input.NAME,
     check: ezP.T3.Expr.Check.parameter,
     hole_value: 'name',
   }
-  this.inputData_.last = {
+  this.inputModel_.last = {
     key: ezP.Const.Input.EXPR,
     label: '=',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,
   }
-  this.outputData_.check = ezP.T3.Expr.defparameter_concrete
+  this.outputModel_.check = ezP.T3.Expr.defparameter_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.defparameter_concrete, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('defparameter_concrete')

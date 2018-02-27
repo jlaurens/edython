@@ -206,6 +206,23 @@ ezP.DelegateSvg.Expr.parameter_list.workspaceBlocks = ezP.Do.arraysMerged([
 ezP.T3.Expr.Check.parameter_any,
 )
 
+ezP.DelegateSvg.Expr.argument_list.workspaceBlocks = ezP.Do.arraysMerged([
+  ezP.T3.Expr.argument_list,
+  ezP.T3.Expr.identifier,
+  ezP.DelegateSvg.Expr.keyword_item,
+  ezP.DelegateSvg.Expr.expression_star,
+  ezP.DelegateSvg.Expr.expression_star_star,
+],
+ezP.T3.Expr.Check.parameter_any,
+)
+
+ezP.DelegateSvg.Stmt.print_stmt.workspaceBlocks = ezP.Do.arraysMerged([
+  ezP.T3.Stmt.print_stmt,
+],
+ezP.DelegateSvg.Expr.argument_list.workspaceBlocks,
+)
+
+
 ezP.DelegateSvg.Stmt.global_nonlocal_stmt.workspaceBlocks =
 [
   ezP.T3.Stmt.global_nonlocal_stmt,

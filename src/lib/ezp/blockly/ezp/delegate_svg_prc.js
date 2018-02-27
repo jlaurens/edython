@@ -28,12 +28,12 @@ goog.require('ezP.MenuItemCode')
 
 ezP.DelegateSvg.Expr.parenth_argument_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.parenth_argument_list.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     start: '(',
     wrap: ezP.T3.Expr.argument_list,
     end: ')',
   }
-  this.outputData_.check = ezP.T3.Expr.parenth_argument_list
+  this.outputModel_.check = ezP.T3.Expr.parenth_argument_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.parenth_argument_list, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('parenth_argument_list')
@@ -49,18 +49,18 @@ ezP.DelegateSvg.Manager.register('parenth_argument_list')
 
 ezP.DelegateSvg.Stmt.decorator_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.decorator_part.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     label: '@',
     key: ezP.Const.Input.NAME,
     wrap: ezP.T3.Expr.dotted_name,
   }
-  this.inputData_.last = {
+  this.inputModel_.last = {
     key: ezP.Const.Input.LIST,
     wrap: ezP.T3.Expr.parenth_argument_list,
     optional: true,
   }
-  this.statementData_.previous.check = ezP.T3.Stmt.Previous.decorator_part
-  this.statementData_.next.check = ezP.T3.Stmt.Next.decorator_part
+  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.decorator_part
+  this.statementModel_.next.check = ezP.T3.Stmt.Next.decorator_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.decorator_part, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Manager.register('decorator_part')

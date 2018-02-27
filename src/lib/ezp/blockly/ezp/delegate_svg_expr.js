@@ -26,7 +26,7 @@ goog.require('ezP.T3.All')
  */
 ezP.DelegateSvg.Expr = function (prototypeName) {
   ezP.DelegateSvg.Expr.superClass_.constructor.call(this, prototypeName)
-  this.outputData_ = {}
+  this.outputModel_ = {}
 }
 goog.inherits(ezP.DelegateSvg.Expr, ezP.DelegateSvg)
 
@@ -117,8 +117,8 @@ ezP.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
  */
 ezP.DelegateSvg.Expr.proper_slice = function (prototypeName) {
   ezP.DelegateSvg.Expr.proper_slice.superClass_.constructor.call(this, prototypeName)
-  this.outputData_.check = ezP.T3.Expr.proper_slice
-  this.inputData_ = {
+  this.outputModel_.check = ezP.T3.Expr.proper_slice
+  this.inputModel_ = {
     first: {
       key: ezP.Const.Input.LOWER_BOUND,
       check: ezP.T3.Expr.Check.expression,
@@ -193,8 +193,8 @@ ezP.DelegateSvg.Expr.proper_slice.prototype.handleMenuItemActionFirst = function
  */
 ezP.DelegateSvg.Expr.conditional_expression_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.conditional_expression_concrete.superClass_.constructor.call(this, prototypeName)
-  this.outputData_.check = ezP.T3.Expr.conditional_expression_concrete
-  this.inputData_ = {
+  this.outputModel_.check = ezP.T3.Expr.conditional_expression_concrete
+  this.inputModel_ = {
     first: {
       key: ezP.Const.Input.EXPR,
       check: ezP.T3.Expr.Check.or_test,
@@ -229,13 +229,13 @@ ezP.DelegateSvg.Manager.register('conditional_expression_concrete')
  */
 ezP.DelegateSvg.Expr.or_expr_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.or_expr_star.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     key: ezP.Const.Input.EXPR,
     label: '*',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.or_expr
   }
-  this.outputData_.check = ezP.T3.Expr.or_expr_star
+  this.outputModel_.check = ezP.T3.Expr.or_expr_star
 }
 goog.inherits(ezP.DelegateSvg.Expr.or_expr_star, ezP.DelegateSvg.Expr)
 
@@ -250,13 +250,13 @@ ezP.DelegateSvg.Manager.register('or_expr_star')
  */
 ezP.DelegateSvg.Expr.or_expr_star_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.or_expr_star_star.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     key: ezP.Const.Input.EXPR,
     label: '**',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.or_expr
   }
-  this.outputData_.check = ezP.T3.Expr.or_expr_star_star
+  this.outputModel_.check = ezP.T3.Expr.or_expr_star_star
 }
 goog.inherits(ezP.DelegateSvg.Expr.or_expr_star_star, ezP.DelegateSvg.Expr)
 
@@ -271,13 +271,13 @@ ezP.DelegateSvg.Manager.register('or_expr_star_star')
 */
 ezP.DelegateSvg.Expr.await_expr = function (prototypeName) {
   ezP.DelegateSvg.Expr.await_expr.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     key: ezP.Const.Input.EXPR,
     label: 'await',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.primary
   }
-  this.outputData_.check = ezP.T3.Expr.await_expr
+  this.outputModel_.check = ezP.T3.Expr.await_expr
 }
 goog.inherits(ezP.DelegateSvg.Expr.await_expr, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('await_expr')
@@ -291,13 +291,13 @@ ezP.DelegateSvg.Manager.register('await_expr')
 */
 ezP.DelegateSvg.Expr.not_test_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.not_test_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     key: ezP.Const.Input.EXPR,
     label: 'not',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.not_test
   }
-  this.outputData_.check = ezP.T3.Expr.not_test_concrete
+  this.outputModel_.check = ezP.T3.Expr.not_test_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.not_test_concrete, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('not_test_concrete')
@@ -311,10 +311,10 @@ ezP.DelegateSvg.Manager.register('not_test_concrete')
 */
 ezP.DelegateSvg.Expr.numberliteral_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.numberliteral_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     number: '0',
   }
-  this.outputData_.check = ezP.T3.Expr.numberliteral_concrete
+  this.outputModel_.check = ezP.T3.Expr.numberliteral_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.numberliteral_concrete, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('numberliteral_concrete')
@@ -334,7 +334,7 @@ ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.imagnumber, ezP.DelegateSv
 */
 ezP.DelegateSvg.Expr.stringliteral = function (prototypeName) {
   ezP.DelegateSvg.Expr.stringliteral.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
+  this.inputModel_ = {
     first: {
       key: ezP.Const.Field.PREFIX,
       label: "",
@@ -347,7 +347,7 @@ ezP.DelegateSvg.Expr.stringliteral = function (prototypeName) {
       css_class: 'ezp-code-reserved',
     },
   }
-  this.outputData_.check = ezP.T3.Expr.stringliteral
+  this.outputModel_.check = ezP.T3.Expr.stringliteral
 }
 goog.inherits(ezP.DelegateSvg.Expr.stringliteral, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('stringliteral')
@@ -573,12 +573,12 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.fieldValueDidChange = function(bloc
 ezP.DelegateSvg.Expr.builtin_object = function (prototypeName) {
   ezP.DelegateSvg.Expr.builtin_object.superClass_.constructor.call(this, prototypeName)
   this.values = ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented']
-  this.inputData_.first = {
+  this.inputModel_.first = {
     key: ezP.Const.Field.VALUE,
     label: this.values[0],
     css_class: 'ezp-code-reserved',
   }
-  this.outputData_.check = ezP.T3.Expr.builtin_object
+  this.outputModel_.check = ezP.T3.Expr.builtin_object
 }
 goog.inherits(ezP.DelegateSvg.Expr.builtin_object, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('builtin_object')
@@ -658,11 +658,11 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.fromDom = function (block, element
 */
 ezP.DelegateSvg.Expr.any = function (prototypeName) {
   ezP.DelegateSvg.Expr.any.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     key: ezP.Const.Field.CODE,
     code: '1+1',
   }
-  this.outputData_.check = null
+  this.outputModel_.check = null
 }
 goog.inherits(ezP.DelegateSvg.Expr.any, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('any')

@@ -39,7 +39,7 @@ module_name ::= identifier
  */
 ezP.DelegateSvg.Expr._as_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr._as_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputData_ = {
+  this.inputModel_ = {
     first: {
       key: ezP.Const.Input.SOURCE,
     },
@@ -64,13 +64,13 @@ goog.inherits(ezP.DelegateSvg.Expr._as_concrete, ezP.DelegateSvg.Expr)
  */
 ezP.DelegateSvg.Expr.module_as_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.module_as_concrete.superClass_.constructor.call(this, prototypeName)
-  this.outputData_.check = ezP.T3.Expr.module_as_concrete
-  goog.mixin(this.inputData_.first, {
+  this.outputModel_.check = ezP.T3.Expr.module_as_concrete
+  goog.mixin(this.inputModel_.first, {
     check: ezP.T3.Expr.Check.module,
     hole_value: 'module',
     plugged: ezP.T3.Expr.module,
   })
-  this.inputData_.last.plugged = ezP.T3.Expr.module_alias
+  this.inputModel_.last.plugged = ezP.T3.Expr.module_alias
 }
 goog.inherits(ezP.DelegateSvg.Expr.module_as_concrete, ezP.DelegateSvg.Expr._as_concrete)
 ezP.DelegateSvg.Manager.register('module_as_concrete')
@@ -86,14 +86,14 @@ ezP.DelegateSvg.Manager.register('module_as_concrete')
  */
 ezP.DelegateSvg.Expr.module_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.module_concrete.superClass_.constructor.call(this, prototypeName)
-  this.outputData_.check = ezP.T3.Expr.module_concrete
-  this.inputData_.first = {
+  this.outputModel_.check = ezP.T3.Expr.module_concrete
+  this.inputModel_.first = {
     key: ezP.Const.Input.LHS,
     check: ezP.T3.Expr.module_name,
     plugged: ezP.T3.Expr.module_identifier,
     hole_value: 'module',
   }
-  this.inputData_.last = {
+  this.inputModel_.last = {
     label: '.',
     key: ezP.Const.Input.RHS,
     check: ezP.T3.Expr.Check.module,
@@ -115,12 +115,12 @@ ezP.DelegateSvg.Manager.register('module_concrete')
  */
 ezP.DelegateSvg.Expr.non_void_module_as_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.non_void_module_as_list.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.list = {
+  this.inputModel_.list = {
     check: ezP.T3.Expr.Check.non_void_module_as_list,
     empty: false,
     sep: ',',
   }
-  this.outputData_.check = ezP.T3.Expr.non_void_module_as_list
+  this.outputModel_.check = ezP.T3.Expr.non_void_module_as_list
   this.hole_value = 'module'
 }
 goog.inherits(ezP.DelegateSvg.Expr.non_void_module_as_list, ezP.DelegateSvg.List)
@@ -137,8 +137,8 @@ ezP.DelegateSvg.Manager.register('non_void_module_as_list')
  */
 ezP.DelegateSvg.Expr.import_module = function (prototypeName) {
   ezP.DelegateSvg.Expr.import_module.superClass_.constructor.call(this, prototypeName)
-  this.outputData_.check = ezP.T3.Expr.import_module
-  this.inputData_.first = {
+  this.outputModel_.check = ezP.T3.Expr.import_module
+  this.inputModel_.first = {
     label: 'import',
     css_class: 'ezp-code-reserved',
     key: ezP.Const.Input.IMPORT,
@@ -169,13 +169,13 @@ import_name ::= identifier
  */
 ezP.DelegateSvg.Expr.import_identifier_as_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.import_identifier_as_concrete.superClass_.constructor.call(this, prototypeName)
-  this.outputData_.check = ezP.T3.Expr.import_identifier_as_concrete
-  goog.mixin(this.inputData_.first, {
+  this.outputModel_.check = ezP.T3.Expr.import_identifier_as_concrete
+  goog.mixin(this.inputModel_.first, {
     check: ezP.T3.Expr.identifier,
     hole_value: 'name',
     plugged: ezP.T3.Expr.import_identifier,
   })
-  this.inputData_.last.plugged = ezP.T3.Expr.import_alias
+  this.inputModel_.last.plugged = ezP.T3.Expr.import_alias
 }
 goog.inherits(ezP.DelegateSvg.Expr.import_identifier_as_concrete, ezP.DelegateSvg.Expr._as_concrete)
 ezP.DelegateSvg.Manager.register('import_identifier_as_concrete')
@@ -191,13 +191,13 @@ ezP.DelegateSvg.Manager.register('import_identifier_as_concrete')
  */
 ezP.DelegateSvg.Expr.non_void_import_identifier_as_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.non_void_import_identifier_as_list.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.list = {
+  this.inputModel_.list = {
     check: ezP.T3.Expr.Check.non_void_import_identifier_as_list,
     empty: false,
     sep: ',',
     hole_value: 'name',
   }
-  this.outputData_.check = ezP.T3.Expr.non_void_import_identifier_as_list
+  this.outputModel_.check = ezP.T3.Expr.non_void_import_identifier_as_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.non_void_import_identifier_as_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('non_void_import_identifier_as_list')
@@ -214,8 +214,8 @@ ezP.DelegateSvg.Manager.register('non_void_import_identifier_as_list')
  */
 ezP.DelegateSvg.Expr.parent_module = function (prototypeName) {
   ezP.DelegateSvg.Expr.parent_module.superClass_.constructor.call(this, prototypeName)
-  this.outputData_.check = ezP.T3.Expr.parent_module
-  this.inputData_.first = {
+  this.outputModel_.check = ezP.T3.Expr.parent_module
+  this.inputModel_.first = {
     label: '.',
     key: ezP.Const.Input.MODULE,
     check: ezP.T3.Expr.Check.relative_module,
@@ -236,8 +236,8 @@ ezP.DelegateSvg.Manager.register('parent_module')
  */
 ezP.DelegateSvg.Expr.from_relative_module_import = function (prototypeName) {
   ezP.DelegateSvg.Expr.from_relative_module_import.superClass_.constructor.call(this, prototypeName)
-  this.outputData_.check = ezP.T3.Expr.from_relative_module_import
-  this.inputData_.first = {
+  this.outputModel_.check = ezP.T3.Expr.from_relative_module_import
+  this.inputModel_.first = {
     label: 'from',
     css_class: 'ezp-code-reserved',
     key: ezP.Const.Input.FROM,
@@ -245,7 +245,7 @@ ezP.DelegateSvg.Expr.from_relative_module_import = function (prototypeName) {
     plugged: ezP.T3.Expr.relative_module,
     hole_value: 'module',
   }
-  this.inputData_.last = {
+  this.inputModel_.last = {
     label: 'import',
     css_class: 'ezp-code-reserved',
     key: ezP.Const.Input.IMPORT,
@@ -267,15 +267,15 @@ ezP.DelegateSvg.Manager.register('from_relative_module_import')
  */
 ezP.DelegateSvg.Expr.from_module_import = function (prototypeName) {
   ezP.DelegateSvg.Expr.from_module_import.superClass_.constructor.call(this, prototypeName)
-  this.outputData_.check = ezP.T3.Expr.from_module_import
-  this.inputData_.first = {
+  this.outputModel_.check = ezP.T3.Expr.from_module_import
+  this.inputModel_.first = {
     key: ezP.Const.Input.MODULE,
     label: 'from',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.module,
     hole_value: 'module',
   }
-  this.inputData_.last = {
+  this.inputModel_.last = {
     label: 'import *',
     css_class: 'ezp-code-reserved',
   }
@@ -294,7 +294,7 @@ ezP.DelegateSvg.Manager.register('from_module_import')
  */
 ezP.DelegateSvg.Stmt.import_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.import_part.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.last = {
+  this.inputModel_.last = {
     key: ezP.Const.Input.MODULE,
     check: ezP.T3.Expr.Check.import_expr,
     wrap: ezP.T3.Expr.import_module,
@@ -373,7 +373,7 @@ ezP.DelegateSvg.Stmt.import_part.prototype.getWrappedTargetBlock = function(bloc
  */
 ezP.DelegateSvg.Stmt.import_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var yorn
-  var D = ezP.DelegateSvg.Manager.getInputData(block.type)
+  var D = ezP.DelegateSvg.Manager.getInputModel(block.type)
   if (yorn = mgr.populate_wrap_alternate(block, D.last.key)) {
     mgr.shouldSeparate()
   }
@@ -402,14 +402,14 @@ ezP.DelegateSvg.Stmt.import_part.prototype.handleMenuItemActionFirst = function 
  */
 ezP.DelegateSvg.Stmt.future_statement = function (prototypeName) {
   ezP.DelegateSvg.Stmt.future_statement.superClass_.constructor.call(this, prototypeName)
-  this.inputData_.first = {
+  this.inputModel_.first = {
     label: 'from __future__ import',
     css_class: 'ezp-code-reserved',
     key: ezP.Const.Input.LIST,
     wrap: ezP.T3.Expr.non_void_import_identifier_as_list,
   }
-  this.statementData_.previous.check = ezP.T3.Stmt.Previous.future_statement
-  this.statementData_.next.check = ezP.T3.Stmt.Next.future_statement
+  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.future_statement
+  this.statementModel_.next.check = ezP.T3.Stmt.Next.future_statement
 }
 goog.inherits(ezP.DelegateSvg.Stmt.future_statement, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Manager.register('future_statement')
