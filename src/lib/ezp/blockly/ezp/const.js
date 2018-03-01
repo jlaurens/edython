@@ -91,6 +91,7 @@ ezP.Const.Input = {
   AS: 'AS',
   SOURCE: 'SOURCE',
   MODULE: 'MODULE',
+  PARENT: 'PARENT',
   POWER: 'POWER',
   
   END: 'END',

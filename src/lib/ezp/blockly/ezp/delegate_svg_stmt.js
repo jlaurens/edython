@@ -378,7 +378,7 @@ ezP.MixinSvg(ezP.DelegateSvg.Stmt.global_nonlocal_stmt, ezP.MixinSvg.Operator)
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.getWrappedTargetBlock = function(block) {
+ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.getMenuTarget = function(block) {
   return block
 }
 

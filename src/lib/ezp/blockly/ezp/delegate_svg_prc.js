@@ -15,28 +15,92 @@ goog.provide('ezP.DelegateSvg.Proc')
 
 goog.require('ezP.DelegateSvg.Group')
 goog.require('ezP.MenuItemCode')
+/*
+decorator_part :: decorator_expr | decorator_call_expr
+decorator_expr ::= "@" dotted_funcname
+decorator_call_expr ::= decorator_expr "(" argument_list ")"
+*/
 
 
 /**
- * Class for a DelegateSvg, parenth_argument_list.
+ * Class for a DelegateSvg, decorator_expr block.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-//  decorator_part            /*   ::= "@" dotted_name ["(" [argument_list [","]] ")"]    */ : "ezp_decorator_part",
-
-ezP.DelegateSvg.Expr.parenth_argument_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.parenth_argument_list.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.decorator_expr = function (prototypeName) {
+  ezP.DelegateSvg.Expr.decorator_expr.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
+    label: '@',
+    key: ezP.Const.Input.NAME,
+    check: ezP.T3.Expr.Check.dotted_funcname,
+    hole_value: 'name',
+  }
+  this.outputModel_.check = ezP.T3.Expr.decorator_expr
+}
+goog.inherits(ezP.DelegateSvg.Expr.decorator_expr, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('decorator_expr')
+
+/**
+ * The overriden implementation is true.
+ * Subclassers will override this but won't call it.
+ * @param {!Block} block.
+ * @override
+ */
+ezP.DelegateSvg.Expr.decorator_expr.prototype.canUnwrap = function(block) {
+  return true
+}
+
+/**
+ * Class for a DelegateSvg, dotted_funcname_concrete block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.dotted_funcname_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.dotted_funcname_concrete.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    key: ezP.Const.Input.PARENT,
+    check: ezP.T3.Expr.identifier,
+    hole_value: 'parent',
+  }
+  this.inputModel_.last = {
+    label: '.',
+    key: ezP.Const.Input.NAME,
+    check: ezP.T3.Expr.Check.dotted_funcname,
+    hole_value: 'name',
+  }
+  this.outputModel_.check = ezP.T3.Expr.dotted_funcname_concrete
+}
+goog.inherits(ezP.DelegateSvg.Expr.dotted_funcname_concrete, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('dotted_funcname_concrete')
+
+
+/**
+ * Class for a DelegateSvg, decorator_call_expr block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.decorator_call_expr = function (prototypeName) {
+  ezP.DelegateSvg.Expr.decorator_call_expr.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    key: ezP.Const.Input.NAME,
+    wrap: ezP.T3.Expr.decorator_expr,
+  }
+  this.inputModel_.last = {
     start: '(',
+    key: ezP.Const.Input.LIST,
     wrap: ezP.T3.Expr.argument_list,
     end: ')',
   }
-  this.outputModel_.check = ezP.T3.Expr.parenth_argument_list
+  this.outputModel_.check = ezP.T3.Expr.decorator_call_expr
 }
-goog.inherits(ezP.DelegateSvg.Expr.parenth_argument_list, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('parenth_argument_list')
+goog.inherits(ezP.DelegateSvg.Expr.decorator_call_expr, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('decorator_call_expr')
 
 /**
  * Class for a DelegateSvg, decorator_part.
@@ -50,14 +114,9 @@ ezP.DelegateSvg.Manager.register('parenth_argument_list')
 ezP.DelegateSvg.Stmt.decorator_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.decorator_part.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    label: '@',
-    key: ezP.Const.Input.NAME,
-    wrap: ezP.T3.Expr.dotted_name,
-  }
-  this.inputModel_.last = {
-    key: ezP.Const.Input.LIST,
-    wrap: ezP.T3.Expr.parenth_argument_list,
-    optional: true,
+    key: ezP.Const.Input.WRAP,
+    wrap: ezP.T3.Expr.decorator_expr,
+    check: ezP.T3.Expr.Check.decorator,
   }
   this.statementModel_.previous.check = ezP.T3.Stmt.Previous.decorator_part
   this.statementModel_.next.check = ezP.T3.Stmt.Next.decorator_part
@@ -73,29 +132,42 @@ ezP.ID.USE_DECORATOR = 'USE_DECORATOR'
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-ezP.DelegateSvg.Stmt.decorator_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var menu = mgr.Menu
-  var dotted_name = this.inputs.first.input.connection.targetBlock()
-  goog.asserts.assert(dotted_name, 'The first wrapper input has not been resolved')
-  var old = undefined
-
-  if (dotted_name.ezp.getItemCount(dotted_name) === 1) {
-    var input = dotted_name.ezp.getItemAtIndex(dotted_name, 0)
-    var target = input.connection.targetBlock()
-    if (target && target.ezp.getIdentifier) {
-      old = target.ezp.getIdentifier(target)
+ezP.DelegateSvg.Expr.decorator_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var menu = mgr.menu
+  var yorn = false
+  var target = this.inputs.first.input.connection.targetBlock()
+  if (target) {
+    if (target.ezp.getValue && target.ezp.setValue) {
+      var old = target.ezp.getValue(target)
+      var F = function(candidate) {
+        if (old !== candidate) {
+          var menuItem = new ezP.MenuItemCode('@'+candidate, {
+            action: ezP.ID.USE_DECORATOR,
+            value: candidate,
+            target: block,
+          })
+          menu.addChild(menuItem, true)
+          return true
+        }
+        return false
+      }
+      var yorn = F('staticmethod')
+      yorn = F('classmethod') || yorn
     }
+  } else {
+    var F = function(candidate) {
+      var menuItem = new ezP.MenuItemCode('@'+candidate, {
+        action: ezP.ID.USE_DECORATOR,
+        value: candidate,
+        target: block,
+      })
+      menu.addChild(menuItem, true)
+    }
+    F('staticmethod')
+    F('classmethod')
+    yorn = true
   }
-  var F = function(candidate) {
-    var menuItem = new ezP.SimpleMenuItemCode('@'+candidate, ezP.ID.USE_DECORATOR, candidate)
-    menuItem.setCheckable(true)
-    menuItem.setEnabled(old != candidate)
-    menu.addChild(menuItem, true)
-  }
-  F('staticmethod')
-  F('classmethod')
-  ezP.DelegateSvg.Stmt.decorator_part.superClass_.populateContextMenuFirst_.call(this, block, mgr)
-  return true
+  return ezP.DelegateSvg.Expr.decorator_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
 /**
@@ -105,28 +177,24 @@ ezP.DelegateSvg.Stmt.decorator_part.prototype.populateContextMenuFirst_ = functi
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Stmt.decorator_part.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
+ezP.DelegateSvg.Expr.decorator_expr.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
   var model = event.target.getModel()
-  var action = model[0]
-  var value = model[1]
-  if (action == ezP.ID.USE_DECORATOR) {
-    var dotted_name = this.inputs.first.input.connection.targetBlock()
-    dotted_name.ezp.removeItems(dotted_name)
-    var input = dotted_name.ezp.getItemAtIndex(dotted_name, 0)
-    var target = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.identifier)
-    goog.asserts.assert(input.connection.isConnectionAllowed(target.outputConnection), 'Problem')
-    input.connection.connect(target.outputConnection)
-    goog.asserts.assert(input.connection.isConnected(), 'Problem')
-    dotted_name.ezp.consolidate(dotted_name)
-    if (target.ezp.setIdentifier) {
-      target.ezp.setIdentifier(target, value)
-    } else {
-      console.log('Identifier block is read only')
+  if (model.action == ezP.ID.USE_DECORATOR) {
+    Blockly.Events.setGroup(true)
+    var target = model.target
+    if (!target.ezp.setValue) {
+      var holes = ezP.HoleFiller.getDeepHoles(target)
+      ezP.HoleFiller.fillDeepHoles(target.workspace, holes)
+      if (!(target = this.inputs.first.input.connection.targetBlock()) || !target.ezp.setValue) {
+        Blockly.Events.setGroup(false)// undo some things here ?
+        return true
+      }
     }
-    block.render()
+    target.ezp.setValue(target, model.value)
+    Blockly.Events.setGroup(false)
     return true
   }
-  return ezP.DelegateSvg.Stmt.decorator_part.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
+  return ezP.DelegateSvg.Expr.decorator_expr.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
 }
 
 

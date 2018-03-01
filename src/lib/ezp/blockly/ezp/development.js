@@ -245,6 +245,14 @@ ezP.DelegateSvg.Expr.list_display.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Expr.comprehension,
 ], ezP.T3.Expr.Check.starred_item)
 
+ezP.DelegateSvg.Expr.decorator_expr.workspaceBlocks = [
+  ezP.T3.Stmt.decorator_part,
+  ezP.T3.Expr.decorator_expr,
+  ezP.T3.Expr.identifier,
+  ezP.T3.Expr.dotted_funcname_concrete,
+  ezP.T3.Expr.decorator_call_expr,
+]
+
 // in progress
 
 ezP.DelegateSvg.Expr.power_concrete.workspaceBlocks = ezP.Do.arraysMerged([

@@ -169,19 +169,25 @@ ezP.MenuManager.prototype.init = function (block, e) {
  * @private
  */
 ezP.MenuManager.prototype.showMenu = function (block, e) {
-  var target = block && block.ezp.getWrappedTargetBlock(block) || block
+  var target = block.ezp.getMenuTarget(block)
   this.init(target, e)
+  var me = this
+  me.alreadyListened = false
   this.shouldSeparate(target.ezp.populateContextMenuFirst_(target, this))
   this.shouldSeparate(target.ezp.populateContextMenuMiddle_(target, this))
   target.ezp.populateContextMenuLast_(target, this)
   this.insertSubmenu.setEnabled(this.insertSubmenu.getMenu().getChildCount() > 0)
   this.removeSubmenu.setEnabled(this.removeSubmenu.getMenu().getChildCount() > 0)
-  var me = this
   goog.events.listenOnce(this.menu, 'action', function (event) {
     setTimeout(function () {// try/finally?
+      if (me.alreadyListened) {
+        console.log('************* I have already listened!')
+        return
+      }
+      me.alreadyListened = true
       target.ezp.handleMenuItemActionFirst(target, me, event)
-          || target.ezp.handleMenuItemActionMiddle(target, me, event)
-          || target.ezp.handleMenuItemActionLast(target, me, event)
+        || target.ezp.handleMenuItemActionMiddle(target, me, event)
+        || target.ezp.handleMenuItemActionLast(target, me, event)
       me.init()
     }, 100)// TODO be sure that this 100 is suffisant
   })
@@ -489,7 +495,7 @@ ezP.MenuManager.prototype.populateVariable_ = function (block) {
 }
 
 ezP.ID.PARENT_INSERT = 'PARENT_INSERT'
-ezP.ID.PARENT_REMOVE = 'PARENT_REMOVE'
+ezP.ID.PARENT_REPLACE = 'PARENT_REPLACE'
 
 /**
  * Handle the selection of an item in the first part of the context dropdown menu.
@@ -504,14 +510,12 @@ ezP.MenuManager.prototype.handleAction_movable_parent = function (block, event) 
   var type = model.type
   var actor = model.actor || block
   if (action === ezP.ID.PARENT_INSERT) {
+    console.log('handleAction_movable_parent', action, actor, type, model.key)
     actor.ezp.insertBlockAbove(actor, type, model.key)
     return true
-  } else if (action === ezP.ID.PARENT_REMOVE) {
-    var other = block.getParent()
-    while (other.ezp.wrapped_) {
-      other = other.getParent()
-    }
-    actor.ezp.replaceBlock(actor, other)
+  } else if (action === ezP.ID.PARENT_REPLACE) {
+    console.log('handleAction_movable_parent', action, actor, model.parent)
+    actor.ezp.replaceBlock(actor, model.parent)
     return true
   }
   return false
@@ -529,7 +533,7 @@ ezP.MenuManager.prototype.handleAction_movable_parent_module = ezP.MenuManager.p
  * @param {!Blockly.Block} block The block.
  * @private
  */
-ezP.MenuManager.prototype.get_movable_parent_menuitem_content = function (type) {
+ezP.MenuManager.prototype.get_movable_parent_menuitem_content = function (type, subtype) {
   switch(type) {
     case ezP.T3.Expr.parent_module: 
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -552,6 +556,24 @@ ezP.MenuManager.prototype.get_movable_parent_menuitem_content = function (type) 
     ),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
     )
+    case ezP.T3.Expr.dotted_funcname_concrete:
+    switch(subtype) {
+      case ezP.Const.Input.NAME:
+      return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+        goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+          goog.dom.createTextNode('parent.'),
+        ),
+        goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
+      )
+      case ezP.Const.Input.PARENT:
+      default:
+      return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+        goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+          goog.dom.createTextNode('.name'),
+        ),
+        goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
+      )
+    }
     case ezP.T3.Expr.slicing:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
@@ -560,6 +582,7 @@ ezP.MenuManager.prototype.get_movable_parent_menuitem_content = function (type) 
     goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
     )
     case ezP.T3.Expr.call_expr:
+    case ezP.T3.Expr.decorator_call_expr:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
         goog.dom.createTextNode('(...)'),
@@ -654,11 +677,12 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
           return false
         }
       }
-      var content = mgr.get_movable_parent_menuitem_content(parent_type)
+      var key = d.key || K
+      var content = mgr.get_movable_parent_menuitem_content(parent_type, key)
       var MI = new ezP.MenuItem(content, {
         action: ezP.ID.PARENT_INSERT,
         type: parent_type,
-        key: d.key || K,
+        key: key,
         actor: block,
       })
       mgr.addInsertChild(MI)
@@ -666,6 +690,18 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
     } else if (d && d.wrap) {
       var list = ezP.Delegate.Manager.getInputModel(d.wrap).list
       if (!list) {
+        if (goog.array.contains(outCheck, d.wrap)) {
+          var key = d.key || K
+          var content = mgr.get_movable_parent_menuitem_content(parent_type, key)
+          var MI = new ezP.MenuItem(content, {
+            action: ezP.ID.PARENT_INSERT,
+            type: parent_type,
+            key: key,
+            actor: block,
+          })
+          mgr.addInsertChild(MI)
+          return true
+        }
         return false
       }
       var listCheck = list.all || list.check || (list.consolidator && list.consolidator.data && list.consolidator.data.check)
@@ -704,29 +740,28 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
  * @param {!string} type the type of the parent to be.
  * @private
  */
-ezP.MenuManager.prototype.populate_insert_parent = function (block, type, top) {
+ezP.MenuManager.prototype.populate_insert_parent = function (block, type, subtype, top) {
   // can we insert a block typed type between the block and
   // the target of its output connection
   var child = block
   do {
-    var c8n = child.outputConnection
-    if (!c8n) {
-      // this is a statement block
+    var outputC8n = child.outputConnection
+    if (!outputC8n) {
+      // child is a statement block
       break
     }
-    var targetC8n = c8n.targetConnection
-    if (!targetC8n) {
+    var inputC8n = outputC8n.targetConnection
+    if (!inputC8n) {
       if (top) {
         this.populate_insert_as_top_parent(child, type)
       }
       break
     }
-    var check = targetC8n.check_
+    var check = inputC8n.check_
     if (check && check.indexOf(type) < 0) {
       // the target connection won't accept block
-      break
+      continue
     }
-
     if (this.populate_insert_as_top_parent(child, type)) {
       break
     }
@@ -738,24 +773,40 @@ ezP.MenuManager.prototype.populate_insert_parent = function (block, type, top) {
  * Only for expressions.
  * @param {!Blockly.Block} block The block.
  * @param {!string} type the type of the parent to be.
+ * @param {!string} subtype the subtype is for example the input name through which parent and children are connected.
  * @private
+ * @return true if an item were added to the remove menu
  */
-ezP.MenuManager.prototype.populate_replace_parent = function (block, type) {
+ezP.MenuManager.prototype.populate_replace_parent = function (block, type, subtype) {
   var child = block
+  var children = [child]
   var parent
   while((parent = child.getParent())) {
     if (parent.type === type) {
-      if (block.ezp.canReplaceBlock(block, parent)) {
-        var content = this.get_movable_parent_menuitem_content(parent.type)
-        var MI = new ezP.MenuItem(content, {
-          action: ezP.ID.PARENT_REMOVE,
-        })
-        this.addRemoveChild(MI)
+      if (subtype && child.ezp.getParentInput(child).name != subtype) {
+        return false
       }
-      return
+      while((child = children.pop())) {
+        if (!child.ezp.wrapped_ || child.ezp.canUnwrap(child)) {
+          if (child.ezp.canReplaceBlock(child, parent)) {
+            var input = child.ezp.getParentInput(child)
+            var content = this.get_movable_parent_menuitem_content(type, input? input.name: undefined)
+            var MI = new ezP.MenuItem(content, {
+              action: ezP.ID.PARENT_REPLACE,
+              actor: child,
+              parent: parent,
+            })
+            this.addRemoveChild(MI)
+            return true
+          }
+        }
+      }
+      return false
     }
     child = parent
+    children.push(child)
   }
+  return false
 }
 
 /**
@@ -765,38 +816,41 @@ ezP.MenuManager.prototype.populate_replace_parent = function (block, type) {
  * @private
  */
 ezP.MenuManager.prototype.populate_movable_parent = function (block) {
-  var movable = [
+  var F = function(movable) {
+    for (var _ = 0, type; (type = movable[_++]);) {
+      var subtype = undefined
+      if (goog.isArray(type)) {
+        subtype = type[1]
+        type = type[0]
+      }
+      this.populate_insert_parent(block, type, subtype, true)
+      this.populate_replace_parent(block, type, subtype)
+    }
+  }
+  F.call(this, [
     ezP.T3.Expr.u_expr_concrete,
     ezP.T3.Expr.call_expr,
     ezP.T3.Expr.slicing,
     ezP.T3.Expr.attributeref,
-  ]
-  for (var _ = 0, type; (type = movable[_++]);) {
-    this.populate_insert_parent(block, type, true)
-    this.populate_replace_parent(block, type)
-  }
+    [ezP.T3.Expr.decorator_call_expr, ezP.Const.Input.NAME],
+  ])
   this.shouldSeparateInsert()
-  var movable = [
+  this.shouldSeparateRemove()
+  F.call(this, [
     ezP.T3.Expr.parenth_form,
     ezP.T3.Expr.list_display,
     ezP.T3.Expr.set_display,
     ezP.T3.Expr.dict_display,
-  ]
-  for (var _ = 0, type; (type = movable[_++]);) {
-    this.populate_insert_parent(block, type, true)
-    this.populate_replace_parent(block, type)
-  }
+  ])
   this.shouldSeparateInsert()
-  var movable = [
+  this.shouldSeparateRemove()
+  F.call(this, [
     ezP.T3.Expr.parent_module,
     ezP.T3.Expr.module_concrete,
     ezP.T3.Expr.module_as_concrete,
     ezP.T3.Expr.import_identifier_as_concrete,
-  ]  
-  for (var _ = 0, type; (type = movable[_++]);) {
-    this.populate_insert_parent(block, type, false)
-    this.populate_replace_parent(block, type)
-  }
+    ezP.T3.Expr.dotted_funcname_concrete,
+  ])
 }
 
 /////////////// WRAP

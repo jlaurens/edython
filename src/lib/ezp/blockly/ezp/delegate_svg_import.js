@@ -361,7 +361,7 @@ ezP.ID.USE_IMPORT_WRAP_TYPE  = 'USE_IMPORT_WRAP_TYPE'
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-ezP.DelegateSvg.Stmt.import_part.prototype.getWrappedTargetBlock = function(block) {
+ezP.DelegateSvg.Stmt.import_part.prototype.getMenuTarget = function(block) {
   return block
 }
 

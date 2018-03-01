@@ -270,6 +270,7 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
  * @private
  */
 ezP.Connection.prototype.connect_ = function(childConnection) {
+  // this is actual parentConnection
   var block = this.sourceBlock_
   var oldChildConnection = this.targetConnection
   var oldParentConnection = childConnection.targetConnection
@@ -284,14 +285,23 @@ ezP.Connection.prototype.connect_ = function(childConnection) {
     console.log('plugged_ is', child.ezp.plugged_)
   }
   if (this.ezp.wrapped_) {
-    var source = childConnection.sourceBlock_
-    source.ezp.makeBlockWrapped_(source)
+    if (child.ezp.hasSelect(child)) { // Blockly.selected == child
+      child.unselect()
+      var P = child
+      while ((P = P.getParent())) {
+        if (!P.ezp.wrapped_) {
+          P.select()
+          break
+        }
+      }
+    }
+    child.ezp.makeBlockWrapped_(child)
   }
-  if (oldChildConnection
-    && childConnection !== oldChildConnection
-    && (source = oldChildConnection.sourceBlock_)
-    && source.ezp.wrapped_) {
-    source.dispose(true)
+  if (oldChildConnection && childConnection !== oldChildConnection) {
+    var oldChild = oldChildConnection.sourceBlock_
+    if (oldChild && oldChild.ezp.wrapped_) {
+      oldChild.dispose(true)
+    }
   }
   block.ezp.didConnect(block, this, oldChildConnection, oldParentConnection)
   child.ezp.didConnect(child, childConnection, oldParentConnection, oldChildConnection)
@@ -320,6 +330,16 @@ ezP.Connection.prototype.disconnectInternal_ = function(parentBlock,
   childConnection.ezp.willDisconnect(childConnection)
   parentBlock.ezp.willDisconnect(parentBlock, parentConnection)
   childBlock.ezp.willDisconnect(childBlock, childConnection)
+  if (parentConnection.ezp.wrapped_) {
+    // currently unwrapping a block,
+    // this occurs while removing the parent
+    // if the parent was selected, select the child
+    childBlock.ezp.makeBlockUnwrapped_(childBlock)
+    if(parentBlock.ezp.hasSelect(parentBlock)) {
+      parentBlock.unselect()
+      childBlock.select()
+    }
+  }
   ezP.Connection.superClass_.disconnectInternal_.call(this, parentBlock, childBlock)
   if (childBlock.ezp.plugged_) {
     console.log('plugged_ was', childBlock.ezp.plugged_)

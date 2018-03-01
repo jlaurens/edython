@@ -44,7 +44,7 @@ ezP.ID.PRINT_KEYWORD_ITEM_REMOVE = 'PRINT_KEYWORD_ITEM_REMOVE'
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-ezP.DelegateSvg.Stmt.print_stmt.prototype.getWrappedTargetBlock = function(block) {
+ezP.DelegateSvg.Stmt.print_stmt.prototype.getMenuTarget = function(block) {
   return block
 }
 
@@ -107,12 +107,12 @@ ezP.DelegateSvg.Stmt.print_stmt.prototype.handleMenuItemActionFirst = function (
   var value = model.key
   if (model.action === ezP.ID.PRINT_KEYWORD_ITEM_INSERT) {
     Blockly.Events.setGroup(true)
-    var list = block.getInput(ezP.Const.Input.LIST).connection.targetBlock()
-    var c8n = list.inputList[list.inputList.length-1].connection
-    var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.keyword_item)
     var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.identifier)
     BB.ezp.setValue(BB, model.key)
+    var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.keyword_item)
     B.getInput(ezP.Const.Input.KEY).connection.connect(BB.outputConnection)
+    var list = block.getInput(ezP.Const.Input.LIST).connection.targetBlock()
+    var c8n = list.inputList[list.inputList.length-1].connection
     c8n.connect(B.outputConnection)  
     Blockly.Events.setGroup(false)
     return true

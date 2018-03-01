@@ -134,7 +134,7 @@ ezP.setup.register(function () {
   ezP.Style.insertCssRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono-BoldOblique.woff')format('woff');font-weight: bold;font-style: oblique;}")
   ezP.Style.insertCssRuleAt('.ezp-block .blocklyText, .ezp-var, .ezp-label, .ezp-code, .ezp-code-reserved, .ezp-code-comment, .ezp-code-placeholder, .ezp-sharp-group{\n' + ezP.Font.style + ';\n}\n')
   ezP.Style.insertCssRuleAt('.ezp-path-selected{stroke: ' + ezP.Style.Path.Selected.colour + ';stroke-width: ' + ezP.Style.Path.Selected.width + 'px;fill: none;}')
-  ezP.Style.insertCssRuleAt('.ezp-selected .ezp-path-contour{stroke: ' + ezP.Style.Path.Selected.colour + ';}')
+  ezP.Style.insertCssRuleAt('.ezp-select .ezp-path-contour{stroke: ' + ezP.Style.Path.Selected.colour + ';}')
   ezP.Style.insertCssRuleAt('.blocklyHighlightedConnectionPath{stroke: ' + ezP.Style.Path.Selected.colour + ';stroke-width: ' + ezP.Style.Path.Selected.width + 'px;fill: none;}')
   ezP.Style.insertCssRuleAt('.blocklyHighlightedConnectionPathH{fill: ' + ezP.Style.Path.Selected.colour + ';stroke: none;}')
   ezP.Style.insertCssRuleAt('.ezp-checkbox-icon-rect{stroke: ' + ezP.Style.Path.colour + ';stroke-width: ' + ezP.Style.Path.width + 'px;fill: white;}')

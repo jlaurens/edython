@@ -155,7 +155,7 @@ ezP.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
  *     input again.  Should be unique to this block.
  * @return {!Blockly.Input} The input object created.
  */
-ezP.Block.prototype.appendWrapValueInput = function(name, prototypeName) {
+ezP.Block.prototype.appendWrapValueInput = function(name, prototypeName, optional, hidden) {
   goog.asserts.assert(prototypeName, 'Missing prototypeName, no block to seal')
   goog.asserts.assert(ezP.T3.All.containsExpression(prototypeName), 'Unnown prototypeName, no block to seal '+prototypeName)
   var input = this.appendValueInput(name)
@@ -164,7 +164,9 @@ ezP.Block.prototype.appendWrapValueInput = function(name, prototypeName) {
   if (!this.ezp.wrappedInputs_) {
     this.ezp.wrappedInputs_ = []
   }
-  this.ezp.wrappedInputs_.push([input, prototypeName])
+  if (!optional) {
+    this.ezp.wrappedInputs_.push([input, prototypeName])
+  }
   return input
 };
 

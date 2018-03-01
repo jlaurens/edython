@@ -512,7 +512,7 @@ ezP.DelegateSvg.Manager.register('aug_assigned')
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-ezP.DelegateSvg.Expr.aug_assigned.prototype.getWrappedTargetBlock = function(block) {
+ezP.DelegateSvg.Expr.aug_assigned.prototype.getMenuTarget = function(block) {
   return block
 }
 

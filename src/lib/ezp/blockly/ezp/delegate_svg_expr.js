@@ -82,7 +82,7 @@ ezP.DelegateSvg.Expr.prototype.canReplaceBlock = function (block, other) {
 }
 
 /**
- * Remove and bypass the parent.
+ * Remove and bypass the other block.
  * If the parent's output connection is connected,
  * connects the block's output connection to it.
  * The connection cannot always establish.
@@ -97,8 +97,14 @@ ezP.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
     block.outputConnection.disconnect()
     if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(block.outputConnection)) {
       // the other block has an output connection that can connect to the block's one
+      var source = c8n.sourceBlock_
+      var selected = source.ezp.hasSelect(source)
+      // next operations may unselect the block
       c8n.disconnect()
       c8n.connect(block.outputConnection)
+      if (selected) {
+        source.select()
+      }
     } else {
       block.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
     }

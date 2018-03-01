@@ -103,7 +103,7 @@ ezP.BlockSvg.prototype.addSelect = function () {
       this.ezp.svgPathHighlight_.parentNode) {
       return
     }
-    Blockly.utils.addClass(this.svgGroup_, 'ezp-selected')
+    Blockly.utils.addClass(this.svgGroup_, 'ezp-select')
     this.svgGroup_.appendChild(this.ezp.svgPathHighlight_)
   }
   for (var _ = 0, input; (input = this.inputList[_++]);) {
@@ -125,13 +125,12 @@ ezP.BlockSvg.prototype.removeSelect = function () {
       || !this.ezp.svgPathHighlight_.parentNode) {
       return
     }
-    Blockly.utils.removeClass(this.svgGroup_, 'ezp-selected')
+    Blockly.utils.removeClass(this.svgGroup_, 'ezp-select')
     goog.dom.removeNode(this.ezp.svgPathHighlight_)
   }
   for (var _ = 0, input; (input = this.inputList[_++]);) {
     for (var __ = 0, field; (field = input.fieldRow[__++]);) {
-      var removeSelect = field.removeSelect
-      if (removeSelect) {
+      if (field.removeSelect) {
         field.removeSelect()
       }
     }

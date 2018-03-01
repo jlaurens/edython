@@ -170,7 +170,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         if ('wrap' in D) {
           v = D.wrap
           goog.asserts.assert(v, 'wrap must exist '+block.type+'.'+K)
-          out.input = block.appendWrapValueInput(k, v)
+          out.input = block.appendWrapValueInput(k, v, D.optional, D.hidden)
         } else {
           out.input = block.appendValueInput(k)
         }
@@ -337,15 +337,16 @@ ezP.DelegateSvg.prototype.postInitSvg = function(block) {
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-ezP.DelegateSvg.prototype.getWrappedTargetBlock = function(block) {
-  if (this.inputs.wrap) {
-    var wrapped = this.inputs.wrap.input.connection.targetBlock()
-    return wrapped? wrapper.ezp.getWrappedTargetBlock(wrapped): wrapped
+ezP.DelegateSvg.prototype.getMenuTarget = function(block) {
+  var wrapped
+  if (this.inputs.wrap && (wrapped = this.inputs.wrap.input.connection.targetBlock())) {
+    return wrapped.ezp.getMenuTarget(wrapped)
   }
-  if (Object.keys(this.inputs).length === 1 && this.wrappedInputs_ && this.wrappedInputs_.length === 1) {
-    return this.wrappedInputs_[0][0].connection.targetBlock()
+  if (this.wrappedInputs_ && this.wrappedInputs_.length &&
+    (wrapped = this.wrappedInputs_[0][0].connection.targetBlock())) {
+    return wrapped.ezp.getMenuTarget(wrapped)
   }
-  return undefined
+  return block
 }
 
 /**
@@ -1105,6 +1106,7 @@ ezP.DelegateSvg.prototype.previousStatementCheck = undefined
  */
 ezP.DelegateSvg.prototype.makeBlockWrapped = function (block) {
   ezP.DelegateSvg.superClass_.makeBlockWrapped.call(this, block)
+  goog.asserts.assert(!this.hasSelect(block), 'Deselect block before')
   block.initSvg()
   goog.dom.removeNode(this.svgPathShape_)
   delete this.svgPathShape_
@@ -1112,6 +1114,30 @@ ezP.DelegateSvg.prototype.makeBlockWrapped = function (block) {
   goog.dom.removeNode(this.svgPathContour_)
   delete this.svgPathContour_
   this.svgPathContour_ = undefined
+}
+
+/**
+ * The default implementation does nothing.
+ * Subclassers will override this but won't call it.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.prototype.makeBlockUnwrapped = function (block) {
+  ezP.DelegateSvg.superClass_.makeBlockUnwrapped.call(this, block)
+  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {}, null)
+  goog.dom.insertChildAt(block.svgGroup_, this.svgPathContour_, 0)
+  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {}, null)
+  goog.dom.insertChildAt(block.svgGroup_, this.svgPathShape_, 0)
+}
+
+/**
+ * Whether the block is selected.
+ * Subclassers will override this but won't call it.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.prototype.hasSelect = function (block) {
+  return goog.dom.classlist.contains(block.svgGroup_, 'ezp-select')
 }
 
 /**
@@ -1250,22 +1276,22 @@ ezP.DelegateSvg.prototype.getPythonType = function (block) {
 
 
 /**
- * Can insert a parent?
+ * Can insert a block above?
  * If the block's output connection is connected,
  * can connect the parent's output to it?
  * The connection cannot always establish.
  * @param {!Block} block.
  * @param {string} prototypeName.
- * @param {string} inputName, which parent's connection to use
+ * @param {string} aboveInputName, which parent's connection to use
  */
-ezP.DelegateSvg.prototype.canInsertParent = function(block, prototypeName, inputName) {
+ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, aboveInputName) {
   var can = false
   Blockly.Events.disable()
   var B = block.workspace.newBlock(prototypeName)
-  var input = B.getInput(inputName)
-  goog.asserts.assert(input, 'No input named '+inputName)
+  var input = B.getInput(aboveInputName)
+  goog.asserts.assert(input, 'No input named '+aboveInputName)
   var c8n = input.connection
-  goog.asserts.assert(c8n, 'Unexpected dummy input '+inputName)
+  goog.asserts.assert(c8n, 'Unexpected dummy input '+aboveInputName)
   if (c8n.checkType_(block.outputConnection)) {
     var targetC8n = block.outputConnection.targetConnection
     can = !targetC8n || targetC8n.checkType_(B.outputConnection)
@@ -1283,35 +1309,58 @@ ezP.DelegateSvg.prototype.canInsertParent = function(block, prototypeName, input
  * The holes are filled.
  * @param {!Block} block.
  * @param {string} prototypeName.
- * @param {string} inputName, which parent's connection to use
+ * @param {string} aboveInputName, which parent's connection to use
  * @return the created block
  */
-ezP.DelegateSvg.prototype.insertBlockAbove = function(block, prototypeName, inputName) {
+ezP.DelegateSvg.prototype.insertBlockAbove = function(block, abovePrototypeName, aboveInputName) {
+  console.log('insertBlockAbove', block, abovePrototypeName, aboveInputName)
   Blockly.Events.setGroup(true)
-  var B = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
-  if (inputName) {
-    var input = B.getInput(inputName)
-    goog.asserts.assert(input, 'No input named '+inputName)
+  var blockAbove = ezP.DelegateSvg.newBlockComplete(block.workspace, abovePrototypeName)
+  console.log('block created of type', abovePrototypeName)
+  if (aboveInputName) {
+    var aboveInput = blockAbove.getInput(aboveInputName)
+    goog.asserts.assert(aboveInput, 'No input named '+aboveInputName)
   } else {
-    input = B.getInput(ezP.Const.Input.LIST)
-    var list = input.connection.targetBlock()
+    aboveInput = blockAbove.getInput(ezP.Const.Input.LIST)
+    var list = aboveInput.connection.targetBlock()
     goog.asserts.assert(list, 'Missing list block inside '+block.type)
-    input = list.getInput(ezP.Do.Name.middle_name)
+    // the list has many potential inputs,
+    // none of them is actually connected because this is very fresh
+    // get the middle input.
+    aboveInput = list.getInput(ezP.Do.Name.middle_name)
   }
-  var c8n = input.connection
-  var holes = ezP.HoleFiller.getDeepHoles(block)
-  goog.asserts.assert(c8n, 'Unexpected dummy input '+inputName)
-  var targetC8n = block.outputConnection.targetConnection
+  // Next connections should be connected
+  var outputC8n = block.outputConnection
+  var aboveInputC8n = aboveInput.connection
+  console.log('Should connect', block.type, 'to input', aboveInput.name, 'of type', abovePrototypeName)
+  console.log('block check:', block.outputConnection.check_)
+  console.log('above check:', aboveInputC8n.check_)
+  goog.asserts.assert(aboveInputC8n, 'Unexpected dummy input '+aboveInputName)
+  var targetC8n = aboveInputC8n.targetConnection
   if (targetC8n/* && targetC8n.isConnected()*/) {
+    console.log('input already connected, disconnect and dispose target')
+    var B = targetC8n.sourceBlock_
     targetC8n.disconnect()
-    targetC8n.connect(B.outputConnection)
+    B.dispose()
+    targetC8n = undefined
+  }
+  var holes = ezP.HoleFiller.getDeepHoles(block)
+  var targetC8n = outputC8n.targetConnection
+  if (targetC8n/* && targetC8n.isConnected()*/) {
+    console.log('bloc output connection is already connected')
+    targetC8n.disconnect()
+    targetC8n.connect(blockAbove.outputConnection)
+    targetC8n = undefined
   } else {
     var its_xy = block.getRelativeToSurfaceXY();
-    var my_xy = B.getRelativeToSurfaceXY();
-    B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+    var my_xy = blockAbove.getRelativeToSurfaceXY();
+    blockAbove.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
   }
-  c8n.connect(block.outputConnection)
-  var holes = ezP.HoleFiller.getDeepHoles(B)
+  console.log('Will connect', block.type, 'to input', aboveInput.name, 'of type', abovePrototypeName)
+  console.log('block check:', outputC8n.check_)
+  console.log('above check:', aboveInputC8n.check_)
+  aboveInputC8n.connect(outputC8n)
+  var holes = ezP.HoleFiller.getDeepHoles(blockAbove)
   // WHAT is the purpose of that ?
   // Commented out because it is weird and I don't
   // remember the problem addressed. Maybe duplicates?
@@ -1324,10 +1373,10 @@ ezP.DelegateSvg.prototype.insertBlockAbove = function(block, prototypeName, inpu
   //     ++i
   //   }
   // }
-  ezP.HoleFiller.fillDeepHoles(B.workspace, holes)
-  B.render()
+  ezP.HoleFiller.fillDeepHoles(blockAbove.workspace, holes)
+  blockAbove.render()
   Blockly.Events.setGroup(false)
-  return B
+  return blockAbove
 }
 
 /**

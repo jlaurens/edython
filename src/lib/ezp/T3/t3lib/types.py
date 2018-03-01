@@ -127,6 +127,7 @@ class Types:
             if len(l):
                 print('*************************', l)
 
+
     def make_compound(self):
         while True:
             for t in self.get_statements():

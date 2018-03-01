@@ -1,6 +1,7 @@
 import re
 from .formatter import Formatter
 
+
 class Type:
     """A Type represents a python 3 expression or statement"""
 
@@ -14,9 +15,9 @@ class Type:
                          r")"
                          r")\s*$")
     re_compound = re.compile(r"^.*\bsuite\b.*$")
-    re_statement = re.compile(r"^.*(?:\bNEWLINE\b|decorator).*$")
+    re_statement = re.compile(r"^.*(?:\bNEWLINE\b).*$")
 
-    def __init__(self, n, name, definition = '', category = 'unknown'):
+    def __init__(self, n, name, definition='', category='unknown'):
         """
         n is the line number,
         name is the expression or statement name: proper_slice, m_Type, and_test...
@@ -40,20 +41,19 @@ class Type:
         self.list_require = []
         self.alias = None
         self.same_checks = None
-        self.setup_name(name)
+        self.is_part = None
+        self.is_compound = None
+        self.is_stmt = None
         self.definition = None
+        self.setup_name(name)
         self.setup_definition(definition)
 
     def setup_name(self, name):
         self.name = name
         self.short_name = None
-        m = self.__class__.re_name.match(name)
-        assert m, 'Bad name: '+name
-        assert not m.group('is_name') and not m.group('is_suite') and not m.group('is_statement'), 'Bad name too: '+name
-        self.is_part = not not m.group('is_part')
-        self.is_stmt = self.is_part or not not m.group('is_stmt_1') or not not m.group('is_stmt_2')
+        self.setup_stmt_()
 
-    def setup_definition(self, definition, append = False):
+    def setup_definition(self, definition, append=False):
         if self.definition and len(self.definition):
             if append:
                 if len(definition):
@@ -68,12 +68,21 @@ class Type:
         else:
             candidate = definition
         self.definition = candidate
-        m = self.__class__.re_compound.match(candidate)
-        self.is_compound = not not m if m else None
-        if self.__class__.re_statement.match(candidate):
-            self.is_stmt = True
-        if self.name == 'key_datum':
-            print('!!!!!!!!!!!!!!!!!!!', self.name, self.definition)
+        self.setup_stmt_()
+
+    def setup_stmt_(self):
+        if self.definition is not None:
+            m = self.__class__.re_name.match(self.name)
+            assert m, 'Bad name: ' + self.name
+            assert not m.group('is_name') and not m.group('is_suite') and not m.group(
+                'is_statement'), 'Bad name too: ' + self.name
+            self.is_part = not not m.group('is_part')
+            self.is_compound = not not self.__class__.re_compound.match(self.definition)
+            self.is_stmt = not not m.group('is_stmt_1') \
+                           or not not m.group('is_stmt_2') \
+                           or self.is_part \
+                           or self.is_compound \
+                           or not not self.__class__.re_statement.match(self.definition)
 
     def get_normalized_definition(self):
         return Formatter.normalize(self.definition)
@@ -90,9 +99,9 @@ class Type:
             L = self.deep_require
         elif self.is_list:
             L = self.list_require
-        else: # if self.is_shallow:
+        else:  # if self.is_shallow:
             L = self.require
-        return sorted([t for t in L if not t.is_wrapper], key = lambda t: (t.n, t.name))
+        return sorted([t for t in L if not t.is_wrapper], key=lambda t: (t.n, t.name))
 
     def __repr__(self):
         return repr(self.__dict__)

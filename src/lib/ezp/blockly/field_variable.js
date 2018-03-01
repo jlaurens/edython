@@ -315,7 +315,7 @@ ezP.FieldVariable.prototype.onHtmlInputChange_ =
  */
 ezP.FieldVariable.prototype.addSelect = function () {
   if (this.menuIcon_) {
-    Blockly.utils.addClass(this.menuIcon_, 'ezp-selected')
+    Blockly.utils.addClass(this.menuIcon_, 'ezp-select')
   }
 }
 
@@ -324,7 +324,7 @@ ezP.FieldVariable.prototype.addSelect = function () {
  */
 ezP.FieldVariable.prototype.removeSelect = function () {
   if (this.menuIcon_) {
-    Blockly.utils.removeClass(this.menuIcon_, 'ezp-selected')
+    Blockly.utils.removeClass(this.menuIcon_, 'ezp-select')
   }
 }
 

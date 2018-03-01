@@ -145,7 +145,7 @@ ezP.FieldOptionsCode.prototype.setValue = function (newValue) {
  */
 ezP.FieldOptionsCode.prototype.addSelect = function () {
   if (this.imageElement_) {
-    Blockly.utils.addClass(this.imageElement_, 'ezp-selected')
+    Blockly.utils.addClass(this.imageElement_, 'ezp-select')
   }
 }
 
@@ -154,6 +154,6 @@ ezP.FieldOptionsCode.prototype.addSelect = function () {
  */
 ezP.FieldOptionsCode.prototype.removeSelect = function () {
   if (this.imageElement_) {
-    Blockly.utils.removeClass(this.imageElement_, 'ezp-selected')
+    Blockly.utils.removeClass(this.imageElement_, 'ezp-select')
   }
 }

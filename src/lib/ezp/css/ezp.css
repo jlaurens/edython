@@ -58,7 +58,7 @@ body {
   -moz-opacity: 0.05;
   filter: alpha(opacity=5);
 }
-.ezp-selected .ezp-menu-icon,
+.ezp-select .ezp-menu-icon,
 .ezp-menu-icon:hover,
 .ezp-path-play:hover {
   opacity: 0.3;

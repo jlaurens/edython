@@ -66,11 +66,13 @@ If a parameter has a default value, all following parameters up until the â€œ*â€
 <pre>
 funcdef ::= REMOVE
 funcdef_part ::= "def" funcname "(" [parameter_list] ")" ["->" expression] ":"
-decorator_part ::=  "@" dotted_funcname [parenth_argument_list]
+decorators ::= REMOVE
+decorator ::= decorator_expr | decorator_call_expr
+decorator_part ::= decorator
+decorator_expr ::= "@" dotted_funcname
+decorator_call_expr ::= decorator_expr "(" argument_list ")"
 dotted_funcname ::= funcname | dotting_identifier '.' dotted_funcname
 dotting_identifier ::= identifier
-decorator ::= REMOVE
-parenth_argument_list ::= "(" [argument_list [","]] ")"
 decorator_part <<< decorator_part | funcdef_part
 </pre>
 

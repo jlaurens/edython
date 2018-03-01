@@ -6075,7 +6075,7 @@ ezP.BlockSvg.prototype.render=function(a){this.ezp.render(this,a)};
 ezP.BlockSvg.prototype.getInput=function(a){var b=this.ezp.getInput(this,a);
 return void 0!==b?b:ezP.BlockSvg.superClass_.getInput.call(this,a)};
 
-ezP.BlockSvg.prototype.addSelect=function(){if(!this.ezp.svgPathHighlight_.parentNode){Blockly.utils.addClass(this.svgGroup_,"ezp-selected");
+ezP.BlockSvg.prototype.addSelect=function(){if(!this.ezp.svgPathHighlight_.parentNode){Blockly.utils.addClass(this.svgGroup_,"ezp-select");
 this.svgGroup_.appendChild(this.ezp.svgPathHighlight_);
 for(var a=0,b;
 b=this.inputList[a++];
@@ -6083,7 +6083,7 @@ b=this.inputList[a++];
 d=b.fieldRow[c++];
 )d.addSelect&&d.addSelect()}};
 ezP.STATUS="6085"
-ezP.BlockSvg.prototype.removeSelect=function(){if(this.ezp.svgPathHighlight_.parentNode){Blockly.utils.removeClass(this.svgGroup_,"ezp-selected");
+ezP.BlockSvg.prototype.removeSelect=function(){if(this.ezp.svgPathHighlight_.parentNode){Blockly.utils.removeClass(this.svgGroup_,"ezp-select");
 for(var a=0,b;
 b=this.inputList[a++];
 )for(var c=0,d;
@@ -6313,8 +6313,8 @@ this.forceRerender();
 return}this.text_=a;
 this.forceRerender()}};
 
-ezP.FieldOptionsCode.prototype.addSelect=function(){this.imageElement_&&Blockly.utils.addClass(this.imageElement_,"ezp-selected")};
-ezP.FieldOptionsCode.prototype.removeSelect=function(){this.imageElement_&&Blockly.utils.removeClass(this.imageElement_,"ezp-selected")};
+ezP.FieldOptionsCode.prototype.addSelect=function(){this.imageElement_&&Blockly.utils.addClass(this.imageElement_,"ezp-select")};
+ezP.FieldOptionsCode.prototype.removeSelect=function(){this.imageElement_&&Blockly.utils.removeClass(this.imageElement_,"ezp-select")};
 ezP.ui={};
 ezP.HSV_SATURATION=5/255;
 ezP.HSV_VALUE=1;
@@ -6352,7 +6352,7 @@ return function(a,d){a.length&&b.insertRule(a,void 0===d?b.cssRules.length:d)}}(
 ezP.setup.register(function(){ezP.Style.insertCssRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('\u263a'),url('DejaVuSansMono.woff')format('woff');font-weight: normal;font-style: normal;}");
 ezP.Style.insertCssRuleAt(".ezp-block .blocklyText, .ezp-code, .ezp-var{\n"+ezP.Font.style+";\n}\n");
 ezP.Style.insertCssRuleAt(".ezp-path-selected{stroke: "+ezP.Style.Path.Selected.colour+";stroke-width: "+ezP.Style.Path.Selected.width+"px;fill: none;}");
-ezP.Style.insertCssRuleAt(".ezp-selected .ezp-path-contour{stroke: "+ezP.Style.Path.Selected.colour+";}");
+ezP.Style.insertCssRuleAt(".ezp-select .ezp-path-contour{stroke: "+ezP.Style.Path.Selected.colour+";}");
 ezP.Style.insertCssRuleAt(".blocklyHighlightedConnectionPath{stroke: "+ezP.Style.Path.Selected.colour+";stroke-width: "+ezP.Style.Path.Selected.width+"px;fill: none;}");
 ezP.Style.insertCssRuleAt(".blocklyHighlightedConnectionPathH{fill: "+ezP.Style.Path.Selected.colour+";stroke: none;}");
 ezP.Style.insertCssRuleAt(".ezp-checkbox-icon-rect{stroke: "+ezP.Style.Path.colour+";stroke-width: "+ezP.Style.Path.width+"px;fill: white;}");
@@ -6666,9 +6666,9 @@ ezP.FieldVariable.prototype.bindEvents_=Blockly.FieldTextInput.prototype.bindEve
 ezP.FieldVariable.prototype.unbindEvents_=Blockly.FieldTextInput.prototype.unbindEvents_;
 ezP.FieldVariable.prototype.onHtmlInputKeyDown_=Blockly.FieldTextInput.prototype.onHtmlInputKeyDown_;
 ezP.FieldVariable.prototype.onHtmlInputChange_=Blockly.FieldTextInput.prototype.onHtmlInputChange_;
-ezP.FieldVariable.prototype.addSelect=function(){this.menuIcon_&&Blockly.utils.addClass(this.menuIcon_,"ezp-selected")};
+ezP.FieldVariable.prototype.addSelect=function(){this.menuIcon_&&Blockly.utils.addClass(this.menuIcon_,"ezp-select")};
 
-ezP.FieldVariable.prototype.removeSelect=function(){this.menuIcon_&&Blockly.utils.removeClass(this.menuIcon_,"ezp-selected")};
+ezP.FieldVariable.prototype.removeSelect=function(){this.menuIcon_&&Blockly.utils.removeClass(this.menuIcon_,"ezp-select")};
 ezP.FieldVariable.prototype.getSerializedXml=function(){var a=goog.dom.createDom("field");
 a.setAttribute("name",this.name);
 a.setAttribute("value",this.getText());
@@ -6745,8 +6745,8 @@ switch(a.name){case ezP.Const.Input.END:case ezP.Const.Input.SEP:case ezP.Const.
 ezP.FieldPrintOptions.prototype.render_=function(){this.visible_?(this.size_.height=ezP.Font.lineHeight(),this.updateWidth()):this.size_.width=0};
 ezP.FieldPrintOptions.prototype.updateWidth=function(){this.size_.width=ezP.Font.space};
 
-ezP.FieldPrintOptions.prototype.addSelect=function(){this.imageElement_&&Blockly.utils.addClass(this.imageElement_,"ezp-selected")};
-ezP.FieldPrintOptions.prototype.removeSelect=function(){this.imageElement_&&Blockly.utils.removeClass(this.imageElement_,"ezp-selected")};
+ezP.FieldPrintOptions.prototype.addSelect=function(){this.imageElement_&&Blockly.utils.addClass(this.imageElement_,"ezp-select")};
+ezP.FieldPrintOptions.prototype.removeSelect=function(){this.imageElement_&&Blockly.utils.removeClass(this.imageElement_,"ezp-select")};
 ezP.Blocks.grp={};
 Blockly.Blocks[ezP.Const.Grp.ANY]={init:function(){this.appendDummyInput().appendField(new ezP.FieldCodeInput(""),"STT").appendField(new ezP.FieldLabel(":"),"STT");
 this.appendStatementInput("DO").setCheck(ezP.Type.Stmt.Check.after_any);
@@ -7558,8 +7558,8 @@ this.size_.width=Blockly.Field.getCachedWidth(this.textElement_);
 this.arrow_.setAttribute("transform","translate("+this.size_.width+",0)");
 this.size_.width+=ezP.Font.space}else this.size_.width=
 0};
-ezP.FieldOptions.prototype.addSelect=function(){this.imageElement_&&Blockly.utils.addClass(this.imageElement_,"ezp-selected")};
-ezP.FieldOptions.prototype.removeSelect=function(){this.imageElement_&&Blockly.utils.removeClass(this.imageElement_,"ezp-selected")};
+ezP.FieldOptions.prototype.addSelect=function(){this.imageElement_&&Blockly.utils.addClass(this.imageElement_,"ezp-select")};
+ezP.FieldOptions.prototype.removeSelect=function(){this.imageElement_&&Blockly.utils.removeClass(this.imageElement_,"ezp-select")};
 ezP.FieldOptions.prototype.getSerializedXml=function(){var a=ezP.FieldOptions.superClass_.getSerializedXml.call(this);
 a.setAttribute("value",this.getValue());
 return a};

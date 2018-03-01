@@ -196,7 +196,7 @@ Blockly.FieldDropdown.prototype.render_ = function () {
  */
 ezP.FieldOptions.prototype.addSelect = function () {
   if (this.imageElement_) {
-    Blockly.utils.addClass(this.imageElement_, 'ezp-selected')
+    Blockly.utils.addClass(this.imageElement_, 'ezp-select')
   }
 }
 
@@ -205,7 +205,7 @@ ezP.FieldOptions.prototype.addSelect = function () {
  */
 ezP.FieldOptions.prototype.removeSelect = function () {
   if (this.imageElement_) {
-    Blockly.utils.removeClass(this.imageElement_, 'ezp-selected')
+    Blockly.utils.removeClass(this.imageElement_, 'ezp-select')
   }
 }
 

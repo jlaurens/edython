@@ -688,7 +688,7 @@ ezP.Delegate.prototype.fromDom = function (block, element) {
  * @private
  */
 ezP.Delegate.prototype.completeWrapped_ = function (block) {
-  if (this.wrappedInputs_) {
+  if (Blockly.Events.recordUndo && this.wrappedInputs_) {
     ezP.Delegate.wrappedFireWall = 100
     for (var i = 0; i < this.wrappedInputs_.length; i++) {
       var data = this.wrappedInputs_[i]
@@ -707,14 +707,44 @@ ezP.Delegate.prototype.makeBlockWrapped = function (block) {
 }
 
 /**
+ * The default implementation is false.
+ * Subclassers will override this but won't call it.
+ * @param {!Block} block.
+ */
+ezP.Delegate.prototype.canUnwrap = function(block) {
+  return false
+}
+
+/**
+ * The default implementation does nothing.
+ * Subclassers will override this but won't call it.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.Delegate.prototype.makeBlockUnwrapped = function (block) {
+}
+
+/**
  * The wrapped blocks are special.
  * @param {!Block} block.
  * @private
  */
 ezP.Delegate.prototype.makeBlockWrapped_ = function (block) {
   if (!block.ezp.wrapped_) {
-    block.ezp.wrapped_ = true
     block.ezp.makeBlockWrapped(block)
+    block.ezp.wrapped_ = true
+  }
+}
+
+/**
+ * The wrapped blocks are special.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.Delegate.prototype.makeBlockUnwrapped_ = function (block) {
+  if (block.ezp.wrapped_) {
+    block.ezp.makeBlockUnwrapped(block)
+    block.ezp.wrapped_ = false
   }
 }
 
@@ -831,7 +861,7 @@ ezP.Delegate.prototype.canReplaceBlock = function (block, other) {
  * @throws {goog.asserts.AssertionError} if the input is not present and
  *     opt_quiet is not true.
  */
-Blockly.Block.prototype.removeInput = function(block, input, opt_quiet) {
+ezP.Delegate.prototype.removeInput = function(block, input, opt_quiet) {
   if (input.block === block) {
     if (input.connection && input.connection.isConnected()) {
       input.connection.setShadowDom(null);
@@ -851,4 +881,23 @@ Blockly.Block.prototype.removeInput = function(block, input, opt_quiet) {
   if (!opt_quiet) {
     goog.asserts.fail('Input "%s" not found.', name);
   }
-};
+}
+
+/**
+ * When the output connection is connected,
+ * returns the input holding the parent's corresponding connection.
+ * @param {!Blockly.Block} block The owner of the delegate.
+ * @return an input.
+ */
+ezP.Delegate.prototype.getParentInput = function(block) {
+  var c8n = block.outputConnection
+  if (c8n && (c8n = c8n.targetConnection)) {
+    var list = c8n.sourceBlock_.inputList
+    for (var i = 0, input; (input = list[i++]);) {
+      if (input.connection === c8n) {
+        return input
+      }
+    }
+  }
+  return null
+}

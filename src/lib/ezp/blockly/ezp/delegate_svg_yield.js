@@ -123,7 +123,7 @@ ezP.DelegateSvg.Manager.register('yield_expression')
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-ezP.DelegateSvg.Expr.yield_expression.prototype.getWrappedTargetBlock = function(block) {
+ezP.DelegateSvg.Expr.yield_expression.prototype.getMenuTarget = function(block) {
   return block
 }
 
