@@ -719,7 +719,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
       })
       mgr.addInsertChild(MI)
       return true
-    } else if (d && d.wrap) {
+    } else if (d && d.wrap && !parent_subtype) {
       var list = ezP.Delegate.Manager.getInputModel(d.wrap).list
       if (!list) {
         if (goog.array.contains(outCheck, d.wrap)) {
@@ -861,7 +861,7 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
   }
   F.call(this, [
     ezP.T3.Expr.u_expr_concrete,
-    ezP.T3.Expr.call_expr,
+    [ezP.T3.Expr.call_expr, ezP.Const.Input.PRIMARY],
     ezP.T3.Expr.slicing,
     ezP.T3.Expr.attributeref,
     [ezP.T3.Expr.decorator_call_expr, ezP.Const.Input.NAME],

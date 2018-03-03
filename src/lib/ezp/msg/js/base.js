@@ -49,6 +49,8 @@ goog.require('ezP')
 
 /** @export */ ezP.Msg.PLACEHOLDER_STRING = "Du texte ici"
 
+/** @export */ ezP.Msg.PLACEHOLDER_BYTES = "Des octets ici"
+
 /** @export */ ezP.Msg.PLACEHOLDER_COMMENT = "Un commentaire ici"
 
 /** @export */ ezP.Msg.PLACEHOLDER_NUMBER = "0"

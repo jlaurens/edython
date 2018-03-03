@@ -45,7 +45,6 @@ goog.inherits(ezP.FieldTextInput, Blockly.FieldTextInput)
  */
 ezP.FieldTextInput.htmlInput_ = null;
 
-
 /**
  * Install this field on a block.
  */
@@ -228,12 +227,14 @@ goog.inherits(ezP.FieldCodeInput, ezP.FieldTextInput)
  */
 ezP.FieldCodeInput.prototype.getDisplayText_ = function() {
   if (this.ezpData.placeholder && !this.ezpData.isEditing) {
-    return this.placeholderText
+    return this.placeholderText()
   }
   return ezP.FieldCodeInput.superClass_.getDisplayText_.call(this)
 }
 
-ezP.FieldCodeInput.prototype.placeholderText = Blockly.Field.NBSP
+ezP.FieldCodeInput.prototype.placeholderText = function() {
+  return Blockly.Field.NBSP
+}
 
 /**
  * By default there is no difference between the human-readable text and
@@ -242,10 +243,12 @@ ezP.FieldCodeInput.prototype.placeholderText = Blockly.Field.NBSP
  */
 ezP.FieldCodeInput.prototype.setValue = function(newValue) {
   if ((this.ezpData.placeholder = !newValue || !newValue.length)) {
-    // newValue = this.placeholderText
-    this.ezpData.cssClass = 'ezp-code-placeholder'
-  } else {
-    this.ezpData.cssClass = undefined
+    // newValue = this.placeholderText()
+    if (this.textElement_) {
+      goog.dom.classlist.add(this.textElement_,'ezp-code-placeholder')
+    }
+  } else if (this.textElement_) {
+    goog.dom.classlist.remove(this.textElement_,'ezp-code-placeholder')
   }   
   ezP.FieldCodeInput.superClass_.setValue.call(this, newValue)
 }
@@ -276,7 +279,9 @@ ezP.FieldCodeComment = function (text, optValidator) {
 goog.inherits(ezP.FieldCodeComment, ezP.FieldCodeInput)
 
 ezP.FieldCodeComment.prototype.cssClass = 'ezp-code-comment'
-ezP.FieldCodeComment.prototype.placeholderText = ezP.Msg.PLACEHOLDER_COMMENT
+ezP.FieldCodeComment.prototype.placeholderText = function() {
+  return ezP.Msg.PLACEHOLDER_COMMENT
+}
 
 ezP.FieldCodeNumber = function (text) {
   var field = this
@@ -291,7 +296,9 @@ ezP.FieldCodeNumber = function (text) {
       for( var _ = 0, re; (re = REs[_++]);) {
         if (re.exec(txt)) {
           field.ezpData.error = false
-          goog.dom.classlist.remove(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
+          if (ezP.FieldTextInput.htmlInput_) {
+            goog.dom.classlist.remove(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
+          }
           block.outputConnection.setCheck(type)
           block.type = type
           block.ezp.setupType(block)
@@ -358,7 +365,9 @@ ezP.FieldCodeNumber.prototype.imagREs = [
   /^[0-9][0-9_]*\.(e|E)[+-]?[0-9][0-9_]*(j|J)$/, // digitpart "." exponent
 ]
 
-ezP.FieldCodeInput.prototype.placeholderText = ezP.Msg.PLACEHOLDER_NUMBER
+ezP.FieldCodeNumber.prototype.placeholderText = function() {
+  ezP.Msg.PLACEHOLDER_NUMBER
+}
 
 /**
  * Adds a 'ezp-code-error' class in case of error.
@@ -371,6 +380,11 @@ ezP.FieldCodeInput.prototype.render_ = function() {
     goog.dom.classlist.add(this.textElement_, 'ezp-code-error')
   } else {
     goog.dom.classlist.remove(this.textElement_, 'ezp-code-error')
+  }
+  if (this.ezpData.placeholder) {
+    goog.dom.classlist.add(this.textElement_, 'ezp-code-placeholder')
+  } else {
+    goog.dom.classlist.remove(this.textElement_, 'ezp-code-placeholder')
   }
 }
 
@@ -386,7 +400,10 @@ ezP.FieldCodeString = function (text) {
 }
 goog.inherits(ezP.FieldCodeString, ezP.FieldCodeInput)
 
-ezP.FieldCodeInput.prototype.placeholderText = ezP.Msg.PLACEHOLDER_STRING
+ezP.FieldCodeString.prototype.placeholderText = function() {
+  return this.sourceBlock_.type === ezP.T3.Expr.bytesliteral?
+  ezP.Msg.PLACEHOLDER_STRING: ezP.Msg.PLACEHOLDER_BYTES
+}
 
 /**
  * Class for an editable long string field.

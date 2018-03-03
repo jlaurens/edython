@@ -27,18 +27,6 @@ goog.require('ezP.DelegateSvg.Group')
 // }
 // Blockly.Blocks[ezP.Const.Prc.MAIN] = Blockly.Blocks[ezP.Const.Prc.ANY]
 
-// Blockly.Blocks[ezP.Const.Prc.DEF] = {
-//   init: function () {
-//     this.appendDummyInput()
-//       .appendField(new ezP.FieldLabel('def '))
-//       .appendField(new ezP.FieldTextInput(''), ezP.Const.Field.DEF)
-//     this.appendDummyInput()
-//       .appendField(new ezP.FieldLabel(':'))
-//     this.appendStatementInput('DO').setCheck(ezP.Type.Stmt.Check.after_any)
-//     this.setTooltip('')
-//     this.setHelpUrl('')
-//   }
-// }
 
 // Blockly.Blocks[ezP.Const.Prc.CLASS] = {
 //   init: function () {

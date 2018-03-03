@@ -420,7 +420,6 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.handleMenuItemActionFirst = 
   return mgr.handleActionOperator(block,event) || ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
 }
 
-
 /**
  * Class for a DelegateSvg, comment_stmt.
  * For ezPython.
@@ -461,3 +460,20 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.preInitSvg = function (block) {
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.renderDrawSharp_ = function (io) {
 }
+
+/**
+ * Class for a DelegateSvg, any_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.any_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.any_stmt.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    key: ezP.Const.Input.EXPRESSION,
+    check: ezP.T3.Expr.Check.expression,
+  }
+}
+goog.inherits(ezP.DelegateSvg.Stmt.any_stmt, ezP.DelegateSvg.Stmt)
+ezP.DelegateSvg.Manager.register('any_stmt')
