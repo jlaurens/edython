@@ -158,14 +158,24 @@ ezP.Delegate.Manager = function () {
     var D = dlgt.inputModel_
     if (D && Object.keys(D).length) {
       Ctor.prototype.inputModel = D
+      if (D.first) {
+        D.first.check = ezP.Do.ensureArray(D.first.check)
+      }
+      if (D.middle) {
+        D.middle.check = ezP.Do.ensureArray(D.middle.check)
+      }
+      if (D.last) {
+        D.last.check = ezP.Do.ensureArray(D.last.check)
+      }
     }
     if ((D = dlgt.outputModel_) && Object.keys(D).length) {
       Ctor.prototype.outputModel = D
+      D.check = ezP.Do.ensureArray(D.check)
     }
     if ((D = dlgt.statementModel_) && Object.keys(D).length) {
       Ctor.prototype.statementModel = D
-      Ctor.prototype.previousCheck = dlgt.previousCheck// to be removed
-      Ctor.prototype.nextCheck = dlgt.nextCheck
+      Ctor.prototype.previousCheck = ezP.Do.ensureArray(dlgt.previousCheck)// to be removed
+      Ctor.prototype.nextCheck = ezP.Do.ensureArray(dlgt.nextCheck)
     }
   }
   /**

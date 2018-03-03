@@ -100,8 +100,11 @@ ezP.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
       var source = c8n.sourceBlock_
       var selected = source.ezp.hasSelect(source)
       // next operations may unselect the block
+      var old = source.ezp.consolidating_
+      source.ezp.consolidating_ = true
       c8n.disconnect()
       c8n.connect(block.outputConnection)
+      source.ezp.consolidating_ = old
       if (selected) {
         source.select()
       }

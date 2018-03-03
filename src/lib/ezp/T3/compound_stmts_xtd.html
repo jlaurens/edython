@@ -65,7 +65,10 @@ If a parameter has a default value, all following parameters up until the â€œ*â€
 
 <pre>
 funcdef ::= REMOVE
-funcdef_part ::= "def" funcname "(" [parameter_list] ")" ["->" expression] ":"
+funcdef_part ::= funcdef_expr ":"
+funcdef_expr ::= funcdef_simple | funcdef_typed
+funcdef_simple ::= "def" funcname "(" [parameter_list] ")"
+funcdef_typed ::= funcdef_simple "->" expression
 decorators ::= REMOVE
 decorator ::= decorator_expr | decorator_call_expr
 decorator_part ::= decorator

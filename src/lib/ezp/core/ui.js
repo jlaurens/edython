@@ -150,6 +150,7 @@ ezP.setup.register(function () {
   ezP.Style.insertCssRuleAt('text.ezp-code-comment, .ezp-code-placeholder {fill: rgba(0, 0, 0, 0.4);}')
   ezP.Style.insertCssRuleAt('.ezp-block rect {fill: white;}')
   ezP.Style.insertCssRuleAt('.ezp-code-error , input.ezp-code-error {color: red;}')
+  ezP.Style.insertCssRuleAt('.ezp-code-disabled {color: #ccc;}')
 })
 
 

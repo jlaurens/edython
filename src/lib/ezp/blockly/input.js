@@ -33,9 +33,6 @@ ezP.Input.setupEzpData = function (input, data) {
     }
     if (data) {
       goog.mixin(input.ezpData, data)
-      if (input.ezpData.n !== undefined && input.ezpData.sep !== undefined) {
-        input.ezpData.listed_ = true
-      }
     }
   }
 }

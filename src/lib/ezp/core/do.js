@@ -274,3 +274,7 @@ ezP.Do.Name = function () {
   me.middle_name = me.getBetween(me.min_name, me.max_name, 0.5)
   return me
 } ()
+
+ezP.Do.ensureArray = function (object) {
+  return goog.isArray(object)? object: [object]
+}

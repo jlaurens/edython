@@ -175,7 +175,7 @@ ezP.MenuManager.prototype.showMenu = function (block, e) {
   me.alreadyListened = false
   this.shouldSeparate(target.ezp.populateContextMenuFirst_(target, this))
   this.shouldSeparate(target.ezp.populateContextMenuMiddle_(target, this))
-  target.ezp.populateContextMenuLast_(target, this)
+  block.ezp.populateContextMenuLast_(block, this)
   this.insertSubmenu.setEnabled(this.insertSubmenu.getMenu().getChildCount() > 0)
   this.removeSubmenu.setEnabled(this.removeSubmenu.getMenu().getChildCount() > 0)
   goog.events.listenOnce(this.menu, 'action', function (event) {
@@ -264,7 +264,8 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     // Option to duplicate this block.
     menuItem = new ezP.MenuItem(
       Blockly.Msg.DUPLICATE_BLOCK,
-      {action: ezP.ID.DUPLICATE_BLOCK})
+      {action: ezP.ID.DUPLICATE_BLOCK,
+      target: block,})
     this.addChild(menuItem, true)
     if (block.getDescendants().length > block.workspace.remainingCapacity()) {
       menuItem.setEnabled(false);
@@ -276,11 +277,13 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     if (block.comment) {
       menuItem = new ezP.MenuItem(
         Blockly.Msg.REMOVE_COMMENT,
-        {action: ezP.ID.REMOVE_COMMENT})
+        {action: ezP.ID.REMOVE_COMMENT,
+        target: block,})
     } else {
       menuItem = new ezP.MenuItem(
         Blockly.Msg.ADD_COMMENT,
-        {action: ezP.ID.ADD_COMMENT})
+        {action: ezP.ID.ADD_COMMENT,
+          target: block,})
     }
     menuItem.setEnabled(false && !goog.userAgent.IE && !block.outputConnection)
     this.addChild(menuItem, true)
@@ -289,12 +292,14 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     if (block.collapsed_) {
       menuItem = new ezP.MenuItem(
         Blockly.Msg.EXPAND_BLOCK,
-        {action: ezP.ID.EXPAND_BLOCK})
+        {action: ezP.ID.EXPAND_BLOCK,
+          target: block,})
       menuItem.setEnabled(true)
     } else {
       menuItem = new ezP.MenuItem(
         Blockly.Msg.COLLAPSE_BLOCK,
-        {action: ezP.ID.COLLAPSE_BLOCK})
+        {action: ezP.ID.COLLAPSE_BLOCK,
+          target: block,})
       menuItem.setEnabled(block.getStatementCount() > 2)
     }
     this.addChild(menuItem, true)
@@ -303,7 +308,8 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     menuItem = new ezP.MenuItem(
       block.disabled
         ? Blockly.Msg.ENABLE_BLOCK : Blockly.Msg.DISABLE_BLOCK,
-      {action: ezP.ID.TOGGLE_ENABLE_BLOCK})
+      {action: ezP.ID.TOGGLE_ENABLE_BLOCK,
+        target: block,})
     menuItem.setEnabled(!block.outputConnection)
     this.addChild(menuItem, true)
   }
@@ -330,7 +336,8 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     menuItem = new ezP.MenuItem(
       descendantCount === 1 ? Blockly.Msg.DELETE_BLOCK
         : Blockly.Msg.DELETE_X_BLOCKS.replace('%1', String(descendantCount)),
-      {action: ezP.ID.DELETE_BLOCK})
+      {action: ezP.ID.DELETE_BLOCK,
+        target: block,})
     menuItem.setEnabled(true)
     this.addChild(menuItem, true)
   }
@@ -338,21 +345,24 @@ ezP.MenuManager.prototype.populateLast = function (block) {
   var url = goog.isFunction(block.helpUrl) ? block.helpUrl() : block.helpUrl
   menuItem = new ezP.MenuItem(
     Blockly.Msg.HELP,
-    {action: ezP.ID.HELP})
+    {action: ezP.ID.HELP,
+      target: block,})
   menuItem.setEnabled(!!url)
   this.addChild(menuItem, true)
   this.separate()
   
   menuItem = new ezP.MenuItem(
     block.ezp.getPythonType(block),
-    {action: ezP.ID.LOG_BLOCK_XML})
+    {action: ezP.ID.LOG_BLOCK_XML,
+      target: block,})
   menuItem.setEnabled(true)
   this.addChild(menuItem, true)
 
   if (block.ezp.plugged_) {
     menuItem = new ezP.MenuItem(
       block.ezp.plugged_.substring(4),
-      {action: ezP.ID.LOG_BLOCK_XML})
+      {action: ezP.ID.LOG_BLOCK_XML,
+        target: block,})
     menuItem.setEnabled(false)
     this.addChild(menuItem, true)
   }
@@ -401,9 +411,10 @@ ezP.DelegateSvg.prototype.handleMenuItemActionLast = function (block, mgr, event
 ezP.MenuManager.prototype.handleActionLast = function (block, event) {
   var workspace = block.workspace
   var model = event.target.getModel()
+  var target = model.target || block
   switch(model.action) {
     case ezP.ID.DUPLICATE_BLOCK:
-      Blockly.duplicate_(block)
+      Blockly.duplicate_(target)
       return true
     case ezP.ID.FILL_DEEP_HOLES:
       Blockly.Events.setGroup(true)
@@ -411,22 +422,22 @@ ezP.MenuManager.prototype.handleActionLast = function (block, event) {
       Blockly.Events.setGroup(false)
       return true
     case ezP.ID.REMOVE_COMMENT:
-    block.setCommentText(null)
+    target.setCommentText(null)
       return true
     case ezP.ID.ADD_COMMENT:
-      block.setCommentText('')
+    target.setCommentText('')
       return true
     case ezP.ID.EXPAND_BLOCK:
-      block.setCollapsed(false)
+    target.setCollapsed(false)
       return true
     case ezP.ID.COLLAPSE_BLOCK:
-      block.setCollapsed(true)
+    target.setCollapsed(true)
       return true
     case ezP.ID.TOGGLE_ENABLE_BLOCK:
-      block.setDisabled(!block.disabled)  
+    target.setDisabled(!block.disabled)  
       return true
     case ezP.ID.DELETE_BLOCK:
-      var unwrapped = block
+      var unwrapped = target
       var parent
       while (unwrapped.ezp.wrapped_ && (parent = unwrapped.getParent())) {
         unwrapped = parent
@@ -437,10 +448,10 @@ ezP.MenuManager.prototype.handleActionLast = function (block, event) {
       Blockly.Events.setGroup(false)
       return true
     case ezP.ID.HELP:
-      block.showHelp_()
+    target.showHelp_()
       return true
     case ezP.ID.LOG_BLOCK_XML:
-      var xmlDom = Blockly.Xml.blockToDom(block);
+      var xmlDom = Blockly.Xml.blockToDom(target);
       var xmlText = Blockly.Xml.domToText(xmlDom)
       console.log(xmlText)
       return true
@@ -556,6 +567,20 @@ ezP.MenuManager.prototype.get_movable_parent_menuitem_content = function (type, 
     ),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
     )
+    case ezP.T3.Expr.parameter_concrete:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      goog.dom.createTextNode(': ...'),
+    ),
+      goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
+    )
+    case ezP.T3.Expr.defparameter_concrete:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      goog.dom.createTextNode('= ...'),
+    ),
+      goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
+    )
     case ezP.T3.Expr.dotted_funcname_concrete:
     switch(subtype) {
       case ezP.Const.Input.NAME:
@@ -586,6 +611,13 @@ ezP.MenuManager.prototype.get_movable_parent_menuitem_content = function (type, 
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
         goog.dom.createTextNode('(...)'),
+      ),
+      goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
+    )
+    case ezP.T3.Expr.funcdef_typed:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+        goog.dom.createTextNode('->...'),
       ),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
     )
@@ -653,7 +685,7 @@ ezP.MenuManager.prototype.get_movable_parent_menuitem_content = function (type, 
  * @param {!string} type the type of the parent to be.
  * @private
  */
-ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, parent_type) {
+ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, parent_type, parent_subtype) {
   var c8n = block.outputConnection
   if (!c8n) {
     // this is a statement block
@@ -664,7 +696,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
   var mgr = this
   var F = function(K) {
     var d = D[K]
-    if (d && d.key && !d.wrap) {
+    if (d && d.key && !d.wrap && (!parent_subtype || d.key == parent_subtype)) {
       if (outCheck && d.check) {
         var found = false, _ = 0, c
         while ((c = d.check[_++])) {
@@ -753,7 +785,7 @@ ezP.MenuManager.prototype.populate_insert_parent = function (block, type, subtyp
     var inputC8n = outputC8n.targetConnection
     if (!inputC8n) {
       if (top) {
-        this.populate_insert_as_top_parent(child, type)
+        this.populate_insert_as_top_parent(child, type, subtype)
       }
       break
     }
@@ -762,7 +794,7 @@ ezP.MenuManager.prototype.populate_insert_parent = function (block, type, subtyp
       // the target connection won't accept block
       continue
     }
-    if (this.populate_insert_as_top_parent(child, type)) {
+    if (this.populate_insert_as_top_parent(child, type, subtype)) {
       break
     }
   } while ((child = child.getParent()))
@@ -816,14 +848,14 @@ ezP.MenuManager.prototype.populate_replace_parent = function (block, type, subty
  * @private
  */
 ezP.MenuManager.prototype.populate_movable_parent = function (block) {
-  var F = function(movable) {
+  var F = function(movable, yorn) {
     for (var _ = 0, type; (type = movable[_++]);) {
       var subtype = undefined
       if (goog.isArray(type)) {
         subtype = type[1]
         type = type[0]
       }
-      this.populate_insert_parent(block, type, subtype, true)
+      this.populate_insert_parent(block, type, subtype, yorn)
       this.populate_replace_parent(block, type, subtype)
     }
   }
@@ -833,7 +865,7 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
     ezP.T3.Expr.slicing,
     ezP.T3.Expr.attributeref,
     [ezP.T3.Expr.decorator_call_expr, ezP.Const.Input.NAME],
-  ])
+  ], true)
   this.shouldSeparateInsert()
   this.shouldSeparateRemove()
   F.call(this, [
@@ -841,7 +873,8 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
     ezP.T3.Expr.list_display,
     ezP.T3.Expr.set_display,
     ezP.T3.Expr.dict_display,
-  ])
+    [ezP.T3.Expr.funcdef_typed, ezP.Const.Input.FUNCDEF],
+  ], true)
   this.shouldSeparateInsert()
   this.shouldSeparateRemove()
   F.call(this, [
@@ -850,6 +883,8 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
     ezP.T3.Expr.module_as_concrete,
     ezP.T3.Expr.import_identifier_as_concrete,
     ezP.T3.Expr.dotted_funcname_concrete,
+    [ezP.T3.Expr.parameter_concrete, ezP.Const.Input.NAME],
+    [ezP.T3.Expr.defparameter_concrete, ezP.Const.Input.NAME],
   ])
 }
 

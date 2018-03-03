@@ -353,6 +353,7 @@ ezP.DelegateSvg.Expr.parameter_concrete = function (prototypeName) {
     label: ':',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,
+    hole_value: 'expression',
   }
   this.outputModel_.check = ezP.T3.Expr.parameter_concrete
 }
@@ -378,8 +379,95 @@ ezP.DelegateSvg.Expr.defparameter_concrete = function (prototypeName) {
     label: '=',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,
+    hole_value: 'value',
   }
   this.outputModel_.check = ezP.T3.Expr.defparameter_concrete
 }
 goog.inherits(ezP.DelegateSvg.Expr.defparameter_concrete, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('defparameter_concrete')
+
+ezP.ID.PARAMETER_INSERT = 'PARAMETER_INSERT'
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var F = function(type, msg) {
+    var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-disabled',
+        goog.dom.createTextNode('( '),
+      ),
+      goog.dom.createDom(goog.dom.TagName.SPAN, null,
+        goog.dom.createTextNode(msg),
+      ),
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-disabled',
+        goog.dom.createTextNode(' )'),
+      ),
+    )
+    mgr.addInsertChild(new ezP.MenuItem(content, {
+      action: ezP.ID.PARAMETER_INSERT,
+      type: type,
+    }))
+  }
+  var G = function(type, msg) {
+    for (var i =0, input; (input = block.inputList[i++]);) {
+      var c8n = input.connection
+      if (c8n && (c8n = c8n.targetConnection)) {
+        if (goog.array.contains(c8n.check_, type)) {
+          return null
+        }
+      }
+    }
+    F(type, msg)
+  }
+  F(ezP.T3.Expr.identifier, 'name')
+  F(ezP.T3.Expr.parameter_concrete, 'name: expression')
+  F(ezP.T3.Expr.defparameter_concrete, 'name = value')
+  G(ezP.T3.Expr.parameter_star, '*...')
+  G(ezP.T3.Expr.parameter_star_star, '** ...')
+  mgr.shouldSeparateInsert()
+  ezP.DelegateSvg.Expr.parameter_list.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  return true
+}
+
+/**
+ * Handle the selection of an item in the context dropdown menu.
+ * @param {!Blockly.Block} block, owner of the delegate.
+ * @param {!goog.ui.Menu} menu The Menu clicked.
+ * @param {!goog....} event The event containing as target
+ * the MenuItem selected within menu.
+ */
+ezP.DelegateSvg.Expr.parameter_list.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
+  var model = event.target.getModel()
+  if (model.action == ezP.ID.PARAMETER_INSERT) {
+    Blockly.Events.setGroup(true)
+    var list = block.inputList
+    var i = list.length
+    var input
+    while ((input = list[--i])) {
+      var c8n = input.connection
+      if (c8n) {
+        if(c8n.targetConnection) {
+          continue
+        }
+        var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, model.type)
+        if (BB.ezp.setValue) {
+          BB.ezp.setValue(BB, 'name')
+        } else {
+          var holes = ezP.HoleFiller.getDeepHoles(BB)
+          ezP.HoleFiller.fillDeepHoles(BB.workspace, holes)
+        }
+        c8n.connect(BB.outputConnection)
+        this.consolidate(block)
+        break
+      }
+    }
+    Blockly.Events.setGroup(false)
+    return true
+  }
+  return ezP.DelegateSvg.Expr.parameter_list.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
+}
+

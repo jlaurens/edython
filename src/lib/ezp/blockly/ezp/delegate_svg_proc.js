@@ -21,7 +21,6 @@ decorator_expr ::= "@" dotted_funcname
 decorator_call_expr ::= decorator_expr "(" argument_list ")"
 */
 
-
 /**
  * Class for a DelegateSvg, decorator_expr block.
  * For ezPython.
@@ -110,7 +109,6 @@ ezP.DelegateSvg.Manager.register('decorator_call_expr')
  * @constructor
  */
 //  decorator_part            /*   ::= "@" dotted_name ["(" [argument_list [","]] ")"]    */ : "ezp_decorator_part",
-
 ezP.DelegateSvg.Stmt.decorator_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.decorator_part.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
@@ -197,19 +195,80 @@ ezP.DelegateSvg.Expr.decorator_expr.prototype.handleMenuItemActionFirst = functi
   return ezP.DelegateSvg.Expr.decorator_expr.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
 }
 
-
 /**
- * Class for a DelegateSvg, proc block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Class for a DelegateSvg, funcdef_simple block.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Proc = function (prototypeName) {
-  ezP.DelegateSvg.Proc.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.funcdef_simple = function (prototypeName) {
+  ezP.DelegateSvg.Expr.funcdef_simple.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    label: 'def',
+    css_class: 'ezp-code-reserved',
+    key: ezP.Const.Input.NAME,
+    check: ezP.T3.Expr.identifier,
+    hole_value: 'name',
+  }
+  this.inputModel_.middle = {
+    start: '(',
+    key: ezP.Const.Input.LIST,
+    wrap: ezP.T3.Expr.parameter_list,
+    end: ')',
+  }
+  this.outputModel_.check = ezP.T3.Expr.funcdef_simple
 }
-goog.inherits(ezP.DelegateSvg.Proc, ezP.DelegateSvg.Group)
-//ezP.DelegateSvg.Manager.register('DEFAULT')
-//ezP.DelegateSvg.Manager.register('DEF')
-//ezP.DelegateSvg.Manager.register('CLASS')
+goog.inherits(ezP.DelegateSvg.Expr.funcdef_simple, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('funcdef_simple')
+
+/**
+ * The overriden implementation is true.
+ * Subclassers will override this but won't call it.
+ * @param {!Block} block.
+ * @override
+ */
+ezP.DelegateSvg.Expr.funcdef_simple.prototype.canUnwrap = function(block) {
+  return true
+}
+
+/**
+ * Class for a DelegateSvg, funcdef_typed block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.funcdef_typed = function (prototypeName) {
+  ezP.DelegateSvg.Expr.funcdef_typed.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    key: ezP.Const.Input.FUNCDEF,
+    wrap: ezP.T3.Expr.funcdef_simple,
+  }
+  this.inputModel_.last = {
+    label: '->',
+    key: ezP.Const.Input.TYPE,
+    check: ezP.T3.Expr.Check.expression,
+  }
+  this.outputModel_.check = ezP.T3.Expr.funcdef_typed
+}
+goog.inherits(ezP.DelegateSvg.Expr.funcdef_typed, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('funcdef_typed')
+
+/**
+ * Class for a DelegateSvg, funcdef_part.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.funcdef_part = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.funcdef_part.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    key: ezP.Const.Input.WRAP,
+    check: ezP.T3.Expr.Check.funcdef_expr,
+    wrap: ezP.T3.Expr.funcdef_simple,
+  }
+}
+goog.inherits(ezP.DelegateSvg.Stmt.funcdef_part, ezP.DelegateSvg.Group)
+ezP.DelegateSvg.Manager.register('funcdef_part')
