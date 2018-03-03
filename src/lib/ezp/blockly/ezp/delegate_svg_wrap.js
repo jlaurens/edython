@@ -68,7 +68,7 @@ ezP.DelegateSvg.Manager.register('expression_stmt')
 ezP.DelegateSvg.Stmt.assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.assignment_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.last = {
-    key: ezP.Const.Input.EXPR,
+    key: ezP.Const.Input.EXPRESSION,
     wrap: ezP.T3.Expr.assignment_expression,
   }
 }

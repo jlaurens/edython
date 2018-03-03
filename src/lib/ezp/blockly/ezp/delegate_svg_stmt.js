@@ -237,7 +237,7 @@ ezP.DelegateSvg.Stmt.assert_stmt = function (prototypeName) {
     },
     last: {
       label: ',',
-      key: ezP.Const.Input.EXPR,
+      key: ezP.Const.Input.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       optional: true
     }

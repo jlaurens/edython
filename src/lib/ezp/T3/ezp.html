@@ -3,11 +3,13 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-  </head>
-  <body>  
-  <pre>
-  print_stmt ::= "print(" argument_list ")"
-  </pre>
-  </body>
+<head>
+</head>
+<body>
+<pre>
+print ::= "print(" argument_list ")"
+print_stmt ::= print
+input ::= "input(" [any_argument] ")"
+</pre>
+</body>
 </html>

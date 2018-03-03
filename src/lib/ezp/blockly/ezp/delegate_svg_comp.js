@@ -27,7 +27,7 @@ ezP.DelegateSvg.Expr.comprehension = function (prototypeName) {
   ezP.DelegateSvg.Expr.comprehension.superClass_.constructor.call(this, prototypeName)
   this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.EXPR,
+      key: ezP.Const.Input.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'name',
     },

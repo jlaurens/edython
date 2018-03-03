@@ -17,24 +17,31 @@ goog.require('ezP.DelegateSvg.Stmt')
 goog.require('ezP.DelegateSvg.List')
 
 /**
- * Class for a DelegateSvg, print_stmt block.
+ * Class for a DelegateSvg, print block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.print_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.print_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first = {
-    start: 'print(',
-    key: ezP.Const.Input.LIST,
-    wrap: ezP.T3.Expr.argument_list_comprehensive,
-    end: ')',
+ezP.DelegateSvg.Expr.print = function (prototypeName) {
+  ezP.DelegateSvg.Expr.print.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_ = {
+    first: {
+      label: 'print',
+      css_class: 'ezp-code-reserved',
+    },
+    last: {
+      start: '(',
+      key: ezP.Const.Input.LIST,
+      wrap: ezP.T3.Expr.argument_list_comprehensive,
+      end: ')',
+    }
   }
+  this.outputModel_.check = [ezP.T3.Expr.print, ezP.T3.Expr.call_expr]
 }
-goog.inherits(ezP.DelegateSvg.Stmt.print_stmt, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('print_stmt')
+goog.inherits(ezP.DelegateSvg.Expr.print, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('print')
 
 
 ezP.ID.PRINT_KEYWORD_ITEM_INSERT = 'PRINT_KEYWORD_ITEM_INSERT'
@@ -44,7 +51,7 @@ ezP.ID.PRINT_KEYWORD_ITEM_REMOVE = 'PRINT_KEYWORD_ITEM_REMOVE'
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-ezP.DelegateSvg.Stmt.print_stmt.prototype.getMenuTarget = function(block) {
+ezP.DelegateSvg.Expr.print.prototype.getMenuTarget = function(block) {
   return block
 }
 
@@ -54,7 +61,7 @@ ezP.DelegateSvg.Stmt.print_stmt.prototype.getMenuTarget = function(block) {
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-ezP.DelegateSvg.Stmt.print_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+ezP.DelegateSvg.Expr.print.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var menu = mgr.Menu
   var list = block.getInput(ezP.Const.Input.LIST).connection.targetBlock()
   var c10r = list.ezp.consolidator
@@ -91,7 +98,7 @@ ezP.DelegateSvg.Stmt.print_stmt.prototype.populateContextMenuFirst_ = function (
     F('file')
     yorn = true
   }
-  return ezP.DelegateSvg.Stmt.print_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
+  return ezP.DelegateSvg.Expr.print.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
 /**
@@ -101,7 +108,7 @@ ezP.DelegateSvg.Stmt.print_stmt.prototype.populateContextMenuFirst_ = function (
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Stmt.print_stmt.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
+ezP.DelegateSvg.Expr.print.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
   var model = event.target.getModel()
   var action = model.action
   var value = model.key
@@ -124,5 +131,24 @@ ezP.DelegateSvg.Stmt.print_stmt.prototype.handleMenuItemActionFirst = function (
     Blockly.Events.setGroup(false)
     return true
   } else 
-  return ezP.DelegateSvg.Stmt.print_stmt.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
+  return ezP.DelegateSvg.Expr.print.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
 }
+
+/**
+ * Class for a DelegateSvg, print_stmt block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.print_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.print_stmt.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    key: ezP.Const.Input.EXPRESSION,
+    wrap: ezP.T3.Expr.print,
+  }
+}
+goog.inherits(ezP.DelegateSvg.Stmt.print_stmt, ezP.DelegateSvg.Stmt)
+ezP.DelegateSvg.Manager.register('print_stmt')
+

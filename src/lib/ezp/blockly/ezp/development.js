@@ -208,7 +208,10 @@ ezP.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks = ezP.DelegateS
   ezP.T3.Expr.comprehension,
 ] , null/*ezP.T3.Expr.Check.expression*/)
 
+ezP.DelegateSvg.Expr.input.workspaceBlocks = 
 ezP.DelegateSvg.Stmt.print_stmt.workspaceBlocks = ezP.Do.arraysMerged([
+  ezP.T3.Expr.input,
+  ezP.T3.Expr.print,
   ezP.T3.Stmt.print_stmt,
 ],
 ezP.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks,

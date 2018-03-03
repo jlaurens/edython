@@ -49,7 +49,7 @@ ezP.DelegateSvg.Manager.register('yield_expression_list')
 ezP.DelegateSvg.Expr.yield_from_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_from_expression.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.EXPR,
+    key: ezP.Const.Input.EXPRESSION,
     label: 'yield from',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression
@@ -70,7 +70,7 @@ ezP.DelegateSvg.Manager.register('yield_from_expression')
 ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_atom.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.EXPR,
+    key: ezP.Const.Input.EXPRESSION,
     start: '(',
     wrap: ezP.T3.Expr.yield_expression,
     end: ')',
@@ -163,7 +163,7 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.handleMenuItemActionFirst = func
 ezP.DelegateSvg.Stmt.yield_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.yield_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.last = {
-    key: ezP.Const.Input.EXPR,
+    key: ezP.Const.Input.EXPRESSION,
     wrap: ezP.T3.Expr.yield_expression,
   }
 }

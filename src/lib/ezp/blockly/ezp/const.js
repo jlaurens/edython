@@ -63,7 +63,7 @@ ezP.Const.Input = {
   ITEM: 'ITEM', /* used by delimited blocks */
   PRIMARY: 'PRIMARY',
   ATTRIBUTE: 'ATTRIBUTE',
-  ARG: 'ARG',
+  ARGUMENT: 'ARGUMENT',
   FIRST: 'FIRST',
   SECOND: 'SECOND',
   LIST: 'LIST',
@@ -74,7 +74,7 @@ ezP.Const.Input = {
   LOWER_BOUND: 'LOWER_BOUND',
   UPPER_BOUND: 'UPPER_BOUND',
   STRIDE: 'STRIDE',
-  EXPR: 'EXPR',// = ANY? NO!
+  EXPRESSION: 'EXPRESSION',// = ANY? NO!
   TARGET: 'TARGET',
   ANNOTATED: 'ANNOTATED',
   ASSIGNED: 'ASSIGNED',

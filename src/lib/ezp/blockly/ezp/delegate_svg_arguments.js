@@ -58,7 +58,7 @@ ezP.DelegateSvg.Expr.expression_star = function (prototypeName) {
   this.inputModel_ = {
     first: {
       label: '*',
-      key: ezP.Const.Input.EXPR,
+      key: ezP.Const.Input.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'value',
     }
@@ -82,7 +82,7 @@ ezP.DelegateSvg.Expr.expression_star_star = function (prototypeName) {
   this.inputModel_ = {
     first: {
       label: '**',
-      key: ezP.Const.Input.EXPR,
+      key: ezP.Const.Input.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'value',
     }

@@ -35,7 +35,7 @@ ezP.DelegateSvg.Expr.lambda_expression = function (prototypeName) {
       wrap: ezP.T3.Expr.parameter_list,
     },
     last: {
-      key: ezP.Const.Input.EXPR,
+      key: ezP.Const.Input.EXPRESSION,
       label: ':',
       check: ezP.T3.Expr.Check.expression.concat(ezP.T3.Expr.Check.expression_nocond),
       didConnect: function(c8n) {// `this` is c8n.ezp

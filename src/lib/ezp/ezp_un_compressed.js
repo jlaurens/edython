@@ -5977,7 +5977,7 @@ if("number"===typeof h){if(0>=h||h>b.length)throw Error('Block "'+this.type+'": 
 if(e[h])throw Error('Block "'+this.type+'": Message index %'+h+" duplicated.");
 e[h]=!0;
 f++;
-a.push(b[h-1])}else(h=h.trim())&&a.push(h)}if(f!==b.length)throw Error('Block "'+this.type+'": Message does not reference all '+b.length+" arg(s).");
+a.push(b[h-1])}else(h=h.trim())&&a.push(h)}if(f!==b.length)throw Error('Block "'+this.type+'": Message does not reference all '+b.length+" ARGUMENT(s).");
 
 a.length&&("string"===typeof a[a.length-1]||goog.string.startsWith(a[a.length-1].type,"field_"))&&(g={type:"input_dummy"},c&&(g.align=c),a.push(g));
 c={LEFT:Blockly.ALIGN_LEFT,RIGHT:Blockly.ALIGN_RIGHT,CENTRE:Blockly.ALIGN_CENTRE};

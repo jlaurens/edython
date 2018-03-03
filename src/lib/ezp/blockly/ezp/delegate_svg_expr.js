@@ -205,7 +205,7 @@ ezP.DelegateSvg.Expr.conditional_expression_concrete = function (prototypeName) 
   this.outputModel_.check = ezP.T3.Expr.conditional_expression_concrete
   this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.EXPR,
+      key: ezP.Const.Input.EXPRESSION,
       check: ezP.T3.Expr.Check.or_test,
       hole_value: 'name',
     },
@@ -239,7 +239,7 @@ ezP.DelegateSvg.Manager.register('conditional_expression_concrete')
 ezP.DelegateSvg.Expr.or_expr_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.or_expr_star.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.EXPR,
+    key: ezP.Const.Input.EXPRESSION,
     label: '*',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.or_expr
@@ -260,7 +260,7 @@ ezP.DelegateSvg.Manager.register('or_expr_star')
 ezP.DelegateSvg.Expr.or_expr_star_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.or_expr_star_star.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.EXPR,
+    key: ezP.Const.Input.EXPRESSION,
     label: '**',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.or_expr
@@ -281,7 +281,7 @@ ezP.DelegateSvg.Manager.register('or_expr_star_star')
 ezP.DelegateSvg.Expr.await_expr = function (prototypeName) {
   ezP.DelegateSvg.Expr.await_expr.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.EXPR,
+    key: ezP.Const.Input.EXPRESSION,
     label: 'await',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.primary
@@ -301,7 +301,7 @@ ezP.DelegateSvg.Manager.register('await_expr')
 ezP.DelegateSvg.Expr.not_test_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.not_test_concrete.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.EXPR,
+    key: ezP.Const.Input.EXPRESSION,
     label: 'not',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.not_test
@@ -696,3 +696,33 @@ ezP.DelegateSvg.Expr.any.prototype.fromDom = function (block, element) {
   var value = element.getAttribute('code')
   block.getField(ezP.Const.Field.CODE).setText(value)
 }
+
+
+
+/**
+ * Class for a DelegateSvg, input block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.input = function (prototypeName) {
+  ezP.DelegateSvg.Expr.input.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_ = {
+    first: {
+      dummy: 'input',
+      css_class: 'ezp-code-reserved',
+    },
+    last: {
+      start: '(',
+      key: ezP.Const.Input.ARGUMENT,
+      check: ezP.T3.Expr.Check.argument_any,
+      optional: true,
+      end: ')',
+    }
+  }
+  this.outputModel_.check = ezP.T3.Expr.call_expr
+}
+goog.inherits(ezP.DelegateSvg.Expr.input, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('input')
+

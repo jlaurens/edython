@@ -349,7 +349,7 @@ ezP.DelegateSvg.Expr.parameter_concrete = function (prototypeName) {
     hole_value: 'name',
   }
   this.inputModel_.last = {
-    key: ezP.Const.Input.EXPR,
+    key: ezP.Const.Input.EXPRESSION,
     label: ':',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,
@@ -375,7 +375,7 @@ ezP.DelegateSvg.Expr.defparameter_concrete = function (prototypeName) {
     hole_value: 'name',
   }
   this.inputModel_.last = {
-    key: ezP.Const.Input.EXPR,
+    key: ezP.Const.Input.EXPRESSION,
     label: '=',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,

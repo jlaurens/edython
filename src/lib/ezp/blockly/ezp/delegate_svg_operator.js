@@ -619,7 +619,7 @@ ezP.DelegateSvg.Expr.power_concrete = function (prototypeName) {
   this.outputModel_.check = ezP.T3.power_concrete
   this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.ARG,
+      key: ezP.Const.Input.ARGUMENT,
       check: ezP.T3.Expr.Check.await_or_primary,
       hole_value: 'name',
     },

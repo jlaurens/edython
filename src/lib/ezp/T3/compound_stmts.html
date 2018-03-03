@@ -438,14 +438,14 @@ that contains the function definition.  The result must be a callable, which is
 invoked with the function object as the only argument. The returned value is
 bound to the function name instead of the function object.  Multiple decorators
 are applied in nested fashion. For example, the following code</p>
-<div class="highlight-python3"><div class="highlight"><pre><span></span><span class="nd">@f1</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+<div class="highlight-python3"><div class="highlight"><pre><span></span><span class="nd">@f1</span><span class="p">(</span><span class="n">ARGUMENT</span><span class="p">)</span>
 <span class="nd">@f2</span>
 <span class="k">def</span> <span class="nf">func</span><span class="p">():</span> <span class="k">pass</span>
 </pre></div>
 </div>
 <p>is roughly equivalent to</p>
 <div class="highlight-python3"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">func</span><span class="p">():</span> <span class="k">pass</span>
-<span class="n">func</span> <span class="o">=</span> <span class="n">f1</span><span class="p">(</span><span class="n">arg</span><span class="p">)(</span><span class="n">f2</span><span class="p">(</span><span class="n">func</span><span class="p">))</span>
+<span class="n">func</span> <span class="o">=</span> <span class="n">f1</span><span class="p">(</span><span class="n">ARGUMENT</span><span class="p">)(</span><span class="n">f2</span><span class="p">(</span><span class="n">func</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>except that the original function is not temporarily bound to the name <code class="docutils literal"><span class="pre">func</span></code>.</p>
@@ -548,14 +548,14 @@ after the class is created and only for classes that were defined using
 the definition syntax.</p>
 <p>Class creation can be customized heavily using <a class="reference internal" href="datamodel.html#metaclasses"><span class="std std-ref">metaclasses</span></a>.</p>
 <p>Classes can also be decorated: just like when decorating functions,</p>
-<div class="highlight-python3"><div class="highlight"><pre><span></span><span class="nd">@f1</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+<div class="highlight-python3"><div class="highlight"><pre><span></span><span class="nd">@f1</span><span class="p">(</span><span class="n">ARGUMENT</span><span class="p">)</span>
 <span class="nd">@f2</span>
 <span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span> <span class="k">pass</span>
 </pre></div>
 </div>
 <p>is roughly equivalent to</p>
 <div class="highlight-python3"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span> <span class="k">pass</span>
-<span class="n">Foo</span> <span class="o">=</span> <span class="n">f1</span><span class="p">(</span><span class="n">arg</span><span class="p">)(</span><span class="n">f2</span><span class="p">(</span><span class="n">Foo</span><span class="p">))</span>
+<span class="n">Foo</span> <span class="o">=</span> <span class="n">f1</span><span class="p">(</span><span class="n">ARGUMENT</span><span class="p">)(</span><span class="n">f2</span><span class="p">(</span><span class="n">Foo</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>The evaluation rules for the decorator expressions are the same as for function
@@ -644,12 +644,12 @@ iterators.</p>
 <p>An <a class="reference internal" href="../glossary.html#term-asynchronous-context-manager"><span class="xref std std-term">asynchronous context manager</span></a> is a <a class="reference internal" href="../glossary.html#term-context-manager"><span class="xref std std-term">context manager</span></a> that is
 able to suspend execution in its <em>enter</em> and <em>exit</em> methods.</p>
 <p>The following code:</p>
-<div class="highlight-python3"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">EXPR</span> <span class="k">as</span> <span class="n">VAR</span><span class="p">:</span>
+<div class="highlight-python3"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">EXPRESSION</span> <span class="k">as</span> <span class="n">VAR</span><span class="p">:</span>
     <span class="n">BLOCK</span>
 </pre></div>
 </div>
 <p>Is semantically equivalent to:</p>
-<div class="highlight-python3"><div class="highlight"><pre><span></span><span class="n">mgr</span> <span class="o">=</span> <span class="p">(</span><span class="n">EXPR</span><span class="p">)</span>
+<div class="highlight-python3"><div class="highlight"><pre><span></span><span class="n">mgr</span> <span class="o">=</span> <span class="p">(</span><span class="n">EXPRESSION</span><span class="p">)</span>
 <span class="n">aexit</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">mgr</span><span class="p">)</span><span class="o">.</span><span class="fm">__aexit__</span>
 <span class="n">aenter</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">mgr</span><span class="p">)</span><span class="o">.</span><span class="fm">__aenter__</span><span class="p">(</span><span class="n">mgr</span><span class="p">)</span>
 
