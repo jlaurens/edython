@@ -51,7 +51,7 @@ ezP.DelegateSvg.List.prototype.renderDrawInput_ = function (io) {
 }
 
 /**
- * Render the fields of a tuple input, if relevant.
+ * Render the fields of a list input, if relevant.
  * @param {!Blockly.Block} The block.
  * @param {!Blockly.Input} Its input.
  * @private

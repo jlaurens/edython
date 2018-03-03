@@ -47,16 +47,6 @@ ezP.Block.prototype.dispose = function () {
 }
 
 /**
- * Append a tuple item value input row.
- * @return {!Blockly.Input} The input object created.
- */
-ezP.Block.prototype.tupleConsolidateEZP_ = function () {
-  if (this.ezp) {
-    this.ezp.tupleConsolidate(this)
-  }
-}
-
-/**
  * Add a value input, statement input or local variable to this block.
  * @param {number} type Either Blockly.INPUT_VALUE or Blockly.NEXT_STATEMENT or
  *     Blockly.DUMMY_INPUT.

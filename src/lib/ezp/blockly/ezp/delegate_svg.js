@@ -777,46 +777,6 @@ ezP.DelegateSvg.prototype.renderDrawDummyInput_ = function (io) {
 }
 
 /**
- * Render the fields of a tuple input, if relevant.
- * @param {!Blockly.Block} The block.
- * @param {!Blockly.Input} Its input.
- * @private
- */
-ezP.DelegateSvg.prototype.renderDrawTupleInput_ = function (io) {
-  if (!io.canTuple) {
-    return false
-  }
-  var tuple = io.input.ezpTuple
-  if (!tuple) {
-    return false
-  }
-  var c8n = io.input.connection
-  this.renderDrawFields_(io, true)
-  c8n.setOffsetInBlock(io.cursorX, 0)
-  if (c8n.isConnected()) {
-    var target = c8n.targetBlock()
-    var root = target.getSvgRoot()
-    if (root) {
-      var bBox = target.getHeightWidth()
-      root.setAttribute('transform', 'translate(' + io.cursorX + ', 0)')
-      io.cursorX += bBox.width
-      target.render()
-    }
-  } else if (tuple.isSeparator) {
-    var pw = this.carretPathDefWidth_(io.cursorX)
-    var w = pw.width
-    c8n.setOffsetInBlock(io.cursorX + w / 2, 0)
-    io.cursorX += w
-  } else {
-    pw = this.placeHolderPathDefWidth_(io.cursorX)
-    io.steps.push(pw.d)
-    io.cursorX += pw.width
-  }
-  this.renderDrawFields_(io, false)
-  return true
-}
-
-/**
  * Render the fields of a value input, if relevant.
  * @param io the input/output argument.
  * @private
