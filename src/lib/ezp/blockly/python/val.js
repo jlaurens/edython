@@ -72,25 +72,6 @@ Blockly.Python[ezP.Const.Expr.UNRY] = function (block) {
 
 Blockly.Python[ezP.Const.Expr.BOOL] = Blockly.Python[ezP.Const.Expr.OP]
 
-Blockly.Python[ezP.Const.Expr.TUPLE] = function (block) {
-  var ezp = block.ezp
-  var max = ezp.getInputTupleMax(block, 0)
-  var l = []
-  var i = 0
-  while (!max || i < max) { // eslint-disable-line no-unmodified-loop-condition
-    var name = 'TUPLE_0_' + i
-    var input = Blockly.Block.prototype.getInput.call(block, name)
-    if (input) {
-      var x = ezP.Python.valueToCode(block, name, Blockly.Python.ORDER_COLLECTION)
-      l.push(x.length ? x : ('MISSING_' + name))
-      ++i
-      continue
-    }
-    break
-  }
-  return [l.join(', '), Blockly.Python.ORDER_COLLECTION]
-}
-
 Blockly.Python[ezP.Const.Expr.RANGE] = function (block) {
   var code = Blockly.Python[ezP.Const.Expr.TUPLE](block)
   return ['range(' + code[0] + ')', Blockly.Python.ORDER_FUNCTION_CALL]

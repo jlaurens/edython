@@ -47,29 +47,6 @@ ezP.Block.prototype.dispose = function () {
 }
 
 /**
- * Add a value input, statement input or local variable to this block.
- * @param {number} type Either Blockly.INPUT_VALUE or Blockly.NEXT_STATEMENT or
- *     Blockly.DUMMY_INPUT.
- * @param {string} name Language-neutral identifier which may used to find this
- *     input again.  Should be unique to this block.
- * @return {!Blockly.Input} The input object created.
- * @private
- * @override
- */
-ezP.Block.prototype.appendInput_ = function (type, name) {
-  var input = ezP.Block.superClass_.appendInput_.call(this, type, name)
-  ezP.Input.setupEzpData(input)
-  if (type === Blockly.INPUT_VALUE) {
-    if (name.match(/^(?:TUPLE|S7R)_(?:\d|\*)+_(?:\d|\*)+$/g)) {
-      input.ezpTuple = input.ezpTuple || {}
-    } else if (name.match(/^(?:ITEM|S7R)_(?:\d|\*)+$/g)) {
-      input.ezpData.listed_ = true
-    }
-  }
-  return input
-}
-
-/**
  * The default implementation forwards to super then
  * lets the delegate handle special cases.
  * @param {boolean} hidden True if connections are hidden.

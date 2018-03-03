@@ -29,7 +29,6 @@ ezP.Input.setupEzpData = function (input, data) {
   if (!input.ezpData) {
     input.ezpData = {
       // sealed_: false, // blocks are not sealed
-      // listed_: false,// consolidator, whether the input belongs to a list
       // s7r_: false,// consolidator, whether the input is a separator
     }
     if (data) {

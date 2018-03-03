@@ -38,7 +38,6 @@ ezP.Type.Expr = {
   parameter_1_star: '8.2',
   parameter_keyed: '8.3',
   parameter_2_stars: '8.4',
-  TUPLE: '9',
 }
 
 ezP.Type.Expr.Provide = {

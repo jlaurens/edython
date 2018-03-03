@@ -666,7 +666,6 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
     canDummy: true,
     canValue: true,
     canStatement: true,
-    canTuple: true,
     canList: true,
     canForif: true,
     i: 0,
@@ -945,67 +944,6 @@ ezP.DelegateSvg.prototype.highlightConnection = function (c8n) {
  */
 ezP.DelegateSvg.prototype.getInput = function (block, name) {
   return undefined
-}
-
-/**
- * Fetches the named input object.
- * @param {!Block} block.
- * @param {string} comment.
- * @param {boolean} ignore not connected value input.
- * @private
- */
-ezP.DelegateSvg.prototype.assertBlockInputTuple__ = function (block, comment, ignore) {
-  var list = block.inputList
-  var i = 0
-  var input
-  while ((input = list[i]) && input.type === Blockly.DUMMY_INPUT) {
-    ++i
-  }
-  var first = i
-  var end = i = list.length
-  while (i > first && (input = list[--i]) && input.type === Blockly.DUMMY_INPUT) {
-    end = i
-  }
-  var max = this.getInputTupleMax(block, 0)
-  try {
-    goog.asserts.assert((end - first) % 2 === 1, 'Bad number of inputs ' + [first, end, list.length])
-    var n = Math.max(1, (end - first - 1) / 2)
-    if (max) {
-      goog.asserts.assert(n <= max, 'Limit overruled ' + [n, max])
-      for (i = first; (input = list[i]) && i < end; i += 2) {
-        if (input.type === Blockly.DUMMY_INPUT) {
-          break
-        }
-        var c8n = input.connection
-        if (n < max) {
-          goog.asserts.assert(input.activeConnectionEZP && c8n && c8n.ezp.s7r_ && !c8n.isConnected(), 'Bad separator at ' + [i, list.length, input.activeConnectionEZP, c8n, c8n.ezp.s7r_, !c8n.isConnected()])
-        } else {
-          goog.asserts.assert(!c8n && !input.activeConnectionEZP, 'Bad separator at ' + [i, list.length, c8n, !input.activeConnectionEZP])
-        }
-      }
-    } else {
-      for (i = first; (input = list[i]) && i < end; i += 2) {
-        if (input.type === Blockly.DUMMY_INPUT) {
-          break
-        }
-        c8n = input.connection
-        goog.asserts.assert(c8n.ezp.s7r_ && !c8n.isConnected(), 'Bad separator at ' + [i, list.length, c8n.ezp.s7r_, !c8n.isConnected()])
-      }
-    }
-    for (i = first + 1; (input = list[i]); i += 2) {
-      if (input.type === Blockly.DUMMY_INPUT) {
-        while ((input = list[++i])) {
-          goog.asserts.assert(input.type === Blockly.DUMMY_INPUT, 'No DUMMY_INPUT at ' + i + '<' + list.length)
-        }
-        break
-      }
-      c8n = input.connection
-      goog.asserts.assert(!c8n.ezp.s7r_ && (ignore || c8n.isConnected()), 'Bad input value at ' + [i, list.length, !c8n.ezp.s7r_, c8n.isConnected()])
-    }
-  } catch (e) {
-    throw e
-  }
-  console.log(comment)
 }
 
 /**

@@ -13,7 +13,6 @@
 
 goog.provide('ezP.Delegate')
 goog.provide('ezP.Mixin')
-goog.provide('ezP.TupleConsolidator')
 
 goog.require('ezP.Helper')
 goog.require('Blockly.Blocks')
@@ -319,19 +318,9 @@ ezP.Delegate.prototype.hasNextStatement_ = function (block) {
 }
 
 /**
- * @param {!Block} block.
- * @return {Number} The max number of inputs. null for unlimited.
- * @private
- */
-ezP.Delegate.prototype.getInputTupleMax = function (block, grp) {
-  return null
-}
-
-/**
  * The default implementation does nothing.
  * @param {!Blockly.Block} block.
  * @param {boolean} hidden True if connections are hidden.
- * @override
  */
 ezP.Delegate.prototype.setConnectionsHidden = function (block, hidden) {
 }
