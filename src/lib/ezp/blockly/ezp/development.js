@@ -267,6 +267,21 @@ ezP.DelegateSvg.Expr.funcdef_simple.workspaceBlocks = ezP.Do.arraysMerged([
 ],
 ezP.DelegateSvg.Expr.parameter_list.workspaceBlocks)
 
+ezP.DelegateSvg.Stmt.assignment_stmt.workspaceBlocks =
+ezP.DelegateSvg.Expr.target_list.workspaceBlocks = ezP.Do.arraysMerged([
+  ezP.T3.Stmt.assignment_stmt,
+  ezP.T3.Expr.assignment_expression,
+  ezP.T3.Expr.target_list,
+  ezP.T3.Expr.void_target_list,
+  ezP.T3.Expr.identifier,
+  ezP.T3.Expr.yield_expression,
+],
+ezP.T3.Expr.Check.assigned_list,
+ezP.T3.Expr.Check.target_unstar,
+ezP.T3.Expr.Check.target,
+ezP.T3.Expr.Check.slice_item,
+ezP.T3.Expr.Check.assigned_expression)
+
 // in progress
 
 ezP.DelegateSvg.Expr.power_concrete.workspaceBlocks = ezP.Do.arraysMerged([

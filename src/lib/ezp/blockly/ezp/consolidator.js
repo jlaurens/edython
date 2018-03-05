@@ -568,3 +568,26 @@ ezP.Consolidator.List.Singled.prototype.consolidate_single = function(io) {
   return false
 }
 
+
+/**
+ * List consolidator for argument list.
+ * Rules are a bit stronger than python requires originally
+ * 1) starred expression only at the end of the list
+ * 2) only one such expression
+ * Main entry: consolidate
+ * @param {!String} single, the required type for a single element....
+ */
+ezP.Consolidator.List.Target = function(D) {
+  var d = {}
+  goog.mixin(d, ezP.Consolidator.List.Target.data)
+  goog.mixin(d, D)
+  ezP.Consolidator.List.Target.superClass_.constructor.call(this, d)
+}
+goog.inherits(ezP.Consolidator.List.Target, ezP.Consolidator.List)
+
+ezP.Consolidator.List.Target.data = {
+  hole_value: 'name',
+  check: null,
+  empty: false,
+  sep: ',',
+}

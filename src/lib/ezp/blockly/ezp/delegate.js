@@ -343,7 +343,7 @@ ezP.Delegate.prototype.getVars = function (block) {
   var vars = []
   for (var i = 0, input; (input = block.inputList[i]); i++) {
     for (var j = 0, field; (field = input.fieldRow[j]); j++) {
-      if (field instanceof ezP.FieldVariable) {
+      if (field instanceof ezP.FieldIdentfier) {
         vars.push(field.getText())
       }
     }

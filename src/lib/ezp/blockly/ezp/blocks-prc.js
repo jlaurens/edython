@@ -16,17 +16,6 @@ goog.provide('ezP.Blocks.prc')
 
 goog.require('ezP.DelegateSvg.Group')
 
-// Blockly.Blocks[ezP.Const.Prc.ANY] = {
-//   init: function () {
-//     this.appendDummyInput().appendField(new ezP.FieldTextInput(''), 'STT')
-//     this.appendStatementInput('DO').setCheck(ezP.Type.Stmt.Check.after_any)
-//     this.setInputsInline(true)
-//     this.setTooltip('')
-//     this.setHelpUrl('')
-//   }
-// }
-// Blockly.Blocks[ezP.Const.Prc.MAIN] = Blockly.Blocks[ezP.Const.Prc.ANY]
-
 
 // Blockly.Blocks[ezP.Const.Prc.CLASS] = {
 //   init: function () {

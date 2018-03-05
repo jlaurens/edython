@@ -12,9 +12,6 @@
 'use strict'
 
 goog.provide('ezP.FieldIdentifier')
-goog.provide('ezP.FieldVariable.Annotation')
-goog.provide('ezP.FieldVariable.Default')
-goog.provide('ezP.FieldVariable.Menu')
 
 goog.require('ezP.FieldCodeInput')
 goog.require('ezP.Style')
@@ -93,7 +90,6 @@ ezP.FieldIdentifier.prototype.deserializeXml = function (xml) {
   this.setValue(variable.name)
 }
 
-
 /**
  * Create and show a text input editor that is a prompt (usually a popup).
  * Mobile browsers have issues with in-line textareas (focus and keyboards).
@@ -101,7 +97,7 @@ ezP.FieldIdentifier.prototype.deserializeXml = function (xml) {
  */
 ezP.FieldIdentifier.prototype.showPromptEditor_ = function () {
   var fieldText = this
-  var prompt = ezP.Msg.RENAME_IDENTIFIER_TITLE.replace('%1', this.text_)
+  var prompt = ezP.Msg.IDENTIFIER_RENAME_TITLE.replace('%1', this.text_)
   Blockly.prompt(prompt, this.text_,
     function (newValue) {
       if (fieldText.sourceBlock_) {
@@ -115,7 +111,7 @@ ezP.FieldIdentifier.prototype.showPromptEditor_ = function () {
  * Called when focusing away from the text field.
  * @param {string} newName The new variable name.
  * @private
- * @this ezP.FieldVariable
+ * @this ezP.FieldIdentifier
  */
 ezP.FieldIdentifier.prototype.onFinishEditing_ = function (newName) {
   var oldName = this.savedValue_
@@ -142,3 +138,19 @@ ezP.FieldIdentifier.prototype.showInlineEditor_ = function(optQuietInput) {
   this.savedValue_ = this.getValue()
   ezP.FieldIdentifier.superClass_.showInlineEditor_.call(this, optQuietInput)
 }
+
+ezP.FieldIdentifier.prototype.showIdentifierEditor = function(a) {
+  this.workspace_=this.sourceBlock_.workspace
+  a=a||!1
+  !a&&(goog.userAgent.MOBILE||goog.userAgent.ANDROID||goog.userAgent.IPAD)?this.showIdentifierPromptEditor_():(this.isEditingIdentifier_=!0,this.showIdentifierInlineEditor_(a))
+}
+
+ezP.FieldIdentifier.prototype.showIdentifierPromptEditor_ = function(){
+  var a=this,b=ezP.Msg.IDENTIFIER_RENAME_TITLE.replace("%1",this.text_)
+  Blockly.prompt(b, this.text_, function(b){
+    a.sourceBlock_&&(b=a.callValidator(b));
+    a.setValue(b)
+  })
+}
+
+ezP.FieldIdentifier.prototype.showIdentifierInlineEditor_ = ezP.FieldIdentifier.prototype.showInlineEditor_

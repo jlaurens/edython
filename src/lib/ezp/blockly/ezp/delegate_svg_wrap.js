@@ -16,66 +16,6 @@ goog.provide('ezP.DelegateSvg.Wrap')
 goog.require('ezP.DelegateSvg.Stmt')
 
 /**
- * Class for a DelegateSvg, assignment_expression block.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.assignment_expression = function (prototypeName) {
-  ezP.DelegateSvg.Expr.assignment_expression.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_ = {
-    first: {
-      key: ezP.Const.Input.LHS,
-      wrap: ezP.T3.Expr.target_list,
-    },
-    last: {
-      key: ezP.Const.Input.RHS,
-      label: '=',
-      check: ezP.T3.Expr.Check.assigned_expression,
-    },
-  }
-  this.outputModel_.check = ezP.T3.Expr.assignment_expression
-}
-goog.inherits(ezP.DelegateSvg.Expr.assignment_expression, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register('assignment_expression')
-
-/**
- * Class for a DelegateSvg, expression_stmt.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Stmt.expression_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.expression_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.last = {
-    key: ezP.Const.Input.LIST,
-    wrap: ezP.T3.Expr.non_void_starred_item_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.expression_stmt, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('expression_stmt')
-
-/**
- * Class for a DelegateSvg, assignment_stmt.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Stmt.assignment_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.assignment_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.last = {
-    key: ezP.Const.Input.EXPRESSION,
-    wrap: ezP.T3.Expr.assignment_expression,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.assignment_stmt, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('assignment_stmt')
-
-/**
  * Class for a DelegateSvg, del_stmt.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing

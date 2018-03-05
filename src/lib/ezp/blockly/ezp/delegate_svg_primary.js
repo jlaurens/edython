@@ -29,7 +29,7 @@ ezP.DelegateSvg.Primary = function (prototypeName) {
     key: ezP.Const.Input.PRIMARY,
     check: ezP.T3.Expr.Check.primary,
     plugged: ezP.T3.Expr.primary,
-    hole_value: 'name',
+    hole_value: 'primary',
   }
 }
 goog.inherits(ezP.DelegateSvg.Primary, ezP.DelegateSvg.Expr)

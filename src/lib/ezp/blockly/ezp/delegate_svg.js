@@ -290,11 +290,6 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
  * @param {!Blockly.Block} block to be initialized..
  */
 ezP.DelegateSvg.prototype.deinitBlock = function(block) {
-  var menu = block.workspace.ezp.menuVariable
-  var ezp = menu.ezp
-  if (ezp.listeningBlock === block) {
-    menu.setVisible(false, true)
-  }
   goog.dom.removeNode(this.svgPathShape_)
   this.svgPathShape_ = undefined
   goog.dom.removeNode(this.svgPathContour_)
@@ -738,11 +733,14 @@ ezP.DelegateSvg.prototype.renderDrawInput_ = function (io) {
  */
 ezP.DelegateSvg.prototype.renderDrawFields_ = function (io, start) {
   var here = io.cursorX
+  io.endsWithCharacter = false
+  var lastField = null
   for (var _ = 0; (io.field = io.input.fieldRow[_]); ++_) {
     if (!!start === !io.field.ezpData.suffix) {
       if (io.field.isVisible() && io.field.getDisplayText_().length>0) {
         var root = io.field.getSvgRoot()
         if (root) {
+          lastField = io.field
           var ezp = io.field.ezpData
           var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
           root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
@@ -757,6 +755,9 @@ ezP.DelegateSvg.prototype.renderDrawFields_ = function (io, start) {
         }
       }          
     }
+  }
+  if (start && lastField && /^.*[a-zA-Z]$/.test(lastField.getValue())) {
+    io.endsWithCharacter = true
   }
   return here - io.cursorX
 }
@@ -803,7 +804,9 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
               for (var i = 0; i<input.fieldRow.length; ++i) {
                 var value = input.fieldRow[i].getValue()
                 if (value.length) {
-                  io.cursorX += ezP.Font.space
+                  if (io.endsWithCharacter) {
+                    io.cursorX += ezP.Font.space
+                  }
                   c8n.setOffsetInBlock(io.cursorX, 0)
                   done = true
                   break
@@ -1399,7 +1402,7 @@ ezP.DelegateSvg.prototype.changeWrapType = function (block, key, newType) {
     if (newType != oldType) {
       Blockly.Events.setGroup(true)
       if (target) {
-  //      target.unplug()
+        target.unplug()
         target.dispose()
       }
       this.completeWrappedInput_(block, input, newType)

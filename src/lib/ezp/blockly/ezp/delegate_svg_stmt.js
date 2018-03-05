@@ -477,3 +477,4 @@ ezP.DelegateSvg.Stmt.any_stmt = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.any_stmt, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Manager.register('any_stmt')
+

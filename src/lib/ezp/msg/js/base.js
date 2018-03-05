@@ -17,7 +17,7 @@ goog.require('ezP')
 
 /** @export */ ezP.Msg.RENAME = 'Renommer'
 
-/** @export */ ezP.Msg.RENAME_IDENTIFIER_TITLE = "Renommer la '%1' en :"
+/** @export */ ezP.Msg.IDENTIFIER_RENAME_TITLE = "Renommer la '%1' en :"
 
 /** @export */ ezP.Msg.CONNECT_MAIN_BLOCK_DLG_TITLE = 'Connecter ce bloc principal'
 /** @export */ ezP.Msg.CONNECT_MAIN_BLOCK_DLG_CONTENT = "Glisser des blocs d'instructions et les connecter sous ce bloc principal."

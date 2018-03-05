@@ -14,7 +14,6 @@
 goog.provide('ezP.DelegateSvg.Identifier')
 
 goog.require('ezP.DelegateSvg.Expr')
-goog.require('ezP.FieldVariable')
 
 /**
  * Class for a DelegateSvg, identifier block.
@@ -35,7 +34,7 @@ ezP.DelegateSvg.Expr.identifier = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.identifier, ezP.DelegateSvg.Expr)
 ezP.Delegate.Manager.register('identifier')
 
-ezP.ID.RENAME_IDENTIFIER = 'RENAME_IDENTIFIER'
+ezP.ID.IDENTIFIER_RENAME = 'IDENTIFIER_RENAME'
 
 ezP.ID.CHANGE_VARIABLE = 'CHANGE_VARIABLE'
 ezP.ID.RENAME_VARIABLE = 'RENAME_VARIABLE'
@@ -81,7 +80,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuFirst_ = function (
   var menu = mgr.menu
   var menuItem = new ezP.MenuItem(
     ezP.Msg.RENAME,
-    [ezP.ID.RENAME_IDENTIFIER]);
+    [ezP.ID.IDENTIFIER_RENAME]);
   mgr.addChild(menuItem, true);
   mgr.shouldSeparate()
   ezP.DelegateSvg.Expr.identifier.superClass_.populateContextMenuFirst_.call(this, block, mgr)
@@ -99,8 +98,8 @@ ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuFirst_ = function (
 ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
   var model = event.target.getModel()
   var action = model[0]
-  if (action == ezP.ID.RENAME_IDENTIFIER) {
-    block.ezp.inputs.first.fieldIdentifier.showIdentifierEditor()
+  if (action == ezP.ID.IDENTIFIER_RENAME) {
+    block.ezp.inputs.first.fieldIdentifier.showEditor_()
     return true
   }
   return ezP.DelegateSvg.Expr.identifier.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
@@ -193,17 +192,3 @@ ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionMiddle = function 
         return ezP.DelegateSvg.Expr.identifier.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
   }
 }
-
-ezP.FieldIdentifier.prototype.showIdentifierEditor=function(a){this.workspace_=this.sourceBlock_.workspace;
-  a=a||!1;
-  !a&&(goog.userAgent.MOBILE||goog.userAgent.ANDROID||goog.userAgent.IPAD)?this.showIdentifierPromptEditor_():(this.isEditingIdentifier_=!0,this.showIdentifierInlineEditor_(a))};
-  
-  ezP.FieldIdentifier.prototype.showIdentifierPromptEditor_=function(){var a=this,b=ezP.Msg.RENAME_IDENTIFIER_TITLE.replace("%1",this.text_);
-  Blockly.prompt(b,this.text_,function(b){a.sourceBlock_&&(b=a.callValidator(b));
-  a.setValue(b)})};
-
-  ezP.FieldVariable.prototype.onFinishEditing_=function(a){this.isEditingIdentifier_=!1;
-  var b=this.sourceBlock_.workspace,c=b.getVariable(a);
-  c?this.setText(c.name):b.renameVariableById(this.getValue(),a)};
-  ezP.FieldIdentifier.prototype.showIdentifierInlineEditor_=ezP.FieldTextInput.prototype.showInlineEditor_;
-  

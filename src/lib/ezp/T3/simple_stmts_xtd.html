@@ -19,8 +19,9 @@ target          ::=  identifier
                      | slicing
                      | "*" target
 <pre>
-assignment_expression ::=  target_list "=" assigned_expression
-assigned_expression ::= starred_expression | yield_expression | assignment_expression
+assignment_expression ::=  target_list "=" assigned_list
+assigned_list ::= starred_item | assigned_single
+assigned_single ::= yield_expression | assignment_expression
 assignment_stmt ::= assignment_expression
 </pre>
 <pre>
@@ -32,15 +33,16 @@ aug_assigned ::= expression_list | yield_expression
 </pre>
 augmented_assignment_stmt ::=  augtarget augop (expression_list | yield_expression)
 <pre>
-target ::= identifier
-  | parenth_target_list
-  | bracket_target_list
-  | attributeref
-  | subscription
-  | slicing
-  | starred_target
-bracket_target_list ::= &quot;[&quot; void_target_list &quot;]&quot;
+target ::= target_unstar | target_star
+target_unstar ::=  identifier
+                     | parenth_target_list
+                     | bracket_target_list
+                     | attributeref
+                     | subscription
+                     | slicing
 parenth_target_list ::= &quot;(&quot; void_target_list &quot;)&quot;
+bracket_target_list ::= &quot;[&quot; void_target_list &quot;]&quot;
+void_target_list ::= [target_list]
 target_star ::= "*" target
 expression_star ::= "*" expression
 something_star ::= "*" something

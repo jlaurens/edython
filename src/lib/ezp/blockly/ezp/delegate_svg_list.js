@@ -228,28 +228,6 @@ ezP.DelegateSvg.List.prototype.getItemAtIndex = function(block, i) {
 }
 
 /**
- * Class for a DelegateSvg, target_list block.
- * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.target_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.target_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.list = {
-    check: ezP.T3.Expr.Check.target_list,
-    empty: false,
-    sep: ',',
-    hole_value: 'name',
-  }
-  this.outputModel_.check = ezP.T3.Expr.target_list
-}
-goog.inherits(ezP.DelegateSvg.Expr.target_list, ezP.DelegateSvg.List)
-ezP.DelegateSvg.Manager.register('target_list')
-
-/**
  * Class for a DelegateSvg, optional expression_list block.
  * This block may be sealed.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
@@ -314,7 +292,6 @@ ezP.DelegateSvg.Expr.starred_item_list = function (prototypeName) {
   this.outputModel_.check = ezP.T3.Expr.starred_item_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.starred_item_list, ezP.DelegateSvg.List)
-
 ezP.DelegateSvg.Manager.register('starred_item_list')
 
 /**
