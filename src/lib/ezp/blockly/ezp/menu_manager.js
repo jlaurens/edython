@@ -508,147 +508,142 @@ ezP.MenuManager.prototype.handleAction_movable_parent_module = ezP.MenuManager.p
  * @private
  */
 ezP.MenuManager.prototype.get_movable_parent_menuitem_content = function (type, subtype) {
-  var F = function(text,css) {
-    return goog.dom.createDom(goog.dom.TagName.SPAN, css,
-      goog.dom.createTextNode(text),
-    )
-  }
   switch(type) {
     case ezP.T3.Expr.parent_module: 
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      F('.', 'ezp-code'),
+      ezP.Do.createSPAN('.', 'ezp-code'),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
     )
     case ezP.T3.Expr.module_concrete:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      F('module', 'ezp-code-placeholder'),
-      F('.', 'ezp-code'),
+      ezP.Do.createSPAN('module', 'ezp-code-placeholder'),
+      ezP.Do.createSPAN('.', 'ezp-code'),
     )
     case ezP.T3.Expr.attributeref:
     switch(subtype) {
-      case ezP.Const.Input.PRIMARY:
+      case ezP.Key.PRIMARY:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        F('.', 'ezp-code'),
-        F('attribute', 'ezp-code-placeholder'),
+        ezP.Do.createSPAN('.', 'ezp-code'),
+        ezP.Do.createSPAN('attribute', 'ezp-code-placeholder'),
         goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
       )
-      // case ezP.Const.Input.ATTRIBUTE:
+      // case ezP.Key.ATTRIBUTE:
       default:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        F('primary', 'ezp-code-placeholder'),
-        F('.', 'ezp-code'),
+        ezP.Do.createSPAN('primary', 'ezp-code-placeholder'),
+        ezP.Do.createSPAN('.', 'ezp-code'),
         goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
       )
     }
     case ezP.T3.Expr.parameter_concrete:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      F(': ', 'ezp-code'),
-      F('…', 'ezp-code-placeholder'),
+      ezP.Do.createSPAN(': ', 'ezp-code'),
+      ezP.Do.createSPAN('…', 'ezp-code-placeholder'),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
     )
     case ezP.T3.Expr.defparameter_concrete:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      F('= ', 'ezp-code'),
-      F('…', 'ezp-code-placeholder'),
+      ezP.Do.createSPAN('= ', 'ezp-code'),
+      ezP.Do.createSPAN('…', 'ezp-code-placeholder'),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
     )
     case ezP.T3.Expr.proper_slice:
     switch(subtype) {
-      case ezP.Const.Input.LOWER_BOUND:
+      case ezP.Key.LOWER_BOUND:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        F(':', 'ezp-code'),
-        F('…', 'ezp-code-placeholder'),
-        F(':', 'ezp-code'),
-        F('…', 'ezp-code-placeholder'),
+        ezP.Do.createSPAN(':', 'ezp-code'),
+        ezP.Do.createSPAN('…', 'ezp-code-placeholder'),
+        ezP.Do.createSPAN(':', 'ezp-code'),
+        ezP.Do.createSPAN('…', 'ezp-code-placeholder'),
         goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
       )
-      case ezP.Const.Input.UPPER_BOUND:
+      case ezP.Key.UPPER_BOUND:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        F('…', 'ezp-code-placeholder'),
-        F(':', 'ezp-code'),
+        ezP.Do.createSPAN('…', 'ezp-code-placeholder'),
+        ezP.Do.createSPAN(':', 'ezp-code'),
         goog.dom.createTextNode(' '+ezP.Msg.AND+' '),
-        F(':', 'ezp-code'),
-        F('…', 'ezp-code-placeholder'),
+        ezP.Do.createSPAN(':', 'ezp-code'),
+        ezP.Do.createSPAN('…', 'ezp-code-placeholder'),
         goog.dom.createTextNode(' '+ezP.Msg.AROUND),
       )
-      case ezP.Const.Input.STRIDE:
+      case ezP.Key.STRIDE:
       default:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        F('…', 'ezp-code-placeholder'),
-        F(':', 'ezp-code'),
-        F('…', 'ezp-code-placeholder'),
-        F(':', 'ezp-code'),
+        ezP.Do.createSPAN('…', 'ezp-code-placeholder'),
+        ezP.Do.createSPAN(':', 'ezp-code'),
+        ezP.Do.createSPAN('…', 'ezp-code-placeholder'),
+        ezP.Do.createSPAN(':', 'ezp-code'),
         goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
       )
     }
     case ezP.T3.Expr.dotted_funcname_concrete:
     switch(subtype) {
-      case ezP.Const.Input.NAME:
+      case ezP.Key.NAME:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        F('parent', 'ezp-code-placeholder'),
-        F('.', 'ezp-code'),
+        ezP.Do.createSPAN('parent', 'ezp-code-placeholder'),
+        ezP.Do.createSPAN('.', 'ezp-code'),
         goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
       )
-      case ezP.Const.Input.PARENT:
+      case ezP.Key.PARENT:
       default:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        F('.', 'ezp-code'),
-        F('name', 'ezp-code-placeholder'),
+        ezP.Do.createSPAN('.', 'ezp-code'),
+        ezP.Do.createSPAN('name', 'ezp-code-placeholder'),
         goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
       )
     }
     case ezP.T3.Expr.slicing:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      F('[', 'ezp-code'),
-      F('…', 'ezp-code-placeholder'),
-      F(']', 'ezp-code'),
+      ezP.Do.createSPAN('[', 'ezp-code'),
+      ezP.Do.createSPAN('…', 'ezp-code-placeholder'),
+      ezP.Do.createSPAN(']', 'ezp-code'),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
     )
     case ezP.T3.Expr.call_expr:
     case ezP.T3.Expr.decorator_call_expr:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      F('(', 'ezp-code'),
-      F('…', 'ezp-code-placeholder'),
-      F(')', 'ezp-code'),
+      ezP.Do.createSPAN('(', 'ezp-code'),
+      ezP.Do.createSPAN('…', 'ezp-code-placeholder'),
+      ezP.Do.createSPAN(')', 'ezp-code'),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
     )
     case ezP.T3.Expr.funcdef_typed:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      F('->', 'ezp-code'),
-      F('…', 'ezp-code-placeholder'),
+      ezP.Do.createSPAN('->', 'ezp-code'),
+      ezP.Do.createSPAN('…', 'ezp-code-placeholder'),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
     )
     case ezP.T3.Expr.module_as_concrete:
     case ezP.T3.Expr.import_identifier_as_concrete:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      F('as', 'ezp-code-reserved'),
-      F(' alias', 'ezp-code-placeholder'),
+      ezP.Do.createSPAN('as', 'ezp-code-reserved'),
+      ezP.Do.createSPAN(' alias', 'ezp-code-placeholder'),
     )
     case ezP.T3.Expr.u_expr_concrete:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      F('-', 'ezp-code'),
+      ezP.Do.createSPAN('-', 'ezp-code'),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
     ) 
     case ezP.T3.Expr.parenth_form:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      F('(', 'ezp-code'),
+      ezP.Do.createSPAN('(', 'ezp-code'),
       goog.dom.createTextNode(' '+ezP.Msg.AND+' '),
-      F(')', 'ezp-code'),
+      ezP.Do.createSPAN(')', 'ezp-code'),
       goog.dom.createTextNode(' '+ezP.Msg.AROUND),
     )
     case ezP.T3.Expr.list_display:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      F('[', 'ezp-code'),
+      ezP.Do.createSPAN('[', 'ezp-code'),
       goog.dom.createTextNode(' '+ezP.Msg.AND+' '),
-      F(']', 'ezp-code'),
+      ezP.Do.createSPAN(']', 'ezp-code'),
       goog.dom.createTextNode(' '+ezP.Msg.AROUND),
     )
     case ezP.T3.Expr.set_display:
     case ezP.T3.Expr.dict_display:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      F('{', 'ezp-code'),
+      ezP.Do.createSPAN('{', 'ezp-code'),
       goog.dom.createTextNode(' '+ezP.Msg.AND+' '),
-      F('}', 'ezp-code'),
+      ezP.Do.createSPAN('}', 'ezp-code'),
       goog.dom.createTextNode(' '+ezP.Msg.AROUND),
     )
     default:
@@ -840,11 +835,11 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
   }
   F.call(this, [
     ezP.T3.Expr.u_expr_concrete,
-    [ezP.T3.Expr.call_expr, ezP.Const.Input.PRIMARY],
+    [ezP.T3.Expr.call_expr, ezP.Key.PRIMARY],
     ezP.T3.Expr.slicing,
-    [ezP.T3.Expr.attributeref, ezP.Const.Input.ATTRIBUTE],
-    [ezP.T3.Expr.attributeref, ezP.Const.Input.PRIMARY],
-    [ezP.T3.Expr.decorator_call_expr, ezP.Const.Input.NAME],
+    [ezP.T3.Expr.attributeref, ezP.Key.ATTRIBUTE],
+    [ezP.T3.Expr.attributeref, ezP.Key.PRIMARY],
+    [ezP.T3.Expr.decorator_call_expr, ezP.Key.NAME],
   ], true)
   this.shouldSeparateInsert()
   this.shouldSeparateRemove()
@@ -853,7 +848,7 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
     ezP.T3.Expr.list_display,
     ezP.T3.Expr.set_display,
     ezP.T3.Expr.dict_display,
-    [ezP.T3.Expr.funcdef_typed, ezP.Const.Input.FUNCDEF],
+    [ezP.T3.Expr.funcdef_typed, ezP.Key.FUNCDEF],
   ], true)
   this.shouldSeparateInsert()
   this.shouldSeparateRemove()
@@ -863,11 +858,11 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
     ezP.T3.Expr.module_as_concrete,
     ezP.T3.Expr.import_identifier_as_concrete,
     ezP.T3.Expr.dotted_funcname_concrete,
-    [ezP.T3.Expr.parameter_concrete, ezP.Const.Input.NAME],
-    [ezP.T3.Expr.defparameter_concrete, ezP.Const.Input.NAME],
-    [ezP.T3.Expr.proper_slice, ezP.Const.Input.LOWER_BOUND],
-    [ezP.T3.Expr.proper_slice, ezP.Const.Input.UPPER_BOUND],
-    [ezP.T3.Expr.proper_slice, ezP.Const.Input.STRIDE],
+    [ezP.T3.Expr.parameter_concrete, ezP.Key.NAME],
+    [ezP.T3.Expr.defparameter_concrete, ezP.Key.NAME],
+    [ezP.T3.Expr.proper_slice, ezP.Key.LOWER_BOUND],
+    [ezP.T3.Expr.proper_slice, ezP.Key.UPPER_BOUND],
+    [ezP.T3.Expr.proper_slice, ezP.Key.STRIDE],
   ])
 }
 

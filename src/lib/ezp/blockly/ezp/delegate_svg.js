@@ -1222,7 +1222,7 @@ ezP.DelegateSvg.prototype.insertBlockAbove = function(block, abovePrototypeName,
     var aboveInput = blockAbove.getInput(aboveInputName)
     goog.asserts.assert(aboveInput, 'No input named '+aboveInputName)
   } else {
-    aboveInput = blockAbove.getInput(ezP.Const.Input.LIST)
+    aboveInput = blockAbove.getInput(ezP.Key.LIST)
     var list = aboveInput.connection.targetBlock()
     goog.asserts.assert(list, 'Missing list block inside '+block.type)
     // the list has many potential inputs,

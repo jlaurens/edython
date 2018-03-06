@@ -52,7 +52,7 @@ ezP.Const.Field = {
   CLASS: 'CLASS',
   NCSTR: 'NCSTR'
 }
-ezP.Const.Input = {
+ezP.Key = {
   NAME: 'NAME',
   FOR: 'FOR',
   IN: 'IN',
@@ -93,6 +93,7 @@ ezP.Const.Input = {
   SOURCE: 'SOURCE',
   POWER: 'POWER',
   FUNCDEF: 'FUNCDEF',
+  CLASSDEF: 'CLASSDEF',
 
   WRAP: 'WRAP',
   

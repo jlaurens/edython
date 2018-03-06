@@ -27,7 +27,7 @@ goog.require('ezP.DelegateSvg.Stmt')
 ezP.DelegateSvg.Expr.target_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.target_star.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.EXPRESSION,
+    key: ezP.Key.EXPRESSION,
     label: '*',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.target
@@ -217,7 +217,7 @@ ezP.DelegateSvg.Manager.register('void_target_list')
 ezP.DelegateSvg.Expr.parenth_target_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.parenth_target_list.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.EXPRESSION,
+    key: ezP.Key.EXPRESSION,
     start: '(',
     end: ')',
     wrap: ezP.T3.Expr.void_target_list,
@@ -239,7 +239,7 @@ ezP.DelegateSvg.Manager.register('parenth_target_list')
 ezP.DelegateSvg.Expr.bracket_target_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.bracket_target_list.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.EXPRESSION,
+    key: ezP.Key.EXPRESSION,
     start: '[',
     end: ']',
     wrap: ezP.T3.Expr.void_target_list,
@@ -260,11 +260,11 @@ ezP.DelegateSvg.Expr.assignment_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.assignment_expression.superClass_.constructor.call(this, prototypeName)
   this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.LHS,
+      key: ezP.Key.LHS,
       wrap: ezP.T3.Expr.target_list,
     },
     last: {
-      key: ezP.Const.Input.RHS,
+      key: ezP.Key.RHS,
       label: '=',
       wrap: ezP.T3.Expr.assigned_list,
     },
@@ -286,7 +286,7 @@ ezP.DelegateSvg.Manager.register('assignment_expression')
 ezP.DelegateSvg.Stmt.assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.assignment_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.last = {
-    key: ezP.Const.Input.EXPRESSION,
+    key: ezP.Key.EXPRESSION,
     wrap: ezP.T3.Expr.assignment_expression,
   }
 }

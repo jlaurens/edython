@@ -159,16 +159,16 @@ ezP.DelegateSvg.Stmt.annotated_assignment_stmt = function (prototypeName) {
   //annotated_assignment_stmt ::=  augtarget ":" expression ["=" expression]
   this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.TARGET,
+      key: ezP.Key.TARGET,
       check: ezP.T3.Expr.Check.augtarget
     },
     middle: {
-      key: ezP.Const.Input.ANNOTATED,
+      key: ezP.Key.ANNOTATED,
       check: ezP.T3.Expr.Check.expression,
       label: ':'
     },
     last: {
-      key: ezP.Const.Input.ASSIGNED,
+      key: ezP.Key.ASSIGNED,
       check: ezP.T3.Expr.Check.expression,
       label: '='
     }
@@ -232,12 +232,12 @@ ezP.DelegateSvg.Stmt.assert_stmt = function (prototypeName) {
     first: {
       label: 'assert',
       css_class: 'ezp-code-reserved',
-      key: ezP.Const.Input.ASSERT,
+      key: ezP.Key.ASSERT,
       check: ezP.T3.Expr.Check.expression
     },
     last: {
       label: ',',
-      key: ezP.Const.Input.EXPRESSION,
+      key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       optional: true
     }
@@ -314,14 +314,14 @@ ezP.DelegateSvg.Stmt.raise_stmt = function (prototypeName) {
     first: {
       label: 'raise',
       css_class: 'ezp-code-reserved',
-      key: ezP.Const.Input.RAISE,
+      key: ezP.Key.RAISE,
       check: ezP.T3.Expr.Check.expression,
       optional: true
     },
     last: {
       label: 'from',
       css_class: 'ezp-code-reserved',
-      key: ezP.Const.Input.FROM,
+      key: ezP.Key.FROM,
       check: ezP.T3.Expr.Check.expression,
       optional: true
     }
@@ -363,7 +363,7 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.constructor.call(this, prototypeName)
   this.operators = ['global', 'nonlocal']
   this.inputModel_.last = {
-    key: ezP.Const.Input.LIST,
+    key: ezP.Key.LIST,
     label: this.operators[0],
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.non_void_identifier_list,
@@ -390,10 +390,8 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.getMenuTarget = function(blo
  */
 ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.getContent = function (block, op) {
   return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-    goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
-      goog.dom.createTextNode(op),
-    ),
-    goog.dom.createTextNode(' ...'),
+    ezP.Do.createSPAN(op, 'ezp-code-reserved'),
+    ezP.Do.createSPAN(' …'),
   )
 }
 
@@ -471,7 +469,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.renderDrawSharp_ = function (io) {
 ezP.DelegateSvg.Stmt.any_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.any_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.EXPRESSION,
+    key: ezP.Key.EXPRESSION,
     check: ezP.T3.Expr.Check.expression,
   }
 }

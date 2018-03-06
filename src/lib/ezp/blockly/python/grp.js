@@ -25,7 +25,7 @@ Blockly.Python[ezP.Const.Grp.ANY] = function (block) {
 }
 
 Blockly.Python[ezP.Const.Grp.IF] = function (block) {
-  var COND = ezP.Python.valueToCode(block, ezP.Const.Input.COND,
+  var COND = ezP.Python.valueToCode(block, ezP.Key.COND,
     Blockly.Python.ORDER_NONE)
   var branch = Blockly.Python.statementToCode(block, 'DO')
   if (!branch.length) {
@@ -35,7 +35,7 @@ Blockly.Python[ezP.Const.Grp.IF] = function (block) {
 }
 
 Blockly.Python[ezP.Const.Grp.ELIF] = function (block) {
-  var COND = ezP.Python.valueToCode(block, ezP.Const.Input.COND,
+  var COND = ezP.Python.valueToCode(block, ezP.Key.COND,
     Blockly.Python.ORDER_NONE)
   var branch = Blockly.Python.statementToCode(block, 'DO')
   if (!branch.length) {
@@ -53,7 +53,7 @@ Blockly.Python[ezP.Const.Grp.ELSE] = function (block) {
 }
 
 Blockly.Python[ezP.Const.Grp.WHILE] = function (block) {
-  var COND = ezP.Python.valueToCode(block, ezP.Const.Input.COND,
+  var COND = ezP.Python.valueToCode(block, ezP.Key.COND,
     Blockly.Python.ORDER_NONE)
   var branch = Blockly.Python.statementToCode(block, 'DO')
   if (!branch.length) {
@@ -63,11 +63,11 @@ Blockly.Python[ezP.Const.Grp.WHILE] = function (block) {
 }
 
 Blockly.Python[ezP.Const.Grp.FOR] = function (block) {
-  var target = ezP.Python.valueToCode(block, ezP.Const.Input.FOR,
+  var target = ezP.Python.valueToCode(block, ezP.Key.FOR,
     Blockly.Python.ORDER_NONE)
-  var list = ezP.Python.valueToCode(block, ezP.Const.Input.LIST,
+  var list = ezP.Python.valueToCode(block, ezP.Key.LIST,
     Blockly.Python.ORDER_NONE)
-  var branch = Blockly.Python.statementToCode(block, ezP.Const.Input.DO)
+  var branch = Blockly.Python.statementToCode(block, ezP.Key.DO)
   if (!branch.length) {
     branch = Blockly.Python.leftLines(/** @type {string} */('MISSING_STATEMENT\n'), Blockly.Python.INDENT)
   }

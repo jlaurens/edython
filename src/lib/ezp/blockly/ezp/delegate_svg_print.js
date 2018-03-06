@@ -33,7 +33,7 @@ ezP.DelegateSvg.Expr.print = function (prototypeName) {
     },
     last: {
       start: '(',
-      key: ezP.Const.Input.LIST,
+      key: ezP.Key.LIST,
       wrap: ezP.T3.Expr.argument_list_comprehensive,
       end: ')',
     }
@@ -63,7 +63,7 @@ ezP.DelegateSvg.Expr.print.prototype.getMenuTarget = function(block) {
  */
 ezP.DelegateSvg.Expr.print.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var menu = mgr.Menu
-  var list = block.getInput(ezP.Const.Input.LIST).connection.targetBlock()
+  var list = block.getInput(ezP.Key.LIST).connection.targetBlock()
   var c10r = list.ezp.consolidator
   var yorn = false
   if (!c10r.hasInputForType(list, ezP.T3.Expr.comprehension)) {
@@ -72,15 +72,13 @@ ezP.DelegateSvg.Expr.print.prototype.populateContextMenuFirst_ = function (block
     var input
     while ((input = c10r.nextInputForType(io, ezP.T3.Expr.keyword_item))) {
       var target = input.connection.targetBlock()
-      if (target && (target = target.getInput(ezP.Const.Input.KEY).connection.targetBlock())) {
+      if (target && (target = target.getInput(ezP.Key.KEY).connection.targetBlock())) {
         has[target.ezp.getValue(target)] = target
       }
     }
     var F = function(candidate) {
       var menuItem = new ezP.MenuItem(
-        goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-          goog.dom.createTextNode(candidate+' = ...'),
-        ),
+        ezP.Do.createSPAN(candidate+' = …', 'ezp-code-disabled'),
         {
           action: has[candidate]? ezP.ID.PRINT_KEYWORD_ITEM_REMOVE: ezP.ID.PRINT_KEYWORD_ITEM_INSERT,
           key: candidate,
@@ -117,8 +115,8 @@ ezP.DelegateSvg.Expr.print.prototype.handleMenuItemActionFirst = function (block
     var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.identifier)
     BB.ezp.setValue(BB, model.key)
     var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.keyword_item)
-    B.getInput(ezP.Const.Input.KEY).connection.connect(BB.outputConnection)
-    var list = block.getInput(ezP.Const.Input.LIST).connection.targetBlock()
+    B.getInput(ezP.Key.KEY).connection.connect(BB.outputConnection)
+    var list = block.getInput(ezP.Key.LIST).connection.targetBlock()
     var c8n = list.inputList[list.inputList.length-1].connection
     c8n.connect(B.outputConnection)  
     Blockly.Events.setGroup(false)
@@ -145,7 +143,7 @@ ezP.DelegateSvg.Expr.print.prototype.handleMenuItemActionFirst = function (block
 ezP.DelegateSvg.Stmt.print_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.print_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.EXPRESSION,
+    key: ezP.Key.EXPRESSION,
     wrap: ezP.T3.Expr.print,
   }
 }

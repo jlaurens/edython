@@ -129,21 +129,21 @@ ezP.DelegateSvg.Expr.proper_slice = function (prototypeName) {
   this.outputModel_.check = ezP.T3.Expr.proper_slice
   this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.LOWER_BOUND,
+      key: ezP.Key.LOWER_BOUND,
       check: ezP.T3.Expr.Check.expression,
       optional: true,
       hole_value: 'lower',
     },
     middle: {
       label: ':',
-      key: ezP.Const.Input.UPPER_BOUND,
+      key: ezP.Key.UPPER_BOUND,
       check: ezP.T3.Expr.Check.expression,
       optional: true,
       hole_value: 'upper',
     },
     last: {
       label: ':',
-      key: ezP.Const.Input.STRIDE,
+      key: ezP.Key.STRIDE,
       check: ezP.T3.Expr.Check.expression,
       optional: true,
       hole_value: 'stride',
@@ -205,19 +205,19 @@ ezP.DelegateSvg.Expr.conditional_expression_concrete = function (prototypeName) 
   this.outputModel_.check = ezP.T3.Expr.conditional_expression_concrete
   this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.EXPRESSION,
+      key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.or_test,
       hole_value: 'name',
     },
     middle: {
       label: 'if',
-      key: ezP.Const.Input.IF,
+      key: ezP.Key.IF,
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.or_test,
     },
     last: {
       label: 'else',
-      key: ezP.Const.Input.ELSE,
+      key: ezP.Key.ELSE,
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'alternate',
@@ -239,7 +239,7 @@ ezP.DelegateSvg.Manager.register('conditional_expression_concrete')
 ezP.DelegateSvg.Expr.or_expr_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.or_expr_star.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.EXPRESSION,
+    key: ezP.Key.EXPRESSION,
     label: '*',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.or_expr
@@ -260,7 +260,7 @@ ezP.DelegateSvg.Manager.register('or_expr_star')
 ezP.DelegateSvg.Expr.or_expr_star_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.or_expr_star_star.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.EXPRESSION,
+    key: ezP.Key.EXPRESSION,
     label: '**',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.or_expr
@@ -281,7 +281,7 @@ ezP.DelegateSvg.Manager.register('or_expr_star_star')
 ezP.DelegateSvg.Expr.await_expr = function (prototypeName) {
   ezP.DelegateSvg.Expr.await_expr.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.EXPRESSION,
+    key: ezP.Key.EXPRESSION,
     label: 'await',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.primary
@@ -301,7 +301,7 @@ ezP.DelegateSvg.Manager.register('await_expr')
 ezP.DelegateSvg.Expr.not_test_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.not_test_concrete.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.EXPRESSION,
+    key: ezP.Key.EXPRESSION,
     label: 'not',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.not_test
@@ -375,16 +375,12 @@ ezP.ID.STRING_PREFIX_REMOVE = 'STRING_PREFIX_REMOVE'
 ezP.DelegateSvg.Expr.stringliteral.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var single = this.inputs.last.input.ezpData.fieldLabelStart.getText() == "'"
   var menuItem = new ezP.MenuItem(
-    goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      goog.dom.createTextNode(ezP.Msg.USE_SINGLE_QUOTE),
-    ),
+    ezP.Do.createSPAN(ezP.Msg.USE_SINGLE_QUOTE, 'ezp-code'),
     {action: ezP.ID.TOGGLE_QUOTE})
   menuItem.setEnabled(!single)
   mgr.addChild(menuItem, true)
   var menuItem = new ezP.MenuItem(
-    goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      goog.dom.createTextNode(ezP.Msg.USE_DOUBLE_QUOTES),
-    ),
+    ezP.Do.createSPAN(ezP.Msg.USE_DOUBLE_QUOTES, 'ezp-code'),
     {action: ezP.ID.TOGGLE_QUOTE})
   menuItem.setEnabled(single)
   mgr.addChild(menuItem, true)
@@ -392,9 +388,7 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.populateContextMenuFirst_ = functio
   var prefix = block.getField(ezP.Const.Field.PREFIX).getValue()
   var item = function(msg, action) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-        goog.dom.createTextNode(msg),
-      ),
+      ezP.Do.createSPAN(msg, 'ezp-code'),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
     )
     return new ezP.MenuItem(content, {
@@ -605,9 +599,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = functi
   var value, _ = 0
   while ((value = this.values[_++])) {
     var menuItem = new ezP.MenuItem(
-      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
-        goog.dom.createTextNode(value),
-      ),
+      ezP.Do.createSPAN(value, 'ezp-code-reserved'),
       {
         action: ezP.ID.BUILTIN_OBJECT_CHANGE,
         value: value,
@@ -715,7 +707,7 @@ ezP.DelegateSvg.Expr.input = function (prototypeName) {
     },
     last: {
       start: '(',
-      key: ezP.Const.Input.ARGUMENT,
+      key: ezP.Key.ARGUMENT,
       check: ezP.T3.Expr.Check.argument_any,
       optional: true,
       end: ')',

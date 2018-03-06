@@ -25,7 +25,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Group = function (prototypeName) {
   ezP.DelegateSvg.Group.superClass_.constructor.call(this, prototypeName)
-  this.statementModel_.key = ezP.Const.Input.DO
+  this.statementModel_.key = ezP.Key.DO
   this.inputModel_.last = {
     label: ':',
   }
@@ -272,7 +272,7 @@ ezP.DelegateSvg.Stmt.if_part = function (prototypeName) {
     label: 'if',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,
-    key: ezP.Const.Input.COND,
+    key: ezP.Key.COND,
   }
   this.statementModel_.previous.check = ezP.T3.Stmt.Previous.if_part
   this.statementModel_.next.check = ezP.T3.Stmt.Next.if_part
@@ -294,7 +294,7 @@ ezP.DelegateSvg.Stmt.elif_part = function (prototypeName) {
     label: 'elif',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,
-    key: ezP.Const.Input.COND,
+    key: ezP.Key.COND,
   }
   this.statementModel_.previous.check = ezP.T3.Stmt.Previous.elif_part
   this.statementModel_.next.check = ezP.T3.Stmt.Next.elif_part
@@ -336,7 +336,7 @@ ezP.DelegateSvg.Stmt.while_part = function (prototypeName) {
     label: 'while',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,
-    key: ezP.Const.Input.COND,
+    key: ezP.Key.COND,
   }
   this.statementModel_.previous.check = ezP.T3.Stmt.Previous.while_part
   this.statementModel_.next.check = ezP.T3.Stmt.Next.while_part
@@ -358,13 +358,13 @@ ezP.DelegateSvg.Stmt.for_part = function (prototypeName) {
     label: 'for',
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.target_list,
-    key: ezP.Const.Input.FOR,
+    key: ezP.Key.FOR,
   }
   this.inputModel_.middle = {
     label: 'in',
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.expression_list,
-    key: ezP.Const.Input.IN,
+    key: ezP.Key.IN,
   }
   this.statementModel_.previous.check = ezP.T3.Stmt.Previous.for_part
   this.statementModel_.next.check = ezP.T3.Stmt.Next.for_part
@@ -383,7 +383,7 @@ ezP.DelegateSvg.Manager.register('for_part')
 ezP.DelegateSvg.Stmt.with_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.with_part.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.LIST,
+    key: ezP.Key.LIST,
     label: 'with',
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.with_item_list,

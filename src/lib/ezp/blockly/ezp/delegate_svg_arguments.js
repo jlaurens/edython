@@ -28,13 +28,13 @@ ezP.DelegateSvg.Expr.keyword_item = function (prototypeName) {
   this.outputModel_.check = ezP.T3.Expr.keyword_item
   this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.KEY,
+      key: ezP.Key.KEY,
       check: ezP.T3.Expr.identifier,
       hole_value: 'key',
     },
     last: {
       label: '=',
-      key: ezP.Const.Input.VALUE,
+      key: ezP.Key.VALUE,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'value',
     }
@@ -58,7 +58,7 @@ ezP.DelegateSvg.Expr.expression_star = function (prototypeName) {
   this.inputModel_ = {
     first: {
       label: '*',
-      key: ezP.Const.Input.EXPRESSION,
+      key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'value',
     }
@@ -82,7 +82,7 @@ ezP.DelegateSvg.Expr.expression_star_star = function (prototypeName) {
   this.inputModel_ = {
     first: {
       label: '**',
-      key: ezP.Const.Input.EXPRESSION,
+      key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'value',
     }

@@ -29,13 +29,13 @@ ezP.DelegateSvg.Expr.lambda_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.lambda_expression.superClass_.constructor.call(this, prototypeName)
   this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.LIST,
+      key: ezP.Key.LIST,
       label: 'lambda',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.parameter_list,
     },
     last: {
-      key: ezP.Const.Input.EXPRESSION,
+      key: ezP.Key.EXPRESSION,
       label: ':',
       check: ezP.T3.Expr.Check.expression.concat(ezP.T3.Expr.Check.expression_nocond),
       didConnect: function(c8n) {// `this` is c8n.ezp

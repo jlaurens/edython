@@ -276,5 +276,11 @@ ezP.Do.Name = function () {
 } ()
 
 ezP.Do.ensureArray = function (object) {
-  return goog.isArray(object)? object: [object]
+  return goog.isArray(object)? object: (object? [object]: object)
+}
+
+ezP.Do.createSPAN = function(text,css) {
+  return goog.dom.createDom(goog.dom.TagName.SPAN, css || null,
+    goog.dom.createTextNode(text),
+  )
 }

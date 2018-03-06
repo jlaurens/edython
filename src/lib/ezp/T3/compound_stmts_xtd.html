@@ -142,7 +142,10 @@ classname   ::=  identifier
 
 <pre>
 classdef ::= IGNORE
-classdef_part ::=  "class" classname [parenth_argument_list] ":"
+classdef_part ::=  classdef_expr ':'
+classdef_expr ::= classdef_simple | classdef_derived
+classdef_simple ::=  "class" classname
+classdef_derived ::=  classdef_simple '(' argument_list ')'
 decorator_part <<< classdef_part
 </pre>
 

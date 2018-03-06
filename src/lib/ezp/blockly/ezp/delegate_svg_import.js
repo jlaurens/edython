@@ -41,12 +41,12 @@ ezP.DelegateSvg.Expr._as_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr._as_concrete.superClass_.constructor.call(this, prototypeName)
   this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.SOURCE,
+      key: ezP.Key.SOURCE,
     },
     last: {
       label: 'as',
       css_class: 'ezp-code-reserved',
-      key: ezP.Const.Input.AS,
+      key: ezP.Key.AS,
       check: ezP.T3.Expr.identifier,
       hole_value: 'alias',
     }
@@ -88,14 +88,14 @@ ezP.DelegateSvg.Expr.module_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.module_concrete.superClass_.constructor.call(this, prototypeName)
   this.outputModel_.check = ezP.T3.Expr.module_concrete
   this.inputModel_.first = {
-    key: ezP.Const.Input.LHS,
+    key: ezP.Key.LHS,
     check: ezP.T3.Expr.module_name,
     plugged: ezP.T3.Expr.module_identifier,
     hole_value: 'module',
   }
   this.inputModel_.last = {
     label: '.',
-    key: ezP.Const.Input.RHS,
+    key: ezP.Key.RHS,
     check: ezP.T3.Expr.Check.module,
     plugged: ezP.T3.Expr.module,
     hole_value: 'submodule',
@@ -141,7 +141,7 @@ ezP.DelegateSvg.Expr.import_module = function (prototypeName) {
   this.inputModel_.first = {
     label: 'import',
     css_class: 'ezp-code-reserved',
-    key: ezP.Const.Input.IMPORT,
+    key: ezP.Key.IMPORT,
     wrap: ezP.T3.Expr.non_void_module_as_list,
   }
 }
@@ -217,7 +217,7 @@ ezP.DelegateSvg.Expr.parent_module = function (prototypeName) {
   this.outputModel_.check = ezP.T3.Expr.parent_module
   this.inputModel_.first = {
     label: '.',
-    key: ezP.Const.Input.MODULE,
+    key: ezP.Key.MODULE,
     check: ezP.T3.Expr.Check.relative_module,
     plugged: ezP.T3.Expr.relative_module,
     optional: true,
@@ -240,7 +240,7 @@ ezP.DelegateSvg.Expr.from_relative_module_import = function (prototypeName) {
   this.inputModel_.first = {
     label: 'from',
     css_class: 'ezp-code-reserved',
-    key: ezP.Const.Input.FROM,
+    key: ezP.Key.FROM,
     check: ezP.T3.Expr.Check.relative_module,
     plugged: ezP.T3.Expr.relative_module,
     hole_value: 'module',
@@ -248,7 +248,7 @@ ezP.DelegateSvg.Expr.from_relative_module_import = function (prototypeName) {
   this.inputModel_.last = {
     label: 'import',
     css_class: 'ezp-code-reserved',
-    key: ezP.Const.Input.IMPORT,
+    key: ezP.Key.IMPORT,
     wrap: ezP.T3.Expr.non_void_import_identifier_as_list,
   }
 }
@@ -269,7 +269,7 @@ ezP.DelegateSvg.Expr.from_module_import = function (prototypeName) {
   ezP.DelegateSvg.Expr.from_module_import.superClass_.constructor.call(this, prototypeName)
   this.outputModel_.check = ezP.T3.Expr.from_module_import
   this.inputModel_.first = {
-    key: ezP.Const.Input.MODULE,
+    key: ezP.Key.MODULE,
     label: 'from',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.module,
@@ -295,57 +295,37 @@ ezP.DelegateSvg.Manager.register('from_module_import')
 ezP.DelegateSvg.Stmt.import_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.import_part.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.last = {
-    key: ezP.Const.Input.MODULE,
+    key: ezP.Key.MODULE,
     check: ezP.T3.Expr.Check.import_expr,
     wrap: ezP.T3.Expr.import_module,
   }
   this.menuData = [
     {
       content: goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-        goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
-          goog.dom.createTextNode('import '),
-        ),
-        goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-placeholder',
-          goog.dom.createTextNode('module'),
-        ),
+        ezP.Do.createSPAN('import ', 'ezp-code-reserved'),
+        ezP.Do.createSPAN('module', 'ezp-code-placeholder'),
         goog.dom.createTextNode(' ['),
-        goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
-          goog.dom.createTextNode('as'),
-        ),
+        ezP.Do.createSPAN('as', 'ezp-code-reserved'),
         goog.dom.createTextNode(' ...]'),
       ),
       type: ezP.T3.Expr.import_module
     },
     {
       content:   goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-        goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
-          goog.dom.createTextNode('from '),
-        ),
-        goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-placeholder',
-          goog.dom.createTextNode('module '),
-        ),
-        goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
-          goog.dom.createTextNode('import '),
-        ),
-        goog.dom.createTextNode('... ['),
-        goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
-          goog.dom.createTextNode('as'),
-        ),
-        goog.dom.createTextNode(' ...]'),
+        ezP.Do.createSPAN('from ', 'ezp-code-reserved'),
+        ezP.Do.createSPAN('module ', 'ezp-code-placeholder'),
+        ezP.Do.createSPAN('import ', 'ezp-code-reserved'),
+        goog.dom.createTextNode('… ['),
+        ezP.Do.createSPAN('as', 'ezp-code-reserved'),
+        goog.dom.createTextNode(' …]'),
       ),
       type: ezP.T3.Expr.from_relative_module_import
     },
     {
       content:   goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-        goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
-          goog.dom.createTextNode('from '),
-        ),
-        goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-placeholder',
-          goog.dom.createTextNode('module '),
-        ),
-        goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
-          goog.dom.createTextNode('import *'),
-        ),
+        ezP.Do.createSPAN('from ', 'ezp-code-reserved'),
+        ezP.Do.createSPAN('module ', 'ezp-code-placeholder'),
+        ezP.Do.createSPAN('import *', 'ezp-code-reserved'),
       ),
       type: ezP.T3.Expr.from_module_import
     },
@@ -354,8 +334,6 @@ ezP.DelegateSvg.Stmt.import_part = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Stmt.import_part, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Manager.register('import_part')
-
-ezP.ID.USE_IMPORT_WRAP_TYPE  = 'USE_IMPORT_WRAP_TYPE'
 
 /**
  * When the block is just a wrapper, returns the wrapped target.
@@ -405,7 +383,7 @@ ezP.DelegateSvg.Stmt.future_statement = function (prototypeName) {
   this.inputModel_.first = {
     label: 'from __future__ import',
     css_class: 'ezp-code-reserved',
-    key: ezP.Const.Input.LIST,
+    key: ezP.Key.LIST,
     wrap: ezP.T3.Expr.non_void_import_identifier_as_list,
   }
   this.statementModel_.previous.check = ezP.T3.Stmt.Previous.future_statement

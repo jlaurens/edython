@@ -27,16 +27,16 @@ ezP.DelegateSvg.Expr.comprehension = function (prototypeName) {
   ezP.DelegateSvg.Expr.comprehension.superClass_.constructor.call(this, prototypeName)
   this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.EXPRESSION,
+      key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'name',
     },
     middle: {
-      key: ezP.Const.Input.FOR,
+      key: ezP.Key.FOR,
       wrap: ezP.T3.Expr.comp_for,
     },
     last: {
-      key: ezP.Const.Input.ITER,
+      key: ezP.Key.ITER,
       wrap: ezP.T3.Expr.comp_iter_list,
     }
   }
@@ -57,13 +57,13 @@ ezP.DelegateSvg.Expr.comp_for = function (prototypeName) {
   ezP.DelegateSvg.Expr.comp_for.superClass_.constructor.call(this, prototypeName)
   this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.FOR,
+      key: ezP.Key.FOR,
       label: 'for',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.target_list,
     },
     last: {
-      key: ezP.Const.Input.IN,
+      key: ezP.Key.IN,
       label: 'in',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.or_test,
@@ -88,7 +88,7 @@ ezP.DelegateSvg.Expr.comp_if = function (prototypeName) {
   ezP.DelegateSvg.Expr.comp_if.superClass_.constructor.call(this, prototypeName)
   this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.IF,
+      key: ezP.Key.IF,
       label: 'if',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression_nocond
@@ -152,12 +152,12 @@ ezP.DelegateSvg.Expr.key_datum_concrete = function (prototypeName) {
   this.outputModel_.check = ezP.T3.Expr.key_datum_concrete
   this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.KEY,
+      key: ezP.Key.KEY,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'key',
     },
     last: {
-      key: ezP.Const.Input.DATUM,
+      key: ezP.Key.DATUM,
       check: ezP.T3.Expr.Check.expression,
       label: ':',
       hole_value: 'value',

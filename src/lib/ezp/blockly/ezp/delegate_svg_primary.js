@@ -26,7 +26,7 @@ goog.require('ezP.DelegateSvg.Expr')
 ezP.DelegateSvg.Primary = function (prototypeName) {
   ezP.DelegateSvg.Primary.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.PRIMARY,
+    key: ezP.Key.PRIMARY,
     check: ezP.T3.Expr.Check.primary,
     plugged: ezP.T3.Expr.primary,
     hole_value: 'primary',
@@ -53,7 +53,7 @@ ezP.DelegateSvg.prototype.getPrimaryConnection = function (block) {
  * @constructor
  */
 ezP.DelegateSvg.Primary.prototype.getPrimaryConnection = function (block) {
-  // var input = block.getInput(ezP.Const.Input.PRIMARY)
+  // var input = block.getInput(ezP.Key.PRIMARY)
   return this.inputs.first.input.connection
 }
 
@@ -69,7 +69,7 @@ ezP.DelegateSvg.Expr.attributeref = function (prototypeName) {
   ezP.DelegateSvg.Expr.attributeref.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.last = {
     label: '.',
-    key: ezP.Const.Input.ATTRIBUTE,
+    key: ezP.Key.ATTRIBUTE,
     check: ezP.T3.Expr.identifier,
     plugged: ezP.T3.Expr.attribute_identifier,
     hole_value: 'attribute',
@@ -92,7 +92,7 @@ ezP.DelegateSvg.Manager.register('attributeref')
 ezP.DelegateSvg.Expr.subscription = ezP.DelegateSvg.Expr.slicing = function (prototypeName) {
   ezP.DelegateSvg.Expr.slicing.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.last = {
-    key: ezP.Const.Input.LIST,
+    key: ezP.Key.LIST,
     wrap: ezP.T3.Expr.display_slice_list,
   }
   this.outputModel_.check = [ezP.T3.Expr.subscription, ezP.T3.Expr.slicing]
@@ -116,7 +116,7 @@ ezP.DelegateSvg.Manager.register('subscription')
 ezP.DelegateSvg.Expr.call_expr =  function (prototypeName) {
   ezP.DelegateSvg.Expr.call_expr.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.last = {
-    key: ezP.Const.Input.LIST,
+    key: ezP.Key.LIST,
     start: '(',
     wrap: ezP.T3.Expr.argument_list,
     end: ')',

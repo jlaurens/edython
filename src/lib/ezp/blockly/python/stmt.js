@@ -16,7 +16,7 @@ goog.provide('ezP.Python.ezp_stmt')
 goog.require('ezP.Python.ezp_expr')
 
 Blockly.Python[ezP.Const.Stmt.SET] = function (block) {
-  var RHS = ezP.Python.valueToCode(block, ezP.Const.Input.RHS,
+  var RHS = ezP.Python.valueToCode(block, ezP.Key.RHS,
     Blockly.Python.ORDER_NONE) || 'None'
   var varName = block.getField(ezP.Const.Field.VAR).getText()
   return varName + ' = ' + RHS + '\n'

@@ -301,7 +301,7 @@ ezP.DelegateSvg.Manager.register('parameter_list')
 ezP.DelegateSvg.Expr.parameter_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.parameter_star.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.NAME,
+    key: ezP.Key.NAME,
     label: '*',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.parameter,
@@ -323,7 +323,7 @@ ezP.DelegateSvg.Manager.register('parameter_star')
 ezP.DelegateSvg.Expr.parameter_star_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.parameter_star_star.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.NAME,
+    key: ezP.Key.NAME,
     label: '**',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.parameter,
@@ -344,12 +344,12 @@ ezP.DelegateSvg.Manager.register('parameter_star_star')
 ezP.DelegateSvg.Expr.parameter_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.parameter_concrete.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.NAME,
+    key: ezP.Key.NAME,
     check: ezP.T3.Expr.identifier,
     hole_value: 'name',
   }
   this.inputModel_.last = {
-    key: ezP.Const.Input.EXPRESSION,
+    key: ezP.Key.EXPRESSION,
     label: ':',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,
@@ -370,12 +370,12 @@ ezP.DelegateSvg.Manager.register('parameter_concrete')
 ezP.DelegateSvg.Expr.defparameter_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.defparameter_concrete.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.NAME,
+    key: ezP.Key.NAME,
     check: ezP.T3.Expr.Check.parameter,
     hole_value: 'name',
   }
   this.inputModel_.last = {
-    key: ezP.Const.Input.EXPRESSION,
+    key: ezP.Key.EXPRESSION,
     label: '=',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,
@@ -397,15 +397,9 @@ ezP.ID.PARAMETER_INSERT = 'PARAMETER_INSERT'
 ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var F = function(type, msg) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-disabled',
-        goog.dom.createTextNode('( '),
-      ),
-      goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        goog.dom.createTextNode(msg),
-      ),
-      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-disabled',
-        goog.dom.createTextNode(' )'),
-      ),
+      ezP.Do.createSPAN('( ', 'ezp-code-disabled'),
+      ezP.Do.createSPAN(msg),
+      ezP.Do.createSPAN(' )', 'ezp-code-disabled'),
     )
     mgr.addInsertChild(new ezP.MenuItem(content, {
       action: ezP.ID.PARAMETER_INSERT,

@@ -255,7 +255,8 @@ ezP.DelegateSvg.Expr.list_display.workspaceBlocks = ezP.Do.arraysMerged([
 ], ezP.T3.Expr.Check.starred_item)
 
 ezP.DelegateSvg.Expr.decorator_expr.workspaceBlocks =
-ezP.DelegateSvg.Expr.funcdef_simple.workspaceBlocks = ezP.Do.arraysMerged([
+ezP.DelegateSvg.Expr.funcdef_simple.workspaceBlocks =
+ezP.DelegateSvg.Stmt.funcdef_part.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Stmt.decorator_part,
   ezP.T3.Expr.decorator_expr,
   ezP.T3.Expr.identifier,
@@ -266,6 +267,16 @@ ezP.DelegateSvg.Expr.funcdef_simple.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Stmt.funcdef_part,
 ],
 ezP.DelegateSvg.Expr.parameter_list.workspaceBlocks)
+
+ezP.DelegateSvg.Stmt.classdef_part.workspaceBlocks =
+ezP.DelegateSvg.Expr.classdef_simple.workspaceBlocks = ezP.Do.arraysMerged([
+  ezP.T3.Stmt.decorator_part,
+  ezP.T3.Expr.classdef_simple,
+  ezP.T3.Expr.classdef_derived,
+  ezP.T3.Stmt.classdef_part,
+  ezP.T3.Stmt.assignment_stmt,
+],
+ezP.DelegateSvg.Expr.argument_list.workspaceBlocks)
 
 ezP.DelegateSvg.Stmt.assignment_stmt.workspaceBlocks =
 ezP.DelegateSvg.Expr.target_list.workspaceBlocks = ezP.Do.arraysMerged([

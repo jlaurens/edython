@@ -31,7 +31,7 @@ goog.require('ezP.DelegateSvg.Expr')
 ezP.MixinSvg.Operator.initModel = function (prototypeName) {
   this.inputModel_ = {
     last: {
-      key: ezP.Const.Input.RHS,
+      key: ezP.Key.RHS,
       css_class: 'ezp-code',
       hole_value: 'name',
     },
@@ -140,7 +140,7 @@ ezP.DelegateSvg.Manager.register('u_expr_concrete')
  * @private
  */
 ezP.DelegateSvg.Expr.u_expr_concrete.prototype.getContent = function (block, op) {
-  return op+' ...'
+  return op+' …'
 }
 
 /**
@@ -154,7 +154,7 @@ ezP.DelegateSvg.Expr.u_expr_concrete.prototype.getContent = function (block, op)
 ezP.DelegateSvg.Binary = function (prototypeName) {
   ezP.DelegateSvg.Binary.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Const.Input.LHS,
+    key: ezP.Key.LHS,
     hole_value: 'name',
   }
 }
@@ -167,7 +167,7 @@ goog.inherits(ezP.DelegateSvg.Binary, ezP.DelegateSvg.Operator)
  * @private
  */
 ezP.DelegateSvg.Binary.prototype.getContent = function (block, op) {
-  return '... '+ op +' ...'
+  return '… '+ op +' …'
 }
 
 /**
@@ -345,9 +345,7 @@ ezP.DelegateSvg.Manager.register('object_comparison')
  * @private
  */
 ezP.DelegateSvg.Expr.object_comparison.prototype.getContent = function (block, op) {
-  return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
-    goog.dom.createTextNode(op),
-  )
+  return ezP.Do.createSPAN(op, 'ezp-code-reserved')
 }
 
 /**
@@ -455,15 +453,13 @@ ezP.DelegateSvg.Expr.aug_assigned = function (prototypeName) {
     {
       content: function(block) {
         var parent = block.getParent()
-        var x = '... <<='
+        var x = '… <<='
         if (parent) {
-          x = '... ' + parent.ezp.inputs.last.fieldLabel.getValue()
+          x = '… ' + parent.ezp.inputs.last.fieldLabel.getValue()
         }
         return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
           goog.dom.createTextNode(x),
-          goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
-            goog.dom.createTextNode(' ...'),
-          )
+          ezP.Do.createSPAN(' …', 'ezp-code-placeholder'),
         )
       },
       type: ezP.T3.Expr.non_void_expression_list
@@ -471,16 +467,14 @@ ezP.DelegateSvg.Expr.aug_assigned = function (prototypeName) {
     {
       content: function(block) {
         var parent = block.getParent()
-        var x = '... <<='
+        var x = '… <<='
         if (parent) {
-          x = '... ' + parent.ezp.inputs.last.fieldLabel.getValue()
+          x = '… ' + parent.ezp.inputs.last.fieldLabel.getValue()
         }
         return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
           goog.dom.createTextNode(x),
-          goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
-            goog.dom.createTextNode(' yield'),
-          ),
-          goog.dom.createTextNode(' ...'),
+          ezP.Do.createSPAN(' yield', 'ezp-code-reserved'),
+          goog.dom.createTextNode(' …'),
         )
       },
       type: ezP.T3.Expr.yield_expression_list,
@@ -488,16 +482,14 @@ ezP.DelegateSvg.Expr.aug_assigned = function (prototypeName) {
     {
       content: function(block) {
         var parent = block.getParent()
-        var x = '... <<='
+        var x = '… <<='
         if (parent) {
-          x = '... ' + parent.ezp.inputs.last.fieldLabel.getValue()
+          x = '… ' + parent.ezp.inputs.last.fieldLabel.getValue()
         }
         return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
           goog.dom.createTextNode(x),
-          goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
-            goog.dom.createTextNode(' yield from'),
-          ),
-          goog.dom.createTextNode(' ...'),
+          ezP.Do.createSPAN(' yield from', 'ezp-code-reserved'),
+          goog.dom.createTextNode(' …'),
         )
       },
       type: ezP.T3.Expr.yield_from_expression,
@@ -619,12 +611,12 @@ ezP.DelegateSvg.Expr.power_concrete = function (prototypeName) {
   this.outputModel_.check = ezP.T3.power_concrete
   this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.ARGUMENT,
+      key: ezP.Key.ARGUMENT,
       check: ezP.T3.Expr.Check.await_or_primary,
       hole_value: 'name',
     },
     last: {
-      key: ezP.Const.Input.POWER,
+      key: ezP.Key.POWER,
       label: '**',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.u_expr,
