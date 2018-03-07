@@ -154,44 +154,6 @@ goog.inherits(ezP.DelegateSvg.Expr.proper_slice, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Manager.register('proper_slice')
 
-ezP.ID.TOGGLE_PROPER_SLICING_STRIDE = 'USE_PROPER_SLICING_STRIDE'
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-ezP.DelegateSvg.Expr.proper_slice.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var last = this.inputs.last.input
-  var unused = last.ezpData.disabled_
-  var menuItem = new ezP.MenuItem(
-    unused? ezP.Msg.USE_PROPER_SLICING_STRIDE: ezP.Msg.UNUSE_PROPER_SLICING_STRIDE,
-    {action: ezP.ID.TOGGLE_PROPER_SLICING_STRIDE})
-  menuItem.setEnabled(!last.connection.isConnected())
-  mgr.addChild(menuItem, true)
-  mgr.separate()
-  ezP.DelegateSvg.Expr.proper_slice.superClass_.populateContextMenuFirst_.call(this,block, mgr)
-  return true
-}
-
-/**
- * Handle the selection of an item in the context dropdown menu.
- * @param {!Blockly.Block} block, owner of the delegate.
- * @param {!goog.ui.Menu} menu The Menu clicked.
- * @param {!goog....} event The event containing as target
- * the MenuItem selected within menu.
- */
-ezP.DelegateSvg.Expr.proper_slice.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
-  var action = event.target.getModel().action
-  if (action == ezP.ID.TOGGLE_PROPER_SLICING_STRIDE) {
-    var input = this.inputs.last.input
-    this.setNamedInputDisabled(block, input.name, !input.ezpData.disabled_)
-    return true
-  }
-  return ezP.DelegateSvg.Expr.proper_slice.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
-}
-
 /**
  * Class for a DelegateSvg, conditional_expression_concrete block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
@@ -362,10 +324,6 @@ goog.inherits(ezP.DelegateSvg.Expr.stringliteral, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('stringliteral')
 ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.bytesliteral, ezP.DelegateSvg.Expr.stringliteral)
 
-ezP.ID.TOGGLE_QUOTE = 'TOGGLE_QUOTE'
-ezP.ID.STRING_PREFIX_INSERT = 'STRING_PREFIX_INSERT'
-ezP.ID.STRING_PREFIX_REMOVE = 'STRING_PREFIX_REMOVE'
-
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
@@ -373,91 +331,29 @@ ezP.ID.STRING_PREFIX_REMOVE = 'STRING_PREFIX_REMOVE'
  * @private
  */
 ezP.DelegateSvg.Expr.stringliteral.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var single = this.inputs.last.input.ezpData.fieldLabelStart.getText() == "'"
+  var fieldStart = this.inputs.last.input.ezpData.fieldLabelStart
+  var fieldEnd = this.inputs.last.input.ezpData.fieldLabelEnd
+  var single = fieldStart.getText() === "'"
   var menuItem = new ezP.MenuItem(
-    ezP.Do.createSPAN(ezP.Msg.USE_SINGLE_QUOTE, 'ezp-code'),
-    {action: ezP.ID.TOGGLE_QUOTE})
-  menuItem.setEnabled(!single)
-  mgr.addChild(menuItem, true)
-  var menuItem = new ezP.MenuItem(
-    ezP.Do.createSPAN(ezP.Msg.USE_DOUBLE_QUOTES, 'ezp-code'),
-    {action: ezP.ID.TOGGLE_QUOTE})
-  menuItem.setEnabled(single)
+    ezP.Do.createSPAN(single? ezP.Msg.USE_DOUBLE_QUOTES: ezP.Msg.USE_SINGLE_QUOTE, 'ezp-code'), function() {
+      Blockly.Events.setGroup(true)
+      var oldValue = fieldStart.getValue()
+      var newValue = single? '"': "'"
+      fieldStart.setValue(newValue)
+      fieldEnd.setValue(newValue)
+      Blockly.Events.setGroup(false)
+    })
   mgr.addChild(menuItem, true)
   mgr.separate()
-  var prefix = block.getField(ezP.Const.Field.PREFIX).getValue()
-  var item = function(msg, action) {
-    var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      ezP.Do.createSPAN(msg, 'ezp-code'),
-      goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
-    )
-    return new ezP.MenuItem(content, {
-      action: action,
-      key: msg,
-    })  
-  }
-  if (!prefix.length) {
-    mgr.addInsertChild(item('u', ezP.ID.STRING_PREFIX_INSERT))
-    mgr.addInsertChild(item('r', ezP.ID.STRING_PREFIX_INSERT))
-    mgr.addInsertChild(item('f', ezP.ID.STRING_PREFIX_INSERT))
-    mgr.addInsertChild(item('b', ezP.ID.STRING_PREFIX_INSERT))
-  } else if (prefix === 'u') {
-    mgr.addRemoveChild(item('u', ezP.ID.STRING_PREFIX_REMOVE))
-  } else if (prefix === 'r') {
-    mgr.addInsertChild(item('f', ezP.ID.STRING_PREFIX_INSERT))
-    mgr.addInsertChild(item('b', ezP.ID.STRING_PREFIX_INSERT))
-    mgr.addRemoveChild(item('r', ezP.ID.STRING_PREFIX_REMOVE))
-  } else if (prefix === 'f') {
-    mgr.addInsertChild(item('r', ezP.ID.STRING_PREFIX_INSERT))
-    mgr.addRemoveChild(item('f', ezP.ID.STRING_PREFIX_REMOVE))
-  } else if (prefix === 'b') {
-    mgr.addInsertChild(item('r', ezP.ID.STRING_PREFIX_INSERT))
-    mgr.addRemoveChild(item('b', ezP.ID.STRING_PREFIX_REMOVE))
-  } else {
-    mgr.addRemoveChild(item('r', ezP.ID.STRING_PREFIX_REMOVE))
-    if (['rf', 'fr',].indexOf(prefix.toLowerCase())<0) {
-      mgr.addRemoveChild(item('b', ezP.ID.STRING_PREFIX_REMOVE))
-    } else {
-      mgr.addRemoveChild(item('f', ezP.ID.STRING_PREFIX_REMOVE))
-    }
-  }
-  mgr.shouldSeparateInsert()
-  ezP.DelegateSvg.Expr.stringliteral.superClass_.populateContextMenuFirst_.call(this,block, mgr)
-  return true
-}
-
-/**
- * Handle the selection of an item in the context dropdown menu.
- * @param {!Blockly.Block} block, owner of the delegate.
- * @param {!goog.ui.Menu} menu The Menu clicked.
- * @param {!goog....} event The event containing as target
- * the MenuItem selected within menu.
- */
-ezP.DelegateSvg.Expr.stringliteral.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
-  var model = event.target.getModel()
-  var action = model.action
-  if (action == ezP.ID.TOGGLE_QUOTE) {
-    Blockly.Events.setGroup(true)
-    var nameStart = 'last.'+ezP.Const.Field.START
-    var fieldStart = block.getField(nameStart)
-    var oldValue = fieldStart.getValue()
-    var newValue = oldValue === "'"? '"': "'"
-    var nameEnd = 'last.'+ezP.Const.Field.END
-    var fieldEnd = block.getField(nameEnd)
-    fieldStart.setValue(newValue)
-    fieldEnd.setValue(newValue)
-    Blockly.Events.setGroup(false)
-    return true
-  } else if (action === ezP.ID.STRING_PREFIX_INSERT) {
-    var field = block.getField(ezP.Const.Field.PREFIX)
-    var oldValue = field.getValue()
-    var newValue = model.key
+  var fieldPrefix = block.getField(ezP.Const.Field.PREFIX)
+  var oldValue = fieldPrefix.getValue()
+  var insert = function (newValue) {
     switch(oldValue) {
       case 'u': case 'U': return true
       case 'r': case 'R':
       if (newValue === 'f') newValue = 'rf'
       else if (newValue === 'b') newValue = 'rb'
-      else return true
+      else return
       break
       case 'f': case 'F':
       if (newValue !== 'r') return true
@@ -468,33 +364,67 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.handleMenuItemActionFirst = functio
       newValue = 'rb'
       break
     }
-    field.setValue(newValue)
-    return true
-  } else if (action === ezP.ID.STRING_PREFIX_REMOVE) {
-    var field = block.getField(ezP.Const.Field.PREFIX)
-    var oldValue = field.getValue()
+    fieldPrefix.setValue(newValue)
+  }
+  var remove = function(key) {
     var newValue = ''
     switch(oldValue) {
       case 'u': case 'U':
       break
       case 'r': case 'R':
-      if (model.key !== 'r') return true
+      if (key !== 'r') return true
       break
       case 'f': case 'F':
-      if (model.key !== 'f') return true
+      if (key !== 'f') return true
       break
       case 'b': case 'B':
-      if (model.key !== 'b') return true
+      if (key !== 'b') return true
       break
       default:
-      if (model.key === 'f' || model.key === 'b') newValue = 'r'
+      if (key === 'f' || key === 'b') newValue = 'r'
       else if (['rf', 'fr',].indexOf(oldValue.toLowerCase())<0) newValue = 'b'
       else newValue = 'f'
     }
-    field.setValue(newValue)
+    fieldPrefix.setValue(newValue)
     return true
   }
-  return ezP.DelegateSvg.Expr.stringliteral.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
+  var item = function(msg, action) {
+    var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      ezP.Do.createSPAN(msg, 'ezp-code'),
+      goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
+    )
+    return new ezP.MenuItem(content, function() {
+      action(msg)
+    })
+  }
+  if (!oldValue.length) {
+    mgr.addInsertChild(item('u', insert))
+    mgr.addInsertChild(item('r', insert))
+    mgr.addInsertChild(item('f', insert))
+    mgr.addInsertChild(item('b', insert))
+  } else if (oldValue === 'u') {
+    mgr.addRemoveChild(item('u', remove))
+  } else if (oldValue === 'r') {
+    mgr.addInsertChild(item('f', insert))
+    mgr.addInsertChild(item('b', insert))
+    mgr.addRemoveChild(item('r', remove))
+  } else if (oldValue === 'f') {
+    mgr.addInsertChild(item('r', insert))
+    mgr.addRemoveChild(item('f', remove))
+  } else if (oldValue === 'b') {
+    mgr.addInsertChild(item('r', insert))
+    mgr.addRemoveChild(item('b', remove))
+  } else {
+    mgr.addRemoveChild(item('r', remove))
+    if (['rf', 'fr',].indexOf(prefix.toLowerCase())<0) {
+      mgr.addRemoveChild(item('b', remove))
+    } else {
+      mgr.addRemoveChild(item('f', remove))
+    }
+  }
+  mgr.shouldSeparateInsert()
+  ezP.DelegateSvg.Expr.stringliteral.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  return true
 }
 
 /**
@@ -530,7 +460,7 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.willRender_ = function (block) {
 }
 
 /**
- * Records the operator as attribute.
+ * Records the prefix as attribute.
  * @param {!Blockly.Block} block.
  * @param {!Element} element dom element to be completed.
  * @override
@@ -540,7 +470,7 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.toDom = function (block, element) {
 }
 
 /**
- * Set the operator from the attribute.
+ * Set the prefix from the attribute.
  * @param {!Blockly.Block} block.
  * @param {!Element} element dom element to be completed.
  * @override
@@ -586,8 +516,6 @@ ezP.DelegateSvg.Expr.builtin_object = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.builtin_object, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('builtin_object')
 
-ezP.ID.BUILTIN_OBJECT_CHANGE = 'BUILTIN_OBJECT_CHANGE'
-
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
@@ -595,14 +523,13 @@ ezP.ID.BUILTIN_OBJECT_CHANGE = 'BUILTIN_OBJECT_CHANGE'
  * @private
  */
 ezP.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var builtin = block.getField(ezP.Const.Field.VALUE).getValue()
+  var field = block.getField(ezP.Const.Field.VALUE)
+  var builtin = field.getValue()
   var value, _ = 0
   while ((value = this.values[_++])) {
     var menuItem = new ezP.MenuItem(
-      ezP.Do.createSPAN(value, 'ezp-code-reserved'),
-      {
-        action: ezP.ID.BUILTIN_OBJECT_CHANGE,
-        value: value,
+      ezP.Do.createSPAN(value, 'ezp-code-reserved'), function() {
+        field.setValue(value)
       })
     menuItem.setEnabled(builtin !== value)
     mgr.addChild(menuItem, true)
@@ -610,23 +537,6 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = functi
   mgr.shouldSeparateInsert()
   ezP.DelegateSvg.Expr.builtin_object.superClass_.populateContextMenuFirst_.call(this, block, mgr)
   return true
-}
-
-/**
- * Handle the selection of an item in the context dropdown menu.
- * @param {!Blockly.Block} block, owner of the delegate.
- * @param {!goog.ui.Menu} menu The Menu clicked.
- * @param {!goog....} event The event containing as target
- * the MenuItem selected within menu.
- */
-ezP.DelegateSvg.Expr.builtin_object.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
-  var model = event.target.getModel()
-  var action = model.action
-  if (action === ezP.ID.BUILTIN_OBJECT_CHANGE) {
-    block.getField(ezP.Const.Field.VALUE).setValue(model.value)
-    return true
-  }
-  return ezP.DelegateSvg.Expr.builtin_object.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
 }
 
 /**

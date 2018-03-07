@@ -166,13 +166,13 @@ ezP.Delegate.Manager = function () {
     if (D && Object.keys(D).length) {
       Ctor.prototype.inputModel = D
       if (D.first) {
-        D.first.check = ezP.Do.ensureArray(D.first.check)
+        D.first.check = ezP.Do.ensureArray(D.first.check||D.first.wrap)
       }
       if (D.middle) {
-        D.middle.check = ezP.Do.ensureArray(D.middle.check)
+        D.middle.check = ezP.Do.ensureArray(D.middle.check||D.middle.wrap)
       }
       if (D.last) {
-        D.last.check = ezP.Do.ensureArray(D.last.check)
+        D.last.check = ezP.Do.ensureArray(D.last.check||D.last.wrap)
       }
     }
     if ((D = dlgt.outputModel_) && Object.keys(D).length) {

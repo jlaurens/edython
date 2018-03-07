@@ -67,8 +67,8 @@ ezP.DelegateSvg.Expr.print.prototype.populateContextMenuFirst_ = function (block
   var c10r = list.ezp.consolidator
   var yorn = false
   if (!c10r.hasInputForType(list, ezP.T3.Expr.comprehension)) {
-    var io = c10r.getIO(list)
     var has = {}
+    var io = c10r.getIO(list)
     var input
     while ((input = c10r.nextInputForType(io, ezP.T3.Expr.keyword_item))) {
       var target = input.connection.targetBlock()
@@ -76,13 +76,31 @@ ezP.DelegateSvg.Expr.print.prototype.populateContextMenuFirst_ = function (block
         has[target.ezp.getValue(target)] = target
       }
     }
+    var insert = function(key) {
+      Blockly.Events.setGroup(true)
+      var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.identifier)
+      BB.ezp.setValue(BB, key)
+      var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.keyword_item)
+      B.getInput(ezP.Key.KEY).connection.connect(BB.outputConnection)
+      var c8n = list.inputList[list.inputList.length-1].connection
+      c8n.connect(B.outputConnection)  
+      block.ezp.consolidate(block)
+      Blockly.Events.setGroup(false)
+    }
+    var remove = function(key) {
+      Blockly.Events.setGroup(true)
+      var B = has[key].getParent()
+      B.unplug()
+      B.dispose()
+      Blockly.Events.setGroup(false)
+    }
     var F = function(candidate) {
       var menuItem = new ezP.MenuItem(
-        ezP.Do.createSPAN(candidate+' = …', 'ezp-code-disabled'),
-        {
-          action: has[candidate]? ezP.ID.PRINT_KEYWORD_ITEM_REMOVE: ezP.ID.PRINT_KEYWORD_ITEM_INSERT,
-          key: candidate,
-          target: has[candidate],
+        ezP.Do.createSPAN(candidate+' = …', 'ezp-code'),
+        has[candidate]? function() {
+          remove(candidate)
+        }: function() {
+          insert(candidate)
         }
       )
       if (has[candidate]) {
@@ -97,39 +115,6 @@ ezP.DelegateSvg.Expr.print.prototype.populateContextMenuFirst_ = function (block
     yorn = true
   }
   return ezP.DelegateSvg.Expr.print.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
-}
-
-/**
- * Handle the selection of an item in the context dropdown menu.
- * @param {!Blockly.Block} block, owner of the delegate.
- * @param {!goog.ui.Menu} menu The Menu clicked.
- * @param {!goog....} event The event containing as target
- * the MenuItem selected within menu.
- */
-ezP.DelegateSvg.Expr.print.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
-  var model = event.target.getModel()
-  var action = model.action
-  var value = model.key
-  if (model.action === ezP.ID.PRINT_KEYWORD_ITEM_INSERT) {
-    Blockly.Events.setGroup(true)
-    var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.identifier)
-    BB.ezp.setValue(BB, model.key)
-    var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.keyword_item)
-    B.getInput(ezP.Key.KEY).connection.connect(BB.outputConnection)
-    var list = block.getInput(ezP.Key.LIST).connection.targetBlock()
-    var c8n = list.inputList[list.inputList.length-1].connection
-    c8n.connect(B.outputConnection)  
-    Blockly.Events.setGroup(false)
-    return true
-  } else if (model.action === ezP.ID.PRINT_KEYWORD_ITEM_REMOVE) {
-    Blockly.Events.setGroup(true)
-    var B = model.target.getParent()
-    B.unplug()
-    B.dispose()
-    Blockly.Events.setGroup(false)
-    return true
-  } else 
-  return ezP.DelegateSvg.Expr.print.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
 }
 
 /**

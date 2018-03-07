@@ -216,23 +216,19 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         out.fieldLabel = field = new ezP.FieldLabel(v)
         k = D.key === undefined ? D.key || K+'.'+ezP.Const.Field.LABEL: D.key
         out.input.appendField(field, k)
-        if (D.css_class) {
-          field.ezpData.css_class = D.css_class
-        }
-        if (D.css_style) {
-          field.ezpData.css_style = D.css_style
-        }
+        field.ezpData.css_class = D.css_class
+        field.ezpData.css_style = D.css_style
       }
       if ((v = D.start) !== undefined) {
         field = out.input.ezpData.fieldLabelStart = new ezP.FieldLabel(v)
-        k = D.key === undefined ? K+'.'+ezP.Const.Field.START: D.key
+        k = K+'.'+ezP.Const.Field.START
         field.ezpData.css_class = D.css_class
         field.ezpData.css_style = D.css_style
         out.input.appendField(field, k)
       }
       if ((v = D.end) !== undefined) {
         field = out.input.ezpData.fieldLabelEnd = new ezP.FieldLabel(v)
-        k = D.key === undefined ? K+'.'+ezP.Const.Field.END: D.key
+        k = K + '.'+ezP.Const.Field.END
         field.ezpData.css_class = D.css_class
         field.ezpData.css_style = D.css_style
         field.ezpData.suffix = true
@@ -240,30 +236,30 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       }
       if ((v = D.identifier) !== undefined) {
         field = out.fieldIdentifier = new ezP.FieldIdentifier(v)
-        k = D.key === undefined ? K+'.'+ezP.Const.Field.IDENTIFIER: D.key
+        k = K+'.'+ezP.Const.Field.IDENTIFIER
         out.input.appendField(field, k)
         // if (D.label) { // this is svg specific
         //   field.ezpData.x_shift = ezP.Font.space
         // }
       } else if ((v = D.code) != undefined) {
         field = out.fieldCodeInput = new ezP.FieldCodeInput(v)
-        k = D.key || ezP.Const.Field.CODE
+        k = K+'.'+ezP.Const.Field.CODE
         out.input.appendField(field, k)
       } else if ((v = D.comment) != undefined) {
         field = out.fieldCodeComment = new ezP.FieldCodeComment(v)
-        k = D.key || ezP.Const.Field.COMMENT
+        k = K+'.'+ezP.Const.Field.COMMENT
         out.input.appendField(field, k)
       } else if ((v = D.number) != undefined) {
         field = out.fieldCodeNumber = new ezP.FieldCodeNumber(v)
-        k = D.key || ezP.Const.Field.NUMBER
+        k = K+'.'+ezP.Const.Field.NUMBER
         out.input.appendField(field, k)
       } else if ((v = D.string) != undefined) {
         field = out.fieldCodeString = new ezP.FieldCodeString(v)
-        k = D.key || ezP.Const.Field.STRING
+        k = K+'.'+ezP.Const.Field.STRING
         out.input.appendField(field, k)
       } else if ((v = D.longString) != undefined) {
         field = out.fieldCodeLongString = new ezP.FieldCodeLongString(v)
-        k = D.key || ezP.Const.Field.LONG_STRING
+        k = K+'.'+ezP.Const.Field.LONG_STRING
         out.input.appendField(field, k)
       }
     }
@@ -755,7 +751,7 @@ ezP.DelegateSvg.prototype.renderDrawFields_ = function (io, start) {
       }          
     }
   }
-  if (start && lastField && /^.*[a-zA-Z]$/.test(lastField.getValue())) {
+  if (start && lastField && /^.*[a-zA-Z_]$/.test(lastField.getValue())) {
     io.endsWithCharacter = true
   }
   return here - io.cursorX
@@ -1393,7 +1389,7 @@ ezP.HoleFiller.fillDeepHoles = function(workspace, holes) {
  * @return yorn whether a change has been made
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.prototype.changeWrapType = function (block, key, newType) {
+ezP.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
   var input = block.getInput(key)
   if (input) {
     var target = input.connection.targetBlock()

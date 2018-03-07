@@ -401,9 +401,30 @@ ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
       ezP.Do.createSPAN(msg),
       ezP.Do.createSPAN(' )', 'ezp-code-disabled'),
     )
-    mgr.addInsertChild(new ezP.MenuItem(content, {
-      action: ezP.ID.PARAMETER_INSERT,
-      type: type,
+    mgr.addInsertChild(new ezP.MenuItem(content, function() {
+      Blockly.Events.setGroup(true)
+      var list = block.inputList
+      var i = list.length
+      var input
+      while ((input = list[--i])) {
+        var c8n = input.connection
+        if (c8n) {
+          if(c8n.targetConnection) {
+            continue
+          }
+          var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, type)
+          if (BB.ezp.setValue) {
+            BB.ezp.setValue(BB, 'name')
+          } else {
+            var holes = ezP.HoleFiller.getDeepHoles(BB)
+            ezP.HoleFiller.fillDeepHoles(BB.workspace, holes)
+          }
+          c8n.connect(BB.outputConnection)
+          block.ezp.consolidate(block)
+          break
+        }
+      }
+      Blockly.Events.setGroup(false)
     }))
   }
   var G = function(type, msg) {
@@ -426,42 +447,3 @@ ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
   ezP.DelegateSvg.Expr.parameter_list.superClass_.populateContextMenuFirst_.call(this,block, mgr)
   return true
 }
-
-/**
- * Handle the selection of an item in the context dropdown menu.
- * @param {!Blockly.Block} block, owner of the delegate.
- * @param {!goog.ui.Menu} menu The Menu clicked.
- * @param {!goog....} event The event containing as target
- * the MenuItem selected within menu.
- */
-ezP.DelegateSvg.Expr.parameter_list.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
-  var model = event.target.getModel()
-  if (model.action == ezP.ID.PARAMETER_INSERT) {
-    Blockly.Events.setGroup(true)
-    var list = block.inputList
-    var i = list.length
-    var input
-    while ((input = list[--i])) {
-      var c8n = input.connection
-      if (c8n) {
-        if(c8n.targetConnection) {
-          continue
-        }
-        var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, model.type)
-        if (BB.ezp.setValue) {
-          BB.ezp.setValue(BB, 'name')
-        } else {
-          var holes = ezP.HoleFiller.getDeepHoles(BB)
-          ezP.HoleFiller.fillDeepHoles(BB.workspace, holes)
-        }
-        c8n.connect(BB.outputConnection)
-        this.consolidate(block)
-        break
-      }
-    }
-    Blockly.Events.setGroup(false)
-    return true
-  }
-  return ezP.DelegateSvg.Expr.parameter_list.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
-}
-

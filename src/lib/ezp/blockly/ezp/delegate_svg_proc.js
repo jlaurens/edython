@@ -133,66 +133,40 @@ ezP.ID.USE_DECORATOR = 'USE_DECORATOR'
 ezP.DelegateSvg.Expr.decorator_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var menu = mgr.menu
   var yorn = false
-  var target = this.inputs.first.input.connection.targetBlock()
-  if (target) {
-    if (target.ezp.getValue && target.ezp.setValue) {
-      var old = target.ezp.getValue(target)
-      var F = function(candidate) {
-        if (old !== candidate) {
-          var menuItem = new ezP.MenuItemCode('@'+candidate, {
-            action: ezP.ID.USE_DECORATOR,
-            value: candidate,
-            target: block,
-          })
-          menu.addChild(menuItem, true)
-          return true
-        }
-        return false
-      }
-      var yorn = F('staticmethod')
-      yorn = F('classmethod') || yorn
-    }
-  } else {
+  var c8n = this.inputs.first.input.connection
+  var target = c8n.targetBlock()
+  if (!target) {
     var F = function(candidate) {
-      var menuItem = new ezP.MenuItemCode('@'+candidate, {
-        action: ezP.ID.USE_DECORATOR,
-        value: candidate,
-        target: block,
+      var menuItem = new ezP.MenuItemCode('@'+candidate, function() {
+        Blockly.Events.setGroup(true)
+        target = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.identifier)
+        target.ezp.setValue(target, candidate)
+        c8n.connect(target.outputConnection)
+        Blockly.Events.setGroup(false)
       })
       menu.addChild(menuItem, true)
-    }
-    F('staticmethod')
-    F('classmethod')
-    yorn = true
+      return true
   }
-  return ezP.DelegateSvg.Expr.decorator_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
-}
-
-/**
- * Handle the selection of an item in the context dropdown menu.
- * @param {!Blockly.Block} block, owner of the delegate.
- * @param {!goog.ui.Menu} menu The Menu clicked.
- * @param {!goog....} event The event containing as target
- * the MenuItem selected within menu.
- */
-ezP.DelegateSvg.Expr.decorator_expr.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
-  var model = event.target.getModel()
-  if (model.action == ezP.ID.USE_DECORATOR) {
-    Blockly.Events.setGroup(true)
-    var target = model.target
-    if (!target.ezp.setValue) {
-      var holes = ezP.HoleFiller.getDeepHoles(target)
-      ezP.HoleFiller.fillDeepHoles(target.workspace, holes)
-      if (!(target = this.inputs.first.input.connection.targetBlock()) || !target.ezp.setValue) {
-        Blockly.Events.setGroup(false)// undo some things here ?
+    var yorn = F('staticmethod')
+    yorn = F('classmethod') || yorn
+  } else if (target.ezp.getValue && target.ezp.setValue) {
+    var old = target.ezp.getValue(target)
+    var F = function(candidate) {
+      if (old !== candidate) {
+        var menuItem = new ezP.MenuItemCode('@'+candidate, function() {
+          Blockly.Events.setGroup(true)
+          target.ezp.setValue(target, candidate)
+          Blockly.Events.setGroup(false)
+        })
+        menu.addChild(menuItem, true)
         return true
       }
+      return false
     }
-    target.ezp.setValue(target, model.value)
-    Blockly.Events.setGroup(false)
-    return true
+    var yorn = F('staticmethod')
+    yorn = F('classmethod') || yorn
   }
-  return ezP.DelegateSvg.Expr.decorator_expr.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
+  return ezP.DelegateSvg.Expr.decorator_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
 /**
@@ -255,6 +229,7 @@ ezP.DelegateSvg.Expr.funcdef_typed = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.funcdef_typed, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('funcdef_typed')
 
+
 /**
  * Class for a DelegateSvg, funcdef_part.
  * For ezPython.
@@ -265,46 +240,57 @@ ezP.DelegateSvg.Manager.register('funcdef_typed')
 ezP.DelegateSvg.Stmt.funcdef_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.funcdef_part.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
+    label: '',
+    css_class: 'ezp-code-reserved',
     key: ezP.Key.WRAP,
     check: ezP.T3.Expr.Check.funcdef_expr,
     wrap: ezP.T3.Expr.funcdef_simple,
   }
-  this.menuData = [
-    {
-      content: goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-        ezP.Do.createSPAN('def', 'ezp-code-reserved'),
-        ezP.Do.createSPAN(' name', 'ezp-code-placeholder'),
-        ezP.Do.createSPAN('('),
-        ezP.Do.createSPAN('…', 'ezp-code-placeholder'),
-        ezP.Do.createSPAN('):'),
-      ),
-      type: ezP.T3.Expr.funcdef_simple
-    },
-    {
-      content:   goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-        ezP.Do.createSPAN('def', 'ezp-code-reserved'),
-        ezP.Do.createSPAN(' name', 'ezp-code-placeholder'),
-        ezP.Do.createSPAN('('),
-        ezP.Do.createSPAN('…', 'ezp-code-placeholder'),
-        ezP.Do.createSPAN(')'),
-        ezP.Do.createSPAN('-> '),
-        ezP.Do.createSPAN('…', 'ezp-code-placeholder'),
-        ezP.Do.createSPAN(':'),
-    ),
-      type: ezP.T3.Expr.funcdef_typed
-    },
-  ]
 }
 goog.inherits(ezP.DelegateSvg.Stmt.funcdef_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('funcdef_part')
 
+/**
+ * Will draw the block. Default implementation does nothing.
+ * The print statement needs some preparation before drawing.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.funcdef_part.prototype.willRender_ = function (block) {
+  ezP.DelegateSvg.Expr.stringliteral.superClass_.willRender_.call(this, block)
+  var field = this.inputs.first.fieldLabel
+  var text = field.getText()
+  field.setVisible(text && text.length)
+}
+
 
 /**
- * When the block is just a wrapper, returns the wrapped target.
- * @param {!Blockly.Block} block owning the delegate.
+ * Records the prefix as attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
  */
-ezP.DelegateSvg.Stmt.funcdef_part.prototype.getMenuTarget = function(block) {
-  return block
+ezP.DelegateSvg.Stmt.funcdef_part.prototype.toDom = function (block, element) {
+  ezP.DelegateSvg.Stmt.funcdef_part.superClass_.toDom.call(this, block, element)
+  var attribute = this.inputs.first.fieldLabel.getText()
+  if (attribute && attribute.length) {
+    element.setAttribute('prefix', this.inputs.first.fieldLabel.getText())
+  }
+}
+
+/**
+ * Set the prefix from the attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.DelegateSvg.Stmt.funcdef_part.prototype.fromDom = function (block, element) {
+  ezP.DelegateSvg.Stmt.funcdef_part.superClass_.fromDom.call(this, block, element)
+  var prefix = element.getAttribute('prefix')
+  var field = this.inputs.first.fieldLabel
+  if (prefix && prefix.length) {
+    field.setText(prefix)
+  }
 }
 
 /**
@@ -314,23 +300,22 @@ ezP.DelegateSvg.Stmt.funcdef_part.prototype.getMenuTarget = function(block) {
  * @private
  */
 ezP.DelegateSvg.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var yorn
-  var D = ezP.DelegateSvg.Manager.getInputModel(block.type)
-  if (yorn = mgr.populate_wrap_alternate(block, D.first.key)) {
-    mgr.shouldSeparate()
+  var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    ezP.Do.createSPAN('async', 'ezp-code-reserved'),
+    goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
+  )
+  var field = this.inputs.first.fieldLabel
+  var old = field.getValue()
+  if (old === 'async') {
+    mgr.addRemoveChild(new ezP.MenuItem(content, function() {
+      field.setValue('')
+    }))
+  } else {
+    mgr.addInsertChild(new ezP.MenuItem(content, function() {
+      field.setValue('async')
+    }))
   }
-  return ezP.DelegateSvg.Stmt.funcdef_part.superClass_.populateContextMenuFirst_.call(this,block, mgr) || yorn
-}
-
-/**
- * Handle the selection of an item in the context dropdown menu.
- * @param {!Blockly.Block} block, owner of the delegate.
- * @param {!goog.ui.Menu} menu The Menu clicked.
- * @param {!goog....} event The event containing as target
- * the MenuItem selected within menu.
- */
-ezP.DelegateSvg.Stmt.funcdef_part.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
-  return mgr.handleAction_wrap_alternate(block, event) || ezP.DelegateSvg.Stmt.funcdef_part.superClass_.handleMenuItemActionMiddle.call(this, block, mgr, event)
+  return ezP.DelegateSvg.Stmt.funcdef_part.superClass_.populateContextMenuFirst_.call(this,block, mgr)
 }
 
 /*
@@ -465,15 +450,4 @@ ezP.DelegateSvg.Stmt.classdef_part.prototype.populateContextMenuFirst_ = functio
     mgr.shouldSeparate()
   }
   return ezP.DelegateSvg.Stmt.classdef_part.superClass_.populateContextMenuFirst_.call(this,block, mgr) || yorn
-}
-
-/**
- * Handle the selection of an item in the context dropdown menu.
- * @param {!Blockly.Block} block, owner of the delegate.
- * @param {!goog.ui.Menu} menu The Menu clicked.
- * @param {!goog....} event The event containing as target
- * the MenuItem selected within menu.
- */
-ezP.DelegateSvg.Stmt.classdef_part.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
-  return mgr.handleAction_wrap_alternate(block, event) || ezP.DelegateSvg.Stmt.classdef_part.superClass_.handleMenuItemActionMiddle.call(this, block, mgr, event)
 }

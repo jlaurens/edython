@@ -465,17 +465,6 @@ ezP.DelegateSvg.AugAssign.prototype.XpopulateContextMenuFirst_ = function (block
 }
 
 /**
- * Handle the selection of an item in the context dropdown menu.
- * @param {!Blockly.Block} block, owner of the delegate.
- * @param {!ezP.MenuManager} mgr mgr.menu The Menu clicked.
- * @param {!goog....} event The event containing the target
- * the MenuItem selected within menu.
- */
-ezP.DelegateSvg.AugAssign.prototype.XhandleMenuItemActionFirst = function (block, mgr, event) {
-  return mgr.handleAction_wrap_alternate(block, event) || ezP.DelegateSvg.AugAssign.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
-}
-
-/**
  * Class for a DelegateSvg, augassign_numeric block.
  * Multiple ops.
  * For ezPython.
@@ -681,8 +670,8 @@ ezP.ID.ASSIGN_LIST_INSERT = 'ASSIGN_LIST_INSERT'
 ezP.DelegateSvg.Expr.augassign_numeric.prototype.populateContextMenuFirst_ =
 ezP.DelegateSvg.Expr.augassign_bitwise.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var target = this.inputs.last.input.connection.targetBlock()
-  var type, input
   if (target) {
+    var type, input
     var can_insert = function() {
       for (var i =0; (input = target.inputList[i++]);) {
         var c8n = input.connection
@@ -695,11 +684,20 @@ ezP.DelegateSvg.Expr.augassign_bitwise.prototype.populateContextMenuFirst_ = fun
       return false
     }
     var F = function(content) {
-      mgr.addInsertChild(new ezP.MenuItem(content, {
-        action: ezP.ID.ASSIGN_LIST_INSERT,
-        type: type,
-        target: input,
-      }))
+      mgr.addInsertChild(new ezP.MenuItem(content, function() {
+          Blockly.Events.setGroup(true)
+          var BB = ezP.DelegateSvg.newBlockComplete(target.workspace, type)
+          if (BB.ezp.setValue) {
+            BB.ezp.setValue(BB, 'name')
+          } else {
+            var holes = ezP.HoleFiller.getDeepHoles(BB)
+            ezP.HoleFiller.fillDeepHoles(BB.workspace, holes)
+          }
+          input.connection.connect(BB.outputConnection)
+          target.ezp.consolidate(target)
+          Blockly.Events.setGroup(false)
+          return
+        }))
     }
     type = ezP.T3.Expr.yield_expression_list
     if (can_insert()) {

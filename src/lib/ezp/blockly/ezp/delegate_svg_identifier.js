@@ -34,8 +34,6 @@ ezP.DelegateSvg.Expr.identifier = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.identifier, ezP.DelegateSvg.Expr)
 ezP.Delegate.Manager.register('identifier')
 
-ezP.ID.IDENTIFIER_RENAME = 'IDENTIFIER_RENAME'
-
 ezP.ID.CHANGE_VARIABLE = 'CHANGE_VARIABLE'
 ezP.ID.RENAME_VARIABLE = 'RENAME_VARIABLE'
 ezP.ID.REPLACE_VARIABLE = 'REPLACE_VARIABLE'
@@ -78,32 +76,13 @@ ezP.DelegateSvg.Expr.identifier.prototype.setValue = function (block, value) {
  */
 ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var menu = mgr.menu
-  var menuItem = new ezP.MenuItem(
-    ezP.Msg.RENAME,
-    [ezP.ID.IDENTIFIER_RENAME]);
-  mgr.addChild(menuItem, true);
+  var menuItem = new ezP.MenuItem(ezP.Msg.RENAME, function() {
+      block.ezp.inputs.first.fieldIdentifier.showEditor_()
+    })
+  mgr.addChild(menuItem, true)
   mgr.shouldSeparate()
   ezP.DelegateSvg.Expr.identifier.superClass_.populateContextMenuFirst_.call(this, block, mgr)
   return true
-}
-
-/**
- * Handle the selection of an item in the first part of the context dropdown menu.
- * Default implementation returns false.
- * @param {!Blockly.Block} block The Menu component clicked.
- * @param {!goog.ui.Menu} menu The Menu component clicked.
- * @param {!goog....} event The event containing as target
- * the MenuItem selected within menu.
- */
-ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
-  var model = event.target.getModel()
-  var action = model[0]
-  if (action == ezP.ID.IDENTIFIER_RENAME) {
-    block.ezp.inputs.first.fieldIdentifier.showEditor_()
-    return true
-  }
-  return ezP.DelegateSvg.Expr.identifier.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
-
 }
 
 /**

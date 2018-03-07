@@ -139,17 +139,6 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = func
 }
 
 /**
- * Handle the selection of an item in the context dropdown menu.
- * @param {!Blockly.Block} block, owner of the delegate.
- * @param {!goog.ui.Menu} menu The Menu clicked.
- * @param {!goog....} event The event containing as target
- * the MenuItem selected within menu.
- */
-ezP.DelegateSvg.Expr.yield_expression.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
-  return mgr.handleAction_wrap_alternate(block, event) || ezP.DelegateSvg.Expr.yield_expression.superClass_.handleMenuItemActionMiddle.call(this, block, mgr, event)
-}
-
-/**
  * Class for a DelegateSvg, yield_stmt.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
