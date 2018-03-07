@@ -848,7 +848,7 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
     ezP.T3.Expr.list_display,
     ezP.T3.Expr.set_display,
     ezP.T3.Expr.dict_display,
-    [ezP.T3.Expr.funcdef_typed, ezP.Key.FUNCDEF],
+    [ezP.T3.Expr.funcdef_typed, ezP.Key.DEFINITION],
   ], true)
   this.shouldSeparateInsert()
   this.shouldSeparateRemove()
@@ -883,7 +883,7 @@ ezP.MenuManager.prototype.populate_wrap_alternate = function (block, key) {
     var input = block.getInput(key)
     if (input && input.connection) {
       var target = input.connection.targetBlock()
-      goog.asserts.assert(target, 'No wrapper in aug_assigned?')
+      goog.asserts.assert(target, 'No wrapper in augassign_list?')
       var F = function(data) {
         var content = goog.isFunction(data.content)? data.content(block): data.content
         goog.asserts.assert(content, 'content is missing '+block.type+' '+key)

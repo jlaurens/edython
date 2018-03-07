@@ -88,8 +88,6 @@ ezP.DelegateSvg.Manager.register = function (key) {
   Blockly.Blocks[prototypeName] = {}
 }
 
-Blockly.Block.prototype.ezp = ezP.DelegateSvg.Manager.registerDefault(ezP.DelegateSvg)
-
 /**
  * This is the shape used to draw the outline of a block
  * @private
@@ -158,7 +156,8 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   block.setTooltip('')
   block.setHelpUrl('')
 
-  var F = function(K, D) {
+  var F = function(K) {
+    var D = this.inputModel_[K]
     var out
     if (D && Object.keys(D).length) {
       out = {}
@@ -275,7 +274,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   if (Object.keys(this.inputModel_).length) {
     var keys = ['first', 'middle', 'last']
     for (var i = 0, K; K = keys[i++];) {
-      var f = F(K, this.inputModel_[K])
+      var f = F.call(this, K)
       if (f) {
         Is[K] = f
       }

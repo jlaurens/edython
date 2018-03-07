@@ -110,6 +110,13 @@ ezP.Delegate.Manager = function () {
     return Ctors[prototypeName]
   }
   /**
+   * Get the Delegate constructor for the given prototype name.
+   * @param {?string} prototypeName Name of the language object containing
+   */
+  me.getTypes = function () {
+    return Object.keys(Ctors)
+  }
+  /**
    * Get the inputModel for that prototypeName.
    * @param {?string} prototypeName Name of the language object containing
    * @return void object if no delegate is registered for that name
@@ -214,11 +221,6 @@ ezP.Delegate.Manager = function () {
       }
     }
   }
-  me.registerDefault = function (Ctor) {
-    // console.log(prototypeName+' -> '+Ctor)
-    Ctors['ezp_default'] = Ctor
-    return defaultDelegate = new Ctor('ezp_default')
-  }
   me.display = function() {
     var keys = Object.keys(Ctors)
     for (var k=0; k<keys.length; k++) {
@@ -228,8 +230,6 @@ ezP.Delegate.Manager = function () {
   }
   return me
 }()
-
-Blockly.Block.prototype.ezp = ezP.Delegate.Manager.registerDefault(ezP.Delegate)
 
 // register this delegate for all the T3 types
 

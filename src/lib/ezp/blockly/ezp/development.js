@@ -123,7 +123,7 @@ ezP.DelegateSvg.Expr.augassign_bitwise.workspaceBlocks = [
   ezP.T3.Expr.identifier,
   ezP.T3.Expr.augassign_numeric,
   ezP.T3.Expr.augassign_bitwise,
-  ezP.T3.Expr.aug_assigned,
+  ezP.T3.Expr.augassign_list,
 ]
 
 ezP.DelegateSvg.Expr.optional_expression_list.workspaceBlocks = [
@@ -198,8 +198,8 @@ ezP.DelegateSvg.Expr.parameter_list.workspaceBlocks = ezP.Do.arraysMerged([
 ezP.T3.Expr.Check.parameter_any,
 )
 
-ezP.DelegateSvg.Stmt.any_stmt.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Stmt.any_stmt,
+ezP.DelegateSvg.Stmt.expression_stmt.workspaceBlocks = ezP.Do.arraysMerged([
+  ezP.T3.Stmt.expression_stmt,
 ],
 ezP.T3.Expr.Check.expression,
 )
@@ -292,6 +292,21 @@ ezP.T3.Expr.Check.target_unstar,
 ezP.T3.Expr.Check.target,
 ezP.T3.Expr.Check.slice_item,
 ezP.T3.Expr.Check.assigned_expression)
+
+ezP.DelegateSvg.Stmt.augassign_numeric_stmt.workspaceBlocks =
+ezP.DelegateSvg.Expr.augassign_numeric.workspaceBlocks =
+ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.workspaceBlocks =
+ezP.DelegateSvg.Expr.augassign_bitwise.workspaceBlocks = ezP.Do.arraysMerged([
+  ezP.T3.Stmt.augassign_numeric_stmt,
+  ezP.T3.Expr.augassign_numeric,
+  ezP.T3.Stmt.augassign_bitwise_stmt,
+  ezP.T3.Expr.augassign_bitwise,
+  ezP.T3.Expr.identifier,
+  ezP.T3.Expr.yield_expression_list,
+  ezP.T3.Expr.yield_from_expression,
+  ezP.T3.Expr.augassign_list,
+],
+ezP.T3.Expr.Check.augassign_list)
 
 // in progress
 

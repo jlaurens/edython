@@ -29,9 +29,6 @@ ezP.DelegateSvg.Literal = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Literal, ezP.DelegateSvg.Expr)
 
-// Default delegate for all expression blocks
-ezP.Delegate.Manager.registerAll(ezP.T3.Expr, ezP.DelegateSvg.Expr, true)
-
 /**
  * Create and initialize the various paths,
  * the first, middle and last inputs if required.

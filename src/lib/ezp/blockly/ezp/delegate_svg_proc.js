@@ -242,7 +242,7 @@ ezP.DelegateSvg.Expr.funcdef_simple.prototype.canUnwrap = function(block) {
 ezP.DelegateSvg.Expr.funcdef_typed = function (prototypeName) {
   ezP.DelegateSvg.Expr.funcdef_typed.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    key: ezP.Key.FUNCDEF,
+    key: ezP.Key.DEFINITION,
     wrap: ezP.T3.Expr.funcdef_simple,
   }
   this.inputModel_.last = {
@@ -382,7 +382,7 @@ ezP.DelegateSvg.Expr.classdef_derived = function (prototypeName) {
   ezP.DelegateSvg.Expr.classdef_derived.superClass_.constructor.call(this, prototypeName)
   this.inputModel_ = {
     first: {
-      key: ezP.Key.CLASSDEF,
+      key: ezP.Key.DEFINITION,
       wrap: ezP.T3.Expr.classdef_simple,
     },
     last: {

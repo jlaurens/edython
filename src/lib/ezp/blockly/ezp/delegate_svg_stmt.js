@@ -460,19 +460,19 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.renderDrawSharp_ = function (io) {
 }
 
 /**
- * Class for a DelegateSvg, any_stmt.
+ * Class for a DelegateSvg, expression_stmt.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.any_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.any_stmt.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Stmt.expression_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.expression_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
     key: ezP.Key.EXPRESSION,
     check: ezP.T3.Expr.Check.expression,
   }
 }
-goog.inherits(ezP.DelegateSvg.Stmt.any_stmt, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('any_stmt')
+goog.inherits(ezP.DelegateSvg.Stmt.expression_stmt, ezP.DelegateSvg.Stmt)
+ezP.DelegateSvg.Manager.register('expression_stmt')
 

@@ -8,6 +8,7 @@
 <body>
 <pre>
 main_stmt ::= green flag statement
+simple_stmt ::= REMOVE
 </pre>
 assignment_stmt ::=  (target_list "=")+ (starred_expression | yield_expression)
 target_list     ::=  target ("," target)* [","]
@@ -27,9 +28,12 @@ assignment_stmt ::= assignment_expression
 <pre>
 augassign_numeric_stmt ::= augassign_numeric
 augassign_bitwise_stmt ::= augassign_bitwise
-augassign_numeric ::=  augtarget augop aug_assigned
-augassign_bitwise ::=  augtarget augop aug_assigned
-aug_assigned ::= expression_list | yield_expression
+augassign_numeric ::=  augtarget augop aug_assign_list
+augassign_bitwise ::=  augtarget augop aug_assign_list
+# aug_assign_list ::= expression_list | yield_expression
+augassign_list ::= (expression ',')+ | augassign_content
+augassign_content ::= expression | yield_expression
+augmented_assignment_stmt ::= REMOVE
 </pre>
 augmented_assignment_stmt ::=  augtarget augop (expression_list | yield_expression)
 <pre>
