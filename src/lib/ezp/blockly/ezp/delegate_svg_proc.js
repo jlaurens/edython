@@ -240,7 +240,7 @@ ezP.DelegateSvg.Manager.register('funcdef_typed')
 ezP.DelegateSvg.Stmt.funcdef_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.funcdef_part.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    prefix: '',
+    asyncable: true,
     css_class: 'ezp-code-reserved',
     key: ezP.Key.WRAP,
     check: ezP.T3.Expr.Check.funcdef_expr,

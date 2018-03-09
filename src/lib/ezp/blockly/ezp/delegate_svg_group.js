@@ -488,7 +488,7 @@ ezP.DelegateSvg.Stmt.with_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.with_part.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
     key: ezP.Key.LIST,
-    prefix: '',
+    asyncable: true,
     label: 'with',
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.with_item_list,
