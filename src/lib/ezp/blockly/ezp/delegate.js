@@ -181,8 +181,10 @@ ezP.Delegate.Manager = function () {
     }
     if ((D = dlgt.statementModel_) && Object.keys(D).length) {
       Ctor.prototype.statementModel = D
-      Ctor.prototype.previousCheck = ezP.Do.ensureArray(dlgt.previousCheck)// to be removed
-      Ctor.prototype.nextCheck = ezP.Do.ensureArray(dlgt.nextCheck)
+      try {
+        D.previous.check = ezP.Do.ensureArray(D.previous.check)
+        D.next.check = ezP.Do.ensureArray(D.next.check)
+      } finally {}
     }
   }
   /**
@@ -505,7 +507,7 @@ ezP.Delegate.prototype.willConnect = function(block, connection, childConnection
 /**
  * Did connect this block's connection to another connection.
  * @param {!Blockly.Block} block
- * @param {!Blockly.Connection} connection what was connected in the block
+ * @param {!Blockly.Connection} connection what has been connected in the block
  * @param {!Blockly.Connection} oldTargetConnection what was previously connected in the block
  * @param {!Blockly.Connection} oldConnection what was previously connected to the new targetConnection
  */

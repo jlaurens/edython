@@ -257,7 +257,7 @@ ezP.DelegateSvg.Manager.register('assert_stmt')
 ezP.DelegateSvg.Stmt.pass_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.pass_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    value: 'pass',
+    label: 'pass',
     css_class: 'ezp-code-reserved',
   }
 }
@@ -275,7 +275,7 @@ ezP.DelegateSvg.Manager.register('pass_stmt')
 ezP.DelegateSvg.Stmt.break_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.break_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    value: 'break',
+    label: 'break',
     css_class: 'ezp-code-reserved',
   }
 }
@@ -293,7 +293,7 @@ ezP.DelegateSvg.Manager.register('break_stmt')
 ezP.DelegateSvg.Stmt.continue_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.continue_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    value: 'continue',
+    label: 'continue',
     css_class: 'ezp-code-reserved',
   }
 }
@@ -460,6 +460,23 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.renderDrawSharp_ = function (io) {
 }
 
 /**
+ * Initialize a block.
+ * @param {!Blockly.Block} block to be initialized..
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Stmt.comment_stmt.prototype.initBlock = function (block) {
+  ezP.DelegateSvg.Stmt.comment_stmt.superClass_.initBlock.call(this, block)
+  block.nextConnection.ezp.getCheck = function() {
+    var c8n = block.previousConnection.targetConnection
+    return c8n? c8n.ezp.getCheck(): null
+  }
+  block.previousConnection.ezp.getCheck = function() {
+    var c8n = block.nextConnection.targetConnection
+    return c8n? c8n.ezp.getCheck(): null
+  }
+}
+
+/**
  * Class for a DelegateSvg, expression_stmt.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
@@ -475,4 +492,44 @@ ezP.DelegateSvg.Stmt.expression_stmt = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.expression_stmt, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Manager.register('expression_stmt')
+
+
+/**
+ * Class for a DelegateSvg, docstring_top_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.docstring_top_stmt =
+ezP.DelegateSvg.Stmt.docstring_def_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.docstring_top_stmt.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    key: ezP.Key.WRAP,
+    wrap: ezP.T3.Expr.docstring,
+  }
+  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.docstring_top_stmt
+  this.statementModel_.next.check = ezP.T3.Stmt.Next.docstring_top_stmt
+}
+goog.inherits(ezP.DelegateSvg.Stmt.docstring_top_stmt, ezP.DelegateSvg.Stmt)
+ezP.DelegateSvg.Manager.register('docstring_top_stmt')
+
+/**
+ * Class for a DelegateSvg, docstring_def_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.docstring_def_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.docstring_def_stmt.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    key: ezP.Key.WRAP,
+    wrap: ezP.T3.Expr.docstring,
+  }
+  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.docstring_def_stmt
+  this.statementModel_.next.check = ezP.T3.Stmt.Next.docstring_def_stmt
+}
+goog.inherits(ezP.DelegateSvg.Stmt.docstring_def_stmt, ezP.DelegateSvg.Stmt)
+ezP.DelegateSvg.Manager.register('docstring_def_stmt')
 

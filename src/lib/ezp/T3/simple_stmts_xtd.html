@@ -96,9 +96,10 @@ Extra part types used to manage docstring placement
 The type of the doctring is dynamically generated depending on its position.
 Rule: a docstring part becomes a top docstring if it is followed by import statements
 <pre>
-docstring_top_stmt ::= triple quoted long string at the top of the module
-import_part > import_part | docstring_top_stmt
-docstring_top_stmt > top_docstring_stmt
+docstring_top_stmt ::= docstring+{1}
+docstring ::= triple quoted string
+import_part >>> import_part | docstring_top_stmt | main_stmt | comment_stmt
+docstring_top_stmt >>> docstring_top_stmt | main_stmt | comment_stmt
 </pre>
 global_stmt ::=  "global" identifier ("," identifier)*
 nonlocal_stmt ::=  "nonlocal" identifier ("," identifier)*
@@ -114,8 +115,7 @@ comment_stmt ::= '# blah blah'
 </pre>
 
 <pre>
-docstring_module_stmt ::= triple quoted long string at the top of the function or class
-future_statement >>> future_statement | comment_stmt | docstring_module_stmt
+future_statement >>> future_statement | comment_stmt | docstring_top_stmt | main_stmt
 </pre>
 
 

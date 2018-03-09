@@ -308,6 +308,20 @@ ezP.DelegateSvg.Expr.augassign_bitwise.workspaceBlocks = ezP.Do.arraysMerged([
 ],
 ezP.T3.Expr.Check.augassign_list)
 
+ezP.DelegateSvg.Expr.docstring.workspaceBlocks = ezP.Do.arraysMerged([
+  ezP.T3.Expr.docstring,
+  ezP.T3.Stmt.docstring_top_stmt,
+  ezP.T3.Stmt.docstring_def_stmt,
+  ezP.T3.Stmt.funcdef_part,
+  ezP.T3.Stmt.classdef_part,
+  ezP.T3.Stmt.import_part,
+  ezP.T3.Stmt.pass_stmt,
+  ezP.T3.Stmt.break_stmt,
+  ezP.T3.Stmt.continue_stmt,
+  ezP.T3.Stmt.comment_stmt,
+])
+
+
 // in progress
 
 ezP.DelegateSvg.Expr.power_concrete.workspaceBlocks = ezP.Do.arraysMerged([

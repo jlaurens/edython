@@ -14,6 +14,7 @@ class Types:
     re_star_identifier = re.compile(r'^\s*"(\*+)"\s*([a-z_][a-z_\d]*)\s*$')
     re_definition = re.compile(r"^\s*(?P<name>[a-zA-Z_][a-zA-Z_\d]*?)\s*(?P<op>::=|!!=|\|\|=)\s*(?P<definition>.*)\s*$")
     re_stmt_order = re.compile(r"^\s*(?P<name>\S+)\s*(?P<order><<<|>>>)\s*(?P<what>.*)\s*$")
+    re_type_name = re.compile(r"^\s*(?P<type>[^\s\.]*)(?:\.(?P<name>[^\s\.]+))?\s*$")
     re_linck = re.compile(r"^\s*(?P<definition>\S+)\s*->\s*(?P<alias>.*)\s*$")
     re_category = re.compile(r"^#\s*category\s*:[\s.\d]*(?P<category>[a-zA-Z\s_]*).*$")
     re_ignore = re.compile(r"^\s*[\d@#.'({].*")
@@ -239,19 +240,32 @@ class Types:
                 continue
         self.all.update(more)
 
+    def is_before_after(self, type):
+
+        return not m or m.group('type') in self.all
+
     def make_before_after(self):
         for k, v in self.is_above.items():
             try:
                 t = self.all[k]
-                t.is_above = [self.all[tt] for tt in v if tt in self.all]
+                t.is_above = []
+                for tt in v:
+                    m = self.re_type_name.match(tt)
+                    if m and m.group('type') in self.all:
+                        t.is_above.append((self.all[m.group('type')], m.group('name')))
             except:
-                print('IGNORED', k, '<', v)
+                print('**** IGNORED', k, '<<<', v)
+
         for k, v in self.is_below.items():
             try:
                 t = self.all[k]
-                t.is_below = [self.all[tt] for tt in v if tt in self.all]
+                t.is_below = []
+                for tt in v:
+                    m = self.re_type_name.match(tt)
+                    if m and m.group('type') in self.all:
+                        t.is_below.append((self.all[m.group('type')], m.group('name')))
             except:
-                print('IGNORED', k, '>', v)
+                print('**** IGNORED', k, '>>>', v)
 
     def make_lists(self):
         if self.lists_made:

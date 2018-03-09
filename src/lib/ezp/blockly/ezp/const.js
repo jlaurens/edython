@@ -57,6 +57,8 @@ ezP.Key = {
   FIRST: 'first',// this MUST be in lower case
   MIDDLE: 'middle',// this MUST be in lower case
   LAST: 'last',// this MUST be in lower case
+  DO: 'do',// this MUST be in lower case
+
   NAME: 'NAME',
   FOR: 'FOR',
   IN: 'IN',
@@ -90,7 +92,6 @@ ezP.Key = {
   IMPORT: 'IMPORT',
   PARENT: 'PARENT',
   IDENTIFIER: 'IDENTIFIER',
-  DO: 'DO',
   AS: 'AS',
   SOURCE: 'SOURCE',
   POWER: 'POWER',

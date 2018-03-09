@@ -116,8 +116,7 @@ ezP.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
 }
 
 /**
- * Will draw the block. Default implementation does nothing.
- * The print statement needs some preparation before drawing.
+ * Get the 'await' field.
  * @param {!Block} block.
  * @private
  */
@@ -761,3 +760,87 @@ ezP.DelegateSvg.Expr.input = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.input, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('input')
 
+/**
+* Class for a DelegateSvg, docstring (expression).
+* For ezPython.
+* @param {?string} prototypeName Name of the language object containing
+*     type-specific functions for this block.
+* @constructor
+*/
+ezP.DelegateSvg.Expr.docstring = function (prototypeName) {
+  ezP.DelegateSvg.Expr.docstring.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_ = {
+    first: {
+      key: ezP.Key.PREFIX,
+      label: "",
+      css_class: 'ezp-code-reserved',
+    },
+    last: {
+      start: "'''",
+      string: '',
+      end: "'''",
+      css_class: 'ezp-code-reserved',
+    },
+  }
+  this.outputModel_.check = ezP.T3.Expr.docstring
+}
+goog.inherits(ezP.DelegateSvg.Expr.docstring, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('docstring')
+ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.bytesliteral, ezP.DelegateSvg.Expr.docstring)
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Expr.docstring.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var fieldStart = this.inputs.last.input.ezpData.fieldLabelStart
+  var fieldEnd = this.inputs.last.input.ezpData.fieldLabelEnd
+  var single = fieldStart.getText() === "'''"
+  var menuItem = new ezP.MenuItem(
+    ezP.Do.createSPAN(single? '"""..."""': "'''...'''", 'ezp-code'), function() {
+      Blockly.Events.setGroup(true)
+      var oldValue = fieldStart.getValue()
+      var newValue = single? '"""': "'''"
+      fieldStart.setValue(newValue)
+      fieldEnd.setValue(newValue)
+      Blockly.Events.setGroup(false)
+    })
+  mgr.addChild(menuItem, true)
+  mgr.shouldSeparateInsert()
+  ezP.DelegateSvg.Expr.docstring.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  return true
+}
+
+/**
+ * On end editing.
+ * @param {!Blockly.Block} block owner of the delegate.
+ * @param {!Blockly.Field} field The field in editing mode.
+ */
+ezP.DelegateSvg.Expr.docstring.prototype.startEditingField = function (block, field) {
+  var nameEnd = 'last.'+ezP.Const.Field.END
+  block.getField(nameEnd).setVisible(false)
+}
+
+/**
+ * On end editing.
+ * @param {!Blockly.Block} block owner of the delegate.
+ * @param {!Blockly.Field} field The field in editing mode.
+ */
+ezP.DelegateSvg.Expr.docstring.prototype.endEditingField = function (block, field) {
+  var nameEnd = 'last.'+ezP.Const.Field.END
+  block.getField(nameEnd).setVisible(true)
+}
+
+/**
+ * Will draw the block. Default implementation does nothing.
+ * The print statement needs some preparation before drawing.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Expr.docstring.prototype.willRender_ = function (block) {
+  ezP.DelegateSvg.Expr.docstring.superClass_.willRender_.call(this, block)
+  var field = this.inputs.first.fieldLabel
+  field.setVisible(field.getValue().length)
+}

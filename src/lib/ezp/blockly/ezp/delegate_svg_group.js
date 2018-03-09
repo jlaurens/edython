@@ -358,6 +358,16 @@ ezP.DelegateSvg.Group.Async = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Group.Async, ezP.DelegateSvg.Group)
 
 /**
+ * Get the 'async' field.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Group.Async.prototype.getFieldAsync = function (block) {
+  var input = this.inputs.first
+  return input? input.fieldAsync: undefined
+}
+
+/**
  * Will draw the block. Default implementation does nothing.
  * The print statement needs some preparation before drawing.
  * @param {!Block} block.
@@ -365,9 +375,11 @@ goog.inherits(ezP.DelegateSvg.Group.Async, ezP.DelegateSvg.Group)
  */
 ezP.DelegateSvg.Group.Async.prototype.willRender_ = function (block) {
   ezP.DelegateSvg.Group.Async.superClass_.willRender_.call(this, block)
-  var field = this.inputs.first.fieldAsync
-  var text = field.getText()
-  field.setVisible(text && text.length)
+  var field = this.getFieldAsync(block)
+  if (field) {
+    var text = field.getText()
+    field.setVisible(text && text.length)
+  }
 }
 
 /**
@@ -376,7 +388,7 @@ ezP.DelegateSvg.Group.Async.prototype.willRender_ = function (block) {
  * @return yes or no
  */
 ezP.DelegateSvg.Group.Async.prototype.asynced = function (block) {
-  var field = this.inputs.first.fieldAsync
+  var field = this.getFieldAsync(block)
   if (field) {
     var attribute = field.getText()
     if (attribute && attribute.length>4) {
@@ -394,7 +406,7 @@ ezP.DelegateSvg.Group.Async.prototype.asynced = function (block) {
  */
 ezP.DelegateSvg.Group.Async.prototype.toDom = function (block, element) {
   ezP.DelegateSvg.Group.Async.superClass_.toDom.call(this, block, element)
-  var field = this.inputs.first.fieldAsync
+  var field = this.getFieldAsync(block)
   if (field) {
     var attribute = field.getText()
     if (attribute && attribute.length>4) {
@@ -411,7 +423,7 @@ ezP.DelegateSvg.Group.Async.prototype.toDom = function (block, element) {
  */
 ezP.DelegateSvg.Group.Async.prototype.fromDom = function (block, element) {
   ezP.DelegateSvg.Group.Async.superClass_.fromDom.call(this, block, element)
-  var field = this.inputs.first.fieldAsync
+  var field = this.getFieldAsync(block)
   if (field) {
     var attribute = element.getAttribute('async')
     if (attribute && attribute.toLowerCase() === 'true') {
@@ -427,20 +439,24 @@ ezP.DelegateSvg.Group.Async.prototype.fromDom = function (block, element) {
  * @private
  */
 ezP.DelegateSvg.Group.Async.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    ezP.Do.createSPAN('async', 'ezp-code-reserved'),
-    goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
-  )
-  var field = this.inputs.first.fieldAsync
-  var old = field.getValue()
-  if (old === 'async ') {
-    mgr.addRemoveChild(new ezP.MenuItem(content, function() {
-      field.setValue('')
-    }))
-  } else {
-    mgr.addInsertChild(new ezP.MenuItem(content, function() {
-      field.setValue('async ')
-    }))
+  var field = this.getFieldAsync(block)
+  if (field) {
+    var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      ezP.Do.createSPAN('async', 'ezp-code-reserved'),
+      goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
+    )
+    var old = field.getValue()
+    if (old && old.length > 4) {
+      mgr.addRemoveChild(new ezP.MenuItem(content, function() {
+        field.setValue('')
+      }))
+      mgr.shouldSeparateRemove()
+    } else {
+      mgr.addInsertChild(new ezP.MenuItem(content, function() {
+        field.setValue('async ')
+      }))
+      mgr.shouldSeparateInsert()
+    }
   }
   return ezP.DelegateSvg.Group.Async.superClass_.populateContextMenuFirst_.call(this,block, mgr)
 }

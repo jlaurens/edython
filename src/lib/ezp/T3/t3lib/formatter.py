@@ -305,12 +305,16 @@ class Formatter:
     def feed_statement_previous(self):
         self.append('ezP.T3.Stmt.Previous = {')
         template = '    ezP.T3.Stmt.{},'
+        template_name = '    ezP.T3.Stmt.{}+"."+ezP.Key.{},'
         for t in self.get_statements():
             try:
                 if len(t.is_below):
                     self.append('  {}: [ // count {}'.format(t.name, len(t.is_below)))
-                    for tt in sorted((tt for tt in t.is_below), key=lambda t: (t.n, t.name)):
-                        self.append(template.format(tt.name))
+                    for tt in sorted((tt for tt in t.is_below), key=lambda t: (t[0].n, t[0].name)):
+                        if tt[1]:
+                            self.append(template_name.format(tt[0].name, tt[1].upper()))
+                        else:
+                            self.append(template.format(tt[0].name))
                     self.append('  ],')
             except:
                 pass
@@ -319,12 +323,16 @@ class Formatter:
     def feed_statement_next(self):
         self.append('ezP.T3.Stmt.Next = {')
         template = '    ezP.T3.Stmt.{},'
+        template_name = '    ezP.T3.Stmt.{}+"."+ezP.Key.{},'
         for t in self.get_statements():
             try:
                 if len(t.is_above):
                     self.append('  {}: [ // count {}'.format(t.name, len(t.is_above)))
-                    for tt in sorted((tt for tt in t.is_above), key=lambda t: (t.n, t.name)):
-                        self.append(template.format(tt.name))
+                    for tt in sorted((tt for tt in t.is_above), key=lambda t: (t[0].n, t[0].name)):
+                        if tt[1]:
+                            self.append(template_name.format(tt[0].name, tt[1].upper()))
+                        else:
+                            self.append(template.format(tt[0].name))
                     self.append('  ],')
             except:
                 pass

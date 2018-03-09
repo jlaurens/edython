@@ -330,6 +330,8 @@ ezP.DelegateSvg.Stmt.import_part = function (prototypeName) {
       type: ezP.T3.Expr.from_module_import
     },
   ]
+  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.import_part
+  this.statementModel_.next.check = ezP.T3.Stmt.Next.import_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.import_part, ezP.DelegateSvg.Stmt)
 

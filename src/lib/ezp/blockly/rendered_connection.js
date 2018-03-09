@@ -111,6 +111,15 @@ ezP.ConnectionDelegate.prototype.didDisconnect = function(connection, oldTargetC
 }
 
 /**
+ * get the check_ array. This is a dynamic method.
+ * The default implementation just returns the connection's check_.
+ * @return the connection's check_ array.
+ */
+ezP.ConnectionDelegate.prototype.getCheck = function() {
+  return this.connection.check_
+}
+
+/**
  * Class for a connection between blocks that may be rendered on screen.
  * @param {!Blockly.Block} source The block establishing this connection.
  * @param {number} type The type of the connection.
@@ -236,24 +245,32 @@ ezP.Connection.prototype.isNextOrPrevious = function() {
 ezP.Connection.prototype.checkType_ = function(otherConnection) {
   if (this.type === Blockly.NEXT_STATEMENT || this.type === Blockly.PREVIOUS_STATEMENT) {
     var T = this.getSourceBlock().type
+    var name = this.ezp.name
+    var check = this.ezp.getCheck()
     if (T.indexOf('ezp_') == 0) {
       var otherT = otherConnection.getSourceBlock().type
+      var otherName = otherConnection.ezp.name
+      var otherCheck = otherConnection.ezp.getCheck()
       if (!this.isNextOrPrevious()) {
-        if (this.check_ && this.check_.indexOf(otherT)<0) {
+        // `this` is the connection of a statement input of its source block
+        // otherConnection 'must' be previous or next
+        if (otherCheck && otherCheck.indexOf(T)<0
+          && (!name || otherCheck.indexOf(T+'.'+name) < 0 && otherCheck.indexOf('.'+name) < 0)) {
           return false
         }
-        return !otherConnection.check_ || !otherConnection.check_.length
+        return !check || check.indexOf(otherT) >= 0
       }
       if (!otherConnection.isNextOrPrevious()) {
-        if (otherConnection.check_ && otherConnection.check_.indexOf(T)<0) {
+        if (check && check.indexOf(otherT)<0
+          && (!otherName || check.indexOf(otherT+'.'+otherName) < 0 && check.indexOf('.'+otherName) < 0)) {
           return false
         }
-        return !this.check_ || !this.check_.length
+        return !otherCheck || chotherCheckeck.indexOf(T) >= 0
       }
-      if (this.check_ && this.check_.indexOf(otherT)<0) {
+      if (check && check.indexOf(otherT)<0) {
         return false
       }
-      if (otherConnection.check_ && otherConnection.check_.indexOf(T)<0) {
+      if (otherCheck && otherCheck.indexOf(T)<0) {
         return false
       }
       return true

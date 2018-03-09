@@ -26,7 +26,8 @@ while_stmt ::= IGNORE
 while_part ::=  "while" expression ":"
 else_part >>> while_part
 </pre>
-The last line means: an else_part comes just after a while_part.
+The last line means: an else_part comes just after a while_part
+(its line number is just one above).
 For an <<< sign, it would read "just before".
 Rules are cumulative, which means that A <<< B and A <<< C significates that A comes just before B or C.
 <pre>
@@ -154,8 +155,8 @@ decorator_part <<< classdef_part
 </pre>
 
 <pre>
-docstring_def_stmt ::= triple quoted long string at the top of the function or class
-docstring_def_stmt >>> funcdef_part | classdef_part
+docstring_def_stmt ::= docstring +{1}
+docstring_def_stmt >>> funcdef_part.do | classdef_part.do | docstring_def_stmt | comment_stmt
 </pre>
 
 <pre>

@@ -59,6 +59,10 @@ ezP.Block.prototype.dispose = function () {
 ezP.Block.prototype.appendInput_ = function (type, name) {
   var input = ezP.Block.superClass_.appendInput_.call(this, type, name)
   ezP.Input.setupEzpData(input)
+  var c8n = input.connection
+  if (c8n) {
+    c8n.ezp.name = name // the connection remembers the name of the input such that checking is fine grained.
+  }
   return input
 }
 
