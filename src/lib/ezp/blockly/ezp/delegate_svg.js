@@ -234,7 +234,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       }
       if ((v = D.label) !== undefined || (v = D.dummy) !== undefined) {
         out.fieldLabel = field = new ezP.FieldLabel(v)
-        k = D.key === undefined ? D.key || K+'.'+ezP.Const.Field.LABEL: D.key
+        k = K+'.'+ezP.Const.Field.LABEL
         out.input.appendField(field, k)
         field.ezpData.css_class = D.css_class
         field.ezpData.css_style = D.css_style

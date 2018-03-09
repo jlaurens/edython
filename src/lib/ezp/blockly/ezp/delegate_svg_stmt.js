@@ -207,10 +207,10 @@ ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block) {
   this.setInputEnabled(block, last, first.connection.isConnected() || connected)
   if (connected) {
     if (last.fieldRow.length == 0) {
-      last.appendField(last.fieldLabel, ezP.Const.Field.LABEL)
+      last.appendField(last.fieldLabel, ezP.Key.LAST+'.'+ezP.Const.Field.LABEL)
     }
   } else if (last.fieldRow.length > 0) {
-    last.removeField(ezP.Const.Field.LABEL)
+    last.removeField(ezP.Key.LAST+'.'+ezP.Const.Field.LABEL)
   }
   var ezp = first.connection.ezp
   if (!ezp.optional_0) {

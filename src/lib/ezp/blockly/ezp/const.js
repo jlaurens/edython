@@ -27,7 +27,6 @@ ezP.Const.Field = {
   START: 'START',
   END: 'END',
   DOTS: 'DOTS',
-  VALUE: 'VALUE',
   CODE: 'CODE',
   ID: 'ID',
   IDENTIFIER: 'IDENTIFIER',
@@ -55,6 +54,9 @@ ezP.Const.Field = {
   NCSTR: 'NCSTR'
 }
 ezP.Key = {
+  FIRST: 'first',// this MUST be in lower case
+  MIDDLE: 'middle',// this MUST be in lower case
+  LAST: 'last',// this MUST be in lower case
   NAME: 'NAME',
   FOR: 'FOR',
   IN: 'IN',
@@ -66,8 +68,6 @@ ezP.Key = {
   PRIMARY: 'PRIMARY',
   ATTRIBUTE: 'ATTRIBUTE',
   ARGUMENT: 'ARGUMENT',
-  FIRST: 'FIRST',
-  SECOND: 'SECOND',
   LIST: 'LIST',
   TYPE: 'TYPE',
   KEY: 'KEY',
@@ -102,6 +102,9 @@ ezP.Key = {
   SEP: 'SEP',
   FILE: 'FILE',
   FLUSH: 'FLUSH',
+
+  PREFIX: 'PREFIX',
+
   // IN PROGRESS
   ANY: 'ANY',
 

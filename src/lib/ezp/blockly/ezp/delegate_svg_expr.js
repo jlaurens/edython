@@ -434,7 +434,7 @@ ezP.DelegateSvg.Expr.stringliteral = function (prototypeName) {
   this.inputModel_ = {
     first: {
       awaitable: true,
-      key: ezP.Const.Field.PREFIX,
+      key: ezP.Key.PREFIX,
       label: "",
       css_class: 'ezp-code-reserved',
     },
@@ -472,7 +472,7 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.populateContextMenuFirst_ = functio
     })
   mgr.addChild(menuItem, true)
   mgr.separate()
-  var fieldPrefix = block.getField(ezP.Const.Field.PREFIX)
+  var fieldPrefix = this.inputs.first.fieldLabel
   var oldValue = fieldPrefix.getValue()
   var insert = function (newValue) {
     switch(oldValue) {
@@ -582,7 +582,7 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.endEditingField = function (block, 
  */
 ezP.DelegateSvg.Expr.stringliteral.prototype.willRender_ = function (block) {
   ezP.DelegateSvg.Expr.stringliteral.superClass_.willRender_.call(this, block)
-  var field = block.getField(ezP.Const.Field.PREFIX)
+  var field = this.inputs.first.fieldLabel
   field.setVisible(field.getValue().length)
 }
 
@@ -594,7 +594,7 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.willRender_ = function (block) {
  */
 ezP.DelegateSvg.Expr.stringliteral.prototype.toDom = function (block, element) {
   ezP.DelegateSvg.Expr.stringliteral.superClass_.toDom.call(this, block, element)
-  element.setAttribute('prefix', block.getField(ezP.Const.Field.PREFIX).getText())
+  element.setAttribute('prefix', this.inputs.first.fieldLabel.getText())
 }
 
 /**
@@ -605,8 +605,8 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.toDom = function (block, element) {
  */
 ezP.DelegateSvg.Expr.stringliteral.prototype.fromDom = function (block, element) {
   ezP.DelegateSvg.Expr.stringliteral.superClass_.fromDom.call(this, block, element)
-  var op = element.getAttribute('prefix')
-  block.getField(ezP.Const.Field.PREFIX).setText(op)
+  var attribute = element.getAttribute('prefix')
+  this.inputs.first.fieldLabel.setText(attribute)
 }
 
 /**
@@ -637,7 +637,7 @@ ezP.DelegateSvg.Expr.builtin_object = function (prototypeName) {
   this.values = ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented']
   this.inputModel_.first = {
     awaitable: true,
-    key: ezP.Const.Field.VALUE,
+    key: ezP.Key.VALUE,
     label: this.values[0],
     css_class: 'ezp-code-reserved',
   }
@@ -653,7 +653,7 @@ ezP.DelegateSvg.Manager.register('builtin_object')
  * @private
  */
 ezP.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var field = block.getField(ezP.Const.Field.VALUE)
+  var field = this.inputs.first.fieldLabel
   var builtin = field.getValue()
   var value, _ = 0
   while ((value = this.values[_++])) {
@@ -677,7 +677,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = functi
  */
 ezP.DelegateSvg.Expr.builtin_object.prototype.toDom = function (block, element) {
   ezP.DelegateSvg.Expr.builtin_object.superClass_.toDom.call(this, block, element)
-  element.setAttribute('value', block.getField(ezP.Const.Field.VALUE).getText())
+  element.setAttribute('value', this.inputs.first.fieldLabel.getText())
 }
 
 /**
@@ -689,7 +689,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.toDom = function (block, element) 
 ezP.DelegateSvg.Expr.builtin_object.prototype.fromDom = function (block, element) {
   ezP.DelegateSvg.Expr.builtin_object.superClass_.fromDom.call(this, block, element)
   var value = element.getAttribute('value')
-  block.getField(ezP.Const.Field.VALUE).setText(value)
+  this.inputs.first.fieldLabel.setText(value)
 }
 
 /**
