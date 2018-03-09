@@ -271,12 +271,12 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
  */
 ezP.Connection.prototype.connect_ = function(childConnection) {
   // this is actual parentConnection
-  var block = this.sourceBlock_
+  var parent = this.sourceBlock_
   var oldChildConnection = this.targetConnection
   var oldParentConnection = childConnection.targetConnection
   this.ezp.willConnect(this, childConnection)
   childConnection.ezp.willConnect(childConnection, this)
-  block.ezp.willConnect(block, this, childConnection)
+  parent.ezp.willConnect(parent, this, childConnection)
   var child = childConnection.sourceBlock_
   child.ezp.willConnect(child, childConnection, this)
   ezP.Connection.superClass_.connect_.call(this, childConnection)
@@ -300,10 +300,12 @@ ezP.Connection.prototype.connect_ = function(childConnection) {
   if (oldChildConnection && childConnection !== oldChildConnection) {
     var oldChild = oldChildConnection.sourceBlock_
     if (oldChild && oldChild.ezp.wrapped_) {
-      oldChild.dispose(true)
+      if (Blockly.Events.recordUndo) {
+        oldChild.dispose(true)
+      }
     }
   }
-  block.ezp.didConnect(block, this, oldChildConnection, oldParentConnection)
+  parent.ezp.didConnect(parent, this, oldChildConnection, oldParentConnection)
   child.ezp.didConnect(child, childConnection, oldParentConnection, oldChildConnection)
   this.ezp.didConnect(this, oldChildConnection, oldParentConnection)
   childConnection.ezp.didConnect(childConnection, oldParentConnection, oldChildConnection)

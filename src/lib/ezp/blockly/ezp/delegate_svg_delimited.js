@@ -27,6 +27,7 @@ ezP.DelegateSvg.Expr.parenth_form = function (prototypeName) {
   ezP.DelegateSvg.Expr.parenth_form.superClass_.constructor.call(this, prototypeName)
   this.outputModel_.check = ezP.T3.Expr.parenth_form
   this.inputModel_.first = {
+    awaitable: true,
     key: ezP.Key.LIST,
     start: '(',
     wrap: ezP.T3.Expr.starred_item_list,
@@ -47,6 +48,7 @@ ezP.DelegateSvg.Manager.register('parenth_form')
 ezP.DelegateSvg.Expr.list_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.list_display.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
+    awaitable: true,
     key: ezP.Key.LIST,
     start: '[',
     wrap: ezP.T3.Expr.starred_item_list_comprehensive,
@@ -67,6 +69,7 @@ ezP.DelegateSvg.Manager.register('list_display')
 ezP.DelegateSvg.Expr.set_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.set_display.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
+    awaitable: true,
     key: ezP.Key.LIST,
     start: '{',
     wrap: ezP.T3.Expr.non_void_starred_item_list_comprehensive,
@@ -87,6 +90,7 @@ ezP.DelegateSvg.Manager.register('set_display')
 ezP.DelegateSvg.Expr.dict_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.dict_display.superClass_.constructor.call(this, prototypeName)
   this.inputModel_. first = {
+    awaitable: true,
     key: ezP.Key.LIST,
     start: '{',
     wrap: ezP.T3.Expr.key_datum_list_comprehensive,
@@ -108,6 +112,7 @@ ezP.DelegateSvg.Manager.register('dict_display')
 ezP.DelegateSvg.Expr.generator_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.generator_expression.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
+    awaitable: true,
     key: ezP.Key.COMPREHENSION,
     start: '{',
     wrap: ezP.T3.Expr.comprehension,

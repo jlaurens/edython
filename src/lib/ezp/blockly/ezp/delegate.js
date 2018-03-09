@@ -362,11 +362,12 @@ ezP.Delegate.prototype.toDom = function (block, element) {
 
 /**
  * Final tune up depending on the block.
- * Default implementation does nothing.
+ * Default implementation calls `completeWrapped_`.
  * @param {!Blockly.Block} block.
  * @param {!Element} hidden a dom element.
  */
 ezP.Delegate.prototype.fromDom = function (block, element) {
+  this.completeWrapped_(block)
 }
 /**
  * Same as Block's getDescendants except that it
@@ -384,17 +385,6 @@ ezP.Delegate.prototype.getUnsealedDescendants = function(block) {
   }
   return blocks;
 };
-
-
-/**
- * Final tune up depending on the block.
- * Default implementation does nothing.
- * @param {!Blockly.Block} block.
- * @param {!Element} hidden a dom element.
- */
-ezP.Delegate.prototype.fromDom = function (block, element) {
-  this.completeWrapped_(block)
-}
 
 /**
  * If the sealed connections are not connected,

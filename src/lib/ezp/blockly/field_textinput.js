@@ -402,7 +402,7 @@ goog.inherits(ezP.FieldCodeString, ezP.FieldCodeInput)
 
 ezP.FieldCodeString.prototype.placeholderText = function() {
   return this.sourceBlock_.type === ezP.T3.Expr.bytesliteral?
-  ezP.Msg.PLACEHOLDER_STRING: ezP.Msg.PLACEHOLDER_BYTES
+  ezP.Msg.PLACEHOLDER_BYTES: ezP.Msg.PLACEHOLDER_STRING
 }
 
 /**

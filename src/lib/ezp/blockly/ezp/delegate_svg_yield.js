@@ -68,6 +68,7 @@ ezP.DelegateSvg.Manager.register('yield_from_expression')
 ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_atom.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
+    awaitable: true,
     key: ezP.Key.EXPRESSION,
     start: '(',
     check: ezP.T3.Expr.yield_expression_list,

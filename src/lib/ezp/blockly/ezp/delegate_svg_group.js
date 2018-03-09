@@ -345,6 +345,109 @@ goog.inherits(ezP.DelegateSvg.Stmt.while_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('while_part')
 
 /**
+ * Class for a DelegateSvg, asyncable block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Group.Async = function (prototypeName) {
+  ezP.DelegateSvg.Group.Async.superClass_.constructor.call(this, prototypeName)
+}
+goog.inherits(ezP.DelegateSvg.Group.Async, ezP.DelegateSvg.Group)
+
+/**
+ * Will draw the block. Default implementation does nothing.
+ * The print statement needs some preparation before drawing.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Group.Async.prototype.willRender_ = function (block) {
+  ezP.DelegateSvg.Group.Async.superClass_.willRender_.call(this, block)
+  var field = this.inputs.first.fieldAsync
+  var text = field.getText()
+  field.setVisible(text && text.length)
+}
+
+/**
+ * Whether the block has an 'async' prefix.
+ * @param {!Blockly.Block} block The block owning the receiver.
+ * @return yes or no
+ */
+ezP.DelegateSvg.Group.Async.prototype.asynced = function (block) {
+  var field = this.inputs.first.fieldAsync
+  if (field) {
+    var attribute = field.getText()
+    if (attribute && attribute.length>4) {
+      return true
+    }
+  }
+  return false
+}
+
+/**
+ * Records the prefix as attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.DelegateSvg.Group.Async.prototype.toDom = function (block, element) {
+  ezP.DelegateSvg.Group.Async.superClass_.toDom.call(this, block, element)
+  var field = this.inputs.first.fieldAsync
+  if (field) {
+    var attribute = field.getText()
+    if (attribute && attribute.length>4) {
+      element.setAttribute('async', 'true')
+    }
+  }
+}
+
+/**
+ * Set the prefix from the attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.DelegateSvg.Group.Async.prototype.fromDom = function (block, element) {
+  ezP.DelegateSvg.Group.Async.superClass_.fromDom.call(this, block, element)
+  var field = this.inputs.first.fieldAsync
+  if (field) {
+    var attribute = element.getAttribute('async')
+    if (attribute && attribute.toLowerCase() === 'true') {
+      field.setText('async ')
+    }
+  }
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Group.Async.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    ezP.Do.createSPAN('async', 'ezp-code-reserved'),
+    goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
+  )
+  var field = this.inputs.first.fieldAsync
+  var old = field.getValue()
+  if (old === 'async ') {
+    mgr.addRemoveChild(new ezP.MenuItem(content, function() {
+      field.setValue('')
+    }))
+  } else {
+    mgr.addInsertChild(new ezP.MenuItem(content, function() {
+      field.setValue('async ')
+    }))
+  }
+  return ezP.DelegateSvg.Group.Async.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+}
+
+
+
+/**
  * Class for a DelegateSvg, for_part block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
@@ -355,6 +458,7 @@ ezP.DelegateSvg.Manager.register('while_part')
 ezP.DelegateSvg.Stmt.for_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.for_part.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
+    asyncable: true,
     label: 'for',
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.target_list,
@@ -369,7 +473,7 @@ ezP.DelegateSvg.Stmt.for_part = function (prototypeName) {
   this.statementModel_.previous.check = ezP.T3.Stmt.Previous.for_part
   this.statementModel_.next.check = ezP.T3.Stmt.Next.for_part
 }
-goog.inherits(ezP.DelegateSvg.Stmt.for_part, ezP.DelegateSvg.Group)
+goog.inherits(ezP.DelegateSvg.Stmt.for_part, ezP.DelegateSvg.Group.Async)
 ezP.DelegateSvg.Manager.register('for_part')
 
 /**
@@ -384,6 +488,7 @@ ezP.DelegateSvg.Stmt.with_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.with_part.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
     key: ezP.Key.LIST,
+    prefix: '',
     label: 'with',
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.with_item_list,
@@ -391,5 +496,5 @@ ezP.DelegateSvg.Stmt.with_part = function (prototypeName) {
   this.statementModel_.previous.check = ezP.T3.Stmt.Previous.with_part
   this.statementModel_.next.check = ezP.T3.Stmt.Next.with_part
 }
-goog.inherits(ezP.DelegateSvg.Stmt.with_part, ezP.DelegateSvg.Group)
+goog.inherits(ezP.DelegateSvg.Stmt.with_part, ezP.DelegateSvg.Group.Async)
 ezP.DelegateSvg.Manager.register('with_part')

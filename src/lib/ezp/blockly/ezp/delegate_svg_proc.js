@@ -240,83 +240,15 @@ ezP.DelegateSvg.Manager.register('funcdef_typed')
 ezP.DelegateSvg.Stmt.funcdef_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.funcdef_part.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    label: '',
+    prefix: '',
     css_class: 'ezp-code-reserved',
     key: ezP.Key.WRAP,
     check: ezP.T3.Expr.Check.funcdef_expr,
     wrap: ezP.T3.Expr.funcdef_simple,
   }
 }
-goog.inherits(ezP.DelegateSvg.Stmt.funcdef_part, ezP.DelegateSvg.Group)
+goog.inherits(ezP.DelegateSvg.Stmt.funcdef_part, ezP.DelegateSvg.Group.Async)
 ezP.DelegateSvg.Manager.register('funcdef_part')
-
-/**
- * Will draw the block. Default implementation does nothing.
- * The print statement needs some preparation before drawing.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Stmt.funcdef_part.prototype.willRender_ = function (block) {
-  ezP.DelegateSvg.Expr.stringliteral.superClass_.willRender_.call(this, block)
-  var field = this.inputs.first.fieldLabel
-  var text = field.getText()
-  field.setVisible(text && text.length)
-}
-
-
-/**
- * Records the prefix as attribute.
- * @param {!Blockly.Block} block.
- * @param {!Element} element dom element to be completed.
- * @override
- */
-ezP.DelegateSvg.Stmt.funcdef_part.prototype.toDom = function (block, element) {
-  ezP.DelegateSvg.Stmt.funcdef_part.superClass_.toDom.call(this, block, element)
-  var attribute = this.inputs.first.fieldLabel.getText()
-  if (attribute && attribute.length) {
-    element.setAttribute('prefix', this.inputs.first.fieldLabel.getText())
-  }
-}
-
-/**
- * Set the prefix from the attribute.
- * @param {!Blockly.Block} block.
- * @param {!Element} element dom element to be completed.
- * @override
- */
-ezP.DelegateSvg.Stmt.funcdef_part.prototype.fromDom = function (block, element) {
-  ezP.DelegateSvg.Stmt.funcdef_part.superClass_.fromDom.call(this, block, element)
-  var prefix = element.getAttribute('prefix')
-  var field = this.inputs.first.fieldLabel
-  if (prefix && prefix.length) {
-    field.setText(prefix)
-  }
-}
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-ezP.DelegateSvg.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    ezP.Do.createSPAN('async', 'ezp-code-reserved'),
-    goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
-  )
-  var field = this.inputs.first.fieldLabel
-  var old = field.getValue()
-  if (old === 'async') {
-    mgr.addRemoveChild(new ezP.MenuItem(content, function() {
-      field.setValue('')
-    }))
-  } else {
-    mgr.addInsertChild(new ezP.MenuItem(content, function() {
-      field.setValue('async')
-    }))
-  }
-  return ezP.DelegateSvg.Stmt.funcdef_part.superClass_.populateContextMenuFirst_.call(this,block, mgr)
-}
 
 /*
 classdef_part ::=  classdef_expr ':'

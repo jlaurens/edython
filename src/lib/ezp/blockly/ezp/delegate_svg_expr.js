@@ -91,6 +91,7 @@ ezP.DelegateSvg.Expr.prototype.canReplaceBlock = function (block, other) {
 ezP.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
   if (other) {
     Blockly.Events.setGroup(true)
+    console.log('**** replaceBlock', block, other)
     var c8n = other.outputConnection
     var its_xy = other.getRelativeToSurfaceXY();
     var my_xy = block.getRelativeToSurfaceXY();
@@ -101,19 +102,143 @@ ezP.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
       var selected = source.ezp.hasSelect(source)
       // next operations may unselect the block
       var old = source.ezp.consolidating_
-      source.ezp.consolidating_ = true
-      c8n.disconnect()
       c8n.connect(block.outputConnection)
       source.ezp.consolidating_ = old
       if (selected) {
         source.select()
       }
     } else {
-      block.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+      block.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y) 
     }
-    other.dispose()
+    other.dispose(true)   
     Blockly.Events.setGroup(false)
   }
+}
+
+/**
+ * Will draw the block. Default implementation does nothing.
+ * The print statement needs some preparation before drawing.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Expr.prototype.getFieldAwait = function (block) {
+  var input = this.inputs.first
+  return input? input.fieldAwait: undefined
+}
+
+/**
+ * Will draw the block. Default implementation does nothing.
+ * The print statement needs some preparation before drawing.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.Expr.prototype.willRender_ = function (block) {
+  ezP.DelegateSvg.Expr.superClass_.willRender_.call(this, block)
+  var field = this.getFieldAwait(block)
+  if (field) {
+    var text = field.getText()
+    field.setVisible(text && text.length)
+  }
+}
+
+/**
+ * Records the prefix as attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.DelegateSvg.Expr.prototype.toDom = function (block, element) {
+  ezP.DelegateSvg.Expr.superClass_.toDom.call(this, block, element)
+  var field = this.getFieldAwait(block)
+  if (field) {
+    var attribute = field.getText()
+    if (attribute && attribute.length>4) {
+      element.setAttribute('await', 'true')
+    }
+  }
+}
+
+/**
+ * Set the prefix from the attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.DelegateSvg.Expr.prototype.fromDom = function (block, element) {
+  ezP.DelegateSvg.Expr.superClass_.fromDom.call(this, block, element)
+  var field = this.getFieldAwait(block)
+  if (field) {
+    var attribute = element.getAttribute('await')
+    if (attribute && attribute.toLowerCase() === 'true') {
+      field.setText('await ')
+    }
+  }
+}
+
+/**
+ * Whether the block has an 'await' prefix.
+ * @param {!Blockly.Block} block The block owning the receiver.
+ * @return yes or no
+ */
+ezP.DelegateSvg.Expr.prototype.awaited = function (block) {
+  var field = this.getFieldAwait(block)
+  if (field) {
+    var attribute = field.getText()
+    if (attribute && attribute.length>4) {
+      return true
+    }
+  }
+  return false
+}
+
+/**
+ * Whether the block can have an 'await' prefix.
+ * Only blocks that are top block or that are directy inside function definitions
+ * are awaitable
+ * @param {!Blockly.Block} block The block owning the receiver.
+ * @return yes or no
+ */
+ezP.DelegateSvg.Expr.prototype.awaitable = function (block) {
+  var parent = block.getParent()
+  if (!parent) {
+    return true
+  }
+  do {
+    if (parent.type === ezP.T3.Stmt.funcdef_part) {
+      return parent.ezp.asynced(parent)
+    }
+  } while((parent = parent.getParent()))
+  return false
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var yorn = ezP.DelegateSvg.Expr.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  var field = this.getFieldAwait(block)
+  if (field && this.awaitable(block)) {
+    var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      ezP.Do.createSPAN('await', 'ezp-code-reserved'),
+      goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
+    )
+    var old = field.getValue()
+    if (old.length > 1) {
+      mgr.shouldSeparateRemove()
+      mgr.addRemoveChild(new ezP.MenuItem(content, function() {
+        field.setValue('')
+      }))
+    } else {
+      mgr.shouldSeparateInsert()
+      mgr.addInsertChild(new ezP.MenuItem(content, function() {
+        field.setValue('await ')
+      }))
+    }
+  }
+  return yorn
 }
 
 /**
@@ -283,6 +408,7 @@ ezP.DelegateSvg.Manager.register('not_test_concrete')
 ezP.DelegateSvg.Expr.numberliteral_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.numberliteral_concrete.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
+    awaitable: true,
     number: '0',
   }
   this.outputModel_.check = ezP.T3.Expr.numberliteral_concrete
@@ -307,6 +433,7 @@ ezP.DelegateSvg.Expr.stringliteral = function (prototypeName) {
   ezP.DelegateSvg.Expr.stringliteral.superClass_.constructor.call(this, prototypeName)
   this.inputModel_ = {
     first: {
+      awaitable: true,
       key: ezP.Const.Field.PREFIX,
       label: "",
       css_class: 'ezp-code-reserved',
@@ -466,6 +593,7 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.willRender_ = function (block) {
  * @override
  */
 ezP.DelegateSvg.Expr.stringliteral.prototype.toDom = function (block, element) {
+  ezP.DelegateSvg.Expr.stringliteral.superClass_.toDom.call(this, block, element)
   element.setAttribute('prefix', block.getField(ezP.Const.Field.PREFIX).getText())
 }
 
@@ -476,6 +604,7 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.toDom = function (block, element) {
  * @override
  */
 ezP.DelegateSvg.Expr.stringliteral.prototype.fromDom = function (block, element) {
+  ezP.DelegateSvg.Expr.stringliteral.superClass_.fromDom.call(this, block, element)
   var op = element.getAttribute('prefix')
   block.getField(ezP.Const.Field.PREFIX).setText(op)
 }
@@ -507,6 +636,7 @@ ezP.DelegateSvg.Expr.builtin_object = function (prototypeName) {
   ezP.DelegateSvg.Expr.builtin_object.superClass_.constructor.call(this, prototypeName)
   this.values = ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented']
   this.inputModel_.first = {
+    awaitable: true,
     key: ezP.Const.Field.VALUE,
     label: this.values[0],
     css_class: 'ezp-code-reserved',
@@ -546,6 +676,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = functi
  * @override
  */
 ezP.DelegateSvg.Expr.builtin_object.prototype.toDom = function (block, element) {
+  ezP.DelegateSvg.Expr.builtin_object.superClass_.toDom.call(this, block, element)
   element.setAttribute('value', block.getField(ezP.Const.Field.VALUE).getText())
 }
 
@@ -556,6 +687,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.toDom = function (block, element) 
  * @override
  */
 ezP.DelegateSvg.Expr.builtin_object.prototype.fromDom = function (block, element) {
+  ezP.DelegateSvg.Expr.builtin_object.superClass_.fromDom.call(this, block, element)
   var value = element.getAttribute('value')
   block.getField(ezP.Const.Field.VALUE).setText(value)
 }
@@ -570,6 +702,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.fromDom = function (block, element
 ezP.DelegateSvg.Expr.any = function (prototypeName) {
   ezP.DelegateSvg.Expr.any.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
+    awaitable: true,
     key: ezP.Const.Field.CODE,
     code: '1+1',
   }
@@ -585,7 +718,8 @@ ezP.DelegateSvg.Manager.register('any')
  * @override
  */
 ezP.DelegateSvg.Expr.any.prototype.toDom = function (block, element) {
-  element.setAttribute('code', block.getField(ezP.Const.Field.CODE).getText())
+  ezP.DelegateSvg.Expr.any.superClass_.toDom.call(this, block, element)
+  element.setAttribute('code', this.inputs.first.fieldCodeInput.getText())
 }
 
 /**
@@ -595,11 +729,10 @@ ezP.DelegateSvg.Expr.any.prototype.toDom = function (block, element) {
  * @override
  */
 ezP.DelegateSvg.Expr.any.prototype.fromDom = function (block, element) {
+  ezP.DelegateSvg.Expr.any.superClass_.fromDom.call(this, block, element)
   var value = element.getAttribute('code')
-  block.getField(ezP.Const.Field.CODE).setText(value)
+  this.inputs.first.fieldCodeInput.setText(value)
 }
-
-
 
 /**
  * Class for a DelegateSvg, input block.

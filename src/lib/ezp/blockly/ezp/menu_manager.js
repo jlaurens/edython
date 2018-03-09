@@ -779,6 +779,7 @@ ezP.MenuManager.prototype.populate_replace_parent = function (block, type, subty
           ezp.replaceBlock(block, parent)
         })
         this.addRemoveChild(MI)
+        console.log(block.type, ' replace ', parent.type)
         return true
       }
     }

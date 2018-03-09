@@ -212,6 +212,26 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         }
       }
       var field
+      if (D.asyncable) {
+        field = out.fieldAsync = new ezP.FieldLabel('')
+        k = K+'.'+ezP.Const.Field.ASYNC
+        field.ezpData.css_class = 'ezp-code-reserved'
+        field.ezpData.css_style = D.css_style
+        out.input.appendField(field, k)
+      } else if (D.awaitable) {
+        field = out.fieldAwait = new ezP.FieldLabel('')
+        k = K+'.'+ezP.Const.Field.AWAIT
+        field.ezpData.css_class = 'ezp-code-reserved'
+        field.ezpData.css_style = D.css_style
+        out.input.appendField(field, k)
+      }
+      if ((v = D.prefix) !== undefined) {
+        field = out.fieldPrefix = new ezP.FieldLabel(v)
+        k = K+'.'+ezP.Const.Field.PREFIX
+        field.ezpData.css_class = D.css_class
+        field.ezpData.css_style = D.css_style
+        out.input.appendField(field, k)
+      }
       if ((v = D.label) !== undefined || (v = D.dummy) !== undefined) {
         out.fieldLabel = field = new ezP.FieldLabel(v)
         k = D.key === undefined ? D.key || K+'.'+ezP.Const.Field.LABEL: D.key
