@@ -18,13 +18,13 @@ if_stmt ::= IGNORE
 if_part ::= "if" expression ":"
 elif_part ::= "elif" expression ":"
 else_part ::= "else" ":"
-else_part >>> if_part | elif_part
-elif_part >>> if_part | elif_part
+else_part >>> if_part | elif_part | comment_stmt
+elif_part >>> if_part | elif_part | comment_stmt
 </pre>
 <pre>
 while_stmt ::= IGNORE
 while_part ::=  "while" expression ":"
-else_part >>> while_part
+else_part >>> while_part | comment_stmt
 </pre>
 The last line means: an else_part comes just after a while_part
 (its line number is just one above).
@@ -33,7 +33,7 @@ Rules are cumulative, which means that A <<< B and A <<< C significates that A c
 <pre>
 for_stmt ::= IGNORE
 for_part ::=  "for" target_list "in" expression_list ":"
-else_part >>> for_part
+else_part >>> for_part | comment_stmt
 </pre>
 try_stmt  ::=  try1_stmt | try2_stmt
 try1_stmt ::=  "try" ":" suite
@@ -45,16 +45,18 @@ try2_stmt ::=  "try" ":" suite
 <pre>
 try_stmt ::= IGNORE
 try_part ::=  "try" ":"
-except_part ::= "except" expression ["as" identifier] ":"
 void_except_part ::= "except" ":"
+except_part ::= "except" expression_except ":"
+expression_except ::= expression | expression_as_name
+expression_as_name ::= expression "as" identifier
 finally_part ::= "finally" ":"
-try_part <<< except_part | void_except_part | finally_part
-except_part <<< except_part | void_except_part | else_part | finally_part
-void_except_part <<< finally_part
-except_part >>> try_part | except_part
-void_except_part >>> try_part | except_part
-else_part >>> except_part | void_except_part
-finally_part >>> try_part | except_part | void_except_part | else_part
+try_part <<< except_part | void_except_part | finally_part | comment_stmt
+except_part <<< except_part | void_except_part | else_part | finally_part | comment_stmt
+void_except_part <<< finally_part | comment_stmt
+except_part >>> try_part | except_part | comment_stmt
+void_except_part >>> try_part | except_part | comment_stmt
+else_part >>> except_part | void_except_part | comment_stmt
+finally_part >>> try_part | except_part | void_except_part | else_part | comment_stmt
 </pre>
 
 with_stmt ::=  "with" with_item ("," with_item)* ":" suite

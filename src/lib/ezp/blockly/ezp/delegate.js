@@ -440,10 +440,20 @@ ezP.Delegate.prototype.makeBlockUnwrapped = function (block) {
  * @private
  */
 ezP.Delegate.prototype.makeBlockWrapped_ = function (block) {
-  if (!block.ezp.wrapped_) {
+  if (!block.ezp.wrapped_ && !this.noBlockWrapped(block)) {
     block.ezp.makeBlockWrapped(block)
     block.ezp.wrapped_ = true
   }
+}
+
+/**
+ * Some block should not be wrapped.
+ * Default implementation returns false
+ * @param {!Block} block.
+ * @return whether the block should be wrapped
+ */
+ezP.Delegate.prototype.noBlockWrapped = function (block) {
+  return false
 }
 
 /**

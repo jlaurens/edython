@@ -615,6 +615,12 @@ ezP.MenuManager.prototype.get_movable_parent_menuitem_content = function (type, 
       ezP.Do.createSPAN('as', 'ezp-code-reserved'),
       ezP.Do.createSPAN(' alias', 'ezp-code-placeholder'),
     )
+    case ezP.T3.Expr.expression_as_name:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      ezP.Do.createSPAN('as', 'ezp-code-reserved'),
+      ezP.Do.createSPAN(' name', 'ezp-code-placeholder'),
+      goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
+    )
     case ezP.T3.Expr.u_expr_concrete:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN('-', 'ezp-code'),
@@ -833,6 +839,7 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
     [ezP.T3.Expr.proper_slice, ezP.Key.LOWER_BOUND],
     [ezP.T3.Expr.proper_slice, ezP.Key.UPPER_BOUND],
     [ezP.T3.Expr.proper_slice, ezP.Key.STRIDE],
+    ezP.T3.Expr.expression_as_name,
   ])
 }
 

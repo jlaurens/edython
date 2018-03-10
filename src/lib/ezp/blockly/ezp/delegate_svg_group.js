@@ -461,8 +461,6 @@ ezP.DelegateSvg.Group.Async.prototype.populateContextMenuFirst_ = function (bloc
   return ezP.DelegateSvg.Group.Async.superClass_.populateContextMenuFirst_.call(this,block, mgr)
 }
 
-
-
 /**
  * Class for a DelegateSvg, for_part block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
@@ -514,3 +512,4 @@ ezP.DelegateSvg.Stmt.with_part = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.with_part, ezP.DelegateSvg.Group.Async)
 ezP.DelegateSvg.Manager.register('with_part')
+

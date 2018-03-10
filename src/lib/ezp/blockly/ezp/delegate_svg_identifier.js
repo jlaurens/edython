@@ -35,6 +35,17 @@ ezP.DelegateSvg.Expr.identifier = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.identifier, ezP.DelegateSvg.Expr)
 ezP.Delegate.Manager.register('identifier')
 
+/**
+ * Some block should not be wrapped.
+ * Default implementation returns false
+ * @param {!Block} block.
+ * @return whether the block should be wrapped
+ */
+ezP.DelegateSvg.Expr.identifier.prototype.noBlockWrapped = function (block) {
+  return true
+}
+
+
 ezP.ID.CHANGE_VARIABLE = 'CHANGE_VARIABLE'
 ezP.ID.RENAME_VARIABLE = 'RENAME_VARIABLE'
 ezP.ID.REPLACE_VARIABLE = 'REPLACE_VARIABLE'
