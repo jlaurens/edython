@@ -85,6 +85,20 @@ display_slice_list ::=  "[" slice_list "]"
 </pre>
 The argument list is managed by the consolidator
 'call' is not acceptable for a name because it is a reserved javascript word
+
+call                 ::=  primary "(" [argument_list [","] | comprehension] ")"
+argument_list        ::=  positional_arguments ["," starred_and_keywords]
+                            ["," keywords_arguments]
+                          | starred_and_keywords ["," keywords_arguments]
+                          | keywords_arguments
+positional_arguments ::=  ["*"] expression ("," ["*"] expression)*
+starred_and_keywords ::=  ("*" expression | keyword_item)
+                          ("," "*" expression | "," keyword_item)*
+keywords_arguments   ::=  (keyword_item | "**" expression)
+                          ("," keyword_item | "," "**" expression)*
+keyword_item         ::=  identifier "=" expression
+
+
 <pre>
 call -> call_expr
 call_expr ::=  primary "(" argument_list_comprehensive ")"
@@ -92,6 +106,10 @@ expression_star ::= "*" expression
 expression_star_star ::= "**" expression
 argument_any ::= expression | expression_star | expression_star_star | keyword_item
 argument_list_comprehensive ::= argument_list | comprehension
+argument_list ::=  argument_any *
+positional_arguments ::=  REMOVE
+starred_and_keywords ::=  REMOVE
+keywords_arguments   ::=  REMOVE
 </pre>
 
 
@@ -103,6 +121,7 @@ await_or_primary ::= await_expr | primary
 comparison ::=  or_expr | number_comparison | object_comparison
 number_comparison ::= comparison comp_operator comparison
 object_comparison ::= comparison comp_operator comparison
+comp_operator ::= REMOVE
 </pre>
 <pre>
 lambda_expr ::= lambda_expression "dynamic with cond"

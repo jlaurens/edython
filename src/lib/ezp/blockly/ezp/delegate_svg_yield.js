@@ -150,6 +150,7 @@ ezP.DelegateSvg.Stmt.yield_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.yield_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.last = {
     key: ezP.Key.EXPRESSION,
+    check: ezP.T3.Expr.Check.yield_expression,
     wrap: ezP.T3.Expr.yield_expression,
   }
 }

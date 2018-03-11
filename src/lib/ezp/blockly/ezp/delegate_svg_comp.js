@@ -133,6 +133,7 @@ ezP.DelegateSvg.Manager.register('comp_iter_list')
 ezP.DelegateSvg.Expr.dict_comprehension = function (prototypeName) {
   ezP.DelegateSvg.Expr.dict_comprehension.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first.wrap =
+  this.inputModel_.first.check =
   ezP.T3.Expr.key_datum_concrete,
   this.outputModel_.check = ezP.T3.Expr.dict_comprehension
 }

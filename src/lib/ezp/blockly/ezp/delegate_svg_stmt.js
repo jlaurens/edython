@@ -170,7 +170,7 @@ ezP.DelegateSvg.Stmt.annotated_assignment_stmt = function (prototypeName) {
     last: {
       key: ezP.Key.ASSIGNED,
       check: ezP.T3.Expr.Check.expression,
-      label: '='
+      operator: '='
     }
   }
 }
@@ -218,34 +218,6 @@ ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block) {
   }
   ezp.optional_ = ezp.optional_0[0] && !connected
 }
-
-/**
- * Class for a DelegateSvg, assert_stmt.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Stmt.assert_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.assert_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_ = {
-    first: {
-      label: 'assert',
-      css_class: 'ezp-code-reserved',
-      key: ezP.Key.ASSERT,
-      check: ezP.T3.Expr.Check.expression
-    },
-    last: {
-      label: ',',
-      key: ezP.Key.EXPRESSION,
-      check: ezP.T3.Expr.Check.expression,
-      optional: true
-    }
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.assert_stmt, ezP.DelegateSvg.Stmt.Two)
-
-ezP.DelegateSvg.Manager.register('assert_stmt')
 
 /**
  * Class for a DelegateSvg, pass_stmt.
@@ -300,35 +272,6 @@ ezP.DelegateSvg.Stmt.continue_stmt = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Stmt.continue_stmt, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Manager.register('continue_stmt')
-
-/**
- * Class for a DelegateSvg, raise_stmt.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Stmt.raise_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.raise_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_ = {
-    first: {
-      label: 'raise',
-      css_class: 'ezp-code-reserved',
-      key: ezP.Key.RAISE,
-      check: ezP.T3.Expr.Check.expression,
-      optional: true
-    },
-    last: {
-      label: 'from',
-      css_class: 'ezp-code-reserved',
-      key: ezP.Key.FROM,
-      check: ezP.T3.Expr.Check.expression,
-      optional: true
-    }
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.raise_stmt, ezP.DelegateSvg.Stmt.Two)
-ezP.DelegateSvg.Manager.register('raise_stmt')
 
 ////////// gobal/nonlocal statement
 /**

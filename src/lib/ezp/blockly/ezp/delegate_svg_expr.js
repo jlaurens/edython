@@ -257,16 +257,16 @@ ezP.DelegateSvg.Expr.proper_slice = function (prototypeName) {
       check: ezP.T3.Expr.Check.expression,
       optional: true,
       hole_value: 'lower',
+      end: ':',
     },
     middle: {
-      label: ':',
       key: ezP.Key.UPPER_BOUND,
       check: ezP.T3.Expr.Check.expression,
       optional: true,
       hole_value: 'upper',
     },
     last: {
-      label: ':',
+      start: ':',
       key: ezP.Key.STRIDE,
       check: ezP.T3.Expr.Check.expression,
       optional: true,
@@ -457,8 +457,8 @@ ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.bytesliteral, ezP.Delegate
  * @private
  */
 ezP.DelegateSvg.Expr.stringliteral.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var fieldStart = this.inputs.last.input.ezpData.fieldLabelStart
-  var fieldEnd = this.inputs.last.input.ezpData.fieldLabelEnd
+  var fieldStart = this.inputs.last.fieldLabelStart
+  var fieldEnd = this.inputs.last.fieldLabelEnd
   var single = fieldStart.getText() === "'"
   var menuItem = new ezP.MenuItem(
     ezP.Do.createSPAN(single? ezP.Msg.USE_DOUBLE_QUOTES: ezP.Msg.USE_SINGLE_QUOTE, 'ezp-code'), function() {
@@ -795,8 +795,8 @@ ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.bytesliteral, ezP.Delegate
  * @private
  */
 ezP.DelegateSvg.Expr.docstring.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var fieldStart = this.inputs.last.input.ezpData.fieldLabelStart
-  var fieldEnd = this.inputs.last.input.ezpData.fieldLabelEnd
+  var fieldStart = this.inputs.last.fieldLabelStart
+  var fieldEnd = this.inputs.last.fieldLabelEnd
   var single = fieldStart.getText() === "'''"
   var menuItem = new ezP.MenuItem(
     ezP.Do.createSPAN(single? '"""..."""': "'''...'''", 'ezp-code'), function() {
@@ -843,4 +843,65 @@ ezP.DelegateSvg.Expr.docstring.prototype.willRender_ = function (block) {
   ezP.DelegateSvg.Expr.docstring.superClass_.willRender_.call(this, block)
   var field = this.inputs.first.fieldLabel
   field.setVisible(field.getValue().length)
+}
+
+/**
+ * Convert the block to python code components.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return the last element of components
+ */
+ezP.DelegateSvg.Expr.prototype.toPythonComponents = function (block, components, indent, is_deep) {
+  var last = components[components.length-1]
+  var c8n, target
+  var FF = function(field, is_operator) {
+    if (field) {
+      var x = field.getText()
+      if (x.length) {
+        if (is_operator) {
+          x = ' ' + x + ' '
+        } else {
+          if (last && last.length) {
+            var mustSeparate = last[last.length-1].match(/[,;:]/)
+            var maySeparate = mustSeparate || last[last.length-1].match(/[a-zA-Z_]/)
+          }
+          if (mustSeparate || (maySeparate && x[0].match(/[a-zA-Z_]/))) {
+            components.push(' ')
+          }
+        }
+        components.push(x)
+        last = x
+      }
+      return true
+    }
+    return false
+  }
+  var F = function(D) {
+    if (!D) {
+      return
+    }
+    FF(D.fieldAsync) || FF(D.fieldAwait)
+    FF(D.fieldPrefix)
+    FF(D.fieldLabel)
+    FF(D.fieldLabelStart)
+    FF(D.fieldIdentifier) || FF(D.fieldCodeInput) || FF(D.fieldCodeComment) || FF(D.fieldCodeNumber) || FF(D.fieldCodeString) || FF(D.fieldCodeLongString) || FF(D.fieldOperator, true)
+    if ((c8n = D.input.connection)) {
+      if ((target = c8n.targetBlock())) {
+        var Cs = []
+        last = target.ezp.toPythonComponents(target, Cs) || last
+        if (Cs.length) {
+          components.push(Cs.join(''))
+        }
+      } else if (!c8n.ezp.optional_) {
+        last = '<MISSING '+D.input.name+'>'
+        components.push(last)
+      }
+    }
+    FF(D.fieldLabelEnd)
+  }
+  F(this.inputs.first)
+  F(this.inputs.middle)
+  F(this.inputs.last)
+  return last
 }

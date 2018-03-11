@@ -513,3 +513,30 @@ ezP.DelegateSvg.Stmt.with_part = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Stmt.with_part, ezP.DelegateSvg.Group.Async)
 ezP.DelegateSvg.Manager.register('with_part')
 
+/**
+ * Class for a DelegateSvg, with_item_concrete block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.with_item_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.with_item_concrete.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_ = {
+    first: {
+      key: ezP.Key.EXPRESSION,
+      check: ezP.T3.Expr.Check.expression,
+      hole_value: 'expression',
+    },
+    last: {
+      key: ezP.Key.TARGET,
+      label: 'as',
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.Check.target,
+      hole_value: 'target',
+    },
+  }
+}
+goog.inherits(ezP.DelegateSvg.Expr.with_item_concrete, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('with_item_concrete')

@@ -330,7 +330,7 @@ ezP.MenuManager.prototype.populateLast = function (block) {
       // replace the parent test with an assertion
     }
     // unwrapped is the topmost block or the first unwrapped parent
-    var descendantCount = unwrapped.ezp.getUnsealedDescendants(unwrapped).length
+    var descendantCount = unwrapped.ezp.getWrappedDescendants(unwrapped).length
     if (parent === null) {
       // the topmost is itself sealed, this should not occur
       ++descendantCount
@@ -338,7 +338,7 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     var nextBlock = unwrapped.getNextBlock()
     if (nextBlock) {
       // Blocks in the current stack would survive this block's deletion.
-      descendantCount -= nextBlock.ezp.getUnsealedDescendants(nextBlock).length
+      descendantCount -= nextBlock.ezp.getWrappedDescendants(nextBlock).length
     }
     menuItem = new ezP.MenuItem(
       descendantCount === 1 ? Blockly.Msg.DELETE_BLOCK
@@ -362,6 +362,24 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     block.ezp.getPythonType(block),
     {action: ezP.ID.LOG_BLOCK_XML,
       target: block,})
+  menuItem.setEnabled(true)
+  this.addChild(menuItem, true)
+
+  menuItem = new ezP.MenuItem(
+    block.ezp.getPythonType(block)+' python code',
+    function(b, e) {
+      console.log('Python code for', block.type)
+      console.log(block.ezp.toPython(block))  
+    })
+  menuItem.setEnabled(true)
+  this.addChild(menuItem, true)
+
+  menuItem = new ezP.MenuItem(
+    block.ezp.getPythonType(block)+' python code (deep)',
+    function(b, e) {
+      console.log('Python code for', block.type)
+      console.log(block.ezp.toPython(block, true))  
+    })
   menuItem.setEnabled(true)
   this.addChild(menuItem, true)
 
@@ -418,6 +436,12 @@ ezP.DelegateSvg.prototype.handleMenuItemActionLast = function (block, mgr, event
 ezP.MenuManager.prototype.handleActionLast = function (block, event) {
   var workspace = block.workspace
   var model = event.target.getModel()
+  if (goog.isFunction(model)) {
+    setTimeout(function() {
+      model(block, event)
+    }, 100)
+    return true
+  }
   var target = model.target || block
   switch(model.action) {
     case ezP.ID.DUPLICATE_BLOCK:
@@ -485,7 +509,9 @@ ezP.MenuManager.prototype.populateVariable_ = function (block) {
 ezP.MenuManager.prototype.handleAction_movable_parent = function (block, event) {
   var model = event.target.getModel()
   if (goog.isFunction(model)) {
-    setTimeout(model, 100)
+    setTimeout(function() {
+      model(block, event)
+    }, 100)
     return true
   }
   return false
@@ -588,6 +614,43 @@ ezP.MenuManager.prototype.get_movable_parent_menuitem_content = function (type, 
         goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
       )
     }
+    case ezP.T3.Expr.expression_as_name:
+    switch(subtype) {
+      case ezP.Key.AS:
+      return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+        ezP.Do.createSPAN('expression ', 'ezp-code-placeholder'),
+        ezP.Do.createSPAN('as', 'ezp-code-reserved'),
+        goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
+      )
+      case ezP.Key.EXPRESSION:
+      default:
+      return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+        ezP.Do.createSPAN('as', 'ezp-code-reserved'),
+        ezP.Do.createSPAN(' name', 'ezp-code-placeholder'),
+        goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
+      )
+    }
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      ezP.Do.createSPAN('as', 'ezp-code-reserved'),
+      ezP.Do.createSPAN(' name', 'ezp-code-placeholder'),
+      goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
+    )
+    case ezP.T3.Expr.expression_from:
+    switch(subtype) {
+      case ezP.Key.FROM:
+      return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+        ezP.Do.createSPAN('expression ', 'ezp-code-placeholder'),
+        ezP.Do.createSPAN('from', 'ezp-code-reserved'),
+        goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
+      )
+      case ezP.Key.EXPRESSION:
+      default:
+      return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+        ezP.Do.createSPAN('from', 'ezp-code-reserved'),
+        ezP.Do.createSPAN(' expression', 'ezp-code-placeholder'),
+        goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
+      )
+    }
     case ezP.T3.Expr.slicing:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN('[', 'ezp-code'),
@@ -614,12 +677,6 @@ ezP.MenuManager.prototype.get_movable_parent_menuitem_content = function (type, 
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN('as', 'ezp-code-reserved'),
       ezP.Do.createSPAN(' alias', 'ezp-code-placeholder'),
-    )
-    case ezP.T3.Expr.expression_as_name:
-    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      ezP.Do.createSPAN('as', 'ezp-code-reserved'),
-      ezP.Do.createSPAN(' name', 'ezp-code-placeholder'),
-      goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
     )
     case ezP.T3.Expr.u_expr_concrete:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -819,6 +876,12 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
     [ezP.T3.Expr.attributeref, ezP.Key.PRIMARY],
     [ezP.T3.Expr.decorator_call_expr, ezP.Key.NAME],
   ], true)
+  F.call(this, [
+    [ezP.T3.Expr.expression_as_name, ezP.Key.AS],
+    [ezP.T3.Expr.expression_as_name, ezP.Key.EXPRESSION],
+    [ezP.T3.Expr.expression_from, ezP.Key.FROM],
+    [ezP.T3.Expr.expression_from, ezP.Key.EXPRESSION],
+  ])
   this.shouldSeparateInsert()
   this.shouldSeparateRemove()
   F.call(this, [
@@ -836,10 +899,9 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
     ezP.T3.Expr.dotted_funcname_concrete,
     [ezP.T3.Expr.parameter_concrete, ezP.Key.NAME],
     [ezP.T3.Expr.defparameter_concrete, ezP.Key.NAME],
-    [ezP.T3.Expr.proper_slice, ezP.Key.LOWER_BOUND],
     [ezP.T3.Expr.proper_slice, ezP.Key.UPPER_BOUND],
     [ezP.T3.Expr.proper_slice, ezP.Key.STRIDE],
-    ezP.T3.Expr.expression_as_name,
+    [ezP.T3.Expr.proper_slice, ezP.Key.LOWER_BOUND],
   ])
 }
 

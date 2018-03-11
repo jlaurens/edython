@@ -240,14 +240,14 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         field.ezpData.css_style = D.css_style
       }
       if ((v = D.start) !== undefined) {
-        field = out.input.ezpData.fieldLabelStart = new ezP.FieldLabel(v)
+        field = out.fieldLabelStart = new ezP.FieldLabel(v)
         k = K+'.'+ezP.Const.Field.START
         field.ezpData.css_class = D.css_class
         field.ezpData.css_style = D.css_style
         out.input.appendField(field, k)
       }
       if ((v = D.end) !== undefined) {
-        field = out.input.ezpData.fieldLabelEnd = new ezP.FieldLabel(v)
+        field = out.fieldLabelEnd = new ezP.FieldLabel(v)
         k = K + '.'+ezP.Const.Field.END
         field.ezpData.css_class = D.css_class
         field.ezpData.css_style = D.css_style
@@ -281,12 +281,28 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         field = out.fieldCodeLongString = new ezP.FieldCodeLongString(v)
         k = K+'.'+ezP.Const.Field.LONG_STRING
         out.input.appendField(field, k)
+      } else if ((v = D.operator) != undefined) {
+        field = out.fieldOperator = new ezP.FieldLabel(v)
+        k = K+'.'+ezP.Const.Field.OPERATOR
+        out.input.appendField(field, k)
       }
     }
     return out
   }
   var Is = {}
   
+  // catch the statement input eventually created in parent's method
+  for (var i = 0, input; (input = block.inputList[i++]);) {
+    if (input.type === Blockly.NEXT_STATEMENT) {
+      Is['next'] = {
+        input: input,
+      }
+      break
+    }
+  }
+  if (block.inputList.length) {
+    var input = block.inputList.length
+  }
   if (Object.keys(this.inputModel_).length) {
     var keys = ['first', 'middle', 'last']
     for (var i = 0, K; K = keys[i++];) {
@@ -1426,4 +1442,90 @@ ezP.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
     }
   }
   return false
+}
+
+/**
+ * Convert the block to python code.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @return some python code
+ */
+ezP.DelegateSvg.prototype.toPython = function (block, is_deep) {
+  var components = []
+  this.toPythonComponents(block, components, '', is_deep)
+  return components.join('\n')
+}
+
+/**
+ * Convert the block to python code components.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return the last element of components
+ */
+ezP.DelegateSvg.prototype.toPythonComponents = function (block, components, indent, is_deep) {
+  var last = components[components.length-1]
+  var Cs = []
+  var c8n, target
+  var FF = function(field, is_operator) {
+    if (field) {
+      var x = field.getText()
+      if (x.length) {
+        if (is_operator) {
+          x = ' ' + x + ' '
+        } else {
+          if (last && last.length) {
+            var mustSeparate = last[last.length-1].match(/[,;:]/)
+            var maySeparate = mustSeparate || last[last.length-1].match(/[a-zA-Z_]/)
+          }
+          if (mustSeparate || (maySeparate && x[0].match(/[a-zA-Z_]/))) {
+            Cs.push(' ')
+          }
+        }
+        Cs.push(x)
+        last = x
+      }
+      return true
+    }
+    return false
+  }
+  var F = function(D) {
+    if (!D) {
+      return
+    }
+    FF(D.fieldAsync) || FF(D.fieldAwait)
+    FF(D.fieldPrefix)
+    FF(D.fieldLabel)
+    FF(D.fieldLabelStart)
+    FF(D.fieldIdentifier) || FF(D.fieldCodeInput) || FF(D.fieldCodeComment) || FF(D.fieldCodeNumber) || FF(D.fieldCodeString) || FF(D.fieldCodeLongString) || FF(D.fieldOperator, true)
+    if ((c8n = D.input.connection)) {
+      if ((target = c8n.targetBlock())) {
+        last = target.ezp.toPythonComponents(target, components, indent, true) || last
+      } else if (!c8n.ezp.optional_) {
+        last = '<MISSING '+D.input.name+'>'
+        components.push(last)
+      }
+    }
+    FF(D.fieldLabelEnd)
+  }
+  F(this.inputs.first, indent)
+  F(this.inputs.middle, indent)
+  F(this.inputs.last, indent)
+  if (Cs.length) {
+    components.push(indent + Cs.join(''))
+    Cs = []
+  }
+  if (this.inputs.next && (c8n = this.inputs.next.input.connection)) {
+    if ((target = c8n.targetBlock())) {
+      target.ezp.toPythonComponents(target, components, indent + '    ', true)
+    } else if (!c8n.ezp.optional_) {
+      components.push(indent + '    ' + '<MISSING ' + this.inputs.next.input.name+'>')
+    }
+    last = undefined
+  }
+  if (is_deep && (c8n = block.nextConnection) && (target = c8n.targetBlock())) {
+    target.ezp.toPythonComponents(target, components, indent, is_deep)
+    last = undefined
+  }
+  return last
 }

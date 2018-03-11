@@ -197,34 +197,45 @@ ezP.DelegateSvg.List.prototype.removeItems = function(block) {
 }
 
 /**
- * Returns the item count.
- * Count the inputs that are not separators.
+ * Convert the block to python code components.
  * For ezPython.
- * @param {!Block} block.
- * @private
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return the last element of components
  */
-ezP.DelegateSvg.List.prototype.getItemCount = function(block) {
-  var list = block.inputList
-  var i = 0
-  var input
-  var count = 0
-  while ((input = list[i++])) {
-    if (!input.ezpData.s7r_) {
-      ++ count
+ezP.DelegateSvg.List.prototype.toPythonComponents = function (block, components, indentation, is_deep) {
+  this.consolidate(block)
+  var last = components[components.length-1]
+  for (var i = 0, input; (input = block.inputList[i++]);) {
+    var c8n = input.connection
+    if (c8n) {
+      var target = c8n.targetBlock()
+      if (target) {
+        last = target.ezp.toPythonComponents(target, components, indentation, is_deep)
+        // NEWLINE
+      } else if (!c8n.ezp.optional_ && !c8n.ezp.s7r_) {
+        last = '<MISSING ELEMENT>'
+        components.push(last)
+        // NEWLINE
+      } else {
+        for (var j = 0, field; (field = input.fieldRow[j++]);) {
+          var x = field.getText()
+          if (x.length) {
+            if (last && last.length) {
+              var mustSeparate = last[last.length-1].match(/[,;:]/)
+              var maySeparate = mustSeparate || last[last.length-1].match(/[a-zA-Z_]/)
+            }
+            if (mustSeparate || (maySeparate && x[0].match(/[a-zA-Z_]/))) {
+              components.push(' ')
+            }
+            components.push(x)
+            last = x              
+          }
+        }
+      }
     }
   }
-  return count
-}
-
-/**
- * Returns the item at the given index.
- * Count the inputs that are not separators.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.List.prototype.getItemAtIndex = function(block, i) {
-  return this.getInput(block, 'ITEM_'+i)
+  return last
 }
 
 /**

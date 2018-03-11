@@ -321,14 +321,18 @@ ezP.DelegateSvg.Expr.docstring.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Stmt.comment_stmt,
 ])
 
-
-ezP.DelegateSvg.Stmt.try_part.workspaceBlocks = ezP.Do.arraysMerged([
+ezP.DelegateSvg.Stmt.try_part.workspaceBlocks =
+ezP.DelegateSvg.Stmt.raise_stmt.workspaceBlocks = ezP.Do.arraysMerged([
+  ezP.T3.Expr.identifier,
+  ezP.T3.Expr.expression_from,
+  ezP.T3.Stmt.raise_stmt,
   ezP.T3.Expr.docstring,
   ezP.T3.Expr.identifier,
   ezP.T3.Stmt.try_part,
   ezP.T3.Stmt.except_part,
   ezP.T3.Expr.expression_as_name,
   ezP.T3.Stmt.void_except_part,
+  ezP.T3.Stmt.else_part,
   ezP.T3.Stmt.finally_part,
   ezP.T3.Stmt.pass_stmt,
   ezP.T3.Stmt.comment_stmt,

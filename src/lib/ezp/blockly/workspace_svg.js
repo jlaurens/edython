@@ -152,7 +152,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function(e) {
   var deleteList = [];
   function addDeletableBlocks(block) {
     if (block.isDeletable()) {
-      deleteList = deleteList.concat(block.ezp.getUnsealedDescendants(block));
+      deleteList = deleteList.concat(block.ezp.getWrappedDescendants(block));
     } else {
       var children = block.getChildren();
       for (var i = 0; i < children.length; i++) {

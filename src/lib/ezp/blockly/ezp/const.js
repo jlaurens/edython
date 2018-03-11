@@ -30,7 +30,7 @@ ezP.Const.Field = {
   CODE: 'CODE',
   ID: 'ID',
   IDENTIFIER: 'IDENTIFIER',
-  OP: 'OP',
+  OPERATOR: 'OPERATOR',
   PREFIX: 'PREFIX',
   AWAIT: 'AWAIT',
   ASYNC: 'ASYNC',

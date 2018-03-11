@@ -52,7 +52,7 @@ ezP.DelegateSvg.Expr.expression_as_name = function (prototypeName) {
       hole_value: 'expression',
     },
     last: {
-      key: ezP.Key.NAME,
+      key: ezP.Key.AS,
       label: 'as',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.identifier,
@@ -128,4 +128,79 @@ ezP.DelegateSvg.Stmt.finally_part = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Stmt.finally_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('finally_part')
 
+/**
+ * Class for a DelegateSvg, expression_from block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.expression_from = function (prototypeName) {
+  ezP.DelegateSvg.Expr.expression_from.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_ = {
+    first: {
+      key: ezP.Key.EXPRESSION,
+      check: ezP.T3.Expr.Check.expression,
+      hole_value: 'expression',
+    },
+    last: {
+      label: 'from',
+      css_class: 'ezp-code-reserved',
+      key: ezP.Key.FROM,
+      check: ezP.T3.Expr.Check.expression,
+      hole_value: 'expression',
+    }
+  }
+  this.outputModel_.check = ezP.T3.Expr.expression_from
+}
+goog.inherits(ezP.DelegateSvg.Expr.expression_from, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('expression_from')
 
+/**
+ * Class for a DelegateSvg, raise_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.raise_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.raise_stmt.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_ = {
+    first: {
+      label: 'raise',
+      css_class: 'ezp-code-reserved',
+      key: ezP.Key.RAISE,
+      check: ezP.T3.Expr.Check.raise_expression,
+      optional: true
+    }
+  }
+}
+goog.inherits(ezP.DelegateSvg.Stmt.raise_stmt, ezP.DelegateSvg.Stmt)
+ezP.DelegateSvg.Manager.register('raise_stmt')
+
+/**
+ * Class for a DelegateSvg, assert_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.assert_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.assert_stmt.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_ = {
+    first: {
+      label: 'assert',
+      css_class: 'ezp-code-reserved',
+      key: ezP.Key.ASSERT,
+      check: ezP.T3.Expr.Check.expression
+    },
+    last: {
+      label: ',',
+      key: ezP.Key.EXPRESSION,
+      check: ezP.T3.Expr.Check.expression,
+      optional: true
+    }
+  }
+}
+goog.inherits(ezP.DelegateSvg.Stmt.assert_stmt, ezP.DelegateSvg.Stmt.Two)
+ezP.DelegateSvg.Manager.register('assert_stmt')

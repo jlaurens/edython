@@ -44,6 +44,8 @@ try2_stmt ::=  "try" ":" suite
                "finally" ":" suite
 <pre>
 try_stmt ::= IGNORE
+try1_stmt ::= IGNORE
+try2_stmt ::= IGNORE
 try_part ::=  "try" ":"
 void_except_part ::= "except" ":"
 except_part ::= "except" expression_except ":"
@@ -51,8 +53,7 @@ expression_except ::= expression | expression_as_name
 expression_as_name ::= expression "as" identifier
 finally_part ::= "finally" ":"
 try_part <<< except_part | void_except_part | finally_part | comment_stmt
-except_part <<< except_part | void_except_part | else_part | finally_part | comment_stmt
-void_except_part <<< finally_part | comment_stmt
+void_except_part >>> except_part
 except_part >>> try_part | except_part | comment_stmt
 void_except_part >>> try_part | except_part | comment_stmt
 else_part >>> except_part | void_except_part | comment_stmt
@@ -72,6 +73,7 @@ If a parameter has a default value, all following parameters up until the â€œ*â€
 
 <pre>
 funcdef ::= REMOVE
+async_funcdef ::= REMOVE
 funcdef_part ::= funcdef_expr ":"
 funcdef_expr ::= funcdef_simple | funcdef_typed
 funcdef_simple ::= "def" funcname "(" [parameter_list] ")"
@@ -164,6 +166,7 @@ docstring_def_stmt >>> funcdef_part.do | classdef_part.do | docstring_def_stmt |
 <pre>
 async_with_stmt ::= REMOVE
 async_for_stmt ::= REMOVE
+async_funcdef ::= REMOVE
 </pre>
 
 

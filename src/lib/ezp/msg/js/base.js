@@ -58,3 +58,10 @@ goog.require('ezP')
 /** @export */ ezP.Msg.USE_SINGLE_QUOTE = "'...'"
 
 /** @export */ ezP.Msg.USE_DOUBLE_QUOTES = '"..."'
+
+/** @export */ ezP.Msg.MISSING_KEY = 'Missing key'
+/** @export */ ezP.Msg.MISSING_VALUE = 'Missing value'
+/** @export */ ezP.Msg.MISSING_EXPRESSION = 'Missing expression'
+/** @export */ ezP.Msg.MISSING_ARGUMENT = 'Missing argument'
+/** @export */ ezP.Msg.MISSING_LHS = 'Missing LHS'
+/** @export */ ezP.Msg.MISSING_RHS = 'Missing RHS'

@@ -377,13 +377,13 @@ ezP.Delegate.prototype.fromDom = function (block, element) {
  * @param {!Blockly.Block} block.
  * @return {!Array.<!Blockly.Block>} Flattened array of blocks.
  */
-ezP.Delegate.prototype.getUnsealedDescendants = function(block) {
+ezP.Delegate.prototype.getWrappedDescendants = function(block) {
   var blocks = [];
   if (!this.wrapped_) {
     blocks.push(block)
   }
   for (var child, x = 0; child = block.childBlocks_[x]; x++) {
-    blocks.push.apply(blocks, child.ezp.getUnsealedDescendants(child))
+    blocks.push.apply(blocks, child.ezp.getWrappedDescendants(child))
   }
   return blocks;
 };
@@ -620,4 +620,14 @@ ezP.Delegate.prototype.getParentInput = function(block) {
     }
   }
   return null
+}
+
+/**
+ * Convert the block to python code.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @constructor
+ */
+ezP.Delegate.prototype.toPython = function (block) {
+  goog.asserts.assert(false, 'Missing toPython implementation for '+block.type)
 }

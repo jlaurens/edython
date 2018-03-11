@@ -37,7 +37,6 @@ ezP.DelegateSvg.Expr.target_star = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.target_star, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('target_star')
 
-
 /**
  * List consolidator for target list.
  * Rules are a bit stronger than python requires originally
@@ -265,7 +264,7 @@ ezP.DelegateSvg.Expr.assignment_expression = function (prototypeName) {
     },
     last: {
       key: ezP.Key.RHS,
-      label: '=',
+      operator: '=',
       wrap: ezP.T3.Expr.assigned_list,
     },
   }
@@ -274,7 +273,6 @@ ezP.DelegateSvg.Expr.assignment_expression = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.assignment_expression, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Manager.register('assignment_expression')
-
 
 /**
  * Class for a DelegateSvg, assignment_stmt.
@@ -292,7 +290,6 @@ ezP.DelegateSvg.Stmt.assignment_stmt = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.assignment_stmt, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Manager.register('assignment_stmt')
-
 
 /**
  * List consolidator for parameter list.
@@ -428,7 +425,6 @@ ezP.DelegateSvg.Expr.assigned_list = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.assigned_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('assigned_list')
 
-
 /**
  * Class for a DelegateSvg, augassign_... block.
  * Multiple ops.
@@ -475,7 +471,7 @@ ezP.DelegateSvg.AugAssign.prototype.XpopulateContextMenuFirst_ = function (block
 ezP.DelegateSvg.Expr.augassign_numeric = function (prototypeName) {
   ezP.DelegateSvg.Expr.augassign_numeric.superClass_.constructor.call(this, prototypeName)
   this.operators = ['+=','-=','*=','/=','//=','%=','**=','@=']
-  this.inputModel_.last.label = this.operators[0]
+  this.inputModel_.last.operator = this.operators[0]
   this.outputModel_.check = ezP.T3.Expr.augassign_numeric
 }
 
@@ -493,7 +489,7 @@ ezP.DelegateSvg.Manager.register('augassign_numeric')
 ezP.DelegateSvg.Expr.augassign_bitwise = function (prototypeName) {
   ezP.DelegateSvg.Expr.augassign_bitwise.superClass_.constructor.call(this, prototypeName)
   this.operators = [">>=", "<<=", "&=", "^=", "|="]
-  this.inputModel_.last.label = this.operators[1]
+  this.inputModel_.last.operator = this.operators[1]
   this.outputModel_.check = ezP.T3.Expr.augassign_bitwise
 }
 
