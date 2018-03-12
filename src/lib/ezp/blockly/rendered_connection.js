@@ -120,6 +120,36 @@ ezP.ConnectionDelegate.prototype.getCheck = function() {
 }
 
 /**
+ * get the name of the input corresponding to this connection, if any.
+ * This is a dynamic method.
+ * The default implementation just returns the receiver's name_.
+ * @return the receiver's name_.
+ */
+ezP.ConnectionDelegate.prototype.getName = function() {
+  return this.name_
+}
+
+/**
+ * Is it a next connection.
+ * @param {!Blockly.Connection} otherConnection Connection to compare against.
+ * @return {boolean} True if the connections share a type.
+ * @private
+ */
+ezP.ConnectionDelegate.prototype.isNext = function() {
+  return this.connection === this.connection.getSourceBlock().nextConnection
+}
+
+/**
+ * Is it a next connection.
+ * @param {!Blockly.Connection} otherConnection Connection to compare against.
+ * @return {boolean} True if the connections share a type.
+ * @private
+ */
+ezP.ConnectionDelegate.prototype.isPrevious = function() {
+  return this.connection === this.connection.getSourceBlock().previousConnection
+}
+
+/**
  * Class for a connection between blocks that may be rendered on screen.
  * @param {!Blockly.Block} source The block establishing this connection.
  * @param {number} type The type of the connection.
@@ -231,41 +261,51 @@ ezP.Connection.prototype.isConnectionAllowed = function(candidate,
  * @return {boolean} True if the connections share a type.
  * @private
  */
-ezP.Connection.prototype.isNextOrPrevious = function() {
-  return this === this.getSourceBlock().nextConnection || this === this.getSourceBlock().previousConnection
-}
-
-/**
- * Is this connection compatible with another connection with respect to the
- * value type system.  E.g. square_root("Hello") is not compatible.
- * @param {!Blockly.Connection} otherConnection Connection to compare against.
- * @return {boolean} True if the connections share a type.
- * @private
- */
 ezP.Connection.prototype.checkType_ = function(otherConnection) {
-  if (this.type === Blockly.NEXT_STATEMENT || this.type === Blockly.PREVIOUS_STATEMENT) {
-    var T = this.getSourceBlock().type
-    var name = this.ezp.name
-    var check = this.ezp.getCheck()
-    if (T.indexOf('ezp_') == 0) {
-      var otherT = otherConnection.getSourceBlock().type
-      var otherName = otherConnection.ezp.name
+  var T = this.getSourceBlock().type
+  if (T.indexOf('ezp_') == 0) {
+    var otherT = otherConnection.getSourceBlock().type
+    if (otherT.indexOf('ezp_') == 0) {
+      var name = this.ezp.getName()
+      var check = this.ezp.getCheck()
+      var otherName = otherConnection.ezp.getName()
       var otherCheck = otherConnection.ezp.getCheck()
-      if (!this.isNextOrPrevious()) {
-        // `this` is the connection of a statement input of its source block
-        // otherConnection 'must' be previous or next
-        if (otherCheck && otherCheck.indexOf(T)<0
-          && (!name || otherCheck.indexOf(T+'.'+name) < 0 && otherCheck.indexOf('.'+name) < 0)) {
-          return false
+      if (name) {
+        // `this.connection` corresponds to a 'do' statement input
+        // possibly through comment statements
+        if (check) {
+          if (check.indexOf(otherT) < 0) {
+            return false
+          }
+          if (otherCheck) {
+            for (var i = 0, t;(t = check[i++]);) {
+              if (otherCheck.indexOf(t) >= 0) {
+                return true
+              }
+            }
+          } else {
+            return true
+          }
         }
-        return !check || check.indexOf(otherT) >= 0
+        return !otherCheck
       }
-      if (!otherConnection.isNextOrPrevious()) {
-        if (check && check.indexOf(otherT)<0
-          && (!otherName || check.indexOf(otherT+'.'+otherName) < 0 && check.indexOf('.'+otherName) < 0)) {
-          return false
+      if (otherName) {
+        // symetrical situation
+        if (otherCheck) {
+          if (otherCheck.indexOf(T) < 0) {
+            return false
+          }
+          if (check) {
+            for (var i = 0, t;(t = otherCheck[i++]);) {
+              if (check.indexOf(t) >= 0) {
+                return true
+              }
+            }
+          } else {
+            return true
+          }
         }
-        return !otherCheck || chotherCheckeck.indexOf(T) >= 0
+        return !check
       }
       if (check && check.indexOf(otherT)<0) {
         return false

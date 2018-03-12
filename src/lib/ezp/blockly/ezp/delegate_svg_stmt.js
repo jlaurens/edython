@@ -113,7 +113,7 @@ ezP.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
       text.appendChild(document.createTextNode('#'))
       length = 1
     }
-    var expected = io.block.getStatementCount()
+    var expected = io.block.ezp.getStatementCount(io.block)
     while (length < expected) {
       y = ezP.Font.totalAscent + length * ezP.Font.lineHeight()
       text = Blockly.utils.createSvgElement('text',
@@ -143,6 +143,16 @@ ezP.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
 ezP.DelegateSvg.Stmt.prototype.renderDrawInput_ = function (io) {
   this.renderDrawDummyInput_(io) ||
     this.renderDrawValueInput_(io)
+}
+
+/**
+ * Convert the block to python code.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @return some python code
+ */
+ezP.DelegateSvg.prototype.toPython = function (block, is_deep) {
+  return this.toPythonStatement(block, '', is_deep)
 }
 
 //////////////////// blocks  //////////////////////////////
@@ -413,9 +423,21 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.initBlock = function (block) {
     var c8n = block.previousConnection.targetConnection
     return c8n? c8n.ezp.getCheck(): null
   }
+  block.nextConnection.ezp.getName = function() {
+    var c8n = block.previousConnection.targetConnection
+    return c8n? c8n.ezp.getName(): null
+  }
   block.previousConnection.ezp.getCheck = function() {
     var c8n = block.nextConnection.targetConnection
     return c8n? c8n.ezp.getCheck(): null
+  }
+  block.previousConnection.ezp.isPrevious = function() {
+    var c8n = block.nextConnection.targetConnection
+    return !c8n || c8n.ezp.isPrevious()
+  }
+  block.nextConnection.ezp.isNext = function() {
+    var c8n = block.previousConnection.targetConnection
+    return !c8n || c8n.ezp.isNext()
   }
 }
 

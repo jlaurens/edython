@@ -225,31 +225,6 @@ ezP.BlockSvg.prototype.getHeightWidth = function () {
 }
 
 /**
- * Returns the total number of code lines for that node and the node below.
- * One atomic instruction is one line.
- * @return {Number}.
- */
-ezP.BlockSvg.prototype.getStatementCount = function () {
-  var n = 1
-  for (var _ = 0, input; (input = this.inputList[_]); ++_) {
-    var c8n = input.connection
-    if (c8n && c8n.type === Blockly.NEXT_STATEMENT) {
-      var hasNext = true
-      if (c8n.isConnected()) {
-        var block = c8n.targetBlock()
-        do {
-          n += block.getStatementCount()
-        } while ((block = block.getNextBlock()))
-      }
-    }
-  }
-  return hasNext && n === 1 ? 2 : n
-}
-Blockly.BlockSvg.prototype.getStatementCount = function () {
-  return 1
-}
-
-/**
  * Set whether the block is collapsed or not.
  * By pass Blockly.BlockSvg.prototype.setCollapsed
  * @param {boolean} collapsed True if collapsed.

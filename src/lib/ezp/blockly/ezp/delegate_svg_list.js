@@ -203,7 +203,7 @@ ezP.DelegateSvg.List.prototype.removeItems = function(block) {
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return the last element of components
  */
-ezP.DelegateSvg.List.prototype.toPythonComponents = function (block, components, indentation, is_deep) {
+ezP.DelegateSvg.List.prototype.toPythonExpressionComponents = function (block, components) {
   this.consolidate(block)
   var last = components[components.length-1]
   for (var i = 0, input; (input = block.inputList[i++]);) {
@@ -211,7 +211,7 @@ ezP.DelegateSvg.List.prototype.toPythonComponents = function (block, components,
     if (c8n) {
       var target = c8n.targetBlock()
       if (target) {
-        last = target.ezp.toPythonComponents(target, components, indentation, is_deep)
+        last = target.ezp.toPythonExpressionComponents(target, components)
         // NEWLINE
       } else if (!c8n.ezp.optional_ && !c8n.ezp.s7r_) {
         last = '<MISSING ELEMENT>'

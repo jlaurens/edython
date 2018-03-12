@@ -33,42 +33,6 @@ ezP.DelegateSvg.Group = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
 
 /**
- * Whether the block has a previous bounded statement.
- * @param {!Block} block.
- * @private
- */
-ezP.Delegate.prototype.hasPreviousBoundedStatement_ = function (block) {
-  if (block.type === ezP.T3.Stmt.elif_part || block.type === ezP.T3.Stmt.else_part) {
-    var c8n = block.previousConnection
-    if (c8n) {
-      var target = c8n.targetBlock()
-      if (target) {
-        return target.type === ezP.T3.Stmt.if_part ||
-          target.type === ezP.T3.Stmt.elif_part ||
-            target.type === ezP.T3.Stmt.while_part ||
-              target.type === ezP.T3.Stmt.for_part
-      }
-    }
-  }
-  return false
-}
-
-/**
- * Whether the block has a next bounded statement.
- * @param {!Block} block.
- * @private
- */
-ezP.Delegate.prototype.hasNextBoundedStatement_ = function (block) {
-  try {
-    var target = c8n.targetBlock().nextConnection
-    return target.type === ezP.T3.Stmt.elif_part ||
-    target.type === ezP.T3.Stmt.else_part
-  }
-  catch (err) {
-    return false
-  }
-}
-/**
  * Block path.
  * @param {!Blockly.Block} block.
  * @private
@@ -117,13 +81,9 @@ ezP.DelegateSvg.Group.prototype.groupContourPathDef_ = function (block) {
   var t = ezP.Font.tabWidth
   var r = ezP.Style.Path.radius()
   var a = ' a ' + r + ', ' + r + ' 0 0 0 '
-  var previousBounded = this.hasPreviousBoundedStatement_(block)
-  var nextBounded = this.hasNextBoundedStatement_(block)
   var previous = this.hasPreviousStatement_(block)
   var next = this.hasNextStatement_(block)
-  if (previousBounded) {
-    var steps = ['m ' + t + ', ' + (-r) + a + r + ', ' + r + ' h ' + (w - t - r)]
-  } else if (previous) {
+  if (previous) {
     steps = ['m 0,0 h ' + w]
   } else {
     steps = ['m ' + r + ',0 h ' + (w - r)]
@@ -137,15 +97,13 @@ ezP.DelegateSvg.Group.prototype.groupContourPathDef_ = function (block) {
   steps.push(' v ' + h)
   steps.push(a + r + ',' + r)
   a = ' a ' + r + ', ' + r + ' 0 0 1 '
-  if (nextBounded) {
-    steps.push('m ' + (-t - r) + ',0')
-  } else if (next) {
+  if (next) {
     steps.push('h ' + (-t - r))
   } else {
     steps.push('h ' + (-t) + a + (-r) + ',' + (-r))
     h -= r
   }
-  if (previousBounded || previous) {
+  if (previous) {
     steps.push('V 0')
   } else {
     steps.push('V ' + r + a + r + ',' + (-r))
@@ -200,7 +158,7 @@ ezP.DelegateSvg.Group.prototype.renderDrawNextStatementInput_ = function (io) {
         target.render()
       }
     }
-    io.block.height = ezP.Font.lineHeight() * io.block.getStatementCount()
+    io.block.height = ezP.Font.lineHeight() * io.block.ezp.getStatementCount(io.block)
   }
   return true
 } /* eslint-enable indent */

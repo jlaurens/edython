@@ -34,6 +34,10 @@ ezP.Input.setupEzpData = function (input, data) {
     if (data) {
       goog.mixin(input.ezpData, data)
     }
+    var c8n = input.connection
+    if (c8n) {
+      c8n.ezp.name_ = input.name // the connection remembers the name of the input such that checking is fine grained.
+    }  
   }
 }
 

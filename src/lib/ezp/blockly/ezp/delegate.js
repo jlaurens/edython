@@ -290,7 +290,7 @@ ezP.Delegate.prototype.initBlock = function (block) {
     }
   } else if ((D = this.statementModel_) && Object.keys(D).length) {
     if (D.key) {
-      block.appendStatementInput(D.key).setCheck(D.check) // Check ?
+      var input = block.appendStatementInput(D.key).setCheck(D.check) // Check ?
     }
     if (D.next) {
       block.setNextStatement(true, D.next.check)
@@ -630,4 +630,30 @@ ezP.Delegate.prototype.getParentInput = function(block) {
  */
 ezP.Delegate.prototype.toPython = function (block) {
   goog.asserts.assert(false, 'Missing toPython implementation for '+block.type)
+}
+
+/**
+ * Returns the total number of code lines for that node and the node below.
+ * One atomic instruction is one line.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @return {Number}.
+ */
+ezP.Delegate.prototype.getStatementCount = function (block) {
+  var n = 1
+  var hasActive = false
+  var hasNext = false
+  for (var _ = 0, input; (input = block.inputList[_]); ++_) {
+    var c8n = input.connection
+    if (c8n && c8n.type === Blockly.NEXT_STATEMENT) {
+      hasNext = true
+      if (c8n.isConnected()) {
+        var target = c8n.targetBlock()
+        do {
+          hasActive = hasActive || (!target.disabled && target.type !== ezP.T3.Stmt.comment_stmt)
+          n += target.ezp.getStatementCount(target)
+        } while ((target = target.getNextBlock()))
+      }
+    }
+  }
+  return n + (hasNext && !hasActive? 1: 0)
 }

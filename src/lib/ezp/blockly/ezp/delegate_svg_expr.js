@@ -241,6 +241,16 @@ ezP.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr)
 }
 
 /**
+ * Convert the block to python code.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @return some python code
+ */
+ezP.DelegateSvg.prototype.toPython = function (block, is_deep) {
+  return this.toPythonExpression(block)
+}
+
+/**
  * Class for a DelegateSvg, proper_slice block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
@@ -845,63 +855,3 @@ ezP.DelegateSvg.Expr.docstring.prototype.willRender_ = function (block) {
   field.setVisible(field.getValue().length)
 }
 
-/**
- * Convert the block to python code components.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
- * @param {!array} components the array of python code strings, will be joined to make the code.
- * @return the last element of components
- */
-ezP.DelegateSvg.Expr.prototype.toPythonComponents = function (block, components, indent, is_deep) {
-  var last = components[components.length-1]
-  var c8n, target
-  var FF = function(field, is_operator) {
-    if (field) {
-      var x = field.getText()
-      if (x.length) {
-        if (is_operator) {
-          x = ' ' + x + ' '
-        } else {
-          if (last && last.length) {
-            var mustSeparate = last[last.length-1].match(/[,;:]/)
-            var maySeparate = mustSeparate || last[last.length-1].match(/[a-zA-Z_]/)
-          }
-          if (mustSeparate || (maySeparate && x[0].match(/[a-zA-Z_]/))) {
-            components.push(' ')
-          }
-        }
-        components.push(x)
-        last = x
-      }
-      return true
-    }
-    return false
-  }
-  var F = function(D) {
-    if (!D) {
-      return
-    }
-    FF(D.fieldAsync) || FF(D.fieldAwait)
-    FF(D.fieldPrefix)
-    FF(D.fieldLabel)
-    FF(D.fieldLabelStart)
-    FF(D.fieldIdentifier) || FF(D.fieldCodeInput) || FF(D.fieldCodeComment) || FF(D.fieldCodeNumber) || FF(D.fieldCodeString) || FF(D.fieldCodeLongString) || FF(D.fieldOperator, true)
-    if ((c8n = D.input.connection)) {
-      if ((target = c8n.targetBlock())) {
-        var Cs = []
-        last = target.ezp.toPythonComponents(target, Cs) || last
-        if (Cs.length) {
-          components.push(Cs.join(''))
-        }
-      } else if (!c8n.ezp.optional_) {
-        last = '<MISSING '+D.input.name+'>'
-        components.push(last)
-      }
-    }
-    FF(D.fieldLabelEnd)
-  }
-  F(this.inputs.first)
-  F(this.inputs.middle)
-  F(this.inputs.last)
-  return last
-}

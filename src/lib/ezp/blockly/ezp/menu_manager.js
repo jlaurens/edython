@@ -307,7 +307,7 @@ ezP.MenuManager.prototype.populateLast = function (block) {
         Blockly.Msg.COLLAPSE_BLOCK,
         {action: ezP.ID.COLLAPSE_BLOCK,
           target: block,})
-      menuItem.setEnabled(block.getStatementCount() > 2)
+      menuItem.setEnabled(block.ezp.getStatementCount(block) > 2)
     }
     this.addChild(menuItem, true)
   }

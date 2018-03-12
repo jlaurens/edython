@@ -71,7 +71,6 @@ ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
     awaitable: true,
     key: ezP.Key.EXPRESSION,
     start: '(',
-    check: ezP.T3.Expr.yield_expression_list,
     wrap: ezP.T3.Expr.yield_expression,
     end: ')',
   }
@@ -95,7 +94,7 @@ ezP.DelegateSvg.Expr.yield_expression = function (prototypeName) {
     wrap: ezP.T3.Expr.yield_expression_list,
     check: ezP.T3.Expr.Check.yield_expression,
   }
-  this.outputModel_.check = ezP.T3.Expr.Check.yield_expression
+  this.outputModel_.check = ezP.T3.Expr.yield_expression
   this.menuData = [
     {
       content: goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
@@ -150,7 +149,6 @@ ezP.DelegateSvg.Stmt.yield_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.yield_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.last = {
     key: ezP.Key.EXPRESSION,
-    check: ezP.T3.Expr.Check.yield_expression,
     wrap: ezP.T3.Expr.yield_expression,
   }
 }
