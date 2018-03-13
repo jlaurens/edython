@@ -413,32 +413,25 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.renderDrawSharp_ = function (io) {
 }
 
 /**
- * Initialize a block.
- * @param {!Blockly.Block} block to be initialized..
- * For subclassers eventually
+ * comment blocks are white.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return None
  */
-ezP.DelegateSvg.Stmt.comment_stmt.prototype.initBlock = function (block) {
-  ezP.DelegateSvg.Stmt.comment_stmt.superClass_.initBlock.call(this, block)
-  block.nextConnection.ezp.getCheck = function() {
-    var c8n = block.previousConnection.targetConnection
-    return c8n? c8n.ezp.getCheck(): null
-  }
-  block.nextConnection.ezp.getName = function() {
-    var c8n = block.previousConnection.targetConnection
-    return c8n? c8n.ezp.getName(): null
-  }
-  block.previousConnection.ezp.getCheck = function() {
-    var c8n = block.nextConnection.targetConnection
-    return c8n? c8n.ezp.getCheck(): null
-  }
-  block.previousConnection.ezp.isPrevious = function() {
-    var c8n = block.nextConnection.targetConnection
-    return !c8n || c8n.ezp.isPrevious()
-  }
-  block.nextConnection.ezp.isNext = function() {
-    var c8n = block.previousConnection.targetConnection
-    return !c8n || c8n.ezp.isNext()
-  }
+ezP.DelegateSvg.Stmt.comment_stmt.prototype.isWhite = function (block) {
+  return true
+}
+
+/**
+ * Do nothing, comment blocks are allways disabled.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+the code.
+ * @return None
+ */
+ezP.DelegateSvg.Stmt.comment_stmt.prototype.setDisabled = function (block, yorn) {
+  return
 }
 
 /**
@@ -480,6 +473,15 @@ goog.inherits(ezP.DelegateSvg.Stmt.docstring_top_stmt, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Manager.register('docstring_top_stmt')
 
 /**
+ * docstring blocks are white, to be confirmed.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return None
+ */
+ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt.comment_stmt.prototype.isWhite
+
+/**
  * Class for a DelegateSvg, docstring_def_stmt.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
@@ -497,4 +499,13 @@ ezP.DelegateSvg.Stmt.docstring_def_stmt = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.docstring_def_stmt, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Manager.register('docstring_def_stmt')
+
+/**
+ * docstring blocks are white.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return None
+ */
+ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt.comment_stmt.prototype.isWhite
 

@@ -657,3 +657,161 @@ ezP.Delegate.prototype.getStatementCount = function (block) {
   }
   return n + (hasNext && !hasActive? 1: 0)
 }
+
+/**
+ * Whether this block is white. White blocks have no effect,
+ * the action of the algorithm is exactly the same whether the block is here or not.
+ * White blocks are comment statements, disabled blocks
+ * and maybe other kinds of blocks to be found...
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return None
+ */
+ezP.Delegate.prototype.isWhite = function (block) {
+  return block.disabled
+}
+
+/**
+ * Get the next connection of this block.
+ * Comment and disabled blocks are transparent with respect to connection checking.
+ * If block
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.Delegate.prototype.getNextConnection = function (block) {
+  while(block.ezp.isWhite(block)) {
+    var c8n
+    if (!(c8n = block.previousConnection) || !(block = c8n.targetBlock())) {
+      return undefined
+    }
+  }
+  return block.nextConnection
+}
+
+/**
+ * Get the previous connection of this block.
+ * Comment and disabled blocks are transparent with respect to connection checking.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.Delegate.prototype.getPreviousConnection = function (block) {
+  while(block.ezp.isWhite(block)) {
+    var c8n
+    if (!(c8n = block.nextConnection) || !(block = c8n.targetBlock())) {
+      return undefined
+    }
+  }
+  return block.previousConnection
+}
+
+/**
+ * Set the disable state of the block.
+ * Calls the block's method but also make sure that previous blocks
+ * and next blocks are in an acceptable state.
+ * For example, if I disable an if block, I should also disable
+ * an elif/else following block, but only if it would make an elif/else orphan.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.Delegate.prototype.setDisabled = function (block, yorn) {
+  if (!!block.disabled === !!yorn) {
+    // nothing to do the block is already in the good state
+    return
+  }
+  Blockly.Events.setGroup(true)
+  var previous, next
+  if (yorn) {
+    block.setDisabled(true)
+    // Does it break next connections
+    if ((previous = block.previousConnection)
+    && (next = previous.targetConnection)
+    && next.ezp.getBlackConnection()) {
+      while ((previous = block.nextConnection)
+      && (previous = previous.targetConnection)
+      && (previous = previous.ezp.getBlackConnection())) {
+        if (next.checkType_(previous)) {
+          break
+        }
+        block = previous.getSourceBlock()
+        // No recursion
+        block.setDisabled(true)
+      }
+    }
+  } else {
+    block.setDisabled(false)
+    // if the connection chain below this block is broken,
+    // try to activate some blocks
+    if ((next = block.nextConnection)) {
+      if ((previous = next.targetConnection)
+      && (previous = previous.ezp.getBlackConnection())
+      && !next.checkType_(previous)) {
+        // find  white block in the below chain that can be activated
+        // stop before the black connection found just above
+        previous = next.targetConnection
+        do {
+          var target = previous.getSourceBlock()
+          if (target.disabled) {
+            target.disabled = false
+            var check = next.checkType_(previous)
+            target.disabled = true
+            if (check) {
+              target.setDisabled(false)
+              if (!(next = target.nextConnection)) {
+                break
+              }
+            }
+          } else if (!target.ezp.isWhite(target)) {
+            // the black connection is reached, no need to go further
+            // but the next may have change and the checkType_ must
+            // be computed once again
+            if (!next.checkType_(previous)) {
+              target.unplug()
+              target.bumpNeighbours_();
+            }
+            break
+          }
+        } while ((previous = previous.ezp.getConnectionBelow()))
+      }
+    }
+    // now consolidate the chain above
+    if ((previous = block.previousConnection)) {
+      if ((next = previous.targetConnection)
+      && (next = next.ezp.getBlackConnection())
+      && !previous.checkType_(next)) {
+        // find  white block in the above chain that can be activated
+        // stop before the black connection found just above
+        next = previous.targetConnection
+        do {
+          var target = next.getSourceBlock()
+          if (target.disabled) {
+            target.disabled = false
+            var check = previous.checkType_(next)
+            target.disabled = true
+            if (check) {
+              target.setDisabled(false)
+              if (!(previous = target.previousConnection)) {
+                break
+              }
+            }
+          } else if (!target.ezp.isWhite(target)) {
+            // the black connection is reached, no need to go further
+            // but the next may have change and the checkType_ must
+            // be computed once again
+            if (!next.checkType_(previous)) {
+              target = previous.getSourceBlock()
+              target.unplug()
+              target.bumpNeighbours_();
+            }
+            break
+          }
+        } while ((next = next.ezp.getConnectionAbove()))
+      }
+    }
+  }
+  Blockly.Events.setGroup(false)
+}
+

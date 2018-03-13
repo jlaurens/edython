@@ -120,19 +120,9 @@ ezP.ConnectionDelegate.prototype.getCheck = function() {
 }
 
 /**
- * get the name of the input corresponding to this connection, if any.
- * This is a dynamic method.
- * The default implementation just returns the receiver's name_.
- * @return the receiver's name_.
- */
-ezP.ConnectionDelegate.prototype.getName = function() {
-  return this.name_
-}
-
-/**
  * Is it a next connection.
  * @param {!Blockly.Connection} otherConnection Connection to compare against.
- * @return {boolean} True if the connections share a type.
+ * @return {boolean} True if the connection is the block's next one.
  * @private
  */
 ezP.ConnectionDelegate.prototype.isNext = function() {
@@ -142,11 +132,123 @@ ezP.ConnectionDelegate.prototype.isNext = function() {
 /**
  * Is it a next connection.
  * @param {!Blockly.Connection} otherConnection Connection to compare against.
- * @return {boolean} True if the connections share a type.
+ * @return {boolean} True if the connection is the block's previous one.
  * @private
  */
 ezP.ConnectionDelegate.prototype.isPrevious = function() {
   return this.connection === this.connection.getSourceBlock().previousConnection
+}
+
+/**
+ * Get the connection of the same kind on the block above.
+ * If the connection is named, returns the connection, whatever ist source block
+ * status may be.
+ * @param F optional function defaults to !argument.ezp.isWhite(argument)
+ * @return a connection, possibly undefined
+ */
+ezP.ConnectionDelegate.prototype.getConnectionAbove = function() {
+  var previous = this.connection.getSourceBlock().previousConnection
+  if (previous && !previous.ezp.name_ && (previous = previous.targetBlock())) {
+    switch(this.connection.type) {
+      case Blockly.NEXT_STATEMENT: return previous.nextConnection
+      case Blockly.PREVIOUS_STATEMENT: return previous.previousConnection
+    }
+  }
+  return undefined
+}
+
+/**
+ * Get the connection of the same kind on the block below.
+ * If the connection is named, returns the connection, whatever ist source block
+ * status may be.
+ * @param F optional function defaults to !argument.ezp.isWhite(argument)
+ * @return a connection, possibly undefined
+ */
+ezP.ConnectionDelegate.prototype.getConnectionBelow = function() {
+  var next = this.connection.getSourceBlock().nextConnection
+  if (next && (next = next.targetBlock())) {
+    switch(this.connection.type) {
+      case Blockly.NEXT_STATEMENT: return next.nextConnection
+      case Blockly.PREVIOUS_STATEMENT: return next.previousConnection
+    }
+}
+  return undefined
+}
+
+/**
+ * Return the black connection.
+ * Traverses the white blocks.
+ * If the source block is black, returns the connection.
+ * If the source block is white, check for the target block's other connection,
+ * and so on.
+ * If the connection is named, returns the connection, whatever its source block
+ * status may be.
+ * @param F optional function defaults to !argument.ezp.isWhite(argument)
+ * @return a connection, possibly undefined
+ */
+ezP.ConnectionDelegate.prototype.getBlackConnection = function(F) {
+  var F = F || function(block) {
+    return !block.ezp.isWhite(block)
+  }
+  var c8n = this.connection
+  var block = c8n.getSourceBlock()
+  if (F(block)) {
+    return c8n
+  }
+  if (this.isPrevious()) {
+    var otherConnection = function(block) {
+      return block.nextConnection
+    }
+  } else if (this.isNext()) {
+    var otherConnection = function(block) {
+      return block.previousConnection
+    }
+  } else {
+    // this is a 'do' statement input connection
+    // whether the surrounding block is disabled or not has no importance
+    return c8n
+  }
+  while ((c8n = otherConnection(block)) && (c8n = c8n.targetConnection) && !(c8n.ezp.name_) && !((block = c8n.getSourceBlock()) && F(block))) {}
+  return c8n
+}
+
+/**
+ * Return the black target connection.
+ * Traverses the white blocks
+ * @param {!Blockly.Connection} otherConnection Connection to compare against.
+ * @return {boolean} True if the connection is the block's next one.
+ * @private
+ */
+ezP.ConnectionDelegate.prototype.getBlackTargetConnection = function() {
+  var c8n = this.connection.targetConnection
+  if (!c8n) {
+    return undefined
+  }
+  var block = c8n.getSourceBlock()
+  if (!block.ezp.isWhite(block)) {
+    return c8n
+  }
+  if (c8n.ezp.isPrevious()) {
+    var F = function(block) {
+      return block.nextConnection
+    }
+  } else if (c8n.ezp.isNext()) {
+    var F = function(block) {
+      return block.previousConnection
+    }
+  } else {
+    return undefined
+  }
+  do {
+    if (!(c8n = F(block))
+    || !(c8n = c8n.targetConnection)
+    || !(block = c8n.getSourceBlock())) {
+      return undefined
+    }
+    if (!block.ezp.isWhite(block)) {
+      return c8n
+    }
+  } while (true)
 }
 
 /**
@@ -262,59 +364,63 @@ ezP.Connection.prototype.isConnectionAllowed = function(candidate,
  * @private
  */
 ezP.Connection.prototype.checkType_ = function(otherConnection) {
-  var T = this.getSourceBlock().type
-  if (T.indexOf('ezp_') == 0) {
-    var otherT = otherConnection.getSourceBlock().type
-    if (otherT.indexOf('ezp_') == 0) {
-      var name = this.ezp.getName()
-      var check = this.ezp.getCheck()
-      var otherName = otherConnection.ezp.getName()
-      var otherCheck = otherConnection.ezp.getCheck()
-      if (name) {
-        // `this.connection` corresponds to a 'do' statement input
-        // possibly through comment statements
-        if (check) {
-          if (check.indexOf(otherT) < 0) {
-            return false
-          }
-          if (otherCheck) {
-            for (var i = 0, t;(t = check[i++]);) {
-              if (otherCheck.indexOf(t) >= 0) {
-                return true
-              }
-            }
-          } else {
-            return true
-          }
+  var c8nA = this.ezp.getBlackConnection()
+  var c8nB = otherConnection.ezp.getBlackConnection()
+  if (!c8nA || !c8nB) {
+    return true
+  }
+  var sourceA = c8nA.getSourceBlock()
+  var sourceB = c8nB.getSourceBlock()
+  var typeA = sourceA.type
+  var typeB = sourceB.type
+  if (typeA.indexOf('ezp_') === 0 && typeB.indexOf('ezp_') === 0) {
+    var checkA = c8nA.check_
+    var checkB = c8nB.check_
+    if (c8nA.ezp.name_) {
+      // c8nA is the connection of a 'do' statement input
+      // connections are vertical (next<->previous)
+      if (checkA) {
+        if (checkA.indexOf(typeB) < 0) {
+          return false
         }
-        return !otherCheck
-      }
-      if (otherName) {
-        // symetrical situation
-        if (otherCheck) {
-          if (otherCheck.indexOf(T) < 0) {
-            return false
-          }
-          if (check) {
-            for (var i = 0, t;(t = otherCheck[i++]);) {
-              if (check.indexOf(t) >= 0) {
-                return true
-              }
+        if (checkB) {
+          for (var i = 0, t;(t = checkA[i++]);) {
+            if (checkB.indexOf(t) >= 0) {
+              return true
             }
-          } else {
-            return true
           }
+        } else {
+          return true
         }
-        return !check
       }
-      if (check && check.indexOf(otherT)<0) {
-        return false
+      return !checkB || checkB.indexOf(typeA+'.'+c8nA.name_)>=0 || checkB.indexOf('.'+c8nA.name_)>=0
+    } /*c8nBame_) */
+    if (c8nB.ezp.name_) {
+      // c8nB is the connection of a 'do' statement input
+      // connections are vertical (next<->previous)
+      if (checkB) {
+        if (checkB.indexOf(typeA) < 0) {
+          return false
+        }
+        if (checkA) {
+          for (var i = 0, t;(t = checkB[i++]);) {
+            if (checkA.indexOf(t) >= 0) {
+              return true
+            }
+          }
+        } else {
+          return true
+        }
       }
-      if (otherCheck && otherCheck.indexOf(T)<0) {
-        return false
-      }
-      return true
+      return !checkA || checkA.indexOf(typeB+'.'+c8nB.name_)>=0 || checkA.indexOf('.'+c8nB.name_)>=0
+    } /* if (c8nA.name_) */
+    if (checkA && checkA.indexOf(typeB)<0) {
+      return false
     }
+    if (checkB && checkB.indexOf(typeA)<0) {
+      return false
+    }
+    return true
   }
   return ezP.Connection.superClass_.checkType_.call(this, otherConnection)
 }
