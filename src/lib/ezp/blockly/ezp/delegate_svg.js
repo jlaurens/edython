@@ -1245,70 +1245,7 @@ ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, a
  * @return the created block
  */
 ezP.DelegateSvg.prototype.insertBlockAbove = function(block, abovePrototypeName, aboveInputName) {
-  console.log('insertBlockAbove', block, abovePrototypeName, aboveInputName)
-  Blockly.Events.setGroup(true)
-  var blockAbove = ezP.DelegateSvg.newBlockComplete(block.workspace, abovePrototypeName)
-  console.log('block created of type', abovePrototypeName)
-  if (aboveInputName) {
-    var aboveInput = blockAbove.getInput(aboveInputName)
-    goog.asserts.assert(aboveInput, 'No input named '+aboveInputName)
-  } else {
-    aboveInput = blockAbove.getInput(ezP.Key.LIST)
-    var list = aboveInput.connection.targetBlock()
-    goog.asserts.assert(list, 'Missing list block inside '+block.type)
-    // the list has many potential inputs,
-    // none of them is actually connected because this is very fresh
-    // get the middle input.
-    aboveInput = list.getInput(ezP.Do.Name.middle_name)
-  }
-  // Next connections should be connected
-  var outputC8n = block.outputConnection
-  var aboveInputC8n = aboveInput.connection
-  console.log('Should connect', block.type, 'to input', aboveInput.name, 'of type', abovePrototypeName)
-  console.log('block check:', block.outputConnection.check_)
-  console.log('above check:', aboveInputC8n.check_)
-  goog.asserts.assert(aboveInputC8n, 'Unexpected dummy input '+aboveInputName)
-  var targetC8n = aboveInputC8n.targetConnection
-  if (targetC8n/* && targetC8n.isConnected()*/) {
-    console.log('input already connected, disconnect and dispose target')
-    var B = targetC8n.sourceBlock_
-    targetC8n.disconnect()
-    B.dispose()
-    targetC8n = undefined
-  }
-  var holes = ezP.HoleFiller.getDeepHoles(block)
-  var targetC8n = outputC8n.targetConnection
-  if (targetC8n/* && targetC8n.isConnected()*/) {
-    console.log('bloc output connection is already connected')
-    targetC8n.disconnect()
-    targetC8n.connect(blockAbove.outputConnection)
-    targetC8n = undefined
-  } else {
-    var its_xy = block.getRelativeToSurfaceXY();
-    var my_xy = blockAbove.getRelativeToSurfaceXY();
-    blockAbove.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
-  }
-  console.log('Will connect', block.type, 'to input', aboveInput.name, 'of type', abovePrototypeName)
-  console.log('block check:', outputC8n.check_)
-  console.log('above check:', aboveInputC8n.check_)
-  aboveInputC8n.connect(outputC8n)
-  var holes = ezP.HoleFiller.getDeepHoles(blockAbove)
-  // WHAT is the purpose of that ?
-  // Commented out because it is weird and I don't
-  // remember the problem addressed. Maybe duplicates?
-  // var i = 0
-  // while (i < holes.length) {
-  //   var j = holes.indexOf(holes[i])
-  //   if ( j>=0 ) {
-  //     holes.splice(j, 1)
-  //   } else {
-  //     ++i
-  //   }
-  // }
-  ezP.HoleFiller.fillDeepHoles(blockAbove.workspace, holes)
-  blockAbove.render()
-  Blockly.Events.setGroup(false)
-  return blockAbove
+  goog.asserts.assert(false, 'Must be subclassed')
 }
 
 /**
@@ -1442,16 +1379,6 @@ ezP.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
     }
   }
   return false
-}
-
-/**
- * Convert the block to python code.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
- * @return some python code
- */
-ezP.DelegateSvg.prototype.toPython = function (block, is_deep) {
-  goog.asserts.assert(false, 'Overriding toPython is required')
 }
 
 /**

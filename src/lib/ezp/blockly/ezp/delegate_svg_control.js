@@ -147,6 +147,17 @@ ezP.DelegateSvg.Control.prototype.renderDrawSharp_ = function (io) {
 }
 
 /**
+ * Convert the block to python code.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @constructor
+ */
+ezP.DelegateSvg.Control.prototype.toPython = function (block, is_deep) {
+  return this.toPythonStatement(block, '', is_deep)
+}
+
+
+/**
  * Class for a DelegateSvg, main_stmt.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.

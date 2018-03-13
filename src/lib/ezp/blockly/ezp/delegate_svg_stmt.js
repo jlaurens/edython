@@ -151,8 +151,64 @@ ezP.DelegateSvg.Stmt.prototype.renderDrawInput_ = function (io) {
  * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
  * @return some python code
  */
-ezP.DelegateSvg.prototype.toPython = function (block, is_deep) {
+ezP.DelegateSvg.Stmt.prototype.toPython = function (block, is_deep) {
   return this.toPythonStatement(block, '', is_deep)
+}
+
+/**
+ * Insert a block above.
+ * If the block's previous connection is connected,
+ * connects the block above to it.
+ * The connection cannot always establish.
+ * The holes are filled.
+ * @param {!Block} block.
+ * @param {string} prototypeName.
+ * @param {string} aboveInputName, which parent's connection to use
+ * @return the created block
+ */
+ezP.DelegateSvg.Stmt.prototype.insertBlockAbove = function(block, abovePrototypeName) {
+  Blockly.Events.setGroup(true)
+  var blockAbove = ezP.DelegateSvg.newBlockComplete(block.workspace, abovePrototypeName)
+  var c8n = block.previousConnection
+  var targetC8n = c8n.targetConnection
+  if (targetC8n) {
+    targetC8n.disconnect()
+    targetConnection.connect(blockAbove.previousConnection)
+  }
+  block.previousConnection.connect(blockAbove.nextConnection)
+  var holes = ezP.HoleFiller.getDeepHoles(blockAbove)
+  ezP.HoleFiller.fillDeepHoles(blockAbove.workspace, holes)
+  blockAbove.render()
+  Blockly.Events.setGroup(false)
+  return blockAbove
+}
+
+/**
+ * Insert a block below.
+ * If the block's next connection is connected,
+ * connects the block below to it.
+ * The connection cannot always establish.
+ * The holes are filled.
+ * @param {!Block} block.
+ * @param {string} prototypeName.
+ * @param {string} aboveInputName, which parent's connection to use
+ * @return the created block
+ */
+ezP.DelegateSvg.Stmt.prototype.insertBlockBelow = function(block, belowPrototypeName) {
+  Blockly.Events.setGroup(true)
+  var blockBelow = ezP.DelegateSvg.newBlockComplete(block.workspace, belowPrototypeName)
+  var c8n = block.nextConnection
+  var targetC8n = c8n.targetConnection
+  if (targetC8n) {
+    targetC8n.disconnect()
+    targetConnection.connect(blockBelow.previousConnection)
+  }
+  block.nextConnection.connect(blockBelow.previousConnection)
+  var holes = ezP.HoleFiller.getDeepHoles(blockBelow)
+  ezP.HoleFiller.fillDeepHoles(blockBelow.workspace, holes)
+  blockBelow.render()
+  Blockly.Events.setGroup(false)
+  return blockBelow
 }
 
 //////////////////// blocks  //////////////////////////////

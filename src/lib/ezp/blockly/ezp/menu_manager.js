@@ -233,6 +233,7 @@ ezP.ID.FILL_DEEP_HOLES = 'FILL_DEEP_HOLES'
 ezP.Delegate.prototype.populateContextMenuFirst_ = function (block, mgr) {
   mgr.shouldSeparate()
   mgr.populate_movable_parent(block)
+  mgr.populate_above_below(block)
 }
 
 /**
@@ -529,7 +530,7 @@ ezP.MenuManager.prototype.handleAction_movable_parent_module = ezP.MenuManager.p
  * @param {!Blockly.Block} block The block.
  * @private
  */
-ezP.MenuManager.prototype.get_movable_parent_menuitem_content = function (type, subtype) {
+ezP.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
   switch(type) {
     case ezP.T3.Expr.parent_module: 
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -743,7 +744,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
         }
       }
       var key = d.key
-      var content = mgr.get_movable_parent_menuitem_content(parent_type, key)
+      var content = mgr.get_menuitem_content(parent_type, key)
       var MI = new ezP.MenuItem(content, function() {
         block.ezp.insertBlockAbove(block, parent_type, key)
       })
@@ -754,7 +755,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
       if (!list) {
         if (goog.array.contains(outCheck, d.wrap)) {
           var key = d.key || K
-          var content = mgr.get_movable_parent_menuitem_content(parent_type, key)
+          var content = mgr.get_menuitem_content(parent_type, key)
           var MI = new ezP.MenuItem(content, function() {
             block.ezp.insertBlockAbove(block, parent_type, key)
           })
@@ -776,7 +777,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
           return false
         }
       }
-      var content = mgr.get_movable_parent_menuitem_content(parent_type)
+      var content = mgr.get_menuitem_content(parent_type)
       var MI = new ezP.MenuItem(content, function() {
         block.ezp.insertBlockAbove(block, parent_type)
       })
@@ -837,7 +838,7 @@ ezP.MenuManager.prototype.populate_replace_parent = function (block, type, subty
     }
     if (!ezp.wrapped_ || ezp.canUnwrap(block)) {
       if (ezp.canReplaceBlock(block, parent)) {
-        var content = this.get_movable_parent_menuitem_content(type, input? input.name: undefined)
+        var content = this.get_menuitem_content(type, input? input.name: undefined)
         var MI = new ezP.MenuItem(content, function() {
           ezp.replaceBlock(block, parent)
         })
@@ -848,6 +849,56 @@ ezP.MenuManager.prototype.populate_replace_parent = function (block, type, subty
     }
   }
   return false
+}
+
+/**
+ * Populate the context menu for the given block.
+ * Only for statements.
+ * @param {!Blockly.Block} block The block.
+ * @private
+ */
+ezP.MenuManager.prototype.populate_above_below = function (block) {
+  // Disable undo registration for a while
+  Blockly.Events.disable()
+  try {
+    var c8n, check
+    if ((c8n = block.previousConnection) && (check = c8n.check_) && check.length) {
+      var targetC8n = c8n.targetConnection
+      for (var _ = 0, type; (type = check[_++]);) {
+        // Can I insert a block above ?
+        var B = block.workspace.newBlock(type)
+        var yorn = B.nextConnection && B.nextConnection.checkType_(c8n)
+        && (!targetC8n || (B.previousConnection && targetC8n.checkType_(B.previousConnection)))
+        B.dispose()
+        if (yorn) {
+          var content = this.get_menuitem_content(type, 'ABOVE')
+          var MI = new ezP.MenuItem(content, function() {
+            block.ezp.insertBlockAbove(block, type)
+          })
+          this.addInsertChild(MI)  
+        }
+      }
+    }
+    if ((c8n = block.nextConnection) && (check = c8n.check_) && check.length) {
+      var targetC8n = c8n.targetConnection
+      for (var _ = 0, type; (type = check[_++]);) {
+        // Can I insert a block below ?
+        var B = block.workspace.newBlock(type)
+        var yorn = B.previousConnection && B.previousConnection.checkType_(c8n)
+        && (!targetC8n || (B.nextConnection && targetC8n.checkType_(B.nextConnection)))
+        B.dispose()
+        if (yorn) {
+          var content = this.get_menuitem_content(type, 'BELOW')
+          var MI = new ezP.MenuItem(content, function() {
+            block.ezp.insertBlockBelow(block, type)
+          })
+          this.addInsertChild(MI)  
+        }
+      }
+    }
+  } finally {
+    Blockly.Events.enable()
+  }
 }
 
 /**

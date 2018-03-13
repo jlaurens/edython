@@ -814,4 +814,3 @@ ezP.Delegate.prototype.setDisabled = function (block, yorn) {
   }
   Blockly.Events.setGroup(false)
 }
-
