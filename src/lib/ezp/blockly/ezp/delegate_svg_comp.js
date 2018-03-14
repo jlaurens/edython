@@ -23,29 +23,27 @@ goog.require('ezP.DelegateSvg.Expr')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.Comprehension = function (prototypeName) {
-  ezP.DelegateSvg.Expr.Comprehension.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+ezP.DelegateSvg.Expr.comprehension = function (prototypeName) {
+  ezP.DelegateSvg.Expr.comprehension.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.EXPR,
-      check: ezP.T3.Require.expression
+      key: ezP.Key.EXPRESSION,
+      check: ezP.T3.Expr.Check.expression,
+      hole_value: 'name',
     },
     middle: {
-      key: ezP.Const.Input.FORIN,
-      check: ezP.T3.comp_for,
-      wrap: ezP.Const.Expr.comp_for
+      key: ezP.Key.FOR,
+      wrap: ezP.T3.Expr.comp_for,
     },
     last: {
-      key: ezP.Const.Input.ITER,
-      check: ezP.T3.comp_iter_list,
-      wrap: ezP.Const.Expr.comp_iter_list
+      key: ezP.Key.ITER,
+      wrap: ezP.T3.Expr.comp_iter_list,
     }
   }
-  this.outputCheck = ezP.T3.comprehension
+  this.outputModel_.check = ezP.T3.Expr.comprehension
 }
-goog.inherits(ezP.DelegateSvg.Expr.Comprehension, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.comprehension, ezP.DelegateSvg.Expr.Comprehension)
+goog.inherits(ezP.DelegateSvg.Expr.comprehension, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('comprehension')
 
 /**
  * Class for a DelegateSvg, comp_for block.
@@ -57,23 +55,26 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.comprehension, ezP.DelegateSvg.E
  */
 ezP.DelegateSvg.Expr.comp_for = function (prototypeName) {
   ezP.DelegateSvg.Expr.comp_for.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.FOR,
+      key: ezP.Key.FOR,
       label: 'for',
-      check: ezP.T3.Require.target_list
+      css_class: 'ezp-code-reserved',
+      wrap: ezP.T3.Expr.target_list,
     },
     last: {
-      key: ezP.Const.Input.IN,
+      key: ezP.Key.IN,
       label: 'in',
-      check: ezP.T3.Require.or_test,
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.Check.or_test,
+      hole_value: 'name',
     }
   }
-  this.outputCheck = ezP.T3.comp_for
+  this.outputModel_.check = ezP.T3.Expr.comp_for
 }
 goog.inherits(ezP.DelegateSvg.Expr.comp_for, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.comp_for, ezP.DelegateSvg.Expr.comp_for)
+ezP.DelegateSvg.Manager.register('comp_for')
 
 /**
  * Class for a DelegateSvg, comp_if block.
@@ -85,15 +86,85 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.comp_for, ezP.DelegateSvg.Expr.c
  */
 ezP.DelegateSvg.Expr.comp_if = function (prototypeName) {
   ezP.DelegateSvg.Expr.comp_if.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+  this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.IF,
+      key: ezP.Key.IF,
       label: 'if',
-      check: ezP.T3.Require.expression_nocond
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.Check.expression_nocond
     }
   }
-  this.outputCheck = ezP.T3.comp_if
+  this.outputModel_.check = ezP.T3.Expr.comp_if
 }
 goog.inherits(ezP.DelegateSvg.Expr.comp_if, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.comp_if, ezP.DelegateSvg.Expr.comp_if)
+ezP.DelegateSvg.Manager.register('comp_if')
+
+/**
+ * Class for a DelegateSvg, comp_iter_list block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.comp_iter_list = function (prototypeName) {
+  ezP.DelegateSvg.Expr.comp_iter_list.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.list = {
+    check: ezP.T3.Expr.Check.comp_iter,
+    empty: true,
+    sep: ',',
+  }
+  this.outputModel_.check = ezP.T3.Expr.comp_iter_list
+}
+goog.inherits(ezP.DelegateSvg.Expr.comp_iter_list, ezP.DelegateSvg.List)
+ezP.DelegateSvg.Manager.register('comp_iter_list')
+
+/**
+ * Class for a DelegateSvg, comprehension value block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+// dict_comprehension ::= expression ":" expression comp_for
+ezP.DelegateSvg.Expr.dict_comprehension = function (prototypeName) {
+  ezP.DelegateSvg.Expr.dict_comprehension.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first.wrap =
+  this.inputModel_.first.check =
+  ezP.T3.Expr.key_datum_concrete,
+  this.outputModel_.check = ezP.T3.Expr.dict_comprehension
+}
+goog.inherits(ezP.DelegateSvg.Expr.dict_comprehension, ezP.DelegateSvg.Expr.comprehension)
+ezP.DelegateSvg.Manager.register('dict_comprehension')
+
+/**
+ * Class for a DelegateSvg, key_datum_concrete block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.key_datum_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.key_datum_concrete.superClass_.constructor.call(this, prototypeName)
+  this.outputModel_.check = ezP.T3.Expr.key_datum_concrete
+  this.inputModel_ = {
+    first: {
+      key: ezP.Key.KEY,
+      check: ezP.T3.Expr.Check.expression,
+      hole_value: 'key',
+    },
+    last: {
+      key: ezP.Key.DATUM,
+      check: ezP.T3.Expr.Check.expression,
+      label: ':',
+      hole_value: 'value',
+    }
+  }
+}
+goog.inherits(ezP.DelegateSvg.Expr.key_datum_concrete, ezP.DelegateSvg.Expr)
+
+ezP.DelegateSvg.Manager.register('key_datum_concrete')

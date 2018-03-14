@@ -16,7 +16,7 @@ goog.provide('ezP.Python.ezp_stmt')
 goog.require('ezP.Python.ezp_expr')
 
 Blockly.Python[ezP.Const.Stmt.SET] = function (block) {
-  var RHS = ezP.Python.valueToCode(block, ezP.Const.Input.RHS,
+  var RHS = ezP.Python.valueToCode(block, ezP.Key.RHS,
     Blockly.Python.ORDER_NONE) || 'None'
   var varName = block.getField(ezP.Const.Field.VAR).getText()
   return varName + ' = ' + RHS + '\n'
@@ -28,7 +28,7 @@ Blockly.Python[ezP.Const.Stmt.ANY] = function (block) {
 }
 
 Blockly.Python[ezP.Const.Stmt.PRINT] = function (block) {
-  var code = Blockly.Python[ezP.Const.Expr.TUPLE](block)[0]
+  var code = Blockly.Python[ezP.T3.Expr.TUPLE](block)[0]
   var ezp = block.ezp
   if (ezp) {
     var state = ezp.getPrintState_(block)
@@ -50,13 +50,13 @@ Blockly.Python[ezP.Const.Stmt.BCP] = function (block) {
 }
 
 Blockly.Python[ezP.Const.Stmt.GNL] = function (block) {
-  var code = Blockly.Python[ezP.Const.Expr.TUPLE](block)[0]
+  var code = Blockly.Python[ezP.T3.Expr.TUPLE](block)[0]
   var GNL = block.getField(ezP.Const.Field.GNL).getText()
   return GNL.length ? GNL + ' ' + code : 'MISSING_STATEMENT' + '\n'
 }
 
 Blockly.Python[ezP.Const.Stmt.DEL] = function (block) {
-  var code = Blockly.Python[ezP.Const.Expr.TUPLE](block)[0]
+  var code = Blockly.Python[ezP.T3.Expr.TUPLE](block)[0]
   return 'del ' + code
 }
 

@@ -12,8 +12,41 @@
 'use strict'
 
 goog.provide('ezP.DelegateSvg')
+goog.provide('ezP.MixinSvg')
+goog.provide('ezP.HoleFiller')
+
 goog.require('ezP.Delegate')
 goog.forwardDeclare('ezP.BlockSvg')
+
+/**
+ * mixin manager.
+ * Adds mixin contents to constructor's prototype
+ * if not already there.
+ * Using strings as parameters is a facility that
+ * must not be used in case the constructor is meant
+ * to replace an already registered one.
+ * For objects in constructor.mixins, does a mixin
+ * on the constructor's prototype.
+ * Mixins do not play well with inheritance.
+ * For ezPython.
+ * @param {!constructor} constructor is either a constructor or the name of a constructor.
+ */
+ezP.MixinSvg = function (constructor, mixins) {
+  var C = ezP.DelegateSvg.Manager.get(constructor) || constructor
+  var Ms = goog.isArray(mixins)? mixins:
+  mixins? [mixins]: C.mixins
+  if (Ms) {
+    var target = C.prototype
+    for (var i = 0, m; (m = Ms[i++]);) {
+      var source = ezP.MixinSvg[m] || m
+      for (var x in source) {
+        if (!target.hasOwnProperty(x)) {
+          target[x] = source[x]
+        }
+      }
+    }
+  }
+}
 
 /**
  * Class for a DelegateSvg.
@@ -30,7 +63,30 @@ goog.inherits(ezP.DelegateSvg, ezP.Delegate)
 
 ezP.DelegateSvg.Manager = ezP.Delegate.Manager
 
-Blockly.Block.prototype.ezp = ezP.DelegateSvg.Manager.registerDefault(ezP.DelegateSvg)
+/**
+ * Method to register an expression block.
+ * The delegate is searched as a DelegateSvg element
+ */
+ezP.DelegateSvg.Manager.register = function (key) {
+  var prototypeName = ezP.T3.Expr[key]
+  var Ctor = undefined
+  var available = undefined
+  if (prototypeName) {
+//    console.log('Registering expression', key)
+    Ctor = ezP.DelegateSvg.Expr[key]
+    available = ezP.T3.Expr.Available
+  } else if ((prototypeName = ezP.T3.Stmt[key])) {
+//    console.log('Registering statement', key)
+    Ctor = ezP.DelegateSvg.Stmt[key]
+    available = ezP.T3.Stmt.Available
+  } else {
+    throw "Unknown block ezP.T3.Expr or ezP.T3.Stmt key: "+key
+  }
+  ezP.MixinSvg(Ctor) // before registering
+  ezP.DelegateSvg.Manager.registerDelegate_(prototypeName, Ctor)
+  available.push(prototypeName)
+  Blockly.Blocks[prototypeName] = {}
+}
 
 /**
  * This is the shape used to draw the outline of a block
@@ -64,75 +120,16 @@ ezP.DelegateSvg.prototype.svgPathInline_ = undefined
 ezP.DelegateSvg.prototype.svgPathHighlight_ = undefined
 
 /**
- * When set, the block has an output,
- * with that check.
- */
-ezP.DelegateSvg.prototype.outputCheck = undefined
-
-/**
- * When set, used as the right delimiter.
- */
-ezP.DelegateSvg.prototype.labelEnd = undefined
-ezP.DelegateSvg.prototype.fieldLabelEnd = undefined
-
-/**
  * When set, used to create an input value.
  * three inputs can be created on the fly.
  * The data is an object with following properties: first, middle, last
  * each value is an object with properties
+ * - key, string uniquely identify the value input. When absent, a dummy input is created
  * - label, optional string
- * - key, string uniquely identify the input, defaults to ezP.Const.Input.WRAP
- * - check, [an array of] strings, types to check the connections 
  * - wrap, optional, the type of the block wrapped by this input
+ * - check, [an array of] strings, types to check the connections. When absent, replaced by `wrap` if any.
  * - optional, true/false whether the connection is optional, only when no wrap.
  */
-
-ezP.DelegateSvg.prototype.inputData = undefined
-
-/**
- * Create and initialize the various paths,
- * the first, middle and last inputs if required.
- * Called once at block creation time.
- * @param {!Blockly.Block} block to be initialized..
- * @private
- */
-ezP.DelegateSvg.prototype.initBlock_ = function(block) {
-  var F = function(D) {
-    var out
-    if (D) {
-      out = {}
-      var k = D.key || ezP.Const.Input.WRAP
-      var v, f
-      if ((v = D.wrap)) {
-        out.input = block.appendWrapValueInput(k, v)
-      } else {
-        out.input = block.appendValueInput(k)
-        if (D.optional) {
-          out.input.connection.ezpData.optional_ = true
-        }
-      }
-      if ((v = D.check)) {
-        out.input.setCheck(v)
-      }
-      if ((v = D.label)) {
-        out.fieldLabel = new ezP.FieldLabel(v)
-        out.input.appendField(out.fieldLabel, ezP.Const.Field.LABEL)
-      }
-    }
-    return out
-  }
-  var Is = {}
-  for (var K in this.inputData) {
-    Is[K] = F(this.inputData[K])
-  }
-  this.inputData = undefined
-  this.inputs = Is
-  this.initBlock(block)
-  if (this.labelEnd) {
-    this.fieldLabelEnd = new ezP.FieldLabel(this.labelEnd)
-    block.appendDummyInput().appendField(this.fieldLabelEnd, ezP.Const.Field.LABEL)
-  }
-}
 
 /**
  * Create and initialize the various paths.
@@ -159,16 +156,162 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   block.setTooltip('')
   block.setHelpUrl('')
 
-  if (this.outputCheck !== undefined) {
-    block.setOutput(true, this.outputCheck)
-  } else {
-    if (this.nextStatementCheck !== undefined) {
-      block.setNextStatement(true, this.nextStatementCheck)
+  var F = function(K) {
+    var D = this.inputModel_[K]
+    var out
+    if (D && Object.keys(D).length) {
+      out = {}
+      if ((D.check === undefined && D.wrap === undefined) || D.dummy || D.identifier || D.code || D.comment || D.number || D.string || D.longString) {
+        out.input = block.appendDummyInput(k)
+      } else {
+        var k = D.key
+        var v, f
+        if ('wrap' in D) {
+          v = D.wrap
+          goog.asserts.assert(v, 'wrap must exist '+block.type+'.'+K)
+          out.input = block.appendWrapValueInput(k, v, D.optional, D.hidden)
+        } else {
+          out.input = block.appendValueInput(k)
+        }
+        var c8n = out.input.connection
+        if (c8n) {
+          var ezp = c8n.ezp
+          ezp.name_ = k
+          if (D.plugged) {
+            ezp.plugged_ = D.plugged
+            //console.log(k, ezp.plugged_)
+          }
+          if (goog.isFunction(D.willConnect)) {
+            ezp.willConnect = D.willConnect
+          }
+          if (goog.isFunction(D.didConnect)) {
+            ezp.didConnect = D.didConnect
+          }
+          if (goog.isFunction(D.willDisconnect)) {
+            ezp.willDisconnect = D.willDisconnect
+          }
+          if (goog.isFunction(D.didDisconnect)) {
+            ezp.didDisconnect = D.didDisconnect
+          }
+          if (D.do && Object.keys(D.do).length) {
+            goog.mixin(ezp, D.do)
+          }
+          if (D.optional) {//svg
+            ezp.optional_ = true
+          }
+          ezp.disabled_ = D.disabled && !D.enabled
+          if ((v = D.check)) {
+            out.input.setCheck(v)
+            var value = goog.isFunction(D.hole_value)?D.hole_value(block): D.hole_value
+            ezp.hole_data = ezP.HoleFiller.getData(v, value)
+          } else if ((v = D.check = D.wrap)) {
+            out.input.setCheck(v)
+          }
+        }
+      }
+      var field
+      if (D.asyncable) {
+        field = out.fieldAsync = new ezP.FieldLabel('')
+        k = K+'.'+ezP.Const.Field.ASYNC
+        field.ezpData.css_class = 'ezp-code-reserved'
+        field.ezpData.css_style = D.css_style
+        out.input.appendField(field, k)
+      } else if (D.awaitable) {
+        field = out.fieldAwait = new ezP.FieldLabel('')
+        k = K+'.'+ezP.Const.Field.AWAIT
+        field.ezpData.css_class = 'ezp-code-reserved'
+        field.ezpData.css_style = D.css_style
+        out.input.appendField(field, k)
+      }
+      if ((v = D.prefix) !== undefined) {
+        field = out.fieldPrefix = new ezP.FieldLabel(v)
+        k = K+'.'+ezP.Const.Field.PREFIX
+        field.ezpData.css_class = D.css_class
+        field.ezpData.css_style = D.css_style
+        out.input.appendField(field, k)
+      }
+      if ((v = D.label) !== undefined || (v = D.dummy) !== undefined) {
+        out.fieldLabel = field = new ezP.FieldLabel(v)
+        k = K+'.'+ezP.Const.Field.LABEL
+        out.input.appendField(field, k)
+        field.ezpData.css_class = D.css_class
+        field.ezpData.css_style = D.css_style
+      }
+      if ((v = D.start) !== undefined) {
+        field = out.fieldLabelStart = new ezP.FieldLabel(v)
+        k = K+'.'+ezP.Const.Field.START
+        field.ezpData.css_class = D.css_class
+        field.ezpData.css_style = D.css_style
+        out.input.appendField(field, k)
+      }
+      if ((v = D.end) !== undefined) {
+        field = out.fieldLabelEnd = new ezP.FieldLabel(v)
+        k = K + '.'+ezP.Const.Field.END
+        field.ezpData.css_class = D.css_class
+        field.ezpData.css_style = D.css_style
+        field.ezpData.suffix = true
+        out.input.appendField(field, k)
+      }
+      if ((v = D.identifier) !== undefined) {
+        field = out.fieldIdentifier = new ezP.FieldIdentifier(v)
+        k = K+'.'+ezP.Const.Field.IDENTIFIER
+        out.input.appendField(field, k)
+        // if (D.label) { // this is svg specific
+        //   field.ezpData.x_shift = ezP.Font.space
+        // }
+      } else if ((v = D.code) != undefined) {
+        field = out.fieldCodeInput = new ezP.FieldCodeInput(v)
+        k = K+'.'+ezP.Const.Field.CODE
+        out.input.appendField(field, k)
+      } else if ((v = D.comment) != undefined) {
+        field = out.fieldCodeComment = new ezP.FieldCodeComment(v)
+        k = K+'.'+ezP.Const.Field.COMMENT
+        out.input.appendField(field, k)
+      } else if ((v = D.number) != undefined) {
+        field = out.fieldCodeNumber = new ezP.FieldCodeNumber(v)
+        k = K+'.'+ezP.Const.Field.NUMBER
+        out.input.appendField(field, k)
+      } else if ((v = D.string) != undefined) {
+        field = out.fieldCodeString = new ezP.FieldCodeString(v)
+        k = K+'.'+ezP.Const.Field.STRING
+        out.input.appendField(field, k)
+      } else if ((v = D.longString) != undefined) {
+        field = out.fieldCodeLongString = new ezP.FieldCodeLongString(v)
+        k = K+'.'+ezP.Const.Field.LONG_STRING
+        out.input.appendField(field, k)
+      } else if ((v = D.operator) != undefined) {
+        field = out.fieldOperator = new ezP.FieldLabel(v)
+        k = K+'.'+ezP.Const.Field.OPERATOR
+        out.input.appendField(field, k)
+      }
     }
-    if (this.previousStatementCheck !== undefined) {
-      block.setPreviousStatement(true, this.previousStatementCheck)
+    return out
+  }
+  var Is = {}
+  
+  // catch the statement input eventually created in parent's method
+  for (var i = 0, input; (input = block.inputList[i++]);) {
+    if (input.type === Blockly.NEXT_STATEMENT) {
+      Is.do = {
+        input: input,
+      }
+      break
     }
   }
+  if (block.inputList.length) {
+    var input = block.inputList.length
+  }
+  if (Object.keys(this.inputModel_).length) {
+    var keys = ['first', 'middle', 'last']
+    for (var i = 0, K; K = keys[i++];) {
+      var f = F.call(this, K)
+      if (f) {
+        Is[K] = f
+      }
+    }
+    this.inputModel_ = undefined
+  }
+  this.inputs = Is
 }
 
 /**
@@ -176,11 +319,6 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
  * @param {!Blockly.Block} block to be initialized..
  */
 ezP.DelegateSvg.prototype.deinitBlock = function(block) {
-  var menu = block.workspace.ezp.menuVariable
-  var ezp = menu.ezp
-  if (ezp.listeningBlock === block) {
-    menu.setVisible(false, true)
-  }
   goog.dom.removeNode(this.svgPathShape_)
   this.svgPathShape_ = undefined
   goog.dom.removeNode(this.svgPathContour_)
@@ -223,23 +361,26 @@ ezP.DelegateSvg.prototype.postInitSvg = function(block) {
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-ezP.DelegateSvg.prototype.getWrappedTargetBlock = function(block) {
-  if (this.inputs.wrap) {
-    return this.inputs.wrap.input.connection.targetBlock()    
+ezP.DelegateSvg.prototype.getMenuTarget = function(block) {
+  var wrapped
+  if (this.inputs.wrap && (wrapped = this.inputs.wrap.input.connection.targetBlock())) {
+    return wrapped.ezp.getMenuTarget(wrapped)
   }
-  if (Object.keys(this.inputs).length === 1 && this.wrappedInputs_ && this.wrappedInputs_.length === 1) {
-    return this.wrappedInputs_[0][0].connection.targetBlock()
+  if (this.wrappedInputs_ && this.wrappedInputs_.length &&
+    (wrapped = this.wrappedInputs_[0][0].connection.targetBlock())) {
+    return wrapped.ezp.getMenuTarget(wrapped)
   }
-  return undefined
+  return block
 }
 
 /**
- * Create and initialize the SVG representation of the child blocks sealed to the given block.
+ * Create and initialize the SVG representation of the child blocks wrapped in the given block.
  * May be called more than once.
  * @param {!Blockly.Block} block to be initialized..
  */
 ezP.DelegateSvg.prototype.initSvgWrap = function(block) {
   if (this.wrappedInputs_) {
+    // do not delete this at the end
     for (var i = 0; i < this.wrappedInputs_.length; i++) {
       var data = this.wrappedInputs_[i]
       var target = data[0].connection.targetBlock()
@@ -261,8 +402,14 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
   if (this.isRendering) {
     return
   }
-  Blockly.Field.startCache()
+  // if (this.wrapped_ && !block.getParent()) {
+  //   console.log('wrapped block with no parent')
+  //   setTimeout(function(){block.dispose()}, 10)
+  //   block.dispose()
+  //   return
+  // }
   this.isRendering = true
+  Blockly.Field.startCache()
   this.minWidth = block.width = 0
   block.rendered = true
   this.consolidate(block)
@@ -294,9 +441,15 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
  * depending on the context.
  * List managers will use consolidators to help list management.
  * @param {!Block} block.
- * @private
  */
-ezP.DelegateSvg.prototype.consolidate = function (block) {
+ezP.DelegateSvg.prototype.consolidate = function (block, deep) {
+  if (deep) {
+    for (var i = 0, input, x; (input = block.inputList[i++]);) {
+      if ((x = input.connection) && (x = x.targetBlock())) {
+        x.ezp.consolidate(x, deep)
+      }
+    }
+  }
 }
 
 /**
@@ -354,6 +507,7 @@ ezP.DelegateSvg.prototype.willRender_ = function (block) {
     }
   }
 }
+
 /**
  * Did draw the block. Default implementation does nothing.
  * The print statement needs some preparation before drawing.
@@ -497,7 +651,7 @@ ezP.DelegateSvg.prototype.didChangeSize_ = function (block) {
     this.updatePath_(block, this.svgPathShape_, this.shapePathDef_)
     this.updatePath_(block, this.svgPathHighlight_, this.highlightedPathDef_)
     this.updatePath_(block, this.svgPathCollapsed_, this.collapsedPathDef_)
-    }
+  }
 }
 
 /**
@@ -543,20 +697,31 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
     canDummy: true,
     canValue: true,
     canStatement: true,
-    canTuple: true,
     canList: true,
     canForif: true,
+    i: 0,
+    length: block.inputList.length,
   }
   io.cursorX = this.getPaddingLeft(block)
   if (!block.outputConnection) {
     this.renderDrawSharp_(io)
   }
-  for (var _ = 0; (io.input = block.inputList[_]); _++) {
+  for (; (io.input = block.inputList[io.i]); io.i++) {
     if (io.input.isVisible()) {
       goog.asserts.assert(io.input.ezpData, 'Input with no ezpData '+io.input.name+' in block '+block.type)
       io.inputDisabled = io.input.ezpData.disabled_
       if (io.inputDisabled) {
         for (var __ = 0, field; (field = io.input.fieldRow[__]); ++__) {
+          if (field.getText().length>0) {
+            var root = field.getSvgRoot()
+            if (root) {
+              root.setAttribute('display', 'none')
+            } else {
+              console.log('Field with no root: did you ...initSvg()?')
+            }
+          }
+        }
+        if ((field = io.input.ezpData.fieldLabel)) {
           if (field.getText().length>0) {
             var root = field.getSvgRoot()
             if (root) {
@@ -599,24 +764,38 @@ ezP.DelegateSvg.prototype.renderDrawInput_ = function (io) {
 /**
  * Render the fields of a block input.
  * @param io An input/output record.
+ * @return the delta of io.cursorX
  * @private
  */
-ezP.DelegateSvg.prototype.renderDrawFields_ = function (io) {
-  for (var _ = 0, field; (field = io.input.fieldRow[_]); ++_) {
-    if (field.getText().length>0) {
-      var root = field.getSvgRoot()
-      if (root) {
-        var ezp = field.ezpFieldData
-        var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
-        root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
-          ', ' + ezP.Padding.t() + ')')
-        var size = field.getSize()
-        io.cursorX += size.width
-    } else {
-        console.log('Field with no root: did you ...initSvg()?')
-      }
+ezP.DelegateSvg.prototype.renderDrawFields_ = function (io, start) {
+  var here = io.cursorX
+  io.endsWithCharacter = false
+  var lastField = null
+  for (var _ = 0; (io.field = io.input.fieldRow[_]); ++_) {
+    if (!!start === !io.field.ezpData.suffix) {
+      if (io.field.isVisible() && io.field.getDisplayText_().length>0) {
+        var root = io.field.getSvgRoot()
+        if (root) {
+          lastField = io.field
+          var ezp = io.field.ezpData
+          var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
+          root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
+            ', ' + ezP.Padding.t() + ')')
+          var size = io.field.getSize()
+          io.cursorX += size.width
+          if (ezp.isEditing) {
+            io.cursorX += ezP.Font.space
+          }
+        } else {
+          console.log('Field with no root: did you ...initSvg()?')
+        }
+      }          
     }
   }
+  if (start && lastField && /^.*[a-zA-Z_]$/.test(lastField.getValue())) {
+    io.endsWithCharacter = true
+  }
+  return here - io.cursorX
 }
 
 /**
@@ -628,46 +807,8 @@ ezP.DelegateSvg.prototype.renderDrawDummyInput_ = function (io) {
   if (!io.canDummy || io.input.type !== Blockly.DUMMY_INPUT) {
     return false
   }
-  this.renderDrawFields_(io)
-  return true
-}
-
-/**
- * Render the fields of a tuple input, if relevant.
- * @param {!Blockly.Block} The block.
- * @param {!Blockly.Input} Its input.
- * @private
- */
-ezP.DelegateSvg.prototype.renderDrawTupleInput_ = function (io) {
-  if (!io.canTuple) {
-    return false
-  }
-  var tuple = io.input.ezpTuple
-  if (!tuple) {
-    return false
-  }
-  var c8n = io.input.connection
-  this.renderDrawFields_(io)
-  c8n.setOffsetInBlock(io.cursorX, 0)
-  if (c8n.isConnected()) {
-    var target = c8n.targetBlock()
-    var root = target.getSvgRoot()
-    if (root) {
-      var bBox = target.getHeightWidth()
-      root.setAttribute('transform', 'translate(' + io.cursorX + ', 0)')
-      io.cursorX += bBox.width
-      target.render()
-    }
-  } else if (tuple.isSeparator) {
-    var pw = this.carretPathDefWidth_(io.cursorX)
-    var w = pw.width
-    c8n.setOffsetInBlock(io.cursorX + w / 2, 0)
-    io.cursorX += w
-  } else {
-    pw = this.placeHolderPathDefWidth_(io.cursorX)
-    io.steps.push(pw.d)
-    io.cursorX += pw.width
-  }
+  this.renderDrawFields_(io, true)
+  this.renderDrawFields_(io, false)
   return true
 }
 
@@ -682,25 +823,51 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   }
   var c8n = io.input.connection
   if (c8n) {
-    var ezp = c8n.ezpData
+    var ezp = c8n.ezp
     var target = c8n.targetBlock()
-    this.renderDrawFields_(io)
+    var delta = this.renderDrawFields_(io, true)
     c8n.setOffsetInBlock(io.cursorX, 0)
     if (!!target) {
       var root = target.getSvgRoot()
       if (!!root) {
-        var bBox = target.getHeightWidth()
+        if (delta) { // insert a space because wrapped blocks are... wrapped
+          // this will change when the locking feature will be implemented
+          var w = target
+          while(w && w.ezp.wrapped_ && w.inputList.length) {
+            var input = w.inputList[0]
+            if (input.fieldRow.length) {
+              var done = false
+              for (var i = 0; i<input.fieldRow.length; ++i) {
+                var value = input.fieldRow[i].getValue()
+                if (value.length) {
+                  if (io.endsWithCharacter) {
+                    io.cursorX += ezP.Font.space
+                  }
+                  c8n.setOffsetInBlock(io.cursorX, 0)
+                  done = true
+                  break
+                }
+              }
+              if (done) {
+                break
+              }
+            }
+            w = input.connection? input.connection.targetBlock(): undefined
+          }
+        }
         root.setAttribute('transform', 'translate(' + io.cursorX + ', 0)')
-        io.cursorX += bBox.width
         target.render()
+        var bBox = target.getHeightWidth()
+        io.cursorX += bBox.width
       }
     } else {
       var pw = ezp.optional_?
-        this.carretPathDefWidth_(io.cursorX):
-        this.placeHolderPathDefWidth_(io.cursorX)
+      this.carretPathDefWidth_(io.cursorX):
+      this.placeHolderPathDefWidth_(io.cursorX)
       io.steps.push(pw.d)
       io.cursorX += pw.width
     }
+    this.renderDrawFields_(io, false)
   }
   return true
 }
@@ -786,7 +953,7 @@ ezP.DelegateSvg.prototype.highlightConnection = function (c8n) {
   if (c8n.type === Blockly.INPUT_VALUE) {
     if (c8n.isConnected()) {
       steps = this.valuePathDef_(c8n.targetBlock())
-    } else if (c8n.ezpData.s7r_ || c8n.ezpData.optional_) {
+    } else if (c8n.ezp.s7r_ || c8n.ezp.optional_) {
       steps = this.carretPathDefWidth_(0).d
     } else {
       steps = this.placeHolderPathDefWidth_(0).d
@@ -816,67 +983,6 @@ ezP.DelegateSvg.prototype.highlightConnection = function (c8n) {
  */
 ezP.DelegateSvg.prototype.getInput = function (block, name) {
   return undefined
-}
-
-/**
- * Fetches the named input object.
- * @param {!Block} block.
- * @param {string} comment.
- * @param {boolean} ignore not connected value input.
- * @private
- */
-ezP.DelegateSvg.prototype.assertBlockInputTuple__ = function (block, comment, ignore) {
-  var list = block.inputList
-  var i = 0
-  var input
-  while ((input = list[i]) && input.type === Blockly.DUMMY_INPUT) {
-    ++i
-  }
-  var first = i
-  var end = i = list.length
-  while (i > first && (input = list[--i]) && input.type === Blockly.DUMMY_INPUT) {
-    end = i
-  }
-  var max = this.getInputTupleMax(block, 0)
-  try {
-    goog.asserts.assert((end - first) % 2 === 1, 'Bad number of inputs ' + [first, end, list.length])
-    var n = Math.max(1, (end - first - 1) / 2)
-    if (max) {
-      goog.asserts.assert(n <= max, 'Limit overruled ' + [n, max])
-      for (i = first; (input = list[i]) && i < end; i += 2) {
-        if (input.type === Blockly.DUMMY_INPUT) {
-          break
-        }
-        var c8n = input.connection
-        if (n < max) {
-          goog.asserts.assert(input.activeConnectionEZP && c8n && c8n.ezpData.s7r_ && !c8n.isConnected(), 'Bad separator at ' + [i, list.length, input.activeConnectionEZP, c8n, c8n.ezpData.s7r_, !c8n.isConnected()])
-        } else {
-          goog.asserts.assert(!c8n && !input.activeConnectionEZP, 'Bad separator at ' + [i, list.length, c8n, !input.activeConnectionEZP])
-        }
-      }
-    } else {
-      for (i = first; (input = list[i]) && i < end; i += 2) {
-        if (input.type === Blockly.DUMMY_INPUT) {
-          break
-        }
-        c8n = input.connection
-        goog.asserts.assert(c8n.ezpData.s7r_ && !c8n.isConnected(), 'Bad separator at ' + [i, list.length, c8n.ezpData.s7r_, !c8n.isConnected()])
-      }
-    }
-    for (i = first + 1; (input = list[i]); i += 2) {
-      if (input.type === Blockly.DUMMY_INPUT) {
-        while ((input = list[++i])) {
-          goog.asserts.assert(input.type === Blockly.DUMMY_INPUT, 'No DUMMY_INPUT at ' + i + '<' + list.length)
-        }
-        break
-      }
-      c8n = input.connection
-      goog.asserts.assert(!c8n.ezpData.s7r_ && (ignore || c8n.isConnected()), 'Bad input value at ' + [i, list.length, !c8n.ezpData.s7r_, c8n.isConnected()])
-    }
-  } catch (e) {
-    throw e
-  }
-  console.log(comment)
 }
 
 /**
@@ -926,7 +1032,6 @@ ezP.StatementBlockEnumerator = function (block) {
   return me
 }
 
-ezP.DelegateSvg.prototype.outputCheck = undefined
 ezP.DelegateSvg.prototype.nextStatementCheck = undefined
 ezP.DelegateSvg.prototype.previousStatementCheck = undefined
 
@@ -938,6 +1043,7 @@ ezP.DelegateSvg.prototype.previousStatementCheck = undefined
  */
 ezP.DelegateSvg.prototype.makeBlockWrapped = function (block) {
   ezP.DelegateSvg.superClass_.makeBlockWrapped.call(this, block)
+  goog.asserts.assert(!this.hasSelect(block), 'Deselect block before')
   block.initSvg()
   goog.dom.removeNode(this.svgPathShape_)
   delete this.svgPathShape_
@@ -945,6 +1051,30 @@ ezP.DelegateSvg.prototype.makeBlockWrapped = function (block) {
   goog.dom.removeNode(this.svgPathContour_)
   delete this.svgPathContour_
   this.svgPathContour_ = undefined
+}
+
+/**
+ * The default implementation does nothing.
+ * Subclassers will override this but won't call it.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.prototype.makeBlockUnwrapped = function (block) {
+  ezP.DelegateSvg.superClass_.makeBlockUnwrapped.call(this, block)
+  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {}, null)
+  goog.dom.insertChildAt(block.svgGroup_, this.svgPathContour_, 0)
+  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {}, null)
+  goog.dom.insertChildAt(block.svgGroup_, this.svgPathShape_, 0)
+}
+
+/**
+ * Whether the block is selected.
+ * Subclassers will override this but won't call it.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.prototype.hasSelect = function (block) {
+  return goog.dom.classlist.contains(block.svgGroup_, 'ezp-select')
 }
 
 /**
@@ -977,6 +1107,47 @@ ezP.DelegateSvg.prototype.setInputEnabled = function (block, input, enabled) {
  * @param {!String} prototypeName.
  * @private
  */
+ezP.DelegateSvg.prototype.toggleNamedInputDisabled = function (block, name) {
+  var input = block.getInput(name)
+  if (input) {
+    var oldValue = input.ezpData.disabled_
+    var newValue = !oldValue
+    if (Blockly.Events.isEnabled()) {
+      Blockly.Events.fire(new Blockly.Events.BlockChange(
+        block, ezP.Const.Event.input_disable, name, oldValue, newValue));
+    }
+    input.ezpData.disabled_ = newValue
+    var current = this.isRendering
+    this.isRendering = true
+    input.setVisible(!newValue)
+    this.isRendering = current
+    if (input.isVisible()) {
+      for (var __ = 0, field; (field = input.fieldRow[__]); ++__) {
+        if (field.getText().length>0) {
+          var root = field.getSvgRoot()
+          if (root) {
+            root.removeAttribute('display')
+          } else {
+            console.log('Field with no root: did you ...initSvg()?')
+          }
+        }
+      }
+    }
+    setTimeout(function(){
+      block.render()
+    }, 100)
+  } else {
+    console.log('Unable to dis/enable non existing input named '+name)
+  }
+}
+
+/**
+ * Set the enable/disable status of the given block.
+ * @param {!Block} block.
+ * @param {!Input} input.
+ * @param {!String} prototypeName.
+ * @private
+ */
 ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValue) {
   var input = block.getInput(name)
   if (input) {
@@ -997,4 +1168,317 @@ ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValu
   } else {
     console.log('Unable to dis/enable non existing input named '+name)
   }
+}
+
+/**
+ * Create a new block, with svg background and wrapped blocks.
+ * @param {!WorkspaceSvg} workspace.
+ * @param {!String} prototypeName.
+ * @private
+ */
+ezP.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id = undefined) {
+  var B = workspace.newBlock(prototypeName, id)
+  B.ezp.completeWrapped_(B)
+  B.initSvg()
+  return B
+}
+
+/**
+ * Prepare the block to be displayed in the given workspace.
+ * Nothing implemented yet
+ * @param {!Block} block.
+ * @param {!WorkspaceSvg} workspace.
+ * @param {!Number} x.
+ * @param {!Number} y.
+ * @param {!String} variant.
+ * @private
+ */
+ezP.DelegateSvg.prototype.prepareForWorkspace = function (block, workspace, x, y, variant) {
+  
+}
+
+/**
+ * Returns the python type of the block.
+ * This information may be displayed as the last item in the contextual menu.
+ * Wrapped blocks will return the parent's answer.
+ * @param {!Blockly.Block} block The block.
+ */
+ezP.DelegateSvg.prototype.getPythonSort = function (block) {
+  if (this.wrapped_) {
+    var parent = block.getParent()
+    return parent.ezp.getPythonSort(parent)
+  }
+  return this.pythonSort_
+}
+
+
+/**
+ * Can insert a block above?
+ * If the block's output connection is connected,
+ * can connect the parent's output to it?
+ * The connection cannot always establish.
+ * @param {!Block} block.
+ * @param {string} prototypeName.
+ * @param {string} aboveInputName, which parent's connection to use
+ */
+ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, aboveInputName) {
+  var can = false
+  Blockly.Events.disable()
+  var B = block.workspace.newBlock(prototypeName)
+  var input = B.getInput(aboveInputName)
+  goog.asserts.assert(input, 'No input named '+aboveInputName)
+  var c8n = input.connection
+  goog.asserts.assert(c8n, 'Unexpected dummy input '+aboveInputName)
+  if (c8n.checkType_(block.outputConnection)) {
+    var targetC8n = block.outputConnection.targetConnection
+    can = !targetC8n || targetC8n.checkType_(B.outputConnection)
+  }
+  B.dispose()
+  Blockly.Events.enable()
+  return can
+}
+
+/**
+ * Insert a parent.
+ * If the block's output connection is connected,
+ * connects the parent's output to it.
+ * The connection cannot always establish.
+ * The holes are filled.
+ * @param {!Block} block.
+ * @param {string} prototypeName.
+ * @param {string} aboveInputName, which parent's connection to use
+ * @return the created block
+ */
+ezP.DelegateSvg.prototype.insertBlockBefore = function(block, abovePrototypeName, aboveInputName) {
+  goog.asserts.assert(false, 'Must be subclassed')
+}
+
+/**
+ * Get the hole filler data object for the given check.
+ * @param {!Array} check an array of types.
+ * @param {objet} value value of the block that will fill the hole, a string for an identifier block.
+ * @private
+ */
+ezP.HoleFiller.getData = function(check, value) {
+  var data
+  if (goog.isFunction(value)) {
+    data = {
+      filler: value,
+    }
+  } else if (check.indexOf(ezP.T3.Expr.identifier) >= 0) {
+    if (value) {
+      data = {
+        type: ezP.T3.Expr.identifier,
+        value: value,
+      }
+    }
+  } else if(check.length === 1 && ezP.T3.All.core_expressions.indexOf(check[0])>=0) {
+    data = {
+      type: check[0],
+      value: value,
+    }
+  }
+  return data
+}
+
+/**
+ * Get an array of the deep connections that can be filled.
+ * @param {!Block} block.
+ * @param {Array} holes whengiven the is the array to be filled
+ * @return an array of conections, holes if given.
+ */
+ezP.HoleFiller.getDeepHoles = function(block, holes) {
+  var H = holes || []
+  var i = 0, input
+  var L = block.inputList
+  var input
+  while((input = L[i++])) {
+    var c8n = input.connection
+    if (c8n && c8n.type === Blockly.INPUT_VALUE && (!c8n.hidden_ || c8n.ezp.wrapped_)) {
+      var target = c8n.targetBlock()
+      if (target) {
+        ezP.HoleFiller.getDeepHoles(target, H)
+      } else if (c8n.ezp.hole_data) {
+        H.push(c8n)
+      }
+    }
+  }
+  return H
+}
+
+/**
+ * For each value input that is not optional and accepts an identifier,
+ * create and connect an identifier block.
+ * Called once at block creation time.
+ * Should not be called directly
+ * @param {!Blockly.Block} block to be initialized..
+ */
+ezP.HoleFiller.fillDeepHoles = function(workspace, holes) {
+  var i = 0
+  for (; i < holes.length; ++i) {
+    var c8n = holes[i]
+    if (c8n && c8n.type === Blockly.INPUT_VALUE && !c8n.isConnected()) {
+      var data = c8n.ezp.hole_data
+      if (data) {
+        try {
+          if (data.filler) {
+            var B = data.filler(workspace)
+          } else {
+            B = ezP.DelegateSvg.newBlockComplete(workspace, data.type)
+            if (B.ezp.setValue && data.value) {
+              B.ezp.setValue(B, data.value)
+            }
+          }
+          c8n.connect(B.outputConnection)
+        }
+        catch(err) {
+          console.log(err.message)
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Change the wrap type of a block.
+ * Undo compliant.
+ * Used in menus.
+ * @param {!Blockly.Block} block owner of the delegate.
+ * @param {!String} key the key of the input holding the connection
+ * @param {!String} newType
+ * @return yorn whether a change has been made
+ * the MenuItem selected within menu.
+ */
+ezP.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
+  var input = block.getInput(key)
+  if (input) {
+    var target = input.connection.targetBlock()
+    var oldType = target? target.type: undefined
+    if (newType != oldType) {
+      Blockly.Events.setGroup(true)
+      if (target) {
+        target.unplug()
+        target.dispose()
+      }
+      this.completeWrappedInput_(block, input, newType)
+      Blockly.Events.setGroup(false)
+      return true
+    }
+  }
+  return false
+}
+
+/**
+ * Convert the block to python code.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @return some python code
+ */
+ezP.DelegateSvg.prototype.toPythonExpression = function (block) {
+  var components = []
+  this.toPythonExpressionComponents(block, components)
+  return components.join('')
+}
+
+/**
+ * Convert the block to python code components.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return the last element of components
+ */
+ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, components) {
+  var last = components[components.length-1]
+  var c8n, target
+  var FFF = function(x, is_operator) {
+    if (x.length) {
+      if (is_operator) {
+        x = ' ' + x + ' '
+      } else {
+        if (last && last.length) {
+          var mustSeparate = last[last.length-1].match(/[,;:]/)
+          var maySeparate = mustSeparate || last[last.length-1].match(/[a-zA-Z_]/)
+        }
+        if (mustSeparate || (maySeparate && x[0].match(/[a-zA-Z_]/))) {
+          components.push(' ')
+        }
+      }
+      components.push(x)
+      last = x
+    }
+    return true
+  }
+  var FF = function(field, is_operator) {
+    return field && FFF(field.getText(), is_operator)
+  }
+  var F = function(D) {
+    if (!D) {
+      return
+    }
+    FF(D.fieldAsync) || FF(D.fieldAwait)
+    FF(D.fieldPrefix)
+    FF(D.fieldLabel)
+    FF(D.fieldLabelStart)
+    FF(D.fieldIdentifier) || FF(D.fieldCodeInput) || FF(D.fieldCodeComment) || FF(D.fieldCodeNumber) || FF(D.fieldCodeString) || FF(D.fieldCodeLongString) || FF(D.fieldOperator, true)
+    if ((c8n = D.input.connection)) {
+      if ((target = c8n.targetBlock())) {
+        FFF(target.ezp.toPythonExpression(target))
+      } else if (!c8n.ezp.optional_) {
+        last = '<MISSING '+D.input.name+'>'
+        components.push(last)
+      }
+    }
+    FF(D.fieldLabelEnd)
+  }
+  F(this.inputs.first)
+  F(this.inputs.middle)
+  F(this.inputs.last)
+  return last
+}
+
+/**
+ * Convert the block to python code.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python, a statement block.
+ * @param {!string}indent, the indentation level for the .
+ * @return some python code
+ */
+ezP.DelegateSvg.prototype.toPythonStatement = function (block, indent, is_deep) {
+  var components = []
+  this.toPythonStatementComponents(block, components, indent, is_deep)
+  return components.join('\n')
+}
+
+/**
+ * Convert the block to python code components.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return None
+ */
+ezP.DelegateSvg.prototype.toPythonStatementComponents = function (block, components, indent, is_deep) {
+  var Cs = []
+  if (block.disabled && indent.indexOf('#') < 0) {
+    indent += '# '
+  }
+  components.push(indent+this.toPythonExpression(block))
+  if (this.inputs.do) {
+    var input = this.inputs.do.input
+    if (input) {
+      var c8n = input.connection
+      if (c8n) {
+        var target = c8n.targetBlock()
+        if (target && !target.ezp.toPythonStatementComponents(target, components, indent+'    ', true) || !target && !c8n.ezp.optional_) {
+          components.push(indent+'    <MISSING '+input.name+'>')
+        }
+      }
+    }
+  }
+  if (is_deep && block.nextConnection) {
+    var target = block.nextConnection.targetBlock()
+    if (target) {
+      var out = target.ezp.toPythonStatementComponents(target, components, indent, true)
+    }
+  }
+  return out || (!block.disabled && block.type !== ezP.T3.Stmt.comment_stmt)
 }

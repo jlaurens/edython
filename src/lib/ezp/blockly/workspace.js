@@ -16,7 +16,6 @@ goog.provide('ezP.Workspace')
 goog.require('Blockly.Workspace')
 goog.require('ezP.Helper')
 goog.require('ezP.Block')
-goog.require('ezP.Variables.Menu')
 
 /**
  * Class for a workspace.  This is a data structure that contains blocks.
@@ -27,7 +26,6 @@ goog.require('ezP.Variables.Menu')
 ezP.Workspace = function (optOptions) {
   ezP.Workspace.superClass_.constructor.call(this, optOptions)
   this.ezp = new ezP.Helper()
-  this.ezp.menuVariable = new ezP.Variables.Menu(this)
 }
 goog.inherits(ezP.Workspace, Blockly.Workspace)
 

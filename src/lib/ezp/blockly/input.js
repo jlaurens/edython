@@ -25,13 +25,19 @@ goog.require('Blockly.Input')
  * For ezPython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-ezP.Input.setupEzpData = function (input) {
+ezP.Input.setupEzpData = function (input, data) {
   if (!input.ezpData) {
     input.ezpData = {
       // sealed_: false, // blocks are not sealed
-      // listed_: false,// consolidator, whether the input belongs to a list
       // s7r_: false,// consolidator, whether the input is a separator
     }
+    if (data) {
+      goog.mixin(input.ezpData, data)
+    }
+    var c8n = input.connection
+    if (c8n) {
+      c8n.ezp.name_ = input.name // the connection remembers the name of the input such that checking is fine grained.
+    }  
   }
 }
 

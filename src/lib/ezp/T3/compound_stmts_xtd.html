@@ -6,7 +6,94 @@
 <head>
 </head>
 <body>
+<pre>
+compound_stmt ::= IGNORE
+</pre>
+
+if_stmt ::=  "if" expression ":" suite
+             ( "elif" expression ":" suite )*
+             ["else" ":" suite]
+<pre>
+if_stmt ::= IGNORE
+if_part ::= "if" expression ":"
+elif_part ::= "elif" expression ":"
+else_part ::= "else" ":"
+last_else_part ::= else_part
+else_part >>> if_part | elif_part | comment_stmt
+last_else_part >>> if_part | elif_part | comment_stmt
+elif_part >>> if_part | elif_part | comment_stmt
+</pre>
+<pre>
+while_stmt ::= IGNORE
+while_part ::=  "while" expression ":"
+else_part >>> while_part
+last_else_part >>> while_part
+</pre>
+The last line means: an else_part comes just after a while_part
+(its line number is just one above).
+For an <<< sign, it would read "just before".
+Rules are cumulative, which means that A <<< B and A <<< C significates that A comes just before B or C.
+<pre>
+for_stmt ::= IGNORE
+for_part ::=  "for" target_list "in" expression_list ":"
+else_part >>> for_part
+last_else_part >>> for_part
+</pre>
+try_stmt  ::=  try1_stmt | try2_stmt
+try1_stmt ::=  "try" ":" suite
+               ("except" [expression ["as" identifier]] ":" suite)+
+               ["else" ":" suite]
+               ["finally" ":" suite]
+try2_stmt ::=  "try" ":" suite
+               "finally" ":" suite
+<pre>
+try_stmt ::= IGNORE
+try1_stmt ::= IGNORE
+try2_stmt ::= IGNORE
+try_part ::=  "try" ":"
+void_except_part ::= "except" ":"
+except_part ::= "except" expression_except ":"
+expression_except ::= expression | expression_as_name
+expression_as_name ::= expression "as" identifier
+finally_part ::= "finally" ":"
+try_part <<< except_part | void_except_part | finally_part | comment_stmt
+void_except_part >>> except_part
+except_part >>> try_part | except_part | comment_stmt
+void_except_part >>> try_part | except_part | comment_stmt
+try_else_part ::= else_part
+else_part >>> except_part | void_except_part | comment_stmt
+try_else_part >>> except_part | void_except_part | comment_stmt
+finally_part >>> try_part | except_part | void_except_part | try_else_part | else_part | comment_stmt
+</pre>
+
+with_stmt ::=  "with" with_item ("," with_item)* ":" suite
+with_item ::=  expression ["as" target]
+
+<pre>
+with_stmt ::= IGNORE
+with_part ::= "with" with_item_list ":"
+with_item_list ::= with_item ("," with_item)*
+</pre>
 If a parameter has a default value, all following parameters up until the “*” must also have a default value — this is a syntactic restriction that is not expressed by the grammar.
+
+
+<pre>
+funcdef ::= REMOVE
+async_funcdef ::= REMOVE
+funcdef_part ::= funcdef_expr ":"
+funcdef_expr ::= funcdef_simple | funcdef_typed
+funcdef_simple ::= "def" funcname "(" [parameter_list] ")"
+funcdef_typed ::= funcdef_simple "->" expression
+decorators ::= REMOVE
+decorator ::= decorator_expr | decorator_call_expr
+decorator_part ::= decorator
+decorator_expr ::= "@" dotted_funcname
+decorator_call_expr ::= decorator_expr "(" argument_list ")"
+dotted_funcname ::= funcname | dotting_identifier '.' dotted_funcname
+dotting_identifier ::= identifier
+decorator_part <<< decorator_part | funcdef_part
+</pre>
+
 
 parameter_list ::=  parameter_list_1 | parameter_list_2| parameter_list_starargs
 parameter_list_1 ::= defparameter ("," defparameter)*
@@ -21,17 +108,72 @@ parameter_list          ::=  defparameter ("," defparameter)* ["," [parameter_li
                              | parameter_list_starargs
 parameter_list_starargs ::=  "*" [parameter] ("," defparameter)* ["," ["**" parameter [","]]]
                              | "**" parameter [","]
+parameter               ::=  identifier [ ":" expression ]
+defparameter            ::=  parameter | parameter "=" expression
+
+From the grammar
+
+parameters: '(' [typedargslist] ')'
+typedargslist: (tfpdef ['=' test] (',' tfpdef ['=' test])* [',' [
+        '*' [tfpdef] (',' tfpdef ['=' test])* [',' ['**' tfpdef [',']]]
+      | '**' tfpdef [',']]]
+  | '*' [tfpdef] (',' tfpdef ['=' test])* [',' ['**' tfpdef [',']]]
+  | '**' tfpdef [','])
+tfpdef: NAME [':' test]
+varargslist: (vfpdef ['=' test] (',' vfpdef ['=' test])* [',' [
+        '*' [vfpdef] (',' vfpdef ['=' test])* [',' ['**' vfpdef [',']]]
+      | '**' vfpdef [',']]]
+  | '*' [vfpdef] (',' vfpdef ['=' test])* [',' ['**' vfpdef [',']]]
+  | '**' vfpdef [',']
+)
+vfpdef: NAME
+
+modulo [',']
+
+typedargslist:
+tfpdef ['=' test] (',' tfpdef ['=' test])*
+| tfpdef ['=' test] (',' tfpdef ['=' test])* ',' '*' [tfpdef] (',' tfpdef ['=' test])*
+| tfpdef ['=' test] (',' tfpdef ['=' test])* ',' '*' [tfpdef] (',' tfpdef ['=' test])* ',' '**' tfpdef
+| '*' [tfpdef] (',' tfpdef ['=' test])*
+| '*' [tfpdef] (',' tfpdef ['=' test])* ',' '**' tfpdef
+| '**' tfpdef
+
+parameter_list ::=
+| defparameter (',' defparameter)*
+| defparameter (',' defparameter)* ',' '*' [tfpdef] (',' defparameter)*
+| defparameter (',' defparameter)* ',' '*' [tfpdef] (',' defparameter)* ',' '**' tfpdef
+| defparameter (',' defparameter)* ',' '**' tfpdef
+| '**' tfpdef
+
 <pre>
-parameter               ::=  identifier | parameter_annotated
-parameter_annotated      ::=  identifier ":" expression
-defparameter            ::=  parameter | parameter_default
-parameter_default   ::=  parameter "=" expression
-parameter_starred ::= "*" [parameter]
-parameter_double_starred ::= "**" parameter
-parameter_any ::= parameter | parameter_default | parameter_starred | parameter_double_starred
-parameter_no_single_starred ::= parameter | parameter_default | parameter_double_starred
-parameter_no_double_starred ::= parameter | parameter_default | parameter_starred
-parameter_no_starred ::= parameter | parameter_default
+parameter_list ::=
+parameter_star ::= "*" [parameter]
+parameter_star_star ::= "**" parameter
+parameter_any ::= parameter | defparameter | parameter_star | parameter_star_star
 </pre>
+
+classdef    ::=  [decorators] "class" classname [inheritance] ":" suite
+classname   ::=  identifier
+
+<pre>
+classdef ::= IGNORE
+classdef_part ::=  classdef_expr ':'
+classdef_expr ::= classdef_simple | classdef_derived
+classdef_simple ::=  "class" classname
+classdef_derived ::=  classdef_simple '(' argument_list ')'
+decorator_part <<< classdef_part
+</pre>
+
+<pre>
+docstring_def_stmt ::= docstring +{1}
+docstring_def_stmt >>> funcdef_part.do | classdef_part.do | docstring_def_stmt | comment_stmt
+</pre>
+
+<pre>
+async_with_stmt ::= REMOVE
+async_for_stmt ::= REMOVE
+async_funcdef ::= REMOVE
+</pre>
+
 </body>
 </html>

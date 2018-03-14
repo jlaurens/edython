@@ -13,10 +13,9 @@
 
 goog.provide('ezP.DelegateSvg.Stmt')
 
-goog.require('ezP.ContextMenu')
 goog.require('ezP.DelegateSvg.List')
 goog.require('ezP.DelegateSvg.Expr')
-goog.require('ezP.DelegateSvg.Expr.Operator')
+goog.require('ezP.DelegateSvg.Operator')
 
 /**
  * Class for a DelegateSvg, statement block.
@@ -28,15 +27,15 @@ goog.require('ezP.DelegateSvg.Expr.Operator')
  */
 ezP.DelegateSvg.Stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.superClass_.constructor.call(this, prototypeName)
-  this.previousStatementCheck = null
-  this.nextStatementCheck = null
+  this.statementModel_ = {
+    previous: {},
+    next: {},
+  }
+
 }
 goog.inherits(ezP.DelegateSvg.Stmt, ezP.DelegateSvg)
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.DEFAULT, ezP.DelegateSvg.Stmt)
 
-ezP.setup.register(function () {
-  ezP.Style.insertCssRuleAt('.ezp-sharp-group{' + ezP.Font.style + '}')
-})
+ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.DelegateSvg.Stmt, true)
 
 /**
  * Initialize a block.
@@ -114,7 +113,7 @@ ezP.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
       text.appendChild(document.createTextNode('#'))
       length = 1
     }
-    var expected = io.block.getStatementCount()
+    var expected = io.block.ezp.getStatementCount(io.block)
     while (length < expected) {
       y = ezP.Font.totalAscent + length * ezP.Font.lineHeight()
       text = Blockly.utils.createSvgElement('text',
@@ -130,7 +129,7 @@ ezP.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
     }
     this.svgSharpGroup_.setAttribute('transform', 'translate(' + (io.cursorX) +
         ', ' + ezP.Padding.t() + ')')
-    io.cursorX += ezP.Font.space
+    io.cursorX += 2*ezP.Font.space
   } else {
     goog.dom.removeChildren(this.svgSharpGroup_)
   }
@@ -147,6 +146,79 @@ ezP.DelegateSvg.Stmt.prototype.renderDrawInput_ = function (io) {
 }
 
 /**
+ * Convert the block to python code.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @return some python code
+ */
+ezP.DelegateSvg.Stmt.prototype.toPython = function (block, is_deep) {
+  return this.toPythonStatement(block, '', is_deep)
+}
+
+/**
+ * Insert a block above.
+ * If the block's previous connection is connected,
+ * connects the block above to it.
+ * The connection cannot always establish.
+ * The holes are filled.
+ * @param {!Block} block.
+ * @param {string} prototypeName.
+ * @param {string} aboveInputName, which parent's connection to use
+ * @return the created block
+ */
+ezP.DelegateSvg.Stmt.prototype.insertBlockBefore = function(block, abovePrototypeName) {
+  Blockly.Events.setGroup(true)
+  var blockBefore = ezP.DelegateSvg.newBlockComplete(block.workspace, abovePrototypeName)
+  var c8n = block.previousConnection
+  var targetC8n = c8n.targetConnection
+  if (targetC8n) {
+    targetC8n.disconnect()
+    targetC8n.connect(blockBefore.previousConnection)
+  } else {
+    var its_xy = block.getRelativeToSurfaceXY();
+    var my_xy = blockBefore.getRelativeToSurfaceXY();
+    blockBefore.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+  }
+  blockBefore.ezp.consolidate(blockBefore, true)
+  var holes = ezP.HoleFiller.getDeepHoles(blockBefore)
+  ezP.HoleFiller.fillDeepHoles(blockBefore.workspace, holes)
+  blockBefore.render()
+  block.previousConnection.connect(blockBefore.nextConnection)
+  Blockly.Events.setGroup(false)
+  return blockBefore
+}
+
+/**
+ * Insert a block below.
+ * If the block's next connection is connected,
+ * connects the block below to it.
+ * The connection cannot always establish.
+ * The holes are filled.
+ * @param {!Block} block.
+ * @param {string} prototypeName.
+ * @param {string} aboveInputName, which parent's connection to use
+ * @return the created block
+ */
+ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototypeName) {
+  Blockly.Events.setGroup(true)
+  var blockAfter = ezP.DelegateSvg.newBlockComplete(block.workspace, belowPrototypeName)
+  var c8n = block.nextConnection
+  var targetC8n = c8n.targetConnection
+  if (targetC8n) {
+    targetC8n.disconnect()
+    targetConnection.connect(blockAfter.previousConnection)
+  }
+  blockAfter.ezp.consolidate(blockAfter, true)
+  var holes = ezP.HoleFiller.getDeepHoles(blockAfter)
+  ezP.HoleFiller.fillDeepHoles(blockAfter.workspace, holes)
+  blockAfter.render()
+  block.nextConnection.connect(blockAfter.previousConnection)
+  Blockly.Events.setGroup(false)
+  return blockAfter
+}
+
+//////////////////// blocks  //////////////////////////////
+/**
  * Class for a DelegateSvg, annotated_assignment_stmt.
  * Python 3.6 feature.
  * For ezPython.
@@ -157,26 +229,26 @@ ezP.DelegateSvg.Stmt.prototype.renderDrawInput_ = function (io) {
 ezP.DelegateSvg.Stmt.annotated_assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.annotated_assignment_stmt.superClass_.constructor.call(this, prototypeName)
   //annotated_assignment_stmt ::=  augtarget ":" expression ["=" expression]
-  this.inputData = {
+  this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.TARGET,
-      check: ezP.T3.Require.augtarget
+      key: ezP.Key.TARGET,
+      check: ezP.T3.Expr.Check.augtarget
     },
     middle: {
-      key: ezP.Const.Input.ANNOTATED,
-      check: ezP.T3.Require.expression,
+      key: ezP.Key.ANNOTATED,
+      check: ezP.T3.Expr.Check.expression,
       label: ':'
     },
     last: {
-      key: ezP.Const.Input.ASSIGNED,
-      check: ezP.T3.Require.expression,
-      label: '='
+      key: ezP.Key.ASSIGNED,
+      check: ezP.T3.Expr.Check.expression,
+      operator: '='
     }
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.annotated_assignment_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.annotated_assignment_stmt, ezP.DelegateSvg.Stmt.annotated_assignment_stmt)
+ezP.DelegateSvg.Manager.register('annotated_assignment_stmt')
 
 /**
  * Class for a DelegateSvg, two optional values and a label.
@@ -199,52 +271,25 @@ goog.inherits(ezP.DelegateSvg.Stmt.Two, ezP.DelegateSvg.Stmt)
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block) {
-  ezP.DelegateSvg.Stmt.Two.superClass_.consolidate.call(this, block)
+ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block, deep) {
+  ezP.DelegateSvg.Stmt.Two.superClass_.consolidate.call(this, block, deep)
   var first = this.inputs.first.input
   var last  = this.inputs.last.input
   var connected = last.connection.isConnected()
   this.setInputEnabled(block, last, first.connection.isConnected() || connected)
   if (connected) {
     if (last.fieldRow.length == 0) {
-      last.appendField(last.fieldLabel, ezP.Const.Field.LABEL)
+      last.appendField(last.fieldLabel, ezP.Key.LAST+'.'+ezP.Const.Field.LABEL)
     }
   } else if (last.fieldRow.length > 0) {
-    last.removeField(ezP.Const.Field.LABEL)
+    last.removeField(ezP.Key.LAST+'.'+ezP.Const.Field.LABEL)
   }
-  var ezp = first.connection.ezpData
+  var ezp = first.connection.ezp
   if (!ezp.optional_0) {
     ezp.optional_0 = [ezp.optional_]
   }
   ezp.optional_ = ezp.optional_0[0] && !connected
 }
-
-/**
- * Class for a DelegateSvg, assert_stmt.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Stmt.assert_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.assert_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
-    first: {
-      label: 'assert',
-      key: ezP.Const.Input.ASSERT,
-      check: ezP.T3.Require.expression
-    },
-    last: {
-      label: ',',
-      key: ezP.Const.Input.EXPR,
-      check: ezP.T3.Require.expression,
-      optional: true
-    }
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.assert_stmt, ezP.DelegateSvg.Stmt.Two)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.assert_stmt, ezP.DelegateSvg.Stmt.assert_stmt)
 
 /**
  * Class for a DelegateSvg, pass_stmt.
@@ -255,11 +300,14 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.assert_stmt, ezP.DelegateSvg.Stm
  */
 ezP.DelegateSvg.Stmt.pass_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.pass_stmt.superClass_.constructor.call(this, prototypeName)
-  this.labelEnd = 'pass'
+  this.inputModel_.first = {
+    label: 'pass',
+    css_class: 'ezp-code-reserved',
+  }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.pass_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.pass_stmt, ezP.DelegateSvg.Stmt.pass_stmt)
+ezP.DelegateSvg.Manager.register('pass_stmt')
 
 /**
  * Class for a DelegateSvg, break_stmt.
@@ -270,11 +318,14 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.pass_stmt, ezP.DelegateSvg.Stmt.
  */
 ezP.DelegateSvg.Stmt.break_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.break_stmt.superClass_.constructor.call(this, prototypeName)
-  this.labelEnd = 'break'
+  this.inputModel_.first = {
+    label: 'break',
+    css_class: 'ezp-code-reserved',
+  }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.break_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.break_stmt, ezP.DelegateSvg.Stmt.break_stmt)
+ezP.DelegateSvg.Manager.register('break_stmt')
 
 /**
  * Class for a DelegateSvg, continue_stmt.
@@ -285,326 +336,238 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.break_stmt, ezP.DelegateSvg.Stmt
  */
 ezP.DelegateSvg.Stmt.continue_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.continue_stmt.superClass_.constructor.call(this, prototypeName)
-  this.labelEnd = 'continue'
+  this.inputModel_.first = {
+    label: 'continue',
+    css_class: 'ezp-code-reserved',
+  }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.continue_stmt, ezP.DelegateSvg.Stmt)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.continue_stmt, ezP.DelegateSvg.Stmt.continue_stmt)
+ezP.DelegateSvg.Manager.register('continue_stmt')
 
+////////// gobal/nonlocal statement
 /**
- * Class for a DelegateSvg, raise_stmt.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Stmt.raise_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.raise_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
-    first: {
-      label: 'raise',
-      key: ezP.Const.Input.RAISE,
-      check: ezP.T3.Require.expression,
-      optional: true
-    },
-    last: {
-      label: 'from',
-      key: ezP.Const.Input.FROM,
-      check: ezP.T3.Require.expression,
-      optional: true
-    }
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.raise_stmt, ezP.DelegateSvg.Stmt.Two)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.raise_stmt, ezP.DelegateSvg.Stmt.raise_stmt)
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- * Class for a DelegateSvg, del statement block...
+ * Class for a DelegateSvg, non_void_identifier_list block.
+ * This block may be sealed.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.Tupled = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.Tupled.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.non_void_identifier_list = function (prototypeName) {
+  ezP.DelegateSvg.Expr.non_void_identifier_list.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.list = {
+    check: ezP.T3.Expr.Check.non_void_identifier_list,
+    empty: false,
+    sep: ',',
+  }
+  this.outputModel_.check = ezP.T3.Expr.non_void_identifier_list
 }
-goog.inherits(ezP.DelegateSvg.Stmt.Tupled, ezP.DelegateSvg.Stmt)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.DEL, ezP.DelegateSvg.Stmt.Tupled)
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.GNL, ezP.DelegateSvg.Stmt.Tupled)
+goog.inherits(ezP.DelegateSvg.Expr.non_void_identifier_list, ezP.DelegateSvg.List)
+ezP.DelegateSvg.Manager.register('non_void_identifier_list')
 
 /**
- * Will render the block.
- * @param {!Blockly.Block} block.
- * @private
- */
-ezP.DelegateSvg.Stmt.Tupled.prototype.willRender_ = function (block) {
-  this.tupleConsolidate(block)
-  ezP.DelegateSvg.Stmt.Tupled.superClass_.willRender_.call(this, block)
-}
-
-/**
- * Render one input of value block.
- * @param io.
- * @private
- */
-ezP.DelegateSvg.Stmt.Tupled.prototype.renderDrawInput_ = function (io) {
-  this.renderDrawDummyInput_(io) ||
-    this.renderDrawTupleInput_(io) ||
-      this.renderDrawValueInput_(io)
-}
-
-/**
- * Class for a DelegateSvg, print statement block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Class for a DelegateSvg, global_nonlocal_expr.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.Print = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.Print.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Stmt.global_nonlocal_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.constructor.call(this, prototypeName)
+  this.operators = ['global', 'nonlocal']
+  this.inputModel_.last = {
+    key: ezP.Key.LIST,
+    label: this.operators[0],
+    css_class: 'ezp-code-reserved',
+    wrap: ezP.T3.Expr.non_void_identifier_list,
+  }
 }
-goog.inherits(ezP.DelegateSvg.Stmt.Print, ezP.DelegateSvg.Stmt)
+goog.inherits(ezP.DelegateSvg.Stmt.global_nonlocal_stmt, ezP.DelegateSvg.Stmt)
+ezP.DelegateSvg.Manager.register('global_nonlocal_stmt')
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Stmt.PRINT, ezP.DelegateSvg.Stmt.Print)
+ezP.MixinSvg(ezP.DelegateSvg.Stmt.global_nonlocal_stmt, ezP.MixinSvg.Operator)
 
 /**
- * The default implementation does nothing.
- * @param {!Blockly.Block} block.
- * @param {boolean} hidden True if connections are hidden.
- * @override
+ * When the block is just a wrapper, returns the wrapped target.
+ * @param {!Blockly.Block} block owning the delegate.
  */
-ezP.DelegateSvg.Stmt.Print.prototype.setConnectionsHidden = function (block, hidden) {
-  ezP.DelegateSvg.Stmt.Print.superClass_.setConnectionsHidden.call(block, hidden)
-  this.updateKeyValueInputHidden_(block)
+ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.getMenuTarget = function(block) {
+  return block
 }
 
 /**
- * Update .
- * @param {!Blockly.Block} block.
+ * Get the content for the menu item.
+ * @param {!Blockly.Block} block The block.
+ * @param {string} op op is the operator
  * @private
  */
-ezP.DelegateSvg.Stmt.Print.prototype.updateKeyValueInputHidden_ = function (block) {
-  for (var _ = 0, x; (x = block.inputList[_++]);) {
-    var yorn = this.isInputVisible(x)
-    if (yorn) {
-      x.setVisible(true)
-    } else if (yorn === false) {
-      x.setVisible(true)// tricky to force an update, issue #8
-      x.setVisible(false)
-    }
-  }
+ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.getContent = function (block, op) {
+  return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+    ezP.Do.createSPAN(op, 'ezp-code-reserved'),
+    ezP.Do.createSPAN(' …'),
+  )
 }
-
-/**
- * Will render the block.
- * @param {!Blockly.Block} block.
- * @private
- */
-ezP.DelegateSvg.Stmt.Print.prototype.willRender_ = function (block) {
-  this.tupleConsolidate(block)
-  this.updateKeyValueInputHidden_(block)
-  ezP.DelegateSvg.Stmt.Print.superClass_.willRender_.call(this, block)
-}
-
-/**
- * Fetches the named input object, forwards to getInputTuple_.
- * @param {!Blockly.Block} block.
- * @param {string} name The name of the input.
- * @return {Blockly.Input} The input object, or null if input does not exist.
- */
-ezP.DelegateSvg.Stmt.Print.prototype.getInput = function (block, name) {
-  var input = this.getInputTuple_(block, name)
-  return input === null
-    ? ezP.DelegateSvg.Stmt.Print.superClass_.getInput.call(this, block, name)
-    : input
-}
-
-/**
- * Render one input of print block.
- * @param io.
- * @private
- */
-ezP.DelegateSvg.Stmt.Print.prototype.renderDrawInput_ = function (io) {
-  this.renderDrawDummyInput_(io) ||
-  (this.renderDrawTupleInput_(io) && this.didRenderDrawTupleInput_(io)) ||
-    (this.willRenderDrawValueInput_(io) && this.renderDrawValueInput_(io))
-}
-
-/**
- * did render a tuple input.
- * @param io.
- * @private
- */
-ezP.DelegateSvg.Stmt.Print.prototype.didRenderDrawTupleInput_ = function (io) {
-  if (io.input.ezpTuple.isSeparator) {
-    io.separatorC8n = io.input.connection
-  }
-  return true
-}
-
-/**
- * will certainly render a print option.
- * @param io.
- * @private
- */
-ezP.DelegateSvg.Stmt.Print.prototype.willRenderDrawValueInput_ = function (io) {
-  if (io.separatorC8n) {
-    var state = this.getPrintState_()
-    for (var x in state) {
-      if (state[x]) {
-        var pw = this.carretPathDefWidth_(io.cursorX)
-        var w = pw.width
-        io.separatorC8n.setOffsetInBlock(io.cursorX + w / 2, 0)
-        io.cursorX -= w
-        break
-      }
-    }
-    delete io.separatorC8n
-  }
-  return true
-}
-
-/**
- * Final tune up depending on the block.
- * Default implementation does nothing.
- * @param {!Blockly.Block} block.
- * @param {!Element} hidden True if connections are hidden.
- * @override
- */
-ezP.DelegateSvg.Stmt.Print.prototype.toDom = function (block, element) {
-  var state = this.getPrintState_(block)
-  var l = []
-  function f (k) {
-    if (state[k]) {
-      l.push(k)
-    }
-  }
-  f(ezP.Const.Input.END)
-  f(ezP.Const.Input.SEP)
-  f(ezP.Const.Input.FILE)
-  f(ezP.Const.Input.FLUSH)
-  if (l.length) {
-    element.setAttribute('state', l.join(' '))
-  }
-}
-
-/**
- * Final tune up depending on the block.
- * Default implementation does nothing.
- * @param {!Blockly.Block} block.
- * @param {!Element} hidden True if connections are hidden.
- * @override
- */
-ezP.DelegateSvg.Stmt.Print.prototype.fromDom = function (block, element) {
-  var state = this.getPrintState_(block)
-  for (var x in state) {
-    if (state.hasOwnProperty(x)) {
-      delete state[x]
-    }
-  }
-  var attr = element.getAttribute('state')
-  if (attr) {
-    attr = attr.split(' ')
-    for (var _ = 0; (x = attr[_++]);) {
-      state[x] = true
-    }
-  }
-}
-ezP.Msg.PRINT_OPTION_END = ezP.Msg.PRINT_OPTION_END || 'end = …'
-ezP.Msg.PRINT_OPTION_SEP = ezP.Msg.PRINT_OPTION_SEP || 'sep = …'
-ezP.Msg.PRINT_OPTION_FILE = ezP.Msg.PRINT_OPTION_FILE || 'file = …'
-ezP.Msg.PRINT_OPTION_FLUSH = ezP.Msg.PRINT_OPTION_FLUSH || 'flush = …'
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!goo.ui.Menu} menu The menu to populate.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Stmt.Print.prototype.populateContextMenuFirst_ = function (block, menu) {
-  var renderer = ezP.KeyValueMenuItemRenderer.getInstance()
-  var options = [
-    [ezP.Msg.PRINT_OPTION_END, ezP.Const.Input.END],
-    [ezP.Msg.PRINT_OPTION_SEP, ezP.Const.Input.SEP],
-    [ezP.Msg.PRINT_OPTION_FILE, ezP.Const.Input.FILE],
-    [ezP.Msg.PRINT_OPTION_FLUSH, ezP.Const.Input.FLUSH]]
-  for (var i = 0; i < options.length; i++) {
-    var content = options[i][0] // Human-readable text or image.
-    var value = options[i][1] // Language-neutral value.
-    var menuItem = new goog.ui.MenuItem(content, undefined, undefined, renderer)
-    menuItem.setValue(value)
-    menuItem.setCheckable(true)
-    menuItem.setChecked(this.getPrintState_()[value])
-    menu.addChild(menuItem, true)
-  }
-  ezP.DelegateSvg.Stmt.Print.superClass_.populateContextMenuFirst_.call(this, block, menu)
-  return true
+ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var yorn = mgr.populateOperator(block)
+  return ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
 /**
  * Handle the selection of an item in the context dropdown menu.
- * @param {!goog.ui.Menu} menu The Menu component clicked.
- * @param {!Blockly.Block} block The Menu component clicked.
+ * @param {!Blockly.Block} block, owner of the delegate.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the Menu clicked.
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Stmt.Print.prototype.handleActionMenuEventFirst = function (block, menu, event) {
-  var workspace = block.workspace
-  var action = event.target.getModel()
-  var state = this.getPrintState_()
-  switch (action) {
-    case ezP.Const.Input.END:
-    case ezP.Const.Input.SEP:
-    case ezP.Const.Input.FILE:
-    case ezP.Const.Input.FLUSH:
-      state[action] = !state[action]
-      setTimeout(function () {
-        block.render()
-      }, 100)
-      return true
-    default:
-      return ezP.DelegateSvg.Stmt.Print.superClass_.handleActionMenuEventFirst.call(this, block, menu, event)
-  }
+ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
+  
+  return mgr.handleActionOperator(block,event) || ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
 }
 
 /**
-* The lazy print state for the given block.
-* This stores the state and visibility of optional input fields.
-* @param {!Blockly.Block} block A block.
-*/
-ezP.DelegateSvg.Stmt.Print.prototype.getPrintState_ = function (block) {
-  return this.printState_ || (this.printState_ = {})
-}
-
-/**
- * Whether an input is visible, according to its internal state.
- * @param {!Block.Input} input.
- * @return yorn
+ * Class for a DelegateSvg, comment_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
  */
-ezP.DelegateSvg.Stmt.Print.prototype.isInputVisible = function (input) {
-  var state = this.getPrintState_()
-  switch (input.name) {
-    case ezP.Const.Input.END:
-    case ezP.Const.Input.SEP:
-    case ezP.Const.Input.FILE:
-    case ezP.Const.Input.FLUSH:
-      return state[input.name] === true
-    default:
-      return undefined
+ezP.DelegateSvg.Stmt.comment_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.comment_stmt.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    label: '# ',
+    css_class: 'ezp-code-reserved',
+  }
+  this.inputModel_.last = {
+    comment: 'comment',
   }
 }
+goog.inherits(ezP.DelegateSvg.Stmt.comment_stmt, ezP.DelegateSvg.Stmt)
+ezP.DelegateSvg.Manager.register('comment_stmt')
+
+/**
+ * Initialize a block.
+ * @param {!Blockly.Block} block to be initialized..
+ * @extends {Blockly.Block}
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.comment_stmt.prototype.preInitSvg = function (block) {
+  ezP.DelegateSvg.Stmt.comment_stmt.superClass_.preInitSvg.call(this, block)
+  goog.dom.removeNode(this.svgSharpGroup_)
+  this.svgSharpGroup_ = undefined
+}
+
+/**
+ * Render the leading # character for commented statement blocks.
+ * Statement subclasses must override it.
+ * @param io.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.comment_stmt.prototype.renderDrawSharp_ = function (io) {
+}
+
+/**
+ * comment blocks are white.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return None
+ */
+ezP.DelegateSvg.Stmt.comment_stmt.prototype.isWhite = function (block) {
+  return true
+}
+
+/**
+ * Do nothing, comment blocks are allways disabled.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+the code.
+ * @return None
+ */
+ezP.DelegateSvg.Stmt.comment_stmt.prototype.setDisabled = function (block, yorn) {
+  return
+}
+
+/**
+ * Class for a DelegateSvg, expression_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.expression_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.expression_stmt.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    key: ezP.Key.EXPRESSION,
+    check: ezP.T3.Expr.Check.expression,
+  }
+}
+goog.inherits(ezP.DelegateSvg.Stmt.expression_stmt, ezP.DelegateSvg.Stmt)
+ezP.DelegateSvg.Manager.register('expression_stmt')
+
+
+/**
+ * Class for a DelegateSvg, docstring_top_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.docstring_top_stmt =
+ezP.DelegateSvg.Stmt.docstring_def_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.docstring_top_stmt.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    key: ezP.Key.WRAP,
+    wrap: ezP.T3.Expr.docstring,
+  }
+  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.docstring_top_stmt
+  this.statementModel_.next.check = ezP.T3.Stmt.Next.docstring_top_stmt
+}
+goog.inherits(ezP.DelegateSvg.Stmt.docstring_top_stmt, ezP.DelegateSvg.Stmt)
+ezP.DelegateSvg.Manager.register('docstring_top_stmt')
+
+/**
+ * docstring blocks are white, to be confirmed.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return None
+ */
+ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt.comment_stmt.prototype.isWhite
+
+/**
+ * Class for a DelegateSvg, docstring_def_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.docstring_def_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.docstring_def_stmt.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    key: ezP.Key.WRAP,
+    wrap: ezP.T3.Expr.docstring,
+  }
+  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.docstring_def_stmt
+  this.statementModel_.next.check = ezP.T3.Stmt.Next.docstring_def_stmt
+}
+goog.inherits(ezP.DelegateSvg.Stmt.docstring_def_stmt, ezP.DelegateSvg.Stmt)
+ezP.DelegateSvg.Manager.register('docstring_def_stmt')
+
+/**
+ * docstring blocks are white.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return None
+ */
+ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt.comment_stmt.prototype.isWhite
+

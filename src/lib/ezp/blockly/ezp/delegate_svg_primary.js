@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Expr.Primary')
+goog.provide('ezP.DelegateSvg.Primary')
 
 goog.require('ezP.DelegateSvg.Expr')
 
@@ -23,24 +23,61 @@ goog.require('ezP.DelegateSvg.Expr')
  *     type-specific functions for this block.
  * @constructor
  */
+ezP.DelegateSvg.Primary = function (prototypeName) {
+  ezP.DelegateSvg.Primary.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    key: ezP.Key.PRIMARY,
+    check: ezP.T3.Expr.Check.primary,
+    plugged: ezP.T3.Expr.primary,
+    hole_value: 'primary',
+  }
+}
+goog.inherits(ezP.DelegateSvg.Primary, ezP.DelegateSvg.Expr)
+
+/**
+ * The primary connection if any.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.prototype.getPrimaryConnection = function (block) {
+  return undefined
+}
+
+/**
+ * The primary connection if any.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Primary.prototype.getPrimaryConnection = function (block) {
+  // var input = block.getInput(ezP.Key.PRIMARY)
+  return this.inputs.first.input.connection
+}
+
+/**
+ * Class for a DelegateSvg, attributeref.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
 ezP.DelegateSvg.Expr.attributeref = function (prototypeName) {
   ezP.DelegateSvg.Expr.attributeref.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
-    first: {
-      key: ezP.Const.Input.PRIMARY,
-      check: ezP.T3.Require.primary
-    },
-    last: {
-      key: ezP.Const.Input.SECONDARY,
-      check: ezP.T3.identifier_dotted,
-      wrap: ezP.Const.Expr.identifier_dotted
-    }
+  this.inputModel_.last = {
+    label: '.',
+    key: ezP.Key.ATTRIBUTE,
+    check: ezP.T3.Expr.identifier,
+    plugged: ezP.T3.Expr.attribute_identifier,
+    hole_value: 'attribute',
   }
-  this.outputCheck = ezP.T3.attributeref 
+  this.outputModel_.check = ezP.T3.Expr.attributeref 
 }
-goog.inherits(ezP.DelegateSvg.Expr.attributeref, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.attributeref, ezP.DelegateSvg.Expr.attributeref)
+goog.inherits(ezP.DelegateSvg.Expr.attributeref, ezP.DelegateSvg.Primary)
+ezP.DelegateSvg.Manager.register('attributeref')
 
 /**
  * Class for a DelegateSvg, subscription and slicing.
@@ -54,27 +91,20 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.attributeref, ezP.DelegateSvg.Ex
  */
 ezP.DelegateSvg.Expr.subscription = ezP.DelegateSvg.Expr.slicing = function (prototypeName) {
   ezP.DelegateSvg.Expr.slicing.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
-    first: {
-      key: ezP.Const.Input.PRIMARY,
-      check: ezP.T3.Require.primary
-    },
-    last: {
-      key: ezP.Const.Input.SLICE,
-      check: ezP.T3.display_slice_list,
-      wrap: ezP.Const.Expr.display_slice_list
-    }
+  this.inputModel_.last = {
+    key: ezP.Key.LIST,
+    wrap: ezP.T3.Expr.display_slice_list,
   }
-  this.outputCheck = ezP.T3.slicing
+  this.outputModel_.check = [ezP.T3.Expr.subscription, ezP.T3.Expr.slicing]
 }
-goog.inherits(ezP.DelegateSvg.Expr.slicing, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.slicing, ezP.DelegateSvg.Expr.slicing)
+goog.inherits(ezP.DelegateSvg.Expr.slicing, ezP.DelegateSvg.Primary)
+ezP.DelegateSvg.Manager.register('slicing')
+ezP.DelegateSvg.Manager.register('subscription')
 
 /**
  * Class for a DelegateSvg, call block.
  * As call is already a reserved message in javascript,
- * we use call_block instead.
+ * we use call_expr instead.
  * Due to the ambibuity, it is implemented only once for both.
  * Slicing is richer.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
@@ -83,22 +113,15 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.slicing, ezP.DelegateSvg.Expr.sl
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.call_block =  function (prototypeName) {
-  ezP.DelegateSvg.Expr.call_block.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
-    first: {
-      key: ezP.Const.Input.PRIMARY,
-      check: ezP.T3.Require.primary
-    },
-    last: {
-      key: ezP.Const.Input.ARGS,
-      label: '(',
-      check: ezP.T3.argument_list,
-      wrap: ezP.Const.Expr.argument_list
-    }
+ezP.DelegateSvg.Expr.call_expr =  function (prototypeName) {
+  ezP.DelegateSvg.Expr.call_expr.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.last = {
+    key: ezP.Key.LIST,
+    start: '(',
+    wrap: ezP.T3.Expr.argument_list,
+    end: ')',
   }
-  this.labelEnd = ')'
+  this.outputModel_.check = ezP.T3.Expr.call_expr
 }
-goog.inherits(ezP.DelegateSvg.Expr.call_block, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.call, ezP.DelegateSvg.Expr.call_block)
+goog.inherits(ezP.DelegateSvg.Expr.call_expr, ezP.DelegateSvg.Primary)
+ezP.DelegateSvg.Manager.register('call_expr')

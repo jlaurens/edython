@@ -55,9 +55,9 @@ Blockly.Python[ezP.Const.Expr.TFN] = function (block) {
 Blockly.Python[ezP.Const.Expr.OP] = function (block) {
   var op = block.getFieldValue(ezP.Const.Field.OP)
   var order = ezP.Op.Binary.getOrder(op)
-  var lhs = ezP.Python.valueToCode(block, ezP.Const.Input.LHS,
+  var lhs = ezP.Python.valueToCode(block, ezP.Key.LHS,
     order || Blockly.Python.ORDER_ATOMIC) || 'MISSING_LHS'
-  var rhs = ezP.Python.valueToCode(block, ezP.Const.Input.RHS,
+  var rhs = ezP.Python.valueToCode(block, ezP.Key.RHS,
     order || Blockly.Python.ORDER_ATOMIC) || 'MISSING_RHS'
   return [lhs + ezP.Op.Binary.displayOp(op) + rhs, order || Blockly.Python.ORDER_NONE]
 }
@@ -65,31 +65,12 @@ Blockly.Python[ezP.Const.Expr.OP] = function (block) {
 Blockly.Python[ezP.Const.Expr.UNRY] = function (block) {
   var op = block.getFieldValue(ezP.Const.Field.OP)
   var order = ezP.Op.Unary.getOrder(op)
-  var any = ezP.Python.valueToCode(block, ezP.Const.Input.ANY,
+  var any = ezP.Python.valueToCode(block, ezP.Key.ANY,
     order || Blockly.Python.ORDER_NONE) || 'MISSING_ANY'
   return [ezP.Op.Unary.displayOp(op) + any, order]
 }
 
 Blockly.Python[ezP.Const.Expr.BOOL] = Blockly.Python[ezP.Const.Expr.OP]
-
-Blockly.Python[ezP.Const.Expr.TUPLE] = function (block) {
-  var ezp = block.ezp
-  var max = ezp.getInputTupleMax(block, 0)
-  var l = []
-  var i = 0
-  while (!max || i < max) { // eslint-disable-line no-unmodified-loop-condition
-    var name = 'TUPLE_0_' + i
-    var input = Blockly.Block.prototype.getInput.call(block, name)
-    if (input) {
-      var x = ezP.Python.valueToCode(block, name, Blockly.Python.ORDER_COLLECTION)
-      l.push(x.length ? x : ('MISSING_' + name))
-      ++i
-      continue
-    }
-    break
-  }
-  return [l.join(', '), Blockly.Python.ORDER_COLLECTION]
-}
 
 Blockly.Python[ezP.Const.Expr.RANGE] = function (block) {
   var code = Blockly.Python[ezP.Const.Expr.TUPLE](block)

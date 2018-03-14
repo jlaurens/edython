@@ -26,7 +26,6 @@ ezP.DelegateSvg.Control = function (prototypeName) {
   ezP.DelegateSvg.Control.superClass_.constructor.call(this, prototypeName)
 }
 goog.inherits(ezP.DelegateSvg.Control, ezP.DelegateSvg)
-ezP.DelegateSvg.Manager.register(ezP.Const.Ctl.DEFAULT, ezP.DelegateSvg.Control)
 
 /**
  * Control block path.
@@ -146,3 +145,29 @@ ezP.DelegateSvg.Control.prototype.renderDrawInput_ = function (io) {
  */
 ezP.DelegateSvg.Control.prototype.renderDrawSharp_ = function (io) {
 }
+
+/**
+ * Convert the block to python code.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @constructor
+ */
+ezP.DelegateSvg.Control.prototype.toPython = function (block, is_deep) {
+  return this.toPythonStatement(block, '', is_deep)
+}
+
+
+/**
+ * Class for a DelegateSvg, main_stmt.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.main_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.main_stmt.superClass_.constructor.call(this, prototypeName)
+}
+goog.inherits(ezP.DelegateSvg.Stmt.main_stmt, ezP.DelegateSvg.Control)
+
+ezP.DelegateSvg.Manager.register('main_stmt')

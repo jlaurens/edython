@@ -11,9 +11,56 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Expr.Operator')
+goog.provide('ezP.DelegateSvg.Operator')
+goog.provide('ezP.MixinSvg.Operator')
 
 goog.require('ezP.DelegateSvg.Expr')
+
+// Declare the mixins first
+
+/**
+ * Inits the various input model.
+ * Called by the constructor.
+ * Separated to be mixed in.
+ * This is not compliant with inheritance.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.MixinSvg.Operator.initModel = function (prototypeName) {
+  this.inputModel_ = {
+    last: {
+      operator: '',
+      key: ezP.Key.RHS,
+      css_class: 'ezp-code',
+      hole_value: 'name',
+    },
+  }
+}
+
+/**
+ * Records the operator as attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.MixinSvg.Operator.operatorToDom = function (block, element) {
+  element.setAttribute('operator', this.inputs.last.fieldOperator.getText())
+}
+
+/**
+ * Set the operator from the attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.MixinSvg.Operator.operatorFromDom = function (block, element) {
+  var op = element.getAttribute('operator')
+  if (this.operators && this.operators.indexOf(op) >= 0) {
+    this.inputs.last.fieldOperator.setValue(op)
+  }
+}
 
 /**
  * Class for a DelegateSvg, [...] op ... block.
@@ -24,221 +71,109 @@ goog.require('ezP.DelegateSvg.Expr')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.Operator = function (prototypeName) {
-  ezP.DelegateSvg.Expr.Operator.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Operator = function (prototypeName) {
+  ezP.DelegateSvg.Operator.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Expr.Operator, ezP.DelegateSvg.Expr)
+goog.inherits(ezP.DelegateSvg.Operator, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Expr.Operator.prototype.operator = undefined
-ezP.DelegateSvg.Expr.Operator.prototype.operators = undefined
-ezP.DelegateSvg.Expr.Operator.prototype.operatorData = undefined
-ezP.DelegateSvg.Expr.Operator.prototype.operatorDidChange = undefined
-ezP.DelegateSvg.Expr.Operator.prototype.canChangeOperator = undefined
+ezP.DelegateSvg.Operator.prototype.operators = undefined
+
+ezP.MixinSvg(ezP.DelegateSvg.Operator, 'Operator')
 
 /**
- * Change the operator of the block. Undo friendly.
- * Called by the receiver's initBlock method and elsewhere.
- * For ezPython.
- * @param {!Block} block.
- * @param {!String} op is the new operator.
+ * Final tune up depending on the block.
+ * Default implementation does nothing.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} hidden a dom element.
  */
-ezP.DelegateSvg.Expr.Operator.prototype.changeOperator = function(block, newValue) {
-  if (this.operators.indexOf(newValue)<0) {
-    // do nothing, this op is not known
-    return
-  }
-  var oldValue = this.fieldOperator.getValue()
-  if (oldValue == newValue) {
-    // nothing to change
-    return
-  }
-  Blockly.Events.setGroup(true)
-  if (Blockly.Events.isEnabled()) {
-    Blockly.Events.fire(new Blockly.Events.BlockChange(
-      block, ezP.Const.Event.change_operator, '', oldValue, newValue));
-  }
-  this.fieldOperator.setValue(newValue)
-  this.operatorDidChange(block)
-  Blockly.Events.setGroup(false)
+ezP.DelegateSvg.Operator.prototype.fromDom = function (block, element) {
+  ezP.DelegateSvg.Operator.superClass_.fromDom.call(this, block, element)
+  this.operatorFromDom(block, element)
 }
 
 /**
- * Whether the block can change operator.
- * For ezPython.
- * @param {!Input} input.
- * @param {!Array} required, an array of required types.
+ * Final tune up depending on the block.
+ * Default implementation does nothing.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} hidden a dom element.
  */
-ezP.DelegateSvg.Expr.Operator.checkInput = function(input, required) {
-  var target = input.connection.targetBlock()
-  if (target) {
-    var check = target.outputConnection.check_
-    for (var i = 0; i < required.length; i++) {
-      if (check.indexOf(required[i]) >= 0) {
-        return true
-      }
-    }
-    return false
-  }
-  return true
+ezP.DelegateSvg.Operator.prototype.toDom = function (block, element) {
+  ezP.DelegateSvg.Operator.superClass_.toDom.call(this, block, element)
+  this.operatorToDom(block, element)
 }
 
-ezP.USE_OPERATOR_ID  = 'USE_OPERATOR'
+
+/**
+ * Get the content for the menu item.
+ * @param {!Blockly.Block} block The block.
+ * @param {string} op op is the operator
+ * @private
+ */
+ezP.DelegateSvg.Operator.prototype.getContent = /* function (block, op) {
+} */ undefined
+
+/**
+ * When the block is just a wrapper, returns the wrapped target.
+ * @param {!Blockly.Block} block owning the delegate.
+ */
+ezP.DelegateSvg.Operator.prototype.getMenuTarget = function(block) {
+  return block
+}
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!goo.ui.Menu} menu The menu to populate.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.Operator.prototype.populateContextMenuFirst_ = function (block, menu) {
-  var value = this.fieldOperator.getValue()
-  var ezp = this
-  var F = function(op) {
-    var menuItem = new ezP.MenuItem(
-      ezp.operatorData[op]['LABEL']
-      ,[ezP.USE_OPERATOR_ID, op]
-    )
-    menuItem.setEnabled(value != op && ezp.canChangeOperator(block, op))
-    menu.addChild(menuItem, true)
-  }
-  for (var i = 0; i<this.operators.length; i++) {
-    F(this.operators[i])
-  }
-  ezP.DelegateSvg.Expr.Operator.superClass_.populateContextMenuFirst_.call(this,block, menu)
-  return true
+ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var yorn = mgr.populateOperator(block)
+  return ezP.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
 /**
  * Handle the selection of an item in the context dropdown menu.
  * @param {!Blockly.Block} block, owner of the delegate.
- * @param {!goog.ui.Menu} menu The Menu clicked.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the Menu clicked.
  * @param {!goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.Expr.Operator.prototype.handleActionMenuEventFirst = function (block, menu, event) {
-  var model = event.target.getModel()
-  var action = model[0]
-  var op = model[1]
-  if (action == ezP.USE_OPERATOR_ID) {
-    if (this.operators.indexOf(op)<0) {
-      return true
-    }
-    if (this.canChangeOperator(block, op)) {
-      this.changeOperator(block, op)
-    }
-    return true
-  }
-  return ezP.DelegateSvg.Expr.Operator.superClass_.handleActionMenuEventFirst.call(this, block, menu, event)
+ezP.DelegateSvg.Operator.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
+  
+  return mgr.handleActionOperator(block, event) || ezP.DelegateSvg.Operator.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
 }
 
-/**
- * Final tune up depending on the block.
- * Default implementation does nothing.
- * @param {!Blockly.Block} block.
- * @param {!Element} hidden True if connections are hidden.
- * @override
- */
-ezP.DelegateSvg.Expr.Operator.prototype.toDom = function (block, element) {
-  element.setAttribute('operator', this.fieldOperator.getText())
-}
-
-/**
- * Final tune up depending on the block.
- * Default implementation does nothing.
- * @param {!Blockly.Block} block.
- * @param {!Element} hidden True if connections are hidden.
- * @override
- */
-ezP.DelegateSvg.Expr.Operator.prototype.fromDom = function (block, element) {
-  var operator = element.getAttribute('operator')
-  if (this.operators.indexOf(operator)<0) {
-    operator = this.operator
-  }
-  this.operator = operator
-  if (this.fieldOperator) {
-    this.fieldOperator.setValue(this.operator)
-  }
-}
+//////////////////////  u_expr_concrete  /////////////////////////
 
 /**
  * Class for a DelegateSvg, unary op ... block.
- * Multiple ops.
- * Abstract class.
+ * u_expr_concrete.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.Unary = function (prototypeName) {
-  ezP.DelegateSvg.Expr.Unary.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.u_expr_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.u_expr_concrete.superClass_.constructor.call(this, prototypeName)
+  this.outputModel_.check = ezP.T3.Expr.u_expr_concrete
+  this.operators = ['-', '+', '~']
+  goog.mixin(this.inputModel_.last, {
+    operator: this.operators[0],
+    check: ezP.T3.Expr.Check.u_expr
+  })
 }
-goog.inherits(ezP.DelegateSvg.Expr.Unary, ezP.DelegateSvg.Expr.Operator)
+goog.inherits(ezP.DelegateSvg.Expr.u_expr_concrete, ezP.DelegateSvg.Operator)
+ezP.DelegateSvg.Manager.register('u_expr_concrete')
 
 /**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
+ * Get the content for the menu item.
+ * @param {!Blockly.Block} block The block.
+ * @param {string} op op is the operator
  * @private
  */
-ezP.DelegateSvg.Expr.Unary.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Expr.Unary.superClass_.initBlock.call(this, block)
-  this.fieldOperator = new ezP.FieldLabel('')
-  this.inputXPR = block.appendValueInput(ezP.Const.Input.EXPR)
-    .appendField(this.fieldOperator)
-  this.changeOperator(block, this.operator)
+ezP.DelegateSvg.Expr.u_expr_concrete.prototype.getContent = function (block, op) {
+  return op+' …'
 }
-
-/**
- * Update the block according to the new operator.
- * For ezPython.
- * @param {!Block} block.
- * @param {!String} op is the new operator.
- */
-ezP.DelegateSvg.Expr.Unary.prototype.operatorDidChange = function(block) {
-  var value = this.fieldOperator.getValue()
-  var data = this.operatorData[value]
-  this.inputXPR.setCheck(data['XPR'])
-  block.setOutput(true, data['OUT'])  
-}
-
-/**
- * Whether the block can change operator.
- * For ezPython.
- * @param {!Block} block.
- * @param {!String} op is the new operator.
- */
-ezP.DelegateSvg.Expr.Unary.prototype.canChangeOperator = function(block, op) {
-  if (this.operators.indexOf(op)<0) {
-    // this op is not known
-    return false
-  }
-  var data = this.operatorData[op]
-  return ezP.DelegateSvg.Expr.Operator.checkInput(this.inputXPR, data['XPR']) 
-}
-
-/**
-* Class for a DelegateSvg, unary_concrete.
-* For ezPython.
-* @param {?string} prototypeName Name of the language object containing
-*     type-specific functions for this block.
-* @constructor
-*/
-ezP.DelegateSvg.Expr.unary_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Expr.unary_concrete.superClass_.constructor.call(this, prototypeName)
-  this.operator = '-'
-  this.operators = ['+', '-', '~', 'not']
-  this.operatorData = {
-    '+': {label:'+...', 'OUT': ezP.T3.u_expr_concrete, 'XPR': ezP.T3.Require.u_expr},
-    '-': {label:'-...', 'OUT': ezP.T3.u_expr_concrete, 'XPR': ezP.T3.Require.u_expr},
-    '~': {label:'~...', 'OUT': ezP.T3.u_expr_concrete, 'XPR': ezP.T3.Require.u_expr},
-    'not': {label:'not ...', 'OUT': ezP.T3.not_test_concrete, 'XPR': ezP.T3.Require.not_test},
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.unary_concrete, ezP.DelegateSvg.Expr.Unary)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.unary_concrete, ezP.DelegateSvg.Expr.unary_concrete)
-
 
 /**
  * Class for a DelegateSvg, ... op ... block.
@@ -248,109 +183,150 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.unary_concrete, ezP.DelegateSvg.
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.Binary = function (prototypeName) {
-  ezP.DelegateSvg.Expr.Binary.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Binary = function (prototypeName) {
+  ezP.DelegateSvg.Binary.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    key: ezP.Key.LHS,
+    hole_value: 'name',
+  }
 }
-goog.inherits(ezP.DelegateSvg.Expr.Binary, ezP.DelegateSvg.Expr.Operator)
+goog.inherits(ezP.DelegateSvg.Binary, ezP.DelegateSvg.Operator)
 
 /**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
+ * Get the content for the menu item.
+ * @param {!Blockly.Block} block The block.
+ * @param {string} op op is the operator
  * @private
  */
-ezP.DelegateSvg.Expr.Binary.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Expr.Binary.superClass_.initBlock.call(this, block)
-  this.inputLHS = block.appendValueInput(ezP.Const.Input.LHS)
-  this.fieldOperator = new ezP.FieldLabel('')
-  this.inputRHS = block.appendValueInput(ezP.Const.Input.RHS)
-    .appendField(this.fieldOperator)
-  this.changeOperator(block, this.operator)
+ezP.DelegateSvg.Binary.prototype.getContent = function (block, op) {
+  return '… '+ op +' …'
 }
 
 /**
- * Update the block according to the new operator.
- * For ezPython.
- * @param {!Block} block.
- * @param {!String} op is the new operator.
- */
-ezP.DelegateSvg.Expr.Binary.prototype.operatorDidChange = function(block) {
-  var value = this.fieldOperator.getValue()
-  var data = this.operatorData[value]
-  block.setOutput(true, data['OUT'])  
-  this.inputRHS.setCheck(data['RHS'])
-  this.inputLHS.setCheck(data['LHS'])
-}
-
-/**
- * Whether the block can change operator.
- * For ezPython.
- * @param {!Block} block.
- * @param {!String} op is the new operator.
- */
-ezP.DelegateSvg.Expr.Binary.prototype.canChangeOperator = function(block, op) {
-  if (this.operators.indexOf(op)<0) {
-    // this op is not known
-    return false
-  }
-  var data = this.operatorData[op]
-  return ezP.DelegateSvg.Expr.Operator.checkInput(this.inputLHS, data['LHS'])
-  || ezP.DelegateSvg.Expr.Operator.checkInput(this.inputRHS, data['RHS'])
-}
-
-/**
- * Class for a DelegateSvg, algebra binary operation block.
+ * Class for a DelegateSvg, m_expr_concrete block.
  * Multiple ops.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.algebra_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Expr.algebra_concrete.superClass_.constructor.call(this, prototypeName)
-  this.operator = '+'
-  this.operators = ['+', '-', '*', '//', '/', '%', '@']
-  this.operatorData = {
-    '*': {label:'... * ...', 'OUT': ezP.T3.m_expr_concrete, 'RHS': ezP.T3.Require.u_expr, 'LHS': ezP.T3.Require.m_expr},
-    '@': {label:'... @ ...', 'OUT': ezP.T3.m_expr_concrete, 'RHS': ezP.T3.Require.m_expr, 'LHS': ezP.T3.Require.m_expr},
-    '//': {label:'... // ...', 'OUT': ezP.T3.m_expr_concrete, 'RHS': ezP.T3.Require.u_expr, 'LHS': ezP.T3.Require.m_expr},
-    '/': {label:'... / ...', 'OUT': ezP.T3.m_expr_concrete, 'RHS': ezP.T3.Require.u_expr, 'LHS': ezP.T3.Require.m_expr},
-    '%': {label:'... % ...', 'OUT': ezP.T3.m_expr_concrete, 'RHS': ezP.T3.Require.u_expr, 'LHS': ezP.T3.Require.m_expr},
-    '+': {label:'... + ...', 'OUT': ezP.T3.a_expr_concrete, 'RHS': ezP.T3.Require.m_expr, 'LHS': ezP.T3.Require.a_expr},
-    '-': {label:'... - ...', 'OUT': ezP.T3.a_expr_concrete, 'RHS': ezP.T3.Require.m_expr, 'LHS': ezP.T3.Require.a_expr},
-  }
+ezP.DelegateSvg.Expr.m_expr_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.m_expr_concrete.superClass_.constructor.call(this, prototypeName)
+  this.operators = ['*', '//', '/', '%', '@']
+  this.inputModel_.first.check = ezP.T3.Expr.Check.m_expr
+  goog.mixin(this.inputModel_.last, {
+    operator: this.operators[0],
+    check: ezP.T3.Expr.Check.u_expr,
+  })
+  this.outputModel_.check = ezP.T3.Expr.m_expr_concrete
 }
-goog.inherits(ezP.DelegateSvg.Expr.algebra_concrete, ezP.DelegateSvg.Expr.Binary)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.algebra_concrete, ezP.DelegateSvg.Expr.algebra_concrete)
+goog.inherits(ezP.DelegateSvg.Expr.m_expr_concrete, ezP.DelegateSvg.Binary)
+ezP.DelegateSvg.Manager.register('m_expr_concrete')
 
 /**
- * Class for a DelegateSvg, bitwise binary operation block.
+ * Class for a DelegateSvg, a_expr_concrete block.
  * Multiple ops.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.bitwise_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Expr.bitwise_concrete.superClass_.constructor.call(this, prototypeName)
-  this.operator = '&'
-  this.operators = ['<<', '>>', '&', '^', '|']
-  this.operatorData = {
-    '<<': {label:'... << ...', 'OUT': ezP.T3.shift_expr_concrete, 'RHS': ezP.T3.Require.a_expr, 'LHS': ezP.T3.Require.shift_expr},
-    '>>': {label:'... >> ...', 'OUT': ezP.T3.shift_expr_concrete, 'RHS': ezP.T3.Require.a_expr, 'LHS': ezP.T3.Require.shift_expr},
-    '&': {label:'... & ...', 'OUT': ezP.T3.and_expr_concrete, 'RHS': ezP.T3.Require.shift_expr, 'LHS': ezP.T3.Require.and_expr},
-    '^': {label:'... ^ ...', 'OUT': ezP.T3.xor_expr_concrete, 'RHS': ezP.T3.Require.and_expr, 'LHS': ezP.T3.Require.xor_expr},
-    '|': {label:'... | ...', 'OUT': ezP.T3.or_expr_concrete, 'RHS': ezP.T3.Require.xor_expr, 'LHS': ezP.T3.Require.or_expr},
-  }
+ezP.DelegateSvg.Expr.a_expr_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.a_expr_concrete.superClass_.constructor.call(this, prototypeName)
+  this.operators = ['+', '-']
+  this.inputModel_.first.check = ezP.T3.Expr.Check.a_expr
+  goog.mixin(this.inputModel_.last, {
+    operator: this.operators[0],
+    check: ezP.T3.Expr.Check.m_expr,
+  })
+  this.outputModel_.check = ezP.T3.Expr.a_expr_concrete
 }
-goog.inherits(ezP.DelegateSvg.Expr.bitwise_concrete, ezP.DelegateSvg.Expr.Binary)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.bitwise_concrete, ezP.DelegateSvg.Expr.bitwise_concrete)
+goog.inherits(ezP.DelegateSvg.Expr.a_expr_concrete, ezP.DelegateSvg.Binary)
+ezP.DelegateSvg.Manager.register('a_expr_concrete')
 
 /**
- * Class for a DelegateSvg, comparison_concrete block.
+ * Class for a DelegateSvg, shift_expr_concrete block.
+ * Multiple ops.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.shift_expr_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.shift_expr_concrete.superClass_.constructor.call(this, prototypeName)
+  this.operators = ['<<', '>>']
+  this.inputModel_.first.check = ezP.T3.Expr.Check.shift_expr
+  goog.mixin(this.inputModel_.last, {
+    operator: this.operators[0],
+    check: ezP.T3.Expr.Check.a_expr,
+  })
+  this.outputModel_.check = ezP.T3.Expr.shift_expr_concrete
+}
+goog.inherits(ezP.DelegateSvg.Expr.shift_expr_concrete, ezP.DelegateSvg.Binary)
+ezP.DelegateSvg.Manager.register('shift_expr_concrete')
+
+/**
+ * Class for a DelegateSvg, and_expr_concrete block.
+ * Multiple ops.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.and_expr_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.and_expr_concrete.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first.check = ezP.T3.Expr.Check.and_expr
+  goog.mixin(this.inputModel_.last,{
+    operator: '&',
+    check: ezP.T3.Expr.Check.shift_expr,
+  })
+  this.outputModel_.check = ezP.T3.Expr.and_expr_concrete
+}
+goog.inherits(ezP.DelegateSvg.Expr.and_expr_concrete, ezP.DelegateSvg.Binary)
+ezP.DelegateSvg.Manager.register('and_expr_concrete')
+
+/**
+ * Class for a DelegateSvg, xor_expr_concrete block.
+ * Multiple ops.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.xor_expr_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.xor_expr_concrete.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first.check = ezP.T3.Expr.Check.xor_expr
+  goog.mixin(this.inputModel_.last, {
+    operator: '^',
+    check: ezP.T3.Expr.Check.and_expr,
+  })
+  this.outputModel_.check = ezP.T3.Expr.xor_expr_concrete
+}
+goog.inherits(ezP.DelegateSvg.Expr.xor_expr_concrete, ezP.DelegateSvg.Binary)
+ezP.DelegateSvg.Manager.register('xor_expr_concrete')
+
+/**
+ * Class for a DelegateSvg, or_expr_concrete block.
+ * Multiple ops.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.or_expr_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.or_expr_concrete.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first.check = ezP.T3.Expr.Check.or_expr
+  goog.mixin(this.inputModel_.last, {
+    operator: '|',
+    check: ezP.T3.Expr.Check.xor_expr,
+  })
+  this.outputModel_.check = ezP.T3.Expr.or_expr_concrete
+}
+goog.inherits(ezP.DelegateSvg.Expr.or_expr_concrete, ezP.DelegateSvg.Binary)
+ezP.DelegateSvg.Manager.register('or_expr_concrete')
+
+/**
+ * Class for a DelegateSvg, number_comparison block.
  * Multiple ops. This is not a list of comparisons, more like a tree.
  * Maybe we should make a flat version in order to compare the blocks
  * if necessary ever.
@@ -359,44 +335,120 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.bitwise_concrete, ezP.DelegateSv
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.comparison_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Expr.comparison_concrete.superClass_.constructor.call(this, prototypeName)
-  this.operator = '<'
-  this.operators = ['<', '>', '==', '>=', '<=', '!=', 'is', 'is not', 'in', 'not in']
-  this.operatorData = {
-    '<': {label:'... < ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-    '>': {label:'... > ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-    '==': {label:'... == ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-    '<=': {label:'... <= ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-    '>=': {label:'... >= ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-    '!=': {label:'... != ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-    'is': {label:'... is ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-    'is not': {label:'... is not ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-    'in': {label:'... in ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-    'not in': {label:'... not in ...', 'OUT': ezP.T3.comparison_concrete, 'RHS': ezP.T3.Require.comparison, 'LHS': ezP.T3.Require.comparison},
-  }
+ezP.DelegateSvg.Expr.number_comparison = function (prototypeName) {
+  ezP.DelegateSvg.Expr.number_comparison.superClass_.constructor.call(this, prototypeName)
+  this.operators = ['<', '>', '==', '>=', '<=', '!=']
+  this.inputModel_.first.check = ezP.T3.Expr.Check.comparison
+  this.inputModel_.last.label = this.operators[0]
+  this.inputModel_.last.check = ezP.T3.Expr.Check.comparison
+  this.outputModel_.check = ezP.T3.Expr.number_comparison
 }
-goog.inherits(ezP.DelegateSvg.Expr.comparison_concrete, ezP.DelegateSvg.Expr.Binary)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.comparison_concrete, ezP.DelegateSvg.Expr.comparison_concrete)
+goog.inherits(ezP.DelegateSvg.Expr.number_comparison, ezP.DelegateSvg.Binary)
+ezP.DelegateSvg.Manager.register('number_comparison')
 
 /**
- * Class for a DelegateSvg, boolean_concrete block.
+ * Class for a DelegateSvg, object_comparison block.
+ * Multiple ops. This is not a list of comparisons, more like a tree.
+ * Maybe we should make a flat version in order to compare the blocks
+ * if necessary ever.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.object_comparison = function (prototypeName) {
+  ezP.DelegateSvg.Expr.object_comparison.superClass_.constructor.call(this, prototypeName)
+  this.operators = ['is', 'is not', 'in', 'not in']
+  this.inputModel_.first.check = ezP.T3.Expr.Check.comparison
+  goog.mixin(this.inputModel_.last, {
+    operator: 'in',
+    css_class: 'ezp-code-reserved',
+    check: ezP.T3.Expr.Check.comparison,
+  })
+  this.outputModel_.check = ezP.T3.Expr.object_comparison
+}
+goog.inherits(ezP.DelegateSvg.Expr.object_comparison, ezP.DelegateSvg.Binary)
+ezP.DelegateSvg.Manager.register('object_comparison')
+
+/**
+ * Get the content for the menu item.
+ * @param {!Blockly.Block} block The block.
+ * @param {string} op op is the operator
+ * @private
+ */
+ezP.DelegateSvg.Expr.object_comparison.prototype.getContent = function (block, op) {
+  return ezP.Do.createSPAN(op, 'ezp-code-reserved')
+}
+
+/**
+ * Class for a DelegateSvg, or_test_concrete block.
  * Multiple ops.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.boolean_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Expr.boolean_concrete.superClass_.constructor.call(this, prototypeName)
-  this.operator = 'or'
-  this.operators = ['or', 'and']
-  this.operatorData = {
-    'or': {label:'... or ...', 'OUT': ezP.T3.or_test_concrete, 'RHS': ezP.T3.Require.and_test, 'LHS': ezP.T3.Require.or_test},
-    'and': {label:'... and ...', 'OUT': ezP.T3.and_test_concrete, 'RHS': ezP.T3.Require.not_test, 'LHS': ezP.T3.Require.and_test},
+ezP.DelegateSvg.Expr.or_test_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.or_test_concrete.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first.check = ezP.T3.Expr.Check.or_test
+  goog.mixin(this.inputModel_.last, {
+    operator: 'or',
+    css_class: 'ezp-code-reserved',
+    check: ezP.T3.Expr.Check.and_test,
+  })
+  this.outputModel_.check = ezP.T3.Expr.or_test_concrete
+}
+goog.inherits(ezP.DelegateSvg.Expr.or_test_concrete, ezP.DelegateSvg.Binary)
+ezP.DelegateSvg.Manager.register('or_test_concrete')
+
+/**
+ * Class for a DelegateSvg, and_test_concrete block.
+ * Multiple ops.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.and_test_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.and_test_concrete.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first.check = ezP.T3.Expr.Check.and_test
+  goog.mixin(this.inputModel_.last, {
+    operator: 'and',
+    css_class: 'ezp-code-reserved',
+    check: ezP.T3.Expr.Check.not_test,
+  })
+  this.outputModel_.check = ezP.T3.Expr.and_test_concrete
+}
+goog.inherits(ezP.DelegateSvg.Expr.and_test_concrete, ezP.DelegateSvg.Binary)
+ezP.DelegateSvg.Manager.register('and_test_concrete')
+
+///////// power ////////
+/**
+ * Class for a DelegateSvg, power_concrete block.
+ * power_concrete ::= await_or_primary "**" u_expr 
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.power_concrete = function (prototypeName) {
+  ezP.DelegateSvg.Expr.power_concrete.superClass_.constructor.call(this, prototypeName)
+  this.outputModel_.check = ezP.T3.power_concrete
+  this.inputModel_ = {
+    first: {
+      key: ezP.Key.ARGUMENT,
+      check: ezP.T3.Expr.Check.await_or_primary,
+      hole_value: 'name',
+    },
+    last: {
+      key: ezP.Key.POWER,
+      operator: '**',
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.Check.u_expr,
+      hole_value: 'power',
+    },
   }
 }
-goog.inherits(ezP.DelegateSvg.Expr.boolean_concrete, ezP.DelegateSvg.Expr.Binary)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.boolean_concrete, ezP.DelegateSvg.Expr.boolean_concrete)
+goog.inherits(ezP.DelegateSvg.Expr.power_concrete, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('power_concrete')

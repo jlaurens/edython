@@ -15,6 +15,7 @@ goog.provide('ezP.Block')
 goog.require('Blockly.Block')
 goog.require('ezP.Input')
 goog.forwardDeclare('ezP.Delegate')
+goog.forwardDeclare('ezP.T3.All')
 
 /**
  * Class for a block.
@@ -31,7 +32,6 @@ goog.forwardDeclare('ezP.Delegate')
 ezP.Block = function (workspace, prototypeName, optId) {
   this.ezp = ezP.Delegate.Manager.create(prototypeName, this.ezp)
   ezP.Block.superClass_.constructor.call(this, workspace, prototypeName, optId)
-  this.ezp.initBlock_(this)
 }
 goog.inherits(ezP.Block, Blockly.Block)
 
@@ -47,16 +47,6 @@ ezP.Block.prototype.dispose = function () {
 }
 
 /**
- * Append a tuple item value input row.
- * @return {!Blockly.Input} The input object created.
- */
-ezP.Block.prototype.tupleConsolidateEZP_ = function () {
-  if (this.ezp) {
-    this.ezp.tupleConsolidate(this)
-  }
-}
-
-/**
  * Add a value input, statement input or local variable to this block.
  * @param {number} type Either Blockly.INPUT_VALUE or Blockly.NEXT_STATEMENT or
  *     Blockly.DUMMY_INPUT.
@@ -69,13 +59,6 @@ ezP.Block.prototype.tupleConsolidateEZP_ = function () {
 ezP.Block.prototype.appendInput_ = function (type, name) {
   var input = ezP.Block.superClass_.appendInput_.call(this, type, name)
   ezP.Input.setupEzpData(input)
-  if (type === Blockly.INPUT_VALUE) {
-    if (name.match(/^(?:TUPLE|S7R)_(?:\d|\*)+_(?:\d|\*)+$/g)) {
-      input.ezpTuple = input.ezpTuple || {}
-    } else if (name.match(/^(?:ITEM|S7R)_(?:\d|\*)+$/g)) {
-      input.ezpData.listed_ = true
-    }
-  }
   return input
 }
 
@@ -93,14 +76,16 @@ ezP.Block.prototype.setConnectionsHidden = function (hidden) {
 /**
  * Return all variables referenced by this block.
  * This is not exactly Blockly's implementation,
- * only FieldVariable's are considered.
+ * only FieldIdentifier's are considered.
  * @return {!Array.<string>} List of variable names.
  */
 ezP.Block.prototype.getVars = function () {
   var vars = []
-  for (var i = 0, input; (input = this.inputList[i]); i++) {
-    for (var j = 0, field; (field = input.fieldRow[j]); j++) {
-      if (field instanceof ezP.FieldVariable) {
+  var i = 0, input
+  for (; (input = this.inputList[i]); i++) {
+    var j = 0, field
+    for (; (field = input.fieldRow[j]); j++) {
+      if (field instanceof ezP.FieldIdentifier) {
         vars.push(field.getText())
       }
     }
@@ -115,9 +100,11 @@ ezP.Block.prototype.getVars = function () {
  * @param {string} newName Renamed variable.
  */
 ezP.Block.prototype.renameVar = function (oldName, newName) {
-  for (var i = 0, input; (input = this.inputList[i]); i++) {
-    for (var j = 0, field; (field = input.fieldRow[j]); j++) {
-      if (field instanceof ezP.FieldVariable &&
+  var i = 0, input
+  for (; (input = this.inputList[i]); i++) {
+    var j = 0, field
+    for (; (field = input.fieldRow[j]); j++) {
+      if (field instanceof ezP.FieldIdentifier &&
           Blockly.Names.equals(oldName, field.getText())) {
         field.setText(newName)
       }
@@ -132,9 +119,11 @@ ezP.Block.prototype.renameVar = function (oldName, newName) {
  * @param {string} newVarId Replacement variable.
  */
 ezP.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
-  for (var i = 0, input; (input = this.inputList[i]); i++) {
-    for (var j = 0, field; (field = input.fieldRow[j]); j++) {
-      if (field instanceof ezP.FieldVariable &&
+  var i = 0, input
+  for (; (input = this.inputList[i]); i++) {
+    var j = 0, field
+    for (; (field = input.fieldRow[j]); j++) {
+      if (field instanceof ezP.FieldIdentifier &&
           Blockly.Names.equals(oldVarId, field.getValue())) {
         field.setValue(newVarId)
       }
@@ -144,20 +133,23 @@ ezP.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
 
 /**
  * Shortcut for appending a sealed value input row.
- * Just add a 'true' ezpData.wrapped_ attribute to the connection.
+ * Add a 'true' ezp.wrapped_ attribute to the connection and register the newly created input to be filled later.
  * @param {string} name Language-neutral identifier which may used to find this
  *     input again.  Should be unique to this block.
  * @return {!Blockly.Input} The input object created.
  */
-ezP.Block.prototype.appendWrapValueInput = function(name, prototypeName) {
+ezP.Block.prototype.appendWrapValueInput = function(name, prototypeName, optional, hidden) {
   goog.asserts.assert(prototypeName, 'Missing prototypeName, no block to seal')
+  goog.asserts.assert(ezP.T3.All.containsExpression(prototypeName), 'Unnown prototypeName, no block to seal '+prototypeName)
   var input = this.appendValueInput(name)
-  input.connection.ezpData.wrapped_ = true
+  input.connection.ezp.wrapped_ = true
   input.connection.setHidden(true)
   if (!this.ezp.wrappedInputs_) {
     this.ezp.wrappedInputs_ = []
   }
-  this.ezp.wrappedInputs_.push([input, prototypeName])
+  if (!optional) {
+    this.ezp.wrappedInputs_.push([input, prototypeName])
+  }
   return input
 };
 

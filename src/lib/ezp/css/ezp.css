@@ -5,51 +5,6 @@ body {
 .ezp_no_options .ezp-menuitem-checkbox, .ezp-hidden {
   display: none;
 }
-
-.blocklyWidgetDiv .ezp-menuitem {
-  color: #000;
-  list-style: none;
-  margin: 0;
-   /* 28px on the left for icon or checkbox; 7em on the right for shortcut. */
-  /*padding: 4px 6px 4px 28px;*/
-  white-space: nowrap;
-}
-
-/* State: disabled. */
-.blocklyWidgetDiv .ezp-menuitem-disabled .ezp-menuitem-accel,
-.blocklyWidgetDiv .ezp-menuitem-disabled .ezp-menuitem-content {
-  color: #ccc !important;
-}
-
-.blocklyWidgetDiv .ezp-menuitem-disabled .ezp-menuitem-icon {
-  opacity: 0.3;
-  -moz-opacity: 0.3;
-  filter: alpha(opacity=30);
-}
-
-/* Keyboard shortcut ("accelerator") style. */
-.blocklyWidgetDiv .ezp-menuitem-accel {
-  color: #999;
-   /* Keyboard shortcuts are untranslated; always left-to-right. */
-   /* #noflip */
-  direction: ltr;
-  left: auto;
-  padding: 0 6px;
-  position: absolute;
-  right: 0;
-  text-align: right;
-}
-
-/* Mnemonic styles. */
-.blocklyWidgetDiv .ezp-menuitem-mnemonic-hint {
-  text-decoration: underline;
-}
-
-.blocklyWidgetDiv .ezp-menuitem-mnemonic-separator {
-  color: #999;
-  font-size: 12px;
-  padding-left: 4px;
-}
 .ezp-checkbox-icon-mark{
   stroke: none;
   fill: white;
@@ -90,7 +45,7 @@ body {
   z-index: 20000; /* Arbitrary, but some apps depend on it... */
 }
 
-.ezp-key-value-menuitem-hover {
+.ezp-menuitem-code:hover {
   background-color: #d6e9f8;
 /*  border-color: #d6e9f8;
   border-style: dotted;
@@ -103,7 +58,7 @@ body {
   -moz-opacity: 0.05;
   filter: alpha(opacity=5);
 }
-.ezp-selected .ezp-menu-icon,
+.ezp-select .ezp-menu-icon,
 .ezp-menu-icon:hover,
 .ezp-path-play:hover {
   opacity: 0.3;
@@ -112,52 +67,30 @@ body {
   cursor: pointer;
 }
 
-.ezp-menuitem, .ezp-submenu, .ezp-menuitem-code, .ezp-menuitem-var {
+.ezp-menuitem, .ezp-submenu {
   color: #000;
   font: normal 13px Arial, sans-serif;
+}
+.ezp-menuitem, .ezp-submenu, .ezp-menuitem-code, .ezp-menuitem-var {
   list-style: none;
   margin: 0;
   /* 28px on the left for icon or checkbox; 7em on the right for shortcut. */
-  padding: 4px 7em 4px 28px;
+  padding: 4px 20px 4px 8px;
   white-space: nowrap;
-}
-
-/* BiDi override for the resting state. */
-/* @noflip */
-.ezp-menuitem.ezp-menuitem-rtl {
-  /* Flip left/right padding for BiDi. */
-  padding-left: 7em;
-  padding-right: 28px;
-}
-
-/* If a menu doesn't have checkable items or items with icons, remove padding. */
-.ezp-nocheckbox.ezp-menuitem,
-.ezp-nocheckbox.ezp-submenu,
-.ezp-nocheckbox.ezp-menuitem-code,
-.ezp-nocheckbox.ezp-menuitem-var,
-.ezp-menu-noicon .ezp-menuitem {
-  padding-left: 8px;
 }
 
 /*
  * If a menu doesn't have items with shortcuts, leave just enough room for
  * submenu arrows, if they are rendered.
  */
-.ezp-noaccel.ezp-menuitem,
-.ezp-noaccel.ezp-submenu,
-.ezp-noaccel.ezp-menuitem-code,
-.ezp-noaccel.ezp-menuitem-var {
-  padding-right: 20px;
+.ezp-accel.ezp-menuitem,
+.ezp-accel.ezp-submenu {
+  padding-right: 7em;
 }
 
 .ezp-nosubmenu .ezp-noaccel.ezp-menuitem-code,
 .ezp-nosubmenu .ezp-noaccel.ezp-menuitem-var {
   padding-right: 8px;
-}
-
-.ezp-menuitem-content {
-  color: #000;
-  font: normal 13px Arial, sans-serif;
 }
 
 /* State: disabled. */
@@ -201,21 +134,6 @@ body {
   width: 16px;
 }
 
-/* BiDi override for the selected/checked state. */
-/* @noflip */
-.ezp-menuitem-rtl .ezp-menuitem-checkbox,
-.ezp-menuitem-rtl .ezp-menuitem-icon {
-  /* Flip left/right positioning. */
-  left: auto;
-  right: 6px;
-}
-
-.ezp-option-selected .ezp-menuitem-checkbox,
-.ezp-option-selected .ezp-menuitem-icon {
-  /* Client apps may override the URL at which they serve the sprite. */
-  background: url(//ssl.gstatic.com/editor/editortoolbar.png) no-repeat -512px 0;
-}
-
 /* Keyboard shortcut ("accelerator") style. */
 .ezp-menuitem-accel {
   color: #999;
@@ -226,15 +144,6 @@ body {
   position: absolute;
   right: 0;
   text-align: right;
-}
-
-/* BiDi override for shortcut style. */
-/* @noflip */
-.ezp-menuitem-rtl .ezp-menuitem-accel {
-  /* Flip left/right positioning and text alignment. */
-  left: 0;
-  right: auto;
-  text-align: left;
 }
 
 /* Mnemonic styles. */
@@ -349,4 +258,13 @@ body {
   font-weight: bold;
   font-family: arial, sans-serif;
   font-size: 13px;
+}
+.ezp-html-input {
+  border: none;
+  border-radius: 4px;
+  height: 100%;
+  margin: 0;
+  outline: none;
+  padding: 0 1px;
+  width: 100%
 }

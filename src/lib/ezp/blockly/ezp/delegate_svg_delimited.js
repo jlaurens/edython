@@ -25,20 +25,18 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Expr.parenth_form = function (prototypeName) {
   ezP.DelegateSvg.Expr.parenth_form.superClass_.constructor.call(this, prototypeName)
-  this.outputCheck = ezP.T3.parenth_form
-  this.sealedPrototypeName = ezP.Const.Expr.starred_item_list
-  this.inputData = {
-    first: {
-      check: ezP.T3.starred_item_list,
-      label: '(',
-      wrap: ezP.Const.Expr.starred_item_list
-    }
+  this.outputModel_.check = ezP.T3.Expr.parenth_form
+  this.inputModel_.first = {
+    awaitable: true,
+    key: ezP.Key.LIST,
+    start: '(',
+    wrap: ezP.T3.Expr.starred_item_list,
+    end: ')',
   }
-  this.labelEnd = ')'
 }
 goog.inherits(ezP.DelegateSvg.Expr.parenth_form, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.parenth_form, ezP.DelegateSvg.Expr.parenth_form)
+ezP.DelegateSvg.Manager.register('parenth_form')
 
 /**
  * Class for a DelegateSvg, list_display block.
@@ -49,18 +47,17 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.parenth_form, ezP.DelegateSvg.Ex
  */
 ezP.DelegateSvg.Expr.list_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.list_display.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
-    first: {
-      check: ezP.T3.starred_list_comprehensive,
-      label: '[',
-      wrap: ezP.Const.Expr.starred_list_comprehensive
-    }
+  this.inputModel_.first = {
+    awaitable: true,
+    key: ezP.Key.LIST,
+    start: '[',
+    wrap: ezP.T3.Expr.starred_item_list_comprehensive,
+    end: ']',
   }
-  this.labelEnd = ']'
+  this.outputModel_.Check = ezP.T3.Expr.list_display
 }
 goog.inherits(ezP.DelegateSvg.Expr.list_display, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.list_display, ezP.DelegateSvg.Expr.list_display)
+ezP.DelegateSvg.Manager.register('list_display')
 
 /**
  * Class for a DelegateSvg, set_display block.
@@ -71,19 +68,17 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.list_display, ezP.DelegateSvg.Ex
  */
 ezP.DelegateSvg.Expr.set_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.set_display.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
-    first: {
-      check: ezP.T3.non_void_starred_list_comprehensive,
-      label: '{',
-      wrap: ezP.Const.Expr.non_void_starred_list_comprehensive
-    }
+  this.inputModel_.first = {
+    awaitable: true,
+    key: ezP.Key.LIST,
+    start: '{',
+    wrap: ezP.T3.Expr.non_void_starred_item_list_comprehensive,
+    end: '}',
   }
-  this.labelEnd = '}'
-  this.outputCheck = ezP.T3.set_display
+  this.outputModel_.check = ezP.T3.Expr.set_display
 }
 goog.inherits(ezP.DelegateSvg.Expr.set_display, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.set_display, ezP.DelegateSvg.Expr.set_display)
+ezP.DelegateSvg.Manager.register('set_display')
 
 /**
  * Class for a DelegateSvg, dict_display block.
@@ -94,19 +89,17 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.set_display, ezP.DelegateSvg.Exp
  */
 ezP.DelegateSvg.Expr.dict_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.dict_display.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
-    first: {
-      check: ezP.T3.key_datum_list_comprehensive,
-      label: '{',
-      wrap: ezP.Const.Expr.key_datum_list_comprehensive
-    }
+  this.inputModel_. first = {
+    awaitable: true,
+    key: ezP.Key.LIST,
+    start: '{',
+    wrap: ezP.T3.Expr.key_datum_list_comprehensive,
+    end: '}',
   }
-  this.labelEnd = '}'
-  this.outputCheck = ezP.T3.dict_display
+  this.outputModel_.check = ezP.T3.Expr.dict_display
 }
 goog.inherits(ezP.DelegateSvg.Expr.dict_display, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.dict_display, ezP.DelegateSvg.Expr.dict_display)
+ezP.DelegateSvg.Manager.register('dict_display')
 
 /**
  * Class for a DelegateSvg, generator expression block.
@@ -118,19 +111,18 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.dict_display, ezP.DelegateSvg.Ex
  */
 ezP.DelegateSvg.Expr.generator_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.generator_expression.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
-    first: {
-      check: ezP.T3.comprehension,
-      label: '{',
-      wrap: ezP.Const.Expr.comprehension
-    }
+  this.inputModel_.first = {
+    awaitable: true,
+    key: ezP.Key.COMPREHENSION,
+    start: '{',
+    wrap: ezP.T3.Expr.comprehension,
+    end: '}',
   }
-  this.labelEnd = '}'
-  this.outputCheck = ezP.T3.generator_expression
+  this.outputModel_.check = ezP.T3.Expr.generator_expression
 }
 goog.inherits(ezP.DelegateSvg.Expr.generator_expression, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.generator_expression, ezP.DelegateSvg.Expr.generator_expression)
+ezP.DelegateSvg.Manager.register('generator_expression')
 
 /**
  * Class for a DelegateSvg, 'slice ...' block.
@@ -141,16 +133,14 @@ ezP.DelegateSvg.Manager.register(ezP.Const.Expr.generator_expression, ezP.Delega
  */
 ezP.DelegateSvg.Expr.display_slice_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.display_slice_list.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
-    first: {
-      check: ezP.T3.slice_list,
-      label: '[',
-      wrap: ezP.Const.Expr.slice_list
-    }
+  this.inputModel_.first = {
+    key: ezP.Key.LIST,
+    start: '[',
+    wrap: ezP.T3.Expr.slice_list,
+    end: ']',
   }
-  this.labelEnd = ']'
-  this.outputCheck = ezP.T3.display_slice_list
+  this.outputModel_.check = ezP.T3.Expr.display_slice_list
 }
 goog.inherits(ezP.DelegateSvg.Expr.display_slice_list, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.display_slice_list, ezP.DelegateSvg.Expr.display_slice_list)
+ezP.DelegateSvg.Manager.register('display_slice_list')

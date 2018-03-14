@@ -15,66 +15,89 @@ goog.provide('ezP.DelegateSvg.Lambda')
 
 goog.require('ezP.DelegateSvg.List')
 goog.require('ezP.DelegateSvg.Expr')
+goog.require('Blockly.RenderedConnection')
 
 /**
- * Class for a DelegateSvg, lambda_expr block.
+ * Class for a DelegateSvg, lambda_expr and lambda_expr_nocond block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Lambda = function (prototypeName) {
-  ezP.DelegateSvg.Lambda.superClass_.constructor.call(this, prototypeName)
-  this.inputData = {
+ezP.DelegateSvg.Expr.lambda_expression = function (prototypeName) {
+  ezP.DelegateSvg.Expr.lambda_expression.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_ = {
     first: {
-      key: ezP.Const.Input.PARS,
+      key: ezP.Key.LIST,
       label: 'lambda',
-      check: ezP.T3.parameter_list,
-      wrap: ezP.Const.Expr.parameter_list
+      css_class: 'ezp-code-reserved',
+      wrap: ezP.T3.Expr.parameter_list,
     },
     last: {
-      key: ezP.Const.Input.EXPR,
+      key: ezP.Key.EXPRESSION,
       label: ':',
-      check: this.epressionType
+      check: ezP.T3.Expr.Check.expression.concat(ezP.T3.Expr.Check.expression_nocond),
+      didConnect: function(oldTargetConnection, oldConnectionn) {
+        this.updateLambdaCheck()
+      },
+      didDisconnect: function(oldTargetConnection) {
+        this.updateLambdaCheck()
+      },
     }
   }
+  this.outputModel_ = {
+    check: [ezP.T3.Expr.lambda_expr, ezP.T3.Expr.lambda_expr_nocond],
+    didConnect: function(oldTargetConnection, oldConnection) {
+      this.updateLambdaCheck()
+    },
+    didDisconnect: function(oldTargetConnection) {
+      this.updateLambdaCheck()
+    },
+  }
 }
-goog.inherits(ezP.DelegateSvg.Lambda, ezP.DelegateSvg.Expr)
+goog.inherits(ezP.DelegateSvg.Expr.lambda_expression, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('lambda_expression')
 
-ezP.DelegateSvg.Lambda.prototype.expressionType = undefined
+ezP.DelegateSvg.Expr.lambda_expr = ezP.DelegateSvg.Expr.lambda_expr_nocond = ezP.DelegateSvg.Expr.lambda_expression
 
-/**
- * Class for a DelegateSvg, lambda_expr block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.lambda_expr = function (prototypeName) {
-  ezP.DelegateSvg.Expr.lambda_expr.superClass_.constructor.call(this, prototypeName)
-  this.expressionType = ezP.T3.Require.expression
-  this.outputCheck = ezP.T3.lambda_expr
+ezP.DelegateSvg.Manager.register('lambda_expr')
+ezP.DelegateSvg.Manager.register('lambda_expr_nocond')
+
+ezP.ConnectionDelegate.prototype.updateLambdaCheck = function() {
+  var block = this.connection.sourceBlock_
+  if (block) {
+    var c8nOut = block.outputConnection
+    var c8nIn = block.ezp.inputs.last.input.connection
+    var nocond_only_out = false
+    var targetC8n = c8nOut.targetConnection
+    if (targetC8n) {
+      var nocond_only_out = targetC8n.check_.indexOf(ezP.T3.Expr.lambda_expr) < 0
+    }
+    var cond_in = true // cond are accepted by default
+    var nocond_in = true // nocond not accepted by default
+    targetC8n = c8nIn.targetConnection
+    if (targetC8n) {
+      cond_in = false
+      for (var i = 0, t; (t = ezP.T3.Expr.Check.expression[++i]);) {
+        if (targetC8n.check_.indexOf(t) >= 0) {
+          cond_in = true
+          break
+        }
+      }
+      nocond_in = false
+      for (var i = 0, t; (t = ezP.T3.Expr.Check.expression_nocond[++i]);) {
+        if (targetC8n.check_.indexOf(t) >= 0) {
+          nocond_in = true
+          break
+        }
+      }
+    }
+    c8nIn.setCheck(nocond_only_out?
+      ezP.T3.Expr.Check.expression_nocond:
+      ezP.T3.Expr.Check.expression.concat(ezP.T3.Expr.Check.expression_nocond))
+    c8nOut.setCheck(
+      (cond_in?[ezP.T3.Expr.lambda_expr]: []).concat(nocond_in?[ezP.T3.Expr.lambda_expr_nocond]: [])
+    )
+  }
 }
-goog.inherits(ezP.DelegateSvg.Expr.lambda_expr, ezP.DelegateSvg.Lambda)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.lambda_expr, ezP.DelegateSvg.Expr.lambda_expr)
-
-/**
- * Class for a DelegateSvg, lambda_expr_nocond block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.lambda_expr_nocond = function (prototypeName) {
-  ezP.DelegateSvg.Expr.lambda_expr_nocond.superClass_.constructor.call(this, prototypeName)
-  this.expressionType = ezP.T3.Require.expression_nocond
-  this.outputCheck = ezP.T3.lambda_expr_nocond
-}
-goog.inherits(ezP.DelegateSvg.Expr.lambda_expr_nocond, ezP.DelegateSvg.Lambda)
-
-ezP.DelegateSvg.Manager.register(ezP.Const.Expr.lambda_expr_nocond, ezP.DelegateSvg.Expr.lambda_expr_nocond)
-

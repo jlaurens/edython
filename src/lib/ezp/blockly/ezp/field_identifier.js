@@ -11,10 +11,7 @@
  */
 'use strict'
 
-goog.provide('ezP.FieldVariable.Identifier')
-goog.provide('ezP.FieldVariable.Annotation')
-goog.provide('ezP.FieldVariable.Default')
-goog.provide('ezP.FieldVariable.Menu')
+goog.provide('ezP.FieldIdentifier')
 
 goog.require('ezP.FieldCodeInput')
 goog.require('ezP.Style')
@@ -30,24 +27,24 @@ goog.require('ezP.Style')
  * @extends {ezP.FieldCodeInput}
  * @constructor
  */
-ezP.FieldVariable.Identifier = function (identifier, optValidator) {
-  ezP.FieldVariable.Identifier.superClass_.constructor.call(this, identifier, optValidator)
+ezP.FieldIdentifier = function (identifier, optValidator) {
+  ezP.FieldIdentifier.superClass_.constructor.call(this, identifier, optValidator)
 }
-goog.inherits(ezP.FieldVariable.Identifier, ezP.FieldCodeInput)
+goog.inherits(ezP.FieldIdentifier, ezP.FieldCodeInput)
 
 /**
  * Attach this field to a block.
  * @param {!Blockly.Block} block The block containing this field.
  */
-ezP.FieldVariable.Identifier.prototype.setSourceBlock = function(block) {
-  ezP.FieldVariable.Identifier.superClass_.setSourceBlock.call(this, block)
+ezP.FieldIdentifier.prototype.setSourceBlock = function(block) {
+  ezP.FieldIdentifier.superClass_.setSourceBlock.call(this, block)
   var workspace = this.sourceBlock_.workspace
   if (workspace && !workspace.getVariable(this.getValue())) {
      workspace.createVariable(this.getValue())
   }
 };
 
-ezP.FieldVariable.Identifier.prototype.getSerializedXml = function () {
+ezP.FieldIdentifier.prototype.getSerializedXml = function () {
   var container = goog.dom.createDom('field')
   container.setAttribute('name', this.name)
   container.setAttribute('value', this.getValue())
@@ -59,7 +56,7 @@ ezP.FieldVariable.Identifier.prototype.getSerializedXml = function () {
   return container
 }
 
-ezP.FieldVariable.Identifier.prototype.deserializeXml = function (xml) {
+ezP.FieldIdentifier.prototype.deserializeXml = function (xml) {
   // TODO (marisaleung): When we change setValue and getValue to
   // interact with id's instead of names, update this so that we get
   // the variable based on id instead of textContent.
@@ -93,15 +90,14 @@ ezP.FieldVariable.Identifier.prototype.deserializeXml = function (xml) {
   this.setValue(variable.name)
 }
 
-
 /**
  * Create and show a text input editor that is a prompt (usually a popup).
  * Mobile browsers have issues with in-line textareas (focus and keyboards).
  * @private
  */
-ezP.FieldVariable.Identifier.prototype.showPromptEditor_ = function () {
+ezP.FieldIdentifier.prototype.showPromptEditor_ = function () {
   var fieldText = this
-  var prompt = ezP.Msg.RENAME_VARIABLE_TITLE.replace('%1', this.text_)
+  var prompt = ezP.Msg.IDENTIFIER_RENAME_TITLE.replace('%1', this.text_)
   Blockly.prompt(prompt, this.text_,
     function (newValue) {
       if (fieldText.sourceBlock_) {
@@ -112,32 +108,22 @@ ezP.FieldVariable.Identifier.prototype.showPromptEditor_ = function () {
 }
 
 /**
- * Close the editor, save the results, and dispose of the editable
- * text field's elements.
- * @return {!Function} Closure to call on destruction of the WidgetDiv.
- * @private
- */
-ezP.FieldVariable.Identifier.prototype.widgetDispose_ = Blockly.FieldTextInput.prototype.widgetDispose_
-
-/**
  * Called when focusing away from the text field.
  * @param {string} newName The new variable name.
  * @private
- * @this ezP.FieldVariable
+ * @this ezP.FieldIdentifier
  */
-ezP.FieldVariable.Identifier.prototype.onFinishEditing_ = function (newName) {
+ezP.FieldIdentifier.prototype.onFinishEditing_ = function (newName) {
   var oldName = this.savedValue_
   var workspace = this.sourceBlock_.workspace
   var VM = workspace.getVariable(newName)
-  if (!VM) {
-    goog.asserts.assert(workspace.getVariable(oldName), 'Missing variable')
-    workspace.renameVariable(oldName, newName)
-  }
-  var allBlocks = workspace.getAllBlocks()
-  for (var _ = 0, B; B = allBlocks[_++];) {
-    var field = B.ezp.fieldIdentifier
-    if (field && field.getValue() === oldName) {
-      field.setValue(newName)
+  if (VM) {
+    var allBlocks = workspace.getAllBlocks()
+    for (var _ = 0, B; B = allBlocks[_++];) {
+      var field = B.ezp.fieldIdentifier
+      if (field && field.getValue() === oldName) {
+        field.setValue(newName)
+      }
     }
   }
 }
@@ -148,40 +134,23 @@ ezP.FieldVariable.Identifier.prototype.onFinishEditing_ = function (newName) {
  *     focus.
  * @private
  */
-ezP.FieldVariable.Identifier.prototype.showInlineEditor_ = function(optQuietInput) {
+ezP.FieldIdentifier.prototype.showInlineEditor_ = function(optQuietInput) {
   this.savedValue_ = this.getValue()
-  ezP.FieldVariable.Identifier.superClass_.showInlineEditor_.call(this, optQuietInput)
+  ezP.FieldIdentifier.superClass_.showInlineEditor_.call(this, optQuietInput)
 }
-  
 
-/**
- * Class for a variable's annotation field.
- * @param {?string} varname The default name for the variable.  If null,
- *     a unique variable name will be generated.
- * @param {Function=} optValidator A function that is executed when a new
- *     option is selected.  Its sole argument is the new option value.
- * @param {Array.<string>} optVariableTypes A list of the types of variables to
- *     include in the dropdown.
- * @extends {ezP.FieldCodeInput}
- * @constructor
- */
-ezP.FieldVariable.Annotation = function (annotation, optValidator) {
-  ezP.FieldVariable.Annotation.superClass_.constructor.call(this, annotation, optValidator)
+ezP.FieldIdentifier.prototype.showIdentifierEditor = function(a) {
+  this.workspace_=this.sourceBlock_.workspace
+  a=a||!1
+  !a&&(goog.userAgent.MOBILE||goog.userAgent.ANDROID||goog.userAgent.IPAD)?this.showIdentifierPromptEditor_():(this.isEditingIdentifier_=!0,this.showIdentifierInlineEditor_(a))
 }
-goog.inherits(ezP.FieldVariable.Annotation, ezP.FieldCodeInput)
 
-/**
- * Class for a variable's default field.
- * @param {?string} varname The default name for the variable.  If null,
- *     a unique variable name will be generated.
- * @param {Function=} optValidator A function that is executed when a new
- *     option is selected.  Its sole argument is the new option value.
- * @param {Array.<string>} optVariableTypes A list of the types of variables to
- *     include in the dropdown.
- * @extends {ezP.FieldCodeInput}
- * @constructor
- */
-ezP.FieldVariable.Default = function (def, optValidator) {
-  ezP.FieldVariable.Default.superClass_.constructor.call(this, def, optValidator)
+ezP.FieldIdentifier.prototype.showIdentifierPromptEditor_ = function(){
+  var a=this,b=ezP.Msg.IDENTIFIER_RENAME_TITLE.replace("%1",this.text_)
+  Blockly.prompt(b, this.text_, function(b){
+    a.sourceBlock_&&(b=a.callValidator(b));
+    a.setValue(b)
+  })
 }
-goog.inherits(ezP.FieldVariable.Default, ezP.FieldCodeInput)
+
+ezP.FieldIdentifier.prototype.showIdentifierInlineEditor_ = ezP.FieldIdentifier.prototype.showInlineEditor_

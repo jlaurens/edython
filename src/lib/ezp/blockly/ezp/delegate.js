@@ -12,10 +12,43 @@
 'use strict'
 
 goog.provide('ezP.Delegate')
-goog.provide('ezP.TupleConsolidator')
+goog.provide('ezP.Mixin')
 
 goog.require('ezP.Helper')
+goog.require('Blockly.Blocks')
+
+goog.require('ezP.T3')
 goog.forwardDeclare('ezP.Block')
+
+/**
+ * mixin manager.
+ * Adds mixin contents to constructor's prototype
+ * if not already there.
+ * Using strings as parameters is a facility that
+ * must not be used in case the constructor is meant
+ * to replace an already registered one.
+ * For objects in constructor.mixins, does a mixin
+ * on the constructor's prototype
+ * Mixins do not play well with inheritance.
+ * For ezPython.
+ * @param {!constructor} constructor is either a constructor or the name of a constructor.
+ */
+ezP.Mixin = function (constructor) {
+  var C = ezP.Delegate.Manager.get(constructor) || constructor
+  var Ms = goog.isArray(mixins)? mixins:
+  mixins? [mixins]: C.mixins
+  if (Ms) {
+    var target = C.prototype
+    for (var i = 0, m; (m = Ms[i++]);) {
+      var source = ezP.Mixin[m] || m
+      for (var x in source) {
+        if (!target.hasOwnProperty(x)) {
+          target[x] = source[x]
+        }
+      }
+    }
+  }
+}
 
 /**
  * Class for a Block Delegate.
@@ -27,8 +60,27 @@ goog.forwardDeclare('ezP.Block')
  */
 ezP.Delegate = function (prototypeName) {
   ezP.Delegate.superClass_.constructor.call(this)
+  this.initModel()
 }
 goog.inherits(ezP.Delegate, ezP.Helper)
+
+/**
+ * Inits the various input data.
+ * Called by the constructor.
+ * Separated to be mixed in.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.Delegate.prototype.initModel = function (prototypeName) {
+  this.inputModel_ = {}
+}
+
+ezP.Delegate.prototype.inputModel = undefined
+ezP.Delegate.prototype.outputModel = undefined
+ezP.Delegate.prototype.statementModel = undefined
+
 /**
  * Delegate manager.
  * @param {?string} prototypeName Name of the language object containing
@@ -39,7 +91,7 @@ ezP.Delegate.Manager = function () {
   var defaultCtor = undefined
   var defaultDelegate = undefined
   /**
-   * DelegateSvg creator.
+   * Delegate instance creator.
    * @param {?string} prototypeName Name of the language object containing
    */
   me.create = function (prototypeName, delegate) {
@@ -47,38 +99,129 @@ ezP.Delegate.Manager = function () {
       return delegate
     }
     var Ctor = Ctors[prototypeName]
-    if (Ctor !== undefined) {
-      return new Ctor(prototypeName)
-    }
-    var Ks = prototypeName.split('_')
-    if (Ks[0] === 'ezp') {
-      while (Ks.length > 1) {
-        Ks.splice(-1, 1)
-        var name = Ks.join('_')
-        Ctor = Ctors[name]
-        if (Ctor !== undefined) {
-          Ctors[prototypeName] = Ctor
-          return new Ctor(prototypeName)
-        }
-      }
-      Ctors[prototypeName] = defaultCtor
-      return new defaultCtor(prototypeName)
-    }
-    return defaultDelegate
+    goog.asserts.assert(Ctor, 'No delegate for '+prototypeName)
+    return new Ctor(prototypeName)
+  }
+  /**
+   * Get the Delegate constructor for the given prototype name.
+   * @param {?string} prototypeName Name of the language object containing
+   */
+  me.get = function (prototypeName) {
+    return Ctors[prototypeName]
+  }
+  /**
+   * Get the Delegate constructor for the given prototype name.
+   * @param {?string} prototypeName Name of the language object containing
+   */
+  me.getTypes = function () {
+    return Object.keys(Ctors)
+  }
+  /**
+   * Get the inputModel for that prototypeName.
+   * @param {?string} prototypeName Name of the language object containing
+   * @return void object if no delegate is registered for that name
+   */
+  me.getInputModel = function (prototypeName) {
+    var Ctor = Ctors[prototypeName]
+    return Ctor? Ctor.prototype.inputModel: {}
+  }
+  /**
+   * Get the outputModel for that prototypeName.
+   * @param {?string} prototypeName Name of the language object containing
+   * @return void object if no delegate is registered for that name
+   */
+  me.getOutputModel = function (prototypeName) {
+    var Ctor = Ctors[prototypeName]
+    return Ctor? Ctor.prototype.outputModel: {}
+  }
+  /**
+   * Get the statementModel for that prototypeName.
+   * @param {?string} prototypeName Name of the language object containing
+   * @return void object if no delegate is registered for that name
+   */
+  me.getStatementModel = function (prototypeName) {
+    var Ctor = Ctors[prototypeName]
+    return Ctor? Ctor.prototype.statementModel: {}
   }
   /**
    * Delegate registrator.
+   * 
+   * Computes and caches inputModel, outputModel and statementModel
+   * only once from the creation of the delegate.
+   * 
+   * The last delegate registered for a given prototype name wins.
    * @param {?string} prototypeName Name of the language object containing
    * @param {Object} constructor
+   * @private
    */
-  me.register = function (prototypeName, Ctor) {
+  me.registerDelegate_ = function (prototypeName, Ctor) {
     // console.log(prototypeName+' -> '+Ctor)
     Ctors[prototypeName] = Ctor
+    goog.asserts.assert(me.create(prototypeName), 'Registration failure: '+prototypeName)
+    // cache all the input, output and statement data at the prototype level
+    // the input data are constructed below with inheritance support
+    // as side effect of manager creation but this is immutability design
+    var dlgt = me.create(prototypeName)
+    var D = dlgt.inputModel_
+    if (D && Object.keys(D).length) {
+      Ctor.prototype.inputModel = D
+      if (D.first) {
+        D.first.check = ezP.Do.ensureArray(D.first.check||D.first.wrap)
+      }
+      if (D.middle) {
+        D.middle.check = ezP.Do.ensureArray(D.middle.check||D.middle.wrap)
+      }
+      if (D.last) {
+        D.last.check = ezP.Do.ensureArray(D.last.check||D.last.wrap)
+      }
+    }
+    if ((D = dlgt.outputModel_) && Object.keys(D).length) {
+      Ctor.prototype.outputModel = D
+      D.check = ezP.Do.ensureArray(D.check)
+    }
+    if ((D = dlgt.statementModel_) && Object.keys(D).length) {
+      Ctor.prototype.statementModel = D
+      try {
+        D.previous.check = ezP.Do.ensureArray(D.previous.check)
+        D.next.check = ezP.Do.ensureArray(D.next.check)
+      } finally {}
+    }
   }
-  me.registerDefault = function (Ctor) {
-    // console.log(prototypeName+' -> '+Ctor)
-    Ctors['ezp_default'] = Ctor
-    return defaultDelegate = new Ctor('ezp_default')
+  /**
+   * Handy method to register an expression or statement block.
+   */
+  me.register = function (key) {
+    var prototypeName = ezP.T3.Expr[key]
+    var Ctor = undefined
+    var available = undefined
+    if (prototypeName) {
+      Ctor = ezP.Delegate[key]
+      available = ezP.T3.Expr.Available
+    } else if ((prototypeName = ezP.T3.Stmt[key])) {
+      Ctor = ezP.Delegate[key]
+      available = ezP.T3.Stmt.Available
+    } else {
+      throw "Unknown block ezP.T3.Expr or ezP.T3.Stmt key: "+key
+    }
+    ezP.Mixin(Ctor)
+    me.registerDelegate_(prototypeName, Ctor)
+    available.push(prototypeName)
+    Blockly.Blocks[prototypeName] = {}
+  }
+  me.registerAll = function (keyedPrototypeNames, Ctor, fake) {
+    var k
+    for (k in keyedPrototypeNames) {
+      k = keyedPrototypeNames[k]
+      if (typeof k === 'string' || k instanceof String) {
+//        console.log('Registering', k)
+        me.registerDelegate_(k, Ctor)
+        if (fake) {
+          k = k.replace('ezp_', 'ezp_fake_')
+//          console.log('Registering', k)
+          me.registerDelegate_(k, Ctor)
+        }
+      }
+    }
   }
   me.display = function() {
     var keys = Object.keys(Ctors)
@@ -90,29 +233,94 @@ ezP.Delegate.Manager = function () {
   return me
 }()
 
-Blockly.Block.prototype.ezp = ezP.Delegate.Manager.registerDefault(ezP.Delegate)
+// register this delegate for all the T3 types
+
+ezP.Delegate.Manager.registerAll(ezP.T3.Expr, ezP.Delegate)
+ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.Delegate)
 
 /**
  * The python type of the owning block.
  */
-ezP.Delegate.prototype.pythonType_ = undefined
+ezP.Delegate.prototype.pythonSort_ = undefined
+
+/**
+ * The real type of the owning block.
+ * There are fake blocks initially used for debugging purposes.
+ * For a block type ezp_fake_foo, the delegate type is ezp_foo.
+ */
+ezP.Delegate.prototype.type_ = undefined
+
+/**
+ * Set the [python ]type of the delegate according to the type of the block.
+ * @param {!Blockly.Block} block to be initialized..
+ * @constructor
+ */
+ezP.Delegate.prototype.setupType = function (block) {
+  var regex = new RegExp("^ezp_((?:fake_)?(.*))$")
+  var m = regex.exec(block.type)
+  this.pythonSort_ = m? m[1]: block.type
+  this.type_ = m? 'ezp_'+m[2]: block.type
+}
 
 /**
  * Initialize a block.
  * @param {!Blockly.Block} block to be initialized..
- * @extends {Blockly.Block}
- * @constructor
+ * For subclassers eventually
  */
 ezP.Delegate.prototype.initBlock = function (block) {
-  var regex = new RegExp("^ezp_\\S+?_(.*)$")
-  var m = regex.exec(block.type)
-  this.pythonType_ = m? m[1]: block.type
+  this.setupType(block)
+  var D = this.outputModel_
+  if (D && Object.keys(D).length) {
+    block.setOutput(true, D.check)
+    var ezp = block.outputConnection.ezp
+    if (goog.isFunction(D.willConnect)) {
+      ezp.willConnect = D.willConnect
+    }
+    if (goog.isFunction(D.didConnect)) {
+      ezp.didConnect = D.didConnect
+    }
+    if (goog.isFunction(D.willDisconnect)) {
+      ezp.willDisconnect = D.willDisconnect
+    }
+    if (goog.isFunction(D.didDisconnect)) {
+      ezp.didDisconnect = D.didDisconnect
+    }
+    if (D.do && Object.keys(D.do).length) {
+      goog.mixin(ezp, D.do)
+    }
+  } else if ((D = this.statementModel_) && Object.keys(D).length) {
+    if (D.key) {
+      var input = block.appendStatementInput(D.key).setCheck(D.check) // Check ?
+    }
+    var F = function(D, c8n) {
+      var ezp = c8n.ezp
+      if (goog.isFunction(D.willDisconnect)) {
+        ezp.willDisconnect = D.willDisconnect
+      }
+      if (goog.isFunction(D.didDisconnect)) {
+        ezp.didDisconnect = D.didDisconnect
+      }
+      if (goog.isFunction(D.willConnect)) {
+        ezp.willConnect = D.willConnect
+      }
+      if (goog.isFunction(D.didConnect)) {
+        ezp.didConnect = D.didConnect
+      }
+    }
+    if (D.next) {
+      block.setNextStatement(true, D.next.check)
+      F(D.next, block.nextConnection)
+    }
+    if (D.previous) {
+      block.setPreviousStatement(true, D.previous.check)
+      F(D.previous, block.previousConnection)
+    }
+  }
 }
 
 /**
 * Deinitialize a block. Nothing to do yet.
 * @param {!Blockly.Block} block to be deinitialized..
-* @extends {Blockly.Block}
 * @constructor
 */
 ezP.Delegate.prototype.deinitBlock = function (block) {
@@ -139,300 +347,9 @@ ezP.Delegate.prototype.hasNextStatement_ = function (block) {
 }
 
 /**
- * @param {!Block} block.
- * @return {Number} The max number of inputs. null for unlimited.
- * @private
- */
-ezP.Delegate.prototype.getInputTupleMax = function (block, grp) {
-  return null
-}
-
-ezP.Delegate.prototype.tupleConsolidate = function (block) {
-  var C = this.tupleConsolidator
-  if (!C) {
-    C = this.tupleConsolidator = new ezP.TupleConsolidator_()
-  }
-  C(block)
-}
-
-ezP.TupleConsolidator_ = function () {
-  var block
-  var list, i, input // list of inputs, index, element at index
-  var tuple, grp, n, sep // ezPython data, group, index, separator
-  var start, end, connected, max
-  var hidden
-  var c8n
-  var getCurrent = function (_) {
-    if ((input = list[i])) {
-      tuple = input.ezpTuple
-      c8n = input.connection
-      goog.asserts.assert(!tuple || c8n, 'Tuple item must have a connection')
-      return input
-    }
-    tuple = c8n = null
-    return null
-  }
-  var getNext = function () {
-    ++i
-    return getCurrent()
-  }
-  var rewind = function (_) {
-    n = 0
-    i = start
-    return getCurrent()
-  }
-  var isTuple = function () {
-    return input && (tuple = input.ezpTuple)
-  }
-  var disposeNotAtI = function (notI) {
-    list[notI].dispose()
-    list.splice(notI, 1)
-    --end
-  }
-  var disposeAtI = function () {
-    list[i].dispose()
-    list.splice(i, 1)
-    --end
-    getCurrent()
-  }
-  var disposeFromI = function (bound) {
-    bound = Math.min(bound, end)
-    while (i < bound) {
-      disposeNotAtI(i)
-      --bound
-    }
-    getCurrent()
-  }
-  var disposeToI = function (bound) {
-    bound = Math.max(bound, start)
-    while (bound < i) {
-      disposeNotAtI(bound)
-      --i
-    }
-  }
-  var insertPlaceholderAtI = function () {
-    c8n = block.makeConnection_(Blockly.INPUT_VALUE)
-    input = new Blockly.Input(Blockly.INPUT_VALUE, '_', block, c8n)
-    list.splice(i, 0, input)
-    ++end
-    tuple = input.ezpTuple = {}
-  }
-  var insertSeparatorAtI = function () {
-    insertPlaceholderAtI()
-    tuple.isSeparator = true
-  }
-  var doFinalizeSeparator = function (extreme) {
-    tuple.grp = grp
-    tuple.n = n
-    tuple.sep = sep
-    input.name = 'S7R_' + grp + '_' + n
-    tuple.isSeparator = c8n.ezpData.s7r_ = true
-    c8n.setHidden(hidden)
-    if (extreme) {
-      tuple.hidden = hidden
-      while (input.fieldRow.length) {
-        input.fieldRow.shift().dispose()
-      }
-    } else if (!input.fieldRow.length) {
-      input.appendField(new ezP.FieldLabel(sep || ','))
-    }
-  }
-  var doFinalizePlaceholder = function () {
-    tuple.grp = grp
-    tuple.n = n
-    tuple.sep = sep
-    input.name = 'TUPLE_' + grp + '_' + n++
-    tuple.isSeparator = c8n.ezpData.s7r_ = false
-  }
-  var doGroup = function () {
-    // group bounds and connected
-    n = 0
-    sep = tuple.sep || ','
-    connected = 0
-    start = i
-    var removeSep = false
-    var placeholder
-    do {
-      if (c8n.isConnected()) {
-        ++connected
-        removeSep = tuple.isSeparator = false
-      } else if (removeSep) {
-        disposeNotAtI(i--)
-      } else if (!tuple.isSeparator) {
-        // remove separators before
-        while (i > start) {
-          if (!list[i - 1].ezpTuple.isSeparator) {
-            break
-          }
-          disposeNotAtI(--i)
-        }
-        removeSep = tuple.isSeparator = true
-        placeholder = i
-      }
-      if (!max || connected < max) {
-        if (!getNext() || !isTuple()) {
-          break
-        }
-      } else {
-        while (getNext() && isTuple()) {
-          if (c8n.isConnected()) {
-            c8n.targetBlock().unplug()
-            disposeAtI()
-          } else if (removeSep) {
-            disposeNotAtI(i--)
-          } else if (!tuple.isSeparator) {
-            // remove separators before
-            while (i > start) {
-              if (!list[i - 1].ezpTuple.isSeparator) {
-                break
-              }
-              disposeNotAtI(--i)
-            }
-            removeSep = tuple.isSeparator = true
-          }
-        }
-        break
-      }
-    } while (true)
-    end = i// this group has index [start, end[
-    hidden = max !== null && connected >= max
-    rewind()
-    if (connected) {
-      if (!tuple.isSeparator) {
-        insertSeparatorAtI()
-      }
-      doFinalizeSeparator(true)
-      while (n < connected) { // eslint-disable-line no-unmodified-loop-condition
-        getNext()
-        while (tuple.isSeparator) {
-          disposeAtI()
-        }
-        doFinalizePlaceholder() // increment n
-        getNext()
-        if (!tuple || !tuple.isSeparator) {
-          insertSeparatorAtI()
-        }
-        doFinalizeSeparator(i === end - 1)
-      }
-      while (getNext() && isTuple()) {
-        disposeAtI()
-      }
-    } else if (placeholder !== undefined) {
-      i = placeholder
-      getCurrent()
-      tuple.isSeparator = false
-      doFinalizePlaceholder()
-      disposeToI(start)
-      getNext()
-      disposeFromI(end)
-    } else {
-      disposeToI(start)
-      insertPlaceholderAtI()
-      doFinalizePlaceholder()
-      getNext()
-    }
-  }
-  var consolidator = function (block_) {
-    block = block_
-    var ezp = block.ezp
-    if (!ezp) {
-      return
-    }
-    list = block.inputList
-    i = start = end = 0
-    tuple = grp = n = sep = input = undefined
-    rewind()
-    do {
-      if (isTuple()) {
-        grp = 0
-        max = ezp.getInputTupleMax(block, grp)
-        doGroup()
-        do {
-          tuple = grp = n = sep = input = undefined
-          if (isTuple()) {
-            ++grp
-            max = ezp.getInputTupleMax(block, grp)
-            doGroup()
-          }
-        } while (getNext())
-        return
-      }
-    } while (getNext())
-  }
-  return consolidator
-}
-
-/**
- * Fetches the named input object.
- * @param {!Blockly.Block} block.
- * @param {string} name The name of the input.
- * @return {Blockly.Input} The input object, or null if input does not exist.
- * The undefined return value for the default block getInput implementation.
- */
-ezP.Delegate.prototype.getInputTuple_ = function (block, name) {
-  if (!name.length) {
-    return null
-  }
-  var L = name.split('_')
-  if (L.length !== 3 || L[0] !== 'TUPLE') {
-    return null
-  }
-  var grp = parseInt(L[1])
-  if (isNaN(grp)) {
-    return null
-  }
-  var n = parseInt(L[2])
-  if (isNaN(n)) {
-    return null
-  }
-  var max = this.getInputTupleMax(block, grp)
-  if (max !== null && n >= max) {
-    return null
-  }
-  this.tupleConsolidate(block)
-  var list = block.inputList
-  var i = 0
-  var input
-  while ((input = list[i])) {
-    var tuple = input.ezpTuple
-    if (!tuple || tuple.grp !== grp) {
-      ++i
-      continue
-    }
-    var already = 0
-    do {
-      if (!tuple.isSeparator) {
-        if (tuple.n === n) {
-          return input
-        }
-        ++already
-      } else {
-        var sep = tuple.sep
-      }
-    } while ((input = list[++i]) && (tuple = input.ezpTuple) && tuple.grp === grp)
-    max = this.getInputTupleMax(block, grp)
-    if (max !== null && already + 1 >= max) {
-      return null
-    }
-    var c8n = block.makeConnection_(Blockly.INPUT_VALUE)
-    input = new Blockly.Input(Blockly.INPUT_VALUE, 'S7R_' + grp + '_' + (n + 1), block, c8n)
-    tuple = input.ezpTuple = {grp: grp, n: n + 1, sep: sep, isSeparator: true}
-    input.appendField(new Blockly.FieldLabel(tuple.sep || ','))
-    list.splice(i, 0, input)
-    c8n = block.makeConnection_(Blockly.INPUT_VALUE)
-    input = new Blockly.Input(Blockly.INPUT_VALUE, name, block, c8n)
-    tuple = input.ezpTuple = {grp: grp, n: n, sep: sep}
-    list.splice(i, 0, input)
-    return input
-  }
-  return null
-}
-
-/**
  * The default implementation does nothing.
  * @param {!Blockly.Block} block.
  * @param {boolean} hidden True if connections are hidden.
- * @override
  */
 ezP.Delegate.prototype.setConnectionsHidden = function (block, hidden) {
 }
@@ -445,7 +362,7 @@ ezP.Delegate.prototype.getVars = function (block) {
   var vars = []
   for (var i = 0, input; (input = block.inputList[i]); i++) {
     for (var j = 0, field; (field = input.fieldRow[j]); j++) {
-      if (field instanceof ezP.FieldVariable) {
+      if (field instanceof ezP.FieldIdentifier) {
         vars.push(field.getText())
       }
     }
@@ -457,18 +374,19 @@ ezP.Delegate.prototype.getVars = function (block) {
  * Final tune up depending on the block.
  * Default implementation does nothing.
  * @param {!Blockly.Block} block.
- * @param {!Element} hidden True if connections are hidden.
+ * @param {!Element} element dom element to be completed.
  */
 ezP.Delegate.prototype.toDom = function (block, element) {
 }
 
 /**
  * Final tune up depending on the block.
- * Default implementation does nothing.
+ * Default implementation calls `completeWrapped_`.
  * @param {!Blockly.Block} block.
  * @param {!Element} hidden a dom element.
  */
 ezP.Delegate.prototype.fromDom = function (block, element) {
+  this.completeWrapped_(block)
 }
 /**
  * Same as Block's getDescendants except that it
@@ -476,27 +394,16 @@ ezP.Delegate.prototype.fromDom = function (block, element) {
  * @param {!Blockly.Block} block.
  * @return {!Array.<!Blockly.Block>} Flattened array of blocks.
  */
-ezP.Delegate.prototype.getUnsealedDescendants = function(block) {
+ezP.Delegate.prototype.getWrappedDescendants = function(block) {
   var blocks = [];
   if (!this.wrapped_) {
     blocks.push(block)
   }
   for (var child, x = 0; child = block.childBlocks_[x]; x++) {
-    blocks.push.apply(blocks, child.ezp.getUnsealedDescendants(child))
+    blocks.push.apply(blocks, child.ezp.getWrappedDescendants(child))
   }
   return blocks;
 };
-
-
-/**
- * Final tune up depending on the block.
- * Default implementation does nothing.
- * @param {!Blockly.Block} block.
- * @param {!Element} hidden a dom element.
- */
-ezP.Delegate.prototype.fromDom = function (block, element) {
-  this.completeWrapped_(block)
-}
 
 /**
  * If the sealed connections are not connected,
@@ -508,7 +415,7 @@ ezP.Delegate.prototype.fromDom = function (block, element) {
  * @private
  */
 ezP.Delegate.prototype.completeWrapped_ = function (block) {
-  if (this.wrappedInputs_) {
+  if (Blockly.Events.recordUndo && this.wrappedInputs_) {
     ezP.Delegate.wrappedFireWall = 100
     for (var i = 0; i < this.wrappedInputs_.length; i++) {
       var data = this.wrappedInputs_[i]
@@ -527,26 +434,65 @@ ezP.Delegate.prototype.makeBlockWrapped = function (block) {
 }
 
 /**
- * Complete the sealed block.
- * When created from dom, the connections are established
- * but the nodes were not created sealed.
+ * The default implementation is false.
+ * Subclassers will override this but won't call it.
+ * @param {!Block} block.
+ */
+ezP.Delegate.prototype.canUnwrap = function(block) {
+  return false
+}
+
+/**
+ * The default implementation does nothing.
+ * Subclassers will override this but won't call it.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.Delegate.prototype.makeBlockUnwrapped = function (block) {
+}
+
+/**
+ * The wrapped blocks are special.
  * @param {!Block} block.
  * @private
  */
 ezP.Delegate.prototype.makeBlockWrapped_ = function (block) {
-  if (!block.ezp.wrapped_) {
-    block.ezp.wrapped_ = true
+  if (!block.ezp.wrapped_ && !this.noBlockWrapped(block)) {
     block.ezp.makeBlockWrapped(block)
+    block.ezp.wrapped_ = true
   }
 }
 
 /**
- * Complete the sealed block.
+ * Some block should not be wrapped.
+ * Default implementation returns false
+ * @param {!Block} block.
+ * @return whether the block should be wrapped
+ */
+ezP.Delegate.prototype.noBlockWrapped = function (block) {
+  return false
+}
+
+/**
+ * The wrapped blocks are special.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.Delegate.prototype.makeBlockUnwrapped_ = function (block) {
+  if (block.ezp.wrapped_) {
+    block.ezp.makeBlockUnwrapped(block)
+    block.ezp.wrapped_ = false
+  }
+}
+
+/**
+ * Complete the wrapped block.
  * When created from dom, the connections are established
  * but the nodes were not created sealed.
  * @param {!Block} block.
  * @param {!Input} input.
  * @param {!String} prototypeName.
+ * @return yorn whether a change has been made
  * @private
  */
 ezP.Delegate.prototype.completeWrappedInput_ = function (block, input, prototypeName) {
@@ -556,7 +502,7 @@ ezP.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
       target.ezp.makeBlockWrapped_(target)
       target.ezp.completeWrapped_(target)
     } else {
-      goog.asserts.assert(prototypeName, 'Missing sealing prototype name in block '+block.type)
+      goog.asserts.assert(prototypeName, 'Missing wrapping prototype name in block '+block.type)
       if (ezP.Delegate.wrappedFireWall > 0) {
         --ezP.Delegate.wrappedFireWall
         var target = block.workspace.newBlock(prototypeName)
@@ -564,7 +510,7 @@ ezP.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
         target.ezp.makeBlockWrapped_(target)
         goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed '+target.type)
         input.connection.connect(target.outputConnection)
-        input.connection.ezpData.disabled_ = true
+        input.connection.ezp.disabled_ = true
         target.ezp.completeWrapped_(target)  
       } else {
         console.log('Maximum value reached in completeWrappedInput_ (circular)')
@@ -573,4 +519,315 @@ ezP.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
       }
     }
   }
+}
+
+/**
+ * Will connect this block's connection to another connection.
+ * @param {!Blockly.Block} block
+ * @param {!Blockly.Connection} connection
+ * @param {!Blockly.Connection} childConnection
+ */
+ezP.Delegate.prototype.willConnect = function(block, connection, childConnection) {
+  // console.log('will connect')
+}
+
+/**
+ * Did connect this block's connection to another connection.
+ * @param {!Blockly.Block} block
+ * @param {!Blockly.Connection} connection what has been connected in the block
+ * @param {!Blockly.Connection} oldTargetConnection what was previously connected in the block
+ * @param {!Blockly.Connection} oldConnection what was previously connected to the new targetConnection
+ */
+ezP.Delegate.prototype.didConnect = function(block, connection, oldTargetConnection, oldConnection) {
+  // console.log('did connect')
+}
+
+/**
+ * Will disconnect this block's connection.
+ * @param {!Blockly.Block} block
+ * @param {!Blockly.Connection} blockConnection
+ */
+ezP.Delegate.prototype.willDisconnect = function(block, blockConnection) {
+  // console.log('will disconnect')
+}
+
+/**
+ * Did connect this block's connection to another connection.
+ * @param {!Blockly.Block} block
+ * @param {!Blockly.Connection} blockConnection
+ * @param {!Blockly.Connection} oldTargetConnection that was connected to blockConnection
+ */
+ezP.Delegate.prototype.didDisconnect = function(block, blockConnection, oldTargetConnection) {
+  // console.log('did disconnect')
+}
+
+/**
+ * Whether the block is not a variable.
+ * @param {!Blockly.Block} block
+ */
+ezP.Delegate.prototype.isNotAVariable = function(block) {
+  return this.plugged_ && ezP.T3.Expr.Check.not_a_variable.indexOf(this.plugged_)<0
+}
+
+/**
+ * In a connection, the inferior block's delegate may have a plugged_.
+ * This is used for example to distinguish generic blocks such as identifiers.
+ * An identifier is in general a variable name but sometimes it cannot be.
+ * module names are such an example.
+ * @private
+ */
+ezP.Delegate.prototype.plugged_ = undefined
+
+/**
+ * Can remove and bypass the parent?
+ * If the parent's output connection is connected,
+ * can connect the block's output connection to it?
+ * The connection cannot always establish.
+ * @param {!Block} block.
+ * @param {!Block} other the block to be replaced
+ */
+ezP.Delegate.prototype.canReplaceBlock = function (block, other) {
+  return false
+}
+
+/**
+ * Remove an input from this block.
+ * @param {!Blockly.Block} block The owner of the delegate.
+ * @param {!Blockly.Input} input the input.
+ * @param {boolean=} opt_quiet True to prevent error if input is not present in block.
+ * @throws {goog.asserts.AssertionError} if the input is not present and
+ *     opt_quiet is not true.
+ */
+ezP.Delegate.prototype.removeInput = function(block, input, opt_quiet) {
+  if (input.block === block) {
+    if (input.connection && input.connection.isConnected()) {
+      input.connection.setShadowDom(null);
+      var block = input.connection.targetBlock();
+      if (block.isShadow()) {
+        // Destroy any attached shadow block.
+        block.dispose();
+      } else {
+        // Disconnect any attached normal block.
+        block.unplug();
+      }
+    }
+    input.dispose();
+    this.inputList.splice(i, 1);
+    return;
+  }
+  if (!opt_quiet) {
+    goog.asserts.fail('Input "%s" not found.', name);
+  }
+}
+
+/**
+ * When the output connection is connected,
+ * returns the input holding the parent's corresponding connection.
+ * @param {!Blockly.Block} block The owner of the delegate.
+ * @return an input.
+ */
+ezP.Delegate.prototype.getParentInput = function(block) {
+  var c8n = block.outputConnection
+  if (c8n && (c8n = c8n.targetConnection)) {
+    var list = c8n.sourceBlock_.inputList
+    for (var i = 0, input; (input = list[i++]);) {
+      if (input.connection === c8n) {
+        return input
+      }
+    }
+  }
+  return null
+}
+
+/**
+ * Convert the block to python code.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @constructor
+ */
+ezP.Delegate.prototype.toPython = function (block) {
+  goog.asserts.assert(false, 'Missing toPython implementation for '+block.type)
+}
+
+/**
+ * Returns the total number of code lines for that node and the node below.
+ * One atomic instruction is one line.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @return {Number}.
+ */
+ezP.Delegate.prototype.getStatementCount = function (block) {
+  var n = 1
+  var hasActive = false
+  var hasNext = false
+  for (var _ = 0, input; (input = block.inputList[_]); ++_) {
+    var c8n = input.connection
+    if (c8n && c8n.type === Blockly.NEXT_STATEMENT) {
+      hasNext = true
+      if (c8n.isConnected()) {
+        var target = c8n.targetBlock()
+        do {
+          hasActive = hasActive || (!target.disabled && target.type !== ezP.T3.Stmt.comment_stmt)
+          n += target.ezp.getStatementCount(target)
+        } while ((target = target.getNextBlock()))
+      }
+    }
+  }
+  return n + (hasNext && !hasActive? 1: 0)
+}
+
+/**
+ * Whether this block is white. White blocks have no effect,
+ * the action of the algorithm is exactly the same whether the block is here or not.
+ * White blocks are comment statements, disabled blocks
+ * and maybe other kinds of blocks to be found...
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return None
+ */
+ezP.Delegate.prototype.isWhite = function (block) {
+  return block.disabled
+}
+
+/**
+ * Get the next connection of this block.
+ * Comment and disabled blocks are transparent with respect to connection checking.
+ * If block
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.Delegate.prototype.getNextConnection = function (block) {
+  while(block.ezp.isWhite(block)) {
+    var c8n
+    if (!(c8n = block.previousConnection) || !(block = c8n.targetBlock())) {
+      return undefined
+    }
+  }
+  return block.nextConnection
+}
+
+/**
+ * Get the previous connection of this block.
+ * Comment and disabled blocks are transparent with respect to connection checking.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.Delegate.prototype.getPreviousConnection = function (block) {
+  while(block.ezp.isWhite(block)) {
+    var c8n
+    if (!(c8n = block.nextConnection) || !(block = c8n.targetBlock())) {
+      return undefined
+    }
+  }
+  return block.previousConnection
+}
+
+/**
+ * Set the disable state of the block.
+ * Calls the block's method but also make sure that previous blocks
+ * and next blocks are in an acceptable state.
+ * For example, if I disable an if block, I should also disable
+ * an elif/else following block, but only if it would make an elif/else orphan.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.Delegate.prototype.setDisabled = function (block, yorn) {
+  if (!!block.disabled === !!yorn) {
+    // nothing to do the block is already in the good state
+    return
+  }
+  Blockly.Events.setGroup(true)
+  var previous, next
+  if (yorn) {
+    block.setDisabled(true)
+    // Does it break next connections
+    if ((previous = block.previousConnection)
+    && (next = previous.targetConnection)
+    && next.ezp.getBlackConnection()) {
+      while ((previous = block.nextConnection)
+      && (previous = previous.targetConnection)
+      && (previous = previous.ezp.getBlackConnection())) {
+        if (next.checkType_(previous)) {
+          break
+        }
+        block = previous.getSourceBlock()
+        // No recursion
+        block.setDisabled(true)
+      }
+    }
+  } else {
+    block.setDisabled(false)
+    // if the connection chain below this block is broken,
+    // try to activate some blocks
+    if ((next = block.nextConnection)) {
+      if ((previous = next.targetConnection)
+      && (previous = previous.ezp.getBlackConnection())
+      && !next.checkType_(previous)) {
+        // find  white block in the below chain that can be activated
+        // stop before the black connection found just above
+        previous = next.targetConnection
+        do {
+          var target = previous.getSourceBlock()
+          if (target.disabled) {
+            target.disabled = false
+            var check = next.checkType_(previous)
+            target.disabled = true
+            if (check) {
+              target.setDisabled(false)
+              if (!(next = target.nextConnection)) {
+                break
+              }
+            }
+          } else if (!target.ezp.isWhite(target)) {
+            // the black connection is reached, no need to go further
+            // but the next may have change and the checkType_ must
+            // be computed once again
+            if (!next.checkType_(previous)) {
+              target.unplug()
+              target.bumpNeighbours_();
+            }
+            break
+          }
+        } while ((previous = previous.ezp.getConnectionBelow()))
+      }
+    }
+    // now consolidate the chain above
+    if ((previous = block.previousConnection)) {
+      if ((next = previous.targetConnection)
+      && (next = next.ezp.getBlackConnection())
+      && !previous.checkType_(next)) {
+        // find  white block in the above chain that can be activated
+        // stop before the black connection found just above
+        next = previous.targetConnection
+        do {
+          var target = next.getSourceBlock()
+          if (target.disabled) {
+            target.disabled = false
+            var check = previous.checkType_(next)
+            target.disabled = true
+            if (check) {
+              target.setDisabled(false)
+              if (!(previous = target.previousConnection)) {
+                break
+              }
+            }
+          } else if (!target.ezp.isWhite(target)) {
+            // the black connection is reached, no need to go further
+            // but the next may have change and the checkType_ must
+            // be computed once again
+            if (!next.checkType_(previous)) {
+              target = previous.getSourceBlock()
+              target.unplug()
+              target.bumpNeighbours_();
+            }
+            break
+          }
+        } while ((next = next.ezp.getConnectionAbove()))
+      }
+    }
+  }
+  Blockly.Events.setGroup(false)
 }
