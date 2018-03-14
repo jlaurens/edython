@@ -39,11 +39,18 @@ goog.inherits(ezP.Block, Blockly.Block)
  * Dispose the delegate too.
  * @param {number|string} colour HSV hue value, or #RRGGBB string.
  */
-ezP.Block.prototype.dispose = function () {
+ezP.Block.prototype.dispose = function (healStack) {
+  if (this === Blockly.selected) {
+    // this block was selected, select the block below or above before deletion
+    var c8n, target
+    if (((c8n = this.nextConnection) && (target = c8n.targetBlock())) || ((c8n = this.previousConnection) && (target = c8n.targetBlock()))) {
+      target.select()
+    }
+  }
   if (this.ezp) {
     this.ezp.deinitBlock(this)
   }
-  ezP.Block.superClass_.dispose.call(this)
+  ezP.Block.superClass_.dispose.call(this, healStack)
 }
 
 /**

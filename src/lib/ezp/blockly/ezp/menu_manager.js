@@ -239,6 +239,10 @@ ezP.MenuManager.prototype.init = function (block, e) {
  * @private
  */
 ezP.MenuManager.prototype.showMenu = function (block, e) {
+  if (this.menu.isVisible()) {
+    this.menu.hide()
+    return
+  }
   var target = block.ezp.getMenuTarget(block)
   this.init(target, e)
   var me = this
@@ -561,6 +565,13 @@ ezP.MenuManager.prototype.handleActionLast = function (block, event) {
       }
       // unwrapped is the topmost block or the first unwrapped parent
       Blockly.Events.setGroup(true)
+      if (target === Blockly.selected && target !== unwrapped) {
+        // this block was selected, select the block below or above before deletion
+        var c8n, target
+        if (((c8n = unwrapped.nextConnection) && (target = c8n.targetBlock())) || ((c8n = unwrapped.previousConnection) && (target = c8n.targetBlock()))) {
+          target.select()
+        }
+      }
       unwrapped.dispose(true, true)
       Blockly.Events.setGroup(false)
       return true

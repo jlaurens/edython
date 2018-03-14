@@ -1482,3 +1482,31 @@ ezP.DelegateSvg.prototype.toPythonStatementComponents = function (block, compone
   }
   return out || (!block.disabled && block.type !== ezP.T3.Stmt.comment_stmt)
 }
+
+/**
+ * Select the block after the owner.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.DelegateSvg.prototype.selectBlockBefore = function (block) {
+  var c8n, target
+  if ((c8n = block.previousConnection) && (target = c8n.targetBlock())) {
+    target.select()
+    return
+  }
+}
+
+/**
+ * Select the block after the owner.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.DelegateSvg.prototype.selectBlockAfter = function (block) {
+  var c8n, target
+  if ((c8n = block.nextConnection) && (target = c8n.targetBlock())) {
+    target.select()
+    return
+  }
+}

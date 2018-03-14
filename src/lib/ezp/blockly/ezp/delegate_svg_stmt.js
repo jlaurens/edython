@@ -184,6 +184,9 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockBefore = function(block, abovePrototyp
   ezP.HoleFiller.fillDeepHoles(blockBefore.workspace, holes)
   blockBefore.render()
   block.previousConnection.connect(blockBefore.nextConnection)
+  if (Blockly.selected === block) {
+    blockBefore.select()
+  }
   Blockly.Events.setGroup(false)
   return blockBefore
 }
@@ -213,6 +216,9 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
   ezP.HoleFiller.fillDeepHoles(blockAfter.workspace, holes)
   blockAfter.render()
   block.nextConnection.connect(blockAfter.previousConnection)
+  if (Blockly.selected === block) {
+    blockAfter.select()
+  }
   Blockly.Events.setGroup(false)
   return blockAfter
 }

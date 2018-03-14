@@ -302,3 +302,20 @@ ezP.BlockSvg.prototype.onMouseDown_ = function(e) {
   }
 };
 
+/**
+ * Keep something selected.
+ * @param {boolean} healStack
+ * @param {boolean} animate
+ */
+ezP.BlockSvg.prototype.dispose = function (healStack, animate) {
+  if (this === Blockly.selected) {
+    // this block was selected, select the block below or above before deletion
+    var c8n, target
+    ((c8n = this.nextConnection) && (target = c8n.targetBlock())) || ((c8n = this.previousConnection) && (target = c8n.targetBlock()))
+  }
+  ezP.BlockSvg.superClass_.dispose.call(this, healStack, animate)
+  if (target) {
+    target.select()
+  }
+}
+
