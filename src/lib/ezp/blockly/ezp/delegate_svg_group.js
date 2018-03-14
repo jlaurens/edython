@@ -300,6 +300,10 @@ ezP.DelegateSvg.Stmt.else_part = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Stmt.else_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('else_part')
 
+ezP.DelegateSvg.Stmt.last_else_part = ezP.DelegateSvg.Stmt.try_else_part = ezP.DelegateSvg.Stmt.else_part
+ezP.DelegateSvg.Manager.register('try_else_part')
+ezP.DelegateSvg.Manager.register('last_else_part')
+
 /**
  * This block may have one of 3 types: else_part, last_else_part, try_else_part.
  * else_part covers both last_else_part and try_else_part.
