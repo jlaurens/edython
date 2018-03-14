@@ -241,7 +241,7 @@ ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.Delegate)
 /**
  * The python type of the owning block.
  */
-ezP.Delegate.prototype.pythonType_ = undefined
+ezP.Delegate.prototype.pythonSort_ = undefined
 
 /**
  * The real type of the owning block.
@@ -258,7 +258,7 @@ ezP.Delegate.prototype.type_ = undefined
 ezP.Delegate.prototype.setupType = function (block) {
   var regex = new RegExp("^ezp_((?:fake_)?(.*))$")
   var m = regex.exec(block.type)
-  this.pythonType_ = m? m[1]: block.type
+  this.pythonSort_ = m? m[1]: block.type
   this.type_ = m? 'ezp_'+m[2]: block.type
 }
 
@@ -292,11 +292,28 @@ ezP.Delegate.prototype.initBlock = function (block) {
     if (D.key) {
       var input = block.appendStatementInput(D.key).setCheck(D.check) // Check ?
     }
+    var F = function(D, c8n) {
+      var ezp = c8n.ezp
+      if (goog.isFunction(D.willDisconnect)) {
+        ezp.willDisconnect = D.willDisconnect
+      }
+      if (goog.isFunction(D.didDisconnect)) {
+        ezp.didDisconnect = D.didDisconnect
+      }
+      if (goog.isFunction(D.willConnect)) {
+        ezp.willConnect = D.willConnect
+      }
+      if (goog.isFunction(D.didConnect)) {
+        ezp.didConnect = D.didConnect
+      }
+    }
     if (D.next) {
       block.setNextStatement(true, D.next.check)
+      F(D.next, block.nextConnection)
     }
     if (D.previous) {
       block.setPreviousStatement(true, D.previous.check)
+      F(D.previous, block.previousConnection)
     }
   }
 }

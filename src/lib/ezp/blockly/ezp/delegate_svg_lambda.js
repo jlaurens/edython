@@ -38,21 +38,21 @@ ezP.DelegateSvg.Expr.lambda_expression = function (prototypeName) {
       key: ezP.Key.EXPRESSION,
       label: ':',
       check: ezP.T3.Expr.Check.expression.concat(ezP.T3.Expr.Check.expression_nocond),
-      didConnect: function(c8n) {// `this` is c8n.ezp
-        c8n.updateLambdaCheck()
+      didConnect: function(oldTargetConnection, oldConnectionn) {
+        this.updateLambdaCheck()
       },
-      didDisconnect: function(c8n) {// `this` is c8n.ezp
-        c8n.updateLambdaCheck()
+      didDisconnect: function(oldTargetConnection) {
+        this.updateLambdaCheck()
       },
     }
   }
   this.outputModel_ = {
     check: [ezP.T3.Expr.lambda_expr, ezP.T3.Expr.lambda_expr_nocond],
-    didConnect: function(c8n) {// `this` is c8n.ezp
-      c8n.updateLambdaCheck()
+    didConnect: function(oldTargetConnection, oldConnection) {
+      this.updateLambdaCheck()
     },
-    didDisconnect: function(c8n) {// `this` is c8n.ezp
-      c8n.updateLambdaCheck()
+    didDisconnect: function(oldTargetConnection) {
+      this.updateLambdaCheck()
     },
   }
 }
@@ -64,8 +64,8 @@ ezP.DelegateSvg.Expr.lambda_expr = ezP.DelegateSvg.Expr.lambda_expr_nocond = ezP
 ezP.DelegateSvg.Manager.register('lambda_expr')
 ezP.DelegateSvg.Manager.register('lambda_expr_nocond')
 
-Blockly.RenderedConnection.prototype.updateLambdaCheck = function() {
-  var block = this.sourceBlock_
+ezP.ConnectionDelegate.prototype.updateLambdaCheck = function() {
+  var block = this.connection.sourceBlock_
   if (block) {
     var c8nOut = block.outputConnection
     var c8nIn = block.ezp.inputs.last.input.connection

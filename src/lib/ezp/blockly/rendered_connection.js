@@ -79,9 +79,8 @@ ezP.ConnectionDelegate.prototype.willConnect = function(targetConnection) {
  * Default implementation does nothing.
  * This can be overriden at block creation time,
  * for example in the initBlock function, of in the inputModel.
- * @param {Blockly.Connection} connection  the connection owning the delegate
  * @param {Blockly.Connection} oldTargetConnection  what was previously connected to connection
- * @param {Blockly.Connection} oldConnection  what was previously connected to connection.targetConnection
+ * @param {Blockly.Connection} oldConnection  what was previously connected to the actual connection.targetConnection
  */
 ezP.ConnectionDelegate.prototype.didConnect = function(oldTargetConnection, oldConnection) {
   return
@@ -92,9 +91,8 @@ ezP.ConnectionDelegate.prototype.didConnect = function(oldTargetConnection, oldC
  * Default implementation does nothing.
  * This can be overriden at block creation time,
  * for example in the initBlock function, of in the inputModel.
- * @param {Blockly.Connection} connection the connection owning the delegate
  */
-ezP.ConnectionDelegate.prototype.willDisconnect = function(connection) {
+ezP.ConnectionDelegate.prototype.willDisconnect = function() {
   return
 }
 
@@ -106,7 +104,7 @@ ezP.ConnectionDelegate.prototype.willDisconnect = function(connection) {
  * @param {Blockly.Connection} connection  the connection owning the delegate
  * @param {Blockly.Connection} oldTargetConnection  what was previously connected to connection
  */
-ezP.ConnectionDelegate.prototype.didDisconnect = function(connection, oldTargetConnection) {
+ezP.ConnectionDelegate.prototype.didDisconnect = function(oldTargetConnection) {
   return
 }
 
@@ -437,8 +435,8 @@ ezP.Connection.prototype.connect_ = function(childConnection) {
   var parent = this.sourceBlock_
   var oldChildConnection = this.targetConnection
   var oldParentConnection = childConnection.targetConnection
-  this.ezp.willConnect(this, childConnection)
-  childConnection.ezp.willConnect(childConnection, this)
+  this.ezp.willConnect(childConnection)
+  childConnection.ezp.willConnect(this)
   parent.ezp.willConnect(parent, this, childConnection)
   var child = childConnection.sourceBlock_
   child.ezp.willConnect(child, childConnection, this)
@@ -470,8 +468,8 @@ ezP.Connection.prototype.connect_ = function(childConnection) {
   }
   parent.ezp.didConnect(parent, this, oldChildConnection, oldParentConnection)
   child.ezp.didConnect(child, childConnection, oldParentConnection, oldChildConnection)
-  this.ezp.didConnect(this, oldChildConnection, oldParentConnection)
-  childConnection.ezp.didConnect(childConnection, oldParentConnection, oldChildConnection)
+  this.ezp.didConnect(oldChildConnection, oldParentConnection)
+  childConnection.ezp.didConnect(oldParentConnection, oldChildConnection)
 }
 
 /**
@@ -491,8 +489,8 @@ ezP.Connection.prototype.disconnectInternal_ = function(parentBlock,
     var parentConnection = this.targetConnection
     var childConnection = this
   }
-  parentConnection.ezp.willDisconnect(parentConnection)
-  childConnection.ezp.willDisconnect(childConnection)
+  parentConnection.ezp.willDisconnect()
+  childConnection.ezp.willDisconnect()
   parentBlock.ezp.willDisconnect(parentBlock, parentConnection)
   childBlock.ezp.willDisconnect(childBlock, childConnection)
   if (parentConnection.ezp.wrapped_) {
@@ -512,8 +510,8 @@ ezP.Connection.prototype.disconnectInternal_ = function(parentBlock,
   }
   parentBlock.ezp.didDisconnect(parentBlock, parentConnection, childConnection)
   childBlock.ezp.didDisconnect(childBlock, childConnection, parentConnection)
-  parentConnection.ezp.didDisconnect(parentConnection, childConnection)
-  childConnection.ezp.didDisconnect(childConnection, parentConnection)
+  parentConnection.ezp.didDisconnect(childConnection)
+  childConnection.ezp.didDisconnect(parentConnection)
 }
 
 Blockly.Connection.singleConnection_original = Blockly.Connection.singleConnection_

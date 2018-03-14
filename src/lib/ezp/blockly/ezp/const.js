@@ -20,7 +20,10 @@ goog.provide('ezP.ID')
 
 goog.require('ezP')
 
-// ezP.Const = ezP.Const || {}
+ezP.Const = {
+  ABOVE: 'ABOVE',// not for block definition
+  BELOW: 'BELOW',
+}
 
 ezP.Const.Field = {
   LABEL: 'LABEL',

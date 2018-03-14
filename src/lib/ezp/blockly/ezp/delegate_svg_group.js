@@ -263,6 +263,14 @@ ezP.DelegateSvg.Manager.register('elif_part')
 /**
  * Class for a DelegateSvg, else_part block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * The else block connection model is more complex than for other blocks.
+ * Where can this block appear?
+ * - after an if or an elif
+ * - after a for
+ * - after a while
+ * - after and except
+ * - before a finally
+ * It is always the last box of the sequence, except when before a finally
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
@@ -274,11 +282,75 @@ ezP.DelegateSvg.Stmt.else_part = function (prototypeName) {
     label: 'else',
     css_class: 'ezp-code-reserved',
   }
-  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.else_part
-  this.statementModel_.next.check = ezP.T3.Stmt.Next.else_part
+  this.statementModel_.previous = {
+    check: ezP.T3.Stmt.Previous.else_part,
+    didConnect: function(oldTargetConnection, oldConnection) {
+      var block = this.connection.getSourceBlock()
+      block.ezp.consolidateType(block)
+    },
+    didDisconnect: function(oldConnection) {
+      var block = this.connection.getSourceBlock()
+      block.ezp.consolidateType(block)
+    },
+  }
+  this.statementModel_.next = {
+    check: ezP.T3.Stmt.Next.else_part,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.else_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('else_part')
+
+/**
+ * This block may have one of 3 types: else_part, last_else_part, try_else_part.
+ * else_part covers both last_else_part and try_else_part.
+ * If the block cannot be of type last_else_part, then its type is try_else_part
+ * and conversely. If the block can be of both types, then it is of type else_part.
+ * First the previous connection tries to constrain the type,
+ * then the next connection.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
+  var T3 = ezP.T3.Stmt
+  var expected = T3.else_part
+  var P = T3.Previous.else_part
+  var N = T3.Next.else_part
+  var targetConnection
+  if ((targetConnection = block.previousConnection.targetConnection)) {
+    var target = targetConnection.getSourceBlock()
+    if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.last_else_part)<0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(target.type) < 0)) {
+      expected = T3.try_else_part
+      P = T3.Previous.try_else_part
+      N = T3.Next.try_else_part
+    } else if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.try_else_part)<0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(target.type) < 0)) {
+      expected = T3.last_else_part
+      P = T3.Previous.last_else_part
+      N = T3.Next.last_else_part
+    }
+  } else if ((targetConnection = block.nextConnection.targetConnection)) {
+    // the previous connection did not add any constrain
+    // may be the next connection will?
+    var target = targetConnection.getSourceBlock()
+    if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.last_else_part)<0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(target.type) < 0)) {
+      expected = T3.try_else_part
+      P = T3.Previous.try_else_part
+      N = T3.Next.try_else_part
+    } else if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.try_else_part)<0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(target.type) < 0)) {
+      expected = T3.last_else_part
+      P = T3.Previous.last_else_part
+      N = T3.Next.last_else_part
+    }
+  }
+  if (block.type !== expected) {
+    block.type = expected
+    this.setupType(block)
+    block.previousConnection.setCheck(P)
+    block.nextConnection.setCheck(N)
+  }
+}
 
 /**
  * Class for a DelegateSvg, while_part block.

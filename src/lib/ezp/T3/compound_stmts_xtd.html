@@ -18,13 +18,16 @@ if_stmt ::= IGNORE
 if_part ::= "if" expression ":"
 elif_part ::= "elif" expression ":"
 else_part ::= "else" ":"
+last_else_part ::= else_part
 else_part >>> if_part | elif_part | comment_stmt
+last_else_part >>> if_part | elif_part | comment_stmt
 elif_part >>> if_part | elif_part | comment_stmt
 </pre>
 <pre>
 while_stmt ::= IGNORE
 while_part ::=  "while" expression ":"
-else_part >>> while_part | comment_stmt
+else_part >>> while_part
+last_else_part >>> while_part
 </pre>
 The last line means: an else_part comes just after a while_part
 (its line number is just one above).
@@ -33,7 +36,8 @@ Rules are cumulative, which means that A <<< B and A <<< C significates that A c
 <pre>
 for_stmt ::= IGNORE
 for_part ::=  "for" target_list "in" expression_list ":"
-else_part >>> for_part | comment_stmt
+else_part >>> for_part
+last_else_part >>> for_part
 </pre>
 try_stmt  ::=  try1_stmt | try2_stmt
 try1_stmt ::=  "try" ":" suite
@@ -56,8 +60,10 @@ try_part <<< except_part | void_except_part | finally_part | comment_stmt
 void_except_part >>> except_part
 except_part >>> try_part | except_part | comment_stmt
 void_except_part >>> try_part | except_part | comment_stmt
+try_else_part ::= else_part
 else_part >>> except_part | void_except_part | comment_stmt
-finally_part >>> try_part | except_part | void_except_part | else_part | comment_stmt
+try_else_part >>> except_part | void_except_part | comment_stmt
+finally_part >>> try_part | except_part | void_except_part | try_else_part | else_part | comment_stmt
 </pre>
 
 with_stmt ::=  "with" with_item ("," with_item)* ":" suite
@@ -168,7 +174,6 @@ async_with_stmt ::= REMOVE
 async_for_stmt ::= REMOVE
 async_funcdef ::= REMOVE
 </pre>
-
 
 </body>
 </html>

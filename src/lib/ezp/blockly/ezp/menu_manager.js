@@ -360,14 +360,14 @@ ezP.MenuManager.prototype.populateLast = function (block) {
   this.separate()
   
   menuItem = new ezP.MenuItem(
-    block.ezp.getPythonType(block),
+    block.ezp.getPythonSort(block),
     {action: ezP.ID.LOG_BLOCK_XML,
       target: block,})
   menuItem.setEnabled(true)
   this.addChild(menuItem, true)
 
   menuItem = new ezP.MenuItem(
-    block.ezp.getPythonType(block)+' python code',
+    block.ezp.getPythonSort(block)+' python code',
     function(b, e) {
       console.log('Python code for', block.type)
       console.log(block.ezp.toPython(block))  
@@ -376,7 +376,7 @@ ezP.MenuManager.prototype.populateLast = function (block) {
   this.addChild(menuItem, true)
 
   menuItem = new ezP.MenuItem(
-    block.ezp.getPythonType(block)+' python code (deep)',
+    block.ezp.getPythonSort(block)+' python code (deep)',
     function(b, e) {
       console.log('Python code for', block.type)
       console.log(block.ezp.toPython(block, true))  
@@ -531,6 +531,20 @@ ezP.MenuManager.prototype.handleAction_movable_parent_module = ezP.MenuManager.p
  * @private
  */
 ezP.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
+  var Stmt1 = function(key, where) {
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      ezP.Do.createSPAN(key, 'ezp-code-reserved'),
+      ezP.Do.createSPAN(' … ', 'ezp-code-placeholder'),
+      ezP.Do.createSPAN(':', 'ezp-code-reserved'),
+      goog.dom.createTextNode(' '+where),
+    )
+  }
+  var Stmt2 = function(key, where) {
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      ezP.Do.createSPAN(key+':', 'ezp-code-reserved'),
+      goog.dom.createTextNode(' '+where),
+    )
+  }
   switch(type) {
     case ezP.T3.Expr.parent_module: 
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -706,6 +720,16 @@ ezP.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
       ezP.Do.createSPAN('}', 'ezp-code'),
       goog.dom.createTextNode(' '+ezP.Msg.AROUND),
     )
+    case ezP.T3.Stmt.if_part: return Stmt1('if', subtype)
+    case ezP.T3.Stmt.elif_part: return Stmt1('elif', subtype)
+    case ezP.T3.Stmt.for_part: return Stmt1('for', subtype)
+    case ezP.T3.Stmt.while_part: return Stmt1('while', subtype)
+    case ezP.T3.Stmt.try_part: return Stmt2('try', subtype)
+    case ezP.T3.Stmt.except_part: return Stmt1('except', subtype)
+    case ezP.T3.Stmt.void_except_part:return Stmt2('except', subtype)
+    case ezP.T3.Stmt.else_part:return Stmt2('else', subtype)
+    case ezP.T3.Stmt.finally_part:return Stmt2('finally', subtype)
+    case ezP.T3.Stmt.with_part: return Stmt1('with', subtype)
     default:
     return 'Parent '+type
   }
@@ -859,46 +883,69 @@ ezP.MenuManager.prototype.populate_replace_parent = function (block, type, subty
  */
 ezP.MenuManager.prototype.populate_above_below = function (block) {
   // Disable undo registration for a while
+  var Ts = [
+    ezP.T3.Stmt.if_part,
+    ezP.T3.Stmt.elif_part,
+    ezP.T3.Stmt.for_part,
+    ezP.T3.Stmt.while_part,
+    ezP.T3.Stmt.try_part,
+    ezP.T3.Stmt.except_part,
+    ezP.T3.Stmt.void_except_part,
+    ezP.T3.Stmt.else_part,
+    ezP.T3.Stmt.finally_part,
+    ezP.T3.Stmt.with_part,
+    // ezP.T3.Stmt.decorator_part,
+    // ezP.T3.Stmt.funcdef_part,
+    // ezP.T3.Stmt.classdef_part,
+    // ezP.T3.Stmt.import_part,
+  ]
   Blockly.Events.disable()
-  try {
-    var c8n, check
-    if ((c8n = block.previousConnection) && (check = c8n.check_) && check.length) {
-      var targetC8n = c8n.targetConnection
-      for (var _ = 0, type; (type = check[_++]);) {
-        // Can I insert a block above ?
-        var B = block.workspace.newBlock(type)
-        var yorn = B.nextConnection && B.nextConnection.checkType_(c8n)
-        && (!targetC8n || (B.previousConnection && targetC8n.checkType_(B.previousConnection)))
-        B.dispose()
-        if (yorn) {
-          var content = this.get_menuitem_content(type, 'ABOVE')
-          var MI = new ezP.MenuItem(content, function() {
-            block.ezp.insertBlockAbove(block, type)
-          })
-          this.addInsertChild(MI)  
-        }
+  var F = function(action, type) {
+    return function() {
+      // create a closure that catches the value of the loop variable
+      var T = type
+      return function() {
+        action(block, T)
       }
-    }
-    if ((c8n = block.nextConnection) && (check = c8n.check_) && check.length) {
+    }()
+  }
+  //try {
+    var c8n
+    if ((c8n = block.nextConnection)) {
       var targetC8n = c8n.targetConnection
-      for (var _ = 0, type; (type = check[_++]);) {
+      for (var _ = 0, type; (type = Ts[_++]);) {
         // Can I insert a block below ?
         var B = block.workspace.newBlock(type)
         var yorn = B.previousConnection && B.previousConnection.checkType_(c8n)
         && (!targetC8n || (B.nextConnection && targetC8n.checkType_(B.nextConnection)))
         B.dispose()
         if (yorn) {
-          var content = this.get_menuitem_content(type, 'BELOW')
-          var MI = new ezP.MenuItem(content, function() {
-            block.ezp.insertBlockBelow(block, type)
-          })
+          var content = this.get_menuitem_content(type, ezP.Msg.AFTER)
+          console.log(content, type)
+          var MI = new ezP.MenuItem(content, F(block.ezp.insertBlockBelow, type))
           this.addInsertChild(MI)  
         }
       }
     }
-  } finally {
+    this.shouldSeparateInsert()
+    if ((c8n = block.previousConnection)) {
+      var targetC8n = c8n.targetConnection
+      for (var _ = 0, type; (type = Ts[_++]);) {
+        // Can I insert a block above ?
+        var B = block.workspace.newBlock(type)
+        var yorn = B.nextConnection && B.nextConnection.checkType_(c8n)
+        && (!targetC8n || (B.previousConnection && targetC8n.checkType_(B.previousConnection)))
+        B.dispose()
+        if (yorn) {
+          var content = this.get_menuitem_content(type, ezP.Msg.BEFORE)
+          var MI = new ezP.MenuItem(content, F(block.ezp.insertBlockAbove, type))
+          this.addInsertChild(MI)  
+        }
+      }
+    }
+  //} finally {
     Blockly.Events.enable()
-  }
+  //}
 }
 
 /**

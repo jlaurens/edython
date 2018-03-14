@@ -173,7 +173,11 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAbove = function(block, abovePrototype
   var targetC8n = c8n.targetConnection
   if (targetC8n) {
     targetC8n.disconnect()
-    targetConnection.connect(blockAbove.previousConnection)
+    targetC8n.connect(blockAbove.previousConnection)
+  } else {
+    var its_xy = block.getRelativeToSurfaceXY();
+    var my_xy = blockAbove.getRelativeToSurfaceXY();
+    blockAbove.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
   }
   block.previousConnection.connect(blockAbove.nextConnection)
   var holes = ezP.HoleFiller.getDeepHoles(blockAbove)

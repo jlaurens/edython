@@ -33,6 +33,7 @@ goog.require('ezP')
 
 /** @export */ ezP.Msg.AT_THE_LEFT = 'à gauche'
 /** @export */ ezP.Msg.AT_THE_RIGHT = 'à droite'
+
 /** @export */ ezP.Msg.AROUND = 'autour'
 
 /** @export */ ezP.Msg.BEFORE = 'avant'
