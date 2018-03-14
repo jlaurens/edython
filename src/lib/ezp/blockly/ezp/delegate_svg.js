@@ -850,15 +850,15 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
             w = input.connection? input.connection.targetBlock(): undefined
           }
         }
-        var bBox = target.getHeightWidth()
         root.setAttribute('transform', 'translate(' + io.cursorX + ', 0)')
-        io.cursorX += bBox.width
         target.render()
+        var bBox = target.getHeightWidth()
+        io.cursorX += bBox.width
       }
     } else {
       var pw = ezp.optional_?
-        this.carretPathDefWidth_(io.cursorX):
-        this.placeHolderPathDefWidth_(io.cursorX)
+      this.carretPathDefWidth_(io.cursorX):
+      this.placeHolderPathDefWidth_(io.cursorX)
       io.steps.push(pw.d)
       io.cursorX += pw.width
     }

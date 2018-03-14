@@ -135,3 +135,48 @@ ezP.DelegateSvg.Stmt.print_stmt = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Stmt.print_stmt, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Manager.register('print_stmt')
 
+/**
+ * Class for a DelegateSvg, input block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.input = function (prototypeName) {
+  ezP.DelegateSvg.Expr.print.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_ = {
+    first: {
+      label: 'input',
+      css_class: 'ezp-code-reserved',
+    },
+    last: {
+      start: '(',
+      key: ezP.Key.EXPRESSION,
+      check: ezP.T3.Expr.Check.argument_any,
+      optional: true,
+      end: ')',
+    }
+  }
+  this.outputModel_.check = [ezP.T3.Expr.input, ezP.T3.Expr.call_expr]
+}
+goog.inherits(ezP.DelegateSvg.Expr.input, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('input')
+
+/**
+ * Class for a DelegateSvg, input_stmt block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.input_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.input_stmt.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    key: ezP.Key.EXPRESSION,
+    wrap: ezP.T3.Expr.input,
+  }
+}
+goog.inherits(ezP.DelegateSvg.Stmt.input_stmt, ezP.DelegateSvg.Stmt)
+ezP.DelegateSvg.Manager.register('input_stmt')

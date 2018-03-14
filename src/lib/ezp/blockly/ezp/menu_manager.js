@@ -813,6 +813,27 @@ ezP.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
     case ezP.T3.Stmt.else_part:return Stmt2('else')
     case ezP.T3.Stmt.finally_part:return Stmt2('finally')
     case ezP.T3.Stmt.with_part: return Stmt1('with')
+    case ezP.T3.Stmt.comment_stmt:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      ezP.Do.createSPAN('#', 'ezp-code-reserved'),
+      ezP.Do.createSPAN(' comment', 'ezp-code-placeholder'),
+    )
+    case ezP.T3.Stmt.assignment_stmt:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-placeholder',
+      goog.dom.createTextNode('name'),
+      ezP.Do.createSPAN(' = ', 'ezp-code-reserved'),
+      goog.dom.createTextNode('value'),
+    )
+    case ezP.T3.Stmt.print_stmt:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN('print', 'ezp-code-reserved'),
+      goog.dom.createTextNode('(…)'),
+    )
+    case ezP.T3.Stmt.input_stmt:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN('input', 'ezp-code-reserved'),
+      goog.dom.createTextNode('(…)'),
+    )
     default:
     return 'Parent '+type
   }
@@ -982,6 +1003,12 @@ ezP.MenuManager.prototype.populate_before_after = function (block) {
     // ezP.T3.Stmt.classdef_part,
     // ezP.T3.Stmt.import_part,
   ]
+  var Us = [
+    ezP.T3.Stmt.comment_stmt,
+    ezP.T3.Stmt.assignment_stmt,
+    ezP.T3.Stmt.print_stmt,
+    ezP.T3.Stmt.input_stmt,
+  ]
   Blockly.Events.disable()
   var F = function(action, type) {
     return function() {
@@ -992,43 +1019,59 @@ ezP.MenuManager.prototype.populate_before_after = function (block) {
       }
     }()
   }
-  //try {
-    var c8n
+  var c8n, sep
+  var F_after = function(targetC8n, type) {
+    var B = block.workspace.newBlock(type)
+    var yorn = B.previousConnection && B.previousConnection.checkType_(c8n)
+    && (!targetC8n || (B.nextConnection && targetC8n.checkType_(B.nextConnection)))
+    B.dispose()
+    if (yorn) {
+      var content = this.get_menuitem_content(type)
+      var MI = new ezP.MenuItem(content, F(block.ezp.insertBlockAfter, type))
+      this.addInsertAfterChild(MI)
+      return true
+    }
+    return false
+  }
+  var F_before = function(targetC8n, type) {
+    var B = block.workspace.newBlock(type)
+    var yorn = B.nextConnection && B.nextConnection.checkType_(c8n)
+    && (!targetC8n || (B.previousConnection && targetC8n.checkType_(B.previousConnection)))
+    B.dispose()
+    if (yorn) {
+      var content = this.get_menuitem_content(type)
+      var MI = new ezP.MenuItem(content, F(block.ezp.insertBlockBefore, type))
+      this.addInsertBeforeChild(MI)
+      return true
+    }
+    return false
+  }
+  try {
     if ((c8n = block.nextConnection)) {
       var targetC8n = c8n.targetConnection
-      for (var _ = 0, type; (type = Ts[_++]);) {
-        // Can I insert a block below ?
-        var B = block.workspace.newBlock(type)
-        var yorn = B.previousConnection && B.previousConnection.checkType_(c8n)
-        && (!targetC8n || (B.nextConnection && targetC8n.checkType_(B.nextConnection)))
-        B.dispose()
-        if (yorn) {
-          var content = this.get_menuitem_content(type, ezP.Msg.AFTER)
-          console.log(content, type)
-          var MI = new ezP.MenuItem(content, F(block.ezp.insertBlockAfter, type))
-          this.addInsertAfterChild(MI)  
-        }
+      for (var _ = 0, type; (type = Us[_++]);) {
+        sep = F_after.call(this, targetC8n, type) || sep
       }
+      this.shouldSeparateInsertAfter(sep)
+      for (var _ = 0, type; (type = Ts[_++]);) {
+        sep = F_after.call(this, targetC8n, type) || sep
+      }
+      this.shouldSeparateInsertAfter(sep)
     }
-    this.shouldSeparateInsert()
     if ((c8n = block.previousConnection)) {
       var targetC8n = c8n.targetConnection
-      for (var _ = 0, type; (type = Ts[_++]);) {
-        // Can I insert a block above ?
-        var B = block.workspace.newBlock(type)
-        var yorn = B.nextConnection && B.nextConnection.checkType_(c8n)
-        && (!targetC8n || (B.previousConnection && targetC8n.checkType_(B.previousConnection)))
-        B.dispose()
-        if (yorn) {
-          var content = this.get_menuitem_content(type, ezP.Msg.BEFORE)
-          var MI = new ezP.MenuItem(content, F(block.ezp.insertBlockBefore, type))
-          this.addInsertBeforeChild(MI)  
-        }
+      for (var _ = 0, type; (type = Us[_++]);) {
+        sep = F_before.call(this, targetC8n, type) || sep
       }
+      this.shouldSeparateInsertBefore(sep)
+      for (var _ = 0, type; (type = Ts[_++]);) {
+        sep = F_before.call(this, targetC8n, type) || sep
+      }
+      this.shouldSeparateInsertBefore(sep)
     }
-  //} finally {
+  } finally {
     Blockly.Events.enable()
-  //}
+  }
 }
 
 /**

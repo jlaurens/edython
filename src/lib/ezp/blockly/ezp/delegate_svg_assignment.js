@@ -179,6 +179,7 @@ ezP.DelegateSvg.Expr.target_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.target_list.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.list = {
     consolidator: ezP.Consolidator.List.Target,
+    hole_value: 'name',
   }
   this.outputModel_.check = ezP.T3.Expr.target_list
 }

@@ -168,23 +168,23 @@ ezP.DelegateSvg.Stmt.prototype.toPython = function (block, is_deep) {
  */
 ezP.DelegateSvg.Stmt.prototype.insertBlockBefore = function(block, abovePrototypeName) {
   Blockly.Events.setGroup(true)
-  var blockAbove = ezP.DelegateSvg.newBlockComplete(block.workspace, abovePrototypeName)
+  var blockBefore = ezP.DelegateSvg.newBlockComplete(block.workspace, abovePrototypeName)
   var c8n = block.previousConnection
   var targetC8n = c8n.targetConnection
   if (targetC8n) {
     targetC8n.disconnect()
-    targetC8n.connect(blockAbove.previousConnection)
+    targetC8n.connect(blockBefore.previousConnection)
   } else {
     var its_xy = block.getRelativeToSurfaceXY();
-    var my_xy = blockAbove.getRelativeToSurfaceXY();
-    blockAbove.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+    var my_xy = blockBefore.getRelativeToSurfaceXY();
+    blockBefore.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
   }
-  block.previousConnection.connect(blockAbove.nextConnection)
-  var holes = ezP.HoleFiller.getDeepHoles(blockAbove)
-  ezP.HoleFiller.fillDeepHoles(blockAbove.workspace, holes)
-  blockAbove.render()
+  block.previousConnection.connect(blockBefore.nextConnection)
+  var holes = ezP.HoleFiller.getDeepHoles(blockBefore)
+  ezP.HoleFiller.fillDeepHoles(blockBefore.workspace, holes)
+  blockBefore.render()
   Blockly.Events.setGroup(false)
-  return blockAbove
+  return blockBefore
 }
 
 /**
@@ -200,19 +200,19 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockBefore = function(block, abovePrototyp
  */
 ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototypeName) {
   Blockly.Events.setGroup(true)
-  var blockBelow = ezP.DelegateSvg.newBlockComplete(block.workspace, belowPrototypeName)
+  var blockAfter = ezP.DelegateSvg.newBlockComplete(block.workspace, belowPrototypeName)
   var c8n = block.nextConnection
   var targetC8n = c8n.targetConnection
   if (targetC8n) {
     targetC8n.disconnect()
-    targetConnection.connect(blockBelow.previousConnection)
+    targetConnection.connect(blockAfter.previousConnection)
   }
-  block.nextConnection.connect(blockBelow.previousConnection)
-  var holes = ezP.HoleFiller.getDeepHoles(blockBelow)
-  ezP.HoleFiller.fillDeepHoles(blockBelow.workspace, holes)
-  blockBelow.render()
+  block.nextConnection.connect(blockAfter.previousConnection)
+  var holes = ezP.HoleFiller.getDeepHoles(blockAfter)
+  ezP.HoleFiller.fillDeepHoles(blockAfter.workspace, holes)
+  blockAfter.render()
   Blockly.Events.setGroup(false)
-  return blockBelow
+  return blockAfter
 }
 
 //////////////////// blocks  //////////////////////////////
