@@ -420,6 +420,7 @@ ezP.DelegateSvg.Expr.assigned_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.assigned_list.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.list = {
     consolidator: ezP.Consolidator.Assigned,
+    hole_value: 'value',
   }
   this.outputModel_.check = ezP.T3.Expr.assigned_list
 }

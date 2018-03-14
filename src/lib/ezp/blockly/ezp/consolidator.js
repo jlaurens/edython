@@ -163,8 +163,8 @@ ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = und
   io.c8n.ezp.optional_ = optional
   io.c8n.ezp.plugged_ = this.plugged
   if (!io.connected && !this.data.empty && !io.c8n.isConnected()) {
-    io.c8n.ezp.hole_data = ezP.HoleFiller.getData(check, io.block.ezp.hole_value)
-    io.block.ezp.can_fill_holes = io.block.ezp.can_fill_holes || !! io.c8n.ezp.hole_data
+    var value = ezP.DelegateSvg.Manager.getInputModel(io.block.type).list.hole_value
+    io.c8n.ezp.hole_data = ezP.HoleFiller.getData(check, value)
   }
   while (io.input.fieldRow.length) {
     io.input.fieldRow.shift().dispose()

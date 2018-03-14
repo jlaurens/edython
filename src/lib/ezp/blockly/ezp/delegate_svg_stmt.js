@@ -179,10 +179,11 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockBefore = function(block, abovePrototyp
     var my_xy = blockBefore.getRelativeToSurfaceXY();
     blockBefore.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
   }
-  block.previousConnection.connect(blockBefore.nextConnection)
+  blockBefore.ezp.consolidate(blockBefore, true)
   var holes = ezP.HoleFiller.getDeepHoles(blockBefore)
   ezP.HoleFiller.fillDeepHoles(blockBefore.workspace, holes)
   blockBefore.render()
+  block.previousConnection.connect(blockBefore.nextConnection)
   Blockly.Events.setGroup(false)
   return blockBefore
 }
@@ -207,10 +208,11 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
     targetC8n.disconnect()
     targetConnection.connect(blockAfter.previousConnection)
   }
-  block.nextConnection.connect(blockAfter.previousConnection)
+  blockAfter.ezp.consolidate(blockAfter, true)
   var holes = ezP.HoleFiller.getDeepHoles(blockAfter)
   ezP.HoleFiller.fillDeepHoles(blockAfter.workspace, holes)
   blockAfter.render()
+  block.nextConnection.connect(blockAfter.previousConnection)
   Blockly.Events.setGroup(false)
   return blockAfter
 }
@@ -269,8 +271,8 @@ goog.inherits(ezP.DelegateSvg.Stmt.Two, ezP.DelegateSvg.Stmt)
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block) {
-  ezP.DelegateSvg.Stmt.Two.superClass_.consolidate.call(this, block)
+ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block, deep) {
+  ezP.DelegateSvg.Stmt.Two.superClass_.consolidate.call(this, block, deep)
   var first = this.inputs.first.input
   var last  = this.inputs.last.input
   var connected = last.connection.isConnected()

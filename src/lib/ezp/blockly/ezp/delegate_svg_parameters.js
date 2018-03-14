@@ -416,6 +416,7 @@ ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
           if (BB.ezp.setValue) {
             BB.ezp.setValue(BB, 'name')
           } else {
+            BB.ezp.consolidate(BB, true)
             var holes = ezP.HoleFiller.getDeepHoles(BB)
             ezP.HoleFiller.fillDeepHoles(BB.workspace, holes)
           }

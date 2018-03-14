@@ -203,9 +203,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
           if ((v = D.check)) {
             out.input.setCheck(v)
             var value = goog.isFunction(D.hole_value)?D.hole_value(block): D.hole_value
-            if (ezp.hole_data = ezP.HoleFiller.getData(v, D.hole_value)) {// svg specific
-              block.ezp.can_fill_holes = true
-            }
+            ezp.hole_data = ezP.HoleFiller.getData(v, value)
           } else if ((v = D.check = D.wrap)) {
             out.input.setCheck(v)
           }
@@ -444,7 +442,14 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
  * List managers will use consolidators to help list management.
  * @param {!Block} block.
  */
-ezP.DelegateSvg.prototype.consolidate = function (block) {
+ezP.DelegateSvg.prototype.consolidate = function (block, deep) {
+  if (deep) {
+    for (var i = 0, input, x; (input = block.inputList[i++]);) {
+      if ((x = input.connection) && (x = x.targetBlock())) {
+        x.ezp.consolidate(x, deep)
+      }
+    }
+  }
 }
 
 /**
@@ -1246,24 +1251,6 @@ ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, a
  */
 ezP.DelegateSvg.prototype.insertBlockBefore = function(block, abovePrototypeName, aboveInputName) {
   goog.asserts.assert(false, 'Must be subclassed')
-}
-
-/**
- * Whether the block has holes to fill.
- * @param {!Block} block.
- */
-ezP.DelegateSvg.prototype.hasHolesToFill = function(block) {
-  if (this.can_fill_holes) {
-    var i = 0
-    var L = block.inputList
-    for (; i < L.length; ++i) {
-      var c8n = L[i].connection
-      if (c8n && !c8n.isConnected()) {
-        return true
-      }
-    }
-  }
-  return false
 }
 
 /**

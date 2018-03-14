@@ -119,9 +119,9 @@ ezP.DelegateSvg.Expr.non_void_module_as_list = function (prototypeName) {
     check: ezP.T3.Expr.Check.non_void_module_as_list,
     empty: false,
     sep: ',',
+    hole_value: 'module',
   }
   this.outputModel_.check = ezP.T3.Expr.non_void_module_as_list
-  this.hole_value = 'module'
 }
 goog.inherits(ezP.DelegateSvg.Expr.non_void_module_as_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('non_void_module_as_list')

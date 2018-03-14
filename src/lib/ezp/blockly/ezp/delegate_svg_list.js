@@ -119,11 +119,9 @@ ezP.DelegateSvg.List.prototype.consolidate_ = function (block) {
   this.consolidating_ = true
   try { 
     this.consolidator.consolidate(block)
-  }
-  catch(err) {
+  } catch(err) {
       throw(err)
-  }
-  finally {
+  } finally {
     this.consolidating_ = false
   }
 }
