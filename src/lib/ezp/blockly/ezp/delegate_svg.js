@@ -1244,7 +1244,7 @@ ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, a
  * @param {string} aboveInputName, which parent's connection to use
  * @return the created block
  */
-ezP.DelegateSvg.prototype.insertBlockAbove = function(block, abovePrototypeName, aboveInputName) {
+ezP.DelegateSvg.prototype.insertBlockBefore = function(block, abovePrototypeName, aboveInputName) {
   goog.asserts.assert(false, 'Must be subclassed')
 }
 

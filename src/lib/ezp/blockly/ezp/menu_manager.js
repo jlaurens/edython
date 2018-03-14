@@ -35,11 +35,17 @@ ezP.DelegateSvg.prototype.getContextMenuHandler = function (block) {
 ezP.MenuManager = function () {
   this.menu = new ezP.PopupMenu(/*undefined, ContextMenuRenderer*/)
   this.insertSubmenu = new ezP.SubMenu(ezP.Msg.ADD)
+  this.insertBeforeSubmenu = new ezP.SubMenu(ezP.Msg.ADD_BEFORE)
+  this.insertAfterSubmenu = new ezP.SubMenu(ezP.Msg.ADD_AFTER)
   this.removeSubmenu = new ezP.SubMenu(ezP.Msg.REMOVE)
   this.didSeparate_ = false
   this.shouldSeparate_ = false
   this.didSeparateInsert_ = false
   this.shouldSeparateInsert_ = false
+  this.didSeparateInsertBefore_ = false
+  this.shouldSeparateInsertBefore_ = false
+  this.didSeparateInsertAfter_ = false
+  this.shouldSeparateInsertAfter_ = false
   this.didSeparateRemove_ = false
   this.shouldSeparateRemove_ = false
 }
@@ -82,6 +88,28 @@ ezP.MenuManager.prototype.separateInsert = function (render = true) {
 /**
  * Add a separator.
  */
+ezP.MenuManager.prototype.separateInsertBefore = function (render = true) {
+  this.shouldSeparateInsertBefore_ = false
+  if (this.insertBeforeSubmenu.getItemCount()) {
+    this.addInsertBeforeChild(new ezP.Separator(), render)
+  }
+  this.didSeparateInsertBefore_ = true
+}
+
+/**
+ * Add a separator.
+ */
+ezP.MenuManager.prototype.separateInsertAfter = function (render = true) {
+  this.shouldSeparateInsertAfter_ = false
+  if (this.insertAfterSubmenu.getItemCount()) {
+    this.addInsertAfterChild(new ezP.Separator(), render)
+  }
+  this.didSeparateInsertAfter_ = true
+}
+
+/**
+ * Add a separator.
+ */
 ezP.MenuManager.prototype.separateRemove = function (render = true) {
   this.shouldSeparateRemove_ = false
   if (this.removeSubmenu.getItemCount()) {
@@ -104,6 +132,22 @@ ezP.MenuManager.prototype.shouldSeparate = function(yorn = true) {
 ezP.MenuManager.prototype.shouldSeparateInsert = function(yorn = true) {
   this.shouldSeparateInsert_  = !this.didSeparateInsert_ && (this.shouldSeparateInsert_ || yorn)
   // console.log('shouldSeparate_', yorn, this.shouldSeparate_)
+}
+
+/**
+ * Whether a separator should be inserted before any forthcoming menu item.
+ */
+ezP.MenuManager.prototype.shouldSeparateInsertBefore = function(yorn = true) {
+  this.shouldSeparateInsertBefore_  = !this.didSeparateInsertBefore_ && (this.shouldSeparateInsertBefore_ || yorn)
+  // console.log('shouldSeparateBefore_', yorn, this.shouldSeparateBefore_)
+}
+
+/**
+ * Whether a separator should be inserted before any forthcoming menu item.
+ */
+ezP.MenuManager.prototype.shouldSeparateInsertAfter = function(yorn = true) {
+  this.shouldSeparateInsertAfter_  = !this.didSeparateInsertAfter_ && (this.shouldSeparateInsertAfter_ || yorn)
+  // console.log('shouldSeparateAfter_', yorn, this.shouldSeparateAfter_)
 }
 
 /**
@@ -138,6 +182,30 @@ ezP.MenuManager.prototype.addInsertChild = function (menuItem, render = true) {
 }
 
 /**
+ * Add a menu item to the insert submenu.
+ */
+ezP.MenuManager.prototype.addInsertBeforeChild = function (menuItem, render = true) {
+  if (this.shouldSeparateInsertBefore_) {
+    // console.log('Did separate')
+    this.separateInsertBefore(render)
+  }
+  this.insertBeforeSubmenu.addItem(menuItem)
+  this.didSeparateInsertBefore_ = false
+}
+
+/**
+ * Add a menu item to the insert submenu.
+ */
+ezP.MenuManager.prototype.addInsertAfterChild = function (menuItem, render = true) {
+  if (this.shouldSeparateInsertAfter_) {
+    // console.log('Did separate')
+    this.separateInsertAfter(render)
+  }
+  this.insertAfterSubmenu.addItem(menuItem)
+  this.didSeparateInsertAfter_ = false
+}
+
+/**
  * Add a menu item to the remove submenu.
  */
 ezP.MenuManager.prototype.addRemoveChild = function (menuItem, render = true) {
@@ -158,6 +226,8 @@ ezP.MenuManager.prototype.init = function (block, e) {
   this.menu.removeChildren(true)
   this.e = e
   this.insertSubmenu.getMenu().removeChildren(true)
+  this.insertBeforeSubmenu.getMenu().removeChildren(true)
+  this.insertAfterSubmenu.getMenu().removeChildren(true)
   this.removeSubmenu.getMenu().removeChildren(true)
 }
 
@@ -175,15 +245,31 @@ ezP.MenuManager.prototype.showMenu = function (block, e) {
   me.alreadyListened = false
   var parent, sep
   parent = target
+  this.populate_before_after(block)
   sep = parent.ezp.populateContextMenuFirst_(parent, this)
   while (parent !== block) {
     parent = parent.getParent()
     sep = parent.ezp.populateContextMenuFirst_(parent, this) || sep
   }
   this.shouldSeparate(sep) // this algorithm needs more thinking
-  this.addChild(this.insertSubmenu, true)
-  this.addChild(this.removeSubmenu, true)
-  this.shouldSeparate(true) // this algorithm needs more thinking
+  if (this.insertSubmenu.getItemCount()) {
+    this.addChild(this.insertSubmenu, true)
+    sep = true
+  }
+  if (this.removeSubmenu.getItemCount()) {
+    this.addChild(this.removeSubmenu, true)
+    sep = true
+  }
+  this.shouldSeparate(sep)
+  if (this.insertAfterSubmenu.getItemCount()) {
+    this.addChild(this.insertAfterSubmenu, true)
+    sep = true
+  }
+  if (this.insertBeforeSubmenu.getItemCount()) {
+    this.addChild(this.insertBeforeSubmenu, true)
+    sep = true
+  }
+  this.shouldSeparate(sep) // this algorithm needs more thinking
   parent = target
   sep = parent.ezp.populateContextMenuMiddle_(parent, this)
   while (parent !== block) {
@@ -233,7 +319,6 @@ ezP.ID.FILL_DEEP_HOLES = 'FILL_DEEP_HOLES'
 ezP.Delegate.prototype.populateContextMenuFirst_ = function (block, mgr) {
   mgr.shouldSeparate()
   mgr.populate_movable_parent(block)
-  mgr.populate_above_below(block)
 }
 
 /**
@@ -531,18 +616,16 @@ ezP.MenuManager.prototype.handleAction_movable_parent_module = ezP.MenuManager.p
  * @private
  */
 ezP.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
-  var Stmt1 = function(key, where) {
+  var Stmt1 = function(key) {
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN(key, 'ezp-code-reserved'),
       ezP.Do.createSPAN(' … ', 'ezp-code-placeholder'),
       ezP.Do.createSPAN(':', 'ezp-code-reserved'),
-      goog.dom.createTextNode(' '+where),
     )
   }
-  var Stmt2 = function(key, where) {
+  var Stmt2 = function(key) {
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN(key+':', 'ezp-code-reserved'),
-      goog.dom.createTextNode(' '+where),
     )
   }
   switch(type) {
@@ -720,16 +803,16 @@ ezP.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
       ezP.Do.createSPAN('}', 'ezp-code'),
       goog.dom.createTextNode(' '+ezP.Msg.AROUND),
     )
-    case ezP.T3.Stmt.if_part: return Stmt1('if', subtype)
-    case ezP.T3.Stmt.elif_part: return Stmt1('elif', subtype)
-    case ezP.T3.Stmt.for_part: return Stmt1('for', subtype)
-    case ezP.T3.Stmt.while_part: return Stmt1('while', subtype)
-    case ezP.T3.Stmt.try_part: return Stmt2('try', subtype)
-    case ezP.T3.Stmt.except_part: return Stmt1('except', subtype)
-    case ezP.T3.Stmt.void_except_part:return Stmt2('except', subtype)
-    case ezP.T3.Stmt.else_part:return Stmt2('else', subtype)
-    case ezP.T3.Stmt.finally_part:return Stmt2('finally', subtype)
-    case ezP.T3.Stmt.with_part: return Stmt1('with', subtype)
+    case ezP.T3.Stmt.if_part: return Stmt1('if')
+    case ezP.T3.Stmt.elif_part: return Stmt1('elif')
+    case ezP.T3.Stmt.for_part: return Stmt1('for')
+    case ezP.T3.Stmt.while_part: return Stmt1('while')
+    case ezP.T3.Stmt.try_part: return Stmt2('try')
+    case ezP.T3.Stmt.except_part: return Stmt1('except')
+    case ezP.T3.Stmt.void_except_part:return Stmt2('except')
+    case ezP.T3.Stmt.else_part:return Stmt2('else')
+    case ezP.T3.Stmt.finally_part:return Stmt2('finally')
+    case ezP.T3.Stmt.with_part: return Stmt1('with')
     default:
     return 'Parent '+type
   }
@@ -770,7 +853,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
       var key = d.key
       var content = mgr.get_menuitem_content(parent_type, key)
       var MI = new ezP.MenuItem(content, function() {
-        block.ezp.insertBlockAbove(block, parent_type, key)
+        block.ezp.insertBlockBefore(block, parent_type, key)
       })
       mgr.addInsertChild(MI)
       return true
@@ -781,7 +864,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
           var key = d.key || K
           var content = mgr.get_menuitem_content(parent_type, key)
           var MI = new ezP.MenuItem(content, function() {
-            block.ezp.insertBlockAbove(block, parent_type, key)
+            block.ezp.insertBlockBefore(block, parent_type, key)
           })
           mgr.addInsertChild(MI)
           return true
@@ -803,7 +886,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
       }
       var content = mgr.get_menuitem_content(parent_type)
       var MI = new ezP.MenuItem(content, function() {
-        block.ezp.insertBlockAbove(block, parent_type)
+        block.ezp.insertBlockBefore(block, parent_type)
       })
       mgr.addInsertChild(MI)
       return true  
@@ -881,7 +964,7 @@ ezP.MenuManager.prototype.populate_replace_parent = function (block, type, subty
  * @param {!Blockly.Block} block The block.
  * @private
  */
-ezP.MenuManager.prototype.populate_above_below = function (block) {
+ezP.MenuManager.prototype.populate_before_after = function (block) {
   // Disable undo registration for a while
   var Ts = [
     ezP.T3.Stmt.if_part,
@@ -922,8 +1005,8 @@ ezP.MenuManager.prototype.populate_above_below = function (block) {
         if (yorn) {
           var content = this.get_menuitem_content(type, ezP.Msg.AFTER)
           console.log(content, type)
-          var MI = new ezP.MenuItem(content, F(block.ezp.insertBlockBelow, type))
-          this.addInsertChild(MI)  
+          var MI = new ezP.MenuItem(content, F(block.ezp.insertBlockAfter, type))
+          this.addInsertAfterChild(MI)  
         }
       }
     }
@@ -938,8 +1021,8 @@ ezP.MenuManager.prototype.populate_above_below = function (block) {
         B.dispose()
         if (yorn) {
           var content = this.get_menuitem_content(type, ezP.Msg.BEFORE)
-          var MI = new ezP.MenuItem(content, F(block.ezp.insertBlockAbove, type))
-          this.addInsertChild(MI)  
+          var MI = new ezP.MenuItem(content, F(block.ezp.insertBlockBefore, type))
+          this.addInsertBeforeChild(MI)  
         }
       }
     }

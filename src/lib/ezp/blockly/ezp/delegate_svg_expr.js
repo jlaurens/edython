@@ -251,8 +251,8 @@ ezP.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr)
  * @param {string} aboveInputName, which parent's connection to use
  * @return the created block
  */
-ezP.DelegateSvg.Expr.prototype.insertBlockAbove = function(block, abovePrototypeName, aboveInputName) {
-  console.log('insertBlockAbove', block, abovePrototypeName, aboveInputName)
+ezP.DelegateSvg.Expr.prototype.insertBlockBefore = function(block, abovePrototypeName, aboveInputName) {
+  console.log('insertBlockBefore', block, abovePrototypeName, aboveInputName)
   Blockly.Events.setGroup(true)
   var blockAbove = ezP.DelegateSvg.newBlockComplete(block.workspace, abovePrototypeName)
   console.log('block created of type', abovePrototypeName)

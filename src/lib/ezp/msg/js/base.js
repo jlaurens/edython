@@ -27,6 +27,8 @@ goog.require('ezP')
 /** @export */ ezP.Msg.UNUSE_PROPER_SLICING_STRIDE = 'pas de 1'
 
 /** @export */ ezP.Msg.ADD = 'Ajouter'
+/** @export */ ezP.Msg.ADD_BEFORE = 'Ajouter avant'
+/** @export */ ezP.Msg.ADD_AFTER = 'Ajouter après'
 /** @export */ ezP.Msg.REMOVE = 'Enlever'
 
 /** @export */ ezP.Msg.FILL_DEEP_HOLES = "Compléter"

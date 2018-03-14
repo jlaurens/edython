@@ -166,7 +166,7 @@ ezP.DelegateSvg.Stmt.prototype.toPython = function (block, is_deep) {
  * @param {string} aboveInputName, which parent's connection to use
  * @return the created block
  */
-ezP.DelegateSvg.Stmt.prototype.insertBlockAbove = function(block, abovePrototypeName) {
+ezP.DelegateSvg.Stmt.prototype.insertBlockBefore = function(block, abovePrototypeName) {
   Blockly.Events.setGroup(true)
   var blockAbove = ezP.DelegateSvg.newBlockComplete(block.workspace, abovePrototypeName)
   var c8n = block.previousConnection
@@ -198,7 +198,7 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAbove = function(block, abovePrototype
  * @param {string} aboveInputName, which parent's connection to use
  * @return the created block
  */
-ezP.DelegateSvg.Stmt.prototype.insertBlockBelow = function(block, belowPrototypeName) {
+ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototypeName) {
   Blockly.Events.setGroup(true)
   var blockBelow = ezP.DelegateSvg.newBlockComplete(block.workspace, belowPrototypeName)
   var c8n = block.nextConnection
