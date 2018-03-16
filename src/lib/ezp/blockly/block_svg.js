@@ -105,11 +105,21 @@ ezP.BlockSvg.prototype.addSelect = function () {
     }
     Blockly.utils.addClass(this.svgGroup_, 'ezp-select')
     this.svgGroup_.appendChild(this.ezp.svgPathHighlight_)
+    // ensure that the svgGroup is the last in the list
+    var node = this.svgGroup_
+    var parent
+    while ((node.tagName === 'g') && (parent = goog.dom.getParentElement(node))) {
+      var last = goog.dom.getLastElementChild(parent)
+      if (last !== node) {
+        goog.dom.removeNode(node)
+        goog.dom.insertSiblingAfter(node, last)
+      }
+      node = parent
+    } 
   }
   for (var _ = 0, input; (input = this.inputList[_++]);) {
     for (var __ = 0, field; (field = input.fieldRow[__++]);) {
-      var addSelect = field.addSelect
-      if (addSelect) {
+      if (field.addSelect) {
         field.addSelect()
       }
     }

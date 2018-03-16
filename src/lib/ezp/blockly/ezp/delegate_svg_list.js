@@ -71,10 +71,10 @@ ezP.DelegateSvg.List.prototype.renderDrawListInput_ = function (io) {
     var target = c8n.targetBlock()
     var root = target.getSvgRoot()
     if (root) {
-      var bBox = target.getHeightWidth()
       root.setAttribute('transform', 'translate(' + io.cursorX + ', 0)')
-      io.cursorX += bBox.width
       target.render()
+      var bBox = target.getHeightWidth()
+      io.cursorX += bBox.width
     }
   } else {
     if (ezp.s7r_ || c8n.ezp.optional_) {

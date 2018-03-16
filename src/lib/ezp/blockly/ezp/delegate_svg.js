@@ -1484,29 +1484,266 @@ ezP.DelegateSvg.prototype.toPythonStatementComponents = function (block, compone
 }
 
 /**
- * Select the block after the owner.
+ * Returns the coordinates of a bounding rect describing the dimensions of this
+ * block.
+ * As the shape is not the same comparing to Blockly's default,
+ * the bounding rect changes too.
+ * Coordinate system: workspace coordinates.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return {!goog.math.Rect}
+ *    Object with top left and bottom right coordinates of the bounding box.
+ */
+ezP.DelegateSvg.prototype.getBoundingRect = function(block) {
+  return goog.math.Rect.createFromPositionAndSize(
+    block.getRelativeToSurfaceXY(),
+    block.getHeightWidth()
+  )
+}
+
+/**
+ * Returns the coordinates of a bounding box describing the dimensions of this
+ * block.
+ * As the shape is not the same comparing to Blockly's default,
+ * the bounding box changes too.
+ * Coordinate system: workspace coordinates.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return {!goog.math.Box}
+ *    Object with top left and bottom right coordinates of the bounding box.
+ */
+ezP.DelegateSvg.prototype.getBoundingBox = function(block) {
+  return this.getBoundingRect(block).toBox()
+}
+
+/**
+ * Get the closest box, according to the filter.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {function} distance Is a function.
+ * @return None
+ */
+ezP.DelegateSvg.getBestBlock = function (workspace, weight) {
+  var smallest = Infinity, best
+  for (var i = 0, top; (top = workspace.topBlocks_[i++]);) {
+    var box = top.ezp.getBoundingRect(top)
+    console.log(top.type, box.toString(), box.getCenter().toString())
+    var w = weight(box.getCenter())
+    if (w < smallest) {
+      smallest = w
+      best = top
+      console.log('BETTER', smallest, best.type)
+    }
+  }
+  return best
+}
+
+/**
+ * Get the closest box, according to the filter.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {function} distance Is a function.
+ * @return None
+ */
+ezP.DelegateSvg.prototype.getBestBlock = function (block, distance) {
+  const a = this.getBoundingBox(block)
+  var smallest = {}, best
+  for (var i = 0, top; (top = block.workspace.topBlocks_[i++]);) {
+    if (top === block) {
+      continue
+    }
+    var b = top.ezp.getBoundingBox(top)
+    var target = top
+    var c8n
+    while ((c8n = target.nextConnection) && (target = c8n.targetBlock())) {
+      b.expandToInclude(target.ezp.getBoundingBox(target))
+    }
+    var d = distance(a, b)
+    if (d.major && (!smallest.major || d.major < smallest.major)) {
+      smallest = d
+      best = top
+    } else if (d.minor && (!smallest.major && (!smallest.minor || d.minor < smallest.minor))) {
+      smallest = d
+      best = top
+    }
+  }
+  return best
+}
+
+/**
+ * Select the block to the left of the owner.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return None
  */
-ezP.DelegateSvg.prototype.selectBlockBefore = function (block) {
-  var c8n, target
-  if ((c8n = block.previousConnection) && (target = c8n.targetBlock())) {
-    target.select()
+ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
+  var parent
+  if ((parent = block.getSurroundParent())) {
+    parent.select()
     return
+  }
+  var target = block
+  do {
+    parent = target
+  } while ((target = parent.getParent()))
+  target = parent.ezp.getBestBlock(parent, function(a, b) {
+    if (a.left <= b.left) {
+      return {}
+    }
+    // b.left < a.left
+    if (a.top - b.bottom > a.left - b.left) {
+      return {minor: a.left - b.left + a.top - b.bottom}
+    }
+    if (b.top - a.bottom > a.left - b.left) {
+      return {minor: a.left - b.left + b.top - a.bottom}
+    }
+    return {
+      major: a.left - b.left + Math.abs(a.bottom + a.top - b.bottom - b.top)/3,
+      minor: b.bottom - b.top,
+    }
+  })
+  if (target) {
+    target.select()
   }
 }
 
 /**
- * Select the block after the owner.
+ * Select the block to the right of the owner.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return None
  */
-ezP.DelegateSvg.prototype.selectBlockAfter = function (block) {
-  var c8n, target
-  if ((c8n = block.nextConnection) && (target = c8n.targetBlock())) {
+ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
+  var parent, c8n, target
+  for(var i = 0, input; (input = block.inputList[i++]);) {
+    if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT) && (target = c8n.targetBlock())) {
+      target.select()
+      return
+    }
+  }
+  for(var i = 0, input; (input = block.inputList[i++]);) {
+    if ((c8n = input.connection) && (c8n.type === Blockly.NEXT_STATEMENT) && (target = c8n.targetBlock())) {
+      target.select()
+      return
+    }
+  }
+  if ((parent = block.getSurroundParent())) {
+  }
+  target = block
+  while ((parent = target.getSurroundParent())) {
+    for(var i = 0, input; (input = parent.inputList[i++]);) {
+      if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT) && (target == c8n.targetBlock())) {
+        for(; (input = parent.inputList[i++]);) {
+          if ((c8n = input.connection) && (target = c8n.targetBlock())) {
+            target.select()
+            return
+          }
+        }
+      }
+    }
+    target = parent
+  }
+  target = block
+  while ((parent = target.getSurroundParent())) {
+    for(var i = 0, input; (input = parent.inputList[i++]);) {
+      if ((c8n = input.connection) && (c8n.type === Blockly.NEXT_STATEMENT) && (target = c8n.targetBlock()) && (target !== block)) {
+        target.select()
+        return
+      }
+    }
+    target = parent
+  }
+  target = block
+  do {
+    parent = target
+  } while ((target = parent.getParent()))
+  target = parent.ezp.getBestBlock(parent, function(a, b) {
+    if (a.right >= b.right) {
+      return {}
+    }
+    // b.right > a.right
+    if (a.top - b.bottom > b.right - a.right) {
+      return {minor: b.right - a.right + a.top - b.bottom}
+    }
+    if (b.top - a.bottom > b.right - a.right) {
+      return {minor: b.right - a.right + b.top - a.bottom}
+    }
+    return {
+      major: b.right - a.right + Math.abs(a.bottom + a.top - b.bottom - b.top)/3,
+      minor: b.bottom - b.top,
+    }
+  })
+  if (target) {
     target.select()
-    return
+  }
+}
+
+/**
+ * Select the block above the owner.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.DelegateSvg.prototype.selectBlockAbove = function (block) {
+  var parent, c8n, target = block
+  do {
+    parent = target
+    if ((c8n = parent.previousConnection) && (target = c8n.targetBlock())) {
+      target.select()
+      return
+    }
+  } while ((target = parent.getParent()))
+  target = parent.ezp.getBestBlock(parent, function(a, b) {
+    if (a.top <= b.top) {
+      return {}
+    }
+    // b.top < a.top
+    if (a.left - b.right > a.top - b.top) {
+      return {minor: a.left - b.right + a.top - b.top}
+    }
+    if (b.left - a.right > a.top - b.top) {
+      return {minor: b.left - a.right + a.top - b.top}
+    }
+    return {
+      major: a.top - b.top + Math.abs(a.left + a.right - b.left - b.right)/3,
+      minor: b.right - b.left,
+    }
+  })
+  if (target) {
+    target.select()
+  }
+}
+
+/**
+ * Select the block below the owner.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.DelegateSvg.prototype.selectBlockBelow = function (block) {
+  var parent, c8n, target = block
+  do {
+    parent = target
+    if ((c8n = parent.nextConnection) && (target = c8n.targetBlock())) {
+      target.select()
+      return
+    }
+  } while ((target = parent.getParent()))
+  target = parent.ezp.getBestBlock(parent, function(a, b) {
+    if (a.bottom >= b.bottom) {
+      return {}
+    }
+    // b.bottom > a.bottom
+    if (a.left - b.right > b.bottom - a.bottom) {
+      return {minor: a.left - b.right + b.bottom - a.bottom}
+    }
+    if (b.left - a.right > b.bottom - a.bottom) {
+      return {minor: b.left - a.right + b.bottom - a.bottom}
+    }
+    return {
+      major: b.bottom - a.bottom + Math.abs(a.left + a.right - b.left - b.right)/3,
+      minor: b.right - b.left,
+    }
+  })
+  if (target) {
+    target.select()
   }
 }
