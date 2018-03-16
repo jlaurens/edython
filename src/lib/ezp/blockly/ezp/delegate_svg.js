@@ -1615,7 +1615,11 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
   var parent, c8n, target
   for(var i = 0, input; (input = block.inputList[i++]);) {
     if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT) && (target = c8n.targetBlock())) {
-      target.select()
+      if (target.ezp.wrapped_) {
+        target.ezp.selectBlockRight(target)
+      } else {
+        target.select()
+      }
       return
     }
   }
