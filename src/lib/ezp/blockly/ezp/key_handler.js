@@ -41,14 +41,26 @@ ezP.KeyHandler.setup = function (document) {
   ezP.KeyHandler.shared.registerShortcut('→', goog.events.KeyCodes.RIGHT);
   ezP.KeyHandler.shared.registerShortcut('←', goog.events.KeyCodes.LEFT);
   ezP.KeyHandler.shared.registerShortcut(' ', goog.events.KeyCodes.SPACE);
-  ezP.KeyHandler.shared.registerShortcut(ezP.T3.Stmt.if_part,
-        goog.events.KeyCodes.I, goog.events.KeyCodes.NONE,
-        goog.events.KeyCodes.F, goog.events.KeyCodes.NONE,
-        goog.events.KeyCodes.ENTER);
-
-  
-  // ezP.KeyHandler.shared.registerShortcut('ENTER', goog.events.KeyCodes.ENTER);
-
+  var keys = {
+    'i f': ezP.T3.Stmt.if_part,
+    'e l i f': ezP.T3.Stmt.elif_part,
+    'e l s e':  ezP.T3.Stmt.else_part,
+    'c l a s s': ezP.T3.Stmt.classdef_part,
+    // 'd e': ezP.T3.Stmt.decorator_part,
+    'e x c e p t': ezP.T3.Stmt.except_part,
+    'f i n a l l y': ezP.T3.Stmt.finally_part,
+    'f o r': ezP.T3.Stmt.for_part,
+    'd e f': ezP.T3.Stmt.funcdef_part,
+    'i f': ezP.T3.Stmt.if_part,
+    'i m p o r t': ezP.T3.Stmt.import_part,
+    't r y': ezP.T3.Stmt.try_part,
+    'w h i l e': ezP.T3.Stmt.while_part,
+    'w i t h': ezP.T3.Stmt.with_part,
+  }
+  var key
+  for (key in keys) {
+    ezP.KeyHandler.shared.registerShortcut(keys[key], key+' enter');
+  }
   ezP.KeyHandler.shared.listen(
     goog.ui.KeyboardShortcutHandler.EventType.SHORTCUT_TRIGGERED,
     function(e) {

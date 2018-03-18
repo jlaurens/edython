@@ -92,7 +92,6 @@ ezP.BlockSvg.prototype.select = function() {
     return;
   }
   var more = this.ezp.selectedConnection || this.ezp.selectedConnectionSource_ && this.ezp.selectedConnectionSource_.ezp.selectedConnection
-  console.log('more', more)
   ezP.BlockSvg.superClass_.select.call(this)
   if (more) {
     if (this.ezp.svgPathHighlight_ && this.ezp.svgPathHighlight_.parentNode) {
@@ -364,7 +363,7 @@ ezP.BlockSvg.prototype.onMouseUp_ = function(e) {
  * @private
  */
 ezP.BlockSvg.prototype.onMouseDown_ = function(e) {
-  if (this.wrapped_) {
+  if (this.ezp.wrapped_) {
     return
   }
   // remove any selected connection, if any

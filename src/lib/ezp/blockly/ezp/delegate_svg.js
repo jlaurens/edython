@@ -2181,23 +2181,34 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, prototypeName) {
       var B = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
       if (c8n === source.nextConnection) {
         if (B.previousConnection) {
-          B.previousConnection.connect(c8n)
           if (targetC8n && B.nextConnection) {
             targetC8n.connect(B.nextConnection)
           }
+          B.previousConnection.connect(c8n)
           B.render()
           B.select()
           return
         }
       } else if (c8n === source.previousConnection) {
-
-      } else if (c8n === source.previousConnection) {
-
+        if (B.nextConnection) {
+          B.render()
+          if (targetC8n && B.previousConnection) {
+            targetC8n.connect(B.previousConnection)
+          } else {
+            var its_xy = block.getRelativeToSurfaceXY();
+            var my_xy = B.getRelativeToSurfaceXY();
+            B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)            
+          }
+          B.nextConnection.connect(c8n)
+          B.select()
+          return
+        }
       } else if (c8n.type === Blockly.NEXT_STATEMENT) {
 
       } else {
 
       }
+      B.dispose(true)
       return
     }
   }
