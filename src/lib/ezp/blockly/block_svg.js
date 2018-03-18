@@ -91,7 +91,7 @@ ezP.BlockSvg.prototype.select = function() {
     this.getSurroundParent().select();
     return;
   }
-  var more = this.ezp.selectedConnectionSource_ && this.ezp.selectedConnectionSource_.ezp.selectedConnection
+  var more = this.ezp.selectedConnection || this.ezp.selectedConnectionSource_ && this.ezp.selectedConnectionSource_.ezp.selectedConnection
   console.log('more', more)
   ezP.BlockSvg.superClass_.select.call(this)
   if (more) {
@@ -337,46 +337,67 @@ ezP.BlockSvg.prototype.showContextMenu_ = function (e) {
  * If the block is sealed to its parent, forwards to the parent.
  * This is used to prevent a dragging operation on a sealed block.
  * However, this will manage the selection of an input connection.
+ * onMouseDown_ message is sent multiple times for one mouse click
+ * because blocks may lay on above the other (when connected for example)
+ * Considering the selection of a connection, we manage the onMouseDown_ calls
+ * independantly. Whatever node is answering to a mousDown event,
+ * a connection will be activated if relevant.
+ * @param {!Event} e Mouse down event or touch start event.
+ * @private
+ */
+ezP.BlockSvg.prototype.onMouseUp_ = function(e) {
+  console.log('onMouseUp_ YES')
+  ezP.BlockSvg.superClass_.onMouseUp_.call(this, e)
+}
+
+/**
+ * Handle a mouse-down on an SVG block.
+ * If the block is sealed to its parent, forwards to the parent.
+ * This is used to prevent a dragging operation on a sealed block.
+ * However, this will manage the selection of an input connection.
+ * onMouseDown_ message is sent multiple times for one mouse click
+ * because blocks may lay on above the other (when connected for example)
+ * Considering the selection of a connection, we manage the onMouseDown_ calls
+ * independantly. Whatever node is answering to a mousDown event,
+ * a connection will be activated if relevant.
  * @param {!Event} e Mouse down event or touch start event.
  * @private
  */
 ezP.BlockSvg.prototype.onMouseDown_ = function(e) {
-  // get the first unwrapped or selected ancestor
-  console.log('onMouseDown_', this.type)
-  var B = this
-  while(true) {
-    if (B.ezp.wrapped_) {
-      if (B === Blockly.selected) {
-        break
-      } else if (!(B = B.getSurroundParent())) {
-        // Do nothing, this is an unconnected wrapped block
-        console.log('unexpected disconnected wrapped block...')
-        return
+  if (this.wrapped_) {
+    return
+  }
+  // remove any selected connection, if any
+  ezP.SelectedConnection.set(null)
+  this.ezp.selectedConnectionSource_ = null
+  // Prepare the mouseUp event for an eventual connection selection
+  this.ezp.lastMouseDownEvent = this === Blockly.selected? e: null
+  ezP.BlockSvg.superClass_.onMouseDown_.call(this, e)
+}
+
+/**
+ * The selected connection is used to insert blocks with the keyboard.
+ * When a connection is selected, one of the ancestor blocks is also selected.
+ * Then, the higlighted path of the source blocks is not the outline of the block
+ * but the shape of the connection as it shows when blocks are moved close enough.
+ */
+ezP.DelegateSvg.prototype.onMouseUp_ = function(block, e) {
+  var ee = this.lastMouseDownEvent
+  if (ee) {
+    if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
+      if (block === Blockly.selected) {
+        // if the block was already selected,
+        // try to select an input connection
+        var c8n = this.getConnectionForEvent(block, e)
+        if (c8n) {
+          ezP.SelectedConnection.set(c8n)
+        } else {
+          ezP.SelectedConnection.set(null)
+        }
       }
-    } else if (B === Blockly.selected) {
-      break
     } else {
-      // most probable situation: unselected and unwrapped block
-      if (!B.ezp.selectedConnectionSource_ || !B.ezp.selectedConnectionSource_.ezp.selectedConnection) {
-        ezP.SelectedConnection.set(null)
-      }
-      if (B === this) {
-        ezP.BlockSvg.superClass_.onMouseDown_.call(B, e)
-      }
-      return
+      ezP.SelectedConnection.set(null)
     }
   }
-  var input = this.ezp.getInputForEvent(this, e)
-  if (input && input.connection) {
-    ezP.SelectedConnection.set(input.connection, B)
-  } else {
-    B.ezp.selectedConnectionSource_ = null
-    ezP.SelectedConnection.set(null)
-  }
-  console.log('onMouseDown ->', B.type, B.ezp.selectedConnectionSource_, B.ezp.selectedConnectionSource_?B.ezp.selectedConnectionSource_.ezp.selectedConnection:'No selected connection')
-  if (B === this) {
-    ezP.BlockSvg.superClass_.onMouseDown_.call(B, e)
-  }
-  return
 }
 

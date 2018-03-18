@@ -320,6 +320,13 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     this.inputModel_ = undefined
   }
   this.inputs = Is
+  if (!block.workspace.options.readOnly && !this.eventsInit_) {
+    Blockly.bindEventWithChecks_(block.getSvgRoot(), 'mouseup', block,
+    function(e) {
+      block.ezp.onMouseUp_(block, e)
+    })
+  }
+  this.eventsInit_ = true;
 }
 
 /**
@@ -992,7 +999,11 @@ ezP.DelegateSvg.prototype.highlightConnectionPathDef = function (c8n) {
     if (c8n === block.previousConnection) {
       steps = 'm ' + block.width + ',' + (-r) + a + (2 * r) + ' h ' + (-block.width) + a + (-2 * r) + ' z'
     } else if (c8n === block.nextConnection) {
-      steps = 'm ' + ezP.Font.tabWidth + ',' + (-r+block.height) + a + (2 * r) + ' h ' + (-ezP.Font.tabWidth) + a + (-2 * r) + ' z'
+      if (block.height > ezP.Font.lineHeight()) { // this is not clean design
+        steps = 'm ' + (ezP.Font.tabWidth+ezP.Style.Path.radius()) + ',' + (block.height-r) + a + (2 * r) + ' h ' + (-ezP.Font.tabWidth-ezP.Style.Path.radius()) + a + (-2 * r) + ' z'
+      } else {
+        steps = 'm ' + block.width + ',' + (block.height-r) + a + (2 * r) + ' h ' + (-block.width) + a + (-2 * r) + ' z'        
+      }
     } else {
       steps = 'm ' + (block.width) + ',' + (-r+ezP.Font.lineHeight()) + a + (2 * r) + ' h ' + (ezP.Font.tabWidth-block.width) + a + (-2 * r) + ' z'
     }
@@ -1648,12 +1659,65 @@ ezP.DelegateSvg.prototype.getBestBlock = function (block, distance) {
  * @return None
  */
 ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
-  var parent
+  var target = this.selectedConnectionSource_
+  if (target && target !== block) {
+    target.ezp.selectBlockLeft(target)
+    return
+  }
+  var parent, input, c8n
+  var selectTarget = function() {
+    if (target = c8n.targetBlock()) {
+      if (target.ezp.wrapped_) {
+        target.ezp.selectBlockLeft(target)
+      } else {
+        target.select()
+      }
+      return true
+    }
+    return false
+  }
+  var selectConnection = function() {
+    if (!selectTarget()) {
+      parent = block
+      while (parent.ezp.wrapped_) {
+        if (!(parent = parent.getSurroundParent())) {
+          return false
+        }
+      }
+      ezP.SelectedConnection.set(c8n, parent)
+    }
+    return true
+  }
+  if ((c8n = this.selectedConnection)) {
+    if (c8n === block.nextStatement) {
+    } else if (c8n.type !== Blockly.NEXT_STATEMENT) {
+      // select the previous non statement input if any
+      for(var i = 0; (input = block.inputList[i++]);) {
+        if (input.connection && c8n === input.connection) {
+          // found it, step down
+          --i
+          for(; (input = block.inputList[--i]);) {
+            if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+              selectConnection()
+              return
+            }
+          }
+        }
+      }
+      ezP.SelectedConnection.set(null)
+      block.select()
+      return
+    } else {
+      ezP.SelectedConnection.set(null)
+      block.select()
+      return  
+    }
+  }
   if ((parent = block.getSurroundParent())) {
     parent.select()
     return
   }
-  var target = block
+  target = block
   do {
     parent = target
   } while ((target = parent.getSurroundParent()))
@@ -1677,7 +1741,6 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
     target.select()
   }
 }
-
 /**
  * Select the block to the right of the owner.
  * The owner is either a selected block or wrapped into a selected block.
@@ -1887,7 +1950,7 @@ ezP.DelegateSvg.prototype.selectBlockBelow = function (block) {
       target.select()
       return
     }
-  } while ((target = parent.getParent()))
+  } while ((target = parent.getSurroundParent()))
   target = parent.ezp.getBestBlock(parent, function(a, b) {
     if (a.bottom >= b.bottom) {
       return {}
@@ -1918,28 +1981,76 @@ ezP.DelegateSvg.prototype.selectBlockBelow = function (block) {
  * @param {Object} e in general a mouse down event
  * @return None
  */
-ezP.DelegateSvg.prototype.getInputForEvent = function (block, e) {
+ezP.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
   var where = new goog.math.Coordinate(e.clientX, e.clientY)
   where = goog.math.Coordinate.difference(where, block.workspace.getOriginOffsetInPixels())
   where.scale(1/block.workspace.scale)
-  where = goog.math.Coordinate.difference(where, this.getBoundingRect(block).getTopLeft())
+  var rect = this.getBoundingRect(block)
+  where = goog.math.Coordinate.difference(where, rect.getTopLeft())
   for (var i = 0, input; (input = block.inputList[i++]);) {
     var c8n = input.connection
-    if (c8n && c8n.type === Blockly.INPUT_VALUE) {
-      var target = c8n.targetBlock()
-      if (target && (input = target.ezp.getInputForEvent(target, e))) {
-        return input
-      }
-      var R = new goog.math.Rect(
-        c8n.offsetInBlock_.x - ezP.Font.space/2,
-        c8n.offsetInBlock_.y,
-        c8n.ezp.optional_ || c8n.ezp.s7r_? 2*ezP.Font.space: 4*ezP.Font.space,
-        ezP.Font.lineHeight(),        
-      )
-      if (R.contains(where)) {
-        return input
+    if (c8n) {
+      if (c8n.type === Blockly.INPUT_VALUE) {
+        var target = c8n.targetBlock()
+        if (target) {
+          if ((c8n = target.ezp.getConnectionForEvent(target, e))) {
+            return c8n
+          }
+        } else {
+          var R = new goog.math.Rect(
+            c8n.offsetInBlock_.x - ezP.Font.space/2,
+            c8n.offsetInBlock_.y + ezP.Font.space/2,
+            c8n.ezp.optional_ || c8n.ezp.s7r_? 2*ezP.Font.space: 4*ezP.Font.space,
+            ezP.Font.lineHeight() - ezP.Font.space,        
+          )
+          if (R.contains(where)) {
+            return c8n
+          }
+        }
+      } else if (c8n.type === Blockly.NEXT_STATEMENT) {
+        var R = new goog.math.Rect(
+          c8n.offsetInBlock_.x,
+          c8n.offsetInBlock_.y - ezP.Font.space/2,
+          ezP.Font.tabWidth,
+          ezP.Font.space,        
+        )
+        if (R.contains(where)) {
+          return c8n
+        }        
       }
     }
+  }
+
+  if ((c8n = block.previousConnection)) {
+    var R = new goog.math.Rect(
+      c8n.offsetInBlock_.x,
+      c8n.offsetInBlock_.y,
+      rect.width,
+      ezP.Font.space/2,        
+    )
+    if (R.contains(where)) {
+      return c8n
+    }  
+  }
+  if ((c8n = block.nextConnection)) {
+    if (rect.height > ezP.Font.lineHeight()) {// Not the cleanest design
+      var R = new goog.math.Rect(
+        c8n.offsetInBlock_.x,
+        c8n.offsetInBlock_.y - ezP.Font.space/2,
+        ezP.Font.tabWidth + ezP.Style.Path.radius(),// R U sure?
+        ezP.Font.space/2,        
+      )  
+    } else {
+      var R = new goog.math.Rect(
+        c8n.offsetInBlock_.x,
+        c8n.offsetInBlock_.y - ezP.Font.space/2,
+        rect.width,
+        ezP.Font.space/2,        
+      )  
+    }
+    if (R.contains(where)) {
+      return c8n
+    }  
   }
 }
 
@@ -1958,7 +2069,7 @@ ezP.SelectedConnection = function() {
     get: function() {
       return c8n
     },
-    set: function(connection, unwrapped) {
+    set: function(connection) {
       if (connection !== c8n) {
         if (c8n) {
           var block = c8n.getSourceBlock()
@@ -1980,11 +2091,15 @@ ezP.SelectedConnection = function() {
             block.removeSelect()
             block.ezp.updateAllPaths_(block)
             block.addSelect()
-            if (unwrapped) {
-              unwrapped.ezp.selectedConnectionSource_ = block
-              if (unwrapped === Blockly.selected) {
-                unwrapped.addSelect()
-              }    
+            var unwrapped = block
+            while (unwrapped.ezp.wrapped_) {
+              if (!(unwrapped = unwrapped.getSurroundParent())) {
+                return
+              }
+            }
+            unwrapped.ezp.selectedConnectionSource_ = block
+            if (unwrapped === Blockly.selected) {
+              unwrapped.addSelect()
             }
           }
         }
