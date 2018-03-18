@@ -127,14 +127,19 @@ ezP.BlockSvg.prototype.addSelect = function () {
     }
     this.svgGroup_.appendChild(this.ezp.svgPathConnection_)
   } else if (!this.ezp.wrapped_) {
-    if (!this.ezp.svgPathHighlight_ || this.ezp.svgPathHighlight_.parentNode) {
-      return
-    }
-    if (!this.ezp.selectedConnectionSource_ || !this.ezp.selectedConnectionSource_.ezp.selectedConnection) {
-      this.svgGroup_.appendChild(this.ezp.svgPathHighlight_)
+    var hasSelectedConnection = this.ezp.selectedConnectionSource_ && this.ezp.selectedConnectionSource_.ezp.selectedConnection
+    if (this.ezp.svgPathHighlight_) {
+      if (this.ezp.svgPathHighlight_.parentNode && hasSelectedConnection) {
+        goog.dom.removeNode(this.ezp.svgPathHighlight_)
+      } else if (!this.ezp.svgPathHighlight_.parentNode && !hasSelectedConnection) {
+        this.svgGroup_.appendChild(this.ezp.svgPathHighlight_)
+      }
     }
   }
-  Blockly.utils.addClass(this.svgGroup_, 'ezp-select')
+  if (goog.dom.classlist.contains(this.svgGroup_, 'ezp-select')) {
+    return
+  }
+  goog.dom.classlist.add(this.svgGroup_, 'ezp-select')
   // ensure that the svgGroup is the last in the list
   this.bringToFront()
   for (var _ = 0, input; (input = this.inputList[_++]);) {
@@ -363,8 +368,7 @@ ezP.BlockSvg.prototype.onMouseDown_ = function(e) {
   }
   var input = this.ezp.getInputForEvent(this, e)
   if (input && input.connection) {
-    B.ezp.selectedConnectionSource_ = input.connection.getSourceBlock() // before
-    ezP.SelectedConnection.set(input.connection)
+    ezP.SelectedConnection.set(input.connection, B)
   } else {
     B.ezp.selectedConnectionSource_ = null
     ezP.SelectedConnection.set(null)
