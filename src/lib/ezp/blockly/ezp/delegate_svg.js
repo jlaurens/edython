@@ -120,6 +120,12 @@ ezP.DelegateSvg.prototype.svgPathInline_ = undefined
 ezP.DelegateSvg.prototype.svgPathHighlight_ = undefined
 
 /**
+ * This is the shape used to draw an highlighted connection contour.
+ * @private
+ */
+ezP.DelegateSvg.prototype.svgPathConnection_ = undefined
+
+/**
  * When set, used to create an input value.
  * three inputs can be created on the fly.
  * The data is an object with following properties: first, middle, last
@@ -149,6 +155,8 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   this.svgPathShape_ = Blockly.utils.createSvgElement('path', {}, null)
   goog.dom.insertChildAt(block.svgGroup_, this.svgPathShape_, 0)
   this.svgPathHighlight_ = Blockly.utils.createSvgElement('path',
+    {'class': 'ezp-path-selected'}, null)
+  this.svgPathConnection_ = Blockly.utils.createSvgElement('path',
     {'class': 'ezp-path-selected'}, null)
   Blockly.utils.addClass(/** @type {!Element} */ (block.svgGroup_),
     'ezp-block')
@@ -329,6 +337,8 @@ ezP.DelegateSvg.prototype.deinitBlock = function(block) {
   this.svgPathInline_ = undefined
   goog.dom.removeNode(this.svgPathHighlight_)
   this.svgPathHighlight_ = undefined
+  goog.dom.removeNode(this.svgPathConnection_)
+  this.svgPathConnection_ = undefined
   ezP.DelegateSvg.superClass_.deinitBlock.call(this, block)
 }
 
@@ -557,11 +567,25 @@ ezP.DelegateSvg.prototype.shapePathDef_ = function (block) {
 ezP.DelegateSvg.prototype.contourPathDef_ = ezP.DelegateSvg.prototype.shapePathDef_
 
 /**
- * Highlighte block outline. Default implementation forwards to shapePathDef_.
+ * Highlighted block outline. Default implementation forwards to shapePathDef_.
  * @param {!ezP.Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.highlightedPathDef_ = ezP.DelegateSvg.prototype.shapePathDef_
+ezP.DelegateSvg.prototype.highlightPathDef_ = ezP.DelegateSvg.prototype.shapePathDef_
+
+/**
+ * Highlighted connection outline.
+ * When a block is selected and one of its connection is also selected
+ * the ui displays a bold line on the connection. When the block has wrapped input,
+ * the selected connection may belong to a wrapped block.
+ * @param {!ezP.Block} block.
+ * @private
+ */
+ezP.DelegateSvg.prototype.connectionPathDef_ = function (block) {
+  return this.selectedConnection?
+    this.highlightConnectionPathDef(this.selectedConnection):
+    ''
+}
 
 /**
  * Extra disabled block outline. Default implementation return a void string.
@@ -585,7 +609,7 @@ ezP.DelegateSvg.prototype.renderDraw_ = function (block) {
   if (root.ezp) {
     root.ezp.alignRightEdges_(root)
   }
-  this.didChangeSize_(block)
+  this.updateAllPaths_(block)
 }
 
 /**
@@ -614,7 +638,7 @@ ezP.DelegateSvg.prototype.alignRightEdges_ = function (block) {
       var width = right - t * ntor.depth()
       if (b.width !== width) {
         b.width = width
-        b.ezp.didChangeSize_(b)
+        b.ezp.updateAllPaths_(b)
       }
     }
   }
@@ -640,16 +664,18 @@ ezP.DelegateSvg.prototype.updatePath_ = function (block, path, def) {
  * @param {!ezP.Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.didChangeSize_ = function (block) {
+ezP.DelegateSvg.prototype.updateAllPaths_ = function (block) {
   if (this.wrapped_) {
     this.updatePath_(block, this.svgPathContour_)
     this.updatePath_(block, this.svgPathShape_)
     this.updatePath_(block, this.svgPathHighlight_)
+    this.updatePath_(block, this.svgPathConnection_, this.connectionPathDef_)
     this.updatePath_(block, this.svgPathCollapsed_)
-    } else {
+  } else {
     this.updatePath_(block, this.svgPathContour_, this.contourPathDef_)
     this.updatePath_(block, this.svgPathShape_, this.shapePathDef_)
-    this.updatePath_(block, this.svgPathHighlight_, this.highlightedPathDef_)
+    this.updatePath_(block, this.svgPathHighlight_, this.highlightPathDef_)
+    this.updatePath_(block, this.svgPathConnection_, this.connectionPathDef_)
     this.updatePath_(block, this.svgPathCollapsed_, this.collapsedPathDef_)
   }
 }
@@ -943,6 +969,30 @@ ezP.DelegateSvg.prototype.placeHolderPathDefWidth_ = function (cursorX) {
   'h -' + (size.width - 2 * p) + a + (-h + 2 * dy) + ' z'
   return {width: size.width, d: d}
 } /* eslint-enable indent */
+
+/**
+ * @param {!Blockly.Connection} c8n The connection to highlight.
+ */
+ezP.DelegateSvg.prototype.highlightConnectionPathDef = function (c8n) {
+  var steps = ''
+  var block = c8n.sourceBlock_
+  if (c8n.type === Blockly.INPUT_VALUE) {
+    if (c8n.isConnected()) {
+      steps = this.valuePathDef_(c8n.targetBlock())
+    } else if (c8n.ezp.s7r_ || c8n.ezp.optional_) {
+      steps = this.carretPathDefWidth_(c8n.offsetInBlock_.x).d
+    } else {
+      steps = this.placeHolderPathDefWidth_(c8n.offsetInBlock_.x).d
+    }
+  } else if (c8n.type === Blockly.OUTPUT_VALUE) {
+    steps = this.valuePathDef_(block)
+  } else {
+    var r = ezP.Style.Path.Selected.width / 2
+    var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
+    steps = 'm ' + block.width + ',' + (-r) + a + (2 * r) + ' h ' + (-block.width) + a + (-2 * r) + ' z'
+  }
+  return steps
+}
 
 /**
  * @param {!Blockly.Connection} c8n The connection to highlight.
@@ -1488,6 +1538,23 @@ ezP.DelegateSvg.prototype.toPythonStatementComponents = function (block, compone
  * block.
  * As the shape is not the same comparing to Blockly's default,
  * the bounding rect changes too.
+ * Coordinate system: global coordinates.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return {!goog.math.Rect}
+ *    Object with top left and bottom right coordinates of the bounding box.
+ */
+ezP.DelegateSvg.prototype.getGlobalBoundingRect = function(block) {
+  var R = this.getBoundingRect(block)
+  R.scale(block.workspace.scale)
+  R.translate(block.workspace.getOriginOffsetInPixels())
+  return R
+}
+
+/**
+ * Returns the coordinates of a bounding rect describing the dimensions of this
+ * block.
+ * As the shape is not the same comparing to Blockly's default,
+ * the bounding rect changes too.
  * Coordinate system: workspace coordinates.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return {!goog.math.Rect}
@@ -1607,41 +1674,69 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
 
 /**
  * Select the block to the right of the owner.
+ * The owner is either a selected block or wrapped into a selected block.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return None
  */
 ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
-  var parent, c8n, target
-  for(var i = 0, input; (input = block.inputList[i++]);) {
-    if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT) && (target = c8n.targetBlock())) {
+  var target = this.selectedConnectionOwner_
+  if (target && target !== this) {
+    target.ezp.selectBlockRight(target)
+    return
+  }
+  var parent, input, c8n
+  var F = function() {
+    if (target = c8n.targetBlock()) {
       if (target.ezp.wrapped_) {
         target.ezp.selectBlockRight(target)
       } else {
         target.select()
       }
-      return
+    } else {
+      parent = block
+      while (parent.ezp.wrapped_) {
+        if (!(parent = parent.getSurroundParent())) {
+          return
+        }
+      }
+      parent.selectedConnectionOwner_ = block
+      ezP.SelectedConnection.set(c8n)
+      parent.select()
     }
   }
-  for(var i = 0, input; (input = block.inputList[i++]);) {
+  if ((c8n = this.selectedConnection)) {
+    for(var i = 0; (input = block.inputList[i++]);) {
+      if (c8n === input.connection) {
+        for(; (input = block.inputList[i++]);) {
+          if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+            F()
+            return
+          }
+        }
+      }
+    }
+  } else {
+    for(var i = 0; (input = block.inputList[i++]);) {
+      if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+        F()
+        return
+      }
+    }
+  }
+  for(var i = 0; (input = block.inputList[i++]);) {
     if ((c8n = input.connection) && (c8n.type === Blockly.NEXT_STATEMENT) && (target = c8n.targetBlock())) {
       target.select()
       return
     }
   }
-  if ((parent = block.getSurroundParent())) {
-  }
   target = block
   while ((parent = target.getSurroundParent())) {
-    for(var i = 0, input; (input = parent.inputList[i++]);) {
+    for(var i = 0; (input = parent.inputList[i++]);) {
       if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT) && (target == c8n.targetBlock())) {
         for(; (input = parent.inputList[i++]);) {
-          if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT) && (target = c8n.targetBlock())) {
-            if (target.ezp.wrapped_) {
-              target.ezp.selectBlockRight(target)
-            } else {
-              target.select()
-            }
+          if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+            F()
             return
           }
         }
@@ -1651,7 +1746,7 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
   }
   target = block
   while ((parent = target.getSurroundParent())) {
-    for(var i = 0, input; (input = parent.inputList[i++]);) {
+    for(var i = 0; (input = parent.inputList[i++]);) {
       if ((c8n = input.connection) && (c8n.type === Blockly.NEXT_STATEMENT) && (target = c8n.targetBlock()) && (target !== block)) {
         target.select()
         return
@@ -1755,3 +1850,82 @@ ezP.DelegateSvg.prototype.selectBlockBelow = function (block) {
     target.select()
   }
 }
+
+/**
+ * Get the input for the given event.
+ * The block is already rendered once.
+ * 
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {Object} e in general a mouse down event
+ * @return None
+ */
+ezP.DelegateSvg.prototype.getInputForEvent = function (block, e) {
+  var where = new goog.math.Coordinate(e.clientX, e.clientY)
+  where = goog.math.Coordinate.difference(where, block.workspace.getOriginOffsetInPixels())
+  where.scale(1/block.workspace.scale)
+  where = goog.math.Coordinate.difference(where, this.getBoundingRect(block).getTopLeft())
+  for (var i = 0, input; (input = block.inputList[i++]);) {
+    var c8n = input.connection
+    if (c8n && c8n.type === Blockly.INPUT_VALUE) {
+      var target = c8n.targetBlock()
+      if (target && (input = target.ezp.getInputForEvent(target, e))) {
+        return input
+      }
+      var R = new goog.math.Rect(
+        c8n.offsetInBlock_.x - ezP.Font.space/2,
+        c8n.offsetInBlock_.y,
+        c8n.ezp.optional_ || c8n.ezp.s7r_? 2*ezP.Font.space: 4*ezP.Font.space,
+        ezP.Font.lineHeight(),        
+      )
+      if (R.contains(where)) {
+        return input
+      }
+    }
+  }
+}
+
+/**
+ * The selected connection is used to insert blocks with the keyboard.
+ * When a connection is selected, one of the ancestor blocks is also selected.
+ * Then, the higlighted path of the source blocks is not the outline of the block
+ * but the shape of the connection as it shows when blocks are moved close enough.
+ */
+ezP.SelectedConnection = function() {
+  var c8n
+  var me = {
+    /**
+     * Lazy getter
+    */
+    get: function() {
+      return c8n
+    },
+    set: function(connection) {
+      if (connection !== c8n) {
+        if (c8n) {
+          var block = c8n.getSourceBlock()
+          if (block) {
+            block.ezp.selectedConnection = null
+            block.ezp.selectedConnectionSource_ = null
+            block.removeSelect()
+            if (block === Blockly.selected) {
+              block.addSelect()
+            }
+          }
+          c8n = null
+        }
+        if (connection) {
+          var block = connection.getSourceBlock()
+          if (block) {
+            block.ezp.selectedConnection = c8n = connection
+            block.ezp.selectedConnectionSource_ = block
+            block.removeSelect()
+            block.ezp.updateAllPaths_(block)
+            block.addSelect()
+          }
+        }
+      }
+    }
+  }
+  return me
+} ()

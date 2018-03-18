@@ -91,7 +91,7 @@ ezP.DelegateSvg.Stmt.prototype.statementPathDef_ = function (block) {
 
 ezP.DelegateSvg.Stmt.prototype.shapePathDef_ =
   ezP.DelegateSvg.Stmt.prototype.contourPathDef_ =
-    ezP.DelegateSvg.Stmt.prototype.highlightedPathDef_ =
+    ezP.DelegateSvg.Stmt.prototype.highlightPathDef_ =
       ezP.DelegateSvg.Stmt.prototype.statementPathDef_
 
 /**

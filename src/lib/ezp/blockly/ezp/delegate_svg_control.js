@@ -79,7 +79,7 @@ ezP.DelegateSvg.Control.prototype.controlPathDef_ = function (block) {
 
 ezP.DelegateSvg.Control.prototype.shapePathDef_ =
   ezP.DelegateSvg.Control.prototype.contourPathDef_ =
-    ezP.DelegateSvg.Control.prototype.highlightedPathDef_ =
+    ezP.DelegateSvg.Control.prototype.highlightPathDef_ =
       ezP.DelegateSvg.Control.prototype.controlPathDef_
 
 ezP.DelegateSvg.Control.prototype.willRender_ = function (block) {

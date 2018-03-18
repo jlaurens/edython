@@ -7136,14 +7136,14 @@ ezP.DelegateSvg.prototype.layoutConnections_=function(a){a.outputConnection?a.ou
 ezP.DelegateSvg.prototype.shapePathDef_=function(a){goog.asserts.assert(!1,"shapePathDef_ must be overriden by "+this)};
 ezP.DelegateSvg.prototype.contourPathDef_=ezP.DelegateSvg.prototype.shapePathDef_;
 
-ezP.DelegateSvg.prototype.highlightedPathDef_=ezP.DelegateSvg.prototype.shapePathDef_;
+ezP.DelegateSvg.prototype.highlightPathDef_=ezP.DelegateSvg.prototype.shapePathDef_;
 ezP.DelegateSvg.prototype.collapsedPathDef_=function(){return""};
 ezP.DelegateSvg.prototype.renderDraw_=function(a){a.height=ezP.Font.lineHeight();
 var b=this.renderDrawInputs_(a);
 this.svgPathInline_.setAttribute("d",b);
 b=a.getRootBlock();
 b.ezp&&b.ezp.alignRightEdges_(b);
-this.didChangeSize_(a)};
+this.updateAllPaths_(a)};
 
 ezP.DelegateSvg.prototype.alignRightEdges_=function(a){for(var b=0,c=ezP.StatementBlockEnumerator(a),d,e=ezP.Font.tabWidth;
 d=c.next();
@@ -7151,11 +7151,11 @@ d=c.next();
 else return;
 for(c=ezP.StatementBlockEnumerator(a);
 d=c.next();
-)d.ezp&&(a=b-e*c.depth(),d.width!==a&&(d.width=a,d.ezp.didChangeSize_(d)))};
+)d.ezp&&(a=b-e*c.depth(),d.width!==a&&(d.width=a,d.ezp.updateAllPaths_(d)))};
 
-ezP.DelegateSvg.prototype.didChangeSize_=function(a){var b=this.shapePathDef_(a);
+ezP.DelegateSvg.prototype.updateAllPaths_=function(a){var b=this.shapePathDef_(a);
 this.svgPathShape_.setAttribute("d",b);
-b=this.highlightedPathDef_(a);
+b=this.highlightPathDef_(a);
 this.svgPathHighlight_.setAttribute("d",b);
 b=this.contourPathDef_(a);
 this.svgPathContour_.setAttribute("d",b);
@@ -7284,7 +7284,7 @@ g&&g.isConnected()?d.push("h "+-b):(d.push("h "+(-b+e)+f+-e+","+-e),c-=e);
 (g=a.previousConnection)&&g.isConnected()&&g.targetBlock().getNextBlock()===a?d.push("v "+-c+" z"):d.push("v "+(-c+e)+f+e+","+-e+" z");
 return d.join(" ")};
 
-ezP.DelegateSvg.Stmt.prototype.shapePathDef_=ezP.DelegateSvg.Stmt.prototype.contourPathDef_=ezP.DelegateSvg.Stmt.prototype.highlightedPathDef_=ezP.DelegateSvg.Stmt.prototype.statementPathDef_;
+ezP.DelegateSvg.Stmt.prototype.shapePathDef_=ezP.DelegateSvg.Stmt.prototype.contourPathDef_=ezP.DelegateSvg.Stmt.prototype.highlightPathDef_=ezP.DelegateSvg.Stmt.prototype.statementPathDef_;
 
 ezP.DelegateSvg.Stmt.prototype.renderDrawSharp_=function(a){if(a.block.disabled){var b=goog.dom.getChildren(this.svgSharpGroup_),c=b.length;
 if(!c){var d=ezP.Font.totalAscent;
@@ -7376,7 +7376,7 @@ f.push("v "+(-c+d)+g+d+","+-d);
 f.push("h "+(e-d));
 return f.join(" ")};
 
-ezP.DelegateSvg.Control.prototype.shapePathDef_=ezP.DelegateSvg.Control.prototype.contourPathDef_=ezP.DelegateSvg.Control.prototype.highlightedPathDef_=ezP.DelegateSvg.Control.prototype.controlPathDef_;
+ezP.DelegateSvg.Control.prototype.shapePathDef_=ezP.DelegateSvg.Control.prototype.contourPathDef_=ezP.DelegateSvg.Control.prototype.highlightPathDef_=ezP.DelegateSvg.Control.prototype.controlPathDef_;
 ezP.DelegateSvg.Control.prototype.willRender_=function(a){ezP.DelegateSvg.Control.superClass_.willRender_.call(this,a);
 a.width=Math.max(a.width,2*ezP.Font.tabWidth)};
 
@@ -7434,7 +7434,7 @@ return m.join(" ")};
 ezP.DelegateSvg.Group.prototype.collapsedPathDef_=function(a){if(a.isCollapsed()){var b=ezP.Font.lineHeight(),c=ezP.Font.tabWidth,d=ezP.Style.Path.radius();
 return"m "+a.width+","+b+" v "+(b-d)/2+" m -"+d+","+d/2+" l "+2*d+","+-d+" M "+(c+d)+","+2*b+" H "+a.width+" v "+(d-b)/2+" m -"+d+","+d/2+" l "+2*d+","+-d}return ezP.DelegateSvg.Group.superClass_.collapsedPathDef_.call(this,a)};
 
-ezP.DelegateSvg.Group.prototype.shapePathDef_=ezP.DelegateSvg.Group.prototype.contourPathDef_=ezP.DelegateSvg.Group.prototype.highlightedPathDef_=ezP.DelegateSvg.Group.prototype.groupShapePathDef_;
+ezP.DelegateSvg.Group.prototype.shapePathDef_=ezP.DelegateSvg.Group.prototype.contourPathDef_=ezP.DelegateSvg.Group.prototype.highlightPathDef_=ezP.DelegateSvg.Group.prototype.groupShapePathDef_;
 
 ezP.DelegateSvg.Group.prototype.renderDrawNextStatementInput_=function(a){if(!a.canStatement||a.input.type!==Blockly.NEXT_STATEMENT)return!1;
 a.cursorX=Math.max(2*ezP.Font.tabWidth,a.cursorX);
@@ -7477,7 +7477,7 @@ ezP.DelegateSvg.Manager.register('CLASS');
 ezP.DelegateSvg.Expr=function(a){ezP.DelegateSvg.Expr.superClass_.constructor.call(this,a)};
 goog.inherits(ezP.DelegateSvg.Expr,ezP.DelegateSvg);
 ezP.DelegateSvg.Manager.register('DEFAULT');
-ezP.DelegateSvg.Expr.prototype.shapePathDef_=ezP.DelegateSvg.Expr.prototype.contourPathDef_=ezP.DelegateSvg.Expr.prototype.highlightedPathDef_=ezP.DelegateSvg.Expr.prototype.valuePathDef_;
+ezP.DelegateSvg.Expr.prototype.shapePathDef_=ezP.DelegateSvg.Expr.prototype.contourPathDef_=ezP.DelegateSvg.Expr.prototype.highlightPathDef_=ezP.DelegateSvg.Expr.prototype.valuePathDef_;
 
 ezP.DelegateSvg.Expr.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)||this.renderDrawValueInput_(a)};
 ezP.DelegateSvg.Expr.Text=function(a){ezP.DelegateSvg.Expr.Text.superClass_.constructor.call(this,a)};

@@ -274,9 +274,9 @@ ezP.Connection.prototype.ezp = undefined
  * Add highlighting around this connection.
  */
 Blockly.RenderedConnection.prototype.highlight = function () {
-  var ezp = this.sourceBlock_.ezp
-  if (ezp) {
-    ezp.highlightConnection(this)
+  var block = this.sourceBlock_
+  if (block && block.ezp) {
+    block.ezp.highlightConnection(this)
     return
   }
   Blockly.RenderedConnection.superClass_.highlight.call(this)
@@ -539,4 +539,4 @@ Blockly.Connection.singleConnection_ = function(block, orphanBlock) {
     }
   }
   return null;
-};
+}

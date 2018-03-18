@@ -35,7 +35,7 @@ ezP.Delegate.Manager.registerAll(ezP.T3.Expr, ezP.DelegateSvg.Expr, true)
 
 ezP.DelegateSvg.Expr.prototype.shapePathDef_ =
   ezP.DelegateSvg.Expr.prototype.contourPathDef_ =
-    ezP.DelegateSvg.Expr.prototype.highlightedPathDef_ =
+    ezP.DelegateSvg.Expr.prototype.highlightPathDef_ =
       ezP.DelegateSvg.Expr.prototype.valuePathDef_
 
 /**

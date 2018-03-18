@@ -42,9 +42,12 @@ goog.inherits(ezP.Block, Blockly.Block)
 ezP.Block.prototype.dispose = function (healStack) {
   if (this === Blockly.selected) {
     // this block was selected, select the block below or above before deletion
+    //this does not work most probably because it is the wrong place
     var c8n, target
-    if (((c8n = this.nextConnection) && (target = c8n.targetBlock())) || ((c8n = this.previousConnection) && (target = c8n.targetBlock()))) {
-      target.select()
+    if (((c8n = this.nextConnection) && (target = c8n.targetBlock())) ||
+    ((c8n = this.previousConnection) && (target = c8n.targetBlock())) ||
+    ((c8n = this.outputConnection) && (target = c8n.targetBlock()))) {
+      setTimeout(function() {target.select()}, 100)// broken for outputConnection ?
     }
   }
   if (this.ezp) {

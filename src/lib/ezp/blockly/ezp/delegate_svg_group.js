@@ -132,7 +132,7 @@ ezP.DelegateSvg.Group.prototype.collapsedPathDef_ = function (block) {
 
 ezP.DelegateSvg.Group.prototype.shapePathDef_ =
   ezP.DelegateSvg.Group.prototype.contourPathDef_ =
-    ezP.DelegateSvg.Group.prototype.highlightedPathDef_ =
+    ezP.DelegateSvg.Group.prototype.highlightPathDef_ =
       ezP.DelegateSvg.Group.prototype.groupShapePathDef_
 
 /**
