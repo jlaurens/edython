@@ -41,6 +41,12 @@ ezP.KeyHandler.setup = function (document) {
   ezP.KeyHandler.shared.registerShortcut('→', goog.events.KeyCodes.RIGHT);
   ezP.KeyHandler.shared.registerShortcut('←', goog.events.KeyCodes.LEFT);
   ezP.KeyHandler.shared.registerShortcut(' ', goog.events.KeyCodes.SPACE);
+  ezP.KeyHandler.shared.registerShortcut(ezP.T3.Stmt.if_part,
+        goog.events.KeyCodes.I, goog.events.KeyCodes.NONE,
+        goog.events.KeyCodes.F, goog.events.KeyCodes.NONE,
+        goog.events.KeyCodes.ENTER);
+
+  
   // ezP.KeyHandler.shared.registerShortcut('ENTER', goog.events.KeyCodes.ENTER);
 
   ezP.KeyHandler.shared.listen(
@@ -55,6 +61,7 @@ ezP.KeyHandler.setup = function (document) {
           case '←': B.ezp.selectBlockLeft(B); return
           case '→': B.ezp.selectBlockRight(B); return
           default:
+          B.ezp.insertBlockOfType(B, e.identifier)
           console.log('selected', e.identifier)
         }
       } else {

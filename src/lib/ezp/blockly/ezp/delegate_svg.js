@@ -1907,7 +1907,31 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
  * @return None
  */
 ezP.DelegateSvg.prototype.selectBlockAbove = function (block) {
-  var parent, c8n, target = block
+  var target = this.selectedConnectionSource_
+  if (target && target !== block) {
+    target.ezp.selectBlockAbove(target)
+    return
+  }
+  var c8n
+  if ((c8n = this.selectedConnection)) {
+    if (c8n === block.previousConnection) {
+      if ((target = c8n.targetBlock())) {
+        ezP.SelectedConnection.set(null)
+        target.select()
+        return
+      }
+    } else {
+      ezP.SelectedConnection.set(null)
+      block.select()
+      return
+    }
+  } else if ((c8n = block.previousConnection)) {
+    ezP.SelectedConnection.set(block.previousConnection)
+    block.select()
+    return
+  }
+  var parent
+  target = block
   do {
     parent = target
     if ((c8n = parent.previousConnection) && (target = c8n.targetBlock())) {
@@ -1943,7 +1967,34 @@ ezP.DelegateSvg.prototype.selectBlockAbove = function (block) {
  * @return None
  */
 ezP.DelegateSvg.prototype.selectBlockBelow = function (block) {
-  var parent, c8n, target = block
+  var target = this.selectedConnectionSource_
+  if (target && target !== block) {
+    target.ezp.selectBlockBelow(target)
+    return
+  }
+  var parent, c8n
+  if ((c8n = this.selectedConnection)) {
+    if (c8n === block.previousConnection) {
+      ezP.SelectedConnection.set(null)
+      block.select()
+      return
+    } else if (c8n === block.nextConnection) {
+      if ((target = c8n.targetBlock())) {
+        ezP.SelectedConnection.set(null)
+        target.select()
+        return
+      }
+    } else if (block.nextConnection) {
+      block.select()
+      ezP.SelectedConnection.set(block.nextConnection)
+      return
+    }
+  } else if (block.nextConnection) {
+    block.select()
+    ezP.SelectedConnection.set(block.nextConnection)
+    return
+  }
+  target = block
   do {
     parent = target
     if ((c8n = parent.nextConnection) && (target = c8n.targetBlock())) {
@@ -1951,6 +2002,7 @@ ezP.DelegateSvg.prototype.selectBlockBelow = function (block) {
       return
     }
   } while ((target = parent.getSurroundParent()))
+
   target = parent.ezp.getBestBlock(parent, function(a, b) {
     if (a.bottom >= b.bottom) {
       return {}
@@ -2020,7 +2072,6 @@ ezP.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
       }
     }
   }
-
   if ((c8n = block.previousConnection)) {
     var R = new goog.math.Rect(
       c8n.offsetInBlock_.x,
@@ -2108,3 +2159,47 @@ ezP.SelectedConnection = function() {
   }
   return me
 } ()
+
+/**
+ * Get the closest box, according to the filter.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {function} distance Is a function.
+ * @return None
+ */
+ezP.DelegateSvg.prototype.insertBlockOfType = function (block, prototypeName) {
+  var source = this.selectedConnectionSource_
+  var c8n
+  if (source && (c8n = source.ezp.selectedConnection)) {
+    if (!c8n.check_ || c8n.check_.indexOf(prototypeName)>=0) {
+      var targetC8n = c8n.targetConnection
+      if (targetC8n) {
+        if (c8n.check_ && c8n.check_.indexOf(prototypeName)<0) {
+          return
+        }
+      }
+      var B = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
+      if (c8n === source.nextConnection) {
+        if (B.previousConnection) {
+          B.previousConnection.connect(c8n)
+          if (targetC8n && B.nextConnection) {
+            targetC8n.connect(B.nextConnection)
+          }
+          B.render()
+          B.select()
+          return
+        }
+      } else if (c8n === source.previousConnection) {
+
+      } else if (c8n === source.previousConnection) {
+
+      } else if (c8n.type === Blockly.NEXT_STATEMENT) {
+
+      } else {
+
+      }
+      return
+    }
+  }
+  console.log('I cannot insert', prototypeName)
+}
