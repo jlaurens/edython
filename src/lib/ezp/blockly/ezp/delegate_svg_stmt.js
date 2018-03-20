@@ -166,29 +166,30 @@ ezP.DelegateSvg.Stmt.prototype.toPython = function (block, is_deep) {
  * @param {string} aboveInputName, which parent's connection to use
  * @return the created block
  */
-ezP.DelegateSvg.Stmt.prototype.insertBlockBefore = function(block, abovePrototypeName) {
+ezP.DelegateSvg.Stmt.prototype.insertBlockAbove = function(block, abovePrototypeName, subtype) {
   Blockly.Events.setGroup(true)
-  var blockBefore = ezP.DelegateSvg.newBlockComplete(block.workspace, abovePrototypeName)
+  var blockAbove = ezP.DelegateSvg.newBlockComplete(block.workspace, abovePrototypeName)
+  blockAbove.ezp.setSubtype(blockAbove, subtype)
   var c8n = block.previousConnection
   var targetC8n = c8n.targetConnection
   if (targetC8n) {
     targetC8n.disconnect()
-    targetC8n.connect(blockBefore.previousConnection)
+    targetC8n.connect(blockAbove.previousConnection)
   } else {
     var its_xy = block.getRelativeToSurfaceXY();
-    var my_xy = blockBefore.getRelativeToSurfaceXY();
-    blockBefore.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+    var my_xy = blockAbove.getRelativeToSurfaceXY();
+    blockAbove.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
   }
-  blockBefore.ezp.consolidate(blockBefore, true)
-  var holes = ezP.HoleFiller.getDeepHoles(blockBefore)
-  ezP.HoleFiller.fillDeepHoles(blockBefore.workspace, holes)
-  blockBefore.render()
-  block.previousConnection.connect(blockBefore.nextConnection)
+  blockAbove.ezp.consolidate(blockAbove, true)
+  var holes = ezP.HoleFiller.getDeepHoles(blockAbove)
+  ezP.HoleFiller.fillDeepHoles(blockAbove.workspace, holes)
+  blockAbove.render()
+  block.previousConnection.connect(blockAbove.nextConnection)
   if (Blockly.selected === block) {
-    blockBefore.select()
+    blockAbove.select()
   }
   Blockly.Events.setGroup(false)
-  return blockBefore
+  return blockAbove
 }
 
 /**

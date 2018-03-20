@@ -1278,7 +1278,6 @@ ezP.DelegateSvg.prototype.getPythonSort = function (block) {
   return this.pythonSort_
 }
 
-
 /**
  * Can insert a block above?
  * If the block's output connection is connected,
@@ -1288,10 +1287,11 @@ ezP.DelegateSvg.prototype.getPythonSort = function (block) {
  * @param {string} prototypeName.
  * @param {string} aboveInputName, which parent's connection to use
  */
-ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, aboveInputName) {
+ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, subtype, aboveInputName) {
   var can = false
   Blockly.Events.disable()
   var B = block.workspace.newBlock(prototypeName)
+  B.ezp.setSubtype(B, subtype)
   var input = B.getInput(aboveInputName)
   goog.asserts.assert(input, 'No input named '+aboveInputName)
   var c8n = input.connection
@@ -1314,9 +1314,10 @@ ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, a
  * @param {!Block} block.
  * @param {string} prototypeName.
  * @param {string} aboveInputName, which parent's connection to use
+ * @param {string} subtype, for subclassers
  * @return the created block
  */
-ezP.DelegateSvg.prototype.insertBlockBefore = function(block, abovePrototypeName, aboveInputName) {
+ezP.DelegateSvg.prototype.insertBlockAbove = function(block, abovePrototypeName, subtype, aboveInputName) {
   goog.asserts.assert(false, 'Must be subclassed')
 }
 
@@ -1684,7 +1685,7 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
           return false
         }
       }
-      ezP.SelectedConnection.set(c8n, parent)
+      ezP.SelectedConnection.set(c8n)
     }
     return true
   }
@@ -1774,7 +1775,7 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
           return false
         }
       }
-      ezP.SelectedConnection.set(c8n, parent)
+      ezP.SelectedConnection.set(c8n)
     }
     return true
   }
@@ -1926,8 +1927,8 @@ ezP.DelegateSvg.prototype.selectBlockAbove = function (block) {
       return
     }
   } else if ((c8n = block.previousConnection)) {
-    ezP.SelectedConnection.set(block.previousConnection)
     block.select()
+    ezP.SelectedConnection.set(block.previousConnection)
     return
   }
   var parent
@@ -2112,32 +2113,48 @@ ezP.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
  * but the shape of the connection as it shows when blocks are moved close enough.
  */
 ezP.SelectedConnection = function() {
-  var c8n
+  var c8n_
   var me = {
     /**
      * Lazy getter
     */
     get: function() {
-      return c8n
+      return c8n_
     },
     set: function(connection) {
-      if (connection !== c8n) {
-        if (c8n) {
-          var block = c8n.getSourceBlock()
-          if (block) {
-            block.ezp.selectedConnection = null
-            block.ezp.selectedConnectionSource_ = null
-            block.removeSelect()
-            if (block === Blockly.selected) {
-              block.addSelect()
+      if (connection) {
+        var block = connection.getSourceBlock()
+        if (block) {
+          if (connection === block.previousConnection && connection.targetConnection) {
+            connection = connection.targetConnection
+            var unwrapped = block = connection.getSourceBlock()
+            do {
+              if (!unwrapped.ezp.wrapped_) {
+                unwrapped.select()
+                unwrapped.bringToFront()
+                break
+              }
+            } while ((unwrapped = unwrapped.getSurroundParent()))
+          }
+        }
+      }
+      if (connection !== c8n_) {
+        if (c8n_) {
+          var oldBlock = c8n_.getSourceBlock()
+          if (oldBlock) {
+            oldBlock.ezp.selectedConnection = null
+            oldBlock.ezp.selectedConnectionSource_ = null
+            oldBlock.removeSelect()
+            if (oldBlock === Blockly.selected) {
+              oldBlock.addSelect()
             }
           }
-          c8n = null
+          c8n_ = null
         }
         if (connection) {
           var block = connection.getSourceBlock()
           if (block) {
-            block.ezp.selectedConnection = c8n = connection
+            block.ezp.selectedConnection = c8n_ = connection
             block.ezp.selectedConnectionSource_ = block
             block.removeSelect()
             block.ezp.updateAllPaths_(block)
@@ -2161,56 +2178,90 @@ ezP.SelectedConnection = function() {
 } ()
 
 /**
+ * Get the subtype of the block.
+ * The default implementation does nothing.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is return, when defined or not null.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.DelegateSvg.prototype.getSubtype = function (block) {
+}
+
+/**
+ * Set the subtype of the block.
+ * The default implementation does nothing.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is expected.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return None
+ */
+ezP.DelegateSvg.prototype.setSubtype = function (block, subtype) {
+}
+
+/**
  * Get the closest box, according to the filter.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
- * @param {function} distance Is a function.
- * @return None
+ * @param {Object} action the prototype of the block to insert, or an object containning this prototype.
+ * @param {string} subtype the subtype of the block to insert.
+ * @return the block that was inserted
  */
-ezP.DelegateSvg.prototype.insertBlockOfType = function (block, prototypeName) {
+ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) {
   var source = this.selectedConnectionSource_
+  var prototypeName = action.type || action
   var c8n
   if (source && (c8n = source.ezp.selectedConnection)) {
     if (!c8n.check_ || c8n.check_.indexOf(prototypeName)>=0) {
       var targetC8n = c8n.targetConnection
       if (targetC8n) {
         if (c8n.check_ && c8n.check_.indexOf(prototypeName)<0) {
-          return
+          return false
         }
       }
-      var B = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
-      if (c8n === source.nextConnection) {
-        if (B.previousConnection) {
-          if (targetC8n && B.nextConnection) {
-            targetC8n.connect(B.nextConnection)
+      Blockly.Events.setGroup(true)
+      try {
+        var B = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
+        B.ezp.setSubtype(B, action.subtype || subtype)
+        if (c8n.type === Blockly.NEXT_STATEMENT) {
+          if (B.previousConnection) {
+            if (targetC8n && targetC8n.checkType_(B.nextConnection)) {
+              targetC8n.connect(B.nextConnection)
+            }
+            B.previousConnection.connect(c8n)
+            B.render()
+            B.select()
+            return B
           }
-          B.previousConnection.connect(c8n)
+        } else if (c8n === source.previousConnection) {
+          if (B.nextConnection) {
+            B.render()
+            if (targetC8n && B.previousConnection) {
+              targetC8n.connect(B.previousConnection)
+            } else {
+              var its_xy = block.getRelativeToSurfaceXY();
+              var my_xy = B.getRelativeToSurfaceXY();
+              B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)            
+            }
+            B.nextConnection.connect(c8n)
+            B.select()
+            return B
+          }
+        } else if (B.outputConnection) {
+          B.outputConnection.connect(c8n)
           B.render()
           B.select()
-          return
+          return B
         }
-      } else if (c8n === source.previousConnection) {
-        if (B.nextConnection) {
-          B.render()
-          if (targetC8n && B.previousConnection) {
-            targetC8n.connect(B.previousConnection)
-          } else {
-            var its_xy = block.getRelativeToSurfaceXY();
-            var my_xy = B.getRelativeToSurfaceXY();
-            B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)            
-          }
-          B.nextConnection.connect(c8n)
-          B.select()
-          return
-        }
-      } else if (c8n.type === Blockly.NEXT_STATEMENT) {
-
-      } else {
-
+        B.dispose(true)
+        return null
+      } finally {
+        Blockly.Events.setGroup(false)
       }
-      B.dispose(true)
-      return
     }
   }
-  console.log('I cannot insert', prototypeName)
+  return null
 }

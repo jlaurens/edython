@@ -132,15 +132,29 @@ ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
 }
 
 /**
- * Handle the selection of an item in the context dropdown menu.
- * @param {!Blockly.Block} block, owner of the delegate.
- * @param {!ezP.MenuManager} mgr mgr.menu is the Menu clicked.
- * @param {!goog....} event The event containing as target
- * the MenuItem selected within menu.
+ * Get the subtype of the block.
+ * The operator.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return None
  */
-ezP.DelegateSvg.Operator.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
-  
-  return mgr.handleActionOperator(block, event) || ezP.DelegateSvg.Operator.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
+ezP.DelegateSvg.Operator.prototype.getSubtype = function (block) {
+  return this.inputs.last.fieldOperator.getValue()
+}
+
+/**
+ * Set the subtype of the block.
+ * The operator.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return None
+ */
+ezP.DelegateSvg.Operator.prototype.setSubtype = function (block, subtype) {
+  if (this.operators && this.operators.indexOf(subtype) >= 0) {
+    this.inputs.last.fieldOperator.setValue(subtype)
+  }
 }
 
 //////////////////////  u_expr_concrete  /////////////////////////
@@ -339,7 +353,7 @@ ezP.DelegateSvg.Expr.number_comparison = function (prototypeName) {
   ezP.DelegateSvg.Expr.number_comparison.superClass_.constructor.call(this, prototypeName)
   this.operators = ['<', '>', '==', '>=', '<=', '!=']
   this.inputModel_.first.check = ezP.T3.Expr.Check.comparison
-  this.inputModel_.last.label = this.operators[0]
+  this.inputModel_.last.operatorLabel = this.operators[0]
   this.inputModel_.last.check = ezP.T3.Expr.Check.comparison
   this.outputModel_.check = ezP.T3.Expr.number_comparison
 }

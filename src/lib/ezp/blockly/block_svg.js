@@ -400,3 +400,45 @@ ezP.DelegateSvg.prototype.onMouseUp_ = function(block, e) {
   }
 }
 
+/**
+ * Dispose of this block.
+ * If the block was selected, then something else should be selected.
+ * @param {boolean} healStack If true, then try to heal any gap by connecting
+ *     the next statement with the previous statement.  Otherwise, dispose of
+ *     all children of this block.
+ * @param {boolean} animate If true, show a disposal animation and sound.
+ * @override
+ */
+ezP.BlockSvg.prototype.dispose = function(healStack, animate) {
+  Blockly.Events.setGroup(true)
+  if (this === Blockly.selected) {
+    // this block was selected, select the block below or above before deletion
+    var c8n, target
+    if (((c8n = this.nextConnection) && (target = c8n.targetBlock())) || ((c8n = this.previousConnection) && (target = c8n.targetBlock()))) {
+      target.select()
+    } else if ((c8n = this.outputConnection) && (c8n = c8n.targetConnection)) {
+      target = c8n.sourceBlock_
+      target.select()
+      ezP.SelectedConnection.set(c8n)
+    }
+  }
+  ezP.BlockSvg.superClass_.dispose.call(this, healStack, animate)
+  Blockly.Events.setGroup(false)
+}
+
+/**
+ * Move this block to the front of the visible workspace.
+ * <g> tags do not respect z-index so SVG renders them in the
+ * order that they are in the DOM.  By placing this block first within the
+ * block group's <g>, it will render on top of any other blocks.
+ * This message is sent from the mouse down event
+ * But this event may select the block above
+ * (when the connection between the blocks is selected)
+ * @package
+ * @override
+ */
+ezP.BlockSvg.prototype.bringToFront = function() {
+  if (this === Blockly.selected) {
+    ezP.BlockSvg.superClass_.bringToFront.call(this)
+  }
+}

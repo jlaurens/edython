@@ -15,6 +15,7 @@ goog.provide('ezP.DelegateSvg.Expr')
 
 goog.require('ezP.DelegateSvg')
 goog.require('ezP.T3.All')
+goog.require('ezP.KeyHandler')
 
 /**
  * Class for a DelegateSvg, value block.
@@ -245,28 +246,43 @@ ezP.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr)
  * If the block's output connection is connected,
  * connects the parent's output to it.
  * The connection cannot always establish.
- * The holes are filled.
+ * The holes are filled when fill_holes is true.
  * @param {!Block} block.
  * @param {string} prototypeName.
  * @param {string} aboveInputName, which parent's connection to use
+ * @param {boolean} fill_holes whether holes should be filled
  * @return the created block
  */
-ezP.DelegateSvg.Expr.prototype.insertBlockBefore = function(block, abovePrototypeName, aboveInputName) {
-  console.log('insertBlockBefore', block, abovePrototypeName, aboveInputName)
+ezP.DelegateSvg.Expr.prototype.insertBlockAbove = function(block, abovePrototypeName, subtype, aboveInputName, fill_holes) {
+//  console.log('insertBlockAbove', block, abovePrototypeName, subtype, aboveInputName)
   Blockly.Events.setGroup(true)
   var blockAbove = ezP.DelegateSvg.newBlockComplete(block.workspace, abovePrototypeName)
+  blockAbove.ezp.setSubtype(blockAbove, subtype)
   console.log('block created of type', abovePrototypeName)
   if (aboveInputName) {
     var aboveInput = blockAbove.getInput(aboveInputName)
     goog.asserts.assert(aboveInput, 'No input named '+aboveInputName)
-  } else {
-    aboveInput = blockAbove.getInput(ezP.Key.LIST)
+  } else if ((aboveInput = blockAbove.getInput(ezP.Key.LIST))) {
     var list = aboveInput.connection.targetBlock()
     goog.asserts.assert(list, 'Missing list block inside '+block.type)
     // the list has many potential inputs,
     // none of them is actually connected because this is very fresh
     // get the middle input.
     aboveInput = list.getInput(ezP.Do.Name.middle_name)
+  } else {
+    // find the first input that can accept block
+    for (var i = 0; (aboveInput = blockAbove.inputList[i++]);) {
+      var aboveInputC8n = aboveInput.connection
+      if (aboveInputC8n) {
+        if (!aboveInputC8n.check_ || aboveInputC8n.check_.indexOf(block.type)>=0) {
+          break
+        }
+      }
+    }
+    if (!aboveInput) {
+      blockAbove.dispose(true)
+      return undefined
+    }
   }
   // Next connections should be connected
   var outputC8n = block.outputConnection
@@ -275,47 +291,65 @@ ezP.DelegateSvg.Expr.prototype.insertBlockBefore = function(block, abovePrototyp
   console.log('block check:', block.outputConnection.check_)
   console.log('above check:', aboveInputC8n.check_)
   goog.asserts.assert(aboveInputC8n, 'Unexpected dummy input '+aboveInputName)
-  var targetC8n = aboveInputC8n.targetConnection
-  if (targetC8n/* && targetC8n.isConnected()*/) {
-    console.log('input already connected, disconnect and dispose target')
-    var B = targetC8n.sourceBlock_
-    targetC8n.disconnect()
-    B.dispose()
-    targetC8n = undefined
-  }
-  var holes = ezP.HoleFiller.getDeepHoles(block)
-  var targetC8n = outputC8n.targetConnection
-  if (targetC8n/* && targetC8n.isConnected()*/) {
-    console.log('bloc output connection is already connected')
-    targetC8n.disconnect()
-    targetC8n.connect(blockAbove.outputConnection)
-    targetC8n = undefined
+  if (aboveInputC8n.checkType_(outputC8n)) {
+    var targetC8n = aboveInputC8n.targetConnection
+    if (targetC8n/* && targetC8n.isConnected()*/) {
+      console.log('input already connected, disconnect and dispose target')
+      var B = targetC8n.sourceBlock_
+      targetC8n.disconnect()
+      B.dispose(true)
+      B = undefined
+      targetC8n = undefined
+    }
+    var targetC8n = outputC8n.targetConnection
+    var bumper
+    if (targetC8n) {
+      targetC8n.disconnect()
+      if (targetC8n.checkType_(blockAbove.outputConnection)) {
+        targetC8n.connect(blockAbove.outputConnection)
+      } else {
+        bumper = targetC8n.sourceBlock_
+        var its_xy = bumper.getRelativeToSurfaceXY();
+        var my_xy = blockAbove.getRelativeToSurfaceXY();
+        blockAbove.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)
+      }
+      targetC8n = undefined
+    } else {
+      var its_xy = block.getRelativeToSurfaceXY();
+      var my_xy = blockAbove.getRelativeToSurfaceXY();
+      blockAbove.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+    }
+    console.log('Will connect', block.type, 'to input', aboveInput.name, 'of type', abovePrototypeName)
+    console.log('block check:', outputC8n.check_)
+    console.log('above check:', aboveInputC8n.check_)
+    aboveInputC8n.connect(outputC8n)
+    if (fill_holes) {
+      var holes = ezP.HoleFiller.getDeepHoles(blockAbove)
+      ezP.HoleFiller.fillDeepHoles(blockAbove.workspace, holes)
+    }
+    blockAbove.render()
+    if (bumper) {
+      bumper.bumpNeighbours_()
+    }  
   } else {
-    var its_xy = block.getRelativeToSurfaceXY();
-    var my_xy = blockAbove.getRelativeToSurfaceXY();
-    blockAbove.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+    blockAbove.dispose()
+    blockAbove = undefined
   }
-  console.log('Will connect', block.type, 'to input', aboveInput.name, 'of type', abovePrototypeName)
-  console.log('block check:', outputC8n.check_)
-  console.log('above check:', aboveInputC8n.check_)
-  aboveInputC8n.connect(outputC8n)
-  var holes = ezP.HoleFiller.getDeepHoles(blockAbove)
-  // WHAT is the purpose of that ?
-  // Commented out because it is weird and I don't
-  // remember the problem addressed. Maybe duplicates?
-  // var i = 0
-  // while (i < holes.length) {
-  //   var j = holes.indexOf(holes[i])
-  //   if ( j>=0 ) {
-  //     holes.splice(j, 1)
-  //   } else {
-  //     ++i
-  //   }
-  // }
-  ezP.HoleFiller.fillDeepHoles(blockAbove.workspace, holes)
-  blockAbove.render()
   Blockly.Events.setGroup(false)
   return blockAbove
+}
+
+/**
+ * Get the closest box, according to the filter.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {Object} action an object.
+ * @param {string} subtype
+ * @return the block that was inserted
+ */
+ezP.DelegateSvg.Expr.prototype.insertBlockOfType = function (block, action, subtype) {
+  return ezP.DelegateSvg.Expr.superClass_.insertBlockOfType.call(this, block, action, subtype)
+  || this.insertBlockAbove(block, action.type || action, action.subtype || subtype, action.input, false)
 }
 
 /**
@@ -764,7 +798,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = functi
  */
 ezP.DelegateSvg.Expr.builtin_object.prototype.toDom = function (block, element) {
   ezP.DelegateSvg.Expr.builtin_object.superClass_.toDom.call(this, block, element)
-  element.setAttribute('value', this.inputs.first.fieldLabel.getText())
+  element.setAttribute('value', this.inputs.first.fieldLabel.getValue())
 }
 
 /**
@@ -776,7 +810,31 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.toDom = function (block, element) 
 ezP.DelegateSvg.Expr.builtin_object.prototype.fromDom = function (block, element) {
   ezP.DelegateSvg.Expr.builtin_object.superClass_.fromDom.call(this, block, element)
   var value = element.getAttribute('value')
-  this.inputs.first.fieldLabel.setText(value)
+  this.inputs.first.fieldLabel.setValue(value)
+}
+
+/**
+ * Get the subtype of the block.
+ * The operator.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return None
+ */
+ezP.DelegateSvg.Expr.builtin_object.prototype.getSubtype = function (block) {
+  return this.inputs.first.fieldLabel.getValue()
+}
+
+/**
+ * Set the subtype of the block.
+ * The operator.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return None
+ */
+ezP.DelegateSvg.Expr.builtin_object.prototype.setSubtype = function (block, subtype) {
+  this.inputs.first.fieldLabel.setValue(subtype)
 }
 
 /**

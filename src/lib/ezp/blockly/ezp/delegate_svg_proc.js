@@ -16,7 +16,7 @@ goog.provide('ezP.DelegateSvg.Proc')
 goog.require('ezP.DelegateSvg.Group')
 goog.require('ezP.MenuItemCode')
 /*
-decorator_part :: decorator_expr | decorator_call_expr
+decorator_stmt :: decorator_expr | decorator_call_expr
 decorator_expr ::= "@" dotted_funcname
 decorator_call_expr ::= decorator_expr "(" argument_list ")"
 */
@@ -102,25 +102,25 @@ goog.inherits(ezP.DelegateSvg.Expr.decorator_call_expr, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('decorator_call_expr')
 
 /**
- * Class for a DelegateSvg, decorator_part.
+ * Class for a DelegateSvg, decorator_stmt.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-//  decorator_part            /*   ::= "@" dotted_name ["(" [argument_list [","]] ")"]    */ : "ezp_decorator_part",
-ezP.DelegateSvg.Stmt.decorator_part = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.decorator_part.superClass_.constructor.call(this, prototypeName)
+//  decorator_stmt            /*   ::= "@" dotted_name ["(" [argument_list [","]] ")"]    */ : "ezp_decorator_stmt",
+ezP.DelegateSvg.Stmt.decorator_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.decorator_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
     key: ezP.Key.WRAP,
     wrap: ezP.T3.Expr.decorator_expr,
     check: ezP.T3.Expr.Check.decorator,
   }
-  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.decorator_part
-  this.statementModel_.next.check = ezP.T3.Stmt.Next.decorator_part
+  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.decorator_stmt
+  this.statementModel_.next.check = ezP.T3.Stmt.Next.decorator_stmt
 }
-goog.inherits(ezP.DelegateSvg.Stmt.decorator_part, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('decorator_part')
+goog.inherits(ezP.DelegateSvg.Stmt.decorator_stmt, ezP.DelegateSvg.Stmt)
+ezP.DelegateSvg.Manager.register('decorator_stmt')
 
 ezP.ID.USE_DECORATOR = 'USE_DECORATOR'
 

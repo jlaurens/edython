@@ -560,16 +560,20 @@ ezP.MenuManager.prototype.handleActionLast = function (block, event) {
     case ezP.ID.DELETE_BLOCK:
       var unwrapped = target
       var parent
-      while (unwrapped.ezp.wrapped_ && (parent = unwrapped.getParent())) {
+      while (unwrapped.ezp.wrapped_ && (parent = unwrapped.getSurroundParent())) {
         unwrapped = parent
       }
       // unwrapped is the topmost block or the first unwrapped parent
       Blockly.Events.setGroup(true)
-      if (target === Blockly.selected && target !== unwrapped) {
+      if (target === Blockly.selected && target != unwrapped) {
         // this block was selected, select the block below or above before deletion
         var c8n, target
         if (((c8n = unwrapped.nextConnection) && (target = c8n.targetBlock())) || ((c8n = unwrapped.previousConnection) && (target = c8n.targetBlock()))) {
           target.select()
+        } else if ((c8n = unwrapped.outputConnection) && (c8n = c8n.targetConnection)) {
+          target = c8n.sourceBlock_
+          target.select()
+          ezP.SelectedConnection.set(c8n)
         }
       }
       unwrapped.dispose(true, true)
@@ -885,7 +889,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
       var key = d.key
       var content = mgr.get_menuitem_content(parent_type, key)
       var MI = new ezP.MenuItem(content, function() {
-        block.ezp.insertBlockBefore(block, parent_type, key)
+        block.ezp.insertBlockAbove(block, parent_type, parent_subtype, key)
       })
       mgr.addInsertChild(MI)
       return true
@@ -896,7 +900,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
           var key = d.key || K
           var content = mgr.get_menuitem_content(parent_type, key)
           var MI = new ezP.MenuItem(content, function() {
-            block.ezp.insertBlockBefore(block, parent_type, key)
+            block.ezp.insertBlockAbove(block, parent_type, parent_subtype, key)
           })
           mgr.addInsertChild(MI)
           return true
@@ -918,7 +922,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
       }
       var content = mgr.get_menuitem_content(parent_type)
       var MI = new ezP.MenuItem(content, function() {
-        block.ezp.insertBlockBefore(block, parent_type)
+        block.ezp.insertBlockAbove(block, parent_type, parent_subtype)
       })
       mgr.addInsertChild(MI)
       return true  
@@ -1009,7 +1013,7 @@ ezP.MenuManager.prototype.populate_before_after = function (block) {
     ezP.T3.Stmt.else_part,
     ezP.T3.Stmt.finally_part,
     ezP.T3.Stmt.with_part,
-    // ezP.T3.Stmt.decorator_part,
+    // ezP.T3.Stmt.decorator_stmt,
     // ezP.T3.Stmt.funcdef_part,
     // ezP.T3.Stmt.classdef_part,
     // ezP.T3.Stmt.import_part,
@@ -1051,7 +1055,7 @@ ezP.MenuManager.prototype.populate_before_after = function (block) {
     B.dispose()
     if (yorn) {
       var content = this.get_menuitem_content(type)
-      var MI = new ezP.MenuItem(content, F(block.ezp.insertBlockBefore, type))
+      var MI = new ezP.MenuItem(content, F(block.ezp.insertBlockAbove, type))
       this.addInsertBeforeChild(MI)
       return true
     }
@@ -1186,10 +1190,10 @@ ezP.MenuManager.prototype.populate_wrap_alternate = function (block, key) {
 ezP.MenuManager.prototype.populateOperator = function (block) {
   var ezp = block.ezp
   if (ezp.operators && ezp.operators.length > 1) {
-    var value = ezp.inputs.last.fieldLabel.getValue()
+    var value = ezp.inputs.last.fieldOperator.getValue()
     var F = function(op) {
       var menuItem = new ezP.MenuItem(ezp.getContent(block, op), function() {
-        ezp.inputs.last.fieldLabel.setValue(op)
+        ezp.inputs.last.fieldOperator.setValue(op)
         return
       })
       menuItem.setEnabled(value != op)

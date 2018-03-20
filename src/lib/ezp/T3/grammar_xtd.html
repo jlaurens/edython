@@ -10,7 +10,7 @@
 #single_input: NEWLINE | simple_stmt | compound_stmt NEWLINE
 #file_input: (NEWLINE | stmt)* ENDMARKER
 #eval_input: testlist NEWLINE* ENDMARKER
-decorator_part: '@' dotted_name [ arglist_void ]
+decorator_stmt: '@' dotted_name [ arglist_void ]
 arglist_void: '(' (argument ',')* [ argument ] ')'
 #decorators: decorator+
 #decorated: decorators (classdef | funcdef | async_funcdef)

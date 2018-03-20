@@ -446,10 +446,10 @@ ezP.Connection.prototype.connect_ = function(childConnection) {
     console.log('plugged_ is', child.ezp.plugged_)
   }
   if (this.ezp.wrapped_) {
-    if (child.ezp.hasSelect(child)) { // Blockly.selected == child
+    if (child.ezp.hasSelect(child)) { // Blockly.selected === child
       child.unselect()
       var P = child
-      while ((P = P.getParent())) {
+      while ((P = P.getSurroundParent())) {
         if (!P.ezp.wrapped_) {
           P.select()
           break
@@ -457,12 +457,39 @@ ezP.Connection.prototype.connect_ = function(childConnection) {
       }
     }
     child.ezp.makeBlockWrapped_(child)
+  } else {
+    // if this connection was selected, the newly connected block should be selected too
+    if (this === ezP.SelectedConnection.get()) {
+      P = parent
+      do {
+        if (P === Blockly.selected) {
+          child.select()
+          break
+        }
+      } while ((P = P.getSurroundParent()))
+    }
   }
   if (oldChildConnection && childConnection !== oldChildConnection) {
     var oldChild = oldChildConnection.sourceBlock_
-    if (oldChild && oldChild.ezp.wrapped_) {
-      if (Blockly.Events.recordUndo) {
-        oldChild.dispose(true)
+    if (oldChild) {
+      if (oldChild.ezp.wrapped_) {
+        if (Blockly.Events.recordUndo) {
+          oldChild.dispose(true)
+        }
+      } else if (!oldChildConnection.targetBlock()) {
+        // another chance to reconnect the orphan
+        // just in case the check_ has changed in between
+        // which might be the case for the else_part blocks
+        P = child
+        var c8n
+        while ((c8n = P.nextConnection)) {
+          if (!c8n.targetConnection) {
+            if (c8n.checkType_(oldChildConnection)) {
+              c8n.connect(oldChildConnection)
+            }
+            break
+          }
+        }
       }
     }
   }

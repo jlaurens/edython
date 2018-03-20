@@ -86,12 +86,12 @@ funcdef_simple ::= "def" funcname "(" [parameter_list] ")"
 funcdef_typed ::= funcdef_simple "->" expression
 decorators ::= REMOVE
 decorator ::= decorator_expr | decorator_call_expr
-decorator_part ::= decorator
+decorator_stmt ::= decorator
 decorator_expr ::= "@" dotted_funcname
 decorator_call_expr ::= decorator_expr "(" argument_list ")"
 dotted_funcname ::= funcname | dotting_identifier '.' dotted_funcname
 dotting_identifier ::= identifier
-decorator_part <<< decorator_part | funcdef_part
+decorator_stmt <<< decorator_stmt | funcdef_part
 </pre>
 
 
@@ -161,7 +161,7 @@ classdef_part ::=  classdef_expr ':'
 classdef_expr ::= classdef_simple | classdef_derived
 classdef_simple ::=  "class" classname
 classdef_derived ::=  classdef_simple '(' argument_list ')'
-decorator_part <<< classdef_part
+decorator_stmt <<< classdef_part
 </pre>
 
 <pre>

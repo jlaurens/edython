@@ -16,6 +16,7 @@ goog.provide('ezP.DelegateSvg.Lambda')
 goog.require('ezP.DelegateSvg.List')
 goog.require('ezP.DelegateSvg.Expr')
 goog.require('Blockly.RenderedConnection')
+goog.require('Blockly.RenderedConnection')
 
 /**
  * Class for a DelegateSvg, lambda_expr and lambda_expr_nocond block.
