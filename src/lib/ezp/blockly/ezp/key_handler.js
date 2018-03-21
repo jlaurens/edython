@@ -12,8 +12,115 @@
 'use strict'
 
 goog.provide('ezP.KeyHandler')
+goog.provide('ezP.KeyHandlerMenu')
 
 goog.require('ezP.DelegateSvg')
+goog.require('ezP.PopupMenu')
+
+ezP.KeyHandlerMenu = function(opt_domHelper, opt_renderer) {
+  ezP.KeyHandlerMenu.superClass_.constructor.call(this, opt_domHelper, opt_renderer)
+}
+goog.inherits(ezP.KeyHandlerMenu, ezP.PopupMenu)
+
+/**
+ * Attempts to handle a keyboard event; returns true if the event was handled,
+ * false otherwise.  If the container is enabled, and a child is highlighted,
+ * calls the child control's `handleKeyEvent` method to give the control
+ * a chance to handle the event first.
+ * @param {goog.events.KeyEvent} e Key event to handle.
+ * @return {boolean} Whether the event was handled by the container (or one of
+ *     its children).
+ */
+ezP.KeyHandlerMenu.prototype.handleKeyEventInternal = function(e) {
+  // Give the highlighted control the chance to handle the key event.
+  if (ezP.KeyHandlerMenu.superClass_.handleKeyEventInternal.call(this, e)) {
+    return true
+  }
+  return this.ezp.handleMenuKeyEvent(e)
+
+  // var highlighted = this.getHighlighted();
+  // if (highlighted && typeof highlighted.handleKeyEvent == 'function' &&
+  //     highlighted.handleKeyEvent(e)) {
+  //   return true;
+  // }
+
+  // // Give the open control the chance to handle the key event.
+  // if (this.openItem_ && this.openItem_ != highlighted &&
+  //     typeof this.openItem_.handleKeyEvent == 'function' &&
+  //     this.openItem_.handleKeyEvent(e)) {
+  //   return true;
+  // }
+
+  // // Do not handle the key event if any modifier key is pressed.
+  // if (e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) {
+  //   return false;
+  // }
+
+  // // Either nothing is highlighted, or the highlighted control didn't handle
+  // // the key event, so attempt to handle it here.
+  // switch (e.keyCode) {
+  //   case goog.events.KeyCodes.ESC:
+  //     if (this.isFocusable()) {
+  //       this.getKeyEventTarget().blur();
+  //     } else {
+  //       return false;
+  //     }
+  //     break;
+
+  //   case goog.events.KeyCodes.HOME:
+  //     this.highlightFirst();
+  //     break;
+
+  //   case goog.events.KeyCodes.END:
+  //     this.highlightLast();
+  //     break;
+
+  //   case goog.events.KeyCodes.UP:
+  //     if (this.orientation_ == goog.ui.Container.Orientation.VERTICAL) {
+  //       this.highlightPrevious();
+  //     } else {
+  //       return false;
+  //     }
+  //     break;
+
+  //   case goog.events.KeyCodes.LEFT:
+  //     if (this.orientation_ == goog.ui.Container.Orientation.HORIZONTAL) {
+  //       if (this.isRightToLeft()) {
+  //         this.highlightNext();
+  //       } else {
+  //         this.highlightPrevious();
+  //       }
+  //     } else {
+  //       return false;
+  //     }
+  //     break;
+
+  //   case goog.events.KeyCodes.DOWN:
+  //     if (this.orientation_ == goog.ui.Container.Orientation.VERTICAL) {
+  //       this.highlightNext();
+  //     } else {
+  //       return false;
+  //     }
+  //     break;
+
+  //   case goog.events.KeyCodes.RIGHT:
+  //     if (this.orientation_ == goog.ui.Container.Orientation.HORIZONTAL) {
+  //       if (this.isRightToLeft()) {
+  //         this.highlightPrevious();
+  //       } else {
+  //         this.highlightNext();
+  //       }
+  //     } else {
+  //       return false;
+  //     }
+  //     break;
+
+  //   default:
+  //     return false;
+  // }
+
+  return true;
+};
 
 /**
  * Key handler class.
@@ -21,13 +128,13 @@ goog.require('ezP.DelegateSvg')
  * @param {!constructor} constructor is either a constructor or the name of a constructor.
  */
 ezP.KeyHandler = function() {
-  var me = {
-    FLUSH_TIME: 2000,
-  }
-  var t_ = new Date().getTime()
+  var me = {MAX_CHILD_COUNT: 20}
   var keys_ = []
-  var shortcuts_ = {}
+  var shortcuts_ = [] // an array of {key: ..., action: ...} objects ordered by key
+  var current_ = []
   var target_
+  var menu_ = new ezP.KeyHandlerMenu(/*undefined, ContextMenuRenderer*/)
+  menu_.ezp = me
 /**
  * Setup the shared key handler.
  * For ezPython.
@@ -41,10 +148,214 @@ ezP.KeyHandler = function() {
     )
   }
   me.register = function(key, action) {
-    shortcuts_[key] = action
+    // manage duplicates
+    if (key.length) {
+      for (var i = 0, s; (s = shortcuts_[i]); i++) {
+        if (s.key === key) {
+          shortcuts_[i] = {
+            key: key,
+            action: action,
+          }
+          return
+        }
+      }
+      shortcuts_.push({
+        key: key,
+        action: action,
+      })
+    }
   }
+  /**
+   * Separate key in 2 parts: what is before the frst occurrence of sep and what is after.
+   * If sep is not in the list, returns undefined.
+   * split('foo', 'f') -> ['', 'oo']
+   * split('foo', 'o') -> ['f', 'o']
+   * split('bar', 'r') -> ['ba', '']
+   * split('foo', 'b') -> undefined
+   * @param {string} key 
+   * @param {string} sep
+   * @return an array of 2 elements, what is before sep and what is after
+   */
+  me.split = function (key, sep) {
+    var i = key.indexOf(sep)
+    if (i < 0) {
+      return undefined
+    }
+    return [key.substring(0, i), key.substring(i+sep.length)]
+  }
+  me.handleMenuKeyEvent = function (event) {
+    var key = event.key
+    if (key === 'Dead') {
+      if (event.keyCode === 78) { // this is on osx, change it twice if necessary
+        key = '~'
+      } else if (event.keyCode === 219) { // this is on osx
+        key = '^'
+      } else {
+        return
+      }
+    } else if (key === 'Backspace') {
+      event.preventDefault()
+      event.stopPropagation()  
+      key = undefined
+    }
+    if (me.updateMenu(key)) {
+      event.preventDefault()
+      event.stopPropagation()  
+      return true
+    }
+    return false
+  }
+  me.handleMenuItemAction = function (event) {
+    var MI = event.target
+    var s = MI.getModel()
+    if (goog.isFunction(s.action)) {
+      s.action(s.key)
+    } else if (s.action) {
+      var B = Blockly.selected
+      if (B) {
+         B.ezp.insertBlockOfType(B, s.action)
+       }
+    } else {
+      console.log('Unknown', s.key)
+    }
+    menu_.removeChildren(true)
+    return true
+  }
+  /**
+   * The me.split must have been called
+   * @param {Object} shortcut
+   * @private
+   */
+  me.insertShortcutInArray_ = function(shortcut, current_) {
+    var lhs = shortcut.components
+    var compare = function(As, Bs) {
+      for (var i = 0; i < As.length; i += 2) {
+        var a = As[i]
+        var b = Bs[i]
+        var cmp = a.length - b.length
+        if (cmp === 0) {
+          cmp = a.localeCompare(b)
+        }
+        if (cmp) {
+          return cmp
+        }
+      }
+      return 0
+    }
+    for (var j = 0, s;(s = current_[j]); j++) {
+      var cmp = compare(lhs, s.components)
+      if (cmp<=0) {
+        break
+      }
+    }
+    // append the shortcut:
+    current_.splice(j, 0, shortcut)
+  }
+  me.updateMenu = function (sep) {
+    var newCurrent = []
+    if (sep === undefined) {
+      if (current_.length) {
+        var l = current_[0].components.length - 2
+        if (l < 3) {
+          return
+        }
+        var newCurrent = []
+        for (var i = 0, s; (s = shortcuts_[i++]); ) {
+          var Cs = s.components
+          if (Cs) {
+            if (Cs.length === l) {
+              me.insertShortcutInArray_(s, newCurrent)
+            } else if (Cs.length > l) {
+              var last = Cs.slice(Cs.length-3, Cs.length).join('')
+              Cs.splice(Cs.length - 3, 3, last)
+              me.insertShortcutInArray_(s, newCurrent)
+            }
+          }
+        }
+      }
+    } else if (sep.length === 1) {
+      for (var i = 0, s; (s = current_[i++]); ) {
+        var Cs = s.components
+        var last = Cs[Cs.length-1]
+        var split = me.split(last, sep)
+        if (split) {
+          Cs.splice(Cs.length-1, 1, split[0], sep, split[1])
+          me.insertShortcutInArray_(s, newCurrent)
+        }
+      }
+    } else {
+      return
+    }
+    var oldLength = current_.length
+    if (newCurrent.length) {
+      current_ = newCurrent
+    } else {
+      return 0
+    }
+    var MI = menu_.getHighlighted()
+    if (MI) {
+      var highlighted = MI.model
+    }
+    for (var i = 0, s; (s = current_[i]); i++) {
+      Cs = s.components
+      var j = 0, c = Cs[j++], d
+      var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+        goog.dom.createTextNode(c))
+      while ((d = Cs[j++]) != undefined && (c = Cs[j++]) != undefined) {
+        content.appendChild(ezP.Do.createSPAN(d, 'ezp-code-emph'))
+        content.appendChild(goog.dom.createTextNode(c))
+      }
+      if ((MI = menu_.getChildAt(i))) {
+        MI.setModel(s)
+        MI.setContent(content)
+      } else {
+        MI = new ezP.MenuItem(content, s)
+        menu_.addChild(MI, true)
+      }
+      if (s === highlighted) {
+        menu_.setHighlighted(MI)
+      }
+    }
+    while ((MI = menu_.getChildAt(i))) {
+      menu_.removeChild(MI, true)      
+    }
+    return oldLength - current_.length
+  }
+  me.populateMenu = function (sep) {
+    current_.length = 0
+    menu_.removeChildren(true)
+    if (sep.length !== 1) {
+      return
+    }
+    // initialize the shortcuts to hold informations
+    // - to build the menuitem content
+    // - to sort and filter the menu items
+    var i = 0, shortcut, split
+    while ((shortcut = shortcuts_[i++])) {
+      if ((split = me.split(shortcut.key, sep))) {
+        shortcut.components = [split[0], sep, split[1]]
+        me.insertShortcutInArray_(shortcut, current_)
+      } else {
+        shortcut.components = undefined
+      }
+    }
+    i = 0
+    while ( i < me.MAX_CHILD_COUNT && (shortcut = current_[i++])) {
+      var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+        goog.dom.createTextNode(shortcut.components[0]),
+        ezP.Do.createSPAN(shortcut.components[1], 'ezp-code-emph'),
+        goog.dom.createTextNode(shortcut.components[2]),
+      )
+      var MI = new ezP.MenuItem(content, shortcut)
+      menu_.addChild(MI, true)
+    }
+    return
+  }  
   me.handleKeyDown_ = function(event) {
-    console.log(event)
+    if (menu_.isVisible()) {
+      // let someone else catch that event
+      return
+    }
     var B = event.target
     if (B !== target_) {
       if (!(B = B.parentNode)) {
@@ -56,14 +367,85 @@ ezP.KeyHandler = function() {
         }
       }
     }
-    var t = new Date().getTime()
-    if (t > t_ + me.FLUSH_TIME) {
-      keys_ = []
+    var key = event.key
+    if (key.toLowerCase() === 'dead') {
+      if (event.keyCode === 78) { // this is on osx
+        key = '~'
+      } else if (event.keyCode === 219) { // this is on osx
+        key = '^'
+      } else {
+        return
+      }
     }
-    t_ = t
-    B = Blockly.selected
-    if (event.keyCode === 13) {// Enter
-      event.preventDefault()
+    if (B = Blockly.selected) {
+      if (event.key === ' ') {
+        event.preventDefault()
+        event.stopPropagation()
+        ezP.MenuManager.shared().showMenu(B, event)
+        return
+      }
+      me.populateMenu(key)
+      if (menu_.getChildCount()) {
+        event.preventDefault()
+        event.stopPropagation()  
+        if (!menu_.inDocument_) {
+          menu_.render()
+        }
+        if (!me.alreadyListening_) {
+          me.alreadyListening_ = true
+          goog.events.listenOnce(menu_, 'action', function (event) {
+            me.alreadyListening_ = false
+            setTimeout(function () {// try/finally?
+              if (me.alreadyListened_) {
+                console.log('************* I have already listened!')
+                return
+              }
+              me.alreadyListened = true
+              me.handleMenuItemAction(event)
+            }, 100)// TODO be sure that this 100 is suffisant
+          })    
+        }
+        var scaledHeight = ezP.Font.lineHeight() * B.workspace.scale
+        var xy = goog.style.getPageOffset(B.svgGroup_)
+        menu_.showMenu(B.svgGroup_, xy.x, xy.y + scaledHeight+2)
+        menu_.highlightFirst()
+      } else {
+        var F = function (f) {
+          event.preventDefault()
+          event.stopPropagation()
+          f.call(B.ezp, B)
+        }  
+        switch(event.key.toLowerCase()) {
+          case 'arrowdown': return F(B.ezp.selectBlockBelow)
+          case 'arrowup': return F(B.ezp.selectBlockAbove)
+          case 'arrowleft': return F(B.ezp.selectBlockLeft)
+          case 'arrowright': return F(B.ezp.selectBlockRight)
+        }  
+      }
+    } else {
+      var F = function (f) {
+        event.preventDefault()
+        event.stopPropagation()
+        var block = ezP.DelegateSvg.getBestBlock(workspace, f)
+        if (block) {
+          block.select()
+        }
+      }
+      switch(event.key.toLowerCase()) {
+        case 'arrowdown': F(function(P) {return P.y}); return
+        case 'arrowup': F(function(P) {return -P.y}); return
+        case 'arrowleft': F(function(P) {return -P.x}); return
+        case 'arrowright': F(function(P) {return P.x}); return
+      }
+    }
+    return
+
+    if (B && event.keyCode === 13) {// Enter
+      if (menu_.isVisible()) {
+        // let someone else catch that event
+        return
+      }
+
       var key = keys_.join('')
       var action = shortcuts_[key]
       if (goog.isFunction(action)) {
@@ -78,11 +460,13 @@ ezP.KeyHandler = function() {
       keys_ = []
     } else if (event.key === ' ' && !keys_.length){
       event.preventDefault()
+      event.stopPropagation()
       if (B) {
         ezP.MenuManager.shared().showMenu(B, event)
       }
     } else if (event.key.length<2){
       event.preventDefault()
+      event.stopPropagation()
       keys_.push(event.key)
     } else if (event.key === 'Dead') {
       if (event.keyCode === 78) { // this is on osx
@@ -93,25 +477,12 @@ ezP.KeyHandler = function() {
       event.preventDefault()
     } else if (B = Blockly.selected) {
       event.preventDefault()
+      event.stopPropagation()
       switch(event.key) {
-        case 'ArrowDown': B.ezp.selectBlockBelow(B); return
-        case 'ArrowUp': B.ezp.selectBlockAbove(B); return
-        case 'ArrowLeft': B.ezp.selectBlockLeft(B); return
-        case 'ArrowRight': B.ezp.selectBlockRight(B); return
-      }
-    } else {
-      event.preventDefault()
-      var F = function (f) {
-        var block = ezP.DelegateSvg.getBestBlock(workspace, f)
-        if (block) {
-          block.select()
-        }
-      }
-      switch(event.key) {
-        case 'ArrowDown': F(function(P) {return P.y}); return
-        case 'ArrowUp': F(function(P) {return -P.y}); return
-        case 'ArrowLeft': F(function(P) {return -P.x}); return
-        case 'ArrowRight': F(function(P) {return P.x}); return
+        case 'arrowDown': B.ezp.selectBlockBelow(B); return
+        case 'arrowUp': B.ezp.selectBlockAbove(B); return
+        case 'arrowLeft': B.ezp.selectBlockLeft(B); return
+        case 'arrowRight': B.ezp.selectBlockRight(B); return
       }
     }
   }
@@ -135,10 +506,8 @@ var Ks = {
   'while': ezP.T3.Stmt.while_part,
   'with': ezP.T3.Stmt.with_part,
   'lambda': ezP.T3.Expr.lambda_expr,
-  'or': ezP.T3.Expr.or_test_concrete,
-  'and': ezP.T3.Expr.and_test_concrete,
-  'if else': ezP.T3.Expr.conditional_expression_concrete,
-  'id': ezP.T3.Expr.identifier,
+  '… if … else …': ezP.T3.Expr.conditional_expression_concrete,
+  'identifier': ezP.T3.Expr.identifier,
   'name': ezP.T3.Expr.identifier,
   '+': {
     type: ezP.T3.Expr.a_expr_concrete,
@@ -250,104 +619,3 @@ for (var i = 0; (K = Ks[i++]); ) {
     subtype: K,
   });
 }
-
-// if (ezP.KeyHandler.shared) {
-//   return
-// }
-// ezP.KeyHandler.shared = new goog.ui.KeyboardShortcutHandler(document)
-
-// ezP.KeyHandler.shared.registerShortcut('↓', goog.events.KeyCodes.DOWN);
-// ezP.KeyHandler.shared.registerShortcut('↑', goog.events.KeyCodes.UP);
-// ezP.KeyHandler.shared.registerShortcut('→', goog.events.KeyCodes.RIGHT);
-// ezP.KeyHandler.shared.registerShortcut('←', goog.events.KeyCodes.LEFT);
-// ezP.KeyHandler.shared.registerShortcut(' ', goog.events.KeyCodes.SPACE);
-// var keys = {
-//   'i f': ezP.T3.Stmt.if_part,
-//   'e l i f': ezP.T3.Stmt.elif_part,
-//   'e l s e':  ezP.T3.Stmt.else_part,
-//   'c l a s s': ezP.T3.Stmt.classdef_part,
-//   // 'd e': ezP.T3.Stmt.decorator_stmt,
-//   'e x c e p t': ezP.T3.Stmt.except_part,
-//   'f i n a l l y': ezP.T3.Stmt.finally_part,
-//   'f o r': ezP.T3.Stmt.for_part,
-//   'd e f': ezP.T3.Stmt.funcdef_part,
-//   'i f': ezP.T3.Stmt.if_part,
-//   'i m p o r t': ezP.T3.Stmt.import_part,
-//   't r y': ezP.T3.Stmt.try_part,
-//   'w h i l e': ezP.T3.Stmt.while_part,
-//   'w i t h': ezP.T3.Stmt.with_part,
-//   'l a m b d a': ezP.T3.Expr.lambda_expr,
-//   'o r': ezP.T3.Expr.or_test_concrete,
-//   'a n d': ezP.T3.Expr.and_test_concrete,
-//   'i f e l s e': ezP.T3.Expr.conditional_expression_concrete,
-// }
-// var key
-// for (key in keys) {
-//   ezP.KeyHandler.shared.registerShortcut(keys[key], key+' enter');
-// }
-// var NONE = goog.ui.KeyboardShortcutHandler.Modifiers.NONE;
-// var ENTER = goog.events.KeyCodes.ENTER
-
-// ezP.KeyHandler.shared.registerShortcut(ezP.T3.Expr.m_expr_concrete,
-//   goog.events.KeyCodes.NUM_MULTIPLY	, NONE, ENTER
-// )
-// ezP.KeyHandler.shared.registerShortcut(ezP.T3.Expr.m_expr_concrete,
-//   'o k enter'
-// )
-// /*
-//   m_expr_concrete           /*   ::= m_expr "*" u_expr | m_expr "@" m_expr | m_expr "//" u_expr| m_expr "/" u_expr | m_expr "%" u_expr (default)  : "ezp_m_expr_concrete",
-//   a_expr_concrete           /*   ::= a_expr "+" m_expr | a_expr "-" m_expr              (default)  : "ezp_a_expr_concrete",
-//   shift_expr_concrete       /*   ::= shift_expr ( "<<" | ">>" ) a_expr                  (default)  : "ezp_shift_expr_concrete",
-//   and_expr_concrete         /*   ::= and_expr "&" shift_expr                            (default)  : "ezp_and_expr_concrete",
-//   xor_expr_concrete         /*   ::= xor_expr "^" and_expr                              (default)  : "ezp_xor_expr_concrete",
-//   or_expr_concrete          /*   ::= or_expr "|" xor_expr                               (default)  : "ezp_or_expr_concrete",
-//    /*   ::= or_test "if" or_test "else" expression             (default)  : "ezp_conditional_expression_concrete",
-//   lambda_expr               /*   ::= lambda_expression "dynamic with cond"              (default)  : "ezp_lambda_expr",
-//   lambda_expr_nocond        /*   ::= lambda_expression "dynamic without cond"           (default)  : "ezp_lambda_expr_nocond",
-//   builtin_object            /*   ::= 'None' | 'True' | 'False' | 'Ellipsis' | '...' |'NotImplemented' (default)  : "ezp_builtin_object",
-
-//   */
-// var keys = [
-//   goog.events.KeyCodes.AT_SIGN,
-// ]
-// var key
-// for (key in keys) {
-//   ezP.KeyHandler.shared.registerShortcut(keys[key], key+' enter');
-// }
-
-// ezP.KeyHandler.shared.registerShortcut(ezP.T3.Stmt.decorator_stmt,
-//   goog.events.KeyCodes.AT_SIGN);
-
-// ezP.KeyHandler.shared.listen(
-//   goog.ui.KeyboardShortcutHandler.EventType.SHORTCUT_TRIGGERED,
-//   function(e) {
-//     var B = Blockly.selected
-//     if (B) {
-//       var type = e.identifier.split(':')
-//       switch(type[0]) {
-//         case ' ': ezP.MenuManager.shared().showMenu(B, e); return
-//         case '↓': B.ezp.selectBlockBelow(B); return
-//         case '↑': B.ezp.selectBlockAbove(B); return
-//         case '←': B.ezp.selectBlockLeft(B); return
-//         case '→': B.ezp.selectBlockRight(B); return
-//         default:
-//         B.ezp.insertBlockOfType(B, type[0], type[1])
-//         console.log('selected', e.identifier)
-//       }
-//     } else {
-//       var F = function (f) {
-//         var block = ezP.DelegateSvg.getBestBlock(workspace, f)
-//         if (block) {
-//           block.select()
-//         }
-//       }
-//       switch(e.identifier) {
-//         case '↓': F(function(P) {return P.y}); return
-//         case '↑': F(function(P) {return -P.y}); return
-//         case '←': F(function(P) {return -P.x}); return
-//         case '→': F(function(P) {return P.x}); return
-//       }
-//       console.log(e.identifier)
-//     }
-//   }
-// )

@@ -2203,7 +2203,7 @@ ezP.DelegateSvg.prototype.setSubtype = function (block, subtype) {
 }
 
 /**
- * Get the closest box, according to the filter.
+ * Insert a block of the given type.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @param {Object} action the prototype of the block to insert, or an object containning this prototype.
@@ -2211,10 +2211,48 @@ ezP.DelegateSvg.prototype.setSubtype = function (block, subtype) {
  * @return the block that was inserted
  */
 ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) {
-  var source = this.selectedConnectionSource_
+  // get the type:
   var prototypeName = action.type || action
-  var c8n
+  // where should I connect a new block?
+  // There might be more than one possibility.
+  var c8n, c8ns, targetC8n
+  var source = this.selectedConnectionSource_
   if (source && (c8n = source.ezp.selectedConnection)) {
+    // the user has selected a connection, there is only one candidate
+    if (!c8n.check_ || c8n.check_.indexOf(prototypeName)>=0) {
+      if ((targetC8n = c8n.targetConnection)) {
+        if (c8n.check_ && c8n.check_.indexOf(prototypeName)<0) {
+          return false
+        }
+      }
+    }
+    c8ns = [c8n]
+  } else {
+    // get all the possible connections of block
+    source = block
+    c8ns = []
+    var push = function(c8n) {
+      if (c8n && (!c8n.check_ || c8n.check_.indexOf(prototypeName) >= 0)) {
+        targetC8n = c8n.targetConnection
+        if (!targetC8n || !targetC8n.check_ || targetC8n.check_.indexOf(prototypeName) >= 0) {
+          c8ns.push(c8n)
+        }
+      }
+    }
+    push(block.nextConnection)
+    push(block.previousConnection)
+    for (var i = 0, input; (input = block.inputList[i++]); ) {
+      if ((c8n = input.connection) && !c8n.isConnected()) {
+        push(c8n)
+      }
+    }
+  }
+  if (!c8ns.length) {
+    return false
+  }
+  var B
+  Blockly.Events.setGroup(true)
+  for (var i = 0; (c8n = c8ns[i++]); ) {
     if (!c8n.check_ || c8n.check_.indexOf(prototypeName)>=0) {
       var targetC8n = c8n.targetConnection
       if (targetC8n) {
@@ -2222,9 +2260,8 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
           return false
         }
       }
-      Blockly.Events.setGroup(true)
       try {
-        var B = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
+        B = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
         B.ezp.setSubtype(B, action.subtype || subtype)
         if (c8n.type === Blockly.NEXT_STATEMENT) {
           if (B.previousConnection) {
@@ -2234,11 +2271,10 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
             B.previousConnection.connect(c8n)
             B.render()
             B.select()
-            return B
+            break
           }
         } else if (c8n === source.previousConnection) {
           if (B.nextConnection) {
-            B.render()
             if (targetC8n && B.previousConnection) {
               targetC8n.connect(B.previousConnection)
             } else {
@@ -2247,21 +2283,23 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
               B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)            
             }
             B.nextConnection.connect(c8n)
+            B.render()
             B.select()
-            return B
+            break
           }
         } else if (B.outputConnection) {
           B.outputConnection.connect(c8n)
           B.render()
           B.select()
-          return B
+          break
+        } else {
+          B.dispose(true)
+          B = undefined
         }
-        B.dispose(true)
-        return null
       } finally {
-        Blockly.Events.setGroup(false)
       }
     }
   }
-  return null
+  Blockly.Events.setGroup(false)
+  return B
 }
