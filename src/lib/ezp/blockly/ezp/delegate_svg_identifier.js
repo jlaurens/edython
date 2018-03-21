@@ -81,6 +81,15 @@ ezP.DelegateSvg.Expr.identifier.prototype.setValue = function (block, value) {
 }
 
 /**
+ * Show the editor for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @private
+ */
+ezP.DelegateSvg.Expr.identifier.prototype.showEditor = function (block) {
+  block.ezp.inputs.first.fieldIdentifier.showEditor_()
+}
+
+/**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.

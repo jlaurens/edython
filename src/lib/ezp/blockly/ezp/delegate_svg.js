@@ -2241,28 +2241,37 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
     }
     push(block.nextConnection)
     push(block.previousConnection)
-    for (var i = 0, input; (input = block.inputList[i++]); ) {
-      if ((c8n = input.connection) && !c8n.isConnected()) {
-        push(c8n)
+    var doFill = function (block) {
+      var i = 0, input, c8n, target
+      while ((input = block.inputList[i++])) {
+        if ((c8n = input.connection) && c8n.type === Blockly.INPUT_VALUE) {
+          if ((target = c8n.targetBlock())) {
+            doFill(target)
+          } else if (!c8n.check_ || c8n.check_.indexOf(prototypeName) >= 0) {
+            c8ns.push(c8n)
+          }
+        }
       }
     }
+    doFill(source)
+    push(block.outputConnection)
   }
   if (!c8ns.length) {
     return false
   }
   var B
   Blockly.Events.setGroup(true)
-  for (var i = 0; (c8n = c8ns[i++]); ) {
-    if (!c8n.check_ || c8n.check_.indexOf(prototypeName)>=0) {
-      var targetC8n = c8n.targetConnection
-      if (targetC8n) {
-        if (c8n.check_ && c8n.check_.indexOf(prototypeName)<0) {
-          return false
+  try {
+    B = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
+    B.ezp.setSubtype(B, action.subtype || subtype)
+    for (var i = 0; (c8n = c8ns[i++]); ) {
+      if (!c8n.check_ || c8n.check_.indexOf(prototypeName)>=0) {
+        var targetC8n = c8n.targetConnection
+        if (targetC8n) {
+          if (c8n.check_ && c8n.check_.indexOf(prototypeName)<0) {
+            return false
+          }
         }
-      }
-      try {
-        B = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
-        B.ezp.setSubtype(B, action.subtype || subtype)
         if (c8n.type === Blockly.NEXT_STATEMENT) {
           if (B.previousConnection) {
             if (targetC8n && targetC8n.checkType_(B.nextConnection)) {
@@ -2287,6 +2296,20 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
             B.select()
             break
           }
+        } else if (c8n === source.outputConnection) {
+          if (B.nextConnection) {
+            if (targetC8n && B.previousConnection) {
+              targetC8n.connect(B.previousConnection)
+            } else {
+              var its_xy = block.getRelativeToSurfaceXY();
+              var my_xy = B.getRelativeToSurfaceXY();
+              B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)            
+            }
+            B.nextConnection.connect(c8n)
+            B.render()
+            B.select()
+            break
+          }
         } else if (B.outputConnection) {
           B.outputConnection.connect(c8n)
           B.render()
@@ -2296,10 +2319,10 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
           B.dispose(true)
           B = undefined
         }
-      } finally {
       }
     }
+  } finally {
+    Blockly.Events.setGroup(false)
   }
-  Blockly.Events.setGroup(false)
   return B
 }

@@ -367,24 +367,32 @@ ezP.KeyHandler = function() {
         }
       }
     }
-    var key = event.key
-    if (key.toLowerCase() === 'dead') {
+    var K = event.key
+    var k = K.toLowerCase()
+    if (k === 'dead') {
       if (event.keyCode === 78) { // this is on osx
-        key = '~'
+        K = '~'
       } else if (event.keyCode === 219) { // this is on osx
-        key = '^'
+        K = '^'
       } else {
+        return
+      }
+    } else if (k === 'enter' || k === 'return') {
+      if ((B = Blockly.selected) && B.ezp.showEditor) {
+        event.preventDefault()
+        event.stopPropagation()
+        B.ezp.showEditor(B)
         return
       }
     }
     if (B = Blockly.selected) {
-      if (event.key === ' ') {
+      if (K === ' ') {
         event.preventDefault()
         event.stopPropagation()
         ezP.MenuManager.shared().showMenu(B, event)
         return
       }
-      me.populateMenu(key)
+      me.populateMenu(K)
       if (menu_.getChildCount()) {
         event.preventDefault()
         event.stopPropagation()  
@@ -415,7 +423,7 @@ ezP.KeyHandler = function() {
           event.stopPropagation()
           f.call(B.ezp, B)
         }  
-        switch(event.key.toLowerCase()) {
+        switch(k) {
           case 'arrowdown': return F(B.ezp.selectBlockBelow)
           case 'arrowup': return F(B.ezp.selectBlockAbove)
           case 'arrowleft': return F(B.ezp.selectBlockLeft)
@@ -431,7 +439,7 @@ ezP.KeyHandler = function() {
           block.select()
         }
       }
-      switch(event.key.toLowerCase()) {
+      switch(k) {
         case 'arrowdown': F(function(P) {return P.y}); return
         case 'arrowup': F(function(P) {return -P.y}); return
         case 'arrowleft': F(function(P) {return -P.x}); return
