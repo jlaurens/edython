@@ -139,9 +139,8 @@ ezP.ConnectionDelegate.prototype.isPrevious = function() {
 
 /**
  * Get the connection of the same kind on the block above.
- * If the connection is named, returns the connection, whatever ist source block
- * status may be.
- * @param F optional function defaults to !argument.ezp.isWhite(argument)
+ * If the connection is named, returns the connection,
+ * whatever its source block status may be.
  * @return a connection, possibly undefined
  */
 ezP.ConnectionDelegate.prototype.getConnectionAbove = function() {
@@ -355,8 +354,8 @@ ezP.Connection.prototype.isConnectionAllowed = function(candidate,
 }
 
 /**
- * Is this connection compatible with another connection with respect to the
- * value type system.  E.g. square_root("Hello") is not compatible.
+ * The type checking mechanism is fine grained compared to blockly's.
+ * If a connection 
  * @param {!Blockly.Connection} otherConnection Connection to compare against.
  * @return {boolean} True if the connections share a type.
  * @private
@@ -375,7 +374,7 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
     var checkA = c8nA.check_
     var checkB = c8nB.check_
     if (c8nA.ezp.name_) {
-      // c8nA is the connection of a 'do' statement input
+      // c8nA is the connection of an input
       // connections are vertical (next<->previous)
       if (checkA) {
         if (checkA.indexOf(typeB) < 0) {
@@ -391,10 +390,10 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
           return true
         }
       }
-      return !checkB || checkB.indexOf(typeA+'.'+c8nA.name_)>=0 || checkB.indexOf('.'+c8nA.name_)>=0
-    } /*c8nBame_) */
+      return !checkB || checkB.indexOf(typeA)>=0 || checkB.indexOf(typeA+'.'+c8nA.name_)>=0 || checkB.indexOf('.'+c8nA.name_)>=0
+    } /* if (c8nA.ezp.name_) */
     if (c8nB.ezp.name_) {
-      // c8nB is the connection of a 'do' statement input
+      // c8nB is the connection of an input
       // connections are vertical (next<->previous)
       if (checkB) {
         if (checkB.indexOf(typeA) < 0) {
@@ -410,8 +409,8 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
           return true
         }
       }
-      return !checkA || checkA.indexOf(typeB+'.'+c8nB.name_)>=0 || checkA.indexOf('.'+c8nB.name_)>=0
-    } /* if (c8nA.name_) */
+      return !checkA || checkA.indexOf(typeB)>=0 || checkA.indexOf(typeB+'.'+c8nB.name_)>=0 || checkA.indexOf('.'+c8nB.name_)>=0
+    } /* if (c8nB.ezp.name_) */
     if (checkA && checkA.indexOf(typeB)<0) {
       return false
     }

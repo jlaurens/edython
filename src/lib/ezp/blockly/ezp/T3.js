@@ -57,7 +57,7 @@ ezP.T3.Stmt = {
   break_stmt                /*   ::= "break"                                            (default) */ : "ezp_break_stmt",
   continue_stmt             /*   ::= "continue"                                         (default) */ : "ezp_continue_stmt",
   future_statement          /*   ::= "from" "__future__" "import" feature ["as" name] ("," feature ["as" name])* | "from" "__future__" "import" "(" feature ["as" name] ("," feature ["as" name])* [","] ")" (default) */ : "ezp_future_statement",
-  main_stmt                 /*   ::= green flag statement                               (default) */ : "ezp_main_stmt",
+  start_stmt                 /*   ::= green flag statement                               (default) */ : "ezp_start_stmt",
   augassign_numeric_stmt    /*   ::= augassign_numeric                                  (default) */ : "ezp_augassign_numeric_stmt",
   augassign_bitwise_stmt    /*   ::= augassign_bitwise                                  (default) */ : "ezp_augassign_bitwise_stmt",
   docstring_top_stmt        /*   ::= docstring+{1}                                      (default) */ : "ezp_docstring_top_stmt",
@@ -73,18 +73,18 @@ ezP.T3.Stmt = {
 ezP.T3.Stmt.Previous = {
   import_part: [ // count 4
     ezP.T3.Stmt.import_part,
-    ezP.T3.Stmt.main_stmt,
+    ezP.T3.Stmt.start_stmt,
     ezP.T3.Stmt.docstring_top_stmt,
     ezP.T3.Stmt.comment_stmt,
   ],
   future_statement: [ // count 4
     ezP.T3.Stmt.future_statement,
-    ezP.T3.Stmt.main_stmt,
+    ezP.T3.Stmt.start_stmt,
     ezP.T3.Stmt.docstring_top_stmt,
     ezP.T3.Stmt.comment_stmt,
   ],
   docstring_top_stmt: [ // count 3
-    ezP.T3.Stmt.main_stmt,
+    ezP.T3.Stmt.start_stmt,
     ezP.T3.Stmt.docstring_top_stmt,
     ezP.T3.Stmt.comment_stmt,
   ],

@@ -7,7 +7,7 @@
 </head>
 <body>
 <pre>
-main_stmt ::= green flag statement
+start_stmt ::= green flag statement
 simple_stmt ::= REMOVE
 </pre>
 assignment_stmt ::=  (target_list "=")+ (starred_expression | yield_expression)
@@ -98,8 +98,8 @@ Rule: a docstring part becomes a top docstring if it is followed by import state
 <pre>
 docstring_top_stmt ::= docstring+{1}
 docstring ::= triple quoted string
-import_part >>> import_part | docstring_top_stmt | main_stmt | comment_stmt
-docstring_top_stmt >>> docstring_top_stmt | main_stmt | comment_stmt
+import_part >>> import_part | docstring_top_stmt | start_stmt | comment_stmt
+docstring_top_stmt >>> docstring_top_stmt | start_stmt | comment_stmt
 </pre>
 global_stmt ::=  "global" identifier ("," identifier)*
 nonlocal_stmt ::=  "nonlocal" identifier ("," identifier)*
@@ -115,7 +115,7 @@ comment_stmt ::= '# blah blah'
 </pre>
 
 <pre>
-future_statement >>> future_statement | comment_stmt | docstring_top_stmt | main_stmt
+future_statement >>> future_statement | comment_stmt | docstring_top_stmt | start_stmt
 </pre>
 
 

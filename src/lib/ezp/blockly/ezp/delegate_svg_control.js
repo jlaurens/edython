@@ -158,16 +158,16 @@ ezP.DelegateSvg.Control.prototype.toPython = function (block, is_deep) {
 
 
 /**
- * Class for a DelegateSvg, main_stmt.
+ * Class for a DelegateSvg, start_stmt.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.main_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.main_stmt.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Stmt.start_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.start_stmt.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Stmt.main_stmt, ezP.DelegateSvg.Control)
+goog.inherits(ezP.DelegateSvg.Stmt.start_stmt, ezP.DelegateSvg.Control)
 
-ezP.DelegateSvg.Manager.register('main_stmt')
+ezP.DelegateSvg.Manager.register('start_stmt')

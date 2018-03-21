@@ -500,6 +500,7 @@ ezP.KeyHandler = function() {
 ezP.KeyHandler.register('if', ezP.T3.Stmt.if_part)
 
 var Ks = {
+  'start': ezP.T3.Stmt.start_stmt,
   'if': ezP.T3.Stmt.if_part,
   'elif': ezP.T3.Stmt.elif_part,
   'else':  ezP.T3.Stmt.else_part,
@@ -517,6 +518,45 @@ var Ks = {
   '… if … else …': ezP.T3.Expr.conditional_expression_concrete,
   'identifier': ezP.T3.Expr.identifier,
   'name': ezP.T3.Expr.identifier,
+  'not': function(key) {
+    var B = Blockly.selected
+    if (B) {
+      var parent = B.getSurroundParent()
+      if (parent && (parent.type === ezP.T3.Expr.not_test_concrete)) {
+        B.ezp.replaceBlock(B, parent)
+        return
+      }
+      B.ezp.insertBlockOfType(B, ezP.T3.Expr.not_test_concrete)
+    }
+  },                                    
+  '±': function(key) {
+    var B = Blockly.selected
+    if (B) {
+      var parent = B.getSurroundParent()
+      if (parent && (parent.type === ezP.T3.Expr.u_expr_concrete) && parent.ezp.getSubtype() === '-') {
+        B.ezp.replaceBlock(B, parent)
+        return
+      }
+      B.ezp.insertBlockOfType(B, ezP.T3.Expr.u_expr_concrete, '-')
+    }
+  },                                    
+  '~': function(key) {
+    var B = Blockly.selected
+    if (B) {
+      var parent = B.getSurroundParent()
+      if (parent && (parent.type === ezP.T3.Expr.u_expr_concrete) && parent.ezp.getSubtype() === '~') {
+        B.ezp.replaceBlock(B, parent)
+        return
+      }
+      B.ezp.insertBlockOfType(B, ezP.T3.Expr.u_expr_concrete, '~')
+    }
+  },
+}
+var K
+for (K in Ks) {
+  ezP.KeyHandler.register(K, Ks[K]);
+}
+Ks = {
   '+': {
     type: ezP.T3.Expr.a_expr_concrete,
     subtype: '+',
@@ -567,45 +607,10 @@ var Ks = {
   '|': ezP.T3.Expr.or_expr_concrete,
   'or': ezP.T3.Expr.or_test_concrete,
   'and': ezP.T3.Expr.and_test_concrete,
-  'not': function(key) {
-    var B = Blockly.selected
-    if (B) {
-      var parent = B.getSurroundParent()
-      if (parent && (parent.type === ezP.T3.Expr.not_test_concrete)) {
-        B.ezp.replaceBlock(B, parent)
-        return
-      }
-      B.ezp.insertBlockOfType(B, ezP.T3.Expr.not_test_concrete)
-    }
-  },                                    
-  '±': function(key) {
-    var B = Blockly.selected
-    if (B) {
-      var parent = B.getSurroundParent()
-      if (parent && (parent.type === ezP.T3.Expr.u_expr_concrete) && parent.ezp.getSubtype() === '-') {
-        B.ezp.replaceBlock(B, parent)
-        return
-      }
-      B.ezp.insertBlockOfType(B, ezP.T3.Expr.u_expr_concrete, '-')
-    }
-  },                                    
-  '~': function(key) {
-    var B = Blockly.selected
-    if (B) {
-      var parent = B.getSurroundParent()
-      if (parent && (parent.type === ezP.T3.Expr.u_expr_concrete) && parent.ezp.getSubtype() === '~') {
-        B.ezp.replaceBlock(B, parent)
-        return
-      }
-      B.ezp.insertBlockOfType(B, ezP.T3.Expr.u_expr_concrete, '~')
-    }
-  },
 }
-var K
 for (K in Ks) {
-  ezP.KeyHandler.register(K, Ks[K]);
+  ezP.KeyHandler.register('… '+K+' …', Ks[K]);
 }
-
 Ks = ['True', 'False', 'None', '...']
 for (var i = 0; (K = Ks[i++]); ) {
   ezP.KeyHandler.register(K, {
@@ -615,15 +620,66 @@ for (var i = 0; (K = Ks[i++]); ) {
 }
 Ks = ['is', 'is not', 'in', 'not in']
 for (var i = 0; (K = Ks[i++]); ) {
-  ezP.KeyHandler.register(K, {
+  ezP.KeyHandler.register('… '+K+' …', {
     type: ezP.T3.Expr.object_comparison,
     subtype: K,
   });
 }
 Ks = ['<', '>', '==', '>=', '<=', '!=']
 for (var i = 0; (K = Ks[i++]); ) {
-  ezP.KeyHandler.register(K, {
+  ezP.KeyHandler.register('… '+K+' …', {
     type: ezP.T3.Expr.number_comparison,
+    subtype: K,
+  });
+}
+
+Ks = {
+  '… = …': ezP.T3.Stmt.assignment_stmt,
+  '…:… = …': ezP.T3.Stmt.annotated_assignment_stmt,
+  'assert …': ezP.T3.Stmt.assert_stmt,
+  'pass': ezP.T3.Stmt.pass_stmt,
+  'break': ezP.T3.Stmt.break_stmt,
+  'continue': ezP.T3.Stmt.continue_stmt,
+  'del …': ezP.T3.Stmt.del_stmt,
+  'return …': ezP.T3.Stmt.return_stmt,
+  'yield …': ezP.T3.Stmt.yield_stmt,
+  'raise …': ezP.T3.Stmt.raise_stmt,
+  'from future import …': ezP.T3.Stmt.raise_stmt,
+  '# comment': ezP.T3.Stmt.comment_stmt,
+  'global …': {
+    type: ezP.T3.Stmt.global_nonlocal_stmt,
+    subtype: 'global',
+  },
+  'nonlocal …': {
+    type: ezP.T3.Stmt.global_nonlocal_stmt,
+    subtype: 'nonlocal',
+  },
+  '@decorator': ezP.T3.Stmt.decorator_stmt,
+  '"""…"""(def)': ezP.T3.Stmt.docstring_def_stmt,
+  'print(…)': ezP.T3.Stmt.print_stmt,
+  'input(…)': ezP.T3.Expr.input,
+  'module as alias': ezP.T3.Expr.module_as_concrete,
+  '(…)': ezP.T3.Expr.parenth_form,
+  '[…]': ezP.T3.Expr.list_display,
+  '{…:…}': ezP.T3.Expr.dict_display,
+  '{…}': ezP.T3.Expr.set_display,
+}
+var K
+for (K in Ks) {
+  ezP.KeyHandler.register(K, Ks[K]);
+}
+
+Ks = ['+=', '-=', '*=', '@=', '/=', '//=', '%=', '**=',]
+for (var i = 0; (K = Ks[i++]); ) {
+  ezP.KeyHandler.register('… '+K+' …', {
+    type: ezP.T3.Stmt.augassign_numeric_stmt,
+    subtype: K,
+  });
+}
+Ks = ['>>=', '<<=', '&=', '^=', '|=',]
+for (var i = 0; (K = Ks[i++]); ) {
+  ezP.KeyHandler.register('… '+K+' …', {
+    type: ezP.T3.Stmt.augassign_bitwise_stmt,
     subtype: K,
   });
 }

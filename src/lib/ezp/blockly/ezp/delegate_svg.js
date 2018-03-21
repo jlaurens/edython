@@ -1239,6 +1239,7 @@ ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValu
 
 /**
  * Create a new block, with svg background and wrapped blocks.
+ * This is the expected way to create the block
  * @param {!WorkspaceSvg} workspace.
  * @param {!String} prototypeName.
  * @private
@@ -1246,6 +1247,7 @@ ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValu
 ezP.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id = undefined) {
   var B = workspace.newBlock(prototypeName, id)
   B.ezp.completeWrapped_(B)
+  B.ezp.consolidate(B, true)
   B.initSvg()
   return B
 }
@@ -1296,7 +1298,7 @@ ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, s
   goog.asserts.assert(input, 'No input named '+aboveInputName)
   var c8n = input.connection
   goog.asserts.assert(c8n, 'Unexpected dummy input '+aboveInputName)
-  if (c8n.checkType_(block.outputConnection)) {
+  if (block.outputConnection && c8n.checkType_(block.outputConnection)) {
     var targetC8n = block.outputConnection.targetConnection
     can = !targetC8n || targetC8n.checkType_(B.outputConnection)
   }
@@ -2241,88 +2243,100 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
     }
     push(block.nextConnection)
     push(block.previousConnection)
-    var doFill = function (block) {
+    var doFill = function (block, c8ns, filter) {
       var i = 0, input, c8n, target
       while ((input = block.inputList[i++])) {
         if ((c8n = input.connection) && c8n.type === Blockly.INPUT_VALUE) {
           if ((target = c8n.targetBlock())) {
-            doFill(target)
-          } else if (!c8n.check_ || c8n.check_.indexOf(prototypeName) >= 0) {
+            doFill(target, c8ns, filter)
+          } else if (filter(c8n)) {
             c8ns.push(c8n)
           }
         }
       }
     }
-    doFill(source)
-    push(block.outputConnection)
+    doFill(source, c8ns, function(c8n) {
+      return !c8n.check_ || c8n.check_.indexOf(prototypeName) >= 0
+    })
+    c8ns.push(block.outputConnection)
   }
   if (!c8ns.length) {
     return false
   }
-  var B
+  var B, ans
   Blockly.Events.setGroup(true)
   try {
     B = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
     B.ezp.setSubtype(B, action.subtype || subtype)
+    var c8ns_B = []
     for (var i = 0; (c8n = c8ns[i++]); ) {
-      if (!c8n.check_ || c8n.check_.indexOf(prototypeName)>=0) {
-        var targetC8n = c8n.targetConnection
-        if (targetC8n) {
-          if (c8n.check_ && c8n.check_.indexOf(prototypeName)<0) {
-            return false
+      var targetC8n = c8n.targetConnection
+      if (c8n === source.previousConnection) {
+        if (B.nextConnection && B.nextConnection.checkType_(c8n)) {
+          if (targetC8n && B.previousConnection
+            && targetC8n.checkType_(B.previousConnection)) {
+            targetC8n.connect(B.previousConnection)
+          } else {
+            var its_xy = block.getRelativeToSurfaceXY();
+            var my_xy = B.getRelativeToSurfaceXY();
+            B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)            
           }
-        }
-        if (c8n.type === Blockly.NEXT_STATEMENT) {
-          if (B.previousConnection) {
-            if (targetC8n && targetC8n.checkType_(B.nextConnection)) {
-              targetC8n.connect(B.nextConnection)
-            }
-            B.previousConnection.connect(c8n)
-            B.render()
-            B.select()
-            break
-          }
-        } else if (c8n === source.previousConnection) {
-          if (B.nextConnection) {
-            if (targetC8n && B.previousConnection) {
-              targetC8n.connect(B.previousConnection)
-            } else {
-              var its_xy = block.getRelativeToSurfaceXY();
-              var my_xy = B.getRelativeToSurfaceXY();
-              B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)            
-            }
-            B.nextConnection.connect(c8n)
-            B.render()
-            B.select()
-            break
-          }
-        } else if (c8n === source.outputConnection) {
-          if (B.nextConnection) {
-            if (targetC8n && B.previousConnection) {
-              targetC8n.connect(B.previousConnection)
-            } else {
-              var its_xy = block.getRelativeToSurfaceXY();
-              var my_xy = B.getRelativeToSurfaceXY();
-              B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)            
-            }
-            B.nextConnection.connect(c8n)
-            B.render()
-            B.select()
-            break
-          }
-        } else if (B.outputConnection) {
-          B.outputConnection.connect(c8n)
+          B.nextConnection.connect(c8n)
           B.render()
           B.select()
-          break
-        } else {
-          B.dispose(true)
+          ans = B
           B = undefined
+          break
         }
+      } else if (c8n === source.outputConnection) {
+        // will connection c8n to an input connection!
+        var c8ns_B = []
+        doFill(B, c8ns_B, function(c) {
+          return c.checkType_(c8n)
+        })
+        var c8n_B = c8ns_B[0]
+        if (c8n_B) {
+          if (targetC8n && B.outputConnection && targetC8n.checkType_(B.outputConnection)) {
+            targetC8n.connect(B.outputConnection)
+          } else {
+            var its_xy = block.getRelativeToSurfaceXY();
+            var my_xy = B.getRelativeToSurfaceXY();
+            B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)            
+          }
+          c8n_B.connect(c8n)
+          B.render()
+          B.select()
+          ans = B
+          B = undefined
+          break
+        }
+      } else if (c8n.type === Blockly.NEXT_STATEMENT) {
+        // this is a statements input or nextConnection
+        if (B.previousConnection && B.previousConnection.checkType_(c8n)) {
+          if (targetC8n && B.nextConnection && targetC8n.checkType_(B.nextConnection)) {
+            targetC8n.connect(B.nextConnection)
+          }
+          B.previousConnection.connect(c8n)
+          B.render()
+          B.select()
+          ans = B
+          B = undefined
+          break
+        }
+      } else if (B.outputConnection && B.outputConnection.checkType_(c8n)) {
+        B.outputConnection.connect(c8n)
+        B.render()
+        B.select()
+        ans = B
+        B = undefined
+        break
       }
     }
   } finally {
+    if (B) {
+      B.dispose(true)
+    }
     Blockly.Events.setGroup(false)
   }
-  return B
+  return ans
 }
