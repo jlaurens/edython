@@ -284,3 +284,17 @@ ezP.Do.createSPAN = function(text,css) {
     goog.dom.createTextNode(text),
   )
 }
+
+/**
+ * Is the given string an acceptable identifier ?
+ * For ezPython.
+ * @return true if candidate is an acceptable identifier
+ */
+ezP.Do.typeOfString = function (candidate) {
+  if (['False', 'None', 'True'].indexOf(candidate)>=0) {
+    return 'reserved identifier'
+  }
+  if (['class', 'finally', 'is', 'return', 'continue', 'for', 'lambda', 'try', 'def', 'from', 'nonlocal', 'while', 'and', 'del', 'global', 'not', 'with', 'as', 'elif', 'if', 'or', 'yield', 'assert', 'else', 'import', 'pass', 'break', 'except', 'in', 'raise'].indexOf(candidate)>=0) {
+    return 'reserved keyword'
+  }
+}

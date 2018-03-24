@@ -2186,9 +2186,10 @@ ezP.SelectedConnection = function() {
  * The only constrain is that a string is return, when defined or not null.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
- * @return None
+ * @return ''
  */
 ezP.DelegateSvg.prototype.getSubtype = function (block) {
+  return ''
 }
 
 /**
@@ -2196,12 +2197,14 @@ ezP.DelegateSvg.prototype.getSubtype = function (block) {
  * The default implementation does nothing.
  * Subclassers may use this to fine tune their own settings.
  * The only constrain is that a string is expected.
+ * The default implementation return false.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @param {string} subtype Is a function.
- * @return None
+ * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.prototype.setSubtype = function (block, subtype) {
+  return false
 }
 
 /**

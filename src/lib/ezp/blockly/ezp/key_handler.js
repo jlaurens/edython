@@ -37,89 +37,6 @@ ezP.KeyHandlerMenu.prototype.handleKeyEventInternal = function(e) {
     return true
   }
   return this.ezp.handleMenuKeyEvent(e)
-
-  // var highlighted = this.getHighlighted();
-  // if (highlighted && typeof highlighted.handleKeyEvent == 'function' &&
-  //     highlighted.handleKeyEvent(e)) {
-  //   return true;
-  // }
-
-  // // Give the open control the chance to handle the key event.
-  // if (this.openItem_ && this.openItem_ != highlighted &&
-  //     typeof this.openItem_.handleKeyEvent == 'function' &&
-  //     this.openItem_.handleKeyEvent(e)) {
-  //   return true;
-  // }
-
-  // // Do not handle the key event if any modifier key is pressed.
-  // if (e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) {
-  //   return false;
-  // }
-
-  // // Either nothing is highlighted, or the highlighted control didn't handle
-  // // the key event, so attempt to handle it here.
-  // switch (e.keyCode) {
-  //   case goog.events.KeyCodes.ESC:
-  //     if (this.isFocusable()) {
-  //       this.getKeyEventTarget().blur();
-  //     } else {
-  //       return false;
-  //     }
-  //     break;
-
-  //   case goog.events.KeyCodes.HOME:
-  //     this.highlightFirst();
-  //     break;
-
-  //   case goog.events.KeyCodes.END:
-  //     this.highlightLast();
-  //     break;
-
-  //   case goog.events.KeyCodes.UP:
-  //     if (this.orientation_ == goog.ui.Container.Orientation.VERTICAL) {
-  //       this.highlightPrevious();
-  //     } else {
-  //       return false;
-  //     }
-  //     break;
-
-  //   case goog.events.KeyCodes.LEFT:
-  //     if (this.orientation_ == goog.ui.Container.Orientation.HORIZONTAL) {
-  //       if (this.isRightToLeft()) {
-  //         this.highlightNext();
-  //       } else {
-  //         this.highlightPrevious();
-  //       }
-  //     } else {
-  //       return false;
-  //     }
-  //     break;
-
-  //   case goog.events.KeyCodes.DOWN:
-  //     if (this.orientation_ == goog.ui.Container.Orientation.VERTICAL) {
-  //       this.highlightNext();
-  //     } else {
-  //       return false;
-  //     }
-  //     break;
-
-  //   case goog.events.KeyCodes.RIGHT:
-  //     if (this.orientation_ == goog.ui.Container.Orientation.HORIZONTAL) {
-  //       if (this.isRightToLeft()) {
-  //         this.highlightPrevious();
-  //       } else {
-  //         this.highlightNext();
-  //       }
-  //     } else {
-  //       return false;
-  //     }
-  //     break;
-
-  //   default:
-  //     return false;
-  // }
-
-  return true;
 };
 
 /**
@@ -130,7 +47,7 @@ ezP.KeyHandlerMenu.prototype.handleKeyEventInternal = function(e) {
 ezP.KeyHandler = function() {
   var me = {MAX_CHILD_COUNT: 20}
   var keys_ = []
-  var shortcuts_ = [] // an array of {key: ..., action: ...} objects ordered by key
+  var shortcuts_ = [] // an array of {key: ..., action: ...} objects
   var current_ = []
   var target_
   var menu_ = new ezP.KeyHandlerMenu(/*undefined, ContextMenuRenderer*/)
@@ -184,39 +101,49 @@ ezP.KeyHandler = function() {
     return [key.substring(0, i), key.substring(i+sep.length)]
   }
   me.handleMenuKeyEvent = function (event) {
-    var key = event.key
-    if (key === 'Dead') {
-      if (event.keyCode === 78) { // this is on osx, change it twice if necessary
-        key = '~'
+    var K = event.key
+    var k = K.toLowerCase()
+    if (k === 'dead') {
+      if (event.keyCode === 78) { // this is on osx, change it twice if necessary for other systems
+        K = '~'
       } else if (event.keyCode === 219) { // this is on osx
-        key = '^'
+        K = '^'
       } else {
         return
       }
-    } else if (key === 'Backspace') {
+    } else if (k === 'backspace') {
       event.preventDefault()
       event.stopPropagation()  
-      key = undefined
+      K = undefined
     }
-    if (me.updateMenu(key)) {
+    if (me.updateMenu(K)) {
       event.preventDefault()
       event.stopPropagation()  
       return true
     }
     return false
   }
-  me.handleMenuItemAction = function (event) {
-    var MI = event.target
-    var s = MI.getModel()
-    if (goog.isFunction(s.action)) {
-      s.action(s.key)
-    } else if (s.action) {
+  me.handleFirstMenuItemAction = function (shortcut) {
+    // if key is a number, then create a number block
+    // if the key fits an identifier, then create an identifier
+    // otherwise, take the first shortcut and pass it to handleAction
+    // if the selected block supports subtypes, then set it
+    var B = Blockly.selected
+    if (B && B.ezp.setSubtype(B, shortcut)) {
+      return
+    }
+  }
+
+  me.handleAction = function (shortcut) {
+    if (goog.isFunction(shortcut.action)) {
+      shortcut.action(shortcut.key)
+    } else if (shortcut.action) {
       var B = Blockly.selected
       if (B) {
-         B.ezp.insertBlockOfType(B, s.action)
+         B.ezp.insertBlockOfType(B, shortcut.action)
        }
     } else {
-      console.log('Unknown', s.key)
+      console.log('Unknown', shortcut.key, shortcut.action)
     }
     menu_.removeChildren(true)
     return true
@@ -254,12 +181,12 @@ ezP.KeyHandler = function() {
   me.updateMenu = function (sep) {
     var newCurrent = []
     if (sep === undefined) {
+      keys_.pop()
       if (current_.length) {
         var l = current_[0].components.length - 2
         if (l < 3) {
           return
         }
-        var newCurrent = []
         for (var i = 0, s; (s = shortcuts_[i++]); ) {
           var Cs = s.components
           if (Cs) {
@@ -274,6 +201,7 @@ ezP.KeyHandler = function() {
         }
       }
     } else if (sep.length === 1) {
+      keys_.push(sep)
       for (var i = 0, s; (s = current_[i++]); ) {
         var Cs = s.components
         var last = Cs[Cs.length-1]
@@ -286,40 +214,49 @@ ezP.KeyHandler = function() {
     } else {
       return
     }
-    var oldLength = current_.length
-    if (newCurrent.length) {
-      current_ = newCurrent
-    } else {
-      return 0
-    }
+    current_ = newCurrent
     var MI = menu_.getHighlighted()
     if (MI) {
       var highlighted = MI.model
     }
-    for (var i = 0, s; (s = current_[i]); i++) {
-      Cs = s.components
-      var j = 0, c = Cs[j++], d
-      var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-        goog.dom.createTextNode(c))
-      while ((d = Cs[j++]) != undefined && (c = Cs[j++]) != undefined) {
-        content.appendChild(ezP.Do.createSPAN(d, 'ezp-code-emph'))
-        content.appendChild(goog.dom.createTextNode(c))
+    MI = menu_.getChildAt(0)
+    var k = keys_.join('')
+    var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+    ezP.Do.createSPAN(k, 'ezp-code-emph'))
+    MI.setContent(content)
+    MI.getModel().key = k
+    if (current_.length) {
+      if (menu_.getChildCount()<2) {
+        menu_.addChild(new ezP.Separator(), true)
       }
-      if ((MI = menu_.getChildAt(i))) {
-        MI.setModel(s)
-        MI.setContent(content)
-      } else {
-        MI = new ezP.MenuItem(content, s)
-        menu_.addChild(MI, true)
+      for (var i = 0, s; (s = current_[i]); i++) {
+        Cs = s.components
+        var j = 0, c = Cs[j++], d
+        var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+          goog.dom.createTextNode(c))
+        while ((d = Cs[j++]) != undefined && (c = Cs[j++]) != undefined) {
+          content.appendChild(ezP.Do.createSPAN(d, 'ezp-code-emph'))
+          content.appendChild(goog.dom.createTextNode(c))
+        }
+        if ((MI = menu_.getChildAt(i+2))) {
+          MI.setModel(s)
+          MI.setContent(content)
+        } else {
+          MI = new ezP.MenuItem(content, s)
+          menu_.addChild(MI, true)
+        }
+        if (s === highlighted) {
+          menu_.setHighlighted(MI)
+        }
       }
-      if (s === highlighted) {
-        menu_.setHighlighted(MI)
+      while ((MI = menu_.getChildAt(i+2))) {
+        menu_.removeChild(MI, true)      
+      }
+    } else {
+      while ((MI = menu_.getChildAt(1))) {
+        menu_.removeChild(MI, true)      
       }
     }
-    while ((MI = menu_.getChildAt(i))) {
-      menu_.removeChild(MI, true)      
-    }
-    return oldLength - current_.length
   }
   me.populateMenu = function (sep) {
     current_.length = 0
@@ -327,6 +264,11 @@ ezP.KeyHandler = function() {
     if (sep.length !== 1) {
       return
     }
+    keys_ = [sep]
+    var content = ezP.Do.createSPAN(sep, 'ezp-code-emph')
+    var MI = new ezP.MenuItem(content, {key: sep, action: me.handleFirstMenuItemAction})
+    menu_.addChild(MI, true)
+
     // initialize the shortcuts to hold informations
     // - to build the menuitem content
     // - to sort and filter the menu items
@@ -338,6 +280,9 @@ ezP.KeyHandler = function() {
       } else {
         shortcut.components = undefined
       }
+    }
+    if (current_.length) {
+      menu_.addChild(new ezP.Separator(), true)
     }
     i = 0
     while ( i < me.MAX_CHILD_COUNT && (shortcut = current_[i++])) {
@@ -403,14 +348,20 @@ ezP.KeyHandler = function() {
           me.alreadyListening_ = true
           goog.events.listenOnce(menu_, 'action', function (event) {
             me.alreadyListening_ = false
-            setTimeout(function () {// try/finally?
-              if (me.alreadyListened_) {
-                console.log('************* I have already listened!')
-                return
+            var target = event.target
+            if (target) {
+              var shortcut = target.getModel()
+              if (shortcut) {
+                setTimeout(function () {// try/finally?
+                  if (me.alreadyListened_) {
+                    console.log('************* I have already listened!')
+                    return
+                  }
+                  me.alreadyListened = true
+                  me.handleAction(shortcut)
+                }, 100)// TODO be sure that this 100 is suffisant
               }
-              me.alreadyListened = true
-              me.handleMenuItemAction(event)
-            }, 100)// TODO be sure that this 100 is suffisant
+            }
           })    
         }
         var scaledHeight = ezP.Font.lineHeight() * B.workspace.scale
@@ -447,52 +398,6 @@ ezP.KeyHandler = function() {
       }
     }
     return
-
-    if (B && event.keyCode === 13) {// Enter
-      if (menu_.isVisible()) {
-        // let someone else catch that event
-        return
-      }
-
-      var key = keys_.join('')
-      var action = shortcuts_[key]
-      if (goog.isFunction(action)) {
-        action(key)
-      } else if (action) {
-        if (B) {
-           B.ezp.insertBlockOfType(B, action)
-         }
-      } else {
-        console.log('Unknown', key)
-      }
-      keys_ = []
-    } else if (event.key === ' ' && !keys_.length){
-      event.preventDefault()
-      event.stopPropagation()
-      if (B) {
-        ezP.MenuManager.shared().showMenu(B, event)
-      }
-    } else if (event.key.length<2){
-      event.preventDefault()
-      event.stopPropagation()
-      keys_.push(event.key)
-    } else if (event.key === 'Dead') {
-      if (event.keyCode === 78) { // this is on osx
-        keys_.push('~')
-      } else if (event.keyCode === 219) { // this is on osx
-        keys_.push('^')
-      }
-      event.preventDefault()
-    } else if (B = Blockly.selected) {
-      event.preventDefault()
-      event.stopPropagation()
-      switch(event.key) {
-        case 'arrowDown': B.ezp.selectBlockBelow(B); return
-        case 'arrowUp': B.ezp.selectBlockAbove(B); return
-        case 'arrowLeft': B.ezp.selectBlockLeft(B); return
-        case 'arrowRight': B.ezp.selectBlockRight(B); return
-      }
-    }
   }
   return me
 } ()

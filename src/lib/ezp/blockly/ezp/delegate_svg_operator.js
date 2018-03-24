@@ -149,12 +149,13 @@ ezP.DelegateSvg.Operator.prototype.getSubtype = function (block) {
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @param {string} subtype Is a function.
- * @return None
+ * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Operator.prototype.setSubtype = function (block, subtype) {
   if (this.operators && this.operators.indexOf(subtype) >= 0) {
     this.inputs.last.fieldOperator.setValue(subtype)
   }
+  return true
 }
 
 //////////////////////  u_expr_concrete  /////////////////////////

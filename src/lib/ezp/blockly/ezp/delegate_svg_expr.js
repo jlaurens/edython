@@ -831,10 +831,11 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.getSubtype = function (block) {
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @param {string} subtype Is a function.
- * @return None
+ * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Expr.builtin_object.prototype.setSubtype = function (block, subtype) {
   this.inputs.first.fieldLabel.setValue(subtype)
+  return true
 }
 
 /**

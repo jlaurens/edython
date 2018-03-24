@@ -192,3 +192,30 @@ ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionMiddle = function 
         return ezP.DelegateSvg.Expr.identifier.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
   }
 }
+
+/**
+ * Get the subtype of the block.
+ * The default implementation does nothing.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is return, when defined or not null.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.DelegateSvg.Expr.identifier.prototype.getSubtype = function (block) {
+  return block.ezp.inputs.first.fieldIdentifier.getValue()
+}
+
+/**
+ * Set the subtype of the block.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is expected.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return true if the receiver supports subtyping, false otherwise
+ */
+ezP.DelegateSvg.Expr.identifier.prototype.setSubtype = function (block, subtype) {
+  block.ezp.inputs.first.fieldIdentifier.setValue(subtype)
+  return true
+}
