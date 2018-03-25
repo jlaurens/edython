@@ -293,7 +293,7 @@ ezP.FieldCodeNumber = function (text) {
       if (check && check.indexOf(type)<0) {
         return undefined
       }
-      for( var _ = 0, re; (re = REs[_++]);) {
+      for( var i = 0, re; (re = REs[i++]);) {
         if (re.exec(txt)) {
           field.ezpData.error = false
           if (ezP.FieldTextInput.htmlInput_) {

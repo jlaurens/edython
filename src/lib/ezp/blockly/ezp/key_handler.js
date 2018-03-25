@@ -125,11 +125,25 @@ ezP.KeyHandler = function() {
   }
   me.handleFirstMenuItemAction = function (shortcut) {
     // if key is a number, then create a number block
-    // if the key fits an identifier, then create an identifier
+    // if the shortcut fits an identifier, then create an identifier
+    // if the shortcut fits a number, then create a number
+    // if the shortcut fits a string literal, then create a string literal
     // otherwise, take the first shortcut and pass it to handleAction
     // if the selected block supports subtypes, then set it
     var B = Blockly.selected
     if (B && B.ezp.setSubtype(B, shortcut)) {
+      return
+    }
+    var type = ezP.Do.typeOfString(shortcut)
+    if (ezP.DelegateSvg.Manager.get(type)) {
+      var B = Blockly.selected
+      if (B && B.ezp.insertBlockOfType(B, type, shortcut)) {
+        return
+      }
+    }
+    if (current_.length) {
+      shortcut = current_[0]
+      me.handleAction(shortcut)
       return
     }
   }
@@ -297,7 +311,7 @@ ezP.KeyHandler = function() {
     return
   }  
   me.handleKeyDown_ = function(event) {
-    if (menu_.isVisible()) {
+    if (menu_.isVisible() || event.metaKey) {
       // let someone else catch that event
       return
     }

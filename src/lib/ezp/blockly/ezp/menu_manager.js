@@ -555,7 +555,7 @@ ezP.MenuManager.prototype.handleActionLast = function (block, event) {
     target.setCollapsed(true)
       return true
     case ezP.ID.TOGGLE_ENABLE_BLOCK:
-    target.ezp.setDisabled(block, !block.disabled)  
+    target.ezp.setDisabled(target, !target.disabled)  
       return true
     case ezP.ID.DELETE_BLOCK:
       var unwrapped = target

@@ -141,7 +141,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (bl
     }
     workspace.deleteVariableInternal_(vm)
     var allBlocks = workspace.getAllBlocks()
-    for (var _ = 0, B; B = allBlocks[_++];) {
+    for (var i = 0, B; B = allBlocks[i++];) {
       var field = block.ezp.inputs.first.fieldIdentifier
       if (field && field.getValue() === oldName) {
         field.setValue(VM.name)
@@ -216,6 +216,9 @@ ezP.DelegateSvg.Expr.identifier.prototype.getSubtype = function (block) {
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Expr.identifier.prototype.setSubtype = function (block, subtype) {
-  block.ezp.inputs.first.fieldIdentifier.setValue(subtype)
-  return true
+  if (ezP.Do.typeOfString(subtype).indexOf('reserved') < 0) {
+    block.ezp.inputs.first.fieldIdentifier.setValue(subtype)
+    return true  
+  }
+  return false
 }

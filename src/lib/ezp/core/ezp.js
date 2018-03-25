@@ -24,7 +24,7 @@ goog.provide('ezP')
 ezP.setup = (function () {
   var i11rs = []
   var me = function () {
-    for (var i11r, _ = 0; (i11r = i11rs[_]); ++_) {
+    for (var i11r, i = 0; (i11r = i11rs[i]); ++i) {
       i11r()
     }
     i11rs = undefined

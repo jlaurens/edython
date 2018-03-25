@@ -125,6 +125,33 @@ ezP.Key = {
 */
 }
 
+ezP.RE = {
+  decimalinteger: /^(?:[1-9][0-9]*|0+)$/,
+  octinteger: /^0(o|O)[0-7]+$/,
+  hexinteger: /^0(x|X)[0-9a-fA-F]+$/,
+  bininteger: /^0(b|B)[01]+$/,
+  pointfloat: /^(?:[0-9]*\.[0-9]+|[0-9]+\.)$/,
+  exponentfloat: /^(?:[0-9]+|[0-9]*\.[0-9]+|[0-9]+\.)[eE][+-]?[0-9]+$/, imagnumber: /^(?:[0-9]*\.[0-9]+|[0-9]+\.|(?:[0-9]+|[0-9]*\.[0-9]+|[0-9]+\.)[eE][+-]?[0-9]+)[jJ]$/,
+  identifier: /^\D\S*$/,
+  stringliteral: /^[ruRU]?(?:'.*'|".*")$/,
+  bytesliteral: /^(?:b|B|br|Br|bR|BR|rb|rB|Rb|RB)(?:'.*'|".*")$/,
+}
+
+/*
+goog.asserts.assert('1234567890123456789123'.match(RE.decimalinteger), 'FAILURE')
+goog.asserts.assert(!'01234567890123456789123'.match(RE.decimalinteger), 'FAILURE')
+goog.asserts.assert('00000'.match(RE.decimalinteger), 'FAILURE')
+goog.asserts.assert('0o0007'.match(RE.octinteger), 'FAILURE')
+goog.asserts.assert('0x0007'.match(RE.hexinteger), 'FAILURE')
+goog.asserts.assert('0b0001'.match(RE.bininteger), 'FAILURE')
+goog.asserts.assert('12345.'.match(RE.pointfloat), 'FAILURE')
+goog.asserts.assert('012345.'.match(RE.pointfloat), 'FAILURE')
+goog.asserts.assert('.0'.match(RE.pointfloat), 'FAILURE')
+goog.asserts.assert('0e0'.match(RE.exponentfloat), 'FAILURE')
+goog.asserts.assert('0e+0'.match(RE.exponentfloat), 'FAILURE')
+goog.asserts.assert('0e-0'.match(RE.exponentfloat), 'FAILURE')
+*/
+
 ezP.Op = {
   Unary: {
     displayOp: function (op) {

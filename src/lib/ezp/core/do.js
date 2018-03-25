@@ -297,4 +297,24 @@ ezP.Do.typeOfString = function (candidate) {
   if (['class', 'finally', 'is', 'return', 'continue', 'for', 'lambda', 'try', 'def', 'from', 'nonlocal', 'while', 'and', 'del', 'global', 'not', 'with', 'as', 'elif', 'if', 'or', 'yield', 'assert', 'else', 'import', 'pass', 'break', 'except', 'in', 'raise'].indexOf(candidate)>=0) {
     return 'reserved keyword'
   }
+  // is it a number ?
+  if (candidate.match(ezP.RE.decimalinteger) || candidate.match(ezP.RE.octinteger) || candidate.match(ezP.RE.hexinteger) || candidate.match(ezP.RE.bininteger)) {
+    return 'integer'
+  }
+  if (candidate.match(ezP.RE.pointfloat) || candidate.match(ezP.RE.exponentfloat)) {
+    return 'floatnumber'
+  }
+  if (candidate.match(ezP.RE.imagnumber)) {
+    return 'imagnumber'
+  }
+  if (candidate.match(ezP.RE.identifier)) {
+    return ezP.T3.Expr.identifier
+  }
+  if (candidate.match(ezP.RE.stringliteral)) {
+    return ezP.T3.Expr.stringliteral
+  }
+  if (candidate.match(ezP.RE.bytesliteral)) {
+    return ezP.T3.Expr.bytesliteral
+  }
+  return undefined
 }

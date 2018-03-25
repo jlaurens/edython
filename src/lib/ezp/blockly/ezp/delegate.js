@@ -659,7 +659,7 @@ ezP.Delegate.prototype.getStatementCount = function (block) {
   var n = 1
   var hasActive = false
   var hasNext = false
-  for (var _ = 0, input; (input = block.inputList[_]); ++_) {
+  for (var i = 0, input; (input = block.inputList[i]); ++i) {
     var c8n = input.connection
     if (c8n && c8n.type === Blockly.NEXT_STATEMENT) {
       hasNext = true

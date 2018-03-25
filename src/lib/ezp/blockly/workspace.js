@@ -64,23 +64,23 @@ ezP.Workspace.prototype.logAllConnections = function (comment) {
   var dbList = this.connectionDBList
   console.log(comment + '> Blockly.INPUT_VALUE connections')
   var db = dbList[Blockly.INPUT_VALUE]
-  for (var _ = 0, c8n; (c8n = db[_]); ++_) {
-    console.log(_ + ':' + [c8n.x_, c8n.y_, c8n.sourceBlock_.type])
+  for (var i = 0, c8n; (c8n = db[i]); ++i) {
+    console.log(i + ':' + [c8n.x_, c8n.y_, c8n.sourceBlock_.type])
   }
   console.log(comment + '> Blockly.OUTPUT_VALUE connections')
   db = dbList[Blockly.OUTPUT_VALUE]
-  for (_ = 0; (c8n = db[_]); ++_) {
-    console.log(_ + ':' + [c8n.x_, c8n.y_, c8n.sourceBlock_.type])
+  for (i = 0; (c8n = db[i]); ++i) {
+    console.log(i + ':' + [c8n.x_, c8n.y_, c8n.sourceBlock_.type])
   }
   console.log(comment + '> Blockly.NEXT_STATEMENT connections')
   db = dbList[Blockly.NEXT_STATEMENT]
-  for (_ = 0; (c8n = db[_]); ++_) {
-    console.log(_ + ':' + [c8n.x_, c8n.y_, c8n.sourceBlock_.type])
+  for (i = 0; (c8n = db[i]); ++i) {
+    console.log(i + ':' + [c8n.x_, c8n.y_, c8n.sourceBlock_.type])
   }
   console.log(comment + '> Blockly.PREVIOUS_STATEMENT connections')
   db = dbList[Blockly.PREVIOUS_STATEMENT]
-  for (_ = 0; (c8n = db[_]); ++_) {
-    console.log(_ + ':' + [c8n.x_, c8n.y_, c8n.sourceBlock_.type])
+  for (i = 0; (c8n = db[i]); ++i) {
+    console.log(i + ':' + [c8n.x_, c8n.y_, c8n.sourceBlock_.type])
   }
 }
 

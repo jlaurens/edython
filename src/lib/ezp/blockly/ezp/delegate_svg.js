@@ -804,7 +804,7 @@ ezP.DelegateSvg.prototype.renderDrawFields_ = function (io, start) {
   var here = io.cursorX
   io.endsWithCharacter = false
   var lastField = null
-  for (var _ = 0; (io.field = io.input.fieldRow[_]); ++_) {
+  for (var i = 0; (io.field = io.input.fieldRow[i]); ++i) {
     if (!!start === !io.field.ezpData.suffix) {
       if (io.field.isVisible() && io.field.getDisplayText_().length>0) {
         var root = io.field.getSvgRoot()
@@ -1667,58 +1667,101 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
     target.ezp.selectBlockLeft(target)
     return
   }
+  var doLast = function(B) {
+    var j = B.inputList.length
+    while (j--) {
+      var input = B.inputList[j], c8n = input.connection
+      if (c8n && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+        var target = c8n.targetBlock()
+        if (!target || !target.ezp.wrapped_ || (c8n = doLast(target))) {
+          return c8n
+        }
+      }
+    }
+    return null
+  }
   var parent, input, c8n
-  var selectTarget = function() {
-    if (target = c8n.targetBlock()) {
-      if (target.ezp.wrapped_) {
-        target.ezp.selectBlockLeft(target)
-      } else {
+  var selectTarget = function(c8n) {
+    var target = c8n.targetBlock()
+    if (!target) {
+      return false
+    }
+    if (!target.ezp.wrapped_) {
+      ezP.SelectedConnection.set(null)
+      target.select()
+      return true
+    }
+    if ((c8n = doLast(target))) {
+      if ((target = c8n.targetBlock())) {
+        ezP.SelectedConnection.set(null)
         target.select()
+      } else {
+        ezP.SelectedConnection.set(c8n)
       }
       return true
     }
     return false
   }
-  var selectConnection = function() {
-    if (!selectTarget()) {
-      parent = block
-      while (parent.ezp.wrapped_) {
-        if (!(parent = parent.getSurroundParent())) {
-          return false
-        }
-      }
-      ezP.SelectedConnection.set(c8n)
+  var selectConnection = function(B) {
+    if (selectTarget(c8n)) {
+      return true
     }
+    // do not select a connection
+    // if there is no unwrapped surround parent
+    var parent = B
+    while (parent.ezp.wrapped_) {
+      if (!(parent = parent.getSurroundParent())) {
+        return false
+      }
+    }
+    ezP.SelectedConnection.set(c8n)
     return true
   }
   if ((c8n = this.selectedConnection)) {
     if (c8n === block.nextStatement) {
     } else if (c8n.type !== Blockly.NEXT_STATEMENT) {
       // select the previous non statement input if any
-      for(var i = 0; (input = block.inputList[i++]);) {
+      for (var i = 0; (input = block.inputList[i++]);) {
         if (input.connection && c8n === input.connection) {
           // found it, step down
           --i
           for(; (input = block.inputList[--i]);) {
             if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
-              selectConnection()
-              return
+              if (selectConnection(block)) {
+                return
+              }
             }
           }
         }
       }
-      ezP.SelectedConnection.set(null)
-      block.select()
-      return
-    } else {
+    } else if (!block.ezp.wrapped_) {
       ezP.SelectedConnection.set(null)
       block.select()
       return  
     }
   }
   if ((parent = block.getSurroundParent())) {
-    parent.select()
-    return
+    // select the previous non statement input if any
+    for (var i = 0; (input = parent.inputList[i++]);) {
+      if ((c8n = input.connection) && block === c8n.targetBlock()) {
+        // found it, step down
+        --i
+        for(; (input = parent.inputList[--i]);) {
+          if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+            if (selectConnection(c8n)) {
+              return
+            }
+          }
+        }
+      }
+    }
+    do {
+      if (!parent.ezp.wrapped_) {
+        ezP.SelectedConnection.set(null)
+        parent.select()
+        return
+      }
+    } while ((parent = block.getSurroundParent()))
   }
   target = block
   do {
@@ -1763,6 +1806,7 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
       if (target.ezp.wrapped_) {
         target.ezp.selectBlockRight(target)
       } else {
+        ezP.SelectedConnection.set(null)
         target.select()
       }
       return true
@@ -1804,8 +1848,9 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
           // found it
           for(; (input = block.inputList[i++]);) {
             if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
-              selectConnection()
-              return
+              if (selectConnection()) {
+                return
+              }
             }
           }
         }
@@ -1814,8 +1859,9 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
       // find a statement connection
       for(var i = 0; (input = block.inputList[i++]);) {
         if ((c8n = input.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
-          selectConnection()
-          return
+          if (selectConnection()) {
+            return
+          }
         }
       }
     }
@@ -1823,16 +1869,18 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
     // select the first non statement connection
     for(var i = 0; (input = block.inputList[i++]);) {
       if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
-        selectConnection()
-        return
+        if (selectConnection()) {
+          return
+        }
       }
     }
     // all the input connections are either dummy or statement connections
     // select the first statement connection (there is an only one for the moment)
     for(var i = 0; (input = block.inputList[i++]);) {
       if ((c8n = input.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
-        selectConnection()
-        return
+        if (selectConnection()) {
+          return
+        }
       }
     }
   }
@@ -1850,15 +1898,17 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
             // try a value input after
             for(; (input = parent.inputList[i++]);) {
               if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
-                selectConnection()
-                return
+                if (selectConnection()) {
+                  return
+                }
               }
             }
             // try the next statement input if any
             for(var i = 0; (input = parent.inputList[i++]);) {
               if ((c8n = input.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
-                selectConnection()
-                return
+                if (selectConnection()) {
+                  return
+                }
               }
             }
           }
@@ -1870,6 +1920,7 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
     while ((parent = target.getSurroundParent())) {
       for(var i = 0; (input = parent.inputList[i++]);) {
         if ((c8n = input.connection) && (c8n.type === Blockly.NEXT_STATEMENT) && (target = c8n.targetBlock()) && (target !== block)) {
+          ezP.SelectedConnection.set(null)
           target.select()
           return
         }
@@ -1899,6 +1950,7 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
     }
   })
   if (target) {
+    ezP.SelectedConnection.set(null)
     target.select()
   }
 }
@@ -2124,6 +2176,7 @@ ezP.SelectedConnection = function() {
       return c8n_
     },
     set: function(connection) {
+      var B
       if (connection) {
         var block = connection.getSourceBlock()
         if (block) {
@@ -2148,7 +2201,12 @@ ezP.SelectedConnection = function() {
             oldBlock.ezp.selectedConnectionSource_ = null
             oldBlock.removeSelect()
             if (oldBlock === Blockly.selected) {
+              oldBlock.ezp.updateAllPaths_(oldBlock)
               oldBlock.addSelect()
+            } else if ((B = Blockly.selected)) {
+              B.ezp.selectedConnectionSource_ = null
+              B.removeSelect()
+              B.addSelect()
             }
           }
           c8n_ = null
@@ -2156,21 +2214,18 @@ ezP.SelectedConnection = function() {
         if (connection) {
           var block = connection.getSourceBlock()
           if (block) {
-            block.ezp.selectedConnection = c8n_ = connection
-            block.ezp.selectedConnectionSource_ = block
-            block.removeSelect()
-            block.ezp.updateAllPaths_(block)
-            block.addSelect()
             var unwrapped = block
             while (unwrapped.ezp.wrapped_) {
               if (!(unwrapped = unwrapped.getSurroundParent())) {
                 return
               }
             }
+            block.ezp.selectedConnection = c8n_ = connection
             unwrapped.ezp.selectedConnectionSource_ = block
-            if (unwrapped === Blockly.selected) {
-              unwrapped.addSelect()
-            }
+            unwrapped.select()
+            block.removeSelect()
+            block.ezp.updateAllPaths_(block)
+            block.addSelect()
           }
         }
       }
@@ -2216,6 +2271,9 @@ ezP.DelegateSvg.prototype.setSubtype = function (block, subtype) {
  * @return the block that was inserted
  */
 ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) {
+  if (!action) {
+    return null
+  }
   // get the type:
   var prototypeName = action.type || action
   // where should I connect a new block?

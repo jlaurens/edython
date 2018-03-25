@@ -776,8 +776,8 @@ ezP.DelegateSvg.Manager.register('builtin_object')
 ezP.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var field = this.inputs.first.fieldLabel
   var builtin = field.getValue()
-  var value, _ = 0
-  while ((value = this.values[_++])) {
+  var value, i = 0
+  while ((value = this.values[i++])) {
     var menuItem = new ezP.MenuItem(
       ezP.Do.createSPAN(value, 'ezp-code-reserved'), function() {
         field.setValue(value)

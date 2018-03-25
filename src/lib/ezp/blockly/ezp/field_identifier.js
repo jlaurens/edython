@@ -119,7 +119,7 @@ ezP.FieldIdentifier.prototype.onFinishEditing_ = function (newName) {
   var VM = workspace.getVariable(newName)
   if (VM) {
     var allBlocks = workspace.getAllBlocks()
-    for (var _ = 0, B; B = allBlocks[_++];) {
+    for (var i = 0, B; B = allBlocks[i++];) {
       var field = B.ezp.fieldIdentifier
       if (field && field.getValue() === oldName) {
         field.setValue(newName)

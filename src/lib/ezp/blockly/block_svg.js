@@ -103,13 +103,18 @@ ezP.BlockSvg.prototype.select = function() {
 }
 
 /**
- * Select this block.  Highlight it visually.
- * Wrapped blocks are not selectable.
+ * Unselect this block.  
+ * If there is a selected connection, it is removed.
+ * Unselect is used from click handling methods.
  */
 ezP.BlockSvg.prototype.unselect = function() {
-  this.ezp.selectedConnectionSource_ = null
-  ezP.SelectedConnection.set(null)
   ezP.BlockSvg.superClass_.unselect.call(this)
+  var B = this.ezp.selectedConnectionSource_
+  if (B) {
+    B. removeSelect()
+    this.ezp.selectedConnectionSource_ = null
+  }
+  this.selectedConnection = null
   this.removeSelect()
 }
 
@@ -141,8 +146,8 @@ ezP.BlockSvg.prototype.addSelect = function () {
   goog.dom.classlist.add(this.svgGroup_, 'ezp-select')
   // ensure that the svgGroup is the last in the list
   this.bringToFront()
-  for (var _ = 0, input; (input = this.inputList[_++]);) {
-    for (var __ = 0, field; (field = input.fieldRow[__++]);) {
+  for (var i = 0, input; (input = this.inputList[i++]);) {
+    for (var j = 0, field; (field = input.fieldRow[j++]);) {
       if (field.addSelect) {
         field.addSelect()
       }
@@ -167,11 +172,12 @@ ezP.BlockSvg.prototype.removeSelect = function () {
     goog.dom.removeNode(this.ezp.svgPathHighlight_)
   }
   Blockly.utils.removeClass(this.svgGroup_, 'ezp-select')
-  if (!this.ezp.selectedConnection) {
+  var B
+  if (!this.ezp.selectedConnection || ((B = Blockly.selected) && B.selectedConnectionSource_ != this)) {
     goog.dom.removeNode(this.ezp.svgPathConnection_)
   }
-  for (var _ = 0, input; (input = this.inputList[_++]);) {
-    for (var __ = 0, field; (field = input.fieldRow[__++]);) {
+  for (var i = 0, input; (input = this.inputList[i++]);) {
+    for (var j = 0, field; (field = input.fieldRow[j++]);) {
       if (field.removeSelect) {
         field.removeSelect()
       }
