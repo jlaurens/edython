@@ -120,9 +120,10 @@ future_statement >>> future_statement | comment_stmt | docstring_top_stmt | star
 
 
 <pre>
-raise_stmt ::=  "raise" raise_expression?
+raise_stmt ::=  "raise" raise_expression
 raise_expression ::= expression | expression_from
 expression_from ::= expression "from" expression
+reraise_stmt ::=  "raise"
 </pre>
 
 </body>

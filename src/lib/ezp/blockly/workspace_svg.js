@@ -256,3 +256,134 @@ Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function(workspace
   Blockly.Events.setGroup(false)
   return {x: x, y: y}
 }
+
+/**
+ * Paste the provided block onto the workspace.
+ * Take into account the selected connection if any.
+ * @param {!Element} xmlBlock XML block element.
+ * @override
+ */
+Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
+  if (!this.rendered || xmlBlock.getElementsByTagName('block').length >=
+      this.remainingCapacity()) {
+    return;
+  }
+  if (this.currentGesture_) {
+    this.currentGesture_.cancel();  // Dragging while pasting?  No.
+  }
+  var c8n, targetC8n
+  if ((c8n = ezP.SelectedConnection.get())) {
+    try {
+      var block = Blockly.Xml.domToBlock(xmlBlock, this);
+      if (c8n.type === Blockly.INPUT_VALUE) {
+        targetC8n = block.outputConnection
+      } else if (c8n.type === Blockly.NEXT_STATEMENT) {
+        targetC8n = block.previousConnection
+      } else if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
+        targetC8n = block.nextConnection
+      }
+    } catch(e) {
+      targetC8n = null
+    }
+    if (targetC8n  && c8n.checkType_(targetC8n)) {
+      Blockly.Events.setGroup(true)
+      if (Blockly.Events.isEnabled()) {
+        Blockly.Events.fire(new Blockly.Events.BlockCreate(block))
+      }
+      if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
+        // the pasted block must move before it is connected
+        // otherwise the newly created block will attract the old one
+        // resulting in a move of the existing connection
+        // 1) get the location of c8n in the workspace
+        var xy = c8n.offsetInBlock_.clone()
+        var xy_block = c8n.sourceBlock_.getRelativeToSurfaceXY()
+        xy.translate(xy_block.x, xy_block.y)
+        // This is where the targetC8n should be once the
+        // connection has been made
+        var xyxy = targetC8n.offsetInBlock_.clone()
+        xy_block = targetC8n.sourceBlock_.getRelativeToSurfaceXY()
+        xyxy.translate(xy_block.x, xy_block.y)
+        // This is where the targetC8n is
+        xyxy.scale(-1)
+        xy.translate(xyxy.x, xyxy.y)
+        targetC8n.sourceBlock_.moveBy(xy.x, xy.y)
+      }
+      c8n.connect(targetC8n)
+      if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
+        targetC8n = block.nextConnection
+      }
+      block.select()
+      if (c8n.type === Blockly.INPUT_VALUE) {
+        var parent = block
+        do {
+          for (var i = 0, input; (input = parent.inputList[i++]); ) {
+            if ((c8n = input.connection) && c8n.type === Blockly.INPUT_VALUE && ! c8n.ezp.optional && !c8n.targetConnection) {
+              ezP.SelectedConnection.set(c8n)
+              parent = null
+              break
+            }
+          }
+        } while (parent && (parent = parent.getSurroundParent(parent)))
+      } else if ((c8n = block.nextConnection)) {
+        ezP.SelectedConnection.set(c8n)
+      }
+      Blockly.Events.setGroup(false)
+      return
+    } else if (block) {
+      block.dispose()
+    }
+  }
+  Blockly.Events.disable();
+  try {
+    var block = Blockly.Xml.domToBlock(xmlBlock, this);
+    // Move the duplicate to original position.
+    var blockX = parseInt(xmlBlock.getAttribute('x'), 10);
+    var blockY = parseInt(xmlBlock.getAttribute('y'), 10);
+    if (!isNaN(blockX) && !isNaN(blockY)) {
+      if (this.RTL) {
+        blockX = -blockX;
+      }
+      // Offset block until not clobbering another block and not in connection
+      // distance with neighbouring blocks.
+      do {
+        var collide = false;
+        var allBlocks = this.getAllBlocks();
+        for (var i = 0, otherBlock; otherBlock = allBlocks[i]; i++) {
+          var otherXY = otherBlock.getRelativeToSurfaceXY();
+          if (Math.abs(blockX - otherXY.x) <= 1 &&
+              Math.abs(blockY - otherXY.y) <= 1) {
+            collide = true;
+            break;
+          }
+        }
+        if (!collide) {
+          // Check for blocks in snap range to any of its connections.
+          var connections = block.getConnections_(false);
+          for (var i = 0, connection; connection = connections[i]; i++) {
+            var neighbour = connection.closest(Blockly.SNAP_RADIUS,
+                new goog.math.Coordinate(blockX, blockY));
+            if (neighbour.connection) {
+              collide = true;
+              break;
+            }
+          }
+        }
+        if (collide) {
+          if (this.RTL) {
+            blockX -= Blockly.SNAP_RADIUS;
+          } else {
+            blockX += Blockly.SNAP_RADIUS;
+          }
+          blockY += Blockly.SNAP_RADIUS * 2;
+        }
+      } while (collide);
+      block.moveBy(blockX, blockY);
+    }
+  } finally {
+    Blockly.Events.enable();
+  }
+  if (Blockly.Events.isEnabled() && !block.isShadow()) {
+    Blockly.Events.fire(new Blockly.Events.BlockCreate(block));
+  }
+  block.select();
+};

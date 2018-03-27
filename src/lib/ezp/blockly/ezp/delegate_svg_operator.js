@@ -154,8 +154,9 @@ ezP.DelegateSvg.Operator.prototype.getSubtype = function (block) {
 ezP.DelegateSvg.Operator.prototype.setSubtype = function (block, subtype) {
   if (this.operators && this.operators.indexOf(subtype) >= 0) {
     this.inputs.last.fieldOperator.setValue(subtype)
+    return true
   }
-  return true
+  return false
 }
 
 //////////////////////  u_expr_concrete  /////////////////////////

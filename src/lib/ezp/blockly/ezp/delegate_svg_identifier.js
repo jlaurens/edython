@@ -216,7 +216,8 @@ ezP.DelegateSvg.Expr.identifier.prototype.getSubtype = function (block) {
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Expr.identifier.prototype.setSubtype = function (block, subtype) {
-  if (ezP.Do.typeOfString(subtype).indexOf('reserved') < 0) {
+  var type = ezP.Do.typeOfString(subtype)
+  if (type === ezP.T3.Expr.identifier) {
     block.ezp.inputs.first.fieldIdentifier.setValue(subtype)
     return true  
   }

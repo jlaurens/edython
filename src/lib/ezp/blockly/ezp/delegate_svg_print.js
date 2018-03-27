@@ -29,7 +29,7 @@ ezP.DelegateSvg.Expr.print = function (prototypeName) {
   this.inputModel_ = {
     first: {
       label: 'print',
-      css_class: 'ezp-code-reserved',
+      css_class: 'ezp-code-builtin',
     },
     last: {
       start: '(',

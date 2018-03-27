@@ -111,10 +111,10 @@ ezP.BlockSvg.prototype.unselect = function() {
   ezP.BlockSvg.superClass_.unselect.call(this)
   var B = this.ezp.selectedConnectionSource_
   if (B) {
-    B. removeSelect()
+    B.removeSelect()
+    B.ezp.selectedConnection = null
     this.ezp.selectedConnectionSource_ = null
   }
-  this.selectedConnection = null
   this.removeSelect()
 }
 

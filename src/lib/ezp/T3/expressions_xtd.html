@@ -49,7 +49,8 @@ optional_expression_list ::= ( expression ',' )* [ expression ]
 <pre>
 # literal ::= stringliteral | bytesliteral | integer | floatnumber | imagnumber
 literal ::= stringliteral | numberliteral | imagnumber
-numberliteral ::= bytesliteral | integer | floatnumber | numberliteral_concrete
+numberliteral ::= bytesliteral | number | numberliteral_concrete
+number ::= integer | floatnumber
 </pre>
 <pre>
 comp_iter_list ::= (comp_iter) *

@@ -796,6 +796,11 @@ ezP.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
       ezP.Do.createSPAN('-', 'ezp-code'),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
     ) 
+    case ezP.T3.Expr.imagnumber:
+    return goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      ezP.Do.createSPAN('j', 'ezp-code'),
+      goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
+    ) 
     case ezP.T3.Expr.parenth_form:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN('(', 'ezp-code'),
@@ -1114,6 +1119,7 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
     [ezP.T3.Expr.attributeref, ezP.Key.ATTRIBUTE],
     [ezP.T3.Expr.attributeref, ezP.Key.PRIMARY],
     [ezP.T3.Expr.decorator_call_expr, ezP.Key.NAME],
+    ezP.T3.Expr.imagnumber,
   ], true)
   F.call(this, [
     [ezP.T3.Expr.expression_as_name, ezP.Key.AS],

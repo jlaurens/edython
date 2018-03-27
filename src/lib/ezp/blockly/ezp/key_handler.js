@@ -135,11 +135,8 @@ ezP.KeyHandler = function() {
       return
     }
     var type = ezP.Do.typeOfString(shortcut)
-    if (ezP.DelegateSvg.Manager.get(type)) {
-      var B = Blockly.selected
-      if (B && B.ezp.insertBlockOfType(B, type, shortcut)) {
-        return
-      }
+    if (me.handleType(type, shortcut)) {
+      return
     }
     if (current_.length) {
       shortcut = current_[0]
@@ -148,14 +145,61 @@ ezP.KeyHandler = function() {
     }
   }
 
+  me.handleType = function (type, subtype) {
+    if (ezP.DelegateSvg.Manager.get(type)) {
+      var B = Blockly.selected
+      if (B) {
+        var c8n = ezP.SelectedConnection.get()
+        if (c8n) {
+          var c8nType = c8n.type
+          var newB
+          if ((newB = B.ezp.insertBlockOfType(B, type, subtype)) || (newB = B.ezp.insertBlockAbove(B, type, subtype))) {
+            // There was a selected connection,
+            // we try to select another one, with possibly the same type
+            // First we take a look at B : is there an unconnected input connection
+            if (c8nType === Blockly.INPUT_VALUE) {
+              var parent = B
+              do {
+                for (var i = 0, input; (input = parent.inputList[i++]); ) {
+                  if ((c8n = input.connection) && c8n.type === c8nType && ! c8n.ezp.optional && ! c8n.targetConnection) {
+                    ezP.SelectedConnection.set(c8n)
+                    return true
+                  }
+                }
+              } while ((parent = parent.getSurroundParent(parent)))
+            } else if ((c8n = B.nextConnection)) {
+              ezP.SelectedConnection.set(c8n)
+              return true
+            }
+            ezP.SelectedConnection.set(null)
+            newB.select()
+            return true
+          }
+        }
+        if ((newB = B.ezp.insertBlockOfType(B, type, subtype)) || (newB = B.ezp.insertBlockAbove(B, type, subtype))) {
+          var parent = B
+          do {
+            for (var i = 0, input; (input = parent.inputList[i++]); ) {
+              if ((c8n = input.connection) && c8n.type === Blockly.INPUT_VALUE && ! c8n.ezp.optional && ! c8n.targetConnection) {
+                ezP.SelectedConnection.set(c8n)
+                return true
+              }
+            }
+          } while ((parent = parent.getSurroundParent(parent)))
+          ezP.SelectedConnection.set(null)
+          newB.select()
+          return true
+        }
+      }
+    }
+    return false
+  }
+
   me.handleAction = function (shortcut) {
     if (goog.isFunction(shortcut.action)) {
       shortcut.action(shortcut.key)
     } else if (shortcut.action) {
-      var B = Blockly.selected
-      if (B) {
-         B.ezp.insertBlockOfType(B, shortcut.action)
-       }
+      me.handleType(shortcut.action.type || shortcut.action, shortcut.action.subtype)
     } else {
       console.log('Unknown', shortcut.key, shortcut.action)
     }
@@ -379,7 +423,14 @@ ezP.KeyHandler = function() {
           })    
         }
         var scaledHeight = ezP.Font.lineHeight() * B.workspace.scale
-        var xy = goog.style.getPageOffset(B.svgGroup_)
+        var c8n = ezP.SelectedConnection.get()
+        if (c8n && c8n.sourceBlock_) {
+          var xy = goog.style.getPageOffset(c8n.sourceBlock_.svgGroup_)
+          var xxyy = c8n.offsetInBlock_.clone().scale(B.workspace.scale)
+          xy.translate(xxyy)
+        } else {
+          var xy = goog.style.getPageOffset(B.svgGroup_)
+        }
         menu_.showMenu(B.svgGroup_, xy.x, xy.y + scaledHeight+2)
         menu_.highlightFirst()
       } else {
@@ -445,7 +496,11 @@ var Ks = {
         B.ezp.replaceBlock(B, parent)
         return
       }
-      B.ezp.insertBlockOfType(B, ezP.T3.Expr.not_test_concrete)
+      if (ezP.SelectedConnection.get()) {
+        B.ezp.insertBlockOfType(B, ezP.T3.Expr.not_test_concrete)
+      } else {
+        B.ezp.insertBlockAbove(B, ezP.T3.Expr.not_test_concrete)
+      }
     }
   },                                    
   '±': function(key) {
@@ -456,7 +511,11 @@ var Ks = {
         B.ezp.replaceBlock(B, parent)
         return
       }
-      B.ezp.insertBlockOfType(B, ezP.T3.Expr.u_expr_concrete, '-')
+      if (ezP.SelectedConnection.get()) {
+        B.ezp.insertBlockOfType(B, ezP.T3.Expr.u_expr_concrete, '-')
+      } else {
+        B.ezp.insertBlockAbove(B, ezP.T3.Expr.u_expr_concrete, '-')
+      }
     }
   },                                    
   '~': function(key) {
@@ -467,7 +526,11 @@ var Ks = {
         B.ezp.replaceBlock(B, parent)
         return
       }
-      B.ezp.insertBlockOfType(B, ezP.T3.Expr.u_expr_concrete, '~')
+      if (ezP.SelectedConnection.get()) {
+        B.ezp.insertBlockOfType(B, ezP.T3.Expr.u_expr_concrete, '~')
+      } else {
+        B.ezp.insertBlockAbove(B, ezP.T3.Expr.u_expr_concrete, '~')
+      }
     }
   },
 }
@@ -562,6 +625,7 @@ Ks = {
   'del …': ezP.T3.Stmt.del_stmt,
   'return …': ezP.T3.Stmt.return_stmt,
   'yield …': ezP.T3.Stmt.yield_stmt,
+  'raise': ezP.T3.Stmt.reraise_stmt,
   'raise …': ezP.T3.Stmt.raise_stmt,
   'from future import …': ezP.T3.Stmt.raise_stmt,
   '# comment': ezP.T3.Stmt.comment_stmt,

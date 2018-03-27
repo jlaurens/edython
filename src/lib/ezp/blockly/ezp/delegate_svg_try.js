@@ -171,12 +171,30 @@ ezP.DelegateSvg.Stmt.raise_stmt = function (prototypeName) {
       css_class: 'ezp-code-reserved',
       key: ezP.Key.RAISE,
       check: ezP.T3.Expr.Check.raise_expression,
-      optional: true
     }
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.raise_stmt, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Manager.register('raise_stmt')
+
+/**
+ * Class for a DelegateSvg, reraise_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.reraise_stmt = function (prototypeName) {
+  ezP.DelegateSvg.Stmt.reraise_stmt.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_ = {
+    first: {
+      label: 'raise',
+      css_class: 'ezp-code-reserved',
+    }
+  }
+}
+goog.inherits(ezP.DelegateSvg.Stmt.reraise_stmt, ezP.DelegateSvg.Stmt)
+ezP.DelegateSvg.Manager.register('reraise_stmt')
 
 /**
  * Class for a DelegateSvg, assert_stmt.

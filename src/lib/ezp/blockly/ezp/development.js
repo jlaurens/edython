@@ -235,9 +235,13 @@ ezP.DelegateSvg.Stmt.comment_stmt.workspaceBlocks = [
 ]
 
 ezP.DelegateSvg.Expr.stringliteral.workspaceBlocks = 
-ezP.DelegateSvg.Expr.numberliteral_concrete.workspaceBlocks = [
+ezP.DelegateSvg.Expr.integer.workspaceBlocks = 
+ezP.DelegateSvg.Expr.floatnumber.workspaceBlocks = 
+ezP.DelegateSvg.Expr.imagnumber.workspaceBlocks = [
   ezP.T3.Expr.stringliteral,
-  ezP.T3.Expr.numberliteral_concrete,
+  ezP.T3.Expr.integer,
+  ezP.T3.Expr.floatnumber,
+  ezP.T3.Expr.imagnumber,
 ]
 
 ezP.DelegateSvg.Expr.starred_item_list_comprehensive.workspaceBlocks = [

@@ -340,19 +340,6 @@ ezP.DelegateSvg.Expr.prototype.insertBlockAbove = function(block, abovePrototype
 }
 
 /**
- * Get the closest box, according to the filter.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {Object} action an object.
- * @param {string} subtype
- * @return the block that was inserted
- */
-ezP.DelegateSvg.Expr.prototype.insertBlockOfType = function (block, action, subtype) {
-  return ezP.DelegateSvg.Expr.superClass_.insertBlockOfType.call(this, block, action, subtype)
-  || this.insertBlockAbove(block, action.type || action, action.subtype || subtype, action.input, false)
-}
-
-/**
  * Convert the block to python code.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
@@ -520,28 +507,109 @@ goog.inherits(ezP.DelegateSvg.Expr.not_test_concrete, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('not_test_concrete')
 
 /**
-* Class for a DelegateSvg, number litteral.
+* Class for a DelegateSvg, integer.
 * For ezPython.
 * @param {?string} prototypeName Name of the language object containing
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Expr.numberliteral_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Expr.numberliteral_concrete.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.integer = function (prototypeName) {
+  ezP.DelegateSvg.Expr.integer.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
     awaitable: true,
     number: '0',
   }
-  this.outputModel_.check = ezP.T3.Expr.numberliteral_concrete
+  this.outputModel_.check = ezP.T3.Expr.integer
 }
-goog.inherits(ezP.DelegateSvg.Expr.numberliteral_concrete, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('numberliteral_concrete')
+goog.inherits(ezP.DelegateSvg.Expr.integer, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('integer')
 
-ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.integer, ezP.DelegateSvg.Expr.numberliteral_concrete)
+/**
+ * Get the subtype of the block.
+ * The default implementation does nothing.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is return, when defined or not null.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.DelegateSvg.Expr.integer.prototype.getSubtype = function (block) {
+  return block.ezp.inputs.first.fieldCodeNumber.getValue()
+}
 
-ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.floatnumber, ezP.DelegateSvg.Expr.numberliteral_concrete)
+/**
+ * Set the subtype of the block.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is expected.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return true if the receiver supports subtyping, false otherwise
+ */
+ezP.DelegateSvg.Expr.integer.prototype.setSubtype = function (block, subtype) {
+  var type = ezP.Do.typeOfString(subtype)
+  if (type === ezP.T3.Expr.integer) {
+    block.ezp.inputs.first.fieldCodeNumber.setValue(subtype)
+    return true  
+  }
+  return false
+}
 
-ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.imagnumber, ezP.DelegateSvg.Expr.numberliteral_concrete)
+/**
+* Class for a DelegateSvg, floatnumber.
+* For ezPython.
+* @param {?string} prototypeName Name of the language object containing
+*     type-specific functions for this block.
+* @constructor
+*/
+ezP.DelegateSvg.Expr.floatnumber = function (prototypeName) {
+  ezP.DelegateSvg.Expr.floatnumber.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    awaitable: true,
+    number: '0.',
+  }
+  this.outputModel_.check = ezP.T3.Expr.floatnumber
+}
+goog.inherits(ezP.DelegateSvg.Expr.floatnumber, ezP.DelegateSvg.Expr.integer)
+ezP.DelegateSvg.Manager.register('floatnumber')
+
+/**
+ * Set the subtype of the block.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is expected.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return true if the receiver supports subtyping, false otherwise
+ */
+ezP.DelegateSvg.Expr.floatnumber.prototype.setSubtype = function (block, subtype) {
+  var type = ezP.Do.typeOfString(subtype)
+  if (type === ezP.T3.Expr.floatnumber) {
+    block.ezp.inputs.first.fieldCodeNumber.setValue(subtype)
+    return true  
+  }
+  return false
+}
+
+/**
+* Class for a DelegateSvg, imagnumber.
+* For ezPython.
+* @param {?string} prototypeName Name of the language object containing
+*     type-specific functions for this block.
+* @constructor
+*/
+ezP.DelegateSvg.Expr.imagnumber = function (prototypeName) {
+  ezP.DelegateSvg.Expr.imagnumber.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    awaitable: true,
+    key: ezP.Key.VALUE,
+    check: ezP.T3.Expr.Check.number,
+    end:'j'
+  }
+  this.outputModel_.check = ezP.T3.Expr.imagnumber
+}
+goog.inherits(ezP.DelegateSvg.Expr.imagnumber, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('imagnumber')
 
 /**
 * Class for a DelegateSvg, string litteral.
@@ -892,7 +960,7 @@ ezP.DelegateSvg.Expr.input = function (prototypeName) {
   this.inputModel_ = {
     first: {
       dummy: 'input',
-      css_class: 'ezp-code-reserved',
+      css_class: 'ezp-code-builtin',
     },
     last: {
       start: '(',
@@ -906,6 +974,32 @@ ezP.DelegateSvg.Expr.input = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.input, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('input')
+
+/**
+ * Class for a DelegateSvg, range block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.range = function (prototypeName) {
+  ezP.DelegateSvg.Expr.input.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_ = {
+    first: {
+      dummy: 'range',
+      css_class: 'ezp-code-builtin',
+    },
+    last: {
+      start: '(',
+      key: ezP.Key.ARGUMENT,
+      wrap: ezP.T3.Expr.proper_slice,
+      end: ')',
+    }
+  }
+  this.outputModel_.check = ezP.T3.Expr.call_expr
+}
+goog.inherits(ezP.DelegateSvg.Expr.range, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('range')
 
 /**
 * Class for a DelegateSvg, docstring (expression).

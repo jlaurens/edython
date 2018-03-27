@@ -494,8 +494,12 @@ ezP.Connection.prototype.connect_ = function(childConnection) {
   }
   parent.ezp.didConnect(parent, this, oldChildConnection, oldParentConnection)
   child.ezp.didConnect(child, childConnection, oldParentConnection, oldChildConnection)
-  this.ezp.didConnect(oldChildConnection, oldParentConnection)
-  childConnection.ezp.didConnect(oldParentConnection, oldChildConnection)
+  if (oldChildConnection) {
+    this.ezp.didConnect(oldChildConnection, oldParentConnection)
+  }
+  if (oldParentConnection) {
+    childConnection.ezp.didConnect(oldParentConnection, oldChildConnection)
+  }
 }
 
 /**

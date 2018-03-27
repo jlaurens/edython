@@ -1400,8 +1400,7 @@ ezP.HoleFiller.fillDeepHoles = function(workspace, holes) {
             }
           }
           c8n.connect(B.outputConnection)
-        }
-        catch(err) {
+        } catch(err) {
           console.log(err.message)
         }
       }
@@ -2279,8 +2278,8 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
   // where should I connect a new block?
   // There might be more than one possibility.
   var c8n, c8ns, targetC8n
-  var source = this.selectedConnectionSource_
-  if (source && (c8n = source.ezp.selectedConnection)) {
+  if ((c8n = ezP.SelectedConnection.get())) {
+    var source = c8n.sourceBlock_ // unwrapped ?
     // the user has selected a connection, there is only one candidate
     if (!c8n.check_ || c8n.check_.indexOf(prototypeName)>=0) {
       if ((targetC8n = c8n.targetConnection)) {
@@ -2398,6 +2397,9 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
       B.dispose(true)
     }
     Blockly.Events.setGroup(false)
+  }
+  if (ans) {
+    ans.bumpNeighbours_()
   }
   return ans
 }
