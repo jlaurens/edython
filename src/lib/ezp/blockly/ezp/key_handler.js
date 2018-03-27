@@ -648,6 +648,7 @@ Ks = {
   },
   '@decorator': ezP.T3.Stmt.decorator_stmt,
   '"""…"""(def)': ezP.T3.Stmt.docstring_def_stmt,
+  "'''…'''(def)": ezP.T3.Stmt.docstring_def_stmt,
   'print(…)': ezP.T3.Stmt.print_stmt,
   'input(…)': ezP.T3.Expr.input,
   'range(…)': {

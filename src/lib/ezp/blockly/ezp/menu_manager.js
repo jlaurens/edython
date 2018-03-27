@@ -311,7 +311,6 @@ ezP.ID.COLLAPSE_BLOCK = 'COLLAPSE_BLOCK'
 ezP.ID.TOGGLE_ENABLE_BLOCK = 'TOGGLE_ENABLE_BLOCK'
 ezP.ID.DELETE_BLOCK = 'DELETE_BLOCK'
 ezP.ID.HELP = 'HELP'
-ezP.ID.LOG_BLOCK_XML = 'LOG_BLOCK_XML'
 ezP.ID.FILL_DEEP_HOLES = 'FILL_DEEP_HOLES'
 
 /**
@@ -356,7 +355,24 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     {action: ezP.ID.FILL_DEEP_HOLES, holes: holes})
     menuItem.setEnabled(holes.length > 0);
   this.addChild(menuItem, true)
-
+  if (block.isMovable() && !block.isInFlyout) {
+    if (block.ezp.canUnlock(block)) {
+      menuItem = new ezP.MenuItem(ezP.Msg.UNLOCK_BLOCK,
+        function(event) {
+          block.ezp.unlock(block)
+        }
+      )
+      this.addChild(menuItem, true)
+    }
+    if (block.ezp.canLock(block)) {
+      menuItem = new ezP.MenuItem(ezP.Msg.LOCK_BLOCK,
+        function(event) {
+          block.ezp.lock(block)
+        }
+      )
+      this.addChild(menuItem, true)
+    }
+  }
   if (block.isDeletable() && block.isMovable() && !block.isInFlyout) {
     // Option to duplicate this block.
     menuItem = new ezP.MenuItem(
@@ -449,9 +465,12 @@ ezP.MenuManager.prototype.populateLast = function (block) {
   this.separate()
   
   menuItem = new ezP.MenuItem(
-    block.ezp.getPythonSort(block),
-    {action: ezP.ID.LOG_BLOCK_XML,
-      target: block,})
+    block.ezp.getPythonSort(block), function(event) {
+      var xmlDom = Blockly.Xml.blockToDom(block)
+      var xmlText = Blockly.Xml.domToText(xmlDom)
+      console.log(xmlText)
+    }
+  )
   menuItem.setEnabled(true)
   this.addChild(menuItem, true)
 
@@ -475,9 +494,8 @@ ezP.MenuManager.prototype.populateLast = function (block) {
 
   if (block.ezp.plugged_) {
     menuItem = new ezP.MenuItem(
-      block.ezp.plugged_.substring(4),
-      {action: ezP.ID.LOG_BLOCK_XML,
-        target: block,})
+      block.ezp.plugged_.substring(4)
+    )
     menuItem.setEnabled(false)
     this.addChild(menuItem, true)
   }
@@ -581,11 +599,6 @@ ezP.MenuManager.prototype.handleActionLast = function (block, event) {
       return true
     case ezP.ID.HELP:
     target.showHelp_()
-      return true
-    case ezP.ID.LOG_BLOCK_XML:
-      var xmlDom = Blockly.Xml.blockToDom(target);
-      var xmlText = Blockly.Xml.domToText(xmlDom)
-      console.log(xmlText)
       return true
   }
 }

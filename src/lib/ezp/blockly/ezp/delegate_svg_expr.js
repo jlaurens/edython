@@ -1111,4 +1111,29 @@ ezP.DelegateSvg.Expr.docstring.prototype.willRender_ = function (block) {
   var field = this.inputs.first.fieldLabel
   field.setVisible(field.getValue().length)
 }
+/**
+ * Get the subtype of the block.
+ * The default implementation does nothing.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is return, when defined or not null.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.DelegateSvg.Expr.docstring.prototype.getSubtype = function (block) {
+  return this.inputs.last.fieldCodeString.getValue()
+}
 
+/**
+ * Set the subtype of the block.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is expected.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return true if the receiver supports subtyping, false otherwise
+ */
+ezP.DelegateSvg.Expr.docstring.prototype.setSubtype = function (block, subtype) {
+  this.inputs.last.fieldCodeString.setValue(subtype)
+  return true
+}

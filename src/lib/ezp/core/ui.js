@@ -138,6 +138,7 @@ ezP.setup.register(function () {
   ezP.Style.insertCssRuleAt('.blocklyHighlightedConnectionPath{stroke: ' + ezP.Style.Path.Selected.colour + ';stroke-width: ' + ezP.Style.Path.Selected.width + 'px;fill: none;}')
   ezP.Style.insertCssRuleAt('.blocklyHighlightedConnectionPathH{fill: ' + ezP.Style.Path.Selected.colour + ';stroke: none;}')
   ezP.Style.insertCssRuleAt('.ezp-checkbox-icon-rect{stroke: ' + ezP.Style.Path.colour + ';stroke-width: ' + ezP.Style.Path.width + 'px;fill: white;}')
+  ezP.Style.insertCssRuleAt('.ezp-locked>.ezp-path-contour, .ezp-locked>.ezp-path-shape{display: none}')
   ezP.Style.insertCssRuleAt('.ezp-path-shape{stroke: none;fill: white;fill-opacity:0.9}')
   ezP.Style.insertCssRuleAt('.ezp-path-shadow-shape{stroke: none;fill: none;}')
   ezP.Style.insertCssRuleAt('.ezp-path-contour, .ezp-path-shadow-contour, .ezp-path-collapsed, .ezp-path-shadow-collapsed {stroke: ' + ezP.Style.Path.colour + ';stroke-width: ' + ezP.Style.Path.width + 'px;fill: none;}')

@@ -97,8 +97,11 @@ ezP.FieldTextInput.prototype.cssClass = 'ezp-code'
  * @private
  */
 ezP.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
-  this.ezpData.isEditing = true
   var block = this.sourceBlock_
+  if (block.ezp.locked_) {
+    return
+  }
+  this.ezpData.isEditing = true
   block.ezp.startEditingField && block.ezp.startEditingField(block, this)
   this.render_()
   block.render()

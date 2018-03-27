@@ -376,6 +376,12 @@ ezP.BlockSvg.prototype.onMouseDown_ = function(e) {
   if (this.ezp.wrapped_) {
     return
   }
+  if (this.ezp.locked_) {
+    var parent = this.getSurroundParent()
+    if (parent && this.ezp.locked_) {
+      return
+    }
+  }
   // remove any selected connection, if any
   ezP.SelectedConnection.set(null)
   this.ezp.selectedConnectionSource_ = null

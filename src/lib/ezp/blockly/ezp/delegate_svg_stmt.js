@@ -504,6 +504,33 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.setDisabled = function (block, yorn)
 }
 
 /**
+ * Get the subtype of the block.
+ * The default implementation does nothing.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is return, when defined or not null.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.DelegateSvg.Stmt.comment_stmt.prototype.getSubtype = function (block) {
+  return block.ezp.inputs.last.fieldCodeComment.getValue()
+}
+
+/**
+ * Set the subtype of the block.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is expected.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return true if the receiver supports subtyping, false otherwise
+ */
+ezP.DelegateSvg.Stmt.comment_stmt.prototype.setSubtype = function (block, subtype) {
+  block.ezp.inputs.last.fieldCodeComment.setValue(subtype)
+  return true
+}
+
+/**
  * Class for a DelegateSvg, expression_stmt.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
@@ -578,3 +605,33 @@ ezP.DelegateSvg.Manager.register('docstring_def_stmt')
  */
 ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt.comment_stmt.prototype.isWhite
 
+/**
+ * Get the subtype of the block.
+ * The default implementation does nothing.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is return, when defined or not null.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.getSubtype = ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.getSubtype = function (block) {
+  var wrapped = this.inputs.first.input.connection.targetBlock()
+  return wrapped? wrapped.ezp.getSuptype(wrapped): undefined
+}
+
+/**
+ * Set the subtype of the block.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is expected.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return true if the receiver supports subtyping, false otherwise
+ */
+ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.setSubtype = function (block, subtype) {
+  var wrapped = this.inputs.first.input.connection.targetBlock()
+  if (wrapped) {
+    wrapped.ezp.setSubtype(wrapped, subtype)
+  }
+  return true
+}

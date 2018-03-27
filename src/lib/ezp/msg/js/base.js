@@ -68,3 +68,5 @@ goog.require('ezP')
 /** @export */ ezP.Msg.MISSING_ARGUMENT = 'Missing argument'
 /** @export */ ezP.Msg.MISSING_LHS = 'Missing LHS'
 /** @export */ ezP.Msg.MISSING_RHS = 'Missing RHS'
+/** @export */ ezP.Msg.LOCK_BLOCK = 'Verrouiller'
+/** @export */ ezP.Msg.UNLOCK_BLOCK = 'Modifier'
