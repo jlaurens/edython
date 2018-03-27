@@ -242,6 +242,33 @@ ezP.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr)
 }
 
 /**
+ * Can insert a block above?
+ * If the block's output connection is connected,
+ * can connect the parent's output to it?
+ * The connection cannot always establish.
+ * @param {!Block} block.
+ * @param {string} prototypeName.
+ * @param {string} aboveInputName, which parent's connection to use
+ */
+ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, subtype, aboveInputName) {
+  var can = false
+  Blockly.Events.disable()
+  var B = block.workspace.newBlock(prototypeName)
+  B.ezp.setSubtype(B, subtype)
+  var input = B.getInput(aboveInputName)
+  goog.asserts.assert(input, 'No input named '+aboveInputName)
+  var c8n = input.connection
+  goog.asserts.assert(c8n, 'Unexpected dummy input '+aboveInputName)
+  if (block.outputConnection && c8n.checkType_(block.outputConnection)) {
+    var targetC8n = block.outputConnection.targetConnection
+    can = !targetC8n || targetC8n.checkType_(B.outputConnection)
+  }
+  B.dispose()
+  Blockly.Events.enable()
+  return can
+}
+
+/**
  * Insert a parent.
  * If the block's output connection is connected,
  * connects the parent's output to it.
@@ -422,7 +449,6 @@ ezP.DelegateSvg.Expr.conditional_expression_concrete = function (prototypeName) 
 goog.inherits(ezP.DelegateSvg.Expr.conditional_expression_concrete, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Manager.register('conditional_expression_concrete')
-
 
 /**
  * Class for a DelegateSvg, '*...' block.

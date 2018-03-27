@@ -403,6 +403,7 @@ ezP.KeyHandler = function() {
         ezP.MenuManager.shared().showMenu(B, event)
         return
       }
+      keys_ = []
       me.populateMenu(K)
       if (menu_.getChildCount()) {
         event.preventDefault()
@@ -649,6 +650,10 @@ Ks = {
   '"""…"""(def)': ezP.T3.Stmt.docstring_def_stmt,
   'print(…)': ezP.T3.Stmt.print_stmt,
   'input(…)': ezP.T3.Expr.input,
+  'range(…)': {
+    type: ezP.T3.Expr.range,
+    subtype: ezP.Key.UPPER_BOUND,
+  },
   'module as alias': ezP.T3.Expr.module_as_concrete,
   '(…)': ezP.T3.Expr.parenth_form,
   '[…]': ezP.T3.Expr.list_display,

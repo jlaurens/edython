@@ -166,12 +166,16 @@ ezP.BlockSvg.prototype.removeSelect = function () {
   } else {
     if ((!this.ezp.svgPathHighlight_ || !this.ezp.svgPathHighlight_.parentNode)
       && (!this.ezp.svgPathConnection_ || !this.ezp.svgPathConnection_.parentNode)) {
-        Blockly.utils.removeClass(this.svgGroup_, 'ezp-select')
+        if (this.svgGroup_) { // how come that we must test that?
+          Blockly.utils.removeClass(this.svgGroup_, 'ezp-select')
+        }
         return
     }
     goog.dom.removeNode(this.ezp.svgPathHighlight_)
   }
-  Blockly.utils.removeClass(this.svgGroup_, 'ezp-select')
+  if (this.svgGroup_) {
+    Blockly.utils.removeClass(this.svgGroup_, 'ezp-select')
+  }
   var B
   if (!this.ezp.selectedConnection || ((B = Blockly.selected) && B.selectedConnectionSource_ != this)) {
     goog.dom.removeNode(this.ezp.svgPathConnection_)

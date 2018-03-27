@@ -1291,19 +1291,6 @@ ezP.DelegateSvg.prototype.getPythonSort = function (block) {
  */
 ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, subtype, aboveInputName) {
   var can = false
-  Blockly.Events.disable()
-  var B = block.workspace.newBlock(prototypeName)
-  B.ezp.setSubtype(B, subtype)
-  var input = B.getInput(aboveInputName)
-  goog.asserts.assert(input, 'No input named '+aboveInputName)
-  var c8n = input.connection
-  goog.asserts.assert(c8n, 'Unexpected dummy input '+aboveInputName)
-  if (block.outputConnection && c8n.checkType_(block.outputConnection)) {
-    var targetC8n = block.outputConnection.targetConnection
-    can = !targetC8n || targetC8n.checkType_(B.outputConnection)
-  }
-  B.dispose()
-  Blockly.Events.enable()
   return can
 }
 
@@ -2327,7 +2314,10 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
   Blockly.Events.setGroup(true)
   try {
     B = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
-    B.ezp.setSubtype(B, action.subtype || subtype)
+    var c8n_N = action.subtype || subtype
+    if (B.ezp.setSubtype(B, c8n_N)) {
+      c8n_N = undefined
+    }
     var c8ns_B = []
     for (var i = 0; (c8n = c8ns[i++]); ) {
       var targetC8n = c8n.targetConnection
@@ -2354,20 +2344,24 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
         doFill(B, c8ns_B, function(c) {
           return c.checkType_(c8n)
         })
-        var c8n_B = c8ns_B[0]
-        if (c8n_B) {
-          if (targetC8n && B.outputConnection && targetC8n.checkType_(B.outputConnection)) {
-            targetC8n.connect(B.outputConnection)
-          } else {
-            var its_xy = block.getRelativeToSurfaceXY();
-            var my_xy = B.getRelativeToSurfaceXY();
-            B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)            
+        for (var i = 0, c8n_B;(c8n_B = c8ns_B[i++]);) {
+          if (!c8n_N || c8n_B.ezp.name_ === c8n_N) {
+            if (targetC8n && B.outputConnection && targetC8n.checkType_(B.outputConnection)) {
+              targetC8n.connect(B.outputConnection)
+            } else {
+              var its_xy = block.getRelativeToSurfaceXY();
+              var my_xy = B.getRelativeToSurfaceXY();
+              B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)            
+            }
+            c8n_B.connect(c8n)
+            B.render()
+            B.select()
+            ans = B
+            B = undefined
+            break  
           }
-          c8n_B.connect(c8n)
-          B.render()
-          B.select()
-          ans = B
-          B = undefined
+        }
+        if (!B) {
           break
         }
       } else if (c8n.type === Blockly.NEXT_STATEMENT) {
@@ -2383,7 +2377,7 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
           B = undefined
           break
         }
-      } else if (B.outputConnection && B.outputConnection.checkType_(c8n)) {
+      } else if ((!c8n_N || c8n_N === c8n.ezp.name) && B.outputConnection && B.outputConnection.checkType_(c8n)) {
         B.outputConnection.connect(c8n)
         B.render()
         B.select()
