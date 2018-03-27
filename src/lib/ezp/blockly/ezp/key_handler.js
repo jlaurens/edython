@@ -257,17 +257,25 @@ ezP.KeyHandler = function() {
             }
           }
         }
+      } else {
+        me.populateMenu(keys_.pop())
+        return
       }
     } else if (sep.length === 1) {
-      keys_.push(sep)
-      for (var i = 0, s; (s = current_[i++]); ) {
-        var Cs = s.components
-        var last = Cs[Cs.length-1]
-        var split = me.split(last, sep)
-        if (split) {
-          Cs.splice(Cs.length-1, 1, split[0], sep, split[1])
-          me.insertShortcutInArray_(s, newCurrent)
+      if (current_) {
+        keys_.push(sep)
+        for (var i = 0, s; (s = current_[i++]); ) {
+          var Cs = s.components
+          var last = Cs[Cs.length-1]
+          var split = me.split(last, sep)
+          if (split) {
+            Cs.splice(Cs.length-1, 1, split[0], sep, split[1])
+            me.insertShortcutInArray_(s, newCurrent)
+          }
         }
+      } else {
+        me.populateMenu(sep)
+        return
       }
     } else {
       return
@@ -322,7 +330,7 @@ ezP.KeyHandler = function() {
     if (sep.length !== 1) {
       return
     }
-    keys_ = [sep]
+    keys_.push(sep)
     var content = ezP.Do.createSPAN(sep, 'ezp-code-emph')
     var MI = new ezP.MenuItem(content, {key: sep, action: me.handleFirstMenuItemAction})
     menu_.addChild(MI, true)
