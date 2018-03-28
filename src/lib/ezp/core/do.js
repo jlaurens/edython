@@ -310,6 +310,9 @@ ezP.Do.typeOfString = function (candidate) {
   if (candidate.match(ezP.RE.imagnumber)) {
     return ezP.T3.Expr.imagnumber
   }
+  if (candidate === 'start') {
+    return ezP.T3.Stmt.start_stmt
+  }
   if (candidate.match(ezP.RE.identifier)) {
     return ezP.T3.Expr.identifier
   }

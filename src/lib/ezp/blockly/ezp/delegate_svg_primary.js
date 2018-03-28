@@ -125,3 +125,88 @@ ezP.DelegateSvg.Expr.call_expr =  function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.call_expr, ezP.DelegateSvg.Primary)
 ezP.DelegateSvg.Manager.register('call_expr')
+
+/**
+ * Class for a DelegateSvg, sum block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.sum_builtin = function (prototypeName) {
+  ezP.DelegateSvg.Expr.sum_builtin.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    dummy: 'sum',
+    css_class: 'ezp-code-builtin',
+  }
+}
+goog.inherits(ezP.DelegateSvg.Expr.sum_builtin, ezP.DelegateSvg.Expr.call_expr)
+ezP.DelegateSvg.Manager.register('sum_builtin')
+
+/**
+ * Class for a DelegateSvg, len block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.len_builtin = function (prototypeName) {
+  ezP.DelegateSvg.Expr.len_builtin.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    dummy: 'len',
+    css_class: 'ezp-code-builtin',
+  }
+}
+goog.inherits(ezP.DelegateSvg.Expr.len_builtin, ezP.DelegateSvg.Expr.call_expr)
+ezP.DelegateSvg.Manager.register('len_builtin')
+
+/**
+ * Class for a DelegateSvg, list block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.list_builtin = function (prototypeName) {
+  ezP.DelegateSvg.Expr.list_builtin.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    dummy: 'list',
+    css_class: 'ezp-code-builtin',
+  }
+}
+goog.inherits(ezP.DelegateSvg.Expr.list_builtin, ezP.DelegateSvg.Expr.call_expr)
+ezP.DelegateSvg.Manager.register('list_builtin')
+
+/**
+ * Class for a DelegateSvg, range block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.range_builtin = function (prototypeName) {
+  ezP.DelegateSvg.Expr.range_builtin.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    dummy: 'range',
+    css_class: 'ezp-code-builtin',
+  }
+}
+goog.inherits(ezP.DelegateSvg.Expr.range_builtin, ezP.DelegateSvg.Expr.call_expr )
+ezP.DelegateSvg.Manager.register('range_builtin')
+
+/**
+ * Class for a DelegateSvg, len block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.len_builtin = function (prototypeName) {
+  ezP.DelegateSvg.Expr.len_builtin.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.first = {
+    dummy: 'len',
+    css_class: 'ezp-code-builtin',
+  }
+}
+goog.inherits(ezP.DelegateSvg.Expr.len_builtin, ezP.DelegateSvg.Expr.call_expr )
+ezP.DelegateSvg.Manager.register('len_builtin')

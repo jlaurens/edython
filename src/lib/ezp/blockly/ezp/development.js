@@ -42,6 +42,7 @@ ezP.DelegateSvg.workspaceBlocks = []
  * This is an array of block prototypes
  * related to the given delegate.
  */
+
 ezP.DelegateSvg.Expr.import_module.workspaceBlocks = [
   ezP.T3.Expr.non_void_module_as_list,
   ezP.T3.Expr.import_module,
@@ -214,10 +215,13 @@ ezP.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks = ezP.DelegateS
   ezP.T3.Expr.comprehension,
 ] , null/*ezP.T3.Expr.Check.expression*/)
 
-ezP.DelegateSvg.Expr.input.workspaceBlocks = 
+ezP.DelegateSvg.Expr.input_builtin.workspaceBlocks = 
 ezP.DelegateSvg.Stmt.print_stmt.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Expr.input,
-  ezP.T3.Expr.print,
+  ezP.T3.Expr.list_builtin,
+  ezP.T3.Expr.sum_builtin,
+  ezP.T3.Expr.range_builtin,
+  ezP.T3.Expr.input_builtin,
+  ezP.T3.Expr.print_builtin,
   ezP.T3.Stmt.print_stmt,
 ],
 ezP.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks,

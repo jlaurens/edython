@@ -167,7 +167,7 @@ ezP.KeyHandler = function() {
                   }
                 }
               } while ((parent = parent.getSurroundParent(parent)))
-            } else if ((c8n = B.nextConnection)) {
+            } else if ((c8n === B.nextConnection) && (c8n = newB.nextConnection)) {
               ezP.SelectedConnection.set(c8n)
               return true
             }
@@ -396,7 +396,7 @@ ezP.KeyHandler = function() {
         return
       }
     }
-    if (B = Blockly.selected) {
+    if ((B = Blockly.selected)) {
       if (K === ' ') {
         event.preventDefault()
         event.stopPropagation()
@@ -425,7 +425,11 @@ ezP.KeyHandler = function() {
                     return
                   }
                   me.alreadyListened = true
-                  me.handleAction(shortcut)
+                  if (shortcut.key) {
+                    me.handleAction(shortcut)
+                  } else {
+                    me.handleFirstMenuItemAction(shortcut)
+                  }
                 }, 100)// TODO be sure that this 100 is suffisant
               }
             }
@@ -627,6 +631,7 @@ for (var i = 0; (K = Ks[i++]); ) {
 Ks = {
   '… = …': ezP.T3.Stmt.assignment_stmt,
   '…:… = …': ezP.T3.Stmt.annotated_assignment_stmt,
+  'start': ezP.T3.Stmt.start_stmt,
   'assert …': ezP.T3.Stmt.assert_stmt,
   'pass': ezP.T3.Stmt.pass_stmt,
   'break': ezP.T3.Stmt.break_stmt,
@@ -636,7 +641,8 @@ Ks = {
   'yield …': ezP.T3.Stmt.yield_stmt,
   'raise': ezP.T3.Stmt.reraise_stmt,
   'raise …': ezP.T3.Stmt.raise_stmt,
-  'from future import …': ezP.T3.Stmt.raise_stmt,
+  // 'from future import …': ezP.T3.Stmt.future_statement,
+  'import …': ezP.T3.Stmt.import_part,
   '# comment': ezP.T3.Stmt.comment_stmt,
   'global …': {
     type: ezP.T3.Stmt.global_nonlocal_stmt,
@@ -650,7 +656,7 @@ Ks = {
   '"""…"""(def)': ezP.T3.Stmt.docstring_def_stmt,
   "'''…'''(def)": ezP.T3.Stmt.docstring_def_stmt,
   'print(…)': ezP.T3.Stmt.print_stmt,
-  'input(…)': ezP.T3.Expr.input,
+  'input(…)': ezP.T3.Expr.input_builtin,
   'range(…)': {
     type: ezP.T3.Expr.range,
     subtype: ezP.Key.UPPER_BOUND,

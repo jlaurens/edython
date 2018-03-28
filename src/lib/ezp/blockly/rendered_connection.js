@@ -377,15 +377,14 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
       // c8nA is the connection of an input
       // connections are vertical (next<->previous)
       if (checkA) {
-        if (checkA.indexOf(typeB) < 0) {
-          return false
-        }
         if (checkB) {
           for (var i = 0, t;(t = checkA[i++]);) {
             if (checkB.indexOf(t) >= 0) {
               return true
             }
           }
+        } else if (checkA.indexOf(typeB) < 0) {
+          return false
         } else {
           return true
         }
@@ -396,15 +395,14 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
       // c8nB is the connection of an input
       // connections are vertical (next<->previous)
       if (checkB) {
-        if (checkB.indexOf(typeA) < 0) {
-          return false
-        }
         if (checkA) {
           for (var i = 0, t;(t = checkB[i++]);) {
             if (checkA.indexOf(t) >= 0) {
               return true
             }
           }
+        } else if (checkB.indexOf(typeA) < 0) {
+          return false
         } else {
           return true
         }

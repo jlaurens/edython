@@ -7,11 +7,14 @@
 </head>
 <body>
 <pre>
-print ::= "print(" argument_list ")"
+print_builtin ::= "print(" argument_list ")"
 print_stmt ::= print
-input ::= "input(" [any_argument] ")"
+input_builtin ::= "input(" [any_argument] ")"
 input_stmt ::= input
-range ::= "range(" proper_slice ")"
+sum_builtin ::= "sum(" argument_list ")"
+list_builtin ::= "list(" argument_list ")"
+range_builtin ::= "range(" argument_list ")"
+len_builtin ::= "len(" argument_list ")"
 </pre>
 </body>
 </html>

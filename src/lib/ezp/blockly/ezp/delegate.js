@@ -181,10 +181,12 @@ ezP.Delegate.Manager = function () {
     }
     if ((D = dlgt.statementModel_) && Object.keys(D).length) {
       Ctor.prototype.statementModel = D
-      try {
+      if (D.previous) {
         D.previous.check = ezP.Do.ensureArray(D.previous.check)
+      }
+      if (D.next) {
         D.next.check = ezP.Do.ensureArray(D.next.check)
-      } finally {}
+      }
     }
   }
   /**

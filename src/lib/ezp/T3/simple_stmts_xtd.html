@@ -115,7 +115,8 @@ comment_stmt ::= '# blah blah'
 </pre>
 
 <pre>
-future_statement >>> future_statement | comment_stmt | docstring_top_stmt | start_stmt
+future_statement >>> future_statement | comment_stmt | docstring_top_stmt | start_stmt | import_part
+import_part >>> future_statement
 </pre>
 
 

@@ -167,7 +167,11 @@ ezP.DelegateSvg.Control.prototype.toPython = function (block, is_deep) {
  */
 ezP.DelegateSvg.Stmt.start_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.start_stmt.superClass_.constructor.call(this, prototypeName)
+  this.statementModel_ = {
+    next: {
+      check: null,
+    }
+  }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.start_stmt, ezP.DelegateSvg.Control)
-
 ezP.DelegateSvg.Manager.register('start_stmt')

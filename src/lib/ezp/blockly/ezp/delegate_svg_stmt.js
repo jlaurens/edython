@@ -531,6 +531,15 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.setSubtype = function (block, subtyp
 }
 
 /**
+ * Show the editor for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.comment_stmt.prototype.showEditor = function (block) {
+  block.ezp.inputs.last.fieldCodeComment.showEditor_()
+}
+
+/**
  * Class for a DelegateSvg, expression_stmt.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing

@@ -148,7 +148,7 @@ ezP.setup.register(function () {
   ezP.Style.insertCssRuleAt('.ezp-code-emph {font-weight: bold;}')
   ezP.Style.insertCssRuleAt('.ezp-code-reserved, .ezp-code-builtin, .ezp-sharp-group {font-weight:bold;color: rgba(0, 84, 147, 0.75);fill: rgba(0, 84, 147, 0.75);}')
   ezP.Style.insertCssRuleAt('.ezp-code-builtin {font-weight:bold;color: rgba(60, 0, 145, 0.75);fill: rgba(60, 0, 145, 0.75);}')
-  ezP.Style.insertCssRuleAt('.ezp-menuitem-disabled .ezp-code-reserved {color: rgba(60, 0,, 0.3);fill: rgba(0, 84, 147, 0.3);}')
+  ezP.Style.insertCssRuleAt('.ezp-menuitem-disabled .ezp-code-reserved {color: rgba(60, 0, 145, 0.3);fill: rgba(0, 84, 147, 0.3);}')
   ezP.Style.insertCssRuleAt('.ezp-menuitem-disabled .ezp-code-builtin {font-weight:bold;color: rgba(60, 0, 145, 0.3);fill: rgba(60, 0, 145, 0.3);}')
   ezP.Style.insertCssRuleAt('.ezp-code-placeholder, .ezp-code-comment {font-style: oblique;}')
   ezP.Style.insertCssRuleAt('text.ezp-code-comment, .ezp-code-placeholder {fill: rgba(0, 0, 0, 0.4);}')

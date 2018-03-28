@@ -975,59 +975,6 @@ ezP.DelegateSvg.Expr.any.prototype.fromDom = function (block, element) {
 }
 
 /**
- * Class for a DelegateSvg, input block.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.input = function (prototypeName) {
-  ezP.DelegateSvg.Expr.input.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_ = {
-    first: {
-      dummy: 'input',
-      css_class: 'ezp-code-builtin',
-    },
-    last: {
-      start: '(',
-      key: ezP.Key.ARGUMENT,
-      check: ezP.T3.Expr.Check.argument_any,
-      optional: true,
-      end: ')',
-    }
-  }
-  this.outputModel_.check = ezP.T3.Expr.call_expr
-}
-goog.inherits(ezP.DelegateSvg.Expr.input, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('input')
-
-/**
- * Class for a DelegateSvg, range block.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.range = function (prototypeName) {
-  ezP.DelegateSvg.Expr.input.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_ = {
-    first: {
-      dummy: 'range',
-      css_class: 'ezp-code-builtin',
-    },
-    last: {
-      start: '(',
-      key: ezP.Key.ARGUMENT,
-      wrap: ezP.T3.Expr.proper_slice,
-      end: ')',
-    }
-  }
-  this.outputModel_.check = ezP.T3.Expr.call_expr
-}
-goog.inherits(ezP.DelegateSvg.Expr.range, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('range')
-
-/**
 * Class for a DelegateSvg, docstring (expression).
 * For ezPython.
 * @param {?string} prototypeName Name of the language object containing
