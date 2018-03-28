@@ -2347,7 +2347,9 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
           } else {
             var its_xy = block.getRelativeToSurfaceXY();
             var my_xy = B.getRelativeToSurfaceXY();
-            B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)            
+            B.render()
+            var HW = B.getHeightWidth()
+            B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y-HW.height)
           }
           B.nextConnection.connect(c8n)
           B.render()
