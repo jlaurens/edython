@@ -359,7 +359,9 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     if (block.ezp.canUnlock(block)) {
       menuItem = new ezP.MenuItem(ezP.Msg.UNLOCK_BLOCK,
         function(event) {
+          Blockly.Events.setGroup(true)
           block.ezp.unlock(block)
+          Blockly.Events.setGroup(false)
         }
       )
       this.addChild(menuItem, true)
@@ -367,7 +369,9 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     if (block.ezp.canLock(block)) {
       menuItem = new ezP.MenuItem(ezP.Msg.LOCK_BLOCK,
         function(event) {
+          Blockly.Events.setGroup(true)
           block.ezp.lock(block)
+          Blockly.Events.setGroup(false)
         }
       )
       this.addChild(menuItem, true)

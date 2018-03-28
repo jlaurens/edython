@@ -176,6 +176,9 @@ ezP.BlockSvg.prototype.removeSelect = function () {
   if (this.svgGroup_) {
     Blockly.utils.removeClass(this.svgGroup_, 'ezp-select')
   }
+  if (this.ezp.svgPathConnection_ && this.ezp.svgPathConnection_.parentNode) {
+    goog.dom.removeNode(this.ezp.svgPathConnection_)
+  }
   var B
   if (!this.ezp.selectedConnection || ((B = Blockly.selected) && B.selectedConnectionSource_ != this)) {
     goog.dom.removeNode(this.ezp.svgPathConnection_)

@@ -20,8 +20,9 @@ goog.provide('ezP.Events');
 
 goog.require('Blockly.Events');
 goog.require('ezP.Const');
+goog.require('ezP.Do');
 
-Blockly.Events.Change.prototype.run_original =
+ezP.Do.Events_Change_prototype_run =
 Blockly.Events.Change.prototype.run
 /**
  * Run a change event.
@@ -29,7 +30,7 @@ Blockly.Events.Change.prototype.run
  */
 Blockly.Events.Change.prototype.run = function(forward) {
   if (!this.element.startsWith('ezp')) {
-    Blockly.Events.Change.prototype.run_original.call(this, forward)
+    ezP.Do.Events_Change_prototype_run.call(this, forward)
     return
   }
   var workspace = this.getEventWorkspace_();
@@ -46,6 +47,13 @@ Blockly.Events.Change.prototype.run = function(forward) {
   switch (this.element) {
     case ezP.Const.Event.input_disable:
       block.ezp.setNamedInputDisabled(block, this.name, value)
+      break;
+    case ezP.Const.Event.locked:
+      if (value) {
+        block.ezp.lock(block)
+      } else {
+        block.ezp.unlock(block)
+      }
       break;
     default:
       console.warn('Unknown change type: ' + this.element);

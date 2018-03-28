@@ -213,4 +213,5 @@ ezP.Op = {
 
 ezP.Const.Event = {
   input_disable: 'ezp_input_disable',
+  locked: 'ezp_locked',
 }

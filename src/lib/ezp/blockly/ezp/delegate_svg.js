@@ -505,7 +505,7 @@ ezP.DelegateSvg.prototype.willRender_ = function (block) {
     }
   } else {
     if (block.svgGroup_) {
-      if (this.locked_ && block.getParent()) {
+      if (this.locked_ && block.outputConnection && block.getSurroundParent()) {
         goog.dom.classlist.add(/** @type {!Element} */(block.svgGroup_), 'ezp-locked')
       } else {
         goog.dom.classlist.remove(/** @type {!Element} */(block.svgGroup_), 'ezp-locked')
@@ -2184,6 +2184,9 @@ ezP.SelectedConnection = function() {
       if (connection) {
         var block = connection.getSourceBlock()
         if (block) {
+          if (block.ezp.locked_) {
+            return
+          }
           if (connection === block.previousConnection && connection.targetConnection) {
             connection = connection.targetConnection
             var unwrapped = block = connection.getSourceBlock()
@@ -2478,9 +2481,16 @@ ezP.DelegateSvg.prototype.lock = function (block) {
   if (this.locked_ || !block.ezp.canLock(block)) {
     return ans
   }
+  Blockly.Events.fire(new Blockly.Events.BlockChange(
+    block, ezP.Const.Event.locked, null, this.locked_, true));
   this.locked_ = true
+  if (block === ezP.SelectedConnection.set)
+  ezP.SelectedConnection.set(null)
   // list all the input for connections with a target
   var i = 0, input, c8n, target
+  if ((c8n = ezP.SelectedConnection.get()) && (block === c8n.getSourceBlock())) {
+    ezP.SelectedConnection.set(null)
+  }
   while ((input = block.inputList[i++])) {
     if ((c8n = input.connection)) {
       if ((target = c8n.targetBlock())) {
@@ -2518,6 +2528,8 @@ ezP.DelegateSvg.prototype.lock = function (block) {
  */
 ezP.DelegateSvg.prototype.unlock = function (block, shallow) {
   var ans = 0
+  Blockly.Events.fire(new Blockly.Events.BlockChange(
+    block, ezP.Const.Event.locked, null, this.locked_, false));
   this.locked_ = false
   // list all the input for connections with a target
   var i = 0, input, c8n, target
