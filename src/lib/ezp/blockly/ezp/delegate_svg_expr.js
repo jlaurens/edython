@@ -248,17 +248,17 @@ ezP.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr)
  * The connection cannot always establish.
  * @param {!Block} block.
  * @param {string} prototypeName.
- * @param {string} aboveInputName, which parent's connection to use
+ * @param {string} surroundInputName, which parent's connection to use
  */
-ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, subtype, aboveInputName) {
+ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, subtype, surroundInputName) {
   var can = false
   Blockly.Events.disable()
   var B = block.workspace.newBlock(prototypeName)
   B.ezp.setSubtype(B, subtype)
-  var input = B.getInput(aboveInputName)
-  goog.asserts.assert(input, 'No input named '+aboveInputName)
+  var input = B.getInput(surroundInputName)
+  goog.asserts.assert(input, 'No input named '+surroundInputName)
   var c8n = input.connection
-  goog.asserts.assert(c8n, 'Unexpected dummy input '+aboveInputName)
+  goog.asserts.assert(c8n, 'Unexpected dummy input '+surroundInputName)
   if (block.outputConnection && c8n.checkType_(block.outputConnection)) {
     var targetC8n = block.outputConnection.targetConnection
     can = !targetC8n || targetC8n.checkType_(B.outputConnection)
@@ -276,50 +276,50 @@ ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, s
  * The holes are filled when fill_holes is true.
  * @param {!Block} block.
  * @param {string} prototypeName.
- * @param {string} aboveInputName, which parent's connection to use
+ * @param {string} surroundInputName, which parent's connection to use
  * @param {boolean} fill_holes whether holes should be filled
  * @return the created block
  */
-ezP.DelegateSvg.Expr.prototype.insertBlockAbove = function(block, abovePrototypeName, subtype, aboveInputName, fill_holes) {
-//  console.log('insertBlockAbove', block, abovePrototypeName, subtype, aboveInputName)
+ezP.DelegateSvg.Expr.prototype.insertSurroundParent = function(block, surroundPrototypeName, subtype, surroundInputName, fill_holes) {
+//  console.log('insertSurroundParent', block, surroundPrototypeName, subtype, surroundInputName)
   Blockly.Events.setGroup(true)
-  var blockAbove = ezP.DelegateSvg.newBlockComplete(block.workspace, abovePrototypeName)
-  blockAbove.ezp.setSubtype(blockAbove, subtype)
-  console.log('block created of type', abovePrototypeName)
-  if (aboveInputName) {
-    var aboveInput = blockAbove.getInput(aboveInputName)
-    goog.asserts.assert(aboveInput, 'No input named '+aboveInputName)
-  } else if ((aboveInput = blockAbove.getInput(ezP.Key.LIST))) {
-    var list = aboveInput.connection.targetBlock()
+  var surroundBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, surroundPrototypeName)
+  surroundBlock.ezp.setSubtype(surroundBlock, subtype)
+  console.log('block created of type', surroundPrototypeName)
+  if (surroundInputName) {
+    var surroundInput = surroundBlock.getInput(surroundInputName)
+    goog.asserts.assert(surroundInput, 'No input named '+surroundInputName)
+  } else if ((surroundInput = surroundBlock.getInput(ezP.Key.LIST))) {
+    var list = surroundInput.connection.targetBlock()
     goog.asserts.assert(list, 'Missing list block inside '+block.type)
     // the list has many potential inputs,
     // none of them is actually connected because this is very fresh
     // get the middle input.
-    aboveInput = list.getInput(ezP.Do.Name.middle_name)
+    surroundInput = list.getInput(ezP.Do.Name.middle_name)
   } else {
     // find the first input that can accept block
-    for (var i = 0; (aboveInput = blockAbove.inputList[i++]);) {
-      var aboveInputC8n = aboveInput.connection
-      if (aboveInputC8n) {
-        if (!aboveInputC8n.check_ || aboveInputC8n.check_.indexOf(block.type)>=0) {
+    for (var i = 0; (surroundInput = surroundBlock.inputList[i++]);) {
+      var surroundInputC8n = surroundInput.connection
+      if (surroundInputC8n) {
+        if (!surroundInputC8n.check_ || surroundInputC8n.check_.indexOf(block.type)>=0) {
           break
         }
       }
     }
-    if (!aboveInput) {
-      blockAbove.dispose(true)
+    if (!surroundInput) {
+      surroundBlock.dispose(true)
       return undefined
     }
   }
   // Next connections should be connected
   var outputC8n = block.outputConnection
-  var aboveInputC8n = aboveInput.connection
-  console.log('Should connect', block.type, 'to input', aboveInput.name, 'of type', abovePrototypeName)
+  var surroundInputC8n = surroundInput.connection
+  console.log('Should connect', block.type, 'to input', surroundInput.name, 'of type', surroundPrototypeName)
   console.log('block check:', block.outputConnection.check_)
-  console.log('above check:', aboveInputC8n.check_)
-  goog.asserts.assert(aboveInputC8n, 'Unexpected dummy input '+aboveInputName)
-  if (aboveInputC8n.checkType_(outputC8n)) {
-    var targetC8n = aboveInputC8n.targetConnection
+  console.log('above check:', surroundInputC8n.check_)
+  goog.asserts.assert(surroundInputC8n, 'Unexpected dummy input '+surroundInputName)
+  if (surroundInputC8n.checkType_(outputC8n)) {
+    var targetC8n = surroundInputC8n.targetConnection
     if (targetC8n/* && targetC8n.isConnected()*/) {
       console.log('input already connected, disconnect and dispose target')
       var B = targetC8n.sourceBlock_
@@ -332,38 +332,38 @@ ezP.DelegateSvg.Expr.prototype.insertBlockAbove = function(block, abovePrototype
     var bumper
     if (targetC8n) {
       targetC8n.disconnect()
-      if (targetC8n.checkType_(blockAbove.outputConnection)) {
-        targetC8n.connect(blockAbove.outputConnection)
+      if (targetC8n.checkType_(surroundBlock.outputConnection)) {
+        targetC8n.connect(surroundBlock.outputConnection)
       } else {
         bumper = targetC8n.sourceBlock_
         var its_xy = bumper.getRelativeToSurfaceXY();
-        var my_xy = blockAbove.getRelativeToSurfaceXY();
-        blockAbove.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)
+        var my_xy = surroundBlock.getRelativeToSurfaceXY();
+        surroundBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)
       }
       targetC8n = undefined
     } else {
       var its_xy = block.getRelativeToSurfaceXY();
-      var my_xy = blockAbove.getRelativeToSurfaceXY();
-      blockAbove.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+      var my_xy = surroundBlock.getRelativeToSurfaceXY();
+      surroundBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
     }
-    console.log('Will connect', block.type, 'to input', aboveInput.name, 'of type', abovePrototypeName)
+    console.log('Will connect', block.type, 'to input', surroundInput.name, 'of type', surroundPrototypeName)
     console.log('block check:', outputC8n.check_)
-    console.log('above check:', aboveInputC8n.check_)
-    aboveInputC8n.connect(outputC8n)
+    console.log('above check:', surroundInputC8n.check_)
+    surroundInputC8n.connect(outputC8n)
     if (fill_holes) {
-      var holes = ezP.HoleFiller.getDeepHoles(blockAbove)
-      ezP.HoleFiller.fillDeepHoles(blockAbove.workspace, holes)
+      var holes = ezP.HoleFiller.getDeepHoles(surroundBlock)
+      ezP.HoleFiller.fillDeepHoles(surroundBlock.workspace, holes)
     }
-    blockAbove.render()
+    surroundBlock.render()
     if (bumper) {
       bumper.bumpNeighbours_()
     }  
   } else {
-    blockAbove.dispose()
-    blockAbove = undefined
+    surroundBlock.dispose()
+    surroundBlock = undefined
   }
   Blockly.Events.setGroup(false)
-  return blockAbove
+  return surroundBlock
 }
 
 /**

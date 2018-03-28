@@ -153,18 +153,26 @@ ezP.KeyHandler = function() {
         if (c8n) {
           var c8nType = c8n.type
           var newB
-          if ((newB = B.ezp.insertBlockOfType(B, type, subtype)) || (newB = B.ezp.insertBlockAbove(B, type, subtype))) {
+          if ((newB = B.ezp.insertBlockOfType(B, type, subtype)) || (newB = B.ezp.insertSurroundParent(B, type, subtype))) {
             // There was a selected connection,
             // we try to select another one, with possibly the same type
             // First we take a look at B : is there an unconnected input connection
             if (c8nType === Blockly.INPUT_VALUE) {
-              var parent = B
+              var parent = B, last
               do {
                 for (var i = 0, input; (input = parent.inputList[i++]); ) {
                   if ((c8n = input.connection) && c8n.type === c8nType && ! c8n.ezp.optional && ! c8n.targetConnection) {
-                    ezP.SelectedConnection.set(c8n)
-                    return true
+                    if (!c8n.ezp.s7r_) {
+                      ezP.SelectedConnection.set(c8n)
+                      return true
+                    } else {
+                      last = c8n
+                    }
                   }
+                }
+                if (last) {
+                  ezP.SelectedConnection.set(last)
+                  return true
                 }
               } while ((parent = parent.getSurroundParent(parent)))
             } else if ((c8n === B.nextConnection) && (c8n = newB.nextConnection)) {
@@ -176,7 +184,7 @@ ezP.KeyHandler = function() {
             return true
           }
         }
-        if ((newB = B.ezp.insertBlockOfType(B, type, subtype)) || (newB = B.ezp.insertBlockAbove(B, type, subtype))) {
+        if ((newB = B.ezp.insertBlockOfType(B, type, subtype)) || (newB = B.ezp.insertSurroundParent(B, type, subtype))) {
           var parent = B
           do {
             for (var i = 0, input; (input = parent.inputList[i++]); ) {
@@ -214,6 +222,45 @@ ezP.KeyHandler = function() {
   me.insertShortcutInArray_ = function(shortcut, current_) {
     var lhs = shortcut.components
     var compare = function(As, Bs) {
+      // put in front strings when there is a full match
+      // For example "module as name" should come before "assert" for "as"
+      // if As[0] is void or does not end with a letter
+      // if the shortcut starts with one, left bonus
+      if (As.length > 1) {
+        if (As[1].match(/[a-zA-Z_]/) && (!As[0].length || !As[0].match(/.*[a-zA-Z_]$/))) {
+          var bonusA = true
+        }
+      }
+      if (Bs.length > 1) {
+        if (Bs[1].match(/[a-zA-Z_]/) && (!Bs[0].length || !Bs[0].match(/.*[a-zA-Z_]$/))) {
+          var bonusB = true
+        }
+      }
+      if (bonusA && !bonusB) {
+        return -1
+      }
+      if (bonusB && !bonusA) {
+        return 1
+      }
+      // if the last As[] is void or does not start with a letter
+      // if the shortcut starts with one, right bonus
+      bonusA = bonusB = false
+      if (As.length > 2) {
+        if (As[As.length-2].match(/[a-zA-Z_]/) && (!As[As.length-1].length || !As[As.length-1][0].match(/[a-zA-Z_]/))) {
+          var bonusA = true
+        }
+      }
+      if (Bs.length > 2) {
+        if (Bs[Bs.length-2].match(/[a-zA-Z_]/) && (!Bs[Bs.length-1].length || !Bs[Bs.length-1][0].match(/[a-zA-Z_]/))) {
+          var bonusB = true
+        }
+      }
+      if (bonusA && !bonusB) {
+        return -1
+      }
+      if (bonusB && !bonusA) {
+        return 1
+      }
       for (var i = 0; i < As.length; i += 2) {
         var a = As[i]
         var b = Bs[i]
@@ -512,7 +559,7 @@ var Ks = {
       if (ezP.SelectedConnection.get()) {
         B.ezp.insertBlockOfType(B, ezP.T3.Expr.not_test_concrete)
       } else {
-        B.ezp.insertBlockAbove(B, ezP.T3.Expr.not_test_concrete)
+        B.ezp.insertSurroundParent(B, ezP.T3.Expr.not_test_concrete)
       }
     }
   },                                    
@@ -527,7 +574,7 @@ var Ks = {
       if (ezP.SelectedConnection.get()) {
         B.ezp.insertBlockOfType(B, ezP.T3.Expr.u_expr_concrete, '-')
       } else {
-        B.ezp.insertBlockAbove(B, ezP.T3.Expr.u_expr_concrete, '-')
+        B.ezp.insertSurroundParent(B, ezP.T3.Expr.u_expr_concrete, '-')
       }
     }
   },                                    
@@ -542,7 +589,7 @@ var Ks = {
       if (ezP.SelectedConnection.get()) {
         B.ezp.insertBlockOfType(B, ezP.T3.Expr.u_expr_concrete, '~')
       } else {
-        B.ezp.insertBlockAbove(B, ezP.T3.Expr.u_expr_concrete, '~')
+        B.ezp.insertSurroundParent(B, ezP.T3.Expr.u_expr_concrete, '~')
       }
     }
   },

@@ -907,7 +907,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
       var key = d.key
       var content = mgr.get_menuitem_content(parent_type, key)
       var MI = new ezP.MenuItem(content, function() {
-        block.ezp.insertBlockAbove(block, parent_type, parent_subtype, key)
+        block.ezp.insertSurroundParent(block, parent_type, parent_subtype, key)
       })
       mgr.addInsertChild(MI)
       return true
@@ -918,7 +918,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
           var key = d.key || K
           var content = mgr.get_menuitem_content(parent_type, key)
           var MI = new ezP.MenuItem(content, function() {
-            block.ezp.insertBlockAbove(block, parent_type, parent_subtype, key)
+            block.ezp.insertSurroundParent(block, parent_type, parent_subtype, key)
           })
           mgr.addInsertChild(MI)
           return true
@@ -940,7 +940,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
       }
       var content = mgr.get_menuitem_content(parent_type)
       var MI = new ezP.MenuItem(content, function() {
-        block.ezp.insertBlockAbove(block, parent_type, parent_subtype)
+        block.ezp.insertSurroundParent(block, parent_type, parent_subtype)
       })
       mgr.addInsertChild(MI)
       return true  
@@ -1073,7 +1073,7 @@ ezP.MenuManager.prototype.populate_before_after = function (block) {
     B.dispose()
     if (yorn) {
       var content = this.get_menuitem_content(type)
-      var MI = new ezP.MenuItem(content, F(block.ezp.insertBlockAbove, type))
+      var MI = new ezP.MenuItem(content, F(block.ezp.insertSurroundParent, type))
       this.addInsertBeforeChild(MI)
       return true
     }

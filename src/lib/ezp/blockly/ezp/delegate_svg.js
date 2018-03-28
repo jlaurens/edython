@@ -1305,9 +1305,9 @@ ezP.DelegateSvg.prototype.getPythonSort = function (block) {
  * The connection cannot always establish.
  * @param {!Block} block.
  * @param {string} prototypeName.
- * @param {string} aboveInputName, which parent's connection to use
+ * @param {string} surroundInputName, which parent's connection to use
  */
-ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, subtype, aboveInputName) {
+ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, subtype, surroundInputName) {
   var can = false
   return can
 }
@@ -1320,11 +1320,11 @@ ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, s
  * The holes are filled.
  * @param {!Block} block.
  * @param {string} prototypeName.
- * @param {string} aboveInputName, which parent's connection to use
+ * @param {string} surroundInputName, which parent's connection to use
  * @param {string} subtype, for subclassers
  * @return the created block
  */
-ezP.DelegateSvg.prototype.insertBlockAbove = function(block, abovePrototypeName, subtype, aboveInputName) {
+ezP.DelegateSvg.prototype.insertSurroundParent = function(block, surroundPrototypeName, subtype, surroundInputName) {
   goog.asserts.assert(false, 'Must be subclassed')
 }
 

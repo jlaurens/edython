@@ -163,33 +163,33 @@ ezP.DelegateSvg.Stmt.prototype.toPython = function (block, is_deep) {
  * The holes are filled.
  * @param {!Block} block.
  * @param {string} prototypeName.
- * @param {string} aboveInputName, which parent's connection to use
+ * @param {string} surroundInputName, which parent's connection to use
  * @return the created block
  */
-ezP.DelegateSvg.Stmt.prototype.insertBlockAbove = function(block, abovePrototypeName, subtype) {
+ezP.DelegateSvg.Stmt.prototype.insertSurroundParent = function(block, surroundPrototypeName, subtype) {
   Blockly.Events.setGroup(true)
-  var blockAbove = ezP.DelegateSvg.newBlockComplete(block.workspace, abovePrototypeName)
-  blockAbove.ezp.setSubtype(blockAbove, subtype)
+  var surroundBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, surroundPrototypeName)
+  surroundBlock.ezp.setSubtype(surroundBlock, subtype)
   var c8n = block.previousConnection
   var targetC8n = c8n.targetConnection
   if (targetC8n) {
     targetC8n.disconnect()
-    targetC8n.connect(blockAbove.previousConnection)
+    targetC8n.connect(surroundBlock.previousConnection)
   } else {
     var its_xy = block.getRelativeToSurfaceXY();
-    var my_xy = blockAbove.getRelativeToSurfaceXY();
-    blockAbove.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+    var my_xy = surroundBlock.getRelativeToSurfaceXY();
+    surroundBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
   }
-  blockAbove.ezp.consolidate(blockAbove, true)
-  var holes = ezP.HoleFiller.getDeepHoles(blockAbove)
-  ezP.HoleFiller.fillDeepHoles(blockAbove.workspace, holes)
-  blockAbove.render()
-  block.previousConnection.connect(blockAbove.nextConnection)
+  surroundBlock.ezp.consolidate(surroundBlock, true)
+  var holes = ezP.HoleFiller.getDeepHoles(surroundBlock)
+  ezP.HoleFiller.fillDeepHoles(surroundBlock.workspace, holes)
+  surroundBlock.render()
+  block.previousConnection.connect(surroundBlock.nextConnection)
   if (Blockly.selected === block) {
-    blockAbove.select()
+    surroundBlock.select()
   }
   Blockly.Events.setGroup(false)
-  return blockAbove
+  return surroundBlock
 }
 
 /**
@@ -200,7 +200,7 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAbove = function(block, abovePrototype
  * The holes are filled.
  * @param {!Block} block.
  * @param {string} prototypeName.
- * @param {string} aboveInputName, which parent's connection to use
+ * @param {string} surroundInputName, which parent's connection to use
  * @return the created block
  */
 ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototypeName) {
