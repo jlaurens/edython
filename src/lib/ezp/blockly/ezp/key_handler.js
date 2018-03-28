@@ -286,7 +286,7 @@ ezP.KeyHandler = function() {
   me.updateMenu = function (sep) {
     var newCurrent = []
     if (sep === undefined) {
-      keys_.pop()
+      var key = keys_.pop()
       if (current_.length) {
         var l = current_[0].components.length - 2
         if (l < 3) {
@@ -305,7 +305,7 @@ ezP.KeyHandler = function() {
           }
         }
       } else {
-        me.populateMenu(keys_.pop())
+        me.populateMenu(key)
         return
       }
     } else if (sep.length === 1) {
@@ -702,6 +702,8 @@ Ks = {
   '@decorator': ezP.T3.Stmt.decorator_stmt,
   '"""…"""(def)': ezP.T3.Stmt.docstring_def_stmt,
   "'''…'''(def)": ezP.T3.Stmt.docstring_def_stmt,
+  '"""…"""': ezP.T3.Stmt.docstring,
+  "'''…'''": ezP.T3.Stmt.docstring,
   'print(…)': ezP.T3.Stmt.print_stmt,
   'input(…)': ezP.T3.Expr.input_builtin,
   'range(…)': {

@@ -511,7 +511,7 @@ ezP.Consolidator.List.Singled.prototype.getCheck = function (io) {
   if (io.single || io.list.length === 1) {
     // a single block or no block at all
     return this.data.all
-  } else if (io.list.length === 3 && io.i == 1) {
+  } else if (io.list.length === 3 && io.i === 1) {
     // there is only one item in the list
     // and it can be replaced by any kind of block
     return this.data.all

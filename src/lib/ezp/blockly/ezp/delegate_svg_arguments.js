@@ -236,7 +236,7 @@ ezP.Consolidator.Arguments.prototype.getCheck = function() {
       can_positional = can_keyword = can_comprehension = true
     } else {
       can_comprehension = false
-      if (io.i <= io.first_keyword) {
+      if (io.first_keyword<0 || io.i <= io.first_keyword) {
         can_positional = true
       }
       if (io.i >= io.last_positional) {

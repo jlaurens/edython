@@ -286,9 +286,9 @@ ezP.Do.createSPAN = function(text,css) {
 }
 
 /**
- * Is the given string an acceptable identifier ?
+ * What is the type of this string? an identifier, a number, a reserved word ?
  * For ezPython.
- * @return true if candidate is an acceptable identifier
+ * @return the type of this candidate
  */
 ezP.Do.typeOfString = function (candidate) {
   if (['False', 'None', 'True'].indexOf(candidate)>=0) {

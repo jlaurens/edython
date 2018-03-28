@@ -841,6 +841,75 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.fieldValueDidChange = function(bloc
 }
 
 /**
+ * Get the subtype of the block.
+ * The default implementation does nothing.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is return, when defined or not null.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.DelegateSvg.Expr.stringliteral.prototype.getSubtype = function (block) {
+  return block.ezp.toPythonExpression(block)
+}
+
+/**
+ * Set the subtype of the block.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is expected.
+ * Undo support ?
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return true if the receiver supports subtyping, false otherwise
+ */
+ezP.DelegateSvg.Expr.stringliteral.prototype.setSubtype = function (block, subtype) {
+  var m = subtype.match(ezP.RE.stringliteral)
+  var fieldStart = this.inputs.last.fieldLabelStart
+  var fieldEnd = this.inputs.last.fieldLabelEnd
+  if (m) {
+    if (m[1]) {
+      this.inputs.first.fieldLabel.setValue(m[1])
+    }
+    if (m[2].length) {
+      this.inputs.last.fieldCodeString.setValue(m[2])
+      fieldStart.setValue("'")
+      fieldEnd.setValue("'")
+    } else if (m[3].length) {
+      this.inputs.last.fieldCodeString.setValue(m[3])
+      fieldStart.setValue('"')
+      fieldEnd.setValue('"')
+    } else {
+      this.inputs.last.fieldCodeString.setValue('')
+    }
+    block.type = ezP.T3.Expr.stringliteral
+    block.ezp.setupType(block)
+    return true  
+  }
+  var m = subtype.match(ezP.RE.bytesliteral)
+  if (m) {
+    if (m[1]) {
+      this.inputs.first.fieldLabel.setValue(m[1])
+    }
+    if (m[2].length) {
+      this.inputs.last.fieldCodeString.setValue(m[2])
+      fieldStart.setValue("'")
+      fieldEnd.setValue("'")
+    } else if (m[3].length) {
+      this.inputs.last.fieldCodeString.setValue(m[3])
+      fieldStart.setValue('"')
+      fieldEnd.setValue('"')
+    } else {
+      this.inputs.last.fieldCodeString.setValue('')
+    }
+    block.type = ezP.T3.Expr.bytesliteral
+    block.ezp.setupType(block)
+    return true  
+  }
+  return false
+}
+
+/**
 * Class for a DelegateSvg, builtin object.
 * For ezPython.
 * @param {?string} prototypeName Name of the language object containing
@@ -1000,7 +1069,6 @@ ezP.DelegateSvg.Expr.docstring = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.docstring, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('docstring')
-ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.bytesliteral, ezP.DelegateSvg.Expr.docstring)
 
 /**
  * Populate the context menu for the given block.
@@ -1081,6 +1149,6 @@ ezP.DelegateSvg.Expr.docstring.prototype.getSubtype = function (block) {
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Expr.docstring.prototype.setSubtype = function (block, subtype) {
-  this.inputs.last.fieldCodeString.setValue(subtype)
+  this.inputs.last.fieldCodeString.setValue(subtype || '')
   return true
 }
