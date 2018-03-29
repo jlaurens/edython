@@ -834,3 +834,27 @@ ezP.Delegate.prototype.setDisabled = function (block, yorn) {
   Blockly.Events.setGroup(false)
 }
 
+/**
+ * Get the value of the block.
+ * Used for simple blocks, form and to dom.
+ * Default implementation returns the subtype.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {?string} value
+ */
+ezP.Delegate.prototype.getValue = function (block) {
+  return block.ezp.getSubtype(block)
+}
+
+/**
+ * Set the value of the block.
+ * Used for simple blocks, form and to dom.
+ * Default implementation sets the subtype.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {?string} value
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.Delegate.prototype.setValue = function (block, value) {
+  return block.ezp.setSubtype(block, value)
+}

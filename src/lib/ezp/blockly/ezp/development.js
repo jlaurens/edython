@@ -37,6 +37,15 @@ ezP.Do.arraysMerged = function(/* list of arrays */) {
  */
 ezP.DelegateSvg.workspaceBlocks = []
 
+ezP.DelegateSvg.Expr.workspaceBlocks = [
+  ezP.T3.Expr.floatnumber,
+  ezP.T3.Expr.integer,
+  ezP.T3.Expr.imagnumber,
+  ezP.T3.Expr.stringliteral,
+  ezP.T3.Expr.bytesliteral,
+  ezP.T3.Expr.docstring,
+]
+
 /**
  * Useful for development purposes only.
  * This is an array of block prototypes
@@ -239,8 +248,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.workspaceBlocks = [
 ]
 
 ezP.DelegateSvg.Expr.stringliteral.workspaceBlocks = 
-ezP.DelegateSvg.Expr.integer.workspaceBlocks = 
-ezP.DelegateSvg.Expr.floatnumber.workspaceBlocks = 
+ezP.DelegateSvg.Expr.number.workspaceBlocks = 
 ezP.DelegateSvg.Expr.imagnumber.workspaceBlocks = [
   ezP.T3.Expr.stringliteral,
   ezP.T3.Expr.integer,

@@ -41,7 +41,7 @@ Blockly.FieldVariable.prototype.getSerializedXml = function () {
  */
 Blockly.Xml.blockToDom = function (block, optNoId) {
   var element
-  if (block.ezp.toDomX && (element = block.ezp.toDomX(block, optNoId))) {
+  if (block.ezp.blockToDom && (element = block.ezp.blockToDom(block, optNoId))) {
     return element
   }
   var element = goog.dom.createDom(block.isShadow() ? 'shadow' : 'block')
@@ -49,6 +49,7 @@ Blockly.Xml.blockToDom = function (block, optNoId) {
   if (!optNoId) {
     element.setAttribute('id', block.id)
   }
+  
   if (block.mutationToDom) {
     // Custom data for an advanced block.
     var mutation = block.mutationToDom()
@@ -185,8 +186,11 @@ Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
   var id = xmlBlock.getAttribute('id')
   block = workspace.newBlock(prototypeName, id)
 
-  if (block.ezp.domToChildren) {
-
+  if (goog.isFunction(block.ezp.domToBlock)) {
+    block.ezp.domToBlock(block, xmlBlock)
+    return block
+  } else if (goog.isFunction(block.ezp.domChildToBlock)) {
+    block.ezp.domChildToBlock(block, xmlBlock)
   } else {
     var blockChild = null
     for (var i = 0, xmlChild; (xmlChild = xmlBlock.childNodes[i]); i++) {
@@ -348,3 +352,282 @@ Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
   }
   return block
 }
+
+goog.require('ezP.DelegateSvg.Expr')
+
+/**
+ * Convert the block to a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {boolean} optNoId Is a function.
+ * @return a dom element
+ */
+ezP.DelegateSvg.Expr.blockToDom = function(block, optNoId) {
+  var text = block.ezp.getValue(block)
+  var element = goog.dom.createDom('block',
+    null,
+    goog.dom.createTextNode(text)
+  )
+  element.setAttribute('type', block.type)
+  if (!optNoId) {
+    element.setAttribute('id', block.id)
+  }
+  return element
+}
+
+/**
+ * Convert dom element to the block.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be edited.
+ * @param {Element} xml Is a function.
+ * @return a dom element
+ */
+ezP.DelegateSvg.Expr.domToBlock = function(block, xml) {
+  var text = ''
+  for (var i = 0, xmlChild; (xmlChild = xml.childNodes[i]); i++) {
+    if (xmlChild.nodeType === 3) {
+      text = xmlChild.nodeValue
+      break
+    }
+  }
+  block.ezp.setValue(block, text)
+}
+
+goog.require('ezP.DelegateSvg.Expr.docstring')
+
+/**
+ * Convert the block to a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {boolean} optNoId Is a function.
+ * @return a dom element
+ */
+ezP.DelegateSvg.Expr.docstring.prototype.blockToDom = ezP.DelegateSvg.Expr.blockToDom
+
+/**
+ * Convert dom element to the block.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {Element} xml Is a function.
+ * @return a dom element
+ */
+ezP.DelegateSvg.Expr.docstring.prototype.domToBlock = ezP.DelegateSvg.Expr.domToBlock
+
+goog.require('ezP.DelegateSvg.Expr.number')
+
+/**
+ * Convert the block to a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {boolean} optNoId Is a function.
+ * @return a dom element
+ */
+ezP.DelegateSvg.Expr.number.prototype.blockToDom = ezP.DelegateSvg.Expr.blockToDom
+
+/**
+ * Convert dom element to the block.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {Element} xml Is a function.
+ * @return a dom element
+ */
+ezP.DelegateSvg.Expr.number.prototype.domToBlock = ezP.DelegateSvg.Expr.domToBlock
+
+goog.require('ezP.DelegateSvg.Expr.stringliteral')
+
+ezP.DelegateSvg.Expr.stringliteral.prototype.blockToDom = ezP.DelegateSvg.Expr.blockToDom
+
+ezP.DelegateSvg.Expr.stringliteral.prototype.domToBlock = ezP.DelegateSvg.Expr.domToBlock
+
+goog.require('ezP.DelegateSvg.Expr.imagnumber')
+
+/**
+ * Convert the block to a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {boolean} optNoId Is a function.
+ * @return a dom element
+ */
+ezP.DelegateSvg.Expr.imagnumber.prototype.blockToDom = ezP.DelegateSvg.Expr.blockToDom
+
+/**
+ * Convert dom element to the block.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {Element} xml Is a function.
+ * @return a dom element
+ */
+ezP.DelegateSvg.Expr.imagnumber.prototype.domToBlock = ezP.DelegateSvg.Expr.domToBlock
+
+/*
+IN PROGRESS
+  imagnumber                /*   ::=                                                    (default) // : "ezp_imagnumber",
+  module_identifier         /*   ::=                                                    (default) // : "ezp_module_identifier",
+  attribute_identifier      /*   ::=                                                    (default) // : "ezp_attribute_identifier",
+  non_void_expression_list  /*   ::=                                                    (default) // : "ezp_non_void_expression_list",
+  parenth_form              /*   ::= "(" [starred_expression] ")"                       (default) // : "ezp_parenth_form",
+  comprehension             /*   ::= expression comp_for                                (default) // : "ezp_comprehension",
+  comp_for                  /*   ::= [ASYNC] "for" target_list "in" or_test [comp_iter] (default) // : "ezp_comp_for",
+  comp_if                   /*   ::= "if" expression_nocond [comp_iter]                 (default) // : "ezp_comp_if",
+  list_display              /*   ::= "[" starred_item_list_comprehensive "]"            (default) // : "ezp_list_display",
+  set_display               /*   ::= "{" non_void_starred_item_list_comprehensive "}"   (default) // : "ezp_set_display",
+  dict_display              /*   ::= "{" [key_datum_list | dict_comprehension] "}"      (default) // : "ezp_dict_display",
+  dict_comprehension        /*   ::= expression ":" expression comp_for                 (default) // : "ezp_dict_comprehension",
+  generator_expression      /*   ::= "(" expression comp_for ")"                        (default) // : "ezp_generator_expression",
+  yield_atom                /*   ::= "(" yield_expression ")"                           (default) // : "ezp_yield_atom",
+  attributeref              /*   ::= primary "." identifier                             (default) // : "ezp_attributeref",
+  subscription              /*   ::= primary "[" expression_list "]"                    (default) // : "ezp_subscription",
+  slicing                   /*   ::= primary display_slice_list                         (default) // : "ezp_slicing",
+  proper_slice              /*   ::= [lower_bound] ":" [upper_bound] [ ":" [stride] ]   (default) // : "ezp_proper_slice",
+  call_expr                 /*   ::= primary "(" [argument_list [","] | comprehension] ")" (default) // : "ezp_call_expr",
+  argument_list             /*   ::= argument_any *                                     (default) // : "ezp_argument_list",
+  keyword_item              /*   ::= identifier "=" expression                          (default) // : "ezp_keyword_item",
+  await_expr                /*   ::= "await" primary                                    (default) // : "ezp_await_expr",
+  power_concrete            /*   ::= await_or_primary "**" u_expr                       (default) // : "ezp_power_concrete",
+  u_expr_concrete           /*   ::= "-" u_expr | "+" u_expr | "~" u_expr               (default) // : "ezp_u_expr_concrete",
+  m_expr_concrete           /*   ::= m_expr "*" u_expr | m_expr "@" m_expr | m_expr "//" u_expr| m_expr "/" u_expr | m_expr "%" u_expr (default) // : "ezp_m_expr_concrete",
+  a_expr_concrete           /*   ::= a_expr "+" m_expr | a_expr "-" m_expr              (default) // : "ezp_a_expr_concrete",
+  shift_expr_concrete       /*   ::= shift_expr ( "<<" | ">>" ) a_expr                  (default) // : "ezp_shift_expr_concrete",
+  and_expr_concrete         /*   ::= and_expr "&" shift_expr                            (default) // : "ezp_and_expr_concrete",
+  xor_expr_concrete         /*   ::= xor_expr "^" and_expr                              (default) // : "ezp_xor_expr_concrete",
+  or_expr_concrete          /*   ::= or_expr "|" xor_expr                               (default) // : "ezp_or_expr_concrete",
+  or_test_concrete          /*   ::= or_test "or" and_test                              (default) // : "ezp_or_test_concrete",
+  and_test_concrete         /*   ::= and_test "and" not_test                            (default) // : "ezp_and_test_concrete",
+  not_test_concrete         /*   ::= "not" not_test                                     (default) // : "ezp_not_test_concrete",
+  conditional_expression_concrete /*   ::= or_test "if" or_test "else" expression             (default) // : "ezp_conditional_expression_concrete",
+  lambda_expr               /*   ::= lambda_expression "dynamic with cond"              (default) // : "ezp_lambda_expr",
+  lambda_expr_nocond        /*   ::= lambda_expression "dynamic without cond"           (default) // : "ezp_lambda_expr_nocond",
+  builtin_object            /*   ::= 'None' | 'True' | 'False' | 'Ellipsis' | '...' |'NotImplemented' (default) // : "ezp_builtin_object",
+  any                       /*   ::= any expression                                     (default) // : "ezp_any",
+  starred_item_list         /*   ::= starred_item ? ( ',' starred_item ) * [',']        (default) // : "ezp_starred_item_list",
+  star_expr                 /*   ::= "*" or_expr                                        (default) // : "ezp_star_expr",
+  optional_expression_list  /*   ::= ( expression ',' )* [ expression ]                 (default) // : "ezp_optional_expression_list",
+  key_datum_concrete        /*   ::= expression ":" expression                          (default) // : "ezp_key_datum_concrete",
+  or_expr_star_star         /*   ::= "**" or_expr                                       (default) // : "ezp_or_expr_star_star",
+  yield_expression_list     /*   ::= "yield" expression_list                            (default) // : "ezp_yield_expression_list",
+  yield_from_expression     /*   ::= "yield" "from" expression                          (default) // : "ezp_yield_from_expression",
+  display_slice_list        /*   ::= "[" slice_list "]"                                 (default) // : "ezp_display_slice_list",
+  call_expr                 /*   ::= primary "(" argument_list_comprehensive ")"        (default) // : "ezp_call_expr",
+  expression_star           /*   ::= "*" expression                                     (default) // : "ezp_expression_star",
+  expression_star_star      /*   ::= "**" expression                                    (default) // : "ezp_expression_star_star",
+  number_comparison         /*   ::= comparison comp_operator comparison                (default) // : "ezp_number_comparison",
+  object_comparison         /*   ::= comparison comp_operator comparison                (default) // : "ezp_object_comparison",
+  lambda_expression         /*   ::= "lambda" [parameter_list]: (expression | expression_no_cond) (default) // : "ezp_lambda_expression",
+  augop                     /*   ::= "+=" | "-=" | "*=" | "@=" | "/=" | "//=" | "%=" | "**=" | ">>=" | "<<=" | "&=" | "^=" | "|=" (default) // : "ezp_augop",
+  module_concrete           /*   ::= module_name '.' module                             (default) // : "ezp_module_concrete",
+  assignment_expression     /*   ::= target_list "=" assigned_list                      (default) // : "ezp_assignment_expression",
+  augassign_numeric         /*   ::= augtarget augop aug_assign_list                    (default) // : "ezp_augassign_numeric",
+  augassign_bitwise         /*   ::= augtarget augop aug_assign_list                    (default) // : "ezp_augassign_bitwise",
+  augassign_list_concrete   /*   ::=  ( expression ',' ) +                              (default) // : "ezp_augassign_list_concrete",
+  parenth_target_list       /*   ::= "(" void_target_list ")"                           (default) // : "ezp_parenth_target_list",
+  bracket_target_list       /*   ::= "[" void_target_list "]"                           (default) // : "ezp_bracket_target_list",
+  void_target_list          /*   ::= [target_list]                                      (default) // : "ezp_void_target_list",
+  target_star               /*   ::= "*" target                                         (default) // : "ezp_target_star",
+  something_star            /*   ::= "*" something                                      (default) // : "ezp_something_star",
+  import_module             /*   ::= "import" non_void_module_as_list                   (default) // : "ezp_import_module",
+  module_as_concrete        /*   ::= module "as" module_alias                           (default) // : "ezp_module_as_concrete",
+  alias                     /*   ::= some alias                                         (default) // : "ezp_alias",
+  from_relative_module_import /*   ::= "from" relative_module "import" non_void_import_identifier_as_list (default) // : "ezp_from_relative_module_import",
+  parent_module             /*   ::= '.' [relative_module]                              (default) // : "ezp_parent_module",
+  import_identifier_as_concrete /*   ::= import_identifier "as" import_alias                (default) // : "ezp_import_identifier_as_concrete",
+  identifier                /*   ::=                                                    (default) // : "ezp_identifier",
+  from_module_import        /*   ::= "from" module "import" "*"                         (default) // : "ezp_from_module_import",
+  docstring                 /*   ::= triple quoted string                               (default) // : "ezp_docstring",
+  expression_from           /*   ::= expression "from" expression                       (default) // : "ezp_expression_from",
+  with_item_concrete        /*   ::= expression "as" target                             (default) // : "ezp_with_item_concrete",
+  parameter_list            /*   ::=                                                    (default) // : "ezp_parameter_list",
+  parameter_list_starargs   /*   ::= "*" [parameter] ("," defparameter)* ["," ["**" parameter [","]]] | "**" parameter [","] (default) // : "ezp_parameter_list_starargs",
+  parameter_concrete        /*   ::= identifier ":" expression                          (default) // : "ezp_parameter_concrete",
+  defparameter_concrete     /*   ::= parameter "=" expression                           (default) // : "ezp_defparameter_concrete",
+  inheritance               /*   ::= "(" [argument_list] ")"                            (default) // : "ezp_inheritance",
+  expression_as_name        /*   ::= expression "as" identifier                         (default) // : "ezp_expression_as_name",
+  funcdef_simple            /*   ::= "def" funcname "(" [parameter_list] ")"            (default) // : "ezp_funcdef_simple",
+  funcdef_typed             /*   ::= funcdef_simple "->" expression                     (default) // : "ezp_funcdef_typed",
+  decorator_expr            /*   ::= "@" dotted_funcname                                (default) // : "ezp_decorator_expr",
+  decorator_call_expr       /*   ::= decorator_expr "(" argument_list ")"               (default) // : "ezp_decorator_call_expr",
+  dotted_funcname_concrete  /*   ::= dotting_identifier '.' dotted_funcname             (default) // : "ezp_dotted_funcname_concrete",
+  parameter_star            /*   ::= "*" [parameter]                                    (default) // : "ezp_parameter_star",
+  parameter_star_star       /*   ::= "**" parameter                                     (default) // : "ezp_parameter_star_star",
+  classdef_simple           /*   ::= "class" classname                                  (default) // : "ezp_classdef_simple",
+  classdef_derived          /*   ::= classdef_simple '(' argument_list ')'              (default) // : "ezp_classdef_derived",
+  print_builtin             /*   ::= "print(" argument_list ")"                         (default) // : "ezp_print_builtin",
+  input_builtin             /*   ::= "input(" [any_argument] ")"                        (default) // : "ezp_input_builtin",
+  sum_builtin               /*   ::= "sum(" argument_list ")"                           (default) // : "ezp_sum_builtin",
+  list_builtin              /*   ::= "list(" argument_list ")"                          (default) // : "ezp_list_builtin",
+  range_builtin             /*   ::= "range(" argument_list ")"                         (default) // : "ezp_range_builtin",
+  len_builtin               /*   ::= "len(" argument_list ")"                           (default) // : "ezp_len_builtin",
+// lists
+  key_datum_list            /*   ::= key_datum ("," key_datum)* [","]                   (default) // : "ezp_key_datum_list",
+  slice_list                /*   ::= slice_item ("," slice_item)* [","]                 (default) // : "ezp_slice_list",
+  non_void_starred_item_list /*   ::= starred_item ( ',' starred_item ) * [',']          (default) // : "ezp_non_void_starred_item_list",
+  comp_iter_list            /*   ::= (comp_iter) *                                      (default) // : "ezp_comp_iter_list",
+  target_list               /*   ::= target ("," target)* [","]                         (default) // : "ezp_target_list",
+  non_void_module_as_list   /*   ::= module_as ( "," module_as )*                       (default) // : "ezp_non_void_module_as_list",
+  non_void_import_identifier_as_list /*   ::= import_identifier_as ( "," import_identifier_as )* (default) // : "ezp_non_void_import_identifier_as_list",
+  non_void_identifier_list  /*   ::= identifier ("," identifier)*                       (default) // : "ezp_non_void_identifier_list",
+  dotted_name               /*   ::= identifier ("." identifier)*                       (default) // : "ezp_dotted_name",
+  with_item_list            /*   ::= with_item ("," with_item)*                         (default) // : "ezp_with_item_list",
+// wrappers, like starred_item ::=  expression | star_expr
+  atom                      /*   ::= identifier | literal | enclosure | builtin_object  (default) // : "ezp_atom",
+  enclosure                 /*   ::= parenth_form | list_display | dict_display | set_display | generator_expression | yield_atom (default) // : "ezp_enclosure",
+  literal                   /*   ::= stringliteral | numberliteral | imagnumber | docstring (default) // : "ezp_literal",
+  comp_iter                 /*   ::= comp_for | comp_if                                 (default) // : "ezp_comp_iter",
+  key_datum                 /*   ::= key_datum_concrete | or_expr_star_star             (default) // : "ezp_key_datum",
+  yield_expression          /*   ::= yield_expression_list | yield_from_expression      (default) // : "ezp_yield_expression",
+  primary                   /*   ::= atom | attributeref | subscription | slicing | call (default) // : "ezp_primary",
+  slice_item                /*   ::= expression | proper_slice                          (default) // : "ezp_slice_item",
+  power                     /*   ::= await_or_primary | power_concrete                  (default) // : "ezp_power",
+  u_expr                    /*   ::= power | u_expr_concrete                            (default) // : "ezp_u_expr",
+  m_expr                    /*   ::= u_expr | m_expr_concrete                           (default) // : "ezp_m_expr",
+  a_expr                    /*   ::= m_expr | a_expr_concrete                           (default) // : "ezp_a_expr",
+  shift_expr                /*   ::= a_expr | shift_expr_concrete                       (default) // : "ezp_shift_expr",
+  and_expr                  /*   ::= shift_expr | and_expr_concrete                     (default) // : "ezp_and_expr",
+  xor_expr                  /*   ::= and_expr | xor_expr_concrete                       (default) // : "ezp_xor_expr",
+  or_expr                   /*   ::= xor_expr | or_expr_concrete                        (default) // : "ezp_or_expr",
+  comparison                /*   ::= or_expr | number_comparison | object_comparison    (default) // : "ezp_comparison",
+  or_test                   /*   ::= and_test | or_test_concrete                        (default) // : "ezp_or_test",
+  and_test                  /*   ::= not_test | and_test_concrete                       (default) // : "ezp_and_test",
+  not_test                  /*   ::= comparison | not_test_concrete                     (default) // : "ezp_not_test",
+  conditional_expression    /*   ::= or_test | conditional_expression_concrete          (default) // : "ezp_conditional_expression",
+  expression                /*   ::= conditional_expression | lambda_expr               (default) // : "ezp_expression",
+  expression_nocond         /*   ::= or_test | lambda_expr_nocond                       (default) // : "ezp_expression_nocond",
+  starred_item              /*   ::= expression | star_expr                             (default) // : "ezp_starred_item",
+  not_a_variable            /*   ::= attribute_identifier | module | module_as | module_identifier | module_alias | import_identifier | import_alias | relative_module | import_identifier_as (default) // : "ezp_not_a_variable",
+  numberliteral             /*   ::= bytesliteral | number | numberliteral_concrete     (default) // : "ezp_numberliteral",
+  number                    /*   ::= integer | floatnumber                              (default) // : "ezp_number",
+  starred_item_list_comprehensive /*   ::= starred_item | comprehension                       (default) // : "ezp_starred_item_list_comprehensive",
+  non_void_starred_item_list_comprehensive /*   ::= starred_item | comprehension                       (default) // : "ezp_non_void_starred_item_list_comprehensive",
+  key_datum_list_comprehensive /*   ::= key_datum | dict_comprehension                     (default) // : "ezp_key_datum_list_comprehensive",
+  argument_any              /*   ::= expression | expression_star | expression_star_star | keyword_item (default) // : "ezp_argument_any",
+  argument_list_comprehensive /*   ::= argument_list | comprehension                      (default) // : "ezp_argument_list_comprehensive",
+  await_or_primary          /*   ::= await_expr | primary                               (default) // : "ezp_await_or_primary",
+  algebra_choice            /*   ::= m_expr_concrete | a_expr_concrete                  (default) // : "ezp_algebra_choice",
+  bitwise_choice            /*   ::= shift_expr_concrete | and_expr_concrete | xor_expr_concrete | or_expr_concrete (default) // : "ezp_bitwise_choice",
+  boolean_choice            /*   ::= and_test_concrete | or_test_concrete               (default) // : "ezp_boolean_choice",
+  unary_choice              /*   ::= u_expr_concrete | not_test_concrete                (default) // : "ezp_unary_choice",
+  target                    /*   ::= target_unstar | target_star                        (default) // : "ezp_target",
+  augtarget                 /*   ::= identifier | attributeref | subscription | slicing (default) // : "ezp_augtarget",
+  module                    /*   ::= module_name | module_concrete                      (default) // : "ezp_module",
+  relative_module           /*   ::= module | parent_module                             (default) // : "ezp_relative_module",
+  assigned_list             /*   ::= starred_item | assigned_single                     (default) // : "ezp_assigned_list",
+  assigned_single           /*   ::= yield_expression | assignment_expression           (default) // : "ezp_assigned_single",
+  augassign_list            /*   ::= augassign_list_concrete | augassign_content        (default) // : "ezp_augassign_list",
+  augassign_content         /*   ::= expression | yield_expression                      (default) // : "ezp_augassign_content",
+  target_unstar             /*   ::= identifier | parenth_target_list | bracket_target_list | attributeref | subscription | slicing (default) // : "ezp_target_unstar",
+  import_expr               /*   ::= import_module | from_relative_module_import | from_module_import (default) // : "ezp_import_expr",
+  module_as                 /*   ::= module | module_as_concrete                        (default) // : "ezp_module_as",
+  module_alias              /*   ::= identifier                                         (default) // : "ezp_module_alias",
+  import_identifier_as      /*   ::= import_identifier | import_identifier_as_concrete  (default) // : "ezp_import_identifier_as",
+  import_identifier         /*   ::= identifier                                         (default) // : "ezp_import_identifier",
+  import_alias              /*   ::= identifier                                         (default) // : "ezp_import_alias",
+  raise_expression          /*   ::= expression | expression_from                       (default) // : "ezp_raise_expression",
+  with_item                 /*   ::= expression | with_item_concrete                    (default) // : "ezp_with_item",
+  decorator                 /*   ::= decorator_expr | decorator_call_expr               (default) // : "ezp_decorator",
+  parameter                 /*   ::= identifier | parameter_concrete                    (default) // : "ezp_parameter",
+  defparameter              /*   ::= parameter | defparameter_concrete                  (default) // : "ezp_defparameter",
+  expression_except         /*   ::= expression | expression_as_name                    (default) // : "ezp_expression_except",
+  funcdef_expr              /*   ::= funcdef_simple | funcdef_typed                     (default) // : "ezp_funcdef_expr",
+  dotted_funcname           /*   ::= funcname | dotted_funcname_concrete                (default) // : "ezp_dotted_funcname",
+  parameter_any             /*   ::= parameter | defparameter | parameter_star | parameter_star_star (default) // : "ezp_parameter_any",
+  classdef_expr             /*   ::= classdef_simple | classdef_derived  
+*/

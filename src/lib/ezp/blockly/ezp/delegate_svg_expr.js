@@ -250,7 +250,7 @@ ezP.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr)
  * @param {string} prototypeName.
  * @param {string} surroundInputName, which parent's connection to use
  */
-ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, subtype, surroundInputName) {
+ezP.DelegateSvg.Expr.prototype.canInsertBlockAbove = function(block, prototypeName, subtype, surroundInputName) {
   var can = false
   Blockly.Events.disable()
   var B = block.workspace.newBlock(prototypeName)
@@ -282,13 +282,16 @@ ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, s
  */
 ezP.DelegateSvg.Expr.prototype.insertSurroundParent = function(block, surroundPrototypeName, subtype, surroundInputName, fill_holes) {
 //  console.log('insertSurroundParent', block, surroundPrototypeName, subtype, surroundInputName)
-  Blockly.Events.setGroup(true)
+  Blockly.Events.disable()
   var surroundBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, surroundPrototypeName)
   surroundBlock.ezp.setSubtype(surroundBlock, subtype)
+  Blockly.Events.enable()
   console.log('block created of type', surroundPrototypeName)
   if (surroundInputName) {
     var surroundInput = surroundBlock.getInput(surroundInputName)
     goog.asserts.assert(surroundInput, 'No input named '+surroundInputName)
+    surroundInputC8n = surroundInput.connection
+    goog.asserts.assert(surroundInputC8n, 'Unexpected dummy input '+surroundInputName)
   } else if ((surroundInput = surroundBlock.getInput(ezP.Key.LIST))) {
     var list = surroundInput.connection.targetBlock()
     goog.asserts.assert(list, 'Missing list block inside '+block.type)
@@ -296,29 +299,43 @@ ezP.DelegateSvg.Expr.prototype.insertSurroundParent = function(block, surroundPr
     // none of them is actually connected because this is very fresh
     // get the middle input.
     surroundInput = list.getInput(ezP.Do.Name.middle_name)
+    surroundInputC8n = surroundInput.connection
+    goog.asserts.assert(surroundInputC8n, 'Unexpected dummy input '+surroundInputName)
   } else {
-    // find the first input that can accept block
-    for (var i = 0; (surroundInput = surroundBlock.inputList[i++]);) {
-      var surroundInputC8n = surroundInput.connection
-      if (surroundInputC8n) {
-        if (!surroundInputC8n.check_ || surroundInputC8n.check_.indexOf(block.type)>=0) {
-          break
+    // find the first connection that can accept block
+    var findC8n = function(B) {
+      var foundC8n, target
+      for (var i = 0, input; (input = B.inputList[i++]);) {
+        var c8n = input.connection
+        if (c8n) {
+          var candidate
+          if (c8n.checkType_(block.outputConnection)) {
+            candidate = c8n
+          } else if ((target = c8n.targetBlock())) {
+            candidate = findC8n(target)
+          }
+          if (candidate) {
+            if (candidate.ezp.name === surroundInputName) {
+              foundC8n = candidate
+              break
+            }
+            if (!foundC8n) {
+              foundC8n = candidate
+            }
+          }
         }
       }
+      return foundC8n
     }
-    if (!surroundInput) {
-      surroundBlock.dispose(true)
-      return undefined
-    }
+    var surroundInputC8n = findC8n(surroundBlock)
   }
   // Next connections should be connected
   var outputC8n = block.outputConnection
-  var surroundInputC8n = surroundInput.connection
-  console.log('Should connect', block.type, 'to input', surroundInput.name, 'of type', surroundPrototypeName)
-  console.log('block check:', block.outputConnection.check_)
-  console.log('above check:', surroundInputC8n.check_)
-  goog.asserts.assert(surroundInputC8n, 'Unexpected dummy input '+surroundInputName)
-  if (surroundInputC8n.checkType_(outputC8n)) {
+  if (surroundInputC8n && surroundInputC8n.checkType_(outputC8n)) {
+    Blockly.Events.setGroup(true)
+    if (Blockly.Events.isEnabled()) {
+      Blockly.Events.fire(new Blockly.Events.BlockCreate(surroundBlock))
+    }
     var targetC8n = surroundInputC8n.targetConnection
     if (targetC8n/* && targetC8n.isConnected()*/) {
       console.log('input already connected, disconnect and dispose target')
@@ -346,9 +363,6 @@ ezP.DelegateSvg.Expr.prototype.insertSurroundParent = function(block, surroundPr
       var my_xy = surroundBlock.getRelativeToSurfaceXY();
       surroundBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
     }
-    console.log('Will connect', block.type, 'to input', surroundInput.name, 'of type', surroundPrototypeName)
-    console.log('block check:', outputC8n.check_)
-    console.log('above check:', surroundInputC8n.check_)
     surroundInputC8n.connect(outputC8n)
     if (fill_holes) {
       var holes = ezP.HoleFiller.getDeepHoles(surroundBlock)
@@ -358,11 +372,11 @@ ezP.DelegateSvg.Expr.prototype.insertSurroundParent = function(block, surroundPr
     if (bumper) {
       bumper.bumpNeighbours_()
     }  
+    Blockly.Events.setGroup(false)
   } else {
-    surroundBlock.dispose()
+    surroundBlock.dispose(true)
     surroundBlock = undefined
   }
-  Blockly.Events.setGroup(false)
   return surroundBlock
 }
 
@@ -532,23 +546,41 @@ ezP.DelegateSvg.Expr.not_test_concrete = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.not_test_concrete, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('not_test_concrete')
 
+goog.provide('ezP.DelegateSvg.Expr.number')
+
 /**
-* Class for a DelegateSvg, integer.
+* Class for a DelegateSvg, number.
 * For ezPython.
 * @param {?string} prototypeName Name of the language object containing
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Expr.integer = function (prototypeName) {
-  ezP.DelegateSvg.Expr.integer.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.number = function (prototypeName) {
+  ezP.DelegateSvg.Expr.number.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
     awaitable: true,
     number: '0',
   }
-  this.outputModel_.check = ezP.T3.Expr.integer
+  this.outputModel_.check = ezP.T3.Expr.Check.number
 }
-goog.inherits(ezP.DelegateSvg.Expr.integer, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('integer')
+goog.inherits(ezP.DelegateSvg.Expr.number, ezP.DelegateSvg.Expr)
+
+ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.integer, ezP.DelegateSvg.Expr.number)
+ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.floatnumber, ezP.DelegateSvg.Expr.number)
+
+/**
+ * Initialize a block.
+ * @param {!Blockly.Block} block to be initialized..
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Expr.number.prototype.initBlock = function (block) {
+  ezP.DelegateSvg.Expr.number.superClass_.initBlock.call(this, block)
+  var value = block.ezp.inputs.first.fieldCodeNumber.getValue()
+  if (block.type === ezP.T3.Expr.floatnumber && value.match(ezP.RE.decinteger)) {
+    value += '.'
+    block.ezp.inputs.first.fieldCodeNumber.setValue(value)
+  }
+}
 
 /**
  * Get the subtype of the block.
@@ -559,7 +591,7 @@ ezP.DelegateSvg.Manager.register('integer')
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return None
  */
-ezP.DelegateSvg.Expr.integer.prototype.getSubtype = function (block) {
+ezP.DelegateSvg.Expr.number.prototype.getSubtype = function (block) {
   return block.ezp.inputs.first.fieldCodeNumber.getValue()
 }
 
@@ -572,51 +604,53 @@ ezP.DelegateSvg.Expr.integer.prototype.getSubtype = function (block) {
  * @param {string} subtype Is a function.
  * @return true if the receiver supports subtyping, false otherwise
  */
-ezP.DelegateSvg.Expr.integer.prototype.setSubtype = function (block, subtype) {
-  var type = ezP.Do.typeOfString(subtype)
-  if (type === ezP.T3.Expr.integer) {
+ezP.DelegateSvg.Expr.number.prototype.setSubtype = function (block, subtype) {
+  if (subtype.match(ezP.RE.decinteger) ||
+  subtype.match(ezP.RE.octinteger) ||
+  subtype.match(ezP.RE.hexinteger) ||
+  subtype.match(ezP.RE.bininteger)) {
     block.ezp.inputs.first.fieldCodeNumber.setValue(subtype)
-    return true  
+    if (block.type !== ezP.T3.Expr.integer) {
+      block.type = ezP.T3.Expr.integer
+      block.ezp.setupType(block)
+    }
+    return true
+  } else if (subtype.match(ezP.RE.pointfloat) ||
+  subtype.match(ezP.RE.exponentfloat)) {
+    block.ezp.inputs.first.fieldCodeNumber.setValue(subtype)
+    if (block.type !== ezP.T3.Expr.floatnumber) {
+      block.type = ezP.T3.Expr.floatnumber
+      block.ezp.setupType(block)
+    }
+    return true
   }
   return false
 }
 
 /**
-* Class for a DelegateSvg, floatnumber.
-* For ezPython.
-* @param {?string} prototypeName Name of the language object containing
-*     type-specific functions for this block.
-* @constructor
-*/
-ezP.DelegateSvg.Expr.floatnumber = function (prototypeName) {
-  ezP.DelegateSvg.Expr.floatnumber.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first = {
-    awaitable: true,
-    number: '0.',
-  }
-  this.outputModel_.check = ezP.T3.Expr.floatnumber
-}
-goog.inherits(ezP.DelegateSvg.Expr.floatnumber, ezP.DelegateSvg.Expr.integer)
-ezP.DelegateSvg.Manager.register('floatnumber')
-
-/**
- * Set the subtype of the block.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is expected.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return true if the receiver supports subtyping, false otherwise
+ * Set the type dynamically from the content of some field.
+ * @param {!Blockly.Block} block the owner of the receiver
+ * @param {!string} name the name of the field that did change
+ * @param {!string} oldValue the value before the change
  */
-ezP.DelegateSvg.Expr.floatnumber.prototype.setSubtype = function (block, subtype) {
-  var type = ezP.Do.typeOfString(subtype)
-  if (type === ezP.T3.Expr.floatnumber) {
-    block.ezp.inputs.first.fieldCodeNumber.setValue(subtype)
-    return true  
+ezP.DelegateSvg.Expr.number.prototype.fieldValueDidChange = function(block, name, oldValue) {
+  var text = block.getField(name).getText()
+  if ((text.match(ezP.RE.decinteger) ||
+  text.match(ezP.RE.octinteger) ||
+  text.match(ezP.RE.hexinteger) ||
+  text.match(ezP.RE.bininteger)) &&
+  block.type !== ezP.T3.Expr.integer) {
+    block.type = ezP.T3.Expr.integer
+    block.ezp.setupType(block)
+  } else if ((text.match(ezP.RE.pointfloat) ||
+  text.match(ezP.RE.exponentfloat)) &&
+  block.type !== ezP.T3.Expr.floatnumber) {
+    block.type = ezP.T3.Expr.floatnumber
+    block.ezp.setupType(block)
   }
-  return false
 }
 
+goog.provide('ezP.DelegateSvg.Expr.imagnumber')
 /**
 * Class for a DelegateSvg, imagnumber.
 * For ezPython.
@@ -630,12 +664,75 @@ ezP.DelegateSvg.Expr.imagnumber = function (prototypeName) {
     awaitable: true,
     key: ezP.Key.VALUE,
     check: ezP.T3.Expr.Check.number,
-    end:'j'
+    css_class: 'ezp-code-reserved',
+    hole_value: function(workspace) {
+      var B = ezP.DelegateSvg.newBlockComplete(workspace, ezP.T3.Expr.integer)
+      B.ezp.setSubtype(B, '1')
+      B.render()
+      return B
+    },
+    end:'j',
   }
   this.outputModel_.check = ezP.T3.Expr.imagnumber
 }
 goog.inherits(ezP.DelegateSvg.Expr.imagnumber, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('imagnumber')
+
+
+/**
+ * Get the subtype of the block.
+ * The default implementation does nothing.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is return, when defined or not null.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.DelegateSvg.Expr.imagnumber.prototype.getSubtype = function (block) {
+  for (var i = 0, input; (input = block.inputList[i++]);) {
+    var c8n = input.connection
+    if (c8n) {
+      var target = c8n.targetBlock()
+      if (target) {
+        return target.ezp.getSubtype(target)
+      }
+    }
+  }
+  return ''
+}
+
+/**
+ * Set the subtype of the block.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is expected.
+ * Undo support ?
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return true if the receiver supports subtyping, false otherwise
+ */
+ezP.DelegateSvg.Expr.imagnumber.prototype.setSubtype = function (block, subtype) {
+  var setSubtype = function(subtype) {
+    for (var i = 0, input; (input = block.inputList[i++]);) {
+      var c8n = input.connection
+      if (c8n) {
+        var target = c8n.getSourceBlock()
+        if (target && goog.isFunction(target.setSubtype)) {
+          if (subtype.length) {
+            return target.ezp.setSubtype(target, subtype)
+          } else {
+            target.dispose(true)
+            return true
+          }
+        }
+      }
+    }
+    return false
+  }
+  return setSubtype(subtype) || (ezP.HoleFiller.fillDeepHoles(block.workspace, ezP.HoleFiller.getDeepHoles(block)), setSubtype(subtype))
+}
+
+goog.provide('ezP.DelegateSvg.Expr.stringliteral')
 
 /**
 * Class for a DelegateSvg, string litteral.
@@ -665,6 +762,22 @@ ezP.DelegateSvg.Expr.stringliteral = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.stringliteral, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('stringliteral')
 ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.bytesliteral, ezP.DelegateSvg.Expr.stringliteral)
+
+/**
+ * Initialize a block.
+ * @param {!Blockly.Block} block to be initialized..
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Expr.stringliteral.prototype.initBlock = function (block) {
+  ezP.DelegateSvg.Expr.stringliteral.superClass_.initBlock.call(this, block)
+  if (block.type === ezP.T3.Expr.bytesliteral) {
+    var fieldPrefix = this.inputs.first.fieldLabel
+    var prefix = fieldPrefix.getValue()
+    if (prefix.toLowerCase().indexOf('b')<0) {
+      fieldPrefix.setValue(prefix + 'b')
+    }
+  }
+}
 
 /**
  * Populate the context menu for the given block.
@@ -740,7 +853,7 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.populateContextMenuFirst_ = functio
     })
   }
   if (!oldValue.length) {
-    mgr.addInsertChild(item('u', insert))
+    // mgr.addInsertChild(item('u', insert))
     mgr.addInsertChild(item('r', insert))
     mgr.addInsertChild(item('f', insert))
     mgr.addInsertChild(item('b', insert))
@@ -758,7 +871,7 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.populateContextMenuFirst_ = functio
     mgr.addRemoveChild(item('b', remove))
   } else {
     mgr.addRemoveChild(item('r', remove))
-    if (['rf', 'fr',].indexOf(prefix.toLowerCase())<0) {
+    if (['rf', 'fr',].indexOf(oldValue.toLowerCase())<0) {
       mgr.addRemoveChild(item('b', remove))
     } else {
       mgr.addRemoveChild(item('f', remove))
@@ -802,30 +915,7 @@ ezP.DelegateSvg.Expr.stringliteral.prototype.willRender_ = function (block) {
 }
 
 /**
- * Records the prefix as attribute.
- * @param {!Blockly.Block} block.
- * @param {!Element} element dom element to be completed.
- * @override
- */
-ezP.DelegateSvg.Expr.stringliteral.prototype.toDom = function (block, element) {
-  ezP.DelegateSvg.Expr.stringliteral.superClass_.toDom.call(this, block, element)
-  element.setAttribute('prefix', this.inputs.first.fieldLabel.getText())
-}
-
-/**
- * Set the prefix from the attribute.
- * @param {!Blockly.Block} block.
- * @param {!Element} element dom element to be completed.
- * @override
- */
-ezP.DelegateSvg.Expr.stringliteral.prototype.fromDom = function (block, element) {
-  ezP.DelegateSvg.Expr.stringliteral.superClass_.fromDom.call(this, block, element)
-  var attribute = element.getAttribute('prefix')
-  this.inputs.first.fieldLabel.setText(attribute)
-}
-
-/**
- * Set the operator from the attribute.
+ * Set the type dynamically from the content of some field.
  * @param {!Blockly.Block} block the owner of the receiver
  * @param {!string} name the name of the field that did change
  * @param {!string} oldValue the value before the change
@@ -1043,6 +1133,8 @@ ezP.DelegateSvg.Expr.any.prototype.fromDom = function (block, element) {
   this.inputs.first.fieldCodeInput.setText(value)
 }
 
+goog.provide('ezP.DelegateSvg.Expr.docstring')
+
 /**
 * Class for a DelegateSvg, docstring (expression).
 * For ezPython.
@@ -1126,6 +1218,7 @@ ezP.DelegateSvg.Expr.docstring.prototype.willRender_ = function (block) {
   var field = this.inputs.first.fieldLabel
   field.setVisible(field.getValue().length)
 }
+
 /**
  * Get the subtype of the block.
  * The default implementation does nothing.
@@ -1151,4 +1244,37 @@ ezP.DelegateSvg.Expr.docstring.prototype.getSubtype = function (block) {
 ezP.DelegateSvg.Expr.docstring.prototype.setSubtype = function (block, subtype) {
   this.inputs.last.fieldCodeString.setValue(subtype || '')
   return true
+}
+
+/**
+ * Get the value of the block.
+ * Used for simple blocks, form and to dom.
+ * Default implementation returns the subtype.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {?string} value
+ */
+ezP.DelegateSvg.Expr.docstring.prototype.getValue = function (block) {
+  return block.ezp.toPythonExpression(block)
+}
+
+/**
+ * Set the value of the block.
+ * Used for simple blocks, form and to dom.
+ * Default implementation sets the subtype.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {?string} value
+ */
+ezP.DelegateSvg.Expr.docstring.prototype.setValue = function (block, value) {
+  var del = "'''", text = value
+  if (value.length > 5) {
+    del = value.substr(0, 3)
+    if (del === '"""' || del === "'''") {
+      text = value.substr(3, value.length-6)
+    }
+  }
+  block.ezp.inputs.last.fieldLabelStart.setValue(del)
+  block.ezp.inputs.last.fieldLabelEnd.setValue(del)
+  block.ezp.setSubtype(block, text)
 }

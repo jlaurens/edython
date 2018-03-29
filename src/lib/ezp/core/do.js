@@ -13,7 +13,7 @@
 
 goog.provide('ezP.Do')
 
-goog.require('ezP')
+goog.require('ezP.Const')
 
 ezP.Do.Name = function () {
   // characters are in ]MIN, MAX[
@@ -301,10 +301,10 @@ ezP.Do.typeOfString = function (candidate) {
     return 'builtin keyword'
   }
   // is it a number ?
-  if (candidate.match(ezP.RE.decimalinteger) || candidate.match(ezP.RE.octinteger) || candidate.match(ezP.RE.hexinteger) || candidate.match(ezP.RE.bininteger)) {
+  if (candidate.match(ezP.RE.decinteger) || candidate.match(ezP.RE.octinteger) || candidate.match(ezP.RE.hexinteger) || candidate.match(ezP.RE.bininteger)) {
     return ezP.T3.Expr.integer
   }
-  if (candidate.match(ezP.RE.pointfloat) || candidate.match(ezP.RE.exponentfloat)) {
+  if (candidate.match(ezP.RE.floatnumber)) {
     return ezP.T3.Expr.floatnumber
   }
   if (candidate.match(ezP.RE.imagnumber)) {

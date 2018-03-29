@@ -210,8 +210,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
           ezp.disabled_ = D.disabled && !D.enabled
           if ((v = D.check)) {
             out.input.setCheck(v)
-            var value = goog.isFunction(D.hole_value)?D.hole_value(block): D.hole_value
-            ezp.hole_data = ezP.HoleFiller.getData(v, value)
+            ezp.hole_data = ezP.HoleFiller.getData(v, D.hole_value)
           } else if ((v = D.check = D.wrap)) {
             out.input.setCheck(v)
           }
@@ -2410,6 +2409,9 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
         return B
       }
     }
+  }
+  if (B) {
+    B.dispose(true)
   }
   return null
 }

@@ -311,7 +311,6 @@ ezP.ID.COLLAPSE_BLOCK = 'COLLAPSE_BLOCK'
 ezP.ID.TOGGLE_ENABLE_BLOCK = 'TOGGLE_ENABLE_BLOCK'
 ezP.ID.DELETE_BLOCK = 'DELETE_BLOCK'
 ezP.ID.HELP = 'HELP'
-ezP.ID.FILL_DEEP_HOLES = 'FILL_DEEP_HOLES'
 
 /**
  * Populate the context menu for the given block.
@@ -351,8 +350,11 @@ ezP.MenuManager.prototype.populateLast = function (block) {
   var menuItem
   var holes = ezP.HoleFiller.getDeepHoles(block)
   menuItem = new ezP.MenuItem(
-    ezP.Msg.FILL_DEEP_HOLES,
-    {action: ezP.ID.FILL_DEEP_HOLES, holes: holes})
+    ezP.Msg.FILL_DEEP_HOLES, function() {
+      Blockly.Events.setGroup(true)
+      ezP.HoleFiller.fillDeepHoles(block.workspace, holes)
+      Blockly.Events.setGroup(false)
+    })
     menuItem.setEnabled(holes.length > 0);
   this.addChild(menuItem, true)
   if (block.isMovable() && !block.isInFlyout) {
@@ -470,7 +472,7 @@ ezP.MenuManager.prototype.populateLast = function (block) {
   
   menuItem = new ezP.MenuItem(
     block.ezp.getPythonSort(block), function(event) {
-      var xmlDom = Blockly.Xml.blockToDom(block)
+      var xmlDom = Blockly.Xml.blockToDom(block, true)
       var xmlText = Blockly.Xml.domToText(xmlDom)
       console.log(xmlText)
     }
@@ -492,6 +494,16 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     function(b, e) {
       console.log('Python code for', block.type)
       console.log(block.ezp.toPython(block, true))  
+    })
+  menuItem.setEnabled(true)
+  this.addChild(menuItem, true)
+
+  menuItem = new ezP.MenuItem(
+    'workspace',
+    function(b, e) {
+      var xmlDom = Blockly.Xml.workspaceToDom(block.workspace, true)
+      var xmlText = Blockly.Xml.domToText(xmlDom)
+      console.log(xmlText)
     })
   menuItem.setEnabled(true)
   this.addChild(menuItem, true)
@@ -558,11 +570,6 @@ ezP.MenuManager.prototype.handleActionLast = function (block, event) {
   switch(model.action) {
     case ezP.ID.DUPLICATE_BLOCK:
       Blockly.duplicate_(target)
-      return true
-    case ezP.ID.FILL_DEEP_HOLES:
-      Blockly.Events.setGroup(true)
-      ezP.HoleFiller.fillDeepHoles(block.workspace, model.holes)
-      Blockly.Events.setGroup(false)
       return true
     case ezP.ID.REMOVE_COMMENT:
     target.setCommentText(null)
