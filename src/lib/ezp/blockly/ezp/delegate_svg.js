@@ -2291,16 +2291,15 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
   if (B.ezp.setSubtype(B, c8n_N)) {
     c8n_N = undefined
   }
-  Blockly.Events.enable()
   if (!B) {
+    Blockly.Events.enable()
     return
   }
   var c8n, otherC8n, foundC8n
   var fin = function(prepare) {
+    Blockly.Events.enable()
     Blockly.Events.setGroup(true)
-    if (Blockly.Events.isEnabled()) {
-      Blockly.Events.fire(new Blockly.Events.BlockCreate(block))
-    }
+    Blockly.Events.fire(new Blockly.Events.BlockCreate(block))
     B.render()
     if (goog.isFunction(prepare)) {
       prepare()
@@ -2309,31 +2308,29 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
     B.select()
     B.bumpNeighbours_()
     Blockly.Events.setGroup(false)
+    return B
   }
   if ((otherC8n = ezP.SelectedConnection.get())) {
     var otherSource = otherC8n.getSourceBlock()
     if (otherC8n.type === Blockly.INPUT_VALUE) {
       if ((c8n = B.outputConnection)&& c8n.checkType_(otherC8n)) {
-        fin()
-        return B
+        return fin()
       }
     } else if (otherC8n === otherSource.previousConnection) {
       if ((c8n = B.nextConnection)&& c8n.checkType_(otherC8n)) {
         var targetC8n = otherC8n.targetConnection
         if (targetC8n && B.previousConnection
           && targetC8n.checkType_(B.previousConnection)) {
-          fin(function() {
+          return fin(function() {
             targetC8n.connect(B.previousConnection)
           })
-          return B
         } else {
-          fin(function() {
+          return fin(function() {
             var its_xy = block.getRelativeToSurfaceXY();
             var my_xy = B.getRelativeToSurfaceXY();
             var HW = B.getHeightWidth()
             B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y-HW.height)
           })
-          return B
         }
         // unreachable code
       }
@@ -2342,13 +2339,11 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
         var targetC8n = otherC8n.targetConnection
         if (targetC8n && B.nextConnection
           && targetC8n.checkType_(B.nextConnection)) {
-          fin(function() {
+          return fin(function() {
             targetC8n.connect(B.previousConnection)
           })
-          return B
         } else {
-          fin()
-          return B
+          return fin()
         }
       }
     }
@@ -2375,44 +2370,40 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
       return otherC8n
     }
     if ((otherC8n = findC8n(block))) {
-      fin()
-      return B
+      return fin()
     }
   }
   if ((c8n = B.previousConnection)) {
     if ((otherC8n = block.nextConnection) && c8n.checkType_(otherC8n)) {
       if ((targetC8n = otherC8n.targetConnection) && B.nextConnection && B.nextConnection.checkType_(targetC8n)) {
-        fin(function() {
+        return fin(function() {
           B.nextConnection.connect(targetC8n)
         })
-        return B
       } else {
-        fin()
-        return B
+        return fin()
       }
     }
   }
   if ((c8n = B.nextConnection)) {
     if ((otherC8n = block.previousConnection) && c8n.checkType_(otherC8n)) {
       if ((targetC8n = otherC8n.targetConnection) && B.previousConnection && B.previousConnection.checkType_(targetC8n)) {
-        fin(function() {
+        return fin(function() {
           B.previousConnection.connect(targetC8n)
         })
-        return B
       } else {
-        fin(function() {
+        return fin(function() {
           var its_xy = block.getRelativeToSurfaceXY();
           var my_xy = B.getRelativeToSurfaceXY();
           var HW = B.getHeightWidth()
           B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y-HW.height)
         })
-        return B
       }
     }
   }
   if (B) {
     B.dispose(true)
   }
+  Blockly.Events.enable()
   return null
 }
 

@@ -17,6 +17,111 @@ goog.require('Blockly.Xml')
 goog.require('Blockly.Field')
 goog.require('Blockly.FieldVariable')
 
+/**
+ * Decode an XML DOM and create blocks on the workspace.
+ * @overriden to support other kind of blocks
+ * This is a copy with a tiny formal modification.
+ * @param {!Element} xml XML DOM.
+ * @param {!Blockly.Workspace} workspace The workspace.
+ * @return {Array.<string>} An array containing new block IDs.
+ */
+ezP.Xml.domToChildBlock = function(xmlChild, workspace) {
+  var newBlockIds = []
+  var name = xmlChild.nodeName.toLowerCase()
+  if (name == 'literal' || name == 'expr' || name == 'stmt') {
+    var block = Blockly.Xml.domToBlock(xmlChild, workspace);
+    newBlockIds.push(block.id);
+    var blockX = parseInt(xmlChild.getAttribute('x'), 10);
+    var blockY = parseInt(xmlChild.getAttribute('y'), 10);
+    if (!isNaN(blockX) && !isNaN(blockY)) {
+      block.moveBy(blockX, blockY);
+    }
+  }
+  return newBlockIds
+}
+/**
+ * Decode an XML DOM and create blocks on the workspace.
+ * @overriden to support other kind of blocks
+ * This is a copy with a tiny formal modification.
+ * @param {!Element} xml XML DOM.
+ * @param {!Blockly.Workspace} workspace The workspace.
+ * @return {Array.<string>} An array containing new block IDs.
+ */
+Blockly.Xml.domToWorkspace = function(xml, workspace) {
+  if (xml instanceof Blockly.Workspace) {
+    var swap = xml;
+    xml = workspace;
+    workspace = swap;
+    console.warn('Deprecated call to Blockly.Xml.domToWorkspace, ' +
+                 'swap the arguments.');
+  }
+  var width;  // Not used in LTR.
+  if (workspace.RTL) {
+    width = workspace.getWidth();
+  }
+  var newBlockIds = [];  // A list of block IDs added by this call.
+  Blockly.Field.startCache();
+  // Safari 7.1.3 is known to provide node lists with extra references to
+  // children beyond the lists' length.  Trust the length, do not use the
+  // looping pattern of checking the index for an object.
+  var childCount = xml.childNodes.length;
+  var existingGroup = Blockly.Events.getGroup();
+  if (!existingGroup) {
+    Blockly.Events.setGroup(true);
+  }
+
+  // Disable workspace resizes as an optimization.
+  if (workspace.setResizesEnabled) {
+    workspace.setResizesEnabled(false);
+  }
+  var variablesFirst = true;
+  try {
+    for (var i = 0; i < childCount; i++) {
+      var xmlChild = xml.childNodes[i];
+      var name = xmlChild.nodeName.toLowerCase();
+      if (name == 'block'||
+        (name == 'shadow' && !Blockly.Events.recordUndo)) {
+        // Allow top-level shadow blocks if recordUndo is disabled since
+        // that means an undo is in progress.  Such a block is expected
+        // to be moved to a nested destination in the next operation.
+        var block = Blockly.Xml.domToBlock(xmlChild, workspace);
+        newBlockIds.push(block.id);
+        var blockX = parseInt(xmlChild.getAttribute('x'), 10);
+        var blockY = parseInt(xmlChild.getAttribute('y'), 10);
+        if (!isNaN(blockX) && !isNaN(blockY)) {
+          block.moveBy(workspace.RTL ? width - blockX : blockX, blockY);
+        }
+        variablesFirst = false;
+      } else if (name == 'shadow') {
+        goog.asserts.fail('Shadow block cannot be a top-level block.');
+        variablesFirst = false;
+      } else if (name == 'variables') {
+        if (variablesFirst) {
+          Blockly.Xml.domToVariables(xmlChild, workspace);
+        } else {
+          throw Error('\'variables\' tag must exist once before block and ' +
+            'shadow tag elements in the workspace XML, but it was found in ' +
+            'another location.');
+        }
+        variablesFirst = false;
+      } else {
+        newBlockIds = newBlockIds.concat(ezP.Xml.domToChildBlock(xmlChild, workspace))
+      }
+    }
+  } finally {
+    if (!existingGroup) {
+      Blockly.Events.setGroup(false);
+    }
+    Blockly.Field.stopCache();
+  }
+  workspace.updateVariableStore(false);
+  // Re-enable workspace resizing.
+  if (workspace.setResizesEnabled) {
+    workspace.setResizesEnabled(true);
+  }
+  return newBlockIds;
+};
+
 Blockly.Field.prototype.getSerializedXml = function () {
   var container = goog.dom.createDom('field', null, this.getValue())
   container.setAttribute('name', this.name)
@@ -39,13 +144,20 @@ Blockly.FieldVariable.prototype.getSerializedXml = function () {
  * @param {boolean} optNoId True if the encoder should skip the block id.
  * @return {!Element} Tree of XML elements.
  */
+ezP.Xml.blockToDom = Blockly.Xml.blockToDom
 Blockly.Xml.blockToDom = function (block, optNoId) {
+  if (block.type.indexOf('ezp_')<0) {
+    return ezP.Xml.blockToDom(block, optNoId)
+  }
   var element
   if (block.ezp.blockToDom && (element = block.ezp.blockToDom(block, optNoId))) {
     return element
   }
-  var element = goog.dom.createDom(block.isShadow() ? 'shadow' : 'block')
-  element.setAttribute('type', block.type)
+  var element = goog.dom.createDom(block.ezp.xmlTagName(block))
+  var type = block.ezp.xmlType(block)
+  if (type) {
+    element.setAttribute('type', type)
+  }
   if (!optNoId) {
     element.setAttribute('id', block.id)
   }
@@ -178,13 +290,30 @@ Blockly.FieldVariable.prototype.deserializeXml = function (xml) {
  * @return {!Blockly.Block} The root block created.
  * @private
  */
+ezP.Xml.domToBlockHeadless_ = Blockly.Xml.domToBlockHeadless_
 Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
   var block = null
   var prototypeName = xmlBlock.getAttribute('type')
-  goog.asserts.assert(prototypeName, 'Block type unspecified: %s',
-    xmlBlock.outerHTML)
   var id = xmlBlock.getAttribute('id')
-  block = workspace.newBlock(prototypeName, id)
+  if (!prototypeName) {
+    var text = ''
+    for (var i = 0, xmlChild; (xmlChild = xmlBlock.childNodes[i]); i++) {
+      if (xmlChild.nodeType === 3) {
+        text = xmlChild.nodeValue
+        break
+      }
+    }
+    prototypeName = ezP.Do.typeOfString(text) || ezP.T3.Expr.numberliteral
+    if ((block = ezP.DelegateSvg.newBlockComplete(workspace, prototypeName, id))) {
+      block.ezp.setValue(block, text)
+    }
+    return block
+  }
+  if (prototypeName.indexOf('ezp_')<0) {
+    return ezP.Xml.domToBlockHeadless_(xmlBlock, workspace)
+  }
+  var concrete = prototypeName + '_concrete'
+  block = ezP.DelegateSvg.Manager.get(concrete)? workspace.newBlock(concrete, id): workspace.newBlock(prototypeName, id)
 
   if (goog.isFunction(block.ezp.domToBlock)) {
     block.ezp.domToBlock(block, xmlBlock)
@@ -364,11 +493,14 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Expr.blockToDom = function(block, optNoId) {
   var text = block.ezp.getValue(block)
-  var element = goog.dom.createDom('block',
+  var element = goog.dom.createDom(block.ezp.xmlTagName(block),
     null,
     goog.dom.createTextNode(text)
   )
-  element.setAttribute('type', block.type)
+  var t = block.ezp.xmlType(block)
+  if (t) {
+    element.setAttribute('type', block.ezp.xmlType_)
+  }
   if (!optNoId) {
     element.setAttribute('id', block.id)
   }
@@ -393,7 +525,7 @@ ezP.DelegateSvg.Expr.domToBlock = function(block, xml) {
   block.ezp.setValue(block, text)
 }
 
-goog.require('ezP.DelegateSvg.Expr.docstring')
+goog.require('ezP.DelegateSvg.Expr.longstringliteral')
 
 /**
  * Convert the block to a dom element.
@@ -402,7 +534,7 @@ goog.require('ezP.DelegateSvg.Expr.docstring')
  * @param {boolean} optNoId Is a function.
  * @return a dom element
  */
-ezP.DelegateSvg.Expr.docstring.prototype.blockToDom = ezP.DelegateSvg.Expr.blockToDom
+ezP.DelegateSvg.Expr.longstringliteral.prototype.blockToDom = ezP.DelegateSvg.Expr.blockToDom
 
 /**
  * Convert dom element to the block.
@@ -411,9 +543,9 @@ ezP.DelegateSvg.Expr.docstring.prototype.blockToDom = ezP.DelegateSvg.Expr.block
  * @param {Element} xml Is a function.
  * @return a dom element
  */
-ezP.DelegateSvg.Expr.docstring.prototype.domToBlock = ezP.DelegateSvg.Expr.domToBlock
+ezP.DelegateSvg.Expr.longstringliteral.prototype.domToBlock = ezP.DelegateSvg.Expr.domToBlock
 
-goog.require('ezP.DelegateSvg.Expr.number')
+goog.require('ezP.DelegateSvg.Expr.numberliteral')
 
 /**
  * Convert the block to a dom element.
@@ -422,7 +554,7 @@ goog.require('ezP.DelegateSvg.Expr.number')
  * @param {boolean} optNoId Is a function.
  * @return a dom element
  */
-ezP.DelegateSvg.Expr.number.prototype.blockToDom = ezP.DelegateSvg.Expr.blockToDom
+ezP.DelegateSvg.Expr.numberliteral.prototype.blockToDom = ezP.DelegateSvg.Expr.blockToDom
 
 /**
  * Convert dom element to the block.
@@ -431,15 +563,15 @@ ezP.DelegateSvg.Expr.number.prototype.blockToDom = ezP.DelegateSvg.Expr.blockToD
  * @param {Element} xml Is a function.
  * @return a dom element
  */
-ezP.DelegateSvg.Expr.number.prototype.domToBlock = ezP.DelegateSvg.Expr.domToBlock
+ezP.DelegateSvg.Expr.numberliteral.prototype.domToBlock = ezP.DelegateSvg.Expr.domToBlock
 
-goog.require('ezP.DelegateSvg.Expr.stringliteral')
+goog.require('ezP.DelegateSvg.Expr.shortliteral')
 
-ezP.DelegateSvg.Expr.stringliteral.prototype.blockToDom = ezP.DelegateSvg.Expr.blockToDom
+ezP.DelegateSvg.Expr.shortliteral.prototype.blockToDom = ezP.DelegateSvg.Expr.blockToDom
 
-ezP.DelegateSvg.Expr.stringliteral.prototype.domToBlock = ezP.DelegateSvg.Expr.domToBlock
+ezP.DelegateSvg.Expr.shortliteral.prototype.domToBlock = ezP.DelegateSvg.Expr.domToBlock
 
-goog.require('ezP.DelegateSvg.Expr.imagnumber')
+goog.require('ezP.DelegateSvg.Expr.numberliteral')
 
 /**
  * Convert the block to a dom element.
@@ -448,7 +580,7 @@ goog.require('ezP.DelegateSvg.Expr.imagnumber')
  * @param {boolean} optNoId Is a function.
  * @return a dom element
  */
-ezP.DelegateSvg.Expr.imagnumber.prototype.blockToDom = ezP.DelegateSvg.Expr.blockToDom
+ezP.DelegateSvg.Expr.numberliteral.prototype.blockToDom = ezP.DelegateSvg.Expr.blockToDom
 
 /**
  * Convert dom element to the block.
@@ -457,11 +589,52 @@ ezP.DelegateSvg.Expr.imagnumber.prototype.blockToDom = ezP.DelegateSvg.Expr.bloc
  * @param {Element} xml Is a function.
  * @return a dom element
  */
-ezP.DelegateSvg.Expr.imagnumber.prototype.domToBlock = ezP.DelegateSvg.Expr.domToBlock
+ezP.DelegateSvg.Expr.numberliteral.prototype.domToBlock = ezP.DelegateSvg.Expr.domToBlock
+
+goog.require('ezP.DelegateSvg.Operator')
+
+/**
+ * Convert the block to a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {boolean} optNoId Is a function.
+ * @return a dom element
+ */
+ezP.DelegateSvg.Operator.blockToDomUnary = function(block, optNoId) {
+  var element = goog.dom.createDom('block')
+  element.setAttribute('type', block.ezp.xmlType_)
+  if (!optNoId) {
+    element.setAttribute('id', block.id)
+  }
+  element.setAttribute('operator', block.ezp.getValue(block))
+  return element
+}
+
+/**
+ * Convert dom element to the block.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be edited.
+ * @param {Element} xml Is a function.
+ * @return a dom element
+ */
+ezP.DelegateSvg.Operator.domToBlockUnary = function(block, xml) {
+  var operator = xml.getAttribute('operator')
+  block.ezp.setValue(block, operator)
+}
 
 /*
 IN PROGRESS
-  imagnumber                /*   ::=                                                    (default) // : "ezp_imagnumber",
+  power_concrete            /*   ::= await_or_primary "**" u_expr                       (default) // : "ezp_power_concrete",
+  u_expr_concrete           /*   ::= "-" u_expr | "+" u_expr | "~" u_expr               (default) // : "ezp_u_expr_concrete",
+  m_expr_concrete           /*   ::= m_expr "*" u_expr | m_expr "@" m_expr | m_expr "//" u_expr| m_expr "/" u_expr | m_expr "%" u_expr (default) // : "ezp_m_expr_concrete",
+  a_expr_concrete           /*   ::= a_expr "+" m_expr | a_expr "-" m_expr              (default) // : "ezp_a_expr_concrete",
+  shift_expr_concrete       /*   ::= shift_expr ( "<<" | ">>" ) a_expr                  (default) // : "ezp_shift_expr_concrete",
+  and_expr_concrete         /*   ::= and_expr "&" shift_expr                            (default) // : "ezp_and_expr_concrete",
+  xor_expr_concrete         /*   ::= xor_expr "^" and_expr                              (default) // : "ezp_xor_expr_concrete",
+  or_expr_concrete          /*   ::= or_expr "|" xor_expr                               (default) // : "ezp_or_expr_concrete",
+  or_test_concrete          /*   ::= or_test "or" and_test                              (default) // : "ezp_or_test_concrete",
+  and_test_concrete         /*   ::= and_test "and" not_test                            (default) // : "ezp_and_test_concrete",
+  not_test_concrete         /*   ::= "not" not_test                                     (default) // : "ezp_not_test_concrete",
   module_identifier         /*   ::=                                                    (default) // : "ezp_module_identifier",
   attribute_identifier      /*   ::=                                                    (default) // : "ezp_attribute_identifier",
   non_void_expression_list  /*   ::=                                                    (default) // : "ezp_non_void_expression_list",
@@ -483,17 +656,6 @@ IN PROGRESS
   argument_list             /*   ::= argument_any *                                     (default) // : "ezp_argument_list",
   keyword_item              /*   ::= identifier "=" expression                          (default) // : "ezp_keyword_item",
   await_expr                /*   ::= "await" primary                                    (default) // : "ezp_await_expr",
-  power_concrete            /*   ::= await_or_primary "**" u_expr                       (default) // : "ezp_power_concrete",
-  u_expr_concrete           /*   ::= "-" u_expr | "+" u_expr | "~" u_expr               (default) // : "ezp_u_expr_concrete",
-  m_expr_concrete           /*   ::= m_expr "*" u_expr | m_expr "@" m_expr | m_expr "//" u_expr| m_expr "/" u_expr | m_expr "%" u_expr (default) // : "ezp_m_expr_concrete",
-  a_expr_concrete           /*   ::= a_expr "+" m_expr | a_expr "-" m_expr              (default) // : "ezp_a_expr_concrete",
-  shift_expr_concrete       /*   ::= shift_expr ( "<<" | ">>" ) a_expr                  (default) // : "ezp_shift_expr_concrete",
-  and_expr_concrete         /*   ::= and_expr "&" shift_expr                            (default) // : "ezp_and_expr_concrete",
-  xor_expr_concrete         /*   ::= xor_expr "^" and_expr                              (default) // : "ezp_xor_expr_concrete",
-  or_expr_concrete          /*   ::= or_expr "|" xor_expr                               (default) // : "ezp_or_expr_concrete",
-  or_test_concrete          /*   ::= or_test "or" and_test                              (default) // : "ezp_or_test_concrete",
-  and_test_concrete         /*   ::= and_test "and" not_test                            (default) // : "ezp_and_test_concrete",
-  not_test_concrete         /*   ::= "not" not_test                                     (default) // : "ezp_not_test_concrete",
   conditional_expression_concrete /*   ::= or_test "if" or_test "else" expression             (default) // : "ezp_conditional_expression_concrete",
   lambda_expr               /*   ::= lambda_expression "dynamic with cond"              (default) // : "ezp_lambda_expr",
   lambda_expr_nocond        /*   ::= lambda_expression "dynamic without cond"           (default) // : "ezp_lambda_expr_nocond",
@@ -570,7 +732,7 @@ IN PROGRESS
 // wrappers, like starred_item ::=  expression | star_expr
   atom                      /*   ::= identifier | literal | enclosure | builtin_object  (default) // : "ezp_atom",
   enclosure                 /*   ::= parenth_form | list_display | dict_display | set_display | generator_expression | yield_atom (default) // : "ezp_enclosure",
-  literal                   /*   ::= stringliteral | numberliteral | imagnumber | docstring (default) // : "ezp_literal",
+  literal                   /*   ::= shortstringliteral | numberliteral | imagnumber | docstring (default) // : "ezp_literal",
   comp_iter                 /*   ::= comp_for | comp_if                                 (default) // : "ezp_comp_iter",
   key_datum                 /*   ::= key_datum_concrete | or_expr_star_star             (default) // : "ezp_key_datum",
   yield_expression          /*   ::= yield_expression_list | yield_from_expression      (default) // : "ezp_yield_expression",

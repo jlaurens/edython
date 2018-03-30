@@ -351,6 +351,21 @@ class Formatter:
     def feed_statement_available(self):
         self.append('ezP.T3.Stmt.Available = []')
 
+    def feed_xml_types(self):
+        self.append('ezP.T3.Xml = {}\n')
+        Ts = [t for t in self.types if t.is_stmt and t.xml_type]
+        self.append('ezP.T3.Xml.Stmt = {{ // count {}'.format(len(Ts)))
+        template = "    {}: '{}',"
+        for t in Ts:
+            self.append(template.format(t.name, t.xml_type))
+        self.append('}\n')
+        Ts = [t for t in self.types if not t.is_stmt and t.xml_type]
+        self.append('ezP.T3.Xml.Expr = {{ // count {}'.format(len(Ts)))
+        template = "    {}: '{}',"
+        for t in Ts:
+            self.append(template.format(t.name, t.xml_type))
+        self.append('}\n')
+
     def get_T3_data(self):
         self.append("""/**
  * @name ezP.T3
@@ -384,6 +399,8 @@ goog.require('ezP')
         self.feed_alias_checks()
         self.append('')
         self.feed_expression_available()
+        self.append('')
+        self.feed_xml_types()
         return '\n'.join(self.T3_data_)
 
     def get_T3_all(self):

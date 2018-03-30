@@ -41,9 +41,20 @@ ezP.DelegateSvg.Expr.workspaceBlocks = [
   ezP.T3.Expr.floatnumber,
   ezP.T3.Expr.integer,
   ezP.T3.Expr.imagnumber,
-  ezP.T3.Expr.stringliteral,
-  ezP.T3.Expr.bytesliteral,
-  ezP.T3.Expr.docstring,
+  ezP.T3.Expr.shortstringliteral,
+  ezP.T3.Expr.shortbytesliteral,
+  ezP.T3.Expr.longstringliteral,
+  ezP.T3.Expr.u_expr_concrete,
+  ezP.T3.Expr.not_test_concrete,
+  ezP.T3.Expr.power_concrete,
+  ezP.T3.Expr.m_expr_concrete,
+  ezP.T3.Expr.a_expr_concrete,
+  ezP.T3.Expr.shift_expr_concrete,
+  ezP.T3.Expr.and_expr_concrete,
+  ezP.T3.Expr.xor_expr_concrete,
+  ezP.T3.Expr.or_expr_concrete,
+  ezP.T3.Expr.or_test_concrete,
+  ezP.T3.Expr.and_test_concrete,
 ]
 
 /**
@@ -247,10 +258,9 @@ ezP.DelegateSvg.Stmt.comment_stmt.workspaceBlocks = [
   ezP.T3.Stmt.comment_stmt,
 ]
 
-ezP.DelegateSvg.Expr.stringliteral.workspaceBlocks = 
-ezP.DelegateSvg.Expr.number.workspaceBlocks = 
-ezP.DelegateSvg.Expr.imagnumber.workspaceBlocks = [
-  ezP.T3.Expr.stringliteral,
+ezP.DelegateSvg.Expr.shortliteral.workspaceBlocks = 
+ezP.DelegateSvg.Expr.numberliteral.workspaceBlocks = [
+  ezP.T3.Expr.shortstringliteral,
   ezP.T3.Expr.integer,
   ezP.T3.Expr.floatnumber,
   ezP.T3.Expr.imagnumber,
@@ -324,8 +334,8 @@ ezP.DelegateSvg.Expr.augassign_bitwise.workspaceBlocks = ezP.Do.arraysMerged([
 ],
 ezP.T3.Expr.Check.augassign_list)
 
-ezP.DelegateSvg.Expr.docstring.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Expr.docstring,
+ezP.DelegateSvg.Expr.longstringliteral.workspaceBlocks = ezP.Do.arraysMerged([
+  ezP.T3.Expr.longstringliteral,
   ezP.T3.Stmt.docstring_top_stmt,
   ezP.T3.Stmt.docstring_def_stmt,
   ezP.T3.Stmt.funcdef_part,
@@ -342,7 +352,7 @@ ezP.DelegateSvg.Stmt.raise_stmt.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Expr.identifier,
   ezP.T3.Expr.expression_from,
   ezP.T3.Stmt.raise_stmt,
-  ezP.T3.Expr.docstring,
+  ezP.T3.Expr.longstringliteral,
   ezP.T3.Expr.identifier,
   ezP.T3.Stmt.try_part,
   ezP.T3.Stmt.except_part,

@@ -12,10 +12,10 @@ class Types:
     re_pipe = re.compile(r'\s*\|\s*')
     re_concrete_candidate = re.compile(r'\s*([a-z_][a-z_\d]*)\s*\|\s*(.*)\s*$')
     re_star_identifier = re.compile(r'^\s*"(\*+)"\s*([a-z_][a-z_\d]*)\s*$')
-    re_definition = re.compile(r"^\s*(?P<name>[a-zA-Z_][a-zA-Z_\d]*?)\s*(?P<op>::=|!!=|\|\|=)\s*(?P<definition>.*)\s*$")
+    re_definition = re.compile(r"^\s*(?P<name>[a-zA-Z_][a-zA-Z_\d]*?)\s*(?:\(\s*(?P<xml>[a-zA-Z_][a-zA-Z_\d]*?)\s*\))?\s*(?P<op>::=|!!=|\|\|=)\s*(?P<definition>.*)\s*$")
     re_stmt_order = re.compile(r"^\s*(?P<name>\S+)\s*(?P<order><<<|>>>)\s*(?P<what>.*)\s*$")
     re_type_name = re.compile(r"^\s*(?P<type>[^\s\.]*)(?:\.(?P<name>[^\s\.]+))?\s*$")
-    re_linck = re.compile(r"^\s*(?P<definition>\S+)\s*->\s*(?P<alias>.*)\s*$")
+    re_linck = re.compile(r"^\s*(?P<source>\S+)\s*->\s*(?P<alias>.*)\s*$")
     re_category = re.compile(r"^#\s*category\s*:[\s.\d]*(?P<category>[a-zA-Z\s_]*).*$")
     re_ignore = re.compile(r"^\s*[\d@#.'({].*")
 
@@ -96,10 +96,12 @@ class Types:
         for l in data.splitlines():
             m = self.re_definition.match(l)
             if m:
-                name, op, definition = m.group('name'), m.group('op'), m.group('definition')
+                name, xml, op, definition = m.group('name'), m.group('xml'), m.group('op'), m.group('definition')
                 try:
                     t = self.get_type(name, create=True)
                     t.setup_definition(definition, op == r'||=')
+                    if len(xml or ''):
+                        t.xml_type = xml
                     if (op == '!!='):
                         t.is_shallow = True
                 except Exception as exc:
@@ -116,7 +118,7 @@ class Types:
                 continue
             m = self.re_linck.match(l)
             if m:
-                self.lincks[m.group('definition')] = m.group('alias')
+                self.lincks[m.group('source')] = m.group('alias')
                 continue
             m = self.re_category.match(l)
             if m:
@@ -485,7 +487,3 @@ class Types:
     def get_T3_all(self):
         formatter = Formatter(self)
         return formatter.get_T3_all()
-
-    def get_T3_delegates(self):
-        formatter = Formatter(self)
-        return formatter.get_T3_delegates()

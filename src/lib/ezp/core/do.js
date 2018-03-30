@@ -316,11 +316,17 @@ ezP.Do.typeOfString = function (candidate) {
   if (candidate.match(ezP.RE.identifier)) {
     return ezP.T3.Expr.identifier
   }
-  if (candidate.match(ezP.RE.stringliteral)) {
-    return ezP.T3.Expr.stringliteral
+  if (candidate.match(ezP.RE.shortstringliteral)) {
+    return ezP.T3.Expr.shortstringliteral
   }
-  if (candidate.match(ezP.RE.bytesliteral)) {
-    return ezP.T3.Expr.bytesliteral
+  if (candidate.match(ezP.RE.shortbytesliteral)) {
+    return ezP.T3.Expr.shortbytesliteral
+  }
+  if (candidate.match(ezP.RE.longstringliteral)) {
+    return ezP.T3.Expr.longstringliteral
+  }
+  if (candidate.match(ezP.RE.longbytesliteral)) {
+    return ezP.T3.Expr.longbytesliteral
   }
   return undefined
 }

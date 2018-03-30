@@ -289,30 +289,22 @@ ezP.FieldCodeComment.prototype.placeholderText = function() {
 ezP.FieldCodeNumber = function (text) {
   var field = this
   var validator = function(txt) {
-    var block = field.sourceBlock_
-    var c8n = block.outputConnection.targetConnection
-    var check = c8n? c8n.check_: undefined
-    var validator_ = function(txt, REs, type) {
-      if (check && check.indexOf(type)<0) {
-        return undefined
-      }
-      for( var i = 0, re; (re = REs[i++]);) {
-        if (re.exec(txt)) {
-          field.ezpData.error = false
-          if (ezP.FieldTextInput.htmlInput_) {
-            goog.dom.classlist.remove(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
-          }
-          block.outputConnection.setCheck(type)
-          block.type = type
-          block.ezp.setupType(block)
-          return txt
+    var validator_ = function(txt, re, type) {
+      if (re.exec(txt)) {
+        field.ezpData.error = false
+        if (ezP.FieldTextInput.htmlInput_) {
+          goog.dom.classlist.remove(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
         }
+        var block = field.sourceBlock_
+        block.type = type
+        block.ezp.setupType(block)
+        return txt
       }
       return undefined
     }
-    if (validator_(txt, field.integerREs, ezP.T3.Expr.integer)
-    || validator_(txt, field.floatREs, ezP.T3.Expr.floatnumber)
-    || validator_(txt, field.imagREs, ezP.T3.Expr.imagnumber)) {
+    if (validator_(txt, ezP.RE.integer, ezP.T3.Expr.integer)
+    || validator_(txt, ezP.RE.floatnumber, ezP.T3.Expr.floatnumber)
+    || validator_(txt, ezP.RE.imagnumber, ezP.T3.Expr.imagnumber)) {
       return txt
     }
     field.ezpData.error = true
@@ -322,51 +314,6 @@ ezP.FieldCodeNumber = function (text) {
   ezP.FieldCodeNumber.superClass_.constructor.call(this, text, validator)
 }
 goog.inherits(ezP.FieldCodeNumber, ezP.FieldCodeInput)
-
-ezP.FieldCodeNumber.prototype.integerREs = [
-  /*
-  integer      ::=  decinteger | bininteger | octinteger | hexinteger
-  decinteger   ::=  nonzerodigit (["_"] digit)* | "0"+ (["_"] "0")*
-  bininteger   ::=  "0" ("b" | "B") (["_"] bindigit)+
-  octinteger   ::=  "0" ("o" | "O") (["_"] octdigit)+
-  hexinteger   ::=  "0" ("x" | "X") (["_"] hexdigit)+
-  nonzerodigit ::=  "1"..."9"
-  digit        ::=  "0"..."9"
-  bindigit     ::=  "0" | "1"
-  octdigit     ::=  "0"..."7"
-  hexdigit     ::=  digit | "a"..."f" | "A"..."F"
-  */
-  /^0(b|B)[01_]+$/,
-  /^0(o|O)[0-7_]+$/,
-  /^0(x|X)[0-9a-fA-F_]+$/,
-  /^[1-9][0-9_]*$/,
-  /^0[0_]*$/,
-]
-
-ezP.FieldCodeNumber.prototype.floatREs = [
-/*
-    floatnumber   ::=  pointfloat | exponentfloat
-    pointfloat    ::=  [digitpart] fraction | digitpart "."
-    exponentfloat ::=  (digitpart | pointfloat) exponent
-    digitpart     ::=  digit (["_"] digit)*
-    fraction      ::=  "." digitpart
-    exponent      ::=  ("e" | "E") ["+" | "-"] digitpart
-*/
-  /^([0-9][0-9_]*)?\.[0-9][0-9_]*$/, // [digitpart] fraction
-  /^[0-9][0-9_]*\.$/, // digitpart "."
-  /^[0-9][0-9_]*(e|E)[+-]?[0-9][0-9_]*$/, // digitpart exponent
-  /^([0-9][0-9_]*)?\.[0-9][0-9_]*(e|E)[+-]?[0-9][0-9_]*$/, // [digitpart] fraction exponent
-  /^[0-9][0-9_]*\.(e|E)[+-]?[0-9][0-9_]*$/, // digitpart "." exponent
-]
-
-ezP.FieldCodeNumber.prototype.imagREs = [
-  /^[0-9][0-9_]*(j|J)$/, // [digitpart] fraction
-  /^([0-9][0-9_]*)?\.[0-9][0-9_]*(j|J)$/, // [digitpart] fraction
-  /^[0-9][0-9_]*\.(j|J)$/, // digitpart "."
-  /^[0-9][0-9_]*(e|E)[+-]?[0-9][0-9_]*(j|J)$/, // digitpart exponent
-  /^([0-9][0-9_]*)?\.[0-9][0-9_]*(e|E)[+-]?[0-9][0-9_]*(j|J)$/, // [digitpart] fraction exponent
-  /^[0-9][0-9_]*\.(e|E)[+-]?[0-9][0-9_]*(j|J)$/, // digitpart "." exponent
-]
 
 ezP.FieldCodeNumber.prototype.placeholderText = function() {
   ezP.Msg.PLACEHOLDER_NUMBER
@@ -404,7 +351,7 @@ ezP.FieldCodeString = function (text) {
 goog.inherits(ezP.FieldCodeString, ezP.FieldCodeInput)
 
 ezP.FieldCodeString.prototype.placeholderText = function() {
-  return this.sourceBlock_.type === ezP.T3.Expr.bytesliteral?
+  return this.sourceBlock_.type === ezP.T3.Expr.shortbytesliteral?
   ezP.Msg.PLACEHOLDER_BYTES: ezP.Msg.PLACEHOLDER_STRING
 }
 

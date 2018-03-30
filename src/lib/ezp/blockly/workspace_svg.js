@@ -213,10 +213,53 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function(e) {
  */
 Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function(workspaceXMLElement, type, x, y) {
   console.log('new workspace element:', type)
-  var child = goog.dom.createElement('block')
-  child.setAttribute('type', type)
+  var tag = 'block', xmlType = undefined, text = undefined
+  switch(type) {
+    case ezP.T3.Expr.integer:
+    text ='123'
+    tag = ezP.T3.Xml.Expr.literal
+    xmlType = null
+    break
+    case ezP.T3.Expr.floatnumber:
+    text = '123.'
+    tag = ezP.T3.Xml.Expr.literal
+    xmlType = null
+    break
+    case ezP.T3.Expr.imagnumber:
+    text = '123j'
+    tag = ezP.T3.Xml.Expr.literal
+    xmlType = null
+    break
+    case ezP.T3.Expr.shortstringliteral:
+    text = "r'x'"
+    tag = ezP.T3.Xml.Expr.literal
+    xmlType = null
+    break
+    case ezP.T3.Expr.shortbytesliteral:
+    text = "b'x'"
+    tag = ezP.T3.Xml.Expr.literal
+    xmlType = null
+    break
+    case ezP.T3.Expr.longstringliteral:
+    text = "r'''x'''"
+    tag = ezP.T3.Xml.Expr.literal
+    xmlType = null
+    break
+    case ezP.T3.Expr.longbytesliteral:
+    text = "b'''x'''"
+    tag = ezP.T3.Xml.Expr.literal
+    xmlType = null
+    break
+  }
+  var child = goog.dom.createElement(tag)
+  if (xmlType) {
+    child.setAttribute('type', xmlType)
+  }
   child.setAttribute('x', x)
   child.setAttribute('y', y)
+  if (text) {
+    goog.dom.appendChild(child, goog.dom.createTextNode(text))
+  }
   goog.dom.appendChild(workspaceXMLElement, child)
 }
 

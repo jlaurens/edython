@@ -258,10 +258,10 @@ ezP.Delegate.prototype.type_ = undefined
  * @constructor
  */
 ezP.Delegate.prototype.setupType = function (block) {
-  var regex = new RegExp("^ezp_((?:fake_)?(.*))$")
-  var m = regex.exec(block.type)
+  var m = /^ezp_((?:fake_)?((.*?)(?:_concrete)?))$/.exec(block.type)
   this.pythonSort_ = m? m[1]: block.type
   this.type_ = m? 'ezp_'+m[2]: block.type
+  this.xmlType_ = m? 'ezp_'+m[3]: block.type
 }
 
 /**
@@ -857,4 +857,25 @@ ezP.Delegate.prototype.getValue = function (block) {
  */
 ezP.Delegate.prototype.setValue = function (block, value) {
   return block.ezp.setSubtype(block, value)
+}
+
+/**
+ * The xml type of this block, as it should appear in the saved data.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.Delegate.prototype.xmlType = function (block) {
+  return this.xmlType_
+}
+
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * Dafulet implementation just returns 'block'
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.Delegate.prototype.xmlTagName = function (block) {
+  return 'block'
 }

@@ -45,6 +45,7 @@ class Type:
         self.is_compound = None
         self.is_stmt = None
         self.definition = None
+        self.xml_type = None
         self.setup_name(name)
         self.setup_definition(definition)
 

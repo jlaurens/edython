@@ -96,8 +96,7 @@ Extra part types used to manage docstring placement
 The type of the doctring is dynamically generated depending on its position.
 Rule: a docstring part becomes a top docstring if it is followed by import statements
 <pre>
-docstring_top_stmt ::= docstring+{1}
-docstring ::= triple quoted string
+docstring_top_stmt ::= longstringliteral+{1}
 import_part >>> import_part | docstring_top_stmt | start_stmt | comment_stmt
 docstring_top_stmt >>> docstring_top_stmt | start_stmt | comment_stmt
 </pre>

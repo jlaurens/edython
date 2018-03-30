@@ -569,7 +569,7 @@ ezP.DelegateSvg.Stmt.docstring_def_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.docstring_top_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
     key: ezP.Key.WRAP,
-    wrap: ezP.T3.Expr.docstring,
+    wrap: ezP.T3.Expr.longstringliteral,
   }
   this.statementModel_.previous.check = ezP.T3.Stmt.Previous.docstring_top_stmt
   this.statementModel_.next.check = ezP.T3.Stmt.Next.docstring_top_stmt
@@ -597,7 +597,7 @@ ezP.DelegateSvg.Stmt.docstring_def_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.docstring_def_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
     key: ezP.Key.WRAP,
-    wrap: ezP.T3.Expr.docstring,
+    wrap: ezP.T3.Expr.longstringliteral,
   }
   this.statementModel_.previous.check = ezP.T3.Stmt.Previous.docstring_def_stmt
   this.statementModel_.next.check = ezP.T3.Stmt.Next.docstring_def_stmt
@@ -643,4 +643,15 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.S
     wrapped.ezp.setSubtype(wrapped, subtype)
   }
   return true
+}
+
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * Dafulet implementation just returns 'stmt'
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.DelegateSvg.Stmt.prototype.xmlTagName = function (block) {
+  return 'stmt'
 }
