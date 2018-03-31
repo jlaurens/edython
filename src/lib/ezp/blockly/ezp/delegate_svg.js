@@ -758,7 +758,7 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
             if (root) {
               root.setAttribute('display', 'none')
             } else {
-              console.log('Field with no root: did you ...initSvg()?')
+              // console.log('Field with no root: did you ...initSvg()?')
             }
           }
         }

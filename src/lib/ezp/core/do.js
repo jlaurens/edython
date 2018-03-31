@@ -301,13 +301,13 @@ ezP.Do.typeOfString = function (candidate) {
     return 'builtin keyword'
   }
   // is it a number ?
-  if (candidate.match(ezP.RE.decinteger) || candidate.match(ezP.RE.octinteger) || candidate.match(ezP.RE.hexinteger) || candidate.match(ezP.RE.bininteger)) {
+  if (ezP.XRE.integer.exec(candidate)) {
     return ezP.T3.Expr.integer
   }
-  if (candidate.match(ezP.RE.floatnumber)) {
+  if (ezP.XRE.floatnumber.exec(candidate)) {
     return ezP.T3.Expr.floatnumber
   }
-  if (candidate.match(ezP.RE.imagnumber)) {
+  if (ezP.XRE.imagnumber.exec(candidate)) {
     return ezP.T3.Expr.imagnumber
   }
   if (candidate === 'start') {
@@ -316,16 +316,16 @@ ezP.Do.typeOfString = function (candidate) {
   if (candidate.match(ezP.RE.identifier)) {
     return ezP.T3.Expr.identifier
   }
-  if (candidate.match(ezP.RE.shortstringliteral)) {
+  if (ezP.XRE.shortstringliteral.exec(candidate)) {
     return ezP.T3.Expr.shortstringliteral
   }
-  if (candidate.match(ezP.RE.shortbytesliteral)) {
+  if (ezP.XRE.shortbytesliteral.exec(candidate)) {
     return ezP.T3.Expr.shortbytesliteral
   }
-  if (candidate.match(ezP.RE.longstringliteral)) {
+  if (ezP.XRE.longstringliteral.exec(candidate)) {
     return ezP.T3.Expr.longstringliteral
   }
-  if (candidate.match(ezP.RE.longbytesliteral)) {
+  if (ezP.XRE.longbytesliteral.exec(candidate)) {
     return ezP.T3.Expr.longbytesliteral
   }
   return undefined

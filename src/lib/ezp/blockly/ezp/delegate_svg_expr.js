@@ -349,7 +349,7 @@ ezP.DelegateSvg.Expr.prototype.insertSurroundParent = function(block, surroundPr
     var bumper
     if (targetC8n) {
       targetC8n.disconnect()
-      if (targetC8n.checkType_(surroundBlock.outputConnection)) {
+      if (surroundBlock.outputConnection && targetC8n.checkType_(surroundBlock.outputConnection)) {
         targetC8n.connect(surroundBlock.outputConnection)
       } else {
         bumper = targetC8n.sourceBlock_
@@ -749,16 +749,6 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.initBlock = function (block) {
 }
 
 /**
- * Set the [python ]type of the delegate according to the type of the block.
- * @param {!Blockly.Block} block to be initialized..
- * @constructor
- */
-ezP.DelegateSvg.Expr.shortliteral.prototype.setupType = function (block) {
-  ezP.DelegateSvg.Expr.shortliteral.superClass_.setupType.call(this, block)
-  this.xmlType_ = 'literal'
-}
-
-/**
  * Initialize a block.
  * @param {!Blockly.Block} block to be initialized..
  * For subclassers eventually
@@ -781,9 +771,11 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.initBlock = function (block) {
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (block, mgr) {
+ezP.DelegateSvg.Expr.literalPopulateContextMenuFirst_ = function (block, mgr) {
   var fieldStart = this.inputs.last.fieldLabelStart
   var fieldEnd = this.inputs.last.fieldLabelEnd
+  var fieldCode = this.inputs.last.fieldCodeString
+  var can_b = !!XRegExp.exec(fieldCode.getValue(), ezP.XRE.bytes)
   var single = fieldStart.getText() === "'"
   var menuItem = new ezP.MenuItem(
     ezP.Do.createSPAN(single? ezP.Msg.USE_DOUBLE_QUOTES: ezP.Msg.USE_SINGLE_QUOTE, 'ezp-code'), function() {
@@ -852,12 +844,16 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.populateContextMenuFirst_ = function
     // mgr.addInsertChild(item('u', insert))
     mgr.addInsertChild(item('r', insert))
     mgr.addInsertChild(item('f', insert))
-    mgr.addInsertChild(item('b', insert))
+    if (can_b) {
+      mgr.addInsertChild(item('b', insert))
+    }
   } else if (oldValue === 'u') {
     mgr.addRemoveChild(item('u', remove))
   } else if (oldValue === 'r') {
     mgr.addInsertChild(item('f', insert))
-    mgr.addInsertChild(item('b', insert))
+    if (can_b) {
+      mgr.addInsertChild(item('b', insert))
+    }
     mgr.addRemoveChild(item('r', remove))
   } else if (oldValue === 'f') {
     mgr.addInsertChild(item('r', insert))
@@ -874,6 +870,10 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.populateContextMenuFirst_ = function
     }
   }
   mgr.shouldSeparateInsert()
+  return true
+}
+ezP.DelegateSvg.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  ezP.DelegateSvg.Expr.literalPopulateContextMenuFirst_.call(this, block, mgr)
   ezP.DelegateSvg.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this,block, mgr)
   return true
 }
@@ -954,27 +954,21 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.setSubtype = function (block, subtyp
   var fieldEnd = this.inputs.last.fieldLabelEnd
   var fieldCode = this.inputs.last.fieldCodeString
   var fieldPrefix = this.inputs.first.fieldLabel
-  var m = subtype.match(ezP.RE.shortstringliteral)
-  if (m) {
-    fieldPrefix.setValue(m[1]||'')
-    fieldStart.setValue(m[2]||"'")
-    fieldEnd.setValue(m[2]||"'")
-    fieldCode.setValue(m[3])
-    block.type = ezP.T3.Expr.shortstringliteral
-    block.ezp.setupType(block)
-    return true  
+  var F = function(re, type) {
+    var m = XRegExp.exec(subtype, re)
+    if (m) {
+      fieldPrefix.setValue(m.prefix||'')
+      fieldStart.setValue(m.delimiter||"'")
+      fieldEnd.setValue(m.delimiter||"'")
+      fieldCode.setValue(m.content||'')
+      block.type = type
+      block.ezp.setupType(block)
+      return true  
+    }
+    return false
   }
-  var m = subtype.match(ezP.RE.shortbytesliteral)
-  if (m) {
-    fieldPrefix.setValue(m[1]||'')
-    fieldStart.setValue(m[2]||"'")
-    fieldEnd.setValue(m[2]||"'")
-    fieldCode.setValue(m[3])
-    block.type = ezP.T3.Expr.shortbytesliteral
-    block.ezp.setupType(block)
-    return true  
-  }
-  return false
+  return F(ezP.XRE.shortstringliteral, ezP.T3.Expr.shortstringliteral) ||
+  F(ezP.XRE.shortbytesliteral, ezP.T3.Expr.shortbytesliteral)
 }
 
 /**
@@ -995,9 +989,7 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.xmlType = function (block) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise
  */
-ezP.DelegateSvg.Expr.shortliteral.prototype.xmlTagName = function (block) {
-  return ezP.T3.Xml.Expr.literal
-}
+ezP.DelegateSvg.Expr.shortliteral.prototype.xmlTagName = ezP.DelegateSvg.Expr.numberliteral.prototype.xmlTagName
 
 /**
 * Class for a DelegateSvg, builtin object.
@@ -1133,7 +1125,7 @@ ezP.DelegateSvg.Expr.any.prototype.fromDom = function (block, element) {
   this.inputs.first.fieldCodeInput.setText(value)
 }
 
-goog.provide('ezP.DelegateSvg.Expr.longstringliteral')
+goog.provide('ezP.DelegateSvg.Expr.longliteral')
 
 /**
 * Class for a DelegateSvg, docstring (expression).
@@ -1142,8 +1134,8 @@ goog.provide('ezP.DelegateSvg.Expr.longstringliteral')
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Expr.longstringliteral = function (prototypeName) {
-  ezP.DelegateSvg.Expr.longstringliteral.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr.longliteral = function (prototypeName) {
+  ezP.DelegateSvg.Expr.longliteral.superClass_.constructor.call(this, prototypeName)
   this.inputModel_ = {
     first: {
       key: ezP.Key.PREFIX,
@@ -1159,8 +1151,11 @@ ezP.DelegateSvg.Expr.longstringliteral = function (prototypeName) {
   }
   this.outputModel_.check = ezP.T3.Expr.longstringliteral
 }
-goog.inherits(ezP.DelegateSvg.Expr.longstringliteral, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('longstringliteral')
+goog.inherits(ezP.DelegateSvg.Expr.longliteral, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Manager.register('longliteral')
+
+ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.longstringliteral, ezP.DelegateSvg.Expr.longliteral)
+ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.longbytesliteral, ezP.DelegateSvg.Expr.longliteral)
 
 /**
  * Populate the context menu for the given block.
@@ -1168,22 +1163,9 @@ ezP.DelegateSvg.Manager.register('longstringliteral')
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.longstringliteral.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var fieldStart = this.inputs.last.fieldLabelStart
-  var fieldEnd = this.inputs.last.fieldLabelEnd
-  var single = fieldStart.getText() === "'''"
-  var menuItem = new ezP.MenuItem(
-    ezP.Do.createSPAN(single? '"""..."""': "'''...'''", 'ezp-code'), function() {
-      Blockly.Events.setGroup(true)
-      var oldValue = fieldStart.getValue()
-      var newValue = single? '"""': "'''"
-      fieldStart.setValue(newValue)
-      fieldEnd.setValue(newValue)
-      Blockly.Events.setGroup(false)
-    })
-  mgr.addChild(menuItem, true)
-  mgr.shouldSeparateInsert()
-  ezP.DelegateSvg.Expr.longstringliteral.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+ezP.DelegateSvg.Expr.longliteral.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  ezP.DelegateSvg.Expr.literalPopulateContextMenuFirst_.call(this, block, mgr)
+  ezP.DelegateSvg.Expr.longliteral.superClass_.populateContextMenuFirst_.call(this,block, mgr)
   return true
 }
 
@@ -1192,7 +1174,7 @@ ezP.DelegateSvg.Expr.longstringliteral.prototype.populateContextMenuFirst_ = fun
  * @param {!Blockly.Block} block owner of the delegate.
  * @param {!Blockly.Field} field The field in editing mode.
  */
-ezP.DelegateSvg.Expr.longstringliteral.prototype.startEditingField = function (block, field) {
+ezP.DelegateSvg.Expr.longliteral.prototype.startEditingField = function (block, field) {
   var nameEnd = 'last.'+ezP.Const.Field.END
   block.getField(nameEnd).setVisible(false)
 }
@@ -1202,7 +1184,7 @@ ezP.DelegateSvg.Expr.longstringliteral.prototype.startEditingField = function (b
  * @param {!Blockly.Block} block owner of the delegate.
  * @param {!Blockly.Field} field The field in editing mode.
  */
-ezP.DelegateSvg.Expr.longstringliteral.prototype.endEditingField = function (block, field) {
+ezP.DelegateSvg.Expr.longliteral.prototype.endEditingField = function (block, field) {
   var nameEnd = 'last.'+ezP.Const.Field.END
   block.getField(nameEnd).setVisible(true)
 }
@@ -1213,10 +1195,26 @@ ezP.DelegateSvg.Expr.longstringliteral.prototype.endEditingField = function (blo
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Expr.longstringliteral.prototype.willRender_ = function (block) {
-  ezP.DelegateSvg.Expr.longstringliteral.superClass_.willRender_.call(this, block)
+ezP.DelegateSvg.Expr.longliteral.prototype.willRender_ = function (block) {
+  ezP.DelegateSvg.Expr.longliteral.superClass_.willRender_.call(this, block)
   var field = this.inputs.first.fieldLabel
   field.setVisible(field.getValue().length)
+}
+
+/**
+ * Set the type dynamically from the content of some field.
+ * @param {!Blockly.Block} block the owner of the receiver
+ * @param {!string} name the name of the field that did change
+ * @param {!string} oldValue the value before the change
+ */
+ezP.DelegateSvg.Expr.longliteral.prototype.fieldValueDidChange = function(block, name, oldValue) {
+  var value = block.getField(name).getText().toLowerCase()
+  if (value === 'b' || value.length !==1 && ['', 'rf', 'fr'].indexOf(value)<0) {
+    block.type = ezP.T3.Expr.longbytesliteral
+  } else {
+    block.type = ezP.T3.Expr.longstringliteral
+  }
+  block.ezp.setupType(block)
 }
 
 /**
@@ -1228,7 +1226,7 @@ ezP.DelegateSvg.Expr.longstringliteral.prototype.willRender_ = function (block) 
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return None
  */
-ezP.DelegateSvg.Expr.longstringliteral.prototype.getSubtype = function (block) {
+ezP.DelegateSvg.Expr.longliteral.prototype.getSubtype = function (block) {
   return this.inputs.last.fieldCodeString.getValue()
 }
 
@@ -1242,32 +1240,26 @@ ezP.DelegateSvg.Expr.longstringliteral.prototype.getSubtype = function (block) {
  * @param {string} subtype Is a function.
  * @return true if the receiver supports subtyping, false otherwise
  */
-ezP.DelegateSvg.Expr.longstringliteral.prototype.setSubtype = function (block, subtype) {
+ezP.DelegateSvg.Expr.longliteral.prototype.setSubtype = function (block, subtype) {
   var fieldStart = this.inputs.last.fieldLabelStart
   var fieldEnd = this.inputs.last.fieldLabelEnd
   var fieldCode = this.inputs.last.fieldCodeString
   var fieldPrefix = this.inputs.first.fieldLabel
-  var m = subtype.match(ezP.RE.longstringliteral)
-  if (m) {
-    fieldPrefix.setValue(m[1]||'')
-    fieldStart.setValue(m[2]||"'")
-    fieldEnd.setValue(m[2]||"'")
-    fieldCode.setValue(m[3])
-    block.type = ezP.T3.Expr.longstringliteral
-    block.ezp.setupType(block)
-    return true  
+  var F = function(re, type) {
+    var m = XRegExp.exec(subtype, re)
+    if (m) {
+      fieldPrefix.setValue(m.prefix||'')
+      fieldStart.setValue(m.delimiter||"'")
+      fieldEnd.setValue(m.delimiter||"'")
+      fieldCode.setValue(m.content||'')
+      block.type = type
+      block.ezp.setupType(block)
+      return true  
+    }
+    return false
   }
-  var m = subtype.match(ezP.RE.longbytesliteral)
-  if (m) {
-    fieldPrefix.setValue(m[1]||'')
-    fieldStart.setValue(m[2]||"'")
-    fieldEnd.setValue(m[2]||"'")
-    fieldCode.setValue(m[3])
-    block.type = ezP.T3.Expr.longbytesliteral
-    block.ezp.setupType(block)
-    return true  
-  }
-  return false
+  return F(ezP.XRE.longstringliteral, ezP.T3.Expr.longstringliteral) ||
+  F(ezP.XRE.longbytesliteral, ezP.T3.Expr.longbytesliteral)
 }
 
 /**
@@ -1278,7 +1270,7 @@ ezP.DelegateSvg.Expr.longstringliteral.prototype.setSubtype = function (block, s
  * @param {!Blockly.Block} block The owner of the receiver.
  * @param {?string} value
  */
-ezP.DelegateSvg.Expr.longstringliteral.prototype.getValue = function (block) {
+ezP.DelegateSvg.Expr.longliteral.prototype.getValue = function (block) {
   return block.ezp.toPythonExpression(block)
 }
 
@@ -1290,7 +1282,7 @@ ezP.DelegateSvg.Expr.longstringliteral.prototype.getValue = function (block) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @param {?string} value
  */
-ezP.DelegateSvg.Expr.longstringliteral.prototype.setValue = function (block, value) {
+ezP.DelegateSvg.Expr.longliteral.prototype.setValue = function (block, value) {
   var del = "'''", text = value
   if (value.length > 5) {
     del = value.substr(0, 3)
@@ -1303,6 +1295,25 @@ ezP.DelegateSvg.Expr.longstringliteral.prototype.setValue = function (block, val
   block.ezp.setSubtype(block, text)
 }
 
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * Dafulet implementation just returns 'expr'
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.DelegateSvg.Expr.longliteral.prototype.xmlTagName = ezP.DelegateSvg.Expr.numberliteral.prototype.xmlTagName
+
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * Dafulet implementation just returns 'expr'
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.DelegateSvg.Expr.longliteral.prototype.xmlType = function (block) {
+  return null
+}
 
 /**
  * The xml tag name of this block, as it should appear in the saved data.
@@ -1312,5 +1323,5 @@ ezP.DelegateSvg.Expr.longstringliteral.prototype.setValue = function (block, val
  * @return true if the given value is accepted, false otherwise
  */
 ezP.DelegateSvg.Expr.prototype.xmlTagName = function (block) {
-  return 'expr'
+  return ezP.T3.Xml.Expr.expression
 }

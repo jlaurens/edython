@@ -13,9 +13,29 @@
 
 goog.provide('ezP.Xml')
 
+goog.require('ezP.Const')
+goog.require('ezP.T3')
+
 goog.require('Blockly.Xml')
 goog.require('Blockly.Field')
 goog.require('Blockly.FieldVariable')
+
+ezP.T3.Xml.Stmt.statement = 'ezp:statement'
+ezP.T3.Xml.Stmt.do = 'ezp:do'
+ezP.T3.Xml.Expr.expression = 'ezp:expression'
+ezP.T3.Xml.Expr.literal = 'ezp:literal'
+
+/**
+ * Converts a DOM structure into plain text.
+ * Currently the text format is fairly ugly: all one line with no whitespace.
+ * @param {!Element} dom A tree of XML elements.
+ * @return {string} Text representation.
+ */
+Blockly.Xml.domToText = function(dom) {
+  dom.setAttribute('xmlns:ezp', 'urn:ezpython')
+  var oSerializer = new XMLSerializer();
+  return oSerializer.serializeToString(dom);
+};
 
 /**
  * Decode an XML DOM and create blocks on the workspace.
@@ -28,7 +48,7 @@ goog.require('Blockly.FieldVariable')
 ezP.Xml.domToChildBlock = function(xmlChild, workspace) {
   var newBlockIds = []
   var name = xmlChild.nodeName.toLowerCase()
-  if (name == 'literal' || name == 'expr' || name == 'stmt') {
+  if (name === ezP.T3.Xml.Expr.literal || name === ezP.T3.Xml.Expr.expression || name === ezP.T3.Xml.Stmt.statement) {
     var block = Blockly.Xml.domToBlock(xmlChild, workspace);
     newBlockIds.push(block.id);
     var blockX = parseInt(xmlChild.getAttribute('x'), 10);
@@ -139,6 +159,21 @@ Blockly.FieldVariable.prototype.getSerializedXml = function () {
 }
 
 /**
+ * Populate the given dom element.
+ * Wrapped blocks are a convenient design but should not survive
+ * a serialization because it has nothing to do with python.
+ * So wrapped blocks should only populate elements already created
+ * by their surround parent.
+ * For the moment, the default implementation does nothing.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {boolean} optNoId Is a function.
+ * @return undefined or a new element, that was added to element
+ */
+ezP.DelegateSvg.Expr.prototype.blockToElement = function(block, element, optNoId) {
+}
+
+/**
  * Encode a block subtree as XML.
  * @param {!Blockly.Block} block The root block to encode.
  * @param {boolean} optNoId True if the encoder should skip the block id.
@@ -147,10 +182,11 @@ Blockly.FieldVariable.prototype.getSerializedXml = function () {
 ezP.Xml.blockToDom = Blockly.Xml.blockToDom
 Blockly.Xml.blockToDom = function (block, optNoId) {
   if (block.type.indexOf('ezp_')<0) {
+    // leave the control to the original player
     return ezP.Xml.blockToDom(block, optNoId)
   }
   var element
-  if (block.ezp.blockToDom && (element = block.ezp.blockToDom(block, optNoId))) {
+  if (goog.isFunction(block.ezp.blockToDom) && (element = block.ezp.blockToDom(block, optNoId))) {
     return element
   }
   var element = goog.dom.createDom(block.ezp.xmlTagName(block))
@@ -196,28 +232,20 @@ Blockly.Xml.blockToDom = function (block, optNoId) {
 
   for (i = 0; (input = block.inputList[i]); i++) {
     var container
-    var empty = true
-    if (input.type === Blockly.DUMMY_INPUT) {
-      continue
-    } else if (input.connection) {
+    if (input.connection) {
       var childBlock = input.connection.targetBlock()
-      if (input.type === Blockly.INPUT_VALUE) {
-        container = goog.dom.createDom('value')
-      } else if (input.type === Blockly.NEXT_STATEMENT) {
-        container = goog.dom.createDom('statement')
-      }
-      var shadow = input.connection.getShadowDom()
-      if (shadow && (!childBlock || !childBlock.isShadow())) {
-        container.appendChild(Blockly.Xml.cloneShadow_(shadow))
-      }
       if (childBlock) {
-        container.appendChild(Blockly.Xml.blockToDom(childBlock, optNoId))
-        empty = false
+        var child = Blockly.Xml.blockToDom(childBlock, optNoId)
+        if (input.type === Blockly.INPUT_VALUE) {
+          container = element
+          child.setAttribute('name', input.name)
+        } else if (input.type === Blockly.NEXT_STATEMENT) {
+          container = goog.dom.createDom(ezP.T3.Xml.Stmt.do)
+          element.appendChild(container)
+          container.setAttribute('name', input.name)
+        }
+        container.appendChild(child)
       }
-    }
-    container.setAttribute('name', input.name)
-    if (!empty) {
-      element.appendChild(container)
     }
   }
   if (block.inputsInlineDefault !== block.inputsInline) {
@@ -245,7 +273,7 @@ Blockly.Xml.blockToDom = function (block, optNoId) {
       Blockly.Xml.blockToDom(nextBlock, optNoId))
     element.appendChild(container)
   }
-  shadow = block.nextConnection && block.nextConnection.getShadowDom()
+  var shadow = block.nextConnection && block.nextConnection.getShadowDom()
   if (shadow && (!nextBlock || !nextBlock.isShadow())) {
     container.appendChild(Blockly.Xml.cloneShadow_(shadow))
   }
@@ -303,17 +331,23 @@ Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
         break
       }
     }
-    prototypeName = ezP.Do.typeOfString(text) || ezP.T3.Expr.numberliteral
+    prototypeName = ezP.Do.typeOfString(text) || ezP.Do.typeOfString(text) || ezP.T3.Expr.integer
     if ((block = ezP.DelegateSvg.newBlockComplete(workspace, prototypeName, id))) {
       block.ezp.setValue(block, text)
     }
     return block
   }
-  if (prototypeName.indexOf('ezp_')<0) {
+  
+  if (xmlBlock.nodeName.toLowerCase().indexOf('ezp:')<0) {
     return ezP.Xml.domToBlockHeadless_(xmlBlock, workspace)
   }
+  if (prototypeName.indexOf('ezp_')<0) {
+    prototypeName = 'ezp_' + prototypeName
+  }  
   var concrete = prototypeName + '_concrete'
-  block = ezP.DelegateSvg.Manager.get(concrete)? workspace.newBlock(concrete, id): workspace.newBlock(prototypeName, id)
+  block = ezP.DelegateSvg.Manager.get(concrete)? ezP.DelegateSvg.newBlockComplete(workspace, concrete, id): ezP.DelegateSvg.newBlockComplete(workspace, prototypeName, id)
+
+console.log('Block created from dom:', xmlBlock, block.type, block.id)
 
   if (goog.isFunction(block.ezp.domToBlock)) {
     block.ezp.domToBlock(block, xmlBlock)
@@ -321,121 +355,32 @@ Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
   } else if (goog.isFunction(block.ezp.domChildToBlock)) {
     block.ezp.domChildToBlock(block, xmlBlock)
   } else {
-    var blockChild = null
     for (var i = 0, xmlChild; (xmlChild = xmlBlock.childNodes[i]); i++) {
       if (xmlChild.nodeType === 3) {
         // Ignore any text at the <block> level.  It's all whitespace anyway.
         continue
       }
-      var input
-  
-      // Find any enclosed blocks or shadows in this tag.
-      var childBlockNode = null
-      var childShadowNode = null
-      for (var j = 0, grandchildNode; (grandchildNode = xmlChild.childNodes[j]); j++) {
-        if (grandchildNode.nodeType === 1) {
-          if (grandchildNode.nodeName.toLowerCase() === 'block') {
-            childBlockNode = grandchildNode
-          } else if (grandchildNode.nodeName.toLowerCase() === 'shadow') {
-            childShadowNode = grandchildNode
-          }
-        }
-      }
-      // Use the shadow block if there is no child block.
-      if (!childBlockNode && childShadowNode) {
-        childBlockNode = childShadowNode
-      }
-  
-      var name = xmlChild.getAttribute('name')
-      switch (xmlChild.nodeName.toLowerCase()) {
-      case 'mutation':
-        // Custom data for an advanced block.
-        if (block.domToMutation) {
-          block.domToMutation(xmlChild)
-          if (block.initSvg) {
-            // Mutation may have added some elements that need initializing.
-            block.initSvg()
-          }
-        }
-        break
-      case 'comment':
-        block.setCommentText(xmlChild.textContent)
-        var visible = xmlChild.getAttribute('pinned')
-        if (visible && !block.isInFlyout) {
-          // Give the renderer a millisecond to render and position the block
-          // before positioning the comment bubble.
-          setTimeout(function () {
-            if (block.comment && block.comment.setVisible) {
-              block.comment.setVisible(visible === 'true')
+      var child = Blockly.Xml.domToBlock(xmlChild, workspace)
+      if (child) {
+        var name = xmlChild.getAttribute('name')
+        if (name) {
+          var input = block.getInput(name)
+          if (input) {
+            var c8n = input.connection
+            if (c8n) {
+              var outputC8n = child.outputConnection
+              if (outputC8n.checkType_(c8n)) {
+                outputC8n.connect(c8n)// could we try not to render now ?
+              }
             }
-          }, 1)
-        }
-        var bubbleW = parseInt(xmlChild.getAttribute('w'), 10)
-        var bubbleH = parseInt(xmlChild.getAttribute('h'), 10)
-        if (!isNaN(bubbleW) && !isNaN(bubbleH) &&
-              block.comment && block.comment.setVisible) {
-          block.comment.setBubbleSize(bubbleW, bubbleH)
-        }
-        break
-      case 'data':
-        block.data = xmlChild.textContent
-        break
-      case 'title':
-        // Titles were renamed to field in December 2013.
-        // Fall through.
-      case 'field':
-        var field = block.getField(name)
-        if (!field) {
-          console.warn('Ignoring non-existent field ' + name + ' in block ' +
-                         prototypeName)
-          break
-        }
-        field.deserializeXml(xmlChild)
-        break
-      case 'value':
-      case 'statement':
-        input = block.getInput(name)
-        if (!input) {
-          console.warn('Ignoring non-existent input ' + name + ' in block ' +
-                         prototypeName)
-          break
-        }
-        if (childShadowNode) {
-          input.connection.setShadowDom(childShadowNode)
-        }
-        if (childBlockNode) {
-          blockChild = Blockly.Xml.domToBlockHeadless_(childBlockNode,
-            workspace)
-          if (blockChild.outputConnection) {
-            input.connection.connect(blockChild.outputConnection)
-          } else if (blockChild.previousConnection) {
-            input.connection.connect(blockChild.previousConnection)
-          } else {
-            goog.asserts.fail(
-              'Child block does not have output or previous statement.')
+          }
+        } else {
+          var c8n = input.nextConnection
+          var otherC8n = child.previousConnection
+          if (outputC8n.checkType_(c8n)) {
+            outputC8n.connect(c8n)// could we try not to render now ?
           }
         }
-        break
-      case 'next':
-        if (childShadowNode && block.nextConnection) {
-          block.nextConnection.setShadowDom(childShadowNode)
-        }
-        if (childBlockNode) {
-          goog.asserts.assert(block.nextConnection,
-            'Next statement does not exist.')
-          // If there is more than one XML 'next' tag.
-          goog.asserts.assert(!block.nextConnection.isConnected(),
-            'Next statement is already connected.')
-          blockChild = Blockly.Xml.domToBlockHeadless_(childBlockNode,
-            workspace)
-          goog.asserts.assert(blockChild.previousConnection,
-            'Next block does not have previous statement.')
-          block.nextConnection.connect(blockChild.previousConnection)
-        }
-        break
-      default:
-        // Unknown tag; ignore.  Same principle as HTML parsers.
-        console.warn('Ignoring unknown tag: ' + xmlChild.nodeName)
       }
     }
   }
@@ -508,13 +453,103 @@ ezP.DelegateSvg.Expr.blockToDom = function(block, optNoId) {
 }
 
 /**
+ * Convert the block to a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {boolean} optNoId Is a function.
+ * @return a dom element
+ */
+ezP.DelegateSvg.Expr.prototype.blockToDom = function(block, optNoId) {
+  var element = ezP.DelegateSvg.Expr.blockToDom.call(this, block, optNoId)
+  this.blockToElement(block, element, optNoId)
+  return element
+}
+
+/**
  * Convert dom element to the block.
+ * The wrapped blocks must be managed specially.
+ * Except for list, wrapped bocks are really transparent.
+ * It means that the xml data does not contain any information
+ * that would make us think that there is a wrapped block.
+ * For list blocks, things are different because of
+ * the dynamically generated input names.
  * For ezPython.
  * @param {!Blockly.Block} block The block to be edited.
  * @param {Element} xml Is a function.
  * @return a dom element
  */
-ezP.DelegateSvg.Expr.domToBlock = function(block, xml) {
+ezP.DelegateSvg.Expr.prototype.domToBlock = function(block, xml) {
+  // try to fill each input
+  for (var j = 0, input; (input = block.inputList[j]); j++) {
+    if (input.name) {
+      console.log('Try to fill', block.type, input.name)
+      var c8n = input.connection
+      if (c8n) {
+        if (c8n.type === Blockly.INPUT_VALUE) {
+          var target = c8n.targetBlock()
+          if (target) {
+            console.log('Already target')
+            var found = false
+            for (var i = 0, xmlChild; (xmlChild = xml.childNodes[i]); i++) {
+              if (goog.isFunction(xmlChild.getAttribute) && xmlChild.getAttribute('name') === input.name) {
+                // we have found some xml data with the same name
+                console.log('feed target with xmlChild', target.type, xmlChild)
+                target.ezp.domToBlock(target, xmlChild)
+                found = true
+                break
+              }
+            }
+            if (!found && target.ezp.wrapped_) {
+              // list blocks are wrapped but will
+              console.log('feed target with xml', target.type, xml)
+              target.ezp.domToBlock(target, xml)
+            }
+          } else {
+            // We try to create a target block, only if the xml element
+            // contains a child with the same name
+            for (var i = 0, xmlChild; (xmlChild = xml.childNodes[i]); i++) {
+              if (goog.isFunction(xmlChild.getAttribute) && xmlChild.getAttribute('name') === input.name) {
+                // Found
+                console.log('Create new target with xmlChild', xmlChild)
+                target = Blockly.Xml.domToBlock(xmlChild, block.workspace)
+                var targetC8n = target.outputConnection
+                if (targetC8n && c8n.checkType_(targetC8n)) {
+                  console.log('Connection done')
+                  c8n.connect(targetC8n)
+                }
+                // no need to look further
+                break
+              }
+            }
+            console.log('Nothing more to do with input', input.name)
+          }
+        }
+      }
+    }
+  }
+}
+
+goog.require('ezP.DelegateSvg.Expr.longliteral')
+
+/**
+ * Convert the block to a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {boolean} optNoId Is a function.
+ * @return a dom element
+ */
+ezP.DelegateSvg.Expr.longliteral.prototype.blockToDom = ezP.DelegateSvg.Expr.blockToDom
+
+/**
+ * Convert dom element to the block.
+ * Literal blocks use the first text node to set their value.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {Element} xml Is a function.
+ * @return a dom element
+ */
+ezP.DelegateSvg.Expr.longliteral.prototype.domToBlock = function(block, xml) {
+  // first step: the first text node is used as value
   var text = ''
   for (var i = 0, xmlChild; (xmlChild = xml.childNodes[i]); i++) {
     if (xmlChild.nodeType === 3) {
@@ -522,28 +557,10 @@ ezP.DelegateSvg.Expr.domToBlock = function(block, xml) {
       break
     }
   }
+  // each block delegate will have its own value management
+  // For example
   block.ezp.setValue(block, text)
 }
-
-goog.require('ezP.DelegateSvg.Expr.longstringliteral')
-
-/**
- * Convert the block to a dom element.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {boolean} optNoId Is a function.
- * @return a dom element
- */
-ezP.DelegateSvg.Expr.longstringliteral.prototype.blockToDom = ezP.DelegateSvg.Expr.blockToDom
-
-/**
- * Convert dom element to the block.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {Element} xml Is a function.
- * @return a dom element
- */
-ezP.DelegateSvg.Expr.longstringliteral.prototype.domToBlock = ezP.DelegateSvg.Expr.domToBlock
 
 goog.require('ezP.DelegateSvg.Expr.numberliteral')
 
@@ -554,7 +571,7 @@ goog.require('ezP.DelegateSvg.Expr.numberliteral')
  * @param {boolean} optNoId Is a function.
  * @return a dom element
  */
-ezP.DelegateSvg.Expr.numberliteral.prototype.blockToDom = ezP.DelegateSvg.Expr.blockToDom
+ezP.DelegateSvg.Expr.numberliteral.prototype.blockToDom = ezP.DelegateSvg.Expr.longliteral.prototype.domToBlock
 
 /**
  * Convert dom element to the block.
@@ -563,13 +580,13 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.blockToDom = ezP.DelegateSvg.Expr.b
  * @param {Element} xml Is a function.
  * @return a dom element
  */
-ezP.DelegateSvg.Expr.numberliteral.prototype.domToBlock = ezP.DelegateSvg.Expr.domToBlock
+ezP.DelegateSvg.Expr.numberliteral.prototype.domToBlock = ezP.DelegateSvg.Expr.longliteral.prototype.domToBlock
 
 goog.require('ezP.DelegateSvg.Expr.shortliteral')
 
 ezP.DelegateSvg.Expr.shortliteral.prototype.blockToDom = ezP.DelegateSvg.Expr.blockToDom
 
-ezP.DelegateSvg.Expr.shortliteral.prototype.domToBlock = ezP.DelegateSvg.Expr.domToBlock
+ezP.DelegateSvg.Expr.shortliteral.prototype.domToBlock = ezP.DelegateSvg.Expr.longliteral.prototype.domToBlock
 
 goog.require('ezP.DelegateSvg.Expr.numberliteral')
 
@@ -589,9 +606,21 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.blockToDom = ezP.DelegateSvg.Expr.b
  * @param {Element} xml Is a function.
  * @return a dom element
  */
-ezP.DelegateSvg.Expr.numberliteral.prototype.domToBlock = ezP.DelegateSvg.Expr.domToBlock
+ezP.DelegateSvg.Expr.numberliteral.prototype.domToBlock = ezP.DelegateSvg.Expr.longliteral.prototype.domToBlock
 
-goog.require('ezP.DelegateSvg.Operator')
+goog.require('ezP.DelegateSvg.Identifier')
+
+/**
+ * Convert dom element to the block.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {Element} xml Is a function.
+ * @return a dom element
+ */
+ezP.DelegateSvg.Expr.identifier.prototype.domToBlock = ezP.DelegateSvg.Expr.longliteral.prototype.domToBlock
+
+
+goog.require('ezP.DelegateSvg.Expr.Comprehension')
 
 /**
  * Convert the block to a dom element.
@@ -600,41 +629,71 @@ goog.require('ezP.DelegateSvg.Operator')
  * @param {boolean} optNoId Is a function.
  * @return a dom element
  */
-ezP.DelegateSvg.Operator.blockToDomUnary = function(block, optNoId) {
-  var element = goog.dom.createDom('block')
-  element.setAttribute('type', block.ezp.xmlType_)
-  if (!optNoId) {
-    element.setAttribute('id', block.id)
+ezP.DelegateSvg.Expr.prototype.blockToElement = function(block, element, optNoId) {
+  for (var i = 0, input;(input = block.inputList[i++]);) {
+    var c8n = input.connection
+    if (c8n) {
+      var target = c8n.targetBlock()
+      if (target) {
+        var child
+        if (target.ezp.wrapped_) {
+          child = target.ezp.blockToElement(target, element, optNoId)
+        } else {
+          child = Blockly.Xml.blockToDom(target, optNoId)
+        }
+        if (child) {
+          child.setAttribute('name', input.name)
+          element.appendChild(child)
+        }
+      }
+    }
   }
-  element.setAttribute('operator', block.ezp.getValue(block))
-  return element
 }
 
+goog.require('ezP.DelegateSvg.List')
+
 /**
- * Convert dom element to the block.
+ * Convert the block to a dom element.
  * For ezPython.
- * @param {!Blockly.Block} block The block to be edited.
- * @param {Element} xml Is a function.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {boolean} optNoId Is a function.
  * @return a dom element
  */
-ezP.DelegateSvg.Operator.domToBlockUnary = function(block, xml) {
-  var operator = xml.getAttribute('operator')
-  block.ezp.setValue(block, operator)
+ezP.DelegateSvg.List.prototype.blockToElement = function(block, element, optNoId) {
+  var child = goog.dom.createDom(block.ezp.xmlTagName(block))
+  var type = block.ezp.xmlType(block)
+  if (type) {
+    child.setAttribute('type', type)
+  }
+  if (!optNoId) {
+    child.setAttribute('id', block.id)
+  }
+  for (var i = 0, input;(input = block.inputList[i++]);) {
+    var c8n = input.connection
+    if (c8n) {
+      var target = c8n.targetBlock()
+      if (target) {
+        var grandChild = Blockly.Xml.blockToDom(target, optNoId)
+        if (grandChild) {
+          grandChild.setAttribute('name', input.name)
+          child.appendChild(grandChild)
+        }
+      }
+    }
+  }
+  return child
 }
 
 /*
+
+<ezp:expression xmlns="http://www.w3.org/1999/xhtml" type="comprehension" xmlns:ezp="urn:ezpython">
+<ezp:expression type="target_list" name="for">
+<ezp:expression type="identifier" name="O">x</ezp:expression>
+</ezp:expression>
+<ezp:expression type="comp_iter_list" name="comp_iter"></ezp:expression>
+</ezp:expression>
+
 IN PROGRESS
-  power_concrete            /*   ::= await_or_primary "**" u_expr                       (default) // : "ezp_power_concrete",
-  u_expr_concrete           /*   ::= "-" u_expr | "+" u_expr | "~" u_expr               (default) // : "ezp_u_expr_concrete",
-  m_expr_concrete           /*   ::= m_expr "*" u_expr | m_expr "@" m_expr | m_expr "//" u_expr| m_expr "/" u_expr | m_expr "%" u_expr (default) // : "ezp_m_expr_concrete",
-  a_expr_concrete           /*   ::= a_expr "+" m_expr | a_expr "-" m_expr              (default) // : "ezp_a_expr_concrete",
-  shift_expr_concrete       /*   ::= shift_expr ( "<<" | ">>" ) a_expr                  (default) // : "ezp_shift_expr_concrete",
-  and_expr_concrete         /*   ::= and_expr "&" shift_expr                            (default) // : "ezp_and_expr_concrete",
-  xor_expr_concrete         /*   ::= xor_expr "^" and_expr                              (default) // : "ezp_xor_expr_concrete",
-  or_expr_concrete          /*   ::= or_expr "|" xor_expr                               (default) // : "ezp_or_expr_concrete",
-  or_test_concrete          /*   ::= or_test "or" and_test                              (default) // : "ezp_or_test_concrete",
-  and_test_concrete         /*   ::= and_test "and" not_test                            (default) // : "ezp_and_test_concrete",
-  not_test_concrete         /*   ::= "not" not_test                                     (default) // : "ezp_not_test_concrete",
   module_identifier         /*   ::=                                                    (default) // : "ezp_module_identifier",
   attribute_identifier      /*   ::=                                                    (default) // : "ezp_attribute_identifier",
   non_void_expression_list  /*   ::=                                                    (default) // : "ezp_non_void_expression_list",

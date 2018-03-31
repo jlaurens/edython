@@ -18,3 +18,11 @@ Adding
 
 NB compilation seems to take forever.
 
+## Working with submodule
+
+Actually, submodules are configured for blockly, goog-closure and xregexp.
+We see the configuration for the latter.
+
+`cd .../src/lib
+git submodule add https://github.com/slevithan/xregexp
+

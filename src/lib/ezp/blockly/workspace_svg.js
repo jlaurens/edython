@@ -213,7 +213,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function(e) {
  */
 Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function(workspaceXMLElement, type, x, y) {
   console.log('new workspace element:', type)
-  var tag = 'block', xmlType = undefined, text = undefined
+  var tag = 'block', xmlType = type, text = undefined
   switch(type) {
     case ezP.T3.Expr.integer:
     text ='123'
@@ -231,25 +231,31 @@ Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function(workspaceX
     xmlType = null
     break
     case ezP.T3.Expr.shortstringliteral:
-    text = "r'x'"
+    text = "r'shortstringliteral'"
     tag = ezP.T3.Xml.Expr.literal
     xmlType = null
     break
     case ezP.T3.Expr.shortbytesliteral:
-    text = "b'x'"
+    text = "b'shortbytesliteral'"
     tag = ezP.T3.Xml.Expr.literal
     xmlType = null
     break
     case ezP.T3.Expr.longstringliteral:
-    text = "r'''x'''"
+    text = "r'''longstringliteral'''"
     tag = ezP.T3.Xml.Expr.literal
     xmlType = null
     break
     case ezP.T3.Expr.longbytesliteral:
-    text = "b'''x'''"
+    text = "b'''longbytesliteral'''"
     tag = ezP.T3.Xml.Expr.literal
     xmlType = null
     break
+    default:
+    if (ezP.T3.All.containsExpression(type)) {
+      tag = ezP.T3.Xml.Expr.expression
+    } else {
+      tag = ezP.T3.Xml.Stmt.statement
+    }
   }
   var child = goog.dom.createElement(tag)
   if (xmlType) {
@@ -276,6 +282,7 @@ Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function(workspaceX
  * @private
  */
 Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function(workspaceXMLElement, types, n_col, offset, step) {
+  workspaceXMLElement.setAttribute('xmlns:ezp', 'urn:ezpython')
   var n = 0
   var x = offset.x
   var y = offset.y

@@ -925,7 +925,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
     } else if (d && d.wrap && !parent_subtype) {
       var list = ezP.Delegate.Manager.getInputModel(d.wrap).list
       if (!list) {
-        if (goog.array.contains(outCheck, d.wrap)) {
+        if (!outCheck || goog.array.contains(outCheck, d.wrap)) {
           var key = d.key || K
           var content = mgr.get_menuitem_content(parent_type, key)
           var MI = new ezP.MenuItem(content, function() {
@@ -937,7 +937,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
         return false
       }
       var listCheck = list.all || list.check || (list.consolidator && list.consolidator.data && list.consolidator.data.check)
-      if (listCheck) {
+      if (outCheck && listCheck) {
         var found = false, _ = 0, c
         while ((c = listCheck[_++])) {
           if (outCheck.indexOf(c) >= 0) {

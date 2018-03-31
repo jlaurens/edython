@@ -61,53 +61,54 @@ ezP.Key = {
   MIDDLE: 'middle',// this MUST be in lower case
   LAST: 'last',// this MUST be in lower case
   DO: 'do',// this MUST be in lower case
-
-  NAME: 'NAME',
-  FOR: 'FOR',
-  IN: 'IN',
-  IF: 'IF',
-  ELSE: 'ELSE',
-  ITER: 'ITER',
-  COMPREHENSION: 'COMP',
-  ITEM: 'ITEM', /* used by delimited blocks */
-  PRIMARY: 'PRIMARY',
-  ATTRIBUTE: 'ATTRIBUTE',
-  ARGUMENT: 'ARGUMENT',
-  LIST: 'LIST',
-  TYPE: 'TYPE',
-  KEY: 'KEY',
-  DATUM: 'DATUM',
-  VALUE: 'VALUE',
-  LOWER_BOUND: 'LOWER_BOUND',
-  UPPER_BOUND: 'UPPER_BOUND',
-  STRIDE: 'STRIDE',
-  EXPRESSION: 'EXPRESSION',// = ANY? NO!
-  TARGET: 'TARGET',
-  ANNOTATED: 'ANNOTATED',
-  ASSIGNED: 'ASSIGNED',
-  LHS: 'LHS',
-  RHS: 'RHS',
-  OPTION: 'OPTION',
-  ASSERT: 'ASSERT',
-  RAISE: 'RAISE',
-  FROM: 'FROM',
-  MODULE: 'MODULE',
-  IMPORT: 'IMPORT',
-  PARENT: 'PARENT',
-  IDENTIFIER: 'IDENTIFIER',
-  AS: 'AS',
-  SOURCE: 'SOURCE',
-  POWER: 'POWER',
-  DEFINITION: 'DEFINITION',
-
-  WRAP: 'WRAP',
+  COMP_FOR: 'comp_for',
+  COMP_ITER: 'comp_iter',
   
-  END: 'END',
-  SEP: 'SEP',
-  FILE: 'FILE',
-  FLUSH: 'FLUSH',
+  NAME: 'name',
+  FOR: 'for',
+  IN: 'in',
+  IF: 'if',
+  ELSE: 'else',
+  COMPREHENSION: 'comprehension',
+  ITEM: 'item', /* used by delimited blocks */
+  PRIMARY: 'primary',
+  ATTRIBUTE: 'attribute',
+  ARGUMENT: 'argument',
+  LIST: 'list',
+  TYPE: 'type',
+  KEY: 'key',
+  DATUM: 'datum',
+  VALUE: 'value',
+  LOWER_BOUND: 'lower_bound',
+  UPPER_BOUND: 'upper_bound',
+  STRIDE: 'stride',
+  EXPRESSION: 'expression',// = ANY? NO!
+  TARGET: 'target',
+  ANNOTATED: 'annotated',
+  ASSIGNED: 'assigned',
+  LHS: 'lhs',
+  RHS: 'rhs',
+  OPTION: 'option',
+  ASSERT: 'assert',
+  RAISE: 'raise',
+  FROM: 'from',
+  MODULE: 'module',
+  IMPORT: 'import',
+  PARENT: 'parent',
+  IDENTIFIER: 'identifier',
+  AS: 'as',
+  SOURCE: 'source',
+  POWER: 'power',
+  DEFINITION: 'definition',
 
-  PREFIX: 'PREFIX',
+  WRAP: 'wrap',
+  
+  END: 'end',
+  SEP: 'sep',
+  FILE: 'file',
+  FLUSH: 'flush',
+
+  PREFIX: 'prefix',
 
   // IN PROGRESS
   ANY: 'ANY',
@@ -123,6 +124,73 @@ ezP.Key = {
   /*
 "LIST", "EXPRESSION", "FOR", "ITER", "IN", "IF", "COMP", "PRIMARY", "ATTRIBUTE", "LOWER_BOUND", "UPPER_BOUND", "STRIDE", "KEY", "VALUE", "ARGUMENT", "POWER", "RHS", "LHS", "ELSE", "DATUM", "IMPORT", "SOURCE", "AS", "FROM", "MODULE", "NAME", "DEFINITION", "TYPE", "PARENT", "DO", "COND", "WRAP", "TARGET", "ANNOTATED", "ASSIGNED", "ASSERT", "RAISE"
 */
+}
+
+XRegExp.install('astral')// python supports astral
+
+ezP.XRE = {
+  integer:/^(?:(([1-9][0-9]*)|(0+))|(0(?:o|O)[0-7]+)|(0(?:x|X)[0-9a-fA-F]+)|(0(?:b|B)[01]+))$/,// group 1: decinteger, 2: octinteger, 3: hexinteger, 4: bininteger
+  integer: XRegExp(
+    `^((?<decinteger>  (?<nonzero>[1-9][0-9]*) | (?<zero>0+) ) |
+    (?<octinteger>  0(?:o|O)[0-7]+) |
+    (?<hexinteger>  0(?:x|X)[0-9a-fA-F]+) |
+    (?<bininteger>  0(?:b|B)[01]+))$`, 'x'),
+  floatnumber: XRegExp(
+    `^(?:
+      (?<pointfloat> (?:[0-9]*\.[0-9]+) | (?:[0-9]+\.) ) |
+      (?<exponentfloat>
+        (?<mantissa> [0-9]+\.?|[0-9]*\.[0-9]+) # === [0-9]+|[0-9]*\.[0-9]+|[0-9]+\.
+        [eE](?<exponent> [+-]?[0-9]+)
+      )
+    )$`, 'x'),
+  imagnumber: XRegExp(
+    `^(?:
+      (?<number> 
+        [0-9]*\.[0-9]+|
+        [0-9]+\.?|
+        (?:
+          (?:
+            [0-9]+|
+            [0-9]*\.[0-9]+|
+            [0-9]+\.
+          )[eE]([+-]?[0-9]+)
+        )
+      )
+    [jJ])$`, 'x'),
+  shortstringliteral: XRegExp(
+    `^(?<prefix> r|u|R|U|f|F|fr|Fr|fR|FR|rf|rF|Rf|RF)?
+    (?<delimiter> '(?!'')|"(?!""))
+    (?<content>
+      (?:[\\x20-\\x5B\\x5D-\\uFFFF]|
+        \\\\[\\x0A\\x0D\\x20-\\uFFFF])*?
+    )
+    \\k<delimiter>`, 'x'),
+  longstringliteral: new XRegExp(
+    `^(?<prefix> r|u|R|U|f|F|fr|Fr|fR|FR|rf|rF|Rf|RF)?
+    (?<delimiter> '''|""")
+    (?<content>
+      (?:[\\x0A\\x0D\\x20-\\x5B\\x5D-\\uFFFF]|
+        \\\\[\\x0A\\x0D\\x20-\\uFFFF])*?
+    )
+    \\k<delimiter>`, 'x'),
+  shortbytesliteral: XRegExp(
+    `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)
+    (?<delimiter> '(?!'')|"(?!""))
+    (?<content>
+      (?:[\\x20-\\x5B\\x5D-\\xFF]|
+        \\\\[\\x0A\\x0D\\x20-\\xFF])*?
+    )
+    \\k<delimiter>`, 'x'),
+  longbytesliteral: XRegExp(
+    `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)
+    (?<delimiter> '''|""")
+    (?<content>
+      (?:[\\x20-\\x5B\\x5D-\\xFF]|
+        \\\\[\\x0A\\x0D\\x20-\\xFF])*?
+    )
+    \\k<delimiter>`, 'x'),
+  bytes: XRegExp(`^(?:[\\x20-\\x5B\\x5D-\\xFF]|
+        \\\\[\\x0A\\x0D\\x20-\\xFF])*$`, 'x'),
 }
 
 ezP.RE = {

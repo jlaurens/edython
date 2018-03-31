@@ -355,13 +355,13 @@ class Formatter:
         self.append('ezP.T3.Xml = {}\n')
         Ts = [t for t in self.types if t.is_stmt and t.xml_type]
         self.append('ezP.T3.Xml.Stmt = {{ // count {}'.format(len(Ts)))
-        template = "    {}: '{}',"
+        template = "    {}: 'ezp:{}',"
         for t in Ts:
             self.append(template.format(t.name, t.xml_type))
         self.append('}\n')
         Ts = [t for t in self.types if not t.is_stmt and t.xml_type]
         self.append('ezP.T3.Xml.Expr = {{ // count {}'.format(len(Ts)))
-        template = "    {}: '{}',"
+        template = "    {}: 'ezp:{}',"
         for t in Ts:
             self.append(template.format(t.name, t.xml_type))
         self.append('}\n')

@@ -653,5 +653,5 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.S
  * @return true if the given value is accepted, false otherwise
  */
 ezP.DelegateSvg.Stmt.prototype.xmlTagName = function (block) {
-  return 'stmt'
+  return ezP.T3.Xml.Stmt.statement
 }

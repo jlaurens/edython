@@ -32,11 +32,11 @@ ezP.DelegateSvg.Expr.comprehension = function (prototypeName) {
       hole_value: 'name',
     },
     middle: {
-      key: ezP.Key.FOR,
+      key: ezP.Key.COMP_FOR,
       wrap: ezP.T3.Expr.comp_for,
     },
     last: {
-      key: ezP.Key.ITER,
+      key: ezP.Key.COMP_ITER,
       wrap: ezP.T3.Expr.comp_iter_list,
     }
   }

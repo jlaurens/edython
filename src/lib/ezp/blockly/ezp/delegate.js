@@ -261,7 +261,7 @@ ezP.Delegate.prototype.setupType = function (block) {
   var m = /^ezp_((?:fake_)?((.*?)(?:_concrete)?))$/.exec(block.type)
   this.pythonSort_ = m? m[1]: block.type
   this.type_ = m? 'ezp_'+m[2]: block.type
-  this.xmlType_ = m? 'ezp_'+m[3]: block.type
+  this.xmlType_ = m? m[3]: block.type
 }
 
 /**
