@@ -430,9 +430,7 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
   block.rendered = true
   this.consolidate(block)
   this.willRender_(block)
-  console.log('START', block.type, block.ezp.endsWithLetter?'T':'F')
   this.renderDraw_(block)
-  console.log('END', block.type, block.ezp.endsWithLetter?'T':'F')
   this.layoutConnections_(block)
   block.renderMoveConnections_()
 
@@ -627,7 +625,6 @@ ezP.DelegateSvg.prototype.renderDraw_ = function (block) {
     // the left part of the contour is the visual separator
     this.endsWithLetter = false
   }
-  console.log('EWL', this.endsWithLetter?'T':'F')
   var d = this.renderDrawInputs_(block)
   this.svgPathInline_.setAttribute('d', d)
   var root = block.getRootBlock()
@@ -791,7 +788,6 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
   io.cursorX += this.getPaddingRight(block)
   this.minWidth = block.width = Math.max(block.width, io.cursorX)
   this.endsWithLetter = io.endsWithLetter
-  console.log('EWL', this.endsWithLetter?'T':'F')
   return io.steps.join(' ')
 }
 
@@ -834,13 +830,11 @@ ezP.DelegateSvg.prototype.renderDrawFields_ = function (io, only_prefix) {
           if (text.length) {
             // if the text is void, it can not change whether
             // the last character was a letter or not
-            if (io.endsWithLetter && /[a-zA-Z_]/.test(text[0])) {
+            if (io.endsWithLetter && ezP.XRE.letter.test(text[0])) {
               // add a separation
               io.cursorX += ezP.Font.space
-              console.log('SPACE ADDED', text)
             }
-            io.endsWithLetter = /[a-zA-Z_]/.test(text[text.length-1])
-            console.log('EWL', io.endsWithLetter? 'T': 'F', text)
+            io.endsWithLetter = ezP.XRE.letter.test(text[text.length-1])
           }
           var ezp = io.field.ezpData
           var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
@@ -896,9 +890,7 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
           target.ezp.endsWithLetter = (target.ezp.wrapped_ ||target.ezp.locked_) && io.endsWithLetter
         }
         target.render()
-        console.log('EWL did render', target.ezp.endsWithLetter?'T':'F', target.type)
         io.endsWithLetter = (target.ezp.wrapped_ ||target.ezp.locked_) && target.ezp.endsWithLetter
-        console.log('EWL', io.endsWithLetter?'T':'F', (target.ezp.wrapped_ ||target.ezp.locked_)?'T':'F')
         var bBox = target.getHeightWidth()
         io.cursorX += bBox.width
       }
@@ -915,7 +907,6 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
         // a space was added as a visual separator anyway
         io.endsWithLetter = false
       }
-      console.log('EWL', io.endsWithLetter?'T':'F')
     }
     this.renderDrawFields_(io, false)
   }

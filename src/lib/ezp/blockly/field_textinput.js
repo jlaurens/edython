@@ -302,9 +302,9 @@ ezP.FieldCodeNumber = function (text) {
       }
       return undefined
     }
-    if (validator_(txt, ezP.RE.integer, ezP.T3.Expr.integer)
-    || validator_(txt, ezP.RE.floatnumber, ezP.T3.Expr.floatnumber)
-    || validator_(txt, ezP.RE.imagnumber, ezP.T3.Expr.imagnumber)) {
+    if (validator_(txt, ezP.XRE.integer, ezP.T3.Expr.integer)
+    || validator_(txt, ezP.XRE.floatnumber, ezP.T3.Expr.floatnumber)
+    || validator_(txt, ezP.XRE.imagnumber, ezP.T3.Expr.imagnumber)) {
       return txt
     }
     field.ezpData.error = true

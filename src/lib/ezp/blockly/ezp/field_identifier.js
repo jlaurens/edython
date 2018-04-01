@@ -28,7 +28,20 @@ goog.require('ezP.Style')
  * @constructor
  */
 ezP.FieldIdentifier = function (identifier, optValidator) {
-  ezP.FieldIdentifier.superClass_.constructor.call(this, identifier, optValidator)
+  var field = this
+  var validator = function(txt) {
+    if (ezP.FieldTextInput.htmlInput_) {
+      if (ezP.XRE.identifier.test(txt)) {
+        field.ezpData.error = false
+        goog.dom.classlist.remove(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
+      } else {
+        field.ezpData.error = true
+        goog.dom.classlist.add(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
+      }
+    }
+    return txt
+  }
+  ezP.FieldIdentifier.superClass_.constructor.call(this, identifier, optValidator || validator)
 }
 goog.inherits(ezP.FieldIdentifier, ezP.FieldCodeInput)
 

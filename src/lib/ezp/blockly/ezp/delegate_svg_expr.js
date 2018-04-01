@@ -599,13 +599,13 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.setupType = function (block) {
 ezP.DelegateSvg.Expr.numberliteral.prototype.consolidateType_ = function (block) {
   if (block.outputConnection) { // this is called once too early
     var value = block.ezp.inputs.first.fieldCodeNumber.getValue()
-    if (value.match(ezP.RE.integer) &&
+    if (XRegExp.test(value, ezP.XRE.integer) &&
     block.type !== ezP.T3.Expr.integer) {
       block.type = ezP.T3.Expr.integer
-    } else if (value.match(ezP.RE.floatnumber) &&
+    } else if (XRegExp.test(value, ezP.XRE.floatnumber) &&
     block.type !== ezP.T3.Expr.floatnumber) {
       block.type = ezP.T3.Expr.floatnumber
-    } else if (value.match(ezP.RE.imagnumber) &&
+    } else if (XRegExp.test(value, ezP.XRE.imagnumber) &&
     block.type !== ezP.T3.Expr.imagnumber) {
       block.type = ezP.T3.Expr.imagnumber
     }
@@ -636,21 +636,21 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.getSubtype = function (block) {
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Expr.numberliteral.prototype.setSubtype = function (block, subtype) {
-  if (subtype.match(ezP.RE.integer)) {
+  if (XRegExp.test(subtype, ezP.XRE.integer)) {
     block.ezp.inputs.first.fieldCodeNumber.setValue(subtype)
     if (block.type !== ezP.T3.Expr.integer) {
       block.type = ezP.T3.Expr.integer
       block.ezp.setupType(block)
     }
     return true
-  } else if (subtype.match(ezP.RE.floatnumber)) {
+  } else if (XRegExp.test(subtype, ezP.XRE.floatnumber)) {
     block.ezp.inputs.first.fieldCodeNumber.setValue(subtype)
     if (block.type !== ezP.T3.Expr.floatnumber) {
       block.type = ezP.T3.Expr.floatnumber
       block.ezp.setupType(block)
     }
     return true
-  } else if (subtype.match(ezP.RE.imagnumber)) {
+  } else if (XRegExp.test(subtype, ezP.XRE.imagnumber)) {
     block.ezp.inputs.first.fieldCodeNumber.setValue(subtype)
     if (block.type !== ezP.T3.Expr.imagnumber) {
       block.type = ezP.T3.Expr.imagnumber
@@ -669,15 +669,15 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.setSubtype = function (block, subty
  */
 ezP.DelegateSvg.Expr.numberliteral.prototype.fieldValueDidChange = function(block, name, oldValue) {
   var text = block.getField(name).getText()
-  if (text.match(ezP.RE.integer) &&
+  if (XRegExp.test(text, ezP.XRE.integer) &&
   block.type !== ezP.T3.Expr.integer) {
     block.type = ezP.T3.Expr.integer
     block.ezp.setupType(block)
-  } else if (text.match(ezP.RE.floatnumber) &&
+  } else if (XRegExp.test(text, ezP.XRE.floatnumber) &&
   block.type !== ezP.T3.Expr.floatnumber) {
     block.type = ezP.T3.Expr.floatnumber
     block.ezp.setupType(block)
-  } else if (text.match(ezP.RE.imagnumber) &&
+  } else if (XRegExp.test(text, ezP.XRE.imagnumber) &&
   block.type !== ezP.T3.Expr.imagnumber) {
     block.type = ezP.T3.Expr.imagnumber
     block.ezp.setupType(block)

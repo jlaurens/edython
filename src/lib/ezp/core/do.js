@@ -313,7 +313,7 @@ ezP.Do.typeOfString = function (candidate) {
   if (candidate === 'start') {
     return ezP.T3.Stmt.start_stmt
   }
-  if (candidate.match(ezP.RE.identifier)) {
+  if (candidate.match(ezP.XRE.identifier)) {
     return ezP.T3.Expr.identifier
   }
   if (ezP.XRE.shortstringliteral.exec(candidate)) {
