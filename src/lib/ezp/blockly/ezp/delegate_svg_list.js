@@ -41,55 +41,6 @@ ezP.DelegateSvg.List.prototype.willRender_ = function (block) {
 }
 
 /**
- * Render list inputs only.
- * @param io.
- * @private
- */
-ezP.DelegateSvg.List.prototype.renderDrawInput_ = function (io) {
-  this.renderDrawDummyInput_(io) ||
-  this.renderDrawListInput_(io)
-}
-
-/**
- * Render the fields of a list input, if relevant.
- * @param {!Blockly.Block} The block.
- * @param {!Blockly.Input} Its input.
- * @private
- */
-ezP.DelegateSvg.List.prototype.renderDrawListInput_ = function (io) {
-  if (!io.canList) {
-    return false
-  }
-  var ezp = io.input.ezpData
-  if (!ezp) {
-    return false
-  }
-  var c8n = io.input.connection
-  this.renderDrawFields_(io, true)
-  c8n.setOffsetInBlock(io.cursorX, 0)
-  if (c8n.isConnected()) {
-    var target = c8n.targetBlock()
-    var root = target.getSvgRoot()
-    if (root) {
-      root.setAttribute('transform', 'translate(' + io.cursorX + ', 0)')
-      target.render()
-      var bBox = target.getHeightWidth()
-      io.cursorX += bBox.width
-    }
-  } else {
-    if (ezp.s7r_ || c8n.ezp.optional_) {
-      var pw = this.carretPathDefWidth_(io.cursorX)
-    } else {
-      pw = this.placeHolderPathDefWidth_(io.cursorX)
-    }
-    io.steps.push(pw.d)
-    io.cursorX += pw.width
-  }
-  this.renderDrawFields_(io, false)
-  return true
-}
-
-/**
  * Fetches the named input object, getInput.
  * @param {!Block} block.
  * @param {string} name The name of the input.

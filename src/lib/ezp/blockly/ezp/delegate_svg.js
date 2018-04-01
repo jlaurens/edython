@@ -430,7 +430,9 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
   block.rendered = true
   this.consolidate(block)
   this.willRender_(block)
+  console.log('START', block.type, block.ezp.endsWithLetter?'T':'F')
   this.renderDraw_(block)
+  console.log('END', block.type, block.ezp.endsWithLetter?'T':'F')
   this.layoutConnections_(block)
   block.renderMoveConnections_()
 
@@ -616,7 +618,16 @@ ezP.DelegateSvg.prototype.collapsedPathDef_ = function () {
  */
 ezP.DelegateSvg.prototype.renderDraw_ = function (block) {
   block.height = ezP.Font.lineHeight()
-  this.endsWithCharacter = false
+  if (!block.outputConnection) {
+    this.endsWithLetter = false // when true, add a space to separate letters
+    // only blocks with outputConnection may be stacked horizontally
+    // such that visual letter separation may be a problem
+    // For other blocks, there is no text field rendered to the left
+  } else if (!block.outputConnection.isConnected() || !this.wrapped_ && !this.locked_) {
+    // the left part of the contour is the visual separator
+    this.endsWithLetter = false
+  }
+  console.log('EWL', this.endsWithLetter?'T':'F')
   var d = this.renderDrawInputs_(block)
   this.svgPathInline_.setAttribute('d', d)
   var root = block.getRootBlock()
@@ -741,7 +752,7 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
     canForif: true,
     i: 0,
     length: block.inputList.length,
-    endsWithCharacter: this.endsWithCharacter,
+    endsWithLetter: this.endsWithLetter,
   }
   io.cursorX = this.getPaddingLeft(block)
   if (!block.outputConnection) {
@@ -779,7 +790,8 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
   }
   io.cursorX += this.getPaddingRight(block)
   this.minWidth = block.width = Math.max(block.width, io.cursorX)
-  this.endsWithCharacter = io.endsWithCharacter
+  this.endsWithLetter = io.endsWithLetter
+  console.log('EWL', this.endsWithLetter?'T':'F')
   return io.steps.join(' ')
 }
 
@@ -805,26 +817,31 @@ ezP.DelegateSvg.prototype.renderDrawInput_ = function (io) {
 
 /**
  * Render the fields of a block input.
+ * 
  * @param io An input/output record.
+ * @param only_prefix boolean 
  * @return the delta of io.cursorX
  * @private
  */
-ezP.DelegateSvg.prototype.renderDrawFields_ = function (io, start) {
+ezP.DelegateSvg.prototype.renderDrawFields_ = function (io, only_prefix) {
   var here = io.cursorX
-  var lastField = null
   for (var i = 0; (io.field = io.input.fieldRow[i]); ++i) {
-    if (!!start === !io.field.ezpData.suffix) {
-      var text = io.field.getText()
+    if (!!only_prefix === !io.field.ezpData.suffix) {
       if (io.field.isVisible()) {
         var root = io.field.getSvgRoot()
         if (root) {
+          var text = io.field.getText()
           if (text.length) {
-            if (io.endsWithCharacter && /[a-zA-Z_]/.test(text[0])) {
+            // if the text is void, it can not change whether
+            // the last character was a letter or not
+            if (io.endsWithLetter && /[a-zA-Z_]/.test(text[0])) {
+              // add a separation
               io.cursorX += ezP.Font.space
+              console.log('SPACE ADDED', text)
             }
-            io.endsWithCharacter = /[a-zA-Z_]/.test(text[text.length-1])
+            io.endsWithLetter = /[a-zA-Z_]/.test(text[text.length-1])
+            console.log('EWL', io.endsWithLetter? 'T': 'F', text)
           }
-          lastField = io.field
           var ezp = io.field.ezpData
           var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
           root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
@@ -839,9 +856,6 @@ ezP.DelegateSvg.prototype.renderDrawFields_ = function (io, start) {
         }
       }          
     }
-  }
-  if (lastField) {
-    io.endsWithCharacter = /^.*[a-zA-Z_]$/.test(lastField.getValue())
   }
   return here - io.cursorX
 }
@@ -869,55 +883,39 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   if (!io.canValue || io.input.type !== Blockly.INPUT_VALUE) {
     return false
   }
+  var delta = this.renderDrawFields_(io, true)
   var c8n = io.input.connection
   if (c8n) {
-    var ezp = c8n.ezp
-    var target = c8n.targetBlock()
-    var delta = this.renderDrawFields_(io, true)
     c8n.setOffsetInBlock(io.cursorX, 0)
+    var target = c8n.targetBlock()
     if (!!target) {
       var root = target.getSvgRoot()
       if (!!root) {
-        if (delta) { // insert a space because wrapped blocks are... wrapped
-          // this will change when the locking feature will be implemented
-          var w = target
-          while(w &&(w.ezp.wrapped_ || w.ezp.locked_)&& w.inputList.length) {
-            var input = w.inputList[0]
-            if (input.fieldRow.length) {
-              var done = false
-              for (var i = 0; i<input.fieldRow.length; ++i) {
-                var value = input.fieldRow[i].getValue()
-                if (value.length) {
-                  if (io.endsWithCharacter) {
-                    io.cursorX += ezP.Font.space
-                    io.endsWithCharacter = false
-                  }
-                  c8n.setOffsetInBlock(io.cursorX, 0)
-                  done = true
-                  break
-                }
-              }
-              if (done) {
-                break
-              }
-            }
-            w = input.connection? input.connection.targetBlock(): undefined
-          }
-        }
         root.setAttribute('transform', 'translate(' + io.cursorX + ', 0)')
-        target.ezp.endsWithCharacter = (target.ezp.wrapped_ ||target.ezp.locked_) && io.endsWithCharacter
+        if (!target.ezp.isRendering) {
+          target.ezp.endsWithLetter = (target.ezp.wrapped_ ||target.ezp.locked_) && io.endsWithLetter
+        }
         target.render()
-        io.endsWithCharacter = (target.ezp.wrapped_ ||target.ezp.locked_) && target.ezp.endsWithCharacter
+        console.log('EWL did render', target.ezp.endsWithLetter?'T':'F', target.type)
+        io.endsWithLetter = (target.ezp.wrapped_ ||target.ezp.locked_) && target.ezp.endsWithLetter
+        console.log('EWL', io.endsWithLetter?'T':'F', (target.ezp.wrapped_ ||target.ezp.locked_)?'T':'F')
         var bBox = target.getHeightWidth()
         io.cursorX += bBox.width
       }
-    } else {
-      var pw = ezp.optional_?
+    } else if (!this.locked_) {
+      // locked blocks won't display any placeholder
+      // (input with no target)
+      var ezp = c8n.ezp
+      var pw = ezp.s7r_ ||ezp.optional_?
       this.carretPathDefWidth_(io.cursorX):
       this.placeHolderPathDefWidth_(io.cursorX)
       io.steps.push(pw.d)
       io.cursorX += pw.width
-      io.endsWithCharacter = false
+      if (pw.width) {
+        // a space was added as a visual separator anyway
+        io.endsWithLetter = false
+      }
+      console.log('EWL', io.endsWithLetter?'T':'F')
     }
     this.renderDrawFields_(io, false)
   }
@@ -2286,12 +2284,12 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
   var prototypeName = action.type || action
   // create a block out of the undo mechanism
   Blockly.Events.disable()
-  var B = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
+  var candidate = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
   var c8n_N = action.subtype || subtype
-  if (B.ezp.setSubtype(B, c8n_N)) {
+  if (candidate.ezp.setSubtype(candidate, c8n_N)) {
     c8n_N = undefined
   }
-  if (!B) {
+  if (!candidate) {
     Blockly.Events.enable()
     return
   }
@@ -2299,55 +2297,55 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
   var fin = function(prepare) {
     Blockly.Events.enable()
     Blockly.Events.setGroup(true)
-    Blockly.Events.fire(new Blockly.Events.BlockCreate(block))
-    B.render()
+    Blockly.Events.fire(new Blockly.Events.BlockCreate(candidate))
+    candidate.render()
     if (goog.isFunction(prepare)) {
       prepare()
     }
     otherC8n.connect(c8n)
-    B.select()
-    B.bumpNeighbours_()
+    candidate.select()
+    candidate.bumpNeighbours_()
     Blockly.Events.setGroup(false)
-    return B
+    return candidate
   }
   if ((otherC8n = ezP.SelectedConnection.get())) {
     var otherSource = otherC8n.getSourceBlock()
     if (otherC8n.type === Blockly.INPUT_VALUE) {
-      if ((c8n = B.outputConnection)&& c8n.checkType_(otherC8n)) {
+      if ((c8n = candidate.outputConnection)&& c8n.checkType_(otherC8n)) {
         return fin()
       }
     } else if (otherC8n === otherSource.previousConnection) {
-      if ((c8n = B.nextConnection)&& c8n.checkType_(otherC8n)) {
+      if ((c8n = candidate.nextConnection)&& c8n.checkType_(otherC8n)) {
         var targetC8n = otherC8n.targetConnection
-        if (targetC8n && B.previousConnection
-          && targetC8n.checkType_(B.previousConnection)) {
+        if (targetC8n && candidate.previousConnection
+          && targetC8n.checkType_(candidate.previousConnection)) {
           return fin(function() {
-            targetC8n.connect(B.previousConnection)
+            targetC8n.connect(candidate.previousConnection)
           })
         } else {
           return fin(function() {
             var its_xy = block.getRelativeToSurfaceXY();
-            var my_xy = B.getRelativeToSurfaceXY();
-            var HW = B.getHeightWidth()
-            B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y-HW.height)
+            var my_xy = candidate.getRelativeToSurfaceXY();
+            var HW = candidate.getHeightWidth()
+            candidate.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y-HW.height)
           })
         }
         // unreachable code
       }
     } else if (otherC8n.type === Blockly.NEXT_STATEMENT) {
-      if ((c8n = B.previousConnection)&& c8n.checkType_(otherC8n)) {
+      if ((c8n = candidate.previousConnection)&& c8n.checkType_(otherC8n)) {
         var targetC8n = otherC8n.targetConnection
-        if (targetC8n && B.nextConnection
-          && targetC8n.checkType_(B.nextConnection)) {
+        if (targetC8n && candidate.nextConnection
+          && targetC8n.checkType_(candidate.nextConnection)) {
           return fin(function() {
-            targetC8n.connect(B.previousConnection)
+            targetC8n.connect(candidate.previousConnection)
           })
         } else {
           return fin()
         }
       }
     }
-  } else if ((c8n = B.outputConnection)) {
+  } else if ((c8n = candidate.outputConnection)) {
     // try to find a free connection in a block
     var findC8n = function(block) {
       var i = 0, input, otherC8n, foundC8n, target
@@ -2373,35 +2371,35 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
       return fin()
     }
   }
-  if ((c8n = B.previousConnection)) {
+  if ((c8n = candidate.previousConnection)) {
     if ((otherC8n = block.nextConnection) && c8n.checkType_(otherC8n)) {
-      if ((targetC8n = otherC8n.targetConnection) && B.nextConnection && B.nextConnection.checkType_(targetC8n)) {
+      if ((targetC8n = otherC8n.targetConnection) && candidate.nextConnection && candidate.nextConnection.checkType_(targetC8n)) {
         return fin(function() {
-          B.nextConnection.connect(targetC8n)
+          candidate.nextConnection.connect(targetC8n)
         })
       } else {
         return fin()
       }
     }
   }
-  if ((c8n = B.nextConnection)) {
+  if ((c8n = candidate.nextConnection)) {
     if ((otherC8n = block.previousConnection) && c8n.checkType_(otherC8n)) {
-      if ((targetC8n = otherC8n.targetConnection) && B.previousConnection && B.previousConnection.checkType_(targetC8n)) {
+      if ((targetC8n = otherC8n.targetConnection) && candidate.previousConnection && candidate.previousConnection.checkType_(targetC8n)) {
         return fin(function() {
-          B.previousConnection.connect(targetC8n)
+          candidate.previousConnection.connect(targetC8n)
         })
       } else {
         return fin(function() {
           var its_xy = block.getRelativeToSurfaceXY();
-          var my_xy = B.getRelativeToSurfaceXY();
-          var HW = B.getHeightWidth()
-          B.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y-HW.height)
+          var my_xy = candidate.getRelativeToSurfaceXY();
+          var HW = candidate.getHeightWidth()
+          candidate.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y-HW.height)
         })
       }
     }
   }
-  if (B) {
-    B.dispose(true)
+  if (candidate) {
+    candidate.dispose(true)
   }
   Blockly.Events.enable()
   return null
