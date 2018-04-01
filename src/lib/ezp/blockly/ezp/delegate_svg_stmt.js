@@ -280,8 +280,8 @@ goog.inherits(ezP.DelegateSvg.Stmt.Two, ezP.DelegateSvg.Stmt)
  */
 ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block, deep) {
   ezP.DelegateSvg.Stmt.Two.superClass_.consolidate.call(this, block, deep)
-  var first = this.inputs.first.input
-  var last  = this.inputs.last.input
+  var first = this.model.first.input
+  var last  = this.model.last.input
   var connected = last.connection.isConnected()
   this.setInputEnabled(block, last, first.connection.isConnected() || connected)
   if (connected) {
@@ -513,7 +513,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.setDisabled = function (block, yorn)
  * @return None
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.getSubtype = function (block) {
-  return block.ezp.inputs.last.fieldCodeComment.getValue()
+  return block.ezp.model.last.fieldCodeComment.getValue()
 }
 
 /**
@@ -526,7 +526,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.getSubtype = function (block) {
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.setSubtype = function (block, subtype) {
-  block.ezp.inputs.last.fieldCodeComment.setValue(subtype)
+  block.ezp.model.last.fieldCodeComment.setValue(subtype)
   return true
 }
 
@@ -536,7 +536,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.setSubtype = function (block, subtyp
  * @private
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.showEditor = function (block) {
-  block.ezp.inputs.last.fieldCodeComment.showEditor_()
+  block.ezp.model.last.fieldCodeComment.showEditor_()
 }
 
 /**
@@ -624,7 +624,7 @@ ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt
  * @return None
  */
 ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.getSubtype = ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.getSubtype = function (block) {
-  var wrapped = this.inputs.first.input.connection.targetBlock()
+  var wrapped = this.model.first.input.connection.targetBlock()
   return wrapped? wrapped.ezp.getSuptype(wrapped): undefined
 }
 
@@ -638,7 +638,7 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.getSubtype = ezP.DelegateSvg.S
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.setSubtype = function (block, subtype) {
-  var wrapped = this.inputs.first.input.connection.targetBlock()
+  var wrapped = this.model.first.input.connection.targetBlock()
   if (wrapped) {
     wrapped.ezp.setSubtype(wrapped, subtype)
   }

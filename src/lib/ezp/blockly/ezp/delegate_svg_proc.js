@@ -133,7 +133,7 @@ ezP.ID.USE_DECORATOR = 'USE_DECORATOR'
 ezP.DelegateSvg.Expr.decorator_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var menu = mgr.menu
   var yorn = false
-  var c8n = this.inputs.first.input.connection
+  var c8n = this.model.first.input.connection
   var target = c8n.targetBlock()
   if (!target) {
     var F = function(candidate) {

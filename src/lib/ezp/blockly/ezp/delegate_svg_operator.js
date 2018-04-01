@@ -46,7 +46,7 @@ ezP.MixinSvg.Operator.initModel = function (prototypeName) {
  * @override
  */
 ezP.MixinSvg.Operator.operatorToDom = function (block, element) {
-  element.setAttribute('operator', this.inputs.last.fieldOperator.getText())
+  element.setAttribute('operator', this.model.last.fieldOperator.getText())
 }
 
 /**
@@ -58,7 +58,7 @@ ezP.MixinSvg.Operator.operatorToDom = function (block, element) {
 ezP.MixinSvg.Operator.operatorFromDom = function (block, element) {
   var op = element.getAttribute('operator')
   if (this.operators && this.operators.indexOf(op) >= 0) {
-    this.inputs.last.fieldOperator.setValue(op)
+    this.model.last.fieldOperator.setValue(op)
   }
 }
 
@@ -140,7 +140,7 @@ ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
  * @return None
  */
 ezP.DelegateSvg.Operator.prototype.getSubtype = function (block) {
-  return this.inputs.last.fieldOperator.getValue()
+  return this.model.last.fieldOperator.getValue()
 }
 
 /**
@@ -153,7 +153,7 @@ ezP.DelegateSvg.Operator.prototype.getSubtype = function (block) {
  */
 ezP.DelegateSvg.Operator.prototype.setSubtype = function (block, subtype) {
   if (this.operators && this.operators.indexOf(subtype) >= 0) {
-    this.inputs.last.fieldOperator.setValue(subtype)
+    this.model.last.fieldOperator.setValue(subtype)
     return true
   }
   return false

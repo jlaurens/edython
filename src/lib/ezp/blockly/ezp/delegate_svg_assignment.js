@@ -452,7 +452,7 @@ goog.inherits(ezP.DelegateSvg.AugAssign, ezP.DelegateSvg.Binary)
  */
 ezP.DelegateSvg.AugAssign.prototype.XpopulateContextMenuFirst_ = function (block, mgr) {
   var yorn
-  var target = this.inputs.last.input.connection.targetBlock()
+  var target = this.model.last.input.connection.targetBlock()
   if (target) {
     var D = ezP.DelegateSvg.Manager.getInputModel(target.type)
     if (yorn = mgr.populate_wrap_alternate(target, D.last.key)) {
@@ -667,7 +667,7 @@ ezP.ID.ASSIGN_LIST_INSERT = 'ASSIGN_LIST_INSERT'
  */
 ezP.DelegateSvg.Expr.augassign_numeric.prototype.populateContextMenuFirst_ =
 ezP.DelegateSvg.Expr.augassign_bitwise.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var target = this.inputs.last.input.connection.targetBlock()
+  var target = this.model.last.input.connection.targetBlock()
   if (target) {
     var type, input
     var can_insert = function() {

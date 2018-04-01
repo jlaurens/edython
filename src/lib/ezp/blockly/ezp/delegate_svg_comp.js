@@ -91,7 +91,8 @@ ezP.DelegateSvg.Expr.comp_if = function (prototypeName) {
       key: ezP.Key.IF,
       label: 'if',
       css_class: 'ezp-code-reserved',
-      check: ezP.T3.Expr.Check.expression_nocond
+      check: ezP.T3.Expr.Check.expression_nocond,
+      hole_value: 'yorn',
     }
   }
   this.outputModel_.check = ezP.T3.Expr.comp_if

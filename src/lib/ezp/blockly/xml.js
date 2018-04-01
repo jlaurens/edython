@@ -248,8 +248,8 @@ Blockly.Xml.blockToDom = function (block, optNoId) {
       }
     }
   }
-  if (block.inputsInlineDefault !== block.inputsInline) {
-    element.setAttribute('inline', block.inputsInline)
+  if (block.modelInlineDefault !== block.modelInline) {
+    element.setAttribute('inline', block.modelInline)
   }
   if (block.isCollapsed()) {
     element.setAttribute('collapsed', true)
@@ -698,9 +698,6 @@ IN PROGRESS
   attribute_identifier      /*   ::=                                                    (default) // : "ezp_attribute_identifier",
   non_void_expression_list  /*   ::=                                                    (default) // : "ezp_non_void_expression_list",
   parenth_form              /*   ::= "(" [starred_expression] ")"                       (default) // : "ezp_parenth_form",
-  comprehension             /*   ::= expression comp_for                                (default) // : "ezp_comprehension",
-  comp_for                  /*   ::= [ASYNC] "for" target_list "in" or_test [comp_iter] (default) // : "ezp_comp_for",
-  comp_if                   /*   ::= "if" expression_nocond [comp_iter]                 (default) // : "ezp_comp_if",
   list_display              /*   ::= "[" starred_item_list_comprehensive "]"            (default) // : "ezp_list_display",
   set_display               /*   ::= "{" non_void_starred_item_list_comprehensive "}"   (default) // : "ezp_set_display",
   dict_display              /*   ::= "{" [key_datum_list | dict_comprehension] "}"      (default) // : "ezp_dict_display",

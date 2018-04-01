@@ -397,7 +397,7 @@ goog.inherits(ezP.DelegateSvg.Group.Async, ezP.DelegateSvg.Group)
  * @private
  */
 ezP.DelegateSvg.Group.Async.prototype.getFieldAsync = function (block) {
-  var input = this.inputs.first
+  var input = this.model.first
   return input? input.fieldAsync: undefined
 }
 

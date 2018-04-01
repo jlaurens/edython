@@ -54,7 +54,7 @@ ezP.DelegateSvg.prototype.getPrimaryConnection = function (block) {
  */
 ezP.DelegateSvg.Primary.prototype.getPrimaryConnection = function (block) {
   // var input = block.getInput(ezP.Key.PRIMARY)
-  return this.inputs.first.input.connection
+  return this.model.first.input.connection
 }
 
 /**

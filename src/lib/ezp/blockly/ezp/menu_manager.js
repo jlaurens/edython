@@ -1220,10 +1220,10 @@ ezP.MenuManager.prototype.populate_wrap_alternate = function (block, key) {
 ezP.MenuManager.prototype.populateOperator = function (block) {
   var ezp = block.ezp
   if (ezp.operators && ezp.operators.length > 1) {
-    var value = ezp.inputs.last.fieldOperator.getValue()
+    var value = ezp.model.last.fieldOperator.getValue()
     var F = function(op) {
       var menuItem = new ezP.MenuItem(ezp.getContent(block, op), function() {
-        ezp.inputs.last.fieldOperator.setValue(op)
+        ezp.model.last.fieldOperator.setValue(op)
         return
       })
       menuItem.setEnabled(value != op)

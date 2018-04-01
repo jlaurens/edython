@@ -7780,7 +7780,7 @@ f=e.connection.getShadowDom();
 k&&
 (h.appendChild(Blockly.Xml.blockToDom(k,b)),g=!1);
 h.setAttribute("name",e.name);
-g||c.appendChild(h)}}a.inputsInlineDefault!==a.inputsInline&&c.setAttribute("inline",a.inputsInline);
+g||c.appendChild(h)}}a.modelInlineDefault!==a.modelInline&&c.setAttribute("inline",a.modelInline);
 a.isCollapsed()&&c.setAttribute("collapsed",!0);
 a.disabled&&c.setAttribute("disabled",!0);
 a.isDeletable()||a.isShadow()||c.setAttribute("deletable",!1);

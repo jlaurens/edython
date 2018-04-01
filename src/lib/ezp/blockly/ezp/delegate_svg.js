@@ -309,6 +309,21 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     var input = block.inputList.length
   }
   if (Object.keys(this.inputModel_).length) {
+    var D, v
+    if ((D = this.inputModel_['prefix'])) {
+      if ((v = D['label'])) {
+        var field = Is.fieldPrefix = new ezP.FieldLabel(v)
+        field.ezpData.css_class = D.css_class
+        field.ezpData.css_style = D.css_style
+      }
+    }
+    if ((D = this.inputModel_['suffix'])) {
+      if ((v = D['label'])) {
+        var field = Is.fieldSufffix = new ezP.FieldLabel(v)
+        field.ezpData.css_class = D.css_class
+        field.ezpData.css_style = D.css_style
+      }
+    }
     var keys = ['first', 'middle', 'last']
     for (var i = 0, K; K = keys[i++];) {
       var f = F.call(this, K)
@@ -318,7 +333,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     }
     this.inputModel_ = undefined
   }
-  this.inputs = Is
+  this.model = Is
   if (!block.workspace.options.readOnly && !this.eventsInit_) {
     Blockly.bindEventWithChecks_(block.getSvgRoot(), 'mouseup', block,
     function(e) {
@@ -379,7 +394,7 @@ ezP.DelegateSvg.prototype.postInitSvg = function(block) {
  */
 ezP.DelegateSvg.prototype.getMenuTarget = function(block) {
   var wrapped
-  if (this.inputs.wrap && (wrapped = this.inputs.wrap.input.connection.targetBlock())) {
+  if (this.model.wrap && (wrapped = this.model.wrap.input.connection.targetBlock())) {
     return wrapped.ezp.getMenuTarget(wrapped)
   }
   if (this.wrappedInputs_ && this.wrappedInputs_.length &&
@@ -1494,9 +1509,9 @@ ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
     }
     FF(D.fieldLabelEnd)
   }
-  F(this.inputs.first)
-  F(this.inputs.middle)
-  F(this.inputs.last)
+  F(this.model.first)
+  F(this.model.middle)
+  F(this.model.last)
   return last
 }
 
@@ -1526,8 +1541,8 @@ ezP.DelegateSvg.prototype.toPythonStatementComponents = function (block, compone
     indent += '# '
   }
   components.push(indent+this.toPythonExpression(block))
-  if (this.inputs.do) {
-    var input = this.inputs.do.input
+  if (this.model.do) {
+    var input = this.model.do.input
     if (input) {
       var c8n = input.connection
       if (c8n) {

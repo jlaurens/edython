@@ -297,7 +297,7 @@ goog.inherits(ezP.DelegateSvg.Expr.argument_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('argument_list')
 
 /**
- * Class for a DelegateSvg, starred_item_list_comprehensive block.
+ * Class for a DelegateSvg, argument_list_comprehensive block.
  * This block may be sealed.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.

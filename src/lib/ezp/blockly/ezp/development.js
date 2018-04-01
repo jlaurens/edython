@@ -55,12 +55,21 @@ ezP.DelegateSvg.Expr.workspaceBlocks = [
   ezP.T3.Expr.xor_expr_concrete,
   ezP.T3.Expr.or_expr_concrete,
   ezP.T3.Expr.or_test_concrete,
-  ezP.T3.Expr.and_test_concrete,*/
-  ezP.T3.Expr.non_void_expression_list,
-  ezP.T3.Expr.parenth_form,
+  ezP.T3.Expr.and_test_concrete,
   ezP.T3.Expr.comprehension,
   ezP.T3.Expr.comp_for,
   ezP.T3.Expr.comp_if,
+  */
+  ezP.T3.Expr.non_void_expression_list,
+  ezP.T3.Expr.parenth_for,
+  ezP.T3.Expr.list_display,
+  ezP.T3.Expr.set_display,
+  ezP.T3.Expr.dict_display,
+  ezP.T3.Expr.dict_comprehension,
+  ezP.T3.Expr.generator_expression,
+  ezP.T3.Expr.yield_atom,
+  ezP.T3.Expr.yield_expression,
+  ezP.T3.Expr.yield_from_expression,
 ]
 
 /**
