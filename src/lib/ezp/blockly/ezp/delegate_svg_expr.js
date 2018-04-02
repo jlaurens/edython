@@ -126,8 +126,7 @@ ezP.DelegateSvg.Expr.prototype.willRender_ = function (block) {
   ezP.DelegateSvg.Expr.superClass_.willRender_.call(this, block)
   var field = this.model.fieldAwait
   if (field) {
-    var text = field.getText()
-    field.setVisible(text && text.length)
+    field.setVisible(this.awaited_)
   }
 }
 
@@ -139,12 +138,8 @@ ezP.DelegateSvg.Expr.prototype.willRender_ = function (block) {
  */
 ezP.DelegateSvg.Expr.prototype.toDom = function (block, element) {
   ezP.DelegateSvg.Expr.superClass_.toDom.call(this, block, element)
-  var field = this.model.fieldAwait
-  if (field) {
-    var attribute = field.getText()
-    if (attribute && attribute.length>4) {
-      element.setAttribute('await', 'true')
-    }
+  if (this.awaited_) {
+    element.setAttribute('await', 'true')
   }
 }
 
@@ -159,9 +154,7 @@ ezP.DelegateSvg.Expr.prototype.fromDom = function (block, element) {
   var field = this.model.fieldAwait
   if (field) {
     var attribute = element.getAttribute('await')
-    if (attribute && attribute.toLowerCase() === 'true') {
-      field.setText('await ')
-    }
+    this.setAwaited(block, attribute && attribute.toLowerCase() === 'true')
   }
 }
 
@@ -173,6 +166,9 @@ ezP.DelegateSvg.Expr.prototype.fromDom = function (block, element) {
  * @return yes or no
  */
 ezP.DelegateSvg.Expr.prototype.awaitable = function (block) {
+  if (!this.model.fieldAwait) {
+    return false
+  }
   var parent = block.getParent()
   if (!parent) {
     return true
@@ -194,21 +190,20 @@ ezP.DelegateSvg.Expr.prototype.awaitable = function (block) {
 ezP.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var yorn = ezP.DelegateSvg.Expr.superClass_.populateContextMenuFirst_.call(this,block, mgr)
   var field = this.model.fieldAwait
-  if (field && this.awaitable(block)) {
+  if (this.awaited_ || this.awaitable(block)) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN('await', 'ezp-code-reserved'),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
     )
-    var old = field.getValue()
-    if (old.length > 1) {
+    if (this.awaited_) {
       mgr.shouldSeparateRemove()
       mgr.addRemoveChild(new ezP.MenuItem(content, function() {
-        field.setValue('')
+        block.ezp.setAwaited(block, false)
       }))
     } else {
       mgr.shouldSeparateInsert()
       mgr.addInsertChild(new ezP.MenuItem(content, function() {
-        field.setValue('await')
+        block.ezp.setAwaited(block, true)
       }))
     }
   }
@@ -489,7 +484,7 @@ goog.inherits(ezP.DelegateSvg.Expr.or_expr_star_star, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('or_expr_star_star')
 
 /**
-* Class for a DelegateSvg, await_expr.
+* Class for a DelegateSvg, await_expr, never used. Replaced by an attribute.
 * For ezPython.
 * @param {?string} prototypeName Name of the language object containing
 *     type-specific functions for this block.

@@ -506,7 +506,6 @@ ezP.DelegateSvg.Group.Async.prototype.populateContextMenuFirst_ = function (bloc
 ezP.DelegateSvg.Stmt.for_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.for_part.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.first = {
-    asyncable: true,
     label: 'for',
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.target_list,
@@ -520,6 +519,7 @@ ezP.DelegateSvg.Stmt.for_part = function (prototypeName) {
   }
   this.statementModel_.previous.check = ezP.T3.Stmt.Previous.for_part
   this.statementModel_.next.check = ezP.T3.Stmt.Next.for_part
+  this.statementModel_.asyncable = true
 }
 goog.inherits(ezP.DelegateSvg.Stmt.for_part, ezP.DelegateSvg.Group.Async)
 ezP.DelegateSvg.Manager.register('for_part')

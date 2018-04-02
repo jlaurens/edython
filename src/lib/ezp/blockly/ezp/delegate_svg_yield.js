@@ -121,7 +121,6 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = func
   return ezP.DelegateSvg.Expr.yield_expression.superClass_.populateContextMenuFirst_.call(this,block, mgr) || yorn
 }
 
-
 /**
  * Class for a DelegateSvg, '(yield ..., ..., ...)'.
  * For ezPython.

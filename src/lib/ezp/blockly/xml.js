@@ -449,6 +449,7 @@ ezP.DelegateSvg.Expr.blockToDom = function(block, optNoId) {
   if (!optNoId) {
     element.setAttribute('id', block.id)
   }
+  this.toDom(block, element)
   return element
 }
 
@@ -479,6 +480,7 @@ ezP.DelegateSvg.Expr.prototype.blockToDom = function(block, optNoId) {
  * @return a dom element
  */
 ezP.DelegateSvg.Expr.prototype.domToBlock = function(block, xml) {
+  this.fromDom(block, xml)
   // try to fill each input
   for (var j = 0, input; (input = block.inputList[j]); j++) {
     if (input.name) {

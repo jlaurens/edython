@@ -315,7 +315,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   }
   if (Object.keys(this.inputModel_).length) {
     if ((D = this.outputModel_) && D.awaitable) {
-      field = new ezP.FieldLabel('')
+      field = new ezP.FieldLabel('await')
       field.ezpData.css_class = 'ezp-code-reserved'
       field.setSourceBlock(block)
       field.init()
@@ -1510,7 +1510,8 @@ ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
     if (!D) {
       return
     }
-    FF(D.fieldAsync) || FF(D.fieldAwait)
+    console.warn('CHANGE Asyn design')
+    FF(D.fieldAsync)
     FF(D.fieldPrefix)
     FF(D.fieldLabel)
     FF(D.fieldLabelStart)
@@ -2569,4 +2570,23 @@ ezP.DelegateSvg.prototype.didConnect = function(block, connection, oldTargetConn
   if (block === Blockly.selected && this.locked_) {
     block.ezp.unlock(block)
   }
+}
+
+/**
+ * Set the await status of the given block.
+ * Undo compliant.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {boolean} deep Whether to unlock statements too.
+ * @return the number of block locked
+ */
+ezP.DelegateSvg.prototype.setAwaited = function (block, yorn) {
+  if (!!yorn === !!this.awaited_) {
+    return false
+  }
+  var ans = 0
+  Blockly.Events.fire(new Blockly.Events.BlockChange(
+    block, ezP.Const.Event.awaited, null, this.awaited_, yorn));
+  this.awaited_ = yorn
+  block.render()
 }

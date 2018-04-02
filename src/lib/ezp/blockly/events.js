@@ -55,6 +55,9 @@ Blockly.Events.Change.prototype.run = function(forward) {
         block.ezp.unlock(block)
       }
       break;
+    case ezP.Const.Event.awaited:
+      block.ezp.setAwaited(block, value)
+      break;
     default:
       console.warn('Unknown change type: ' + this.element);
   }
