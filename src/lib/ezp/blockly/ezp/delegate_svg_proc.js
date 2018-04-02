@@ -36,7 +36,9 @@ ezP.DelegateSvg.Expr.decorator_expr = function (prototypeName) {
     check: ezP.T3.Expr.Check.dotted_funcname,
     hole_value: 'name',
   }
-  this.outputModel_.check = ezP.T3.Expr.decorator_expr
+  this.outputModel_ = {
+    check: ezP.T3.Expr.decorator_expr,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.decorator_expr, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('decorator_expr')
@@ -71,7 +73,9 @@ ezP.DelegateSvg.Expr.dotted_funcname_concrete = function (prototypeName) {
     check: ezP.T3.Expr.Check.dotted_funcname,
     hole_value: 'name',
   }
-  this.outputModel_.check = ezP.T3.Expr.dotted_funcname_concrete
+  this.outputModel_ = {
+    check: ezP.T3.Expr.dotted_funcname_concrete,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.dotted_funcname_concrete, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('dotted_funcname_concrete')
@@ -96,7 +100,9 @@ ezP.DelegateSvg.Expr.decorator_call_expr = function (prototypeName) {
     wrap: ezP.T3.Expr.argument_list,
     end: ')',
   }
-  this.outputModel_.check = ezP.T3.Expr.decorator_call_expr
+  this.outputModel_ = {
+    check: ezP.T3.Expr.decorator_call_expr,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.decorator_call_expr, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('decorator_call_expr')
@@ -191,7 +197,9 @@ ezP.DelegateSvg.Expr.funcdef_simple = function (prototypeName) {
     wrap: ezP.T3.Expr.parameter_list,
     end: ')',
   }
-  this.outputModel_.check = ezP.T3.Expr.funcdef_simple
+  this.outputModel_ = {
+    check: ezP.T3.Expr.funcdef_simple,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.funcdef_simple, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('funcdef_simple')
@@ -224,7 +232,9 @@ ezP.DelegateSvg.Expr.funcdef_typed = function (prototypeName) {
     key: ezP.Key.TYPE,
     check: ezP.T3.Expr.Check.expression,
   }
-  this.outputModel_.check = ezP.T3.Expr.funcdef_typed
+  this.outputModel_ = {
+    check: ezP.T3.Expr.funcdef_typed,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.funcdef_typed, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('funcdef_typed')
@@ -273,7 +283,9 @@ ezP.DelegateSvg.Expr.classdef_simple = function (prototypeName) {
     check: ezP.T3.Expr.identifier,
     hole_value: 'name',
   }
-  this.outputModel_.check = ezP.T3.Expr.classdef_simple
+  this.outputModel_ = {
+    check: ezP.T3.Expr.classdef_simple,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.classdef_simple, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('classdef_simple')
@@ -309,7 +321,9 @@ ezP.DelegateSvg.Expr.classdef_derived = function (prototypeName) {
       end: ')',
     }
   }
-  this.outputModel_.check = ezP.T3.Expr.classdef_derived
+  this.outputModel_ = {
+    check: ezP.T3.Expr.classdef_derived,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.classdef_derived, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('classdef_derived')

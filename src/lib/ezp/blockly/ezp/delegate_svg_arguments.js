@@ -25,7 +25,9 @@ goog.require('ezP.DelegateSvg.List')
  */
 ezP.DelegateSvg.Expr.keyword_item = function (prototypeName) {
   ezP.DelegateSvg.Expr.keyword_item.superClass_.constructor.call(this, prototypeName)
-  this.outputModel_.check = ezP.T3.Expr.keyword_item
+  this.outputModel_ = {
+    check: ezP.T3.Expr.keyword_item,
+  }
   this.inputModel_ = {
     first: {
       key: ezP.Key.KEY,
@@ -54,7 +56,9 @@ ezP.DelegateSvg.Manager.register('keyword_item')
  */
 ezP.DelegateSvg.Expr.expression_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.expression_star.superClass_.constructor.call(this, prototypeName)
-  this.outputModel_.check = ezP.T3.Expr.expression_star
+  this.outputModel_ = {
+    check: ezP.T3.Expr.expression_star,
+  }
   this.inputModel_ = {
     first: {
       label: '*',
@@ -78,7 +82,9 @@ ezP.DelegateSvg.Manager.register('expression_star')
  */
 ezP.DelegateSvg.Expr.expression_star_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.expression_star_star.superClass_.constructor.call(this, prototypeName)
-  this.outputModel_.check = ezP.T3.Expr.expression_star_star
+  this.outputModel_ = {
+    check: ezP.T3.Expr.expression_star_star,
+  }
   this.inputModel_ = {
     first: {
       label: '**',
@@ -291,7 +297,9 @@ ezP.DelegateSvg.Expr.argument_list = function (prototypeName) {
     sep: ',',
     hole_value: 'name',
   }
-  this.outputModel_.check = ezP.T3.Expr.argument_list
+  this.outputModel_ = {
+    check: ezP.T3.Expr.argument_list,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.argument_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('argument_list')
@@ -317,7 +325,9 @@ ezP.DelegateSvg.Expr.argument_list_comprehensive = function (prototypeName) {
   goog.array.removeDuplicates(RA)
   D.all = RA
   this.inputModel_.list = D
-  this.outputModel_.check = ezP.T3.Expr.argument_list_comprehensive
+  this.outputModel_ = {
+    check: ezP.T3.Expr.argument_list_comprehensive,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.argument_list_comprehensive, ezP.DelegateSvg.List)
 

@@ -204,7 +204,9 @@ ezP.DelegateSvg.Expr.optional_expression_list = function (prototypeName) {
     sep: ',',
     hole_value: 'name',
   }
-  this.outputModel_.check = ezP.T3.Expr.optional_expression_list
+  this.outputModel_ = {
+    check: ezP.T3.Expr.optional_expression_list,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.optional_expression_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('optional_expression_list')
@@ -226,7 +228,9 @@ ezP.DelegateSvg.Expr.non_void_expression_list = function (prototypeName) {
     sep: ',',
     hole_value: 'name',
   }
-  this.outputModel_.check = ezP.T3.Expr.non_void_expression_list
+  this.outputModel_ = {
+    check: ezP.T3.Expr.non_void_expression_list,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.non_void_expression_list, ezP.DelegateSvg.List)
 
@@ -249,7 +253,9 @@ ezP.DelegateSvg.Expr.starred_item_list = function (prototypeName) {
     sep: ',',
     hole_value: 'name',
   }
-  this.outputModel_.check = ezP.T3.Expr.starred_item_list
+  this.outputModel_ = {
+    check: ezP.T3.Expr.starred_item_list,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.starred_item_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('starred_item_list')
@@ -270,7 +276,9 @@ ezP.DelegateSvg.Expr.key_datum_list = function (prototypeName) {
     empty: true,
     sep: ',',
   }
-  this.outputModel_.check = ezP.T3.Expr.key_datum_list
+  this.outputModel_ = {
+    check: ezP.T3.Expr.key_datum_list,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.key_datum_list, ezP.DelegateSvg.List)
 
@@ -299,7 +307,9 @@ ezP.DelegateSvg.Expr.starred_item_list_comprehensive = function (prototypeName) 
   goog.array.removeDuplicates(RA)
   D.all = RA
   this.inputModel_.list = D
-  this.outputModel_.check = ezP.T3.Expr.starred_item_list_comprehensive
+  this.outputModel_ = {
+    check: ezP.T3.Expr.starred_item_list_comprehensive,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.starred_item_list_comprehensive, ezP.DelegateSvg.List)
 
@@ -326,7 +336,9 @@ ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive = function (protot
   goog.array.removeDuplicates(RA)
   D.all = RA
   this.inputModel_.list = D
-  this.outputModel_.check = ezP.T3.Expr.non_void_starred_item_list_comprehensive
+  this.outputModel_ = {
+    check: ezP.T3.Expr.non_void_starred_item_list_comprehensive,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive, ezP.DelegateSvg.List)
 
@@ -353,7 +365,9 @@ ezP.DelegateSvg.Expr.key_datum_list_comprehensive = function (prototypeName) {
   goog.array.removeDuplicates(RA)
   D.all = RA
   this.inputModel_.list = D
-  this.outputModel_.check = ezP.T3.Expr.key_datum_list_comprehensive
+  this.outputModel_ = {
+    check: ezP.T3.Expr.key_datum_list_comprehensive,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.key_datum_list_comprehensive, ezP.DelegateSvg.List)
 
@@ -375,7 +389,9 @@ ezP.DelegateSvg.Expr.slice_list = function (prototypeName) {
     empty: false,
     sep: ',',
   }
-  this.outputModel_.check = ezP.T3.Expr.slice_list
+  this.outputModel_ = {
+    check: ezP.T3.Expr.slice_list,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.slice_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('slice_list')
@@ -396,7 +412,9 @@ ezP.DelegateSvg.Expr.with_item_list = function (prototypeName) {
     empty: false,
     sep: ',',
   }
-  this.outputModel_.check = ezP.T3.Expr.with_item_list
+  this.outputModel_ = {
+    check: ezP.T3.Expr.with_item_list,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.with_item_list, ezP.DelegateSvg.List)
 

@@ -369,7 +369,9 @@ ezP.DelegateSvg.Expr.non_void_identifier_list = function (prototypeName) {
     empty: false,
     sep: ',',
   }
-  this.outputModel_.check = ezP.T3.Expr.non_void_identifier_list
+  this.outputModel_ = {
+    check: ezP.T3.Expr.non_void_identifier_list,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.non_void_identifier_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('non_void_identifier_list')

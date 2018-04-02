@@ -59,7 +59,9 @@ ezP.DelegateSvg.Expr.expression_as_name = function (prototypeName) {
       hole_value: 'name',
     }
   }
-  this.outputModel_.check = ezP.T3.Expr.expression_as_name
+  this.outputModel_ = {
+    check: ezP.T3.Expr.expression_as_name,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.expression_as_name, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('expression_as_name')
@@ -151,7 +153,9 @@ ezP.DelegateSvg.Expr.expression_from = function (prototypeName) {
       hole_value: 'expression',
     }
   }
-  this.outputModel_.check = ezP.T3.Expr.expression_from
+  this.outputModel_ = {
+    check: ezP.T3.Expr.expression_from,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.expression_from, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('expression_from')

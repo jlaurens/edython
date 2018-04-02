@@ -286,7 +286,9 @@ ezP.DelegateSvg.Expr.parameter_list = function (prototypeName) {
   this.inputModel_.list = {
     consolidator: ezP.Consolidator.Parameters,
   }
-  this.outputModel_.check = ezP.T3.Expr.parameter_list
+  this.outputModel_ = {
+    check: ezP.T3.Expr.parameter_list,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.parameter_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('parameter_list')
@@ -308,7 +310,9 @@ ezP.DelegateSvg.Expr.parameter_star = function (prototypeName) {
     hole_value: 'name',
     optional: true,
   }
-  this.outputModel_.check = ezP.T3.Expr.parameter_star
+  this.outputModel_ = {
+    check: ezP.T3.Expr.parameter_star,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.parameter_star, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('parameter_star')
@@ -329,7 +333,9 @@ ezP.DelegateSvg.Expr.parameter_star_star = function (prototypeName) {
     check: ezP.T3.Expr.Check.parameter,
     hole_value: 'name',
   }
-  this.outputModel_.check = ezP.T3.Expr.parameter_star_star
+  this.outputModel_ = {
+    check: ezP.T3.Expr.parameter_star_star,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.parameter_star_star, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('parameter_star_star')
@@ -355,7 +361,9 @@ ezP.DelegateSvg.Expr.parameter_concrete = function (prototypeName) {
     check: ezP.T3.Expr.Check.expression,
     hole_value: 'expression',
   }
-  this.outputModel_.check = ezP.T3.Expr.parameter_concrete
+  this.outputModel_ = {
+    check: ezP.T3.Expr.parameter_concrete,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.parameter_concrete, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('parameter_concrete')
@@ -381,7 +389,9 @@ ezP.DelegateSvg.Expr.defparameter_concrete = function (prototypeName) {
     check: ezP.T3.Expr.Check.expression,
     hole_value: 'value',
   }
-  this.outputModel_.check = ezP.T3.Expr.defparameter_concrete
+  this.outputModel_ = {
+    check: ezP.T3.Expr.defparameter_concrete,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.defparameter_concrete, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('defparameter_concrete')

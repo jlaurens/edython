@@ -38,7 +38,9 @@ ezP.DelegateSvg.Expr.print_builtin = function (prototypeName) {
       end: ')',
     }
   }
-  this.outputModel_.check = [ezP.T3.Expr.print_builtin, ezP.T3.Expr.call_expr]
+  this.outputModel_ = {
+    check: [ezP.T3.Expr.print_builtin, ezP.T3.Expr.call_expr],
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.print_builtin, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('print_builtin')
@@ -158,7 +160,9 @@ ezP.DelegateSvg.Expr.input_builtin = function (prototypeName) {
       end: ')',
     }
   }
-  this.outputModel_.check = [ezP.T3.Expr.input_builtin, ezP.T3.Expr.call_expr]
+  this.outputModel_ = {
+    check: [ezP.T3.Expr.input_builtin, ezP.T3.Expr.call_expr],
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.input_builtin, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('input_builtin')

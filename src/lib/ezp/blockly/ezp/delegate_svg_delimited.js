@@ -25,7 +25,9 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Expr.parenth_form = function (prototypeName) {
   ezP.DelegateSvg.Expr.parenth_form.superClass_.constructor.call(this, prototypeName)
-  this.outputModel_.check = ezP.T3.Expr.parenth_form
+  this.outputModel_ = {
+    check: ezP.T3.Expr.parenth_form,
+  }
   this.inputModel_.prefix = {
     label: '(',
   }
@@ -46,14 +48,16 @@ ezP.DelegateSvg.Manager.register('parenth_form')
  */
 ezP.DelegateSvg.Expr.list_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.list_display.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.awaitable = true
   this.inputModel_.first = {
     key: ezP.Key.LIST,
     start: '[',
     wrap: ezP.T3.Expr.starred_item_list_comprehensive,
     end: ']',
   }
-  this.outputModel_.Check = ezP.T3.Expr.list_display
+  this.outputModel_ = {
+    awaitable: true,
+    check: ezP.T3.Expr.list_display,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.list_display, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('list_display')
@@ -67,14 +71,16 @@ ezP.DelegateSvg.Manager.register('list_display')
  */
 ezP.DelegateSvg.Expr.set_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.set_display.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.awaitable = true
   this.inputModel_.first = {
     key: ezP.Key.LIST,
     start: '{',
     wrap: ezP.T3.Expr.non_void_starred_item_list_comprehensive,
     end: '}',
   }
-  this.outputModel_.check = ezP.T3.Expr.set_display
+  this.outputModel_ = {
+    awaitable: true,
+    check: ezP.T3.Expr.set_display,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.set_display, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('set_display')
@@ -88,14 +94,16 @@ ezP.DelegateSvg.Manager.register('set_display')
  */
 ezP.DelegateSvg.Expr.dict_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.dict_display.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.awaitable = true
   this.inputModel_. first = {
     key: ezP.Key.LIST,
     start: '{',
     wrap: ezP.T3.Expr.key_datum_list_comprehensive,
     end: '}',
   }
-  this.outputModel_.check = ezP.T3.Expr.dict_display
+  this.outputModel_ = {
+    awaitable: true,
+    check: ezP.T3.Expr.dict_display,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.dict_display, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('dict_display')
@@ -110,14 +118,16 @@ ezP.DelegateSvg.Manager.register('dict_display')
  */
 ezP.DelegateSvg.Expr.generator_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.generator_expression.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.awaitable = true
   this.inputModel_.first = {
     key: ezP.Key.COMPREHENSION,
     start: '{',
     wrap: ezP.T3.Expr.comprehension,
     end: '}',
   }
-  this.outputModel_.check = ezP.T3.Expr.generator_expression
+  this.outputModel_ = {
+    awaitable: true,
+    check: ezP.T3.Expr.generator_expression,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.generator_expression, ezP.DelegateSvg.Expr)
 
@@ -138,7 +148,9 @@ ezP.DelegateSvg.Expr.display_slice_list = function (prototypeName) {
     wrap: ezP.T3.Expr.slice_list,
     end: ']',
   }
-  this.outputModel_.check = ezP.T3.Expr.display_slice_list
+  this.outputModel_ = {
+    check: ezP.T3.Expr.display_slice_list,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.display_slice_list, ezP.DelegateSvg.Expr)
 

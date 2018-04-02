@@ -309,13 +309,13 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         field.ezpData.css_style = D.css_style
         field.setSourceBlock(block)
         field.init()
+        return field
       }
     }
-    return field
   }
   if (Object.keys(this.inputModel_).length) {
-    if ((D = this.inputModel_.awaitable)) {
-      field = new ezP.FieldLabel('await')
+    if ((D = this.outputModel_) && D.awaitable) {
+      field = new ezP.FieldLabel('')
       field.ezpData.css_class = 'ezp-code-reserved'
       field.setSourceBlock(block)
       field.init()
@@ -758,16 +758,16 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   io.cursorX = this.getPaddingLeft(block)
   if (!block.outputConnection) {
     this.renderDrawSharp_(io)
-    this.endsWithLetter = false // when true, add a space to separate letters
+    this.shouldSeparateField = false // when true, add a space to separate letters
     // only blocks with outputConnection may be stacked horizontally
     // such that visual letter separation may be a problem
     // For other blocks, there is no text field rendered to the left
   } else if (!block.outputConnection.isConnected() || !this.wrapped_ && !this.locked_) {
     // the left part of the contour is the visual separator
-    this.endsWithLetter = false
+    this.shouldSeparateField = false
   }
-  io.endsWithLetter = this.endsWithLetter
-  if (this.await_ && (io.field = this.model.fieldAwait)) {
+  io.shouldSeparateField = this.shouldSeparateField
+  if ((io.field = this.model.fieldAwait)) {
     this.renderDrawField_(io)
   }
   if ((io.field = this.model.fieldPrefix)) {
@@ -808,7 +808,7 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   }
   io.cursorX += this.getPaddingRight(block)
   this.minWidth = block.width = Math.max(block.width, io.cursorX)
-  this.endsWithLetter = io.endsWithLetter
+  this.shouldSeparateField = io.shouldSeparateField
   return io.steps.join(' ')
 }
 
@@ -846,11 +846,11 @@ ezP.DelegateSvg.prototype.renderDrawField_ = function (io) {
       if (text.length) {
         // if the text is void, it can not change whether
         // the last character was a letter or not
-        if (io.endsWithLetter && ezP.XRE.letter.test(text[0])) {
+        if (io.shouldSeparateField && ezP.XRE.id_continue.test(text[0])) {
           // add a separation
           io.cursorX += ezP.Font.space
         }
-        io.endsWithLetter = ezP.XRE.letter.test(text[text.length-1])
+        io.shouldSeparateField = ezP.XRE.id_continue.test(text[text.length-1])
       }
       var ezp = io.field.ezpData
       var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
@@ -918,10 +918,10 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       if (!!root) {
         root.setAttribute('transform', 'translate(' + io.cursorX + ', 0)')
         if (!target.ezp.isRendering) {
-          target.ezp.endsWithLetter = (target.ezp.wrapped_ ||target.ezp.locked_) && io.endsWithLetter
+          target.ezp.shouldSeparateField = (target.ezp.wrapped_ ||target.ezp.locked_) && io.shouldSeparateField
         }
         target.render()
-        io.endsWithLetter = (target.ezp.wrapped_ ||target.ezp.locked_) && target.ezp.endsWithLetter
+        io.shouldSeparateField = (target.ezp.wrapped_ ||target.ezp.locked_) && target.ezp.shouldSeparateField
         var bBox = target.getHeightWidth()
         io.cursorX += bBox.width
       }
@@ -936,7 +936,7 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       io.cursorX += pw.width
       if (pw.width) {
         // a space was added as a visual separator anyway
-        io.endsWithLetter = false
+        io.shouldSeparateField = false
       }
     }
     this.renderDrawFields_(io, false)

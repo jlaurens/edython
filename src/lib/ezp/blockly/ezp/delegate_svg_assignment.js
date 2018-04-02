@@ -32,7 +32,9 @@ ezP.DelegateSvg.Expr.target_star = function (prototypeName) {
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.target
   }
-  this.outputModel_.check = ezP.T3.Expr.target_star
+  this.outputModel_ = {
+    check: ezP.T3.Expr.target_star,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.target_star, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('target_star')
@@ -181,7 +183,9 @@ ezP.DelegateSvg.Expr.target_list = function (prototypeName) {
     consolidator: ezP.Consolidator.List.Target,
     hole_value: 'name',
   }
-  this.outputModel_.check = ezP.T3.Expr.target_list
+  this.outputModel_ = {
+    check: ezP.T3.Expr.target_list,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.target_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('target_list')
@@ -200,7 +204,9 @@ ezP.DelegateSvg.Expr.void_target_list = function (prototypeName) {
   this.inputModel_.list = {
     consolidator: ezP.Consolidator.List.Target.Void,
   }
-  this.outputModel_.check = ezP.T3.Expr.void_target_list
+  this.outputModel_ = {
+    check: ezP.T3.Expr.void_target_list,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.void_target_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('void_target_list')
@@ -222,7 +228,9 @@ ezP.DelegateSvg.Expr.parenth_target_list = function (prototypeName) {
     end: ')',
     wrap: ezP.T3.Expr.void_target_list,
   }
-  this.outputModel_.check = ezP.T3.Expr.parenth_target_list
+  this.outputModel_ = {
+    check: ezP.T3.Expr.parenth_target_list,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.parenth_target_list, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('parenth_target_list')
@@ -244,7 +252,9 @@ ezP.DelegateSvg.Expr.bracket_target_list = function (prototypeName) {
     end: ']',
     wrap: ezP.T3.Expr.void_target_list,
   }
-  this.outputModel_.check = ezP.T3.Expr.bracket_target_list
+  this.outputModel_ = {
+    check: ezP.T3.Expr.bracket_target_list,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.bracket_target_list, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('bracket_target_list')
@@ -269,7 +279,9 @@ ezP.DelegateSvg.Expr.assignment_expression = function (prototypeName) {
       wrap: ezP.T3.Expr.assigned_list,
     },
   }
-  this.outputModel_.check = ezP.T3.Expr.assignment_expression
+  this.outputModel_ = {
+    check: ezP.T3.Expr.assignment_expression,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.assignment_expression, ezP.DelegateSvg.Expr)
 
@@ -422,7 +434,9 @@ ezP.DelegateSvg.Expr.assigned_list = function (prototypeName) {
     consolidator: ezP.Consolidator.Assigned,
     hole_value: 'value',
   }
-  this.outputModel_.check = ezP.T3.Expr.assigned_list
+  this.outputModel_ = {
+    check: ezP.T3.Expr.assigned_list,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.assigned_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('assigned_list')
@@ -474,7 +488,9 @@ ezP.DelegateSvg.Expr.augassign_numeric = function (prototypeName) {
   ezP.DelegateSvg.Expr.augassign_numeric.superClass_.constructor.call(this, prototypeName)
   this.operators = ['+=','-=','*=','/=','//=','%=','**=','@=']
   this.inputModel_.last.operator = this.operators[0]
-  this.outputModel_.check = ezP.T3.Expr.augassign_numeric
+  this.outputModel_ = {
+    check: ezP.T3.Expr.augassign_numeric,
+  }
 }
 
 goog.inherits(ezP.DelegateSvg.Expr.augassign_numeric, ezP.DelegateSvg.AugAssign)
@@ -492,7 +508,9 @@ ezP.DelegateSvg.Expr.augassign_bitwise = function (prototypeName) {
   ezP.DelegateSvg.Expr.augassign_bitwise.superClass_.constructor.call(this, prototypeName)
   this.operators = [">>=", "<<=", "&=", "^=", "|="]
   this.inputModel_.last.operator = this.operators[1]
-  this.outputModel_.check = ezP.T3.Expr.augassign_bitwise
+  this.outputModel_ = {
+    check: ezP.T3.Expr.augassign_bitwise,
+  }
 }
 
 goog.inherits(ezP.DelegateSvg.Expr.augassign_bitwise, ezP.DelegateSvg.AugAssign)
@@ -651,7 +669,9 @@ ezP.DelegateSvg.Expr.augassign_list = function (prototypeName) {
   this.inputModel_.list = {
     consolidator: ezP.Consolidator.List.AugAssigned,
   }
-  this.outputModel_.check = ezP.T3.Expr.augassign_list
+  this.outputModel_ = {
+    check: ezP.T3.Expr.augassign_list,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.augassign_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('augassign_list')
