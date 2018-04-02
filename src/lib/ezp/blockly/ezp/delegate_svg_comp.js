@@ -181,3 +181,28 @@ ezP.DelegateSvg.Expr.key_datum_concrete = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.key_datum_concrete, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Manager.register('key_datum_concrete')
+
+/**
+ * Class for a DelegateSvg, generator expression block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.generator_expression = function (prototypeName) {
+  ezP.DelegateSvg.Expr.generator_expression.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.prefix = {
+    label: '{',
+  }
+  this.inputModel_.suffix = {
+    label: '}',
+  }
+  this.outputModel_ = {
+    awaitable: true,
+    check: ezP.T3.Expr.generator_expression,
+  }
+}
+goog.inherits(ezP.DelegateSvg.Expr.generator_expression, ezP.DelegateSvg.Expr.comprehension)
+
+ezP.DelegateSvg.Manager.register('generator_expression')

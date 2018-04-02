@@ -260,6 +260,30 @@ ezP.DelegateSvg.Expr.starred_item_list = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.starred_item_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('starred_item_list')
 
+
+/**
+ * Class for a DelegateSvg, parenth_form.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.parenth_form = function (prototypeName) {
+  ezP.DelegateSvg.Expr.parenth_form.superClass_.constructor.call(this, prototypeName)
+  this.outputModel_ = {
+    check: ezP.T3.Expr.parenth_form,
+  }
+  this.inputModel_.prefix = {
+    label: '(',
+  }
+  this.inputModel_.suffix = {
+    label: ')',
+  }
+}
+goog.inherits(ezP.DelegateSvg.Expr.parenth_form, ezP.DelegateSvg.Expr.starred_item_list)
+ezP.DelegateSvg.Manager.register('parenth_form')
+
 /**
  * Class for a DelegateSvg, key_datum_list block.
  * This block may be sealed.
@@ -312,8 +336,31 @@ ezP.DelegateSvg.Expr.starred_item_list_comprehensive = function (prototypeName) 
   }
 }
 goog.inherits(ezP.DelegateSvg.Expr.starred_item_list_comprehensive, ezP.DelegateSvg.List)
-
 ezP.DelegateSvg.Manager.register('starred_item_list_comprehensive')
+
+
+/**
+ * Class for a DelegateSvg, list_display block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.list_display = function (prototypeName) {
+  ezP.DelegateSvg.Expr.list_display.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.prefix = {
+    label: '[',
+  }
+  this.inputModel_.suffix = {
+    label: ']',
+  }
+  this.outputModel_ = {
+    awaitable: true,
+    check: ezP.T3.Expr.list_display,
+  }
+}
+goog.inherits(ezP.DelegateSvg.Expr.list_display, ezP.DelegateSvg.Expr.starred_item_list_comprehensive)
+ezP.DelegateSvg.Manager.register('list_display')
 
 /**
  * Class for a DelegateSvg, non_void_starred_item_list_comprehensive block.
@@ -341,8 +388,30 @@ ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive = function (protot
   }
 }
 goog.inherits(ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive, ezP.DelegateSvg.List)
-
 ezP.DelegateSvg.Manager.register('non_void_starred_item_list_comprehensive')
+
+/**
+ * Class for a DelegateSvg, set_display block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.set_display = function (prototypeName) {
+  ezP.DelegateSvg.Expr.set_display.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.prefix = {
+    label: '{',
+  }
+  this.inputModel_.suffix = {
+    label: '}',
+  }
+  this.outputModel_ = {
+    awaitable: true,
+    check: ezP.T3.Expr.set_display,
+  }
+}
+goog.inherits(ezP.DelegateSvg.Expr.set_display, ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive)
+ezP.DelegateSvg.Manager.register('set_display')
 
 /**
  * Class for a DelegateSvg, key_datum_list_comprehensive block.
@@ -370,8 +439,30 @@ ezP.DelegateSvg.Expr.key_datum_list_comprehensive = function (prototypeName) {
   }
 }
 goog.inherits(ezP.DelegateSvg.Expr.key_datum_list_comprehensive, ezP.DelegateSvg.List)
-
 ezP.DelegateSvg.Manager.register('key_datum_list_comprehensive')
+
+/**
+ * Class for a DelegateSvg, dict_display block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.dict_display = function (prototypeName) {
+  ezP.DelegateSvg.Expr.dict_display.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.prefix = {
+    label: '{',
+  }
+  this.inputModel_.suffix = {
+    label: '}',
+  }
+  this.outputModel_ = {
+    awaitable: true,
+    check: ezP.T3.Expr.dict_display,
+  }
+}
+goog.inherits(ezP.DelegateSvg.Expr.dict_display, ezP.DelegateSvg.Expr.key_datum_list_comprehensive)
+ezP.DelegateSvg.Manager.register('dict_display')
 
 /**
  * Class for a DelegateSvg, slice_list block.
@@ -395,6 +486,29 @@ ezP.DelegateSvg.Expr.slice_list = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.slice_list, ezP.DelegateSvg.List)
 ezP.DelegateSvg.Manager.register('slice_list')
+
+/**
+ * Class for a DelegateSvg, 'slice ...' block.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.display_slice_list = function (prototypeName) {
+  ezP.DelegateSvg.Expr.display_slice_list.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.prefix = {
+    label: '[',
+  }
+  this.inputModel_.suffix = {
+    label: ']',
+  }
+  this.outputModel_ = {
+    check: ezP.T3.Expr.display_slice_list,
+  }
+}
+goog.inherits(ezP.DelegateSvg.Expr.display_slice_list, ezP.DelegateSvg.Expr.slice_list)
+
+ezP.DelegateSvg.Manager.register('display_slice_list')
 
 /**
  * Class for a DelegateSvg, with_item_list block.

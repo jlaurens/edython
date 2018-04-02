@@ -78,6 +78,19 @@ ezP.DelegateSvg.Expr.workspaceBlocks = [
  * related to the given delegate.
  */
 
+ezP.DelegateSvg.Expr.delimitedWorkspaceBlocks = [
+  ezP.T3.Expr.parenth_form,
+  ezP.T3.Expr.list_display,
+  ezP.T3.Expr.set_display,
+  ezP.T3.Expr.dict_display,
+  ezP.T3.Expr.generator_expression,
+  ezP.T3.Expr.display_slice_list,
+  ezP.T3.Expr.starred_item_list,
+  ezP.T3.Expr.parenth_target_list,
+  ezP.T3.Expr.bracket_target_list,
+  ezP.T3.Expr.yield_atom,
+]
+
 ezP.DelegateSvg.Expr.import_module.workspaceBlocks = [
   ezP.T3.Expr.non_void_module_as_list,
   ezP.T3.Expr.import_module,

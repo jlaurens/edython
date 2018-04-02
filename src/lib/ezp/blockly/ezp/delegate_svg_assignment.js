@@ -222,17 +222,17 @@ ezP.DelegateSvg.Manager.register('void_target_list')
  */
 ezP.DelegateSvg.Expr.parenth_target_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.parenth_target_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first = {
-    key: ezP.Key.EXPRESSION,
-    start: '(',
-    end: ')',
-    wrap: ezP.T3.Expr.void_target_list,
+  this.inputModel_.prefix = {
+    label: '(',
+  }
+  this.inputModel_.suffix = {
+    label: ')',
   }
   this.outputModel_ = {
     check: ezP.T3.Expr.parenth_target_list,
   }
 }
-goog.inherits(ezP.DelegateSvg.Expr.parenth_target_list, ezP.DelegateSvg.Expr)
+goog.inherits(ezP.DelegateSvg.Expr.parenth_target_list, ezP.DelegateSvg.Expr.void_target_list)
 ezP.DelegateSvg.Manager.register('parenth_target_list')
 
 /**
@@ -246,17 +246,17 @@ ezP.DelegateSvg.Manager.register('parenth_target_list')
  */
 ezP.DelegateSvg.Expr.bracket_target_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.bracket_target_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first = {
-    key: ezP.Key.EXPRESSION,
-    start: '[',
-    end: ']',
-    wrap: ezP.T3.Expr.void_target_list,
+  this.inputModel_.prefix = {
+    label: '[',
+  }
+  this.inputModel_.suffix = {
+    label: ']',
   }
   this.outputModel_ = {
     check: ezP.T3.Expr.bracket_target_list,
   }
 }
-goog.inherits(ezP.DelegateSvg.Expr.bracket_target_list, ezP.DelegateSvg.Expr)
+goog.inherits(ezP.DelegateSvg.Expr.bracket_target_list, ezP.DelegateSvg.Expr.void_target_list)
 ezP.DelegateSvg.Manager.register('bracket_target_list')
 
 /**

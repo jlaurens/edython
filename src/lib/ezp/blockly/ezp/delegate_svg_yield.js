@@ -61,31 +61,6 @@ ezP.DelegateSvg.Expr.yield_from_expression = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Expr.yield_from_expression, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Manager.register('yield_from_expression')
-
-/**
- * Class for a DelegateSvg, '(yield ..., ..., ...)'.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
-  ezP.DelegateSvg.Expr.yield_atom.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first = {
-    key: ezP.Key.EXPRESSION,
-    start: '(',
-    wrap: ezP.T3.Expr.yield_expression,
-    end: ')',
-  }
-  this.outputModel_ = {
-    awaitable: true,
-    check: ezP.T3.Expr.yield_atom,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.yield_atom, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register('yield_atom')
-
 /**
  * Class for a DelegateSvg, yield_expression.
  * For ezPython.
@@ -145,6 +120,31 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = func
   }
   return ezP.DelegateSvg.Expr.yield_expression.superClass_.populateContextMenuFirst_.call(this,block, mgr) || yorn
 }
+
+
+/**
+ * Class for a DelegateSvg, '(yield ..., ..., ...)'.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
+  ezP.DelegateSvg.Expr.yield_atom.superClass_.constructor.call(this, prototypeName)
+  this.inputModel_.prefix = {
+    label: '(',
+  }
+  this.inputModel_.suffix = {
+    label: ')',
+  }
+  this.outputModel_ = {
+    awaitable: true,
+    check: ezP.T3.Expr.yield_atom,
+  }
+}
+goog.inherits(ezP.DelegateSvg.Expr.yield_atom, ezP.DelegateSvg.Expr.yield_expression)
+
+ezP.DelegateSvg.Manager.register('yield_atom')
 
 /**
  * Class for a DelegateSvg, yield_stmt.
