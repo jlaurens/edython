@@ -660,28 +660,36 @@ goog.require('ezP.DelegateSvg.List')
  * @return a dom element
  */
 ezP.DelegateSvg.List.prototype.blockToElement = function(block, element, optNoId) {
-  var child = goog.dom.createDom(block.ezp.xmlTagName(block))
-  var type = block.ezp.xmlType(block)
-  if (type) {
-    child.setAttribute('type', type)
-  }
-  if (!optNoId) {
-    child.setAttribute('id', block.id)
-  }
-  for (var i = 0, input;(input = block.inputList[i++]);) {
-    var c8n = input.connection
-    if (c8n) {
-      var target = c8n.targetBlock()
-      if (target) {
-        var grandChild = Blockly.Xml.blockToDom(target, optNoId)
-        if (grandChild) {
-          grandChild.setAttribute('name', input.name)
-          child.appendChild(grandChild)
+  var populate = function(element) {
+    for (var i = 0, input;(input = block.inputList[i++]);) {
+      var c8n = input.connection
+      if (c8n) {
+        var target = c8n.targetBlock()
+        if (target) {
+          var child = Blockly.Xml.blockToDom(target, optNoId)
+          if (child) {
+            child.setAttribute('name', input.name)
+            element.appendChild(child)
+          }
         }
       }
     }
   }
-  return child
+  if (this.wrapped_) {
+    var child = goog.dom.createDom(block.ezp.xmlTagName(block))
+    var type = block.ezp.xmlType(block)
+    if (type) {
+      child.setAttribute('type', type)
+    }
+    if (!optNoId) {
+      child.setAttribute('id', block.id)
+    }
+    populate(child)
+    return child
+  } else {
+    populate(element)
+    return undefined    
+  }
 }
 
 /*

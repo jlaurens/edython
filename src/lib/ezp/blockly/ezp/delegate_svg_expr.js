@@ -117,16 +117,6 @@ ezP.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
 }
 
 /**
- * Get the 'await' field.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Expr.prototype.getFieldAwait = function (block) {
-  var input = this.model.first
-  return input? input.fieldAwait: undefined
-}
-
-/**
  * Will draw the block. Default implementation does nothing.
  * The print statement needs some preparation before drawing.
  * @param {!Block} block.
@@ -134,7 +124,7 @@ ezP.DelegateSvg.Expr.prototype.getFieldAwait = function (block) {
  */
 ezP.DelegateSvg.Expr.prototype.willRender_ = function (block) {
   ezP.DelegateSvg.Expr.superClass_.willRender_.call(this, block)
-  var field = this.getFieldAwait(block)
+  var field = this.model.fieldAwait
   if (field) {
     var text = field.getText()
     field.setVisible(text && text.length)
@@ -149,7 +139,7 @@ ezP.DelegateSvg.Expr.prototype.willRender_ = function (block) {
  */
 ezP.DelegateSvg.Expr.prototype.toDom = function (block, element) {
   ezP.DelegateSvg.Expr.superClass_.toDom.call(this, block, element)
-  var field = this.getFieldAwait(block)
+  var field = this.model.fieldAwait
   if (field) {
     var attribute = field.getText()
     if (attribute && attribute.length>4) {
@@ -166,29 +156,13 @@ ezP.DelegateSvg.Expr.prototype.toDom = function (block, element) {
  */
 ezP.DelegateSvg.Expr.prototype.fromDom = function (block, element) {
   ezP.DelegateSvg.Expr.superClass_.fromDom.call(this, block, element)
-  var field = this.getFieldAwait(block)
+  var field = this.model.fieldAwait
   if (field) {
     var attribute = element.getAttribute('await')
     if (attribute && attribute.toLowerCase() === 'true') {
       field.setText('await ')
     }
   }
-}
-
-/**
- * Whether the block has an 'await' prefix.
- * @param {!Blockly.Block} block The block owning the receiver.
- * @return yes or no
- */
-ezP.DelegateSvg.Expr.prototype.awaited = function (block) {
-  var field = this.getFieldAwait(block)
-  if (field) {
-    var attribute = field.getText()
-    if (attribute && attribute.length>4) {
-      return true
-    }
-  }
-  return false
 }
 
 /**
@@ -219,7 +193,7 @@ ezP.DelegateSvg.Expr.prototype.awaitable = function (block) {
  */
 ezP.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var yorn = ezP.DelegateSvg.Expr.superClass_.populateContextMenuFirst_.call(this,block, mgr)
-  var field = this.getFieldAwait(block)
+  var field = this.model.fieldAwait
   if (field && this.awaitable(block)) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN('await', 'ezp-code-reserved'),
@@ -234,7 +208,7 @@ ezP.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr)
     } else {
       mgr.shouldSeparateInsert()
       mgr.addInsertChild(new ezP.MenuItem(content, function() {
-        field.setValue('await ')
+        field.setValue('await')
       }))
     }
   }

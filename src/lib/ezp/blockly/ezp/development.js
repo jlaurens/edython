@@ -61,7 +61,7 @@ ezP.DelegateSvg.Expr.workspaceBlocks = [
   ezP.T3.Expr.comp_if,
   */
   ezP.T3.Expr.non_void_expression_list,
-  ezP.T3.Expr.parenth_for,
+  ezP.T3.Expr.parenth_form,
   ezP.T3.Expr.list_display,
   ezP.T3.Expr.set_display,
   ezP.T3.Expr.dict_display,

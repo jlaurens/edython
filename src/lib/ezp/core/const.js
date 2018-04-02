@@ -34,8 +34,6 @@ ezP.Const.Field = {
   ID: 'ID',
   IDENTIFIER: 'IDENTIFIER',
   OPERATOR: 'OPERATOR',
-  PREFIX: 'PREFIX',
-  AWAIT: 'AWAIT',
   ASYNC: 'ASYNC',
   COMMENT: 'COMMENT',
   NUMBER: 'NUMBER',
@@ -112,7 +110,6 @@ ezP.Key = {
 
   // IN PROGRESS
   ANY: 'ANY',
-
 
   OPTIONS: 'OPTIONS',
   COND: 'COND',

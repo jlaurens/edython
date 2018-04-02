@@ -26,8 +26,8 @@ goog.require('ezP.DelegateSvg.Expr')
 ezP.DelegateSvg.Expr.identifier = function (prototypeName) {
   ezP.DelegateSvg.Expr.identifier.superClass_.constructor.call(this, prototypeName)
   this.outputModel_.check = ezP.T3.Expr.identifier
+  this.inputModel_.awaitable = true
   this.inputModel_.first = {
-    awaitable: true,
     key: ezP.Key.NAME,
     identifier: 'item',
   }

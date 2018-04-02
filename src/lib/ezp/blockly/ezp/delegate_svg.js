@@ -223,12 +223,6 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         field.ezpData.css_class = 'ezp-code-reserved'
         field.ezpData.css_style = D.css_style
         out.input.appendField(field, k)
-      } else if (D.awaitable) {
-        field = out.fieldAwait = new ezP.FieldLabel('')
-        k = K+'.'+ezP.Const.Field.AWAIT
-        field.ezpData.css_class = 'ezp-code-reserved'
-        field.ezpData.css_style = D.css_style
-        out.input.appendField(field, k)
       }
       if ((v = D.prefix) !== undefined) {
         field = out.fieldPrefix = new ezP.FieldLabel(v)
@@ -294,46 +288,51 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     }
     return out
   }
-  var Is = {}
+  var model = {}
   
   // catch the statement input eventually created in parent's method
   for (var i = 0, input; (input = block.inputList[i++]);) {
     if (input.type === Blockly.NEXT_STATEMENT) {
-      Is.do = {
+      model.do = {
         input: input,
       }
       break
     }
   }
-  if (block.inputList.length) {
-    var input = block.inputList.length
+  var field, D
+  var FF = function(key) {
+    var v
+    if ((D = this.inputModel_[key])) {
+      if ((v = D['label'])) {
+        field = new ezP.FieldLabel(v)
+        field.ezpData.css_class = D.css_class
+        field.ezpData.css_style = D.css_style
+        field.setSourceBlock(block)
+        field.init()
+      }
+    }
+    return field
   }
   if (Object.keys(this.inputModel_).length) {
-    var D, v
-    if ((D = this.inputModel_['prefix'])) {
-      if ((v = D['label'])) {
-        var field = Is.fieldPrefix = new ezP.FieldLabel(v)
-        field.ezpData.css_class = D.css_class
-        field.ezpData.css_style = D.css_style
-      }
-    }
-    if ((D = this.inputModel_['suffix'])) {
-      if ((v = D['label'])) {
-        var field = Is.fieldSufffix = new ezP.FieldLabel(v)
-        field.ezpData.css_class = D.css_class
-        field.ezpData.css_style = D.css_style
-      }
-    }
+    if ((D = this.inputModel_.awaitable)) {
+      field = new ezP.FieldLabel('await')
+      field.ezpData.css_class = 'ezp-code-reserved'
+      field.setSourceBlock(block)
+      field.init()
+      model.fieldAwait = field
+    }    
+    model.fieldPrefix = FF.call(this, 'prefix')
+    model.fieldSuffix = FF.call(this, 'suffix')
     var keys = ['first', 'middle', 'last']
     for (var i = 0, K; K = keys[i++];) {
       var f = F.call(this, K)
       if (f) {
-        Is[K] = f
+        model[K] = f
       }
     }
     this.inputModel_ = undefined
   }
-  this.model = Is
+  this.model = model
   if (!block.workspace.options.readOnly && !this.eventsInit_) {
     Blockly.bindEventWithChecks_(block.getSvgRoot(), 'mouseup', block,
     function(e) {
@@ -631,16 +630,7 @@ ezP.DelegateSvg.prototype.collapsedPathDef_ = function () {
  */
 ezP.DelegateSvg.prototype.renderDraw_ = function (block) {
   block.height = ezP.Font.lineHeight()
-  if (!block.outputConnection) {
-    this.endsWithLetter = false // when true, add a space to separate letters
-    // only blocks with outputConnection may be stacked horizontally
-    // such that visual letter separation may be a problem
-    // For other blocks, there is no text field rendered to the left
-  } else if (!block.outputConnection.isConnected() || !this.wrapped_ && !this.locked_) {
-    // the left part of the contour is the visual separator
-    this.endsWithLetter = false
-  }
-  var d = this.renderDrawInputs_(block)
+  var d = this.renderDrawModel_(block)
   this.svgPathInline_.setAttribute('d', d)
   var root = block.getRootBlock()
   if (root.ezp) {
@@ -752,7 +742,7 @@ ezP.DelegateSvg.prototype.getPaddingRight = function (block) {
  * @param {!Blockly.Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
+ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   /* eslint-disable indent */
   var io = {
     block: block,
@@ -764,20 +754,33 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
     canForif: true,
     i: 0,
     length: block.inputList.length,
-    endsWithLetter: this.endsWithLetter,
   }
   io.cursorX = this.getPaddingLeft(block)
   if (!block.outputConnection) {
     this.renderDrawSharp_(io)
+    this.endsWithLetter = false // when true, add a space to separate letters
+    // only blocks with outputConnection may be stacked horizontally
+    // such that visual letter separation may be a problem
+    // For other blocks, there is no text field rendered to the left
+  } else if (!block.outputConnection.isConnected() || !this.wrapped_ && !this.locked_) {
+    // the left part of the contour is the visual separator
+    this.endsWithLetter = false
+  }
+  io.endsWithLetter = this.endsWithLetter
+  if (this.await_ && (io.field = this.model.fieldAwait)) {
+    this.renderDrawField_(io)
+  }
+  if ((io.field = this.model.fieldPrefix)) {
+    this.renderDrawField_(io)
   }
   for (; (io.input = block.inputList[io.i]); io.i++) {
     if (io.input.isVisible()) {
       goog.asserts.assert(io.input.ezpData, 'Input with no ezpData '+io.input.name+' in block '+block.type)
       io.inputDisabled = io.input.ezpData.disabled_
       if (io.inputDisabled) {
-        for (var __ = 0, field; (field = io.input.fieldRow[__]); ++__) {
-          if (field.getText().length>0) {
-            var root = field.getSvgRoot()
+        for (var j = 0; (io.field = io.input.fieldRow[j]); ++j) {
+          if (io.field.getText().length>0) {
+            var root = io.field.getSvgRoot()
             if (root) {
               root.setAttribute('display', 'none')
             } else {
@@ -785,9 +788,9 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
             }
           }
         }
-        if ((field = io.input.ezpData.fieldLabel)) {
-          if (field.getText().length>0) {
-            var root = field.getSvgRoot()
+        if ((io.field = io.input.ezpData.fieldLabel)) {
+          if (io.field.getText().length>0) {
+            var root = io.field.getSvgRoot()
             if (root) {
               root.setAttribute('display', 'none')
             } else {
@@ -799,6 +802,9 @@ ezP.DelegateSvg.prototype.renderDrawInputs_ = function (block) {
         this.renderDrawInput_(io)
       }
     }
+  }
+  if ((io.field = this.model.fieldSuffix)) {
+    this.renderDrawField_(io)
   }
   io.cursorX += this.getPaddingRight(block)
   this.minWidth = block.width = Math.max(block.width, io.cursorX)
@@ -827,6 +833,41 @@ ezP.DelegateSvg.prototype.renderDrawInput_ = function (io) {
 }
 
 /**
+ * Render the field at io.field, which must be defined.
+ * 
+ * @param io An input/output record.
+ * @private
+ */
+ezP.DelegateSvg.prototype.renderDrawField_ = function (io) {
+  if (io.field.isVisible()) {
+    var root = io.field.getSvgRoot()
+    if (root) {
+      var text = io.field.getText()
+      if (text.length) {
+        // if the text is void, it can not change whether
+        // the last character was a letter or not
+        if (io.endsWithLetter && ezP.XRE.letter.test(text[0])) {
+          // add a separation
+          io.cursorX += ezP.Font.space
+        }
+        io.endsWithLetter = ezP.XRE.letter.test(text[text.length-1])
+      }
+      var ezp = io.field.ezpData
+      var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
+      root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
+        ', ' + ezP.Padding.t() + ')')
+      var size = io.field.getSize()
+      io.cursorX += size.width
+      if (ezp.isEditing) {
+        io.cursorX += ezP.Font.space
+      }
+    } else {
+      console.log('Field with no root: did you ...initSvg()?')
+    }
+  }          
+}
+
+/**
  * Render the fields of a block input.
  * 
  * @param io An input/output record.
@@ -838,32 +879,7 @@ ezP.DelegateSvg.prototype.renderDrawFields_ = function (io, only_prefix) {
   var here = io.cursorX
   for (var i = 0; (io.field = io.input.fieldRow[i]); ++i) {
     if (!!only_prefix === !io.field.ezpData.suffix) {
-      if (io.field.isVisible()) {
-        var root = io.field.getSvgRoot()
-        if (root) {
-          var text = io.field.getText()
-          if (text.length) {
-            // if the text is void, it can not change whether
-            // the last character was a letter or not
-            if (io.endsWithLetter && ezP.XRE.letter.test(text[0])) {
-              // add a separation
-              io.cursorX += ezP.Font.space
-            }
-            io.endsWithLetter = ezP.XRE.letter.test(text[text.length-1])
-          }
-          var ezp = io.field.ezpData
-          var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
-          root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
-            ', ' + ezP.Padding.t() + ')')
-          var size = io.field.getSize()
-          io.cursorX += size.width
-          if (ezp.isEditing) {
-            io.cursorX += ezP.Font.space
-          }
-        } else {
-          console.log('Field with no root: did you ...initSvg()?')
-        }
-      }          
+      this.renderDrawField_(io)
     }
   }
   return here - io.cursorX
@@ -1614,7 +1630,7 @@ ezP.DelegateSvg.prototype.getBoundingBox = function(block) {
  * Get the closest box, according to the filter.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
- * @param {function} distance Is a function.
+ * @param {function} distance is a function.
  * @return None
  */
 ezP.DelegateSvg.getBestBlock = function (workspace, weight) {
@@ -1636,7 +1652,7 @@ ezP.DelegateSvg.getBestBlock = function (workspace, weight) {
  * Get the closest box, according to the filter.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
- * @param {function} distance Is a function.
+ * @param {function} distance is a function.
  * @return None
  */
 ezP.DelegateSvg.prototype.getBestBlock = function (block, distance) {
@@ -2267,7 +2283,7 @@ ezP.DelegateSvg.prototype.getSubtype = function (block) {
  * The default implementation return false.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
+ * @param {string} subtype is a function.
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.prototype.setSubtype = function (block, subtype) {

@@ -7139,7 +7139,7 @@ ezP.DelegateSvg.prototype.contourPathDef_=ezP.DelegateSvg.prototype.shapePathDef
 ezP.DelegateSvg.prototype.highlightPathDef_=ezP.DelegateSvg.prototype.shapePathDef_;
 ezP.DelegateSvg.prototype.collapsedPathDef_=function(){return""};
 ezP.DelegateSvg.prototype.renderDraw_=function(a){a.height=ezP.Font.lineHeight();
-var b=this.renderDrawInputs_(a);
+var b=this.renderDrawModel_(a);
 this.svgPathInline_.setAttribute("d",b);
 b=a.getRootBlock();
 b.ezp&&b.ezp.alignRightEdges_(b);
@@ -7162,7 +7162,7 @@ this.svgPathContour_.setAttribute("d",b);
 b=this.collapsedPathDef_(a);
 this.svgPathCollapsed_.setAttribute("d",b)};
 
-ezP.DelegateSvg.prototype.renderDrawInputs_=function(a){var b={block:a,steps:[],canDummy:!0,canValue:!0,canStatement:!0,canTuple:!0};
+ezP.DelegateSvg.prototype.renderDrawModel_=function(a){var b={block:a,steps:[],canDummy:!0,canValue:!0,canStatement:!0,canTuple:!0};
 a.outputConnection?b.cursorX=ezP.Font.space:(b.cursorX=ezP.Padding.l(),this.renderDrawSharp_(b));
 for(var c=0;
 b.input=a.inputList[c];
