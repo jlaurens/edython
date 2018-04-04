@@ -270,11 +270,11 @@ ezP.DelegateSvg.Expr.assignment_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.assignment_expression.superClass_.constructor.call(this, prototypeName)
   this.inputModel_ = {
     m_1: {
-      key: ezP.Key.LHS,
+      key: ezP.Key.TARGET,
       wrap: ezP.T3.Expr.target_list,
     },
     m_3: {
-      key: ezP.Key.RHS,
+      key: ezP.Key.ASSIGNED,
       operator: '=',
       wrap: ezP.T3.Expr.assigned_list,
     },
@@ -765,3 +765,38 @@ ezP.DelegateSvg.Expr.augassign_numeric.prototype.handleMenuItemActionFirst = ezP
   return ezP.DelegateSvg.Stmt.augassign_numeric_stmt.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
 }
 
+
+/**
+ * toDom.
+ * @param {!Blockly.Block} block to be translated.
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Expr.assignment_expression.prototype.toDom = function (block, element, optNoId) {
+  // create a list element
+  ezP.Xml.namedInputListToDom(block, ezP.Key.TARGET, element, optNoId)
+  ezP.Xml.namedInputListToDom(block, ezP.Key.ASSIGNED, element, optNoId)
+}
+
+/**
+ * fromDom.
+ * @param {!Blockly.Block} block to be initialized.
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Expr.assignment_expression.prototype.fromDom = function (block, xml) {
+  ezP.Xml.namedInputListFromDom(block, ezP.Key.TARGET, xml)
+  ezP.Xml.namedInputListFromDom(block, ezP.Key.ASSIGNED, xml)
+}
+
+/**
+ * toDom.
+ * @param {!Blockly.Block} block to be translated.
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Stmt.assignment_stmt.prototype.toDom = ezP.DelegateSvg.Expr.assignment_expression.prototype.toDom
+
+/**
+ * fromDom.
+ * @param {!Blockly.Block} block to be initialized.
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Stmt.assignment_stmt.prototype.fromDom = ezP.DelegateSvg.Expr.assignment_expression.prototype.fromDom

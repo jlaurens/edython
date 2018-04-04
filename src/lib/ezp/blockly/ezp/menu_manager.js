@@ -477,7 +477,7 @@ ezP.MenuManager.prototype.populateLast = function (block) {
   
   menuItem = new ezP.MenuItem(
     block.ezp.getPythonSort(block), function(event) {
-      var xmlDom = Blockly.Xml.blockToDom(block, false)
+      var xmlDom = Blockly.Xml.blockToDom(block, true)
       var xmlText = Blockly.Xml.domToText(xmlDom)
       console.log(xmlText)
     }

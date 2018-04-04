@@ -153,6 +153,7 @@ ezP.Block.prototype.appendWrapValueInput = function(name, prototypeName, optiona
   goog.asserts.assert(ezP.T3.All.containsExpression(prototypeName), 'Unnown prototypeName, no block to seal '+prototypeName)
   var input = this.appendValueInput(name)
   input.connection.ezp.wrapped_ = true
+  input.connection.ezp.optional_ = optional
   input.connection.setHidden(true)
   if (!this.ezp.wrappedInputs_) {
     this.ezp.wrappedInputs_ = []

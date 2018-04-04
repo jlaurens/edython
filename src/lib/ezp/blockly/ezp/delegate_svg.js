@@ -190,6 +190,14 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
             }
             B.inputList.splice(0, 1)
           }
+          if (B.ezp.wrappedInputs_ && B.ezp.wrappedInputs_.length) {
+            if (!this.wrappedInputs_) {
+              this.wrappedInputs_ = []
+            }
+            while ((input = B.ezp.wrappedInputs_.shift(0))) {
+              this.wrappedInputs_.push(input)
+            }
+          }
           B.dispose(true)
         }
       }

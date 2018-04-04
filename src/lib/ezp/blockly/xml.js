@@ -26,33 +26,13 @@ ezP.T3.Xml.Expr.expression = 'ezp:expression'
 ezP.T3.Xml.Expr.literal = 'ezp:literal'
 
 /**
- * Final tune up depending on the block.
- * Default implementation does nothing.
- * @param {!Blockly.Block} block.
- * @param {!Element} element dom element to be completed.
- */
-ezP.Delegate.prototype.toDom = function (block, element, optNoId) {
-  return element
-}
-
-/**
- * Final tune up depending on the block.
- * Default implementation calls `completeWrapped_`.
- * @param {!Blockly.Block} block.
- * @param {!Element} hidden a dom element.
- */
-ezP.Delegate.prototype.fromDom = function (block, element) {
-  this.completeWrapped_(block)
-}
-
-/**
  * Converts a DOM structure into plain text.
  * Currently the text format is fairly ugly: all one line with no whitespace.
  * @param {!Element} dom A tree of XML elements.
  * @return {string} Text representation.
  */
 Blockly.Xml.domToText = function(dom) {
-  dom.setAttribute('xmlns:ezp', 'urn:ezpython')
+  dom.setAttribute('xmlns:ezp', 'urn:ezpython:1.0')
   var oSerializer = new XMLSerializer();
   return oSerializer.serializeToString(dom);
 };
@@ -184,11 +164,15 @@ Blockly.FieldVariable.prototype.getSerializedXml = function () {
  * @return {!Element} Tree of XML elements, possibly null.
  */
 ezP.Xml.toDom = function (block, element, optNoId) {
-  var controller
-  if (!(controller = block.ezp.xml) || !goog.isFunction(controller.toDom)) {
-    controller = block.ezp
+  var controller = block.ezp
+  if ((controller &&
+    goog.isFunction(controller.toDom)) ||
+    ((controller = block.ezp.xml) &&
+    goog.isFunction(controller.toDom)) ||
+    ((controller = ezP.DelegateSvg.Manager.get(block.type)) &&
+    goog.isFunction(controller.toDom))) {
+      return controller.toDom.call(controller, block, element, optNoId)
   }
-  return controller.toDom.call(controller, block, element, optNoId)
 }
 
 /**
@@ -198,9 +182,14 @@ ezP.Xml.toDom = function (block, element, optNoId) {
  * @return {!Element} Tree of XML elements, possibly null.
  */
 ezP.Xml.blockToDom = function (block, optNoId) {
-  var controller = ezP.DelegateSvg.Manager.get(block.type)
-  if ((controller && goog.isFunction(controller.blockToDom)) || ((controller = block.ezp.xml) && goog.isFunction(controller.blockToDom))) {
-    return controller.blockToDom.call(controller, block)
+  var controller = block.ezp
+  if ((controller &&
+    goog.isFunction(controller.blockToDom)) ||
+    ((controller = block.ezp.xml) &&
+    goog.isFunction(controller.blockToDom)) ||
+    ((controller = ezP.DelegateSvg.Manager.get(block.type)) &&
+    goog.isFunction(controller.blockToDom))) {
+    return controller.blockToDom.call(controller, optNoId)
   }
   var element = goog.dom.createDom(block.ezp.xmlTagName(block))
   if (!optNoId) {
@@ -262,14 +251,15 @@ Blockly.FieldVariable.prototype.deserializeXml = function (xml) {
  * @return {!Element} Tree of XML elements, possibly null.
  */
 ezP.Xml.fromDom = function (block, element) {
-  var controller = ezP.DelegateSvg.Manager.get(block.type)
-  if (!controller ||
-    !goog.isFunction(controller.fromDom) ||
-    !(controller = block.ezp.xml) ||
-    !goog.isFunction(controller.fromDom)) {
-    controller = block.ezp
+  var controller = block.ezp
+  if ((controller &&
+    goog.isFunction(controller.fromDom)) ||
+    ((controller = block.ezp.xml) &&
+    goog.isFunction(controller.fromDom)) ||
+    ((controller = ezP.DelegateSvg.Manager.get(block.type)) &&
+    goog.isFunction(controller.fromDom))) {
+    return controller.fromDom.call(controller, block, element)
   }
-  controller.fromDom.call(controller, block, element)
 }
 
 /**
@@ -453,20 +443,6 @@ goog.require('ezP.DelegateSvg.Expr')
 
 /**
  * Convert the block to a dom element.
- * Called at the end of blockToDom.
- * Default implementation does nothing.
- * For ezPython.
- * @param {!Blockly.Block} block The block to be converted.
- * @param {boolean} optNoId Is a function.
- * @return a dom element
- */
-ezP.DelegateSvg.prototype.toDom = function(block, element, optNoId) {
-  var x = this.inputListToDom(block, element, optNoId)
-  return this.wrapped_? x: element
-}
-
-/**
- * Convert the block to a dom element.
  * For ezPython.
  * @param {!Blockly.Block} block The block to be converted.
  * @param {boolean} optNoId Is a function.
@@ -586,12 +562,9 @@ goog.require('ezP.DelegateSvg.Expr.longliteral')
  * @return a dom element
  */
 ezP.DelegateSvg.Expr.valueToDom = function(block, element, optNoId) {
-  var element = ezP.DelegateSvg.Expr.prototype.toDom.call(this, block, element, optNoId)
-  if (element) {
-    var text = block.ezp.getValue(block)
-    var child = goog.dom.createTextNode(text)
-    goog.dom.appendChild(element, child)
-  }
+  var text = block.ezp.getValue(block)
+  var child = goog.dom.createTextNode(text)
+  goog.dom.appendChild(element, child)
   return element
 }
 
@@ -603,7 +576,6 @@ ezP.DelegateSvg.Expr.valueToDom = function(block, element, optNoId) {
  * @return a dom element
  */
 ezP.DelegateSvg.Expr.valueFromDom = function(block, element) {
-  ezP.DelegateSvg.Expr.prototype.fromDom.call(this, block, element)
   var text = ''
   for (var i = 0, xmlChild; (xmlChild = element.childNodes[i]); i++) {
     if (xmlChild.nodeType === 3) {
@@ -693,6 +665,84 @@ ezP.Xml.inputToDom = function(input, element, optNoId) {
 ezP.Xml.namedInputToDom = function(block, name, element, optNoId) {
   var input = block.getInput(name)
   return input? ezP.Xml.inputToDom(input, element, optNoId): undefined
+}
+
+/**
+ * Convert the block's input list with the given name to a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {boolean} optNoId Is a function.
+ * @return a dom element, void lists may return nothing
+ */
+ezP.Xml.namedInputListToDom = function(block, name, element, optNoId) {
+  var input = block.getInput(name)
+  if (input) {
+    var target = input.connection.targetBlock()
+    if (target) {
+      var child = goog.dom.createDom('ezp:list')
+      if (ezP.Xml.toDom(target, child, optNoId)) {
+        goog.dom.appendChild(element, child)
+        child.setAttribute('name', input.name)
+        return child
+      }
+    }
+  }
+  return undefined
+}
+
+
+/**
+ * Convert the block's input list with the given name to a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {boolean} optNoId Is a function.
+ * @return a dom element, void lists may return nothing
+ */
+ezP.Xml.namedInputListFromDom = function(block, name, element) {
+  var input = block.getInput(name)
+  if (input) {
+    var target = input.connection.targetBlock()
+    if (target) {
+      for (var i = 0, child;(child = element.childNodes[i++]);) {
+        if (child.nodeName.toLowerCase() === 'ezp:list' && child.getAttribute('name') === name) {
+          ezP.Xml.fromDom(target, child)
+          return true
+        }
+      }
+    }
+  }
+  return false
+}
+
+/**
+ * Convert the block's input list from a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {boolean} optNoId Is a function.
+ * @return a dom element, void lists may return nothing
+ */
+ezP.Xml.inputListFromDom = function(block, element, optNoId) {
+  for (var i = 0, xmlChild; (xmlChild = xml.childNodes[i]); i++) {
+    var name
+    if (goog.isFunction(xmlChild.getAttribute)) {
+      var name = xmlChild.getAttribute('name')
+      if (name) {
+        var input = block.getInput(name)
+        if (input) {
+          var c8n = input.connection
+          if (c8n) {
+            var child = Blockly.Xml.domToBlock(xmlChild, block.workspace)
+            if (child) {
+              var outputC8n = child.outputConnection
+              if (outputC8n && outputC8n.checkType_(c8n)) {
+                outputC8n.connect(c8n)// could we try not to render now ?
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 /**
@@ -793,7 +843,7 @@ ezP.DelegateSvg.List.prototype.inputListToDom = function(block, element, optNoId
  * @param {boolean} optNoId Is a function.
  * @return a dom element, void lists may return nothing
  */
-ezP.DelegateSvg.List.prototype.inputListFromDom = function(block, xml, optNoId) {
+ezP.DelegateSvg.List.prototype.fromDom = function(block, xml, optNoId) {
   for (var i = 0, xmlChild; (xmlChild = xml.childNodes[i]); i++) {
     var name
     if (goog.isFunction(xmlChild.getAttribute)) {

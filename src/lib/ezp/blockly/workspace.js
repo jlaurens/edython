@@ -119,21 +119,21 @@ ezP.Workspace.prototype.getVariableUses = function (name, all) {
 ezP.Workspace.savedGetBlockById = Blockly.Workspace.prototype.getBlockById
 Blockly.Workspace.prototype.getBlockById = function(id) {
   var block = ezP.Workspace.savedGetBlockById.call(this, id)
-  if (!block) {
-    var m = XRegExp.exec(id, ezP.XRE.id_wrapped)
-    if (m && (block = ezP.Workspace.savedGetBlockById.call(this, m.id))) {
-      var e8r = block.ezp.inputEnumerator(block)
-      while (e8r.next()) {
-        var c8n = e8r.here.connection
-        if (c8n) {
-          var target = c8n.targetBlock()
-          if (target.id === id) {
-            return target
-          }
+  if (block) {
+    return block
+  }
+  var m = XRegExp.exec(id, ezP.XRE.id_wrapped)
+  if (m && (block = ezP.Workspace.savedGetBlockById.call(this, m.id))) {
+    var e8r = block.ezp.inputEnumerator(block)
+    while (e8r.next()) {
+      var c8n = e8r.here.connection
+      if (c8n) {
+        var target = c8n.targetBlock()
+        if (target.id === id) {
+          return target
         }
       }
     }
-    return undefined
   }
-  return block
-};
+  return undefined
+}

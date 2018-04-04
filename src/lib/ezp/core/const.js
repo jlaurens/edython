@@ -56,6 +56,8 @@ ezP.Const.Field = {
 }
 ezP.Key = {
   LIST: 'ezp:list',
+  TARGET: 'ezp:target',
+  ASSIGNED: 'ezp:assigned',
 
   FIRST: 'm_1',// this MUST be in lower case
   MIDDLE: 'm_2',// this MUST be in lower case
@@ -82,9 +84,7 @@ ezP.Key = {
   UPPER_BOUND: 'upper_bound',
   STRIDE: 'stride',
   EXPRESSION: 'expression',// = ANY? NO!
-  TARGET: 'target',
   ANNOTATED: 'annotated',
-  ASSIGNED: 'assigned',
   LHS: 'lhs',
   RHS: 'rhs',
   OPTION: 'option',
