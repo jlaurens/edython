@@ -175,3 +175,7 @@ ezP.DelegateSvg.Stmt.start_stmt = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Stmt.start_stmt, ezP.DelegateSvg.Control)
 ezP.DelegateSvg.Manager.register('start_stmt')
+
+ezP.DelegateSvg.Control.T3s = [
+  ezP.T3.Stmt.start_stmt,
+]
