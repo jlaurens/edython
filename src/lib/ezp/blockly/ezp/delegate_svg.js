@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -165,17 +165,39 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   block.setHelpUrl('')
 
   var F = function(K) {
-    var D = this.inputModel_[K]
+    var D = this.inputModel[K]
     var out
     if (D && Object.keys(D).length) {
       out = {}
+      var v, f
+      if ((v = D.insert)) {
+        var B = ezP.DelegateSvg.newBlockComplete(block.workspace, v)
+        if (B) {
+          // transfer input
+          var input
+          while ((input = B.inputList[0])) {
+            block.inputList.push(input)
+            input.sourceBlock_ = block
+            if (input.connection) {
+              input.connection.sourceBlock_ = block
+            }
+            for (var j = 0, field;(field = input.fieldRow[j++]);) {
+              field.sourceBlock_ = block
+              if (field.textElement_) {
+                block.getSvgRoot().appendChild(field.textElement_)
+                field.textElement_.tooltip = block
+              }
+            }
+            B.inputList.splice(0, 1)
+          }
+          B.dispose(true)
+        }
+      }
       if ((D.check === undefined && D.wrap === undefined) || D.dummy || D.identifier || D.code || D.comment || D.number || D.string || D.longString) {
         out.input = block.appendDummyInput(k)
       } else {
         var k = D.key
-        var v, f
-        if ('wrap' in D) {
-          v = D.wrap
+        if ((v = D.wrap)) {
           goog.asserts.assert(v, 'wrap must exist '+block.type+'.'+K)
           out.input = block.appendWrapValueInput(k, v, D.optional, D.hidden)
         } else {
@@ -217,13 +239,6 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         }
       }
       var field
-      if (D.asyncable) {
-        field = out.fieldAsync = new ezP.FieldLabel('')
-        k = K+'.'+ezP.Const.Field.ASYNC
-        field.ezpData.css_class = 'ezp-code-reserved'
-        field.ezpData.css_style = D.css_style
-        out.input.appendField(field, k)
-      }
       if ((v = D.prefix) !== undefined) {
         field = out.fieldPrefix = new ezP.FieldLabel(v)
         k = K+'.'+ezP.Const.Field.PREFIX
@@ -291,10 +306,11 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   var model = {}
   
   // catch the statement input eventually created in parent's method
-  for (var i = 0, input; (input = block.inputList[i++]);) {
-    if (input.type === Blockly.NEXT_STATEMENT) {
+  var e8r = block.ezp.inputEnumerator(block)
+  while (e8r.next()) {
+    if (e8r.here.type === Blockly.NEXT_STATEMENT) {
       model.do = {
-        input: input,
+        input: e8r.here,
       }
       break
     }
@@ -313,17 +329,24 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       }
     }
   }
+  if ((D = this.outputModel_) && D.awaitable) {
+    field = new ezP.FieldLabel('await')
+    field.ezpData.css_class = 'ezp-code-reserved'
+    field.setSourceBlock(block)
+    field.init()
+    model.fieldAwait = field
+  }    
+  if ((D = this.statementModel_) && D.asyncable) {
+    field = new ezP.FieldLabel('async')
+    field.ezpData.css_class = 'ezp-code-reserved'
+    field.setSourceBlock(block)
+    field.init()
+    model.fieldAsync = field
+  }
   if (Object.keys(this.inputModel_).length) {
-    if ((D = this.outputModel_) && D.awaitable) {
-      field = new ezP.FieldLabel('await')
-      field.ezpData.css_class = 'ezp-code-reserved'
-      field.setSourceBlock(block)
-      field.init()
-      model.fieldAwait = field
-    }    
     model.fieldPrefix = FF.call(this, 'prefix')
     model.fieldSuffix = FF.call(this, 'suffix')
-    var keys = ['first', 'middle', 'last']
+    var keys = ['m_1', 'm_2', 'm_3']
     for (var i = 0, K; K = keys[i++];) {
       var f = F.call(this, K)
       if (f) {
@@ -396,8 +419,10 @@ ezP.DelegateSvg.prototype.getMenuTarget = function(block) {
   if (this.model.wrap && (wrapped = this.model.wrap.input.connection.targetBlock())) {
     return wrapped.ezp.getMenuTarget(wrapped)
   }
-  if (this.wrappedInputs_ && this.wrappedInputs_.length &&
+  if (this.wrappedInputs_ && this.wrappedInputs_.length === 1 &&
     (wrapped = this.wrappedInputs_[0][0].connection.targetBlock())) {
+      // if there are more than one wrapped block,
+      // then we choose none of them
     return wrapped.ezp.getMenuTarget(wrapped)
   }
   return block
@@ -474,8 +499,9 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
  */
 ezP.DelegateSvg.prototype.consolidate = function (block, deep) {
   if (deep) {
-    for (var i = 0, input, x; (input = block.inputList[i++]);) {
-      if ((x = input.connection) && (x = x.targetBlock())) {
+    var e8r = block.ezp.inputEnumerator(block), x
+    while (e8r.next()) {
+      if ((x = e8r.here.connection) && (x = x.targetBlock())) {
         x.ezp.consolidate(x, deep)
       }
     }
@@ -752,8 +778,9 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     canStatement: true,
     canList: true,
     canForif: true,
-    i: 0,
-    length: block.inputList.length,
+    i: 0, // input index
+    i_max: block.inputList.length,
+    f: 0, // field index
   }
   io.cursorX = this.getPaddingLeft(block)
   if (!block.outputConnection) {
@@ -767,6 +794,9 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     this.shouldSeparateField = false
   }
   io.shouldSeparateField = this.shouldSeparateField
+  if ((io.field = this.model.fieldAsync)) {
+    this.renderDrawField_(io)
+  }
   if ((io.field = this.model.fieldAwait)) {
     this.renderDrawField_(io)
   }
@@ -877,7 +907,8 @@ ezP.DelegateSvg.prototype.renderDrawField_ = function (io) {
  */
 ezP.DelegateSvg.prototype.renderDrawFields_ = function (io, only_prefix) {
   var here = io.cursorX
-  for (var i = 0; (io.field = io.input.fieldRow[i]); ++i) {
+  io.f = 0
+  for (; (io.field = io.input.fieldRow[io.f]); ++io.f) {
     if (!!only_prefix === !io.field.ezpData.suffix) {
       this.renderDrawField_(io)
     }
@@ -910,7 +941,7 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   }
   var delta = this.renderDrawFields_(io, true)
   var c8n = io.input.connection
-  if (c8n) {
+  if (c8n && !c8n.hidden_) {
     c8n.setOffsetInBlock(io.cursorX, 0)
     var target = c8n.targetBlock()
     if (!!target) {
@@ -929,7 +960,7 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       // locked blocks won't display any placeholder
       // (input with no target)
       var ezp = c8n.ezp
-      var pw = ezp.s7r_ ||ezp.optional_?
+      var pw = ezp.s7r_ || ezp.optional_?
       this.carretPathDefWidth_(io.cursorX):
       this.placeHolderPathDefWidth_(io.cursorX)
       io.steps.push(pw.d)
@@ -1102,8 +1133,8 @@ ezP.DelegateSvg.prototype.getInput = function (block, name) {
 ezP.StatementBlockEnumerator = function (block) {
   var b
   var bs = [block]
-  var i
-  var is = [0]
+  var e8r
+  var e8rs = [block.ezp.inputEnumerator(block)]
   var input, next
   var me = {}
   me.next = function () {
@@ -1115,21 +1146,21 @@ ezP.StatementBlockEnumerator = function (block) {
   }
   me.next_ = function () {
     while ((b = bs.shift())) {
-      i = is.shift()
-      while ((input = b.inputList[i++])) {
-        if (input.type === Blockly.NEXT_STATEMENT) {
-          if (input.connection && (next = input.connection.targetBlock())) {
+      e8r = e8rs.shift()
+      while (e8r.next()) {
+        if (e8r.here.type === Blockly.NEXT_STATEMENT) {
+          if (e8r.here.connection && (next = e8r.here.connection.targetBlock())) {
             bs.unshift(b)
-            is.unshift(i)
+            e8rs.unshift(e8r)
             bs.unshift(next)
-            is.unshift(0)
+            e8rs.unshift(next.ezp.inputEnumerator(next))
             return next
           }
         }
       }
       if ((b = b.getNextBlock())) {
         bs.unshift(b)
-        is.unshift(0)
+        e8rs.unshift(b.ezp.inputEnumerator(b))
         return b
       }
     }
@@ -1202,8 +1233,51 @@ ezP.DelegateSvg.prototype.setInputEnabled = function (block, input, enabled) {
   }
   input.disabled_ = !enabled
   input.setVisible(enabled)
-  input.connection.hidden_ = !enabled
   input.connection.setHidden(!enabled)
+}
+
+/**
+ * Set the enable/disable status of the given block.
+ * @param {!Block} block.
+ * @param {!Input} input.
+ * @param {!String} name  input name.
+ * @param {!boolean} newValue.
+ * @private
+ */
+ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValue) {
+  var input = block.getInput(name)
+  if (input) {
+    var oldValue = input.ezpData.disabled_
+    if (Blockly.Events.isEnabled()) {
+      Blockly.Events.fire(new Blockly.Events.BlockChange(
+        block, ezP.Const.Event.input_disable, name, oldValue, newValue));
+    }
+    input.ezpData.disabled_ = newValue
+    var current = this.isRendering
+    this.isRendering = true
+    input.setVisible(!newValue)
+    this.isRendering = current
+    if (input.isVisible()) {
+      for (var __ = 0, field; (field = input.fieldRow[__]); ++__) {
+        if (field.getText().length>0) {
+          var root = field.getSvgRoot()
+          if (root) {
+            root.removeAttribute('display')
+          } else {
+            console.log('Field with no root: did you ...initSvg()?')
+          }
+        }
+      }
+    }
+    setTimeout(function(){
+      console.log('1')
+      if (block.workspace) {
+        block.render()
+      }
+    }, 1)
+  } else {
+    console.log('Unable to dis/enable non existing input named '+name)
+  }
 }
 
 /**
@@ -1240,8 +1314,11 @@ ezP.DelegateSvg.prototype.toggleNamedInputDisabled = function (block, name) {
       }
     }
     setTimeout(function(){
-      block.render()
-    }, 100)
+      console.log('2')
+      if (block.workspace) {
+        block.render()
+      }
+    }, 1)
   } else {
     console.log('Unable to dis/enable non existing input named '+name)
   }
@@ -1269,8 +1346,11 @@ ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValu
     input.ezpData.disabled_ = newValue
     input.setVisible(!newValue)
     setTimeout(function(){
-      block.render()
-    }, 100)
+      console.log('3', block)
+      if (block.workspace) {
+        block.render()
+      }
+    }, 1)
   } else {
     console.log('Unable to dis/enable non existing input named '+name)
   }
@@ -1328,7 +1408,7 @@ ezP.DelegateSvg.prototype.getPythonSort = function (block) {
  * @param {string} prototypeName.
  * @param {string} surroundInputName, which parent's connection to use
  */
-ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, subtype, surroundInputName) {
+ezP.DelegateSvg.prototype.canInsertParent = function(block, prototypeName, subtype, surroundInputName) {
   var can = false
   return can
 }
@@ -1345,7 +1425,7 @@ ezP.DelegateSvg.prototype.canInsertBlockAbove = function(block, prototypeName, s
  * @param {string} subtype, for subclassers
  * @return the created block
  */
-ezP.DelegateSvg.prototype.insertSurroundParent = function(block, surroundPrototypeName, subtype, surroundInputName) {
+ezP.DelegateSvg.prototype.insertParent = function(block, surroundPrototypeName, subtype, surroundInputName) {
   goog.asserts.assert(false, 'Must be subclassed')
 }
 
@@ -1385,11 +1465,9 @@ ezP.HoleFiller.getData = function(check, value) {
  */
 ezP.HoleFiller.getDeepHoles = function(block, holes) {
   var H = holes || []
-  var i = 0, input
-  var L = block.inputList
-  var input
-  while((input = L[i++])) {
-    var c8n = input.connection
+  var e8r = block.ezp.inputEnumerator(block)
+  while (e8r.next()) {
+    var c8n = e8r.here.connection
     if (c8n && c8n.type === Blockly.INPUT_VALUE && (!c8n.hidden_ || c8n.ezp.wrapped_)) {
       var target = c8n.targetBlock()
       if (target) {
@@ -1492,9 +1570,9 @@ ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
       } else {
         if (last && last.length) {
           var mustSeparate = last[last.length-1].match(/[,;:]/)
-          var maySeparate = mustSeparate || last[last.length-1].match(/[a-zA-Z_]/)
+          var maySeparate = mustSeparate || ezP.XRE.id_continue.test(last[last.length-1])
         }
-        if (mustSeparate || (maySeparate && x[0].match(/[a-zA-Z_]/))) {
+        if (mustSeparate || (maySeparate && ezP.XRE.id_continue.test(x[0]))) {
           components.push(' ')
         }
       }
@@ -1510,8 +1588,6 @@ ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
     if (!D) {
       return
     }
-    console.warn('CHANGE Asyn design')
-    FF(D.fieldAsync)
     FF(D.fieldPrefix)
     FF(D.fieldLabel)
     FF(D.fieldLabelStart)
@@ -1526,9 +1602,9 @@ ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
     }
     FF(D.fieldLabelEnd)
   }
-  F(this.model.first)
-  F(this.model.middle)
-  F(this.model.last)
+  F(this.model.m_1)
+  F(this.model.m_2)
+  F(this.model.m_3)
   return last
 }
 
@@ -1694,9 +1770,10 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
     return
   }
   var doLast = function(B) {
-    var j = B.inputList.length
-    while (j--) {
-      var input = B.inputList[j], c8n = input.connection
+    var e8r = B.ezp.inputEnumerator(B)
+    B.end()
+    while (B.previous()) {
+      var c8n = e8r.here.connection
       if (c8n && (c8n.type !== Blockly.NEXT_STATEMENT)) {
         var target = c8n.targetBlock()
         if (!target || (!target.ezp.wrapped_ && !target.ezp.locked_) || (c8n = doLast(target))) {
@@ -1747,17 +1824,34 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
     if (c8n === block.nextStatement) {
     } else if (c8n.type !== Blockly.NEXT_STATEMENT) {
       // select the previous non statement input if any
-      for (var i = 0; (input = block.inputList[i++]);) {
-        if (input.connection && c8n === input.connection) {
+      var e8r = block.ezp.inputEnumerator(block)
+      while (e8r.next()) {
+        if (e8r.here.connection && c8n === e8r.here.connection) {
           // found it, step down
-          --i
-          for(; (input = block.inputList[--i]);) {
-            if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+          e8r.previous()
+          while (e8r.previous()) {
+            if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
               if (selectConnection(block)) {
                 return
               }
             }
           }
+          break
+        }
+      }
+      e8r.start(block)
+      while (e8r.next()) {
+        if (e8r.here.connection && c8n === e8r.here.connection) {
+          // found it, step down
+          e8r.previous()
+          while (e8r.previous()) {
+            if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+              if (selectConnection(block)) {
+                return
+              }
+            }
+          }
+          break
         }
       }
     } else if (!block.ezp.wrapped_ && !block.ezp.locked_) {
@@ -1768,17 +1862,19 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
   }
   if ((parent = block.getSurroundParent())) {
     // select the previous non statement input if any
-    for (var i = 0; (input = parent.inputList[i++]);) {
-      if ((c8n = input.connection) && block === c8n.targetBlock()) {
+    var e8r = parent.ezp.inputEnumerator(parent)
+    while (e8r.next()) {
+      if ((c8n = e8r.here.connection) && block === c8n.targetBlock()) {
         // found it, step down
-        --i
-        for(; (input = parent.inputList[--i]);) {
-          if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+        e8r.previous()
+        while (e8r.previous()) {
+          if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
             if (selectConnection(c8n)) {
               return
             }
           }
         }
+        break
       }
     }
     do {
@@ -1869,11 +1965,12 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
     } else {
       // select the connection following `this.selectedConnection`
       // which not a NEXT_STATEMENT one, if any
-      for(var i = 0; (input = block.inputList[i++]);) {
-        if (input.connection && c8n === input.connection) {
+      var e8r = block.ezp.inputEnumerator(block)
+      while (e8r.next()) {
+        if (e8r.here.connection && c8n === e8r.here.connection) {
           // found it
-          for(; (input = block.inputList[i++]);) {
-            if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+          while (e8r.next()) {
+            if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
               if (selectConnection()) {
                 return
               }
@@ -1883,8 +1980,9 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
       }
       // it was the last value connection
       // find a statement connection
-      for(var i = 0; (input = block.inputList[i++]);) {
-        if ((c8n = input.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
+      e8r.start()
+      while(e8r.next()) {
+        if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
           if (selectConnection()) {
             return
           }
@@ -1893,8 +1991,9 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
     }
   } else {
     // select the first non statement connection
-    for(var i = 0; (input = block.inputList[i++]);) {
-      if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+    var e8r = block.ezp.inputEnumerator(block)
+    while (e8r.next()) {
+      if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
         if (selectConnection()) {
           return
         }
@@ -1902,8 +2001,9 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
     }
     // all the input connections are either dummy or statement connections
     // select the first statement connection (there is an only one for the moment)
-    for(var i = 0; (input = block.inputList[i++]);) {
-      if ((c8n = input.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
+    e8r.start()
+    while (e8r.next()) {
+      if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
         if (selectConnection()) {
           return
         }
@@ -1915,23 +2015,25 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
     // only when a value input is connected to the block
     target = block
     while ((parent = target.getSurroundParent())) {
-      for(var i = 0; (input = parent.inputList[i++]);) {
-        if ((c8n = input.connection) && (target === c8n.targetBlock())) {
+      var e8r = parent.ezp.inputEnumerator(parent)
+      while (e8r.next()) {
+        if ((c8n = e8r.here.connection) && (target === c8n.targetBlock())) {
           if (c8n.type === Blockly.NEXT_STATEMENT) {
             // nothing is more right...
             break
           } else {
             // try a value input after
-            for(; (input = parent.inputList[i++]);) {
-              if ((c8n = input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+            while (e8r.next()) {
+              if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
                 if (selectConnection()) {
                   return
                 }
               }
             }
             // try the next statement input if any
-            for(var i = 0; (input = parent.inputList[i++]);) {
-              if ((c8n = input.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
+            e8r.start()
+            while (e8r.next()) {
+              if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
                 if (selectConnection()) {
                   return
                 }
@@ -1944,8 +2046,9 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
     }
     target = block
     while ((parent = target.getSurroundParent())) {
-      for(var i = 0; (input = parent.inputList[i++]);) {
-        if ((c8n = input.connection) && (c8n.type === Blockly.NEXT_STATEMENT) && (target = c8n.targetBlock()) && (target !== block)) {
+      var e8r = parent.ezp.inputEnumerator(parent)
+      while (e8r.next()) {
+        if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT) && (target = c8n.targetBlock()) && (target !== block)) {
           ezP.SelectedConnection.set(null)
           target.select()
           return
@@ -2120,8 +2223,9 @@ ezP.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
   where.scale(1/block.workspace.scale)
   var rect = this.getBoundingRect(block)
   where = goog.math.Coordinate.difference(where, rect.getTopLeft())
-  for (var i = 0, input; (input = block.inputList[i++]);) {
-    var c8n = input.connection
+  var e8r = block.ezp.inputEnumerator(block)
+  while (e8r.next()) {
+    var c8n = e8r.here.connection
     if (c8n) {
       if (c8n.type === Blockly.INPUT_VALUE) {
         var target = c8n.targetBlock()
@@ -2306,21 +2410,26 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
   // get the type:
   var prototypeName = action.type || action
   // create a block out of the undo mechanism
-  Blockly.Events.disable()
+  var enabled = Blockly.Events.isEnabled()
+  if (enabled) {
+    var eventDisabler = ezP.Events.Disabler()
+  }
   var candidate = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
   var c8n_N = action.subtype || subtype
   if (candidate.ezp.setSubtype(candidate, c8n_N)) {
     c8n_N = undefined
   }
   if (!candidate) {
-    Blockly.Events.enable()
+    eventDisabler.stop()
     return
   }
   var c8n, otherC8n, foundC8n
   var fin = function(prepare) {
-    Blockly.Events.enable()
+    eventDisabler.stop()
     Blockly.Events.setGroup(true)
-    Blockly.Events.fire(new Blockly.Events.BlockCreate(candidate))
+    if (Blockly.Events.isEnabled()) {
+      Blockly.Events.fire(new Blockly.Events.BlockCreate(candidate))
+    }
     candidate.render()
     if (goog.isFunction(prepare)) {
       prepare()
@@ -2371,9 +2480,10 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
   } else if ((c8n = candidate.outputConnection)) {
     // try to find a free connection in a block
     var findC8n = function(block) {
-      var i = 0, input, otherC8n, foundC8n, target
-      while ((input = block.inputList[i++])) {
-        if ((foundC8n = input.connection) && foundC8n.type === Blockly.INPUT_VALUE) {
+      var e8r = block.ezp.inputEnumerator(block)
+      var otherC8n, foundC8n, target
+      while (e8r.next()) {
+        if ((foundC8n = e8r.here.connection) && foundC8n.type === Blockly.INPUT_VALUE) {
           if ((target = foundC8n.targetBlock())) {
             foundC8n = findC8n(target)
           } else if (!c8n.checkType_(foundC8n)) {
@@ -2424,7 +2534,7 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
   if (candidate) {
     candidate.dispose(true)
   }
-  Blockly.Events.enable()
+  eventDisabler.stop()
   return null
 }
 
@@ -2439,9 +2549,9 @@ ezP.DelegateSvg.prototype.canLock = function (block) {
     return true
   }
   // list all the input for a non optional connection with no target
-  var i = 0, input, c8n, target
-  while ((input = block.inputList[i++])) {
-    if ((c8n = input.connection)) {
+  var e8r = block.ezp.inputEnumerator(block), c8n, target
+  while (e8r.next()) {
+    if ((c8n = e8r.here.connection)) {
       if ((target = c8n.targetBlock())) {
         if (!target.ezp.canLock(target)) {
           return false
@@ -2464,9 +2574,9 @@ ezP.DelegateSvg.prototype.canUnlock = function (block) {
     return true
   }
   // list all the input for a non optional connection with no target
-  var i = 0, input, c8n, target
-  while ((input = block.inputList[i++])) {
-    if ((c8n = input.connection)) {
+  var e8r = block.ezp.inputEnumerator(block), c8n, target
+  while (e8r.next()) {
+    if ((c8n = e8r.here.connection)) {
       if ((target = c8n.targetBlock())) {
         if (target.ezp.canUnlock(target)) {
           return true
@@ -2488,18 +2598,21 @@ ezP.DelegateSvg.prototype.lock = function (block) {
   if (this.locked_ || !block.ezp.canLock(block)) {
     return ans
   }
-  Blockly.Events.fire(new Blockly.Events.BlockChange(
-    block, ezP.Const.Event.locked, null, this.locked_, true));
+  if (Blockly.Events.isEnabled()) {
+    Blockly.Events.fire(new Blockly.Events.BlockChange(
+    block, ezP.Const.Event.locked, null, this.locked_, true))
+  }
   this.locked_ = true
   if (block === ezP.SelectedConnection.set)
   ezP.SelectedConnection.set(null)
   // list all the input for connections with a target
-  var i = 0, input, c8n, target
+  var c8n
   if ((c8n = ezP.SelectedConnection.get()) && (block === c8n.getSourceBlock())) {
     ezP.SelectedConnection.set(null)
   }
-  while ((input = block.inputList[i++])) {
-    if ((c8n = input.connection)) {
+  var e8r = block.ezp.inputEnumerator(block), otherC8n, foundC8n, target
+  while (e8r.next()) {
+    if ((c8n = e8r.here.connection)) {
       if ((target = c8n.targetBlock())) {
         ans += target.ezp.lock(target)
       }
@@ -2525,7 +2638,6 @@ ezP.DelegateSvg.prototype.lock = function (block) {
   (block.getSurroundParent()||block).render()
   return ans
 }
-
 /**
  * Unlock the given block.
  * For ezPython.
@@ -2535,13 +2647,15 @@ ezP.DelegateSvg.prototype.lock = function (block) {
  */
 ezP.DelegateSvg.prototype.unlock = function (block, shallow) {
   var ans = 0
-  Blockly.Events.fire(new Blockly.Events.BlockChange(
-    block, ezP.Const.Event.locked, null, this.locked_, false));
+  if (Blockly.Events.isEnabled()) {
+    Blockly.Events.fire(new Blockly.Events.BlockChange(
+    block, ezP.Const.Event.locked, null, this.locked_, false))
+  }
   this.locked_ = false
   // list all the input for connections with a target
-  var i = 0, input, c8n, target
-  while ((input = block.inputList[i++])) {
-    if ((c8n = input.connection)) {
+  var e8r = block.ezp.inputEnumerator(block), c8n, target
+  while (e8r.next()) {
+    if ((c8n = e8r.here.connection)) {
       if ((!shallow || c8n.type === Blockly.INPUT_VALUE) && (target = c8n.targetBlock())) {
         ans += target.ezp.unlock(target, shallow)
       }
@@ -2585,8 +2699,30 @@ ezP.DelegateSvg.prototype.setAwaited = function (block, yorn) {
     return false
   }
   var ans = 0
-  Blockly.Events.fire(new Blockly.Events.BlockChange(
-    block, ezP.Const.Event.awaited, null, this.awaited_, yorn));
+  if (Blockly.Events.isEnabled()) {
+    Blockly.Events.fire(new Blockly.Events.BlockChange(
+    block, ezP.Const.Event.awaited, null, this.awaited_, yorn))
+  }
   this.awaited_ = yorn
+  block.render()
+}
+
+/**
+ * Set the async status of the given block.
+ * Undo compliant.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {boolean} deep Whether to unlock statements too.
+ * @return the number of block locked
+ */
+ezP.DelegateSvg.prototype.setAsynced = function (block, yorn) {
+  if (!!yorn === !!this.asynced_) {
+    return
+  }
+  if (Blockly.Events.isEnabled()) {
+    Blockly.Events.fire(new Blockly.Events.BlockChange(
+    block, ezP.Const.Event.asynced, null, this.asynced_, yorn))
+  }
+  this.asynced_ = yorn
   block.render()
 }

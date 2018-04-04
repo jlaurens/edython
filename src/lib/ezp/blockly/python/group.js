@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('ezP.Python.ezp_grp')
+goog.provide('ezP.Python.ezp:grp')
 
-goog.require('ezP.Python.ezp_stmt')
+goog.require('ezP.Python.ezp:stmt')
 
 Blockly.Python[ezP.Const.Grp.ANY] = function (block) {
   var STT = block.getField(ezP.Const.Field.STT).getText()

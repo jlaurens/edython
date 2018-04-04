@@ -1,7 +1,7 @@
 /*
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */

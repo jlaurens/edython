@@ -829,7 +829,7 @@ goog.array={};
 goog.NATIVE_ARRAY_PROTOTYPES=goog.TRUSTED_SITE;
 goog.array.ASSUME_NATIVE_FUNCTIONS=!1;
 goog.array.peek=function(a){return a[a.length-1]};
-goog.array.last=goog.array.peek;
+goog.array.m_3=goog.array.peek;
 
 goog.array.indexOf=goog.NATIVE_ARRAY_PROTOTYPES&&(goog.array.ASSUME_NATIVE_FUNCTIONS||Array.prototype.indexOf)?function(a,b,c){goog.asserts.assert(null!=a.length);
 return Array.prototype.indexOf.call(a,b,c)}:function(a,b,c){c=null==c?0:0>c?Math.max(0,a.length+c):c;

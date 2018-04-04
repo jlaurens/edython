@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('ezP.Python.ezp_stmt')
+goog.provide('ezP.Python.ezp:stmt')
 
-goog.require('ezP.Python.ezp_expr')
+goog.require('ezP.Python.ezp:expr')
 
 Blockly.Python[ezP.Const.Stmt.SET] = function (block) {
   var RHS = ezP.Python.valueToCode(block, ezP.Key.RHS,

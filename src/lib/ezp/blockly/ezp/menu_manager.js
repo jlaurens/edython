@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -291,11 +291,16 @@ ezP.MenuManager.prototype.showMenu = function (block, e) {
         return
       }
       me.alreadyListened = true
-      target.ezp.handleMenuItemActionFirst(target, me, event)
+      var model = event.target && event.target.getModel()
+      if (goog.isFunction(model)) {
+        model(event)
+      } else {
+        target.ezp.handleMenuItemActionFirst(target, me, event)
         || target.ezp.handleMenuItemActionMiddle(target, me, event)
         || target.ezp.handleMenuItemActionLast(target, me, event)
+      }
       me.init()
-    }, 100)// TODO be sure that this 100 is suffisant
+    }, 10)// TODO be sure that this 100 is suffisant
   })
   var bBox = block.ezp.svgPathShape_.getBBox()
   var scaledHeight = bBox.height * block.workspace.scale
@@ -472,7 +477,7 @@ ezP.MenuManager.prototype.populateLast = function (block) {
   
   menuItem = new ezP.MenuItem(
     block.ezp.getPythonSort(block), function(event) {
-      var xmlDom = Blockly.Xml.blockToDom(block, true)
+      var xmlDom = Blockly.Xml.blockToDom(block, false)
       var xmlText = Blockly.Xml.domToText(xmlDom)
       console.log(xmlText)
     }
@@ -918,7 +923,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
       var key = d.key
       var content = mgr.get_menuitem_content(parent_type, key)
       var MI = new ezP.MenuItem(content, function() {
-        block.ezp.insertSurroundParent(block, parent_type, parent_subtype, key)
+        block.ezp.insertParent(block, parent_type, parent_subtype, key)
       })
       mgr.addInsertChild(MI)
       return true
@@ -929,7 +934,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
           var key = d.key || K
           var content = mgr.get_menuitem_content(parent_type, key)
           var MI = new ezP.MenuItem(content, function() {
-            block.ezp.insertSurroundParent(block, parent_type, parent_subtype, key)
+            block.ezp.insertParent(block, parent_type, parent_subtype, key)
           })
           mgr.addInsertChild(MI)
           return true
@@ -951,14 +956,14 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
       }
       var content = mgr.get_menuitem_content(parent_type)
       var MI = new ezP.MenuItem(content, function() {
-        block.ezp.insertSurroundParent(block, parent_type, parent_subtype)
+        block.ezp.insertParent(block, parent_type, parent_subtype)
       })
       mgr.addInsertChild(MI)
       return true  
     }
     return false
   }
-  return F('first') || F('middle') || F('last')
+  return F('m_1') || F('m_2') || F('m_3')
 }
 
 /**
@@ -1053,7 +1058,7 @@ ezP.MenuManager.prototype.populate_before_after = function (block) {
     ezP.T3.Stmt.print_stmt,
     ezP.T3.Stmt.input_stmt,
   ]
-  Blockly.Events.disable()
+  var eventDisabler = ezP.Events.Disabler()
   var F = function(action, type) {
     return function() {
       // create a closure that catches the value of the loop variable
@@ -1084,7 +1089,7 @@ ezP.MenuManager.prototype.populate_before_after = function (block) {
     B.dispose()
     if (yorn) {
       var content = this.get_menuitem_content(type)
-      var MI = new ezP.MenuItem(content, F(block.ezp.insertSurroundParent, type))
+      var MI = new ezP.MenuItem(content, F(block.ezp.insertParent, type))
       this.addInsertBeforeChild(MI)
       return true
     }
@@ -1114,7 +1119,7 @@ ezP.MenuManager.prototype.populate_before_after = function (block) {
       this.shouldSeparateInsertBefore(sep)
     }
   } finally {
-    Blockly.Events.enable()
+    eventDisabler.stop()
   }
 }
 
@@ -1187,7 +1192,7 @@ ezP.MenuManager.prototype.populate_wrap_alternate = function (block, key) {
     var input = block.getInput(key)
     if (input && input.connection) {
       var target = input.connection.targetBlock()
-      goog.asserts.assert(target, 'No wrapper in augassign_list?')
+      goog.asserts.assert(target, 'No wrapper in '+ block.type)
       var F = function(data) {
         var content = goog.isFunction(data.content)? data.content(block): data.content
         goog.asserts.assert(content, 'content is missing '+block.type+' '+key)
@@ -1220,10 +1225,10 @@ ezP.MenuManager.prototype.populate_wrap_alternate = function (block, key) {
 ezP.MenuManager.prototype.populateOperator = function (block) {
   var ezp = block.ezp
   if (ezp.operators && ezp.operators.length > 1) {
-    var value = ezp.model.last.fieldOperator.getValue()
+    var value = ezp.model.m_3.fieldOperator.getValue()
     var F = function(op) {
       var menuItem = new ezP.MenuItem(ezp.getContent(block, op), function() {
-        ezp.model.last.fieldOperator.setValue(op)
+        ezp.model.m_3.fieldOperator.setValue(op)
         return
       })
       menuItem.setEnabled(value != op)

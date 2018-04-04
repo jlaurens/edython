@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -155,8 +155,9 @@ ezP.DelegateSvg.List.prototype.removeItems = function(block) {
 ezP.DelegateSvg.List.prototype.toPythonExpressionComponents = function (block, components) {
   this.consolidate(block)
   var last = components[components.length-1]
-  for (var i = 0, input; (input = block.inputList[i++]);) {
-    var c8n = input.connection
+  var e8r = block.ezp.inputEnumerator(block)
+  while (e8r.next()) {
+    var c8n = e8r.here.connection
     if (c8n) {
       var target = c8n.targetBlock()
       if (target) {
@@ -167,14 +168,14 @@ ezP.DelegateSvg.List.prototype.toPythonExpressionComponents = function (block, c
         components.push(last)
         // NEWLINE
       } else {
-        for (var j = 0, field; (field = input.fieldRow[j++]);) {
+        for (var j = 0, field; (field = e8r.here.fieldRow[j++]);) {
           var x = field.getText()
           if (x.length) {
             if (last && last.length) {
               var mustSeparate = last[last.length-1].match(/[,;:]/)
-              var maySeparate = mustSeparate || last[last.length-1].match(/[a-zA-Z_]/)
+              var maySeparate = mustSeparate || ezP.XRE.id_continue.test(last[last.length-1])
             }
-            if (mustSeparate || (maySeparate && x[0].match(/[a-zA-Z_]/))) {
+            if (mustSeparate || (maySeparate && ezP.XRE.id_continue.test(x[0]))) {
               components.push(' ')
             }
             components.push(x)

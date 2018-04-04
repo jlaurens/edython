@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -62,3 +62,22 @@ Blockly.Events.Change.prototype.run = function(forward) {
       console.warn('Unknown change type: ' + this.element);
   }
 };
+
+/**
+ * Event disabler.
+ * @param {boolean} forward True if run forward, false if run backward (undo).
+ */
+ezP.Events.Disabler = function() {
+  if (Blockly.Events.isEnabled()) {
+    Blockly.Events.disable()
+    return {
+      stop: function() {
+        Blockly.Events.enable()
+      }
+    }
+  } else {
+    return {
+      stop: function() {}
+    }
+  }
+}

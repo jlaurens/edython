@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -26,7 +26,7 @@ goog.require('ezP.DelegateSvg.Stmt')
 ezP.DelegateSvg.Group = function (prototypeName) {
   ezP.DelegateSvg.Group.superClass_.constructor.call(this, prototypeName)
   this.statementModel_.key = ezP.Key.DO
-  this.inputModel_.last = {
+  this.inputModel_.m_3 = {
     label: ':',
   }
 }
@@ -226,7 +226,7 @@ ezP.DelegateSvg.Group.prototype.highlightConnection = function (c8n) {
  */
 ezP.DelegateSvg.Stmt.if_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.if_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first = {
+  this.inputModel_.m_1 = {
     label: 'if',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,
@@ -248,7 +248,7 @@ ezP.DelegateSvg.Manager.register('if_part')
  */
 ezP.DelegateSvg.Stmt.elif_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.elif_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first = {
+  this.inputModel_.m_1 = {
     label: 'elif',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,
@@ -278,7 +278,7 @@ ezP.DelegateSvg.Manager.register('elif_part')
  */
 ezP.DelegateSvg.Stmt.else_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.else_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first = {
+  this.inputModel_.m_1 = {
     label: 'else',
     css_class: 'ezp-code-reserved',
   }
@@ -366,7 +366,7 @@ ezP.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
  */
 ezP.DelegateSvg.Stmt.while_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.while_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first = {
+  this.inputModel_.m_1 = {
     label: 'while',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,
@@ -392,16 +392,6 @@ ezP.DelegateSvg.Group.Async = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Group.Async, ezP.DelegateSvg.Group)
 
 /**
- * Get the 'async' field.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Group.Async.prototype.getFieldAsync = function (block) {
-  var input = this.model.first
-  return input? input.fieldAsync: undefined
-}
-
-/**
  * Will draw the block. Default implementation does nothing.
  * The print statement needs some preparation before drawing.
  * @param {!Block} block.
@@ -409,27 +399,10 @@ ezP.DelegateSvg.Group.Async.prototype.getFieldAsync = function (block) {
  */
 ezP.DelegateSvg.Group.Async.prototype.willRender_ = function (block) {
   ezP.DelegateSvg.Group.Async.superClass_.willRender_.call(this, block)
-  var field = this.getFieldAsync(block)
+  var field = this.model.fieldAsync
   if (field) {
-    var text = field.getText()
-    field.setVisible(text && text.length)
+    field.setVisible(this.asynced_)
   }
-}
-
-/**
- * Whether the block has an 'async' prefix.
- * @param {!Blockly.Block} block The block owning the receiver.
- * @return yes or no
- */
-ezP.DelegateSvg.Group.Async.prototype.asynced = function (block) {
-  var field = this.getFieldAsync(block)
-  if (field) {
-    var attribute = field.getText()
-    if (attribute && attribute.length>4) {
-      return true
-    }
-  }
-  return false
 }
 
 /**
@@ -438,15 +411,12 @@ ezP.DelegateSvg.Group.Async.prototype.asynced = function (block) {
  * @param {!Element} element dom element to be completed.
  * @override
  */
-ezP.DelegateSvg.Group.Async.prototype.toDom = function (block, element) {
-  ezP.DelegateSvg.Group.Async.superClass_.toDom.call(this, block, element)
-  var field = this.getFieldAsync(block)
-  if (field) {
-    var attribute = field.getText()
-    if (attribute && attribute.length>4) {
-      element.setAttribute('async', 'true')
-    }
+ezP.DelegateSvg.Group.Async.prototype.toDom = function (block, element, optNoId) {
+  var element = ezP.DelegateSvg.Group.Async.superClass_.toDom.call(this, block, element, optNoId)
+  if (element && this.asynced_) {
+    element.setAttribute('async', 'true')
   }
+  return element
 }
 
 /**
@@ -457,12 +427,10 @@ ezP.DelegateSvg.Group.Async.prototype.toDom = function (block, element) {
  */
 ezP.DelegateSvg.Group.Async.prototype.fromDom = function (block, element) {
   ezP.DelegateSvg.Group.Async.superClass_.fromDom.call(this, block, element)
-  var field = this.getFieldAsync(block)
+  var field = this.model.fieldAsync
   if (field) {
     var attribute = element.getAttribute('async')
-    if (attribute && attribute.toLowerCase() === 'true') {
-      field.setText('async ')
-    }
+    this.setAsynced(block, attribute && attribute.toLowerCase() === 'true')
   }
 }
 
@@ -473,21 +441,20 @@ ezP.DelegateSvg.Group.Async.prototype.fromDom = function (block, element) {
  * @private
  */
 ezP.DelegateSvg.Group.Async.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var field = this.getFieldAsync(block)
+  var field = this.model.fieldAsync
   if (field) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN('async', 'ezp-code-reserved'),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
     )
-    var old = field.getValue()
-    if (old && old.length > 4) {
+    if (this.asynced_) {
       mgr.addRemoveChild(new ezP.MenuItem(content, function() {
-        field.setValue('')
+        block.ezp.setAsynced(block, false)
       }))
       mgr.shouldSeparateRemove()
     } else {
       mgr.addInsertChild(new ezP.MenuItem(content, function() {
-        field.setValue('async ')
+        block.ezp.setAsynced(block, true)
       }))
       mgr.shouldSeparateInsert()
     }
@@ -505,13 +472,13 @@ ezP.DelegateSvg.Group.Async.prototype.populateContextMenuFirst_ = function (bloc
  */
 ezP.DelegateSvg.Stmt.for_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.for_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first = {
+  this.inputModel_.m_1 = {
     label: 'for',
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.target_list,
     key: ezP.Key.FOR,
   }
-  this.inputModel_.middle = {
+  this.inputModel_.m_2 = {
     label: 'in',
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.expression_list,
@@ -534,15 +501,15 @@ ezP.DelegateSvg.Manager.register('for_part')
  */
 ezP.DelegateSvg.Stmt.with_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.with_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first = {
+  this.inputModel_.m_1 = {
     key: ezP.Key.LIST,
-    asyncable: true,
     label: 'with',
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.with_item_list,
   }
   this.statementModel_.previous.check = ezP.T3.Stmt.Previous.with_part
   this.statementModel_.next.check = ezP.T3.Stmt.Next.with_part
+  this.statementModel_.asyncable = true
 }
 goog.inherits(ezP.DelegateSvg.Stmt.with_part, ezP.DelegateSvg.Group.Async)
 ezP.DelegateSvg.Manager.register('with_part')
@@ -558,12 +525,12 @@ ezP.DelegateSvg.Manager.register('with_part')
 ezP.DelegateSvg.Expr.with_item_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.with_item_concrete.superClass_.constructor.call(this, prototypeName)
   this.inputModel_ = {
-    first: {
+    m_1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
-    last: {
+    m_3: {
       key: ezP.Key.TARGET,
       label: 'as',
       css_class: 'ezp-code-reserved',

@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -55,9 +55,11 @@ ezP.Const.Field = {
   NCSTR: 'NCSTR'
 }
 ezP.Key = {
-  FIRST: 'first',// this MUST be in lower case
-  MIDDLE: 'middle',// this MUST be in lower case
-  LAST: 'last',// this MUST be in lower case
+  LIST: 'ezp:list',
+
+  FIRST: 'm_1',// this MUST be in lower case
+  MIDDLE: 'm_2',// this MUST be in lower case
+  LAST: 'm_3',// this MUST be in lower case
   DO: 'do',// this MUST be in lower case
   COMP_FOR: 'comp_for',
   COMP_ITER: 'comp_iter',
@@ -72,7 +74,6 @@ ezP.Key = {
   PRIMARY: 'primary',
   ATTRIBUTE: 'attribute',
   ARGUMENT: 'argument',
-  LIST: 'list',
   TYPE: 'type',
   KEY: 'key',
   DATUM: 'datum',
@@ -195,6 +196,7 @@ ezP.XRE = {
     (?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl})
     (?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl}|\\p{Mn}|\\p{Mc}|\\p{Nd}|\\p{Pc})*
   )$`, 'x'),
+  id_wrapped: XRegExp(`^(?<id>.*?)\.(?<name>ezp:[a-zA-Z_][a-zA-Z_0-9]*)$`, 'x'),
 }
 
 /*
@@ -263,7 +265,8 @@ goog.asserts.assert('0e-0'.match(RE.exponentfloat), 'FAILURE')
 */
 
 ezP.Const.Event = {
-  input_disable: 'ezp_input_disable',
-  locked: 'ezp_locked',
-  awaited: 'ezp_awaited',
+  input_disable: 'ezp:input_disable',
+  locked: 'ezp:locked',
+  awaited: 'ezp:awaited',
+  asynced: 'ezp:asynced',
 }

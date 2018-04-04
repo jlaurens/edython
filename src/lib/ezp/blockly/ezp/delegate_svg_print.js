@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -27,11 +27,11 @@ goog.require('ezP.DelegateSvg.List')
 ezP.DelegateSvg.Expr.print_builtin = function (prototypeName) {
   ezP.DelegateSvg.Expr.print_builtin.superClass_.constructor.call(this, prototypeName)
   this.inputModel_ = {
-    first: {
+    m_1: {
       label: 'print',
       css_class: 'ezp-code-builtin',
     },
-    last: {
+    m_3: {
       start: '(',
       key: ezP.Key.LIST,
       wrap: ezP.T3.Expr.argument_list_comprehensive,
@@ -129,9 +129,8 @@ ezP.DelegateSvg.Expr.print_builtin.prototype.populateContextMenuFirst_ = functio
  */
 ezP.DelegateSvg.Stmt.print_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.print_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first = {
-    key: ezP.Key.EXPRESSION,
-    wrap: ezP.T3.Expr.print_builtin,
+  this.inputModel_.m_1 = {
+    insert: ezP.T3.Expr.print_builtin,
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.print_stmt, ezP.DelegateSvg.Stmt)
@@ -148,11 +147,11 @@ ezP.DelegateSvg.Manager.register('print_stmt')
 ezP.DelegateSvg.Expr.input_builtin = function (prototypeName) {
   ezP.DelegateSvg.Expr.input_builtin.superClass_.constructor.call(this, prototypeName)
   this.inputModel_ = {
-    first: {
+    m_1: {
       label: 'input',
       css_class: 'ezp-code-builtin',
     },
-    last: {
+    m_3: {
       start: '(',
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.argument_any,
@@ -177,9 +176,8 @@ ezP.DelegateSvg.Manager.register('input_builtin')
  */
 ezP.DelegateSvg.Stmt.input_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.input_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first = {
-    key: ezP.Key.EXPRESSION,
-    wrap: ezP.T3.Expr.input_builtin,
+  this.inputModel_.m_1 = {
+    insert: ezP.T3.Expr.input_builtin,
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.input_stmt, ezP.DelegateSvg.Stmt)

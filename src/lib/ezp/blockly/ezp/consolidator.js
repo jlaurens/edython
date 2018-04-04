@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -191,6 +191,15 @@ ezP.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
   }
   io.input.setCheck(this.getCheck(io))
   io.input.connection.ezp.plugged_ = this.data.plugged
+  if (io.block.ezp.locked_) {
+    io.c8n.setHidden(true)
+  } else if (io.i === 0 && io.noLeftSeparator && io.list.length > 1) {
+    io.c8n.setHidden(true)
+  } else if (io.i === 2 && 3 === io.list.length && io.noDynamicList) {
+    io.c8n.setHidden(true)
+  } else {
+    io.c8n.setHidden(false)
+  }
 }
 
 /**
@@ -371,8 +380,16 @@ ezP.Consolidator.List.prototype.doFinalize = function(io) {
  * @param {Object} io, parameters....
  */
 ezP.Consolidator.List.prototype.getIO = function(block) {
+  var unwrapped = block.ezp.getUnwrapped(block)
   var io = {
     block: block,
+    noLeftSeparator: (block.workspace.options.noLeftSeparator 
+      || block.workspace.options.noDynamicList)
+      && (!unwrapped
+        || (!unwrapped.ezp.withLeftSeparator_ && !unwrapped.ezp.withDynamicList_)),
+    noDynamicList: (block.workspace.options.noDynamicList)
+      && (!unwrapped
+        || !unwrapped.ezp.withDynamicList_),
     list: block.inputList,
     sep: this.data.sep,
   }
@@ -394,7 +411,7 @@ ezP.Consolidator.List.prototype.consolidate = function(block) {
         && this.consolidate_connected(io)) {}
     }
     this.doCleanup(io)
-    if (io.edited) {
+    if (io.edited || io.noLeftSeparator || io.noDynamicList) {
       this.doFinalize(io)
     }
   } else {
@@ -431,7 +448,7 @@ ezP.Consolidator.List.prototype.getInput = function (block, name) {
     }
   } while (this.nextInput(io))
   // no input found, create one
-  if (io.list.length == 1) {
+  if (io.list.length === 1) {
     // there is only one placeholder with no separators
     // either we insert at 0 or one
     // anyway we must have separators before and after

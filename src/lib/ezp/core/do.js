@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -329,4 +329,56 @@ ezP.Do.typeOfString = function (candidate) {
     return ezP.T3.Expr.longbytesliteral
   }
   return undefined
+}
+
+/**
+ * List enumerator
+ * For ezPython.
+ * @param {!Array} list indexed object.
+ * @param {!function} filter an optional filter.
+ * @return an enumerator
+ */
+ezP.Do.Enumerator = function (list, filter) {
+  if (goog.isFunction(filter)) {
+    var filter = filter
+  }
+  var i = 0, me = {here: undefined}
+  me.start = function() {
+    i = 0
+    me.here = undefined
+  }
+  me.end = function() {
+    i = list.length
+    me.here = undefined
+  }
+  me.isAtStart = function() {
+    return i === 0
+  }
+  me.isAtEnd = function() {
+    return i < list.length
+  }
+  var next_ = function() {
+    return i < list.length? list[i++]: undefined
+  }
+  var previous_ = function() {
+    return i > 0? list[--i]: undefined
+  }
+  me.next = function() {
+    while ((me.here = next_())) {
+      if (!filter || filter(me.here)) {
+        break
+      }
+    }
+    return me.here
+  }
+  me.previous = function() {
+    while ((me.here = previous_())) {
+      if (!filter || filter(me.here)) {
+        break
+      }
+    }
+    return me.here
+  }
+  me.start()
+  return me
 }

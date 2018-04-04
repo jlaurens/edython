@@ -203,7 +203,7 @@ class Formatter:
     preamble = """/**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -229,7 +229,7 @@ class Formatter:
         Feed the T3_data_ with expression types.
         :return:
         """
-        template = '  {:<25} /*   ::= {:<50} ({}) */ : "ezp_{}",'
+        template = '  {:<25} /*   ::= {:<50} ({}) */ : "ezp:{}",'
         self.append('ezP.T3.Expr = {')
         self.append('// core expressions')
         for t in self.get_expressions():
@@ -250,7 +250,7 @@ class Formatter:
         self.append('}')
 
     def feed_statements(self):
-        template = '  {:<25} /*   ::= {:<50} ({}) */ : "ezp_{}",'
+        template = '  {:<25} /*   ::= {:<50} ({}) */ : "ezp:{}",'
         self.append('ezP.T3.Stmt = {')
         self.append('// part statements')
         for t in self.get_statements():

@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -302,7 +302,7 @@ ezP.DelegateSvg.Manager.register('parameter_list')
  */
 ezP.DelegateSvg.Expr.parameter_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.parameter_star.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first = {
+  this.inputModel_.m_1 = {
     key: ezP.Key.NAME,
     label: '*',
     css_class: 'ezp-code-reserved',
@@ -326,7 +326,7 @@ ezP.DelegateSvg.Manager.register('parameter_star')
  */
 ezP.DelegateSvg.Expr.parameter_star_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.parameter_star_star.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first = {
+  this.inputModel_.m_1 = {
     key: ezP.Key.NAME,
     label: '**',
     css_class: 'ezp-code-reserved',
@@ -349,12 +349,12 @@ ezP.DelegateSvg.Manager.register('parameter_star_star')
  */
 ezP.DelegateSvg.Expr.parameter_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.parameter_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first = {
+  this.inputModel_.m_1 = {
     key: ezP.Key.NAME,
     check: ezP.T3.Expr.identifier,
     hole_value: 'name',
   }
-  this.inputModel_.last = {
+  this.inputModel_.m_3 = {
     key: ezP.Key.EXPRESSION,
     label: ':',
     css_class: 'ezp-code-reserved',
@@ -377,12 +377,12 @@ ezP.DelegateSvg.Manager.register('parameter_concrete')
  */
 ezP.DelegateSvg.Expr.defparameter_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.defparameter_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first = {
+  this.inputModel_.m_1 = {
     key: ezP.Key.NAME,
     check: ezP.T3.Expr.Check.parameter,
     hole_value: 'name',
   }
-  this.inputModel_.last = {
+  this.inputModel_.m_3 = {
     key: ezP.Key.EXPRESSION,
     label: '=',
     css_class: 'ezp-code-reserved',
@@ -405,6 +405,7 @@ ezP.ID.PARAMETER_INSERT = 'PARAMETER_INSERT'
  * @private
  */
 ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var e8r = block.ezp.inputEnumerator(block)
   var F = function(type, msg) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN('( ', 'ezp-code-disabled'),
@@ -413,11 +414,9 @@ ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
     )
     mgr.addInsertChild(new ezP.MenuItem(content, function() {
       Blockly.Events.setGroup(true)
-      var list = block.inputList
-      var i = list.length
-      var input
-      while ((input = list[--i])) {
-        var c8n = input.connection
+      e8r.end()
+      while (e8r.previous()) {
+        var c8n = e8r.here.connection
         if (c8n) {
           if(c8n.targetConnection) {
             continue
@@ -439,8 +438,9 @@ ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
     }))
   }
   var G = function(type, msg) {
-    for (var i =0, input; (input = block.inputList[i++]);) {
-      var c8n = input.connection
+    e8r.start()
+    while(e8r.next()) {
+      var c8n = e8r.here.connection
       if (c8n && (c8n = c8n.targetConnection)) {
         if (goog.array.contains(c8n.check_, type)) {
           return null

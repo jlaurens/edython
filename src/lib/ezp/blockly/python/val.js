@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('ezP.Python.ezp_expr')
+goog.provide('ezP.Python.ezp:expr')
 
 goog.require('Blockly.Python')
 goog.require('ezP.Const')

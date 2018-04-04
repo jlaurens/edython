@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('ezP.Python.ezp_prc')
+goog.provide('ezP.Python.ezp:prc')
 
-goog.require('ezP.Python.ezp_grp')
+goog.require('ezP.Python.ezp:grp')
 
 Blockly.Python[ezP.Const.Prc.DEF] = function (block) {
   var DEF = ezP.Python.valueToCode(block, ezP.Const.Field.DEF,

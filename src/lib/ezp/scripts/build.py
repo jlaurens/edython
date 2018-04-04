@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # Compresses the necesary closure-library files.
 #
-# Copyright 2017 jerome dot laurens at u-bourgogne dot fr.
+# Copyright 2018 jerome dot laurens at u-bourgogne dot fr.
 #
 # Licensed under CeCILL-B.
 

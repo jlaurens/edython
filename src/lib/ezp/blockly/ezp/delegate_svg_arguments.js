@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -29,12 +29,12 @@ ezP.DelegateSvg.Expr.keyword_item = function (prototypeName) {
     check: ezP.T3.Expr.keyword_item,
   }
   this.inputModel_ = {
-    first: {
+    m_1: {
       key: ezP.Key.KEY,
       check: ezP.T3.Expr.identifier,
       hole_value: 'key',
     },
-    last: {
+    m_3: {
       label: '=',
       key: ezP.Key.VALUE,
       check: ezP.T3.Expr.Check.expression,
@@ -60,7 +60,7 @@ ezP.DelegateSvg.Expr.expression_star = function (prototypeName) {
     check: ezP.T3.Expr.expression_star,
   }
   this.inputModel_ = {
-    first: {
+    m_1: {
       label: '*',
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
@@ -86,7 +86,7 @@ ezP.DelegateSvg.Expr.expression_star_star = function (prototypeName) {
     check: ezP.T3.Expr.expression_star_star,
   }
   this.inputModel_ = {
-    first: {
+    m_1: {
       label: '**',
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,

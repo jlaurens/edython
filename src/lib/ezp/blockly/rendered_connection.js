@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -370,7 +370,7 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
   var sourceB = c8nB.getSourceBlock()
   var typeA = sourceA.type
   var typeB = sourceB.type
-  if (typeA.indexOf('ezp_') === 0 && typeB.indexOf('ezp_') === 0) {
+  if (typeA.indexOf('ezp:') === 0 && typeB.indexOf('ezp:') === 0) {
     var checkA = c8nA.check_
     var checkB = c8nB.check_
     if (c8nA.ezp.name_) {
@@ -557,12 +557,13 @@ Blockly.Connection.singleConnection_original = Blockly.Connection.singleConnecti
  * @override
  */
 Blockly.Connection.singleConnection_ = function(block, orphanBlock) {
-  for (var i = 0; i < block.inputList.length; i++) {
-    var thisConnection = block.inputList[i].connection;
-    if (thisConnection && thisConnection.type == Blockly.INPUT_VALUE &&
-        orphanBlock.outputConnection.checkType_(thisConnection)) {
-      if (!thisConnection.isConnected()) {
-        return thisConnection;
+  var e8r = block.ezp.inputEnumerator(block)
+  while (e8r.next()) {
+    var c8n = e8r.here.connection;
+    if (c8n && c8n.type == Blockly.INPUT_VALUE &&
+        orphanBlock.outputConnection.checkType_(c8n)) {
+      if (!c8n.isConnected()) {
+        return c8n;
       }
     }
   }

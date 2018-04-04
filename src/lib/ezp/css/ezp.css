@@ -2,7 +2,7 @@ body {
   margin:0px;
 }
 
-.ezp_no_options .ezp-menuitem-checkbox, .ezp-hidden {
+.ezp-no-options .ezp-menuitem-checkbox, .ezp-hidden {
   display: none;
 }
 .ezp-checkbox-icon-mark{
@@ -31,7 +31,7 @@ body {
   z-index: 20000; /* Arbitrary, but some apps depend on it... */
 }
 
-.ezp-print-block-menu, .ezp-options-menu, .ezp_options_code-menu {
+.ezp-print-block-menu, .ezp-options-menu, .ezp-options-code-menu {
   background: #fff;
   border-color: #ccc #666 #666 #ccc;
   border-style: solid;

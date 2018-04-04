@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -29,13 +29,13 @@ goog.require('Blockly.RenderedConnection')
 ezP.DelegateSvg.Expr.lambda_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.lambda_expression.superClass_.constructor.call(this, prototypeName)
   this.inputModel_ = {
-    first: {
+    m_1: {
       key: ezP.Key.LIST,
       label: 'lambda',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.parameter_list,
     },
-    last: {
+    m_3: {
       key: ezP.Key.EXPRESSION,
       label: ':',
       check: ezP.T3.Expr.Check.expression.concat(ezP.T3.Expr.Check.expression_nocond),
@@ -69,7 +69,7 @@ ezP.ConnectionDelegate.prototype.updateLambdaCheck = function() {
   var block = this.connection.sourceBlock_
   if (block) {
     var c8nOut = block.outputConnection
-    var c8nIn = block.ezp.model.last.input.connection
+    var c8nIn = block.ezp.model.m_3.input.connection
     var nocond_only_out = false
     var targetC8n = c8nOut.targetConnection
     if (targetC8n) {

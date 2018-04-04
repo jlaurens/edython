@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -24,7 +24,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Stmt.del_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.del_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.last = {
+  this.inputModel_.m_3 = {
     key: ezP.Key.LIST,
     label: 'del',
     css_class: 'ezp-code-reserved',
@@ -43,7 +43,7 @@ ezP.DelegateSvg.Manager.register('del_stmt')
  */
 ezP.DelegateSvg.Stmt.return_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.return_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.last = {
+  this.inputModel_.m_3 = {
     key: ezP.Key.LIST,
     label: 'return',
     css_class: 'ezp-code-reserved',

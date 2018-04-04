@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -52,7 +52,7 @@ Blockly.Workspace.prototype.dispose = function () {
  * @return {!Blockly.Block} The created block.
  */
 ezP.Workspace.prototype.newBlock = function (prototypeName, optId) {
-  if (prototypeName.startsWith('ezp_')) {
+  if (prototypeName.startsWith('ezp:')) {
     return new ezP.Block(this, prototypeName, optId)
   } else {
     return new Blockly.Block(this, prototypeName, optId)
@@ -110,3 +110,30 @@ ezP.Workspace.prototype.getVariableUses = function (name, all) {
   }
   return uses
 }
+
+/**
+ * Find the block on this workspace with the specified ID.
+ * @param {string} id ID of block to find.
+ * @return {Blockly.Block} The sought after block or null if not found.
+ */
+ezP.Workspace.savedGetBlockById = Blockly.Workspace.prototype.getBlockById
+Blockly.Workspace.prototype.getBlockById = function(id) {
+  var block = ezP.Workspace.savedGetBlockById.call(this, id)
+  if (!block) {
+    var m = XRegExp.exec(id, ezP.XRE.id_wrapped)
+    if (m && (block = ezP.Workspace.savedGetBlockById.call(this, m.id))) {
+      var e8r = block.ezp.inputEnumerator(block)
+      while (e8r.next()) {
+        var c8n = e8r.here.connection
+        if (c8n) {
+          var target = c8n.targetBlock()
+          if (target.id === id) {
+            return target
+          }
+        }
+      }
+    }
+    return undefined
+  }
+  return block
+};

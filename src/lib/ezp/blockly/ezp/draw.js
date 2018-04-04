@@ -11,6 +11,11 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Math')
+goog.provide('ezP.Draw')
 
-goog.require('ezP.DelegateSvg.Expr')
+goog.require('ezP.DelegateSvg')
+
+/**
+ * Draw controller.
+ */
+

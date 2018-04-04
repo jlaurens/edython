@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -153,15 +153,16 @@ ezP.KeyHandler = function() {
         if (c8n) {
           var c8nType = c8n.type
           var newB
-          if ((newB = B.ezp.insertBlockOfType(B, type, subtype)) || (newB = B.ezp.insertSurroundParent(B, type, subtype))) {
+          if ((newB = B.ezp.insertBlockOfType(B, type, subtype)) || (newB = B.ezp.insertParent(B, type, subtype))) {
             // There was a selected connection,
             // we try to select another one, with possibly the same type
             // First we take a look at B : is there an unconnected input connection
             if (c8nType === Blockly.INPUT_VALUE) {
               var parent = B, last
               do {
-                for (var i = 0, input; (input = parent.inputList[i++]); ) {
-                  if ((c8n = input.connection) && c8n.type === c8nType && ! c8n.ezp.optional && ! c8n.targetConnection) {
+                var e8r = parent.ezp.inputEnumerator(parent)
+                while (e8r.next()) {
+                  if ((c8n = e8r.here.connection) && c8n.type === c8nType && ! c8n.ezp.optional_ && ! c8n.targetConnection) {
                     if (!c8n.ezp.s7r_) {
                       ezP.SelectedConnection.set(c8n)
                       return true
@@ -184,11 +185,12 @@ ezP.KeyHandler = function() {
             return true
           }
         }
-        if ((newB = B.ezp.insertBlockOfType(B, type, subtype)) || (newB = B.ezp.insertSurroundParent(B, type, subtype))) {
+        if ((newB = B.ezp.insertBlockOfType(B, type, subtype)) || (newB = B.ezp.insertParent(B, type, subtype))) {
           var parent = B
           do {
-            for (var i = 0, input; (input = parent.inputList[i++]); ) {
-              if ((c8n = input.connection) && c8n.type === Blockly.INPUT_VALUE && ! c8n.ezp.optional && ! c8n.targetConnection) {
+            var e8r = parent.ezp.inputEnumerator(parent)
+            while (e8r.next()) {
+              if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && ! c8n.ezp.optional_ && ! c8n.targetConnection) {
                 ezP.SelectedConnection.set(c8n)
                 return true
               }
@@ -227,12 +229,12 @@ ezP.KeyHandler = function() {
       // if As[0] is void or does not end with a letter
       // if the shortcut starts with one, left bonus
       if (As.length > 1) {
-        if (As[1].match(/[a-zA-Z_]/) && (!As[0].length || !As[0].match(/.*[a-zA-Z_]$/))) {
+        if (ezP.XRE.id_continue.test(As[1]) && (!As[0].length || !ezP.XRE.id_continue.test(As[0]))) {
           var bonusA = true
         }
       }
       if (Bs.length > 1) {
-        if (Bs[1].match(/[a-zA-Z_]/) && (!Bs[0].length || !Bs[0].match(/.*[a-zA-Z_]$/))) {
+        if (ezP.XRE.id_continue.test(Bs[1]) && (!Bs[0].length || !ezP.XRE.id_continue.test(Bs[0]))) {
           var bonusB = true
         }
       }
@@ -246,12 +248,12 @@ ezP.KeyHandler = function() {
       // if the shortcut starts with one, right bonus
       bonusA = bonusB = false
       if (As.length > 2) {
-        if (As[As.length-2].match(/[a-zA-Z_]/) && (!As[As.length-1].length || !As[As.length-1][0].match(/[a-zA-Z_]/))) {
+        if (ezP.XRE.id_continue.test(As[As.length-2]) && (!As[As.length-1].length || !ezP.XRE.id_continue.test(As[As.length-1][0]))) {
           var bonusA = true
         }
       }
       if (Bs.length > 2) {
-        if (Bs[Bs.length-2].match(/[a-zA-Z_]/) && (!Bs[Bs.length-1].length || !Bs[Bs.length-1][0].match(/[a-zA-Z_]/))) {
+        if (ezP.XRE.id_continue.test(Bs[Bs.length-2]) && (!Bs[Bs.length-1].length || !ezP.XRE.id_continue.test(Bs[Bs.length-1][0]))) {
           var bonusB = true
         }
       }
@@ -559,7 +561,7 @@ var Ks = {
       if (ezP.SelectedConnection.get()) {
         B.ezp.insertBlockOfType(B, ezP.T3.Expr.not_test_concrete)
       } else {
-        B.ezp.insertSurroundParent(B, ezP.T3.Expr.not_test_concrete)
+        B.ezp.insertParent(B, ezP.T3.Expr.not_test_concrete)
       }
     }
   },                                    
@@ -574,7 +576,7 @@ var Ks = {
       if (ezP.SelectedConnection.get()) {
         B.ezp.insertBlockOfType(B, ezP.T3.Expr.u_expr_concrete, '-')
       } else {
-        B.ezp.insertSurroundParent(B, ezP.T3.Expr.u_expr_concrete, '-')
+        B.ezp.insertParent(B, ezP.T3.Expr.u_expr_concrete, '-')
       }
     }
   },                                    
@@ -589,7 +591,7 @@ var Ks = {
       if (ezP.SelectedConnection.get()) {
         B.ezp.insertBlockOfType(B, ezP.T3.Expr.u_expr_concrete, '~')
       } else {
-        B.ezp.insertSurroundParent(B, ezP.T3.Expr.u_expr_concrete, '~')
+        B.ezp.insertParent(B, ezP.T3.Expr.u_expr_concrete, '~')
       }
     }
   },

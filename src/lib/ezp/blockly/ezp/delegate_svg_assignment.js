@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -26,7 +26,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Expr.target_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.target_star.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first = {
+  this.inputModel_.m_1 = {
     key: ezP.Key.EXPRESSION,
     label: '*',
     css_class: 'ezp-code-reserved',
@@ -69,7 +69,7 @@ ezP.Consolidator.List.Target.Void.data = {
  */
 ezP.Consolidator.List.Target.prototype.getIO = function(block) {
   var io = ezP.Consolidator.List.Target.superClass_.getIO.call(this, block)
-  io.first_starred = io.last = -1
+  io.first_starred = io.m_3 = -1
   return io
 }
 
@@ -104,7 +104,7 @@ ezP.Consolidator.List.Target.prototype.doCleanup = function () {
     }
   }
   var setupFirst = function (io) {
-    io.first_starred = io.last = -1
+    io.first_starred = io.m_3 = -1
     this.setupIO(io, 0)
     while (!!io.ezp) {
       if ((io.ezp.parameter_type_ = getCheckType(io)) === Type.STARRED) {
@@ -112,7 +112,7 @@ ezP.Consolidator.List.Target.prototype.doCleanup = function () {
           io.first_starred = io.i
         }
       } else if (io.ezp.parameter_type_ === Type.OTHER) {
-        io.last = io.i
+        io.m_3 = io.i
       }
       this.nextInput(io)
     }
@@ -122,9 +122,9 @@ ezP.Consolidator.List.Target.prototype.doCleanup = function () {
     setupFirst.call(this, io)
     // move parameters that are not placed correctly (in ezP sense)
     if (io.first_starred>=0) {
-      while (io.first_starred < io.last) {
+      while (io.first_starred < io.m_3) {
         this.setupIO(io, io.first_starred + 2)
-        while (io.i <= io.last) {
+        while (io.i <= io.m_3) {
           if (io.ezp.parameter_type_ === Type.OTHER) {
             // move this to io.first_starred
             var c8n = io.c8n
@@ -269,11 +269,11 @@ ezP.DelegateSvg.Manager.register('bracket_target_list')
 ezP.DelegateSvg.Expr.assignment_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.assignment_expression.superClass_.constructor.call(this, prototypeName)
   this.inputModel_ = {
-    first: {
+    m_1: {
       key: ezP.Key.LHS,
       wrap: ezP.T3.Expr.target_list,
     },
-    last: {
+    m_3: {
       key: ezP.Key.RHS,
       operator: '=',
       wrap: ezP.T3.Expr.assigned_list,
@@ -287,6 +287,8 @@ goog.inherits(ezP.DelegateSvg.Expr.assignment_expression, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Manager.register('assignment_expression')
 
+goog.provide('ezP.DelegateSvg.Stmt.assignment_stmt')
+
 /**
  * Class for a DelegateSvg, assignment_stmt.
  * For ezPython.
@@ -296,9 +298,8 @@ ezP.DelegateSvg.Manager.register('assignment_expression')
  */
 ezP.DelegateSvg.Stmt.assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.assignment_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.last = {
-    key: ezP.Key.EXPRESSION,
-    wrap: ezP.T3.Expr.assignment_expression,
+  this.inputModel_.m_3 = {
+    insert : ezP.T3.Expr.assignment_expression,
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.assignment_stmt, ezP.DelegateSvg.Stmt)
@@ -451,9 +452,9 @@ ezP.DelegateSvg.Manager.register('assigned_list')
  */
 ezP.DelegateSvg.AugAssign = function (prototypeName) {
   ezP.DelegateSvg.AugAssign.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.first.check = ezP.T3.Expr.Check.augtarget
-  this.inputModel_.last.key = ezP.Key.LIST
-  this.inputModel_.last.wrap = ezP.T3.Expr.augassign_list
+  this.inputModel_.m_1.check = ezP.T3.Expr.Check.augtarget
+  this.inputModel_.m_3.key = ezP.Key.LIST
+  this.inputModel_.m_3.wrap = ezP.T3.Expr.augassign_list
 }
 
 goog.inherits(ezP.DelegateSvg.AugAssign, ezP.DelegateSvg.Binary)
@@ -466,10 +467,10 @@ goog.inherits(ezP.DelegateSvg.AugAssign, ezP.DelegateSvg.Binary)
  */
 ezP.DelegateSvg.AugAssign.prototype.XpopulateContextMenuFirst_ = function (block, mgr) {
   var yorn
-  var target = this.model.last.input.connection.targetBlock()
+  var target = this.model.m_3.input.connection.targetBlock()
   if (target) {
     var D = ezP.DelegateSvg.Manager.getInputModel(target.type)
-    if (yorn = mgr.populate_wrap_alternate(target, D.last.key)) {
+    if (yorn = mgr.populate_wrap_alternate(target, D.m_3.key)) {
       mgr.shouldSeparate()
     }
   }
@@ -487,7 +488,7 @@ ezP.DelegateSvg.AugAssign.prototype.XpopulateContextMenuFirst_ = function (block
 ezP.DelegateSvg.Expr.augassign_numeric = function (prototypeName) {
   ezP.DelegateSvg.Expr.augassign_numeric.superClass_.constructor.call(this, prototypeName)
   this.operators = ['+=','-=','*=','/=','//=','%=','**=','@=']
-  this.inputModel_.last.operator = this.operators[0]
+  this.inputModel_.m_3.operator = this.operators[0]
   this.outputModel_ = {
     check: ezP.T3.Expr.augassign_numeric,
   }
@@ -507,7 +508,7 @@ ezP.DelegateSvg.Manager.register('augassign_numeric')
 ezP.DelegateSvg.Expr.augassign_bitwise = function (prototypeName) {
   ezP.DelegateSvg.Expr.augassign_bitwise.superClass_.constructor.call(this, prototypeName)
   this.operators = [">>=", "<<=", "&=", "^=", "|="]
-  this.inputModel_.last.operator = this.operators[1]
+  this.inputModel_.m_3.operator = this.operators[1]
   this.outputModel_ = {
     check: ezP.T3.Expr.augassign_bitwise,
   }
@@ -525,9 +526,8 @@ ezP.DelegateSvg.Manager.register('augassign_bitwise')
  */
 ezP.DelegateSvg.Stmt.augassign_numeric_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.augassign_numeric_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.last = {
-    key: ezP.Key.EXPRESSION,
-    wrap: ezP.T3.Expr.augassign_numeric,
+  this.inputModel_.m_3 = {
+    insert: ezP.T3.Expr.augassign_numeric,
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.augassign_numeric_stmt, ezP.DelegateSvg.Stmt)
@@ -542,9 +542,8 @@ ezP.DelegateSvg.Manager.register('augassign_numeric_stmt')
  */
 ezP.DelegateSvg.Stmt.augassign_bitwise_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.last = {
-    key: ezP.Key.EXPRESSION,
-    wrap: ezP.T3.Expr.augassign_bitwise,
+  this.inputModel_.m_3 = {
+    insert: ezP.T3.Expr.augassign_bitwise,
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.augassign_bitwise_stmt, ezP.DelegateSvg.Stmt)
@@ -687,12 +686,13 @@ ezP.ID.ASSIGN_LIST_INSERT = 'ASSIGN_LIST_INSERT'
  */
 ezP.DelegateSvg.Expr.augassign_numeric.prototype.populateContextMenuFirst_ =
 ezP.DelegateSvg.Expr.augassign_bitwise.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var target = this.model.last.input.connection.targetBlock()
+  var target = this.model.m_3.input.connection.targetBlock()
   if (target) {
     var type, input
     var can_insert = function() {
-      for (var i =0; (input = target.inputList[i++]);) {
-        var c8n = input.connection
+      var e8r = target.ezp.inputEnumerator(target)
+      while (e8r.next()) {
+        var c8n = e8r.here.connection
         if (c8n && !c8n.targetConnection) {
           if (goog.array.contains(c8n.check_, type)) {
             return true

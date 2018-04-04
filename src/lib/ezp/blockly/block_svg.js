@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -146,9 +146,10 @@ ezP.BlockSvg.prototype.addSelect = function () {
   goog.dom.classlist.add(this.svgGroup_, 'ezp-select')
   // ensure that the svgGroup is the last in the list
   this.bringToFront()
-  for (var i = 0, input; (input = this.inputList[i++]);) {
-    for (var j = 0, field; (field = input.fieldRow[j++]);) {
-      if (field.addSelect) {
+  var e8r = this.ezp.inputEnumerator(this)
+  while (e8r.next()) {
+    for (var j = 0, field; (field = e8r.here.fieldRow[j++]);) {
+      if (goog.isFunction(field.addSelect)) {
         field.addSelect()
       }
     }
@@ -183,9 +184,10 @@ ezP.BlockSvg.prototype.removeSelect = function () {
   if (!this.ezp.selectedConnection || ((B = Blockly.selected) && B.selectedConnectionSource_ != this)) {
     goog.dom.removeNode(this.ezp.svgPathConnection_)
   }
-  for (var i = 0, input; (input = this.inputList[i++]);) {
-    for (var j = 0, field; (field = input.fieldRow[j++]);) {
-      if (field.removeSelect) {
+  var e8r = this.ezp.inputEnumerator(this)
+  while (e8r.next()) {
+    for (var j = 0, field; (field = e8r.here.fieldRow[j++]);) {
+      if (goog.isFunction(field.removeSelect)) {
         field.removeSelect()
       }
     }

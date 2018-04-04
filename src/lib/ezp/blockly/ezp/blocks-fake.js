@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -31,7 +31,7 @@ var F = function(k) {
 for (k in Ks) {
   k = Ks[k]
   if (typeof k === 'string' || k instanceof String) {
-    var prototypeName = k.replace('ezp_', 'ezp_fake_')
+    var prototypeName = k.replace('ezp:', 'ezp:fake_')
     Blockly.Blocks[prototypeName] = {
       init: F(k)
     }
@@ -48,7 +48,7 @@ var F = function(k) {
 for (k in Ks) {
   k = Ks[k]
   if (typeof k === 'string' || k instanceof String) {
-    var prototypeName = k.replace('ezp_', 'ezp_fake_')
+    var prototypeName = k.replace('ezp:', 'ezp:fake_')
     Blockly.Blocks[prototypeName] = {
       init: F(k)
     }

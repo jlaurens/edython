@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -77,6 +77,12 @@ ezP.Delegate.prototype.initModel = function (prototypeName) {
   this.inputModel_ = {}
 }
 
+/**
+ * These models have default values shared by all instances.
+ * They are created while registering the delegate.
+ * The block specific data is store in
+ * the delegate's model instance variable.
+ */
 ezP.Delegate.prototype.inputModel = undefined
 ezP.Delegate.prototype.outputModel = undefined
 ezP.Delegate.prototype.statementModel = undefined
@@ -165,14 +171,14 @@ ezP.Delegate.Manager = function () {
     var D = dlgt.inputModel_
     if (D && Object.keys(D).length) {
       Ctor.prototype.inputModel = D
-      if (D.first) {
-        D.first.check = ezP.Do.ensureArray(D.first.check||D.first.wrap)
+      if (D.m_1) {
+        D.m_1.check = ezP.Do.ensureArray(D.m_1.check||D.m_1.wrap)
       }
-      if (D.middle) {
-        D.middle.check = ezP.Do.ensureArray(D.middle.check||D.middle.wrap)
+      if (D.m_2) {
+        D.m_2.check = ezP.Do.ensureArray(D.m_2.check||D.m_2.wrap)
       }
-      if (D.last) {
-        D.last.check = ezP.Do.ensureArray(D.last.check||D.last.wrap)
+      if (D.m_3) {
+        D.m_3.check = ezP.Do.ensureArray(D.m_3.check||D.m_3.wrap)
       }
     }
     if ((D = dlgt.outputModel_) && Object.keys(D).length) {
@@ -218,7 +224,7 @@ ezP.Delegate.Manager = function () {
 //        console.log('Registering', k)
         me.registerDelegate_(k, Ctor)
         if (fake) {
-          k = k.replace('ezp_', 'ezp_fake_')
+          k = k.replace('ezp:', 'ezp:fake_')
 //          console.log('Registering', k)
           me.registerDelegate_(k, Ctor)
         }
@@ -248,7 +254,7 @@ ezP.Delegate.prototype.pythonSort_ = undefined
 /**
  * The real type of the owning block.
  * There are fake blocks initially used for debugging purposes.
- * For a block type ezp_fake_foo, the delegate type is ezp_foo.
+ * For a block type ezp:fake_foo, the delegate type is ezp:foo.
  */
 ezP.Delegate.prototype.type_ = undefined
 
@@ -258,9 +264,9 @@ ezP.Delegate.prototype.type_ = undefined
  * @constructor
  */
 ezP.Delegate.prototype.setupType = function (block) {
-  var m = /^ezp_((?:fake_)?((.*?)(?:_concrete)?))$/.exec(block.type)
+  var m = /^ezp:((?:fake_)?((.*?)(?:_concrete)?))$/.exec(block.type)
   this.pythonSort_ = m? m[1]: block.type
-  this.type_ = m? 'ezp_'+m[2]: block.type
+  this.type_ = m? 'ezp:'+m[2]: block.type
   this.xmlType_ = m? m[3]: block.type
 }
 
@@ -373,24 +379,6 @@ ezP.Delegate.prototype.getVars = function (block) {
 }
 
 /**
- * Final tune up depending on the block.
- * Default implementation does nothing.
- * @param {!Blockly.Block} block.
- * @param {!Element} element dom element to be completed.
- */
-ezP.Delegate.prototype.toDom = function (block, element) {
-}
-
-/**
- * Final tune up depending on the block.
- * Default implementation calls `completeWrapped_`.
- * @param {!Blockly.Block} block.
- * @param {!Element} hidden a dom element.
- */
-ezP.Delegate.prototype.fromDom = function (block, element) {
-  this.completeWrapped_(block)
-}
-/**
  * Same as Block's getDescendants except that it
  * includes this block in the list only when not sealed.
  * @param {!Blockly.Block} block.
@@ -417,7 +405,7 @@ ezP.Delegate.prototype.getWrappedDescendants = function(block) {
  * @private
  */
 ezP.Delegate.prototype.completeWrapped_ = function (block) {
-  if (Blockly.Events.recordUndo && this.wrappedInputs_) {
+  if (this.wrappedInputs_) {
     ezP.Delegate.wrappedFireWall = 100
     for (var i = 0; i < this.wrappedInputs_.length; i++) {
       var data = this.wrappedInputs_[i]
@@ -488,6 +476,24 @@ ezP.Delegate.prototype.makeBlockUnwrapped_ = function (block) {
 }
 
 /**
+ * Get the first enclosing unwrapped block.
+ * @param {!Block} block.
+ * @param {!Input} input.
+ * @param {!String} prototypeName.
+ * @return yorn whether a change has been made
+ * @private
+ */
+ezP.Delegate.prototype.getUnwrapped = function (block) {
+  var parent = block
+  do {
+    if (!parent.ezp.wrapped_) {
+      break
+    }
+  } while ((parent = parent.getSurroundParent()))
+  return parent
+}
+
+/**
  * Complete the wrapped block.
  * When created from dom, the connections are established
  * but the nodes were not created sealed.
@@ -520,6 +526,7 @@ ezP.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
         return
       }
     }
+    target.id = block.id+'.'+input.name
   }
 }
 
@@ -661,8 +668,9 @@ ezP.Delegate.prototype.getStatementCount = function (block) {
   var n = 1
   var hasActive = false
   var hasNext = false
-  for (var i = 0, input; (input = block.inputList[i]); ++i) {
-    var c8n = input.connection
+  var e8r = block.ezp.inputEnumerator(block)
+  while (e8r.next()) {
+    var c8n = e8r.here.connection
     if (c8n && c8n.type === Blockly.NEXT_STATEMENT) {
       hasNext = true
       if (c8n.isConnected()) {
@@ -877,5 +885,17 @@ ezP.Delegate.prototype.xmlType = function (block) {
  * @return true if the given value is accepted, false otherwise
  */
 ezP.Delegate.prototype.xmlTagName = function (block) {
-  return 'block'
+  return block.type
+}
+
+/**
+ * Input enumerator
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.Delegate.prototype.inputEnumerator = function (block, all) {
+  return ezP.Do.Enumerator(block.inputList, all? undefined: function(x) {
+    return !x.ezpData.disabled_
+  })
 }

@@ -1,7 +1,7 @@
 /**
  * ezPython
  *
- * Copyright 2017 Jérôme LAURENS.
+ * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
@@ -29,7 +29,7 @@ ezP.inherits(Blockly.WorkspaceSvg, ezP.Workspace)
  * @return {!Blockly.BlockSvg} The created block.
  */
 Blockly.WorkspaceSvg.prototype.newBlock = function (prototypeName, optId) {
-  if (prototypeName.startsWith('ezp_')) {
+  if (prototypeName.startsWith('ezp:')) {
     return new ezP.BlockSvg(this, prototypeName, optId)
   } else {
     return new Blockly.BlockSvg(this, prototypeName, optId)
@@ -213,54 +213,38 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function(e) {
  */
 Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function(workspaceXMLElement, type, x, y) {
   console.log('new workspace element:', type)
-  var tag = 'block', xmlType = type, text = undefined
+  var tag = type, text = undefined
   switch(type) {
     case ezP.T3.Expr.integer:
     text ='123'
     tag = ezP.T3.Xml.Expr.literal
-    xmlType = null
     break
     case ezP.T3.Expr.floatnumber:
     text = '123.'
     tag = ezP.T3.Xml.Expr.literal
-    xmlType = null
     break
     case ezP.T3.Expr.imagnumber:
     text = '123j'
     tag = ezP.T3.Xml.Expr.literal
-    xmlType = null
     break
     case ezP.T3.Expr.shortstringliteral:
     text = "r'shortstringliteral'"
     tag = ezP.T3.Xml.Expr.literal
-    xmlType = null
     break
     case ezP.T3.Expr.shortbytesliteral:
     text = "b'shortbytesliteral'"
     tag = ezP.T3.Xml.Expr.literal
-    xmlType = null
     break
     case ezP.T3.Expr.longstringliteral:
     text = "r'''longstringliteral'''"
     tag = ezP.T3.Xml.Expr.literal
-    xmlType = null
     break
     case ezP.T3.Expr.longbytesliteral:
     text = "b'''longbytesliteral'''"
     tag = ezP.T3.Xml.Expr.literal
-    xmlType = null
     break
-    default:
-    if (ezP.T3.All.containsExpression(type)) {
-      tag = ezP.T3.Xml.Expr.expression
-    } else {
-      tag = ezP.T3.Xml.Stmt.statement
-    }
   }
   var child = goog.dom.createElement(tag)
-  if (xmlType) {
-    child.setAttribute('type', xmlType)
-  }
   child.setAttribute('x', x)
   child.setAttribute('y', y)
   if (text) {
@@ -366,8 +350,9 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
       if (c8n.type === Blockly.INPUT_VALUE) {
         var parent = block
         do {
-          for (var i = 0, input; (input = parent.inputList[i++]); ) {
-            if ((c8n = input.connection) && c8n.type === Blockly.INPUT_VALUE && ! c8n.ezp.optional && !c8n.targetConnection) {
+           var e8r = parent.ezp.inputEnumerator(parent)
+           while (e8r.next()) {
+            if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && ! c8n.ezp.optional_ && !c8n.targetConnection) {
               ezP.SelectedConnection.set(c8n)
               parent = null
               break
@@ -383,7 +368,7 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
       block.dispose()
     }
   }
-  Blockly.Events.disable();
+  var eventDisabler = ezP.Events.Disabler();
   try {
     var block = Blockly.Xml.domToBlock(xmlBlock, this);
     // Move the duplicate to original position.
@@ -430,7 +415,7 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
       block.moveBy(blockX, blockY);
     }
   } finally {
-    Blockly.Events.enable();
+    eventDisabler.stop();
   }
   if (Blockly.Events.isEnabled() && !block.isShadow()) {
     Blockly.Events.fire(new Blockly.Events.BlockCreate(block));
