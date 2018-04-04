@@ -30,13 +30,13 @@ ezP.DelegateSvg.Expr.keyword_item = function (prototypeName) {
   }
   this.inputModel_ = {
     m_1: {
-      key: ezP.Key.KEY,
+      key: ezP.Key.IDENTIFIER,
       check: ezP.T3.Expr.identifier,
       hole_value: 'key',
     },
     m_3: {
       label: '=',
-      key: ezP.Key.VALUE,
+      key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'value',
     }
@@ -315,16 +315,12 @@ ezP.DelegateSvg.Manager.register('argument_list')
  */
 ezP.DelegateSvg.Expr.argument_list_comprehensive = function (prototypeName) {
   ezP.DelegateSvg.Expr.argument_list_comprehensive.superClass_.constructor.call(this, prototypeName)
-  var D = {
+  this.inputModel_.list = {
     consolidator: ezP.Consolidator.Arguments,
     empty: true,
     sep: ',',
     hole_value: 'name',
   }
-  var RA = goog.array.concat(D.check, D.single)
-  goog.array.removeDuplicates(RA)
-  D.all = RA
-  this.inputModel_.list = D
   this.outputModel_ = {
     check: ezP.T3.Expr.argument_list_comprehensive,
   }
@@ -332,3 +328,11 @@ ezP.DelegateSvg.Expr.argument_list_comprehensive = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.argument_list_comprehensive, ezP.DelegateSvg.List)
 
 ezP.DelegateSvg.Manager.register('argument_list_comprehensive')
+
+ezP.DelegateSvg.Argument.T3s = [
+  ezP.T3.Expr.keyword_item,
+  ezP.T3.Expr.expression_star,
+  ezP.T3.Expr.expression_star_star,
+  ezP.T3.Expr.argument_list,
+  ezP.T3.Expr.argument_list_comprehensive,
+]

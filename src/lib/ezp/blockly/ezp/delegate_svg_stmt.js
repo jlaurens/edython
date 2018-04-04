@@ -385,10 +385,10 @@ ezP.DelegateSvg.Manager.register('non_void_identifier_list')
  */
 ezP.DelegateSvg.Stmt.global_nonlocal_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.constructor.call(this, prototypeName)
-  this.operators = ['global', 'nonlocal']
+  this.inputModel_.operators = ['global', 'nonlocal']
   this.inputModel_.m_3 = {
     key: ezP.Key.LIST,
-    label: this.operators[0],
+    label: this.inputModel_.operators[0],
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.non_void_identifier_list,
   }

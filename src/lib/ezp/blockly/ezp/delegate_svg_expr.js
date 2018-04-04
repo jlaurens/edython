@@ -131,21 +131,6 @@ ezP.DelegateSvg.Expr.prototype.willRender_ = function (block) {
 }
 
 /**
- * Set the prefix from the attribute.
- * @param {!Blockly.Block} block.
- * @param {!Element} element dom element to be completed.
- * @override
- */
-ezP.DelegateSvg.Expr.prototype.fromDom = function (block, element) {
-  ezP.DelegateSvg.Expr.superClass_.fromDom.call(this, block, element)
-  var field = this.model.fieldAwait
-  if (field) {
-    var attribute = element.getAttribute('await')
-    this.setAwaited(block, attribute && attribute.toLowerCase() === 'true')
-  }
-}
-
-/**
  * Whether the block can have an 'await' prefix.
  * Only blocks that are top block or that are directy inside function definitions
  * are awaitable
@@ -262,7 +247,7 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
     var findC8n = function(B) {
       var foundC8n, target
       const e8r = B.ezp.inputEnumerator(B)
-      while (B.next()) {
+      while (e8r.next()) {
         var c8n = e8r.here.connection
         if (c8n) {
           var candidate
@@ -566,7 +551,7 @@ ezP.DelegateSvg.Literal.prototype.xmlType = function (block) {
 
 /**
  * The xml tag name of this block, as it should appear in the saved data.
- * Dafulet implementation just returns 'expr'
+ * Default implementation just returns 'expr'
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise

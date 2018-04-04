@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Expr.Comprehension')
+goog.provide('ezP.DelegateSvg.Comprehension')
 
 goog.require('ezP.DelegateSvg.Expr')
 
@@ -140,9 +140,10 @@ ezP.DelegateSvg.Manager.register('comp_iter_list')
 // dict_comprehension ::= expression ":" expression comp_for
 ezP.DelegateSvg.Expr.dict_comprehension = function (prototypeName) {
   ezP.DelegateSvg.Expr.dict_comprehension.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1.wrap =
-  this.inputModel_.m_1.check =
+  this.inputModel_.m_1 = {
+    insert:
   ezP.T3.Expr.key_datum_concrete,
+  }
   this.outputModel_ = {
     check: ezP.T3.Expr.dict_comprehension,
   }
@@ -205,3 +206,13 @@ ezP.DelegateSvg.Expr.generator_expression = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr.generator_expression, ezP.DelegateSvg.Expr.comprehension)
 
 ezP.DelegateSvg.Manager.register('generator_expression')
+
+ezP.DelegateSvg.Comprehension.T3s = [
+  ezP.T3.Expr.comprehension,
+  ezP.T3.Expr.comp_for,
+  ezP.T3.Expr.comp_if,
+  ezP.T3.Expr.comp_iter_list,
+  ezP.T3.Expr.dict_comprehension,
+  ezP.T3.Expr.key_datum_concrete,
+  ezP.T3.Expr.generator_expression
+]

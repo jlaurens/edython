@@ -269,7 +269,7 @@ ezP.DelegateSvg.Manager.register('yield_atom')
 ezP.DelegateSvg.Stmt.yield_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.yield_stmt.superClass_.constructor.call(this, prototypeName)
   this.inputModel_.m_3 = {
-    wrap: ezP.T3.Expr.yield_expression
+    insert: ezP.T3.Expr.yield_expression
   }
 }
 goog.inherits(ezP.DelegateSvg.Stmt.yield_stmt, ezP.DelegateSvg.Stmt)

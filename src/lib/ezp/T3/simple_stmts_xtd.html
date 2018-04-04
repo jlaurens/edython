@@ -31,8 +31,8 @@ augassign_bitwise_stmt ::= augassign_bitwise
 augassign_numeric ::=  augtarget augop aug_assign_list
 augassign_bitwise ::=  augtarget augop aug_assign_list
 # aug_assign_list ::= expression_list | yield_expression
-augassign_list ::= (expression ',')+ | augassign_content
-augassign_content ::= expression | yield_expression
+augassign_list ::= (expression ',')+ | augassign_single
+augassign_single ::= expression | yield_expression
 augmented_assignment_stmt ::= REMOVE
 </pre>
 augmented_assignment_stmt ::=  augtarget augop (expression_list | yield_expression)

@@ -26,6 +26,8 @@ ezP.Const = {
 }
 
 ezP.Const.Field = {
+  OPERATOR: 'operator',
+  
   LABEL: 'LABEL',
   START: 'START',
   END: 'END',
@@ -55,35 +57,38 @@ ezP.Const.Field = {
   NCSTR: 'NCSTR'
 }
 ezP.Key = {
-  LIST: 'ezp:list',
-  TARGET: 'ezp:target',
-  ASSIGNED: 'ezp:assigned',
+  LIST: 'list',
+  TARGET: 'target',
+  ASSIGNED: 'assigned',
+  IDENTIFIER: 'identifier',
+  EXPRESSION: 'expression',// = ANY? NO!
+  ARGUMENT: 'argument',
+  POWER: 'power',
+  FOR: 'for',
+  IN: 'in',
+  COMP_ITER: 'comp_iter',
+  KEY: 'key',
+  DATUM: 'datum',
+  
 
   FIRST: 'm_1',// this MUST be in lower case
   MIDDLE: 'm_2',// this MUST be in lower case
   LAST: 'm_3',// this MUST be in lower case
   DO: 'do',// this MUST be in lower case
   COMP_FOR: 'comp_for',
-  COMP_ITER: 'comp_iter',
   
   NAME: 'name',
-  FOR: 'for',
-  IN: 'in',
   IF: 'if',
   ELSE: 'else',
   COMPREHENSION: 'comprehension',
   ITEM: 'item', /* used by delimited blocks */
   PRIMARY: 'primary',
   ATTRIBUTE: 'attribute',
-  ARGUMENT: 'argument',
   TYPE: 'type',
-  KEY: 'key',
-  DATUM: 'datum',
   VALUE: 'value',
   LOWER_BOUND: 'lower_bound',
   UPPER_BOUND: 'upper_bound',
   STRIDE: 'stride',
-  EXPRESSION: 'expression',// = ANY? NO!
   ANNOTATED: 'annotated',
   LHS: 'lhs',
   RHS: 'rhs',
@@ -94,10 +99,8 @@ ezP.Key = {
   MODULE: 'module',
   IMPORT: 'import',
   PARENT: 'parent',
-  IDENTIFIER: 'identifier',
   AS: 'as',
   SOURCE: 'source',
-  POWER: 'power',
   DEFINITION: 'definition',
 
   WRAP: 'wrap',
@@ -196,7 +199,8 @@ ezP.XRE = {
     (?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl})
     (?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl}|\\p{Mn}|\\p{Mc}|\\p{Nd}|\\p{Pc})*
   )$`, 'x'),
-  id_wrapped: XRegExp(`^(?<id>.*?)\.(?<name>ezp:[a-zA-Z_][a-zA-Z_0-9]*)$`, 'x'),
+  id_wrapped: XRegExp(`^(?<id>.*?)\.wrapped:(?<name>[a-zA-Z_][a-zA-Z_0-9]*)$`, 'x'),
+  concrete: XRegExp(`^(?<core>.*?)_concrete$`, 'x'),
 }
 
 /*

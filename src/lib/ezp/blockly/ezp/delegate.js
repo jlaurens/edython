@@ -526,7 +526,7 @@ ezP.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
         return
       }
     }
-    target.id = block.id+'.'+input.name
+    target.id = block.id+'.wrapped:'+input.name
   }
 }
 
@@ -879,7 +879,7 @@ ezP.Delegate.prototype.xmlType = function (block) {
 
 /**
  * The xml tag name of this block, as it should appear in the saved data.
- * Dafulet implementation just returns 'block'
+ * Default implementation just returns 'block'
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise

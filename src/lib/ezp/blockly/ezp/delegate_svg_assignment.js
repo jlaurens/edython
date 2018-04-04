@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Expr.Target')
+goog.provide('ezP.DelegateSvg.Assignment')
 
 goog.require('ezP.DelegateSvg.List')
 goog.require('ezP.DelegateSvg.Stmt')
@@ -487,8 +487,8 @@ ezP.DelegateSvg.AugAssign.prototype.XpopulateContextMenuFirst_ = function (block
  */
 ezP.DelegateSvg.Expr.augassign_numeric = function (prototypeName) {
   ezP.DelegateSvg.Expr.augassign_numeric.superClass_.constructor.call(this, prototypeName)
-  this.operators = ['+=','-=','*=','/=','//=','%=','**=','@=']
-  this.inputModel_.m_3.operator = this.operators[0]
+  this.inputModel_.operators = ['+=','-=','*=','/=','//=','%=','**=','@=']
+  this.inputModel_.m_3.operator = this.inputModel_.operators[0]
   this.outputModel_ = {
     check: ezP.T3.Expr.augassign_numeric,
   }
@@ -507,8 +507,8 @@ ezP.DelegateSvg.Manager.register('augassign_numeric')
  */
 ezP.DelegateSvg.Expr.augassign_bitwise = function (prototypeName) {
   ezP.DelegateSvg.Expr.augassign_bitwise.superClass_.constructor.call(this, prototypeName)
-  this.operators = [">>=", "<<=", "&=", "^=", "|="]
-  this.inputModel_.m_3.operator = this.operators[1]
+  this.inputModel_.operators = [">>=", "<<=", "&=", "^=", "|="]
+  this.inputModel_.m_3.operator = this.inputModel_.operators[1]
   this.outputModel_ = {
     check: ezP.T3.Expr.augassign_bitwise,
   }
@@ -650,7 +650,7 @@ ezP.Consolidator.List.AugAssigned.prototype.doCleanup = function () {
  */
 ezP.Consolidator.List.AugAssigned.prototype.getCheck = function (io) {
   if (io.list.length === 1 || io.list.length === 3 && io.i === 1) {
-    return ezP.T3.Expr.Check.augassign_content
+    return ezP.T3.Expr.Check.augassign_single
   } else {
     return ezP.T3.Expr.Check.expression
   }
@@ -765,38 +765,18 @@ ezP.DelegateSvg.Expr.augassign_numeric.prototype.handleMenuItemActionFirst = ezP
   return ezP.DelegateSvg.Stmt.augassign_numeric_stmt.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
 }
 
-
-/**
- * toDom.
- * @param {!Blockly.Block} block to be translated.
- * For subclassers eventually
- */
-ezP.DelegateSvg.Expr.assignment_expression.prototype.toDom = function (block, element, optNoId) {
-  // create a list element
-  ezP.Xml.namedInputListToDom(block, ezP.Key.TARGET, element, optNoId)
-  ezP.Xml.namedInputListToDom(block, ezP.Key.ASSIGNED, element, optNoId)
-}
-
-/**
- * fromDom.
- * @param {!Blockly.Block} block to be initialized.
- * For subclassers eventually
- */
-ezP.DelegateSvg.Expr.assignment_expression.prototype.fromDom = function (block, xml) {
-  ezP.Xml.namedInputListFromDom(block, ezP.Key.TARGET, xml)
-  ezP.Xml.namedInputListFromDom(block, ezP.Key.ASSIGNED, xml)
-}
-
-/**
- * toDom.
- * @param {!Blockly.Block} block to be translated.
- * For subclassers eventually
- */
-ezP.DelegateSvg.Stmt.assignment_stmt.prototype.toDom = ezP.DelegateSvg.Expr.assignment_expression.prototype.toDom
-
-/**
- * fromDom.
- * @param {!Blockly.Block} block to be initialized.
- * For subclassers eventually
- */
-ezP.DelegateSvg.Stmt.assignment_stmt.prototype.fromDom = ezP.DelegateSvg.Expr.assignment_expression.prototype.fromDom
+ezP.DelegateSvg.Assignment.T3s = [
+  ezP.T3.Expr.target_star,
+  ezP.T3.Expr.target_list,
+  ezP.T3.Expr.void_target_list,
+  ezP.T3.Expr.parenth_target_list,
+  ezP.T3.Expr.bracket_target_list,
+  ezP.T3.Expr.assignment_expression,
+  ezP.T3.Stmt.assignment_stmt,
+  ezP.T3.Expr.assigned_list,
+  ezP.T3.Expr.augassign_numeric,
+  ezP.T3.Expr.augassign_bitwise,
+  ezP.T3.Stmt.augassign_numeric_stmt,
+  ezP.T3.Stmt.augassign_bitwise_stmt,
+  ezP.T3.Expr.augassign_list,
+]
