@@ -25,7 +25,7 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Expr.comprehension = function (prototypeName) {
   ezP.DelegateSvg.Expr.comprehension.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_ = {
+  this.inputModel__ = {
     m_1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
@@ -39,7 +39,7 @@ ezP.DelegateSvg.Expr.comprehension = function (prototypeName) {
       wrap: ezP.T3.Expr.comp_iter_list,
     }
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.comprehension,
   }
 }
@@ -56,7 +56,7 @@ ezP.DelegateSvg.Manager.register('comprehension')
  */
 ezP.DelegateSvg.Expr.comp_for = function (prototypeName) {
   ezP.DelegateSvg.Expr.comp_for.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_ = {
+  this.inputModel__ = {
     m_1: {
       key: ezP.Key.FOR,
       label: 'for',
@@ -71,7 +71,7 @@ ezP.DelegateSvg.Expr.comp_for = function (prototypeName) {
       hole_value: 'name',
     }
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.comp_for,
   }
 }
@@ -89,7 +89,7 @@ ezP.DelegateSvg.Manager.register('comp_for')
  */
 ezP.DelegateSvg.Expr.comp_if = function (prototypeName) {
   ezP.DelegateSvg.Expr.comp_if.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_ = {
+  this.inputModel__ = {
     m_1: {
       key: ezP.Key.IF,
       label: 'if',
@@ -98,7 +98,7 @@ ezP.DelegateSvg.Expr.comp_if = function (prototypeName) {
       hole_value: 'yorn',
     }
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.comp_if,
   }
 }
@@ -117,12 +117,12 @@ ezP.DelegateSvg.Manager.register('comp_if')
  */
 ezP.DelegateSvg.Expr.comp_iter_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.comp_iter_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.list = {
+  this.inputModel__.list = {
     check: ezP.T3.Expr.Check.comp_iter,
     empty: true,
     sep: ',',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.comp_iter_list,
   }
 }
@@ -140,11 +140,11 @@ ezP.DelegateSvg.Manager.register('comp_iter_list')
 // dict_comprehension ::= expression ":" expression comp_for
 ezP.DelegateSvg.Expr.dict_comprehension = function (prototypeName) {
   ezP.DelegateSvg.Expr.dict_comprehension.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     insert:
   ezP.T3.Expr.key_datum_concrete,
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.dict_comprehension,
   }
 }
@@ -161,10 +161,10 @@ ezP.DelegateSvg.Manager.register('dict_comprehension')
  */
 ezP.DelegateSvg.Expr.key_datum_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.key_datum_concrete.superClass_.constructor.call(this, prototypeName)
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.key_datum_concrete,
   }
-  this.inputModel_ = {
+  this.inputModel__ = {
     m_1: {
       key: ezP.Key.KEY,
       check: ezP.T3.Expr.Check.expression,
@@ -192,13 +192,13 @@ ezP.DelegateSvg.Manager.register('key_datum_concrete')
  */
 ezP.DelegateSvg.Expr.generator_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.generator_expression.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.prefix = {
+  this.inputModel__.prefix = {
     label: '(',
   }
-  this.inputModel_.suffix = {
+  this.inputModel__.suffix = {
     label: ')',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     awaitable: true,
     check: ezP.T3.Expr.generator_expression,
   }

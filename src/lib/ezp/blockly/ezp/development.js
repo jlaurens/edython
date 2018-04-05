@@ -297,8 +297,8 @@ ezP.DelegateSvg.Stmt.comment_stmt.workspaceBlocks = [
   ezP.T3.Stmt.comment_stmt,
 ]
 
-ezP.DelegateSvg.Expr.shortliteral.workspaceBlocks = 
-ezP.DelegateSvg.Expr.numberliteral.workspaceBlocks = [
+ezP.DelegateSvg.Literal.shortliteral.workspaceBlocks = 
+ezP.DelegateSvg.Literal.numberliteral.workspaceBlocks = [
   ezP.T3.Expr.shortstringliteral,
   ezP.T3.Expr.integer,
   ezP.T3.Expr.floatnumber,

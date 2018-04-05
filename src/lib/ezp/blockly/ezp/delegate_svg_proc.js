@@ -30,13 +30,13 @@ decorator_call_expr ::= decorator_expr "(" argument_list ")"
  */
 ezP.DelegateSvg.Expr.decorator_expr = function (prototypeName) {
   ezP.DelegateSvg.Expr.decorator_expr.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     label: '@',
     key: ezP.Key.NAME,
     check: ezP.T3.Expr.Check.dotted_funcname,
     hole_value: 'name',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.decorator_expr,
   }
 }
@@ -62,18 +62,18 @@ ezP.DelegateSvg.Expr.decorator_expr.prototype.canUnwrap = function(block) {
  */
 ezP.DelegateSvg.Expr.dotted_funcname_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.dotted_funcname_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     key: ezP.Key.PARENT,
     check: ezP.T3.Expr.identifier,
     hole_value: 'parent',
   }
-  this.inputModel_.m_3 = {
+  this.inputModel__.m_3 = {
     label: '.',
     key: ezP.Key.NAME,
     check: ezP.T3.Expr.Check.dotted_funcname,
     hole_value: 'name',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.dotted_funcname_concrete,
   }
 }
@@ -90,16 +90,16 @@ ezP.DelegateSvg.Manager.register('dotted_funcname_concrete')
  */
 ezP.DelegateSvg.Expr.decorator_call_expr = function (prototypeName) {
   ezP.DelegateSvg.Expr.decorator_call_expr.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     insert: ezP.T3.Expr.decorator_expr,
   }
-  this.inputModel_.m_3 = {
+  this.inputModel__.m_3 = {
     start: '(',
     key: ezP.Key.LIST,
     wrap: ezP.T3.Expr.argument_list,
     end: ')',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.decorator_call_expr,
   }
 }
@@ -116,13 +116,13 @@ ezP.DelegateSvg.Manager.register('decorator_call_expr')
 //  decorator_stmt            /*   ::= "@" dotted_name ["(" [argument_list [","]] ")"]    */ : "ezp:decorator_stmt",
 ezP.DelegateSvg.Stmt.decorator_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.decorator_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     key: ezP.Key.WRAP,
     wrap: ezP.T3.Expr.decorator_expr,
     check: ezP.T3.Expr.Check.decorator,
   }
-  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.decorator_stmt
-  this.statementModel_.next.check = ezP.T3.Stmt.Next.decorator_stmt
+  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.decorator_stmt
+  this.statementModel__.next.check = ezP.T3.Stmt.Next.decorator_stmt
 }
 goog.inherits(ezP.DelegateSvg.Stmt.decorator_stmt, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Manager.register('decorator_stmt')
@@ -138,7 +138,7 @@ ezP.ID.USE_DECORATOR = 'USE_DECORATOR'
 ezP.DelegateSvg.Expr.decorator_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var menu = mgr.menu
   var yorn = false
-  var c8n = this.model.m_1.input.connection
+  var c8n = this.uiModel.m_1.input.connection
   var target = c8n.targetBlock()
   if (!target) {
     var F = function(candidate) {
@@ -183,20 +183,20 @@ ezP.DelegateSvg.Expr.decorator_expr.prototype.populateContextMenuFirst_ = functi
  */
 ezP.DelegateSvg.Expr.funcdef_simple = function (prototypeName) {
   ezP.DelegateSvg.Expr.funcdef_simple.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     label: 'def',
     css_class: 'ezp-code-reserved',
     key: ezP.Key.NAME,
     check: ezP.T3.Expr.identifier,
     hole_value: 'name',
   }
-  this.inputModel_.m_2 = {
+  this.inputModel__.m_2 = {
     start: '(',
     key: ezP.Key.LIST,
     wrap: ezP.T3.Expr.parameter_list,
     end: ')',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.funcdef_simple,
   }
 }
@@ -222,15 +222,15 @@ ezP.DelegateSvg.Expr.funcdef_simple.prototype.canUnwrap = function(block) {
  */
 ezP.DelegateSvg.Expr.funcdef_typed = function (prototypeName) {
   ezP.DelegateSvg.Expr.funcdef_typed.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     insert: ezP.T3.Expr.funcdef_simple,
   }
-  this.inputModel_.m_3 = {
+  this.inputModel__.m_3 = {
     label: '->',
     key: ezP.Key.TYPE,
     check: ezP.T3.Expr.Check.expression,
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.funcdef_typed,
   }
 }
@@ -247,13 +247,13 @@ ezP.DelegateSvg.Manager.register('funcdef_typed')
  */
 ezP.DelegateSvg.Stmt.funcdef_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.funcdef_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     css_class: 'ezp-code-reserved',
     key: ezP.Key.WRAP,
     check: ezP.T3.Expr.Check.funcdef_expr,
     wrap: ezP.T3.Expr.funcdef_simple,
   }
-  this.statementModel_.asyncable = true
+  this.statementModel__.asyncable = true
 }
 goog.inherits(ezP.DelegateSvg.Stmt.funcdef_part, ezP.DelegateSvg.Group.Async)
 ezP.DelegateSvg.Manager.register('funcdef_part')
@@ -274,14 +274,14 @@ classdef_derived ::=  classdef_simple parenth_argument_list
  */
 ezP.DelegateSvg.Expr.classdef_simple = function (prototypeName) {
   ezP.DelegateSvg.Expr.classdef_simple.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     label: 'class',
     css_class: 'ezp-code-reserved',
     key: ezP.Key.NAME,
     check: ezP.T3.Expr.identifier,
     hole_value: 'name',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.classdef_simple,
   }
 }
@@ -307,7 +307,7 @@ ezP.DelegateSvg.Expr.classdef_simple.prototype.canUnwrap = function(block) {
  */
 ezP.DelegateSvg.Expr.classdef_derived = function (prototypeName) {
   ezP.DelegateSvg.Expr.classdef_derived.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_ = {
+  this.inputModel__ = {
     m_1: {
       key: ezP.Key.DEFINITION,
       wrap: ezP.T3.Expr.classdef_simple,
@@ -319,7 +319,7 @@ ezP.DelegateSvg.Expr.classdef_derived = function (prototypeName) {
       end: ')',
     }
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.classdef_derived,
   }
 }
@@ -345,7 +345,7 @@ ezP.DelegateSvg.Expr.classdef_derived.prototype.canUnwrap = function(block) {
  */
 ezP.DelegateSvg.Stmt.classdef_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.classdef_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     key: ezP.Key.WRAP,
     check: ezP.T3.Expr.Check.classdef_expr,
     wrap: ezP.T3.Expr.classdef_simple,

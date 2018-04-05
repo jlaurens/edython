@@ -283,10 +283,10 @@ ezP.Consolidator.Parameters.prototype.getCheck = function() {
  */
 ezP.DelegateSvg.Expr.parameter_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.parameter_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.list = {
+  this.inputModel__.list = {
     consolidator: ezP.Consolidator.Parameters,
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.parameter_list,
   }
 }
@@ -302,7 +302,7 @@ ezP.DelegateSvg.Manager.register('parameter_list')
  */
 ezP.DelegateSvg.Expr.parameter_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.parameter_star.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     key: ezP.Key.NAME,
     label: '*',
     css_class: 'ezp-code-reserved',
@@ -310,7 +310,7 @@ ezP.DelegateSvg.Expr.parameter_star = function (prototypeName) {
     hole_value: 'name',
     optional: true,
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.parameter_star,
   }
 }
@@ -326,14 +326,14 @@ ezP.DelegateSvg.Manager.register('parameter_star')
  */
 ezP.DelegateSvg.Expr.parameter_star_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.parameter_star_star.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     key: ezP.Key.NAME,
     label: '**',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.parameter,
     hole_value: 'name',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.parameter_star_star,
   }
 }
@@ -349,19 +349,19 @@ ezP.DelegateSvg.Manager.register('parameter_star_star')
  */
 ezP.DelegateSvg.Expr.parameter_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.parameter_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     key: ezP.Key.NAME,
     check: ezP.T3.Expr.identifier,
     hole_value: 'name',
   }
-  this.inputModel_.m_3 = {
+  this.inputModel__.m_3 = {
     key: ezP.Key.EXPRESSION,
     label: ':',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,
     hole_value: 'expression',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.parameter_concrete,
   }
 }
@@ -377,19 +377,19 @@ ezP.DelegateSvg.Manager.register('parameter_concrete')
  */
 ezP.DelegateSvg.Expr.defparameter_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.defparameter_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     key: ezP.Key.NAME,
     check: ezP.T3.Expr.Check.parameter,
     hole_value: 'name',
   }
-  this.inputModel_.m_3 = {
+  this.inputModel__.m_3 = {
     key: ezP.Key.EXPRESSION,
     label: '=',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,
     hole_value: 'value',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.defparameter_concrete,
   }
 }

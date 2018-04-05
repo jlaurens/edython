@@ -74,7 +74,7 @@ goog.inherits(ezP.Delegate, ezP.Helper)
  * @constructor
  */
 ezP.Delegate.prototype.initModel = function (prototypeName) {
-  this.inputModel_ = {}
+  this.inputModel__ = {}
 }
 
 /**
@@ -83,9 +83,7 @@ ezP.Delegate.prototype.initModel = function (prototypeName) {
  * The block specific data is store in
  * the delegate's model instance variable.
  */
-ezP.Delegate.prototype.inputModel = undefined
-ezP.Delegate.prototype.outputModel = undefined
-ezP.Delegate.prototype.statementModel = undefined
+ezP.Delegate.prototype.Model_ = undefined
 
 /**
  * Delegate manager.
@@ -96,6 +94,81 @@ ezP.Delegate.Manager = function () {
   var Ctors = {}
   var defaultCtor = undefined
   var defaultDelegate = undefined
+  /**
+   * Helper to initialize a block's input mode.
+   * to and from are 1 depth tree.
+   * @param {!Object} to  destination.
+   * @param {!Object} from  source.
+   */
+  var mixinModel = function (to, from) {
+    for (var k in from) {
+      var from_d = from[k]
+      // next is my test for a dictionary, hence my meaning of dictionary
+      // in that context
+      if (from_d && Object.keys(from_d).length === Object.getOwnPropertyNames(from_d).length) {
+        // we have a dictionary, do a mixin
+        var to_d = to[k]
+        if (to_d) {
+          if (Object.keys(to_d).length !== Object.getOwnPropertyNames(to_d).length) {
+            to_d = to[k] = {}
+          }
+        } else {
+          to_d = to[k] = {}
+        }
+        mixinModel(to_d, from_d)
+      } else {
+        // it is not a dictionary, do a simple copy/override
+        to[k] = from_d
+      }
+    }
+    if ((to.check)) {
+      to.check = ezP.Do.ensureArray(to.check)
+    } else if ((to_d = to.wrap)) {
+      to.check = ezP.Do.ensureArray(to_d)
+    }
+  }
+  /**
+   * Private helper to provide the constructor with a getInputModel.
+   * @param {?Object} Ctor a constructor
+   */
+  var helper = function(Ctor) {
+    if (Ctor.model_) {
+      return Ctor.model_
+    }
+    var model = {
+      input: {},
+      output: {},
+      statement: {},
+    }
+    if (Ctor !== ezP.Delegate && Ctor.superClass_) {
+      mixinModel(model, helper(Ctor.superClass_.constructor))
+    }
+    if (Ctor.model__ && Object.keys(Ctor.model__).length) {
+      mixinModel(model, Ctor.model__)
+      Ctor.model__ = {}
+    }
+    return Ctor.model_ = model
+  }
+  /**
+   * Method to create the constructor of a subclass.
+   * Registers the subclass too.
+   */
+  me.makeSubclass = function(key, parent, model) {
+    var Ctor = parent[key] = function (prototypeName) {
+      Ctor.superClass_.constructor.call(this, prototypeName)
+    }
+    goog.inherits(Ctor, parent)
+    ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr[key]||ezP.T3.Stmt[key], Ctor)
+    if (model) {
+      if (!model.output) {
+        var t = ezP.T3.Expr[key]
+        model.output = {
+          check: t,
+        }
+      }
+      Ctor.model__ = model
+    }
+  }
   /**
    * Delegate instance creator.
    * @param {?string} prototypeName Name of the language object containing
@@ -123,36 +196,48 @@ ezP.Delegate.Manager = function () {
     return Object.keys(Ctors)
   }
   /**
-   * Get the inputModel for that prototypeName.
+   * Get the inputModel_ for that prototypeName.
    * @param {?string} prototypeName Name of the language object containing
    * @return void object if no delegate is registered for that name
    */
   me.getInputModel = function (prototypeName) {
     var Ctor = Ctors[prototypeName]
-    return Ctor? Ctor.prototype.inputModel: {}
+    if (Ctor) {
+      var model = Ctor.prototype.getModel()
+      return model && model.input
+    }
+    return {}
   }
   /**
-   * Get the outputModel for that prototypeName.
+   * Get the outputModel_ for that prototypeName.
    * @param {?string} prototypeName Name of the language object containing
    * @return void object if no delegate is registered for that name
    */
   me.getOutputModel = function (prototypeName) {
     var Ctor = Ctors[prototypeName]
-    return Ctor? Ctor.prototype.outputModel: {}
+    if (Ctor) {
+      var model = Ctor.prototype.getModel()
+      return model && model.output
+    }
+    return {}
   }
   /**
-   * Get the statementModel for that prototypeName.
+   * Get the statementModel_ for that prototypeName.
    * @param {?string} prototypeName Name of the language object containing
    * @return void object if no delegate is registered for that name
    */
   me.getStatementModel = function (prototypeName) {
     var Ctor = Ctors[prototypeName]
-    return Ctor? Ctor.prototype.statementModel: {}
+    if (Ctor) {
+      var model = Ctor.prototype.getModel()
+      return model && model.statement
+    }
+    return {}
   }
   /**
    * Delegate registrator.
    * 
-   * Computes and caches inputModel, outputModel and statementModel
+   * Computes and caches inputModel_, outputModel_ and statementModel_
    * only once from the creation of the delegate.
    * 
    * The last delegate registered for a given prototype name wins.
@@ -165,34 +250,9 @@ ezP.Delegate.Manager = function () {
     Ctors[prototypeName] = Ctor
     goog.asserts.assert(me.create(prototypeName), 'Registration failure: '+prototypeName)
     // cache all the input, output and statement data at the prototype level
-    // the input data are constructed below with inheritance support
-    // as side effect of manager creation but this is immutability design
-    var dlgt = me.create(prototypeName)
-    var D = dlgt.inputModel_
-    if (D && Object.keys(D).length) {
-      Ctor.prototype.inputModel = D
-      if (D.m_1) {
-        D.m_1.check = ezP.Do.ensureArray(D.m_1.check||D.m_1.wrap)
-      }
-      if (D.m_2) {
-        D.m_2.check = ezP.Do.ensureArray(D.m_2.check||D.m_2.wrap)
-      }
-      if (D.m_3) {
-        D.m_3.check = ezP.Do.ensureArray(D.m_3.check||D.m_3.wrap)
-      }
-    }
-    if ((D = dlgt.outputModel_) && Object.keys(D).length) {
-      Ctor.prototype.outputModel = D
-      D.check = ezP.Do.ensureArray(D.check)
-    }
-    if ((D = dlgt.statementModel_) && Object.keys(D).length) {
-      Ctor.prototype.statementModel = D
-      if (D.previous) {
-        D.previous.check = ezP.Do.ensureArray(D.previous.check)
-      }
-      if (D.next) {
-        D.next.check = ezP.Do.ensureArray(D.next.check)
-      }
+    Ctor.prototype.getModel = function () {
+      console.log(prototypeName, Ctor)
+      return helper(Ctor)
     }
   }
   /**
@@ -277,7 +337,7 @@ ezP.Delegate.prototype.setupType = function (block) {
  */
 ezP.Delegate.prototype.initBlock = function (block) {
   this.setupType(block)
-  var D = this.outputModel_
+  var D = this.getModel().output
   if (D && Object.keys(D).length) {
     block.setOutput(true, D.check)
     var ezp = block.outputConnection.ezp
@@ -296,7 +356,7 @@ ezP.Delegate.prototype.initBlock = function (block) {
     if (D.do && Object.keys(D.do).length) {
       goog.mixin(ezp, D.do)
     }
-  } else if ((D = this.statementModel_) && Object.keys(D).length) {
+  } else if ((D = this.getModel().statement) && Object.keys(D).length) {
     if (D.key) {
       var input = block.appendStatementInput(D.key).setCheck(D.check) // Check ?
     }

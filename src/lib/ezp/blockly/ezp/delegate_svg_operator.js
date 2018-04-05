@@ -29,7 +29,7 @@ goog.require('ezP.DelegateSvg.Expr')
  * @constructor
  */
 ezP.MixinSvg.Operator.initModel = function (prototypeName) {
-  this.inputModel_ = {
+  this.inputModel__ = {
     m_3: {
       operator: '',
       key: ezP.Key.RHS,
@@ -92,7 +92,7 @@ ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
  * @return None
  */
 ezP.DelegateSvg.Operator.prototype.getSubtype = function (block) {
-  return this.model.m_3.fieldOperator.getValue()
+  return this.uiModel.m_3.fieldOperator.getValue()
 }
 
 /**
@@ -104,8 +104,9 @@ ezP.DelegateSvg.Operator.prototype.getSubtype = function (block) {
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Operator.prototype.setSubtype = function (block, subtype) {
-  if (this.inputModel.operators && this.inputModel.operators.indexOf(subtype) >= 0) {
-    this.model.m_3.fieldOperator.setValue(subtype)
+  var model = this.getModel().input
+  if (model.operators && model.operators.indexOf(subtype) >= 0) {
+    this.uiModel.m_3.fieldOperator.setValue(subtype)
     return true
   }
   return false
@@ -123,14 +124,14 @@ ezP.DelegateSvg.Operator.prototype.setSubtype = function (block, subtype) {
  */
 ezP.DelegateSvg.Expr.u_expr_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.u_expr_concrete.superClass_.constructor.call(this, prototypeName)
-  this.outputModel_ = {
-    check: ezP.T3.Expr.u_expr_concrete,
-  }
-  this.inputModel_.operators = ['-', '+', '~']
-  goog.mixin(this.inputModel_.m_3, {
-    operator: this.inputModel_.operators[0],
+  this.inputModel__.operators = ['-', '+', '~']
+  goog.mixin(this.inputModel__.m_3, {
+    operator: this.inputModel__.operators[0],
     check: ezP.T3.Expr.Check.u_expr
   })
+  this.outputModel__ = {
+    check: ezP.T3.Expr.u_expr_concrete,
+  }
 }
 goog.inherits(ezP.DelegateSvg.Expr.u_expr_concrete, ezP.DelegateSvg.Operator)
 ezP.DelegateSvg.Manager.register('u_expr_concrete')
@@ -155,7 +156,7 @@ ezP.DelegateSvg.Expr.u_expr_concrete.prototype.getContent = function (block, op)
  */
 ezP.DelegateSvg.Binary = function (prototypeName) {
   ezP.DelegateSvg.Binary.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     key: ezP.Key.LHS,
     hole_value: 'name',
   }
@@ -182,13 +183,13 @@ ezP.DelegateSvg.Binary.prototype.getContent = function (block, op) {
  */
 ezP.DelegateSvg.Expr.m_expr_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.m_expr_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.operators = ['*', '//', '/', '%', '@']
-  this.inputModel_.m_1.check = ezP.T3.Expr.Check.m_expr
-  goog.mixin(this.inputModel_.m_3, {
-    operator: this.inputModel_.operators[0],
+  this.inputModel__.operators = ['*', '//', '/', '%', '@']
+  this.inputModel__.m_1.check = ezP.T3.Expr.Check.m_expr
+  goog.mixin(this.inputModel__.m_3, {
+    operator: this.inputModel__.operators[0],
     check: ezP.T3.Expr.Check.u_expr,
   })
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.m_expr_concrete,
   }
 }
@@ -205,13 +206,13 @@ ezP.DelegateSvg.Manager.register('m_expr_concrete')
  */
 ezP.DelegateSvg.Expr.a_expr_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.a_expr_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.operators = ['+', '-']
-  this.inputModel_.m_1.check = ezP.T3.Expr.Check.a_expr
-  goog.mixin(this.inputModel_.m_3, {
-    operator: this.inputModel_.operators[0],
+  this.inputModel__.operators = ['+', '-']
+  this.inputModel__.m_1.check = ezP.T3.Expr.Check.a_expr
+  goog.mixin(this.inputModel__.m_3, {
+    operator: this.inputModel__.operators[0],
     check: ezP.T3.Expr.Check.m_expr,
   })
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.a_expr_concrete,
   }
 }
@@ -228,13 +229,13 @@ ezP.DelegateSvg.Manager.register('a_expr_concrete')
  */
 ezP.DelegateSvg.Expr.shift_expr_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.shift_expr_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.operators = ['<<', '>>']
-  this.inputModel_.m_1.check = ezP.T3.Expr.Check.shift_expr
-  goog.mixin(this.inputModel_.m_3, {
-    operator: this.inputModel_.operators[0],
+  this.inputModel__.operators = ['<<', '>>']
+  this.inputModel__.m_1.check = ezP.T3.Expr.Check.shift_expr
+  goog.mixin(this.inputModel__.m_3, {
+    operator: this.inputModel__.operators[0],
     check: ezP.T3.Expr.Check.a_expr,
   })
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.shift_expr_concrete,
   }
 }
@@ -251,12 +252,12 @@ ezP.DelegateSvg.Manager.register('shift_expr_concrete')
  */
 ezP.DelegateSvg.Expr.and_expr_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.and_expr_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1.check = ezP.T3.Expr.Check.and_expr
-  goog.mixin(this.inputModel_.m_3,{
+  this.inputModel__.m_1.check = ezP.T3.Expr.Check.and_expr
+  goog.mixin(this.inputModel__.m_3,{
     operator: '&',
     check: ezP.T3.Expr.Check.shift_expr,
   })
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.and_expr_concrete,
   }
 }
@@ -273,12 +274,12 @@ ezP.DelegateSvg.Manager.register('and_expr_concrete')
  */
 ezP.DelegateSvg.Expr.xor_expr_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.xor_expr_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1.check = ezP.T3.Expr.Check.xor_expr
-  goog.mixin(this.inputModel_.m_3, {
+  this.inputModel__.m_1.check = ezP.T3.Expr.Check.xor_expr
+  goog.mixin(this.inputModel__.m_3, {
     operator: '^',
     check: ezP.T3.Expr.Check.and_expr,
   })
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.xor_expr_concrete,
   }
 }
@@ -295,12 +296,12 @@ ezP.DelegateSvg.Manager.register('xor_expr_concrete')
  */
 ezP.DelegateSvg.Expr.or_expr_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.or_expr_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1.check = ezP.T3.Expr.Check.or_expr
-  goog.mixin(this.inputModel_.m_3, {
+  this.inputModel__.m_1.check = ezP.T3.Expr.Check.or_expr
+  goog.mixin(this.inputModel__.m_3, {
     operator: '|',
     check: ezP.T3.Expr.Check.xor_expr,
   })
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.or_expr_concrete,
   }
 }
@@ -319,11 +320,11 @@ ezP.DelegateSvg.Manager.register('or_expr_concrete')
  */
 ezP.DelegateSvg.Expr.number_comparison = function (prototypeName) {
   ezP.DelegateSvg.Expr.number_comparison.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.operators = ['<', '>', '==', '>=', '<=', '!=']
-  this.inputModel_.m_1.check = ezP.T3.Expr.Check.comparison
-  this.inputModel_.m_3.operator = this.inputModel_.operators[0]
-  this.inputModel_.m_3.check = ezP.T3.Expr.Check.comparison
-  this.outputModel_ = {
+  this.inputModel__.operators = ['<', '>', '==', '>=', '<=', '!=']
+  this.inputModel__.m_1.check = ezP.T3.Expr.Check.comparison
+  this.inputModel__.m_3.operator = this.inputModel__.operators[0]
+  this.inputModel__.m_3.check = ezP.T3.Expr.Check.comparison
+  this.outputModel__ = {
     check: ezP.T3.Expr.number_comparison,
   }
 }
@@ -342,14 +343,14 @@ ezP.DelegateSvg.Manager.register('number_comparison')
  */
 ezP.DelegateSvg.Expr.object_comparison = function (prototypeName) {
   ezP.DelegateSvg.Expr.object_comparison.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.operators = ['is', 'is not', 'in', 'not in']
-  this.inputModel_.m_1.check = ezP.T3.Expr.Check.comparison
-  goog.mixin(this.inputModel_.m_3, {
+  this.inputModel__.operators = ['is', 'is not', 'in', 'not in']
+  this.inputModel__.m_1.check = ezP.T3.Expr.Check.comparison
+  goog.mixin(this.inputModel__.m_3, {
     operator: 'in',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.comparison,
   })
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.object_comparison,
   }
 }
@@ -376,13 +377,13 @@ ezP.DelegateSvg.Expr.object_comparison.prototype.getContent = function (block, o
  */
 ezP.DelegateSvg.Expr.or_test_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.or_test_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1.check = ezP.T3.Expr.Check.or_test
-  goog.mixin(this.inputModel_.m_3, {
+  this.inputModel__.m_1.check = ezP.T3.Expr.Check.or_test
+  goog.mixin(this.inputModel__.m_3, {
     operator: 'or',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.and_test,
   })
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.or_test_concrete,
   }
 }
@@ -399,13 +400,13 @@ ezP.DelegateSvg.Manager.register('or_test_concrete')
  */
 ezP.DelegateSvg.Expr.and_test_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.and_test_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1.check = ezP.T3.Expr.Check.and_test
-  goog.mixin(this.inputModel_.m_3, {
+  this.inputModel__.m_1.check = ezP.T3.Expr.Check.and_test
+  goog.mixin(this.inputModel__.m_3, {
     operator: 'and',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.not_test,
   })
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.and_test_concrete,
   }
 }
@@ -423,7 +424,7 @@ ezP.DelegateSvg.Manager.register('and_test_concrete')
  */
 ezP.DelegateSvg.Expr.power_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.power_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_ = {
+  this.inputModel__ = {
     m_1: {
       key: ezP.Key.ARGUMENT,
       check: ezP.T3.Expr.Check.await_or_primary,
@@ -437,7 +438,7 @@ ezP.DelegateSvg.Expr.power_concrete = function (prototypeName) {
       hole_value: 'power',
     },
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.power_concrete,
   }
 }

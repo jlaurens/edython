@@ -25,12 +25,12 @@ goog.require('ezP.DelegateSvg.Group')
  */
 ezP.DelegateSvg.Stmt.try_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.try_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     dummy: 'try',
     css_class: 'ezp-code-reserved',
   }
-  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.try_part
-  this.statementModel_.next.check = ezP.T3.Stmt.Next.try_part
+  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.try_part
+  this.statementModel__.next.check = ezP.T3.Stmt.Next.try_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.try_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('try_part')
@@ -45,7 +45,7 @@ ezP.DelegateSvg.Manager.register('try_part')
  */
 ezP.DelegateSvg.Expr.expression_as_name = function (prototypeName) {
   ezP.DelegateSvg.Expr.expression_as_name.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_ = {
+  this.inputModel__ = {
     m_1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
@@ -59,7 +59,7 @@ ezP.DelegateSvg.Expr.expression_as_name = function (prototypeName) {
       hole_value: 'name',
     }
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.expression_as_name,
   }
 }
@@ -77,15 +77,15 @@ ezP.DelegateSvg.Manager.register('expression_as_name')
  */
 ezP.DelegateSvg.Stmt.except_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.except_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     key: ezP.Key.EXPRESSION,
     label: 'except',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression_except,
     hole_value: 'expression',
   }
-  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.except_part
-  this.statementModel_.next.check = ezP.T3.Stmt.Next.except_part
+  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.except_part
+  this.statementModel__.next.check = ezP.T3.Stmt.Next.except_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.except_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('except_part')
@@ -100,12 +100,12 @@ ezP.DelegateSvg.Manager.register('except_part')
  */
 ezP.DelegateSvg.Stmt.void_except_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.void_except_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     dummy: 'except',
     css_class: 'ezp-code-reserved',
   }
-  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.void_except_part
-  this.statementModel_.next.check = ezP.T3.Stmt.Next.void_except_part
+  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.void_except_part
+  this.statementModel__.next.check = ezP.T3.Stmt.Next.void_except_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.void_except_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('void_except_part')
@@ -120,12 +120,12 @@ ezP.DelegateSvg.Manager.register('void_except_part')
  */
 ezP.DelegateSvg.Stmt.finally_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.finally_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     dummy: 'finally',
     css_class: 'ezp-code-reserved',
   }
-  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.finally_part
-  this.statementModel_.next.check = ezP.T3.Stmt.Next.finally_part
+  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.finally_part
+  this.statementModel__.next.check = ezP.T3.Stmt.Next.finally_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.finally_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('finally_part')
@@ -139,7 +139,7 @@ ezP.DelegateSvg.Manager.register('finally_part')
  */
 ezP.DelegateSvg.Expr.expression_from = function (prototypeName) {
   ezP.DelegateSvg.Expr.expression_from.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_ = {
+  this.inputModel__ = {
     m_1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
@@ -153,7 +153,7 @@ ezP.DelegateSvg.Expr.expression_from = function (prototypeName) {
       hole_value: 'expression',
     }
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.expression_from,
   }
 }
@@ -169,7 +169,7 @@ ezP.DelegateSvg.Manager.register('expression_from')
  */
 ezP.DelegateSvg.Stmt.raise_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.raise_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_ = {
+  this.inputModel__ = {
     m_1: {
       label: 'raise',
       css_class: 'ezp-code-reserved',
@@ -190,7 +190,7 @@ ezP.DelegateSvg.Manager.register('raise_stmt')
  */
 ezP.DelegateSvg.Stmt.reraise_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.reraise_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_ = {
+  this.inputModel__ = {
     m_1: {
       label: 'raise',
       css_class: 'ezp-code-reserved',
@@ -209,7 +209,7 @@ ezP.DelegateSvg.Manager.register('reraise_stmt')
  */
 ezP.DelegateSvg.Stmt.assert_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.assert_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_ = {
+  this.inputModel__ = {
     m_1: {
       label: 'assert',
       css_class: 'ezp-code-reserved',

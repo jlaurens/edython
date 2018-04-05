@@ -27,13 +27,13 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Expr.yield_expression_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_expression_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     key: ezP.Key.LIST,
     label: 'yield',
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.non_void_expression_list,
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.yield_expression_list,
   }
 }
@@ -49,13 +49,13 @@ ezP.DelegateSvg.Manager.register('yield_expression_list')
  */
 ezP.DelegateSvg.Expr.yield_from_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_from_expression.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     key: ezP.Key.FROM,
     label: 'yield from',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.yield_from_expression,
   }
 }
@@ -71,22 +71,22 @@ ezP.DelegateSvg.Manager.register('yield_from_expression')
  */
 ezP.DelegateSvg.Expr.yield_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_expression.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.prefix = {
+  this.inputModel__.prefix = {
     label: 'yield',
     css_class: 'ezp-code-reserved',
   }
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     key: ezP.Key.FROM,
     label: 'from',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression
   }
-  this.inputModel_.m_2 = {
+  this.inputModel__.m_2 = {
     key: ezP.Key.LIST,
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.non_void_expression_list,
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.yield_expression,
   }
 }
@@ -245,13 +245,13 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = func
  */
 ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
   ezP.DelegateSvg.Expr.yield_atom.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.prefix = {
+  this.inputModel__.prefix = {
     label: '(',
   }
-  this.inputModel_.suffix = {
+  this.inputModel__.suffix = {
     label: ')',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     awaitable: true,
     check: ezP.T3.Expr.yield_atom,
   }
@@ -268,7 +268,7 @@ ezP.DelegateSvg.Manager.register('yield_atom')
  */
 ezP.DelegateSvg.Stmt.yield_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.yield_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_3 = {
+  this.inputModel__.m_3 = {
     insert: ezP.T3.Expr.yield_expression
   }
 }

@@ -25,8 +25,8 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Group = function (prototypeName) {
   ezP.DelegateSvg.Group.superClass_.constructor.call(this, prototypeName)
-  this.statementModel_.key = ezP.Key.DO
-  this.inputModel_.m_3 = {
+  this.statementModel__.key = ezP.Key.DO
+  this.inputModel__.m_3 = {
     label: ':',
   }
 }
@@ -226,14 +226,14 @@ ezP.DelegateSvg.Group.prototype.highlightConnection = function (c8n) {
  */
 ezP.DelegateSvg.Stmt.if_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.if_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     label: 'if',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,
     key: ezP.Key.COND,
   }
-  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.if_part
-  this.statementModel_.next.check = ezP.T3.Stmt.Next.if_part
+  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.if_part
+  this.statementModel__.next.check = ezP.T3.Stmt.Next.if_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.if_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('if_part')
@@ -248,14 +248,14 @@ ezP.DelegateSvg.Manager.register('if_part')
  */
 ezP.DelegateSvg.Stmt.elif_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.elif_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     label: 'elif',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,
     key: ezP.Key.COND,
   }
-  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.elif_part
-  this.statementModel_.next.check = ezP.T3.Stmt.Next.elif_part
+  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.elif_part
+  this.statementModel__.next.check = ezP.T3.Stmt.Next.elif_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.elif_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('elif_part')
@@ -278,11 +278,11 @@ ezP.DelegateSvg.Manager.register('elif_part')
  */
 ezP.DelegateSvg.Stmt.else_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.else_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     label: 'else',
     css_class: 'ezp-code-reserved',
   }
-  this.statementModel_.previous = {
+  this.statementModel__.previous = {
     check: ezP.T3.Stmt.Previous.else_part,
     didConnect: function(oldTargetConnection, oldConnection) {
       var block = this.connection.getSourceBlock()
@@ -293,7 +293,7 @@ ezP.DelegateSvg.Stmt.else_part = function (prototypeName) {
       block.ezp.consolidateType(block)
     },
   }
-  this.statementModel_.next = {
+  this.statementModel__.next = {
     check: ezP.T3.Stmt.Next.else_part,
   }
 }
@@ -366,14 +366,14 @@ ezP.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
  */
 ezP.DelegateSvg.Stmt.while_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.while_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     label: 'while',
     css_class: 'ezp-code-reserved',
     check: ezP.T3.Expr.Check.expression,
     key: ezP.Key.COND,
   }
-  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.while_part
-  this.statementModel_.next.check = ezP.T3.Stmt.Next.while_part
+  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.while_part
+  this.statementModel__.next.check = ezP.T3.Stmt.Next.while_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.while_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('while_part')
@@ -399,7 +399,7 @@ goog.inherits(ezP.DelegateSvg.Group.Async, ezP.DelegateSvg.Group)
  */
 ezP.DelegateSvg.Group.Async.prototype.willRender_ = function (block) {
   ezP.DelegateSvg.Group.Async.superClass_.willRender_.call(this, block)
-  var field = this.model.fieldAsync
+  var field = this.uiModel.fieldAsync
   if (field) {
     field.setVisible(this.asynced_)
   }
@@ -427,7 +427,7 @@ ezP.DelegateSvg.Group.Async.prototype.toDom = function (block, element, optNoId)
  */
 ezP.DelegateSvg.Group.Async.prototype.fromDom = function (block, element) {
   ezP.DelegateSvg.Group.Async.superClass_.fromDom.call(this, block, element)
-  var field = this.model.fieldAsync
+  var field = this.uiModel.fieldAsync
   if (field) {
     var attribute = element.getAttribute('async')
     this.setAsynced(block, attribute && attribute.toLowerCase() === 'true')
@@ -441,7 +441,7 @@ ezP.DelegateSvg.Group.Async.prototype.fromDom = function (block, element) {
  * @private
  */
 ezP.DelegateSvg.Group.Async.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var field = this.model.fieldAsync
+  var field = this.uiModel.fieldAsync
   if (field) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN('async', 'ezp-code-reserved'),
@@ -472,21 +472,21 @@ ezP.DelegateSvg.Group.Async.prototype.populateContextMenuFirst_ = function (bloc
  */
 ezP.DelegateSvg.Stmt.for_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.for_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     label: 'for',
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.target_list,
     key: ezP.Key.FOR,
   }
-  this.inputModel_.m_2 = {
+  this.inputModel__.m_2 = {
     label: 'in',
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.expression_list,
     key: ezP.Key.IN,
   }
-  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.for_part
-  this.statementModel_.next.check = ezP.T3.Stmt.Next.for_part
-  this.statementModel_.asyncable = true
+  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.for_part
+  this.statementModel__.next.check = ezP.T3.Stmt.Next.for_part
+  this.statementModel__.asyncable = true
 }
 goog.inherits(ezP.DelegateSvg.Stmt.for_part, ezP.DelegateSvg.Group.Async)
 ezP.DelegateSvg.Manager.register('for_part')
@@ -501,15 +501,15 @@ ezP.DelegateSvg.Manager.register('for_part')
  */
 ezP.DelegateSvg.Stmt.with_part = function (prototypeName) {
   ezP.DelegateSvg.Stmt.with_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     key: ezP.Key.LIST,
     label: 'with',
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.with_item_list,
   }
-  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.with_part
-  this.statementModel_.next.check = ezP.T3.Stmt.Next.with_part
-  this.statementModel_.asyncable = true
+  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.with_part
+  this.statementModel__.next.check = ezP.T3.Stmt.Next.with_part
+  this.statementModel__.asyncable = true
 }
 goog.inherits(ezP.DelegateSvg.Stmt.with_part, ezP.DelegateSvg.Group.Async)
 ezP.DelegateSvg.Manager.register('with_part')
@@ -524,7 +524,7 @@ ezP.DelegateSvg.Manager.register('with_part')
  */
 ezP.DelegateSvg.Expr.with_item_concrete = function (prototypeName) {
   ezP.DelegateSvg.Expr.with_item_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_ = {
+  this.inputModel__ = {
     m_1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,

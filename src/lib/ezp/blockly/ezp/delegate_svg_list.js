@@ -26,7 +26,7 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.List = function (prototypeName) {
   ezP.DelegateSvg.List.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.list = {}
+  this.inputModel__.list = {}
 }
 goog.inherits(ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
@@ -87,7 +87,7 @@ ezP.DelegateSvg.List.prototype.consolidate_ = function (block) {
 ezP.DelegateSvg.List.prototype.createConsolidator = function (block) {
   if (!this.consolidator) {
     var D = ezP.DelegateSvg.Manager.getInputModel(block.type).list
-    goog.asserts.assert(D, 'inputModel_.list is missing in '+block.type)
+    goog.asserts.assert(D, 'inputModel__.list is missing in '+block.type)
     var Ctor = D.consolidator? D.consolidator:
     ezP.Consolidator.List
     this.consolidator = new Ctor(D)
@@ -199,13 +199,13 @@ ezP.DelegateSvg.List.prototype.toPythonExpressionComponents = function (block, c
  */
 ezP.DelegateSvg.Expr.optional_expression_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.optional_expression_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.list = {
+  this.inputModel__.list = {
     check: ezP.T3.Expr.Check.expression,
     empty: true,
     sep: ',',
     hole_value: 'name',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.optional_expression_list,
   }
 }
@@ -223,13 +223,13 @@ ezP.DelegateSvg.Manager.register('optional_expression_list')
  */
 ezP.DelegateSvg.Expr.non_void_expression_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.non_void_expression_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.list = {
+  this.inputModel__.list = {
     check: ezP.T3.Expr.Check.expression,
     empty: false,
     sep: ',',
     hole_value: 'name',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.non_void_expression_list,
   }
 }
@@ -248,13 +248,13 @@ ezP.DelegateSvg.Manager.register('non_void_expression_list')
  */
 ezP.DelegateSvg.Expr.starred_item_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.starred_item_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.list = {
+  this.inputModel__.list = {
     check: ezP.T3.Expr.Check.starred_item,
     empty: true,
     sep: ',',
     hole_value: 'name',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.starred_item_list,
   }
 }
@@ -272,13 +272,13 @@ ezP.DelegateSvg.Manager.register('starred_item_list')
  */
 ezP.DelegateSvg.Expr.parenth_form = function (prototypeName) {
   ezP.DelegateSvg.Expr.parenth_form.superClass_.constructor.call(this, prototypeName)
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.parenth_form,
   }
-  this.inputModel_.prefix = {
+  this.inputModel__.prefix = {
     label: '(',
   }
-  this.inputModel_.suffix = {
+  this.inputModel__.suffix = {
     label: ')',
   }
 }
@@ -296,12 +296,12 @@ ezP.DelegateSvg.Manager.register('parenth_form')
  */
 ezP.DelegateSvg.Expr.key_datum_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.key_datum_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.list = {
+  this.inputModel__.list = {
     check: ezP.T3.Expr.Check.key_datum,
     empty: true,
     sep: ',',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.key_datum_list,
   }
 }
@@ -331,8 +331,8 @@ ezP.DelegateSvg.Expr.starred_item_list_comprehensive = function (prototypeName) 
   var RA = goog.array.concat(D.check,D.single)
   goog.array.removeDuplicates(RA)
   D.all = RA
-  this.inputModel_.list = D
-  this.outputModel_ = {
+  this.inputModel__.list = D
+  this.outputModel__ = {
     check: ezP.T3.Expr.starred_item_list_comprehensive,
   }
 }
@@ -349,13 +349,13 @@ ezP.DelegateSvg.Manager.register('starred_item_list_comprehensive')
  */
 ezP.DelegateSvg.Expr.list_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.list_display.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.prefix = {
+  this.inputModel__.prefix = {
     label: '[',
   }
-  this.inputModel_.suffix = {
+  this.inputModel__.suffix = {
     label: ']',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     awaitable: true,
     check: ezP.T3.Expr.list_display,
   }
@@ -383,8 +383,8 @@ ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive = function (protot
   var RA = goog.array.concat(D.check,D.single)
   goog.array.removeDuplicates(RA)
   D.all = RA
-  this.inputModel_.list = D
-  this.outputModel_ = {
+  this.inputModel__.list = D
+  this.outputModel__ = {
     check: ezP.T3.Expr.non_void_starred_item_list_comprehensive,
   }
 }
@@ -400,13 +400,13 @@ ezP.DelegateSvg.Manager.register('non_void_starred_item_list_comprehensive')
  */
 ezP.DelegateSvg.Expr.set_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.set_display.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.prefix = {
+  this.inputModel__.prefix = {
     label: '{',
   }
-  this.inputModel_.suffix = {
+  this.inputModel__.suffix = {
     label: '}',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     awaitable: true,
     check: ezP.T3.Expr.set_display,
   }
@@ -434,8 +434,8 @@ ezP.DelegateSvg.Expr.key_datum_list_comprehensive = function (prototypeName) {
   var RA = goog.array.concat(D.check,D.single)
   goog.array.removeDuplicates(RA)
   D.all = RA
-  this.inputModel_.list = D
-  this.outputModel_ = {
+  this.inputModel__.list = D
+  this.outputModel__ = {
     check: ezP.T3.Expr.key_datum_list_comprehensive,
   }
 }
@@ -451,13 +451,13 @@ ezP.DelegateSvg.Manager.register('key_datum_list_comprehensive')
  */
 ezP.DelegateSvg.Expr.dict_display = function (prototypeName) {
   ezP.DelegateSvg.Expr.dict_display.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.prefix = {
+  this.inputModel__.prefix = {
     label: '{',
   }
-  this.inputModel_.suffix = {
+  this.inputModel__.suffix = {
     label: '}',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     awaitable: true,
     check: ezP.T3.Expr.dict_display,
   }
@@ -476,12 +476,12 @@ ezP.DelegateSvg.Manager.register('dict_display')
  */
 ezP.DelegateSvg.Expr.slice_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.slice_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.list = {
+  this.inputModel__.list = {
     check: ezP.T3.Expr.Check.slice_item,
     empty: false,
     sep: ',',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.slice_list,
   }
 }
@@ -497,13 +497,13 @@ ezP.DelegateSvg.Manager.register('slice_list')
  */
 ezP.DelegateSvg.Expr.display_slice_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.display_slice_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.prefix = {
+  this.inputModel__.prefix = {
     label: '[',
   }
-  this.inputModel_.suffix = {
+  this.inputModel__.suffix = {
     label: ']',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.display_slice_list,
   }
 }
@@ -522,12 +522,12 @@ ezP.DelegateSvg.Manager.register('display_slice_list')
  */
 ezP.DelegateSvg.Expr.with_item_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.with_item_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.list = {
+  this.inputModel__.list = {
     check: ezP.T3.Expr.Check.with_item,
     empty: false,
     sep: ',',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.with_item_list,
   }
 }

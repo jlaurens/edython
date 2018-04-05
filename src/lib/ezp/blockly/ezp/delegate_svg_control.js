@@ -167,7 +167,7 @@ ezP.DelegateSvg.Control.prototype.toPython = function (block, is_deep) {
  */
 ezP.DelegateSvg.Stmt.start_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.start_stmt.superClass_.constructor.call(this, prototypeName)
-  this.statementModel_ = {
+  this.statementModel__ = {
     next: {
       check: null,
     }

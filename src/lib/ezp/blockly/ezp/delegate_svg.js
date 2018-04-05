@@ -163,9 +163,9 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   // block.setInputsInline(true)
   block.setTooltip('')
   block.setHelpUrl('')
-
+  var inputModel = this.getModel().input
   var F = function(K) {
-    var D = this.inputModel[K]
+    var D = inputModel[K]
     var out
     if (D && Object.keys(D).length) {
       out = {}
@@ -326,7 +326,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   var field, D
   var FF = function(key) {
     var v
-    if ((D = this.inputModel_[key])) {
+    if ((D = inputModel[key])) {
       if ((v = D['label'])) {
         field = new ezP.FieldLabel(v)
         field.ezpData.css_class = D.css_class
@@ -337,21 +337,22 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       }
     }
   }
-  if ((D = this.outputModel_) && D.awaitable) {
+  if ((D = this.getModel().output) && D.awaitable) {
     field = new ezP.FieldLabel('await')
     field.ezpData.css_class = 'ezp-code-reserved'
     field.setSourceBlock(block)
     field.init()
     model.fieldAwait = field
   }    
-  if ((D = this.statementModel_) && D.asyncable) {
+  if ((D = this.getModel().statement) && D.asyncable) {
     field = new ezP.FieldLabel('async')
     field.ezpData.css_class = 'ezp-code-reserved'
     field.setSourceBlock(block)
     field.init()
     model.fieldAsync = field
   }
-  if (Object.keys(this.inputModel_).length) {
+  if (Object.keys(inputModel).length) {
+    model.fieldModifier = FF.call(this, 'modifier')
     model.fieldPrefix = FF.call(this, 'prefix')
     model.fieldSuffix = FF.call(this, 'suffix')
     var keys = ['m_1', 'm_2', 'm_3']
@@ -361,9 +362,8 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         model[K] = f
       }
     }
-    this.inputModel_ = undefined
   }
-  this.model = model
+  this.uiModel = model
   if (!block.workspace.options.readOnly && !this.eventsInit_) {
     Blockly.bindEventWithChecks_(block.getSvgRoot(), 'mouseup', block,
     function(e) {
@@ -424,7 +424,7 @@ ezP.DelegateSvg.prototype.postInitSvg = function(block) {
  */
 ezP.DelegateSvg.prototype.getMenuTarget = function(block) {
   var wrapped
-  if (this.model.wrap && (wrapped = this.model.wrap.input.connection.targetBlock())) {
+  if (this.uiModel.wrap && (wrapped = this.uiModel.wrap.input.connection.targetBlock())) {
     return wrapped.ezp.getMenuTarget(wrapped)
   }
   if (this.wrappedInputs_ && this.wrappedInputs_.length === 1 &&
@@ -802,13 +802,13 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     this.shouldSeparateField = false
   }
   io.shouldSeparateField = this.shouldSeparateField
-  if ((io.field = this.model.fieldAsync)) {
+  if ((io.field = this.uiModel.fieldAsync)) {
     this.renderDrawField_(io)
   }
-  if ((io.field = this.model.fieldAwait)) {
+  if ((io.field = this.uiModel.fieldAwait)) {
     this.renderDrawField_(io)
   }
-  if ((io.field = this.model.fieldPrefix)) {
+  if ((io.field = this.uiModel.fieldPrefix)) {
     this.renderDrawField_(io)
   }
   for (; (io.input = block.inputList[io.i]); io.i++) {
@@ -841,7 +841,7 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
       }
     }
   }
-  if ((io.field = this.model.fieldSuffix)) {
+  if ((io.field = this.uiModel.fieldSuffix)) {
     this.renderDrawField_(io)
   }
   io.cursorX += this.getPaddingRight(block)
@@ -1610,9 +1610,9 @@ ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
     }
     FF(D.fieldLabelEnd)
   }
-  F(this.model.m_1)
-  F(this.model.m_2)
-  F(this.model.m_3)
+  F(this.uiModel.m_1)
+  F(this.uiModel.m_2)
+  F(this.uiModel.m_3)
   return last
 }
 
@@ -1642,8 +1642,8 @@ ezP.DelegateSvg.prototype.toPythonStatementComponents = function (block, compone
     indent += '# '
   }
   components.push(indent+this.toPythonExpression(block))
-  if (this.model.do) {
-    var input = this.model.do.input
+  if (this.uiModel.do) {
+    var input = this.uiModel.do.input
     if (input) {
       var c8n = input.connection
       if (c8n) {

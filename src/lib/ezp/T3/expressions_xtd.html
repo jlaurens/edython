@@ -126,8 +126,10 @@ keywords_arguments   ::=  REMOVE
 
 <pre>
 power ::= await_or_primary [ "**" u_expr ]
-await_or_primary ::= await_expr | primary
+await_or_primary ::= primary
+await_expr ::= REMOVE
 </pre>
+The await_expr is just a primary with an await attribute
 <pre>
 comparison ::=  or_expr | number_comparison | object_comparison
 number_comparison ::= comparison comp_operator comparison

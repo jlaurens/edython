@@ -27,7 +27,7 @@ goog.require('ezP.DelegateSvg.Operator')
  */
 ezP.DelegateSvg.Stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.superClass_.constructor.call(this, prototypeName)
-  this.statementModel_ = {
+  this.statementModel__ = {
     previous: {},
     next: {},
   }
@@ -236,7 +236,7 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
 ezP.DelegateSvg.Stmt.annotated_assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.annotated_assignment_stmt.superClass_.constructor.call(this, prototypeName)
   //annotated_assignment_stmt ::=  augtarget ":" expression ["=" expression]
-  this.inputModel_ = {
+  this.inputModel__ = {
     m_1: {
       key: ezP.Key.TARGET,
       check: ezP.T3.Expr.Check.augtarget
@@ -280,8 +280,8 @@ goog.inherits(ezP.DelegateSvg.Stmt.Two, ezP.DelegateSvg.Stmt)
  */
 ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block, deep) {
   ezP.DelegateSvg.Stmt.Two.superClass_.consolidate.call(this, block, deep)
-  var first = this.model.m_1.input
-  var last  = this.model.m_3.input
+  var first = this.uiModel.m_1.input
+  var last  = this.uiModel.m_3.input
   var connected = last.connection.isConnected()
   this.setInputEnabled(block, last, first.connection.isConnected() || connected)
   if (connected) {
@@ -307,7 +307,7 @@ ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block, deep) {
  */
 ezP.DelegateSvg.Stmt.pass_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.pass_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     label: 'pass',
     css_class: 'ezp-code-reserved',
   }
@@ -325,7 +325,7 @@ ezP.DelegateSvg.Manager.register('pass_stmt')
  */
 ezP.DelegateSvg.Stmt.break_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.break_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     label: 'break',
     css_class: 'ezp-code-reserved',
   }
@@ -343,7 +343,7 @@ ezP.DelegateSvg.Manager.register('break_stmt')
  */
 ezP.DelegateSvg.Stmt.continue_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.continue_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     label: 'continue',
     css_class: 'ezp-code-reserved',
   }
@@ -364,12 +364,12 @@ ezP.DelegateSvg.Manager.register('continue_stmt')
  */
 ezP.DelegateSvg.Expr.non_void_identifier_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.non_void_identifier_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.list = {
+  this.inputModel__.list = {
     check: ezP.T3.Expr.Check.non_void_identifier_list,
     empty: false,
     sep: ',',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.non_void_identifier_list,
   }
 }
@@ -385,10 +385,10 @@ ezP.DelegateSvg.Manager.register('non_void_identifier_list')
  */
 ezP.DelegateSvg.Stmt.global_nonlocal_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.operators = ['global', 'nonlocal']
-  this.inputModel_.m_3 = {
+  this.inputModel__.operators = ['global', 'nonlocal']
+  this.inputModel__.m_3 = {
     key: ezP.Key.LIST,
-    label: this.inputModel_.operators[0],
+    label: this.inputModel__.operators[0],
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.non_void_identifier_list,
   }
@@ -451,11 +451,11 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.handleMenuItemActionFirst = 
  */
 ezP.DelegateSvg.Stmt.comment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.comment_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     label: '# ',
     css_class: 'ezp-code-reserved',
   }
-  this.inputModel_.m_3 = {
+  this.inputModel__.m_3 = {
     comment: 'comment',
   }
 }
@@ -515,7 +515,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.setDisabled = function (block, yorn)
  * @return None
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.getSubtype = function (block) {
-  return block.ezp.model.m_3.fieldCodeComment.getValue()
+  return block.ezp.uiModel.m_3.fieldCodeComment.getValue()
 }
 
 /**
@@ -528,7 +528,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.getSubtype = function (block) {
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.setSubtype = function (block, subtype) {
-  block.ezp.model.m_3.fieldCodeComment.setValue(subtype)
+  block.ezp.uiModel.m_3.fieldCodeComment.setValue(subtype)
   return true
 }
 
@@ -538,7 +538,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.setSubtype = function (block, subtyp
  * @private
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.showEditor = function (block) {
-  block.ezp.model.m_3.fieldCodeComment.showEditor_()
+  block.ezp.uiModel.m_3.fieldCodeComment.showEditor_()
 }
 
 /**
@@ -550,7 +550,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.showEditor = function (block) {
  */
 ezP.DelegateSvg.Stmt.expression_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.expression_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     key: ezP.Key.EXPRESSION,
     check: ezP.T3.Expr.Check.expression,
   }
@@ -569,12 +569,12 @@ ezP.DelegateSvg.Manager.register('expression_stmt')
 ezP.DelegateSvg.Stmt.docstring_top_stmt =
 ezP.DelegateSvg.Stmt.docstring_def_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.docstring_top_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     key: ezP.Key.WRAP,
     wrap: ezP.T3.Expr.longstringliteral,
   }
-  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.docstring_top_stmt
-  this.statementModel_.next.check = ezP.T3.Stmt.Next.docstring_top_stmt
+  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.docstring_top_stmt
+  this.statementModel__.next.check = ezP.T3.Stmt.Next.docstring_top_stmt
 }
 goog.inherits(ezP.DelegateSvg.Stmt.docstring_top_stmt, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Manager.register('docstring_top_stmt')
@@ -597,12 +597,12 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt
  */
 ezP.DelegateSvg.Stmt.docstring_def_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.docstring_def_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.m_1 = {
+  this.inputModel__.m_1 = {
     key: ezP.Key.WRAP,
     wrap: ezP.T3.Expr.longstringliteral,
   }
-  this.statementModel_.previous.check = ezP.T3.Stmt.Previous.docstring_def_stmt
-  this.statementModel_.next.check = ezP.T3.Stmt.Next.docstring_def_stmt
+  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.docstring_def_stmt
+  this.statementModel__.next.check = ezP.T3.Stmt.Next.docstring_def_stmt
 }
 goog.inherits(ezP.DelegateSvg.Stmt.docstring_def_stmt, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Manager.register('docstring_def_stmt')
@@ -626,7 +626,7 @@ ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt
  * @return None
  */
 ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.getSubtype = ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.getSubtype = function (block) {
-  var wrapped = this.model.m_1.input.connection.targetBlock()
+  var wrapped = this.uiModel.m_1.input.connection.targetBlock()
   return wrapped? wrapped.ezp.getSuptype(wrapped): undefined
 }
 
@@ -640,7 +640,7 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.getSubtype = ezP.DelegateSvg.S
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.setSubtype = function (block, subtype) {
-  var wrapped = this.model.m_1.input.connection.targetBlock()
+  var wrapped = this.uiModel.m_1.input.connection.targetBlock()
   if (wrapped) {
     wrapped.ezp.setSubtype(wrapped, subtype)
   }

@@ -25,10 +25,10 @@ goog.require('ezP.DelegateSvg.List')
  */
 ezP.DelegateSvg.Expr.keyword_item = function (prototypeName) {
   ezP.DelegateSvg.Expr.keyword_item.superClass_.constructor.call(this, prototypeName)
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.keyword_item,
   }
-  this.inputModel_ = {
+  this.inputModel__ = {
     m_1: {
       key: ezP.Key.IDENTIFIER,
       check: ezP.T3.Expr.identifier,
@@ -56,10 +56,10 @@ ezP.DelegateSvg.Manager.register('keyword_item')
  */
 ezP.DelegateSvg.Expr.expression_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.expression_star.superClass_.constructor.call(this, prototypeName)
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.expression_star,
   }
-  this.inputModel_ = {
+  this.inputModel__ = {
     m_1: {
       label: '*',
       key: ezP.Key.EXPRESSION,
@@ -82,10 +82,10 @@ ezP.DelegateSvg.Manager.register('expression_star')
  */
 ezP.DelegateSvg.Expr.expression_star_star = function (prototypeName) {
   ezP.DelegateSvg.Expr.expression_star_star.superClass_.constructor.call(this, prototypeName)
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.expression_star_star,
   }
-  this.inputModel_ = {
+  this.inputModel__ = {
     m_1: {
       label: '**',
       key: ezP.Key.EXPRESSION,
@@ -290,14 +290,14 @@ ezP.Consolidator.Arguments.prototype.getCheck = function() {
  */
 ezP.DelegateSvg.Expr.argument_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.argument_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.list = {
+  this.inputModel__.list = {
     check: ezP.T3.Expr.Check.argument_any,
     consolidator: ezP.Consolidator.List,
     empty: true,
     sep: ',',
     hole_value: 'name',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.argument_list,
   }
 }
@@ -315,13 +315,13 @@ ezP.DelegateSvg.Manager.register('argument_list')
  */
 ezP.DelegateSvg.Expr.argument_list_comprehensive = function (prototypeName) {
   ezP.DelegateSvg.Expr.argument_list_comprehensive.superClass_.constructor.call(this, prototypeName)
-  this.inputModel_.list = {
+  this.inputModel__.list = {
     consolidator: ezP.Consolidator.Arguments,
     empty: true,
     sep: ',',
     hole_value: 'name',
   }
-  this.outputModel_ = {
+  this.outputModel__ = {
     check: ezP.T3.Expr.argument_list_comprehensive,
   }
 }
