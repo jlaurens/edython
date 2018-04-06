@@ -29,7 +29,7 @@ Blockly.Events.Change.prototype.run
  * @param {boolean} forward True if run forward, false if run backward (undo).
  */
 Blockly.Events.Change.prototype.run = function(forward) {
-  if (!this.element.startsWith('ezp')) {
+  if (!this.element.startsWith('ezp:')) {
     ezP.Do.Events_Change_prototype_run.call(this, forward)
     return
   }
@@ -59,7 +59,12 @@ Blockly.Events.Change.prototype.run = function(forward) {
       block.ezp.setAwaited(block, value)
       break;
     default:
-      console.warn('Unknown change type: ' + this.element);
+      var m = XRegExp.exec(this.element, ezP.XRE.event_property)
+      if (m) {
+        block.ezp.setProperty(block, key, value)
+      } else {
+        console.warn('Unknown change type: ' + this.element);
+      }
   }
 };
 

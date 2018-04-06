@@ -26,7 +26,7 @@ goog.require('ezP.DelegateSvg.List')
  */
 ezP.DelegateSvg.Expr.print_builtin = function (prototypeName) {
   ezP.DelegateSvg.Expr.print_builtin.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__ = {
+  this.model__.input = {
     m_1: {
       label: 'print',
       css_class: 'ezp-code-builtin',
@@ -129,7 +129,7 @@ ezP.DelegateSvg.Expr.print_builtin.prototype.populateContextMenuFirst_ = functio
  */
 ezP.DelegateSvg.Stmt.print_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.print_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.m_1 = {
+  this.model__.input.m_1 = {
     insert: ezP.T3.Expr.print_builtin,
   }
 }
@@ -146,7 +146,7 @@ ezP.DelegateSvg.Manager.register('print_stmt')
  */
 ezP.DelegateSvg.Expr.input_builtin = function (prototypeName) {
   ezP.DelegateSvg.Expr.input_builtin.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__ = {
+  this.model__.input = {
     m_1: {
       label: 'input',
       css_class: 'ezp-code-builtin',
@@ -176,7 +176,7 @@ ezP.DelegateSvg.Manager.register('input_builtin')
  */
 ezP.DelegateSvg.Stmt.input_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.input_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.m_1 = {
+  this.model__.input.m_1 = {
     insert: ezP.T3.Expr.input_builtin,
   }
 }

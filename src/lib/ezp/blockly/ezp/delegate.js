@@ -58,32 +58,17 @@ ezP.Mixin = function (constructor) {
  *     type-specific functions for this block.
  * @constructor
  */
+console.warn('Remove the model__ below')
 ezP.Delegate = function (prototypeName) {
   ezP.Delegate.superClass_.constructor.call(this)
-  this.initModel()
+  this.properties = {}
+  this.model__ = {
+    input: {},
+    output: {},
+    statement: {},
+  }
 }
 goog.inherits(ezP.Delegate, ezP.Helper)
-
-/**
- * Inits the various input data.
- * Called by the constructor.
- * Separated to be mixed in.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.Delegate.prototype.initModel = function (prototypeName) {
-  this.inputModel__ = {}
-}
-
-/**
- * These models have default values shared by all instances.
- * They are created while registering the delegate.
- * The block specific data is store in
- * the delegate's model instance variable.
- */
-ezP.Delegate.prototype.Model_ = undefined
 
 /**
  * Delegate manager.
@@ -240,7 +225,7 @@ ezP.Delegate.Manager = function () {
     return Object.keys(Ctors)
   }
   /**
-   * Get the inputModel_ for that prototypeName.
+   * Get the input model for that prototypeName.
    * @param {?string} prototypeName Name of the language object containing
    * @return void object if no delegate is registered for that name
    */
@@ -253,7 +238,7 @@ ezP.Delegate.Manager = function () {
     return {}
   }
   /**
-   * Get the outputModel_ for that prototypeName.
+   * Get the output model for that prototypeName.
    * @param {?string} prototypeName Name of the language object containing
    * @return void object if no delegate is registered for that name
    */
@@ -266,7 +251,7 @@ ezP.Delegate.Manager = function () {
     return {}
   }
   /**
-   * Get the statementModel_ for that prototypeName.
+   * Get the statement model for that prototypeName.
    * @param {?string} prototypeName Name of the language object containing
    * @return void object if no delegate is registered for that name
    */
@@ -281,7 +266,7 @@ ezP.Delegate.Manager = function () {
   /**
    * Delegate registrator.
    * 
-   * Computes and caches inputModel_, outputModel_ and statementModel_
+   * Computes and caches the model
    * only once from the creation of the delegate.
    * 
    * The last delegate registered for a given prototype name wins.
@@ -1001,4 +986,61 @@ ezP.Delegate.prototype.inputEnumerator = function (block, all) {
   return ezP.Do.Enumerator(block.inputList, all? undefined: function(x) {
     return !x.ezpData.disabled_
   })
+}
+
+/**
+ * Whether the named property for the given block exists.
+ * Undo compliant.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {boolean} deep Whether to unlock statements too.
+ * @return the number of block locked
+ */
+ezP.Delegate.prototype.hasProperty = function (block, key) {
+  return !!block.ezp.properties[key+'_']
+}
+
+/**
+ * Get the named property the given block.
+ * Undo compliant.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {boolean} deep Whether to unlock statements too.
+ * @return the number of block locked
+ */
+ezP.Delegate.prototype.getProperty = function (block, key) {
+  var holder = block.ezp.properties[key+'_']
+  return holder && holder.value
+}
+
+/**
+ * Set the named property of the given block.
+ * Undo compliant.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {boolean} deep Whether to unlock statements too.
+ * @return the number of block locked
+ */
+ezP.Delegate.prototype.setProperty = function (block, key, newValue) {
+  var holder = block.ezp.properties[key+'_']
+  if (!holder) {
+    return false
+  }
+  var oldValue = holder.value
+  if (oldValue === newValue) {
+    return false
+  }
+  if (goog.isFunction(holder.willChange)) {
+    holder.willChange.call(block.ezp, block, oldValue, newValue)
+  }
+  if (Blockly.Events.isEnabled()) {
+    Blockly.Events.fire(new Blockly.Events.BlockChange(
+    block, ezP.Const.Event.property+':'+key, null, block.ezp[k], yorn))
+  }
+  block.ezp[k] = newValue
+  if (goog.isFunction(holder.didChange)) {
+    holder.didChange.call(block.ezp, block, oldValue, newValue)
+  }
+  block.render()
+  return true
 }

@@ -26,7 +26,6 @@ ezP.Const = {
 }
 
 ezP.Const.Field = {
-  OPERATOR: 'operator',
   
   LABEL: 'LABEL',
   START: 'START',
@@ -36,7 +35,6 @@ ezP.Const.Field = {
   ID: 'ID',
   IDENTIFIER: 'IDENTIFIER',
   OPERATOR: 'OPERATOR',
-  ASYNC: 'ASYNC',
   COMMENT: 'COMMENT',
   NUMBER: 'NUMBER',
   STRING: 'STRING',
@@ -70,6 +68,9 @@ ezP.Key = {
   KEY: 'key',
   DATUM: 'datum',
   
+  OPERATOR: 'operator',
+  ASYNC: 'async',
+  AWAIT: 'await',
 
   FIRST: 'm_1',// this MUST be in lower case
   MIDDLE: 'm_2',// this MUST be in lower case
@@ -79,7 +80,10 @@ ezP.Key = {
   
   NAME: 'name',
   IF: 'if',
+  ELIF: 'elif',
   ELSE: 'else',
+  WHILE: 'while',
+  WITH: 'with',
   COMPREHENSION: 'comprehension',
   ITEM: 'item', /* used by delimited blocks */
   PRIMARY: 'primary',
@@ -200,7 +204,8 @@ ezP.XRE = {
     (?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl}|\\p{Mn}|\\p{Mc}|\\p{Nd}|\\p{Pc})*
   )$`, 'x'),
   id_wrapped: XRegExp(`^(?<id>.*?)\.wrapped:(?<name>[a-zA-Z_][a-zA-Z_0-9]*)$`, 'x'),
-  concrete: XRegExp(`^(?<core>.*?)_concrete$`, 'x'),
+  concrete: XRegExp(`^(?<core>.*?)_concrete$`),
+  event_property: XRegExp(`^ezp:property:(?<key>.*?)$`),
 }
 
 /*
@@ -270,7 +275,7 @@ goog.asserts.assert('0e-0'.match(RE.exponentfloat), 'FAILURE')
 
 ezP.Const.Event = {
   input_disable: 'ezp:input_disable',
+  property: 'ezp:property',
   locked: 'ezp:locked',
-  awaited: 'ezp:awaited',
   asynced: 'ezp:asynced',
 }

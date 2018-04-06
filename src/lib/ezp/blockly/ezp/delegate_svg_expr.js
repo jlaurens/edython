@@ -125,7 +125,7 @@ ezP.DelegateSvg.Expr.prototype.willRender_ = function (block) {
   ezP.DelegateSvg.Expr.superClass_.willRender_.call(this, block)
   var field = this.uiModel.fieldAwait
   if (field) {
-    field.setVisible(this.awaited_)
+    field.setVisible(this.await_)
   }
 }
 
@@ -146,7 +146,7 @@ ezP.DelegateSvg.Expr.prototype.awaitable = function (block) {
   }
   do {
     if (parent.type === ezP.T3.Stmt.funcdef_part) {
-      return !!parent.ezp.asynced_
+      return !!parent.ezp.async_
     }
   } while((parent = parent.getParent()))
   return false
@@ -161,12 +161,12 @@ ezP.DelegateSvg.Expr.prototype.awaitable = function (block) {
 ezP.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var yorn = ezP.DelegateSvg.Expr.superClass_.populateContextMenuFirst_.call(this,block, mgr)
   var field = this.uiModel.fieldAwait
-  if (this.awaited_ || this.awaitable && this.awaitable(block)) {
+  if (this.await_ || this.awaitable && this.awaitable(block)) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN('await', 'ezp-code-reserved'),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
     )
-    if (this.awaited_) {
+    if (this.await_) {
       mgr.shouldSeparateRemove()
       mgr.addRemoveChild(new ezP.MenuItem(content, function() {
         block.ezp.setAwaited(block, false)
@@ -433,27 +433,6 @@ ezP.DelegateSvg.Manager.makeSubclass('or_expr_star_star', {
     }
   },
 })
-
-// /**
-// * Class for a DelegateSvg, await_expr, never used. Replaced by an attribute.
-// * For ezPython.
-// * @param {?string} prototypeName Name of the language object containing
-// *     type-specific functions for this block.
-// * @constructor
-// */
-// ezP.DelegateSvg.Expr.await_expr = function (prototypeName) {
-//   ezP.DelegateSvg.Expr.await_expr.superClass_.constructor.call(this, prototypeName)
-//   this.inputModel__.m_1 = {
-//     key: ezP.Key.EXPRESSION,
-//     label: 'await',
-//     css_class: 'ezp-code-reserved',
-//     check: ezP.T3.Expr.Check.primary
-//   }
-//   this.outputModel__ = {
-//     check: ezP.T3.Expr.await_expr,
-//   }
-// }
-// goog.inherits(ezP.DelegateSvg.Expr.await_expr, ezP.DelegateSvg.Expr)
 
 /**
 * Class for a DelegateSvg, not_test_concrete.

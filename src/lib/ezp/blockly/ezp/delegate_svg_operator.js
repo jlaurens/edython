@@ -137,7 +137,7 @@ ezP.DelegateSvg.Expr.u_expr_concrete.prototype.getContent = function (block, op)
  */
 ezP.DelegateSvg.Binary = function (prototypeName) {
   ezP.DelegateSvg.Binary.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.m_1 = {
+  this.model__.input.m_1 = {
     key: ezP.Key.LHS,
     hole_value: 'name',
   }

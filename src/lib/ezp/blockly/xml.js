@@ -993,29 +993,31 @@ ezP.DelegateSvg.List.prototype.inputListToDom = function(block, element, optNoId
 }
 
 /**
- * Set the await prefix from the attribute.
+ * Set the named property from the attribute.
  * @param {!Blockly.Block} block.
  * @param {!Element} element dom element to be completed.
  * @override
  */
-ezP.Xml.awaitToDom = function (block, element, optNoId) {
-  if (block.ezp.awaited_) {
-    element.setAttribute('await', 'true')
+ezP.Xml.propertyToDom = function (block, key, element, optNoId) {
+  if (block.ezp.hasProperty(block, key)) {
+    var property = block.ezp.getProperty(block, key)
+    if (!!property) {
+      element.setAttribute(key, 'true')
+    }
   }
   return true
 }
 
 /**
- * Set the await prefix from the attribute.
+ * Set the named property from the attribute.
  * @param {!Blockly.Block} block.
  * @param {!Element} element dom element to be completed.
  * @override
  */
-ezP.Xml.awaitFromDom = function (block, element) {
-  var field = block.ezp.uiModel.fieldAwait
-  if (field) {
-    var attribute = element.getAttribute('await')
-    block.ezp.setAwaited(block, attribute && attribute.toLowerCase() === 'true')
+ezP.Xml.propertyFromDom = function (block, key, element) {
+  if (block.ezp.hasProperty(block, key)) {
+    var attribute = element.getAttribute(key)
+    block.ezp.setProperty(block, key, !!attribute && (attribute.toLowerCase() === 'true'))
     return true
   }
   return false

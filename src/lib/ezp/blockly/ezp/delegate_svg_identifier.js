@@ -220,3 +220,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.setSubtype = function (block, subtype)
   }
   return false
 }
+
+ezP.DelegateSvg.Identifier.T3s = [
+  ezP.T3.Expr.identifier,
+]

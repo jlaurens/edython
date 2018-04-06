@@ -26,7 +26,7 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.List = function (prototypeName) {
   ezP.DelegateSvg.List.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.list = {}
+  this.model__.input.list = {}
 }
 goog.inherits(ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
@@ -197,20 +197,16 @@ ezP.DelegateSvg.List.prototype.toPythonExpressionComponents = function (block, c
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.optional_expression_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.optional_expression_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.list = {
-    check: ezP.T3.Expr.Check.expression,
-    empty: true,
-    sep: ',',
-    hole_value: 'name',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.optional_expression_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.optional_expression_list, ezP.DelegateSvg.List)
-ezP.DelegateSvg.Manager.register('optional_expression_list')
+ezP.DelegateSvg.Manager.makeSubclass('optional_expression_list', {
+  input: {
+    list: {
+      check: ezP.T3.Expr.Check.expression,
+      empty: true,
+      sep: ',',
+      hole_value: 'name',
+    },
+  },
+}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, expression_list block.
@@ -221,21 +217,16 @@ ezP.DelegateSvg.Manager.register('optional_expression_list')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.non_void_expression_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.non_void_expression_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.list = {
-    check: ezP.T3.Expr.Check.expression,
-    empty: false,
-    sep: ',',
-    hole_value: 'name',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.non_void_expression_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.non_void_expression_list, ezP.DelegateSvg.List)
-
-ezP.DelegateSvg.Manager.register('non_void_expression_list')
+ezP.DelegateSvg.Manager.makeSubclass('non_void_expression_list', {
+  input: {
+    list: {
+      check: ezP.T3.Expr.Check.expression,
+      empty: false,
+      sep: ',',
+      hole_value: 'name',
+    },
+  },
+}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, starred_item_list block.
@@ -246,21 +237,16 @@ ezP.DelegateSvg.Manager.register('non_void_expression_list')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.starred_item_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.starred_item_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.list = {
-    check: ezP.T3.Expr.Check.starred_item,
-    empty: true,
-    sep: ',',
-    hole_value: 'name',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.starred_item_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.starred_item_list, ezP.DelegateSvg.List)
-ezP.DelegateSvg.Manager.register('starred_item_list')
-
+ezP.DelegateSvg.Manager.makeSubclass('starred_item_list', {
+  input: {
+    list: {
+      check: ezP.T3.Expr.Check.starred_item,
+      empty: false,
+      sep: ',',
+      hole_value: 'name',
+    },
+  },
+}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, parenth_form.
@@ -270,20 +256,22 @@ ezP.DelegateSvg.Manager.register('starred_item_list')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.parenth_form = function (prototypeName) {
-  ezP.DelegateSvg.Expr.parenth_form.superClass_.constructor.call(this, prototypeName)
-  this.outputModel__ = {
-    check: ezP.T3.Expr.parenth_form,
-  }
-  this.inputModel__.prefix = {
-    label: '(',
-  }
-  this.inputModel__.suffix = {
-    label: ')',
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.parenth_form, ezP.DelegateSvg.Expr.starred_item_list)
-ezP.DelegateSvg.Manager.register('parenth_form')
+ezP.DelegateSvg.Manager.makeSubclass('parenth_form', {
+  input: {
+    prefix: {
+      label: '(',
+    },
+    list: {
+      check: ezP.T3.Expr.Check.starred_item,
+      empty: false,
+      sep: ',',
+      hole_value: 'name',
+    },
+    suffix: {
+      label: ')',
+    },
+  },
+}, ezP.DelegateSvg.Expr.starred_item_list, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, key_datum_list block.
@@ -294,20 +282,15 @@ ezP.DelegateSvg.Manager.register('parenth_form')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.key_datum_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.key_datum_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.list = {
-    check: ezP.T3.Expr.Check.key_datum,
-    empty: true,
-    sep: ',',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.key_datum_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.key_datum_list, ezP.DelegateSvg.List)
-
-ezP.DelegateSvg.Manager.register('key_datum_list')
+ezP.DelegateSvg.Manager.makeSubclass('key_datum_list', {
+  input: {
+    list: {
+      check: ezP.T3.Expr.Check.key_datum,
+      empty: true,
+      sep: ',',
+    },
+  },
+}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, starred_item_list_comprehensive block.
@@ -318,8 +301,7 @@ ezP.DelegateSvg.Manager.register('key_datum_list')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.starred_item_list_comprehensive = function (prototypeName) {
-  ezP.DelegateSvg.Expr.starred_item_list_comprehensive.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Manager.makeSubclass('starred_item_list_comprehensive', function() {
   var D = {
     check: ezP.T3.Expr.Check.non_void_starred_item_list,
     single: ezP.T3.Expr.comprehension,
@@ -331,14 +313,12 @@ ezP.DelegateSvg.Expr.starred_item_list_comprehensive = function (prototypeName) 
   var RA = goog.array.concat(D.check,D.single)
   goog.array.removeDuplicates(RA)
   D.all = RA
-  this.inputModel__.list = D
-  this.outputModel__ = {
-    check: ezP.T3.Expr.starred_item_list_comprehensive,
+  return {
+    input: {
+      list: D,
+    },
   }
-}
-goog.inherits(ezP.DelegateSvg.Expr.starred_item_list_comprehensive, ezP.DelegateSvg.List)
-ezP.DelegateSvg.Manager.register('starred_item_list_comprehensive')
-
+}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, list_display block.
@@ -347,21 +327,16 @@ ezP.DelegateSvg.Manager.register('starred_item_list_comprehensive')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.list_display = function (prototypeName) {
-  ezP.DelegateSvg.Expr.list_display.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.prefix = {
-    label: '[',
-  }
-  this.inputModel__.suffix = {
-    label: ']',
-  }
-  this.outputModel__ = {
-    awaitable: true,
-    check: ezP.T3.Expr.list_display,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.list_display, ezP.DelegateSvg.Expr.starred_item_list_comprehensive)
-ezP.DelegateSvg.Manager.register('list_display')
+ezP.DelegateSvg.Manager.makeSubclass('list_display', {
+  input: {
+    prefix: {
+      label: '[',
+    },
+    suffix: {
+      label: ']',
+    },
+  },
+}, ezP.DelegateSvg.Expr.starred_item_list_comprehensive, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, non_void_starred_item_list_comprehensive block.
@@ -372,24 +347,24 @@ ezP.DelegateSvg.Manager.register('list_display')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive = function (prototypeName) {
-  ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Manager.makeSubclass('non_void_starred_item_list_comprehensive', function() {
   var D = {
     check: ezP.T3.Expr.Check.non_void_starred_item_list,
     single: ezP.T3.Expr.comprehension,
+    consolidator: ezP.Consolidator.List.Singled,
     empty: false,
     sep: ',',
+    hole_value: 'name',
   }
   var RA = goog.array.concat(D.check,D.single)
   goog.array.removeDuplicates(RA)
   D.all = RA
-  this.inputModel__.list = D
-  this.outputModel__ = {
-    check: ezP.T3.Expr.non_void_starred_item_list_comprehensive,
+  return {
+    input: {
+      list: D,
+    },
   }
-}
-goog.inherits(ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive, ezP.DelegateSvg.List)
-ezP.DelegateSvg.Manager.register('non_void_starred_item_list_comprehensive')
+}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, set_display block.
@@ -398,21 +373,16 @@ ezP.DelegateSvg.Manager.register('non_void_starred_item_list_comprehensive')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.set_display = function (prototypeName) {
-  ezP.DelegateSvg.Expr.set_display.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.prefix = {
-    label: '{',
-  }
-  this.inputModel__.suffix = {
-    label: '}',
-  }
-  this.outputModel__ = {
-    awaitable: true,
-    check: ezP.T3.Expr.set_display,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.set_display, ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive)
-ezP.DelegateSvg.Manager.register('set_display')
+ezP.DelegateSvg.Manager.makeSubclass('set_display', {
+  input: {
+    prefix: {
+      label: '{',
+    },
+    suffix: {
+      label: '}',
+    },
+  },
+}, ezP.DelegateSvg.Expr.starred_item_list_comprehensive, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, key_datum_list_comprehensive block.
@@ -423,24 +393,23 @@ ezP.DelegateSvg.Manager.register('set_display')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.key_datum_list_comprehensive = function (prototypeName) {
-  ezP.DelegateSvg.Expr.key_datum_list_comprehensive.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Manager.makeSubclass('key_datum_list_comprehensive', function() {
   var D = {
     check: ezP.T3.Expr.Check.key_datum_list,
     single: ezP.T3.Expr.dict_comprehension,
+    consolidator: ezP.Consolidator.List.Singled,
     empty: true,
     sep: ',',
   }
   var RA = goog.array.concat(D.check,D.single)
   goog.array.removeDuplicates(RA)
   D.all = RA
-  this.inputModel__.list = D
-  this.outputModel__ = {
-    check: ezP.T3.Expr.key_datum_list_comprehensive,
+  return {
+    input: {
+      list: D,
+    },
   }
-}
-goog.inherits(ezP.DelegateSvg.Expr.key_datum_list_comprehensive, ezP.DelegateSvg.List)
-ezP.DelegateSvg.Manager.register('key_datum_list_comprehensive')
+}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, dict_display block.
@@ -449,21 +418,16 @@ ezP.DelegateSvg.Manager.register('key_datum_list_comprehensive')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.dict_display = function (prototypeName) {
-  ezP.DelegateSvg.Expr.dict_display.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.prefix = {
-    label: '{',
-  }
-  this.inputModel__.suffix = {
-    label: '}',
-  }
-  this.outputModel__ = {
-    awaitable: true,
-    check: ezP.T3.Expr.dict_display,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.dict_display, ezP.DelegateSvg.Expr.key_datum_list_comprehensive)
-ezP.DelegateSvg.Manager.register('dict_display')
+ezP.DelegateSvg.Manager.makeSubclass('dict_display', {
+  input: {
+    prefix: {
+      label: '{',
+    },
+    suffix: {
+      label: '}',
+    },
+  },
+}, ezP.DelegateSvg.Expr.key_datum_list_comprehensive, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, slice_list block.
@@ -474,19 +438,15 @@ ezP.DelegateSvg.Manager.register('dict_display')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.slice_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.slice_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.list = {
-    check: ezP.T3.Expr.Check.slice_item,
-    empty: false,
-    sep: ',',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.slice_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.slice_list, ezP.DelegateSvg.List)
-ezP.DelegateSvg.Manager.register('slice_list')
+ezP.DelegateSvg.Manager.makeSubclass('slice_list', {
+  input: {
+    list: {
+      check: ezP.T3.Expr.Check.slice_item,
+      empty: false,
+      sep: ',',
+    },
+  },
+}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, 'slice ...' block.
@@ -495,21 +455,16 @@ ezP.DelegateSvg.Manager.register('slice_list')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.display_slice_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.display_slice_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.prefix = {
-    label: '[',
-  }
-  this.inputModel__.suffix = {
-    label: ']',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.display_slice_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.display_slice_list, ezP.DelegateSvg.Expr.slice_list)
-
-ezP.DelegateSvg.Manager.register('display_slice_list')
+ezP.DelegateSvg.Manager.makeSubclass('display_slice_list', {
+  input: {
+    prefix: {
+      label: '[',
+    },
+    suffix: {
+      label: ']',
+    },
+  },
+}, ezP.DelegateSvg.Expr.slice_list, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, with_item_list block.
@@ -520,18 +475,29 @@ ezP.DelegateSvg.Manager.register('display_slice_list')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.with_item_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.with_item_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.list = {
-    check: ezP.T3.Expr.Check.with_item,
-    empty: false,
-    sep: ',',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.with_item_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.with_item_list, ezP.DelegateSvg.List)
+ezP.DelegateSvg.Manager.makeSubclass('with_item_list', {
+  input: {
+    list: {
+      check: ezP.T3.Expr.Check.with_item,
+      empty: false,
+      sep: ',',
+    },
+  },
+}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Manager.register('with_item_list')
-
+ezP.DelegateSvg.List.T3s = [
+  ezP.T3.Expr.optional_expression_list,
+  ezP.T3.Expr.non_void_expression_list,
+  ezP.T3.Expr.starred_item_list,
+  ezP.T3.Expr.parenth_form,
+  ezP.T3.Expr.key_datum_list,
+  ezP.T3.Expr.starred_item_list_comprehensive,
+  ezP.T3.Expr.list_display,
+  ezP.T3.Expr.non_void_starred_item_list_comprehensive,
+  ezP.T3.Expr.set_display,
+  ezP.T3.Expr.key_datum_list_comprehensive,
+  ezP.T3.Expr.dict_display,
+  ezP.T3.Expr.slice_list,
+  ezP.T3.Expr.dict_display,
+  ezP.T3.Expr.with_item_list,
+]

@@ -349,6 +349,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   if ((D = this.getModel().output) && D.awaitable) {
     field = new ezP.FieldLabel('await')
     field.ezpData.css_class = 'ezp-code-reserved'
+    field.name = ezP.Const.Field.AWAIT
     field.setSourceBlock(block)
     field.init()
     model.fieldAwait = field
@@ -356,6 +357,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   if ((D = this.getModel().statement) && D.asyncable) {
     field = new ezP.FieldLabel('async')
     field.ezpData.css_class = 'ezp-code-reserved'
+    field.name = ezP.Const.Field.ASYNC
     field.setSourceBlock(block)
     field.init()
     model.fieldAsync = field
@@ -2701,45 +2703,4 @@ ezP.DelegateSvg.prototype.didConnect = function(block, connection, oldTargetConn
   if (block === Blockly.selected && this.locked_) {
     block.ezp.unlock(block)
   }
-}
-
-/**
- * Set the await status of the given block.
- * Undo compliant.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {boolean} deep Whether to unlock statements too.
- * @return the number of block locked
- */
-ezP.DelegateSvg.prototype.setAwaited = function (block, yorn) {
-  if (!!yorn === !!this.awaited_) {
-    return false
-  }
-  var ans = 0
-  if (Blockly.Events.isEnabled()) {
-    Blockly.Events.fire(new Blockly.Events.BlockChange(
-    block, ezP.Const.Event.awaited, null, this.awaited_, yorn))
-  }
-  this.awaited_ = yorn
-  block.render()
-}
-
-/**
- * Set the async status of the given block.
- * Undo compliant.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {boolean} deep Whether to unlock statements too.
- * @return the number of block locked
- */
-ezP.DelegateSvg.prototype.setAsynced = function (block, yorn) {
-  if (!!yorn === !!this.asynced_) {
-    return
-  }
-  if (Blockly.Events.isEnabled()) {
-    Blockly.Events.fire(new Blockly.Events.BlockChange(
-    block, ezP.Const.Event.asynced, null, this.asynced_, yorn))
-  }
-  this.asynced_ = yorn
-  block.render()
 }

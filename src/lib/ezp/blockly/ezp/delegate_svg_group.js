@@ -25,12 +25,19 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Group = function (prototypeName) {
   ezP.DelegateSvg.Group.superClass_.constructor.call(this, prototypeName)
-  this.statementModel__.key = ezP.Key.DO
-  this.inputModel__.m_3 = {
-    label: ':',
-  }
 }
 goog.inherits(ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
+
+ezP.DelegateSvg.Group.model__ = {
+  input: {
+    m_3: {
+      label: ':',
+    },
+  },
+  statement: {
+    key: ezP.Key.DO,
+  }
+}
 
 /**
  * Block path.
@@ -224,19 +231,16 @@ ezP.DelegateSvg.Group.prototype.highlightConnection = function (c8n) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.if_part = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.if_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.m_1 = {
-    label: 'if',
-    css_class: 'ezp-code-reserved',
-    check: ezP.T3.Expr.Check.expression,
-    key: ezP.Key.COND,
-  }
-  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.if_part
-  this.statementModel__.next.check = ezP.T3.Stmt.Next.if_part
-}
-goog.inherits(ezP.DelegateSvg.Stmt.if_part, ezP.DelegateSvg.Group)
-ezP.DelegateSvg.Manager.register('if_part')
+ezP.DelegateSvg.Manager.makeSubclass('if_part', {
+  input: {
+    m_1: {
+      label: 'if',
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.Check.expression,
+      key: ezP.Key.IF,
+    },
+  },
+}, ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
 
 /**
  * Class for a DelegateSvg, elif_part block.
@@ -246,19 +250,16 @@ ezP.DelegateSvg.Manager.register('if_part')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.elif_part = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.elif_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.m_1 = {
-    label: 'elif',
-    css_class: 'ezp-code-reserved',
-    check: ezP.T3.Expr.Check.expression,
-    key: ezP.Key.COND,
-  }
-  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.elif_part
-  this.statementModel__.next.check = ezP.T3.Stmt.Next.elif_part
-}
-goog.inherits(ezP.DelegateSvg.Stmt.elif_part, ezP.DelegateSvg.Group)
-ezP.DelegateSvg.Manager.register('elif_part')
+ezP.DelegateSvg.Manager.makeSubclass('elif_part', {
+  input: {
+    m_1: {
+      label: 'elif',
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.Check.expression,
+      key: ezP.Key.ELIF,
+    },
+  },
+}, ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
 
 /**
  * Class for a DelegateSvg, else_part block.
@@ -276,29 +277,26 @@ ezP.DelegateSvg.Manager.register('elif_part')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.else_part = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.else_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.m_1 = {
-    label: 'else',
-    css_class: 'ezp-code-reserved',
-  }
-  this.statementModel__.previous = {
-    check: ezP.T3.Stmt.Previous.else_part,
-    didConnect: function(oldTargetConnection, oldConnection) {
-      var block = this.connection.getSourceBlock()
-      block.ezp.consolidateType(block)
+ezP.DelegateSvg.Manager.makeSubclass('else_part', {
+  input: {
+    m_1: {
+      label: 'else',
+      css_class: 'ezp-code-reserved',
     },
-    didDisconnect: function(oldConnection) {
-      var block = this.connection.getSourceBlock()
-      block.ezp.consolidateType(block)
+  },
+  statement: {
+    previous : {
+      didConnect: function(oldTargetConnection, oldConnection) {
+        var block = this.connection.getSourceBlock()
+        block.ezp.consolidateType(block)
+      },
+      didDisconnect: function(oldConnection) {
+        var block = this.connection.getSourceBlock()
+        block.ezp.consolidateType(block)
+      },
     },
-  }
-  this.statementModel__.next = {
-    check: ezP.T3.Stmt.Next.else_part,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.else_part, ezP.DelegateSvg.Group)
-ezP.DelegateSvg.Manager.register('else_part')
+  },
+}, ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Stmt.last_else_part = ezP.DelegateSvg.Stmt.try_else_part = ezP.DelegateSvg.Stmt.else_part
 ezP.DelegateSvg.Manager.register('try_else_part')
@@ -364,32 +362,16 @@ ezP.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.while_part = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.while_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.m_1 = {
-    label: 'while',
-    css_class: 'ezp-code-reserved',
-    check: ezP.T3.Expr.Check.expression,
-    key: ezP.Key.COND,
-  }
-  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.while_part
-  this.statementModel__.next.check = ezP.T3.Stmt.Next.while_part
-}
-goog.inherits(ezP.DelegateSvg.Stmt.while_part, ezP.DelegateSvg.Group)
-ezP.DelegateSvg.Manager.register('while_part')
-
-/**
- * Class for a DelegateSvg, asyncable block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Group.Async = function (prototypeName) {
-  ezP.DelegateSvg.Group.Async.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Group.Async, ezP.DelegateSvg.Group)
+ezP.DelegateSvg.Manager.makeSubclass('while_part', {
+  input: {
+    m_1: {
+      label: 'while',
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.Check.expression,
+      key: ezP.Key.WHILE,
+    },
+  },
+}, ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
 
 /**
  * Will draw the block. Default implementation does nothing.
@@ -397,40 +379,11 @@ goog.inherits(ezP.DelegateSvg.Group.Async, ezP.DelegateSvg.Group)
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Group.Async.prototype.willRender_ = function (block) {
-  ezP.DelegateSvg.Group.Async.superClass_.willRender_.call(this, block)
+ezP.DelegateSvg.Group.prototype.willRender_ = function (block) {
+  ezP.DelegateSvg.Group.superClass_.willRender_.call(this, block)
   var field = this.uiModel.fieldAsync
   if (field) {
-    field.setVisible(this.asynced_)
-  }
-}
-
-/**
- * Records the prefix as attribute.
- * @param {!Blockly.Block} block.
- * @param {!Element} element dom element to be completed.
- * @override
- */
-ezP.DelegateSvg.Group.Async.prototype.toDom = function (block, element, optNoId) {
-  var element = ezP.DelegateSvg.Group.Async.superClass_.toDom.call(this, block, element, optNoId)
-  if (element && this.asynced_) {
-    element.setAttribute('async', 'true')
-  }
-  return element
-}
-
-/**
- * Set the prefix from the attribute.
- * @param {!Blockly.Block} block.
- * @param {!Element} element dom element to be completed.
- * @override
- */
-ezP.DelegateSvg.Group.Async.prototype.fromDom = function (block, element) {
-  ezP.DelegateSvg.Group.Async.superClass_.fromDom.call(this, block, element)
-  var field = this.uiModel.fieldAsync
-  if (field) {
-    var attribute = element.getAttribute('async')
-    this.setAsynced(block, attribute && attribute.toLowerCase() === 'true')
+    field.setVisible(this.async_)
   }
 }
 
@@ -440,26 +393,25 @@ ezP.DelegateSvg.Group.Async.prototype.fromDom = function (block, element) {
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Group.Async.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var field = this.uiModel.fieldAsync
-  if (field) {
+ezP.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  if (block.ezp.uiModel.fieldAsync) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN('async', 'ezp-code-reserved'),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
     )
-    if (this.asynced_) {
+    if (block.ezp.getProperty(block, ezP.Key.ASYNC)) {
       mgr.addRemoveChild(new ezP.MenuItem(content, function() {
-        block.ezp.setAsynced(block, false)
+        block.ezp.setProperty(block, ezP.Key.ASYNC, false)
       }))
       mgr.shouldSeparateRemove()
     } else {
       mgr.addInsertChild(new ezP.MenuItem(content, function() {
-        block.ezp.setAsynced(block, true)
+        block.ezp.setProperty(block, ezP.Key.ASYNC, true)
       }))
       mgr.shouldSeparateInsert()
     }
   }
-  return ezP.DelegateSvg.Group.Async.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  return ezP.DelegateSvg.Group.superClass_.populateContextMenuFirst_.call(this,block, mgr)
 }
 
 /**
@@ -470,26 +422,22 @@ ezP.DelegateSvg.Group.Async.prototype.populateContextMenuFirst_ = function (bloc
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.for_part = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.for_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.m_1 = {
-    label: 'for',
-    css_class: 'ezp-code-reserved',
-    wrap: ezP.T3.Expr.target_list,
-    key: ezP.Key.FOR,
-  }
-  this.inputModel__.m_2 = {
-    label: 'in',
-    css_class: 'ezp-code-reserved',
-    wrap: ezP.T3.Expr.expression_list,
-    key: ezP.Key.IN,
-  }
-  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.for_part
-  this.statementModel__.next.check = ezP.T3.Stmt.Next.for_part
-  this.statementModel__.asyncable = true
-}
-goog.inherits(ezP.DelegateSvg.Stmt.for_part, ezP.DelegateSvg.Group.Async)
-ezP.DelegateSvg.Manager.register('for_part')
+ezP.DelegateSvg.Manager.makeSubclass('for_part', {
+  input: {
+    m_1: {
+      label: 'for',
+      css_class: 'ezp-code-reserved',
+      wrap: ezP.T3.Expr.target_list,
+      key: ezP.Key.FOR,
+    },
+    m_2: {
+      label: 'in',
+      css_class: 'ezp-code-reserved',
+      wrap: ezP.T3.Expr.expression_list,
+      key: ezP.Key.IN,
+    },
+  },
+}, ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
 
 /**
  * Class for a DelegateSvg, with_part block.
@@ -499,20 +447,16 @@ ezP.DelegateSvg.Manager.register('for_part')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.with_part = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.with_part.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.m_1 = {
-    key: ezP.Key.LIST,
-    label: 'with',
-    css_class: 'ezp-code-reserved',
-    wrap: ezP.T3.Expr.with_item_list,
-  }
-  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.with_part
-  this.statementModel__.next.check = ezP.T3.Stmt.Next.with_part
-  this.statementModel__.asyncable = true
-}
-goog.inherits(ezP.DelegateSvg.Stmt.with_part, ezP.DelegateSvg.Group.Async)
-ezP.DelegateSvg.Manager.register('with_part')
+ezP.DelegateSvg.Manager.makeSubclass('with_part', {
+  input: {
+    m_1: {
+      key: ezP.Key.WITH,
+      label: 'with',
+      css_class: 'ezp-code-reserved',
+      wrap: ezP.T3.Expr.with_item_list,
+    },
+  },
+}, ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
 
 /**
  * Class for a DelegateSvg, with_item_concrete block.
@@ -522,9 +466,8 @@ ezP.DelegateSvg.Manager.register('with_part')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.with_item_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Expr.with_item_concrete.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__ = {
+ezP.DelegateSvg.Manager.makeSubclass('with_item_concrete', {
+  input: {
     m_1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
@@ -537,7 +480,15 @@ ezP.DelegateSvg.Expr.with_item_concrete = function (prototypeName) {
       check: ezP.T3.Expr.Check.target,
       hole_value: 'target',
     },
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.with_item_concrete, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('with_item_concrete')
+  },
+})
+
+ezP.DelegateSvg.Group.T3s = [
+  ezP.T3.Stmt.if_part,
+  ezP.T3.Stmt.elif_part,
+  ezP.T3.Stmt.else_part,
+  ezP.T3.Stmt.while_part,
+  ezP.T3.Stmt.with_part,
+  ezP.T3.Stmt.for_part,
+  ezP.T3.Expr.with_item_concrete,
+]

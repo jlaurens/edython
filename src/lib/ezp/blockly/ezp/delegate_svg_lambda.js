@@ -28,7 +28,7 @@ goog.require('Blockly.RenderedConnection')
  */
 ezP.DelegateSvg.Expr.lambda_expression = function (prototypeName) {
   ezP.DelegateSvg.Expr.lambda_expression.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__ = {
+  this.model__.input = {
     m_1: {
       key: ezP.Key.LIST,
       label: 'lambda',
