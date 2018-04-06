@@ -23,9 +23,8 @@ goog.require('ezP.DelegateSvg.Expr')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.comprehension = function (prototypeName) {
-  ezP.DelegateSvg.Expr.comprehension.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__ = {
+ezP.DelegateSvg.Manager.makeSubclass('comprehension', {
+  input: {
     m_1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
@@ -38,13 +37,8 @@ ezP.DelegateSvg.Expr.comprehension = function (prototypeName) {
       key: ezP.Key.COMP_ITER,
       wrap: ezP.T3.Expr.comp_iter_list,
     }
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.comprehension,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.comprehension, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('comprehension')
+  },
+})
 
 /**
  * Class for a DelegateSvg, comp_for block.
@@ -54,9 +48,8 @@ ezP.DelegateSvg.Manager.register('comprehension')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.comp_for = function (prototypeName) {
-  ezP.DelegateSvg.Expr.comp_for.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__ = {
+ezP.DelegateSvg.Manager.makeSubclass('comp_for', {
+  input: {
     m_1: {
       key: ezP.Key.FOR,
       label: 'for',
@@ -69,15 +62,9 @@ ezP.DelegateSvg.Expr.comp_for = function (prototypeName) {
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.or_test,
       hole_value: 'name',
-    }
+    }  
   }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.comp_for,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.comp_for, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register('comp_for')
+})
 
 /**
  * Class for a DelegateSvg, comp_if block.
@@ -87,24 +74,17 @@ ezP.DelegateSvg.Manager.register('comp_for')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.comp_if = function (prototypeName) {
-  ezP.DelegateSvg.Expr.comp_if.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__ = {
+ezP.DelegateSvg.Manager.makeSubclass('comp_if', {
+  input: {
     m_1: {
       key: ezP.Key.IF,
       label: 'if',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression_nocond,
       hole_value: 'yorn',
-    }
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.comp_if,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.comp_if, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register('comp_if')
+    },
+  },
+})
 
 /**
  * Class for a DelegateSvg, comp_iter_list block.
@@ -115,22 +95,18 @@ ezP.DelegateSvg.Manager.register('comp_if')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.comp_iter_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.comp_iter_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.list = {
-    check: ezP.T3.Expr.Check.comp_iter,
-    empty: true,
-    sep: ',',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.comp_iter_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.comp_iter_list, ezP.DelegateSvg.List)
-ezP.DelegateSvg.Manager.register('comp_iter_list')
+ezP.DelegateSvg.Manager.makeSubclass('comp_iter_list', {
+  input: {
+    list: {
+      check: ezP.T3.Expr.Check.comp_iter,
+      empty: true,
+      sep: ',',
+    },  
+  },
+}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
 /**
- * Class for a DelegateSvg, comprehension value block.
+ * Class for a DelegateSvg, dict comprehension value block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
@@ -138,18 +114,20 @@ ezP.DelegateSvg.Manager.register('comp_iter_list')
  * @constructor
  */
 // dict_comprehension ::= expression ":" expression comp_for
-ezP.DelegateSvg.Expr.dict_comprehension = function (prototypeName) {
-  ezP.DelegateSvg.Expr.dict_comprehension.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.m_1 = {
-    insert:
-  ezP.T3.Expr.key_datum_concrete,
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.dict_comprehension,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.dict_comprehension, ezP.DelegateSvg.Expr.comprehension)
-ezP.DelegateSvg.Manager.register('dict_comprehension')
+ezP.DelegateSvg.Manager.makeSubclass('dict_comprehension', {
+  input: {
+    m_1: {
+      insert: ezP.T3.Expr.key_datum_concrete,
+    },
+    m_2: {
+      insert: ezP.T3.Expr.comp_for,
+    },
+    m_3: {
+      key: ezP.Key.COMP_ITER,
+      wrap: ezP.T3.Expr.comp_iter_list,
+    },  
+  },
+})
 
 /**
  * Class for a DelegateSvg, key_datum_concrete block.
@@ -159,12 +137,8 @@ ezP.DelegateSvg.Manager.register('dict_comprehension')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.key_datum_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Expr.key_datum_concrete.superClass_.constructor.call(this, prototypeName)
-  this.outputModel__ = {
-    check: ezP.T3.Expr.key_datum_concrete,
-  }
-  this.inputModel__ = {
+ezP.DelegateSvg.Manager.makeSubclass('key_datum_concrete', {
+  input: {
     m_1: {
       key: ezP.Key.KEY,
       check: ezP.T3.Expr.Check.expression,
@@ -177,10 +151,7 @@ ezP.DelegateSvg.Expr.key_datum_concrete = function (prototypeName) {
       hole_value: 'value',
     }
   }
-}
-goog.inherits(ezP.DelegateSvg.Expr.key_datum_concrete, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register('key_datum_concrete')
+})
 
 /**
  * Class for a DelegateSvg, generator expression block.
@@ -190,22 +161,16 @@ ezP.DelegateSvg.Manager.register('key_datum_concrete')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.generator_expression = function (prototypeName) {
-  ezP.DelegateSvg.Expr.generator_expression.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.prefix = {
-    label: '(',
-  }
-  this.inputModel__.suffix = {
-    label: ')',
-  }
-  this.outputModel__ = {
-    awaitable: true,
-    check: ezP.T3.Expr.generator_expression,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.generator_expression, ezP.DelegateSvg.Expr.comprehension)
-
-ezP.DelegateSvg.Manager.register('generator_expression')
+ezP.DelegateSvg.Manager.makeSubclass('generator_expression', {
+  input: {
+    prefix: {
+      label: '(',
+    },
+    suffix: {
+      label: ')',
+    }
+  },
+}, ezP.DelegateSvg.Expr.comprehension, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Comprehension.T3s = [
   ezP.T3.Expr.comprehension,
