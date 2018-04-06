@@ -154,7 +154,7 @@ ezP.Block.prototype.appendWrapValueInput = function(name, prototypeName, optiona
   var input = this.appendValueInput(name)
   input.connection.ezp.wrapped_ = true
   input.connection.ezp.optional_ = optional
-  input.connection.setHidden(true)
+  input.connection.setHidden(true) // Don't ever connect any block to this connection from the UI
   if (!this.ezp.wrappedInputs_) {
     this.ezp.wrappedInputs_ = []
   }

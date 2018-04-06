@@ -161,7 +161,7 @@ ezP.DelegateSvg.Expr.prototype.awaitable = function (block) {
 ezP.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var yorn = ezP.DelegateSvg.Expr.superClass_.populateContextMenuFirst_.call(this,block, mgr)
   var field = this.uiModel.fieldAwait
-  if (this.awaited_ || this.awaitable(block)) {
+  if (this.awaited_ || this.awaitable && this.awaitable(block)) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN('await', 'ezp-code-reserved'),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),

@@ -26,6 +26,7 @@ assigned_single ::= yield_expression | assignment_expression
 assignment_stmt ::= assignment_expression
 </pre>
 <pre>
+augassign_stmt[augmented_assignment_stmt] ::=  augassign_numeric_stmt | augassign_bitwise_stmt
 augassign_numeric_stmt ::= augassign_numeric
 augassign_bitwise_stmt ::= augassign_bitwise
 augassign_numeric ::=  augtarget augop aug_assign_list

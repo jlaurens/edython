@@ -1224,8 +1224,8 @@ ezP.MenuManager.prototype.populate_wrap_alternate = function (block, key) {
  */
 ezP.MenuManager.prototype.populateOperator = function (block) {
   var ezp = block.ezp
-  var model = ezp.getModel()
-  if (model.operators && model.operators.length > 1) {
+  var operators = ezp.getModel()
+  if ((operators = operators.input) && (operators = operators.operators) && operators.length > 1) {
     var value = ezp.getSubtype(block)
     var F = function(op) {
       var menuItem = new ezP.MenuItem(ezp.getContent(block, op), function() {
@@ -1236,8 +1236,8 @@ ezP.MenuManager.prototype.populateOperator = function (block) {
       this.addChild(menuItem, true)
       goog.dom.classlist.add(menuItem.getElement().firstChild, 'ezp-code')
     }
-    for (var i = 0; i<model.operators.length; i++) {
-      F.call(this, model.operators[i])
+    for (var i = 0; i<operators.length; i++) {
+      F.call(this, operators[i])
     }
     return true
   }

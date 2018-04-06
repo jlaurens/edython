@@ -22,6 +22,7 @@ goog.require('Blockly.FieldVariable')
 
 ezP.T3.Xml.Stmt.statement = 'ezp:statement'
 ezP.T3.Xml.Stmt.do = 'ezp:do'
+ezP.T3.Xml.Stmt.augmented_assignment = 'ezp:augmented_assignment'
 ezP.T3.Xml.Expr.expression = 'ezp:expression'
 ezP.T3.Xml.Expr.literal = 'ezp:literal'
 ezP.T3.Xml.Expr.comparison = 'ezp:comparison'
@@ -312,22 +313,11 @@ ezP.Xml.domToBlockHeadless = function(xmlBlock, workspace) {
   if (!xmlBlock.nodeName) {
     return block
   }
-  var prototypeName = xmlBlock.nodeName.toLowerCase()
-  var id = xmlBlock.getAttribute('id')
-  if (prototypeName === ezP.T3.Expr.literal) {
-    var text = ''
-    for (var i = 0, xmlChild; (xmlChild = xmlBlock.childNodes[i]); i++) {
-      if (xmlChild.nodeType === 3) {
-        text = xmlChild.nodeValue
-        break
-      }
-    }
-    prototypeName = ezP.Do.typeOfString(text) || ezP.T3.Expr.integer
-    if ((block = ezP.DelegateSvg.newBlockComplete(workspace, prototypeName, id))) {
-      block.ezp.setValue(block, text)
-    }
+  if ((block = ezP.Xml.AugAssign.domToBlock(xmlBlock, workspace)) || (block = ezP.Xml.Literal.domToBlock(xmlBlock, workspace))) {
     return block
   }
+  var prototypeName = xmlBlock.nodeName.toLowerCase()
+  var id = xmlBlock.getAttribute('id')
   if (prototypeName === ezP.T3.Xml.Expr.comparison) {
     var op = xmlBlock.getAttribute(ezP.Const.Field.OPERATOR)
     var type = ezP.T3.Expr.number_comparison, Ctor, model
@@ -849,7 +839,33 @@ ezP.DelegateSvg.Expr.valueFromDom = function(block, element) {
   block.ezp.setValue(block, text)
 }
 
+goog.provide('ezP.Xml.Literal')
 goog.require('ezP.DelegateSvg.Expr.numberliteral')
+
+/**
+ * Set the operator from the element's tagName.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Xml.Literal.domToBlock = function (element, workspace) {
+  var name = element.tagName
+  if (name && name.toLowerCase() === ezP.DelegateSvg.Literal.prototype.xmlTagName()) {
+    var text = ''
+    for (var i = 0, xmlChild; (xmlChild = xmlBlock.childNodes[i]); i++) {
+      if (xmlChild.nodeType === 3) {
+        text = xmlChild.nodeValue
+        break
+      }
+    }
+    name = ezP.Do.typeOfString(text) || ezP.T3.Expr.integer
+    var block = ezP.DelegateSvg.newBlockComplete(workspace, name, id)
+    if (block) {
+      block.ezp.setValue(block, text)
+    }
+    return block
+  }
+}
 
 /**
  * Convert the block to a dom element.
@@ -1061,9 +1077,9 @@ ezP.DelegateSvg.Operator.prototype.xmlTagName = function (block) {
  * @param {!Element} element dom element to be completed.
  * @override
  */
-ezP.Xml.Operator.toDom = function (block, element) {
+ezP.Xml.Operator.toDom = function (block, element, optNoId) {
   element.setAttribute(ezP.Const.Field.OPERATOR, block.ezp.getSubtype(block))
-  ezP.Xml.InputList.toDom(block, element)
+  ezP.Xml.InputList.toDom(block, element, optNoId)
 }
 
 /**
@@ -1072,14 +1088,85 @@ ezP.Xml.Operator.toDom = function (block, element) {
  * @param {!Element} element dom element to be completed.
  * @override
  */
-ezP.Xml.Operator.fromDom = function (block, element, optNoId) {
+ezP.Xml.Operator.fromDom = function (block, element) {
   var op = element.getAttribute(ezP.Const.Field.OPERATOR)
   block.ezp.setSubtype(block, op)
-  ezP.Xml.InputList.fromDom(block, element, optNoId)
+  ezP.Xml.InputList.fromDom(block, element)
 }
 
 ezP.DelegateSvg.Operator.prototype.xml = ezP.Xml.Operator
 ezP.DelegateSvg.Expr.power_concrete.prototype.xml = ezP.Xml.Operator
+
+
+goog.provide('ezP.Xml.AugAssign')
+goog.require('ezP.DelegateSvg.AugAssign')
+
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * Default implementation just returns 'expr'
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.DelegateSvg.Stmt.augassign_numeric_stmt.prototype.xmlTagName = ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.xmlTagName = function (block) {
+  return ezP.T3.Xml.Stmt.augmented_assignment
+}
+
+/**
+ * Records the operator as attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Xml.AugAssign.toDom = function (block, element, optNoId) {
+  element.setAttribute(ezP.Const.Field.OPERATOR, block.ezp.getSubtype(block))
+  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().input.m_1.key
+  ezP.Xml.namedInputToDom(block, name, element, optNoId)
+  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().input.m_3.key
+  ezP.Xml.namedListInputToDom(block, name, element, optNoId)
+}
+
+/**
+ * Set the operator from the element's tagName.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Xml.AugAssign.domToBlock = function (element, workspace) {
+  var name = element.tagName
+  if (name && name.toLowerCase() === ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.xmlTagName()) {
+    var op = element.getAttribute(ezP.Const.Field.OPERATOR)
+    var type = ezP.T3.Stmt.augassign_numeric_stmt
+    var model = ezP.DelegateSvg.Expr.augassign_numeric.prototype.getModel()
+    if (model.input.operators.indexOf(op) < 0) {
+      type = ezP.T3.Stmt.augassign_bitwise_stmt
+    }
+    var id = element.getAttribute('id')
+    var block = ezP.DelegateSvg.newBlockComplete(workspace, type, id)
+    ezP.Xml.fromDom(block, element)
+    return block
+  }
+}
+
+/**
+ * Set the operator from the attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Xml.AugAssign.fromDom = function (block, element) {
+  var op = element.getAttribute(ezP.Const.Field.OPERATOR)
+  block.ezp.setSubtype(block, op)
+  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().input.m_1.key
+  ezP.Xml.namedInputFromDom(block, name, element)
+  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().input.m_3.key
+  ezP.Xml.namedListInputFromDom(block, name, element)
+}
+
+ezP.DelegateSvg.AugAssign.prototype.xml = ezP.Xml.AugAssign
+ezP.DelegateSvg.Stmt.augassign_numeric_stmt.prototype.xml = ezP.Xml.AugAssign
+ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.xml = ezP.Xml.AugAssign
+
 
 /**
  * The xml tag name of this block, as it should appear in the saved data.

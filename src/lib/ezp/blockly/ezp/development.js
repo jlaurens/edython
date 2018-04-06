@@ -183,7 +183,7 @@ ezP.DelegateSvg.Expr.augassign_bitwise.workspaceBlocks = [
   ezP.T3.Expr.identifier,
   ezP.T3.Expr.augassign_numeric,
   ezP.T3.Expr.augassign_bitwise,
-  ezP.T3.Expr.augassign_list,
+  ezP.T3.Expr.augassign_list_concrete,
 ]
 
 ezP.DelegateSvg.Expr.optional_expression_list.workspaceBlocks = [

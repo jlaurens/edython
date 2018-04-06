@@ -100,8 +100,11 @@ ezP.Delegate.Manager = function () {
    * @param {!Object} to  destination.
    * @param {!Object} from  source.
    */
-  var mixinModel = function (to, from) {
+  var mixinModel = function (to, from, ignore) {
     for (var k in from) {
+      if(ignore && ignore(k)) {
+        continue
+      }
       var from_d = from[k]
       // next is my test for a dictionary, hence my meaning of dictionary
       // in that context
@@ -131,7 +134,7 @@ ezP.Delegate.Manager = function () {
    * Private helper to provide the constructor with a getInputModel.
    * @param {?Object} Ctor a constructor
    */
-  var helper = function(Ctor) {
+  var helper = function(Ctor, inputModel) {
     if (Ctor.model_) {
       return Ctor.model_
     }
@@ -151,7 +154,14 @@ ezP.Delegate.Manager = function () {
       }
       delete Ctor.model__
     }
-    return Ctor.model_ = model
+    if (inputModel) {
+      mixinModel(model.input, inputModel)
+    }
+    Ctor.model_ = model
+    Ctor.prototype.getModel = function() {
+      return Ctor.model_
+    }
+    return Ctor.model_
   }
   /**
    * Method to create the constructor of a subclass.
@@ -168,6 +178,17 @@ ezP.Delegate.Manager = function () {
     }
     if (model) {
       if (!goog.isFunction(model)) {
+        if((model.input && (t = model.input.insert))) {
+          var otherCtor = goog.isFunction(t)? t: me.get(t)
+          goog.asserts.assert(otherCtor, 'Not inserted: '+t)
+          var otherModel = otherCtor.prototype.getModel()
+          if (otherModel.input) {
+            Ctor.prototype.getModel = function() {
+              return helper(Ctor, otherModel.input)
+            }
+          }
+          delete model.input.insert
+        }
         var t = ezP.T3.Expr[key]
         if (t) {
           if (!model.output) {
@@ -274,7 +295,6 @@ ezP.Delegate.Manager = function () {
     goog.asserts.assert(me.create(prototypeName), 'Registration failure: '+prototypeName)
     // cache all the input, output and statement data at the prototype level
     Ctor.prototype.getModel = function () {
-      console.log(prototypeName, Ctor)
       return helper(Ctor)
     }
   }

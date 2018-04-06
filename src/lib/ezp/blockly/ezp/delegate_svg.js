@@ -182,7 +182,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         if (B) {
           // transfer input
           var input
-          while ((input = B.inputList[0])) {
+          while ((input = B.inputList.shift(0))) {
             block.inputList.push(input)
             input.sourceBlock_ = block
             if (input.connection) {
@@ -195,8 +195,8 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
                 field.textElement_.tooltip = block
               }
             }
-            B.inputList.splice(0, 1)
           }
+          // xfer wrapped
           if (B.ezp.wrappedInputs_ && B.ezp.wrappedInputs_.length) {
             if (!this.wrappedInputs_) {
               this.wrappedInputs_ = []
@@ -205,6 +205,8 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
               this.wrappedInputs_.push(input)
             }
           }
+          // xfer uiModel
+          out.insert = B.ezp.uiModel
           B.dispose(true)
         }
       }

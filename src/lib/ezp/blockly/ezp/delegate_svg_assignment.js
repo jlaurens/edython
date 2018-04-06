@@ -272,10 +272,8 @@ goog.provide('ezP.DelegateSvg.Stmt.assignment_stmt')
  */
 ezP.DelegateSvg.Manager.makeSubclass('assignment_stmt', {
   input: {
-    m_1: {
-      insert: ezP.T3.Expr.assignment_expression,
-    },
-  },
+    insert: ezP.DelegateSvg.Expr.assignment_expression,
+  }
 })
 
 /**
@@ -411,6 +409,8 @@ ezP.DelegateSvg.Manager.makeSubclass('assigned_list', {
   },
 }, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
+goog.provide('ezP.DelegateSvg.AugAssign')
+
 /**
  * Class for a DelegateSvg, augassign_... block.
  * Multiple ops.
@@ -431,7 +431,7 @@ ezP.DelegateSvg.AugAssign.model__ = {
     },
     m_3: {
       key: ezP.Key.LIST,
-      wrap: ezP.T3.Expr.augassign_list,
+      wrap: ezP.T3.Expr.augassign_list_concrete,
     }
   }
 }
@@ -479,10 +479,8 @@ ezP.DelegateSvg.Manager.makeSubclass('augassign_bitwise', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('augassign_numeric_stmt', {
   input: {
-    m_3: {
-      insert: ezP.T3.Expr.augassign_numeric,
-    },
-  }
+    insert: ezP.T3.Expr.augassign_numeric,
+  },
 })
 
 /**
@@ -494,11 +492,17 @@ ezP.DelegateSvg.Manager.makeSubclass('augassign_numeric_stmt', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('augassign_bitwise_stmt', {
   input: {
-    m_3: {
-      insert: ezP.T3.Expr.augassign_bitwise,
-    },
-  }
+    insert: ezP.T3.Expr.augassign_bitwise,
+  },
 })
+
+/**
+ * Get the content for the menu item.
+ * @param {!Blockly.Block} block The block.
+ * @param {string} op op is the operator
+ * @private
+ */
+ezP.DelegateSvg.Stmt.augassign_numeric_stmt.prototype.getContent = ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.getContent = ezP.DelegateSvg.Binary.prototype.getContent
 
 /**
  * List consolidator for target list.
@@ -608,23 +612,76 @@ ezP.Consolidator.List.AugAssigned.prototype.getCheck = function (io) {
 }
 
 /**
- * Class for a DelegateSvg, augassign_list.
+ * Class for a DelegateSvg, augassign_list_concrete.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('augassign_list', {
+ezP.DelegateSvg.Manager.makeSubclass('augassign_list_concrete', {
   input: {
     list: {
       consolidator: ezP.Consolidator.List.AugAssigned,
       hole_value: 'name',
     },
   }
-})
+}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
-
-ezP.ID.ASSIGN_LIST_INSERT = 'ASSIGN_LIST_INSERT'
+ezP.DelegateSvg.AugAssign.populateContextMenuFirst_ = function (block, mgr) {
+  var input = block.getInput(ezP.Key.LIST)
+  if (input) {
+    var target = input.connection.targetBlock()
+    if (target) {
+      var type
+      var can_insert = function() {
+        var e8r = target.ezp.inputEnumerator(target)
+        while ((input = e8r.next())) {
+          var c8n = e8r.here.connection
+          if (c8n && !c8n.targetConnection) {
+            if (goog.array.contains(c8n.check_, type)) {
+              return true
+            }
+          }
+        }
+        return false
+      }
+      var F = function(content) {
+        mgr.addInsertChild(new ezP.MenuItem(content, function() {
+            Blockly.Events.setGroup(true)
+            var BB = ezP.DelegateSvg.newBlockComplete(target.workspace, type)
+            if (BB.ezp.setValue) {
+              BB.ezp.setValue(BB, 'name')
+            } else {
+              var holes = ezP.HoleFiller.getDeepHoles(BB)
+              ezP.HoleFiller.fillDeepHoles(BB.workspace, holes)
+            }
+            input.connection.connect(BB.outputConnection)
+            target.ezp.consolidate(target)
+            Blockly.Events.setGroup(false)
+            return
+          }))
+      }
+      type = ezP.T3.Expr.yield_expression_list
+      if (can_insert()) {
+        var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+          ezP.Do.createSPAN('yield', 'ezp-code-reserved'),
+          ezP.Do.createSPAN(' …', 'ezp-code-placeholder'),
+        )
+        F(content)
+      }
+      type = ezP.T3.Expr.yield_from_expression
+      if (can_insert()) {
+        var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+          ezP.Do.createSPAN('yield from', 'ezp-code-reserved'),
+          ezP.Do.createSPAN(' …', 'ezp-code-placeholder'),
+        )
+        F(content)
+      }
+      mgr.shouldSeparateInsert()
+    }
+  }
+  return true
+}
 
 /**
  * Populate the context menu for the given block.
@@ -633,58 +690,38 @@ ezP.ID.ASSIGN_LIST_INSERT = 'ASSIGN_LIST_INSERT'
  * @private
  */
 ezP.DelegateSvg.Expr.augassign_numeric.prototype.populateContextMenuFirst_ =
-ezP.DelegateSvg.Expr.augassign_bitwise.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var target = this.uiModel.m_3.input.connection.targetBlock()
-  if (target) {
-    var type, input
-    var can_insert = function() {
-      var e8r = target.ezp.inputEnumerator(target)
-      while (e8r.next()) {
-        var c8n = e8r.here.connection
-        if (c8n && !c8n.targetConnection) {
-          if (goog.array.contains(c8n.check_, type)) {
-            return true
-          }
-        }
-      }
-      return false
-    }
-    var F = function(content) {
-      mgr.addInsertChild(new ezP.MenuItem(content, function() {
-          Blockly.Events.setGroup(true)
-          var BB = ezP.DelegateSvg.newBlockComplete(target.workspace, type)
-          if (BB.ezp.setValue) {
-            BB.ezp.setValue(BB, 'name')
-          } else {
-            var holes = ezP.HoleFiller.getDeepHoles(BB)
-            ezP.HoleFiller.fillDeepHoles(BB.workspace, holes)
-          }
-          input.connection.connect(BB.outputConnection)
-          target.ezp.consolidate(target)
-          Blockly.Events.setGroup(false)
-          return
-        }))
-    }
-    type = ezP.T3.Expr.yield_expression_list
-    if (can_insert()) {
-      var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-        ezP.Do.createSPAN('yield', 'ezp-code-reserved'),
-        ezP.Do.createSPAN(' …', 'ezp-code-placeholder'),
-      )
-      F(content)
-    }
-    type = ezP.T3.Expr.yield_from_expression
-    if (can_insert()) {
-      var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-        ezP.Do.createSPAN('yield from', 'ezp-code-reserved'),
-        ezP.Do.createSPAN(' …', 'ezp-code-placeholder'),
-      )
-      F(content)
-    }
-    mgr.shouldSeparateInsert()
-  }
-  return ezP.DelegateSvg.Expr.augassign_numeric.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+ezP.DelegateSvg.Expr.augassign_bitwise.prototype.populateContextMenuFirst_ = function(block, mgr) {
+  ezP.DelegateSvg.AugAssign.populateContextMenuFirst_(block, mgr)
+  return ezP.DelegateSvg.Expr.augassign_bitwise.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
+
+ezP.DelegateSvg.Stmt.augassign_numeric_stmt.prototype.populateContextMenuFirst_ =
+ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.populateContextMenuFirst_ = function(block, mgr) {
+  mgr.populateOperator(block)
+  ezP.DelegateSvg.AugAssign.populateContextMenuFirst_(block, mgr)
+  return ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+}
+
+/**
+ * Get the subtype of the block.
+ * The operator.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return None
+ */
+ezP.DelegateSvg.Stmt.augassign_numeric_stmt.prototype.getSubtype = ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.getSubtype = ezP.DelegateSvg.Operator.prototype.getSubtype
+
+/**
+ * Set the subtype of the block.
+ * The operator.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return true if the receiver supports subtyping, false otherwise
+ */
+ezP.DelegateSvg.Stmt.augassign_numeric_stmt.prototype.setSubtype = ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.setSubtype = ezP.DelegateSvg.Operator.prototype.setSubtype
+
 
 ezP.DelegateSvg.Assignment.T3s = [
   ezP.T3.Expr.target_star,
@@ -699,5 +736,5 @@ ezP.DelegateSvg.Assignment.T3s = [
   ezP.T3.Expr.augassign_bitwise,
   ezP.T3.Stmt.augassign_numeric_stmt,
   ezP.T3.Stmt.augassign_bitwise_stmt,
-  ezP.T3.Expr.augassign_list,
+  ezP.T3.Expr.augassign_list_concrete,
 ]

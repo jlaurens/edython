@@ -89,7 +89,7 @@ ezP.DelegateSvg.Operator.prototype.getSubtype = function (block) {
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Operator.prototype.setSubtype = function (block, subtype) {
-  var model = this.getModel()
+  var model = this.getModel().input
   if (model.operators && model.operators.indexOf(subtype) >= 0) {
     this.uiModel.m_3.fieldOperator.setValue(subtype)
     return true
@@ -108,8 +108,8 @@ ezP.DelegateSvg.Operator.prototype.setSubtype = function (block, subtype) {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('u_expr_concrete', {
-  operators: ['-', '+', '~'],
   input: {
+    operators: ['-', '+', '~'],
     m_3: {
       operator: '-',
       check: ezP.T3.Expr.Check.u_expr
@@ -172,8 +172,8 @@ ezP.DelegateSvg.Binary.prototype.getContent = function (block, op) {
  */
 ezP.DelegateSvg.Binary.makeSubclass = function(key, operators, check1, operator, check3) {
   ezP.DelegateSvg.Manager.makeSubclass(key, {
-    operators: operators,
     input: {
+      operators: operators,
       m_1: {
         check: ezP.T3.Expr.Check[check1]
       },

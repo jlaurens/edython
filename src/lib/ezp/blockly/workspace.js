@@ -129,7 +129,7 @@ Blockly.Workspace.prototype.getBlockById = function(id) {
       var c8n = e8r.here.connection
       if (c8n) {
         var target = c8n.targetBlock()
-        if (target.id === id) {
+        if (target && target.id === id) {
           return target
         }
       }
