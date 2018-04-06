@@ -24,20 +24,16 @@ goog.require('ezP.DelegateSvg.Stmt')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.target_star = function (prototypeName) {
-  ezP.DelegateSvg.Expr.target_star.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.m_1 = {
-    key: ezP.Key.EXPRESSION,
-    label: '*',
-    css_class: 'ezp-code-reserved',
-    check: ezP.T3.Expr.Check.target
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.target_star,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.target_star, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('target_star')
+ezP.DelegateSvg.Manager.makeSubclass('target_star', {
+  input: {
+    m_1: {
+      key: ezP.Key.EXPRESSION,
+      label: '*',
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.Check.target
+    },
+  },
+})
 
 /**
  * List consolidator for target list.
@@ -177,18 +173,14 @@ ezP.Consolidator.List.Target.prototype.getCheck = function (io) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.target_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.target_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.list = {
-    consolidator: ezP.Consolidator.List.Target,
-    hole_value: 'name',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.target_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.target_list, ezP.DelegateSvg.List)
-ezP.DelegateSvg.Manager.register('target_list')
+ezP.DelegateSvg.Manager.makeSubclass('target_list', {
+  input: {
+    list: {
+      consolidator: ezP.Consolidator.List.Target,
+      hole_value: 'name',
+    },
+  },
+}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, void_target_list block.
@@ -199,17 +191,14 @@ ezP.DelegateSvg.Manager.register('target_list')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.void_target_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.void_target_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.list = {
-    consolidator: ezP.Consolidator.List.Target.Void,
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.void_target_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.void_target_list, ezP.DelegateSvg.List)
-ezP.DelegateSvg.Manager.register('void_target_list')
+ezP.DelegateSvg.Manager.makeSubclass('void_target_list', {
+  input: {
+    list: {
+      consolidator: ezP.Consolidator.List.Target.Void,
+      hole_value: 'name',
+    },
+  },
+}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, parenth_target_list block.
@@ -220,20 +209,16 @@ ezP.DelegateSvg.Manager.register('void_target_list')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.parenth_target_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.parenth_target_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.prefix = {
-    label: '(',
-  }
-  this.inputModel__.suffix = {
-    label: ')',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.parenth_target_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.parenth_target_list, ezP.DelegateSvg.Expr.void_target_list)
-ezP.DelegateSvg.Manager.register('parenth_target_list')
+ezP.DelegateSvg.Manager.makeSubclass('parenth_target_list', {
+  input: {
+    prefix: {
+      label: '(',
+    },
+    suffix: {
+      label: ')',
+    }
+  },
+})
 
 /**
  * Class for a DelegateSvg, bracket_target_list block.
@@ -244,20 +229,16 @@ ezP.DelegateSvg.Manager.register('parenth_target_list')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.bracket_target_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.bracket_target_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.prefix = {
-    label: '[',
-  }
-  this.inputModel__.suffix = {
-    label: ']',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.bracket_target_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.bracket_target_list, ezP.DelegateSvg.Expr.void_target_list)
-ezP.DelegateSvg.Manager.register('bracket_target_list')
+ezP.DelegateSvg.Manager.makeSubclass('bracket_target_list', {
+  input: {
+    prefix: {
+      label: '[',
+    },
+    suffix: {
+      label: ']',
+    }
+  },
+})
 
 /**
  * Class for a DelegateSvg, assignment_expression block.
@@ -266,9 +247,8 @@ ezP.DelegateSvg.Manager.register('bracket_target_list')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.assignment_expression = function (prototypeName) {
-  ezP.DelegateSvg.Expr.assignment_expression.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__ = {
+ezP.DelegateSvg.Manager.makeSubclass('assignment_expression', {
+  input: {
     m_1: {
       key: ezP.Key.TARGET,
       wrap: ezP.T3.Expr.target_list,
@@ -278,14 +258,8 @@ ezP.DelegateSvg.Expr.assignment_expression = function (prototypeName) {
       operator: '=',
       wrap: ezP.T3.Expr.assigned_list,
     },
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.assignment_expression,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.assignment_expression, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register('assignment_expression')
+  },
+})
 
 goog.provide('ezP.DelegateSvg.Stmt.assignment_stmt')
 
@@ -296,14 +270,13 @@ goog.provide('ezP.DelegateSvg.Stmt.assignment_stmt')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.assignment_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.assignment_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.m_3 = {
-    insert : ezP.T3.Expr.assignment_expression,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.assignment_stmt, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('assignment_stmt')
+ezP.DelegateSvg.Manager.makeSubclass('assignment_stmt', {
+  input: {
+    m_1: {
+      insert: ezP.T3.Expr.assignment_expression,
+    },
+  },
+})
 
 /**
  * List consolidator for parameter list.
@@ -429,18 +402,14 @@ ezP.Consolidator.Assigned.prototype.getCheck = function (io) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.assigned_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.assigned_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.list = {
-    consolidator: ezP.Consolidator.Assigned,
-    hole_value: 'value',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.assigned_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.assigned_list, ezP.DelegateSvg.List)
-ezP.DelegateSvg.Manager.register('assigned_list')
+ezP.DelegateSvg.Manager.makeSubclass('assigned_list', {
+  input: {
+    list: {
+      consolidator: ezP.Consolidator.Assigned,
+      hole_value: 'value',
+    },
+  },
+}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, augassign_... block.
@@ -452,29 +421,19 @@ ezP.DelegateSvg.Manager.register('assigned_list')
  */
 ezP.DelegateSvg.AugAssign = function (prototypeName) {
   ezP.DelegateSvg.AugAssign.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.m_1.check = ezP.T3.Expr.Check.augtarget
-  this.inputModel__.m_3.key = ezP.Key.LIST
-  this.inputModel__.m_3.wrap = ezP.T3.Expr.augassign_list
 }
-
 goog.inherits(ezP.DelegateSvg.AugAssign, ezP.DelegateSvg.Binary)
 
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-ezP.DelegateSvg.AugAssign.prototype.XpopulateContextMenuFirst_ = function (block, mgr) {
-  var yorn
-  var target = this.uiModel.m_3.input.connection.targetBlock()
-  if (target) {
-    var D = ezP.DelegateSvg.Manager.getInputModel(target.type)
-    if (yorn = mgr.populate_wrap_alternate(target, D.m_3.key)) {
-      mgr.shouldSeparate()
+ezP.DelegateSvg.AugAssign.model__ = {
+  input: {
+    m_1: {
+      check: ezP.T3.Expr.Check.augtarget,
+    },
+    m_3: {
+      key: ezP.Key.LIST,
+      wrap: ezP.T3.Expr.augassign_list,
     }
   }
-  return ezP.DelegateSvg.AugAssign.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
 /**
@@ -485,17 +444,14 @@ ezP.DelegateSvg.AugAssign.prototype.XpopulateContextMenuFirst_ = function (block
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.augassign_numeric = function (prototypeName) {
-  ezP.DelegateSvg.Expr.augassign_numeric.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.operators = ['+=','-=','*=','/=','//=','%=','**=','@=']
-  this.inputModel__.m_3.operator = this.inputModel__.operators[0]
-  this.outputModel__ = {
-    check: ezP.T3.Expr.augassign_numeric,
+ezP.DelegateSvg.Manager.makeSubclass('augassign_numeric', {
+  input: {
+    operators: ['+=','-=','*=','/=','//=','%=','**=','@='],
+    m_3: {
+      operator: '+=',
+    },
   }
-}
-
-goog.inherits(ezP.DelegateSvg.Expr.augassign_numeric, ezP.DelegateSvg.AugAssign)
-ezP.DelegateSvg.Manager.register('augassign_numeric')
+}, ezP.DelegateSvg.AugAssign, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, augassign_bitwise block.
@@ -505,17 +461,14 @@ ezP.DelegateSvg.Manager.register('augassign_numeric')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.augassign_bitwise = function (prototypeName) {
-  ezP.DelegateSvg.Expr.augassign_bitwise.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.operators = [">>=", "<<=", "&=", "^=", "|="]
-  this.inputModel__.m_3.operator = this.inputModel__.operators[1]
-  this.outputModel__ = {
-    check: ezP.T3.Expr.augassign_bitwise,
+ezP.DelegateSvg.Manager.makeSubclass('augassign_bitwise', {
+  input: {
+    operators: [">>=", "<<=", "&=", "^=", "|="],
+    m_3: {
+      operator: '<<=',
+    },
   }
-}
-
-goog.inherits(ezP.DelegateSvg.Expr.augassign_bitwise, ezP.DelegateSvg.AugAssign)
-ezP.DelegateSvg.Manager.register('augassign_bitwise')
+}, ezP.DelegateSvg.AugAssign, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, augassign_numeric_stmt.
@@ -524,14 +477,13 @@ ezP.DelegateSvg.Manager.register('augassign_bitwise')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.augassign_numeric_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.augassign_numeric_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.m_3 = {
-    insert: ezP.T3.Expr.augassign_numeric,
+ezP.DelegateSvg.Manager.makeSubclass('augassign_numeric_stmt', {
+  input: {
+    m_3: {
+      insert: ezP.T3.Expr.augassign_numeric,
+    },
   }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.augassign_numeric_stmt, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('augassign_numeric_stmt')
+})
 
 /**
  * Class for a DelegateSvg, augassign_bitwise_stmt.
@@ -540,14 +492,13 @@ ezP.DelegateSvg.Manager.register('augassign_numeric_stmt')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.augassign_bitwise_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.m_3 = {
-    insert: ezP.T3.Expr.augassign_bitwise,
+ezP.DelegateSvg.Manager.makeSubclass('augassign_bitwise_stmt', {
+  input: {
+    m_3: {
+      insert: ezP.T3.Expr.augassign_bitwise,
+    },
   }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.augassign_bitwise_stmt, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('augassign_bitwise_stmt')
+})
 
 /**
  * List consolidator for target list.
@@ -663,17 +614,14 @@ ezP.Consolidator.List.AugAssigned.prototype.getCheck = function (io) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.augassign_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.augassign_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.list = {
-    consolidator: ezP.Consolidator.List.AugAssigned,
+ezP.DelegateSvg.Manager.makeSubclass('augassign_list', {
+  input: {
+    list: {
+      consolidator: ezP.Consolidator.List.AugAssigned,
+      hole_value: 'name',
+    },
   }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.augassign_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.augassign_list, ezP.DelegateSvg.List)
-ezP.DelegateSvg.Manager.register('augassign_list')
+})
 
 
 ezP.ID.ASSIGN_LIST_INSERT = 'ASSIGN_LIST_INSERT'
@@ -736,33 +684,6 @@ ezP.DelegateSvg.Expr.augassign_bitwise.prototype.populateContextMenuFirst_ = fun
     mgr.shouldSeparateInsert()
   }
   return ezP.DelegateSvg.Expr.augassign_numeric.superClass_.populateContextMenuFirst_.call(this,block, mgr)
-}
-
-/**
- * Handle the selection of an item in the context dropdown menu.
- * @param {!Blockly.Block} block, owner of the delegate.
- * @param {!goog.ui.Menu} menu The Menu clicked.
- * @param {!goog....} event The event containing as target
- * the MenuItem selected within menu.
- */
-ezP.DelegateSvg.Expr.augassign_numeric.prototype.handleMenuItemActionFirst = ezP.DelegateSvg.Expr.augassign_bitwise.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
-  var model = event.target.getModel()
-  if (model.action === ezP.ID.ASSIGN_LIST_INSERT) {
-    Blockly.Events.setGroup(true)
-    var input = model.target
-    var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, model.type)
-    if (BB.ezp.setValue) {
-      BB.ezp.setValue(BB, 'name')
-    } else {
-      var holes = ezP.HoleFiller.getDeepHoles(BB)
-      ezP.HoleFiller.fillDeepHoles(BB.workspace, holes)
-    }
-    input.connection.connect(BB.outputConnection)
-    input.sourceBlock_.ezp.consolidate(input.sourceBlock_)
-    Blockly.Events.setGroup(false)
-    return true
-  }
-  return ezP.DelegateSvg.Stmt.augassign_numeric_stmt.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
 }
 
 ezP.DelegateSvg.Assignment.T3s = [

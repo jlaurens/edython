@@ -88,6 +88,13 @@ ezP.DelegateSvg.Manager.register = function (key) {
   Blockly.Blocks[prototypeName] = {}
 }
 
+ezP.DelegateSvg.Manager.makeSubclass_ = ezP.DelegateSvg.Manager.makeSubclass
+ezP.DelegateSvg.Manager.makeSubclass = function(key, model, parent, owner) {
+  parent = parent || (ezP.T3.Expr[key]? ezP.DelegateSvg.Expr: ezP.DelegateSvg.Stmt)
+  ezP.Delegate.Manager.makeSubclass_(key, model, parent, owner)
+  Blockly.Blocks[ezP.T3.Stmt[key]||ezP.T3.Expr[key]] = {}
+}
+
 /**
  * This is the shape used to draw the outline of a block
  * @private

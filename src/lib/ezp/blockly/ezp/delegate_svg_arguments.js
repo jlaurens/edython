@@ -23,12 +23,8 @@ goog.require('ezP.DelegateSvg.List')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.keyword_item = function (prototypeName) {
-  ezP.DelegateSvg.Expr.keyword_item.superClass_.constructor.call(this, prototypeName)
-  this.outputModel__ = {
-    check: ezP.T3.Expr.keyword_item,
-  }
-  this.inputModel__ = {
+ezP.DelegateSvg.Manager.makeSubclass('keyword_item', {
+  input: {
     m_1: {
       key: ezP.Key.IDENTIFIER,
       check: ezP.T3.Expr.identifier,
@@ -39,12 +35,9 @@ ezP.DelegateSvg.Expr.keyword_item = function (prototypeName) {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'value',
-    }
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.keyword_item, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register('keyword_item')
+    },
+  },
+})
 
 /**
  * Class for a DelegateSvg, expression_star block.
@@ -54,23 +47,16 @@ ezP.DelegateSvg.Manager.register('keyword_item')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.expression_star = function (prototypeName) {
-  ezP.DelegateSvg.Expr.expression_star.superClass_.constructor.call(this, prototypeName)
-  this.outputModel__ = {
-    check: ezP.T3.Expr.expression_star,
-  }
-  this.inputModel__ = {
+ezP.DelegateSvg.Manager.makeSubclass('expression_star', {
+  input: {
     m_1: {
       label: '*',
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'value',
-    }
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.expression_star, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register('expression_star')
+    },
+  },
+})
 
 /**
  * Class for a DelegateSvg, expression_star_star block.
@@ -80,23 +66,16 @@ ezP.DelegateSvg.Manager.register('expression_star')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.expression_star_star = function (prototypeName) {
-  ezP.DelegateSvg.Expr.expression_star_star.superClass_.constructor.call(this, prototypeName)
-  this.outputModel__ = {
-    check: ezP.T3.Expr.expression_star_star,
-  }
-  this.inputModel__ = {
+ezP.DelegateSvg.Manager.makeSubclass('expression_star_star', {
+  input: {
     m_1: {
       label: '**',
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'value',
-    }
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.expression_star_star, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Manager.register('expression_star_star')
+    },
+  },
+})
 
 /**
  * List consolidator for argument list.
@@ -288,21 +267,17 @@ ezP.Consolidator.Arguments.prototype.getCheck = function() {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.argument_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.argument_list.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.list = {
-    check: ezP.T3.Expr.Check.argument_any,
-    consolidator: ezP.Consolidator.List,
-    empty: true,
-    sep: ',',
-    hole_value: 'name',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.argument_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.argument_list, ezP.DelegateSvg.List)
-ezP.DelegateSvg.Manager.register('argument_list')
+ezP.DelegateSvg.Manager.makeSubclass('argument_list', {
+  input: {
+    list: {
+      check: ezP.T3.Expr.Check.argument_any,
+      consolidator: ezP.Consolidator.List,
+      empty: true,
+      sep: ',',
+      hole_value: 'name',
+    },
+  },
+}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
 /**
  * Class for a DelegateSvg, argument_list_comprehensive block.
@@ -313,21 +288,16 @@ ezP.DelegateSvg.Manager.register('argument_list')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.argument_list_comprehensive = function (prototypeName) {
-  ezP.DelegateSvg.Expr.argument_list_comprehensive.superClass_.constructor.call(this, prototypeName)
-  this.inputModel__.list = {
-    consolidator: ezP.Consolidator.Arguments,
-    empty: true,
-    sep: ',',
-    hole_value: 'name',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.argument_list_comprehensive,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.argument_list_comprehensive, ezP.DelegateSvg.List)
-
-ezP.DelegateSvg.Manager.register('argument_list_comprehensive')
+ezP.DelegateSvg.Manager.makeSubclass('argument_list_comprehensive', {
+  input: {
+    list: {
+      consolidator: ezP.Consolidator.Arguments,
+      empty: true,
+      sep: ',',
+      hole_value: 'name',
+    },
+  },
+}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Argument.T3s = [
   ezP.T3.Expr.keyword_item,

@@ -849,7 +849,7 @@ ezP.DelegateSvg.Expr.valueFromDom = function(block, element) {
   block.ezp.setValue(block, text)
 }
 
-goog.require('ezP.DelegateSvg.Literal.numberliteral')
+goog.require('ezP.DelegateSvg.Expr.numberliteral')
 
 /**
  * Convert the block to a dom element.

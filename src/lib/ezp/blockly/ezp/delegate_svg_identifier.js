@@ -23,16 +23,13 @@ goog.require('ezP.DelegateSvg.Expr')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('identifier', ezP.DelegateSvg.Expr, {
+ezP.DelegateSvg.Manager.makeSubclass('identifier', {
   input: {
     m_1: {
       key: ezP.Key.NAME,
       identifier: 'item',
     },
   },
-  output: {
-    check: ezP.T3.Expr.identifier,
-  }
 })
 
 /**

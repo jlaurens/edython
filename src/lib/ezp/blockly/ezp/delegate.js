@@ -143,9 +143,13 @@ ezP.Delegate.Manager = function () {
     if (Ctor !== ezP.Delegate && Ctor.superClass_) {
       mixinModel(model, helper(Ctor.superClass_.constructor))
     }
-    if (Ctor.model__ && Object.keys(Ctor.model__).length) {
-      mixinModel(model, Ctor.model__)
-      Ctor.model__ = {}
+    if (Ctor.model__) {
+      if (goog.isFunction(Ctor.model__)) {
+        model = Ctor.model__(model)
+      } else if (Object.keys(Ctor.model__).length) {
+        mixinModel(model, Ctor.model__)
+      }
+      delete Ctor.model__
     }
     return Ctor.model_ = model
   }
@@ -153,17 +157,36 @@ ezP.Delegate.Manager = function () {
    * Method to create the constructor of a subclass.
    * Registers the subclass too.
    */
-  me.makeSubclass = function(key, parent, model) {
-    var Ctor = parent[key] = function (prototypeName) {
+  me.makeSubclass = function(key, model, parent, owner) {    
+    var Ctor = (owner||parent)[key] = function (prototypeName) {
       Ctor.superClass_.constructor.call(this, prototypeName)
     }
     goog.inherits(Ctor, parent)
     ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr[key]||ezP.T3.Stmt[key], Ctor)
+    if (goog.isFunction(model)) {
+      model = model()
+    }
     if (model) {
-      if (!model.output) {
+      if (!goog.isFunction(model)) {
         var t = ezP.T3.Expr[key]
-        model.output = {
-          check: t,
+        if (t) {
+          if (!model.output) {
+            model.output = {
+              check: t,
+            }
+          }
+        } else if ((t = ezP.T3.Stmt[key])) {
+          var statement = model.statement || (model.statement = {})
+          if (!statement.previous) {
+            statement.previous = {
+              check: ezP.T3.Stmt.Previous[key]
+            }
+          }
+          if (!statement.next) {
+            statement.next = {
+              check: ezP.T3.Stmt.Next[key]
+            }
+          }
         }
       }
       Ctor.model__ = model
