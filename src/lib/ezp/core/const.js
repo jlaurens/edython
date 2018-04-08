@@ -67,8 +67,8 @@ ezP.Key = {
   COMP_ITER: 'comp_iter',
   KEY: 'key',
   DATUM: 'datum',
-  
   OPERATOR: 'operator',
+
   ASYNC: 'async',
   AWAIT: 'await',
 

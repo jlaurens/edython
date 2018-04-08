@@ -415,7 +415,7 @@ ezP.DelegateSvg.prototype.preInitSvg = function(block) {
 /**
  * Create and initialize the SVG representation of the block.
  * May be called more than once.
- * @param {!Blockly.Block} block to be initialized..
+ * @param {!Blockly.Block} block to be initialized.
  */
 ezP.DelegateSvg.prototype.postInitSvg = function(block) {
   goog.dom.removeNode(block.svgPath_)

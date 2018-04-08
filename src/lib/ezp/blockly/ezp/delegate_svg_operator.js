@@ -41,6 +41,24 @@ ezP.DelegateSvg.Operator.model__ = {
 }
 
 /**
+ * Create and initialize the various paths.
+ * Called once at block creation time.
+ * Should not be called directly
+ * Declares the operator property.
+ * @param {!Blockly.Block} block to be initialized.
+ */
+ezP.DelegateSvg.Operator.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Operator.superClass_.initBlock.call(block.ezp, block)
+  var model = block.ezp.constructor.getModel()
+  block.ezp.initProperty(block, ezP.Key.OPERATOR, model.input.operators[model.input.initialOperator], undefined, undefined, function(block, oldValue, newValue) {
+    var disabler = new ezP.Events.Disabler()
+    var field = block.ezp.uiModel.m_3.fieldOperator
+    field.setValue(newValue)
+    disabler.stop()
+  })
+}
+
+/**
  * Get the content for the menu item.
  * @param {!Blockly.Block} block The block.
  * @param {string} op op is the operator

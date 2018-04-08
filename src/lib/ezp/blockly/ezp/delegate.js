@@ -966,17 +966,6 @@ ezP.Delegate.prototype.xmlType = function (block) {
 }
 
 /**
- * The xml tag name of this block, as it should appear in the saved data.
- * Default implementation just returns 'block'
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return true if the given value is accepted, false otherwise
- */
-ezP.Delegate.prototype.xmlTagName = function (block) {
-  return block.type
-}
-
-/**
  * Input enumerator
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
@@ -1030,17 +1019,54 @@ ezP.Delegate.prototype.setProperty = function (block, key, newValue) {
   if (oldValue === newValue) {
     return false
   }
-  if (goog.isFunction(holder.willChange)) {
-    holder.willChange.call(block.ezp, block, oldValue, newValue)
+  if (holder.validate_ && !holder.validate_.call(block.ezp, block, oldValue, newValue)) {
+    return false
+  }
+  if (holder.willChange_) {
+    holder.willChange_.call(block.ezp, block, oldValue, newValue)
   }
   if (Blockly.Events.isEnabled()) {
     Blockly.Events.fire(new Blockly.Events.BlockChange(
     block, ezP.Const.Event.property+':'+key, null, block.ezp[k], yorn))
   }
-  block.ezp[k] = newValue
-  if (goog.isFunction(holder.didChange)) {
-    holder.didChange.call(block.ezp, block, oldValue, newValue)
+  holder.value = newValue
+  if (holder.didChange_) {
+    holder.didChange_.call(block.ezp, block, oldValue, newValue)
   }
   block.render()
   return true
+}
+
+/**
+ * Init the named property of the given block.
+ * Model is an object w.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} key Whether to unlock statements too.
+ * @param {Object} value.
+ * @param {function} validate.
+ * @param {function} willChange.
+ * @param {function} didChange.
+ * @return the number of block locked
+ */
+ezP.Delegate.prototype.initProperty = function (block, key, value, validate, willChange, didChange) {
+  var k = key+'_'
+  var holder = block.ezp.properties[k] || (block.ezp.properties[k] = {})
+  holder.value = value
+  if (validate && goog.isFunction(validate)) {
+    holder.validate = validate
+  } else {
+    delete holder.validate
+  }
+  if (willChange && goog.isFunction(willChange)) {
+    holder.willChange = willChange
+  } else {
+    delete holder.willChange
+  }
+  if (didChange && goog.isFunction(didChange)) {
+    holder.didChange = didChange
+    didChange(block, undefined, value)
+  } else {
+    delete holder.didChange
+  }
 }

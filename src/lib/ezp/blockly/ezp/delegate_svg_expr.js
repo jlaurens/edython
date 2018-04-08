@@ -500,17 +500,6 @@ ezP.DelegateSvg.Literal.prototype.xmlType = function (block) {
 }
 
 /**
- * The xml tag name of this block, as it should appear in the saved data.
- * Default implementation just returns 'expr'
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return true if the given value is accepted, false otherwise
- */
-ezP.DelegateSvg.Literal.prototype.xmlTagName = function (block) {
-  return ezP.T3.Xml.Expr.literal
-}
-
-/**
 * Class for a DelegateSvg, number: integer, floatnumber or imagnumber.
 * For ezPython.
 * @param {?string} prototypeName Name of the language object containing

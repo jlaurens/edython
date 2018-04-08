@@ -70,7 +70,6 @@ Blockly.Events.Change.prototype.run = function(forward) {
 
 /**
  * Event disabler.
- * @param {boolean} forward True if run forward, false if run backward (undo).
  */
 ezP.Events.Disabler = function() {
   if (Blockly.Events.isEnabled()) {
