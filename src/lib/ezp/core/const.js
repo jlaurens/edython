@@ -54,7 +54,8 @@ ezP.Const.Field = {
   CLASS: 'CLASS',
   NCSTR: 'NCSTR'
 }
-ezP.Key = {
+
+ezP.Key = {  
   LIST: 'list',
   TARGET: 'target',
   ASSIGNED: 'assigned',
@@ -75,7 +76,7 @@ ezP.Key = {
   FIRST: 'm_1',// this MUST be in lower case
   MIDDLE: 'm_2',// this MUST be in lower case
   LAST: 'm_3',// this MUST be in lower case
-  DO: 'do',// this MUST be in lower case
+  SUITE: 'suite',// this MUST be in lower case
   COMP_FOR: 'comp_for',
   
   NAME: 'name',

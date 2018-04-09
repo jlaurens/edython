@@ -18,7 +18,7 @@ goog.require('ezP.Python.ezp:grp')
 Blockly.Python[ezP.Const.Prc.DEF] = function (block) {
   var DEF = ezP.Python.valueToCode(block, ezP.Const.Field.DEF,
     Blockly.Python.ORDER_NONE)
-  var branch = Blockly.Python.statementToCode(block, 'DO')
+  var branch = Blockly.Python.statementToCode(block, 'SUITE')
   if (!branch.length) {
     branch = Blockly.Python.leftLines(/** @type {string} */('MISSING_STATEMENT\n'), Blockly.Python.INDENT)
   }
@@ -30,7 +30,7 @@ Blockly.Python[ezP.Const.Prc.CLASS] = function (block) {
     Blockly.Python.ORDER_NONE)
   var NCSTR = ezP.Python.valueToCode(block, ezP.Const.Field.NCSTR,
     Blockly.Python.ORDER_NONE)
-  var branch = Blockly.Python.statementToCode(block, 'DO')
+  var branch = Blockly.Python.statementToCode(block, 'SUITE')
   if (!branch.length) {
     branch = Blockly.Python.leftLines(/** @type {string} */('MISSING_STATEMENT\n'), Blockly.Python.INDENT)
   }

@@ -28,7 +28,7 @@ goog.require('ezP.DelegateSvg.Group')
 //       .appendField(new ezP.FieldLabel(')'))
 //     this.appendDummyInput()
 //       .appendField(new ezP.FieldLabel(':'))
-//     this.appendStatementInput('DO').setCheck(ezP.Type.Stmt.Check.after_any)
+//     this.appendStatementInput('SUITE').setCheck(ezP.Type.Stmt.Check.after_any)
 //     this.setTooltip('')
 //     this.setHelpUrl('')
 //   }

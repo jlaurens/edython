@@ -2450,9 +2450,7 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
       Blockly.Events.fire(new Blockly.Events.BlockCreate(candidate))
     }
     candidate.render()
-    if (goog.isFunction(prepare)) {
-      prepare()
-    }
+    prepare && prepare()
     otherC8n.connect(c8n)
     candidate.select()
     candidate.bumpNeighbours_()
@@ -2498,23 +2496,28 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
     }
   } else if ((c8n = candidate.outputConnection)) {
     // try to find a free connection in a block
+    // When not undefined, the returned connection can connect to c8n.
     var findC8n = function(block) {
       var e8r = block.ezp.inputEnumerator(block)
       var otherC8n, foundC8n, target
       while (e8r.next()) {
         if ((foundC8n = e8r.here.connection) && foundC8n.type === Blockly.INPUT_VALUE) {
           if ((target = foundC8n.targetBlock())) {
-            foundC8n = findC8n(target)
+            if (!(foundC8n = findC8n(target))) {
+              continue
+            }
           } else if (!c8n.checkType_(foundC8n)) {
-            foundC8n = null
+            continue
           }
-        }
-        if (foundC8n && (!c8n_N || foundC8n.ezp.name_ === c8n_N)) {
-          // we have found a connection with the expected name
-          return foundC8n
-        }
-        if (!otherC8n || otherC8n.ezp.s7r_ && foundC8n) {
-          otherC8n = foundC8n
+          if (!c8n_N || foundC8n.ezp.name_ === c8n_N) {
+            // we have found a connection with the expected name
+            return foundC8n
+          }
+          // if there is no connection with the expected name,
+          // then remember this connection and continue the loop
+          if (!otherC8n || otherC8n.ezp.s7r_ && foundC8n) {
+            otherC8n = foundC8n
+          }
         }
       }
       return otherC8n

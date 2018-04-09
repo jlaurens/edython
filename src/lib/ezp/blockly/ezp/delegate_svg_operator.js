@@ -49,8 +49,8 @@ ezP.DelegateSvg.Operator.model__ = {
  */
 ezP.DelegateSvg.Operator.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Operator.superClass_.initBlock.call(block.ezp, block)
-  var model = block.ezp.constructor.getModel()
-  block.ezp.initProperty(block, ezP.Key.OPERATOR, model.input.operators[model.input.initialOperator], undefined, undefined, function(block, oldValue, newValue) {
+  var model = block.ezp.getModel()
+  block.ezp.initProperty(block, ezP.Key.OPERATOR, model.input.operators[model.input.initialOperator || 0], undefined, undefined, function(block, oldValue, newValue) {
     var disabler = new ezP.Events.Disabler()
     var field = block.ezp.uiModel.m_3.fieldOperator
     field.setValue(newValue)
@@ -95,7 +95,7 @@ ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
  * @return None
  */
 ezP.DelegateSvg.Operator.prototype.getSubtype = function (block) {
-  return this.uiModel.m_3.fieldOperator.getValue()
+  return this.getProperty(block, ezP.Key.OPERATOR)
 }
 
 /**
@@ -107,12 +107,7 @@ ezP.DelegateSvg.Operator.prototype.getSubtype = function (block) {
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Operator.prototype.setSubtype = function (block, subtype) {
-  var model = this.getModel().input
-  if (model.operators && model.operators.indexOf(subtype) >= 0) {
-    this.uiModel.m_3.fieldOperator.setValue(subtype)
-    return true
-  }
-  return false
+  return this.setProperty(block, ezP.Key.OPERATOR, subtype)
 }
 
 //////////////////////  u_expr_concrete  /////////////////////////

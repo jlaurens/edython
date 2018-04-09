@@ -35,7 +35,7 @@ ezP.DelegateSvg.Group.model__ = {
     },
   },
   statement: {
-    key: ezP.Key.DO,
+    key: ezP.Key.SUITE,
   }
 }
 

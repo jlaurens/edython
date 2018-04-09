@@ -17,7 +17,7 @@ goog.require('ezP.Python.ezp:stmt')
 
 Blockly.Python[ezP.Const.Grp.ANY] = function (block) {
   var STT = block.getField(ezP.Const.Field.STT).getText()
-  var branch = Blockly.Python.statementToCode(block, 'DO')
+  var branch = Blockly.Python.statementToCode(block, 'SUITE')
   if (!branch.length) {
     branch = Blockly.Python.leftLines(/** @type {string} */('MISSING_STATEMENT\n'), Blockly.Python.INDENT)
   }
@@ -27,7 +27,7 @@ Blockly.Python[ezP.Const.Grp.ANY] = function (block) {
 Blockly.Python[ezP.Const.Grp.IF] = function (block) {
   var COND = ezP.Python.valueToCode(block, ezP.Key.COND,
     Blockly.Python.ORDER_NONE)
-  var branch = Blockly.Python.statementToCode(block, 'DO')
+  var branch = Blockly.Python.statementToCode(block, 'SUITE')
   if (!branch.length) {
     branch = Blockly.Python.leftLines(/** @type {string} */('MISSING_STATEMENT\n'), Blockly.Python.INDENT)
   }
@@ -37,7 +37,7 @@ Blockly.Python[ezP.Const.Grp.IF] = function (block) {
 Blockly.Python[ezP.Const.Grp.ELIF] = function (block) {
   var COND = ezP.Python.valueToCode(block, ezP.Key.COND,
     Blockly.Python.ORDER_NONE)
-  var branch = Blockly.Python.statementToCode(block, 'DO')
+  var branch = Blockly.Python.statementToCode(block, 'SUITE')
   if (!branch.length) {
     branch = Blockly.Python.leftLines(/** @type {string} */('MISSING_STATEMENT\n'), Blockly.Python.INDENT)
   }
@@ -45,7 +45,7 @@ Blockly.Python[ezP.Const.Grp.ELIF] = function (block) {
 }
 
 Blockly.Python[ezP.Const.Grp.ELSE] = function (block) {
-  var branch = Blockly.Python.statementToCode(block, 'DO')
+  var branch = Blockly.Python.statementToCode(block, 'SUITE')
   if (!branch.length) {
     branch = Blockly.Python.leftLines(/** @type {string} */('MISSING_STATEMENT\n'), Blockly.Python.INDENT)
   }
@@ -55,7 +55,7 @@ Blockly.Python[ezP.Const.Grp.ELSE] = function (block) {
 Blockly.Python[ezP.Const.Grp.WHILE] = function (block) {
   var COND = ezP.Python.valueToCode(block, ezP.Key.COND,
     Blockly.Python.ORDER_NONE)
-  var branch = Blockly.Python.statementToCode(block, 'DO')
+  var branch = Blockly.Python.statementToCode(block, 'SUITE')
   if (!branch.length) {
     branch = Blockly.Python.leftLines(/** @type {string} */('MISSING_STATEMENT\n'), Blockly.Python.INDENT)
   }
@@ -67,7 +67,7 @@ Blockly.Python[ezP.Const.Grp.FOR] = function (block) {
     Blockly.Python.ORDER_NONE)
   var list = ezP.Python.valueToCode(block, ezP.Key.LIST,
     Blockly.Python.ORDER_NONE)
-  var branch = Blockly.Python.statementToCode(block, ezP.Key.DO)
+  var branch = Blockly.Python.statementToCode(block, ezP.Key.SUITE)
   if (!branch.length) {
     branch = Blockly.Python.leftLines(/** @type {string} */('MISSING_STATEMENT\n'), Blockly.Python.INDENT)
   }

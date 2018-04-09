@@ -27,27 +27,15 @@ goog.require('ezP.T3')
 
 goog.require('Blockly.Xml')
 
-ezP.T3.Xml.Stmt.statement = 'ezp:statement'
-ezP.T3.Xml.Stmt.do = 'ezp:do'
-ezP.T3.Xml.Stmt.augmented_assignment = 'ezp:augmented_assignment'
-ezP.T3.Xml.Expr.expression = 'ezp:expression'
-ezP.T3.Xml.Expr.literal = 'ezp:literal'
-ezP.T3.Xml.Expr.comparison = 'ezp:comparison'
-ezP.T3.Xml.Expr.list = 'ezp:list'
-
-
-
-
-
-
-
-
-
-
-
-
-goog.require('Blockly.Field')
-goog.require('Blockly.FieldVariable')
+ezP.Xml = {
+  INPUT: 'ezp:input',
+  FLOW: 'ezp:flow',
+  NEXT: 'next',
+  LIST: 'ezp:list',
+  LITERAL: 'ezp:literal',
+  COMPARISON: 'ezp:comparison',
+  AUGMENTED_ASSIGNMENT: 'ezp:augmented_assignment',
+}
 
 /**
  * Converts a DOM structure into plain text.
@@ -330,7 +318,7 @@ goog.require('ezP.DelegateSvg.Expr')
  * @return true if the given value is accepted, false otherwise
  */
 ezP.DelegateSvg.Literal.prototype.xmlTagName = function (block) {
-  return ezP.T3.Xml.Expr.literal
+  return ezP.Xml.LITERAL
 }
 
 goog.provide('ezP.Xml.Literal')
@@ -369,7 +357,7 @@ goog.require('ezP.DelegateSvg.List')
  * @return true if the given value is accepted, false otherwise
  */
 ezP.DelegateSvg.List.prototype.xmlTagName = function (block) {
-  return block.getSurroundParent()? ezP.T3.Xml.Expr.list: ezP.DelegateSvg.List.superClass_.xmlTagName.call(this, block)
+  return block.getSurroundParent()? ezP.Xml.LIST: ezP.DelegateSvg.List.superClass_.xmlTagName.call(this, block)
 }
 
 /**
@@ -521,7 +509,11 @@ ezP.Xml.Input.toDom = function(input, element, optNoId, optNoName) {
       } else {
         var child = ezP.Xml.blockToDom(target, optNoId)
         if (!optNoName) {
-          child.setAttribute('input', input.name)
+          if (input.type === Blockly.INPUT_VALUE) {
+            child.setAttribute(ezP.Xml.INPUT, input.name)
+          } else if (input.type === Blockly.NEXT_STATEMENT) {
+            child.setAttribute(ezP.Xml.FLOW, input.name)
+          }
         }
       }
       goog.dom.appendChild(element, child)
@@ -569,7 +561,14 @@ ezP.Xml.Input.fromDom = function(input, element) {
       }
       // find an xml child with the proper input attribute
       for (var i = 0, child; (child = element.childNodes[i++]);) {
-        if (goog.isFunction(child.getAttribute) && child.getAttribute('input') === input.name) {
+        if (goog.isFunction(child.getAttribute)) {
+          if (input.type === Blockly.INPUT_VALUE) {
+            var attribute = child.getAttribute(ezP.Xml.INPUT)
+          } else if (input.type === Blockly.NEXT_STATEMENT) {
+            var attribute = child.getAttribute(ezP.Xml.FLOW)
+          }
+        }
+        if (attribute && attribute === input.name) {
           if (target) {
             return ezP.Xml.fromDom(target, child)
           } else if ((target = Blockly.Xml.domToBlock(child, input.sourceBlock_.workspace))) {
@@ -617,7 +616,7 @@ ezP.Xml.InputList.toDom = function(block, element, optNoId) {
   var e8r = block.ezp.inputEnumerator(block), input
   while ((input = e8r.next())) {
     if (input.name) {
-      ezP.Xml.Input.toDom(input, element, optNoId)
+      out = ezP.Xml.Input.toDom(input, element, optNoId)
     }
   }
   return out
@@ -640,6 +639,57 @@ ezP.Xml.InputList.fromDom = function(block, element) {
   block.bumpNeighbours_()
 }
 
+goog.provide('ezP.Xml.Stmt')
+
+/**
+ * Convert the block's input list and next blocks to a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {boolean} optNoId Is a function.
+ * @return a dom element, void lists may return nothing
+ */
+ezP.Xml.Stmt.toDom = function(block, element, optNoId) {
+  ezP.Xml.InputList.toDom(block, element, optNoId)
+  var c8n = block.nextConnection
+  if (c8n) {
+    var target = c8n.targetBlock()
+    if(target) {
+      var child = Blockly.Xml.blockToDom(target, optNoId)
+      if (child) {
+        child.setAttribute(ezP.Xml.FLOW, ezP.Xml.NEXT)
+        goog.dom.appendChild(element, child)
+      }
+    }
+  }
+  
+}
+
+/**
+ * Convert the block's input list and next statement from a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {boolean} optNoId Is a function.
+ * @return a dom element, void lists may return nothing
+ */
+ezP.Xml.Stmt.fromDom = function(block, element) {
+  ezP.Xml.InputList.fromDom(block, element)
+  var c8n = block.nextConnection
+  if (c8n) {
+    for (var i = 0, child; (child = element.childNodes[i++]);) {
+      if (goog.isFunction(child.getAttribute) && (child.getAttribute(ezP.Xml.FLOW) === ezP.Xml.NEXT)) {
+        var target = Blockly.Xml.domToBlock(child, block.workspace)
+        if (target) {
+          // we could create a block form that child element
+          // then connect it to 
+          if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
+            c8n.connect(target.previousConnection)
+          }
+          return target
+        }
+      }
+    }
+  }
+}
 
 
 
@@ -658,11 +708,8 @@ ezP.Xml.InputList.fromDom = function(block, element) {
 
 
 
-
-
-
-
-
+goog.require('Blockly.Field')
+goog.require('Blockly.FieldVariable')
 
 Blockly.Field.prototype.getSerializedXml = function () {
   var container = goog.dom.createDom('field', null, this.getValue())
@@ -732,7 +779,7 @@ ezP.Xml.namedListInputToDom = function(block, name, element, optNoId) {
       var child = goog.dom.createDom('ezp:list')
       if (ezP.Xml.toDom(target, child, optNoId)) {
         goog.dom.appendChild(element, child)
-        child.setAttribute('input', input.name)
+        child.setAttribute(ezP.Xml.INPUT, input.name)
         return child
       }
     }
@@ -753,7 +800,7 @@ ezP.Xml.namedListInputFromDom = function(block, name, element) {
     var target = input.connection.targetBlock()
     if (target) {
       for (var i = 0, child;(child = element.childNodes[i++]);) {
-        if (child.nodeName.toLowerCase() === 'ezp:list' && child.getAttribute('input') === name) {
+        if (child.nodeName.toLowerCase() === 'ezp:list' && child.getAttribute(ezP.Xml.INPUT) === name) {
           ezP.Xml.fromDom(target, child)
           return true
         }
@@ -823,12 +870,12 @@ ezP.Xml.Text.fromDom = function(block, element) {
 
 goog.require('ezP.DelegateSvg.Expr')
 
-ezP.DelegateSvg.Expr.builtin_object.xml = ezP.Xml.Value
+ezP.DelegateSvg.Expr.builtin_object.prototype.xml = ezP.Xml.Value
 
-ezP.DelegateSvg.Expr.any.xml = ezP.Xml.Text
+ezP.DelegateSvg.Expr.any.prototype.xml = ezP.Xml.Text
 
 
-ezP.DelegateSvg.Expr.proper_slice.xml = ezP.DelegateSvg.Expr.conditional_expression_concrete.xml = ezP.Xml.InputList
+ezP.DelegateSvg.Expr.proper_slice.prototype.xml = ezP.DelegateSvg.Expr.conditional_expression_concrete.prototype.xml = ezP.Xml.InputList
 
 
 goog.provide('ezP.Xml.SingleInput')
@@ -855,7 +902,7 @@ ezP.Xml.SingleInput.fromDom = function(block, xml) {
   return ezP.Xml.Input.fromDom(block.inputList[0], xml.childNodes[0])
 }
 
-ezP.DelegateSvg.Expr.or_expr_star.xml = ezP.DelegateSvg.Expr.or_expr_star_star.xml = ezP.DelegateSvg.Expr.not_test_concrete.xml = ezP.Xml.SingleInput
+ezP.DelegateSvg.Expr.or_expr_star.prototype.xml = ezP.DelegateSvg.Expr.or_expr_star_star.prototype.xml = ezP.DelegateSvg.Expr.not_test_concrete.prototype.xml = ezP.Xml.SingleInput
 
 // ezP.DelegateSvg.Expr.T3s = [
 //   ezP.DelegateSvg.Expr.proper_slice,
@@ -890,7 +937,7 @@ ezP.Xml.Property.toDom = function (block, key, element, optNoId) {
   if (block.ezp.hasProperty(block, key)) {
     var property = block.ezp.getProperty(block, key)
     if (!!property) {
-      element.setAttribute(key, 'true')
+      element.setAttribute(key, property)
     }
   }
   return true
@@ -905,8 +952,7 @@ ezP.Xml.Property.toDom = function (block, key, element, optNoId) {
 ezP.Xml.Property.fromDom = function (block, key, element) {
   if (block.ezp.hasProperty(block, key)) {
     var attribute = element.getAttribute(key)
-    block.ezp.setProperty(block, key, !!attribute && (attribute.toLowerCase() === 'true'))
-    return true
+    return block.ezp.setProperty(block, key, attribute)
   }
   return false
 }
@@ -930,99 +976,17 @@ ezP.DelegateSvg.Expr.identifier.prototype.xml = ezP.Xml.Text
 
 
 
-
-
-
-
-
-/**
- * Convert the block's input list to a dom element.
- * Only value inputs are taken into account.
- * Dummy inputs are ignored.
- * If they contain editable fields, then
- * the persistent storage is made differently.
- * If the input list contains only one value input which is a wrapper,
- * then the method is forwarded to the target.
- * For ezPython.
- * @param {!Blockly.Block} block The block to be converted.
- * @param {boolean} optNoId Is a function.
- * @return a dom element, void lists may return nothing
- */
-ezP.DelegateSvg.prototype.inputListToDom = function(block, element, optNoId) {
-  var unique = undefined
-  var e8r = block.ezp.inputEnumerator(block), input
-  while ((input = e8r.next())) {
-    var c8n = input.connection
-    if (c8n && c8n.type === Blockly.INPUT_VALUE) {
-      var target = c8n.targetBlock()
-      if (target) {
-        var child
-        if (target.ezp.wrapped_) {
-          if (false && unique === undefined) {
-            unique = {target: target, name: input.name}
-          } else {
-            if (unique && (child = Blockly.Xml.blockToDom(unique.target, optNoId))) {
-              element.appendChild(child)
-              child.setAttribute('input', unique.name)
-            }
-            unique = null
-            if ((child = Blockly.Xml.blockToDom(target, optNoId))) {
-              element.appendChild(child)
-              child.setAttribute('input', input.name)
-            }
-          }
-        } else if ((child = Blockly.Xml.blockToDom(target, optNoId))) {
-          element.appendChild(child)
-          child.setAttribute('input', input.name)
-        }
-      }
-    }
-  }
-  return unique? unique.target.ezp.toDom(unique.target, element, optNoId): element
-}
-
-
 /**
  * Convert the block to a dom element.
  * Called at the end of blockToDom.
- * Default implementation does nothing.
  * For ezPython.
  * @param {!Blockly.Block} block The block to be converted.
  * @param {boolean} optNoId Is a function.
  * @return a dom element
  */
 ezP.DelegateSvg.List.prototype.toDom = function(block, element, optNoId) {
-  var x = this.inputListToDom(block, element, optNoId)
+  var x = ezP.Xml.InputList.toDom(block, element, optNoId)
   return block.getSurroundParent()? x: element
-}
-
-
-/**
- * Convert the block's input list to a dom element.
- * Void lists may not appear in the persistent storage.
- * For ezPython.
- * @param {!Blockly.Block} block The block to be converted.
- * @param {boolean} optNoId Is a function.
- * @return a dom element, void lists may return nothing
- */
-ezP.DelegateSvg.List.prototype.inputListToDom = function(block, element, optNoId) {
-  var returnElement
-  var e8r = block.ezp.inputEnumerator(block)
-  while (e8r.next()) {
-    var c8n = e8r.here.connection
-    if (c8n && c8n.type === Blockly.INPUT_VALUE) {
-      var target = c8n.targetBlock()
-      if (target) {
-        var child
-        if ((child = Blockly.Xml.blockToDom(target, optNoId))) {
-          element.appendChild(child)
-          child.setAttribute('input', e8r.here.name)
-          returnElement = element
-        }
-      }
-    }
-  }
-  return returnElement
 }
 
 /**
@@ -1030,6 +994,8 @@ ezP.DelegateSvg.List.prototype.inputListToDom = function(block, element, optNoId
  * Void lists may not appear in the persistent storage.
  * As list are dynamic objects, the input list is not
  * known until the end.
+ * List blocks are expected to contain only expressions,
+ * no statements.
  * For ezPython.
  * @param {!Blockly.Block} block The block to be converted.
  * @param {Element} xml the persistent element.
@@ -1038,7 +1004,7 @@ ezP.DelegateSvg.List.prototype.inputListToDom = function(block, element, optNoId
 ezP.DelegateSvg.List.prototype.fromDom = function(block, xml) {
   for (var i = 0, xmlChild; (xmlChild = xml.childNodes[i]); i++) {
     if (goog.isFunction(xmlChild.getAttribute)) {
-      var name = xmlChild.getAttribute('input')
+      var name = xmlChild.getAttribute(ezP.Xml.INPUT)
       if (name) {
         var input = block.getInput(name)
         if (input) {
@@ -1064,7 +1030,6 @@ ezP.DelegateSvg.List.prototype.fromDom = function(block, xml) {
     }
   }
 }
-
 
 goog.provide('ezP.Xml.Operator')
 goog.require('ezP.DelegateSvg.Operator')
@@ -1121,7 +1086,7 @@ goog.require('ezP.DelegateSvg.Operator')
  * @return true if the given value is accepted, false otherwise
  */
 ezP.DelegateSvg.Expr.number_comparison.prototype.xmlTagName = ezP.DelegateSvg.Expr.object_comparison.prototype.xmlTagName = function (block) {
-  return ezP.T3.Xml.Expr.comparison
+  return ezP.Xml.COMPARISON
 }
 
 /**
@@ -1131,9 +1096,10 @@ ezP.DelegateSvg.Expr.number_comparison.prototype.xmlTagName = ezP.DelegateSvg.Ex
  * @override
  */
 ezP.Xml.Comparison.domToBlock = function (element, workspace) {
+  var block
   var prototypeName = element.nodeName.toLowerCase()
   var id = element.getAttribute('id')
-  if (prototypeName === ezP.T3.Xml.Expr.comparison) {
+  if (prototypeName === ezP.Xml.COMPARISON) {
     var op = element.getAttribute(ezP.Const.Field.OPERATOR)
     var Ctor, model, type = ezP.T3.Expr.number_comparison
     if ((Ctor = ezP.DelegateSvg.Manager.get(type))
@@ -1146,7 +1112,7 @@ ezP.Xml.Comparison.domToBlock = function (element, workspace) {
     } else {
       return block
     }
-    ezP.Xml.fromDom(block, xmlBlock)    
+    ezP.Xml.fromDom(block, element)    
     return block
   }
 }
@@ -1162,7 +1128,7 @@ goog.require('ezP.DelegateSvg.AugAssign')
  * @return true if the given value is accepted, false otherwise
  */
 ezP.DelegateSvg.Stmt.augassign_numeric_stmt.prototype.xmlTagName = ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.xmlTagName = function (block) {
-  return ezP.T3.Xml.Stmt.augmented_assignment
+  return ezP.Xml.AUGMENTED_ASSIGNMENT
 }
 
 /**
@@ -1226,9 +1192,9 @@ ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.xml = ezP.Xml.AugAssign
 
 goog.require('ezP.DelegateSvg.Argument')
 
-ezP.DelegateSvg.Expr.keyword_item.xml = ezP.Xml.InputList
-ezP.DelegateSvg.Expr.expression_star.xml = ezP.Xml.InputList
-ezP.DelegateSvg.Expr.expression_star_star.xml = ezP.Xml.InputList
+ezP.DelegateSvg.Expr.keyword_item.prototype.xml = ezP.Xml.InputList
+ezP.DelegateSvg.Expr.expression_star.prototype.xml = ezP.Xml.InputList
+ezP.DelegateSvg.Expr.expression_star_star.prototype.xml = ezP.Xml.InputList
 
 // ezP.T3.Expr.identifier,
 
@@ -1239,10 +1205,10 @@ ezP.DelegateSvg.Expr.expression_star_star.xml = ezP.Xml.InputList
 goog.provide('ezP.Xml.Comprehension')
 goog.require('ezP.DelegateSvg.Comprehension')
 
-ezP.DelegateSvg.Expr.comp_for.xml =
-ezP.DelegateSvg.Expr.comp_if.xml =
-ezP.DelegateSvg.Expr.comp_iter_list.xml =
-ezP.DelegateSvg.Expr.key_datum_concrete.xml =
+ezP.DelegateSvg.Expr.comp_for.prototype.xml =
+ezP.DelegateSvg.Expr.comp_if.prototype.xml =
+ezP.DelegateSvg.Expr.comp_iter_list.prototype.xml =
+ezP.DelegateSvg.Expr.key_datum_concrete.prototype.xml =
 ezP.Xml.InputList
 
 /**
@@ -1252,15 +1218,15 @@ ezP.Xml.InputList
  * @param {boolean} optNoId true if no id is required.
  * For subclassers eventually
  */
-ezP.DelegateSvg.Expr.key_datum_concrete.xml =
+ezP.DelegateSvg.Expr.key_datum_concrete.prototype.xml =
 ezP.Xml.InputList
 
 
-ezP.DelegateSvg.Expr.comprehension.xml =
-ezP.DelegateSvg.Expr.generator_expression.xml =
+ezP.DelegateSvg.Expr.comprehension.prototype.xml =
+ezP.DelegateSvg.Expr.generator_expression.prototype.xml =
 ezP.Xml.InputList
 
-ezP.DelegateSvg.Expr.dict_comprehension.xml = {}
+ezP.DelegateSvg.Expr.dict_comprehension.prototype.xml = {}
 
 /**
  * toDom.
@@ -1269,7 +1235,7 @@ ezP.DelegateSvg.Expr.dict_comprehension.xml = {}
  * @param {boolean} optNoId true if no id is required.
  * For subclassers eventually
  */
-ezP.DelegateSvg.Expr.dict_comprehension.xml.toDom = function (block, element, optNoId) {
+ezP.DelegateSvg.Expr.dict_comprehension.prototype.xml.toDom = function (block, element, optNoId) {
   // create a list element
   ezP.Xml.Input.Named.toDom(block, ezP.Key.KEY, element, optNoId)
   ezP.Xml.Input.Named.toDom(block, ezP.Key.DATUM, element, optNoId)
@@ -1284,19 +1250,13 @@ ezP.DelegateSvg.Expr.dict_comprehension.xml.toDom = function (block, element, op
  * @param {!Element} xml dom element.
  * For subclassers eventually
  */
-ezP.DelegateSvg.Expr.dict_comprehension.xml.fromDom = function (block, xml) {
+ezP.DelegateSvg.Expr.dict_comprehension.prototype.xml.fromDom = function (block, xml) {
   ezP.Xml.Input.Named.fromDom(block, ezP.Key.KEY, xml)
   ezP.Xml.Input.Named.fromDom(block, ezP.Key.DATUM, xml)
   ezP.Xml.namedListInputFromDom(block, ezP.Key.FOR, xml)
   ezP.Xml.Input.Named.fromDom(block, ezP.Key.IN, xml)
   ezP.Xml.namedListInputFromDom(block, ezP.Key.COMP_ITER, xml)
 }
-
-goog.require('ezP.DelegateSvg.Group')
-
-ezP.DelegateSvg.Group.prototype.xml = ezP.Xml.InputList
-
-ezP.DelegateSvg.Stmt.with_part.prototype.xml = ezP.Xml.InputList
 
 goog.require('ezP.DelegateSvg.Assignment')
 
@@ -1312,3 +1272,5 @@ ezP.DelegateSvg.Expr.assignment_expression.prototype.xml = ezP.Xml.InputList
  * For subclassers eventually
  */
 ezP.DelegateSvg.Stmt.assignment_stmt.prototype.xml = ezP.DelegateSvg.Expr.assignment_expression.prototype.xml
+
+ezP.DelegateSvg.Stmt.prototype.xml = ezP.Xml.Stmt

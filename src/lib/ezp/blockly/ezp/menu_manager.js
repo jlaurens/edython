@@ -1226,10 +1226,10 @@ ezP.MenuManager.prototype.populateOperator = function (block) {
   var ezp = block.ezp
   var operators = ezp.getModel()
   if ((operators = operators.input) && (operators = operators.operators) && operators.length > 1) {
-    var value = ezp.getSubtype(block)
+    var value = ezp.setProperty(block, ezP.Key.OPERATOR)
     var F = function(op) {
       var menuItem = new ezP.MenuItem(ezp.getContent(block, op), function() {
-        ezp.setSubtype(block, op)
+        ezp.setProperty(block, ezP.Key.OPERATOR, op)
         return
       })
       menuItem.setEnabled(value != op)

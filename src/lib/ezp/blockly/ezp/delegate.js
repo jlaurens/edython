@@ -1019,19 +1019,19 @@ ezP.Delegate.prototype.setProperty = function (block, key, newValue) {
   if (oldValue === newValue) {
     return false
   }
-  if (holder.validate_ && !holder.validate_.call(block.ezp, block, oldValue, newValue)) {
+  if (holder.validate && !holder.validate.call(block.ezp, block, oldValue, newValue)) {
     return false
   }
-  if (holder.willChange_) {
-    holder.willChange_.call(block.ezp, block, oldValue, newValue)
+  if (holder.willChange) {
+    holder.willChange.call(block.ezp, block, oldValue, newValue)
   }
   if (Blockly.Events.isEnabled()) {
     Blockly.Events.fire(new Blockly.Events.BlockChange(
-    block, ezP.Const.Event.property+':'+key, null, block.ezp[k], yorn))
+    block, ezP.Const.Event.property+':'+key, null, oldValue, newValue))
   }
   holder.value = newValue
-  if (holder.didChange_) {
-    holder.didChange_.call(block.ezp, block, oldValue, newValue)
+  if (holder.didChange) {
+    holder.didChange.call(block.ezp, block, oldValue, newValue)
   }
   block.render()
   return true

@@ -138,8 +138,8 @@ ezP.T3.Stmt.Previous = {
   ],
   docstring_def_stmt: [ // count 4
     ezP.T3.Stmt.comment_stmt,
-    ezP.T3.Stmt.funcdef_part+"."+ezP.Key.DO,
-    ezP.T3.Stmt.classdef_part+"."+ezP.Key.DO,
+    ezP.T3.Stmt.funcdef_part+"."+ezP.Key.SUITE,
+    ezP.T3.Stmt.classdef_part+"."+ezP.Key.SUITE,
     ezP.T3.Stmt.docstring_def_stmt,
   ],
 }
