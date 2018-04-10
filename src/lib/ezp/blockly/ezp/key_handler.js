@@ -542,7 +542,7 @@ var Ks = {
   'for': ezP.T3.Stmt.for_part,
   '@': ezP.T3.Stmt.decorator_stmt,
   'def': ezP.T3.Stmt.funcdef_part,
-  'import': ezP.T3.Stmt.import_part,
+  'import': ezP.T3.Stmt.import_stmt,
   'try': ezP.T3.Stmt.try_part,
   'while': ezP.T3.Stmt.while_part,
   'with': ezP.T3.Stmt.with_part,
@@ -691,7 +691,7 @@ Ks = {
   'raise': ezP.T3.Stmt.reraise_stmt,
   'raise …': ezP.T3.Stmt.raise_stmt,
   // 'from future import …': ezP.T3.Stmt.future_statement,
-  'import …': ezP.T3.Stmt.import_part,
+  'import …': ezP.T3.Stmt.import_stmt,
   '# comment': ezP.T3.Stmt.comment_stmt,
   'global …': {
     type: ezP.T3.Stmt.global_nonlocal_stmt,

@@ -69,6 +69,7 @@ ezP.Key = {
   KEY: 'key',
   DATUM: 'datum',
   OPERATOR: 'operator',
+  FUTURE: 'future',
 
   ASYNC: 'async',
   AWAIT: 'await',

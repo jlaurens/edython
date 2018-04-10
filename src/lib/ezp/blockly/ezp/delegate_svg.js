@@ -215,6 +215,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       } else {
         var k = D.key
         if ((v = D.wrap)) {
+          k = k || v
           goog.asserts.assert(v, 'wrap must exist '+block.type+'.'+K)
           out.input = block.appendWrapValueInput(k, v, D.optional, D.hidden)
         } else {
@@ -823,32 +824,30 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     this.renderDrawField_(io)
   }
   for (; (io.input = block.inputList[io.i]); io.i++) {
-    if (io.input.isVisible()) {
-      goog.asserts.assert(io.input.ezpData, 'Input with no ezpData '+io.input.name+' in block '+block.type)
-      io.inputDisabled = io.input.ezpData.disabled_
-      if (io.inputDisabled) {
-        for (var j = 0; (io.field = io.input.fieldRow[j]); ++j) {
-          if (io.field.getText().length>0) {
-            var root = io.field.getSvgRoot()
-            if (root) {
-              root.setAttribute('display', 'none')
-            } else {
-              // console.log('Field with no root: did you ...initSvg()?')
-            }
+    goog.asserts.assert(io.input.ezpData, 'Input with no ezpData '+io.input.name+' in block '+block.type)
+    io.inputDisabled = io.input.ezpData.disabled_
+    if (io.input.isVisible() && !io.inputDisabled) {
+      this.renderDrawInput_(io)
+    } else {
+      for (var j = 0; (io.field = io.input.fieldRow[j]); ++j) {
+        if (io.field.getText().length>0) {
+          var root = io.field.getSvgRoot()
+          if (root) {
+            root.setAttribute('display', 'none')
+          } else {
+            // console.log('Field with no root: did you ...initSvg()?')
           }
         }
-        if ((io.field = io.input.ezpData.fieldLabel)) {
-          if (io.field.getText().length>0) {
-            var root = io.field.getSvgRoot()
-            if (root) {
-              root.setAttribute('display', 'none')
-            } else {
-              console.log('Field with no root: did you ...initSvg()?')
-            }
+      }
+      if ((io.c8n = io.input.connection)) {
+        if ((io.target = io.c8n.targetBlock())) {
+          var root = io.target.getSvgRoot()
+          if (root) {
+            root.setAttribute('display', 'none')
+          } else {
+            console.log('Block with no root: did you ...initSvg()?')
           }
         }
-      } else {
-        this.renderDrawInput_(io)
       }
     }
   }
@@ -1135,10 +1134,15 @@ ezP.DelegateSvg.prototype.highlightConnection = function (c8n) {
 /**
  * Fetches the named input object.
  * @param {string} name The name of the input.
- * @return {Blockly.Input} The input object, or null if input does not exist.
+ * @return {Blockly.Input} The input object, or null if input does not exist. Input that are disabled are skipped.
  */
 ezP.DelegateSvg.prototype.getInput = function (block, name) {
-  return undefined
+  var e8r = this.inputEnumerator(block)
+  while (e8r.next()) {
+    if (e8r.here.name === name) {
+      return e8r.here
+    }
+  }
 }
 
 /**
@@ -1287,85 +1291,20 @@ ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValu
           }
         }
       }
-    }
-    setTimeout(function(){
-      console.log('1')
-      if (block.workspace) {
-        block.render()
-      }
-    }, 1)
-  } else {
-    console.log('Unable to dis/enable non existing input named '+name)
-  }
-}
-
-/**
- * Set the enable/disable status of the given block.
- * @param {!Block} block.
- * @param {!Input} input.
- * @param {!String} prototypeName.
- * @private
- */
-ezP.DelegateSvg.prototype.toggleNamedInputDisabled = function (block, name) {
-  var input = block.getInput(name)
-  if (input) {
-    var oldValue = input.ezpData.disabled_
-    var newValue = !oldValue
-    if (Blockly.Events.isEnabled()) {
-      Blockly.Events.fire(new Blockly.Events.BlockChange(
-        block, ezP.Const.Event.input_disable, name, oldValue, newValue));
-    }
-    input.ezpData.disabled_ = newValue
-    var current = this.isRendering
-    this.isRendering = true
-    input.setVisible(!newValue)
-    this.isRendering = current
-    if (input.isVisible()) {
-      for (var __ = 0, field; (field = input.fieldRow[__]); ++__) {
-        if (field.getText().length>0) {
-          var root = field.getSvgRoot()
+      var c8n = input.connection
+      if (c8n) {
+        var target = c8n.targetBlock()
+        if (target) {
+          var root = target.getSvgRoot()
           if (root) {
             root.removeAttribute('display')
           } else {
-            console.log('Field with no root: did you ...initSvg()?')
+            console.log('Block with no root: did you ...initSvg()?')
           }
         }
       }
     }
     setTimeout(function(){
-      console.log('2')
-      if (block.workspace) {
-        block.render()
-      }
-    }, 1)
-  } else {
-    console.log('Unable to dis/enable non existing input named '+name)
-  }
-}
-
-/**
- * Set the enable/disable status of the given block.
- * @param {!Block} block.
- * @param {!Input} input.
- * @param {!String} prototypeName.
- * @private
- */
-ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValue) {
-  var input = block.getInput(name)
-  if (input) {
-    var oldValue = input.ezpData.disabled_
-    newValue = !!newValue
-    if (!oldValue == !newValue) {
-      return
-    }
-    if (Blockly.Events.isEnabled()) {
-      Blockly.Events.fire(new Blockly.Events.BlockChange(
-        block, ezP.Const.Event.input_disable, name, oldValue, newValue));
-    }
-    input.ezpData.disabled_ = newValue
-    input.setVisible(!newValue)
-    setTimeout(function(){
-      console.log('3', block)
       if (block.workspace) {
         block.render()
       }

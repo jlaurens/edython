@@ -1050,7 +1050,7 @@ ezP.MenuManager.prototype.populate_before_after = function (block) {
     // ezP.T3.Stmt.decorator_stmt,
     // ezP.T3.Stmt.funcdef_part,
     // ezP.T3.Stmt.classdef_part,
-    // ezP.T3.Stmt.import_part,
+    // ezP.T3.Stmt.import_stmt,
   ]
   var Us = [
     ezP.T3.Stmt.comment_stmt,

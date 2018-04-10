@@ -29,7 +29,7 @@ ezP.T3 = {}
 
 ezP.T3.Stmt = {
 // part statements
-  import_part               /*   ::= import_expr                                        (default) */ : "ezp:import_part",
+  import_stmt               /*   ::= import_expr                                        (default) */ : "ezp:import_stmt",
   if_part                   /*   ::= "if" expression ":"                                (default) */ : "ezp:if_part",
   elif_part                 /*   ::= "elif" expression ":"                              (default) */ : "ezp:elif_part",
   else_part                 /*   ::= "else" ":"                                         (default) */ : "ezp:else_part",
@@ -73,15 +73,15 @@ ezP.T3.Stmt = {
 }
 
 ezP.T3.Stmt.Previous = {
-  import_part: [ // count 5
-    ezP.T3.Stmt.import_part,
+  import_stmt: [ // count 5
+    ezP.T3.Stmt.import_stmt,
     ezP.T3.Stmt.future_statement,
     ezP.T3.Stmt.start_stmt,
     ezP.T3.Stmt.docstring_top_stmt,
     ezP.T3.Stmt.comment_stmt,
   ],
   future_statement: [ // count 5
-    ezP.T3.Stmt.import_part,
+    ezP.T3.Stmt.import_stmt,
     ezP.T3.Stmt.future_statement,
     ezP.T3.Stmt.start_stmt,
     ezP.T3.Stmt.docstring_top_stmt,

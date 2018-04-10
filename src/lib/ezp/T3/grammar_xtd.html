@@ -29,7 +29,7 @@ vfpdef_def: vfpdef [ '=' test]
 #vfpdef: NAME
 #stmt: simple_stmt | compound_stmt
 #simple_stmt: small_stmt ( ';' small_stmt)* [ ';' ] NEWLINE
-#small_stmt: (expr_stmt | del_stmt | pass_stmt | flow_stmt | import_part | global_stmt | nonlocal_stmt | assert_stmt)
+#small_stmt: (expr_stmt | del_stmt | pass_stmt | flow_stmt | import_stmt | global_stmt | nonlocal_stmt | assert_stmt)
 #expr_stmt: testlist_star_expr (annassign | augassign (yield_expr|testlist) | ( '=' (yield_expr|testlist_star_expr))*)
 #annassign: ':' test [ '=' test]
 testlist_star_expr: test_star_expr ( ',' test_star_expr)* [ ',' ]
@@ -46,7 +46,7 @@ yield_stmt: yield_expr
 raise_stmt: 'raise' [raise_what]
 raise_what: test [raise_from]
 raise_from: 'from' test
-import_part: import_name | import_from
+import_stmt: import_name | import_from
 import_name: 'import' dotted_as_names
 import_from: 'from' import_from_what 'import' import_what
 import_from_what: ( '.' | '...' )* dotted_name | ( '.' | '...' )+

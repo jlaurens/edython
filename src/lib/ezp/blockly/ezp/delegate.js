@@ -279,6 +279,8 @@ ezP.Delegate.Manager = function () {
     Ctors[prototypeName] = Ctor
     goog.asserts.assert(me.create(prototypeName), 'Registration failure: '+prototypeName)
     // cache all the input, output and statement data at the prototype level
+    Ctor.ezpTypes = Ctor.ezpTypes || []
+    Ctor.ezpTypes.push(prototypeName)
     Ctor.prototype.getModel = function () {
       return helper(Ctor)
     }
@@ -605,6 +607,9 @@ ezP.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
         goog.asserts.assert(target, 'completeWrapped_ failed: '+ prototypeName);
         target.ezp.makeBlockWrapped_(target)
         goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed '+target.type)
+        if (!input.connection.checkType_(target.outputConnection)) {
+          input.connection.checkType_(target.outputConnection)
+        }
         input.connection.connect(target.outputConnection)
         input.connection.ezp.disabled_ = true
         target.ezp.completeWrapped_(target)  

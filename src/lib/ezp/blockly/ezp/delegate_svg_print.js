@@ -137,6 +137,69 @@ goog.inherits(ezP.DelegateSvg.Stmt.print_stmt, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Manager.register('print_stmt')
 
 /**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @override
+ */
+ezP.DelegateSvg.Expr.print_builtin.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var menu = mgr.Menu
+  var list = block.getInput(ezP.Key.LIST).connection.targetBlock()
+  var c10r = list.ezp.consolidator
+  var yorn = false
+  if (!c10r.hasInputForType(list, ezP.T3.Expr.comprehension)) {
+    var has = {}
+    var io = c10r.getIO(list)
+    var input
+    while ((input = c10r.nextInputForType(io, ezP.T3.Expr.keyword_item))) {
+      var target = input.connection.targetBlock()
+      if (target && (target = target.getInput(ezP.Key.KEY).connection.targetBlock())) {
+        has[target.ezp.getValue(target)] = target
+      }
+    }
+    var insert = function(key) {
+      Blockly.Events.setGroup(true)
+      var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.identifier)
+      BB.ezp.setValue(BB, key)
+      var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.keyword_item)
+      B.getInput(ezP.Key.KEY).connection.connect(BB.outputConnection)
+      // we assume that inputList is not void
+      var c8n = list.inputList[list.inputList.length-1].connection
+      c8n.connect(B.outputConnection)  
+      block.ezp.consolidate(block)
+      Blockly.Events.setGroup(false)
+    }
+    var remove = function(key) {
+      Blockly.Events.setGroup(true)
+      var B = has[key].getParent()
+      B.unplug()
+      B.dispose()
+      Blockly.Events.setGroup(false)
+    }
+    var F = function(candidate) {
+      var menuItem = new ezP.MenuItem(
+        ezP.Do.createSPAN(candidate+' = …', 'ezp-code'),
+        has[candidate]? function() {
+          remove(candidate)
+        }: function() {
+          insert(candidate)
+        }
+      )
+      if (has[candidate]) {
+        mgr.addRemoveChild(menuItem)
+      } else {
+        mgr.addInsertChild(menuItem)
+      }
+    }
+    F('sep')
+    F('end')
+    F('file')
+    yorn = true
+  }
+  return ezP.DelegateSvg.Expr.print_builtin.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
+}
+
+/**
  * Class for a DelegateSvg, input block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
