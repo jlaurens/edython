@@ -284,6 +284,7 @@ ezP.Delegate.Manager = function () {
     Ctor.prototype.getModel = function () {
       return helper(Ctor)
     }
+    Blockly.Blocks[prototypeName] = {}
   }
   /**
    * Handy method to register an expression or statement block.
@@ -304,7 +305,6 @@ ezP.Delegate.Manager = function () {
     ezP.Mixin(Ctor)
     me.registerDelegate_(prototypeName, Ctor)
     available.push(prototypeName)
-    Blockly.Blocks[prototypeName] = {}
   }
   me.registerAll = function (keyedPrototypeNames, Ctor, fake) {
     var k

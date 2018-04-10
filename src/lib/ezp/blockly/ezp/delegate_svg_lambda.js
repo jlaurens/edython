@@ -123,3 +123,5 @@ ezP.DelegateSvg.Lambda.T3s = [
   ezP.T3.Expr.lambda_expr,
   ezP.T3.Expr.lambda_expr_nocond
 ]
+
+console.warn('no_cond not tested.')

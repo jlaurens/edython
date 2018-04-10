@@ -35,6 +35,7 @@ ezP.Xml = {
   LITERAL: 'ezp:literal',
   COMPARISON: 'ezp:comparison',
   AUGMENTED_ASSIGNMENT: 'ezp:augmented_assignment',
+  LAMBDA: 'ezp:lambda',
 }
 
 /**
@@ -1261,7 +1262,22 @@ ezP.DelegateSvg.Expr.parameter_concrete.prototype.xml =
 ezP.DelegateSvg.Expr.defparameter_concrete.prototype.xml =
 ezP.Xml.InputList
 
+goog.require('ezP.DelegateSvg.Lambda')
 
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * Default implementation just returns the block type.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.DelegateSvg.Expr.lambda_expression.prototype.xmlTagName = function (block) {
+  return ezP.Xml.LAMBDA
+}
+
+ezP.DelegateSvg.Manager.registerDelegate_(ezP.Xml.LAMBDA, ezP.DelegateSvg.Expr.lambda_expression)
+
+ezP.DelegateSvg.Expr.lambda_expression.prototype.xml = ezP.Xml.InputList
 
 goog.require('ezP.DelegateSvg.Argument')
 

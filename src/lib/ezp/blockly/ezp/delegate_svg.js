@@ -85,7 +85,6 @@ ezP.DelegateSvg.Manager.register = function (key) {
   ezP.MixinSvg(Ctor) // before registering
   ezP.DelegateSvg.Manager.registerDelegate_(prototypeName, Ctor)
   available.push(prototypeName)
-  Blockly.Blocks[prototypeName] = {}
 }
 
 ezP.DelegateSvg.Manager.makeSubclass_ = ezP.DelegateSvg.Manager.makeSubclass
@@ -1736,8 +1735,8 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
   }
   var doLast = function(B) {
     var e8r = B.ezp.inputEnumerator(B)
-    B.end()
-    while (B.previous()) {
+    e8r.end()
+    while (e8r.previous()) {
       var c8n = e8r.here.connection
       if (c8n && (c8n.type !== Blockly.NEXT_STATEMENT)) {
         var target = c8n.targetBlock()
