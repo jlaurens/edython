@@ -90,7 +90,14 @@ ezP.DelegateSvg.Manager.register = function (key) {
 
 ezP.DelegateSvg.Manager.makeSubclass_ = ezP.DelegateSvg.Manager.makeSubclass
 ezP.DelegateSvg.Manager.makeSubclass = function(key, model, parent, owner) {
-  parent = parent || (ezP.T3.Expr[key]? ezP.DelegateSvg.Expr: ezP.DelegateSvg.Stmt)
+  if (goog.isFunction(model)) {
+    model = model()
+  }
+  owner = owner
+  || (ezP.T3.Expr[key]? ezP.DelegateSvg.Expr: ezP.DelegateSvg.Stmt)
+  parent = parent
+  || (model && model.input && model.input.list && ezP.DelegateSvg.List)
+  || owner
   ezP.Delegate.Manager.makeSubclass_(key, model, parent, owner)
   Blockly.Blocks[ezP.T3.Stmt[key]||ezP.T3.Expr[key]] = {}
 }
@@ -241,8 +248,8 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
           if (goog.isFunction(D.didDisconnect)) {
             ezp.didDisconnect = D.didDisconnect
           }
-          if (D.do && Object.keys(D.do).length) {
-            goog.mixin(ezp, D.do)
+          if (D.suite && Object.keys(D.suite).length) {
+            goog.mixin(ezp, D.suite)
           }
           if (D.optional) {//svg
             ezp.optional_ = true
@@ -327,7 +334,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   var e8r = block.ezp.inputEnumerator(block)
   while (e8r.next()) {
     if (e8r.here.type === Blockly.NEXT_STATEMENT) {
-      model.do = {
+      model.suite = {
         input: e8r.here,
       }
       break
@@ -1592,8 +1599,8 @@ ezP.DelegateSvg.prototype.toPythonStatementComponents = function (block, compone
     indent += '# '
   }
   components.push(indent+this.toPythonExpression(block))
-  if (this.uiModel.do) {
-    var input = this.uiModel.do.input
+  if (this.uiModel.suite) {
+    var input = this.uiModel.suite.input
     if (input) {
       var c8n = input.connection
       if (c8n) {

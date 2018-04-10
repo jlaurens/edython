@@ -277,7 +277,7 @@ ezP.DelegateSvg.Manager.makeSubclass('argument_list', {
       hole_value: 'name',
     },
   },
-}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+})
 
 /**
  * Class for a DelegateSvg, argument_list_comprehensive block.
@@ -297,7 +297,7 @@ ezP.DelegateSvg.Manager.makeSubclass('argument_list_comprehensive', {
       hole_value: 'name',
     },
   },
-}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+})
 
 ezP.DelegateSvg.Argument.T3s = [
   ezP.T3.Expr.keyword_item,

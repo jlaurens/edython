@@ -240,7 +240,7 @@ ezP.DelegateSvg.Manager.makeSubclass('if_part', {
       key: ezP.Key.IF,
     },
   },
-}, ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
+}, ezP.DelegateSvg.Group)
 
 /**
  * Class for a DelegateSvg, elif_part block.
@@ -259,7 +259,7 @@ ezP.DelegateSvg.Manager.makeSubclass('elif_part', {
       key: ezP.Key.ELIF,
     },
   },
-}, ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
+}, ezP.DelegateSvg.Group)
 
 /**
  * Class for a DelegateSvg, else_part block.
@@ -296,7 +296,7 @@ ezP.DelegateSvg.Manager.makeSubclass('else_part', {
       },
     },
   },
-}, ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
+}, ezP.DelegateSvg.Group)
 
 ezP.DelegateSvg.Stmt.last_else_part = ezP.DelegateSvg.Stmt.try_else_part = ezP.DelegateSvg.Stmt.else_part
 ezP.DelegateSvg.Manager.register('try_else_part')
@@ -371,7 +371,7 @@ ezP.DelegateSvg.Manager.makeSubclass('while_part', {
       key: ezP.Key.WHILE,
     },
   },
-}, ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
+}, ezP.DelegateSvg.Group)
 
 /**
  * Will draw the block. Default implementation does nothing.
@@ -437,7 +437,7 @@ ezP.DelegateSvg.Manager.makeSubclass('for_part', {
       key: ezP.Key.IN,
     },
   },
-}, ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
+}, ezP.DelegateSvg.Group)
 
 /**
  * Class for a DelegateSvg, with_part block.
@@ -456,7 +456,7 @@ ezP.DelegateSvg.Manager.makeSubclass('with_part', {
       wrap: ezP.T3.Expr.with_item_list,
     },
   },
-}, ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
+}, ezP.DelegateSvg.Group)
 
 /**
  * Class for a DelegateSvg, with_item_concrete block.

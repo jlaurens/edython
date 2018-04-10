@@ -76,7 +76,7 @@ ezP.DelegateSvg.Manager.makeSubclass('module_as_concrete', {
       plugged: ezP.T3.Expr.module_alias,
     },
   },
-}, ezP.DelegateSvg.Expr._as_concrete, ezP.DelegateSvg.Expr)
+}, ezP.DelegateSvg.Expr._as_concrete)
 
 /**
  * Class for a DelegateSvg, module block.
@@ -123,7 +123,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_module_as_list', {
       hole_value: 'module',
     },
   },
-}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+})
 
 /////////////////     import_module      ///////////////////
 
@@ -175,7 +175,7 @@ ezP.DelegateSvg.Manager.makeSubclass('import_identifier_as_concrete', {
       plugged: ezP.T3.Expr.import_alias,
     },
   },
-}, ezP.DelegateSvg.Expr._as_concrete, ezP.DelegateSvg.Expr)
+}, ezP.DelegateSvg.Expr._as_concrete)
 
 /**
  * Class for a DelegateSvg, non_void_import_identifier_as_list block.
@@ -195,7 +195,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_import_identifier_as_list', {
       hole_value: 'name',
     },
   },
-}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+})
 
 /**
  * Class for a DelegateSvg, parent_module block.

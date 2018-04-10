@@ -103,7 +103,7 @@ ezP.DelegateSvg.Manager.makeSubclass('comp_iter_list', {
       sep: ',',
     },  
   },
-}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+})
 
 /**
  * Class for a DelegateSvg, dict comprehension value block.
@@ -170,7 +170,7 @@ ezP.DelegateSvg.Manager.makeSubclass('generator_expression', {
       label: ')',
     }
   },
-}, ezP.DelegateSvg.Expr.comprehension, ezP.DelegateSvg.Expr)
+}, ezP.DelegateSvg.Expr.comprehension)
 
 ezP.DelegateSvg.Comprehension.T3s = [
   ezP.T3.Expr.comprehension,

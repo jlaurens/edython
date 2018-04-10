@@ -206,7 +206,7 @@ ezP.DelegateSvg.Manager.makeSubclass('optional_expression_list', {
       hole_value: 'name',
     },
   },
-}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+})
 
 /**
  * Class for a DelegateSvg, expression_list block.
@@ -226,7 +226,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_expression_list', {
       hole_value: 'name',
     },
   },
-}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+})
 
 /**
  * Class for a DelegateSvg, starred_item_list block.
@@ -246,7 +246,7 @@ ezP.DelegateSvg.Manager.makeSubclass('starred_item_list', {
       hole_value: 'name',
     },
   },
-}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+})
 
 /**
  * Class for a DelegateSvg, parenth_form.
@@ -271,7 +271,7 @@ ezP.DelegateSvg.Manager.makeSubclass('parenth_form', {
       label: ')',
     },
   },
-}, ezP.DelegateSvg.Expr.starred_item_list, ezP.DelegateSvg.Expr)
+}, ezP.DelegateSvg.Expr.starred_item_list)
 
 /**
  * Class for a DelegateSvg, key_datum_list block.
@@ -290,7 +290,7 @@ ezP.DelegateSvg.Manager.makeSubclass('key_datum_list', {
       sep: ',',
     },
   },
-}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+})
 
 /**
  * Class for a DelegateSvg, starred_item_list_comprehensive block.
@@ -318,7 +318,7 @@ ezP.DelegateSvg.Manager.makeSubclass('starred_item_list_comprehensive', function
       list: D,
     },
   }
-}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+})
 
 /**
  * Class for a DelegateSvg, list_display block.
@@ -336,7 +336,7 @@ ezP.DelegateSvg.Manager.makeSubclass('list_display', {
       label: ']',
     },
   },
-}, ezP.DelegateSvg.Expr.starred_item_list_comprehensive, ezP.DelegateSvg.Expr)
+}, ezP.DelegateSvg.Expr.starred_item_list_comprehensive)
 
 /**
  * Class for a DelegateSvg, non_void_starred_item_list_comprehensive block.
@@ -364,7 +364,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_starred_item_list_comprehensive',
       list: D,
     },
   }
-}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+})
 
 /**
  * Class for a DelegateSvg, set_display block.
@@ -382,7 +382,7 @@ ezP.DelegateSvg.Manager.makeSubclass('set_display', {
       label: '}',
     },
   },
-}, ezP.DelegateSvg.Expr.starred_item_list_comprehensive, ezP.DelegateSvg.Expr)
+}, ezP.DelegateSvg.Expr.starred_item_list_comprehensive)
 
 /**
  * Class for a DelegateSvg, key_datum_list_comprehensive block.
@@ -409,7 +409,7 @@ ezP.DelegateSvg.Manager.makeSubclass('key_datum_list_comprehensive', function() 
       list: D,
     },
   }
-}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+})
 
 /**
  * Class for a DelegateSvg, dict_display block.
@@ -427,7 +427,7 @@ ezP.DelegateSvg.Manager.makeSubclass('dict_display', {
       label: '}',
     },
   },
-}, ezP.DelegateSvg.Expr.key_datum_list_comprehensive, ezP.DelegateSvg.Expr)
+}, ezP.DelegateSvg.Expr.key_datum_list_comprehensive)
 
 /**
  * Class for a DelegateSvg, slice_list block.
@@ -446,7 +446,7 @@ ezP.DelegateSvg.Manager.makeSubclass('slice_list', {
       sep: ',',
     },
   },
-}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+})
 
 /**
  * Class for a DelegateSvg, 'slice ...' block.
@@ -464,7 +464,7 @@ ezP.DelegateSvg.Manager.makeSubclass('display_slice_list', {
       label: ']',
     },
   },
-}, ezP.DelegateSvg.Expr.slice_list, ezP.DelegateSvg.Expr)
+}, ezP.DelegateSvg.Expr.slice_list)
 
 /**
  * Class for a DelegateSvg, with_item_list block.
@@ -483,7 +483,7 @@ ezP.DelegateSvg.Manager.makeSubclass('with_item_list', {
       sep: ',',
     },
   },
-}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+})
 
 ezP.DelegateSvg.List.T3s = [
   ezP.T3.Expr.optional_expression_list,

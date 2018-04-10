@@ -13,24 +13,26 @@
 
 goog.provide('ezP.DelegateSvg.Lambda')
 
-goog.require('ezP.DelegateSvg.List')
-goog.require('ezP.DelegateSvg.Expr')
-goog.require('Blockly.RenderedConnection')
-goog.require('Blockly.RenderedConnection')
+goog.require('ezP.DelegateSvg.Parameters')
 
 /**
  * Class for a DelegateSvg, lambda_expr and lambda_expr_nocond block.
+ * The only difference between lambda_expr and lambda_expr_nocond comes
+ * from the type of the expression. We choose to gather the two blocks
+ * and just change the check array depending on the type of the connected
+ * expression. Whenever one of the connections connects or disconnects,
+ * the checking policy changes accordingly. See the `updateLambdaCheck`
+ * method of the connection's delegate.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.lambda_expression = function (prototypeName) {
-  ezP.DelegateSvg.Expr.lambda_expression.superClass_.constructor.call(this, prototypeName)
-  this.model__.input = {
+ezP.DelegateSvg.Manager.makeSubclass('lambda_expression', {
+  input: {
     m_1: {
-      key: ezP.Key.LIST,
+      key: ezP.Key.PARAMETERS,
       label: 'lambda',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.parameter_list,
@@ -40,25 +42,37 @@ ezP.DelegateSvg.Expr.lambda_expression = function (prototypeName) {
       label: ':',
       check: ezP.T3.Expr.Check.expression.concat(ezP.T3.Expr.Check.expression_nocond),
       didConnect: function(oldTargetConnection, oldConnectionn) {
+        // `this` is a connection's delegate
         this.updateLambdaCheck()
       },
-      didDisconnect: function(oldTargetConnection) {
+      didDisconnect: function(oldConnection) {
+        // `this` is a connection's delegate
         this.updateLambdaCheck()
       },
     }
-  }
-  this.outputModel__ = {
+  },
+  output: {
     check: [ezP.T3.Expr.lambda_expr, ezP.T3.Expr.lambda_expr_nocond],
     didConnect: function(oldTargetConnection, oldConnection) {
+      // `this` is a connection's delegate
       this.updateLambdaCheck()
     },
-    didDisconnect: function(oldTargetConnection) {
+    didDisconnect: function(oldConnection) {
+      // `this` is a connection's delegate
       this.updateLambdaCheck()
     },
   }
+})
+
+/**
+ * Initialize a block.
+ * @param {!Blockly.Block} block to be initialized..
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Expr.lambda_expression.prototype.initBlock = function (block) {
+  ezP.DelegateSvg.Expr.lambda_expression.superClass_.initBlock.call(this, block)
+  block.outputConnection.ezp.updateLambdaCheck()
 }
-goog.inherits(ezP.DelegateSvg.Expr.lambda_expression, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('lambda_expression')
 
 ezP.DelegateSvg.Expr.lambda_expr = ezP.DelegateSvg.Expr.lambda_expr_nocond = ezP.DelegateSvg.Expr.lambda_expression
 
@@ -69,7 +83,8 @@ ezP.ConnectionDelegate.prototype.updateLambdaCheck = function() {
   var block = this.connection.sourceBlock_
   if (block) {
     var c8nOut = block.outputConnection
-    var c8nIn = block.ezp.uiModel.m_3.input.connection
+    var input = block.getInput(ezP.Key.EXPRESSION)
+    var c8nIn = input.connection
     var nocond_only_out = false
     var targetC8n = c8nOut.targetConnection
     if (targetC8n) {
@@ -102,3 +117,9 @@ ezP.ConnectionDelegate.prototype.updateLambdaCheck = function() {
     )
   }
 }
+
+ezP.DelegateSvg.Lambda.T3s = [
+  ezP.T3.Expr.lambda_expression,
+  ezP.T3.Expr.lambda_expr,
+  ezP.T3.Expr.lambda_expr_nocond
+]

@@ -506,7 +506,7 @@ ezP.MenuManager.prototype.populateLast = function (block) {
   menuItem = new ezP.MenuItem(
     'workspace',
     function(b, e) {
-      var xmlDom = Blockly.Xml.workspaceToDom(block.workspace, true)
+      var xmlDom = Blockly.Xml.workspaceToDom(block.workspace)
       var xmlText = Blockly.Xml.domToText(xmlDom)
       console.log(xmlText)
     })

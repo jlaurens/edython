@@ -55,8 +55,8 @@ ezP.Const.Field = {
   NCSTR: 'NCSTR'
 }
 
+console.warn('avoid ezP.Key.LIST: not enough discriminating')
 ezP.Key = {  
-  LIST: 'list',
   TARGET: 'target',
   ASSIGNED: 'assigned',
   IDENTIFIER: 'identifier',
@@ -70,7 +70,10 @@ ezP.Key = {
   DATUM: 'datum',
   OPERATOR: 'operator',
   FUTURE: 'future',
+  PARAMETERS: 'parameters',
 
+  LIST: 'list',// avoid this one when possibe
+  
   ASYNC: 'async',
   AWAIT: 'await',
 

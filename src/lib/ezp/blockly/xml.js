@@ -337,7 +337,7 @@ ezP.Xml.Literal.domToBlock = function (element, workspace) {
       var text = xmlChild.nodeValue
       var type = ezP.Do.typeOfString(text)
       if (ezP.DelegateSvg.Manager.get(type)) {
-        var block = ezP.DelegateSvg.newBlockComplete(workspace, type)
+        var block = ezP.DelegateSvg.newBlockComplete(workspace, type, id)
         if (block) {
           block.ezp.setValue(block, text)
           return block
@@ -413,16 +413,16 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
   var controller = ezP.DelegateSvg.Manager.get(concrete)
   if (controller) {
     if (controller.ezp && goog.isFunction(controller.ezp.domToBlock)) {
-      return controller.ezp.domToBlock(xmlBlock, workspace)
+      return controller.ezp.domToBlock(xmlBlock, workspace, id)
     } else if (goog.isFunction(controller.domToBlock)) {
-      return controller.domToBlock(xmlBlock, workspace)
+      return controller.domToBlock(xmlBlock, workspace, id)
     }
     block = ezP.DelegateSvg.newBlockComplete(workspace, concrete, id)
   } else if ((controller = ezP.DelegateSvg.Manager.get(prototypeName))) {
     if (controller.ezp && goog.isFunction(controller.ezp.domToBlock)) {
-      return controller.ezp.domToBlock(xmlBlock, workspace)
+      return controller.ezp.domToBlock(xmlBlock, workspace, id)
     } else if (goog.isFunction(controller.domToBlock)) {
-      return controller.domToBlock(xmlBlock, workspace)
+      return controller.domToBlock(xmlBlock, workspace, id)
     }
     block = ezP.DelegateSvg.newBlockComplete(workspace, prototypeName, id)
   }
@@ -1253,6 +1253,13 @@ ezP.DelegateSvg.Stmt.augassign_numeric_stmt.prototype.xml = ezP.Xml.AugAssign
 ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.xml = ezP.Xml.AugAssign
 
 
+goog.require('ezP.DelegateSvg.Parameters')
+
+ezP.DelegateSvg.Expr.parameter_star.prototype.xml =
+ezP.DelegateSvg.Expr.parameter_star_star.prototype.xml =
+ezP.DelegateSvg.Expr.parameter_concrete.prototype.xml =
+ezP.DelegateSvg.Expr.defparameter_concrete.prototype.xml =
+ezP.Xml.InputList
 
 
 

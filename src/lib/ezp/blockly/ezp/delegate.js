@@ -152,8 +152,8 @@ ezP.Delegate.Manager = function () {
    * Method to create the constructor of a subclass.
    * Registers the subclass too.
    */
-  me.makeSubclass = function(key, model, parent, owner) {    
-    var Ctor = (owner||parent)[key] = function (prototypeName) {
+  me.makeSubclass = function(key, model, parent, owner) {
+    var Ctor = owner[key] = function (prototypeName) {
       Ctor.superClass_.constructor.call(this, prototypeName)
     }
     goog.inherits(Ctor, parent)
@@ -383,8 +383,8 @@ ezP.Delegate.prototype.initBlock = function (block) {
     if (goog.isFunction(D.didDisconnect)) {
       ezp.didDisconnect = D.didDisconnect
     }
-    if (D.do && Object.keys(D.do).length) {
-      goog.mixin(ezp, D.do)
+    if (D.suite && Object.keys(D.suite).length) {
+      goog.mixin(ezp, D.suite)
     }
   } else if ((D = this.getModel().statement) && Object.keys(D).length) {
     if (D.key) {

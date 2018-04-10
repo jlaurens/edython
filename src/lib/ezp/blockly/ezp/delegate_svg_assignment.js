@@ -180,7 +180,7 @@ ezP.DelegateSvg.Manager.makeSubclass('target_list', {
       hole_value: 'name',
     },
   },
-}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+})
 
 /**
  * Class for a DelegateSvg, void_target_list block.
@@ -198,7 +198,7 @@ ezP.DelegateSvg.Manager.makeSubclass('void_target_list', {
       hole_value: 'name',
     },
   },
-}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+})
 
 /**
  * Class for a DelegateSvg, parenth_target_list block.
@@ -407,7 +407,7 @@ ezP.DelegateSvg.Manager.makeSubclass('assigned_list', {
       hole_value: 'value',
     },
   },
-}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+})
 
 goog.provide('ezP.DelegateSvg.AugAssign')
 
@@ -451,7 +451,7 @@ ezP.DelegateSvg.Manager.makeSubclass('augassign_numeric', {
       operator: '+=',
     },
   }
-}, ezP.DelegateSvg.AugAssign, ezP.DelegateSvg.Expr)
+}, ezP.DelegateSvg.AugAssign)
 
 /**
  * Class for a DelegateSvg, augassign_bitwise block.
@@ -468,7 +468,7 @@ ezP.DelegateSvg.Manager.makeSubclass('augassign_bitwise', {
       operator: '<<=',
     },
   }
-}, ezP.DelegateSvg.AugAssign, ezP.DelegateSvg.Expr)
+}, ezP.DelegateSvg.AugAssign)
 
 /**
  * Class for a DelegateSvg, augassign_numeric_stmt.
@@ -625,7 +625,7 @@ ezP.DelegateSvg.Manager.makeSubclass('augassign_list_concrete', {
       hole_value: 'name',
     },
   }
-}, ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+})
 
 ezP.DelegateSvg.AugAssign.populateContextMenuFirst_ = function (block, mgr) {
   var input = block.getInput(ezP.Key.LIST)

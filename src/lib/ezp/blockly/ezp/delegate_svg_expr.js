@@ -515,7 +515,7 @@ ezP.DelegateSvg.Manager.makeSubclass('numberliteral', {
   output: {
     check: ezP.T3.Expr.integer,
   }
-}, ezP.DelegateSvg.Literal, ezP.DelegateSvg.Expr)
+}, ezP.DelegateSvg.Literal)
 
 ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.numberliteral, ezP.DelegateSvg.Expr.numberliteral)
 ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.integer, ezP.DelegateSvg.Expr.numberliteral)
@@ -651,7 +651,7 @@ ezP.DelegateSvg.Manager.makeSubclass('shortliteral', {
   output: {
     check: ezP.T3.Expr.shortstringliteral,
   }
-}, ezP.DelegateSvg.Literal, ezP.DelegateSvg.Expr)
+}, ezP.DelegateSvg.Literal)
 
 ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.shortstringliteral, ezP.DelegateSvg.Expr.shortliteral)
 ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.shortbytesliteral, ezP.DelegateSvg.Expr.shortliteral)
@@ -1014,7 +1014,7 @@ ezP.DelegateSvg.Manager.makeSubclass('longliteral', {
   output: {
     check: ezP.T3.Expr.longstringliteral,
   },
-}, ezP.DelegateSvg.Literal, ezP.DelegateSvg.Expr)
+}, ezP.DelegateSvg.Literal)
 
 ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.longstringliteral, ezP.DelegateSvg.Expr.longliteral)
 ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.longbytesliteral, ezP.DelegateSvg.Expr.longliteral)

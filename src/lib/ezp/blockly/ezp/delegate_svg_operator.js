@@ -128,7 +128,7 @@ ezP.DelegateSvg.Manager.makeSubclass('u_expr_concrete', {
       check: ezP.T3.Expr.Check.u_expr
     },
   },
-}, ezP.DelegateSvg.Operator, ezP.DelegateSvg.Expr)
+}, ezP.DelegateSvg.Operator)
 
 /**
  * Get the content for the menu item.
@@ -195,7 +195,7 @@ ezP.DelegateSvg.Binary.makeSubclass = function(key, operators, check1, operator,
         check: ezP.T3.Expr.Check[check3]
       },
     },
-  }, ezP.DelegateSvg.Binary, ezP.DelegateSvg.Expr)
+  }, ezP.DelegateSvg.Binary)
 }
 ezP.DelegateSvg.Binary.makeSubclass(
   'm_expr_concrete',

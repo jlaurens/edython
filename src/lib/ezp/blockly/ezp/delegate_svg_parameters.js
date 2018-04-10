@@ -281,17 +281,13 @@ ezP.Consolidator.Parameters.prototype.getCheck = function() {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.parameter_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.parameter_list.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.list = {
-    consolidator: ezP.Consolidator.Parameters,
+ezP.DelegateSvg.Manager.makeSubclass('parameter_list', {
+  input: {
+    list: {
+      consolidator: ezP.Consolidator.Parameters,
+    }
   }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.parameter_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.parameter_list, ezP.DelegateSvg.List)
-ezP.DelegateSvg.Manager.register('parameter_list')
+})
 
 /**
  * Class for a DelegateSvg, parameter_star.
@@ -300,22 +296,18 @@ ezP.DelegateSvg.Manager.register('parameter_list')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.parameter_star = function (prototypeName) {
-  ezP.DelegateSvg.Expr.parameter_star.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    key: ezP.Key.NAME,
-    label: '*',
-    css_class: 'ezp-code-reserved',
-    check: ezP.T3.Expr.Check.parameter,
-    hole_value: 'name',
-    optional: true,
+ezP.DelegateSvg.Manager.makeSubclass('parameter_star', {
+  input: {
+    m_1: {
+      key: ezP.Key.NAME,
+      label: '*',
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.Check.parameter,
+      hole_value: 'name',
+      optional: true,
+    }
   }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.parameter_star,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.parameter_star, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('parameter_star')
+})
 
 /**
  * Class for a DelegateSvg, parameter_star_star.
@@ -324,21 +316,17 @@ ezP.DelegateSvg.Manager.register('parameter_star')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.parameter_star_star = function (prototypeName) {
-  ezP.DelegateSvg.Expr.parameter_star_star.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    key: ezP.Key.NAME,
-    label: '**',
-    css_class: 'ezp-code-reserved',
-    check: ezP.T3.Expr.Check.parameter,
-    hole_value: 'name',
+ezP.DelegateSvg.Manager.makeSubclass('parameter_star_star', {
+  input: {
+    m_1: {
+      key: ezP.Key.NAME,
+      label: '**',
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.Check.parameter,
+      hole_value: 'name',
+    }
   }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.parameter_star_star,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.parameter_star_star, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('parameter_star_star')
+})
 
 /**
  * Class for a DelegateSvg, parameter_concrete.
@@ -347,26 +335,22 @@ ezP.DelegateSvg.Manager.register('parameter_star_star')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.parameter_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Expr.parameter_concrete.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    key: ezP.Key.NAME,
-    check: ezP.T3.Expr.identifier,
-    hole_value: 'name',
+ezP.DelegateSvg.Manager.makeSubclass('parameter_concrete', {
+  input: {
+    m_1: {
+      key: ezP.Key.NAME,
+      check: ezP.T3.Expr.identifier,
+      hole_value: 'name',
+    },
+    m_3: {
+      key: ezP.Key.EXPRESSION,
+      label: ':',
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.Check.expression,
+      hole_value: 'expression',
+    },
   }
-  this.model__.input.m_3 = {
-    key: ezP.Key.EXPRESSION,
-    label: ':',
-    css_class: 'ezp-code-reserved',
-    check: ezP.T3.Expr.Check.expression,
-    hole_value: 'expression',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.parameter_concrete,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.parameter_concrete, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('parameter_concrete')
+})
 
 /**
  * Class for a DelegateSvg, defparameter_concrete.
@@ -375,28 +359,22 @@ ezP.DelegateSvg.Manager.register('parameter_concrete')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.defparameter_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Expr.defparameter_concrete.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    key: ezP.Key.NAME,
-    check: ezP.T3.Expr.Check.parameter,
-    hole_value: 'name',
+ezP.DelegateSvg.Manager.makeSubclass('defparameter_concrete', {
+  input: {
+    m_1: {
+      key: ezP.Key.NAME,
+      check: ezP.T3.Expr.Check.parameter,
+      hole_value: 'name',
+    },
+    m_3: {
+      key: ezP.Key.EXPRESSION,
+      label: '=',
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.Check.expression,
+      hole_value: 'value',
+    },
   }
-  this.model__.input.m_3 = {
-    key: ezP.Key.EXPRESSION,
-    label: '=',
-    css_class: 'ezp-code-reserved',
-    check: ezP.T3.Expr.Check.expression,
-    hole_value: 'value',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.defparameter_concrete,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.defparameter_concrete, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('defparameter_concrete')
-
-ezP.ID.PARAMETER_INSERT = 'PARAMETER_INSERT'
+})
 
 /**
  * Populate the context menu for the given block.
@@ -458,3 +436,13 @@ ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
   ezP.DelegateSvg.Expr.parameter_list.superClass_.populateContextMenuFirst_.call(this,block, mgr)
   return true
 }
+
+ezP.DelegateSvg.Parameters.T3s = [
+  ezP.T3.Expr.parameter_list,
+  ezP.T3.Expr.parameter_star,
+  ezP.T3.Expr.parameter_star_star,
+  ezP.T3.Expr.parameter_concrete,
+  ezP.T3.Expr.defparameter_concrete,
+]
+
+console.warn('Use a modifier field for * and ** (instead of await and async too)')
