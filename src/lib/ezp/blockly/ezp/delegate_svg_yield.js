@@ -174,7 +174,7 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.fromDom = function (block, xml) 
  * @private
  */
 ezP.DelegateSvg.Expr.yield_expression.getFromInputDisabled = function (block) {
-  return block.getInput(ezP.Key.FROM).ezpData.disabled_
+  return block.getInput(ezP.Key.FROM).ezp.disabled_
 }
 
 /**

@@ -60,7 +60,8 @@ if (Blockly.Msg.NEW_VARIABLE.startsWith('Créer')) {
  * @private
  */
 ezP.DelegateSvg.Expr.identifier.prototype.getValue = function (block) {
-  var field = block.ezp.uiModel.m_1.fieldIdentifier
+  var input = block.getInput(ezP.Key.NAME)
+  var field = input.ezp.fields.identifier
   return field.getValue()
 }
 
@@ -71,7 +72,8 @@ ezP.DelegateSvg.Expr.identifier.prototype.getValue = function (block) {
  * @private
  */
 ezP.DelegateSvg.Expr.identifier.prototype.setValue = function (block, value) {
-  var field = block.ezp.uiModel.m_1.fieldIdentifier
+  var input = block.getInput(ezP.Key.NAME)
+  var field = input.ezp.fields.identifier
   if (field && field.getValue() !== value) {
     field.setValue(value)
   }
@@ -83,7 +85,9 @@ ezP.DelegateSvg.Expr.identifier.prototype.setValue = function (block, value) {
  * @private
  */
 ezP.DelegateSvg.Expr.identifier.prototype.showEditor = function (block) {
-  block.ezp.uiModel.m_1.fieldIdentifier.showEditor_()
+  var input = block.getInput(ezP.Key.NAME)
+  var field = input.ezp.fields.identifier
+  field.showEditor_()
 }
 
 /**
@@ -95,7 +99,9 @@ ezP.DelegateSvg.Expr.identifier.prototype.showEditor = function (block) {
 ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var menu = mgr.menu
   var menuItem = new ezP.MenuItem(ezP.Msg.RENAME, function() {
-      block.ezp.uiModel.m_1.fieldIdentifier.showEditor_()
+      var input = block.getInput(ezP.Key.NAME)
+      var field = input.ezp.fields.identifier
+      field.showEditor_()
     })
   mgr.addChild(menuItem, true)
   mgr.shouldSeparate()
@@ -123,7 +129,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuMiddle_ = function 
  * the MenuItem selected within menu.
  */
 ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (block, VM) {
-  var listener = block.ezp.uiModel.m_1.fieldIdentifier
+  var listener = block.ezp.uiModel.m_1.field.identifier
   var oldName = listener.getValue()
   var workspace = block.workspace
   var oldVarId = workspace.getVariable(oldName).getId()
@@ -139,7 +145,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (bl
     workspace.deleteVariableInternal_(vm)
     var allBlocks = workspace.getAllBlocks()
     for (var i = 0, B; B = allBlocks[i++];) {
-      var field = block.ezp.uiModel.m_1.fieldIdentifier
+      var field = block.ezp.uiModel.m_1.field.identifier
       if (field && field.getValue() === oldName) {
         field.setValue(VM.name)
       }
@@ -157,7 +163,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (bl
  * the MenuItem selected within menu.
  */
 ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionMiddle = function (block, mgr, event) {
-  var listener = block.ezp.uiModel.m_1.fieldIdentifier
+  var listener = block.ezp.uiModel.m_1.field.identifier
   var workspace = block.workspace
   var model = event.target.getModel()
   var action = model[0]
@@ -200,7 +206,9 @@ ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionMiddle = function 
  * @return None
  */
 ezP.DelegateSvg.Expr.identifier.prototype.getSubtype = function (block) {
-  return block.ezp.uiModel.m_1.fieldIdentifier.getValue()
+  var input = block.getInput(ezP.Key.NAME)
+  var field = input.ezp.fields.identifier
+  return field.getValue()
 }
 
 /**
@@ -215,7 +223,9 @@ ezP.DelegateSvg.Expr.identifier.prototype.getSubtype = function (block) {
 ezP.DelegateSvg.Expr.identifier.prototype.setSubtype = function (block, subtype) {
   var type = ezP.Do.typeOfString(subtype)
   if (type === ezP.T3.Expr.identifier) {
-    block.ezp.uiModel.m_1.fieldIdentifier.setValue(subtype)
+    var input = block.getInput(ezP.Key.NAME)
+    var field = input.ezp.fields.identifier
+    field.setValue(subtype)
     return true  
   }
   return false

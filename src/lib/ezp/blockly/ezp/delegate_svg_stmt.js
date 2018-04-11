@@ -286,7 +286,7 @@ ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block, deep) {
   this.setInputEnabled(block, last, first.connection.isConnected() || connected)
   if (connected) {
     if (last.fieldRow.length == 0) {
-      last.appendField(last.fieldLabel, ezP.Key.LAST+'.'+ezP.Const.Field.LABEL)
+      last.appendField(last.fields.label, ezP.Key.LAST+'.'+ezP.Const.Field.LABEL)
     }
   } else if (last.fieldRow.length > 0) {
     last.removeField(ezP.Key.LAST+'.'+ezP.Const.Field.LABEL)
@@ -515,7 +515,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.setDisabled = function (block, yorn)
  * @return None
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.getSubtype = function (block) {
-  return block.ezp.uiModel.m_3.fieldCodeComment.getValue()
+  return block.ezp.uiModel.m_3.fields.codeComment.getValue()
 }
 
 /**
@@ -528,7 +528,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.getSubtype = function (block) {
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.setSubtype = function (block, subtype) {
-  block.ezp.uiModel.m_3.fieldCodeComment.setValue(subtype)
+  block.ezp.uiModel.m_3.fields.codeComment.setValue(subtype)
   return true
 }
 
@@ -538,7 +538,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.setSubtype = function (block, subtyp
  * @private
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.showEditor = function (block) {
-  block.ezp.uiModel.m_3.fieldCodeComment.showEditor_()
+  block.ezp.uiModel.m_3.fields.codeComment.showEditor_()
 }
 
 /**

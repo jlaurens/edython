@@ -25,14 +25,19 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Primary = function (prototypeName) {
   ezP.DelegateSvg.Primary.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    key: ezP.Key.PRIMARY,
-    check: ezP.T3.Expr.Check.primary,
-    plugged: ezP.T3.Expr.primary,
-    hole_value: 'primary',
-  }
 }
 goog.inherits(ezP.DelegateSvg.Primary, ezP.DelegateSvg.Expr)
+
+ezP.DelegateSvg.Primary.model__ = {
+  input: {
+    m_1: {
+      key: ezP.Key.PRIMARY,
+      check: ezP.T3.Expr.Check.primary,
+      plugged: ezP.T3.Expr.primary,
+      hole_value: 'primary',
+    },
+  },
+}
 
 /**
  * The primary connection if any.
@@ -53,8 +58,8 @@ ezP.DelegateSvg.prototype.getPrimaryConnection = function (block) {
  * @constructor
  */
 ezP.DelegateSvg.Primary.prototype.getPrimaryConnection = function (block) {
-  // var input = block.getInput(ezP.Key.PRIMARY)
-  return this.uiModel.m_1.input.connection
+  var input = block.getInput(ezP.Key.PRIMARY)
+  return input.connection
 }
 
 /**
@@ -65,21 +70,17 @@ ezP.DelegateSvg.Primary.prototype.getPrimaryConnection = function (block) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.attributeref = function (prototypeName) {
-  ezP.DelegateSvg.Expr.attributeref.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_3 = {
-    label: '.',
-    key: ezP.Key.ATTRIBUTE,
-    check: ezP.T3.Expr.identifier,
-    plugged: ezP.T3.Expr.attribute_identifier,
-    hole_value: 'attribute',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.attributeref ,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.attributeref, ezP.DelegateSvg.Primary)
-ezP.DelegateSvg.Manager.register('attributeref')
+ezP.DelegateSvg.Manager.makeSubclass('attributeref', {
+  input: {
+    m_3: {
+      label: '.',
+      key: ezP.Key.ATTRIBUTE,
+      check: ezP.T3.Expr.identifier,
+      plugged: ezP.T3.Expr.attribute_identifier,
+      hole_value: 'attribute',
+    },
+  },
+}, ezP.DelegateSvg.Primary)
 
 /**
  * Class for a DelegateSvg, subscription and slicing.
@@ -91,22 +92,60 @@ ezP.DelegateSvg.Manager.register('attributeref')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.subscription = ezP.DelegateSvg.Expr.slicing = function (prototypeName) {
-  ezP.DelegateSvg.Expr.slicing.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_3 = {
-    key: ezP.Key.LIST,
-    wrap: ezP.T3.Expr.display_slice_list,
-  }
-  this.outputModel__ = {
+ezP.DelegateSvg.Manager.makeSubclass('slicing', {
+  input: {
+    m_3: {
+      key: ezP.Key.SLICE,
+      wrap: ezP.T3.Expr.display_slice_list,
+    },
+  },
+  output: {
     check: [ezP.T3.Expr.subscription, ezP.T3.Expr.slicing],
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.slicing, ezP.DelegateSvg.Primary)
-ezP.DelegateSvg.Manager.register('slicing')
+  },
+}, ezP.DelegateSvg.Primary)
+
+ezP.DelegateSvg.Expr.subscription = ezP.DelegateSvg.Expr.slicing
 ezP.DelegateSvg.Manager.register('subscription')
 
 /**
  * Class for a DelegateSvg, call block.
+ * As call is already a reserved message in javascript,
+ * we use call_expr instead.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Manager.makeSubclass('call_expr', {
+  input: {
+    m_3: {
+      key: ezP.Key.ARGUMENTS,
+      start: '(',
+      wrap: ezP.T3.Expr.argument_list,
+      end: ')',
+    },
+  },
+}, ezP.DelegateSvg.Primary)
+
+/**
+ * Class for a DelegateSvg, call statement block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Manager.makeSubclass('call_stmt', {
+  input: {
+    m_1: {
+      insert: ezP.T3.Expr.call_expr,
+    },
+  },
+})
+
+/**
+ * Class for a DelegateSvg, call block, built in functions.
  * As call is already a reserved message in javascript,
  * we use call_expr instead.
  * Due to the ambibuity, it is implemented only once for both.
@@ -117,102 +156,174 @@ ezP.DelegateSvg.Manager.register('subscription')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.call_expr =  function (prototypeName) {
-  ezP.DelegateSvg.Expr.call_expr.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_3 = {
-    key: ezP.Key.LIST,
-    start: '(',
-    wrap: ezP.T3.Expr.argument_list,
-    end: ')',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.call_expr,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.call_expr, ezP.DelegateSvg.Primary)
-ezP.DelegateSvg.Manager.register('call_expr')
+ezP.DelegateSvg.Manager.makeSubclass('builtin_call_expr', {
+  input: {
+    builtins: ['range', 'list', 'len', 'sum'],
+    m_1: {
+      label: '',
+      css_class: 'ezp-code-builtin',
+      key: ezP.Key.ARGUMENTS,
+      start: '(',
+      wrap: ezP.T3.Expr.argument_list,
+      end: ')',
+    },
+  },
+  output: {
+    check: [ezP.T3.Expr.call_expr],
+  },
+})
 
 /**
- * Class for a DelegateSvg, sum block.
+ * Initialize a block.
+ * @param {!Blockly.Block} block to be initialized..
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Expr.builtin_call_expr.prototype.initBlock = function (block) {
+  ezP.DelegateSvg.Expr.builtin_call_expr.superClass_.initBlock.call(this, block)
+  var builtins = this.getModel().input.builtins
+  this.initProperty(block, ezP.Key.BUILTIN, builtins[0], null, null, function(block, oldValue, newValue) {
+    var disabler = new ezP.Events.Disabler()
+    var input = block.getInput(ezP.Key.ARGUMENTS)
+    var field = input.ezp.fields.label
+    field.setValue(newValue)
+    disabler.stop()
+  })
+}
+
+/**
+ * Get the subtype of the block.
+ * The operator.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return None
+ */
+ezP.DelegateSvg.Expr.builtin_call_expr.prototype.getSubtype = function (block) {
+  return this.getProperty(block, ezP.Key.BUILTIN)
+}
+
+/**
+ * Set the subtype of the block.
+ * The operator.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return true if the receiver supports subtyping, false otherwise
+ */
+ezP.DelegateSvg.Expr.builtin_call_expr.prototype.setSubtype = function (block, subtype) {
+  return this.setProperty(block, ezP.Key.BUILTIN, subtype)
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Expr.builtin_call_expr.populateMenu = function (block, mgr) {
+  var builtins = block.ezp.getModel().input.builtins
+  var current = block.ezp.getProperty(block, ezP.Key.BUILTIN)
+  var F = function(content, key) {
+    var menuItem = new ezP.MenuItem(content, function() {
+      block.ezp.setProperty(block, ezP.Key.BUILTIN, key)
+    })
+    mgr.addChild(menuItem, true)
+    menuItem.setEnabled(key !== current)
+  }
+  for (var i = 0, k;(k = builtins[i++]);) {
+    F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-builtin',
+      goog.dom.createTextNode(k),
+    ), k)
+  }
+  mgr.shouldSeparateInsert()
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Expr.builtin_call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  ezP.DelegateSvg.Expr.builtin_call_expr.populateMenu(block, mgr)
+  return ezP.DelegateSvg.Expr.builtin_call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+}
+
+/**
+ * Class for a DelegateSvg, statement call block, built in functions.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.sum_builtin = function (prototypeName) {
-  ezP.DelegateSvg.Expr.sum_builtin.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    dummy: 'sum',
-    css_class: 'ezp-code-builtin',
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.sum_builtin, ezP.DelegateSvg.Expr.call_expr)
-ezP.DelegateSvg.Manager.register('sum_builtin')
+ezP.DelegateSvg.Manager.makeSubclass('builtin_call_stmt', {
+  input: {
+    builtins: ['range', 'list', 'len', 'sum'],
+    m_1: {
+      insert: ezP.T3.Expr.builtin_call_expr,
+    },
+  },
+})
 
 /**
- * Class for a DelegateSvg, len block.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
  */
-ezP.DelegateSvg.Expr.len_builtin = function (prototypeName) {
-  ezP.DelegateSvg.Expr.len_builtin.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    dummy: 'len',
-    css_class: 'ezp-code-builtin',
-  }
+ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  ezP.DelegateSvg.Expr.builtin_call_expr.populateMenu(block, mgr)
+  return ezP.DelegateSvg.Stmt.builtin_call_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
-goog.inherits(ezP.DelegateSvg.Expr.len_builtin, ezP.DelegateSvg.Expr.call_expr)
-ezP.DelegateSvg.Manager.register('len_builtin')
 
 /**
- * Class for a DelegateSvg, list block.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
+ * Initialize a block.
+ * @param {!Blockly.Block} block to be initialized..
+ * For subclassers eventually
  */
-ezP.DelegateSvg.Expr.list_builtin = function (prototypeName) {
-  ezP.DelegateSvg.Expr.list_builtin.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    dummy: 'list',
-    css_class: 'ezp-code-builtin',
-  }
+ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.initBlock = function (block) {
+  this.getModel = ezP.DelegateSvg.Expr.builtin_call_expr.prototype.getModel
+  ezP.DelegateSvg.Stmt.builtin_call_stmt.superClass_.initBlock.call(this, block)
+  var builtins = this.getModel().input.builtins
+  this.initProperty(block, ezP.Key.BUILTIN, builtins[0], null, null, function(block, oldValue, newValue) {
+    var disabler = new ezP.Events.Disabler()
+    var input = block.getInput(ezP.Key.ARGUMENTS)
+    var field = input.ezp.fields.label
+    field.setValue(newValue)
+    disabler.stop()
+  })
 }
-goog.inherits(ezP.DelegateSvg.Expr.list_builtin, ezP.DelegateSvg.Expr.call_expr)
-ezP.DelegateSvg.Manager.register('list_builtin')
 
 /**
- * Class for a DelegateSvg, range block.
+ * Get the subtype of the block.
+ * The operator.
  * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return None
  */
-ezP.DelegateSvg.Expr.range_builtin = function (prototypeName) {
-  ezP.DelegateSvg.Expr.range_builtin.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    dummy: 'range',
-    css_class: 'ezp-code-builtin',
-  }
+ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.getSubtype = function (block) {
+  return this.getProperty(block, ezP.Key.BUILTIN)
 }
-goog.inherits(ezP.DelegateSvg.Expr.range_builtin, ezP.DelegateSvg.Expr.call_expr )
-ezP.DelegateSvg.Manager.register('range_builtin')
 
 /**
- * Class for a DelegateSvg, len block.
+ * Set the subtype of the block.
+ * The operator.
  * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return true if the receiver supports subtyping, false otherwise
  */
-ezP.DelegateSvg.Expr.len_builtin = function (prototypeName) {
-  ezP.DelegateSvg.Expr.len_builtin.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    dummy: 'len',
-    css_class: 'ezp-code-builtin',
-  }
+ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.setSubtype = function (block, subtype) {
+  return this.setProperty(block, ezP.Key.BUILTIN, subtype)
 }
-goog.inherits(ezP.DelegateSvg.Expr.len_builtin, ezP.DelegateSvg.Expr.call_expr )
-ezP.DelegateSvg.Manager.register('len_builtin')
+
+ezP.DelegateSvg.Primary.T3s = [
+  ezP.T3.Expr.attributeref,
+  ezP.T3.Expr.slicing,
+  ezP.T3.Expr.subscription,
+  ezP.T3.Expr.call_expr,
+  ezP.T3.Stmt.call_stmt,
+  ezP.T3.Expr.builtin_call_expr,
+  ezP.T3.Stmt.builtin_call_stmt,
+]

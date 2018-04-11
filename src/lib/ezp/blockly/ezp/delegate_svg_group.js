@@ -381,7 +381,7 @@ ezP.DelegateSvg.Manager.makeSubclass('while_part', {
  */
 ezP.DelegateSvg.Group.prototype.willRender_ = function (block) {
   ezP.DelegateSvg.Group.superClass_.willRender_.call(this, block)
-  var field = this.uiModel.fieldAsync
+  var field = this.uiModel.fields.async
   if (field) {
     field.setVisible(this.async_)
   }
@@ -394,7 +394,7 @@ ezP.DelegateSvg.Group.prototype.willRender_ = function (block) {
  * @private
  */
 ezP.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  if (block.ezp.uiModel.fieldAsync) {
+  if (block.ezp.uiModel.fields.async) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN('async', 'ezp-code-reserved'),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),

@@ -8,14 +8,13 @@
 <body>
 <pre>
 any_stmt ::= any statement
+call_stmt ::= call_expr
 print_builtin ::= "print(" argument_list ")"
 print_stmt ::= print
+builtin_call_expr ::= "whatever(" argument_list ")"
+builtin_call_stmt ::= builtin_call_expr
 input_builtin ::= "input(" [any_argument] ")"
 input_stmt ::= input
-sum_builtin ::= "sum(" argument_list ")"
-list_builtin ::= "list(" argument_list ")"
-range_builtin ::= "range(" argument_list ")"
-len_builtin ::= "len(" argument_list ")"
 </pre>
 </body>
 </html>

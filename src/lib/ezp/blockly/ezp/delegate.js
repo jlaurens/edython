@@ -978,7 +978,7 @@ ezP.Delegate.prototype.xmlType = function (block) {
  */
 ezP.Delegate.prototype.inputEnumerator = function (block, all) {
   return ezP.Do.Enumerator(block.inputList, all? undefined: function(x) {
-    return !x.ezpData.disabled_
+    return !x.ezp.disabled_
   })
 }
 

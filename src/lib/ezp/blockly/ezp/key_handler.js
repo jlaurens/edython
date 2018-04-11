@@ -709,8 +709,21 @@ Ks = {
   'print(…)': ezP.T3.Stmt.print_stmt,
   'input(…)': ezP.T3.Expr.input_builtin,
   'range(…)': {
-    type: ezP.T3.Expr.range,
-    subtype: ezP.Key.UPPER_BOUND,
+    type: ezP.T3.Expr.call_builtin,
+    subtype: 'range',
+    key: ezP.Key.UPPER_BOUND,
+  },
+  'list(…)': {
+    type: ezP.T3.Expr.call_builtin,
+    subtype: 'list',
+  },
+  'len(…)': {
+    type: ezP.T3.Expr.call_builtin,
+    subtype: 'len',
+  },
+  'sum(…)': {
+    type: ezP.T3.Expr.call_builtin,
+    subtype: 'sum',
   },
   'module as alias': ezP.T3.Expr.module_as_concrete,
   '(…)': ezP.T3.Expr.parenth_form,
@@ -718,6 +731,8 @@ Ks = {
   '{…:…}': ezP.T3.Expr.dict_display,
   '{…}': ezP.T3.Expr.set_display,
 }
+console.warn('Implement support for `key` in range above')
+console.warn('Problem when there can be both a statement and an expression for the same shortcut')
 var K
 for (K in Ks) {
   ezP.KeyHandler.register(K, Ks[K]);

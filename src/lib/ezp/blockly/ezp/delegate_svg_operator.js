@@ -52,7 +52,7 @@ ezP.DelegateSvg.Operator.prototype.initBlock = function(block) {
   var model = block.ezp.getModel()
   block.ezp.initProperty(block, ezP.Key.OPERATOR, model.input.operators[model.input.initialOperator || 0], undefined, undefined, function(block, oldValue, newValue) {
     var disabler = new ezP.Events.Disabler()
-    var field = block.ezp.uiModel.m_3.fieldOperator
+    var field = block.ezp.uiModel.m_3.fields.operator
     field.setValue(newValue)
     disabler.stop()
   })

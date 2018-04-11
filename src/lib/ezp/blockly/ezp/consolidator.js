@@ -85,7 +85,7 @@ ezP.Consolidator.List.prototype.setupIO = function (io, i) {
     io.i = i
   }
   if ((io.input = io.list[io.i])) {
-    io.ezp = io.input.ezpData
+    io.ezp = io.input.ezp
     io.c8n = io.input.connection
     goog.asserts.assert(!io.ezp || !!io.c8n, 'List items must have a connection')
     return true

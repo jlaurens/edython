@@ -299,7 +299,7 @@ ezP.DelegateSvg.Manager.makeSubclass('import_stmt', {
 ezP.DelegateSvg.Stmt.import_stmt.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Stmt.import_stmt.superClass_.initBlock.call(block.ezp, block)
   var values = this.getModel().input.subtypes
-  block.ezp.initProperty(block, 'subtype', values[0], function(block, oldValue, newValue) {
+  block.ezp.initProperty(block, ezP.Key.SUBTYPE, values[0], function(block, oldValue, newValue) {
     return values.indexOf(newValue) >= 0
   }, null, function(block, oldValue, newValue) {
     Blockly.Events.setGroup(true)
@@ -336,7 +336,7 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function(block) {
  * @return None
  */
 ezP.DelegateSvg.Stmt.import_stmt.prototype.getSubtype = function (block) {
-  return block.ezp.getProperty(block, 'subtype')
+  return block.ezp.getProperty(block, ezP.Key.SUBTYPE)
 }
 
 /**
@@ -349,7 +349,7 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.getSubtype = function (block) {
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Stmt.import_stmt.prototype.setSubtype = function (block, subtype) {
-  block.ezp.setProperty(block, 'subtype', subtype)
+  block.ezp.setProperty(block, ezP.Key.SUBTYPE, subtype)
 }
 
 /**
@@ -361,10 +361,10 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.setSubtype = function (block, subtype
 ezP.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var values = block.ezp.getModel().input.subtypes
   var menu = mgr.menu
-  var current = block.ezp.getProperty(block, 'subtype')
+  var current = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
   var F = function(content, key) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setProperty(block, 'subtype', key)
+      block.ezp.setProperty(block, ezP.Key.SUBTYPE, key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)

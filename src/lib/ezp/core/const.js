@@ -27,9 +27,12 @@ ezP.Const = {
 
 ezP.Const.Field = {
   
+  MODIFIER: 'MODIFIER',
+  PREFIX: 'PREFIX',
   LABEL: 'LABEL',
   START: 'START',
   END: 'END',
+  SUFFIX: 'SUFFIX',
   DOTS: 'DOTS',
   CODE: 'CODE',
   ID: 'ID',
@@ -69,8 +72,13 @@ ezP.Key = {
   KEY: 'key',
   DATUM: 'datum',
   OPERATOR: 'operator',
+  MODIFIER: 'modifier',
+  BUILTIN: 'builtin',
   FUTURE: 'future',
   PARAMETERS: 'parameters',
+  SLICE: 'slice',
+  ARGUMENTS: 'arguments',
+  SUBTYPE: 'subtype',
 
   LIST: 'list',// avoid this one when possibe
   

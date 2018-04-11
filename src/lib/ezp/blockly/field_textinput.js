@@ -31,7 +31,7 @@ goog.require('Blockly.FieldTextInput')
  * @constructor
  */
 ezP.FieldTextInput = function (text, optValidator) {
-  this.ezpData = {}
+  this.ezp = {}
   ezP.FieldTextInput.superClass_.constructor.call(this, text,
     optValidator)
 }
@@ -101,7 +101,7 @@ ezP.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
   if (block.ezp.locked_) {
     return
   }
-  this.ezpData.isEditing = true
+  this.ezp.isEditing = true
   block.ezp.startEditingField && block.ezp.startEditingField(block, this)
   this.render_()
   block.render()
@@ -172,7 +172,7 @@ ezP.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
 ezP.FieldTextInput.prototype.widgetDispose_ = function () {
   var thisField = this
   return function () {
-    thisField.ezpData.isEditing = false
+    thisField.ezp.isEditing = false
     var block = thisField.sourceBlock_
     block.ezp.endEditingField && block.ezp.endEditingField(block, this)  
     thisField.callValidator()
@@ -229,7 +229,7 @@ goog.inherits(ezP.FieldCodeInput, ezP.FieldTextInput)
  * @private
  */
 ezP.FieldCodeInput.prototype.getDisplayText_ = function() {
-  if (this.ezpData.placeholder && !this.ezpData.isEditing) {
+  if (this.ezp.placeholder && !this.ezp.isEditing) {
     return this.placeholderText()
   }
   return ezP.FieldCodeInput.superClass_.getDisplayText_.call(this)
@@ -245,7 +245,7 @@ ezP.FieldCodeInput.prototype.placeholderText = function() {
  * @param {string} newValue New value.
  */
 ezP.FieldCodeInput.prototype.setValue = function(newValue) {
-  if ((this.ezpData.placeholder = !newValue || !newValue.length)) {
+  if ((this.ezp.placeholder = !newValue || !newValue.length)) {
     // newValue = this.placeholderText()
     if (this.textElement_) {
       goog.dom.classlist.add(this.textElement_,'ezp-code-placeholder')
@@ -263,7 +263,7 @@ ezP.FieldCodeInput.prototype.setValue = function(newValue) {
  */
 ezP.FieldCodeInput.prototype.render_ = function() {
   ezP.FieldCodeInput.superClass_.render_.call(this)
-  if (this.ezpData.placeholder) {
+  if (this.ezp.placeholder) {
     goog.dom.classlist.add(this.textElement_, 'ezp-code-placeholder')
   } else {
     goog.dom.classlist.remove(this.textElement_, 'ezp-code-placeholder')
@@ -291,7 +291,7 @@ ezP.FieldCodeNumber = function (text) {
   var validator = function(txt) {
     var validator_ = function(txt, re, type) {
       if (re.exec(txt)) {
-        field.ezpData.error = false
+        field.ezp.error = false
         if (ezP.FieldTextInput.htmlInput_) {
           goog.dom.classlist.remove(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
         }
@@ -307,7 +307,7 @@ ezP.FieldCodeNumber = function (text) {
     || validator_(txt, ezP.XRE.imagnumber, ezP.T3.Expr.imagnumber)) {
       return txt
     }
-    field.ezpData.error = true
+    field.ezp.error = true
     goog.dom.classlist.add(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
     return txt
   }
@@ -326,12 +326,12 @@ ezP.FieldCodeNumber.prototype.placeholderText = function() {
  */
 ezP.FieldCodeInput.prototype.render_ = function() {
   ezP.FieldCodeInput.superClass_.render_.call(this)
-  if (this.ezpData.error) {
+  if (this.ezp.error) {
     goog.dom.classlist.add(this.textElement_, 'ezp-code-error')
   } else {
     goog.dom.classlist.remove(this.textElement_, 'ezp-code-error')
   }
-  if (this.ezpData.placeholder) {
+  if (this.ezp.placeholder) {
     goog.dom.classlist.add(this.textElement_, 'ezp-code-placeholder')
   } else {
     goog.dom.classlist.remove(this.textElement_, 'ezp-code-placeholder')

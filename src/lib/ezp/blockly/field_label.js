@@ -27,7 +27,7 @@ goog.require('ezP.Block')
 ezP.FieldLabel = function (text, optClass) {
   ezP.FieldLabel.superClass_.constructor.call(this, text, optClass)
   this.size_ = new goog.math.Size(0, ezP.Font.height)
-  this.ezpData = {}
+  this.ezp = {}
 }
 goog.inherits(ezP.FieldLabel, Blockly.FieldLabel)
 
@@ -45,8 +45,8 @@ ezP.FieldLabel.prototype.init = function () {
   if (this.class_) {
     goog.dom.classlist.add(this.textElement_, this.class_)
   }
-  if (this.ezpData.css_class) {
-    goog.dom.classlist.add(this.textElement_, this.ezpData.css_class)
+  if (this.ezp.css_class) {
+    goog.dom.classlist.add(this.textElement_, this.ezp.css_class)
   }
   if (!this.visible_) {
     this.textElement_.style.display = 'none'

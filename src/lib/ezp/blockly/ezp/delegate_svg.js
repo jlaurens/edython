@@ -181,7 +181,9 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     var D = inputModel[K]
     var out
     if (D && Object.keys(D).length) {
-      out = {}
+      out = {
+        field: {}
+      }
       var v, f
       if ((v = D.insert)) {
         var B = ezP.DelegateSvg.newBlockComplete(block.workspace, v)
@@ -263,71 +265,47 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         }
       }
       var field
-      if ((v = D.prefix) !== undefined) {
-        field = out.fieldPrefix = new ezP.FieldLabel(v)
-        k = K+'.'+ezP.Const.Field.PREFIX
-        field.ezpData.css_class = D.css_class
-        field.ezpData.css_style = D.css_style
-        out.input.appendField(field, k)
+      var FFF = function(name, Ctor, key) {
+        field = out.field[name] = out.input.ezp.fields[name] = new Ctor(v)
+        out.input.appendField(field, K+'.'+key)
+        return field
+      }
+      var FF = function(name, key) {
+        field = FFF(name, ezP.FieldLabel, key)
+        field.ezp.css_class = D.css_class
+        field.ezp.css_style = D.css_style
+        return field
       }
       if ((v = D.label) !== undefined || (v = D.dummy) !== undefined) {
-        out.fieldLabel = field = new ezP.FieldLabel(v)
-        k = K+'.'+ezP.Const.Field.LABEL
-        out.input.appendField(field, k)
-        field.ezpData.css_class = D.css_class
-        field.ezpData.css_style = D.css_style
+        FF('label', ezP.Const.Field.LABEL)
       }
       if ((v = D.start) !== undefined) {
-        field = out.fieldLabelStart = new ezP.FieldLabel(v)
-        k = K+'.'+ezP.Const.Field.START
-        field.ezpData.css_class = D.css_class
-        field.ezpData.css_style = D.css_style
-        out.input.appendField(field, k)
+        FF('start', ezP.Const.Field.START)
       }
       if ((v = D.end) !== undefined) {
-        field = out.fieldLabelEnd = new ezP.FieldLabel(v)
-        k = K + '.'+ezP.Const.Field.END
-        field.ezpData.css_class = D.css_class
-        field.ezpData.css_style = D.css_style
-        field.ezpData.suffix = true
-        out.input.appendField(field, k)
+        FF('end', ezP.Const.Field.END).ezp.suffix = true
       }
       if ((v = D.identifier) !== undefined) {
-        field = out.fieldIdentifier = new ezP.FieldIdentifier(v)
-        k = K+'.'+ezP.Const.Field.IDENTIFIER
-        out.input.appendField(field, k)
-        // if (D.label) { // this is svg specific
-        //   field.ezpData.x_shift = ezP.Font.space
-        // }
+        FFF('identifier', ezP.FieldIdentifier, ezP.Const.Field.IDENTIFIER)
       } else if ((v = D.code) != undefined) {
-        field = out.fieldCodeInput = new ezP.FieldCodeInput(v)
-        k = K+'.'+ezP.Const.Field.CODE
-        out.input.appendField(field, k)
+        FFF('codeInput', ezP.FieldCodeInput, ezP.Const.Field.CODE)
       } else if ((v = D.comment) != undefined) {
-        field = out.fieldCodeComment = new ezP.FieldCodeComment(v)
-        k = K+'.'+ezP.Const.Field.COMMENT
-        out.input.appendField(field, k)
+        FFF('codeComment', ezP.FieldCodeComment, ezP.Const.Field.COMMENT)
       } else if ((v = D.number) != undefined) {
-        field = out.fieldCodeNumber = new ezP.FieldCodeNumber(v)
-        k = K+'.'+ezP.Const.Field.NUMBER
-        out.input.appendField(field, k)
+        FFF('codeNumber', ezP.FieldCodeNumber, ezP.Const.Field.NUMBER)
       } else if ((v = D.string) != undefined) {
-        field = out.fieldCodeString = new ezP.FieldCodeString(v)
-        k = K+'.'+ezP.Const.Field.STRING
-        out.input.appendField(field, k)
+        FFF('codeString', ezP.FieldCodeString, ezP.Const.Field.STRING)
       } else if ((v = D.longString) != undefined) {
-        field = out.fieldCodeLongString = new ezP.FieldCodeLongString(v)
-        k = K+'.'+ezP.Const.Field.LONG_STRING
-        out.input.appendField(field, k)
+        FFF('codeLongString', ezP.FieldCodeLongString, ezP.Const.Field.LONG_STRING)
       } else if ((v = D.operator) != undefined) {
-        field = out.fieldOperator = new ezP.FieldLabel(v)
-        k = K+'.'+ezP.Const.Field.OPERATOR
-        out.input.appendField(field, k)
+        FFF('operator', ezP.FieldLabel, ezP.Const.Field.OPERATOR)
       }
     }
     return out
   }
-  var model = {}
+  var model = {
+    fields: {},
+  }
   
   // catch the statement input eventually created in parent's method
   var e8r = block.ezp.inputEnumerator(block)
@@ -345,8 +323,8 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     if ((D = inputModel[key])) {
       if ((v = D['label'])) {
         field = new ezP.FieldLabel(v)
-        field.ezpData.css_class = D.css_class
-        field.ezpData.css_style = D.css_style
+        field.ezp.css_class = D.css_class
+        field.ezp.css_style = D.css_style
         field.setSourceBlock(block)
         field.init()
         return field
@@ -355,24 +333,24 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   }
   if ((D = this.getModel().output) && D.awaitable) {
     field = new ezP.FieldLabel('await')
-    field.ezpData.css_class = 'ezp-code-reserved'
+    field.ezp.css_class = 'ezp-code-reserved'
     field.name = ezP.Const.Field.AWAIT
     field.setSourceBlock(block)
     field.init()
-    model.fieldAwait = field
+    model.fields.await = field
   }    
   if ((D = this.getModel().statement) && D.asyncable) {
     field = new ezP.FieldLabel('async')
-    field.ezpData.css_class = 'ezp-code-reserved'
+    field.ezp.css_class = 'ezp-code-reserved'
     field.name = ezP.Const.Field.ASYNC
     field.setSourceBlock(block)
     field.init()
-    model.fieldAsync = field
+    model.fields.async = field
   }
   if (Object.keys(inputModel).length) {
-    model.fieldModifier = FF.call(this, 'modifier')
-    model.fieldPrefix = FF.call(this, 'prefix')
-    model.fieldSuffix = FF.call(this, 'suffix')
+    model.fields.modifier = FF.call(this, 'modifier')
+    model.fields.prefix = FF.call(this, 'prefix')
+    model.fields.suffix = FF.call(this, 'suffix')
     var keys = ['m_1', 'm_2', 'm_3']
     for (var i = 0, K; K = keys[i++];) {
       var f = F.call(this, K)
@@ -537,7 +515,7 @@ ezP.DelegateSvg.prototype.consolidate = function (block, deep) {
 /**
  * Whether the block is sealed to its parent.
  * The sealed status is decided at init time.
- * The corresponding input.ezpData.connection.wrapped_ is set to true.
+ * The corresponding input.ezp.connection.wrapped_ is set to true.
  * @private
  */
 ezP.DelegateSvg.prototype.wrapped_ = undefined
@@ -820,18 +798,18 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     this.shouldSeparateField = false
   }
   io.shouldSeparateField = this.shouldSeparateField
-  if ((io.field = this.uiModel.fieldAsync)) {
+  if ((io.field = this.uiModel.fields.async)) {
     this.renderDrawField_(io)
   }
-  if ((io.field = this.uiModel.fieldAwait)) {
+  if ((io.field = this.uiModel.fields.await)) {
     this.renderDrawField_(io)
   }
-  if ((io.field = this.uiModel.fieldPrefix)) {
+  if ((io.field = this.uiModel.fields.prefix)) {
     this.renderDrawField_(io)
   }
   for (; (io.input = block.inputList[io.i]); io.i++) {
-    goog.asserts.assert(io.input.ezpData, 'Input with no ezpData '+io.input.name+' in block '+block.type)
-    io.inputDisabled = io.input.ezpData.disabled_
+    goog.asserts.assert(io.input.ezp, 'Input with no ezp '+io.input.name+' in block '+block.type)
+    io.inputDisabled = io.input.ezp.disabled_
     if (io.input.isVisible() && !io.inputDisabled) {
       this.renderDrawInput_(io)
     } else {
@@ -857,7 +835,7 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
       }
     }
   }
-  if ((io.field = this.uiModel.fieldSuffix)) {
+  if ((io.field = this.uiModel.field.suffix)) {
     this.renderDrawField_(io)
   }
   io.cursorX += this.getPaddingRight(block)
@@ -906,7 +884,7 @@ ezP.DelegateSvg.prototype.renderDrawField_ = function (io) {
         }
         io.shouldSeparateField = ezP.XRE.id_continue.test(text[text.length-1])
       }
-      var ezp = io.field.ezpData
+      var ezp = io.field.ezp
       var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
       root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
         ', ' + ezP.Padding.t() + ')')
@@ -933,7 +911,7 @@ ezP.DelegateSvg.prototype.renderDrawFields_ = function (io, only_prefix) {
   var here = io.cursorX
   io.f = 0
   for (; (io.field = io.input.fieldRow[io.f]); ++io.f) {
-    if (!!only_prefix === !io.field.ezpData.suffix) {
+    if (!!only_prefix === !io.field.ezp.suffix) {
       this.renderDrawField_(io)
     }
   }
@@ -1276,12 +1254,12 @@ ezP.DelegateSvg.prototype.setInputEnabled = function (block, input, enabled) {
 ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValue) {
   var input = block.getInput(name)
   if (input) {
-    var oldValue = input.ezpData.disabled_
+    var oldValue = input.ezp.disabled_
     if (Blockly.Events.isEnabled()) {
       Blockly.Events.fire(new Blockly.Events.BlockChange(
         block, ezP.Const.Event.input_disable, name, oldValue, newValue));
     }
-    input.ezpData.disabled_ = newValue
+    input.ezp.disabled_ = newValue
     var current = this.isRendering
     this.isRendering = true
     input.setVisible(!newValue)
@@ -1552,10 +1530,10 @@ ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
     if (!D) {
       return
     }
-    FF(D.fieldPrefix)
-    FF(D.fieldLabel)
-    FF(D.fieldLabelStart)
-    FF(D.fieldIdentifier) || FF(D.fieldCodeInput) || FF(D.fieldCodeComment) || FF(D.fieldCodeNumber) || FF(D.fieldCodeString) || FF(D.fieldCodeLongString) || FF(D.fieldOperator, true)
+    FF(D.fields.prefix)
+    FF(D.fields.label)
+    FF(D.fields.start)
+    FF(D.fields.identifier) || FF(D.fields.codeInput) || FF(D.fields.codeComment) || FF(D.fields.codeNumber) || FF(D.fields.codeString) || FF(D.fields.codeLongString) || FF(D.fields.operator, true)
     if ((c8n = D.input.connection)) {
       if ((target = c8n.targetBlock())) {
         FFF(target.ezp.toPythonExpression(target))
@@ -1564,7 +1542,7 @@ ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
         components.push(last)
       }
     }
-    FF(D.fieldLabelEnd)
+    FF(D.fields.end)
   }
   F(this.uiModel.m_1)
   F(this.uiModel.m_2)

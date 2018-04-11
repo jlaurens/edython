@@ -17,7 +17,7 @@ goog.require('ezP')
 goog.require('Blockly.Input')
 
 /**
- * Add an ezpData object to an input to store extra information.
+ * Add an ezp object to an input to store extra information.
  * All this extra information is gathered under a dedicated namespace
  * to avoid name collisions.
  * This is not a delegate because there are few informations or actions needed.
@@ -26,13 +26,14 @@ goog.require('Blockly.Input')
  * @param {!Blockly.Input} workspace The block's workspace.
  */
 ezP.Input.setupEzpData = function (input, data) {
-  if (!input.ezpData) {
-    input.ezpData = {
+  if (!input.ezp) {
+    input.ezp = {
+      fields: {},
       // sealed_: false, // blocks are not sealed
       // s7r_: false,// consolidator, whether the input is a separator
     }
     if (data) {
-      goog.mixin(input.ezpData, data)
+      goog.mixin(input.ezp, data)
     }
     var c8n = input.connection
     if (c8n) {
@@ -41,5 +42,5 @@ ezP.Input.setupEzpData = function (input, data) {
   }
 }
 
-Blockly.Input.prototype.ezpData = undefined
+Blockly.Input.prototype.ezp = undefined
 

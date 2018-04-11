@@ -32,10 +32,10 @@ ezP.FieldIdentifier = function (identifier, optValidator) {
   var validator = function(txt) {
     if (ezP.FieldTextInput.htmlInput_) {
       if (ezP.XRE.identifier.test(txt)) {
-        field.ezpData.error = false
+        field.ezp.error = false
         goog.dom.classlist.remove(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
       } else {
-        field.ezpData.error = true
+        field.ezp.error = true
         goog.dom.classlist.add(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
       }
     }
@@ -120,6 +120,7 @@ ezP.FieldIdentifier.prototype.showPromptEditor_ = function () {
     })
 }
 
+console.warn('Fix code below: variable name replace all')
 /**
  * Called when focusing away from the text field.
  * @param {string} newName The new variable name.
@@ -133,7 +134,7 @@ ezP.FieldIdentifier.prototype.onFinishEditing_ = function (newName) {
   if (VM) {
     var allBlocks = workspace.getAllBlocks()
     for (var i = 0, B; B = allBlocks[i++];) {
-      var field = B.ezp.fieldIdentifier
+      var field = B.ezp.field.identifier
       if (field && field.getValue() === oldName) {
         field.setValue(newName)
       }
