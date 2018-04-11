@@ -36,6 +36,9 @@ ezP.Xml = {
   COMPARISON: 'ezp:comparison',
   AUGMENTED_ASSIGNMENT: 'ezp:augmented_assignment',
   LAMBDA: 'ezp:lambda',
+  CALL: 'ezp:call',
+  BUILTIN: 'ezp:builtin',
+  BUILTIN_CALL: 'ezp:builtin_call',
 }
 
 /**
@@ -403,7 +406,8 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
   // is it a literal or an augmented assignment ?
   if ((block = ezP.Xml.Literal.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.Comparison.domToBlock(xmlBlock, workspace))
-  || (block = ezP.Xml.AugAssign.domToBlock(xmlBlock, workspace))) {
+  || (block = ezP.Xml.AugAssign.domToBlock(xmlBlock, workspace))
+  || (block = ezP.Xml.Call.domToBlock(xmlBlock, workspace))) {
     return block
   }
   // Now create the block, either concrete or not
@@ -746,11 +750,90 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.fromDom = function(block, xml) {
   return ezP.Xml.InputList.fromDom(block, xml)
 }
 
+goog.require('ezP.DelegateSvg.Primary')
+goog.provide('ezP.Xml.Call')
+
+ezP.DelegateSvg.Expr.attributeref.prototype.xml =
+ezP.DelegateSvg.Expr.slicing.prototype.xml =
+
+// call blocks have ezp:call and tag ezp:builtin_call names
+// if there is an ezp:input attribute, even a ''
+// then it is an expression block otherwise it is a statement block.
+console.warn('convert print statement to print expression and conversely, top blocks only')
+ezP.Xml.Call.domToBlock = function(element, workspace) {
+  var prototypeName = element.nodeName.toLowerCase()
+  var call
+  if ((call = (prototypeName === ezP.Xml.CALL))
+  || prototypeName === ezP.Xml.BUILTIN_CALL) {
+    var input = element.getAttribute(ezP.Xml.INPUT)
+    var type
+    if (call) {
+      if (input != null) {
+        type = ezP.T3.Expr.call_expr
+      } else {
+        type = ezP.T3.Stmt.call_stmt
+      }
+    } else if (input != null) {
+      type = ezP.T3.Expr.builtin_call_expr
+    } else {
+      type = ezP.T3.Stmt.builtin_call_stmt
+    }
+    var id = element.getAttribute('id')
+    var block = ezP.DelegateSvg.newBlockComplete(workspace, type, id)
+    if (block) {
+      ezP.Xml.fromDom(block, element)
+      ezP.Xml.Property.fromDom(block, ezP.Key.BUILTIN, element)
+      return block
+    }
+  }
+}
 
 
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * Default implementation just returns 'ezp:list' when this block is embedded
+ * and the inherited value otherwise.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.DelegateSvg.Expr.call_expr.prototype.xmlTagName = ezP.DelegateSvg.Stmt.call_stmt.prototype.xmlTagName = function (block) {
+  return ezP.Xml.CALL
+}
 
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * Default implementation just returns 'ezp:list' when this block is embedded
+ * and the inherited value otherwise.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.DelegateSvg.Expr.builtin_call_expr.prototype.xmlTagName = ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.xmlTagName = function (block) {
+  return ezP.Xml.BUILTIN_CALL
+}
 
+/**
+ * Convert the block's input list to a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {Element} xml the persistent element.
+ * @return a dom element, void lists may return nothing
+ */
+ezP.Xml.Call.toDom = function(block, element, optNoId) {
+  ezP.Xml.InputList.toDom(block, element, optNoId)
+  if (block.ezp instanceof ezP.DelegateSvg.Expr) {
+    element.setAttribute(ezP.Xml.INPUT, '')
+  }
+  ezP.Xml.Property.toDom(block, ezP.Key.BUILTIN, element, optNoId)
+}
 
+ezP.Xml.Call.fromDom = ezP.Xml.InputList.fromDom
+
+ezP.DelegateSvg.Expr.call_expr.prototype.xml =
+ezP.DelegateSvg.Expr.builtin_call_expr.prototype.xml =
+ezP.DelegateSvg.Stmt.call_stmt.prototype.xml =
+ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.xml = ezP.Xml.Call
 
 
 

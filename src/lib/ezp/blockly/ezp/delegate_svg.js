@@ -2359,22 +2359,19 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
   // get the type:
   var prototypeName = action.type || action
   // create a block out of the undo mechanism
-  var enabled = Blockly.Events.isEnabled()
-  if (enabled) {
-    var eventDisabler = ezP.Events.Disabler()
-  }
+  var disabler = new ezP.Events.Disabler()
   var candidate = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
+  if (!candidate) {
+    disabler.stop()
+    return
+  }
   var c8n_N = action.subtype || subtype
   if (candidate.ezp.setSubtype(candidate, c8n_N)) {
     c8n_N = undefined
   }
-  if (!candidate) {
-    eventDisabler.stop()
-    return
-  }
   var c8n, otherC8n, foundC8n
   var fin = function(prepare) {
-    eventDisabler.stop()
+    disabler.stop()
     Blockly.Events.setGroup(true)
     if (Blockly.Events.isEnabled()) {
       Blockly.Events.fire(new Blockly.Events.BlockCreate(candidate))
@@ -2490,7 +2487,7 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
   if (candidate) {
     candidate.dispose(true)
   }
-  eventDisabler.stop()
+  disabler.stop()
   return null
 }
 

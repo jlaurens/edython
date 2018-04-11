@@ -39,6 +39,7 @@ ezP.KeyHandlerMenu.prototype.handleKeyEventInternal = function(e) {
   return this.ezp.handleMenuKeyEvent(e)
 };
 
+console.warn('Problem inserting a print block')
 /**
  * Key handler class.
  * For ezPython.
