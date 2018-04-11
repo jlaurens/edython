@@ -240,6 +240,7 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
 }
 
 //////////////////// blocks  //////////////////////////////
+console.warn('convert to new model below')
 /**
  * Class for a DelegateSvg, annotated_assignment_stmt.
  * Python 3.6 feature.
@@ -251,7 +252,7 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
 ezP.DelegateSvg.Stmt.annotated_assignment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.annotated_assignment_stmt.superClass_.constructor.call(this, prototypeName)
   //annotated_assignment_stmt ::=  augtarget ":" expression ["=" expression]
-  this.model__.input = {
+  this.model__.inputs = {
     m_1: {
       key: ezP.Key.TARGET,
       check: ezP.T3.Expr.Check.augtarget
@@ -322,7 +323,7 @@ ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block, deep) {
  */
 ezP.DelegateSvg.Stmt.pass_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.pass_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
+  this.model__.inputs.m_1 = {
     label: 'pass',
     css_class: 'ezp-code-reserved',
   }
@@ -340,7 +341,7 @@ ezP.DelegateSvg.Manager.register('pass_stmt')
  */
 ezP.DelegateSvg.Stmt.break_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.break_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
+  this.model__.inputs.m_1 = {
     label: 'break',
     css_class: 'ezp-code-reserved',
   }
@@ -358,7 +359,7 @@ ezP.DelegateSvg.Manager.register('break_stmt')
  */
 ezP.DelegateSvg.Stmt.continue_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.continue_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
+  this.model__.inputs.m_1 = {
     label: 'continue',
     css_class: 'ezp-code-reserved',
   }
@@ -379,7 +380,7 @@ ezP.DelegateSvg.Manager.register('continue_stmt')
  */
 ezP.DelegateSvg.Expr.non_void_identifier_list = function (prototypeName) {
   ezP.DelegateSvg.Expr.non_void_identifier_list.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.list = {
+  this.model__.inputs.list = {
     check: ezP.T3.Expr.Check.non_void_identifier_list,
     empty: false,
     sep: ',',
@@ -400,10 +401,10 @@ ezP.DelegateSvg.Manager.register('non_void_identifier_list')
  */
 ezP.DelegateSvg.Stmt.global_nonlocal_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.operators = ['global', 'nonlocal']
-  this.model__.input.m_3 = {
+  this.model__.inputs.operators = ['global', 'nonlocal']
+  this.model__.inputs.m_3 = {
     key: ezP.Key.LIST,
-    label: this.model__.input.operators[0],
+    label: this.model__.inputs.operators[0],
     css_class: 'ezp-code-reserved',
     wrap: ezP.T3.Expr.non_void_identifier_list,
   }
@@ -466,11 +467,11 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.handleMenuItemActionFirst = 
  */
 ezP.DelegateSvg.Stmt.comment_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.comment_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
+  this.model__.inputs.m_1 = {
     label: '# ',
     css_class: 'ezp-code-reserved',
   }
-  this.model__.input.m_3 = {
+  this.model__.inputs.m_3 = {
     comment: 'comment',
   }
 }
@@ -565,7 +566,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.showEditor = function (block) {
  */
 ezP.DelegateSvg.Stmt.expression_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.expression_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
+  this.model__.inputs.m_1 = {
     key: ezP.Key.EXPRESSION,
     check: ezP.T3.Expr.Check.expression,
   }
@@ -584,7 +585,7 @@ ezP.DelegateSvg.Manager.register('expression_stmt')
 ezP.DelegateSvg.Stmt.docstring_top_stmt =
 ezP.DelegateSvg.Stmt.docstring_def_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.docstring_top_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
+  this.model__.inputs.m_1 = {
     key: ezP.Key.WRAP,
     wrap: ezP.T3.Expr.longstringliteral,
   }
@@ -612,7 +613,7 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt
  */
 ezP.DelegateSvg.Stmt.docstring_def_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.docstring_def_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
+  this.model__.inputs.m_1 = {
     key: ezP.Key.WRAP,
     wrap: ezP.T3.Expr.longstringliteral,
   }

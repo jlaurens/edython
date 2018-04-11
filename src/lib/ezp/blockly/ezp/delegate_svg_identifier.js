@@ -24,7 +24,7 @@ goog.require('ezP.DelegateSvg.Expr')
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('identifier', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.NAME,
       identifier: 'item',

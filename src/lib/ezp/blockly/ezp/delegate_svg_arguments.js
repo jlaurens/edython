@@ -24,7 +24,7 @@ goog.require('ezP.DelegateSvg.List')
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('keyword_item', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.IDENTIFIER,
       check: ezP.T3.Expr.identifier,
@@ -48,7 +48,7 @@ ezP.DelegateSvg.Manager.makeSubclass('keyword_item', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('expression_star', {
-  input: {
+  inputs: {
     m_1: {
       label: '*',
       key: ezP.Key.EXPRESSION,
@@ -67,7 +67,7 @@ ezP.DelegateSvg.Manager.makeSubclass('expression_star', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('expression_star_star', {
-  input: {
+  inputs: {
     m_1: {
       label: '**',
       key: ezP.Key.EXPRESSION,
@@ -268,7 +268,7 @@ ezP.Consolidator.Arguments.prototype.getCheck = function() {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('argument_list', {
-  input: {
+  inputs: {
     list: {
       check: ezP.T3.Expr.Check.argument_any,
       consolidator: ezP.Consolidator.List,
@@ -289,7 +289,7 @@ ezP.DelegateSvg.Manager.makeSubclass('argument_list', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('argument_list_comprehensive', {
-  input: {
+  inputs: {
     list: {
       consolidator: ezP.Consolidator.Arguments,
       empty: true,

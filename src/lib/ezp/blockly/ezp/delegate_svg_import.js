@@ -43,7 +43,7 @@ ezP.DelegateSvg.Expr._as_concrete = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Expr._as_concrete, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Expr._as_concrete.model__ = {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.SOURCE,
     },
@@ -66,7 +66,7 @@ ezP.DelegateSvg.Expr._as_concrete.model__ = {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('module_as_concrete', {
-  input: {
+  inputs: {
     m_1: {
       check: ezP.T3.Expr.Check.module,
       hole_value: 'module',
@@ -88,7 +88,7 @@ ezP.DelegateSvg.Manager.makeSubclass('module_as_concrete', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('module_concrete', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.LHS,
       check: ezP.T3.Expr.module_name,
@@ -115,7 +115,7 @@ ezP.DelegateSvg.Manager.makeSubclass('module_concrete', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('non_void_module_as_list', {
-  input: {
+  inputs: {
     list: {
       check: ezP.T3.Expr.Check.non_void_module_as_list,
       empty: false,
@@ -135,7 +135,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_module_as_list', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('import_module', {
-  input: {
+  inputs: {
     m_1: {
       label: 'import',
       css_class: 'ezp-code-reserved',
@@ -165,7 +165,7 @@ import_name ::= identifier
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('import_identifier_as_concrete', {
-  input: {
+  inputs: {
     m_1: {
       check: ezP.T3.Expr.identifier,
       hole_value: 'name',
@@ -187,7 +187,7 @@ ezP.DelegateSvg.Manager.makeSubclass('import_identifier_as_concrete', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('non_void_import_identifier_as_list', {
-  input: {
+  inputs: {
     list: {
       check: ezP.T3.Expr.Check.non_void_import_identifier_as_list,
       empty: false,
@@ -208,7 +208,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_import_identifier_as_list', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('parent_module', {
-  input: {
+  inputs: {
     m_1: {
       label: '.',
       key: ezP.Key.MODULE,
@@ -228,7 +228,7 @@ ezP.DelegateSvg.Manager.makeSubclass('parent_module', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('from_relative_module_import', {
-  input: {
+  inputs: {
     m_1: {
       label: 'from',
       css_class: 'ezp-code-reserved',
@@ -257,7 +257,7 @@ ezP.DelegateSvg.Manager.makeSubclass('from_relative_module_import', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('from_module_import', {
-  input: {
+  inputs: {
     m_1: {
       label: 'from',
       css_class: 'ezp-code-reserved',
@@ -282,7 +282,7 @@ ezP.DelegateSvg.Manager.makeSubclass('from_module_import', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('import_stmt', {
-  input: {
+  inputs: {
     subtypes: [ezP.T3.Expr.import_module, ezP.T3.Expr.from_relative_module_import,ezP.T3.Expr.from_module_import],
     m_1: {
       wrap: ezP.T3.Expr.import_module,
@@ -296,16 +296,21 @@ ezP.DelegateSvg.Manager.makeSubclass('import_stmt', {
   },
 })
 
+/**
+ * Create and initialize the subtype property
+ * Declares the operator property.
+ * @param {!Blockly.Block} block to be initialized.
+ */
 ezP.DelegateSvg.Stmt.import_stmt.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Stmt.import_stmt.superClass_.initBlock.call(block.ezp, block)
-  var values = this.getModel().input.subtypes
-  block.ezp.initProperty(block, ezP.Key.SUBTYPE, values[0], function(block, oldValue, newValue) {
-    return values.indexOf(newValue) >= 0
+  var subtypes = this.getModel().inputs.subtypes
+  block.ezp.initProperty(block, ezP.Key.SUBTYPE, subtypes[0], function(block, oldValue, newValue) {
+    return subtypes.indexOf(newValue) >= 0
   }, null, function(block, oldValue, newValue) {
     Blockly.Events.setGroup(true)
     var old = block.ezp.isRendering
     block.ezp.isRendering = true
-    for (var i = 0, k; (k = values[i++]);) {
+    for (var i = 0, k; (k = subtypes[i++]);) {
       block.ezp.setNamedInputDisabled(block, k, (k !== newValue))
     }
     block.ezp.isRendering = old
@@ -359,7 +364,7 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.setSubtype = function (block, subtype
  * @private
  */
 ezP.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var values = block.ezp.getModel().input.subtypes
+  var values = block.ezp.getModel().inputs.subtypes
   var menu = mgr.menu
   var current = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
   var F = function(content, key) {
@@ -403,7 +408,7 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('future_statement', {
-  input: {
+  inputs: {
     m_1: {
       label: 'from __future__ import',
       css_class: 'ezp-code-reserved',

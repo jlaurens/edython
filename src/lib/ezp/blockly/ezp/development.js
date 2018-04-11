@@ -317,25 +317,18 @@ ezP.DelegateSvg.Expr.list_display.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Expr.comprehension,
 ], ezP.T3.Expr.Check.starred_item)
 
-ezP.DelegateSvg.Expr.decorator_expr.workspaceBlocks =
-ezP.DelegateSvg.Expr.funcdef_simple.workspaceBlocks =
+ezP.DelegateSvg.Stmt.decorator_stmt.workspaceBlocks =
 ezP.DelegateSvg.Stmt.funcdef_part.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Stmt.decorator_stmt,
-  ezP.T3.Expr.decorator_expr,
   ezP.T3.Expr.identifier,
   ezP.T3.Expr.dotted_funcname_concrete,
-  ezP.T3.Expr.decorator_call_expr,
-  ezP.T3.Expr.funcdef_simple,
-  ezP.T3.Expr.funcdef_typed,
   ezP.T3.Stmt.funcdef_part,
+  ezP.T3.Stmt.classdef_part,
 ],
 ezP.DelegateSvg.Expr.parameter_list.workspaceBlocks)
 
-ezP.DelegateSvg.Stmt.classdef_part.workspaceBlocks =
-ezP.DelegateSvg.Expr.classdef_simple.workspaceBlocks = ezP.Do.arraysMerged([
+ezP.DelegateSvg.Stmt.classdef_part.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Stmt.decorator_stmt,
-  ezP.T3.Expr.classdef_simple,
-  ezP.T3.Expr.classdef_derived,
   ezP.T3.Stmt.classdef_part,
   ezP.T3.Stmt.assignment_stmt,
 ],

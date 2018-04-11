@@ -7166,7 +7166,7 @@ ezP.DelegateSvg.prototype.renderDrawModel_=function(a){var b={block:a,steps:[],c
 a.outputConnection?b.cursorX=ezP.Font.space:(b.cursorX=ezP.Padding.l(),this.renderDrawSharp_(b));
 for(var c=0;
 b.input=a.inputList[c];
-c++)b.input.isVisible()&&this.renderDrawInput_(b);
+c++)b.inputs.isVisible()&&this.renderDrawInput_(b);
 b.cursorX=a.outputConnection?b.cursorX+ezP.Font.space:b.cursorX+ezP.Padding.r();
 this.minWidth=a.width=Math.max(a.width,b.cursorX);
 return b.steps.join(" ")};
@@ -7174,18 +7174,18 @@ return b.steps.join(" ")};
 ezP.DelegateSvg.prototype.renderDrawSharp_=function(a){goog.asserts.assert(!1,"renderDrawSharp_ must be overriden by "+this)};
 ezP.DelegateSvg.prototype.renderDrawInput_=function(a){goog.asserts.assert(!1,"renderDrawInput_ must be overriden by "+this)};
 ezP.DelegateSvg.prototype.renderDrawFields_=function(a){for(var b=0,c;
-c=a.input.fieldRow[b];
+c=a.inputs.fieldRow[b];
 ++b){var d=c.getSvgRoot();
 d&&(d.setAttribute("transform","translate("+a.cursorX+", "+ezP.Padding.t()+")"),a.cursorX+=c.getSize().width)}};
 
-ezP.DelegateSvg.prototype.renderDrawDummyInput_=function(a){if(!a.canDummy||a.input.type!==Blockly.DUMMY_INPUT)return!1;
+ezP.DelegateSvg.prototype.renderDrawDummyInput_=function(a){if(!a.canDummy||a.inputs.type!==Blockly.DUMMY_INPUT)return!1;
 this.renderDrawFields_(a);
 return!0};
 
 ezP.DelegateSvg.prototype.renderDrawTupleInput_=function(a){if(!a.canTuple)return!1;
-var b=a.input.ezpTuple;
+var b=a.inputs.ezpTuple;
 if(!b)return!1;
-var c=a.input.connection;
+var c=a.inputs.connection;
 this.renderDrawFields_(a);
 c.setOffsetInBlock(a.cursorX,0);
 if(c.isConnected()){if(c=c.targetBlock(),b=c.getSvgRoot()){var d=c.getHeightWidth();
@@ -7195,8 +7195,8 @@ c.render()}}else b.isSeparator?(b=this.carretPathDefWidth_(a.cursorX),b=b.width,
 a.steps.push(b.d),a.cursorX+=b.width);
 return!0};
 
-ezP.DelegateSvg.prototype.renderDrawValueInput_=function(a){if(!a.canValue||a.input.type!==Blockly.INPUT_VALUE)return!1;
-var b=a.input.connection;
+ezP.DelegateSvg.prototype.renderDrawValueInput_=function(a){if(!a.canValue||a.inputs.type!==Blockly.INPUT_VALUE)return!1;
+var b=a.inputs.connection;
 this.renderDrawFields_(a);
 if(b)if(b.setOffsetInBlock(a.cursorX,0),b.isConnected()){b=b.targetBlock();
 var c=b.getSvgRoot();
@@ -7324,7 +7324,7 @@ ezP.DelegateSvg.Stmt.Print.prototype.getInput=function(a,b){var c=this.getInputT
 return null===c?ezP.DelegateSvg.Stmt.Print.superClass_.getInput.call(this,a,b):c};
 
 ezP.DelegateSvg.Stmt.Print.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)||this.renderDrawTupleInput_(a)&&this.didRenderDrawTupleInput_(a)||this.willRenderDrawValueInput_(a)&&this.renderDrawValueInput_(a)};
-ezP.DelegateSvg.Stmt.Print.prototype.didRenderDrawTupleInput_=function(a){a.input.ezpTuple.isSeparator&&(a.separatorC8n=a.input.connection);
+ezP.DelegateSvg.Stmt.Print.prototype.didRenderDrawTupleInput_=function(a){a.inputs.ezpTuple.isSeparator&&(a.separatorC8n=a.inputs.connection);
 return!0};
 
 ezP.DelegateSvg.Stmt.Print.prototype.willRenderDrawValueInput_=function(a){if(a.separatorC8n){var b=this.getPrintState_(),c;
@@ -7436,10 +7436,10 @@ return"m "+a.width+","+b+" v "+(b-d)/2+" m -"+d+","+d/2+" l "+2*d+","+-d+" M "+(
 
 ezP.DelegateSvg.Group.prototype.shapePathDef_=ezP.DelegateSvg.Group.prototype.contourPathDef_=ezP.DelegateSvg.Group.prototype.highlightPathDef_=ezP.DelegateSvg.Group.prototype.groupShapePathDef_;
 
-ezP.DelegateSvg.Group.prototype.renderDrawNextStatementInput_=function(a){if(!a.canStatement||a.input.type!==Blockly.NEXT_STATEMENT)return!1;
+ezP.DelegateSvg.Group.prototype.renderDrawNextStatementInput_=function(a){if(!a.canStatement||a.inputs.type!==Blockly.NEXT_STATEMENT)return!1;
 a.cursorX=Math.max(2*ezP.Font.tabWidth,a.cursorX);
 a.canStatement=!1;
-var b=a.input.connection;
+var b=a.inputs.connection;
 b&&(b.setOffsetInBlock(ezP.Font.tabWidth,ezP.Font.lineHeight()),b.isConnected()&&(b=b.targetBlock(),b.getSvgRoot()&&b.render()),a.block.height=ezP.Font.lineHeight()*a.block.getStatementCount());
 return!0};
 

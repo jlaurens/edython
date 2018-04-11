@@ -340,7 +340,7 @@ ezP.DelegateSvg.Expr.prototype.toPython = function (block, is_deep) {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('proper_slice', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.LOWER_BOUND,
       check: ezP.T3.Expr.Check.expression,
@@ -373,7 +373,7 @@ ezP.DelegateSvg.Manager.makeSubclass('proper_slice', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('conditional_expression_concrete', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.or_test,
@@ -404,7 +404,7 @@ ezP.DelegateSvg.Manager.makeSubclass('conditional_expression_concrete', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('or_expr_star', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.EXPRESSION,
       label: '*',
@@ -423,7 +423,7 @@ ezP.DelegateSvg.Manager.makeSubclass('or_expr_star', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('or_expr_star_star', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.EXPRESSION,
       label: '**',
@@ -443,7 +443,7 @@ ezP.DelegateSvg.Manager.makeSubclass('or_expr_star_star', {
 * @constructor
 */
 ezP.DelegateSvg.Manager.makeSubclass('not_test_concrete', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.EXPRESSION,
       label: 'not',
@@ -507,7 +507,7 @@ ezP.DelegateSvg.Literal.prototype.xmlType = function (block) {
 * @constructor
 */
 ezP.DelegateSvg.Manager.makeSubclass('numberliteral', {
-  input: {
+  inputs: {
     m_1: {
       number: '0',
     }
@@ -635,7 +635,7 @@ goog.provide('ezP.DelegateSvg.Expr.shortliteral')
 * @constructor
 */
 ezP.DelegateSvg.Manager.makeSubclass('shortliteral', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.PREFIX,
       label: "",
@@ -886,7 +886,7 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.setSubtype = function (block, subtyp
 */
 ezP.DelegateSvg.Manager.makeSubclass('builtin_object', {
   values: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.VALUE,
       label: 'True',
@@ -952,7 +952,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.setValue = ezP.DelegateSvg.Expr.bu
 */
 ezP.DelegateSvg.Manager.makeSubclass('any', {
   values: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.CODE,
       code: '1+1',
@@ -998,7 +998,7 @@ goog.provide('ezP.DelegateSvg.Expr.longliteral')
 * @constructor
 */
 ezP.DelegateSvg.Manager.makeSubclass('longliteral', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.PREFIX,
       label: "",

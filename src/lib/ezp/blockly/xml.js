@@ -500,7 +500,7 @@ ezP.Xml.Input.toDom = function(input, element, optNoId, optNoName) {
         return ezP.Xml.toDom(target, element, optNoId)
       } else {
         var child = ezP.Xml.blockToDom(target, optNoId)
-        if (child.childNodes.length>0 || child.hasAttributes()) {
+        if (child.childNodes.length>0 || child.hasAttributes() || !(target.ezp instanceof ezP.DelegateSvg.List)) {
           if (!optNoName) {
             if (input.type === Blockly.INPUT_VALUE) {
               child.setAttribute(ezP.Xml.INPUT, input.name)
@@ -634,7 +634,7 @@ ezP.Xml.InputList.fromDom = function(block, element) {
   block.bumpNeighbours_()
 }
 
-goog.provide('ezP.Xml.Stmt')
+goog.provide('ezP.Xml.Flow')
 
 /**
  * Convert the block's input list and next blocks to a dom element.
@@ -644,8 +644,7 @@ goog.provide('ezP.Xml.Stmt')
  * @param {boolean} optNoId.
  * @return a dom element, void lists may return nothing
  */
-ezP.Xml.Stmt.toDom = function(block, element, optNoId) {
-  ezP.Xml.InputList.toDom(block, element, optNoId)
+ezP.Xml.Flow.toDom = function(block, element, optNoId) {
   var c8n = block.nextConnection
   if (c8n) {
     var target = c8n.targetBlock()
@@ -657,7 +656,6 @@ ezP.Xml.Stmt.toDom = function(block, element, optNoId) {
       }
     }
   }
-  
 }
 
 /**
@@ -667,8 +665,7 @@ ezP.Xml.Stmt.toDom = function(block, element, optNoId) {
  * @param {Element} xml the persistent element.
  * @return a dom element, void lists may return nothing
  */
-ezP.Xml.Stmt.fromDom = function(block, element) {
-  ezP.Xml.InputList.fromDom(block, element)
+ezP.Xml.Flow.fromDom = function(block, element) {
   var c8n = block.nextConnection
   if (c8n) {
     for (var i = 0, child; (child = element.childNodes[i++]);) {
@@ -685,6 +682,33 @@ ezP.Xml.Stmt.fromDom = function(block, element) {
       }
     }
   }
+}
+
+goog.provide('ezP.Xml.Stmt')
+
+/**
+ * Convert the block's input list and next blocks to a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {Element} xml the persistent element.
+ * @param {boolean} optNoId.
+ * @return a dom element, void lists may return nothing
+ */
+ezP.Xml.Stmt.toDom = function(block, element, optNoId) {
+  ezP.Xml.InputList.toDom(block, element, optNoId)
+  ezP.Xml.Flow.toDom(block, element, optNoId)  
+}
+
+/**
+ * Convert the block's input list and next statement from a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {Element} xml the persistent element.
+ * @return a dom element, void lists may return nothing
+ */
+ezP.Xml.Stmt.fromDom = function(block, element) {
+  ezP.Xml.InputList.fromDom(block, element)
+  ezP.Xml.Flow.fromDom(block, element)  
 }
 
 // import_stmt
@@ -840,6 +864,125 @@ goog.require('ezP.DelegateSvg.Print')
 ezP.DelegateSvg.Expr.builtin_input_expr.prototype.xml =
 ezP.DelegateSvg.Expr.builtin_print_expr.prototype.xml =
 ezP.Xml.InputList
+
+goog.require('ezP.DelegateSvg.Proc')
+
+ezP.DelegateSvg.Expr.dotted_funcname_concrete.prototype.xml = ezP.Xml.InputList
+
+goog.provide('ezP.Xml.Decorator')
+
+ezP.DelegateSvg.Stmt.decorator_stmt.prototype.xml = ezP.Xml.Decorator
+
+/**
+ * Records the operator as attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Xml.Decorator.toDom = function (block, element, optNoId) {
+  var builtin = block.ezp.getProperty(block, ezP.Key.BUILTIN)
+  if (builtin) {
+    element.setAttribute(ezP.Xml.BUILTIN, builtin)
+  } else {
+    ezP.Xml.Input.Named.toDom(block, ezP.Key.NAME, element, optNoId)
+  }
+  var subtype = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
+  if (subtype) {
+    ezP.Xml.Input.Named.toDom(block, ezP.Key.ARGUMENTS, element, optNoId)
+  }
+}
+
+/**
+ * Set the value from the attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Xml.Decorator.fromDom = function (block, element) {
+  var builtin = element.getAttribute(ezP.Xml.BUILTIN)
+  if (!builtin || !block.ezp.setProperty(block, ezP.Key.BUILTIN, builtin) ) {
+    ezP.Xml.Input.Named.fromDom(block, ezP.Key.NAME, element)
+  }
+  if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.ARGUMENTS, element)) {
+    block.ezp.setProperty(block, ezP.Key.SUBTYPE, ezP.Key.ARGUMENTS)
+  }
+}
+
+goog.provide('ezP.Xml.Funcdef')
+
+ezP.DelegateSvg.Stmt.funcdef_part.prototype.xml = ezP.Xml.Funcdef
+
+/**
+ * Records the operator as attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Xml.Funcdef.toDom = function (block, element, optNoId) {
+  ezP.Xml.Input.Named.toDom(block, ezP.Key.NAME, element, optNoId)
+  ezP.Xml.Input.Named.toDom(block, ezP.Key.PARAMETERS, element, optNoId)
+  var subtype = block.ezp.getProperty(block, ezP.Key.TYPE)
+  if (subtype) {
+    ezP.Xml.Input.Named.toDom(block, ezP.Key.TYPE, element, optNoId)
+  }
+  ezP.Xml.Input.Named.toDom(block, ezP.Key.SUITE, element, optNoId)
+  ezP.Xml.Flow.toDom(block, element, optNoId)
+}
+
+/**
+ * Set the value from the attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Xml.Funcdef.fromDom = function (block, element) {
+  ezP.Xml.Input.Named.fromDom(block, ezP.Key.NAME, element)
+  ezP.Xml.Input.Named.fromDom(block, ezP.Key.PARAMETERS, element)
+  if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.TYPE, element)) {
+    block.ezp.setProperty(block, ezP.Key.TYPE, ezP.Key.TYPE)
+  }
+  ezP.Xml.Input.Named.fromDom(block, ezP.Key.SUITE, element)
+  ezP.Xml.Flow.fromDom(block, element)
+}
+
+
+goog.provide('ezP.Xml.Classdef')
+
+ezP.DelegateSvg.Stmt.classdef_part.prototype.xml = ezP.Xml.Classdef
+
+/**
+ * Records the operator as attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Xml.Classdef.toDom = function (block, element, optNoId) {
+  ezP.Xml.Input.Named.toDom(block, ezP.Key.NAME, element, optNoId)
+  var subtype = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
+  if (subtype) {
+    ezP.Xml.Input.Named.toDom(block, ezP.Key.ARGUMENTS, element, optNoId)
+  }
+  ezP.Xml.Input.Named.toDom(block, ezP.Key.SUITE, element, optNoId)
+  ezP.Xml.Flow.toDom(block, element, optNoId)
+}
+
+/**
+ * Set the value from the attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Xml.Classdef.fromDom = function (block, element) {
+  ezP.Xml.Input.Named.fromDom(block, ezP.Key.NAME, element)
+  if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.ARGUMENTS, element)) {
+    block.ezp.setProperty(block, ezP.Key.SUBTYPE, ezP.Key.ARGUMENTS)
+  }
+  ezP.Xml.Input.Named.fromDom(block, ezP.Key.SUITE, element)
+  ezP.Xml.Flow.fromDom(block, element)
+}
+
+
+
 
 
 
@@ -1157,6 +1300,7 @@ ezP.DelegateSvg.List.prototype.toDom = function(block, element, optNoId) {
  * @return a dom element, void lists may return nothing
  */
 ezP.DelegateSvg.List.prototype.fromDom = function(block, xml) {
+  var out
   for (var i = 0, xmlChild; (xmlChild = xml.childNodes[i]); i++) {
     if (goog.isFunction(xmlChild.getAttribute)) {
       var name = xmlChild.getAttribute(ezP.Xml.INPUT)
@@ -1167,10 +1311,11 @@ ezP.DelegateSvg.List.prototype.fromDom = function(block, xml) {
           if (c8n) {
             var target = c8n.targetBlock()
             if (target) {
-              ezP.Xml.fromDom(target, (target.ezp.wrapped_ && !(target.ezp instanceof ezP.DelegateSvg.List))?
+              out = out || ezP.Xml.fromDom(target, (target.ezp.wrapped_ && !(target.ezp instanceof ezP.DelegateSvg.List))?
                 xml: xmlChild)
               continue
             } else if ((target = Blockly.Xml.domToBlock(xmlChild, input.sourceBlock_.workspace))) {
+              out = target
               // we could create a block form that child element
               // then connect it to 
               if (target.outputConnection && c8n.checkType_(target.outputConnection)) {
@@ -1184,6 +1329,7 @@ ezP.DelegateSvg.List.prototype.fromDom = function(block, xml) {
       }
     }
   }
+  return out
 }
 
 goog.provide('ezP.Xml.Operator')
@@ -1258,11 +1404,11 @@ ezP.Xml.Comparison.domToBlock = function (element, workspace) {
     var op = element.getAttribute(ezP.Key.OPERATOR)
     var Ctor, model, type = ezP.T3.Expr.number_comparison
     if ((Ctor = ezP.DelegateSvg.Manager.get(type))
-    && (model = Ctor.prototype.getModel().input)
+    && (model = Ctor.prototype.getModel().inputs)
     && model.operators
     && model.operators.indexOf(op)>=0) {
       block = ezP.DelegateSvg.newBlockComplete(workspace, type, id)
-    } else if ((type = ezP.T3.Expr.object_comparison) && (Ctor = ezP.DelegateSvg.Manager.get(type)) && (model = Ctor.prototype.getModel().input) && model.operators && model.operators.indexOf(op)>=0) {
+    } else if ((type = ezP.T3.Expr.object_comparison) && (Ctor = ezP.DelegateSvg.Manager.get(type)) && (model = Ctor.prototype.getModel().inputs) && model.operators && model.operators.indexOf(op)>=0) {
       block = ezP.DelegateSvg.newBlockComplete(workspace, type, id)
     } else {
       return block
@@ -1298,7 +1444,7 @@ ezP.Xml.AugAssign.domToBlock = function (element, workspace) {
     var op = element.getAttribute(ezP.Key.OPERATOR)
     var type = ezP.T3.Stmt.augassign_numeric_stmt
     var model = ezP.DelegateSvg.Expr.augassign_numeric.prototype.getModel()
-    if (model.input.operators.indexOf(op) < 0) {
+    if (model.inputs.operators.indexOf(op) < 0) {
       type = ezP.T3.Stmt.augassign_bitwise_stmt
     }
     var id = element.getAttribute('id')
@@ -1316,9 +1462,9 @@ ezP.Xml.AugAssign.domToBlock = function (element, workspace) {
  */
 ezP.Xml.AugAssign.toDom = function (block, element, optNoId) {
   element.setAttribute(ezP.Key.OPERATOR, block.ezp.getSubtype(block))
-  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().input.m_1.key
+  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().inputs.m_1.key
   ezP.Xml.Input.Named.toDom(block, name, element, optNoId)
-  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().input.m_3.key
+  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().inputs.m_3.key
   ezP.Xml.namedListInputToDom(block, name, element, optNoId)
 }
 
@@ -1331,9 +1477,9 @@ ezP.Xml.AugAssign.toDom = function (block, element, optNoId) {
 ezP.Xml.AugAssign.fromDom = function (block, element) {
   var op = element.getAttribute(ezP.Key.OPERATOR)
   block.ezp.setSubtype(block, op)
-  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().input.m_1.key
+  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().inputs.m_1.key
   ezP.Xml.Input.Named.fromDom(block, name, element)
-  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().input.m_3.key
+  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().inputs.m_3.key
   ezP.Xml.namedListInputFromDom(block, name, element)
 }
 

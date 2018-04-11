@@ -24,7 +24,7 @@ goog.require('ezP.DelegateSvg.Expr')
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('comprehension', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
@@ -49,7 +49,7 @@ ezP.DelegateSvg.Manager.makeSubclass('comprehension', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('comp_for', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.FOR,
       label: 'for',
@@ -75,7 +75,7 @@ ezP.DelegateSvg.Manager.makeSubclass('comp_for', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('comp_if', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.IF,
       label: 'if',
@@ -96,7 +96,7 @@ ezP.DelegateSvg.Manager.makeSubclass('comp_if', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('comp_iter_list', {
-  input: {
+  inputs: {
     list: {
       check: ezP.T3.Expr.Check.comp_iter,
       empty: true,
@@ -115,7 +115,7 @@ ezP.DelegateSvg.Manager.makeSubclass('comp_iter_list', {
  */
 // dict_comprehension ::= expression ":" expression comp_for
 ezP.DelegateSvg.Manager.makeSubclass('dict_comprehension', {
-  input: {
+  inputs: {
     m_1: {
       insert: ezP.T3.Expr.key_datum_concrete,
     },
@@ -138,7 +138,7 @@ ezP.DelegateSvg.Manager.makeSubclass('dict_comprehension', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('key_datum_concrete', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.KEY,
       check: ezP.T3.Expr.Check.expression,
@@ -162,7 +162,7 @@ ezP.DelegateSvg.Manager.makeSubclass('key_datum_concrete', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('generator_expression', {
-  input: {
+  inputs: {
     prefix: {
       label: '(',
     },

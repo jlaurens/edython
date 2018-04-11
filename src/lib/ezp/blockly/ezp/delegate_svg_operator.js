@@ -30,7 +30,7 @@ ezP.DelegateSvg.Operator = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Operator, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Operator.model__ = {
-  input: {
+  inputs: {
     m_3: {
       operator: '',
       key: ezP.Key.RHS,
@@ -50,7 +50,7 @@ ezP.DelegateSvg.Operator.model__ = {
 ezP.DelegateSvg.Operator.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Operator.superClass_.initBlock.call(block.ezp, block)
   var model = block.ezp.getModel()
-  block.ezp.initProperty(block, ezP.Key.OPERATOR, model.input.operators[model.input.initialOperator || 0], undefined, undefined, function(block, oldValue, newValue) {
+  block.ezp.initProperty(block, ezP.Key.OPERATOR, model.inputs.operators[model.inputs.initialOperator || 0], undefined, undefined, function(block, oldValue, newValue) {
     var disabler = new ezP.Events.Disabler()
     var field = block.ezp.uiModel.m_3.fields.operator
     field.setValue(newValue)
@@ -121,7 +121,7 @@ ezP.DelegateSvg.Operator.prototype.setSubtype = function (block, subtype) {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('u_expr_concrete', {
-  input: {
+  inputs: {
     operators: ['-', '+', '~'],
     m_3: {
       operator: '-',
@@ -150,14 +150,14 @@ ezP.DelegateSvg.Expr.u_expr_concrete.prototype.getContent = function (block, op)
  */
 ezP.DelegateSvg.Binary = function (prototypeName) {
   ezP.DelegateSvg.Binary.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
+  this.model__.inputs.m_1 = {
     key: ezP.Key.LHS,
     hole_value: 'name',
   }
 }
 goog.inherits(ezP.DelegateSvg.Binary, ezP.DelegateSvg.Operator)
 ezP.DelegateSvg.Binary.model__ = {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.LHS,
       hole_value: 'name',
@@ -185,7 +185,7 @@ ezP.DelegateSvg.Binary.prototype.getContent = function (block, op) {
  */
 ezP.DelegateSvg.Binary.makeSubclass = function(key, operators, check1, operator, check3) {
   ezP.DelegateSvg.Manager.makeSubclass(key, {
-    input: {
+    inputs: {
       operators: operators,
       m_1: {
         check: ezP.T3.Expr.Check[check1]
@@ -373,7 +373,7 @@ ezP.DelegateSvg.Binary.makeSubclass(
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('power_concrete', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.ARGUMENT,
       check: ezP.T3.Expr.Check.await_or_primary,

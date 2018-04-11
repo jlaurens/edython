@@ -30,7 +30,7 @@ goog.require('ezP.DelegateSvg.Parameters')
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('lambda_expression', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.PARAMETERS,
       label: 'lambda',

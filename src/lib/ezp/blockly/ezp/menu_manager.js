@@ -137,6 +137,13 @@ ezP.MenuManager.prototype.shouldSeparateInsert = function(yorn = true) {
 /**
  * Whether a separator should be inserted before any forthcoming menu item.
  */
+ezP.MenuManager.prototype.shouldSeparateRemove = function(yorn = true) {
+  this.shouldSeparateRemove_  = !this.didSeparateRemove_ && (this.shouldSeparateRemove_ || yorn)
+}
+
+/**
+ * Whether a separator should be inserted before any forthcoming menu item.
+ */
 ezP.MenuManager.prototype.shouldSeparateInsertBefore = function(yorn = true) {
   this.shouldSeparateInsertBefore_  = !this.didSeparateInsertBefore_ && (this.shouldSeparateInsertBefore_ || yorn)
   // console.log('shouldSeparateBefore_', yorn, this.shouldSeparateBefore_)
@@ -148,13 +155,6 @@ ezP.MenuManager.prototype.shouldSeparateInsertBefore = function(yorn = true) {
 ezP.MenuManager.prototype.shouldSeparateInsertAfter = function(yorn = true) {
   this.shouldSeparateInsertAfter_  = !this.didSeparateInsertAfter_ && (this.shouldSeparateInsertAfter_ || yorn)
   // console.log('shouldSeparateAfter_', yorn, this.shouldSeparateAfter_)
-}
-
-/**
- * Whether a separator should be inserted before any forthcoming menu item.
- */
-ezP.MenuManager.prototype.shouldSeparateRemove = function(yorn = true) {
-  this.shouldSeparateRemove_  = !this.didSeparateRemove_ && (this.shouldSeparateRemove_ || yorn)
 }
 
 /**
@@ -903,7 +903,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
     return false
   }
   var outCheck = c8n.check_
-  var D = ezP.Delegate.Manager.getInputModel(parent_type)
+  var D = ezP.Delegate.Manager.getInputsModel(parent_type)
   var mgr = this
   var F = function(K) {
     var d = D[K]
@@ -928,7 +928,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
       mgr.addInsertChild(MI)
       return true
     } else if (d && d.wrap && !parent_subtype) {
-      var list = ezP.Delegate.Manager.getInputModel(d.wrap).list
+      var list = ezP.Delegate.Manager.getInputsModel(d.wrap).list
       if (!list) {
         if (!outCheck || goog.array.contains(outCheck, d.wrap)) {
           var key = d.key || K

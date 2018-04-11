@@ -97,6 +97,7 @@ body {
 .ezp-menuitem-disabled .ezp-menuitem-accel,
 .ezp-menuitem-disabled .ezp-menuitem-content,
 .ezp-menuitem-code-disabled,
+.ezp-menuitem-code-disabled .ezp-code-reserved,
 .ezp-submenu-disabled .ezp-submenu-content,
 .ezp-submenu-disabled .ezp-submenu-arrow {
   color: #ccc !important;

@@ -63,7 +63,7 @@ ezP.Delegate = function (prototypeName) {
   ezP.Delegate.superClass_.constructor.call(this)
   this.properties = {}
   this.model__ = {
-    input: {},
+    inputs: {},
     output: {},
     statement: {},
   }
@@ -116,7 +116,7 @@ ezP.Delegate.Manager = function () {
     }
   }
   /**
-   * Private helper to provide the constructor with a getInputModel.
+   * Private helper to provide the constructor with a getInputsModel.
    * @param {?Object} Ctor a constructor
    */
   var helper = function(Ctor, inputModel) {
@@ -124,7 +124,7 @@ ezP.Delegate.Manager = function () {
       return Ctor.model_
     }
     var model = {
-      input: {},
+      inputs: {},
       output: {},
       statement: {},
     }
@@ -140,7 +140,7 @@ ezP.Delegate.Manager = function () {
       delete Ctor.model__
     }
     if (inputModel) {
-      mixinModel(model.input, inputModel)
+      mixinModel(model.inputs, inputModel)
     }
     Ctor.model_ = model
     Ctor.prototype.getModel = function() {
@@ -162,37 +162,37 @@ ezP.Delegate.Manager = function () {
       model = model()
     }
     if (model) {
-      if (!goog.isFunction(model)) {
-        if((model.input && (t = model.input.insert))) {
-          var otherCtor = goog.isFunction(t)? t: me.get(t)
-          goog.asserts.assert(otherCtor, 'Not inserted: '+t)
-          var otherModel = otherCtor.prototype.getModel()
-          if (otherModel.input) {
-            Ctor.prototype.getModel = function() {
-              return helper(Ctor, otherModel.input)
-            }
+      if((model.inputs && (t = model.inputs.insert))) {
+        var otherCtor = goog.isFunction(t)? t: me.get(t)
+        goog.asserts.assert(otherCtor, 'Not inserted: '+t)
+        var otherModel = otherCtor.prototype.getModel()
+        if (otherModel.inputs) {
+          Ctor.prototype.getModel = function() {
+            return helper(Ctor, otherModel.inputs)
           }
-          delete model.input.insert
         }
-        var t = ezP.T3.Expr[key]
-        if (t) {
-          if (!model.output) {
-            model.output = {
-              check: t,
-            }
+        delete model.inputs.insert
+      }
+      var t = ezP.T3.Expr[key]
+      if (t) {
+        if (!model.output) {
+          model.output = {
+            check: t,
           }
-        } else if ((t = ezP.T3.Stmt[key])) {
-          var statement = model.statement || (model.statement = {})
-          if (!statement.previous) {
-            statement.previous = {
-              check: ezP.T3.Stmt.Previous[key]
-            }
-          }
-          if (!statement.next) {
-            statement.next = {
-              check: ezP.T3.Stmt.Next[key]
-            }
-          }
+        }
+      } else if ((t = ezP.T3.Stmt[key])) {
+        var statement = model.statement || (model.statement = {})
+        if (!statement.previous) {
+          statement.previous = {}
+        }
+        if (!statement.previous.check) {
+          statement.previous.check = ezP.T3.Stmt.Previous[key]
+        }
+        if (!statement.next) {
+          statement.next = {}
+        }
+        if (!statement.next.check) {
+          statement.next.check = ezP.T3.Stmt.Next[key]
         }
       }
       Ctor.model__ = model
@@ -229,11 +229,11 @@ ezP.Delegate.Manager = function () {
    * @param {?string} prototypeName Name of the language object containing
    * @return void object if no delegate is registered for that name
    */
-  me.getInputModel = function (prototypeName) {
+  me.getInputsModel = function (prototypeName) {
     var Ctor = Ctors[prototypeName]
     if (Ctor) {
       var model = Ctor.prototype.getModel()
-      return model && model.input
+      return model && model.inputs
     }
     return {}
   }
@@ -1021,7 +1021,7 @@ ezP.Delegate.prototype.setProperty = function (block, key, newValue) {
     return false
   }
   var oldValue = holder.value
-  if (oldValue === newValue) {
+  if (oldValue == newValue) {
     return false
   }
   if (holder.validate && !holder.validate.call(block.ezp, block, oldValue, newValue)) {

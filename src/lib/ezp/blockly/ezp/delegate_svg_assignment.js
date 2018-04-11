@@ -25,7 +25,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('target_star', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.EXPRESSION,
       label: '*',
@@ -65,7 +65,7 @@ ezP.Consolidator.List.Target.Void.data = {
  */
 ezP.Consolidator.List.Target.prototype.getIO = function(block) {
   var io = ezP.Consolidator.List.Target.superClass_.getIO.call(this, block)
-  io.first_starred = io.m_3 = -1
+  io.first_starred = io.last = -1
   return io
 }
 
@@ -100,7 +100,7 @@ ezP.Consolidator.List.Target.prototype.doCleanup = function () {
     }
   }
   var setupFirst = function (io) {
-    io.first_starred = io.m_3 = -1
+    io.first_starred = io.last = -1
     this.setupIO(io, 0)
     while (!!io.ezp) {
       if ((io.ezp.parameter_type_ = getCheckType(io)) === Type.STARRED) {
@@ -108,7 +108,7 @@ ezP.Consolidator.List.Target.prototype.doCleanup = function () {
           io.first_starred = io.i
         }
       } else if (io.ezp.parameter_type_ === Type.OTHER) {
-        io.m_3 = io.i
+        io.last = io.i
       }
       this.nextInput(io)
     }
@@ -118,9 +118,9 @@ ezP.Consolidator.List.Target.prototype.doCleanup = function () {
     setupFirst.call(this, io)
     // move parameters that are not placed correctly (in ezP sense)
     if (io.first_starred>=0) {
-      while (io.first_starred < io.m_3) {
+      while (io.first_starred < io.last) {
         this.setupIO(io, io.first_starred + 2)
-        while (io.i <= io.m_3) {
+        while (io.i <= io.last) {
           if (io.ezp.parameter_type_ === Type.OTHER) {
             // move this to io.first_starred
             var c8n = io.c8n
@@ -174,7 +174,7 @@ ezP.Consolidator.List.Target.prototype.getCheck = function (io) {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('target_list', {
-  input: {
+  inputs: {
     list: {
       consolidator: ezP.Consolidator.List.Target,
       hole_value: 'name',
@@ -192,7 +192,7 @@ ezP.DelegateSvg.Manager.makeSubclass('target_list', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('void_target_list', {
-  input: {
+  inputs: {
     list: {
       consolidator: ezP.Consolidator.List.Target.Void,
       hole_value: 'name',
@@ -210,7 +210,7 @@ ezP.DelegateSvg.Manager.makeSubclass('void_target_list', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('parenth_target_list', {
-  input: {
+  inputs: {
     prefix: {
       label: '(',
     },
@@ -230,7 +230,7 @@ ezP.DelegateSvg.Manager.makeSubclass('parenth_target_list', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('bracket_target_list', {
-  input: {
+  inputs: {
     prefix: {
       label: '[',
     },
@@ -248,7 +248,7 @@ ezP.DelegateSvg.Manager.makeSubclass('bracket_target_list', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('assignment_expression', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.TARGET,
       wrap: ezP.T3.Expr.target_list,
@@ -271,7 +271,7 @@ goog.provide('ezP.DelegateSvg.Stmt.assignment_stmt')
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('assignment_stmt', {
-  input: {
+  inputs: {
     insert: ezP.DelegateSvg.Expr.assignment_expression,
   }
 })
@@ -401,7 +401,7 @@ ezP.Consolidator.Assigned.prototype.getCheck = function (io) {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('assigned_list', {
-  input: {
+  inputs: {
     list: {
       consolidator: ezP.Consolidator.Assigned,
       hole_value: 'value',
@@ -425,7 +425,7 @@ ezP.DelegateSvg.AugAssign = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.AugAssign, ezP.DelegateSvg.Binary)
 
 ezP.DelegateSvg.AugAssign.model__ = {
-  input: {
+  inputs: {
     m_1: {
       check: ezP.T3.Expr.Check.augtarget,
     },
@@ -445,7 +445,7 @@ ezP.DelegateSvg.AugAssign.model__ = {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('augassign_numeric', {
-  input: {
+  inputs: {
     operators: ['+=','-=','*=','/=','//=','%=','**=','@='],
     m_3: {
       operator: '+=',
@@ -462,7 +462,7 @@ ezP.DelegateSvg.Manager.makeSubclass('augassign_numeric', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('augassign_bitwise', {
-  input: {
+  inputs: {
     operators: [">>=", "<<=", "&=", "^=", "|="],
     m_3: {
       operator: '<<=',
@@ -478,7 +478,7 @@ ezP.DelegateSvg.Manager.makeSubclass('augassign_bitwise', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('augassign_numeric_stmt', {
-  input: {
+  inputs: {
     insert: ezP.T3.Expr.augassign_numeric,
   },
 })
@@ -491,7 +491,7 @@ ezP.DelegateSvg.Manager.makeSubclass('augassign_numeric_stmt', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('augassign_bitwise_stmt', {
-  input: {
+  inputs: {
     insert: ezP.T3.Expr.augassign_bitwise,
   },
 })
@@ -619,7 +619,7 @@ ezP.Consolidator.List.AugAssigned.prototype.getCheck = function (io) {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('augassign_list_concrete', {
-  input: {
+  inputs: {
     list: {
       consolidator: ezP.Consolidator.List.AugAssigned,
       hole_value: 'name',

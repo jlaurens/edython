@@ -95,10 +95,9 @@ ezP.DelegateSvg.Manager.makeSubclass = function(key, model, parent, owner) {
   owner = owner
   || (ezP.T3.Expr[key]? ezP.DelegateSvg.Expr: ezP.DelegateSvg.Stmt)
   parent = parent
-  || (model && model.input && model.input.list && ezP.DelegateSvg.List)
+  || (model && model.inputs && model.inputs.list && ezP.DelegateSvg.List)
   || owner
   ezP.Delegate.Manager.makeSubclass_(key, model, parent, owner)
-  Blockly.Blocks[ezP.T3.Stmt[key]||ezP.T3.Expr[key]] = {}
 }
 
 /**
@@ -155,7 +154,7 @@ ezP.DelegateSvg.prototype.svgPathConnection_ = undefined
  * Called once at block creation time.
  * Should not be called directly
  * The block implementation is created according to a dictionary
- * input model available through `getModel().input`.
+ * input model available through `getModel().inputs`.
  * The structure of that dictionary is detailled in the treatment flow
  * below.
  * @param {!Blockly.Block} block to be initialized..
@@ -180,7 +179,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   // block.setInputsInline(true)
   block.setTooltip('')
   block.setHelpUrl('')
-  var inputModel = this.getModel().input
+  var inputModel = this.getModel().inputs
   var doOneModel = function(K) {
     var D = inputModel[K]
     if (D && Object.keys(D).length) {
@@ -280,10 +279,10 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
           }
           ezp.disabled_ = D.disabled && !D.enabled
           if ((v = D.check)) {
-            out.input.setCheck(v)
+            c8n.setCheck(v)
             ezp.hole_data = ezP.HoleFiller.getData(v, D.hole_value)
           } else if ((v = D.check = D.wrap)) {
-            out.input.setCheck(v)
+            c8n.setCheck(v)
           }
         }
       }
@@ -427,7 +426,7 @@ ezP.DelegateSvg.prototype.postInitSvg = function(block) {
  */
 ezP.DelegateSvg.prototype.getMenuTarget = function(block) {
   var wrapped
-  if (this.uiModel.wrap && (wrapped = this.uiModel.wrap.input.connection.targetBlock())) {
+  if (this.uiModel.wrap && (wrapped = this.uiModel.wrap.inputs.connection.targetBlock())) {
     return wrapped.ezp.getMenuTarget(wrapped)
   }
   if (this.wrappedInputs_ && this.wrappedInputs_.length === 1 &&
@@ -478,7 +477,7 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
   Blockly.Field.startCache()
   this.minWidth = block.width = 0
   block.rendered = true
-  this.consolidate(block)
+  this.consolidate(block, true)
   this.willRender_(block)
   this.renderDraw_(block)
   this.layoutConnections_(block)
@@ -1541,11 +1540,11 @@ ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
     FF(D.fields.label)
     FF(D.fields.start)
     FF(D.fields.identifier) || FF(D.fields.input) || FF(D.fields.comment) || FF(D.fields.number) || FF(D.fields.string) || FF(D.fields.longString) || FF(D.fields.operator, true)
-    if ((c8n = D.input.connection)) {
+    if ((c8n = D.inputs.connection)) {
       if ((target = c8n.targetBlock())) {
         FFF(target.ezp.toPythonExpression(target))
       } else if (!c8n.ezp.optional_) {
-        last = '<MISSING '+D.input.name+'>'
+        last = '<MISSING '+D.inputs.name+'>'
         components.push(last)
       }
     }

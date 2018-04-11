@@ -14,44 +14,7 @@
 goog.provide('ezP.DelegateSvg.Proc')
 
 goog.require('ezP.DelegateSvg.Group')
-goog.require('ezP.MenuItemCode')
-/*
-decorator_stmt :: decorator_expr | decorator_call_expr
-decorator_expr ::= "@" dotted_funcname
-decorator_call_expr ::= decorator_expr "(" argument_list ")"
-*/
-
-/**
- * Class for a DelegateSvg, decorator_expr block.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.decorator_expr = function (prototypeName) {
-  ezP.DelegateSvg.Expr.decorator_expr.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    label: '@',
-    key: ezP.Key.NAME,
-    check: ezP.T3.Expr.Check.dotted_funcname,
-    hole_value: 'name',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.decorator_expr,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.decorator_expr, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('decorator_expr')
-
-/**
- * The overriden implementation is true.
- * Subclassers will override this but won't call it.
- * @param {!Block} block.
- * @override
- */
-ezP.DelegateSvg.Expr.decorator_expr.prototype.canUnwrap = function(block) {
-  return true
-}
+goog.require('ezP.MenuItem')
 
 /**
  * Class for a DelegateSvg, dotted_funcname_concrete block.
@@ -60,52 +23,22 @@ ezP.DelegateSvg.Expr.decorator_expr.prototype.canUnwrap = function(block) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.dotted_funcname_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Expr.dotted_funcname_concrete.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    key: ezP.Key.PARENT,
-    check: ezP.T3.Expr.identifier,
-    hole_value: 'parent',
-  }
-  this.model__.input.m_3 = {
-    label: '.',
-    key: ezP.Key.NAME,
-    check: ezP.T3.Expr.Check.dotted_funcname,
-    hole_value: 'name',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.dotted_funcname_concrete,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.dotted_funcname_concrete, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('dotted_funcname_concrete')
-
-
-/**
- * Class for a DelegateSvg, decorator_call_expr block.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.decorator_call_expr = function (prototypeName) {
-  ezP.DelegateSvg.Expr.decorator_call_expr.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    insert: ezP.T3.Expr.decorator_expr,
-  }
-  this.model__.input.m_3 = {
-    start: '(',
-    key: ezP.Key.LIST,
-    wrap: ezP.T3.Expr.argument_list,
-    end: ')',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.decorator_call_expr,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.decorator_call_expr, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('decorator_call_expr')
-
+ezP.DelegateSvg.Manager.makeSubclass('dotted_funcname_concrete', {
+  inputs: {
+    m_1: {
+      key: ezP.Key.PARENT,
+      check: ezP.T3.Expr.identifier,
+      hole_value: 'parent',
+    },
+    m_3: {
+      label: '.',
+      key: ezP.Key.NAME,
+      check: ezP.T3.Expr.Check.dotted_funcname,
+      hole_value: 'name',
+    },
+  },
+})
+console.warn('implement the statement')
 /**
  * Class for a DelegateSvg, decorator_stmt.
  * For ezPython.
@@ -114,20 +47,78 @@ ezP.DelegateSvg.Manager.register('decorator_call_expr')
  * @constructor
  */
 //  decorator_stmt            /*   ::= "@" dotted_name ["(" [argument_list [","]] ")"]    */ : "ezp:decorator_stmt",
-ezP.DelegateSvg.Stmt.decorator_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.decorator_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    key: ezP.Key.WRAP,
-    wrap: ezP.T3.Expr.decorator_expr,
-    check: ezP.T3.Expr.Check.decorator,
+ezP.DelegateSvg.Manager.makeSubclass('decorator_stmt', {
+  inputs: {
+    builtins: [null, 'staticmethod', 'classmethod'],
+    subtypes: [null, ezP.Key.ARGUMENTS],
+    prefix: {
+      label: '@',
+      css_class: 'ezp-code-reserved',
+    },
+    m_1: {
+      key: ezP.Key.NAME,
+      check: ezP.T3.Expr.Check.dotted_funcname,
+      hole_value: 'decorator',
+    },
+    m_2: {
+      key: ezP.Key.BUILTIN,
+      start: 'staticmethod',
+      css_class: 'ezp-code-reserved',
+    },
+    m_3: {
+      start: '(',
+      key: ezP.Key.ARGUMENTS,
+      wrap: ezP.T3.Expr.argument_list,
+      end: ')',
+    },
+  },
+  statement: {
+    next: {
+      required: true,
+    }
   }
-  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.decorator_stmt
-  this.statementModel__.next.check = ezP.T3.Stmt.Next.decorator_stmt
-}
-goog.inherits(ezP.DelegateSvg.Stmt.decorator_stmt, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('decorator_stmt')
+})
 
-ezP.ID.USE_DECORATOR = 'USE_DECORATOR'
+/**
+ * Create and initialize the subtype property.
+ * Called once at block creation time.
+ * Should not be called directly
+ * Declares the operator property.
+ * @param {!Blockly.Block} block to be initialized.
+ */
+ezP.DelegateSvg.Stmt.decorator_stmt.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Stmt.decorator_stmt.superClass_.initBlock.call(block.ezp, block)
+  var subtypes = block.ezp.getModel().inputs.subtypes
+  block.ezp.initProperty(block, ezP.Key.SUBTYPE, subtypes[0], function(block, oldValue, newValue) {
+    return subtypes.indexOf(newValue) >= 0
+  }, null, function(block, oldValue, newValue) {
+    Blockly.Events.setGroup(true)
+    var old = block.ezp.isRendering
+    block.ezp.isRendering = true
+    block.ezp.setNamedInputDisabled(block, ezP.Key.ARGUMENTS, (ezP.Key.ARGUMENTS != newValue))
+    block.ezp.isRendering = old
+    Blockly.Events.setGroup(false)
+  })
+  var builtins = this.getModel().inputs.builtins
+  block.ezp.initProperty(block, ezP.Key.BUILTIN, builtins[0], function(block, oldValue, newValue) {
+    return builtins.indexOf(newValue) >= 0
+  }, null, function(block, oldValue, newValue) {
+    Blockly.Events.setGroup(true)
+    var old = block.ezp.isRendering
+    block.ezp.isRendering = true
+    block.ezp.setNamedInputDisabled(block, ezP.Key.NAME, !!newValue)
+    block.ezp.setNamedInputDisabled(block, ezP.Key.BUILTIN, !newValue)
+    var input = block.getInput(ezP.Key.BUILTIN)
+    var field = input.ezp.fields.start
+    if (newValue) {
+      var disabler = new ezP.Events.Disabler()
+      field.setValue(newValue)
+      disabler.stop()
+    }
+    block.ezp.isRendering = old
+    Blockly.Events.setGroup(false)
+  })
+}
 
 /**
  * Populate the context menu for the given block.
@@ -135,108 +126,58 @@ ezP.ID.USE_DECORATOR = 'USE_DECORATOR'
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-ezP.DelegateSvg.Expr.decorator_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var menu = mgr.menu
-  var yorn = false
-  var c8n = this.uiModel.m_1.input.connection
-  var target = c8n.targetBlock()
-  if (!target) {
-    var F = function(candidate) {
-      var menuItem = new ezP.MenuItemCode('@'+candidate, function() {
-        Blockly.Events.setGroup(true)
-        target = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.identifier)
-        target.ezp.setValue(target, candidate)
-        c8n.connect(target.outputConnection)
-        Blockly.Events.setGroup(false)
-      })
-      menu.addChild(menuItem, true)
-      return true
-  }
-    var yorn = F('staticmethod')
-    yorn = F('classmethod') || yorn
-  } else if (target.ezp.getValue && target.ezp.setValue) {
-    var old = target.ezp.getValue(target)
-    var F = function(candidate) {
-      if (old !== candidate) {
-        var menuItem = new ezP.MenuItemCode('@'+candidate, function() {
-          Blockly.Events.setGroup(true)
-          target.ezp.setValue(target, candidate)
-          Blockly.Events.setGroup(false)
-        })
-        menu.addChild(menuItem, true)
-        return true
-      }
-      return false
-    }
-    var yorn = F('staticmethod')
-    yorn = F('classmethod') || yorn
-  }
-  return ezP.DelegateSvg.Expr.decorator_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
+ezP.DelegateSvg.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var builtin = block.ezp.getProperty(block, ezP.Key.BUILTIN)
+  var subtype = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
+  var t, menuItem
+  var inputs = block.ezp.getModel().inputs
+  menuItem = new ezP.MenuItem(
+      goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      ezP.Do.createSPAN('@', 'ezp-code-reserved'),
+      ezP.Do.createSPAN('decorator', 'ezp-code-placeholder'),
+    ),
+      function() {
+    block.ezp.setProperty(block, ezP.Key.BUILTIN, inputs.builtins[0])
+  })
+  menuItem.setEnabled((inputs.builtins[0] != builtin) && !subtype)
+  mgr.addChild(menuItem)
+  menuItem = new ezP.MenuItem(
+      ezP.Do.createSPAN('@'+inputs.builtins[1], 'ezp-code-reserved'),
+      function() {
+    block.ezp.setProperty(block, ezP.Key.BUILTIN, inputs.builtins[1])
+  })
+  menuItem.setEnabled((inputs.builtins[1] != builtin) && !subtype)
+  mgr.addChild(menuItem)
+  menuItem = new ezP.MenuItem(
+      ezP.Do.createSPAN('@'+inputs.builtins[2], 'ezp-code-reserved'),
+      function() {
+    block.ezp.setProperty(block, ezP.Key.BUILTIN, inputs.builtins[2])
+  })
+  menuItem.setEnabled((inputs.builtins[2] != builtin) && !subtype)
+  mgr.addChild(menuItem)
+  mgr.shouldSeparate()
+  menuItem = new ezP.MenuItem(
+    goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN('@', 'ezp-code-reserved'),
+      ezP.Do.createSPAN('decorator', 'ezp-code-placeholder'),
+    ), function() {
+    block.ezp.setProperty(block, ezP.Key.SUBTYPE, inputs.subtypes[0])
+  })
+  menuItem.setEnabled(inputs.subtypes[0] != subtype)
+  mgr.addChild(menuItem)
+  menuItem = new ezP.MenuItem(
+    goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN('@', 'ezp-code-reserved'),
+      ezP.Do.createSPAN('decorator', 'ezp-code-placeholder'),
+      goog.dom.createTextNode('(…)'),
+    ), function() {
+    block.ezp.setProperty(block, ezP.Key.SUBTYPE, inputs.subtypes[1])
+  })
+  menuItem.setEnabled(inputs.subtypes[1] != subtype)
+  mgr.addChild(menuItem)
+  mgr.shouldSeparate()
+  return ezP.DelegateSvg.Stmt.decorator_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
-
-/**
- * Class for a DelegateSvg, funcdef_simple block.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.funcdef_simple = function (prototypeName) {
-  ezP.DelegateSvg.Expr.funcdef_simple.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    label: 'def',
-    css_class: 'ezp-code-reserved',
-    key: ezP.Key.NAME,
-    check: ezP.T3.Expr.identifier,
-    hole_value: 'name',
-  }
-  this.model__.input.m_2 = {
-    start: '(',
-    key: ezP.Key.LIST,
-    wrap: ezP.T3.Expr.parameter_list,
-    end: ')',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.funcdef_simple,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.funcdef_simple, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('funcdef_simple')
-
-/**
- * The overriden implementation is true.
- * Subclassers will override this but won't call it.
- * @param {!Block} block.
- * @override
- */
-ezP.DelegateSvg.Expr.funcdef_simple.prototype.canUnwrap = function(block) {
-  return true
-}
-
-/**
- * Class for a DelegateSvg, funcdef_typed block.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.funcdef_typed = function (prototypeName) {
-  ezP.DelegateSvg.Expr.funcdef_typed.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    insert: ezP.T3.Expr.funcdef_simple,
-  }
-  this.model__.input.m_3 = {
-    label: '->',
-    key: ezP.Key.TYPE,
-    check: ezP.T3.Expr.Check.expression,
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.funcdef_typed,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.funcdef_typed, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('funcdef_typed')
-
 
 /**
  * Class for a DelegateSvg, funcdef_part.
@@ -245,140 +186,136 @@ ezP.DelegateSvg.Manager.register('funcdef_typed')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.funcdef_part = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.funcdef_part.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    css_class: 'ezp-code-reserved',
-    key: ezP.Key.WRAP,
-    check: ezP.T3.Expr.Check.funcdef_expr,
-    wrap: ezP.T3.Expr.funcdef_simple,
-  }
-  this.statementModel__.asyncable = true
+ // funcdef_part ::= ["async"] "def" funcname "(" [parameter_list] ")" ["->" expression] ":" SUITE
+
+ezP.DelegateSvg.Manager.makeSubclass('funcdef_part', {
+  inputs: {
+    subtypes: ['', ezP.Key.TYPE],
+    m_1: {
+      key: ezP.Key.NAME,
+      label: 'def',
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.identifier,
+      hole_value: 'name',
+    },
+    m_2: {
+      key: ezP.Key.PARAMETERS,
+      start: '(',
+      wrap: ezP.T3.Expr.parameter_list,
+      end: ')',
+    },
+    m_3: {
+      label: '->',
+      key: ezP.Key.TYPE,
+      check: ezP.T3.Expr.Check.expression,
+    },
+  },
+}, ezP.DelegateSvg.Group)
+
+/**
+ * Create and initialize the subtype property.
+ * Called once at block creation time.
+ * Should not be called directly
+ * Declares the operator property.
+ * @param {!Blockly.Block} block to be initialized.
+ */
+ezP.DelegateSvg.Stmt.funcdef_part.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Stmt.funcdef_part.superClass_.initBlock.call(block.ezp, block)
+  var subtypes = block.ezp.getModel().inputs.subtypes
+  block.ezp.initProperty(block, ezP.Key.TYPE, subtypes[0], function(block, oldValue, newValue) {
+    return subtypes.indexOf(newValue) >= 0
+  }, null, function(block, oldValue, newValue) {
+    Blockly.Events.setGroup(true)
+    var old = block.ezp.isRendering
+    block.ezp.isRendering = true
+    block.ezp.setNamedInputDisabled(block, ezP.Key.TYPE, (ezP.Key.TYPE !== newValue))
+    block.ezp.isRendering = old
+    Blockly.Events.setGroup(false)
+  })
 }
-goog.inherits(ezP.DelegateSvg.Stmt.funcdef_part, ezP.DelegateSvg.Group)
-ezP.DelegateSvg.Manager.register('funcdef_part')
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var subtypes = block.ezp.getModel().inputs.subtypes
+  var menu = mgr.menu
+  var current = block.ezp.getProperty(block, ezP.Key.TYPE)
+  var F = function(content, key) {
+    var menuItem = new ezP.MenuItem(content, function() {
+      block.ezp.setProperty(block, ezP.Key.TYPE, key)
+    })
+    mgr.addChild(menuItem, true)
+    menuItem.setEnabled(key !== current)
+  }
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN('def', 'ezp-code-reserved'),
+      ezP.Do.createSPAN(' f', 'ezp-code-placeholder'),
+      goog.dom.createTextNode('(…)'),
+    ), subtypes[0])
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN('def', 'ezp-code-reserved'),
+      ezP.Do.createSPAN(' f', 'ezp-code-placeholder'),
+      goog.dom.createTextNode('(…) -> …'),
+  ), subtypes[1])
+  mgr.shouldSeparate()
+  return ezP.DelegateSvg.Stmt.funcdef_part.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+}
 
 /*
-classdef_part ::=  classdef_expr ':'
-classdef_expr ::= classdef_simple | classdef_derived
-classdef_simple ::=  "class" classname
-classdef_derived ::=  classdef_simple parenth_argument_list
+classdef_part ::=  "class" classname [parenth_argument_list] ':'
 */
 
 /**
- * Class for a DelegateSvg, classdef_simple block.
+ * Class for a DelegateSvg, classdef_part block.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.classdef_simple = function (prototypeName) {
-  ezP.DelegateSvg.Expr.classdef_simple.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    label: 'class',
-    css_class: 'ezp-code-reserved',
-    key: ezP.Key.NAME,
-    check: ezP.T3.Expr.identifier,
-    hole_value: 'name',
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.classdef_simple,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.classdef_simple, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('classdef_simple')
-
-/**
- * The overriden implementation is true.
- * Subclassers will override this but won't call it.
- * @param {!Block} block.
- * @override
- */
-ezP.DelegateSvg.Expr.classdef_simple.prototype.canUnwrap = function(block) {
-  return true
-}
-
-/**
- * Class for a DelegateSvg, classdef_derived block.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.classdef_derived = function (prototypeName) {
-  ezP.DelegateSvg.Expr.classdef_derived.superClass_.constructor.call(this, prototypeName)
-  this.model__.input = {
+ezP.DelegateSvg.Manager.makeSubclass('classdef_part', {
+  inputs: {
+    subtypes: ['', ezP.Key.ARGUMENTS],
     m_1: {
-      key: ezP.Key.DEFINITION,
-      wrap: ezP.T3.Expr.classdef_simple,
+      key: ezP.Key.NAME,
+      label: 'class',
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.identifier,
+      hole_value: 'name',
     },
-    m_3: {
+    m_2: {
+      key: ezP.Key.ARGUMENTS,
       start: '(',
-      key: ezP.Key.LIST,
       wrap: ezP.T3.Expr.argument_list,
       end: ')',
-    }
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.classdef_derived,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.classdef_derived, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('classdef_derived')
-
-/**
- * The overriden implementation is true.
- * Subclassers will override this but won't call it.
- * @param {!Block} block.
- * @override
- */
-ezP.DelegateSvg.Expr.classdef_derived.prototype.canUnwrap = function(block) {
-  return true
-}
-
-/**
- * Class for a DelegateSvg, classdef_part.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Stmt.classdef_part = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.classdef_part.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    key: ezP.Key.WRAP,
-    check: ezP.T3.Expr.Check.classdef_expr,
-    wrap: ezP.T3.Expr.classdef_simple,
-  }
-  this.menuData = [
-    {
-      content: goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-        ezP.Do.createSPAN('class', 'ezp-code-reserved'),
-        ezP.Do.createSPAN(' name', 'ezp-code-placeholder'),
-      ),
-      type: ezP.T3.Expr.classdef_simple
     },
-    {
-      content:   goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-        ezP.Do.createSPAN('class', 'ezp-code-reserved'),
-        ezP.Do.createSPAN(' name', 'ezp-code-placeholder'),
-        ezP.Do.createSPAN('('),
-        ezP.Do.createSPAN('…', 'ezp-code-placeholder'),
-        ezP.Do.createSPAN(')'),
-    ),
-      type: ezP.T3.Expr.classdef_derived
-    },
-  ]
-}
-goog.inherits(ezP.DelegateSvg.Stmt.classdef_part, ezP.DelegateSvg.Group)
-ezP.DelegateSvg.Manager.register('classdef_part')
+  },
+}, ezP.DelegateSvg.Group)
+
 
 /**
- * When the block is just a wrapper, returns the wrapped target.
- * @param {!Blockly.Block} block owning the delegate.
+ * Create and initialize the subtype property.
+ * Called once at block creation time.
+ * Should not be called directly
+ * Declares the operator property.
+ * @param {!Blockly.Block} block to be initialized.
  */
-ezP.DelegateSvg.Stmt.classdef_part.prototype.getMenuTarget = function(block) {
-  return block
+ezP.DelegateSvg.Stmt.classdef_part.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Stmt.classdef_part.superClass_.initBlock.call(block.ezp, block)
+  var subtypes = this.getModel().inputs.subtypes
+  block.ezp.initProperty(block, ezP.Key.SUBTYPE, subtypes[0], function(block, oldValue, newValue) {
+    return subtypes.indexOf(newValue) >= 0
+  }, null, function(block, oldValue, newValue) {
+    Blockly.Events.setGroup(true)
+    var old = block.ezp.isRendering
+    block.ezp.isRendering = true
+    block.ezp.setNamedInputDisabled(block, ezP.Key.ARGUMENTS, (ezP.Key.ARGUMENTS !== newValue))
+    block.ezp.isRendering = old
+    Blockly.Events.setGroup(false)
+  })
 }
 
 /**
@@ -388,10 +325,32 @@ ezP.DelegateSvg.Stmt.classdef_part.prototype.getMenuTarget = function(block) {
  * @private
  */
 ezP.DelegateSvg.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var yorn
-  var D = ezP.DelegateSvg.Manager.getInputModel(block.type)
-  if (yorn = mgr.populate_wrap_alternate(block, D.m_1.key)) {
-    mgr.shouldSeparate()
+  var subtypes = block.ezp.getModel().inputs.subtypes
+  var menu = mgr.menu
+  var current = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
+  var F = function(content, key) {
+    var menuItem = new ezP.MenuItem(content, function() {
+      block.ezp.setProperty(block, ezP.Key.SUBTYPE, key)
+    })
+    mgr.addChild(menuItem, true)
+    menuItem.setEnabled(key !== current)
   }
-  return ezP.DelegateSvg.Stmt.classdef_part.superClass_.populateContextMenuFirst_.call(this,block, mgr) || yorn
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN('class', 'ezp-code-reserved'),
+      ezP.Do.createSPAN(' name', 'ezp-code-placeholder'),
+    ), subtypes[0])
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN('class', 'ezp-code-reserved'),
+      ezP.Do.createSPAN(' name', 'ezp-code-placeholder'),
+      goog.dom.createTextNode('(…)'),
+  ), subtypes[1])
+  mgr.shouldSeparate()
+  return ezP.DelegateSvg.Stmt.classdef_part.superClass_.populateContextMenuFirst_.call(this,block, mgr)
 }
+
+ezP.DelegateSvg.Proc.T3s = [
+  ezP.T3.Expr.dotted_funcname_concrete,
+  ezP.T3.Stmt.decorator_stmt,
+  ezP.T3.Stmt.funcdef_part,
+  ezP.T3.Stmt.classdef_part,
+]

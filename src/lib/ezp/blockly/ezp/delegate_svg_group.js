@@ -29,7 +29,7 @@ ezP.DelegateSvg.Group = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Group.model__ = {
-  input: {
+  inputs: {
     m_3: {
       label: ':',
     },
@@ -232,7 +232,7 @@ ezP.DelegateSvg.Group.prototype.highlightConnection = function (c8n) {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('if_part', {
-  input: {
+  inputs: {
     m_1: {
       label: 'if',
       css_class: 'ezp-code-reserved',
@@ -251,7 +251,7 @@ ezP.DelegateSvg.Manager.makeSubclass('if_part', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('elif_part', {
-  input: {
+  inputs: {
     m_1: {
       label: 'elif',
       css_class: 'ezp-code-reserved',
@@ -278,7 +278,7 @@ ezP.DelegateSvg.Manager.makeSubclass('elif_part', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('else_part', {
-  input: {
+  inputs: {
     m_1: {
       label: 'else',
       css_class: 'ezp-code-reserved',
@@ -363,7 +363,7 @@ ezP.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('while_part', {
-  input: {
+  inputs: {
     m_1: {
       label: 'while',
       css_class: 'ezp-code-reserved',
@@ -423,7 +423,7 @@ ezP.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (block, mgr
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('for_part', {
-  input: {
+  inputs: {
     m_1: {
       label: 'for',
       css_class: 'ezp-code-reserved',
@@ -448,7 +448,7 @@ ezP.DelegateSvg.Manager.makeSubclass('for_part', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('with_part', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.WITH,
       label: 'with',
@@ -467,7 +467,7 @@ ezP.DelegateSvg.Manager.makeSubclass('with_part', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('with_item_concrete', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,

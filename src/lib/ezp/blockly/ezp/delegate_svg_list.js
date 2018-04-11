@@ -26,7 +26,7 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.List = function (prototypeName) {
   ezP.DelegateSvg.List.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.list = {}
+  this.model__.inputs.list = {}
 }
 goog.inherits(ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
@@ -86,7 +86,7 @@ ezP.DelegateSvg.List.prototype.consolidate_ = function (block) {
  */
 ezP.DelegateSvg.List.prototype.createConsolidator = function (block) {
   if (!this.consolidator) {
-    var D = ezP.DelegateSvg.Manager.getInputModel(block.type).list
+    var D = ezP.DelegateSvg.Manager.getInputsModel(block.type).list
     goog.asserts.assert(D, 'inputModel__.list is missing in '+block.type)
     var Ctor = D.consolidator? D.consolidator:
     ezP.Consolidator.List
@@ -198,7 +198,7 @@ ezP.DelegateSvg.List.prototype.toPythonExpressionComponents = function (block, c
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('optional_expression_list', {
-  input: {
+  inputs: {
     list: {
       check: ezP.T3.Expr.Check.expression,
       empty: true,
@@ -218,7 +218,7 @@ ezP.DelegateSvg.Manager.makeSubclass('optional_expression_list', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('non_void_expression_list', {
-  input: {
+  inputs: {
     list: {
       check: ezP.T3.Expr.Check.expression,
       empty: false,
@@ -238,7 +238,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_expression_list', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('starred_item_list', {
-  input: {
+  inputs: {
     list: {
       check: ezP.T3.Expr.Check.starred_item,
       empty: false,
@@ -257,7 +257,7 @@ ezP.DelegateSvg.Manager.makeSubclass('starred_item_list', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('parenth_form', {
-  input: {
+  inputs: {
     prefix: {
       label: '(',
     },
@@ -283,7 +283,7 @@ ezP.DelegateSvg.Manager.makeSubclass('parenth_form', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('key_datum_list', {
-  input: {
+  inputs: {
     list: {
       check: ezP.T3.Expr.Check.key_datum,
       empty: true,
@@ -314,7 +314,7 @@ ezP.DelegateSvg.Manager.makeSubclass('starred_item_list_comprehensive', function
   goog.array.removeDuplicates(RA)
   D.all = RA
   return {
-    input: {
+    inputs: {
       list: D,
     },
   }
@@ -328,7 +328,7 @@ ezP.DelegateSvg.Manager.makeSubclass('starred_item_list_comprehensive', function
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('list_display', {
-  input: {
+  inputs: {
     prefix: {
       label: '[',
     },
@@ -360,7 +360,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_starred_item_list_comprehensive',
   goog.array.removeDuplicates(RA)
   D.all = RA
   return {
-    input: {
+    inputs: {
       list: D,
     },
   }
@@ -374,7 +374,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_starred_item_list_comprehensive',
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('set_display', {
-  input: {
+  inputs: {
     prefix: {
       label: '{',
     },
@@ -405,7 +405,7 @@ ezP.DelegateSvg.Manager.makeSubclass('key_datum_list_comprehensive', function() 
   goog.array.removeDuplicates(RA)
   D.all = RA
   return {
-    input: {
+    inputs: {
       list: D,
     },
   }
@@ -419,7 +419,7 @@ ezP.DelegateSvg.Manager.makeSubclass('key_datum_list_comprehensive', function() 
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('dict_display', {
-  input: {
+  inputs: {
     prefix: {
       label: '{',
     },
@@ -439,7 +439,7 @@ ezP.DelegateSvg.Manager.makeSubclass('dict_display', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('slice_list', {
-  input: {
+  inputs: {
     list: {
       check: ezP.T3.Expr.Check.slice_item,
       empty: false,
@@ -456,7 +456,7 @@ ezP.DelegateSvg.Manager.makeSubclass('slice_list', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('display_slice_list', {
-  input: {
+  inputs: {
     prefix: {
       label: '[',
     },
@@ -476,7 +476,7 @@ ezP.DelegateSvg.Manager.makeSubclass('display_slice_list', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('with_item_list', {
-  input: {
+  inputs: {
     list: {
       check: ezP.T3.Expr.Check.with_item,
       empty: false,

@@ -24,7 +24,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Stmt.del_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.del_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_3 = {
+  this.model__.inputs.m_3 = {
     key: ezP.Key.LIST,
     label: 'del',
     css_class: 'ezp-code-reserved',
@@ -43,7 +43,7 @@ ezP.DelegateSvg.Manager.register('del_stmt')
  */
 ezP.DelegateSvg.Stmt.return_stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.return_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_3 = {
+  this.model__.inputs.m_3 = {
     key: ezP.Key.LIST,
     label: 'return',
     css_class: 'ezp-code-reserved',

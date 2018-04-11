@@ -29,7 +29,7 @@ ezP.DelegateSvg.Primary = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Primary, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Primary.model__ = {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.PRIMARY,
       check: ezP.T3.Expr.Check.primary,
@@ -71,7 +71,7 @@ ezP.DelegateSvg.Primary.prototype.getPrimaryConnection = function (block) {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('attributeref', {
-  input: {
+  inputs: {
     m_3: {
       label: '.',
       key: ezP.Key.ATTRIBUTE,
@@ -93,7 +93,7 @@ ezP.DelegateSvg.Manager.makeSubclass('attributeref', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('slicing', {
-  input: {
+  inputs: {
     m_3: {
       key: ezP.Key.SLICE,
       wrap: ezP.T3.Expr.display_slice_list,
@@ -118,7 +118,7 @@ ezP.DelegateSvg.Manager.register('subscription')
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('call_expr', {
-  input: {
+  inputs: {
     m_3: {
       key: ezP.Key.ARGUMENTS,
       start: '(',
@@ -137,7 +137,7 @@ ezP.DelegateSvg.Manager.makeSubclass('call_expr', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('call_stmt', {
-  input: {
+  inputs: {
     m_1: {
       insert: ezP.T3.Expr.call_expr,
     },
@@ -157,7 +157,7 @@ ezP.DelegateSvg.Manager.makeSubclass('call_stmt', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('builtin_call_expr', {
-  input: {
+  inputs: {
     builtins: ['range', 'list', 'len', 'sum'],
     m_1: {
       label: '',
@@ -180,7 +180,7 @@ ezP.DelegateSvg.Manager.makeSubclass('builtin_call_expr', {
  */
 ezP.DelegateSvg.Expr.builtin_call_expr.prototype.initBlock = function (block) {
   ezP.DelegateSvg.Expr.builtin_call_expr.superClass_.initBlock.call(this, block)
-  var builtins = this.getModel().input.builtins
+  var builtins = this.getModel().inputs.builtins
   this.initProperty(block, ezP.Key.BUILTIN, builtins[0], function(block, oldValue, newValue) {
     return builtins.indexOf(newValue)>=0
   }, null, function(block, oldValue, newValue) {
@@ -223,7 +223,7 @@ ezP.DelegateSvg.Expr.builtin_call_expr.prototype.setSubtype = function (block, s
  * @private
  */
 ezP.DelegateSvg.Expr.builtin_call_expr.populateMenu = function (block, mgr) {
-  var builtins = block.ezp.getModel().input.builtins
+  var builtins = block.ezp.getModel().inputs.builtins
   var current = block.ezp.getProperty(block, ezP.Key.BUILTIN)
   var F = function(content, key) {
     var menuItem = new ezP.MenuItem(content, function() {
@@ -259,7 +259,7 @@ ezP.DelegateSvg.Expr.builtin_call_expr.prototype.populateContextMenuFirst_ = fun
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('builtin_call_stmt', {
-  input: {
+  inputs: {
     builtins: ['range', 'list', 'len', 'sum'],
     m_1: {
       insert: ezP.T3.Expr.builtin_call_expr,
@@ -286,7 +286,7 @@ ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.populateContextMenuFirst_ = fun
 ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.initBlock = function (block) {
   this.getModel = ezP.DelegateSvg.Expr.builtin_call_expr.prototype.getModel
   ezP.DelegateSvg.Stmt.builtin_call_stmt.superClass_.initBlock.call(this, block)
-  var builtins = this.getModel().input.builtins
+  var builtins = this.getModel().inputs.builtins
   this.initProperty(block, ezP.Key.BUILTIN, builtins[0], function(block, oldValue, newValue) {
     return builtins.indexOf(newValue)>=0
   }, null, function(block, oldValue, newValue) {

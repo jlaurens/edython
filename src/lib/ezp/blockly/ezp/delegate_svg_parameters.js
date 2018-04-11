@@ -282,7 +282,7 @@ ezP.Consolidator.Parameters.prototype.getCheck = function() {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('parameter_list', {
-  input: {
+  inputs: {
     list: {
       consolidator: ezP.Consolidator.Parameters,
     }
@@ -297,7 +297,7 @@ ezP.DelegateSvg.Manager.makeSubclass('parameter_list', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('parameter_star', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.NAME,
       label: '*',
@@ -317,7 +317,7 @@ ezP.DelegateSvg.Manager.makeSubclass('parameter_star', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('parameter_star_star', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.NAME,
       label: '**',
@@ -336,7 +336,7 @@ ezP.DelegateSvg.Manager.makeSubclass('parameter_star_star', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('parameter_concrete', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.NAME,
       check: ezP.T3.Expr.identifier,
@@ -360,7 +360,7 @@ ezP.DelegateSvg.Manager.makeSubclass('parameter_concrete', {
  * @constructor
  */
 ezP.DelegateSvg.Manager.makeSubclass('defparameter_concrete', {
-  input: {
+  inputs: {
     m_1: {
       key: ezP.Key.NAME,
       check: ezP.T3.Expr.Check.parameter,
