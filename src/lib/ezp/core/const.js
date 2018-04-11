@@ -26,14 +26,6 @@ ezP.Const = {
 }
 
 ezP.Const.Field = {
-  
-  MODIFIER: 'MODIFIER',
-  PREFIX: 'PREFIX',
-  START: 'START',
-  END: 'END',
-  SUFFIX: 'SUFFIX',
-  DOTS: 'DOTS',
-  ID: 'ID',
   // IN PROGRESS
   VAR: 'VAR',
   STARS: 'STARS',
@@ -121,13 +113,14 @@ ezP.Key = {
 
   PREFIX: 'prefix',
 
-  LABEL: 'LABEL',
-  CODE: 'CODE',
-  COMMENT: 'COMMENT',
-  NUMBER: 'NUMBER',
-  STRING: 'STRING',
-  LONG_STRING: 'LONG_STRING',
-
+  LABEL: 'label', // lowercase
+  CODE: 'code', // lowercase
+  COMMENT: 'comment', // lowercase
+  NUMBER: 'number', // lowercase
+  STRING: 'string', // lowercase
+  LONG_STRING: 'longString', // lowercase
+  START: 'start', // lowercase
+  
   // IN PROGRESS
   ANY: 'ANY',
 

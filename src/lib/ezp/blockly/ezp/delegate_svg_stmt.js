@@ -167,28 +167,43 @@ ezP.DelegateSvg.Stmt.prototype.toPython = function (block, is_deep) {
  * @return the created block
  */
 ezP.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeName, subtype) {
-  Blockly.Events.setGroup(true)
-  var parentBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName)
-  parentBlock.ezp.setSubtype(parentBlock, subtype)
   var c8n = block.previousConnection
-  var targetC8n = c8n.targetConnection
-  if (targetC8n) {
-    targetC8n.disconnect()
-    targetC8n.connect(parentBlock.previousConnection)
-  } else {
-    var its_xy = block.getRelativeToSurfaceXY();
-    var my_xy = parentBlock.getRelativeToSurfaceXY();
-    parentBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+  if (c8n) {
+    var disabler = new ezP.Events.Disabler()
+    var parentBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName)
+    disabler.stop()
+    var parentC8n = parentBlock.nextConnection
+    if (parentC8n) {
+      Blockly.Events.setGroup(true)
+      if (Blockly.Events.isEnabled()) {
+        Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
+      }
+      try {
+        parentBlock.ezp.setSubtype(parentBlock, subtype)
+        var targetC8n = c8n.targetConnection
+        if (targetC8n) {
+          targetC8n.disconnect()
+          if (parentBlock.previousConnection) {
+            targetC8n.connect(parentBlock.previousConnection)
+          }
+        } else {
+          var its_xy = block.getRelativeToSurfaceXY();
+          var my_xy = parentBlock.getRelativeToSurfaceXY();
+          parentBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+        }
+        parentBlock.ezp.consolidate(parentBlock, true)
+        var holes = ezP.HoleFiller.getDeepHoles(parentBlock)
+        ezP.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
+        parentBlock.render()
+        c8n.connect(parentC8n)
+        if (Blockly.selected === block) {
+          parentBlock.select()
+        }
+      } finally {
+        Blockly.Events.setGroup(false)
+      }
+    }
   }
-  parentBlock.ezp.consolidate(parentBlock, true)
-  var holes = ezP.HoleFiller.getDeepHoles(parentBlock)
-  ezP.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
-  parentBlock.render()
-  block.previousConnection.connect(parentBlock.nextConnection)
-  if (Blockly.selected === block) {
-    parentBlock.select()
-  }
-  Blockly.Events.setGroup(false)
   return parentBlock
 }
 

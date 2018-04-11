@@ -181,7 +181,9 @@ ezP.DelegateSvg.Manager.makeSubclass('builtin_call_expr', {
 ezP.DelegateSvg.Expr.builtin_call_expr.prototype.initBlock = function (block) {
   ezP.DelegateSvg.Expr.builtin_call_expr.superClass_.initBlock.call(this, block)
   var builtins = this.getModel().input.builtins
-  this.initProperty(block, ezP.Key.BUILTIN, builtins[0], null, null, function(block, oldValue, newValue) {
+  this.initProperty(block, ezP.Key.BUILTIN, builtins[0], function(block, oldValue, newValue) {
+    return builtins.indexOf(newValue)>=0
+  }, null, function(block, oldValue, newValue) {
     var disabler = new ezP.Events.Disabler()
     var input = block.getInput(ezP.Key.ARGUMENTS)
     var field = input.ezp.fields.label
@@ -285,7 +287,9 @@ ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.initBlock = function (block) {
   this.getModel = ezP.DelegateSvg.Expr.builtin_call_expr.prototype.getModel
   ezP.DelegateSvg.Stmt.builtin_call_stmt.superClass_.initBlock.call(this, block)
   var builtins = this.getModel().input.builtins
-  this.initProperty(block, ezP.Key.BUILTIN, builtins[0], null, null, function(block, oldValue, newValue) {
+  this.initProperty(block, ezP.Key.BUILTIN, builtins[0], function(block, oldValue, newValue) {
+    return builtins.indexOf(newValue)>=0
+  }, null, function(block, oldValue, newValue) {
     var disabler = new ezP.Events.Disabler()
     var input = block.getInput(ezP.Key.ARGUMENTS)
     var field = input.ezp.fields.label

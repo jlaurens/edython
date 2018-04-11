@@ -154,6 +154,10 @@ ezP.DelegateSvg.prototype.svgPathConnection_ = undefined
  * Create and initialize the various paths.
  * Called once at block creation time.
  * Should not be called directly
+ * The block implementation is created according to a dictionary
+ * input model available through `getModel().input`.
+ * The structure of that dictionary is detailled in the treatment flow
+ * below.
  * @param {!Blockly.Block} block to be initialized..
  */
 ezP.DelegateSvg.prototype.initBlock = function(block) {
@@ -177,16 +181,16 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   block.setTooltip('')
   block.setHelpUrl('')
   var inputModel = this.getModel().input
-  var F = function(K) {
+  var doOneModel = function(K) {
     var D = inputModel[K]
-    var out
     if (D && Object.keys(D).length) {
-      out = {
-        field: {}
+      var out = {
+        fields: {}
       }
-      var k = D.key
-      var v, f
-      // first insert a base input model
+      var k = D.key // when present, the optName of the input created
+      var v, field
+      // first insert a base input model by creating a node
+      // of a different type and transferring input ownership
       if ((v = D.insert)) {
         var B = ezP.DelegateSvg.newBlockComplete(block.workspace, v)
         if (B) {
@@ -200,7 +204,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
             }
             for (var j = 0, field;(field = input.fieldRow[j++]);) {
               field.sourceBlock_ = block
-              if (field.textElement_) {
+              if (field.textElement_) { // fields have no other element
                 block.getSvgRoot().appendChild(field.textElement_)
                 field.textElement_.tooltip = block
               }
@@ -216,43 +220,36 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
             }
           }
           // xfer uiModel
-          out.insert = B.ezp.uiModel
+          out.insert = B.ezp.uiModel// not yet used
           B.dispose(true)
         }
       }
       // the main field may determine the name of the input
-      var mainField
-      var FFF = function(name, Ctor, key) {
-        field = out.field[name] = out.input.ezp.fields[name] = new Ctor(v)
-        out.input.appendField(field, K+'.'+key)
-        return field
+      var doEditableFields = function(key, Ctor) {
+        if ((v = D[key]) !== undefined) {
+          out.input = block.appendDummyInput(k || key)
+          field = out.fields[key] = out.input.ezp.fields[key] = new Ctor(v)
+          out.input.appendField(field, k||(k+'.'+key))
+          return field
+        }
       }
-      if ((v = D.identifier) !== undefined) {
-        FFF('identifier', ezP.FieldIdentifier, ezP.Key.IDENTIFIER)
-      } else if ((v = D.code) != undefined) {
-        FFF('input', ezP.FieldInput, ezP.Key.CODE)
-      } else if ((v = D.comment) != undefined) {
-        FFF('comment', ezP.FieldComment, ezP.Key.COMMENT)
-      } else if ((v = D.number) != undefined) {
-        FFF('number', ezP.FieldNumber, ezP.Key.NUMBER)
-      } else if ((v = D.string) != undefined) {
-        FFF('string', ezP.FieldString, ezP.Key.STRING)
-      } else if ((v = D.longString) != undefined) {
-        FFF('longString', ezP.FieldLongString, ezP.Key.LONG_STRING)
-      } else if ((v = D.operator) != undefined) {
-        FFF('operator', ezP.FieldLabel, ezP.Key.OPERATOR)
-      }
-
-
-
-      if ((D.check === undefined && D.wrap === undefined) || D.dummy || D.identifier || D.code || D.comment || D.number || D.string || D.longString) {
+      // first fields are editable ones
+      // They belong to a dummy input
+      if (!doEditableFields(ezP.Key.IDENTIFIER, ezP.FieldIdentifier)
+      && !doEditableFields(ezP.Key.CODE, ezP.FieldInput)
+      && !doEditableFields(ezP.Key.COMMENT, ezP.FieldComment)
+      && !doEditableFields(ezP.Key.NUMBER, ezP.FieldNumber)
+      && !doEditableFields(ezP.Key.STRING, ezP.FieldString)
+      && !doEditableFields(ezP.Key.LONG_STRING, ezP.FieldLongString)
+      && !doEditableFields(ezP.Key.OPERATOR, ezP.FieldLabel)
+      && ((D.check === undefined && D.wrap === undefined) || D.dummy)) {
         out.input = block.appendDummyInput(k)
       } else {
         if ((v = D.wrap)) {
           k = k || v
           goog.asserts.assert(v, 'wrap must exist '+block.type+'.'+K)
           out.input = block.appendWrapValueInput(k, v, D.optional, D.hidden)
-        } else {
+        } else if (!out.input) {
           out.input = block.appendValueInput(k)
         }
         var c8n = out.input.connection
@@ -290,27 +287,26 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
           }
         }
       }
-      var field
-      var FFF = function(name, Ctor, key) {
-        field = out.field[name] = out.input.ezp.fields[name] = new Ctor(v)
-        out.input.appendField(field, K+'.'+key)
-        return field
-      }
-      var FF = function(name, key) {
-        field = FFF(name, ezP.FieldLabel, key)
+      // Now come label fields
+      var FF = function(key) {
+        field = out.fields[key] = out.input.ezp.fields[key] = new ezP.FieldLabel(v)
+        out.input.appendField(field, k+'.'+key)
         field.ezp.css_class = D.css_class
         field.ezp.css_style = D.css_style
         return field
       }
-      if ((v = D.label) !== undefined || (v = D.dummy) !== undefined) {
-        FF('label', ezP.Key.LABEL)
+      if ((v = D.dummy) !== undefined) {
+        FF(ezP.Key.LABEL)
       }
-      if ((v = D.start) !== undefined) {
-        FF('start', ezP.Key.START)
+      var doLabel = function(key) {
+        if ((v = D[key]) !== undefined) {
+          return FF(key)
+        }
       }
-      if ((v = D.end) !== undefined) {
-        FF('end', ezP.Key.END).ezp.suffix = true
-      }
+      doLabel(ezP.Key.LABEL)
+      doLabel(ezP.Key.START)
+      field = doLabel(ezP.Key.END)
+      field && (field.ezp.suffix = true)
     }
     return out
   }
@@ -364,9 +360,9 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     model.fields.suffix = FF.call(this, 'suffix')
     var keys = ['m_1', 'm_2', 'm_3']
     for (var i = 0, K; K = keys[i++];) {
-      var f = F.call(this, K)
-      if (f) {
-        model[K] = f
+      var p = doOneModel.call(this, K)
+      if (p) {
+        model[K] = p
       }
     }
   }
@@ -1537,7 +1533,7 @@ ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
   var FF = function(field, is_operator) {
     return field && FFF(field.getText(), is_operator)
   }
-  var F = function(D) {
+  var doOneModel = function(D) {
     if (!D) {
       return
     }
@@ -1555,9 +1551,9 @@ ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
     }
     FF(D.fields.end)
   }
-  F(this.uiModel.m_1)
-  F(this.uiModel.m_2)
-  F(this.uiModel.m_3)
+  doOneModel(this.uiModel.m_1)
+  doOneModel(this.uiModel.m_2)
+  doOneModel(this.uiModel.m_3)
   return last
 }
 
@@ -2443,13 +2439,17 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
           } else if (!c8n.checkType_(foundC8n)) {
             continue
           }
-          if (!c8n_N || foundC8n.ezp.name_ === c8n_N) {
-            // we have found a connection with the expected name
+          if (!foundC8n.ezp.s7r_ && (!c8n_N || foundC8n.ezp.name_ === c8n_N)) {
+            // we have found a connection
+            // which s not a separator and
+            // with the expected name
             return foundC8n
           }
           // if there is no connection with the expected name,
           // then remember this connection and continue the loop
-          if (!otherC8n || otherC8n.ezp.s7r_ && foundC8n) {
+          // We remember the last separator connection
+          // of the first which is not a separator
+          if (!otherC8n || otherC8n.ezp.s7r_) {
             otherC8n = foundC8n
           }
         }

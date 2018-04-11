@@ -131,11 +131,15 @@ ezP.KeyHandler = function() {
     // otherwise, take the first shortcut and pass it to handleAction
     // if the selected block supports subtypes, then set it
     var B = Blockly.selected
-    if (B && B.ezp.setSubtype(B, shortcut)) {
+    var c8n = ezP.SelectedConnection.get()
+    if (B && !c8n && B.ezp.setSubtype(B, shortcut)) {
       return
     }
     var type = ezP.Do.typeOfString(shortcut)
     if (me.handleType(type, shortcut)) {
+      return
+    }
+    if (B && B.ezp.setSubtype(B, shortcut)) {
       return
     }
     if (current_.length) {
