@@ -129,7 +129,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuMiddle_ = function 
  * the MenuItem selected within menu.
  */
 ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (block, VM) {
-  var listener = block.ezp.uiModel.m_1.field.identifier
+  var listener = block.ezp.uiModel.m_1.fields.identifier
   var oldName = listener.getValue()
   var workspace = block.workspace
   var oldVarId = workspace.getVariable(oldName).getId()
@@ -145,7 +145,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (bl
     workspace.deleteVariableInternal_(vm)
     var allBlocks = workspace.getAllBlocks()
     for (var i = 0, B; B = allBlocks[i++];) {
-      var field = block.ezp.uiModel.m_1.field.identifier
+      var field = block.ezp.uiModel.m_1.fields.identifier
       if (field && field.getValue() === oldName) {
         field.setValue(VM.name)
       }
@@ -163,7 +163,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (bl
  * the MenuItem selected within menu.
  */
 ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionMiddle = function (block, mgr, event) {
-  var listener = block.ezp.uiModel.m_1.field.identifier
+  var listener = block.ezp.uiModel.m_1.fields.identifier
   var workspace = block.workspace
   var model = event.target.getModel()
   var action = model[0]

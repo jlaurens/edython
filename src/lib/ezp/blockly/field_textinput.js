@@ -12,11 +12,11 @@
 'use strict'
 
 goog.provide('ezP.FieldTextInput')
-goog.provide('ezP.FieldCodeInput')
-goog.provide('ezP.FieldCodeComment')
-goog.provide('ezP.FieldCodeNumber')
-goog.provide('ezP.FieldCodeString')
-goog.provide('ezP.FieldCodeLongString')
+goog.provide('ezP.FieldInput')
+goog.provide('ezP.FieldComment')
+goog.provide('ezP.FieldNumber')
+goog.provide('ezP.FieldString')
+goog.provide('ezP.FieldLongString')
 
 goog.require('Blockly.FieldTextInput')
 
@@ -216,11 +216,11 @@ ezP.FieldTextInput.prototype.resizeEditor_ = function () {
  * @extends {ezP.FieldTextInput}
  * @constructor
  */
-ezP.FieldCodeInput = function (text, optValidator) {
-  ezP.FieldCodeInput.superClass_.constructor.call(this, text,
+ezP.FieldInput = function (text, optValidator) {
+  ezP.FieldInput.superClass_.constructor.call(this, text,
     optValidator)
 }
-goog.inherits(ezP.FieldCodeInput, ezP.FieldTextInput)
+goog.inherits(ezP.FieldInput, ezP.FieldTextInput)
 
 /**
  * Get the text from this field as displayed on screen.  May differ from getText
@@ -228,14 +228,14 @@ goog.inherits(ezP.FieldCodeInput, ezP.FieldTextInput)
  * @return {string} Currently displayed text.
  * @private
  */
-ezP.FieldCodeInput.prototype.getDisplayText_ = function() {
+ezP.FieldInput.prototype.getDisplayText_ = function() {
   if (this.ezp.placeholder && !this.ezp.isEditing) {
     return this.placeholderText()
   }
-  return ezP.FieldCodeInput.superClass_.getDisplayText_.call(this)
+  return ezP.FieldInput.superClass_.getDisplayText_.call(this)
 }
 
-ezP.FieldCodeInput.prototype.placeholderText = function() {
+ezP.FieldInput.prototype.placeholderText = function() {
   return Blockly.Field.NBSP
 }
 
@@ -244,7 +244,7 @@ ezP.FieldCodeInput.prototype.placeholderText = function() {
  * the language-neutral values.  Subclasses (such as dropdown) may define this.
  * @param {string} newValue New value.
  */
-ezP.FieldCodeInput.prototype.setValue = function(newValue) {
+ezP.FieldInput.prototype.setValue = function(newValue) {
   if ((this.ezp.placeholder = !newValue || !newValue.length)) {
     // newValue = this.placeholderText()
     if (this.textElement_) {
@@ -253,7 +253,7 @@ ezP.FieldCodeInput.prototype.setValue = function(newValue) {
   } else if (this.textElement_) {
     goog.dom.classlist.remove(this.textElement_,'ezp-code-placeholder')
   }   
-  ezP.FieldCodeInput.superClass_.setValue.call(this, newValue)
+  ezP.FieldInput.superClass_.setValue.call(this, newValue)
 }
 
 /**
@@ -261,8 +261,8 @@ ezP.FieldCodeInput.prototype.setValue = function(newValue) {
  * @override
  * @private
  */
-ezP.FieldCodeInput.prototype.render_ = function() {
-  ezP.FieldCodeInput.superClass_.render_.call(this)
+ezP.FieldInput.prototype.render_ = function() {
+  ezP.FieldInput.superClass_.render_.call(this)
   if (this.ezp.placeholder) {
     goog.dom.classlist.add(this.textElement_, 'ezp-code-placeholder')
   } else {
@@ -276,17 +276,17 @@ ezP.FieldCodeInput.prototype.render_ = function() {
  * @extends {ezP.FieldTextInput}
  * @constructor
  */
-ezP.FieldCodeComment = function (text, optValidator) {
-  ezP.FieldCodeComment.superClass_.constructor.call(this, text, optValidator)
+ezP.FieldComment = function (text, optValidator) {
+  ezP.FieldComment.superClass_.constructor.call(this, text, optValidator)
 }
-goog.inherits(ezP.FieldCodeComment, ezP.FieldCodeInput)
+goog.inherits(ezP.FieldComment, ezP.FieldInput)
 
-ezP.FieldCodeComment.prototype.cssClass = 'ezp-code-comment'
-ezP.FieldCodeComment.prototype.placeholderText = function() {
+ezP.FieldComment.prototype.cssClass = 'ezp-code-comment'
+ezP.FieldComment.prototype.placeholderText = function() {
   return ezP.Msg.PLACEHOLDER_COMMENT
 }
 
-ezP.FieldCodeNumber = function (text) {
+ezP.FieldNumber = function (text) {
   var field = this
   var validator = function(txt) {
     var validator_ = function(txt, re, type) {
@@ -311,11 +311,11 @@ ezP.FieldCodeNumber = function (text) {
     goog.dom.classlist.add(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
     return txt
   }
-  ezP.FieldCodeNumber.superClass_.constructor.call(this, text, validator)
+  ezP.FieldNumber.superClass_.constructor.call(this, text, validator)
 }
-goog.inherits(ezP.FieldCodeNumber, ezP.FieldCodeInput)
+goog.inherits(ezP.FieldNumber, ezP.FieldInput)
 
-ezP.FieldCodeNumber.prototype.placeholderText = function() {
+ezP.FieldNumber.prototype.placeholderText = function() {
   ezP.Msg.PLACEHOLDER_NUMBER
 }
 
@@ -324,8 +324,8 @@ ezP.FieldCodeNumber.prototype.placeholderText = function() {
  * @private
  * @override
  */
-ezP.FieldCodeInput.prototype.render_ = function() {
-  ezP.FieldCodeInput.superClass_.render_.call(this)
+ezP.FieldInput.prototype.render_ = function() {
+  ezP.FieldInput.superClass_.render_.call(this)
   if (this.ezp.error) {
     goog.dom.classlist.add(this.textElement_, 'ezp-code-error')
   } else {
@@ -344,13 +344,13 @@ ezP.FieldCodeInput.prototype.render_ = function() {
  * @extends {ezP.FieldTextInput}
  * @constructor
  */
-ezP.FieldCodeString = function (text) {
+ezP.FieldString = function (text) {
   var validator = null
-  ezP.FieldCodeString.superClass_.constructor.call(this, text, validator)
+  ezP.FieldString.superClass_.constructor.call(this, text, validator)
 }
-goog.inherits(ezP.FieldCodeString, ezP.FieldCodeInput)
+goog.inherits(ezP.FieldString, ezP.FieldInput)
 
-ezP.FieldCodeString.prototype.placeholderText = function() {
+ezP.FieldString.prototype.placeholderText = function() {
   return this.sourceBlock_.type === ezP.T3.Expr.shortbytesliteral?
   ezP.Msg.PLACEHOLDER_BYTES: ezP.Msg.PLACEHOLDER_STRING
 }
@@ -361,9 +361,9 @@ ezP.FieldCodeString.prototype.placeholderText = function() {
  * @extends {ezP.FieldTextInput}
  * @constructor
  */
-ezP.FieldCodeLongString = function (text) {
+ezP.FieldLongString = function (text) {
   var validator = null
-  ezP.FieldCodeLongString.superClass_.constructor.call(this, text, validator)
+  ezP.FieldLongString.superClass_.constructor.call(this, text, validator)
 }
-goog.inherits(ezP.FieldCodeLongString, ezP.FieldCodeInput)
+goog.inherits(ezP.FieldLongString, ezP.FieldInput)
 

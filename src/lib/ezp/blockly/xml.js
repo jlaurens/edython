@@ -1167,7 +1167,7 @@ ezP.Xml.Comparison.domToBlock = function (element, workspace) {
   var prototypeName = element.nodeName.toLowerCase()
   var id = element.getAttribute('id')
   if (prototypeName === ezP.Xml.COMPARISON) {
-    var op = element.getAttribute(ezP.Const.Field.OPERATOR)
+    var op = element.getAttribute(ezP.Key.OPERATOR)
     var Ctor, model, type = ezP.T3.Expr.number_comparison
     if ((Ctor = ezP.DelegateSvg.Manager.get(type))
     && (model = Ctor.prototype.getModel().input)
@@ -1207,7 +1207,7 @@ ezP.DelegateSvg.Stmt.augassign_numeric_stmt.prototype.xmlTagName = ezP.DelegateS
 ezP.Xml.AugAssign.domToBlock = function (element, workspace) {
   var name = element.tagName
   if (name && name.toLowerCase() === ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.xmlTagName()) {
-    var op = element.getAttribute(ezP.Const.Field.OPERATOR)
+    var op = element.getAttribute(ezP.Key.OPERATOR)
     var type = ezP.T3.Stmt.augassign_numeric_stmt
     var model = ezP.DelegateSvg.Expr.augassign_numeric.prototype.getModel()
     if (model.input.operators.indexOf(op) < 0) {
@@ -1227,7 +1227,7 @@ ezP.Xml.AugAssign.domToBlock = function (element, workspace) {
  * @override
  */
 ezP.Xml.AugAssign.toDom = function (block, element, optNoId) {
-  element.setAttribute(ezP.Const.Field.OPERATOR, block.ezp.getSubtype(block))
+  element.setAttribute(ezP.Key.OPERATOR, block.ezp.getSubtype(block))
   var name = ezP.DelegateSvg.AugAssign.prototype.getModel().input.m_1.key
   ezP.Xml.Input.Named.toDom(block, name, element, optNoId)
   var name = ezP.DelegateSvg.AugAssign.prototype.getModel().input.m_3.key
@@ -1241,7 +1241,7 @@ ezP.Xml.AugAssign.toDom = function (block, element, optNoId) {
  * @override
  */
 ezP.Xml.AugAssign.fromDom = function (block, element) {
-  var op = element.getAttribute(ezP.Const.Field.OPERATOR)
+  var op = element.getAttribute(ezP.Key.OPERATOR)
   block.ezp.setSubtype(block, op)
   var name = ezP.DelegateSvg.AugAssign.prototype.getModel().input.m_1.key
   ezP.Xml.Input.Named.fromDom(block, name, element)

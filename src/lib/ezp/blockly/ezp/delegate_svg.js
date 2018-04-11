@@ -184,7 +184,9 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       out = {
         field: {}
       }
+      var k = D.key
       var v, f
+      // first insert a base input model
       if ((v = D.insert)) {
         var B = ezP.DelegateSvg.newBlockComplete(block.workspace, v)
         if (B) {
@@ -218,10 +220,34 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
           B.dispose(true)
         }
       }
+      // the main field may determine the name of the input
+      var mainField
+      var FFF = function(name, Ctor, key) {
+        field = out.field[name] = out.input.ezp.fields[name] = new Ctor(v)
+        out.input.appendField(field, K+'.'+key)
+        return field
+      }
+      if ((v = D.identifier) !== undefined) {
+        FFF('identifier', ezP.FieldIdentifier, ezP.Key.IDENTIFIER)
+      } else if ((v = D.code) != undefined) {
+        FFF('codeInput', ezP.FieldInput, ezP.Key.CODE)
+      } else if ((v = D.comment) != undefined) {
+        FFF('codeComment', ezP.FieldComment, ezP.Key.COMMENT)
+      } else if ((v = D.number) != undefined) {
+        FFF('codeNumber', ezP.FieldNumber, ezP.Key.NUMBER)
+      } else if ((v = D.string) != undefined) {
+        FFF('codeString', ezP.FieldString, ezP.Key.STRING)
+      } else if ((v = D.longString) != undefined) {
+        FFF('codeLongString', ezP.FieldLongString, ezP.Key.LONG_STRING)
+      } else if ((v = D.operator) != undefined) {
+        FFF('operator', ezP.FieldLabel, ezP.Key.OPERATOR)
+      }
+
+
+
       if ((D.check === undefined && D.wrap === undefined) || D.dummy || D.identifier || D.code || D.comment || D.number || D.string || D.longString) {
         out.input = block.appendDummyInput(k)
       } else {
-        var k = D.key
         if ((v = D.wrap)) {
           k = k || v
           goog.asserts.assert(v, 'wrap must exist '+block.type+'.'+K)
@@ -277,28 +303,13 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         return field
       }
       if ((v = D.label) !== undefined || (v = D.dummy) !== undefined) {
-        FF('label', ezP.Const.Field.LABEL)
+        FF('label', ezP.Key.LABEL)
       }
       if ((v = D.start) !== undefined) {
-        FF('start', ezP.Const.Field.START)
+        FF('start', ezP.Key.START)
       }
       if ((v = D.end) !== undefined) {
-        FF('end', ezP.Const.Field.END).ezp.suffix = true
-      }
-      if ((v = D.identifier) !== undefined) {
-        FFF('identifier', ezP.FieldIdentifier, ezP.Const.Field.IDENTIFIER)
-      } else if ((v = D.code) != undefined) {
-        FFF('codeInput', ezP.FieldCodeInput, ezP.Const.Field.CODE)
-      } else if ((v = D.comment) != undefined) {
-        FFF('codeComment', ezP.FieldCodeComment, ezP.Const.Field.COMMENT)
-      } else if ((v = D.number) != undefined) {
-        FFF('codeNumber', ezP.FieldCodeNumber, ezP.Const.Field.NUMBER)
-      } else if ((v = D.string) != undefined) {
-        FFF('codeString', ezP.FieldCodeString, ezP.Const.Field.STRING)
-      } else if ((v = D.longString) != undefined) {
-        FFF('codeLongString', ezP.FieldCodeLongString, ezP.Const.Field.LONG_STRING)
-      } else if ((v = D.operator) != undefined) {
-        FFF('operator', ezP.FieldLabel, ezP.Const.Field.OPERATOR)
+        FF('end', ezP.Key.END).ezp.suffix = true
       }
     }
     return out
@@ -334,7 +345,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   if ((D = this.getModel().output) && D.awaitable) {
     field = new ezP.FieldLabel('await')
     field.ezp.css_class = 'ezp-code-reserved'
-    field.name = ezP.Const.Field.AWAIT
+    field.name = ezP.Key.AWAIT
     field.setSourceBlock(block)
     field.init()
     model.fields.await = field
@@ -342,7 +353,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   if ((D = this.getModel().statement) && D.asyncable) {
     field = new ezP.FieldLabel('async')
     field.ezp.css_class = 'ezp-code-reserved'
-    field.name = ezP.Const.Field.ASYNC
+    field.name = ezP.Key.ASYNC
     field.setSourceBlock(block)
     field.init()
     model.fields.async = field
@@ -835,7 +846,7 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
       }
     }
   }
-  if ((io.field = this.uiModel.field.suffix)) {
+  if ((io.field = this.uiModel.fields.suffix)) {
     this.renderDrawField_(io)
   }
   io.cursorX += this.getPaddingRight(block)

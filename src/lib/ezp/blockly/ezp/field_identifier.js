@@ -13,7 +13,7 @@
 
 goog.provide('ezP.FieldIdentifier')
 
-goog.require('ezP.FieldCodeInput')
+goog.require('ezP.FieldInput')
 goog.require('ezP.Style')
 
 /**
@@ -24,7 +24,7 @@ goog.require('ezP.Style')
  *     option is selected.  Its sole argument is the new option value.
  * @param {Array.<string>} optVariableTypes A list of the types of variables to
  *     include in the dropdown.
- * @extends {ezP.FieldCodeInput}
+ * @extends {ezP.FieldInput}
  * @constructor
  */
 ezP.FieldIdentifier = function (identifier, optValidator) {
@@ -43,7 +43,7 @@ ezP.FieldIdentifier = function (identifier, optValidator) {
   }
   ezP.FieldIdentifier.superClass_.constructor.call(this, identifier, optValidator || validator)
 }
-goog.inherits(ezP.FieldIdentifier, ezP.FieldCodeInput)
+goog.inherits(ezP.FieldIdentifier, ezP.FieldInput)
 
 /**
  * Attach this field to a block.
