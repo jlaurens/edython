@@ -274,14 +274,12 @@ ezP.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks = ezP.DelegateS
   ezP.T3.Expr.comprehension,
 ] , null/*ezP.T3.Expr.Check.expression*/)
 
-ezP.DelegateSvg.Expr.input_builtin.workspaceBlocks = 
-ezP.DelegateSvg.Stmt.print_stmt.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Expr.list_builtin,
-  ezP.T3.Expr.sum_builtin,
-  ezP.T3.Expr.range_builtin,
-  ezP.T3.Expr.input_builtin,
-  ezP.T3.Expr.print_builtin,
-  ezP.T3.Stmt.print_stmt,
+ezP.DelegateSvg.Expr.builtin_input_expr.workspaceBlocks = 
+ezP.DelegateSvg.Stmt.builtin_print_stmt.workspaceBlocks = ezP.Do.arraysMerged([
+  ezP.T3.Expr.builtin_input_expr,
+  ezP.T3.Expr.builtin_input_stmt,
+  ezP.T3.Expr.builtin_print_expr,
+  ezP.T3.Stmt.builtin_print_stmt,
 ],
 ezP.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks,
 )

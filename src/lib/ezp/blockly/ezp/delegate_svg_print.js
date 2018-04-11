@@ -16,6 +16,7 @@ goog.provide('ezP.DelegateSvg.Print')
 goog.require('ezP.DelegateSvg.Stmt')
 goog.require('ezP.DelegateSvg.List')
 
+console.warn('Move this block to the builtin blocks, with contextual consolidator and argument list')
 /**
  * Class for a DelegateSvg, print block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
@@ -24,36 +25,29 @@ goog.require('ezP.DelegateSvg.List')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.print_builtin = function (prototypeName) {
-  ezP.DelegateSvg.Expr.print_builtin.superClass_.constructor.call(this, prototypeName)
-  this.model__.input = {
+ezP.DelegateSvg.Manager.makeSubclass('builtin_print_expr', {
+  input: {
     m_1: {
       label: 'print',
       css_class: 'ezp-code-builtin',
     },
     m_3: {
       start: '(',
-      key: ezP.Key.LIST,
+      key: ezP.Key.ARGUMENTS,
       wrap: ezP.T3.Expr.argument_list_comprehensive,
       end: ')',
     }
-  }
-  this.outputModel__ = {
-    check: [ezP.T3.Expr.print_builtin, ezP.T3.Expr.call_expr],
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.print_builtin, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('print_builtin')
-
-
-ezP.ID.PRINT_KEYWORD_ITEM_INSERT = 'PRINT_KEYWORD_ITEM_INSERT'
-ezP.ID.PRINT_KEYWORD_ITEM_REMOVE = 'PRINT_KEYWORD_ITEM_REMOVE'
+  },
+  output: {
+    check: [ezP.T3.Expr.builtin_print_expr, ezP.T3.Expr.call_expr],
+  },
+})
 
 /**
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-ezP.DelegateSvg.Expr.print_builtin.prototype.getMenuTarget = function(block) {
+ezP.DelegateSvg.Expr.builtin_print_expr.prototype.getMenuTarget = function(block) {
   return block
 }
 
@@ -63,9 +57,9 @@ ezP.DelegateSvg.Expr.print_builtin.prototype.getMenuTarget = function(block) {
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-ezP.DelegateSvg.Expr.print_builtin.prototype.populateContextMenuFirst_ = function (block, mgr) {
+ezP.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var menu = mgr.Menu
-  var list = block.getInput(ezP.Key.LIST).connection.targetBlock()
+  var list = block.getInput(ezP.Key.ARGUMENTS).connection.targetBlock()
   var c10r = list.ezp.consolidator
   var yorn = false
   if (!c10r.hasInputForType(list, ezP.T3.Expr.comprehension)) {
@@ -116,7 +110,7 @@ ezP.DelegateSvg.Expr.print_builtin.prototype.populateContextMenuFirst_ = functio
     F('file')
     yorn = true
   }
-  return ezP.DelegateSvg.Expr.print_builtin.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
+  return ezP.DelegateSvg.Expr.builtin_print_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
 /**
@@ -127,14 +121,13 @@ ezP.DelegateSvg.Expr.print_builtin.prototype.populateContextMenuFirst_ = functio
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.print_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.print_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    insert: ezP.T3.Expr.print_builtin,
+ ezP.DelegateSvg.Manager.makeSubclass('builtin_print_stmt', {
+   input: {
+     m_1: {
+      insert: ezP.T3.Expr.builtin_print_expr,
+    }
   }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.print_stmt, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('print_stmt')
+})
 
 /**
  * Populate the context menu for the given block.
@@ -142,9 +135,9 @@ ezP.DelegateSvg.Manager.register('print_stmt')
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-ezP.DelegateSvg.Expr.print_builtin.prototype.populateContextMenuFirst_ = function (block, mgr) {
+ezP.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var menu = mgr.Menu
-  var list = block.getInput(ezP.Key.LIST).connection.targetBlock()
+  var list = block.getInput(ezP.Key.ARGUMENTS).connection.targetBlock()
   var c10r = list.ezp.consolidator
   var yorn = false
   if (!c10r.hasInputForType(list, ezP.T3.Expr.comprehension)) {
@@ -196,7 +189,7 @@ ezP.DelegateSvg.Expr.print_builtin.prototype.populateContextMenuFirst_ = functio
     F('file')
     yorn = true
   }
-  return ezP.DelegateSvg.Expr.print_builtin.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
+  return ezP.DelegateSvg.Stmt.builtin_print_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
 /**
@@ -207,9 +200,8 @@ ezP.DelegateSvg.Expr.print_builtin.prototype.populateContextMenuFirst_ = functio
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.input_builtin = function (prototypeName) {
-  ezP.DelegateSvg.Expr.input_builtin.superClass_.constructor.call(this, prototypeName)
-  this.model__.input = {
+ezP.DelegateSvg.Manager.makeSubclass('builtin_input_expr', {
+  input: {
     m_1: {
       label: 'input',
       css_class: 'ezp-code-builtin',
@@ -221,27 +213,31 @@ ezP.DelegateSvg.Expr.input_builtin = function (prototypeName) {
       optional: true,
       end: ')',
     }
-  }
-  this.outputModel__ = {
-    check: [ezP.T3.Expr.input_builtin, ezP.T3.Expr.call_expr],
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.input_builtin, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('input_builtin')
+  },
+  output: {
+    check: [ezP.T3.Expr.builtin_input_expr, ezP.T3.Expr.call_expr],
+  },
+})
 
 /**
- * Class for a DelegateSvg, input_stmt block.
+ * Class for a DelegateSvg, builtin_input_stmt block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.input_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.input_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.input.m_1 = {
-    insert: ezP.T3.Expr.input_builtin,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.input_stmt, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('input_stmt')
+ezP.DelegateSvg.Manager.makeSubclass('builtin_input_stmt', {
+  input: {
+    m_1: {
+      insert: ezP.T3.Expr.builtin_input_expr,
+    },
+  },
+})
+
+ezP.DelegateSvg.Print.T3s = [
+  ezP.T3.Expr.builtin_print_expr,
+  ezP.T3.Stmt.builtin_print_stmt,
+  ezP.T3.Expr.builtin_input_expr,
+  ezP.T3.Stmt.builtin_input_stmt,
+]

@@ -835,6 +835,11 @@ ezP.DelegateSvg.Expr.builtin_call_expr.prototype.xml =
 ezP.DelegateSvg.Stmt.call_stmt.prototype.xml =
 ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.xml = ezP.Xml.Call
 
+goog.require('ezP.DelegateSvg.Print')
+
+ezP.DelegateSvg.Expr.builtin_input_expr.prototype.xml =
+ezP.DelegateSvg.Expr.builtin_print_expr.prototype.xml =
+ezP.Xml.InputList
 
 
 

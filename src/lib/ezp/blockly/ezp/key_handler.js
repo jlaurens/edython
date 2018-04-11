@@ -712,7 +712,7 @@ Ks = {
   '"""…"""': ezP.T3.Stmt.docstring,
   "'''…'''": ezP.T3.Stmt.docstring,
   'print(…)': ezP.T3.Stmt.print_stmt,
-  'input(…)': ezP.T3.Expr.input_builtin,
+  'input(…)': ezP.T3.Expr.builtin_input_expr,
   'range(…)': {
     type: ezP.T3.Expr.call_builtin,
     subtype: 'range',
