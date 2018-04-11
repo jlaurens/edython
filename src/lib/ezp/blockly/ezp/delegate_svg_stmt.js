@@ -27,14 +27,8 @@ goog.require('ezP.DelegateSvg.Operator')
  */
 ezP.DelegateSvg.Stmt = function (prototypeName) {
   ezP.DelegateSvg.Stmt.superClass_.constructor.call(this, prototypeName)
-  this.statementModel__ = {
-    previous: {},
-    next: {},
-  }
-
 }
 goog.inherits(ezP.DelegateSvg.Stmt, ezP.DelegateSvg)
-
 ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.DelegateSvg.Stmt, true)
 
 /**
@@ -240,7 +234,6 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
 }
 
 //////////////////// blocks  //////////////////////////////
-console.warn('convert to new model below')
 /**
  * Class for a DelegateSvg, annotated_assignment_stmt.
  * Python 3.6 feature.
@@ -249,29 +242,79 @@ console.warn('convert to new model below')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.annotated_assignment_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.annotated_assignment_stmt.superClass_.constructor.call(this, prototypeName)
-  //annotated_assignment_stmt ::=  augtarget ":" expression ["=" expression]
-  this.model__.inputs = {
+ezP.DelegateSvg.Manager.makeSubclass('annotated_assignment_stmt', {
+  inputs: {
     m_1: {
       key: ezP.Key.TARGET,
-      check: ezP.T3.Expr.Check.augtarget
+      check: ezP.T3.Expr.Check.augtarget,
+      hole_value: 'name',
     },
     m_2: {
       key: ezP.Key.ANNOTATED,
       check: ezP.T3.Expr.Check.expression,
-      label: ':'
+      label: ':',
+      hole_value: 'annotation',
     },
     m_3: {
       key: ezP.Key.ASSIGNED,
       check: ezP.T3.Expr.Check.expression,
-      operator: '='
-    }
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.annotated_assignment_stmt, ezP.DelegateSvg.Stmt)
+      label: '=',
+      hole_value: 'value',
+    },
+  },
+})
 
-ezP.DelegateSvg.Manager.register('annotated_assignment_stmt')
+/**
+ * Create and initialize the subtype property.
+ * Called once at block creation time.
+ * Should not be called directly
+ * Declares the operator property.
+ * @param {!Blockly.Block} block to be initialized.
+ */
+ezP.DelegateSvg.Stmt.annotated_assignment_stmt.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Stmt.annotated_assignment_stmt.superClass_.initBlock.call(block.ezp, block)
+  var subtypes = this.getModel().inputs.subtypes
+  block.ezp.initProperty(block, ezP.Key.ASSIGNED, null, null, null, function(block, oldValue, newValue) {
+    Blockly.Events.setGroup(true)
+    var old = block.ezp.isRendering
+    block.ezp.isRendering = true
+    block.ezp.setNamedInputDisabled(block, ezP.Key.ASSIGNED, (!newValue))
+    block.ezp.isRendering = old
+    Blockly.Events.setGroup(false)
+  })
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.annotated_assignment_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var subtypes = block.ezp.getModel().inputs.subtypes
+  var current = block.ezp.getProperty(block, ezP.Key.ASSIGNED)
+  var F = function(content, key) {
+    var menuItem = new ezP.MenuItem(content, function() {
+      block.ezp.setProperty(block, ezP.Key.ASSIGNED, key)
+    })
+    mgr.addChild(menuItem, true)
+    menuItem.setEnabled(key !== current)
+  }
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN('name', 'ezp-code-placeholder'),
+      ezP.Do.createSPAN(':', 'ezp-code'),
+      ezP.Do.createSPAN('annotation', 'ezp-code-placeholder'),
+    ), null)
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN('name', 'ezp-code-placeholder'),
+      goog.dom.createTextNode(':'),
+      ezP.Do.createSPAN('annotation', 'ezp-code-placeholder'),
+      goog.dom.createTextNode(' = '),
+      ezP.Do.createSPAN('expression', 'ezp-code-placeholder'),
+  ), ezP.Key.ASSIGNED)
+  mgr.shouldSeparate()
+  return ezP.DelegateSvg.Stmt.annotated_assignment_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+}
 
 /**
  * Class for a DelegateSvg, two optional values and a label.
@@ -288,7 +331,6 @@ goog.inherits(ezP.DelegateSvg.Stmt.Two, ezP.DelegateSvg.Stmt)
 
 /**
  * Prepare the inputs.
- * The default implementation does nothing.
  * Subclassers may enable/disable an input
  * depending on the context.
  * @param {!Block} block.
@@ -321,16 +363,14 @@ ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block, deep) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.pass_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.pass_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.m_1 = {
-    label: 'pass',
-    css_class: 'ezp-code-reserved',
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.pass_stmt, ezP.DelegateSvg.Stmt)
-
-ezP.DelegateSvg.Manager.register('pass_stmt')
+ezP.DelegateSvg.Manager.makeSubclass('pass_stmt', {
+  inputs: {
+    m_1: {
+      label: 'pass',
+      css_class: 'ezp-code-reserved',
+    },
+  },
+})
 
 /**
  * Class for a DelegateSvg, break_stmt.
@@ -339,16 +379,14 @@ ezP.DelegateSvg.Manager.register('pass_stmt')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.break_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.break_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.m_1 = {
-    label: 'break',
-    css_class: 'ezp-code-reserved',
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.break_stmt, ezP.DelegateSvg.Stmt)
-
-ezP.DelegateSvg.Manager.register('break_stmt')
+ezP.DelegateSvg.Manager.makeSubclass('break_stmt', {
+  inputs: {
+    m_1: {
+      label: 'break',
+      css_class: 'ezp-code-reserved',
+    },
+  },
+})
 
 /**
  * Class for a DelegateSvg, continue_stmt.
@@ -357,16 +395,14 @@ ezP.DelegateSvg.Manager.register('break_stmt')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.continue_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.continue_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.m_1 = {
-    label: 'continue',
-    css_class: 'ezp-code-reserved',
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.continue_stmt, ezP.DelegateSvg.Stmt)
-
-ezP.DelegateSvg.Manager.register('continue_stmt')
+ezP.DelegateSvg.Manager.makeSubclass('continue_stmt', {
+  inputs: {
+    m_1: {
+      label: 'continue',
+      css_class: 'ezp-code-reserved',
+    },
+  },
+})
 
 ////////// gobal/nonlocal statement
 /**
@@ -378,19 +414,15 @@ ezP.DelegateSvg.Manager.register('continue_stmt')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.non_void_identifier_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.non_void_identifier_list.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.list = {
-    check: ezP.T3.Expr.Check.non_void_identifier_list,
-    empty: false,
-    sep: ',',
+ezP.DelegateSvg.Manager.makeSubclass('non_void_identifier_list', {
+  inputs: {
+    list: {
+      check: ezP.T3.Expr.Check.non_void_identifier_list,
+      empty: false,
+      sep: ',',
+    }
   }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.non_void_identifier_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.non_void_identifier_list, ezP.DelegateSvg.List)
-ezP.DelegateSvg.Manager.register('non_void_identifier_list')
+}, ezP.DelegateSvg.List)
 
 /**
  * Class for a DelegateSvg, global_nonlocal_expr.
@@ -399,40 +431,37 @@ ezP.DelegateSvg.Manager.register('non_void_identifier_list')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.global_nonlocal_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.operators = ['global', 'nonlocal']
-  this.model__.inputs.m_3 = {
-    key: ezP.Key.LIST,
-    label: this.model__.inputs.operators[0],
-    css_class: 'ezp-code-reserved',
-    wrap: ezP.T3.Expr.non_void_identifier_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.global_nonlocal_stmt, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('global_nonlocal_stmt')
-
-ezP.MixinSvg(ezP.DelegateSvg.Stmt.global_nonlocal_stmt, ezP.MixinSvg.Operator)
+ezP.DelegateSvg.Manager.makeSubclass('global_nonlocal_stmt', {
+  inputs: {
+    subtypes: ['global', 'nonlocal'],
+    m_3: {
+      key: ezP.Key.IDENTIFIERS,
+      label: '',
+      css_class: 'ezp-code-reserved',
+      wrap: ezP.T3.Expr.non_void_identifier_list,
+    },
+  },
+})
 
 /**
- * When the block is just a wrapper, returns the wrapped target.
- * @param {!Blockly.Block} block owning the delegate.
+ * Create and initialize the subtype property.
+ * Called once at block creation time.
+ * Should not be called directly
+ * Declares the operator property.
+ * @param {!Blockly.Block} block to be initialized.
  */
-ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.getMenuTarget = function(block) {
-  return block
-}
-
-/**
- * Get the content for the menu item.
- * @param {!Blockly.Block} block The block.
- * @param {string} op op is the operator
- * @private
- */
-ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.getContent = function (block, op) {
-  return goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-    ezP.Do.createSPAN(op, 'ezp-code-reserved'),
-    ezP.Do.createSPAN(' …'),
-  )
+ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.initBlock.call(block.ezp, block)
+  var subtypes = this.getModel().inputs.subtypes
+  block.ezp.initProperty(block, ezP.Key.IDENTIFIERS, subtypes[0], null, null, function(block, oldValue, newValue) {
+    Blockly.Events.setGroup(true)
+    var old = block.ezp.isRendering
+    block.ezp.isRendering = true
+    var input = block.getInput(ezP.Key.IDENTIFIERS)
+    input.ezp.fields.label.setValue(newValue)
+    block.ezp.isRendering = old
+    Blockly.Events.setGroup(false)
+  })
 }
 
 /**
@@ -442,20 +471,23 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.getContent = function (block
  * @private
  */
 ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var yorn = mgr.populateOperator(block)
-  return ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
-}
-
-/**
- * Handle the selection of an item in the context dropdown menu.
- * @param {!Blockly.Block} block, owner of the delegate.
- * @param {!ezP.MenuManager} mgr mgr.menu is the Menu clicked.
- * @param {!goog....} event The event containing as target
- * the MenuItem selected within menu.
- */
-ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
-  
-  return mgr.handleActionOperator(block,event) || ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.handleMenuItemActionFirst.call(this, block, mgr, event)
+  var subtypes = block.ezp.getModel().inputs.subtypes
+  var current = block.ezp.getProperty(block, ezP.Key.IDENTIFIERS)
+  var F = function(key) {
+    var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN(key, 'ezp-code-reserved'),
+      ezP.Do.createSPAN(' …', 'ezp-code-placeholder'),
+    )
+    var menuItem = new ezP.MenuItem(content, function() {
+      block.ezp.setProperty(block, ezP.Key.IDENTIFIERS, key)
+    })
+    mgr.addChild(menuItem, true)
+    menuItem.setEnabled(key !== current)
+  }
+  F(subtypes[0])
+  F(subtypes[1])
+  mgr.shouldSeparate()
+  return ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 /**
@@ -589,8 +621,6 @@ ezP.DelegateSvg.Stmt.docstring_def_stmt = function (prototypeName) {
     key: ezP.Key.WRAP,
     wrap: ezP.T3.Expr.longstringliteral,
   }
-  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.docstring_top_stmt
-  this.statementModel__.next.check = ezP.T3.Stmt.Next.docstring_top_stmt
 }
 goog.inherits(ezP.DelegateSvg.Stmt.docstring_top_stmt, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Manager.register('docstring_top_stmt')
@@ -617,12 +647,11 @@ ezP.DelegateSvg.Stmt.docstring_def_stmt = function (prototypeName) {
     key: ezP.Key.WRAP,
     wrap: ezP.T3.Expr.longstringliteral,
   }
-  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.docstring_def_stmt
-  this.statementModel__.next.check = ezP.T3.Stmt.Next.docstring_def_stmt
 }
 goog.inherits(ezP.DelegateSvg.Stmt.docstring_def_stmt, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Manager.register('docstring_def_stmt')
 
+console.warn('if_part and others conform to the new model and xml ?')
 /**
  * docstring blocks are white.
  * For ezPython.
@@ -662,3 +691,11 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.S
   }
   return true
 }
+
+ezP.DelegateSvg.Stmt.T3s = [
+  ezP.T3.Stmt.annotated_assignment_stmt,
+  ezP.T3.Stmt.pass_stmt,
+  ezP.T3.Stmt.break_stmt,
+  ezP.T3.Stmt.continue_stmt,
+  ezP.T3.Stmt.global_nonlocal_stmt,
+]

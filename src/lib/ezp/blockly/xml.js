@@ -39,6 +39,8 @@ ezP.Xml = {
   CALL: 'ezp:call',
   BUILTIN: 'ezp:builtin',
   BUILTIN_CALL: 'ezp:builtin_call',
+  GLOBAL: 'ezp:global',
+  NONLOCAL: 'ezp:nonlocal',
 }
 
 /**
@@ -407,7 +409,8 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
   if ((block = ezP.Xml.Literal.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.Comparison.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.AugAssign.domToBlock(xmlBlock, workspace))
-  || (block = ezP.Xml.Call.domToBlock(xmlBlock, workspace))) {
+  || (block = ezP.Xml.AugAssign.domToBlock(xmlBlock, workspace))
+  || (block = ezP.Xml.Global.domToBlock(xmlBlock, workspace))) {
     return block
   }
   // Now create the block, either concrete or not
@@ -980,6 +983,96 @@ ezP.Xml.Classdef.fromDom = function (block, element) {
   ezP.Xml.Input.Named.fromDom(block, ezP.Key.SUITE, element)
   ezP.Xml.Flow.fromDom(block, element)
 }
+
+goog.provide('ezP.Xml.Annotated')
+
+ezP.DelegateSvg.Stmt.annotated_assignment_stmt.prototype.xml = ezP.Xml.Annotated
+
+/**
+ * Records the operator as attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Xml.Annotated.toDom = function (block, element, optNoId) {
+  ezP.Xml.Input.Named.toDom(block, ezP.Key.TARGET, element, optNoId)
+  ezP.Xml.Input.Named.toDom(block, ezP.Key.ANNOTATED, element, optNoId)
+  var subtype = block.ezp.getProperty(block, ezP.Key.ASSIGNED)
+  if (subtype) {
+    ezP.Xml.Input.Named.toDom(block, ezP.Key.ASSIGNED, element, optNoId)
+  }
+  ezP.Xml.Flow.toDom(block, element, optNoId)
+}
+
+/**
+ * Set the value from the attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Xml.Annotated.fromDom = function (block, element) {
+  ezP.Xml.Input.Named.fromDom(block, ezP.Key.TARGET, element)
+  ezP.Xml.Input.Named.fromDom(block, ezP.Key.ANNOTATED, element)
+  if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.ASSIGNED, element)) {
+    block.ezp.setProperty(block, ezP.Key.ASSIGNED, ezP.Key.ASSIGNED)
+  }
+  ezP.Xml.Flow.fromDom(block, element)
+}
+
+goog.provide('ezP.Xml.Global')
+
+ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.xml = ezP.Xml.Global
+
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * Default implementation just returns 'ezp:list' when this block is embedded
+ * and the inherited value otherwise.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.xmlTagName = function (block) {
+  var current = block.ezp.getProperty(block, ezP.Key.IDENTIFIERS)
+  var subtypes = block.ezp.getModel().inputs.subtypes
+  return current === subtypes[0]? ezP.Xml.GLOBAL: ezP.Xml.NONLOCAL
+}
+
+/**
+ * Records the operator as attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Xml.Global.toDom = function (block, element, optNoId) {
+  ezP.Xml.Input.Named.toDom(block, ezP.Key.IDENTIFIERS, element, optNoId)
+}
+
+/**
+ * Set the value from the attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Xml.Global.domToBlock = function (xmlBlock, workspace) {
+  var prototypeName = xmlBlock.nodeName.toLowerCase()
+  var global
+  if ((global = (prototypeName === ezP.Xml.GLOBAL))
+  || (prototypeName === ezP.Xml.NONLOCAL)) {
+    var id = xmlBlock.getAttribute('id')
+    var block = ezP.DelegateSvg.newBlockComplete(workspace, ezP.T3.Stmt.global_nonlocal_stmt, id)
+    if (block) {
+      var subtypes = block.ezp.getModel().inputs.subtypes
+      block.ezp.setProperty(block, ezP.Key.IDENTIFIERS, subtypes[global? 0: 1])
+      ezP.Xml.Input.Named.fromDom(block, ezP.Key.IDENTIFIERS, xmlBlock)
+      return block
+    }
+  }
+}
+
+
+
+
+
 
 
 

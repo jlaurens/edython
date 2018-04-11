@@ -781,7 +781,7 @@ ezP.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr)
   return true
 }
 ezP.DelegateSvg.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  ezP.DelegateSvg.Expr.literalPopulateContextMenuFirst_.call(this, block, mgr)
+  ezP.DelegateSvg.Literal.literalPopulateContextMenuFirst_.call(this, block, mgr)
   ezP.DelegateSvg.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this,block, mgr)
   return true
 }

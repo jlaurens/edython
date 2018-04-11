@@ -149,6 +149,8 @@ ezP.DelegateSvg.prototype.svgPathConnection_ = undefined
  * - optional, true/false whether the connection is optional, only when no wrap.
  */
 
+console.warn('Beware of quotes in string literals')
+
 /**
  * Create and initialize the various paths.
  * Called once at block creation time.
@@ -223,12 +225,19 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
           B.dispose(true)
         }
       }
+      var recorder
       // the main field may determine the name of the input
       var doEditableFields = function(key, Ctor) {
         if ((v = D[key]) !== undefined) {
           out.input = block.appendDummyInput(k || key)
           field = out.fields[key] = out.input.ezp.fields[key] = new Ctor(v)
-          out.input.appendField(field, k||(k+'.'+key))
+          recorder = function() {
+            var ff = field
+            var kk = k && (k+'.'+key) || key
+            return function() {
+              out.input.appendField(ff, kk)
+            }
+          } ()
           return field
         }
       }
@@ -304,6 +313,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       }
       doLabel(ezP.Key.LABEL)
       doLabel(ezP.Key.START)
+      recorder && recorder()
       field = doLabel(ezP.Key.END)
       field && (field.ezp.suffix = true)
     }
@@ -426,7 +436,7 @@ ezP.DelegateSvg.prototype.postInitSvg = function(block) {
  */
 ezP.DelegateSvg.prototype.getMenuTarget = function(block) {
   var wrapped
-  if (this.uiModel.wrap && (wrapped = this.uiModel.wrap.inputs.connection.targetBlock())) {
+  if (this.uiModel.wrap && (wrapped = this.uiModel.wrap.input.connection.targetBlock())) {
     return wrapped.ezp.getMenuTarget(wrapped)
   }
   if (this.wrappedInputs_ && this.wrappedInputs_.length === 1 &&
@@ -1540,11 +1550,11 @@ ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
     FF(D.fields.label)
     FF(D.fields.start)
     FF(D.fields.identifier) || FF(D.fields.input) || FF(D.fields.comment) || FF(D.fields.number) || FF(D.fields.string) || FF(D.fields.longString) || FF(D.fields.operator, true)
-    if ((c8n = D.inputs.connection)) {
+    if ((c8n = D.input.connection)) {
       if ((target = c8n.targetBlock())) {
         FFF(target.ezp.toPythonExpression(target))
       } else if (!c8n.ezp.optional_) {
-        last = '<MISSING '+D.inputs.name+'>'
+        last = '<MISSING '+D.input.name+'>'
         components.push(last)
       }
     }

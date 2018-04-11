@@ -29,8 +29,6 @@ ezP.DelegateSvg.Stmt.try_part = function (prototypeName) {
     dummy: 'try',
     css_class: 'ezp-code-reserved',
   }
-  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.try_part
-  this.statementModel__.next.check = ezP.T3.Stmt.Next.try_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.try_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('try_part')
@@ -84,8 +82,6 @@ ezP.DelegateSvg.Stmt.except_part = function (prototypeName) {
     check: ezP.T3.Expr.Check.expression_except,
     hole_value: 'expression',
   }
-  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.except_part
-  this.statementModel__.next.check = ezP.T3.Stmt.Next.except_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.except_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('except_part')
@@ -104,8 +100,6 @@ ezP.DelegateSvg.Stmt.void_except_part = function (prototypeName) {
     dummy: 'except',
     css_class: 'ezp-code-reserved',
   }
-  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.void_except_part
-  this.statementModel__.next.check = ezP.T3.Stmt.Next.void_except_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.void_except_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('void_except_part')
@@ -124,8 +118,6 @@ ezP.DelegateSvg.Stmt.finally_part = function (prototypeName) {
     dummy: 'finally',
     css_class: 'ezp-code-reserved',
   }
-  this.statementModel__.previous.check = ezP.T3.Stmt.Previous.finally_part
-  this.statementModel__.next.check = ezP.T3.Stmt.Next.finally_part
 }
 goog.inherits(ezP.DelegateSvg.Stmt.finally_part, ezP.DelegateSvg.Group)
 ezP.DelegateSvg.Manager.register('finally_part')
