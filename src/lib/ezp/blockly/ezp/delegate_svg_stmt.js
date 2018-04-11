@@ -515,7 +515,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.setDisabled = function (block, yorn)
  * @return None
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.getSubtype = function (block) {
-  return block.ezp.uiModel.m_3.fields.codeComment.getValue()
+  return block.ezp.uiModel.m_3.fields.comment.getValue()
 }
 
 /**
@@ -528,7 +528,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.getSubtype = function (block) {
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.setSubtype = function (block, subtype) {
-  block.ezp.uiModel.m_3.fields.codeComment.setValue(subtype)
+  block.ezp.uiModel.m_3.fields.comment.setValue(subtype)
   return true
 }
 
@@ -538,7 +538,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.setSubtype = function (block, subtyp
  * @private
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.showEditor = function (block) {
-  block.ezp.uiModel.m_3.fields.codeComment.showEditor_()
+  block.ezp.uiModel.m_3.fields.comment.showEditor_()
 }
 
 /**

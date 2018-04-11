@@ -230,15 +230,15 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       if ((v = D.identifier) !== undefined) {
         FFF('identifier', ezP.FieldIdentifier, ezP.Key.IDENTIFIER)
       } else if ((v = D.code) != undefined) {
-        FFF('codeInput', ezP.FieldInput, ezP.Key.CODE)
+        FFF('input', ezP.FieldInput, ezP.Key.CODE)
       } else if ((v = D.comment) != undefined) {
-        FFF('codeComment', ezP.FieldComment, ezP.Key.COMMENT)
+        FFF('comment', ezP.FieldComment, ezP.Key.COMMENT)
       } else if ((v = D.number) != undefined) {
-        FFF('codeNumber', ezP.FieldNumber, ezP.Key.NUMBER)
+        FFF('number', ezP.FieldNumber, ezP.Key.NUMBER)
       } else if ((v = D.string) != undefined) {
-        FFF('codeString', ezP.FieldString, ezP.Key.STRING)
+        FFF('string', ezP.FieldString, ezP.Key.STRING)
       } else if ((v = D.longString) != undefined) {
-        FFF('codeLongString', ezP.FieldLongString, ezP.Key.LONG_STRING)
+        FFF('longString', ezP.FieldLongString, ezP.Key.LONG_STRING)
       } else if ((v = D.operator) != undefined) {
         FFF('operator', ezP.FieldLabel, ezP.Key.OPERATOR)
       }
@@ -1544,7 +1544,7 @@ ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
     FF(D.fields.prefix)
     FF(D.fields.label)
     FF(D.fields.start)
-    FF(D.fields.identifier) || FF(D.fields.codeInput) || FF(D.fields.codeComment) || FF(D.fields.codeNumber) || FF(D.fields.codeString) || FF(D.fields.codeLongString) || FF(D.fields.operator, true)
+    FF(D.fields.identifier) || FF(D.fields.input) || FF(D.fields.comment) || FF(D.fields.number) || FF(D.fields.string) || FF(D.fields.longString) || FF(D.fields.operator, true)
     if ((c8n = D.input.connection)) {
       if ((target = c8n.targetBlock())) {
         FFF(target.ezp.toPythonExpression(target))

@@ -539,7 +539,7 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.setupType = function (block) {
  */
 ezP.DelegateSvg.Expr.numberliteral.prototype.consolidateType_ = function (block) {
   if (block.outputConnection) { // this is called once too early
-    var value = block.ezp.uiModel.m_1.fields.codeNumber.getValue()
+    var value = block.ezp.uiModel.m_1.fields.number.getValue()
     if (XRegExp.test(value, ezP.XRE.integer) &&
     block.type !== ezP.T3.Expr.integer) {
       block.type = ezP.T3.Expr.integer
@@ -564,7 +564,7 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.consolidateType_ = function (block)
  * @return None
  */
 ezP.DelegateSvg.Expr.numberliteral.prototype.getSubtype = function (block) {
-  return block.ezp.uiModel.m_1.fields.codeNumber.getValue()
+  return block.ezp.uiModel.m_1.fields.number.getValue()
 }
 
 /**
@@ -578,21 +578,21 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.getSubtype = function (block) {
  */
 ezP.DelegateSvg.Expr.numberliteral.prototype.setSubtype = function (block, subtype) {
   if (XRegExp.test(subtype, ezP.XRE.integer)) {
-    block.ezp.uiModel.m_1.fields.codeNumber.setValue(subtype)
+    block.ezp.uiModel.m_1.fields.number.setValue(subtype)
     if (block.type !== ezP.T3.Expr.integer) {
       block.type = ezP.T3.Expr.integer
       block.ezp.setupType(block)
     }
     return true
   } else if (XRegExp.test(subtype, ezP.XRE.floatnumber)) {
-    block.ezp.uiModel.m_1.fields.codeNumber.setValue(subtype)
+    block.ezp.uiModel.m_1.fields.number.setValue(subtype)
     if (block.type !== ezP.T3.Expr.floatnumber) {
       block.type = ezP.T3.Expr.floatnumber
       block.ezp.setupType(block)
     }
     return true
   } else if (XRegExp.test(subtype, ezP.XRE.imagnumber)) {
-    block.ezp.uiModel.m_1.fields.codeNumber.setValue(subtype)
+    block.ezp.uiModel.m_1.fields.number.setValue(subtype)
     if (block.type !== ezP.T3.Expr.imagnumber) {
       block.type = ezP.T3.Expr.imagnumber
       block.ezp.setupType(block)
@@ -682,7 +682,7 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.initBlock = function (block) {
 ezP.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr) {
   var start = this.uiModel.m_3.fields.start
   var end = this.uiModel.m_3.fields.end
-  var code = this.uiModel.m_3.fields.codeString
+  var code = this.uiModel.m_3.fields.string
   var can_b = !!XRegExp.exec(code.getValue(), ezP.XRE.bytes)
   var single = start.getText() === "'"
   var menuItem = new ezP.MenuItem(
@@ -858,7 +858,7 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.getSubtype = function (block) {
 ezP.DelegateSvg.Expr.shortliteral.prototype.setSubtype = function (block, subtype) {
   var start = this.uiModel.m_3.fields.start
   var end = this.uiModel.m_3.fields.end
-  var code = this.uiModel.m_3.fields.codeString
+  var code = this.uiModel.m_3.fields.string
   var prefix = this.uiModel.m_1.fields.label
   var F = function(re, type) {
     var m = XRegExp.exec(subtype, re)
@@ -972,7 +972,7 @@ ezP.DelegateSvg.Manager.makeSubclass('any', {
  * @return None
  */
 ezP.DelegateSvg.Expr.any.prototype.getValue = ezP.DelegateSvg.Expr.any.prototype.getSubtype = function (block) {
-  return this.uiModel.m_1.fields.codeInput.getValue()
+  return this.uiModel.m_1.fields.input.getValue()
 }
 
 /**
@@ -984,7 +984,7 @@ ezP.DelegateSvg.Expr.any.prototype.getValue = ezP.DelegateSvg.Expr.any.prototype
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Expr.any.prototype.setValue = ezP.DelegateSvg.Expr.any.prototype.setSubtype = function (block, subtype) {
-  this.uiModel.m_1.fields.codeInput.setValue(subtype)
+  this.uiModel.m_1.fields.input.setValue(subtype)
   return true
 }
 
@@ -1087,7 +1087,7 @@ ezP.DelegateSvg.Expr.longliteral.prototype.fieldValueDidChange = function(block,
  * @return None
  */
 ezP.DelegateSvg.Expr.longliteral.prototype.getSubtype = function (block) {
-  return this.uiModel.m_3.fields.codeString.getValue()
+  return this.uiModel.m_3.fields.string.getValue()
 }
 
 /**
@@ -1103,7 +1103,7 @@ ezP.DelegateSvg.Expr.longliteral.prototype.getSubtype = function (block) {
 ezP.DelegateSvg.Expr.longliteral.prototype.setSubtype = function (block, subtype) {
   var start = this.uiModel.m_3.fields.start
   var end = this.uiModel.m_3.fields.end
-  var code = this.uiModel.m_3.fields.codeString
+  var code = this.uiModel.m_3.fields.string
   var prefix = this.uiModel.m_1.fields.label
   var F = function(re, type) {
     var m = XRegExp.exec(subtype, re)
