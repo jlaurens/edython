@@ -10,19 +10,27 @@ class Types:
 
     """
     re_pipe = re.compile(r'\s*\|\s*')
+    re_filter = re.compile(r'^(?:>>>|def |for |with |class |except |async |TypeError|Traceback|None|True|False'
+                           r'|Execution |Don\'t |(?:expr|[\d, +*(\-)=])+$|inst[.= ]|[xi] |if |yield |\S+Error:'
+                           r'|i,|print\(|raise |The |During |import |from |[a-zA-Z\d ]*=|while |else:|try:|except:'
+                           r')')
     re_concrete_candidate = re.compile(r'\s*([a-z_][a-z_\d]*)\s*\|\s*(.*)\s*$')
     re_star_identifier = re.compile(r'^\s*"(\*+)"\s*([a-z_][a-z_\d]*)\s*$')
-    re_definition = re.compile(r"^\s*(?P<name>[a-zA-Z_][a-zA-Z_\d]*?)\s*(?:\(\s*(?P<xml>[a-zA-Z_][a-zA-Z_\d]*?)\s*\))?\s*(?P<op>::=|!!=|\|\|=)\s*(?P<definition>.*)\s*$")
+    re_definition = re.compile(r"^\s*(?P<name>[a-zA-Z_][a-zA-Z_\d]*)"
+                               r"(?:\s*/\s*(?P<xml_tags>[a-zA-Z_](?:[a-zA-Z_\d\|]*[a-zA-Z_\d])?)?)"
+                               r"?\s*(?P<op>::=|!!=|\|\|=)?"
+                               r"\s*(?P<definition>(?:[^\\]|\\.)*?)"
+                               r"\s*(?:#.*)?$")
     re_stmt_order = re.compile(r"^\s*(?P<name>\S+)\s*(?P<order><<<|>>>)\s*(?P<what>.*)\s*$")
     re_type_name = re.compile(r"^\s*(?P<type>[^\s\.]*)(?:\.(?P<name>[^\s\.]+))?\s*$")
-    re_linck = re.compile(r"^\s*(?P<source>\S+)\s*->\s*(?P<alias>.*)\s*$")
-    re_category = re.compile(r"^#\s*category\s*:[\s.\d]*(?P<category>[a-zA-Z\s_]*).*$")
+    re_link = re.compile(r"^\s*(?P<source>\S+)\s*->\s*(?P<alias>.*)\s*$")
+    re_category = re.compile(r"^\s*category\s*:[\s.\d]*(?P<category>[a-zA-Z\s_]*).*$")
     re_ignore = re.compile(r"^\s*[\d@#.'({].*")
 
     all = {}
     is_above = {}
     is_below = {}
-    lincks = {}
+    links = {}
     n = 0
     current_category = 'default'
     lists_made = False
@@ -92,21 +100,25 @@ class Types:
         :return: None
         """
         data = data.replace('\n ', ' ')
-        data = re.sub(r'  +', ' ', data)
+        data = re.sub(r' {2,}', ' ', data)
         for l in data.splitlines():
+            if self.re_filter.match(l):
+                continue
             m = self.re_definition.match(l)
             if m:
-                name, xml, op, definition = m.group('name'), m.group('xml'), m.group('op'), m.group('definition')
-                try:
-                    t = self.get_type(name, create=True)
-                    t.setup_definition(definition, op == r'||=')
-                    if len(xml or ''):
-                        t.xml_type = xml
-                    if (op == '!!='):
-                        t.is_shallow = True
-                except Exception as exc:
-                    print(exc)
-                continue
+                name, xml_tags, op, definition = m.group('name'),\
+                                                 m.group('xml_tags'), m.group('op'), m.group('definition')
+                if xml_tags or op:
+                    try:
+                        t = self.get_type(name, create=True)
+                        t.setup_definition(definition, op == r'||=')
+                        if xml_tags:
+                            t.xml_tags = self.re_pipe.split(xml_tags)
+                        if (op == '!!='):
+                            t.is_shallow = True
+                    except Exception as exc:
+                        print(exc)
+                    continue
             m = self.re_stmt_order.match(l)
             if m:
                 name = m.group('name')
@@ -116,9 +128,9 @@ class Types:
                 already = where[name]
                 already.update(re.split(r'\s*\|\s*', m.group('what')))
                 continue
-            m = self.re_linck.match(l)
+            m = self.re_link.match(l)
             if m:
-                self.lincks[m.group('source')] = m.group('alias')
+                self.links[m.group('source')] = m.group('alias')
                 continue
             m = self.re_category.match(l)
             if m:
@@ -128,7 +140,7 @@ class Types:
             if m:
                 continue
             if len(l):
-                print('*************************', l)
+                print('************************* potential danger:', l)
 
 
     def make_compound(self):
@@ -165,7 +177,7 @@ class Types:
         more = {}
         for t in self.get_expressions():
             definition = t.definition
-            cs = Types.re_pipe.split(definition)[1:]
+            cs = self.re_pipe.split(definition)[1:]
             if len(cs) > 0:
                 cs = [x for x in cs if Formatter.get_identifier(x)]
                 if len(cs) == 0:
@@ -242,21 +254,19 @@ class Types:
                 continue
         self.all.update(more)
 
-    def is_before_after(self, type):
-
-        return not m or m.group('type') in self.all
-
     def make_before_after(self):
         for k, v in self.is_above.items():
             try:
+                print('k:', k)
                 t = self.all[k]
+                print(k, t.name)
                 t.is_above = []
                 for tt in v:
                     m = self.re_type_name.match(tt)
                     if m and m.group('type') in self.all:
                         t.is_above.append((self.all[m.group('type')], m.group('name')))
-            except:
-                print('**** IGNORED', k, '<<<', v)
+            except KeyError as e:
+                print('**** DANGER: unknown type', e)
 
         for k, v in self.is_below.items():
             try:
@@ -266,8 +276,8 @@ class Types:
                     m = self.re_type_name.match(tt)
                     if m and m.group('type') in self.all:
                         t.is_below.append((self.all[m.group('type')], m.group('name')))
-            except:
-                print('**** IGNORED', k, '>>>', v)
+            except KeyError as e:
+                print('**** DANGER: unknown type', e)
 
     def make_lists(self):
         if self.lists_made:
@@ -287,7 +297,7 @@ class Types:
     def make_link(self):
         for t in self:
             try:
-                a = self.lincks[t.name]
+                a = self.links[t.name]
                 t.old_name = t.name
                 t.name = a
                 print('**** AS:', t.old_name, '->', t.name)

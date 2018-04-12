@@ -351,19 +351,19 @@ class Formatter:
     def feed_statement_available(self):
         self.append('ezP.T3.Stmt.Available = []')
 
-    def feed_xml_types(self):
+    def feed_xml_tags(self):
         self.append('ezP.T3.Xml = {}\n')
-        Ts = [t for t in self.types if t.is_stmt and t.xml_type]
+        Ts = [t for t in self.types if t.is_stmt and t.xml_tags]
         self.append('ezP.T3.Xml.Stmt = {{ // count {}'.format(len(Ts)))
-        template = "    {}: 'ezp:{}',"
+        template = "    {}: {},"
         for t in Ts:
-            self.append(template.format(t.name, t.xml_type))
+            self.append(template.format(t.name, "['"+"', '".join(t.xml_tags)+"']"))
         self.append('}\n')
-        Ts = [t for t in self.types if not t.is_stmt and t.xml_type]
+        Ts = [t for t in self.types if not t.is_stmt and t.xml_tags]
         self.append('ezP.T3.Xml.Expr = {{ // count {}'.format(len(Ts)))
-        template = "    {}: 'ezp:{}',"
+        template = "    {}: {},"
         for t in Ts:
-            self.append(template.format(t.name, t.xml_type))
+            self.append(template.format(t.name, "['"+"', '".join(t.xml_tags)+"']"))
         self.append('}\n')
 
     def get_T3_data(self):
@@ -400,7 +400,7 @@ goog.require('ezP')
         self.append('')
         self.feed_expression_available()
         self.append('')
-        self.feed_xml_types()
+        self.feed_xml_tags()
         return '\n'.join(self.T3_data_)
 
     def get_T3_all(self):

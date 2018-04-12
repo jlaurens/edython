@@ -15,6 +15,10 @@
  * 4) fromDom, to convert the content of an existing element into a block.
  * The Blockly original methods are overriden to manage the ezPython blocks.
  * The xml nodes concerning ezPython all pertain to the `ezp` namespace.
+ * There are separate xml nodes for statements and expressions,
+ * the latter are characterized by an input attribute, which may be
+ * a void string. This is useful for call expression that can appear as
+ * statements too.
  * The domToWorkspace has been overriden to manage more blocks.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
@@ -28,9 +32,10 @@ goog.require('ezP.T3')
 goog.require('Blockly.Xml')
 
 ezP.Xml = {
-  INPUT: 'ezp:input',
-  FLOW: 'ezp:flow',
-  NEXT: 'next',
+  INPUT: 'input', // attribute name
+  FLOW: 'flow', // attribute name
+  NEXT: 'next', // attribute name
+
   LIST: 'ezp:list',
   LITERAL: 'ezp:literal',
   COMPARISON: 'ezp:comparison',

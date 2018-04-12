@@ -51,16 +51,16 @@ optional_expression_list ::= ( expression ',' )* [ expression ]
 literal ::= shortliteral | longliteral | numberliteral
 shortliteral ::= shortstringliteral | shortbytesliteral
 longliteral ::= longstringliteral | longbytesliteral
-shortstringliteral ::= ''
-shortbytesliteral ::= b''
-longstringliteral ::= ''''''
-longbytesliteral ::= b''''''
+shortstringliteral/literal ::= ''
+shortbytesliteral/literal ::= b''
+longstringliteral/literal ::= ''''''
+longbytesliteral/literal ::= b''''''
 bytesliteral ::= shortbytesliteral | longbytesliteral
 stringliteral ::= shortbytesliteral | longbytesliteral
 numberliteral ::= integer | floatnumber | imagnumber
-integer ::= 123
-floatnumber ::= 123.
-imagnumber ::= 123j
+integer/literal ::= 123
+floatnumber/literal ::= 123.
+imagnumber/literal ::= 123j
 </pre>
 <pre>
 comp_iter_list ::= (comp_iter) *
@@ -83,8 +83,8 @@ or_expr_star_star ::=  "**" or_expr
 </pre>
 <pre>
 yield_expression ::=  yield_expression_list | yield_from_expression
-yield_expression_list ::=  "yield" expression_list
-yield_from_expression ::= "yield" "from" expression
+yield_expression_list/yield ::=  "yield" expression_list
+yield_from_expression/yield ::= "yield" "from" expression
 </pre>
 <pre>
 attributeref ::= primary "." identifier
@@ -112,7 +112,7 @@ keyword_item         ::=  identifier "=" expression
 
 <pre>
 call -> call_expr
-call_expr ::=  primary "(" argument_list_comprehensive ")"
+call_expr/call ::=  primary "(" argument_list_comprehensive ")"
 expression_star ::= "*" expression
 expression_star_star ::= "**" expression
 argument_any ::= expression | expression_star | expression_star_star | keyword_item
@@ -132,14 +132,14 @@ await_expr ::= REMOVE
 The await_expr is just a primary with an await attribute
 <pre>
 comparison ::=  or_expr | number_comparison | object_comparison
-number_comparison ::= comparison comp_operator comparison
-object_comparison ::= comparison comp_operator comparison
+number_comparison/comparison ::= comparison comp_operator comparison
+object_comparison/comparison ::= comparison comp_operator comparison
 comp_operator ::= REMOVE
 </pre>
 <pre>
 lambda_expr ::= lambda_expression "dynamic with cond"
 lambda_expr_nocond ::= lambda_expression "dynamic without cond"
-lambda_expression ::= "lambda" [parameter_list]: (expression | expression_no_cond)
+lambda_expression/lambda ::= "lambda" [parameter_list]: (expression | expression_no_cond)
 </pre>
 These are auxiliary types used to check connections.
 <pre>
