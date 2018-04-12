@@ -353,12 +353,11 @@ class Formatter:
 
     def feed_xml_tags(self):
         self.append('''ezP.T3.Xml = {
-    Expr: {},
-    Stmt: {},
+    toDom: {},
 }''')
         from_dom = {}
         Ts = [t for t in self.types if t.is_stmt and t.to_dom and len(t.to_dom) == 1]
-        self.append('ezP.T3.Xml.Stmt.toDom = {{ // count {}'.format(len(Ts)))
+        self.append('ezP.T3.Xml.toDom.Stmt = {{ // count {}'.format(len(Ts)))
         template = "    {}: '{}',"
         for t in Ts:
             k = t.to_dom[0]
@@ -369,7 +368,7 @@ class Formatter:
         self.append('}\n')
 
         Ts = [t for t in self.types if not t.is_stmt and t.to_dom and len(t.to_dom) == 1]
-        self.append('ezP.T3.Xml.Expr.toDom = {{ // count {}'.format(len(Ts)))
+        self.append('ezP.T3.Xml.toDom.Expr = {{ // count {}'.format(len(Ts)))
         template = "    {}: '{}',"
         for t in Ts:
             k = t.to_dom[0]

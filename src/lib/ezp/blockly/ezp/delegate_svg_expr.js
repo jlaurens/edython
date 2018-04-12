@@ -1152,7 +1152,7 @@ ezP.DelegateSvg.Expr.longliteral.prototype.setValue = function (block, value) {
   }
   block.ezp.uiModel.m_3.fields.start.setValue(del)
   block.ezp.uiModel.m_3.fields.end.setValue(del)
-  block.ezp.setSubtype(block, text)
+  block.ezp.setSubtype(block, value) || block.ezp.setSubtype(block, text)
 }
 
 ezP.DelegateSvg.Expr.T3s = [

@@ -504,7 +504,7 @@ ezP.DelegateSvg.Manager.makeSubclass('comment_stmt', {
       css_class: 'ezp-code-reserved',
     },
     m_2: {
-      comment: 'comment', // we cannot merge with m_1 due to css_class
+      comment: '', // we cannot merge with m_1 due to css_class
     },
   },
 })
@@ -598,15 +598,14 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.showEditor = function (block) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.expression_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.expression_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.m_1 = {
-    key: ezP.Key.EXPRESSION,
-    check: ezP.T3.Expr.Check.expression,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.expression_stmt, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('expression_stmt')
+ezP.DelegateSvg.Manager.makeSubclass('expression_stmt', {
+  inputs: {
+    m_1: {
+      key: ezP.Key.EXPRESSION,
+      check: ezP.T3.Expr.Check.expression,
+    },
+  },
+})
 
 
 /**
@@ -616,16 +615,13 @@ ezP.DelegateSvg.Manager.register('expression_stmt')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.docstring_top_stmt =
-ezP.DelegateSvg.Stmt.docstring_def_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.docstring_top_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.m_1 = {
-    key: ezP.Key.WRAP,
-    wrap: ezP.T3.Expr.longstringliteral,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.docstring_top_stmt, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('docstring_top_stmt')
+ezP.DelegateSvg.Manager.makeSubclass('docstring_top_stmt', {
+  inputs: {
+    m_1: {
+      wrap: ezP.T3.Expr.longstringliteral,
+    },
+  },
+})
 
 /**
  * docstring blocks are white, to be confirmed.
@@ -643,15 +639,13 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.docstring_def_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.docstring_def_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.m_1 = {
-    key: ezP.Key.WRAP,
-    wrap: ezP.T3.Expr.longstringliteral,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.docstring_def_stmt, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('docstring_def_stmt')
+ ezP.DelegateSvg.Manager.makeSubclass('docstring_def_stmt', {
+  inputs: {
+    m_1: {
+      wrap: ezP.T3.Expr.longstringliteral,
+    },
+  },
+})
 
 console.warn('if_part and others conform to the new model and xml ?')
 /**
@@ -673,8 +667,8 @@ ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt
  * @return None
  */
 ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.getSubtype = ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.getSubtype = function (block) {
-  var wrapped = this.uiModel.m_1.input.connection.targetBlock()
-  return wrapped? wrapped.ezp.getSuptype(wrapped): undefined
+  var target = this.uiModel.m_1.input.connection.targetBlock()
+  return target? target.ezp.getSuptype(target): undefined
 }
 
 /**
@@ -687,9 +681,9 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.getSubtype = ezP.DelegateSvg.S
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.setSubtype = function (block, subtype) {
-  var wrapped = this.uiModel.m_1.input.connection.targetBlock()
-  if (wrapped) {
-    wrapped.ezp.setSubtype(wrapped, subtype)
+  var target = this.uiModel.m_1.input.connection.targetBlock()
+  if (target) {
+    target.ezp.setSubtype(target, subtype)
   }
   return true
 }
@@ -701,4 +695,7 @@ ezP.DelegateSvg.Stmt.T3s = [
   ezP.T3.Stmt.continue_stmt,
   ezP.T3.Stmt.global_nonlocal_stmt,
   ezP.T3.Stmt.comment_stmt,
+  ezP.T3.Stmt.expression_stmt,
+  ezP.T3.Stmt.docstring_top_stmt,
+  ezP.T3.Stmt.docstring_def_stmt,
 ]

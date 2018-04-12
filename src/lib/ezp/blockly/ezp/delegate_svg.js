@@ -959,7 +959,7 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   }
   var delta = this.renderDrawFields_(io, true)
   var c8n = io.input.connection
-  if (c8n && !c8n.hidden_) {
+  if (c8n) {// once `&&!c8n.hidden_` was there, bad idea but why was it here?
     c8n.setOffsetInBlock(io.cursorX, 0)
     var target = c8n.targetBlock()
     if (!!target) {

@@ -317,7 +317,7 @@ goog.require('ezP.DelegateSvg.Expr')
  * @return true if the given value is accepted, false otherwise
  */
 ezP.Delegate.prototype.xmlTagName = function (block) {
-  var tag = (this instanceof ezP.DelegateSvg.Expr? ezP.T3.Xml.Expr: ezP.T3.Xml.Stmt).toDom[this.constructor.ezp.key]
+  var tag = (this instanceof ezP.DelegateSvg.Expr? ezP.T3.Xml.toDom.Expr: ezP.T3.Xml.toDom.Stmt)[this.constructor.ezp.key]
   return tag && 'ezp:'+tag || block.type
 }
 
@@ -377,6 +377,9 @@ goog.provide('ezP.Xml.Literal')
  */
 ezP.Xml.Literal.domToBlock = function (element, workspace) {
   var prototypeName = element.nodeName.toLowerCase()
+  if (prototypeName !== ezP.T3.Xml.toDom.Expr.shortsrtingliteral) {
+    return
+  }
   var id = element.getAttribute('id')
   for (var i = 0, xmlChild; (xmlChild = element.childNodes[i]); i++) {
     if (xmlChild.nodeType === 3) {
