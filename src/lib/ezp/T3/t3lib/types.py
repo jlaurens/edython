@@ -17,7 +17,7 @@ class Types:
     re_concrete_candidate = re.compile(r'\s*([a-z_][a-z_\d]*)\s*\|\s*(.*)\s*$')
     re_star_identifier = re.compile(r'^\s*"(\*+)"\s*([a-z_][a-z_\d]*)\s*$')
     re_definition = re.compile(r"^\s*(?P<name>[a-zA-Z_][a-zA-Z_\d]*)"
-                               r"(?:\s*/\s*(?P<xml_tags>[a-zA-Z_](?:[a-zA-Z_\d\|]*[a-zA-Z_\d])?)?)"
+                               r"(?:\s*/\s*(?P<to_dom>[a-zA-Z_](?:[a-zA-Z_\d\|]*[a-zA-Z_\d])?)?)"
                                r"?\s*(?P<op>::=|!!=|\|\|=)?"
                                r"\s*(?P<definition>(?:[^\\]|\\.)*?)"
                                r"\s*(?:#.*)?$")
@@ -106,15 +106,16 @@ class Types:
                 continue
             m = self.re_definition.match(l)
             if m:
-                name, xml_tags, op, definition = m.group('name'),\
-                                                 m.group('xml_tags'), m.group('op'), m.group('definition')
-                if xml_tags or op:
+                name, to_dom, op, definition = m.group('name'),\
+                                                 m.group('to_dom'), m.group('op'), m.group('definition')
+                if to_dom or op:
                     try:
                         t = self.get_type(name, create=True)
-                        t.setup_definition(definition, op == r'||=')
-                        if xml_tags:
-                            t.xml_tags = self.re_pipe.split(xml_tags)
-                        if (op == '!!='):
+                        if op:
+                            t.setup_definition(definition, op == r'||=')
+                        if to_dom:
+                            t.to_dom = self.re_pipe.split(to_dom)
+                        if op == '!!=':
                             t.is_shallow = True
                     except Exception as exc:
                         print(exc)

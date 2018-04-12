@@ -307,7 +307,7 @@ ezP.Xml.blockToDom = function (block, optNoId) {
   return element
 }
 
-goog.require('ezP.Delegate')
+goog.require('ezP.DelegateSvg.Expr')
 
 /**
  * The xml tag name of this block, as it should appear in the saved data.
@@ -317,10 +317,45 @@ goog.require('ezP.Delegate')
  * @return true if the given value is accepted, false otherwise
  */
 ezP.Delegate.prototype.xmlTagName = function (block) {
-  return block.type
+  var tag = (this instanceof ezP.DelegateSvg.Expr? ezP.T3.Xml.Expr: ezP.T3.Xml.Stmt).toDom[this.constructor.ezp.key]
+  return tag && 'ezp:'+tag || block.type
 }
 
-goog.require('ezP.DelegateSvg.Expr')
+goog.provide('ezP.Xml.Text')
+
+/**
+ * Convert the block's value to a text dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {Element} xml the persistent element.
+ * @return a dom element
+ */
+ezP.Xml.Text.toDom = function(block, element, optNoId) {
+  var text = block.ezp.getValue(block)
+  var child = goog.dom.createTextNode(text)
+  goog.dom.appendChild(element, child)
+  return element
+}
+
+/**
+ * Convert the block from a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {Element} xml the persistent element.
+ * @return a dom element
+ */
+ezP.Xml.Text.fromDom = function(block, element) {
+  var text = ''
+  for (var i = 0, xmlChild; (xmlChild = element.childNodes[i]); i++) {
+    if (xmlChild.nodeType === 3) {
+      text = xmlChild.nodeValue
+      break
+    }
+  }
+  block.ezp.setValue(block, text)
+}
+
+goog.require('ezP.DelegateSvg.Literal')
 
 /**
  * The xml tag name of this block, as it should appear in the saved data.
@@ -410,16 +445,23 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
   if (!xmlBlock.nodeName) {
     return block
   }
+  var name = xmlBlock.nodeName.toLowerCase()
+  var prototypeName
+  // is there a simple correspondance with a known type
+  if ((prototypeName = ezP.T3.Xml.fromDom[name.substring(4)])) {
+    // nothing more to do here
+  }
   // is it a literal or an augmented assignment ?
-  if ((block = ezP.Xml.Literal.domToBlock(xmlBlock, workspace))
+  else if ((block = ezP.Xml.Literal.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.Comparison.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.AugAssign.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.AugAssign.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.Global.domToBlock(xmlBlock, workspace))) {
     return block
+  } else {
+    prototypeName = name
   }
   // Now create the block, either concrete or not
-  var prototypeName = xmlBlock.nodeName.toLowerCase()
   var id = xmlBlock.getAttribute('id')
 
   var concrete = prototypeName + '_concrete'
@@ -953,7 +995,6 @@ ezP.Xml.Funcdef.fromDom = function (block, element) {
   ezP.Xml.Flow.fromDom(block, element)
 }
 
-
 goog.provide('ezP.Xml.Classdef')
 
 ezP.DelegateSvg.Stmt.classdef_part.prototype.xml = ezP.Xml.Classdef
@@ -1074,7 +1115,7 @@ ezP.Xml.Global.domToBlock = function (xmlBlock, workspace) {
   }
 }
 
-
+ezP.DelegateSvg.Stmt.comment_stmt.prototype.xml = ezP.Xml.Text
 
 
 
@@ -1214,40 +1255,6 @@ ezP.Xml.Value.toDom = function (block, element, optNoId) {
 ezP.Xml.Value.fromDom = function (block, element) {
   var value = element.getAttribute('value')
   block.ezp.setValue(block, value)
-}
-
-goog.provide('ezP.Xml.Text')
-
-/**
- * Convert the block's value to a text dom element.
- * For ezPython.
- * @param {!Blockly.Block} block The block to be converted.
- * @param {Element} xml the persistent element.
- * @return a dom element
- */
-ezP.Xml.Text.toDom = function(block, element, optNoId) {
-  var text = block.ezp.getValue(block)
-  var child = goog.dom.createTextNode(text)
-  goog.dom.appendChild(element, child)
-  return element
-}
-
-/**
- * Convert the block from a dom element.
- * For ezPython.
- * @param {!Blockly.Block} block The block to be converted.
- * @param {Element} xml the persistent element.
- * @return a dom element
- */
-ezP.Xml.Text.fromDom = function(block, element) {
-  var text = ''
-  for (var i = 0, xmlChild; (xmlChild = element.childNodes[i]); i++) {
-    if (xmlChild.nodeType === 3) {
-      text = xmlChild.nodeValue
-      break
-    }
-  }
-  block.ezp.setValue(block, text)
 }
 
 goog.require('ezP.DelegateSvg.Expr')

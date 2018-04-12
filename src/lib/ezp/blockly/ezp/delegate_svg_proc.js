@@ -121,6 +121,17 @@ ezP.DelegateSvg.Stmt.decorator_stmt.prototype.initBlock = function(block) {
 }
 
 /**
+ * decorator blocks are white when followed by a statement.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return None
+ */
+ezP.DelegateSvg.Stmt.decorator_stmt.prototype.isWhite = function (block) {
+  return block.nextConnection.isConnected()
+}
+
+/**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.

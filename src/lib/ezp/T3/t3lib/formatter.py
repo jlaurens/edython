@@ -352,18 +352,40 @@ class Formatter:
         self.append('ezP.T3.Stmt.Available = []')
 
     def feed_xml_tags(self):
-        self.append('ezP.T3.Xml = {}\n')
-        Ts = [t for t in self.types if t.is_stmt and t.xml_tags]
-        self.append('ezP.T3.Xml.Stmt = {{ // count {}'.format(len(Ts)))
-        template = "    {}: {},"
+        self.append('''ezP.T3.Xml = {
+    Expr: {},
+    Stmt: {},
+}''')
+        from_dom = {}
+        Ts = [t for t in self.types if t.is_stmt and t.to_dom and len(t.to_dom) == 1]
+        self.append('ezP.T3.Xml.Stmt.toDom = {{ // count {}'.format(len(Ts)))
+        template = "    {}: '{}',"
         for t in Ts:
-            self.append(template.format(t.name, "['"+"', '".join(t.xml_tags)+"']"))
+            k = t.to_dom[0]
+            self.append(template.format(t.name, k))
+            if not k in from_dom:
+                from_dom[k] = []
+            from_dom[k].append(t)
         self.append('}\n')
-        Ts = [t for t in self.types if not t.is_stmt and t.xml_tags]
-        self.append('ezP.T3.Xml.Expr = {{ // count {}'.format(len(Ts)))
-        template = "    {}: {},"
+
+        Ts = [t for t in self.types if not t.is_stmt and t.to_dom and len(t.to_dom) == 1]
+        self.append('ezP.T3.Xml.Expr.toDom = {{ // count {}'.format(len(Ts)))
+        template = "    {}: '{}',"
         for t in Ts:
-            self.append(template.format(t.name, "['"+"', '".join(t.xml_tags)+"']"))
+            k = t.to_dom[0]
+            self.append(template.format(t.name, k))
+            if not k in from_dom:
+                from_dom[k] = []
+            from_dom[k].append(t)
+        self.append('}\n')
+
+        Ts = [(k, v) for k, v in from_dom.items() if len(v) == 1]
+        self.append('ezP.T3.Xml.fromDom = {{ // count {}'.format(len(Ts)))
+        template = "    {}: {},"
+        for k,v in Ts:
+            t = v[0]
+            prefix = 'Stmt' if t.is_stmt else 'Expr'
+            self.append(template.format(k, 'ezP.T3.'+prefix+'.'+t.name))
         self.append('}\n')
 
     def get_T3_data(self):

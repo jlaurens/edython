@@ -497,18 +497,17 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = 
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.comment_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.comment_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.m_1 = {
-    label: '# ',
-    css_class: 'ezp-code-reserved',
-  }
-  this.model__.inputs.m_3 = {
-    comment: 'comment',
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.comment_stmt, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('comment_stmt')
+ezP.DelegateSvg.Manager.makeSubclass('comment_stmt', {
+  inputs: {
+    m_1: {
+      label: '# ',
+      css_class: 'ezp-code-reserved',
+    },
+    m_2: {
+      comment: 'comment', // we cannot merge with m_1 due to css_class
+    },
+  },
+})
 
 /**
  * Initialize a block.
@@ -563,7 +562,8 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.setDisabled = function (block, yorn)
  * @return None
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.getSubtype = function (block) {
-  return block.ezp.uiModel.m_3.fields.comment.getValue()
+  var input = block.getInput(ezP.Key.COMMENT)
+  return input.ezp.fields.comment.getValue()
 }
 
 /**
@@ -576,7 +576,8 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.getSubtype = function (block) {
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.setSubtype = function (block, subtype) {
-  block.ezp.uiModel.m_3.fields.comment.setValue(subtype)
+  var input = block.getInput(ezP.Key.COMMENT)
+  input.ezp.fields.comment.setValue(subtype)
   return true
 }
 
@@ -586,7 +587,8 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.setSubtype = function (block, subtyp
  * @private
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.showEditor = function (block) {
-  block.ezp.uiModel.m_3.fields.comment.showEditor_()
+  var input = block.getInput(ezP.Key.COMMENT)
+  return input.ezp.fields.comment.showEditor_()
 }
 
 /**
@@ -698,4 +700,5 @@ ezP.DelegateSvg.Stmt.T3s = [
   ezP.T3.Stmt.break_stmt,
   ezP.T3.Stmt.continue_stmt,
   ezP.T3.Stmt.global_nonlocal_stmt,
+  ezP.T3.Stmt.comment_stmt,
 ]

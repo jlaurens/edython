@@ -45,7 +45,7 @@ class Type:
         self.is_compound = None
         self.is_stmt = None
         self.definition = None
-        self.xml_tags = None
+        self.to_dom = None
         self.setup_name(name)
         self.setup_definition(definition)
 
