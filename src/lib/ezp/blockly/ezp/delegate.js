@@ -370,9 +370,11 @@ ezP.Delegate.prototype.type_ = undefined
 /**
  * Set the [python ]type of the delegate according to the type of the block.
  * @param {!Blockly.Block} block to be initialized..
+ * @param {string} optNewType
  * @constructor
  */
-ezP.Delegate.prototype.setupType = function (block) {
+ezP.Delegate.prototype.setupType = function (block, optNewType) {
+  optNewType && (block.type = optNewType)
   var m = /^ezp:((?:fake_)?((.*?)(?:_concrete)?))$/.exec(block.type)
   this.pythonSort_ = m? m[1]: block.type
   this.type_ = m? 'ezp:'+m[2]: block.type

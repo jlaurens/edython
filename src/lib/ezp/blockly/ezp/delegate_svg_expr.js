@@ -480,11 +480,12 @@ ezP.DelegateSvg.Literal.prototype.initBlock = function (block) {
 
 /**
  * Set the [python ]type of the delegate according to the type of the block.
- * @param {!Blockly.Block} block to be initialized..
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {string} optNewType
  * @constructor
  */
-ezP.DelegateSvg.Literal.prototype.setupType = function (block) {
-  ezP.DelegateSvg.Literal.superClass_.setupType.call(this, block)
+ezP.DelegateSvg.Literal.prototype.setupType = function (block, optNewType) {
+  ezP.DelegateSvg.Literal.superClass_.setupType.call(this, block, optNewType)
   this.xmlType_ = ezP.T3.Expr.literal
 }
 
@@ -580,22 +581,19 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.setSubtype = function (block, subty
   if (XRegExp.test(subtype, ezP.XRE.integer)) {
     block.ezp.uiModel.m_1.fields.number.setValue(subtype)
     if (block.type !== ezP.T3.Expr.integer) {
-      block.type = ezP.T3.Expr.integer
-      block.ezp.setupType(block)
+      block.ezp.setupType(block, ezP.T3.Expr.integer)
     }
     return true
   } else if (XRegExp.test(subtype, ezP.XRE.floatnumber)) {
     block.ezp.uiModel.m_1.fields.number.setValue(subtype)
     if (block.type !== ezP.T3.Expr.floatnumber) {
-      block.type = ezP.T3.Expr.floatnumber
-      block.ezp.setupType(block)
+      block.ezp.setupType(block,  ezP.T3.Expr.floatnumber)
     }
     return true
   } else if (XRegExp.test(subtype, ezP.XRE.imagnumber)) {
     block.ezp.uiModel.m_1.fields.number.setValue(subtype)
     if (block.type !== ezP.T3.Expr.imagnumber) {
-      block.type = ezP.T3.Expr.imagnumber
-      block.ezp.setupType(block)
+      block.ezp.setupType(block,  ezP.T3.Expr.imagnumber)
     }
     return true
   }
@@ -610,19 +608,16 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.setSubtype = function (block, subty
  */
 ezP.DelegateSvg.Expr.numberliteral.prototype.fieldValueDidChange = function(block, name, oldValue) {
   var text = block.getField(name).getText()
-  if (XRegExp.test(text, ezP.XRE.integer) &&
-  block.type !== ezP.T3.Expr.integer) {
-    block.type = ezP.T3.Expr.integer
-    block.ezp.setupType(block)
-  } else if (XRegExp.test(text, ezP.XRE.floatnumber) &&
-  block.type !== ezP.T3.Expr.floatnumber) {
-    block.type = ezP.T3.Expr.floatnumber
-    block.ezp.setupType(block)
-  } else if (XRegExp.test(text, ezP.XRE.imagnumber) &&
-  block.type !== ezP.T3.Expr.imagnumber) {
-    block.type = ezP.T3.Expr.imagnumber
-    block.ezp.setupType(block)
+  var F = function(re, type) {
+    if (XRegExp.test(text, re) &&
+  block.type !== type) {
+      block.ezp.setupType(block, type)
+      return true
+    }
   }
+  F(ezP.XRE.integer, ezP.T3.Expr.integer)
+  || F(ezP.T3.Expr.floatnumber, ezP.T3.Expr.floatnumber)
+  || F(ezP.T3.Expr.imagnumber, ezP.T3.Expr.imagnumber)
 }
 
 goog.provide('ezP.DelegateSvg.Expr.shortliteral')
@@ -867,14 +862,13 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.setSubtype = function (block, subtyp
       start.setValue(m.delimiter||"'")
       end.setValue(m.delimiter||"'")
       code.setValue(m.content||'')
-      block.type = type
-      block.ezp.setupType(block)
+      block.ezp.setupType(block, type)
       return true  
     }
     return false
   }
-  return F(ezP.XRE.shortstringliteral, ezP.T3.Expr.shortstringliteral) ||
-  F(ezP.XRE.shortbytesliteral, ezP.T3.Expr.shortbytesliteral)
+  return F(ezP.XRE.shortstringliteral, ezP.T3.Expr.shortstringliteral)
+  || F(ezP.XRE.shortbytesliteral, ezP.T3.Expr.shortbytesliteral)
 }
 
 /**
@@ -1112,14 +1106,13 @@ ezP.DelegateSvg.Expr.longliteral.prototype.setSubtype = function (block, subtype
       start.setValue(m.delimiter||"'")
       end.setValue(m.delimiter||"'")
       code.setValue(m.content||'')
-      block.type = type
-      block.ezp.setupType(block)
+      block.ezp.setupType(block, type)
       return true  
     }
     return false
   }
-  return F(ezP.XRE.longstringliteral, ezP.T3.Expr.longstringliteral) ||
-  F(ezP.XRE.longbytesliteral, ezP.T3.Expr.longbytesliteral)
+  return F(ezP.XRE.longstringliteral, ezP.T3.Expr.longstringliteral)
+  || F(ezP.XRE.longbytesliteral, ezP.T3.Expr.longbytesliteral)
 }
 
 /**

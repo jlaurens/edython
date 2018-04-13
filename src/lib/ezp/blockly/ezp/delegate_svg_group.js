@@ -347,8 +347,7 @@ ezP.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
     }
   }
   if (block.type !== expected) {
-    block.type = expected
-    this.setupType(block)
+    this.setupType(block, expected)
     block.previousConnection.setCheck(P)
     block.nextConnection.setCheck(N)
   }

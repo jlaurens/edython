@@ -1120,8 +1120,25 @@ ezP.Xml.Global.domToBlock = function (xmlBlock, workspace) {
 
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.xml = ezP.Xml.Text
 
+goog.require('ezP.DelegateSvg.Try')
 
-
+ezP.DelegateSvg.Stmt.raise_stmt.prototype.fromDom = function (block, element) {
+  var max = -1
+  var k = null
+  var subtypes = this.getModel().inputs.subtypes
+  for (var i = 0, child; (child = element.childNodes[i++]);) {
+    if (child.getAttribute) {
+      var attribute = child.getAttribute(ezP.Xml.INPUT)
+      var j = subtypes.indexOf(attribute)
+      if (j>max) {
+        max = j
+        k = attribute
+      }
+    }
+  }
+  this.setProperty(block, ezP.Key.EXPRESSION, k)
+  ezP.Xml.InputList.fromDom(block, element)
+}
 
 
 

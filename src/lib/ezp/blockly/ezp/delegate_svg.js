@@ -234,6 +234,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
           recorder = function() {
             var ff = field
             var kk = k && (k+'.'+key) || key
+            ff.ezp.key = kk
             return function() {
               out.input.appendField(ff, kk)
             }
@@ -298,7 +299,8 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       // Now come label fields
       var FF = function(key) {
         field = out.fields[key] = out.input.ezp.fields[key] = new ezP.FieldLabel(v)
-        out.input.appendField(field, k+'.'+key)
+        field.ezp.key = k+'.'+key
+        out.input.appendField(field, field.ezp.key)
         field.ezp.css_class = D.css_class
         field.ezp.css_style = D.css_style
         return field
@@ -342,11 +344,14 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         field.ezp.css_class = D.css_class
         field.ezp.css_style = D.css_style
         field.setSourceBlock(block)
+        field.name = key
         field.init()
+        model.fields[key] = field
         return field
       }
     }
   }
+  // next are not implemented in the model
   if ((D = this.getModel().output) && D.awaitable) {
     field = new ezP.FieldLabel('await')
     field.ezp.css_class = 'ezp-code-reserved'
@@ -356,7 +361,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     model.fields.await = field
   }    
   if ((D = this.getModel().statement) && D.asyncable) {
-    field = new ezP.FieldLabel('async')
+    field = new ezP.FieldLabel(ezP.Key.ASYNC)
     field.ezp.css_class = 'ezp-code-reserved'
     field.name = ezP.Key.ASYNC
     field.setSourceBlock(block)
@@ -364,9 +369,9 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     model.fields.async = field
   }
   if (Object.keys(inputModel).length) {
-    model.fields.modifier = FF.call(this, 'modifier')
-    model.fields.prefix = FF.call(this, 'prefix')
-    model.fields.suffix = FF.call(this, 'suffix')
+    FF.call(this, ezP.Key.MODIFIER)
+    FF.call(this, ezP.Key.PREFIX)
+    FF.call(this, ezP.Key.SUFFIX)
     var keys = ['m_1', 'm_2', 'm_3']
     for (var i = 0, K; K = keys[i++];) {
       var p = doOneModel.call(this, K)
@@ -384,7 +389,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   }
   this.eventsInit_ = true;
 }
-
+console.warn('implement async and await, see above awaitable and asyncable')
 /**
  * Revert operation of initBlock.
  * @param {!Blockly.Block} block to be initialized..

@@ -23,47 +23,14 @@ goog.require('ezP.DelegateSvg.Group')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.try_part = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.try_part.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.m_1 = {
-    dummy: 'try',
-    css_class: 'ezp-code-reserved',
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.try_part, ezP.DelegateSvg.Group)
-ezP.DelegateSvg.Manager.register('try_part')
-
-/**
- * Class for a DelegateSvg, expression_as_name block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.expression_as_name = function (prototypeName) {
-  ezP.DelegateSvg.Expr.expression_as_name.superClass_.constructor.call(this, prototypeName)
-  this.model__.input = {
+ezP.DelegateSvg.Manager.makeSubclass('try_part', {
+  inputs: {
     m_1: {
-      key: ezP.Key.EXPRESSION,
-      check: ezP.T3.Expr.Check.expression,
-      hole_value: 'expression',
-    },
-    m_3: {
-      key: ezP.Key.AS,
-      label: 'as',
+      dummy: 'try',
       css_class: 'ezp-code-reserved',
-      check: ezP.T3.Expr.identifier,
-      hole_value: 'name',
-    }
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.expression_as_name,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.expression_as_name, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('expression_as_name')
-
+    },
+  },
+}, ezP.DelegateSvg.Group)
 
 /**
  * Class for a DelegateSvg, except_part block.
@@ -73,18 +40,88 @@ ezP.DelegateSvg.Manager.register('expression_as_name')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.except_part = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.except_part.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.m_1 = {
-    key: ezP.Key.EXPRESSION,
-    label: 'except',
-    css_class: 'ezp-code-reserved',
-    check: ezP.T3.Expr.Check.expression_except,
-    hole_value: 'expression',
+ezP.DelegateSvg.Manager.makeSubclass('except_part', {
+  inputs: {
+    subtypes: [null, ezP.Key.EXPRESSION, ezP.Key.AS],
+    prefix: {
+      label: 'except',
+      css_class: 'ezp-code-reserved',
+    },
+    m_1: {
+      key: ezP.Key.EXPRESSION,
+      check: ezP.T3.Expr.Check.expression,
+      hole_value: 'expression',
+    },
+    m_2: {
+      key: ezP.Key.AS,
+      label: 'as',
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.identifier,
+      hole_value: 'name',
+    },
+  },
+}, ezP.DelegateSvg.Group)
+
+/**
+ * Initialize a block.
+ * @param {!Blockly.Block} block to be initialized..
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Stmt.except_part.prototype.initBlock = function (block) {
+  ezP.DelegateSvg.Stmt.except_part.superClass_.initBlock.call(this, block)
+  var subtypes = this.getModel().inputs.subtypes
+  var F = function(k) {
+    block.ezp.setupType(block, ezP.T3.Stmt.Next[k])
+    block.nextConnection.setCheck(ezP.T3.Stmt.Next[k])
+    block.previousConnection.setCheck(ezP.T3.Stmt.Previous[k])
   }
+  this.initProperty(block, ezP.Key.EXPRESSION, subtypes[1], function(block, oldValue, newValue) {
+    return subtypes.indexOf(newValue) >= 0
+  }, null, function(block, oldValue, newValue) {
+    var i = subtypes.indexOf(newValue)
+    block.ezp.setNamedInputDisabled(block, subtypes[1], i < 1)
+    block.ezp.setNamedInputDisabled(block, subtypes[2], i < 2)
+    F(i > 0? 'except_part': 'except_void_part')
+  })
 }
-goog.inherits(ezP.DelegateSvg.Stmt.except_part, ezP.DelegateSvg.Group)
-ezP.DelegateSvg.Manager.register('except_part')
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var current = block.ezp.getProperty(block, ezP.Key.EXPRESSION)
+  var subtypes = this.getModel().inputs.subtypes
+  var F = function(content, k) {
+    var menuItem = new ezP.MenuItem(content, function() {
+      block.ezp.setProperty(block, ezP.Key.EXPRESSION, k)
+    })
+    mgr.addChild(menuItem, true)
+    menuItem.setEnabled(k !== current)
+  }
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
+      goog.dom.createTextNode('except:'),
+    ), subtypes[0]
+  )
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN('except ', 'ezp-code-reserved'),
+      goog.dom.createTextNode('…:'),
+    ), subtypes[1]
+  )
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN('except', 'ezp-code-reserved'),
+      goog.dom.createTextNode(' … '),
+      ezP.Do.createSPAN(' as', 'ezp-code-reserved'),
+      goog.dom.createTextNode(' …:'),
+    ), subtypes[2]
+  )
+  mgr.shouldSeparate()
+  return ezP.DelegateSvg.Stmt.except_part.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+}
+
+
 
 /**
  * Class for a DelegateSvg, void_except_part block.
@@ -94,15 +131,14 @@ ezP.DelegateSvg.Manager.register('except_part')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.void_except_part = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.void_except_part.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.m_1 = {
-    dummy: 'except',
-    css_class: 'ezp-code-reserved',
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.void_except_part, ezP.DelegateSvg.Group)
-ezP.DelegateSvg.Manager.register('void_except_part')
+ezP.DelegateSvg.Manager.makeSubclass('void_except_part', {
+  inputs: {
+    m_1: {
+      dummy: 'except',
+      css_class: 'ezp-code-reserved',
+    },
+  },
+}, ezP.DelegateSvg.Group)
 
 /**
  * Class for a DelegateSvg, finally_part block.
@@ -112,45 +148,14 @@ ezP.DelegateSvg.Manager.register('void_except_part')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.finally_part = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.finally_part.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.m_1 = {
-    dummy: 'finally',
-    css_class: 'ezp-code-reserved',
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.finally_part, ezP.DelegateSvg.Group)
-ezP.DelegateSvg.Manager.register('finally_part')
-
-/**
- * Class for a DelegateSvg, expression_from block.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.expression_from = function (prototypeName) {
-  ezP.DelegateSvg.Expr.expression_from.superClass_.constructor.call(this, prototypeName)
-  this.model__.input = {
+ezP.DelegateSvg.Manager.makeSubclass('finally_part', {
+  inputs: {
     m_1: {
-      key: ezP.Key.EXPRESSION,
-      check: ezP.T3.Expr.Check.expression,
-      hole_value: 'expression',
-    },
-    m_3: {
-      label: 'from',
+      dummy: 'finally',
       css_class: 'ezp-code-reserved',
-      key: ezP.Key.FROM,
-      check: ezP.T3.Expr.Check.expression,
-      hole_value: 'expression',
-    }
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.expression_from,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.expression_from, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('expression_from')
+    },
+  },
+}, ezP.DelegateSvg.Group)
 
 /**
  * Class for a DelegateSvg, raise_stmt.
@@ -159,38 +164,80 @@ ezP.DelegateSvg.Manager.register('expression_from')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.raise_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.raise_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.input = {
-    m_1: {
+ezP.DelegateSvg.Manager.makeSubclass('raise_stmt', {
+  inputs: {
+    subtypes: [null, ezP.Key.EXPRESSION, ezP.Key.FROM],
+    prefix: {
       label: 'raise',
       css_class: 'ezp-code-reserved',
-      key: ezP.Key.RAISE,
-      check: ezP.T3.Expr.Check.raise_expression,
-    }
-  }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.raise_stmt, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('raise_stmt')
+    },
+    m_1: {
+      key: ezP.Key.EXPRESSION,
+      check: ezP.T3.Expr.Check.expression,
+      hole_value: 'expression',
+    },
+    m_2: {
+      label: 'from',
+      css_class: 'ezp-code-reserved',
+      key: ezP.Key.FROM,
+      check: ezP.T3.Expr.Check.expression,
+      hole_value: 'expression',
+    },
+  },
+})
 
 /**
- * Class for a DelegateSvg, reraise_stmt.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
+ * Initialize a block.
+ * @param {!Blockly.Block} block to be initialized..
+ * For subclassers eventually
  */
-ezP.DelegateSvg.Stmt.reraise_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.reraise_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.input = {
-    m_1: {
-      label: 'raise',
-      css_class: 'ezp-code-reserved',
-    }
-  }
+ezP.DelegateSvg.Stmt.raise_stmt.prototype.initBlock = function (block) {
+  ezP.DelegateSvg.Stmt.raise_stmt.superClass_.initBlock.call(this, block)
+  var subtypes = this.getModel().inputs.subtypes
+  this.initProperty(block, ezP.Key.EXPRESSION, subtypes[1], function(block, oldValue, newValue) {
+    return subtypes.indexOf(newValue) >= 0
+  }, null, function(block, oldValue, newValue) {
+    var i = subtypes.indexOf(newValue)
+    block.ezp.setNamedInputDisabled(block, subtypes[1], i < 1)
+    block.ezp.setNamedInputDisabled(block, subtypes[2], i < 2)
+  })
 }
-goog.inherits(ezP.DelegateSvg.Stmt.reraise_stmt, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('reraise_stmt')
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var current = block.ezp.getProperty(block, ezP.Key.EXPRESSION)
+  var subtypes = this.getModel().inputs.subtypes
+  var F = function(content, k) {
+    var menuItem = new ezP.MenuItem(content, function() {
+      block.ezp.setProperty(block, ezP.Key.EXPRESSION, k)
+    })
+    mgr.addChild(menuItem, true)
+    menuItem.setEnabled(k !== current)
+  }
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
+      goog.dom.createTextNode('raise'),
+    ), subtypes[0]
+  )
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN('raise ', 'ezp-code-reserved'),
+      goog.dom.createTextNode('…'),
+    ), subtypes[1]
+  )
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN('raise', 'ezp-code-reserved'),
+      goog.dom.createTextNode(' … '),
+      ezP.Do.createSPAN(' from', 'ezp-code-reserved'),
+      goog.dom.createTextNode(' …'),
+    ), subtypes[2]
+  )
+  mgr.shouldSeparate()
+  return ezP.DelegateSvg.Stmt.raise_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+}
 
 /**
  * Class for a DelegateSvg, assert_stmt.
@@ -199,9 +246,8 @@ ezP.DelegateSvg.Manager.register('reraise_stmt')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.assert_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.assert_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.input = {
+ezP.DelegateSvg.Manager.makeSubclass('assert_stmt', {
+  inputs: {
     m_1: {
       label: 'assert',
       css_class: 'ezp-code-reserved',
@@ -212,9 +258,58 @@ ezP.DelegateSvg.Stmt.assert_stmt = function (prototypeName) {
       label: ',',
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
-      optional: true
     }
-  }
+  },
+})
+
+/**
+ * Initialize a block.
+ * @param {!Blockly.Block} block to be initialized..
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Stmt.assert_stmt.prototype.initBlock = function (block) {
+  ezP.DelegateSvg.Stmt.assert_stmt.superClass_.initBlock.call(this, block)
+  var builtins = this.getModel().inputs.builtins
+  this.initProperty(block, ezP.Key.EXPRESSION, null, function(block, oldValue, newValue) {
+    return !newValue || (newValue === ezP.Key.EXPRESSION)
+  }, null, function(block, oldValue, newValue) {
+    block.ezp.setNamedInputDisabled(block, ezP.Key.EXPRESSION, newValue !== ezP.Key.EXPRESSION)
+  })
 }
-goog.inherits(ezP.DelegateSvg.Stmt.assert_stmt, ezP.DelegateSvg.Stmt.Two)
-ezP.DelegateSvg.Manager.register('assert_stmt')
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var current = block.ezp.getProperty(block, ezP.Key.EXPRESSION)
+  var F = function(content, key) {
+    var menuItem = new ezP.MenuItem(content, function() {
+      block.ezp.setProperty(block, ezP.Key.EXPRESSION, key)
+    })
+    mgr.addChild(menuItem, true)
+    menuItem.setEnabled(key !== current)
+  }
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN('assert ', 'ezp-code-reserved'),
+      goog.dom.createTextNode('…'),
+    ), null
+  )
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN('assert ', 'ezp-code-reserved'),
+      goog.dom.createTextNode('…, …'),
+    ), ezP.Key.EXPRESSION
+  )
+  mgr.shouldSeparate()
+  return ezP.DelegateSvg.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+}
+
+ezP.DelegateSvg.Try.T3s = [
+  ezP.T3.Stmt.try_part,
+  ezP.T3.Stmt.except_part,
+  ezP.T3.Stmt.finally_part,
+  ezP.T3.Stmt.raise_stmt,
+  ezP.T3.Stmt.assert_stmt,
+]

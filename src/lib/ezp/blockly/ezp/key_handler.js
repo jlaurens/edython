@@ -68,6 +68,7 @@ ezP.KeyHandler = function() {
   me.register = function(key, action) {
     // manage duplicates
     if (key.length) {
+      goog.asserts.assert(action, 'No action to register for '+key)
       for (var i = 0, s; (s = shortcuts_[i]); i++) {
         if (s.key === key) {
           shortcuts_[i] = {
@@ -216,7 +217,7 @@ ezP.KeyHandler = function() {
     } else if (shortcut.action) {
       me.handleType(shortcut.action.type || shortcut.action, shortcut.action.subtype)
     } else {
-      console.log('Unknown', shortcut.key, shortcut.action)
+      return false
     }
     menu_.removeChildren(true)
     return true
@@ -479,11 +480,8 @@ ezP.KeyHandler = function() {
                     return
                   }
                   me.alreadyListened = true
-                  if (shortcut.key) {
-                    me.handleAction(shortcut)
-                  } else {
-                    me.handleFirstMenuItemAction(shortcut)
-                  }
+                  shortcut.key && me.handleAction(shortcut)
+                  || me.handleFirstMenuItemAction(shortcut)
                 }, 100)// TODO be sure that this 100 is suffisant
               }
             }
@@ -693,8 +691,18 @@ Ks = {
   'del …': ezP.T3.Stmt.del_stmt,
   'return …': ezP.T3.Stmt.return_stmt,
   'yield …': ezP.T3.Stmt.yield_stmt,
-  'raise': ezP.T3.Stmt.reraise_stmt,
-  'raise …': ezP.T3.Stmt.raise_stmt,
+  'raise': {
+    type: ezP.T3.Stmt.raise_stmt,
+    subtype: null,
+  },
+  'raise …': {
+    type: ezP.T3.Stmt.raise_stmt,
+    subtype: ezP.Key.EXPRESSION,
+  },
+  'raise … from …': {
+    type: ezP.T3.Stmt.raise_stmt,
+    subtype: ezP.Key.FROM,
+  },
   // 'from future import …': ezP.T3.Stmt.future_statement,
   'import …': ezP.T3.Stmt.import_stmt,
   '# comment': ezP.T3.Stmt.comment_stmt,
@@ -709,9 +717,15 @@ Ks = {
   '@decorator': ezP.T3.Stmt.decorator_stmt,
   '"""…"""(def)': ezP.T3.Stmt.docstring_def_stmt,
   "'''…'''(def)": ezP.T3.Stmt.docstring_def_stmt,
-  '"""…"""': ezP.T3.Stmt.docstring,
-  "'''…'''": ezP.T3.Stmt.docstring,
-  'print(…)': ezP.T3.Stmt.print_stmt,
+  '"""…"""': {
+    type: ezP.T3.Expr.longstringliteral,
+    subtype: '"""',
+  },
+  "'''…'''": {
+    type: ezP.T3.Expr.longstringliteral,
+    subtype: "'''",
+  },
+  'print(…)': ezP.T3.Stmt.builtin_print_stmt,
   'input(…)': ezP.T3.Expr.builtin_input_expr,
   'range(…)': {
     type: ezP.T3.Expr.call_builtin,

@@ -296,8 +296,7 @@ ezP.FieldNumber = function (text) {
           goog.dom.classlist.remove(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
         }
         var block = field.sourceBlock_
-        block.type = type
-        block.ezp.setupType(block)
+        block.ezp.setupType(block, type)
         return txt
       }
       return undefined

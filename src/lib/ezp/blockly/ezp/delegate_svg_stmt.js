@@ -317,46 +317,6 @@ ezP.DelegateSvg.Stmt.annotated_assignment_stmt.prototype.populateContextMenuFirs
 }
 
 /**
- * Class for a DelegateSvg, two optional values and a label.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Stmt.Two = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.Two.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Stmt.Two, ezP.DelegateSvg.Stmt)
-
-
-/**
- * Prepare the inputs.
- * Subclassers may enable/disable an input
- * depending on the context.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.Stmt.Two.prototype.consolidate = function (block, deep) {
-  ezP.DelegateSvg.Stmt.Two.superClass_.consolidate.call(this, block, deep)
-  var first = this.uiModel.m_1.input
-  var last  = this.uiModel.m_3.input
-  var connected = last.connection.isConnected()
-  this.setInputEnabled(block, last, first.connection.isConnected() || connected)
-  if (connected) {
-    if (last.fieldRow.length == 0) {
-      last.appendField(last.fields.label, ezP.Key.LAST+'.'+ezP.Key.LABEL)
-    }
-  } else if (last.fieldRow.length > 0) {
-    last.removeField(ezP.Key.LAST+'.'+ezP.Key.LABEL)
-  }
-  var ezp = first.connection.ezp
-  if (!ezp.optional_0) {
-    ezp.optional_0 = [ezp.optional_]
-  }
-  ezp.optional_ = ezp.optional_0[0] && !connected
-}
-
-/**
  * Class for a DelegateSvg, pass_stmt.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
