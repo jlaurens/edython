@@ -650,6 +650,42 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.S
   return true
 }
 
+/**
+ * Class for a DelegateSvg, del_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Manager.makeSubclass('del_stmt', {
+  inputs: {
+    m_1: {
+      key: ezP.Key.DEL,
+      label: 'del',
+      css_class: 'ezp-code-reserved',
+      wrap: ezP.T3.Expr.target_list,
+    }
+  },
+})
+
+/**
+ * Class for a DelegateSvg, return_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Manager.makeSubclass('return_stmt', {
+  inputs: {
+    m_1: {
+      key: ezP.Key.RETURN,
+      label: 'return',
+      css_class: 'ezp-code-reserved',
+      wrap: ezP.T3.Expr.expression_list,
+    }
+  },
+})
+
 ezP.DelegateSvg.Stmt.T3s = [
   ezP.T3.Stmt.annotated_assignment_stmt,
   ezP.T3.Stmt.pass_stmt,
@@ -660,4 +696,6 @@ ezP.DelegateSvg.Stmt.T3s = [
   ezP.T3.Stmt.expression_stmt,
   ezP.T3.Stmt.docstring_top_stmt,
   ezP.T3.Stmt.docstring_def_stmt,
+  ezP.T3.Stmt.del_stmt,
+  ezP.T3.Stmt.return_stmt,
 ]

@@ -64,6 +64,8 @@ ezP.Key = {
   ARGUMENTS: 'arguments',
   IDENTIFIERS: 'identifiers',
   SUBTYPE: 'subtype',
+  DEL: 'del',
+  RETURN: 'return',
 
   LIST: 'list',// avoid this one when possibe
   
