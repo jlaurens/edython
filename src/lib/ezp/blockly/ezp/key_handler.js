@@ -540,7 +540,18 @@ var Ks = {
   'elif': ezP.T3.Stmt.elif_part,
   'else':  ezP.T3.Stmt.else_part,
   'class': ezP.T3.Stmt.classdef_part,
-  'except': ezP.T3.Stmt.except_part,
+  'except': {
+    type: ezP.T3.Stmt.except_part,
+    subtype: 0,
+  },
+  'except …': {
+    type: ezP.T3.Stmt.except_part,
+    subtype: 1,
+  },
+  'except … as …': {
+    type: ezP.T3.Stmt.except_part,
+    subtype: 2,
+  },
   'finally': ezP.T3.Stmt.finally_part,
   'for': ezP.T3.Stmt.for_part,
   '@': ezP.T3.Stmt.decorator_stmt,
@@ -693,15 +704,15 @@ Ks = {
   'yield …': ezP.T3.Stmt.yield_stmt,
   'raise': {
     type: ezP.T3.Stmt.raise_stmt,
-    subtype: null,
+    subtype: 0,
   },
   'raise …': {
     type: ezP.T3.Stmt.raise_stmt,
-    subtype: ezP.Key.EXPRESSION,
+    subtype: 1,
   },
   'raise … from …': {
     type: ezP.T3.Stmt.raise_stmt,
-    subtype: ezP.Key.FROM,
+    subtype: 2,
   },
   // 'from future import …': ezP.T3.Stmt.future_statement,
   'import …': ezP.T3.Stmt.import_stmt,

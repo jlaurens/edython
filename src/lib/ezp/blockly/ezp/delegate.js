@@ -379,6 +379,26 @@ ezP.Delegate.prototype.setupType = function (block, optNewType) {
   this.pythonSort_ = m? m[1]: block.type
   this.type_ = m? 'ezp:'+m[2]: block.type
   this.xmlType_ = m? m[3]: block.type
+  // test all connections
+  var c8n, targetC8n
+  if ((c8n = block.previousConnection) && (targetC8n = c8n.targetConnection)) {
+    if (!c8n.checkType_(targetC8n)) {
+      block.unplug()
+      block.bumpNeighbours_()
+    }
+  }
+  if ((c8n = block.outputConnection) && (targetC8n = c8n.targetConnection)) {
+    if (!c8n.checkType_(targetC8n)) {
+      block.unplug()
+      block.bumpNeighbours_()
+    }
+  }
+  if ((c8n = block.nextConnection) && (targetC8n = c8n.targetConnection)) {
+    if (!c8n.checkType_(targetC8n)) {
+      c8n.disconnect()
+      targetC8n.getSourceBlock().bumpNeighbours_()
+    }
+  }
 }
 
 /**

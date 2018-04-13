@@ -2435,7 +2435,8 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
         }
       }
     }
-  } else if ((c8n = candidate.outputConnection)) {
+  }
+  if ((c8n = candidate.outputConnection)) {
     // try to find a free connection in a block
     // When not undefined, the returned connection can connect to c8n.
     var findC8n = function(block) {
@@ -2473,13 +2474,20 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
   }
   if ((c8n = candidate.previousConnection)) {
     if ((otherC8n = block.nextConnection) && c8n.checkType_(otherC8n)) {
-      if ((targetC8n = otherC8n.targetConnection) && candidate.nextConnection && candidate.nextConnection.checkType_(targetC8n)) {
-        return fin(function() {
-          candidate.nextConnection.connect(targetC8n)
-        })
-      } else {
-        return fin()
-      }
+      return fin(function() {
+        if ((targetC8n = otherC8n.targetConnection)) {
+          // connected to something, beware of orphans
+          otherC8n.disconnect()
+          if (candidate.nextConnection && candidate.nextConnection.checkType_(targetC8n)) {
+            candidate.nextConnection.connect(targetC8n)
+            targetC8n = null
+          }
+        }
+        c8n.connect(otherC8n)
+        if (targetC8n) {
+          targetC8n.getSourceBlock().bumpNeighbours_()
+        }
+      })
     }
   }
   if ((c8n = candidate.nextConnection)) {

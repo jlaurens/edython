@@ -55,6 +55,7 @@ try1_stmt ::= IGNORE
 try2_stmt ::= IGNORE
 try_part/try
 except_part/except
+void_except_part ::= "except" ":" # this block type is never used in a definition, only for ckecking
 finally_part/finally
 try_part <<< except_part | void_except_part | finally_part | comment_stmt
 void_except_part >>> except_part
