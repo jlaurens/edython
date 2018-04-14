@@ -117,6 +117,8 @@ class Types:
                             t.to_dom = self.re_pipe.split(to_dom)
                         if op == '!!=':
                             t.is_shallow = True
+                        if not op:
+                            print('************ ONLY XML TAG', t.name)
                     except Exception as exc:
                         print(exc)
                     continue

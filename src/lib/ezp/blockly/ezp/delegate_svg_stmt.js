@@ -415,7 +415,7 @@ ezP.DelegateSvg.Manager.makeSubclass('global_nonlocal_stmt', {
 ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.initBlock.call(block.ezp, block)
   var subtypes = this.getModel().inputs.subtypes
-  block.ezp.initProperty(block, ezP.Key.IDENTIFIERS, subtypes[0], null, null, function(block, oldValue, newValue) {
+  block.ezp.initProperty(block, ezP.Key.SUBTYPE, subtypes[0], null, null, function(block, oldValue, newValue) {
     Blockly.Events.setGroup(true)
     var old = block.ezp.isRendering
     block.ezp.isRendering = true
@@ -434,14 +434,14 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.initBlock = function(block) 
  */
 ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var subtypes = block.ezp.getModel().inputs.subtypes
-  var current = block.ezp.getProperty(block, ezP.Key.IDENTIFIERS)
+  var current = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
   var F = function(key) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN(key, 'ezp-code-reserved'),
       ezP.Do.createSPAN(' …', 'ezp-code-placeholder'),
     )
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setProperty(block, ezP.Key.IDENTIFIERS, key)
+      block.ezp.setProperty(block, ezP.Key.SUBTYPE, key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)

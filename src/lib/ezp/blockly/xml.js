@@ -1122,6 +1122,12 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.xml = ezP.Xml.Text
 
 goog.require('ezP.DelegateSvg.Try')
 
+/**
+ * Set the value from the attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
 ezP.DelegateSvg.Stmt.raise_stmt.prototype.fromDom = function (block, element) {
   var max = -1
   var k = null
@@ -1136,10 +1142,51 @@ ezP.DelegateSvg.Stmt.raise_stmt.prototype.fromDom = function (block, element) {
       }
     }
   }
-  this.setProperty(block, ezP.Key.EXPRESSION, k)
+  this.setSubtype(block, k)
   ezP.Xml.InputList.fromDom(block, element)
 }
 
+goog.require('ezP.DelegateSvg.Yield')
+goog.provide('ezP.Xml.Yield')
+
+/**
+ * Set the value from the attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Xml.Yield.toDom = function (block, element) {
+  ezP.Xml.InputList.toDom(block, element)
+  if (block.ezp instanceof ezP.DelegateSvg.Expr) {
+    element.setAttribute(ezP.Key.INPUT, '')
+  }
+}
+
+/**
+ * Set the value from the attribute.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Xml.Yield.fromDom = function (block, element) {
+  var max = -1
+  var k = null
+  var subtypes = block.ezp.getModel().inputs.subtypes
+  for (var i = 0, child; (child = element.childNodes[i++]);) {
+    if (child.getAttribute) {
+      var attribute = child.getAttribute(ezP.Xml.INPUT)
+      var j = subtypes.indexOf(attribute)
+      if (j>max) {
+        max = j
+        k = attribute
+      }
+    }
+  }
+  block.ezp.setSubtype(block, k)
+  ezP.Xml.InputList.fromDom(block, element)
+}
+
+ezP.DelegateSvg.Expr.yield_expression.prototype.xml = ezP.DelegateSvg.Stmt.yield_stmt.prototype.xml = ezP.Xml.Yield
 
 
 

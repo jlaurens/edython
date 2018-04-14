@@ -16,52 +16,6 @@ goog.provide('ezP.DelegateSvg.Yield')
 goog.require('ezP.DelegateSvg.List')
 goog.require('ezP.DelegateSvg.Stmt')
 
-/////////////////     yield_expression_list      ///////////////////
-
-/**
- * Class for a DelegateSvg, 'yield ...' block.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.yield_expression_list = function (prototypeName) {
-  ezP.DelegateSvg.Expr.yield_expression_list.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.m_1 = {
-    key: ezP.Key.LIST,
-    label: 'yield',
-    css_class: 'ezp-code-reserved',
-    wrap: ezP.T3.Expr.non_void_expression_list,
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.yield_expression_list,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.yield_expression_list, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('yield_expression_list')
-
-/**
- * Class for a DelegateSvg, 'yield from ...' block.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.yield_from_expression = function (prototypeName) {
-  ezP.DelegateSvg.Expr.yield_from_expression.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.m_1 = {
-    key: ezP.Key.FROM,
-    label: 'yield from',
-    css_class: 'ezp-code-reserved',
-    check: ezP.T3.Expr.Check.expression
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.yield_from_expression,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.yield_from_expression, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('yield_from_expression')
-
 /**
  * Class for a DelegateSvg, yield_expression.
  * For ezPython.
@@ -69,29 +23,25 @@ ezP.DelegateSvg.Manager.register('yield_from_expression')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.yield_expression = function (prototypeName) {
-  ezP.DelegateSvg.Expr.yield_expression.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.prefix = {
-    label: 'yield',
-    css_class: 'ezp-code-reserved',
-  }
-  this.model__.inputs.m_1 = {
-    key: ezP.Key.FROM,
-    label: 'from',
-    css_class: 'ezp-code-reserved',
-    check: ezP.T3.Expr.Check.expression
-  }
-  this.model__.inputs.m_2 = {
-    key: ezP.Key.LIST,
-    css_class: 'ezp-code-reserved',
-    wrap: ezP.T3.Expr.non_void_expression_list,
-  }
-  this.outputModel__ = {
-    check: ezP.T3.Expr.yield_expression,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.yield_expression, ezP.DelegateSvg.Expr)
-ezP.DelegateSvg.Manager.register('yield_expression')
+ezP.DelegateSvg.Manager.makeSubclass('yield_expression', {
+  inputs: {
+    subtypes: [null, ezP.Key.EXPRESSION, ezP.Key.FROM],
+    prefix: {
+      label: 'yield',
+      css_class: 'ezp-code-reserved',
+    },
+    m_1: {
+      key: ezP.Key.EXPRESSION,
+      wrap: ezP.T3.Expr.non_void_expression_list,
+    },
+    m_2: {
+      key: ezP.Key.FROM,
+      label: 'from',
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.Check.expression
+    },
+  },
+})
 
 /**
  * Initialize a block.
@@ -100,7 +50,41 @@ ezP.DelegateSvg.Manager.register('yield_expression')
  */
 ezP.DelegateSvg.Expr.yield_expression.prototype.initBlock = function (block) {
   ezP.DelegateSvg.Expr.yield_expression.superClass_.initBlock.call(this, block)
-  ezP.DelegateSvg.Expr.yield_expression.setFromInputDisabled(block, true)
+  var subtypes = this.getModel().inputs.subtypes
+  this.initProperty(block, ezP.Key.SUBTYPE, subtypes[0], function(block, oldValue, newValue) {
+    return subtypes.indexOf(newValue) >= 0
+  }, null, function(block, oldValue, newValue) {
+    var i = subtypes.indexOf(newValue)
+    block.ezp.setNamedInputDisabled(block, subtypes[1], i != 1)
+    block.ezp.setNamedInputDisabled(block, subtypes[2], i != 2)
+  })
+}
+
+/**
+ * Get the subtype of the block.
+ * The default implementation does nothing.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is return, when defined or not null.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.DelegateSvg.Expr.yield_expression.prototype.getSubtype = function (block) {
+  return block.ezp.getProperty(block, ezP.Key.SUBTYPE)
+}
+
+/**
+ * Set the subtype of the block.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is expected.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return true if the receiver supports subtyping, false otherwise
+ */
+ezP.DelegateSvg.Expr.yield_expression.prototype.setSubtype = function (block, subtype) {
+  var subtypes = this.getModel().inputs.subtypes
+  return block.ezp.setProperty(block, ezP.Key.SUBTYPE, goog.isNumber(subtype)? subtypes[subtype]: subtype)
 }
 
 /**
@@ -108,7 +92,7 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.initBlock = function (block) {
  * @param {!Blockly.Block} block to be translated.
  * For subclassers eventually
  */
-ezP.DelegateSvg.Expr.yield_expression.prototype.toDom = function (block, element, optNoId) {
+ezP.DelegateSvg.Expr.yield_expression.prototype.XtoDom = function (block, element, optNoId) {
   var yorn = ezP.DelegateSvg.Expr.yield_expression.getFromInputDisabled(block)
   if (yorn) {
     // create a list element
@@ -134,7 +118,7 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.toDom = function (block, element
  * @param {!Blockly.Block} block to be initialized.
  * For subclassers eventually
  */
-ezP.DelegateSvg.Expr.yield_expression.prototype.fromDom = function (block, xml) {
+ezP.DelegateSvg.Expr.yield_expression.prototype.XfromDom = function (block, xml) {
   if (xml.getAttribute('mode') === 'list') {
     ezP.DelegateSvg.Expr.yield_expression.setFromInputDisabled(block, true)
   }
@@ -168,32 +152,6 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.fromDom = function (block, xml) 
 }
 
 /**
- * Disable the from input.
- * @param {!Blockly.Block} block The block.
- * @param {!boolean} yorn.
- * @private
- */
-ezP.DelegateSvg.Expr.yield_expression.getFromInputDisabled = function (block) {
-  return block.getInput(ezP.Key.FROM).ezp.disabled_
-}
-
-/**
- * Disable the from input.
- * @param {!Blockly.Block} block The block.
- * @param {!boolean} yorn.
- * @private
- */
-ezP.DelegateSvg.Expr.yield_expression.setFromInputDisabled = function (block, yorn) {
-  Blockly.Events.setGroup(true)
-  var old = block.ezp.isRendering
-  block.ezp.isRendering = true
-  block.ezp.setNamedInputDisabled(block, ezP.Key.FROM, yorn)
-  block.ezp.setNamedInputDisabled(block, ezP.Key.LIST, !yorn)
-  block.ezp.isRendering = old
-  Blockly.Events.setGroup(false)
-}
-
-/**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @param {!ezP.MenuManager} mgr, mgr.menu is the menu to populate.
@@ -201,28 +159,32 @@ ezP.DelegateSvg.Expr.yield_expression.setFromInputDisabled = function (block, yo
  */
 ezP.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (block, mgr) {
   if (block.ezp.locked_) {
-    return false
+    return
   }
-  var yorn = ezP.DelegateSvg.Expr.yield_expression.getFromInputDisabled(block)
-  var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-    ezP.Do.createSPAN('yield from', 'ezp-code-reserved'),
-    goog.dom.createTextNode(' …'),
+  var current = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
+  var subtypes = this.getModel().inputs.subtypes
+  var F = function(content, k) {
+    var menuItem = new ezP.MenuItem(content, function() {
+      block.ezp.setProperty(block, ezP.Key.SUBTYPE, k)
+    })
+    mgr.addChild(menuItem, true)
+    menuItem.setEnabled(k !== current)
+  }
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
+      goog.dom.createTextNode('yield'),
+    ), subtypes[0]
   )
-  var menuItem = new ezP.MenuItem(content, function() {
-    ezP.DelegateSvg.Expr.yield_expression.setFromInputDisabled(block, false)
-  })
-  menuItem.setEnabled(yorn)
-  mgr.addChild(menuItem, true)
-  var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-    ezP.Do.createSPAN('yield', 'ezp-code-reserved'),
-    goog.dom.createTextNode(' …'),
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN('yield ', 'ezp-code-reserved'),
+      goog.dom.createTextNode('…'),
+    ), subtypes[1]
   )
-  var menuItem = new ezP.MenuItem(content, function() {
-    ezP.DelegateSvg.Expr.yield_expression.setFromInputDisabled(block, true)
-  })
-  menuItem.setEnabled(!yorn)
-  mgr.addChild(menuItem, true)
-  return true
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      ezP.Do.createSPAN('yield from', 'ezp-code-reserved'),
+      goog.dom.createTextNode(' …'),
+    ), subtypes[2]
+  )
+  mgr.shouldSeparate()
 }
 
 /**
@@ -243,21 +205,20 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = func
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.yield_atom = function (prototypeName) {
-  ezP.DelegateSvg.Expr.yield_atom.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.prefix = {
-    label: '(',
-  }
-  this.model__.inputs.suffix = {
-    label: ')',
-  }
-  this.outputModel__ = {
-    awaitable: true,
-    check: ezP.T3.Expr.yield_atom,
-  }
-}
-goog.inherits(ezP.DelegateSvg.Expr.yield_atom, ezP.DelegateSvg.Expr.yield_expression)
-ezP.DelegateSvg.Manager.register('yield_atom')
+ezP.DelegateSvg.Manager.makeSubclass('yield_atom', {
+  inputs: {
+    prefix: {
+      label: '(',
+    },
+    m_1: {
+      key: ezP.Key.EXPRESSION,
+      wrap: ezP.T3.Expr.yield_expression,
+    },
+    suffix: {
+      label: ')',
+    },
+  },
+})
 
 /**
  * Class for a DelegateSvg, yield_stmt.
@@ -266,15 +227,50 @@ ezP.DelegateSvg.Manager.register('yield_atom')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.yield_stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.yield_stmt.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.m_3 = {
-    insert: ezP.T3.Expr.yield_expression
+ezP.DelegateSvg.Manager.makeSubclass('yield_stmt', {
+  inputs: {
+    insert: ezP.T3.Expr.yield_expression,
   }
-}
-goog.inherits(ezP.DelegateSvg.Stmt.yield_stmt, ezP.DelegateSvg.Stmt)
-ezP.DelegateSvg.Manager.register('yield_stmt')
+})
 
+/**
+ * Initialize a block.
+ * @param {!Blockly.Block} block to be initialized..
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Stmt.yield_stmt.prototype.initBlock = function (block) {
+  ezP.DelegateSvg.Expr.yield_expression.superClass_.initBlock.call(this, block)
+  var subtypes = this.getModel().inputs.subtypes
+  this.initProperty(block, ezP.Key.SUBTYPE, subtypes[0], function(block, oldValue, newValue) {
+    return subtypes.indexOf(newValue) >= 0
+  }, null, function(block, oldValue, newValue) {
+    var i = subtypes.indexOf(newValue)
+    block.ezp.setNamedInputDisabled(block, subtypes[1], i != 1)
+    block.ezp.setNamedInputDisabled(block, subtypes[2], i != 2)
+  })
+}
+
+/**
+ * Get the subtype of the block.
+ * The default implementation does nothing.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is return, when defined or not null.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return None
+ */
+ezP.DelegateSvg.Stmt.yield_stmt.prototype.getSubtype = ezP.DelegateSvg.Expr.yield_expression.prototype.getSubtype
+
+/**
+ * Set the subtype of the block.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is expected.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype Is a function.
+ * @return true if the receiver supports subtyping, false otherwise
+ */
+ezP.DelegateSvg.Stmt.yield_stmt.prototype.setSubtype = ezP.DelegateSvg.Expr.yield_expression.prototype.setSubtype
 
 /**
  * Populate the context menu for the given block.
@@ -283,6 +279,12 @@ ezP.DelegateSvg.Manager.register('yield_stmt')
  * @private
  */
 ezP.DelegateSvg.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var yorn = ezP.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_.call(this, block, mgr)
-  return ezP.DelegateSvg.Expr.yield_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr) || yorn
+  ezP.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_.call(this, block, mgr)
+  return ezP.DelegateSvg.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
 }
+
+ezP.DelegateSvg.Yield.T3s = [
+  ezP.T3.Expr.yield_expression,
+  ezP.T3.Expr.yield_atom,
+  ezP.T3.Stmt.yield_stmt,
+]

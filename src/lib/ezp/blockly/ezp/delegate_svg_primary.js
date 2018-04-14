@@ -158,7 +158,7 @@ ezP.DelegateSvg.Manager.makeSubclass('call_stmt', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('builtin_call_expr', {
   inputs: {
-    builtins: ['range', 'list', 'len', 'sum'],
+    subtypes: ['range', 'list', 'len', 'sum'],
     m_1: {
       label: '',
       css_class: 'ezp-code-builtin',
@@ -180,9 +180,9 @@ ezP.DelegateSvg.Manager.makeSubclass('builtin_call_expr', {
  */
 ezP.DelegateSvg.Expr.builtin_call_expr.prototype.initBlock = function (block) {
   ezP.DelegateSvg.Expr.builtin_call_expr.superClass_.initBlock.call(this, block)
-  var builtins = this.getModel().inputs.builtins
-  this.initProperty(block, ezP.Key.BUILTIN, builtins[0], function(block, oldValue, newValue) {
-    return builtins.indexOf(newValue)>=0
+  var subtypes = this.getModel().inputs.subtypes
+  this.initProperty(block, ezP.Key.SUBTYPE, subtypes[0], function(block, oldValue, newValue) {
+    return subtypes.indexOf(newValue)>=0
   }, null, function(block, oldValue, newValue) {
     var disabler = new ezP.Events.Disabler()
     var input = block.getInput(ezP.Key.ARGUMENTS)
@@ -201,7 +201,7 @@ ezP.DelegateSvg.Expr.builtin_call_expr.prototype.initBlock = function (block) {
  * @return None
  */
 ezP.DelegateSvg.Expr.builtin_call_expr.prototype.getSubtype = function (block) {
-  return this.getProperty(block, ezP.Key.BUILTIN)
+  return this.getProperty(block, ezP.Key.SUBTYPE)
 }
 
 /**
@@ -213,7 +213,7 @@ ezP.DelegateSvg.Expr.builtin_call_expr.prototype.getSubtype = function (block) {
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Expr.builtin_call_expr.prototype.setSubtype = function (block, subtype) {
-  return this.setProperty(block, ezP.Key.BUILTIN, subtype)
+  return this.setProperty(block, ezP.Key.SUBTYPE, subtype)
 }
 
 /**
@@ -223,16 +223,16 @@ ezP.DelegateSvg.Expr.builtin_call_expr.prototype.setSubtype = function (block, s
  * @private
  */
 ezP.DelegateSvg.Expr.builtin_call_expr.populateMenu = function (block, mgr) {
-  var builtins = block.ezp.getModel().inputs.builtins
-  var current = block.ezp.getProperty(block, ezP.Key.BUILTIN)
+  var subtypes = block.ezp.getModel().inputs.subtypes
+  var current = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
   var F = function(content, key) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setProperty(block, ezP.Key.BUILTIN, key)
+      block.ezp.setProperty(block, ezP.Key.SUBTYPE, key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)
   }
-  for (var i = 0, k;(k = builtins[i++]);) {
+  for (var i = 0, k;(k = subtypes[i++]);) {
     F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-builtin',
       goog.dom.createTextNode(k),
     ), k)
@@ -260,7 +260,7 @@ ezP.DelegateSvg.Expr.builtin_call_expr.prototype.populateContextMenuFirst_ = fun
  */
 ezP.DelegateSvg.Manager.makeSubclass('builtin_call_stmt', {
   inputs: {
-    builtins: ['range', 'list', 'len', 'sum'],
+    subtypes: ['range', 'list', 'len', 'sum'],
     m_1: {
       insert: ezP.T3.Expr.builtin_call_expr,
     },
@@ -286,9 +286,9 @@ ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.populateContextMenuFirst_ = fun
 ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.initBlock = function (block) {
   this.getModel = ezP.DelegateSvg.Expr.builtin_call_expr.prototype.getModel
   ezP.DelegateSvg.Stmt.builtin_call_stmt.superClass_.initBlock.call(this, block)
-  var builtins = this.getModel().inputs.builtins
-  this.initProperty(block, ezP.Key.BUILTIN, builtins[0], function(block, oldValue, newValue) {
-    return builtins.indexOf(newValue)>=0
+  var subtypes = this.getModel().inputs.subtypes
+  this.initProperty(block, ezP.Key.SUBTYPE, subtypes[0], function(block, oldValue, newValue) {
+    return subtypes.indexOf(newValue)>=0
   }, null, function(block, oldValue, newValue) {
     var disabler = new ezP.Events.Disabler()
     var input = block.getInput(ezP.Key.ARGUMENTS)
@@ -307,7 +307,7 @@ ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.initBlock = function (block) {
  * @return None
  */
 ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.getSubtype = function (block) {
-  return this.getProperty(block, ezP.Key.BUILTIN)
+  return this.getProperty(block, ezP.Key.SUBTYPE)
 }
 
 /**
@@ -319,7 +319,7 @@ ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.getSubtype = function (block) {
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.setSubtype = function (block, subtype) {
-  return this.setProperty(block, ezP.Key.BUILTIN, subtype)
+  return this.setProperty(block, ezP.Key.SUBTYPE, subtype)
 }
 
 ezP.DelegateSvg.Primary.T3s = [

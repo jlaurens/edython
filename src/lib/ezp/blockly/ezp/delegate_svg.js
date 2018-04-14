@@ -182,6 +182,43 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   block.setTooltip('')
   block.setHelpUrl('')
   var inputModel = this.getModel().inputs
+  var doInsert = function(type, isMain) {
+    var B = ezP.DelegateSvg.newBlockComplete(block.workspace, type)
+    if (B) {
+      // transfer input
+      var input
+      while ((input = B.inputList.shift(0))) {
+        block.inputList.push(input)
+        input.sourceBlock_ = block
+        if (input.connection) {
+          input.connection.sourceBlock_ = block
+        }
+        for (var j = 0, field;(field = input.fieldRow[j++]);) {
+          field.sourceBlock_ = block
+          if (field.textElement_) { // fields have no other element
+            block.getSvgRoot().appendChild(field.textElement_)
+            field.textElement_.tooltip = block
+          }
+        }
+      }
+      // xfer wrapped
+      if (B.ezp.wrappedInputs_ && B.ezp.wrappedInputs_.length) {
+        if (!this.wrappedInputs_) {
+          this.wrappedInputs_ = []
+        }
+        while ((input = B.ezp.wrappedInputs_.shift(0))) {
+          this.wrappedInputs_.push(input)
+        }
+      }
+      // xfer uiModel
+      var uiModel = B.ezp.uiModel// not yet used
+      if (isMain) {
+        this.getModel().inputs = B.getModel.inputs
+      }
+      B.dispose(true)
+      return uiModel
+    }
+  }
   var doOneModel = function(K) {
     var D = inputModel[K]
     if (D && Object.keys(D).length) {
@@ -193,37 +230,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       // first insert a base input model by creating a node
       // of a different type and transferring input ownership
       if ((v = D.insert)) {
-        var B = ezP.DelegateSvg.newBlockComplete(block.workspace, v)
-        if (B) {
-          // transfer input
-          var input
-          while ((input = B.inputList.shift(0))) {
-            block.inputList.push(input)
-            input.sourceBlock_ = block
-            if (input.connection) {
-              input.connection.sourceBlock_ = block
-            }
-            for (var j = 0, field;(field = input.fieldRow[j++]);) {
-              field.sourceBlock_ = block
-              if (field.textElement_) { // fields have no other element
-                block.getSvgRoot().appendChild(field.textElement_)
-                field.textElement_.tooltip = block
-              }
-            }
-          }
-          // xfer wrapped
-          if (B.ezp.wrappedInputs_ && B.ezp.wrappedInputs_.length) {
-            if (!this.wrappedInputs_) {
-              this.wrappedInputs_ = []
-            }
-            while ((input = B.ezp.wrappedInputs_.shift(0))) {
-              this.wrappedInputs_.push(input)
-            }
-          }
-          // xfer uiModel
-          out.insert = B.ezp.uiModel// not yet used
-          B.dispose(true)
-        }
+        out.uiModel = doInsert.call(this, v)
       }
       var recorder
       // the main field may determine the name of the input
@@ -368,15 +375,21 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     field.init()
     model.fields.async = field
   }
+  // if insert is one of the keys, 
   if (Object.keys(inputModel).length) {
-    FF.call(this, ezP.Key.MODIFIER)
-    FF.call(this, ezP.Key.PREFIX)
-    FF.call(this, ezP.Key.SUFFIX)
-    var keys = ['m_1', 'm_2', 'm_3']
-    for (var i = 0, K; K = keys[i++];) {
-      var p = doOneModel.call(this, K)
-      if (p) {
-        model[K] = p
+    var v
+    if ((v = inputModel.insert)) {
+      model = doInsert.call(this, v, true)
+    } else {
+      FF.call(this, ezP.Key.MODIFIER)
+      FF.call(this, ezP.Key.PREFIX)
+      FF.call(this, ezP.Key.SUFFIX)
+      var keys = ['m_1', 'm_2', 'm_3']
+      for (var i = 0, K; K = keys[i++];) {
+        var p = doOneModel.call(this, K)
+        if (p) {
+          model[K] = p
+        }
       }
     }
   }

@@ -115,6 +115,7 @@ ezP.Key = {
   FLUSH: 'flush',
 
   PREFIX: 'prefix',
+  SUFFIX: 'suffix',
 
   LABEL: 'label', // lowercase
   CODE: 'code', // lowercase
