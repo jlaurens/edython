@@ -966,7 +966,7 @@ ezP.DelegateSvg.Manager.makeSubclass('any', {
  * @return None
  */
 ezP.DelegateSvg.Expr.any.prototype.getValue = ezP.DelegateSvg.Expr.any.prototype.getSubtype = function (block) {
-  return this.uiModel.m_1.fields.input.getValue()
+  return this.uiModel.m_1.fields[ezP.Key.CODE].getValue()
 }
 
 /**
@@ -978,7 +978,7 @@ ezP.DelegateSvg.Expr.any.prototype.getValue = ezP.DelegateSvg.Expr.any.prototype
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Expr.any.prototype.setValue = ezP.DelegateSvg.Expr.any.prototype.setSubtype = function (block, subtype) {
-  this.uiModel.m_1.fields.input.setValue(subtype)
+  this.uiModel.m_1.fields[ezP.Key.CODE].setValue(subtype)
   return true
 }
 

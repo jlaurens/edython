@@ -270,6 +270,10 @@ ezP.FieldInput.prototype.render_ = function() {
   }
 };
 
+ezP.FieldInput.prototype.placeholderText = function() {
+  return ezP.Msg.PLACEHOLDER_CODE
+}
+
 /**
  * Class for an editable comment field.
  * @param {string} text The initial content of the field.

@@ -377,7 +377,7 @@ goog.provide('ezP.Xml.Literal')
  */
 ezP.Xml.Literal.domToBlock = function (element, workspace) {
   var prototypeName = element.nodeName.toLowerCase()
-  if (prototypeName !== ezP.T3.Xml.toDom.Expr.shortsrtingliteral) {
+  if (prototypeName.substring(4) !== ezP.T3.Xml.toDom.Expr.shortstringliteral) {
     return
   }
   var id = element.getAttribute('id')
@@ -1356,7 +1356,7 @@ ezP.Xml.SingleInput.toDom = function(block, element, optNoId) {
  * @return a dom element, void lists may return nothing
  */
 ezP.Xml.SingleInput.fromDom = function(block, xml) {
-  return ezP.Xml.Input.fromDom(block.inputList[0], xml.childNodes[0])
+  return xml.childNodes.length && ezP.Xml.Input.fromDom(block.inputList[0], xml.childNodes[0])
 }
 
 ezP.DelegateSvg.Expr.or_expr_star.prototype.xml = ezP.DelegateSvg.Expr.or_expr_star_star.prototype.xml = ezP.DelegateSvg.Expr.not_test_concrete.prototype.xml = ezP.Xml.SingleInput

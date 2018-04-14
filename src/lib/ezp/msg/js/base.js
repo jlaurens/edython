@@ -58,6 +58,10 @@ goog.require('ezP')
 
 /** @export */ ezP.Msg.PLACEHOLDER_NUMBER = "0"
 
+/** @export */ ezP.Msg.PLACEHOLDER_CODE = "Une instruction ici"
+
+/** @export */ ezP.Msg.PLACEHOLDER_IDENTIFIER = "nom"
+
 /** @export */ ezP.Msg.USE_SINGLE_QUOTE = "'...'"
 
 /** @export */ ezP.Msg.USE_DOUBLE_QUOTES = '"..."'

@@ -32,6 +32,10 @@ ezP.DelegateSvg.Manager.makeSubclass('identifier', {
   },
 })
 
+ezP.FieldIdentifier.prototype.placeholderText = function() {
+  return ezP.Msg.PLACEHOLDER_IDENTIFIER
+}
+
 /**
  * Some block should not be wrapped.
  * Default implementation returns false
