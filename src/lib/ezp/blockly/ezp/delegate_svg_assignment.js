@@ -430,7 +430,7 @@ ezP.DelegateSvg.AugAssign.model__ = {
       check: ezP.T3.Expr.Check.augtarget,
     },
     m_3: {
-      key: ezP.Key.LIST,
+      key: ezP.Key.EXPRESSION,
       wrap: ezP.T3.Expr.augassign_list_concrete,
     }
   }

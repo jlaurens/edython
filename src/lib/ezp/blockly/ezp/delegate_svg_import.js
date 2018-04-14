@@ -303,13 +303,15 @@ ezP.DelegateSvg.Manager.makeSubclass('import_stmt', {
  */
 ezP.DelegateSvg.Stmt.import_stmt.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Stmt.import_stmt.superClass_.initBlock.call(block.ezp, block)
-  var subtypes = this.getModel().inputs.subtypes
-  block.ezp.initProperty(block, ezP.Key.SUBTYPE, subtypes[0], function(block, oldValue, newValue) {
-    return subtypes.indexOf(newValue) >= 0
+  var inputs = this.getModel().inputs
+  var subtypes = inputs.subtypes
+  block.ezp.initProperty(block, ezP.Key.SUBTYPE, subtypes[inputs.initialSubtypeIndex || 0], function(block, oldValue, newValue) {
+    return block.ezp.getModel().inputs.subtypes.indexOf(newValue) >= 0
   }, null, function(block, oldValue, newValue) {
     Blockly.Events.setGroup(true)
     var old = block.ezp.isRendering
     block.ezp.isRendering = true
+    var subtypes = this.getModel().inputs.subtypes
     for (var i = 0, k; (k = subtypes[i++]);) {
       block.ezp.setNamedInputDisabled(block, k, (k !== newValue))
     }

@@ -32,8 +32,8 @@ goog.inherits(ezP.DelegateSvg.Operator, ezP.DelegateSvg.Expr)
 ezP.DelegateSvg.Operator.model__ = {
   inputs: {
     m_3: {
-      operator: '',
       key: ezP.Key.RHS,
+      operator: '',
       css_class: 'ezp-code',
       hole_value: 'name',
     },
@@ -50,7 +50,10 @@ ezP.DelegateSvg.Operator.model__ = {
 ezP.DelegateSvg.Operator.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Operator.superClass_.initBlock.call(block.ezp, block)
   var model = block.ezp.getModel()
-  block.ezp.initProperty(block, ezP.Key.OPERATOR, model.inputs.operators[model.inputs.initialOperator || 0], undefined, undefined, function(block, oldValue, newValue) {
+  var operators = model.inputs.operators
+  block.ezp.initProperty(block, ezP.Key.OPERATOR, model.inputs.operators[model.inputs.initialOperator || 0], function(block, oldValue, newValue) {
+    return block.ezp.getModel().inputs.operators.indexOf(newValue) >= 0
+  } , null, function(block, oldValue, newValue) {
     var disabler = new ezP.Events.Disabler()
     var field = block.ezp.uiModel.m_3.fields.operator
     field.setValue(newValue)

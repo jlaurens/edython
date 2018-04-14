@@ -234,13 +234,13 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       }
       var recorder
       // the main field may determine the name of the input
-      var doEditableFields = function(key, Ctor) {
-        if ((v = D[key]) !== undefined) {
-          out.input = block.appendDummyInput(k || key)
-          field = out.fields[key] = out.input.ezp.fields[key] = new Ctor(v)
+      var doEditableFields = function(name, Ctor) {
+        if ((v = D[name]) !== undefined) {
+          out.input = block.appendDummyInput(k || name)
+          field = out.fields[name] = out.input.ezp.fields[name] = new Ctor(v)
           recorder = function() {
             var ff = field
-            var kk = k && (k+'.'+key) || key
+            var kk = k && (k+'.'+name) || name
             ff.ezp.key = kk
             return function() {
               out.input.appendField(ff, kk)
@@ -257,11 +257,11 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       && !doEditableFields(ezP.Key.NUMBER, ezP.FieldNumber)
       && !doEditableFields(ezP.Key.STRING, ezP.FieldString)
       && !doEditableFields(ezP.Key.LONG_STRING, ezP.FieldLongString)
-      && !doEditableFields(ezP.Key.OPERATOR, ezP.FieldLabel)
       && ((D.check === undefined && D.wrap === undefined) || D.dummy)) {
         out.input = block.appendDummyInput(k)
       } else {
         if ((v = D.wrap)) {
+          goog.asserts.assert(!out.input, 'Wrapped blocks and editable fields are not compatable')
           k = k || v
           goog.asserts.assert(v, 'wrap must exist '+block.type+'.'+K)
           out.input = block.appendWrapValueInput(k, v, D.optional, D.hidden)
@@ -320,6 +320,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
           return FF(key)
         }
       }
+      doLabel(ezP.Key.OPERATOR)
       doLabel(ezP.Key.LABEL)
       doLabel(ezP.Key.START)
       recorder && recorder()

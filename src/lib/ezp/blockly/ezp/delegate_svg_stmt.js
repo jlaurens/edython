@@ -219,8 +219,8 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
   var targetC8n = c8n.targetConnection
   if (targetC8n) {
     targetC8n.disconnect()
-    if (targetC8n.checkType_(blockAfter.previousConnection)) {
-      targetC8n.connect(blockAfter.previousConnection)
+    if (targetC8n.checkType_(blockAfter.nextConnection)) {
+      targetC8n.connect(blockAfter.nextConnection)
     }
   }
   blockAfter.ezp.consolidate(blockAfter, true)

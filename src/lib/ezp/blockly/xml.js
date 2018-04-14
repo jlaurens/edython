@@ -457,7 +457,7 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
   // is it a literal or an augmented assignment ?
   else if ((block = ezP.Xml.Literal.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.Comparison.domToBlock(xmlBlock, workspace))
-  || (block = ezP.Xml.AugAssign.domToBlock(xmlBlock, workspace))
+  || (block = ezP.Xml.Group.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.AugAssign.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.Global.domToBlock(xmlBlock, workspace))) {
     return block
@@ -1287,6 +1287,9 @@ ezP.Xml.namedListInputToDom = function(block, name, element, optNoId) {
 ezP.Xml.namedListInputFromDom = function(block, name, element) {
   var input = block.getInput(name)
   if (input) {
+    if (!input.connection) {
+      console.warn('Missing connection')
+    }
     var target = input.connection.targetBlock()
     if (target) {
       for (var i = 0, child;(child = element.childNodes[i++]);) {
@@ -1658,6 +1661,27 @@ ezP.Xml.AugAssign.fromDom = function (block, element) {
 ezP.DelegateSvg.AugAssign.prototype.xml = ezP.Xml.AugAssign
 ezP.DelegateSvg.Stmt.augassign_numeric_stmt.prototype.xml = ezP.Xml.AugAssign
 ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.xml = ezP.Xml.AugAssign
+
+goog.require('ezP.DelegateSvg.Group')
+goog.provide('ezP.Xml.Group')
+
+/**
+ * Set the operator from the element's tagName.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Xml.Group.domToBlock = function (element, workspace) {
+  var name = element.tagName
+  if (name && name.toLowerCase() === ezP.DelegateSvg.Stmt.else_part.prototype.xmlTagName()) {
+    var type = ezP.T3.Stmt.else_part
+    var id = element.getAttribute('id')
+    var block = ezP.DelegateSvg.newBlockComplete(workspace, type, id)
+    ezP.Xml.fromDom(block, element)
+    return block
+  }
+}
+
 
 
 goog.require('ezP.DelegateSvg.Parameters')
