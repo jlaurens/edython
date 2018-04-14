@@ -295,6 +295,7 @@ class Formatter:
                 self.append('  {}: [ // count {}'.format(t.name, len(checks)))
                 for tt in sorted(checks, key=lambda t: (t.n, t.name)):
                     self.append(template.format(tt.name))
+                self.append(template.format(self.types.get_type('any').name))
                 self.append('  ],')
         self.append('}')
         self.append('\n// same checks')

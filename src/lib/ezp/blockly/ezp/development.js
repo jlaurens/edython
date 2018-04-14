@@ -434,6 +434,7 @@ ezP.DelegateSvg.Expr.comprehension.workspaceBlocks,
 )
 
 goog.require('ezP.DelegateSvg.Expr'),
+goog.require('ezP.DelegateSvg.Literal'),
 goog.require('ezP.DelegateSvg.Operator'),
 goog.require('ezP.DelegateSvg.Argument'),
 goog.require('ezP.DelegateSvg.Assignment'),
@@ -454,6 +455,7 @@ goog.require('ezP.DelegateSvg.Yield'),
 
 ezP.DelegateSvg.T3s = ezP.Do.arraysMerged(
   ezP.DelegateSvg.Expr.T3s,
+  ezP.DelegateSvg.Literal.T3s,
   ezP.DelegateSvg.Operator.T3s,
   ezP.DelegateSvg.Argument.T3s,
   ezP.DelegateSvg.Assignment.T3s,
