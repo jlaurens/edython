@@ -351,7 +351,8 @@ ezP.Connection.prototype.isConnectionAllowed = function(candidate,
 
 /**
  * The type checking mechanism is fine grained compared to blockly's.
- * If a connection 
+ * The check_ is used more precisely.
+ * For example, elif blocks cannot connect to the suite connection, only the next connection.
  * @param {!Blockly.Connection} otherConnection Connection to compare against.
  * @return {boolean} True if the connections share a type.
  * @private
@@ -371,8 +372,20 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
     var checkB = c8nB.check_
     if (c8nA.ezp.name_) {
       // c8nA is the connection of an input
-      // connections are vertical (next<->previous)
-      if (checkA) {
+      // connections are inline
+      if (c8nA.type === Blockly.NEXT_STATEMENT) {
+        if (c8nB.type === Blockly.PREVIOUS_STATEMENT) {
+          if (checkB) {
+            // B cannot be a root statement
+            return false
+          }
+          if (checkA && checkA.indexOf(typeB) < 0) {
+            return false
+          }
+          return true
+        }
+        return false
+      } else if (checkA) {
         if (checkB) {
           for (var i = 0, t;(t = checkA[i++]);) {
             if (checkB.indexOf(t) >= 0) {
@@ -389,8 +402,20 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
     } /* if (c8nA.ezp.name_) */
     if (c8nB.ezp.name_) {
       // c8nB is the connection of an input
-      // connections are vertical (next<->previous)
-      if (checkB) {
+      // connections are inline
+      if (c8nB.type === Blockly.NEXT_STATEMENT) {
+        if (c8nA.type === Blockly.PREVIOUS_STATEMENT) {
+          if (checkA) {
+            // A cannot be a root statement
+            return false
+          }
+          if (checkB && checkB.indexOf(typeA) < 0) {
+            return false
+          }
+          return true
+        }
+        return false
+      } else if (checkB) {
         if (checkA) {
           for (var i = 0, t;(t = checkB[i++]);) {
             if (checkA.indexOf(t) >= 0) {
