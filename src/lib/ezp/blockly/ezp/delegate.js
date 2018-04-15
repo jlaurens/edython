@@ -355,6 +355,132 @@ ezP.Delegate.Manager = function () {
 ezP.Delegate.Manager.registerAll(ezP.T3.Expr, ezP.Delegate)
 ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.Delegate)
 
+
+/**
+ * Whether the named property for the given block exists.
+ * Undo compliant.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {boolean} deep Whether to unlock statements too.
+ * @return the number of block locked
+ */
+ezP.Delegate.prototype.hasProperty = function (block, key) {
+  return !!block.ezp.properties[key+'_']
+}
+
+/**
+ * Get the named property for the given block.
+ * Undo compliant.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {boolean} deep Whether to unlock statements too.
+ * @return the number of block locked
+ */
+ezP.Delegate.prototype.getProperty = function (block, key) {
+  var holder = block.ezp.properties[key+'_']
+  return holder && holder.value
+}
+
+/**
+ * Set the named property for the given block.
+ * Undo compliant.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {boolean} deep Whether to unlock statements too.
+ * @return the number of block locked
+ */
+ezP.Delegate.prototype.setProperty = function (block, key, newValue) {
+  var holder = block.ezp.properties[key+'_']
+  if (!holder) {
+    return false
+  }
+  var oldValue = holder.value
+  if (oldValue == newValue) {
+    return false
+  }
+  if (holder.validate && !holder.validate.call(block.ezp, block, oldValue, newValue)) {
+    return false
+  }
+  if (holder.willChange) {
+    holder.willChange.call(block.ezp, block, oldValue, newValue)
+  }
+  if (Blockly.Events.isEnabled()) {
+    Blockly.Events.fire(new Blockly.Events.BlockChange(
+    block, ezP.Const.Event.property+':'+key, null, oldValue, newValue))
+  }
+  holder.value = newValue
+  if (holder.didChange) {
+    holder.didChange.call(block.ezp, block, oldValue, newValue)
+  }
+  block.render()
+  return true
+}
+
+/**
+ * Declares and init the named property for the given block.
+ * value is an object.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} key Whether to unlock statements too.
+ * @param {Object} value.
+ * @param {function} validate.
+ * @param {function} willChange.
+ * @param {function} didChange.
+ * @return the number of block locked
+ */
+ezP.Delegate.prototype.initProperty = function (block, key, value, validate, willChange, didChange) {
+  var k = key+'_'
+  var holder = block.ezp.properties[k] || (block.ezp.properties[k] = {})
+  holder.value = value
+  if (validate && goog.isFunction(validate)) {
+    holder.validate = validate
+  } else {
+    delete holder.validate
+  }
+  if (willChange && goog.isFunction(willChange)) {
+    holder.willChange = willChange
+  } else {
+    delete holder.willChange
+  }
+  if (didChange && goog.isFunction(didChange)) {
+    holder.didChange = didChange
+    didChange.call(block.ezp, block, undefined, value)
+  } else {
+    delete holder.didChange
+  }
+}
+
+/**
+ * Get the subtype of the block.
+ * The subtype of a block is used to fine tune the block typing
+ * mechanism.
+ * 
+ * The default implementation return a void string.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is return, when defined or not null.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return ''
+ */
+ezP.DelegateSvg.prototype.getSubtype = function (block) {
+  return ''
+}
+
+/**
+ * Set the subtype of the block.
+ * The default implementation does nothing.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is expected.
+ * The default implementation return false.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} subtype is a function.
+ * @return true if the receiver supports subtyping, false otherwise
+ */
+ezP.DelegateSvg.prototype.setSubtype = function (block, subtype) {
+  return false
+}
+
 /**
  * The python type of the owning block.
  */
@@ -783,16 +909,6 @@ ezP.Delegate.prototype.getParentInput = function(block) {
 }
 
 /**
- * Convert the block to python code.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
- * @constructor
- */
-ezP.Delegate.prototype.toPython = function (block) {
-  goog.asserts.assert(false, 'Missing toPython implementation for '+block.type)
-}
-
-/**
  * Returns the total number of code lines for that node and the node below.
  * One atomic instruction is one line.
  * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
@@ -1021,98 +1137,4 @@ ezP.Delegate.prototype.inputEnumerator = function (block, all) {
   return ezP.Do.Enumerator(block.inputList, all? undefined: function(x) {
     return !x.ezp.disabled_
   })
-}
-
-/**
- * Whether the named property for the given block exists.
- * Undo compliant.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {boolean} deep Whether to unlock statements too.
- * @return the number of block locked
- */
-ezP.Delegate.prototype.hasProperty = function (block, key) {
-  return !!block.ezp.properties[key+'_']
-}
-
-/**
- * Get the named property the given block.
- * Undo compliant.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {boolean} deep Whether to unlock statements too.
- * @return the number of block locked
- */
-ezP.Delegate.prototype.getProperty = function (block, key) {
-  var holder = block.ezp.properties[key+'_']
-  return holder && holder.value
-}
-
-/**
- * Set the named property of the given block.
- * Undo compliant.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {boolean} deep Whether to unlock statements too.
- * @return the number of block locked
- */
-ezP.Delegate.prototype.setProperty = function (block, key, newValue) {
-  var holder = block.ezp.properties[key+'_']
-  if (!holder) {
-    return false
-  }
-  var oldValue = holder.value
-  if (oldValue == newValue) {
-    return false
-  }
-  if (holder.validate && !holder.validate.call(block.ezp, block, oldValue, newValue)) {
-    return false
-  }
-  if (holder.willChange) {
-    holder.willChange.call(block.ezp, block, oldValue, newValue)
-  }
-  if (Blockly.Events.isEnabled()) {
-    Blockly.Events.fire(new Blockly.Events.BlockChange(
-    block, ezP.Const.Event.property+':'+key, null, oldValue, newValue))
-  }
-  holder.value = newValue
-  if (holder.didChange) {
-    holder.didChange.call(block.ezp, block, oldValue, newValue)
-  }
-  block.render()
-  return true
-}
-
-/**
- * Init the named property of the given block.
- * Model is an object w.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} key Whether to unlock statements too.
- * @param {Object} value.
- * @param {function} validate.
- * @param {function} willChange.
- * @param {function} didChange.
- * @return the number of block locked
- */
-ezP.Delegate.prototype.initProperty = function (block, key, value, validate, willChange, didChange) {
-  var k = key+'_'
-  var holder = block.ezp.properties[k] || (block.ezp.properties[k] = {})
-  holder.value = value
-  if (validate && goog.isFunction(validate)) {
-    holder.validate = validate
-  } else {
-    delete holder.validate
-  }
-  if (willChange && goog.isFunction(willChange)) {
-    holder.willChange = willChange
-  } else {
-    delete holder.willChange
-  }
-  if (didChange && goog.isFunction(didChange)) {
-    holder.didChange = didChange
-    didChange.call(block.ezp, block, undefined, value)
-  } else {
-    delete holder.didChange
-  }
 }

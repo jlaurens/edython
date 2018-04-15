@@ -146,49 +146,6 @@ ezP.DelegateSvg.List.prototype.removeItems = function(block) {
 }
 
 /**
- * Convert the block to python code components.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
- * @param {!array} components the array of python code strings, will be joined to make the code.
- * @return the last element of components
- */
-ezP.DelegateSvg.List.prototype.toPythonExpressionComponents = function (block, components) {
-  this.consolidate(block)
-  var last = components[components.length-1]
-  var e8r = block.ezp.inputEnumerator(block)
-  while (e8r.next()) {
-    var c8n = e8r.here.connection
-    if (c8n) {
-      var target = c8n.targetBlock()
-      if (target) {
-        last = target.ezp.toPythonExpressionComponents(target, components)
-        // NEWLINE
-      } else if (!c8n.ezp.optional_ && !c8n.ezp.s7r_) {
-        last = '<MISSING ELEMENT>'
-        components.push(last)
-        // NEWLINE
-      } else {
-        for (var j = 0, field; (field = e8r.here.fieldRow[j++]);) {
-          var x = field.getText()
-          if (x.length) {
-            if (last && last.length) {
-              var mustSeparate = last[last.length-1].match(/[,;:]/)
-              var maySeparate = mustSeparate || ezP.XRE.id_continue.test(last[last.length-1])
-            }
-            if (mustSeparate || (maySeparate && ezP.XRE.id_continue.test(x[0]))) {
-              components.push(' ')
-            }
-            components.push(x)
-            last = x              
-          }
-        }
-      }
-    }
-  }
-  return last
-}
-
-/**
  * Class for a DelegateSvg, optional expression_list block.
  * This block may be sealed.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.

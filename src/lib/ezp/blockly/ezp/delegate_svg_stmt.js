@@ -140,16 +140,6 @@ ezP.DelegateSvg.Stmt.prototype.renderDrawInput_ = function (io) {
 }
 
 /**
- * Convert the block to python code.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
- * @return some python code
- */
-ezP.DelegateSvg.Stmt.prototype.toPython = function (block, is_deep) {
-  return this.toPythonStatement(block, '', is_deep)
-}
-
-/**
  * Insert a block above.
  * If the block's previous connection is connected,
  * connects the block above to it.

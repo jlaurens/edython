@@ -322,16 +322,6 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
 }
 
 /**
- * Convert the block to python code.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
- * @return some python code
- */
-ezP.DelegateSvg.Expr.prototype.toPython = function (block, is_deep) {
-  return this.toPythonExpression(block)
-}
-
-/**
  * Class for a DelegateSvg, proper_slice block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
