@@ -98,7 +98,9 @@ ezP.Delegate.Manager = function () {
       var from_d = from[k]
       // next is my test for a dictionary, hence my meaning of dictionary
       // in that context
-      if (goog.isNumber(from_d)) {
+      if (goog.isNull(from_d)) {
+        to[k] = from_d
+      } else if (goog.isNumber(from_d)) {
         to[k] = from_d
       } else if (from_d && Object.keys(from_d).length === Object.getOwnPropertyNames(from_d).length) {
         // we have a dictionary, do a mixin
@@ -198,13 +200,13 @@ ezP.Delegate.Manager = function () {
         if (!statement.previous) {
           statement.previous = {}
         }
-        if (!statement.previous.check) {
+        if (!statement.previous.check && !goog.isNull(statement.previous.check)) {
           statement.previous.check = ezP.T3.Stmt.Previous[key]
         }
         if (!statement.next) {
           statement.next = {}
         }
-        if (!statement.next.check) {
+        if (!statement.next.check && !goog.isNull(statement.next.check)) {
           statement.next.check = ezP.T3.Stmt.Next[key]
         }
       }
@@ -640,11 +642,11 @@ ezP.Delegate.prototype.initBlock = function (block) {
         ezp.didConnect = D.didConnect
       }
     }
-    if (D.next) {
+    if (D.next && D.next.check !== null) {
       block.setNextStatement(true, D.next.check)
       F(D.next, block.nextConnection)
     }
-    if (D.previous) {
+    if (D.previous && D.previous.check !== null) {
       block.setPreviousStatement(true, D.previous.check)
       F(D.previous, block.previousConnection)
     }

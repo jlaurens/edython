@@ -1072,7 +1072,6 @@ ezP.MenuManager.prototype.populate_before_after = function (block) {
     ezP.T3.Stmt.print_stmt,
     ezP.T3.Stmt.builtin_input_stmt,
   ]
-  var eventDisabler = ezP.Events.Disabler()
   var F = function(action, type) {
     return function() {
       // create a closure that catches the value of the loop variable
@@ -1109,6 +1108,7 @@ ezP.MenuManager.prototype.populate_before_after = function (block) {
     }
     return false
   }
+  var eventDisabler = ezP.Events.Disabler()
   try {
     if ((c8n = block.nextConnection)) {
       var targetC8n = c8n.targetConnection
