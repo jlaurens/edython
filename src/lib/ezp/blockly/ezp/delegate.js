@@ -98,7 +98,9 @@ ezP.Delegate.Manager = function () {
       var from_d = from[k]
       // next is my test for a dictionary, hence my meaning of dictionary
       // in that context
-      if (from_d && Object.keys(from_d).length === Object.getOwnPropertyNames(from_d).length) {
+      if (goog.isNumber(from_d)) {
+        to[k] = from_d
+      } else if (from_d && Object.keys(from_d).length === Object.getOwnPropertyNames(from_d).length) {
         // we have a dictionary, do a mixin
         var to_d = to[k]
         if (to_d) {

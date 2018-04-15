@@ -458,8 +458,8 @@ ezP.DelegateSvg.Manager.makeSubclass('not_test_concrete', {
 * @constructor
 */
 ezP.DelegateSvg.Manager.makeSubclass('builtin_object', {
-  values: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
   inputs: {
+    subtypes: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
     m_1: {
       key: ezP.Key.VALUE,
       label: 'True',
@@ -469,26 +469,45 @@ ezP.DelegateSvg.Manager.makeSubclass('builtin_object', {
 })
 
 /**
+ * Initialize the subtype.
+ * @param {!Blockly.Block} block to be initialized..
+ */
+ezP.DelegateSvg.Expr.builtin_object.prototype.initSubtype = function(block) {
+  this.setSubtype(block, block.ezp.uiModel.m_1.fields.label.getValue(block))
+}
+
+/**
+ * Initialize the subtype.
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
+ */
+ezP.DelegateSvg.Expr.builtin_object.prototype.didChangeSubtype = function(block, oldSubtype, newSubtype) {
+  ezP.DelegateSvg.Expr.builtin_object.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
+  block.ezp.uiModel.m_1.fields.label.setValue(newSubtype)
+}
+
+/**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
 ezP.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var field = this.uiModel.m_1.fields.label
-  var builtin = field.getValue()
-  var value, i = 0, values = this.getModel().values
-  while ((value = values[i++])) {
-    var menuItem = new ezP.MenuItem(
-      ezP.Do.createSPAN(value, 'ezp-code-reserved'), function() {
-        field.setValue(value)
-      })
-    menuItem.setEnabled(builtin !== value)
-    mgr.addChild(menuItem, true)
-  }
+  mgr.populateSubtypes(block)
   mgr.shouldSeparateInsert()
   ezP.DelegateSvg.Expr.builtin_object.superClass_.populateContextMenuFirst_.call(this, block, mgr)
   return true
+}
+
+/**
+ * Get the content for the menu item.
+ * @param {!Blockly.Block} block The block.
+ * @param {string} op op is the operator
+ * @private
+ */
+ezP.DelegateSvg.Expr.builtin_object.prototype.getContent = function (block, op) {
+  return ezP.Do.createSPAN(op, 'ezp-code-reserved')
 }
 
 /**
@@ -499,9 +518,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = functi
  * @param {string} subtype Is a function.
  * @return None
  */
-ezP.DelegateSvg.Expr.builtin_object.prototype.getValue = ezP.DelegateSvg.Expr.builtin_object.prototype.getSubtype = function (block) {
-  return this.uiModel.m_1.fields.label.getValue()
-}
+ezP.DelegateSvg.Expr.builtin_object.prototype.getValue = ezP.DelegateSvg.Expr.builtin_object.prototype.getSubtype
 
 /**
  * Set the subtype of the block.
@@ -511,10 +528,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.getValue = ezP.DelegateSvg.Expr.bu
  * @param {string} subtype Is a function.
  * @return true if the receiver supports subtyping, false otherwise
  */
-ezP.DelegateSvg.Expr.builtin_object.prototype.setValue = ezP.DelegateSvg.Expr.builtin_object.prototype.setSubtype = function (block, subtype) {
-  this.uiModel.m_1.fields.label.setValue(subtype)
-  return true
-}
+ezP.DelegateSvg.Expr.builtin_object.prototype.setValue = ezP.DelegateSvg.Expr.builtin_object.prototype.setSubtype
 
 /**
 * Class for a DelegateSvg, any object.

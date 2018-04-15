@@ -30,7 +30,8 @@ ezP.DelegateSvg.Manager.makeSubclass('target_star', {
       key: ezP.Key.EXPRESSION,
       label: '*',
       css_class: 'ezp-code-reserved',
-      check: ezP.T3.Expr.Check.target
+      check: ezP.T3.Expr.Check.target,
+      hole_value: 'target',
     },
   },
 })
@@ -218,7 +219,7 @@ ezP.DelegateSvg.Manager.makeSubclass('parenth_target_list', {
       label: ')',
     }
   },
-})
+}, ezP.DelegateSvg.Expr.target_list)
 
 /**
  * Class for a DelegateSvg, bracket_target_list block.
@@ -238,7 +239,7 @@ ezP.DelegateSvg.Manager.makeSubclass('bracket_target_list', {
       label: ']',
     }
   },
-})
+}, ezP.DelegateSvg.Expr.target_list)
 
 /**
  * Class for a DelegateSvg, assignment_expression block.
@@ -446,7 +447,7 @@ ezP.DelegateSvg.AugAssign.model__ = {
  */
 ezP.DelegateSvg.Manager.makeSubclass('augassign_numeric', {
   inputs: {
-    operators: ['+=','-=','*=','/=','//=','%=','**=','@='],
+    subtypes: ['+=','-=','*=','/=','//=','%=','**=','@='],
     m_3: {
       operator: '+=',
     },
@@ -463,7 +464,7 @@ ezP.DelegateSvg.Manager.makeSubclass('augassign_numeric', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('augassign_bitwise', {
   inputs: {
-    operators: [">>=", "<<=", "&=", "^=", "|="],
+    subtypes: [">>=", "<<=", "&=", "^=", "|="],
     m_3: {
       operator: '<<=',
     },

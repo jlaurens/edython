@@ -44,16 +44,38 @@ ezP.DelegateSvg.Operator.model__ = {
  * Create and initialize the various paths.
  * Called once at block creation time.
  * Should not be called directly
+ * The block implementation is created according to a dictionary
+ * input model available through `getModel().inputs`.
+ * The structure of that dictionary is detailled in the treatment flow
+ * below.
+ * @param {!Blockly.Block} block to be initialized..
+ */
+ezP.DelegateSvg.Operator.prototype.initBlock = function(block) {
+  ezP.DelegateSvg.Operator.superClass_.initBlock.call(this, block)
+  var field = block.ezp.uiModel.m_3.fields.operator
+  var value = field.getValue()
+  if (this.validateSubtype(block, value)) {
+    this.setSubtype(block, value)
+  } else {
+    field.setValue(this.getSubtype(block))
+  }
+}
+/**
+ * Create and initialize the various paths.
+ * Called once at block creation time.
+ * Should not be called directly
  * Declares the operator property.
  * @param {!Blockly.Block} block to be initialized.
  */
 ezP.DelegateSvg.Operator.prototype.didChangeSubtype = function(block, oldValue, newValue) {
-  var disabler = new ezP.Events.Disabler()
-  try {
-    var field = block.ezp.uiModel.m_3.fields.operator
-    field.setValue(newValue)
-  } finally {
-    disabler.stop()
+  var field = block.ezp.uiModel.m_3.fields.operator
+  if (newValue !== field.getValue()) {
+    var disabler = new ezP.Events.Disabler()
+    try {
+      field.setValue(newValue)
+    } finally {
+      disabler.stop()
+    }
   }
 }
 
@@ -85,30 +107,6 @@ ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
   return ezP.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
-/**
- * Get the subtype of the block.
- * The operator.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return None
- */
-ezP.DelegateSvg.Operator.prototype.getSubtype = function (block) {
-  return this.getProperty(block, ezP.Key.OPERATOR)
-}
-
-/**
- * Set the subtype of the block.
- * The operator.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return true if the receiver supports subtyping, false otherwise
- */
-ezP.DelegateSvg.Operator.prototype.setSubtype = function (block, subtype) {
-  return this.setProperty(block, ezP.Key.OPERATOR, subtype)
-}
-
 //////////////////////  u_expr_concrete  /////////////////////////
 
 /**
@@ -121,7 +119,7 @@ ezP.DelegateSvg.Operator.prototype.setSubtype = function (block, subtype) {
  */
 ezP.DelegateSvg.Manager.makeSubclass('u_expr_concrete', {
   inputs: {
-    operators: ['-', '+', '~'],
+    subtypes: ['-', '+', '~'],
     m_3: {
       operator: '-',
       check: ezP.T3.Expr.Check.u_expr
@@ -182,15 +180,16 @@ ezP.DelegateSvg.Binary.prototype.getContent = function (block, op) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Binary.makeSubclass = function(key, operators, check1, operator, check3) {
+ezP.DelegateSvg.Binary.makeSubclass = function(key, operators, check1, check3, operatorIndex) {
   ezP.DelegateSvg.Manager.makeSubclass(key, {
     inputs: {
-      operators: operators,
+      subtypes: operators,
+      subtypeIndex: operatorIndex || 0,
       m_1: {
         check: ezP.T3.Expr.Check[check1]
       },
       m_3: {
-        operator: operator,
+        operator: '',
         check: ezP.T3.Expr.Check[check3]
       },
     },
@@ -200,7 +199,6 @@ ezP.DelegateSvg.Binary.makeSubclass(
   'm_expr_concrete',
   ['*', '//', '/', '%', '@'],
   'm_expr',
-  '*',
   'u_expr',
 )
 
@@ -216,7 +214,6 @@ ezP.DelegateSvg.Binary.makeSubclass(
   'a_expr_concrete',
   ['+', '-'],
   'a_expr',
-  '+',
   'm_expr',
 )
 
@@ -232,7 +229,6 @@ ezP.DelegateSvg.Binary.makeSubclass(
   'shift_expr_concrete',
   ['<<', '>>'],
   'shift_expr',
-  '<<',
   'a_expr',
 )
 
@@ -248,7 +244,6 @@ ezP.DelegateSvg.Binary.makeSubclass(
   'and_expr_concrete',
   ['&'],
   'and_expr',
-  '&',
   'shift_expr',
 )
 
@@ -264,7 +259,6 @@ ezP.DelegateSvg.Binary.makeSubclass(
   'xor_expr_concrete',
   ['^'],
   'xor_expr',
-  '^',
   'and_expr',
 )
 
@@ -280,7 +274,6 @@ ezP.DelegateSvg.Binary.makeSubclass(
   'or_expr_concrete',
   ['|'],
   'or_expr',
-  '|',
   'or_expr',
 )
 
@@ -298,7 +291,6 @@ ezP.DelegateSvg.Binary.makeSubclass(
   'number_comparison',
   ['<', '>', '==', '>=', '<=', '!='],
   'comparison',
-  '<',
   'comparison',
 )
 
@@ -312,13 +304,19 @@ ezP.DelegateSvg.Binary.makeSubclass(
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Binary.makeSubclass(
-  'object_comparison',
-  ['is', 'is not', 'in', 'not in'],
-  'comparison',
-  'in',
-  'comparison',
-)
+ezP.DelegateSvg.Manager.makeSubclass('object_comparison', {
+  inputs: {
+    subtypes: ['is', 'is not', 'in', 'not in'],
+    subtypeIndex: 2,
+    m_1: {
+      check: ezP.T3.Expr.Check.comparison
+    },
+    m_3: {
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.Check.comparison
+    },
+  },
+}, ezP.DelegateSvg.Binary)
 
 /**
  * Get the content for the menu item.
@@ -338,13 +336,18 @@ ezP.DelegateSvg.Expr.object_comparison.prototype.getContent = function (block, o
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Binary.makeSubclass(
-  'or_test_concrete',
-  ['or'],
-  'or_test',
-  'or',
-  'and_test',
-)
+ezP.DelegateSvg.Manager.makeSubclass('or_test_concrete', {
+  inputs: {
+    subtypes: ['or'],
+    m_1: {
+      check: ezP.T3.Expr.Check.or_test
+    },
+    m_3: {
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.Check.and_test
+    },
+  },
+}, ezP.DelegateSvg.Binary)
 
 /**
  * Class for a DelegateSvg, and_test_concrete block.
@@ -354,13 +357,18 @@ ezP.DelegateSvg.Binary.makeSubclass(
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Binary.makeSubclass(
-  'and_test_concrete',
-  ['and'],
-  'and_test',
-  'and',
-  'not_test',
-)
+ezP.DelegateSvg.Manager.makeSubclass('and_test_concrete', {
+  inputs: {
+    subtypes: ['and'],
+    m_1: {
+      check: ezP.T3.Expr.Check.and_test
+    },
+    m_3: {
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.Check.not_test
+    },
+  },
+}, ezP.DelegateSvg.Binary)
 
 ///////// power ////////
 /**

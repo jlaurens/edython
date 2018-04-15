@@ -342,7 +342,7 @@ ezP.DelegateSvg.Manager.makeSubclass('set_display', {
       label: '}',
     },
   },
-}, ezP.DelegateSvg.Expr.starred_item_list_comprehensive)
+}, ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive)
 
 /**
  * Class for a DelegateSvg, key_datum_list_comprehensive block.

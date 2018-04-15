@@ -1239,7 +1239,7 @@ ezP.MenuManager.prototype.populate_wrap_alternate = function (block, key) {
 ezP.MenuManager.prototype.populateSubtypes = function (block) {
   var ezp = block.ezp
   var subtypes = ezp.getModel().inputs.subtypes
-  if (subtypes.length > 1) {
+  if (subtypes && subtypes.length > 1) {
     var current = ezp.getSubtype(block)
     var F = function(subtype) {
       var menuItem = new ezP.MenuItem(ezp.getContent(block, subtype), function() {

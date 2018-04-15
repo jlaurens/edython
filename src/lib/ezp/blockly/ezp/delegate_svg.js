@@ -403,11 +403,20 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   }
   this.eventsInit_ = true;
   // wait until the end to set the subtype because it causes rendering
+  this.initSubtype(block)
+}
 
+/**
+ * Initialize the subtype.
+ * @param {!Blockly.Block} block to be initialized..
+ */
+ezP.DelegateSvg.prototype.initSubtype = function(block) {
+  var inputModel = this.getModel().inputs
   if(inputModel.subtypes) {
     this.setSubtype(block, inputModel.subtypeIndex || 0)
   }
 }
+
 console.warn('implement async and await, see above awaitable and asyncable')
 /**
  * Revert operation of initBlock.
