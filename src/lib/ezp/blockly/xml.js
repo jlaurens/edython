@@ -459,6 +459,7 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
   || (block = ezP.Xml.Comparison.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.Group.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.AugAssign.domToBlock(xmlBlock, workspace))
+  || (block = ezP.Xml.Primary.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.Global.domToBlock(xmlBlock, workspace))) {
     return block
   } else {
@@ -1675,6 +1676,27 @@ ezP.Xml.Group.domToBlock = function (element, workspace) {
   var name = element.tagName
   if (name && name.toLowerCase() === ezP.DelegateSvg.Stmt.else_part.prototype.xmlTagName()) {
     var type = ezP.T3.Stmt.else_part
+    var id = element.getAttribute('id')
+    var block = ezP.DelegateSvg.newBlockComplete(workspace, type, id)
+    ezP.Xml.fromDom(block, element)
+    return block
+  }
+}
+
+goog.require('ezP.DelegateSvg.Primary')
+goog.provide('ezP.Xml.Primary')
+
+/**
+ * Set the operator from the element's tagName.
+ * @param {!Blockly.Block} block.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Xml.Primary.domToBlock = function (element, workspace) {
+  var name = element.tagName
+  if (name && name.toLowerCase() === ezP.DelegateSvg.Stmt.call_stmt.prototype.xmlTagName()) {
+    var input = element.getAttribute(ezP.Xml.INPUT)
+    var type = input? ezP.T3.Expr.call_expr: ezP.T3.Stmt.call_stmt
     var id = element.getAttribute('id')
     var block = ezP.DelegateSvg.newBlockComplete(workspace, type, id)
     ezP.Xml.fromDom(block, element)

@@ -1111,7 +1111,7 @@ ezP.Delegate.prototype.initProperty = function (block, key, value, validate, wil
   }
   if (didChange && goog.isFunction(didChange)) {
     holder.didChange = didChange
-    didChange(block, undefined, value)
+    didChange.call(block.ezp, block, undefined, value)
   } else {
     delete holder.didChange
   }
