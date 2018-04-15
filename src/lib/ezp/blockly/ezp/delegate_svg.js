@@ -1691,12 +1691,10 @@ ezP.DelegateSvg.getBestBlock = function (workspace, weight) {
   var smallest = Infinity, best
   for (var i = 0, top; (top = workspace.topBlocks_[i++]);) {
     var box = top.ezp.getBoundingRect(top)
-    console.log(top.type, box.toString(), box.getCenter().toString())
     var w = weight(box.getCenter())
     if (w < smallest) {
       smallest = w
       best = top
-      console.log('BETTER', smallest, best.type)
     }
   }
   return best

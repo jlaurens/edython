@@ -30,7 +30,7 @@ goog.inherits(ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
 
 ezP.DelegateSvg.Group.model__ = {
   inputs: {
-    m_3: {
+    suffix: {
       label: ':',
     },
   },

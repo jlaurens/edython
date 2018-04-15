@@ -486,7 +486,7 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
     block = ezP.DelegateSvg.newBlockComplete(workspace, prototypeName, id)
   }
   if (block) {
-    console.log('Block created from dom:', xmlBlock, block.type, block.id)
+//    console.log('Block created from dom:', xmlBlock, block.type, block.id)
     // then fill it based on the xml data
     ezP.Xml.fromDom(block, xmlBlock)
   }
