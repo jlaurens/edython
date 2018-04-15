@@ -357,8 +357,11 @@ ezP.MenuManager.prototype.populateLast = function (block) {
   menuItem = new ezP.MenuItem(
     ezP.Msg.FILL_DEEP_HOLES, function() {
       Blockly.Events.setGroup(true)
-      ezP.HoleFiller.fillDeepHoles(block.workspace, holes)
-      Blockly.Events.setGroup(false)
+      try {
+        ezP.HoleFiller.fillDeepHoles(block.workspace, holes)
+      } finally {
+        Blockly.Events.setGroup(false)
+      }
     })
     menuItem.setEnabled(holes.length > 0);
   this.addChild(menuItem, true)
@@ -367,8 +370,11 @@ ezP.MenuManager.prototype.populateLast = function (block) {
       menuItem = new ezP.MenuItem(ezP.Msg.UNLOCK_BLOCK,
         function(event) {
           Blockly.Events.setGroup(true)
-          block.ezp.unlock(block)
-          Blockly.Events.setGroup(false)
+          try {
+            block.ezp.unlock(block)
+          } finally {
+            Blockly.Events.setGroup(false)
+          }
         }
       )
       this.addChild(menuItem, true)
@@ -377,8 +383,11 @@ ezP.MenuManager.prototype.populateLast = function (block) {
       menuItem = new ezP.MenuItem(ezP.Msg.LOCK_BLOCK,
         function(event) {
           Blockly.Events.setGroup(true)
-          block.ezp.lock(block)
-          Blockly.Events.setGroup(false)
+          try {
+            block.ezp.lock(block)
+          } finally {
+            Blockly.Events.setGroup(false)
+          }
         }
       )
       this.addChild(menuItem, true)
@@ -599,20 +608,25 @@ ezP.MenuManager.prototype.handleActionLast = function (block, event) {
       }
       // unwrapped is the topmost block or the first unwrapped parent
       Blockly.Events.setGroup(true)
-      if (target === Blockly.selected && target != unwrapped) {
-        // this block was selected, select the block below or above before deletion
-        var c8n, target
-        if (((c8n = unwrapped.nextConnection) && (target = c8n.targetBlock())) || ((c8n = unwrapped.previousConnection) && (target = c8n.targetBlock()))) {
-          target.select()
-        } else if ((c8n = unwrapped.outputConnection) && (c8n = c8n.targetConnection)) {
-          target = c8n.sourceBlock_
-          target.select()
-          ezP.SelectedConnection.set(c8n)
+      var returnState = false
+      try {
+        if (target === Blockly.selected && target != unwrapped) {
+          // this block was selected, select the block below or above before deletion
+          var c8n, target
+          if (((c8n = unwrapped.nextConnection) && (target = c8n.targetBlock())) || ((c8n = unwrapped.previousConnection) && (target = c8n.targetBlock()))) {
+            target.select()
+          } else if ((c8n = unwrapped.outputConnection) && (c8n = c8n.targetConnection)) {
+            target = c8n.sourceBlock_
+            target.select()
+            ezP.SelectedConnection.set(c8n)
+          }
         }
+        unwrapped.dispose(true, true)
+        returnState = true
+      } finally {
+        Blockly.Events.setGroup(false)
       }
-      unwrapped.dispose(true, true)
-      Blockly.Events.setGroup(false)
-      return true
+      return returnState
     case ezP.ID.HELP:
     target.showHelp_()
       return true
@@ -1215,29 +1229,28 @@ ezP.MenuManager.prototype.populate_wrap_alternate = function (block, key) {
   return false
 }
 
-/////////////// OPERATORS
+/////////////// SUBTYPES
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @private
  */
-ezP.MenuManager.prototype.populateOperator = function (block) {
+ezP.MenuManager.prototype.populateSubtypes = function (block) {
   var ezp = block.ezp
-  var operators = ezp.getModel()
-  if ((operators = operators.input) && (operators = operators.operators) && operators.length > 1) {
-    var value = ezp.setProperty(block, ezP.Key.OPERATOR)
-    var F = function(op) {
-      var menuItem = new ezP.MenuItem(ezp.getContent(block, op), function() {
-        ezp.setProperty(block, ezP.Key.OPERATOR, op)
-        return
+  var subtypes = ezp.getModel().inputs.subtypes
+  if (subtypes.length > 1) {
+    var current = ezp.getSubtype(block)
+    var F = function(subtype) {
+      var menuItem = new ezP.MenuItem(ezp.getContent(block, subtype), function() {
+        ezp.setSubtype(block, subtype)
       })
-      menuItem.setEnabled(value != op)
+      menuItem.setEnabled(current != subtype)
       this.addChild(menuItem, true)
       goog.dom.classlist.add(menuItem.getElement().firstChild, 'ezp-code')
     }
-    for (var i = 0; i<operators.length; i++) {
-      F.call(this, operators[i])
+    for (var i = 0; i<subtypes.length; i++) {
+      F.call(this, subtypes[i])
     }
     return true
   }

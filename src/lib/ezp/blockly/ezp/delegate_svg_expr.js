@@ -91,27 +91,30 @@ ezP.DelegateSvg.Expr.prototype.canReplaceBlock = function (block, other) {
 ezP.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
   if (other) {
     Blockly.Events.setGroup(true)
-    console.log('**** replaceBlock', block, other)
-    var c8n = other.outputConnection
-    var its_xy = other.getRelativeToSurfaceXY();
-    var my_xy = block.getRelativeToSurfaceXY();
-    block.outputConnection.disconnect()
-    if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(block.outputConnection)) {
-      // the other block has an output connection that can connect to the block's one
-      var source = c8n.sourceBlock_
-      var selected = source.ezp.hasSelect(source)
-      // next operations may unselect the block
-      var old = source.ezp.consolidating_
-      c8n.connect(block.outputConnection)
-      source.ezp.consolidating_ = old
-      if (selected) {
-        source.select()
+    try {
+      console.log('**** replaceBlock', block, other)
+      var c8n = other.outputConnection
+      var its_xy = other.getRelativeToSurfaceXY();
+      var my_xy = block.getRelativeToSurfaceXY();
+      block.outputConnection.disconnect()
+      if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(block.outputConnection)) {
+        // the other block has an output connection that can connect to the block's one
+        var source = c8n.sourceBlock_
+        var selected = source.ezp.hasSelect(source)
+        // next operations may unselect the block
+        var old = source.ezp.consolidating_
+        c8n.connect(block.outputConnection)
+        source.ezp.consolidating_ = old
+        if (selected) {
+          source.select()
+        }
+      } else {
+        block.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y) 
       }
-    } else {
-      block.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y) 
+    } finally {
+      other.dispose(true)   
+      Blockly.Events.setGroup(false)
     }
-    other.dispose(true)   
-    Blockly.Events.setGroup(false)
   }
 }
 
@@ -274,46 +277,49 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
   var outputC8n = block.outputConnection
   if (parentInputC8n && parentInputC8n.checkType_(outputC8n)) {
     Blockly.Events.setGroup(true)
-    if (Blockly.Events.isEnabled()) {
-      Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
-    }
-    var targetC8n = parentInputC8n.targetConnection
-    if (targetC8n/* && targetC8n.isConnected()*/) {
-      console.log('input already connected, disconnect and dispose target')
-      var B = targetC8n.sourceBlock_
-      targetC8n.disconnect()
-      B.dispose(true)
-      B = undefined
-      targetC8n = undefined
-    }
-    var targetC8n = outputC8n.targetConnection
-    var bumper
-    if (targetC8n) {
-      targetC8n.disconnect()
-      if (parentBlock.outputConnection && targetC8n.checkType_(parentBlock.outputConnection)) {
-        targetC8n.connect(parentBlock.outputConnection)
-      } else {
-        bumper = targetC8n.sourceBlock_
-        var its_xy = bumper.getRelativeToSurfaceXY();
-        var my_xy = parentBlock.getRelativeToSurfaceXY();
-        parentBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)
+    try {
+      if (Blockly.Events.isEnabled()) {
+        Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
       }
-      targetC8n = undefined
-    } else {
-      var its_xy = block.getRelativeToSurfaceXY();
-      var my_xy = parentBlock.getRelativeToSurfaceXY();
-      parentBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+      var targetC8n = parentInputC8n.targetConnection
+      if (targetC8n/* && targetC8n.isConnected()*/) {
+        console.log('input already connected, disconnect and dispose target')
+        var B = targetC8n.sourceBlock_
+        targetC8n.disconnect()
+        B.dispose(true)
+        B = undefined
+        targetC8n = undefined
+      }
+      var targetC8n = outputC8n.targetConnection
+      var bumper
+      if (targetC8n) {
+        targetC8n.disconnect()
+        if (parentBlock.outputConnection && targetC8n.checkType_(parentBlock.outputConnection)) {
+          targetC8n.connect(parentBlock.outputConnection)
+        } else {
+          bumper = targetC8n.sourceBlock_
+          var its_xy = bumper.getRelativeToSurfaceXY();
+          var my_xy = parentBlock.getRelativeToSurfaceXY();
+          parentBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)
+        }
+        targetC8n = undefined
+      } else {
+        var its_xy = block.getRelativeToSurfaceXY();
+        var my_xy = parentBlock.getRelativeToSurfaceXY();
+        parentBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+      }
+      parentInputC8n.connect(outputC8n)
+      if (fill_holes) {
+        var holes = ezP.HoleFiller.getDeepHoles(parentBlock)
+        ezP.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
+      }
+      parentBlock.render()
+      if (bumper) {
+        bumper.bumpNeighbours_()
+      }  
+    } finally {
+      Blockly.Events.setGroup(false)
     }
-    parentInputC8n.connect(outputC8n)
-    if (fill_holes) {
-      var holes = ezP.HoleFiller.getDeepHoles(parentBlock)
-      ezP.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
-    }
-    parentBlock.render()
-    if (bumper) {
-      bumper.bumpNeighbours_()
-    }  
-    Blockly.Events.setGroup(false)
   } else {
     parentBlock.dispose(true)
     parentBlock = undefined

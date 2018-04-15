@@ -140,21 +140,24 @@ ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (bl
   var vm = workspace.getVariableById(oldVarId)
   if (vm) {
     Blockly.Events.setGroup(true)
-    var blocks = workspace.getAllBlocks()
-    var newVarId = VM.getId()
-    // Iterate through every block and update name.
-    for (var i = 0; i < blocks.length; i++) {
-      blocks[i].replaceVarId(oldVarId, newVarId)
-    }
-    workspace.deleteVariableInternal_(vm)
-    var allBlocks = workspace.getAllBlocks()
-    for (var i = 0, B; B = allBlocks[i++];) {
-      var field = block.ezp.uiModel.m_1.fields.identifier
-      if (field && field.getValue() === oldName) {
-        field.setValue(VM.name)
+    try {
+      var blocks = workspace.getAllBlocks()
+      var newVarId = VM.getId()
+      // Iterate through every block and update name.
+      for (var i = 0; i < blocks.length; i++) {
+        blocks[i].replaceVarId(oldVarId, newVarId)
       }
-    }    
-    Blockly.Events.setGroup(false)
+      workspace.deleteVariableInternal_(vm)
+      var allBlocks = workspace.getAllBlocks()
+      for (var i = 0, B; B = allBlocks[i++];) {
+        var field = block.ezp.uiModel.m_1.fields.identifier
+        if (field && field.getValue() === oldName) {
+          field.setValue(VM.name)
+        }
+      }    
+    } finally {
+      Blockly.Events.setGroup(false)
+    }
   }
 }
 

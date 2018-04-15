@@ -162,7 +162,7 @@ ezP.Block.prototype.appendWrapValueInput = function(name, prototypeName, optiona
     this.ezp.wrappedInputs_.push([input, prototypeName])
   }
   return input
-};
+}
 
 /**
  * Set whether this block returns a value.
@@ -178,4 +178,4 @@ ezP.Block.prototype.setOutput = function(newBoolean, opt_check) {
       'ezP output connection must be types for '+this.type)
   }
   ezP.Block.superClass_.setOutput.call(this, newBoolean, opt_check)
-};
+}

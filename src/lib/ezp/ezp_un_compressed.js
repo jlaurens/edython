@@ -7115,8 +7115,8 @@ goog.dom.removeNode(this.svgDottedLine_);
 this.svgDottedLine_=void 0;
 ezP.DelegateSvg.superClass_.disposeInternal.call(this)};
 
-ezP.DelegateSvg.prototype.render=function(a,b){if(!this.isRendering){Blockly.Field.startCache();
-this.isRendering=!0;
+ezP.DelegateSvg.prototype.render=function(a,b){if(!this.skipRendering){Blockly.Field.startCache();
+this.skipRendering=!0;
 this.minWidth=a.width=0;
 a.rendered=!0;
 this.willRender_(a);
@@ -7125,7 +7125,7 @@ this.layoutConnections_(a);
 a.renderMoveConnections_();
 if(!1!==b){var c=a.getParent();
 c?c.render(!0):a.workspace.resizeContents()}this.didRender_(a);
-this.isRendering=!1;
+this.skipRendering=!1;
 Blockly.Field.stopCache()}};
 
 ezP.DelegateSvg.prototype.willRender_=function(a){a.isShadow()?(Blockly.utils.addClass(this.svgPathShape_,"ezp-path-shadow-shape"),Blockly.utils.removeClass(this.svgPathShape_,"ezp-path-shape"),Blockly.utils.addClass(this.svgPathContour_,"ezp-path-shadow-contour"),Blockly.utils.removeClass(this.svgPathContour_,"ezp-path-contour"),Blockly.utils.addClass(this.svgPathCollapsed_,"ezp-path-shadow-collapsed"),Blockly.utils.removeClass(this.svgPathCollapsed_,"ezp-path-collapsed")):(Blockly.utils.addClass(this.svgPathShape_,

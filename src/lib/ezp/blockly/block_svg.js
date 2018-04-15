@@ -38,8 +38,16 @@ ezP.BlockSvg = function (workspace, prototypeName, optId) {
 }
 goog.inherits(ezP.BlockSvg, Blockly.BlockSvg)
 
+/**
+ * Initialize the block.
+ * Let the delegate do the job.
+ * No rendering of that block is done during that process,
+ * linked blocks may render though.
+ */
 ezP.BlockSvg.prototype.init = function() {
+  this.ezp.skipRendering = true
   this.ezp.initBlock(this)
+  this.ezp.skipRendering = false
 }
 
 /**
@@ -52,6 +60,18 @@ ezP.BlockSvg.prototype.initSvg = function() {
   this.ezp.postInitSvg(this)
   this.ezp.initSvgWrap(this)
 };
+
+/**
+ * Returns the named field from a block.
+ * When not found using the inherited method,
+ * ask the delegate.
+ * NB: not all fields belong to an input.
+ * @param {string} name The name of the field.
+ * @return {Blockly.Field} Named field, or null if field does not exist.
+ */
+ezP.BlockSvg.prototype.getField = function(name) {
+  return ezP.BlockSvg.superClass_.getField.call(this, name) || this.ezp.getField(this, name)
+}
 
 ezP.BlockSvg.CORNER_RADIUS = 3
 
@@ -432,19 +452,22 @@ ezP.DelegateSvg.prototype.onMouseUp_ = function(block, e) {
  */
 ezP.BlockSvg.prototype.dispose = function(healStack, animate) {
   Blockly.Events.setGroup(true)
-  if (this === Blockly.selected) {
-    // this block was selected, select the block below or above before deletion
-    var c8n, target
-    if (((c8n = this.nextConnection) && (target = c8n.targetBlock())) || ((c8n = this.previousConnection) && (target = c8n.targetBlock()))) {
-      target.select()
-    } else if ((c8n = this.outputConnection) && (c8n = c8n.targetConnection)) {
-      target = c8n.sourceBlock_
-      target.select()
-      ezP.SelectedConnection.set(c8n)
+  try {
+    if (this === Blockly.selected) {
+      // this block was selected, select the block below or above before deletion
+      var c8n, target
+      if (((c8n = this.nextConnection) && (target = c8n.targetBlock())) || ((c8n = this.previousConnection) && (target = c8n.targetBlock()))) {
+        target.select()
+      } else if ((c8n = this.outputConnection) && (c8n = c8n.targetConnection)) {
+        target = c8n.sourceBlock_
+        target.select()
+        ezP.SelectedConnection.set(c8n)
+      }
     }
+    ezP.BlockSvg.superClass_.dispose.call(this, healStack, animate)
+  } finally {
+    Blockly.Events.setGroup(false)
   }
-  ezP.BlockSvg.superClass_.dispose.call(this, healStack, animate)
-  Blockly.Events.setGroup(false)
 }
 
 /**

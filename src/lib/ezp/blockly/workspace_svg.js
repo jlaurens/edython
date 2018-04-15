@@ -244,22 +244,25 @@ Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function(workspace
   var y = offset.y
   var i = 0
   Blockly.Events.setGroup(true)
-  for (; i<types.length; i++) {
-    this.addElementInWorkspaceBlocks(workspaceXMLElement, types[i], x, y)
-    if (++n<n_col) {
-      x += step.x
-      y += step.y
-    } else {
-      n = 0
+  try {
+    for (; i<types.length; i++) {
+      this.addElementInWorkspaceBlocks(workspaceXMLElement, types[i], x, y)
+      if (++n<n_col) {
+        x += step.x
+        y += step.y
+      } else {
+        n = 0
+        x = offset.x
+        y += step.y
+      }
+    }
+    if (n < n_col) {
       x = offset.x
       y += step.y
     }
+  } finally {
+    Blockly.Events.setGroup(false)
   }
-  if (n < n_col) {
-    x = offset.x
-    y += step.y
-  }
-  Blockly.Events.setGroup(false)
   return {x: x, y: y}
 }
 
@@ -293,48 +296,51 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
     }
     if (targetC8n  && c8n.checkType_(targetC8n)) {
       Blockly.Events.setGroup(true)
-      if (Blockly.Events.isEnabled()) {
-        Blockly.Events.fire(new Blockly.Events.BlockCreate(block))
-      }
-      if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
-        // the pasted block must move before it is connected
-        // otherwise the newly created block will attract the old one
-        // resulting in a move of the existing connection
-        // 1) get the location of c8n in the workspace
-        var xy = c8n.offsetInBlock_.clone()
-        var xy_block = c8n.sourceBlock_.getRelativeToSurfaceXY()
-        xy.translate(xy_block.x, xy_block.y)
-        // This is where the targetC8n should be once the
-        // connection has been made
-        var xyxy = targetC8n.offsetInBlock_.clone()
-        xy_block = targetC8n.sourceBlock_.getRelativeToSurfaceXY()
-        xyxy.translate(xy_block.x, xy_block.y)
-        // This is where the targetC8n is
-        xyxy.scale(-1)
-        xy.translate(xyxy.x, xyxy.y)
-        targetC8n.sourceBlock_.moveBy(xy.x, xy.y)
-      }
-      c8n.connect(targetC8n)
-      if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
-        targetC8n = block.nextConnection
-      }
-      block.select()
-      if (c8n.type === Blockly.INPUT_VALUE) {
-        var parent = block
-        do {
-           var e8r = parent.ezp.inputEnumerator(parent)
-           while (e8r.next()) {
-            if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && ! c8n.ezp.optional_ && !c8n.targetConnection) {
-              ezP.SelectedConnection.set(c8n)
-              parent = null
-              break
+      try {
+        if (Blockly.Events.isEnabled()) {
+          Blockly.Events.fire(new Blockly.Events.BlockCreate(block))
+        }
+        if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
+          // the pasted block must move before it is connected
+          // otherwise the newly created block will attract the old one
+          // resulting in a move of the existing connection
+          // 1) get the location of c8n in the workspace
+          var xy = c8n.offsetInBlock_.clone()
+          var xy_block = c8n.sourceBlock_.getRelativeToSurfaceXY()
+          xy.translate(xy_block.x, xy_block.y)
+          // This is where the targetC8n should be once the
+          // connection has been made
+          var xyxy = targetC8n.offsetInBlock_.clone()
+          xy_block = targetC8n.sourceBlock_.getRelativeToSurfaceXY()
+          xyxy.translate(xy_block.x, xy_block.y)
+          // This is where the targetC8n is
+          xyxy.scale(-1)
+          xy.translate(xyxy.x, xyxy.y)
+          targetC8n.sourceBlock_.moveBy(xy.x, xy.y)
+        }
+        c8n.connect(targetC8n)
+        if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
+          targetC8n = block.nextConnection
+        }
+        block.select()
+        if (c8n.type === Blockly.INPUT_VALUE) {
+          var parent = block
+          do {
+            var e8r = parent.ezp.inputEnumerator(parent)
+            while (e8r.next()) {
+              if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && ! c8n.ezp.optional_ && !c8n.targetConnection) {
+                ezP.SelectedConnection.set(c8n)
+                parent = null
+                break
+              }
             }
-          }
-        } while (parent && (parent = parent.getSurroundParent(parent)))
-      } else if ((c8n = block.nextConnection)) {
-        ezP.SelectedConnection.set(c8n)
+          } while (parent && (parent = parent.getSurroundParent(parent)))
+        } else if ((c8n = block.nextConnection)) {
+          ezP.SelectedConnection.set(c8n)
+        }
+      } finally {
+        Blockly.Events.setGroup(false)
       }
-      Blockly.Events.setGroup(false)
       return
     } else if (block) {
       block.dispose()

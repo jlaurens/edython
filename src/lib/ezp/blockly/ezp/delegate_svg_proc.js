@@ -93,30 +93,39 @@ ezP.DelegateSvg.Stmt.decorator_stmt.prototype.initBlock = function(block) {
     return subtypes.indexOf(newValue) >= 0
   }, null, function(block, oldValue, newValue) {
     Blockly.Events.setGroup(true)
-    var old = block.ezp.isRendering
-    block.ezp.isRendering = true
-    block.ezp.setNamedInputDisabled(block, ezP.Key.ARGUMENTS, (ezP.Key.ARGUMENTS != newValue))
-    block.ezp.isRendering = old
-    Blockly.Events.setGroup(false)
+    try {
+      var old = block.ezp.skipRendering
+      block.ezp.skipRendering = true
+      block.ezp.setNamedInputDisabled(block, ezP.Key.ARGUMENTS, (ezP.Key.ARGUMENTS != newValue))
+      block.ezp.skipRendering = old
+    } finally {
+      Blockly.Events.setGroup(false)
+    }
   })
   var builtins = this.getModel().inputs.builtins
   block.ezp.initProperty(block, ezP.Key.BUILTIN, builtins[0], function(block, oldValue, newValue) {
     return builtins.indexOf(newValue) >= 0
   }, null, function(block, oldValue, newValue) {
     Blockly.Events.setGroup(true)
-    var old = block.ezp.isRendering
-    block.ezp.isRendering = true
-    block.ezp.setNamedInputDisabled(block, ezP.Key.NAME, !!newValue)
-    block.ezp.setNamedInputDisabled(block, ezP.Key.BUILTIN, !newValue)
-    var input = block.getInput(ezP.Key.BUILTIN)
-    var field = input.ezp.fields.start
-    if (newValue) {
-      var disabler = new ezP.Events.Disabler()
-      field.setValue(newValue)
-      disabler.stop()
+    try {
+      var old = block.ezp.skipRendering
+      block.ezp.skipRendering = true
+      block.ezp.setNamedInputDisabled(block, ezP.Key.NAME, !!newValue)
+      block.ezp.setNamedInputDisabled(block, ezP.Key.BUILTIN, !newValue)
+      var input = block.getInput(ezP.Key.BUILTIN)
+      var field = input.ezp.fields.start
+      if (newValue) {
+        var disabler = new ezP.Events.Disabler()
+        try {
+          field.setValue(newValue)
+        } finally {
+          disabler.stop()
+        }
+      }
+      block.ezp.skipRendering = old
+    } finally {
+      Blockly.Events.setGroup(false)
     }
-    block.ezp.isRendering = old
-    Blockly.Events.setGroup(false)
   })
 }
 
@@ -237,11 +246,14 @@ ezP.DelegateSvg.Stmt.funcdef_part.prototype.initBlock = function(block) {
     return subtypes.indexOf(newValue) >= 0
   }, null, function(block, oldValue, newValue) {
     Blockly.Events.setGroup(true)
-    var old = block.ezp.isRendering
-    block.ezp.isRendering = true
-    block.ezp.setNamedInputDisabled(block, ezP.Key.TYPE, (ezP.Key.TYPE !== newValue))
-    block.ezp.isRendering = old
-    Blockly.Events.setGroup(false)
+    try {
+      var old = block.ezp.skipRendering
+      block.ezp.skipRendering = true
+      block.ezp.setNamedInputDisabled(block, ezP.Key.TYPE, (ezP.Key.TYPE !== newValue))
+      block.ezp.skipRendering = old
+    } finally {
+      Blockly.Events.setGroup(false)
+    }
   })
 }
 
@@ -321,11 +333,14 @@ ezP.DelegateSvg.Stmt.classdef_part.prototype.initBlock = function(block) {
     return subtypes.indexOf(newValue) >= 0
   }, null, function(block, oldValue, newValue) {
     Blockly.Events.setGroup(true)
-    var old = block.ezp.isRendering
-    block.ezp.isRendering = true
-    block.ezp.setNamedInputDisabled(block, ezP.Key.ARGUMENTS, (ezP.Key.ARGUMENTS !== newValue))
-    block.ezp.isRendering = old
-    Blockly.Events.setGroup(false)
+    try {
+      var old = block.ezp.skipRendering
+      block.ezp.skipRendering = true
+      block.ezp.setNamedInputDisabled(block, ezP.Key.ARGUMENTS, (ezP.Key.ARGUMENTS !== newValue))
+      block.ezp.skipRendering = old
+    } finally {
+      Blockly.Events.setGroup(false)
+    }
   })
 }
 

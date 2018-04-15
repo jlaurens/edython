@@ -74,21 +74,27 @@ ezP.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
     }
     var insert = function(key) {
       Blockly.Events.setGroup(true)
-      var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.identifier)
-      BB.ezp.setValue(BB, key)
-      var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.keyword_item)
-      B.getInput(ezP.Key.KEY).connection.connect(BB.outputConnection)
-      var c8n = list.inputList[list.inputList.length-1].connection
-      c8n.connect(B.outputConnection)  
-      block.ezp.consolidate(block)
-      Blockly.Events.setGroup(false)
+      try {
+        var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.identifier)
+        BB.ezp.setValue(BB, key)
+        var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.keyword_item)
+        B.getInput(ezP.Key.KEY).connection.connect(BB.outputConnection)
+        var c8n = list.inputList[list.inputList.length-1].connection
+        c8n.connect(B.outputConnection)  
+        block.ezp.consolidate(block)
+      } finally {
+        Blockly.Events.setGroup(false)
+      }
     }
     var remove = function(key) {
       Blockly.Events.setGroup(true)
-      var B = has[key].getParent()
-      B.unplug()
-      B.dispose()
-      Blockly.Events.setGroup(false)
+      try {
+        var B = has[key].getParent()
+        B.unplug()
+        B.dispose()
+      } finally {
+        Blockly.Events.setGroup(false)
+      }
     }
     var F = function(candidate) {
       var menuItem = new ezP.MenuItem(
@@ -152,22 +158,28 @@ ezP.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
     }
     var insert = function(key) {
       Blockly.Events.setGroup(true)
-      var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.identifier)
-      BB.ezp.setValue(BB, key)
-      var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.keyword_item)
-      B.getInput(ezP.Key.KEY).connection.connect(BB.outputConnection)
-      // we assume that inputList is not void
-      var c8n = list.inputList[list.inputList.length-1].connection
-      c8n.connect(B.outputConnection)  
-      block.ezp.consolidate(block)
-      Blockly.Events.setGroup(false)
+      try {
+        var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.identifier)
+        BB.ezp.setValue(BB, key)
+        var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.keyword_item)
+        B.getInput(ezP.Key.KEY).connection.connect(BB.outputConnection)
+        // we assume that inputList is not void
+        var c8n = list.inputList[list.inputList.length-1].connection
+        c8n.connect(B.outputConnection)  
+        block.ezp.consolidate(block)
+      } finally {
+        Blockly.Events.setGroup(false)
+      }
     }
     var remove = function(key) {
       Blockly.Events.setGroup(true)
-      var B = has[key].getParent()
-      B.unplug()
-      B.dispose()
-      Blockly.Events.setGroup(false)
+      try {
+        var B = has[key].getParent()
+        B.unplug()
+        B.dispose()
+      } finally {
+        Blockly.Events.setGroup(false)
+      }
     }
     var F = function(candidate) {
       var menuItem = new ezP.MenuItem(

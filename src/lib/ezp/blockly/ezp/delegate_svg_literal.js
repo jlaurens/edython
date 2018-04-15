@@ -185,6 +185,7 @@ goog.provide('ezP.DelegateSvg.Expr.shortliteral')
 
 /**
 * Class for a DelegateSvg, string litteral.
+* The subtype is the kind of delimiters used.
 * For ezPython.
 * @param {?string} prototypeName Name of the language object containing
 *     type-specific functions for this block.
@@ -192,15 +193,15 @@ goog.provide('ezP.DelegateSvg.Expr.shortliteral')
 */
 ezP.DelegateSvg.Manager.makeSubclass('shortliteral', {
   inputs: {
-    m_1: {
-      key: ezP.Key.PREFIX,
-      label: "",
+    subtypes: ["'", '"'],
+    prefix: {
+      label: '',
       css_class: 'ezp-code-reserved',
     },
     m_3: {
-      start: "'",
+      start: '',
       string: '',
-      end: "'",
+      end: '',
       css_class: 'ezp-code-reserved',
     },
   },
@@ -213,20 +214,21 @@ ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.shortstringliteral, ezP.De
 ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.shortbytesliteral, ezP.DelegateSvg.Expr.shortliteral)
 
 /**
- * Initialize a block.
- * @param {!Blockly.Block} block to be initialized..
- * For subclassers eventually
+ * Hook after the subtype change.
+ * Default implementation does nothing.
+ * Subclassers will take care of undo compliance.
+ * When undoing, care must be taken not to fire new events.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
  */
-ezP.DelegateSvg.Expr.shortliteral.prototype.initBlock = function (block) {
-  block.ezp.setupType(block)
-  ezP.DelegateSvg.Expr.shortliteral.superClass_.initBlock.call(this, block)
-  if (block.type === ezP.T3.Expr.shortbytesliteral) {
-    var field = this.uiModel.m_1.fields.label
-    var prefix = field.getValue()
-    if (prefix.toLowerCase().indexOf('b')<0) {
-      field.setValue(prefix + 'b')
-    }
-  }
+ezP.DelegateSvg.Expr.shortliteral.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
+  ezP.DelegateSvg.Expr.shortliteral.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
+  var start = this.uiModel.m_3.fields.start
+  var end = this.uiModel.m_3.fields.end
+  start.setValue(newSubtype)
+  end.setValue(newSubtype)
 }
 
 /**
@@ -236,23 +238,11 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.initBlock = function (block) {
  * @private
  */
 ezP.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr) {
-  var start = this.uiModel.m_3.fields.start
-  var end = this.uiModel.m_3.fields.end
+  mgr.populateSubtypes(block)
   var code = this.uiModel.m_3.fields.string
   var can_b = !!XRegExp.exec(code.getValue(), ezP.XRE.bytes)
-  var single = start.getText() === "'"
-  var menuItem = new ezP.MenuItem(
-    ezP.Do.createSPAN(single? ezP.Msg.USE_DOUBLE_QUOTES: ezP.Msg.USE_SINGLE_QUOTE, 'ezp-code'), function() {
-      Blockly.Events.setGroup(true)
-      var oldValue = start.getValue()
-      var newValue = single? '"': "'"
-      start.setValue(newValue)
-      end.setValue(newValue)
-      Blockly.Events.setGroup(false)
-    })
-  mgr.addChild(menuItem, true)
   mgr.separate()
-  var prefix = this.uiModel.m_1.fields.label
+  var prefix = this.uiModel.fields.prefix
   var oldValue = prefix.getValue()
   var insert = function (newValue) {
     switch(oldValue) {
@@ -336,6 +326,17 @@ ezP.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr)
   mgr.shouldSeparateInsert()
   return true
 }
+
+/**
+ * Get the content for the menu item.
+ * @param {!Blockly.Block} block The block.
+ * @param {string} op op is the operator
+ * @private
+ */
+ezP.DelegateSvg.Expr.shortliteral.prototype.getContent = function (block, subtype) {
+  return ezP.Do.createSPAN(subtype + '…' + subtype, 'ezp-code')
+}
+
 ezP.DelegateSvg.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (block, mgr) {
   ezP.DelegateSvg.Literal.literalPopulateContextMenuFirst_.call(this, block, mgr)
   ezP.DelegateSvg.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this,block, mgr)
@@ -368,7 +369,7 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.endEditingField = function (block, f
  */
 ezP.DelegateSvg.Expr.shortliteral.prototype.willRender_ = function (block) {
   ezP.DelegateSvg.Expr.shortliteral.superClass_.willRender_.call(this, block)
-  var field = this.uiModel.m_1.fields.label
+  var field = this.uiModel.fields.prefix
   field.setVisible(field.getValue().length)
 }
 
@@ -397,8 +398,12 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.fieldValueDidChange = function(block
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return None
  */
-ezP.DelegateSvg.Expr.shortliteral.prototype.getSubtype = function (block) {
-  return block.ezp.toPythonExpression(block)
+ezP.DelegateSvg.Expr.shortliteral.prototype.getValue = function (block) {
+  var prefix = this.uiModel.fields.prefix
+  var start = this.uiModel.m_3.fields.start
+  var code = this.uiModel.m_3.fields.string
+  var end = this.uiModel.m_3.fields.end
+  return [prefix.getValue(), start.getValue(), code.getValue(), end.getValue()].join('')
 }
 
 /**
@@ -411,11 +416,11 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.getSubtype = function (block) {
  * @param {string} subtype Is a function.
  * @return true if the receiver supports subtyping, false otherwise
  */
-ezP.DelegateSvg.Expr.shortliteral.prototype.setSubtype = function (block, subtype) {
+ezP.DelegateSvg.Expr.shortliteral.prototype.setValue = function (block, subtype) {
+  var prefix = this.uiModel.fields.prefix
   var start = this.uiModel.m_3.fields.start
-  var end = this.uiModel.m_3.fields.end
   var code = this.uiModel.m_3.fields.string
-  var prefix = this.uiModel.m_1.fields.label
+  var end = this.uiModel.m_3.fields.end
   var F = function(re, type) {
     var m = XRegExp.exec(subtype, re)
     if (m) {
@@ -436,6 +441,7 @@ goog.provide('ezP.DelegateSvg.Expr.longliteral')
 
 /**
 * Class for a DelegateSvg, docstring (expression).
+* The subtype is the kind of delimiters used.
 * For ezPython.
 * @param {?string} prototypeName Name of the language object containing
 *     type-specific functions for this block.
@@ -443,15 +449,15 @@ goog.provide('ezP.DelegateSvg.Expr.longliteral')
 */
 ezP.DelegateSvg.Manager.makeSubclass('longliteral', {
   inputs: {
-    m_1: {
-      key: ezP.Key.PREFIX,
-      label: "",
+    subtypes: ["'''", '"""'],
+    prefix: {
+      label: '',
       css_class: 'ezp-code-reserved',
     },
     m_3: {
-      start: "'''",
+      start: '',
       string: '',
-      end: "'''",
+      end: '',
       css_class: 'ezp-code-reserved',
     },
   },
@@ -462,6 +468,16 @@ ezP.DelegateSvg.Manager.makeSubclass('longliteral', {
 
 ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.longstringliteral, ezP.DelegateSvg.Expr.longliteral)
 ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.longbytesliteral, ezP.DelegateSvg.Expr.longliteral)
+
+ezP.DelegateSvg.Expr.longliteral.prototype.didChangeSubtype = ezP.DelegateSvg.Expr.shortliteral.prototype.didChangeSubtype
+
+/**
+ * Get the content for the menu item.
+ * @param {!Blockly.Block} block The block.
+ * @param {string} op op is the operator
+ * @private
+ */
+ezP.DelegateSvg.Expr.longliteral.prototype.getContent = ezP.DelegateSvg.Expr.shortliteral.prototype.getContent
 
 /**
  * Populate the context menu for the given block.
@@ -480,18 +496,14 @@ ezP.DelegateSvg.Expr.longliteral.prototype.populateContextMenuFirst_ = function 
  * @param {!Blockly.Block} block owner of the delegate.
  * @param {!Blockly.Field} field The field in editing mode.
  */
-ezP.DelegateSvg.Expr.longliteral.prototype.startEditingField = function (block, field) {
-  this.uiModel.m_3.fields.end.setVisible(false)
-}
+ezP.DelegateSvg.Expr.longliteral.prototype.startEditingField = ezP.DelegateSvg.Expr.shortliteral.prototype.startEditingField
 
 /**
  * On end editing.
  * @param {!Blockly.Block} block owner of the delegate.
  * @param {!Blockly.Field} field The field in editing mode.
  */
-ezP.DelegateSvg.Expr.longliteral.prototype.endEditingField = function (block, field) {
-  this.uiModel.m_3.fields.end.setVisible(true)
-}
+ezP.DelegateSvg.Expr.longliteral.prototype.endEditingField = ezP.DelegateSvg.Expr.shortliteral.prototype.endEditingField
 
 /**
  * Will draw the block. Default implementation does nothing.
@@ -501,7 +513,7 @@ ezP.DelegateSvg.Expr.longliteral.prototype.endEditingField = function (block, fi
  */
 ezP.DelegateSvg.Expr.longliteral.prototype.willRender_ = function (block) {
   ezP.DelegateSvg.Expr.longliteral.superClass_.willRender_.call(this, block)
-  var field = this.uiModel.m_1.fields.label
+  var field = this.uiModel.fields.prefix
   field.setVisible(field.getValue().length)
 }
 
@@ -530,9 +542,7 @@ ezP.DelegateSvg.Expr.longliteral.prototype.fieldValueDidChange = function(block,
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return None
  */
-ezP.DelegateSvg.Expr.longliteral.prototype.getSubtype = function (block) {
-  return this.uiModel.m_3.fields.string.getValue()
-}
+ezP.DelegateSvg.Expr.longliteral.prototype.getValue = ezP.DelegateSvg.Expr.shortliteral.prototype.getValue
 
 /**
  * Set the subtype of the block.
@@ -544,11 +554,11 @@ ezP.DelegateSvg.Expr.longliteral.prototype.getSubtype = function (block) {
  * @param {string} subtype Is a function.
  * @return true if the receiver supports subtyping, false otherwise
  */
-ezP.DelegateSvg.Expr.longliteral.prototype.setSubtype = function (block, subtype) {
+ezP.DelegateSvg.Expr.longliteral.prototype.setValue = function (block, subtype) {
+  var prefix = this.uiModel.fields.prefix
   var start = this.uiModel.m_3.fields.start
-  var end = this.uiModel.m_3.fields.end
   var code = this.uiModel.m_3.fields.string
-  var prefix = this.uiModel.m_1.fields.label
+  var end = this.uiModel.m_3.fields.end
   var F = function(re, type) {
     var m = XRegExp.exec(subtype, re)
     if (m) {
@@ -563,39 +573,6 @@ ezP.DelegateSvg.Expr.longliteral.prototype.setSubtype = function (block, subtype
   }
   return F(ezP.XRE.longstringliteral, ezP.T3.Expr.longstringliteral)
   || F(ezP.XRE.longbytesliteral, ezP.T3.Expr.longbytesliteral)
-}
-
-/**
- * Get the value of the block.
- * Used for simple blocks, form and to dom.
- * Default implementation returns the subtype.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {?string} value
- */
-ezP.DelegateSvg.Expr.longliteral.prototype.getValue = function (block) {
-  return block.ezp.toPythonExpression(block)
-}
-
-/**
- * Set the value of the block.
- * Used for simple blocks, form and to dom.
- * Default implementation sets the subtype.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {?string} value
- */
-ezP.DelegateSvg.Expr.longliteral.prototype.setValue = function (block, value) {
-  var del = "'''", text = value
-  if (value.length > 5) {
-    del = value.substr(0, 3)
-    if (del === '"""' || del === "'''") {
-      text = value.substr(3, value.length-6)
-    }
-  }
-  block.ezp.uiModel.m_3.fields.start.setValue(del)
-  block.ezp.uiModel.m_3.fields.end.setValue(del)
-  block.ezp.setSubtype(block, value) || block.ezp.setSubtype(block, text)
 }
 
 ezP.DelegateSvg.Literal.T3s = [

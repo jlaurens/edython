@@ -355,6 +355,103 @@ ezP.Delegate.Manager = function () {
 ezP.Delegate.Manager.registerAll(ezP.T3.Expr, ezP.Delegate)
 ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.Delegate)
 
+/**
+ * Get the subtype of the block.
+ * The subtype of a block is used to fine tune the block typing
+ * mechanism. For example, comparison blocks are using different
+ * comparison operators. There are two kinds of comparison blocks,
+ * one for numerical comparision, which subtype is one of the numerical
+ * comparision operators, and one for object comparision,
+ * which subtype is an other operator.
+ * 
+ * The default implementation return a void string.
+ * Subclassers may use this to fine tune their own settings.
+ * The only constrain is that a string is return, when defined or not null.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return ''
+ */
+ezP.Delegate.prototype.getSubtype = function (block) {
+  return this.subtype_
+}
+
+/**
+ * Validates the new subtype.
+ * Compares to the data of the model.
+ * The default implementation return false.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newSubtype
+ * @return true if newSubtype is acceptable, false otherwise
+ */
+ezP.Delegate.prototype.validateSubtype = function (block, newSubtype) {
+  var subtypes = block.ezp.getModel().inputs.subtypes
+  return !subtypes || subtypes.indexOf(newSubtype) >= 0
+}
+
+/**
+ * Hook before the subtype change.
+ * Default implementation does nothing.
+ * Subclassers will take care of undo compliance.
+ * When undoing, care must be taken not to fire new events.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
+ */
+ezP.Delegate.prototype.willChangeSubtype = function (block, oldSubtype, newSubtype) {
+  return
+}
+
+/**
+ * Hook after the subtype change.
+ * Default implementation does nothing.
+ * Subclassers will take care of undo compliance.
+ * When undoing, care must be taken not to fire new events.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
+ */
+ezP.Delegate.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
+}
+
+/**
+ * Set the subtype of the block.
+ * Undo compliant.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {Object} newSubtype  newSubtype is a string or an index.
+ * When not a string, this is the index of the subtype in the subtypes
+ * array in the model.
+ * @return true if the receiver has been modified, false otherwise
+ */
+ezP.Delegate.prototype.setSubtype = function (block, newSubtype) {
+  if (goog.isNumber(newSubtype)) {
+    var subtypes = this.getModel().inputs.subtypes
+    if (subtypes) {
+      newSubtype = subtypes[newSubtype]
+    }
+  }
+  if ((this.subtype_ === newSubtype) || (!this.validateSubtype(block, newSubtype))) {
+    return false
+  }
+  var oldSubtype = this.subtype_
+  Blockly.Events.setGroup(true)
+  try {
+    this.willChangeSubtype(block, oldSubtype, newSubtype)
+    if (Blockly.Events.isEnabled()) {
+      Blockly.Events.fire(new Blockly.Events.BlockChange(
+      block, ezP.Const.Event.SUBTYPE, null, oldSubtype, newSubtype))
+    }
+    this.subtype_ = newSubtype
+    this.didChangeSubtype(block, oldSubtype, newSubtype)
+    block.render() // render now or possibly later ?
+  } finally {
+    Blockly.Events.setGroup(false)
+  }
+  return true
+}
 
 /**
  * Whether the named property for the given block exists.
@@ -448,37 +545,6 @@ ezP.Delegate.prototype.initProperty = function (block, key, value, validate, wil
   } else {
     delete holder.didChange
   }
-}
-
-/**
- * Get the subtype of the block.
- * The subtype of a block is used to fine tune the block typing
- * mechanism.
- * 
- * The default implementation return a void string.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is return, when defined or not null.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return ''
- */
-ezP.DelegateSvg.prototype.getSubtype = function (block) {
-  return ''
-}
-
-/**
- * Set the subtype of the block.
- * The default implementation does nothing.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is expected.
- * The default implementation return false.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype is a function.
- * @return true if the receiver supports subtyping, false otherwise
- */
-ezP.DelegateSvg.prototype.setSubtype = function (block, subtype) {
-  return false
 }
 
 /**
@@ -1001,95 +1067,98 @@ ezP.Delegate.prototype.setDisabled = function (block, yorn) {
   }
   Blockly.Events.setGroup(true)
   var previous, next
-  if (yorn) {
-    block.setDisabled(true)
-    // Does it break next connections
-    if ((previous = block.previousConnection)
-    && (next = previous.targetConnection)
-    && next.ezp.getBlackConnection()) {
-      while ((previous = block.nextConnection)
-      && (previous = previous.targetConnection)
-      && (previous = previous.ezp.getBlackConnection())) {
-        if (next.checkType_(previous)) {
-          break
+  try {
+    if (yorn) {
+      block.setDisabled(true)
+      // Does it break next connections
+      if ((previous = block.previousConnection)
+      && (next = previous.targetConnection)
+      && next.ezp.getBlackConnection()) {
+        while ((previous = block.nextConnection)
+        && (previous = previous.targetConnection)
+        && (previous = previous.ezp.getBlackConnection())) {
+          if (next.checkType_(previous)) {
+            break
+          }
+          block = previous.getSourceBlock()
+          // No recursion
+          block.setDisabled(true)
         }
-        block = previous.getSourceBlock()
-        // No recursion
-        block.setDisabled(true)
       }
-    }
-  } else {
-    block.setDisabled(false)
-    // if the connection chain below this block is broken,
-    // try to activate some blocks
-    if ((next = block.nextConnection)) {
-      if ((previous = next.targetConnection)
-      && (previous = previous.ezp.getBlackConnection())
-      && !next.checkType_(previous)) {
-        // find  white block in the below chain that can be activated
-        // stop before the black connection found just above
-        previous = next.targetConnection
-        do {
-          var target = previous.getSourceBlock()
-          if (target.disabled) {
-            target.disabled = false
-            var check = next.checkType_(previous)
-            target.disabled = true
-            if (check) {
-              target.setDisabled(false)
-              if (!(next = target.nextConnection)) {
-                break
+    } else {
+      block.setDisabled(false)
+      // if the connection chain below this block is broken,
+      // try to activate some blocks
+      if ((next = block.nextConnection)) {
+        if ((previous = next.targetConnection)
+        && (previous = previous.ezp.getBlackConnection())
+        && !next.checkType_(previous)) {
+          // find  white block in the below chain that can be activated
+          // stop before the black connection found just above
+          previous = next.targetConnection
+          do {
+            var target = previous.getSourceBlock()
+            if (target.disabled) {
+              target.disabled = false
+              var check = next.checkType_(previous)
+              target.disabled = true
+              if (check) {
+                target.setDisabled(false)
+                if (!(next = target.nextConnection)) {
+                  break
+                }
               }
-            }
-          } else if (!target.ezp.isWhite(target)) {
-            // the black connection is reached, no need to go further
-            // but the next may have change and the checkType_ must
-            // be computed once again
-            if (!next.checkType_(previous)) {
-              target.unplug()
-              target.bumpNeighbours_();
-            }
-            break
-          }
-        } while ((previous = previous.ezp.getConnectionBelow()))
-      }
-    }
-    // now consolidate the chain above
-    if ((previous = block.previousConnection)) {
-      if ((next = previous.targetConnection)
-      && (next = next.ezp.getBlackConnection())
-      && !previous.checkType_(next)) {
-        // find  white block in the above chain that can be activated
-        // stop before the black connection found just above
-        next = previous.targetConnection
-        do {
-          var target = next.getSourceBlock()
-          if (target.disabled) {
-            target.disabled = false
-            var check = previous.checkType_(next)
-            target.disabled = true
-            if (check) {
-              target.setDisabled(false)
-              if (!(previous = target.previousConnection)) {
-                break
+            } else if (!target.ezp.isWhite(target)) {
+              // the black connection is reached, no need to go further
+              // but the next may have change and the checkType_ must
+              // be computed once again
+              if (!next.checkType_(previous)) {
+                target.unplug()
+                target.bumpNeighbours_();
               }
+              break
             }
-          } else if (!target.ezp.isWhite(target)) {
-            // the black connection is reached, no need to go further
-            // but the next may have change and the checkType_ must
-            // be computed once again
-            if (!next.checkType_(previous)) {
-              target = previous.getSourceBlock()
-              target.unplug()
-              target.bumpNeighbours_();
+          } while ((previous = previous.ezp.getConnectionBelow()))
+        }
+      }
+      // now consolidate the chain above
+      if ((previous = block.previousConnection)) {
+        if ((next = previous.targetConnection)
+        && (next = next.ezp.getBlackConnection())
+        && !previous.checkType_(next)) {
+          // find  white block in the above chain that can be activated
+          // stop before the black connection found just above
+          next = previous.targetConnection
+          do {
+            var target = next.getSourceBlock()
+            if (target.disabled) {
+              target.disabled = false
+              var check = previous.checkType_(next)
+              target.disabled = true
+              if (check) {
+                target.setDisabled(false)
+                if (!(previous = target.previousConnection)) {
+                  break
+                }
+              }
+            } else if (!target.ezp.isWhite(target)) {
+              // the black connection is reached, no need to go further
+              // but the next may have change and the checkType_ must
+              // be computed once again
+              if (!next.checkType_(previous)) {
+                target = previous.getSourceBlock()
+                target.unplug()
+                target.bumpNeighbours_();
+              }
+              break
             }
-            break
-          }
-        } while ((next = next.ezp.getConnectionAbove()))
+          } while ((next = next.ezp.getConnectionAbove()))
+        }
       }
     }
+  } finally {
+    Blockly.Events.setGroup(false)
   }
-  Blockly.Events.setGroup(false)
 }
 
 /**

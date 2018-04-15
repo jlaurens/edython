@@ -392,27 +392,30 @@ ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
     )
     mgr.addInsertChild(new ezP.MenuItem(content, function() {
       Blockly.Events.setGroup(true)
-      e8r.end()
-      while (e8r.previous()) {
-        var c8n = e8r.here.connection
-        if (c8n) {
-          if(c8n.targetConnection) {
-            continue
+      try {
+        e8r.end()
+        while (e8r.previous()) {
+          var c8n = e8r.here.connection
+          if (c8n) {
+            if(c8n.targetConnection) {
+              continue
+            }
+            var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, type)
+            if (BB.ezp.setValue) {
+              BB.ezp.setValue(BB, 'name')
+            } else {
+              BB.ezp.consolidate(BB, true)
+              var holes = ezP.HoleFiller.getDeepHoles(BB)
+              ezP.HoleFiller.fillDeepHoles(BB.workspace, holes)
+            }
+            c8n.connect(BB.outputConnection)
+            block.ezp.consolidate(block)
+            break
           }
-          var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, type)
-          if (BB.ezp.setValue) {
-            BB.ezp.setValue(BB, 'name')
-          } else {
-            BB.ezp.consolidate(BB, true)
-            var holes = ezP.HoleFiller.getDeepHoles(BB)
-            ezP.HoleFiller.fillDeepHoles(BB.workspace, holes)
-          }
-          c8n.connect(BB.outputConnection)
-          block.ezp.consolidate(block)
-          break
         }
+      } finally {
+        Blockly.Events.setGroup(false)
       }
-      Blockly.Events.setGroup(false)
     }))
   }
   var G = function(type, msg) {

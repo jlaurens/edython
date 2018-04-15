@@ -58,6 +58,9 @@ Blockly.Events.Change.prototype.run = function(forward) {
     case ezP.Const.Event.awaited:
       block.ezp.setAwaited(block, value)
       break;
+    case ezP.Const.Event.SUBTYPE:
+      block.ezp.setSubtype(block, value)
+      break;
     default:
       var m = XRegExp.exec(this.element, ezP.XRE.event_property)
       if (m) {

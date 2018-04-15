@@ -185,10 +185,13 @@ ezP.DelegateSvg.Expr.builtin_call_expr.prototype.initBlock = function (block) {
     return subtypes.indexOf(newValue)>=0
   }, null, function(block, oldValue, newValue) {
     var disabler = new ezP.Events.Disabler()
-    var input = block.getInput(ezP.Key.ARGUMENTS)
-    var field = input.ezp.fields.label
-    field.setValue(newValue)
-    disabler.stop()
+    try {
+      var input = block.getInput(ezP.Key.ARGUMENTS)
+      var field = input.ezp.fields.label
+      field.setValue(newValue)
+    } finally {
+      disabler.stop()
+    }
   })
 }
 
@@ -291,10 +294,13 @@ ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.initBlock = function (block) {
     return subtypes.indexOf(newValue)>=0
   }, null, function(block, oldValue, newValue) {
     var disabler = new ezP.Events.Disabler()
-    var input = block.getInput(ezP.Key.ARGUMENTS)
-    var field = input.ezp.fields.label
-    field.setValue(newValue)
-    disabler.stop()
+    try {
+      var input = block.getInput(ezP.Key.ARGUMENTS)
+      var field = input.ezp.fields.label
+      field.setValue(newValue)
+    } finally {
+      disabler.stop()
+    }
   })
 }
 

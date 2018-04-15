@@ -309,14 +309,17 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.initBlock = function(block) {
     return block.ezp.getModel().inputs.subtypes.indexOf(newValue) >= 0
   }, null, function(block, oldValue, newValue) {
     Blockly.Events.setGroup(true)
-    var old = block.ezp.isRendering
-    block.ezp.isRendering = true
-    var subtypes = this.getModel().inputs.subtypes
-    for (var i = 0, k; (k = subtypes[i++]);) {
-      block.ezp.setNamedInputDisabled(block, k, (k !== newValue))
+    try {
+      var old = block.ezp.skipRendering
+      block.ezp.skipRendering = true
+      var subtypes = this.getModel().inputs.subtypes
+      for (var i = 0, k; (k = subtypes[i++]);) {
+        block.ezp.setNamedInputDisabled(block, k, (k !== newValue))
+      }
+      block.ezp.skipRendering = old
+    } finally {
+      Blockly.Events.setGroup(false)
     }
-    block.ezp.isRendering = old
-    Blockly.Events.setGroup(false)
   })
 }
 

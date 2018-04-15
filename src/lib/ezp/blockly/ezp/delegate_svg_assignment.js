@@ -648,17 +648,19 @@ ezP.DelegateSvg.AugAssign.populateContextMenuFirst_ = function (block, mgr) {
       var F = function(content) {
         mgr.addInsertChild(new ezP.MenuItem(content, function() {
             Blockly.Events.setGroup(true)
-            var BB = ezP.DelegateSvg.newBlockComplete(target.workspace, type)
-            if (BB.ezp.setValue) {
-              BB.ezp.setValue(BB, 'name')
-            } else {
-              var holes = ezP.HoleFiller.getDeepHoles(BB)
-              ezP.HoleFiller.fillDeepHoles(BB.workspace, holes)
+            try {
+              var BB = ezP.DelegateSvg.newBlockComplete(target.workspace, type)
+              if (BB.ezp.setValue) {
+                BB.ezp.setValue(BB, 'name')
+              } else {
+                var holes = ezP.HoleFiller.getDeepHoles(BB)
+                ezP.HoleFiller.fillDeepHoles(BB.workspace, holes)
+              }
+              input.connection.connect(BB.outputConnection)
+              target.ezp.consolidate(target)
+            } finally {
+              Blockly.Events.setGroup(false)
             }
-            input.connection.connect(BB.outputConnection)
-            target.ezp.consolidate(target)
-            Blockly.Events.setGroup(false)
-            return
           }))
       }
       type = ezP.T3.Expr.yield_expression_list
@@ -697,7 +699,7 @@ ezP.DelegateSvg.Expr.augassign_bitwise.prototype.populateContextMenuFirst_ = fun
 
 ezP.DelegateSvg.Stmt.augassign_numeric_stmt.prototype.populateContextMenuFirst_ =
 ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.populateContextMenuFirst_ = function(block, mgr) {
-  mgr.populateOperator(block)
+  mgr.populateSubtypes(block)
   ezP.DelegateSvg.AugAssign.populateContextMenuFirst_(block, mgr)
   return ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }

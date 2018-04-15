@@ -235,15 +235,15 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       var recorder
       // the main field may determine the name of the input
       var doEditableFields = function(name, Ctor) {
-        if ((v = D[name]) !== undefined) {
+        if (goog.isDefAndNotNull(v = D[name])) {
           out.input = block.appendDummyInput(k || name)
           field = out.fields[name] = out.input.ezp.fields[name] = new Ctor(v)
           recorder = function() {
             var ff = field
             var kk = k && (k+'.'+name) || name
-            ff.ezp.key = kk
             return function() {
               out.input.appendField(ff, kk)
+              ff.init()
             }
           } ()
           return field
@@ -306,17 +306,17 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       // Now come label fields
       var FF = function(key) {
         field = out.fields[key] = out.input.ezp.fields[key] = new ezP.FieldLabel(v)
-        field.ezp.key = k+'.'+key
-        out.input.appendField(field, field.ezp.key)
+        out.input.appendField(field, k && k+'.'+key || key)
         field.ezp.css_class = D.css_class
         field.ezp.css_style = D.css_style
+        field.init()
         return field
       }
       if ((v = D.dummy) !== undefined) {
         FF(ezP.Key.LABEL)
       }
       var doLabel = function(key) {
-        if ((v = D[key]) !== undefined) {
+        if (goog.isDefAndNotNull(v = D[key])) {
           return FF(key)
         }
       }
@@ -347,7 +347,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   var FF = function(key) {
     var v
     if ((D = inputModel[key])) {
-      if ((v = D['label'])) {
+      if (goog.isDefAndNotNull(v = D.label)) {
         field = new ezP.FieldLabel(v)
         field.ezp.css_class = D.css_class
         field.ezp.css_style = D.css_style
@@ -402,6 +402,11 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     })
   }
   this.eventsInit_ = true;
+  // wait until the end to set the subtype because it causes rendering
+
+  if(inputModel.subtypes) {
+    this.setSubtype(block, inputModel.subtypeIndex || 0)
+  }
 }
 console.warn('implement async and await, see above awaitable and asyncable')
 /**
@@ -450,6 +455,23 @@ ezP.DelegateSvg.prototype.postInitSvg = function(block) {
 }
 
 /**
+ * Returns the named field from a block.
+ * Only fields that do not belong to an input are searched for.
+ * @param {string} name The name of the field.
+ * @return {Blockly.Field} Named field, or null if field does not exist.
+ */
+ezP.DelegateSvg.prototype.getField = function(block, name) {
+  var fields = this.uiModel.fields
+  for(var key in fields) {
+    var field = fields[key]
+    if (field.name === name) {
+      return field
+    }
+  }
+  return null
+};
+
+/**
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
@@ -493,7 +515,7 @@ ezP.DelegateSvg.prototype.initSvgWrap = function(block) {
  *   If true, also render block's parent, grandparent, etc.  Defaults to true.
  */
 ezP.DelegateSvg.prototype.render = function (block, optBubble) {
-  if (this.isRendering) {
+  if (this.skipRendering) {
     return
   }
   // if (this.wrapped_ && !block.getParent()) {
@@ -502,7 +524,7 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
   //   block.dispose()
   //   return
   // }
-  this.isRendering = true
+  this.skipRendering = true
   Blockly.Field.startCache()
   this.minWidth = block.width = 0
   block.rendered = true
@@ -523,7 +545,7 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
     }
   }
   this.didRender_(block)
-  this.isRendering = false
+  this.skipRendering = false
   Blockly.Field.stopCache()
   // block.workspace.logAllConnections('didRender')
 }
@@ -985,7 +1007,7 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       var root = target.getSvgRoot()
       if (!!root) {
         root.setAttribute('transform', 'translate(' + io.cursorX + ', 0)')
-        if (!target.ezp.isRendering) {
+        if (!target.ezp.skipRendering) {
           target.ezp.shouldSeparateField = (target.ezp.wrapped_ ||target.ezp.locked_) && io.shouldSeparateField
         }
         target.render()
@@ -1295,10 +1317,10 @@ ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValu
         block, ezP.Const.Event.input_disable, name, oldValue, newValue));
     }
     input.ezp.disabled_ = newValue
-    var current = this.isRendering
-    this.isRendering = true
+    var current = this.skipRendering
+    this.skipRendering = true
     input.setVisible(!newValue)
-    this.isRendering = current
+    this.skipRendering = current
     if (input.isVisible()) {
       for (var __ = 0, field; (field = input.fieldRow[__]); ++__) {
         if (field.getText().length>0) {
@@ -1501,21 +1523,25 @@ ezP.HoleFiller.fillDeepHoles = function(workspace, holes) {
  */
 ezP.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
   var input = block.getInput(key)
+  var returnState = false
   if (input) {
     var target = input.connection.targetBlock()
     var oldType = target? target.type: undefined
     if (newType != oldType) {
       Blockly.Events.setGroup(true)
-      if (target) {
-        target.unplug()
-        target.dispose()
+      try {
+        if (target) {
+          target.unplug()
+          target.dispose()
+        }
+        this.completeWrappedInput_(block, input, newType)
+        returnState = true
+      } finally {
+        Blockly.Events.setGroup(false)        
       }
-      this.completeWrappedInput_(block, input, newType)
-      Blockly.Events.setGroup(false)
-      return true
     }
   }
-  return false
+  return returnState
 }
 
 /**
@@ -2244,43 +2270,138 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
   var prototypeName = action.type || action
   // create a block out of the undo mechanism
   var disabler = new ezP.Events.Disabler()
-  var candidate = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
-  if (!candidate) {
-    disabler.stop()
-    return
-  }
-  var c8n_N = action.subtype || subtype
-  if (candidate.ezp.setSubtype(candidate, c8n_N)) {
-    c8n_N = undefined
-  }
-  var c8n, otherC8n, foundC8n
-  var fin = function(prepare) {
-    disabler.stop()
-    Blockly.Events.setGroup(true)
-    if (Blockly.Events.isEnabled()) {
-      Blockly.Events.fire(new Blockly.Events.BlockCreate(candidate))
+  var conclude = function() {
+    if (disabler) {
+      disabler.stop()
     }
-    candidate.render()
-    prepare && prepare()
-    otherC8n.connect(c8n)
-    candidate.select()
-    candidate.bumpNeighbours_()
-    Blockly.Events.setGroup(false)
-    return candidate
   }
-  if ((otherC8n = ezP.SelectedConnection.get())) {
-    var otherSource = otherC8n.getSourceBlock()
-    if (otherC8n.type === Blockly.INPUT_VALUE) {
-      if ((c8n = candidate.outputConnection)&& c8n.checkType_(otherC8n)) {
+  try {
+    var candidate = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
+    if (!candidate) {
+      disabler.stop()
+      disabler = null
+      return
+    }
+    var c8n_N = action.subtype || subtype
+    if (candidate.ezp.setSubtype(candidate, c8n_N)) {
+      c8n_N = undefined
+    }
+    var c8n, otherC8n, foundC8n
+    var fin = function(prepare) {
+      disabler.stop()
+      disabler = null
+      Blockly.Events.setGroup(true)
+      try {
+        if (Blockly.Events.isEnabled()) {
+          Blockly.Events.fire(new Blockly.Events.BlockCreate(candidate))
+        }
+        candidate.render()
+        prepare && prepare()
+        otherC8n.connect(c8n)
+        candidate.select()
+        candidate.bumpNeighbours_()
+      } finally {
+        Blockly.Events.setGroup(false)
+      }
+      return candidate
+    }
+    if ((otherC8n = ezP.SelectedConnection.get())) {
+      var otherSource = otherC8n.getSourceBlock()
+      if (otherC8n.type === Blockly.INPUT_VALUE) {
+        if ((c8n = candidate.outputConnection)&& c8n.checkType_(otherC8n)) {
+          return fin()
+        }
+      } else if (otherC8n === otherSource.previousConnection) {
+        if ((c8n = candidate.nextConnection)&& c8n.checkType_(otherC8n)) {
+          var targetC8n = otherC8n.targetConnection
+          if (targetC8n && candidate.previousConnection
+            && targetC8n.checkType_(candidate.previousConnection)) {
+            return fin(function() {
+              targetC8n.connect(candidate.previousConnection)
+            })
+          } else {
+            return fin(function() {
+              var its_xy = block.getRelativeToSurfaceXY();
+              var my_xy = candidate.getRelativeToSurfaceXY();
+              var HW = candidate.getHeightWidth()
+              candidate.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y-HW.height)
+            })
+          }
+          // unreachable code
+        }
+      } else if (otherC8n.type === Blockly.NEXT_STATEMENT) {
+        if ((c8n = candidate.previousConnection)&& c8n.checkType_(otherC8n)) {
+          var targetC8n = otherC8n.targetConnection
+          if (targetC8n && candidate.nextConnection
+            && targetC8n.checkType_(candidate.nextConnection)) {
+            return fin(function() {
+              targetC8n.connect(candidate.previousConnection)
+            })
+          } else {
+            return fin()
+          }
+        }
+      }
+    }
+    if ((c8n = candidate.outputConnection)) {
+      // try to find a free connection in a block
+      // When not undefined, the returned connection can connect to c8n.
+      var findC8n = function(block) {
+        var e8r = block.ezp.inputEnumerator(block)
+        var otherC8n, foundC8n, target
+        while (e8r.next()) {
+          if ((foundC8n = e8r.here.connection) && foundC8n.type === Blockly.INPUT_VALUE) {
+            if ((target = foundC8n.targetBlock())) {
+              if (!(foundC8n = findC8n(target))) {
+                continue
+              }
+            } else if (!c8n.checkType_(foundC8n)) {
+              continue
+            }
+            if (!foundC8n.ezp.s7r_ && (!c8n_N || foundC8n.ezp.name_ === c8n_N)) {
+              // we have found a connection
+              // which s not a separator and
+              // with the expected name
+              return foundC8n
+            }
+            // if there is no connection with the expected name,
+            // then remember this connection and continue the loop
+            // We remember the last separator connection
+            // of the first which is not a separator
+            if (!otherC8n || otherC8n.ezp.s7r_) {
+              otherC8n = foundC8n
+            }
+          }
+        }
+        return otherC8n
+      }
+      if ((otherC8n = findC8n(block))) {
         return fin()
       }
-    } else if (otherC8n === otherSource.previousConnection) {
-      if ((c8n = candidate.nextConnection)&& c8n.checkType_(otherC8n)) {
-        var targetC8n = otherC8n.targetConnection
-        if (targetC8n && candidate.previousConnection
-          && targetC8n.checkType_(candidate.previousConnection)) {
+    }
+    if ((c8n = candidate.previousConnection)) {
+      if ((otherC8n = block.nextConnection) && c8n.checkType_(otherC8n)) {
+        return fin(function() {
+          if ((targetC8n = otherC8n.targetConnection)) {
+            // connected to something, beware of orphans
+            otherC8n.disconnect()
+            if (candidate.nextConnection && candidate.nextConnection.checkType_(targetC8n)) {
+              candidate.nextConnection.connect(targetC8n)
+              targetC8n = null
+            }
+          }
+          c8n.connect(otherC8n)
+          if (targetC8n) {
+            targetC8n.getSourceBlock().bumpNeighbours_()
+          }
+        })
+      }
+    }
+    if ((c8n = candidate.nextConnection)) {
+      if ((otherC8n = block.previousConnection) && c8n.checkType_(otherC8n)) {
+        if ((targetC8n = otherC8n.targetConnection) && candidate.previousConnection && candidate.previousConnection.checkType_(targetC8n)) {
           return fin(function() {
-            targetC8n.connect(candidate.previousConnection)
+            candidate.previousConnection.connect(targetC8n)
           })
         } else {
           return fin(function() {
@@ -2290,97 +2411,14 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
             candidate.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y-HW.height)
           })
         }
-        // unreachable code
-      }
-    } else if (otherC8n.type === Blockly.NEXT_STATEMENT) {
-      if ((c8n = candidate.previousConnection)&& c8n.checkType_(otherC8n)) {
-        var targetC8n = otherC8n.targetConnection
-        if (targetC8n && candidate.nextConnection
-          && targetC8n.checkType_(candidate.nextConnection)) {
-          return fin(function() {
-            targetC8n.connect(candidate.previousConnection)
-          })
-        } else {
-          return fin()
-        }
       }
     }
-  }
-  if ((c8n = candidate.outputConnection)) {
-    // try to find a free connection in a block
-    // When not undefined, the returned connection can connect to c8n.
-    var findC8n = function(block) {
-      var e8r = block.ezp.inputEnumerator(block)
-      var otherC8n, foundC8n, target
-      while (e8r.next()) {
-        if ((foundC8n = e8r.here.connection) && foundC8n.type === Blockly.INPUT_VALUE) {
-          if ((target = foundC8n.targetBlock())) {
-            if (!(foundC8n = findC8n(target))) {
-              continue
-            }
-          } else if (!c8n.checkType_(foundC8n)) {
-            continue
-          }
-          if (!foundC8n.ezp.s7r_ && (!c8n_N || foundC8n.ezp.name_ === c8n_N)) {
-            // we have found a connection
-            // which s not a separator and
-            // with the expected name
-            return foundC8n
-          }
-          // if there is no connection with the expected name,
-          // then remember this connection and continue the loop
-          // We remember the last separator connection
-          // of the first which is not a separator
-          if (!otherC8n || otherC8n.ezp.s7r_) {
-            otherC8n = foundC8n
-          }
-        }
-      }
-      return otherC8n
+    if (candidate) {
+      candidate.dispose(true)
     }
-    if ((otherC8n = findC8n(block))) {
-      return fin()
-    }
+  } finally {
+    conclude()
   }
-  if ((c8n = candidate.previousConnection)) {
-    if ((otherC8n = block.nextConnection) && c8n.checkType_(otherC8n)) {
-      return fin(function() {
-        if ((targetC8n = otherC8n.targetConnection)) {
-          // connected to something, beware of orphans
-          otherC8n.disconnect()
-          if (candidate.nextConnection && candidate.nextConnection.checkType_(targetC8n)) {
-            candidate.nextConnection.connect(targetC8n)
-            targetC8n = null
-          }
-        }
-        c8n.connect(otherC8n)
-        if (targetC8n) {
-          targetC8n.getSourceBlock().bumpNeighbours_()
-        }
-      })
-    }
-  }
-  if ((c8n = candidate.nextConnection)) {
-    if ((otherC8n = block.previousConnection) && c8n.checkType_(otherC8n)) {
-      if ((targetC8n = otherC8n.targetConnection) && candidate.previousConnection && candidate.previousConnection.checkType_(targetC8n)) {
-        return fin(function() {
-          candidate.previousConnection.connect(targetC8n)
-        })
-      } else {
-        return fin(function() {
-          var its_xy = block.getRelativeToSurfaceXY();
-          var my_xy = candidate.getRelativeToSurfaceXY();
-          var HW = candidate.getHeightWidth()
-          candidate.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y-HW.height)
-        })
-      }
-    }
-  }
-  if (candidate) {
-    candidate.dispose(true)
-  }
-  disabler.stop()
-  return null
 }
 
 /**

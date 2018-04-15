@@ -133,16 +133,19 @@ ezP.DelegateSvg.List.prototype.removeItems = function(block) {
   var i = 0
   var input
   Blockly.Events.setGroup(true)
-  while ((input = list[i++])) {
-    var c8n = input.connection
-    var target = c8n.targetBlock()
-    if (target) {
-      c8n.disconnect()
-      target.dispose()
+  try {
+    while ((input = list[i++])) {
+      var c8n = input.connection
+      var target = c8n.targetBlock()
+      if (target) {
+        c8n.disconnect()
+        target.dispose()
+      }
     }
+    this.consolidate(block)
+  } finally {
+    Blockly.Events.setGroup(false)
   }
-  this.consolidate(block)
-  Blockly.Events.setGroup(false)
 }
 
 /**

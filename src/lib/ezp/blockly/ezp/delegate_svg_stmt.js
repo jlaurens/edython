@@ -154,15 +154,19 @@ ezP.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
   var c8n = block.previousConnection
   if (c8n) {
     var disabler = new ezP.Events.Disabler()
-    var parentBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName)
-    disabler.stop()
+    try {
+      var parentBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName)
+    } finally {
+      disabler.stop()
+      return
+    }
     var parentC8n = parentBlock.nextConnection
     if (parentC8n) {
       Blockly.Events.setGroup(true)
-      if (Blockly.Events.isEnabled()) {
-        Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
-      }
       try {
+        if (Blockly.Events.isEnabled()) {
+          Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
+        }
         parentBlock.ezp.setSubtype(parentBlock, subtype)
         var targetC8n = c8n.targetConnection
         if (targetC8n) {
@@ -204,24 +208,27 @@ ezP.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
  */
 ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototypeName) {
   Blockly.Events.setGroup(true)
-  var blockAfter = ezP.DelegateSvg.newBlockComplete(block.workspace, belowPrototypeName)
-  var c8n = block.nextConnection
-  var targetC8n = c8n.targetConnection
-  if (targetC8n) {
-    targetC8n.disconnect()
-    if (targetC8n.checkType_(blockAfter.nextConnection)) {
-      targetC8n.connect(blockAfter.nextConnection)
+  try {
+    var blockAfter = ezP.DelegateSvg.newBlockComplete(block.workspace, belowPrototypeName)
+    var c8n = block.nextConnection
+    var targetC8n = c8n.targetConnection
+    if (targetC8n) {
+      targetC8n.disconnect()
+      if (targetC8n.checkType_(blockAfter.nextConnection)) {
+        targetC8n.connect(blockAfter.nextConnection)
+      }
     }
+    blockAfter.ezp.consolidate(blockAfter, true)
+    var holes = ezP.HoleFiller.getDeepHoles(blockAfter)
+    ezP.HoleFiller.fillDeepHoles(blockAfter.workspace, holes)
+    blockAfter.render()
+    block.nextConnection.connect(blockAfter.previousConnection)
+    if (Blockly.selected === block) {
+      blockAfter.select()
+    }
+  } finally {
+    Blockly.Events.setGroup(false)
   }
-  blockAfter.ezp.consolidate(blockAfter, true)
-  var holes = ezP.HoleFiller.getDeepHoles(blockAfter)
-  ezP.HoleFiller.fillDeepHoles(blockAfter.workspace, holes)
-  blockAfter.render()
-  block.nextConnection.connect(blockAfter.previousConnection)
-  if (Blockly.selected === block) {
-    blockAfter.select()
-  }
-  Blockly.Events.setGroup(false)
   return blockAfter
 }
 
@@ -268,11 +275,14 @@ ezP.DelegateSvg.Stmt.annotated_assignment_stmt.prototype.initBlock = function(bl
   var subtypes = this.getModel().inputs.subtypes
   block.ezp.initProperty(block, ezP.Key.ASSIGNED, null, null, null, function(block, oldValue, newValue) {
     Blockly.Events.setGroup(true)
-    var old = block.ezp.isRendering
-    block.ezp.isRendering = true
-    block.ezp.setNamedInputDisabled(block, ezP.Key.ASSIGNED, (!newValue))
-    block.ezp.isRendering = old
-    Blockly.Events.setGroup(false)
+    try {
+      var old = block.ezp.skipRendering
+      block.ezp.skipRendering = true
+      block.ezp.setNamedInputDisabled(block, ezP.Key.ASSIGNED, (!newValue))
+      block.ezp.skipRendering = old
+    } finally {
+      Blockly.Events.setGroup(false)
+    }
   })
 }
 
@@ -407,12 +417,15 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.initBlock = function(block) 
   var subtypes = this.getModel().inputs.subtypes
   block.ezp.initProperty(block, ezP.Key.SUBTYPE, subtypes[0], null, null, function(block, oldValue, newValue) {
     Blockly.Events.setGroup(true)
-    var old = block.ezp.isRendering
-    block.ezp.isRendering = true
-    var input = block.getInput(ezP.Key.IDENTIFIERS)
-    input.ezp.fields.label.setValue(newValue)
-    block.ezp.isRendering = old
-    Blockly.Events.setGroup(false)
+    try {
+      var old = block.ezp.skipRendering
+      block.ezp.skipRendering = true
+      var input = block.getInput(ezP.Key.IDENTIFIERS)
+      input.ezp.fields.label.setValue(newValue)
+      block.ezp.skipRendering = old
+    } finally {
+      Blockly.Events.setGroup(false)
+    }
   })
 }
 
