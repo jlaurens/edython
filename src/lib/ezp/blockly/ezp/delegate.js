@@ -191,9 +191,10 @@ ezP.Delegate.Manager = function () {
       var t = ezP.T3.Expr[key]
       if (t) {
         if (!model.output) {
-          model.output = {
-            check: t,
-          }
+          model.output = {}
+        }
+        if (!model.output.check) {
+          model.output.check = t
         }
       } else if ((t = ezP.T3.Stmt[key])) {
         var statement = model.statement || (model.statement = {})

@@ -34,11 +34,18 @@ ezP.DelegateSvg.Manager.makeSubclass('identifier', {
     didConnect: function(oldTargetConnection, oldConnectionn) {
       // `this` is a connection's delegate
       var targetC8n = this.connection.targetConnection
-      for (var i = 0, input;(input = targetC8n.sourceBlock_.inputList[i++]);) {
-        if (input.connection === targetC8n) {
-          var block = this.connection.sourceBlock_
-          block.ezp.setPhantomValue(block, input.ezp.model.hole_value)
-          return
+      var source = targetC8n.sourceBlock_
+      if (source.ezp instanceof ezP.DelegateSvg.List) {
+
+      } else {
+        for (var i = 0, input;(input = source.inputList[i++]);) {
+          if (input.connection === targetC8n) {
+            if (input.ezp.model) {
+              var block = this.connection.sourceBlock_
+              block.ezp.setPhantomValue(block, input.ezp.model.hole_value)
+            }
+            return
+          }
         }
       }
     },
