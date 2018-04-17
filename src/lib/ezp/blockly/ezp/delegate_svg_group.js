@@ -238,6 +238,7 @@ ezP.DelegateSvg.Manager.makeSubclass('if_part', {
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
       key: ezP.Key.IF,
+      hole_value: 'condition',
     },
   },
 }, ezP.DelegateSvg.Group)
@@ -257,6 +258,7 @@ ezP.DelegateSvg.Manager.makeSubclass('elif_part', {
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
       key: ezP.Key.ELIF,
+      hole_value: 'condition',
     },
   },
 }, ezP.DelegateSvg.Group)
@@ -368,6 +370,7 @@ ezP.DelegateSvg.Manager.makeSubclass('while_part', {
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
       key: ezP.Key.WHILE,
+      hole_value: 'condition',
     },
   },
 }, ezP.DelegateSvg.Group)
@@ -428,12 +431,14 @@ ezP.DelegateSvg.Manager.makeSubclass('for_part', {
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.target_list,
       key: ezP.Key.FOR,
+      hole_value: 'element',
     },
     m_2: {
       label: 'in',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.expression_list,
       key: ezP.Key.IN,
+      hole_value: 'set',
     },
   },
 }, ezP.DelegateSvg.Group)

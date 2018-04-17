@@ -236,7 +236,7 @@ ezP.FieldInput.prototype.getDisplayText_ = function() {
 }
 
 ezP.FieldInput.prototype.placeholderText = function() {
-  return Blockly.Field.NBSP
+  return this.placeholderText_ || Blockly.Field.NBSP
 }
 
 /**
@@ -271,7 +271,7 @@ ezP.FieldInput.prototype.render_ = function() {
 };
 
 ezP.FieldInput.prototype.placeholderText = function() {
-  return ezP.Msg.PLACEHOLDER_CODE
+  return this.placeholderText_ || ezP.Msg.PLACEHOLDER_CODE
 }
 
 /**
@@ -287,7 +287,7 @@ goog.inherits(ezP.FieldComment, ezP.FieldInput)
 
 ezP.FieldComment.prototype.cssClass = 'ezp-code-comment'
 ezP.FieldComment.prototype.placeholderText = function() {
-  return ezP.Msg.PLACEHOLDER_COMMENT
+  return this.placeholderText_ || ezP.Msg.PLACEHOLDER_COMMENT
 }
 
 ezP.FieldNumber = function (text) {
@@ -319,7 +319,7 @@ ezP.FieldNumber = function (text) {
 goog.inherits(ezP.FieldNumber, ezP.FieldInput)
 
 ezP.FieldNumber.prototype.placeholderText = function() {
-  ezP.Msg.PLACEHOLDER_NUMBER
+  return this.placeholderText_ || ezP.Msg.PLACEHOLDER_NUMBER
 }
 
 /**
@@ -354,8 +354,8 @@ ezP.FieldString = function (text) {
 goog.inherits(ezP.FieldString, ezP.FieldInput)
 
 ezP.FieldString.prototype.placeholderText = function() {
-  return this.sourceBlock_.type === ezP.T3.Expr.shortbytesliteral?
-  ezP.Msg.PLACEHOLDER_BYTES: ezP.Msg.PLACEHOLDER_STRING
+  return this.placeholderText_ || (this.sourceBlock_.type === ezP.T3.Expr.shortbytesliteral?
+  ezP.Msg.PLACEHOLDER_BYTES: ezP.Msg.PLACEHOLDER_STRING)
 }
 
 /**

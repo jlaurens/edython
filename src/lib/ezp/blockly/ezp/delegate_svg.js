@@ -1507,8 +1507,9 @@ ezP.HoleFiller.fillDeepHoles = function(workspace, holes) {
             var B = data.filler(workspace)
           } else {
             B = ezP.DelegateSvg.newBlockComplete(workspace, data.type)
-            if (B.ezp.setValue && data.value) {
-              B.ezp.setValue(B, data.value)
+            if (data.value) {
+              B.ezp.setPhantomValue && B.ezp.setPhantomValue(B, data.value) ||
+              B.ezp.setValue && B.ezp.setValue(B, data.value)
             }
           }
           c8n.connect(B.outputConnection)

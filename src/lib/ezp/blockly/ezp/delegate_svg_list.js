@@ -441,6 +441,7 @@ ezP.DelegateSvg.Manager.makeSubclass('with_item_list', {
       check: ezP.T3.Expr.Check.with_item,
       empty: false,
       sep: ',',
+      hole_value: 'nom',
     },
   },
 })

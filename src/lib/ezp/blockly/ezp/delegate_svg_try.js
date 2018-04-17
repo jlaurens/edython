@@ -272,12 +272,14 @@ ezP.DelegateSvg.Manager.makeSubclass('assert_stmt', {
       label: 'assert',
       css_class: 'ezp-code-reserved',
       key: ezP.Key.ASSERT,
-      check: ezP.T3.Expr.Check.expression
+      check: ezP.T3.Expr.Check.expression,
+      hole_value: 'expression',
     },
     m_3: {
       label: ',',
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
+      hole_value: 'expression',
     }
   },
 })

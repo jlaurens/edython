@@ -27,14 +27,21 @@ ezP.DelegateSvg.Manager.makeSubclass('identifier', {
   inputs: {
     m_1: {
       key: ezP.Key.NAME,
-      identifier: 'item',
+      identifier: '',
     },
   },
 })
 
+/**
+ * Returns the text that should appear in grey when some field content is missing.
+ * @param {!Block} block.
+ * @return whether the block should be wrapped
+ */
 ezP.FieldIdentifier.prototype.placeholderText = function() {
-  return ezP.Msg.PLACEHOLDER_IDENTIFIER
+  return this.placeholderText_ || ezP.Msg.PLACEHOLDER_IDENTIFIER
 }
+
+
 
 /**
  * Some block should not be wrapped.
@@ -43,6 +50,17 @@ ezP.FieldIdentifier.prototype.placeholderText = function() {
  * @return whether the block should be wrapped
  */
 ezP.DelegateSvg.Expr.identifier.prototype.noBlockWrapped = function (block) {
+  return true
+}
+
+/**
+ * Set the placeholderText.
+ * @param {!Block} block.
+ * @param {!string} text.
+ * @return true
+ */
+ezP.DelegateSvg.Expr.identifier.prototype.setPhantomValue = function(block, text) {
+  this.uiModel.m_1.fields.identifier.placeholderText_ = text
   return true
 }
 

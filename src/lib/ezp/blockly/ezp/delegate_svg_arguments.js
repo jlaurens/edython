@@ -51,6 +51,7 @@ ezP.DelegateSvg.Manager.makeSubclass('expression_star', {
   inputs: {
     m_1: {
       label: '*',
+      css_class: 'ezp-code-reserved',
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'value',
@@ -70,6 +71,7 @@ ezP.DelegateSvg.Manager.makeSubclass('expression_star_star', {
   inputs: {
     m_1: {
       label: '**',
+      css_class: 'ezp-code-reserved',
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'value',
