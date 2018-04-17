@@ -152,6 +152,7 @@ ezP.KeyHandler = function() {
   }
 
   me.handleType = function (type, subtype) {
+    console.log('me.handleType',type, subtype)
     if (ezP.DelegateSvg.Manager.get(type)) {
       var B = Blockly.selected
       if (B) {
@@ -163,26 +164,22 @@ ezP.KeyHandler = function() {
             // There was a selected connection,
             // we try to select another one, with possibly the same type
             // First we take a look at B : is there an unconnected input connection
-            if (c8nType === Blockly.INPUT_VALUE) {
-              var parent = B, last
-              do {
-                var e8r = parent.ezp.inputEnumerator(parent)
-                while (e8r.next()) {
-                  if ((c8n = e8r.here.connection) && c8n.type === c8nType && ! c8n.ezp.optional_ && ! c8n.targetConnection) {
-                    if (!c8n.ezp.s7r_) {
-                      ezP.SelectedConnection.set(c8n)
-                      return true
-                    } else {
-                      last = c8n
-                    }
+            var doFirst = function(block, type) {
+              var e8r = block.ezp.inputEnumerator(block)
+              while (e8r.next()) {
+                if ((c8n = e8r.here.connection) && c8n.type === type) {
+                  if (!c8n.hidden_ && !c8n.targetConnection) {
+                    ezP.SelectedConnection.set(c8n)
+                    return true
+                  } else if (c8n.targetConnection) {
+                    return doFirst(c8n.targetBlock(), type)
                   }
                 }
-                if (last) {
-                  ezP.SelectedConnection.set(last)
-                  return true
-                }
-              } while ((parent = parent.getSurroundParent(parent)))
-            } else if ((c8n === B.nextConnection) && (c8n = newB.nextConnection)) {
+              }
+            }
+            if (doFirst(newB, Blockly.INPUT_VALUE)) {
+              return true
+            } else if ((c8n === B.nextConnection) && (c8n = newB.nextConnection) && !c8n.hidden_) {
               ezP.SelectedConnection.set(c8n)
               return true
             }
@@ -207,11 +204,13 @@ ezP.KeyHandler = function() {
           return true
         }
       }
+      console.log('NO selected')
     }
     return false
   }
 
   me.handleAction = function (shortcut) {
+    console.log('me.handleAction',shortcut)
     if (goog.isFunction(shortcut.action)) {
       shortcut.action(shortcut.key)
     } else if (shortcut.action) {

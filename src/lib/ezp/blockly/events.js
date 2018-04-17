@@ -92,3 +92,15 @@ ezP.Events.Disabler = function() {
     }
   }
 }
+
+/**
+ * Event disabler.
+ */
+ezP.Events.Disabler.wrap = function(f) {
+  var disabler = new ezP.Events.Disabler()
+  try {
+    f()
+  } finally {
+    disabler.stop()
+  }
+}

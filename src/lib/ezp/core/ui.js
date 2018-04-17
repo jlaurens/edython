@@ -100,7 +100,7 @@ ezP.setup.register(function () {
 ezP.Style.Path = {
   Selected: {
     'colour': '#fc3',
-    'width': 3
+    'width': 2.5
   },
   'colour': goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 9 / 10)),
   'width': 1.5, // px

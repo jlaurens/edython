@@ -80,53 +80,18 @@ ezP.DelegateSvg.Manager.makeSubclass('decorator_stmt', {
 })
 
 /**
- * Create and initialize the subtype property.
- * Called once at block creation time.
- * Should not be called directly
- * Declares the operator property.
- * @param {!Blockly.Block} block to be initialized.
+ * Hook after the subtype change.
+ * Default implementation does nothing.
+ * Subclassers will take care of undo compliance.
+ * Event recording is disabled.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
  */
-ezP.DelegateSvg.Stmt.decorator_stmt.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Stmt.decorator_stmt.superClass_.initBlock.call(block.ezp, block)
-  var subtypes = block.ezp.getModel().inputs.subtypes
-  block.ezp.initProperty(block, ezP.Key.SUBTYPE, subtypes[0], function(block, oldValue, newValue) {
-    return subtypes.indexOf(newValue) >= 0
-  }, null, function(block, oldValue, newValue) {
-    Blockly.Events.setGroup(true)
-    try {
-      var old = block.ezp.skipRendering
-      block.ezp.skipRendering = true
-      block.ezp.setNamedInputDisabled(block, ezP.Key.ARGUMENTS, (ezP.Key.ARGUMENTS != newValue))
-      block.ezp.skipRendering = old
-    } finally {
-      Blockly.Events.setGroup(false)
-    }
-  })
-  var builtins = this.getModel().inputs.builtins
-  block.ezp.initProperty(block, ezP.Key.BUILTIN, builtins[0], function(block, oldValue, newValue) {
-    return builtins.indexOf(newValue) >= 0
-  }, null, function(block, oldValue, newValue) {
-    Blockly.Events.setGroup(true)
-    try {
-      var old = block.ezp.skipRendering
-      block.ezp.skipRendering = true
-      block.ezp.setNamedInputDisabled(block, ezP.Key.NAME, !!newValue)
-      block.ezp.setNamedInputDisabled(block, ezP.Key.BUILTIN, !newValue)
-      var input = block.getInput(ezP.Key.BUILTIN)
-      var field = input.ezp.fields.start
-      if (newValue) {
-        var disabler = new ezP.Events.Disabler()
-        try {
-          field.setValue(newValue)
-        } finally {
-          disabler.stop()
-        }
-      }
-      block.ezp.skipRendering = old
-    } finally {
-      Blockly.Events.setGroup(false)
-    }
-  })
+ezP.DelegateSvg.Stmt.decorator_stmt.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
+  ezP.DelegateSvg.Stmt.decorator_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
+  block.ezp.setNamedInputDisabled(block, ezP.Key.ARGUMENTS, (ezP.Key.ARGUMENTS != newSubtype))
 }
 
 /**
@@ -233,28 +198,18 @@ ezP.DelegateSvg.Manager.makeSubclass('funcdef_part', {
 }, ezP.DelegateSvg.Group)
 
 /**
- * Create and initialize the subtype property.
- * Called once at block creation time.
- * Should not be called directly
- * Declares the operator property.
- * @param {!Blockly.Block} block to be initialized.
+ * Hook after the subtype change.
+ * Default implementation does nothing.
+ * Subclassers will take care of undo compliance.
+ * Event recording is disabled.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
  */
-ezP.DelegateSvg.Stmt.funcdef_part.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Stmt.funcdef_part.superClass_.initBlock.call(block.ezp, block)
-  var subtypes = block.ezp.getModel().inputs.subtypes
-  block.ezp.initProperty(block, ezP.Key.TYPE, subtypes[0], function(block, oldValue, newValue) {
-    return subtypes.indexOf(newValue) >= 0
-  }, null, function(block, oldValue, newValue) {
-    Blockly.Events.setGroup(true)
-    try {
-      var old = block.ezp.skipRendering
-      block.ezp.skipRendering = true
-      block.ezp.setNamedInputDisabled(block, ezP.Key.TYPE, (ezP.Key.TYPE !== newValue))
-      block.ezp.skipRendering = old
-    } finally {
-      Blockly.Events.setGroup(false)
-    }
-  })
+ezP.DelegateSvg.Stmt.funcdef_part.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
+  ezP.DelegateSvg.Stmt.funcdef_part.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
+  block.ezp.setNamedInputDisabled(block, ezP.Key.TYPE, (ezP.Key.TYPE !== newSubtype))
 }
 
 /**
@@ -301,7 +256,7 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
  */
 ezP.DelegateSvg.Manager.makeSubclass('classdef_part', {
   inputs: {
-    subtypes: ['', ezP.Key.ARGUMENTS],
+    subtypes: [null, ezP.Key.ARGUMENTS],
     m_1: {
       key: ezP.Key.NAME,
       label: 'class',
@@ -320,28 +275,18 @@ ezP.DelegateSvg.Manager.makeSubclass('classdef_part', {
 
 
 /**
- * Create and initialize the subtype property.
- * Called once at block creation time.
- * Should not be called directly
- * Declares the operator property.
- * @param {!Blockly.Block} block to be initialized.
+ * Hook after the subtype change.
+ * Default implementation does nothing.
+ * Subclassers will take care of undo compliance.
+ * Event recording is disabled.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
  */
-ezP.DelegateSvg.Stmt.classdef_part.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Stmt.classdef_part.superClass_.initBlock.call(block.ezp, block)
-  var subtypes = this.getModel().inputs.subtypes
-  block.ezp.initProperty(block, ezP.Key.SUBTYPE, subtypes[0], function(block, oldValue, newValue) {
-    return subtypes.indexOf(newValue) >= 0
-  }, null, function(block, oldValue, newValue) {
-    Blockly.Events.setGroup(true)
-    try {
-      var old = block.ezp.skipRendering
-      block.ezp.skipRendering = true
-      block.ezp.setNamedInputDisabled(block, ezP.Key.ARGUMENTS, (ezP.Key.ARGUMENTS !== newValue))
-      block.ezp.skipRendering = old
-    } finally {
-      Blockly.Events.setGroup(false)
-    }
-  })
+ezP.DelegateSvg.Stmt.classdef_part.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
+  ezP.DelegateSvg.Stmt.classdef_part.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
+  block.ezp.setNamedInputDisabled(block, ezP.Key.ARGUMENTS, (ezP.Key.ARGUMENTS !== newSubtype))
 }
 
 /**

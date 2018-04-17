@@ -44,47 +44,17 @@ ezP.DelegateSvg.Manager.makeSubclass('yield_expression', {
 })
 
 /**
- * Initialize a block.
- * @param {!Blockly.Block} block to be initialized..
- * For subclassers eventually
+ * Initialize the subtype.
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
  */
-ezP.DelegateSvg.Expr.yield_expression.prototype.initBlock = function (block) {
-  ezP.DelegateSvg.Expr.yield_expression.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Expr.yield_expression.prototype.didChangeSubtype = function(block, oldSubtype, newSubtype) {
+  ezP.DelegateSvg.Expr.builtin_object.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
   var subtypes = this.getModel().inputs.subtypes
-  this.initProperty(block, ezP.Key.SUBTYPE, subtypes[0], function(block, oldValue, newValue) {
-    return subtypes.indexOf(newValue) >= 0
-  }, null, function(block, oldValue, newValue) {
-    var i = subtypes.indexOf(newValue)
-    block.ezp.setNamedInputDisabled(block, subtypes[1], i != 1)
-    block.ezp.setNamedInputDisabled(block, subtypes[2], i != 2)
-  })
-}
-
-/**
- * Get the subtype of the block.
- * The default implementation does nothing.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is return, when defined or not null.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return None
- */
-ezP.DelegateSvg.Expr.yield_expression.prototype.getSubtype = function (block) {
-  return block.ezp.getProperty(block, ezP.Key.SUBTYPE)
-}
-
-/**
- * Set the subtype of the block.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is expected.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return true if the receiver supports subtyping, false otherwise
- */
-ezP.DelegateSvg.Expr.yield_expression.prototype.setSubtype = function (block, subtype) {
-  var subtypes = this.getModel().inputs.subtypes
-  return block.ezp.setProperty(block, ezP.Key.SUBTYPE, goog.isNumber(subtype)? subtypes[subtype]: subtype)
+  var i = subtypes.indexOf(newSubtype)
+  block.ezp.setNamedInputDisabled(block, subtypes[1], i != 1)
+  block.ezp.setNamedInputDisabled(block, subtypes[2], i != 2)
 }
 
 /**
@@ -234,43 +204,18 @@ ezP.DelegateSvg.Manager.makeSubclass('yield_stmt', {
 })
 
 /**
- * Initialize a block.
- * @param {!Blockly.Block} block to be initialized..
- * For subclassers eventually
+ * When the subtype has changed.
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
  */
-ezP.DelegateSvg.Stmt.yield_stmt.prototype.initBlock = function (block) {
-  ezP.DelegateSvg.Expr.yield_expression.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Stmt.yield_stmt.prototype.didChangeSubtype = function(block, oldSubtype, newSubtype) {
+  ezP.DelegateSvg.Stmt.yield_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
   var subtypes = this.getModel().inputs.subtypes
-  this.initProperty(block, ezP.Key.SUBTYPE, subtypes[0], function(block, oldValue, newValue) {
-    return subtypes.indexOf(newValue) >= 0
-  }, null, function(block, oldValue, newValue) {
-    var i = subtypes.indexOf(newValue)
-    block.ezp.setNamedInputDisabled(block, subtypes[1], i != 1)
-    block.ezp.setNamedInputDisabled(block, subtypes[2], i != 2)
-  })
+  var i = subtypes.indexOf(newSubtype)
+  block.ezp.setNamedInputDisabled(block, subtypes[1], i != 1)
+  block.ezp.setNamedInputDisabled(block, subtypes[2], i != 2)
 }
-
-/**
- * Get the subtype of the block.
- * The default implementation does nothing.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is return, when defined or not null.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return None
- */
-ezP.DelegateSvg.Stmt.yield_stmt.prototype.getSubtype = ezP.DelegateSvg.Expr.yield_expression.prototype.getSubtype
-
-/**
- * Set the subtype of the block.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is expected.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return true if the receiver supports subtyping, false otherwise
- */
-ezP.DelegateSvg.Stmt.yield_stmt.prototype.setSubtype = ezP.DelegateSvg.Expr.yield_expression.prototype.setSubtype
 
 /**
  * Populate the context menu for the given block.

@@ -178,45 +178,12 @@ ezP.DelegateSvg.Manager.makeSubclass('builtin_call_expr', {
  * @param {!Blockly.Block} block to be initialized..
  * For subclassers eventually
  */
-ezP.DelegateSvg.Expr.builtin_call_expr.prototype.initBlock = function (block) {
-  ezP.DelegateSvg.Expr.builtin_call_expr.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Expr.builtin_call_expr.prototype.didChangeSubtype = function (block, oldSubtype, newSybtype) {
+  ezP.DelegateSvg.Expr.builtin_call_expr.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSybtype)
   var subtypes = this.getModel().inputs.subtypes
-  this.initProperty(block, ezP.Key.SUBTYPE, subtypes[0], function(block, oldValue, newValue) {
-    return subtypes.indexOf(newValue)>=0
-  }, null, function(block, oldValue, newValue) {
-    var disabler = new ezP.Events.Disabler()
-    try {
-      var input = block.getInput(ezP.Key.ARGUMENTS)
-      var field = input.ezp.fields.label
-      field.setValue(newValue)
-    } finally {
-      disabler.stop()
-    }
-  })
-}
-
-/**
- * Get the subtype of the block.
- * The operator.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return None
- */
-ezP.DelegateSvg.Expr.builtin_call_expr.prototype.getSubtype = function (block) {
-  return this.getProperty(block, ezP.Key.SUBTYPE)
-}
-
-/**
- * Set the subtype of the block.
- * The operator.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return true if the receiver supports subtyping, false otherwise
- */
-ezP.DelegateSvg.Expr.builtin_call_expr.prototype.setSubtype = function (block, subtype) {
-  return this.setProperty(block, ezP.Key.SUBTYPE, subtype)
+  var input = block.getInput(ezP.Key.ARGUMENTS)
+  var field = input.ezp.fields.label
+  field.setValue(newSybtype)
 }
 
 /**
@@ -271,6 +238,31 @@ ezP.DelegateSvg.Manager.makeSubclass('builtin_call_stmt', {
 })
 
 /**
+ * Initialize a block.
+ * @param {!Blockly.Block} block to be initialized..
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.initBlock = function (block) {
+  this.getModel = ezP.DelegateSvg.Expr.builtin_call_expr.prototype.getModel
+  ezP.DelegateSvg.Stmt.builtin_call_stmt.superClass_.initBlock.call(this, block)
+}
+
+/**
+ * When the subtype has just changed.
+ * @param {!Blockly.Block} block  to be initialized.
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
+  ezP.DelegateSvg.Stmt.builtin_call_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
+  var subtypes = this.getModel().inputs.subtypes
+  var input = block.getInput(ezP.Key.ARGUMENTS)
+  var field = input.ezp.fields.label
+  field.setValue(newSubtype)
+}
+
+/**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
@@ -279,53 +271,6 @@ ezP.DelegateSvg.Manager.makeSubclass('builtin_call_stmt', {
 ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   ezP.DelegateSvg.Expr.builtin_call_expr.populateMenu(block, mgr)
   return ezP.DelegateSvg.Stmt.builtin_call_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
-}
-
-/**
- * Initialize a block.
- * @param {!Blockly.Block} block to be initialized..
- * For subclassers eventually
- */
-ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.initBlock = function (block) {
-  this.getModel = ezP.DelegateSvg.Expr.builtin_call_expr.prototype.getModel
-  ezP.DelegateSvg.Stmt.builtin_call_stmt.superClass_.initBlock.call(this, block)
-  var subtypes = this.getModel().inputs.subtypes
-  this.initProperty(block, ezP.Key.SUBTYPE, subtypes[0], function(block, oldValue, newValue) {
-    return subtypes.indexOf(newValue)>=0
-  }, null, function(block, oldValue, newValue) {
-    var disabler = new ezP.Events.Disabler()
-    try {
-      var input = block.getInput(ezP.Key.ARGUMENTS)
-      var field = input.ezp.fields.label
-      field.setValue(newValue)
-    } finally {
-      disabler.stop()
-    }
-  })
-}
-
-/**
- * Get the subtype of the block.
- * The operator.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return None
- */
-ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.getSubtype = function (block) {
-  return this.getProperty(block, ezP.Key.SUBTYPE)
-}
-
-/**
- * Set the subtype of the block.
- * The operator.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return true if the receiver supports subtyping, false otherwise
- */
-ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.setSubtype = function (block, subtype) {
-  return this.setProperty(block, ezP.Key.SUBTYPE, subtype)
 }
 
 ezP.DelegateSvg.Primary.T3s = [

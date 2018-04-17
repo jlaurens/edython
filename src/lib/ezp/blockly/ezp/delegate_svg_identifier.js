@@ -249,38 +249,44 @@ ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionMiddle = function 
 }
 
 /**
- * Get the subtype of the block.
- * The default implementation does nothing.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is return, when defined or not null.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return None
+ * When the subtype did change.
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
  */
-ezP.DelegateSvg.Expr.identifier.prototype.getSubtype = function (block) {
+ezP.DelegateSvg.Expr.identifier.prototype.initSubtype = function (block) {
+  ezP.DelegateSvg.Expr.identifier.superClass_.initSubtype.call(this, block)
   var input = block.getInput(ezP.Key.NAME)
   var field = input.ezp.fields.identifier
-  return field.getValue()
+  this.setSubtype(field.getValue())
+  return
 }
 
 /**
- * Set the subtype of the block.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is expected.
+ * When the subtype did change.
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
+ */
+ezP.DelegateSvg.Expr.identifier.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
+  ezP.DelegateSvg.Expr.identifier.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
+  var input = block.getInput(ezP.Key.NAME)
+  var field = input.ezp.fields.identifier
+  field.setValue(newSubtype)
+  return
+}
+
+/**
+ * Validates the new subtype.
+ * Compares to the data of the model.
+ * The default implementation return false.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return true if the receiver supports subtyping, false otherwise
+ * @param {string} newSubtype
+ * @return true if newSubtype is acceptable, false otherwise
  */
-ezP.DelegateSvg.Expr.identifier.prototype.setSubtype = function (block, subtype) {
-  var type = ezP.Do.typeOfString(subtype)
-  if (type === ezP.T3.Expr.identifier) {
-    var input = block.getInput(ezP.Key.NAME)
-    var field = input.ezp.fields.identifier
-    field.setValue(subtype)
-    return true  
-  }
-  return false
+ezP.DelegateSvg.Expr.identifier.prototype.validateSubtype = function (block, newSubtype) {
+  return ezP.Do.typeOfString(subtype) === ezP.T3.Expr.identifier
 }
 
 ezP.DelegateSvg.Identifier.T3s = [

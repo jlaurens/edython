@@ -719,27 +719,6 @@ ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.populateContextMenuFirst_ 
   return ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
-/**
- * Get the subtype of the block.
- * The operator.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return None
- */
-ezP.DelegateSvg.Stmt.augassign_numeric_stmt.prototype.getSubtype = ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.getSubtype = ezP.DelegateSvg.Operator.prototype.getSubtype
-
-/**
- * Set the subtype of the block.
- * The operator.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return true if the receiver supports subtyping, false otherwise
- */
-ezP.DelegateSvg.Stmt.augassign_numeric_stmt.prototype.setSubtype = ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.setSubtype = ezP.DelegateSvg.Operator.prototype.setSubtype
-
-
 ezP.DelegateSvg.Assignment.T3s = [
   ezP.T3.Expr.target_star,
   ezP.T3.Expr.target_list,

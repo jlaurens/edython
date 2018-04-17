@@ -477,7 +477,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.initSubtype = function(block) {
 }
 
 /**
- * Initialize the subtype.
+ * When the subtype did change.
  * @param {!Blockly.Block} block to be initialized.
  * @param {string} oldSubtype
  * @param {string} newSubtype
@@ -558,9 +558,7 @@ ezP.DelegateSvg.Manager.makeSubclass('any', {
  * @param {string} subtype Is a function.
  * @return None
  */
-ezP.DelegateSvg.Expr.any.prototype.getValue = ezP.DelegateSvg.Expr.any.prototype.getSubtype = function (block) {
-  return this.uiModel.m_1.fields[ezP.Key.CODE].getValue()
-}
+ezP.DelegateSvg.Expr.any.prototype.getValue = ezP.DelegateSvg.Expr.any.prototype.getSubtype
 
 /**
  * Set the subtype of the block.
@@ -570,9 +568,17 @@ ezP.DelegateSvg.Expr.any.prototype.getValue = ezP.DelegateSvg.Expr.any.prototype
  * @param {string} subtype Is a function.
  * @return true if the receiver supports subtyping, false otherwise
  */
-ezP.DelegateSvg.Expr.any.prototype.setValue = ezP.DelegateSvg.Expr.any.prototype.setSubtype = function (block, subtype) {
-  this.uiModel.m_1.fields[ezP.Key.CODE].setValue(subtype)
-  return true
+ezP.DelegateSvg.Expr.any.prototype.setValue = ezP.DelegateSvg.Expr.any.prototype.setSubtype
+
+/**
+ * When the subtype has changed.
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
+ */
+ezP.DelegateSvg.Expr.any.prototype.didChangeSubtype = function(block, oldSubtype, newSubtype) {
+  ezP.DelegateSvg.Expr.any.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
+  block.ezp.uiModel.m_1.fields.code.setValue(newSubtype)
 }
 
 ezP.DelegateSvg.Expr.T3s = [

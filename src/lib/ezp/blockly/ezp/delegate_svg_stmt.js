@@ -264,7 +264,7 @@ ezP.DelegateSvg.Manager.makeSubclass('annotated_assignment_stmt', {
 })
 
 /**
- * Create and initialize the subtype property.
+ * Create and initialize the assigned property.
  * Called once at block creation time.
  * Should not be called directly
  * Declares the operator property.
@@ -396,9 +396,12 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_identifier_list', {
 ezP.DelegateSvg.Manager.makeSubclass('global_nonlocal_stmt', {
   inputs: {
     subtypes: ['global', 'nonlocal'],
+    prefix: {
+      label: '',
+      css_class: 'ezp-code-reserved',
+    },
     m_3: {
       key: ezP.Key.IDENTIFIERS,
-      label: '',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.non_void_identifier_list,
     },
@@ -406,27 +409,18 @@ ezP.DelegateSvg.Manager.makeSubclass('global_nonlocal_stmt', {
 })
 
 /**
- * Create and initialize the subtype property.
- * Called once at block creation time.
- * Should not be called directly
- * Declares the operator property.
- * @param {!Blockly.Block} block to be initialized.
+ * Hook after the subtype change.
+ * Default implementation does nothing.
+ * Subclassers will take care of undo compliance.
+ * Event recording is disabled.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
  */
-ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.initBlock.call(block.ezp, block)
-  var subtypes = this.getModel().inputs.subtypes
-  block.ezp.initProperty(block, ezP.Key.SUBTYPE, subtypes[0], null, null, function(block, oldValue, newValue) {
-    Blockly.Events.setGroup(true)
-    try {
-      var old = block.ezp.skipRendering
-      block.ezp.skipRendering = true
-      var input = block.getInput(ezP.Key.IDENTIFIERS)
-      input.ezp.fields.label.setValue(newValue)
-      block.ezp.skipRendering = old
-    } finally {
-      Blockly.Events.setGroup(false)
-    }
-  })
+ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
+  ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
+  block.ezp.uiModel.fields.prefix.setValue(newSubtype)
 }
 
 /**
@@ -518,31 +512,27 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.setDisabled = function (block, yorn)
 }
 
 /**
- * Get the subtype of the block.
- * The default implementation does nothing.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is return, when defined or not null.
+ * When the subtype has just changed.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
- * @return None
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
  */
-ezP.DelegateSvg.Stmt.comment_stmt.prototype.getSubtype = function (block) {
+ezP.DelegateSvg.Stmt.comment_stmt.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
+  ezP.DelegateSvg.Stmt.comment_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
   var input = block.getInput(ezP.Key.COMMENT)
-  return input.ezp.fields.comment.getValue()
+  input.ezp.fields.comment.setValue(subtype)
 }
 
 /**
- * Set the subtype of the block.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is expected.
+ * Validate the subtype.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return true if the receiver supports subtyping, false otherwise
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
  */
-ezP.DelegateSvg.Stmt.comment_stmt.prototype.setSubtype = function (block, subtype) {
-  var input = block.getInput(ezP.Key.COMMENT)
-  input.ezp.fields.comment.setValue(subtype)
+ezP.DelegateSvg.Stmt.comment_stmt.prototype.validateSubtype = function (block, newSubtype) {
+  ezP.DelegateSvg.Stmt.comment_stmt.superClass_.validateSubtype.call(this, block, newSubtype)
   return true
 }
 

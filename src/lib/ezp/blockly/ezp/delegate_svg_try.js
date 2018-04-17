@@ -67,49 +67,18 @@ ezP.DelegateSvg.Manager.makeSubclass('except_part', {
  * @param {!Blockly.Block} block to be initialized..
  * For subclassers eventually
  */
-ezP.DelegateSvg.Stmt.except_part.prototype.initBlock = function (block) {
-  ezP.DelegateSvg.Stmt.except_part.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Stmt.except_part.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
+  ezP.DelegateSvg.Stmt.except_part.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
   var subtypes = this.getModel().inputs.subtypes
   var F = function(k) {
     block.ezp.setupType(block, ezP.T3.Stmt[k])
     block.nextConnection.setCheck(ezP.T3.Stmt.Next[k])
     block.previousConnection.setCheck(ezP.T3.Stmt.Previous[k])
   }
-  this.initProperty(block, ezP.Key.SUBTYPE, subtypes[1], function(block, oldValue, newValue) {
-    return subtypes.indexOf(newValue) >= 0
-  }, null, function(block, oldValue, newValue) {
-    var i = subtypes.indexOf(newValue)
-    block.ezp.setNamedInputDisabled(block, subtypes[1], i < 1)
-    block.ezp.setNamedInputDisabled(block, subtypes[2], i < 2)
-    F(i > 0? 'except_part': 'void_except_part')
-  })
-}
-
-/**
- * Get the subtype of the block.
- * The default implementation does nothing.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is return, when defined or not null.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return None
- */
-ezP.DelegateSvg.Stmt.except_part.prototype.getSubtype = function (block) {
-  return block.ezp.getProperty(block, ezP.Key.SUBTYPE)
-}
-
-/**
- * Set the subtype of the block.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is expected.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return true if the receiver supports subtyping, false otherwise
- */
-ezP.DelegateSvg.Stmt.except_part.prototype.setSubtype = function (block, subtype) {
-  var subtypes = this.getModel().inputs.subtypes
-  return block.ezp.setProperty(block, ezP.Key.SUBTYPE, goog.isNumber(subtype)? subtypes[subtype]: subtype)
+  var i = subtypes.indexOf(newSubtype)
+  block.ezp.setNamedInputDisabled(block, subtypes[1], i < 1)
+  block.ezp.setNamedInputDisabled(block, subtypes[2], i < 2)
+  F(i > 0? 'except_part': 'void_except_part')
 }
 
 /**
@@ -199,28 +168,13 @@ ezP.DelegateSvg.Manager.makeSubclass('raise_stmt', {
  * @param {!Blockly.Block} block to be initialized..
  * For subclassers eventually
  */
-ezP.DelegateSvg.Stmt.raise_stmt.prototype.initBlock = function (block) {
-  ezP.DelegateSvg.Stmt.raise_stmt.superClass_.initBlock.call(this, block)
+ezP.DelegateSvg.Stmt.raise_stmt.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
+  ezP.DelegateSvg.Stmt.raise_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
   var subtypes = this.getModel().inputs.subtypes
-  this.initProperty(block, ezP.Key.SUBTYPE, subtypes[1], function(block, oldValue, newValue) {
-    return subtypes.indexOf(newValue) >= 0
-  }, null, function(block, oldValue, newValue) {
-    var i = subtypes.indexOf(newValue)
-    block.ezp.setNamedInputDisabled(block, subtypes[1], i < 1)
-    block.ezp.setNamedInputDisabled(block, subtypes[2], i < 2)
-  })
+  var i = subtypes.indexOf(newSubtype)
+  block.ezp.setNamedInputDisabled(block, subtypes[1], i < 1)
+  block.ezp.setNamedInputDisabled(block, subtypes[2], i < 2)
 }
-
-/**
- * Set the subtype of the block.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is expected.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return true if the receiver supports subtyping, false otherwise
- */
-ezP.DelegateSvg.Stmt.raise_stmt.prototype.setSubtype = ezP.DelegateSvg.Stmt.except_part.prototype.setSubtype
 
 /**
  * Populate the context menu for the given block.
@@ -285,18 +239,18 @@ ezP.DelegateSvg.Manager.makeSubclass('assert_stmt', {
 })
 
 /**
- * Initialize a block.
- * @param {!Blockly.Block} block to be initialized..
- * For subclassers eventually
+ * Hook after the subtype change.
+ * Default implementation does nothing.
+ * Subclassers will take care of undo compliance.
+ * When undoing, care must be taken not to fire new events.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
  */
-ezP.DelegateSvg.Stmt.assert_stmt.prototype.initBlock = function (block) {
-  ezP.DelegateSvg.Stmt.assert_stmt.superClass_.initBlock.call(this, block)
-  var builtins = this.getModel().inputs.builtins
-  this.initProperty(block, ezP.Key.SUBTYPE, null, function(block, oldValue, newValue) {
-    return !newValue || (newValue === ezP.Key.EXPRESSION)
-  }, null, function(block, oldValue, newValue) {
-    block.ezp.setNamedInputDisabled(block, ezP.Key.EXPRESSION, newValue !== ezP.Key.EXPRESSION)
-  })
+ezP.DelegateSvg.Stmt.assert_stmt.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
+  ezP.DelegateSvg.Stmt.assert_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
+  block.ezp.setNamedInputDisabled(block, ezP.Key.EXPRESSION, newSubtype !== ezP.Key.EXPRESSION)
 }
 
 /**

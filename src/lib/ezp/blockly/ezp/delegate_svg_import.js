@@ -297,30 +297,21 @@ ezP.DelegateSvg.Manager.makeSubclass('import_stmt', {
 })
 
 /**
- * Create and initialize the subtype property
- * Declares the operator property.
- * @param {!Blockly.Block} block to be initialized.
+ * Hook after the subtype change.
+ * Default implementation does nothing.
+ * Subclassers will take care of undo compliance.
+ * Event recording is disabled.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
  */
-ezP.DelegateSvg.Stmt.import_stmt.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Stmt.import_stmt.superClass_.initBlock.call(block.ezp, block)
-  var inputs = this.getModel().inputs
-  var subtypes = inputs.subtypes
-  block.ezp.initProperty(block, ezP.Key.SUBTYPE, subtypes[inputs.initialSubtypeIndex || 0], function(block, oldValue, newValue) {
-    return block.ezp.getModel().inputs.subtypes.indexOf(newValue) >= 0
-  }, null, function(block, oldValue, newValue) {
-    Blockly.Events.setGroup(true)
-    try {
-      var old = block.ezp.skipRendering
-      block.ezp.skipRendering = true
-      var subtypes = this.getModel().inputs.subtypes
-      for (var i = 0, k; (k = subtypes[i++]);) {
-        block.ezp.setNamedInputDisabled(block, k, (k !== newValue))
-      }
-      block.ezp.skipRendering = old
-    } finally {
-      Blockly.Events.setGroup(false)
-    }
-  })
+ezP.DelegateSvg.Stmt.import_stmt.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
+  ezP.DelegateSvg.Stmt.import_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
+  var subtypes = this.getModel().inputs.subtypes
+  for (var i = 0, k; (k = subtypes[i++]);) {
+    block.ezp.setNamedInputDisabled(block, k, (k !== newSubtype))
+  }
 }
 
 ezP.DelegateSvg.Stmt.import_stmt.prototype.willRender_ = function(block) {
@@ -334,32 +325,6 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.willRender_ = function(block) {
  */
 ezP.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function(block) {
   return block
-}
-
-/**
- * Get the subtype of the block.
- * The default implementation does nothing.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is return, when defined or not null.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return None
- */
-ezP.DelegateSvg.Stmt.import_stmt.prototype.getSubtype = function (block) {
-  return block.ezp.getProperty(block, ezP.Key.SUBTYPE)
-}
-
-/**
- * Set the subtype of the block.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is expected.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return true if the receiver supports subtyping, false otherwise
- */
-ezP.DelegateSvg.Stmt.import_stmt.prototype.setSubtype = function (block, subtype) {
-  block.ezp.setProperty(block, ezP.Key.SUBTYPE, subtype)
 }
 
 /**

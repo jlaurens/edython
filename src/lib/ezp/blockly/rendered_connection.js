@@ -271,7 +271,7 @@ ezP.Connection.prototype.ezp = undefined
 Blockly.RenderedConnection.prototype.highlight = function () {
   var block = this.sourceBlock_
   if (block && block.ezp) {
-    block.ezp.highlightConnection(this)
+    block.ezp.highlightConnection(block, this)
     return
   }
   Blockly.RenderedConnection.superClass_.highlight.call(this)

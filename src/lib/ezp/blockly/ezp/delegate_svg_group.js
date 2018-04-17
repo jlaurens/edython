@@ -184,7 +184,7 @@ ezP.DelegateSvg.Group.prototype.renderDrawInput_ = function (io) {
 /**
  * @param {!Blockly.Connection} c8n The connection to highlight.
  */
-ezP.DelegateSvg.Group.prototype.highlightConnection = function (c8n) {
+ezP.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
   var steps
   var block = c8n.sourceBlock_
   if (c8n.type === Blockly.INPUT_VALUE) {
