@@ -184,6 +184,20 @@ ezP.DelegateSvg.Manager.makeSubclass('target_list', {
 })
 
 /**
+ * Prepare io, just before walking through the input list.
+ * Subclassers may add their own stuff to io.
+ * @param {Object} io, parameters....
+ */
+ezP.Consolidator.List.Target.prototype.getIO = function(block) {
+  var unwrapped = block.ezp.getUnwrapped(block)
+  var io = ezP.Consolidator.List.Target.superClass_.getIO.call(this, block)
+  io.noDynamicList = io.noDynamicList || ((block.workspace.ezp.options.noDynamicTargetList)
+      && (!unwrapped
+        || !unwrapped.ezp.withDynamicTargetList_))
+  return io
+}
+
+/**
  * Class for a DelegateSvg, void_target_list block.
  * This block may be sealed.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.

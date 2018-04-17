@@ -106,6 +106,9 @@ ezP.BlockSvg.prototype.getInput = function (name) {
  * Wrapped blocks are not selectable.
  */
 ezP.BlockSvg.prototype.select = function() {
+  if (!this.workspace) {
+    return
+  }
   if (!this.ezp.selectedConnection && this.ezp.wrapped_ && this.getSurroundParent()) {
     // Wrapped blocks should not be selected.
     this.getSurroundParent().select();

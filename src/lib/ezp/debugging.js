@@ -11,4 +11,9 @@ Blockly.RenderedConnection.prototype.setHidden = function(hidden) {
   } else if (!hidden && !this.inDB_) {
     this.db_.addConnection(this);
   }
+  if (hidden) {
+    console.log('hide')
+  } else {
+    console.log('show')
+  }
 };

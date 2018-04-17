@@ -346,7 +346,7 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
       block.dispose()
     }
   }
-  var eventDisabler = ezP.Events.Disabler();
+  var disabler = ezP.Events.Disabler();
   try {
     var block = Blockly.Xml.domToBlock(xmlBlock, this);
     // Move the duplicate to original position.
@@ -393,7 +393,7 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
       block.moveBy(blockX, blockY);
     }
   } finally {
-    eventDisabler.stop();
+    disabler.stop();
   }
   if (Blockly.Events.isEnabled() && !block.isShadow()) {
     Blockly.Events.fire(new Blockly.Events.BlockCreate(block));

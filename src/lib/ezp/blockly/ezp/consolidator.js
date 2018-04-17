@@ -383,11 +383,11 @@ ezP.Consolidator.List.prototype.getIO = function(block) {
   var unwrapped = block.ezp.getUnwrapped(block)
   var io = {
     block: block,
-    noLeftSeparator: (block.workspace.options.noLeftSeparator 
-      || block.workspace.options.noDynamicList)
+    noLeftSeparator: (block.workspace.ezp.options.noLeftSeparator 
+      || block.workspace.ezp.options.noDynamicList)
       && (!unwrapped
         || (!unwrapped.ezp.withLeftSeparator_ && !unwrapped.ezp.withDynamicList_)),
-    noDynamicList: (block.workspace.options.noDynamicList)
+    noDynamicList: (block.workspace.ezp.options.noDynamicList)
       && (!unwrapped
         || !unwrapped.ezp.withDynamicList_),
     list: block.inputList,

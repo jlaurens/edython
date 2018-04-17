@@ -26,5 +26,6 @@ goog.require('goog.Disposable')
  */
 ezP.Helper = function () {
   ezP.Helper.superClass_.constructor.call(this)
+  this.options = {}
 }
 goog.inherits(ezP.Helper, goog.Disposable)

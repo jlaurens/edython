@@ -739,20 +739,24 @@ Ks = {
   'print(…)': ezP.T3.Stmt.builtin_print_stmt,
   'input(…)': ezP.T3.Expr.builtin_input_expr,
   'range(…)': {
-    type: ezP.T3.Expr.call_builtin,
+    type: ezP.T3.Expr.builtin_call_expr,
     subtype: 'range',
     key: ezP.Key.UPPER_BOUND,
   },
   'list(…)': {
-    type: ezP.T3.Expr.call_builtin,
+    type: ezP.T3.Expr.builtin_call_expr,
     subtype: 'list',
   },
+  'set(…)': {
+    type: ezP.T3.Expr.builtin_call_expr,
+    subtype: 'set',
+  },
   'len(…)': {
-    type: ezP.T3.Expr.call_builtin,
+    type: ezP.T3.Expr.builtin_call_expr,
     subtype: 'len',
   },
   'sum(…)': {
-    type: ezP.T3.Expr.call_builtin,
+    type: ezP.T3.Expr.builtin_call_expr,
     subtype: 'sum',
   },
   'module as alias': ezP.T3.Expr.module_as_concrete,

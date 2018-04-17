@@ -158,7 +158,7 @@ ezP.DelegateSvg.Manager.makeSubclass('call_stmt', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('builtin_call_expr', {
   inputs: {
-    subtypes: ['range', 'list', 'len', 'sum'],
+    subtypes: ['range', 'list', 'set', 'len', 'sum'],
     m_1: {
       label: '',
       css_class: 'ezp-code-builtin',

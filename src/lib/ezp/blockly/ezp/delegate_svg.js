@@ -1026,7 +1026,7 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
         var bBox = target.getHeightWidth()
         io.cursorX += bBox.width
       }
-    } else if (!this.locked_) {
+    } else if (!this.locked_ && !c8n.hidden_) {
       // locked blocks won't display any placeholder
       // (input with no target)
       var ezp = c8n.ezp
@@ -1673,7 +1673,7 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
     e8r.end()
     while (e8r.previous()) {
       var c8n = e8r.here.connection
-      if (c8n && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+      if (c8n && (!c8n.hidden_ || c8n.ezp.wrapped_) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
         var target = c8n.targetBlock()
         if (!target || (!target.ezp.wrapped_ && !target.ezp.locked_) || (c8n = doLast(target))) {
           return c8n
@@ -1729,7 +1729,7 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
           // found it, step down
           e8r.previous()
           while (e8r.previous()) {
-            if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+            if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.ezp.wrapped_) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
               if (selectConnection(block)) {
                 return
               }
@@ -1744,7 +1744,7 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
           // found it, step down
           e8r.previous()
           while (e8r.previous()) {
-            if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+            if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.ezp.wrapped_) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
               if (selectConnection(block)) {
                 return
               }
@@ -1763,11 +1763,11 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
     // select the previous non statement input if any
     var e8r = parent.ezp.inputEnumerator(parent)
     while (e8r.next()) {
-      if ((c8n = e8r.here.connection) && block === c8n.targetBlock()) {
+      if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.ezp.wrapped_) && block === c8n.targetBlock()) {
         // found it, step down
         e8r.previous()
         while (e8r.previous()) {
-          if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+          if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.ezp.wrapped_) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
             if (selectConnection(c8n)) {
               return
             }
@@ -1782,7 +1782,7 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
         parent.select()
         return
       }
-    } while ((parent = block.getSurroundParent()))
+    } while ((parent = parent.getSurroundParent()))
   }
   target = block
   do {
@@ -1835,6 +1835,9 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
     return false
   }
   var selectConnection = function() {
+    if (c8n.hidden_ && !c8n.ezp.wrapped_) {
+      return false
+    }
     if (!selectTarget()) {
       parent = block
       while (parent.ezp.wrapped_ || parent.ezp.locked_) {
@@ -2125,7 +2128,7 @@ ezP.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
   var e8r = block.ezp.inputEnumerator(block)
   while (e8r.next()) {
     var c8n = e8r.here.connection
-    if (c8n) {
+    if (c8n && (!c8n.hidden_ || c8n.ezp.wrapped_)) {
       if (c8n.type === Blockly.INPUT_VALUE) {
         var target = c8n.targetBlock()
         if (target) {
@@ -2156,7 +2159,7 @@ ezP.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
       }
     }
   }
-  if ((c8n = block.previousConnection)) {
+  if ((c8n = block.previousConnection) && !c8n.hidden) {
     var R = new goog.math.Rect(
       c8n.offsetInBlock_.x,
       c8n.offsetInBlock_.y,
@@ -2167,7 +2170,7 @@ ezP.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
       return c8n
     }  
   }
-  if ((c8n = block.nextConnection)) {
+  if ((c8n = block.nextConnection) && !c8n.hidden) {
     if (rect.height > ezP.Font.lineHeight()) {// Not the cleanest design
       var R = new goog.math.Rect(
         c8n.offsetInBlock_.x,
@@ -2282,16 +2285,10 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
   var prototypeName = action.type || action
   // create a block out of the undo mechanism
   var disabler = new ezP.Events.Disabler()
-  var conclude = function() {
-    if (disabler) {
-      disabler.stop()
-    }
-  }
   try {
     var candidate = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
     if (!candidate) {
       disabler.stop()
-      disabler = null
       return
     }
     var c8n_N = action.subtype || subtype
@@ -2301,7 +2298,6 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
     var c8n, otherC8n, foundC8n
     var fin = function(prepare) {
       disabler.stop()
-      disabler = null
       Blockly.Events.setGroup(true)
       try {
         if (Blockly.Events.isEnabled()) {
@@ -2429,7 +2425,7 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
       candidate.dispose(true)
     }
   } finally {
-    conclude()
+    disabler.stop()
   }
 }
 

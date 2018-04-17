@@ -79,6 +79,10 @@ ezP.Events.Disabler = function() {
     Blockly.Events.disable()
     return {
       stop: function() {
+        if(this.fired) {
+          return
+        }
+        this.fired = true
         Blockly.Events.enable()
       }
     }

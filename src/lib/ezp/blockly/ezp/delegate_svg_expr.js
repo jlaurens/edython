@@ -195,7 +195,7 @@ ezP.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr)
  */
 ezP.DelegateSvg.Expr.prototype.canInsertParent = function(block, prototypeName, subtype, parentInputName) {
   var can = false
-  var eventDisabler = ezP.Events.Disabler()
+  var disabler = ezP.Events.Disabler()
   var B = block.workspace.newBlock(prototypeName)
   B.ezp.setSubtype(B, subtype)
   var input = B.getInput(parentInputName)
@@ -207,7 +207,7 @@ ezP.DelegateSvg.Expr.prototype.canInsertParent = function(block, prototypeName, 
     can = !targetC8n || targetC8n.checkType_(B.outputConnection)
   }
   B.dispose()
-  eventDisabler.stop()
+  disabler.stop()
   return can
 }
 
@@ -225,10 +225,10 @@ ezP.DelegateSvg.Expr.prototype.canInsertParent = function(block, prototypeName, 
  */
 ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeName, subtype, parentInputName, fill_holes) {
 //  console.log('insertParent', block, parentPrototypeName, subtype, parentInputName)
-  var eventDisabler = ezP.Events.Disabler()
+  var disabler = ezP.Events.Disabler()
   var parentBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName)
   parentBlock.ezp.setSubtype(parentBlock, subtype)
-  eventDisabler.stop()
+  disabler.stop()
   console.log('block created of type', parentPrototypeName)
   if (parentInputName) {
     var parentInput = parentBlock.getInput(parentInputName)
