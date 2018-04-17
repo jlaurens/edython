@@ -555,7 +555,7 @@ ezP.Delegate.prototype.initProperty = function (block, key, value, validate, wil
 /**
  * The python type of the owning block.
  */
-ezP.Delegate.prototype.pythonSort_ = undefined
+ezP.Delegate.prototype.pythonType_ = undefined
 
 /**
  * The real type of the owning block.
@@ -573,7 +573,7 @@ ezP.Delegate.prototype.type_ = undefined
 ezP.Delegate.prototype.setupType = function (block, optNewType) {
   optNewType && (block.type = optNewType)
   var m = /^ezp:((?:fake_)?((.*?)(?:_concrete)?))$/.exec(block.type)
-  this.pythonSort_ = m? m[1]: block.type
+  this.pythonType_ = m? m[1]: block.type
   this.type_ = m? 'ezp:'+m[2]: block.type
   this.xmlType_ = m? m[3]: block.type
   // test all connections

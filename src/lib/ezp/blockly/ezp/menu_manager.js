@@ -485,7 +485,7 @@ ezP.MenuManager.prototype.populateLast = function (block) {
   this.separate()
   
   menuItem = new ezP.MenuItem(
-    block.ezp.getPythonSort(block), function(event) {
+    block.ezp.getPythonType(block), function(event) {
       var xmlDom = Blockly.Xml.blockToDom(block, true)
       var xmlText = Blockly.Xml.domToText(xmlDom)
       console.log(xmlText)
@@ -495,7 +495,7 @@ ezP.MenuManager.prototype.populateLast = function (block) {
   this.addChild(menuItem, true)
 
   menuItem = new ezP.MenuItem(
-    block.ezp.getPythonSort(block)+' python code',
+    block.ezp.getPythonType(block)+' python code',
     function(b, e) {
       console.log('Python code for', block.type)
       console.log(block.ezp.toPython(block))  
@@ -504,7 +504,7 @@ ezP.MenuManager.prototype.populateLast = function (block) {
   this.addChild(menuItem, true)
 
   menuItem = new ezP.MenuItem(
-    block.ezp.getPythonSort(block)+' python code (deep)',
+    block.ezp.getPythonType(block)+' python code (deep)',
     function(b, e) {
       console.log('Python code for', block.type)
       console.log(block.ezp.toPython(block, true))  

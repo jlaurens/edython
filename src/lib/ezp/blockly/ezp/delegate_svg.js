@@ -1401,12 +1401,12 @@ ezP.DelegateSvg.prototype.prepareForWorkspace = function (block, workspace, x, y
  * Wrapped blocks will return the parent's answer.
  * @param {!Blockly.Block} block The block.
  */
-ezP.DelegateSvg.prototype.getPythonSort = function (block) {
+ezP.DelegateSvg.prototype.getPythonType = function (block) {
   if (this.wrapped_) {
     var parent = block.getParent()
-    return parent.ezp.getPythonSort(parent)
+    return parent.ezp.getPythonType(parent)
   }
-  return this.pythonSort_
+  return this.pythonType_
 }
 
 /**
