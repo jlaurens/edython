@@ -449,7 +449,7 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
  * @private
  */
 ezP.Connection.prototype.connect_ = function(childConnection) {
-  // this is actual parentConnection
+  // `this` is actually the parentConnection
   var parent = this.sourceBlock_
   var oldChildConnection = this.targetConnection
   var oldParentConnection = childConnection.targetConnection
@@ -511,6 +511,8 @@ ezP.Connection.prototype.connect_ = function(childConnection) {
       }
     }
   }
+  childConnection.ezp.didConnect()
+  this.ezp.didConnect()
   parent.ezp.didConnect(parent, this, oldChildConnection, oldParentConnection)
   child.ezp.didConnect(child, childConnection, oldParentConnection, oldChildConnection)
   if (oldChildConnection) {

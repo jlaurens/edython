@@ -30,6 +30,24 @@ ezP.DelegateSvg.Manager.makeSubclass('identifier', {
       identifier: '',
     },
   },
+  output: {
+    didConnect: function(oldTargetConnection, oldConnectionn) {
+      // `this` is a connection's delegate
+      var targetC8n = this.connection.targetConnection
+      for (var i = 0, input;(input = targetC8n.sourceBlock_.inputList[i++]);) {
+        if (input.connection === targetC8n) {
+          var block = this.connection.sourceBlock_
+          block.ezp.setPhantomValue(block, input.ezp.model.hole_value)
+          return
+        }
+      }
+    },
+    didDisconnect: function(oldConnection) {
+      // `this` is a connection's delegate
+      var block = this.connection.sourceBlock_
+      block.ezp.setPhantomValue(block, undefined)
+    },
+  }
 })
 
 /**
@@ -60,7 +78,9 @@ ezP.DelegateSvg.Expr.identifier.prototype.noBlockWrapped = function (block) {
  * @return true
  */
 ezP.DelegateSvg.Expr.identifier.prototype.setPhantomValue = function(block, text) {
-  this.uiModel.m_1.fields.identifier.placeholderText_ = text
+  var field = this.uiModel.m_1.fields.identifier
+  field.placeholderText_ = text
+  field.render_()
   return true
 }
 

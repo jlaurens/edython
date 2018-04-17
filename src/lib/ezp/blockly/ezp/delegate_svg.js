@@ -268,6 +268,8 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         } else if (!out.input) {
           out.input = block.appendValueInput(k)
         }
+        // let the input know about the model used to create it
+        out.input.ezp.model = D
         var c8n = out.input.connection
         if (c8n) {
           var ezp = c8n.ezp

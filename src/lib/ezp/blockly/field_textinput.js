@@ -245,30 +245,9 @@ ezP.FieldInput.prototype.placeholderText = function() {
  * @param {string} newValue New value.
  */
 ezP.FieldInput.prototype.setValue = function(newValue) {
-  if ((this.ezp.placeholder = !newValue || !newValue.length)) {
-    // newValue = this.placeholderText()
-    if (this.textElement_) {
-      goog.dom.classlist.add(this.textElement_,'ezp-code-placeholder')
-    }
-  } else if (this.textElement_) {
-    goog.dom.classlist.remove(this.textElement_,'ezp-code-placeholder')
-  }   
+  this.ezp.placeholder = !newValue || !newValue.length 
   ezP.FieldInput.superClass_.setValue.call(this, newValue)
 }
-
-/**
- * Adds the class.
- * @override
- * @private
- */
-ezP.FieldInput.prototype.render_ = function() {
-  ezP.FieldInput.superClass_.render_.call(this)
-  if (this.ezp.placeholder) {
-    goog.dom.classlist.add(this.textElement_, 'ezp-code-placeholder')
-  } else {
-    goog.dom.classlist.remove(this.textElement_, 'ezp-code-placeholder')
-  }
-};
 
 ezP.FieldInput.prototype.placeholderText = function() {
   return this.placeholderText_ || ezP.Msg.PLACEHOLDER_CODE
