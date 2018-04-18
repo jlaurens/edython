@@ -360,210 +360,79 @@ ezP.Delegate.Manager = function () {
 ezP.Delegate.Manager.registerAll(ezP.T3.Expr, ezP.Delegate)
 ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.Delegate)
 
-/**
- * Get the subtype of the block.
- * The subtype of a block is used to fine tune the block typing
- * mechanism. For example, comparison blocks are using different
- * comparison operators. There are two kinds of comparison blocks,
- * one for numerical comparision, which subtype is one of the numerical
- * comparision operators, and one for object comparision,
- * which subtype is an other operator.
- * 
- * The default implementation return a void string.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is return, when defined or not null.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return ''
- */
-ezP.Delegate.prototype.getSubtype = function (block) {
-  return this.subtype_
-}
 
 /**
- * Validates the new subtype.
- * Compares to the data of the model.
- * The default implementation return false.
+ * Declares and init a named property for the given constructor.
  * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newSubtype
- * @return true if newSubtype is acceptable, false otherwise
+ * @param {Object} Ctor The constructor to add the property to.
+ * @param {string} key Whether to unlock statements too.
+ * @param {function} initialize.
+ * @param {function} validate.
+ * @param {function} willChange.
+ * @param {function} didChange.
+ * @return the number of block locked
  */
-ezP.Delegate.prototype.validateSubtype = function (block, newSubtype) {
-  var subtypes = block.ezp.getModel().inputs.subtypes
-  return subtypes && subtypes.indexOf(newSubtype) >= 0
-}
-
-/**
- * Hook before the subtype change.
- * Default implementation does nothing.
- * Subclassers will take care of undo compliance.
- * Event recording is disabled.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} oldSubtype
- * @param {string} newSubtype
- */
-ezP.Delegate.prototype.willChangeSubtype = function (block, oldSubtype, newSubtype) {
-  return
-}
-
-/**
- * Hook after the subtype change.
- * Default implementation does nothing.
- * Subclassers will take care of undo compliance.
- * Event recording is disabled.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} oldSubtype
- * @param {string} newSubtype
- */
-ezP.Delegate.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
-}
-
-/**
- * Set the subtype of the block.
- * Undo compliant.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {Object} newSubtype  newSubtype is a string or an index.
- * When not a string, this is the index of the subtype in the subtypes
- * array in the model.
- * @return true if the receiver has been modified, false otherwise
- */
-ezP.Delegate.prototype.setSubtype = function (block, newSubtype) {
-  if (goog.isNumber(newSubtype)) {
-    var subtypes = this.getModel().inputs.subtypes
-    if (subtypes) {
-      newSubtype = subtypes[newSubtype]
+ezP.Delegate.addProperty = function (Ctor, key, initialize, validate, willChange, didChange) {
+  var k = key.charAt(0).toUpperCase() + key.slice(1)
+  var k_ = key + '_'
+  var p = Ctor.prototype
+  p['get'+k] = function(block) {
+    return this[k_]
+  }
+  p['init'+k] = initialize || function(block) {
+    var inputs = block.ezp.getModel().inputs
+    var values = inputs[key+'s']
+    var id = inputs[key+'Index']
+    this.setValue(block, values[i])
+  }
+  p['validate'+k] = validate || function(block, newValue) {
+    var values = block.ezp.getModel().inputs[key+'s']
+    return values && values.indexOf(newValue) >= 0
+  }
+  p['willChange'+k] = willChange || function(block, oldValue, newValue) {
+  }
+  p['didChange'+k] = didChange || function(block, oldValue, newValue) {
+  }
+  p['set'+k] = function (block, newValue) {
+    if (goog.isNumber(newValue)) {
+      var values = block.ezp.getModel().inputs[key+'s']
+      if (values) {
+        newValue = values[newValue]
+      }
     }
-  }
-  if ((this.subtype_ === newSubtype) || (!this.validateSubtype(block, newSubtype))) {
-    return false
-  }
-  var oldSubtype = this.subtype_
-  Blockly.Events.setGroup(true)
-  var old = block.ezp.skipRendering
-  try {
-    block.ezp.skipRendering = true
-    ezP.Events.Disabler.wrap(function() {
-      block.ezp.willChangeSubtype(block, oldSubtype, newSubtype)
-    })
-    if (Blockly.Events.isEnabled()) {
-      Blockly.Events.fire(new Blockly.Events.BlockChange(
-      block, ezP.Const.Event.SUBTYPE, null, oldSubtype, newSubtype))
+    if ((this[k_] === newValue) || (!this['validate'+k](block, newValue))) {
+      return false
     }
-    this.subtype_ = newSubtype
-    ezP.Events.Disabler.wrap(function() {
-      block.ezp.didChangeSubtype(block, oldSubtype, newSubtype)
-    })
-    block.render() // render now or possibly later ?
-  } finally {
-    block.ezp.skipRendering = old
-    Blockly.Events.setGroup(false)
-  }
-  return true
-}
-
-
-/**
- * Get the value of the block.
- * 
- * The default implementation return a void string.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is return, when defined or not null.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return ''
- */
-ezP.Delegate.prototype.getValue = function (block) {
-  return this.value_
-}
-
-/**
- * Validates the new value.
- * Compares to the data of the model.
- * The default implementation return false.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newValue
- * @return true if newValue is acceptable, false otherwise
- */
-ezP.Delegate.prototype.validateValue = function (block, newValue) {
-  var values = block.ezp.getModel().inputs.values
-  return values && values.indexOf(newValue) >= 0
-}
-
-/**
- * Hook before the value change.
- * Default implementation does nothing.
- * Subclassers will take care of undo compliance.
- * When undoing, care must be taken not to fire new events.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} oldValue
- * @param {string} newValue
- */
-ezP.Delegate.prototype.willChangeValue = function (block, oldValue, newValue) {
-  return
-}
-
-/**
- * Hook after the value change.
- * Default implementation does nothing.
- * Subclassers will take care of undo compliance.
- * When undoing, care must be taken not to fire new events.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} oldValue
- * @param {string} newValue
- */
-ezP.Delegate.prototype.didChangeValue = function (block, oldValue, newValue) {
-}
-
-/**
- * Set the subtype of the block.
- * Undo compliant.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {Object} newValue  newValue is an object or an index.
- * When not a string, this is the index of the value in the values
- * array in the model.
- * @return true if the receiver has been modified, false otherwise
- */
-ezP.Delegate.prototype.setValue = function (block, newValue) {
-  if (goog.isNumber(newValue)) {
-    var values = this.getModel().inputs.values
-    if (values) {
-      newValue = values[newValue]
+    var oldValue = this[k_]
+    Blockly.Events.setGroup(true)
+    var old = this.skipRendering
+    try {
+      this.skipRendering = true
+      ezP.Events.Disabler.wrap(function() {
+        block.ezp['willChange'+k](block, oldValue, newValue)
+      })
+      if (Blockly.Events.isEnabled()) {
+        Blockly.Events.fire(new Blockly.Events.BlockChange(
+        block, 'ezp:property.'+key, null, oldValue, newValue))
+      }
+      this[k_] = newValue
+      ezP.Events.Disabler.wrap(function() {
+        block.ezp['didChange'+k](block, oldValue, newValue)
+      })
+      this.skipRendering = old
+      block.render() // render now or possibly later ?
+    } finally {
+      this.skipRendering = old
+      Blockly.Events.setGroup(false)
     }
+    return true
   }
-  if ((this.value_ === newValue) || (!this.validateValue(block, newValue))) {
-    return false
-  }
-  var oldValue = this.value_
-  Blockly.Events.setGroup(true)
-  var old = block.ezp.skipRendering
-  try {
-    block.ezp.skipRendering = true
-    ezP.Events.Disabler.wrap(function() {
-      block.ezp.willChangeValue(block, oldValue, newValue)
-    })
-    if (Blockly.Events.isEnabled()) {
-      Blockly.Events.fire(new Blockly.Events.BlockChange(
-      block, ezP.Const.Event.VALUE, null, oldValue, newValue))
-    }
-    this.value_ = newValue
-    ezP.Events.Disabler.wrap(function() {
-      block.ezp.didChangeValue(block, oldValue, newValue)
-    })
-    block.render() // render now or possibly later ?
-  } finally {
-    block.ezp.skipRendering = old
-    Blockly.Events.setGroup(false)
-  }
-  return true
 }
+
+ezP.Delegate.addProperty(ezP.Delegate, 'subtype')
+ezP.Delegate.addProperty(ezP.Delegate, 'value')
+ezP.Delegate.addProperty(ezP.Delegate, 'modifier')
+ezP.Delegate.addProperty(ezP.Delegate, 'variant')
 
 /**
  * Whether the named property for the given block exists.
