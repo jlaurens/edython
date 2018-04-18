@@ -290,7 +290,7 @@ ezP.DelegateSvg.Manager.makeSubclass('parameter_list', {
 })
 
 /**
- * Class for a DelegateSvg, parameter_star.
+ * Class for a DelegateSvg, parameter.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
