@@ -103,7 +103,7 @@ ezP.DelegateSvg.Operator.prototype.getMenuTarget = function(block) {
  * @private
  */
 ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var yorn = mgr.populateSubtypes(block)
+  var yorn = mgr.populateProperties(block, 'subtype')
   return ezP.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 

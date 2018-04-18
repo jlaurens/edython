@@ -238,7 +238,7 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.didChangeSubtype = function (block, 
  * @private
  */
 ezP.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr) {
-  mgr.populateSubtypes(block)
+  mgr.populateProperties(block, 'subtype')
   var code = this.ui.i_3.fields.string
   var can_b = !!XRegExp.exec(code.getValue(), ezP.XRE.bytes)
   mgr.separate()

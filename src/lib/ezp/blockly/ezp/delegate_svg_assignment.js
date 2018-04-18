@@ -714,7 +714,7 @@ ezP.DelegateSvg.Expr.augassign_bitwise.prototype.populateContextMenuFirst_ = fun
 
 ezP.DelegateSvg.Stmt.augassign_numeric_stmt.prototype.populateContextMenuFirst_ =
 ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.populateContextMenuFirst_ = function(block, mgr) {
-  mgr.populateSubtypes(block)
+  mgr.populateProperties(block, 'subtype')
   ezP.DelegateSvg.AugAssign.populateContextMenuFirst_(block, mgr)
   return ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }

@@ -1219,33 +1219,6 @@ ezP.MenuManager.prototype.populate_wrap_alternate = function (block, key) {
  * @param {!Blockly.Block} block The block.
  * @private
  */
-ezP.MenuManager.prototype.populateSubtypes = function (block) {
-  var ezp = block.ezp
-  var subtypes = ezp.getModel().inputs.subtypes
-  if (subtypes && subtypes.length > 1) {
-    var current = ezp.getSubtype(block)
-    var F = function(subtype) {
-      var menuItem = new ezP.MenuItem(ezp.getContent(block, subtype), function() {
-        ezp.setSubtype(block, subtype)
-      })
-      menuItem.setEnabled(current != subtype)
-      this.addChild(menuItem, true)
-      goog.dom.classlist.add(menuItem.getElement().firstChild, 'ezp-code')
-    }
-    for (var i = 0; i<subtypes.length; i++) {
-      F.call(this, subtypes[i])
-    }
-    return true
-  }
-  return false
-}
-
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @private
- */
 ezP.MenuManager.prototype.populateProperties = function (block, key) {
   var ezp = block.ezp
   var properties = ezp.getModel().inputs[key+'s']
