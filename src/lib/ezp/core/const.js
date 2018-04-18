@@ -79,6 +79,7 @@ ezP.Key = {
   COMP_FOR: 'comp_for',
   
   NAME: 'name',
+  DOTTED_NAME: 'dotted_name',
   IF: 'if',
   ELIF: 'elif',
   ELSE: 'else',

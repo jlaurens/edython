@@ -121,36 +121,16 @@ ezP.FieldIdentifier.prototype.showPromptEditor_ = function () {
 }
 
 console.warn('Fix code below: variable name replace all')
+
 /**
  * Called when focusing away from the text field.
  * @param {string} newName The new variable name.
  * @private
  * @this ezP.FieldIdentifier
  */
-ezP.FieldIdentifier.prototype.onFinishEditing_ = function (newName) {
-  var oldName = this.savedValue_
-  var workspace = this.sourceBlock_.workspace
-  var VM = workspace.getVariable(newName)
-  if (VM) {
-    var allBlocks = workspace.getAllBlocks()
-    for (var i = 0, B; B = allBlocks[i++];) {
-      var field = B.ezp.field.identifier
-      if (field && field.getValue() === oldName) {
-        field.setValue(newName)
-      }
-    }
-  }
-}
-
-/**
- * Create and show a text input editor that sits directly over the text input.
- * @param {boolean} quietInput True if editor should be created without
- *     focus.
- * @private
- */
-ezP.FieldIdentifier.prototype.showInlineEditor_ = function(optQuietInput) {
-  this.savedValue_ = this.getValue()
-  ezP.FieldIdentifier.superClass_.showInlineEditor_.call(this, optQuietInput)
+ezP.FieldIdentifier.prototype.onEndEditing_ = function () {
+  var block = this.sourceBlock_
+  block.ezp.setValue(block, this.getValue())
 }
 
 ezP.FieldIdentifier.prototype.showIdentifierEditor = function(a) {

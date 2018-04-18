@@ -321,7 +321,7 @@ ezP.DelegateSvg.Stmt.decorator_stmt.workspaceBlocks =
 ezP.DelegateSvg.Stmt.funcdef_part.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Stmt.decorator_stmt,
   ezP.T3.Expr.identifier,
-  ezP.T3.Expr.dotted_funcname_concrete,
+  ezP.T3.Expr.dotted_name,
   ezP.T3.Stmt.funcdef_part,
   ezP.T3.Stmt.classdef_part,
 ],

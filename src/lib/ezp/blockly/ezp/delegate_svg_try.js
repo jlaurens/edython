@@ -88,11 +88,11 @@ ezP.DelegateSvg.Stmt.except_part.prototype.didChangeSubtype = function (block, o
  * @private
  */
 ezP.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var current = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
+  var current = block.ezp.getSubtype(block)
   var subtypes = this.getModel().inputs.subtypes
   var F = function(content, k) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setProperty(block, ezP.Key.SUBTYPE, k)
+      block.ezp.setSubtype(block, k)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
@@ -183,11 +183,11 @@ ezP.DelegateSvg.Stmt.raise_stmt.prototype.didChangeSubtype = function (block, ol
  * @private
  */
 ezP.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var current = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
+  var current = block.ezp.getSubtype(block)
   var subtypes = this.getModel().inputs.subtypes
   var F = function(content, k) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setProperty(block, ezP.Key.SUBTYPE, k)
+      block.ezp.setSubtype(block, k)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
@@ -260,10 +260,10 @@ ezP.DelegateSvg.Stmt.assert_stmt.prototype.didChangeSubtype = function (block, o
  * @private
  */
 ezP.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var current = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
+  var current = block.ezp.getSubtype(block)
   var F = function(content, key) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setProperty(block, ezP.Key.SUBTYPE, key)
+      block.ezp.setSubtype(block, key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)

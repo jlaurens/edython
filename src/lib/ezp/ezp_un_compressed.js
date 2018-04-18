@@ -6642,7 +6642,7 @@ a=a||!1;
 ezP.FieldVariable.prototype.showIdentifierPromptEditor_=function(){var a=this,b=ezP.Msg.RENAME_VARIABLE_TITLE.replace("%1",this.text_);
 Blockly.prompt(b,this.text_,function(b){a.sourceBlock_&&(b=a.callValidator(b));
 a.setValue(b)})};
-ezP.FieldVariable.prototype.onFinishEditing_=function(a){this.isEditingIdentifier_=!1;
+ezP.FieldVariable.prototype.onEndEditing_=function(a){this.isEditingIdentifier_=!1;
 var b=this.sourceBlock_.workspace,c=b.getVariable(a);
 c?this.setText(c.name):b.renameVariableById(this.getValue(),a)};
 ezP.FieldVariable.prototype.showIdentifierInlineEditor_=ezP.FieldTextInput.prototype.showInlineEditor_;
@@ -6656,7 +6656,7 @@ null===a?Blockly.utils.addClass(b,"blocklyInvalidInput"):Blockly.utils.removeCla
 
 ezP.FieldVariable.prototype.maybeSaveEdit_=function(){var a=Blockly.FieldTextInput.htmlInput_,b=a.value;
 if(this.sourceBlock_)if(b=this.callValidator(b),null===b)b=a.defaultValue;
-else if(this.onFinishEditing_)this.onFinishEditing_(b);
+else if(this.onEndEditing_)this.onEndEditing_(b);
 this.setText(b);
 this.sourceBlock_.rendered&&this.sourceBlock_.render()};
 ezP.FieldVariable.prototype.widgetDispose_=Blockly.FieldTextInput.prototype.widgetDispose_;

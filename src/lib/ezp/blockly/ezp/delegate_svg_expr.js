@@ -126,7 +126,7 @@ ezP.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
  */
 ezP.DelegateSvg.Expr.prototype.willRender_ = function (block) {
   ezP.DelegateSvg.Expr.superClass_.willRender_.call(this, block)
-  var field = this.uiModel.fields.await
+  var field = this.ui.fields.await
   if (field) {
     field.setVisible(this.await_)
   }
@@ -140,7 +140,7 @@ ezP.DelegateSvg.Expr.prototype.willRender_ = function (block) {
  * @return yes or no
  */
 ezP.DelegateSvg.Expr.prototype.awaitable = function (block) {
-  if (!this.uiModel.fields.await) {
+  if (!this.ui.fields.await) {
     return false
   }
   var parent = block.getParent()
@@ -163,7 +163,7 @@ ezP.DelegateSvg.Expr.prototype.awaitable = function (block) {
  */
 ezP.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var yorn = ezP.DelegateSvg.Expr.superClass_.populateContextMenuFirst_.call(this,block, mgr)
-  var field = this.uiModel.fields.await
+  var field = this.ui.fields.await
   if (this.await_ || this.awaitable && this.awaitable(block)) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN('await', 'ezp-code-reserved'),
@@ -473,7 +473,7 @@ ezP.DelegateSvg.Manager.makeSubclass('builtin_object', {
  * @param {!Blockly.Block} block to be initialized..
  */
 ezP.DelegateSvg.Expr.builtin_object.prototype.initSubtype = function(block) {
-  this.setSubtype(block, block.ezp.uiModel.i_1.fields.label.getValue(block))
+  this.setSubtype(block, block.ezp.ui.i_1.fields.label.getValue(block))
 }
 
 /**
@@ -484,7 +484,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.initSubtype = function(block) {
  */
 ezP.DelegateSvg.Expr.builtin_object.prototype.didChangeSubtype = function(block, oldSubtype, newSubtype) {
   ezP.DelegateSvg.Expr.builtin_object.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  block.ezp.uiModel.i_1.fields.label.setValue(newSubtype)
+  block.ezp.ui.i_1.fields.label.setValue(newSubtype)
 }
 
 /**
@@ -578,7 +578,7 @@ ezP.DelegateSvg.Expr.any.prototype.setValue = ezP.DelegateSvg.Expr.any.prototype
  */
 ezP.DelegateSvg.Expr.any.prototype.didChangeSubtype = function(block, oldSubtype, newSubtype) {
   ezP.DelegateSvg.Expr.any.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  block.ezp.uiModel.i_1.fields.code.setValue(newSubtype)
+  block.ezp.ui.i_1.fields.code.setValue(newSubtype)
 }
 
 ezP.DelegateSvg.Expr.T3s = [

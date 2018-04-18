@@ -194,10 +194,10 @@ ezP.DelegateSvg.Expr.builtin_call_expr.prototype.didChangeSubtype = function (bl
  */
 ezP.DelegateSvg.Expr.builtin_call_expr.populateMenu = function (block, mgr) {
   var subtypes = block.ezp.getModel().inputs.subtypes
-  var current = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
+  var current = block.ezp.getSubtype(block)
   var F = function(content, key) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setProperty(block, ezP.Key.SUBTYPE, key)
+      block.ezp.setSubtype(block, key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)

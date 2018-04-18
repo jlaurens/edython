@@ -131,11 +131,11 @@ ezP.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (bloc
   if (block.ezp.locked_) {
     return
   }
-  var current = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
+  var current = block.ezp.getSubtype(block)
   var subtypes = this.getModel().inputs.subtypes
   var F = function(content, k) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setProperty(block, ezP.Key.SUBTYPE, k)
+      block.ezp.setSubtype(block, k)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)

@@ -210,13 +210,13 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
           this.wrappedInputs_.push(input)
         }
       }
-      // xfer uiModel
-      var uiModel = B.ezp.uiModel// not yet used
+      // xfer ui
+      var ui = B.ezp.ui// not yet used
       if (isMain) {
         this.getModel().inputs = B.getModel.inputs
       }
       B.dispose(true)
-      return uiModel
+      return ui
     }
   }
   var doOneModel = function(K) {
@@ -230,7 +230,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       // first insert a base input model by creating a node
       // of a different type and transferring input ownership
       if ((v = D.insert)) {
-        out.uiModel = doInsert.call(this, v)
+        out.ui = doInsert.call(this, v)
       }
       var recorder
       // the main field may determine the name of the input
@@ -256,6 +256,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       && !doEditableFields(ezP.Key.COMMENT, ezP.FieldComment)
       && !doEditableFields(ezP.Key.NUMBER, ezP.FieldNumber)
       && !doEditableFields(ezP.Key.STRING, ezP.FieldString)
+      && !doEditableFields(ezP.Key.DOTTED_NAME, ezP.FieldDottedName)
       && !doEditableFields(ezP.Key.LONG_STRING, ezP.FieldLongString)
       && ((D.check === undefined && D.wrap === undefined) || D.dummy)) {
         out.input = block.appendDummyInput(k)
@@ -396,7 +397,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       }
     }
   }
-  this.uiModel = model
+  this.ui = model
   if (!block.workspace.options.readOnly && !this.eventsInit_) {
     Blockly.bindEventWithChecks_(block.getSvgRoot(), 'mouseup', block,
     function(e) {
@@ -484,7 +485,7 @@ ezP.DelegateSvg.prototype.postInitSvg = function(block) {
  * @return {Blockly.Field} Named field, or null if field does not exist.
  */
 ezP.DelegateSvg.prototype.getField = function(block, name) {
-  var fields = this.uiModel.fields
+  var fields = this.ui.fields
   for(var key in fields) {
     var field = fields[key]
     if (field.name === name) {
@@ -500,7 +501,7 @@ ezP.DelegateSvg.prototype.getField = function(block, name) {
  */
 ezP.DelegateSvg.prototype.getMenuTarget = function(block) {
   var wrapped
-  if (this.uiModel.wrap && (wrapped = this.uiModel.wrap.input.connection.targetBlock())) {
+  if (this.ui.wrap && (wrapped = this.ui.wrap.input.connection.targetBlock())) {
     return wrapped.ezp.getMenuTarget(wrapped)
   }
   if (this.wrappedInputs_ && this.wrappedInputs_.length === 1 &&
@@ -878,13 +879,13 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     this.shouldSeparateField = false
   }
   io.shouldSeparateField = this.shouldSeparateField
-  if ((io.field = this.uiModel.fields.async)) {
+  if ((io.field = this.ui.fields.async)) {
     this.renderDrawField_(io)
   }
-  if ((io.field = this.uiModel.fields.await)) {
+  if ((io.field = this.ui.fields.await)) {
     this.renderDrawField_(io)
   }
-  if ((io.field = this.uiModel.fields.prefix)) {
+  if ((io.field = this.ui.fields.prefix)) {
     this.renderDrawField_(io)
   }
   for (; (io.input = block.inputList[io.i]); io.i++) {
@@ -915,7 +916,7 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
       }
     }
   }
-  if ((io.field = this.uiModel.fields.suffix)) {
+  if ((io.field = this.ui.fields.suffix)) {
     this.renderDrawField_(io)
   }
   io.cursorX += this.getPaddingRight(block)

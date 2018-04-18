@@ -52,7 +52,7 @@ ezP.DelegateSvg.Operator.model__ = {
  */
 ezP.DelegateSvg.Operator.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Operator.superClass_.initBlock.call(this, block)
-  var field = block.ezp.uiModel.i_3.fields.operator
+  var field = block.ezp.ui.i_3.fields.operator
   var value = field.getValue()
   if (this.validateSubtype(block, value)) {
     this.setSubtype(block, value)
@@ -68,7 +68,7 @@ ezP.DelegateSvg.Operator.prototype.initBlock = function(block) {
  * @param {!Blockly.Block} block to be initialized.
  */
 ezP.DelegateSvg.Operator.prototype.didChangeSubtype = function(block, oldValue, newValue) {
-  var field = block.ezp.uiModel.i_3.fields.operator
+  var field = block.ezp.ui.i_3.fields.operator
   if (newValue !== field.getValue()) {
     var disabler = new ezP.Events.Disabler()
     try {

@@ -35,6 +35,7 @@ ezP.Xml = {
   INPUT: 'input', // attribute name
   FLOW: 'flow', // attribute name
   NEXT: 'next', // attribute name
+  DOTTED_NAME: 'dotted_name', // attribute name
 
   LIST: 'ezp:list',
   LITERAL: 'ezp:literal',
@@ -921,7 +922,7 @@ ezP.Xml.InputList
 
 goog.require('ezP.DelegateSvg.Proc')
 
-ezP.DelegateSvg.Expr.dotted_funcname_concrete.prototype.xml = ezP.Xml.InputList
+ezP.DelegateSvg.Expr.dotted_name.prototype.xml = ezP.Xml.Text
 
 goog.provide('ezP.Xml.Decorator')
 
@@ -934,13 +935,11 @@ ezP.DelegateSvg.Stmt.decorator_stmt.prototype.xml = ezP.Xml.Decorator
  * @override
  */
 ezP.Xml.Decorator.toDom = function (block, element, optNoId) {
-  var builtin = block.ezp.getProperty(block, ezP.Key.BUILTIN)
-  if (builtin) {
-    element.setAttribute(ezP.Xml.BUILTIN, builtin)
-  } else {
-    ezP.Xml.Input.Named.toDom(block, ezP.Key.NAME, element, optNoId)
+  var value = block.ezp.getValue(block)
+  if (goog.isDefAndNotNull(value)) {
+    element.setAttribute(ezP.Xml.DOTTED_NAME, value)
   }
-  var subtype = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
+  var subtype = block.ezp.getSubtype(block)
   if (subtype) {
     ezP.Xml.Input.Named.toDom(block, ezP.Key.ARGUMENTS, element, optNoId)
   }
@@ -953,12 +952,12 @@ ezP.Xml.Decorator.toDom = function (block, element, optNoId) {
  * @override
  */
 ezP.Xml.Decorator.fromDom = function (block, element) {
-  var builtin = element.getAttribute(ezP.Xml.BUILTIN)
-  if (!builtin || !block.ezp.setProperty(block, ezP.Key.BUILTIN, builtin) ) {
-    ezP.Xml.Input.Named.fromDom(block, ezP.Key.NAME, element)
+  var value = element.getAttribute(ezP.Xml.DOTTED_NAME)
+  if (goog.isDefAndNotNull(value)) {
+    block.ezp.setValue(block, value)
   }
   if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.ARGUMENTS, element)) {
-    block.ezp.setProperty(block, ezP.Key.SUBTYPE, ezP.Key.ARGUMENTS)
+    block.ezp.setSubtype(block, ezP.Key.ARGUMENTS)
   }
 }
 
@@ -975,7 +974,7 @@ ezP.DelegateSvg.Stmt.funcdef_part.prototype.xml = ezP.Xml.Funcdef
 ezP.Xml.Funcdef.toDom = function (block, element, optNoId) {
   ezP.Xml.Input.Named.toDom(block, ezP.Key.NAME, element, optNoId)
   ezP.Xml.Input.Named.toDom(block, ezP.Key.PARAMETERS, element, optNoId)
-  var subtype = block.ezp.getProperty(block, ezP.Key.TYPE)
+  var subtype = block.ezp.getSubtype(block)
   if (subtype) {
     ezP.Xml.Input.Named.toDom(block, ezP.Key.TYPE, element, optNoId)
   }
@@ -993,7 +992,7 @@ ezP.Xml.Funcdef.fromDom = function (block, element) {
   ezP.Xml.Input.Named.fromDom(block, ezP.Key.NAME, element)
   ezP.Xml.Input.Named.fromDom(block, ezP.Key.PARAMETERS, element)
   if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.TYPE, element)) {
-    block.ezp.setProperty(block, ezP.Key.TYPE, ezP.Key.TYPE)
+    block.ezp.setSubtype(block, ezP.Key.TYPE)
   }
   ezP.Xml.Input.Named.fromDom(block, ezP.Key.SUITE, element)
   ezP.Xml.Flow.fromDom(block, element)
@@ -1011,7 +1010,7 @@ ezP.DelegateSvg.Stmt.classdef_part.prototype.xml = ezP.Xml.Classdef
  */
 ezP.Xml.Classdef.toDom = function (block, element, optNoId) {
   ezP.Xml.Input.Named.toDom(block, ezP.Key.NAME, element, optNoId)
-  var subtype = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
+  var subtype = block.ezp.getSubtype(block)
   if (subtype) {
     ezP.Xml.Input.Named.toDom(block, ezP.Key.ARGUMENTS, element, optNoId)
   }
@@ -1028,7 +1027,7 @@ ezP.Xml.Classdef.toDom = function (block, element, optNoId) {
 ezP.Xml.Classdef.fromDom = function (block, element) {
   ezP.Xml.Input.Named.fromDom(block, ezP.Key.NAME, element)
   if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.ARGUMENTS, element)) {
-    block.ezp.setProperty(block, ezP.Key.SUBTYPE, ezP.Key.ARGUMENTS)
+    block.ezp.setSubtype(block, ezP.Key.ARGUMENTS)
   }
   ezP.Xml.Input.Named.fromDom(block, ezP.Key.SUITE, element)
   ezP.Xml.Flow.fromDom(block, element)
@@ -1082,7 +1081,7 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.xml = ezP.Xml.Global
  * @return true if the given value is accepted, false otherwise
  */
 ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.xmlTagName = function (block) {
-  var current = block.ezp.getProperty(block, ezP.Key.IDENTIFIERS)
+  var current = block.ezp.getSubtype(block)
   var subtypes = block.ezp.getModel().inputs.subtypes
   return current === subtypes[0]? ezP.Xml.GLOBAL: ezP.Xml.NONLOCAL
 }
@@ -1112,7 +1111,7 @@ ezP.Xml.Global.domToBlock = function (xmlBlock, workspace) {
     var block = ezP.DelegateSvg.newBlockComplete(workspace, ezP.T3.Stmt.global_nonlocal_stmt, id)
     if (block) {
       var subtypes = block.ezp.getModel().inputs.subtypes
-      block.ezp.setProperty(block, ezP.Key.IDENTIFIERS, subtypes[global? 0: 1])
+      block.ezp.setSubtype(block, subtypes[global? 0: 1])
       ezP.Xml.Input.Named.fromDom(block, ezP.Key.IDENTIFIERS, xmlBlock)
       return block
     }

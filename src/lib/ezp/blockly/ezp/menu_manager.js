@@ -754,22 +754,6 @@ ezP.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
         goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
       )
     }
-    case ezP.T3.Expr.dotted_funcname_concrete:
-    switch(subtype) {
-      case ezP.Key.NAME:
-      return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        ezP.Do.createSPAN('parent', 'ezp-code-placeholder'),
-        ezP.Do.createSPAN('.', 'ezp-code'),
-        goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
-      )
-      case ezP.Key.PARENT:
-      default:
-      return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        ezP.Do.createSPAN('.', 'ezp-code'),
-        ezP.Do.createSPAN('name', 'ezp-code-placeholder'),
-        goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
-      )
-    }
     case ezP.T3.Expr.expression_as_name:
     switch(subtype) {
       case ezP.Key.AS:
@@ -1184,7 +1168,6 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
     ezP.T3.Expr.module_concrete,
     ezP.T3.Expr.module_as_concrete,
     ezP.T3.Expr.import_identifier_as_concrete,
-    ezP.T3.Expr.dotted_funcname_concrete,
     [ezP.T3.Expr.parameter_concrete, ezP.Key.NAME],
     [ezP.T3.Expr.defparameter_concrete, ezP.Key.NAME],
     [ezP.T3.Expr.proper_slice, ezP.Key.UPPER_BOUND],

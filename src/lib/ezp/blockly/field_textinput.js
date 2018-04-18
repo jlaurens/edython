@@ -173,9 +173,10 @@ ezP.FieldTextInput.prototype.widgetDispose_ = function () {
   var thisField = this
   return function () {
     thisField.ezp.isEditing = false
-    var block = thisField.sourceBlock_
-    block.ezp.endEditingField && block.ezp.endEditingField(block, this)  
     thisField.callValidator()
+    thisField.onEndEditing_()
+    var block = thisField.sourceBlock_
+    block.ezp.endEditingField && block.ezp.endEditingField(block, thisField)  
     thisField.render_()
     block.render()
     ezP.FieldTextInput.superClass_.widgetDispose_.call(thisField)

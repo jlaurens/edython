@@ -420,7 +420,7 @@ ezP.DelegateSvg.Manager.makeSubclass('global_nonlocal_stmt', {
  */
 ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
   ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  block.ezp.uiModel.fields.prefix.setValue(newSubtype)
+  block.ezp.ui.fields.prefix.setValue(newSubtype)
 }
 
 /**
@@ -431,14 +431,14 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.didChangeSubtype = function 
  */
 ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var subtypes = block.ezp.getModel().inputs.subtypes
-  var current = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
+  var current = block.ezp.getSubtype(block)
   var F = function(key) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN(key, 'ezp-code-reserved'),
       ezP.Do.createSPAN(' …', 'ezp-code-placeholder'),
     )
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setProperty(block, ezP.Key.SUBTYPE, key)
+      block.ezp.setSubtype(block, key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)
@@ -622,7 +622,7 @@ ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt
  * @return None
  */
 ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.getSubtype = ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.getSubtype = function (block) {
-  var target = this.uiModel.i_1.input.connection.targetBlock()
+  var target = this.ui.i_1.input.connection.targetBlock()
   return target? target.ezp.getSuptype(target): undefined
 }
 
@@ -636,7 +636,7 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.getSubtype = ezP.DelegateSvg.S
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.setSubtype = function (block, subtype) {
-  var target = this.uiModel.i_1.input.connection.targetBlock()
+  var target = this.ui.i_1.input.connection.targetBlock()
   if (target) {
     target.ezp.setSubtype(target, subtype)
   }

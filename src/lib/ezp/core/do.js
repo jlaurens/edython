@@ -316,6 +316,20 @@ ezP.Do.typeOfString = function (candidate) {
   if (ezP.XRE.identifier.exec(candidate)) {
     return ezP.T3.Expr.identifier
   }
+  var components = candidate.split('.')
+  if (components.length > 1) {
+    var dotted_name = true
+    for (var i = 0;i < components.length;i++) {
+      var c = components[i]
+      if(!ezP.XRE.identifier.exec(c)) {
+        dotted_name = false
+        break
+      }
+    }
+    if (dotted_name) {
+      return ezP.T3.Expr.dotted_name
+    }
+  }
   if (ezP.XRE.shortstringliteral.exec(candidate)) {
     return ezP.T3.Expr.shortstringliteral
   }

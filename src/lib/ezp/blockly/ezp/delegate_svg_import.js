@@ -336,10 +336,10 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function(block) {
 ezP.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var values = block.ezp.getModel().inputs.subtypes
   var menu = mgr.menu
-  var current = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
+  var current = block.ezp.getSubtype(block)
   var F = function(content, key) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setProperty(block, ezP.Key.SUBTYPE, key)
+      block.ezp.setSubtype(block, key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)

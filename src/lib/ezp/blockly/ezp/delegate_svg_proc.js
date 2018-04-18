@@ -16,29 +16,257 @@ goog.provide('ezP.DelegateSvg.Proc')
 goog.require('ezP.DelegateSvg.Group')
 goog.require('ezP.MenuItem')
 
+goog.provide('ezP.FieldDottedName')
+
+goog.require('ezP.FieldInput')
+goog.require('ezP.Style')
+
 /**
- * Class for a DelegateSvg, dotted_funcname_concrete block.
+ * Class for a dotted name field.
+ * @param {?string} varname The default name for the variable.  If null,
+ *     a unique variable name will be generated.
+ * @param {Function=} optValidator A function that is executed when a new
+ *     option is selected.  Its sole argument is the new option value.
+ * @param {Array.<string>} optVariableTypes A list of the types of variables to
+ *     include in the dropdown.
+ * @extends {ezP.FieldInput}
+ * @constructor
+ */
+ezP.FieldDottedName = function (identifier, optValidator) {
+  var field = this
+  var validator = function(txt) {
+    if (ezP.FieldTextInput.htmlInput_) {
+      var block = field.sourceBlock_
+      if (!block || block.ezp.validateValue(block, txt)) {
+        field.ezp.error = false
+        goog.dom.classlist.remove(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
+      } else {
+        field.ezp.error = true
+        goog.dom.classlist.add(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
+      }
+    }
+    return txt
+  }
+  ezP.FieldDottedName.superClass_.constructor.call(this, identifier, optValidator || validator)
+  this.spellcheck_ = false
+}
+goog.inherits(ezP.FieldDottedName, ezP.FieldInput)
+
+/**
+ * Create and show a text input editor that is a prompt (usually a popup).
+ * Mobile browsers have issues with in-line textareas (focus and keyboards).
+ * @private
+ */
+ezP.FieldDottedName.prototype.showPromptEditor_ = function () {
+  var fieldText = this
+  var prompt = ezP.Msg.IDENTIFIER_RENAME_TITLE.replace('%1', this.text_)
+  Blockly.prompt(prompt, this.text_,
+    function (newValue) {
+      if (fieldText.sourceBlock_) {
+        newValue = fieldText.callValidator(newValue)
+      }
+      fieldText.setValue(newValue)
+    })
+}
+
+console.warn('Fix code below: variable name replace all')
+/**
+ * Called when focusing away from the text field.
+ * @param {string} newName The new variable name.
+ * @private
+ * @this ezP.FieldDottedName
+ */
+ezP.FieldDottedName.prototype.onEndEditing_ = function (newName) {
+  this.sourceBlock_.setValue(newName)
+}
+
+ezP.FieldDottedName.prototype.showDottedNameEditor = function(a) {
+  this.workspace_=this.sourceBlock_.workspace
+  a=a||!1
+  !a&&(goog.userAgent.MOBILE||goog.userAgent.ANDROID||goog.userAgent.IPAD)?this.showDottedNamePromptEditor_():(this.isEditingDottedName_=!0,this.showDottedNameInlineEditor_(a))
+}
+
+ezP.FieldDottedName.prototype.showDottedNamePromptEditor_ = function(){
+  var a=this,b=ezP.Msg.IDENTIFIER_RENAME_TITLE.replace("%1",this.text_)
+  Blockly.prompt(b, this.text_, function(b){
+    a.sourceBlock_&&(b=a.callValidator(b));
+    a.setValue(b)
+  })
+}
+
+/**
+ * Called when focusing away from the text field.
+ * @param {string} newName The new variable name.
+ * @private
+ * @this ezP.FieldIdentifier
+ */
+ezP.FieldDottedName.prototype.onEndEditing_ = function () {
+  var block = this.sourceBlock_
+  block.ezp.setValue(block, this.getValue())
+}
+
+
+ezP.FieldDottedName.prototype.showDottedNameInlineEditor_ = ezP.FieldDottedName.prototype.showInlineEditor_
+
+/**
+ * Class for a DelegateSvg, dotted_name block.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('dotted_funcname_concrete', {
+ezP.DelegateSvg.Manager.makeSubclass('dotted_name', {
   inputs: {
     i_1: {
-      key: ezP.Key.PARENT,
-      check: ezP.T3.Expr.identifier,
-      hole_value: 'parent',
-    },
-    i_3: {
-      label: '.',
-      key: ezP.Key.NAME,
-      check: ezP.T3.Expr.Check.dotted_funcname,
-      hole_value: 'name',
+      dotted_name: '',
     },
   },
+  output: {
+    didConnect: function(oldTargetConnection, oldConnectionn) {
+      // `this` is a connection's delegate
+      var targetC8n = this.connection.targetConnection
+      var source = targetC8n.sourceBlock_
+      if (source.ezp instanceof ezP.DelegateSvg.List) {
+
+      } else {
+        for (var i = 0, input;(input = source.inputList[i++]);) {
+          if (input.connection === targetC8n) {
+            if (input.ezp.model) {
+              var block = this.connection.sourceBlock_
+              block.ezp.setPhantomValue(block, input.ezp.model.hole_value)
+            }
+            return
+          }
+        }
+      }
+    },
+    didDisconnect: function(oldConnection) {
+      // `this` is a connection's delegate
+      var block = this.connection.sourceBlock_
+      block.ezp.setPhantomValue(block, undefined)
+    },
+  }
 })
-console.warn('implement the statement')
+
+/**
+ * Returns the text that should appear in grey when some field content is missing.
+ * @param {!Block} block.
+ * @return whether the block should be wrapped
+ */
+ezP.FieldDottedName.prototype.placeholderText = function() {
+  return this.placeholderText_ || ezP.Msg.PLACEHOLDER_IDENTIFIER
+}
+
+/**
+ * Some block should not be wrapped.
+ * Default implementation returns false
+ * @param {!Block} block.
+ * @return whether the block should be wrapped
+ */
+ezP.DelegateSvg.Expr.dotted_name.prototype.noBlockWrapped = function (block) {
+  return true
+}
+
+/**
+ * Set the placeholderText.
+ * @param {!Block} block.
+ * @param {!string} text.
+ * @return true
+ */
+ezP.DelegateSvg.Expr.dotted_name.prototype.setPhantomValue = function(block, text) {
+  var field = this.ui.i_1.fields.dotted_name
+  field.placeholderText_ = text
+  field.render_()
+  return true
+}
+
+/**
+ * Show the editor for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @private
+ */
+ezP.DelegateSvg.Expr.dotted_name.prototype.showEditor = function (block) {
+  this.ui.i_1.fields.dotted_name.showEditor_()
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Expr.dotted_name.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var menu = mgr.menu
+  var menuItem = new ezP.MenuItem(ezP.Msg.RENAME, function() {
+      block.ezp.showEditor()
+    })
+  mgr.addChild(menuItem, true)
+  mgr.shouldSeparate()
+  ezP.DelegateSvg.Expr.dotted_name.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return true
+}
+
+/**
+ * Initialize the subtype.
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {string} oldValue
+ * @param {string} newValue
+ */
+ezP.DelegateSvg.Expr.dotted_name.prototype.initValue = function (block) {
+  ezP.DelegateSvg.Expr.dotted_name.superClass_.initValue.call(this, block)
+  this.setValue(this.ui.i_1.fields.dotted_name.getValue() || '')
+  return
+}
+
+/**
+ * When the subtype did change.
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {string} oldValue
+ * @param {string} newValue
+ */
+ezP.DelegateSvg.Expr.dotted_name.prototype.didChangeValue = function (block, oldValue, newValue) {
+  ezP.DelegateSvg.Expr.dotted_name.superClass_.didChangeValue.call(this, block, oldValue, newValue)
+  this.ui.i_1.fields.dotted_name.setValue(newValue || '')
+  return
+}
+
+/**
+ * Validates the new value.
+ * The type must be one of `dotted_name` or `identifier`.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newValue
+ * @return true if newValue is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Expr.dotted_name.prototype.validateValue = function (block, newValue) {
+  var type = ezP.Do.typeOfString(newValue)
+  return type === ezP.T3.Expr.dotted_name || type === ezP.T3.Expr.identifier
+}
+
+// /**
+//  * Class for a DelegateSvg, dotted_funcname_concrete block.
+//  * For ezPython.
+//  * @param {?string} prototypeName Name of the language object containing
+//  *     type-specific functions for this block.
+//  * @constructor
+//  */
+// ezP.DelegateSvg.Manager.makeSubclass('dotted_funcname_concrete', {
+//   inputs: {
+//     i_1: {
+//       key: ezP.Key.PARENT,
+//       check: ezP.T3.Expr.identifier,
+//       hole_value: 'parent',
+//     },
+//     i_3: {
+//       label: '.',
+//       key: ezP.Key.NAME,
+//       check: ezP.T3.Expr.dotted_name,
+//       hole_value: 'name',
+//     },
+//   },
+// })
+// console.warn('implement the statement')
 /**
  * Class for a DelegateSvg, decorator_stmt.
  * For ezPython.
@@ -56,8 +284,7 @@ ezP.DelegateSvg.Manager.makeSubclass('decorator_stmt', {
       css_class: 'ezp-code-reserved',
     },
     i_1: {
-      key: ezP.Key.NAME,
-      check: ezP.T3.Expr.Check.dotted_funcname,
+      dotted_name: '',
       hole_value: 'decorator',
     },
     i_2: {
@@ -92,10 +319,11 @@ ezP.DelegateSvg.Manager.makeSubclass('decorator_stmt', {
 ezP.DelegateSvg.Stmt.decorator_stmt.prototype.didChangeValueOrSubtype = function (block, value, subtype) {
   var values = this.getModel().inputs.values
   var named = values.indexOf(value) < 1
-  this.setNamedInputDisabled(block, ezP.Key.NAME, !named)
+  this.setNamedInputDisabled(block, ezP.Key.DOTTED_NAME, !named)
   this.setNamedInputDisabled(block, ezP.Key.BUILTIN, named)
   this.setNamedInputDisabled(block, ezP.Key.ARGUMENTS, !named || (ezP.Key.ARGUMENTS != subtype))
-  this.uiModel.i_2.fields.label.setValue(value)
+  this.ui.i_1.fields.dotted_name.setValue(value || '')
+  this.ui.i_2.fields.label.setValue(value || '')
 }
 
 /**
@@ -123,6 +351,28 @@ ezP.DelegateSvg.Stmt.decorator_stmt.prototype.didChangeSubtype = function (block
 ezP.DelegateSvg.Stmt.decorator_stmt.prototype.didChangeValue = function (block, oldValue, newValue) {
   ezP.DelegateSvg.Stmt.decorator_stmt.superClass_.didChangeValue.call(this, block, oldValue, newValue)
   this.didChangeValueOrSubtype(block, newValue, this.getSubtype(block))
+}
+
+/**
+ * Validates the new value.
+ * The type must be one of `dotted_name` or `identifier`.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newValue
+ * @return true if newValue is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Stmt.decorator_stmt.prototype.validateValue = function (block, newValue) {
+  var type = ezP.Do.typeOfString(newValue)
+  return type === ezP.T3.Expr.dotted_name || type === ezP.T3.Expr.identifier
+}
+
+/**
+ * On end editing.
+ * @param {!Blockly.Block} block owner of the delegate.
+ * @param {!Blockly.Field} field The field in editing mode.
+ */
+ezP.DelegateSvg.Stmt.decorator_stmt.prototype.endEditingField = function (block, field) {
+  this.setValue(block, field.getValue())
 }
 
 /**
@@ -353,7 +603,7 @@ ezP.DelegateSvg.Stmt.classdef_part.prototype.populateContextMenuFirst_ = functio
 }
 
 ezP.DelegateSvg.Proc.T3s = [
-  ezP.T3.Expr.dotted_funcname_concrete,
+  ezP.T3.Expr.dotted_name,
   ezP.T3.Stmt.decorator_stmt,
   ezP.T3.Stmt.funcdef_part,
   ezP.T3.Stmt.classdef_part,

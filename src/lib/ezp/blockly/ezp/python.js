@@ -116,9 +116,9 @@ ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
     }
     FF(D.fields.end)
   }
-  doOneModel(this.uiModel.i_1)
-  doOneModel(this.uiModel.i_2)
-  doOneModel(this.uiModel.i_3)
+  doOneModel(this.ui.i_1)
+  doOneModel(this.ui.i_2)
+  doOneModel(this.ui.i_3)
   return last
 }
 
@@ -148,8 +148,8 @@ ezP.DelegateSvg.prototype.toPythonStatementComponents = function (block, compone
     indent += '# '
   }
   components.push(indent+this.toPythonExpression(block))
-  if (this.uiModel.suite) {
-    var input = this.uiModel.suite.input
+  if (this.ui.suite) {
+    var input = this.ui.suite.input
     if (input) {
       var c8n = input.connection
       if (c8n) {

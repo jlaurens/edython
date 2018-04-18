@@ -80,7 +80,7 @@ ezP.ConnectionDelegate.prototype.willConnect = function(targetConnection) {
  * @param {Blockly.Connection} oldTargetConnection  what was previously connected to connection
  * @param {Blockly.Connection} oldConnection  what was previously connected to the actual connection.targetConnection
  */
-ezP.ConnectionDelegate.prototype.didConnect = function(oldTargetConnection, oldConnection) {
+ezP.ConnectionDelegate.prototype.didConnect = function(oldTargetConnection, targetOldConnection) {
   return
 }
 
@@ -511,8 +511,8 @@ ezP.Connection.prototype.connect_ = function(childConnection) {
       }
     }
   }
-  childConnection.ezp.didConnect()
-  this.ezp.didConnect()
+  childConnection.ezp.didConnect(oldChildConnection, oldParentConnection)
+  this.ezp.didConnect(oldParentConnection, oldChildConnection)
   parent.ezp.didConnect(parent, this, oldChildConnection, oldParentConnection)
   child.ezp.didConnect(child, childConnection, oldParentConnection, oldChildConnection)
   if (oldChildConnection) {

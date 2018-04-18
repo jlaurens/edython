@@ -83,12 +83,8 @@ funcdef ::= REMOVE
 async_funcdef ::= REMOVE
 funcdef_part ::= ["async"] "def" funcname "(" [parameter_list] ")" ["->" expression] ":" SUITE
 decorators ::= REMOVE
-decorator ::= decorator_expr | decorator_call_expr
-decorator_stmt ::= decorator
-decorator_expr ::= "@" dotted_funcname
-decorator_call_expr ::= decorator_expr "(" argument_list ")"
-dotted_funcname ::= funcname | dotting_identifier '.' dotted_funcname
-dotting_identifier ::= identifier
+decorator ::= REMOVE
+decorator_stmt ::= "@" dotted_name ["(" [argument_list [","]] ")"] NEWLINE
 decorator_stmt <<< decorator_stmt | funcdef_part
 </pre>
 

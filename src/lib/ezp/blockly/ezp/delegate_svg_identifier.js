@@ -85,7 +85,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.noBlockWrapped = function (block) {
  * @return true
  */
 ezP.DelegateSvg.Expr.identifier.prototype.setPhantomValue = function(block, text) {
-  var field = this.uiModel.i_1.fields.identifier
+  var field = this.ui.i_1.fields.identifier
   field.placeholderText_ = text
   field.render_()
   return true
@@ -178,7 +178,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuMiddle_ = function 
  * the MenuItem selected within menu.
  */
 ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (block, VM) {
-  var listener = block.ezp.uiModel.i_1.fields.identifier
+  var listener = block.ezp.ui.i_1.fields.identifier
   var oldName = listener.getValue()
   var workspace = block.workspace
   var oldVarId = workspace.getVariable(oldName).getId()
@@ -195,7 +195,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (bl
       workspace.deleteVariableInternal_(vm)
       var allBlocks = workspace.getAllBlocks()
       for (var i = 0, B; B = allBlocks[i++];) {
-        var field = block.ezp.uiModel.i_1.fields.identifier
+        var field = block.ezp.ui.i_1.fields.identifier
         if (field && field.getValue() === oldName) {
           field.setValue(VM.name)
         }
@@ -215,7 +215,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (bl
  * the MenuItem selected within menu.
  */
 ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionMiddle = function (block, mgr, event) {
-  var listener = block.ezp.uiModel.i_1.fields.identifier
+  var listener = block.ezp.ui.i_1.fields.identifier
   var workspace = block.workspace
   var model = event.target.getModel()
   var action = model[0]
@@ -286,7 +286,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.didChangeSubtype = function (block, ol
  * @return true if newSubtype is acceptable, false otherwise
  */
 ezP.DelegateSvg.Expr.identifier.prototype.validateSubtype = function (block, newSubtype) {
-  return ezP.Do.typeOfString(subtype) === ezP.T3.Expr.identifier
+  return ezP.Do.typeOfString(newSubtype) === ezP.T3.Expr.identifier
 }
 
 ezP.DelegateSvg.Identifier.T3s = [
