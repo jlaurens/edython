@@ -1705,7 +1705,7 @@ ezP.Xml.Primary.domToBlock = function (element, workspace) {
 
 
 
-goog.require('ezP.DelegateSvg.Parameters')
+goog.require('ezP.DelegateSvg.Parameter')
 
 ezP.DelegateSvg.Expr.parameter_star.prototype.xml =
 ezP.DelegateSvg.Expr.parameter_star_star.prototype.xml =

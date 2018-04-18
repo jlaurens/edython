@@ -382,8 +382,11 @@ ezP.Delegate.addProperty = function (Ctor, key, initialize, validate, willChange
   p['init'+k] = initialize || function(block) {
     var inputs = block.ezp.getModel().inputs
     var values = inputs[key+'s']
-    var id = inputs[key+'Index']
-    this.setValue(block, values[i])
+    if (values) {
+      var i = inputs[key+'Index'] || 0
+      var value = values[i]
+      this['set'+k](block, value) || this['didChange'+k](block, value, value)
+    }
   }
   p['validate'+k] = validate || function(block, newValue) {
     var values = block.ezp.getModel().inputs[key+'s']
@@ -408,17 +411,13 @@ ezP.Delegate.addProperty = function (Ctor, key, initialize, validate, willChange
     var old = this.skipRendering
     try {
       this.skipRendering = true
-      ezP.Events.Disabler.wrap(function() {
-        block.ezp['willChange'+k](block, oldValue, newValue)
-      })
+      this['willChange'+k](block, oldValue, newValue)
       if (Blockly.Events.isEnabled()) {
         Blockly.Events.fire(new Blockly.Events.BlockChange(
         block, ezP.Const.Event.PROPERTY+key, null, oldValue, newValue))
       }
       this[k_] = newValue
-      ezP.Events.Disabler.wrap(function() {
-        block.ezp['didChange'+k](block, oldValue, newValue)
-      })
+      this['didChange'+k](block, oldValue, newValue)
       this.skipRendering = old
       block.render() // render now or possibly later ?
     } finally {

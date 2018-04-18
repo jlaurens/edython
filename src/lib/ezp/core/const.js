@@ -80,6 +80,7 @@ ezP.Key = {
   
   NAME: 'name',
   DOTTED_NAME: 'dotted_name',
+  ANNOTATION: 'annotation',
   IF: 'if',
   ELIF: 'elif',
   ELSE: 'else',

@@ -13,7 +13,7 @@
 
 goog.provide('ezP.DelegateSvg.Lambda')
 
-goog.require('ezP.DelegateSvg.Parameters')
+goog.require('ezP.DelegateSvg.Parameter')
 
 /**
  * Class for a DelegateSvg, lambda_expr and lambda_expr_nocond block.

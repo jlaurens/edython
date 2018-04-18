@@ -42,6 +42,7 @@ ezP.FieldIdentifier = function (identifier, optValidator) {
     return txt
   }
   ezP.FieldIdentifier.superClass_.constructor.call(this, identifier, optValidator || validator)
+  this.spellcheck_ = false
 }
 goog.inherits(ezP.FieldIdentifier, ezP.FieldInput)
 

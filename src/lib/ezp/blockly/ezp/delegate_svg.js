@@ -408,6 +408,8 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   // wait until the end to set the subtype because it causes rendering
   this.initSubtype(block)
   this.initValue(block)
+  this.initModifier(block)
+  this.initVariant(block)
 }
 
 /**
@@ -885,6 +887,9 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   if ((io.field = this.ui.fields.await)) {
     this.renderDrawField_(io)
   }
+  if ((io.field = this.ui.fields.modifier)) {
+    this.renderDrawField_(io)
+  }
   if ((io.field = this.ui.fields.prefix)) {
     this.renderDrawField_(io)
   }
@@ -955,15 +960,15 @@ ezP.DelegateSvg.prototype.renderDrawField_ = function (io) {
   if (io.field.isVisible()) {
     var root = io.field.getSvgRoot()
     if (root) {
-      var text = io.field.getText()
+      var text = io.field.getDisplayText_()
       if (text.length) {
         // if the text is void, it can not change whether
         // the last character was a letter or not
-        if (io.shouldSeparateField && ezP.XRE.id_continue.test(text[0])) {
+        if (io.shouldSeparateField && (text[0] === '=' ||ezP.XRE.id_continue.test(text[0]))) {
           // add a separation
           io.cursorX += ezP.Font.space
         }
-        io.shouldSeparateField = ezP.XRE.id_continue.test(text[text.length-1])
+        io.shouldSeparateField = ezP.XRE.id_continue.test(text[text.length-1]) || text[text.length-1] === '=' || text[text.length-1] === ':'
       }
       var ezp = io.field.ezp
       var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0

@@ -258,7 +258,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.initSubtype = function (block) {
   ezP.DelegateSvg.Expr.identifier.superClass_.initSubtype.call(this, block)
   var input = block.getInput(ezP.Key.NAME)
   var field = input.ezp.fields.identifier
-  this.setSubtype(field.getValue())
+  this.setSubtype(block, field.getValue())
   return
 }
 
