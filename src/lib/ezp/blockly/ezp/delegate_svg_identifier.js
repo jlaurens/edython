@@ -184,7 +184,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (bl
   var oldVarId = workspace.getVariable(oldName).getId()
   var vm = workspace.getVariableById(oldVarId)
   if (vm) {
-    Blockly.Events.setGroup(true)
+    var grouper = new ezP.Events.Grouper()
     try {
       var blocks = workspace.getAllBlocks()
       var newVarId = VM.getId()
@@ -201,7 +201,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (bl
         }
       }    
     } finally {
-      Blockly.Events.setGroup(false)
+      grouper.stop()
     }
   }
 }

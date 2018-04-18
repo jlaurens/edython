@@ -90,7 +90,7 @@ ezP.DelegateSvg.Expr.prototype.canReplaceBlock = function (block, other) {
  */
 ezP.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
   if (other) {
-    Blockly.Events.setGroup(true)
+    var grouper = new ezP.Events.Grouper()
     try {
       console.log('**** replaceBlock', block, other)
       var c8n = other.outputConnection
@@ -113,7 +113,7 @@ ezP.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
       }
     } finally {
       other.dispose(true)   
-      Blockly.Events.setGroup(false)
+      grouper.stop()
     }
   }
 }
@@ -276,7 +276,7 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
   // Next connections should be connected
   var outputC8n = block.outputConnection
   if (parentInputC8n && parentInputC8n.checkType_(outputC8n)) {
-    Blockly.Events.setGroup(true)
+    var grouper = new ezP.Events.Grouper()
     try {
       if (Blockly.Events.isEnabled()) {
         Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
@@ -318,7 +318,7 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
         bumper.bumpNeighbours_()
       }  
     } finally {
-      Blockly.Events.setGroup(false)
+      grouper.stop()
     }
   } else {
     parentBlock.dispose(true)

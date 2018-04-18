@@ -73,7 +73,7 @@ ezP.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
       }
     }
     var insert = function(key) {
-      Blockly.Events.setGroup(true)
+      var grouper = new ezP.Events.Grouper()
       try {
         var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.identifier)
         BB.ezp.setValue(BB, key)
@@ -83,17 +83,17 @@ ezP.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
         c8n.connect(B.outputConnection)  
         block.ezp.consolidate(block)
       } finally {
-        Blockly.Events.setGroup(false)
+        grouper.stop()
       }
     }
     var remove = function(key) {
-      Blockly.Events.setGroup(true)
+      var grouper = new ezP.Events.Grouper()
       try {
         var B = has[key].getParent()
         B.unplug()
         B.dispose()
       } finally {
-        Blockly.Events.setGroup(false)
+        grouper.stop()
       }
     }
     var F = function(candidate) {
@@ -157,7 +157,7 @@ ezP.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
       }
     }
     var insert = function(key) {
-      Blockly.Events.setGroup(true)
+      var grouper = new ezP.Events.Grouper()
       try {
         var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.identifier)
         BB.ezp.setValue(BB, key)
@@ -168,17 +168,17 @@ ezP.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
         c8n.connect(B.outputConnection)  
         block.ezp.consolidate(block)
       } finally {
-        Blockly.Events.setGroup(false)
+        grouper.stop()
       }
     }
     var remove = function(key) {
-      Blockly.Events.setGroup(true)
+      var grouper = new ezP.Events.Grouper()
       try {
         var B = has[key].getParent()
         B.unplug()
         B.dispose()
       } finally {
-        Blockly.Events.setGroup(false)
+        grouper.stop()
       }
     }
     var F = function(candidate) {

@@ -132,7 +132,7 @@ ezP.DelegateSvg.List.prototype.removeItems = function(block) {
   var list = block.inputList
   var i = 0
   var input
-  Blockly.Events.setGroup(true)
+  var grouper = new ezP.Events.Grouper()
   try {
     while ((input = list[i++])) {
       var c8n = input.connection
@@ -144,7 +144,7 @@ ezP.DelegateSvg.List.prototype.removeItems = function(block) {
     }
     this.consolidate(block)
   } finally {
-    Blockly.Events.setGroup(false)
+    grouper.stop()
   }
 }
 

@@ -131,7 +131,10 @@ console.warn('Fix code below: variable name replace all')
  */
 ezP.FieldIdentifier.prototype.onEndEditing_ = function () {
   var block = this.sourceBlock_
-  block.ezp.setValue(block, this.getValue())
+  if (!block.ezp.setValue(block, this.getValue())) {
+    var value = block.ezp.getValue(block)
+    block.ezp.didChangeValue(block, value, value)
+  }
 }
 
 ezP.FieldIdentifier.prototype.showIdentifierEditor = function(a) {

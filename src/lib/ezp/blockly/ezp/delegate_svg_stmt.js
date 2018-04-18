@@ -162,7 +162,7 @@ ezP.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
     }
     var parentC8n = parentBlock.nextConnection
     if (parentC8n) {
-      Blockly.Events.setGroup(true)
+      var grouper = new ezP.Events.Grouper()
       try {
         if (Blockly.Events.isEnabled()) {
           Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
@@ -188,7 +188,7 @@ ezP.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
           parentBlock.select()
         }
       } finally {
-        Blockly.Events.setGroup(false)
+        grouper.stop()
       }
     }
   }
@@ -207,7 +207,7 @@ ezP.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
  * @return the created block
  */
 ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototypeName) {
-  Blockly.Events.setGroup(true)
+  var grouper = new ezP.Events.Grouper()
   try {
     var blockAfter = ezP.DelegateSvg.newBlockComplete(block.workspace, belowPrototypeName)
     var c8n = block.nextConnection
@@ -227,7 +227,7 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
       blockAfter.select()
     }
   } finally {
-    Blockly.Events.setGroup(false)
+    grouper.stop()
   }
   return blockAfter
 }
@@ -274,14 +274,14 @@ ezP.DelegateSvg.Stmt.annotated_assignment_stmt.prototype.initBlock = function(bl
   ezP.DelegateSvg.Stmt.annotated_assignment_stmt.superClass_.initBlock.call(block.ezp, block)
   var subtypes = this.getModel().inputs.subtypes
   block.ezp.initProperty(block, ezP.Key.ASSIGNED, null, null, null, function(block, oldValue, newValue) {
-    Blockly.Events.setGroup(true)
+    var grouper = new ezP.Events.Grouper()
     try {
       var old = block.ezp.skipRendering
       block.ezp.skipRendering = true
       block.ezp.setNamedInputDisabled(block, ezP.Key.ASSIGNED, (!newValue))
       block.ezp.skipRendering = old
     } finally {
-      Blockly.Events.setGroup(false)
+      grouper.stop()
     }
   })
 }

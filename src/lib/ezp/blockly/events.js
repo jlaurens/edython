@@ -110,3 +110,21 @@ ezP.Events.Disabler.wrap = function(f) {
     disabler.stop()
   }
 }
+
+/**
+ * Event disabler.
+ */
+ezP.Events.Grouper = function() {
+  if (Blockly.Events.getGroup()) {
+    return {
+      stop: function() {}
+    }
+  } else {
+    Blockly.Events.setGroup(true)
+    return {
+      stop: function() {
+        Blockly.Events.setGroup(false)
+      }
+    }
+  }
+}

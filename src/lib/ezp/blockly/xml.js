@@ -36,10 +36,12 @@ ezP.Xml = {
   FLOW: 'flow', // attribute name
   NEXT: 'next', // attribute name
   DOTTED_NAME: 'dotted_name', // attribute name
+  MODIFIER: 'modifier', // attribute name
 
   LIST: 'ezp:list',
   LITERAL: 'ezp:literal',
   COMPARISON: 'ezp:comparison',
+  PARAMETER: 'ezp:parameter',
   AUGMENTED_ASSIGNMENT: 'ezp:augmented_assignment',
   LAMBDA: 'ezp:lambda',
   CALL: 'ezp:call',
@@ -90,7 +92,7 @@ Blockly.Xml.domToWorkspace = function(xml, workspace) {
   var childCount = xml.childNodes.length;
   var existingGroup = Blockly.Events.getGroup();
   if (!existingGroup) {
-    Blockly.Events.setGroup(true);
+    var grouper = new ezP.Events.Grouper();
   }
 
   // Disable workspace resizes as an optimization.
@@ -156,7 +158,7 @@ Blockly.Xml.domToWorkspace = function(xml, workspace) {
     }
   } finally {
     if (!existingGroup) {
-      Blockly.Events.setGroup(false);
+      grouper.stop();
     }
     Blockly.Field.stopCache();
   }
@@ -333,8 +335,10 @@ goog.provide('ezP.Xml.Text')
  */
 ezP.Xml.Text.toDom = function(block, element, optNoId) {
   var text = block.ezp.getValue(block)
-  var child = goog.dom.createTextNode(text)
-  goog.dom.appendChild(element, child)
+  if (text && text.length) {
+    var child = goog.dom.createTextNode(text)
+    goog.dom.appendChild(element, child)
+  }
   return element
 }
 
@@ -346,14 +350,12 @@ ezP.Xml.Text.toDom = function(block, element, optNoId) {
  * @return a dom element
  */
 ezP.Xml.Text.fromDom = function(block, element) {
-  var text = ''
   for (var i = 0, xmlChild; (xmlChild = element.childNodes[i]); i++) {
-    if (xmlChild.nodeType === 3) {
-      text = xmlChild.nodeValue
-      break
+    if (xmlChild.nodeType === 3 && block.ezp.setValue(block, xmlChild.nodeValue)) {
+      return true
     }
   }
-  block.ezp.setValue(block, text)
+  return false
 }
 
 goog.require('ezP.DelegateSvg.Literal')
@@ -1712,6 +1714,80 @@ ezP.DelegateSvg.Expr.parameter_star_star.prototype.xml =
 ezP.DelegateSvg.Expr.parameter_concrete.prototype.xml =
 ezP.DelegateSvg.Expr.defparameter_concrete.prototype.xml =
 ezP.Xml.InputList
+
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * Default implementation just returns the block type.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.DelegateSvg.Expr.parameter.prototype.xmlTagName = function (block) {
+  return ezP.Xml.PARAMETER
+}
+
+
+/**
+ * Convert the block to a dom element.
+ * Called at the end of blockToDom.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {Element} xml the persistent element.
+ * @param {boolean} optNoId.
+ * @return a dom element
+ */
+ezP.DelegateSvg.Expr.parameter.prototype.toDom = function(block, element, optNoId) {
+  var modifier = this.getModifier(block)
+  if (modifier && modifier.length) {
+    element.setAttribute(ezP.Xml.MODIFIER, modifier)
+  }
+  var flags = this.getSubtype(block)
+  var withAnnotation = flags % 2
+  var withDefinition = flags & 2
+  var withoutIdentifier = (flags & 4) && modifier && modifier.length == 1
+  if (!withoutIdentifier) {
+    var text = this.getValue(block)
+    var child = goog.dom.createTextNode( text || '?')
+    goog.dom.appendChild(element, child)
+    if (withAnnotation) {
+      ezP.Xml.Input.Named.toDom(block, ezP.Key.ANNOTATION, element, optNoId)
+    }
+    if (withDefinition) {
+      ezP.Xml.Input.Named.toDom(block, ezP.Key.DEFINITION, element, optNoId)
+    }
+  }
+}
+
+/**
+ * fromDom.
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {!Element} xml dom element.
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Expr.parameter.prototype.fromDom = function (block, element) {
+  var modifier = element.getAttribute(ezP.Xml.MODIFIER)
+  if (modifier) {
+    this.setModifier(block, modifier)
+  }
+  var flags = modifier && modifier.length == 1 ? 4: 0
+  for (var i = 0, xmlChild; (xmlChild = element.childNodes[i]); i++) {
+    if (xmlChild.nodeType === 3) {
+      flags = 0
+      var text = xmlChild.nodeValue
+      if (text !== '?') {
+        block.ezp.setValue(block, text)
+      }
+      if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.ANNOTATION, element)) {
+        flags &= 1
+      }
+      if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.DEFINITION, element)) {
+        flags &= 2
+      }
+      break
+    }
+  }
+  this.setSubtype(block, flags)
+}
 
 goog.require('ezP.DelegateSvg.Lambda')
 

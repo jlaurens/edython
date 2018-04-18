@@ -356,11 +356,11 @@ ezP.MenuManager.prototype.populateLast = function (block) {
   var holes = ezP.HoleFiller.getDeepHoles(block)
   menuItem = new ezP.MenuItem(
     ezP.Msg.FILL_DEEP_HOLES, function() {
-      Blockly.Events.setGroup(true)
+      var grouper = new ezP.Events.Grouper()
       try {
         ezP.HoleFiller.fillDeepHoles(block.workspace, holes)
       } finally {
-        Blockly.Events.setGroup(false)
+        grouper.stop()
       }
     })
     menuItem.setEnabled(holes.length > 0);
@@ -369,11 +369,11 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     if (block.ezp.canUnlock(block)) {
       menuItem = new ezP.MenuItem(ezP.Msg.UNLOCK_BLOCK,
         function(event) {
-          Blockly.Events.setGroup(true)
+          var grouper = new ezP.Events.Grouper()
           try {
             block.ezp.unlock(block)
           } finally {
-            Blockly.Events.setGroup(false)
+            grouper.stop()
           }
         }
       )
@@ -382,11 +382,11 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     if (block.ezp.canLock(block)) {
       menuItem = new ezP.MenuItem(ezP.Msg.LOCK_BLOCK,
         function(event) {
-          Blockly.Events.setGroup(true)
+          var grouper = new ezP.Events.Grouper()
           try {
             block.ezp.lock(block)
           } finally {
-            Blockly.Events.setGroup(false)
+            grouper.stop()
           }
         }
       )
@@ -607,7 +607,7 @@ ezP.MenuManager.prototype.handleActionLast = function (block, event) {
         unwrapped = parent
       }
       // unwrapped is the topmost block or the first unwrapped parent
-      Blockly.Events.setGroup(true)
+      var grouper = new ezP.Events.Grouper()
       var returnState = false
       try {
         if (target === Blockly.selected && target != unwrapped) {
@@ -624,7 +624,7 @@ ezP.MenuManager.prototype.handleActionLast = function (block, event) {
         unwrapped.dispose(true, true)
         returnState = true
       } finally {
-        Blockly.Events.setGroup(false)
+        grouper.stop()
       }
       return returnState
     case ezP.ID.HELP:

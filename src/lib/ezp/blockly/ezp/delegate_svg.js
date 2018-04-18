@@ -1558,7 +1558,7 @@ ezP.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
     var target = input.connection.targetBlock()
     var oldType = target? target.type: undefined
     if (newType != oldType) {
-      Blockly.Events.setGroup(true)
+      var grouper = new ezP.Events.Grouper()
       try {
         if (target) {
           target.unplug()
@@ -1567,7 +1567,7 @@ ezP.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
         this.completeWrappedInput_(block, input, newType)
         returnState = true
       } finally {
-        Blockly.Events.setGroup(false)        
+        grouper.stop()        
       }
     }
   }
@@ -2317,7 +2317,7 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
     var c8n, otherC8n, foundC8n
     var fin = function(prepare) {
       disabler.stop()
-      Blockly.Events.setGroup(true)
+      var grouper = new ezP.Events.Grouper()
       try {
         if (Blockly.Events.isEnabled()) {
           Blockly.Events.fire(new Blockly.Events.BlockCreate(candidate))
@@ -2328,7 +2328,7 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
         candidate.select()
         candidate.bumpNeighbours_()
       } finally {
-        Blockly.Events.setGroup(false)
+        grouper.stop()
       }
       return candidate
     }

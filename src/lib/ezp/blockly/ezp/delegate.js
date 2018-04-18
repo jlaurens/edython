@@ -407,7 +407,7 @@ ezP.Delegate.addProperty = function (Ctor, key, initialize, validate, willChange
       return false
     }
     var oldValue = this[k_]
-    Blockly.Events.setGroup(true)
+    var grouper = new ezP.Events.Grouper()
     var old = this.skipRendering
     try {
       this.skipRendering = true
@@ -422,7 +422,7 @@ ezP.Delegate.addProperty = function (Ctor, key, initialize, validate, willChange
       block.render() // render now or possibly later ?
     } finally {
       this.skipRendering = old
-      Blockly.Events.setGroup(false)
+      grouper.stop()
     }
     return true
   }
@@ -1045,7 +1045,7 @@ ezP.Delegate.prototype.setDisabled = function (block, yorn) {
     // nothing to do the block is already in the good state
     return
   }
-  Blockly.Events.setGroup(true)
+  var grouper = new ezP.Events.Grouper()
   var previous, next
   try {
     if (yorn) {
@@ -1137,7 +1137,7 @@ ezP.Delegate.prototype.setDisabled = function (block, yorn) {
       }
     }
   } finally {
-    Blockly.Events.setGroup(false)
+    grouper.stop()
   }
 }
 

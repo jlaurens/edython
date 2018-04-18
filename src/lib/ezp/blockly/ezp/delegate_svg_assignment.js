@@ -662,7 +662,7 @@ ezP.DelegateSvg.AugAssign.populateContextMenuFirst_ = function (block, mgr) {
       }
       var F = function(content) {
         mgr.addInsertChild(new ezP.MenuItem(content, function() {
-            Blockly.Events.setGroup(true)
+            var grouper = new ezP.Events.Grouper()
             try {
               var BB = ezP.DelegateSvg.newBlockComplete(target.workspace, type)
               if (BB.ezp.setValue) {
@@ -674,7 +674,7 @@ ezP.DelegateSvg.AugAssign.populateContextMenuFirst_ = function (block, mgr) {
               input.connection.connect(BB.outputConnection)
               target.ezp.consolidate(target)
             } finally {
-              Blockly.Events.setGroup(false)
+              grouper.stop()
             }
           }))
       }

@@ -185,6 +185,16 @@ ezP.FieldTextInput.prototype.widgetDispose_ = function () {
 }
 
 /**
+ * Called when focusing away from the text field.
+ * Default to noop.
+ * @param {string} newName The new variable name.
+ * @private
+ * @this ezP.FieldIdentifier
+ */
+ezP.FieldTextInput.prototype.onEndEditing_ = function () {
+}
+
+/**
  * Override to noop.
  * @inherited
  */
