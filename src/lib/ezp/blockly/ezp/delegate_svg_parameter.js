@@ -505,93 +505,6 @@ ezP.DelegateSvg.Expr.parameter.prototype.didChangeValue = function(block, oldVal
 }
 
 /**
- * Class for a DelegateSvg, parameter_star.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('parameter_star', {
-  inputs: {
-    i_1: {
-      key: ezP.Key.NAME,
-      label: '*',
-      css_class: 'ezp-code-reserved',
-      check: ezP.T3.Expr.Check.parameter,
-      hole_value: 'name',
-      optional: true,
-    }
-  }
-})
-
-/**
- * Class for a DelegateSvg, parameter_star_star.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('parameter_star_star', {
-  inputs: {
-    i_1: {
-      key: ezP.Key.NAME,
-      label: '**',
-      css_class: 'ezp-code-reserved',
-      check: ezP.T3.Expr.Check.parameter,
-      hole_value: 'name',
-    }
-  }
-})
-
-/**
- * Class for a DelegateSvg, parameter_concrete.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-// ezP.DelegateSvg.Manager.makeSubclass('parameter_concrete', {
-//   inputs: {
-//     i_1: {
-//       key: ezP.Key.NAME,
-//       check: ezP.T3.Expr.identifier,
-//       hole_value: 'name',
-//     },
-//     i_3: {
-//       key: ezP.Key.EXPRESSION,
-//       label: ':',
-//       css_class: 'ezp-code-reserved',
-//       check: ezP.T3.Expr.Check.expression,
-//       hole_value: 'expression',
-//     },
-//   }
-// })
-
-/**
- * Class for a DelegateSvg, defparameter_concrete.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('defparameter_concrete', {
-  inputs: {
-    i_1: {
-      key: ezP.Key.NAME,
-      check: ezP.T3.Expr.Check.parameter,
-      hole_value: 'name',
-    },
-    i_3: {
-      key: ezP.Key.EXPRESSION,
-      label: '=',
-      css_class: 'ezp-code-reserved',
-      check: ezP.T3.Expr.Check.expression,
-      hole_value: 'value',
-    },
-  }
-})
-
-/**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
@@ -599,57 +512,51 @@ ezP.DelegateSvg.Manager.makeSubclass('defparameter_concrete', {
  */
 ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var e8r = block.ezp.inputEnumerator(block)
-  var F = function(type, msg) {
-    var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN('( ', 'ezp-code-disabled'),
-      ezP.Do.createSPAN(msg),
-      ezP.Do.createSPAN(' )', 'ezp-code-disabled'),
-    )
-    mgr.addInsertChild(new ezP.MenuItem(content, function() {
-      var grouper = new ezP.Events.Grouper()
-      try {
-        e8r.end()
-        while (e8r.previous()) {
-          var c8n = e8r.here.connection
-          if (c8n) {
-            if(c8n.targetConnection) {
-              continue
-            }
-            var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, type)
-            if (BB.ezp.setValue) {
-              BB.ezp.setValue(BB, 'name')
-            } else {
-              BB.ezp.consolidate(BB, true)
-              var holes = ezP.HoleFiller.getDeepHoles(BB)
-              ezP.HoleFiller.fillDeepHoles(BB.workspace, holes)
-            }
-            c8n.connect(BB.outputConnection)
-            block.ezp.consolidate(block)
-            break
-          }
-        }
-      } finally {
-        grouper.stop()
-      }
-    }))
-  }
-  var G = function(type, msg) {
-    e8r.start()
-    while(e8r.next()) {
+  var F = function(modifier, flags, msg) {
+    var BB
+    ezP.Events.Disabler.wrap(function() {
+      BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.parameter)
+      BB.ezp.skipRendering = true
+      BB.ezp.setModifier(BB, modifier)
+      BB.ezp.setSubtype(BB, flags)
+    })
+    e8r.end()
+    while(e8r.previous()) {
       var c8n = e8r.here.connection
-      if (c8n && (c8n = c8n.targetConnection)) {
-        if (goog.array.contains(c8n.check_, type)) {
-          return null
+      if (c8n && !c8n.targetConnection) {
+        if (c8n.checkType_(BB.outputConnection)) {
+          var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+            ezP.Do.createSPAN('( ', 'ezp-code-disabled'),
+            ezP.Do.createSPAN(msg),
+            ezP.Do.createSPAN(' )', 'ezp-code-disabled'),
+          )
+          mgr.addInsertChild(new ezP.MenuItem(content, function() {
+            var grouper = new ezP.Events.Grouper()
+            try {
+              var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.parameter)
+              B.ezp.skipRendering = true
+              B.ezp.setModifier(B, modifier)
+              B.ezp.setSubtype(B, flags)
+              B.ezp.skipRendering = false
+              c8n.connect(B.outputConnection)
+              B.render()
+            } finally {
+              grouper.stop()
+            }
+          }))
         }
       }
     }
-    F(type, msg)
+    ezP.Events.Disabler.wrap(function() {
+      BB.dispose(true)
+    })
   }
-  F(ezP.T3.Expr.identifier, 'name')
-  F(ezP.T3.Expr.parameter_concrete, 'name: expression')
-  F(ezP.T3.Expr.defparameter_concrete, 'name = value')
-  G(ezP.T3.Expr.parameter_star, '*...')
-  G(ezP.T3.Expr.parameter_star_star, '** ...')
+  F('', 0, 'name')
+  F('', 1, 'name: expression')
+  F('', 2, 'name = value')
+  F('*', 4, '*')
+  F('*', 0, '*…')
+  F('**', 0, '**…')
   mgr.shouldSeparateInsert()
   ezP.DelegateSvg.Expr.parameter_list.superClass_.populateContextMenuFirst_.call(this,block, mgr)
   return true

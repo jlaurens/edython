@@ -1709,12 +1709,6 @@ ezP.Xml.Primary.domToBlock = function (element, workspace) {
 
 goog.require('ezP.DelegateSvg.Parameter')
 
-ezP.DelegateSvg.Expr.parameter_star.prototype.xml =
-ezP.DelegateSvg.Expr.parameter_star_star.prototype.xml =
-ezP.DelegateSvg.Expr.parameter_concrete.prototype.xml =
-ezP.DelegateSvg.Expr.defparameter_concrete.prototype.xml =
-ezP.Xml.InputList
-
 /**
  * The xml tag name of this block, as it should appear in the saved data.
  * Default implementation just returns the block type.
