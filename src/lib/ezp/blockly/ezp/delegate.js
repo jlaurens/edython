@@ -413,7 +413,7 @@ ezP.Delegate.addProperty = function (Ctor, key, initialize, validate, willChange
       })
       if (Blockly.Events.isEnabled()) {
         Blockly.Events.fire(new Blockly.Events.BlockChange(
-        block, 'ezp:property.'+key, null, oldValue, newValue))
+        block, ezP.Const.Event.PROPERTY+key, null, oldValue, newValue))
       }
       this[k_] = newValue
       ezP.Events.Disabler.wrap(function() {

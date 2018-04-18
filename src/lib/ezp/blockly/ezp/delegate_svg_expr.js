@@ -459,7 +459,7 @@ ezP.DelegateSvg.Manager.makeSubclass('not_test_concrete', {
 */
 ezP.DelegateSvg.Manager.makeSubclass('builtin_object', {
   inputs: {
-    subtypes: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
+    values: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
     i_1: {
       key: ezP.Key.VALUE,
       label: 'True',
@@ -469,22 +469,22 @@ ezP.DelegateSvg.Manager.makeSubclass('builtin_object', {
 })
 
 /**
- * Initialize the subtype.
+ * Initialize the value.
  * @param {!Blockly.Block} block to be initialized..
  */
-ezP.DelegateSvg.Expr.builtin_object.prototype.initSubtype = function(block) {
-  this.setSubtype(block, block.ezp.ui.i_1.fields.label.getValue(block))
+ezP.DelegateSvg.Expr.builtin_object.prototype.initValue = function(block) {
+  this.setValue(block, block.ezp.ui.i_1.fields.label.getValue(block))
 }
 
 /**
- * When the subtype did change.
+ * When the value did change.
  * @param {!Blockly.Block} block to be initialized.
- * @param {string} oldSubtype
- * @param {string} newSubtype
+ * @param {string} oldValue
+ * @param {string} newValue
  */
-ezP.DelegateSvg.Expr.builtin_object.prototype.didChangeSubtype = function(block, oldSubtype, newSubtype) {
-  ezP.DelegateSvg.Expr.builtin_object.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  block.ezp.ui.i_1.fields.label.setValue(newSubtype)
+ezP.DelegateSvg.Expr.builtin_object.prototype.didChangeValue = function(block, oldValue, newValue) {
+  ezP.DelegateSvg.Expr.builtin_object.superClass_.didChangeValue.call(this, block, oldValue, newValue)
+  block.ezp.ui.i_1.fields.label.setValue(newValue)
 }
 
 /**
@@ -494,7 +494,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.didChangeSubtype = function(block,
  * @private
  */
 ezP.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  mgr.populateSubtypes(block)
+  mgr.populateProperties(block, 'value')
   mgr.shouldSeparateInsert()
   ezP.DelegateSvg.Expr.builtin_object.superClass_.populateContextMenuFirst_.call(this, block, mgr)
   return true
@@ -509,26 +509,6 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = functi
 ezP.DelegateSvg.Expr.builtin_object.prototype.getContent = function (block, op) {
   return ezP.Do.createSPAN(op, 'ezp-code-reserved')
 }
-
-/**
- * Get the subtype of the block.
- * The operator.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return None
- */
-ezP.DelegateSvg.Expr.builtin_object.prototype.getValue = ezP.DelegateSvg.Expr.builtin_object.prototype.getSubtype
-
-/**
- * Set the subtype of the block.
- * The operator.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return true if the receiver supports subtyping, false otherwise
- */
-ezP.DelegateSvg.Expr.builtin_object.prototype.setValue = ezP.DelegateSvg.Expr.builtin_object.prototype.setSubtype
 
 /**
 * Class for a DelegateSvg, any object.

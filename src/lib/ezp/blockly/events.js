@@ -67,7 +67,16 @@ Blockly.Events.Change.prototype.run = function(forward) {
     default:
       var m = XRegExp.exec(this.element, ezP.XRE.event_property)
       if (m) {
-        block.ezp.setProperty(block, m.key, value)
+        switch(m.key) {
+          case 'subtype': block.ezp.setSubtype(block, value); break
+          case 'value': block.ezp.setValue(block, value); break
+          case 'modifier': block.ezp.setModifier(block, value); break
+          case 'variant': block.ezp.setVariant(block, value); break
+          default:
+          var k = 'set'+m.key.charAt(0).toUpperCase() + m.key.slice(1)
+          var setter = block.ezp[k]
+          setter && setter.call(block.ezp, block, value) || block.ezp.setProperty(block, m.key, value)
+        }
       } else {
         console.warn('Unknown change type: ' + this.element);
       }

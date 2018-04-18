@@ -284,8 +284,7 @@ goog.asserts.assert('0e-0'.match(RE.exponentfloat), 'FAILURE')
 */
 
 ezP.Const.Event = {
-  SUBTYPE: 'ezp:property.subtype',
-  VALUE: 'ezp:value',
+  PROPERTY: 'ezp:property:',
   input_disable: 'ezp:input_disable',
   property: 'ezp:property',
   locked: 'ezp:locked',

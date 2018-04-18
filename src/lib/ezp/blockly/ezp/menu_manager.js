@@ -1239,3 +1239,31 @@ ezP.MenuManager.prototype.populateSubtypes = function (block) {
   }
   return false
 }
+
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @private
+ */
+ezP.MenuManager.prototype.populateProperties = function (block, key) {
+  var ezp = block.ezp
+  var properties = ezp.getModel().inputs[key+'s']
+  if (properties && properties.length > 1) {
+    var k = key.charAt(0).toUpperCase() + key.slice(1)
+    var current = ezp['get' + k](block)
+    var F = function(property) {
+      var menuItem = new ezP.MenuItem(ezp.getContent(block, property), function() {
+        ezp['set' + k](block, property)
+      })
+      menuItem.setEnabled(current != property)
+      this.addChild(menuItem, true)
+      goog.dom.classlist.add(menuItem.getElement().firstChild, 'ezp-code')
+    }
+    for (var i = 0; i<properties.length; i++) {
+      F.call(this, properties[i])
+    }
+    return true
+  }
+  return false
+}
