@@ -31,7 +31,7 @@ goog.inherits(ezP.DelegateSvg.Operator, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Operator.model__ = {
   inputs: {
-    m_3: {
+    i_3: {
       key: ezP.Key.RHS,
       operator: '',
       css_class: 'ezp-code',
@@ -52,7 +52,7 @@ ezP.DelegateSvg.Operator.model__ = {
  */
 ezP.DelegateSvg.Operator.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Operator.superClass_.initBlock.call(this, block)
-  var field = block.ezp.uiModel.m_3.fields.operator
+  var field = block.ezp.uiModel.i_3.fields.operator
   var value = field.getValue()
   if (this.validateSubtype(block, value)) {
     this.setSubtype(block, value)
@@ -68,7 +68,7 @@ ezP.DelegateSvg.Operator.prototype.initBlock = function(block) {
  * @param {!Blockly.Block} block to be initialized.
  */
 ezP.DelegateSvg.Operator.prototype.didChangeSubtype = function(block, oldValue, newValue) {
-  var field = block.ezp.uiModel.m_3.fields.operator
+  var field = block.ezp.uiModel.i_3.fields.operator
   if (newValue !== field.getValue()) {
     var disabler = new ezP.Events.Disabler()
     try {
@@ -120,7 +120,7 @@ ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
 ezP.DelegateSvg.Manager.makeSubclass('u_expr_concrete', {
   inputs: {
     subtypes: ['-', '+', '~'],
-    m_3: {
+    i_3: {
       operator: '-',
       check: ezP.T3.Expr.Check.u_expr
     },
@@ -147,7 +147,7 @@ ezP.DelegateSvg.Expr.u_expr_concrete.prototype.getContent = function (block, op)
  */
 ezP.DelegateSvg.Binary = function (prototypeName) {
   ezP.DelegateSvg.Binary.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.m_1 = {
+  this.model__.inputs.i_1 = {
     key: ezP.Key.LHS,
     hole_value: 'name',
   }
@@ -155,7 +155,7 @@ ezP.DelegateSvg.Binary = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Binary, ezP.DelegateSvg.Operator)
 ezP.DelegateSvg.Binary.model__ = {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.LHS,
       hole_value: 'name',
     },
@@ -185,10 +185,10 @@ ezP.DelegateSvg.Binary.makeSubclass = function(key, operators, check1, check3, o
     inputs: {
       subtypes: operators,
       subtypeIndex: operatorIndex || 0,
-      m_1: {
+      i_1: {
         check: ezP.T3.Expr.Check[check1]
       },
-      m_3: {
+      i_3: {
         operator: '',
         check: ezP.T3.Expr.Check[check3]
       },
@@ -308,10 +308,10 @@ ezP.DelegateSvg.Manager.makeSubclass('object_comparison', {
   inputs: {
     subtypes: ['is', 'is not', 'in', 'not in'],
     subtypeIndex: 2,
-    m_1: {
+    i_1: {
       check: ezP.T3.Expr.Check.comparison
     },
-    m_3: {
+    i_3: {
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.comparison
     },
@@ -339,10 +339,10 @@ ezP.DelegateSvg.Expr.object_comparison.prototype.getContent = function (block, o
 ezP.DelegateSvg.Manager.makeSubclass('or_test_concrete', {
   inputs: {
     subtypes: ['or'],
-    m_1: {
+    i_1: {
       check: ezP.T3.Expr.Check.or_test
     },
-    m_3: {
+    i_3: {
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.and_test
     },
@@ -360,10 +360,10 @@ ezP.DelegateSvg.Manager.makeSubclass('or_test_concrete', {
 ezP.DelegateSvg.Manager.makeSubclass('and_test_concrete', {
   inputs: {
     subtypes: ['and'],
-    m_1: {
+    i_1: {
       check: ezP.T3.Expr.Check.and_test
     },
-    m_3: {
+    i_3: {
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.not_test
     },
@@ -381,12 +381,12 @@ ezP.DelegateSvg.Manager.makeSubclass('and_test_concrete', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('power_concrete', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.ARGUMENT,
       check: ezP.T3.Expr.Check.await_or_primary,
       hole_value: 'name',
     },
-    m_3: {
+    i_3: {
       key: ezP.Key.POWER,
       operator: '**',
       css_class: 'ezp-code-reserved',

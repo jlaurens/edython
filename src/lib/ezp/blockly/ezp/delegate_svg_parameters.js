@@ -298,7 +298,7 @@ ezP.DelegateSvg.Manager.makeSubclass('parameter_list', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('parameter_star', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.NAME,
       label: '*',
       css_class: 'ezp-code-reserved',
@@ -318,7 +318,7 @@ ezP.DelegateSvg.Manager.makeSubclass('parameter_star', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('parameter_star_star', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.NAME,
       label: '**',
       css_class: 'ezp-code-reserved',
@@ -337,12 +337,12 @@ ezP.DelegateSvg.Manager.makeSubclass('parameter_star_star', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('parameter_concrete', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.NAME,
       check: ezP.T3.Expr.identifier,
       hole_value: 'name',
     },
-    m_3: {
+    i_3: {
       key: ezP.Key.EXPRESSION,
       label: ':',
       css_class: 'ezp-code-reserved',
@@ -361,12 +361,12 @@ ezP.DelegateSvg.Manager.makeSubclass('parameter_concrete', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('defparameter_concrete', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.NAME,
       check: ezP.T3.Expr.Check.parameter,
       hole_value: 'name',
     },
-    m_3: {
+    i_3: {
       key: ezP.Key.EXPRESSION,
       label: '=',
       css_class: 'ezp-code-reserved',

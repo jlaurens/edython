@@ -1638,9 +1638,9 @@ ezP.Xml.AugAssign.domToBlock = function (element, workspace) {
  */
 ezP.Xml.AugAssign.toDom = function (block, element, optNoId) {
   element.setAttribute(ezP.Key.OPERATOR, block.ezp.getSubtype(block))
-  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().inputs.m_1.key
+  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().inputs.i_1.key
   ezP.Xml.Input.Named.toDom(block, name, element, optNoId)
-  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().inputs.m_3.key
+  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().inputs.i_3.key
   ezP.Xml.namedListInputToDom(block, name, element, optNoId)
 }
 
@@ -1653,9 +1653,9 @@ ezP.Xml.AugAssign.toDom = function (block, element, optNoId) {
 ezP.Xml.AugAssign.fromDom = function (block, element) {
   var op = element.getAttribute(ezP.Key.OPERATOR)
   block.ezp.setSubtype(block, op)
-  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().inputs.m_1.key
+  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().inputs.i_1.key
   ezP.Xml.Input.Named.fromDom(block, name, element)
-  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().inputs.m_3.key
+  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().inputs.i_3.key
   ezP.Xml.namedListInputFromDom(block, name, element)
 }
 

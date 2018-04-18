@@ -44,10 +44,10 @@ goog.inherits(ezP.DelegateSvg.Expr._as_concrete, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Expr._as_concrete.model__ = {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.SOURCE,
     },
-    m_3: {
+    i_3: {
       label: 'as',
       css_class: 'ezp-code-reserved',
       key: ezP.Key.AS,
@@ -67,12 +67,12 @@ ezP.DelegateSvg.Expr._as_concrete.model__ = {
  */
 ezP.DelegateSvg.Manager.makeSubclass('module_as_concrete', {
   inputs: {
-    m_1: {
+    i_1: {
       check: ezP.T3.Expr.Check.module,
       hole_value: 'module',
       plugged: ezP.T3.Expr.module,
     },
-    m_3: {
+    i_3: {
       plugged: ezP.T3.Expr.module_alias,
     },
   },
@@ -89,13 +89,13 @@ ezP.DelegateSvg.Manager.makeSubclass('module_as_concrete', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('module_concrete', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.LHS,
       check: ezP.T3.Expr.module_name,
       plugged: ezP.T3.Expr.module_identifier,
       hole_value: 'module',
     },
-    m_3: {
+    i_3: {
       label: '.',
       key: ezP.Key.RHS,
       check: ezP.T3.Expr.Check.module,
@@ -136,7 +136,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_module_as_list', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('import_module', {
   inputs: {
-    m_1: {
+    i_1: {
       label: 'import',
       css_class: 'ezp-code-reserved',
       key: ezP.Key.IMPORT,
@@ -166,12 +166,12 @@ import_name ::= identifier
  */
 ezP.DelegateSvg.Manager.makeSubclass('import_identifier_as_concrete', {
   inputs: {
-    m_1: {
+    i_1: {
       check: ezP.T3.Expr.identifier,
       hole_value: 'name',
       plugged: ezP.T3.Expr.import_identifier,
     },
-    m_3: {
+    i_3: {
       plugged: ezP.T3.Expr.import_alias,
     },
   },
@@ -209,7 +209,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_import_identifier_as_list', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('parent_module', {
   inputs: {
-    m_1: {
+    i_1: {
       label: '.',
       key: ezP.Key.MODULE,
       check: ezP.T3.Expr.Check.relative_module,
@@ -229,7 +229,7 @@ ezP.DelegateSvg.Manager.makeSubclass('parent_module', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('from_relative_module_import', {
   inputs: {
-    m_1: {
+    i_1: {
       label: 'from',
       css_class: 'ezp-code-reserved',
       key: ezP.Key.FROM,
@@ -237,7 +237,7 @@ ezP.DelegateSvg.Manager.makeSubclass('from_relative_module_import', {
       plugged: ezP.T3.Expr.relative_module,
       hole_value: 'module',
     },
-    m_3: {
+    i_3: {
       label: 'import',
       css_class: 'ezp-code-reserved',
       key: ezP.Key.IMPORT,
@@ -258,7 +258,7 @@ ezP.DelegateSvg.Manager.makeSubclass('from_relative_module_import', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('from_module_import', {
   inputs: {
-    m_1: {
+    i_1: {
       label: 'from',
       css_class: 'ezp-code-reserved',
       key: ezP.Key.MODULE,
@@ -284,13 +284,13 @@ ezP.DelegateSvg.Manager.makeSubclass('from_module_import', {
 ezP.DelegateSvg.Manager.makeSubclass('import_stmt', {
   inputs: {
     subtypes: [ezP.T3.Expr.import_module, ezP.T3.Expr.from_relative_module_import,ezP.T3.Expr.from_module_import],
-    m_1: {
+    i_1: {
       wrap: ezP.T3.Expr.import_module,
     },
-    m_2: {
+    i_2: {
       wrap: ezP.T3.Expr.from_relative_module_import,
     },
-    m_3: {
+    i_3: {
       wrap: ezP.T3.Expr.from_module_import,
     },
   },
@@ -379,7 +379,7 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
  */
 ezP.DelegateSvg.Manager.makeSubclass('future_statement', {
   inputs: {
-    m_1: {
+    i_1: {
       label: 'from __future__ import',
       css_class: 'ezp-code-reserved',
       key: ezP.Key.LIST,

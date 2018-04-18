@@ -31,13 +31,13 @@ goog.require('ezP.DelegateSvg.Parameters')
  */
 ezP.DelegateSvg.Manager.makeSubclass('lambda_expression', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.PARAMETERS,
       label: 'lambda',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.parameter_list,
     },
-    m_3: {
+    i_3: {
       key: ezP.Key.EXPRESSION,
       label: ':',
       check: ezP.T3.Expr.Check.expression.concat(ezP.T3.Expr.Check.expression_nocond),

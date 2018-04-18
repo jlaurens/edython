@@ -25,7 +25,7 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Manager.makeSubclass('identifier', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.NAME,
       identifier: '',
     },
@@ -85,7 +85,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.noBlockWrapped = function (block) {
  * @return true
  */
 ezP.DelegateSvg.Expr.identifier.prototype.setPhantomValue = function(block, text) {
-  var field = this.uiModel.m_1.fields.identifier
+  var field = this.uiModel.i_1.fields.identifier
   field.placeholderText_ = text
   field.render_()
   return true
@@ -178,7 +178,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.populateContextMenuMiddle_ = function 
  * the MenuItem selected within menu.
  */
 ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (block, VM) {
-  var listener = block.ezp.uiModel.m_1.fields.identifier
+  var listener = block.ezp.uiModel.i_1.fields.identifier
   var oldName = listener.getValue()
   var workspace = block.workspace
   var oldVarId = workspace.getVariable(oldName).getId()
@@ -195,7 +195,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (bl
       workspace.deleteVariableInternal_(vm)
       var allBlocks = workspace.getAllBlocks()
       for (var i = 0, B; B = allBlocks[i++];) {
-        var field = block.ezp.uiModel.m_1.fields.identifier
+        var field = block.ezp.uiModel.i_1.fields.identifier
         if (field && field.getValue() === oldName) {
           field.setValue(VM.name)
         }
@@ -215,7 +215,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.onActionReplaceVariable = function (bl
  * the MenuItem selected within menu.
  */
 ezP.DelegateSvg.Expr.identifier.prototype.handleMenuItemActionMiddle = function (block, mgr, event) {
-  var listener = block.ezp.uiModel.m_1.fields.identifier
+  var listener = block.ezp.uiModel.i_1.fields.identifier
   var workspace = block.workspace
   var model = event.target.getModel()
   var action = model[0]

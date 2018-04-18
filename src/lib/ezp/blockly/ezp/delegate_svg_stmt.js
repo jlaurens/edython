@@ -243,18 +243,18 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
  */
 ezP.DelegateSvg.Manager.makeSubclass('annotated_assignment_stmt', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.TARGET,
       check: ezP.T3.Expr.Check.augtarget,
       hole_value: 'name',
     },
-    m_2: {
+    i_2: {
       key: ezP.Key.ANNOTATED,
       check: ezP.T3.Expr.Check.expression,
       label: ':',
       hole_value: 'annotation',
     },
-    m_3: {
+    i_3: {
       key: ezP.Key.ASSIGNED,
       check: ezP.T3.Expr.Check.expression,
       label: '=',
@@ -327,7 +327,7 @@ ezP.DelegateSvg.Stmt.annotated_assignment_stmt.prototype.populateContextMenuFirs
  */
 ezP.DelegateSvg.Manager.makeSubclass('pass_stmt', {
   inputs: {
-    m_1: {
+    i_1: {
       label: 'pass',
       css_class: 'ezp-code-reserved',
     },
@@ -343,7 +343,7 @@ ezP.DelegateSvg.Manager.makeSubclass('pass_stmt', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('break_stmt', {
   inputs: {
-    m_1: {
+    i_1: {
       label: 'break',
       css_class: 'ezp-code-reserved',
     },
@@ -359,7 +359,7 @@ ezP.DelegateSvg.Manager.makeSubclass('break_stmt', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('continue_stmt', {
   inputs: {
-    m_1: {
+    i_1: {
       label: 'continue',
       css_class: 'ezp-code-reserved',
     },
@@ -400,7 +400,7 @@ ezP.DelegateSvg.Manager.makeSubclass('global_nonlocal_stmt', {
       label: '',
       css_class: 'ezp-code-reserved',
     },
-    m_3: {
+    i_3: {
       key: ezP.Key.IDENTIFIERS,
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.non_void_identifier_list,
@@ -458,12 +458,12 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = 
  */
 ezP.DelegateSvg.Manager.makeSubclass('comment_stmt', {
   inputs: {
-    m_1: {
+    i_1: {
       label: '# ',
       css_class: 'ezp-code-reserved',
     },
-    m_2: {
-      comment: '', // we cannot merge with m_1 due to css_class
+    i_2: {
+      comment: '', // we cannot merge with i_1 due to css_class
     },
   },
 })
@@ -555,7 +555,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.showEditor = function (block) {
  */
 ezP.DelegateSvg.Manager.makeSubclass('expression_stmt', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
     },
@@ -572,7 +572,7 @@ ezP.DelegateSvg.Manager.makeSubclass('expression_stmt', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('docstring_top_stmt', {
   inputs: {
-    m_1: {
+    i_1: {
       wrap: ezP.T3.Expr.longstringliteral,
     },
   },
@@ -596,7 +596,7 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt
  */
  ezP.DelegateSvg.Manager.makeSubclass('docstring_def_stmt', {
   inputs: {
-    m_1: {
+    i_1: {
       wrap: ezP.T3.Expr.longstringliteral,
     },
   },
@@ -622,7 +622,7 @@ ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt
  * @return None
  */
 ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.getSubtype = ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.getSubtype = function (block) {
-  var target = this.uiModel.m_1.input.connection.targetBlock()
+  var target = this.uiModel.i_1.input.connection.targetBlock()
   return target? target.ezp.getSuptype(target): undefined
 }
 
@@ -636,7 +636,7 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.getSubtype = ezP.DelegateSvg.S
  * @return true if the receiver supports subtyping, false otherwise
  */
 ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.setSubtype = function (block, subtype) {
-  var target = this.uiModel.m_1.input.connection.targetBlock()
+  var target = this.uiModel.i_1.input.connection.targetBlock()
   if (target) {
     target.ezp.setSubtype(target, subtype)
   }
@@ -652,7 +652,7 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.S
  */
 ezP.DelegateSvg.Manager.makeSubclass('del_stmt', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.DEL,
       label: 'del',
       css_class: 'ezp-code-reserved',
@@ -670,7 +670,7 @@ ezP.DelegateSvg.Manager.makeSubclass('del_stmt', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('return_stmt', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.RETURN,
       label: 'return',
       css_class: 'ezp-code-reserved',

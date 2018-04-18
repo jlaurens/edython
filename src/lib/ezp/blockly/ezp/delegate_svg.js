@@ -387,7 +387,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       FF.call(this, ezP.Key.MODIFIER)
       FF.call(this, ezP.Key.PREFIX)
       FF.call(this, ezP.Key.SUFFIX)
-      var keys = ['m_1', 'm_2', 'm_3']
+      var keys = ['i_1', 'i_2', 'i_3']
       for (var i = 0, K; K = keys[i++];) {
         var p = doOneModel.call(this, K)
         if (p) {

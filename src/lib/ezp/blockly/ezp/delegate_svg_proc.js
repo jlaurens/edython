@@ -25,12 +25,12 @@ goog.require('ezP.MenuItem')
  */
 ezP.DelegateSvg.Manager.makeSubclass('dotted_funcname_concrete', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.PARENT,
       check: ezP.T3.Expr.identifier,
       hole_value: 'parent',
     },
-    m_3: {
+    i_3: {
       label: '.',
       key: ezP.Key.NAME,
       check: ezP.T3.Expr.Check.dotted_funcname,
@@ -49,23 +49,23 @@ console.warn('implement the statement')
 //  decorator_stmt            /*   ::= "@" dotted_name ["(" [argument_list [","]] ")"]    */ : "ezp:decorator_stmt",
 ezP.DelegateSvg.Manager.makeSubclass('decorator_stmt', {
   inputs: {
-    builtins: [null, 'staticmethod', 'classmethod'],
+    values: [null, 'staticmethod', 'classmethod'],
     subtypes: [null, ezP.Key.ARGUMENTS],
     prefix: {
       label: '@',
       css_class: 'ezp-code-reserved',
     },
-    m_1: {
+    i_1: {
       key: ezP.Key.NAME,
       check: ezP.T3.Expr.Check.dotted_funcname,
       hole_value: 'decorator',
     },
-    m_2: {
+    i_2: {
       key: ezP.Key.BUILTIN,
-      start: 'staticmethod',
+      label: 'staticmethod',
       css_class: 'ezp-code-reserved',
     },
-    m_3: {
+    i_3: {
       start: '(',
       key: ezP.Key.ARGUMENTS,
       wrap: ezP.T3.Expr.argument_list,
@@ -89,9 +89,40 @@ ezP.DelegateSvg.Manager.makeSubclass('decorator_stmt', {
  * @param {string} oldSubtype
  * @param {string} newSubtype
  */
+ezP.DelegateSvg.Stmt.decorator_stmt.prototype.didChangeValueOrSubtype = function (block, value, subtype) {
+  var values = this.getModel().inputs.values
+  var named = values.indexOf(value) < 1
+  this.setNamedInputDisabled(block, ezP.Key.NAME, !named)
+  this.setNamedInputDisabled(block, ezP.Key.BUILTIN, named)
+  this.setNamedInputDisabled(block, ezP.Key.ARGUMENTS, !named || (ezP.Key.ARGUMENTS != subtype))
+  this.uiModel.i_2.fields.label.setValue(value)
+}
+
+/**
+ * Hook after the subtype change.
+ * Default implementation does nothing.
+ * Subclassers will take care of undo compliance.
+ * Event recording is disabled.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} oldSubtype
+ * @param {string} newSubtype
+ */
 ezP.DelegateSvg.Stmt.decorator_stmt.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
   ezP.DelegateSvg.Stmt.decorator_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  block.ezp.setNamedInputDisabled(block, ezP.Key.ARGUMENTS, (ezP.Key.ARGUMENTS != newSubtype))
+  this.didChangeValueOrSubtype(block, this.getValue(block), newSubtype)
+}
+
+/**
+ * Hook after the Value change.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} oldValue
+ * @param {string} newValue
+ */
+ezP.DelegateSvg.Stmt.decorator_stmt.prototype.didChangeValue = function (block, oldValue, newValue) {
+  ezP.DelegateSvg.Stmt.decorator_stmt.superClass_.didChangeValue.call(this, block, oldValue, newValue)
+  this.didChangeValueOrSubtype(block, newValue, this.getSubtype(block))
 }
 
 /**
@@ -112,55 +143,59 @@ ezP.DelegateSvg.Stmt.decorator_stmt.prototype.isWhite = function (block) {
  * @override
  */
 ezP.DelegateSvg.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var builtin = block.ezp.getProperty(block, ezP.Key.BUILTIN)
-  var subtype = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
-  var t, menuItem
   var inputs = block.ezp.getModel().inputs
-  menuItem = new ezP.MenuItem(
+  var value = this.getValue(block)
+  var values = inputs.values
+  var named = values.indexOf(value) < 1
+  var subtype = this.getSubtype(block)
+  var subtypes = inputs.subtypes
+  var menuItem = new ezP.MenuItem(
       goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN('@', 'ezp-code-reserved'),
       ezP.Do.createSPAN('decorator', 'ezp-code-placeholder'),
     ),
       function() {
-    block.ezp.setProperty(block, ezP.Key.BUILTIN, inputs.builtins[0])
+    block.ezp.setValue(block, values[0])
   })
-  menuItem.setEnabled((inputs.builtins[0] != builtin) && !subtype)
+  menuItem.setEnabled(values[0] != value)
   mgr.addChild(menuItem)
   menuItem = new ezP.MenuItem(
-      ezP.Do.createSPAN('@'+inputs.builtins[1], 'ezp-code-reserved'),
+      ezP.Do.createSPAN('@'+values[1], 'ezp-code-reserved'),
       function() {
-    block.ezp.setProperty(block, ezP.Key.BUILTIN, inputs.builtins[1])
+    block.ezp.setValue(block, values[1])
   })
-  menuItem.setEnabled((inputs.builtins[1] != builtin) && !subtype)
+  menuItem.setEnabled(values[1] != value)
   mgr.addChild(menuItem)
   menuItem = new ezP.MenuItem(
-      ezP.Do.createSPAN('@'+inputs.builtins[2], 'ezp-code-reserved'),
+      ezP.Do.createSPAN('@'+values[2], 'ezp-code-reserved'),
       function() {
-    block.ezp.setProperty(block, ezP.Key.BUILTIN, inputs.builtins[2])
+    block.ezp.setValue(block, values[2])
   })
-  menuItem.setEnabled((inputs.builtins[2] != builtin) && !subtype)
+  menuItem.setEnabled(values[2] != value)
   mgr.addChild(menuItem)
   mgr.shouldSeparate()
-  menuItem = new ezP.MenuItem(
-    goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN('@', 'ezp-code-reserved'),
-      ezP.Do.createSPAN('decorator', 'ezp-code-placeholder'),
-    ), function() {
-    block.ezp.setProperty(block, ezP.Key.SUBTYPE, inputs.subtypes[0])
-  })
-  menuItem.setEnabled(inputs.subtypes[0] != subtype)
-  mgr.addChild(menuItem)
-  menuItem = new ezP.MenuItem(
-    goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN('@', 'ezp-code-reserved'),
-      ezP.Do.createSPAN('decorator', 'ezp-code-placeholder'),
-      goog.dom.createTextNode('(…)'),
-    ), function() {
-    block.ezp.setProperty(block, ezP.Key.SUBTYPE, inputs.subtypes[1])
-  })
-  menuItem.setEnabled(inputs.subtypes[1] != subtype)
-  mgr.addChild(menuItem)
-  mgr.shouldSeparate()
+  if (named) {
+    menuItem = new ezP.MenuItem(
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+        ezP.Do.createSPAN('@', 'ezp-code-reserved'),
+        value? goog.dom.createTextNode(value): ezP.Do.createSPAN('decorator', 'ezp-code-placeholder'),
+      ), function() {
+      block.ezp.setSubtype(block, subtypes[0])
+    })
+    menuItem.setEnabled(subtypes[0] != subtype)
+    mgr.addChild(menuItem)
+    menuItem = new ezP.MenuItem(
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+        ezP.Do.createSPAN('@', 'ezp-code-reserved'),
+        value? goog.dom.createTextNode(value): ezP.Do.createSPAN('decorator', 'ezp-code-placeholder'),
+        goog.dom.createTextNode('(…)'),
+      ), function() {
+      block.ezp.setSubtype(block, subtypes[1])
+    })
+    menuItem.setEnabled(subtypes[1] != subtype)
+    mgr.addChild(menuItem)
+    mgr.shouldSeparate()
+  }
   return ezP.DelegateSvg.Stmt.decorator_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
@@ -176,20 +211,20 @@ ezP.DelegateSvg.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = functi
 ezP.DelegateSvg.Manager.makeSubclass('funcdef_part', {
   inputs: {
     subtypes: ['', ezP.Key.TYPE],
-    m_1: {
+    i_1: {
       key: ezP.Key.NAME,
       label: 'def',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.identifier,
       hole_value: 'name',
     },
-    m_2: {
+    i_2: {
       key: ezP.Key.PARAMETERS,
       start: '(',
       wrap: ezP.T3.Expr.parameter_list,
       end: ')',
     },
-    m_3: {
+    i_3: {
       label: '->',
       key: ezP.Key.TYPE,
       check: ezP.T3.Expr.Check.expression,
@@ -220,14 +255,13 @@ ezP.DelegateSvg.Stmt.funcdef_part.prototype.didChangeSubtype = function (block, 
  */
 ezP.DelegateSvg.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var subtypes = block.ezp.getModel().inputs.subtypes
-  var menu = mgr.menu
-  var current = block.ezp.getProperty(block, ezP.Key.TYPE)
+  var subtype = block.ezp.getSubtype(block)
   var F = function(content, key) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setProperty(block, ezP.Key.TYPE, key)
+      block.ezp.setSubtype(block, key)
     })
     mgr.addChild(menuItem, true)
-    menuItem.setEnabled(key !== current)
+    menuItem.setEnabled(key !== subtype)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN('def', 'ezp-code-reserved'),
@@ -257,14 +291,14 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
 ezP.DelegateSvg.Manager.makeSubclass('classdef_part', {
   inputs: {
     subtypes: [null, ezP.Key.ARGUMENTS],
-    m_1: {
+    i_1: {
       key: ezP.Key.NAME,
       label: 'class',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.identifier,
       hole_value: 'name',
     },
-    m_2: {
+    i_2: {
       key: ezP.Key.ARGUMENTS,
       start: '(',
       wrap: ezP.T3.Expr.argument_list,
@@ -297,14 +331,13 @@ ezP.DelegateSvg.Stmt.classdef_part.prototype.didChangeSubtype = function (block,
  */
 ezP.DelegateSvg.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var subtypes = block.ezp.getModel().inputs.subtypes
-  var menu = mgr.menu
-  var current = block.ezp.getProperty(block, ezP.Key.SUBTYPE)
+  var subtype = block.ezp.getSubtype(block)
   var F = function(content, key) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setProperty(block, ezP.Key.SUBTYPE, key)
+      block.ezp.setSubtype(block, key)
     })
     mgr.addChild(menuItem, true)
-    menuItem.setEnabled(key !== current)
+    menuItem.setEnabled(key !== subtype)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN('class', 'ezp-code-reserved'),

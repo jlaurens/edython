@@ -25,12 +25,12 @@ goog.require('ezP.DelegateSvg.List')
  */
 ezP.DelegateSvg.Manager.makeSubclass('keyword_item', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.IDENTIFIER,
       check: ezP.T3.Expr.identifier,
       hole_value: 'key',
     },
-    m_3: {
+    i_3: {
       label: '=',
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
@@ -49,7 +49,7 @@ ezP.DelegateSvg.Manager.makeSubclass('keyword_item', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('expression_star', {
   inputs: {
-    m_1: {
+    i_1: {
       label: '*',
       css_class: 'ezp-code-reserved',
       key: ezP.Key.EXPRESSION,
@@ -69,7 +69,7 @@ ezP.DelegateSvg.Manager.makeSubclass('expression_star', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('expression_star_star', {
   inputs: {
-    m_1: {
+    i_1: {
       label: '**',
       css_class: 'ezp-code-reserved',
       key: ezP.Key.EXPRESSION,

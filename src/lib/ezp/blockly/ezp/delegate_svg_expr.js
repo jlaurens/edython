@@ -337,20 +337,20 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
  */
 ezP.DelegateSvg.Manager.makeSubclass('proper_slice', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.LOWER_BOUND,
       check: ezP.T3.Expr.Check.expression,
       optional: true,
       hole_value: 'lower',
       end: ':',
     },
-    m_2: {
+    i_2: {
       key: ezP.Key.UPPER_BOUND,
       check: ezP.T3.Expr.Check.expression,
       optional: true,
       hole_value: 'upper',
     },
-    m_3: {
+    i_3: {
       start: ':',
       key: ezP.Key.STRIDE,
       check: ezP.T3.Expr.Check.expression,
@@ -370,19 +370,19 @@ ezP.DelegateSvg.Manager.makeSubclass('proper_slice', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('conditional_expression_concrete', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.or_test,
       hole_value: 'name',
     },
-    m_2: {
+    i_2: {
       label: 'if',
       key: ezP.Key.IF,
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.or_test,
       hole_value: 'condition',
     },
-    m_3: {
+    i_3: {
       label: 'else',
       key: ezP.Key.ELSE,
       css_class: 'ezp-code-reserved',
@@ -401,7 +401,7 @@ ezP.DelegateSvg.Manager.makeSubclass('conditional_expression_concrete', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('or_expr_star', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.EXPRESSION,
       label: '*',
       css_class: 'ezp-code-reserved',
@@ -420,7 +420,7 @@ ezP.DelegateSvg.Manager.makeSubclass('or_expr_star', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('or_expr_star_star', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.EXPRESSION,
       label: '**',
       css_class: 'ezp-code-reserved',
@@ -440,7 +440,7 @@ ezP.DelegateSvg.Manager.makeSubclass('or_expr_star_star', {
 */
 ezP.DelegateSvg.Manager.makeSubclass('not_test_concrete', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.EXPRESSION,
       label: 'not',
       css_class: 'ezp-code-reserved',
@@ -460,7 +460,7 @@ ezP.DelegateSvg.Manager.makeSubclass('not_test_concrete', {
 ezP.DelegateSvg.Manager.makeSubclass('builtin_object', {
   inputs: {
     subtypes: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
-    m_1: {
+    i_1: {
       key: ezP.Key.VALUE,
       label: 'True',
       css_class: 'ezp-code-reserved',
@@ -473,7 +473,7 @@ ezP.DelegateSvg.Manager.makeSubclass('builtin_object', {
  * @param {!Blockly.Block} block to be initialized..
  */
 ezP.DelegateSvg.Expr.builtin_object.prototype.initSubtype = function(block) {
-  this.setSubtype(block, block.ezp.uiModel.m_1.fields.label.getValue(block))
+  this.setSubtype(block, block.ezp.uiModel.i_1.fields.label.getValue(block))
 }
 
 /**
@@ -484,7 +484,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.initSubtype = function(block) {
  */
 ezP.DelegateSvg.Expr.builtin_object.prototype.didChangeSubtype = function(block, oldSubtype, newSubtype) {
   ezP.DelegateSvg.Expr.builtin_object.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  block.ezp.uiModel.m_1.fields.label.setValue(newSubtype)
+  block.ezp.uiModel.i_1.fields.label.setValue(newSubtype)
 }
 
 /**
@@ -540,7 +540,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.setValue = ezP.DelegateSvg.Expr.bu
 ezP.DelegateSvg.Manager.makeSubclass('any', {
   values: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.CODE,
       code: '1+1',
     },
@@ -578,7 +578,7 @@ ezP.DelegateSvg.Expr.any.prototype.setValue = ezP.DelegateSvg.Expr.any.prototype
  */
 ezP.DelegateSvg.Expr.any.prototype.didChangeSubtype = function(block, oldSubtype, newSubtype) {
   ezP.DelegateSvg.Expr.any.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  block.ezp.uiModel.m_1.fields.code.setValue(newSubtype)
+  block.ezp.uiModel.i_1.fields.code.setValue(newSubtype)
 }
 
 ezP.DelegateSvg.Expr.T3s = [

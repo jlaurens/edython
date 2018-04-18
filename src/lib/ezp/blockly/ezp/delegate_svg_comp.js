@@ -25,15 +25,15 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Manager.makeSubclass('comprehension', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'name',
     },
-    m_2: {
+    i_2: {
       insert: ezP.T3.Expr.comp_for,
     },
-    m_3: {
+    i_3: {
       key: ezP.Key.COMP_ITER,
       wrap: ezP.T3.Expr.comp_iter_list,
     }
@@ -50,13 +50,13 @@ ezP.DelegateSvg.Manager.makeSubclass('comprehension', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('comp_for', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.FOR,
       label: 'for',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.target_list,
     },
-    m_3: {
+    i_3: {
       key: ezP.Key.IN,
       label: 'in',
       css_class: 'ezp-code-reserved',
@@ -76,7 +76,7 @@ ezP.DelegateSvg.Manager.makeSubclass('comp_for', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('comp_if', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.IF,
       label: 'if',
       css_class: 'ezp-code-reserved',
@@ -116,13 +116,13 @@ ezP.DelegateSvg.Manager.makeSubclass('comp_iter_list', {
 // dict_comprehension ::= expression ":" expression comp_for
 ezP.DelegateSvg.Manager.makeSubclass('dict_comprehension', {
   inputs: {
-    m_1: {
+    i_1: {
       insert: ezP.T3.Expr.key_datum_concrete,
     },
-    m_2: {
+    i_2: {
       insert: ezP.T3.Expr.comp_for,
     },
-    m_3: {
+    i_3: {
       key: ezP.Key.COMP_ITER,
       wrap: ezP.T3.Expr.comp_iter_list,
     },  
@@ -139,12 +139,12 @@ ezP.DelegateSvg.Manager.makeSubclass('dict_comprehension', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('key_datum_concrete', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.KEY,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'key',
     },
-    m_3: {
+    i_3: {
       key: ezP.Key.DATUM,
       check: ezP.T3.Expr.Check.expression,
       label: ':',

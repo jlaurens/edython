@@ -26,7 +26,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Manager.makeSubclass('target_star', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.EXPRESSION,
       label: '*',
       css_class: 'ezp-code-reserved',
@@ -264,11 +264,11 @@ ezP.DelegateSvg.Manager.makeSubclass('bracket_target_list', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('assignment_expression', {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.TARGET,
       wrap: ezP.T3.Expr.target_list,
     },
-    m_3: {
+    i_3: {
       key: ezP.Key.ASSIGNED,
       operator: '=',
       wrap: ezP.T3.Expr.assigned_list,
@@ -441,10 +441,10 @@ goog.inherits(ezP.DelegateSvg.AugAssign, ezP.DelegateSvg.Binary)
 
 ezP.DelegateSvg.AugAssign.model__ = {
   inputs: {
-    m_1: {
+    i_1: {
       check: ezP.T3.Expr.Check.augtarget,
     },
-    m_3: {
+    i_3: {
       key: ezP.Key.EXPRESSION,
       wrap: ezP.T3.Expr.augassign_list_concrete,
     }
@@ -462,7 +462,7 @@ ezP.DelegateSvg.AugAssign.model__ = {
 ezP.DelegateSvg.Manager.makeSubclass('augassign_numeric', {
   inputs: {
     subtypes: ['+=','-=','*=','/=','//=','%=','**=','@='],
-    m_3: {
+    i_3: {
       operator: '+=',
     },
   }
@@ -479,7 +479,7 @@ ezP.DelegateSvg.Manager.makeSubclass('augassign_numeric', {
 ezP.DelegateSvg.Manager.makeSubclass('augassign_bitwise', {
   inputs: {
     subtypes: [">>=", "<<=", "&=", "^=", "|="],
-    m_3: {
+    i_3: {
       operator: '<<=',
     },
   }

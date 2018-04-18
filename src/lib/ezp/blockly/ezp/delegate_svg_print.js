@@ -27,11 +27,11 @@ console.warn('Move this block to the builtin blocks, with contextual consolidato
  */
 ezP.DelegateSvg.Manager.makeSubclass('builtin_print_expr', {
   inputs: {
-    m_1: {
+    i_1: {
       label: 'print',
       css_class: 'ezp-code-builtin',
     },
-    m_3: {
+    i_3: {
       start: '(',
       key: ezP.Key.ARGUMENTS,
       wrap: ezP.T3.Expr.argument_list_comprehensive,
@@ -129,7 +129,7 @@ ezP.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
  */
  ezP.DelegateSvg.Manager.makeSubclass('builtin_print_stmt', {
    inputs: {
-     m_1: {
+     i_1: {
       insert: ezP.T3.Expr.builtin_print_expr,
     }
   }
@@ -214,11 +214,11 @@ ezP.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
  */
 ezP.DelegateSvg.Manager.makeSubclass('builtin_input_expr', {
   inputs: {
-    m_1: {
+    i_1: {
       label: 'input',
       css_class: 'ezp-code-builtin',
     },
-    m_3: {
+    i_3: {
       start: '(',
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.argument_any,
@@ -241,7 +241,7 @@ ezP.DelegateSvg.Manager.makeSubclass('builtin_input_expr', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('builtin_input_stmt', {
   inputs: {
-    m_1: {
+    i_1: {
       insert: ezP.T3.Expr.builtin_input_expr,
     },
   },

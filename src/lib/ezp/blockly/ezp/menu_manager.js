@@ -977,7 +977,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
     }
     return false
   }
-  return F('m_1') || F('m_2') || F('m_3')
+  return F('i_1') || F('i_2') || F('i_3')
 }
 
 /**

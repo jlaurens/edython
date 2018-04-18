@@ -72,9 +72,9 @@ ezP.Key = {
   ASYNC: 'async',
   AWAIT: 'await',
 
-  FIRST: 'm_1',// this MUST be in lower case
-  MIDDLE: 'm_2',// this MUST be in lower case
-  LAST: 'm_3',// this MUST be in lower case
+  FIRST: 'i_1',// this MUST be in lower case
+  MIDDLE: 'i_2',// this MUST be in lower case
+  LAST: 'i_3',// this MUST be in lower case
   SUITE: 'suite',// this MUST be in lower case
   COMP_FOR: 'comp_for',
   
@@ -284,6 +284,7 @@ goog.asserts.assert('0e-0'.match(RE.exponentfloat), 'FAILURE')
 
 ezP.Const.Event = {
   SUBTYPE: 'ezp:subtype',
+  VALUE: 'ezp:value',
   input_disable: 'ezp:input_disable',
   property: 'ezp:property',
   locked: 'ezp:locked',

@@ -30,7 +30,7 @@ goog.inherits(ezP.DelegateSvg.Primary, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Primary.model__ = {
   inputs: {
-    m_1: {
+    i_1: {
       key: ezP.Key.PRIMARY,
       check: ezP.T3.Expr.Check.primary,
       plugged: ezP.T3.Expr.primary,
@@ -72,7 +72,7 @@ ezP.DelegateSvg.Primary.prototype.getPrimaryConnection = function (block) {
  */
 ezP.DelegateSvg.Manager.makeSubclass('attributeref', {
   inputs: {
-    m_3: {
+    i_3: {
       label: '.',
       key: ezP.Key.ATTRIBUTE,
       check: ezP.T3.Expr.identifier,
@@ -94,7 +94,7 @@ ezP.DelegateSvg.Manager.makeSubclass('attributeref', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('slicing', {
   inputs: {
-    m_3: {
+    i_3: {
       key: ezP.Key.SLICE,
       wrap: ezP.T3.Expr.display_slice_list,
     },
@@ -119,7 +119,7 @@ ezP.DelegateSvg.Manager.register('subscription')
  */
 ezP.DelegateSvg.Manager.makeSubclass('call_expr', {
   inputs: {
-    m_3: {
+    i_3: {
       key: ezP.Key.ARGUMENTS,
       start: '(',
       wrap: ezP.T3.Expr.argument_list,
@@ -138,7 +138,7 @@ ezP.DelegateSvg.Manager.makeSubclass('call_expr', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('call_stmt', {
   inputs: {
-    m_1: {
+    i_1: {
       insert: ezP.T3.Expr.call_expr,
     },
   },
@@ -159,7 +159,7 @@ ezP.DelegateSvg.Manager.makeSubclass('call_stmt', {
 ezP.DelegateSvg.Manager.makeSubclass('builtin_call_expr', {
   inputs: {
     subtypes: ['range', 'list', 'set', 'len', 'sum'],
-    m_1: {
+    i_1: {
       label: '',
       css_class: 'ezp-code-builtin',
       key: ezP.Key.ARGUMENTS,
@@ -231,7 +231,7 @@ ezP.DelegateSvg.Expr.builtin_call_expr.prototype.populateContextMenuFirst_ = fun
 ezP.DelegateSvg.Manager.makeSubclass('builtin_call_stmt', {
   inputs: {
     subtypes: ['range', 'list', 'len', 'sum'],
-    m_1: {
+    i_1: {
       insert: ezP.T3.Expr.builtin_call_expr,
     },
   },

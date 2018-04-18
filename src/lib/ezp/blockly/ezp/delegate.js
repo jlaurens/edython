@@ -551,7 +551,7 @@ ezP.Delegate.prototype.setValue = function (block, newValue) {
     })
     if (Blockly.Events.isEnabled()) {
       Blockly.Events.fire(new Blockly.Events.BlockChange(
-      block, ezP.Const.Event.SUBTYPE, null, oldValue, newValue))
+      block, ezP.Const.Event.VALUE, null, oldValue, newValue))
     }
     this.value_ = newValue
     ezP.Events.Disabler.wrap(function() {

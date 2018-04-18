@@ -30,11 +30,11 @@ ezP.DelegateSvg.Manager.makeSubclass('yield_expression', {
       label: 'yield',
       css_class: 'ezp-code-reserved',
     },
-    m_1: {
+    i_1: {
       key: ezP.Key.EXPRESSION,
       wrap: ezP.T3.Expr.non_void_expression_list,
     },
-    m_2: {
+    i_2: {
       key: ezP.Key.FROM,
       label: 'from',
       css_class: 'ezp-code-reserved',
@@ -180,7 +180,7 @@ ezP.DelegateSvg.Manager.makeSubclass('yield_atom', {
     prefix: {
       label: '(',
     },
-    m_1: {
+    i_1: {
       key: ezP.Key.EXPRESSION,
       wrap: ezP.T3.Expr.yield_expression,
     },
