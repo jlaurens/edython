@@ -565,10 +565,6 @@ ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
 ezP.DelegateSvg.Parameter.T3s = [
   ezP.T3.Expr.parameter_list,
   ezP.T3.Expr.parameter,
-  ezP.T3.Expr.parameter_star,
-  ezP.T3.Expr.parameter_star_star,
-  ezP.T3.Expr.parameter_concrete,
-  ezP.T3.Expr.defparameter_concrete,
 ]
 
 console.warn('Use a modifier field for * and ** (instead of await and async too)')
