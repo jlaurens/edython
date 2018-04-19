@@ -54,7 +54,7 @@ ezP.DelegateSvg.Operator.prototype.initBlock = function(block) {
   ezP.DelegateSvg.Operator.superClass_.initBlock.call(this, block)
   var field = block.ezp.ui.i_3.fields.operator
   var value = field.getValue()
-  if (this.validateSubtype(block, value)) {
+  if ((value = this.validateSubtype(block, value).validated)) {
     this.setSubtype(block, value)
   } else {
     field.setValue(this.getSubtype(block))
@@ -69,13 +69,11 @@ ezP.DelegateSvg.Operator.prototype.initBlock = function(block) {
  */
 ezP.DelegateSvg.Operator.prototype.didChangeSubtype = function(block, oldValue, newValue) {
   var field = block.ezp.ui.i_3.fields.operator
+  newValue = this.getSubtype(block)
   if (newValue !== field.getValue()) {
-    var disabler = new ezP.Events.Disabler()
-    try {
+    ezP.Events.Disabler.wrap(function () {
       field.setValue(newValue)
-    } finally {
-      disabler.stop()
-    }
+    })
   }
 }
 

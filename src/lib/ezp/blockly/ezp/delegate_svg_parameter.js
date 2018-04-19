@@ -345,7 +345,7 @@ ezP.DelegateSvg.Expr.parameter.prototype.initSubtype = function (block) {
  */
 ezP.DelegateSvg.Expr.parameter.prototype.initValue = function (block) {
   ezP.DelegateSvg.Expr.parameter.superClass_.initValue.call(this, block)
-  this.setValue(block, this.ui.i_1.fields.identifier.getValue())
+  this.setEditValue(block, this.ui.i_1.fields.identifier.getValue())
   return
 }
 
@@ -450,7 +450,6 @@ ezP.DelegateSvg.Expr.parameter.prototype.didChangeModifier = function(block, old
   var field = block.ezp.ui.fields.modifier
   field.setValue(newModifier)
   field.setVisible(newModifier && newModifier.length>0)
-  this.consolidateType(block)
 }
 
 /**
@@ -461,7 +460,7 @@ ezP.DelegateSvg.Expr.parameter.prototype.didChangeModifier = function(block, old
  * @return true if newValue is acceptable, false otherwise
  */
 ezP.DelegateSvg.Expr.parameter.prototype.validateSubtype = function (block, newSubtype) {
-  return goog.isNumber(newSubtype) && 0 <= newSubtype && newSubtype <= 4
+  return goog.isNumber(newSubtype) && 0 <= newSubtype && newSubtype <= 4 && {validated: newSubtype}
 }
 
 /**
@@ -478,7 +477,6 @@ ezP.DelegateSvg.Expr.parameter.prototype.didChangeSubtype = function(block, oldS
   this.setNamedInputDisabled(block, ezP.Key.IDENTIFIER, withoutIdentifier)
   this.setNamedInputDisabled(block, ezP.Key.ANNOTATION, !withAnnotation)
   this.setNamedInputDisabled(block, ezP.Key.DEFINITION, !withDefinition)
-  this.consolidateType(block)
 }
 
 /**
@@ -490,7 +488,7 @@ ezP.DelegateSvg.Expr.parameter.prototype.didChangeSubtype = function(block, oldS
  */
 ezP.DelegateSvg.Expr.parameter.prototype.validateValue = function (block, newValue) {
   var type = ezP.Do.typeOfString(newValue)
-  return type === ezP.T3.Expr.identifier
+  return type === ezP.T3.Expr.identifier && {validated: newSubtype}
 }
 
 /**

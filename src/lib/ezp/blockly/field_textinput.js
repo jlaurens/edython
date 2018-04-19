@@ -102,6 +102,7 @@ ezP.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
     return
   }
   this.ezp.isEditing = true
+  this.ezp.grouper_ = new ezP.Events.Grouper()
   block.ezp.startEditingField && block.ezp.startEditingField(block, this)
   this.render_()
   block.render()
@@ -121,13 +122,13 @@ ezP.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
  * @private
  */
 ezP.FieldTextInput.prototype.showPromptEditor_ = function () {
-  var fieldText = this
+  var field = this
   Blockly.prompt(Blockly.Msg.CHANGE_VALUE_TITLE, this.text_,
     function (newValue) {
-      if (fieldText.sourceBlock_) {
-        newValue = fieldText.callValidator(newValue)
+      if (field.sourceBlock_) {
+        newValue = field.callValidator(newValue)
       }
-      fieldText.setValue(newValue)
+      field.setValue(newValue)
     })
 }
 
@@ -170,28 +171,20 @@ ezP.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
  * @private
  */
 ezP.FieldTextInput.prototype.widgetDispose_ = function () {
-  var thisField = this
+  var field = this
   return function () {
-    thisField.ezp.isEditing = false
-    thisField.callValidator()
-    thisField.onEndEditing_()
-    var block = thisField.sourceBlock_
-    block.ezp.endEditingField && block.ezp.endEditingField(block, thisField)  
-    thisField.render_()
+    field.ezp.isEditing = false
+    field.callValidator()
+    field.onEndEditing_ && field.onEndEditing_()
+    field.ezp.onEndEditing_ && field.ezp.onEndEditing_.call(field)
+    var block = field.sourceBlock_
+    block.ezp.endEditingField && block.ezp.endEditingField(block, field)  
+    field.ezp.grouper_ && field.ezp.grouper_.stop()
+    field.render_()
     block.render()
-    ezP.FieldTextInput.superClass_.widgetDispose_.call(thisField)
+    ezP.FieldTextInput.superClass_.widgetDispose_.call(field)
     Blockly.WidgetDiv.DIV.style.fontFamily = ''
   }
-}
-
-/**
- * Called when focusing away from the text field.
- * Default to noop.
- * @param {string} newName The new variable name.
- * @private
- * @this ezP.FieldIdentifier
- */
-ezP.FieldTextInput.prototype.onEndEditing_ = function () {
 }
 
 /**

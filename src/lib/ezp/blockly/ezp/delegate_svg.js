@@ -225,7 +225,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       var out = {
         fields: {}
       }
-      var k = D.key // when present, the optName of the input created
+      var k = D.key || K // when present, the optName of the input created
       var v, field
       // first insert a base input model by creating a node
       // of a different type and transferring input ownership
@@ -256,9 +256,23 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       && !doEditableFields(ezP.Key.COMMENT, ezP.FieldComment)
       && !doEditableFields(ezP.Key.NUMBER, ezP.FieldNumber)
       && !doEditableFields(ezP.Key.STRING, ezP.FieldString)
-      && !doEditableFields(ezP.Key.DOTTED_NAME, ezP.FieldDottedName)
       && !doEditableFields(ezP.Key.LONG_STRING, ezP.FieldLongString)
-      && ((D.check === undefined && D.wrap === undefined) || D.dummy)) {
+      && (v = D.name)) {
+        k = v.key
+        out.input = block.appendDummyInput(k)
+        field = out.fields[k] = out.input.ezp.fields.name = new ezP.FieldDottedName(v.value, v.validator)
+        if (goog.isFunction(v.onEndEditing)) {
+          field.ezp.onEndEditing_ = v.onEndEditing
+        }
+        recorder = function() {
+          var ff = field
+          var kk = k
+          return function() {
+            out.input.appendField(ff, kk)
+            ff.init()
+          }
+        } ()
+      } else if ((D.check === undefined && D.wrap === undefined) || D.dummy) {
         out.input = block.appendDummyInput(k)
       } else {
         if ((v = D.wrap)) {

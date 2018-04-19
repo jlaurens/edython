@@ -533,7 +533,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.didChangeSubtype = function (block, 
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.validateSubtype = function (block, newSubtype) {
   ezP.DelegateSvg.Stmt.comment_stmt.superClass_.validateSubtype.call(this, block, newSubtype)
-  return true
+  return  {validated: newSubtype}
 }
 
 /**

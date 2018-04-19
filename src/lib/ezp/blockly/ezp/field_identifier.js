@@ -28,14 +28,13 @@ goog.require('ezP.Style')
  * @constructor
  */
 ezP.FieldIdentifier = function (identifier, optValidator) {
-  var field = this
-  var validator = function(txt) {
+  var validator = function(txt) {// `this` is the field
     if (ezP.FieldTextInput.htmlInput_) {
       if (ezP.XRE.identifier.test(txt)) {
-        field.ezp.error = false
+        this.ezp.error = false
         goog.dom.classlist.remove(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
       } else {
-        field.ezp.error = true
+        this.ezp.error = true
         goog.dom.classlist.add(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
       }
     }
@@ -144,10 +143,10 @@ ezP.FieldIdentifier.prototype.showIdentifierEditor = function(a) {
 }
 
 ezP.FieldIdentifier.prototype.showIdentifierPromptEditor_ = function(){
-  var a=this,b=ezP.Msg.IDENTIFIER_RENAME_TITLE.replace("%1",this.text_)
-  Blockly.prompt(b, this.text_, function(b){
-    a.sourceBlock_&&(b=a.callValidator(b));
-    a.setValue(b)
+  var field = this, title = ezP.Msg.IDENTIFIER_RENAME_TITLE.replace("%1",this.text_)
+  Blockly.prompt(title, this.text_, function(newValue){
+    field.sourceBlock_&&(newValue = field.callValidator(newValue));
+    field.setValue(newValue)
   })
 }
 

@@ -473,7 +473,7 @@ ezP.DelegateSvg.Manager.makeSubclass('builtin_object', {
  * @param {!Blockly.Block} block to be initialized..
  */
 ezP.DelegateSvg.Expr.builtin_object.prototype.initValue = function(block) {
-  this.setValue(block, block.ezp.ui.i_1.fields.label.getValue(block))
+  this.setEditValue(block, block.ezp.ui.i_1.fields.label.getValue(block))
 }
 
 /**
@@ -484,7 +484,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.initValue = function(block) {
  */
 ezP.DelegateSvg.Expr.builtin_object.prototype.didChangeValue = function(block, oldValue, newValue) {
   ezP.DelegateSvg.Expr.builtin_object.superClass_.didChangeValue.call(this, block, oldValue, newValue)
-  block.ezp.ui.i_1.fields.label.setValue(newValue)
+  block.ezp.ui.i_1.fields.label.setValue(this.getEditValue(block))
 }
 
 /**
@@ -529,26 +529,7 @@ ezP.DelegateSvg.Manager.makeSubclass('any', {
     check: null,
   },
 })
-
-/**
- * Get the subtype of the block.
- * The operator.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return None
- */
-ezP.DelegateSvg.Expr.any.prototype.getValue = ezP.DelegateSvg.Expr.any.prototype.getSubtype
-
-/**
- * Set the subtype of the block.
- * The operator.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return true if the receiver supports subtyping, false otherwise
- */
-ezP.DelegateSvg.Expr.any.prototype.setValue = ezP.DelegateSvg.Expr.any.prototype.setSubtype
+console.warn('value and subtype')
 
 /**
  * When the subtype has changed.
@@ -558,7 +539,7 @@ ezP.DelegateSvg.Expr.any.prototype.setValue = ezP.DelegateSvg.Expr.any.prototype
  */
 ezP.DelegateSvg.Expr.any.prototype.didChangeSubtype = function(block, oldSubtype, newSubtype) {
   ezP.DelegateSvg.Expr.any.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  block.ezp.ui.i_1.fields.code.setValue(newSubtype)
+  block.ezp.ui.i_1.fields.code.setValue(this.getEditValue(block))
 }
 
 ezP.DelegateSvg.Expr.T3s = [

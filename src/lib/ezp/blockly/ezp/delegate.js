@@ -360,7 +360,6 @@ ezP.Delegate.Manager = function () {
 ezP.Delegate.Manager.registerAll(ezP.T3.Expr, ezP.Delegate)
 ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.Delegate)
 
-
 /**
  * Declares and init a named property for the given constructor.
  * For ezPython.
@@ -372,14 +371,14 @@ ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.Delegate)
  * @param {function} didChange.
  * @return the number of block locked
  */
-ezP.Delegate.addProperty = function (Ctor, key, initialize, validate, willChange, didChange) {
+ezP.Delegate.addProperty = function (Ctor, key, params) {
   var k = key.charAt(0).toUpperCase() + key.slice(1)
   var k_ = key + '_'
   var p = Ctor.prototype
   p['get'+k] = function(block) {
     return this[k_]
   }
-  p['init'+k] = initialize || function(block) {
+  p['init'+k] = params && params.initialize || function(block) {
     var inputs = block.ezp.getModel().inputs
     var values = inputs[key+'s']
     if (values) {
@@ -388,13 +387,13 @@ ezP.Delegate.addProperty = function (Ctor, key, initialize, validate, willChange
       this['set'+k](block, value) || this['didChange'+k](block, value, value)
     }
   }
-  p['validate'+k] = validate || function(block, newValue) {
+  p['validate'+k] = params && params.validate || function(block, newValue) {
     var values = block.ezp.getModel().inputs[key+'s']
-    return values && values.indexOf(newValue) >= 0
+    return values && values.indexOf(newValue) >= 0 && {validated: newValue}
   }
-  p['willChange'+k] = willChange || function(block, oldValue, newValue) {
+  p['willChange'+k] = params && params.willChange || function(block, oldValue, newValue) {
   }
-  p['didChange'+k] = didChange || function(block, oldValue, newValue) {
+  p['didChange'+k] = params && params.didChange || function(block, oldValue, newValue) {
   }
   p['set'+k] = function (block, newValue) {
     if (goog.isNumber(newValue)) {
@@ -403,7 +402,7 @@ ezP.Delegate.addProperty = function (Ctor, key, initialize, validate, willChange
         newValue = values[newValue]
       }
     }
-    if ((this[k_] === newValue) || (!this['validate'+k](block, newValue))) {
+    if ((this[k_] === newValue) || !(newValue = this['validate'+k](block, newValue)) || !(newValue = newValue.validated)) {
       return false
     }
     var oldValue = this[k_]
@@ -418,6 +417,7 @@ ezP.Delegate.addProperty = function (Ctor, key, initialize, validate, willChange
       }
       this[k_] = newValue
       this['didChange'+k](block, oldValue, newValue)
+      this.consolidateType(block)
       this.skipRendering = old
       block.render() // render now or possibly later ?
     } finally {
@@ -426,11 +426,43 @@ ezP.Delegate.addProperty = function (Ctor, key, initialize, validate, willChange
     }
     return true
   }
+  if (params && params.editable) {
+    p['fromEdit'+k] = function(block, value) {
+      return value
+    }
+    p['toEdit'+k] = function(block, value) {
+      return value
+    }
+    p['getEdit'+k] = function(block) {
+      return this['toEdit'+k](block, this['get'+k](block))
+    }
+    p['setEdit'+k] = function(block, newValue) {
+      return this['set'+k](block, this['fromEdit'+k](block, newValue))
+    }
+    p['validateEdit'+k] = function(block, newValue) {
+      return this['validate'+k](block, this['fromEdit'+k](block, newValue))
+    }
+  }
 }
 
-ezP.Delegate.addProperty(ezP.Delegate, 'subtype')
-ezP.Delegate.addProperty(ezP.Delegate, 'value')
+/**
+ * Some blocks may change when their properties change,
+ * for example. This message is sent whenever one of the properties
+ * declared below changes.
+ * The type of the block may change, thus implying some connection changes.
+ * The connection checks may change too.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.Delegate.prototype.consolidateType = function (block) {
+  this.setupType(block)
+}
+
 ezP.Delegate.addProperty(ezP.Delegate, 'modifier')
+ezP.Delegate.addProperty(ezP.Delegate, 'subtype')
+ezP.Delegate.addProperty(ezP.Delegate, 'value', {editable:true})
 ezP.Delegate.addProperty(ezP.Delegate, 'variant')
 
 /**

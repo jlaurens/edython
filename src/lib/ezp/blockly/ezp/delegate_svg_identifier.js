@@ -114,6 +114,8 @@ ezP.DelegateSvg.Expr.identifier.prototype.getValue = function (block) {
   return field.getValue()
 }
 
+console.warn('setValue REMOVE');
+
 /**
  * Set the value.
  * @param {!Blockly.Block} block The block.
@@ -286,7 +288,7 @@ ezP.DelegateSvg.Expr.identifier.prototype.didChangeSubtype = function (block, ol
  * @return true if newSubtype is acceptable, false otherwise
  */
 ezP.DelegateSvg.Expr.identifier.prototype.validateSubtype = function (block, newSubtype) {
-  return ezP.Do.typeOfString(newSubtype) === ezP.T3.Expr.identifier
+  return ezP.Do.typeOfString(newSubtype) === ezP.T3.Expr.identifier && {validated: newSubtype}
 }
 
 ezP.DelegateSvg.Identifier.T3s = [

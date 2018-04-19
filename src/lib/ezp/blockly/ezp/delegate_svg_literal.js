@@ -30,27 +30,6 @@ ezP.DelegateSvg.Literal = function (prototypeName) {
 goog.inherits(ezP.DelegateSvg.Literal, ezP.DelegateSvg.Expr)
 
 /**
- * Initialize a block.
- * @param {!Blockly.Block} block to be initialized..
- * For subclassers eventually
- */
-ezP.DelegateSvg.Literal.prototype.initBlock = function (block) {
-  ezP.DelegateSvg.Literal.superClass_.initBlock.call(this, block)
-  block.ezp.setupType(block)
-}
-
-/**
- * Set the [python ]type of the delegate according to the type of the block.
- * @param {!Blockly.Block} block to be initialized.
- * @param {string} optNewType
- * @constructor
- */
-ezP.DelegateSvg.Literal.prototype.setupType = function (block, optNewType) {
-  ezP.DelegateSvg.Literal.superClass_.setupType.call(this, block, optNewType)
-  this.xmlType_ = ezP.T3.Expr.literal
-}
-
-/**
  * The xml type of this block, as it should appear in the saved data.
  * Numbers have no xml type.
  * For ezPython.
@@ -90,7 +69,7 @@ ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr.imagnumber, ezP.DelegateSv
  * @constructor
  */
 ezP.DelegateSvg.Expr.numberliteral.prototype.setupType = function (block) {
-  this.consolidateType_(block)
+  this.consolidateType(block)
   ezP.DelegateSvg.Expr.numberliteral.superClass_.setupType.call(this, block)
 }
 
@@ -99,7 +78,7 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.setupType = function (block) {
  * @param {!Blockly.Block} block to be initialized..
  * For subclassers eventually
  */
-ezP.DelegateSvg.Expr.numberliteral.prototype.consolidateType_ = function (block) {
+ezP.DelegateSvg.Expr.numberliteral.prototype.consolidateType = function (block) {
   if (block.outputConnection) { // this is called once too early
     var value = block.ezp.ui.i_1.fields.number.getValue()
     if (XRegExp.test(value, ezP.XRE.integer) &&
@@ -128,7 +107,7 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.consolidateType_ = function (block)
 ezP.DelegateSvg.Expr.numberliteral.prototype.getSubtype = function (block) {
   return block.ezp.ui.i_1.fields.number.getValue()
 }
-
+console.warn('REMOVE setSubtype')
 /**
  * Set the subtype of the block.
  * Subclassers may use this to fine tune their own settings.
