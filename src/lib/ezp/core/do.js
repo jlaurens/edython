@@ -313,13 +313,19 @@ ezP.Do.typeOfString = function (candidate) {
   if (candidate === 'start') {
     return ezP.T3.Stmt.start_stmt
   }
-  if (ezP.XRE.identifier.exec(candidate)) {
-    return ezP.T3.Expr.identifier
-  }
   var components = candidate.split('.')
   if (components.length > 1) {
-    var dotted_name = true
-    for (var i = 0;i < components.length;i++) {
+    var dotted_name = true, first
+    // skip the void components
+    for (var i = 0; i < components.length;) {
+      var c = components[i]
+      if(c.length) {
+        first = i
+        break
+      }
+      i++
+    }
+    for (; i < components.length; i++) {
       var c = components[i]
       if(!ezP.XRE.identifier.exec(c)) {
         dotted_name = false
@@ -327,8 +333,10 @@ ezP.Do.typeOfString = function (candidate) {
       }
     }
     if (dotted_name) {
-      return ezP.T3.Expr.dotted_name
+      return goog.isDef(first)? ezP.T3.Expr.parent_module: ezP.T3.Expr.dotted_name
     }
+  } else if (ezP.XRE.identifier.exec(candidate)) {
+    return ezP.T3.Expr.identifier
   }
   if (ezP.XRE.shortstringliteral.exec(candidate)) {
     return ezP.T3.Expr.shortstringliteral

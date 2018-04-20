@@ -50,17 +50,21 @@ goog.require('ezP')
 
 /** @export */ ezP.Msg.RENAME_VARIABLE_TITLE = "Renommer la variable '%1' en :"
 
-/** @export */ ezP.Msg.PLACEHOLDER_STRING = "Du texte ici"
+goog.provide('ezP.Msg.Placeholder')
 
-/** @export */ ezP.Msg.PLACEHOLDER_BYTES = "Des octets ici"
+/** @export */ ezP.Msg.Placeholder.STRING = "Du texte ici"
 
-/** @export */ ezP.Msg.PLACEHOLDER_COMMENT = "Un commentaire ici"
+/** @export */ ezP.Msg.Placeholder.BYTES = "Des octets ici"
 
-/** @export */ ezP.Msg.PLACEHOLDER_NUMBER = "0"
+/** @export */ ezP.Msg.Placeholder.COMMENT = "Un commentaire ici"
 
-/** @export */ ezP.Msg.PLACEHOLDER_CODE = "Une instruction ici"
+/** @export */ ezP.Msg.Placeholder.NUMBER = "0"
 
-/** @export */ ezP.Msg.PLACEHOLDER_IDENTIFIER = "nom"
+/** @export */ ezP.Msg.Placeholder.CODE = "Une instruction ici"
+
+/** @export */ ezP.Msg.Placeholder.IDENTIFIER = "nom"
+
+/** @export */ ezP.Msg.Placeholder.TERM = "nom"
 
 /** @export */ ezP.Msg.USE_SINGLE_QUOTE = "'...'"
 

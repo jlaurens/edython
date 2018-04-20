@@ -44,6 +44,7 @@ ezP.Const.Field = {
 
 console.warn('avoid ezP.Key.LIST: not enough discriminating')
 ezP.Key = {  
+  TERM: 'term',// this MUST be in lower case
   TARGET: 'target',
   ASSIGNED: 'assigned',
   IDENTIFIER: 'identifier',
@@ -72,9 +73,6 @@ ezP.Key = {
   ASYNC: 'async',
   AWAIT: 'await',
 
-  FIRST: 'i_1',// this MUST be in lower case
-  MIDDLE: 'i_2',// this MUST be in lower case
-  LAST: 'i_3',// this MUST be in lower case
   SUITE: 'suite',// this MUST be in lower case
   COMP_FOR: 'comp_for',
   

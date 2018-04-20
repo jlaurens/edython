@@ -33,7 +33,7 @@ ezP.DelegateSvg.Manager.makeSubclass('identifier', {
   output: {
     didConnect: function(oldTargetConnection, oldConnectionn) {
       // `this` is a connection's delegate
-      var targetC8n = this.connection.targetConnection
+      var targetC8n = this.targetConnection
       var source = targetC8n.sourceBlock_
       if (source.ezp instanceof ezP.DelegateSvg.List) {
 
@@ -41,7 +41,7 @@ ezP.DelegateSvg.Manager.makeSubclass('identifier', {
         for (var i = 0, input;(input = source.inputList[i++]);) {
           if (input.connection === targetC8n) {
             if (input.ezp.model) {
-              var block = this.connection.sourceBlock_
+              var block = this.sourceBlock_
               block.ezp.setPhantomValue(block, input.ezp.model.hole_value)
             }
             return
@@ -50,8 +50,8 @@ ezP.DelegateSvg.Manager.makeSubclass('identifier', {
       }
     },
     didDisconnect: function(oldConnection) {
-      // `this` is a connection's delegate
-      var block = this.connection.sourceBlock_
+      // `this` is a connection
+      var block = this.sourceBlock_
       block.ezp.setPhantomValue(block, undefined)
     },
   }
@@ -63,7 +63,7 @@ ezP.DelegateSvg.Manager.makeSubclass('identifier', {
  * @return whether the block should be wrapped
  */
 ezP.FieldIdentifier.prototype.placeholderText = function() {
-  return this.placeholderText_ || ezP.Msg.PLACEHOLDER_IDENTIFIER
+  return this.placeholderText_ || ezP.Msg.Placeholder.IDENTIFIER
 }
 
 

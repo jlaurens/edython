@@ -98,7 +98,7 @@ ezP.FieldTextInput.prototype.cssClass = 'ezp-code'
  */
 ezP.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
   var block = this.sourceBlock_
-  if (block.ezp.locked_) {
+  if (block.ezp.locked_ || !block.ezp.canEdit_) {
     return
   }
   this.ezp.isEditing = true
@@ -223,6 +223,7 @@ ezP.FieldTextInput.prototype.resizeEditor_ = function () {
 ezP.FieldInput = function (text, optValidator) {
   ezP.FieldInput.superClass_.constructor.call(this, text,
     optValidator)
+  this.spellcheck_ = false
 }
 goog.inherits(ezP.FieldInput, ezP.FieldTextInput)
 
@@ -254,7 +255,7 @@ ezP.FieldInput.prototype.setValue = function(newValue) {
 }
 
 ezP.FieldInput.prototype.placeholderText = function() {
-  return this.placeholderText_ || ezP.Msg.PLACEHOLDER_CODE
+  return this.placeholderText_ || ezP.Msg.Placeholder.CODE
 }
 
 /**
@@ -270,7 +271,7 @@ goog.inherits(ezP.FieldComment, ezP.FieldInput)
 
 ezP.FieldComment.prototype.cssClass = 'ezp-code-comment'
 ezP.FieldComment.prototype.placeholderText = function() {
-  return this.placeholderText_ || ezP.Msg.PLACEHOLDER_COMMENT
+  return this.placeholderText_ || ezP.Msg.Placeholder.COMMENT
 }
 
 ezP.FieldNumber = function (text) {
@@ -302,7 +303,7 @@ ezP.FieldNumber = function (text) {
 goog.inherits(ezP.FieldNumber, ezP.FieldInput)
 
 ezP.FieldNumber.prototype.placeholderText = function() {
-  return this.placeholderText_ || ezP.Msg.PLACEHOLDER_NUMBER
+  return this.placeholderText_ || ezP.Msg.Placeholder.NUMBER
 }
 
 /**
@@ -338,7 +339,7 @@ goog.inherits(ezP.FieldString, ezP.FieldInput)
 
 ezP.FieldString.prototype.placeholderText = function() {
   return this.placeholderText_ || (this.sourceBlock_.type === ezP.T3.Expr.shortbytesliteral?
-  ezP.Msg.PLACEHOLDER_BYTES: ezP.Msg.PLACEHOLDER_STRING)
+  ezP.Msg.Placeholder.BYTES: ezP.Msg.Placeholder.STRING)
 }
 
 /**

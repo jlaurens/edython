@@ -43,11 +43,11 @@ ezP.DelegateSvg.Manager.makeSubclass('lambda_expression', {
       check: ezP.T3.Expr.Check.expression.concat(ezP.T3.Expr.Check.expression_nocond),
       didConnect: function(oldTargetConnection, oldConnectionn) {
         // `this` is a connection's delegate
-        this.updateLambdaCheck()
+        this.ezp.updateLambdaCheck()
       },
       didDisconnect: function(oldConnection) {
         // `this` is a connection's delegate
-        this.updateLambdaCheck()
+        this.ezp.updateLambdaCheck()
       },
     }
   },
@@ -55,11 +55,11 @@ ezP.DelegateSvg.Manager.makeSubclass('lambda_expression', {
     check: [ezP.T3.Expr.lambda_expr, ezP.T3.Expr.lambda_expr_nocond],
     didConnect: function(oldTargetConnection, oldConnection) {
       // `this` is a connection's delegate
-      this.updateLambdaCheck()
+      this.ezp.updateLambdaCheck()
     },
     didDisconnect: function(oldConnection) {
       // `this` is a connection's delegate
-      this.updateLambdaCheck()
+      this.ezp.updateLambdaCheck()
     },
   }
 })

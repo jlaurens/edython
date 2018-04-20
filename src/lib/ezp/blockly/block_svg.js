@@ -123,6 +123,12 @@ ezP.BlockSvg.prototype.select = function() {
   } else if (this.ezp.svgPathHighlight_ && !this.ezp.svgPathHighlight_.parentNode) {
     this.svgGroup_.appendChild(this.ezp.svgPathHighlight_)
   }
+  if (!this.ezp.canEdit_) {
+    var block = this
+    setTimeout(function() {
+      block.ezp.canEdit_ = true
+    }, 10)
+  }
 }
 
 /**
@@ -132,6 +138,7 @@ ezP.BlockSvg.prototype.select = function() {
  */
 ezP.BlockSvg.prototype.unselect = function() {
   ezP.BlockSvg.superClass_.unselect.call(this)
+  this.ezp.canEdit_ = false
   var B = this.ezp.selectedConnectionSource_
   if (B) {
     B.removeSelect()

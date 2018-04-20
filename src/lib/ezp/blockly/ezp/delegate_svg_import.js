@@ -79,33 +79,6 @@ ezP.DelegateSvg.Manager.makeSubclass('module_as_concrete', {
 }, ezP.DelegateSvg.Expr._as_concrete)
 
 /**
- * Class for a DelegateSvg, module block.
- * module ::= module_name ['.' module]
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('module_concrete', {
-  inputs: {
-    i_1: {
-      key: ezP.Key.LHS,
-      check: ezP.T3.Expr.module_name,
-      plugged: ezP.T3.Expr.module_identifier,
-      hole_value: 'module',
-    },
-    i_3: {
-      label: '.',
-      key: ezP.Key.RHS,
-      check: ezP.T3.Expr.Check.module,
-      plugged: ezP.T3.Expr.module,
-      hole_value: 'submodule',
-    },
-  },
-})
-
-/**
  * Class for a DelegateSvg, non_void_module_as_list block.
  * This block may be wrapped.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
@@ -149,8 +122,6 @@ ezP.DelegateSvg.Manager.makeSubclass('import_module', {
 /*
 from_relative_module_import ::= "from" relative_module "import" non_void_identifier_as_list
 # relative_module ::=  "."* module | "."+
-relative_module ::=  module | parent_module
-parent_module ::= '.' [relative_module]
 non_void_identifier_as_list ::= import_identifier_as ( "," import_identifier_as )*
 import_identifier_as ::= identifier "as" import_name
 identifier ::= an identifier but not as a variable name here
@@ -193,29 +164,6 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_import_identifier_as_list', {
       empty: false,
       sep: ',',
       hole_value: 'name',
-    },
-  },
-})
-
-/**
- * Class for a DelegateSvg, parent_module block.
- * This block may be wrapped.
- * parent_module ::= '.' [relative_module]
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('parent_module', {
-  inputs: {
-    i_1: {
-      label: '.',
-      key: ezP.Key.MODULE,
-      check: ezP.T3.Expr.Check.relative_module,
-      plugged: ezP.T3.Expr.relative_module,
-      optional: true,
-      hole_value: 'module',
     },
   },
 })
@@ -389,13 +337,11 @@ ezP.DelegateSvg.Manager.makeSubclass('future_statement', {
 })
 
 ezP.DelegateSvg.Import.T3s = [
-  ezP.T3.Expr.module_concrete,
   ezP.T3.Expr.module_as_concrete,
   ezP.T3.Expr.non_void_module_as_list,
   ezP.T3.Expr.import_module,
   ezP.T3.Expr.import_identifier_as_concrete,
   ezP.T3.Expr.non_void_import_identifier_as_list,
-  ezP.T3.Expr.parent_module,
   ezP.T3.Expr.from_relative_module_import,
   ezP.T3.Expr.from_module_import,
   ezP.T3.Stmt.import_stmt,

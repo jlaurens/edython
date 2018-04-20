@@ -378,13 +378,16 @@ ezP.Delegate.addProperty = function (Ctor, key, params) {
   p['get'+k] = function(block) {
     return this[k_]
   }
+  p['get'+k+'s'] = function(block) {
+    return block.ezp.getModel().inputs[key+'s']
+  }
   p['init'+k] = params && params.initialize || function(block) {
     var inputs = block.ezp.getModel().inputs
     var values = inputs[key+'s']
     if (values) {
       var i = inputs[key+'Index'] || 0
       var value = values[i]
-      this['set'+k](block, value) || this['didChange'+k](block, value, value)
+      this['set'+k](block, value) || this.consolidateType(block)
     }
   }
   p['validate'+k] = params && params.validate || function(block, newValue) {
@@ -402,7 +405,7 @@ ezP.Delegate.addProperty = function (Ctor, key, params) {
         newValue = values[newValue]
       }
     }
-    if ((this[k_] === newValue) || !(newValue = this['validate'+k](block, newValue)) || !(newValue = newValue.validated)) {
+    if ((this[k_] === newValue) || !(newValue = this['validate'+k](block, newValue)) || !goog.isDef(newValue = newValue.validated)) {
       return false
     }
     var oldValue = this[k_]
@@ -906,14 +909,6 @@ ezP.Delegate.prototype.willDisconnect = function(block, blockConnection) {
  */
 ezP.Delegate.prototype.didDisconnect = function(block, blockConnection, oldTargetConnection) {
   // console.log('did disconnect')
-}
-
-/**
- * Whether the block is not a variable.
- * @param {!Blockly.Block} block
- */
-ezP.Delegate.prototype.isNotAVariable = function(block) {
-  return this.plugged_ && ezP.T3.Expr.Check.not_a_variable.indexOf(this.plugged_)<0
 }
 
 /**

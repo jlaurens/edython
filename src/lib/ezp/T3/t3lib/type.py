@@ -6,7 +6,7 @@ class Type:
     """A Type represents a python 3 expression or statement"""
 
     re_name = re.compile(r"^\s*(?P<name>"
-                         r"(?P<is_name>name)|(?P<is_suite>suite)|(?P<is_statement>statement|stmt_list)"
+                         r"(?P<is_suite>suite)|(?P<is_statement>statement|stmt_list)"
                          r"|"
                          r"(?:"
                          r"(?P<is_stmt_1>stmt_|statement_)?"
@@ -75,8 +75,7 @@ class Type:
         if self.definition is not None:
             m = self.__class__.re_name.match(self.name)
             assert m, 'Bad name: ' + self.name
-            assert not m.group('is_name') and not m.group('is_suite') and not m.group(
-                'is_statement'), 'Bad name too: ' + self.name
+            assert not m.group('is_suite') and not m.group('is_statement'), 'Bad name too: ' + self.name
             self.is_part = not not m.group('is_part')
             self.is_compound = not not self.__class__.re_compound.match(self.definition)
             self.is_stmt = not not m.group('is_stmt_1') \

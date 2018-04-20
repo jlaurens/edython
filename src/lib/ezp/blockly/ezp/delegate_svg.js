@@ -257,12 +257,23 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       && !doEditableFields(ezP.Key.NUMBER, ezP.FieldNumber)
       && !doEditableFields(ezP.Key.STRING, ezP.FieldString)
       && !doEditableFields(ezP.Key.LONG_STRING, ezP.FieldLongString)
-      && (v = D.name)) {
+      && (v = D.term)) {
         k = v.key
         out.input = block.appendDummyInput(k)
-        field = out.fields[k] = out.input.ezp.fields.name = new ezP.FieldDottedName(v.value, v.validator)
+        field = out.fields[k] = out.input.ezp.fields.term = new ezP.FieldInput(v.value, v.validator)
+        if (goog.isFunction(v.init)) {
+          v.init.call(field)
+        }
         if (goog.isFunction(v.onEndEditing)) {
           field.ezp.onEndEditing_ = v.onEndEditing
+        }
+        if (v.placeholder) {
+          field.placeholderText = function() {
+            var p = v.placeholder
+            return function() {
+              return this.placeholderText_ || p
+            }
+          } ()
         }
         recorder = function() {
           var ff = field
@@ -424,28 +435,6 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   this.initValue(block)
   this.initModifier(block)
   this.initVariant(block)
-}
-
-/**
- * Initialize the subtype from the model.
- * @param {!Blockly.Block} block to be initialized..
- */
-ezP.DelegateSvg.prototype.initSubtype = function(block) {
-  var inputModel = this.getModel().inputs
-  if(inputModel.subtypes) {
-    this.setSubtype(block, inputModel.subtypeIndex || 0)
-  }
-}
-
-/**
- * Initialize the value from the model.
- * @param {!Blockly.Block} block to be initialized..
- */
-ezP.DelegateSvg.prototype.initValue = function(block) {
-  var inputModel = this.getModel().inputs
-  if(inputModel.values) {
-    this.setValue(block, inputModel.valueIndex || 0)
-  }
 }
 
 console.warn('implement async and await, see above awaitable and asyncable')
@@ -1355,6 +1344,9 @@ ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValu
   var input = block.getInput(name)
   if (input) {
     var oldValue = input.ezp.disabled_
+    if (!!oldValue === !!newValue) {
+      return
+    }
     if (Blockly.Events.isEnabled()) {
       Blockly.Events.fire(new Blockly.Events.BlockChange(
         block, ezP.Const.Event.input_disable, name, oldValue, newValue));
@@ -1364,6 +1356,11 @@ ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValu
     this.skipRendering = true
     input.setVisible(!newValue)
     this.skipRendering = current
+    var c8n = input.connection
+    if (c8n) {
+      c8n.ezp.hidden_ = !!newValue
+      c8n.setHidden(newValue)
+    }
     if (input.isVisible()) {
       for (var __ = 0, field; (field = input.fieldRow[__]); ++__) {
         if (field.getText().length>0) {
@@ -1375,7 +1372,6 @@ ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValu
           }
         }
       }
-      var c8n = input.connection
       if (c8n) {
         var target = c8n.targetBlock()
         if (target) {
@@ -1388,6 +1384,7 @@ ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValu
         }
       }
     }
+
     setTimeout(function(){
       if (block.workspace) {
         block.render()

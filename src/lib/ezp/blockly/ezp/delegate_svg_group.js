@@ -289,11 +289,11 @@ ezP.DelegateSvg.Manager.makeSubclass('else_part', {
   statement: {
     previous : {
       didConnect: function(oldTargetConnection, oldConnection) {
-        var block = this.connection.getSourceBlock()
+        var block = this.getSourceBlock()
         block.ezp.consolidateType(block)
       },
       didDisconnect: function(oldConnection) {
-        var block = this.connection.getSourceBlock()
+        var block = this.getSourceBlock()
         block.ezp.consolidateType(block)
       },
     },

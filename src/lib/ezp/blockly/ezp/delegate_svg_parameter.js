@@ -14,6 +14,7 @@
 goog.provide('ezP.DelegateSvg.Parameter')
 
 goog.require('ezP.DelegateSvg.List')
+goog.require('ezP.DelegateSvg.Term')
 
 /**
  * List consolidator for parameter list.
@@ -52,7 +53,7 @@ ezP.Consolidator.Parameter.data = {
 ezP.Consolidator.Parameter.prototype.consolidate_connected = function(io) {
   if (io.i + 1 ===  io.list.length) {
     var check = io.c8n.targetConnection.check_
-    if (goog.array.contains(check,ezP.T3.Expr.parameter_star_star)) {
+    if (goog.array.contains(check, ezP.T3.Expr.parameter_star_star)) {
       // do not add a separator after
       return false
     }
@@ -98,6 +99,8 @@ ezP.Consolidator.Parameter.prototype.doCleanup = function () {
     var check = target.check_
     if (goog.array.contains(check,ezP.T3.Expr.parameter_star)) {
       return Type.star
+    } else if (goog.array.contains(check,ezP.T3.Expr.parameter_star)) {
+      return Type.star
     } else if (goog.array.contains(check,ezP.T3.Expr.parameter_star_star)) {
       return Type.star_star
     } else if (goog.array.contains(check,ezP.T3.Expr.defparameter_concrete)) {
@@ -107,7 +110,7 @@ ezP.Consolidator.Parameter.prototype.doCleanup = function () {
     }
   }
   var setupFirst = function (io) {
-    io.first_star_star = io.first_star = io.first_default = io.last_default = -1
+    io.first_star_star = io.min_first_star = io.first_star = io.first_default = io.last_default = -1
     var last_default = -1
     this.setupIO(io, 0)
     while (!!io.ezp) {
@@ -119,7 +122,6 @@ ezP.Consolidator.Parameter.prototype.doCleanup = function () {
         break
         case Type.star:
         if (io.first_star < 0) {
-          // this is an error
           io.first_star = io.i
         }
         break
@@ -134,6 +136,9 @@ ezP.Consolidator.Parameter.prototype.doCleanup = function () {
         case Type.parameter:
         if (io.last_default < 0) {
           io.last_default = last_default
+        }
+        if (io.first_star < 0) {
+          io.min_first_star = io.i
         }
         break
       }
@@ -235,8 +240,8 @@ ezP.Consolidator.Parameter.prototype.getCheck = function() {
   return function (io) {
     var can_star_star = (io.first_star_star < 0 && io.i + 3  > io.list.length )
     || io.first_star_star == io.i
-    var can_star = (io.first_star < 0 && (io.last_default < 0 || io.i <= io.last_default + 2)) || io.first_star == io.i
-    var can_parameter = io.first_default < 0 || io.i <= io.first_default || io.first_star < 0 || io.i >= io.first_star
+    var can_star = (io.first_star < 0 && io.min_first_star <= io.i && (io.last_default < 0 || io.i <= io.last_default + 2)) || io.first_star == io.i || io.list.length == 1
+    var can_parameter = io.first_default < 0 || io.i <= io.first_default || io.first_star < 0 || io.i <= io.first_star
     var can_default = io.first_star < 0 || io.i > io.first_star - 3 || (io.last_default < 0 && io.last_default - 2 < io.i)
     var K = 0
     if (can_parameter) {
@@ -290,219 +295,6 @@ ezP.DelegateSvg.Manager.makeSubclass('parameter_list', {
 })
 
 /**
- * Class for a DelegateSvg, parameter.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('parameter', {
-  inputs: {
-    modifiers: ['', '*', '**'],
-    modifier: {
-      label: '',
-      css_class: 'ezp-code-reserved',
-    },
-    i_1: {
-      key: ezP.Key.IDENTIFIER,
-      identifier: '',
-      hole_value: 'parameter',
-    },
-    i_2: {
-      key: ezP.Key.ANNOTATION,
-      label: ':',
-      css_class: 'ezp-code-reserved',
-      check: ezP.T3.Expr.Check.expression,
-      hole_value: 'expression',
-    },
-    i_3: {
-      key: ezP.Key.DEFINITION,
-      label: '=',
-      css_class: 'ezp-code-reserved',
-      check: ezP.T3.Expr.Check.expression,
-      hole_value: 'expression',
-    },
-  }
-})
-
-ezP.DelegateSvg.Expr.parameter_concrete = ezP.DelegateSvg.Expr.parameter
-
-ezP.DelegateSvg.Manager.register('parameter_concrete', ezP.DelegateSvg.Expr.parameter)
-
-/**
- * Init the subtype.
- * @param {!Blockly.Block} block to be initialized.
- */
-ezP.DelegateSvg.Expr.parameter.prototype.initSubtype = function (block) {
-  ezP.DelegateSvg.Expr.parameter.superClass_.initValue.call(this, block)
-  this.setSubtype(block, 0)
-  return
-}
-
-/**
- * Init the value.
- * @param {!Blockly.Block} block to be initialized.
- */
-ezP.DelegateSvg.Expr.parameter.prototype.initValue = function (block) {
-  ezP.DelegateSvg.Expr.parameter.superClass_.initValue.call(this, block)
-  this.setEditValue(block, this.ui.i_1.fields.identifier.getValue())
-  return
-}
-
-/**
- * Get the content for the menu item.
- * @param {!Blockly.Block} block The block.
- * @param {string} op op is the operator
- * @private
- */
-ezP.DelegateSvg.Expr.parameter.prototype.getContent = function (block, op, flags) {
-  if (flags === undefined) {
-    flags = this.getSubtype(block)
-  }
-  var withAnnotation = flags % 2
-  var withDefinition = flags & 2
-  var withoutIdentifier = flags & 4
-  
-  var element = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    ezP.Do.createSPAN(op||' ', 'ezp-code-reserved'),
-  )
-  if (!withoutIdentifier) {
-    var value = this.getValue(block)
-    element.appendChild(ezP.Do.createSPAN(value || 'nom', value? 'ezp-code': 'ezp-code-placeholder'))
-  }
-  if (withAnnotation) {
-    element.appendChild(ezP.Do.createSPAN(':', 'ezp-code-reserved'))
-    element.appendChild(ezP.Do.createSPAN(' …', 'ezp-code-placeholder'))
-  }
-  if (withDefinition) {
-    element.appendChild(ezP.Do.createSPAN(' = ', 'ezp-code-reserved'))
-    element.appendChild(ezP.Do.createSPAN('…', 'ezp-code-placeholder'))
-  }
-  return element
-}
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-ezP.DelegateSvg.Expr.parameter.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var currentModifier = this.getModifier(block)
-  var currentFlags = this.getSubtype(block)
-  var F = function(modifier, flags) {
-    if (modifier !== currentModifier || flags !== currentFlags) {
-      var content = block.ezp.getContent(block, modifier, flags)
-      var menuItem = new ezP.MenuItem(content, function() {
-        block.ezp.setModifier(block, modifier)
-        block.ezp.setSubtype(block, flags)
-      })
-      mgr.addChild(menuItem, true)
-    }
-  }
-  F('*', 4)
-  F('', 0)
-  F('', 1)
-  F('', 2)
-  F('', 3)
-  F('*', currentFlags & 1)
-  F('**', currentFlags & 1)
-  mgr.shouldSeparate()
-  ezP.DelegateSvg.Expr.parameter.superClass_.populateContextMenuFirst_.call(this,block, mgr)
-  return true
-}
-
-/**
- * This block may have one of different types and output check.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.parameter.prototype.consolidateType = function (block) {
-  var flags = this.getSubtype(block)
-  var withAnnotation = flags % 2
-  var withDefinition = flags & 2
-  var modifier = this.getModifier(block)
-  var modifiers = this.getModel().inputs.modifiers
-  var i = modifiers.indexOf(modifier)
-  this.setupType(block, [ezP.T3.Expr.identifer, ezP.T3.Expr.parameter_star, ezP.T3.Expr.parameter_star_star][i])
-  block.setOutput(true, [
-    withDefinition?[ezP.T3.Expr.defparameter_concrete]: (withAnnotation? [ezP.T3.Expr.parameter_concrete]: [ezP.T3.Expr.identifier]),
-    [ezP.T3.Expr.parameter_star],
-    [ezP.T3.Expr.parameter_star_star],
-  ][i])
-}
-
-/**
- * When the modifier did change.
- * @param {!Blockly.Block} block to be initialized.
- * @param {string} oldModifier
- * @param {string} newModifier
- */
-ezP.DelegateSvg.Expr.parameter.prototype.didChangeModifier = function(block, oldModifier, newModifier) {
-  ezP.DelegateSvg.Expr.parameter.superClass_.didChangeModifier.call(this, block, oldModifier, newModifier)
-  var modifiers = this.getModel().inputs.modifiers
-  var i = modifiers.indexOf(newModifier)
-  if (i<0) {
-    i = 0
-  }
-  var field = block.ezp.ui.fields.modifier
-  field.setValue(newModifier)
-  field.setVisible(newModifier && newModifier.length>0)
-}
-
-/**
- * Validates the new subtype.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newValue
- * @return true if newValue is acceptable, false otherwise
- */
-ezP.DelegateSvg.Expr.parameter.prototype.validateSubtype = function (block, newSubtype) {
-  return goog.isNumber(newSubtype) && 0 <= newSubtype && newSubtype <= 4 && {validated: newSubtype}
-}
-
-/**
- * When the subtype did change.
- * @param {!Blockly.Block} block to be initialized.
- * @param {string} oldSubtype
- * @param {string} newSubtype
- */
-ezP.DelegateSvg.Expr.parameter.prototype.didChangeSubtype = function(block, oldSubtype, newSubtype) {
-  ezP.DelegateSvg.Expr.parameter.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  var withAnnotation = newSubtype % 2
-  var withDefinition = newSubtype & 2
-  var withoutIdentifier = newSubtype & 4
-  this.setNamedInputDisabled(block, ezP.Key.IDENTIFIER, withoutIdentifier)
-  this.setNamedInputDisabled(block, ezP.Key.ANNOTATION, !withAnnotation)
-  this.setNamedInputDisabled(block, ezP.Key.DEFINITION, !withDefinition)
-}
-
-/**
- * Validates the new value.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newValue
- * @return true if newValue is acceptable, false otherwise
- */
-ezP.DelegateSvg.Expr.parameter.prototype.validateValue = function (block, newValue) {
-  var type = ezP.Do.typeOfString(newValue)
-  return type === ezP.T3.Expr.identifier && {validated: newSubtype}
-}
-
-/**
- * When the value did change.
- * @param {!Blockly.Block} block to be initialized.
- * @param {string} oldValue
- * @param {string} newValue
- */
-ezP.DelegateSvg.Expr.parameter.prototype.didChangeValue = function(block, oldValue, newValue) {
-  ezP.DelegateSvg.Expr.parameter.superClass_.didChangeValue.call(this, block, oldValue, newValue)
-  this.ui.i_1.fields.identifier.setValue(this.getValue(block) || '')
-}
-
-/**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
@@ -513,10 +305,10 @@ ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
   var F = function(modifier, flags, msg) {
     var BB
     ezP.Events.Disabler.wrap(function() {
-      BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.parameter)
+      BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term)
       BB.ezp.skipRendering = true
       BB.ezp.setModifier(BB, modifier)
-      BB.ezp.setSubtype(BB, flags)
+      BB.ezp.setVariant(BB, flags)
     })
     e8r.end()
     while(e8r.previous()) {
@@ -531,10 +323,10 @@ ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
           mgr.addInsertChild(new ezP.MenuItem(content, function() {
             var grouper = new ezP.Events.Grouper()
             try {
-              var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.parameter)
+              var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term)
               B.ezp.skipRendering = true
               B.ezp.setModifier(B, modifier)
-              B.ezp.setSubtype(B, flags)
+              B.ezp.setVariant(B, flags)
               B.ezp.skipRendering = false
               c8n.connect(B.outputConnection)
               B.render()

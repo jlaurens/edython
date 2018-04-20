@@ -38,8 +38,9 @@ ezP.Xml = {
   DOTTED_NAME: 'dotted_name', // attribute name
   MODIFIER: 'modifier', // attribute name
 
-  LIST: 'ezp:list',
   LITERAL: 'ezp:literal',
+  TERM: 'ezp:term',
+  LIST: 'ezp:list',
   COMPARISON: 'ezp:comparison',
   PARAMETER: 'ezp:parameter',
   AUGMENTED_ASSIGNMENT: 'ezp:augmented_assignment',
@@ -924,7 +925,7 @@ ezP.Xml.InputList
 
 goog.require('ezP.DelegateSvg.Proc')
 
-ezP.DelegateSvg.Expr.dotted_name.prototype.xml = ezP.Xml.Text
+ezP.DelegateSvg.Expr.term.prototype.xml = ezP.Xml.Text
 
 goog.provide('ezP.Xml.Decorator')
 
@@ -1707,7 +1708,7 @@ ezP.Xml.Primary.domToBlock = function (element, workspace) {
 
 
 
-goog.require('ezP.DelegateSvg.Parameter')
+goog.require('ezP.DelegateSvg.Term')
 
 /**
  * The xml tag name of this block, as it should appear in the saved data.
@@ -1716,10 +1717,9 @@ goog.require('ezP.DelegateSvg.Parameter')
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise
  */
-ezP.DelegateSvg.Expr.parameter.prototype.xmlTagName = function (block) {
-  return ezP.Xml.PARAMETER
+ezP.DelegateSvg.Expr.term.prototype.xmlTagName = function (block) {
+  return ezP.Xml.TERM
 }
-
 
 /**
  * Convert the block to a dom element.
@@ -1730,16 +1730,16 @@ ezP.DelegateSvg.Expr.parameter.prototype.xmlTagName = function (block) {
  * @param {boolean} optNoId.
  * @return a dom element
  */
-ezP.DelegateSvg.Expr.parameter.prototype.toDom = function(block, element, optNoId) {
+ezP.DelegateSvg.Expr.term.prototype.toDom = function(block, element, optNoId) {
   var modifier = this.getModifier(block)
   if (modifier && modifier.length) {
     element.setAttribute(ezP.Xml.MODIFIER, modifier)
   }
-  var flags = this.getSubtype(block)
+  var flags = this.getVariant(block)
   var withAnnotation = flags % 2
   var withDefinition = flags & 2
-  var withoutIdentifier = (flags & 4) && modifier && modifier.length == 1
-  if (!withoutIdentifier) {
+  var withoutValue = flags & 4
+  if (!withoutValue) {
     var text = this.getValue(block)
     var child = goog.dom.createTextNode( text || '?')
     goog.dom.appendChild(element, child)
@@ -1758,7 +1758,7 @@ ezP.DelegateSvg.Expr.parameter.prototype.toDom = function(block, element, optNoI
  * @param {!Element} xml dom element.
  * For subclassers eventually
  */
-ezP.DelegateSvg.Expr.parameter.prototype.fromDom = function (block, element) {
+ezP.DelegateSvg.Expr.term.prototype.fromDom = function (block, element) {
   var modifier = element.getAttribute(ezP.Xml.MODIFIER)
   if (modifier) {
     this.setModifier(block, modifier)
@@ -1772,15 +1772,15 @@ ezP.DelegateSvg.Expr.parameter.prototype.fromDom = function (block, element) {
         block.ezp.setValue(block, text)
       }
       if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.ANNOTATION, element)) {
-        flags &= 1
+        flags |= 1
       }
       if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.DEFINITION, element)) {
-        flags &= 2
+        flags |= 2
       }
       break
     }
   }
-  this.setSubtype(block, flags)
+  this.setVariant(block, flags)
 }
 
 goog.require('ezP.DelegateSvg.Lambda')

@@ -107,7 +107,6 @@ ezP.DelegateSvg.Expr.import_module.workspaceBlocks = [
   ezP.T3.Expr.import_module,
   ezP.T3.Expr.module_as_concrete,
   ezP.T3.Expr.identifier,
-  ezP.T3.Expr.module_concrete,
 ]
 
 ezP.DelegateSvg.Expr.from_relative_module_import.workspaceBlocks = [
@@ -115,8 +114,6 @@ ezP.DelegateSvg.Expr.from_relative_module_import.workspaceBlocks = [
   ezP.T3.Expr.from_relative_module_import,
   ezP.T3.Expr.import_identifier_as_concrete,
   ezP.T3.Expr.identifier,
-  ezP.T3.Expr.parent_module,
-  ezP.T3.Expr.module_concrete,
 ]
 
 ezP.DelegateSvg.Expr.from_module_import.workspaceBlocks = [ezP.T3.Expr.from_module_import].concat(ezP.T3.Expr.Check.module)
@@ -211,7 +208,6 @@ ezP.DelegateSvg.Expr.yield_expression.workspaceBlocks = [
 ezP.DelegateSvg.Stmt.import_stmt.workspaceBlocks = [
   ezP.T3.Expr.identifier,
   ezP.T3.Expr.module_as_concrete,
-  ezP.T3.Expr.module_concrete,
   ezP.T3.Expr.non_void_module_as_list,
   ezP.T3.Expr.import_module,
   ezP.T3.Expr.import_identifier_as_concrete,
@@ -455,6 +451,7 @@ goog.require('ezP.DelegateSvg.Yield'),
 
 ezP.DelegateSvg.T3s = ezP.Do.arraysMerged(
   ezP.DelegateSvg.Expr.T3s,
+  ezP.DelegateSvg.Term.T3s,
   ezP.DelegateSvg.Literal.T3s,
   ezP.DelegateSvg.Operator.T3s,
   ezP.DelegateSvg.Argument.T3s,

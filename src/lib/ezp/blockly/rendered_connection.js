@@ -363,6 +363,9 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
   if (!c8nA || !c8nB) {
     return true
   }
+  if (c8nA.hidden_ || c8nB.hidden_) {
+    return false
+  }
   var sourceA = c8nA.getSourceBlock()
   var sourceB = c8nB.getSourceBlock()
   var typeA = sourceA.type
@@ -453,8 +456,8 @@ ezP.Connection.prototype.connect_ = function(childConnection) {
   var parent = this.sourceBlock_
   var oldChildConnection = this.targetConnection
   var oldParentConnection = childConnection.targetConnection
-  this.ezp.willConnect(childConnection)
-  childConnection.ezp.willConnect(this)
+  this.ezp.willConnect.call(this, childConnection)
+  childConnection.ezp.willConnect.call(childConnection, this)
   parent.ezp.willConnect(parent, this, childConnection)
   var child = childConnection.sourceBlock_
   child.ezp.willConnect(child, childConnection, this)
@@ -511,15 +514,15 @@ ezP.Connection.prototype.connect_ = function(childConnection) {
       }
     }
   }
-  childConnection.ezp.didConnect(oldChildConnection, oldParentConnection)
-  this.ezp.didConnect(oldParentConnection, oldChildConnection)
+  childConnection.ezp.didConnect.call(childConnection, oldChildConnection, oldParentConnection)
+  this.ezp.didConnect.call(this, oldParentConnection, oldChildConnection)
   parent.ezp.didConnect(parent, this, oldChildConnection, oldParentConnection)
   child.ezp.didConnect(child, childConnection, oldParentConnection, oldChildConnection)
   if (oldChildConnection) {
-    this.ezp.didConnect(oldChildConnection, oldParentConnection)
+    this.ezp.didConnect.call(this, oldChildConnection, oldParentConnection)
   }
   if (oldParentConnection) {
-    childConnection.ezp.didConnect(oldParentConnection, oldChildConnection)
+    childConnection.ezp.didConnect.call(childConnection, oldParentConnection, oldChildConnection)
   }
 }
 
@@ -540,8 +543,8 @@ ezP.Connection.prototype.disconnectInternal_ = function(parentBlock,
     var parentConnection = this.targetConnection
     var childConnection = this
   }
-  parentConnection.ezp.willDisconnect()
-  childConnection.ezp.willDisconnect()
+  parentConnection.ezp.willDisconnect.call(parentConnection)
+  childConnection.ezp.willDisconnect.call(childConnection)
   parentBlock.ezp.willDisconnect(parentBlock, parentConnection)
   childBlock.ezp.willDisconnect(childBlock, childConnection)
   if (parentConnection.ezp.wrapped_) {
@@ -561,8 +564,8 @@ ezP.Connection.prototype.disconnectInternal_ = function(parentBlock,
   }
   parentBlock.ezp.didDisconnect(parentBlock, parentConnection, childConnection)
   childBlock.ezp.didDisconnect(childBlock, childConnection, parentConnection)
-  parentConnection.ezp.didDisconnect(childConnection)
-  childConnection.ezp.didDisconnect(parentConnection)
+  parentConnection.ezp.didDisconnect.call(parentConnection, childConnection)
+  childConnection.ezp.didDisconnect.call(childConnection, parentConnection)
 }
 
 Blockly.Connection.singleConnection_original = Blockly.Connection.singleConnection_
@@ -592,3 +595,62 @@ Blockly.Connection.singleConnection_ = function(block, orphanBlock) {
   }
   return null;
 }
+
+ezP.RenderedConnection.savedSetHidden = Blockly.RenderedConnection.prototype.setHidden
+
+/**
+ * Set whether this connections is hidden (not tracked in a database) or not.
+ * The delegate's hidden_ property takes precedence over `hidden`parameter.
+ * @param {boolean} hidden True if connection is hidden.
+ */
+Blockly.RenderedConnection.prototype.setHidden = function(hidden) {
+  // ADDED by JL: 
+  if (goog.isDef(this.ezp.hidden_)) {
+    hidden = this.ezp.hidden_
+  }
+  // DONE
+  ezP.RenderedConnection.savedSetHidden.call(this, hidden)
+}
+
+/**
+ * Change the connection's coordinates.
+ * @param {number} x New absolute x coordinate, in workspace coordinates.
+ * @param {number} y New absolute y coordinate, in workspace coordinates.
+ */
+Blockly.RenderedConnection.prototype.moveTo = function(x, y) {
+  // ADDED by JL: do nothing when the connection did not move
+  if (this.x_ !== x || this.y_ !== y) {
+    // Remove it from its old location in the database (if already present)
+    if (this.inDB_) {
+      this.db_.removeConnection_(this);
+    }
+    this.x_ = x;
+    this.y_ = y;
+    // Insert it into its new location in the database.
+    if (!this.hidden_) {
+      this.db_.addConnection(this);
+    }
+  }
+};
+
+/**
+ * Find the closest compatible connection to this connection.
+ * All parameters are in workspace units.
+ * @param {number} maxLimit The maximum radius to another connection.
+ * @param {number} dx Horizontal offset between this connection's location
+ *     in the database and the current location (as a result of dragging).
+ * @param {number} dy Vertical offset between this connection's location
+ *     in the database and the current location (as a result of dragging).
+ * @return {!{connection: ?Blockly.Connection, radius: number}} Contains two
+ *     properties: 'connection' which is either another connection or null,
+ *     and 'radius' which is the distance.
+ */
+Blockly.RenderedConnection.prototype.closest = function(maxLimit, dx, dy) {
+  // BEGIN ADDENDUM by JL
+  if(this.hidden_) {
+    return {}
+  }
+  // END ADDENDUM ny JL
+  return this.dbOpposite_.searchForClosest(this, maxLimit, dx, dy);
+};
+

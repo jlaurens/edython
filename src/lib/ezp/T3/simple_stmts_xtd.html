@@ -50,7 +50,6 @@ bracket_target_list ::= &quot;[&quot; void_target_list &quot;]&quot;
 void_target_list ::= [target_list]
 target_star ::= "*" target
 expression_star ::= "*" expression
-something_star ::= "*" something
 </pre>
 import_stmt     ::=  "import" module ["as" name] ( "," module ["as" name] )*
                      | "from" relative_module "import" identifier ["as" name] ( "," identifier ["as" name] )*
@@ -59,7 +58,6 @@ import_stmt     ::=  "import" module ["as" name] ( "," module ["as" name] )*
 
 module          ::=  (identifier ".")* identifier
 relative_module ::=  "."* module | "."+
-name            ::=  identifier
 
 <pre>
 import_stmt/import ::= import_module | from_relative_module_import | from_module_import
@@ -70,23 +68,20 @@ non_void_module_as_list ::= module_as ( "," module_as )*
 module_as ::= module ["as" module_alias]
 module ::= module_name ['.' module]
 module_alias ::= identifier
-#name  ::=  identifier
 name ::= IGNORE
+term  ::=  "not just an identifier"
 module_name ::= identifier
-alias ::= some alias
-not_a_variable ||= module | module_as | module_identifier | module_alias
 
 # relative_module ::=  "."* module | "."+
 relative_module ::=  module | parent_module
-parent_module ::= '.' [relative_module]
+parent_module ::= '.'+ [module]
+module ::= dotted_name
 non_void_import_identifier_as_list ::= import_identifier_as ( "," import_identifier_as )*
 import_identifier_as ::= import_identifier ["as" import_alias]
 identifier ::=
 import_identifier ::= identifier
 import_alias ::= identifier
 #the usage name of an imported identifier
-not_a_variable ||= import_identifier | import_alias | relative_module | import_identifier_as
-
 </pre>
 In *_named, the 'as' part is optional.
 Extra part types used to manage docstring placement
