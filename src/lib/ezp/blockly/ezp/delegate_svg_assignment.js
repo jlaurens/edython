@@ -292,20 +292,7 @@ ezP.DelegateSvg.Manager.makeSubclass('assignment_stmt', {
 })
 
 /**
- * List consolidator for parameter list.
- * A parameter list contains 3 kinds of objects
- * 1) parameters as identifiers, (possibly annotated or defaulted)
- * 2) '*' identifier
- * 3) '**' identifier
- * Here are the rules
- * A) The starred identifiers must appear only once at most.
- * B) The single starred must appear before the double starred, if any
- * C) The double starred must be the last one if any
- * D) Citing the documentation:
- *    If a parameter has a default value,
- *    all following parameters up until the “*”
- *    must also have a default value...
- * All the inputs are connectedÒ.
+ * List consolidator for assignment list.
  */
 ezP.Consolidator.Assigned = function() {
   ezP.Consolidator.Assigned.superClass_.constructor.call(this, ezP.Consolidator.Assigned.data)
@@ -461,10 +448,7 @@ ezP.DelegateSvg.AugAssign.model__ = {
  */
 ezP.DelegateSvg.Manager.makeSubclass('augassign_numeric', {
   inputs: {
-    subtypes: ['+=','-=','*=','/=','//=','%=','**=','@='],
-    i_3: {
-      operator: '+=',
-    },
+    values: ['+=','-=','*=','/=','//=','%=','**=','@='],
   }
 }, ezP.DelegateSvg.AugAssign)
 
@@ -478,10 +462,8 @@ ezP.DelegateSvg.Manager.makeSubclass('augassign_numeric', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('augassign_bitwise', {
   inputs: {
-    subtypes: [">>=", "<<=", "&=", "^=", "|="],
-    i_3: {
-      operator: '<<=',
-    },
+    values: [">>=", "<<=", "&=", "^=", "|="],
+    valueIndex: 1,
   }
 }, ezP.DelegateSvg.AugAssign)
 

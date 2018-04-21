@@ -14,7 +14,6 @@
 goog.provide('ezP.Consolidator.List')
 
 goog.require('ezP.Const')
-goog.require('ezP.Type')
 goog.require('ezP.Input')
 goog.require('ezP.Do')
 goog.require('ezP.DelegateSvg')

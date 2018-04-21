@@ -291,6 +291,9 @@ ezP.Do.createSPAN = function(text,css) {
  * @return the type of this candidate
  */
 ezP.Do.typeOfString = function (candidate) {
+  if (!goog.isString(candidate)) {
+    return
+  }
   if (['False', 'None', 'True'].indexOf(candidate)>=0) {
     return 'reserved identifier'
   }
@@ -333,7 +336,7 @@ ezP.Do.typeOfString = function (candidate) {
       }
     }
     if (dotted_name) {
-      return goog.isDef(first)? ezP.T3.Expr.parent_module: ezP.T3.Expr.dotted_name
+      return goog.isDef(first) && first>0? ezP.T3.Expr.parent_module: ezP.T3.Expr.dotted_name
     }
   } else if (ezP.XRE.identifier.exec(candidate)) {
     return ezP.T3.Expr.identifier

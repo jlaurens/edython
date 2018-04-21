@@ -41,40 +41,11 @@ ezP.DelegateSvg.Operator.model__ = {
 }
 
 /**
- * Create and initialize the various paths.
- * Called once at block creation time.
- * Should not be called directly
- * The block implementation is created according to a dictionary
- * input model available through `getModel().inputs`.
- * The structure of that dictionary is detailled in the treatment flow
- * below.
- * @param {!Blockly.Block} block to be initialized..
+ * When the value did change, sets the subtype accordingly.
+ * @param {!Blockly.Block} block to be synchronized.
  */
-ezP.DelegateSvg.Operator.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.Operator.superClass_.initBlock.call(this, block)
-  var field = block.ezp.ui.i_3.fields.operator
-  var value = field.getValue()
-  if ((value = this.validateSubtype(block, value).validated)) {
-    this.setSubtype(block, value)
-  } else {
-    field.setValue(this.getSubtype(block))
-  }
-}
-/**
- * Create and initialize the various paths.
- * Called once at block creation time.
- * Should not be called directly
- * Declares the operator property.
- * @param {!Blockly.Block} block to be initialized.
- */
-ezP.DelegateSvg.Operator.prototype.didChangeSubtype = function(block, oldValue, newValue) {
-  var field = block.ezp.ui.i_3.fields.operator
-  newValue = this.getSubtype(block)
-  if (newValue !== field.getValue()) {
-    ezP.Events.Disabler.wrap(function () {
-      field.setValue(newValue)
-    })
-  }
+ezP.DelegateSvg.Operator.prototype.synchronizeValue = function (block) {
+  this.ui.i_3.fields.operator.setValue(this.getValue())
 }
 
 /**
@@ -101,7 +72,7 @@ ezP.DelegateSvg.Operator.prototype.getMenuTarget = function(block) {
  * @private
  */
 ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var yorn = mgr.populateProperties(block, 'subtype')
+  var yorn = mgr.populateProperties(block, 'value')
   return ezP.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
@@ -117,9 +88,8 @@ ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
  */
 ezP.DelegateSvg.Manager.makeSubclass('u_expr_concrete', {
   inputs: {
-    subtypes: ['-', '+', '~'],
+    values: ['-', '+', '~'],
     i_3: {
-      operator: '-',
       check: ezP.T3.Expr.Check.u_expr
     },
   },
@@ -145,10 +115,6 @@ ezP.DelegateSvg.Expr.u_expr_concrete.prototype.makeTitle = function (block, op) 
  */
 ezP.DelegateSvg.Binary = function (prototypeName) {
   ezP.DelegateSvg.Binary.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.i_1 = {
-    key: ezP.Key.LHS,
-    hole_value: 'name',
-  }
 }
 goog.inherits(ezP.DelegateSvg.Binary, ezP.DelegateSvg.Operator)
 ezP.DelegateSvg.Binary.model__ = {
@@ -181,13 +147,12 @@ ezP.DelegateSvg.Binary.prototype.makeTitle = function (block, op) {
 ezP.DelegateSvg.Binary.makeSubclass = function(key, operators, check1, check3, operatorIndex) {
   ezP.DelegateSvg.Manager.makeSubclass(key, {
     inputs: {
-      subtypes: operators,
-      subtypeIndex: operatorIndex || 0,
+      values: operators,
+      valueIndex: operatorIndex || 0,
       i_1: {
         check: ezP.T3.Expr.Check[check1]
       },
       i_3: {
-        operator: '',
         check: ezP.T3.Expr.Check[check3]
       },
     },
@@ -304,8 +269,8 @@ ezP.DelegateSvg.Binary.makeSubclass(
  */
 ezP.DelegateSvg.Manager.makeSubclass('object_comparison', {
   inputs: {
-    subtypes: ['is', 'is not', 'in', 'not in'],
-    subtypeIndex: 2,
+    values: ['is', 'is not', 'in', 'not in'],
+    valueIndex: 2,
     i_1: {
       check: ezP.T3.Expr.Check.comparison
     },
@@ -336,7 +301,7 @@ ezP.DelegateSvg.Expr.object_comparison.prototype.makeTitle = function (block, op
  */
 ezP.DelegateSvg.Manager.makeSubclass('or_test_concrete', {
   inputs: {
-    subtypes: ['or'],
+    values: ['or'],
     i_1: {
       check: ezP.T3.Expr.Check.or_test
     },
@@ -357,7 +322,7 @@ ezP.DelegateSvg.Manager.makeSubclass('or_test_concrete', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('and_test_concrete', {
   inputs: {
-    subtypes: ['and'],
+    values: ['and'],
     i_1: {
       check: ezP.T3.Expr.Check.and_test
     },

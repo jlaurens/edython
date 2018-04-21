@@ -153,13 +153,13 @@ ezP.Delegate.Manager = function () {
     if (Ctor !== ezP.Delegate && Ctor.superClass_) {
       mixinModel(model, helper(Ctor.superClass_.constructor))
     }
-    if (Ctor.ezp.model__) {
+    if (Ctor.model__) {
       if (goog.isFunction(Ctor.model__)) {
-        model = Ctor.ezp.model__(model)
-      } else if (Object.keys(Ctor.ezp.model__).length) {
-        mixinModel(model, Ctor.ezp.model__)
+        model = Ctor.model__(model)
+      } else if (Object.keys(Ctor.model__).length) {
+        mixinModel(model, Ctor.model__)
       }
-      delete Ctor.ezp.model__
+      delete Ctor.model__
     }
     if (inputModel) {
       mixinModel(model.inputs, inputModel)
@@ -225,7 +225,7 @@ ezP.Delegate.Manager = function () {
           statement.next.check = ezP.T3.Stmt.Next[key]
         }
       }
-      Ctor.ezp.model__ = model
+      Ctor.model__ = model
     }
     return Ctor
   }
@@ -445,7 +445,7 @@ ezP.Do.addInstanceProperty = function (Ctor, key, params) {
       holder.value = newValue
       this[Ks._didChange](block, oldValue, newValue)
       var synchronize = this[Ks.synchronize]
-      synchronize && synchronize.call(this, block)
+      synchronize && synchronize.call(this, block, newValue)
       this.consolidateType(block)
       this.skipRendering = old
       block.render() // render now or possibly later ?
@@ -465,14 +465,14 @@ ezP.Do.addInstanceProperty = function (Ctor, key, params) {
     holder = holder[key] || (holder[key] = {})
     if ((holder.value === newValue) || !(newValue = this[Ks.validate](block, newValue)) || !goog.isDef(newValue = newValue.validated)) {
       var synchronize = this[Ks.synchronize]
-      synchronize && synchronize.call(this, block)
+      synchronize && synchronize.call(this, block, newValue)
       return false
     }
     this[Ks.setValidated](block, newValue)
     return true
   }
 }
-
+console.warn('synchronizeFoo has another argument')
 /**
  * Declares and init a named property for the given constructor.
  * For ezPython.

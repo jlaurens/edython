@@ -58,7 +58,7 @@ ezP.Key = {
   DATUM: 'datum',
   OPERATOR: 'operator',
   MODIFIER: 'modifier',// this MUST be in lower case
-  BUILTIN: 'builtin',
+  BUILTIN: 'builtin',// this MUST be in lower case
   FUTURE: 'future',
   PARAMETERS: 'parameters',
   SLICE: 'slice',

@@ -84,6 +84,7 @@ ezP.KeyHandler = function() {
       })
     }
   }
+  console.warn('Change the value and subtype')
   /**
    * Separate key in 2 parts: what is before the frst occurrence of sep and what is after.
    * If sep is not in the list, returns undefined.

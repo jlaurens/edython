@@ -66,6 +66,8 @@ goog.provide('ezP.Msg.Placeholder')
 
 /** @export */ ezP.Msg.Placeholder.TERM = "nom"
 
+/** @export */ ezP.Msg.Placeholder.DECORATOR = "decorateur"
+
 /** @export */ ezP.Msg.USE_SINGLE_QUOTE = "'...'"
 
 /** @export */ ezP.Msg.USE_DOUBLE_QUOTES = '"..."'

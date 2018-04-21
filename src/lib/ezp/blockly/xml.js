@@ -37,6 +37,7 @@ ezP.Xml = {
   NEXT: 'next', // attribute name
   DOTTED_NAME: 'dotted_name', // attribute name
   MODIFIER: 'modifier', // attribute name
+  VALUE: 'value', // attribute name
 
   LITERAL: 'ezp:literal',
   TERM: 'ezp:term',
@@ -948,12 +949,14 @@ ezP.DelegateSvg.Stmt.decorator_stmt.prototype.xml = ezP.Xml.Decorator
  * @override
  */
 ezP.Xml.Decorator.toDom = function (block, element, optNoId) {
-  var value = block.ezp.getValue(block)
-  if (goog.isDefAndNotNull(value)) {
-    element.setAttribute(ezP.Xml.DOTTED_NAME, value)
+  var ezp = block.ezp
+  var variant = ezp.getVariant(block)
+  var value = variant === ezP.Key.BUILTIN? ezp.getBuiltin(block): ezp.getValue(block)
+  if (goog.isDef(value)) {
+    var child = goog.dom.createTextNode(value)
+    goog.dom.appendChild(element, child)
   }
-  var subtype = block.ezp.getSubtype(block)
-  if (subtype) {
+  if (variant === ezP.Key.ARGUMENTS) {
     ezP.Xml.Input.Named.toDom(block, ezP.Key.ARGUMENTS, element, optNoId)
   }
 }
@@ -965,12 +968,30 @@ ezP.Xml.Decorator.toDom = function (block, element, optNoId) {
  * @override
  */
 ezP.Xml.Decorator.fromDom = function (block, element) {
-  var value = element.getAttribute(ezP.Xml.DOTTED_NAME)
-  if (goog.isDefAndNotNull(value)) {
-    block.ezp.setValue(block, value)
+  var builtin
+  var value
+  var ezp = block.ezp
+  for (var i = 0, xmlChild; (xmlChild = element.childNodes[i]); i++) {
+    if (xmlChild.nodeType === 3) {
+      var text = xmlChild.nodeValue
+      value = text
+      if (ezp.validateBuiltin(block, text)) {
+        builtin = text
+      }
+      break
+    }
   }
   if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.ARGUMENTS, element)) {
-    block.ezp.setSubtype(block, ezP.Key.ARGUMENTS)
+    ezp.setValue(block, value)
+    ezp.setVariant(block, 2)
+  } else if(builtin) {
+    ezp.setVariant(block, 1)
+    ezp.setBuiltin(block, builtin)
+  } else {
+    ezp.setVariant(block, 0)
+    if (goog.isDef(value)) {
+      ezp.setValue(block, value)
+    }
   }
 }
 
@@ -1537,7 +1558,7 @@ ezP.DelegateSvg.Operator.prototype.xmlTagName = function (block) {
  * @override
  */
 ezP.Xml.Operator.toDom = function (block, element, optNoId) {
-  ezP.Xml.Property.toDom(block, ezP.Key.OPERATOR, element, optNoId)
+  element.setAttribute(ezP.Xml.VALUE, block.ezp.getValue(block))
   ezP.Xml.InputList.toDom(block, element, optNoId)
 }
 
@@ -1548,7 +1569,7 @@ ezP.Xml.Operator.toDom = function (block, element, optNoId) {
  * @override
  */
 ezP.Xml.Operator.fromDom = function (block, element) {
-  ezP.Xml.Property.fromDom(block, ezP.Key.OPERATOR, element)
+  block.ezp.setValue(block, element.getAttribute(ezP.Xml.VALUE))
   ezP.Xml.InputList.fromDom(block, element)
 }
 

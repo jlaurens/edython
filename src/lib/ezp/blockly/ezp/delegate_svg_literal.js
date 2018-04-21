@@ -91,8 +91,7 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.initValue = function (block) {
 
 /**
  * When the value did change, sets the subtype accordingly.
- * @param {!Blockly.Block} block to be initialized.
- * @param {string} newValue
+ * @param {!Blockly.Block} block to be synchronized.
  */
 ezP.DelegateSvg.Expr.numberliteral.prototype.synchronizeValue = function (block) {
   this.ui.i_1.fields.value.setValue(this.getValue() || '0')

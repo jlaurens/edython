@@ -640,6 +640,7 @@ ezP.DelegateSvg.prototype.willRender_ = function (block) {
       goog.dom.classlist.remove(/** @type {!Element} */(block.svgGroup_), 'ezp-locked')
     }
   }
+  // change the class of the shape on error
   var F = !!Object.keys(this.errors).length?
   goog.dom.classlist.add:
   goog.dom.classlist.remove
