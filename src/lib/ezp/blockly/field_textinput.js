@@ -103,6 +103,8 @@ ezP.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
   }
   this.ezp.isEditing = true
   this.ezp.grouper_ = new ezP.Events.Grouper()
+  this.onStartEditing_ && this.onStartEditing_()
+  this.ezp.onStartEditing_ && this.ezp.onStartEditing_.call(this)
   block.ezp.startEditingField && block.ezp.startEditingField(block, this)
   this.render_()
   block.render()
@@ -192,6 +194,27 @@ ezP.FieldTextInput.prototype.widgetDispose_ = function () {
  * @inherited
  */
 ezP.FieldTextInput.prototype.updateEditable = function() {
+};
+
+/**
+ * Check to see if the contents of the editor validates.
+ * Style the editor accordingly.
+ * @private
+ */
+ezP.FieldTextInput.prototype.validate_ = function() {
+  var valid = true;
+  goog.asserts.assertObject(ezP.FieldTextInput.htmlInput_);
+  var htmlInput = ezP.FieldTextInput.htmlInput_;
+  if (this.sourceBlock_) {
+    valid = this.callValidator(htmlInput.value);
+  }
+  if (valid === null) {
+    this.ezp.error = true
+    goog.dom.classlist.add(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
+  } else {
+    this.ezp.error = false
+    goog.dom.classlist.remove(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
+  }
 };
 
 /**

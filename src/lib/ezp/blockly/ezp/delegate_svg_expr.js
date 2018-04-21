@@ -473,7 +473,7 @@ ezP.DelegateSvg.Manager.makeSubclass('builtin_object', {
  * @param {!Blockly.Block} block to be initialized..
  */
 ezP.DelegateSvg.Expr.builtin_object.prototype.initValue = function(block) {
-  this.setEditValue(block, block.ezp.ui.i_1.fields.label.getValue(block))
+  this.setValue(block, block.ezp.ui.i_1.fields.label.getValue(block))
 }
 
 /**
@@ -484,7 +484,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.initValue = function(block) {
  */
 ezP.DelegateSvg.Expr.builtin_object.prototype.didChangeValue = function(block, oldValue, newValue) {
   ezP.DelegateSvg.Expr.builtin_object.superClass_.didChangeValue.call(this, block, oldValue, newValue)
-  block.ezp.ui.i_1.fields.label.setValue(this.getEditValue(block))
+  block.ezp.ui.i_1.fields.label.setValue(this.getValue(block))
 }
 
 /**
@@ -506,7 +506,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = functi
  * @param {string} op op is the operator
  * @private
  */
-ezP.DelegateSvg.Expr.builtin_object.prototype.getContent = function (block, op) {
+ezP.DelegateSvg.Expr.builtin_object.prototype.makeTitle = function (block, op) {
   return ezP.Do.createSPAN(op, 'ezp-code-reserved')
 }
 
@@ -539,7 +539,7 @@ console.warn('value and subtype')
  */
 ezP.DelegateSvg.Expr.any.prototype.didChangeSubtype = function(block, oldSubtype, newSubtype) {
   ezP.DelegateSvg.Expr.any.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  block.ezp.ui.i_1.fields.code.setValue(this.getEditValue(block))
+  block.ezp.ui.i_1.fields.code.setValue(this.getValue(block))
 }
 
 ezP.DelegateSvg.Expr.T3s = [

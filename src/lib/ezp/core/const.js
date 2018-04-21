@@ -57,17 +57,20 @@ ezP.Key = {
   KEY: 'key',
   DATUM: 'datum',
   OPERATOR: 'operator',
-  MODIFIER: 'modifier',
+  MODIFIER: 'modifier',// this MUST be in lower case
   BUILTIN: 'builtin',
   FUTURE: 'future',
   PARAMETERS: 'parameters',
   SLICE: 'slice',
   ARGUMENTS: 'arguments',
   IDENTIFIERS: 'identifiers',
-  SUBTYPE: 'subtype',
+  SUBTYPE: 'subtype',// this MUST be in lower case
   DEL: 'del',
   RETURN: 'return',
 
+  VARIANT: 'variant',// this MUST be in lower case
+  CONTENT: 'content',// this MUST be in lower case
+  
   LIST: 'list',// avoid this one when possibe
   
   ASYNC: 'async',
@@ -89,7 +92,7 @@ ezP.Key = {
   PRIMARY: 'primary',
   ATTRIBUTE: 'attribute',
   TYPE: 'type',
-  VALUE: 'value',
+  VALUE: 'value',// this MUST be in lower case
   LOWER_BOUND: 'lower_bound',
   UPPER_BOUND: 'upper_bound',
   STRIDE: 'stride',
@@ -151,58 +154,98 @@ ezP.XRE = {
     (?<bininteger>  0(?:b|B)[01]+))$`, 'x'),
   floatnumber: XRegExp(
     `^(?:
-      (?<pointfloat> (?:[0-9]*\.[0-9]+) | (?:[0-9]+\.) ) |
+      (?<pointfloat> (?:[0-9]*\\.[0-9]+) | (?:[0-9]+\\.) ) |
       (?<exponentfloat>
-        (?<mantissa> [0-9]+\.?|[0-9]*\.[0-9]+) # === [0-9]+|[0-9]*\.[0-9]+|[0-9]+\.
+        (?<mantissa> [0-9]+\\.?|[0-9]*\\.[0-9]+) # === [0-9]+|[0-9]*\\.[0-9]+|[0-9]+\\.
         [eE](?<exponent> [+-]?[0-9]+)
       )
     )$`, 'x'),
   imagnumber: XRegExp(
     `^(?:
       (?<number> 
-        [0-9]*\.[0-9]+|
-        [0-9]+\.?|
+        [0-9]*\\.[0-9]+|
+        [0-9]+\\.?|
         (?:
           (?:
             [0-9]+|
-            [0-9]*\.[0-9]+|
-            [0-9]+\.
+            [0-9]*\\.[0-9]+|
+            [0-9]+\\.
           )[eE]([+-]?[0-9]+)
         )
       )
     [jJ])$`, 'x'),
-  shortstringliteral: XRegExp(
+  shortstringliteralSingle: XRegExp(
     `^(?<prefix> r|u|R|U|f|F|fr|Fr|fR|FR|rf|rF|Rf|RF)?
-    (?<delimiter> '(?!'')|"(?!""))
+    (?<delimiter> ')
     (?<content>
-      (?:[\\x20-\\x5B\\x5D-\\uFFFF]|
+      (?:[\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF]|
         \\\\[\\x0A\\x0D\\x20-\\uFFFF])*?
     )
-    \\k<delimiter>`, 'x'),
-  longstringliteral: new XRegExp(
+    \\k<delimiter>$`, 'x'),
+  shortstringliteralDouble: XRegExp(
     `^(?<prefix> r|u|R|U|f|F|fr|Fr|fR|FR|rf|rF|Rf|RF)?
-    (?<delimiter> '''|""")
+    (?<delimiter> ")
     (?<content>
-      (?:[\\x0A\\x0D\\x20-\\x5B\\x5D-\\uFFFF]|
+      (?:[\\x20\\x21\\x23-\\x5B\\x5D-\\uFFFF]|
         \\\\[\\x0A\\x0D\\x20-\\uFFFF])*?
     )
-    \\k<delimiter>`, 'x'),
-  shortbytesliteral: XRegExp(
-    `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)
-    (?<delimiter> '(?!'')|"(?!""))
+    \\k<delimiter>$`, 'x'),
+  longstringliteralSingle: XRegExp(
+    `^(?<prefix> r|u|R|U|f|F|fr|Fr|fR|FR|rf|rF|Rf|RF)?
+    (?<delimiter> (?<del> '){3})
     (?<content>
-      (?:[\\x20-\\x5B\\x5D-\\xFF]|
-        \\\\[\\x0A\\x0D\\x20-\\xFF])*?
+      (?:[\\x0A\\x0D\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF]|
+        \\\\[\\x0A\\x0D\\x20-\\uFFFF]|
+        \\k<del>{1,2}(?!\\k<del>)|
+        \\k<del>{1,2}(?=\\k<delimiter>$))*?
     )
-    \\k<delimiter>`, 'x'),
-  longbytesliteral: XRegExp(
-    `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)
-    (?<delimiter> '''|""")
+    \\k<delimiter>$`, 'x'),
+  longstringliteralDouble: XRegExp(
+    `^(?<prefix> r|u|R|U|f|F|fr|Fr|fR|FR|rf|rF|Rf|RF)?
+    (?<delimiter> (?<del> "){3})
     (?<content>
-      (?:[\\x20-\\x5B\\x5D-\\xFF]|
-        \\\\[\\x0A\\x0D\\x20-\\xFF])*?
+      (?:[\\x0A\\x0D\\x20\\x21\\x23-\\x5B\\x5D-\\uFFFF]|
+        \\\\[\\x0A\\x0D\\x20-\\uFFFF]|
+        \\k<del>{1,2}(?!\\k<del>)|
+        \\k<del>{1,2}(?=\\k<delimiter>$))*?
     )
-    \\k<delimiter>`, 'x'),
+    \\k<delimiter>$`, 'x'),
+  shortbytesliteralSingle: XRegExp(
+    `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)
+    (?<delimiter> ')
+    (?<content>
+      (?:[\\x00-\\x26\\x28-\\x5B\\x5D-\\x7F]|
+        \\\\[\\x00-\\xFF])*?
+    )
+    \\k<delimiter>$`, 'x'),
+  shortbytesliteralDouble: XRegExp(
+    `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)
+    (?<delimiter> ")
+    (?<content>
+      (?:[\\x00-\\x21\\x23-\\x5B\\x5D-\\x7F]|
+        \\\\[\\x00-\\xFF])*?
+    )
+    \\k<delimiter>$`, 'x'),
+  longbytesliteralSingle: XRegExp(
+    `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)
+    (?<delimiter> (?<del> '){3})
+    (?<content>
+      (?:[\\x00-\\x26\\x28-\\x5B\\x5D-\\x7F]|
+        \\\\[\\x00-\\xFF]|
+        \\k<del>{1,2}(?!\\k<del>)|
+        \\k<del>{1,2}(?=\\k<delimiter>$))*?
+    )
+    \\k<delimiter>$`, 'x'),
+  longbytesliteralDouble: XRegExp(
+    `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)
+    (?<delimiter> (?<del> "){3})
+    (?<content>
+      (?:[\\x00-\\x21\\x23-\\x5B\\x5D-\\x7F]|
+        \\\\[\\x00-\\xFF]|
+        \\k<del>{1,2}(?!\\k<del>)|
+        \\k<del>{1,2}(?=\\k<delimiter>$))*?
+    )
+    \\k<delimiter>$`, 'x'),
   bytes: XRegExp(`^(?:[\\x20-\\x5B\\x5D-\\xFF]|
         \\\\[\\x0A\\x0D\\x20-\\xFF])*$`, 'x'),
   letter: XRegExp(`(?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo})`),
@@ -212,7 +255,7 @@ ezP.XRE = {
     (?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl})
     (?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl}|\\p{Mn}|\\p{Mc}|\\p{Nd}|\\p{Pc})*
   )$`, 'x'),
-  id_wrapped: XRegExp(`^(?<id>.*?)\.wrapped:(?<name>[a-zA-Z_][a-zA-Z_0-9]*)$`, 'x'),
+  id_wrapped: XRegExp(`^(?<id>.*?)\\.wrapped:(?<name>[a-zA-Z_][a-zA-Z_0-9]*)$`, 'x'),
   concrete: XRegExp(`^(?<core>.*?)_concrete$`),
   event_property: XRegExp(`^ezp:property:(?<key>.*?)$`),
 }

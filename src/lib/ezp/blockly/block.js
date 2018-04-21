@@ -95,7 +95,7 @@ ezP.Block.prototype.getVars = function () {
   for (; (input = this.inputList[i]); i++) {
     var j = 0, field
     for (; (field = input.fieldRow[j]); j++) {
-      if (field instanceof ezP.FieldIdentifier) {
+      if (field instanceof ezP.FieldInput) {
         vars.push(field.getText())
       }
     }

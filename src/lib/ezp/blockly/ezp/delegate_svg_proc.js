@@ -137,14 +137,14 @@ ezP.DelegateSvg.Stmt.decorator_stmt.prototype.validateValue = function (block, n
   var type = ezP.Do.typeOfString(newValue)
   return (type === ezP.T3.Expr.dotted_name || type === ezP.T3.Expr.identifier) && {validated: newSubtype}
 }
-
+console.warn('onEndEditing below')
 /**
  * On end editing.
  * @param {!Blockly.Block} block owner of the delegate.
  * @param {!Blockly.Field} field The field in editing mode.
  */
 ezP.DelegateSvg.Stmt.decorator_stmt.prototype.endEditingField = function (block, field) {
-  this.setEditValue(block, field.getValue())
+  this.setValue(block, field.getValue())
 }
 
 /**

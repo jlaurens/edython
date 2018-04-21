@@ -72,11 +72,11 @@ ezP.DelegateSvg.Manager.register = function (key) {
   var Ctor = undefined
   var available = undefined
   if (prototypeName) {
-//    console.log('Registering expression', key)
+    (key === 'numberliteral') && console.log('Registering expression', key)
     Ctor = ezP.DelegateSvg.Expr[key]
     available = ezP.T3.Expr.Available
   } else if ((prototypeName = ezP.T3.Stmt[key])) {
-//    console.log('Registering statement', key)
+    // console.log('Registering statement', key)
     Ctor = ezP.DelegateSvg.Stmt[key]
     available = ezP.T3.Stmt.Available
   } else {
@@ -97,7 +97,9 @@ ezP.DelegateSvg.Manager.makeSubclass = function(key, model, parent, owner) {
   parent = parent
   || (model && model.inputs && model.inputs.list && ezP.DelegateSvg.List)
   || owner
-  ezP.Delegate.Manager.makeSubclass_(key, model, parent, owner)
+  var Ctor = ezP.Delegate.Manager.makeSubclass_(key, model, parent, owner)
+  ezP.Do.addClassProperty(Ctor, 'subtype')
+  return Ctor
 }
 
 /**
@@ -166,11 +168,11 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   this.svgPathInline_ = Blockly.utils.createSvgElement('path',
     {'class': 'ezp-path-contour'}, null)
   goog.dom.insertChildAt(block.svgGroup_, this.svgPathInline_, 0)
-  this.svgPathCollapsed_ = Blockly.utils.createSvgElement('path', {}, null)
+  this.svgPathCollapsed_ = Blockly.utils.createSvgElement('path', {'class': 'ezp-path-collapsed'}, null)
   goog.dom.insertChildAt(block.svgGroup_, this.svgPathCollapsed_, 0)
-  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {}, null)
+  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {'class': 'ezp-path-contour'}, null)
   goog.dom.insertChildAt(block.svgGroup_, this.svgPathContour_, 0)
-  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {}, null)
+  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {'class': 'ezp-path-shape'}, null)
   goog.dom.insertChildAt(block.svgGroup_, this.svgPathShape_, 0)
   this.svgPathHighlight_ = Blockly.utils.createSvgElement('path',
     {'class': 'ezp-path-selected'}, null)
@@ -249,41 +251,51 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
           return field
         }
       }
+      var doEditableFields_ = function(name) {
+        if (goog.isDefAndNotNull(v = D[name])) {
+          k = v.key
+          out.input = block.appendDummyInput(k)
+          field = out.fields[k] = out.input.ezp.fields.term = new ezP.FieldInput(v.value, v.validator)
+          if (goog.isFunction(v.init)) {
+            v.init.call(field)
+          }
+          if (goog.isFunction(v.onStartEditing)) {
+            field.ezp.onStartEditing_ = v.onStartEditing
+          }
+          if (goog.isFunction(v.onEndEditing)) {
+            field.ezp.onEndEditing_ = v.onEndEditing
+          }
+          if (goog.isFunction(v.placeholder)) {
+            field.placeholderText = v.placeholder
+          } else if (v.placeholder) {
+            field.placeholderText = function() {
+              var p = v.placeholder
+              return function() {
+                return this.placeholderText_ || p
+              }
+            } ()
+          }
+          recorder = function() {
+            var ff = field
+            var kk = k
+            return function() {
+              out.input.appendField(ff, kk)
+              ff.init()
+            }
+          } ()
+          return true
+        }
+      }
       // first fields are editable ones
       // They belong to a dummy input
       if (!doEditableFields(ezP.Key.IDENTIFIER, ezP.FieldIdentifier)
       && !doEditableFields(ezP.Key.CODE, ezP.FieldInput)
       && !doEditableFields(ezP.Key.COMMENT, ezP.FieldComment)
-      && !doEditableFields(ezP.Key.NUMBER, ezP.FieldNumber)
-      && !doEditableFields(ezP.Key.STRING, ezP.FieldString)
       && !doEditableFields(ezP.Key.LONG_STRING, ezP.FieldLongString)
-      && (v = D.term)) {
-        k = v.key
-        out.input = block.appendDummyInput(k)
-        field = out.fields[k] = out.input.ezp.fields.term = new ezP.FieldInput(v.value, v.validator)
-        if (goog.isFunction(v.init)) {
-          v.init.call(field)
-        }
-        if (goog.isFunction(v.onEndEditing)) {
-          field.ezp.onEndEditing_ = v.onEndEditing
-        }
-        if (v.placeholder) {
-          field.placeholderText = function() {
-            var p = v.placeholder
-            return function() {
-              return this.placeholderText_ || p
-            }
-          } ()
-        }
-        recorder = function() {
-          var ff = field
-          var kk = k
-          return function() {
-            out.input.appendField(ff, kk)
-            ff.init()
-          }
-        } ()
-      } else if ((D.check === undefined && D.wrap === undefined) || D.dummy) {
+      && !doEditableFields_(ezP.Key.TERM)
+      && !doEditableFields_(ezP.Key.NUMBER)
+      && !doEditableFields_(ezP.Key.STRING)
+      && (D.check === undefined && D.wrap === undefined) || D.dummy) {
         out.input = block.appendDummyInput(k)
       } else {
         if ((v = D.wrap)) {
@@ -431,6 +443,14 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   }
   this.eventsInit_ = true;
   // wait until the end to set the subtype because it causes rendering
+  this.initProperties(block)
+}
+
+/**
+ * Init all the properties of the block.
+ * @param {!Blockly.Block} block to be initialized..
+ */
+ezP.DelegateSvg.prototype.initProperties = function(block) {
   this.initSubtype(block)
   this.initValue(block)
   this.initModifier(block)
@@ -613,52 +633,25 @@ ezP.DelegateSvg.prototype.wrapped_ = undefined
  * @private
  */
 ezP.DelegateSvg.prototype.willRender_ = function (block) {
-  if (block.isShadow()) {
-    if (this.svgPathShape_) {
-      Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathShape_),
-      'ezp-path-shadow-shape')
-      Blockly.utils.removeClass(/** @type {!Element} */ (this.svgPathShape_),
-      'ezp-path-shape')
-    }
-    if (this.svgPathContour_) {
-      Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathContour_),
-      'ezp-path-shadow-contour')
-      Blockly.utils.removeClass(/** @type {!Element} */ (this.svgPathContour_),
-      'ezp-path-contour')
-    }
-    if (this.svgPathCollapsed_) {
-      Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathCollapsed_),
-      'ezp-path-shadow-collapsed')
-      Blockly.utils.removeClass(/** @type {!Element} */ (this.svgPathCollapsed_),
-      'ezp-path-collapsed')
-    }
-  } else {
-    if (block.svgGroup_) {
-      if (this.locked_ && block.outputConnection && block.getSurroundParent()) {
-        goog.dom.classlist.add(/** @type {!Element} */(block.svgGroup_), 'ezp-locked')
-      } else {
-        goog.dom.classlist.remove(/** @type {!Element} */(block.svgGroup_), 'ezp-locked')
-      }
-    }
-    if (this.svgPathShape_) {
-      Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathShape_),
-      'ezp-path-shape')
-      Blockly.utils.removeClass(/** @type {!Element} */ (this.svgPathShape_),
-      'ezp-path-shadow-shape')
-    }
-    if (this.svgPathContour_) {
-      Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathContour_),
-      'ezp-path-contour')
-      Blockly.utils.removeClass(/** @type {!Element} */ (this.svgPathContour_),
-        'ezp-path-shadow-contour')
-    }
-    if (this.svgPathCollapsed_) {
-      Blockly.utils.addClass(/** @type {!Element} */ (this.svgPathCollapsed_),
-      'ezp-path-collapsed')
-      Blockly.utils.removeClass(/** @type {!Element} */ (this.svgPathCollapsed_),
-      'ezp-path-shadow-collapsed')
+  if (block.svgGroup_) {
+    if (this.locked_ && block.outputConnection && block.getSurroundParent()) {
+      goog.dom.classlist.add(/** @type {!Element} */(block.svgGroup_), 'ezp-locked')
+    } else {
+      goog.dom.classlist.remove(/** @type {!Element} */(block.svgGroup_), 'ezp-locked')
     }
   }
+  var F = !!Object.keys(this.errors).length?
+  goog.dom.classlist.add:
+  goog.dom.classlist.remove
+  var FF = function(elt) {
+    if (/** @type {!Element} */(elt)) {
+      F(elt, 'ezp-error')
+    }
+  }
+  FF(this.svgPathShape_)
+  FF(this.svgPathContour_)
+  FF(this.svgPathCollapsed_)
+  FF(this.svgPathHighlight_)
 }
 
 /**
@@ -1294,9 +1287,9 @@ ezP.DelegateSvg.prototype.makeBlockWrapped = function (block) {
  */
 ezP.DelegateSvg.prototype.makeBlockUnwrapped = function (block) {
   ezP.DelegateSvg.superClass_.makeBlockUnwrapped.call(this, block)
-  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {}, null)
+  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {'class': 'ezp-path-contour'}, null)
   goog.dom.insertChildAt(block.svgGroup_, this.svgPathContour_, 0)
-  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {}, null)
+  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {'class': 'ezp-path-shape'}, null)
   goog.dom.insertChildAt(block.svgGroup_, this.svgPathShape_, 0)
 }
 

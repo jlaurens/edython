@@ -1220,7 +1220,7 @@ ezP.MenuManager.prototype.populateProperties = function (block, key) {
     var k = key.charAt(0).toUpperCase() + key.slice(1)
     var current = ezp['get' + k](block)
     var F = function(property) {
-      var menuItem = new ezP.MenuItem(ezp.getContent(block, property), function() {
+      var menuItem = new ezP.MenuItem(ezp.makeTitle(block, property, key), function() {
         ezp['set' + k](block, property)
       })
       menuItem.setEnabled(current != property)

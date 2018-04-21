@@ -3647,7 +3647,7 @@ a.setParent(this);
 goog.array.insertAt(this.children_,a,b);
 a.inDocument_&&this.inDocument_&&a.getParent()==this?(c=this.getContentElement(),b=c.childNodes[b]||null,b!=a.getElement()&&c.insertBefore(a.getElement(),b)):c?(this.element_||this.createDom(),b=this.getChildAt(b+1),a.render_(this.getContentElement(),b?b.element_:null)):this.inDocument_&&!a.inDocument_&&a.element_&&a.element_.parentNode&&a.element_.parentNode.nodeType==goog.dom.NodeType.ELEMENT&&a.enterDocument()};
 
-goog.ui.Component.prototype.getContentElement=function(){return this.element_};
+goog.ui.Component.prototype.makeTitleElement=function(){return this.element_};
 goog.ui.Component.prototype.isRightToLeft=function(){null==this.rightToLeft_&&(this.rightToLeft_=goog.style.isRightToLeft(this.inDocument_?this.element_:this.dom_.getDocument().body));
 return this.rightToLeft_};
 goog.ui.Component.prototype.setRightToLeft=function(a){if(this.inDocument_)throw Error(goog.ui.Component.Error.ALREADY_RENDERED);
@@ -3917,7 +3917,7 @@ goog.ui.ContainerRenderer.prototype.getAriaRole=function(){return this.ariaRole_
 goog.ui.ContainerRenderer.prototype.enableTabIndex=function(a,b){a&&(a.tabIndex=b?0:-1)};
 
 goog.ui.ContainerRenderer.prototype.createDom=function(a){return a.getDomHelper().createDom("DIV",this.getClassNames(a).join(" "))};
-goog.ui.ContainerRenderer.prototype.getContentElement=function(a){return a};
+goog.ui.ContainerRenderer.prototype.makeTitleElement=function(a){return a};
 goog.ui.ContainerRenderer.prototype.canDecorate=function(a){return"DIV"==a.tagName};
 
 goog.ui.ContainerRenderer.prototype.decorate=function(a,b){b.id&&a.setId(b.id);
@@ -3965,7 +3965,7 @@ goog.ui.ControlRenderer.TOGGLE_ARIA_STATE_MAP_=goog.object.create(goog.a11y.aria
 goog.a11y.aria.State.SELECTED);
 goog.ui.ControlRenderer.prototype.getAriaRole=function(){};
 goog.ui.ControlRenderer.prototype.createDom=function(a){return a.getDomHelper().createDom("DIV",this.getClassNames(a).join(" "),a.getContent())};
-goog.ui.ControlRenderer.prototype.getContentElement=function(a){return a};
+goog.ui.ControlRenderer.prototype.makeTitleElement=function(a){return a};
 
 goog.ui.ControlRenderer.prototype.enableClassName=function(a,b,c){if(a=a.getElement?a.getElement():a){var d=[b];
 goog.userAgent.IE&&!goog.userAgent.isVersionOrHigher("7")&&(d=this.getAppliedCombinedClassNames_(goog.dom.classlist.get(a),b),d.push(b));
@@ -4122,7 +4122,7 @@ goog.ui.Control.prototype.getAriaLabel=function(){return this.ariaLabel_};
 goog.ui.Control.prototype.setAriaLabel=function(a){this.ariaLabel_=a;
 var b=this.getElement();
 b&&this.renderer_.setAriaLabel(b,a)};
-goog.ui.Control.prototype.getContentElement=function(){return this.renderer_.getContentElement(this.getElement())};
+goog.ui.Control.prototype.makeTitleElement=function(){return this.renderer_.getContentElement(this.getElement())};
 goog.ui.Control.prototype.canDecorate=function(a){return this.renderer_.canDecorate(a)};
 
 goog.ui.Control.prototype.decorateInternal=function(a){a=this.renderer_.decorate(this,a);
@@ -4153,7 +4153,7 @@ this.keyHandler_&&(this.keyHandler_.dispose(),delete this.keyHandler_);
 delete this.renderer_;
 this.ieMouseEventSequenceSimulator_=this.extraClassNames_=this.content_=null};
 
-goog.ui.Control.prototype.getContent=function(){return this.content_};
+goog.ui.Control.prototype.makeTitle=function(){return this.content_};
 goog.ui.Control.prototype.setContent=function(a){this.renderer_.setContent(this.getElement(),a);
 this.setContentInternal(a)};
 goog.ui.Control.prototype.setContentInternal=function(a){this.content_=a};
@@ -4305,7 +4305,7 @@ goog.ui.Container.prototype.setRenderer=function(a){if(this.getElement())throw E
 this.renderer_=a};
 goog.ui.Container.prototype.createDom=function(){this.setElementInternal(this.renderer_.createDom(this))};
 
-goog.ui.Container.prototype.getContentElement=function(){return this.renderer_.getContentElement(this.getElement())};
+goog.ui.Container.prototype.makeTitleElement=function(){return this.renderer_.getContentElement(this.getElement())};
 goog.ui.Container.prototype.canDecorate=function(a){return this.renderer_.canDecorate(a)};
 goog.ui.Container.prototype.decorateInternal=function(a){this.setElementInternal(this.renderer_.decorate(this,a));
 "none"==a.style.display&&(this.visible_=!1)};
@@ -4517,7 +4517,7 @@ goog.ui.MenuItemRenderer.prototype.createDom=function(a){var b=a.getDomHelper().
 this.setEnableCheckBoxStructure(a,b,a.isSupportedState(goog.ui.Component.State.SELECTED)||a.isSupportedState(goog.ui.Component.State.CHECKED));
 return b};
 
-goog.ui.MenuItemRenderer.prototype.getContentElement=function(a){return a&&a.firstChild};
+goog.ui.MenuItemRenderer.prototype.makeTitleElement=function(a){return a&&a.firstChild};
 goog.ui.MenuItemRenderer.prototype.decorate=function(a,b){goog.asserts.assert(b);
 this.hasContentStructure(b)||b.appendChild(this.createContent(b.childNodes,a.getDomHelper()));
 goog.dom.classlist.contains(b,"goog-option")&&(a.setCheckable(!0),this.setCheckable(a,b,!0));
@@ -6426,7 +6426,7 @@ goog.addSingletonGetter(ezP.KeyValueMenuItemRenderer);
 
 ezP.Style.setControlRendererCssClass(ezP.KeyValueMenuItemRenderer,"ezp-key-value-menuitem","content",{padding:"4px 6px 4px "+(ezP.Font.space+12)+"px;"},"hover",{"background-color":"#d6e9f8"});
 ezP.KeyValueMenuItemRenderer.prototype.getClassForState=ezP.MenuItemRenderer.prototype.getClassForState;
-ezP.KeyValueMenuItemRenderer.prototype.getContentElement=function(a){return a&&a.firstChild};
+ezP.KeyValueMenuItemRenderer.prototype.makeTitleElement=function(a){return a&&a.firstChild};
 
 ezP.KeyValueMenuItemRenderer.prototype.decorate=function(a,b){goog.asserts.assert(b);
 this.hasContentStructure(b)||b.appendChild(this.createContent(b.childNodes,a.getDomHelper()));

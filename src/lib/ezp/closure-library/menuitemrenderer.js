@@ -181,7 +181,7 @@ ezP.Style.setControlRendererCssClass(
 )
 
 /** @override */
-ezP.KeyValueMenuItemRenderer.prototype.getContentElement = function (element) {
+ezP.KeyValueMenuItemRenderer.prototype.makeTitleElement = function (element) {
   return /** @type {Element} */ (element && element.firstChild)
 }
 

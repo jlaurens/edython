@@ -83,7 +83,7 @@ ezP.DelegateSvg.Operator.prototype.didChangeSubtype = function(block, oldValue, 
  * @param {string} op op is the operator
  * @private
  */
-ezP.DelegateSvg.Operator.prototype.getContent = /* function (block, op) {
+ezP.DelegateSvg.Operator.prototype.makeTitle = /* function (block, op) {
 } */ undefined
 
 /**
@@ -131,7 +131,7 @@ ezP.DelegateSvg.Manager.makeSubclass('u_expr_concrete', {
  * @param {string} op op is the operator
  * @private
  */
-ezP.DelegateSvg.Expr.u_expr_concrete.prototype.getContent = function (block, op) {
+ezP.DelegateSvg.Expr.u_expr_concrete.prototype.makeTitle = function (block, op) {
   return op+' …'
 }
 
@@ -166,7 +166,7 @@ ezP.DelegateSvg.Binary.model__ = {
  * @param {string} op op is the operator
  * @private
  */
-ezP.DelegateSvg.Binary.prototype.getContent = function (block, op) {
+ezP.DelegateSvg.Binary.prototype.makeTitle = function (block, op) {
   return '… '+ op +' …'
 }
 
@@ -322,7 +322,7 @@ ezP.DelegateSvg.Manager.makeSubclass('object_comparison', {
  * @param {string} op op is the operator
  * @private
  */
-ezP.DelegateSvg.Expr.object_comparison.prototype.getContent = function (block, op) {
+ezP.DelegateSvg.Expr.object_comparison.prototype.makeTitle = function (block, op) {
   return ezP.Do.createSPAN(op, 'ezp-code-reserved')
 }
 

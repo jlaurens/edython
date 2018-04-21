@@ -338,16 +338,16 @@ ezP.Do.typeOfString = function (candidate) {
   } else if (ezP.XRE.identifier.exec(candidate)) {
     return ezP.T3.Expr.identifier
   }
-  if (ezP.XRE.shortstringliteral.exec(candidate)) {
+  if (ezP.XRE.shortstringliteralSingle.exec(candidate) || ezP.XRE.shortstringliteralDouble.exec(candidate)) {
     return ezP.T3.Expr.shortstringliteral
   }
-  if (ezP.XRE.shortbytesliteral.exec(candidate)) {
+  if (ezP.XRE.shortbytesliteralSingle.exec(candidate) || ezP.XRE.shortbytesliteralDouble.exec(candidate)) {
     return ezP.T3.Expr.shortbytesliteral
   }
-  if (ezP.XRE.longstringliteral.exec(candidate)) {
+  if (ezP.XRE.longstringliteralSingle.exec(candidate) || ezP.XRE.longstringliteralDouble.exec(candidate)) {
     return ezP.T3.Expr.longstringliteral
   }
-  if (ezP.XRE.longbytesliteral.exec(candidate)) {
+  if (ezP.XRE.longbytesliteralSingle.exec(candidate) || ezP.XRE.longbytesliteralDouble.exec(candidate)) {
     return ezP.T3.Expr.longbytesliteral
   }
   return undefined

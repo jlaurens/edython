@@ -40,26 +40,18 @@ ezP.DelegateSvg.Manager.makeSubclass(ezP.Key.TERM, {
         key:ezP.Key.VALUE,
         value: '',
         placeholder: ezP.Msg.Placeholder.TERM,
-        validator: function(txt) {// this is the field
-          if (ezP.FieldTextInput.htmlInput_) {
-            var block = this.sourceBlock_
-            if (!block || block.ezp.validateEditValue(block, txt || this.getValue())) {
-              this.ezp.error = false
-              goog.dom.classlist.remove(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
-            } else {
-              this.ezp.error = true
-              goog.dom.classlist.add(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
-            }
+        validator: function(txt) {
+          var block = this.sourceBlock_
+          if (block) {
+            var ezp = block.ezp
+            var v = ezp.validateValue(block, txt || this.getValue())
+            return v && v.validated
           }
-          return txt
         },
         onEndEditing: function () {
           var block = this.sourceBlock_
           var ezp = block.ezp
-          if (!ezp.setEditValue(block, this.getValue())) {
-            var value = ezp.getValue(block)
-            ezp.didChangeValue(block, value, value)
-          }
+          ezp.setValue(block, this.getValue())
         },
       },
     },
@@ -175,7 +167,7 @@ ezP.DelegateSvg.Expr.term.prototype.didChangeModifier = function(block, oldModif
  */
 ezP.DelegateSvg.Expr.term.prototype.initValue = function (block) {
   ezP.DelegateSvg.Expr.term.superClass_.initValue.call(this, block)
-  this.setValue(this.ui.i_1.fields.value.getValue() || '')
+  this.setValue(block, this.ui.i_1.fields.value.getValue() || '')
   return
 }
 
@@ -187,10 +179,18 @@ ezP.DelegateSvg.Expr.term.prototype.initValue = function (block) {
  */
 ezP.DelegateSvg.Expr.term.prototype.didChangeValue = function (block, oldValue, newValue) {
   ezP.DelegateSvg.Expr.term.superClass_.didChangeValue.call(this, block, oldValue, newValue)
-  this.ui.i_1.fields.value.setValue(this.getEditValue() || '')
   var type = newValue? ezP.Do.typeOfString(newValue): ezP.T3.Expr.identifier
   block.ezp.setSubtype(block, type)
   return
+}
+
+/**
+ * When the value did change, sets the subtype accordingly.
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {string} newValue
+ */
+ezP.DelegateSvg.Expr.numberliteral.prototype.synchronizeValue = function (block) {
+  this.ui.i_1.fields.value.setValue(this.getValue() || '')
 }
 
 /**
@@ -202,8 +202,9 @@ ezP.DelegateSvg.Expr.term.prototype.didChangeValue = function (block, oldValue, 
  * @return true if newValue is acceptable, false otherwise
  */
 ezP.DelegateSvg.Expr.term.prototype.validateValue = function (block, newValue) {
-  var type = ezP.Do.typeOfString(newValue)
-  return (type === ezP.T3.Expr.dotted_name || type === ezP.T3.Expr.parent_module || type === ezP.T3.Expr.identifier) && {validated: newValue}
+  var subtypes = this.getSubtypes(block)
+  var subtype = ezP.Do.typeOfString(newValue)
+  return (subtypes.indexOf(subtype)>= 0) && {validated: newValue}
 }
 
 /**
@@ -342,7 +343,7 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
  * @param {string} op op is the operator
  * @private
  */
-ezP.DelegateSvg.Expr.term.prototype.getContent = function (block, op, flags) {
+ezP.DelegateSvg.Expr.term.prototype.makeTitle = function (block, op, flags) {
   if (flags === undefined) {
     flags = this.getVariant(block)
   }
@@ -381,8 +382,8 @@ ezP.DelegateSvg.Expr.term.prototype.populateContextMenuFirst_ = function (block,
   var F = function(j, flags) {
     var modifier = modifiers[j]
     if (j !== i || flags !== currentFlags) {
-      var content = block.ezp.getContent(block, modifier, flags)
-      var menuItem = new ezP.MenuItem(content, function() {
+      var title = block.ezp.makeTitle(block, modifier, flags)
+      var menuItem = new ezP.MenuItem(title, function() {
         block.ezp.setModifier(block, modifier)
         block.ezp.setVariant(block, flags)
       })

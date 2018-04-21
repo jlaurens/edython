@@ -372,6 +372,8 @@ ezP.DelegateSvg.Literal.prototype.xmlTagName = function (block) {
   return ezP.Xml.LITERAL
 }
 
+ezP.DelegateSvg.Literal.prototype.xml = ezP.Xml.Text
+
 goog.provide('ezP.Xml.Literal')
 /**
  * Try to create a comparison block from the given element.
@@ -381,7 +383,7 @@ goog.provide('ezP.Xml.Literal')
  */
 ezP.Xml.Literal.domToBlock = function (element, workspace) {
   var prototypeName = element.nodeName.toLowerCase()
-  if (prototypeName.substring(4) !== ezP.T3.Xml.toDom.Expr.shortstringliteral) {
+  if (prototypeName !== ezP.Xml.LITERAL) {
     return
   }
   var id = element.getAttribute('id')
@@ -389,15 +391,28 @@ ezP.Xml.Literal.domToBlock = function (element, workspace) {
     if (xmlChild.nodeType === 3) {
       var text = xmlChild.nodeValue
       var type = ezP.Do.typeOfString(text)
-      if (ezP.DelegateSvg.Manager.get(type)) {
-        var block = ezP.DelegateSvg.newBlockComplete(workspace, type, id)
+      if (ezP.DelegateSvg.Expr.numberliteral.ezp.validateSubtype(type)) {
+        var block = ezP.DelegateSvg.newBlockComplete(workspace, ezP.T3.Expr.numberliteral, id)
         if (block) {
-          block.ezp.setValue(block, text)
+          block.ezp.setValue(block, text) || block.ezp.setValidatedContent(block, text)
+          return block
+        }
+      } else if (ezP.DelegateSvg.Expr.shortliteral.ezp.validateSubtype(type)) {
+        var block = ezP.DelegateSvg.newBlockComplete(workspace, ezP.T3.Expr.shortliteral, id)
+        if (block) {
+          block.ezp.setValue(block, text) || block.ezp.setValidatedContent(block, text)
+          return block
+        }
+      } else if (ezP.DelegateSvg.Expr.longliteral.ezp.validateSubtype(type)) {
+        var block = ezP.DelegateSvg.newBlockComplete(workspace, ezP.T3.Expr.longliteral, id)
+        if (block) {
+          block.ezp.setValue(block, text) || block.ezp.setValidatedContent(block, text)
           return block
         }
       }
     }
   }
+  return  ezP.DelegateSvg.newBlockComplete(workspace, ezP.T3.Expr.shortliteral, id)
 }
 
 /**
@@ -1429,14 +1444,6 @@ goog.require('ezP.DelegateSvg.Literal')
  */
 ezP.DelegateSvg.Literal.prototype.xml = ezP.Xml.Text
 
-goog.require('ezP.DelegateSvg.Identifier')
-
-/**
- * Convert dom element to the block.
- * For ezPython.
- */
-ezP.DelegateSvg.Expr.identifier.prototype.xml = ezP.Xml.Text
-
 goog.require('ezP.DelegateSvg.List')
 
 /**
@@ -1582,11 +1589,11 @@ ezP.Xml.Comparison.domToBlock = function (element, workspace) {
     var op = element.getAttribute(ezP.Key.OPERATOR)
     var Ctor, model, type = ezP.T3.Expr.number_comparison
     if ((Ctor = ezP.DelegateSvg.Manager.get(type))
-    && (model = Ctor.prototype.getModel().inputs)
+    && (model = Ctor.ezp.getModel().inputs)
     && model.operators
     && model.operators.indexOf(op)>=0) {
       block = ezP.DelegateSvg.newBlockComplete(workspace, type, id)
-    } else if ((type = ezP.T3.Expr.object_comparison) && (Ctor = ezP.DelegateSvg.Manager.get(type)) && (model = Ctor.prototype.getModel().inputs) && model.operators && model.operators.indexOf(op)>=0) {
+    } else if ((type = ezP.T3.Expr.object_comparison) && (Ctor = ezP.DelegateSvg.Manager.get(type)) && (model = Ctor.ezp.getModel().inputs) && model.operators && model.operators.indexOf(op)>=0) {
       block = ezP.DelegateSvg.newBlockComplete(workspace, type, id)
     } else {
       return block
@@ -1640,9 +1647,9 @@ ezP.Xml.AugAssign.domToBlock = function (element, workspace) {
  */
 ezP.Xml.AugAssign.toDom = function (block, element, optNoId) {
   element.setAttribute(ezP.Key.OPERATOR, block.ezp.getSubtype(block))
-  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().inputs.i_1.key
+  var name = ezP.DelegateSvg.AugAssign.ezp.getModel().inputs.i_1.key
   ezP.Xml.Input.Named.toDom(block, name, element, optNoId)
-  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().inputs.i_3.key
+  var name = ezP.DelegateSvg.AugAssign.ezp.getModel().inputs.i_3.key
   ezP.Xml.namedListInputToDom(block, name, element, optNoId)
 }
 
@@ -1655,9 +1662,9 @@ ezP.Xml.AugAssign.toDom = function (block, element, optNoId) {
 ezP.Xml.AugAssign.fromDom = function (block, element) {
   var op = element.getAttribute(ezP.Key.OPERATOR)
   block.ezp.setSubtype(block, op)
-  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().inputs.i_1.key
+  var name = ezP.DelegateSvg.AugAssign.ezp.getModel().inputs.i_1.key
   ezP.Xml.Input.Named.fromDom(block, name, element)
-  var name = ezP.DelegateSvg.AugAssign.prototype.getModel().inputs.i_3.key
+  var name = ezP.DelegateSvg.AugAssign.ezp.getModel().inputs.i_3.key
   ezP.Xml.namedListInputFromDom(block, name, element)
 }
 

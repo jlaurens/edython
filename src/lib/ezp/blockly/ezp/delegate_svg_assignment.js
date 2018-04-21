@@ -517,7 +517,7 @@ ezP.DelegateSvg.Manager.makeSubclass('augassign_bitwise_stmt', {
  * @param {string} op op is the operator
  * @private
  */
-ezP.DelegateSvg.Stmt.augassign_numeric_stmt.prototype.getContent = ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.getContent = ezP.DelegateSvg.Binary.prototype.getContent
+ezP.DelegateSvg.Stmt.augassign_numeric_stmt.prototype.makeTitle = ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.makeTitle = ezP.DelegateSvg.Binary.prototype.makeTitle
 
 /**
  * List consolidator for target list.
@@ -642,6 +642,12 @@ ezP.DelegateSvg.Manager.makeSubclass('augassign_list_concrete', {
   }
 })
 
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
 ezP.DelegateSvg.AugAssign.populateContextMenuFirst_ = function (block, mgr) {
   var input = block.getInput(ezP.Key.LIST)
   if (input) {

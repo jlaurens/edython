@@ -62,6 +62,7 @@ console.warn('Remove the model__ below, transition process')
 ezP.Delegate = function (prototypeName) {
   ezP.Delegate.superClass_.constructor.call(this)
   this.properties = {}
+  this.errors = {}
   this.model__ = {
     inputs: {},
     output: {},
@@ -125,12 +126,24 @@ ezP.Delegate.Manager = function () {
     }
   }
   /**
+   * Just adds a proper ezp object to the delegate.
+   * @param {Object} constructor
+   * @private
+   */
+  var prepareDelegate = function (Ctor, key) {
+    Ctor.ezp || (Ctor.ezp = new ezP.Delegate.EzP(key || null))
+    Ctor.ezp.getModel || (Ctor.ezp.getModel = function () {
+      return helper(Ctor)
+    })
+  }
+  /**
    * Private helper to provide the constructor with a getInputsModel.
    * @param {?Object} Ctor a constructor
    */
   var helper = function(Ctor, inputModel) {
-    if (Ctor.model_) {
-      return Ctor.model_
+    Ctor.ezp || prepareDelegate(Ctor)
+    if (Ctor.ezp.model_) {
+      return Ctor.ezp.model_
     }
     var model = {
       inputs: {},
@@ -140,22 +153,22 @@ ezP.Delegate.Manager = function () {
     if (Ctor !== ezP.Delegate && Ctor.superClass_) {
       mixinModel(model, helper(Ctor.superClass_.constructor))
     }
-    if (Ctor.model__) {
+    if (Ctor.ezp.model__) {
       if (goog.isFunction(Ctor.model__)) {
-        model = Ctor.model__(model)
-      } else if (Object.keys(Ctor.model__).length) {
-        mixinModel(model, Ctor.model__)
+        model = Ctor.ezp.model__(model)
+      } else if (Object.keys(Ctor.ezp.model__).length) {
+        mixinModel(model, Ctor.ezp.model__)
       }
-      delete Ctor.model__
+      delete Ctor.ezp.model__
     }
     if (inputModel) {
       mixinModel(model.inputs, inputModel)
     }
-    Ctor.model_ = model
-    Ctor.prototype.getModel = function() {
-      return Ctor.model_
+    Ctor.ezp.model_ = model
+    Ctor.ezp.getModel = function() {
+      return Ctor.ezp.model_
     }
-    return Ctor.model_
+    return Ctor.ezp.model_
   }
   /**
    * Method to create the constructor of a subclass.
@@ -165,6 +178,7 @@ ezP.Delegate.Manager = function () {
    * But we do not always have
    * key === me.get(key).ezp.key
    * Registers the subclass too.
+   @return the constructor created
    */
   me.makeSubclass = function(key, model, parent, owner) {
     var Ctor = owner[key] = function (prototypeName) {
@@ -172,7 +186,7 @@ ezP.Delegate.Manager = function () {
     }
     goog.inherits(Ctor, parent)
     Ctor.ezp = new ezP.Delegate.EzP(key)
-    ezP.DelegateSvg.Manager.registerDelegate_(ezP.T3.Expr[key]||ezP.T3.Stmt[key], Ctor)
+    ezP.Delegate.Manager.registerDelegate_(ezP.T3.Expr[key]||ezP.T3.Stmt[key], Ctor)
     if (goog.isFunction(model)) {
       model = model()
     }
@@ -182,7 +196,7 @@ ezP.Delegate.Manager = function () {
         goog.asserts.assert(otherCtor, 'Not inserted: '+t)
         var otherModel = otherCtor.prototype.getModel()
         if (otherModel.inputs) {
-          Ctor.prototype.getModel = function() {
+          Ctor.ezp.getModel = function() {
             return helper(Ctor, otherModel.inputs)
           }
         }
@@ -211,8 +225,9 @@ ezP.Delegate.Manager = function () {
           statement.next.check = ezP.T3.Stmt.Next[key]
         }
       }
-      Ctor.model__ = model
+      Ctor.ezp.model__ = model
     }
+    return Ctor
   }
   /**
    * Delegate instance creator.
@@ -254,43 +269,6 @@ ezP.Delegate.Manager = function () {
     return {}
   }
   /**
-   * Get the output model for that prototypeName.
-   * @param {?string} prototypeName Name of the language object containing
-   * @return void object if no delegate is registered for that name
-   */
-  me.getOutputModel = function (prototypeName) {
-    var Ctor = Ctors[prototypeName]
-    if (Ctor) {
-      var model = Ctor.prototype.getModel()
-      return model && model.output
-    }
-    return {}
-  }
-  /**
-   * Get the statement model for that prototypeName.
-   * @param {?string} prototypeName Name of the language object containing
-   * @return void object if no delegate is registered for that name
-   */
-  me.getStatementModel = function (prototypeName) {
-    var Ctor = Ctors[prototypeName]
-    if (Ctor) {
-      var model = Ctor.prototype.getModel()
-      return model && model.statement
-    }
-    return {}
-  }
-  /**
-   * Just adds a proper ezp object to the delegate.
-   * @param {Object} constructor
-   * @private
-   */
-  me.prepareDelegate = function (Ctor, key) {
-    Ctor.ezp || (Ctor.ezp = new ezP.Delegate.EzP(key || null))
-    Ctor.prototype.getModel = function () {
-      return helper(Ctor)
-    }
-  }
-  /**
    * Delegate registrator.
    * The constructor has an ezp attached object for
    * some kind of introspection.
@@ -307,7 +285,7 @@ ezP.Delegate.Manager = function () {
     Ctors[prototypeName] = Ctor
     goog.asserts.assert(me.create(prototypeName), 'Registration failure: '+prototypeName)
     // cache all the input, output and statement data at the prototype level
-    me.prepareDelegate(Ctor, key)
+    prepareDelegate(Ctor, key)
     Ctor.ezp.types.push(prototypeName)
     Blockly.Blocks[prototypeName] = {}
   }
@@ -355,6 +333,13 @@ ezP.Delegate.Manager = function () {
   return me
 }()
 
+/**
+ * Model getter. Ask the constructor.
+ */
+ezP.Delegate.prototype.getModel = function() {
+  return this.constructor.ezp.getModel()
+}
+
 // register this delegate for all the T3 types
 
 ezP.Delegate.Manager.registerAll(ezP.T3.Expr, ezP.Delegate)
@@ -364,62 +349,103 @@ ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.Delegate)
  * Declares and init a named property for the given constructor.
  * For ezPython.
  * @param {Object} Ctor The constructor to add the property to.
- * @param {string} key Whether to unlock statements too.
- * @param {function} initialize.
- * @param {function} validate.
- * @param {function} willChange.
- * @param {function} didChange.
+ * @param {!string} key Whether to unlock statements too.
+ * @param {Object} params.
  * @return the number of block locked
  */
-ezP.Delegate.addProperty = function (Ctor, key, params) {
+ezP.Do.addInstanceProperty = function (Ctor, key, params) {
   var k = key.charAt(0).toUpperCase() + key.slice(1)
-  var k_ = key + '_'
+  var Ks = {
+    keys: key+'s',
+    index: key+'Index',
+    get: 'get'+k,
+    init: 'init'+k,
+    gets: 'get'+k+'s',
+    set: 'set'+k,
+    validate: 'validate'+k,
+    synchronize: 'synchronize'+k,
+    setValidated: 'setValidated'+k,
+    didChange: 'didChange'+k,
+    _didChange: '_didChange'+k,
+    willChange: 'willChange'+k,
+    _willChange: '_willChange'+k,
+  }
   var p = Ctor.prototype
-  p['get'+k] = function(block) {
-    return this[k_]
+  p[Ks.get] = function(block) {
+    var holder = this.properties
+    holder = holder[key] || (holder[key] = {})
+    if (goog.isDef(holder.value) || holder.lock_get) {
+      return holder.value
+    }
+    try {
+      holder.lock_get = true
+      p[Ks.init].call(this, block)
+    } finally {
+      delete holder.lock_get
+    }
+    return holder.value
   }
-  p['get'+k+'s'] = function(block) {
-    return block.ezp.getModel().inputs[key+'s']
+  p[Ks.gets] = function(block) {
+    return block.ezp.getModel().inputs[Ks.keys]
   }
-  p['init'+k] = params && params.initialize || function(block) {
+  p[Ks.init] = params && params.initialize || function(block) {
     var inputs = block.ezp.getModel().inputs
-    var values = inputs[key+'s']
+    var values = inputs[Ks.keys]
     if (values) {
-      var i = inputs[key+'Index'] || 0
+      var i = inputs[Ks.index] || 0
       var value = values[i]
-      this['set'+k](block, value) || this.consolidateType(block)
+      return this[Ks.set](block, value)
     }
   }
-  p['validate'+k] = params && params.validate || function(block, newValue) {
-    var values = block.ezp.getModel().inputs[key+'s']
-    return values && values.indexOf(newValue) >= 0 && {validated: newValue}
+  p[Ks.validate] = params && params.validate || function(block, newValue) {
+    var values = block.ezp.getModel().inputs[Ks.keys]
+    return (!values || values.indexOf(newValue) >= 0) && {validated: newValue} || null
   }
-  p['willChange'+k] = params && params.willChange || function(block, oldValue, newValue) {
+  p[Ks.willChange] = params && params.willChange || function(block, oldValue, newValue) {
   }
-  p['didChange'+k] = params && params.didChange || function(block, oldValue, newValue) {
-  }
-  p['set'+k] = function (block, newValue) {
-    if (goog.isNumber(newValue)) {
-      var values = block.ezp.getModel().inputs[key+'s']
-      if (values) {
-        newValue = values[newValue]
-      }
+  p[Ks._willChange] = function(block, oldValue, newValue) {
+    var holder = this.properties[key]
+    if (holder.lock_willChange) {
+      return
     }
-    if ((this[k_] === newValue) || !(newValue = this['validate'+k](block, newValue)) || !goog.isDef(newValue = newValue.validated)) {
-      return false
+    try {
+      holder.lock_willChange = true
+      this[Ks.willChange](block, oldValue, newValue)
+    } finally {
+      delete holder.lock_willChange
     }
-    var oldValue = this[k_]
+  }
+  p[Ks.didChange] = params && params.didChange || function(block, oldValue, newValue) {
+  }
+  p[Ks._didChange] = function(block, oldValue, newValue) {
+    var holder = this.properties[key]
+    if (holder.lock_didChange) {
+      return
+    }
+    try {
+      holder.lock_didChange = true
+      this[Ks.didChange](block, oldValue, newValue)
+    } finally {
+      delete holder.lock_didChange
+    }
+  }
+  p[Ks.setValidated] = function (block, newValue) {
+    var holder = this.properties
+    holder = holder[key] || (holder[key] = {})
+    var oldValue = holder.value
     var grouper = new ezP.Events.Grouper()
     var old = this.skipRendering
     try {
       this.skipRendering = true
-      this['willChange'+k](block, oldValue, newValue)
+      this[Ks._willChange](block, oldValue, newValue)
       if (Blockly.Events.isEnabled()) {
         Blockly.Events.fire(new Blockly.Events.BlockChange(
         block, ezP.Const.Event.PROPERTY+key, null, oldValue, newValue))
       }
-      this[k_] = newValue
-      this['didChange'+k](block, oldValue, newValue)
+      holder.value = newValue
+      this[Ks._didChange](block, oldValue, newValue)
+      var synchronize = this[Ks.synchronize]
+      synchronize && synchronize.call(this, block)
       this.consolidateType(block)
       this.skipRendering = old
       block.render() // render now or possibly later ?
@@ -427,24 +453,45 @@ ezP.Delegate.addProperty = function (Ctor, key, params) {
       this.skipRendering = old
       grouper.stop()
     }
+  }
+  p[Ks.set] = function (block, newValue) {
+    if (goog.isNumber(newValue)) {
+      var values = block.ezp.getModel().inputs[Ks.keys]
+      if (values) {
+        newValue = values[newValue]
+      }
+    }
+    var holder = this.properties
+    holder = holder[key] || (holder[key] = {})
+    if ((holder.value === newValue) || !(newValue = this[Ks.validate](block, newValue)) || !goog.isDef(newValue = newValue.validated)) {
+      var synchronize = this[Ks.synchronize]
+      synchronize && synchronize.call(this, block)
+      return false
+    }
+    this[Ks.setValidated](block, newValue)
     return true
   }
-  if (params && params.editable) {
-    p['fromEdit'+k] = function(block, value) {
-      return value
-    }
-    p['toEdit'+k] = function(block, value) {
-      return value
-    }
-    p['getEdit'+k] = function(block) {
-      return this['toEdit'+k](block, this['get'+k](block))
-    }
-    p['setEdit'+k] = function(block, newValue) {
-      return this['set'+k](block, this['fromEdit'+k](block, newValue))
-    }
-    p['validateEdit'+k] = function(block, newValue) {
-      return this['validate'+k](block, this['fromEdit'+k](block, newValue))
-    }
+}
+
+/**
+ * Declares and init a named property for the given constructor.
+ * For ezPython.
+ * @param {Object} Ctor The constructor to add the property to.
+ * @param {!string} key Whether to unlock statements too.
+ */
+ezP.Do.addClassProperty = function (Ctor, key) {
+  var k = key.charAt(0).toUpperCase() + key.slice(1)
+  var Ks = {
+    keys: key+'s',
+    gets: 'get'+k+'s',
+    validate: 'validate'+k
+  }
+  Ctor.ezp[Ks.gets] = function() {
+    return Ctor.ezp.getModel().inputs[Ks.keys]
+  }
+  Ctor.ezp[Ks.validate] = function(newValue) {
+    var values = Ctor.ezp[Ks.gets]()
+    return values && values.indexOf(newValue) >= 0 && {validated: newValue}
   }
 }
 
@@ -463,10 +510,10 @@ ezP.Delegate.prototype.consolidateType = function (block) {
   this.setupType(block)
 }
 
-ezP.Delegate.addProperty(ezP.Delegate, 'modifier')
-ezP.Delegate.addProperty(ezP.Delegate, 'subtype')
-ezP.Delegate.addProperty(ezP.Delegate, 'value', {editable:true})
-ezP.Delegate.addProperty(ezP.Delegate, 'variant')
+ezP.Do.addInstanceProperty(ezP.Delegate, ezP.Key.MODIFIER)
+ezP.Do.addInstanceProperty(ezP.Delegate, ezP.Key.SUBTYPE)
+ezP.Do.addInstanceProperty(ezP.Delegate, ezP.Key.VALUE)
+ezP.Do.addInstanceProperty(ezP.Delegate, ezP.Key.VARIANT)
 
 /**
  * Whether the named property for the given block exists.
@@ -945,13 +992,7 @@ ezP.Delegate.prototype.removeInput = function(block, input, opt_quiet) {
     if (input.connection && input.connection.isConnected()) {
       input.connection.setShadowDom(null);
       var block = input.connection.targetBlock();
-      if (block.isShadow()) {
-        // Destroy any attached shadow block.
-        block.dispose();
-      } else {
-        // Disconnect any attached normal block.
-        block.unplug();
-      }
+      block.unplug();
     }
     input.dispose();
     this.inputList.splice(i, 1);
@@ -1188,4 +1229,40 @@ ezP.Delegate.prototype.inputEnumerator = function (block, all) {
   return ezP.Do.Enumerator(block.inputList, all? undefined: function(x) {
     return !x.ezp.disabled_
   })
+}
+
+/**
+ * Set the error
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {!string} key
+ * @param {!string} msg
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.Delegate.prototype.setError = function (block, key, msg) {
+  this.errors[key] = {
+    message: msg,
+  }
+}
+
+/**
+ * get the error
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {!string} key
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.Delegate.prototype.getError = function (block, key) {
+  return this.errors[key]
+}
+
+/**
+ * get the error
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {!string} key
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.Delegate.prototype.removeError = function (block, key) {
+  delete this.errors[key]
 }

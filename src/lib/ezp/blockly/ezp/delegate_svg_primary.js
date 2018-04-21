@@ -243,9 +243,11 @@ ezP.DelegateSvg.Manager.makeSubclass('builtin_call_stmt', {
  * For subclassers eventually
  */
 ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.initBlock = function (block) {
-  this.getModel = ezP.DelegateSvg.Expr.builtin_call_expr.prototype.getModel
   ezP.DelegateSvg.Stmt.builtin_call_stmt.superClass_.initBlock.call(this, block)
 }
+
+ezP.DelegateSvg.Stmt.builtin_call_stmt.ezp.getModel = ezP.DelegateSvg.Expr.builtin_call_expr.ezp.getModel
+
 
 /**
  * When the subtype has just changed.
