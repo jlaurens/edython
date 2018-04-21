@@ -393,22 +393,17 @@ ezP.Xml.Literal.domToBlock = function (element, workspace) {
       var type = ezP.Do.typeOfString(text)
       if (ezP.DelegateSvg.Expr.numberliteral.ezp.validateSubtype(type)) {
         var block = ezP.DelegateSvg.newBlockComplete(workspace, ezP.T3.Expr.numberliteral, id)
-        if (block) {
-          block.ezp.setValue(block, text) || block.ezp.setValidatedContent(block, text)
-          return block
-        }
       } else if (ezP.DelegateSvg.Expr.shortliteral.ezp.validateSubtype(type)) {
         var block = ezP.DelegateSvg.newBlockComplete(workspace, ezP.T3.Expr.shortliteral, id)
-        if (block) {
-          block.ezp.setValue(block, text) || block.ezp.setValidatedContent(block, text)
-          return block
-        }
       } else if (ezP.DelegateSvg.Expr.longliteral.ezp.validateSubtype(type)) {
         var block = ezP.DelegateSvg.newBlockComplete(workspace, ezP.T3.Expr.longliteral, id)
-        if (block) {
-          block.ezp.setValue(block, text) || block.ezp.setValidatedContent(block, text)
-          return block
-        }
+      }
+      if (block) {
+        var ezp = block.ezp
+        ezp.setValue(block, text)
+        || ezp.validateValue(block, text)
+        || ezp.setValidatedContent(block, text)
+        return block
       }
     }
   }
