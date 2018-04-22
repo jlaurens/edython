@@ -58,18 +58,25 @@ ezP.Key = {
   DATUM: 'datum',
   OPERATOR: 'operator',
   MODIFIER: 'modifier',// this MUST be in lower case
-  BUILTIN: 'builtin',// this MUST be in lower case
   FUTURE: 'future',
   PARAMETERS: 'parameters',
   SLICE: 'slice',
   ARGUMENTS: 'arguments',
   IDENTIFIERS: 'identifiers',
-  SUBTYPE: 'subtype',// this MUST be in lower case
   DEL: 'del',
   RETURN: 'return',
 
-  VARIANT: 'variant',// this MUST be in lower case
+
+  IMPORT_MODULE: 'import_module',
+
+  SUBTYPE: 'subtype',// this MUST be in lower case
+  VALUE: 'value',// this MUST be in lower case
   CONTENT: 'content',// this MUST be in lower case
+  VARIANT: 'variant',// this MUST be in lower case
+  ALIAS: 'alias',// this MUST be in lower case
+  BUILTIN: 'builtin',// this MUST be in lower case
+  
+  EDIT: 'edit',// this MUST be in lower case
   
   LIST: 'list',// avoid this one when possibe
   
@@ -92,7 +99,6 @@ ezP.Key = {
   PRIMARY: 'primary',
   ATTRIBUTE: 'attribute',
   TYPE: 'type',
-  VALUE: 'value',// this MUST be in lower case
   LOWER_BOUND: 'lower_bound',
   UPPER_BOUND: 'upper_bound',
   STRIDE: 'stride',

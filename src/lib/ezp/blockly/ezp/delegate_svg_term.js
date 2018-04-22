@@ -44,7 +44,7 @@ ezP.DelegateSvg.Manager.makeSubclass(ezP.Key.TERM, {
           var block = this.sourceBlock_
           if (block) {
             var ezp = block.ezp
-            var v = ezp.validateValue(block, txt || this.getValue())
+            var v = ezp.validateValue(block, goog.isDef(txt) && txt || this.getValue())
             return v && v.validated
           }
         },
@@ -68,6 +68,28 @@ ezP.DelegateSvg.Manager.makeSubclass(ezP.Key.TERM, {
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
+    },
+    i_4: {
+      label: 'as',
+      css_class: 'ezp-code-reserved',
+      edit: {
+        key:ezP.Key.ALIAS,
+        value: '',
+        placeholder: ezP.Msg.Placeholder.ALIAS,
+        validator: function(txt) {
+          var block = this.sourceBlock_
+          if (block) {
+            var ezp = block.ezp
+            var v = ezp.validateAlias(block, goog.isDef(txt) && txt || this.getValue())
+            return v && v.validated
+          }
+        },
+        onEndEditing: function () {
+          var block = this.sourceBlock_
+          var ezp = block.ezp
+          ezp.setAlias(block, this.getValue())
+        },
+      },
     },
   },
   output: {
@@ -97,6 +119,46 @@ ezP.DelegateSvg.Manager.makeSubclass(ezP.Key.TERM, {
   }
 })
 
+ezP.Do.addInstanceProperty(ezP.DelegateSvg.Expr.term, ezP.Key.ALIAS)
+
+/**
+* Init all the properties of the block.
+* @param {!Blockly.Block} block to be initialized.
+*/
+ezP.DelegateSvg.Expr.term.prototype.initProperties = function(block) {
+  ezP.DelegateSvg.Expr.term.superClass_.initProperties.call(this, block)
+  this.initAlias(block)
+}
+
+/**
+ * Init the alias in the properties.
+ * For that blocks, the variant is a set of flags to control which input should be visible.
+ * @param {!Blockly.Block} block to be initialized.
+ */
+ezP.DelegateSvg.Expr.term.prototype.initAlias = function (block) {
+  this.setAlias(block, '')
+}
+
+/**
+ * Validate the alias in the properties.
+ * For that blocks, the variant is a set of flags to control which input should be visible.
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {string} newAlias
+ * @return an object when validated, undefined otherwise.
+ */
+ezP.DelegateSvg.Expr.term.prototype.validateAlias = function (block, newAlias) {
+  var subtype = ezP.Do.typeOfString(newAlias)
+  return (subtype === ezP.T3.Expr.identifier) && {validated: newAlias} || null
+}
+/**
+ * Synchronize the value with the ui.
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {string} newValue
+ */
+ezP.DelegateSvg.Expr.term.prototype.synchronizeAlias = function (block, newAlias) {
+  this.ui.i_4.fields.alias.setValue(newAlias)
+}
+
 /**
  * Some block should not be wrapped.
  * Default implementation returns false
@@ -125,20 +187,50 @@ ezP.DelegateSvg.Expr.term.prototype.initVariant = function (block) {
  * @return true if newVariant is acceptable, false otherwise
  */
 ezP.DelegateSvg.Expr.term.prototype.validateVariant = function (block, newVariant) {
-  return goog.isNumber(newVariant) && 0 <= newVariant && newVariant <= 4 && {validated: newVariant}
+  if (!goog.isNumber(newVariant)) {
+    return null
+  }
+  var modifier = this.getModifier(block)
+  var modifiers = this.getModifiers(block)
+  var i = modifiers.indexOf(modifier)
+  var withModifier = i > 0
+  // first step: being consistent
+  var flags = newVariant
+  var withoutValue = flags & 4 && i === 1
+  var withAnnotation = flags % 2 && i !== 2 && !withoutValue
+  var withDefinition = flags & 2 && i === 0
+  var subtype = this.getSubtype(block)
+  var subtypes = this.getSubtypes(block)
+  var j = subtypes.indexOf(subtype)
+  // further checks are based on the subtype.
+  if (!withoutValue) {
+    if (j === 2) {
+      // only one possibility
+      withModifier = withAnnotation = withDefinition = false
+    } else if (j === 1) {
+      withAnnotation = withDefinition = false
+    }
+  }
+  var withAlias = flags & 8 && i === 0 && !withAnnotation && !withDefinition
+  flags = (withAnnotation?1:0) + (withDefinition?2:0) + (withoutValue?4:0) + (withAlias?8:0)
+  return {validated: flags}
 }
 
 /**
- * When the variant did change.
+ * Synchronize the variant with the ui.
  * @param {!Blockly.Block} block to be initialized.
- * @param {string} oldVariant
  * @param {string} newVariant
  */
-ezP.DelegateSvg.Expr.term.prototype.didChangeVariant = function(block, oldVariant, newVariant) {
-  ezP.DelegateSvg.Expr.term.superClass_.didChangeVariant.call(this, block, oldVariant, newVariant)
-  var withAnnotation = newVariant % 2
-  var withDefinition = newVariant & 2
-  var withoutValue = newVariant & 4
+ezP.DelegateSvg.Expr.term.prototype.synchronizeVariant = function(block, newVariant) {
+  var flags = newVariant
+  var withoutValue = flags & 4
+  var withAnnotation = flags % 2
+  var withDefinition = flags & 2
+  var withAlias = flags & 8
+  this.setInputDisabled(block, this.ui.i_1.input, withoutValue)
+  this.setInputDisabled(block, this.ui.i_2.input, !withAnnotation)
+  this.setInputDisabled(block, this.ui.i_3.input, !withDefinition)
+  this.setInputDisabled(block, this.ui.i_4.input, !withAlias)
 }
 
 /**
@@ -169,8 +261,13 @@ ezP.DelegateSvg.Expr.term.prototype.initValue = function (block) {
  */
 ezP.DelegateSvg.Expr.term.prototype.didChangeValue = function (block, oldValue, newValue) {
   ezP.DelegateSvg.Expr.term.superClass_.didChangeValue.call(this, block, oldValue, newValue)
-  var type = newValue? ezP.Do.typeOfString(newValue): ezP.T3.Expr.identifier
-  block.ezp.setSubtype(block, type)
+  var subtype = newValue? ezP.Do.typeOfString(newValue): ezP.T3.Expr.identifier
+  block.ezp.setSubtype(block, subtype)
+  var subtypes = this.getSubtypes(block)
+  var j = subtypes.indexOf(subtype)
+  if (j == 2) {
+    this.setModifier(block, 0)
+  }
   return
 }
 
@@ -179,7 +276,7 @@ ezP.DelegateSvg.Expr.term.prototype.didChangeValue = function (block, oldValue, 
  * @param {!Blockly.Block} block to be initialized.
  * @param {string} newValue
  */
-ezP.DelegateSvg.Expr.numberliteral.prototype.synchronizeValue = function (block, newValue) {
+ezP.DelegateSvg.Expr.term.prototype.synchronizeValue = function (block, newValue) {
   this.ui.i_1.fields.value.setValue(newValue)
 }
 
@@ -240,89 +337,74 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
   * identifier ::= 
   * parameter_solid ::= identifier ":" expression
   * defparameter_solid ::= parameter "=" expression
+  * module_as_solid ::= module "as" identifier
+  * import_identifier_as_solid ::= identifier "as" identifier
   * (with parameter ::= identifier | parameter_solid)
   * (with module ::= dotted_name)
   */
-  if (this.consolidatingType_) {
-    return
-  }
-  this.consolidatingType_ = true
-  try {
-    var modifier = this.getModifier(block)
-    var modifiers = this.getModifiers(block)
-    var i = modifiers.indexOf(modifier)
-    var withModifier = i > 0
-    // first step: being consistent
-    var flags = this.getVariant(block)
-    var withoutValue = flags & 4 && i === 1
-    var withAnnotation = flags % 2 && i !== 2 && !withoutValue
-    var withDefinition = flags & 2 && i === 0 && !withoutValue
-    var subtype = this.getSubtype(block)
-    var subtypes = this.getSubtypes(block)
-    var j = subtypes.indexOf(subtype)
-    // further checks are based on the subtype.
-    if (!withoutValue) {
-      if (j === 2) {
-        // only one possibility
-        withModifier = withAnnotation = withDefinition = false
-      } else if (j === 1) {
-        withAnnotation = withDefinition = false
-      }
+  var modifier = this.getModifier(block)
+  var modifiers = this.getModifiers(block)
+  var i = modifiers.indexOf(modifier)
+  var withModifier = i > 0
+  // first step: being consistent
+  var flags = this.getVariant(block)
+  var withoutValue = flags & 4
+  var withAnnotation = flags % 2
+  var withDefinition = flags & 2
+  var withAlias = flags & 8
+  var subtype = this.getSubtype(block)
+  var subtypes = this.getSubtypes(block)
+  var j = subtypes.indexOf(subtype)
+  if (withoutValue) {
+    // only one possibility
+    block.outputConnection.setCheck([ezP.T3.Expr.parameter_star])
+  } else if (withAlias) {
+    // only two possibilities
+    block.outputConnection.setCheck(j > 0? [ezP.T3.Expr.module_as_solid]: [ezP.T3.Expr.module_as_solid, ezP.T3.Expr.import_identifier_as_solid])
+  } else if (subtype === ezP.T3.Expr.parent_module) {
+    // only one possibility
+    block.outputConnection.setCheck([subtype])
+  } else if (i === 1) {
+    /* One of
+    * expression_star ::= "*" expression
+    * parameter_star ::= "*" [parameter]
+    * target_star ::= "*" target
+    */
+    if (subtype === ezP.T3.Expr.identifier) {
+      block.outputConnection.setCheck(withAnnotation || withDefinition?[ezP.T3.Expr.parameter_star]: [ezP.T3.Expr.expression_star,
+      ezP.T3.Expr.parameter_star,
+      ezP.T3.Expr.target_star])
+    } else /* if (subtype === ezP.T3.Expr.dotted_name */ {
+      block.outputConnection.setCheck([ezP.T3.Expr.expression_star,
+      ezP.T3.Expr.target_star])
     }
-    flags = withAnnotation?0:1 + withDefinition?0:2 + withoutValue?0:4
-    this.setVariant(flags)
-    this.setNamedInputDisabled(block, ezP.Key.VALUE, withoutValue)
-    this.setNamedInputDisabled(block, ezP.Key.ANNOTATION, !withAnnotation)
-    this.setNamedInputDisabled(block, ezP.Key.DEFINITION, !withDefinition)
-    this.ui.fields.modifier.setVisible(withModifier)
-    if (withoutValue) {
-      // only one possibility
-      block.outputConnection.setCheck([ezP.T3.Expr.parameter_star])
-    } else if (subtype === ezP.T3.Expr.parent_module) {
-      // only one possibility
-      block.outputConnection.setCheck([subtype])
-    } else if (i === 1) {
-      /* One of
-      * expression_star ::= "*" expression
-      * parameter_star ::= "*" [parameter]
-      * target_star ::= "*" target
-      */
-      if (subtype === ezP.T3.Expr.identifier) {
-        block.outputConnection.setCheck(withAnnotation || withDefinition?[ezP.T3.Expr.parameter_star]: [ezP.T3.Expr.expression_star,
-        ezP.T3.Expr.parameter_star,
-        ezP.T3.Expr.target_star])
-      } else /* if (subtype === ezP.T3.Expr.dotted_name */ {
-        block.outputConnection.setCheck([ezP.T3.Expr.expression_star,
-        ezP.T3.Expr.target_star])
-      }
-    } else if (i === 2) {
-      /* One of
-      * expression_star_star ::= "**" expression
-      * parameter_star_star ::= "**" parameter
-      */
-      if (subtype === ezP.T3.Expr.identifier) {
-        block.outputConnection.setCheck([ezP.T3.Expr.expression_star_star,
-        ezP.T3.Expr.parameter_star_star])
-      } else /* if (subtype === ezP.T3.Expr.dotted_name */ {
-        block.outputConnection.setCheck([ezP.T3.Expr.expression_star_star])
-      }
-    } else /* if (i === 0) */ {
-      /* One of
-      * attributeref ::= primary "." identifier
-      * dotted_name ::= identifier ("." identifier)*
-      * parent_module ::= '.'+ [module]
-      * identifier ::= 
-      * parameter_solid ::= identifier ":" expression
-      * defparameter_solid ::= parameter "=" expression
-      */
-      if (subtype === ezP.T3.Expr.identifier) {
-        block.outputConnection.setCheck(withDefinition?([ezP.T3.Expr.defparameter_solid,]):(withAnnotation?([ezP.T3.Expr.parameter_solid,]):([ezP.T3.Expr.identifier, ezP.T3.Expr.dotted_name,])))
-      } else /* if (subtype === ezP.T3.Expr.dotted_name */ {
-        block.outputConnection.setCheck([ezP.T3.Expr.expression_star_star])
-      }
+  } else if (i === 2) {
+    /* One of
+    * expression_star_star ::= "**" expression
+    * parameter_star_star ::= "**" parameter
+    */
+    if (subtype === ezP.T3.Expr.identifier) {
+      block.outputConnection.setCheck([ezP.T3.Expr.expression_star_star,
+      ezP.T3.Expr.parameter_star_star])
+    } else /* if (subtype === ezP.T3.Expr.dotted_name */ {
+      block.outputConnection.setCheck([ezP.T3.Expr.expression_star_star])
     }
-  } finally {
-    delete this.consolidatingType_
+  } else /* if (i === 0) */ {
+    /* One of
+    * attributeref ::= primary "." identifier
+    * dotted_name ::= identifier ("." identifier)*
+    * parent_module ::= '.'+ [module]
+    * identifier ::= 
+    * parameter_solid ::= identifier ":" expression
+    * defparameter_solid ::= parameter "=" expression
+    * module_as_solid ::= module "as" identifier
+    * import_identifier_as_solid ::= identifier "as" identifier
+    */
+    if (subtype === ezP.T3.Expr.identifier) {
+      block.outputConnection.setCheck((withDefinition?([ezP.T3.Expr.defparameter_solid,]):(withAnnotation?([ezP.T3.Expr.parameter_solid,]):([ezP.T3.Expr.identifier, ezP.T3.Expr.dotted_name,]))))
+    } else {
+      block.outputConnection.setCheck([subtype,])
+    }
   }
   ezP.DelegateSvg.Expr.term.superClass_.consolidateType.call(this, block)
 }
@@ -340,6 +422,7 @@ ezP.DelegateSvg.Expr.term.prototype.makeTitle = function (block, op, flags) {
   var withAnnotation = flags % 2
   var withDefinition = flags & 2
   var withoutValue = flags & 4
+  var withAlias = flags & 8
   
   var element = goog.dom.createDom(goog.dom.TagName.SPAN, null,
     ezP.Do.createSPAN(op||' ', 'ezp-code-reserved'),
@@ -356,6 +439,10 @@ ezP.DelegateSvg.Expr.term.prototype.makeTitle = function (block, op, flags) {
     element.appendChild(ezP.Do.createSPAN(' = ', 'ezp-code-reserved'))
     element.appendChild(ezP.Do.createSPAN('…', 'ezp-code-placeholder'))
   }
+  if (withAlias) {
+    element.appendChild(ezP.Do.createSPAN(' as ', 'ezp-code-reserved'))
+    element.appendChild(ezP.Do.createSPAN('…', 'ezp-code-placeholder'))
+  }
   return element
 }
 
@@ -369,6 +456,10 @@ ezP.DelegateSvg.Expr.term.prototype.populateContextMenuFirst_ = function (block,
   var modifiers = this.getModifiers(block)
   var i = modifiers.indexOf(this.getModifier(block))
   var currentFlags = this.getVariant(block)
+  var withAnnotation = currentFlags % 2
+  var withDefinition = currentFlags & 2
+  var withoutValue = currentFlags & 4
+  var withAlias = currentFlags & 8
   var F = function(j, flags) {
     var modifier = modifiers[j]
     if (j !== i || flags !== currentFlags) {
@@ -380,12 +471,13 @@ ezP.DelegateSvg.Expr.term.prototype.populateContextMenuFirst_ = function (block,
       mgr.addChild(menuItem, true)
     }
   }
-  if (currentFlags === 4) {
+  if (withoutValue || withAlias) {
     F(0, 0)
     F(0, 2)
     F(0, 1)
     F(1, 0)
     F(2, 0)
+    F(0, 8)
   } else {
     // add or remove the '=…' part
     if (i) {
@@ -402,6 +494,7 @@ ezP.DelegateSvg.Expr.term.prototype.populateContextMenuFirst_ = function (block,
       F(i, currentFlags & 2)
       F(i, currentFlags | 1)
     }
+    F(0, 8)
   }
   mgr.shouldSeparate()
   var menuItem = new ezP.MenuItem(ezP.Msg.RENAME, function() {

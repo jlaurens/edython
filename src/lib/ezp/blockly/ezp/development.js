@@ -102,23 +102,13 @@ ezP.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks = ezP.DelegateS
 ] , null/*ezP.T3.Expr.Check.expression*/)
 
 
-ezP.DelegateSvg.Expr.import_module.workspaceBlocks = [
+ezP.DelegateSvg.Stmt.import_stmt.workspaceBlocks = [
   ezP.T3.Expr.non_void_module_as_list,
   ezP.T3.Expr.import_module,
   ezP.T3.Expr.module_as_solid,
   ezP.T3.Expr.term,
 ]
 
-ezP.DelegateSvg.Expr.from_relative_module_import.workspaceBlocks = [
-  ezP.T3.Expr.non_void_import_identifier_as_list,
-  ezP.T3.Expr.from_relative_module_import,
-  ezP.T3.Expr.import_identifier_as_solid,
-  ezP.T3.Expr.term,
-]
-
-ezP.DelegateSvg.Expr.from_module_import.workspaceBlocks = [ezP.T3.Expr.from_module_import].concat(ezP.T3.Expr.Check.module)
-
-ezP.DelegateSvg.Stmt.import_stmt.workspaceBlocks = [ezP.T3.Stmt.import_stmt].concat(ezP.DelegateSvg.Expr.import_module.workspaceBlocks).concat(ezP.DelegateSvg.Expr.from_relative_module_import.workspaceBlocks).concat(ezP.DelegateSvg.Expr.from_module_import.workspaceBlocks)
 
 ezP.DelegateSvg.Expr.dict_comprehension.workspaceBlocks =
 ezP.DelegateSvg.Expr.comprehension.workspaceBlocks = [
@@ -311,9 +301,9 @@ ezP.DelegateSvg.Expr.list_display.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Expr.comprehension,
 ], ezP.T3.Expr.Check.starred_item)
 
-ezP.DelegateSvg.Stmt.decorator_stmt.workspaceBlocks =
+ezP.DelegateSvg.Stmt.decorator.workspaceBlocks =
 ezP.DelegateSvg.Stmt.funcdef_part.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Stmt.decorator_stmt,
+  ezP.T3.Stmt.decorator,
   ezP.T3.Expr.term,
   ezP.T3.Expr.dotted_name,
   ezP.T3.Stmt.funcdef_part,
@@ -322,7 +312,7 @@ ezP.DelegateSvg.Stmt.funcdef_part.workspaceBlocks = ezP.Do.arraysMerged([
 ezP.DelegateSvg.Expr.parameter_list.workspaceBlocks)
 
 ezP.DelegateSvg.Stmt.classdef_part.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Stmt.decorator_stmt,
+  ezP.T3.Stmt.decorator,
   ezP.T3.Stmt.classdef_part,
   ezP.T3.Stmt.assignment_stmt,
 ],

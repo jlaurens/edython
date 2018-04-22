@@ -292,6 +292,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       && !doEditableFields(ezP.Key.CODE, ezP.FieldInput)
       && !doEditableFields(ezP.Key.COMMENT, ezP.FieldComment)
       && !doEditableFields(ezP.Key.LONG_STRING, ezP.FieldLongString)
+      && !doEditableFields_(ezP.Key.EDIT)
       && !doEditableFields_(ezP.Key.TERM)
       && !doEditableFields_(ezP.Key.NUMBER)
       && !doEditableFields_(ezP.Key.STRING)
@@ -425,7 +426,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       FF.call(this, ezP.Key.MODIFIER)
       FF.call(this, ezP.Key.PREFIX)
       FF.call(this, ezP.Key.SUFFIX)
-      var keys = ['i_1', 'i_2', 'i_3']
+      var keys = ['i_1', 'i_2', 'i_3', 'i_4']
       for (var i = 0, K; K = keys[i++];) {
         var p = doOneModel.call(this, K)
         if (p) {
@@ -447,14 +448,14 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
 }
 
 /**
- * Init all the properties of the block.
- * @param {!Blockly.Block} block to be initialized..
- */
+* Init all the properties of the block.
+* @param {!Blockly.Block} block to be initialized.
+*/
 ezP.DelegateSvg.prototype.initProperties = function(block) {
-  this.initSubtype(block)
-  this.initValue(block)
   this.initModifier(block)
+  this.initSubtype(block)
   this.initVariant(block)
+  this.initValue(block)
 }
 
 console.warn('implement async and await, see above awaitable and asyncable')
@@ -958,16 +959,16 @@ ezP.DelegateSvg.prototype.renderDrawField_ = function (io) {
     var root = io.field.getSvgRoot()
     if (root) {
       var text = io.field.getDisplayText_()
+      var ezp = io.field.ezp
       if (text.length) {
         // if the text is void, it can not change whether
         // the last character was a letter or not
-        if (io.shouldSeparateField && (text[0] === '=' ||ezP.XRE.id_continue.test(text[0]))) {
+        if (io.shouldSeparateField && (text[0] === '=' ||ezP.XRE.id_continue.test(text[0]) || ezp.isEditing)) {
           // add a separation
           io.cursorX += ezP.Font.space
         }
         io.shouldSeparateField = ezP.XRE.id_continue.test(text[text.length-1]) || text[text.length-1] === '=' || text[text.length-1] === ':'
       }
-      var ezp = io.field.ezp
       var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
       root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
         ', ' + ezP.Padding.t() + ')')
@@ -1334,6 +1335,71 @@ ezP.DelegateSvg.prototype.setInputEnabled = function (block, input, enabled) {
  * @param {!boolean} newValue.
  * @private
  */
+ezP.DelegateSvg.prototype.setInputDisabled = function (block, input, newValue) {
+  var oldValue = input.ezp.disabled_
+  if (!!oldValue === !!newValue) {
+    return
+  }
+  input.ezp.disabled_ = newValue
+  var current = this.skipRendering
+  this.skipRendering = true
+  input.setVisible(!newValue)
+  this.skipRendering = current
+  var c8n = input.connection
+  if (c8n) {
+    c8n.ezp.hidden_ = !!newValue
+    c8n.setHidden(newValue)
+  }
+  if (input.isVisible()) {
+    for (var __ = 0, field; (field = input.fieldRow[__]); ++__) {
+      if (field.getText().length>0) {
+        var root = field.getSvgRoot()
+        if (root) {
+          root.removeAttribute('display')
+        } else {
+          console.log('Field with no root: did you ...initSvg()?')
+        }
+      }
+    }
+    if (c8n) {
+      var target = c8n.targetBlock()
+      if (target) {
+        var root = target.getSvgRoot()
+        if (root) {
+          root.removeAttribute('display')
+        } else {
+          console.log('Block with no root: did you ...initSvg()?')
+        }
+      }
+    }
+  }
+  this.delayedRender(block)
+}
+
+/**
+ * Set the enable/disable status of the given block.
+ * @param {!Block} block.
+ * @private
+ */
+ezP.DelegateSvg.prototype.delayedRender = function (block) {
+  if (!goog.isDef(this.delayedRender)) {
+    this.delayedRender = setTimeout(function(){
+      delete block.ezp.delayedRender
+      if (block.workspace) {
+        block.render()
+      }
+    }, 10)
+  }
+}
+
+/**
+ * Set the enable/disable status of the given block.
+ * @param {!Block} block.
+ * @param {!Input} input.
+ * @param {!String} name  input name.
+ * @param {!boolean} newValue.
+ * @private
+ */
 ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValue) {
   var input = block.getInput(name)
   if (input) {
@@ -1345,45 +1411,7 @@ ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValu
       Blockly.Events.fire(new Blockly.Events.BlockChange(
         block, ezP.Const.Event.input_disable, name, oldValue, newValue));
     }
-    input.ezp.disabled_ = newValue
-    var current = this.skipRendering
-    this.skipRendering = true
-    input.setVisible(!newValue)
-    this.skipRendering = current
-    var c8n = input.connection
-    if (c8n) {
-      c8n.ezp.hidden_ = !!newValue
-      c8n.setHidden(newValue)
-    }
-    if (input.isVisible()) {
-      for (var __ = 0, field; (field = input.fieldRow[__]); ++__) {
-        if (field.getText().length>0) {
-          var root = field.getSvgRoot()
-          if (root) {
-            root.removeAttribute('display')
-          } else {
-            console.log('Field with no root: did you ...initSvg()?')
-          }
-        }
-      }
-      if (c8n) {
-        var target = c8n.targetBlock()
-        if (target) {
-          var root = target.getSvgRoot()
-          if (root) {
-            root.removeAttribute('display')
-          } else {
-            console.log('Block with no root: did you ...initSvg()?')
-          }
-        }
-      }
-    }
-
-    setTimeout(function(){
-      if (block.workspace) {
-        block.render()
-      }
-    }, 1)
+    this.setInputDisabled(block, input, newValue)
   } else {
     console.log('Unable to dis/enable non existing input named '+name)
   }

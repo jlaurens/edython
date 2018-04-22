@@ -17,6 +17,7 @@ class Types:
     re_solid_candidate = re.compile(r'\s*([a-z_][a-z_\d]*)\s*\|\s*(.*)\s*$')
     re_star_identifier = re.compile(r'^\s*"(\*+)"\s*([a-z_][a-z_\d]*)\s*$')
     re_definition = re.compile(r"^\s*(?P<name>[a-zA-Z_][a-zA-Z_\d]*)"
+                               r"(?:\s*\(\s*(?P<is_stmt>stmt)\s*\)\s*)?"
                                r"(?:\s*/\s*(?P<to_dom>[a-zA-Z_](?:[a-zA-Z_\d\|]*[a-zA-Z_\d])?)?)"
                                r"?\s*(?P<op>::=|!!=|\|\|=)?"
                                r"\s*(?P<definition>(?:[^\\]|\\.)*?)"
@@ -106,13 +107,15 @@ class Types:
                 continue
             m = self.re_definition.match(l)
             if m:
-                name, to_dom, op, definition = m.group('name'),\
-                                                 m.group('to_dom'), m.group('op'), m.group('definition')
+                name, is_stmt, to_dom, op, definition = m.group('name'), m.group('is_stmt'), \
+                                                        m.group('to_dom'), m.group('op'), m.group('definition')
                 if to_dom or op:
                     try:
                         t = self.get_type(name, create=True)
                         if op:
                             t.setup_definition(definition, op == r'||=')
+                        if is_stmt:
+                            t.is_stmt = True
                         if to_dom:
                             t.to_dom = self.re_pipe.split(to_dom)
                         if op == '!!=':

@@ -809,8 +809,7 @@ ezP.Xml.Stmt.fromDom = function(block, element) {
 
 goog.require('ezP.DelegateSvg.Import')
 
-ezP.DelegateSvg.Stmt.import_stmt.prototype.xml = 
-ezP.DelegateSvg.Expr.from_relative_module_import.prototype.xml = ezP.DelegateSvg.Expr.from_module_import.prototype.xml = ezP.Xml.InputList
+ezP.DelegateSvg.Stmt.import_stmt.prototype.xml = ezP.Xml.InputList
 
 /**
  * Convert the block to a dom element.
@@ -965,7 +964,7 @@ ezP.DelegateSvg.Expr.term.prototype.xml = ezP.Xml.Text
 
 goog.provide('ezP.Xml.Decorator')
 
-ezP.DelegateSvg.Stmt.decorator_stmt.prototype.xml = ezP.Xml.Decorator
+ezP.DelegateSvg.Stmt.decorator.prototype.xml = ezP.Xml.Decorator
 
 /**
  * Records the operator as attribute.

@@ -956,7 +956,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
     }
     return false
   }
-  return F('i_1') || F('i_2') || F('i_3')
+  return F('i_1') || F('i_2') || F('i_3') || F('i_4')
 }
 
 /**
@@ -1040,7 +1040,7 @@ ezP.MenuManager.prototype.populate_before_after = function (block) {
     ezP.T3.Stmt.else_part,
     ezP.T3.Stmt.finally_part,
     ezP.T3.Stmt.with_part,
-    // ezP.T3.Stmt.decorator_stmt,
+    // ezP.T3.Stmt.decorator,
     // ezP.T3.Stmt.funcdef_part,
     // ezP.T3.Stmt.classdef_part,
     // ezP.T3.Stmt.import_stmt,

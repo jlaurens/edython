@@ -81,11 +81,11 @@ If a parameter has a default value, all following parameters up until the â€œ*â€
 <pre>
 funcdef ::= REMOVE
 async_funcdef ::= REMOVE
-funcdef_part ::= ["async"] "def" funcname "(" [parameter_list] ")" ["->" expression] ":" SUITE
+funcdef_part/funcdef ::= ["async"] "def" funcname "(" [parameter_list] ")" ["->" expression] ":" SUITE
 decorators ::= REMOVE
 decorator ::= REMOVE
-decorator_stmt ::= "@" dotted_name ["(" [argument_list [","]] ")"] NEWLINE
-decorator_stmt <<< decorator_stmt | funcdef_part
+decorator(stmt) ::= "@" dotted_name ["(" [argument_list [","]] ")"] NEWLINE
+decorator <<< decorator | funcdef_part
 </pre>
 
 
@@ -152,7 +152,7 @@ classname   ::=  identifier
 <pre>
 classdef ::= IGNORE
 classdef_part ::=  "class" classname ['(' argument_list ')'] ':'
-decorator_stmt <<< classdef_part
+decorator <<< classdef_part
 </pre>
 
 <pre>

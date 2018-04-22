@@ -554,7 +554,7 @@ var Ks = {
   },
   'finally': ezP.T3.Stmt.finally_part,
   'for': ezP.T3.Stmt.for_part,
-  '@': ezP.T3.Stmt.decorator_stmt,
+  '@': ezP.T3.Stmt.decorator,
   'def': ezP.T3.Stmt.funcdef_part,
   'import': ezP.T3.Stmt.import_stmt,
   'try': ezP.T3.Stmt.try_part,
@@ -725,7 +725,7 @@ Ks = {
     type: ezP.T3.Stmt.global_nonlocal_stmt,
     subtype: 'nonlocal',
   },
-  '@decorator': ezP.T3.Stmt.decorator_stmt,
+  '@decorator': ezP.T3.Stmt.decorator,
   '"""…"""(def)': ezP.T3.Stmt.docstring_def_stmt,
   "'''…'''(def)": ezP.T3.Stmt.docstring_def_stmt,
   '"""…"""': {

@@ -13,6 +13,7 @@
 
 goog.provide('ezP.DelegateSvg.Proc')
 
+goog.require('ezP.DelegateSvg.Term')
 goog.require('ezP.DelegateSvg.Group')
 goog.require('ezP.MenuItem')
 
@@ -40,14 +41,14 @@ goog.require('ezP.MenuItem')
 // })
 // console.warn('implement the statement')
 /**
- * Class for a DelegateSvg, decorator_stmt.
+ * Class for a DelegateSvg, decorator.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-//  decorator_stmt            /*   ::= "@" dotted_name ["(" [argument_list [","]] ")"]    */ : "ezp:decorator_stmt",
-ezP.DelegateSvg.Manager.makeSubclass('decorator_stmt', {
+//  decorator            /*   ::= "@" dotted_name ["(" [argument_list [","]] ")"]    */ : "ezp:decorator",
+ezP.DelegateSvg.Manager.makeSubclass('decorator', {
   inputs: {
     builtins: ['staticmethod', 'classmethod'],
     variants: [ezP.Key.DOTTED_NAME, ezP.Key.BUILTIN, ezP.Key.ARGUMENTS],
@@ -65,7 +66,7 @@ ezP.DelegateSvg.Manager.makeSubclass('decorator_stmt', {
           var block = this.sourceBlock_
           if (block) {
             var ezp = block.ezp
-            var v = ezp.validateValue(block, txt || this.getValue())
+            var v = ezp.validateValue(block, goog.isDef(txt) && txt || this.getValue())
             return v && v.validated
           }
         },
@@ -94,14 +95,14 @@ ezP.DelegateSvg.Manager.makeSubclass('decorator_stmt', {
     }
   }
 })
-ezP.Do.addInstanceProperty(ezP.DelegateSvg.Stmt.decorator_stmt, ezP.Key.BUILTIN)
+ezP.Do.addInstanceProperty(ezP.DelegateSvg.Stmt.decorator, ezP.Key.BUILTIN)
 
 /**
  * Synchronize the UI after a variant change.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
  */
-ezP.DelegateSvg.Stmt.decorator_stmt.prototype.synchronizeVariant = function (block, variant) {
+ezP.DelegateSvg.Stmt.decorator.prototype.synchronizeVariant = function (block, variant) {
   this.setNamedInputDisabled(block, ezP.Key.DOTTED_NAME, variant === ezP.Key.BUILTIN)
   this.setNamedInputDisabled(block, ezP.Key.BUILTIN, variant !== ezP.Key.BUILTIN)
   this.setNamedInputDisabled(block, ezP.Key.ARGUMENTS, variant !== ezP.Key.ARGUMENTS)
@@ -112,7 +113,7 @@ ezP.DelegateSvg.Stmt.decorator_stmt.prototype.synchronizeVariant = function (blo
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
  */
-ezP.DelegateSvg.Stmt.decorator_stmt.prototype.synchronizeBuiltin = function (block, builtin) {
+ezP.DelegateSvg.Stmt.decorator.prototype.synchronizeBuiltin = function (block, builtin) {
   this.ui.i_2.fields.label.setValue(builtin)
 }
 
@@ -121,7 +122,7 @@ ezP.DelegateSvg.Stmt.decorator_stmt.prototype.synchronizeBuiltin = function (blo
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
  */
-ezP.DelegateSvg.Stmt.decorator_stmt.prototype.initValue = function (block) {
+ezP.DelegateSvg.Stmt.decorator.prototype.initValue = function (block) {
   this.setValue(block, this.ui.i_1.fields.dotted_name.getValue())
 }
 
@@ -130,7 +131,7 @@ ezP.DelegateSvg.Stmt.decorator_stmt.prototype.initValue = function (block) {
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
  */
-ezP.DelegateSvg.Stmt.decorator_stmt.prototype.synchronizeValue = function (block, value) {
+ezP.DelegateSvg.Stmt.decorator.prototype.synchronizeValue = function (block, value) {
   this.ui.i_1.fields.dotted_name.setValue(value)
 }
 
@@ -142,7 +143,7 @@ ezP.DelegateSvg.Stmt.decorator_stmt.prototype.synchronizeValue = function (block
  * @param {string} newValue
  * @return true if newValue is acceptable, false otherwise
  */
-ezP.DelegateSvg.Stmt.decorator_stmt.prototype.validateValue = function (block, newValue) {
+ezP.DelegateSvg.Stmt.decorator.prototype.validateValue = function (block, newValue) {
   var subtypes = this.getSubtypes(block)
   var subtype = ezP.Do.typeOfString(newValue)
   return (subtypes.indexOf(subtype)>= 0) && {validated: newValue} || null
@@ -155,7 +156,7 @@ ezP.DelegateSvg.Stmt.decorator_stmt.prototype.validateValue = function (block, n
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
-ezP.DelegateSvg.Stmt.decorator_stmt.prototype.isWhite = function (block) {
+ezP.DelegateSvg.Stmt.decorator.prototype.isWhite = function (block) {
   return block.nextConnection.isConnected()
 }
 
@@ -165,7 +166,7 @@ ezP.DelegateSvg.Stmt.decorator_stmt.prototype.isWhite = function (block) {
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-ezP.DelegateSvg.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+ezP.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var value = this.getValue(block)
   var builtin = this.getBuiltin(block)
   var builtins = this.getBuiltins(block)
@@ -214,7 +215,7 @@ ezP.DelegateSvg.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = functi
   menuItem.setEnabled(i_v !== 2)
   mgr.addChild(menuItem)
   mgr.shouldSeparate()
-  return ezP.DelegateSvg.Stmt.decorator_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return ezP.DelegateSvg.Stmt.decorator.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 /**
@@ -360,8 +361,8 @@ ezP.DelegateSvg.Stmt.classdef_part.prototype.populateContextMenuFirst_ = functio
 }
 
 ezP.DelegateSvg.Proc.T3s = [
-  ezP.T3.Expr.dotted_name,
-  ezP.T3.Stmt.decorator_stmt,
+  ezP.T3.Expr.term,
+  ezP.T3.Stmt.decorator,
   ezP.T3.Stmt.funcdef_part,
   ezP.T3.Stmt.classdef_part,
 ]

@@ -22,9 +22,8 @@ import_module ::= "import" non_void_module_as_list
 non_void_module_as_list ::= module_as ( "," module_as )*
 # module_as is not just an identifier, to simplify the UI management
 # module might represent here an object from a python module
-module_as ::= module ["as" module_alias]
+module_as ::= module ["as" identifier]
 module ::= module_name ['.' module]
-module_alias ::= identifier
 #name  ::=  identifier
 name ::= IGNORE
 module_name ::= identifier
@@ -59,7 +58,7 @@ ezP.DelegateSvg.Expr._as_solid.model__ = {
 
 /**
  * Class for a DelegateSvg, module_as_solid.
- * module_as ::= module ["as" module_alias]
+ * module_as ::= module ["as" identifier]
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
@@ -73,7 +72,7 @@ ezP.DelegateSvg.Manager.makeSubclass('module_as_solid', {
       plugged: ezP.T3.Expr.module,
     },
     i_3: {
-      plugged: ezP.T3.Expr.module_alias,
+      plugged: ezP.T3.Expr.identifier,
     },
   },
 }, ezP.DelegateSvg.Expr._as_solid)
@@ -97,36 +96,6 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_module_as_list', {
     },
   },
 })
-
-/////////////////     import_module      ///////////////////
-
-/**
- * Class for a DelegateSvg, import module.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('import_module', {
-  inputs: {
-    i_1: {
-      label: 'import',
-      css_class: 'ezp-code-reserved',
-      key: ezP.Key.IMPORT,
-      wrap: ezP.T3.Expr.non_void_module_as_list,
-    },
-  },
-})
-
-/////////////////////  from_relative_module_import  ///////////////////////////
-/*
-from_relative_module_import ::= "from" relative_module "import" non_void_identifier_as_list
-# relative_module ::=  "."* module | "."+
-non_void_identifier_as_list ::= import_identifier_as ( "," import_identifier_as )*
-import_identifier_as ::= identifier "as" import_name
-identifier ::= an identifier but not as a variable name here
-import_name ::= identifier
-*/
 
 /**
  * Class for a DelegateSvg, import_identifier_as_solid.
@@ -168,16 +137,25 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_import_identifier_as_list', {
   },
 })
 
+
+/////////////////     import_stmt      ///////////////////
+
 /**
- * Class for a DelegateSvg, from_relative_module_import module.
+ * Class for a DelegateSvg, import_stmt.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('from_relative_module_import', {
+ezP.DelegateSvg.Manager.makeSubclass('import_stmt', {
   inputs: {
     i_1: {
+      label: 'import',
+      css_class: 'ezp-code-reserved',
+      key: ezP.Key.IMPORT_MODULE,
+      wrap: ezP.T3.Expr.non_void_module_as_list,
+    },
+    i_2: {
       label: 'from',
       css_class: 'ezp-code-reserved',
       key: ezP.Key.FROM,
@@ -191,80 +169,51 @@ ezP.DelegateSvg.Manager.makeSubclass('from_relative_module_import', {
       key: ezP.Key.IMPORT,
       wrap: ezP.T3.Expr.non_void_import_identifier_as_list,
     },
-  },
-})
-
-/////////////////     from_module_import      ///////////////////
-
-/**
- * Class for a DelegateSvg, from_module_import.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('from_module_import', {
-  inputs: {
-    i_1: {
+    i_4: {
       label: 'from',
       css_class: 'ezp-code-reserved',
       key: ezP.Key.MODULE,
       check: ezP.T3.Expr.Check.module,
       hole_value: 'module',
-    },
-    suffix: {
-      label: 'import *',
-      css_class: 'ezp-code-reserved',
-    },
-  },
-})
-
-/////////////////     import_stmt      ///////////////////
-
-/**
- * Class for a DelegateSvg, import_stmt.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('import_stmt', {
-  inputs: {
-    subtypes: [ezP.T3.Expr.import_module, ezP.T3.Expr.from_relative_module_import,ezP.T3.Expr.from_module_import],
-    i_1: {
-      wrap: ezP.T3.Expr.import_module,
-    },
-    i_2: {
-      wrap: ezP.T3.Expr.from_relative_module_import,
-    },
-    i_3: {
-      wrap: ezP.T3.Expr.from_module_import,
+      end: 'import *',
     },
   },
 })
 
 /**
- * Hook after the subtype change.
- * Default implementation does nothing.
- * Subclassers will take care of undo compliance.
- * Event recording is disabled.
+ * Validates the new variant: 3 values.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} oldSubtype
- * @param {string} newSubtype
+ * @param {string} newVariant
+ * @return true if newVariant is acceptable, false otherwise
  */
-ezP.DelegateSvg.Stmt.import_stmt.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
-  ezP.DelegateSvg.Stmt.import_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  var subtypes = this.getModel().inputs.subtypes
-  for (var i = 0, k; (k = subtypes[i++]);) {
-    block.ezp.setNamedInputDisabled(block, k, (k !== newSubtype))
-  }
+ezP.DelegateSvg.Stmt.import_stmt.prototype.validateVariant = function (block, newVariant) {
+  return goog.isNumber(newVariant) && 0 <= newVariant && newVariant < 3 && {validated: newVariant} || null
 }
 
-ezP.DelegateSvg.Stmt.import_stmt.prototype.willRender_ = function(block) {
-  ezP.DelegateSvg.Stmt.import_stmt.superClass_.willRender_.call(block.ezp, block)
-
+/**
+ * synchronize the variant with the UI.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newVariant
+ */
+ezP.DelegateSvg.Stmt.import_stmt.prototype.synchronizeVariant = function (block, newVariant) {
+  var disabled_1 = true, disabled_23 = true, disabled_4 = true
+  switch(newVariant) {
+    case 0:
+    disabled_1 = false
+    break
+    case 1:
+    disabled_23 = false
+    break
+    case 2:
+    disabled_4 = false
+    break
+  }
+  this.setInputDisabled(block, this.ui.i_1.input, disabled_1)
+  this.setInputDisabled(block, this.ui.i_2.input, disabled_23)
+  this.setInputDisabled(block, this.ui.i_3.input, disabled_23)
+  this.setInputDisabled(block, this.ui.i_4.input, disabled_4)
 }
 
 /**
@@ -282,15 +231,13 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function(block) {
  * @private
  */
 ezP.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var values = block.ezp.getModel().inputs.subtypes
-  var menu = mgr.menu
-  var current = block.ezp.getSubtype(block)
-  var F = function(content, key) {
+  var current = block.ezp.getVariant(block)
+  var F = function(content, variant) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setSubtype(block, key)
+      block.ezp.setVariant(block, variant)
     })
     mgr.addChild(menuItem, true)
-    menuItem.setEnabled(key !== current)
+    menuItem.setEnabled(variant !== current)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
     ezP.Do.createSPAN('import ', 'ezp-code-reserved'),
@@ -298,7 +245,7 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
     goog.dom.createTextNode(' ['),
     ezP.Do.createSPAN('as', 'ezp-code-reserved'),
     goog.dom.createTextNode(' ...]'),
-  ), values[0])
+  ), 0)
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
     ezP.Do.createSPAN('from ', 'ezp-code-reserved'),
     ezP.Do.createSPAN('module ', 'ezp-code-placeholder'),
@@ -306,12 +253,12 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
     goog.dom.createTextNode('… ['),
     ezP.Do.createSPAN('as', 'ezp-code-reserved'),
     goog.dom.createTextNode(' …]'),
-  ), values[1])
+  ), 1)
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
     ezP.Do.createSPAN('from ', 'ezp-code-reserved'),
     ezP.Do.createSPAN('module ', 'ezp-code-placeholder'),
     ezP.Do.createSPAN('import *', 'ezp-code-reserved'),
-  ), values[2])
+  ), 2)
   mgr.shouldSeparate()
   return ezP.DelegateSvg.Stmt.import_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
 }
@@ -337,13 +284,11 @@ ezP.DelegateSvg.Manager.makeSubclass('future_statement', {
 })
 
 ezP.DelegateSvg.Import.T3s = [
+  ezP.T3.Expr.term,
   ezP.T3.Expr.module_as_solid,
   ezP.T3.Expr.non_void_module_as_list,
-  ezP.T3.Expr.import_module,
   ezP.T3.Expr.import_identifier_as_solid,
   ezP.T3.Expr.non_void_import_identifier_as_list,
-  ezP.T3.Expr.from_relative_module_import,
-  ezP.T3.Expr.from_module_import,
   ezP.T3.Stmt.import_stmt,
   ezP.T3.Stmt.future_statement,  
 ]

@@ -401,7 +401,7 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
           return true
         }
       }
-      return !checkB || checkB.indexOf(typeA)>=0 || checkB.indexOf(typeA+'.'+c8nA.name_)>=0 || checkB.indexOf('.'+c8nA.name_)>=0
+      return !checkA || checkA.indexOf(typeB)>=0 || checkA.indexOf(typeB+'.'+c8nB.name_)>=0 || checkA.indexOf('.'+c8nB.name_)>=0
     } /* if (c8nA.ezp.name_) */
     if (c8nB.ezp.name_) {
       // c8nB is the connection of an input
@@ -431,7 +431,7 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
           return true
         }
       }
-      return !checkA || checkA.indexOf(typeB)>=0 || checkA.indexOf(typeB+'.'+c8nB.name_)>=0 || checkA.indexOf('.'+c8nB.name_)>=0
+      return !checkB || checkB.indexOf(typeA)>=0 || checkB.indexOf(typeA+'.'+c8nA.name_)>=0 || checkB.indexOf('.'+c8nA.name_)>=0
     } /* if (c8nB.ezp.name_) */
     if (checkA && checkA.indexOf(typeB)<0) {
       return false

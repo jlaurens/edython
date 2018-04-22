@@ -60,27 +60,19 @@ module          ::=  (identifier ".")* identifier
 relative_module ::=  "."* module | "."+
 
 <pre>
-import_stmt/import ::= import_module | from_relative_module_import | from_module_import
-import_module ::= "import" non_void_module_as_list
-from_relative_module_import ::= "from" relative_module "import" non_void_import_identifier_as_list
-from_module_import ::= "from" module "import" "*"
+import_stmt/import ::=  "import" non_void_module_as_list
+                     | "from" relative_module "import" non_void_import_identifier_as_list
+                     | "from" module "import" "*"
 non_void_module_as_list ::= module_as ( "," module_as )*
-module_as ::= module ["as" module_alias]
-module ::= module_name ['.' module]
-module_alias ::= identifier
-name ::= IGNORE
+module_as ::= module ["as" identifier]
 term  ::=  "not just an identifier"
-module_name ::= identifier
-
 # relative_module ::=  "."* module | "."+
 relative_module ::=  module | parent_module
 parent_module ::= '.'+ [module]
 module ::= dotted_name
 non_void_import_identifier_as_list ::= import_identifier_as ( "," import_identifier_as )*
-import_identifier_as ::= import_identifier ["as" import_alias]
 identifier ::=
-import_identifier ::= identifier
-import_alias ::= identifier
+import_identifier_as ::= identifier | identifier "as" identifier
 #the usage name of an imported identifier
 </pre>
 In *_named, the 'as' part is optional.
