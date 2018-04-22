@@ -573,7 +573,8 @@ ezP.DelegateSvg.Manager.makeSubclass('expression_stmt', {
 ezP.DelegateSvg.Manager.makeSubclass('docstring_top_stmt', {
   inputs: {
     i_1: {
-      wrap: ezP.T3.Expr.longstringliteral,
+      wrap: ezP.T3.Expr.longliteral,
+      check: ezP.T3.Expr.Check.longliteral,
     },
   },
 })
@@ -597,7 +598,8 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt
  ezP.DelegateSvg.Manager.makeSubclass('docstring_def_stmt', {
   inputs: {
     i_1: {
-      wrap: ezP.T3.Expr.longstringliteral,
+      wrap: ezP.T3.Expr.longliteral,
+      check: ezP.T3.Expr.Check.longliteral,
     },
   },
 })
