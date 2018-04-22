@@ -256,7 +256,7 @@ ezP.XRE = {
     (?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl}|\\p{Mn}|\\p{Mc}|\\p{Nd}|\\p{Pc})*
   )$`, 'x'),
   id_wrapped: XRegExp(`^(?<id>.*?)\\.wrapped:(?<name>[a-zA-Z_][a-zA-Z_0-9]*)$`, 'x'),
-  concrete: XRegExp(`^(?<core>.*?)_concrete$`),
+  solid: XRegExp(`^(?<core>.*?)_solid$`),
   event_property: XRegExp(`^ezp:property:(?<key>.*?)$`),
 }
 

@@ -629,7 +629,7 @@ ezP.Delegate.prototype.type_ = undefined
  */
 ezP.Delegate.prototype.setupType = function (block, optNewType) {
   optNewType && (block.type = optNewType)
-  var m = /^ezp:((?:fake_)?((.*?)(?:_concrete)?))$/.exec(block.type)
+  var m = /^ezp:((?:fake_)?((.*?)(?:_solid)?))$/.exec(block.type)
   this.pythonType_ = m? m[1]: block.type
   this.type_ = m? 'ezp:'+m[2]: block.type
   this.xmlType_ = m? m[3]: block.type

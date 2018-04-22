@@ -252,10 +252,10 @@ Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
  * 4) block.ezp.constructor
  * Otherwise an xml element with the block's tag name is created.
  * Then it is populated with the toDom method.
- * There are 5 particular situations: literal, augmented assignments and comparisons, wrapped blocks, list blocks and finally concrete blocks.
+ * There are 5 particular situations: literal, augmented assignments and comparisons, wrapped blocks, list blocks and finally solid blocks.
  * 1) Literal blocks include various numbers and strings.
  * They all share the same tag name: ezp:literal.
- * The concrete block type is guessed from
+ * The solid block type is guessed from
  * the nature of the block content.
  * It's easy to encode such blocks, but decoding is based on the use
  * of a regular expression.
@@ -273,11 +273,11 @@ Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
  * The same holds for comparison blocks, mutatis mutandis.
  * 3) List blocks are meant to be wrapped. They should never appear
  * as top blocks. When wrapped, the tag name is always ezp:list.
- * The concrete type is encoded in the input attribute,
+ * The solid type is encoded in the input attribute,
  * it also depends on the enclosing block.
  * 4) Wrapped blocks other than lists will not add an xml child level.
  * As a consequence, this method just returns nothing for such blocks.
- * 5) concrete blocks are named after their type which ezp:foo_concrete.
+ * 5) solid blocks are named after their type which ezp:foo_concrete.
  * These block types correspond to an alternate in the python grammar.
  * The persistence storage may remember these blocks as ezp:foo instead of ezp:foo_concrete.
  * @param {!Blockly.Block} block The root block to encode.
@@ -480,18 +480,18 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
   } else {
     prototypeName = name
   }
-  // Now create the block, either concrete or not
+  // Now create the block, either solid or not
   var id = xmlBlock.getAttribute('id')
 
-  var concrete = prototypeName + '_concrete'
-  var controller = ezP.DelegateSvg.Manager.get(concrete)
+  var solid = prototypeName + '_solid'
+  var controller = ezP.DelegateSvg.Manager.get(solid)
   if (controller) {
     if (controller.ezp && goog.isFunction(controller.ezp.domToBlock)) {
       return controller.ezp.domToBlock(xmlBlock, workspace, id)
     } else if (goog.isFunction(controller.domToBlock)) {
       return controller.domToBlock(xmlBlock, workspace, id)
     }
-    block = ezP.DelegateSvg.newBlockComplete(workspace, concrete, id)
+    block = ezP.DelegateSvg.newBlockComplete(workspace, solid, id)
   } else if ((controller = ezP.DelegateSvg.Manager.get(prototypeName))) {
     if (controller.ezp && goog.isFunction(controller.ezp.domToBlock)) {
       return controller.ezp.domToBlock(xmlBlock, workspace, id)
@@ -1544,7 +1544,7 @@ goog.require('ezP.DelegateSvg.Operator')
  * @return true if the given value is accepted, false otherwise
  */
 ezP.DelegateSvg.Operator.prototype.xmlTagName = function (block) {
-  var m = XRegExp.exec(block.type, ezP.XRE.concrete)
+  var m = XRegExp.exec(block.type, ezP.XRE.solid)
   if (m) {
     return m.core
   }

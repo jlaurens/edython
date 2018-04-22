@@ -178,6 +178,7 @@ ezP.DelegateSvg.Comprehension.T3s = [
   ezP.T3.Expr.comp_if,
   ezP.T3.Expr.comp_iter_list,
   ezP.T3.Expr.dict_comprehension,
+  ezP.T3.Expr.term,
   ezP.T3.Expr.key_datum_concrete,
   ezP.T3.Expr.generator_expression
 ]

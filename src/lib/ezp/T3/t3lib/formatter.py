@@ -77,7 +77,7 @@ class Formatter:
     @classmethod
     def minimize(cls, text):
         """
-        Used to make some types concrete
+        Used to make some types solid
         :param text: the shortenized (part of a) definition of a type
         :return: text with any occurrence of "OPTIONAL" removed
         """

@@ -708,7 +708,7 @@ ezP.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
         goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
       )
     }
-    case ezP.T3.Expr.parameter_concrete:
+    case ezP.T3.Expr.key_datum_concrete:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN(': ', 'ezp-code'),
       ezP.Do.createSPAN('…', 'ezp-code-placeholder'),
@@ -1162,7 +1162,7 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
     ezP.T3.Expr.parent_module,
     ezP.T3.Expr.module_as_concrete,
     ezP.T3.Expr.import_identifier_as_concrete,
-    [ezP.T3.Expr.parameter_concrete, ezP.Key.NAME],
+    [ezP.T3.Expr.key_datum_concrete, ezP.Key.NAME],
     [ezP.T3.Expr.defparameter_concrete, ezP.Key.NAME],
     [ezP.T3.Expr.proper_slice, ezP.Key.UPPER_BOUND],
     [ezP.T3.Expr.proper_slice, ezP.Key.STRIDE],

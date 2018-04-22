@@ -56,7 +56,7 @@ ezP.DelegateSvg.Manager.makeSubclass(ezP.Key.TERM, {
       },
     },
     i_2: {
-      key: ezP.Key.ANNOTATION,
+      key: ezP.Key.DATUM,
       label: ':',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
@@ -114,7 +114,7 @@ ezP.DelegateSvg.Expr.term.prototype.noBlockWrapped = function (block) {
  */
 ezP.DelegateSvg.Expr.term.prototype.initVariant = function (block) {
   ezP.DelegateSvg.Expr.term.superClass_.initVariant.call(this, block)
-  this.setVariant(block, 0) || this.consolidateType(block)
+  this.setVariant(block, 0)
 }
 
 /**
@@ -142,18 +142,11 @@ ezP.DelegateSvg.Expr.term.prototype.didChangeVariant = function(block, oldVarian
 }
 
 /**
- * When the modifier did change.
+ * Synchornize the modifier with the ui.
  * @param {!Blockly.Block} block to be initialized.
- * @param {string} oldModifier
  * @param {string} newModifier
  */
-ezP.DelegateSvg.Expr.term.prototype.didChangeModifier = function(block, oldModifier, newModifier) {
-  ezP.DelegateSvg.Expr.term.superClass_.didChangeModifier.call(this, block, oldModifier, newModifier)
-  var modifiers = this.getModifiers(block)
-  var i = modifiers.indexOf(newModifier)
-  if (i<0) {
-    i = 0
-  }
+ezP.DelegateSvg.Expr.term.prototype.synchronizeModifier = function(block, newModifier) {
   var field = block.ezp.ui.fields.modifier
   field.setValue(newModifier)
   field.setVisible(newModifier && newModifier.length>0)
@@ -162,11 +155,8 @@ ezP.DelegateSvg.Expr.term.prototype.didChangeModifier = function(block, oldModif
 /**
  * Initialize the value.
  * @param {!Blockly.Block} block to be initialized.
- * @param {string} oldValue
- * @param {string} newValue
  */
 ezP.DelegateSvg.Expr.term.prototype.initValue = function (block) {
-  ezP.DelegateSvg.Expr.term.superClass_.initValue.call(this, block)
   this.setValue(block, this.ui.i_1.fields.value.getValue() || '')
   return
 }
@@ -185,12 +175,12 @@ ezP.DelegateSvg.Expr.term.prototype.didChangeValue = function (block, oldValue, 
 }
 
 /**
- * When the value did change, sets the subtype accordingly.
+ * Synchronize the value with the ui.
  * @param {!Blockly.Block} block to be initialized.
  * @param {string} newValue
  */
-ezP.DelegateSvg.Expr.numberliteral.prototype.synchronizeValue = function (block) {
-  this.ui.i_1.fields.value.setValue(this.getValue() || '')
+ezP.DelegateSvg.Expr.numberliteral.prototype.synchronizeValue = function (block, newValue) {
+  this.ui.i_1.fields.value.setValue(newValue)
 }
 
 /**
@@ -204,7 +194,7 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.synchronizeValue = function (block)
 ezP.DelegateSvg.Expr.term.prototype.validateValue = function (block, newValue) {
   var subtypes = this.getSubtypes(block)
   var subtype = ezP.Do.typeOfString(newValue)
-  return (subtypes.indexOf(subtype)>= 0) && {validated: newValue}
+  return (subtypes.indexOf(subtype)>= 0) && {validated: newValue} || null
 }
 
 /**
@@ -248,9 +238,9 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
   * dotted_name ::= identifier ("." identifier)*
   * parent_module ::= '.'+ [module]
   * identifier ::= 
-  * parameter_concrete ::= identifier ":" expression
+  * key_datum_concrete ::= identifier ":" expression
   * defparameter_concrete ::= parameter "=" expression
-  * (with parameter ::= identifier | parameter_concrete)
+  * (with parameter ::= identifier | key_datum)
   * (with module ::= dotted_name)
   */
   if (this.consolidatingType_) {
@@ -282,7 +272,7 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
     flags = withAnnotation?0:1 + withDefinition?0:2 + withoutValue?0:4
     this.setVariant(flags)
     this.setNamedInputDisabled(block, ezP.Key.VALUE, withoutValue)
-    this.setNamedInputDisabled(block, ezP.Key.ANNOTATION, !withAnnotation)
+    this.setNamedInputDisabled(block, ezP.Key.DATUM, !withAnnotation)
     this.setNamedInputDisabled(block, ezP.Key.DEFINITION, !withDefinition)
     this.ui.fields.modifier.setVisible(withModifier)
     if (withoutValue) {
@@ -322,11 +312,11 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
       * dotted_name ::= identifier ("." identifier)*
       * parent_module ::= '.'+ [module]
       * identifier ::= 
-      * parameter_concrete ::= identifier ":" expression
+      * key_datum_concrete ::= identifier ":" expression
       * defparameter_concrete ::= parameter "=" expression
       */
       if (subtype === ezP.T3.Expr.identifier) {
-        block.outputConnection.setCheck(withDefinition?([ezP.T3.Expr.defparameter_concrete,]):(withAnnotation?([ezP.T3.Expr.parameter_concrete,]):([ezP.T3.Expr.identifier, ezP.T3.Expr.dotted_name,])))
+        block.outputConnection.setCheck(withDefinition?([ezP.T3.Expr.defparameter_concrete,]):(withAnnotation?([ezP.T3.Expr.key_datum_concrete,]):([ezP.T3.Expr.identifier, ezP.T3.Expr.dotted_name,])))
       } else /* if (subtype === ezP.T3.Expr.dotted_name */ {
         block.outputConnection.setCheck([ezP.T3.Expr.expression_star_star])
       }
