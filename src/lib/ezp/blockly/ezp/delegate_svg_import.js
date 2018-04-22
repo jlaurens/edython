@@ -37,12 +37,12 @@ module_name ::= identifier
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr._as_concrete = function (prototypeName) {
-  ezP.DelegateSvg.Expr._as_concrete.superClass_.constructor.call(this, prototypeName)
+ezP.DelegateSvg.Expr._as_solid = function (prototypeName) {
+  ezP.DelegateSvg.Expr._as_solid.superClass_.constructor.call(this, prototypeName)
 }
-goog.inherits(ezP.DelegateSvg.Expr._as_concrete, ezP.DelegateSvg.Expr)
+goog.inherits(ezP.DelegateSvg.Expr._as_solid, ezP.DelegateSvg.Expr)
 
-ezP.DelegateSvg.Expr._as_concrete.model__ = {
+ezP.DelegateSvg.Expr._as_solid.model__ = {
   inputs: {
     i_1: {
       key: ezP.Key.SOURCE,
@@ -58,14 +58,14 @@ ezP.DelegateSvg.Expr._as_concrete.model__ = {
 }
 
 /**
- * Class for a DelegateSvg, module_as_concrete.
+ * Class for a DelegateSvg, module_as_solid.
  * module_as ::= module ["as" module_alias]
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('module_as_concrete', {
+ezP.DelegateSvg.Manager.makeSubclass('module_as_solid', {
   inputs: {
     i_1: {
       check: ezP.T3.Expr.Check.module,
@@ -76,7 +76,7 @@ ezP.DelegateSvg.Manager.makeSubclass('module_as_concrete', {
       plugged: ezP.T3.Expr.module_alias,
     },
   },
-}, ezP.DelegateSvg.Expr._as_concrete)
+}, ezP.DelegateSvg.Expr._as_solid)
 
 /**
  * Class for a DelegateSvg, non_void_module_as_list block.
@@ -129,13 +129,13 @@ import_name ::= identifier
 */
 
 /**
- * Class for a DelegateSvg, import_identifier_as_concrete.
+ * Class for a DelegateSvg, import_identifier_as_solid.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('import_identifier_as_concrete', {
+ezP.DelegateSvg.Manager.makeSubclass('import_identifier_as_solid', {
   inputs: {
     i_1: {
       check: ezP.T3.Expr.identifier,
@@ -146,7 +146,7 @@ ezP.DelegateSvg.Manager.makeSubclass('import_identifier_as_concrete', {
       plugged: ezP.T3.Expr.import_alias,
     },
   },
-}, ezP.DelegateSvg.Expr._as_concrete)
+}, ezP.DelegateSvg.Expr._as_solid)
 
 /**
  * Class for a DelegateSvg, non_void_import_identifier_as_list block.
@@ -337,10 +337,10 @@ ezP.DelegateSvg.Manager.makeSubclass('future_statement', {
 })
 
 ezP.DelegateSvg.Import.T3s = [
-  ezP.T3.Expr.module_as_concrete,
+  ezP.T3.Expr.module_as_solid,
   ezP.T3.Expr.non_void_module_as_list,
   ezP.T3.Expr.import_module,
-  ezP.T3.Expr.import_identifier_as_concrete,
+  ezP.T3.Expr.import_identifier_as_solid,
   ezP.T3.Expr.non_void_import_identifier_as_list,
   ezP.T3.Expr.from_relative_module_import,
   ezP.T3.Expr.from_module_import,

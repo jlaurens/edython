@@ -51,6 +51,7 @@ ezP.Xml = {
   BUILTIN_CALL: 'ezp:builtin_call',
   GLOBAL: 'ezp:global',
   NONLOCAL: 'ezp:nonlocal',
+  PLACEHOLDER: 'ezp:placeholder',// convenient
 }
 
 /**
@@ -277,9 +278,9 @@ Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
  * it also depends on the enclosing block.
  * 4) Wrapped blocks other than lists will not add an xml child level.
  * As a consequence, this method just returns nothing for such blocks.
- * 5) solid blocks are named after their type which ezp:foo_concrete.
+ * 5) solid blocks are named after their type which ezp:foo_solid.
  * These block types correspond to an alternate in the python grammar.
- * The persistence storage may remember these blocks as ezp:foo instead of ezp:foo_concrete.
+ * The persistence storage may remember these blocks as ezp:foo instead of ezp:foo_solid.
  * @param {!Blockly.Block} block The root block to encode.
  * @param {boolean} optNoId True if the encoder should skip the block id.
  * @return {!Element} Tree of XML elements, possibly null.
@@ -539,9 +540,7 @@ ezP.Xml.fromDom = function (block, element) {
 
 //////////////  basic methods
 
-ezP.Xml.Input = {
-  Named: {}
-}
+goog.provide('ezP.Xml.Input.Named')
 
 /**
  * Convert the block's input to a dom element.
@@ -594,9 +593,18 @@ ezP.Xml.Input.toDom = function(input, element, optNoId, optNoName) {
  * @param {boolean} optNoId.
  * @return the added child, if any
  */
-ezP.Xml.Input.Named.toDom = function(block, name, element, optNoId) {
+ezP.Xml.Input.Named.toDom = function(block, name, element, optNoId, withPlaceholder) {
   var input = block.getInput(name)
-  return input? ezP.Xml.Input.toDom(input, element, optNoId): undefined
+  if (input) {
+    var out = ezP.Xml.Input.toDom(input, element, optNoId)
+    if (!out && withPlaceholder) {
+      var child = goog.dom.createDom(ezP.Xml.PLACEHOLDER)
+      child.setAttribute(ezP.Xml.INPUT, name)
+      goog.dom.appendChild(element, child)
+      return true
+    }
+  }
+  return out
 }
 
 /**
@@ -624,6 +632,9 @@ ezP.Xml.Input.fromDom = function(input, element) {
       }
       // find an xml child with the proper input attribute
       for (var i = 0, child; (child = element.childNodes[i++]);) {
+        if (child.tagName && child.tagName.toLowerCase() === ezP.Xml.PLACEHOLDER) {
+          continue
+        }
         if (goog.isFunction(child.getAttribute)) {
           if (input.type === Blockly.INPUT_VALUE) {
             var attribute = child.getAttribute(ezP.Xml.INPUT)
@@ -656,13 +667,27 @@ ezP.Xml.Input.fromDom = function(input, element) {
  * @param {!Blockly.Block} block The block to be converted.
  * @param {string} name The name of the input
  * @param {Element} element a dom element in which to save the input
- * @return the added child, if any
+ * @param {boolean} withPlaceholder a dom element in which to save the input
+ * @return the added child, if any, or just true in case of a placeholder
  */
-ezP.Xml.Input.Named.fromDom = function(block, name, element) {
+ezP.Xml.Input.Named.fromDom = function(block, name, element, withPlaceholder) {
   var input = block.getInput(name)
   if (input) {
-    return ezP.Xml.Input.fromDom(input, element)
+    var out = ezP.Xml.Input.fromDom(input, element)
+    if (!out && withPlaceholder) {
+      for (var i = 0, child; (child = element.childNodes[i++]);) {
+        if (child.tagName && child.tagName.toLowerCase() === ezP.Xml.PLACEHOLDER) {
+          if (goog.isFunction(child.getAttribute)) {
+            var attribute = child.getAttribute(ezP.Xml.INPUT)
+            if (attribute && attribute === input.name) {
+              return true
+            }
+          }
+        }
+      }
+    }
   }
+  return out
 }
 
 goog.provide('ezP.Xml.InputList')
@@ -1299,7 +1324,7 @@ ezP.Xml.namedListInputToDom = function(block, name, element, optNoId) {
   if (input) {
     var target = input.connection.targetBlock()
     if (target) {
-      var child = goog.dom.createDom('ezp:list')
+      var child = goog.dom.createDom(ezP.Xml.LIST)
       if (ezP.Xml.toDom(target, child, optNoId)) {
         goog.dom.appendChild(element, child)
         child.setAttribute(ezP.Xml.INPUT, input.name)
@@ -1368,7 +1393,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.xml = ezP.Xml.Value
 ezP.DelegateSvg.Expr.any.prototype.xml = ezP.Xml.Text
 
 
-ezP.DelegateSvg.Expr.proper_slice.prototype.xml = ezP.DelegateSvg.Expr.conditional_expression_concrete.prototype.xml = ezP.Xml.InputList
+ezP.DelegateSvg.Expr.proper_slice.prototype.xml = ezP.DelegateSvg.Expr.conditional_expression_solid.prototype.xml = ezP.Xml.InputList
 
 
 goog.provide('ezP.Xml.SingleInput')
@@ -1396,14 +1421,14 @@ ezP.Xml.SingleInput.fromDom = function(block, xml) {
   return xml.childNodes.length && ezP.Xml.Input.fromDom(block.inputList[0], xml.childNodes[0])
 }
 
-ezP.DelegateSvg.Expr.or_expr_star.prototype.xml = ezP.DelegateSvg.Expr.or_expr_star_star.prototype.xml = ezP.DelegateSvg.Expr.not_test_concrete.prototype.xml = ezP.Xml.SingleInput
+ezP.DelegateSvg.Expr.or_expr_star.prototype.xml = ezP.DelegateSvg.Expr.or_expr_star_star.prototype.xml = ezP.DelegateSvg.Expr.not_test_solid.prototype.xml = ezP.Xml.SingleInput
 
 // ezP.DelegateSvg.Expr.T3s = [
 //   ezP.DelegateSvg.Expr.proper_slice,
-//   ezP.DelegateSvg.Expr.conditional_expression_concrete,
+//   ezP.DelegateSvg.Expr.conditional_expression_solid,
 //   ezP.DelegateSvg.Expr.or_expr_star,
 //   ezP.DelegateSvg.Expr.or_expr_star_star,
-//   ezP.DelegateSvg.Expr.not_test_concrete,
+//   ezP.DelegateSvg.Expr.not_test_solid,
 //   ezP.DelegateSvg.Expr.shortstringliteral,
 //   ezP.DelegateSvg.Expr.shortbytesliteral,
 //   ezP.DelegateSvg.Expr.longstringliteral,
@@ -1574,7 +1599,7 @@ ezP.Xml.Operator.fromDom = function (block, element) {
 }
 
 ezP.DelegateSvg.Operator.prototype.xml = ezP.Xml.Operator
-ezP.DelegateSvg.Expr.power_concrete.prototype.xml = ezP.Xml.Operator
+ezP.DelegateSvg.Expr.power_solid.prototype.xml = ezP.Xml.Operator
 
 
 goog.provide('ezP.Xml.Comparison')
@@ -1767,10 +1792,10 @@ ezP.DelegateSvg.Expr.term.prototype.toDom = function(block, element, optNoId) {
     var child = goog.dom.createTextNode( text || '?')
     goog.dom.appendChild(element, child)
     if (withAnnotation) {
-      ezP.Xml.Input.Named.toDom(block, ezP.Key.ANNOTATION, element, optNoId)
+      ezP.Xml.Input.Named.toDom(block, ezP.Key.ANNOTATION, element, optNoId, true)
     }
     if (withDefinition) {
-      ezP.Xml.Input.Named.toDom(block, ezP.Key.DEFINITION, element, optNoId)
+      ezP.Xml.Input.Named.toDom(block, ezP.Key.DEFINITION, element, optNoId, true)
     }
   }
 }
@@ -1794,10 +1819,10 @@ ezP.DelegateSvg.Expr.term.prototype.fromDom = function (block, element) {
       if (text !== '?') {
         block.ezp.setValue(block, text)
       }
-      if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.ANNOTATION, element)) {
+      if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.ANNOTATION, element, true)) {
         flags |= 1
       }
-      if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.DEFINITION, element)) {
+      if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.DEFINITION, element, true)) {
         flags |= 2
       }
       break
@@ -1841,7 +1866,7 @@ goog.require('ezP.DelegateSvg.Comprehension')
 ezP.DelegateSvg.Expr.comp_for.prototype.xml =
 ezP.DelegateSvg.Expr.comp_if.prototype.xml =
 ezP.DelegateSvg.Expr.comp_iter_list.prototype.xml =
-ezP.DelegateSvg.Expr.key_datum_concrete.prototype.xml =
+ezP.DelegateSvg.Expr.key_datum_solid.prototype.xml =
 ezP.Xml.InputList
 
 /**
@@ -1851,7 +1876,7 @@ ezP.Xml.InputList
  * @param {boolean} optNoId true if no id is required.
  * For subclassers eventually
  */
-ezP.DelegateSvg.Expr.key_datum_concrete.prototype.xml =
+ezP.DelegateSvg.Expr.key_datum_solid.prototype.xml =
 ezP.Xml.InputList
 
 

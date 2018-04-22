@@ -106,7 +106,7 @@ ezP.Consolidator.Parameter.prototype.doCleanup = function () {
       return Type.star
     } else if (goog.array.contains(check,ezP.T3.Expr.parameter_star_star)) {
       return Type.star_star
-    } else if (goog.array.contains(check,ezP.T3.Expr.defparameter_concrete)) {
+    } else if (goog.array.contains(check,ezP.T3.Expr.defparameter_solid)) {
       return Type.default
     } else {
       return Type.parameter
@@ -268,7 +268,7 @@ ezP.Consolidator.Parameter.prototype.getCheck = function() {
       out = ezP.T3.Expr.Check.parameter.slice()
     }
     if (can_default) {
-      out.push(ezP.T3.Expr.defparameter_concrete)
+      out.push(ezP.T3.Expr.defparameter_solid)
     }
     if (can_star) {
       out.push(ezP.T3.Expr.parameter_star)      

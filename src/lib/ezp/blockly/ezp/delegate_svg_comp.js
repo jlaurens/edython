@@ -117,7 +117,7 @@ ezP.DelegateSvg.Manager.makeSubclass('comp_iter_list', {
 ezP.DelegateSvg.Manager.makeSubclass('dict_comprehension', {
   inputs: {
     i_1: {
-      insert: ezP.T3.Expr.key_datum_concrete,
+      insert: ezP.T3.Expr.key_datum_solid,
     },
     i_2: {
       insert: ezP.T3.Expr.comp_for,
@@ -130,14 +130,14 @@ ezP.DelegateSvg.Manager.makeSubclass('dict_comprehension', {
 })
 
 /**
- * Class for a DelegateSvg, key_datum_concrete block.
+ * Class for a DelegateSvg, key_datum_solid block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('key_datum_concrete', {
+ezP.DelegateSvg.Manager.makeSubclass('key_datum_solid', {
   inputs: {
     i_1: {
       key: ezP.Key.KEY,
@@ -179,6 +179,6 @@ ezP.DelegateSvg.Comprehension.T3s = [
   ezP.T3.Expr.comp_iter_list,
   ezP.T3.Expr.dict_comprehension,
   ezP.T3.Expr.term,
-  ezP.T3.Expr.key_datum_concrete,
+  ezP.T3.Expr.key_datum_solid,
   ezP.T3.Expr.generator_expression
 ]

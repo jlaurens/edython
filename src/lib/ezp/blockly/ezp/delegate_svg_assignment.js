@@ -433,7 +433,7 @@ ezP.DelegateSvg.AugAssign.model__ = {
     },
     i_3: {
       key: ezP.Key.EXPRESSION,
-      wrap: ezP.T3.Expr.augassign_list_concrete,
+      wrap: ezP.T3.Expr.augassign_list_solid,
     }
   }
 }
@@ -609,13 +609,13 @@ ezP.Consolidator.List.AugAssigned.prototype.getCheck = function (io) {
 }
 
 /**
- * Class for a DelegateSvg, augassign_list_concrete.
+ * Class for a DelegateSvg, augassign_list_solid.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('augassign_list_concrete', {
+ezP.DelegateSvg.Manager.makeSubclass('augassign_list_solid', {
   inputs: {
     list: {
       consolidator: ezP.Consolidator.List.AugAssigned,
@@ -720,5 +720,5 @@ ezP.DelegateSvg.Assignment.T3s = [
   ezP.T3.Expr.augassign_bitwise,
   ezP.T3.Stmt.augassign_numeric_stmt,
   ezP.T3.Stmt.augassign_bitwise_stmt,
-  ezP.T3.Expr.augassign_list_concrete,
+  ezP.T3.Expr.augassign_list_solid,
 ]

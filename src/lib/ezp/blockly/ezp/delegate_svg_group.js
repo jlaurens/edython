@@ -463,14 +463,14 @@ ezP.DelegateSvg.Manager.makeSubclass('with_part', {
 }, ezP.DelegateSvg.Group)
 
 /**
- * Class for a DelegateSvg, with_item_concrete block.
+ * Class for a DelegateSvg, with_item_solid block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('with_item_concrete', {
+ezP.DelegateSvg.Manager.makeSubclass('with_item_solid', {
   inputs: {
     i_1: {
       key: ezP.Key.EXPRESSION,
@@ -494,5 +494,5 @@ ezP.DelegateSvg.Group.T3s = [
   ezP.T3.Stmt.while_part,
   ezP.T3.Stmt.with_part,
   ezP.T3.Stmt.for_part,
-  ezP.T3.Expr.with_item_concrete,
+  ezP.T3.Expr.with_item_solid,
 ]

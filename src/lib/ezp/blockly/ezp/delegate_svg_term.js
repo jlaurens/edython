@@ -56,7 +56,7 @@ ezP.DelegateSvg.Manager.makeSubclass(ezP.Key.TERM, {
       },
     },
     i_2: {
-      key: ezP.Key.DATUM,
+      key: ezP.Key.ANNOTATION,
       label: ':',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
@@ -238,9 +238,9 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
   * dotted_name ::= identifier ("." identifier)*
   * parent_module ::= '.'+ [module]
   * identifier ::= 
-  * key_datum_concrete ::= identifier ":" expression
-  * defparameter_concrete ::= parameter "=" expression
-  * (with parameter ::= identifier | key_datum)
+  * parameter_solid ::= identifier ":" expression
+  * defparameter_solid ::= parameter "=" expression
+  * (with parameter ::= identifier | parameter_solid)
   * (with module ::= dotted_name)
   */
   if (this.consolidatingType_) {
@@ -272,7 +272,7 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
     flags = withAnnotation?0:1 + withDefinition?0:2 + withoutValue?0:4
     this.setVariant(flags)
     this.setNamedInputDisabled(block, ezP.Key.VALUE, withoutValue)
-    this.setNamedInputDisabled(block, ezP.Key.DATUM, !withAnnotation)
+    this.setNamedInputDisabled(block, ezP.Key.ANNOTATION, !withAnnotation)
     this.setNamedInputDisabled(block, ezP.Key.DEFINITION, !withDefinition)
     this.ui.fields.modifier.setVisible(withModifier)
     if (withoutValue) {
@@ -312,11 +312,11 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
       * dotted_name ::= identifier ("." identifier)*
       * parent_module ::= '.'+ [module]
       * identifier ::= 
-      * key_datum_concrete ::= identifier ":" expression
-      * defparameter_concrete ::= parameter "=" expression
+      * parameter_solid ::= identifier ":" expression
+      * defparameter_solid ::= parameter "=" expression
       */
       if (subtype === ezP.T3.Expr.identifier) {
-        block.outputConnection.setCheck(withDefinition?([ezP.T3.Expr.defparameter_concrete,]):(withAnnotation?([ezP.T3.Expr.key_datum_concrete,]):([ezP.T3.Expr.identifier, ezP.T3.Expr.dotted_name,])))
+        block.outputConnection.setCheck(withDefinition?([ezP.T3.Expr.defparameter_solid,]):(withAnnotation?([ezP.T3.Expr.parameter_solid,]):([ezP.T3.Expr.identifier, ezP.T3.Expr.dotted_name,])))
       } else /* if (subtype === ezP.T3.Expr.dotted_name */ {
         block.outputConnection.setCheck([ezP.T3.Expr.expression_star_star])
       }

@@ -17,13 +17,13 @@ goog.require('ezP.DelegateSvg.Group')
 goog.require('ezP.MenuItem')
 
 // /**
-//  * Class for a DelegateSvg, dotted_funcname_concrete block.
+//  * Class for a DelegateSvg, dotted_funcname_solid block.
 //  * For ezPython.
 //  * @param {?string} prototypeName Name of the language object containing
 //  *     type-specific functions for this block.
 //  * @constructor
 //  */
-// ezP.DelegateSvg.Manager.makeSubclass('dotted_funcname_concrete', {
+// ezP.DelegateSvg.Manager.makeSubclass('dotted_funcname_solid', {
 //   inputs: {
 //     i_1: {
 //       key: ezP.Key.PARENT,

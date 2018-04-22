@@ -76,17 +76,17 @@ ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
   return ezP.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
-//////////////////////  u_expr_concrete  /////////////////////////
+//////////////////////  u_expr_solid  /////////////////////////
 
 /**
  * Class for a DelegateSvg, unary op ... block.
- * u_expr_concrete.
+ * u_expr_solid.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('u_expr_concrete', {
+ezP.DelegateSvg.Manager.makeSubclass('u_expr_solid', {
   inputs: {
     values: ['-', '+', '~'],
     i_3: {
@@ -101,7 +101,7 @@ ezP.DelegateSvg.Manager.makeSubclass('u_expr_concrete', {
  * @param {string} op op is the operator
  * @private
  */
-ezP.DelegateSvg.Expr.u_expr_concrete.prototype.makeTitle = function (block, op) {
+ezP.DelegateSvg.Expr.u_expr_solid.prototype.makeTitle = function (block, op) {
   return op+' …'
 }
 
@@ -137,7 +137,7 @@ ezP.DelegateSvg.Binary.prototype.makeTitle = function (block, op) {
 }
 
 /**
- * Class for a DelegateSvg, m_expr_concrete block.
+ * Class for a DelegateSvg, m_expr_solid block.
  * Multiple ops.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
@@ -159,14 +159,14 @@ ezP.DelegateSvg.Binary.makeSubclass = function(key, operators, check1, check3, o
   }, ezP.DelegateSvg.Binary)
 }
 ezP.DelegateSvg.Binary.makeSubclass(
-  'm_expr_concrete',
+  'm_expr_solid',
   ['*', '//', '/', '%', '@'],
   'm_expr',
   'u_expr',
 )
 
 /**
- * Class for a DelegateSvg, a_expr_concrete block.
+ * Class for a DelegateSvg, a_expr_solid block.
  * Multiple ops.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
@@ -174,14 +174,14 @@ ezP.DelegateSvg.Binary.makeSubclass(
  * @constructor
  */
 ezP.DelegateSvg.Binary.makeSubclass(
-  'a_expr_concrete',
+  'a_expr_solid',
   ['+', '-'],
   'a_expr',
   'm_expr',
 )
 
 /**
- * Class for a DelegateSvg, shift_expr_concrete block.
+ * Class for a DelegateSvg, shift_expr_solid block.
  * Multiple ops.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
@@ -189,14 +189,14 @@ ezP.DelegateSvg.Binary.makeSubclass(
  * @constructor
  */
 ezP.DelegateSvg.Binary.makeSubclass(
-  'shift_expr_concrete',
+  'shift_expr_solid',
   ['<<', '>>'],
   'shift_expr',
   'a_expr',
 )
 
 /**
- * Class for a DelegateSvg, and_expr_concrete block.
+ * Class for a DelegateSvg, and_expr_solid block.
  * Multiple ops.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
@@ -204,14 +204,14 @@ ezP.DelegateSvg.Binary.makeSubclass(
  * @constructor
  */
 ezP.DelegateSvg.Binary.makeSubclass(
-  'and_expr_concrete',
+  'and_expr_solid',
   ['&'],
   'and_expr',
   'shift_expr',
 )
 
 /**
- * Class for a DelegateSvg, xor_expr_concrete block.
+ * Class for a DelegateSvg, xor_expr_solid block.
  * Multiple ops.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
@@ -219,14 +219,14 @@ ezP.DelegateSvg.Binary.makeSubclass(
  * @constructor
  */
 ezP.DelegateSvg.Binary.makeSubclass(
-  'xor_expr_concrete',
+  'xor_expr_solid',
   ['^'],
   'xor_expr',
   'and_expr',
 )
 
 /**
- * Class for a DelegateSvg, or_expr_concrete block.
+ * Class for a DelegateSvg, or_expr_solid block.
  * Multiple ops.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
@@ -234,7 +234,7 @@ ezP.DelegateSvg.Binary.makeSubclass(
  * @constructor
  */
 ezP.DelegateSvg.Binary.makeSubclass(
-  'or_expr_concrete',
+  'or_expr_solid',
   ['|'],
   'or_expr',
   'or_expr',
@@ -292,14 +292,14 @@ ezP.DelegateSvg.Expr.object_comparison.prototype.makeTitle = function (block, op
 }
 
 /**
- * Class for a DelegateSvg, or_test_concrete block.
+ * Class for a DelegateSvg, or_test_solid block.
  * Multiple ops.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('or_test_concrete', {
+ezP.DelegateSvg.Manager.makeSubclass('or_test_solid', {
   inputs: {
     values: ['or'],
     i_1: {
@@ -313,14 +313,14 @@ ezP.DelegateSvg.Manager.makeSubclass('or_test_concrete', {
 }, ezP.DelegateSvg.Binary)
 
 /**
- * Class for a DelegateSvg, and_test_concrete block.
+ * Class for a DelegateSvg, and_test_solid block.
  * Multiple ops.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('and_test_concrete', {
+ezP.DelegateSvg.Manager.makeSubclass('and_test_solid', {
   inputs: {
     values: ['and'],
     i_1: {
@@ -335,14 +335,14 @@ ezP.DelegateSvg.Manager.makeSubclass('and_test_concrete', {
 
 ///////// power ////////
 /**
- * Class for a DelegateSvg, power_concrete block.
- * power_concrete ::= await_or_primary "**" u_expr 
+ * Class for a DelegateSvg, power_solid block.
+ * power_solid ::= await_or_primary "**" u_expr 
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('power_concrete', {
+ezP.DelegateSvg.Manager.makeSubclass('power_solid', {
   inputs: {
     i_1: {
       key: ezP.Key.ARGUMENT,
@@ -360,16 +360,16 @@ ezP.DelegateSvg.Manager.makeSubclass('power_concrete', {
 })
 
 ezP.DelegateSvg.Operator.T3s = [
-  ezP.T3.Expr.u_expr_concrete,
-  ezP.T3.Expr.m_expr_concrete,
-  ezP.T3.Expr.a_expr_concrete,
-  ezP.T3.Expr.shift_expr_concrete,
-  ezP.T3.Expr.and_expr_concrete,
-  ezP.T3.Expr.xor_expr_concrete,
-  ezP.T3.Expr.or_expr_concrete,
+  ezP.T3.Expr.u_expr_solid,
+  ezP.T3.Expr.m_expr_solid,
+  ezP.T3.Expr.a_expr_solid,
+  ezP.T3.Expr.shift_expr_solid,
+  ezP.T3.Expr.and_expr_solid,
+  ezP.T3.Expr.xor_expr_solid,
+  ezP.T3.Expr.or_expr_solid,
   ezP.T3.Expr.number_comparison,
   ezP.T3.Expr.object_comparison,
-  ezP.T3.Expr.or_test_concrete,
-  ezP.T3.Expr.and_test_concrete,
-  ezP.T3.Expr.power_concrete,
+  ezP.T3.Expr.or_test_solid,
+  ezP.T3.Expr.and_test_solid,
+  ezP.T3.Expr.power_solid,
 ]

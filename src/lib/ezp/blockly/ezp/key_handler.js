@@ -561,21 +561,21 @@ var Ks = {
   'while': ezP.T3.Stmt.while_part,
   'with': ezP.T3.Stmt.with_part,
   'lambda': ezP.T3.Expr.lambda_expr,
-  '… if … else …': ezP.T3.Expr.conditional_expression_concrete,
+  '… if … else …': ezP.T3.Expr.conditional_expression_solid,
   'identifier': ezP.T3.Expr.identifier,
   'name': ezP.T3.Expr.identifier,
   'not': function(key) {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
-      if (parent && (parent.type === ezP.T3.Expr.not_test_concrete)) {
+      if (parent && (parent.type === ezP.T3.Expr.not_test_solid)) {
         B.ezp.replaceBlock(B, parent)
         return
       }
       if (ezP.SelectedConnection.get()) {
-        B.ezp.insertBlockOfType(B, ezP.T3.Expr.not_test_concrete)
+        B.ezp.insertBlockOfType(B, ezP.T3.Expr.not_test_solid)
       } else {
-        B.ezp.insertParent(B, ezP.T3.Expr.not_test_concrete)
+        B.ezp.insertParent(B, ezP.T3.Expr.not_test_solid)
       }
     }
   },                                    
@@ -583,14 +583,14 @@ var Ks = {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
-      if (parent && (parent.type === ezP.T3.Expr.u_expr_concrete) && parent.ezp.getSubtype(parent) === '-') {
+      if (parent && (parent.type === ezP.T3.Expr.u_expr_solid) && parent.ezp.getSubtype(parent) === '-') {
         B.ezp.replaceBlock(B, parent)
         return
       }
       if (ezP.SelectedConnection.get()) {
-        B.ezp.insertBlockOfType(B, ezP.T3.Expr.u_expr_concrete, '-')
+        B.ezp.insertBlockOfType(B, ezP.T3.Expr.u_expr_solid, '-')
       } else {
-        B.ezp.insertParent(B, ezP.T3.Expr.u_expr_concrete, '-')
+        B.ezp.insertParent(B, ezP.T3.Expr.u_expr_solid, '-')
       }
     }
   },                                    
@@ -598,14 +598,14 @@ var Ks = {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
-      if (parent && (parent.type === ezP.T3.Expr.u_expr_concrete) && parent.ezp.getSubtype(parent) === '~') {
+      if (parent && (parent.type === ezP.T3.Expr.u_expr_solid) && parent.ezp.getSubtype(parent) === '~') {
         B.ezp.replaceBlock(B, parent)
         return
       }
       if (ezP.SelectedConnection.get()) {
-        B.ezp.insertBlockOfType(B, ezP.T3.Expr.u_expr_concrete, '~')
+        B.ezp.insertBlockOfType(B, ezP.T3.Expr.u_expr_solid, '~')
       } else {
-        B.ezp.insertParent(B, ezP.T3.Expr.u_expr_concrete, '~')
+        B.ezp.insertParent(B, ezP.T3.Expr.u_expr_solid, '~')
       }
     }
   },
@@ -616,55 +616,55 @@ for (K in Ks) {
 }
 Ks = {
   '+': {
-    type: ezP.T3.Expr.a_expr_concrete,
+    type: ezP.T3.Expr.a_expr_solid,
     subtype: '+',
     input: ezP.Key.LHS,
   },
   '-': {
-    type: ezP.T3.Expr.a_expr_concrete,
+    type: ezP.T3.Expr.a_expr_solid,
     subtype: '-',
     input: ezP.Key.LHS,
   },
   '*': {
-    type: ezP.T3.Expr.m_expr_concrete,
+    type: ezP.T3.Expr.m_expr_solid,
     subtype: '*',
     input: ezP.Key.LHS,
   },
   '//': {
-    type: ezP.T3.Expr.m_expr_concrete,
+    type: ezP.T3.Expr.m_expr_solid,
     subtype: '//',
     input: ezP.Key.LHS,
   },
   '/': {
-    type: ezP.T3.Expr.m_expr_concrete,
+    type: ezP.T3.Expr.m_expr_solid,
     subtype: '/',
     input: ezP.Key.LHS,
   },
   '%': {
-    type: ezP.T3.Expr.m_expr_concrete,
+    type: ezP.T3.Expr.m_expr_solid,
     subtype: '%',
     input: ezP.Key.LHS,
   },
   '@': {
-    type: ezP.T3.Expr.m_expr_concrete,
+    type: ezP.T3.Expr.m_expr_solid,
     subtype: '@',
     input: ezP.Key.LHS,
   },
   '<<': {
-    type: ezP.T3.Expr.shift_expr_concrete,
+    type: ezP.T3.Expr.shift_expr_solid,
     subtype: '<<',
     input: ezP.Key.LHS,
   },
   '>>': {
-    type: ezP.T3.Expr.shift_expr_concrete,
+    type: ezP.T3.Expr.shift_expr_solid,
     subtype: '>>',
     input: ezP.Key.LHS,
   },
-  '&': ezP.T3.Expr.and_expr_concrete,
-  '^': ezP.T3.Expr.xor_expr_concrete,
-  '|': ezP.T3.Expr.or_expr_concrete,
-  'or': ezP.T3.Expr.or_test_concrete,
-  'and': ezP.T3.Expr.and_test_concrete,
+  '&': ezP.T3.Expr.and_expr_solid,
+  '^': ezP.T3.Expr.xor_expr_solid,
+  '|': ezP.T3.Expr.or_expr_solid,
+  'or': ezP.T3.Expr.or_test_solid,
+  'and': ezP.T3.Expr.and_test_solid,
 }
 for (K in Ks) {
   ezP.KeyHandler.register('… '+K+' …', Ks[K]);
@@ -759,7 +759,7 @@ Ks = {
     type: ezP.T3.Expr.builtin_call_expr,
     subtype: 'sum',
   },
-  'module as alias': ezP.T3.Expr.module_as_concrete,
+  'module as alias': ezP.T3.Expr.module_as_solid,
   '(…)': ezP.T3.Expr.parenth_form,
   '[…]': ezP.T3.Expr.list_display,
   '{…:…}': ezP.T3.Expr.dict_display,

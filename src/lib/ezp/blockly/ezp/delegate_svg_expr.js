@@ -361,14 +361,14 @@ ezP.DelegateSvg.Manager.makeSubclass('proper_slice', {
 })
 
 /**
- * Class for a DelegateSvg, conditional_expression_concrete block.
+ * Class for a DelegateSvg, conditional_expression_solid block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('conditional_expression_concrete', {
+ezP.DelegateSvg.Manager.makeSubclass('conditional_expression_solid', {
   inputs: {
     i_1: {
       key: ezP.Key.EXPRESSION,
@@ -431,14 +431,14 @@ ezP.DelegateSvg.Manager.makeSubclass('or_expr_star_star', {
 })
 
 /**
-* Class for a DelegateSvg, not_test_concrete.
+* Class for a DelegateSvg, not_test_solid.
 * This is not an Operator subclass because 'not' is a reserved word.
 * For ezPython.
 * @param {?string} prototypeName Name of the language object containing
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Manager.makeSubclass('not_test_concrete', {
+ezP.DelegateSvg.Manager.makeSubclass('not_test_solid', {
   inputs: {
     i_1: {
       key: ezP.Key.EXPRESSION,
@@ -544,10 +544,10 @@ ezP.DelegateSvg.Expr.any.prototype.didChangeSubtype = function(block, oldSubtype
 
 ezP.DelegateSvg.Expr.T3s = [
   ezP.T3.Expr.proper_slice,
-  ezP.T3.Expr.conditional_expression_concrete,
+  ezP.T3.Expr.conditional_expression_solid,
   ezP.T3.Expr.or_expr_star,
   ezP.T3.Expr.or_expr_star_star,
-  ezP.T3.Expr.not_test_concrete,
+  ezP.T3.Expr.not_test_solid,
   ezP.T3.Expr.builtin_object,
   ezP.T3.Expr.any,
 ]
