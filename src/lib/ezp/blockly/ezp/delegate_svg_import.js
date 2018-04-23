@@ -30,54 +30,6 @@ module_name ::= identifier
 */
 
 /**
- * Class for a DelegateSvg, module_as.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr._as_solid = function (prototypeName) {
-  ezP.DelegateSvg.Expr._as_solid.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Expr._as_solid, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Expr._as_solid.model__ = {
-  inputs: {
-    i_1: {
-      key: ezP.Key.SOURCE,
-    },
-    i_3: {
-      label: 'as',
-      css_class: 'ezp-code-reserved',
-      key: ezP.Key.AS,
-      check: ezP.T3.Expr.identifier,
-      hole_value: 'alias',
-    }
-  }
-}
-
-/**
- * Class for a DelegateSvg, module_as_solid.
- * module_as ::= module ["as" identifier]
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('module_as_solid', {
-  inputs: {
-    i_1: {
-      check: ezP.T3.Expr.Check.module,
-      hole_value: 'module',
-      plugged: ezP.T3.Expr.module,
-    },
-    i_3: {
-      plugged: ezP.T3.Expr.identifier,
-    },
-  },
-}, ezP.DelegateSvg.Expr._as_solid)
-
-/**
  * Class for a DelegateSvg, non_void_module_as_list block.
  * This block may be wrapped.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
@@ -96,26 +48,6 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_module_as_list', {
     },
   },
 })
-
-/**
- * Class for a DelegateSvg, import_identifier_as_solid.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('import_identifier_as_solid', {
-  inputs: {
-    i_1: {
-      check: ezP.T3.Expr.identifier,
-      hole_value: 'name',
-      plugged: ezP.T3.Expr.import_identifier,
-    },
-    i_3: {
-      plugged: ezP.T3.Expr.import_alias,
-    },
-  },
-}, ezP.DelegateSvg.Expr._as_solid)
 
 /**
  * Class for a DelegateSvg, non_void_import_identifier_as_list block.
@@ -142,6 +74,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_import_identifier_as_list', {
 
 /**
  * Class for a DelegateSvg, import_stmt.
+ * The value property is used to store the module.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
@@ -149,6 +82,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_import_identifier_as_list', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('import_stmt', {
   inputs: {
+    variants: [0, 1, 2],
     i_1: {
       label: 'import',
       css_class: 'ezp-code-reserved',
@@ -162,6 +96,24 @@ ezP.DelegateSvg.Manager.makeSubclass('import_stmt', {
       check: ezP.T3.Expr.Check.relative_module,
       plugged: ezP.T3.Expr.relative_module,
       hole_value: 'module',
+      edit: {
+        key:ezP.Key.FROM,
+        value: '',
+        placeholder: ezP.Msg.Placeholder.MODULE,
+        validator: function(txt) {
+          var block = this.sourceBlock_
+          if (block) {
+            var ezp = block.ezp
+            var v = ezp.validateValue(block, goog.isDef(txt) && txt || this.getValue())
+            return v && v.validated
+          }
+        },
+        onEndEditing: function () {
+          var block = this.sourceBlock_
+          var ezp = block.ezp
+          ezp.setValue(block, this.getValue())
+        },
+      },
     },
     i_3: {
       label: 'import',
@@ -170,18 +122,41 @@ ezP.DelegateSvg.Manager.makeSubclass('import_stmt', {
       wrap: ezP.T3.Expr.non_void_import_identifier_as_list,
     },
     i_4: {
-      label: 'from',
+      label: 'import *',
       css_class: 'ezp-code-reserved',
-      key: ezP.Key.MODULE,
-      check: ezP.T3.Expr.Check.module,
-      hole_value: 'module',
-      end: 'import *',
     },
   },
 })
 
 /**
- * Validates the new variant: 3 values.
+ * Validate the value property.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newValue
+ * @return true if newValue is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Stmt.import_stmt.prototype.validateValue = function (block, newValue) {
+  var type = ezP.Do.typeOfString(newValue)
+  var variant = this.getVariant(block)
+  return type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name || variant === 1 && (type === ezP.T3.Expr.parent_module)?
+  {validated: newValue}: null
+}
+
+/**
+ * Validate the value property.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newValue
+ * @return true if newValue is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Stmt.import_stmt.prototype.synchronizeValue = function (block, newValue) {
+  this.ui.i_2.fields.from.setValue(newValue)
+}
+
+console.log('When read from dom, if the read data is not valid, what to do?')
+
+/**
+ * Validates the new variant.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @param {string} newVariant
@@ -192,27 +167,40 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.validateVariant = function (block, ne
 }
 
 /**
+ * Validates the new variant.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newVariant
+ * @return true if newVariant is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Stmt.import_stmt.prototype.didChangeVariant = function (block, newVariant) {
+  this.setSubtype(block, newVariant === 1? 0: 1)
+}
+
+/**
  * synchronize the variant with the UI.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @param {string} newVariant
  */
 ezP.DelegateSvg.Stmt.import_stmt.prototype.synchronizeVariant = function (block, newVariant) {
-  var disabled_1 = true, disabled_23 = true, disabled_4 = true
+  var disabled_1 = true, disabled_2 = true, disabled_3 = true, disabled_4 = true
   switch(newVariant) {
     case 0:
     disabled_1 = false
     break
     case 1:
-    disabled_23 = false
+    disabled_2 = false
+    disabled_3 = false
     break
     case 2:
+    disabled_2 = false
     disabled_4 = false
     break
   }
   this.setInputDisabled(block, this.ui.i_1.input, disabled_1)
-  this.setInputDisabled(block, this.ui.i_2.input, disabled_23)
-  this.setInputDisabled(block, this.ui.i_3.input, disabled_23)
+  this.setInputDisabled(block, this.ui.i_2.input, disabled_2)
+  this.setInputDisabled(block, this.ui.i_3.input, disabled_3)
   this.setInputDisabled(block, this.ui.i_4.input, disabled_4)
 }
 
@@ -285,9 +273,7 @@ ezP.DelegateSvg.Manager.makeSubclass('future_statement', {
 
 ezP.DelegateSvg.Import.T3s = [
   ezP.T3.Expr.term,
-  ezP.T3.Expr.module_as_solid,
   ezP.T3.Expr.non_void_module_as_list,
-  ezP.T3.Expr.import_identifier_as_solid,
   ezP.T3.Expr.non_void_import_identifier_as_list,
   ezP.T3.Stmt.import_stmt,
   ezP.T3.Stmt.future_statement,  

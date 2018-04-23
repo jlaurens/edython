@@ -68,7 +68,7 @@ ezP.FieldLabel.prototype.init = function () {
 Blockly.Field.prototype.updateWidth = function () {
   var width = Blockly.Field.getCachedWidth(this.textElement_)
   if (this.borderRect_) {
-    this.borderRect_.setAttribute('width', width)
+    this.borderRect_.setAttribute('width', width+2*ezP.Style.Edit.padding_h)
   }
   this.size_.width = width
 }

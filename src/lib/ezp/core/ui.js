@@ -117,6 +117,13 @@ ezP.Style.CheckBox = {
   'padding': 1.5// px
 }
 
+ezP.Style.Edit = {
+  padding_h: 1,
+  padding_v: 0,
+  radius: 2,
+  width: 0.5,
+}
+
 ezP.Style.insertCssRuleAt = (function () {
   var style = document.createElement('style')
   document.head.appendChild(style)
@@ -146,6 +153,8 @@ ezP.setup.register(function () {
   ezP.Style.insertCssRuleAt('.ezp-locked>.ezp-path-contour, .ezp-locked>.ezp-path-shape{display: none}')
   ezP.Style.insertCssRuleAt('.ezp-path-shape{stroke: none;fill: white;fill-opacity:0.9}')
   ezP.Style.insertCssRuleAt('.ezp-path-contour, .ezp-path-collapsed {stroke: ' + ezP.Style.Path.colour + ';stroke-width: ' + ezP.Style.Path.width + 'px;fill: none;}')
+  ezP.Style.insertCssRuleAt('.ezp-edit {stroke: ' + ezP.Style.Path.colour + ';stroke-width: '+ezP.Style.Edit.width+'px;fill: none;}')
+  ezP.Style.insertCssRuleAt('rect.ezp-editing {stroke: none;}')
   ezP.Style.insertCssRuleAt('.ezp-path-dotted{stroke: ' + ezP.Style.Path.colour + ';stroke-width: ' + (ezP.Style.Path.width * 1.5) + 'px;stroke-linecap:round;stroke-dasharray:0 ' + ezP.Font.space / 2 + ';}')
   ezP.Style.insertCssRuleAt('.ezp-no-path{display:none;}', 5)
   ezP.Style.insertCssRuleAt('.ezp-code-emph {font-weight: bold;}')

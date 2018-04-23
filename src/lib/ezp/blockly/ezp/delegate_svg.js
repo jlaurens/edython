@@ -963,11 +963,11 @@ ezP.DelegateSvg.prototype.renderDrawField_ = function (io) {
       if (text.length) {
         // if the text is void, it can not change whether
         // the last character was a letter or not
-        if (io.shouldSeparateField && (text[0] === '=' ||ezP.XRE.id_continue.test(text[0]) || ezp.isEditing)) {
+        if (io.shouldSeparateField && (text[0] === '=' || text[0] === '.' ||ezP.XRE.id_continue.test(text[0]) || ezp.isEditing)) {
           // add a separation
           io.cursorX += ezP.Font.space
         }
-        io.shouldSeparateField = ezP.XRE.id_continue.test(text[text.length-1]) || text[text.length-1] === '=' || text[text.length-1] === ':'
+        io.shouldSeparateField = ezP.XRE.id_continue.test(text[text.length-1]) || text[text.length-1] === '=' || text[text.length-1] === ':' || text[text.length-1] === '.'
       }
       var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
       root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +

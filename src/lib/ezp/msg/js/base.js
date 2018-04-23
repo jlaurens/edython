@@ -68,6 +68,10 @@ goog.provide('ezP.Msg.Placeholder')
 
 /** @export */ ezP.Msg.Placeholder.ALIAS = "alias"
 
+/** @export */ ezP.Msg.Placeholder.MODULE = "module"
+
+/** @export */ ezP.Msg.Placeholder.BASE = "base"
+
 /** @export */ ezP.Msg.Placeholder.DECORATOR = "decorateur"
 
 /** @export */ ezP.Msg.USE_SINGLE_QUOTE = "'...'"

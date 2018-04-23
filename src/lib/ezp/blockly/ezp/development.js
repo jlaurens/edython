@@ -200,7 +200,6 @@ ezP.DelegateSvg.Stmt.import_stmt.workspaceBlocks = [
   ezP.T3.Expr.module_as_solid,
   ezP.T3.Expr.non_void_module_as_list,
   ezP.T3.Expr.import_module,
-  ezP.T3.Expr.import_identifier_as_solid,
   ezP.T3.Expr.non_void_import_identifier_as_list,
   ezP.T3.Expr.parent_module,
   ezP.T3.Expr.from_relative_module_import,

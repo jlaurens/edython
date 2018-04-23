@@ -38,6 +38,8 @@ ezP.Xml = {
   DOTTED_NAME: 'dotted_name', // attribute name
   MODIFIER: 'modifier', // attribute name
   VALUE: 'value', // attribute name
+  AS: 'as', // attribute name
+  FROM: 'from', // attribute name
 
   LITERAL: 'ezp:literal',
   TERM: 'ezp:term',
@@ -54,6 +56,7 @@ ezP.Xml = {
   PLACEHOLDER: 'ezp:placeholder',// convenient
 }
 
+console.warn('No ezP.Xml.CALL !!!!')
 /**
  * Converts a DOM structure into plain text.
  * Currently the text format is fairly ugly: all one line with no whitespace.
@@ -821,15 +824,14 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.xml = ezP.Xml.InputList
  * @return a dom element
  */
 ezP.DelegateSvg.Stmt.import_stmt.prototype.toDom = function(block, element, optNoId) {
-  var e8r = block.ezp.inputEnumerator(block)
-  while (e8r.next()) {
-    var c8n = e8r.here.connection
-    if (c8n) {
-      var target = c8n.targetBlock()
-      if (target) {
-        return ezP.Xml.toDom(target, element, optNoId)
-      }
-    }
+  var variant = this.getVariant(block)
+  if (variant === 0) {
+    return ezP.Xml.Input.Named.toDom(block, ezP.Key.IMPORT_MODULE, element, optNoId)
+  }
+  var text = this.getValue(block)
+  element.setAttribute(ezP.Xml.FROM, text || '?')
+  if (variant === 1) {
+    return ezP.Xml.Input.Named.toDom(block, ezP.Key.IMPORT, element, optNoId, true)
   }
 }
 
@@ -846,28 +848,20 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.toDom = function(block, element, optN
  * @return a dom element, void lists may return nothing
  */
 ezP.DelegateSvg.Stmt.import_stmt.prototype.fromDom = function(block, xml) {
-  var fromChild, importChild
-  for (var i = 0, xmlChild; (xmlChild = xml.childNodes[i]); i++) {
-    if (goog.isFunction(xmlChild.getAttribute)) {
-      switch(xmlChild.getAttribute(ezP.Xml.INPUT)) {
-        case ezP.Key.FROM: fromChild = xmlChild; break
-        case ezP.Key.IMPORT: importChild = xmlChild; break
-      }
-    }
+  var text = xml.getAttribute(ezP.Xml.FROM)
+  if (!text || !text.length) {
+    this.setVariant(block, 0)
+    return ezP.Xml.Input.Named.fromDom(block, ezP.Key.IMPORT_MODULE, xml)
   }
-  if (fromChild) {
-    if (importChild) {
-      block.ezp.setSubtype(block, ezP.T3.Expr.from_relative_module_import)
-    } else {
-      block.ezp.setSubtype(block, ezP.T3.Expr.from_module_import)
-    }
-  } else if (importChild) {
-    block.ezp.setSubtype(block, ezP.T3.Expr.import_module)    
+  if (text !== '?') {
+    block.ezp.setValue(block, text)
   }
-  return ezP.Xml.InputList.fromDom(block, xml)
+  var variant = ezP.Xml.Input.Named.fromDom(block, ezP.Key.IMPORT, xml, true)?1: 2
+  this.setVariant(block, variant)
 }
 
 goog.require('ezP.DelegateSvg.Primary')
+
 goog.provide('ezP.Xml.Call')
 
 ezP.DelegateSvg.Expr.attributeref.prototype.xml =
@@ -960,8 +954,6 @@ ezP.Xml.InputList
 
 goog.require('ezP.DelegateSvg.Proc')
 
-ezP.DelegateSvg.Expr.term.prototype.xml = ezP.Xml.Text
-
 goog.provide('ezP.Xml.Decorator')
 
 ezP.DelegateSvg.Stmt.decorator.prototype.xml = ezP.Xml.Decorator
@@ -976,7 +968,7 @@ ezP.Xml.Decorator.toDom = function (block, element, optNoId) {
   var ezp = block.ezp
   var variant = ezp.getVariant(block)
   var value = variant === ezP.Key.BUILTIN? ezp.getBuiltin(block): ezp.getValue(block)
-  if (goog.isDef(value)) {
+  if (goog.isDefAndNotNull(value)) {
     var child = goog.dom.createTextNode(value)
     goog.dom.appendChild(element, child)
   }
@@ -1013,7 +1005,7 @@ ezP.Xml.Decorator.fromDom = function (block, element) {
     ezp.setBuiltin(block, builtin)
   } else {
     ezp.setVariant(block, 0)
-    if (goog.isDef(value)) {
+    if (goog.isDefAndNotNull(value)) {
       ezp.setValue(block, value)
     }
   }
@@ -1525,7 +1517,7 @@ ezP.DelegateSvg.List.prototype.toDom = function(block, element, optNoId) {
  * @return a dom element, void lists may return nothing
  */
 ezP.DelegateSvg.List.prototype.fromDom = function(block, xml) {
-  var out
+  var out = block
   for (var i = 0, xmlChild; (xmlChild = xml.childNodes[i]); i++) {
     if (goog.isFunction(xmlChild.getAttribute)) {
       var name = xmlChild.getAttribute(ezP.Xml.INPUT)
@@ -1786,15 +1778,19 @@ ezP.DelegateSvg.Expr.term.prototype.toDom = function(block, element, optNoId) {
   var withAnnotation = flags % 2
   var withDefinition = flags & 2
   var withoutValue = flags & 4
+  var withAlias = flags & 8
   if (!withoutValue) {
     var text = this.getValue(block)
-    var child = goog.dom.createTextNode( text || '?')
-    goog.dom.appendChild(element, child)
+    element.setAttribute(ezP.Xml.VALUE, text || '?')
     if (withAnnotation) {
       ezP.Xml.Input.Named.toDom(block, ezP.Key.ANNOTATION, element, optNoId, true)
     }
     if (withDefinition) {
       ezP.Xml.Input.Named.toDom(block, ezP.Key.DEFINITION, element, optNoId, true)
+    }
+    if (withAlias) {
+      var text = this.getAlias(block)
+      element.setAttribute(ezP.Xml.AS, text || '?')
     }
   }
 }
@@ -1806,30 +1802,41 @@ ezP.DelegateSvg.Expr.term.prototype.toDom = function(block, element, optNoId) {
  * For subclassers eventually
  */
 ezP.DelegateSvg.Expr.term.prototype.fromDom = function (block, element) {
+  var withModifier
+  var withAnnotation
+  var withDefinition
+  var withoutValue = true
+  var withAlias
   var modifier = element.getAttribute(ezP.Xml.MODIFIER)
   if (modifier) {
+    withModifier = modifier.length
     this.setModifier(block, modifier)
   }
-  var flags = modifier && modifier.length == 1 ? 4: 0
-  for (var i = 0, xmlChild; (xmlChild = element.childNodes[i]); i++) {
-    if (xmlChild.nodeType === 3) {
-      flags = 0
-      var text = xmlChild.nodeValue
-      if (text !== '?') {
-        block.ezp.setValue(block, text)
-      }
-      if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.ANNOTATION, element, true)) {
-        flags |= 1
-      }
-      if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.DEFINITION, element, true)) {
-        flags |= 2
-      }
-      break
+  var text = element.getAttribute(ezP.Xml.VALUE)
+  if (text) {
+    withoutValue = false
+    if (text !== '?') {
+      block.ezp.setValue(block, text === '?'? '': text)
     }
   }
-  this.setVariant(block, flags)
+  text = element.getAttribute(ezP.Xml.AS)
+  if (text) {
+    withAlias = true
+    if (text !== '?') {
+      block.ezp.setAlias(block, text === '?'? '': text)
+    }
+  }
+  if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.ANNOTATION, element, true)) {
+    withAnnotation = true
+  }
+  if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.DEFINITION, element, true)) {
+    withDefinition = true
+  }
+  var flags = (withAnnotation?1:0) + (withDefinition?2:0) + (withoutValue?4:0) + (withAlias?8:0)
+  flags = this.validateVariant(block, flags)
+  this.setValidatedVariant(block, flags)
 }
-
+console.log('manage the conflicts/ bad data.')
 goog.require('ezP.DelegateSvg.Lambda')
 
 /**

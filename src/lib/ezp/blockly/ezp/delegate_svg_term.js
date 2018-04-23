@@ -475,26 +475,26 @@ ezP.DelegateSvg.Expr.term.prototype.populateContextMenuFirst_ = function (block,
     F(0, 0)
     F(0, 2)
     F(0, 1)
+    F(0, 8)
+    F(1, 4)
     F(1, 0)
     F(2, 0)
-    F(0, 8)
   } else {
     // add or remove the '=…' part
-    if (i) {
-      F(0, currentFlags)
-    } else {
-      F(i, currentFlags & 1)
-      F(i, currentFlags | 2)
-    }
-    F(1, 4)
-    F(1, currentFlags & 1)
-    F(2, currentFlags & 1)
-    // add or remove the ':…' part
-    if (i < 2) {
-      F(i, currentFlags & 2)
-      F(i, currentFlags | 1)
+    F(0, 0)
+    if (i === 0) {
+      F(0, currentFlags | 2)
+      F(0, currentFlags | 1)
     }
     F(0, 8)
+    F(1, 4)
+    F(1, currentFlags & 1)
+    // add or remove the ':…' part
+    if (i === 1) {
+      F(1, currentFlags & 2)
+      F(1, currentFlags | 1)
+    }
+    F(2, currentFlags & 1)
   }
   mgr.shouldSeparate()
   var menuItem = new ezP.MenuItem(ezP.Msg.RENAME, function() {

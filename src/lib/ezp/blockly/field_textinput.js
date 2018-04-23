@@ -60,11 +60,12 @@ ezP.FieldTextInput.prototype.init = function () {
   }
 
   this.borderRect_ = Blockly.utils.createSvgElement('rect',
-    { 'rx': 0,
-      'ry': 0,
-      'x': 0,
-      'y': 0,
-      'height': ezP.Font.height},
+    { class:'ezp-edit',
+      'rx': ezP.Style.Edit.radius,
+      'ry': ezP.Style.Edit.radius,
+      'x': -ezP.Style.Edit.padding_h,
+      'y': -ezP.Style.Edit.padding_v,
+      'height': ezP.Font.height + 2*ezP.Style.Edit.padding_v},
     this.fieldGroup_, this.sourceBlock_.workspace)
 
   /** @type {!Element} */
@@ -102,6 +103,7 @@ ezP.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
     return
   }
   this.ezp.isEditing = true
+  this.borderRect_ && goog.dom.classlist.add(this.borderRect_, 'ezp-editing')
   this.ezp.grouper_ = new ezP.Events.Grouper()
   this.onStartEditing_ && this.onStartEditing_()
   this.ezp.onStartEditing_ && this.ezp.onStartEditing_.call(this)
@@ -176,6 +178,7 @@ ezP.FieldTextInput.prototype.widgetDispose_ = function () {
   var field = this
   return function () {
     field.ezp.isEditing = false
+    field.borderRect_ && goog.dom.classlist.remove(field.borderRect_, 'ezp-editing')
     field.callValidator()
     field.onEndEditing_ && field.onEndEditing_()
     field.ezp.onEndEditing_ && field.ezp.onEndEditing_.call(field)
@@ -228,7 +231,7 @@ ezP.FieldTextInput.prototype.resizeEditor_ = function () {
     div.style.width = (bBox.width+ezP.Font.space) * this.workspace_.scale + 'px'
     div.style.height = bBox.height * this.workspace_.scale + 'px'
     var xy = this.getAbsoluteXY_()
-    div.style.left = (xy.x - ezP.EditorOffset.x) + 'px'
+    div.style.left = (xy.x - ezP.EditorOffset.x+ezP.Style.Edit.padding_h) + 'px'
     div.style.top = (xy.y - ezP.EditorOffset.y) + 'px'
   }
 }
