@@ -59,6 +59,22 @@ ezP.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
 }
 
 /**
+ * Did connect this block's connection to another connection.
+ * When conecting locked blocks, select the receiver.
+ * @param {!Blockly.Block} block
+ * @param {!Blockly.Connection} connection what has been connected in the block
+ * @param {!Blockly.Connection} oldTargetConnection what was previously connected in the block
+ * @param {!Blockly.Connection} oldConnection what was previously connected to the new targetConnection
+ */
+ezP.DelegateSvg.Expr.prototype.didConnect = function(block, connection, oldTargetConnection, oldConnection) {
+  ezP.DelegateSvg.Expr.superClass_.didConnect.call(this, block, connection, oldTargetConnection, oldConnection)
+  if (block === Blockly.selected && this.locked_) {
+    var parent = block.getSurroundParent()
+    parent && parent.select()
+  }
+}
+
+/**
  * Can remove and bypass the parent?
  * If the parent's output connection is connected,
  * can connect the block's output connection to it?

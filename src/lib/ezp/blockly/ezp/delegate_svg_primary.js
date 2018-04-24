@@ -83,6 +83,130 @@ ezP.DelegateSvg.Expr.attributeref.prototype.synchronizeValue = function (block, 
 }
 
 /**
+ * Class for a DelegateSvg, subscription and slicing.
+ * Due to the ambibuity, it is implemented only once for both.
+ * Slicing is richer.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Manager.makeSubclass('slicing', {
+  inputs: {
+    variants: [0, 1],
+    i_1: {
+      edit: {
+        key:ezP.Key.VALUE,
+        value: '',
+        placeholder: ezP.Msg.Placeholder.IDENTIFIER,
+        validator: function(txt) {
+          var block = this.sourceBlock_
+          if (block) {
+            var ezp = block.ezp
+            var v = ezp.validateValue(block, goog.isDef(txt) && txt || this.getValue())
+            return v && v.validated
+          }
+        },
+        onEndEditing: function () {
+          var block = this.sourceBlock_
+          var ezp = block.ezp
+          ezp.setValue(block, this.getValue())
+        },
+      },
+    },
+    i_2: {
+      key: ezP.Key.PRIMARY,
+      check: ezP.T3.Expr.Check.primary,
+      plugged: ezP.T3.Expr.primary,
+      hole_value: 'primary',
+    },
+    i_3: {
+      key: ezP.Key.SLICE,
+      wrap: ezP.T3.Expr.display_slice_list,
+    },
+  },
+  output: {
+    check: [ezP.T3.Expr.subscription, ezP.T3.Expr.slicing],
+  },
+})
+
+ezP.DelegateSvg.Expr.subscription = ezP.DelegateSvg.Expr.slicing
+ezP.DelegateSvg.Manager.register('subscription')
+
+
+/**
+ * Validate the value property.
+ * The variant is true when the value is builtin, false otherwise.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newValue
+ * @return true if newValue is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Expr.slicing.prototype.validateValue = function (block, newValue) {
+  var type = ezP.Do.typeOfString(newValue)
+  return type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name?
+  {validated: newValue}: null
+}
+
+/**
+ * Synchronize the value property.
+ * The variant is true when the value is builtin, false otherwise.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newValue
+ * @return true if newValue is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Expr.slicing.prototype.synchronizeValue = function (block, newValue) {
+  this.ui.i_1.fields.value.setValue(newValue || '')
+}
+
+/**
+ * Synchronize the variant property.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newVariant
+ * @return true if newVariant is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Expr.slicing.prototype.synchronizeVariant = function (block, newVariant) {
+  this.setInputDisabled(block, this.ui.i_1.input, !!newVariant)
+  this.setInputDisabled(block, this.ui.i_2.input, !newVariant)
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var current = this.getVariant(block)? 1: 0
+  var F = function(content, j) {
+    var menuItem = new ezP.MenuItem(content, function() {
+      block.ezp.setVariant(block, j)
+    })
+    mgr.addChild(menuItem, true)
+    menuItem.setEnabled(j !== current)
+  }
+  var value = this.getValue(block)
+  var content =
+  goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    ezP.Do.createSPAN(value || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'),
+    ezP.Do.createSPAN('[…]', 'ezp-code'),
+  )
+  F(content, 0)
+  var content =
+  goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    ezP.Do.createSPAN(ezP.Msg.Placeholder.EXPRESSION, 'ezp-code-placeholder'),
+    ezP.Do.createSPAN('[…]', 'ezp-code'),
+  )
+  F(content, 1)
+  mgr.shouldSeparateInsert()
+  return ezP.DelegateSvg.Primary.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+}
+
+
+/**
  * Base class for primaries.
  * Uses value and variant properties, plus oldValue.
  * For ezPython.
@@ -253,31 +377,6 @@ ezP.DelegateSvg.Primary.prototype.populateContextMenuFirst_ = function (block, m
   }
   return ezP.DelegateSvg.Primary.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
-
-/**
- * Class for a DelegateSvg, subscription and slicing.
- * Due to the ambibuity, it is implemented only once for both.
- * Slicing is richer.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('slicing', {
-  inputs: {
-    i_3: {
-      key: ezP.Key.SLICE,
-      wrap: ezP.T3.Expr.display_slice_list,
-    },
-  },
-  output: {
-    check: [ezP.T3.Expr.subscription, ezP.T3.Expr.slicing],
-  },
-}, ezP.DelegateSvg.Primary)
-
-ezP.DelegateSvg.Expr.subscription = ezP.DelegateSvg.Expr.slicing
-ezP.DelegateSvg.Manager.register('subscription')
 
 /**
  * Class for a DelegateSvg, call block.

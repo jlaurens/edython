@@ -2613,18 +2613,3 @@ ezP.DelegateSvg.prototype.unlock = function (block, shallow) {
   (block.getSurroundParent()||block).render()
   return ans
 }
-
-/**
- * Did connect this block's connection to another connection.
- * When conecting locked blocks, select the receiver.
- * @param {!Blockly.Block} block
- * @param {!Blockly.Connection} connection what has been connected in the block
- * @param {!Blockly.Connection} oldTargetConnection what was previously connected in the block
- * @param {!Blockly.Connection} oldConnection what was previously connected to the new targetConnection
- */
-ezP.DelegateSvg.prototype.didConnect = function(block, connection, oldTargetConnection, oldConnection) {
-  ezP.DelegateSvg.superClass_.didConnect.call(this, block, connection, oldTargetConnection, oldConnection)
-  if (block === Blockly.selected && this.locked_) {
-    block.ezp.unlock(block)
-  }
-}

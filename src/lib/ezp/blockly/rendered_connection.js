@@ -363,7 +363,7 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
   if (!c8nA || !c8nB) {
     return true
   }
-  if (c8nA.hidden_ && c8nA.ezp.wrapped_ || c8nB.hidden_ && c8nB.ezp.wrapped_) {
+  if (c8nA.ezp.disabled_ || c8nB.ezp.disabled_) {
     return false
   }
   var sourceA = c8nA.getSourceBlock()
@@ -375,6 +375,9 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
     var checkB = c8nB.check_
     if (c8nA.ezp.name_) {
       // c8nA is the connection of an input
+      if (sourceA.ezp.locked_) {
+        return false
+      }
       // connections are inline
       if (c8nA.type === Blockly.NEXT_STATEMENT) {
         if (c8nB.type === Blockly.PREVIOUS_STATEMENT) {
@@ -405,6 +408,9 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
     } /* if (c8nA.ezp.name_) */
     if (c8nB.ezp.name_) {
       // c8nB is the connection of an input
+      if (sourceB.ezp.locked_) {
+        return false
+      }
       // connections are inline
       if (c8nB.type === Blockly.NEXT_STATEMENT) {
         if (c8nA.type === Blockly.PREVIOUS_STATEMENT) {

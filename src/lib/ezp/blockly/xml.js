@@ -43,6 +43,10 @@ ezP.Xml = {
   VALUE: 'value', // attribute name
   AS: 'as', // attribute name
   FROM: 'from', // attribute name
+  STATE: 'state', // attribute name
+
+  LOCKED: 'locked', // attribute name
+  QUESTION: '?',
 
   LITERAL: 'ezp:literal',
   TERM: 'ezp:term',
@@ -309,13 +313,17 @@ ezP.Xml.blockToDom = function (block, optNoId) {
     goog.isFunction(controller.blockToDom)) ||
     ((controller = ezp.constructor) &&
     goog.isFunction(controller.blockToDom))) {
-    return controller.blockToDom.call(controller, block, optNoId)
+    var element = controller.blockToDom.call(controller, block, optNoId)
+  } else {
+    element = goog.dom.createDom(block.ezp.xmlTagName(block))
+    if (!optNoId) {
+      element.setAttribute('id', block.id)
+    }
+    ezP.Xml.toDom(block, element, optNoId)
   }
-  var element = goog.dom.createDom(block.ezp.xmlTagName(block))
-  if (!optNoId) {
-    element.setAttribute('id', block.id)
+  if (block.ezp.locked_) {
+    element.setAttribute(ezP.Xml.STATE, ezP.Xml.LOCKED)
   }
-  ezP.Xml.toDom(block, element, optNoId)
   return element
 }
 
@@ -483,34 +491,39 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
   || (block = ezP.Xml.AugAssign.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.Primary.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.Global.domToBlock(xmlBlock, workspace))) {
-    return block
+    
   } else {
     prototypeName = name
-  }
-  // Now create the block, either solid or not
-  var id = xmlBlock.getAttribute('id')
-
-  var solid = prototypeName + '_solid'
-  var controller = ezP.DelegateSvg.Manager.get(solid)
-  if (controller) {
-    if (controller.ezp && goog.isFunction(controller.ezp.domToBlock)) {
-      return controller.ezp.domToBlock(xmlBlock, workspace, id)
-    } else if (goog.isFunction(controller.domToBlock)) {
-      return controller.domToBlock(xmlBlock, workspace, id)
+    var id = xmlBlock.getAttribute('id')
+    var solid = prototypeName + '_solid'
+    var controller = ezP.DelegateSvg.Manager.get(solid)
+    if (controller) {
+      if (controller.ezp && goog.isFunction(controller.ezp.domToBlock)) {
+        return controller.ezp.domToBlock(xmlBlock, workspace, id)
+      } else if (goog.isFunction(controller.domToBlock)) {
+        return controller.domToBlock(xmlBlock, workspace, id)
+      }
+      block = ezP.DelegateSvg.newBlockComplete(workspace, solid, id)
+    } else if ((controller = ezP.DelegateSvg.Manager.get(prototypeName))) {
+      if (controller.ezp && goog.isFunction(controller.ezp.domToBlock)) {
+        return controller.ezp.domToBlock(xmlBlock, workspace, id)
+      } else if (goog.isFunction(controller.domToBlock)) {
+        return controller.domToBlock(xmlBlock, workspace, id)
+      }
+      block = ezP.DelegateSvg.newBlockComplete(workspace, prototypeName, id)
     }
-    block = ezP.DelegateSvg.newBlockComplete(workspace, solid, id)
-  } else if ((controller = ezP.DelegateSvg.Manager.get(prototypeName))) {
-    if (controller.ezp && goog.isFunction(controller.ezp.domToBlock)) {
-      return controller.ezp.domToBlock(xmlBlock, workspace, id)
-    } else if (goog.isFunction(controller.domToBlock)) {
-      return controller.domToBlock(xmlBlock, workspace, id)
+    // Now create the block, either solid or not
+    if (block) {
+  //    console.log('Block created from dom:', xmlBlock, block.type, block.id)
+      // then fill it based on the xml data
+      ezP.Xml.fromDom(block, xmlBlock)
     }
-    block = ezP.DelegateSvg.newBlockComplete(workspace, prototypeName, id)
   }
   if (block) {
-//    console.log('Block created from dom:', xmlBlock, block.type, block.id)
-    // then fill it based on the xml data
-    ezP.Xml.fromDom(block, xmlBlock)
+    var state = xmlBlock.getAttribute(ezP.Xml.STATE)
+    if (state && state.toLowerCase() === ezP.Xml.LOCKED) {
+      block.ezp.lock(block)
+    }
   }
   return block
 }
@@ -653,7 +666,7 @@ ezP.Xml.Input.fromDom = function(input, element) {
             return ezP.Xml.fromDom(target, child)
           } else if ((target = Blockly.Xml.domToBlock(child, input.sourceBlock_.workspace))) {
             // we could create a block form that child element
-            // then connect it to 
+            // then connect it
             if (target.outputConnection && c8n.checkType_(target.outputConnection)) {
               c8n.connect(target.outputConnection)
             } else if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
@@ -666,6 +679,8 @@ ezP.Xml.Input.fromDom = function(input, element) {
     }
   }
 }
+
+console.log('record the lock status')
 
 /**
  * Convert the block's input with the given name to a dom element.
@@ -1745,7 +1760,6 @@ ezP.DelegateSvg.Expr.attributeref.prototype.toDom = function(block, element, opt
   return ezP.Xml.Input.Named.toDom(block, ezP.Key.PRIMARY, element, optNoId)
 }
 
-
 /**
  * fromDom.
  * @param {!Blockly.Block} block to be initialized.
@@ -1758,6 +1772,48 @@ ezP.DelegateSvg.Expr.attributeref.prototype.fromDom = function (block, element) 
     block.ezp.setValue(block, text) // validation?
   }
   return ezP.Xml.Input.Named.fromDom(block, ezP.Key.PRIMARY, element)
+}
+
+/**
+ * Convert the block to a dom element.
+ * Called at the end of blockToDom.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {Element} xml the persistent element.
+ * @param {boolean} optNoId.
+ * @return a dom element
+ */
+ezP.DelegateSvg.Expr.slicing.prototype.toDom = function(block, element, optNoId) {
+  var variant = this.getVariant(block)
+  if (variant) {
+    ezP.Xml.Input.Named.toDom(block, ezP.Key.PRIMARY, element, optNoId)
+  } else {
+    var text = this.getValue(block)
+    element.setAttribute(ezP.Xml.VALUE, text || '?')  
+  }
+  return ezP.Xml.Input.Named.toDom(block, ezP.Key.SLICE, element, optNoId)
+}
+
+/**
+ * fromDom.
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {!Element} xml dom element.
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Expr.slicing.prototype.fromDom = function (block, element) {
+  var text = element.getAttribute(ezP.Xml.VALUE)
+  if (text) {
+    this.setVariant(block, 0)
+    if (text === '?') {
+      block.ezp.setValidatedValue(block, '')
+    } else {
+      block.ezp.setValue(block, text)
+    }
+  } else {
+    this.setVariant(block, 1)
+    ezP.Xml.Input.Named.fromDom(block, ezP.Key.PRIMARY, element)
+  }
+  return ezP.Xml.Input.Named.fromDom(block, ezP.Key.SLICE, element)
 }
 
 /**
