@@ -425,23 +425,66 @@ ezP.DelegateSvg.Expr.call_expr.prototype.populateContextMenuFirst_ = function (b
  */
 ezP.DelegateSvg.Manager.makeSubclass('call_stmt', {
   inputs: {
-    i_1: {
-      insert: ezP.T3.Expr.call_expr,
-    },
+    insert: ezP.T3.Expr.call_expr,
   },
 })
 
-ezP.DelegateSvg.Stmt.call_stmt.ezp.getModel = ezP.DelegateSvg.Expr.call_expr.ezp.getModel
+ezP.Do.addInstanceProperty(ezP.DelegateSvg.Stmt.call_stmt, ezP.Key.BACKUP)
+
 /**
- * Synchronize the variant with the ui.
- * @param {!Blockly.Block} block  to be initialized.
- * @param {string} newVariant
- * For subclassers eventually
+ * Init the variant property.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
  */
-ezP.DelegateSvg.Stmt.call_stmt.prototype.synchronizeVariant = function (block, newVariant) {
-  var field = this.ui.i_1.fields.label
-  field.setValue(newVariant)
-}
+ezP.DelegateSvg.Stmt.call_stmt.prototype.initVariant = ezP.DelegateSvg.Expr.call_expr.prototype.initVariant
+
+/**
+ * Validate the variant property.
+ * The variant is true when the value is builtin, false otherwise.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newVariant
+ * @return true if newVariant is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Stmt.call_stmt.prototype.validateVariant = ezP.DelegateSvg.Expr.call_expr.prototype.validateVariant
+
+/**
+ * Synchronize the variant property.
+ * The variant is true when the value is builtin, false otherwise.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newVariant
+ * @return true if newVariant is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Stmt.call_stmt.prototype.synchronizeVariant = ezP.DelegateSvg.Expr.call_expr.prototype.synchronizeVariant
+
+/**
+ * Validate the value property.
+ * The variant is true when the value is builtin, false otherwise.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newValue
+ * @return true if newValue is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Stmt.call_stmt.prototype.validateValue = ezP.DelegateSvg.Expr.call_expr.prototype.validateValue
+
+/**
+ * When the value did change.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} oldValue
+ * @param {string} newValue
+ * @return true if newValue is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Stmt.call_stmt.prototype.didChangeValue = ezP.DelegateSvg.Expr.call_expr.prototype.didChangeValue
+
+/**
+ * Synchronize the value property with the UI.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newValue
+ */
+ezP.DelegateSvg.Stmt.call_stmt.prototype.synchronizeValue = ezP.DelegateSvg.Expr.call_expr.prototype.synchronizeValue
 
 /**
  * Populate the context menu for the given block.
