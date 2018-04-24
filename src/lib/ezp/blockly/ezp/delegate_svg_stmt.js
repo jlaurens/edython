@@ -409,18 +409,13 @@ ezP.DelegateSvg.Manager.makeSubclass('global_nonlocal_stmt', {
 })
 
 /**
- * Hook after the subtype change.
- * Default implementation does nothing.
- * Subclassers will take care of undo compliance.
- * Event recording is disabled.
+ * Synchronize the subtype property with the UI.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} oldSubtype
  * @param {string} newSubtype
  */
-ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
-  ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  block.ezp.ui.fields.prefix.setValue(newSubtype)
+ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.synchronizeSubtype = function (block, newSubtype) {
+  block.ezp.ui.fields.prefix.setValue(newSubtype || '')
 }
 
 /**
@@ -512,16 +507,14 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.setDisabled = function (block, yorn)
 }
 
 /**
- * When the subtype has just changed.
+ * Synchronize the subtype with the UI.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} oldSubtype
  * @param {string} newSubtype
  */
-ezP.DelegateSvg.Stmt.comment_stmt.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
-  ezP.DelegateSvg.Stmt.comment_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
+ezP.DelegateSvg.Stmt.comment_stmt.prototype.didChangeSubtype = function (block, newSubtype) {
   var input = block.getInput(ezP.Key.COMMENT)
-  input.ezp.fields.comment.setValue(subtype)
+  input.ezp.fields.comment.setValue(subtype || '')
 }
 
 /**

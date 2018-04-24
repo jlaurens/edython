@@ -967,7 +967,7 @@ ezP.DelegateSvg.prototype.renderDrawField_ = function (io) {
           // add a separation
           io.cursorX += ezP.Font.space
         }
-        io.shouldSeparateField = ezP.XRE.id_continue.test(text[text.length-1]) || text[text.length-1] === '=' || text[text.length-1] === ':' || text[text.length-1] === '.'
+        io.shouldSeparateField = ezP.XRE.id_continue.test(text[text.length-1]) || text[text.length-1] === '=' || text[text.length-1] === ':' || (text[text.length-1] === '.' && !io.field instanceof ezP.FieldTextInput)
       }
       var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
       root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +

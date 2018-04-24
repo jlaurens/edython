@@ -80,6 +80,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_import_identifier_as_list', {
  *     type-specific functions for this block.
  * @constructor
  */
+ console.warn('Is the edit: below complete?')
 ezP.DelegateSvg.Manager.makeSubclass('import_stmt', {
   inputs: {
     variants: [0, 1, 2],
@@ -150,7 +151,7 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.validateValue = function (block, newV
  * @return true if newValue is acceptable, false otherwise
  */
 ezP.DelegateSvg.Stmt.import_stmt.prototype.synchronizeValue = function (block, newValue) {
-  this.ui.i_2.fields.from.setValue(newValue)
+  this.ui.i_2.fields.from.setValue(newValue || '')
 }
 
 console.log('When read from dom, if the read data is not valid, what to do?')

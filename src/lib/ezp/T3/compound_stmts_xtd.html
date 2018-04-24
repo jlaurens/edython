@@ -21,7 +21,7 @@ if_stmt ::= IGNORE
 if_part/if ::= "if" expression ":"
 elif_part/elif ::= "elif" expression ":"
 else_part/else ::= "else" ":"
-last_else_part/else ::= else_part
+last_else_part ::= else_part # this block type is never used in a definition, only for checking
 else_part >>> if_part | elif_part | comment_stmt
 last_else_part >>> if_part | elif_part | comment_stmt
 elif_part >>> if_part | elif_part | comment_stmt
@@ -55,13 +55,13 @@ try1_stmt ::= IGNORE
 try2_stmt ::= IGNORE
 try_part/try
 except_part/except
-void_except_part ::= "except" ":" # this block type is never used in a definition, only for ckecking
+void_except_part ::= "except" ":" # this block type is never used in a definition, only for checking
 finally_part/finally
 try_part <<< except_part | void_except_part | finally_part | comment_stmt
 void_except_part >>> except_part
 except_part >>> try_part | except_part | comment_stmt
 void_except_part >>> try_part | except_part | comment_stmt
-try_else_part/else ::= else_part
+try_else_part/else ::= else_part # this block type is never used in a definition, only for checking
 else_part >>> except_part | void_except_part | comment_stmt
 try_else_part >>> except_part | void_except_part | comment_stmt
 finally_part >>> try_part | except_part | void_except_part | try_else_part | else_part | comment_stmt
@@ -72,7 +72,7 @@ with_item ::=  expression ["as" target]
 
 <pre>
 with_stmt ::= IGNORE
-with_part ::= "with" with_item_list ":"
+with_part/with ::= "with" with_item_list ":"
 with_item_list ::= with_item ("," with_item)*
 </pre>
 If a parameter has a default value, all following parameters up until the “*” must also have a default value — this is a syntactic restriction that is not expressed by the grammar.
@@ -81,7 +81,7 @@ If a parameter has a default value, all following parameters up until the “*�
 <pre>
 funcdef ::= REMOVE
 async_funcdef ::= REMOVE
-funcdef_part/funcdef ::= ["async"] "def" funcname "(" [parameter_list] ")" ["->" expression] ":" SUITE
+funcdef_part/function ::= ["async"] "def" funcname "(" [parameter_list] ")" ["->" expression] ":" SUITE
 decorators ::= REMOVE
 decorator ::= REMOVE
 decorator(stmt) ::= "@" dotted_name ["(" [argument_list [","]] ")"] NEWLINE
@@ -151,7 +151,7 @@ classname   ::=  identifier
 
 <pre>
 classdef ::= IGNORE
-classdef_part ::=  "class" classname ['(' argument_list ')'] ':'
+classdef_part/class ::=  "class" classname ['(' argument_list ')'] ':'
 decorator <<< classdef_part
 </pre>
 

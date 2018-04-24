@@ -77,7 +77,7 @@ ezP.Key = {
   BUILTIN: 'builtin',// this MUST be in lower case
   
   EDIT: 'edit',// this MUST be in lower case
-  
+    
   LIST: 'list',// avoid this one when possibe
   
   ASYNC: 'async',
@@ -115,6 +115,9 @@ ezP.Key = {
   AS: 'as',
   SOURCE: 'source',
   DEFINITION: 'definition',
+
+  BACKUP: 'backup',// this MUST be in camelcase
+  ALT: 'alt',// this MUST be in camelcase
 
   WRAP: 'wrap',
   

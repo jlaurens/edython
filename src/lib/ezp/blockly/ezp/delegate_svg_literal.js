@@ -93,8 +93,8 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.initValue = function (block) {
  * When the value did change, sets the subtype accordingly.
  * @param {!Blockly.Block} block to be synchronized.
  */
-ezP.DelegateSvg.Expr.numberliteral.prototype.synchronizeValue = function (block) {
-  this.ui.i_1.fields.value.setValue(this.getValue() || '0')
+ezP.DelegateSvg.Expr.numberliteral.prototype.synchronizeValue = function (block, newValue) {
+  this.ui.i_1.fields.value.setValue(newValue || '0')
 }
 
 /**
@@ -311,8 +311,8 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.didChangeContent = function (block, 
  * Change the UI.
  * @param {!Blockly.Block} block to be initialized.
  */
-ezP.DelegateSvg.Expr.shortliteral.prototype.synchronizeContent = function (block) {
-  this.ui.i_1.fields.value.setValue(this.getContent() || '')
+ezP.DelegateSvg.Expr.shortliteral.prototype.synchronizeContent = function (block, newContent) {
+  this.ui.i_1.fields.value.setValue(newContent || '')
 }
 
 /**

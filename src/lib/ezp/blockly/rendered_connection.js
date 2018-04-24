@@ -363,7 +363,7 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
   if (!c8nA || !c8nB) {
     return true
   }
-  if (c8nA.hidden_ && !c8nA.ezp.wrapped_ || c8nB.hidden_ && !c8nB.ezp.wrapped_) {
+  if (c8nA.hidden_ && c8nA.ezp.wrapped_ || c8nB.hidden_ && c8nB.ezp.wrapped_) {
     return false
   }
   var sourceA = c8nA.getSourceBlock()

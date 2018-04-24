@@ -6,9 +6,10 @@ class Type:
     """A Type represents a python 3 expression or statement"""
 
     re_name = re.compile(r"^\s*(?P<name>"
-                         r"(?P<is_suite>suite)|(?P<is_statement>statement|stmt_list)"
-                         r"|"
-                         r"(?:"
+                         r"(?P<is_group>if|elif|else|for|while|with|funcdef|classdef|"
+                         r"try|except|void_except|try_else|finally|last_else)"
+                         r"|(?P<is_suite>suite)|(?P<is_statement>statement|stmt_list)"
+                         r"|(?:"
                          r"(?P<is_stmt_1>stmt_|statement_)?"
                          r"\S+?"
                          r"(?:(?P<is_stmt_2>_stmt|_statement|def)|(?P<is_part>_part)?)"
@@ -41,6 +42,7 @@ class Type:
         self.list_require = []
         self.alias = None
         self.same_checks = None
+        self.is_group = None
         self.is_part = None
         self.is_compound = None
         self.is_stmt = None
@@ -76,6 +78,7 @@ class Type:
             m = self.__class__.re_name.match(self.name)
             assert m, 'Bad name: ' + self.name
             assert not m.group('is_suite') and not m.group('is_statement'), 'Bad name too: ' + self.name
+            self.is_group = not not m.group('is_group')
             self.is_part = not not m.group('is_part')
             self.is_compound = not not self.__class__.re_compound.match(self.definition)
             self.is_stmt = not not m.group('is_stmt_1') \

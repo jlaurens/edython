@@ -20,6 +20,9 @@
  * a void string. This is useful for call expression that can appear as
  * statements too.
  * The domToWorkspace has been overriden to manage more blocks.
+ * When both an expression and a statement share the same
+ * tag, the expression always have an input attribute,
+ * which may be void.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -920,8 +923,8 @@ ezP.DelegateSvg.Expr.call_expr.prototype.xmlTagName = ezP.DelegateSvg.Stmt.call_
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise
  */
-ezP.DelegateSvg.Expr.builtin_call_expr.prototype.xmlTagName = ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.xmlTagName = function (block) {
-  return ezP.Xml.BUILTIN_CALL
+ezP.DelegateSvg.Expr.call_expr.prototype.xmlTagName = ezP.DelegateSvg.Stmt.call_stmt.prototype.xmlTagName = function (block) {
+  return ezP.Xml.CALL
 }
 
 /**
@@ -942,9 +945,7 @@ ezP.Xml.Call.toDom = function(block, element, optNoId) {
 ezP.Xml.Call.fromDom = ezP.Xml.InputList.fromDom
 
 ezP.DelegateSvg.Expr.call_expr.prototype.xml =
-ezP.DelegateSvg.Expr.builtin_call_expr.prototype.xml =
-ezP.DelegateSvg.Stmt.call_stmt.prototype.xml =
-ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.xml = ezP.Xml.Call
+ezP.DelegateSvg.Stmt.call_stmt.prototype.xml = ezP.Xml.Call
 
 goog.require('ezP.DelegateSvg.Print')
 
@@ -1728,6 +1729,38 @@ goog.require('ezP.DelegateSvg.Primary')
 goog.provide('ezP.Xml.Primary')
 
 /**
+ * Convert the block to a dom element.
+ * Called at the end of blockToDom.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {Element} xml the persistent element.
+ * @param {boolean} optNoId.
+ * @return a dom element
+ */
+ezP.DelegateSvg.Expr.attributeref.prototype.toDom = function(block, element, optNoId) {
+  var text = this.getValue(block)
+  if (text && text.length) {
+    element.setAttribute(ezP.Xml.VALUE, text)
+  }
+  return ezP.Xml.Input.Named.toDom(block, ezP.Key.PRIMARY, element, optNoId)
+}
+
+
+/**
+ * fromDom.
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {!Element} xml dom element.
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Expr.attributeref.prototype.fromDom = function (block, element) {
+  var text = element.getAttribute(ezP.Xml.VALUE)
+  if (text) {
+    block.ezp.setValue(block, text) // validation?
+  }
+  return ezP.Xml.Input.Named.fromDom(block, ezP.Key.PRIMARY, element)
+}
+
+/**
  * Set the operator from the element's tagName.
  * @param {!Blockly.Block} block.
  * @param {!Element} element dom element to be completed.
@@ -1846,13 +1879,13 @@ goog.require('ezP.DelegateSvg.Lambda')
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise
  */
-ezP.DelegateSvg.Expr.lambda_expression.prototype.xmlTagName = function (block) {
+ezP.DelegateSvg.Expr.lambda.prototype.xmlTagName = function (block) {
   return ezP.Xml.LAMBDA
 }
 
-ezP.DelegateSvg.Manager.registerDelegate_(ezP.Xml.LAMBDA, ezP.DelegateSvg.Expr.lambda_expression)
+ezP.DelegateSvg.Manager.registerDelegate_(ezP.Xml.LAMBDA, ezP.DelegateSvg.Expr.lambda)
 
-ezP.DelegateSvg.Expr.lambda_expression.prototype.xml = ezP.Xml.InputList
+ezP.DelegateSvg.Expr.lambda.prototype.xml = ezP.Xml.InputList
 
 goog.require('ezP.DelegateSvg.Argument')
 

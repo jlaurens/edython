@@ -226,9 +226,9 @@ ezP.DelegateSvg.Stmt.with_part.workspaceBlocks = ezP.Do.arraysMerged([
 ],
 ezP.T3.Expr.Check.expression)
 
-ezP.DelegateSvg.Expr.lambda_expression.workspaceBlocks = ezP.Do.arraysMerged([
+ezP.DelegateSvg.Expr.lambda.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Expr.parameter_list,
-  ezP.T3.Expr.lambda_expression,
+  ezP.T3.Expr.lambda,
   ezP.T3.Expr.term,
 ],
 ezP.T3.Expr.Check.expression,

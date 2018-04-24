@@ -114,7 +114,7 @@ ezP.DelegateSvg.Stmt.decorator.prototype.synchronizeVariant = function (block, v
  * @param {!Blockly.Block} block The owner of the receiver.
  */
 ezP.DelegateSvg.Stmt.decorator.prototype.synchronizeBuiltin = function (block, builtin) {
-  this.ui.i_2.fields.label.setValue(builtin)
+  this.ui.i_2.fields.label.setValue(builtin || '')
 }
 
 /**
@@ -132,7 +132,7 @@ ezP.DelegateSvg.Stmt.decorator.prototype.initValue = function (block) {
  * @param {!Blockly.Block} block The owner of the receiver.
  */
 ezP.DelegateSvg.Stmt.decorator.prototype.synchronizeValue = function (block, value) {
-  this.ui.i_1.fields.dotted_name.setValue(value)
+  this.ui.i_1.fields.dotted_name.setValue(value || '')
 }
 
 /**

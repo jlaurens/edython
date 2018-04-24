@@ -480,11 +480,9 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.initValue = function(block) {
  * When the value did change.
  * @param {!Blockly.Block} block to be initialized.
  * @param {string} oldValue
- * @param {string} newValue
  */
-ezP.DelegateSvg.Expr.builtin_object.prototype.didChangeValue = function(block, oldValue, newValue) {
-  ezP.DelegateSvg.Expr.builtin_object.superClass_.didChangeValue.call(this, block, oldValue, newValue)
-  block.ezp.ui.i_1.fields.label.setValue(this.getValue(block))
+ezP.DelegateSvg.Expr.builtin_object.prototype.synchronizeValue = function(block, newValue) {
+  block.ezp.ui.i_1.fields.label.setValue(newValue || '')
 }
 
 /**
@@ -534,12 +532,10 @@ console.warn('value and subtype')
 /**
  * When the subtype has changed.
  * @param {!Blockly.Block} block to be initialized.
- * @param {string} oldSubtype
- * @param {string} newSubtype
+ * @param {string} newValue
  */
-ezP.DelegateSvg.Expr.any.prototype.didChangeSubtype = function(block, oldSubtype, newSubtype) {
-  ezP.DelegateSvg.Expr.any.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  block.ezp.ui.i_1.fields.code.setValue(this.getValue(block))
+ezP.DelegateSvg.Expr.any.prototype.synchronizeValue = function(block, newValue) {
+  block.ezp.ui.i_1.fields.code.setValue(newValue || '')
 }
 
 ezP.DelegateSvg.Expr.T3s = [

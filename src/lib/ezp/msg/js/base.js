@@ -64,6 +64,10 @@ goog.provide('ezP.Msg.Placeholder')
 
 /** @export */ ezP.Msg.Placeholder.IDENTIFIER = "nom"
 
+/** @export */ ezP.Msg.Placeholder.ATTRIBUTE = "attribut"
+
+/** @export */ ezP.Msg.Placeholder.EXPRESSION = "expression"
+
 /** @export */ ezP.Msg.Placeholder.TERM = "nom"
 
 /** @export */ ezP.Msg.Placeholder.ALIAS = "alias"

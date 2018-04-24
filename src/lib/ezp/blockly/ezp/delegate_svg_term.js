@@ -156,7 +156,7 @@ ezP.DelegateSvg.Expr.term.prototype.validateAlias = function (block, newAlias) {
  * @param {string} newValue
  */
 ezP.DelegateSvg.Expr.term.prototype.synchronizeAlias = function (block, newAlias) {
-  this.ui.i_4.fields.alias.setValue(newAlias)
+  this.ui.i_4.fields.alias.setValue(newAlias || '')
 }
 
 /**
@@ -240,7 +240,7 @@ ezP.DelegateSvg.Expr.term.prototype.synchronizeVariant = function(block, newVari
  */
 ezP.DelegateSvg.Expr.term.prototype.synchronizeModifier = function(block, newModifier) {
   var field = block.ezp.ui.fields.modifier
-  field.setValue(newModifier)
+  field.setValue(newModifier || '')
   field.setVisible(newModifier && newModifier.length>0)
 }
 
@@ -277,7 +277,7 @@ ezP.DelegateSvg.Expr.term.prototype.didChangeValue = function (block, oldValue, 
  * @param {string} newValue
  */
 ezP.DelegateSvg.Expr.term.prototype.synchronizeValue = function (block, newValue) {
-  this.ui.i_1.fields.value.setValue(newValue)
+  this.ui.i_1.fields.value.setValue(newValue || '')
 }
 
 /**

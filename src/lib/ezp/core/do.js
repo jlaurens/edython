@@ -285,6 +285,12 @@ ezP.Do.createSPAN = function(text,css) {
   )
 }
 
+goog.require('ezP.T3')
+
+ezP.T3.Expr.reserved_identifier = 'reserved identifier'
+ezP.T3.Expr.reserved_keyword = 'reserved keyword'
+ezP.T3.Expr.builtin_name = 'builtin name'
+
 /**
  * What is the type of this string? an identifier, a number, a reserved word ?
  * For ezPython.
@@ -295,13 +301,13 @@ ezP.Do.typeOfString = function (candidate) {
     return
   }
   if (['False', 'None', 'True'].indexOf(candidate)>=0) {
-    return 'reserved identifier'
+    return ezP.T3.Expr.reserved_identifier
   }
   if (['class', 'finally', 'is', 'return', 'continue', 'for', 'lambda', 'try', 'def', 'from', 'nonlocal', 'while', 'and', 'del', 'global', 'not', 'with', 'as', 'elif', 'if', 'or', 'yield', 'assert', 'else', 'import', 'pass', 'break', 'except', 'in', 'raise'].indexOf(candidate)>=0) {
-    return 'reserved keyword'
+    return ezP.T3.Expr.reserved_keyword
   }
   if (['print', 'input', 'range', 'list', 'len', 'sum'].indexOf(candidate)>=0) {
-    return 'builtin keyword'
+    return ezP.T3.Expr.builtin_name
   }
   // is it a number ?
   if (ezP.XRE.integer.exec(candidate)) {
@@ -458,7 +464,7 @@ ezP.Do.addInstanceProperty = function (Ctor, key, params) {
     if (values) {
       var i = inputs[Ks.index] || 0
       var value = values[i]
-      return this[Ks.set](block, value)
+      return this[Ks.set].call(this, block, value)
     }
   }
   p[Ks.validate] = params && params.validate || function(block, newValue) {
@@ -474,7 +480,7 @@ ezP.Do.addInstanceProperty = function (Ctor, key, params) {
     }
     try {
       holder.lock_willChange = true
-      this[Ks.willChange](block, oldValue, newValue)
+      this[Ks.willChange].call(this, block, oldValue, newValue)
     } finally {
       delete holder.lock_willChange
     }
@@ -488,7 +494,7 @@ ezP.Do.addInstanceProperty = function (Ctor, key, params) {
     }
     try {
       holder.lock_didChange = true
-      this[Ks.didChange](block, oldValue, newValue)
+      this[Ks.didChange].call(this, block, oldValue, newValue)
     } finally {
       delete holder.lock_didChange
     }
@@ -501,15 +507,15 @@ ezP.Do.addInstanceProperty = function (Ctor, key, params) {
     var old = this.skipRendering
     try {
       this.skipRendering = true
-      this[Ks._willChange](block, oldValue, newValue)
+      this[Ks._willChange].call(this, block, oldValue, newValue)
       if (Blockly.Events.isEnabled()) {
         Blockly.Events.fire(new Blockly.Events.BlockChange(
         block, Ks.event, null, oldValue, newValue))
       }
       holder.value = newValue
-      this[Ks._didChange](block, oldValue, newValue)
+      this[Ks._didChange].call(this, block, oldValue, newValue)
       var synchronize = this[Ks.synchronize]
-      synchronize && synchronize.call(this, block, newValue)
+      synchronize && synchronize.call(this, block, newValue || this[Ks.get].call(this, block))
       this.consolidateType(block)
       this.skipRendering = old
       block.render() // render now or possibly later ?
@@ -527,12 +533,12 @@ ezP.Do.addInstanceProperty = function (Ctor, key, params) {
     }
     var holder = this.properties
     holder = holder[key] || (holder[key] = {_keys: Ks})
-    if ((holder.value === newValue) || !(newValue = this[Ks.validate](block, newValue)) || !goog.isDef(newValue = newValue.validated)) {
+    if ((holder.value === newValue) || !(newValue = this[Ks.validate].call(this, block, newValue)) || !goog.isDef(newValue = newValue.validated)) {
       var synchronize = this[Ks.synchronize]
-      synchronize && synchronize.call(this, block, newValue)
+      synchronize && synchronize.call(this, block, newValue || this[Ks.get].call(this, block))
       return false
     }
-    this[Ks.setValidated](block, newValue)
+    this[Ks.setValidated].call(this, block, newValue)
     return true
   }
 }

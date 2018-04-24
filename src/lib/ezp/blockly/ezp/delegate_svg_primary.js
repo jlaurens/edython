@@ -15,52 +15,6 @@ goog.provide('ezP.DelegateSvg.Primary')
 
 goog.require('ezP.DelegateSvg.Expr')
 
-/**
- * Class for a DelegateSvg, attributeref.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Primary = function (prototypeName) {
-  ezP.DelegateSvg.Primary.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Primary, ezP.DelegateSvg.Expr)
-
-ezP.DelegateSvg.Primary.model__ = {
-  inputs: {
-    i_1: {
-      key: ezP.Key.PRIMARY,
-      check: ezP.T3.Expr.Check.primary,
-      plugged: ezP.T3.Expr.primary,
-      hole_value: 'primary',
-    },
-  },
-}
-
-/**
- * The primary connection if any.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.prototype.getPrimaryConnection = function (block) {
-  return undefined
-}
-
-/**
- * The primary connection if any.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Primary.prototype.getPrimaryConnection = function (block) {
-  var input = block.getInput(ezP.Key.PRIMARY)
-  return input.connection
-}
 
 /**
  * Class for a DelegateSvg, attributeref.
@@ -72,15 +26,233 @@ ezP.DelegateSvg.Primary.prototype.getPrimaryConnection = function (block) {
  */
 ezP.DelegateSvg.Manager.makeSubclass('attributeref', {
   inputs: {
-    i_3: {
+    i_1: {
+      key: ezP.Key.PRIMARY,
+      check: ezP.T3.Expr.Check.primary,
+      plugged: ezP.T3.Expr.primary,
+      hole_value: 'primary',
+    },
+    i_2: {
       label: '.',
-      key: ezP.Key.ATTRIBUTE,
-      check: ezP.T3.Expr.identifier,
-      plugged: ezP.T3.Expr.attribute_identifier,
-      hole_value: 'attribute',
+      edit: {
+        key:ezP.Key.VALUE,
+        value: '',
+        placeholder: ezP.Msg.Placeholder.ATTRIBUTE,
+        validator: function(txt) {
+          var block = this.sourceBlock_
+          if (block) {
+            var ezp = block.ezp
+            var v = ezp.validateValue(block, goog.isDef(txt) && txt || this.getValue())
+            return v && v.validated
+          }
+        },
+        onEndEditing: function () {
+          var block = this.sourceBlock_
+          var ezp = block.ezp
+          ezp.setValue(block, this.getValue())
+        },
+      },
     },
   },
-}, ezP.DelegateSvg.Primary)
+})
+
+
+/**
+ * Validate the value property.
+ * The variant is true when the value is builtin, false otherwise.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newValue
+ * @return true if newValue is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Expr.attributeref.prototype.validateValue = function (block, newValue) {
+  var type = ezP.Do.typeOfString(newValue)
+  return type === ezP.T3.Expr.builtin_name || type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name?
+  {validated: newValue}: null
+}
+
+/**
+ * Synchronize the value property with the UI.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newValue
+ */
+ezP.DelegateSvg.Expr.attributeref.prototype.synchronizeValue = function (block, newValue) {
+  var field = this.ui.i_2.fields.value
+  field.setValue(newValue || '')
+}
+
+/**
+ * Base class for primaries.
+ * Uses value and variant properties, plus oldValue.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Primary = function (prototypeName) {
+  ezP.DelegateSvg.Primary.superClass_.constructor.call(this, prototypeName)
+}
+goog.inherits(ezP.DelegateSvg.Primary, ezP.DelegateSvg.Expr)
+
+ezP.Do.addInstanceProperty(ezP.DelegateSvg.Primary, ezP.Key.BACKUP)
+
+ezP.DelegateSvg.Primary.model__ = {
+  inputs: {
+    i_1: {
+      edit: {
+        key:ezP.Key.VALUE,
+        value: '',
+        placeholder: ezP.Msg.Placeholder.IDENTIFIER,
+        validator: function(txt) {
+          var block = this.sourceBlock_
+          if (block) {
+            var ezp = block.ezp
+            var v = ezp.validateValue(block, goog.isDef(txt) && txt || this.getValue())
+            return v && v.validated
+          }
+        },
+        onEndEditing: function () {
+          var block = this.sourceBlock_
+          var ezp = block.ezp
+          ezp.setValue(block, this.getValue())
+        },
+      },
+    },
+    i_2: {
+      key: ezP.Key.PRIMARY,
+      check: ezP.T3.Expr.Check.primary,
+      plugged: ezP.T3.Expr.primary,
+      hole_value: 'primary',
+    },
+  },
+}
+
+ezP.Do.addInstanceProperty(ezP.DelegateSvg.Primary, ezP.Key.BACKUP)
+
+/**
+ * Init the variant property.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newValue
+ * @return true if newValue is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Primary.prototype.initVariant = function (block) {
+  this.setVariant(block, 0)
+}
+
+/**
+ * Validate the variant property.
+ * The variant is true when the value is builtin, false otherwise.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newVariant
+ * @return true if newVariant is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Primary.prototype.validateVariant = function (block, newVariant) {
+  return goog.isNumber(newVariant) && newVariant >= 0 && newVariant < 4
+}
+
+/**
+ * Validate the value property.
+ * The variant is true when the value is builtin, false otherwise.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newValue
+ * @return true if newValue is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Primary.prototype.validateValue = function (block, newValue) {
+  var type = ezP.Do.typeOfString(newValue)
+  return type === ezP.T3.Expr.builtin_name || type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name?
+  {validated: newValue}: null
+}
+
+/**
+ * When the value did change.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newValue
+ * @return true if newValue is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Primary.prototype.didChangeValue = function (block, newValue) {
+  var values = this.getValues(block)
+  if (values) {
+    var builtin = values.indexOf(newValue) >= 0
+    var variant = this.getVariant(block)
+    this.setVariant(block, variant%2 | (builtin? 2: 0))
+  }
+  if (!builtin) {
+    this.setBackup(block, newValue)
+  }
+}
+
+/**
+ * Synchronize the value property with the UI.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newValue
+ */
+ezP.DelegateSvg.Primary.prototype.synchronizeValue = function (block, newValue) {
+  var field = this.ui.i_1.fields.value
+  field.setValue(newValue)
+}
+
+/**
+ * Synchronize the variant property with the UI.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newVariant
+ */
+ezP.DelegateSvg.Primary.prototype.synchronizeVariant = function (block, newVariant) {
+  var withExpression = newVariant % 2
+  var withBuiltin = newVariant & 2
+  this.setInputDisabled(block, this.ui.i_1.input, withExpression)
+  this.setInputDisabled(block, this.ui.i_2.input, !withExpression)
+  var field = this.ui.i_1.fields.value
+  if (field.textElement_) {
+    var i = withBuiltin? 0: 1
+    var ra = ['ezp-code', 'ezp-code-reserved']
+    goog.dom.classlist.remove(field.textElement_, ra[i])
+    goog.dom.classlist.add(field.textElement_, ra[1-i])
+  }
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Primary.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var values = this.getValues(block)
+  if (values) {
+    var current = this.getValue(block)
+    var i = values.indexOf(current)
+    var content
+    if ( i>= 0) {
+      var oldValue = block.ezp.getBackup(block)
+      content = oldValue? ezP.Do.createSPAN(oldValue, 'ezp-code'): ezP.Do.createSPAN(ezP.Msg.Placeholder.IDENTIFIER, 'ezp-code-placeholder')
+      var menuItem = new ezP.MenuItem(content, function() {
+        block.ezp.setValue(block, oldValue)
+      })
+      mgr.addChild(menuItem, true)
+    }
+    var F = function(j) {
+      // closure to catch j
+      content = ezP.Do.createSPAN(values[j], 'ezp-code-reserved')
+      var menuItem = new ezP.MenuItem(content, function() {
+        block.ezp.setValue(block, j)
+      })
+      mgr.addChild(menuItem, true)
+      menuItem.setEnabled(j !== i)
+    }
+    for (var j = 0; j < values.length; j++) {
+      F (j)
+    }
+    mgr.shouldSeparateInsert()
+  }
+  return ezP.DelegateSvg.Primary.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+}
 
 /**
  * Class for a DelegateSvg, subscription and slicing.
@@ -119,6 +291,7 @@ ezP.DelegateSvg.Manager.register('subscription')
  */
 ezP.DelegateSvg.Manager.makeSubclass('call_expr', {
   inputs: {
+    values: ['range', 'list', 'set', 'len', 'sum'],
     i_3: {
       key: ezP.Key.ARGUMENTS,
       start: '(',
@@ -127,6 +300,8 @@ ezP.DelegateSvg.Manager.makeSubclass('call_expr', {
     },
   },
 }, ezP.DelegateSvg.Primary)
+
+ezP.Do.addInstanceProperty(ezP.DelegateSvg.Expr.call_expr, ezP.Key.BUILTIN)
 
 /**
  * Class for a DelegateSvg, call statement block.
@@ -144,46 +319,21 @@ ezP.DelegateSvg.Manager.makeSubclass('call_stmt', {
   },
 })
 
-/**
- * Class for a DelegateSvg, call block, built in functions.
- * As call is already a reserved message in javascript,
- * we use call_expr instead.
- * Due to the ambibuity, it is implemented only once for both.
- * Slicing is richer.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('builtin_call_expr', {
-  inputs: {
-    subtypes: ['range', 'list', 'set', 'len', 'sum'],
-    i_1: {
-      label: '',
-      css_class: 'ezp-code-builtin',
-      key: ezP.Key.ARGUMENTS,
-      start: '(',
-      wrap: ezP.T3.Expr.argument_list,
-      end: ')',
-    },
-  },
-  output: {
-    check: [ezP.T3.Expr.call_expr],
-  },
-})
+ezP.DelegateSvg.Stmt.call_stmt.ezp.getModel = ezP.DelegateSvg.Expr.call_expr.ezp.getModel
+
 
 /**
- * Initialize a block.
+ * Synchronize the builtin with the UI.
  * @param {!Blockly.Block} block to be initialized..
  * For subclassers eventually
  */
-ezP.DelegateSvg.Expr.builtin_call_expr.prototype.didChangeSubtype = function (block, oldSubtype, newSybtype) {
-  ezP.DelegateSvg.Expr.builtin_call_expr.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSybtype)
-  var subtypes = this.getModel().inputs.subtypes
-  var input = block.getInput(ezP.Key.ARGUMENTS)
-  var field = input.ezp.fields.label
-  field.setValue(newSybtype)
+ezP.DelegateSvg.Expr.call_expr.prototype.synchronizeBuiltin = function (block, newBuiltin) {
+  var field = this.ui.i_3.fields.label
+  field.setValue(newBuiltin)
+  var builtin = newBuiltin.length
+  this.setInputDisabled(block, this.ui.i_1.input, builtin)
+  this.setInputDisabled(block, this.ui.i_2.input, builtin)
+  this.setInputDisabled(block, this.ui.i_2.input, !builtin)
 }
 
 /**
@@ -192,17 +342,17 @@ ezP.DelegateSvg.Expr.builtin_call_expr.prototype.didChangeSubtype = function (bl
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.builtin_call_expr.populateMenu = function (block, mgr) {
-  var subtypes = block.ezp.getModel().inputs.subtypes
-  var current = block.ezp.getSubtype(block)
+ezP.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
+  var builtins = this.getBuiltins(block)
+  var current = block.ezp.getBuiltin(block)
   var F = function(content, key) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setSubtype(block, key)
+      block.ezp.setBuiltin(block, key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)
   }
-  for (var i = 0, k;(k = subtypes[i++]);) {
+  for (var i = 1, k;(k = variants[i++]);) {
     F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-builtin',
       goog.dom.createTextNode(k),
     ), k)
@@ -216,52 +366,20 @@ ezP.DelegateSvg.Expr.builtin_call_expr.populateMenu = function (block, mgr) {
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.builtin_call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  ezP.DelegateSvg.Expr.builtin_call_expr.populateMenu(block, mgr)
-  return ezP.DelegateSvg.Expr.builtin_call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+ezP.DelegateSvg.Expr.call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  ezP.DelegateSvg.Expr.call_expr.populateMenu.call(this, block, mgr)
+  return ezP.DelegateSvg.Expr.call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 /**
- * Class for a DelegateSvg, statement call block, built in functions.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('builtin_call_stmt', {
-  inputs: {
-    subtypes: ['range', 'list', 'len', 'sum'],
-    i_1: {
-      insert: ezP.T3.Expr.builtin_call_expr,
-    },
-  },
-})
-
-/**
- * Initialize a block.
- * @param {!Blockly.Block} block to be initialized..
- * For subclassers eventually
- */
-ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.initBlock = function (block) {
-  ezP.DelegateSvg.Stmt.builtin_call_stmt.superClass_.initBlock.call(this, block)
-}
-
-ezP.DelegateSvg.Stmt.builtin_call_stmt.ezp.getModel = ezP.DelegateSvg.Expr.builtin_call_expr.ezp.getModel
-
-
-/**
- * When the subtype has just changed.
+ * Synchronize the variant with the ui.
  * @param {!Blockly.Block} block  to be initialized.
- * @param {string} oldSubtype
- * @param {string} newSubtype
+ * @param {string} newVariant
  * For subclassers eventually
  */
-ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
-  ezP.DelegateSvg.Stmt.builtin_call_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  var subtypes = this.getModel().inputs.subtypes
-  var input = block.getInput(ezP.Key.ARGUMENTS)
-  var field = input.ezp.fields.label
-  field.setValue(newSubtype)
+ezP.DelegateSvg.Stmt.call_stmt.prototype.synchronizeVariant = function (block, newVariant) {
+  var field = this.ui.i_1.fields.label
+  field.setValue(newVariant)
 }
 
 /**
@@ -270,17 +388,16 @@ ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.didChangeSubtype = function (bl
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Stmt.builtin_call_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  ezP.DelegateSvg.Expr.builtin_call_expr.populateMenu(block, mgr)
-  return ezP.DelegateSvg.Stmt.builtin_call_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+ezP.DelegateSvg.Stmt.call_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  ezP.DelegateSvg.Expr.call_expr.populateMenu.call(this, block, mgr)
+  return ezP.DelegateSvg.Stmt.call_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 ezP.DelegateSvg.Primary.T3s = [
+  ezP.T3.Expr.term,
   ezP.T3.Expr.attributeref,
   ezP.T3.Expr.slicing,
   ezP.T3.Expr.subscription,
   ezP.T3.Expr.call_expr,
   ezP.T3.Stmt.call_stmt,
-  ezP.T3.Expr.builtin_call_expr,
-  ezP.T3.Stmt.builtin_call_stmt,
 ]
