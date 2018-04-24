@@ -204,7 +204,7 @@ ezP.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (blo
   )
   F(content, 1)
   mgr.shouldSeparateInsert()
-  return ezP.DelegateSvg.Expr.call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return ezP.DelegateSvg.Expr.slicing.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 /**
@@ -229,7 +229,7 @@ ezP.DelegateSvg.Manager.makeSubclass('call_expr', {
           var block = this.sourceBlock_
           if (block) {
             var ezp = block.ezp
-            var v = ezp.validateValue(block, goog.isDef(txt) && txt || this.getValue())
+            var v = ezp.validateValue(block, goog.isDef(txt)? txt: this.getValue())
             return v && v.validated
           }
         },
@@ -238,6 +238,11 @@ ezP.DelegateSvg.Manager.makeSubclass('call_expr', {
           var ezp = block.ezp
           ezp.setValue(block, this.getValue())
         },
+        // synchronize: function () {
+        //   var block = this.sourceBlock_
+        //   var ezp = block.ezp
+        //   this.setValue(ezp.getValue(block) || '')
+        // },
       },
     },
     i_2: {
@@ -255,7 +260,6 @@ ezP.DelegateSvg.Manager.makeSubclass('call_expr', {
   },
 })
 
-ezP.Do.addInstanceProperty(ezP.DelegateSvg.Expr.call_expr, ezP.Key.BUILTIN)
 ezP.Do.addInstanceProperty(ezP.DelegateSvg.Expr.call_expr, ezP.Key.BACKUP)
 
 /**
@@ -276,7 +280,29 @@ ezP.DelegateSvg.Expr.call_expr.prototype.initVariant = function (block) {
  * @return true if newVariant is acceptable, false otherwise
  */
 ezP.DelegateSvg.Expr.call_expr.prototype.validateVariant = function (block, newVariant) {
-  return goog.isNumber(newVariant) && newVariant >= 0 && newVariant < 4
+  return goog.isNumber(newVariant) && newVariant >= 0 && newVariant < 3 && {validated: newVariant}
+}
+
+/**
+ * Synchronize the variant property.
+ * The variant is true when the value is builtin, false otherwise.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newVariant
+ * @return true if newVariant is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Expr.call_expr.prototype.synchronizeVariant = function (block, newVariant) {
+  var withExpression = newVariant === 1
+  this.setInputDisabled(block, this.ui.i_1.input, withExpression)
+  this.setInputDisabled(block, this.ui.i_2.input, !withExpression)
+  var field = this.ui.i_1.fields.value
+  if (field.textElement_) {
+    var withBuiltin = newVariant === 2
+    var i = withBuiltin? 0: 1
+    var ra = ['ezp-code', 'ezp-code-reserved']
+    goog.dom.classlist.remove(field.textElement_, ra[i])
+    goog.dom.classlist.add(field.textElement_, ra[1-i])
+  }
 }
 
 /**
@@ -297,14 +323,15 @@ ezP.DelegateSvg.Expr.call_expr.prototype.validateValue = function (block, newVal
  * When the value did change.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} oldValue
  * @param {string} newValue
  * @return true if newValue is acceptable, false otherwise
  */
-ezP.DelegateSvg.Expr.call_expr.prototype.didChangeValue = function (block, newValue) {
+ezP.DelegateSvg.Expr.call_expr.prototype.didChangeValue = function (block, oldValue, newValue) {
   var values = this.getValues(block)
   if (values) {
     var builtin = values.indexOf(newValue) >= 0
-    var variant = this.getVariant(block)
+    var variant = this.getVariant(block) || 0
     this.setVariant(block, variant%2 | (builtin? 2: 0))
   }
   if (!builtin) {
@@ -321,26 +348,60 @@ ezP.DelegateSvg.Expr.call_expr.prototype.didChangeValue = function (block, newVa
 ezP.DelegateSvg.Expr.call_expr.prototype.synchronizeValue = function (block, newValue) {
   var field = this.ui.i_1.fields.value
   field.setValue(newValue)
+  field.render_()// sometimes we do nit need to render the field
 }
 
 /**
- * Synchronize the variant property with the UI.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newVariant
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
  */
-ezP.DelegateSvg.Expr.call_expr.prototype.synchronizeVariant = function (block, newVariant) {
-  var withExpression = newVariant % 2
-  var withBuiltin = newVariant & 2
-  this.setInputDisabled(block, this.ui.i_1.input, withExpression)
-  this.setInputDisabled(block, this.ui.i_2.input, !withExpression)
-  var field = this.ui.i_1.fields.value
-  if (field.textElement_) {
-    var i = withBuiltin? 0: 1
-    var ra = ['ezp-code', 'ezp-code-reserved']
-    goog.dom.classlist.remove(field.textElement_, ra[i])
-    goog.dom.classlist.add(field.textElement_, ra[1-i])
+ezP.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
+  var variant = this.getVariant(block)
+  var values = this.getValues(block)
+  var current = this.getValue(block)
+  var i = values.indexOf(current)
+  if (variant !== 0) {
+    var oldValue = block.ezp.getBackup(block)
+    var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      oldValue? ezP.Do.createSPAN(oldValue, 'ezp-code'): ezP.Do.createSPAN(ezP.Msg.Placeholder.IDENTIFIER, 'ezp-code-placeholder'),
+      ezP.Do.createSPAN('(…)', 'ezp-code'),
+    )
+    var menuItem = new ezP.MenuItem(content, function() {
+      block.ezp.setValidatedValue(block, oldValue || '')
+      block.ezp.setVariant(block, 0)
+    })
+    mgr.addChild(menuItem, true)
   }
+  var F = function(j) {
+    // closure to catch j
+    content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      ezP.Do.createSPAN(values[j], 'ezp-code-reserved'),
+      ezP.Do.createSPAN('(…)', 'ezp-code'),
+    )
+    var menuItem = new ezP.MenuItem(content, function() {
+      block.ezp.setValidatedValue(block, values[j])
+      block.ezp.setVariant(block, 2)
+    })
+    mgr.addChild(menuItem, true)
+    menuItem.setEnabled(j !== i)
+  }
+  for (var j = 0; j < values.length; j++) {
+    F (j)
+  }
+  if (variant !== 1) {
+    var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      ezP.Do.createSPAN(ezP.Msg.Placeholder.EXPRESSION, 'ezp-code-placeholder'),
+      ezP.Do.createSPAN('(…)', 'ezp-code'),
+    )
+    var menuItem = new ezP.MenuItem(content, function() {
+      block.ezp.setValidatedValue(block, oldValue || '')
+      block.ezp.setVariant(block, 1)
+    })
+    mgr.addChild(menuItem, true)
+  }
+  mgr.shouldSeparateInsert()
 }
 
 /**
@@ -350,33 +411,7 @@ ezP.DelegateSvg.Expr.call_expr.prototype.synchronizeVariant = function (block, n
  * @private
  */
 ezP.DelegateSvg.Expr.call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var values = this.getValues(block)
-  if (values) {
-    var current = this.getValue(block)
-    var i = values.indexOf(current)
-    var content
-    if ( i>= 0) {
-      var oldValue = block.ezp.getBackup(block)
-      content = oldValue? ezP.Do.createSPAN(oldValue, 'ezp-code'): ezP.Do.createSPAN(ezP.Msg.Placeholder.IDENTIFIER, 'ezp-code-placeholder')
-      var menuItem = new ezP.MenuItem(content, function() {
-        block.ezp.setValue(block, oldValue)
-      })
-      mgr.addChild(menuItem, true)
-    }
-    var F = function(j) {
-      // closure to catch j
-      content = ezP.Do.createSPAN(values[j], 'ezp-code-reserved')
-      var menuItem = new ezP.MenuItem(content, function() {
-        block.ezp.setValue(block, j)
-      })
-      mgr.addChild(menuItem, true)
-      menuItem.setEnabled(j !== i)
-    }
-    for (var j = 0; j < values.length; j++) {
-      F (j)
-    }
-    mgr.shouldSeparateInsert()
-  }
+  ezP.DelegateSvg.Expr.call_expr.populateMenu.call(this, block, mgr)
   return ezP.DelegateSvg.Expr.call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
@@ -397,57 +432,6 @@ ezP.DelegateSvg.Manager.makeSubclass('call_stmt', {
 })
 
 ezP.DelegateSvg.Stmt.call_stmt.ezp.getModel = ezP.DelegateSvg.Expr.call_expr.ezp.getModel
-
-
-/**
- * Synchronize the builtin with the UI.
- * @param {!Blockly.Block} block to be initialized..
- * For subclassers eventually
- */
-ezP.DelegateSvg.Expr.call_expr.prototype.synchronizeBuiltin = function (block, newBuiltin) {
-  var field = this.ui.i_3.fields.label
-  field.setValue(newBuiltin)
-  var builtin = newBuiltin.length
-  this.setInputDisabled(block, this.ui.i_1.input, builtin)
-  this.setInputDisabled(block, this.ui.i_2.input, builtin)
-  this.setInputDisabled(block, this.ui.i_2.input, !builtin)
-}
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-ezP.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
-  var builtins = this.getBuiltins(block)
-  var current = block.ezp.getBuiltin(block)
-  var F = function(content, key) {
-    var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setBuiltin(block, key)
-    })
-    mgr.addChild(menuItem, true)
-    menuItem.setEnabled(key !== current)
-  }
-  for (var i = 1, k;(k = variants[i++]);) {
-    F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-builtin',
-      goog.dom.createTextNode(k),
-    ), k)
-  }
-  mgr.shouldSeparateInsert()
-}
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-ezP.DelegateSvg.Expr.call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  ezP.DelegateSvg.Expr.call_expr.populateMenu.call(this, block, mgr)
-  return ezP.DelegateSvg.Expr.call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
-}
-
 /**
  * Synchronize the variant with the ui.
  * @param {!Blockly.Block} block  to be initialized.

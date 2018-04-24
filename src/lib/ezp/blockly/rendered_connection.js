@@ -660,3 +660,13 @@ Blockly.RenderedConnection.prototype.closest = function(maxLimit, dx, dy) {
   return this.dbOpposite_.searchForClosest(this, maxLimit, dx, dy);
 };
 
+ezP.RenderedConnection.savedDispose = Blockly.Connection.prototype.dispose
+/**
+ * Sever all links to this connection (not including from the source object).
+ */
+Blockly.Connection.prototype.dispose = function() {
+  if (this === ezP.SelectedConnection.get()) {
+    ezP.SelectedConnection.set(null)
+  }
+  ezP.RenderedConnection.savedDispose.call(this)
+}
