@@ -84,7 +84,6 @@ ezP.DelegateSvg.Expr.delimitedWorkspaceBlocks = [
   ezP.T3.Expr.set_display,
   ezP.T3.Expr.dict_display,
   ezP.T3.Expr.generator_expression,
-  ezP.T3.Expr.display_slice_list,
   ezP.T3.Expr.starred_item_list,
   ezP.T3.Expr.parenth_target_list,
   ezP.T3.Expr.bracket_target_list,
@@ -392,7 +391,6 @@ ezP.DelegateSvg.Expr.starred_item_list.workspaceBlocks = [
   ezP.T3.Expr.starred_item_list,
 ] .concat(ezP.T3.Expr.Check.starred_item)
 
-ezP.DelegateSvg.Expr.display_slice_list.workspaceBlocks =
 ezP.DelegateSvg.Expr.generator_expression.workspaceBlocks =
 ezP.DelegateSvg.Expr.dict_display.workspaceBlocks =
 ezP.DelegateSvg.Expr.set_display.workspaceBlocks =
@@ -412,7 +410,6 @@ ezP.DelegateSvg.Expr.comprehension.workspaceBlocks,
 [
   ezP.T3.Expr.generator_expression,
   ezP.T3.Expr.slice_list,
-  ezP.T3.Expr.display_slice_list,
 ],
 )
 

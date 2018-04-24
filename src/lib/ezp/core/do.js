@@ -441,6 +441,9 @@ ezP.Do.addInstanceProperty = function (Ctor, key, params) {
     event: ezP.Const.Event.PROPERTY+key,
   }
   var p = Ctor.prototype
+  if (p[Ks.get]) {
+    return
+  }
   p[Ks.get] = function(block) {
     var holder = this.properties
     holder = holder[key] || (holder[key] = {_keys: Ks})

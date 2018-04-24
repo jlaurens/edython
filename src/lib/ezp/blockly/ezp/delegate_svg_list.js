@@ -409,24 +409,6 @@ ezP.DelegateSvg.Manager.makeSubclass('slice_list', {
 })
 
 /**
- * Class for a DelegateSvg, 'slice ...' block.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('display_slice_list', {
-  inputs: {
-    prefix: {
-      label: '[',
-    },
-    suffix: {
-      label: ']',
-    },
-  },
-}, ezP.DelegateSvg.Expr.slice_list)
-
-/**
  * Class for a DelegateSvg, with_item_list block.
  * This block may be sealed.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.

@@ -76,13 +76,6 @@ key_datum ::= key_datum_solid | or_expr_star_star
 key_datum_solid ::=  expression ":" expression
 or_expr_star_star ::=  "**" or_expr
 </pre>
-<pre>
-attributeref ::= primary "." identifier
-</pre>
-<pre>
-slicing      ::=  primary display_slice_list
-display_slice_list ::=  "[" slice_list "]"
-</pre>
 The argument list is managed by the consolidator
 'call' is not acceptable for a name because it is a reserved javascript word
 

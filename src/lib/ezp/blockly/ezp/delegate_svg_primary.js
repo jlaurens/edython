@@ -123,7 +123,9 @@ ezP.DelegateSvg.Manager.makeSubclass('slicing', {
     },
     i_3: {
       key: ezP.Key.SLICE,
-      wrap: ezP.T3.Expr.display_slice_list,
+      start: '[',
+      wrap: ezP.T3.Expr.slice_list,
+      end: ']',
     },
   },
   output: {
@@ -202,27 +204,22 @@ ezP.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (blo
   )
   F(content, 1)
   mgr.shouldSeparateInsert()
-  return ezP.DelegateSvg.Primary.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return ezP.DelegateSvg.Expr.call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
-
 /**
- * Base class for primaries.
- * Uses value and variant properties, plus oldValue.
+ * Class for a DelegateSvg, call block.
+ * As call is already a reserved message in javascript,
+ * we use call_expr instead.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Primary = function (prototypeName) {
-  ezP.DelegateSvg.Primary.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Primary, ezP.DelegateSvg.Expr)
-
-ezP.Do.addInstanceProperty(ezP.DelegateSvg.Primary, ezP.Key.BACKUP)
-
-ezP.DelegateSvg.Primary.model__ = {
+ezP.DelegateSvg.Manager.makeSubclass('call_expr', {
   inputs: {
+    values: ['range', 'list', 'set', 'len', 'sum'],
     i_1: {
       edit: {
         key:ezP.Key.VALUE,
@@ -249,19 +246,24 @@ ezP.DelegateSvg.Primary.model__ = {
       plugged: ezP.T3.Expr.primary,
       hole_value: 'primary',
     },
+    i_3: {
+      key: ezP.Key.ARGUMENTS,
+      start: '(',
+      wrap: ezP.T3.Expr.argument_list,
+      end: ')',
+    },
   },
-}
+})
 
-ezP.Do.addInstanceProperty(ezP.DelegateSvg.Primary, ezP.Key.BACKUP)
+ezP.Do.addInstanceProperty(ezP.DelegateSvg.Expr.call_expr, ezP.Key.BUILTIN)
+ezP.Do.addInstanceProperty(ezP.DelegateSvg.Expr.call_expr, ezP.Key.BACKUP)
 
 /**
  * Init the variant property.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newValue
- * @return true if newValue is acceptable, false otherwise
  */
-ezP.DelegateSvg.Primary.prototype.initVariant = function (block) {
+ezP.DelegateSvg.Expr.call_expr.prototype.initVariant = function (block) {
   this.setVariant(block, 0)
 }
 
@@ -273,7 +275,7 @@ ezP.DelegateSvg.Primary.prototype.initVariant = function (block) {
  * @param {string} newVariant
  * @return true if newVariant is acceptable, false otherwise
  */
-ezP.DelegateSvg.Primary.prototype.validateVariant = function (block, newVariant) {
+ezP.DelegateSvg.Expr.call_expr.prototype.validateVariant = function (block, newVariant) {
   return goog.isNumber(newVariant) && newVariant >= 0 && newVariant < 4
 }
 
@@ -285,7 +287,7 @@ ezP.DelegateSvg.Primary.prototype.validateVariant = function (block, newVariant)
  * @param {string} newValue
  * @return true if newValue is acceptable, false otherwise
  */
-ezP.DelegateSvg.Primary.prototype.validateValue = function (block, newValue) {
+ezP.DelegateSvg.Expr.call_expr.prototype.validateValue = function (block, newValue) {
   var type = ezP.Do.typeOfString(newValue)
   return type === ezP.T3.Expr.builtin_name || type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name?
   {validated: newValue}: null
@@ -298,7 +300,7 @@ ezP.DelegateSvg.Primary.prototype.validateValue = function (block, newValue) {
  * @param {string} newValue
  * @return true if newValue is acceptable, false otherwise
  */
-ezP.DelegateSvg.Primary.prototype.didChangeValue = function (block, newValue) {
+ezP.DelegateSvg.Expr.call_expr.prototype.didChangeValue = function (block, newValue) {
   var values = this.getValues(block)
   if (values) {
     var builtin = values.indexOf(newValue) >= 0
@@ -316,7 +318,7 @@ ezP.DelegateSvg.Primary.prototype.didChangeValue = function (block, newValue) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @param {string} newValue
  */
-ezP.DelegateSvg.Primary.prototype.synchronizeValue = function (block, newValue) {
+ezP.DelegateSvg.Expr.call_expr.prototype.synchronizeValue = function (block, newValue) {
   var field = this.ui.i_1.fields.value
   field.setValue(newValue)
 }
@@ -327,7 +329,7 @@ ezP.DelegateSvg.Primary.prototype.synchronizeValue = function (block, newValue) 
  * @param {!Blockly.Block} block The owner of the receiver.
  * @param {string} newVariant
  */
-ezP.DelegateSvg.Primary.prototype.synchronizeVariant = function (block, newVariant) {
+ezP.DelegateSvg.Expr.call_expr.prototype.synchronizeVariant = function (block, newVariant) {
   var withExpression = newVariant % 2
   var withBuiltin = newVariant & 2
   this.setInputDisabled(block, this.ui.i_1.input, withExpression)
@@ -347,7 +349,7 @@ ezP.DelegateSvg.Primary.prototype.synchronizeVariant = function (block, newVaria
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Primary.prototype.populateContextMenuFirst_ = function (block, mgr) {
+ezP.DelegateSvg.Expr.call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var values = this.getValues(block)
   if (values) {
     var current = this.getValue(block)
@@ -375,32 +377,8 @@ ezP.DelegateSvg.Primary.prototype.populateContextMenuFirst_ = function (block, m
     }
     mgr.shouldSeparateInsert()
   }
-  return ezP.DelegateSvg.Primary.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return ezP.DelegateSvg.Expr.call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
-
-/**
- * Class for a DelegateSvg, call block.
- * As call is already a reserved message in javascript,
- * we use call_expr instead.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('call_expr', {
-  inputs: {
-    values: ['range', 'list', 'set', 'len', 'sum'],
-    i_3: {
-      key: ezP.Key.ARGUMENTS,
-      start: '(',
-      wrap: ezP.T3.Expr.argument_list,
-      end: ')',
-    },
-  },
-}, ezP.DelegateSvg.Primary)
-
-ezP.Do.addInstanceProperty(ezP.DelegateSvg.Expr.call_expr, ezP.Key.BUILTIN)
 
 /**
  * Class for a DelegateSvg, call statement block.
@@ -492,7 +470,7 @@ ezP.DelegateSvg.Stmt.call_stmt.prototype.populateContextMenuFirst_ = function (b
   return ezP.DelegateSvg.Stmt.call_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
-ezP.DelegateSvg.Primary.T3s = [
+ezP.DelegateSvg.Expr.call_expr.T3s = [
   ezP.T3.Expr.term,
   ezP.T3.Expr.attributeref,
   ezP.T3.Expr.slicing,
