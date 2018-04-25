@@ -104,6 +104,7 @@ ezP.Consolidator.List.prototype.nextInput = function (io) {
 }
 
 ezP.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
+  var me = this
   if (i !== undefined) {
     io.i = i
   }
@@ -113,6 +114,7 @@ ezP.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
   }
   c8n.ezp.didConnect = function(c8n, otherC8n) {
     this.sourceBlock_.ezp.will_connect_ = false
+    me.consolidate(this.sourceBlock_, true)
   }
   var input = new Blockly.Input(Blockly.INPUT_VALUE, '!', io.block, c8n)
   ezP.Input.setupEzpData(input)
@@ -410,7 +412,7 @@ ezP.Consolidator.List.prototype.getIO = function(block) {
  * Removes empty place holders
  * @param {!Block} block, to be consolidated....
  */
-ezP.Consolidator.List.prototype.consolidate = function(block) {
+ezP.Consolidator.List.prototype.consolidate = function(block, force) {
   var io = this.getIO(block)
   // things are different if one of the inputs is connected
   if (this.walk_to_next_connected(io)) {
@@ -419,7 +421,7 @@ ezP.Consolidator.List.prototype.consolidate = function(block) {
         && this.consolidate_connected(io)) {}
     }
     this.doCleanup(io)
-    if (io.edited || io.noLeftSeparator || io.noDynamicList) {
+    if (force || io.edited || io.noLeftSeparator || io.noDynamicList) {
       this.doFinalize(io)
     }
   } else {

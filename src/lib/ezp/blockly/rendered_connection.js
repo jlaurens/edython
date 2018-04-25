@@ -670,3 +670,16 @@ Blockly.Connection.prototype.dispose = function() {
   }
   ezP.RenderedConnection.savedDispose.call(this)
 }
+
+ezP.RenderedConnection.onCheckChanged_ = Blockly.RenderedConnection.prototype.onCheckChanged_
+/**
+ * Function to be called when this connection's compatible types have changed.
+ * @private
+ */
+Blockly.RenderedConnection.prototype.onCheckChanged_ = function() {
+  ezP.RenderedConnection.onCheckChanged_.call(this)
+  var block = this.targetBlock()
+  if (block) {
+    block.ezp.consolidate(block, false, true)
+  }
+}

@@ -13,6 +13,7 @@
 
 goog.provide('ezP.DelegateSvg.Assignment')
 
+goog.require('ezP.DelegateSvg.Term')
 goog.require('ezP.DelegateSvg.List')
 goog.require('ezP.DelegateSvg.Stmt')
 
@@ -119,34 +120,21 @@ ezP.Consolidator.List.Target.prototype.doCleanup = function () {
     setupFirst.call(this, io)
     // move parameters that are not placed correctly (in ezP sense)
     if (io.first_starred>=0) {
-      while (io.first_starred < io.last) {
-        this.setupIO(io, io.first_starred + 2)
-        while (io.i <= io.last) {
-          if (io.ezp.parameter_type_ === Type.OTHER) {
-            // move this to io.first_starred
-            var c8n = io.c8n
-            var target = c8n.targetConnection
-            c8n.disconnect()
-            while (io.i > io.first_starred) {
-              this.setupIO(io, io.i - 2)
-              var t = io.c8n.targetConnection
-              io.c8n.disconnect()
-              c8n.connect(t)
-              c8n = io.c8n
-            }
-            c8n.connect(target)
-            io.first_starred += 2
-            this.setupIO(io, io.first_starred + 2)
-          } else {
-            this.setupIO(io, io.i + 2)
-          }
+      this.setupIO(io, io.first_starred + 2)
+      while (!!io.ezp) {
+        if (io.ezp.parameter_type_ === Type.STARRED) {
+          // disconnect this
+          var c8n = io.c8n
+          var target = c8n.targetConnection
+          c8n.disconnect()
+          // remove that input and the next one
+          this.disposeAtI(io, io.i)
+          this.setupIO(io, io.i)
+          this.disposeAtI(io, io.i)
+          this.setupIO(io, io.i)
+        } else {
+          this.setupIO(io, io.i + 2)
         }
-        // io.last_positional = io.first_keyword - 2
-        setupFirst.call(this, io)
-      }
-      // remove whatever is after the first_starred
-      while (this.setupIO(io, io.first_starred + 1)) {
-        this.disposeAtI(io)
       }
     }
   }
@@ -182,17 +170,6 @@ ezP.DelegateSvg.Manager.makeSubclass('target_list', {
     },
   },
 })
-
-/**
- * Prepare io, just before walking through the input list.
- * Subclassers may add their own stuff to io.
- * @param {Object} io, parameters....
- */
-ezP.Consolidator.List.Target.prototype.getIO = function(block) {
-  var unwrapped = block.ezp.getUnwrapped(block)
-  var io = ezP.Consolidator.List.Target.superClass_.getIO.call(this, block)
-  return io
-}
 
 /**
  * Class for a DelegateSvg, void_target_list block.
@@ -604,8 +581,7 @@ ezP.DelegateSvg.Manager.makeSubclass('augassign_numeric', {
  */
 ezP.DelegateSvg.Manager.makeSubclass('augassign_bitwise', {
   inputs: {
-    values: [">>=", "<<=", "&=", "^=", "|="],
-    valueIndex: 1,
+    values: ["<<=", ">>=", "&=", "^=", "|="],
   }
 }, ezP.DelegateSvg.AugAssign)
 
@@ -851,7 +827,7 @@ ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.populateContextMenuFirst_ 
 
 
 ezP.DelegateSvg.Assignment.T3s = [
-  ezP.T3.Expr.target_star,
+  ezP.T3.Expr.term,
   ezP.T3.Expr.target_list,
   ezP.T3.Expr.target_list_list,
   ezP.T3.Expr.void_target_list,

@@ -58,20 +58,20 @@ ezP.DelegateSvg.List.prototype.getInput = function (block, name) {
  * 
  * @param {!Block} block.
  */
-ezP.DelegateSvg.List.prototype.consolidate_ = function (block) {
-  if (this.consolidating_ || this.will_connect_) {
+ezP.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
+  if (this.consolidate_lock || this.will_connect_) {
     // reentrant flag or wait for the new connection
     // to be established before consolidating
     // reentrant is essential because the consolidation
     // may cause rerendering ad vitam eternam.
     return
   }
-  ezP.DelegateSvg.List.superClass_.consolidate.call(this, block)
-  this.consolidating_ = true
+  ezP.DelegateSvg.List.superClass_.consolidate.call(this, block, force)
+  this.consolidate_lock = true
   try { 
-    this.consolidator.consolidate(block)
+    this.consolidator.consolidate(block, force)
   } finally {
-    this.consolidating_ = false
+    delete this.consolidate_lock
   }
 }
 
@@ -100,10 +100,10 @@ ezP.DelegateSvg.List.prototype.createConsolidator = function (block) {
  * 
  * @param {!Block} block.
  */
-ezP.DelegateSvg.List.prototype.consolidate = function (block) {
+ezP.DelegateSvg.List.prototype.consolidate = function (block, deep, force) {
   this.createConsolidator(block)
   this.consolidate = ezP.DelegateSvg.List.prototype.consolidate_
-  this.consolidate(block)// this is not recursive
+  this.consolidate(block, force)// this is not recursive
 }
 
 // ezP.DelegateSvg.List.prototype.consolidator = undefined

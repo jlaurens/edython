@@ -609,12 +609,12 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
  * List managers will use consolidators to help list management.
  * @param {!Block} block.
  */
-ezP.DelegateSvg.prototype.consolidate = function (block, deep) {
+ezP.DelegateSvg.prototype.consolidate = function (block, deep, force) {
   if (deep) {
     var e8r = block.ezp.inputEnumerator(block), x
     while (e8r.next()) {
       if ((x = e8r.here.connection) && (x = x.targetBlock())) {
-        x.ezp.consolidate(x, deep)
+        x.ezp.consolidate(x, deep, force)
       }
     }
   }
