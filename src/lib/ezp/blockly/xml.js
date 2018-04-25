@@ -1569,7 +1569,7 @@ ezP.DelegateSvg.List.prototype.toDom = function(block, element, optNoId) {
  * @param {Element} xml the persistent element.
  * @return a dom element, void lists may return nothing
  */
-ezP.DelegateSvg.List.prototype.fromDom = function(block, xml) {
+ezP.DelegateSvg.List.prototype.fromDom = function(block, xml, type) {
   var out = block
   for (var i = 0, xmlChild; (xmlChild = xml.childNodes[i]); i++) {
     if (goog.isFunction(xmlChild.getAttribute)) {
@@ -1583,6 +1583,58 @@ ezP.DelegateSvg.List.prototype.fromDom = function(block, xml) {
             if (target) {
               out = out || ezP.Xml.fromDom(target, (target.ezp.wrapped_ && !(target.ezp instanceof ezP.DelegateSvg.List))?
                 xml: xmlChild)
+              continue
+            } else if (type && (target = ezP.DelegateSvg.newBlockComplete(type, input.sourceBlock_.workspace))) {
+              out = out || ezP.Xml.fromDom(target, xmlChild)
+              continue
+            } else if ((target = Blockly.Xml.domToBlock(xmlChild, input.sourceBlock_.workspace))) {
+              out = target
+              // we could create a block form that child element
+              // then connect it to 
+              if (target.outputConnection && c8n.checkType_(target.outputConnection)) {
+                c8n.connect(target.outputConnection)
+              } else if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
+                c8n.connect(target.previousConnection)
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return out
+}
+
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * Default implementation just returns 'ezp:list' when this block is embedded
+ * and the inherited value otherwise.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.DelegateSvg.Expr.target_list.prototype.xmlTagName = function (block) {
+  return ezP.DelegateSvg.List.superClass_.xmlTagName.call(this, block)
+}
+
+ezP.DelegateSvg.Expr.target_list_list.prototype.XfromDom = function(block, xml) {
+  var out = block
+  for (var i = 0, xmlChild; (xmlChild = xml.childNodes[i]); i++) {
+    if (goog.isFunction(xmlChild.getAttribute)) {
+      var name = xmlChild.getAttribute(ezP.Xml.INPUT)
+      if (name) {
+        var input = block.getInput(name)
+        if (input) {
+          var c8n = input.connection
+          if (c8n) {
+            var target = c8n.targetBlock()
+            if (target) {
+              out = out || ezP.Xml.fromDom(target, (target.ezp.wrapped_ && !(target.ezp instanceof ezP.DelegateSvg.List))?
+                xml: xmlChild)
+              continue
+            } else if ((target = ezP.DelegateSvg.newBlockComplete(input.sourceBlock_.workspace, ezP.T3.Expr.target_list))) {
+              c8n.connect(target.outputConnection)
+              out = ezP.Xml.fromDom(target, xmlChild)
               continue
             } else if ((target = Blockly.Xml.domToBlock(xmlChild, input.sourceBlock_.workspace))) {
               out = target

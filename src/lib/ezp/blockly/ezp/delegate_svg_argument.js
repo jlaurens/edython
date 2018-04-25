@@ -96,7 +96,7 @@ goog.inherits(ezP.Consolidator.Arguments, ezP.Consolidator.List)
 ezP.Consolidator.Arguments.data = {
   check: null,
   empty: true,
-  sep: ',',
+  presep: ',',
 }
 
 /**
@@ -275,7 +275,7 @@ ezP.DelegateSvg.Manager.makeSubclass('argument_list', {
       check: ezP.T3.Expr.Check.argument_any,
       consolidator: ezP.Consolidator.List,
       empty: true,
-      sep: ',',
+      presep: ',',
       hole_value: 'name',
     },
   },
@@ -295,7 +295,7 @@ ezP.DelegateSvg.Manager.makeSubclass('argument_list_comprehensive', {
     list: {
       consolidator: ezP.Consolidator.Arguments,
       empty: true,
-      sep: ',',
+      presep: ',',
       hole_value: 'name',
     },
   },

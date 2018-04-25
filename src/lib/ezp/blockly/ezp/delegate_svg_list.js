@@ -70,8 +70,6 @@ ezP.DelegateSvg.List.prototype.consolidate_ = function (block) {
   this.consolidating_ = true
   try { 
     this.consolidator.consolidate(block)
-  } catch(err) {
-      throw(err)
   } finally {
     this.consolidating_ = false
   }
@@ -162,7 +160,7 @@ ezP.DelegateSvg.Manager.makeSubclass('optional_expression_list', {
     list: {
       check: ezP.T3.Expr.Check.expression,
       empty: true,
-      sep: ',',
+      presep: ',',
       hole_value: 'name',
     },
   },
@@ -182,7 +180,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_expression_list', {
     list: {
       check: ezP.T3.Expr.Check.expression,
       empty: false,
-      sep: ',',
+      presep: ',',
       hole_value: 'name',
     },
   },
@@ -202,7 +200,7 @@ ezP.DelegateSvg.Manager.makeSubclass('starred_item_list', {
     list: {
       check: ezP.T3.Expr.Check.starred_item,
       empty: false,
-      sep: ',',
+      presep: ',',
       hole_value: 'name',
     },
   },
@@ -224,7 +222,7 @@ ezP.DelegateSvg.Manager.makeSubclass('parenth_form', {
     list: {
       check: ezP.T3.Expr.Check.starred_item,
       empty: false,
-      sep: ',',
+      presep: ',',
       hole_value: 'name',
     },
     suffix: {
@@ -247,7 +245,7 @@ ezP.DelegateSvg.Manager.makeSubclass('key_datum_list', {
     list: {
       check: ezP.T3.Expr.Check.key_datum,
       empty: true,
-      sep: ',',
+      presep: ',',
     },
   },
 })
@@ -267,7 +265,7 @@ ezP.DelegateSvg.Manager.makeSubclass('starred_item_list_comprehensive', function
     single: ezP.T3.Expr.comprehension,
     consolidator: ezP.Consolidator.List.Singled,
     empty: true,
-    sep: ',',
+    presep: ',',
     hole_value: 'name',
   }
   var RA = goog.array.concat(D.check,D.single)
@@ -313,7 +311,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_starred_item_list_comprehensive',
     single: ezP.T3.Expr.comprehension,
     consolidator: ezP.Consolidator.List.Singled,
     empty: false,
-    sep: ',',
+    presep: ',',
     hole_value: 'name',
   }
   var RA = goog.array.concat(D.check,D.single)
@@ -359,7 +357,7 @@ ezP.DelegateSvg.Manager.makeSubclass('key_datum_list_comprehensive', function() 
     single: ezP.T3.Expr.dict_comprehension,
     consolidator: ezP.Consolidator.List.Singled,
     empty: true,
-    sep: ',',
+    presep: ',',
   }
   var RA = goog.array.concat(D.check,D.single)
   goog.array.removeDuplicates(RA)
@@ -403,7 +401,7 @@ ezP.DelegateSvg.Manager.makeSubclass('slice_list', {
     list: {
       check: ezP.T3.Expr.Check.slice_item,
       empty: false,
-      sep: ',',
+      presep: ',',
     },
   },
 })
@@ -422,7 +420,7 @@ ezP.DelegateSvg.Manager.makeSubclass('with_item_list', {
     list: {
       check: ezP.T3.Expr.Check.with_item,
       empty: false,
-      sep: ',',
+      presep: ',',
       hole_value: 'nom',
     },
   },

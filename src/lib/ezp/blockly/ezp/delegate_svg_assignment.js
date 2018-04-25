@@ -56,7 +56,7 @@ ezP.Consolidator.List.Target.Void.data = {
   hole_value: 'name',
   check: null,
   empty: true,
-  sep: ',',
+  presep: ',',
 }
 
 /**
@@ -302,7 +302,7 @@ goog.inherits(ezP.Consolidator.Assigned, ezP.Consolidator.List)
 ezP.Consolidator.Assigned.data = {
   check: null,
   empty: false,
-  sep: ',',
+  presep: ',',
 }
 
 /**
@@ -521,7 +521,7 @@ ezP.Consolidator.List.AugAssigned.data = {
   hole_value: 'name',
   check: null,
   empty: false,
-  sep: ',',
+  presep: ',',
 }
 
 /**
@@ -706,6 +706,27 @@ ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.populateContextMenuFirst_ 
   ezP.DelegateSvg.AugAssign.populateContextMenuFirst_(block, mgr)
   return ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
+
+
+/**
+ * Class for a DelegateSvg, with_item_list block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Manager.makeSubclass('target_list_list', {
+  inputs: {
+    list: {
+      check: ezP.T3.Expr.target_list,
+      empty: false,
+      postsep: '=',
+    },
+    suffix: 'youpi',
+  },
+})
 
 ezP.DelegateSvg.Assignment.T3s = [
   ezP.T3.Expr.target_star,

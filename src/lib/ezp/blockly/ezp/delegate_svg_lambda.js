@@ -43,7 +43,7 @@ goog.inherits(ezP.Consolidator.Parameter, ezP.Consolidator.List)
 ezP.Consolidator.Parameter.data = {
   check: ezP.T3.Expr.Check.primary,
   empty: true,
-  sep: ',',
+  presep: ',',
 }
 
 /**

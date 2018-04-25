@@ -152,7 +152,8 @@ ezP.Consolidator.List.prototype.getCheck = function (io) {
  */
 ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = undefined, optional = false) {
   io.ezp.n = io.n
-  io.ezp.sep = io.sep
+  io.ezp.presep = io.presep
+  io.ezp.postsep = io.postsep
   io.ezp.s7r_ = io.c8n.ezp.s7r_ = false
   var check = this.getCheck(io)
   if (name && name.length) {
@@ -171,22 +172,30 @@ ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = und
 }
 
 ezP.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, name) {
-  io.ezp.sep = io.sep
+  io.ezp.presep = io.presep || ''
+  io.ezp.postsep = io.postsep || ''
   if (name && name.length) {
     io.input.name = name
   }
   io.ezp.s7r_ = io.c8n.ezp.s7r_ = true
-  if (extreme || io.ezp.sep.length == 0) {
+  if (extreme || !io.ezp.presep.length && io.ezp.postsep.length) {
     while (io.input.fieldRow.length) {
       io.input.fieldRow.shift().dispose()
     }
   } else if (!io.input.fieldRow.length) {
-    var field = new ezP.FieldLabel(io.sep || this.data.sep)
-    io.input.fieldRow.splice(0, 0, field)
-    field.setSourceBlock(io.block)
-    if (io.block.rendered) {
-      field.init()
+    var f = function(sep, suffix) {
+      var field = new ezP.FieldLabel(sep)
+      io.input.fieldRow.splice(0, 0, field)
+      field.setSourceBlock(io.block)
+      if (io.block.rendered) {
+        field.init()
+      }
+      field.ezp.suffix = suffix
     }
+    var sep = io.ezp.presep || this.data.presep
+    sep && sep.length && f(sep)
+    var sep = io.ezp.postsep || this.data.postsep
+    sep && sep.length && f(sep, true)
   }
   io.input.setCheck(this.getCheck(io))
   io.input.connection.ezp.plugged_ = this.data.plugged
@@ -277,7 +286,7 @@ ezP.Consolidator.List.prototype.walk_to_next_connected = function(io, gobble) {
   // things are different if one of the inputs is connected
   while (!!io.ezp) {
     if (io.c8n.targetConnection) {
-      io.sep = io.ezp.sep || this.data.sep
+      io.presep = io.ezp.presep || this.data.presep
       return true
     }
     if (gobble) {
@@ -390,7 +399,7 @@ ezP.Consolidator.List.prototype.getIO = function(block) {
       && (!unwrapped
         || !unwrapped.ezp.withDynamicList_),
     list: block.inputList,
-    sep: this.data.sep,
+    presep: this.data.presep,
   }
   this.setupIO(io, 0)
   return io
@@ -434,7 +443,8 @@ ezP.Consolidator.List.prototype.getInput = function (block, name) {
   var io = this.getIO(block)
   do {
     if (!!io.ezp) {
-      io.sep = io.ezp.sep || io.sep
+      io.presep = io.ezp.presep || io.presep
+      io.postsep = io.ezp.postsep || io.postsep
       if (!io.ezp.s7r_) {
         var o = ezP.Do.Name.getOrder(io.input.name, name)
         if (!o) {
@@ -605,5 +615,5 @@ ezP.Consolidator.List.Target.data = {
   hole_value: 'name',
   check: null,
   empty: false,
-  sep: ',',
+  presep: ',',
 }

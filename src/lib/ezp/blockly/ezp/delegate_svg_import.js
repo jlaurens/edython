@@ -43,7 +43,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_module_as_list', {
     list: {
       check: ezP.T3.Expr.Check.non_void_module_as_list,
       empty: false,
-      sep: ',',
+      presep: ',',
       hole_value: 'module',
     },
   },
@@ -63,7 +63,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_import_identifier_as_list', {
     list: {
       check: ezP.T3.Expr.Check.non_void_import_identifier_as_list,
       empty: false,
-      sep: ',',
+      presep: ',',
       hole_value: 'name',
     },
   },

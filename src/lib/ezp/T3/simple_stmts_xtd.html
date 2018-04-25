@@ -23,7 +23,9 @@ target          ::=  identifier
 assignment_expression/assignment ::=  target_list "=" assigned_list
 assigned_list ::= starred_item | assigned_single
 assigned_single ::= yield_expression | assignment_expression
-assignment_stmt/assignment ::= assignment_expression
+assignment_stmt/assignment ::= target_list_list assigned
+target_list_list ::= (target_list "=")+
+assigned ::= starred_expression | yield_expression
 </pre>
 <pre>
 augassign_stmt/augmented_assignment ::=  augassign_numeric_stmt | augassign_bitwise_stmt

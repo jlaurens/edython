@@ -100,7 +100,7 @@ ezP.DelegateSvg.Manager.makeSubclass('comp_iter_list', {
     list: {
       check: ezP.T3.Expr.Check.comp_iter,
       empty: true,
-      sep: ',',
+      presep: ',',
     },  
   },
 })
