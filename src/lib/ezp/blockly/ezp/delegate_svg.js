@@ -448,17 +448,6 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   this.initProperties(block)
 }
 
-/**
-* Init all the properties of the block.
-* @param {!Blockly.Block} block to be initialized.
-*/
-ezP.DelegateSvg.prototype.initProperties = function(block) {
-  this.initModifier(block)
-  this.initSubtype(block)
-  this.initVariant(block)
-  this.initValue(block)
-}
-
 console.warn('implement async and await, see above awaitable and asyncable')
 /**
  * Revert operation of initBlock.
@@ -964,11 +953,11 @@ ezP.DelegateSvg.prototype.renderDrawField_ = function (io) {
       if (text.length) {
         // if the text is void, it can not change whether
         // the last character was a letter or not
-        if (io.shouldSeparateField && (text[0] === '=' || text[0] === '.' ||ezP.XRE.id_continue.test(text[0]) || ezp.isEditing)) {
+        if (io.shouldSeparateField && (ezP.XRE.operator.test(text[0]) || text[0] === '.' || ezP.XRE.id_continue.test(text[0]) || ezp.isEditing)) {
           // add a separation
           io.cursorX += ezP.Font.space
         }
-        io.shouldSeparateField = ezP.XRE.id_continue.test(text[text.length-1]) || text[text.length-1] === '=' || text[text.length-1] === ':' || (text[text.length-1] === '.' && !io.field instanceof ezP.FieldTextInput)
+        io.shouldSeparateField = ezP.XRE.id_continue.test(text[text.length-1]) || ezP.XRE.operator.test(text[text.length-1]) || text[text.length-1] === ':' || (text[text.length-1] === '.' && !io.field instanceof ezP.FieldTextInput)
       }
       var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
       root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +

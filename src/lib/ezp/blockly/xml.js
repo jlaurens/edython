@@ -1148,41 +1148,6 @@ ezP.Xml.Classdef.fromDom = function (block, element) {
   ezP.Xml.Flow.fromDom(block, element)
 }
 
-goog.provide('ezP.Xml.Annotated')
-
-ezP.DelegateSvg.Stmt.annotated_assignment_stmt.prototype.xml = ezP.Xml.Annotated
-
-/**
- * Records the operator as attribute.
- * @param {!Blockly.Block} block.
- * @param {!Element} element dom element to be completed.
- * @override
- */
-ezP.Xml.Annotated.toDom = function (block, element, optNoId) {
-  ezP.Xml.Input.Named.toDom(block, ezP.Key.TARGET, element, optNoId)
-  ezP.Xml.Input.Named.toDom(block, ezP.Key.ANNOTATED, element, optNoId)
-  var subtype = block.ezp.getProperty(block, ezP.Key.ASSIGNED)
-  if (subtype) {
-    ezP.Xml.Input.Named.toDom(block, ezP.Key.ASSIGNED, element, optNoId)
-  }
-  ezP.Xml.Flow.toDom(block, element, optNoId)
-}
-
-/**
- * Set the value from the attribute.
- * @param {!Blockly.Block} block.
- * @param {!Element} element dom element to be completed.
- * @override
- */
-ezP.Xml.Annotated.fromDom = function (block, element) {
-  ezP.Xml.Input.Named.fromDom(block, ezP.Key.TARGET, element)
-  ezP.Xml.Input.Named.fromDom(block, ezP.Key.ANNOTATED, element)
-  if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.ASSIGNED, element)) {
-    block.ezp.setProperty(block, ezP.Key.ASSIGNED, ezP.Key.ASSIGNED)
-  }
-  ezP.Xml.Flow.fromDom(block, element)
-}
-
 goog.provide('ezP.Xml.Global')
 
 ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.xml = ezP.Xml.Global
@@ -1498,40 +1463,6 @@ ezP.DelegateSvg.Expr.or_expr_star.prototype.xml = ezP.DelegateSvg.Expr.or_expr_s
 // ]
 
 goog.require('ezP.DelegateSvg.Expr.longliteral')
-
-
-goog.provide('ezP.Xml.Property')
-
-/**
- * Set the named property from the attribute.
- * @param {!Blockly.Block} block.
- * @param {!Element} element dom element to be completed.
- * @override
- */
-ezP.Xml.Property.toDom = function (block, key, element, optNoId) {
-  if (block.ezp.hasProperty(block, key)) {
-    var property = block.ezp.getProperty(block, key)
-    if (!!property) {
-      element.setAttribute(key, property)
-    }
-  }
-  return true
-}
-
-/**
- * Set the named property from the attribute.
- * @param {!Blockly.Block} block.
- * @param {!Element} element dom element to be completed.
- * @override
- */
-ezP.Xml.Property.fromDom = function (block, key, element) {
-  if (block.ezp.hasProperty(block, key)) {
-    var attribute = element.getAttribute(key)
-    return block.ezp.setProperty(block, key, attribute)
-  }
-  return false
-}
-
 
 goog.require('ezP.DelegateSvg.Literal')
 

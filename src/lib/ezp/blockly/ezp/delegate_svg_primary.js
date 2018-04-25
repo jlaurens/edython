@@ -260,7 +260,7 @@ ezP.DelegateSvg.Manager.makeSubclass('call_expr', {
   },
 })
 
-ezP.Do.addInstanceProperty(ezP.DelegateSvg.Expr.call_expr, ezP.Key.BACKUP)
+ezP.Delegate.addInstanceProperty(ezP.DelegateSvg.Expr.call_expr, ezP.Key.BACKUP)
 
 /**
  * Init the variant property.
@@ -429,7 +429,7 @@ ezP.DelegateSvg.Manager.makeSubclass('call_stmt', {
   },
 })
 
-ezP.Do.addInstanceProperty(ezP.DelegateSvg.Stmt.call_stmt, ezP.Key.BACKUP)
+ezP.Delegate.addInstanceProperty(ezP.DelegateSvg.Stmt.call_stmt, ezP.Key.BACKUP)
 
 /**
  * Init the variant property.

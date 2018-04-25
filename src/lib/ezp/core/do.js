@@ -423,8 +423,10 @@ ezP.Do.Enumerator = function (list, filter) {
  * @return the number of block locked
  */
 ezP.Do.addInstanceProperty = function (Ctor, key, params) {
+  var ezp = Ctor.ezp || (Ctor.ezp = {})
+  var properties = ezp.properties || (ezp.properties = {})
   var k = key.charAt(0).toUpperCase() + key.slice(1)
-  var Ks = {
+  var Ks = properties[key] = {
     keys: key+'s',
     index: key+'Index',
     get: 'get'+k,
@@ -446,7 +448,7 @@ ezP.Do.addInstanceProperty = function (Ctor, key, params) {
   }
   p[Ks.get] = function(block) {
     var holder = this.properties
-    holder = holder[key] || (holder[key] = {_keys: Ks})
+    holder = holder[key] || (holder[key] = {})
     if (goog.isDef(holder.value) || holder.lock_get) {
       return holder.value
     }
@@ -504,7 +506,7 @@ ezP.Do.addInstanceProperty = function (Ctor, key, params) {
   }
   p[Ks.setValidated] = function (block, newValue) {
     var holder = this.properties
-    holder = holder[key] || (holder[key] = {_keys: Ks})
+    holder = holder[key] || (holder[key] = {})
     var oldValue = holder.value
     var grouper = new ezP.Events.Grouper()
     var old = this.skipRendering
@@ -535,7 +537,7 @@ ezP.Do.addInstanceProperty = function (Ctor, key, params) {
       }
     }
     var holder = this.properties
-    holder = holder[key] || (holder[key] = {_keys: Ks})
+    holder = holder[key] || (holder[key] = {})
     if ((holder.value === newValue) || !(newValue = this[Ks.validate].call(this, block, newValue)) || !goog.isDef(newValue = newValue.validated)) {
       var synchronize = this[Ks.synchronize]
       synchronize && synchronize.call(this, block, newValue || this[Ks.get].call(this, block))

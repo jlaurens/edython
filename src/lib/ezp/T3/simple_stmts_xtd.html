@@ -28,14 +28,8 @@ target_list_list ::= (target_list "=")+
 assigned ::= starred_expression | yield_expression
 </pre>
 <pre>
-augassign_stmt/augmented_assignment ::=  augassign_numeric_stmt | augassign_bitwise_stmt
-augassign_numeric_stmt ::= augassign_numeric
-augassign_bitwise_stmt ::= augassign_bitwise
-augassign_numeric ::=  augtarget augop aug_assign_list
-augassign_bitwise ::=  augtarget augop aug_assign_list
-# aug_assign_list ::= expression_list | yield_expression
-augassign_list ::= (expression ',')+ | augassign_single
-augassign_single ::= expression | yield_expression
+augassign_numeric_stmt/augmented_assignment ::= augtarget numeric_augop (expression_list | yield_expression)
+augassign_bitwise_stmt/augmented_assignment ::= augtarget bitwise_augop (expression_list | yield_expression)
 augmented_assignment_stmt ::= REMOVE
 </pre>
 augmented_assignment_stmt ::=  augtarget augop (expression_list | yield_expression)

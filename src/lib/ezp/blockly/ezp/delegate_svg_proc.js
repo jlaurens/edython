@@ -96,7 +96,7 @@ ezP.DelegateSvg.Manager.makeSubclass('decorator', {
     }
   }
 })
-ezP.Do.addInstanceProperty(ezP.DelegateSvg.Stmt.decorator, ezP.Key.BUILTIN)
+ezP.Delegate.addInstanceProperty(ezP.DelegateSvg.Stmt.decorator, ezP.Key.BUILTIN)
 
 /**
  * Synchronize the UI after a variant change.

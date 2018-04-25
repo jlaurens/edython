@@ -29,7 +29,7 @@ ezP.DelegateSvg.Literal = function (prototypeName) {
 }
 goog.inherits(ezP.DelegateSvg.Literal, ezP.DelegateSvg.Expr)
 
-ezP.Do.addInstanceProperty(ezP.DelegateSvg.Literal, ezP.Key.CONTENT)
+ezP.Delegate.addInstanceProperty(ezP.DelegateSvg.Literal, ezP.Key.CONTENT)
 
 /**
  * The xml type of this block, as it should appear in the saved data.

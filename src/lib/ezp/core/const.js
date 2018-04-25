@@ -49,6 +49,7 @@ ezP.Key = {
   ASSIGNED: 'assigned',
   IDENTIFIER: 'identifier',
   EXPRESSION: 'expression',// = ANY? NO!
+  EXPRESSIONS: 'expressions',// = ANY? NO!
   ARGUMENT: 'argument',
   POWER: 'power',
   FOR: 'for',
@@ -267,6 +268,7 @@ ezP.XRE = {
   id_wrapped: XRegExp(`^(?<id>.*?)\\.wrapped:(?<name>[a-zA-Z_][a-zA-Z_0-9]*)$`, 'x'),
   solid: XRegExp(`^(?<core>.*?)_solid$`),
   event_property: XRegExp(`^ezp:property:(?<key>.*?)$`),
+  operator: XRegExp(`^[+\\-/%*@<>&^|=]$`),
 }
 
 /*

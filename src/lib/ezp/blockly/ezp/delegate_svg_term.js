@@ -119,16 +119,7 @@ ezP.DelegateSvg.Manager.makeSubclass(ezP.Key.TERM, {
   }
 })
 
-ezP.Do.addInstanceProperty(ezP.DelegateSvg.Expr.term, ezP.Key.ALIAS)
-
-/**
-* Init all the properties of the block.
-* @param {!Blockly.Block} block to be initialized.
-*/
-ezP.DelegateSvg.Expr.term.prototype.initProperties = function(block) {
-  ezP.DelegateSvg.Expr.term.superClass_.initProperties.call(this, block)
-  this.initAlias(block)
-}
+ezP.Delegate.addInstanceProperty(ezP.DelegateSvg.Expr.term, ezP.Key.ALIAS)
 
 /**
  * Init the alias in the properties.
