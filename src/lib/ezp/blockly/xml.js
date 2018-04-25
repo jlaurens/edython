@@ -1920,7 +1920,7 @@ ezP.DelegateSvg.Expr.term.prototype.fromDom = function (block, element) {
   }
   var flags = (withAnnotation?1:0) + (withDefinition?2:0) + (withoutValue?4:0) + (withAlias?8:0)
   var v = this.validateVariant(block, flags)
-  flags = v && v.validated || flags
+  flags = v? v.validated: flags
   this.setValidatedVariant(block, flags)
 }
 console.log('manage the conflicts/ bad data.')
