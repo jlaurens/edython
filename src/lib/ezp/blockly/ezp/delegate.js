@@ -136,6 +136,7 @@ ezP.Delegate.Manager = function () {
     Ctor.ezp.getModel || (Ctor.ezp.getModel = function () {
       return helper(Ctor)
     })
+    Ctor.ezp.isExpression = !ezP.T3.Stmt[key]
   }
   /**
    * Private helper to provide the constructor with a getInputsModel.
@@ -1114,4 +1115,15 @@ ezP.Delegate.prototype.getError = function (block, key) {
  */
 ezP.Delegate.prototype.removeError = function (block, key) {
   delete this.errors[key]
+}
+
+/**
+ * Whether the delegate is a statement
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {!string} key
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.Delegate.prototype.isExpression = function (block) {
+  return this.constructor.ezp.isExpression
 }

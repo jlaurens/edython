@@ -20,10 +20,10 @@ target          ::=  identifier
                      | slicing
                      | "*" target
 <pre>
-assignment_expression ::=  target_list "=" assigned_list
+assignment_expression/assignment ::=  target_list "=" assigned_list
 assigned_list ::= starred_item | assigned_single
 assigned_single ::= yield_expression | assignment_expression
-assignment_stmt ::= assignment_expression
+assignment_stmt/assignment ::= assignment_expression
 </pre>
 <pre>
 augassign_stmt/augmented_assignment ::=  augassign_numeric_stmt | augassign_bitwise_stmt
@@ -104,6 +104,9 @@ import_stmt >>> future_statement
 
 Some shortcuts
 <pre>
+pass_stmt/pass
+continue_stmt/continue
+break_stmt/break
 raise_stmt/raise
 yield_stmt/yield
 del_stmt/del

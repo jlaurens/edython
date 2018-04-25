@@ -45,7 +45,7 @@ ezP.DelegateSvg.Operator.model__ = {
  * @param {!Blockly.Block} block to be synchronized.
  */
 ezP.DelegateSvg.Operator.prototype.synchronizeValue = function (block, newValue) {
-  this.ui.i_3.fields.operator.setValue(neValue || '')
+  this.ui.i_3.fields.operator.setValue(newValue || '')
 }
 
 /**

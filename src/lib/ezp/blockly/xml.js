@@ -325,6 +325,9 @@ ezP.Xml.blockToDom = function (block, optNoId) {
   if (block.ezp.locked_) {
     element.setAttribute(ezP.Xml.STATE, ezP.Xml.LOCKED)
   }
+  if (block.ezp.isExpression(block) && goog.isNull(element.getAttribute(ezP.Xml.INPUT))) {
+    element.setAttribute(ezP.Xml.INPUT, '')
+  }
   return element
 }
 

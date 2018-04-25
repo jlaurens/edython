@@ -1506,7 +1506,7 @@ ezP.HoleFiller.getData = function(check, value) {
   } else if (check.indexOf(ezP.T3.Expr.identifier) >= 0) {
     if (value) {
       data = {
-        type: ezP.T3.Expr.identifier,
+        type: ezP.T3.Expr.term,
         value: value,
       }
     }
@@ -1530,7 +1530,7 @@ ezP.HoleFiller.getDeepHoles = function(block, holes) {
   var e8r = block.ezp.inputEnumerator(block)
   while (e8r.next()) {
     var c8n = e8r.here.connection
-    if (c8n && c8n.type === Blockly.INPUT_VALUE && (!c8n.hidden_ || c8n.ezp.wrapped_)) {
+    if (c8n && c8n.type === Blockly.INPUT_VALUE && (!c8n.ezp.disabled_ || c8n.ezp.wrapped_)) {
       var target = c8n.targetBlock()
       if (target) {
         ezP.HoleFiller.getDeepHoles(target, H)
