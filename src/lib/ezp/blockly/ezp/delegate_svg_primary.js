@@ -42,7 +42,7 @@ ezP.DelegateSvg.Manager.makeSubclass('attributeref', {
           var block = this.sourceBlock_
           if (block) {
             var ezp = block.ezp
-            var v = ezp.validateValue(block, goog.isDef(txt) && txt || this.getValue())
+            var v = ezp.validateValue(block, goog.isDef(txt)? txt: this.getValue())
             return v && v.validated
           }
         },
@@ -104,7 +104,7 @@ ezP.DelegateSvg.Manager.makeSubclass('slicing', {
           var block = this.sourceBlock_
           if (block) {
             var ezp = block.ezp
-            var v = ezp.validateValue(block, goog.isDef(txt) && txt || this.getValue())
+            var v = ezp.validateValue(block, goog.isDef(txt)? txt: this.getValue())
             return v && v.validated
           }
         },

@@ -39,12 +39,13 @@ ezP.Xml = {
   FLOW: 'flow', // attribute name
   NEXT: 'next', // attribute name
   DOTTED_NAME: 'dotted_name', // attribute name
+  NAME: 'name', // attribute name
   MODIFIER: 'modifier', // attribute name
   VALUE: 'value', // attribute name
   AS: 'as', // attribute name
   FROM: 'from', // attribute name
-  STATE: 'state', // attribute name
 
+  STATE: 'state', // attribute name
   LOCKED: 'locked', // attribute name
   QUESTION: '?',
 
@@ -493,16 +494,17 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
             var Ctor = ezP.DelegateSvg.Manager.get(candidate)
             if (Ctor && where[Ctor.ezp.key]) {
               prototypeName = candidate
-              block = ezP.DelegateSvg.newBlockComplete(workspace, prototypeName, id)
-              if (block) {
-            //    console.log('Block created from dom:', xmlBlock, block.type, block.id)
-                // then fill it based on the xml data
-                ezP.Xml.fromDom(block, xmlBlock)
-              }
+              break
             }
           }
         } ()
       }
+    }
+    block = ezP.DelegateSvg.newBlockComplete(workspace, prototypeName, id)
+    if (block) {
+//    console.log('Block created from dom:', xmlBlock, block.type, block.id)
+      // then fill it based on the xml data
+      ezP.Xml.fromDom(block, xmlBlock)
     }
   }
   // is it a literal or an augmented assignment ?
@@ -1058,11 +1060,14 @@ ezP.DelegateSvg.Stmt.funcdef_part.prototype.xml = ezP.Xml.Funcdef
  * @override
  */
 ezP.Xml.Funcdef.toDom = function (block, element, optNoId) {
-  ezP.Xml.Input.Named.toDom(block, ezP.Key.NAME, element, optNoId)
+  var value = block.ezp.getValue(block)
+  if (value) {
+    element.setAttribute(ezP.Xml.NAME, value)
+  }
   ezP.Xml.Input.Named.toDom(block, ezP.Key.PARAMETERS, element, optNoId)
-  var subtype = block.ezp.getSubtype(block)
-  if (subtype) {
-    ezP.Xml.Input.Named.toDom(block, ezP.Key.TYPE, element, optNoId)
+  var variant = block.ezp.getVariant(block)
+  if (variant) {
+    ezP.Xml.Input.Named.toDom(block, ezP.Key.TYPE, element, optNoId, true)
   }
   ezP.Xml.Input.Named.toDom(block, ezP.Key.SUITE, element, optNoId)
   ezP.Xml.Flow.toDom(block, element, optNoId)
@@ -1075,10 +1080,13 @@ ezP.Xml.Funcdef.toDom = function (block, element, optNoId) {
  * @override
  */
 ezP.Xml.Funcdef.fromDom = function (block, element) {
-  ezP.Xml.Input.Named.fromDom(block, ezP.Key.NAME, element)
+  var value = element.getAttribute(ezP.Xml.NAME)
+  if (goog.isDefAndNotNull(value)) {
+    block.ezp.setValue(block, value)
+  }
   ezP.Xml.Input.Named.fromDom(block, ezP.Key.PARAMETERS, element)
-  if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.TYPE, element)) {
-    block.ezp.setSubtype(block, ezP.Key.TYPE)
+  if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.TYPE, element, true)) {
+    block.ezp.setVariant(block, ezP.Key.TYPE)
   }
   ezP.Xml.Input.Named.fromDom(block, ezP.Key.SUITE, element)
   ezP.Xml.Flow.fromDom(block, element)
@@ -1095,10 +1103,13 @@ ezP.DelegateSvg.Stmt.classdef_part.prototype.xml = ezP.Xml.Classdef
  * @override
  */
 ezP.Xml.Classdef.toDom = function (block, element, optNoId) {
-  ezP.Xml.Input.Named.toDom(block, ezP.Key.NAME, element, optNoId)
-  var subtype = block.ezp.getSubtype(block)
-  if (subtype) {
-    ezP.Xml.Input.Named.toDom(block, ezP.Key.ARGUMENTS, element, optNoId)
+  var value = block.ezp.getValue(block)
+  if (value) {
+    element.setAttribute(ezP.Xml.NAME, value)
+  }
+  var variant = block.ezp.getVariant(block)
+  if (variant) {
+    ezP.Xml.Input.Named.toDom(block, ezP.Key.ARGUMENTS, element, optNoId, true)
   }
   ezP.Xml.Input.Named.toDom(block, ezP.Key.SUITE, element, optNoId)
   ezP.Xml.Flow.toDom(block, element, optNoId)
@@ -1111,9 +1122,12 @@ ezP.Xml.Classdef.toDom = function (block, element, optNoId) {
  * @override
  */
 ezP.Xml.Classdef.fromDom = function (block, element) {
-  ezP.Xml.Input.Named.fromDom(block, ezP.Key.NAME, element)
-  if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.ARGUMENTS, element)) {
-    block.ezp.setSubtype(block, ezP.Key.ARGUMENTS)
+  var value = element.getAttribute(ezP.Xml.NAME)
+  if (goog.isDefAndNotNull(value)) {
+    block.ezp.setValue(block, value)
+  }
+  if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.ARGUMENTS, element, true)) {
+    block.ezp.setVariant(block, ezP.Key.ARGUMENTS)
   }
   ezP.Xml.Input.Named.fromDom(block, ezP.Key.SUITE, element)
   ezP.Xml.Flow.fromDom(block, element)

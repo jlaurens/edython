@@ -66,7 +66,7 @@ ezP.DelegateSvg.Manager.makeSubclass('decorator', {
           var block = this.sourceBlock_
           if (block) {
             var ezp = block.ezp
-            var v = ezp.validateValue(block, goog.isDef(txt) && txt || this.getValue())
+            var v = ezp.validateValue(block, goog.isDef(txt)? txt: this.getValue())
             return v && v.validated
           }
         },
@@ -235,8 +235,24 @@ ezP.DelegateSvg.Manager.makeSubclass('funcdef_part', {
       key: ezP.Key.NAME,
       label: 'def',
       css_class: 'ezp-code-reserved',
-      check: ezP.T3.Expr.identifier,
-      hole_value: 'name',
+      term: {
+        key: ezP.Key.NAME,
+        value: '',
+        placeholder: ezP.Msg.Placeholder.IDENTIFIER,
+        validator: function(txt) {
+          var block = this.sourceBlock_
+          if (block) {
+            var ezp = block.ezp
+            var v = ezp.validateValue(block, goog.isDef(txt)? txt: this.getValue())
+            return v && v.validated
+          }
+        },
+        onEndEditing: function () {
+          var block = this.sourceBlock_
+          var ezp = block.ezp
+          ezp.setValue(block, this.getValue())
+        },
+      },
     },
     i_2: {
       key: ezP.Key.PARAMETERS,
@@ -251,6 +267,27 @@ ezP.DelegateSvg.Manager.makeSubclass('funcdef_part', {
     },
   },
 }, ezP.DelegateSvg.Group)
+
+/**
+ * Validate the value property.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {!Object} newValue.
+ */
+ezP.DelegateSvg.Stmt.funcdef_part.prototype.validateValue = function (block, newValue) {
+  var type = ezP.Do.typeOfString(newValue)
+  return type === ezP.T3.Expr.identifier? {validated: newValue}: null
+}
+
+/**
+ * Synchronize the value property with the UI.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {!Object} newValue.
+ */
+ezP.DelegateSvg.Stmt.funcdef_part.prototype.synchronizeValue = function (block, newValue) {
+  this.ui.i_1.fields.name.setValue(newValue)
+}
 
 /**
  * Synchronize the variant with the UI.
@@ -306,11 +343,26 @@ ezP.DelegateSvg.Manager.makeSubclass('classdef_part', {
   inputs: {
     variants: [null, ezP.Key.ARGUMENTS],
     i_1: {
-      key: ezP.Key.NAME,
       label: 'class',
       css_class: 'ezp-code-reserved',
-      check: ezP.T3.Expr.identifier,
-      hole_value: 'name',
+      term: {
+        key: ezP.Key.NAME,
+        value: '',
+        placeholder: ezP.Msg.Placeholder.IDENTIFIER,
+        validator: function(txt) {
+          var block = this.sourceBlock_
+          if (block) {
+            var ezp = block.ezp
+            var v = ezp.validateValue(block, goog.isDef(txt)? txt: this.getValue())
+            return v && v.validated
+          }
+        },
+        onEndEditing: function () {
+          var block = this.sourceBlock_
+          var ezp = block.ezp
+          ezp.setValue(block, this.getValue())
+        },
+      },
     },
     i_2: {
       key: ezP.Key.ARGUMENTS,
@@ -321,6 +373,26 @@ ezP.DelegateSvg.Manager.makeSubclass('classdef_part', {
   },
 }, ezP.DelegateSvg.Group)
 
+/**
+ * Validate the value property.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {!Object} newValue.
+ */
+ezP.DelegateSvg.Stmt.funcdef_part.prototype.validateValue = function (block, newValue) {
+  var type = ezP.Do.typeOfString(newValue)
+  return type === ezP.T3.Expr.identifier? {validated: newValue}: null
+}
+
+/**
+ * Synchronize the value property with the UI.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {!Object} newValue.
+ */
+ezP.DelegateSvg.Stmt.funcdef_part.prototype.synchronizeValue = function (block, newValue) {
+  this.ui.i_1.fields.name.setValue(newValue)
+}
 
 /**
  * Synchronize the variant with the UI.
@@ -328,8 +400,7 @@ ezP.DelegateSvg.Manager.makeSubclass('classdef_part', {
  * @param {!Blockly.Block} block The owner of the receiver.
  */
 ezP.DelegateSvg.Stmt.classdef_part.prototype.synchronizeVariant = function (block) {
-  
-  block.ezp.setNamedInputDisabled(block, ezP.Key.ARGUMENTS, (ezP.Key.ARGUMENTS !== this.getVariant(block)))
+  block.ezp.setInputDisabled(block, this.ui.i_2.input, (ezP.Key.ARGUMENTS !== this.getVariant(block)))
 }
 
 /**

@@ -61,7 +61,7 @@ ezP.DelegateSvg.Manager.makeSubclass('numberliteral', {
           var block = this.sourceBlock_
           if (block) {
             var ezp = block.ezp
-            var v = ezp.validateValue(block, goog.isDef(txt) && txt || this.getValue())
+            var v = ezp.validateValue(block, goog.isDef(txt)? txt: this.getValue())
             return v && v.validated
           }
         },
@@ -186,7 +186,7 @@ ezP.DelegateSvg.Manager.makeSubclass('shortliteral', {
           var block = this.sourceBlock_
           if (block) {
             var ezp = block.ezp
-            var v = ezp.validateContent(block, goog.isDef(txt) && txt || this.getValue())
+            var v = ezp.validateContent(block, goog.isDef(txt)? txt: this.getValue())
             return v && v.validated
           }
         },
