@@ -122,6 +122,7 @@ Blockly.Workspace.prototype.getBlockById = function(id) {
   if (block) {
     return block
   }
+  console.log('TRY AGAIN:', id)
   var m = XRegExp.exec(id, ezP.XRE.id_wrapped)
   if (m && (block = ezP.Workspace.savedGetBlockById.call(this, m.id))) {
     var e8r = block.ezp.inputEnumerator(block)
@@ -135,5 +136,5 @@ Blockly.Workspace.prototype.getBlockById = function(id) {
       }
     }
   }
-  return undefined
+  console.log('FAILED:', id)
 }

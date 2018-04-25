@@ -68,17 +68,16 @@ ezP.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
     var input
     while ((input = c10r.nextInputForType(io, ezP.T3.Expr.keyword_item))) {
       var target = input.connection.targetBlock()
-      if (target && (target = target.getInput(ezP.Key.KEY).connection.targetBlock())) {
+      if (target) {
         has[target.ezp.getValue(target)] = target
       }
     }
     var insert = function(key) {
       var grouper = new ezP.Events.Grouper()
       try {
-        var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.identifier)
-        BB.ezp.setValue(BB, key)
-        var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.keyword_item)
-        B.getInput(ezP.Key.KEY).connection.connect(BB.outputConnection)
+        var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term)
+        B.ezp.setValue(B, key)
+        B.ezp.setVariant(B, 2)
         var c8n = list.inputList[list.inputList.length-1].connection
         c8n.connect(B.outputConnection)  
         block.ezp.consolidate(block)
@@ -89,7 +88,7 @@ ezP.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
     var remove = function(key) {
       var grouper = new ezP.Events.Grouper()
       try {
-        var B = has[key].getParent()
+        var B = has[key]
         B.unplug()
         B.dispose()
       } finally {
@@ -129,9 +128,7 @@ ezP.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
  */
  ezP.DelegateSvg.Manager.makeSubclass('builtin_print_stmt', {
    inputs: {
-     i_1: {
-      insert: ezP.T3.Expr.builtin_print_expr,
-    }
+    insert: ezP.T3.Expr.builtin_print_expr,
   }
 })
 
@@ -152,17 +149,16 @@ ezP.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
     var input
     while ((input = c10r.nextInputForType(io, ezP.T3.Expr.keyword_item))) {
       var target = input.connection.targetBlock()
-      if (target && (target = target.getInput(ezP.Key.KEY).connection.targetBlock())) {
+      if (target) {
         has[target.ezp.getValue(target)] = target
       }
     }
     var insert = function(key) {
       var grouper = new ezP.Events.Grouper()
       try {
-        var BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.identifier)
-        BB.ezp.setValue(BB, key)
-        var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.keyword_item)
-        B.getInput(ezP.Key.KEY).connection.connect(BB.outputConnection)
+        var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term)
+        B.ezp.setValue(B, key)
+        B.ezp.setVariant(B, 2)
         // we assume that inputList is not void
         var c8n = list.inputList[list.inputList.length-1].connection
         c8n.connect(B.outputConnection)  
@@ -174,7 +170,7 @@ ezP.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
     var remove = function(key) {
       var grouper = new ezP.Events.Grouper()
       try {
-        var B = has[key].getParent()
+        var B = has[key]
         B.unplug()
         B.dispose()
       } finally {
@@ -231,25 +227,9 @@ ezP.DelegateSvg.Manager.makeSubclass('builtin_input_expr', {
   },
 })
 
-/**
- * Class for a DelegateSvg, builtin_input_stmt block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('builtin_input_stmt', {
-  inputs: {
-    i_1: {
-      insert: ezP.T3.Expr.builtin_input_expr,
-    },
-  },
-})
-
 ezP.DelegateSvg.Print.T3s = [
+  ezP.T3.Expr.term,
   ezP.T3.Expr.builtin_print_expr,
   ezP.T3.Stmt.builtin_print_stmt,
   ezP.T3.Expr.builtin_input_expr,
-  ezP.T3.Stmt.builtin_input_stmt,
 ]

@@ -751,13 +751,11 @@ ezP.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
         --ezP.Delegate.wrappedFireWall
         var target = block.workspace.newBlock(prototypeName)
         goog.asserts.assert(target, 'completeWrapped_ failed: '+ prototypeName);
-        target.ezp.makeBlockWrapped_(target)
         goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed '+target.type)
-        if (!input.connection.checkType_(target.outputConnection)) {
-          input.connection.checkType_(target.outputConnection)
-        }
+        input.connection.ezp.disabled_ = false
         input.connection.connect(target.outputConnection)
         input.connection.ezp.disabled_ = true
+        target.ezp.makeBlockWrapped_(target)
         target.ezp.completeWrapped_(target)  
       } else {
         console.log('Maximum value reached in completeWrappedInput_ (circular)')

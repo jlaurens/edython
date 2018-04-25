@@ -379,13 +379,19 @@ class Formatter:
             from_dom[k].append(t)
         self.append('}\n')
 
-        Ts = [(k, v) for k, v in from_dom.items() if len(v) == 1]
+        Ts = [(k, v) for k, v in from_dom.items()]
         self.append('ezP.T3.Xml.fromDom = {{ // count {}'.format(len(Ts)))
         template = "    {}: {},"
         for k,v in Ts:
-            t = v[0]
-            prefix = 'Stmt' if t.is_stmt else 'Expr'
-            self.append(template.format(k, 'ezP.T3.'+prefix+'.'+t.name))
+            if len(v) == 1:
+                t = v[0]
+                prefix = 'Stmt' if t.is_stmt else 'Expr'
+                self.append(template.format(k, 'ezP.T3.' + prefix + '.' + t.name))
+            else:
+                ra = []
+                for t in v:
+                    ra.append('ezP.T3.'+('Stmt' if t.is_stmt else 'Expr') + '.' + t.name)
+                self.append(template.format(k, '[' + ', '.join(ra) + ']'))
         self.append('}\n')
 
     def get_T3_data(self):

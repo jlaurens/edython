@@ -337,6 +337,7 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
   * identifier ::= 
   * parameter_solid ::= identifier ":" expression
   * defparameter_solid ::= parameter "=" expression
+  * keyword_item ::= identifier "=" expression
   * module_as_solid ::= module "as" identifier
   * import_identifier_as_solid ::= identifier "as" identifier
   * (with parameter ::= identifier | parameter_solid)
@@ -397,11 +398,12 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
     * identifier ::= 
     * parameter_solid ::= identifier ":" expression
     * defparameter_solid ::= parameter "=" expression
+    * keyword_item ::= identifier "=" expression
     * module_as_solid ::= module "as" identifier
     * import_identifier_as_solid ::= identifier "as" identifier
     */
     if (subtype === ezP.T3.Expr.identifier) {
-      block.outputConnection.setCheck((withDefinition?([ezP.T3.Expr.defparameter_solid,]):(withAnnotation?([ezP.T3.Expr.parameter_solid,]):([ezP.T3.Expr.identifier, ezP.T3.Expr.dotted_name,]))))
+      block.outputConnection.setCheck((withDefinition?([ezP.T3.Expr.defparameter_solid,ezP.T3.Expr.keyword_item,]):(withAnnotation?([ezP.T3.Expr.parameter_solid,]):([ezP.T3.Expr.identifier, ezP.T3.Expr.dotted_name,]))))
     } else {
       block.outputConnection.setCheck([subtype,])
     }

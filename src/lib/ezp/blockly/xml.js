@@ -482,7 +482,28 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
   var prototypeName
   // is there a simple correspondance with a known type
   if ((prototypeName = ezP.T3.Xml.fromDom[name.substring(4)])) {
-    // nothing more to do here
+    if (goog.isArray(prototypeName)) {
+      if (prototypeName.length === 1) {
+        prototypeName = prototypeName[0]
+      } else {
+        var f = function() {
+          var where = goog.isDefAndNotNull(xmlBlock.getAttribute(ezP.Xml.INPUT))? ezP.T3.Expr: ezP.T3.Stmt
+          for (var i = 0; i < prototypeName.length; i++) {
+            var candidate = prototypeName[i]
+            var Ctor = ezP.DelegateSvg.Manager.get(candidate)
+            if (Ctor && where[Ctor.ezp.key]) {
+              prototypeName = candidate
+              block = ezP.DelegateSvg.newBlockComplete(workspace, prototypeName, id)
+              if (block) {
+            //    console.log('Block created from dom:', xmlBlock, block.type, block.id)
+                // then fill it based on the xml data
+                ezP.Xml.fromDom(block, xmlBlock)
+              }
+            }
+          }
+        } ()
+      }
+    }
   }
   // is it a literal or an augmented assignment ?
   else if ((block = ezP.Xml.Literal.domToBlock(xmlBlock, workspace))
@@ -1898,7 +1919,8 @@ ezP.DelegateSvg.Expr.term.prototype.fromDom = function (block, element) {
     withDefinition = true
   }
   var flags = (withAnnotation?1:0) + (withDefinition?2:0) + (withoutValue?4:0) + (withAlias?8:0)
-  flags = this.validateVariant(block, flags)
+  var v = this.validateVariant(block, flags)
+  flags = v && v.validated || flags
   this.setValidatedVariant(block, flags)
 }
 console.log('manage the conflicts/ bad data.')
