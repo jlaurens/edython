@@ -191,9 +191,6 @@ ezP.DelegateSvg.Manager.makeSubclass('target_list', {
 ezP.Consolidator.List.Target.prototype.getIO = function(block) {
   var unwrapped = block.ezp.getUnwrapped(block)
   var io = ezP.Consolidator.List.Target.superClass_.getIO.call(this, block)
-  io.noDynamicList = io.noDynamicList || ((block.workspace.ezp.options.noDynamicTargetList)
-      && (!unwrapped
-        || !unwrapped.ezp.withDynamicTargetList_))
   return io
 }
 
@@ -255,28 +252,26 @@ ezP.DelegateSvg.Manager.makeSubclass('bracket_target_list', {
   },
 }, ezP.DelegateSvg.Expr.target_list)
 
+goog.provide('ezP.DelegateSvg.Stmt.assignment_stmt')
+
 /**
- * Class for a DelegateSvg, assignment_expression block.
+ * Class for a DelegateSvg, target_list_list block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('assignment_expression', {
+ezP.DelegateSvg.Manager.makeSubclass('target_list_list', {
   inputs: {
-    i_1: {
-      key: ezP.Key.TARGET,
-      wrap: ezP.T3.Expr.target_list,
-    },
-    i_3: {
-      key: ezP.Key.ASSIGNED,
-      operator: '=',
-      wrap: ezP.T3.Expr.assigned_list,
+    list: {
+      check: ezP.T3.Expr.target_list,
+      empty: false,
+      postsep: '=',
     },
   },
 })
-
-goog.provide('ezP.DelegateSvg.Stmt.assignment_stmt')
 
 /**
  * Class for a DelegateSvg, assignment_stmt.
@@ -287,9 +282,157 @@ goog.provide('ezP.DelegateSvg.Stmt.assignment_stmt')
  */
 ezP.DelegateSvg.Manager.makeSubclass('assignment_stmt', {
   inputs: {
-    insert: ezP.DelegateSvg.Expr.assignment_expression,
+    subtypes: [ezP.T3.Expr.identifier, ezP.T3.Expr.dotted_name, ],
+    i_1: {
+      term: {
+        key:ezP.Key.VALUE,
+        value: '',
+        placeholder: ezP.Msg.Placeholder.IDENTIFIER,
+        validator: function(txt) {
+          var block = this.sourceBlock_
+          if (block) {
+            var ezp = block.ezp
+            var v = ezp.validateValue(block, goog.isDef(txt)? txt: this.getValue())
+            return v && v.validated
+          }
+        },
+        onEndEditing: function () {
+          var block = this.sourceBlock_
+          var ezp = block.ezp
+          ezp.setValue(block, this.getValue())
+        },
+      },
+    },
+    i_2: {
+      key: ezP.Key.ANNOTATION,
+      label: ':',
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.Check.expression,
+      hole_value: 'expression',
+    },
+    i_3: {
+      key: ezP.Key.TARGET,
+      wrap: ezP.T3.Expr.target_list_list,
+    },
+    i_4: {
+      key: ezP.Key.ASSIGNED,
+      operator: '=',
+      wrap: ezP.T3.Expr.assigned_list,
+    },
   }
 })
+
+
+/**
+ * Init the variant.
+ * For that blocks, the variant is a set of flags to control which input should be visible.
+ * @param {!Blockly.Block} block to be initialized.
+ */
+ezP.DelegateSvg.Stmt.assignment_stmt.prototype.initVariant = function (block) {
+  ezP.DelegateSvg.Expr.term.superClass_.initVariant.call(this, block)
+  this.setVariant(block, 0)
+}
+
+/**
+ * Validates the new variant.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newVariant
+ * @return true if newVariant is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Stmt.assignment_stmt.prototype.validateVariant = function (block, newVariant) {
+  return (newVariant == 0 || newVariant == 1 || newVariant == 2)? {validated: newVariant}: null
+}
+
+/**
+ * Synchronize the variant with the ui.
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {string} newVariant
+ */
+ezP.DelegateSvg.Stmt.assignment_stmt.prototype.synchronizeVariant = function(block, newVariant) {
+  this.setInputDisabled(block, this.ui.i_1.input, newVariant == 2)
+  this.setInputDisabled(block, this.ui.i_2.input, newVariant != 1)
+  this.setInputDisabled(block, this.ui.i_3.input, newVariant != 2)
+}
+
+/**
+ * Initialize the value.
+ * @param {!Blockly.Block} block to be initialized.
+ */
+ezP.DelegateSvg.Stmt.assignment_stmt.prototype.initValue = function (block) {
+  this.setValue(block, this.ui.i_1.fields.value.getValue() || '')
+  return
+}
+
+/**
+ * Synchronize the value with the ui.
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {string} newValue
+ */
+ezP.DelegateSvg.Stmt.assignment_stmt.prototype.synchronizeValue = function (block, newValue) {
+  this.ui.i_1.fields.value.setValue(newValue || '')
+}
+
+/**
+ * Validates the new value.
+ * The type must be one of `dotted_name` or `identifier`.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newValue
+ * @return true if newValue is acceptable, false otherwise
+ */
+ezP.DelegateSvg.Stmt.assignment_stmt.prototype.validateValue = function (block, newValue) {
+  var subtypes = this.getSubtypes(block)
+  var subtype = ezP.Do.typeOfString(newValue)
+  return subtypes.indexOf(subtype) >= 0? {validated: newValue}: null
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var value = this.getValue(block)
+  var current = this.getVariant(block)
+
+  var F = function(content, variant) {
+    var menuItem = new ezP.MenuItem(content, function() {
+      block.ezp.setVariant(block, variant)
+    })
+    menuItem.setEnabled(variant != current)
+    mgr.addChild(menuItem, true)
+  }
+  var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+    ezP.Do.createSPAN('yield', 'ezp-code-reserved'),
+    ezP.Do.createSPAN(' …', 'ezp-code-placeholder'),
+  )
+  var content =
+  goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    ezP.Do.createSPAN(value || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'),
+    ezP.Do.createSPAN(' = …', 'ezp-code'),
+  )
+  F(content, 0)
+  var content =
+  goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    ezP.Do.createSPAN(value || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'),
+    ezP.Do.createSPAN(': … = …', 'ezp-code'),
+  )
+  F(content, 1)
+  var content = ezP.Do.createSPAN('…,… = …,…', 'ezp-code')
+  F(content, 2)
+  mgr.shouldSeparate()
+  if (current != 2) {
+    var menuItem = new ezP.MenuItem(ezP.Msg.RENAME, function() {
+        block.ezp.ui.i_1.fields.value.showEditor()
+      })
+    mgr.addChild(menuItem, true)
+    mgr.shouldSeparate()
+  }
+  ezP.DelegateSvg.Stmt.assignment_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  return true
+}
 
 /**
  * List consolidator for assignment list.
@@ -341,8 +484,7 @@ ezP.Consolidator.Assigned.prototype.doCleanup = function () {
     var check = target.check_
     if (goog.array.contains(check, ezP.T3.Expr.yield_expression)
     || goog.array.contains(check, ezP.T3.Expr.yield_expression_list)
-      || goog.array.contains(check, ezP.T3.Expr.yield_from_expression)
-        || goog.array.contains(check, ezP.T3.Expr.assignment_expression)) {
+      || goog.array.contains(check, ezP.T3.Expr.yield_from_expression)) {
       return Type.first_single
     } else {
       return Type.other
@@ -708,33 +850,13 @@ ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.populateContextMenuFirst_ 
 }
 
 
-/**
- * Class for a DelegateSvg, with_item_list block.
- * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('target_list_list', {
-  inputs: {
-    list: {
-      check: ezP.T3.Expr.target_list,
-      empty: false,
-      postsep: '=',
-    },
-    suffix: 'youpi',
-  },
-})
-
 ezP.DelegateSvg.Assignment.T3s = [
   ezP.T3.Expr.target_star,
   ezP.T3.Expr.target_list,
+  ezP.T3.Expr.target_list_list,
   ezP.T3.Expr.void_target_list,
   ezP.T3.Expr.parenth_target_list,
   ezP.T3.Expr.bracket_target_list,
-  ezP.T3.Expr.assignment_expression,
   ezP.T3.Stmt.assignment_stmt,
   ezP.T3.Expr.assigned_list,
   ezP.T3.Expr.augassign_numeric,

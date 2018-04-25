@@ -319,7 +319,6 @@ ezP.DelegateSvg.Expr.argument_list.workspaceBlocks)
 ezP.DelegateSvg.Stmt.assignment_stmt.workspaceBlocks =
 ezP.DelegateSvg.Expr.target_list.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Stmt.assignment_stmt,
-  ezP.T3.Expr.assignment_expression,
   ezP.T3.Expr.target_list,
   ezP.T3.Expr.void_target_list,
   ezP.T3.Expr.term,

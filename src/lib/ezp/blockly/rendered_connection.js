@@ -364,7 +364,7 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
     return true
   }
   if (c8nA.ezp.disabled_ || c8nB.ezp.disabled_) {
-    return false
+    return c8nA === c8nB.targetConnection
   }
   var sourceA = c8nA.getSourceBlock()
   var sourceB = c8nB.getSourceBlock()

@@ -234,7 +234,7 @@ ezP.DelegateSvg.Expr.term.prototype.synchronizeVariant = function(block, newVari
 }
 
 /**
- * Synchornize the modifier with the ui.
+ * Synchronize the modifier with the ui.
  * @param {!Blockly.Block} block to be initialized.
  * @param {string} newModifier
  */

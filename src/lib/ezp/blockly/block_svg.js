@@ -389,10 +389,10 @@ ezP.BlockSvg.prototype.showContextMenu_ = function (e) {
  * @param {!Event} e Mouse down event or touch start event.
  * @private
  */
-ezP.BlockSvg.prototype.onMouseUp_ = function(e) {
-  console.log('onMouseUp_ YES')
-  ezP.BlockSvg.superClass_.onMouseUp_.call(this, e)
-}
+// ezP.BlockSvg.prototype.onMouseUp_ = function(e) {
+//   console.log('onMouseUp_ YES')
+//   ezP.BlockSvg.superClass_.onMouseUp_.call(this, e)
+// }
 
 /**
  * Handle a mouse-down on an SVG block.
@@ -409,11 +409,13 @@ ezP.BlockSvg.prototype.onMouseUp_ = function(e) {
  */
 ezP.BlockSvg.prototype.onMouseDown_ = function(e) {
   if (this.ezp.wrapped_) {
+    // mouse down on a wrapped block means dragging
+    // but dragging is not allowd for that blocks
     return
   }
   if (this.ezp.locked_) {
     var parent = this.getSurroundParent()
-    if (parent && this.ezp.locked_) {
+    if (parent) {
       return
     }
   }
