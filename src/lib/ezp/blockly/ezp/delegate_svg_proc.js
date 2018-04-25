@@ -75,6 +75,7 @@ ezP.DelegateSvg.Manager.makeSubclass('decorator', {
           var ezp = block.ezp
           ezp.setValue(block, this.getValue())
         },
+        left_space: true,
       },
     },
     i_2: {

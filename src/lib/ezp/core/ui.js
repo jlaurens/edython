@@ -153,6 +153,7 @@ ezP.setup.register(function () {
   ezP.Style.insertCssRuleAt('.ezp-locked>.ezp-path-contour, .ezp-locked>.ezp-path-shape{display: none}')
   ezP.Style.insertCssRuleAt('.ezp-path-shape{stroke: none;fill: white;fill-opacity:0.9}')
   ezP.Style.insertCssRuleAt('.ezp-path-contour, .ezp-path-collapsed {stroke: ' + ezP.Style.Path.colour + ';stroke-width: ' + ezP.Style.Path.width + 'px;fill: none;}')
+  ezP.Style.insertCssRuleAt('.ezp-none {stroke:none;fill:none;}')
   ezP.Style.insertCssRuleAt('.ezp-edit {stroke: ' + ezP.Style.Path.colour + ';stroke-width: '+ezP.Style.Edit.width+'px;fill: none;}')
   ezP.Style.insertCssRuleAt('rect.ezp-editing, .ezp-locked  .ezp-edit {stroke: none;}')
   ezP.Style.insertCssRuleAt('.ezp-path-dotted{stroke: ' + ezP.Style.Path.colour + ';stroke-width: ' + (ezP.Style.Path.width * 1.5) + 'px;stroke-linecap:round;stroke-dasharray:0 ' + ezP.Font.space / 2 + ';}')

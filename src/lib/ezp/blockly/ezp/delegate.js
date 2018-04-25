@@ -100,7 +100,7 @@ ezP.Delegate.Manager = function () {
       var from_d = from[k]
       // next is my test for a dictionary, hence my meaning of dictionary
       // in that context
-      if (goog.isNull(from_d)) {
+      if (goog.isNull(from_d) || goog.isBoolean(from_d)) {
         to[k] = from_d
       } else if (goog.isNumber(from_d)) {
         to[k] = from_d

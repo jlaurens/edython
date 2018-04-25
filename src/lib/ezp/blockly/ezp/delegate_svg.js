@@ -275,6 +275,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
               }
             } ()
           }
+          field.ezp.left_space = v.left_space
           recorder = function() {
             var ff = field
             var kk = k

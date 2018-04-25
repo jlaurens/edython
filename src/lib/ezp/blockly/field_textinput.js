@@ -60,10 +60,19 @@ ezP.FieldTextInput.prototype.init = function () {
   }
 
   this.borderRect_ = Blockly.utils.createSvgElement('rect',
-    { class:'ezp-edit',
+    { class: 'ezp-none',
+      rx: 0,
+      ry: 0,
+      x: -ezP.Style.Edit.padding_h,
+      y: -ezP.Style.Edit.padding_v,
+      height: ezP.Font.height + 2*ezP.Style.Edit.padding_v},
+    this.fieldGroup_, this.sourceBlock_.workspace)
+
+  this.editRect_ = Blockly.utils.createSvgElement('rect',
+    { class: 'ezp-edit',
       'rx': ezP.Style.Edit.radius,
       'ry': ezP.Style.Edit.radius,
-      'x': -ezP.Style.Edit.padding_h,
+      'x': -ezP.Style.Edit.padding_h - (this.ezp.left_space? ezP.Font.space:0),
       'y': -ezP.Style.Edit.padding_v,
       'height': ezP.Font.height + 2*ezP.Style.Edit.padding_v},
     this.fieldGroup_, this.sourceBlock_.workspace)
@@ -80,6 +89,27 @@ ezP.FieldTextInput.prototype.init = function () {
   // Force a render.
   this.render_()
 }
+
+/**
+ * Updates the width of the field. This calls getCachedWidth which won't cache
+ * the approximated width on IE/Edge when `getComputedTextLength` fails. Once
+ * it eventually does succeed, the result will be cached.
+ **/
+ezP.FieldTextInput.prototype.updateWidth = function () {
+  ezP.FieldTextInput.superClass_.updateWidth.call(this)
+  var width = Blockly.Field.getCachedWidth(this.textElement_)
+  if (this.editRect_) {
+    this.editRect_.setAttribute('width', width+2*ezP.Style.Edit.padding_h+(this.ezp.left_space? ezP.Font.space: 0))
+  }
+}
+
+/**
+ * Dispose of all DOM objects belonging to this editable field.
+ */
+ezP.FieldTextInput.prototype.dispose = function() {
+  ezP.FieldTextInput.superClass_.dispose.call(this)
+  this.editRect_ = null;
+};
 
 /**
  * Mouse cursor style when over the hotspot that initiates the editor.
@@ -103,7 +133,7 @@ ezP.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
     return
   }
   this.ezp.isEditing = true
-  this.borderRect_ && goog.dom.classlist.add(this.borderRect_, 'ezp-editing')
+  this.editRect_ && goog.dom.classlist.add(this.editRect_, 'ezp-editing')
   this.ezp.grouper_ = new ezP.Events.Grouper()
   this.onStartEditing_ && this.onStartEditing_()
   this.ezp.onStartEditing_ && this.ezp.onStartEditing_.call(this)
@@ -178,7 +208,7 @@ ezP.FieldTextInput.prototype.widgetDispose_ = function () {
   var field = this
   return function () {
     field.ezp.isEditing = false
-    field.borderRect_ && goog.dom.classlist.remove(field.borderRect_, 'ezp-editing')
+    field.editRect_ && goog.dom.classlist.remove(field.editRect_, 'ezp-editing')
     field.callValidator()
     field.onEndEditing_ && field.onEndEditing_()
     field.ezp.onEndEditing_ && field.ezp.onEndEditing_.call(field)
@@ -228,7 +258,7 @@ ezP.FieldTextInput.prototype.resizeEditor_ = function () {
   if (this.fieldGroup_) {
     var div = Blockly.WidgetDiv.DIV
     var bBox = this.fieldGroup_.getBBox()
-    div.style.width = (bBox.width+ezP.Font.space) * this.workspace_.scale + 'px'
+    div.style.width = (bBox.width+ezP.Font.space-(this.ezp.left_space? ezP.Font.space: 0)-ezP.Style.Edit.padding_h) * this.workspace_.scale + 'px'
     div.style.height = bBox.height * this.workspace_.scale + 'px'
     var xy = this.getAbsoluteXY_()
     div.style.left = (xy.x - ezP.EditorOffset.x+ezP.Style.Edit.padding_h) + 'px'
