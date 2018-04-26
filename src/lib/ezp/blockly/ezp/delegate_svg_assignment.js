@@ -87,10 +87,6 @@ ezP.Consolidator.List.Target.Void.data = {
   presep: ',',
 }
 
-ezP.Consolidator.List.makeSubclass('Void', {
-  empty: true,
-}, ezP.Consolidator.List.Target)
-
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
@@ -136,7 +132,7 @@ ezP.Consolidator.List.Target.prototype.doCleanup = function () {
     io.first_starred = io.last = -1
     this.setupIO(io, 0)
     while (!!io.ezp) {
-      if ((io.ezp.parameter_type_ = getCheckType(io)) === Type.STARRED) {
+      if ((io.ezp.parameter_type_ = getCheckType.call(this, io)) === Type.STARRED) {
         if (io.first_starred < 0) {
           io.first_starred = io.i
         }
@@ -149,8 +145,8 @@ ezP.Consolidator.List.Target.prototype.doCleanup = function () {
   return function(io) {
     ezP.Consolidator.List.Target.superClass_.doCleanup.call(this, io)
     setupFirst.call(this, io)
-    // move parameters that are not placed correctly (in ezP sense)
     if (io.first_starred>=0) {
+      // ther must be only one starred
       this.setupIO(io, io.first_starred + 2)
       while (!!io.ezp) {
         if (io.ezp.parameter_type_ === Type.STARRED) {
@@ -160,9 +156,7 @@ ezP.Consolidator.List.Target.prototype.doCleanup = function () {
           c8n.disconnect()
           // remove that input and the next one
           this.disposeAtI(io, io.i)
-          this.setupIO(io, io.i)
           this.disposeAtI(io, io.i)
-          this.setupIO(io, io.i)
         } else {
           this.setupIO(io, io.i + 2)
         }
@@ -214,7 +208,8 @@ ezP.DelegateSvg.Manager.makeSubclass('target_list', {
 ezP.DelegateSvg.Manager.makeSubclass('void_target_list', {
   inputs: {
     list: {
-      consolidator: ezP.Consolidator.List.Target.Void,
+      consolidator: ezP.Consolidator.List.Target,
+      empty: true,
       hole_value: 'name',
     },
   },
@@ -437,136 +432,40 @@ ezP.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
   return true
 }
 
-// /**
-//  * List consolidator for assignment list.
-//  */
-// ezP.Consolidator.Assigned = function() {
-  
-//   if (!goog.isArray(this.constructor.data.checkSingleOnly)) {
-//     this.constructor.data.checkSingleOnly = goog.array.filter(this.constructor.data.check, function(x) {
-//       this.constructor.data.checkNoSingle.indexOf(x) < 0
-//     })
-//   }
-//   ezP.Consolidator.Assigned.superClass_.constructor.call(this, ezP.Consolidator.Assigned.data)
-// }
-// goog.inherits(ezP.Consolidator.Assigned, ezP.Consolidator.List)
-
-// ezP.Consolidator.Assigned.data = {
-//   check: null,
-//   empty: false,
-//   presep: ',',
-//   check: ezP.T3.Expr.Check.assigned_list,
-//   checkNoSingle: ezP.T3.Expr.Check.starred_item_list,
-// }
-
-ezP.Consolidator.List.makeSubclass('Assigned', {
-  check: null,
-  empty: false,
-  presep: ',',
-  check: ezP.T3.Expr.Check.assigned_list,
-  checkNoSingle: ezP.T3.Expr.Check.starred_item_list,
-}, ezP.Consolidator.List, ezP.Consolidator)
-
-/**
- * Prepare io, just before walking through the input list for example.
- * Subclassers may add their own stuff to io.
- * @param {!Blockly.block} block owner of the receiver
- */
-ezP.Consolidator.Assigned.prototype.getIO = function(block) {
-  var io = ezP.Consolidator.Assigned.superClass_.getIO.call(this, block)
-  io.first_single = -1
-  return io
-}
-
-/**
- * Once the whole list has been managed,
- * there might be unwanted things.
- */
-ezP.Consolidator.Assigned.prototype.doCleanup = function () {
-  // preparation: walk through the list of inputs and
-  // find the key inputs
-  var Type = {
-    unconnected: 0,
-    single: 1,
-    other: 2,
+ezP.DelegateSvg.Manager.makeSubclass('assigned_list', function() {
+  var D = {
+    check: ezP.T3.Expr.Check.starred_item,
+    single: ezP.T3.Expr.yield_expression,
+    consolidator: ezP.Consolidator.List.Singled,
+    empty: false,
+    presep: ',',
   }
-  /**
-   * Whether the input corresponds to an identifier...
-   * Called when io.input is connected.
-   * @param {Object} io, parameters....
-   */
-  var getCheckType = function(io) {
-    var target = io.c8n.targetConnection
-    if (!target) {
-      return Type.unconnected
-    }
-    var check = target.check_
-    var single = this.data.checkSingleOnly
-    return goog.array.find(single, function(type) {
-      goog.array.contains(check, type)
-    })? Type.first_single: Type.other
-  }
-  var setupFirst = function (io) {
-    io.first_single = -1
-    this.setupIO(io, 0)
-    while (!!io.ezp) {
-      if(Type.first_single === (io.ezp.parameter_type_ = getCheckType(io))) {
-        if (io.first_single < 0) {
-          io.first_single = io.i
-          return
-        }
-      }                    
-      this.nextInput(io)
-    }
-  }
-  return function(io) {
-    ezP.Consolidator.Assigned.superClass_.doCleanup.call(this, io)
-    setupFirst.call(this, io)
-    // there must be an only one
-    // first remove all the extra parameters
-    if (io.first_single >= 0) {
-      this.setupIO(io, 0)
-      while(io.first_single>0) {
-        this.disposeAtI(io)
-        --io.first_single
-      }
-      this.setupIO(io, 1)
-      while (io.list.length>1) {
-        this.disposeAtI(io)
-      }
-    }
-  }
-} ()
-
-/**
- * Returns the required types for the current input.
- * This does not suppose that the list of input has been completely consolidated
- * @param {!Object} io parameter.
- */
-ezP.Consolidator.Assigned.prototype.getCheck = function (io) {
-  if (io.first_single >= 0 || (io.list.length === 1) || (io.i === 1 && io.list.length === 3)) {
-    return this.data.check
-  } else {
-    return this.data.checkNoSingle
-  }
-}
-
-/**
- * Class for a DelegateSvg, assigned_list block.
- * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Manager.makeSubclass('assigned_list', {
-  inputs: {
-    list: {
-      consolidator: ezP.Consolidator.Assigned,
-      hole_value: 'value',
+  var RA = goog.array.concat(D.check,D.single)
+  goog.array.removeDuplicates(RA)
+  D.all = RA
+  return {
+    inputs: {
+      list: D,
     },
-  },
+  }
+})
+
+ezP.DelegateSvg.Manager.makeSubclass('augassigned_list', function() {
+  var D = {
+    check: ezP.T3.Expr.Check.expression,
+    single: ezP.T3.Expr.yield_expression,
+    consolidator: ezP.Consolidator.List.Singled,
+    empty: false,
+    presep: ',',
+  }
+  var RA = goog.array.concat(D.check,D.single)
+  goog.array.removeDuplicates(RA)
+  D.all = RA
+  return {
+    inputs: {
+      list: D,
+    },
+  }
 })
 
 goog.provide('ezP.DelegateSvg.AugAssign')
@@ -610,12 +509,7 @@ ezP.DelegateSvg.Manager.makeSubclass('augmented_assignment_stmt', {
     i_3: {
       key: ezP.Key.EXPRESSIONS,
       label: '',
-      wrap: ezP.T3.Expr.non_void_expression_list,
-    },
-    i_4: {
-      key: ezP.Key.YIELD,
-      label: '',
-      check: ezP.T3.Expr.yield_expression,
+      wrap: ezP.T3.Expr.augassigned_list,
     },
   },
 })
@@ -626,8 +520,7 @@ ezP.Delegate.addInstanceProperty(ezP.DelegateSvg.Stmt.augmented_assignment_stmt,
 
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.Flag = {
   TARGET: 1,// flags are 1 based
-  YIELD: 2,
-  BITWISE: 3,
+  BITWISE: 2,
 }
 
 /**
@@ -699,9 +592,6 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.synchronizeVariant = fu
   var withTarget = this.getVariantFlag(block, this.Flag.TARGET)
   this.setInputDisabled(block, this.ui.i_1.input, withTarget)
   this.setInputDisabled(block, this.ui.i_2.input, !withTarget)
-  var withYield = this.getVariantFlag(block, this.Flag.YIELD)
-  this.setInputDisabled(block, this.ui.i_3.input, withYield)
-  this.setInputDisabled(block, this.ui.i_4.input, !withYield)
 }
 
 /**
@@ -726,9 +616,7 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.synchronizeOperator = f
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.didChangeNumberOperator = function (block, oldOperator, newOperator) {
   var withBitwise = this.getVariantFlag(block, 
   this.Flag.BITWISE)
-  console.log('didChangeNumberOperator', withBitwise,newOperator)
   if (!withBitwise) {
-    console.log('BOUNCE')
     this.setOperator(block, newOperator)
   }
 }
@@ -741,9 +629,7 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.didChangeNumberOperator
  */
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.didChangeBitwiseOperator = function (block, oldOperator, newOperator) {
   var withBitwise = this.getVariantFlag(block, this.Flag.BITWISE)
-  console.log('didChangeBitwiseOperator', withBitwise,newOperator)
   if (withBitwise) {
-    console.log('BOUNCE')
     this.setOperator(block, newOperator)
   }
 }
@@ -757,10 +643,6 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.didChangeBitwiseOperato
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.synchronizeOperator = function (block, newOperator) {
   var field = this.ui.i_3.fields.label
   field.setValue(newOperator || '')
-  // field.render_()
-  field = this.ui.i_4.fields.label
-  field.setValue(newOperator || '')
-  // field.render_()
 }
 
 /**
@@ -778,7 +660,6 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
   var operators = withBitwise? 
   this.getBitwiseOperators(block):
   this.getNumberOperators(block)
-  var withYield = this.getVariantFlag(block, this.Flag.YIELD)
   var F = function(i) {
     var op = operators[i]
     if (op !== operator) {
@@ -787,9 +668,7 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
         withTarget? ezP.Do.createSPAN('…', 'ezp-code'):
         ezP.Do.createSPAN(value || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'),
         ezP.Do.createSPAN(' '+op+' ', 'ezp-code'),
-        withYield? 
-          ezP.Do.createSPAN('yield …', 'ezp-code-reserved'): 
-          ezP.Do.createSPAN('…', 'ezp-code'),
+        ezP.Do.createSPAN('…', 'ezp-code'),
       )
       var menuItem = new ezP.MenuItem(content, function() {
         console.log('Change', withBitwise?'bitwise':'number', 'operator to', op)
@@ -822,22 +701,7 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
     goog.dom.createTextNode('… '+operator+' …'),
   )
   F(ezP.Do.makeVariantFlags(variant, this.Flag.TARGET), content)
-  var content =
-  goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    ezP.Do.createSPAN(value || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'),
-    ezP.Do.createSPAN(' '+operator+' ', 'ezp-code'),
-    ezP.Do.createSPAN('yield', 'ezp-code-reserved'),
-    ezP.Do.createSPAN(' …', 'ezp-code'),
-  )
-  F(ezP.Do.makeVariantFlags(variant, this.Flag.YIELD), content)
-  var content =
-  goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-    goog.dom.createTextNode('… '+operator+' '),
-    ezP.Do.createSPAN('yield', 'ezp-code-reserved'),
-    goog.dom.createTextNode(' …'),
-  )
-  F(ezP.Do.makeVariantFlags(variant, this.Flag.YIELD, this.Flag.TARGET), content)
-  mgr.shouldSeparate()
+ mgr.shouldSeparate()
   var content =
   ezP.Do.createSPAN(withBitwise? '+=, -=, /= …': '<<=, >>=, &= …', 'ezp-code')
   var menuItem = function(ezp) {
@@ -852,6 +716,7 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
 
 ezP.DelegateSvg.Assignment.T3s = [
   ezP.T3.Expr.term,
+  ezP.T3.Expr.yield_expression,
   ezP.T3.Expr.target_list,
   ezP.T3.Expr.target_list_list,
   ezP.T3.Expr.void_target_list,
@@ -859,5 +724,6 @@ ezP.DelegateSvg.Assignment.T3s = [
   ezP.T3.Expr.bracket_target_list,
   ezP.T3.Stmt.assignment_stmt,
   ezP.T3.Expr.assigned_list,
+  ezP.T3.Expr.augassigned_list,
   ezP.T3.Stmt.augmented_assignment_stmt,
 ]

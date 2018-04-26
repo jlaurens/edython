@@ -1695,12 +1695,7 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.toDom = function (block
     }
   }
   element.setAttribute(ezP.Key.OPERATOR, this.getOperator(block))
-  var withYield = this.getVariantFlag(block, this.Flag.YIELD)
-  if (withYield) {
-    ezP.Xml.Input.Named.toDom(block, ezP.Key.YIELD, element, optNoId, true)
-  } else {
-    ezP.Xml.Input.Named.toDom(block, ezP.Key.EXPRESSIONS, element, optNoId)
-  }
+  ezP.Xml.Input.Named.toDom(block, ezP.Key.EXPRESSIONS, element, optNoId)
 }
 
 /**
@@ -1728,11 +1723,7 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.fromDom = function (blo
     this.setBitwiseOperator(block, operator)
     variant = ezP.Do.makeVariantFlags(variant, this.Flag.BITWISE)
   }
-  if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.YIELD, element, true)) {
-    variant = ezP.Do.makeVariantFlags(variant, this.Flag.YIELD)
-  } else {
-    ezP.Xml.Input.Named.fromDom(block, ezP.Key.ARGUMENTS, element)
-  }
+  ezP.Xml.Input.Named.fromDom(block, ezP.Key.ARGUMENTS, element)
   this.setVariant(block, variant)
 }
 

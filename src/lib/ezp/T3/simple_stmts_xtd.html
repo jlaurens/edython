@@ -20,14 +20,17 @@ target          ::=  identifier
                      | slicing
                      | "*" target
 <pre>
-assignment_expression/assignment ::=  target_list "=" assigned_list
-assigned_list ::= starred_item | assigned_single
-assigned_single ::= yield_expression | assignment_expression
-assignment_stmt/assignment ::= target_list_list assigned
-target_list_list ::= (target_list "=")+
-assigned ::= starred_expression | yield_expression
-augmented_assignment_stmt/augmented_assignment
+assignment_stmt/assignment ::= target_list_list "=" assigned_list
+target_list_list ::= (target_list "=")* target_list
+assigned_list ::= starred_item | yield_expression
+augmented_assignment_stmt/augmented_assignment ::=  augtarget augop augassigned_list
+augassigned_list ::= expression | yield_expression
 </pre>
+augmented_assignment_stmt ::=  augtarget augop (expression_list | yield_expression)
+augtarget                 ::=  identifier | attributeref | subscription | slicing
+augop                     ::=  "+=" | "-=" | "*=" | "@=" | "/=" | "//=" | "%=" | "**="
+                               | ">>=" | "<<=" | "&=" | "^=" | "|="
+
 <pre>
 target ::= target_unstar | target_star
 target_unstar ::=  identifier

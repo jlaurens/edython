@@ -82,6 +82,9 @@ ezP.Consolidator.List.makeSubclass = function(key, data, Ctor, owner) {
   if (Ctor.data_) {
     goog.mixin(subclass.data_, Ctor.data_)
   }
+  if (goog.isFunction(data)) {
+    data = data.call(this)
+  }
   if (data) {
     goog.mixin(subclass.data_, data)
   }
@@ -110,15 +113,23 @@ ezP.Consolidator.List.prototype.setupIO = function (io, i) {
 /**
  * Advance to the next input. Returns false when at end.
  * @param {!Object} io parameter.
+ * @return boolean, false when at end
  */
 ezP.Consolidator.List.prototype.nextInput = function (io) {
   ++io.i
   return this.setupIO(io)
 }
 
+/**
+ * Insert a placeholder at the given index.
+ * io is properly set up at the end.
+ * @param {!Object} io parameter.
+ * @param {number} i. When undefined, take io.i
+ * @return boolean, whether the io is at end.
+ */
 ezP.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
   var me = this
-  if (i !== undefined) {
+  if (goog.isNumber(i)) {
     io.i = i
   }
   var c8n = io.block.makeConnection_(Blockly.INPUT_VALUE)
@@ -133,22 +144,24 @@ ezP.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
   ezP.Input.setupEzpData(input)
   io.list.splice(io.i, 0, input)
   io.edited = true
-  this.setupIO(io)
-  return input
+  return this.setupIO(io)
 }
 
 /**
  * Dispose of the input at the given index.
  * No range checking.
+ * io is properly set up at the end.
  * @param {!Object} io parameter.
+ * @return boolean, whether the io is at end.
  */
 ezP.Consolidator.List.prototype.disposeAtI = function (io, i) {
-  if (i === undefined) {
+  if (!goog.isNumber(i)) {
     i = io.i
   }
   io.list[i].dispose()
   io.list.splice(i, 1)
   io.edited = true
+  return this.setupIO(io)
 }
 
 /**
@@ -188,6 +201,10 @@ ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = und
   }
 }
 
+/**
+ * Finalize the current input as a separator.
+ * @param {!Object} io parameter.
+ */
 ezP.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, name) {
   io.ezp.presep = io.presep || ''
   io.ezp.postsep = io.postsep || ''
@@ -229,6 +246,9 @@ ezP.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
 
 /**
  * Consolidate a connected input but the first one.
+ * Add an unconnected input after, if there is no one.
+ * On return, io points to the location after
+ * the potential separator.
  * @param {!Object} io parameter.
  * @return yes exactly if there are more input
  */
@@ -249,12 +269,13 @@ ezP.Consolidator.List.prototype.consolidate_connected = function(io) {
  * @return yes exactly if there are more input
  */
 ezP.Consolidator.List.prototype.consolidate_first_connected = function(io) {
-  // the actual input is the first connected
-  // remove whatever precedes it, except the very first separator, if any
+  // let subclassers catch this if they want to.
   if (!this.consolidate_single(io)) {
     // nothing more to consolidate
     return false
   }
+  // the actual input is the first connected
+  // remove whatever precedes it, except the very first separator, if any
   var j = io.i
   if (j === 0) {
     // there is an opening separator missing
@@ -271,6 +292,8 @@ ezP.Consolidator.List.prototype.consolidate_first_connected = function(io) {
 /**
  * Consolidate the first connected input when expected to be single.
  * Default implementation return true.
+ * Subclassers will manage things differently and
+ * return false
  * @param {!Object} io parameter.
  * @return yes exactly if there are more input
  */
@@ -279,23 +302,7 @@ ezP.Consolidator.List.prototype.consolidate_single = function(io) {
 }
 
 /**
- * Find the next connected input
- * @param {!Object} io parameter.
- */
-ezP.Consolidator.List.prototype.gobble_to_connected = function(io) {
-  // things are different if one of the inputs is connected
-  while (io.ezp) {
-    if (io.c8n.targetConnection) {
-      return true
-    }
-    this.disposeAtI(io)
-    this.setupIO(io)
-  }
-  return false
-}
-
-/**
- * Find the next connected input
+ * Find the next connected input. 
  * @param {!Object} io parameter.
  * @param {!boolean} gobble whether to gobble intermediate inputs.
  */
@@ -304,11 +311,11 @@ ezP.Consolidator.List.prototype.walk_to_next_connected = function(io, gobble) {
   while (!!io.ezp) {
     if (io.c8n.targetConnection) {
       io.presep = io.ezp.presep || this.data.presep
+      io.postsep = io.ezp.postsep || this.data.postsep
       return true
     }
     if (gobble) {
-      this.disposeAtI(io)
-      this.setupIO(io)  
+      this.disposeAtI(io) 
     } else {
       this.nextInput(io)  
     }
@@ -317,12 +324,15 @@ ezP.Consolidator.List.prototype.walk_to_next_connected = function(io, gobble) {
 }
 
 /**
- * List consolidator.
- * Removes empty place holders
+ * No connected connection has been found.
+ * Removes extra empty placeholders, or
+ * create of if none exists.
  * @param {!Object} io parameter.
  */
 ezP.Consolidator.List.prototype.consolidate_unconnected = function(io) {
   // remove any separator up to the first placeholder
+  // This is because the placeholder may have been connected
+  // before, undoing will be easier.
   this.setupIO(io, 0)
   if (!!io.ezp) {
     while (true) {
@@ -366,7 +376,11 @@ ezP.Consolidator.List.prototype.doCleanup = function(io) {
 
 /**
  * Finalize placeholders and separators.
- * There are at least 2 inputs, a separator and a placeholder. There can be a supplemental separator after.
+ * In general, there are at least 2 inputs:
+ * a separator and a placeholder.
+ * There can be a supplemental separator after.
+ * Find dynamic names for placeholders,
+ * set the separator property when not connected.
  * @param {!Object} io parameter.
  */
 ezP.Consolidator.List.prototype.doFinalize = function(io) {
@@ -417,6 +431,7 @@ ezP.Consolidator.List.prototype.getIO = function(block) {
         || !unwrapped.ezp.withDynamicList_),
     list: block.inputList,
     presep: this.data.presep,
+    postsep: this.data.postsep,
   }
   this.setupIO(io, 0)
   return io
@@ -426,6 +441,7 @@ ezP.Consolidator.List.prototype.getIO = function(block) {
  * List consolidator.
  * Removes empty place holders
  * @param {!Block} block, to be consolidated....
+ * @param {boolean} force, true if no shortcut is allowed.
  */
 ezP.Consolidator.List.prototype.consolidate = function(block, force) {
   var io = this.getIO(block)
@@ -440,6 +456,7 @@ ezP.Consolidator.List.prototype.consolidate = function(block, force) {
       this.doFinalize(io)
     }
   } else {
+    // no connected input
     this.consolidate_unconnected(io)
   }
 }
@@ -497,7 +514,7 @@ ezP.Consolidator.List.prototype.getInput = function (block, name) {
 
 /**
  * Get the next input compatible with the given type.
- * Enumerator object.
+ * Enumerator object. Used by the print block.
  * @param {object} io argument object
  * @return the next keyword item input, undefined when at end.
  */
@@ -516,6 +533,7 @@ ezP.Consolidator.List.prototype.nextInputForType = function(io, type) {
 
 /**
  * Whether the block has an input for the given type.
+ * Used by the print block.
  * @param {object} io argument object
  * @return the next keyword item input, undefined when at end.
  */
@@ -546,6 +564,23 @@ goog.inherits(ezP.Consolidator.List.Singled, ezP.Consolidator.List)
 ezP.Consolidator.List.makeSubclass('Singled')
 
 /**
+ * Find the next connected input.
+ * To the inherited implementation is appended a test
+ * whether there is an input of single type.
+ * @param {!Object} io parameter.
+ * @param {!boolean} gobble whether to gobble intermediate inputs.
+ * @override
+ */
+ezP.Consolidator.List.Singled.prototype.walk_to_next_connected = function(io, gobble) {
+  var ans = ezP.Consolidator.List.Singled.superClass_.walk_to_next_connected.call(this, io, gobble)
+  if (ans && !io.single
+    && io.c8n.targetConnection.check_.indexOf(this.data.single) >= 0) {
+    io.single = io.input
+  }
+  return ans
+}
+
+/**
  * Returns the required types for the current input.
  * Returns `all` if the list is void
  * or if there is only one item to be replaced.
@@ -567,23 +602,12 @@ ezP.Consolidator.List.Singled.prototype.getCheck = function (io) {
 }
 
 /**
- * Find the next connected input
- * @param {!Object} io parameter.
- * @param {!boolean} gobble whether to gobble intermediate inputs.
- * @override
- */
-ezP.Consolidator.List.Singled.prototype.walk_to_next_connected = function(io, gobble) {
-  var ans = ezP.Consolidator.List.Singled.superClass_.walk_to_next_connected.call(this, io, gobble)
-  if (ans && !io.single
-    && io.c8n.targetConnection.check_.indexOf(this.data.single) >= 0) {
-    io.single = io.input
-  }
-  return ans
-}
-
-/**
  * Once the whole list has been managed,
  * there might be unwanted things.
+ * In general, when there is a input connected
+ * to a block of the single type, no other block must exist,
+ * nor separator.
+ * @param {!Object} io parameter.
  */
 ezP.Consolidator.List.Singled.prototype.doCleanup = function(io) {
   ezP.Consolidator.List.Singled.superClass_.doCleanup.call(this, io)
@@ -591,9 +615,9 @@ ezP.Consolidator.List.Singled.prototype.doCleanup = function(io) {
 }
 
 /**
- * Consolidate the first connected input
+ * Consolidate the first connected input as single.
  * @param {!Object} io parameter.
- * @return yes exactly if there are more input
+ * @return false if there were a single input, yes otherwise.
  */
 ezP.Consolidator.List.Singled.prototype.consolidate_single = function(io) {
   // the actual input is the first connected
@@ -607,7 +631,7 @@ ezP.Consolidator.List.Singled.prototype.consolidate_single = function(io) {
     while(io.list.length > 1) {
       this.disposeAtI(io, 1)
     }
-    return true
+    return false
   }
-  return false
+  return true
 }

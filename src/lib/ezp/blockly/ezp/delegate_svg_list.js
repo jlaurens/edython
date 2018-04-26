@@ -426,6 +426,10 @@ ezP.DelegateSvg.Manager.makeSubclass('with_item_list', {
 })
 
 ezP.DelegateSvg.List.T3s = [
+  ezP.T3.Expr.term,
+  ezP.T3.Expr.comprehension,
+  ezP.T3.Expr.dict_comprehension,
+  ezP.T3.Expr.key_datum,
   ezP.T3.Expr.optional_expression_list,
   ezP.T3.Expr.non_void_expression_list,
   ezP.T3.Expr.starred_item_list,
