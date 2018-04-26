@@ -88,17 +88,21 @@ ezP.DelegateSvg.Manager.makeSubclass('expression_star_star', {
  * Main entry: consolidate
  * @param {!String} single, the required type for a single element....
  */
-ezP.Consolidator.Arguments = function() {
-  ezP.Consolidator.Arguments.superClass_.constructor.call(this, ezP.Consolidator.Arguments.data)
-}
-goog.inherits(ezP.Consolidator.Arguments, ezP.Consolidator.List)
+// ezP.Consolidator.Arguments = function() {
+//   ezP.Consolidator.Arguments.superClass_.constructor.call(this, ezP.Consolidator.Arguments.data)
+// }
+// goog.inherits(ezP.Consolidator.Arguments, ezP.Consolidator.List)
 
-ezP.Consolidator.Arguments.data = {
+// ezP.Consolidator.Arguments.data = {
+//   check: null,
+//   empty: true,
+//   presep: ',',
+// }
+ezP.Consolidator.List.makeSubclass('Arguments', {
   check: null,
   empty: true,
   presep: ',',
-}
-
+}, ezP.Consolidator.List, ezP.Consolidator)
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.

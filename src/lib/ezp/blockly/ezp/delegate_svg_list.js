@@ -86,8 +86,7 @@ ezP.DelegateSvg.List.prototype.createConsolidator = function (block) {
   if (!this.consolidator) {
     var D = ezP.DelegateSvg.Manager.getInputsModel(block.type).list
     goog.asserts.assert(D, 'inputModel__.list is missing in '+block.type)
-    var Ctor = D.consolidator? D.consolidator:
-    ezP.Consolidator.List
+    var Ctor = D.consolidator || ezP.Consolidator.List
     this.consolidator = new Ctor(D)
     goog.asserts.assert(this.consolidator, 'Could not create the consolidator '+Ctor)
   }

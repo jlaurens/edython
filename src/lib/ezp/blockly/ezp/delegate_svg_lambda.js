@@ -35,17 +35,22 @@ goog.require('ezP.DelegateSvg.Term')
  *    must also have a default value...
  * All the inputs are connectedÒ.
  */
-ezP.Consolidator.Parameter = function() {
-  ezP.Consolidator.Parameter.superClass_.constructor.call(this, ezP.Consolidator.Parameter.data)
-}
-goog.inherits(ezP.Consolidator.Parameter, ezP.Consolidator.List)
+// ezP.Consolidator.Parameter = function() {
+//   ezP.Consolidator.Parameter.superClass_.constructor.call(this, ezP.Consolidator.Parameter.data)
+// }
+// goog.inherits(ezP.Consolidator.Parameter, ezP.Consolidator.List)
 
-ezP.Consolidator.Parameter.data = {
+// ezP.Consolidator.Parameter.data = {
+//   check: ezP.T3.Expr.Check.primary,
+//   empty: true,
+//   presep: ',',
+// }
+
+ezP.Consolidator.List.makeSubclass('Parameter', {
   check: ezP.T3.Expr.Check.primary,
   empty: true,
   presep: ',',
-}
-
+}, ezP.Consolidator.List, ezP.Consolidator)
 /**
  * Consolidate a connected input but the first one.
  * Does nothing if this is the last input of '**' type.

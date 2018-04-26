@@ -48,30 +48,43 @@ ezP.Consolidator.prototype.consolidate = undefined
  * The undo/redo management is based on the name
  * of the input, which means that naming should be done
  * dynamically.
- * We start with only one input named 'ITEM_1'.
- * All the items are named either 'ITEM_...' or 'S7R_...',
- * depending on the type of input.
- * When connected, an item is named 'ITEM_...',
- * There is in general one 'S7R_...' between 2 'ITEM_...'s,
- * those separators are displayed with a small lentisque,
- * and accept connections.
- * The indices are words ordered lexicographically.
- * Letters are [!-~], id est with ascii code in [33; 126].
- * That makes 94 letters
- * (any printable character except space).
- * Foreach triple 'S7R_xxx', 'ITEM_yyy', 'S7R_zzz' of consecutive elements of the list, we have
- * xxx < yyy = zzz
- * If we connect 'S7R_xxx', the new list will become
- * 'S7R_xxx', 'ITEM_zzz', 'S7R_zzz', 'ITEM_yyy', 'S7R_yyy'
- * such that xxx < zzz < yyy
- * There are infinitelly many words between xxx and yyy,
- * we choose the one with the smallest number of characters
- * which is close to the arithmetical mean of xxx and yyy.
  * @param {!Object} data, all the data needed
  */
-ezP.Consolidator.List = function(data) {
-  goog.asserts.assert(data.check !== undefined, 'Lists must type check their items or ... ')
-  this.data = data
+ezP.Consolidator.List = function(d) {
+  this.data = {}
+  var D = this.constructor.data_
+  if (D) {
+    goog.mixin(this.data, D)
+  }
+  if (d) {
+    goog.mixin(this.data, d)
+  }
+  goog.asserts.assert(goog.isDef(this.data.check), 'List consolidators must check their objects')
+  this.init && this.init()
+}
+
+/**
+ * Create a subclass of a consolidator.
+ * This is the preferred method to create consolidator classes.
+ * The main purpose is to manage the shared data model
+ * and allow inheritance.
+ * Extra initialization may be performed by the init function.
+ * @param {!Object} data.
+ */
+ezP.Consolidator.List.makeSubclass = function(key, data, Ctor, owner) {
+  Ctor = Ctor || ezP.Consolidator.List
+  owner = owner || Ctor
+  var subclass = owner[key] = function(d) {
+    subclass.superClass_.constructor.call(this, d)
+  }
+  goog.inherits(subclass, Ctor)
+  subclass.data_ = {} // start with a fresh object for the constructor data model
+  if (Ctor.data_) {
+    goog.mixin(subclass.data_, Ctor.data_)
+  }
+  if (data) {
+    goog.mixin(subclass.data_, data)
+  }
 }
 
 /**
@@ -142,6 +155,8 @@ ezP.Consolidator.List.prototype.disposeAtI = function (io, i) {
  * Returns the required types for the current input.
  * Assumes that the list of input is correct,
  * no more insertion, no more deletion.
+ * The default implementation just returns the check entry
+ * in the data object.
  * @param {!Object} io parameter.
  */
 ezP.Consolidator.List.prototype.getCheck = function (io) {
@@ -528,6 +543,8 @@ ezP.Consolidator.List.Singled = function(data) {
 }
 goog.inherits(ezP.Consolidator.List.Singled, ezP.Consolidator.List)
 
+ezP.Consolidator.List.makeSubclass('Singled')
+
 /**
  * Returns the required types for the current input.
  * Returns `all` if the list is void
@@ -573,7 +590,6 @@ ezP.Consolidator.List.Singled.prototype.doCleanup = function(io) {
   this.consolidate_single(io)
 }
 
-
 /**
  * Consolidate the first connected input
  * @param {!Object} io parameter.
@@ -594,28 +610,4 @@ ezP.Consolidator.List.Singled.prototype.consolidate_single = function(io) {
     return true
   }
   return false
-}
-
-
-/**
- * List consolidator for argument list.
- * Rules are a bit stronger than python requires originally
- * 1) starred expression only at the end of the list
- * 2) only one such expression
- * Main entry: consolidate
- * @param {!String} single, the required type for a single element....
- */
-ezP.Consolidator.List.Target = function(D) {
-  var d = {}
-  goog.mixin(d, ezP.Consolidator.List.Target.data)
-  goog.mixin(d, D)
-  ezP.Consolidator.List.Target.superClass_.constructor.call(this, d)
-}
-goog.inherits(ezP.Consolidator.List.Target, ezP.Consolidator.List)
-
-ezP.Consolidator.List.Target.data = {
-  hole_value: 'name',
-  check: null,
-  empty: false,
-  presep: ',',
 }

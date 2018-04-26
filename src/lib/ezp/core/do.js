@@ -431,6 +431,7 @@ ezP.Do.addInstanceProperty = function (Ctor, key, params) {
     index: key+'Index',
     get: 'get'+k,
     init: 'init'+k,
+    _init: '_init'+k,
     gets: 'get'+k+'s',
     set: 'set'+k,
     validate: 'validate'+k,
@@ -463,7 +464,7 @@ ezP.Do.addInstanceProperty = function (Ctor, key, params) {
   p[Ks.gets] = function(block) {
     return block.ezp.getModel().inputs[Ks.keys]
   }
-  p[Ks.init] = params && params.initialize || function(block) {
+  p[Ks._init] = params && params.initialize || function(block) {
     var inputs = block.ezp.getModel().inputs
     var values = inputs[Ks.keys]
     if (values) {
@@ -471,6 +472,13 @@ ezP.Do.addInstanceProperty = function (Ctor, key, params) {
       var value = values[i]
       return this[Ks.set].call(this, block, value)
     }
+  }
+  p[Ks.init] = function(block) {
+    var value = this[Ks.get].call(this, block)
+    if (goog.isDef(value)) {
+      return
+    }
+    return this[Ks._init].call(this, block)
   }
   p[Ks.validate] = params && params.validate || function(block, newValue) {
     var values = block.ezp.getModel().inputs[Ks.keys]
@@ -569,3 +577,21 @@ ezP.Do.addClassProperty = function (Ctor, key) {
     return values && values.indexOf(newValue) >= 0 && {validated: newValue}
   }
 }
+
+/**
+ * set the flags given the positions as arguments.
+ * if the position is negative, unset the symmetric bit
+ * Positions are given 1 based
+ * For ezPython.
+ */
+ ezP.Do.makeVariantFlags = function(variant) {
+  for(var i = 1; i < arguments.length; i++) {
+    var position = arguments[i]
+    if (position < 0) {
+      variant ^= 1 << (- position - 1 )
+    } else if (position > 0) {
+      variant |= 1 << (  position - 1)
+    }
+  }
+  return variant
+ }

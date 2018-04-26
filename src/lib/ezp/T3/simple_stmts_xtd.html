@@ -26,13 +26,8 @@ assigned_single ::= yield_expression | assignment_expression
 assignment_stmt/assignment ::= target_list_list assigned
 target_list_list ::= (target_list "=")+
 assigned ::= starred_expression | yield_expression
+augmented_assignment_stmt/augmented_assignment
 </pre>
-<pre>
-augassign_numeric_stmt/augmented_assignment ::= augtarget numeric_augop (expression_list | yield_expression)
-augassign_bitwise_stmt/augmented_assignment ::= augtarget bitwise_augop (expression_list | yield_expression)
-augmented_assignment_stmt ::= REMOVE
-</pre>
-augmented_assignment_stmt ::=  augtarget augop (expression_list | yield_expression)
 <pre>
 target ::= target_unstar | target_star
 target_unstar ::=  identifier

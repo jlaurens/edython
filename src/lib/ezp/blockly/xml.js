@@ -54,7 +54,6 @@ ezP.Xml = {
   LIST: 'ezp:list',
   COMPARISON: 'ezp:comparison',
   PARAMETER: 'ezp:parameter',
-  AUGMENTED_ASSIGNMENT: 'ezp:augmented_assignment',
   LAMBDA: 'ezp:lambda',
   CALL: 'ezp:call',
   BUILTIN: 'ezp:builtin',
@@ -279,9 +278,6 @@ Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
  * Encoding the blocks is straightforward, decoding is not.
  * The operator is stored as an attribute and used to distinguish between
  * bitwise and number augmented assignments.
- * Augmented assignment exist in both statement and expression version
- * despite python only knows about augmented assignment statement.
- * This may change in the future to stick to python definitions.
  * The same holds for comparison blocks, mutatis mutandis.
  * 3) List blocks are meant to be wrapped. They should never appear
  * as top blocks. When wrapped, the tag name is always ezp:list.
@@ -462,7 +458,7 @@ ezP.Xml.toDom = function (block, element, optNoId) {
 /**
  * Decode an XML block tag and create a block (and possibly sub blocks)
  * on the workspace.
- * Try to decode a literal or an augmented assignment.
+ * Try to decode a literal or other special node.
  * If that does not work, try to deconde ans ezPython block,
  * if that still does not work, fall down to the original
  * Blockly's method.
@@ -510,11 +506,10 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
       ezP.Xml.fromDom(block, xmlBlock)
     }
   }
-  // is it a literal or an augmented assignment ?
+  // is it a literal or somethin else special ?
   else if ((block = ezP.Xml.Literal.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.Comparison.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.Group.domToBlock(xmlBlock, workspace))
-  || (block = ezP.Xml.AugAssign.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.Call.domToBlock(xmlBlock, workspace))
   || (block = ezP.Xml.Global.domToBlock(xmlBlock, workspace))) {
     
@@ -968,12 +963,10 @@ ezP.Xml.Call.toDom = function(block, element, optNoId) {
   }
   var variant = ezp.getVariant(block)
   if (variant === 1) {
-    ezP.Xml.Input.Named.toDom(block, ezP.Key.PRIMARY, element, optNoId, true)
+    ezP.Xml.Input.Named.toDom(block, ezP.Key.PRIMARY, element, optNoId)
   } else {
     var text = ezp.getValue(block)
-    if (text) {
-      element.setAttribute(ezP.Xml.VALUE, text)
-    }
+    element.setAttribute(ezP.Xml.VALUE, text || '?')
   }
   ezP.Xml.Input.Named.toDom(block, ezP.Key.ARGUMENTS, element, optNoId)
 }
@@ -986,16 +979,16 @@ ezP.Xml.Call.toDom = function(block, element, optNoId) {
  */
 ezP.Xml.Call.fromDom = function(block, element) {
   var ezp = block.ezp
-  if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.PRIMARY, element, true)) {
-    ezp.setVariant(block, 1)
-  } else {
-    var text = element.getAttribute(ezP.Xml.VALUE)
-    if (text) {
-      ezp.setValue(block, text) || ezp.setValidatedValue(block, text) && ezp.setVariant(block, 0)
-    } else {
-      ezp.setValidatedValue(block, '')
-      ezp.setVariant(block, 0)
+  var text = element.getAttribute(ezP.Xml.VALUE)
+  if (goog.isDefAndNotNull(text)) {
+    if (text === '?') {
+      text = ''
     }
+    ezp.setValue(block, text) || ezp.setValidatedValue(block, text)
+    ezp.setVariant(block, 0)
+  } else {
+    ezP.Xml.Input.Named.fromDom(block, ezP.Key.PRIMARY, element)
+    ezp.setVariant(block, 1)
   }
   return ezP.Xml.Input.Named.fromDom(block, ezP.Key.ARGUMENTS, element)
 }
@@ -1683,41 +1676,7 @@ ezP.Xml.Comparison.domToBlock = function (element, workspace) {
   }
 }
 
-goog.provide('ezP.Xml.AugAssign')
 goog.require('ezP.DelegateSvg.AugAssign')
-
-/**
- * The xml tag name of this block, as it should appear in the saved data.
- * Default implementation just returns 'expr'
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return true if the given value is accepted, false otherwise
- */
-ezP.DelegateSvg.Stmt.augassign_numeric_stmt.prototype.xmlTagName = ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.xmlTagName = function (block) {
-  return ezP.Xml.AUGMENTED_ASSIGNMENT
-}
-
-/**
- * Set the operator from the element's tagName.
- * @param {!Blockly.Block} block.
- * @param {!Element} element dom element to be completed.
- * @override
- */
-ezP.Xml.AugAssign.domToBlock = function (element, workspace) {
-  var name = element.tagName
-  if (name && name.toLowerCase() === ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.xmlTagName()) {
-    var op = element.getAttribute(ezP.Key.OPERATOR)
-    var type = ezP.T3.Stmt.augassign_numeric_stmt
-    var model = ezP.DelegateSvg.Expr.augassign_numeric.prototype.getModel()
-    if (model.inputs.operators.indexOf(op) < 0) {
-      type = ezP.T3.Stmt.augassign_bitwise_stmt
-    }
-    var id = element.getAttribute('id')
-    var block = ezP.DelegateSvg.newBlockComplete(workspace, type, id)
-    ezP.Xml.fromDom(block, element)
-    return block
-  }
-}
 
 /**
  * Records the operator as attribute.
@@ -1725,32 +1684,57 @@ ezP.Xml.AugAssign.domToBlock = function (element, workspace) {
  * @param {!Element} element dom element to be completed.
  * @override
  */
-ezP.Xml.AugAssign.toDom = function (block, element, optNoId) {
-  element.setAttribute(ezP.Key.OPERATOR, block.ezp.getSubtype(block))
-  var name = ezP.DelegateSvg.AugAssign.ezp.getModel().inputs.i_1.key
-  ezP.Xml.Input.Named.toDom(block, name, element, optNoId)
-  var name = ezP.DelegateSvg.AugAssign.ezp.getModel().inputs.i_3.key
-  ezP.Xml.namedListInputToDom(block, name, element, optNoId)
+ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.toDom = function (block, element, optNoId) {
+  var withTarget = this.getVariantFlag(block, this.Flag.TARGET)
+  if (withTarget) {
+    ezP.Xml.Input.Named.toDom(block, ezP.Key.TARGET, element, optNoId, true)
+  } else {
+    var text = this.getValue(block)
+    if (text && text.length) {
+      element.setAttribute(ezP.Key.VALUE, text)
+    }
+  }
+  element.setAttribute(ezP.Key.OPERATOR, this.getOperator(block))
+  var withYield = this.getVariantFlag(block, this.Flag.YIELD)
+  if (withYield) {
+    ezP.Xml.Input.Named.toDom(block, ezP.Key.YIELD, element, optNoId, true)
+  } else {
+    ezP.Xml.Input.Named.toDom(block, ezP.Key.EXPRESSIONS, element, optNoId)
+  }
 }
 
 /**
- * Set the operator from the attribute.
+ * Set the augmented_assignment_stmt from the element.
  * @param {!Blockly.Block} block.
  * @param {!Element} element dom element to be completed.
  * @override
  */
-ezP.Xml.AugAssign.fromDom = function (block, element) {
-  var op = element.getAttribute(ezP.Key.OPERATOR)
-  block.ezp.setSubtype(block, op)
-  var name = ezP.DelegateSvg.AugAssign.ezp.getModel().inputs.i_1.key
-  ezP.Xml.Input.Named.fromDom(block, name, element)
-  var name = ezP.DelegateSvg.AugAssign.ezp.getModel().inputs.i_3.key
-  ezP.Xml.namedListInputFromDom(block, name, element)
+ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.fromDom = function (block, element) {
+  var variant = 0
+  if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.TARGET, element, true)) {
+    variant = ezP.Do.makeVariantFlags(variant, this.Flag.TARGET)
+  } else {
+    var text = element.getAttribute(ezP.Key.VALUE)
+    if (goog.isDefAndNotNull(text)) {
+      this.setValue(block, text)
+    }
+  }
+  var operator = element.getAttribute(ezP.Key.OPERATOR)
+  var numberOperators = this.getNumberOperators(block)
+  var bitwiseOperators = this.getBitwiseOperators(block)
+  if (numberOperators.indexOf(operator) >= 0) {
+    this.setNumberOperator(block, operator)
+  } else if (bitwiseOperators.indexOf(operator) >= 0) {
+    this.setBitwiseOperator(block, operator)
+    variant = ezP.Do.makeVariantFlags(variant, this.Flag.BITWISE)
+  }
+  if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.YIELD, element, true)) {
+    variant = ezP.Do.makeVariantFlags(variant, this.Flag.YIELD)
+  } else {
+    ezP.Xml.Input.Named.fromDom(block, ezP.Key.ARGUMENTS, element)
+  }
+  this.setVariant(block, variant)
 }
-
-ezP.DelegateSvg.AugAssign.prototype.xml = ezP.Xml.AugAssign
-ezP.DelegateSvg.Stmt.augassign_numeric_stmt.prototype.xml = ezP.Xml.AugAssign
-ezP.DelegateSvg.Stmt.augassign_bitwise_stmt.prototype.xml = ezP.Xml.AugAssign
 
 goog.require('ezP.DelegateSvg.Group')
 goog.provide('ezP.Xml.Group')

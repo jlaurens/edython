@@ -775,7 +775,7 @@ for (K in Ks) {
 Ks = ['+=', '-=', '*=', '@=', '/=', '//=', '%=', '**=',]
 for (var i = 0; (K = Ks[i++]); ) {
   ezP.KeyHandler.register('… '+K+' …', {
-    type: ezP.T3.Stmt.augassign_numeric_stmt,
+    type: ezP.T3.Stmt.augmented_assignment_stmt,
     subtype: K,
   });
 }
