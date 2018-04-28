@@ -579,6 +579,15 @@ ezP.Do.addClassProperty = function (Ctor, key) {
 }
 
 /**
+ * Get the flag given the position as argument.
+ * Positions are given 1 based
+ * For ezPython.
+ */
+ ezP.Do.getVariantFlag = function(variant, flag) {
+  return variant & 1 << (  position - 1)
+ }
+
+/**
  * set the flags given the positions as arguments.
  * if the position is negative, unset the symmetric bit
  * Positions are given 1 based

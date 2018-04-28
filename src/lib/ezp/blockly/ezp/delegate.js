@@ -404,41 +404,15 @@ ezP.Delegate.addInstanceProperty(ezP.Delegate, ezP.Key.VARIANT)
 
 
 /**
- * Set the [python ]type of the delegate according to the type of the block.
+ * Get the flag for the given position.
+ * Use setVariant to set all the flags at once
+ * in order to record only one undo event.
  * @param {!Blockly.Block} block to be initialized..
  * @param {number} flag, one based
  * @return whether this flag is set
  */
 ezP.Delegate.prototype.getVariantFlag = function (block, flag) {
   return this.getVariant(block) & 1 << (flag - 1)
-}
-
-/**
- * Set the [python ]type of the delegate according to the type of the block.
- * @param {!Blockly.Block} block to be initialized..
- * @param {number} flag, one based
- * @param {boolean} yorn
- */
-ezP.Delegate.prototype.setVariantFlag = function (block, flag, yorn, validated) {
-  if (validated) {
-    this.setValidatedVariant(block, this.getVariant(block) | 1 << (flag - 1))
-  } else {
-    this.setVariant(block, this.getVariant(block) | 1 << (flag - 1))
-  }
-}
-
-/**
- * Set the [python ]type of the delegate according to the type of the block.
- * @param {!Blockly.Block} block to be initialized..
- * @param {number} flag, one based
- * @param {boolean} yorn
- */
-ezP.Delegate.prototype.toggleVariantFlag = function (block, flag, yorn, validated) {
-  if (validated) {
-    this.setValidatedVariant(block, this.getVariant(block) | 1 << (flag - 1))
-  } else {
-    this.setVariant(block, this.getVariant(block) | 1 << (flag - 1))
-  }
 }
 
 /**

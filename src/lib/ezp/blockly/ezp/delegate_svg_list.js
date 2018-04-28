@@ -261,13 +261,13 @@ ezP.DelegateSvg.Manager.makeSubclass('key_datum_list', {
 ezP.DelegateSvg.Manager.makeSubclass('starred_item_list_comprehensive', function() {
   var D = {
     check: ezP.T3.Expr.Check.non_void_starred_item_list,
-    single: ezP.T3.Expr.comprehension,
+    unique: ezP.T3.Expr.comprehension,
     consolidator: ezP.Consolidator.List.Singled,
     empty: true,
     presep: ',',
     hole_value: 'name',
   }
-  var RA = goog.array.concat(D.check,D.single)
+  var RA = goog.array.concat(D.check,D.unique)
   goog.array.removeDuplicates(RA)
   D.all = RA
   return {
@@ -307,13 +307,13 @@ ezP.DelegateSvg.Manager.makeSubclass('list_display', {
 ezP.DelegateSvg.Manager.makeSubclass('non_void_starred_item_list_comprehensive', function() {
   var D = {
     check: ezP.T3.Expr.Check.non_void_starred_item_list,
-    single: ezP.T3.Expr.comprehension,
+    unique: ezP.T3.Expr.comprehension,
     consolidator: ezP.Consolidator.List.Singled,
     empty: false,
     presep: ',',
     hole_value: 'name',
   }
-  var RA = goog.array.concat(D.check,D.single)
+  var RA = goog.array.concat(D.check,D.unique)
   goog.array.removeDuplicates(RA)
   D.all = RA
   return {
@@ -353,12 +353,12 @@ ezP.DelegateSvg.Manager.makeSubclass('set_display', {
 ezP.DelegateSvg.Manager.makeSubclass('key_datum_list_comprehensive', function() {
   var D = {
     check: ezP.T3.Expr.Check.key_datum_list,
-    single: ezP.T3.Expr.dict_comprehension,
+    unique: ezP.T3.Expr.dict_comprehension,
     consolidator: ezP.Consolidator.List.Singled,
     empty: true,
     presep: ',',
   }
-  var RA = goog.array.concat(D.check,D.single)
+  var RA = goog.array.concat(D.check,D.unique)
   goog.array.removeDuplicates(RA)
   D.all = RA
   return {
@@ -427,6 +427,7 @@ ezP.DelegateSvg.Manager.makeSubclass('with_item_list', {
 
 ezP.DelegateSvg.List.T3s = [
   ezP.T3.Expr.term,
+  ezP.T3.Expr.expression_star,
   ezP.T3.Expr.comprehension,
   ezP.T3.Expr.dict_comprehension,
   ezP.T3.Expr.key_datum,

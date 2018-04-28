@@ -26,31 +26,11 @@ goog.require('ezP.DelegateSvg')
  * Default constructor does nothing
  * Main entry: consolidate
  * These are implemented as potential singletons but are not used as is.
+ * Extra initialization may be performed by the init function.
  * TODO: use singletons...
- */
-ezP.Consolidator = function() {
-}
-
-/**
- * Main and unique entry point.
- * Removes empty place holders
- * @param {!Block} block, to be consolidated....
- */
-ezP.Consolidator.prototype.consolidate = undefined
-
-/**
- * List consolidator.
- * Remove empty place holders, add separators,
- * order non empty place holders.
- * Main entries: consolidate and getInput.
- * The idea is to create the input elements
- * only when needed.
- * The undo/redo management is based on the name
- * of the input, which means that naming should be done
- * dynamically.
  * @param {!Object} data, all the data needed
  */
-ezP.Consolidator.List = function(d) {
+ezP.Consolidator = function(d) {
   this.data = {}
   var D = this.constructor.data_
   if (D) {
@@ -64,15 +44,26 @@ ezP.Consolidator.List = function(d) {
 }
 
 /**
+ * Main and unique entry point.
+ * Removes empty place holders
+ * @param {!Block} block, to be consolidated....
+ */
+ezP.Consolidator.prototype.consolidate = undefined
+
+/**
+ * Init. Not implemented. No parameter, no return.
+ */
+ezP.Consolidator.prototype.init = undefined
+
+/**
  * Create a subclass of a consolidator.
  * This is the preferred method to create consolidator classes.
  * The main purpose is to manage the shared data model
  * and allow inheritance.
- * Extra initialization may be performed by the init function.
  * @param {!Object} data.
  */
-ezP.Consolidator.List.makeSubclass = function(key, data, Ctor, owner) {
-  Ctor = Ctor || ezP.Consolidator.List
+ezP.Consolidator.makeSubclass = function(key, data, Ctor, owner) {
+  Ctor = Ctor || ezP.Consolidator
   owner = owner || Ctor
   var subclass = owner[key] = function(d) {
     subclass.superClass_.constructor.call(this, d)
@@ -87,6 +78,34 @@ ezP.Consolidator.List.makeSubclass = function(key, data, Ctor, owner) {
   }
   if (data) {
     goog.mixin(subclass.data_, data)
+  }
+  subclass.makeSubclass = function(key, data, Ctor, owner) {
+    ezP.Consolidator.makeSubclass(key, data, Ctor || subclass, owner)
+  }
+}
+
+/**
+ * List consolidator.
+ * Remove empty place holders, add separators,
+ * order non empty place holders.
+ * Main entries: consolidate and getInput.
+ * The idea is to create the input elements
+ * only when needed.
+ * The undo/redo management is based on the name
+ * of the input, which means that naming should be done
+ * dynamically.
+ * @param {!Object} data, all the data needed
+ */
+ezP.Consolidator.makeSubclass('List')
+
+/**
+ * Initialize the list consolidator.
+ * @param {!Object} io parameter.
+ */
+ezP.Consolidator.List.prototype.init = function() {
+  goog.asserts.assert(goog.isDef(this.data.check), 'List consolidators must check their objects')
+  if (this.data.unique) {
+    this.data.unique = ezP.Do.ensureArray(this.data.unique)
   }
 }
 
@@ -121,11 +140,20 @@ ezP.Consolidator.List.prototype.nextInput = function (io) {
 }
 
 /**
+ * Wether the current input is connected or will be connected.
+ * @param {!Object} io parameter.
+ * @return boolean, true when connected.
+ */
+ezP.Consolidator.List.prototype.willBeConnected = function (io) {
+  return io.ezp && (io.c8n.targetConnection || io.ezp.will_connect_)
+}
+
+/**
  * Insert a placeholder at the given index.
  * io is properly set up at the end.
  * @param {!Object} io parameter.
  * @param {number} i. When undefined, take io.i
- * @return boolean, whether the io is at end.
+ * @return {Blockly.Input}, the input inserted.
  */
 ezP.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
   var me = this
@@ -134,9 +162,11 @@ ezP.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
   }
   var c8n = io.block.makeConnection_(Blockly.INPUT_VALUE)
   c8n.ezp.willConnect = function(c8n, otherC8n) {
+    c8n.ezp.will_connect_ = true
     this.sourceBlock_.ezp.will_connect_ = true
   }
   c8n.ezp.didConnect = function(c8n, otherC8n) {
+    this.ezp.will_connect_ = false
     this.sourceBlock_.ezp.will_connect_ = false
     me.consolidate(this.sourceBlock_, true)
   }
@@ -144,7 +174,8 @@ ezP.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
   ezP.Input.setupEzpData(input)
   io.list.splice(io.i, 0, input)
   io.edited = true
-  return this.setupIO(io)
+  this.setupIO(io)
+  return input
 }
 
 /**
@@ -166,13 +197,26 @@ ezP.Consolidator.List.prototype.disposeAtI = function (io, i) {
 
 /**
  * Returns the required types for the current input.
- * Assumes that the list of input is correct,
- * no more insertion, no more deletion.
- * The default implementation just returns the check entry
- * in the data object.
+ * When not in single mode, returns `check`.
+ * When in single mode, returns `all` if the list is void
+ * or if there is only one item to be replaced.
+ * In all other situations, return `check`.
  * @param {!Object} io parameter.
  */
 ezP.Consolidator.List.prototype.getCheck = function (io) {
+  if (this.data.all) {
+    if (io.unique || io.list.length === 1) {
+      // a single block or no block at all
+      return this.data.all
+    } else if (io.list.length === 3 && io.i === 1) {
+      // there is only one item in the list
+      // and it can be replaced by any kind of block
+      return this.data.all
+    } else {
+      // blocks of type check are already there
+      return this.data.check
+    }
+  }
   return this.data.check
 }
 
@@ -255,7 +299,7 @@ ezP.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
 ezP.Consolidator.List.prototype.consolidate_connected = function(io) {
   // ensure that there is one input after,
   // which is not connected
-  if (!this.nextInput(io) || io.c8n.targetConnection) {
+  if (!this.nextInput(io) || this.willBeConnected(io)) {
     this.insertPlaceholder(io)
     // this one is connected or missing
     // we would expect a separator
@@ -298,6 +342,18 @@ ezP.Consolidator.List.prototype.consolidate_first_connected = function(io) {
  * @return yes exactly if there are more input
  */
 ezP.Consolidator.List.prototype.consolidate_single = function(io) {
+  if (io.unique) {
+    // remove whatever precedes it, even the very first separator
+    var j = io.list.indexOf(io.unique)
+    while(j) {
+      this.disposeAtI(io, --j)
+    }
+    // remove whatever follows
+    while(io.list.length > 1) {
+      this.disposeAtI(io, 1)
+    }
+    return false
+  }
   return true
 }
 
@@ -309,9 +365,18 @@ ezP.Consolidator.List.prototype.consolidate_single = function(io) {
 ezP.Consolidator.List.prototype.walk_to_next_connected = function(io, gobble) {
   // things are different if one of the inputs is connected
   while (!!io.ezp) {
-    if (io.c8n.targetConnection) {
+    if (this.willBeConnected(io)) {
       io.presep = io.ezp.presep || this.data.presep
       io.postsep = io.ezp.postsep || this.data.postsep
+      // manage the unique input
+      if (this.data.unique && !io.unique
+        && io.c8n.targetConnection && function(my) {
+          return goog.array.find(io.c8n.targetConnection.check_, function(x) {
+            return my.data.unique.indexOf(x) >= 0
+          })
+        } (this)) {
+        io.unique = io.input
+      }
       return true
     }
     if (gobble) {
@@ -367,8 +432,9 @@ ezP.Consolidator.List.prototype.consolidate_unconnected = function(io) {
 
 /**
  * Cleanup. Subclassers may choose to insert or remove inputs,
- * once the whole list has been managed once.
- * default implementation does nothing.
+ * once the whole list has been managed once
+ * in a de facto standard way.
+ * Default implementation does nothing.
  * @param {!Object} io parameter.
  */
 ezP.Consolidator.List.prototype.doCleanup = function(io) {
@@ -556,82 +622,4 @@ ezP.Consolidator.List.prototype.hasInputForType = function(block, type) {
  * There should not exist blocks that provide both types.
  * @param {!Object} data data structure that contains the model....
  */
-ezP.Consolidator.List.Singled = function(data) {
-  ezP.Consolidator.List.Singled.superClass_.constructor.call(this, data)
-}
-goog.inherits(ezP.Consolidator.List.Singled, ezP.Consolidator.List)
-
 ezP.Consolidator.List.makeSubclass('Singled')
-
-/**
- * Find the next connected input.
- * To the inherited implementation is appended a test
- * whether there is an input of single type.
- * @param {!Object} io parameter.
- * @param {!boolean} gobble whether to gobble intermediate inputs.
- * @override
- */
-ezP.Consolidator.List.Singled.prototype.walk_to_next_connected = function(io, gobble) {
-  var ans = ezP.Consolidator.List.Singled.superClass_.walk_to_next_connected.call(this, io, gobble)
-  if (ans && !io.single
-    && io.c8n.targetConnection.check_.indexOf(this.data.single) >= 0) {
-    io.single = io.input
-  }
-  return ans
-}
-
-/**
- * Returns the required types for the current input.
- * Returns `all` if the list is void
- * or if there is only one item to be replaced.
- * In all other situations, return this.data.check.
- * @param {!Object} io parameter.
- */
-ezP.Consolidator.List.Singled.prototype.getCheck = function (io) {
-  if (io.single || io.list.length === 1) {
-    // a single block or no block at all
-    return this.data.all
-  } else if (io.list.length === 3 && io.i === 1) {
-    // there is only one item in the list
-    // and it can be replaced by any kind of block
-    return this.data.all
-  } else {
-    // blocks of type check are already there
-    return this.data.check
-  }
-}
-
-/**
- * Once the whole list has been managed,
- * there might be unwanted things.
- * In general, when there is a input connected
- * to a block of the single type, no other block must exist,
- * nor separator.
- * @param {!Object} io parameter.
- */
-ezP.Consolidator.List.Singled.prototype.doCleanup = function(io) {
-  ezP.Consolidator.List.Singled.superClass_.doCleanup.call(this, io)
-  this.consolidate_single(io)
-}
-
-/**
- * Consolidate the first connected input as single.
- * @param {!Object} io parameter.
- * @return false if there were a single input, yes otherwise.
- */
-ezP.Consolidator.List.Singled.prototype.consolidate_single = function(io) {
-  // the actual input is the first connected
-  if (io.single) {
-    // remove whatever precedes it, even the very first separator
-    var j = io.list.indexOf(io.single)
-    while(j) {
-      this.disposeAtI(io, --j)
-    }
-    // remove whatever follows
-    while(io.list.length > 1) {
-      this.disposeAtI(io, 1)
-    }
-    return false
-  }
-  return true
-}

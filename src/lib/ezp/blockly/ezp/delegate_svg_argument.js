@@ -110,7 +110,7 @@ ezP.Consolidator.List.makeSubclass('Arguments', {
  */
 ezP.Consolidator.Arguments.prototype.getIO = function(block) {
   var io = ezP.Consolidator.Arguments.superClass_.getIO.call(this, block)
-  io.first_keyword = io.last_positional = io.single = -1
+  io.first_keyword = io.last_positional = io.unique = -1
   return io
 }
 
@@ -140,7 +140,7 @@ ezP.Consolidator.Arguments.prototype.doCleanup = function () {
     }
     var check = target.check_
     if (goog.array.contains(check, ezP.T3.Expr.comprehension)) {
-      io.single = io.i
+      io.unique = io.i
       return Type.COMPREHENSION
     } else if (goog.array.contains(check, ezP.T3.Expr.expression_star_star) || goog.array.contains(check, ezP.T3.Expr.keyword_item)) {
       return Type.KEYWORD
@@ -149,9 +149,9 @@ ezP.Consolidator.Arguments.prototype.doCleanup = function () {
     }
   }
   var setupFirst = function (io) {
-    io.first_keyword = io.last_positional = io.single = -1
+    io.first_keyword = io.last_positional = io.unique = -1
     this.setupIO(io, 0)
-    while (!!io.ezp&& io.single < 1) {
+    while (!!io.ezp&& io.unique < 1) {
       switch ((io.ezp.parameter_type_ = getCheckType(io))) {
         case Type.ARGUMENT:
         io.last_positional = io.i
@@ -162,7 +162,7 @@ ezP.Consolidator.Arguments.prototype.doCleanup = function () {
         }
         break
         case Type.COMPREHENSION:
-        io.single = io.i
+        io.unique = io.i
       }
       this.nextInput(io)
     }
@@ -170,10 +170,10 @@ ezP.Consolidator.Arguments.prototype.doCleanup = function () {
   return function(io) {
     ezP.Consolidator.Arguments.superClass_.doCleanup.call(this, io)
     setupFirst.call(this, io)
-    if (io.single >= 0) {
-      // remove whatever comes before and after the io.single
+    if (io.unique >= 0) {
+      // remove whatever comes before and after the io.unique
       this.setupIO(io, 0)
-      while (io.i < io.single--) {
+      while (io.i < io.unique--) {
         this.disposeAtI(io)
         this.setupIO(io)
       }
@@ -223,7 +223,7 @@ ezP.Consolidator.Arguments.prototype.getCheck = function() {
   var cache = {}
   return function (io) {
     var can_positional, can_keyword, can_comprehension
-    if (io.single >= 0 || io.list.length === 1 || io.list.length === 3 && io.i === 1) {
+    if (io.unique >= 0 || io.list.length === 1 || io.list.length === 3 && io.i === 1) {
       can_positional = can_keyword = can_comprehension = true
     } else {
       can_comprehension = false

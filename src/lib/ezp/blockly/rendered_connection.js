@@ -358,6 +358,12 @@ ezP.Connection.prototype.isConnectionAllowed = function(candidate,
  * @private
  */
 ezP.Connection.prototype.checkType_ = function(otherConnection) {
+  if (!Blockly.Events.recordUndo) {
+    // we are undoing or redoing
+    // we will most certainly reach a state that was valid
+    // some time ago
+    return true
+  }
   var c8nA = this.ezp.getBlackConnection()
   var c8nB = otherConnection.ezp.getBlackConnection()
   if (!c8nA || !c8nB) {
@@ -574,7 +580,7 @@ ezP.Connection.prototype.disconnectInternal_ = function(parentBlock,
   childConnection.ezp.didDisconnect.call(childConnection, parentConnection)
 }
 
-Blockly.Connection.singleConnection_original = Blockly.Connection.singleConnection_
+Blockly.Connection.uniqueConnection_original = Blockly.Connection.uniqueConnection_
 
 /**
  * Does the given block have one and only one connection point that will accept
@@ -588,7 +594,7 @@ Blockly.Connection.singleConnection_original = Blockly.Connection.singleConnecti
  * @private
  * @override
  */
-Blockly.Connection.singleConnection_ = function(block, orphanBlock) {
+Blockly.Connection.uniqueConnection_ = function(block, orphanBlock) {
   var e8r = block.ezp.inputEnumerator(block)
   while (e8r.next()) {
     var c8n = e8r.here.connection;

@@ -1616,9 +1616,9 @@ goog.i18n.bidi.tempRe_=/%%%%/g;
 
 goog.i18n.bidi.mirrorCSS=function(a){return a.replace(goog.i18n.bidi.dimensionsRe_,":$1 $4 $3 $2").replace(goog.i18n.bidi.leftRe_,"%%%%").replace(goog.i18n.bidi.rightRe_,goog.i18n.bidi.labelLeft).replace(goog.i18n.bidi.tempRe_,goog.i18n.bidi.labelEnd.value)};
 goog.i18n.bidi.doubleQuoteSubstituteRe_=/([\u0591-\u05f2])"/g;
-goog.i18n.bidi.singleQuoteSubstituteRe_=/([\u0591-\u05f2])'/g;
+goog.i18n.bidi.uniqueQuoteSubstituteRe_=/([\u0591-\u05f2])'/g;
 
-goog.i18n.bidi.normalizeHebrewQuote=function(a){return a.replace(goog.i18n.bidi.doubleQuoteSubstituteRe_,"$1\u05f4").replace(goog.i18n.bidi.singleQuoteSubstituteRe_,"$1\u05f3")};
+goog.i18n.bidi.normalizeHebrewQuote=function(a){return a.replace(goog.i18n.bidi.doubleQuoteSubstituteRe_,"$1\u05f4").replace(goog.i18n.bidi.uniqueQuoteSubstituteRe_,"$1\u05f3")};
 goog.i18n.bidi.wordSeparatorRe_=/\s+/;
 goog.i18n.bidi.hasNumeralsRe_=/[\d\u06f0-\u06f9]/;
 goog.i18n.bidi.rtlDetectionThreshold_=.4;

@@ -435,12 +435,12 @@ ezP.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
 ezP.DelegateSvg.Manager.makeSubclass('assigned_list', function() {
   var D = {
     check: ezP.T3.Expr.Check.starred_item,
-    single: ezP.T3.Expr.yield_expression,
+    unique: ezP.T3.Expr.yield_expression,
     consolidator: ezP.Consolidator.List.Singled,
     empty: false,
     presep: ',',
   }
-  var RA = goog.array.concat(D.check,D.single)
+  var RA = goog.array.concat(D.check,D.unique)
   goog.array.removeDuplicates(RA)
   D.all = RA
   return {
@@ -453,12 +453,12 @@ ezP.DelegateSvg.Manager.makeSubclass('assigned_list', function() {
 ezP.DelegateSvg.Manager.makeSubclass('augassigned_list', function() {
   var D = {
     check: ezP.T3.Expr.Check.expression,
-    single: ezP.T3.Expr.yield_expression,
+    unique: ezP.T3.Expr.yield_expression,
     consolidator: ezP.Consolidator.List.Singled,
     empty: false,
     presep: ',',
   }
-  var RA = goog.array.concat(D.check,D.single)
+  var RA = goog.array.concat(D.check,D.unique)
   goog.array.removeDuplicates(RA)
   D.all = RA
   return {

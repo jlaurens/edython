@@ -589,7 +589,6 @@ ezP.DelegateSvg.Manager.makeSubclass('return_stmt', {
 })
 
 ezP.DelegateSvg.Stmt.T3s = [
-  ezP.T3.Stmt.annotated_assignment_stmt,
   ezP.T3.Stmt.pass_stmt,
   ezP.T3.Stmt.break_stmt,
   ezP.T3.Stmt.continue_stmt,

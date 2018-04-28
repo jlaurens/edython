@@ -1843,18 +1843,49 @@ ezP.DelegateSvg.Expr.term.prototype.xmlTagName = function (block) {
  * @return a dom element
  */
 ezP.DelegateSvg.Expr.term.prototype.toDom = function(block, element, optNoId) {
-  var modifier = this.getModifier(block)
-  if (modifier && modifier.length) {
+  var variant = this.getVariant(block)
+  var inputs = this.getModel(block).inputs
+  var modifier = '', withAnnotation, withDefinition
+  var withoutValue, withAlias
+  switch(variant) {
+    case inputs.NAME:
+    break
+    case inputs.STAR_NAME:
+      modifier = '*'
+    break
+    case inputs.STAR_STAR_NAME:
+      modifier = '**'
+    break
+    case inputs.NAME_ANNOTATION:
+      withAnnotation = true
+    break
+    case inputs.STAR_NAME_ANNOTATION:
+      modifier = '*'
+      withAnnotation = true
+    break
+    case inputs.NAME_ANNOTATION_DEFINITION:
+      withAnnotation = true
+      withDefinition = true
+    break
+    case inputs.NAME_DEFINITION:
+      withDefinition = true
+    break
+    case inputs.NAME_ALIAS:
+      withoutAlias = true
+    break
+    case inputs.STAR:
+      modifier = '*'
+      withoutValue = true
+    break
+  }
+  if (modifier.length) {
     element.setAttribute(ezP.Xml.MODIFIER, modifier)
   }
-  var flags = this.getVariant(block)
-  var withAnnotation = flags % 2
-  var withDefinition = flags & 2
-  var withoutValue = flags & 4
-  var withAlias = flags & 8
   if (!withoutValue) {
     var text = this.getValue(block)
-    element.setAttribute(ezP.Xml.VALUE, text || '?')
+    if (text && text.length || modifier === '*') {
+      element.setAttribute(ezP.Xml.VALUE, text || '?')
+    }
     if (withAnnotation) {
       ezP.Xml.Input.Named.toDom(block, ezP.Key.ANNOTATION, element, optNoId, true)
     }
@@ -1875,16 +1906,9 @@ ezP.DelegateSvg.Expr.term.prototype.toDom = function(block, element, optNoId) {
  * For subclassers eventually
  */
 ezP.DelegateSvg.Expr.term.prototype.fromDom = function (block, element) {
-  var withModifier
-  var withAnnotation
-  var withDefinition
-  var withoutValue = true
-  var withAlias
-  var modifier = element.getAttribute(ezP.Xml.MODIFIER)
-  if (modifier) {
-    withModifier = modifier.length
-    this.setModifier(block, modifier)
-  }
+  var withAnnotation, withDefinition, withAlias
+  var modifier = element.getAttribute(ezP.Xml.MODIFIER) || ''
+  var withoutValue = modifier === '*'
   var text = element.getAttribute(ezP.Xml.VALUE)
   if (text) {
     withoutValue = false
@@ -1905,10 +1929,30 @@ ezP.DelegateSvg.Expr.term.prototype.fromDom = function (block, element) {
   if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.DEFINITION, element, true)) {
     withDefinition = true
   }
-  var flags = (withAnnotation?1:0) + (withDefinition?2:0) + (withoutValue?4:0) + (withAlias?8:0)
-  var v = this.validateVariant(block, flags)
-  flags = v? v.validated: flags
-  this.setValidatedVariant(block, flags)
+  var newVariant
+  var subtype = this.getSubtype(block)
+  var inputs = this.getModel(block).inputs
+  var expected = inputs.variantsBySubtype[subtype]
+  if (modifier === '**') {
+    newVariant = inputs.STAR_STAR_NAME
+  } else if (modifier === '*') {
+    if (withoutValue) {
+      newVariant = inputs.STAR
+    } else if (withAnnotation) {
+      newVariant = inputs.STAR_NAME_ANNOTATION
+    } else {
+      newVariant = inputs.STAR_NAME
+    }
+  }
+  if (expected.indexOf(newVariant) < 0) {
+    if (withDefinition) {
+      newVariant = withAnnotation? inputs.NAME_ANNOTATION_DEFINITION: inputs.NAME_DEFINITION
+    }
+    if (expected.indexOf(newVariant) < 0) {
+      newVariant = withAnnotation? inputs.NAME_ANNOTATION: inputs.NAME
+    }
+  }
+  this.setValidatedVariant(block, newVariant)
 }
 console.log('manage the conflicts/ bad data.')
 goog.require('ezP.DelegateSvg.Lambda')
