@@ -53,7 +53,7 @@ ezP.Mixin = function (constructor) {
 
 /**
  * Class for a Block Delegate.
- * Not normally called directly, ezP.Delegate.create(...) is preferred.
+ * Not normally called directly, ezP.Delegate.Manager.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
@@ -234,10 +234,7 @@ ezP.Delegate.Manager = function () {
    * Delegate instance creator.
    * @param {?string} prototypeName Name of the language object containing
    */
-  me.create = function (prototypeName, delegate) {
-    if (delegate && delegate !== defaultDelegate) {
-      return delegate
-    }
+  me.create = function (prototypeName) {
     var Ctor = Ctors[prototypeName]
     goog.asserts.assert(Ctor, 'No delegate for '+prototypeName)
     return new Ctor(prototypeName)

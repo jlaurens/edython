@@ -30,7 +30,7 @@ goog.forwardDeclare('ezP.T3.All')
  * @constructor
  */
 ezP.Block = function (workspace, prototypeName, optId) {
-  this.ezp = ezP.Delegate.Manager.create(prototypeName, this.ezp)
+  this.ezp = ezP.Delegate.Manager.create(prototypeName)
   ezP.Block.superClass_.constructor.call(this, workspace, prototypeName, optId)
 }
 goog.inherits(ezP.Block, Blockly.Block)

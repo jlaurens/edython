@@ -99,6 +99,11 @@ ezP.DelegateSvg.Manager.makeSubclass = function(key, model, parent, owner) {
   || owner
   var Ctor = ezP.Delegate.Manager.makeSubclass_(key, model, parent, owner)
   ezP.Do.addClassProperty(Ctor, 'subtype')
+  // Next would be a shortcut, is it really necessary?
+  // Cleaner code ?
+  // Ctor.makeSubclass = function(key, model, owner) {
+  //   ezP.DelegateSvg.Manager.makeSubclass(key, model, Ctor, owner)
+  // }
   return Ctor
 }
 
