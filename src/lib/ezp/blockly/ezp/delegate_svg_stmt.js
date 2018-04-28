@@ -49,6 +49,16 @@ ezP.DelegateSvg.Stmt.prototype.validateComment = function (block, newComment) {
 }
 
 /**
+ * Validate the comment property.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newComment
+ */
+ezP.DelegateSvg.Stmt.prototype.validateCommentShow = function (block, newComment) {
+  return {validated: newComment}
+}
+
+/**
  * Initialize the comment property.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.

@@ -128,3 +128,35 @@ ezP.Events.Grouper = function() {
     }
   }
 }
+
+goog.require('ezP.Data')
+
+/**
+* set the value of the property,
+* without validation but with undo and synchronization
+* @param {Object} newValue
+*/
+ezP.Data.prototype.setTrusted = function (newValue) {
+  var grouper = new ezP.Events.Grouper()
+  var block = this.block_
+  var ezp = block.ezp
+  var old = ezp.skipRendering
+  try {
+    ezp.skipRendering = true
+    var oldValue = this.value_
+    this._willChange(oldValue, newValue)
+    if (!this.noUndo && Blockly.Events.isEnabled()) {
+      Blockly.Events.fire(new Blockly.Events.BlockChange(
+      block, ezP.Const.Event.PROPERTY+this.key, null, oldValue, newValue))
+    }
+    this.value_ = newValue
+    this._didChange(oldValue, newValue)
+    this.synchronize && this.synchronize(newValue)
+    ezp.consolidateType(block)
+    ezp.skipRendering = old
+    !old && block.render() // render now or possibly later ?
+  } finally {
+    ezp.skipRendering = old
+    grouper.stop()
+  }
+}

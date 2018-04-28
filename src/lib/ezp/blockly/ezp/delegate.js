@@ -372,7 +372,7 @@ ezP.Delegate.prototype.consolidateType = function (block) {
 * Init all the properties of the block.
 * @param {!Blockly.Block} block to be initialized.
 */
-ezP.Delegate.prototype.initProperties = function(block) {
+ezP.Delegate.prototype.initData = function(block) {
 }
 
 /**
@@ -381,28 +381,6 @@ ezP.Delegate.prototype.initProperties = function(block) {
  */
 ezP.Delegate.addInstanceProperty = function(Ctor, key) {
   ezP.Do.addInstanceProperty(Ctor, key)
-  Ctor.prototype.initProperties = function() {
-    var init = Ctor.prototype.initProperties
-    if (!init) {
-      var c = Ctor
-      while (true) {
-        if ((c = c.superClass_)) {
-          if ((init = c.prototype.initProperties)) {
-            break
-          }
-        } else {
-          return
-        }
-      }
-    }
-    return function(block) {
-      init.call(this, block)
-      var k
-      for (k in Ctor.ezp.Property) {
-        this.getProperty(block, k).get() // initialize as side effect
-      }
-    }
-  } ()
 }
 
 ezP.Delegate.addInstanceProperty(ezP.Delegate, ezP.Key.MODIFIER)

@@ -528,7 +528,7 @@ ezP.Do.addInstanceProperty = function (Ctor, key, params) {
       holder.value = newValue
       this[Ks._didChange].call(this, block, oldValue, newValue)
       var synchronize = this[Ks.synchronize]
-      synchronize && synchronize.call(this, block, newValue || this[Ks.get].call(this, block))
+      synchronize && synchronize.call(this, block, goog.isDef(newValue) && newValue || this[Ks.get].call(this, block))
       this.consolidateType(block)
       this.skipRendering = old
       block.render() // render now or possibly later ?

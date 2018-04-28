@@ -180,8 +180,7 @@ ezP.DelegateSvg.Expr.term.prototype.noBlockWrapped = function (block) {
  * @param {!Blockly.Block} block to be initialized.
  */
 ezP.DelegateSvg.Expr.term.prototype.initVariant = function (block) {
-  ezP.DelegateSvg.Expr.term.superClass_.initVariant.call(this, block)
-  this.setVariant(block, 0)
+  this.setTrustedVariant(block, 0)
 }
 
 /**
@@ -236,7 +235,7 @@ ezP.DelegateSvg.Expr.term.prototype.synchronizeVariant = function(block, newVari
  * @param {!Blockly.Block} block to be initialized.
  */
 ezP.DelegateSvg.Expr.term.prototype.initValue = function (block) {
-  this.setValue(block, this.ui.i_1.fields.value.getValue() || '')
+  this.setValue(block, this.ui.i_1.fields.value.getValue() || '') || this.didChangeValue(block, undefined, this.getValue(block))
   return
 }
 
@@ -263,7 +262,6 @@ ezP.DelegateSvg.Expr.term.prototype.validateValue = function (block, newValue) {
  * @param {string} newValue
  */
 ezP.DelegateSvg.Expr.term.prototype.didChangeValue = function (block, oldValue, newValue) {
-  ezP.DelegateSvg.Expr.term.superClass_.didChangeValue.call(this, block, oldValue, newValue)
   var subtype = newValue? ezP.Do.typeOfString(newValue): ezP.T3.Expr.identifier
   block.ezp.setSubtype(block, subtype)
   return

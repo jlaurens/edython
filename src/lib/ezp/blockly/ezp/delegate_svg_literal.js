@@ -245,7 +245,7 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.consolidateValue = function(block) {
  * Init all the properties of the block.
  * @param {!Blockly.Block} block to be initialized..
  */
-ezP.DelegateSvg.Expr.shortliteral.prototype.initProperties = function(block) {
+ezP.DelegateSvg.Expr.shortliteral.prototype.initData = function(block) {
   // first the delimiters in the variant property
   var field = this.ui.i_1.fields.start
   var variant = field.getValue() || this.getVariants(block)[0]
