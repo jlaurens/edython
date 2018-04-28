@@ -133,6 +133,8 @@ ezP.Key = {
   LABEL: 'label', // lowercase
   CODE: 'code', // lowercase
   COMMENT: 'comment', // lowercase
+  COMMENT_MARK: 'commentMark', // lowercase
+  COMMENT_SHOW: 'commentShow', // lowercase
   NUMBER: 'number', // lowercase
   STRING: 'string', // lowercase
   LONG_STRING: 'longString', // lowercase
@@ -268,7 +270,8 @@ ezP.XRE = {
   id_wrapped: XRegExp(`^(?<id>.*?)\\.wrapped:(?<name>[a-zA-Z_][a-zA-Z_0-9]*)$`, 'x'),
   solid: XRegExp(`^(?<core>.*?)_solid$`),
   event_property: XRegExp(`^ezp:property:(?<key>.*?)$`),
-  operator: XRegExp(`^[+\\-/%*@<>&^|=]$`),
+  operator: XRegExp(`^[+\\-/%*@<>&^|=#]$`),
+  comment: XRegExp(`^(?<value>[^\\r\\n]*)`),
 }
 
 /*

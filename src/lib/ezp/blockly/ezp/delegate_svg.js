@@ -92,20 +92,24 @@ ezP.DelegateSvg.Manager.makeSubclass = function(key, model, parent, owner) {
   if (goog.isFunction(model)) {
     model = model()
   }
-  owner = owner
-  || (ezP.T3.Expr[key]? ezP.DelegateSvg.Expr: ezP.DelegateSvg.Stmt)
+  owner = owner 
+  || ezP.T3.Expr[key] && ezP.DelegateSvg.Expr
+  || ezP.T3.Stmt[key] && ezP.DelegateSvg.Stmt
   parent = parent
   || (model && model.inputs && model.inputs.list && ezP.DelegateSvg.List)
   || owner
   var Ctor = ezP.Delegate.Manager.makeSubclass_(key, model, parent, owner)
   ezP.Do.addClassProperty(Ctor, 'subtype')
-  // Next would be a shortcut, is it really necessary?
-  // Cleaner code ?
-  // Ctor.makeSubclass = function(key, model, owner) {
-  //   ezP.DelegateSvg.Manager.makeSubclass(key, model, Ctor, owner)
-  // }
   return Ctor
 }
+
+/**
+ * Subclass maker.
+ */
+ezP.DelegateSvg.makeSubclass = function(key, model, owner) {
+  return ezP.DelegateSvg.Manager.makeSubclass(key, model, ezP.DelegateSvg, owner)
+}
+
 
 /**
  * This is the shape used to draw the outline of a block
@@ -438,6 +442,40 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         if (p) {
           model[K] = p
         }
+      }
+      // comment for statements is managed separately
+      // we've got 2 fields, one for the symbol and one for the text
+      var key = ezP.Key.COMMENT
+      if ((D = inputModel[key])) {
+        // for now, just create the fields
+        field = new ezP.FieldInput('', function(txt) {
+          if (goog.isDef(txt)) {
+            var block = this.sourceBlock_
+            if (block) {
+              var ezp = block.ezp
+              var v = ezp.validateComment(block, txt)
+              return v && v.validated
+            }
+          }
+          return {validated: ''}
+        })
+        field.ezp.onEndEditing_ = function() {
+          var block = this.sourceBlock_
+          block.ezp.setComment(block, this.getValue())
+        }
+        field.placeholderText_ = ezP.Msg.Placeholder.COMMENT
+        field.ezp.css_class = 'ezp-code-comment'
+        field.setSourceBlock(block)
+        field.name = key
+        field.init()
+        model.fields[key] = field
+        key = ezP.Key.COMMENT_MARK
+        field = new ezP.FieldLabel('#')
+        field.ezp.css_class = 'ezp-code-reserved'
+        field.setSourceBlock(block)
+        field.name = key
+        field.init()
+        model.fields[key] = field
       }
     }
   }
@@ -916,6 +954,12 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   }
   if ((io.field = this.ui.fields.suffix)) {
     this.renderDrawField_(io)
+  }
+  if ((io.field = this.ui.fields.commentMark)) {
+    this.renderDrawField_(io)
+    if ((io.field = this.ui.fields.comment)) {
+      this.renderDrawField_(io)
+    }
   }
   io.cursorX += this.getPaddingRight(block)
   this.minWidth = block.width = Math.max(block.width, io.cursorX)

@@ -25,11 +25,68 @@ goog.require('ezP.DelegateSvg.Operator')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt = function (prototypeName) {
-  ezP.DelegateSvg.Stmt.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Stmt, ezP.DelegateSvg)
+ezP.DelegateSvg.makeSubclass('Stmt', {
+  inputs: {
+    comment: {
+      value: '',
+      display: false,
+    }
+  }
+})
 ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.DelegateSvg.Stmt, true)
+
+ezP.Do.addInstanceProperty(ezP.DelegateSvg.Stmt, ezP.Key.COMMENT)
+ezP.Do.addInstanceProperty(ezP.DelegateSvg.Stmt, ezP.Key.COMMENT_SHOW)
+
+/**
+ * Validate the comment property.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newComment
+ */
+ezP.DelegateSvg.Stmt.prototype.validateComment = function (block, newComment) {
+  return {validated: XRegExp.exec(newComment, ezP.XRE.comment).value || ''}
+}
+
+/**
+ * Initialize the comment property.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ */
+ezP.DelegateSvg.Stmt.prototype.initComment = function (block) {
+  this.setComment(block, '')
+}
+
+/**
+ * Synchronize the comment with the UI.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newSubtype
+ */
+ezP.DelegateSvg.Stmt.prototype.synchronizeComment = function (block, newComment) {
+  this.ui.fields.comment.setValue(newComment || '')
+}
+
+/**
+ * Initialize the show comment property.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ */
+ezP.DelegateSvg.Stmt.prototype.initCommentShow = function (block) {
+  this.setCommentShow(block, false)
+}
+
+/**
+ * Synchronize the comment show property with the UI.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {string} newCommentShow
+ */
+ezP.DelegateSvg.Stmt.prototype.synchronizeCommentShow = function (block, newCommentShow) {
+  this.ui.fields.commentMark.setVisible(!!newCommentShow)
+  this.ui.fields.comment.setVisible(!!newCommentShow)
+}
+
 
 /**
  * Initialize a block.
@@ -239,7 +296,7 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('pass_stmt', {
+ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.pass_stmt, {
   inputs: {
     i_1: {
       label: 'pass',
@@ -255,7 +312,7 @@ ezP.DelegateSvg.Manager.makeSubclass('pass_stmt', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('break_stmt', {
+ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.break_stmt, {
   inputs: {
     i_1: {
       label: 'break',
@@ -271,7 +328,7 @@ ezP.DelegateSvg.Manager.makeSubclass('break_stmt', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('continue_stmt', {
+ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.continue_stmt, {
   inputs: {
     i_1: {
       label: 'continue',
@@ -290,7 +347,7 @@ ezP.DelegateSvg.Manager.makeSubclass('continue_stmt', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('non_void_identifier_list', {
+ezP.DelegateSvg.Manager.makeSubclass(ezP.T3.Expr.non_void_identifier_list, {
   inputs: {
     list: {
       check: ezP.T3.Expr.Check.non_void_identifier_list,
@@ -307,7 +364,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_identifier_list', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('global_nonlocal_stmt', {
+ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.global_nonlocal_stmt, {
   inputs: {
     subtypes: ['global', 'nonlocal'],
     prefix: {
@@ -365,17 +422,7 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = 
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('comment_stmt', {
-  inputs: {
-    i_1: {
-      label: '# ',
-      css_class: 'ezp-code-reserved',
-    },
-    i_2: {
-      comment: '', // we cannot merge with i_1 due to css_class
-    },
-  },
-})
+ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.comment_stmt)
 
 /**
  * Initialize a block.
@@ -387,6 +434,16 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.preInitSvg = function (block) {
   ezP.DelegateSvg.Stmt.comment_stmt.superClass_.preInitSvg.call(this, block)
   goog.dom.removeNode(this.svgSharpGroup_)
   this.svgSharpGroup_ = undefined
+}
+
+/**
+ * For comment statements, the comment show is always true.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ # @override
+ */
+ezP.DelegateSvg.Stmt.prototype.getCommentShow = function (block) {
+  return true
 }
 
 /**
@@ -414,43 +471,11 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.isWhite = function (block) {
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
 the code.
+ * @override
  * @return None
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.setDisabled = function (block, yorn) {
   return
-}
-
-/**
- * Synchronize the subtype with the UI.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newSubtype
- */
-ezP.DelegateSvg.Stmt.comment_stmt.prototype.didChangeSubtype = function (block, newSubtype) {
-  var input = block.getInput(ezP.Key.COMMENT)
-  input.ezp.fields.comment.setValue(subtype || '')
-}
-
-/**
- * Validate the subtype.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} oldSubtype
- * @param {string} newSubtype
- */
-ezP.DelegateSvg.Stmt.comment_stmt.prototype.validateSubtype = function (block, newSubtype) {
-  ezP.DelegateSvg.Stmt.comment_stmt.superClass_.validateSubtype.call(this, block, newSubtype)
-  return  {validated: newSubtype}
-}
-
-/**
- * Show the editor for the given block.
- * @param {!Blockly.Block} block The block.
- * @private
- */
-ezP.DelegateSvg.Stmt.comment_stmt.prototype.showEditor = function (block) {
-  var input = block.getInput(ezP.Key.COMMENT)
-  return input.ezp.fields.comment.showEditor_()
 }
 
 /**
@@ -460,7 +485,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.showEditor = function (block) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('expression_stmt', {
+ezP.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
   inputs: {
     i_1: {
       key: ezP.Key.EXPRESSION,
@@ -477,7 +502,7 @@ ezP.DelegateSvg.Manager.makeSubclass('expression_stmt', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('docstring_top_stmt', {
+ezP.DelegateSvg.Stmt.makeSubclass('docstring_top_stmt', {
   inputs: {
     i_1: {
       wrap: ezP.T3.Expr.longliteral,
@@ -502,7 +527,7 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt
  *     type-specific functions for this block.
  * @constructor
  */
- ezP.DelegateSvg.Manager.makeSubclass('docstring_def_stmt', {
+ ezP.DelegateSvg.Stmt.makeSubclass('docstring_def_stmt', {
   inputs: {
     i_1: {
       wrap: ezP.T3.Expr.longliteral,
@@ -559,7 +584,7 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.S
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('del_stmt', {
+ezP.DelegateSvg.Stmt.makeSubclass('del_stmt', {
   inputs: {
     i_1: {
       key: ezP.Key.DEL,
@@ -577,7 +602,7 @@ ezP.DelegateSvg.Manager.makeSubclass('del_stmt', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('return_stmt', {
+ezP.DelegateSvg.Stmt.makeSubclass('return_stmt', {
   inputs: {
     i_1: {
       key: ezP.Key.RETURN,

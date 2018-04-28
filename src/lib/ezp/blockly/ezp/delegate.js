@@ -60,15 +60,17 @@ ezP.Mixin = function (constructor) {
  * @constructor
  */
 console.warn('Remove the model__ below, transition process')
-ezP.Delegate = function (prototypeName) {
+ezP.Delegate = function (block) {
   ezP.Delegate.superClass_.constructor.call(this)
-  this.properties = {}
+  this.properties = {}// will be removed
   this.errors = {}
   this.model__ = {
     inputs: {},
     output: {},
     statement: {},
   }
+  this.block_ = block
+  block.ezp = this
 }
 goog.inherits(ezP.Delegate, ezP.Helper)
 
@@ -181,9 +183,13 @@ ezP.Delegate.Manager = function () {
    * Registers the subclass too.
    @return the constructor created
    */
-  me.makeSubclass = function(key, model, parent, owner) {
-    var Ctor = owner[key] = function (prototypeName) {
-      Ctor.superClass_.constructor.call(this, prototypeName)
+  me.makeSubclass = function(key, model, parent, owner = undefined) {
+    if (key.indexOf('ezp:') >= 0) {
+      key = key.substring(4)
+    }
+    owner = owner || parent
+    var Ctor = owner[key] = function (block) {
+      Ctor.superClass_.constructor.call(this, block)
     }
     goog.inherits(Ctor, parent)
     Ctor.ezp = new ezP.Delegate.EzP(key)
@@ -228,16 +234,20 @@ ezP.Delegate.Manager = function () {
       }
       Ctor.model__ = model
     }
+    Ctor.makeSubclass = function(key, model, owner) {
+      return me.makeSubclass(key, model, Ctor, owner)
+    }
     return Ctor
   }
   /**
    * Delegate instance creator.
    * @param {?string} prototypeName Name of the language object containing
    */
-  me.create = function (prototypeName) {
-    var Ctor = Ctors[prototypeName]
-    goog.asserts.assert(Ctor, 'No delegate for '+prototypeName)
-    return new Ctor(prototypeName)
+  me.create = function (block) {
+    goog.asserts.assert(!goog.isString(block), 'CHANGE THAT!')
+    var Ctor = Ctors[block.type]
+    goog.asserts.assert(Ctor, 'No delegate for '+block.type)
+    return new Ctor(block)
   }
   /**
    * Get the Delegate constructor for the given prototype name.
@@ -281,7 +291,6 @@ ezP.Delegate.Manager = function () {
   me.registerDelegate_ = function (prototypeName, Ctor, key) {
     // console.log(prototypeName+' -> '+Ctor)
     Ctors[prototypeName] = Ctor
-    goog.asserts.assert(me.create(prototypeName), 'Registration failure: '+prototypeName)
     // cache all the input, output and statement data at the prototype level
     prepareDelegate(Ctor, key)
     Ctor.ezp.types.push(prototypeName)
@@ -386,10 +395,12 @@ ezP.Delegate.addInstanceProperty = function(Ctor, key) {
         }
       }
     }
-    var K = Ctor.ezp.properties[key].init
     return function(block) {
       init.call(this, block)
-      this[K].call(this, block)
+      var k
+      for (k in Ctor.ezp.Property) {
+        this.getProperty(block, k).get() // initialize as side effect
+      }
     }
   } ()
 }

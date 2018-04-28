@@ -293,7 +293,7 @@ ezP.DelegateSvg.Manager.makeSubclass('assignment_stmt', {
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
         validator: function(txt) {
           var block = this.sourceBlock_
-          if (block) {
+          if (block) { // which one comes first, validation or sourceBlock setup?
             var ezp = block.ezp
             var v = ezp.validateValue(block, goog.isDef(txt)? txt: this.getValue())
             return v && v.validated

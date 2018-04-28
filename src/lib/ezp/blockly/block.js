@@ -30,7 +30,8 @@ goog.forwardDeclare('ezP.T3.All')
  * @constructor
  */
 ezP.Block = function (workspace, prototypeName, optId) {
-  this.ezp = ezP.Delegate.Manager.create(prototypeName)
+  this.type = prototypeName
+  this.ezp = ezP.Delegate.Manager.create(this)
   ezP.Block.superClass_.constructor.call(this, workspace, prototypeName, optId)
 }
 goog.inherits(ezP.Block, Blockly.Block)
@@ -39,7 +40,7 @@ goog.inherits(ezP.Block, Blockly.Block)
  * Dispose the delegate too.
  * @param {number|string} colour HSV hue value, or #RRGGBB string.
  */
-ezP.Block.prototype.dispose = function (healStack) {
+ezP.Block.prototype.dispose = function(healStack) {
   if (this === Blockly.selected) {
     // this block was selected, select the block below or above before deletion
     //this does not work most probably because it is the wrong place

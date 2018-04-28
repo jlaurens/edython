@@ -24,11 +24,16 @@ goog.require('ezP.DelegateSvg.Expr')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List = function (prototypeName) {
-  ezP.DelegateSvg.List.superClass_.constructor.call(this, prototypeName)
-  this.model__.inputs.list = {}
-}
-goog.inherits(ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
+ezP.DelegateSvg.Expr.makeSubclass('List', {
+  inputs: {
+    list: {},
+  },
+}, ezP.DelegateSvg)
+// ezP.DelegateSvg.List = function (prototypeName) {
+//   ezP.DelegateSvg.List.superClass_.constructor.call(this, prototypeName)
+//   this.model__.inputs.list = {}
+// }
+// goog.inherits(ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
 /**
  * Will render the block.

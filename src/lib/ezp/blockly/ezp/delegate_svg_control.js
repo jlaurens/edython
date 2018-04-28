@@ -22,10 +22,11 @@ goog.require('ezP.DelegateSvg.Stmt')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Control = function (prototypeName) {
-  ezP.DelegateSvg.Control.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Control, ezP.DelegateSvg.Stmt)
+// ezP.DelegateSvg.Control = function (block) {
+//   ezP.DelegateSvg.Control.superClass_.constructor.call(this, block)
+// }
+// goog.inherits(ezP.DelegateSvg.Control, ezP.DelegateSvg.Stmt)
+ezP.DelegateSvg.Stmt.makeSubclass('Control', null, ezP.DelegateSvg)
 
 /**
  * Control block path.

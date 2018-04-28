@@ -44,6 +44,7 @@ ezP.Xml = {
   VALUE: 'value', // attribute name
   AS: 'as', // attribute name
   FROM: 'from', // attribute name
+  COMMENT: 'comment', // attribute name
 
   STATE: 'state', // attribute name
   LOCKED: 'locked', // attribute name
@@ -240,15 +241,15 @@ Blockly.Xml.domToBlock = function(xmlBlock, workspace) {
 ezP.Xml.savedDomToBlockHeadless_ = Blockly.Xml.domToBlockHeadless_
 Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
   var block = null
-  if (!xmlBlock.nodeName) {
-    return block
+  if (xmlBlock.nodeName) {
+    var prototypeName = xmlBlock.nodeName.toLowerCase();
+    if (prototypeName.indexOf('ezp:')<0) {
+      block = ezP.Xml.savedDomToBlockHeadless_(xmlBlock, workspace)
+    } else {
+      block = ezP.Xml.domToBlock(xmlBlock, workspace)
+    }
   }
-  var prototypeName = xmlBlock.nodeName.toLowerCase();
-  if (prototypeName.indexOf('ezp:')<0) {
-    return ezP.Xml.savedDomToBlockHeadless_(xmlBlock, workspace)
-  } else {
-    return ezP.Xml.domToBlock(xmlBlock, workspace)
-  }
+  return block
 }
 
 
@@ -318,11 +319,17 @@ ezP.Xml.blockToDom = function (block, optNoId) {
     }
     ezP.Xml.toDom(block, element, optNoId)
   }
+  // this is for the editor, not python
   if (block.ezp.locked_) {
     element.setAttribute(ezP.Xml.STATE, ezP.Xml.LOCKED)
   }
   if (block.ezp instanceof ezP.DelegateSvg.Expr && goog.isNull(element.getAttribute(ezP.Xml.INPUT))) {
     element.setAttribute(ezP.Xml.INPUT, '')
+  }
+  if (block.ezp instanceof ezP.DelegateSvg.Stmt) {
+    if (block.ezp.getCommentShow(block)) {
+      element.setAttribute(ezP.Xml.COMMENT, block.ezp.getComment(block) || '')
+    }
   }
   return element
 }
@@ -418,7 +425,7 @@ ezP.Xml.Literal.domToBlock = function (element, workspace) {
         var ezp = block.ezp
         ezp.setValue(block, text)
         || ezp.validateValue(block, text)
-        || ezp.setValidatedContent(block, text)
+        || ezp.setTrustedContent(block, text)
         return block
       }
     }
@@ -565,6 +572,13 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
  */
 ezP.Xml.fromDom = function (block, element) {
   var ezp = block.ezp
+  if (false && ezp instanceof ezP.DelegateSvg.Stmt) {
+    var comment = xmlBlock.getAttribute(ezP.Xml.COMMENT)
+    if (goog.isDefAndNotNull(comment)) {
+      ezp.setComment(block, comment)
+      ezp.setCommentShow(block, true)
+    }
+  }
   var controller = block.ezp
   if ((controller &&
     goog.isFunction(controller.fromDom)) ||
@@ -984,7 +998,7 @@ ezP.Xml.Call.fromDom = function(block, element) {
     if (text === '?') {
       text = ''
     }
-    ezp.setValue(block, text) || ezp.setValidatedValue(block, text)
+    ezp.setValue(block, text) || ezp.setTrustedValue(block, text)
     ezp.setVariant(block, 0)
   } else {
     ezP.Xml.Input.Named.fromDom(block, ezP.Key.PRIMARY, element)
@@ -1809,7 +1823,7 @@ ezP.DelegateSvg.Expr.slicing.prototype.fromDom = function (block, element) {
   if (text) {
     this.setVariant(block, 0)
     if (text === '?') {
-      block.ezp.setValidatedValue(block, '')
+      block.ezp.setTrustedValue(block, '')
     } else {
       block.ezp.setValue(block, text)
     }
@@ -1944,7 +1958,7 @@ ezP.DelegateSvg.Expr.term.prototype.fromDom = function (block, element) {
       newVariant = inputs.STAR_NAME
     }
   }
-  if (expected.indexOf(newVariant) < 0) {
+  if (expected && expected.indexOf(newVariant) < 0) {
     if (withDefinition) {
       newVariant = withAnnotation? inputs.NAME_ANNOTATION_DEFINITION: inputs.NAME_DEFINITION
     }
@@ -1952,7 +1966,7 @@ ezP.DelegateSvg.Expr.term.prototype.fromDom = function (block, element) {
       newVariant = withAnnotation? inputs.NAME_ANNOTATION: inputs.NAME
     }
   }
-  this.setValidatedVariant(block, newVariant)
+  this.setTrustedVariant(block, newVariant)
 }
 console.log('manage the conflicts/ bad data.')
 goog.require('ezP.DelegateSvg.Lambda')

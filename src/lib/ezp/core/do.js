@@ -6,7 +6,7 @@
  * License CeCILL-B
  */
 /**
- * @fileoverview Consolidators for various list blocks and proper_slice, for ezPython.
+ * @fileoverview Various utilities.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -436,7 +436,7 @@ ezP.Do.addInstanceProperty = function (Ctor, key, params) {
     set: 'set'+k,
     validate: 'validate'+k,
     synchronize: 'synchronize'+k,
-    setValidated: 'setValidated'+k,
+    setTrusted: 'setTrusted'+k,
     didChange: 'didChange'+k,
     _didChange: '_didChange'+k,
     willChange: 'willChange'+k,
@@ -512,7 +512,7 @@ ezP.Do.addInstanceProperty = function (Ctor, key, params) {
       delete holder.lock_didChange
     }
   }
-  p[Ks.setValidated] = function (block, newValue) {
+  p[Ks.setTrusted] = function (block, newValue) {
     var holder = this.properties
     holder = holder[key] || (holder[key] = {})
     var oldValue = holder.value
@@ -551,7 +551,7 @@ ezP.Do.addInstanceProperty = function (Ctor, key, params) {
       synchronize && synchronize.call(this, block, newValue || this[Ks.get].call(this, block))
       return false
     }
-    this[Ks.setValidated].call(this, block, newValue)
+    this[Ks.setTrusted].call(this, block, newValue)
     return true
   }
 }

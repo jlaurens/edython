@@ -256,12 +256,12 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.initProperties = function(block) {
   var modifier = field.getValue() || this.getModifiers(block)[0]
   var content = this.ui.i_1.fields.value.getValue() || ''
   if (this.getPossibleSubtype(block, modifier, content)) {
-    this.setValidatedModifier(block, modifier)
-    this.setValidatedContent(block, content)
+    this.setTrustedModifier(block, modifier)
+    this.setTrustedContent(block, content)
   } else {
-    this.setValidatedContent(block, content)
+    this.setTrustedContent(block, content)
     var modifiers = this.getModifiers(block)
-    for (var i = 0; i < modifiers.length;) {
+    for (var i = 0; i < modifiers.length; i++) {
       modifier = modifiers[i]
       if (this.setModifier(block, modifier)) {
         break

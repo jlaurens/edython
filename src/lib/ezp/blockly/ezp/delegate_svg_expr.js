@@ -25,10 +25,11 @@ goog.require('ezP.KeyHandler')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr = function (prototypeName) {
-  ezP.DelegateSvg.Expr.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Expr, ezP.DelegateSvg)
+ezP.DelegateSvg.makeSubclass('Expr')
+// ezP.DelegateSvg.Expr = function (prototypeName) {
+//   ezP.DelegateSvg.Expr.superClass_.constructor.call(this, prototypeName)
+// }
+// goog.inherits(ezP.DelegateSvg.Expr, ezP.DelegateSvg)
 
 // Default delegate for all expression blocks
 ezP.Delegate.Manager.registerAll(ezP.T3.Expr, ezP.DelegateSvg.Expr, true)

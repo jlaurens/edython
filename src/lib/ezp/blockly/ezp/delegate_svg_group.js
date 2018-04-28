@@ -23,12 +23,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Group = function (prototypeName) {
-  ezP.DelegateSvg.Group.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
-
-ezP.DelegateSvg.Group.model__ = {
+ezP.DelegateSvg.Stmt.makeSubclass('Group', {
   inputs: {
     suffix: {
       label: ':',
@@ -36,8 +31,12 @@ ezP.DelegateSvg.Group.model__ = {
   },
   statement: {
     key: ezP.Key.SUITE,
-  }
-}
+  },
+}, ezP.DelegateSvg)
+// ezP.DelegateSvg.Group = function (prototypeName) {
+//   ezP.DelegateSvg.Group.superClass_.constructor.call(this, prototypeName)
+// }
+// goog.inherits(ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
 
 /**
  * Block path.

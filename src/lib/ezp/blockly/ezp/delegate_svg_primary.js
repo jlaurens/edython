@@ -369,7 +369,7 @@ ezP.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
       ezP.Do.createSPAN('(…)', 'ezp-code'),
     )
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setValidatedValue(block, oldValue || '')
+      block.ezp.setTrustedValue(block, oldValue || '')
       block.ezp.setVariant(block, 0)
     })
     mgr.addChild(menuItem, true)
@@ -381,7 +381,7 @@ ezP.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
       ezP.Do.createSPAN('(…)', 'ezp-code'),
     )
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setValidatedValue(block, values[j])
+      block.ezp.setTrustedValue(block, values[j])
       block.ezp.setVariant(block, 2)
     })
     mgr.addChild(menuItem, true)
@@ -396,7 +396,7 @@ ezP.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
       ezP.Do.createSPAN('(…)', 'ezp-code'),
     )
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setValidatedValue(block, oldValue || '')
+      block.ezp.setTrustedValue(block, oldValue || '')
       block.ezp.setVariant(block, 1)
     })
     mgr.addChild(menuItem, true)
