@@ -474,24 +474,17 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_object', {
   data: {
     value: {
       all: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
+      default: 0,
     },
   },
   inputs: {
     i_1: {
       key: ezP.Key.VALUE,
-      label: 'True',
+      label: '',
       css_class: 'ezp-code-reserved',
     },
   },
 })
-
-/**
- * Initialize the value.
- * @param {!Blockly.Block} block to be initialized..
- */
-ezP.DelegateSvg.Expr.builtin_object.prototype.initValue = function(block) {
-  this.data.value.set(block.ezp.ui.i_1.fields.label.getValue())
-}
 
 /**
  * When the value did change.

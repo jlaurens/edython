@@ -19,6 +19,7 @@ goog.require('Blockly.Blocks')
 goog.require('ezP.T3')
 goog.require('ezP.Do')
 goog.forwardDeclare('ezP.Block')
+goog.require('ezP.Data')
 
 /**
  * Class for a Block Delegate.
@@ -32,23 +33,23 @@ console.warn('Remove the this.model__ below')
 ezP.Delegate = function (block) {
   ezP.Delegate.superClass_.constructor.call(this)
   this.errors = Object.create(null) // just a hash
-  this.properties = {}// will be removed
-  this.model__ = {
-    data: {},
-    inputs: {},
-    output: {},
-    statement: {},
-  }// will be removed
+  this.model_ = this.constructor.ezp.getModel()
   this.block_ = block
   block.ezp = this
-  this.data = Object.create(null) // just a hash
-  this.initData()
+  var data = this.data = Object.create(null) // just a hash
+  var dataModel = this.model_.data
+  for (var k in dataModel) {
+    if (ezP.Do.hasOwnProperty(dataModel, k)) {
+      data[k] = new ezP.Data(this, k, dataModel[k])
+    }
+  }
 }
 goog.inherits(ezP.Delegate, ezP.Helper)
 
 /**
  * Get the ezp namespace in the constructor.
  * Create one if it does not exist.
+ * Closure used.
  */
 ezP.Delegate.getCtorEzp = function() {
   // one (almost hidden) shared constructor
@@ -90,7 +91,7 @@ ezP.Delegate.Manager = function () {
     return ezp
   }
   /**
-   * Helper to initialize a block's input model.
+   * Helper to initialize a block's model.
    * to and from are tree.
    * Add to destination all the leafs from source.
    * @param {!Object} to  destination.
@@ -369,14 +370,6 @@ ezP.Delegate.prototype.consolidateType = function (block) {
   this.setupType(block)
 }
 
-
-/**
-* Init all the properties of the block.
-* @param {!Blockly.Block} block to be initialized.
-* @return undefined
-*/
-ezP.Delegate.prototype.initData = undefined
-
 ezP.Delegate.model__ = {
   data: {
     modifier: {},
@@ -384,6 +377,41 @@ ezP.Delegate.model__ = {
     value: {},
     variant: {},
   },
+}
+
+/**
+ * Initialize the data.
+ * if the data model contains an intializer, use it,
+ * otherwise send an init message to all the data controllers.
+ */
+ezP.Delegate.prototype.initData = function() {
+  var data = this.data
+  for (var k in data) {
+    data[k].ui = this.ui
+  }
+  var init = this.getModel().initData
+  if (goog.isFunction(init)) {
+    init.call(this)
+    return
+  }
+  var data = this.data
+  for (var k in data) {
+    data[k].init()
+  }
+  this.synchronizeData()
+}
+
+/**
+ * Synchronize the data to the UI.
+ * Sends a `synchronize` message to all data controllers.
+ * May be used at the end of an initialization process
+ * where we use only data's `internalSet` method.
+ */
+ezP.Delegate.prototype.synchronizeData = function() {
+  var data = this.data
+  for (var k in data) {
+    data[k].synchronize(data[k].get())
+  }
 }
 
 /**
@@ -1053,24 +1081,3 @@ ezP.Delegate.prototype.removeError = function (block, key) {
   delete this.errors[key]
 }
 
-goog.require('ezP.Data')
-
-/**
- * Init the data from the model.
- * Message sent at the end of the construction.
- * Creates a `fooData` property pointing to an `ezP.Data` instance
- * for each entry `foo` in the data model.
- * For ezPython.
- */
-ezP.Delegate.prototype.initData = function () {
-  var dataModel = this.getModel().data
-  var data = this.data
-  for (var k in dataModel) {
-    if (ezP.Do.hasOwnProperty(dataModel, k)) {
-      if (data[k]) {
-        continue
-      }
-      data[k] = new ezP.Data(this, k, dataModel[k])
-    }
-  }
-}

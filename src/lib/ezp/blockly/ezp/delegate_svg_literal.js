@@ -26,7 +26,9 @@ goog.provide('ezP.DelegateSvg.Expr.numberliteral')
 */
 ezP.DelegateSvg.Expr.makeSubclass('Literal', {
   data: {
-    content: {},
+    content: {
+      default: '',
+    },
   }
 }, ezP.DelegateSvg)
 
@@ -52,6 +54,7 @@ ezP.DelegateSvg.Literal.makeSubclass('numberliteral', {
   data: {
     subtype: {
       all: [ezP.T3.Expr.integer, ezP.T3.Expr.floatnumber, ezP.T3.Expr.imagnumber],
+      default: 0,
     },
   },
   inputs: { 
@@ -162,14 +165,17 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
   data: {
     subtype: {
       all:[ezP.T3.Expr.shortstringliteral, ezP.T3.Expr.shortbytesliteral],
+      default: 0,
     },
     variant: {
       all: ["'", '"'],
+      default: 0,
     },
     modifier: {
       all: ['', 'r', 'u', 'R', 'U', 'f', 'F',
     'fr', 'Fr', 'fR', 'FR', 'rf', 'rF', 'Rf', 'RF',
     'b', 'B', 'br', 'Br', 'bR', 'BR', 'rb', 'rB', 'Rb', 'RB'],
+      default: 0,
     },
   },
   inputs: {
@@ -470,9 +476,11 @@ ezP.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
   data: {
     subtype: {
       all: [ezP.T3.Expr.longstringliteral, ezP.T3.Expr.longbytesliteral],
+      default: 0,
     },
     variant: {
       all: ["'''", '"""'],
+      default: 0,
     },
   },
   output: {

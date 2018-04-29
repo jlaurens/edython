@@ -191,7 +191,7 @@ ezP.XRE = {
     (?<delimiter> ')
     (?<content>
       (?:[\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF]|
-        \\\\[\\x0A\\x0D\\x20-\\uFFFF])*?
+        \\\\[\\x0A\\x0D\\x20-\\uFFFF])*
     )
     \\k<delimiter>$`, 'x'),
   shortstringliteralDouble: XRegExp(
@@ -199,7 +199,7 @@ ezP.XRE = {
     (?<delimiter> ")
     (?<content>
       (?:[\\x20\\x21\\x23-\\x5B\\x5D-\\uFFFF]|
-        \\\\[\\x0A\\x0D\\x20-\\uFFFF])*?
+        \\\\[\\x0A\\x0D\\x20-\\uFFFF])*
     )
     \\k<delimiter>$`, 'x'),
   longstringliteralSingle: XRegExp(
@@ -207,9 +207,7 @@ ezP.XRE = {
     (?<delimiter> (?<del> '){3})
     (?<content>
       (?:[\\x0A\\x0D\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF]|
-        \\\\[\\x0A\\x0D\\x20-\\uFFFF]|
-        \\k<del>{1,2}(?!\\k<del>)|
-        \\k<del>{1,2}(?=\\k<delimiter>$))*?
+        \\\\[\\x0A\\x0D\\x20-\\uFFFF])*
     )
     \\k<delimiter>$`, 'x'),
   longstringliteralDouble: XRegExp(
@@ -217,9 +215,7 @@ ezP.XRE = {
     (?<delimiter> (?<del> "){3})
     (?<content>
       (?:[\\x0A\\x0D\\x20\\x21\\x23-\\x5B\\x5D-\\uFFFF]|
-        \\\\[\\x0A\\x0D\\x20-\\uFFFF]|
-        \\k<del>{1,2}(?!\\k<del>)|
-        \\k<del>{1,2}(?=\\k<delimiter>$))*?
+        \\\\[\\x0A\\x0D\\x20-\\uFFFF])*
     )
     \\k<delimiter>$`, 'x'),
   shortbytesliteralSingle: XRegExp(

@@ -28,16 +28,81 @@ goog.require('ezP.Style')
 ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
   var D = {
     data: {
-      alias: {}, // new
+      value: {
+        default: '',
+        validate: function (newValue) {
+          var subtype = ezP.Do.typeOfString(newValue)
+          if (subtype) {
+            var expected = this.model.bySubtype[subtype]
+            if (expected && (expected.indexOf(this.data.variant.get()) >= 0)) {
+              return {validated: newValue}
+            }
+          }
+          return null
+        },
+        synchronize: function (newValue) {
+          this.ui.i_1.fields.value.setValue(newValue || '')
+        },
+      },
+      alias: {
+        default: '',
+        synchronize: function (block, newAlias) {
+          this.ui.i_4.fields.alias.setValue(newAlias || '')
+        },
+        validate: function (newAlias) {
+          var subtype = ezP.Do.typeOfString(newAlias)
+          return (subtype === ezP.T3.Expr.identifier) && {validated: newAlias} || null
+        }
+      }, // new
       modifier: {
         all: ['', '*', '**'],
+        default: 0,
       },
       subtype: {
         all: [ezP.T3.Expr.identifier,
         ezP.T3.Expr.dotted_name,
         ezP.T3.Expr.parent_module],
+        default: 0,
       },
-      variant: {},
+      variant: {
+        default: 0,
+        validate: function (newVariant) {
+          // this may be called very early
+          var variants = this.getAll()
+          if (variants.indexOf(newVariant) < 0) {
+            return null
+          }
+          var model = this.model
+          // simple case
+          if (newVariant === model.STAR) {
+            return {validated: newVariant}
+          }
+          // We won't change the variant if the subtype won't fit.
+          var subtype = this.data.subtype.get()
+          if (subtype) {
+            var expected = model.bySubtype[subtype]
+            if (expected) {
+              return {validated: expected.indexOf(newVariant) < 0? expected[0]: newVariant}
+            }
+            return {validated: variants[0]}   
+          }
+          return {validated: newVariant}
+        },
+        synchronize: function(newVariant) {
+          var model = this.model
+          this.setInputDisabled(this.ui.i_1.input, newVariant === model.STAR)
+          this.setInputDisabled(this.ui.i_2.input, newVariant !== model.NAME_ANNOTATION &&
+          newVariant !== model.STAR_NAME_ANNOTATION &&
+          newVariant !== model.NAME_ANNOTATION_DEFINITION)
+          this.setInputDisabled(this.ui.i_3.input, newVariant !== model.NAME_DEFINITION &&
+          newVariant !== model.NAME_ANNOTATION_DEFINITION)
+          this.setInputDisabled(this.ui.i_4.input, newVariant !== model.NAME_ALIAS)
+          var field = this.ui.fields.modifier
+          var newModifier = newVariant === model.STAR || newVariant === model.STAR_NAME || newVariant === model.STAR_NAME_ANNOTATION? '*': (newVariant === model.STAR_STAR_NAME? '**': '')
+          field.setValue(newModifier)
+          field.setVisible(newModifier.length>0)
+        },
+      },
     },
     inputs: {
       modifier: {
@@ -50,12 +115,8 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
           value: '',
           placeholder: ezP.Msg.Placeholder.TERM,
           validator: function(txt) {
-            var block = this.sourceBlock_
-            if (block) {
-              var ezp = block.ezp
-              var v = ezp.validateValue(block, goog.isDef(txt)? txt: this.getValue())
-              return v && v.validated
-            }
+            var v = this.sourceBlock_.ezp.data.value.validate(goog.isDef(txt)? txt: this.getValue())
+            return v && v.validated
           },
           onEndEditing: function () {
             var block = this.sourceBlock_
@@ -86,28 +147,22 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
           value: '',
           placeholder: ezP.Msg.Placeholder.NAME_ALIAS,
           validator: function(txt) {
-            var block = this.sourceBlock_
-            if (block) {
-              var ezp = block.ezp
-              var v = ezp.validateAlias(block, goog.isDef(txt)? txt: this.getValue())
-              return v && v.validated
-            }
+            var v = this.sourceBlock_.ezp.data.alias.validate(goog.isDef(txt)? txt: this.getValue())
+            return v && v.validated
           },
           onEndEditing: function () {
-            var block = this.sourceBlock_
-            var ezp = block.ezp
-            ezp.data.alias.set(this.getValue.get())
+            this.sourceBlock_.ezp.data.alias.set(this.getValue.get())
           },
         },
       },
     },
     output: {
       didConnect: function(oldTargetConnection, oldConnectionn) {
-        // `this` is a connection's delegate
+        // `this` is a connection
         var targetC8n = this.targetConnection
         var source = targetC8n.sourceBlock_
         if (source.ezp instanceof ezP.DelegateSvg.List) {
-
+          // do nothing ?
         } else {
           for (var i = 0, input;(input = source.inputList[i++]);) {
             if (input.connection === targetC8n) {
@@ -143,35 +198,6 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
 })
 
 /**
- * Init the alias in the properties.
- * For that blocks, the variant is a set of flags to control which input should be visible.
- * @param {!Blockly.Block} block to be initialized.
- */
-ezP.DelegateSvg.Expr.term.prototype.initAlias = function (block) {
-  this.data.alias.set('')
-}
-
-/**
- * Validate the alias in the properties.
- * For that blocks, the variant is a set of flags to control which input should be visible.
- * @param {!Blockly.Block} block to be initialized.
- * @param {string} newAlias
- * @return an object when validated, undefined otherwise.
- */
-ezP.DelegateSvg.Expr.term.prototype.validateAlias = function (block, newAlias) {
-  var subtype = ezP.Do.typeOfString(newAlias)
-  return (subtype === ezP.T3.Expr.identifier) && {validated: newAlias} || null
-}
-/**
- * Synchronize the value with the ui.
- * @param {!Blockly.Block} block to be initialized.
- * @param {string} newValue
- */
-ezP.DelegateSvg.Expr.term.prototype.synchronizeAlias = function (block, newAlias) {
-  this.ui.i_4.fields.alias.setValue(newAlias || '')
-}
-
-/**
  * Some block should not be wrapped.
  * Default implementation returns false
  * @param {!Block} block.
@@ -179,85 +205,6 @@ ezP.DelegateSvg.Expr.term.prototype.synchronizeAlias = function (block, newAlias
  */
 ezP.DelegateSvg.Expr.term.prototype.noBlockWrapped = function (block) {
   return true
-}
-
-/**
- * Init the variant.
- * For that blocks, the variant is a set of flags to control which input should be visible.
- * @param {!Blockly.Block} block to be initialized.
- */
-ezP.DelegateSvg.Expr.term.prototype.initVariant = function (block) {
-  this.data.variant.setTrusted(0)
-}
-
-/**
- * Validates the new variant.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newVariant
- * @return true if newVariant is acceptable, false otherwise
- */
-ezP.DelegateSvg.Expr.term.prototype.validateVariant = function (block, newVariant) {
-  var variants = this.data.variant.getAll()
-  if (variants.indexOf(newVariant) < 0) {
-    return null
-  }
-  var dataVariant = this.data.variant
-  // simple case
-  if (newVariant === dataVariant.STAR) {
-    return {validated: newVariant}
-  }
-  // We won't change the variant if the subtype won't fit.
-  var subtype = this.data.subtype.get()
-  var expected = this.data.variant.bySubtype[subtype]
-  if (expected.indexOf(newVariant) < 0) {
-    return {validated: expected[0]}
-  }
-  return {validated: newVariant}
-}
-
-/**
- * Synchronize the variant with the ui.
- * @param {!Blockly.Block} block to be initialized.
- * @param {string} newVariant
- */
-ezP.DelegateSvg.Expr.term.prototype.synchronizeVariant = function(block, newVariant) {
-  var dataVariant = this.data.variant
-  this.setInputDisabled(block, this.ui.i_1.input, newVariant === dataVariant.STAR)
-  this.setInputDisabled(block, this.ui.i_2.input, newVariant !== dataVariant.NAME_ANNOTATION &&
-  newVariant !== dataVariant.STAR_NAME_ANNOTATION &&
-  newVariant !== dataVariant.NAME_ANNOTATION_DEFINITION)
-  this.setInputDisabled(block, this.ui.i_3.input, newVariant !== dataVariant.NAME_DEFINITION &&
-  newVariant !== dataVariant.NAME_ANNOTATION_DEFINITION)
-  this.setInputDisabled(block, this.ui.i_4.input, newVariant !== dataVariant.NAME_ALIAS)
-  var field = block.ezp.ui.fields.modifier
-  var newModifier = newVariant === dataVariant.STAR || newVariant === dataVariant.STAR_NAME || newVariant === dataVariant.STAR_NAME_ANNOTATION? '*': (newVariant === dataVariant.STAR_STAR_NAME? '**': '')
-  field.setValue(newModifier)
-  field.setVisible(newModifier.length>0)
-}
-
-/**
- * Initialize the value.
- * @param {!Blockly.Block} block to be initialized.
- */
-ezP.DelegateSvg.Expr.term.prototype.initValue = function (block) {
-  this.data.value.set(this.ui.i_1.fields.value.getValue() || '') || this.didChangeValue(block, undefined, this.data.value.get())
-  return
-}
-
-/**
- * Validates the new value.
- * The type must be one of `dotted_name` or `identifier`.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newValue
- * @return true if newValue is acceptable, false otherwise
- */
-ezP.DelegateSvg.Expr.term.prototype.validateValue = function (block, newValue) {
-  var subtype = ezP.Do.typeOfString(newValue)
-  var expected = this.data.variant.bySubtype[subtype]
-  var variant = this.data.variant.get()
-  return expected && expected.indexOf(variant) >= 0? {validated: newValue}: null
 }
 
 /**
@@ -270,15 +217,6 @@ ezP.DelegateSvg.Expr.term.prototype.didChangeValue = function (block, oldValue, 
   var subtype = newValue? ezP.Do.typeOfString(newValue): ezP.T3.Expr.identifier
   block.ezp.data.subtype.set(subtype)
   return
-}
-
-/**
- * Synchronize the value with the ui.
- * @param {!Blockly.Block} block to be initialized.
- * @param {string} newValue
- */
-ezP.DelegateSvg.Expr.term.prototype.synchronizeValue = function (block, newValue) {
-  this.ui.i_1.fields.value.setValue(newValue || '')
 }
 
 /**
@@ -321,6 +259,7 @@ ezP.DelegateSvg.Expr.term.prototype.showEditor = function (block) {
  * @constructor
  */
 ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
+  ezP.DelegateSvg.Expr.term.superClass_.consolidateType.call(this, block)
 /*
   * The possible types for the blocks are all expression types, namely
   // * expression_star ::= "*" expression
@@ -341,29 +280,28 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
   * (with parameter ::= identifier | parameter_solid)
   * (with module ::= dotted_name)
   */
-  var dataVariant = this.data.variant
   var variantData = this.data.variant
+  var model = variantData.model
   var variant = variantData.get()
   var subtype = this.data.subtype.get()
-  var subtypes = this.data.subtype.getAll()
-  var j = subtypes.indexOf(subtype)
+  var j = this.data.subtype.getAll().indexOf(subtype)
   var check
   if (subtype === ezP.T3.Expr.parent_module) {
     check = subtype
   } else {
     switch(variant) {
-      case variantData.NAME:
+      case model.NAME:
         check = subtype === ezP.T3.Expr.identifier?
         subtype: [ezP.T3.Expr.dotted_name, ezP.T3.Expr.attributeref, ]
       break
-      case variantData.STAR_STAR_NAME:
+      case model.STAR_STAR_NAME:
         // expression_star_star ::= "**" expression
         // parameter_star_star ::= "**" parameter
         check = subtype === ezP.T3.Expr.identifier?[ezP.T3.Expr.expression_star_star,
           ezP.T3.Expr.parameter_star_star]:
         [ezP.T3.Expr.expression_star_star]
       break
-      case variantData.STAR_NAME:
+      case model.STAR_NAME:
         // expression_star ::= "*" expression
         // parameter_star ::= "*" [parameter]
         // target_star ::= "*" target
@@ -377,35 +315,34 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
           ezP.T3.Expr.target_star,
           ezP.T3.Expr.star_expr,]
       break
-      case variantData.NAME_ANNOTATION:
+      case model.NAME_ANNOTATION:
         // parameter_solid ::= identifier ":" expression
         check = [ezP.T3.Expr.parameter_solid]
       break
-      case variantData.STAR_NAME_ANNOTATION:
+      case model.STAR_NAME_ANNOTATION:
        check = [ezP.T3.Expr.parameter_star]
       break
-      case variantData.NAME_ANNOTATION_DEFINITION:
+      case model.NAME_ANNOTATION_DEFINITION:
         // defparameter_solid ::= parameter "=" expression
         check = [ezP.T3.Expr.defparameter_solid,]
       break
-      case variantData.NAME_DEFINITION:
+      case model.NAME_DEFINITION:
         // defparameter_solid ::= parameter "=" expression
         // keyword_item ::= identifier "=" expression
         check = [ezP.T3.Expr.defparameter_solid,
           ezP.T3.Expr.keyword_item,]
       break
-      case variantData.NAME_ALIAS:
+      case model.NAME_ALIAS:
         // module_as_solid ::= module "as" identifier
         // import_identifier_as_solid ::= identifier "as" identifier
         check = subtype === ezP.T3.Expr.identifier? [ezP.T3.Expr.module_as_solid, ezP.T3.Expr.import_identifier_as_solid]: [ezP.T3.Expr.module_as_solid]
       break
-      case variantData.STAR:
+      case model.STAR:
         check = [ezP.T3.Expr.parameter_star]
       break
     }
   }
   block.outputConnection.setCheck(check)
-  ezP.DelegateSvg.Expr.term.superClass_.consolidateType.call(this, block)
 }
 
 /**

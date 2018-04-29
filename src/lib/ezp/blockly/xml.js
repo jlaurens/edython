@@ -35,19 +35,19 @@ goog.require('ezP.T3')
 goog.require('Blockly.Xml')
 
 ezP.Xml = {
-  INPUT: 'input', // attribute name
-  FLOW: 'flow', // attribute name
-  NEXT: 'next', // attribute name
-  DOTTED_NAME: 'dotted_name', // attribute name
-  NAME: 'name', // attribute name
-  MODIFIER: 'modifier', // attribute name
-  VALUE: 'value', // attribute name
-  AS: 'as', // attribute name
-  FROM: 'from', // attribute name
-  COMMENT: 'comment', // attribute name
+  INPUT: 'ezp:input', // attribute name
+  FLOW: 'ezp:flow', // attribute name
+  NEXT: 'ezp:next', // attribute name
+  DOTTED_NAME: 'ezp:dotted_name', // attribute name
+  NAME: 'ezp:name', // attribute name
+  MODIFIER: 'ezp:modifier', // attribute name
+  VALUE: 'ezp:value', // attribute name
+  AS: 'ezp:as', // attribute name
+  FROM: 'ezp:from', // attribute name
+  COMMENT: 'ezp:comment', // attribute name
 
-  STATE: 'state', // attribute name
-  LOCKED: 'locked', // attribute name
+  STATE: 'ezp:state', // attribute name
+  LOCKED: 'ezp:locked', // attribute name
   QUESTION: '?',
 
   LITERAL: 'ezp:literal',
@@ -492,18 +492,17 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
     if (goog.isArray(prototypeName)) {
       if (prototypeName.length === 1) {
         prototypeName = prototypeName[0]
-      } else {
-        var f = function() {
+      } else if (!(prototypeName = function() {
           var where = goog.isDefAndNotNull(xmlBlock.getAttribute(ezP.Xml.INPUT))? ezP.T3.Expr: ezP.T3.Stmt
           for (var i = 0; i < prototypeName.length; i++) {
             var candidate = prototypeName[i]
             var Ctor = ezP.DelegateSvg.Manager.get(candidate)
             if (Ctor && where[Ctor.ezp.key]) {
-              prototypeName = candidate
-              break
+              return candidate
             }
           }
-        } ()
+        } ())){
+        return block
       }
     }
     block = ezP.DelegateSvg.newBlockComplete(workspace, prototypeName, id)
@@ -1390,6 +1389,33 @@ ezP.Xml.namedListInputFromDom = function(block, name, element) {
   return false
 }
 
+goog.require('ezP.Data')
+
+/**
+ * Records the data as attribute.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Data.prototype.toDomAttribute = function (element) {
+  var value = this.get()
+  if (value && value.length) {
+    element.setAttribute(this.name, this.get())
+  }
+  return element
+}
+
+/**
+ * Records the data from the attribute.
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+ezP.Data.prototype.fromDomAttribute = function (element) {
+  var text = element.getAttribute(this.name)
+  if (goog.isDefAndNotNull(text)) {
+    this.set(text)
+  }
+}
+
 goog.provide('ezP.Xml.Value')
 
 /**
@@ -1411,7 +1437,9 @@ ezP.Xml.Value.toDom = function (block, element, optNoId) {
  */
 ezP.Xml.Value.fromDom = function (block, element) {
   var value = element.getAttribute('value')
-  block.ezp.data.value.set(value)
+  if (goog.isDefAndNotNull(value)) {
+    block.ezp.data.value.set(value)
+  }
 }
 
 goog.require('ezP.DelegateSvg.Expr')
@@ -1629,7 +1657,8 @@ ezP.DelegateSvg.Operator.prototype.xmlTagName = function (block) {
  * @override
  */
 ezP.Xml.Operator.toDom = function (block, element, optNoId) {
-  element.setAttribute(ezP.Xml.VALUE, block.ezp.data.value.get())
+  block.ezp.data.operator.toDomAttribute(element)
+  element.setAttribute(ezP.Xml.VALUE, block.ezp.data.operator.get())
   ezP.Xml.InputList.toDom(block, element, optNoId)
 }
 
@@ -1640,7 +1669,7 @@ ezP.Xml.Operator.toDom = function (block, element, optNoId) {
  * @override
  */
 ezP.Xml.Operator.fromDom = function (block, element) {
-  block.ezp.data.value.set(element.getAttribute(ezP.Xml.VALUE))
+  block.ezp.data.operator.fromDomAttribute(element)
   ezP.Xml.InputList.fromDom(block, element)
 }
 
@@ -1700,8 +1729,9 @@ goog.require('ezP.DelegateSvg.AugAssign')
  */
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.toDom = function (block, element, optNoId) {
   var variantData = this.data.variant
+  var model = variantData.model
   var variant = variantData.get()
-  var withTarget = ezP.Do.getVariantFlag(variant, variantData.Flag.TARGET)
+  var withTarget = ezP.Do.getVariantFlag(variant, model.TARGET)
   if (withTarget) {
     ezP.Xml.Input.Named.toDom(block, ezP.Key.TARGET, element, optNoId, true)
   } else {
@@ -1723,7 +1753,7 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.toDom = function (block
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.fromDom = function (block, element) {
   var variant = 0
   if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.TARGET, element, true)) {
-    variant = ezP.Do.makeVariantFlags(variant, this.data.variant.Flag.TARGET)
+    variant = ezP.Do.makeVariantFlags(variant, this.data.variant.model.TARGET)
   } else {
     var text = element.getAttribute(ezP.Key.VALUE)
     if (goog.isDefAndNotNull(text)) {
@@ -1737,7 +1767,7 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.fromDom = function (blo
     this.setNumberOperator(block, operator)
   } else if (bitwiseOperators.indexOf(operator) >= 0) {
     this.setBitwiseOperator(block, operator)
-    variant = ezP.Do.makeVariantFlags(variant, this.data.variant.Flag.BITWISE)
+    variant = ezP.Do.makeVariantFlags(variant, this.data.variant.model.BITWISE)
   }
   ezP.Xml.Input.Named.fromDom(block, ezP.Key.ARGUMENTS, element)
   this.data.variant.set(variant)
@@ -1931,7 +1961,10 @@ ezP.DelegateSvg.Expr.term.prototype.fromDom = function (block, element) {
     if (text !== '?') {
       block.ezp.data.value.set(text === '?'? '': text)
     }
+  } else {
+    block.ezp.data.value.set('')
   }
+  // text must be initialized
   text = element.getAttribute(ezP.Xml.AS)
   if (text) {
     withAlias = true
@@ -1947,25 +1980,25 @@ ezP.DelegateSvg.Expr.term.prototype.fromDom = function (block, element) {
   }
   var newVariant
   var subtype = this.data.subtype.get()
-  var variantData = this.data.variant
-  var expected = variantData.bySubtype[subtype]
+  var model = this.data.variant.model
+  var expected = model.bySubtype[subtype]
   if (modifier === '**') {
-    newVariant = variantData.STAR_STAR_NAME
+    newVariant = model.STAR_STAR_NAME
   } else if (modifier === '*') {
     if (withoutValue) {
-      newVariant = variantData.STAR
+      newVariant = model.STAR
     } else if (withAnnotation) {
-      newVariant = variantData.STAR_NAME_ANNOTATION
+      newVariant = model.STAR_NAME_ANNOTATION
     } else {
-      newVariant = variantData.STAR_NAME
+      newVariant = model.STAR_NAME
     }
   }
   if (expected && expected.indexOf(newVariant) < 0) {
     if (withDefinition) {
-      newVariant = withAnnotation? variantData.NAME_ANNOTATION_DEFINITION: variantData.NAME_DEFINITION
+      newVariant = withAnnotation? model.NAME_ANNOTATION_DEFINITION: model.NAME_DEFINITION
     }
     if (expected.indexOf(newVariant) < 0) {
-      newVariant = withAnnotation? variantData.NAME_ANNOTATION: variantData.NAME
+      newVariant = withAnnotation? model.NAME_ANNOTATION: model.NAME
     }
   }
   this.data.variant.setTrusted(newVariant)

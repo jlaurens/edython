@@ -288,6 +288,9 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     subtype: {
       all: [ezP.T3.Expr.identifier, ezP.T3.Expr.dotted_name, ],
     },
+    variant: {
+      default: 0,
+    }
   },
   inputs: {
     i_1: {
@@ -329,17 +332,6 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
   }
 })
 
-
-/**
- * Init the variant.
- * For that blocks, the variant is a set of flags to control which input should be visible.
- * @param {!Blockly.Block} block to be initialized.
- */
-ezP.DelegateSvg.Stmt.assignment_stmt.prototype.initVariant = function (block) {
-  ezP.DelegateSvg.Expr.term.superClass_.initVariant.call(this, block)
-  this.data.variant.set(0)
-}
-
 /**
  * Validates the new variant.
  * For ezPython.
@@ -367,7 +359,7 @@ ezP.DelegateSvg.Stmt.assignment_stmt.prototype.synchronizeVariant = function(blo
  * @param {!Blockly.Block} block to be initialized.
  */
 ezP.DelegateSvg.Stmt.assignment_stmt.prototype.initValue = function (block) {
-  this.data.value.set(this.ui.i_1.fields.value.getValue() || '')
+  this.data.value.internalSet(this.ui.i_1.fields.value.getValue() || '')
   return
 }
 
@@ -587,7 +579,8 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.validateVariant = funct
  */
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.didChangeVariant = function (block, oldVariant, newVariant) {
   var variantData = this.data.variant
-  var withBitwise = ezP.Do.getVariantFlag(variantData.get(), variantData.Flag.BITWISE)
+  var model = variantData.model
+  var withBitwise = ezP.Do.getVariantFlag(variantData.get(), model.BITWISE)
   this.data.operator.set(withBitwise? this.data.bitwiseOperator.get(): this.data.numberOperator.get())
 }
 
@@ -599,7 +592,8 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.didChangeVariant = func
  */
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.synchronizeVariant = function (block, newVariant) {
   var variantData = this.data.variant
-  var withTarget = ezP.Do.getVariantFlag(variantData.get(), variantData.Flag.TARGET)
+  var model = variantData.model
+  var withTarget = ezP.Do.getVariantFlag(variantData.get(), model.TARGET)
   this.setInputDisabled(block, this.ui.i_1.input, withTarget)
   this.setInputDisabled(block, this.ui.i_2.input, !withTarget)
 }
@@ -625,8 +619,9 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.synchronizeOperator = f
  */
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.didChangeNumberOperator = function (block, oldOperator, newOperator) {
   var variantData = this.data.variant
+  var model = variantData.model
   var withBitwise = ezP.Do.getVariantFlag(variantData.get(), 
-  variantData.Flag.BITWISE)
+  model.BITWISE)
   if (!withBitwise) {
     this.data.operator.set(newOperator)
   }
@@ -640,7 +635,8 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.didChangeNumberOperator
  */
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.didChangeBitwiseOperator = function (block, oldOperator, newOperator) {
   var variantData = this.data.variant
-  var withBitwise = ezP.Do.getVariantFlag(variantData.get(), variantData.Flag.BITWISE)
+  var model = variantData.model
+  var withBitwise = ezP.Do.getVariantFlag(variantData.get(), model.BITWISE)
   if (withBitwise) {
     this.data.operator.set(newOperator)
   }
@@ -665,11 +661,12 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.synchronizeOperator = f
  */
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var variantData = this.data.variant
+  var model = variantData.model
   const current = variantData.get()
-  var withTarget = ezP.Do.getVariantFlag(current, variantData.Flag.TARGET)
+  var withTarget = ezP.Do.getVariantFlag(current, model.TARGET)
   var value = this.data.value.get()
   var operator = this.data.operator.get()
-  var withBitwise = ezP.Do.getVariantFlag(current, variantData.Flag.BITWISE)
+  var withBitwise = ezP.Do.getVariantFlag(current, model.BITWISE)
   var operators = withBitwise? 
   this.data.bitwiseOperator.getAll():
   this.data.numberOperator.getAll()
@@ -702,7 +699,7 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
       mgr.addChild(menuItem, true)
     }
   }
-  var variant = withBitwise? ezP.Do.makeVariantFlags(0, variantData.Flag.BITWISE): 0
+  var variant = withBitwise? ezP.Do.makeVariantFlags(0, model.BITWISE): 0
   var content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
     ezP.Do.createSPAN(value || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'),
@@ -713,13 +710,13 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
   goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
     goog.dom.createTextNode('… '+operator+' …'),
   )
-  F(ezP.Do.makeVariantFlags(variant, variantData.Flag.TARGET), content)
+  F(ezP.Do.makeVariantFlags(variant, model.TARGET), content)
  mgr.shouldSeparate()
   var content =
   ezP.Do.createSPAN(withBitwise? '+=, -=, /= …': '<<=, >>=, &= …', 'ezp-code')
   var menuItem = function(ezp) {
     return new ezP.MenuItem(content, function() {
-      ezp.data.variant.set(ezP.Do.makeVariantFlags(current, withBitwise? -ezp.data.variant.Flag.BITWISE: ezp.data.variant.Flag.BITWISE))
+      ezp.data.variant.set(ezP.Do.makeVariantFlags(current, withBitwise? -model.BITWISE: model.BITWISE))
   })
   } (this)
   mgr.addChild(menuItem, true)

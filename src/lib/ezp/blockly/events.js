@@ -136,7 +136,7 @@ goog.require('ezP.Data')
 * without validation but with undo and synchronization
 * @param {Object} newValue
 */
-ezP.Data.prototype.setTrusted = function (newValue) {
+ezP.Data.prototype.setTrusted_ = function (newValue) {
   var grouper = new ezP.Events.Grouper()
   var ezp = this.owner_
   var block = ezp.block_
@@ -151,7 +151,7 @@ ezP.Data.prototype.setTrusted = function (newValue) {
     }
     this.value_ = newValue
     this._didChange(oldValue, newValue)
-    this.synchronize && this.synchronize(newValue)
+    this.synchronize(newValue)
     ezp.consolidateType(block)
     ezp.skipRendering = old
     !old && block.render() // render now or possibly later ?

@@ -1215,13 +1215,13 @@ ezP.MenuManager.prototype.populate_wrap_alternate = function (block, key) {
  */
 ezP.MenuManager.prototype.populateProperties = function (block, key) {
   var ezp = block.ezp
-  var properties = ezp.getModel().inputs[key+'s']
+  var data = ezp.data[key]
+  var properties = data.getAll()
   if (properties && properties.length > 1) {
-    var k = key.charAt(0).toUpperCase() + key.slice(1)
-    var current = ezp['get' + k](block)
+    var current = data.get()
     var F = function(property) {
       var menuItem = new ezP.MenuItem(ezp.makeTitle(block, property, key), function() {
-        ezp['set' + k](block, property)
+        data.set(property)
       })
       menuItem.setEnabled(current != property)
       this.addChild(menuItem, true)

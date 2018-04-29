@@ -432,7 +432,8 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   }
   this.eventsInit_ = true;
   // wait until the end to set the subtype because it causes rendering
-  this.initData(block)
+  // now it is time to intialize the data
+  this.initData()
 }
 
 console.warn('implement async and await, see above awaitable and asyncable')
