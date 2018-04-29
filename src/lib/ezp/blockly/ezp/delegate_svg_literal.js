@@ -24,12 +24,11 @@ goog.provide('ezP.DelegateSvg.Expr.numberliteral')
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Literal = function (prototypeName) {
-  ezP.DelegateSvg.Literal.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg.Literal, ezP.DelegateSvg.Expr)
-
-ezP.Delegate.addInstanceProperty(ezP.DelegateSvg.Literal, ezP.Key.CONTENT)
+ezP.DelegateSvg.Expr.makeSubclass('Literal', {
+  data: {
+    content: {},
+  }
+}, ezP.DelegateSvg)
 
 /**
  * The xml type of this block, as it should appear in the saved data.
@@ -49,9 +48,13 @@ ezP.DelegateSvg.Literal.prototype.xmlType = function (block) {
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Manager.makeSubclass('numberliteral', {
-  inputs: {
-    subtypes: [ezP.T3.Expr.integer, ezP.T3.Expr.floatnumber, ezP.T3.Expr.imagnumber],
+ezP.DelegateSvg.Literal.makeSubclass('numberliteral', {
+  data: {
+    subtype: {
+      all: [ezP.T3.Expr.integer, ezP.T3.Expr.floatnumber, ezP.T3.Expr.imagnumber],
+    },
+  },
+  inputs: { 
     i_1: {
       number: {
         key:ezP.Key.VALUE,
@@ -70,7 +73,7 @@ ezP.DelegateSvg.Manager.makeSubclass('numberliteral', {
           var ezp = block.ezp
           var value = this.getValue()
           if (value.length) {
-            ezp.setValue(block, this.getValue())
+            ezp.data.value.set(this.getValue())
           }
         },
       },
@@ -79,14 +82,14 @@ ezP.DelegateSvg.Manager.makeSubclass('numberliteral', {
   output: {
     check: ezP.T3.Expr.integer,
   },
-}, ezP.DelegateSvg.Literal)
+})
 
 /**
  * Initialize the value.
  * @param {!Blockly.Block} block to be initialized.
  */
 ezP.DelegateSvg.Expr.numberliteral.prototype.initValue = function (block) {
-  this.setValue(block, this.ui.i_1.fields.value.getValue() || '0')
+  this.data.value.set(this.ui.i_1.fields.value.getValue() || '0')
 }
 
 /**
@@ -104,9 +107,8 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.synchronizeValue = function (block,
  * @param {string} newValue
  */
 ezP.DelegateSvg.Expr.numberliteral.prototype.didChangeValue = function (block, oldValue, newValue) {
-  ezP.DelegateSvg.Expr.numberliteral.superClass_.didChangeValue.call(this, block, oldValue, newValue)
   var type = newValue? ezP.Do.typeOfString(newValue): ezP.T3.Expr.integer
-  block.ezp.setSubtype(block, type)
+  block.ezp.data.subtype.set(type)
   return
 }
 
@@ -119,7 +121,7 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.didChangeValue = function (block, o
  * @return true if newValue is acceptable, false otherwise
  */
 ezP.DelegateSvg.Expr.numberliteral.prototype.validateValue = function (block, newValue) {
-  var subtypes = this.getSubtypes(block)
+  var subtypes = this.data.subtype.getAll()
   var subtype = ezP.Do.typeOfString(newValue)
   return (subtypes.indexOf(subtype)>= 0) && {validated: newValue} || null
 }
@@ -141,7 +143,7 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.showEditor = function (block) {
  * @constructor
  */
 ezP.DelegateSvg.Expr.numberliteral.prototype.consolidateType = function (block) {
-  var subtype = this.getSubtype(block)
+  var subtype = this.data.subtype.get()
   block.outputConnection.setCheck(subtype)
   ezP.DelegateSvg.Expr.term.superClass_.consolidateType.call(this, block)
 }
@@ -156,13 +158,21 @@ goog.provide('ezP.DelegateSvg.Expr.shortliteral')
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Manager.makeSubclass('shortliteral', {
-  inputs: {
-    subtypes: [ezP.T3.Expr.shortstringliteral, ezP.T3.Expr.shortbytesliteral],
-    variants: ["'", '"'],
-    modifiers: ['', 'r', 'u', 'R', 'U', 'f', 'F',
+ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
+  data: {
+    subtype: {
+      all:[ezP.T3.Expr.shortstringliteral, ezP.T3.Expr.shortbytesliteral],
+    },
+    variant: {
+      all: ["'", '"'],
+    },
+    modifier: {
+      all: ['', 'r', 'u', 'R', 'U', 'f', 'F',
     'fr', 'Fr', 'fR', 'FR', 'rf', 'rF', 'Rf', 'RF',
     'b', 'B', 'br', 'Br', 'bR', 'BR', 'rb', 'rB', 'Rb', 'RB'],
+    },
+  },
+  inputs: {
     prefix: {
       label: '',
       css_class: 'ezp-code-reserved',
@@ -178,7 +188,7 @@ ezP.DelegateSvg.Manager.makeSubclass('shortliteral', {
           if (this.placeholderText_) {
             return this.placeholderText_
           }
-          var subtype = ezp.getSubtype(block)
+          var subtype = ezp.data.subtype.get()
           return subtype === ezP.T3.Expr.shortbytesliteral || subtype === ezP.T3.Expr.shortbytesliteral?
           ezP.Msg.Placeholder.BYTES: ezP.Msg.Placeholder.STRING
         },
@@ -199,7 +209,7 @@ ezP.DelegateSvg.Manager.makeSubclass('shortliteral', {
           var block = this.sourceBlock_
           var ezp = block.ezp
           var value = this.getValue()
-          ezp.setContent(block, this.getValue())
+          ezp.data.content.set(this.getValue())
           ezp.ui.i_1.fields.end.setVisible(true)
         },
       },
@@ -210,7 +220,7 @@ ezP.DelegateSvg.Manager.makeSubclass('shortliteral', {
   output: {
     check: ezP.T3.Expr.shortstringliteral,
   }
-}, ezP.DelegateSvg.Literal)
+})
 
 /**
  * Get the possible subtype from both modifier and content.
@@ -220,7 +230,7 @@ ezP.DelegateSvg.Manager.makeSubclass('shortliteral', {
  * @return one of the two possible subtypes or undefined when the input does not fit.
  */
 ezP.DelegateSvg.Expr.shortliteral.prototype.getPossibleSubtype = function (block, modifier, content) {
-  var delimiter = this.getVariant(block)
+  var delimiter = this.data.variant.get()
   var value = ''+modifier+delimiter+content+delimiter
   return !!XRegExp.exec(value, ezP.XRE.shortbytesliteralSingle) && ezP.T3.Expr.shortbytesliteral ||
   !!XRegExp.exec(value, ezP.XRE.shortbytesliteralDouble) && ezP.T3.Expr.shortbytesliteral ||
@@ -233,37 +243,38 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.getPossibleSubtype = function (block
  * @param {!Blockly.Block} block the owner of the receiver
  */
 ezP.DelegateSvg.Expr.shortliteral.prototype.consolidateValue = function(block) {
-  var modifier = this.getModifier(block)
-  var delimiter = this.getVariant(block)
-  var content = this.getContent(block)
+  var modifier = this.data.modifier.get()
+  var delimiter = this.data.variant.get()
+  var content = this.data.content.get()
   if (goog.isDef(modifier) && goog.isDef(delimiter) && goog.isDef(content)) {
-    this.setValue(block, ''+modifier+delimiter+content+delimiter)
+    this.data.value.set(''+modifier+delimiter+content+delimiter)
   }
 }
 
+console.warn('Change the initData below')
 /**
  * Init all the properties of the block.
  * @param {!Blockly.Block} block to be initialized..
  */
-ezP.DelegateSvg.Expr.shortliteral.prototype.initData = function(block) {
+ezP.DelegateSvg.Expr.shortliteral.prototype.initXData = function(block) {
   // first the delimiters in the variant property
   var field = this.ui.i_1.fields.start
-  var variant = field.getValue() || this.getVariants(block)[0]
-  this.setVariant(block, variant)
+  var variant = field.getValue() || this.data.variant.getAll()[0]
+  this.data.variant.set(variant)
   // validating the modifier depends on the delimiter,
   // hence the variant, to be initialized
   var field = this.ui.fields.prefix
-  var modifier = field.getValue() || this.getModifiers(block)[0]
+  var modifier = field.getValue() || this.data.modifier.get()
   var content = this.ui.i_1.fields.value.getValue() || ''
   if (this.getPossibleSubtype(block, modifier, content)) {
-    this.setTrustedModifier(block, modifier)
-    this.setTrustedContent(block, content)
+    this.data.modifier.setTrusted(modifier)
+    this.data.content.setTrusted(content)
   } else {
-    this.setTrustedContent(block, content)
-    var modifiers = this.getModifiers(block)
+    this.data.content.setTrusted(content)
+    var modifiers = this.data.modifier.get()
     for (var i = 0; i < modifiers.length; i++) {
       modifier = modifiers[i]
-      if (this.setModifier(block, modifier)) {
+      if (this.data.modifier.set(modifier)) {
         break
       }
     }
@@ -281,10 +292,10 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.didChangeValue = function (block, ol
   var F = function(xre, type) {
     var m = XRegExp.exec(newValue, xre)
     if (m) {
-      block.ezp.setModifier(block, m.prefix||'')
-      block.ezp.setVariant(block, m.delimiter||"'")
-      block.ezp.setContent(block, m.content||'')
-      block.ezp.setSubtype(block, type)
+      block.ezp.data.modifier.set(m.prefix||'')
+      block.ezp.data.variant.set(m.delimiter||"'")
+      block.ezp.data.content.set(m.content||'')
+      block.ezp.data.subtype.set(type)
       return true  
     }
     return false
@@ -322,7 +333,7 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.synchronizeContent = function (block
  * @param {string} newContent
  */
 ezP.DelegateSvg.Expr.shortliteral.prototype.validateContent = function (block, newContent) {
-  var modifier = this.getModifier(block)
+  var modifier = this.data.modifier.get()
   return (!goog.isDef(modifier) || this.getPossibleSubtype(block, modifier, newContent)) && {validated: newContent} || null
 }
 
@@ -332,7 +343,7 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.validateContent = function (block, n
  * @param {!Blockly.Block} block The owner of the receiver.
  */
 ezP.DelegateSvg.Expr.shortliteral.prototype.validateModifier = function (block, newModifier) {
-  var content = this.getContent(block)
+  var content = this.data.content.get()
   return (!goog.isDef(content) || this.getPossibleSubtype(block, newModifier, content)) && {validated: newModifier}
 }
 
@@ -343,7 +354,7 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.validateModifier = function (block, 
  */
 ezP.DelegateSvg.Expr.shortliteral.prototype.synchronizeModifier = function (block) {
   var field = this.ui.fields.prefix
-  var modifier = this.getModifier(block)
+  var modifier = this.data.modifier.get()
   field.setValue(modifier)
   field.setVisible(!!modifier && !!modifier.length)
 }
@@ -356,7 +367,7 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.synchronizeModifier = function (bloc
 ezP.DelegateSvg.Expr.shortliteral.prototype.synchronizeVariant = function (block) {
   var start = this.ui.i_1.fields.start
   var end = this.ui.i_1.fields.end
-  var variant = this.getVariant(block)
+  var variant = this.data.variant.get()
   start.setValue(variant)
   end.setValue(variant)
 }
@@ -366,7 +377,7 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.synchronizeVariant = function (block
  * @param {!Blockly.Block} block the owner of the receiver
  */
 ezP.DelegateSvg.Expr.shortliteral.prototype.consolidateType = function(block) {
-  var type = this.getSubtype(block)
+  var type = this.data.subtype.get()
   block.outputConnection.setCheck([type])
 }
 
@@ -389,9 +400,9 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.makeTitle = function (block, variant
 ezP.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr) {
   mgr.populateProperties(block, 'variant')
   mgr.separate()
-  var current = this.getModifier(block).toLowerCase()
-  var delimiter = this.getVariant(block)
-  var content = this.getContent(block)
+  var current = this.data.modifier.get()
+  var delimiter = this.data.variant.get()
+  var content = this.data.content.get()
   var can_b = !!this.getPossibleSubtype(block, 'b', content)
   var can_f = !!this.getPossibleSubtype(block, 'f', content)
   var item = function(msg, modifier) {
@@ -401,7 +412,7 @@ ezP.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr)
         goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
       )
       return new ezP.MenuItem(title, function() {
-        block.ezp.setModifier(block, modifier)
+        block.ezp.data.modifier.set(modifier)
       })
     }
   }
@@ -455,15 +466,19 @@ goog.provide('ezP.DelegateSvg.Expr.longliteral')
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Manager.makeSubclass('longliteral', {
-  inputs: {
-    subtypes: [ezP.T3.Expr.longstringliteral, ezP.T3.Expr.longbytesliteral],
-    variants: ["'''", '"""'],
+ezP.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
+  data: {
+    subtype: {
+      all: [ezP.T3.Expr.longstringliteral, ezP.T3.Expr.longbytesliteral],
+    },
+    variant: {
+      all: ["'''", '"""'],
+    },
   },
   output: {
     check: ezP.T3.Expr.longstringliteral,
   },
-}, ezP.DelegateSvg.Expr.shortliteral)
+})
 
 /**
  * When the value did change.
@@ -475,10 +490,10 @@ ezP.DelegateSvg.Expr.longliteral.prototype.didChangeValue = function (block, old
   var F = function(xre, type) {
     var m = XRegExp.exec(newValue, xre)
     if (m) {
-      block.ezp.setModifier(block, m.prefix||'')
-      block.ezp.setVariant(block, m.delimiter||"'''")
-      block.ezp.setContent(block, m.content||'')
-      block.ezp.setSubtype(block, type)
+      block.ezp.data.modifier.set(m.prefix||'')
+      block.ezp.data.variant.set(m.delimiter||"'''")
+      block.ezp.data.content.set(m.content||'')
+      block.ezp.data.subtype.set(type)
       return true  
     }
     return false
@@ -503,7 +518,7 @@ ezP.DelegateSvg.Expr.longliteral.prototype.didChangeValue = function (block, old
  * @return one of the two possible subtypes or undefined when the input does not fit.
  */
 ezP.DelegateSvg.Expr.longliteral.prototype.getPossibleSubtype = function (block, modifier, content) {
-  var delimiter = this.getVariant(block)
+  var delimiter = this.data.variant.get()
   var value = ''+modifier+delimiter+content+delimiter
   return !!XRegExp.exec(value, ezP.XRE.longbytesliteralSingle) && ezP.T3.Expr.longbytesliteral ||
   !!XRegExp.exec(value, ezP.XRE.longbytesliteralDouble) && ezP.T3.Expr.longbytesliteral ||

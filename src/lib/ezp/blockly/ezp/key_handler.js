@@ -135,14 +135,14 @@ ezP.KeyHandler = function() {
     // if the selected block supports subtypes, then set it
     var B = Blockly.selected
     var c8n = ezP.SelectedConnection.get()
-    if (B && !c8n && B.ezp.setSubtype(B, shortcut)) {
+    if (B && !c8n && B.ezp.data.subtype.set(shortcut)) {
       return
     }
     var type = ezP.Do.typeOfString(shortcut)
     if (me.handleType(type, shortcut)) {
       return
     }
-    if (B && B.ezp.setSubtype(B, shortcut)) {
+    if (B && B.ezp.data.subtype.set(shortcut)) {
       return
     }
     if (current_.length) {
@@ -583,7 +583,7 @@ var Ks = {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
-      if (parent && (parent.type === ezP.T3.Expr.u_expr_solid) && parent.ezp.getSubtype(parent) === '-') {
+      if (parent && (parent.type === ezP.T3.Expr.u_expr_solid) && parent.ezp.data.subtype.get() === '-') {
         B.ezp.replaceBlock(B, parent)
         return
       }
@@ -598,7 +598,7 @@ var Ks = {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
-      if (parent && (parent.type === ezP.T3.Expr.u_expr_solid) && parent.ezp.getSubtype(parent) === '~') {
+      if (parent && (parent.type === ezP.T3.Expr.u_expr_solid) && parent.ezp.data.subtype.get() === '~') {
         B.ezp.replaceBlock(B, parent)
         return
       }

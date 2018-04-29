@@ -22,10 +22,6 @@ goog.require('ezP.DelegateSvg.Stmt')
  *     type-specific functions for this block.
  * @constructor
  */
-// ezP.DelegateSvg.Control = function (block) {
-//   ezP.DelegateSvg.Control.superClass_.constructor.call(this, block)
-// }
-// goog.inherits(ezP.DelegateSvg.Control, ezP.DelegateSvg.Stmt)
 ezP.DelegateSvg.Stmt.makeSubclass('Control', null, ezP.DelegateSvg)
 
 /**
@@ -155,13 +151,13 @@ ezP.DelegateSvg.Control.prototype.renderDrawSharp_ = function (io) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('start_stmt', {
+ezP.DelegateSvg.Control.makeSubclass('start_stmt', {
   statement: {
     previous: {
       check: null,
     },
   },
-}, ezP.DelegateSvg.Control)
+})
 
 ezP.DelegateSvg.Control.T3s = [
   ezP.T3.Stmt.start_stmt,

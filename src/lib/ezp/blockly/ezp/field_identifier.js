@@ -52,7 +52,7 @@ goog.inherits(ezP.FieldIdentifier, ezP.FieldInput)
 ezP.FieldIdentifier.prototype.setSourceBlock = function(block) {
   ezP.FieldIdentifier.superClass_.setSourceBlock.call(this, block)
   var workspace = this.sourceBlock_.workspace
-  if (workspace && !workspace.getVariable(this.getValue())) {
+  if (workspace && !workspace.getVariable(this.getValue() {
      workspace.createVariable(this.getValue())
   }
 };
@@ -130,8 +130,8 @@ console.warn('Fix code below: variable name replace all')
  */
 ezP.FieldIdentifier.prototype.onEndEditing_ = function () {
   var block = this.sourceBlock_
-  if (!block.ezp.setValue(block, this.getValue())) {
-    var value = block.ezp.getValue(block)
+  if (!block.ezp.data.value.set(this.getValue()) {}
+    var value = block.ezp.data.value.get()
     block.ezp.didChangeValue(block, value, value)
   }
 }

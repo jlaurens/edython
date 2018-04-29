@@ -25,13 +25,21 @@ goog.require('ezP.Style')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass(ezP.Key.TERM, function() {
+ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
   var D = {
-    inputs: {
-      modifiers: ['', '*', '**'],// don't change that order
-      subtypes: [ezP.T3.Expr.identifier,
+    data: {
+      alias: {}, // new
+      modifier: {
+        all: ['', '*', '**'],
+      },
+      subtype: {
+        all: [ezP.T3.Expr.identifier,
         ezP.T3.Expr.dotted_name,
-        ezP.T3.Expr.parent_module],// don't change that order
+        ezP.T3.Expr.parent_module],
+      },
+      variant: {},
+    },
+    inputs: {
       modifier: {
         label: '',
         css_class: 'ezp-code-reserved',
@@ -52,7 +60,7 @@ ezP.DelegateSvg.Manager.makeSubclass(ezP.Key.TERM, function() {
           onEndEditing: function () {
             var block = this.sourceBlock_
             var ezp = block.ezp
-            ezp.setValue(block, this.getValue())
+            ezp.data.value.set(this.getValue())
           },
         },
       },
@@ -88,7 +96,7 @@ ezP.DelegateSvg.Manager.makeSubclass(ezP.Key.TERM, function() {
           onEndEditing: function () {
             var block = this.sourceBlock_
             var ezp = block.ezp
-            ezp.setAlias(block, this.getValue())
+            ezp.data.alias.set(this.getValue.get())
           },
         },
       },
@@ -121,19 +129,18 @@ ezP.DelegateSvg.Manager.makeSubclass(ezP.Key.TERM, function() {
   }
   var keys = ['NAME', 'NAME_DEFINITION', 'NAME_ALIAS',
      'STAR', 'STAR_NAME', 'STAR_STAR_NAME', 'NAME_ANNOTATION', 'STAR_NAME_ANNOTATION', 'NAME_ANNOTATION_DEFINITION']
-  D.inputs.variants = []
+  var DD = D.data.variant
+  DD.all = []
   for (var i = 0; i < keys.length; i++) {
-    D.inputs[keys[i]] = i
-    D.inputs.variants.push(i)
+    DD[keys[i]] = i
+    DD.all.push(i)
   }
-  var DD = D.inputs.variantsBySubtype = {}
-  DD[ezP.T3.Expr.identifier] = D.inputs.variants
-  DD[ezP.T3.Expr.dotted_name] = [D.inputs.NAME, D.inputs.NAME_ALIAS, D.inputs.STAR_NAME, D.inputs.STAR]
-  DD[ezP.T3.Expr.parent_module] = [D.inputs.NAME,]
+  var DDD = DD.bySubtype = Object.create(null)
+  DDD[ezP.T3.Expr.identifier] = DD.all
+  DDD[ezP.T3.Expr.dotted_name] = [DD.NAME, DD.NAME_ALIAS, DD.STAR_NAME, DD.STAR]
+  DDD[ezP.T3.Expr.parent_module] = [DD.NAME,]
   return D
 })
-
-ezP.Delegate.addInstanceProperty(ezP.DelegateSvg.Expr.term, ezP.Key.ALIAS)
 
 /**
  * Init the alias in the properties.
@@ -141,7 +148,7 @@ ezP.Delegate.addInstanceProperty(ezP.DelegateSvg.Expr.term, ezP.Key.ALIAS)
  * @param {!Blockly.Block} block to be initialized.
  */
 ezP.DelegateSvg.Expr.term.prototype.initAlias = function (block) {
-  this.setAlias(block, '')
+  this.data.alias.set('')
 }
 
 /**
@@ -180,7 +187,7 @@ ezP.DelegateSvg.Expr.term.prototype.noBlockWrapped = function (block) {
  * @param {!Blockly.Block} block to be initialized.
  */
 ezP.DelegateSvg.Expr.term.prototype.initVariant = function (block) {
-  this.setTrustedVariant(block, 0)
+  this.data.variant.setTrusted(0)
 }
 
 /**
@@ -191,19 +198,18 @@ ezP.DelegateSvg.Expr.term.prototype.initVariant = function (block) {
  * @return true if newVariant is acceptable, false otherwise
  */
 ezP.DelegateSvg.Expr.term.prototype.validateVariant = function (block, newVariant) {
-  var variants = this.getVariants(block)
+  var variants = this.data.variant.getAll()
   if (variants.indexOf(newVariant) < 0) {
     return null
   }
-  var inputs = this.getModel().inputs
+  var dataVariant = this.data.variant
   // simple case
-  if (newVariant === inputs.STAR) {
+  if (newVariant === dataVariant.STAR) {
     return {validated: newVariant}
   }
   // We won't change the variant if the subtype won't fit.
-  var inputs = this.getModel().inputs 
-  var subtype = this.getSubtype(block)
-  var expected = inputs.variantsBySubtype[subtype]
+  var subtype = this.data.subtype.get()
+  var expected = this.data.variant.bySubtype[subtype]
   if (expected.indexOf(newVariant) < 0) {
     return {validated: expected[0]}
   }
@@ -216,16 +222,16 @@ ezP.DelegateSvg.Expr.term.prototype.validateVariant = function (block, newVarian
  * @param {string} newVariant
  */
 ezP.DelegateSvg.Expr.term.prototype.synchronizeVariant = function(block, newVariant) {
-  var inputs = this.getModel(block).inputs
-  this.setInputDisabled(block, this.ui.i_1.input, newVariant === inputs.STAR)
-  this.setInputDisabled(block, this.ui.i_2.input, newVariant !== inputs.NAME_ANNOTATION &&
-  newVariant !== inputs.STAR_NAME_ANNOTATION &&
-  newVariant !== inputs.NAME_ANNOTATION_DEFINITION)
-  this.setInputDisabled(block, this.ui.i_3.input, newVariant !== inputs.NAME_DEFINITION &&
-  newVariant !== inputs.NAME_ANNOTATION_DEFINITION)
-  this.setInputDisabled(block, this.ui.i_4.input, newVariant !== inputs.NAME_ALIAS)
+  var dataVariant = this.data.variant
+  this.setInputDisabled(block, this.ui.i_1.input, newVariant === dataVariant.STAR)
+  this.setInputDisabled(block, this.ui.i_2.input, newVariant !== dataVariant.NAME_ANNOTATION &&
+  newVariant !== dataVariant.STAR_NAME_ANNOTATION &&
+  newVariant !== dataVariant.NAME_ANNOTATION_DEFINITION)
+  this.setInputDisabled(block, this.ui.i_3.input, newVariant !== dataVariant.NAME_DEFINITION &&
+  newVariant !== dataVariant.NAME_ANNOTATION_DEFINITION)
+  this.setInputDisabled(block, this.ui.i_4.input, newVariant !== dataVariant.NAME_ALIAS)
   var field = block.ezp.ui.fields.modifier
-  var newModifier = newVariant === inputs.STAR || newVariant === inputs.STAR_NAME || newVariant === inputs.STAR_NAME_ANNOTATION? '*': (newVariant === inputs.STAR_STAR_NAME? '**': '')
+  var newModifier = newVariant === dataVariant.STAR || newVariant === dataVariant.STAR_NAME || newVariant === dataVariant.STAR_NAME_ANNOTATION? '*': (newVariant === dataVariant.STAR_STAR_NAME? '**': '')
   field.setValue(newModifier)
   field.setVisible(newModifier.length>0)
 }
@@ -235,7 +241,7 @@ ezP.DelegateSvg.Expr.term.prototype.synchronizeVariant = function(block, newVari
  * @param {!Blockly.Block} block to be initialized.
  */
 ezP.DelegateSvg.Expr.term.prototype.initValue = function (block) {
-  this.setValue(block, this.ui.i_1.fields.value.getValue() || '') || this.didChangeValue(block, undefined, this.getValue(block))
+  this.data.value.set(this.ui.i_1.fields.value.getValue() || '') || this.didChangeValue(block, undefined, this.data.value.get())
   return
 }
 
@@ -249,9 +255,8 @@ ezP.DelegateSvg.Expr.term.prototype.initValue = function (block) {
  */
 ezP.DelegateSvg.Expr.term.prototype.validateValue = function (block, newValue) {
   var subtype = ezP.Do.typeOfString(newValue)
-  var inputs = this.getModel().inputs
-  var expected = inputs.variantsBySubtype[subtype]
-  var variant = this.getVariant(block)
+  var expected = this.data.variant.bySubtype[subtype]
+  var variant = this.data.variant.get()
   return expected && expected.indexOf(variant) >= 0? {validated: newValue}: null
 }
 
@@ -263,7 +268,7 @@ ezP.DelegateSvg.Expr.term.prototype.validateValue = function (block, newValue) {
  */
 ezP.DelegateSvg.Expr.term.prototype.didChangeValue = function (block, oldValue, newValue) {
   var subtype = newValue? ezP.Do.typeOfString(newValue): ezP.T3.Expr.identifier
-  block.ezp.setSubtype(block, subtype)
+  block.ezp.data.subtype.set(subtype)
   return
 }
 
@@ -336,28 +341,29 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
   * (with parameter ::= identifier | parameter_solid)
   * (with module ::= dotted_name)
   */
-  var inputs = this.getModel().inputs
-  var variant = this.getVariant(block)
-  var subtype = this.getSubtype(block)
-  var subtypes = this.getSubtypes(block)
+  var dataVariant = this.data.variant
+  var variantData = this.data.variant
+  var variant = variantData.get()
+  var subtype = this.data.subtype.get()
+  var subtypes = this.data.subtype.getAll()
   var j = subtypes.indexOf(subtype)
   var check
   if (subtype === ezP.T3.Expr.parent_module) {
     check = subtype
   } else {
     switch(variant) {
-      case inputs.NAME:
+      case variantData.NAME:
         check = subtype === ezP.T3.Expr.identifier?
         subtype: [ezP.T3.Expr.dotted_name, ezP.T3.Expr.attributeref, ]
       break
-      case inputs.STAR_STAR_NAME:
+      case variantData.STAR_STAR_NAME:
         // expression_star_star ::= "**" expression
         // parameter_star_star ::= "**" parameter
         check = subtype === ezP.T3.Expr.identifier?[ezP.T3.Expr.expression_star_star,
           ezP.T3.Expr.parameter_star_star]:
         [ezP.T3.Expr.expression_star_star]
       break
-      case inputs.STAR_NAME:
+      case variantData.STAR_NAME:
         // expression_star ::= "*" expression
         // parameter_star ::= "*" [parameter]
         // target_star ::= "*" target
@@ -371,29 +377,29 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
           ezP.T3.Expr.target_star,
           ezP.T3.Expr.star_expr,]
       break
-      case inputs.NAME_ANNOTATION:
+      case variantData.NAME_ANNOTATION:
         // parameter_solid ::= identifier ":" expression
         check = [ezP.T3.Expr.parameter_solid]
       break
-      case inputs.STAR_NAME_ANNOTATION:
+      case variantData.STAR_NAME_ANNOTATION:
        check = [ezP.T3.Expr.parameter_star]
       break
-      case inputs.NAME_ANNOTATION_DEFINITION:
+      case variantData.NAME_ANNOTATION_DEFINITION:
         // defparameter_solid ::= parameter "=" expression
         check = [ezP.T3.Expr.defparameter_solid,]
       break
-      case inputs.NAME_DEFINITION:
+      case variantData.NAME_DEFINITION:
         // defparameter_solid ::= parameter "=" expression
         // keyword_item ::= identifier "=" expression
         check = [ezP.T3.Expr.defparameter_solid,
           ezP.T3.Expr.keyword_item,]
       break
-      case inputs.NAME_ALIAS:
+      case variantData.NAME_ALIAS:
         // module_as_solid ::= module "as" identifier
         // import_identifier_as_solid ::= identifier "as" identifier
         check = subtype === ezP.T3.Expr.identifier? [ezP.T3.Expr.module_as_solid, ezP.T3.Expr.import_identifier_as_solid]: [ezP.T3.Expr.module_as_solid]
       break
-      case inputs.STAR:
+      case variantData.STAR:
         check = [ezP.T3.Expr.parameter_star]
       break
     }
@@ -409,37 +415,37 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
  * @private
  */
 ezP.DelegateSvg.Expr.term.prototype.makeTitle = function (block, variant) {
+  var variantData = this.data.variant
   if (!goog.isDef(variant)) {
-    variant = this.getVariant(block)
+    variant = variantData.get()
   }
-  var inputs = this.getModel().inputs
   var args = [goog.dom.TagName.SPAN, null]
   switch(variant) {
-    case inputs.STAR_NAME:
-    case inputs.STAR_NAME_ANNOTATION:
-    case inputs.STAR:
+    case variantData.STAR_NAME:
+    case variantData.STAR_NAME_ANNOTATION:
+    case variantData.STAR:
     args.push(ezP.Do.createSPAN('*', 'ezp-code-reserved'))
     break
-    case inputs.STAR_STAR_NAME:
+    case variantData.STAR_STAR_NAME:
     args.push(ezP.Do.createSPAN('**', 'ezp-code-reserved'))
     break
   }
-  if (variant !== inputs.STAR) {
-    var value = this.getValue(block)
+  if (variant !== variantData.STAR) {
+    var value = this.data.value.get()
     args.push(ezP.Do.createSPAN(value || this.getPhantomValue(block) || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'))
     switch(variant) {
-      case inputs.NAME_ANNOTATION:
-      case inputs.STAR_NAME_ANNOTATION:
-      case inputs.NAME_ANNOTATION_DEFINITION:
+      case variantData.NAME_ANNOTATION:
+      case variantData.STAR_NAME_ANNOTATION:
+      case variantData.NAME_ANNOTATION_DEFINITION:
         args.push(ezP.Do.createSPAN(':', 'ezp-code-reserved'), ezP.Do.createSPAN(' …', 'ezp-code-placeholder'))
       break
     }
     switch(variant) {
-      case inputs.NAME_ANNOTATION_DEFINITION:
-      case inputs.NAME_DEFINITION:
+      case variantData.NAME_ANNOTATION_DEFINITION:
+      case variantData.NAME_DEFINITION:
         args.push(ezP.Do.createSPAN(' = ', 'ezp-code-reserved'), ezP.Do.createSPAN('…', 'ezp-code-placeholder'))
       break
-      case inputs.NAME_ALIAS:
+      case variantData.NAME_ALIAS:
         args.push(ezP.Do.createSPAN(' as ', 'ezp-code-reserved'), ezP.Do.createSPAN('…', 'ezp-code-placeholder'))
       break
     }
@@ -454,14 +460,14 @@ ezP.DelegateSvg.Expr.term.prototype.makeTitle = function (block, variant) {
  * @private
  */
 ezP.DelegateSvg.Expr.term.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var current = this.getVariant(block)
+  var current = this.data.variant.get()
   var F = function(variant) {
     if (variant !== current) {
       var title = block.ezp.makeTitle(block, variant)
       var menuItem = new ezP.MenuItem(title, function() {
         Blockly.Events.setGroup(true)
         try {
-          block.ezp.setVariant(block, variant)
+          block.ezp.data.variant.set(variant)
         } finally {
           Blockly.Events.setGroup(false)
         }
@@ -469,7 +475,7 @@ ezP.DelegateSvg.Expr.term.prototype.populateContextMenuFirst_ = function (block,
       mgr.addChild(menuItem, true)
     }
   }
-  var variants = this.getVariants(block)
+  var variants = this.data.variant.getAll()
   for (var i = 0; i < variants.length; i++) {
     F(variants[i])
   }

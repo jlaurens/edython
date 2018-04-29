@@ -62,10 +62,10 @@ Blockly.Events.Change.prototype.run = function(forward) {
       var m = XRegExp.exec(this.element, ezP.XRE.event_property)
       if (m) {
         switch(m.key) {
-          case 'subtype': block.ezp.setSubtype(block, value); break
-          case 'value': block.ezp.setValue(block, value); break
-          case 'modifier': block.ezp.setModifier(block, value); break
-          case 'variant': block.ezp.setVariant(block, value); break
+          case 'subtype': block.ezp.data.subtype.set(value); break
+          case 'value': block.ezp.data.value.set(value); break
+          case 'modifier': block.ezp.data.modifier.set(value); break
+          case 'variant': block.ezp.data.variant.set(value); break
           default:
           var k = 'set'+m.key.charAt(0).toUpperCase() + m.key.slice(1)
           var setter = block.ezp[k]
@@ -138,8 +138,8 @@ goog.require('ezP.Data')
 */
 ezP.Data.prototype.setTrusted = function (newValue) {
   var grouper = new ezP.Events.Grouper()
-  var block = this.block_
-  var ezp = block.ezp
+  var ezp = this.owner_
+  var block = ezp.block_
   var old = ezp.skipRendering
   try {
     ezp.skipRendering = true

@@ -23,14 +23,14 @@ goog.require('ezP.DelegateSvg.Group')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('try_part', {
+ezP.DelegateSvg.Group.makeSubclass('try_part', {
   inputs: {
     i_1: {
       dummy: 'try',
       css_class: 'ezp-code-reserved',
     },
   },
-}, ezP.DelegateSvg.Group)
+})
 
 /**
  * Class for a DelegateSvg, except_part block.
@@ -40,9 +40,13 @@ ezP.DelegateSvg.Manager.makeSubclass('try_part', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('except_part', {
+ezP.DelegateSvg.Group.makeSubclass('except_part', {
+  data: {
+    subtype: {
+      all: [null, ezP.Key.EXPRESSION, ezP.Key.AS],
+    }
+  },
   inputs: {
-    subtypes: [null, ezP.Key.EXPRESSION, ezP.Key.AS],
     prefix: {
       label: 'except',
       css_class: 'ezp-code-reserved',
@@ -60,7 +64,7 @@ ezP.DelegateSvg.Manager.makeSubclass('except_part', {
       hole_value: 'name',
     },
   },
-}, ezP.DelegateSvg.Group)
+})
 
 /**
  * Initialize a block.
@@ -69,7 +73,7 @@ ezP.DelegateSvg.Manager.makeSubclass('except_part', {
  */
 ezP.DelegateSvg.Stmt.except_part.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
   ezP.DelegateSvg.Stmt.except_part.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  var subtypes = this.getModel().inputs.subtypes
+  var subtypes = this.data.subtype.getAll()
   var F = function(k) {
     block.ezp.setupType(block, ezP.T3.Stmt[k])
     block.nextConnection.setCheck(ezP.T3.Stmt.Next[k])
@@ -88,11 +92,11 @@ ezP.DelegateSvg.Stmt.except_part.prototype.didChangeSubtype = function (block, o
  * @private
  */
 ezP.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var current = block.ezp.getSubtype(block)
-  var subtypes = this.getModel().inputs.subtypes
+  var current = block.ezp.data.subtype.get()
+  var subtypes = this.data.subtype.getAll()
   var F = function(content, k) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setSubtype(block, k)
+      block.ezp.data.subtype.set(k)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
@@ -125,14 +129,14 @@ ezP.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function 
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('finally_part', {
+ezP.DelegateSvg.Group.makeSubclass('finally_part', {
   inputs: {
     i_1: {
       dummy: 'finally',
       css_class: 'ezp-code-reserved',
     },
   },
-}, ezP.DelegateSvg.Group)
+})
 
 /**
  * Class for a DelegateSvg, raise_stmt.
@@ -141,9 +145,13 @@ ezP.DelegateSvg.Manager.makeSubclass('finally_part', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('raise_stmt', {
+ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
+  data: {
+    subtype: {
+      all: [null, ezP.Key.EXPRESSION, ezP.Key.FROM],
+    },
+  },
   inputs: {
-    subtypes: [null, ezP.Key.EXPRESSION, ezP.Key.FROM],
     prefix: {
       label: 'raise',
       css_class: 'ezp-code-reserved',
@@ -170,7 +178,7 @@ ezP.DelegateSvg.Manager.makeSubclass('raise_stmt', {
  */
 ezP.DelegateSvg.Stmt.raise_stmt.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
   ezP.DelegateSvg.Stmt.raise_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  var subtypes = this.getModel().inputs.subtypes
+  var subtypes = this.data.subtype.getAll()
   var i = subtypes.indexOf(newSubtype)
   block.ezp.setNamedInputDisabled(block, subtypes[1], i < 1)
   block.ezp.setNamedInputDisabled(block, subtypes[2], i < 2)
@@ -183,11 +191,11 @@ ezP.DelegateSvg.Stmt.raise_stmt.prototype.didChangeSubtype = function (block, ol
  * @private
  */
 ezP.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var current = block.ezp.getSubtype(block)
-  var subtypes = this.getModel().inputs.subtypes
+  var current = block.ezp.data.subtype.get()
+  var subtypes = this.data.subtype.getAll()
   var F = function(content, k) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setSubtype(block, k)
+      block.ezp.data.subtype.set(k)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
@@ -219,9 +227,13 @@ ezP.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('assert_stmt', {
+ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
+  data: {
+    subtype: {
+      all: [null, ezP.Key.EXPRESSION],
+    },
+  },
   inputs: {
-    subtypes: [null, ezP.Key.EXPRESSION],
     i_1: {
       label: 'assert',
       css_class: 'ezp-code-reserved',
@@ -260,10 +272,10 @@ ezP.DelegateSvg.Stmt.assert_stmt.prototype.didChangeSubtype = function (block, o
  * @private
  */
 ezP.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var current = block.ezp.getSubtype(block)
+  var current = block.ezp.data.subtype.get()
   var F = function(content, key) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setSubtype(block, key)
+      block.ezp.data.subtype.set(key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)

@@ -23,7 +23,7 @@ goog.require('ezP.DelegateSvg.Expr')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('comprehension', {
+ezP.DelegateSvg.Expr.makeSubclass('comprehension', {
   inputs: {
     i_1: {
       key: ezP.Key.EXPRESSION,
@@ -48,7 +48,7 @@ ezP.DelegateSvg.Manager.makeSubclass('comprehension', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('comp_for', {
+ezP.DelegateSvg.Expr.makeSubclass('comp_for', {
   inputs: {
     i_1: {
       key: ezP.Key.FOR,
@@ -74,7 +74,7 @@ ezP.DelegateSvg.Manager.makeSubclass('comp_for', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('comp_if', {
+ezP.DelegateSvg.Expr.makeSubclass('comp_if', {
   inputs: {
     i_1: {
       key: ezP.Key.IF,
@@ -95,7 +95,7 @@ ezP.DelegateSvg.Manager.makeSubclass('comp_if', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('comp_iter_list', {
+ezP.DelegateSvg.Expr.makeSubclass('comp_iter_list', {
   inputs: {
     list: {
       check: ezP.T3.Expr.Check.comp_iter,
@@ -114,7 +114,7 @@ ezP.DelegateSvg.Manager.makeSubclass('comp_iter_list', {
  * @constructor
  */
 // dict_comprehension ::= expression ":" expression comp_for
-ezP.DelegateSvg.Manager.makeSubclass('dict_comprehension', {
+ezP.DelegateSvg.Expr.makeSubclass('dict_comprehension', {
   inputs: {
     i_1: {
       insert: ezP.T3.Expr.key_datum_solid,
@@ -137,7 +137,7 @@ ezP.DelegateSvg.Manager.makeSubclass('dict_comprehension', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('key_datum_solid', {
+ezP.DelegateSvg.Expr.makeSubclass('key_datum_solid', {
   inputs: {
     i_1: {
       key: ezP.Key.KEY,
@@ -161,7 +161,7 @@ ezP.DelegateSvg.Manager.makeSubclass('key_datum_solid', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('generator_expression', {
+ezP.DelegateSvg.Expr.comprehension.makeSubclass('generator_expression', {
   inputs: {
     prefix: {
       label: '(',
@@ -170,7 +170,7 @@ ezP.DelegateSvg.Manager.makeSubclass('generator_expression', {
       label: ')',
     }
   },
-}, ezP.DelegateSvg.Expr.comprehension)
+}, ezP.DelegateSvg.Expr)
 
 ezP.DelegateSvg.Comprehension.T3s = [
   ezP.T3.Expr.comprehension,

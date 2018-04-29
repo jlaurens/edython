@@ -23,9 +23,13 @@ goog.require('ezP.DelegateSvg.Stmt')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('yield_expression', {
+ezP.DelegateSvg.Expr.makeSubclass('yield_expression', {
+  data: {
+    subtype: {
+      all: [null, ezP.Key.EXPRESSION, ezP.Key.FROM],
+    }
+  },
   inputs: {
-    subtypes: [null, ezP.Key.EXPRESSION, ezP.Key.FROM],
     prefix: {
       label: 'yield',
       css_class: 'ezp-code-reserved',
@@ -50,8 +54,7 @@ ezP.DelegateSvg.Manager.makeSubclass('yield_expression', {
  * @param {string} newSubtype
  */
 ezP.DelegateSvg.Expr.yield_expression.prototype.didChangeSubtype = function(block, oldSubtype, newSubtype) {
-  ezP.DelegateSvg.Expr.builtin_object.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  var subtypes = this.getModel().inputs.subtypes
+  var subtypes = this.data.subtype.getAll()
   var i = subtypes.indexOf(newSubtype)
   block.ezp.setNamedInputDisabled(block, subtypes[1], i != 1)
   block.ezp.setNamedInputDisabled(block, subtypes[2], i != 2)
@@ -63,7 +66,7 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.didChangeSubtype = function(bloc
  * For subclassers eventually
  */
 ezP.DelegateSvg.Expr.yield_expression.prototype.XtoDom = function (block, element, optNoId) {
-  var yorn = ezP.DelegateSvg.Expr.yield_expression.getFromInputDisabled(block)
+  var yorn = ezP.DelegateSvg.Expr.yield_expression.toDom(block, element, optNoId)
   if (yorn) {
     // create a list element
     var input = block.getInput(ezP.Key.LIST)
@@ -131,11 +134,11 @@ ezP.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (bloc
   if (block.ezp.locked_) {
     return
   }
-  var current = block.ezp.getSubtype(block)
-  var subtypes = this.getModel().inputs.subtypes
+  var current = this.data.subtype.get()
+  var subtypes = this.data.subtype.getAll()
   var F = function(content, k) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setSubtype(block, k)
+      block.ezp.data.subtype.set(k)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
@@ -175,7 +178,7 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = func
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('yield_atom', {
+ezP.DelegateSvg.Expr.makeSubclass('yield_atom', {
   inputs: {
     prefix: {
       label: '(',
@@ -197,7 +200,7 @@ ezP.DelegateSvg.Manager.makeSubclass('yield_atom', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('yield_stmt', {
+ezP.DelegateSvg.Stmt.makeSubclass('yield_stmt', {
   inputs: {
     insert: ezP.T3.Expr.yield_expression,
   }
@@ -211,7 +214,7 @@ ezP.DelegateSvg.Manager.makeSubclass('yield_stmt', {
  */
 ezP.DelegateSvg.Stmt.yield_stmt.prototype.didChangeSubtype = function(block, oldSubtype, newSubtype) {
   ezP.DelegateSvg.Stmt.yield_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  var subtypes = this.getModel().inputs.subtypes
+  var subtypes = this.data.subtype.getAll()
   var i = subtypes.indexOf(newSubtype)
   block.ezp.setNamedInputDisabled(block, subtypes[1], i != 1)
   block.ezp.setNamedInputDisabled(block, subtypes[2], i != 2)

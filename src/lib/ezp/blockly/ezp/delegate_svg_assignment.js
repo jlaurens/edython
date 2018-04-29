@@ -26,7 +26,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('target_star', {
+ezP.DelegateSvg.Expr.makeSubclass('target_star', {
   inputs: {
     i_1: {
       key: ezP.Key.EXPRESSION,
@@ -187,7 +187,7 @@ ezP.Consolidator.List.Target.prototype.getCheck = function (io) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('target_list', {
+ezP.DelegateSvg.List.makeSubclass('target_list', {
   inputs: {
     list: {
       consolidator: ezP.Consolidator.List.Target,
@@ -205,7 +205,7 @@ ezP.DelegateSvg.Manager.makeSubclass('target_list', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('void_target_list', {
+ezP.DelegateSvg.List.makeSubclass('void_target_list', {
   inputs: {
     list: {
       consolidator: ezP.Consolidator.List.Target,
@@ -224,7 +224,7 @@ ezP.DelegateSvg.Manager.makeSubclass('void_target_list', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('parenth_target_list', {
+ezP.DelegateSvg.Expr.void_target_list.makeSubclass('parenth_target_list', {
   inputs: {
     prefix: {
       label: '(',
@@ -233,7 +233,7 @@ ezP.DelegateSvg.Manager.makeSubclass('parenth_target_list', {
       label: ')',
     }
   },
-}, ezP.DelegateSvg.Expr.void_target_list)
+})
 
 /**
  * Class for a DelegateSvg, bracket_target_list block.
@@ -244,7 +244,7 @@ ezP.DelegateSvg.Manager.makeSubclass('parenth_target_list', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('bracket_target_list', {
+ezP.DelegateSvg.Expr.void_target_list.makeSubclass('bracket_target_list', {
   inputs: {
     prefix: {
       label: '[',
@@ -253,7 +253,7 @@ ezP.DelegateSvg.Manager.makeSubclass('bracket_target_list', {
       label: ']',
     }
   },
-}, ezP.DelegateSvg.Expr.void_target_list)
+})
 
 goog.provide('ezP.DelegateSvg.Stmt.assignment_stmt')
 
@@ -266,7 +266,7 @@ goog.provide('ezP.DelegateSvg.Stmt.assignment_stmt')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('target_list_list', {
+ezP.DelegateSvg.List.makeSubclass('target_list_list', {
   inputs: {
     list: {
       check: ezP.T3.Expr.target_list,
@@ -283,9 +283,13 @@ ezP.DelegateSvg.Manager.makeSubclass('target_list_list', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('assignment_stmt', {
+ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
+  data: {
+    subtype: {
+      all: [ezP.T3.Expr.identifier, ezP.T3.Expr.dotted_name, ],
+    },
+  },
   inputs: {
-    subtypes: [ezP.T3.Expr.identifier, ezP.T3.Expr.dotted_name, ],
     i_1: {
       term: {
         key:ezP.Key.VALUE,
@@ -302,7 +306,7 @@ ezP.DelegateSvg.Manager.makeSubclass('assignment_stmt', {
         onEndEditing: function () {
           var block = this.sourceBlock_
           var ezp = block.ezp
-          ezp.setValue(block, this.getValue())
+          ezp.data.value.set(this.getValue()())
         },
       },
     },
@@ -333,7 +337,7 @@ ezP.DelegateSvg.Manager.makeSubclass('assignment_stmt', {
  */
 ezP.DelegateSvg.Stmt.assignment_stmt.prototype.initVariant = function (block) {
   ezP.DelegateSvg.Expr.term.superClass_.initVariant.call(this, block)
-  this.setVariant(block, 0)
+  this.data.variant.set(0)
 }
 
 /**
@@ -363,7 +367,7 @@ ezP.DelegateSvg.Stmt.assignment_stmt.prototype.synchronizeVariant = function(blo
  * @param {!Blockly.Block} block to be initialized.
  */
 ezP.DelegateSvg.Stmt.assignment_stmt.prototype.initValue = function (block) {
-  this.setValue(block, this.ui.i_1.fields.value.getValue() || '')
+  this.data.value.set(this.ui.i_1.fields.value.getValue() || '')
   return
 }
 
@@ -385,7 +389,7 @@ ezP.DelegateSvg.Stmt.assignment_stmt.prototype.synchronizeValue = function (bloc
  * @return true if newValue is acceptable, false otherwise
  */
 ezP.DelegateSvg.Stmt.assignment_stmt.prototype.validateValue = function (block, newValue) {
-  var subtypes = this.getSubtypes(block)
+  var subtypes = this.data.subtype.getAll()
   var subtype = ezP.Do.typeOfString(newValue)
   return subtypes.indexOf(subtype) >= 0? {validated: newValue}: null
 }
@@ -397,11 +401,11 @@ ezP.DelegateSvg.Stmt.assignment_stmt.prototype.validateValue = function (block, 
  * @private
  */
 ezP.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var value = this.getValue(block)
-  var current = this.getVariant(block)
+  var value = this.data.value.get()
+  var current = this.data.variant.get()
   var F = function(content, variant) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setVariant(block, variant)
+      block.ezp.data.variant.set(variant)
     })
     menuItem.setEnabled(variant != current)
     mgr.addChild(menuItem, true)
@@ -432,7 +436,7 @@ ezP.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
   return true
 }
 
-ezP.DelegateSvg.Manager.makeSubclass('assigned_list', function() {
+ezP.DelegateSvg.List.makeSubclass('assigned_list', function() {
   var D = {
     check: ezP.T3.Expr.Check.starred_item,
     unique: ezP.T3.Expr.yield_expression,
@@ -450,7 +454,7 @@ ezP.DelegateSvg.Manager.makeSubclass('assigned_list', function() {
   }
 })
 
-ezP.DelegateSvg.Manager.makeSubclass('augassigned_list', function() {
+ezP.DelegateSvg.List.makeSubclass('augassigned_list', function() {
   var D = {
     check: ezP.T3.Expr.Check.expression,
     unique: ezP.T3.Expr.yield_expression,
@@ -478,10 +482,25 @@ goog.provide('ezP.DelegateSvg.AugAssign')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('augmented_assignment_stmt', {
+ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
+  data: {
+    variant: {
+      Flag: {
+        TARGET: 1,// flags are 1 based
+        BITWISE: 2,
+      },
+    },
+    operator: {},
+    numberOperator: {
+      all: ['+=','-=','*=','/=','//=','%=','**=','@='],
+      noUndo: true,
+    },
+    bitwiseOperator: {
+      all: ['<<=', '>>=', '&=', '^=', '|='],
+      noUndo: true,
+    }
+  },
   inputs: {
-    numberOperators: ['+=','-=','*=','/=','//=','%=','**=','@='],
-    bitwiseOperators: ['<<=', '>>=', '&=', '^=', '|='],
     i_1: {
       term: {
         key:ezP.Key.VALUE,
@@ -498,7 +517,7 @@ ezP.DelegateSvg.Manager.makeSubclass('augmented_assignment_stmt', {
         onEndEditing: function () {
           var block = this.sourceBlock_
           var ezp = block.ezp
-          ezp.setValue(block, this.getValue())
+          ezp.data.value.set(this.getValue())
         },
       },
     },
@@ -513,15 +532,6 @@ ezP.DelegateSvg.Manager.makeSubclass('augmented_assignment_stmt', {
     },
   },
 })
-
-ezP.Delegate.addInstanceProperty(ezP.DelegateSvg.Stmt.augmented_assignment_stmt, 'operator')
-ezP.Delegate.addInstanceProperty(ezP.DelegateSvg.Stmt.augmented_assignment_stmt, 'numberOperator')
-ezP.Delegate.addInstanceProperty(ezP.DelegateSvg.Stmt.augmented_assignment_stmt, 'bitwiseOperator')
-
-ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.Flag = {
-  TARGET: 1,// flags are 1 based
-  BITWISE: 2,
-}
 
 /**
  * Validate the value property.
@@ -553,7 +563,7 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.synchronizeValue = func
  * @param {!Blockly.Block} block The owner of the receiver.
  */
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.initVariant = function (block) {
-  this.setVariant(block, 0) || this.didChangeVariant(block, 0)
+  this.data.variant.set(0) || this.didChangeVariant(block, 0)
 }
 
 /**
@@ -576,10 +586,9 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.validateVariant = funct
  * @param {string} newVariant
  */
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.didChangeVariant = function (block, oldVariant, newVariant) {
-  this.initNumberOperator(block)// called only once (in theory)
-  this.initBitwiseOperator(block)// called only once (in theory)
-  var withBitwise = this.getVariantFlag(block, this.Flag.BITWISE)
-  this.setOperator(block, withBitwise? this.getBitwiseOperator(block): this.getNumberOperator(block))
+  var variantData = this.data.variant
+  var withBitwise = ezP.Do.getVariantFlag(variantData.get(), variantData.Flag.BITWISE)
+  this.data.operator.set(withBitwise? this.data.bitwiseOperator.get(): this.data.numberOperator.get())
 }
 
 /**
@@ -589,7 +598,8 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.didChangeVariant = func
  * @param {string} newVariant
  */
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.synchronizeVariant = function (block, newVariant) {
-  var withTarget = this.getVariantFlag(block, this.Flag.TARGET)
+  var variantData = this.data.variant
+  var withTarget = ezP.Do.getVariantFlag(variantData.get(), variantData.Flag.TARGET)
   this.setInputDisabled(block, this.ui.i_1.input, withTarget)
   this.setInputDisabled(block, this.ui.i_2.input, !withTarget)
 }
@@ -614,10 +624,11 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.synchronizeOperator = f
  * @param {string} newOperator
  */
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.didChangeNumberOperator = function (block, oldOperator, newOperator) {
-  var withBitwise = this.getVariantFlag(block, 
-  this.Flag.BITWISE)
+  var variantData = this.data.variant
+  var withBitwise = ezP.Do.getVariantFlag(variantData.get(), 
+  variantData.Flag.BITWISE)
   if (!withBitwise) {
-    this.setOperator(block, newOperator)
+    this.data.operator.set(newOperator)
   }
 }
 /**
@@ -628,9 +639,10 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.didChangeNumberOperator
  * @param {string} newOperator
  */
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.didChangeBitwiseOperator = function (block, oldOperator, newOperator) {
-  var withBitwise = this.getVariantFlag(block, this.Flag.BITWISE)
+  var variantData = this.data.variant
+  var withBitwise = ezP.Do.getVariantFlag(variantData.get(), variantData.Flag.BITWISE)
   if (withBitwise) {
-    this.setOperator(block, newOperator)
+    this.data.operator.set(newOperator)
   }
 }
 
@@ -652,14 +664,15 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.synchronizeOperator = f
  * @private
  */
 ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  const current = this.getVariant(block)
-  var withTarget = this.getVariantFlag(block, this.Flag.TARGET)
-  var value = this.getValue(block)
-  var operator = this.getOperator(block)
-  var withBitwise = this.getVariantFlag(block, this.Flag.BITWISE)
+  var variantData = this.data.variant
+  const current = variantData.get()
+  var withTarget = ezP.Do.getVariantFlag(current, variantData.Flag.TARGET)
+  var value = this.data.value.get()
+  var operator = this.data.operator.get()
+  var withBitwise = ezP.Do.getVariantFlag(current, variantData.Flag.BITWISE)
   var operators = withBitwise? 
-  this.getBitwiseOperators(block):
-  this.getNumberOperators(block)
+  this.data.bitwiseOperator.getAll():
+  this.data.numberOperator.getAll()
   var F = function(i) {
     var op = operators[i]
     if (op !== operator) {
@@ -684,12 +697,12 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
   var F = function(variant, content) {
     if (variant !== current) {
       var menuItem = new ezP.MenuItem(content, function() {
-        block.ezp.setVariant(block, variant)
+        block.ezp.data.variant.set(variant)
       })
       mgr.addChild(menuItem, true)
     }
   }
-  var variant = withBitwise? ezP.Do.makeVariantFlags(0, this.Flag.BITWISE): 0
+  var variant = withBitwise? ezP.Do.makeVariantFlags(0, variantData.Flag.BITWISE): 0
   var content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
     ezP.Do.createSPAN(value || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'),
@@ -700,13 +713,13 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
   goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
     goog.dom.createTextNode('… '+operator+' …'),
   )
-  F(ezP.Do.makeVariantFlags(variant, this.Flag.TARGET), content)
+  F(ezP.Do.makeVariantFlags(variant, variantData.Flag.TARGET), content)
  mgr.shouldSeparate()
   var content =
   ezP.Do.createSPAN(withBitwise? '+=, -=, /= …': '<<=, >>=, &= …', 'ezp-code')
   var menuItem = function(ezp) {
     return new ezP.MenuItem(content, function() {
-      ezp.setVariant(block, ezP.Do.makeVariantFlags(current, withBitwise? -ezp.Flag.BITWISE: ezp.Flag.BITWISE))
+      ezp.data.variant.set(ezP.Do.makeVariantFlags(current, withBitwise? -ezp.data.variant.Flag.BITWISE: ezp.data.variant.Flag.BITWISE))
   })
   } (this)
   mgr.addChild(menuItem, true)

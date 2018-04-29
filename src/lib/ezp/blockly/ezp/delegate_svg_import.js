@@ -38,7 +38,7 @@ module_name ::= identifier
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('non_void_module_as_list', {
+ezP.DelegateSvg.List.makeSubclass('non_void_module_as_list', {
   inputs: {
     list: {
       check: ezP.T3.Expr.Check.non_void_module_as_list,
@@ -58,7 +58,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_module_as_list', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('non_void_import_identifier_as_list', {
+ezP.DelegateSvg.List.makeSubclass('non_void_import_identifier_as_list', {
   inputs: {
     list: {
       check: ezP.T3.Expr.Check.non_void_import_identifier_as_list,
@@ -81,9 +81,13 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_import_identifier_as_list', {
  * @constructor
  */
  console.warn('Is the edit: below complete?')
-ezP.DelegateSvg.Manager.makeSubclass('import_stmt', {
+ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
+  data: {
+    variant: {
+      all: [0, 1, 2],
+    },
+  },
   inputs: {
-    variants: [0, 1, 2],
     i_1: {
       label: 'import',
       css_class: 'ezp-code-reserved',
@@ -112,7 +116,7 @@ ezP.DelegateSvg.Manager.makeSubclass('import_stmt', {
         onEndEditing: function () {
           var block = this.sourceBlock_
           var ezp = block.ezp
-          ezp.setValue(block, this.getValue())
+          ezp.data.value.set(this.getValue())
         },
       },
     },
@@ -138,7 +142,7 @@ ezP.DelegateSvg.Manager.makeSubclass('import_stmt', {
  */
 ezP.DelegateSvg.Stmt.import_stmt.prototype.validateValue = function (block, newValue) {
   var type = ezP.Do.typeOfString(newValue)
-  var variant = this.getVariant(block)
+  var variant = this.data.variant.get()
   return type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name || variant === 1 && (type === ezP.T3.Expr.parent_module)?
   {validated: newValue}: null
 }
@@ -175,7 +179,7 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.validateVariant = function (block, ne
  * @return true if newVariant is acceptable, false otherwise
  */
 ezP.DelegateSvg.Stmt.import_stmt.prototype.didChangeVariant = function (block, newVariant) {
-  this.setSubtype(block, newVariant === 1? 0: 1)
+  this.data.subtype.set(newVariant === 1? 0: 1)
 }
 
 /**
@@ -220,10 +224,10 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function(block) {
  * @private
  */
 ezP.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var current = block.ezp.getVariant(block)
+  var current = block.ezp.data.variant.get()
   var F = function(content, variant) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setVariant(block, variant)
+      block.ezp.data.variant.set(variant)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(variant !== current)
@@ -261,7 +265,7 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('future_statement', {
+ezP.DelegateSvg.Stmt.makeSubclass('future_statement', {
   inputs: {
     i_1: {
       label: 'from __future__ import',

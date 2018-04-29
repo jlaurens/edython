@@ -26,11 +26,7 @@ goog.require('ezP.KeyHandler')
  * @constructor
  */
 ezP.DelegateSvg.makeSubclass('Expr')
-// ezP.DelegateSvg.Expr = function (prototypeName) {
-//   ezP.DelegateSvg.Expr.superClass_.constructor.call(this, prototypeName)
-// }
-// goog.inherits(ezP.DelegateSvg.Expr, ezP.DelegateSvg)
-
+console.warn('Problem above')
 // Default delegate for all expression blocks
 ezP.Delegate.Manager.registerAll(ezP.T3.Expr, ezP.DelegateSvg.Expr, true)
 
@@ -214,7 +210,7 @@ ezP.DelegateSvg.Expr.prototype.canInsertParent = function(block, prototypeName, 
   var can = false
   var disabler = ezP.Events.Disabler()
   var B = block.workspace.newBlock(prototypeName)
-  B.ezp.setSubtype(B, subtype)
+  B.ezp.data.subtype.set(subtype)
   var input = B.getInput(parentInputName)
   goog.asserts.assert(input, 'No input named '+parentInputName)
   var c8n = input.connection
@@ -244,7 +240,7 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
 //  console.log('insertParent', block, parentPrototypeName, subtype, parentInputName)
   var disabler = ezP.Events.Disabler()
   var parentBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName)
-  parentBlock.ezp.setSubtype(parentBlock, subtype)
+  parentBlock.ezp.data.subtype.set(subtype)
   disabler.stop()
   console.log('block created of type', parentPrototypeName)
   if (parentInputName) {
@@ -352,7 +348,7 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('proper_slice', {
+ezP.DelegateSvg.Expr.makeSubclass('proper_slice', {
   inputs: {
     i_1: {
       key: ezP.Key.LOWER_BOUND,
@@ -385,7 +381,7 @@ ezP.DelegateSvg.Manager.makeSubclass('proper_slice', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('conditional_expression_solid', {
+ezP.DelegateSvg.Expr.makeSubclass('conditional_expression_solid', {
   inputs: {
     i_1: {
       key: ezP.Key.EXPRESSION,
@@ -416,7 +412,7 @@ ezP.DelegateSvg.Manager.makeSubclass('conditional_expression_solid', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('or_expr_star', {
+ezP.DelegateSvg.Expr.makeSubclass('or_expr_star', {
   inputs: {
     i_1: {
       key: ezP.Key.EXPRESSION,
@@ -435,7 +431,7 @@ ezP.DelegateSvg.Manager.makeSubclass('or_expr_star', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('or_expr_star_star', {
+ezP.DelegateSvg.Expr.makeSubclass('or_expr_star_star', {
   inputs: {
     i_1: {
       key: ezP.Key.EXPRESSION,
@@ -455,7 +451,7 @@ ezP.DelegateSvg.Manager.makeSubclass('or_expr_star_star', {
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Manager.makeSubclass('not_test_solid', {
+ezP.DelegateSvg.Expr.makeSubclass('not_test_solid', {
   inputs: {
     i_1: {
       key: ezP.Key.EXPRESSION,
@@ -474,9 +470,13 @@ ezP.DelegateSvg.Manager.makeSubclass('not_test_solid', {
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Manager.makeSubclass('builtin_object', {
+ezP.DelegateSvg.Expr.makeSubclass('builtin_object', {
+  data: {
+    value: {
+      all: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
+    },
+  },
   inputs: {
-    values: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
     i_1: {
       key: ezP.Key.VALUE,
       label: 'True',
@@ -490,7 +490,7 @@ ezP.DelegateSvg.Manager.makeSubclass('builtin_object', {
  * @param {!Blockly.Block} block to be initialized..
  */
 ezP.DelegateSvg.Expr.builtin_object.prototype.initValue = function(block) {
-  this.setValue(block, block.ezp.ui.i_1.fields.label.getValue(block))
+  this.data.value.set(block.ezp.ui.i_1.fields.label.getValue())
 }
 
 /**
@@ -532,8 +532,12 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.makeTitle = function (block, op) {
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Manager.makeSubclass('any', {
-  values: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
+ezP.DelegateSvg.Expr.makeSubclass('any', {
+  data: {
+    value: {
+      all: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
+    }
+  },
   inputs: {
     i_1: {
       key: ezP.Key.CODE,

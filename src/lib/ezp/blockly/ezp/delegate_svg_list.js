@@ -29,11 +29,6 @@ ezP.DelegateSvg.Expr.makeSubclass('List', {
     list: {},
   },
 }, ezP.DelegateSvg)
-// ezP.DelegateSvg.List = function (prototypeName) {
-//   ezP.DelegateSvg.List.superClass_.constructor.call(this, prototypeName)
-//   this.model__.inputs.list = {}
-// }
-// goog.inherits(ezP.DelegateSvg.List, ezP.DelegateSvg.Expr)
 
 /**
  * Will render the block.
@@ -159,7 +154,7 @@ ezP.DelegateSvg.List.prototype.removeItems = function(block) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('optional_expression_list', {
+ezP.DelegateSvg.List.makeSubclass('optional_expression_list', {
   inputs: {
     list: {
       check: ezP.T3.Expr.Check.expression,
@@ -179,7 +174,7 @@ ezP.DelegateSvg.Manager.makeSubclass('optional_expression_list', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('non_void_expression_list', {
+ezP.DelegateSvg.List.makeSubclass('non_void_expression_list', {
   inputs: {
     list: {
       check: ezP.T3.Expr.Check.expression,
@@ -199,7 +194,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_expression_list', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('starred_item_list', {
+ezP.DelegateSvg.List.makeSubclass('starred_item_list', {
   inputs: {
     list: {
       check: ezP.T3.Expr.Check.starred_item,
@@ -218,7 +213,7 @@ ezP.DelegateSvg.Manager.makeSubclass('starred_item_list', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('parenth_form', {
+ezP.DelegateSvg.Expr.starred_item_list.makeSubclass('parenth_form', {
   inputs: {
     prefix: {
       label: '(',
@@ -233,7 +228,7 @@ ezP.DelegateSvg.Manager.makeSubclass('parenth_form', {
       label: ')',
     },
   },
-}, ezP.DelegateSvg.Expr.starred_item_list)
+})
 
 /**
  * Class for a DelegateSvg, key_datum_list block.
@@ -244,7 +239,7 @@ ezP.DelegateSvg.Manager.makeSubclass('parenth_form', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('key_datum_list', {
+ezP.DelegateSvg.List.makeSubclass('key_datum_list', {
   inputs: {
     list: {
       check: ezP.T3.Expr.Check.key_datum,
@@ -263,7 +258,7 @@ ezP.DelegateSvg.Manager.makeSubclass('key_datum_list', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('starred_item_list_comprehensive', function() {
+ezP.DelegateSvg.List.makeSubclass('starred_item_list_comprehensive', function() {
   var D = {
     check: ezP.T3.Expr.Check.non_void_starred_item_list,
     unique: ezP.T3.Expr.comprehension,
@@ -289,7 +284,7 @@ ezP.DelegateSvg.Manager.makeSubclass('starred_item_list_comprehensive', function
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('list_display', {
+ezP.DelegateSvg.Expr.starred_item_list_comprehensive.makeSubclass('list_display', {
   inputs: {
     prefix: {
       label: '[',
@@ -298,7 +293,7 @@ ezP.DelegateSvg.Manager.makeSubclass('list_display', {
       label: ']',
     },
   },
-}, ezP.DelegateSvg.Expr.starred_item_list_comprehensive)
+})
 
 /**
  * Class for a DelegateSvg, non_void_starred_item_list_comprehensive block.
@@ -309,7 +304,7 @@ ezP.DelegateSvg.Manager.makeSubclass('list_display', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('non_void_starred_item_list_comprehensive', function() {
+ezP.DelegateSvg.List.makeSubclass('non_void_starred_item_list_comprehensive', function() {
   var D = {
     check: ezP.T3.Expr.Check.non_void_starred_item_list,
     unique: ezP.T3.Expr.comprehension,
@@ -335,7 +330,7 @@ ezP.DelegateSvg.Manager.makeSubclass('non_void_starred_item_list_comprehensive',
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('set_display', {
+ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive.makeSubclass('set_display', {
   inputs: {
     prefix: {
       label: '{',
@@ -344,7 +339,7 @@ ezP.DelegateSvg.Manager.makeSubclass('set_display', {
       label: '}',
     },
   },
-}, ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive)
+})
 
 /**
  * Class for a DelegateSvg, key_datum_list_comprehensive block.
@@ -355,7 +350,7 @@ ezP.DelegateSvg.Manager.makeSubclass('set_display', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('key_datum_list_comprehensive', function() {
+ezP.DelegateSvg.List.makeSubclass('key_datum_list_comprehensive', function() {
   var D = {
     check: ezP.T3.Expr.Check.key_datum_list,
     unique: ezP.T3.Expr.dict_comprehension,
@@ -380,7 +375,7 @@ ezP.DelegateSvg.Manager.makeSubclass('key_datum_list_comprehensive', function() 
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('dict_display', {
+ezP.DelegateSvg.Expr.key_datum_list_comprehensive.makeSubclass('dict_display', {
   inputs: {
     prefix: {
       label: '{',
@@ -389,7 +384,7 @@ ezP.DelegateSvg.Manager.makeSubclass('dict_display', {
       label: '}',
     },
   },
-}, ezP.DelegateSvg.Expr.key_datum_list_comprehensive)
+})
 
 /**
  * Class for a DelegateSvg, slice_list block.
@@ -400,7 +395,7 @@ ezP.DelegateSvg.Manager.makeSubclass('dict_display', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('slice_list', {
+ezP.DelegateSvg.List.makeSubclass('slice_list', {
   inputs: {
     list: {
       check: ezP.T3.Expr.Check.slice_item,
@@ -419,7 +414,7 @@ ezP.DelegateSvg.Manager.makeSubclass('slice_list', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('with_item_list', {
+ezP.DelegateSvg.List.makeSubclass('with_item_list', {
   inputs: {
     list: {
       check: ezP.T3.Expr.Check.with_item,

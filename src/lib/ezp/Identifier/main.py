@@ -1,6 +1,6 @@
 import pathlib, re
 
-path = pathlib.Path(__file__).parent / 'UnicodeData.txt'
+path = pathlib.Path(__file__).parent / 'data.Unicode.txt'
 
 class BadLineError(Exception):
     """Badly formatted line."""

@@ -25,7 +25,7 @@ console.warn('Move this block to the builtin blocks, with contextual consolidato
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('builtin_print_expr', {
+ezP.DelegateSvg.Expr.makeSubclass('builtin_print_expr', {
   inputs: {
     i_1: {
       label: 'print',
@@ -69,15 +69,15 @@ ezP.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
     while ((input = c10r.nextInputForType(io, ezP.T3.Expr.keyword_item))) {
       var target = input.connection.targetBlock()
       if (target) {
-        has[target.ezp.getValue(target)] = target
+        has[target.ezp.data.value.get()] = target
       }
     }
     var insert = function(key) {
       var grouper = new ezP.Events.Grouper()
       try {
         var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term)
-        B.ezp.setValue(B, key)
-        B.ezp.setVariant(B, 2)
+        B.ezp.data.value.set(key)
+        B.ezp.data.variant.set(2)
         var c8n = list.inputList[list.inputList.length-1].connection
         c8n.connect(B.outputConnection)  
         block.ezp.consolidate(block)
@@ -126,7 +126,7 @@ ezP.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
  *     type-specific functions for this block.
  * @constructor
  */
- ezP.DelegateSvg.Manager.makeSubclass('builtin_print_stmt', {
+ ezP.DelegateSvg.Stmt.makeSubclass('builtin_print_stmt', {
    inputs: {
     insert: ezP.T3.Expr.builtin_print_expr,
   }
@@ -150,15 +150,15 @@ ezP.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
     while ((input = c10r.nextInputForType(io, ezP.T3.Expr.keyword_item))) {
       var target = input.connection.targetBlock()
       if (target) {
-        has[target.ezp.getValue(target)] = target
+        has[target.ezp.data.value.get()] = target
       }
     }
     var insert = function(key) {
       var grouper = new ezP.Events.Grouper()
       try {
         var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term)
-        B.ezp.setValue(B, key)
-        B.ezp.setVariant(B, 2)
+        B.ezp.data.value.set(key)
+        B.ezp.data.variant.set(2)
         // we assume that inputList is not void
         var c8n = list.inputList[list.inputList.length-1].connection
         c8n.connect(B.outputConnection)  
@@ -208,7 +208,7 @@ ezP.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('builtin_input_expr', {
+ezP.DelegateSvg.Expr.makeSubclass('builtin_input_expr', {
   inputs: {
     i_1: {
       label: 'input',

@@ -33,10 +33,6 @@ ezP.DelegateSvg.Stmt.makeSubclass('Group', {
     key: ezP.Key.SUITE,
   },
 }, ezP.DelegateSvg)
-// ezP.DelegateSvg.Group = function (prototypeName) {
-//   ezP.DelegateSvg.Group.superClass_.constructor.call(this, prototypeName)
-// }
-// goog.inherits(ezP.DelegateSvg.Group, ezP.DelegateSvg.Stmt)
 
 /**
  * Block path.
@@ -230,7 +226,7 @@ ezP.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('if_part', {
+ezP.DelegateSvg.Group.makeSubclass('if_part', {
   inputs: {
     i_1: {
       label: 'if',
@@ -240,7 +236,7 @@ ezP.DelegateSvg.Manager.makeSubclass('if_part', {
       hole_value: 'condition',
     },
   },
-}, ezP.DelegateSvg.Group)
+})
 
 /**
  * Class for a DelegateSvg, elif_part block.
@@ -250,7 +246,7 @@ ezP.DelegateSvg.Manager.makeSubclass('if_part', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('elif_part', {
+ezP.DelegateSvg.Group.makeSubclass('elif_part', {
   inputs: {
     i_1: {
       label: 'elif',
@@ -260,7 +256,7 @@ ezP.DelegateSvg.Manager.makeSubclass('elif_part', {
       hole_value: 'condition',
     },
   },
-}, ezP.DelegateSvg.Group)
+})
 
 /**
  * Class for a DelegateSvg, else_part block.
@@ -278,7 +274,7 @@ ezP.DelegateSvg.Manager.makeSubclass('elif_part', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('else_part', {
+ezP.DelegateSvg.Group.makeSubclass('else_part', {
   inputs: {
     i_1: {
       label: 'else',
@@ -297,7 +293,7 @@ ezP.DelegateSvg.Manager.makeSubclass('else_part', {
       },
     },
   },
-}, ezP.DelegateSvg.Group)
+})
 
 ezP.DelegateSvg.Stmt.last_else_part = ezP.DelegateSvg.Stmt.try_else_part = ezP.DelegateSvg.Stmt.else_part
 ezP.DelegateSvg.Manager.register('try_else_part')
@@ -362,7 +358,7 @@ ezP.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('while_part', {
+ezP.DelegateSvg.Group.makeSubclass('while_part', {
   inputs: {
     i_1: {
       label: 'while',
@@ -372,7 +368,7 @@ ezP.DelegateSvg.Manager.makeSubclass('while_part', {
       hole_value: 'condition',
     },
   },
-}, ezP.DelegateSvg.Group)
+})
 
 /**
  * Will draw the block. Default implementation does nothing.
@@ -423,7 +419,7 @@ ezP.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (block, mgr
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('for_part', {
+ezP.DelegateSvg.Group.makeSubclass('for_part', {
   inputs: {
     i_1: {
       label: 'for',
@@ -440,7 +436,7 @@ ezP.DelegateSvg.Manager.makeSubclass('for_part', {
       hole_value: 'set',
     },
   },
-}, ezP.DelegateSvg.Group)
+})
 
 /**
  * Class for a DelegateSvg, with_part block.
@@ -450,7 +446,7 @@ ezP.DelegateSvg.Manager.makeSubclass('for_part', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('with_part', {
+ezP.DelegateSvg.Group.makeSubclass('with_part', {
   inputs: {
     i_1: {
       key: ezP.Key.WITH,
@@ -459,7 +455,7 @@ ezP.DelegateSvg.Manager.makeSubclass('with_part', {
       wrap: ezP.T3.Expr.with_item_list,
     },
   },
-}, ezP.DelegateSvg.Group)
+})
 
 /**
  * Class for a DelegateSvg, with_item_solid block.
@@ -469,7 +465,7 @@ ezP.DelegateSvg.Manager.makeSubclass('with_part', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('with_item_solid', {
+ezP.DelegateSvg.Expr.makeSubclass('with_item_solid', {
   inputs: {
     i_1: {
       key: ezP.Key.EXPRESSION,

@@ -294,7 +294,7 @@ ezP.Consolidator.Parameter.prototype.getCheck = function() {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('parameter_list', {
+ezP.DelegateSvg.Expr.makeSubclass('parameter_list', {
   inputs: {
     list: {
       consolidator: ezP.Consolidator.Parameter,
@@ -315,8 +315,8 @@ ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
     ezP.Events.Disabler.wrap(function() {
       BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term)
       BB.ezp.skipRendering = true
-      BB.ezp.setModifier(BB, modifier)
-      BB.ezp.setVariant(BB, flags)
+      BB.ezp.data.modifier.set(modifier)
+      BB.ezp.data.variant.set(flags)
     })
     e8r.end()
     while(e8r.previous()) {
@@ -333,8 +333,8 @@ ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
             try {
               var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term)
               B.ezp.skipRendering = true
-              B.ezp.setModifier(B, modifier)
-              B.ezp.setVariant(B, flags)
+              B.ezp.data.modifier.set(modifier)
+              B.ezp.data.variant.set(flags)
               B.ezp.skipRendering = false
               c8n.connect(B.outputConnection)
               B.render()
@@ -376,7 +376,7 @@ console.warn('Use a modifier field for * and ** (instead of await and async too)
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('lambda', {
+ezP.DelegateSvg.Expr.makeSubclass('lambda', {
   inputs: {
     i_1: {
       key: ezP.Key.PARAMETERS,

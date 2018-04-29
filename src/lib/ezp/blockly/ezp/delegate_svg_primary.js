@@ -24,7 +24,7 @@ goog.require('ezP.DelegateSvg.Expr')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('attributeref', {
+ezP.DelegateSvg.Expr.makeSubclass('attributeref', {
   inputs: {
     i_1: {
       key: ezP.Key.PRIMARY,
@@ -49,7 +49,7 @@ ezP.DelegateSvg.Manager.makeSubclass('attributeref', {
         onEndEditing: function () {
           var block = this.sourceBlock_
           var ezp = block.ezp
-          ezp.setValue(block, this.getValue())
+          ezp.data.value.set(this.getValue())
         },
       },
     },
@@ -92,9 +92,13 @@ ezP.DelegateSvg.Expr.attributeref.prototype.synchronizeValue = function (block, 
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('slicing', {
+ezP.DelegateSvg.Expr.makeSubclass('slicing', {
+  data: {
+    variant: {
+      all: [0, 1],
+    },
+  },
   inputs: {
-    variants: [0, 1],
     i_1: {
       edit: {
         key:ezP.Key.VALUE,
@@ -111,7 +115,7 @@ ezP.DelegateSvg.Manager.makeSubclass('slicing', {
         onEndEditing: function () {
           var block = this.sourceBlock_
           var ezp = block.ezp
-          ezp.setValue(block, this.getValue())
+          ezp.data.value.set(this.getValue())
         },
       },
     },
@@ -182,15 +186,15 @@ ezP.DelegateSvg.Expr.slicing.prototype.synchronizeVariant = function (block, new
  * @private
  */
 ezP.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var current = this.getVariant(block)? 1: 0
+  var current = this.data.variant.get()? 1: 0
   var F = function(content, j) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setVariant(block, j)
+      block.ezp.data.variant.set(j)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(j !== current)
   }
-  var value = this.getValue(block)
+  var value = this.data.value.get()
   var content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
     ezP.Do.createSPAN(value || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'),
@@ -217,9 +221,14 @@ ezP.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (blo
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('call_expr', {
+ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
+  data: {
+    backup: {},
+    value: {
+      all: ['range', 'list', 'set', 'len', 'sum'],
+    },
+  },
   inputs: {
-    values: ['range', 'list', 'set', 'len', 'sum'],
     i_1: {
       edit: {
         key:ezP.Key.VALUE,
@@ -236,12 +245,12 @@ ezP.DelegateSvg.Manager.makeSubclass('call_expr', {
         onEndEditing: function () {
           var block = this.sourceBlock_
           var ezp = block.ezp
-          ezp.setValue(block, this.getValue())
+          ezp.data.value.set(this.getValue())
         },
         // synchronize: function () {
         //   var block = this.sourceBlock_
         //   var ezp = block.ezp
-        //   this.setValue(ezp.getValue(block) || '')
+        //   this.setValue(ezp.getValue() || '')
         // },
       },
     },
@@ -260,15 +269,13 @@ ezP.DelegateSvg.Manager.makeSubclass('call_expr', {
   },
 })
 
-ezP.Delegate.addInstanceProperty(ezP.DelegateSvg.Expr.call_expr, ezP.Key.BACKUP)
-
 /**
  * Init the variant property.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
  */
 ezP.DelegateSvg.Expr.call_expr.prototype.initVariant = function (block) {
-  this.setVariant(block, 0)
+  this.data.variant.set(0)
 }
 
 /**
@@ -328,14 +335,14 @@ ezP.DelegateSvg.Expr.call_expr.prototype.validateValue = function (block, newVal
  * @return true if newValue is acceptable, false otherwise
  */
 ezP.DelegateSvg.Expr.call_expr.prototype.didChangeValue = function (block, oldValue, newValue) {
-  var values = this.getValues(block)
+  var values = this.data.value.getAll()
   if (values) {
     var builtin = values.indexOf(newValue) >= 0
-    var variant = this.getVariant(block) || 0
-    this.setVariant(block, variant%2 | (builtin? 2: 0))
+    var variant = this.data.variant.get() || 0
+    this.data.variant.set(variant%2 | (builtin? 2: 0))
   }
   if (!builtin) {
-    this.setBackup(block, newValue)
+    this.data.backup.set(newValue)
   }
 }
 
@@ -358,19 +365,19 @@ ezP.DelegateSvg.Expr.call_expr.prototype.synchronizeValue = function (block, new
  * @private
  */
 ezP.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
-  var variant = this.getVariant(block)
-  var values = this.getValues(block)
-  var current = this.getValue(block)
+  var variant = this.data.variant.get()
+  var values = this.data.value.getAll()
+  var current = this.data.value.get()
   var i = values.indexOf(current)
   if (variant !== 0) {
-    var oldValue = block.ezp.getBackup(block)
+    var oldValue = block.ezp.data.backup.get()
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       oldValue? ezP.Do.createSPAN(oldValue, 'ezp-code'): ezP.Do.createSPAN(ezP.Msg.Placeholder.IDENTIFIER, 'ezp-code-placeholder'),
       ezP.Do.createSPAN('(…)', 'ezp-code'),
     )
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setTrustedValue(block, oldValue || '')
-      block.ezp.setVariant(block, 0)
+      block.ezp.data.value.setTrusted(oldValue || '')
+      block.ezp.data.variant.set(0)
     })
     mgr.addChild(menuItem, true)
   }
@@ -381,8 +388,8 @@ ezP.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
       ezP.Do.createSPAN('(…)', 'ezp-code'),
     )
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setTrustedValue(block, values[j])
-      block.ezp.setVariant(block, 2)
+      block.ezp.data.value.setTrusted(values[j])
+      block.ezp.data.variant.set(2)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(j !== i)
@@ -396,8 +403,8 @@ ezP.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
       ezP.Do.createSPAN('(…)', 'ezp-code'),
     )
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setTrustedValue(block, oldValue || '')
-      block.ezp.setVariant(block, 1)
+      block.ezp.data.value.setTrusted(oldValue || '')
+      block.ezp.data.variant.set(1)
     })
     mgr.addChild(menuItem, true)
   }
@@ -423,13 +430,14 @@ ezP.DelegateSvg.Expr.call_expr.prototype.populateContextMenuFirst_ = function (b
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('call_stmt', {
+ezP.DelegateSvg.Stmt.makeSubclass('call_stmt', {
+  data: {
+    backup: {}
+  },
   inputs: {
     insert: ezP.T3.Expr.call_expr,
   },
 })
-
-ezP.Delegate.addInstanceProperty(ezP.DelegateSvg.Stmt.call_stmt, ezP.Key.BACKUP)
 
 /**
  * Init the variant property.

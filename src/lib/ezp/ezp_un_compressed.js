@@ -3964,7 +3964,7 @@ goog.ui.ControlRenderer.IE6_CLASS_COMBINATIONS=[];
 goog.ui.ControlRenderer.TOGGLE_ARIA_STATE_MAP_=goog.object.create(goog.a11y.aria.Role.BUTTON,goog.a11y.aria.State.PRESSED,goog.a11y.aria.Role.CHECKBOX,goog.a11y.aria.State.CHECKED,goog.a11y.aria.Role.MENU_ITEM,goog.a11y.aria.State.SELECTED,goog.a11y.aria.Role.MENU_ITEM_CHECKBOX,goog.a11y.aria.State.CHECKED,goog.a11y.aria.Role.MENU_ITEM_RADIO,goog.a11y.aria.State.CHECKED,goog.a11y.aria.Role.RADIO,goog.a11y.aria.State.CHECKED,goog.a11y.aria.Role.TAB,goog.a11y.aria.State.SELECTED,goog.a11y.aria.Role.TREEITEM,
 goog.a11y.aria.State.SELECTED);
 goog.ui.ControlRenderer.prototype.getAriaRole=function(){};
-goog.ui.ControlRenderer.prototype.createDom=function(a){return a.getDomHelper().createDom("DIV",this.getClassNames(a).join(" "),a.getContent())};
+goog.ui.ControlRenderer.prototype.createDom=function(a){return a.getDomHelper().createDom("DIV",this.getClassNames(a).join(" "),a.data.content.get()};
 goog.ui.ControlRenderer.prototype.makeTitleElement=function(a){return a};
 
 goog.ui.ControlRenderer.prototype.enableClassName=function(a,b,c){if(a=a.getElement?a.getElement():a){var d=[b];
@@ -4154,7 +4154,7 @@ delete this.renderer_;
 this.ieMouseEventSequenceSimulator_=this.extraClassNames_=this.content_=null};
 
 goog.ui.Control.prototype.makeTitle=function(){return this.content_};
-goog.ui.Control.prototype.setContent=function(a){this.renderer_.setContent(this.getElement(),a);
+goog.ui.Control.prototype.setContent=function(a){this.renderer_.data.content.set(a);
 this.setContentInternal(a)};
 goog.ui.Control.prototype.setContentInternal=function(a){this.content_=a};
 goog.ui.Control.prototype.getCaption=function(){var a=this.getContent();
@@ -4513,7 +4513,7 @@ break;
 case goog.ui.MenuItemRenderer.CompositeCssClassIndex_.CONTENT:b=this.getStructuralCssClass()+"-content"}this.classNameCache_[a]=b}return b};
 
 goog.ui.MenuItemRenderer.prototype.getAriaRole=function(){return goog.a11y.aria.Role.MENU_ITEM};
-goog.ui.MenuItemRenderer.prototype.createDom=function(a){var b=a.getDomHelper().createDom("DIV",this.getClassNames(a).join(" "),this.createContent(a.getContent(),a.getDomHelper()));
+goog.ui.MenuItemRenderer.prototype.createDom=function(a){var b=a.getDomHelper().createDom("DIV",this.getClassNames(a).join(" "),this.createContent(a.data.content.get();
 this.setEnableCheckBoxStructure(a,b,a.isSupportedState(goog.ui.Component.State.SELECTED)||a.isSupportedState(goog.ui.Component.State.CHECKED));
 return b};
 
@@ -6049,7 +6049,7 @@ ezP.Block.prototype.replaceVarId=function(a,b){for(var c=0,d;
 d=this.inputList[c];
 c++)for(var e=0,f;
 f=d.fieldRow[e];
-e++)f instanceof ezP.FieldVariable&&Blockly.Names.equals(a,f.getValue())&&f.setValue(b)};
+e++)f instanceof ezP.FieldVariable&&Blockly.Names.equals(a,f.data.value.get()};
 ezP.inherits(Blockly.BlockSvg,ezP.Block);
 ezP.DelegateSvg=function(a){ezP.DelegateSvg.superClass_.constructor.call(this,a)};
 
@@ -6221,7 +6221,7 @@ ezP.FieldInput=function(a,b){ezP.FieldInput.superClass_.constructor.call(this,a,
 goog.inherits(ezP.FieldInput,ezP.FieldTextInput);
 
 ezP.FieldTextInput.prototype.getSerializedXml=function(){var a=ezP.FieldTextInput.superClass_.getSerializedXml.call(this);
-a.setAttribute("value",this.getValue());
+a.setAttribute("value",this.data.value.get();
 return a};
 ezP.FieldTextInput.prototype.deserializeXml=function(a){this.setValue(a.getAttribute("value")||"")};
 ezP.FieldDropdown=function(a,b){ezP.FieldDropdown.superClass_.constructor.call(this,a,b)};
@@ -6269,7 +6269,7 @@ this.menuIcon_.setAttribute("transform","translate("+this.size_.width+",0)");
 this.size_.width+=ezP.Style.MenuIcon.width}else this.size_.width=0};
 
 ezP.FieldDropdown.prototype.getSerializedXml=function(){var a=ezP.FieldDropdown.superClass_.getSerializedXml.call(this);
-a.setAttribute("value",this.getValue());
+a.setAttribute("value",this.data.value.get();
 return a};
 ezP.FieldDropdown.prototype.deserializeXml=function(a){this.setValue(a.getAttribute("value")||"")};
 ezP.FieldOptionsCode=function(a,b){ezP.FieldOptionsCode.superClass_.constructor.call(this,a,b);
@@ -6590,7 +6590,7 @@ ezP.Variables.onMenuItemAction=function(a,b){var c=a.ezp.listener,d=c.sourceBloc
 e=e[1];
 if(f===ezP.ID.CHANGE_VARIABLE)c.setValue(e.getId());
 else if(f===ezP.ID.RENAME_VARIABLE)c.showIdentifierEditor();
-else if(f===ezP.ID.REPLACE_VARIABLE)f=c.getValue(),e=e.getId(),ezP.Variables.replaceVarId(d,f,e);
+else if(f===ezP.ID.REPLACE_VARIABLE)f=c.data.value.get();
 else if(f===ezP.ID.DELETE_UNUSED_VARIABLES)ezP.Variables.deleteUnusedVariables(d);
 else if(f===ezP.ID.NEW_VARIABLE)e=ezP.Variables.createDummyVariable(d),c.setValue(e.getId()),
 setTimeout(function(){c.showIdentifierEditor()},10);
@@ -6604,7 +6604,7 @@ ezP.FieldVariable.CSS_CLASS="ezp_no_options";
 ezP.FieldVariable.prototype.init=function(){this.fieldGroup_||(this.fieldGroup_=Blockly.utils.createSvgElement("g",{},null),this.sourceBlock_.getSvgRoot().appendChild(this.fieldGroup_),this.visible_||(this.fieldGroup_.style.display="none"),this.textElement_=Blockly.utils.createSvgElement("text",{"class":"ezp-code",y:ezP.Font.totalAscent},this.fieldGroup_),this.menuIcon_=ezP.Style.MenuIcon.path(this.fieldGroup_),this.mouseDownWrapper_=Blockly.bindEventWithChecks_(this.menuIcon_,"mousedown",this,this.onMouseDown_),
 this.borderRect_=this.textElement_,this.updateEditable(),this.initModel())};
 ezP.FieldVariable.prototype.initModel=function(){if(!this.getText())this.setValue(Blockly.Variables.generateUniqueName(this.sourceBlock_.isInFlyout?this.sourceBlock_.workspace.targetWorkspace:this.sourceBlock_.workspace));
-else if(!this.getValue()&&!this.sourceBlock_.isInFlyout){var a=this.getText();
+else if(!this.data.value.get(){var a=this.getText();
 this.ezp_varId_=(this.sourceBlock_.workspace.getVariableById(a)||this.sourceBlock_.workspace.getVariable(a)||this.sourceBlock_.workspace.createVariable(a)).getId()}};
 
 ezP.FieldVariable.prototype.render_=function(){if(this.visible_){goog.dom.removeChildren(this.textElement_);
@@ -6644,7 +6644,7 @@ Blockly.prompt(b,this.text_,function(b){a.sourceBlock_&&(b=a.callValidator(b));
 a.setValue(b)})};
 ezP.FieldVariable.prototype.onEndEditing_=function(a){this.isEditingIdentifier_=!1;
 var b=this.sourceBlock_.workspace,c=b.getVariable(a);
-c?this.setText(c.name):b.renameVariableById(this.getValue(),a)};
+c?this.setText(c.name):b.renameVariableById(this.data.value.get()};
 ezP.FieldVariable.prototype.showIdentifierInlineEditor_=ezP.FieldTextInput.prototype.showInlineEditor_;
 
 ezP.FieldVariable.prototype.classValidator=function(a){return a};
@@ -6672,7 +6672,7 @@ ezP.FieldVariable.prototype.removeSelect=function(){this.menuIcon_&&Blockly.util
 ezP.FieldVariable.prototype.getSerializedXml=function(){var a=goog.dom.createDom("field");
 a.setAttribute("name",this.name);
 a.setAttribute("value",this.getText());
-var b=this.sourceBlock_.workspace.getVariableById(this.getValue());
+var b=this.sourceBlock_.workspace.getVariableById(this.data.value.get();
 b&&(a.setAttribute("id",b.getId()),a.setAttribute("variableType",b.type));
 return a};
 
@@ -7561,7 +7561,7 @@ this.size_.width+=ezP.Font.space}else this.size_.width=
 ezP.FieldOptions.prototype.addSelect=function(){this.imageElement_&&Blockly.utils.addClass(this.imageElement_,"ezp-select")};
 ezP.FieldOptions.prototype.removeSelect=function(){this.imageElement_&&Blockly.utils.removeClass(this.imageElement_,"ezp-select")};
 ezP.FieldOptions.prototype.getSerializedXml=function(){var a=ezP.FieldOptions.superClass_.getSerializedXml.call(this);
-a.setAttribute("value",this.getValue());
+a.setAttribute("value",this.data.value.get();
 return a};
 
 ezP.FieldOptions.prototype.deserializeXml=function(a){this.setValue(a.getAttribute("value")||"")};
@@ -7749,10 +7749,10 @@ for(d=0;
 e=c[d];
 ++d)console.log(d+":"+[e.x_,e.y_,e.offsetInBlock_,e.sourceBlock_.type])};
 ezP.Xml={};
-Blockly.Field.prototype.getSerializedXml=function(){var a=goog.dom.createDom("field",null,this.getValue());
+Blockly.Field.prototype.getSerializedXml=function(){var a=goog.dom.createDom("field",null,this.data.value.get();
 a.setAttribute("name",this.name);
 return a};
-Blockly.FieldVariable.prototype.getSerializedXml=function(){var a=Blockly.FieldVariable.superClass_.getSerializedXml.call(this),b=this.sourceBlock_.workspace.getVariable(this.getValue());
+Blockly.FieldVariable.prototype.getSerializedXml=function(){var a=Blockly.FieldVariable.superClass_.getSerializedXml.call(this),b=this.sourceBlock_.workspace.getVariable(this.data.value.get();
 b&&(a.setAttribute("id",b.getId()),a.setAttribute("variableType",b.type));
 return a};
 

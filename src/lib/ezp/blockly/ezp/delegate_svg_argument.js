@@ -23,7 +23,7 @@ goog.require('ezP.DelegateSvg.List')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('keyword_item', {
+ezP.DelegateSvg.Expr.makeSubclass('keyword_item', {
   inputs: {
     i_1: {
       key: ezP.Key.IDENTIFIER,
@@ -47,7 +47,7 @@ ezP.DelegateSvg.Manager.makeSubclass('keyword_item', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('expression_star', {
+ezP.DelegateSvg.Expr.makeSubclass('expression_star', {
   inputs: {
     i_1: {
       label: '*',
@@ -67,7 +67,7 @@ ezP.DelegateSvg.Manager.makeSubclass('expression_star', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('expression_star_star', {
+ezP.DelegateSvg.Expr.makeSubclass('expression_star_star', {
   inputs: {
     i_1: {
       label: '**',
@@ -273,7 +273,7 @@ ezP.Consolidator.Arguments.prototype.getCheck = function() {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('argument_list', {
+ezP.DelegateSvg.Expr.makeSubclass('argument_list', {
   inputs: {
     list: {
       check: ezP.T3.Expr.Check.argument_any,
@@ -294,7 +294,7 @@ ezP.DelegateSvg.Manager.makeSubclass('argument_list', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass('argument_list_comprehensive', {
+ezP.DelegateSvg.Expr.makeSubclass('argument_list_comprehensive', {
   inputs: {
     list: {
       consolidator: ezP.Consolidator.Arguments,

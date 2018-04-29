@@ -12,41 +12,10 @@
 'use strict'
 
 goog.provide('ezP.DelegateSvg')
-goog.provide('ezP.MixinSvg')
 goog.provide('ezP.HoleFiller')
 
 goog.require('ezP.Delegate')
 goog.forwardDeclare('ezP.BlockSvg')
-
-/**
- * mixin manager.
- * Adds mixin contents to constructor's prototype
- * if not already there.
- * Using strings as parameters is a facility that
- * must not be used in case the constructor is meant
- * to replace an already registered one.
- * For objects in constructor.mixins, does a mixin
- * on the constructor's prototype.
- * Mixins do not play well with inheritance.
- * For ezPython.
- * @param {!constructor} constructor is either a constructor or the name of a constructor.
- */
-ezP.MixinSvg = function (constructor, mixins) {
-  var C = ezP.DelegateSvg.Manager.get(constructor) || constructor
-  var Ms = goog.isArray(mixins)? mixins:
-  mixins? [mixins]: C.mixins
-  if (Ms) {
-    var target = C.prototype
-    for (var i = 0, m; (m = Ms[i++]);) {
-      var source = ezP.MixinSvg[m] || m
-      for (var x in source) {
-        if (!target.hasOwnProperty(x)) {
-          target[x] = source[x]
-        }
-      }
-    }
-  }
-}
 
 /**
  * Class for a DelegateSvg.
@@ -56,60 +25,35 @@ ezP.MixinSvg = function (constructor, mixins) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg = function (prototypeName) {
-  ezP.DelegateSvg.superClass_.constructor.call(this, prototypeName)
-}
-goog.inherits(ezP.DelegateSvg, ezP.Delegate)
+ezP.Delegate.makeSubclass('Svg')
+
+// Mimic Blockly naming convention
+ezP.DelegateSvg = ezP.Delegate.Svg
 
 ezP.DelegateSvg.Manager = ezP.Delegate.Manager
 
 /**
- * Method to register an expression block.
+ * Method to register an expression or a statement block.
  * The delegate is searched as a DelegateSvg element
  */
 ezP.DelegateSvg.Manager.register = function (key) {
   var prototypeName = ezP.T3.Expr[key]
-  var Ctor = undefined
+  var delegateCtor = undefined
   var available = undefined
   if (prototypeName) {
     (key === 'numberliteral') && console.log('Registering expression', key)
-    Ctor = ezP.DelegateSvg.Expr[key]
+    delegateCtor = ezP.DelegateSvg.Expr[key]
     available = ezP.T3.Expr.Available
   } else if ((prototypeName = ezP.T3.Stmt[key])) {
     // console.log('Registering statement', key)
-    Ctor = ezP.DelegateSvg.Stmt[key]
+    delegateCtor = ezP.DelegateSvg.Stmt[key]
     available = ezP.T3.Stmt.Available
   } else {
     throw "Unknown block ezP.T3.Expr or ezP.T3.Stmt key: "+key
   }
-  ezP.MixinSvg(Ctor) // before registering
-  ezP.DelegateSvg.Manager.registerDelegate_(prototypeName, Ctor)
+  ezP.DelegateSvg.Manager.registerDelegate_(prototypeName, delegateCtor)
   available.push(prototypeName)
 }
-
-ezP.DelegateSvg.Manager.makeSubclass_ = ezP.DelegateSvg.Manager.makeSubclass
-ezP.DelegateSvg.Manager.makeSubclass = function(key, model, parent, owner) {
-  if (goog.isFunction(model)) {
-    model = model()
-  }
-  owner = owner 
-  || ezP.T3.Expr[key] && ezP.DelegateSvg.Expr
-  || ezP.T3.Stmt[key] && ezP.DelegateSvg.Stmt
-  parent = parent
-  || (model && model.inputs && model.inputs.list && ezP.DelegateSvg.List)
-  || owner
-  var Ctor = ezP.Delegate.Manager.makeSubclass_(key, model, parent, owner)
-  ezP.Do.addClassProperty(Ctor, 'subtype')
-  return Ctor
-}
-
-/**
- * Subclass maker.
- */
-ezP.DelegateSvg.makeSubclass = function(key, model, owner) {
-  return ezP.DelegateSvg.Manager.makeSubclass(key, model, ezP.DelegateSvg, owner)
-}
-
 
 /**
  * This is the shape used to draw the outline of a block
@@ -224,7 +168,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       // xfer ui
       var ui = B.ezp.ui// not yet used
       if (isMain) {
-        this.getModel().inputs = B.getModel.inputs
+        this.getModel().inputs = B.getModel().inputs
       }
       B.dispose(true)
       return ui
@@ -245,10 +189,10 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       }
       var recorder
       // the main field may determine the name of the input
-      var doEditableFields = function(name, Ctor) {
+      var doEditableFields = function(name, fieldCtor) {
         if (goog.isDefAndNotNull(v = D[name])) {
           out.input = block.appendDummyInput(k || name)
-          field = out.fields[name] = out.input.ezp.fields[name] = new Ctor(v)
+          field = out.fields[name] = out.input.ezp.fields[name] = new fieldCtor(v)
           recorder = function() {
             var ff = field
             var kk = k && (k+'.'+name) || name
@@ -461,7 +405,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         })
         field.ezp.onEndEditing_ = function() {
           var block = this.sourceBlock_
-          block.ezp.setComment(block, this.getValue())
+          block.ezp.data.comment.set(this.getValue())
         }
         field.placeholderText_ = ezP.Msg.Placeholder.COMMENT
         field.ezp.css_class = 'ezp-code-comment'
@@ -1602,7 +1546,7 @@ ezP.HoleFiller.fillDeepHoles = function(workspace, holes) {
             B = ezP.DelegateSvg.newBlockComplete(workspace, data.type)
             if (data.value) {
               B.ezp.setPhantomValue && B.ezp.setPhantomValue(B, data.value) ||
-              B.ezp.setValue && B.ezp.setValue(B, data.value)
+              B.ezp.setValue && B.ezp.data.value.set(data.value)
             }
           }
           c8n.connect(B.outputConnection)
@@ -2384,7 +2328,7 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
       return
     }
     var c8n_N = action.subtype || subtype
-    if (candidate.ezp.setSubtype(candidate, c8n_N)) {
+    if (candidate.ezp.data.subtype.set(c8n_N)) {
       c8n_N = undefined
     }
     var c8n, otherC8n, foundC8n

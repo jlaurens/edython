@@ -1178,7 +1178,7 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
  */
 ezP.MenuManager.prototype.populate_wrap_alternate = function (block, key) {
   var ezp = block.ezp
-  if (ezp.menuData && ezp.menuData.length > 1) {
+  if (ezp.menuData && ezp.data.menu.length > 1) {
     var menu = this.menu
     var input = block.getInput(key)
     if (input && input.connection) {

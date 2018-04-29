@@ -17,6 +17,7 @@ goog.require('ezP.DelegateSvg.List')
 goog.require('ezP.DelegateSvg.Expr')
 goog.require('ezP.DelegateSvg.Operator')
 
+console.warn('gather fooData -> data.foo')
 /**
  * Class for a DelegateSvg, statement block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
@@ -26,6 +27,10 @@ goog.require('ezP.DelegateSvg.Operator')
  * @constructor
  */
 ezP.DelegateSvg.makeSubclass('Stmt', {
+  data: {
+    comment: {},
+    commentShow: {},
+  },
   inputs: {
     comment: {
       value: '',
@@ -34,9 +39,6 @@ ezP.DelegateSvg.makeSubclass('Stmt', {
   }
 })
 ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.DelegateSvg.Stmt, true)
-
-ezP.Do.addInstanceProperty(ezP.DelegateSvg.Stmt, ezP.Key.COMMENT)
-ezP.Do.addInstanceProperty(ezP.DelegateSvg.Stmt, ezP.Key.COMMENT_SHOW)
 
 /**
  * Validate the comment property.
@@ -64,7 +66,7 @@ ezP.DelegateSvg.Stmt.prototype.validateCommentShow = function (block, newComment
  * @param {!Blockly.Block} block The owner of the receiver.
  */
 ezP.DelegateSvg.Stmt.prototype.initComment = function (block) {
-  this.setComment(block, '')
+  this.data.comment.set('')
 }
 
 /**
@@ -83,7 +85,7 @@ ezP.DelegateSvg.Stmt.prototype.synchronizeComment = function (block, newComment)
  * @param {!Blockly.Block} block The owner of the receiver.
  */
 ezP.DelegateSvg.Stmt.prototype.initCommentShow = function (block) {
-  this.setCommentShow(block, false)
+  this.data.commentShow.set(false)
 }
 
 /**
@@ -234,7 +236,7 @@ ezP.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
         if (Blockly.Events.isEnabled()) {
           Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
         }
-        parentBlock.ezp.setSubtype(parentBlock, subtype)
+        parentBlock.ezp.data.subtype.set(subtype)
         var targetC8n = c8n.targetConnection
         if (targetC8n) {
           targetC8n.disconnect()
@@ -357,7 +359,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.continue_stmt, {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Manager.makeSubclass(ezP.T3.Expr.non_void_identifier_list, {
+ezP.DelegateSvg.List.makeSubclass(ezP.T3.Expr.non_void_identifier_list, {
   inputs: {
     list: {
       check: ezP.T3.Expr.Check.non_void_identifier_list,
@@ -365,7 +367,7 @@ ezP.DelegateSvg.Manager.makeSubclass(ezP.T3.Expr.non_void_identifier_list, {
       presep: ',',
     }
   }
-}, ezP.DelegateSvg.List)
+})
 
 /**
  * Class for a DelegateSvg, global_nonlocal_expr.
@@ -375,8 +377,12 @@ ezP.DelegateSvg.Manager.makeSubclass(ezP.T3.Expr.non_void_identifier_list, {
  * @constructor
  */
 ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.global_nonlocal_stmt, {
+  data: {
+    subtype: {
+      all: ['global', 'nonlocal'],
+    },
+  },
   inputs: {
-    subtypes: ['global', 'nonlocal'],
     prefix: {
       label: '',
       css_class: 'ezp-code-reserved',
@@ -406,15 +412,15 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.synchronizeSubtype = functio
  * @private
  */
 ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var subtypes = block.ezp.getModel().inputs.subtypes
-  var current = block.ezp.getSubtype(block)
+  var subtypes = this.data.subtype.getAll()
+  var current = block.ezp.data.subtype.get()
   var F = function(key) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN(key, 'ezp-code-reserved'),
       ezP.Do.createSPAN(' …', 'ezp-code-placeholder'),
     )
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.setSubtype(block, key)
+      block.ezp.data.subtype.set(key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)
@@ -582,7 +588,7 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.getSubtype = ezP.DelegateSvg.S
 ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.setSubtype = function (block, subtype) {
   var target = this.ui.i_1.input.connection.targetBlock()
   if (target) {
-    target.ezp.setSubtype(target, subtype)
+    target.ezp.data.subtype.set(subtype)
   }
   return true
 }

@@ -6,37 +6,48 @@
  * License CeCILL-B
  */
 /**
- * @fileoverview Base for properties.
+ * @fileoverview ezP.Data is a class for a data controller.
+ * It merely provides the API.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
 goog.require('ezP')
-goog.provide('ezP.')
+goog.provide('ezP.Data')
 
 /**
  * Base property constructor.
  * For ezPython.
- * @param {!Blockly.Block} Ctor The constructor to add the property to.
- * @param {!string} key Whether to unlock statements too.
- * @param {Object} params.
- * @return the number of block locked
+ * @param {!Object} owner The object owning the data.
+ * @param {Object|null} mixins contains methods and properties.
  */
-ezP.Data = function(block) {
-  goog.asserts.assert(block, 'Missing block')
-  this.block_ = block // circular reference
+ezP.Data = function(owner, key, mixins) {
+  goog.asserts.assert(owner, 'Missing owner')
+  this.owner_ = owner // circular reference
   this.value_ = undefined
+  this.key = key
+  this.upperKey = key[0].toUpperCase()+key.slice(1)
+  var p = this.constructor.prototype
+  for (var x in mixins) {
+    if (x !== 'get' && x !== 'set' && !x.startsWith('_') && !x.endsWith('_') && ezP.Do.hasOwnProperty(mixins, x)) {
+      p[x] = mixins[x]
+      console.log('ADDED:', x)
+    } else {
+      console.log('REFUSED:', x)
+    }
+  }
 }
 
 /**
- * set the value of the property
+ * Get the owner of the data.
+ * Actually, this is a block delegate.
  */
-ezP.Data.prototype.getBlock = function() {
-  return this.block_
+ezP.Data.prototype.getOwner = function() {
+  return this.owner_
 }
 
 /**
- * set the value of the property
+ * Get the value of the data
  * @param {Object} newValue
  */
 ezP.Data.prototype.get = function() {
@@ -57,21 +68,24 @@ ezP.Data.prototype.get = function() {
 /**
  * When not undefined, this is the default used to initialize
  * the value. May be an index in the the `all` array.
- * May be overriden by mixin.
+ * If this is a function it is evaluated with no argument.
+ * May be overriden by the mixins.
  */
 ezP.Data.prototype.default = undefined
 
 /**
  * Init the value of the property.
- * May be set in the mixins.
+ * May be overriden by the mixins.
  */
 ezP.Data.prototype.init = function() {
-  if (goog.isDefAndNotNull(this.default)) {
+  if (goog.isFunction(this.default)) {
+    this.default()
+  } else if (goog.isDefAndNotNull(this.default)) {
     this.set(this.default)
   }
   // transition
-  var block = this.block_
-  var ezp = block.ezp
+  var ezp = this.owner_
+  var block = ezp.block_
   var key = 'init' + this.upperKey
   var init = ezp[key]
   init && init.call(ezp, block)
@@ -79,25 +93,27 @@ ezP.Data.prototype.init = function() {
 
 /**
  * When not undefined, this is the array of all possible values.
- * May be overriden by mixin.
+ * May be overriden by the mixins.
+ * Do not use this directly because this can be a function.
+ * Always use `getAll` instead.
  */
 ezP.Data.prototype.all = undefined
 
 /**
- * Get all the values. Transitional.
+ * Get all the values.
  */
 ezP.Data.prototype.getAll = function() {
-  return goog.isArray(this.all) && this.all || this.block_.ezp.getModel().inputs[this.key+'s']
+  return goog.isFunction(this.all) && this.all() || goog.isArray(this.all) && this.all
 }
 
 /**
  * Validates the value of the property
- * May be overriden by mixin
+ * May be overriden by the mixins.
  * @param {Object} newValue
  */
 ezP.Data.prototype.validate = function(newValue) {
-  var block = this.block_
-  var ezp = block.ezp
+  var ezp = this.owner_
+  var block = ezp.block_
   var key = 'validate' + this.upperKey
   var all = this.getAll()
   return ezp[key] && ezp[key].call(ezp, block, newValue) || (!all || all.indexOf(newValue) >= 0) && {validated: newValue} || null
@@ -106,14 +122,14 @@ ezP.Data.prototype.validate = function(newValue) {
 /**
  * Will change the value of the property.
  * The signature is `willChange( oldValue, newValue ) → void`
- * May be overriden by mixin
+ * May be overriden by the mixins.
  * @param {Object} oldValue
  * @param {Object} newValue
  * @return undefined
  */
 ezP.Data.prototype.willChange = function(oldValue, newValue) {
-  var block = this.block_
-  var ezp = block.ezp
+  var ezp = this.owner_
+  var block = ezp.block_
   var key = 'willChange' + this.upperKey
   ezp[key] && ezp[key].call(ezp, block, oldValue, newValue)
 }
@@ -139,14 +155,14 @@ ezP.Data.prototype._willChange = function(oldValue, newValue) {
 /**
  * Did change the value of the property.
  * The signature is `didChange( oldValue, newValue ) → void`
- * May be overriden by mixin
+ * May be overriden by the mixins.
  * @param {Object} oldValue
  * @param {Object} newValue
  * @return undefined
  */
 ezP.Data.prototype.didChange = function(oldValue, newValue) {
-  var block = this.block_
-  var ezp = block.ezp
+  var ezp = this.owner_
+  var block = ezp.block_
   var key = 'didChange' + this.upperKey
   ezp[key] && ezp[key].call(ezp, block, oldValue, newValue)
 }
@@ -181,8 +197,8 @@ ezP.Data.prototype.noUndo = undefined
  * @param {Object} newValue
  */
 ezP.Data.prototype.synchronize = function(newValue) {
-  var block = this.block_
-  var ezp = block.ezp
+  var ezp = this.owner_
+  var block = ezp.block_
   var key = 'synchronize' + this.upperKey
   ezp[key] && ezp[key].call(ezp, block, newValue)
 }
@@ -218,131 +234,4 @@ ezP.Data.prototype.set = function (newValue) {
   }
   this.setTrusted(newValue)
   return true
-}
-
-/**
- * Declares and init a named property for the given constructor.
- * First create a subclass of ezP.Data, with custom data from param.
- * Then create various getters and setters in the Ctor prototype.
- * Each constructor holds a map of property constructors.
- * For ezPython.
- * @param {Object} Ctor The constructor to add the property to.
- * @param {!string} key Whether to unlock statements too.
- * @param {Object} params.
- * @return the number of block locked
- */
-ezP.Data.add = function (Ctor, key, mixins) {
-  // The property belongs to a subclass of ezP.Data
-  // We subclass because the willChange and didChange methods
-  // will definitely differ from one block to the other.
-  // This subclass is stored in Ctor, such that each time
-  // a new instance of Ctor is created, its property
-  // can be created from the appropriate constructor.
-  // First retrieve the `ezp` object:
-  // this is where we add things to constructors.
-  var ezp = Ctor.ezp || (Ctor.ezp = {})
-  // The repository for property constructors is a standard
-  // object named `ezp.data`. Its properties are the various
-  // keys added, the corresponding value is the corresponding
-  // ezP.Data subclass constructor
-  var keyCtor = 'ezp:' + key
-  if (ezp.data) {
-    if (ezp.data[keyCtor]) {
-      // this key has already been added
-      console.log('This key has already been added', key)
-      return
-    }
-    // get the constructor. Its prototype contains all the keys
-    // already created, including the inherited ones.
-    for(var kk in ezp.data) {
-      console.log('Already known key:', kk)
-    }
-    var dataCtor = ezp.data.constructor
-    for(var kk in dataCtor.prototype) {
-      console.log('Already known prototype key:', kk)
-    }
-  } else {
-    dataCtor = function() {}
-    // Find the first ancestor of Ctor with an ezp.data object
-    var c = Ctor
-    while (c.superClass_) {
-      c = c.superClass_.constructor
-      if (c.ezp && c.ezp.data) {
-        goog.inherits(dataCtor, c.ezp.data.constructor)
-        break
-      }
-    }
-    for(var kk in dataCtor.prototype) {
-      console.log('Freshly known prototype key:', kk)
-    }
-  }
-  var subclass = dataCtor.prototype[keyCtor] = function(block) {
-    ezP.Data.call(this, block)
-  }
-  goog.inherits(subclass, ezP.Data)
-  for(var kk in dataCtor.prototype) {
-    console.log('Newly known prototype key:', kk)
-  }
-  // now that we have extended dataCtor, we create another instance
-  // which prototype will take into account the change
-  ezp.data = new dataCtor()
-  for(var kk in ezp.data) {
-    console.log('Newly known key:', kk)
-  }
-  // Now it is time to extend the ezP.Data subclass
-  // Even if nothing changes, we subclass.
-  var p = subclass.prototype
-  for (var x in mixins) {
-    if (x !== 'get' && x !== 'set' && !x.startsWith('_') && !x.endsWith('_') && mixins.hasOwnData(x)) {
-      p[x] = mixins[x]
-      console.log('ADDED:', x)
-    } else {
-      console.log('REFUSED:', x)
-    }
-  }
-  p.key = key
-  // Making the transition
-  const K = key.charAt(0).toUpperCase() + key.slice(1)
-  p.upperKey = K
-  // Now go for the Ctor extension.
-  // this is the main entry
-  p = Ctor.prototype // Ctor === this.constructor
-  if (!p.getDataForKey) {
-    p.getDataForKey = function(block, kk) {
-      var property = this.property_ || (this.property_ = Object.create(null))
-      return property[kk] || (property[kk] = new this.constructor.ezp.data['ezp:' + kk](block))
-    }
-  }
-  // the key is catched in the closure
-  p[key+'Data'] = function(block) {
-    return this.getDataForKey(block, key)
-  }
-  p['get'+K] = function(block) {
-    return this.getDataForKey(block, key).get()
-  }
-  p['get'+K+'s'] = function(block) {
-    return this.constructor.ezp.data['ezp:' + key].all || block && block.ezp.getModel().inputs[key+'s']
-  }
-  p['setTrusted'+K] = function (block, newValue) {
-    this.getDataForKey(block, key).setTrusted(newValue)
-  }
-  p['set'+K] = function (block, newValue) {
-    this.getDataForKey(block, key).set(newValue)
-  }
-  if (!p.hasOwnProperty('initData')) {
-    var init = p.initData
-    p.initData = function(block) {
-      init && init.call(this, block)
-      var d = Ctor.ezp.data
-      for (var k in d) {
-        if (k.startsWith('ezp:')) {
-          this.getDataForKey(block, k.substring(4)).get() // initialize as side effect
-        }
-      }
-    }
-  }
-}
-
-if (ezP && ezP.Do) {
-  ezP.Do.addInstanceProperty = ezP.Data.add
 }

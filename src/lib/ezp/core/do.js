@@ -414,176 +414,14 @@ ezP.Do.Enumerator = function (list, filter) {
   return me
 }
 
-/**
- * Declares and init a named property for the given constructor.
- * For ezPython.
- * @param {Object} Ctor The constructor to add the property to.
- * @param {!string} key Whether to unlock statements too.
- * @param {Object} params.
- * @return the number of block locked
- */
-ezP.Do.addInstanceProperty = function (Ctor, key, params) {
-  var ezp = Ctor.ezp || (Ctor.ezp = {})
-  var properties = ezp.properties || (ezp.properties = {})
-  var k = key.charAt(0).toUpperCase() + key.slice(1)
-  var Ks = properties[key] = {
-    keys: key+'s',
-    index: key+'Index',
-    get: 'get'+k,
-    init: 'init'+k,
-    _init: '_init'+k,
-    gets: 'get'+k+'s',
-    set: 'set'+k,
-    validate: 'validate'+k,
-    synchronize: 'synchronize'+k,
-    setTrusted: 'setTrusted'+k,
-    didChange: 'didChange'+k,
-    _didChange: '_didChange'+k,
-    willChange: 'willChange'+k,
-    _willChange: '_willChange'+k,
-    event: ezP.Const.Event.PROPERTY+key,
-  }
-  var p = Ctor.prototype
-  if (p[Ks.get]) {
-    return
-  }
-  p[Ks.get] = function(block) {
-    var holder = this.properties
-    holder = holder[key] || (holder[key] = {})
-    if (goog.isDef(holder.value) || holder.lock_get) {
-      return holder.value
-    }
-    try {
-      holder.lock_get = true
-      p[Ks.init].call(this, block)
-    } finally {
-      delete holder.lock_get
-    }
-    return holder.value
-  }
-  p[Ks.gets] = function(block) {
-    return block.ezp.getModel().inputs[Ks.keys]
-  }
-  p[Ks._init] = params && params.initialize || function(block) {
-    var inputs = block.ezp.getModel().inputs
-    var values = inputs[Ks.keys]
-    if (values) {
-      var i = inputs[Ks.index] || 0
-      var value = values[i]
-      return this[Ks.set].call(this, block, value)
-    }
-  }
-  p[Ks.init] = function(block) {
-    var value = this[Ks.get].call(this, block)
-    if (goog.isDef(value)) {
-      return
-    }
-    return this[Ks._init].call(this, block)
-  }
-  p[Ks.validate] = params && params.validate || function(block, newValue) {
-    var values = block.ezp.getModel().inputs[Ks.keys]
-    return (!values || values.indexOf(newValue) >= 0) && {validated: newValue} || null
-  }
-  p[Ks.willChange] = params && params.willChange || function(block, oldValue, newValue) {
-  }
-  p[Ks._willChange] = function(block, oldValue, newValue) {
-    var holder = this.properties[key]
-    if (holder.lock_willChange) {
-      return
-    }
-    try {
-      holder.lock_willChange = true
-      this[Ks.willChange].call(this, block, oldValue, newValue)
-    } finally {
-      delete holder.lock_willChange
-    }
-  }
-  p[Ks.didChange] = params && params.didChange || function(block, oldValue, newValue) {
-  }
-  p[Ks._didChange] = function(block, oldValue, newValue) {
-    var holder = this.properties[key]
-    if (holder.lock_didChange) {
-      return
-    }
-    try {
-      holder.lock_didChange = true
-      this[Ks.didChange].call(this, block, oldValue, newValue)
-    } finally {
-      delete holder.lock_didChange
-    }
-  }
-  p[Ks.setTrusted] = function (block, newValue) {
-    var holder = this.properties
-    holder = holder[key] || (holder[key] = {})
-    var oldValue = holder.value
-    var grouper = new ezP.Events.Grouper()
-    var old = this.skipRendering
-    try {
-      this.skipRendering = true
-      this[Ks._willChange].call(this, block, oldValue, newValue)
-      if (Blockly.Events.isEnabled()) {
-        Blockly.Events.fire(new Blockly.Events.BlockChange(
-        block, Ks.event, null, oldValue, newValue))
-      }
-      holder.value = newValue
-      this[Ks._didChange].call(this, block, oldValue, newValue)
-      var synchronize = this[Ks.synchronize]
-      synchronize && synchronize.call(this, block, goog.isDef(newValue) && newValue || this[Ks.get].call(this, block))
-      this.consolidateType(block)
-      this.skipRendering = old
-      block.render() // render now or possibly later ?
-    } finally {
-      this.skipRendering = old
-      grouper.stop()
-    }
-  }
-  p[Ks.set] = function (block, newValue) {
-    if (goog.isNumber(newValue)) {
-      var values = block.ezp.getModel().inputs[Ks.keys]
-      if (values) {
-        newValue = values[newValue]
-      }
-    }
-    var holder = this.properties
-    holder = holder[key] || (holder[key] = {})
-    if ((holder.value === newValue) || !(newValue = this[Ks.validate].call(this, block, newValue)) || !goog.isDef(newValue = newValue.validated)) {
-      var synchronize = this[Ks.synchronize]
-      synchronize && synchronize.call(this, block, newValue || this[Ks.get].call(this, block))
-      return false
-    }
-    this[Ks.setTrusted].call(this, block, newValue)
-    return true
-  }
-}
 console.warn('synchronizeFoo has another argument')
-/**
- * Declares and init a named property for the given constructor.
- * For ezPython.
- * @param {Object} Ctor The constructor to add the property to.
- * @param {!string} key Whether to unlock statements too.
- */
-ezP.Do.addClassProperty = function (Ctor, key) {
-  var k = key.charAt(0).toUpperCase() + key.slice(1)
-  var Ks = {
-    keys: key+'s',
-    gets: 'get'+k+'s',
-    validate: 'validate'+k
-  }
-  Ctor.ezp[Ks.gets] = function() {
-    return Ctor.ezp.getModel().inputs[Ks.keys]
-  }
-  Ctor.ezp[Ks.validate] = function(newValue) {
-    var values = Ctor.ezp[Ks.gets]()
-    return values && values.indexOf(newValue) >= 0 && {validated: newValue}
-  }
-}
 
 /**
  * Get the flag given the position as argument.
  * Positions are given 1 based
  * For ezPython.
  */
- ezP.Do.getVariantFlag = function(variant, flag) {
+ ezP.Do.getVariantFlag = function(variant, position) {
   return variant & 1 << (  position - 1)
  }
 
@@ -603,4 +441,15 @@ ezP.Do.addClassProperty = function (Ctor, key) {
     }
   }
   return variant
- }
+}
+
+/**
+ * Convenient shortcut
+ * For ezPython.
+ * @param {!Array} list indexed object.
+ * @param {!function} filter an optional filter.
+ * @return an enumerator
+ */
+ezP.Do.hasOwnProperty = function (object, key) {
+  return Object.prototype.hasOwnProperty.call(object, key)
+}
