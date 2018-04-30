@@ -273,7 +273,7 @@ ezP.Consolidator.Arguments.prototype.getCheck = function() {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('argument_list', {
+ezP.DelegateSvg.List.makeSubclass('argument_list', {
   inputs: {
     list: {
       check: ezP.T3.Expr.Check.argument_any,
@@ -294,7 +294,7 @@ ezP.DelegateSvg.Expr.makeSubclass('argument_list', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('argument_list_comprehensive', {
+ezP.DelegateSvg.List.makeSubclass('argument_list_comprehensive', {
   inputs: {
     list: {
       consolidator: ezP.Consolidator.Arguments,

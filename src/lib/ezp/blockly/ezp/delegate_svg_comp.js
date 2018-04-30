@@ -95,7 +95,7 @@ ezP.DelegateSvg.Expr.makeSubclass('comp_if', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('comp_iter_list', {
+ezP.DelegateSvg.List.makeSubclass('comp_iter_list', {
   inputs: {
     list: {
       check: ezP.T3.Expr.Check.comp_iter,

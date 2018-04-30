@@ -294,7 +294,7 @@ ezP.Consolidator.Parameter.prototype.getCheck = function() {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('parameter_list', {
+ezP.DelegateSvg.List.makeSubclass('parameter_list', {
   inputs: {
     list: {
       consolidator: ezP.Consolidator.Parameter,
