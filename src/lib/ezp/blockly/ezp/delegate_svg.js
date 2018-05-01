@@ -360,6 +360,9 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       }
     }
   }
+  FF.call(this, ezP.Key.MODIFIER)
+  FF.call(this, ezP.Key.PREFIX)
+  FF.call(this, ezP.Key.SUFFIX)
   // next are not implemented in the ui
   if ((D = this.getModel().output) && D.awaitable) {
     field = new ezP.FieldLabel('await')
@@ -383,14 +386,10 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     if ((v = inputModel.insert)) {
       ui = doInsert.call(this, v, true)
     } else {
-      FF.call(this, ezP.Key.MODIFIER)
-      FF.call(this, ezP.Key.PREFIX)
-      FF.call(this, ezP.Key.SUFFIX)
-      var keys = ['i_1', 'i_2', 'i_3', 'i_4']
-      for (var i = 0, K; K = keys[i++];) {
-        var p = doOneModel.call(this, K)
+      for (var i = 1; i < 5; i++) {
+        var p = doOneModel.call(this, i)
         if (p) {
-          ui[K] = p
+          ui[i] = p
         }
       }
       // comment for statements is managed separately

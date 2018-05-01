@@ -25,7 +25,7 @@ goog.require('ezP.DelegateSvg.Group')
  */
 ezP.DelegateSvg.Group.makeSubclass('try_part', {
   inputs: {
-    i_1: {
+    1: {
       dummy: 'try',
       css_class: 'ezp-code-reserved',
     },
@@ -53,12 +53,12 @@ ezP.DelegateSvg.Group.makeSubclass('except_part', {
     },
   },
   inputs: {
-    i_1: {
+    1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
-    i_2: {
+    2: {
       key: ezP.Key.AS,
       label: 'as',
       css_class: 'ezp-code-reserved',
@@ -133,7 +133,7 @@ ezP.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function 
  */
 ezP.DelegateSvg.Group.makeSubclass('finally_part', {
   inputs: {
-    i_1: {
+    1: {
       dummy: 'finally',
       css_class: 'ezp-code-reserved',
     },
@@ -160,12 +160,12 @@ ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
     },
   },
   inputs: {
-    i_1: {
+    1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
-    i_2: {
+    2: {
       label: 'from',
       css_class: 'ezp-code-reserved',
       key: ezP.Key.FROM,
@@ -238,14 +238,14 @@ ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
     },
   },
   inputs: {
-    i_1: {
+    1: {
       label: 'assert',
       css_class: 'ezp-code-reserved',
       key: ezP.Key.ASSERT,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
-    i_3: {
+    3: {
       label: ',',
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,

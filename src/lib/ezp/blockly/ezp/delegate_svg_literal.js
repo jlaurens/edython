@@ -75,7 +75,7 @@ ezP.DelegateSvg.Literal.makeSubclass('numberliteral', {
     },
   },
   inputs: { 
-    i_1: {
+    1: {
       number: {
         key:ezP.Key.VALUE,
         value: 0,
@@ -100,7 +100,7 @@ ezP.DelegateSvg.Literal.makeSubclass('numberliteral', {
  * @private
  */
 ezP.DelegateSvg.Expr.numberliteral.prototype.showEditor = function (block) {
-  this.ui.i_1.fields.value.showEditor_()
+  this.ui[1].fields.value.showEditor_()
 }
 
 /**
@@ -203,7 +203,7 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
     },
   },
   inputs: {
-    i_1: {
+    1: {
       start: '',
       string: {
         key:ezP.Key.VALUE,
@@ -267,14 +267,14 @@ console.warn('Change the initData below')
  */
 ezP.DelegateSvg.Expr.shortliteral.prototype.initXData = function(block) {
   // first the delimiters in the variant property
-  var field = this.ui.i_1.fields.start
+  var field = this.ui[1].fields.start
   var variant = field.getValue() || this.data.delimiter.getAll()[0]
   this.data.delimiter.set(variant)
   // validating the modifier depends on the delimiter,
   // hence the variant, to be initialized
   var field = this.ui.fields.prefix
   var modifier = field.getValue() || this.data.modifier.get()
-  var content = this.ui.i_1.fields.value.getValue() || ''
+  var content = this.ui[1].fields.value.getValue() || ''
   if (this.getPossibleSubtype(modifier, content)) {
     this.data.modifier.setTrusted(modifier)
     this.data.content.setTrusted(content)

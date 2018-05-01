@@ -26,12 +26,12 @@ goog.require('ezP.MenuItem')
 //  */
 // ezP.DelegateSvg.makeSubclass('dotted_funcname_solid', {
 //   inputs: {
-//     i_1: {
+//     1: {
 //       key: ezP.Key.PARENT,
 //       check: ezP.T3.Expr.identifier,
 //       hole_value: 'parent',
 //     },
-//     i_3: {
+//     3: {
 //       label: '.',
 //       key: ezP.Key.NAME,
 //       check: ezP.T3.Expr.dotted_name,
@@ -87,7 +87,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
     },
   },
   inputs: {
-    i_1: {
+    1: {
       term: {
         key: ezP.Key.DOTTED_NAME,
         value: '',
@@ -101,12 +101,12 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
         left_space: true,
       },
     },
-    i_2: {
+    2: {
       key: ezP.Key.BUILTIN,
       label: '',
       css_class: 'ezp-code-reserved',
     },
-    i_3: {
+    3: {
       start: '(',
       key: ezP.Key.ARGUMENTS,
       wrap: ezP.T3.Expr.argument_list,
@@ -219,7 +219,7 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
     }
   },
   inputs: {
-    i_1: {
+    1: {
       key: ezP.Key.NAME,
       label: 'def',
       css_class: 'ezp-code-reserved',
@@ -235,13 +235,13 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
         },
       },
     },
-    i_2: {
+    2: {
       key: ezP.Key.PARAMETERS,
       start: '(',
       wrap: ezP.T3.Expr.parameter_list,
       end: ')',
     },
-    i_3: {
+    3: {
       label: '->',
       key: ezP.Key.TYPE,
       check: ezP.T3.Expr.Check.expression,
@@ -310,7 +310,7 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
     },
   },
   inputs: {
-    i_1: {
+    1: {
       label: 'class',
       css_class: 'ezp-code-reserved',
       term: {
@@ -325,7 +325,7 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
         },
       },
     },
-    i_2: {
+    2: {
       key: ezP.Key.ARGUMENTS,
       start: '(',
       wrap: ezP.T3.Expr.argument_list,

@@ -110,7 +110,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
       },
     },
     inputs: {
-      i_1: {
+      1: {
         term: {
           key:ezP.Key.VALUE,
           value: '',
@@ -123,21 +123,21 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
           },
         },
       },
-      i_2: {
+      2: {
         key: ezP.Key.ANNOTATION,
         label: ':',
         css_class: 'ezp-code-reserved',
         check: ezP.T3.Expr.Check.expression,
         hole_value: 'expression',
       },
-      i_3: {
+      3: {
         key: ezP.Key.DEFINITION,
         label: '=',
         css_class: 'ezp-code-reserved',
         check: ezP.T3.Expr.Check.expression,
         hole_value: 'expression',
       },
-      i_4: {
+      4: {
         label: 'as',
         css_class: 'ezp-code-reserved',
         edit: {
@@ -223,7 +223,7 @@ ezP.DelegateSvg.Expr.term.prototype.didChangeValue = function (block, oldValue, 
  * @return the phantom value
  */
 ezP.DelegateSvg.Expr.term.prototype.getPhantomValue = function(block) {
-  var field = this.ui.i_1.fields.value
+  var field = this.ui[1].fields.value
   return field.placeholderText_
 }
 
@@ -234,7 +234,7 @@ ezP.DelegateSvg.Expr.term.prototype.getPhantomValue = function(block) {
  * @return true
  */
 ezP.DelegateSvg.Expr.term.prototype.setPhantomValue = function(block, text) {
-  var field = this.ui.i_1.fields.value
+  var field = this.ui[1].fields.value
   field.placeholderText_ = text
   field.render_()
   return true
@@ -246,7 +246,7 @@ ezP.DelegateSvg.Expr.term.prototype.setPhantomValue = function(block, text) {
  * @private
  */
 ezP.DelegateSvg.Expr.term.prototype.showEditor = function (block) {
-  this.ui.i_1.fields.value.showEditor_()
+  this.ui[1].fields.value.showEditor_()
 }
 
 /**

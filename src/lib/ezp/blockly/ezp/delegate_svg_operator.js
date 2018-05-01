@@ -29,12 +29,12 @@ ezP.DelegateSvg.Expr.makeSubclass('Operator', {
     operator: {
       default: 0,
       synchronize: function(newValue) {
-        this.ui.i_2.fields.operator.setValue(newValue || '')
+        this.ui[2].fields.operator.setValue(newValue || '')
       },
     },
   },
   inputs: {
-    i_2: {
+    2: {
       key: ezP.Key.RHS,
       operator: '',
       css_class: 'ezp-code',
@@ -88,7 +88,7 @@ ezP.DelegateSvg.Operator.makeSubclass('u_expr_solid', {
     },
   },
   inputs: {
-    i_2: {
+    2: {
       check: ezP.T3.Expr.Check.u_expr
     },
   },
@@ -114,7 +114,7 @@ ezP.DelegateSvg.Expr.u_expr_solid.prototype.makeTitle = function (block, op) {
  */
 ezP.DelegateSvg.Operator.makeSubclass('Binary',{
   inputs: {
-    i_1: {
+    1: {
       key: ezP.Key.LHS,
       hole_value: 'name',
     },
@@ -147,10 +147,10 @@ ezP.DelegateSvg.Binary.makeModel = function(operators, check1, check3, operatorI
       },
     },
     inputs: {
-      i_1: {
+      1: {
         check: ezP.T3.Expr.Check[check1]
       },
-      i_2: {
+      2: {
         check: ezP.T3.Expr.Check[check3]
       },
     },
@@ -296,10 +296,10 @@ ezP.DelegateSvg.Binary.makeSubclass('object_comparison', {
     },
   },
   inputs: {
-    i_1: {
+    1: {
       check: ezP.T3.Expr.Check.comparison
     },
-    i_2: {
+    2: {
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.comparison
     },
@@ -331,10 +331,10 @@ ezP.DelegateSvg.Binary.makeSubclass('or_test_solid', {
     }
   },
   inputs: {
-    i_1: {
+    1: {
       check: ezP.T3.Expr.Check.or_test
     },
-    i_2: {
+    2: {
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.and_test
     },
@@ -356,10 +356,10 @@ ezP.DelegateSvg.Binary.makeSubclass('and_test_solid', {
     }
   },
   inputs: {
-    i_1: {
+    1: {
       check: ezP.T3.Expr.Check.and_test
     },
-    i_2: {
+    2: {
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.not_test
     },
@@ -383,12 +383,12 @@ ezP.DelegateSvg.Operator.makeSubclass('power_solid', {
     },
   },
   inputs: {
-    i_1: {
+    1: {
       key: ezP.Key.ARGUMENT,
       check: ezP.T3.Expr.Check.await_or_primary,
       hole_value: 'name',
     },
-    i_2: {
+    2: {
       key: ezP.Key.POWER,
       check: ezP.T3.Expr.Check.u_expr,
       hole_value: 'power',

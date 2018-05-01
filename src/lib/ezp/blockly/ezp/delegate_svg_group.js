@@ -228,7 +228,7 @@ ezP.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
  */
 ezP.DelegateSvg.Group.makeSubclass('if_part', {
   inputs: {
-    i_1: {
+    1: {
       label: 'if',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
@@ -248,7 +248,7 @@ ezP.DelegateSvg.Group.makeSubclass('if_part', {
  */
 ezP.DelegateSvg.Group.makeSubclass('elif_part', {
   inputs: {
-    i_1: {
+    1: {
       label: 'elif',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
@@ -276,7 +276,7 @@ ezP.DelegateSvg.Group.makeSubclass('elif_part', {
  */
 ezP.DelegateSvg.Group.makeSubclass('else_part', {
   inputs: {
-    i_1: {
+    1: {
       label: 'else',
       css_class: 'ezp-code-reserved',
     },
@@ -360,7 +360,7 @@ ezP.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
  */
 ezP.DelegateSvg.Group.makeSubclass('while_part', {
   inputs: {
-    i_1: {
+    1: {
       label: 'while',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
@@ -421,14 +421,14 @@ ezP.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (block, mgr
  */
 ezP.DelegateSvg.Group.makeSubclass('for_part', {
   inputs: {
-    i_1: {
+    1: {
       label: 'for',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.target_list,
       key: ezP.Key.FOR,
       hole_value: 'element',
     },
-    i_2: {
+    2: {
       label: 'in',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.expression_list,
@@ -448,7 +448,7 @@ ezP.DelegateSvg.Group.makeSubclass('for_part', {
  */
 ezP.DelegateSvg.Group.makeSubclass('with_part', {
   inputs: {
-    i_1: {
+    1: {
       key: ezP.Key.WITH,
       label: 'with',
       css_class: 'ezp-code-reserved',
@@ -467,12 +467,12 @@ ezP.DelegateSvg.Group.makeSubclass('with_part', {
  */
 ezP.DelegateSvg.Expr.makeSubclass('with_item_solid', {
   inputs: {
-    i_1: {
+    1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
-    i_3: {
+    3: {
       key: ezP.Key.TARGET,
       label: 'as',
       css_class: 'ezp-code-reserved',

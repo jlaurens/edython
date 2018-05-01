@@ -34,19 +34,19 @@ ezP.DelegateSvg.Expr.makeSubclass('attributeref', {
         {validated: newValue}: null
       },
       synchronize: function(newValue) {
-        var field = this.ui.i_2.fields.value
+        var field = this.ui[2].fields.value
         this.setFieldValue(newValue || '', 2, ezP.Key.VALUE)
       },
     },
   },
   inputs: {
-    i_1: {
+    1: {
       key: ezP.Key.PRIMARY,
       check: ezP.T3.Expr.Check.primary,
       plugged: ezP.T3.Expr.primary,
       hole_value: 'primary',
     },
-    i_2: {
+    2: {
       label: '.',
       edit: {
         key: ezP.Key.VALUE,
@@ -95,7 +95,7 @@ ezP.DelegateSvg.Expr.makeSubclass('slicing', {
     }
   },
   inputs: {
-    i_1: {
+    1: {
       edit: {
         key: ezP.Key.VALUE,
         value: '',
@@ -108,13 +108,13 @@ ezP.DelegateSvg.Expr.makeSubclass('slicing', {
         },
       },
     },
-    i_2: {
+    2: {
       key: ezP.Key.PRIMARY,
       check: ezP.T3.Expr.Check.primary,
       plugged: ezP.T3.Expr.primary,
       hole_value: 'primary',
     },
-    i_3: {
+    3: {
       key: ezP.Key.SLICE,
       start: '[',
       wrap: ezP.T3.Expr.slice_list,
@@ -180,7 +180,7 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
         var withExpression = newValue === 1
         this.setInputDisabled(1, withExpression)
         this.setInputDisabled(2, !withExpression)
-        var field = this.ui.i_1.fields.value
+        var field = this.ui[1].fields.value
         if (field.textElement_) {
           var withBuiltin = newValue === 2
           var i = withBuiltin? 0: 1
@@ -214,7 +214,7 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
     },
   },
   inputs: {
-    i_1: {
+    1: {
       edit: {
         key: ezP.Key.VALUE,
         value: '',
@@ -227,13 +227,13 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
         },
       },
     },
-    i_2: {
+    2: {
       key: ezP.Key.PRIMARY,
       check: ezP.T3.Expr.Check.primary,
       plugged: ezP.T3.Expr.primary,
       hole_value: 'primary',
     },
-    i_3: {
+    3: {
       key: ezP.Key.ARGUMENTS,
       start: '(',
       wrap: ezP.T3.Expr.argument_list,

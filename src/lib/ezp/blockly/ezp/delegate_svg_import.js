@@ -111,13 +111,13 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
     },
   },
   inputs: {
-    i_1: {
+    1: {
       label: 'import',
       css_class: 'ezp-code-reserved',
       key: ezP.Key.IMPORT_MODULE,
       wrap: ezP.T3.Expr.non_void_module_as_list,
     },
-    i_2: {
+    2: {
       label: 'from',
       css_class: 'ezp-code-reserved',
       key: ezP.Key.FROM,
@@ -136,13 +136,13 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         },
       },
     },
-    i_3: {
+    3: {
       label: 'import',
       css_class: 'ezp-code-reserved',
       key: ezP.Key.IMPORT,
       wrap: ezP.T3.Expr.non_void_import_identifier_as_list,
     },
-    i_4: {
+    4: {
       label: 'import *',
       css_class: 'ezp-code-reserved',
     },
@@ -209,7 +209,7 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
  */
 ezP.DelegateSvg.Stmt.makeSubclass('future_statement', {
   inputs: {
-    i_1: {
+    1: {
       label: 'from __future__ import',
       css_class: 'ezp-code-reserved',
       key: ezP.Key.LIST,

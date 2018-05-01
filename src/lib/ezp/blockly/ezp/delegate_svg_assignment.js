@@ -28,7 +28,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Expr.makeSubclass('target_star', {
   inputs: {
-    i_1: {
+    1: {
       key: ezP.Key.EXPRESSION,
       label: '*',
       css_class: 'ezp-code-reserved',
@@ -304,7 +304,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     },
   },
   inputs: {
-    i_1: {
+    1: {
       term: {
         key:ezP.Key.VALUE,
         value: '',
@@ -317,18 +317,18 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         },
       },
     },
-    i_2: {
+    2: {
       key: ezP.Key.ANNOTATION,
       label: ':',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
-    i_3: {
+    3: {
       key: ezP.Key.TARGET,
       wrap: ezP.T3.Expr.target_list_list,
     },
-    i_4: {
+    4: {
       key: ezP.Key.ASSIGNED,
       operator: '=',
       wrap: ezP.T3.Expr.assigned_list,
@@ -369,7 +369,7 @@ ezP.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
   mgr.shouldSeparate()
   if (current != 2) {
     var menuItem = new ezP.MenuItem(ezP.Msg.RENAME, function() {
-        block.ezp.ui.i_1.fields.value.showEditor()
+        block.ezp.ui[1].fields.value.showEditor()
       })
     mgr.addChild(menuItem, true)
     mgr.shouldSeparate()
@@ -434,7 +434,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
           {validated: newValue}: null
         },
         synchronize: function(newValue) {
-          var field = this.ui.i_1.fields.value
+          var field = this.ui[1].fields.value
           field.setValue(newValue || '')
         },
       },
@@ -464,7 +464,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
       },
     },
     inputs: {
-      i_1: {
+      1: {
         term: {
           key:ezP.Key.VALUE,
           value: '',
@@ -477,11 +477,11 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
           },
         },
       },
-      i_2: {
+      2: {
         key: ezP.Key.TARGET,
         check: ezP.T3.Expr.Check.augtarget,
       },
-      i_3: {
+      3: {
         key: ezP.Key.EXPRESSIONS,
         label: '',
         wrap: ezP.T3.Expr.augassigned_list,

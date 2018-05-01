@@ -350,20 +350,20 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
  */
 ezP.DelegateSvg.Expr.makeSubclass('proper_slice', {
   inputs: {
-    i_1: {
+    1: {
       key: ezP.Key.LOWER_BOUND,
       check: ezP.T3.Expr.Check.expression,
       optional: true,
       hole_value: 'lower',
       end: ':',
     },
-    i_2: {
+    2: {
       key: ezP.Key.UPPER_BOUND,
       check: ezP.T3.Expr.Check.expression,
       optional: true,
       hole_value: 'upper',
     },
-    i_3: {
+    3: {
       start: ':',
       key: ezP.Key.STRIDE,
       check: ezP.T3.Expr.Check.expression,
@@ -383,19 +383,19 @@ ezP.DelegateSvg.Expr.makeSubclass('proper_slice', {
  */
 ezP.DelegateSvg.Expr.makeSubclass('conditional_expression_solid', {
   inputs: {
-    i_1: {
+    1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.or_test,
       hole_value: 'name',
     },
-    i_2: {
+    2: {
       label: 'if',
       key: ezP.Key.IF,
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.or_test,
       hole_value: 'condition',
     },
-    i_3: {
+    3: {
       label: 'else',
       key: ezP.Key.ELSE,
       css_class: 'ezp-code-reserved',
@@ -423,7 +423,7 @@ ezP.DelegateSvg.Expr.makeSubclass('starred_expression', function () {
       },
     },
     inputs: {
-      i_1: {
+      1: {
         key: ezP.Key.EXPRESSION,
         label: '',
         css_class: 'ezp-code-reserved',
@@ -453,7 +453,7 @@ ezP.DelegateSvg.Expr.starred_expression.prototype.consolidateType = function(blo
   // ezP.T3.Expr.Check.or_expr
   var data = this.data.modifier
   var withOneStar = data.get() === data.model.STAR
-  var c8n = this.ui.i_1.input.connection
+  var c8n = this.ui[1].input.connection
   var targetC8n = c8n.targetConnection
   var no_or_expr = false
   if (targetC8n) {
@@ -509,7 +509,7 @@ ezP.DelegateSvg.Expr.starred_expression.prototype.populateContextMenuFirst_ = fu
 */
 ezP.DelegateSvg.Expr.makeSubclass('not_test_solid', {
   inputs: {
-    i_1: {
+    1: {
       key: ezP.Key.EXPRESSION,
       label: 'not',
       css_class: 'ezp-code-reserved',
@@ -537,7 +537,7 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_object', {
     },
   },
   inputs: {
-    i_1: {
+    1: {
       key: ezP.Key.VALUE,
       label: '',
       css_class: 'ezp-code-reserved',
@@ -585,7 +585,7 @@ ezP.DelegateSvg.Expr.makeSubclass('any', {
     }
   },
   inputs: {
-    i_1: {
+    1: {
       value: {
         value: '',
         placeholder: ezP.Msg.Placeholder.CODE,

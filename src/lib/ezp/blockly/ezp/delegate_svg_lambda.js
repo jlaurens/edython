@@ -376,13 +376,13 @@ console.warn('Use a modifier field for * and ** (instead of await and async too)
  */
 ezP.DelegateSvg.Expr.makeSubclass('lambda', {
   inputs: {
-    i_1: {
+    1: {
       key: ezP.Key.PARAMETERS,
       label: 'lambda',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.parameter_list,
     },
-    i_3: {
+    3: {
       key: ezP.Key.EXPRESSION,
       label: ':',
       check: ezP.T3.Expr.Check.expression.concat(ezP.T3.Expr.Check.expression_nocond),

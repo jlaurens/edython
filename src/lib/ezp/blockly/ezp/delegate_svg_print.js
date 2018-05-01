@@ -27,11 +27,11 @@ console.warn('Move this block to the builtin blocks, with contextual consolidato
  */
 ezP.DelegateSvg.Expr.makeSubclass('builtin_print_expr', {
   inputs: {
-    i_1: {
+    1: {
       label: 'print',
       css_class: 'ezp-code-builtin',
     },
-    i_3: {
+    3: {
       start: '(',
       key: ezP.Key.ARGUMENTS,
       wrap: ezP.T3.Expr.argument_list_comprehensive,
@@ -210,11 +210,11 @@ ezP.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
  */
 ezP.DelegateSvg.Expr.makeSubclass('builtin_input_expr', {
   inputs: {
-    i_1: {
+    1: {
       label: 'input',
       css_class: 'ezp-code-builtin',
     },
-    i_3: {
+    3: {
       start: '(',
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.argument_any,

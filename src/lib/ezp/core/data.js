@@ -315,7 +315,7 @@ ezP.Data.prototype.set = function (newValue) {
 ezP.Data.prototype.setFieldValue = function(inputName, fieldKey, newValue) {
   var ui = this.owner_.ui
   for (var i = 0; i < 5; i++) {
-    var u = ui['i_'+i]
+    var u = ui[i]
     if (u && u.input.name === inputName) {
       var f = u.fields[fieldKey]
       if (f) {
@@ -333,7 +333,7 @@ ezP.Data.prototype.setFieldValue = function(inputName, fieldKey, newValue) {
  * @private
  */
 ezP.Data.prototype.setInputDisabled = function (inputIndex, newValue) {
-  var i = this.ui['i_' + inputIndex]
+  var i = this.ui[inputIndex]
   i && this.owner_.setInputDisabled(this.owner_.block_, i.input, newValue)
 }
 
@@ -349,7 +349,7 @@ console.warn ('Change the model design for i_(\d): {...} to $1: {...}')
  * @private
  */
 ezP.Data.prototype.setFieldValue = function (newValue, inputIndex, fieldKey, noUndo) {
-  var i = inputIndex && this.ui['i_' + inputIndex] || this.ui
+  var i = inputIndex && this.ui[inputIndex] || this.ui
   var field = i.fields[fieldKey || this.key]
   if (field) {
     if (!noUndo && !this.noUndo && Blockly.Events.isEnabled()) {
@@ -375,7 +375,7 @@ ezP.Data.prototype.setFieldValue = function (newValue, inputIndex, fieldKey, noU
  * @private
  */
 ezP.Data.prototype.setFieldVisible = function (newValue, inputIndex, fieldKey) {
-  var i = inputIndex && this.ui['i_' + inputIndex] || this.ui
+  var i = inputIndex && this.ui[inputIndex] || this.ui
   var field = i.fields[fieldKey || this.key]
   if (field) {
     field.setVisible(newValue)
