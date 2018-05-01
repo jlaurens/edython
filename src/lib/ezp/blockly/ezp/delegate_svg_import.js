@@ -81,6 +81,33 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
   data: {
     variant: {
       all: [0, 1, 2],
+      synchronize: function(newValue) {
+        // var disabled_1 = true, disabled_2 = true, disabled_3 = true, disabled_4 = true
+        // switch(newValue) {
+        //   case 0: disabled_1 = false; break
+        //   case 1: disabled_2 = disabled_3 = false; break
+        //   case 2: disabled_2 = disabled_4 = false; break
+        // }
+        // this.setInputDisabled(1, disabled_1)
+        // this.setInputDisabled(2, disabled_2)
+        // this.setInputDisabled(3, disabled_3)
+        // this.setInputDisabled(4, disabled_4)
+        this.setInputDisabled(1, newValue != 0)
+        this.setInputDisabled(2, newValue == 0)
+        this.setInputDisabled(3, newValue != 1)
+        this.setInputDisabled(4, newValue != 2)
+      },
+    },
+    value: {
+      validate: function(newValue) {
+        var type = ezP.Do.typeOfString(newValue)
+        var variant = this.data.variant.get()
+        return type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name || variant === 1 && (type === ezP.T3.Expr.parent_module)?
+        {validated: newValue}: null
+      },
+      synchronize: function(newValue) {
+        this.setFieldValue(newValue || '', 2, ezP.Key.FROM)
+      },
     },
   },
   inputs: {
@@ -102,17 +129,10 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         value: '',
         placeholder: ezP.Msg.Placeholder.MODULE,
         validator: function(txt) {
-          var block = this.sourceBlock_
-          if (block) {
-            var ezp = block.ezp
-            var v = ezp.validateValue(block, goog.isDef(txt)? txt: this.getValue())
-            return v && v.validated
-          }
+          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
         },
         onEndEditing: function () {
-          var block = this.sourceBlock_
-          var ezp = block.ezp
-          ezp.data.value.set(this.getValue())
+          this.ezp.setData(this.getValue(), ezP.Key.VALUE)
         },
       },
     },
@@ -129,81 +149,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
   },
 })
 
-/**
- * Validate the value property.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newValue
- * @return true if newValue is acceptable, false otherwise
- */
-ezP.DelegateSvg.Stmt.import_stmt.prototype.validateValue = function (block, newValue) {
-  var type = ezP.Do.typeOfString(newValue)
-  var variant = this.data.variant.get()
-  return type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name || variant === 1 && (type === ezP.T3.Expr.parent_module)?
-  {validated: newValue}: null
-}
-
-/**
- * Validate the value property.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newValue
- * @return true if newValue is acceptable, false otherwise
- */
-ezP.DelegateSvg.Stmt.import_stmt.prototype.synchronizeValue = function (block, newValue) {
-  this.ui.i_2.fields.from.setValue(newValue || '')
-}
-
 console.log('When read from dom, if the read data is not valid, what to do?')
-
-/**
- * Validates the new variant.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newVariant
- * @return true if newVariant is acceptable, false otherwise
- */
-ezP.DelegateSvg.Stmt.import_stmt.prototype.validateVariant = function (block, newVariant) {
-  return goog.isNumber(newVariant) && 0 <= newVariant && newVariant < 3 && {validated: newVariant} || null
-}
-
-/**
- * Validates the new variant.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newVariant
- * @return true if newVariant is acceptable, false otherwise
- */
-ezP.DelegateSvg.Stmt.import_stmt.prototype.didChangeVariant = function (block, newVariant) {
-  this.data.subtype.set(newVariant === 1? 0: 1)
-}
-
-/**
- * synchronize the variant with the UI.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newVariant
- */
-ezP.DelegateSvg.Stmt.import_stmt.prototype.synchronizeVariant = function (block, newVariant) {
-  var disabled_1 = true, disabled_2 = true, disabled_3 = true, disabled_4 = true
-  switch(newVariant) {
-    case 0:
-    disabled_1 = false
-    break
-    case 1:
-    disabled_2 = false
-    disabled_3 = false
-    break
-    case 2:
-    disabled_2 = false
-    disabled_4 = false
-    break
-  }
-  this.setInputDisabled(block, this.ui.i_1.input, disabled_1)
-  this.setInputDisabled(block, this.ui.i_2.input, disabled_2)
-  this.setInputDisabled(block, this.ui.i_3.input, disabled_3)
-  this.setInputDisabled(block, this.ui.i_4.input, disabled_4)
-}
 
 /**
  * When the block is just a wrapper, returns the wrapped target.

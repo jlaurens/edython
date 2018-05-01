@@ -242,6 +242,22 @@ ezP.Data.prototype.synchronize = function(newValue) {
 }
 
 /**
+ * Consolidate the data.
+ * May be overriden by the model.
+ * @param {Object} newValue
+ */
+ezP.Data.prototype.consolidate = function() {
+  if (goog.isFunction(this.model.consolidate)) {
+    this.model.consolidate.call(this)
+    return
+  }
+  var ezp = this.owner_
+  var block = ezp.block_
+  var key = 'consolidate' + this.upperKey
+  ezp[key] && ezp[key].call(ezp, block)
+}
+
+/**
  * set the value of the property without any validation.
  * If the value is a number, change to the corresponding item
  * in the `getAll()` array.

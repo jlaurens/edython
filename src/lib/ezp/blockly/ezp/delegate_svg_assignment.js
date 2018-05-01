@@ -283,8 +283,25 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       all: [ezP.T3.Expr.identifier, ezP.T3.Expr.dotted_name, ],
     },
     variant: {
+      all: [0, 1, 2],
       default: 0,
-    }
+      synchronizeVariant = function(block, newValue) {
+        this.setInputDisabled(1, newValue == 2)
+        this.setInputDisabled(2, newValue != 1)
+        this.setInputDisabled(3, newValue != 2)
+      },
+    },
+    value: {
+      default: '',
+      validate: function(newValue) {
+        var types = this.data.subtype.getAll()
+        var type = ezP.Do.typeOfString(newValue)
+        return types.indexOf(type) >= 0? {validated: newValue}: null
+      },
+      synchronize: function(newValue) {
+        this.setFieldValue(newValue || '', 1, ezP.Key.VALUE)
+      },
+    },
   },
   inputs: {
     i_1: {
@@ -293,17 +310,10 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         value: '',
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
         validator: function(txt) {
-          var block = this.sourceBlock_
-          if (block) { // which one comes first, validation or sourceBlock setup?
-            var ezp = block.ezp
-            var v = ezp.validateValue(block, goog.isDef(txt)? txt: this.getValue())
-            return v && v.validated
-          }
+          return this.validateData(txt, ezP.Key.VALUE)
         },
         onEndEditing: function () {
-          var block = this.sourceBlock_
-          var ezp = block.ezp
-          ezp.data.value.set(this.getValue()())
+          this.setDataValue(this.getValue(), ezP.Key.VALUE)
         },
       },
     },
@@ -325,60 +335,6 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     },
   }
 })
-
-/**
- * Validates the new variant.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newVariant
- * @return true if newVariant is acceptable, false otherwise
- */
-ezP.DelegateSvg.Stmt.assignment_stmt.prototype.validateVariant = function (block, newVariant) {
-  return (newVariant == 0 || newVariant == 1 || newVariant == 2)? {validated: newVariant}: null
-}
-
-/**
- * Synchronize the variant with the ui.
- * @param {!Blockly.Block} block to be initialized.
- * @param {string} newVariant
- */
-ezP.DelegateSvg.Stmt.assignment_stmt.prototype.synchronizeVariant = function(block, newVariant) {
-  this.setInputDisabled(block, this.ui.i_1.input, newVariant == 2)
-  this.setInputDisabled(block, this.ui.i_2.input, newVariant != 1)
-  this.setInputDisabled(block, this.ui.i_3.input, newVariant != 2)
-}
-
-/**
- * Initialize the value.
- * @param {!Blockly.Block} block to be initialized.
- */
-ezP.DelegateSvg.Stmt.assignment_stmt.prototype.initValue = function (block) {
-  this.data.value.internalSet(this.ui.i_1.fields.value.getValue() || '')
-  return
-}
-
-/**
- * Synchronize the value with the ui.
- * @param {!Blockly.Block} block to be initialized.
- * @param {string} newValue
- */
-ezP.DelegateSvg.Stmt.assignment_stmt.prototype.synchronizeValue = function (block, newValue) {
-  this.ui.i_1.fields.value.setValue(newValue || '')
-}
-
-/**
- * Validates the new value.
- * The type must be one of `dotted_name` or `identifier`.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newValue
- * @return true if newValue is acceptable, false otherwise
- */
-ezP.DelegateSvg.Stmt.assignment_stmt.prototype.validateValue = function (block, newValue) {
-  var subtypes = this.data.subtype.getAll()
-  var subtype = ezP.Do.typeOfString(newValue)
-  return subtypes.indexOf(subtype) >= 0? {validated: newValue}: null
-}
 
 /**
  * Populate the context menu for the given block.
@@ -483,22 +439,29 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
         },
       },
       operator: {
-        numberOperators: ['+=','-=','*=','/=','//=','%=','**=','@='],
-        bitwiseOperators: ['<<=', '>>=', '&=', '^=', '|='],
         default: '+=',
-        operator: function (newOperator) {
-          this.setFieldValue(newOperator, 3, ezP.Key.LABEL)
-          this.setFieldValue(newOperator, 4, ezP.Key.LABEL)
+        synchronize: function (newValue) {
+          this.setFieldValue(newValue, 3, ezP.Key.LABEL)
+        },
+        didChange: function(oldValue, newValue) {
+          this.data.numberOperator.set(newValue)
+          this.data.bitwiseOperator.set(newValue)
         }
       },
       numberOperator: {
         all: ['+=','-=','*=','/=','//=','%=','**=','@='],
         noUndo: true,
+        didChange: function(oldValue, newValue) {
+          this.data.operator.set(newValue)
+        },
       },
       bitwiseOperator: {
         all: ['<<=', '>>=', '&=', '^=', '|='],
         noUndo: true,
-      }
+        didChange: function(newValue) {
+          this.data.operator.set(newValue)
+        },
+      },
     },
     inputs: {
       i_1: {
@@ -540,48 +503,6 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
 } ())
 
 console.warn('in initBlock,Search for field names corresponding to data names: model.data.foo -> model.u_*.foo')
-/**
- * When numberOperator did change, bounce to operator if relevant.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} oldOperator
- * @param {string} newOperator
- */
-ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.didChangeNumberOperator = function (block, oldOperator, newOperator) {
-  var variantData = this.data.variant
-  var model = variantData.model
-  var withBitwise = ezP.Do.getVariantFlag(variantData.get(), 
-  model.BITWISE)
-  if (!withBitwise) {
-    this.data.operator.set(newOperator)
-  }
-}
-/**
- * When bitwiseOperator did change, bounce to operator if relevant.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} oldOperator
- * @param {string} newOperator
- */
-ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.didChangeBitwiseOperator = function (block, oldOperator, newOperator) {
-  var variantData = this.data.variant
-  var model = variantData.model
-  var withBitwise = ezP.Do.getVariantFlag(variantData.get(), model.BITWISE)
-  if (withBitwise) {
-    this.data.operator.set(newOperator)
-  }
-}
-
-/**
- * Synchronize the value property with the UI.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newVariant
- */
-ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.synchronizeOperator = function (block, newOperator) {
-  var field = this.ui.i_3.fields.label
-  field.setValue(newOperator || '')
-}
 
 /**
  * Populate the context menu for the given block.
