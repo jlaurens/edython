@@ -1477,7 +1477,7 @@ ezP.Xml.SingleInput.fromDom = function(block, xml) {
   return xml.childNodes.length && ezP.Xml.Input.fromDom(block.inputList[0], xml.childNodes[0])
 }
 
-ezP.DelegateSvg.Expr.or_expr_star.prototype.xml = ezP.DelegateSvg.Expr.or_expr_star_star.prototype.xml = ezP.DelegateSvg.Expr.not_test_solid.prototype.xml = ezP.Xml.SingleInput
+ezP.DelegateSvg.Expr.not_test_solid.prototype.xml = ezP.Xml.SingleInput
 
 // ezP.DelegateSvg.Expr.T3s = [
 //   ezP.DelegateSvg.Expr.proper_slice,
@@ -1764,9 +1764,9 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.fromDom = function (blo
   var numberOperators = this.data.numberOperator.getAll()
   var bitwiseOperators = this.data.bitwiseOperator.getAll()
   if (numberOperators.indexOf(operator) >= 0) {
-    this.setNumberOperator(block, operator)
+    this.data.numberOperator.set(operator)
   } else if (bitwiseOperators.indexOf(operator) >= 0) {
-    this.setBitwiseOperator(block, operator)
+    this.data.bitwiseOperator.set(operator)
     variant = ezP.Do.makeVariantFlags(variant, this.data.variant.model.BITWISE)
   }
   ezP.Xml.Input.Named.fromDom(block, ezP.Key.ARGUMENTS, element)
@@ -2024,8 +2024,6 @@ ezP.DelegateSvg.Expr.lambda.prototype.xml = ezP.Xml.InputList
 goog.require('ezP.DelegateSvg.Argument')
 
 ezP.DelegateSvg.Expr.keyword_item.prototype.xml = ezP.Xml.InputList
-ezP.DelegateSvg.Expr.expression_star.prototype.xml = ezP.Xml.InputList
-ezP.DelegateSvg.Expr.expression_star_star.prototype.xml = ezP.Xml.InputList
 
 // ezP.T3.Expr.identifier,
 
@@ -2139,3 +2137,32 @@ ezP.DelegateSvg.Stmt.assignment_stmt.prototype.xml.fromDom = function (block, el
   }
   ezP.Xml.Input.Named.fromDom(block, ezP.Key.ASSIGNED, element)
 }
+
+goog.require('ezP.DelegateSvg.Expr')
+
+ezP.DelegateSvg.Expr.starred_expression.prototype.xml = {}
+
+/**
+ * toDom.
+ * @param {!Blockly.Block} block to be translated.
+ * @param {!Element} element dom element to be completed.
+ * @param {boolean} optNoId true if no id is required.
+ * @this is the block delegate
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Expr.starred_expression.prototype.xml.toDom = function (block, element, optNoId) {
+  block.ezp.data.modifier.toDomAttribute(element)
+  ezP.Xml.Input.Named.toDom(block, ezP.Key.EXPRESSION, element, optNoId)
+}
+
+/**
+ * fromDom.
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {!Element} xml dom element.
+ * For subclassers eventually
+ */
+ezP.DelegateSvg.Expr.starred_expression.prototype.xml.fromDom = function (block, element) {
+  block.ezp.data.modifier.fromDomAttribute(element)
+  ezP.Xml.Input.Named.fromDom(block, ezP.Key.EXPRESSION, element)
+}
+

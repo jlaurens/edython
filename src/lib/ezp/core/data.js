@@ -311,13 +311,57 @@ ezP.Data.prototype.setFieldValue = function(inputName, fieldKey, newValue) {
 }
 
 /**
- * Set the enable/disable status of the given block.
- * @param {!Block} block.
- * @param {!Input} input.
- * @param {!String} name  input name.
+ * Set the enable/disable status of the given input.
+ * @param {!number} index  of the input older in the ui object 
  * @param {!boolean} newValue.
  * @private
  */
-ezP.Data.prototype.setInputDisabled = function (input, newValue) {
-  this.owner_.setInputDisabled(this.owner_.block_, input, newValue)
+ezP.Data.prototype.setInputDisabled = function (inputIndex, newValue) {
+  var i = this.ui['i_' + inputIndex]
+  i && this.owner_.setInputDisabled(this.owner_.block_, i.input, newValue)
+}
+
+console.warn ('Change the model design for i_(\d): {...} to $1: {...}')
+/**
+ * Set the value of the field in the input given by its index
+ * and the key.
+ * @param {!Object} newValue.
+ * @param {!number} inputIndex  of the input in the model (i_1, i_2...) 
+ * When false, this corresponds to the fields that are not
+ * part of an input, like the modifier field.
+ * @param {string|null} fieldKey  of the input holder in the ui object 
+ * @private
+ */
+ezP.Data.prototype.setFieldValue = function (newValue, inputIndex, fieldKey, noUndo) {
+  var i = inputIndex && this.ui['i_' + inputIndex] || this.ui
+  var field = i.fields[fieldKey || this.key]
+  if (field) {
+    if (!noUndo && !this.noUndo && Blockly.Events.isEnabled()) {
+      Blockly.Events.disable()
+      var enable = true
+    }
+    try {
+      field.setValue(newValue)
+    } finally {
+      enable && Blockly.Events.enable()
+    }
+  }
+}
+
+/**
+ * Set the visible status of the field in the input given by its index
+ * and the key.
+ * @param {!Object} newValue.
+ * @param {!number} inputIndex  of the input in the model (i_1, i_2...) 
+ * When false, this corresponds to the fields that are not
+ * part of an input, like the modifier field.
+ * @param {string|null} fieldKey  of the input holder in the ui object 
+ * @private
+ */
+ezP.Data.prototype.setFieldVisible = function (newValue, inputIndex, fieldKey) {
+  var i = inputIndex && this.ui['i_' + inputIndex] || this.ui
+  var field = i.fields[fieldKey || this.key]
+  if (field) {
+    field.setVisible(newValue)
+  }
 }

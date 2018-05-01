@@ -265,7 +265,7 @@ ezP.XRE = {
   )$`, 'x'),
   id_wrapped: XRegExp(`^(?<id>.*?)\\.wrapped:(?<name>[a-zA-Z_][a-zA-Z_0-9]*)$`, 'x'),
   solid: XRegExp(`^(?<core>.*?)_solid$`),
-  event_property: XRegExp(`^ezp:property:(?<key>.*?)$`),
+  event_data: XRegExp(`^ezp:data:(?<key>.*?)$`),
   operator: XRegExp(`^[+\\-/%*@<>&^|=#]$`),
   comment: XRegExp(`^(?<value>[^\\r\\n]*)`),
 }
@@ -336,8 +336,7 @@ goog.asserts.assert('0e-0'.match(RE.exponentfloat), 'FAILURE')
 */
 
 ezP.Const.Event = {
-  PROPERTY: 'ezp:property:',
-  input_disable: 'ezp:input_disable',
+  DATA: 'ezp:data:',
   property: 'ezp:property',
   locked: 'ezp:locked',
   asynced: 'ezp:asynced',

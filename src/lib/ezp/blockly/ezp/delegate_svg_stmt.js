@@ -360,13 +360,11 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.continue_stmt, {
  * @constructor
  */
 ezP.DelegateSvg.List.makeSubclass(ezP.T3.Expr.non_void_identifier_list, {
-  inputs: {
-    list: {
-      check: ezP.T3.Expr.Check.non_void_identifier_list,
-      empty: false,
-      presep: ',',
-    }
-  }
+  list: {
+    check: ezP.T3.Expr.Check.non_void_identifier_list,
+    empty: false,
+    presep: ',',
+  },
 })
 
 /**
@@ -382,11 +380,13 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.global_nonlocal_stmt, {
       all: ['global', 'nonlocal'],
     },
   },
-  inputs: {
+  fields: {
     prefix: {
       label: '',
       css_class: 'ezp-code-reserved',
     },
+  },
+  inputs: {
     i_3: {
       key: ezP.Key.IDENTIFIERS,
       css_class: 'ezp-code-reserved',

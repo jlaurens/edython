@@ -179,10 +179,6 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
     },
   },
   inputs: {
-    prefix: {
-      label: '',
-      css_class: 'ezp-code-reserved',
-    },
     i_1: {
       start: '',
       string: {
@@ -220,6 +216,12 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
         },
       },
       end: '',
+      css_class: 'ezp-code-reserved',
+    },
+  },
+  fields: {
+    prefix: {
+      label: '',
       css_class: 'ezp-code-reserved',
     },
   },

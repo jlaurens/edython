@@ -237,7 +237,7 @@ ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = und
   io.c8n.ezp.optional_ = optional
   io.c8n.ezp.plugged_ = this.plugged
   if (!io.connected && !this.data.empty && !io.c8n.isConnected()) {
-    var value = ezP.DelegateSvg.Manager.getInputsModel(io.block.type).list.hole_value
+    var value = ezP.DelegateSvg.Manager.getModel(io.block.type).list.hole_value
     io.c8n.ezp.hole_data = ezP.HoleFiller.getData(check, value)
   }
   while (io.input.fieldRow.length) {

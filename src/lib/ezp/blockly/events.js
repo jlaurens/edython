@@ -45,9 +45,6 @@ Blockly.Events.Change.prototype.run = function(forward) {
   }
   var value = forward ? this.newValue : this.oldValue;
   switch (this.element) {
-    case ezP.Const.Event.input_disable:
-      block.ezp.setNamedInputDisabled(block, this.name, value)
-      break;
     case ezP.Const.Event.locked:
       if (value) {
         block.ezp.lock(block)
@@ -59,18 +56,10 @@ Blockly.Events.Change.prototype.run = function(forward) {
       block.ezp.setAwaited(block, value)
       break;
     default:
-      var m = XRegExp.exec(this.element, ezP.XRE.event_property)
-      if (m) {
-        switch(m.key) {
-          case 'subtype': block.ezp.data.subtype.set(value); break
-          case 'value': block.ezp.data.value.set(value); break
-          case 'modifier': block.ezp.data.modifier.set(value); break
-          case 'variant': block.ezp.data.variant.set(value); break
-          default:
-          var k = 'set'+m.key.charAt(0).toUpperCase() + m.key.slice(1)
-          var setter = block.ezp[k]
-          setter && setter.call(block.ezp, block, value) || block.ezp.setProperty(block, m.key, value)
-        }
+      var m = XRegExp.exec(this.element, ezP.XRE.event_data)
+      var data
+      if (m && (data = block.ezp.data[m.key])) {
+        block.ezp.data.subtype.set(value)
       } else {
         console.warn('Unknown change type: ' + this.element);
       }
@@ -147,7 +136,7 @@ ezP.Data.prototype.setTrusted_ = function (newValue) {
     this._willChange(oldValue, newValue)
     if (!this.noUndo && Blockly.Events.isEnabled()) {
       Blockly.Events.fire(new Blockly.Events.BlockChange(
-      block, ezP.Const.Event.PROPERTY+this.key, null, oldValue, newValue))
+      block, ezP.Const.Event.DATA+this.key, null, oldValue, newValue))
     }
     this.value_ = newValue
     this._didChange(oldValue, newValue)

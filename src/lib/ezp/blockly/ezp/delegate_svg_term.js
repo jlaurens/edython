@@ -41,17 +41,17 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
           return null
         },
         synchronize: function (newValue) {
-          this.ui.i_1.fields.value.setValue(newValue || '')
+          this.setFieldValue(newValue || '', 1, ezP.Key.TERM)
         },
       },
       alias: {
         default: '',
-        synchronize: function (block, newAlias) {
-          this.ui.i_4.fields.alias.setValue(newAlias || '')
+        synchronize: function (block, newValue) {
+          this.setFieldValue(newValue || '', 4)
         },
-        validate: function (newAlias) {
-          var subtype = ezP.Do.typeOfString(newAlias)
-          return (subtype === ezP.T3.Expr.identifier) && {validated: newAlias} || null
+        validate: function (newValue) {
+          var subtype = ezP.Do.typeOfString(newValue)
+          return (subtype === ezP.T3.Expr.identifier) && {validated: newValue} || null
         }
       }, // new
       modifier: {
@@ -66,62 +66,60 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
       },
       variant: {
         default: 0,
-        validate: function (newVariant) {
+        validate: function (newValue) {
           // this may be called very early
-          var variants = this.getAll()
-          if (variants.indexOf(newVariant) < 0) {
+          var values = this.getAll()
+          if (values.indexOf(newValue) < 0) {
             return null
           }
           var model = this.model
           // simple case
-          if (newVariant === model.STAR) {
-            return {validated: newVariant}
+          if (newValue === model.STAR) {
+            return {validated: newValue}
           }
           // We won't change the variant if the subtype won't fit.
           var subtype = this.data.subtype.get()
           if (subtype) {
             var expected = model.bySubtype[subtype]
             if (expected) {
-              return {validated: expected.indexOf(newVariant) < 0? expected[0]: newVariant}
+              return {validated: expected.indexOf(newValue) < 0? expected[0]: newValue}
             }
-            return {validated: variants[0]}   
+            return {validated: values[0]}   
           }
-          return {validated: newVariant}
+          return {validated: newValue}
         },
-        synchronize: function(newVariant) {
+        synchronize: function(newValue) {
           var model = this.model
-          this.setInputDisabled(this.ui.i_1.input, newVariant === model.STAR)
-          this.setInputDisabled(this.ui.i_2.input, newVariant !== model.NAME_ANNOTATION &&
-          newVariant !== model.STAR_NAME_ANNOTATION &&
-          newVariant !== model.NAME_ANNOTATION_DEFINITION)
-          this.setInputDisabled(this.ui.i_3.input, newVariant !== model.NAME_DEFINITION &&
-          newVariant !== model.NAME_ANNOTATION_DEFINITION)
-          this.setInputDisabled(this.ui.i_4.input, newVariant !== model.NAME_ALIAS)
-          var field = this.ui.fields.modifier
-          var newModifier = newVariant === model.STAR || newVariant === model.STAR_NAME || newVariant === model.STAR_NAME_ANNOTATION? '*': (newVariant === model.STAR_STAR_NAME? '**': '')
-          field.setValue(newModifier)
-          field.setVisible(newModifier.length>0)
+          this.setInputDisabled(1, newValue === model.STAR)
+          this.setInputDisabled(2, newValue !== model.NAME_ANNOTATION &&
+          newValue !== model.STAR_NAME_ANNOTATION &&
+          newValue !== model.NAME_ANNOTATION_DEFINITION)
+          this.setInputDisabled(3, newValue !== model.NAME_DEFINITION &&
+          newValue !== model.NAME_ANNOTATION_DEFINITION)
+          this.setInputDisabled(4, newValue !== model.NAME_ALIAS)
+          var newModifier = newValue === model.STAR || newValue === model.STAR_NAME || newValue === model.STAR_NAME_ANNOTATION? '*': (newValue === model.STAR_STAR_NAME? '**': '')
+          this.setFieldValue(newModifier, null, ezP.Key.MODIFIER, true)
+          this.setFieldVisible(newModifier.length>0, null, ezP.Key.MODIFIER)
         },
       },
     },
-    inputs: {
+    fields: {
       modifier: {
         label: '',
         css_class: 'ezp-code-reserved',
       },
+    },
+    inputs: {
       i_1: {
         term: {
           key:ezP.Key.VALUE,
           value: '',
           placeholder: ezP.Msg.Placeholder.TERM,
           validator: function(txt) {
-            var v = this.sourceBlock_.ezp.data.value.validate(goog.isDef(txt)? txt: this.getValue())
-            return v && v.validated
+            return this.validateData(txt, ezP.Key.VALUE)
           },
           onEndEditing: function () {
-            var block = this.sourceBlock_
-            var ezp = block.ezp
-            ezp.data.value.set(this.getValue())
+            this.setData(this.getValue(), ezP.Key.VALUE)
           },
         },
       },
@@ -157,7 +155,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
       },
     },
     output: {
-      didConnect: function(oldTargetConnection, oldConnectionn) {
+      didConnect: function(oldTargetConnection, oldConnection) {
         // `this` is a connection
         var targetC8n = this.targetConnection
         var source = targetC8n.sourceBlock_

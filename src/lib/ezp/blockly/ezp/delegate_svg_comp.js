@@ -96,13 +96,11 @@ ezP.DelegateSvg.Expr.makeSubclass('comp_if', {
  * @constructor
  */
 ezP.DelegateSvg.List.makeSubclass('comp_iter_list', {
-  inputs: {
-    list: {
-      check: ezP.T3.Expr.Check.comp_iter,
-      empty: true,
-      presep: ',',
-    },  
-  },
+  list: {
+    check: ezP.T3.Expr.Check.comp_iter,
+    empty: true,
+    presep: ',',
+  },  
 })
 
 /**
@@ -162,7 +160,7 @@ ezP.DelegateSvg.Expr.makeSubclass('key_datum_solid', {
  * @constructor
  */
 ezP.DelegateSvg.Expr.comprehension.makeSubclass('generator_expression', {
-  inputs: {
+  fields: {
     prefix: {
       label: '(',
     },

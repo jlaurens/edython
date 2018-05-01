@@ -295,10 +295,8 @@ ezP.Consolidator.Parameter.prototype.getCheck = function() {
  * @constructor
  */
 ezP.DelegateSvg.List.makeSubclass('parameter_list', {
-  inputs: {
-    list: {
-      consolidator: ezP.Consolidator.Parameter,
-    }
+  list: {
+    consolidator: ezP.Consolidator.Parameter,
   }
 })
 

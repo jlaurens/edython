@@ -136,6 +136,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   // block.setInputsInline(true)
   block.setTooltip('')
   block.setHelpUrl('')
+  var fieldModel = this.getModel().fields
   var inputModel = this.getModel().inputs
   var doInsert = function(type, isMain) {
     var B = ezP.DelegateSvg.newBlockComplete(block.workspace, type)
@@ -206,9 +207,9 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       }
       var doEditableFields_ = function(name) {
         if (goog.isDefAndNotNull(v = D[name])) {
-          k = v.key
+          k = v.key || name
           out.input = block.appendDummyInput(k)
-          field = out.fields[k] = out.input.ezp.fields.term = new ezP.FieldInput(v.value, v.validator)
+          field = out.fields[k] = out.input.ezp.fields.term = new ezP.FieldInput(v.value, v.validator, name)
           if (goog.isFunction(v.init)) {
             v.init.call(field)
           }
@@ -241,15 +242,16 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         }
       }
       // first fields are editable ones
-      // They belong to a dummy input
+      // They belong to a standalone dummy input
       if (!doEditableFields(ezP.Key.IDENTIFIER, ezP.FieldIdentifier)
-      && !doEditableFields(ezP.Key.CODE, ezP.FieldInput)
-      && !doEditableFields(ezP.Key.COMMENT, ezP.FieldComment)
       && !doEditableFields(ezP.Key.LONG_STRING, ezP.FieldLongString)
+      && !doEditableFields_(ezP.Key.VALUE)
       && !doEditableFields_(ezP.Key.EDIT)
       && !doEditableFields_(ezP.Key.TERM)
       && !doEditableFields_(ezP.Key.NUMBER)
       && !doEditableFields_(ezP.Key.STRING)
+      && !doEditableFields_(ezP.Key.CODE)
+      && !doEditableFields_(ezP.Key.COMMENT)
       && (D.check === undefined && D.wrap === undefined) || D.dummy) {
         out.input = block.appendDummyInput(k)
       } else {
@@ -341,7 +343,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   var field, D
   var FF = function(key) {
     var v
-    if ((D = inputModel[key])) {
+    if ((D = fieldModel[key])) {
       if (goog.isDefAndNotNull(v = D.label)) {
         field = new ezP.FieldLabel(v)
         field.ezp.css_class = D.css_class
@@ -402,7 +404,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
             }
           }
           return {validated: ''}
-        })
+        }, key)
         field.ezp.onEndEditing_ = function() {
           var block = this.sourceBlock_
           block.ezp.data.comment.set(this.getValue())
@@ -433,9 +435,11 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   this.eventsInit_ = true;
   // wait until the end to set the subtype because it causes rendering
   // now it is time to intialize the data
-  this.initData()
+  this.initData(block)
+  // and find the appropriate type
+  this.consolidateType(block)
 }
-
+console.error('replace the validateComment above')
 console.warn('implement async and await, see above awaitable and asyncable')
 /**
  * Revert operation of initBlock.
@@ -1391,10 +1395,6 @@ ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValu
     var oldValue = input.ezp.disabled_
     if (!!oldValue === !!newValue) {
       return
-    }
-    if (Blockly.Events.isEnabled()) {
-      Blockly.Events.fire(new Blockly.Events.BlockChange(
-        block, ezP.Const.Event.input_disable, name, oldValue, newValue));
     }
     this.setInputDisabled(block, input, newValue)
   } else {

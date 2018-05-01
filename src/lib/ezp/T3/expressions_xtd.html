@@ -29,8 +29,8 @@ any ::= any expression
 starred_list ::= starred_item ( ',' starred_item ) * [',']
 <pre>
 # starred_expression ::= expression | ( starred_item ',' )* [ starred_item ]
-starred_expression -> starred_item_list
-starred_expression ::= starred_item_list
+#starred_expression -> starred_item_list
+#starred_expression ::= starred_item_list
 starred_item_list ::= starred_item ? ( ',' starred_item ) * [',']
 # starred_list ::=  starred_item ( "," starred_item )* [","]
 starred_list ::= non_void_starred_item_list
@@ -103,6 +103,7 @@ argument_list ::=  argument_any *
 positional_arguments ::=  REMOVE
 starred_and_keywords ::=  REMOVE
 keywords_arguments   ::=  REMOVE
+starred_expression/starred ::= one of expression_star, expression_star_star, or_expr_star_star, star_expr
 </pre>
 
 

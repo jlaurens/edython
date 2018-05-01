@@ -20,6 +20,19 @@ goog.provide('ezP.FieldLongString')
 
 goog.require('Blockly.FieldTextInput')
 
+goog.provide('ezP.FieldHelper')
+
+
+/**
+ * Class for an editable text field helper.
+ * @param {ezP.TextInputField} owner  The owner of the field.
+ * @constructor
+ */
+ezP.FieldHelper = function (owner) {
+  this.owner_ = owner
+  owner.ezp = this
+}
+
 /**
  * Class for an editable text field.
  * @param {string} text The initial content of the field.
@@ -31,7 +44,7 @@ goog.require('Blockly.FieldTextInput')
  * @constructor
  */
 ezP.FieldTextInput = function (text, optValidator) {
-  this.ezp = {}
+  new ezP.FieldHelper(this)
   ezP.FieldTextInput.superClass_.constructor.call(this, text,
     optValidator)
 }
@@ -276,10 +289,12 @@ ezP.FieldTextInput.prototype.resizeEditor_ = function () {
  * @extends {ezP.FieldTextInput}
  * @constructor
  */
-ezP.FieldInput = function (text, optValidator) {
+ezP.FieldInput = function (text, optValidator, key) {
+  goog.asserts.assert(key, 'missing key for an editable field')
   ezP.FieldInput.superClass_.constructor.call(this, text,
     optValidator)
   this.spellcheck_ = false
+  this.ezp.key = key
 }
 goog.inherits(ezP.FieldInput, ezP.FieldTextInput)
 
@@ -410,3 +425,34 @@ ezP.FieldLongString = function (text) {
 }
 goog.inherits(ezP.FieldLongString, ezP.FieldInput)
 
+/**
+ * Set the keyed data of the source block to the given value.
+ * Eventual problem: there might be some kind of formatting such that
+ * the data stored and the data shown in the ui are not the same.
+ * There is no step for such a translation but the need did not occur yet.
+ * @param {Object} newValue
+ * @param {string|null} key  The data key, when null or undefined, ths receiver's key.
+ * @constructor
+ */
+ezP.FieldHelper.prototype.setData = function (newValue, key) {
+  var block = this.owner_.sourceBlock_
+  if (block) {
+    var data = block.ezp.data[key || this.key]
+    data.set(newValue)
+  }
+}
+
+/**
+ * Validate the keyed data of the source block.
+ * @param {Object} newValue
+ * @param {string|null} key  The data key, when null or undefined, ths receiver's key.
+ * @constructor
+ */
+ezP.FieldHelper.prototype.validateData = function (newValue, key) {
+  var block = this.owner_.sourceBlock_
+  if (block) {
+    var data = block.ezp.data[key || this.key]
+    var v = data.validate(newValue)
+    return v && v.validated
+  }
+}

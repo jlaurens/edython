@@ -61,6 +61,18 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
       all: [ezP.T3.Expr.dotted_name, ezP.T3.Expr.identifier],
     }
   },
+  fields: {
+    prefix: {
+      label: '@',
+      css_class: 'ezp-code-reserved',
+    },
+  },
+  fields: {
+    prefix: {
+      label: '@',
+      css_class: 'ezp-code-reserved',
+    },
+  },
   inputs: {
     prefix: {
       label: '@',
@@ -353,8 +365,12 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
  * @constructor
  */
 ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
+  data: {
+    variant: {
+      all: [null, ezP.Key.ARGUMENTS],
+    },
+  },
   inputs: {
-    variants: [null, ezP.Key.ARGUMENTS],
     i_1: {
       label: 'class',
       css_class: 'ezp-code-reserved',

@@ -46,11 +46,13 @@ ezP.DelegateSvg.Group.makeSubclass('except_part', {
       all: [null, ezP.Key.EXPRESSION, ezP.Key.AS],
     }
   },
-  inputs: {
+  fields: {
     prefix: {
       label: 'except',
       css_class: 'ezp-code-reserved',
     },
+  },
+  inputs: {
     i_1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
@@ -151,11 +153,13 @@ ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       all: [null, ezP.Key.EXPRESSION, ezP.Key.FROM],
     },
   },
-  inputs: {
+  fields: {
     prefix: {
       label: 'raise',
       css_class: 'ezp-code-reserved',
     },
+  },
+  inputs: {
     i_1: {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,

@@ -25,9 +25,7 @@ goog.require('ezP.DelegateSvg.Expr')
  * @constructor
  */
 ezP.DelegateSvg.Expr.makeSubclass('List', {
-  inputs: {
-    list: {},
-  },
+  list: {},
 }, ezP.DelegateSvg)
 
 /**
@@ -84,7 +82,7 @@ ezP.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
  */
 ezP.DelegateSvg.List.prototype.createConsolidator = function (block) {
   if (!this.consolidator) {
-    var D = ezP.DelegateSvg.Manager.getInputsModel(block.type).list
+    var D = ezP.DelegateSvg.Manager.getModel(block.type).list
     goog.asserts.assert(D, 'inputModel__.list is missing in '+block.type)
     var Ctor = D.consolidator || ezP.Consolidator.List
     this.consolidator = new Ctor(D)
@@ -155,13 +153,11 @@ ezP.DelegateSvg.List.prototype.removeItems = function(block) {
  * @constructor
  */
 ezP.DelegateSvg.List.makeSubclass('optional_expression_list', {
-  inputs: {
-    list: {
-      check: ezP.T3.Expr.Check.expression,
-      empty: true,
-      presep: ',',
-      hole_value: 'name',
-    },
+  list: {
+    check: ezP.T3.Expr.Check.expression,
+    empty: true,
+    presep: ',',
+    hole_value: 'name',
   },
 })
 
@@ -175,13 +171,11 @@ ezP.DelegateSvg.List.makeSubclass('optional_expression_list', {
  * @constructor
  */
 ezP.DelegateSvg.List.makeSubclass('non_void_expression_list', {
-  inputs: {
-    list: {
-      check: ezP.T3.Expr.Check.expression,
-      empty: false,
-      presep: ',',
-      hole_value: 'name',
-    },
+  list: {
+    check: ezP.T3.Expr.Check.expression,
+    empty: false,
+    presep: ',',
+    hole_value: 'name',
   },
 })
 
@@ -195,13 +189,11 @@ ezP.DelegateSvg.List.makeSubclass('non_void_expression_list', {
  * @constructor
  */
 ezP.DelegateSvg.List.makeSubclass('starred_item_list', {
-  inputs: {
-    list: {
-      check: ezP.T3.Expr.Check.starred_item,
-      empty: false,
-      presep: ',',
-      hole_value: 'name',
-    },
+  list: {
+    check: ezP.T3.Expr.Check.starred_item,
+    empty: false,
+    presep: ',',
+    hole_value: 'name',
   },
 })
 
@@ -214,15 +206,15 @@ ezP.DelegateSvg.List.makeSubclass('starred_item_list', {
  * @constructor
  */
 ezP.DelegateSvg.Expr.starred_item_list.makeSubclass('parenth_form', {
-  inputs: {
+  list: {
+    check: ezP.T3.Expr.Check.starred_item,
+    empty: false,
+    presep: ',',
+    hole_value: 'name',
+  },
+  fields: {
     prefix: {
       label: '(',
-    },
-    list: {
-      check: ezP.T3.Expr.Check.starred_item,
-      empty: false,
-      presep: ',',
-      hole_value: 'name',
     },
     suffix: {
       label: ')',
@@ -240,12 +232,46 @@ ezP.DelegateSvg.Expr.starred_item_list.makeSubclass('parenth_form', {
  * @constructor
  */
 ezP.DelegateSvg.List.makeSubclass('key_datum_list', {
-  inputs: {
+  list: {
+    check: ezP.T3.Expr.Check.key_datum,
+    empty: true,
+    presep: ',',
+  },
+})
+
+/**
+ * Class for a DelegateSvg, starred_item_list_comprehensive block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.List.makeSubclass('starred_item_list', {
     list: {
-      check: ezP.T3.Expr.Check.key_datum,
-      empty: true,
-      presep: ',',
-    },
+    check: ezP.T3.Expr.Check.non_void_starred_item_list,
+    empty: true,
+    presep: ',',
+    hole_value: 'name',
+  },
+})
+
+/**
+ * Class for a DelegateSvg, starred_item_list_comprehensive block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.List.makeSubclass('non_void_starred_item_list', {
+    list: {
+    check: ezP.T3.Expr.Check.non_void_starred_item_list,
+    empty: false,
+    presep: ',',
+    hole_value: 'name',
   },
 })
 
@@ -271,9 +297,7 @@ ezP.DelegateSvg.List.makeSubclass('starred_item_list_comprehensive', function() 
   goog.array.removeDuplicates(RA)
   D.all = RA
   return {
-    inputs: {
-      list: D,
-    },
+    list: D,
   }
 })
 
@@ -285,7 +309,7 @@ ezP.DelegateSvg.List.makeSubclass('starred_item_list_comprehensive', function() 
  * @constructor
  */
 ezP.DelegateSvg.Expr.starred_item_list_comprehensive.makeSubclass('list_display', {
-  inputs: {
+  fields: {
     prefix: {
       label: '[',
     },
@@ -317,9 +341,7 @@ ezP.DelegateSvg.List.makeSubclass('non_void_starred_item_list_comprehensive', fu
   goog.array.removeDuplicates(RA)
   D.all = RA
   return {
-    inputs: {
-      list: D,
-    },
+    list: D,
   }
 })
 
@@ -331,7 +353,7 @@ ezP.DelegateSvg.List.makeSubclass('non_void_starred_item_list_comprehensive', fu
  * @constructor
  */
 ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive.makeSubclass('set_display', {
-  inputs: {
+  fields: {
     prefix: {
       label: '{',
     },
@@ -362,9 +384,7 @@ ezP.DelegateSvg.List.makeSubclass('key_datum_list_comprehensive', function() {
   goog.array.removeDuplicates(RA)
   D.all = RA
   return {
-    inputs: {
-      list: D,
-    },
+    list: D,
   }
 })
 
@@ -376,7 +396,7 @@ ezP.DelegateSvg.List.makeSubclass('key_datum_list_comprehensive', function() {
  * @constructor
  */
 ezP.DelegateSvg.Expr.key_datum_list_comprehensive.makeSubclass('dict_display', {
-  inputs: {
+  fields: {
     prefix: {
       label: '{',
     },
@@ -396,12 +416,10 @@ ezP.DelegateSvg.Expr.key_datum_list_comprehensive.makeSubclass('dict_display', {
  * @constructor
  */
 ezP.DelegateSvg.List.makeSubclass('slice_list', {
-  inputs: {
-    list: {
-      check: ezP.T3.Expr.Check.slice_item,
-      empty: false,
-      presep: ',',
-    },
+  list: {
+    check: ezP.T3.Expr.Check.slice_item,
+    empty: false,
+    presep: ',',
   },
 })
 
@@ -415,13 +433,11 @@ ezP.DelegateSvg.List.makeSubclass('slice_list', {
  * @constructor
  */
 ezP.DelegateSvg.List.makeSubclass('with_item_list', {
-  inputs: {
-    list: {
-      check: ezP.T3.Expr.Check.with_item,
-      empty: false,
-      presep: ',',
-      hole_value: 'nom',
-    },
+  list: {
+    check: ezP.T3.Expr.Check.with_item,
+    empty: false,
+    presep: ',',
+    hole_value: 'nom',
   },
 })
 

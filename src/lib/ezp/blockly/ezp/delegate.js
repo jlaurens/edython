@@ -142,6 +142,7 @@ ezP.Delegate.Manager = function () {
     }
     var model = {
       data: {},
+      fields: {},
       inputs: {},
       output: {},
       statement: {},
@@ -273,13 +274,9 @@ ezP.Delegate.Manager = function () {
    * @param {?string} prototypeName Name of the language object containing
    * @return void object if no delegate is registered for that name
    */
-  me.getInputsModel = function (prototypeName) {
+  me.getModel = function (prototypeName) {
     var delegateCtor = Ctors[prototypeName]
-    if (delegateCtor) {
-      var model = delegateCtor.prototype.getModel()
-      return model && model.inputs
-    }
-    return {}
+    return delegateCtor && delegateCtor.prototype.getModel() || {}
   }
   /**
    * Delegate registrator.

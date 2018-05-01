@@ -29,11 +29,13 @@ ezP.DelegateSvg.Expr.makeSubclass('yield_expression', {
       all: [null, ezP.Key.EXPRESSION, ezP.Key.FROM],
     }
   },
-  inputs: {
+  fields: {
     prefix: {
       label: 'yield',
       css_class: 'ezp-code-reserved',
     },
+  },
+  inputs: {
     i_1: {
       key: ezP.Key.EXPRESSION,
       wrap: ezP.T3.Expr.non_void_expression_list,
@@ -179,16 +181,18 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = func
  * @constructor
  */
 ezP.DelegateSvg.Expr.makeSubclass('yield_atom', {
-  inputs: {
+  fields: {
     prefix: {
       label: '(',
     },
+    suffix: {
+      label: ')',
+    },
+  },
+  inputs: {
     i_1: {
       key: ezP.Key.EXPRESSION,
       wrap: ezP.T3.Expr.yield_expression,
-    },
-    suffix: {
-      label: ')',
     },
   },
 })

@@ -412,36 +412,92 @@ ezP.DelegateSvg.Expr.makeSubclass('conditional_expression_solid', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('or_expr_star', {
-  inputs: {
-    i_1: {
-      key: ezP.Key.EXPRESSION,
-      label: '*',
-      css_class: 'ezp-code-reserved',
-      check: ezP.T3.Expr.Check.or_expr,
-      hole_value: 'name',
-    }
-  },
-})
+ezP.DelegateSvg.Expr.makeSubclass('starred_expression', function () {
+  var D = {
+    data: {
+      modifier: {
+        default: 0,
+        synchronize: function(newValue) {
+          this.setFieldValue(newValue, 1, ezP.Key.LABEL)
+        },
+      },
+    },
+    inputs: {
+      i_1: {
+        key: ezP.Key.EXPRESSION,
+        label: '',
+        css_class: 'ezp-code-reserved',
+        check: ezP.T3.Expr.Check.expression,
+        hole_value: 'name',
+        didConnect: function(oldTargetConnection, oldConnection) {
+          var block = this.getSourceBlock()
+          block.ezp.consolidateType(block)
+        },
+      },
+    },
+  }
+  D.data.modifier.STAR = '*'
+  D.data.modifier.STAR_STAR = '**'
+  D.data.modifier.all = [D.data.modifier.STAR, D.data.modifier.STAR_STAR]
+  return D
+} ())
 
 /**
- * Class for a DelegateSvg, '**...' block.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
+ * Set the type dynamically from the modifier.
+ * @param {!Blockly.Block} block the owner of the receiver
  */
-ezP.DelegateSvg.Expr.makeSubclass('or_expr_star_star', {
-  inputs: {
-    i_1: {
-      key: ezP.Key.EXPRESSION,
-      label: '**',
-      css_class: 'ezp-code-reserved',
-      check: ezP.T3.Expr.Check.or_expr,
-      hole_value: 'name',
-    }
-  },
-})
+ezP.DelegateSvg.Expr.starred_expression.prototype.consolidateType = function(block) {
+  // one of 4 types depending on the modifier and the connected stuff:
+  // expression_star, expression_star_star, or_expr_star_star, star_expr
+  // ezP.T3.Expr.Check.expression
+  // ezP.T3.Expr.Check.or_expr
+  var data = this.data.modifier
+  var withOneStar = data.get() === data.model.STAR
+  var c8n = this.ui.i_1.input.connection
+  var targetC8n = c8n.targetConnection
+  var no_or_expr = false
+  if (targetC8n) {
+    var targetCheck = targetC8n.check_
+    no_or_expr = function() {
+      for (var i = 0; i < targetCheck.length; i++) {
+        var type = targetCheck[i]
+        if (ezP.T3.Expr.Check.or_expr.indexOf(type) >= 0) {
+          return false
+        }
+      }
+      return true
+    } ()
+  }
+  if (no_or_expr) {
+    var check = withOneStar? ezP.T3.Expr.expression_star: ezP.T3.Expr.expression_star_star
+  } else {
+    var check = withOneStar? [ezP.T3.Expr.star_expr, ezP.T3.Expr.expression_star]: [ezP.T3.Expr.or_expr_star_star, ezP.T3.Expr.expression_star_star]
+  }
+  block.outputConnection.setCheck(check)
+}
+
+/**
+ * Get the content for the menu item.
+ * @param {!Blockly.Block} block The block.
+ * @param {string} op op is the operator
+ * @private
+ */
+ezP.DelegateSvg.Expr.starred_expression.prototype.makeTitle = function (block, op) {
+  return ezP.Do.createSPAN(op, 'ezp-code-reserved')
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Expr.starred_expression.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  mgr.populateProperties(block, 'modifier')
+  mgr.shouldSeparateInsert()
+  ezP.DelegateSvg.Expr.starred_expression.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return true
+}
 
 /**
 * Class for a DelegateSvg, not_test_solid.
@@ -475,6 +531,9 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_object', {
     value: {
       all: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
       default: 0,
+      synchronize: function(newValue) {
+        this.setFieldValue(newValue || '', 1, ezP.Key.LABEL)
+      },
     },
   },
   inputs: {
@@ -485,15 +544,6 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_object', {
     },
   },
 })
-
-/**
- * When the value did change.
- * @param {!Blockly.Block} block to be initialized.
- * @param {string} oldValue
- */
-ezP.DelegateSvg.Expr.builtin_object.prototype.synchronizeValue = function(block, newValue) {
-  block.ezp.ui.i_1.fields.label.setValue(newValue || '')
-}
 
 /**
  * Populate the context menu for the given block.
@@ -518,6 +568,7 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.makeTitle = function (block, op) {
   return ezP.Do.createSPAN(op, 'ezp-code-reserved')
 }
 
+console.warn('Add some to|from dom hints in the data model')
 /**
 * Class for a DelegateSvg, any object.
 * For ezPython.
@@ -528,13 +579,20 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.makeTitle = function (block, op) {
 ezP.DelegateSvg.Expr.makeSubclass('any', {
   data: {
     value: {
-      all: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
+      synchronize: function(block, newValue) {
+        this.setFieldValue(newValue || '')
+      }
     }
   },
   inputs: {
     i_1: {
-      key: ezP.Key.CODE,
-      code: '1+1',
+      value: {
+        value: '',
+        placeholder: ezP.Msg.Placeholder.CODE,
+        onEndEditing: function () {
+          this.ezp.setData(this.getValue())
+        },
+      },
     },
   },
   output: {
@@ -543,20 +601,10 @@ ezP.DelegateSvg.Expr.makeSubclass('any', {
 })
 console.warn('value and subtype')
 
-/**
- * When the subtype has changed.
- * @param {!Blockly.Block} block to be initialized.
- * @param {string} newValue
- */
-ezP.DelegateSvg.Expr.any.prototype.synchronizeValue = function(block, newValue) {
-  block.ezp.ui.i_1.fields.code.setValue(newValue || '')
-}
-
 ezP.DelegateSvg.Expr.T3s = [
   ezP.T3.Expr.proper_slice,
   ezP.T3.Expr.conditional_expression_solid,
-  ezP.T3.Expr.or_expr_star,
-  ezP.T3.Expr.or_expr_star_star,
+  ezP.T3.Expr.starred_expression,
   ezP.T3.Expr.not_test_solid,
   ezP.T3.Expr.builtin_object,
   ezP.T3.Expr.any,

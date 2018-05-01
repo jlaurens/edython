@@ -40,46 +40,6 @@ ezP.DelegateSvg.Expr.makeSubclass('keyword_item', {
 })
 
 /**
- * Class for a DelegateSvg, expression_star block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.makeSubclass('expression_star', {
-  inputs: {
-    i_1: {
-      label: '*',
-      css_class: 'ezp-code-reserved',
-      key: ezP.Key.EXPRESSION,
-      check: ezP.T3.Expr.Check.expression,
-      hole_value: 'value',
-    },
-  },
-})
-
-/**
- * Class for a DelegateSvg, expression_star_star block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.makeSubclass('expression_star_star', {
-  inputs: {
-    i_1: {
-      label: '**',
-      css_class: 'ezp-code-reserved',
-      key: ezP.Key.EXPRESSION,
-      check: ezP.T3.Expr.Check.expression,
-      hole_value: 'value',
-    },
-  },
-})
-
-/**
  * List consolidator for argument list.
  * Rules are a bit stronger than python requires originally
  * 1) If there is a comprehension, it must be alone.
@@ -274,14 +234,12 @@ ezP.Consolidator.Arguments.prototype.getCheck = function() {
  * @constructor
  */
 ezP.DelegateSvg.List.makeSubclass('argument_list', {
-  inputs: {
-    list: {
-      check: ezP.T3.Expr.Check.argument_any,
-      consolidator: ezP.Consolidator.List,
-      empty: true,
-      presep: ',',
-      hole_value: 'name',
-    },
+  list: {
+    check: ezP.T3.Expr.Check.argument_any,
+    consolidator: ezP.Consolidator.List,
+    empty: true,
+    presep: ',',
+    hole_value: 'name',
   },
 })
 
@@ -295,20 +253,17 @@ ezP.DelegateSvg.List.makeSubclass('argument_list', {
  * @constructor
  */
 ezP.DelegateSvg.List.makeSubclass('argument_list_comprehensive', {
-  inputs: {
-    list: {
-      consolidator: ezP.Consolidator.Arguments,
-      empty: true,
-      presep: ',',
-      hole_value: 'name',
-    },
+  list: {
+    consolidator: ezP.Consolidator.Arguments,
+    empty: true,
+    presep: ',',
+    hole_value: 'name',
   },
 })
 
 ezP.DelegateSvg.Argument.T3s = [
   ezP.T3.Expr.keyword_item,
-  ezP.T3.Expr.expression_star,
-  ezP.T3.Expr.expression_star_star,
+  ezP.T3.Expr.starred_expression, // from Expr
   ezP.T3.Expr.argument_list,
   ezP.T3.Expr.argument_list_comprehensive,
 ]
