@@ -443,7 +443,7 @@ ezP.DelegateSvg.List.makeSubclass('with_item_list', {
 
 ezP.DelegateSvg.List.T3s = [
   ezP.T3.Expr.term,
-  ezP.T3.Expr.expression_star,
+  ezP.T3.Expr.starred_expression,
   ezP.T3.Expr.comprehension,
   ezP.T3.Expr.dict_comprehension,
   ezP.T3.Expr.key_datum,

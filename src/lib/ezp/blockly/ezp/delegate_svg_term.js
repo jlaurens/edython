@@ -116,7 +116,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
           value: '',
           placeholder: ezP.Msg.Placeholder.TERM,
           validator: function(txt) {
-            return this.validateData(txt, ezP.Key.VALUE)
+            return this.ezp.validateData(txt, ezP.Key.VALUE)
           },
           onEndEditing: function () {
             this.setData(this.getValue(), ezP.Key.VALUE)

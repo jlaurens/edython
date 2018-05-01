@@ -285,7 +285,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     variant: {
       all: [0, 1, 2],
       default: 0,
-      synchronizeVariant = function(block, newValue) {
+      synchronize: function(newValue) {
         this.setInputDisabled(1, newValue == 2)
         this.setInputDisabled(2, newValue != 1)
         this.setInputDisabled(3, newValue != 2)
@@ -310,7 +310,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         value: '',
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
         validator: function(txt) {
-          return this.validateData(txt, ezP.Key.VALUE)
+          return this.ezp.validateData(txt, ezP.Key.VALUE)
         },
         onEndEditing: function () {
           this.setDataValue(this.getValue(), ezP.Key.VALUE)

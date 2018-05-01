@@ -414,12 +414,20 @@ ezP.Xml.Literal.domToBlock = function (element, workspace) {
     if (xmlChild.nodeType === 3) {
       var text = xmlChild.nodeValue
       var type = ezP.Do.typeOfString(text)
-      if (ezP.DelegateSvg.Expr.numberliteral.ezp.validateSubtype(type)) {
+      switch(type) {
+        case ezP.T3.Expr.integer:
+        case ezP.T3.Expr.floatnumber:
+        case ezP.T3.Expr.imagnumber:
         var block = ezP.DelegateSvg.newBlockComplete(workspace, ezP.T3.Expr.numberliteral, id)
-      } else if (ezP.DelegateSvg.Expr.shortliteral.ezp.validateSubtype(type)) {
+        break
+        case ezP.T3.Expr.shortstringliteral:
+        case ezP.T3.Expr.shortbytesliteral:
         var block = ezP.DelegateSvg.newBlockComplete(workspace, ezP.T3.Expr.shortliteral, id)
-      } else if (ezP.DelegateSvg.Expr.longliteral.ezp.validateSubtype(type)) {
+        break
+        case ezP.T3.Expr.longstringliteral:
+        case ezP.T3.Expr.longbytesliteral:
         var block = ezP.DelegateSvg.newBlockComplete(workspace, ezP.T3.Expr.longliteral, id)
+        break
       }
       if (block) {
         var ezp = block.ezp

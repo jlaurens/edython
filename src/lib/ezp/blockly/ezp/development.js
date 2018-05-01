@@ -92,8 +92,6 @@ ezP.DelegateSvg.Expr.delimitedWorkspaceBlocks = [
 
 ezP.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks = ezP.DelegateSvg.Expr.argument_list.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Expr.argument_list,
-  ezP.T3.Expr.expression_star,
-  ezP.T3.Expr.expression_star_star,
   ezP.T3.Expr.keyword_item,
   ezP.T3.Expr.term,
   ezP.T3.Expr.argument_list_comprehensive,
@@ -240,8 +238,7 @@ ezP.T3.Expr.Check.expression,
 
 ezP.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks = ezP.DelegateSvg.Expr.argument_list.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Expr.argument_list,
-  ezP.T3.Expr.expression_star,
-  ezP.T3.Expr.expression_star_star,
+  ezP.T3.Expr.starred_expression,
   ezP.T3.Expr.keyword_item,
   ezP.T3.Expr.term,
   ezP.T3.Expr.argument_list_comprehensive,

@@ -28,8 +28,25 @@ console.warn('gather fooData -> data.foo')
  */
 ezP.DelegateSvg.makeSubclass('Stmt', {
   data: {
-    comment: {},
-    commentShow: {},
+    comment: {
+      default: '',
+      validate: function(newValue) {
+        return {validated: XRegExp.exec(newValue, ezP.XRE.comment).value || ''}
+      },
+      synchronize: function(newValue) {
+        this.setFieldValue(newValue || '', 0, 'comment')
+      },
+    },
+    commentShow: {
+      default: false,
+      validate: function(newValue) {
+        return {validated: newValue} // is it still necessary ?
+      },
+      synchronize: function(newValue) {
+        this.setFieldVisible(!!newValue, 0, 'commentMark')
+        this.setFieldVisible(!!newValue, 0, 'comment')
+      },
+    },
   },
   inputs: {
     comment: {
@@ -39,66 +56,6 @@ ezP.DelegateSvg.makeSubclass('Stmt', {
   }
 })
 ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.DelegateSvg.Stmt, true)
-
-/**
- * Validate the comment property.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newComment
- */
-ezP.DelegateSvg.Stmt.prototype.validateComment = function (block, newComment) {
-  return {validated: XRegExp.exec(newComment, ezP.XRE.comment).value || ''}
-}
-
-/**
- * Validate the comment property.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newComment
- */
-ezP.DelegateSvg.Stmt.prototype.validateCommentShow = function (block, newComment) {
-  return {validated: newComment}
-}
-
-/**
- * Initialize the comment property.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- */
-ezP.DelegateSvg.Stmt.prototype.initComment = function (block) {
-  this.data.comment.set('')
-}
-
-/**
- * Synchronize the comment with the UI.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newSubtype
- */
-ezP.DelegateSvg.Stmt.prototype.synchronizeComment = function (block, newComment) {
-  this.ui.fields.comment.setValue(newComment || '')
-}
-
-/**
- * Initialize the show comment property.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- */
-ezP.DelegateSvg.Stmt.prototype.initCommentShow = function (block) {
-  this.data.commentShow.set(false)
-}
-
-/**
- * Synchronize the comment show property with the UI.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newCommentShow
- */
-ezP.DelegateSvg.Stmt.prototype.synchronizeCommentShow = function (block, newCommentShow) {
-  this.ui.fields.commentMark.setVisible(!!newCommentShow)
-  this.ui.fields.comment.setVisible(!!newCommentShow)
-}
-
 
 /**
  * Initialize a block.

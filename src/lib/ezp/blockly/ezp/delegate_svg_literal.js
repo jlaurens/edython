@@ -81,7 +81,7 @@ ezP.DelegateSvg.Literal.makeSubclass('numberliteral', {
         value: 0,
         placeholder: ezP.Msg.Placeholder.NUMBER,
         validator: function(txt) {
-          return this.validateData(txt, ezP.Key.VALUE)
+          return this.ezp.validateData(txt, ezP.Key.VALUE)
         },
         onEndEditing: function () {
           return setDataValue(this.getValue(), ezP.Key.VALUE)
@@ -157,7 +157,7 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
       },
       synchronize: function(newValue) {
         this.setFieldValue(newValue, 0, 'prefix')
-        this.setFieldVisible(!!newValue && !!newValue.length)
+        this.setFieldVisible(!!newValue && !!newValue.length, 0, 'prefix')
       },
     },
     content: {
@@ -219,7 +219,7 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
           ezP.Msg.Placeholder.BYTES: ezP.Msg.Placeholder.STRING
         },
         validator: function(txt) {
-          return this.validateData(goog.isDef(txt)? txt: this.getValue(), 'content')
+          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), 'content')
         },
         onStartEditing: function () {
           this.seFieldVisible(false, 1, 'end')
@@ -396,6 +396,7 @@ ezP.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
       default: 0,
     },
     value: {
+      default: '',
       didChange: function(oldValue, newValue) {
         var F = function(xre, type) {
           var m = XRegExp.exec(newValue, xre)

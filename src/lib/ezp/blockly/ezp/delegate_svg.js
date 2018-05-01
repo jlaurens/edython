@@ -136,8 +136,12 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   // block.setInputsInline(true)
   block.setTooltip('')
   block.setHelpUrl('')
-  var fieldModel = this.getModel().fields
-  var inputModel = this.getModel().inputs
+  var model = this.getModel()
+  var link = model.link
+  model = link && ezP.DelegateSvg.Manager.getModel(link) || model
+  var dataModel = model.fields
+  var fieldModel = model.fields
+  var inputModel = model.inputs
   var doInsert = function(type, isMain) {
     var B = ezP.DelegateSvg.newBlockComplete(block.workspace, type)
     if (B) {
@@ -326,7 +330,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     }
     return out
   }
-  var model = {
+  var ui = {
     fields: {},
   }
   
@@ -334,7 +338,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   var e8r = block.ezp.inputEnumerator(block)
   while (e8r.next()) {
     if (e8r.here.type === Blockly.NEXT_STATEMENT) {
-      model.suite = {
+      ui.suite = {
         input: e8r.here,
       }
       break
@@ -351,19 +355,19 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         field.setSourceBlock(block)
         field.name = key
         field.init()
-        model.fields[key] = field
+        ui.fields[key] = field
         return field
       }
     }
   }
-  // next are not implemented in the model
+  // next are not implemented in the ui
   if ((D = this.getModel().output) && D.awaitable) {
     field = new ezP.FieldLabel('await')
     field.ezp.css_class = 'ezp-code-reserved'
     field.name = ezP.Key.AWAIT
     field.setSourceBlock(block)
     field.init()
-    model.fields.await = field
+    ui.fields.await = field
   }    
   if ((D = this.getModel().statement) && D.asyncable) {
     field = new ezP.FieldLabel(ezP.Key.ASYNC)
@@ -371,13 +375,13 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     field.name = ezP.Key.ASYNC
     field.setSourceBlock(block)
     field.init()
-    model.fields.async = field
+    ui.fields.async = field
   }
   // if insert is one of the keys, 
   if (Object.keys(inputModel).length) {
     var v
     if ((v = inputModel.insert)) {
-      model = doInsert.call(this, v, true)
+      ui = doInsert.call(this, v, true)
     } else {
       FF.call(this, ezP.Key.MODIFIER)
       FF.call(this, ezP.Key.PREFIX)
@@ -386,7 +390,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       for (var i = 0, K; K = keys[i++];) {
         var p = doOneModel.call(this, K)
         if (p) {
-          model[K] = p
+          ui[K] = p
         }
       }
       // comment for statements is managed separately
@@ -395,37 +399,28 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       if ((D = inputModel[key])) {
         // for now, just create the fields
         field = new ezP.FieldInput('', function(txt) {
-          if (goog.isDef(txt)) {
-            var block = this.sourceBlock_
-            if (block) {
-              var ezp = block.ezp
-              var v = ezp.validateComment(block, txt)
-              return v && v.validated
-            }
-          }
-          return {validated: ''}
+          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), 'comment')
         }, key)
         field.ezp.onEndEditing_ = function() {
-          var block = this.sourceBlock_
-          block.ezp.data.comment.set(this.getValue())
+          this.ezp.setData(this.getValue(), 'comment')
         }
         field.placeholderText_ = ezP.Msg.Placeholder.COMMENT
         field.ezp.css_class = 'ezp-code-comment'
         field.setSourceBlock(block)
         field.name = key
         field.init()
-        model.fields[key] = field
+        ui.fields[key] = field
         key = ezP.Key.COMMENT_MARK
         field = new ezP.FieldLabel('#')
         field.ezp.css_class = 'ezp-code-reserved'
         field.setSourceBlock(block)
         field.name = key
         field.init()
-        model.fields[key] = field
+        ui.fields[key] = field
       }
     }
   }
-  this.ui = model
+  this.ui = ui
   if (!block.workspace.options.readOnly && !this.eventsInit_) {
     Blockly.bindEventWithChecks_(block.getSvgRoot(), 'mouseup', block,
     function(e) {
@@ -439,7 +434,6 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   // and find the appropriate type
   this.consolidateType(block)
 }
-console.error('replace the validateComment above')
 console.warn('implement async and await, see above awaitable and asyncable')
 /**
  * Revert operation of initBlock.

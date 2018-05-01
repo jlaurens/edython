@@ -53,18 +53,31 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
   data: {
     builtin: {
       all: ['staticmethod', 'classmethod'],
+      synchronizeBuiltin :function(builtin) {
+        this.setFieldValue(builtin || '', 2, 'label')
+      },
     },
     variant: {
       all: [ezP.Key.DOTTED_NAME, ezP.Key.BUILTIN, ezP.Key.ARGUMENTS],
+      synchronize: function(variant) {
+        this.setInputDisabled(1, variant === ezP.Key.BUILTIN)
+        this.setInputDisabled(2, variant !== ezP.Key.BUILTIN)
+        this.setInputDisabled(3, variant !== ezP.Key.ARGUMENTS)
+      },
     },
     subtype: {
       all: [ezP.T3.Expr.dotted_name, ezP.T3.Expr.identifier],
-    }
-  },
-  fields: {
-    prefix: {
-      label: '@',
-      css_class: 'ezp-code-reserved',
+    },
+    value: {
+      default: '',
+      validate: function(newValue) {
+        var subtypes = this.data.subtype.getAll()
+        var subtype = ezP.Do.typeOfString(newValue)
+        return (subtypes.indexOf(subtype)>= 0) && {validated: newValue} || null
+      },
+      synchronize: function(newValue) {
+        this.setFieldValue(newValue || '', 1, 'dotted_name')
+      },
     },
   },
   fields: {
@@ -74,27 +87,16 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
     },
   },
   inputs: {
-    prefix: {
-      label: '@',
-      css_class: 'ezp-code-reserved',
-    },
     i_1: {
       term: {
         key: ezP.Key.DOTTED_NAME,
         value: '',
         placeholder: ezP.Msg.Placeholder.DECORATOR,
         validator: function(txt) {
-          var block = this.sourceBlock_
-          if (block) {
-            var ezp = block.ezp
-            var v = ezp.validateValue(block, goog.isDef(txt)? txt: this.getValue())
-            return v && v.validated
-          }
+          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
         },
         onEndEditing: function () {
-          var block = this.sourceBlock_
-          var ezp = block.ezp
-          ezp.data.value.set(this.getValue())
+          this.setDataValue(this.getValue(), ezP.Key.VALUE)
         },
         left_space: true,
       },
@@ -117,58 +119,6 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
     }
   }
 })
-
-/**
- * Synchronize the UI after a variant change.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- */
-ezP.DelegateSvg.Stmt.decorator.prototype.synchronizeVariant = function (block, variant) {
-  this.setNamedInputDisabled(block, ezP.Key.DOTTED_NAME, variant === ezP.Key.BUILTIN)
-  this.setNamedInputDisabled(block, ezP.Key.BUILTIN, variant !== ezP.Key.BUILTIN)
-  this.setNamedInputDisabled(block, ezP.Key.ARGUMENTS, variant !== ezP.Key.ARGUMENTS)
-}
-
-/**
- * Synchronize the UI after a builtin change.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- */
-ezP.DelegateSvg.Stmt.decorator.prototype.synchronizeBuiltin = function (block, builtin) {
-  this.ui.i_2.fields.label.setValue(builtin || '')
-}
-
-/**
- * Init the value.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- */
-ezP.DelegateSvg.Stmt.decorator.prototype.initValue = function (block) {
-  this.data.value.set(this.ui.i_1.fields.dotted_name.getValue())
-}
-
-/**
- * Synchronize the ui after the value change.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- */
-ezP.DelegateSvg.Stmt.decorator.prototype.synchronizeValue = function (block, value) {
-  this.ui.i_1.fields.dotted_name.setValue(value || '')
-}
-
-/**
- * Validates the new value.
- * The type must be one of `dotted_name` or `identifier`.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newValue
- * @return true if newValue is acceptable, false otherwise
- */
-ezP.DelegateSvg.Stmt.decorator.prototype.validateValue = function (block, newValue) {
-  var subtypes = this.data.subtype.getAll()
-  var subtype = ezP.Do.typeOfString(newValue)
-  return (subtypes.indexOf(subtype)>= 0) && {validated: newValue} || null
-}
 
 /**
  * decorator blocks are white when followed by a statement.
@@ -253,6 +203,19 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
   data: {
     variant: {
       all: ['', ezP.Key.TYPE],
+      synchronize: function (newValue) {
+        this.setInputDisabled(3, (ezP.Key.TYPE !== newValue))
+      },
+    },
+    value: {
+      default: '',
+      validate: function(newValue) {
+        var type = ezP.Do.typeOfString(newValue)
+        return type === ezP.T3.Expr.identifier? {validated: newValue}: null
+      },
+      synchronize: function(newValue) {
+        this.setFieldValue(newValue, 1, 'name')
+      },      
     }
   },
   inputs: {
@@ -265,17 +228,10 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
         value: '',
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
         validator: function(txt) {
-          var block = this.sourceBlock_
-          if (block) {
-            var ezp = block.ezp
-            var v = ezp.validateValue(block, goog.isDef(txt)? txt: this.getValue())
-            return v && v.validated
-          }
+          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
         },
         onEndEditing: function () {
-          var block = this.sourceBlock_
-          var ezp = block.ezp
-          ezp.data.value.set(this.getValue())
+          this.setDataValue(this.getValue(), ezP.Key.VALUE)
         },
       },
     },
@@ -292,36 +248,6 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
     },
   },
 })
-
-/**
- * Validate the value property.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {!Object} newValue.
- */
-ezP.DelegateSvg.Stmt.funcdef_part.prototype.validateValue = function (block, newValue) {
-  var type = ezP.Do.typeOfString(newValue)
-  return type === ezP.T3.Expr.identifier? {validated: newValue}: null
-}
-
-/**
- * Synchronize the value property with the UI.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {!Object} newValue.
- */
-ezP.DelegateSvg.Stmt.funcdef_part.prototype.synchronizeValue = function (block, newValue) {
-  this.ui.i_1.fields.name.setValue(newValue)
-}
-
-/**
- * Synchronize the variant with the UI.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- */
-ezP.DelegateSvg.Stmt.funcdef_part.prototype.synchronizeVariant = function (block) {
-  this.setNamedInputDisabled(block, ezP.Key.TYPE, (ezP.Key.TYPE !== this.data.variant.get()))
-}
 
 /**
  * Populate the context menu for the given block.
@@ -368,6 +294,19 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
   data: {
     variant: {
       all: [null, ezP.Key.ARGUMENTS],
+      synchronize: function(newValue) {
+        block.ezp.setInputDisabled(2, (ezP.Key.ARGUMENTS !== newValue))
+      },
+    },
+    value: {
+      default: '',
+      validate: function(newValue) {
+        var type = ezP.Do.typeOfString(newValue)
+        return type === ezP.T3.Expr.identifier? {validated: newValue}: null
+      },
+      synchronize: function(newValue) {
+        this.setFieldValue(newValue, 1, 'name')
+      },
     },
   },
   inputs: {
@@ -379,17 +318,10 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
         value: '',
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
         validator: function(txt) {
-          var block = this.sourceBlock_
-          if (block) {
-            var ezp = block.ezp
-            var v = ezp.validateValue(block, goog.isDef(txt)? txt: this.getValue())
-            return v && v.validated
-          }
+          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
         },
         onEndEditing: function () {
-          var block = this.sourceBlock_
-          var ezp = block.ezp
-          ezp.data.value.set(this.getValue())
+          this.setDataValue(this.getValue(), ezP.Key.VALUE)
         },
       },
     },
@@ -401,36 +333,6 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
     },
   },
 })
-
-/**
- * Validate the value property.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {!Object} newValue.
- */
-ezP.DelegateSvg.Stmt.funcdef_part.prototype.validateValue = function (block, newValue) {
-  var type = ezP.Do.typeOfString(newValue)
-  return type === ezP.T3.Expr.identifier? {validated: newValue}: null
-}
-
-/**
- * Synchronize the value property with the UI.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {!Object} newValue.
- */
-ezP.DelegateSvg.Stmt.funcdef_part.prototype.synchronizeValue = function (block, newValue) {
-  this.ui.i_1.fields.name.setValue(newValue)
-}
-
-/**
- * Synchronize the variant with the UI.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- */
-ezP.DelegateSvg.Stmt.classdef_part.prototype.synchronizeVariant = function (block) {
-  block.ezp.setInputDisabled(block, this.ui.i_2.input, (ezP.Key.ARGUMENTS !== this.data.variant.get()))
-}
 
 /**
  * Populate the context menu for the given block.
