@@ -24,7 +24,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  * @constructor
  */
 ezP.DelegateSvg.Stmt.makeSubclass('Group', {
-  inputs: {
+  fields: {
     suffix: {
       label: ':',
     },
