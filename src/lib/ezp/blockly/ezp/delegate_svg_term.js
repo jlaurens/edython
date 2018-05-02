@@ -28,7 +28,18 @@ goog.require('ezP.Style')
 ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
   var D = {
     data: {
-      value: {
+      modifier: {
+        all: ['', '*', '**'],
+        noUndo: true,
+        synchronize: function(newValue) {
+          this.setFieldValue(newValue)
+          this.setFieldVisible(newValue.length>0)
+        },
+        xml: {
+          persistent: true,
+        },
+      },
+      name: {
         default: '',
         validate: function (newValue) {
           var subtype = ezP.Do.typeOfString(newValue)
@@ -43,29 +54,34 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
         didChange: function(oldValue, newValue) {
           var subtype = newValue? ezP.Do.typeOfString(newValue): ezP.T3.Expr.identifier
           this.data.subtype.set(subtype)
-          return
         },
         synchronize: function (newValue) {
-          this.setFieldValue(newValue || '', 1, ezP.Key.TERM)
+          this.setFieldValue(this.toText() || '')
+          this.setInputDisabled(this.disabled_)
+        },
+        xml: {
+          persistent: true,
         },
       },
       alias: {
         default: '',
         synchronize: function (block, newValue) {
-          this.setFieldValue(newValue || '', 4)
+          this.setFieldValue(this.toText())
+          this.ui.inputs.alias.setDisabled(this.disabled_)
         },
         validate: function (newValue) {
           var subtype = ezP.Do.typeOfString(newValue)
           return (subtype === ezP.T3.Expr.identifier) && {validated: newValue} || null
+        },
+        xml: {
+          persistent: 'required',
         }
       }, // new
-      modifier: {
-        all: ['', '*', '**'],
-      },
       subtype: {
         all: [ezP.T3.Expr.identifier,
         ezP.T3.Expr.dotted_name,
         ezP.T3.Expr.parent_module],
+        noUndo: true,
       },
       variant: {
         validate: function (newValue) {
@@ -90,18 +106,18 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
           }
           return {validated: newValue}
         },
-        synchronize: function(newValue) {
+        didChange: function(oldValue, newValue) {
           var model = this.model
-          this.setInputDisabled(1, newValue === model.STAR)
-          this.setInputDisabled(2, newValue !== model.NAME_ANNOTATION &&
+          var newModifier = newValue === model.STAR || newValue === model.STAR_NAME || newValue === model.STAR_NAME_ANNOTATION? '*': (newValue === model.STAR_STAR_NAME? '**': '')
+          this.data.modifier.set(newModifier)
+          this.data.name.required = newValue !== model.STAR
+          this.ui.inputs.annotation.setDisabled(newValue !== model.NAME_ANNOTATION &&
           newValue !== model.STAR_NAME_ANNOTATION &&
           newValue !== model.NAME_ANNOTATION_DEFINITION)
-          this.setInputDisabled(3, newValue !== model.NAME_DEFINITION &&
+          this.ui.inputs.definition.setDisabled(newValue !== model.NAME_DEFINITION &&
           newValue !== model.NAME_ANNOTATION_DEFINITION)
-          this.setInputDisabled(4, newValue !== model.NAME_ALIAS)
-          var newModifier = newValue === model.STAR || newValue === model.STAR_NAME || newValue === model.STAR_NAME_ANNOTATION? '*': (newValue === model.STAR_STAR_NAME? '**': '')
-          this.setFieldValue(newModifier, null, ezP.Key.MODIFIER, true)
-          this.setFieldVisible(newModifier.length>0, null, ezP.Key.MODIFIER)
+          this.data.name.setDisabled(newValue === model.STAR)
+          this.data.alias.setDisabled(newValue !== model.NAME_ALIAS)
         },
       },
     },
@@ -113,15 +129,15 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
     },
     inputs: {
       1: {
-        term: {
-          key:ezP.Key.VALUE,
+        name: {
+          key:ezP.Key.NAME,
           edit: '',
           placeholder: ezP.Msg.Placeholder.TERM,
           validator: function(txt) {
-            return this.ezp.validateData(txt, ezP.Key.VALUE)
+            return this.ezp.validateData(txt, ezP.Key.NAME)
           },
           onEndEditing: function () {
-            this.ezp.setData(this.getValue(), ezP.Key.VALUE)
+            this.ezp.setData(this.getValue(), ezP.Key.NAME)
           },
         },
       },
@@ -145,13 +161,13 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
         edit: {
           key:ezP.Key.ALIAS,
           edit: '',
-          placeholder: ezP.Msg.Placeholder.NAME_ALIAS,
+          placeholder: ezP.Msg.Placeholder.ALIAS,
           validator: function(txt) {
             var v = this.sourceBlock_.ezp.data.alias.validate(goog.isDef(txt)? txt: this.getValue())
             return v && v.validated
           },
           onEndEditing: function () {
-            this.sourceBlock_.ezp.data.alias.set(this.getValue.get())
+            this.sourceBlock_.ezp.data.alias.set(this.getValue())
           },
         },
       },
@@ -213,7 +229,7 @@ ezP.DelegateSvg.Expr.term.prototype.noBlockWrapped = function (block) {
  * @return the phantom value
  */
 ezP.DelegateSvg.Expr.term.prototype.getPhantomValue = function(block) {
-  var field = this.ui[1].fields.value
+  var field = this.ui.inputs.name.fields.name
   return field.placeholderText_
 }
 
@@ -224,7 +240,7 @@ ezP.DelegateSvg.Expr.term.prototype.getPhantomValue = function(block) {
  * @return true
  */
 ezP.DelegateSvg.Expr.term.prototype.setPhantomValue = function(block, text) {
-  var field = this.ui[1].fields.value
+  var field = this.ui.inputs.name.fields.name
   field.placeholderText_ = text
   field.render_()
   return true
@@ -236,7 +252,7 @@ ezP.DelegateSvg.Expr.term.prototype.setPhantomValue = function(block, text) {
  * @private
  */
 ezP.DelegateSvg.Expr.term.prototype.showEditor = function (block) {
-  this.ui[1].fields.value.showEditor_()
+  this.ui.inputs.name.fields.name.showEditor_()
 }
 
 /**
@@ -356,7 +372,7 @@ ezP.DelegateSvg.Expr.term.prototype.makeTitle = function (block, variant) {
     break
   }
   if (variant !== model.STAR) {
-    var value = this.data.value.get()
+    var value = this.data.name.get()
     args.push(ezP.Do.createSPAN(value || this.getPhantomValue(block) || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'))
     switch(variant) {
       case model.NAME_ANNOTATION:

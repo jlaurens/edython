@@ -36,6 +36,8 @@ ezP.Data = function(owner, key, model) {
   this.model = model
   this.upperKey = key[0].toUpperCase()+key.slice(1)
   this.name = 'ezp:'+(this.model.name || this.key).toLowerCase()
+  this.noUndo = model.noUndo
+  this.disabled_ = false
 }
 
 /**
@@ -147,6 +149,29 @@ ezP.Data.prototype.validate = function(newValue) {
   var key = 'validate' + this.upperKey
   var all = this.getAll()
   return ezp[key] && ezp[key].call(ezp, block, newValue) || (!all || all.indexOf(newValue) >= 0) && {validated: newValue} || null
+}
+
+/**
+ * Returns the text representation of the data.
+ * @param {Object} newValue
+ */
+ezP.Data.prototype.toText = function() {
+  if (goog.isFunction(this.model.toText)) {
+    return this.model.toText.call(this, newValue)
+  }
+  return this.get() || ''
+}
+
+/**
+ * Set the value from the given text representation.
+ * @param {Object} newValue
+ */
+ezP.Data.prototype.fromText = function(txt) {
+  if (goog.isFunction(this.model.fromText)) {
+    this.model.fromText.call(this, newValue)
+    return
+  }
+  this.set(txt)
 }
 
 /**
@@ -311,14 +336,53 @@ ezP.Data.prototype.set = function (newValue) {
 }
 
 /**
- * Set the enable/disable status of the given input.
+ * Disabled data correspond to diabled input.
+ * Changing this value will cause an UI synchronization.
+ * Always synchronize, even when no value changed.
+ * @param {Object} newValue
+ */
+ezP.Data.prototype.setDisabled = function(newValue) {
+  this.disabled_ = newValue
+  this.synchronize(this.value_)
+}
+/**
+ * Disabled data correspond to diabled input.
+ * Changing this value will cause an UI synchronization.
+ * Always synchronize, even when no value changed.
+ * @param {Object} newValue
+ */
+ezP.Data.prototype.isDisabled = function() {
+  return this.disabled_
+}
+
+/**
+ * Consolidate the value.
+ * Should be overriden by the model.
+ * Reentrant management here.
+ * @param {Object} newValue
+ */
+ezP.Data.prototype.consolidate = function() {
+  if (this.consolidate_lock) {
+    return
+  }
+  if (goog.isFunction(this.model.consolidate)) {
+    this.consolidate_lock = true
+    try {
+      this.model.consolidate.call(this)
+    } finally {
+      delete this.consolidate_lock
+    }
+  }
+}
+
+/**
+ * An active data is not explicitely disabled, and does contain text.
  * @param {!number} index  of the input older in the ui object 
  * @param {!boolean} newValue.
  * @private
  */
-ezP.Data.prototype.setInputDisabled = function (inputIndex, newValue) {
-  var i = this.ui[inputIndex]
-  i && this.owner_.setInputDisabled(this.owner_.block_, i.input, newValue)
+ezP.Data.prototype.isActive = function () {
+  return !!this.required || ! this.disabled_ && goog.isString(this.value_) && this.value_.length
 }
 
 console.warn ('Change the model design for i_(\d): {...} to $1: {...}')
@@ -332,44 +396,13 @@ console.warn ('Change the model design for i_(\d): {...} to $1: {...}')
  * @param {boolean} noUndo  true when no undo tracking should be performed. 
  * @private
  */
-ezP.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
-  var field = this.ui.fields[fieldKey || this.key]
-  if (field) {
-    if (!noUndo && !this.noUndo && Blockly.Events.isEnabled()) {
-      Blockly.Events.disable()
-      var enable = true
-    }
-    try {
-      field.setValue(newValue)
-    } finally {
-      enable && Blockly.Events.enable()
-    }
-  }
-}
-
-/**
- * Set the value of the field in the input given by its index
- * and the key.
- * @param {!Object} newValue.
- * @param {!number} inputIndex  of the input in the model (i_1, i_2...) 
- * When false, this corresponds to the fields that are not
- * part of an input, like the modifier field.
- * @param {string|null} fieldKey  of the input holder in the ui object 
- * @private
- */
-ezP.Data.prototype.setFieldValue = function (newValue, inputIndex, fieldKey, noUndo) {
-  var i = inputIndex && this.ui[inputIndex] || this.ui
-  var field = i.fields[fieldKey || this.key]
-  if (field) {
-    if (!noUndo && !this.noUndo && Blockly.Events.isEnabled()) {
-      Blockly.Events.disable()
-      var enable = true
-    }
-    try {
-      field.setValue(newValue)
-    } finally {
-      enable && Blockly.Events.enable()
-    }
+ezP.Data.prototype.setFieldValue = function (newValue) {
+  goog.asserts.assert(this.field, 'No field bound.')
+  Blockly.Events.disable()
+  try {
+    this.field.setValue(newValue)
+  } finally {
+    Blockly.Events.enable()
   }
 }
 
@@ -377,16 +410,41 @@ ezP.Data.prototype.setFieldValue = function (newValue, inputIndex, fieldKey, noU
  * Set the visible status of the field in the input given by its index
  * and the key.
  * @param {!Object} newValue.
+ */
+ezP.Data.prototype.setFieldVisible = function (newValue) {
+  this.field.setVisible(newValue)
+}
+
+/**
+ * Set the enable/disable status of the given input.
+ * @param {!number} index  of the input older in the ui object 
+ * @param {!boolean} newValue.
+ * @private
+ */
+ezP.Data.prototype.setInputDisabled = function (newValue) {
+  goog.asserts.assert(this.input, 'Missing input binding')
+  this.input.setDisabled(newValue)
+}
+
+/**
+ * Set the value of the main field given by its key.
+ * @param {!Object} newValue.
  * @param {!number} inputIndex  of the input in the model (i_1, i_2...) 
  * When false, this corresponds to the fields that are not
  * part of an input, like the modifier field.
  * @param {string|null} fieldKey  of the input holder in the ui object 
+ * @param {boolean} noUndo  true when no undo tracking should be performed. 
  * @private
  */
-ezP.Data.prototype.setMainFieldVisible = function (newValue, fieldKey) {
+ezP.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
   var field = this.ui.fields[fieldKey || this.key]
   if (field) {
-    field.setVisible(newValue)
+    Blockly.Events.disable()
+    try {
+      field.setValue(newValue)
+    } finally {
+      Blockly.Events.enable()
+    }
   }
 }
 

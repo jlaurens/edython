@@ -69,7 +69,7 @@ ezP.DelegateSvg.Literal.makeSubclass('numberliteral', {
         return
       },
       synchronize: function(newValue) {
-        this.setFieldValue(newValue || '0', 1, ezP.Key.VALUE)
+        this.setFieldValue(this.toText() || '0', 1, ezP.Key.VALUE)
       },
     },
   },
@@ -136,8 +136,8 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
         this.data.value.consolidate()
       },
       synchronize: function(newValue) {
-        this.setFieldValue(newValue, 1, 'start')
-        this.setFieldValue(newValue, 1, 'end')
+        this.setFieldValue(this.toText(), 1, 'start')
+        this.setFieldValue(this.toText(), 1, 'end')
       },
     },
     modifier: {
@@ -152,7 +152,7 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
         return (!goog.isDef(content) || this.owner_.getPossibleSubtype(newValue, content)) && {validated: newValue}
       },
       synchronize: function(newValue) {
-        this.setFieldValue(newValue, 0, 'prefix')
+        this.setFieldValue(this.toText(), 0, 'prefix')
         this.setMainFieldVisible(!!newValue && !!newValue.length, 'prefix')
       },
     },
@@ -166,7 +166,7 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
         return (!goog.isDef(modifier) || this.owner_.getPossibleSubtype(modifier, newValue)) && {validated: newValue} || null
       },
       synchronize: function(newValue) {
-        this.setFieldValue(newValue || '', 1)
+        this.setFieldValue(this.toText() || '', 1)
       },
     },
     value: {

@@ -298,13 +298,13 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         return types.indexOf(type) >= 0? {validated: newValue}: null
       },
       synchronize: function(newValue) {
-        this.setFieldValue(newValue || '', 1, ezP.Key.VALUE)
+        this.setFieldValue(this.toText() || '', 1, ezP.Key.VALUE)
       },
     },
   },
   inputs: {
     1: {
-      term: {
+      name: {
         key:ezP.Key.VALUE,
         edit: '',
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
@@ -440,7 +440,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
       operator: {
         default: '+=',
         synchronize: function (newValue) {
-          this.setFieldValue(newValue, 3, ezP.Key.LABEL)
+          this.setFieldValue(this.toText(), 3, ezP.Key.LABEL)
         },
         didChange: function(oldValue, newValue) {
           this.data.numberOperator.set(newValue)
@@ -464,7 +464,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
     },
     inputs: {
       1: {
-        term: {
+        name: {
           key:ezP.Key.VALUE,
           edit: '',
           placeholder: ezP.Msg.Placeholder.IDENTIFIER,

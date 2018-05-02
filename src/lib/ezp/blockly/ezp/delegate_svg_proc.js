@@ -76,7 +76,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
         return (subtypes.indexOf(subtype)>= 0) && {validated: newValue} || null
       },
       synchronize: function(newValue) {
-        this.setFieldValue(newValue || '', 1, 'dotted_name')
+        this.setFieldValue(this.toText() || '', 1, 'dotted_name')
       },
     },
   },
@@ -88,7 +88,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
   },
   inputs: {
     1: {
-      term: {
+      name: {
         key: ezP.Key.DOTTED_NAME,
         edit: '',
         placeholder: ezP.Msg.Placeholder.DECORATOR,
@@ -214,16 +214,20 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
         return type === ezP.T3.Expr.identifier? {validated: newValue}: null
       },
       synchronize: function(newValue) {
-        this.setFieldValue(newValue, 1, 'name')
+        this.setFieldValue(this.toText(), 1, 'name')
       },      
-    }
+    },
+  },
+  fields: {
+    prefix: {
+      label: 'def',
+      css_class: 'ezp-code-reserved',      
+    },
   },
   inputs: {
     1: {
       key: ezP.Key.NAME,
-      label: 'def',
-      css_class: 'ezp-code-reserved',
-      term: {
+      name: {
         key: ezP.Key.NAME,
         edit: '',
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
@@ -305,7 +309,7 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
         return type === ezP.T3.Expr.identifier? {validated: newValue}: null
       },
       synchronize: function(newValue) {
-        this.setFieldValue(newValue, 1, 'name')
+        this.setFieldValue(this.toText(), 1, 'name')
       },
     },
   },
@@ -313,7 +317,7 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
     1: {
       label: 'class',
       css_class: 'ezp-code-reserved',
-      term: {
+      name: {
         key: ezP.Key.NAME,
         edit: '',
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,

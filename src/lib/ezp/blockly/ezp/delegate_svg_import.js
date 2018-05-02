@@ -106,7 +106,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         {validated: newValue}: null
       },
       synchronize: function(newValue) {
-        this.setFieldValue(newValue || '', 2, ezP.Key.FROM)
+        this.setFieldValue(this.toText() || '', 2, ezP.Key.FROM)
       },
     },
   },

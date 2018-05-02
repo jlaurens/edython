@@ -200,13 +200,9 @@ ezP.DelegateSvg.Stmt.prototype.minBlockWidth = function (block) {
 ezP.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeName, subtype) {
   var c8n = block.previousConnection
   if (c8n) {
-    var disabler = new ezP.Events.Disabler()
-    try {
-      var parentBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName)
-    } finally {
-      disabler.stop()
-      return
-    }
+    Blockly.Events.disable()
+    var parentBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName)
+    Blockly.Events.enable()
     var parentC8n = parentBlock.nextConnection
     if (parentC8n) {
       var grouper = new ezP.Events.Grouper()

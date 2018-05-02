@@ -559,6 +559,12 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
     if (state && state.toLowerCase() === ezP.Xml.LOCKED) {
       block.ezp.lock(block)
     }
+    // this block have been created from untrusted data
+    // We might need to fix some stuff before returning
+    // In particular, it will be the perfect place to setup variants
+    block.ezp.consolidate(block)
+    block.ezp.synchronizeData(block)
+    block.ezp.synchronizeInputs(block)
   }
   return block
 }
@@ -600,9 +606,153 @@ ezP.Xml.fromDom = function (block, element) {
   }
 }
 
+// General stuff
+
+goog.provide('ezP.Xml.Expr')
+
+/**
+ * Convert the block's input list and next blocks to a dom element.
+ * Expressions will write their data, then their input.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {Element} xml the persistent element.
+ * @param {boolean} optNoId.
+ * @return a dom element, void lists may return nothing
+ * @this a block delegate
+ */
+ezP.Xml.Expr.toDom = function(block, element, optNoId) {
+  ezP.Xml.Data.toDom(block, element)
+  ezP.Xml.InputList.toDom(block, element, optNoId)
+}
+
+ezP.DelegateSvg.Expr.prototype.xml = ezP.Xml.Expr
+
+/**
+ * Convert the block's input list and next statement from a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {Element} xml the persistent element.
+ * @return a dom element, void lists may return nothing
+ * @this a block delegate
+ */
+ezP.Xml.Expr.fromDom = function(block, element) {
+  ezP.Xml.Data.fromDom(block, element) 
+  ezP.Xml.InputList.fromDom(block, element) 
+}
+
+goog.provide('ezP.Xml.Stmt')
+
+/**
+ * Convert the block's input list and next blocks to a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {Element} xml the persistent element.
+ * @param {boolean} optNoId.
+ * @return a dom element, void lists may return nothing
+ * @this a block delegate
+ */
+ezP.Xml.Stmt.toDom = function(block, element, optNoId) {
+  ezP.Xml.Data.toDom(block, element) 
+  ezP.Xml.InputList.toDom(block, element, optNoId)
+  ezP.Xml.Flow.toDom(block, element, optNoId)  
+}
+
+/**
+ * Convert the block's input list and next statement from a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {Element} xml the persistent element.
+ * @return a dom element, void lists may return nothing
+ * @this a block delegate
+ */
+ezP.Xml.Stmt.fromDom = function(block, element) {
+  ezP.Xml.Data.fromDom(block, element) 
+  ezP.Xml.InputList.fromDom(block, element)
+  ezP.Xml.Flow.fromDom(block, element)  
+}
+
+goog.provide('ezP.Xml.Data')
+
+/**
+ * Convert the block's data.
+ * List all the available data and converts them to xml.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {Element} xml the persistent element.
+ * @param {boolean} optNoId.
+ * @return a dom element, void lists may return nothing
+ * @this a block delegate
+ */
+ezP.Xml.Data.toDom = function(block, element, optNoId) {
+  for(var key in block.ezp.data) {
+    var data = block.ezp.data[key]
+    if (data.disabled_) {
+      continue
+    }
+    // only data with an xml object are saved
+    var xml = data.model.xml
+    if (xml) {
+      if (xml.toDom) {
+        xml.toDom(element)
+      } else if (xml.persistent === 'text') {
+        var txt = data.toText()
+        if (txt.length) {
+          var child = goog.dom.createTextNode(value)
+          goog.dom.appendChild(element, child)
+        }
+      } else if (xml.persistent) {
+        var attribute = xml.attribute || 'ezp:'+key
+        var txt = data.toText()
+        // only a void string might not be saved
+        // A void string is saved if the data is required,
+        // either from the data model, or programmatically
+        if (txt.length || xml.persistent === 'required' || data.required) {
+          element.setAttribute(attribute, txt || '?')
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Convert the block's data from a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {Element} xml the persistent element.
+ * @return a dom element, void lists may return nothing
+ * @this a block delegate
+ */
+ezP.Xml.Data.fromDom = function(block, element) {
+  for(var key in block.ezp.data) {
+    var data = block.ezp.data[key]
+    var xml = data.model.xml
+    if (xml) {
+      if (xml.fromDom) {
+        xml.fromDom(element)
+      } else if (xml.persistent === 'text') {
+        for (var i = 0, child; (child = element.childNodes[i]); i++) {
+          if (child.nodeType === 3) {
+            data.fromText(child.nodeValue)
+            break
+          }
+        }
+      } else if (xml.persistent) {
+        var attribute = xml.attribute || 'ezp:'+key
+        var txt = element.getAttribute(attribute)
+        if (goog.isDefAndNotNull(txt)) {
+          if ((xml.persistent.required || data.required) && txt === '?') {
+            txt = ''
+          }
+          data.fromText(txt)
+        }
+      }
+    }
+  }
+}
+
 //////////////  basic methods
 
-goog.provide('ezP.Xml.Input.Named')
+goog.provide('ezP.Xml.Input')
 
 /**
  * Convert the block's input to a dom element.
@@ -614,23 +764,35 @@ goog.provide('ezP.Xml.Input.Named')
  * then the method is forwarded as is to the target.
  * If the target is a list, then a list element is created
  * and populated by the target.
+ * Variants make things more complicated.
+ * Depending on the value of the variant,
+ * the input may be disabled or not.
+ * A disabled input will not save its data to the dom.
+ * An optional input with no data will save nothing.
+ * On the opposite, we may have an input that must save data
+ * but has nothing available.
+ * What are the criteria to decide if an input is require or not?
+ * When writing to dom, such an input must not be disabled,
+ * and must have some data or be marked as required.
  * For ezPython.
- * @param {!Blockly.Input} input  the input to be saved.
+ * @param {!ezP.Input} input  the input to be saved.
  * @param {Element} element a dom element in which to save the input
  * @param {boolean} optNoId.
+ * @param {boolean} optNoName. For lists, if there is no ambiguity, we can avoid the use of the input attribute.
  * @return the added child, if any
  */
 ezP.Xml.Input.toDom = function(input, element, optNoId, optNoName) {
-  var c8n = input.connection
-  if (c8n) {
-    var target = c8n.targetBlock()
+  var out = function() {
+    var target = input.getTarget()
     if (target) { // otherwise, there is nothing to remember
       if (target.ezp.wrapped_) {
+        // wrapped blocks are just a convenient computational model.
+        // For lists only, we do create a further level
         if (target.ezp instanceof ezP.DelegateSvg.List) {
           var child = ezP.Xml.blockToDom(target, optNoId)
           if (child.childNodes.length>0) {
             if (!optNoName) {
-              child.setAttribute(ezP.Xml.INPUT, input.name)
+              child.setAttribute(ezP.Xml.INPUT, input.key)
             }
             goog.dom.appendChild(element, child)
             return child      
@@ -644,9 +806,9 @@ ezP.Xml.Input.toDom = function(input, element, optNoId, optNoName) {
         if (child.childNodes.length>0 || child.hasAttributes()) {
           if (!optNoName) {
             if (input.type === Blockly.INPUT_VALUE) {
-              child.setAttribute(ezP.Xml.INPUT, input.name)
+              child.setAttribute(ezP.Xml.INPUT, input.key)
             } else if (input.type === Blockly.NEXT_STATEMENT) {
-              child.setAttribute(ezP.Xml.FLOW, input.name)
+              child.setAttribute(ezP.Xml.FLOW, input.key)
             }
           }
           goog.dom.appendChild(element, child)
@@ -654,8 +816,71 @@ ezP.Xml.Input.toDom = function(input, element, optNoId, optNoName) {
         }
       }
     }
+  } ()
+  if (!out && input.isRequiredToDom()) {
+    var child = goog.dom.createDom(ezP.Xml.PLACEHOLDER)
+    child.setAttribute(ezP.Xml.INPUT, input.key)
+    goog.dom.appendChild(element, child)
+    return true
   }
 }
+
+/**
+ * Convert the delegates's input from a dom element.
+ * Given an input and an element, initialize the input target
+ * block with data from the given element.
+ * The given element was created by the input's source block
+ * in a blockToDom method. If it contains a child element
+ * which input attribute is exactly the input's name,
+ * then we ask the input target block to fromDom.
+ * Target blocks are managed here too.
+ * No consistency test is made however.
+ * For ezPython.
+ * @param {!ezP.Input} block The block to be converted.
+ * @param {Element} element a dom element in which to save the input
+ * @return the added child, if any
+ */
+ezP.Xml.Input.fromDom = function(input, element) {
+  input.setRequiredFromDom(false)
+  var target = input.getTarget()
+  if (target && target.ezp.wrapped_ && !(target.ezp instanceof ezP.DelegateSvg.List)) {
+    input.setRequiredFromDom(true)
+    return ezP.Xml.fromDom(target, element)
+  }
+  // find an xml child with the proper input attribute
+  for (var i = 0, child; (child = element.childNodes[i++]);) {
+    if (goog.isFunction(child.getAttribute)) {
+      if (input.type === Blockly.INPUT_VALUE) {
+        var attribute = child.getAttribute(ezP.Xml.INPUT)
+      } else if (input.type === Blockly.NEXT_STATEMENT) {
+        var attribute = child.getAttribute(ezP.Xml.FLOW)
+      }
+    }
+    if (attribute === input.key) {
+      if (child.tagName && child.tagName.toLowerCase() === ezP.Xml.PLACEHOLDER) {
+        input.setRequiredFromDom(true)
+        return true
+      }
+      if (target) {
+        input.setRequiredFromDom(true)
+        return ezP.Xml.fromDom(target, child)
+      } else if ((target = Blockly.Xml.domToBlock(child, input.getWorkspace()))) {
+        // we could create a block form that child element
+        // then connect it
+        var c8n = input.getConnection()
+        if (target.outputConnection && c8n.checkType_(target.outputConnection)) {
+          c8n.connect(target.outputConnection)
+        } else if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
+          c8n.connect(target.previousConnection)
+        }
+        input.setRequiredFromDom(true)
+        return target
+      }
+    }
+  }
+}
+
+goog.provide('ezP.Xml.Input.Named')
 
 /**
  * Convert the block's input with the given name to a dom element.
@@ -667,74 +892,12 @@ ezP.Xml.Input.toDom = function(input, element, optNoId, optNoName) {
  * @return the added child, if any
  */
 ezP.Xml.Input.Named.toDom = function(block, name, element, optNoId, withPlaceholder) {
-  var input = block.getInput(name)
-  if (input) {
+  var input = block.ezp.ui.inputs[name]
+  if (input && !input.disabled) {
     var out = ezP.Xml.Input.toDom(input, element, optNoId)
-    if (!out && withPlaceholder) {
-      var child = goog.dom.createDom(ezP.Xml.PLACEHOLDER)
-      child.setAttribute(ezP.Xml.INPUT, name)
-      goog.dom.appendChild(element, child)
-      return true
-    }
   }
   return out
 }
-
-/**
- * Convert the block's input from a dom element.
- * Given an input and an element, initialize the input target
- * block with data from the given element.
- * The given element was created by the input's source block
- * in a blockToDom method. If it contains a child element
- * which input attribute is exactly the input's name,
- * then we ask the input target block to fromDom.
- * Target blocks are managed here too.
- * No consistency test is made however.
- * For ezPython.
- * @param {!Blockly.Input} block The block to be converted.
- * @param {Element} element a dom element in which to save the input
- * @return the added child, if any
- */
-ezP.Xml.Input.fromDom = function(input, element) {
-  if (input) {
-    var c8n = input.connection
-    if (c8n) {
-      var target = c8n.targetBlock()
-      if (target && target.ezp.wrapped_ && !(target.ezp instanceof ezP.DelegateSvg.List)) {
-        return ezP.Xml.fromDom(target, element)
-      }
-      // find an xml child with the proper input attribute
-      for (var i = 0, child; (child = element.childNodes[i++]);) {
-        if (child.tagName && child.tagName.toLowerCase() === ezP.Xml.PLACEHOLDER) {
-          continue
-        }
-        if (goog.isFunction(child.getAttribute)) {
-          if (input.type === Blockly.INPUT_VALUE) {
-            var attribute = child.getAttribute(ezP.Xml.INPUT)
-          } else if (input.type === Blockly.NEXT_STATEMENT) {
-            var attribute = child.getAttribute(ezP.Xml.FLOW)
-          }
-        }
-        if (attribute && attribute === input.name) {
-          if (target) {
-            return ezP.Xml.fromDom(target, child)
-          } else if ((target = Blockly.Xml.domToBlock(child, input.sourceBlock_.workspace))) {
-            // we could create a block form that child element
-            // then connect it
-            if (target.outputConnection && c8n.checkType_(target.outputConnection)) {
-              c8n.connect(target.outputConnection)
-            } else if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
-              c8n.connect(target.previousConnection)
-            }
-            return target
-          }
-        }
-      }
-    }
-  }
-}
-
-console.log('record the lock status')
 
 /**
  * Convert the block's input with the given name to a dom element.
@@ -746,21 +909,9 @@ console.log('record the lock status')
  * @return the added child, if any, or just true in case of a placeholder
  */
 ezP.Xml.Input.Named.fromDom = function(block, name, element, withPlaceholder) {
-  var input = block.getInput(name)
+  var input = block.ezp.ui.inputs[name]
   if (input) {
-    var out = ezP.Xml.Input.fromDom(input, element)
-    if (!out && withPlaceholder) {
-      for (var i = 0, child; (child = element.childNodes[i++]);) {
-        if (child.tagName && child.tagName.toLowerCase() === ezP.Xml.PLACEHOLDER) {
-          if (goog.isFunction(child.getAttribute)) {
-            var attribute = child.getAttribute(ezP.Xml.INPUT)
-            if (attribute && attribute === input.name) {
-              return true
-            }
-          }
-        }
-      }
-    }
+    var out = ezP.Xml.Input.fromDom(input, element, withPlaceholder)
   }
   return out
 }
@@ -777,9 +928,10 @@ goog.provide('ezP.Xml.InputList')
  */
 ezP.Xml.InputList.toDom = function(block, element, optNoId) {
   var out
-  var e8r = block.ezp.inputEnumerator(block), input
-  while ((input = e8r.next())) {
-    if (input.name) {
+  var inputs = block.ezp.ui.inputs
+  for (var k in inputs) {
+    var input = inputs[k]
+    if (!input.disabled) {
       out = ezP.Xml.Input.toDom(input, element, optNoId)
     }
   }
@@ -787,26 +939,42 @@ ezP.Xml.InputList.toDom = function(block, element, optNoId) {
 }
 
 /**
- * Convert the block's input list from a dom element.
+ * Convert the delagate's input list from a dom element.
+ * We filtered out disabled inputs while saving,
+ * we do not while loading.
  * For ezPython.
  * @param {!Blockly.Block} block The block to be converted.
  * @param {Element} xml the persistent element.
  * @return a dom element, void lists may return nothing
  */
 ezP.Xml.InputList.fromDom = function(block, element) {
-  var e8r = block.ezp.inputEnumerator(block), input
-  while ((input = e8r.next())) {
-    if (input.name) {
-      ezP.Xml.Input.fromDom(input, element)
-    }
+  var inputs = block.ezp.ui.inputs
+  for (var k in inputs) {
+    var input = inputs[k]
+    ezP.Xml.Input.fromDom(input, element)
   }
   block.bumpNeighbours_()
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 goog.provide('ezP.Xml.Flow')
 
 /**
- * Convert the block's input list and next blocks to a dom element.
+ * Convert the block's next statements to a dom element.
  * For ezPython.
  * @param {!Blockly.Block} block The block to be converted.
  * @param {Element} xml the persistent element.
@@ -828,7 +996,7 @@ ezP.Xml.Flow.toDom = function(block, element, optNoId) {
 }
 
 /**
- * Convert the block's input list and next statement from a dom element.
+ * Convert the block's next statement from a dom element.
  * For ezPython.
  * @param {!Blockly.Block} block The block to be converted.
  * @param {Element} xml the persistent element.
@@ -851,33 +1019,6 @@ ezP.Xml.Flow.fromDom = function(block, element) {
       }
     }
   }
-}
-
-goog.provide('ezP.Xml.Stmt')
-
-/**
- * Convert the block's input list and next blocks to a dom element.
- * For ezPython.
- * @param {!Blockly.Block} block The block to be converted.
- * @param {Element} xml the persistent element.
- * @param {boolean} optNoId.
- * @return a dom element, void lists may return nothing
- */
-ezP.Xml.Stmt.toDom = function(block, element, optNoId) {
-  ezP.Xml.InputList.toDom(block, element, optNoId)
-  ezP.Xml.Flow.toDom(block, element, optNoId)  
-}
-
-/**
- * Convert the block's input list and next statement from a dom element.
- * For ezPython.
- * @param {!Blockly.Block} block The block to be converted.
- * @param {Element} xml the persistent element.
- * @return a dom element, void lists may return nothing
- */
-ezP.Xml.Stmt.fromDom = function(block, element) {
-  ezP.Xml.InputList.fromDom(block, element)
-  ezP.Xml.Flow.fromDom(block, element)  
 }
 
 // import_stmt
@@ -1896,46 +2037,46 @@ ezP.DelegateSvg.Expr.term.prototype.xmlTagName = function (block) {
  * @param {boolean} optNoId.
  * @return a dom element
  */
-ezP.DelegateSvg.Expr.term.prototype.toDom = function(block, element, optNoId) {
+ezP.DelegateSvg.Expr.term.prototype.toDomX = function(block, element, optNoId) {
   var variant = this.data.variant.get()
-  var inputs = this.getModel(block).inputs
+  var model = this.data.variant.model
   var modifier = '', withAnnotation, withDefinition
-  var withoutValue, withAlias
+  var withoutName, withAlias
   switch(variant) {
-    case inputs.NAME:
+    case model.NAME:
     break
-    case inputs.STAR_NAME:
+    case model.STAR_NAME:
       modifier = '*'
     break
-    case inputs.STAR_STAR_NAME:
+    case model.STAR_STAR_NAME:
       modifier = '**'
     break
-    case inputs.NAME_ANNOTATION:
+    case model.NAME_ANNOTATION:
       withAnnotation = true
     break
-    case inputs.STAR_NAME_ANNOTATION:
+    case model.STAR_NAME_ANNOTATION:
       modifier = '*'
-      withAnnotation = true
+      model = true
     break
-    case inputs.NAME_ANNOTATION_DEFINITION:
+    case model.NAME_ANNOTATION_DEFINITION:
       withAnnotation = true
       withDefinition = true
     break
-    case inputs.NAME_DEFINITION:
+    case model.NAME_DEFINITION:
       withDefinition = true
     break
-    case inputs.NAME_ALIAS:
+    case model.NAME_ALIAS:
       withoutAlias = true
     break
-    case inputs.STAR:
+    case model.STAR:
       modifier = '*'
-      withoutValue = true
+      withoutName = true
     break
   }
   if (modifier.length) {
     element.setAttribute(ezP.Xml.MODIFIER, modifier)
   }
-  if (!withoutValue) {
+  if (!withoutName) {
     var text = this.data.value.get()
     if (text && text.length || modifier === '*') {
       element.setAttribute(ezP.Xml.VALUE, text || '?')
@@ -1960,40 +2101,18 @@ ezP.DelegateSvg.Expr.term.prototype.toDom = function(block, element, optNoId) {
  * For subclassers eventually
  */
 ezP.DelegateSvg.Expr.term.prototype.fromDom = function (block, element) {
-  var withAnnotation, withDefinition, withAlias
-  var modifier = element.getAttribute(ezP.Xml.MODIFIER) || ''
-  var withoutValue = modifier === '*'
-  var text = element.getAttribute(ezP.Xml.VALUE)
-  if (text) {
-    withoutValue = false
-    if (text !== '?') {
-      block.ezp.data.value.set(text === '?'? '': text)
-    }
-  } else {
-    block.ezp.data.value.set('')
-  }
-  // text must be initialized
-  text = element.getAttribute(ezP.Xml.AS)
-  if (text) {
-    withAlias = true
-    if (text !== '?') {
-      block.ezp.data.alias.set(text === '?'? '': text)
-    }
-  }
-  if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.ANNOTATION, element, true)) {
-    withAnnotation = true
-  }
-  if (ezP.Xml.Input.Named.fromDom(block, ezP.Key.DEFINITION, element, true)) {
-    withDefinition = true
-  }
-  var newVariant
-  var subtype = this.data.subtype.get()
+  ezP.Xml.Expr.fromDom(block, element)
   var model = this.data.variant.model
-  var expected = model.bySubtype[subtype]
+  var modifier = this.data.modifier.get()
+  var withoutName = modifier === '*' && !this.data.name.isActive()
+  var withAlias = this.data.alias.isActive()
+  var withAnnotation = this.ui.inputs.annotation.isRequiredFromDom()
+  var newVariant = undefined
+  var model = this.data.variant.model
   if (modifier === '**') {
     newVariant = model.STAR_STAR_NAME
   } else if (modifier === '*') {
-    if (withoutValue) {
+    if (withoutName) {
       newVariant = model.STAR
     } else if (withAnnotation) {
       newVariant = model.STAR_NAME_ANNOTATION
@@ -2001,7 +2120,9 @@ ezP.DelegateSvg.Expr.term.prototype.fromDom = function (block, element) {
       newVariant = model.STAR_NAME
     }
   }
-  if (expected && expected.indexOf(newVariant) < 0) {
+  var withDefinition = this.ui.inputs.definition.isRequiredFromDom()
+  var expected = model.bySubtype[this.data.subtype.get()]
+  if (expected && expected.indexOf(newVariant) < 0) { // maybe newVariant is undefined
     if (withDefinition) {
       newVariant = withAnnotation? model.NAME_ANNOTATION_DEFINITION: model.NAME_DEFINITION
     }

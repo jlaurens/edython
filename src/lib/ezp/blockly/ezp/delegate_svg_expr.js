@@ -208,19 +208,23 @@ ezP.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr)
  */
 ezP.DelegateSvg.Expr.prototype.canInsertParent = function(block, prototypeName, subtype, parentInputName) {
   var can = false
-  var disabler = ezP.Events.Disabler()
-  var B = block.workspace.newBlock(prototypeName)
-  B.ezp.data.subtype.set(subtype)
-  var input = B.getInput(parentInputName)
-  goog.asserts.assert(input, 'No input named '+parentInputName)
-  var c8n = input.connection
-  goog.asserts.assert(c8n, 'Unexpected dummy input '+parentInputName)
-  if (block.outputConnection && c8n.checkType_(block.outputConnection)) {
-    var targetC8n = block.outputConnection.targetConnection
-    can = !targetC8n || targetC8n.checkType_(B.outputConnection)
+  Blockly.Events.disable()
+  try {
+   var B = block.workspace.newBlock(prototypeName)
+    B.ezp.data.subtype.set(subtype)
+    var input = B.getInput(parentInputName)
+    goog.asserts.assert(input, 'No input named '+parentInputName)
+    var c8n = input.connection
+    goog.asserts.assert(c8n, 'Unexpected dummy input '+parentInputName)
+    if (block.outputConnection && c8n.checkType_(block.outputConnection)) {
+      var targetC8n = block.outputConnection.targetConnection
+      can = !targetC8n || targetC8n.checkType_(B.outputConnection)
+    }
+
+  } finally {
+    B.dispose()
+    Blockly.Events.ensable()
   }
-  B.dispose()
-  disabler.stop()
   return can
 }
 
@@ -238,10 +242,13 @@ ezP.DelegateSvg.Expr.prototype.canInsertParent = function(block, prototypeName, 
  */
 ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeName, subtype, parentInputName, fill_holes) {
 //  console.log('insertParent', block, parentPrototypeName, subtype, parentInputName)
-  var disabler = ezP.Events.Disabler()
-  var parentBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName)
-  parentBlock.ezp.data.subtype.set(subtype)
-  disabler.stop()
+  ezP.Events.disable()
+  var parentBlock
+  ezP.Events.Disabler.wrap(function() {
+    parentBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName)
+    parentBlock.ezp.data.subtype.set(subtype)
+  })
+  
   console.log('block created of type', parentPrototypeName)
   if (parentInputName) {
     var parentInput = parentBlock.getInput(parentInputName)
@@ -417,7 +424,7 @@ ezP.DelegateSvg.Expr.makeSubclass('starred_expression', function () {
     data: {
       modifier: {
         synchronize: function(newValue) {
-          this.setFieldValue(newValue, 1, ezP.Key.LABEL)
+          this.setFieldValue(this.toText(), 1, ezP.Key.LABEL)
         },
       },
     },
@@ -530,7 +537,7 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_object', {
     value: {
       all: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
       synchronize: function(newValue) {
-        this.setFieldValue(newValue || '', 1, ezP.Key.LABEL)
+        this.setFieldValue(this.toText() || '', 1, ezP.Key.LABEL)
       },
     },
   },
@@ -578,7 +585,7 @@ ezP.DelegateSvg.Expr.makeSubclass('any', {
   data: {
     value: {
       synchronize: function(block, newValue) {
-        this.setFieldValue(newValue || '')
+        this.setFieldValue(this.toText() || '')
       }
     }
   },

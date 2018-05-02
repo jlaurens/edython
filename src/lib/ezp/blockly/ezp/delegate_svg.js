@@ -137,13 +137,11 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   block.setTooltip('')
   block.setHelpUrl('')
   var model = this.getModel()
-  if (goog.isDefAndNotNull(model.xml)) {
-    this.xml = model.xml
-  }
   var dataModel = model.data
   var fieldModel = model.fields
   var ui = {
     fields: {},
+    inputs: {},
   }
   var field, D
   // a main field is not editable, it can only have a label.
@@ -188,7 +186,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   }
 
   // now the inputs
-  var inputModel = model.inputs
+  var inputModels = model.inputs
   var doInsert = function(type, isMain) {
     var B = ezP.DelegateSvg.newBlockComplete(block.workspace, type)
     if (B) {
@@ -226,53 +224,59 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       return ui
     }
   }
-  var doOneModel = function(K) {
-    var D = inputModel[K]
-    if (D && Object.keys(D).length) {
-      var out = {
-        fields: {}
-      }
-      var k = D.key || K // when present, the optName of the input created
-      var v, field
+  var doOneInputModel = function(i) {
+    // we assume that one input model only contains at most one of
+    // - editable field
+    // - value input, check: key
+    // - wrap input
+    // - insert input
+    // It may contain label fields
+    var inputModel = inputModels[i]
+    if (inputModel && Object.keys(inputModel).length) {
+      // first create t
+      var k = inputModel.key || i // when present, the optName of the input created
+      var out = new ezP.Input(this, k, inputModel)
+      var model, field
       // first insert a base input model by creating a node
       // of a different type and transferring input ownership
-      if ((v = D.insert)) {
-        out.ui = doInsert.call(this, v)
+      if ((model = inputModel.insert)) {
+        out.ui = doInsert.call(this, model)
       }
       var recorder
       // the main field may determine the name of the input
       var doEditableFields = function(name) {
-        if (goog.isDefAndNotNull(v = D[name])) {
-          k = v.key || name
-          if (goog.isDefAndNotNull(v.edit)) {
-            field = new ezP.FieldInput(v.edit, v.validator, name)
-          } else if (goog.isDefAndNotNull(v.label)) {
-            field = new ezP.FieldLable(v.label)
+        if (goog.isDefAndNotNull(model = inputModel[name])) {
+          var k = model.key || name
+          if (goog.isDefAndNotNull(model.edit)) {
+            field = new ezP.FieldInput(model.edit, model.validator, name)
+          } else if (goog.isDefAndNotNull(model.label)) {
+            field = new ezP.FieldLabel(model.label)
+            field.name = name
           } else {
             return false
           }
-          out.input = block.appendDummyInput(k)
-          out.fields[k] = out.input.ezp.fields.term = field
-          if (goog.isFunction(v.init)) {
-            v.init.call(field)
+          out.setInput(block.appendDummyInput(k))
+          out.registerField(field)
+          if (goog.isFunction(model.init)) {
+            model.init.call(field)
           }
-          if (goog.isFunction(v.onStartEditing)) {
-            field.ezp.onStartEditing_ = v.onStartEditing
+          if (goog.isFunction(model.onStartEditing)) {
+            field.ezp.onStartEditing_ = model.onStartEditing
           }
-          if (goog.isFunction(v.onEndEditing)) {
-            field.ezp.onEndEditing_ = v.onEndEditing
+          if (goog.isFunction(model.onEndEditing)) {
+            field.ezp.onEndEditing_ = model.onEndEditing
           }
-          if (goog.isFunction(v.placeholder)) {
-            field.placeholderText = v.placeholder
-          } else if (v.placeholder) {
+          if (goog.isFunction(model.placeholder)) {
+            field.placeholderText = model.placeholder
+          } else if (model.placeholder) {
             field.placeholderText = function() {
-              var p = v.placeholder
+              var p = model.placeholder
               return function() {
                 return this.placeholderText_ || p
               }
             } ()
           }
-          field.ezp.left_space = v.left_space
+          field.ezp.left_space = model.left_space
           recorder = function() {
             var ff = field
             var kk = k
@@ -288,71 +292,35 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       // They belong to a standalone dummy input
       if (!doEditableFields(ezP.Key.VALUE)
       && !doEditableFields(ezP.Key.EDIT)
+      && !doEditableFields(ezP.Key.NAME)
       && !doEditableFields(ezP.Key.TERM)
       && !doEditableFields(ezP.Key.NUMBER)
       && !doEditableFields(ezP.Key.STRING)
       && !doEditableFields(ezP.Key.CODE)
       && !doEditableFields(ezP.Key.COMMENT)
-      && (D.check === undefined && D.wrap === undefined)) {
-        out.input = block.appendDummyInput(k)
+      && (inputModel.check === undefined && inputModel.wrap === undefined)) {
+        out.setInput(block.appendDummyInput(k))
       } else {
-        if ((v = D.wrap)) {
+        if ((model = inputModel.wrap)) {
           goog.asserts.assert(!out.input, 'Wrapped blocks and editable fields are not compatable')
-          k = k || v
-          goog.asserts.assert(v, 'wrap must exist '+block.type+'.'+K)
-          out.input = block.appendWrapValueInput(k, v, D.optional, D.hidden)
+          k = k || model
+          goog.asserts.assert(model, 'wrap must exist '+block.type+'.'+i)
+          out.setInput(block.appendWrapValueInput(k, model, inputModel.optional, inputModel.hidden))
         } else if (!out.input) {
-          out.input = block.appendValueInput(k)
-        }
-        // let the input know about the model used to create it
-        out.input.ezp.model = D
-        var c8n = out.input.connection
-        if (c8n) {
-          var ezp = c8n.ezp
-          ezp.name_ = k
-          if (D.plugged) {
-            ezp.plugged_ = D.plugged
-            //console.log(k, ezp.plugged_)
-          }
-          if (goog.isFunction(D.willConnect)) {
-            ezp.willConnect = D.willConnect
-          }
-          if (goog.isFunction(D.didConnect)) {
-            ezp.didConnect = D.didConnect
-          }
-          if (goog.isFunction(D.willDisconnect)) {
-            ezp.willDisconnect = D.willDisconnect
-          }
-          if (goog.isFunction(D.didDisconnect)) {
-            ezp.didDisconnect = D.didDisconnect
-          }
-          if (D.suite && Object.keys(D.suite).length) {
-            goog.mixin(ezp, D.suite)
-          }
-          if (D.optional) {//svg
-            ezp.optional_ = true
-          }
-          ezp.disabled_ = D.disabled && !D.enabled
-          if ((v = D.check)) {
-            c8n.setCheck(v)
-            ezp.hole_data = ezP.HoleFiller.getData(v, D.hole_value)
-          } else if ((v = D.check = D.wrap)) {
-            c8n.setCheck(v)
-          }
+          out.setInput(block.appendValueInput(k))
         }
       }
       // Now come label fields
-      var FF = function(key) {
-        field = out.fields[key] = out.input.ezp.fields[key] = new ezP.FieldLabel(v)
-        out.input.appendField(field, k && k+'.'+key || key)
-        field.ezp.css_class = D.css_class
-        field.ezp.css_style = D.css_style
-        field.init()
-        return field
-      }
       var doLabel = function(key) {
-        if (goog.isDefAndNotNull(v = D[key])) {
-          return FF(key)
+        if (goog.isDefAndNotNull(model = inputModel[key])) {
+          field = new ezP.FieldLabel(model)
+          field.name = key
+          out.fields[key] = out.input.ezp.fields[key] = field
+          out.input.appendField(field, k && k+'.'+key || key)
+          field.ezp.css_class = inputModel.css_class
+          field.ezp.css_style = inputModel.css_style
+          field.init()
+          return field
         }
       }
       doLabel(ezP.Key.OPERATOR)
@@ -363,7 +331,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       field && (field.ezp.suffix = true)
     }
     return out
-  }
+  }// end of doOneInputModel
   
   // catch the statement input eventually created in parent's method
   var e8r = block.ezp.inputEnumerator(block)
@@ -393,15 +361,15 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     ui.fields.async = field
   }
   // if insert is one of the keys, 
-  if (Object.keys(inputModel).length) {
+  if (Object.keys(inputModels).length) {
     var v
-    if ((v = inputModel.insert)) {
+    if ((v = inputModels.insert)) {
       ui = doInsert.call(this, v, true)
     } else {
       for (var i = 1; i < 5; i++) {
-        var p = doOneModel.call(this, i)
+        var p = doOneInputModel.call(this, i)
         if (p) {
-          ui[i] = p
+          ui.inputs[p.input.name] = ui[i] = p
         }
       }
     }
@@ -415,9 +383,12 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   }
   this.eventsInit_ = true;
   // wait until the end to set the subtype because it causes rendering
+  // bind the data and the ui when relevant.
+  // We establish a bi directional bound between data, inputs and fields
   // now it is time to intialize the data
   this.initData(block)
   this.synchronizeData(block)
+  this.synchronizeInputs(block)
   // and find the appropriate type
   this.consolidateType(block)
 }
@@ -482,7 +453,20 @@ ezP.DelegateSvg.prototype.getField = function(block, name) {
     }
   }
   return null
-};
+}
+
+/**
+ * Synchronize the data to the UI.
+ * Sends a `synchronize` message to all data controllers.
+ * May be used at the end of an initialization process
+ * where we use only data's `internalSet` method.
+ */
+ezP.DelegateSvg.prototype.synchronizeInputs = function(block) {
+  var inputs = this.ui.inputs
+  for (var k in inputs) {
+    inputs[k].synchronize()
+  }
+}
 
 /**
  * When the block is just a wrapper, returns the wrapped target.
@@ -542,6 +526,7 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
   this.minWidth = block.width = 0
   block.rendered = true
   this.consolidate(block, true)
+  this.synchronizeInputs(block)// no need to synchronize the data
   this.willRender_(block)
   this.renderDraw_(block)
   this.layoutConnections_(block)
@@ -568,10 +553,16 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
  * The default implementation does nothing.
  * Subclassers may enable/disable an input
  * depending on the context.
+ * This message is sent when the block is retrieved from some
+ * untrusted xml data.
  * List managers will use consolidators to help list management.
  * @param {!Block} block.
  */
 ezP.DelegateSvg.prototype.consolidate = function (block, deep, force) {
+  for (var k in this.data) {
+    var data = this.data[k]
+    data.consolidate()
+  }
   if (deep) {
     var e8r = block.ezp.inputEnumerator(block), x
     while (e8r.next()) {

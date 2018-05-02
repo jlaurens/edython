@@ -378,9 +378,22 @@ ezP.Delegate.model__ = {
  * otherwise send an init message to all the data controllers.
  */
 ezP.Delegate.prototype.initData = function() {
-  var data = this.data
-  for (var k in data) {
-    data[k].ui = this.ui
+  for (var k in this.data) {
+    var data = this.data[k]
+    data.ui = this.ui
+    if (data.model.synchronize) {
+      if ((data.input = this.ui.inputs[k])) {
+        data.input.data = data
+        data.input.key = k
+        var field = data.input.fields[k]
+      } else {
+        field = this.ui.fields[k]        
+      }
+      if (field) {
+        data.field = field
+        field.ezp.data = data
+      }
+    }
   }
   var init = this.getModel().initData
   if (goog.isFunction(init)) {

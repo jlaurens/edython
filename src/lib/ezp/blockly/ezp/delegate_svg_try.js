@@ -233,7 +233,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
     variant: {
       all: [0, 1],
       synchronize: function(newValue) {
-        this.setInputDisabled(3, newValue < 1)
+        this.setInputDisabled(2, newValue < 1)
       },
     },
   },
@@ -249,7 +249,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
-    3: {
+    2: {
       label: ',',
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,

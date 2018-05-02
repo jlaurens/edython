@@ -35,7 +35,7 @@ ezP.DelegateSvg.Expr.makeSubclass('attributeref', {
       },
       synchronize: function(newValue) {
         var field = this.ui[2].fields.value
-        this.setFieldValue(newValue || '', 2, ezP.Key.VALUE)
+        this.setFieldValue(this.toText() || '', 2, ezP.Key.VALUE)
       },
     },
   },
@@ -90,7 +90,7 @@ ezP.DelegateSvg.Expr.makeSubclass('slicing', {
         {validated: newValue}: null
       },
       synchronize: function(newValue) {
-        this.setFieldValue(newValue || '', 1, ezP.Key.VALUE)
+        this.setFieldValue(this.toText() || '', 1, ezP.Key.VALUE)
       },
     }
   },
@@ -208,7 +208,7 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
         }
       },
       synchronize: function(newValue) {
-        this.setFieldValue(newValue, 1, ezP.Key.VALUE)
+        this.setFieldValue(this.toText(), 1, ezP.Key.VALUE)
       },
     },
   },
