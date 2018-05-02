@@ -33,7 +33,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
         validate: function (newValue) {
           var subtype = ezP.Do.typeOfString(newValue)
           if (subtype) {
-            var expected = this.model.bySubtype[subtype]
+            var expected = this.data.variant.model.bySubtype[subtype]
             if (expected && (expected.indexOf(this.data.variant.get()) >= 0)) {
               return {validated: newValue}
             }
@@ -117,11 +117,11 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
           key:ezP.Key.VALUE,
           edit: '',
           placeholder: ezP.Msg.Placeholder.TERM,
-          validate: function(txt) {
+          validator: function(txt) {
             return this.ezp.validateData(txt, ezP.Key.VALUE)
           },
           onEndEditing: function () {
-            this.setData(this.getValue(), ezP.Key.VALUE)
+            this.ezp.setData(this.getValue(), ezP.Key.VALUE)
           },
         },
       },
@@ -146,7 +146,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
           key:ezP.Key.ALIAS,
           edit: '',
           placeholder: ezP.Msg.Placeholder.NAME_ALIAS,
-          validate: function(txt) {
+          validator: function(txt) {
             var v = this.sourceBlock_.ezp.data.alias.validate(goog.isDef(txt)? txt: this.getValue())
             return v && v.validated
           },
@@ -340,37 +340,37 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
  * @private
  */
 ezP.DelegateSvg.Expr.term.prototype.makeTitle = function (block, variant) {
-  var variantData = this.data.variant
+  var model = this.data.variant.model
   if (!goog.isDef(variant)) {
     variant = variantData.get()
   }
   var args = [goog.dom.TagName.SPAN, null]
   switch(variant) {
-    case variantData.STAR_NAME:
-    case variantData.STAR_NAME_ANNOTATION:
-    case variantData.STAR:
+    case model.STAR_NAME:
+    case model.STAR_NAME_ANNOTATION:
+    case model.STAR:
     args.push(ezP.Do.createSPAN('*', 'ezp-code-reserved'))
     break
-    case variantData.STAR_STAR_NAME:
+    case model.STAR_STAR_NAME:
     args.push(ezP.Do.createSPAN('**', 'ezp-code-reserved'))
     break
   }
-  if (variant !== variantData.STAR) {
+  if (variant !== model.STAR) {
     var value = this.data.value.get()
     args.push(ezP.Do.createSPAN(value || this.getPhantomValue(block) || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'))
     switch(variant) {
-      case variantData.NAME_ANNOTATION:
-      case variantData.STAR_NAME_ANNOTATION:
-      case variantData.NAME_ANNOTATION_DEFINITION:
+      case model.NAME_ANNOTATION:
+      case model.STAR_NAME_ANNOTATION:
+      case model.NAME_ANNOTATION_DEFINITION:
         args.push(ezP.Do.createSPAN(':', 'ezp-code-reserved'), ezP.Do.createSPAN(' …', 'ezp-code-placeholder'))
       break
     }
     switch(variant) {
-      case variantData.NAME_ANNOTATION_DEFINITION:
-      case variantData.NAME_DEFINITION:
+      case model.NAME_ANNOTATION_DEFINITION:
+      case model.NAME_DEFINITION:
         args.push(ezP.Do.createSPAN(' = ', 'ezp-code-reserved'), ezP.Do.createSPAN('…', 'ezp-code-placeholder'))
       break
-      case variantData.NAME_ALIAS:
+      case model.NAME_ALIAS:
         args.push(ezP.Do.createSPAN(' as ', 'ezp-code-reserved'), ezP.Do.createSPAN('…', 'ezp-code-placeholder'))
       break
     }

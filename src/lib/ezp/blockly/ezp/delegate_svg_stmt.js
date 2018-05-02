@@ -56,7 +56,7 @@ ezP.DelegateSvg.makeSubclass('Stmt', {
     },
     comment: {
       edit: '',
-      validate: function(txt) {
+      validator: function(txt) {
         return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), 'comment')
       },
       onEndEditing: function() {

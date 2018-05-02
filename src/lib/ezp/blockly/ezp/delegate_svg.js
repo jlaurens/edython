@@ -137,6 +137,9 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   block.setTooltip('')
   block.setHelpUrl('')
   var model = this.getModel()
+  if (goog.isDefAndNotNull(model.xml)) {
+    this.xml = model.xml
+  }
   var dataModel = model.data
   var fieldModel = model.fields
   var ui = {
@@ -151,9 +154,9 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     var v
     if ((D = fieldModel[key])) {
       if (goog.isDefAndNotNull(v = D.edit)) {
-        field = new ezP.FieldInput(v, null, key)
+        field = new ezP.FieldInput(v, D.validator, key)
       } else if (goog.isDefAndNotNull(v = D.label)) {
-        field = new ezP.FieldLabel(v, null, key)
+        field = new ezP.FieldLabel(v)
       } else {
         return
       }
@@ -242,7 +245,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         if (goog.isDefAndNotNull(v = D[name])) {
           k = v.key || name
           if (goog.isDefAndNotNull(v.edit)) {
-            field = new ezP.FieldInput(v.edit, null, name)
+            field = new ezP.FieldInput(v.edit, v.validator, name)
           } else if (goog.isDefAndNotNull(v.label)) {
             field = new ezP.FieldLable(v.label)
           } else {
@@ -943,12 +946,12 @@ ezP.DelegateSvg.prototype.renderDrawField_ = function (io) {
       if (text.length) {
         // if the text is void, it can not change whether
         // the last character was a letter or not
-        if (io.shouldSeparateField && !io.firstStar && (ezP.XRE.operator.test(text[0]) || text[0] === '.' || ezP.XRE.id_continue.test(text[0]) || ezp.isEditing)) {
+        if (io.shouldSeparateField && !io.starSymbol && (ezP.XRE.operator.test(text[0]) || text[0] === '.' || ezP.XRE.id_continue.test(text[0]) || ezp.isEditing)) {
           // add a separation
           io.cursorX += ezP.Font.space
         }
         io.shouldSeparateField = ezP.XRE.id_continue.test(text[text.length-1]) || ezP.XRE.operator.test(text[text.length-1]) || text[text.length-1] === ':' || (text[text.length-1] === '.' && !io.field instanceof ezP.FieldTextInput)
-        io.firstStar = (io.f === 0 && text[text.length-1] === '*')
+        io.starSymbol = (io.f === 0 && (text[text.length-1] === '@' || text[text.length-1] === '*'))
       }
       var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
       root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +

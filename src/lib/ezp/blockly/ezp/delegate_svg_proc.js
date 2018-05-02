@@ -92,13 +92,13 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
         key: ezP.Key.DOTTED_NAME,
         edit: '',
         placeholder: ezP.Msg.Placeholder.DECORATOR,
-        validate: function(txt) {
+        validator: function(txt) {
           return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
         },
         onEndEditing: function () {
           this.ezp.setData(this.getValue(), ezP.Key.VALUE)
         },
-        left_space: true,
+        // left_space: true,
       },
     },
     2: {
@@ -227,7 +227,7 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
         key: ezP.Key.NAME,
         edit: '',
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
-        validate: function(txt) {
+        validator: function(txt) {
           return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
         },
         onEndEditing: function () {
@@ -317,7 +317,7 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
         key: ezP.Key.NAME,
         edit: '',
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
-        validate: function(txt) {
+        validator: function(txt) {
           return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
         },
         onEndEditing: function () {
