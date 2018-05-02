@@ -175,7 +175,6 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
   data: {
     variant: {
       all: [0, 1, 2,],
-      default: 0,
       synchronize: function(newValue) {
         var withExpression = newValue === 1
         this.setInputDisabled(1, withExpression)

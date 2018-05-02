@@ -94,6 +94,10 @@ ezP.Data.prototype.internalSet = function(newValue) {
 /**
  * Init the value of the property.
  * May be overriden by the model.
+ * If the model contains:
+ * default: foo,
+ * then the initial value will be foo,
+ * even if it is not a valid data.
  */
 ezP.Data.prototype.init = function() {
   if (goog.isFunction(this.model.init)) {
@@ -104,13 +108,13 @@ ezP.Data.prototype.init = function() {
     this.internalSet(this.model.default.call(this))
   } else if (goog.isDefAndNotNull(this.model.default)) {
     this.internalSet(this.model.default)
+  } else {
+    // initialize the data with the first object of the `all` array
+    var all = this.getAll()
+    if (all && all.length) {
+      this.internalSet(all[0])
+    }
   }
-  // transitional, will be removed soon
-  var ezp = this.owner_
-  var block = ezp.block_
-  var key = 'init' + this.upperKey
-  var init = ezp[key]
-  init && init.call(ezp, block)
 }
 
 /**
@@ -307,26 +311,6 @@ ezP.Data.prototype.set = function (newValue) {
 }
 
 /**
- * set the value of the corresponding field.
- * @param {string} inputName
- * @param {string} fieldKey
- * @param {Object} newValue
- */
-ezP.Data.prototype.setFieldValue = function(inputName, fieldKey, newValue) {
-  var ui = this.owner_.ui
-  for (var i = 0; i < 5; i++) {
-    var u = ui[i]
-    if (u && u.input.name === inputName) {
-      var f = u.fields[fieldKey]
-      if (f) {
-        f.setValue(newValue)
-        return true
-      }
-    }
-  }
-}
-
-/**
  * Set the enable/disable status of the given input.
  * @param {!number} index  of the input older in the ui object 
  * @param {!boolean} newValue.
@@ -338,6 +322,31 @@ ezP.Data.prototype.setInputDisabled = function (inputIndex, newValue) {
 }
 
 console.warn ('Change the model design for i_(\d): {...} to $1: {...}')
+/**
+ * Set the value of the main field given by its key.
+ * @param {!Object} newValue.
+ * @param {!number} inputIndex  of the input in the model (i_1, i_2...) 
+ * When false, this corresponds to the fields that are not
+ * part of an input, like the modifier field.
+ * @param {string|null} fieldKey  of the input holder in the ui object 
+ * @param {boolean} noUndo  true when no undo tracking should be performed. 
+ * @private
+ */
+ezP.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
+  var field = this.ui.fields[fieldKey || this.key]
+  if (field) {
+    if (!noUndo && !this.noUndo && Blockly.Events.isEnabled()) {
+      Blockly.Events.disable()
+      var enable = true
+    }
+    try {
+      field.setValue(newValue)
+    } finally {
+      enable && Blockly.Events.enable()
+    }
+  }
+}
+
 /**
  * Set the value of the field in the input given by its index
  * and the key.

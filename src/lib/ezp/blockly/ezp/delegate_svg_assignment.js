@@ -284,7 +284,6 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     },
     variant: {
       all: [0, 1, 2],
-      default: 0,
       synchronize: function(newValue) {
         this.setInputDisabled(1, newValue == 2)
         this.setInputDisabled(2, newValue != 1)
@@ -491,7 +490,6 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
   D.data.variant = {
     DEFAULT: 0,
     WITH_TARGET: 1,
-    default: 0,
     synchronize: function (newVariant) {
       var withTarget = newVariant === this.WITH_TARGET
       this.setInputDisabled(1, withTarget)

@@ -54,7 +54,6 @@ ezP.DelegateSvg.Literal.makeSubclass('numberliteral', {
   data: {
     subtype: {
       all: [ezP.T3.Expr.integer, ezP.T3.Expr.floatnumber, ezP.T3.Expr.imagnumber],
-      default: 0,
       noUndo: true,
     },
     value: {
@@ -130,11 +129,9 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
   data: {
     subtype: {
       all:[ezP.T3.Expr.shortstringliteral, ezP.T3.Expr.shortbytesliteral],
-      default: 0,
     },
     delimiter: {
       all: ["'", '"'],
-      default: 0,
       didChange: function(oldValue, newValue) {
         this.data.value.consolidate()
       },
@@ -147,7 +144,6 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
       all: ['', 'r', 'u', 'R', 'U', 'f', 'F',
     'fr', 'Fr', 'fR', 'FR', 'rf', 'rF', 'Rf', 'RF',
     'b', 'B', 'br', 'Br', 'bR', 'BR', 'rb', 'rB', 'Rb', 'RB'],
-      default: 0,
       didChange: function(oldValue, newValue) {
         this.data.value.consolidate()
       },
@@ -389,11 +385,9 @@ ezP.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
   data: {
     subtype: {
       all: [ezP.T3.Expr.longstringliteral, ezP.T3.Expr.longbytesliteral],
-      default: 0,
     },
     delimiter: {
       all: ["'''", '"""'],
-      default: 0,
     },
     value: {
       default: '',

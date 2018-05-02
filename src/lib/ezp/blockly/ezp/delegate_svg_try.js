@@ -44,7 +44,6 @@ ezP.DelegateSvg.Group.makeSubclass('except_part', {
   data: {
     variant: {
       all: [0, 1, 2],
-      default: 0,
       didChange: function(oldValue, newValue) {
         var ezp = this.owner_
         var block = ezp.block_
@@ -159,7 +158,6 @@ ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
   data: {
     variant: {
       all: [0, 1, 2],
-      default: 0,
       synchronize: function(newValue) {
         this.setInputDisabled(1, newValue < 1)
         this.setInputDisabled(2, newValue < 2)
@@ -234,7 +232,6 @@ ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
   data: {
     variant: {
       all: [0, 1],
-      default: 0,
       synchronize: function(newValue) {
         this.setInputDisabled(3, newValue < 1)
       },

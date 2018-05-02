@@ -342,8 +342,11 @@ ezP.DelegateSvg.List.makeSubclass(ezP.T3.Expr.non_void_identifier_list, {
  */
 ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.global_nonlocal_stmt, {
   data: {
-    subtype: {
+    variant: {
       all: ['global', 'nonlocal'],
+      synchronize: function(newValue) {
+        this.setMainFieldValue(newValue || '', 'prefix')
+      },
     },
   },
   fields: {
@@ -360,16 +363,6 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.global_nonlocal_stmt, {
     },
   },
 })
-
-/**
- * Synchronize the subtype property with the UI.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} newSubtype
- */
-ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.synchronizeSubtype = function (block, newSubtype) {
-  block.ezp.ui.fields.prefix.setValue(newSubtype || '')
-}
 
 /**
  * Populate the context menu for the given block.

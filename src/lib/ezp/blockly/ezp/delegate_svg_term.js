@@ -61,16 +61,13 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
       }, // new
       modifier: {
         all: ['', '*', '**'],
-        default: 0,
       },
       subtype: {
         all: [ezP.T3.Expr.identifier,
         ezP.T3.Expr.dotted_name,
         ezP.T3.Expr.parent_module],
-        default: 0,
       },
       variant: {
-        default: 0,
         validate: function (newValue) {
           // this may be called very early
           var values = this.getAll()

@@ -27,7 +27,6 @@ goog.require('ezP.DelegateSvg.Expr')
 ezP.DelegateSvg.Expr.makeSubclass('Operator', {
   data: {
     operator: {
-      default: 0,
       synchronize: function(newValue) {
         this.ui[2].fields.operator.setValue(newValue || '')
       },

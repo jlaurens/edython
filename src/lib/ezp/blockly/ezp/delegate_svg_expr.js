@@ -416,7 +416,6 @@ ezP.DelegateSvg.Expr.makeSubclass('starred_expression', function () {
   var D = {
     data: {
       modifier: {
-        default: 0,
         synchronize: function(newValue) {
           this.setFieldValue(newValue, 1, ezP.Key.LABEL)
         },
@@ -530,7 +529,6 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_object', {
   data: {
     value: {
       all: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
-      default: 0,
       synchronize: function(newValue) {
         this.setFieldValue(newValue || '', 1, ezP.Key.LABEL)
       },
