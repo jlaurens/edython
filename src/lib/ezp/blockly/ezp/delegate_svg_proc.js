@@ -295,7 +295,7 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
     variant: {
       all: [null, ezP.Key.ARGUMENTS],
       synchronize: function(newValue) {
-        block.ezp.setInputDisabled(2, (ezP.Key.ARGUMENTS !== newValue))
+        this.setInputDisabled(2, (ezP.Key.ARGUMENTS !== newValue))
       },
     },
     value: {

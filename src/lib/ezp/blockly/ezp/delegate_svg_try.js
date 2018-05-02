@@ -42,9 +42,18 @@ ezP.DelegateSvg.Group.makeSubclass('try_part', {
  */
 ezP.DelegateSvg.Group.makeSubclass('except_part', {
   data: {
-    subtype: {
-      all: [null, ezP.Key.EXPRESSION, ezP.Key.AS],
-    }
+    variant: {
+      all: [0, 1, 2],
+      didChange: function(oldValue, newValue) {
+        var ezp = this.owner_
+        var block = ezp.block_
+        ezp.consolidateType(block)
+      },
+      synchronize: function(newValue) {
+        this.setInputDisabled(1, newValue < 1)
+        this.setInputDisabled(2, newValue < 2)
+      },
+    },
   },
   fields: {
     prefix: {
@@ -69,22 +78,21 @@ ezP.DelegateSvg.Group.makeSubclass('except_part', {
 })
 
 /**
- * Initialize a block.
- * @param {!Blockly.Block} block to be initialized..
- * For subclassers eventually
+ * The type and connection depend on the properties modifier, value and variant.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
  */
-ezP.DelegateSvg.Stmt.except_part.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
-  ezP.DelegateSvg.Stmt.except_part.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  var subtypes = this.data.subtype.getAll()
+ezP.DelegateSvg.Stmt.except_part.prototype.consolidateType = function (block) {
+  var variant = this.data.variant.get()
   var F = function(k) {
-    block.ezp.setupType(block, ezP.T3.Stmt[k])
+    this.setupType(block, ezP.T3.Stmt[k])
     block.nextConnection.setCheck(ezP.T3.Stmt.Next[k])
     block.previousConnection.setCheck(ezP.T3.Stmt.Previous[k])
   }
-  var i = subtypes.indexOf(newSubtype)
-  block.ezp.setNamedInputDisabled(block, subtypes[1], i < 1)
-  block.ezp.setNamedInputDisabled(block, subtypes[2], i < 2)
-  F(i > 0? 'except_part': 'void_except_part')
+  F(variant > 0? 'except_part': 'void_except_part')
+  ezP.DelegateSvg.Stmt.except_part.superClass_.consolidateType.call(this, block)
 }
 
 /**
@@ -94,30 +102,29 @@ ezP.DelegateSvg.Stmt.except_part.prototype.didChangeSubtype = function (block, o
  * @private
  */
 ezP.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var current = block.ezp.data.subtype.get()
-  var subtypes = this.data.subtype.getAll()
+  var current = block.ezp.data.variant.get()
   var F = function(content, k) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.subtype.set(k)
+      block.ezp.data.variant.set(k)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
       goog.dom.createTextNode('except:'),
-    ), subtypes[0]
+    ), 0
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN('except ', 'ezp-code-reserved'),
       goog.dom.createTextNode('…:'),
-    ), subtypes[1]
+    ), 1
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN('except', 'ezp-code-reserved'),
       goog.dom.createTextNode(' … '),
       ezP.Do.createSPAN(' as', 'ezp-code-reserved'),
       goog.dom.createTextNode(' …:'),
-    ), subtypes[2]
+    ), 2
   )
   mgr.shouldSeparate()
   return ezP.DelegateSvg.Stmt.except_part.superClass_.populateContextMenuFirst_.call(this,block, mgr)
@@ -132,12 +139,12 @@ ezP.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function 
  * @constructor
  */
 ezP.DelegateSvg.Group.makeSubclass('finally_part', {
-  inputs: {
-    1: {
-      dummy: 'finally',
+  fields: {
+    label: {
+      value: 'finally',
       css_class: 'ezp-code-reserved',
-    },
-  },
+    } 
+  }
 })
 
 /**
@@ -149,8 +156,12 @@ ezP.DelegateSvg.Group.makeSubclass('finally_part', {
  */
 ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
   data: {
-    subtype: {
-      all: [null, ezP.Key.EXPRESSION, ezP.Key.FROM],
+    variant: {
+      all: [0, 1, 2],
+      synchronize: function(newValue) {
+        this.setInputDisabled(1, newValue < 1)
+        this.setInputDisabled(2, newValue < 2)
+      },
     },
   },
   fields: {
@@ -176,49 +187,35 @@ ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
 })
 
 /**
- * Initialize a block.
- * @param {!Blockly.Block} block to be initialized..
- * For subclassers eventually
- */
-ezP.DelegateSvg.Stmt.raise_stmt.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
-  ezP.DelegateSvg.Stmt.raise_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  var subtypes = this.data.subtype.getAll()
-  var i = subtypes.indexOf(newSubtype)
-  block.ezp.setNamedInputDisabled(block, subtypes[1], i < 1)
-  block.ezp.setNamedInputDisabled(block, subtypes[2], i < 2)
-}
-
-/**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
 ezP.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var current = block.ezp.data.subtype.get()
-  var subtypes = this.data.subtype.getAll()
+  var current = block.ezp.data.variant.get()
   var F = function(content, k) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.subtype.set(k)
+      block.ezp.data.variant.set(k)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
       goog.dom.createTextNode('raise'),
-    ), subtypes[0]
+    ), 0
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN('raise ', 'ezp-code-reserved'),
       goog.dom.createTextNode('…'),
-    ), subtypes[1]
+    ), 1
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN('raise', 'ezp-code-reserved'),
       goog.dom.createTextNode(' … '),
       ezP.Do.createSPAN(' from', 'ezp-code-reserved'),
       goog.dom.createTextNode(' …'),
-    ), subtypes[2]
+    ), 2
   )
   mgr.shouldSeparate()
   return ezP.DelegateSvg.Stmt.raise_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
@@ -233,8 +230,11 @@ ezP.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (
  */
 ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
   data: {
-    subtype: {
-      all: [null, ezP.Key.EXPRESSION],
+    variant: {
+      all: [0, 1],
+      synchronize: function(newValue) {
+        this.setInputDisabled(3, newValue < 1)
+      },
     },
   },
   inputs: {
@@ -255,31 +255,16 @@ ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
 })
 
 /**
- * Hook after the subtype change.
- * Default implementation does nothing.
- * Subclassers will take care of undo compliance.
- * When undoing, care must be taken not to fire new events.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} oldSubtype
- * @param {string} newSubtype
- */
-ezP.DelegateSvg.Stmt.assert_stmt.prototype.didChangeSubtype = function (block, oldSubtype, newSubtype) {
-  ezP.DelegateSvg.Stmt.assert_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  block.ezp.setNamedInputDisabled(block, ezP.Key.EXPRESSION, newSubtype !== ezP.Key.EXPRESSION)
-}
-
-/**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
 ezP.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var current = block.ezp.data.subtype.get()
+  var current = block.ezp.data.variant.get()
   var F = function(content, key) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.subtype.set(key)
+      block.ezp.data.variant.set(key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)
@@ -287,12 +272,12 @@ ezP.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function 
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN('assert ', 'ezp-code-reserved'),
       goog.dom.createTextNode('…'),
-    ), null
+    ), 0
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN('assert ', 'ezp-code-reserved'),
       goog.dom.createTextNode('…, …'),
-    ), ezP.Key.EXPRESSION
+    ), 1
   )
   mgr.shouldSeparate()
   return ezP.DelegateSvg.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)

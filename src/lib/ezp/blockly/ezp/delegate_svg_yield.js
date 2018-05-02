@@ -26,7 +26,11 @@ goog.require('ezP.DelegateSvg.Stmt')
 ezP.DelegateSvg.Expr.makeSubclass('yield_expression', {
   data: {
     subtype: {
-      all: [null, ezP.Key.EXPRESSION, ezP.Key.FROM],
+      all: [0, 1, 2],
+      synchronize: function(newValue) {
+        this.setInputDisabled(1, newValue != 1)
+        this.setInputDisabled(2, newValue != 2)
+      }
     }
   },
   fields: {
@@ -48,19 +52,6 @@ ezP.DelegateSvg.Expr.makeSubclass('yield_expression', {
     },
   },
 })
-
-/**
- * Initialize the subtype.
- * @param {!Blockly.Block} block to be initialized.
- * @param {string} oldSubtype
- * @param {string} newSubtype
- */
-ezP.DelegateSvg.Expr.yield_expression.prototype.didChangeSubtype = function(block, oldSubtype, newSubtype) {
-  var subtypes = this.data.subtype.getAll()
-  var i = subtypes.indexOf(newSubtype)
-  block.ezp.setNamedInputDisabled(block, subtypes[1], i != 1)
-  block.ezp.setNamedInputDisabled(block, subtypes[2], i != 2)
-}
 
 /**
  * toDom.
@@ -137,7 +128,6 @@ ezP.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (bloc
     return
   }
   var current = this.data.subtype.get()
-  var subtypes = this.data.subtype.getAll()
   var F = function(content, k) {
     var menuItem = new ezP.MenuItem(content, function() {
       block.ezp.data.subtype.set(k)
@@ -147,17 +137,17 @@ ezP.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (bloc
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
       goog.dom.createTextNode('yield'),
-    ), subtypes[0]
+    ), 0
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN('yield ', 'ezp-code-reserved'),
       goog.dom.createTextNode('…'),
-    ), subtypes[1]
+    ), 1
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN('yield from', 'ezp-code-reserved'),
       goog.dom.createTextNode(' …'),
-    ), subtypes[2]
+    ), 2
   )
   mgr.shouldSeparate()
 }
@@ -172,6 +162,41 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = func
   var yorn = ezP.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_.call(this, block, mgr)
   return ezP.DelegateSvg.Expr.yield_expression.superClass_.populateContextMenuFirst_.call(this,block, mgr) || yorn
 }
+
+
+/**
+ * Class for a DelegateSvg, starred_item_list_or_yield block.
+ * This block may be sealed.
+ * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.List.makeSubclass('parenth_form', function() {
+  var D = {
+    check: ezP.T3.Expr.Check.non_void_starred_item_list,
+    unique: ezP.T3.Expr.yield_expression,
+    consolidator: ezP.Consolidator.List.Singled,
+    empty: true,
+    presep: ',',
+    hole_value: 'name',
+  }
+  var RA = goog.array.concat(D.check,D.unique)
+  goog.array.removeDuplicates(RA)
+  D.all = RA
+  return {
+    list: D,
+    fields: {
+      prefix: {
+        label: '(',
+      },
+      suffix: {
+        label: ')',
+      },
+    },
+  }
+})
 
 /**
  * Class for a DelegateSvg, '(yield ..., ..., ...)'.
@@ -205,24 +230,8 @@ ezP.DelegateSvg.Expr.makeSubclass('yield_atom', {
  * @constructor
  */
 ezP.DelegateSvg.Stmt.makeSubclass('yield_stmt', {
-  inputs: {
-    insert: ezP.T3.Expr.yield_expression,
-  }
+  link: ezP.T3.Expr.yield_expression,
 })
-
-/**
- * When the subtype has changed.
- * @param {!Blockly.Block} block to be initialized.
- * @param {string} oldSubtype
- * @param {string} newSubtype
- */
-ezP.DelegateSvg.Stmt.yield_stmt.prototype.didChangeSubtype = function(block, oldSubtype, newSubtype) {
-  ezP.DelegateSvg.Stmt.yield_stmt.superClass_.didChangeSubtype.call(this, block, oldSubtype, newSubtype)
-  var subtypes = this.data.subtype.getAll()
-  var i = subtypes.indexOf(newSubtype)
-  block.ezp.setNamedInputDisabled(block, subtypes[1], i != 1)
-  block.ezp.setNamedInputDisabled(block, subtypes[2], i != 2)
-}
 
 /**
  * Populate the context menu for the given block.
@@ -237,6 +246,7 @@ ezP.DelegateSvg.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (
 
 ezP.DelegateSvg.Yield.T3s = [
   ezP.T3.Expr.yield_expression,
-  ezP.T3.Expr.yield_atom,
   ezP.T3.Stmt.yield_stmt,
+  ezP.T3.Expr.term,
+  ezP.T3.Expr.parenth_form,
 ]

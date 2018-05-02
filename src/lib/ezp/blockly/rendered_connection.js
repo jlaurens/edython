@@ -369,7 +369,18 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
   if (!c8nA || !c8nB) {
     return true
   }
-  if (c8nA.ezp.disabled_ || c8nB.ezp.disabled_) {
+  // short stop if one of the connection is hidden or disabled
+  // except when we try to establish a connection with a wrapped block.
+  // in either case, returns true iff the connetion is aready established
+  if (c8nA.ezp.wrapped_) {
+    if (c8nA.targetConnection) {
+      return c8nA === c8nB.targetConnection
+    }
+  } else if (c8nB.ezp.wrapped_) {
+    if (c8nB.targetConnection) {
+      return c8nB === c8nA.targetConnection
+    }
+  } else if (c8nA.ezp.disabled_ || c8nB.ezp.disabled_ || c8nA.ezp.hidden_ || c8nB.ezp.hidden_) {
     return c8nA === c8nB.targetConnection
   }
   var sourceA = c8nA.getSourceBlock()
@@ -689,3 +700,53 @@ Blockly.RenderedConnection.prototype.onCheckChanged_ = function() {
     block.ezp.consolidate(block, false, true)
   }
 }
+
+/**
+ * Does the given block have one and only one connection point that will accept
+ * an orphaned block?
+ * @param {!Blockly.Block} block The superior block.
+ * @param {!Blockly.Block} orphanBlock The inferior block.
+ * @return {Blockly.Connection} The suitable connection point on 'block',
+ *     or null.
+ * @private
+ */
+Blockly.Connection.singleConnection_ = function(block, orphanBlock) {
+  var connection = false;
+  for (var i = 0; i < block.inputList.length; i++) {
+    var thisConnection = block.inputList[i].connection;
+    if (thisConnection && thisConnection.type == Blockly.INPUT_VALUE &&
+        orphanBlock.outputConnection.checkType_(thisConnection)) {
+      if (connection) {
+        return null;  // More than one connection.
+      }
+      connection = thisConnection;
+    }
+  }
+  return connection;
+};
+
+/**
+ * Walks down a row a blocks, at each stage checking if there are any
+ * connections that will accept the orphaned block.  If at any point there
+ * are zero or multiple eligible connections, returns null.  Otherwise
+ * returns the only input on the last block in the chain.
+ * Terminates early for shadow blocks.
+ * @param {!Blockly.Block} startBlock The block on which to start the search.
+ * @param {!Blockly.Block} orphanBlock The block that is looking for a home.
+ * @return {Blockly.Connection} The suitable connection point on the chain
+ *    of blocks, or null.
+ * @private
+ */
+Blockly.Connection.lastConnectionInRow_ = function(startBlock, orphanBlock) {
+  var newBlock = startBlock;
+  var connection;
+  while ((connection = Blockly.Connection.singleConnection_(
+      /** @type {!Blockly.Block} */ (newBlock), orphanBlock)) && !connection.ezp.disabled_) {
+    // '=' is intentional in line above.
+    newBlock = connection.targetBlock();
+    if (!newBlock || newBlock.isShadow()) {
+      return connection;
+    }
+  }
+  return null;
+};

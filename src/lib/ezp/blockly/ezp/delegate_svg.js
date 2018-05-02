@@ -247,9 +247,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       }
       // first fields are editable ones
       // They belong to a standalone dummy input
-      if (!doEditableFields(ezP.Key.IDENTIFIER, ezP.FieldIdentifier)
-      && !doEditableFields(ezP.Key.LONG_STRING, ezP.FieldLongString)
-      && !doEditableFields_(ezP.Key.VALUE)
+      if (!doEditableFields_(ezP.Key.VALUE)
       && !doEditableFields_(ezP.Key.EDIT)
       && !doEditableFields_(ezP.Key.TERM)
       && !doEditableFields_(ezP.Key.NUMBER)
@@ -362,6 +360,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   }
   FF.call(this, ezP.Key.MODIFIER)
   FF.call(this, ezP.Key.PREFIX)
+  FF.call(this, ezP.Key.LABEL)
   FF.call(this, ezP.Key.SUFFIX)
   // next are not implemented in the ui
   if ((D = this.getModel().output) && D.awaitable) {
@@ -1329,7 +1328,7 @@ ezP.DelegateSvg.prototype.setInputDisabled = function (block, input, newValue) {
   this.skipRendering = current
   var c8n = input.connection
   if (c8n) {
-    c8n.ezp.hidden_ = !!newValue
+    c8n.ezp.hidden_ = !!newValue // the hidden status will be forced
     c8n.setHidden(newValue)
   }
   if (input.isVisible()) {

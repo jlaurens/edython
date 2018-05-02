@@ -127,9 +127,7 @@ ezP.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
  * @constructor
  */
  ezP.DelegateSvg.Stmt.makeSubclass('builtin_print_stmt', {
-   inputs: {
-    insert: ezP.T3.Expr.builtin_print_expr,
-  }
+   link: ezP.T3.Expr.builtin_print_expr,
 })
 
 /**

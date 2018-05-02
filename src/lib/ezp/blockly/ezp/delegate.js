@@ -568,7 +568,7 @@ ezP.Delegate.prototype.getVars = function (block) {
   var vars = []
   for (var i = 0, input; (input = block.inputList[i]); i++) {
     for (var j = 0, field; (field = input.fieldRow[j]); j++) {
-      if (field instanceof ezP.FieldIdentifier) {
+      if (field instanceof ezP.FieldInput) {
         vars.push(field.getText())
       }
     }
@@ -714,9 +714,7 @@ ezP.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
         var target = block.workspace.newBlock(prototypeName)
         goog.asserts.assert(target, 'completeWrapped_ failed: '+ prototypeName);
         goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed '+target.type)
-        input.connection.ezp.disabled_ = false
         input.connection.connect(target.outputConnection)
-        input.connection.ezp.disabled_ = true
         target.ezp.makeBlockWrapped_(target)
         target.ezp.completeWrapped_(target)  
       } else {

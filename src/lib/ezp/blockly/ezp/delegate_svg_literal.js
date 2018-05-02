@@ -64,7 +64,7 @@ ezP.DelegateSvg.Literal.makeSubclass('numberliteral', {
         var subtype = ezP.Do.typeOfString(newValue)
         return (subtypes.indexOf(subtype)>= 0) && {validated: newValue} || null
       },
-      didChangeValue: function(oldValue, newValue) {
+      didChange: function(oldValue, newValue) {
         var type = newValue? ezP.Do.typeOfString(newValue): ezP.T3.Expr.integer
         block.ezp.data.subtype.set(type)
         return

@@ -329,7 +329,7 @@ ezP.DelegateSvg.Stmt.call_stmt.prototype.populateContextMenuFirst_ = function (b
   return ezP.DelegateSvg.Stmt.call_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
-ezP.DelegateSvg.Expr.call_expr.T3s = [
+ezP.DelegateSvg.Primary.T3s = [
   ezP.T3.Expr.term,
   ezP.T3.Expr.attributeref,
   ezP.T3.Expr.slicing,

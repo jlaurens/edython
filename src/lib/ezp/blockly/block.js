@@ -87,7 +87,7 @@ ezP.Block.prototype.setConnectionsHidden = function (hidden) {
 /**
  * Return all variables referenced by this block.
  * This is not exactly Blockly's implementation,
- * only FieldIdentifier's are considered.
+ * only FieldInput's are considered.
  * @return {!Array.<string>} List of variable names.
  */
 ezP.Block.prototype.getVars = function () {
@@ -115,7 +115,7 @@ ezP.Block.prototype.renameVar = function (oldName, newName) {
   for (; (input = this.inputList[i]); i++) {
     var j = 0, field
     for (; (field = input.fieldRow[j]); j++) {
-      if (field instanceof ezP.FieldIdentifier &&
+      if (field instanceof ezP.FieldInput &&
           Blockly.Names.equals(oldName, field.getText())) {
         field.setText(newName)
       }
@@ -134,7 +134,7 @@ ezP.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
   for (; (input = this.inputList[i]); i++) {
     var j = 0, field
     for (; (field = input.fieldRow[j]); j++) {
-      if (field instanceof ezP.FieldIdentifier &&
+      if (field instanceof ezP.FieldInput &&
           Blockly.Names.equals(oldVarId, field.getValue())) {
         field.setValue(newVarId)
       }

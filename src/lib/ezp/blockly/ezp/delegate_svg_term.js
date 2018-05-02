@@ -40,6 +40,11 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
           }
           return null
         },
+        didChange: function(oldValue, newValue) {
+          var subtype = newValue? ezP.Do.typeOfString(newValue): ezP.T3.Expr.identifier
+          this.data.subtype.set(subtype)
+          return
+        },
         synchronize: function (newValue) {
           this.setFieldValue(newValue || '', 1, ezP.Key.TERM)
         },
@@ -203,18 +208,6 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
  */
 ezP.DelegateSvg.Expr.term.prototype.noBlockWrapped = function (block) {
   return true
-}
-
-/**
- * When the value did change, sets the subtype accordingly.
- * @param {!Blockly.Block} block to be initialized.
- * @param {string} oldValue
- * @param {string} newValue
- */
-ezP.DelegateSvg.Expr.term.prototype.didChangeValue = function (block, oldValue, newValue) {
-  var subtype = newValue? ezP.Do.typeOfString(newValue): ezP.T3.Expr.identifier
-  block.ezp.data.subtype.set(subtype)
-  return
 }
 
 /**
