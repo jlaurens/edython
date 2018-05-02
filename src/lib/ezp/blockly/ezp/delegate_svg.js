@@ -1374,27 +1374,6 @@ ezP.DelegateSvg.prototype.delayedRender = function (block) {
 }
 
 /**
- * Set the enable/disable status of the given block.
- * @param {!Block} block.
- * @param {!Input} input.
- * @param {!String} name  input name.
- * @param {!boolean} newValue.
- * @private
- */
-ezP.DelegateSvg.prototype.setNamedInputDisabled = function (block, name, newValue) {
-  var input = block.getInput(name)
-  if (input) {
-    var oldValue = input.ezp.disabled_
-    if (!!oldValue === !!newValue) {
-      return
-    }
-    this.setInputDisabled(block, input, newValue)
-  } else {
-    console.log('Unable to dis/enable non existing input named '+name)
-  }
-}
-
-/**
  * Create a new block, with svg background and wrapped blocks.
  * This is the expected way to create the block
  * @param {!WorkspaceSvg} workspace.
