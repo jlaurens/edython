@@ -237,10 +237,14 @@ ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
       },
     },
   },
-  inputs: {
-    1: {
+  fields: {
+    prefix: {
       label: 'assert',
       css_class: 'ezp-code-reserved',
+    },
+  },
+  inputs: {
+    1: {
       key: ezP.Key.ASSERT,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',

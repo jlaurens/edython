@@ -78,6 +78,10 @@ goog.provide('ezP.Msg.Placeholder')
 
 /** @export */ ezP.Msg.Placeholder.DECORATOR = "decorateur"
 
+/** @export */ ezP.Msg.Placeholder.ADD_COMMENT = "Ajouter un commentaire"
+
+/** @export */ ezP.Msg.Placeholder.REMOVE_COMMENT = "Supprimer le commentaire"
+
 /** @export */ ezP.Msg.USE_SINGLE_QUOTE = "'...'"
 
 /** @export */ ezP.Msg.USE_DOUBLE_QUOTES = '"..."'

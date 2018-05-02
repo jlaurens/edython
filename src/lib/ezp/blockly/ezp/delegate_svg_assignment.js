@@ -306,13 +306,13 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     1: {
       term: {
         key:ezP.Key.VALUE,
-        value: '',
+        edit: '',
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
-        validator: function(txt) {
+        validate: function(txt) {
           return this.ezp.validateData(txt, ezP.Key.VALUE)
         },
         onEndEditing: function () {
-          this.setDataValue(this.getValue(), ezP.Key.VALUE)
+          this.ezp.setData(this.getValue(), ezP.Key.VALUE)
         },
       },
     },
@@ -466,9 +466,9 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
       1: {
         term: {
           key:ezP.Key.VALUE,
-          value: '',
+          edit: '',
           placeholder: ezP.Msg.Placeholder.IDENTIFIER,
-          validator: function(txt) {
+          validate: function(txt) {
             return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
           },
           onEndEditing: function () {

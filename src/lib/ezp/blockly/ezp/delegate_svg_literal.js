@@ -73,17 +73,17 @@ ezP.DelegateSvg.Literal.makeSubclass('numberliteral', {
       },
     },
   },
-  inputs: { 
+  inputs: {
     1: {
       number: {
         key:ezP.Key.VALUE,
-        value: 0,
+        edit: 0,
         placeholder: ezP.Msg.Placeholder.NUMBER,
-        validator: function(txt) {
+        validate: function(txt) {
           return this.ezp.validateData(txt, ezP.Key.VALUE)
         },
         onEndEditing: function () {
-          return setDataValue(this.getValue(), ezP.Key.VALUE)
+          this.setData(this.getValue(), ezP.Key.VALUE)
         },
       },
     },
@@ -153,7 +153,7 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
       },
       synchronize: function(newValue) {
         this.setFieldValue(newValue, 0, 'prefix')
-        this.setFieldVisible(!!newValue && !!newValue.length, 0, 'prefix')
+        this.setMainFieldVisible(!!newValue && !!newValue.length, 'prefix')
       },
     },
     content: {
@@ -203,7 +203,7 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
       start: '',
       string: {
         key:ezP.Key.VALUE,
-        value: '',
+        edit: '',
         placeholder: function() {
           var block = this.sourceBlock_
           var ezp = block.ezp
@@ -214,7 +214,7 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
           return subtype === ezP.T3.Expr.shortbytesliteral || subtype === ezP.T3.Expr.shortbytesliteral?
           ezP.Msg.Placeholder.BYTES: ezP.Msg.Placeholder.STRING
         },
-        validator: function(txt) {
+        validate: function(txt) {
           return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), 'content')
         },
         onStartEditing: function () {

@@ -196,7 +196,10 @@ ezP.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
   
   goog.dom.classlist.add(div, this.cssClass)
   goog.dom.classlist.add(htmlInput, this.cssClass)
-
+  if (this.ezp.comment) {
+    goog.dom.classlist.remove(htmlInput, 'ezp-code')
+    goog.dom.classlist.add(htmlInput, 'ezp-code-comment')
+  }
   ezP.FieldTextInput.htmlInput_ = Blockly.FieldTextInput.htmlInput_ = htmlInput
   div.appendChild(htmlInput)
 
@@ -393,6 +396,11 @@ ezP.FieldInput.prototype.render_ = function() {
     goog.dom.classlist.add(this.textElement_, 'ezp-code-placeholder')
   } else {
     goog.dom.classlist.remove(this.textElement_, 'ezp-code-placeholder')
+  }
+  if (this.ezp.comment) {
+    goog.dom.classlist.add(this.textElement_, 'ezp-code-comment')
+  } else {
+    goog.dom.classlist.remove(this.textElement_, 'ezp-code-comment')
   }
 }
 

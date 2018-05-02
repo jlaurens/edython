@@ -90,13 +90,13 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
     1: {
       term: {
         key: ezP.Key.DOTTED_NAME,
-        value: '',
+        edit: '',
         placeholder: ezP.Msg.Placeholder.DECORATOR,
-        validator: function(txt) {
+        validate: function(txt) {
           return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
         },
         onEndEditing: function () {
-          this.setDataValue(this.getValue(), ezP.Key.VALUE)
+          this.ezp.setData(this.getValue(), ezP.Key.VALUE)
         },
         left_space: true,
       },
@@ -225,13 +225,13 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
       css_class: 'ezp-code-reserved',
       term: {
         key: ezP.Key.NAME,
-        value: '',
+        edit: '',
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
-        validator: function(txt) {
+        validate: function(txt) {
           return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
         },
         onEndEditing: function () {
-          this.setDataValue(this.getValue(), ezP.Key.VALUE)
+          this.ezp.setData(this.getValue(), ezP.Key.VALUE)
         },
       },
     },
@@ -315,13 +315,13 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
       css_class: 'ezp-code-reserved',
       term: {
         key: ezP.Key.NAME,
-        value: '',
+        edit: '',
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
-        validator: function(txt) {
+        validate: function(txt) {
           return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
         },
         onEndEditing: function () {
-          this.setDataValue(this.getValue(), ezP.Key.VALUE)
+          this.ezp.setData(this.getValue(), ezP.Key.VALUE)
         },
       },
     },

@@ -585,7 +585,7 @@ ezP.DelegateSvg.Expr.makeSubclass('any', {
   inputs: {
     1: {
       value: {
-        value: '',
+        edit: '',
         placeholder: ezP.Msg.Placeholder.CODE,
         onEndEditing: function () {
           this.ezp.setData(this.getValue())

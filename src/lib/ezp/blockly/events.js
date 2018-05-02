@@ -59,7 +59,7 @@ Blockly.Events.Change.prototype.run = function(forward) {
       var m = XRegExp.exec(this.element, ezP.XRE.event_data)
       var data
       if (m && (data = block.ezp.data[m.key])) {
-        block.ezp.data.subtype.set(value)
+        data.set(value)
       } else {
         console.warn('Unknown change type: ' + this.element);
       }

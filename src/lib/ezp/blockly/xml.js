@@ -327,7 +327,7 @@ ezP.Xml.blockToDom = function (block, optNoId) {
     element.setAttribute(ezP.Xml.INPUT, '')
   }
   if (block.ezp instanceof ezP.DelegateSvg.Stmt) {
-    if (block.ezp.data.commentShow.get()) {
+    if (block.ezp.data.comment_show.get()) {
       element.setAttribute(ezP.Xml.COMMENT, block.ezp.data.comment.get() || '')
     }
   }
@@ -493,6 +493,7 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
   if (!xmlBlock.nodeName) {
     return block
   }
+  var id = xmlBlock.getAttribute('id')
   var name = xmlBlock.nodeName.toLowerCase()
   var prototypeName
   // is there a simple correspondance with a known type
@@ -529,7 +530,6 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
     
   } else {
     prototypeName = name
-    var id = xmlBlock.getAttribute('id')
     var solid = prototypeName + '_solid'
     var controller = ezP.DelegateSvg.Manager.get(solid)
     if (controller) {
@@ -579,11 +579,11 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
  */
 ezP.Xml.fromDom = function (block, element) {
   var ezp = block.ezp
-  if (false && ezp instanceof ezP.DelegateSvg.Stmt) {
-    var comment = xmlBlock.getAttribute(ezP.Xml.COMMENT)
+  if (ezp instanceof ezP.DelegateSvg.Stmt) {
+    var comment = element.getAttribute(ezP.Xml.COMMENT)
     if (goog.isDefAndNotNull(comment)) {
       ezp.data.comment.set(comment)
-      ezp.data.commentShow.set(true)
+      ezp.data.comment_show.set(true)
     }
   }
   var controller = block.ezp

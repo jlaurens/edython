@@ -133,8 +133,8 @@ ezP.Key = {
   LABEL: 'label', // lowercase
   CODE: 'code', // lowercase
   COMMENT: 'comment', // lowercase
-  COMMENT_MARK: 'commentMark', // lowercase
-  COMMENT_SHOW: 'commentShow', // lowercase
+  COMMENT_MARK: 'comment_mark', // lowercase
+  COMMENT_SHOW: 'comment_show', // lowercase
   NUMBER: 'number', // lowercase
   STRING: 'string', // lowercase
   LONG_STRING: 'longString', // lowercase

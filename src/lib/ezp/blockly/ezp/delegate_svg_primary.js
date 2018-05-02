@@ -50,13 +50,13 @@ ezP.DelegateSvg.Expr.makeSubclass('attributeref', {
       label: '.',
       edit: {
         key: ezP.Key.VALUE,
-        value: '',
+        edit: '',
         placeholder: ezP.Msg.Placeholder.ATTRIBUTE,
-        validator: function(txt) {
+        validate: function(txt) {
           return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
         },
         onEndEditing: function () {
-          this.setDataValue(this.getValue(), ezP.Key.VALUE)
+          this.ezp.setData(this.getValue(), ezP.Key.VALUE)
         },
       },
     },
@@ -98,13 +98,13 @@ ezP.DelegateSvg.Expr.makeSubclass('slicing', {
     1: {
       edit: {
         key: ezP.Key.VALUE,
-        value: '',
+        edit: '',
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
-        validator: function(txt) {
+        validate: function(txt) {
           return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
         },
         onEndEditing: function () {
-          this.setDataValue(this.getValue(), ezP.Key.VALUE)
+          this.ezp.setData(this.getValue(), ezP.Key.VALUE)
         },
       },
     },
@@ -216,13 +216,13 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
     1: {
       edit: {
         key: ezP.Key.VALUE,
-        value: '',
+        edit: '',
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
-        validator: function(txt) {
+        validate: function(txt) {
           return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
         },
         onEndEditing: function () {
-          this.setDataValue(this.getValue(), ezP.Key.VALUE)
+          this.ezp.setData(this.getValue(), ezP.Key.VALUE)
         },
       },
     },

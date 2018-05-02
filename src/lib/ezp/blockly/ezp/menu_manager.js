@@ -265,6 +265,7 @@ ezP.MenuManager.prototype.showMenu = function (block, e) {
     sep = true
   }
   this.shouldSeparate(sep)
+  sep = block.ezp.populateContextMenuComment && block.ezp.populateContextMenuComment(block, this)
   if (this.insertAfterSubmenu.getItemCount()) {
     this.addChild(this.insertAfterSubmenu, true)
     sep = true

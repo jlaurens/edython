@@ -391,7 +391,6 @@ ezP.Delegate.prototype.initData = function() {
   for (var k in data) {
     data[k].init()
   }
-  this.synchronizeData()
 }
 
 /**
@@ -400,7 +399,7 @@ ezP.Delegate.prototype.initData = function() {
  * May be used at the end of an initialization process
  * where we use only data's `internalSet` method.
  */
-ezP.Delegate.prototype.synchronizeData = function() {
+ezP.Delegate.prototype.synchronizeData = function(block) {
   var data = this.data
   for (var k in data) {
     data[k].synchronize(data[k].get())

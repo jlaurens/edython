@@ -383,6 +383,23 @@ ezP.Data.prototype.setFieldValue = function (newValue, inputIndex, fieldKey, noU
  * @param {string|null} fieldKey  of the input holder in the ui object 
  * @private
  */
+ezP.Data.prototype.setMainFieldVisible = function (newValue, fieldKey) {
+  var field = this.ui.fields[fieldKey || this.key]
+  if (field) {
+    field.setVisible(newValue)
+  }
+}
+
+/**
+ * Set the visible status of the field in the input given by its index
+ * and the key.
+ * @param {!Object} newValue.
+ * @param {!number} inputIndex  of the input in the model (i_1, i_2...) 
+ * When false, this corresponds to the fields that are not
+ * part of an input, like the modifier field.
+ * @param {string|null} fieldKey  of the input holder in the ui object 
+ * @private
+ */
 ezP.Data.prototype.setFieldVisible = function (newValue, inputIndex, fieldKey) {
   var i = inputIndex && this.ui[inputIndex] || this.ui
   var field = i.fields[fieldKey || this.key]

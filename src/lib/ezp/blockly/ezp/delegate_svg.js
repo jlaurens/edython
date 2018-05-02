@@ -143,14 +143,34 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     fields: {},
   }
   var field, D
+  // a main field is not editable, it can only have a label.
+  // to do: make the difference between a label and a value
+  // the former is not editable whereas the latter is
+  // or should be once it is widely implemented
   var doMainField = function(key) {
     var v
-    if ((D = fieldModel[key]) && goog.isDefAndNotNull(v = D.label)) {
-      field = new ezP.FieldLabel(v)
+    if ((D = fieldModel[key])) {
+      if (goog.isDefAndNotNull(v = D.edit)) {
+        field = new ezP.FieldInput(v, null, key)
+      } else if (goog.isDefAndNotNull(v = D.label)) {
+        field = new ezP.FieldLabel(v, null, key)
+      } else {
+        return
+      }
       field.ezp.css_class = D.css_class
       field.ezp.css_style = D.css_style
       field.setSourceBlock(block)
-      field.name = field.ezp.key = key // main fields have identical name and key
+      field.ezp.key = key // main fields have identical name and key
+      if (goog.isFunction(v.placeholder)) {
+        field.placeholderText = D.placeholder
+      } else if (D.placeholder) {
+        field.placeholderText = function() {
+          var p = D.placeholder
+          return function() {
+            return this.placeholderText_ || p
+          }
+        } ()
+      }
       field.init()
       ui.fields[key] = field
       return field
@@ -159,6 +179,12 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   doMainField.call(this, ezP.Key.MODIFIER)
   doMainField.call(this, ezP.Key.PREFIX)
   doMainField.call(this, ezP.Key.SUFFIX)
+  doMainField.call(this, ezP.Key.COMMENT_MARK)
+  if ((field = doMainField.call(this, ezP.Key.COMMENT))) {
+    field.ezp.comment = true // this will manage the css-class
+  }
+
+  // now the inputs
   var inputModel = model.inputs
   var doInsert = function(type, isMain) {
     var B = ezP.DelegateSvg.newBlockComplete(block.workspace, type)
@@ -212,26 +238,18 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       }
       var recorder
       // the main field may determine the name of the input
-      var doEditableFields = function(name, fieldCtor) {
-        if (goog.isDefAndNotNull(v = D[name])) {
-          out.input = block.appendDummyInput(k || name)
-          field = out.fields[name] = out.input.ezp.fields[name] = new fieldCtor(v)
-          recorder = function() {
-            var ff = field
-            var kk = k && (k+'.'+name) || name
-            return function() {
-              out.input.appendField(ff, kk)
-              ff.init()
-            }
-          } ()
-          return field
-        }
-      }
-      var doEditableFields_ = function(name) {
+      var doEditableFields = function(name) {
         if (goog.isDefAndNotNull(v = D[name])) {
           k = v.key || name
+          if (goog.isDefAndNotNull(v.edit)) {
+            field = new ezP.FieldInput(v.edit, null, name)
+          } else if (goog.isDefAndNotNull(v.label)) {
+            field = new ezP.FieldLable(v.label)
+          } else {
+            return false
+          }
           out.input = block.appendDummyInput(k)
-          field = out.fields[k] = out.input.ezp.fields.term = new ezP.FieldInput(v.value, v.validator, name)
+          out.fields[k] = out.input.ezp.fields.term = field
           if (goog.isFunction(v.init)) {
             v.init.call(field)
           }
@@ -265,14 +283,14 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       }
       // first fields are editable ones
       // They belong to a standalone dummy input
-      if (!doEditableFields_(ezP.Key.VALUE)
-      && !doEditableFields_(ezP.Key.EDIT)
-      && !doEditableFields_(ezP.Key.TERM)
-      && !doEditableFields_(ezP.Key.NUMBER)
-      && !doEditableFields_(ezP.Key.STRING)
-      && !doEditableFields_(ezP.Key.CODE)
-      && !doEditableFields_(ezP.Key.COMMENT)
-      && (D.check === undefined && D.wrap === undefined) || D.dummy) {
+      if (!doEditableFields(ezP.Key.VALUE)
+      && !doEditableFields(ezP.Key.EDIT)
+      && !doEditableFields(ezP.Key.TERM)
+      && !doEditableFields(ezP.Key.NUMBER)
+      && !doEditableFields(ezP.Key.STRING)
+      && !doEditableFields(ezP.Key.CODE)
+      && !doEditableFields(ezP.Key.COMMENT)
+      && (D.check === undefined && D.wrap === undefined)) {
         out.input = block.appendDummyInput(k)
       } else {
         if ((v = D.wrap)) {
@@ -329,9 +347,6 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         field.init()
         return field
       }
-      if ((v = D.dummy) !== undefined) {
-        FF(ezP.Key.LABEL)
-      }
       var doLabel = function(key) {
         if (goog.isDefAndNotNull(v = D[key])) {
           return FF(key)
@@ -386,31 +401,6 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
           ui[i] = p
         }
       }
-      // comment for statements is managed separately
-      // we've got 2 fields, one for the symbol and one for the text
-      var key = ezP.Key.COMMENT
-      if ((D = inputModel[key])) {
-        // for now, just create the fields
-        field = new ezP.FieldInput('', function(txt) {
-          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), 'comment')
-        }, key)
-        field.ezp.onEndEditing_ = function() {
-          this.ezp.setData(this.getValue(), 'comment')
-        }
-        field.placeholderText_ = ezP.Msg.Placeholder.COMMENT
-        field.ezp.css_class = 'ezp-code-comment'
-        field.setSourceBlock(block)
-        field.name = key
-        field.init()
-        ui.fields[key] = field
-        key = ezP.Key.COMMENT_MARK
-        field = new ezP.FieldLabel('#')
-        field.ezp.css_class = 'ezp-code-reserved'
-        field.setSourceBlock(block)
-        field.name = key
-        field.init()
-        ui.fields[key] = field
-      }
     }
   }
   this.ui = ui
@@ -424,6 +414,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   // wait until the end to set the subtype because it causes rendering
   // now it is time to intialize the data
   this.initData(block)
+  this.synchronizeData(block)
   // and find the appropriate type
   this.consolidateType(block)
 }
@@ -900,11 +891,11 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   if ((io.field = this.ui.fields.suffix)) {
     this.renderDrawField_(io)
   }
-  if ((io.field = this.ui.fields.commentMark)) {
+  if ((io.field = this.ui.fields.comment_mark)) {
     this.renderDrawField_(io)
-    if ((io.field = this.ui.fields.comment)) {
-      this.renderDrawField_(io)
-    }
+  }
+  if ((io.field = this.ui.fields.comment)) {
+    this.renderDrawField_(io)
   }
   // enlarge the width if necessary
   io.cursorX = Math.max(io.cursorX, this.minBlockWidth())
@@ -941,9 +932,12 @@ ezP.DelegateSvg.prototype.renderDrawInput_ = function (io) {
  * @private
  */
 ezP.DelegateSvg.prototype.renderDrawField_ = function (io) {
-  if (io.field.isVisible()) {
-    var root = io.field.getSvgRoot()
-    if (root) {
+  var root = io.field.getSvgRoot()
+  if (root) {
+    if (!io.field.isVisible()) {
+      root.setAttribute('display', 'none')
+    } else {
+      root.removeAttribute('display')
       var text = io.field.getDisplayText_()
       var ezp = io.field.ezp
       if (text.length) {
@@ -964,10 +958,10 @@ ezP.DelegateSvg.prototype.renderDrawField_ = function (io) {
       if (ezp.isEditing) {
         io.cursorX += ezP.Font.space
       }
-    } else {
-      console.log('Field with no root: did you ...initSvg()?')
-    }
-  }          
+    }       
+  } else {
+    console.log('Field with no root: did you ...initSvg()?')
+  }
 }
 
 /**

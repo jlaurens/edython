@@ -115,9 +115,9 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
       1: {
         term: {
           key:ezP.Key.VALUE,
-          value: '',
+          edit: '',
           placeholder: ezP.Msg.Placeholder.TERM,
-          validator: function(txt) {
+          validate: function(txt) {
             return this.ezp.validateData(txt, ezP.Key.VALUE)
           },
           onEndEditing: function () {
@@ -144,9 +144,9 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
         css_class: 'ezp-code-reserved',
         edit: {
           key:ezP.Key.ALIAS,
-          value: '',
+          edit: '',
           placeholder: ezP.Msg.Placeholder.NAME_ALIAS,
-          validator: function(txt) {
+          validate: function(txt) {
             var v = this.sourceBlock_.ezp.data.alias.validate(goog.isDef(txt)? txt: this.getValue())
             return v && v.validated
           },

@@ -112,6 +112,15 @@ ezP.DelegateSvg.Control.prototype.preInitSvg = function (block) {
 }
 
 /**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Control.prototype.populateContextMenuComment = function (block, mgr) {
+}
+
+/**
  * Deletes or nulls out any references to COM objects, DOM nodes, or other
  * disposable objects...
  * @protected

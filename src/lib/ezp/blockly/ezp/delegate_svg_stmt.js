@@ -30,30 +30,42 @@ ezP.DelegateSvg.makeSubclass('Stmt', {
   data: {
     comment: {
       default: '',
+      placeholderText: ezP.Msg.Placeholder.COMMENT,
       validate: function(newValue) {
         return {validated: XRegExp.exec(newValue, ezP.XRE.comment).value || ''}
       },
       synchronize: function(newValue) {
-        this.setFieldValue(newValue || '', 0, 'comment')
+        this.setMainFieldValue(newValue || '', 'comment')
       },
     },
-    commentShow: {
+    comment_show: {
       default: false,
       validate: function(newValue) {
         return {validated: newValue} // is it still necessary ?
       },
       synchronize: function(newValue) {
-        this.setFieldVisible(!!newValue, 0, 'commentMark')
-        this.setFieldVisible(!!newValue, 0, 'comment')
+        this.setMainFieldVisible(!!newValue, 'comment_mark')
+        this.setMainFieldVisible(!!newValue, 'comment')
       },
     },
   },
-  inputs: {
+  fields: {
+    comment_mark: {
+      label: '#',
+      css_class: 'ezp-code-reserved',
+    },
     comment: {
-      value: '',
-      display: false,
-    }
-  }
+      edit: '',
+      validate: function(txt) {
+        return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), 'comment')
+      },
+      onEndEditing: function() {
+        this.ezp.setData(this.getValue(), 'comment')
+      },
+      placeholder: ezP.Msg.Placeholder.COMMENT,
+      css_class: 'ezp-code-comment',
+    },
+  },
 })
 ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.DelegateSvg.Stmt, true)
 
@@ -268,6 +280,25 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
 }
 
 /**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (block, mgr) {
+  var show = this.data.comment_show.get()
+  var value = this.data.value.get()
+  var current = this.data.variant.get()
+  var content =
+  ezP.Do.createSPAN(show? ezP.Msg.Placeholder.REMOVE_COMMENT: ezP.Msg.Placeholder.ADD_COMMENT, null)
+  var menuItem = new ezP.MenuItem(content, function() {
+    block.ezp.data.comment_show.set(!show)
+  })
+  mgr.addChild(menuItem, true)
+  return true
+}
+
+/**
  * Class for a DelegateSvg, pass_stmt.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
@@ -397,7 +428,20 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = 
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.comment_stmt)
+ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.comment_stmt, {
+  data: {
+     comment_show: {
+      default: true,
+      validate: function(newValue) {
+        return {validated: true} // is it still necessary ?
+      },
+      synchronize: function(newValue) {
+        this.setMainFieldVisible(true, 'comment_mark')
+        this.setMainFieldVisible(true, 'comment')
+      },
+    },
+  },
+})
 
 /**
  * Initialize a block.
@@ -428,6 +472,15 @@ ezP.DelegateSvg.Stmt.prototype.getCommentShow = function (block) {
  * @private
  */
 ezP.DelegateSvg.Stmt.comment_stmt.prototype.renderDrawSharp_ = function (io) {
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.comment_stmt.prototype.populateContextMenuComment = function (block, mgr) {
 }
 
 /**
@@ -588,6 +641,22 @@ ezP.DelegateSvg.Stmt.makeSubclass('return_stmt', {
   },
 })
 
+/**
+ * Class for a DelegateSvg, return_stmt.
+ * For ezPython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+ezP.DelegateSvg.Stmt.makeSubclass('any_stmt', {
+  fields: {
+    prefix: {
+      edit: '',
+      css_class: 'ezp-code',
+    }
+  }
+})
+
 ezP.DelegateSvg.Stmt.T3s = [
   ezP.T3.Stmt.pass_stmt,
   ezP.T3.Stmt.break_stmt,
@@ -599,4 +668,5 @@ ezP.DelegateSvg.Stmt.T3s = [
   ezP.T3.Stmt.docstring_def_stmt,
   ezP.T3.Stmt.del_stmt,
   ezP.T3.Stmt.return_stmt,
+  ezP.T3.Stmt.any_stmt,
 ]
