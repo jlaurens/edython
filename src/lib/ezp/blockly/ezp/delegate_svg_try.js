@@ -24,9 +24,9 @@ goog.require('ezP.DelegateSvg.Group')
  * @constructor
  */
 ezP.DelegateSvg.Group.makeSubclass('try_part', {
-  inputs: {
-    1: {
-      dummy: 'try',
+  fields: {
+    prefix: {
+      label: 'try',
       css_class: 'ezp-code-reserved',
     },
   },
@@ -91,7 +91,7 @@ ezP.DelegateSvg.Stmt.except_part.prototype.consolidateType = function (block) {
     block.nextConnection.setCheck(ezP.T3.Stmt.Next[k])
     block.previousConnection.setCheck(ezP.T3.Stmt.Previous[k])
   }
-  F(variant > 0? 'except_part': 'void_except_part')
+  F.call(this, variant > 0? 'except_part': 'void_except_part')
   ezP.DelegateSvg.Stmt.except_part.superClass_.consolidateType.call(this, block)
 }
 
@@ -140,8 +140,8 @@ ezP.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function 
  */
 ezP.DelegateSvg.Group.makeSubclass('finally_part', {
   fields: {
-    label: {
-      value: 'finally',
+    prefix: {
+      label: 'finally',
       css_class: 'ezp-code-reserved',
     } 
   }

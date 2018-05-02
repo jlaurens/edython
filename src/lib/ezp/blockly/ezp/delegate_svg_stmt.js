@@ -166,6 +166,15 @@ ezP.DelegateSvg.Stmt.prototype.renderDrawInput_ = function (io) {
 }
 
 /**
+ * Render the inputs of the block.
+ * @param {!Blockly.Block} block.
+ * @protected
+ */
+ezP.DelegateSvg.Stmt.prototype.minBlockWidth = function (block) {
+  return ezP.Font.tabWidth
+}
+
+/**
  * Insert a block above.
  * If the block's previous connection is connected,
  * connects the block above to it.

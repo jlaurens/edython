@@ -29,15 +29,13 @@ goog.require('ezP.Data')
  *     type-specific functions for this block.
  * @constructor
  */
-console.warn('Remove the this.model__ below')
 ezP.Delegate = function (block) {
   ezP.Delegate.superClass_.constructor.call(this)
   this.errors = Object.create(null) // just a hash
-  this.model_ = this.constructor.ezp.getModel()
   this.block_ = block
   block.ezp = this
   var data = this.data = Object.create(null) // just a hash
-  var dataModel = this.model_.data
+  var dataModel = this.getModel().data
   for (var k in dataModel) {
     if (ezP.Do.hasOwnProperty(dataModel, k)) {
       data[k] = new ezP.Data(this, k, dataModel[k])
@@ -203,17 +201,15 @@ ezP.Delegate.Manager = function () {
       model = model()
     }
     if (model) {
-      // manage the insert: key
-      if((t = model.insert)) {
-        var insertCtor = goog.isFunction(t)? t: me.get(t)
-        goog.asserts.assert(insertCtor, 'Not inserted: '+t)
-        var insertModel = insertCtor.prototype.getModel()
-        if (insertModel) {
-          delegateCtor.ezp.getModel = function() {
-            return modeller(delegateCtor, insertModel)
-          }
+      // manage the link: key
+      var link, linkModel = model
+      while((link = model.link)) {
+        var linkCtor = goog.isFunction(link)? link: me.get(link)
+        goog.asserts.assert(linkCtor, 'Not inserted: '+link)
+        var linkModel = linkCtor.ezp.getModel()
+        if (linkModel) {
+          model = linkModel
         }
-        delete model.insert
       }
       var t = ezP.T3.Expr[key]
       if (t) {
@@ -276,7 +272,7 @@ ezP.Delegate.Manager = function () {
    */
   me.getModel = function (prototypeName) {
     var delegateCtor = Ctors[prototypeName]
-    return delegateCtor && delegateCtor.prototype.getModel() || {}
+    return delegateCtor && delegateCtor.ezp.getModel() || {}
   }
   /**
    * Delegate registrator.

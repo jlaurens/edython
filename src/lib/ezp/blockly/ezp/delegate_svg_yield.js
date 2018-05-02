@@ -25,7 +25,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Expr.makeSubclass('yield_expression', {
   data: {
-    subtype: {
+    variant: {
       all: [0, 1, 2],
       synchronize: function(newValue) {
         this.setInputDisabled(1, newValue != 1)
@@ -127,10 +127,10 @@ ezP.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (bloc
   if (block.ezp.locked_) {
     return
   }
-  var current = this.data.subtype.get()
+  var current = this.data.variant.get()
   var F = function(content, k) {
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.subtype.set(k)
+      block.ezp.data.variant.set(k)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)

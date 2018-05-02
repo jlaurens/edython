@@ -137,10 +137,28 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   block.setTooltip('')
   block.setHelpUrl('')
   var model = this.getModel()
-  var link = model.link
-  model = link && ezP.DelegateSvg.Manager.getModel(link) || model
-  var dataModel = model.fields
+  var dataModel = model.data
   var fieldModel = model.fields
+  var ui = {
+    fields: {},
+  }
+  var field, D
+  var doMainField = function(key) {
+    var v
+    if ((D = fieldModel[key]) && goog.isDefAndNotNull(v = D.label)) {
+      field = new ezP.FieldLabel(v)
+      field.ezp.css_class = D.css_class
+      field.ezp.css_style = D.css_style
+      field.setSourceBlock(block)
+      field.name = field.ezp.key = key // main fields have identical name and key
+      field.init()
+      ui.fields[key] = field
+      return field
+    }
+  }
+  doMainField.call(this, ezP.Key.MODIFIER)
+  doMainField.call(this, ezP.Key.PREFIX)
+  doMainField.call(this, ezP.Key.SUFFIX)
   var inputModel = model.inputs
   var doInsert = function(type, isMain) {
     var B = ezP.DelegateSvg.newBlockComplete(block.workspace, type)
@@ -328,9 +346,6 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     }
     return out
   }
-  var ui = {
-    fields: {},
-  }
   
   // catch the statement input eventually created in parent's method
   var e8r = block.ezp.inputEnumerator(block)
@@ -342,26 +357,6 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       break
     }
   }
-  var field, D
-  var FF = function(key) {
-    var v
-    if ((D = fieldModel[key])) {
-      if (goog.isDefAndNotNull(v = D.label)) {
-        field = new ezP.FieldLabel(v)
-        field.ezp.css_class = D.css_class
-        field.ezp.css_style = D.css_style
-        field.setSourceBlock(block)
-        field.name = key
-        field.init()
-        ui.fields[key] = field
-        return field
-      }
-    }
-  }
-  FF.call(this, ezP.Key.MODIFIER)
-  FF.call(this, ezP.Key.PREFIX)
-  FF.call(this, ezP.Key.LABEL)
-  FF.call(this, ezP.Key.SUFFIX)
   // next are not implemented in the ui
   if ((D = this.getModel().output) && D.awaitable) {
     field = new ezP.FieldLabel('await')
@@ -825,6 +820,15 @@ ezP.DelegateSvg.prototype.getPaddingRight = function (block) {
 /**
  * Render the inputs of the block.
  * @param {!Blockly.Block} block.
+ * @protected
+ */
+ezP.DelegateSvg.prototype.minBlockWidth = function (block) {
+  return 0
+}
+
+/**
+ * Render the inputs of the block.
+ * @param {!Blockly.Block} block.
  * @private
  */
 ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
@@ -902,6 +906,8 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
       this.renderDrawField_(io)
     }
   }
+  // enlarge the width if necessary
+  io.cursorX = Math.max(io.cursorX, this.minBlockWidth())
   io.cursorX += this.getPaddingRight(block)
   this.minWidth = block.width = Math.max(block.width, io.cursorX)
   this.shouldSeparateField = io.shouldSeparateField
