@@ -227,11 +227,15 @@ ezP.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
  * @constructor
  */
 ezP.DelegateSvg.Group.makeSubclass('if_part', {
+  fields: {
+    label: {
+      label: 'if',
+      css_class: 'ezp-code-reserved',
+    },
+  },
   inputs: {
     1: {
       key: ezP.Key.IF,
-      label: 'if',
-      css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'condition',
     },
@@ -247,11 +251,15 @@ ezP.DelegateSvg.Group.makeSubclass('if_part', {
  * @constructor
  */
 ezP.DelegateSvg.Group.makeSubclass('elif_part', {
+  fields: {
+    label: {
+      label: 'elif',
+      css_class: 'ezp-code-reserved',
+    },
+  },
   inputs: {
     1: {
       key: ezP.Key.ELIF,
-      label: 'elif',
-      css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'condition',
     },
@@ -275,9 +283,8 @@ ezP.DelegateSvg.Group.makeSubclass('elif_part', {
  * @constructor
  */
 ezP.DelegateSvg.Group.makeSubclass('else_part', {
-  inputs: {
-    1: {
-      key: 'dummy',
+  fields: {
+    label: {
       label: 'else',
       css_class: 'ezp-code-reserved',
     },
@@ -360,11 +367,15 @@ ezP.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
  * @constructor
  */
 ezP.DelegateSvg.Group.makeSubclass('while_part', {
+  fields: {
+    label: {
+      label: 'while',
+      css_class: 'ezp-code-reserved',
+    },
+  },
   inputs: {
     1: {
       key: ezP.Key.WHILE,
-      label: 'while',
-      css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'condition',
     },
