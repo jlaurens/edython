@@ -16,6 +16,7 @@ thumbs.db
 /src/lib/ezp/scripts/build
 /**/python_workbench
 /**/.idea
+/**/*.ipynb
 /**/*.command
 !/**/README.md
 !/**/Readme.md
