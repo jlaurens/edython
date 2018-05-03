@@ -32,8 +32,8 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_print_expr', {
       css_class: 'ezp-code-builtin',
     },
     3: {
-      start: '(',
       key: ezP.Key.ARGUMENTS,
+      start: '(',
       wrap: ezP.T3.Expr.argument_list_comprehensive,
       end: ')',
     },
@@ -213,8 +213,8 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_input_expr', {
       css_class: 'ezp-code-builtin',
     },
     3: {
-      start: '(',
       key: ezP.Key.EXPRESSION,
+      start: '(',
       check: ezP.T3.Expr.Check.argument_any,
       optional: true,
       end: ')',

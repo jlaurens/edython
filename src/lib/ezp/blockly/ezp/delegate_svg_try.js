@@ -177,9 +177,9 @@ ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       hole_value: 'expression',
     },
     2: {
+      key: ezP.Key.FROM,
       label: 'from',
       css_class: 'ezp-code-reserved',
-      key: ezP.Key.FROM,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
@@ -250,8 +250,8 @@ ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
       hole_value: 'expression',
     },
     2: {
-      label: ',',
       key: ezP.Key.EXPRESSION,
+      label: ',',
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
