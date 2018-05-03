@@ -356,7 +356,7 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
  * @constructor
  */
 ezP.DelegateSvg.Expr.makeSubclass('proper_slice', {
-  inputs: {
+  tiles: {
     lower_bound: {
       order: 1,
       check: ezP.T3.Expr.Check.expression,
@@ -389,7 +389,7 @@ ezP.DelegateSvg.Expr.makeSubclass('proper_slice', {
  * @constructor
  */
 ezP.DelegateSvg.Expr.makeSubclass('conditional_expression_solid', {
-  inputs: {
+  tiles: {
     expression: {
       order: 1,
       check: ezP.T3.Expr.Check.or_test,
@@ -428,7 +428,7 @@ ezP.DelegateSvg.Expr.makeSubclass('starred_expression', function () {
         },
       },
     },
-    inputs: {
+    tiles: {
       expression: {
         order: 1,
         label: '',
@@ -514,7 +514,7 @@ ezP.DelegateSvg.Expr.starred_expression.prototype.populateContextMenuFirst_ = fu
 * @constructor
 */
 ezP.DelegateSvg.Expr.makeSubclass('not_test_solid', {
-  inputs: {
+  tiles: {
     expression: {
       order: 1,
       label: 'not',
@@ -541,7 +541,7 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_object', {
       },
     },
   },
-  inputs: {
+  tiles: {
     value: {
       order: 1,
       label: '',
@@ -583,21 +583,21 @@ console.warn('Add some to|from dom hints in the data model')
 */
 ezP.DelegateSvg.Expr.makeSubclass('any', {
   data: {
-    value: {
+    code: {
+      default: '',
       synchronize: function(block, newValue) {
         this.setFieldValue(this.toText() || '')
       },
     },
   },
-  inputs: {
+  tiles: {
     code: {
       order: 1,
-      value: {
-        edit: '',
-        placeholder: ezP.Msg.Placeholder.CODE,
+      edit: {
         onEndEditing: function () {
           this.ezp.setData(this.getValue())
         },
+        placeholder: ezP.Msg.Placeholder.CODE,
       },
     },
   },

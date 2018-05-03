@@ -897,7 +897,7 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
     return false
   }
   var outCheck = c8n.check_
-  var D = ezP.Delegate.Manager.getModel(parent_type).inputs
+  var D = ezP.Delegate.Manager.getModel(parent_type).tiles
   var mgr = this
   var F = function(K) {
     var d = D[K]

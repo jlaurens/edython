@@ -24,7 +24,7 @@ goog.require('ezP.DelegateSvg.List')
  * @constructor
  */
 ezP.DelegateSvg.Expr.makeSubclass('keyword_item', {
-  inputs: {
+  tiles: {
     identifier: {
       order: 1,
       check: ezP.T3.Expr.identifier,

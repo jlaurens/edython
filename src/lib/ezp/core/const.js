@@ -159,14 +159,15 @@ ezP.Key = {
 XRegExp.install('astral')// python supports astral
 
 ezP.XRE = {
-  integer:/^(?:(([1-9][0-9]*)|(0+))|(0(?:o|O)[0-7]+)|(0(?:x|X)[0-9a-fA-F]+)|(0(?:b|B)[01]+))$/,// group 1: decinteger, 2: octinteger, 3: hexinteger, 4: bininteger
+  integer:/^-?(?:(([1-9][0-9]*)|(0+))|(0(?:o|O)[0-7]+)|(0(?:x|X)[0-9a-fA-F]+)|(0(?:b|B)[01]+))$/,// group 1: decinteger, 2: octinteger, 3: hexinteger, 4: bininteger
   integer: XRegExp(
-    `^((?<decinteger>  (?<nonzero>[1-9][0-9]*) | (?<zero>0+) ) |
+    `^(?<sign>-)?(?:
+    ((?<decinteger>  (?<nonzero>[1-9][0-9]*) | (?<zero>0+) ) |
     (?<octinteger>  0(?:o|O)[0-7]+) |
     (?<hexinteger>  0(?:x|X)[0-9a-fA-F]+) |
-    (?<bininteger>  0(?:b|B)[01]+))$`, 'x'),
+    (?<bininteger>  0(?:b|B)[01]+)))$`, 'x'),
   floatnumber: XRegExp(
-    `^(?:
+    `^(?<sign>-)?(?:
       (?<pointfloat> (?:[0-9]*\\.[0-9]+) | (?:[0-9]+\\.) ) |
       (?<exponentfloat>
         (?<mantissa> [0-9]+\\.?|[0-9]*\\.[0-9]+) # === [0-9]+|[0-9]*\\.[0-9]+|[0-9]+\\.
@@ -174,7 +175,7 @@ ezP.XRE = {
       )
     )$`, 'x'),
   imagnumber: XRegExp(
-    `^(?:
+    `^(?<sign>-)?(?:
       (?<number> 
         [0-9]*\\.[0-9]+|
         [0-9]+\\.?|

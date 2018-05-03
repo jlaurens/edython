@@ -111,7 +111,7 @@ console.warn('Beware of quotes in string literals')
  * Called once at block creation time.
  * Should not be called directly
  * The block implementation is created according to a dictionary
- * input model available through `getModel().inputs`.
+ * input model available through `getModel().tiles`.
  * The structure of that dictionary is detailled in the treatment flow
  * below.
  * @param {!Blockly.Block} block to be initialized..
@@ -141,7 +141,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   var fieldModel = model.fields
   var ui = {
     fields: {},
-    inputs: {},
+    tiles: {},
   }
   var field, D
   // a main field is not editable, it can only have a label.
@@ -149,24 +149,34 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   // the former is not editable whereas the latter is
   // or should be once it is widely implemented
   var doMainField = function(key) {
-    var v
-    if ((D = fieldModel[key])) {
-      if (goog.isDefAndNotNull(v = D.edit)) {
-        field = new ezP.FieldInput(v, D.validator, key)
-      } else if (goog.isDefAndNotNull(v = D.label)) {
-        field = new ezP.FieldLabel(v)
-      } else {
+    var model = fieldModel[key]
+    if (model) {
+      var value = model
+      if (!goog.isString(value) && !goog.isString(value = model.value)) {
         return
       }
-      field.ezp.css_class = D.css_class
-      field.ezp.css_style = D.css_style
+      var field = new ezP.FieldLabel(value)
+      if (!(field.ezp.css_class = model.css_class || model.css && 'ezp-code-'+model.css)) {
+        switch(ezP.Do.typeOfString(value)) {
+          case ezP.T3.Expr.reserved_identifier:
+          case ezP.T3.Expr.reserved_keyword:
+          field.ezp.css_class = 'ezp-code-reserved'
+          break
+          case ezP.T3.Expr.builtin_name:
+          field.ezp.css_class = 'ezp-code-builtin'
+          break
+          default:
+          field.ezp.css_class = 'ezp-code'
+        }
+      }
+      field.ezp.css_style = model.css_style
       field.setSourceBlock(block)
       field.ezp.key = key // main fields have identical name and key
-      if (goog.isFunction(v.placeholder)) {
+      if (goog.isFunction(model.placeholder)) {
         field.placeholderText = D.placeholder
-      } else if (D.placeholder) {
+      } else if (model.placeholder) {
         field.placeholderText = function() {
-          var p = D.placeholder
+          var p = model.placeholder
           return function() {
             return this.placeholderText_ || p
           }
@@ -184,9 +194,8 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   if ((field = doMainField.call(this, ezP.Key.COMMENT))) {
     field.ezp.comment = true // this will manage the css-class
   }
-
-  // now the inputs
-  var inputModels = model.inputs
+  // now the tiles
+  var tileModels = model.tiles
   var doInsert = function(type, isMain) {
     var B = ezP.DelegateSvg.newBlockComplete(block.workspace, type)
     if (B) {
@@ -218,34 +227,34 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       // xfer ui
       var ui = B.ezp.ui// not yet used
       if (isMain) {
-        this.getModel().inputs = B.getModel().inputs
+        this.getModel().tiles = B.getModel().tiles
       }
       B.dispose(true)
       return ui
     }
   }
-  var doOneInputModel = function(i) {
+  var doOneTileModel = function(i) {
     // we assume that one input model only contains at most one of
     // - editable field
     // - value input, check: key
     // - wrap input
     // - insert input
     // It may contain label fields
-    var inputModel = inputModels[i]
-    if (inputModel && Object.keys(inputModel).length) {
+    var tileModel = tileModels[i]
+    if (tileModel && Object.keys(tileModel).length) {
       // first create t
-      var k = inputModel.key || i // when present, the optName of the input created
-      var out = new ezP.Input(this, k, inputModel)
+      var k = tileModel.key || i // when present, the optName of the input created
+      var out = new ezP.Tile(this, k, tileModel)
       var model, field
       // first insert a base input model by creating a node
       // of a different type and transferring input ownership
-      if ((model = inputModel.insert)) {
+      if ((model = tileModel.insert)) {
         out.ui = doInsert.call(this, model)
       }
       var recorder
       // the main field may determine the name of the input
       var doEditableFields = function(name) {
-        if (goog.isDefAndNotNull(model = inputModel[name])) {
+        if (goog.isDefAndNotNull(model = tileModel[name])) {
           var k = model.key || name
           if (goog.isDefAndNotNull(model.edit)) {
             field = new ezP.FieldInput(model.edit, model.validator, name)
@@ -298,27 +307,27 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       && !doEditableFields(ezP.Key.STRING)
       && !doEditableFields(ezP.Key.CODE)
       && !doEditableFields(ezP.Key.COMMENT)
-      && (inputModel.check === undefined && inputModel.wrap === undefined)) {
+      && (tileModel.check === undefined && tileModel.wrap === undefined)) {
         out.setInput(block.appendDummyInput(k))
       } else {
-        if ((model = inputModel.wrap)) {
+        if ((model = tileModel.wrap)) {
           goog.asserts.assert(!out.input, 'Wrapped blocks and editable fields are not compatable')
           k = k || model
           goog.asserts.assert(model, 'wrap must exist '+block.type+'.'+i)
-          out.setInput(block.appendWrapValueInput(k, model, inputModel.optional, inputModel.hidden))
+          out.setInput(block.appendWrapValueInput(k, model, tileModel.optional, tileModel.hidden))
         } else if (!out.input) {
           out.setInput(block.appendValueInput(k))
         }
       }
       // Now come label fields
       var doLabel = function(key) {
-        if (goog.isDefAndNotNull(model = inputModel[key])) {
+        if (goog.isDefAndNotNull(model = tileModel[key])) {
           field = new ezP.FieldLabel(model)
           field.name = key
           out.fields[key] = out.input.ezp.fields[key] = field
           out.input.appendField(field, k && k+'.'+key || key)
-          field.ezp.css_class = inputModel.css_class
-          field.ezp.css_style = inputModel.css_style
+          field.ezp.css_class = tileModel.css_class
+          field.ezp.css_style = tileModel.css_style
           field.init()
           return field
         }
@@ -331,7 +340,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       field && (field.ezp.suffix = true)
     }
     return out
-  }// end of doOneInputModel
+  }// end of doOneTileModel
   
   // catch the statement input eventually created in parent's method
   var e8r = block.ezp.inputEnumerator(block)
@@ -361,15 +370,15 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
     ui.fields.async = field
   }
   // if insert is one of the keys, 
-  if (Object.keys(inputModels).length) {
+  if (Object.keys(tileModels).length) {
     var v
-    if ((v = inputModels.insert)) {
+    if ((v = tileModels.insert)) {
       ui = doInsert.call(this, v, true)
     } else {
       for (var i = 1; i < 5; i++) {
-        var p = doOneInputModel.call(this, i)
+        var p = doOneTileModel.call(this, i)
         if (p) {
-          ui.inputs[p.input.name] = ui[i] = p
+          ui.tiles[p.input.name] = ui[i] = p
         }
       }
     }
@@ -462,7 +471,7 @@ ezP.DelegateSvg.prototype.getField = function(block, name) {
  * where we use only data's `internalSet` method.
  */
 ezP.DelegateSvg.prototype.synchronizeInputs = function(block) {
-  var inputs = this.ui.inputs
+  var inputs = this.ui.tiles
   for (var k in inputs) {
     inputs[k].synchronize()
   }

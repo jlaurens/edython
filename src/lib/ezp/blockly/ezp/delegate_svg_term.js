@@ -67,7 +67,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
         default: '',
         synchronize: function (block, newValue) {
           this.setFieldValue(this.toText())
-          this.ui.inputs.alias.setDisabled(this.disabled_)
+          this.ui.tiles.alias.setDisabled(this.disabled_)
         },
         validate: function (newValue) {
           var subtype = ezP.Do.typeOfString(newValue)
@@ -111,10 +111,10 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
           var newModifier = newValue === model.STAR || newValue === model.STAR_NAME || newValue === model.STAR_NAME_ANNOTATION? '*': (newValue === model.STAR_STAR_NAME? '**': '')
           this.data.modifier.set(newModifier)
           this.data.name.required = newValue !== model.STAR
-          this.ui.inputs.annotation.setDisabled(newValue !== model.NAME_ANNOTATION &&
+          this.ui.tiles.annotation.setDisabled(newValue !== model.NAME_ANNOTATION &&
           newValue !== model.STAR_NAME_ANNOTATION &&
           newValue !== model.NAME_ANNOTATION_DEFINITION)
-          this.ui.inputs.definition.setDisabled(newValue !== model.NAME_DEFINITION &&
+          this.ui.tiles.definition.setDisabled(newValue !== model.NAME_DEFINITION &&
           newValue !== model.NAME_ANNOTATION_DEFINITION)
           this.data.name.setDisabled(newValue === model.STAR)
           this.data.alias.setDisabled(newValue !== model.NAME_ALIAS)
@@ -123,53 +123,54 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
     },
     fields: {
       modifier: {
-        label: '',
-        css_class: 'ezp-code-reserved',
+        value: '',
+        css: 'reserved',
       },
     },
-    inputs: {
+    tiles: {
       name: {
         order: 1,
-        name: {
-          key:ezP.Key.NAME,
-          edit: '',
+        edit: {
           placeholder: ezP.Msg.Placeholder.TERM,
           validator: function(txt) {
-            return this.ezp.validateData(txt, ezP.Key.NAME)
+            return this.ezp.validateData(goog.isDef(txt)? text: this.getValue() )
           },
           onEndEditing: function () {
-            this.ezp.setData(this.getValue(), ezP.Key.NAME)
+            this.ezp.setData(this.getValue())
           },
         },
       },
       annotation: {
         order: 2,
-        label: ':',
-        css_class: 'ezp-code-reserved',
+        label: {
+          value: ':',
+          css: 'reserved',
+        },
         check: ezP.T3.Expr.Check.expression,
         hole_value: 'expression',
       },
       definition: {
         order: 3,
-        label: '=',
-        css_class: 'ezp-code-reserved',
+        label: {
+          value: '=',
+          css: 'reserved',
+        },
         check: ezP.T3.Expr.Check.expression,
         hole_value: 'expression',
       },
       as: {
         order: 4,
-        label: 'as',
-        css_class: 'ezp-code-reserved',
+        label: {
+          value: 'as',
+          css: 'reserved',
+        },
         edit: {
-          key:ezP.Key.ALIAS,
-          edit: '',
           placeholder: ezP.Msg.Placeholder.ALIAS,
           validator: function(txt) {
-            var v = this.sourceBlock_.ezp.data.alias.validate(goog.isDef(txt)? txt: this.getValue())
-            return v && v.validated
+            return this.validateData(goog.isDef(txt)? txt: this.getValue())
           },
           onEndEditing: function () {
-            this.sourceBlock_.ezp.data.alias.set(this.getValue())
+            this.setData(this.getValue())
           },
         },
       },
@@ -231,7 +232,7 @@ ezP.DelegateSvg.Expr.term.prototype.noBlockWrapped = function (block) {
  * @return the phantom value
  */
 ezP.DelegateSvg.Expr.term.prototype.getPhantomValue = function(block) {
-  var field = this.ui.inputs.name.fields.name
+  var field = this.ui.tiles.name.fields.name
   return field.placeholderText_
 }
 
@@ -242,7 +243,7 @@ ezP.DelegateSvg.Expr.term.prototype.getPhantomValue = function(block) {
  * @return true
  */
 ezP.DelegateSvg.Expr.term.prototype.setPhantomValue = function(block, text) {
-  var field = this.ui.inputs.name.fields.name
+  var field = this.ui.tiles.name.fields.name
   field.placeholderText_ = text
   field.render_()
   return true
@@ -254,7 +255,7 @@ ezP.DelegateSvg.Expr.term.prototype.setPhantomValue = function(block, text) {
  * @private
  */
 ezP.DelegateSvg.Expr.term.prototype.showEditor = function (block) {
-  this.ui.inputs.name.fields.name.showEditor_()
+  this.ui.tiles.name.fields.name.showEditor_()
 }
 
 /**

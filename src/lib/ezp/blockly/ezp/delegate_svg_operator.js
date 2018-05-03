@@ -32,7 +32,7 @@ ezP.DelegateSvg.Expr.makeSubclass('Operator', {
       },
     },
   },
-  inputs: {
+  tiles: {
     rhs: {
       order: 2,
       operator: '',
@@ -86,7 +86,7 @@ ezP.DelegateSvg.Operator.makeSubclass('u_expr_solid', {
       all: ['-', '+', '~'],
     },
   },
-  inputs: {
+  tiles: {
     dummy: {
       order: 2,
       check: ezP.T3.Expr.Check.u_expr,
@@ -113,7 +113,7 @@ ezP.DelegateSvg.Expr.u_expr_solid.prototype.makeTitle = function (block, op) {
  * @constructor
  */
 ezP.DelegateSvg.Operator.makeSubclass('Binary',{
-  inputs: {
+  tiles: {
     lhs: {
       order: 1,
       hole_value: 'name',
@@ -146,7 +146,7 @@ ezP.DelegateSvg.Binary.makeModel = function(operators, check1, check3, operatorI
         default: operatorIndex || 0,
       },
     },
-    inputs: {
+    tiles: {
       left: {
         check: ezP.T3.Expr.Check[check1]
       },
@@ -295,7 +295,7 @@ ezP.DelegateSvg.Binary.makeSubclass('object_comparison', {
       default: 2,
     },
   },
-  inputs: {
+  tiles: {
     left: {
       check: ezP.T3.Expr.Check.comparison
     },
@@ -331,7 +331,7 @@ ezP.DelegateSvg.Binary.makeSubclass('or_test_solid', {
       all: ['or'],
     }
   },
-  inputs: {
+  tiles: {
     left: {
       check: ezP.T3.Expr.Check.or_test
     },
@@ -356,7 +356,7 @@ ezP.DelegateSvg.Binary.makeSubclass('and_test_solid', {
       all: ['and'],
     }
   },
-  inputs: {
+  tiles: {
     left: {
       check: ezP.T3.Expr.Check.and_test
     },
@@ -383,7 +383,7 @@ ezP.DelegateSvg.Operator.makeSubclass('power_solid', {
       default: '**',
     },
   },
-  inputs: {
+  tiles: {
     argument: {
       order: 1,
       check: ezP.T3.Expr.Check.await_or_primary,

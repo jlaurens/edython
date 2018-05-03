@@ -109,7 +109,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       },
     },
   },
-  inputs: {
+  tiles: {
     import_module: {
       order: 1,
       label: 'import',
@@ -208,7 +208,7 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
  * @constructor
  */
 ezP.DelegateSvg.Stmt.makeSubclass('future_statement', {
-  inputs: {
+  tiles: {
     list: {
       order: 1,
       label: 'from __future__ import',

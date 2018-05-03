@@ -141,7 +141,7 @@ ezP.Delegate.Manager = function () {
     var model = {
       data: {},
       fields: {},
-      inputs: {},
+      tiles: {},
       output: {},
       statement: {},
     }
@@ -159,7 +159,7 @@ ezP.Delegate.Manager = function () {
     }
     if (insertModel) {
       insertModel.data && merger(model.data, insertModel.data)
-      insertModel.inputs && merger(model.inputs, insertModel.inputs)
+      insertModel.tiles && merger(model.tiles, insertModel.tiles)
     }
     // store that object permanently
     delegateCtor.ezp.model_ = model
@@ -374,6 +374,9 @@ ezP.Delegate.model__ = {
 
 /**
  * Initialize the data.
+ * Bind data and fields.
+ * We assume that if data and fields share the same name,
+ * they must be bound, otherwise we would have chosen different names...
  * if the data model contains an intializer, use it,
  * otherwise send an init message to all the data controllers.
  */
@@ -381,17 +384,41 @@ ezP.Delegate.prototype.initData = function() {
   for (var k in this.data) {
     var data = this.data[k]
     data.ui = this.ui
-    if (data.model.synchronize) {
-      if ((data.input = this.ui.inputs[k])) {
-        data.input.data = data
-        data.input.key = k
-        var field = data.input.fields[k]
+    var tile = this.ui.tiles[k]
+    if (tile) {
+      data.tile = tile
+      tile.data = data
+      // try the unique editable field
+      if (Object.keys(tile.fields).length === 1) {
+        for(var kk in tile.fields) {
+          data.field = tile.fields[kk]
+          break
+        }
       } else {
-        field = this.ui.fields[k]        
+        data.field = tile.fields.edit
       }
-      if (field) {
-        data.field = field
-        field.ezp.data = data
+    } else if (!(data.field = this.ui.fields[k])) {
+      for(var kk in this.ui.tiles) {
+        tile = this.ui.tiles[kk]
+        if ((data.field = tile.fields[k])) {
+          break
+        }
+      }
+      var field = data.field
+      var ezp = field && field.ezp
+      if (ezp) {
+        // this is for editable fields
+        ezp.data = data
+        var model = ezp.model
+        if (!field.getValidator() && model.validator) {
+          var validator = function(data) {
+            return function (txt) {
+              var v = data.validate(txt)
+              return v && v.validated || null
+            }
+          } (data)
+          field.setValidator(validator)
+        }
       }
     }
   }

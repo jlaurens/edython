@@ -375,7 +375,7 @@ console.warn('Use a modifier field for * and ** (instead of await and async too)
  * @constructor
  */
 ezP.DelegateSvg.Expr.makeSubclass('lambda', {
-  inputs: {
+  tiles: {
     parameters: {
       order: 1,
       label: 'lambda',

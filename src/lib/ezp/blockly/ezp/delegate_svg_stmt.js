@@ -51,10 +51,12 @@ ezP.DelegateSvg.makeSubclass('Stmt', {
   },
   fields: {
     comment_mark: {
+      order: -2,
       label: '#',
       css_class: 'ezp-code-reserved',
     },
     comment: {
+      order: -1,
       edit: '',
       validator: function(txt) {
         return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), 'comment')
@@ -302,12 +304,8 @@ ezP.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (block, mgr
  * @constructor
  */
 ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.pass_stmt, {
-  inputs: {
-    name: {
-      order: 1,
-      label: 'pass',
-      css_class: 'ezp-code-reserved',
-    },
+  fields: {
+    label: 'pass',
   },
 })
 
@@ -319,12 +317,8 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.pass_stmt, {
  * @constructor
  */
 ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.break_stmt, {
-  inputs: {
-    name: {
-      order: 1,
-      label: 'break',
-      css_class: 'ezp-code-reserved',
-    },
+  fields: {
+    label: 'break',
   },
 })
 
@@ -336,12 +330,8 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.break_stmt, {
  * @constructor
  */
 ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.continue_stmt, {
-  inputs: {
-    name: {
-      order: 1,
-      label: 'continue',
-      css_class: 'ezp-code-reserved',
-    },
+  fields: {
+    label: 'break',
   },
 })
 
@@ -385,7 +375,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.global_nonlocal_stmt, {
       css_class: 'ezp-code-reserved',
     },
   },
-  inputs: {
+  tiles: {
     identifiers: {
       order: 3,
       css_class: 'ezp-code-reserved',
@@ -513,7 +503,7 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.setDisabled = function (block, yorn)
  * @constructor
  */
 ezP.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
-  inputs: {
+  tiles: {
     expression: {
       order: 1,
       check: ezP.T3.Expr.Check.expression,
@@ -530,7 +520,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
  * @constructor
  */
 ezP.DelegateSvg.Stmt.makeSubclass('docstring_top_stmt', {
-  inputs: {
+  tiles: {
     dummy: {
       order: 1,
       wrap: ezP.T3.Expr.longliteral,
@@ -556,7 +546,7 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt
  * @constructor
  */
 ezP.DelegateSvg.Stmt.makeSubclass('docstring_def_stmt', {
-  inputs: {
+  tiles: {
     dummy: {
       order: 1,
       wrap: ezP.T3.Expr.longliteral,
@@ -614,7 +604,7 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.S
  * @constructor
  */
 ezP.DelegateSvg.Stmt.makeSubclass('del_stmt', {
-  inputs: {
+  tiles: {
     del: {
       order: 1,
       label: 'del',
@@ -632,7 +622,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('del_stmt', {
  * @constructor
  */
 ezP.DelegateSvg.Stmt.makeSubclass('return_stmt', {
-  inputs: {
+  tiles: {
     return: {
       order: 1,
       label: 'return',

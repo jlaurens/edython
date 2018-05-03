@@ -150,6 +150,14 @@ ezP.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
   this.ezp.grouper_ = new ezP.Events.Grouper()
   this.onStartEditing_ && this.onStartEditing_()
   this.ezp.onStartEditing_ && this.ezp.onStartEditing_.call(this)
+  var model = this.ezp.model
+  if (model) {
+    if (goog.isFunction(model.onStartEditing)) {
+      model.onStartEditing.call(this)
+    } else if (model.onStartEditing) {
+      this.ezp.constructor.onStartEditing.call(this)
+    }
+  }
   block.ezp.startEditingField && block.ezp.startEditingField(block, this)
   this.render_()
   block.render()
@@ -228,6 +236,14 @@ ezP.FieldTextInput.prototype.widgetDispose_ = function () {
     field.callValidator()
     field.onEndEditing_ && field.onEndEditing_()
     field.ezp.onEndEditing_ && field.ezp.onEndEditing_.call(field)
+    var model = field.ezp.model
+    if (model) {
+      if (goog.isFunction(model.onEndEditing)) {
+        model.onEndEditing.call(field)
+      } else if (model.onEndEditing) {
+        field.ezp.constructor.onEndEditing.call(field)
+      }
+    }
     var block = field.sourceBlock_
     block.ezp.endEditingField && block.ezp.endEditingField(block, field)  
     field.ezp.grouper_ && field.ezp.grouper_.stop()
@@ -432,6 +448,30 @@ ezP.FieldLongString = function (text) {
   ezP.FieldLongString.superClass_.constructor.call(this, text, validator)
 }
 goog.inherits(ezP.FieldLongString, ezP.FieldInput)
+
+/**
+ * Default method to start editing.
+ * @this is a field owning an helper
+ */
+ezP.FieldHelper.onStartEditing = function () {
+}
+
+/**
+ * Default method to end editing.
+ * @this is a field owning an helper
+ */
+ezP.FieldHelper.onEndEditing = function () {
+  this.ezp.data.fromText(this.getValue())
+}
+
+/**
+ * Default method for binding the field value to its data object.
+ * @this is a field owning an helper
+ */
+ezP.FieldHelper.validator = function (newValue) {
+  var v = this.ezp.data.validate(newValue)
+  return v && v.validated || null
+}
 
 /**
  * Set the keyed data of the source block to the given value.

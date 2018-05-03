@@ -397,7 +397,7 @@ console.warn ('Change the model design for i_(\d): {...} to $1: {...}')
  * @private
  */
 ezP.Data.prototype.setFieldValue = function (newValue) {
-  goog.asserts.assert(this.field, 'No field bound.')
+  goog.asserts.assert(this.field, 'No field bound. '+this.key+'/'+this.owner_.block_.type)
   Blockly.Events.disable()
   try {
     this.field.setValue(newValue)

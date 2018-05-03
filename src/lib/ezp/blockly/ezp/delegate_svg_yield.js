@@ -39,7 +39,7 @@ ezP.DelegateSvg.Expr.makeSubclass('yield_expression', {
       css_class: 'ezp-code-reserved',
     },
   },
-  inputs: {
+  tiles: {
     expression: {
       order: 1,
       wrap: ezP.T3.Expr.non_void_expression_list,
@@ -214,7 +214,7 @@ ezP.DelegateSvg.Expr.makeSubclass('yield_atom', {
       label: ')',
     },
   },
-  inputs: {
+  tiles: {
     expression: {
       order: 1,
       wrap: ezP.T3.Expr.yield_expression,

@@ -23,20 +23,16 @@ goog.require('ezP.DelegateSvg.Expr')
  *     type-specific functions for this block.
  * @constructor
  */
-console.warn('Remove those ugly insert, make a subclass?')
 ezP.DelegateSvg.Expr.makeSubclass('comprehension', {
-  inputs: {
+  tiles: {
+    insert: ezP.T3.Expr.comp_for,
     expression: {
       order: 1,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'name',
     },
-    comp_for: {
-      order: 2,
-      insert: ezP.T3.Expr.comp_for,
-    },
     comp_iter: {
-      order: 3,
+      order: 5,
       wrap: ezP.T3.Expr.comp_iter_list,
     },
   },
@@ -51,7 +47,7 @@ ezP.DelegateSvg.Expr.makeSubclass('comprehension', {
  * @constructor
  */
 ezP.DelegateSvg.Expr.makeSubclass('comp_for', {
-  inputs: {
+  tiles: {
     for: {
       order: 1,
       label: 'for',
@@ -59,7 +55,7 @@ ezP.DelegateSvg.Expr.makeSubclass('comp_for', {
       wrap: ezP.T3.Expr.target_list,
     },
     in: {
-      order: 3,
+      order: 2,
       label: 'in',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.or_test,
@@ -77,7 +73,7 @@ ezP.DelegateSvg.Expr.makeSubclass('comp_for', {
  * @constructor
  */
 ezP.DelegateSvg.Expr.makeSubclass('comp_if', {
-  inputs: {
+  tiles: {
     if: {
       order: 1,
       label: 'if',
@@ -115,17 +111,33 @@ ezP.DelegateSvg.List.makeSubclass('comp_iter_list', {
  */
 // dict_comprehension ::= expression ":" expression comp_for
 ezP.DelegateSvg.Expr.makeSubclass('dict_comprehension', {
-  inputs: {
-    key_datum: {
+  tiles: {
+    key: {
       order: 1,
-      insert: ezP.T3.Expr.key_datum_solid,
+      check: ezP.T3.Expr.Check.expression,
+      hole_value: 'key',
     },
-    comp_for: {
+    datum: {
       order: 2,
-      insert: ezP.T3.Expr.comp_for,
+      check: ezP.T3.Expr.Check.expression,
+      label: ':',
+      hole_value: 'value',
     },
-    comp_iter: {
+    for: {
       order: 3,
+      label: 'for',
+      css_class: 'ezp-code-reserved',
+      wrap: ezP.T3.Expr.target_list,
+    },
+    in: {
+      order: 4,
+      label: 'in',
+      css_class: 'ezp-code-reserved',
+      check: ezP.T3.Expr.Check.or_test,
+      hole_value: 'name',
+    },
+    for_if: { // that name is so ugly
+      order: 5,
       wrap: ezP.T3.Expr.comp_iter_list,
     },  
   },
@@ -140,14 +152,14 @@ ezP.DelegateSvg.Expr.makeSubclass('dict_comprehension', {
  * @constructor
  */
 ezP.DelegateSvg.Expr.makeSubclass('key_datum_solid', {
-  inputs: {
+  tiles: {
     key: {
       order: 1,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'key',
     },
     datum: {
-      order: 3,
+      order: 2,
       check: ezP.T3.Expr.Check.expression,
       label: ':',
       hole_value: 'value',

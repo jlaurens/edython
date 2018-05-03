@@ -25,7 +25,7 @@ goog.require('ezP.MenuItem')
 //  * @constructor
 //  */
 // ezP.DelegateSvg.makeSubclass('dotted_funcname_solid', {
-//   inputs: {
+//   tiles: {
 //     1: {
 //       key: ezP.Key.PARENT,
 //       check: ezP.T3.Expr.identifier,
@@ -53,22 +53,22 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
   data: {
     builtin: {
       all: ['staticmethod', 'classmethod'],
-      synchronizeBuiltin :function(builtin) {
-        this.setFieldValue(builtin || '', 2, 'label')
+      synchronize: function(newValue) {
+        this.setFieldValue(newValue || '')
       },
     },
     variant: {
-      all: [ezP.Key.DOTTED_NAME, ezP.Key.BUILTIN, ezP.Key.ARGUMENTS],
+      all: ['DOTTED_NAME', 'BUILTIN', 'ARGUMENTS'],
       synchronize: function(variant) {
-        this.setInputDisabled(1, variant === ezP.Key.BUILTIN)
-        this.setInputDisabled(2, variant !== ezP.Key.BUILTIN)
-        this.setInputDisabled(3, variant !== ezP.Key.ARGUMENTS)
+        this.ui.tiles.dotted_name.setDisabled(variant === 'BUILTIN')
+        this.ui.tiles.builtin.setDisabled(variant !== 'BUILTIN')
+        this.ui.tiles.arguments.setDisabled(variant !== 'ARGUMENTS')
       },
     },
     subtype: {
       all: [ezP.T3.Expr.dotted_name, ezP.T3.Expr.identifier],
     },
-    value: {
+    dotted_name: {
       default: '',
       validate: function(newValue) {
         var subtypes = this.data.subtype.getAll()
@@ -76,36 +76,35 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
         return (subtypes.indexOf(subtype)>= 0) && {validated: newValue} || null
       },
       synchronize: function(newValue) {
-        this.setFieldValue(this.toText() || '', 1, 'dotted_name')
+        this.setFieldValue(this.toText() || '')
       },
     },
   },
   fields: {
     prefix: {
       label: '@',
-      css_class: 'ezp-code-reserved',
+      css: 'reserved',
     },
   },
-  inputs: {
-    name: {
+  tiles: {
+    dotted_name: {
       order: 1,
-      name: {
-        key: ezP.Key.DOTTED_NAME,
-        edit: '',
+      edit: {
         placeholder: ezP.Msg.Placeholder.DECORATOR,
         validator: function(txt) {
-          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
+          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
         },
         onEndEditing: function () {
-          this.ezp.setData(this.getValue(), ezP.Key.VALUE)
+          this.ezp.setData(this.getValue())
         },
         // left_space: true,
       },
     },
     builtin: {
       order: 2,
-      label: '',
-      css_class: 'ezp-code-reserved',
+      label: {
+        css: 'reserved',
+      },
     },
     arguments: {
       order: 3,
@@ -132,7 +131,6 @@ ezP.DelegateSvg.Stmt.decorator.prototype.isWhite = function (block) {
   return block.nextConnection.isConnected()
 }
 
-console.warn('Code uncomplete below')
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
@@ -140,20 +138,21 @@ console.warn('Code uncomplete below')
  * @override
  */
 ezP.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var value = this.data.value.get()
+  var dotted_name = this.data.dotted_name.get()
   var builtin = this.data.builtin.get()
   var builtins = this.data.builtin.getAll()
   var i_b = builtins.indexOf(builtin)
   var variant = this.data.variant.get()
   var variants = this.data.variant.getAll()
   var i_v = variants.indexOf(variant)
-  if (variant === ezP.Key.BUILTIN) {
+  if (variant === 'BUILTIN') {
 
   }
+
   var menuItem = new ezP.MenuItem(
       ezP.Do.createSPAN('@'+builtins[0], 'ezp-code-reserved'),
       function() {
-    block.ezp.setBuiltin(block, 0)
+    block.ezp.data.builtin.set(0)
     block.ezp.data.variant.set(1)
   })
   menuItem.setEnabled(i_b != 0 || i_v != 1)
@@ -161,7 +160,7 @@ ezP.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (b
   menuItem = new ezP.MenuItem(
       ezP.Do.createSPAN('@'+builtins[1], 'ezp-code-reserved'),
       function() {
-    block.ezp.setBuiltin(block, 1)
+    block.ezp.data.builtin.set(1)
     block.ezp.data.variant.set(1)
   })
   menuItem.setEnabled(i_b != 1 || i_v != 1)
@@ -169,7 +168,7 @@ ezP.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (b
   menuItem = new ezP.MenuItem(
       goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN('@', 'ezp-code-reserved'),
-      ezP.Do.createSPAN(value || ezP.Msg.Placeholder.DECORATOR, !value && 'ezp-code-placeholder'),
+      ezP.Do.createSPAN(dotted_name || ezP.Msg.Placeholder.DECORATOR, !dotted_name && 'ezp-code-placeholder'),
     ),
       function() {
     block.ezp.data.variant.set(0)
@@ -208,35 +207,33 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
         this.setInputDisabled(3, (ezP.Key.TYPE !== newValue))
       },
     },
-    value: {
+    name: {
       default: '',
       validate: function(newValue) {
         var type = ezP.Do.typeOfString(newValue)
         return type === ezP.T3.Expr.identifier? {validated: newValue}: null
       },
       synchronize: function(newValue) {
-        this.setFieldValue(this.toText(), 1, 'name')
+        this.setFieldValue(this.toText())
       },      
     },
   },
   fields: {
     prefix: {
       label: 'def',
-      css_class: 'ezp-code-reserved',      
+      css: 'reserved',      
     },
   },
-  inputs: {
+  tiles: {
     name: {
       order: 1,
-      name: {
-        key: ezP.Key.NAME,
-        edit: '',
+      edit: {
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
         validator: function(txt) {
-          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
+          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
         },
         onEndEditing: function () {
-          this.ezp.setData(this.getValue(), ezP.Key.VALUE)
+          this.ezp.setData(this.getValue())
         },
       },
     },
@@ -303,31 +300,29 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
         this.setInputDisabled(2, (ezP.Key.ARGUMENTS !== newValue))
       },
     },
-    value: {
+    name: {
       default: '',
       validate: function(newValue) {
         var type = ezP.Do.typeOfString(newValue)
         return type === ezP.T3.Expr.identifier? {validated: newValue}: null
       },
       synchronize: function(newValue) {
-        this.setFieldValue(this.toText(), 1, 'name')
+        this.setFieldValue(this.toText())
       },
     },
   },
-  inputs: {
+  tiles: {
     name: {
       order: 1,
       label: 'class',
       css_class: 'ezp-code-reserved',
-      name: {
-        key: ezP.Key.NAME,
-        edit: '',
+      edit: {
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
         validator: function(txt) {
-          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
+          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
         },
         onEndEditing: function () {
-          this.ezp.setData(this.getValue(), ezP.Key.VALUE)
+          this.ezp.setData(this.getValue())
         },
       },
     },

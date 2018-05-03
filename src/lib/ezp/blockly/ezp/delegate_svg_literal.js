@@ -73,12 +73,10 @@ ezP.DelegateSvg.Literal.makeSubclass('numberliteral', {
       },
     },
   },
-  inputs: {
+  tiles: {
     value: {
       order: 1,
-      number: {
-        key:ezP.Key.VALUE,
-        edit: 0,
+      edit: {
         placeholder: ezP.Msg.Placeholder.NUMBER,
         validator: function(txt) {
           return this.ezp.validateData(txt, ezP.Key.VALUE)
@@ -189,7 +187,7 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
         || F(ezP.XRE.shortbytesliteralSingle, ezP.T3.Expr.shortbytesliteral)
         || F(ezP.XRE.shortbytesliteralDouble, ezP.T3.Expr.shortbytesliteral)
       },
-      consolidateValue: function() {
+      consolidate: function() {
         var modifier = this.data.modifier.get()
         var delimiter = this.data.delimiter.get()
         var content = this.data.content.get()
@@ -199,13 +197,11 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
       },
     },
   },
-  inputs: {
-    value: {
+  tiles: {
+    content: {
       order: 1,
       start: '',
-      string: {
-        key:ezP.Key.VALUE,
-        edit: '',
+      edit: {
         placeholder: function() {
           var block = this.sourceBlock_
           var ezp = block.ezp
@@ -220,11 +216,11 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
           return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), 'content')
         },
         onStartEditing: function () {
-          this.seFieldVisible(false, 1, 'end')
+          this.ezp.tile.fields.end.setVisible(false)
         },
         onEndEditing: function () {
           this.ezp.setData(this.getValue(), 'content')
-          this.seFieldVisible(false, 1, 'end')
+          this.ezp.tile.fields.end.setVisible(true)
         },
       },
       end: '',

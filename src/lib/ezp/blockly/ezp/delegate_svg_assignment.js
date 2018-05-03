@@ -27,7 +27,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  * @constructor
  */
 ezP.DelegateSvg.Expr.makeSubclass('target_star', {
-  inputs: {
+  tiles: {
     expression: {
       order: 1,
       label: '*',
@@ -285,12 +285,12 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     variant: {
       all: [0, 1, 2],
       synchronize: function(newValue) {
-        this.setInputDisabled(1, newValue == 2)
-        this.setInputDisabled(2, newValue != 1)
-        this.setInputDisabled(3, newValue != 2)
+        this.ui.tiles.name.setDisabled(newValue == 2)
+        this.ui.tiles.annotation.setDisabled(newValue != 1)
+        this.ui.tiles.target.setDisabled(newValue != 2)
       },
     },
-    value: {
+    name: {
       default: '',
       validate: function(newValue) {
         var types = this.data.subtype.getAll()
@@ -298,16 +298,14 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         return types.indexOf(type) >= 0? {validated: newValue}: null
       },
       synchronize: function(newValue) {
-        this.setFieldValue(this.toText() || '', 1, ezP.Key.VALUE)
+        this.setFieldValue(this.toText() || '')
       },
     },
   },
-  inputs: {
+  tiles: {
     name: {
       order: 1,
-      name: {
-        key:ezP.Key.VALUE,
-        edit: '',
+      edit: {
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
         validator: function(txt) {
           return this.ezp.validateData(txt, ezP.Key.VALUE)
@@ -426,7 +424,7 @@ goog.provide('ezP.DelegateSvg.AugAssign')
 ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
   var D = {
     data: {
-      value: {
+      name: {
         default: '',
         validate: function(newValue) {
           var type = ezP.Do.typeOfString(newValue)
@@ -434,14 +432,13 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
           {validated: newValue}: null
         },
         synchronize: function(newValue) {
-          var field = this.ui[1].fields.value
-          field.setValue(newValue || '')
+          this.setFieldValue(newValue || '')
         },
       },
       operator: {
         default: '+=',
         synchronize: function (newValue) {
-          this.setFieldValue(this.toText(), 3, ezP.Key.LABEL)
+          this.setFieldValue(this.toText())
         },
         didChange: function(oldValue, newValue) {
           this.data.numberOperator.set(newValue)
@@ -463,18 +460,17 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
         },
       },
     },
-    inputs: {
+    tiles: {
       name: {
         order: 1,
-        name: {
-          key:ezP.Key.VALUE,
-          edit: '',
+        edit: {
           placeholder: ezP.Msg.Placeholder.IDENTIFIER,
           validator: function(txt) {
-            return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
+            return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
           },
           onEndEditing: function () {
-            this.ezp.setData(this.getValue(), ezP.Key.VALUE)
+            this.ezp.setData(this.getValue())
+            // this.ezp.data.fromText(this.getValue())
           },
         },
       },
@@ -484,21 +480,20 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
       },
       expressions: {
         order: 3,
-        label: '',
+        operator: {},
         wrap: ezP.T3.Expr.augassigned_list,
       },
     },
   }
   D.data.variant = {
-    DEFAULT: 0,
-    WITH_TARGET: 1,
+    NAME_EXPRESSIONS: 0,
+    TARGET_EXPRESSIONS: 1,
     synchronize: function (newVariant) {
-      var withTarget = newVariant === this.WITH_TARGET
-      this.setInputDisabled(1, withTarget)
-      this.setInputDisabled(2, !withTarget)
+      this.ui.tiles.name.setDisabled(newVariant)
+      this.ui.tiles.target.setDisabled(!newVariant)
     },
   }
-  D.data.variant.all = [D.data.variant.DEFAULT, D.data.variant.WITH_TARGET]
+  D.data.variant.all = [D.data.variant.NAME_EXPRESSIONS, D.data.variant.TARGET_EXPRESSION]
   return D
 } ())
 
@@ -515,7 +510,7 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
   var model = variantData.model
   const current = variantData.get()
   var withTarget = ezP.Do.getVariantFlag(current, model.TARGET)
-  var value = this.data.value.get()
+  var name = this.data.name.get()
   var operator = this.data.operator.get()
   var withBitwise = ezP.Do.getVariantFlag(current, model.BITWISE)
   var operators = withBitwise? 
@@ -527,7 +522,7 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
       var content =
       goog.dom.createDom(goog.dom.TagName.SPAN, null,
         withTarget? ezP.Do.createSPAN('…', 'ezp-code'):
-        ezP.Do.createSPAN(value || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'),
+        ezP.Do.createSPAN(name || ezP.Msg.Placeholder.IDENTIFIER, name? 'ezp-code': 'ezp-code-placeholder'),
         ezP.Do.createSPAN(' '+op+' ', 'ezp-code'),
         ezP.Do.createSPAN('…', 'ezp-code'),
       )
@@ -550,24 +545,24 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
       mgr.addChild(menuItem, true)
     }
   }
-  var variant = withBitwise? ezP.Do.makeVariantFlags(0, model.BITWISE): 0
+  var variant = model.NAME_EXPRESSIONS
   var content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    ezP.Do.createSPAN(value || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'),
+    ezP.Do.createSPAN(name || ezP.Msg.Placeholder.IDENTIFIER, name? 'ezp-code': 'ezp-code-placeholder'),
     ezP.Do.createSPAN(' '+operator+' …', 'ezp-code'),
   )
-  F(variant, content)
+  F(model.NAME_EXPRESSIONS, content)
   var content =
   goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
     goog.dom.createTextNode('… '+operator+' …'),
   )
-  F(ezP.Do.makeVariantFlags(variant, model.TARGET), content)
- mgr.shouldSeparate()
+  F(model.TARGET_EXPRESSIONS, content)
+  mgr.shouldSeparate()
   var content =
   ezP.Do.createSPAN(withBitwise? '+=, -=, /= …': '<<=, >>=, &= …', 'ezp-code')
   var menuItem = function(ezp) {
     return new ezP.MenuItem(content, function() {
-      ezp.data.variant.set(ezP.Do.makeVariantFlags(current, withBitwise? -model.BITWISE: model.BITWISE))
+      ezp.data.operator.set(withBitwise? ezp.data.bitwiseOperator.toText(): ezp.data.numberOperator.toText())
   })
   } (this)
   mgr.addChild(menuItem, true)

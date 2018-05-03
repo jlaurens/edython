@@ -233,7 +233,7 @@ ezP.DelegateSvg.Group.makeSubclass('if_part', {
       css_class: 'ezp-code-reserved',
     },
   },
-  inputs: {
+  tiles: {
     if: {
       order: 1,
       check: ezP.T3.Expr.Check.expression,
@@ -257,7 +257,7 @@ ezP.DelegateSvg.Group.makeSubclass('elif_part', {
       css_class: 'ezp-code-reserved',
     },
   },
-  inputs: {
+  tiles: {
     elif: {
       order: 1,
       check: ezP.T3.Expr.Check.expression,
@@ -373,7 +373,7 @@ ezP.DelegateSvg.Group.makeSubclass('while_part', {
       css_class: 'ezp-code-reserved',
     },
   },
-  inputs: {
+  tiles: {
     while: {
       order: 1,
       check: ezP.T3.Expr.Check.expression,
@@ -432,7 +432,7 @@ ezP.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (block, mgr
  * @constructor
  */
 ezP.DelegateSvg.Group.makeSubclass('for_part', {
-  inputs: {
+  tiles: {
     for: {
       order: 1,
       label: 'for',
@@ -459,7 +459,7 @@ ezP.DelegateSvg.Group.makeSubclass('for_part', {
  * @constructor
  */
 ezP.DelegateSvg.Group.makeSubclass('with_part', {
-  inputs: {
+  tiles: {
     with: {
       order: 1,
       label: 'with',
@@ -478,7 +478,7 @@ ezP.DelegateSvg.Group.makeSubclass('with_part', {
  * @constructor
  */
 ezP.DelegateSvg.Expr.makeSubclass('with_item_solid', {
-  inputs: {
+  tiles: {
     expression: {
       order: 1,
       check: ezP.T3.Expr.Check.expression,

@@ -61,7 +61,7 @@ ezP.DelegateSvg.Group.makeSubclass('except_part', {
       css_class: 'ezp-code-reserved',
     },
   },
-  inputs: {
+  tiles: {
     expression: {
       order: 1,
       check: ezP.T3.Expr.Check.expression,
@@ -170,7 +170,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       css_class: 'ezp-code-reserved',
     },
   },
-  inputs: {
+  tiles: {
     expression: {
       order: 1,
       check: ezP.T3.Expr.Check.expression,
@@ -243,7 +243,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
       css_class: 'ezp-code-reserved',
     },
   },
-  inputs: {
+  tiles: {
     assert: {
       order: 1,
       check: ezP.T3.Expr.Check.expression,

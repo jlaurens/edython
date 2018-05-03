@@ -892,7 +892,7 @@ goog.provide('ezP.Xml.Input.Named')
  * @return the added child, if any
  */
 ezP.Xml.Input.Named.toDom = function(block, name, element, optNoId, withPlaceholder) {
-  var input = block.ezp.ui.inputs[name]
+  var input = block.ezp.ui.tiles[name]
   if (input && !input.disabled) {
     var out = ezP.Xml.Input.toDom(input, element, optNoId)
   }
@@ -909,7 +909,7 @@ ezP.Xml.Input.Named.toDom = function(block, name, element, optNoId, withPlacehol
  * @return the added child, if any, or just true in case of a placeholder
  */
 ezP.Xml.Input.Named.fromDom = function(block, name, element, withPlaceholder) {
-  var input = block.ezp.ui.inputs[name]
+  var input = block.ezp.ui.tiles[name]
   if (input) {
     var out = ezP.Xml.Input.fromDom(input, element, withPlaceholder)
   }
@@ -928,7 +928,7 @@ goog.provide('ezP.Xml.InputList')
  */
 ezP.Xml.InputList.toDom = function(block, element, optNoId) {
   var out
-  var inputs = block.ezp.ui.inputs
+  var inputs = block.ezp.ui.tiles
   for (var k in inputs) {
     var input = inputs[k]
     if (!input.disabled) {
@@ -948,7 +948,7 @@ ezP.Xml.InputList.toDom = function(block, element, optNoId) {
  * @return a dom element, void lists may return nothing
  */
 ezP.Xml.InputList.fromDom = function(block, element) {
-  var inputs = block.ezp.ui.inputs
+  var inputs = block.ezp.ui.tiles
   for (var k in inputs) {
     var input = inputs[k]
     ezP.Xml.Input.fromDom(input, element)
@@ -1854,11 +1854,11 @@ ezP.Xml.Comparison.domToBlock = function (element, workspace) {
     var op = element.getAttribute(ezP.Key.OPERATOR)
     var Ctor, model, type = ezP.T3.Expr.number_comparison
     if ((Ctor = ezP.DelegateSvg.Manager.get(type))
-    && (model = Ctor.ezp.getModel().inputs)
+    && (model = Ctor.ezp.getModel().tiles)
     && model.operators
     && model.operators.indexOf(op)>=0) {
       block = ezP.DelegateSvg.newBlockComplete(workspace, type, id)
-    } else if ((type = ezP.T3.Expr.object_comparison) && (Ctor = ezP.DelegateSvg.Manager.get(type)) && (model = Ctor.ezp.getModel().inputs) && model.operators && model.operators.indexOf(op)>=0) {
+    } else if ((type = ezP.T3.Expr.object_comparison) && (Ctor = ezP.DelegateSvg.Manager.get(type)) && (model = Ctor.ezp.getModel().tiles) && model.operators && model.operators.indexOf(op)>=0) {
       block = ezP.DelegateSvg.newBlockComplete(workspace, type, id)
     } else {
       return block
@@ -2106,7 +2106,7 @@ ezP.DelegateSvg.Expr.term.prototype.fromDom = function (block, element) {
   var modifier = this.data.modifier.get()
   var withoutName = modifier === '*' && !this.data.name.isActive()
   var withAlias = this.data.alias.isActive()
-  var withAnnotation = this.ui.inputs.annotation.isRequiredFromDom()
+  var withAnnotation = this.ui.tiles.annotation.isRequiredFromDom()
   var newVariant = undefined
   var model = this.data.variant.model
   if (modifier === '**') {
@@ -2120,7 +2120,7 @@ ezP.DelegateSvg.Expr.term.prototype.fromDom = function (block, element) {
       newVariant = model.STAR_NAME
     }
   }
-  var withDefinition = this.ui.inputs.definition.isRequiredFromDom()
+  var withDefinition = this.ui.tiles.definition.isRequiredFromDom()
   var expected = model.bySubtype[this.data.subtype.get()]
   if (expected && expected.indexOf(newVariant) < 0) { // maybe newVariant is undefined
     if (withDefinition) {

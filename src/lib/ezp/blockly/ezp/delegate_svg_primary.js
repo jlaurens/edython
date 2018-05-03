@@ -39,7 +39,7 @@ ezP.DelegateSvg.Expr.makeSubclass('attributeref', {
       },
     },
   },
-  inputs: {
+  tiles: {
     primary: {
       order: 1,
       check: ezP.T3.Expr.Check.primary,
@@ -83,7 +83,7 @@ ezP.DelegateSvg.Expr.makeSubclass('slicing', {
         this.setInputDisabled(2, !newValue)
       },
     },
-    value: {
+    name: {
       default: '',
       validate: function(newValue) {
         var type = ezP.Do.typeOfString(newValue)
@@ -95,12 +95,10 @@ ezP.DelegateSvg.Expr.makeSubclass('slicing', {
       },
     }
   },
-  inputs: {
+  tiles: {
     name: {
       order: 1,
       edit: {
-        key: ezP.Key.VALUE,
-        edit: '',
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
         validator: function(txt) {
           return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
@@ -194,7 +192,7 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
     backup: {
       noUndo: true,
     },
-    value: {
+    name: {
       all: ['range', 'list', 'set', 'len', 'sum'],
       validate: function(newValue) {
         var type = ezP.Do.typeOfString(newValue)
@@ -210,22 +208,20 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
         }
       },
       synchronize: function(newValue) {
-        this.setFieldValue(this.toText(), 1, ezP.Key.VALUE)
+        this.setFieldValue(this.toText())
       },
     },
   },
-  inputs: {
+  tiles: {
     name: {
       order: 1,
       edit: {
-        key: ezP.Key.VALUE,
-        edit: '',
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
         validator: function(txt) {
-          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
+          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
         },
         onEndEditing: function () {
-          this.ezp.setData(this.getValue(), ezP.Key.VALUE)
+          this.ezp.setData(this.getValue())
         },
       },
     },
