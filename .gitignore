@@ -14,6 +14,7 @@ thumbs.db
 /node_modules
 /sandbox/**
 /src/lib/ezp/scripts/build
+/**/python_workbench
 /**/.idea
 /**/*.command
 !/**/README.md
