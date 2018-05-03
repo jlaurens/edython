@@ -112,6 +112,7 @@ ezP.Key = {
   FROM: 'from',
   MODULE: 'module',
   IMPORT: 'import',
+  IMPORT_STAR: 'import_star',
   PARENT: 'parent',
   AS: 'as',
   SOURCE: 'source',
