@@ -277,6 +277,7 @@ ezP.DelegateSvg.Group.makeSubclass('elif_part', {
 ezP.DelegateSvg.Group.makeSubclass('else_part', {
   inputs: {
     1: {
+      key: 'dummy',
       label: 'else',
       css_class: 'ezp-code-reserved',
     },

@@ -304,6 +304,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
   },
   inputs: {
     1: {
+      key:ezP.Key.NAME,
       name: {
         key:ezP.Key.VALUE,
         edit: '',

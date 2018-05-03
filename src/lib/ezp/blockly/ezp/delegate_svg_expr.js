@@ -591,6 +591,7 @@ ezP.DelegateSvg.Expr.makeSubclass('any', {
   },
   inputs: {
     1: {
+      key: ezP.Key.CODE,
       value: {
         edit: '',
         placeholder: ezP.Msg.Placeholder.CODE,

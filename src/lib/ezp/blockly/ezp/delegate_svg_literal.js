@@ -201,6 +201,7 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
   },
   inputs: {
     1: {
+      key: ezP.Key.VALUE,
       start: '',
       string: {
         key:ezP.Key.VALUE,
