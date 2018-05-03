@@ -88,6 +88,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
   },
   inputs: {
     1: {
+      key: ezP.Key.NAME,
       name: {
         key: ezP.Key.DOTTED_NAME,
         edit: '',
@@ -315,6 +316,7 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
   },
   inputs: {
     1: {
+      key: ezP.Key.NAME,
       label: 'class',
       css_class: 'ezp-code-reserved',
       name: {

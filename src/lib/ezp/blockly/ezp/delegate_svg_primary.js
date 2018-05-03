@@ -47,6 +47,7 @@ ezP.DelegateSvg.Expr.makeSubclass('attributeref', {
       hole_value: 'primary',
     },
     2: {
+      key: ezP.Key.ATTRIBUTE,
       label: '.',
       edit: {
         key: ezP.Key.VALUE,
@@ -96,6 +97,7 @@ ezP.DelegateSvg.Expr.makeSubclass('slicing', {
   },
   inputs: {
     1: {
+      key: ezP.Key.NAME,
       edit: {
         key: ezP.Key.VALUE,
         edit: '',
@@ -214,6 +216,7 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
   },
   inputs: {
     1: {
+      key: ezP.Key.NAME,
       edit: {
         key: ezP.Key.VALUE,
         edit: '',

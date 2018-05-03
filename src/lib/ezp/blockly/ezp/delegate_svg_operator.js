@@ -88,7 +88,8 @@ ezP.DelegateSvg.Operator.makeSubclass('u_expr_solid', {
   },
   inputs: {
     2: {
-      check: ezP.T3.Expr.Check.u_expr
+      key: 'dummy',
+      check: ezP.T3.Expr.Check.u_expr,
     },
   },
 })

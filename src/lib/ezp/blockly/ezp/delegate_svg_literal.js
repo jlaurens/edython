@@ -75,6 +75,7 @@ ezP.DelegateSvg.Literal.makeSubclass('numberliteral', {
   },
   inputs: {
     1: {
+      key: ezP.Key.VALUE,
       number: {
         key:ezP.Key.VALUE,
         edit: 0,

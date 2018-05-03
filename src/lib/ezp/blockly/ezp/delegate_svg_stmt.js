@@ -304,6 +304,7 @@ ezP.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (block, mgr
 ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.pass_stmt, {
   inputs: {
     1: {
+      key: ezP.Key.NAME,
       label: 'pass',
       css_class: 'ezp-code-reserved',
     },
@@ -320,6 +321,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.pass_stmt, {
 ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.break_stmt, {
   inputs: {
     1: {
+      key: ezP.Key.NAME,
       label: 'break',
       css_class: 'ezp-code-reserved',
     },
@@ -336,6 +338,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.break_stmt, {
 ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.continue_stmt, {
   inputs: {
     1: {
+      key: ezP.Key.NAME,
       label: 'continue',
       css_class: 'ezp-code-reserved',
     },
@@ -529,6 +532,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
 ezP.DelegateSvg.Stmt.makeSubclass('docstring_top_stmt', {
   inputs: {
     1: {
+      key: 'dummy',
       wrap: ezP.T3.Expr.longliteral,
       check: ezP.T3.Expr.Check.longliteral,
     },
@@ -554,6 +558,7 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt
 ezP.DelegateSvg.Stmt.makeSubclass('docstring_def_stmt', {
   inputs: {
     1: {
+      key: 'dummy',
       wrap: ezP.T3.Expr.longliteral,
       check: ezP.T3.Expr.Check.longliteral,
     },

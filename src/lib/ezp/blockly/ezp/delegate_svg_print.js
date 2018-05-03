@@ -28,6 +28,7 @@ console.warn('Move this block to the builtin blocks, with contextual consolidato
 ezP.DelegateSvg.Expr.makeSubclass('builtin_print_expr', {
   inputs: {
     1: {
+      key: ezP.Key.NAME,
       label: 'print',
       css_class: 'ezp-code-builtin',
     },
@@ -209,6 +210,7 @@ ezP.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
 ezP.DelegateSvg.Expr.makeSubclass('builtin_input_expr', {
   inputs: {
     1: {
+      key: ezP.Key.NAME,
       label: 'input',
       css_class: 'ezp-code-builtin',
     },

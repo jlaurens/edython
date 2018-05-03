@@ -143,6 +143,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       wrap: ezP.T3.Expr.non_void_import_identifier_as_list,
     },
     4: {
+      key: 'dummy',
       label: 'import *',
       css_class: 'ezp-code-reserved',
     },
