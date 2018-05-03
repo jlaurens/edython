@@ -371,8 +371,8 @@ ezP.DelegateSvg.Expr.makeSubclass('proper_slice', {
       hole_value: 'upper',
     },
     3: {
-      start: ':',
       key: ezP.Key.STRIDE,
+      start: ':',
       check: ezP.T3.Expr.Check.expression,
       optional: true,
       hole_value: 'stride',
@@ -396,15 +396,15 @@ ezP.DelegateSvg.Expr.makeSubclass('conditional_expression_solid', {
       hole_value: 'name',
     },
     2: {
-      label: 'if',
       key: ezP.Key.IF,
+      label: 'if',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.or_test,
       hole_value: 'condition',
     },
     3: {
-      label: 'else',
       key: ezP.Key.ELSE,
+      label: 'else',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'alternate',

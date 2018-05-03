@@ -108,8 +108,8 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
       css_class: 'ezp-code-reserved',
     },
     3: {
-      start: '(',
       key: ezP.Key.ARGUMENTS,
+      start: '(',
       wrap: ezP.T3.Expr.argument_list,
       end: ')',
     },
@@ -247,8 +247,8 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
       end: ')',
     },
     3: {
-      label: '->',
       key: ezP.Key.TYPE,
+      label: '->',
       check: ezP.T3.Expr.Check.expression,
     },
   },

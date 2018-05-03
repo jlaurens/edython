@@ -229,10 +229,10 @@ ezP.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
 ezP.DelegateSvg.Group.makeSubclass('if_part', {
   inputs: {
     1: {
+      key: ezP.Key.IF,
       label: 'if',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
-      key: ezP.Key.IF,
       hole_value: 'condition',
     },
   },
@@ -249,10 +249,10 @@ ezP.DelegateSvg.Group.makeSubclass('if_part', {
 ezP.DelegateSvg.Group.makeSubclass('elif_part', {
   inputs: {
     1: {
+      key: ezP.Key.ELIF,
       label: 'elif',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
-      key: ezP.Key.ELIF,
       hole_value: 'condition',
     },
   },
@@ -362,10 +362,10 @@ ezP.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
 ezP.DelegateSvg.Group.makeSubclass('while_part', {
   inputs: {
     1: {
+      key: ezP.Key.WHILE,
       label: 'while',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
-      key: ezP.Key.WHILE,
       hole_value: 'condition',
     },
   },
@@ -423,17 +423,17 @@ ezP.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (block, mgr
 ezP.DelegateSvg.Group.makeSubclass('for_part', {
   inputs: {
     1: {
+      key: ezP.Key.FOR,
       label: 'for',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.target_list,
-      key: ezP.Key.FOR,
       hole_value: 'element',
     },
     2: {
+      key: ezP.Key.IN,
       label: 'in',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.expression_list,
-      key: ezP.Key.IN,
       hole_value: 'set',
     },
   },
