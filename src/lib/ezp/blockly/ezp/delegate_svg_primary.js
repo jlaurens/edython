@@ -40,14 +40,14 @@ ezP.DelegateSvg.Expr.makeSubclass('attributeref', {
     },
   },
   inputs: {
-    1: {
-      key: ezP.Key.PRIMARY,
+    primary: {
+      order: 1,
       check: ezP.T3.Expr.Check.primary,
       plugged: ezP.T3.Expr.primary,
       hole_value: 'primary',
     },
-    2: {
-      key: ezP.Key.ATTRIBUTE,
+    attribute: {
+      order: 2,
       label: '.',
       edit: {
         key: ezP.Key.VALUE,
@@ -96,8 +96,8 @@ ezP.DelegateSvg.Expr.makeSubclass('slicing', {
     }
   },
   inputs: {
-    1: {
-      key: ezP.Key.NAME,
+    name: {
+      order: 1,
       edit: {
         key: ezP.Key.VALUE,
         edit: '',
@@ -110,14 +110,14 @@ ezP.DelegateSvg.Expr.makeSubclass('slicing', {
         },
       },
     },
-    2: {
-      key: ezP.Key.PRIMARY,
+    primary: {
+      order: 2,
       check: ezP.T3.Expr.Check.primary,
       plugged: ezP.T3.Expr.primary,
       hole_value: 'primary',
     },
-    3: {
-      key: ezP.Key.SLICE,
+    slice: {
+      order: 3,
       start: '[',
       wrap: ezP.T3.Expr.slice_list,
       end: ']',
@@ -215,8 +215,8 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
     },
   },
   inputs: {
-    1: {
-      key: ezP.Key.NAME,
+    name: {
+      order: 1,
       edit: {
         key: ezP.Key.VALUE,
         edit: '',
@@ -229,14 +229,14 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
         },
       },
     },
-    2: {
-      key: ezP.Key.PRIMARY,
+    primary: {
+      order: 2,
       check: ezP.T3.Expr.Check.primary,
       plugged: ezP.T3.Expr.primary,
       hole_value: 'primary',
     },
-    3: {
-      key: ezP.Key.ARGUMENTS,
+    arguments: {
+      order: 3,
       start: '(',
       wrap: ezP.T3.Expr.argument_list,
       end: ')',

@@ -28,8 +28,8 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Expr.makeSubclass('target_star', {
   inputs: {
-    1: {
-      key: ezP.Key.EXPRESSION,
+    expression: {
+      order: 1,
       label: '*',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.target,
@@ -303,8 +303,8 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     },
   },
   inputs: {
-    1: {
-      key:ezP.Key.NAME,
+    name: {
+      order: 1,
       name: {
         key:ezP.Key.VALUE,
         edit: '',
@@ -317,19 +317,19 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         },
       },
     },
-    2: {
-      key: ezP.Key.ANNOTATION,
+    annotation: {
+      order: 2,
       label: ':',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
-    3: {
-      key: ezP.Key.TARGET,
+    target: {
+      order: 3,
       wrap: ezP.T3.Expr.target_list_list,
     },
-    4: {
-      key: ezP.Key.ASSIGNED,
+    assigned: {
+      order: 4,
       operator: '=',
       wrap: ezP.T3.Expr.assigned_list,
     },
@@ -477,12 +477,12 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
           },
         },
       },
-      2: {
-        key: ezP.Key.TARGET,
+      target: {
+        order: 2,
         check: ezP.T3.Expr.Check.augtarget,
       },
-      3: {
-        key: ezP.Key.EXPRESSIONS,
+      expressions: {
+        order: 3,
         label: '',
         wrap: ezP.T3.Expr.augassigned_list,
       },

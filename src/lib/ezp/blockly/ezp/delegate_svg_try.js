@@ -62,13 +62,13 @@ ezP.DelegateSvg.Group.makeSubclass('except_part', {
     },
   },
   inputs: {
-    1: {
-      key: ezP.Key.EXPRESSION,
+    expression: {
+      order: 1,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
-    2: {
-      key: ezP.Key.AS,
+    as: {
+      order: 2,
       label: 'as',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.identifier,
@@ -171,13 +171,13 @@ ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
     },
   },
   inputs: {
-    1: {
-      key: ezP.Key.EXPRESSION,
+    expression: {
+      order: 1,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
-    2: {
-      key: ezP.Key.FROM,
+    from: {
+      order: 2,
       label: 'from',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
@@ -244,13 +244,13 @@ ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
     },
   },
   inputs: {
-    1: {
-      key: ezP.Key.ASSERT,
+    assert: {
+      order: 1,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
-    2: {
-      key: ezP.Key.EXPRESSION,
+    expression: {
+      order: 2,
       label: ',',
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',

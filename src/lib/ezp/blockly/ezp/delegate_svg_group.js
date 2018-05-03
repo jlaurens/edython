@@ -234,8 +234,8 @@ ezP.DelegateSvg.Group.makeSubclass('if_part', {
     },
   },
   inputs: {
-    1: {
-      key: ezP.Key.IF,
+    if: {
+      order: 1,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'condition',
     },
@@ -258,8 +258,8 @@ ezP.DelegateSvg.Group.makeSubclass('elif_part', {
     },
   },
   inputs: {
-    1: {
-      key: ezP.Key.ELIF,
+    elif: {
+      order: 1,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'condition',
     },
@@ -374,8 +374,8 @@ ezP.DelegateSvg.Group.makeSubclass('while_part', {
     },
   },
   inputs: {
-    1: {
-      key: ezP.Key.WHILE,
+    while: {
+      order: 1,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'condition',
     },
@@ -433,15 +433,15 @@ ezP.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (block, mgr
  */
 ezP.DelegateSvg.Group.makeSubclass('for_part', {
   inputs: {
-    1: {
-      key: ezP.Key.FOR,
+    for: {
+      order: 1,
       label: 'for',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.target_list,
       hole_value: 'element',
     },
-    2: {
-      key: ezP.Key.IN,
+    in: {
+      order: 2,
       label: 'in',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.expression_list,
@@ -460,8 +460,8 @@ ezP.DelegateSvg.Group.makeSubclass('for_part', {
  */
 ezP.DelegateSvg.Group.makeSubclass('with_part', {
   inputs: {
-    1: {
-      key: ezP.Key.WITH,
+    with: {
+      order: 1,
       label: 'with',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.with_item_list,
@@ -479,13 +479,13 @@ ezP.DelegateSvg.Group.makeSubclass('with_part', {
  */
 ezP.DelegateSvg.Expr.makeSubclass('with_item_solid', {
   inputs: {
-    1: {
-      key: ezP.Key.EXPRESSION,
+    expression: {
+      order: 1,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
-    3: {
-      key: ezP.Key.TARGET,
+    target: {
+      order: 3,
       label: 'as',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.target,

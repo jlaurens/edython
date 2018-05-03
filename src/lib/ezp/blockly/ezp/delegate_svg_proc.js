@@ -87,8 +87,8 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
     },
   },
   inputs: {
-    1: {
-      key: ezP.Key.NAME,
+    name: {
+      order: 1,
       name: {
         key: ezP.Key.DOTTED_NAME,
         edit: '',
@@ -102,13 +102,13 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
         // left_space: true,
       },
     },
-    2: {
-      key: ezP.Key.BUILTIN,
+    builtin: {
+      order: 2,
       label: '',
       css_class: 'ezp-code-reserved',
     },
-    3: {
-      key: ezP.Key.ARGUMENTS,
+    arguments: {
+      order: 3,
       start: '(',
       wrap: ezP.T3.Expr.argument_list,
       end: ')',
@@ -226,8 +226,8 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
     },
   },
   inputs: {
-    1: {
-      key: ezP.Key.NAME,
+    name: {
+      order: 1,
       name: {
         key: ezP.Key.NAME,
         edit: '',
@@ -240,14 +240,14 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
         },
       },
     },
-    2: {
-      key: ezP.Key.PARAMETERS,
+    parameters: {
+      order: 2,
       start: '(',
       wrap: ezP.T3.Expr.parameter_list,
       end: ')',
     },
-    3: {
-      key: ezP.Key.TYPE,
+    type: {
+      order: 3,
       label: '->',
       check: ezP.T3.Expr.Check.expression,
     },
@@ -315,8 +315,8 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
     },
   },
   inputs: {
-    1: {
-      key: ezP.Key.NAME,
+    name: {
+      order: 1,
       label: 'class',
       css_class: 'ezp-code-reserved',
       name: {
@@ -331,8 +331,8 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
         },
       },
     },
-    2: {
-      key: ezP.Key.ARGUMENTS,
+    arguments: {
+      order: 2,
       start: '(',
       wrap: ezP.T3.Expr.argument_list,
       end: ')',

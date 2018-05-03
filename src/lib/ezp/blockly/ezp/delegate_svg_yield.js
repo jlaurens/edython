@@ -40,12 +40,12 @@ ezP.DelegateSvg.Expr.makeSubclass('yield_expression', {
     },
   },
   inputs: {
-    1: {
-      key: ezP.Key.EXPRESSION,
+    expression: {
+      order: 1,
       wrap: ezP.T3.Expr.non_void_expression_list,
     },
-    2: {
-      key: ezP.Key.FROM,
+    from: {
+      order: 2,
       label: 'from',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression
@@ -215,8 +215,8 @@ ezP.DelegateSvg.Expr.makeSubclass('yield_atom', {
     },
   },
   inputs: {
-    1: {
-      key: ezP.Key.EXPRESSION,
+    expression: {
+      order: 1,
       wrap: ezP.T3.Expr.yield_expression,
     },
   },

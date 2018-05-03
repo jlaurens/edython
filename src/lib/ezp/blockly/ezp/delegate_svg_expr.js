@@ -357,21 +357,21 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
  */
 ezP.DelegateSvg.Expr.makeSubclass('proper_slice', {
   inputs: {
-    1: {
-      key: ezP.Key.LOWER_BOUND,
+    lower_bound: {
+      order: 1,
       check: ezP.T3.Expr.Check.expression,
       optional: true,
       hole_value: 'lower',
       end: ':',
     },
-    2: {
-      key: ezP.Key.UPPER_BOUND,
+    upper_bound: {
+      order: 2,
       check: ezP.T3.Expr.Check.expression,
       optional: true,
       hole_value: 'upper',
     },
-    3: {
-      key: ezP.Key.STRIDE,
+    stride: {
+      order: 3,
       start: ':',
       check: ezP.T3.Expr.Check.expression,
       optional: true,
@@ -390,20 +390,20 @@ ezP.DelegateSvg.Expr.makeSubclass('proper_slice', {
  */
 ezP.DelegateSvg.Expr.makeSubclass('conditional_expression_solid', {
   inputs: {
-    1: {
-      key: ezP.Key.EXPRESSION,
+    expression: {
+      order: 1,
       check: ezP.T3.Expr.Check.or_test,
       hole_value: 'name',
     },
-    2: {
-      key: ezP.Key.IF,
+    if: {
+      order: 2,
       label: 'if',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.or_test,
       hole_value: 'condition',
     },
-    3: {
-      key: ezP.Key.ELSE,
+    else: {
+      order: 3,
       label: 'else',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
@@ -429,8 +429,8 @@ ezP.DelegateSvg.Expr.makeSubclass('starred_expression', function () {
       },
     },
     inputs: {
-      1: {
-        key: ezP.Key.EXPRESSION,
+      expression: {
+        order: 1,
         label: '',
         css_class: 'ezp-code-reserved',
         check: ezP.T3.Expr.Check.expression,
@@ -515,8 +515,8 @@ ezP.DelegateSvg.Expr.starred_expression.prototype.populateContextMenuFirst_ = fu
 */
 ezP.DelegateSvg.Expr.makeSubclass('not_test_solid', {
   inputs: {
-    1: {
-      key: ezP.Key.EXPRESSION,
+    expression: {
+      order: 1,
       label: 'not',
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.not_test,
@@ -542,8 +542,8 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_object', {
     },
   },
   inputs: {
-    1: {
-      key: ezP.Key.VALUE,
+    value: {
+      order: 1,
       label: '',
       css_class: 'ezp-code-reserved',
     },
@@ -590,8 +590,8 @@ ezP.DelegateSvg.Expr.makeSubclass('any', {
     },
   },
   inputs: {
-    1: {
-      key: ezP.Key.CODE,
+    code: {
+      order: 1,
       value: {
         edit: '',
         placeholder: ezP.Msg.Placeholder.CODE,

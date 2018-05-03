@@ -141,15 +141,15 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
           },
         },
       },
-      2: {
-        key: ezP.Key.ANNOTATION,
+      annotation: {
+        order: 2,
         label: ':',
         css_class: 'ezp-code-reserved',
         check: ezP.T3.Expr.Check.expression,
         hole_value: 'expression',
       },
-      3: {
-        key: ezP.Key.DEFINITION,
+      definition: {
+        order: 3,
         label: '=',
         css_class: 'ezp-code-reserved',
         check: ezP.T3.Expr.Check.expression,

@@ -303,8 +303,8 @@ ezP.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (block, mgr
  */
 ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.pass_stmt, {
   inputs: {
-    1: {
-      key: ezP.Key.NAME,
+    name: {
+      order: 1,
       label: 'pass',
       css_class: 'ezp-code-reserved',
     },
@@ -320,8 +320,8 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.pass_stmt, {
  */
 ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.break_stmt, {
   inputs: {
-    1: {
-      key: ezP.Key.NAME,
+    name: {
+      order: 1,
       label: 'break',
       css_class: 'ezp-code-reserved',
     },
@@ -337,8 +337,8 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.break_stmt, {
  */
 ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.continue_stmt, {
   inputs: {
-    1: {
-      key: ezP.Key.NAME,
+    name: {
+      order: 1,
       label: 'continue',
       css_class: 'ezp-code-reserved',
     },
@@ -386,8 +386,8 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.global_nonlocal_stmt, {
     },
   },
   inputs: {
-    3: {
-      key: ezP.Key.IDENTIFIERS,
+    identifiers: {
+      order: 3,
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.non_void_identifier_list,
     },
@@ -514,8 +514,8 @@ ezP.DelegateSvg.Stmt.comment_stmt.prototype.setDisabled = function (block, yorn)
  */
 ezP.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
   inputs: {
-    1: {
-      key: ezP.Key.EXPRESSION,
+    expression: {
+      order: 1,
       check: ezP.T3.Expr.Check.expression,
     },
   },
@@ -531,8 +531,8 @@ ezP.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
  */
 ezP.DelegateSvg.Stmt.makeSubclass('docstring_top_stmt', {
   inputs: {
-    1: {
-      key: 'dummy',
+    dummy: {
+      order: 1,
       wrap: ezP.T3.Expr.longliteral,
       check: ezP.T3.Expr.Check.longliteral,
     },
@@ -557,8 +557,8 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt
  */
 ezP.DelegateSvg.Stmt.makeSubclass('docstring_def_stmt', {
   inputs: {
-    1: {
-      key: 'dummy',
+    dummy: {
+      order: 1,
       wrap: ezP.T3.Expr.longliteral,
       check: ezP.T3.Expr.Check.longliteral,
     },
@@ -615,8 +615,8 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.S
  */
 ezP.DelegateSvg.Stmt.makeSubclass('del_stmt', {
   inputs: {
-    1: {
-      key: ezP.Key.DEL,
+    del: {
+      order: 1,
       label: 'del',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.target_list,
@@ -633,8 +633,8 @@ ezP.DelegateSvg.Stmt.makeSubclass('del_stmt', {
  */
 ezP.DelegateSvg.Stmt.makeSubclass('return_stmt', {
   inputs: {
-    1: {
-      key: ezP.Key.RETURN,
+    return: {
+      order: 1,
       label: 'return',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.expression_list,

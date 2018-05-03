@@ -33,8 +33,8 @@ ezP.DelegateSvg.Expr.makeSubclass('Operator', {
     },
   },
   inputs: {
-    2: {
-      key: ezP.Key.RHS,
+    rhs: {
+      order: 2,
       operator: '',
       css_class: 'ezp-code',
       hole_value: 'name',
@@ -87,8 +87,8 @@ ezP.DelegateSvg.Operator.makeSubclass('u_expr_solid', {
     },
   },
   inputs: {
-    2: {
-      key: 'dummy',
+    dummy: {
+      order: 2,
       check: ezP.T3.Expr.Check.u_expr,
     },
   },
@@ -114,8 +114,8 @@ ezP.DelegateSvg.Expr.u_expr_solid.prototype.makeTitle = function (block, op) {
  */
 ezP.DelegateSvg.Operator.makeSubclass('Binary',{
   inputs: {
-    1: {
-      key: ezP.Key.LHS,
+    lhs: {
+      order: 1,
       hole_value: 'name',
     },
   },
@@ -383,13 +383,13 @@ ezP.DelegateSvg.Operator.makeSubclass('power_solid', {
     },
   },
   inputs: {
-    1: {
-      key: ezP.Key.ARGUMENT,
+    argument: {
+      order: 1,
       check: ezP.T3.Expr.Check.await_or_primary,
       hole_value: 'name',
     },
-    2: {
-      key: ezP.Key.POWER,
+    power: {
+      order: 2,
       check: ezP.T3.Expr.Check.u_expr,
       hole_value: 'power',
     },

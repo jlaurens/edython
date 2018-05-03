@@ -25,13 +25,13 @@ goog.require('ezP.DelegateSvg.List')
  */
 ezP.DelegateSvg.Expr.makeSubclass('keyword_item', {
   inputs: {
-    1: {
-      key: ezP.Key.IDENTIFIER,
+    identifier: {
+      order: 1,
       check: ezP.T3.Expr.identifier,
       hole_value: 'key',
     },
-    3: {
-      key: ezP.Key.EXPRESSION,
+    expression: {
+      order: 3,
       label: '=',
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'value',

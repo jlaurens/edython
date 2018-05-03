@@ -74,8 +74,8 @@ ezP.DelegateSvg.Literal.makeSubclass('numberliteral', {
     },
   },
   inputs: {
-    1: {
-      key: ezP.Key.VALUE,
+    value: {
+      order: 1,
       number: {
         key:ezP.Key.VALUE,
         edit: 0,
@@ -200,8 +200,8 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
     },
   },
   inputs: {
-    1: {
-      key: ezP.Key.VALUE,
+    value: {
+      order: 1,
       start: '',
       string: {
         key:ezP.Key.VALUE,
