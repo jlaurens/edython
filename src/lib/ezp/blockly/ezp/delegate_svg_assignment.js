@@ -385,7 +385,7 @@ ezP.DelegateSvg.List.makeSubclass('assigned_list', function() {
     consolidator: ezP.Consolidator.List.Singled,
     empty: false,
     presep: ',',
-  },
+  }
   var RA = goog.array.concat(D.check,D.unique)
   goog.array.removeDuplicates(RA)
   D.all = RA

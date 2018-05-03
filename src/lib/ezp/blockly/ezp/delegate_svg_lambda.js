@@ -403,14 +403,14 @@ ezP.DelegateSvg.Expr.makeSubclass('lambda', {
       var block = this.sourceBlock_
       if (block) {
         block.ezp.consolidateType(block)
-      },
+      }
     },
     didDisconnect: function(oldConnection) {
       // `this` is a connection
       var block = this.sourceBlock_
       if (block) {
         block.ezp.consolidateType(block)
-      },
+      }
     },
   },
 })
