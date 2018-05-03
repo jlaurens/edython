@@ -551,7 +551,7 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt
  *     type-specific functions for this block.
  * @constructor
  */
- ezP.DelegateSvg.Stmt.makeSubclass('docstring_def_stmt', {
+ezP.DelegateSvg.Stmt.makeSubclass('docstring_def_stmt', {
   inputs: {
     1: {
       wrap: ezP.T3.Expr.longliteral,
@@ -615,7 +615,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('del_stmt', {
       label: 'del',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.target_list,
-    }
+    },
   },
 })
 
@@ -633,7 +633,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('return_stmt', {
       label: 'return',
       css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.expression_list,
-    }
+    },
   },
 })
 

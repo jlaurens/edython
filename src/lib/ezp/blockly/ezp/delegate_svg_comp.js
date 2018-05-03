@@ -36,7 +36,7 @@ ezP.DelegateSvg.Expr.makeSubclass('comprehension', {
     3: {
       key: ezP.Key.COMP_ITER,
       wrap: ezP.T3.Expr.comp_iter_list,
-    }
+    },
   },
 })
 
@@ -62,8 +62,8 @@ ezP.DelegateSvg.Expr.makeSubclass('comp_for', {
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.or_test,
       hole_value: 'name',
-    }  
-  }
+    },
+  },
 })
 
 /**
@@ -147,8 +147,8 @@ ezP.DelegateSvg.Expr.makeSubclass('key_datum_solid', {
       check: ezP.T3.Expr.Check.expression,
       label: ':',
       hole_value: 'value',
-    }
-  }
+    },
+  },
 })
 
 /**
@@ -166,7 +166,7 @@ ezP.DelegateSvg.Expr.comprehension.makeSubclass('generator_expression', {
     },
     suffix: {
       label: ')',
-    }
+    },
   },
 }, ezP.DelegateSvg.Expr)
 

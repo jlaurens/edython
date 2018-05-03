@@ -29,7 +29,7 @@ ezP.DelegateSvg.Expr.makeSubclass('Literal', {
     content: {
       default: '',
     },
-  }
+  },
 }, ezP.DelegateSvg)
 
 /**

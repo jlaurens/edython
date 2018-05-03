@@ -254,7 +254,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
       key: ezP.Key.EXPRESSION,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
-    }
+    },
   },
 })
 

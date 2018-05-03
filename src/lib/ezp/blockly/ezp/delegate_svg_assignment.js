@@ -227,7 +227,7 @@ ezP.DelegateSvg.Expr.void_target_list.makeSubclass('parenth_target_list', {
     },
     suffix: {
       label: ')',
-    }
+    },
   },
 })
 
@@ -247,7 +247,7 @@ ezP.DelegateSvg.Expr.void_target_list.makeSubclass('bracket_target_list', {
     },
     suffix: {
       label: ']',
-    }
+    },
   },
 })
 
@@ -332,7 +332,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       operator: '=',
       wrap: ezP.T3.Expr.assigned_list,
     },
-  }
+  },
 })
 
 /**
@@ -384,7 +384,7 @@ ezP.DelegateSvg.List.makeSubclass('assigned_list', function() {
     consolidator: ezP.Consolidator.List.Singled,
     empty: false,
     presep: ',',
-  }
+  },
   var RA = goog.array.concat(D.check,D.unique)
   goog.array.removeDuplicates(RA)
   D.all = RA

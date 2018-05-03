@@ -297,7 +297,7 @@ ezP.Consolidator.Parameter.prototype.getCheck = function() {
 ezP.DelegateSvg.List.makeSubclass('parameter_list', {
   list: {
     consolidator: ezP.Consolidator.Parameter,
-  }
+  },
 })
 
 /**
@@ -394,7 +394,7 @@ ezP.DelegateSvg.Expr.makeSubclass('lambda', {
         // `this` is a connection
         this.ezp.updateLambdaCheck()
       },
-    }
+    },
   },
   output: {
     check: [ezP.T3.Expr.lambda_expr, ezP.T3.Expr.lambda_expr_nocond],
@@ -403,16 +403,16 @@ ezP.DelegateSvg.Expr.makeSubclass('lambda', {
       var block = this.sourceBlock_
       if (block) {
         block.ezp.consolidateType(block)
-      }
+      },
     },
     didDisconnect: function(oldConnection) {
       // `this` is a connection
       var block = this.sourceBlock_
       if (block) {
         block.ezp.consolidateType(block)
-      }
+      },
     },
-  }
+  },
 })
 
 ezP.ConnectionDelegate.prototype.consolidateType = function(block) {

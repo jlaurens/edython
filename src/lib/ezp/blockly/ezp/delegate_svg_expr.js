@@ -376,7 +376,7 @@ ezP.DelegateSvg.Expr.makeSubclass('proper_slice', {
       check: ezP.T3.Expr.Check.expression,
       optional: true,
       hole_value: 'stride',
-    }
+    },
   },
 })
 
@@ -408,7 +408,7 @@ ezP.DelegateSvg.Expr.makeSubclass('conditional_expression_solid', {
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'alternate',
-    }
+    },
   },
 })
 
@@ -521,7 +521,7 @@ ezP.DelegateSvg.Expr.makeSubclass('not_test_solid', {
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.not_test,
       hole_value: 'name',
-    }
+    },
   },
 })
 
@@ -586,8 +586,8 @@ ezP.DelegateSvg.Expr.makeSubclass('any', {
     value: {
       synchronize: function(block, newValue) {
         this.setFieldValue(this.toText() || '')
-      }
-    }
+      },
+    },
   },
   inputs: {
     1: {

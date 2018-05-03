@@ -36,7 +36,7 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_print_expr', {
       key: ezP.Key.ARGUMENTS,
       wrap: ezP.T3.Expr.argument_list_comprehensive,
       end: ')',
-    }
+    },
   },
   output: {
     check: [ezP.T3.Expr.builtin_print_expr, ezP.T3.Expr.call_expr],
@@ -126,7 +126,7 @@ ezP.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
  *     type-specific functions for this block.
  * @constructor
  */
- ezP.DelegateSvg.Stmt.makeSubclass('builtin_print_stmt', {
+ezP.DelegateSvg.Stmt.makeSubclass('builtin_print_stmt', {
    link: ezP.T3.Expr.builtin_print_expr,
 })
 
@@ -218,7 +218,7 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_input_expr', {
       check: ezP.T3.Expr.Check.argument_any,
       optional: true,
       end: ')',
-    }
+    },
   },
   output: {
     check: [ezP.T3.Expr.builtin_input_expr, ezP.T3.Expr.call_expr],
