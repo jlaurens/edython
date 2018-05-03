@@ -128,7 +128,8 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
       },
     },
     inputs: {
-      1: {
+      name: {
+        order: 1,
         name: {
           key:ezP.Key.NAME,
           edit: '',
@@ -155,7 +156,8 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
         check: ezP.T3.Expr.Check.expression,
         hole_value: 'expression',
       },
-      4: {
+      as: {
+        order: 4,
         label: 'as',
         css_class: 'ezp-code-reserved',
         edit: {

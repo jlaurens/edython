@@ -23,6 +23,7 @@ goog.require('ezP.DelegateSvg.Expr')
  *     type-specific functions for this block.
  * @constructor
  */
+console.warn('Remove those ugly insert, make a subclass?')
 ezP.DelegateSvg.Expr.makeSubclass('comprehension', {
   inputs: {
     expression: {
@@ -30,7 +31,8 @@ ezP.DelegateSvg.Expr.makeSubclass('comprehension', {
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'name',
     },
-    2: {
+    comp_for: {
+      order: 2,
       insert: ezP.T3.Expr.comp_for,
     },
     comp_iter: {
@@ -114,10 +116,12 @@ ezP.DelegateSvg.List.makeSubclass('comp_iter_list', {
 // dict_comprehension ::= expression ":" expression comp_for
 ezP.DelegateSvg.Expr.makeSubclass('dict_comprehension', {
   inputs: {
-    1: {
+    key_datum: {
+      order: 1,
       insert: ezP.T3.Expr.key_datum_solid,
     },
-    2: {
+    comp_for: {
+      order: 2,
       insert: ezP.T3.Expr.comp_for,
     },
     comp_iter: {

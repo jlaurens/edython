@@ -464,7 +464,8 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
       },
     },
     inputs: {
-      1: {
+      name: {
+        order: 1,
         name: {
           key:ezP.Key.VALUE,
           edit: '',

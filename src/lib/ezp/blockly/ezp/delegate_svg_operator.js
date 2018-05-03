@@ -147,10 +147,10 @@ ezP.DelegateSvg.Binary.makeModel = function(operators, check1, check3, operatorI
       },
     },
     inputs: {
-      1: {
+      left: {
         check: ezP.T3.Expr.Check[check1]
       },
-      2: {
+      right: {
         check: ezP.T3.Expr.Check[check3]
       },
     },
@@ -296,10 +296,10 @@ ezP.DelegateSvg.Binary.makeSubclass('object_comparison', {
     },
   },
   inputs: {
-    1: {
+    left: {
       check: ezP.T3.Expr.Check.comparison
     },
-    2: {
+    right: {
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.comparison
     },
@@ -324,6 +324,7 @@ ezP.DelegateSvg.Expr.object_comparison.prototype.makeTitle = function (block, op
  *     type-specific functions for this block.
  * @constructor
  */
+console.warn('Check the css-class below, does it belong there?')
 ezP.DelegateSvg.Binary.makeSubclass('or_test_solid', {
   data: {
     operator: {
@@ -331,10 +332,10 @@ ezP.DelegateSvg.Binary.makeSubclass('or_test_solid', {
     }
   },
   inputs: {
-    1: {
+    left: {
       check: ezP.T3.Expr.Check.or_test
     },
-    2: {
+    right: {
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.and_test
     },
@@ -356,10 +357,10 @@ ezP.DelegateSvg.Binary.makeSubclass('and_test_solid', {
     }
   },
   inputs: {
-    1: {
+    left: {
       check: ezP.T3.Expr.Check.and_test
     },
-    2: {
+    right: {
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.not_test
     },
