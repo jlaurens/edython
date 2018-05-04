@@ -13,10 +13,6 @@
 
 goog.provide('ezP.FieldTextInput')
 goog.provide('ezP.FieldInput')
-goog.provide('ezP.FieldComment')
-goog.provide('ezP.FieldNumber')
-goog.provide('ezP.FieldString')
-goog.provide('ezP.FieldLongString')
 
 goog.require('Blockly.FieldTextInput')
 
@@ -331,7 +327,7 @@ ezP.FieldInput.prototype.getDisplayText_ = function() {
 }
 
 ezP.FieldInput.prototype.placeholderText = function() {
-  return this.placeholderText_ || Blockly.Field.NBSP
+  return this.placeholderText_ || goog.isString(this.model.placeholder) &&  this.model.placeholder || goog.isFunction(this.model.placeholder) &&  this.model.placeholder() ||ezP.Msg.Placeholder.CODE
 }
 
 /**
@@ -342,58 +338,6 @@ ezP.FieldInput.prototype.placeholderText = function() {
 ezP.FieldInput.prototype.setValue = function(newValue) {
   this.ezp.placeholder = !newValue || !newValue.length 
   ezP.FieldInput.superClass_.setValue.call(this, newValue)
-}
-
-ezP.FieldInput.prototype.placeholderText = function() {
-  return this.placeholderText_ || ezP.Msg.Placeholder.CODE
-}
-
-/**
- * Class for an editable comment field.
- * @param {string} text The initial content of the field.
- * @extends {ezP.FieldTextInput}
- * @constructor
- */
-ezP.FieldComment = function (text, optValidator) {
-  ezP.FieldComment.superClass_.constructor.call(this, text, optValidator)
-}
-goog.inherits(ezP.FieldComment, ezP.FieldInput)
-
-ezP.FieldComment.prototype.cssClass = 'ezp-code-comment'
-ezP.FieldComment.prototype.placeholderText = function() {
-  return this.placeholderText_ || ezP.Msg.Placeholder.COMMENT
-}
-
-ezP.FieldNumber = function (text) {
-  var field = this
-  var validator = function(txt) {
-    var validator_ = function(txt, re, type) {
-      if (re.exec(txt)) {
-        field.ezp.error = false
-        if (ezP.FieldTextInput.htmlInput_) {
-          goog.dom.classlist.remove(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
-        }
-        var block = field.sourceBlock_
-        block.ezp.setupType(block, type)
-        return txt
-      }
-      return undefined
-    }
-    if (validator_(txt, ezP.XRE.integer, ezP.T3.Expr.integer)
-    || validator_(txt, ezP.XRE.floatnumber, ezP.T3.Expr.floatnumber)
-    || validator_(txt, ezP.XRE.imagnumber, ezP.T3.Expr.imagnumber)) {
-      return txt
-    }
-    field.ezp.error = true
-    goog.dom.classlist.add(ezP.FieldTextInput.htmlInput_, 'ezp-code-error')
-    return txt
-  }
-  ezP.FieldNumber.superClass_.constructor.call(this, text, validator)
-}
-goog.inherits(ezP.FieldNumber, ezP.FieldInput)
-
-ezP.FieldNumber.prototype.placeholderText = function() {
-  return this.placeholderText_ || ezP.Msg.Placeholder.NUMBER
 }
 
 /**
@@ -419,35 +363,6 @@ ezP.FieldInput.prototype.render_ = function() {
     goog.dom.classlist.remove(this.textElement_, 'ezp-code-comment')
   }
 }
-
-/**
- * Class for an editable string field.
- * @param {string} text The initial content of the field.
- * @extends {ezP.FieldTextInput}
- * @constructor
- */
-ezP.FieldString = function (text) {
-  var validator = null
-  ezP.FieldString.superClass_.constructor.call(this, text, validator)
-}
-goog.inherits(ezP.FieldString, ezP.FieldInput)
-
-ezP.FieldString.prototype.placeholderText = function() {
-  return this.placeholderText_ || (this.sourceBlock_.type === ezP.T3.Expr.shortbytesliteral?
-  ezP.Msg.Placeholder.BYTES: ezP.Msg.Placeholder.STRING)
-}
-
-/**
- * Class for an editable long string field.
- * @param {string} text The initial content of the field.
- * @extends {ezP.FieldTextInput}
- * @constructor
- */
-ezP.FieldLongString = function (text) {
-  var validator = null
-  ezP.FieldLongString.superClass_.constructor.call(this, text, validator)
-}
-goog.inherits(ezP.FieldLongString, ezP.FieldInput)
 
 /**
  * Default method to start editing.

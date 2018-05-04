@@ -97,23 +97,40 @@ ezP.Tiles = function(owner, key, tileModel) {
   if (goog.isDefAndNotNull(model = tileModel[name])) {
     var field = new ezP.FieldInput(model.value || '', model.validator, key)
     setupField(field, model)
-    if (goog.isFunction(model.onStartEditing)) {
-      field.ezp.onStartEditing_ = model.onStartEditing
-    }
-    if (goog.isFunction(model.onEndEditing)) {
-      field.ezp.onEndEditing_ = model.onEndEditing
-    }
-    if (goog.isFunction(model.placeholder)) {
-      field.placeholderText = model.placeholder
-    } else if (model.placeholder) {
-      field.placeholderText = function() {
-        var p = model.placeholder
-        return function() {
-          return this.placeholderText_ || p
-        }
-      } ()
-    }
     this.registerField(field)
+  }
+}
+
+/**
+ * Setup the field according to the model.
+ * For ezPython.
+ * @param {!ezP.FieldLabel} field
+ * @param {Object} model
+ */
+ezP.Do.setupField = function (field, model) {
+  if (!(field.ezp.css_class = model.css_class || model.css && 'ezp-code-'+model.css)) {
+    switch(ezP.Do.typeOfString(field.getValue())) {
+      case ezP.T3.Expr.reserved_identifier:
+      case ezP.T3.Expr.reserved_keyword:
+      field.ezp.css_class = 'ezp-code-reserved'
+      break
+      case ezP.T3.Expr.builtin_name:
+      field.ezp.css_class = 'ezp-code-builtin'
+      break
+      default:
+      field.ezp.css_class = 'ezp-code'
+    }
+  }
+  field.ezp.css_style = model.css_style
+  if (goog.isFunction(model.placeholder)) {
+    field.placeholderText = model.placeholder
+  } else if (model.placeholder) {
+    field.placeholderText = function() {
+      var p = model.placeholder
+      return function() {
+        return this.placeholderText_ || p
+      }
+    } ()
   }
 }
 
