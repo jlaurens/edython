@@ -78,7 +78,7 @@ ezP.DelegateSvg.Literal.makeSubclass('numberliteral', {
       order: 1,
       edit: {
         placeholder: ezP.Msg.Placeholder.NUMBER,
-        validator: function(txt) {
+        validate: function(txt) {
           return this.ezp.validateData(txt, ezP.Key.VALUE)
         },
         onEndEditing: function () {
@@ -212,7 +212,7 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
           return subtype === ezP.T3.Expr.shortbytesliteral || subtype === ezP.T3.Expr.shortbytesliteral?
           ezP.Msg.Placeholder.BYTES: ezP.Msg.Placeholder.STRING
         },
-        validator: function(txt) {
+        validate: function(txt) {
           return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), 'content')
         },
         onStartEditing: function () {

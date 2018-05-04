@@ -101,38 +101,86 @@ ezP.Tiles = function(owner, key, tileModel) {
   }
 }
 
+goog.require('ezP.FieldLabel')
+goog.require('ezP.FieldInput')
+
 /**
  * Setup the field according to the model.
+ * The string model should not be used, transitional implementation.
  * For ezPython.
- * @param {!ezP.FieldLabel} field
- * @param {Object} model
+ * @param {!string} fieldName
+ * @param {!string|Object} model
  */
-ezP.Do.setupField = function (field, model) {
-  if (!(field.ezp.css_class = model.css_class || model.css && 'ezp-code-'+model.css)) {
-    switch(ezP.Do.typeOfString(field.getValue())) {
-      case ezP.T3.Expr.reserved_identifier:
-      case ezP.T3.Expr.reserved_keyword:
-      field.ezp.css_class = 'ezp-code-reserved'
-      break
-      case ezP.T3.Expr.builtin_name:
-      field.ezp.css_class = 'ezp-code-builtin'
-      break
-      default:
-      field.ezp.css_class = 'ezp-code'
+ezP.Do.makeField = function () {
+  // create a closure for these default functions
+  var validate = function (txt) {
+      var d = this.ezp.data
+      var v = d && d.validate(txt)
+      return v? v.validated || null: txt
+  }
+  var onStartEditing = function () {
+  }
+  var onEndEditing = function () {
+    goog.asserts.assert(this.ezp.data, 'No data bound to field '+this.name+'/'+this.sourceBlock_.type)
+    this.ezp.data.fromText(this.getValue())
+  }
+  // Change the `... = true,` entrie to real functions
+  var setupModel = function(model) {
+    // no need to setup the model each time we create a new block
+    if (model.setup_) {
+      return
+    }
+    model.setup_ = true
+    if (model.validate === true) {
+      model.validate = validate
+    } else if (model.validate && !goog.isFunction(model.validate)) {
+      delete model.validate
+    }
+    if (model.onStartEditing === true) {
+      model.onStartEditing = onStartEditing
+    } else if (model.onStartEditing && !goog.isFunction(model.onStartEditing)) {
+      delete model.onStartEditing
+    }
+    if (model.onEndEditing === true) {
+      model.onEndEditing = onEndEditing
+    } else if (model.onEndEditing && !goog.isFunction(model.onEndEditing)) {
+      delete model.onEndEditing
     }
   }
-  field.ezp.css_style = model.css_style
-  if (goog.isFunction(model.placeholder)) {
-    field.placeholderText = model.placeholder
-  } else if (model.placeholder) {
-    field.placeholderText = function() {
-      var p = model.placeholder
-      return function() {
-        return this.placeholderText_ || p
+  return function (fieldName, model) {
+    var field
+    if (goog.isString(model)) {
+      field = new ezP.FieldLabel(model.value)
+      field.ezp.css_class = 'ezp-code'
+    } else {
+      setupModel(model)
+      if (model.edit || model.validate || model.onEndEditing || model.onStartEditing) {
+        // this is an ediable field
+        field = new ezP.FieldInput(model.edit || '', model.validate, fieldName)
+      } else {
+        // this is just a label field
+        field = new ezP.FieldLabel(model.value || '')
       }
-    } ()
+      if (!(field.ezp.css_class = model.css_class || model.css && 'ezp-code-'+model.css)) {
+        switch(ezP.Do.typeOfString(field.getValue())) {
+          case ezP.T3.Expr.reserved_identifier:
+          case ezP.T3.Expr.reserved_keyword:
+          field.ezp.css_class = 'ezp-code-reserved'
+          break
+          case ezP.T3.Expr.builtin_name:
+          field.ezp.css_class = 'ezp-code-builtin'
+          break
+          default:
+          field.ezp.css_class = 'ezp-code'
+        }
+      }
+      field.ezp.css_style = model.css_style
+    }
+    field.name = fieldName
+    field.ezp.key = key // main fields have identical name and key
+    return field
   }
-}
+} ()
 
 /**
  * Set the underlying Blockly input.

@@ -132,7 +132,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
         order: 1,
         edit: {
           placeholder: ezP.Msg.Placeholder.TERM,
-          validator: function(txt) {
+          validate: function(txt) {
             return this.ezp.validateData(goog.isDef(txt)? text: this.getValue() )
           },
           onEndEditing: function () {
@@ -166,7 +166,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
         },
         edit: {
           placeholder: ezP.Msg.Placeholder.ALIAS,
-          validator: function(txt) {
+          validate: function(txt) {
             return this.validateData(goog.isDef(txt)? txt: this.getValue())
           },
           onEndEditing: function () {

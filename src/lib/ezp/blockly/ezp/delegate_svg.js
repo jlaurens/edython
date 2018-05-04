@@ -147,37 +147,8 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   // first create them, then order them
   for(var key in fieldModel) {
     var model = fieldModel[key]
-    var value = model
-    if (!goog.isString(value) && !goog.isString(value = model.value)) {
-      continue
-    }
-    var field = new ezP.FieldLabel(value)
-    if (!(field.ezp.css_class = model.css_class || model.css && 'ezp-code-'+model.css)) {
-      switch(ezP.Do.typeOfString(value)) {
-        case ezP.T3.Expr.reserved_identifier:
-        case ezP.T3.Expr.reserved_keyword:
-        field.ezp.css_class = 'ezp-code-reserved'
-        break
-        case ezP.T3.Expr.builtin_name:
-        field.ezp.css_class = 'ezp-code-builtin'
-        break
-        default:
-        field.ezp.css_class = 'ezp-code'
-      }
-    }
-    field.ezp.css_style = model.css_style
+    var field = ezP.Do.makeField(model)
     field.setSourceBlock(block)
-    field.ezp.key = key // main fields have identical name and key
-    if (goog.isFunction(model.placeholder)) {
-      field.placeholderText = D.placeholder
-    } else if (model.placeholder) {
-      field.placeholderText = function() {
-        var p = model.placeholder
-        return function() {
-          return this.placeholderText_ || p
-        }
-      } ()
-    }
     field.init()
     ui.fields[key] = field
   }
@@ -210,16 +181,6 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       field.ezp.css_style = model.css_style
       field.setSourceBlock(block)
       field.ezp.key = key // main fields have identical name and key
-      if (goog.isFunction(model.placeholder)) {
-        field.placeholderText = D.placeholder
-      } else if (model.placeholder) {
-        field.placeholderText = function() {
-          var p = model.placeholder
-          return function() {
-            return this.placeholderText_ || p
-          }
-        } ()
-      }
       field.init()
       ui.fields[key] = field
       return field
@@ -312,16 +273,6 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
           }
           if (goog.isFunction(model.onEndEditing)) {
             field.ezp.onEndEditing_ = model.onEndEditing
-          }
-          if (goog.isFunction(model.placeholder)) {
-            field.placeholderText = model.placeholder
-          } else if (model.placeholder) {
-            field.placeholderText = function() {
-              var p = model.placeholder
-              return function() {
-                return this.placeholderText_ || p
-              }
-            } ()
           }
           field.ezp.left_space = model.left_space
           recorder = function() {

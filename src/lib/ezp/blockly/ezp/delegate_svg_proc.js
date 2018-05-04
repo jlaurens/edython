@@ -91,7 +91,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
       order: 1,
       edit: {
         placeholder: ezP.Msg.Placeholder.DECORATOR,
-        validator: function(txt) {
+        validate: function(txt) {
           return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
         },
         onEndEditing: function () {
@@ -229,7 +229,7 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
       order: 1,
       edit: {
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
-        validator: function(txt) {
+        validate: function(txt) {
           return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
         },
         onEndEditing: function () {
@@ -318,7 +318,7 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
       css_class: 'ezp-code-reserved',
       edit: {
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
-        validator: function(txt) {
+        validate: function(txt) {
           return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
         },
         onEndEditing: function () {

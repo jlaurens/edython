@@ -326,8 +326,24 @@ ezP.FieldInput.prototype.getDisplayText_ = function() {
   return ezP.FieldInput.superClass_.getDisplayText_.call(this)
 }
 
+/**
+ * The placeholder text.
+ * Get the model driven value if any.
+ * @return {string} Currently displayed text.
+ * @private
+ */
 ezP.FieldInput.prototype.placeholderText = function() {
-  return this.placeholderText_ || goog.isString(this.model.placeholder) &&  this.model.placeholder || goog.isFunction(this.model.placeholder) &&  this.model.placeholder() ||ezP.Msg.Placeholder.CODE
+  if (this.placeholderText_) {
+    return this.placeholderText_
+  }
+  var F = function() {
+    var model = this.ezp && this.ezp.model
+    if (model) {
+      var placeholder = model.placeholder
+      return goog.isString(placeholder) &&  placeholder || goog.isFunction(placeholder) &&  placeholder.call(this)
+    }
+  }
+  return F() || ezP.Msg.Placeholder.CODE
 }
 
 /**
@@ -377,15 +393,6 @@ ezP.FieldHelper.onStartEditing = function () {
  */
 ezP.FieldHelper.onEndEditing = function () {
   this.ezp.data.fromText(this.getValue())
-}
-
-/**
- * Default method for binding the field value to its data object.
- * @this is a field owning an helper
- */
-ezP.FieldHelper.validator = function (newValue) {
-  var v = this.ezp.data.validate(newValue)
-  return v && v.validated || null
 }
 
 /**

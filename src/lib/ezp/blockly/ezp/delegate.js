@@ -409,16 +409,6 @@ ezP.Delegate.prototype.initData = function() {
       if (ezp) {
         // this is for editable fields
         ezp.data = data
-        var model = ezp.model
-        if (!field.getValidator() && model.validator) {
-          var validator = function(data) {
-            return function (txt) {
-              var v = data.validate(txt)
-              return v && v.validated || null
-            }
-          } (data)
-          field.setValidator(validator)
-        }
       }
     }
   }
