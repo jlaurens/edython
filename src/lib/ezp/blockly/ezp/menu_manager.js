@@ -898,66 +898,68 @@ ezP.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
   }
   var outCheck = c8n.check_
   var D = ezP.Delegate.Manager.getModel(parent_type).tiles
+  if (D) {
   var mgr = this
-  var F = function(K) {
-    var d = D[K]
-    if (d && d.key && (!parent_subtype && !d.wrap || d.key === parent_subtype)) {
-      if (outCheck && d.check) {
-        var found = false, _ = 0, c
-        while ((c = d.check[_++])) {
-          if (outCheck.indexOf(c) >= 0) {
-            found = true
-            break
+    var F = function(K) {
+      var d = D[K]
+      if (d && d.key && (!parent_subtype && !d.wrap || d.key === parent_subtype)) {
+        if (outCheck && d.check) {
+          var found = false, _ = 0, c
+          while ((c = d.check[_++])) {
+            if (outCheck.indexOf(c) >= 0) {
+              found = true
+              break
+            }
+          }
+          if (!found) {
+            return false
           }
         }
-        if (!found) {
+        var key = d.key
+        var content = mgr.get_menuitem_content(parent_type, key)
+        var MI = new ezP.MenuItem(content, function() {
+          block.ezp.insertParent(block, parent_type, parent_subtype, key)
+        })
+        mgr.addInsertChild(MI)
+        return true
+      } else if (d && d.wrap && !parent_subtype) {
+        var list = ezP.Delegate.Manager.getModel(d.wrap).list
+        if (!list) {
+          if (!outCheck || goog.array.contains(outCheck, d.wrap)) {
+            var key = d.key || K
+            var content = mgr.get_menuitem_content(parent_type, key)
+            var MI = new ezP.MenuItem(content, function() {
+              block.ezp.insertParent(block, parent_type, parent_subtype, key)
+            })
+            mgr.addInsertChild(MI)
+            return true
+          }
           return false
         }
-      }
-      var key = d.key
-      var content = mgr.get_menuitem_content(parent_type, key)
-      var MI = new ezP.MenuItem(content, function() {
-        block.ezp.insertParent(block, parent_type, parent_subtype, key)
-      })
-      mgr.addInsertChild(MI)
-      return true
-    } else if (d && d.wrap && !parent_subtype) {
-      var list = ezP.Delegate.Manager.getModel(d.wrap).list
-      if (!list) {
-        if (!outCheck || goog.array.contains(outCheck, d.wrap)) {
-          var key = d.key || K
-          var content = mgr.get_menuitem_content(parent_type, key)
-          var MI = new ezP.MenuItem(content, function() {
-            block.ezp.insertParent(block, parent_type, parent_subtype, key)
-          })
-          mgr.addInsertChild(MI)
-          return true
-        }
-        return false
-      }
-      var listCheck = list.all || list.check || (list.consolidator && list.consolidator.data && list.consolidator.data.check)
-      if (outCheck && listCheck) {
-        var found = false, _ = 0, c
-        while ((c = listCheck[_++])) {
-          if (outCheck.indexOf(c) >= 0) {
-            found = true
-            break
+        var listCheck = list.all || list.check || (list.consolidator && list.consolidator.data && list.consolidator.data.check)
+        if (outCheck && listCheck) {
+          var found = false, _ = 0, c
+          while ((c = listCheck[_++])) {
+            if (outCheck.indexOf(c) >= 0) {
+              found = true
+              break
+            }
+          }
+          if (!found) {
+            return false
           }
         }
-        if (!found) {
-          return false
-        }
+        var content = mgr.get_menuitem_content(parent_type)
+        var MI = new ezP.MenuItem(content, function() {
+          block.ezp.insertParent(block, parent_type, parent_subtype)
+        })
+        mgr.addInsertChild(MI)
+        return true  
       }
-      var content = mgr.get_menuitem_content(parent_type)
-      var MI = new ezP.MenuItem(content, function() {
-        block.ezp.insertParent(block, parent_type, parent_subtype)
-      })
-      mgr.addInsertChild(MI)
-      return true  
+      return false
     }
-    return false
+    return F(1) || F(2) || F(3) || F(4)
   }
-  return F(1) || F(2) || F(3) || F(4)
 }
 
 /**

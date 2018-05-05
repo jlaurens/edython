@@ -70,7 +70,7 @@ ezP.FieldTextInput.prototype.init = function () {
   if (this.ezp.tile) {
     this.ezp.tile.getSvgRoot().appendChild(this.fieldGroup_)
   } else {
-    this.this.sourceBlock_.getSvgRoot().appendChild(this.textElement_)
+    this.sourceBlock_.getSvgRoot().appendChild(this.fieldGroup_)
   }
   this.borderRect_ = Blockly.utils.createSvgElement('rect',
     { class: 'ezp-none',
@@ -152,9 +152,9 @@ ezP.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
   this.ezp.onStartEditing_ && this.ezp.onStartEditing_.call(this)
   var model = this.ezp.model
   if (model) {
-    if (goog.isFunction(model.onStartEditing)) {
-      model.onStartEditing.call(this)
-    } else if (model.onStartEditing) {
+    if (goog.isFunction(model.startEditing)) {
+      model.startEditing.call(this)
+    } else if (model.startEditing) {
       this.ezp.constructor.onStartEditing.call(this)
     }
   }
@@ -238,9 +238,9 @@ ezP.FieldTextInput.prototype.widgetDispose_ = function () {
     field.ezp.onEndEditing_ && field.ezp.onEndEditing_.call(field)
     var model = field.ezp.model
     if (model) {
-      if (goog.isFunction(model.onEndEditing)) {
-        model.onEndEditing.call(field)
-      } else if (model.onEndEditing) {
+      if (goog.isFunction(model.endEditing)) {
+        model.endEditing.call(field)
+      } else if (model.endEditing) {
         field.ezp.constructor.onEndEditing.call(field)
       }
     }

@@ -81,7 +81,7 @@ ezP.Delegate.getCtorEzp = function() {
  */
 ezP.Delegate.Manager = function () {
   var me = {}
-  var Ctors = Object.crete(null)
+  var Ctors = Object.create(null)
   var defaultCtor = undefined
   var defaultDelegate = undefined
   /**
@@ -147,13 +147,7 @@ ezP.Delegate.Manager = function () {
     if (ezp.model_) {
       return ezp.model_
     }
-    var model = Object.create(null, {
-      data: Object.create(null),
-      fields: Object.create(null),
-      tiles: Object.create(null),
-      output: Object.create(null),
-      statement: Object.create(null),
-    })
+    var model = Object.create(null)
     var c = delegateCtor.superClass_
     if (c && (c = c.constructor) && c.ezp) {
       merger(model, modeller(c))
@@ -210,7 +204,6 @@ ezP.Delegate.Manager = function () {
       model = model()
     }
     if (model) {
-      model = Object.create(null, model)
       // manage the link: key
       var link, linkModel = model
       while((link = model.link)) {

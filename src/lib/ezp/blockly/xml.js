@@ -460,6 +460,7 @@ ezP.Xml.Literal.domToBlock = function (element, workspace) {
  * @return {!Element} Tree of XML elements, possibly null.
  */
 ezP.Xml.toDom = function (block, element, optNoId) {
+  ezP.Xml.Data.toDom(block, element, optNoId)
   var ezp = block.ezp
   var controller = ezp
   if ((controller && goog.isFunction(controller.toDom)) ||
@@ -690,31 +691,40 @@ goog.provide('ezP.Xml.Data')
  * @this a block delegate
  */
 ezP.Xml.Data.toDom = function(block, element, optNoId) {
+  var hasText = false
   for(var key in block.ezp.data) {
     var data = block.ezp.data[key]
-    if (data.disabled_) {
+    if (data.isDisabled()) {
       continue
     }
-    // only data with an xml object are saved
+    var model = data.model
+    // in general, data should be saved
+    if (model.noXml) {
+      // only few data need not be saved
+      continue
+    }
     var xml = data.model.xml
+    var required = data.required
     if (xml) {
-      if (xml.toDom) {
-        xml.toDom(element)
-      } else if (xml.persistent === 'text') {
-        var txt = data.toText()
-        if (txt.length) {
-          var child = goog.dom.createTextNode(value)
-          goog.dom.appendChild(element, child)
-        }
-      } else if (xml.persistent) {
-        var attribute = xml.attribute || 'ezp:'+key
-        var txt = data.toText()
-        // only a void string might not be saved
-        // A void string is saved if the data is required,
-        // either from the data model, or programmatically
-        if (txt.length || xml.persistent === 'required' || data.required) {
-          element.setAttribute(attribute, txt || '?')
-        }
+      if (goog.isFunction(xml.toDom)) {
+        xml.toDom.call(data, element)
+        continue
+      }
+      var attribute = xml.attribute
+      var text = xml.text
+      required = required || xml.attribute
+    }
+    var txt = data.toText()
+    if (txt.length || required && (txt = '?')) {
+      if (text) {
+        goog.asserts.assert(!hasText,
+          ezP.Do.format('Only one text node {0}/{1}', key, block.type))
+        var child = goog.dom.createTextNode(txt)
+        goog.dom.appendChild(element, child)
+        hasText = true
+      } else {
+        attribute = attribute || 'ezp:'+key
+        element.setAttribute(attribute, txt)
       }
     }
   }
@@ -732,25 +742,34 @@ ezP.Xml.Data.fromDom = function(block, element) {
   for(var key in block.ezp.data) {
     var data = block.ezp.data[key]
     var xml = data.model.xml
+    var required = data.required
     if (xml) {
-      if (xml.fromDom) {
-        xml.fromDom(element)
-      } else if (xml.persistent === 'text') {
-        for (var i = 0, child; (child = element.childNodes[i]); i++) {
-          if (child.nodeType === 3) {
-            data.fromText(child.nodeValue)
-            break
-          }
+      if (goog.isFunction(xml.fromDom)) {
+        xml.fromDom.call(data, element)
+        continue
+      }
+      var attribute = xml.attribute
+      var text = xml.text
+      required = required || xml.attribute
+    }
+    if (text) {
+      for (var i = 0, child; (child = element.childNodes[i]); i++) {
+        if (child.nodeType === 3) {
+          var txt = child.nodeValue
         }
-      } else if (xml.persistent) {
-        var attribute = xml.attribute || 'ezp:'+key
-        var txt = element.getAttribute(attribute)
-        if (goog.isDefAndNotNull(txt)) {
-          if ((xml.persistent.required || data.required) && txt === '?') {
-            txt = ''
-          }
-          data.fromText(txt)
+      }
+    } else {
+      attribute = attribute || 'ezp:'+key
+      var txt = element.getAttribute(attribute)
+    }
+    if (goog.isDefAndNotNull(txt)) {
+      if (required && txt === '?') {
+        data.fromText(txt)
+      } else {
+        if (txt === '?') {
+          data.questionMark_ = true
         }
+        data.fromText(txt)
       }
     }
   }

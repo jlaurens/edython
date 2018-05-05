@@ -124,7 +124,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
           validate: function(txt) {
             return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
           },
-          onEndEditing: function () {
+          endEditing: function () {
             this.ezp.setData(this.getValue(), ezP.Key.VALUE)
           },
         },

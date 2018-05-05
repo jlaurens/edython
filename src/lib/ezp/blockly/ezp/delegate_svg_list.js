@@ -213,12 +213,8 @@ ezP.DelegateSvg.Expr.starred_item_list.makeSubclass('parenth_form', {
     hole_value: 'name',
   },
   fields: {
-    prefix: {
-      label: '(',
-    },
-    suffix: {
-      label: ')',
-    },
+    prefix: '(',
+    suffix: ')',
   },
 })
 

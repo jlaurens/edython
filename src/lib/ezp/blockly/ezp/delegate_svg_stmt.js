@@ -30,13 +30,11 @@ ezP.DelegateSvg.makeSubclass('Stmt', {
   data: {
     comment: {
       default: '',
-      placeholderText: ezP.Msg.Placeholder.COMMENT,
       validate: function(newValue) {
         return {validated: XRegExp.exec(newValue, ezP.XRE.comment).value || ''}
       },
-      synchronize: function(newValue) {
-        this.setMainFieldValue(newValue || '', 'comment')
-      },
+      synchronize: true,
+      placeholderText: ezP.Msg.Placeholder.COMMENT,
     },
     comment_show: {
       default: false,
@@ -44,19 +42,19 @@ ezP.DelegateSvg.makeSubclass('Stmt', {
         return {validated: newValue} // is it still necessary ?
       },
       synchronize: function(newValue) {
-        this.setMainFieldVisible(!!newValue, 'comment_mark')
-        this.setMainFieldVisible(!!newValue, 'comment')
+        this.ui.fields.comment_mark.setVisible(!!newValue)
+        this.ui.fields.comment.setVisible(!!newValue)
       },
     },
   },
   fields: {
     comment_mark: {
-      label: '#',
+      value: '#',
       css: 'reserved',
     },
     comment: {
       validate: true,
-      onEndEditing: true,
+      endEditing: true,
       placeholder: ezP.Msg.Placeholder.COMMENT,
       css: 'comment',
     },
@@ -70,8 +68,8 @@ ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.DelegateSvg.Stmt, true)
  * @extends {Blockly.Block}
  * @constructor
  */
-ezP.DelegateSvg.Stmt.prototype.preInitSvg = function (block) {
-  ezP.DelegateSvg.Stmt.superClass_.preInitSvg.call(this, block)
+ezP.DelegateSvg.Stmt.prototype.postInitSvg = function (block) {
+  ezP.DelegateSvg.Stmt.superClass_.postInitSvg.call(this, block)
   this.svgSharpGroup_ = Blockly.utils.createSvgElement('g',
     {'class': 'ezp-sharp-group'}, null)
   goog.dom.insertSiblingAfter(this.svgSharpGroup_, this.svgPathContour_)
@@ -278,8 +276,6 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
  */
 ezP.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (block, mgr) {
   var show = this.data.comment_show.get()
-  var value = this.data.value.get()
-  var current = this.data.variant.get()
   var content =
   ezP.Do.createSPAN(show? ezP.Msg.Placeholder.REMOVE_COMMENT: ezP.Msg.Placeholder.ADD_COMMENT, null)
   var menuItem = new ezP.MenuItem(content, function() {
@@ -358,7 +354,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.global_nonlocal_stmt, {
     variant: {
       all: ['global', 'nonlocal'],
       synchronize: function(newValue) {
-        this.setMainFieldValue(newValue || '', 'prefix')
+        this.ezp.setMainFieldValue(newValue || '', 'prefix')
       },
     },
   },
@@ -416,8 +412,8 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.comment_stmt, {
         return {validated: true} // is it still necessary ?
       },
       synchronize: function(newValue) {
-        this.setMainFieldVisible(true, 'comment_mark')
-        this.setMainFieldVisible(true, 'comment')
+        this.ui.fields.comment_mark.setVisible(true)
+        this.ui.fields.comment.setVisible(true)
       },
     },
   },
@@ -595,12 +591,12 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.S
  * @constructor
  */
 ezP.DelegateSvg.Stmt.makeSubclass('del_stmt', {
-  fields: {
-    label: 'del',
-  },
   tiles: {
     del: {
       order: 1,
+      fields: {
+        label: 'del',
+      },
       wrap: ezP.T3.Expr.target_list,
     },
   },
@@ -636,8 +632,11 @@ ezP.DelegateSvg.Stmt.makeSubclass('any_stmt', {
   data: {
     code: {
       synchronize: true,
+      xml: {
+        text: true,
+      },
     }
-  }
+  },
   fields: {
     code: {
       endEditing: true,

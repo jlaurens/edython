@@ -52,10 +52,8 @@ ezP.Tile = function(owner, key, tileModel) {
   var block = this.block = owner.block_
   goog.asserts.assert(block,
     ezP.Do.format('block must exist {0}/{1}', key))  
-  ezP.Tile.makeFields(this, this, tileModel)
+  ezP.Tile.makeFields(this, this, tileModel.fields)
   if (tileModel.wrap) {
-    goog.asserts.assert(model,
-    ezP.Do.format('wrap must exist {0}/{1}', key, block.type))
     this.setInput(block.appendWrapValueInput(key, tileModel.wrap, tileModel.optional, tileModel.hidden))
   } else if (tileModel.check) {
     this.setInput(block.appendValueInput(key))
@@ -129,9 +127,9 @@ ezP.Tile.makeFields = function (owner, ui, fieldsModel) {
       var v = d && d.validate(txt)
       return v? v.validated || null: txt
   }
-  var onStartEditing = function () {
+  var startEditing = function () {
   }
-  var onEndEditing = function () {
+  var endEditing = function () {
     goog.asserts.assert(this.ezp.data, 'No data bound to field '+this.name+'/'+this.sourceBlock_.type)
     this.ezp.data.fromText(this.getValue())
   }
@@ -142,21 +140,20 @@ ezP.Tile.makeFields = function (owner, ui, fieldsModel) {
       return
     }
     model.setup_ = true
-    goog.asserts.assert(!goog.isDef(model.order) || !goog.isNumber(model.order), 'Bad order '+ model)
     if (model.validate === true) {
       model.validate = validate
     } else if (model.validate && !goog.isFunction(model.validate)) {
       delete model.validate
     }
-    if (model.onStartEditing === true) {
-      model.onStartEditing = onStartEditing
-    } else if (model.onStartEditing && !goog.isFunction(model.onStartEditing)) {
-      delete model.onStartEditing
+    if (model.startEditing === true) {
+      model.startEditing = startEditing
+    } else if (model.startEditing && !goog.isFunction(model.startEditing)) {
+      delete model.startEditing
     }
-    if (model.onEndEditing === true) {
-      model.onEndEditing = onEndEditing
-    } else if (model.onEndEditing && !goog.isFunction(model.onEndEditing)) {
-      delete model.onEndEditing
+    if (model.endEditing === true) {
+      model.endEditing = endEditing
+    } else if (model.endEditing && !goog.isFunction(model.endEditing)) {
+      delete model.endEditing
     }
   }
   var makeField = function (fieldName, model) {
@@ -169,7 +166,7 @@ ezP.Tile.makeFields = function (owner, ui, fieldsModel) {
       field.ezp.css_class = 'ezp-code'
     } else if (goog.isObject(model)) {
       setupModel(model)
-      if (model.edit || model.validate || model.onEndEditing || model.onStartEditing) {
+      if (model.edit || model.validate || model.endEditing || model.startEditing) {
         // this is an ediable field
         field = new ezP.FieldInput(model.edit || '', model.validate, fieldName)
       } else if (goog.isDefAndNotNull(model.value)) {
@@ -178,6 +175,7 @@ ezP.Tile.makeFields = function (owner, ui, fieldsModel) {
       } else { // other entries are ignored
         return
       }
+      field.ezp.model = model
       if (!(field.ezp.css_class = model.css_class || model.css && 'ezp-code-'+model.css)) {
         switch(ezP.Do.typeOfString(field.getValue())) {
           case ezP.T3.Expr.reserved_identifier:
@@ -285,7 +283,7 @@ ezP.Tile.makeFields = function (owner, ui, fieldsModel) {
   // we have exhausted all the fields that are already ordered
   // either explicitely or not
   goog.asserts.assert(unordered.length < 2,
-  ezP.Do.format('Too many unordered fields in {0}/{1}',key, model))
+  ezP.Do.format('Too many unordered fields in {0}/{1}',key, JSON.stringify(model)))
   unordered[0] && (ui.fromStartField = chain(ui.fromStartField, unordered[0]))
   ui.fromStartField && delete ui.fromStartField.ezp.ezpLast_
   ui.toEndField && delete ui.toEndField.ezp.ezpLast_
@@ -301,11 +299,11 @@ ezP.Tile.makeFields = function (owner, ui, fieldsModel) {
 ezP.Tile.prototype.setInput = function (input) {
   this.input = input
   this.connection = input.connection
-  input.ezp.model = this.model
+  input.ezp.tile = this
   var c8n = this.connection
   if (c8n) {
     var ezp = c8n.ezp
-    ezp.model = this.model
+    ezp.tile = this
     ezp.name_ = this.key
     if (this.model.plugged) {
       ezp.plugged_ = D.plugged

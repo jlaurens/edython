@@ -309,10 +309,12 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
   tiles: {
     name: {
       order: 1,
-      edit: {
-        placeholder: ezP.Msg.Placeholder.IDENTIFIER,
-        validate: true,
-        onEndEditing: true,
+      fields: {
+        edit: {
+          placeholder: ezP.Msg.Placeholder.IDENTIFIER,
+          validate: true,
+          endEditing: true,
+        },
       },
     },
     annotation: {
@@ -478,7 +480,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
             validate: function(txt) {
               return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
             },
-            onEndEditing: function () {
+            endEditing: function () {
               this.ezp.setData(this.getValue())
               // this.ezp.data.fromText(this.getValue())
             },

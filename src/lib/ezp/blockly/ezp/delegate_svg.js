@@ -755,7 +755,7 @@ ezP.DelegateSvg.prototype.renderDrawTile_ = function (io) {
     root.removeAttribute('display')
     root.setAttribute('transform',
     'translate(' + io.cursorX + ', 0)')
-    var saved = io.cursorX
+    io.offsetX = io.cursorX
     io.cursorX = 0
     if ((io.field = io.tile.fromStartField)) {
       do {
@@ -770,7 +770,8 @@ ezP.DelegateSvg.prototype.renderDrawTile_ = function (io) {
         this.renderDrawField_(io)
       } while((io.field = io.field.ezp.nextField))
     }
-    io.cursorX += saved
+    io.cursorX += io.offsetX
+    io.offsetX = 0
   }
 }
 
@@ -878,7 +879,7 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   var delta = this.renderDrawFields_(io, true)
   var c8n = io.input.connection
   if (c8n) {// once `&&!c8n.hidden_` was there, bad idea but why was it here?
-    c8n.setOffsetInBlock(io.cursorX, 0)
+    c8n.setOffsetInBlock(io.cursorX+io.offsetX, 0)
     var target = c8n.targetBlock()
     if (!!target) {
       var root = target.getSvgRoot()
@@ -897,8 +898,8 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       // (input with no target)
       var ezp = c8n.ezp
       var pw = ezp.s7r_ || ezp.optional_?
-      this.carretPathDefWidth_(io.cursorX):
-      this.placeHolderPathDefWidth_(io.cursorX)
+      this.carretPathDefWidth_(io.cursorX+io.offsetX):
+      this.placeHolderPathDefWidth_(io.cursorX+io.offsetX)
       io.steps.push(pw.d)
       io.cursorX += pw.width
       if (pw.width) {

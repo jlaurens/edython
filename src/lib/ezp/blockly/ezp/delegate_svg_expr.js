@@ -607,7 +607,7 @@ ezP.DelegateSvg.Expr.makeSubclass('any', {
       order: 1,
       fields: {
         edit: {
-          onEndEditing: true,
+          endEditing: true,
           placeholder: ezP.Msg.Placeholder.CODE,
         },
       },

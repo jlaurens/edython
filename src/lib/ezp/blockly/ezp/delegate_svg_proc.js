@@ -71,7 +71,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
           validate: function(txt) {
             return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
           },
-          onEndEditing: function () {
+          endEditing: function () {
             this.ezp.setData(this.getValue())
           },
           // left_space: true,
@@ -201,9 +201,7 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
     },
   },
   fields: {
-    prefix: {
-      label: 'def',
-    },
+    prefix: 'def',
   },
   tiles: {
     name: {
@@ -214,7 +212,7 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
           validate: function(txt) {
             return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
           },
-          onEndEditing: function () {
+          endEditing: function () {
             this.ezp.setData(this.getValue())
           },
         },
@@ -309,7 +307,7 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
       fields: {
         edit: {
           validate: true,
-          onEndEditing: true,
+          endEditing: true,
           placeholder: ezP.Msg.Placeholder.IDENTIFIER,
         },
       },

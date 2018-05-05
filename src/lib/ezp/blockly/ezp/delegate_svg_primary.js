@@ -57,7 +57,7 @@ ezP.DelegateSvg.Expr.makeSubclass('attributeref', {
           validate: function(txt) {
             return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
           },
-          onEndEditing: function () {
+          endEditing: function () {
             this.ezp.setData(this.getValue(), ezP.Key.VALUE)
           },
         },
@@ -101,7 +101,7 @@ ezP.DelegateSvg.Expr.makeSubclass('slicing', {
       fields: {
         edit: {
           validate: true,
-          onEndEditing: true,
+          endEditing: true,
           placeholder: ezP.Msg.Placeholder.IDENTIFIER,
         },
       },
@@ -221,7 +221,7 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
           validate: function(txt) {
             return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
           },
-          onEndEditing: function () {
+          endEditing: function () {
             this.ezp.setData(this.getValue())
           },
         },

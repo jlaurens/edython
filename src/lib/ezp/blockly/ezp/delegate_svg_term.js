@@ -134,7 +134,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
           edit: {
             placeholder: ezP.Msg.Placeholder.TERM,
             validate: true,
-            onEndEditing: true,
+            endEditing: true,
           },
         },
       },
@@ -167,7 +167,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
           edit: {
             placeholder: ezP.Msg.Placeholder.ALIAS,
             validate: true,
-            onEndEditing: true,
+            endEditing: true,
           },
         },
       },

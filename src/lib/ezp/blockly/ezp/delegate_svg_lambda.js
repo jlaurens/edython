@@ -380,14 +380,14 @@ ezP.DelegateSvg.Expr.makeSubclass('lambda', {
       order: 1,
       fields: {
         label: '',
-      }
+      },
       wrap: ezP.T3.Expr.parameter_list,
     },
     expression: {
       order: 3,
       fields: {
         label: '',
-      }
+      },
       check: ezP.T3.Expr.Check.expression.concat(ezP.T3.Expr.Check.expression_nocond),
       didConnect: function(oldTargetConnection, oldConnectionn) {
         // `this` is a connection
