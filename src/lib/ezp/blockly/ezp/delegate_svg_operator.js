@@ -35,8 +35,9 @@ ezP.DelegateSvg.Expr.makeSubclass('Operator', {
   tiles: {
     rhs: {
       order: 2,
-      operator: '',
-      css_class: 'ezp-code',
+      fields: {
+        operator: ''
+      },
       hole_value: 'name',
     },
   },
@@ -336,7 +337,11 @@ ezP.DelegateSvg.Binary.makeSubclass('or_test_solid', {
       check: ezP.T3.Expr.Check.or_test
     },
     right: {
-      css_class: 'ezp-code-reserved',
+      fields: {
+        operator: {
+          css: 'reserved',
+        },
+      },
       check: ezP.T3.Expr.Check.and_test
     },
   },
@@ -361,7 +366,11 @@ ezP.DelegateSvg.Binary.makeSubclass('and_test_solid', {
       check: ezP.T3.Expr.Check.and_test
     },
     right: {
-      css_class: 'ezp-code-reserved',
+      fields: {
+        operator: {
+          css: 'reserved',
+        }
+      },
       check: ezP.T3.Expr.Check.not_test
     },
   },

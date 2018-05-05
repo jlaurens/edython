@@ -17,30 +17,6 @@ goog.require('ezP.DelegateSvg.Term')
 goog.require('ezP.DelegateSvg.Group')
 goog.require('ezP.MenuItem')
 
-// /**
-//  * Class for a DelegateSvg, dotted_funcname_solid block.
-//  * For ezPython.
-//  * @param {?string} prototypeName Name of the language object containing
-//  *     type-specific functions for this block.
-//  * @constructor
-//  */
-// ezP.DelegateSvg.makeSubclass('dotted_funcname_solid', {
-//   tiles: {
-//     1: {
-//       key: ezP.Key.PARENT,
-//       check: ezP.T3.Expr.identifier,
-//       hole_value: 'parent',
-//     },
-//     3: {
-//       label: '.',
-//       key: ezP.Key.NAME,
-//       check: ezP.T3.Expr.dotted_name,
-//       hole_value: 'name',
-//     },
-//   },
-// })
-// console.warn('implement the statement')
-
 /**
  * Class for a DelegateSvg, decorator.
  * For ezPython.
@@ -89,28 +65,34 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
   tiles: {
     dotted_name: {
       order: 1,
-      edit: {
-        placeholder: ezP.Msg.Placeholder.DECORATOR,
-        validate: function(txt) {
-          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
+      fields: {
+        edit: {
+          placeholder: ezP.Msg.Placeholder.DECORATOR,
+          validate: function(txt) {
+            return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
+          },
+          onEndEditing: function () {
+            this.ezp.setData(this.getValue())
+          },
+          // left_space: true,
         },
-        onEndEditing: function () {
-          this.ezp.setData(this.getValue())
-        },
-        // left_space: true,
       },
     },
     builtin: {
       order: 2,
-      label: {
-        css: 'reserved',
+      fields: {
+        label: {
+          css: 'reserved',
+        },
       },
     },
     arguments: {
       order: 3,
-      start: '(',
+      fields: {
+        start: '(',
+        end: ')',
+      },
       wrap: ezP.T3.Expr.argument_list,
-      end: ')',
     },
   },
   statement: {
@@ -221,31 +203,36 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
   fields: {
     prefix: {
       label: 'def',
-      css: 'reserved',      
     },
   },
   tiles: {
     name: {
       order: 1,
-      edit: {
-        placeholder: ezP.Msg.Placeholder.IDENTIFIER,
-        validate: function(txt) {
-          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
-        },
-        onEndEditing: function () {
-          this.ezp.setData(this.getValue())
+      fields: {
+        edit: {
+          placeholder: ezP.Msg.Placeholder.IDENTIFIER,
+          validate: function(txt) {
+            return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
+          },
+          onEndEditing: function () {
+            this.ezp.setData(this.getValue())
+          },
         },
       },
     },
     parameters: {
       order: 2,
-      start: '(',
+      fields: {
+        start: '(',
+        end: ')',
+      },
       wrap: ezP.T3.Expr.parameter_list,
-      end: ')',
     },
     type: {
       order: 3,
-      label: '->',
+      fields: {
+        label: '->',
+      },
       check: ezP.T3.Expr.Check.expression,
     },
   },
@@ -319,21 +306,21 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
   tiles: {
     name: {
       order: 1,
-      edit: {
-        placeholder: ezP.Msg.Placeholder.IDENTIFIER,
-        validate: function(txt) {
-          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
-        },
-        onEndEditing: function () {
-          this.ezp.setData(this.getValue())
+      fields: {
+        edit: {
+          validate: true,
+          onEndEditing: true,
+          placeholder: ezP.Msg.Placeholder.IDENTIFIER,
         },
       },
     },
     arguments: {
       order: 2,
-      start: '(',
+      fields: {
+        start: '(',
+        end: ')',
+      },
       wrap: ezP.T3.Expr.argument_list,
-      end: ')',
     },
   },
 })

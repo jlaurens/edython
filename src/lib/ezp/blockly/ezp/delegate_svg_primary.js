@@ -48,16 +48,18 @@ ezP.DelegateSvg.Expr.makeSubclass('attributeref', {
     },
     attribute: {
       order: 2,
-      label: '.',
-      edit: {
-        key: ezP.Key.VALUE,
-        edit: '',
-        placeholder: ezP.Msg.Placeholder.ATTRIBUTE,
-        validate: function(txt) {
-          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
-        },
-        onEndEditing: function () {
-          this.ezp.setData(this.getValue(), ezP.Key.VALUE)
+      fields: {
+        label: '.',
+        edit: {
+          key: ezP.Key.VALUE,
+          edit: '',
+          placeholder: ezP.Msg.Placeholder.ATTRIBUTE,
+          validate: function(txt) {
+            return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
+          },
+          onEndEditing: function () {
+            this.ezp.setData(this.getValue(), ezP.Key.VALUE)
+          },
         },
       },
     },
@@ -96,13 +98,11 @@ ezP.DelegateSvg.Expr.makeSubclass('slicing', {
   tiles: {
     name: {
       order: 1,
-      edit: {
-        placeholder: ezP.Msg.Placeholder.IDENTIFIER,
-        validate: function(txt) {
-          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
-        },
-        onEndEditing: function () {
-          this.ezp.setData(this.getValue(), ezP.Key.VALUE)
+      fields: {
+        edit: {
+          validate: true,
+          onEndEditing: true,
+          placeholder: ezP.Msg.Placeholder.IDENTIFIER,
         },
       },
     },
@@ -114,9 +114,11 @@ ezP.DelegateSvg.Expr.makeSubclass('slicing', {
     },
     slice: {
       order: 3,
-      start: '[',
+      fields: {
+        start: '[',
+        end: ']',
+      },
       wrap: ezP.T3.Expr.slice_list,
-      end: ']',
     },
   },
   output: {
@@ -213,13 +215,15 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
   tiles: {
     name: {
       order: 1,
-      edit: {
-        placeholder: ezP.Msg.Placeholder.IDENTIFIER,
-        validate: function(txt) {
-          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
-        },
-        onEndEditing: function () {
-          this.ezp.setData(this.getValue())
+      fields: {
+        edit: {
+          placeholder: ezP.Msg.Placeholder.IDENTIFIER,
+          validate: function(txt) {
+            return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
+          },
+          onEndEditing: function () {
+            this.ezp.setData(this.getValue())
+          },
         },
       },
     },
@@ -231,9 +235,11 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
     },
     arguments: {
       order: 3,
-      start: '(',
+      fields: {
+        start: '(',
+        end: ')',
+      },
       wrap: ezP.T3.Expr.argument_list,
-      end: ')',
     },
   },
 })

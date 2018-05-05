@@ -130,44 +130,45 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
     tiles: {
       name: {
         order: 1,
-        edit: {
-          placeholder: ezP.Msg.Placeholder.TERM,
-          validate: function(txt) {
-            return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue() )
-          },
-          onEndEditing: function () {
-            this.ezp.setData(this.getValue())
+        fields: {
+          edit: {
+            placeholder: ezP.Msg.Placeholder.TERM,
+            validate: true,
+            onEndEditing: true,
           },
         },
       },
       annotation: {
         order: 2,
-        label: {
-          value: ':',
-          css: 'reserved',
+        fields: {
+          label: {
+            value: ':',
+            css: 'reserved',
+          },
         },
         check: ezP.T3.Expr.Check.expression,
         hole_value: 'expression',
       },
       definition: {
         order: 3,
-        label: {
-          value: '=',
-          css: 'reserved',
+        fields: {
+          label: {
+            value: '=',
+            css: 'reserved',
+          },
         },
         check: ezP.T3.Expr.Check.expression,
         hole_value: 'expression',
       },
       alias: {
         order: 4,
-        label: {
-          value: 'as',
-          css: 'reserved',
-        },
-        edit: {
-          placeholder: ezP.Msg.Placeholder.ALIAS,
-          validate: true,
-          onEndEditing: true,
+        fields: {
+          label: 'as',
+          edit: {
+            placeholder: ezP.Msg.Placeholder.ALIAS,
+            validate: true,
+            onEndEditing: true,
+          },
         },
       },
     },

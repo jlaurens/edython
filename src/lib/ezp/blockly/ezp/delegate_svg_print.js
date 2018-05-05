@@ -35,9 +35,11 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_print_expr', {
   tiles: {
     arguments: {
       order: 1,
-      start: '(',
+      fields: {
+        start: '(',
+        end: ')',
+      },
       wrap: ezP.T3.Expr.argument_list_comprehensive,
-      end: ')',
     },
   },
   output: {
@@ -212,16 +214,17 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_input_expr', {
   fields: {
     label: {
       value: 'input',
-      css: 'builtin',
     },
   },
   tiles: {
     expression: {
       order: 1,
-      start: '(',
+      fields: {
+        start: '(',
+        end: ')',
+      },
       check: ezP.T3.Expr.Check.argument_any,
       optional: true,
-      end: ')',
     },
   },
   output: {

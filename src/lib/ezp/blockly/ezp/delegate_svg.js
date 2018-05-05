@@ -698,30 +698,31 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
       //   }    
       // }
     } while ((io.tile = io.tile.nextTile))
-  }
-  for (; (io.input = block.inputList[io.i]); io.i++) {
-    goog.asserts.assert(io.input.ezp, 'Input with no ezp '+io.input.name+' in block '+block.type)
-    io.inputDisabled = io.input.ezp.disabled_
-    if (io.input.isVisible() && !io.inputDisabled) {
-      this.renderDrawInput_(io)
-    } else {
-      for (var j = 0; (io.field = io.input.fieldRow[j]); ++j) {
-        if (io.field.getText().length>0) {
-          var root = io.field.getSvgRoot()
-          if (root) {
-            root.setAttribute('display', 'none')
-          } else {
-            // console.log('Field with no root: did you ...initSvg()?')
+  } else {
+    for (; (io.input = block.inputList[io.i]); io.i++) {
+      goog.asserts.assert(io.input.ezp, 'Input with no ezp '+io.input.name+' in block '+block.type)
+      io.inputDisabled = io.input.ezp.disabled_
+      if (io.input.isVisible() && !io.inputDisabled) {
+        this.renderDrawInput_(io)
+      } else {
+        for (var j = 0; (io.field = io.input.fieldRow[j]); ++j) {
+          if (io.field.getText().length>0) {
+            var root = io.field.getSvgRoot()
+            if (root) {
+              root.setAttribute('display', 'none')
+            } else {
+              // console.log('Field with no root: did you ...initSvg()?')
+            }
           }
         }
-      }
-      if ((io.c8n = io.input.connection)) {
-        if ((io.target = io.c8n.targetBlock())) {
-          var root = io.target.getSvgRoot()
-          if (root) {
-            root.setAttribute('display', 'none')
-          } else {
-            console.log('Block with no root: did you ...initSvg()?')
+        if ((io.c8n = io.input.connection)) {
+          if ((io.target = io.c8n.targetBlock())) {
+            var root = io.target.getSvgRoot()
+            if (root) {
+              root.setAttribute('display', 'none')
+            } else {
+              console.log('Block with no root: did you ...initSvg()?')
+            }
           }
         }
       }

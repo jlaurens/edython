@@ -32,7 +32,9 @@ ezP.DelegateSvg.Expr.makeSubclass('keyword_item', {
     },
     expression: {
       order: 3,
-      label: '=',
+      fields: {
+        label: '=',
+      },
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'value',
     },

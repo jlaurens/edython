@@ -73,20 +73,17 @@ ezP.DelegateSvg.Literal.makeSubclass('numberliteral', {
       },
     },
   },
-  tiles: {
-    value: {
-      order: 1,
-      edit: {
-        placeholder: ezP.Msg.Placeholder.NUMBER,
-        validate: function(txt) {
-          return this.ezp.validateData(txt, ezP.Key.VALUE)
-        },
-        onEndEditing: function () {
-          this.ezp.setData(this.getValue(), ezP.Key.VALUE)
-        },
+  fields: {
+    edit: {
+      placeholder: ezP.Msg.Placeholder.NUMBER,
+      validate: function(txt) {
+        return this.ezp.validateData(txt, ezP.Key.VALUE)
+      },
+      onEndEditing: function () {
+        this.ezp.setData(this.getValue(), ezP.Key.VALUE)
       },
     },
-  },
+  }
   output: {
     check: ezP.T3.Expr.integer,
   },
@@ -197,40 +194,35 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
       },
     },
   },
-  tiles: {
-    content: {
-      order: 1,
-      start: '',
-      edit: {
-        placeholder: function() {
-          var block = this.sourceBlock_
-          var ezp = block.ezp
-          if (this.placeholderText_) {
-            return this.placeholderText_
-          }
-          var subtype = ezp.data.subtype.get()
-          return subtype === ezP.T3.Expr.shortbytesliteral || subtype === ezP.T3.Expr.shortbytesliteral?
-          ezP.Msg.Placeholder.BYTES: ezP.Msg.Placeholder.STRING
-        },
-        validate: function(txt) {
-          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), 'content')
-        },
-        onStartEditing: function () {
-          this.ezp.tile.fields.end.setVisible(false)
-        },
-        onEndEditing: function () {
-          this.ezp.setData(this.getValue(), 'content')
-          this.ezp.tile.fields.end.setVisible(true)
-        },
-      },
-      end: '',
-      css_class: 'ezp-code-reserved',
-    },
-  },
   fields: {
     prefix: {
-      label: '',
-      css_class: 'ezp-code-reserved',
+      css: 'reserved',
+    },
+    start: {
+      css: 'reserved',
+    },
+    edit: {
+      placeholder: function() {
+        var block = this.sourceBlock_
+        var ezp = block.ezp
+        if (this.placeholderText_) {
+          return this.placeholderText_
+        }
+        var subtype = ezp.data.subtype.get()
+        return subtype === ezP.T3.Expr.shortbytesliteral || subtype === ezP.T3.Expr.shortbytesliteral?
+        ezP.Msg.Placeholder.BYTES: ezP.Msg.Placeholder.STRING
+      },
+      validate: true,
+      onStartEditing: function () {
+        this.ezp.tile.fields.end.setVisible(false)
+      },
+      onEndEditing: function () {
+        this.ezp.setData(this.getValue(), 'content')
+        this.ezp.tile.fields.end.setVisible(true)
+      },
+    },
+    end: {
+      css: 'reserved',
     },
   },
   output: {

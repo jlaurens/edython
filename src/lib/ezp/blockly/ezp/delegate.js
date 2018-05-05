@@ -81,7 +81,7 @@ ezP.Delegate.getCtorEzp = function() {
  */
 ezP.Delegate.Manager = function () {
   var me = {}
-  var Ctors = {}
+  var Ctors = Object.crete(null)
   var defaultCtor = undefined
   var defaultDelegate = undefined
   /**
@@ -119,10 +119,10 @@ ezP.Delegate.Manager = function () {
         var to_d = to[k]
         if (to_d) {
           if (Object.keys(to_d).length !== Object.getOwnPropertyNames(to_d).length) {
-            to_d = to[k] = {}
+            to_d = to[k] = Object.create(null)
           }
         } else {
-          to_d = to[k] = {}
+          to_d = to[k] = Object.create(null)
         }
         merger(to_d, from_d)
       } else {
@@ -147,13 +147,13 @@ ezP.Delegate.Manager = function () {
     if (ezp.model_) {
       return ezp.model_
     }
-    var model = {
-      data: {},
-      fields: {},
-      tiles: {},
-      output: {},
-      statement: {},
-    }
+    var model = Object.create(null, {
+      data: Object.create(null),
+      fields: Object.create(null),
+      tiles: Object.create(null),
+      output: Object.create(null),
+      statement: Object.create(null),
+    })
     var c = delegateCtor.superClass_
     if (c && (c = c.constructor) && c.ezp) {
       merger(model, modeller(c))
@@ -210,6 +210,7 @@ ezP.Delegate.Manager = function () {
       model = model()
     }
     if (model) {
+      model = Object.create(null, model)
       // manage the link: key
       var link, linkModel = model
       while((link = model.link)) {
@@ -223,21 +224,21 @@ ezP.Delegate.Manager = function () {
       var t = ezP.T3.Expr[key]
       if (t) {
         if (!model.output) {
-          model.output = {}
+          model.output = Object.create(null)
         }
         if (!model.output.check) {
           model.output.check = t
         }
       } else if ((t = ezP.T3.Stmt[key])) {
-        var statement = model.statement || (model.statement = {})
+        var statement = model.statement || (model.statement = Object.create(null))
         if (!statement.previous) {
-          statement.previous = {}
+          statement.previous = Object.create(null)
         }
         if (!statement.previous.check && !goog.isNull(statement.previous.check)) {
           statement.previous.check = ezP.T3.Stmt.Previous[key]
         }
         if (!statement.next) {
-          statement.next = {}
+          statement.next = Object.create(null)
         }
         if (!statement.next.check && !goog.isNull(statement.next.check)) {
           statement.next.check = ezP.T3.Stmt.Next[key]
@@ -281,7 +282,7 @@ ezP.Delegate.Manager = function () {
    */
   me.getModel = function (prototypeName) {
     var delegateCtor = Ctors[prototypeName]
-    return delegateCtor && delegateCtor.ezp.getModel() || {}
+    return delegateCtor && delegateCtor.ezp.getModel() || Object.create(null)
   }
   /**
    * Delegate registrator.

@@ -359,10 +359,12 @@ ezP.DelegateSvg.Expr.makeSubclass('proper_slice', {
   tiles: {
     lower_bound: {
       order: 1,
+      fields: {
+        label: ':',
+      },
       check: ezP.T3.Expr.Check.expression,
       optional: true,
       hole_value: 'lower',
-      end: ':',
     },
     upper_bound: {
       order: 2,
@@ -372,7 +374,9 @@ ezP.DelegateSvg.Expr.makeSubclass('proper_slice', {
     },
     stride: {
       order: 3,
-      start: ':',
+      fields: {
+        start: ':',
+      },
       check: ezP.T3.Expr.Check.expression,
       optional: true,
       hole_value: 'stride',
@@ -397,15 +401,17 @@ ezP.DelegateSvg.Expr.makeSubclass('conditional_expression_solid', {
     },
     if: {
       order: 2,
-      label: 'if',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'if',
+      },
       check: ezP.T3.Expr.Check.or_test,
       hole_value: 'condition',
     },
     else: {
       order: 3,
-      label: 'else',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'else',
+      },
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'alternate',
     },
@@ -431,8 +437,12 @@ ezP.DelegateSvg.Expr.makeSubclass('starred_expression', function () {
     tiles: {
       expression: {
         order: 1,
-        label: '',
-        css_class: 'ezp-code-reserved',
+        fields: {
+          label: {
+            value: '',
+            css: 'reserved',
+          },
+        },
         check: ezP.T3.Expr.Check.expression,
         hole_value: 'name',
         didConnect: function(oldTargetConnection, oldConnection) {
@@ -516,8 +526,9 @@ ezP.DelegateSvg.Expr.makeSubclass('not_test_solid', {
   tiles: {
     expression: {
       order: 1,
-      label: 'not',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'not',
+      },
       check: ezP.T3.Expr.Check.not_test,
       hole_value: 'name',
     },
@@ -543,8 +554,10 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_object', {
   tiles: {
     value: {
       order: 1,
-      label: '',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        value: '',
+        css: 'reserved',
+      },
     },
   },
 })
@@ -592,11 +605,11 @@ ezP.DelegateSvg.Expr.makeSubclass('any', {
   tiles: {
     code: {
       order: 1,
-      edit: {
-        onEndEditing: function () {
-          this.ezp.setData(this.getValue())
+      fields: {
+        edit: {
+          onEndEditing: true,
+          placeholder: ezP.Msg.Placeholder.CODE,
         },
-        placeholder: ezP.Msg.Placeholder.CODE,
       },
     },
   },

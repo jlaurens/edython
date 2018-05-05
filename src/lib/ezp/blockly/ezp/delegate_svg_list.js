@@ -310,12 +310,8 @@ ezP.DelegateSvg.List.makeSubclass('starred_item_list_comprehensive', function() 
  */
 ezP.DelegateSvg.Expr.starred_item_list_comprehensive.makeSubclass('list_display', {
   fields: {
-    prefix: {
-      label: '[',
-    },
-    suffix: {
-      label: ']',
-    },
+    prefix: '[',
+    suffix: ']',
   },
 })
 
@@ -354,12 +350,8 @@ ezP.DelegateSvg.List.makeSubclass('non_void_starred_item_list_comprehensive', fu
  */
 ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive.makeSubclass('set_display', {
   fields: {
-    prefix: {
-      label: '{',
-    },
-    suffix: {
-      label: '}',
-    },
+    prefix: '{',
+    suffix: '}',
   },
 })
 
@@ -397,12 +389,8 @@ ezP.DelegateSvg.List.makeSubclass('key_datum_list_comprehensive', function() {
  */
 ezP.DelegateSvg.Expr.key_datum_list_comprehensive.makeSubclass('dict_display', {
   fields: {
-    prefix: {
-      label: '{',
-    },
-    suffix: {
-      label: '}',
-    },
+    prefix: '{',
+    suffix: '}',
   },
 })
 

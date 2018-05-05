@@ -25,9 +25,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  */
 ezP.DelegateSvg.Stmt.makeSubclass('Group', {
   fields: {
-    suffix: {
-      label: ':',
-    },
+    suffix: ':',
   },
   statement: {
     key: ezP.Key.SUITE,
@@ -228,10 +226,7 @@ ezP.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
  */
 ezP.DelegateSvg.Group.makeSubclass('if_part', {
   fields: {
-    label: {
-      label: 'if',
-      css_class: 'ezp-code-reserved',
-    },
+    label: 'if',
   },
   tiles: {
     if: {
@@ -252,10 +247,7 @@ ezP.DelegateSvg.Group.makeSubclass('if_part', {
  */
 ezP.DelegateSvg.Group.makeSubclass('elif_part', {
   fields: {
-    label: {
-      label: 'elif',
-      css_class: 'ezp-code-reserved',
-    },
+    label: 'elif',
   },
   tiles: {
     elif: {
@@ -284,10 +276,7 @@ ezP.DelegateSvg.Group.makeSubclass('elif_part', {
  */
 ezP.DelegateSvg.Group.makeSubclass('else_part', {
   fields: {
-    label: {
-      label: 'else',
-      css_class: 'ezp-code-reserved',
-    },
+    label: 'else',
   },
   statement: {
     previous : {
@@ -366,10 +355,7 @@ ezP.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
  */
 ezP.DelegateSvg.Group.makeSubclass('while_part', {
   fields: {
-    label: {
-      label: 'while',
-      css_class: 'ezp-code-reserved',
-    },
+    label: 'while',
   },
   tiles: {
     while: {
@@ -433,15 +419,17 @@ ezP.DelegateSvg.Group.makeSubclass('for_part', {
   tiles: {
     for: {
       order: 1,
-      label: 'for',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'for',
+      },
       wrap: ezP.T3.Expr.target_list,
       hole_value: 'element',
     },
     in: {
       order: 2,
-      label: 'in',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'in',
+      },
       wrap: ezP.T3.Expr.expression_list,
       hole_value: 'set',
     },
@@ -460,8 +448,9 @@ ezP.DelegateSvg.Group.makeSubclass('with_part', {
   tiles: {
     with: {
       order: 1,
-      label: 'with',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'with',
+      },
       wrap: ezP.T3.Expr.with_item_list,
     },
   },
@@ -484,8 +473,9 @@ ezP.DelegateSvg.Expr.makeSubclass('with_item_solid', {
     },
     target: {
       order: 3,
-      label: 'as',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'as',
+      },
       check: ezP.T3.Expr.Check.target,
       hole_value: 'target',
     },

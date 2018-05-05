@@ -30,8 +30,12 @@ ezP.DelegateSvg.Expr.makeSubclass('target_star', {
   tiles: {
     expression: {
       order: 1,
-      label: '*',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: {
+          value: '*',
+          css_class: 'ezp-code-reserved',
+        },
+      },
       check: ezP.T3.Expr.Check.target,
       hole_value: 'target',
     },
@@ -223,10 +227,10 @@ ezP.DelegateSvg.List.makeSubclass('void_target_list', {
 ezP.DelegateSvg.Expr.void_target_list.makeSubclass('parenth_target_list', {
   fields: {
     prefix: {
-      label: '(',
+      value: '(',
     },
     suffix: {
-      label: ')',
+      value: ')',
     },
   },
 })
@@ -243,10 +247,10 @@ ezP.DelegateSvg.Expr.void_target_list.makeSubclass('parenth_target_list', {
 ezP.DelegateSvg.Expr.void_target_list.makeSubclass('bracket_target_list', {
   fields: {
     prefix: {
-      label: '[',
+      value: '[',
     },
     suffix: {
-      label: ']',
+      value: ']',
     },
   },
 })
@@ -313,8 +317,12 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     },
     annotation: {
       order: 2,
-      label: ':',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: {
+          value: ':',
+          css: 'reserved',
+        },
+      },
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
@@ -324,7 +332,12 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     },
     assigned: {
       order: 4,
-      operator: '=',
+      fields: {
+        operator: {
+          value: '=',
+          css: 'reserved',
+        },
+      },
       wrap: ezP.T3.Expr.assigned_list,
     },
   },
@@ -459,14 +472,16 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
     tiles: {
       name: {
         order: 1,
-        edit: {
-          placeholder: ezP.Msg.Placeholder.IDENTIFIER,
-          validate: function(txt) {
-            return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
-          },
-          onEndEditing: function () {
-            this.ezp.setData(this.getValue())
-            // this.ezp.data.fromText(this.getValue())
+        fields: {
+          edit: {
+            placeholder: ezP.Msg.Placeholder.IDENTIFIER,
+            validate: function(txt) {
+              return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
+            },
+            onEndEditing: function () {
+              this.ezp.setData(this.getValue())
+              // this.ezp.data.fromText(this.getValue())
+            },
           },
         },
       },
@@ -476,7 +491,10 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
       },
       expressions: {
         order: 3,
-        operator: {},
+        fields: {
+          operator: {
+          },
+        },
         wrap: ezP.T3.Expr.augassigned_list,
       },
     },

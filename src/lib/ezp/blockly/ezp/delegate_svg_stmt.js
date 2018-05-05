@@ -51,21 +51,14 @@ ezP.DelegateSvg.makeSubclass('Stmt', {
   },
   fields: {
     comment_mark: {
-      order: -2,
       label: '#',
-      css_class: 'ezp-code-reserved',
+      css: 'reserved',
     },
     comment: {
-      order: -1,
-      edit: '',
-      validate: function(txt) {
-        return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), 'comment')
-      },
-      onEndEditing: function() {
-        this.ezp.setData(this.getValue(), 'comment')
-      },
+      validate: true,
+      onEndEditing: true,
       placeholder: ezP.Msg.Placeholder.COMMENT,
-      css_class: 'ezp-code-comment',
+      css: 'comment',
     },
   },
 })
@@ -331,7 +324,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.break_stmt, {
  */
 ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.continue_stmt, {
   fields: {
-    label: 'break',
+    label: 'continue',
   },
 })
 
@@ -371,14 +364,12 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.global_nonlocal_stmt, {
   },
   fields: {
     prefix: {
-      label: '',
-      css_class: 'ezp-code-reserved',
+      css: 'reserved',
     },
   },
   tiles: {
     identifiers: {
       order: 3,
-      css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.non_void_identifier_list,
     },
   },
@@ -604,11 +595,12 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.S
  * @constructor
  */
 ezP.DelegateSvg.Stmt.makeSubclass('del_stmt', {
+  fields: {
+    label: 'del',
+  },
   tiles: {
     del: {
       order: 1,
-      label: 'del',
-      css_class: 'ezp-code-reserved',
       wrap: ezP.T3.Expr.target_list,
     },
   },
@@ -625,8 +617,9 @@ ezP.DelegateSvg.Stmt.makeSubclass('return_stmt', {
   tiles: {
     return: {
       order: 1,
-      label: 'return',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'return',
+      },
       wrap: ezP.T3.Expr.expression_list,
     },
   },
@@ -640,10 +633,14 @@ ezP.DelegateSvg.Stmt.makeSubclass('return_stmt', {
  * @constructor
  */
 ezP.DelegateSvg.Stmt.makeSubclass('any_stmt', {
+  data: {
+    code: {
+      synchronize: true,
+    }
+  }
   fields: {
-    prefix: {
-      edit: '',
-      css_class: 'ezp-code',
+    code: {
+      endEditing: true,
     }
   }
 })

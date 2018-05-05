@@ -25,10 +25,7 @@ goog.require('ezP.DelegateSvg.Group')
  */
 ezP.DelegateSvg.Group.makeSubclass('try_part', {
   fields: {
-    prefix: {
-      label: 'try',
-      css_class: 'ezp-code-reserved',
-    },
+    prefix: 'try',
   },
 })
 
@@ -56,10 +53,7 @@ ezP.DelegateSvg.Group.makeSubclass('except_part', {
     },
   },
   fields: {
-    prefix: {
-      label: 'except',
-      css_class: 'ezp-code-reserved',
-    },
+    prefix: 'except',
   },
   tiles: {
     expression: {
@@ -69,8 +63,9 @@ ezP.DelegateSvg.Group.makeSubclass('except_part', {
     },
     as: {
       order: 2,
-      label: 'as',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'as',
+      },
       check: ezP.T3.Expr.identifier,
       hole_value: 'name',
     },
@@ -140,10 +135,7 @@ ezP.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function 
  */
 ezP.DelegateSvg.Group.makeSubclass('finally_part', {
   fields: {
-    prefix: {
-      label: 'finally',
-      css_class: 'ezp-code-reserved',
-    } 
+    prefix: 'finally',
   }
 })
 
@@ -165,10 +157,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
     },
   },
   fields: {
-    prefix: {
-      label: 'raise',
-      css_class: 'ezp-code-reserved',
-    },
+    prefix: 'raise',
   },
   tiles: {
     expression: {
@@ -178,8 +167,9 @@ ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
     },
     from: {
       order: 2,
-      label: 'from',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'from',
+      },
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
@@ -238,10 +228,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
     },
   },
   fields: {
-    prefix: {
-      label: 'assert',
-      css_class: 'ezp-code-reserved',
-    },
+    prefix: 'assert',
   },
   tiles: {
     assert: {
@@ -251,7 +238,9 @@ ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
     },
     expression: {
       order: 2,
-      label: ',',
+      fields: {
+        label: ',',
+      },
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
     },

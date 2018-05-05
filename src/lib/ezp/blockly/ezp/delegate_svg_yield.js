@@ -34,10 +34,7 @@ ezP.DelegateSvg.Expr.makeSubclass('yield_expression', {
     }
   },
   fields: {
-    prefix: {
-      label: 'yield',
-      css_class: 'ezp-code-reserved',
-    },
+    prefix: 'yield',
   },
   tiles: {
     expression: {
@@ -46,8 +43,9 @@ ezP.DelegateSvg.Expr.makeSubclass('yield_expression', {
     },
     from: {
       order: 2,
-      label: 'from',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'from',
+      },
       check: ezP.T3.Expr.Check.expression
     },
   },
@@ -188,12 +186,8 @@ ezP.DelegateSvg.List.makeSubclass('parenth_form', function() {
   return {
     list: D,
     fields: {
-      prefix: {
-        label: '(',
-      },
-      suffix: {
-        label: ')',
-      },
+      prefix: '(',
+      suffix: ')',
     },
   }
 })
@@ -207,12 +201,8 @@ ezP.DelegateSvg.List.makeSubclass('parenth_form', function() {
  */
 ezP.DelegateSvg.Expr.makeSubclass('yield_atom', {
   fields: {
-    prefix: {
-      label: '(',
-    },
-    suffix: {
-      label: ')',
-    },
+    prefix: '(',
+    suffix: ')',
   },
   tiles: {
     expression: {

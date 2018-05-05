@@ -32,12 +32,16 @@ ezP.DelegateSvg.Expr.makeSubclass('comprehension', {
     },
     for: {
       order: 2,
-      label: 'for',
+      fields: {
+        label: 'for',
+      },
       wrap: ezP.T3.Expr.target_list,
     },
     in: {
       order: 3,
-      label: 'in',
+      fields: {
+        label: 'in',
+      },
       check: ezP.T3.Expr.Check.or_test,
       hole_value: 'name',
     },
@@ -60,14 +64,16 @@ ezP.DelegateSvg.Expr.makeSubclass('comp_for', {
   tiles: {
     for: {
       order: 1,
-      label: 'for',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'for',
+      },
       wrap: ezP.T3.Expr.target_list,
     },
     in: {
       order: 2,
-      label: 'in',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'in',
+      },
       check: ezP.T3.Expr.Check.or_test,
       hole_value: 'name',
     },
@@ -86,8 +92,9 @@ ezP.DelegateSvg.Expr.makeSubclass('comp_if', {
   tiles: {
     if: {
       order: 1,
-      label: 'if',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'if',
+      },
       check: ezP.T3.Expr.Check.expression_nocond,
       hole_value: 'yorn',
     },
@@ -129,20 +136,24 @@ ezP.DelegateSvg.Expr.makeSubclass('dict_comprehension', {
     },
     datum: {
       order: 2,
+      fields: {
+        label: ':',
+      },
       check: ezP.T3.Expr.Check.expression,
-      label: ':',
       hole_value: 'value',
     },
     for: {
       order: 3,
-      label: 'for',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'for',
+      },
       wrap: ezP.T3.Expr.target_list,
     },
     in: {
       order: 4,
-      label: 'in',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'in',
+      },
       check: ezP.T3.Expr.Check.or_test,
       hole_value: 'name',
     },
@@ -170,8 +181,10 @@ ezP.DelegateSvg.Expr.makeSubclass('key_datum_solid', {
     },
     datum: {
       order: 2,
+      fields: {
+        label: ':',
+      },
       check: ezP.T3.Expr.Check.expression,
-      label: ':',
       hole_value: 'value',
     },
   },
@@ -187,12 +200,8 @@ ezP.DelegateSvg.Expr.makeSubclass('key_datum_solid', {
  */
 ezP.DelegateSvg.Expr.comprehension.makeSubclass('generator_expression', {
   fields: {
-    prefix: {
-      label: '(',
-    },
-    suffix: {
-      label: ')',
-    },
+    prefix: '(',
+    suffix: ')',
   },
 }, ezP.DelegateSvg.Expr)
 

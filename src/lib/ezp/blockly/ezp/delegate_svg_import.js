@@ -108,39 +108,43 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
   tiles: {
     import_module: {
       order: 1,
-      label: 'import',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'import',
+      },
       wrap: ezP.T3.Expr.non_void_module_as_list,
     },
     from: {
       order: 2,
-      label: 'from',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'from',
+        edit: {
+          key:ezP.Key.FROM,
+          edit: '',
+          placeholder: ezP.Msg.Placeholder.MODULE,
+          validate: function(txt) {
+            return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
+          },
+          onEndEditing: function () {
+            this.ezp.setData(this.getValue(), ezP.Key.VALUE)
+          },
+        },
+      },
       check: ezP.T3.Expr.Check.relative_module,
       plugged: ezP.T3.Expr.relative_module,
       hole_value: 'module',
-      edit: {
-        key:ezP.Key.FROM,
-        edit: '',
-        placeholder: ezP.Msg.Placeholder.MODULE,
-        validate: function(txt) {
-          return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
-        },
-        onEndEditing: function () {
-          this.ezp.setData(this.getValue(), ezP.Key.VALUE)
-        },
-      },
     },
     import: {
       order: 3,
-      label: 'import',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'import',
+      },
       wrap: ezP.T3.Expr.non_void_import_identifier_as_list,
     },
     import_star: {
       order: 4,
-      label: 'import *',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: 'import *',
+      },
     },
   },
 })
@@ -207,8 +211,12 @@ ezP.DelegateSvg.Stmt.makeSubclass('future_statement', {
   tiles: {
     list: {
       order: 1,
-      label: 'from __future__ import',
-      css_class: 'ezp-code-reserved',
+      fields: {
+        label: {
+          value: 'from __future__ import',
+          css: 'reserved',
+        }
+      },
       wrap: ezP.T3.Expr.non_void_import_identifier_as_list,
     },
   },
