@@ -292,12 +292,10 @@ ezP.DelegateSvg.Group.makeSubclass('else_part', {
   statement: {
     previous : {
       didConnect: function(oldTargetConnection, oldConnection) {
-        var block = this.getSourceBlock()
-        block.ezp.consolidateType(block)
+        this.ezp.consolidateSourceType()
       },
       didDisconnect: function(oldConnection) {
-        var block = this.getSourceBlock()
-        block.ezp.consolidateType(block)
+        this.ezp.consolidateSourceType()
       },
     },
   },

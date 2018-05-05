@@ -551,7 +551,13 @@ ezP.Xml.domToBlock = function(xmlBlock, workspace) {
     if (block) {
   //    console.log('Block created from dom:', xmlBlock, block.type, block.id)
       // then fill it based on the xml data
-      ezP.Xml.fromDom(block, xmlBlock)
+      var saved = block.ezp.skipRendering
+      block.ezp.skipRendering = true
+      try {
+        ezP.Xml.fromDom(block, xmlBlock)
+      } finally {
+        block.ezp.skipRendering = saved
+      }
     }
   }
   if (block) {
@@ -1711,7 +1717,7 @@ ezP.DelegateSvg.List.prototype.fromDom = function(block, xml, type) {
               out = out || ezP.Xml.fromDom(target, (target.ezp.wrapped_ && !(target.ezp instanceof ezP.DelegateSvg.List))?
                 xml: xmlChild)
               continue
-            } else if (type && (target = ezP.DelegateSvg.newBlockComplete(type, input.sourceBlock_.workspace))) {
+            } else if (type && (target = ezP.DelegateSvg.newBlockComplete(type, input.sourceBlock_.workspace, true))) {
               out = out || ezP.Xml.fromDom(target, xmlChild)
               continue
             } else if ((target = Blockly.Xml.domToBlock(xmlChild, input.sourceBlock_.workspace))) {
@@ -1759,7 +1765,7 @@ ezP.DelegateSvg.Expr.target_list_list.prototype.XfromDom = function(block, xml) 
               out = out || ezP.Xml.fromDom(target, (target.ezp.wrapped_ && !(target.ezp instanceof ezP.DelegateSvg.List))?
                 xml: xmlChild)
               continue
-            } else if ((target = ezP.DelegateSvg.newBlockComplete(input.sourceBlock_.workspace, ezP.T3.Expr.target_list))) {
+            } else if ((target = ezP.DelegateSvg.newBlockComplete(input.sourceBlock_.workspace, ezP.T3.Expr.target_list, true))) {
               c8n.connect(target.outputConnection)
               out = ezP.Xml.fromDom(target, xmlChild)
               continue

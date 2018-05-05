@@ -25,14 +25,24 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Expr.makeSubclass('comprehension', {
   tiles: {
-    insert: ezP.T3.Expr.comp_for,
     expression: {
       order: 1,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'name',
     },
-    comp_iter: {
-      order: 5,
+    for: {
+      order: 2,
+      label: 'for',
+      wrap: ezP.T3.Expr.target_list,
+    },
+    in: {
+      order: 3,
+      label: 'in',
+      check: ezP.T3.Expr.Check.or_test,
+      hole_value: 'name',
+    },
+    for_if: {
+      order: 4,
       wrap: ezP.T3.Expr.comp_iter_list,
     },
   },

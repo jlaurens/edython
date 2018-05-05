@@ -40,79 +40,90 @@ goog.require('Blockly.Input')
  * @param {!string} key  One of the keys in `tiles` section of the model.
  * @param {!Object} tileModel  the model for the given key i the above mention section.
  */
-ezP.Tiles = function(owner, key, tileModel) {
-  goog.asserts.assert(owner, 'Missing owner')
-  goog.asserts.assert(key, 'Missing key')
-  goog.asserts.assert(tileModel, 'Missing model')
+ezP.Tile = function(owner, key, tileModel) {
+  goog.asserts.assert(owner, 'Missing tile owner')
+  goog.asserts.assert(key, 'Missing tile key')
+  goog.asserts.assert(tileModel, 'Missing tile model')
+   goog.asserts.assert(tileModel.order, 'Missing tile model order')
   this.owner = owner
   this.key = key
   this.model = tileModel
   this.input = undefined
-  this.fields = Object.create(null)
-  this.orderedFields = Object.create(null)
-  // First create the Blockly's input, if necessary
-  if ((model = tileModel.wrap)) {
-    goog.asserts.assert(model, 'wrap must exist '+block.type+'.'+i)
-    this.setInput(block.appendWrapValueInput(key, model, tileModel.optional, tileModel.hidden))
+  var block = this.block = owner.block_
+  goog.asserts.assert(block,
+    ezP.Do.format('block must exist {0}/{1}', key))  
+  ezP.Tile.makeFields(this, this, tileModel)
+  if (tileModel.wrap) {
+    goog.asserts.assert(model,
+    ezP.Do.format('wrap must exist {0}/{1}', key, block.type))
+    this.setInput(block.appendWrapValueInput(key, tileModel.wrap, tileModel.optional, tileModel.hidden))
   } else if (tileModel.check) {
     this.setInput(block.appendValueInput(key))
   }
-  // Start with labels
-  var setupField = function(field, model) {
-    field.ezp.model = model
-    if (!(field.ezp.css_class = model.css_class || model.css && 'ezp-code-'+model.css)) {
-      switch(ezP.Do.typeOfString(field.getValue())) {
-        case ezP.T3.Expr.reserved_identifier:
-        case ezP.T3.Expr.reserved_keyword:
-        field.ezp.css_class = 'ezp-code-reserved'
-        break
-        case ezP.T3.Expr.builtin_name:
-        field.ezp.css_class = 'ezp-code-builtin'
-        break
-        default:
-        field.ezp.css_class = 'ezp-code'
-      }
-    }
-    field.ezp.css_style = model.css_style
+}
+
+/**
+ * Install this tile on a block.
+ */
+ezP.Tile.prototype.init = function() {
+  if (this.svgRoot_) {
+    // Tile has already been initialized once.
+    return;
   }
-  var doLabel = function(fieldKey, order) {
-    var value = tileModel[fieldKey]
-    if (goog.isString(value)) {
-      field = new ezP.FieldLabel(value)
-      setupField(field, tileModel)
-    } else if (goog.isDefAndNotNull(value)) {
-      field = new ezP.FieldLabel(value)
-      setupField(field, value)
-    } else {
-      return
-    }
-    this.registerField(field, order)
+  // Build the DOM.
+  this.svgGroup_ = Blockly.utils.createSvgElement('g', {
+    class: 'ezp-tile'
+  }, null);
+  if (this.disabled_) {
+    this.svgGroup_.style.display = 'none';
   }
-  doLabel.call(this, ezP.Key.OPERATOR, 0)
-  doLabel.call(this, ezP.Key.LABEL, 1)
-  doLabel.call(this, ezP.Key.START, 2)
-  doLabel.call(this, ezP.Key.END, -1) // the last field
-  // manage the unique editable field, if any
-  var model, name = 'edit'
-  if (goog.isDefAndNotNull(model = tileModel[name])) {
-    var field = new ezP.FieldInput(model.value || '', model.validator, key)
-    setupField(field, model)
-    this.registerField(field)
+  // init all the fields
+  for (var k in this.fields) {
+    var field = this.fields[k]
+    field.setSourceBlock(this.block) // is it necessary?
+    field.ezp.tile = this
+    field.init()
   }
+  this.getBlock().getSvgRoot().appendChild(this.svgGroup_);
+  // this.render_();
+};
+console.warn('What would be a tile rendering?')
+/**
+ * The DOM SVG group representing this tile.
+ */
+ezP.Tile.prototype.getSvgRoot = function() {
+  return this.svgGroup_
+};
+
+/**
+ * Dispose of all DOM objects belonging to this tile.
+ */
+ezP.Tile.prototype.dispose = function() {
+  goog.dom.removeNode(this.svgGroup_);
+  this.svgGroup_ = null;
+  this.owner = null
+  this.key = null
+  this.model = null
+  this.input = null
+  this.block = null
+  this.ui = null
 }
 
 goog.require('ezP.FieldLabel')
 goog.require('ezP.FieldInput')
 
+
 /**
- * Setup the field according to the model.
- * The string model should not be used, transitional implementation.
+ * Create all the fields from the model.
  * For ezPython.
- * @param {!string} fieldName
- * @param {!string|Object} model
+ * @param {!Object} owner
+ * @param {!Object} ui
+ * @param {!Object} fieldsModel
  */
-ezP.Do.makeField = function () {
-  // create a closure for these default functions
+ezP.Tile.makeFields = function (owner, ui, fieldsModel) {
+  ui.fields = ui.fields || Object.create(null)
+  // field maker
+  // default helper functions for an editable field bound to a data object
   var validate = function (txt) {
       var d = this.ezp.data
       var v = d && d.validate(txt)
@@ -124,13 +135,14 @@ ezP.Do.makeField = function () {
     goog.asserts.assert(this.ezp.data, 'No data bound to field '+this.name+'/'+this.sourceBlock_.type)
     this.ezp.data.fromText(this.getValue())
   }
-  // Change the `... = true,` entrie to real functions
+  // Change some `... = true,` entrie to real functions
   var setupModel = function(model) {
     // no need to setup the model each time we create a new block
     if (model.setup_) {
       return
     }
     model.setup_ = true
+    goog.asserts.assert(!goog.isDef(model.order) || !goog.isNumber(model.order), 'Bad order '+ model)
     if (model.validate === true) {
       model.validate = validate
     } else if (model.validate && !goog.isFunction(model.validate)) {
@@ -147,19 +159,24 @@ ezP.Do.makeField = function () {
       delete model.onEndEditing
     }
   }
-  return function (fieldName, model) {
+  var makeField = function (fieldName, model) {
     var field
     if (goog.isString(model)) {
-      field = new ezP.FieldLabel(model.value)
+      if (model.startsWith('css')) {
+        return
+      }
+      field = new ezP.FieldLabel(model)
       field.ezp.css_class = 'ezp-code'
-    } else {
+    } else if (goog.isObject(model)) {
       setupModel(model)
       if (model.edit || model.validate || model.onEndEditing || model.onStartEditing) {
         // this is an ediable field
         field = new ezP.FieldInput(model.edit || '', model.validate, fieldName)
-      } else {
+      } else if (goog.isDefAndNotNull(model.value)) {
         // this is just a label field
-        field = new ezP.FieldLabel(model.value || '')
+        field = new ezP.FieldLabel(model.value)
+      } else { // other entries are ignored
+        return
       }
       if (!(field.ezp.css_class = model.css_class || model.css && 'ezp-code-'+model.css)) {
         switch(ezP.Do.typeOfString(field.getValue())) {
@@ -175,12 +192,105 @@ ezP.Do.makeField = function () {
         }
       }
       field.ezp.css_style = model.css_style
+      field.ezp.order = model.order
+    } else {
+      return
     }
-    field.name = fieldName
-    field.ezp.key = key // main fields have identical name and key
+    field.name = field.ezp.key = fieldName // main fields have identical name and key
     return field
   }
-} ()
+  // Serious things here
+  var block = owner.getBlock()
+  goog.asserts.assert(block, 'Missing while making fields')
+  for(var key in fieldsModel) {
+    var model = fieldsModel[key]
+    var field = makeField(key, model)
+    if (field) {
+      ui.fields[key] = field
+    }
+  }
+  // now order
+  // fields must not have the same order 
+  // some default fields have predefined order
+  var byOrder = Object.create(null)
+  var unordered = []
+  var fromStart = [] // fields ordered from the beginning
+  var toEnd = [] // // fields ordered to the end
+  for(var key in ui.fields) {
+    var field = ui.fields[key]
+    var order = field.ezp.order
+    if (order) {
+      goog.asserts.assert(!byOrder[order],
+      ezP.Do.format('Fields with the same order  {0} = {1} / {2}',
+      byOrder[order].name, field.name, field.sourceBlock_.type))
+      byOrder[order] = field
+      if (order>0) {
+        for (var i = 0; i < fromStart.length; i++) {
+          if (fromStart[i].ezp.order > order) {
+            break
+          }
+        }
+        fromStart.splice(i, 0, field)
+      } else if (order<0) {
+        for (var i = 0; i < toEnd.length; i++) {
+          if (toEnd[i].ezp.order < order) {
+            break
+          }
+        }
+        toEnd.splice(i, 0, field)
+      }
+    } else {
+      unordered.push(field)
+    }
+  }
+  // now order the fields in linked lists
+  // Next returns the first field in a chain field.ezp.nextField -> ...
+  // The chain is built from the list of arguments
+  // arguments are either field names or fields
+  var chain = function() {
+    var field
+    for (var i = 0; i < arguments.length; i++) {
+      var fieldName = arguments[i]
+      if ((field = goog.isString(fieldName)? ui.fields[fieldName]: fieldName)) {
+        var j = unordered.length
+        while (j--) {
+          if(unordered[j] === field) {
+            unordered.splice(j, 1);
+          }
+        }
+        var ezp = field.ezp.ezpLast_ || field.ezp
+        for (i++; i < arguments.length; i++) {
+          var fieldName = arguments[i]
+          if ((ezp.nextField = goog.isString(fieldName)? ui.fields[fieldName]: fieldName)) {
+            var j = unordered.length
+            while (j--) {
+              if(unordered[j] === ezp.nextField) {
+                unordered.splice(j, 1);
+              }
+            }
+            ezp = ezp.nextField.ezp
+            delete ezp.ezpLast_
+          }
+        }
+        field.ezp.ezpLast_ = ezp
+        break
+      }
+    }
+    return field
+  }
+  ui.fromStartField = chain.apply(fromStart)
+  ui.fromStartField = chain(ezP.Key.MODIFIER, ezP.Key.PREFIX, ezP.Key.LABEL, ui.fromStartField)
+  ui.toEndField = chain.apply(toEnd)
+  ui.toEndField = chain(ui.toEndField, ezP.Key.SUFFIX, ezP.Key.COMMENT_MARK, ezP.Key.COMMENT)
+  // we have exhausted all the fields that are already ordered
+  // either explicitely or not
+  goog.asserts.assert(unordered.length < 2,
+  ezP.Do.format('Too many unordered fields in {0}/{1}',key, model))
+  unordered[0] && (ui.fromStartField = chain(ui.fromStartField, unordered[0]))
+  ui.fromStartField && delete ui.fromStartField.ezp.ezpLast_
+  ui.toEndField && delete ui.toEndField.ezp.ezpLast_
+  ui.fields.comment && (ui.fields.comment.ezp.comment = true)
+}
 
 /**
  * Set the underlying Blockly input.
@@ -195,21 +305,10 @@ ezP.Tile.prototype.setInput = function (input) {
   var c8n = this.connection
   if (c8n) {
     var ezp = c8n.ezp
+    ezp.model = this.model
     ezp.name_ = this.key
     if (this.model.plugged) {
       ezp.plugged_ = D.plugged
-    }
-    if (goog.isFunction(this.model.willConnect)) {
-      ezp.willConnect = this.model.willConnect
-    }
-    if (goog.isFunction(this.model.didConnect)) {
-      ezp.didConnect = this.model.didConnect
-    }
-    if (goog.isFunction(this.model.willDisconnect)) {
-      ezp.willDisconnect = this.model.willDisconnect
-    }
-    if (goog.isFunction(this.model.didDisconnect)) {
-      ezp.didDisconnect = this.model.didDisconnect
     }
     if (this.model.suite && Object.keys(this.model.suite).length) {
       goog.mixin(ezp, this.model.suite)
@@ -229,24 +328,12 @@ ezP.Tile.prototype.setInput = function (input) {
 }
 
 /**
- * Record the Blockly field.
- * If the receiver is expected to have an input, register the fields
- * after the input is created.
+ * Get the block.
  * For ezPython.
- * @param {!Blockly.Field} field
+ * @param {boolean} newValue.
  */
-ezP.Tile.prototype.registerField = function (field, order) {
-  goog.asserts.assert(field.name, 'Any field must have a name, inluding label fields')
-  // setup the graph of objects
-  this.fields[field.name] = field
-  this.input && (this.input.ezp.fields[field.name] = field)
-  field.ezp.tile = this
-  if (goog.isNumber(order)) {
-    this.orderedFields[order] = field
-  }
-  // initialize
-  field.setSourceBlock(this.owner.block_)
-  field.init()
+ezP.Tile.prototype.getBlock = function () {
+  return this.block
 }
 
 /**
@@ -279,11 +366,19 @@ ezP.Tile.prototype.getTarget = function () {
 /**
  * Set the disable state.
  * For ezPython.
- * @param {!Blockly.Input} workspace The block's workspace.
+ * @param {!bollean} newValue.
  */
 ezP.Tile.prototype.setDisabled = function (newValue) {
   this.disabled = newValue
   this.synchronize()
+}
+
+/**
+ * Get the disable state.
+ * For ezPython.
+ */
+ezP.Tile.prototype.isDisabled = function () {
+  return this.disabled
 }
 
 /**
@@ -327,14 +422,56 @@ ezP.Tile.prototype.isRequiredFromDom = function () {
  * @param {!Blockly.Input} workspace The block's workspace.
  */
 ezP.Tile.prototype.synchronize = function () {
-  this.owner.setInputDisabled(this.owner.block_, this.input, this.disabled)
+  var input = this.input
+  if (!input) {
+    return
+  }
+  var newValue = this.disabled
+  var oldValue = input.ezp.disabled_
+  if (!!oldValue === !!newValue) {
+    return
+  }
+  input.ezp.disabled_ = newValue
+  var current = this.skipRendering
+  this.skipRendering = true
+  input.setVisible(!newValue)
+  this.skipRendering = current
+  var c8n = input.connection
+  if (c8n) {
+    c8n.ezp.hidden_ = !!newValue // the hidden status will be forced
+    c8n.setHidden(newValue)
+  }
+  if (input.isVisible()) {
+    for (var __ = 0, field; (field = input.fieldRow[__]); ++__) {
+      if (field.getText().length>0) {
+        var root = field.getSvgRoot()
+        if (root) {
+          root.removeAttribute('display')
+        } else {
+          console.log('Field with no root: did you ...initSvg()?')
+        }
+      }
+    }
+    if (c8n) {
+      var target = c8n.targetBlock()
+      if (target) {
+        var root = target.getSvgRoot()
+        if (root) {
+          root.removeAttribute('display')
+        } else {
+          console.log('Block with no root: did you ...initSvg()?')
+        }
+      }
+    }
+  }
+  this.owner.delayedRender(this.block)
 }
 
 /**
  * Set the value of the field in the input given by its index
  * and the key.
  * @param {!Object} newValue.
- * @param {string} fieldKey  of the input holder in the ui object 
+ * @param {string} fieldKey  of the input holder in the owner object 
  * @private
  */
 ezP.Tile.prototype.setFieldValue = function (newValue, fieldKey) {

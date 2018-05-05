@@ -245,7 +245,7 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
   ezP.Events.disable()
   var parentBlock
   ezP.Events.Disabler.wrap(function() {
-    parentBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName)
+    parentBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName, true)
     parentBlock.ezp.data.subtype.set(subtype)
   })
   
@@ -436,8 +436,7 @@ ezP.DelegateSvg.Expr.makeSubclass('starred_expression', function () {
         check: ezP.T3.Expr.Check.expression,
         hole_value: 'name',
         didConnect: function(oldTargetConnection, oldConnection) {
-          var block = this.getSourceBlock()
-          block.ezp.consolidateType(block)
+          this.ezp.consolidateSourceType()
         },
       },
     },

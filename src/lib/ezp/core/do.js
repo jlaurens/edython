@@ -453,3 +453,17 @@ console.warn('synchronizeFoo has another argument')
 ezP.Do.hasOwnProperty = function (object, key) {
   return Object.prototype.hasOwnProperty.call(object, key)
 }
+
+/**
+ * Convenient format
+ * For ezPython.
+ * @param {!Array} list indexed object.
+ * @param {!function} filter an optional filter.
+ * @return an enumerator
+ */
+ezP.Do.format = function(format) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  return format.replace(/{(\d+)}/g, function(match, number) { 
+    return goog.isDef(args[number])? args[number]: match
+  })
+}

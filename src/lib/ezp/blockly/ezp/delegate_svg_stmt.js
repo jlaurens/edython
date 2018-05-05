@@ -203,7 +203,7 @@ ezP.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
   var c8n = block.previousConnection
   if (c8n) {
     Blockly.Events.disable()
-    var parentBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName)
+    var parentBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName, true)
     Blockly.Events.enable()
     var parentC8n = parentBlock.nextConnection
     if (parentC8n) {
@@ -254,7 +254,7 @@ ezP.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
 ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototypeName) {
   var grouper = new ezP.Events.Grouper()
   try {
-    var blockAfter = ezP.DelegateSvg.newBlockComplete(block.workspace, belowPrototypeName)
+    var blockAfter = ezP.DelegateSvg.newBlockComplete(block.workspace, belowPrototypeName, true)
     var c8n = block.nextConnection
     var targetC8n = c8n.targetConnection
     if (targetC8n) {

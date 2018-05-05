@@ -87,14 +87,10 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         //   case 1: disabled_2 = disabled_3 = false; break
         //   case 2: disabled_2 = disabled_4 = false; break
         // }
-        // this.setInputDisabled(1, disabled_1)
-        // this.setInputDisabled(2, disabled_2)
-        // this.setInputDisabled(3, disabled_3)
-        // this.setInputDisabled(4, disabled_4)
-        this.setInputDisabled(1, newValue != 0)
-        this.setInputDisabled(2, newValue == 0)
-        this.setInputDisabled(3, newValue != 1)
-        this.setInputDisabled(4, newValue != 2)
+        this.ui.tiles.import_module.setDisabled(newValue != 0)
+        this.ui.tiles.from.setDisabled(newValue == 0)
+        this.ui.tiles.import.setDisabled(newValue != 1)
+        this.ui.tiles.import_star.setDisabled(newValue != 2)
       },
     },
     value: {

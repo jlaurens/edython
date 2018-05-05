@@ -106,6 +106,8 @@ ezP.DelegateSvg.prototype.svgPathConnection_ = undefined
 
 console.warn('Beware of quotes in string literals')
 
+goog.require('ezP.Tile')
+
 /**
  * Create and initialize the various paths.
  * Called once at block creation time.
@@ -118,260 +120,69 @@ console.warn('Beware of quotes in string literals')
  */
 ezP.DelegateSvg.prototype.initBlock = function(block) {
   ezP.DelegateSvg.superClass_.initBlock.call(this, block)
-  this.svgPathInline_ = Blockly.utils.createSvgElement('path',
-    {'class': 'ezp-path-contour'}, null)
-  goog.dom.insertChildAt(block.svgGroup_, this.svgPathInline_, 0)
-  this.svgPathCollapsed_ = Blockly.utils.createSvgElement('path', {'class': 'ezp-path-collapsed'}, null)
-  goog.dom.insertChildAt(block.svgGroup_, this.svgPathCollapsed_, 0)
-  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {'class': 'ezp-path-contour'}, null)
-  goog.dom.insertChildAt(block.svgGroup_, this.svgPathContour_, 0)
-  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {'class': 'ezp-path-shape'}, null)
-  goog.dom.insertChildAt(block.svgGroup_, this.svgPathShape_, 0)
-  this.svgPathHighlight_ = Blockly.utils.createSvgElement('path',
-    {'class': 'ezp-path-selected'}, null)
-  this.svgPathConnection_ = Blockly.utils.createSvgElement('path',
-    {'class': 'ezp-path-selected'}, null)
-  Blockly.utils.addClass(/** @type {!Element} */ (block.svgGroup_),
-    'ezp-block')
   // block.setInputsInline(true)
   block.setTooltip('')
   block.setHelpUrl('')
-  var model = this.getModel()
-  var dataModel = model.data
-  var fieldModel = model.fields
-  var ui = {
-    fields: {},
-    tiles: {},
-  }
-  // Manage the main fields
-  // first create them, then order them
-  for(var key in fieldModel) {
-    var model = fieldModel[key]
-    var field = ezP.Do.makeField(model)
-    field.setSourceBlock(block)
-    field.init()
-    ui.fields[key] = field
-  }
-  var field, D
-  // a main field is not editable, it can only have a label.
-  // to do: make the difference between a label and a value
-  // the former is not editable whereas the latter is
-  // or should be once it is widely implemented
-  var doMainField = function(key) {
-    var model = fieldModel[key]
-    if (model) {
-      var value = model
-      if (!goog.isString(value) && !goog.isString(value = model.value)) {
-        return
-      }
-      var field = new ezP.FieldLabel(value)
-      if (!(field.ezp.css_class = model.css_class || model.css && 'ezp-code-'+model.css)) {
-        switch(ezP.Do.typeOfString(value)) {
-          case ezP.T3.Expr.reserved_identifier:
-          case ezP.T3.Expr.reserved_keyword:
-          field.ezp.css_class = 'ezp-code-reserved'
-          break
-          case ezP.T3.Expr.builtin_name:
-          field.ezp.css_class = 'ezp-code-builtin'
-          break
-          default:
-          field.ezp.css_class = 'ezp-code'
-        }
-      }
-      field.ezp.css_style = model.css_style
-      field.setSourceBlock(block)
-      field.ezp.key = key // main fields have identical name and key
-      field.init()
-      ui.fields[key] = field
-      return field
-    }
-  }
-  doMainField.call(this, ezP.Key.MODIFIER)
-  doMainField.call(this, ezP.Key.PREFIX)
-  doMainField.call(this, ezP.Key.SUFFIX)
-  doMainField.call(this, ezP.Key.COMMENT_MARK)
-  if ((field = doMainField.call(this, ezP.Key.COMMENT))) {
-    field.ezp.comment = true // this will manage the css-class
-  }
-  // now the tiles
-  var tileModels = model.tiles
-  var doInsert = function(type, isMain) {
-    var B = ezP.DelegateSvg.newBlockComplete(block.workspace, type)
-    if (B) {
-      // transfer input
-      var input
-      while ((input = B.inputList.shift(0))) {
-        block.inputList.push(input)
-        input.sourceBlock_ = block
-        if (input.connection) {
-          input.connection.sourceBlock_ = block
-        }
-        for (var j = 0, field;(field = input.fieldRow[j++]);) {
-          field.sourceBlock_ = block
-          if (field.textElement_) { // fields have no other element
-            block.getSvgRoot().appendChild(field.textElement_)
-            field.textElement_.tooltip = block
-          }
-        }
-      }
-      // xfer wrapped
-      if (B.ezp.wrappedInputs_ && B.ezp.wrappedInputs_.length) {
-        if (!this.wrappedInputs_) {
-          this.wrappedInputs_ = []
-        }
-        while ((input = B.ezp.wrappedInputs_.shift(0))) {
-          this.wrappedInputs_.push(input)
-        }
-      }
-      // xfer ui
-      var ui = B.ezp.ui// not yet used
-      if (isMain) {
-        this.getModel().tiles = B.getModel().tiles
-      }
-      B.dispose(true)
-      return ui
-    }
-  }
-  var doOneTileModel = function(i) {
-    // we assume that one input model only contains at most one of
-    // - editable field
-    // - value input, check: key
-    // - wrap input
-    // - insert input
-    // It may contain label fields
-    var tileModel = tileModels[i]
-    if (tileModel && Object.keys(tileModel).length) {
-      // first create t
-      var k = tileModel.key || i // when present, the optName of the input created
-      var out = new ezP.Tile(this, k, tileModel)
-      var model, field
-      // first insert a base input model by creating a node
-      // of a different type and transferring input ownership
-      if ((model = tileModel.insert)) {
-        out.ui = doInsert.call(this, model)
-      }
-      var recorder
-      // the main field may determine the name of the input
-      var doEditableFields = function(name) {
-        if (goog.isDefAndNotNull(model = tileModel[name])) {
-          var k = model.key || name
-          if (goog.isDefAndNotNull(model.edit)) {
-            field = new ezP.FieldInput(model.edit, model.validator, name)
-          } else if (goog.isDefAndNotNull(model.label)) {
-            field = new ezP.FieldLabel(model.label)
-            field.name = name
+  var ui = Object.create(null)
+  var makeTiles = function(owner, tilesModel) {
+    var tiles = Object.create(null)
+    var ordered = []
+    for (var k in tilesModel) {
+      var tileModel = tilesModel[k]
+      var order = tileModel.order
+      var insert = tileModel.insert
+      var tile, nextTile
+      if (insert) {
+        var model = ezP.DelegateSvg.Manager.getModel(insert)
+        if (model) {
+          makeTiles(owner, model.tiles)
+          if ((tile = ui.headTile)) {
+            delete ui.tiles
+            nextTile = tile
+            do {
+              goog.asserts.assert(!goog.isDef(tiles[nextTile.key]),
+              ezP.Do.format('Duplicate inserted tile key {0}/{1}/{2}', nextTile.key, insert, block.type))
+              tiles[nextTile.key] = tile
+            } while ((nextTile = nextTile.nextTile))
           } else {
-            return false
+            continue
           }
-          out.setInput(block.appendDummyInput(k))
-          out.registerField(field)
-          if (goog.isFunction(model.init)) {
-            model.init.call(field)
-          }
-          if (goog.isFunction(model.onStartEditing)) {
-            field.ezp.onStartEditing_ = model.onStartEditing
-          }
-          if (goog.isFunction(model.onEndEditing)) {
-            field.ezp.onEndEditing_ = model.onEndEditing
-          }
-          field.ezp.left_space = model.left_space
-          recorder = function() {
-            var ff = field
-            var kk = k
-            return function() {
-              out.input.appendField(ff, kk)
-              ff.init()
-            }
-          } ()
-          return true
+        } else {
+          continue
         }
-      }
-      // first fields are editable ones
-      // They belong to a standalone dummy input
-      if (!doEditableFields(ezP.Key.VALUE)
-      && !doEditableFields(ezP.Key.EDIT)
-      && !doEditableFields(ezP.Key.NAME)
-      && !doEditableFields(ezP.Key.TERM)
-      && !doEditableFields(ezP.Key.NUMBER)
-      && !doEditableFields(ezP.Key.STRING)
-      && !doEditableFields(ezP.Key.CODE)
-      && !doEditableFields(ezP.Key.COMMENT)
-      && (tileModel.check === undefined && tileModel.wrap === undefined)) {
-        out.setInput(block.appendDummyInput(k))
+      } else if (goog.isObject(tileModel) && (tile = new ezP.Tile(owner, k, tileModel))) {
+        goog.asserts.assert(!goog.isDef(tiles[k]),
+        ezP.Do.format('Duplicate tile key {0}/{1}', k, block.type))
+        tiles[k] = tile
       } else {
-        if ((model = tileModel.wrap)) {
-          goog.asserts.assert(!out.input, 'Wrapped blocks and editable fields are not compatable')
-          k = k || model
-          goog.asserts.assert(model, 'wrap must exist '+block.type+'.'+i)
-          out.setInput(block.appendWrapValueInput(k, model, tileModel.optional, tileModel.hidden))
-        } else if (!out.input) {
-          out.setInput(block.appendValueInput(k))
+        continue
+      }
+      tile.order = order
+      for (var i = 0; i < ordered.length; i++) {
+        // we must not find an aleady existing entry.
+        goog.asserts.assert(i != tile.order,
+        ezP.Do.format('Same order tile {0}/{1}', i, block.type))
+        if (i > tile.model.order) {
+          break
         }
       }
-      // Now come label fields
-      var doLabel = function(key) {
-        if (goog.isDefAndNotNull(model = tileModel[key])) {
-          field = new ezP.FieldLabel(model)
-          field.name = key
-          out.fields[key] = out.input.ezp.fields[key] = field
-          out.input.appendField(field, k && k+'.'+key || key)
-          field.ezp.css_class = tileModel.css_class
-          field.ezp.css_style = tileModel.css_style
-          field.init()
-          return field
-        }
-      }
-      doLabel(ezP.Key.OPERATOR)
-      doLabel(ezP.Key.LABEL)
-      doLabel(ezP.Key.START)
-      recorder && recorder()
-      field = doLabel(ezP.Key.END)
-      field && (field.ezp.suffix = true)
+      ordered.splice(i,0,tile)
     }
-    return out
-  }// end of doOneTileModel
-  
-  // catch the statement input eventually created in parent's method
-  var e8r = block.ezp.inputEnumerator(block)
-  while (e8r.next()) {
-    if (e8r.here.type === Blockly.NEXT_STATEMENT) {
-      ui.suite = {
-        input: e8r.here,
-      }
-      break
-    }
-  }
-  // next are not implemented in the ui
-  if ((D = this.getModel().output) && D.awaitable) {
-    field = new ezP.FieldLabel('await')
-    field.ezp.css_class = 'ezp-code-reserved'
-    field.name = ezP.Key.AWAIT
-    field.setSourceBlock(block)
-    field.init()
-    ui.fields.await = field
-  }    
-  if ((D = this.getModel().statement) && D.asyncable) {
-    field = new ezP.FieldLabel(ezP.Key.ASYNC)
-    field.ezp.css_class = 'ezp-code-reserved'
-    field.name = ezP.Key.ASYNC
-    field.setSourceBlock(block)
-    field.init()
-    ui.fields.async = field
-  }
-  // if insert is one of the keys, 
-  if (Object.keys(tileModels).length) {
-    var v
-    if ((v = tileModels.insert)) {
-      ui = doInsert.call(this, v, true)
-    } else {
-      for (var i = 1; i < 5; i++) {
-        var p = doOneTileModel.call(this, i)
-        if (p) {
-          ui.tiles[p.input.name] = ui[i] = p
-        }
+    if ((tile = ordered[0])) {
+      i = 1
+      while ((nextTile = ordered[i++])) {
+        tile.nextTile = nextTile
+        nextTile.previousTile = tile
+        tile = nextTile
       }
     }
+    ui.headTile = ordered[0]
+    ui.tiles = tiles
   }
+  var model = this.getModel()
+  makeTiles(this, model.tiles)
+  ezP.Tile.makeFields(this, ui, model.fields)
+  // now initialize all the fields
   this.ui = ui
   if (!block.workspace.options.readOnly && !this.eventsInit_) {
     Blockly.bindEventWithChecks_(block.getSvgRoot(), 'mouseup', block,
@@ -427,13 +238,35 @@ ezP.DelegateSvg.prototype.preInitSvg = function(block) {
 ezP.DelegateSvg.prototype.postInitSvg = function(block) {
   goog.dom.removeNode(block.svgPath_)
   delete block.svgPath_
-  block.svgPath_ = undefined
   goog.dom.removeNode(block.svgPathLight_)
   delete block.svgPathLight_
-  block.svgPathLight_ = undefined
   goog.dom.removeNode(block.svgPathDark_)
   delete block.svgPathDark_
-  block.svgPathDark_ = undefined
+    this.svgPathInline_ = Blockly.utils.createSvgElement('path',
+    {'class': 'ezp-path-contour'}, null)
+  goog.dom.insertChildAt(block.svgGroup_, this.svgPathInline_, 0)
+  this.svgPathCollapsed_ = Blockly.utils.createSvgElement('path', {'class': 'ezp-path-collapsed'}, null)
+  goog.dom.insertChildAt(block.svgGroup_, this.svgPathCollapsed_, 0)
+  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {'class': 'ezp-path-contour'}, null)
+  goog.dom.insertChildAt(block.svgGroup_, this.svgPathContour_, 0)
+  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {'class': 'ezp-path-shape'}, null)
+  goog.dom.insertChildAt(block.svgGroup_, this.svgPathShape_, 0)
+  this.svgPathHighlight_ = Blockly.utils.createSvgElement('path',
+    {'class': 'ezp-path-selected'}, null)
+  this.svgPathConnection_ = Blockly.utils.createSvgElement('path',
+    {'class': 'ezp-path-selected'}, null)
+  Blockly.utils.addClass(/** @type {!Element} */ (block.svgGroup_),
+    'ezp-block')
+  // install all the fields and tiles in the DOM
+  for (var k in this.ui.fields) {
+    var field = this.ui.fields[k]
+    field.setSourceBlock(block)
+    field.init()
+  }
+  for (var k in this.ui.tiles) {
+    var tile = this.ui.tiles[k]
+    tile.init()
+  }
 }
 
 /**
@@ -810,7 +643,7 @@ ezP.DelegateSvg.prototype.minBlockWidth = function (block) {
 }
 
 /**
- * Render the inputs of the block.
+ * Render the inputs, the fields and the tiles of the block.
  * @param {!Blockly.Block} block.
  * @private
  */
@@ -840,17 +673,31 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     this.shouldSeparateField = false
   }
   io.shouldSeparateField = this.shouldSeparateField
-  if ((io.field = this.ui.fields.async)) {
-    this.renderDrawField_(io)
+  
+  if ((io.field = this.ui.fromStartField)) {
+    do {
+      this.renderDrawField_(io)
+    } while((io.field = io.field.ezp.nextField))
   }
-  if ((io.field = this.ui.fields.await)) {
-    this.renderDrawField_(io)
-  }
-  if ((io.field = this.ui.fields.modifier)) {
-    this.renderDrawField_(io)
-  }
-  if ((io.field = this.ui.fields.prefix)) {
-    this.renderDrawField_(io)
+  if ((io.tile = this.ui.headTile)) {
+    do {
+      this.renderDrawTile_(io)
+      // if (tile.isDisabled()) {
+
+      // } else {
+      //   if ((io.field = tile.fromStartField)) {
+      //     do {
+      //       this.renderDrawField_(io)
+      //     } while((io.field = io.field.ezp.nextField))
+      //   }
+
+      //   if ((io.field = tile.fromStartField)) {
+      //     do {
+      //       this.renderDrawField_(io)
+      //     } while((io.field = io.field.ezp.nextField))
+      //   }    
+      // }
+    } while ((io.tile = io.tile.nextTile))
   }
   for (; (io.input = block.inputList[io.i]); io.i++) {
     goog.asserts.assert(io.input.ezp, 'Input with no ezp '+io.input.name+' in block '+block.type)
@@ -880,14 +727,10 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
       }
     }
   }
-  if ((io.field = this.ui.fields.suffix)) {
-    this.renderDrawField_(io)
-  }
-  if ((io.field = this.ui.fields.comment_mark)) {
-    this.renderDrawField_(io)
-  }
-  if ((io.field = this.ui.fields.comment)) {
-    this.renderDrawField_(io)
+  if ((io.field = this.ui.toEndField)) {
+    do {
+      this.renderDrawField_(io)
+    } while((io.field = io.field.ezp.nextField))
   }
   // enlarge the width if necessary
   io.cursorX = Math.max(io.cursorX, this.minBlockWidth())
@@ -895,6 +738,39 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   this.minWidth = block.width = Math.max(block.width, io.cursorX)
   this.shouldSeparateField = io.shouldSeparateField
   return io.steps.join(' ')
+}
+
+/**
+ * Render the the tile in `io.tile`.
+ * @param io.
+ * @private
+ */
+ezP.DelegateSvg.prototype.renderDrawTile_ = function (io) {
+  var root = io.tile.getSvgRoot()
+  goog.asserts.assert(root, 'Tile with no root')
+  if (io.tile.isDisabled()) {
+    root.setAttribute('display', 'none')
+  } else {
+    root.removeAttribute('display')
+    root.setAttribute('transform',
+    'translate(' + io.cursorX + ', 0)')
+    var saved = io.cursorX
+    io.cursorX = 0
+    if ((io.field = io.tile.fromStartField)) {
+      do {
+        this.renderDrawField_(io)
+      } while((io.field = io.field.ezp.nextField))
+    }
+    if ((io.input = io.tile.input)) {
+      this.renderDrawInput_(io)
+    }
+    if ((io.field = io.tile.toEndField)) {
+      do {
+        this.renderDrawField_(io)
+      } while((io.field = io.field.ezp.nextField))
+    }
+    io.cursorX += saved
+  }
 }
 
 /**
@@ -1303,55 +1179,6 @@ ezP.DelegateSvg.prototype.setInputEnabled = function (block, input, enabled) {
 /**
  * Set the enable/disable status of the given block.
  * @param {!Block} block.
- * @param {!Input} input.
- * @param {!String} name  input name.
- * @param {!boolean} newValue.
- * @private
- */
-ezP.DelegateSvg.prototype.setInputDisabled = function (block, input, newValue) {
-  var oldValue = input.ezp.disabled_
-  if (!!oldValue === !!newValue) {
-    return
-  }
-  input.ezp.disabled_ = newValue
-  var current = this.skipRendering
-  this.skipRendering = true
-  input.setVisible(!newValue)
-  this.skipRendering = current
-  var c8n = input.connection
-  if (c8n) {
-    c8n.ezp.hidden_ = !!newValue // the hidden status will be forced
-    c8n.setHidden(newValue)
-  }
-  if (input.isVisible()) {
-    for (var __ = 0, field; (field = input.fieldRow[__]); ++__) {
-      if (field.getText().length>0) {
-        var root = field.getSvgRoot()
-        if (root) {
-          root.removeAttribute('display')
-        } else {
-          console.log('Field with no root: did you ...initSvg()?')
-        }
-      }
-    }
-    if (c8n) {
-      var target = c8n.targetBlock()
-      if (target) {
-        var root = target.getSvgRoot()
-        if (root) {
-          root.removeAttribute('display')
-        } else {
-          console.log('Block with no root: did you ...initSvg()?')
-        }
-      }
-    }
-  }
-  this.delayedRender(block)
-}
-
-/**
- * Set the enable/disable status of the given block.
- * @param {!Block} block.
  * @private
  */
 ezP.DelegateSvg.prototype.delayedRender = function (block) {
@@ -1367,16 +1194,20 @@ ezP.DelegateSvg.prototype.delayedRender = function (block) {
 
 /**
  * Create a new block, with svg background and wrapped blocks.
- * This is the expected way to create the block
+ * This is the expected way to create the block.
+ * The is a caveat due to proper timing in initializing the svg.
+ * Whether blocks are headless or not is not clearly designed in Blockly.
  * @param {!WorkspaceSvg} workspace.
  * @param {!String} prototypeName.
  * @private
  */
-ezP.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id = undefined) {
-  var B = workspace.newBlock(prototypeName, id)
+ezP.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id, initSvg) {
+  var B = workspace.newBlock(prototypeName, goog.isString(id) && id)
   B.ezp.completeWrapped_(B)
   B.ezp.consolidate(B, true)
-  B.initSvg()
+  if (goog.isBoolean(id) && id || initSvg) {
+    B.initSvg()
+  }
   return B
 }
 
@@ -1507,7 +1338,7 @@ ezP.HoleFiller.fillDeepHoles = function(workspace, holes) {
           if (data.filler) {
             var B = data.filler(workspace)
           } else {
-            B = ezP.DelegateSvg.newBlockComplete(workspace, data.type)
+            B = ezP.DelegateSvg.newBlockComplete(workspace, data.type, true)
             if (data.value) {
               B.ezp.setPhantomValue && B.ezp.setPhantomValue(B, data.value) ||
               B.ezp.setValue && B.ezp.data.value.set(data.value)
@@ -2286,7 +2117,7 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
   // create a block out of the undo mechanism
   var disabler = new ezP.Events.Disabler()
   try {
-    var candidate = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
+    var candidate = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName, true)
     if (!candidate) {
       disabler.stop()
       return

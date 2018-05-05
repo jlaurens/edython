@@ -13,7 +13,6 @@
 
 goog.provide('ezP.Block')
 goog.require('Blockly.Block')
-goog.require('ezP.Input')
 goog.forwardDeclare('ezP.Delegate')
 goog.forwardDeclare('ezP.T3.All')
 

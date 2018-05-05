@@ -64,13 +64,12 @@ ezP.ConnectionDelegate.prototype.name_ = undefined// must change to wrapper
 
 /**
  * Will connect.
- * Default implementation does nothing.
- * This can be overriden at block creation time.
+ * Forwards to the model.
  * @param {Blockly.Connection} connection the connection owning the delegate
  * @param {Blockly.Connection} targetConnection
  */
 ezP.ConnectionDelegate.prototype.willConnect = function(targetConnection) {
-  return
+  goog.isFunction(this.model.willConnect) && this.model.willConnect.call(this.connection, targetConnection)
 }
 
 /**
@@ -81,7 +80,7 @@ ezP.ConnectionDelegate.prototype.willConnect = function(targetConnection) {
  * @param {Blockly.Connection} oldConnection  what was previously connected to the actual connection.targetConnection
  */
 ezP.ConnectionDelegate.prototype.didConnect = function(oldTargetConnection, targetOldConnection) {
-  return
+  goog.isFunction(this.model.didConnect) && this.model.didConnect.call(this.connection, oldTargetConnection, targetOldConnection)
 }
 
 /**
@@ -90,7 +89,7 @@ ezP.ConnectionDelegate.prototype.didConnect = function(oldTargetConnection, targ
  * This can be overriden at block creation time.
  */
 ezP.ConnectionDelegate.prototype.willDisconnect = function() {
-  return
+  goog.isFunction(this.model.willDisconnect) && this.model.willDisconnect.call(this.connection)
 }
 
 /**
@@ -101,7 +100,7 @@ ezP.ConnectionDelegate.prototype.willDisconnect = function() {
  * @param {Blockly.Connection} oldTargetConnection  what was previously connected to connection
  */
 ezP.ConnectionDelegate.prototype.didDisconnect = function(oldTargetConnection) {
-  return
+  goog.isFunction(this.model.didDisconnect) && this.model.didDisconnect.call(this.connection, oldTargetConnection)
 }
 
 /**
@@ -474,22 +473,23 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
  * @param {!Blockly.Connection} childConnection Connection on inferior block.
  * @private
  */
-ezP.Connection.prototype.connect_ = function(childConnection) {
-  // `this` is actually the parentConnection
-  var parent = this.sourceBlock_
-  var oldChildConnection = this.targetConnection
-  var oldParentConnection = childConnection.targetConnection
-  this.ezp.willConnect.call(this, childConnection)
-  childConnection.ezp.willConnect.call(childConnection, this)
-  parent.ezp.willConnect(parent, this, childConnection)
-  var child = childConnection.sourceBlock_
-  child.ezp.willConnect(child, childConnection, this)
-  ezP.Connection.superClass_.connect_.call(this, childConnection)
-  if (this.ezp.plugged_) {
-    child.ezp.plugged_ = this.ezp.plugged_
+ezP.Connection.prototype.connect_ = function(childC8n) {
+  // `this` is actually the parentC8n
+  var parentC8n = this
+  var parent = parentC8n.sourceBlock_
+  var child = childC8n.sourceBlock_
+  var oldChildC8n = parentC8n.targetConnection
+  var oldParentC8n = childC8n.targetConnection
+  parentC8n.ezp.willConnect(childC8n)
+  childC8n.ezp.willConnect(parentC8n)
+  parent.ezp.willConnect(parent, parentC8n, childC8n)
+  child.ezp.willConnect(child, childC8n, parentC8n)
+  ezP.Connection.superClass_.connect_.call(parentC8n, childC8n)
+  if (parentC8n.ezp.plugged_) {
+    child.ezp.plugged_ = parentC8n.ezp.plugged_
     console.log('plugged_ is', child.ezp.plugged_)
   }
-  if (this.ezp.wrapped_) {
+  if (parentC8n.ezp.wrapped_) {
     if (child.ezp.hasSelect(child)) { // Blockly.selected === child
       child.unselect()
       var P = child
@@ -503,7 +503,7 @@ ezP.Connection.prototype.connect_ = function(childConnection) {
     child.ezp.makeBlockWrapped_(child)
   } else {
     // if this connection was selected, the newly connected block should be selected too
-    if (this === ezP.SelectedConnection.get()) {
+    if (parentC8n === ezP.SelectedConnection.get()) {
       P = parent
       do {
         if (P === Blockly.selected) {
@@ -513,14 +513,14 @@ ezP.Connection.prototype.connect_ = function(childConnection) {
       } while ((P = P.getSurroundParent()))
     }
   }
-  if (oldChildConnection && childConnection !== oldChildConnection) {
-    var oldChild = oldChildConnection.sourceBlock_
+  if (oldChildC8n && childC8n !== oldChildC8n) {
+    var oldChild = oldChildC8n.sourceBlock_
     if (oldChild) {
       if (oldChild.ezp.wrapped_) {
         if (Blockly.Events.recordUndo) {
           oldChild.dispose(true)
         }
-      } else if (!oldChildConnection.targetBlock()) {
+      } else if (!oldChildC8n.targetBlock()) {
         // another chance to reconnect the orphan
         // just in case the check_ has changed in between
         // which might be the case for the else_part blocks
@@ -528,8 +528,8 @@ ezP.Connection.prototype.connect_ = function(childConnection) {
         var c8n
         while ((c8n = P.nextConnection)) {
           if (!c8n.targetConnection) {
-            if (c8n.checkType_(oldChildConnection)) {
-              c8n.connect(oldChildConnection)
+            if (c8n.checkType_(oldChildC8n)) {
+              c8n.connect(oldChildC8n)
             }
             break
           }
@@ -537,16 +537,10 @@ ezP.Connection.prototype.connect_ = function(childConnection) {
       }
     }
   }
-  childConnection.ezp.didConnect.call(childConnection, oldChildConnection, oldParentConnection)
-  this.ezp.didConnect.call(this, oldParentConnection, oldChildConnection)
-  parent.ezp.didConnect(parent, this, oldChildConnection, oldParentConnection)
-  child.ezp.didConnect(child, childConnection, oldParentConnection, oldChildConnection)
-  if (oldChildConnection) {
-    this.ezp.didConnect.call(this, oldChildConnection, oldParentConnection)
-  }
-  if (oldParentConnection) {
-    childConnection.ezp.didConnect.call(childConnection, oldParentConnection, oldChildConnection)
-  }
+  childC8n.ezp.didConnect(oldChildC8n, oldParentC8n)
+  parentC8n.ezp.didConnect(oldParentC8n, oldChildC8n)
+  parent.ezp.didConnect(parent, parentC8n, oldChildC8n, oldParentC8n)
+  child.ezp.didConnect(child, childC8n, oldParentC8n, oldChildC8n)
 }
 
 /**
@@ -560,17 +554,17 @@ ezP.Connection.prototype.disconnectInternal_ = function(parentBlock,
   childBlock) {
   var block = this.sourceBlock_
   if (block === parentBlock) {
-    var parentConnection = this
-    var childConnection = this.targetConnection
+    var parentC8n = this
+    var childC8n = this.targetConnection
   } else {
-    var parentConnection = this.targetConnection
-    var childConnection = this
+    var parentC8n = this.targetConnection
+    var childC8n = this
   }
-  parentConnection.ezp.willDisconnect.call(parentConnection)
-  childConnection.ezp.willDisconnect.call(childConnection)
-  parentBlock.ezp.willDisconnect(parentBlock, parentConnection)
-  childBlock.ezp.willDisconnect(childBlock, childConnection)
-  if (parentConnection.ezp.wrapped_) {
+  parentC8n.ezp.willDisconnect()
+  childC8n.ezp.willDisconnect()
+  parentBlock.ezp.willDisconnect(parentBlock, parentC8n)
+  childBlock.ezp.willDisconnect(childBlock, childC8n)
+  if (parentC8n.ezp.wrapped_) {
     // currently unwrapping a block,
     // this occurs while removing the parent
     // if the parent was selected, select the child
@@ -585,10 +579,10 @@ ezP.Connection.prototype.disconnectInternal_ = function(parentBlock,
     console.log('plugged_ was', childBlock.ezp.plugged_)
     childBlock.ezp.plugged_ = undefined
   }
-  parentBlock.ezp.didDisconnect(parentBlock, parentConnection, childConnection)
-  childBlock.ezp.didDisconnect(childBlock, childConnection, parentConnection)
-  parentConnection.ezp.didDisconnect.call(parentConnection, childConnection)
-  childConnection.ezp.didDisconnect.call(childConnection, parentConnection)
+  parentBlock.ezp.didDisconnect(parentBlock, parentC8n, childC8n)
+  childBlock.ezp.didDisconnect(childBlock, childC8n, parentC8n)
+  parentC8n.ezp.didDisconnect(childC8n)
+  childC8n.ezp.didDisconnect(parentC8n)
 }
 
 Blockly.Connection.uniqueConnection_original = Blockly.Connection.uniqueConnection_
@@ -749,4 +743,11 @@ Blockly.Connection.lastConnectionInRow_ = function(startBlock, orphanBlock) {
     }
   }
   return null;
-};
+}
+
+/**
+ * Walks down a row a blocks, at each stage */
+ezP.ConnectionDelegate.prototype.consolidateSourceType = function() {
+  var block = this.connection.getSourceBlock()
+  block.ezp.consolidateType(block)
+}

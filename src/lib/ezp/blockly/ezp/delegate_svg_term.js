@@ -57,7 +57,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
         },
         synchronize: function (newValue) {
           this.setFieldValue(this.toText() || '')
-          this.setInputDisabled(this.disabled_)
+          this.setTileDisabled(this.disabled_)
         },
         xml: {
           persistent: true,
@@ -133,7 +133,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
         edit: {
           placeholder: ezP.Msg.Placeholder.TERM,
           validate: function(txt) {
-            return this.ezp.validateData(goog.isDef(txt)? text: this.getValue() )
+            return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue() )
           },
           onEndEditing: function () {
             this.ezp.setData(this.getValue())
@@ -158,7 +158,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
         check: ezP.T3.Expr.Check.expression,
         hole_value: 'expression',
       },
-      as: {
+      alias: {
         order: 4,
         label: {
           value: 'as',
@@ -166,12 +166,8 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
         },
         edit: {
           placeholder: ezP.Msg.Placeholder.ALIAS,
-          validate: function(txt) {
-            return this.validateData(goog.isDef(txt)? txt: this.getValue())
-          },
-          onEndEditing: function () {
-            this.setData(this.getValue())
-          },
+          validate: true,
+          onEndEditing: true,
         },
       },
     },
@@ -232,7 +228,7 @@ ezP.DelegateSvg.Expr.term.prototype.noBlockWrapped = function (block) {
  * @return the phantom value
  */
 ezP.DelegateSvg.Expr.term.prototype.getPhantomValue = function(block) {
-  var field = this.ui.tiles.name.fields.name
+  var field = this.ui.tiles.name.fields.edit
   return field.placeholderText_
 }
 
@@ -255,7 +251,7 @@ ezP.DelegateSvg.Expr.term.prototype.setPhantomValue = function(block, text) {
  * @private
  */
 ezP.DelegateSvg.Expr.term.prototype.showEditor = function (block) {
-  this.ui.tiles.name.fields.name.showEditor_()
+  this.ui.tiles.name.fields.edit.showEditor_()
 }
 
 /**

@@ -79,8 +79,8 @@ ezP.DelegateSvg.Expr.makeSubclass('slicing', {
     variant: {
       all: [0, 1],
       synchronize: function(newValue) {
-        this.setInputDisabled(1, !!newValue)
-        this.setInputDisabled(2, !newValue)
+        this.ui.tiles.name.setDisabled(!!newValue)
+        this.ui.tiles.primary.setDisabled(!newValue)
       },
     },
     name: {
@@ -90,9 +90,7 @@ ezP.DelegateSvg.Expr.makeSubclass('slicing', {
         return type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name?
         {validated: newValue}: null
       },
-      synchronize: function(newValue) {
-        this.setFieldValue(this.toText() || '', 1, ezP.Key.VALUE)
-      },
+      synchronize: true,
     }
   },
   tiles: {
@@ -176,10 +174,10 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
     variant: {
       all: [0, 1, 2,],
       synchronize: function(newValue) {
-        var withExpression = newValue === 1
-        this.setInputDisabled(1, withExpression)
-        this.setInputDisabled(2, !withExpression)
-        var field = this.ui[1].fields.value
+        var withPrimary = newValue === 1
+        this.ui.tiles.name.setDisabled(withPrimary)
+        this.ui.tiles.primary.setDisabled(!withPrimary)
+        var field = this.ui.tiles.name.fields.edit
         if (field.textElement_) {
           var withBuiltin = newValue === 2
           var i = withBuiltin? 0: 1

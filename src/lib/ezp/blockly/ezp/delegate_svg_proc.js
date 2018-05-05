@@ -202,9 +202,9 @@ ezP.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (b
 ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
   data: {
     variant: {
-      all: ['', ezP.Key.TYPE],
+      all: [null, ezP.Key.TYPE],
       synchronize: function (newValue) {
-        this.setInputDisabled(3, (ezP.Key.TYPE !== newValue))
+        this.ui.tiles.type.setDisabled(!newValue)
       },
     },
     name: {
@@ -297,7 +297,7 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
     variant: {
       all: [null, ezP.Key.ARGUMENTS],
       synchronize: function(newValue) {
-        this.setInputDisabled(2, (ezP.Key.ARGUMENTS !== newValue))
+        this.ui.tiles.arguments.setDisabled(!newValue)
       },
     },
     name: {
@@ -311,11 +311,14 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
       },
     },
   },
+  fields: {
+    label: {
+      value: 'class',
+    },
+  },
   tiles: {
     name: {
       order: 1,
-      label: 'class',
-      css_class: 'ezp-code-reserved',
       edit: {
         placeholder: ezP.Msg.Placeholder.IDENTIFIER,
         validate: function(txt) {

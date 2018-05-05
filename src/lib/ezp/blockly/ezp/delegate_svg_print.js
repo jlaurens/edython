@@ -77,7 +77,7 @@ ezP.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
     var insert = function(key) {
       var grouper = new ezP.Events.Grouper()
       try {
-        var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term)
+        var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term, true)
         B.ezp.data.value.set(key)
         B.ezp.data.variant.set(2)
         var c8n = list.inputList[list.inputList.length-1].connection
@@ -156,7 +156,7 @@ ezP.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
     var insert = function(key) {
       var grouper = new ezP.Events.Grouper()
       try {
-        var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term)
+        var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term, true)
         B.ezp.data.value.set(key)
         B.ezp.data.variant.set(2)
         // we assume that inputList is not void

@@ -419,6 +419,7 @@ ezP.BlockSvg.prototype.onMouseDown_ = function(e) {
       return
     }
   }
+  // Next is not good design
   // remove any selected connection, if any
   ezP.SelectedConnection.set(null)
   this.ezp.selectedConnectionSource_ = null

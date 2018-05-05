@@ -311,7 +311,7 @@ ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
   var F = function(modifier, flags, msg) {
     var BB
     ezP.Events.Disabler.wrap(function() {
-      BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term)
+      BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term, true)
       BB.ezp.skipRendering = true
       BB.ezp.data.modifier.set(modifier)
       BB.ezp.data.variant.set(flags)
@@ -329,7 +329,7 @@ ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
           mgr.addInsertChild(new ezP.MenuItem(content, function() {
             var grouper = new ezP.Events.Grouper()
             try {
-              var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term)
+              var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term, true)
               B.ezp.skipRendering = true
               B.ezp.data.modifier.set(modifier)
               B.ezp.data.variant.set(flags)
@@ -399,18 +399,10 @@ ezP.DelegateSvg.Expr.makeSubclass('lambda', {
   output: {
     check: [ezP.T3.Expr.lambda_expr, ezP.T3.Expr.lambda_expr_nocond],
     didConnect: function(oldTargetConnection, oldConnection) {
-      // `this` is a connection
-      var block = this.sourceBlock_
-      if (block) {
-        block.ezp.consolidateType(block)
-      }
+      this.ezp.consolidateSourceType()
     },
     didDisconnect: function(oldConnection) {
-      // `this` is a connection
-      var block = this.sourceBlock_
-      if (block) {
-        block.ezp.consolidateType(block)
-      }
+      this.ezp.consolidateSourceType()
     },
   },
 })

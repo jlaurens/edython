@@ -67,7 +67,11 @@ ezP.FieldTextInput.prototype.init = function () {
   if (!this.visible_) {
     this.fieldGroup_.style.display = 'none'
   }
-
+  if (this.ezp.tile) {
+    this.ezp.tile.getSvgRoot().appendChild(this.fieldGroup_)
+  } else {
+    this.this.sourceBlock_.getSvgRoot().appendChild(this.textElement_)
+  }
   this.borderRect_ = Blockly.utils.createSvgElement('rect',
     { class: 'ezp-none',
       rx: 0,
@@ -91,10 +95,10 @@ ezP.FieldTextInput.prototype.init = function () {
     {'class': this.cssClass, 'y': ezP.Font.totalAscent},
     this.fieldGroup_)
   this.updateEditable()
-  this.sourceBlock_.getSvgRoot().appendChild(this.fieldGroup_)
+  this.fieldGroup_.appendChild(this.textElement_)
   this.mouseDownWrapper_ =
-  Blockly.bindEventWithChecks_(this.fieldGroup_, 'mousedown', this,
-    this.onMouseDown_)
+  Blockly.bindEventWithChecks_(this.fieldGroup_, 'mousedown', this, this.onMouseDown_
+  )
   // Force a render.
   this.render_()
 }
@@ -336,14 +340,13 @@ ezP.FieldInput.prototype.placeholderText = function() {
   if (this.placeholderText_) {
     return this.placeholderText_
   }
-  var F = function() {
+  return function() {
     var model = this.ezp && this.ezp.model
     if (model) {
       var placeholder = model.placeholder
       return goog.isString(placeholder) &&  placeholder || goog.isFunction(placeholder) &&  placeholder.call(this)
     }
-  }
-  return F() || ezP.Msg.Placeholder.CODE
+  }.call(this) || ezP.Msg.Placeholder.CODE
 }
 
 /**
@@ -404,12 +407,28 @@ ezP.FieldHelper.onEndEditing = function () {
  * @param {string|null} key  The data key, when null or undefined, ths receiver's key.
  * @constructor
  */
-ezP.FieldHelper.prototype.setData = function (newValue, key) {
-  var block = this.owner_.sourceBlock_
-  if (block) {
-    var data = block.ezp.data[key || this.key]
-    data.set(newValue)
+ezP.FieldHelper.prototype.getData_ = function (key) {
+  var data = this.data
+  if (!data) {
+    var block = this.owner_.sourceBlock_
+    data = block && block.ezp.data[key || this.key]
+    goog.asserts.assert(data,
+    ezP.Do.format('No data bound to field {0}/{1}', key || this.key, block && block.type))
   }
+  return data
+}
+
+/**
+ * Set the keyed data of the source block to the given value.
+ * Eventual problem: there might be some kind of formatting such that
+ * the data stored and the data shown in the ui are not the same.
+ * There is no step for such a translation but the need did not occur yet.
+ * @param {Object} newValue
+ * @param {string|null} key  The data key, when null or undefined, ths receiver's key.
+ * @constructor
+ */
+ezP.FieldHelper.prototype.setData = function (newValue, key) {
+  this.getData_(key).set(newValue)
 }
 
 /**
@@ -419,10 +438,6 @@ ezP.FieldHelper.prototype.setData = function (newValue, key) {
  * @constructor
  */
 ezP.FieldHelper.prototype.validateData = function (newValue, key) {
-  var block = this.owner_.sourceBlock_
-  if (block) {
-    var data = block.ezp.data[key || this.key]
-    var v = data.validate(newValue)
-    return v && v.validated
-  }
+  var v = this.getData_(key).validate(newValue)
+  return v && v.validated
 }

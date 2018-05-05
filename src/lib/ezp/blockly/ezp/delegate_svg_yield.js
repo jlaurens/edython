@@ -28,8 +28,8 @@ ezP.DelegateSvg.Expr.makeSubclass('yield_expression', {
     variant: {
       all: [0, 1, 2],
       synchronize: function(newValue) {
-        this.setInputDisabled(1, newValue != 1)
-        this.setInputDisabled(2, newValue != 2)
+        this.ui.tiles.expression.setDisabled(newValue != 1)
+        this.ui.tiles.from.setDisabled(newValue != 2)
       }
     }
   },

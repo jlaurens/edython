@@ -417,13 +417,12 @@ ezP.Data.prototype.setFieldVisible = function (newValue) {
 
 /**
  * Set the enable/disable status of the given input.
- * @param {!number} index  of the input older in the ui object 
  * @param {!boolean} newValue.
  * @private
  */
-ezP.Data.prototype.setInputDisabled = function (newValue) {
-  goog.asserts.assert(this.input, 'Missing input binding')
-  this.input.setDisabled(newValue)
+ezP.Data.prototype.setTileDisabled = function (newValue) {
+  goog.asserts.assert(this.tile, 'Missing tile binding')
+  this.tile.setDisabled(newValue)
 }
 
 /**

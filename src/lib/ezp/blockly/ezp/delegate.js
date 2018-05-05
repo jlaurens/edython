@@ -45,6 +45,15 @@ ezP.Delegate = function (block) {
 goog.inherits(ezP.Delegate, ezP.Helper)
 
 /**
+ * Get the block.
+ * For ezPython.
+ * @param {boolean} newValue.
+ */
+ezP.Delegate.prototype.getBlock = function () {
+  return this.block_
+}
+
+/**
  * Get the ezp namespace in the constructor.
  * Create one if it does not exist.
  * Closure used.
@@ -363,15 +372,6 @@ ezP.Delegate.prototype.consolidateType = function (block) {
   this.setupType(block)
 }
 
-ezP.Delegate.model__ = {
-  data: {
-    modifier: {},
-    subtype: {},
-    value: {},
-    variant: {},
-  },
-}
-
 /**
  * Initialize the data.
  * Bind data and fields.
@@ -397,19 +397,21 @@ ezP.Delegate.prototype.initData = function() {
       } else {
         data.field = tile.fields.edit
       }
-    } else if (!(data.field = this.ui.fields[k])) {
+    } else if ((data.field = this.ui.fields[k])) {
+      data.field.ezp.data = data
+    } else {
       for(var kk in this.ui.tiles) {
         tile = this.ui.tiles[kk]
         if ((data.field = tile.fields[k])) {
           break
         }
       }
-      var field = data.field
-      var ezp = field && field.ezp
-      if (ezp) {
-        // this is for editable fields
-        ezp.data = data
-      }
+    }
+    var field = data.field
+    var ezp = field && field.ezp
+    if (ezp) {
+      // this is for editable fields
+      ezp.data = data
     }
   }
   var init = this.getModel().initData
@@ -504,18 +506,7 @@ ezP.Delegate.prototype.initBlock = function (block) {
   if (D && Object.keys(D).length) {
     block.setOutput(true, D.check)
     var ezp = block.outputConnection.ezp
-    if (goog.isFunction(D.willConnect)) {
-      ezp.willConnect = D.willConnect
-    }
-    if (goog.isFunction(D.didConnect)) {
-      ezp.didConnect = D.didConnect
-    }
-    if (goog.isFunction(D.willDisconnect)) {
-      ezp.willDisconnect = D.willDisconnect
-    }
-    if (goog.isFunction(D.didDisconnect)) {
-      ezp.didDisconnect = D.didDisconnect
-    }
+    ezp.model = D
     if (D.suite && Object.keys(D.suite).length) {
       goog.mixin(ezp, D.suite)
     }
@@ -523,28 +514,13 @@ ezP.Delegate.prototype.initBlock = function (block) {
     if (D.key) {
       var input = block.appendStatementInput(D.key).setCheck(D.check) // Check ?
     }
-    var F = function(D, c8n) {
-      var ezp = c8n.ezp
-      if (goog.isFunction(D.willDisconnect)) {
-        ezp.willDisconnect = D.willDisconnect
-      }
-      if (goog.isFunction(D.didDisconnect)) {
-        ezp.didDisconnect = D.didDisconnect
-      }
-      if (goog.isFunction(D.willConnect)) {
-        ezp.willConnect = D.willConnect
-      }
-      if (goog.isFunction(D.didConnect)) {
-        ezp.didConnect = D.didConnect
-      }
-    }
     if (D.next && D.next.check !== null) {
       block.setNextStatement(true, D.next.check)
-      F(D.next, block.nextConnection)
+      block.nextConnection.ezp.model = D.next
     }
     if (D.previous && D.previous.check !== null) {
       block.setPreviousStatement(true, D.previous.check)
-      F(D.previous, block.previousConnection)
+      block.previousConnection.ezp.model = D.previous
     }
   }
 }
