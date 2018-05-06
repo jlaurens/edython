@@ -169,7 +169,7 @@ ezP.Tile.makeFields = function() {
         field = new ezP.FieldInput(model.edit || '', model.validate, fieldName)
       } else if (goog.isDefAndNotNull(model.value) || goog.isDefAndNotNull(model.css)) {
         // this is just a label field
-        field = new ezP.FieldLabel(model.value)
+        field = new ezP.FieldLabel(model.value || '')
       } else { // other entries are ignored
         return
       }

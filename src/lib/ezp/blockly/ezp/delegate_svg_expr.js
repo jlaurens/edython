@@ -540,19 +540,13 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_object', {
   data: {
     value: {
       all: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
-      synchronize: function(newValue) {
-        this.setFieldValue(this.toText() || '', 1, ezP.Key.LABEL)
-      },
+      synchronize: true,
     },
   },
-  tiles: {
+  fields: {
     value: {
-      order: 1,
-      fields: {
-        value: '',
-        css: 'reserved',
-      },
-    },
+      css: 'reserved',
+    }
   },
 })
 
