@@ -167,7 +167,7 @@ ezP.Tile.makeFields = function() {
       if (model.edit || model.validate || model.endEditing || model.startEditing) {
         // this is an ediable field
         field = new ezP.FieldInput(model.edit || '', model.validate, fieldName)
-      } else if (goog.isDefAndNotNull(model.value)) {
+      } else if (goog.isDefAndNotNull(model.value) || goog.isDefAndNotNull(model.css)) {
         // this is just a label field
         field = new ezP.FieldLabel(model.value)
       } else { // other entries are ignored
@@ -412,10 +412,7 @@ ezP.Tile.prototype.isRequiredToDom = function () {
  * @param {boolean} newValue.
  */
 ezP.Tile.prototype.isRequiredFromDom = function () {
-  if (this.is_required_from_dom != this.is_required_from_dom || this.model.xml && this.model.xml.required) {
-    console.log('WTF: ', this.is_required_from_dom, this.is_required_from_dom || this.model.xml && this.model.xml.require)
-  }
-  return this.is_required_from_dom // || this.model.xml && this.model.xml.required
+ return this.is_required_from_dom || this.model.xml && this.model.xml.required
 }
 
 /**
@@ -509,7 +506,7 @@ ezP.Tile.prototype.setFieldValue = function (newValue, fieldKey) {
  * @return a dom element, void lists may return nothing
  * @this a block delegate
  */
-ezP.Tile.prototype.toDom = function(element, optNoId, optNoName) {
+ezP.Tile.prototype.toDom = function(element, optNoId) {
   var xml = this.model.xml
   if (!this.isDisabled() && (!goog.isDef(xml) || xml !== false)) {
     var out = function() {
@@ -520,10 +517,11 @@ ezP.Tile.prototype.toDom = function(element, optNoId, optNoName) {
           if (target.ezp.wrapped_) {
             // wrapped blocks are just a convenient computational model.
             // For lists only, we do create a further level
+            // Actually, every wrapped block is a list
             if (target.ezp instanceof ezP.DelegateSvg.List) {
               var child = ezP.Xml.blockToDom(target, optNoId)
               if (child.childNodes.length>0) {
-                if (!optNoName) {
+                if (!xml || !xml.noInputName) {
                   child.setAttribute(ezP.Xml.INPUT, this.key)
                 }
                 goog.dom.appendChild(element, child)
@@ -536,7 +534,7 @@ ezP.Tile.prototype.toDom = function(element, optNoId, optNoName) {
           } else {
             var child = ezP.Xml.blockToDom(target, optNoId)
             if (child.childNodes.length>0 || child.hasAttributes()) {
-              if (!optNoName) {
+              if (!xml || !xml.noInputName) {
                 if (this.inputType === Blockly.INPUT_VALUE) {
                   child.setAttribute(ezP.Xml.INPUT, this.key)
                 } else if (this.inputType === Blockly.NEXT_STATEMENT) {

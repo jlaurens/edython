@@ -437,13 +437,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
  * @constructor
  */
 ezP.DelegateSvg.Stmt.makeSubclass('docstring_top_stmt', {
-  tiles: {
-    dummy: {
-      order: 1,
-      wrap: ezP.T3.Expr.longliteral,
-      check: ezP.T3.Expr.Check.longliteral,
-    },
-  },
+  link: ezP.T3.Expr.longliteral,
 })
 
 /**
@@ -465,13 +459,7 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = function(block)  {
  * @constructor
  */
 ezP.DelegateSvg.Stmt.makeSubclass('docstring_def_stmt', {
-  tiles: {
-    dummy: {
-      order: 1,
-      wrap: ezP.T3.Expr.longliteral,
-      check: ezP.T3.Expr.Check.longliteral,
-    },
-  },
+  link: ezP.T3.Expr.longliteral,
 })
 
 console.warn('if_part and others conform to the new model and xml ?')

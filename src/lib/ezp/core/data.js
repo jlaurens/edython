@@ -430,8 +430,8 @@ ezP.Data.prototype.setFieldVisible = function (newValue) {
  * @private
  */
 ezP.Data.prototype.setTileDisabled = function (newValue) {
-  goog.asserts.assert(this.tile, 'Missing tile binding')
-  this.tile.setDisabled(newValue)
+  goog.asserts.assert(this.tile || this.tile === null, 'Missing tile binding')
+  this.tile && this.tile.setDisabled(newValue)
 }
 
 /**

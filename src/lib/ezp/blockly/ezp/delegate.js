@@ -399,11 +399,13 @@ ezP.Delegate.prototype.initData = function() {
         data.field = tile.fields.edit
       }
     } else if ((data.field = this.ui.fields[k])) {
+      data.tile = null
       data.field.ezp.data = data
     } else {
       for(var kk in this.ui.tiles) {
         tile = this.ui.tiles[kk]
         if ((data.field = tile.fields[k])) {
+          data.tile = tile
           break
         }
       }

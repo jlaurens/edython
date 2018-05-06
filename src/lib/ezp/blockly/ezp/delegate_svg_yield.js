@@ -199,16 +199,10 @@ ezP.DelegateSvg.List.makeSubclass('parenth_form', function() {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('yield_atom', {
+ezP.DelegateSvg.Expr.yield_expression.makeSubclass('yield_atom', {
   fields: {
     prefix: '(',
     suffix: ')',
-  },
-  tiles: {
-    expression: {
-      order: 1,
-      wrap: ezP.T3.Expr.yield_expression,
-    },
   },
 })
 

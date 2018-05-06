@@ -425,37 +425,31 @@ ezP.DelegateSvg.Expr.makeSubclass('conditional_expression_solid', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('starred_expression', function () {
-  var D = {
-    data: {
-      modifier: {
-        synchronize: function(newValue) {
-          this.setFieldValue(this.toText(), 1, ezP.Key.LABEL)
-        },
+ezP.DelegateSvg.Expr.makeSubclass('starred_expression', {
+  data: {
+    modifier: {
+      STAR: '*',
+      STAR_STAR: '**',
+      all: ['*', '**'],
+      synchronize: true,
+    },
+  },
+  fields: {
+    modifier: {
+      css: 'reserved',
+    },
+  },
+  tiles: {
+    expression: {
+      order: 1,
+      check: ezP.T3.Expr.Check.expression,
+      hole_value: 'name',
+      didConnect: function(oldTargetConnection, oldConnection) {
+        this.ezp.consolidateSource()
       },
     },
-    tiles: {
-      expression: {
-        order: 1,
-        fields: {
-          label: {
-            value: '',
-            css: 'reserved',
-          },
-        },
-        check: ezP.T3.Expr.Check.expression,
-        hole_value: 'name',
-        didConnect: function(oldTargetConnection, oldConnection) {
-          this.ezp.consolidateSource()
-        },
-      },
-    },
-  }
-  D.data.modifier.STAR = '*'
-  D.data.modifier.STAR_STAR = '**'
-  D.data.modifier.all = [D.data.modifier.STAR, D.data.modifier.STAR_STAR]
-  return D
-} ())
+  },
+})
 
 /**
  * Set the type dynamically from the modifier.
@@ -468,7 +462,7 @@ ezP.DelegateSvg.Expr.starred_expression.prototype.consolidateType = function(blo
   // ezP.T3.Expr.Check.or_expr
   var data = this.data.modifier
   var withOneStar = data.get() === data.model.STAR
-  var c8n = this.ui[1].input.connection
+  var c8n = this.ui.tiles.expression.connection
   var targetC8n = c8n.targetConnection
   var no_or_expr = false
   if (targetC8n) {
