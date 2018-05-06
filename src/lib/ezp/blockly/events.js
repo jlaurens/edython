@@ -140,8 +140,8 @@ ezP.Data.prototype.setTrusted_ = function (newValue) {
     }
     this.value_ = newValue
     this._didChange(oldValue, newValue)
+    ezp.consolidate(block)
     this.synchronize(newValue)
-    ezp.consolidateType(block)
     ezp.skipRendering = old
     !old && block.render() // render now or possibly later ?
   } finally {

@@ -62,16 +62,16 @@ ezP.Consolidator.prototype.init = undefined
  * and allow inheritance.
  * @param {!Object} data.
  */
-ezP.Consolidator.makeSubclass = function(key, data, Ctor, owner) {
-  Ctor = Ctor || ezP.Consolidator
-  owner = owner || Ctor
+ezP.Consolidator.makeSubclass = function(key, data, C10r, owner) {
+  C10r = C10r || ezP.Consolidator
+  owner = owner || C10r
   var subclass = owner[key] = function(d) {
     subclass.superClass_.constructor.call(this, d)
   }
-  goog.inherits(subclass, Ctor)
+  goog.inherits(subclass, C10r)
   subclass.data_ = {} // start with a fresh object for the constructor data model
-  if (Ctor.data_) {
-    goog.mixin(subclass.data_, Ctor.data_)
+  if (C10r.data_) {
+    goog.mixin(subclass.data_, C10r.data_)
   }
   if (goog.isFunction(data)) {
     data = data.call(this)
@@ -79,8 +79,8 @@ ezP.Consolidator.makeSubclass = function(key, data, Ctor, owner) {
   if (data) {
     goog.mixin(subclass.data_, data)
   }
-  subclass.makeSubclass = function(key, data, Ctor, owner) {
-    ezP.Consolidator.makeSubclass(key, data, Ctor || subclass, owner)
+  subclass.makeSubclass = function(key, data, C10r, owner) {
+    ezP.Consolidator.makeSubclass(key, data, C10r || subclass, owner)
   }
 }
 

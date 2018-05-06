@@ -437,7 +437,8 @@ ezP.FieldHelper.prototype.setData = function (newValue, key) {
  * @param {string|null} key  The data key, when null or undefined, ths receiver's key.
  * @constructor
  */
-ezP.FieldHelper.prototype.validateData = function (newValue, key) {
-  var v = this.getData_(key).validate(newValue)
-  return v && v.validated
+ezP.FieldHelper.prototype.validate = function (txt) {
+    var d = this.data
+    var v = d && d.validate(goog.isDef(txt)? txt: this.getValue())
+    return v? (goog.isDef(v.validated)? v.validated: null): txt
 }

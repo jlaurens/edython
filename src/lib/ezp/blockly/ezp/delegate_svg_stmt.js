@@ -35,6 +35,20 @@ ezP.DelegateSvg.makeSubclass('Stmt', {
       },
       synchronize: true,
       placeholderText: ezP.Msg.Placeholder.COMMENT,
+      xml: {
+        toDom: function(element) {
+          if (this.data.comment_show.get()) {
+            element.setAttribute(this.attributeName, this.toText())
+          }
+        },
+        fromDom: function(element) {
+          var comment = element.getAttribute(this.attributeName)
+          if (goog.isDefAndNotNull(comment)) {
+            this.fromText(comment)
+            this.data.comment_show.set(true)
+          }
+        },
+      }
     },
     comment_show: {
       default: false,
@@ -45,6 +59,7 @@ ezP.DelegateSvg.makeSubclass('Stmt', {
         this.ui.fields.comment_mark.setVisible(!!newValue)
         this.ui.fields.comment.setVisible(!!newValue)
       },
+      xml: false,// do not save
     },
   },
   fields: {

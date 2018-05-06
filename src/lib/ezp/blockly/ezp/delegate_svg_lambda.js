@@ -402,10 +402,10 @@ ezP.DelegateSvg.Expr.makeSubclass('lambda', {
   output: {
     check: [ezP.T3.Expr.lambda_expr, ezP.T3.Expr.lambda_expr_nocond],
     didConnect: function(oldTargetConnection, oldConnection) {
-      this.ezp.consolidateSourceType()
+      this.ezp.consolidateSource()
     },
     didDisconnect: function(oldConnection) {
-      this.ezp.consolidateSourceType()
+      this.ezp.consolidateSource()
     },
   },
 })

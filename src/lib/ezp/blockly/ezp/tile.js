@@ -118,14 +118,12 @@ goog.require('ezP.FieldInput')
  * @param {!Object} ui
  * @param {!Object} fieldsModel
  */
-ezP.Tile.makeFields = function (owner, ui, fieldsModel) {
-  ui.fields = ui.fields || Object.create(null)
-  // field maker
+ezP.Tile.makeFields = function() {
+  // This is a closure
   // default helper functions for an editable field bound to a data object
+  // `this` is an instance of  ezP.FieldInput
   var validate = function (txt) {
-      var d = this.ezp.data
-      var v = d && d.validate(txt)
-      return v? v.validated || null: txt
+      return this.ezp.validate.call(this, txt)
   }
   var startEditing = function () {
   }
@@ -197,98 +195,102 @@ ezP.Tile.makeFields = function (owner, ui, fieldsModel) {
     field.name = field.ezp.key = fieldName // main fields have identical name and key
     return field
   }
-  // Serious things here
-  var block = owner.getBlock()
-  goog.asserts.assert(block, 'Missing while making fields')
-  for(var key in fieldsModel) {
-    var model = fieldsModel[key]
-    var field = makeField(key, model)
-    if (field) {
-      ui.fields[key] = field
-    }
-  }
-  // now order
-  // fields must not have the same order 
-  // some default fields have predefined order
-  var byOrder = Object.create(null)
-  var unordered = []
-  var fromStart = [] // fields ordered from the beginning
-  var toEnd = [] // // fields ordered to the end
-  for(var key in ui.fields) {
-    var field = ui.fields[key]
-    var order = field.ezp.order
-    if (order) {
-      goog.asserts.assert(!byOrder[order],
-      ezP.Do.format('Fields with the same order  {0} = {1} / {2}',
-      byOrder[order].name, field.name, field.sourceBlock_.type))
-      byOrder[order] = field
-      if (order>0) {
-        for (var i = 0; i < fromStart.length; i++) {
-          if (fromStart[i].ezp.order > order) {
-            break
-          }
-        }
-        fromStart.splice(i, 0, field)
-      } else if (order<0) {
-        for (var i = 0; i < toEnd.length; i++) {
-          if (toEnd[i].ezp.order < order) {
-            break
-          }
-        }
-        toEnd.splice(i, 0, field)
+  return function (owner, ui, fieldsModel) {
+    ui.fields = ui.fields || Object.create(null)
+    // field maker
+    // Serious things here
+    var block = owner.getBlock()
+    goog.asserts.assert(block, 'Missing while making fields')
+    for(var key in fieldsModel) {
+      var model = fieldsModel[key]
+      var field = makeField(key, model)
+      if (field) {
+        ui.fields[key] = field
       }
-    } else {
-      unordered.push(field)
     }
-  }
-  // now order the fields in linked lists
-  // Next returns the first field in a chain field.ezp.nextField -> ...
-  // The chain is built from the list of arguments
-  // arguments are either field names or fields
-  var chain = function() {
-    var field
-    for (var i = 0; i < arguments.length; i++) {
-      var fieldName = arguments[i]
-      if ((field = goog.isString(fieldName)? ui.fields[fieldName]: fieldName)) {
-        var j = unordered.length
-        while (j--) {
-          if(unordered[j] === field) {
-            unordered.splice(j, 1);
-          }
-        }
-        var ezp = field.ezp.ezpLast_ || field.ezp
-        for (i++; i < arguments.length; i++) {
-          var fieldName = arguments[i]
-          if ((ezp.nextField = goog.isString(fieldName)? ui.fields[fieldName]: fieldName)) {
-            var j = unordered.length
-            while (j--) {
-              if(unordered[j] === ezp.nextField) {
-                unordered.splice(j, 1);
-              }
+    // now order
+    // fields must not have the same order 
+    // some default fields have predefined order
+    var byOrder = Object.create(null)
+    var unordered = []
+    var fromStart = [] // fields ordered from the beginning
+    var toEnd = [] // // fields ordered to the end
+    for(var key in ui.fields) {
+      var field = ui.fields[key]
+      var order = field.ezp.order
+      if (order) {
+        goog.asserts.assert(!byOrder[order],
+        ezP.Do.format('Fields with the same order  {0} = {1} / {2}',
+        byOrder[order].name, field.name, field.sourceBlock_.type))
+        byOrder[order] = field
+        if (order>0) {
+          for (var i = 0; i < fromStart.length; i++) {
+            if (fromStart[i].ezp.order > order) {
+              break
             }
-            ezp = ezp.nextField.ezp
-            delete ezp.ezpLast_
           }
+          fromStart.splice(i, 0, field)
+        } else if (order<0) {
+          for (var i = 0; i < toEnd.length; i++) {
+            if (toEnd[i].ezp.order < order) {
+              break
+            }
+          }
+          toEnd.splice(i, 0, field)
         }
-        field.ezp.ezpLast_ = ezp
-        break
+      } else {
+        unordered.push(field)
       }
     }
-    return field
+    // now order the fields in linked lists
+    // Next returns the first field in a chain field.ezp.nextField -> ...
+    // The chain is built from the list of arguments
+    // arguments are either field names or fields
+    var chain = function() {
+      var field
+      for (var i = 0; i < arguments.length; i++) {
+        var fieldName = arguments[i]
+        if ((field = goog.isString(fieldName)? ui.fields[fieldName]: fieldName)) {
+          var j = unordered.length
+          while (j--) {
+            if(unordered[j] === field) {
+              unordered.splice(j, 1);
+            }
+          }
+          var ezp = field.ezp.ezpLast_ || field.ezp
+          for (i++; i < arguments.length; i++) {
+            var fieldName = arguments[i]
+            if ((ezp.nextField = goog.isString(fieldName)? ui.fields[fieldName]: fieldName)) {
+              var j = unordered.length
+              while (j--) {
+                if(unordered[j] === ezp.nextField) {
+                  unordered.splice(j, 1);
+                }
+              }
+              ezp = ezp.nextField.ezp
+              delete ezp.ezpLast_
+            }
+          }
+          field.ezp.ezpLast_ = ezp
+          break
+        }
+      }
+      return field
+    }
+    ui.fromStartField = chain.apply(fromStart)
+    ui.fromStartField = chain(ezP.Key.MODIFIER, ezP.Key.PREFIX, ezP.Key.LABEL, ui.fromStartField)
+    ui.toEndField = chain.apply(toEnd)
+    ui.toEndField = chain(ui.toEndField, ezP.Key.SUFFIX, ezP.Key.COMMENT_MARK, ezP.Key.COMMENT)
+    // we have exhausted all the fields that are already ordered
+    // either explicitely or not
+    goog.asserts.assert(unordered.length < 2,
+    ezP.Do.format('Too many unordered fields in {0}/{1}',key, JSON.stringify(model)))
+    unordered[0] && (ui.fromStartField = chain(ui.fromStartField, unordered[0]))
+    ui.fromStartField && delete ui.fromStartField.ezp.ezpLast_
+    ui.toEndField && delete ui.toEndField.ezp.ezpLast_
+    ui.fields.comment && (ui.fields.comment.ezp.comment = true)
   }
-  ui.fromStartField = chain.apply(fromStart)
-  ui.fromStartField = chain(ezP.Key.MODIFIER, ezP.Key.PREFIX, ezP.Key.LABEL, ui.fromStartField)
-  ui.toEndField = chain.apply(toEnd)
-  ui.toEndField = chain(ui.toEndField, ezP.Key.SUFFIX, ezP.Key.COMMENT_MARK, ezP.Key.COMMENT)
-  // we have exhausted all the fields that are already ordered
-  // either explicitely or not
-  goog.asserts.assert(unordered.length < 2,
-  ezP.Do.format('Too many unordered fields in {0}/{1}',key, JSON.stringify(model)))
-  unordered[0] && (ui.fromStartField = chain(ui.fromStartField, unordered[0]))
-  ui.fromStartField && delete ui.fromStartField.ezp.ezpLast_
-  ui.toEndField && delete ui.toEndField.ezp.ezpLast_
-  ui.fields.comment && (ui.fields.comment.ezp.comment = true)
-}
+} ()
 
 /**
  * Set the underlying Blockly input.

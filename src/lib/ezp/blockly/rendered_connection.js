@@ -747,7 +747,7 @@ Blockly.Connection.lastConnectionInRow_ = function(startBlock, orphanBlock) {
 
 /**
  * Walks down a row a blocks, at each stage */
-ezP.ConnectionDelegate.prototype.consolidateSourceType = function() {
+ezP.ConnectionDelegate.prototype.consolidateSource = function() {
   var block = this.connection.getSourceBlock()
-  block.ezp.consolidateType(block)
+  block.ezp.consolidate(block)
 }

@@ -196,10 +196,10 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   // We establish a bi directional bound between data, inputs and fields
   // now it is time to intialize the data
   this.initData(block)
-  this.synchronizeData(block)
-  this.synchronizeInputs(block)
   // and find the appropriate type
-  this.consolidateType(block)
+  this.consolidate(block)
+  this.synchronizeData(block)
+  this.synchronizeTiles(block)
 }
 console.warn('implement async and await, see above awaitable and asyncable')
 /**
@@ -287,15 +287,14 @@ ezP.DelegateSvg.prototype.getField = function(block, name) {
 }
 
 /**
- * Synchronize the data to the UI.
- * Sends a `synchronize` message to all data controllers.
- * May be used at the end of an initialization process
- * where we use only data's `internalSet` method.
+ * Synchronize the tiles with the UI.
+ * Sends a `synchronize` message to all tiles.
+ * May be used at the end of an initialization process.
  */
-ezP.DelegateSvg.prototype.synchronizeInputs = function(block) {
-  var inputs = this.ui.tiles
-  for (var k in inputs) {
-    inputs[k].synchronize()
+ezP.DelegateSvg.prototype.synchronizeTiles = function(block) {
+  var tiles = this.ui.tiles
+  for (var k in tiles) {
+    tiles[k].synchronize()
   }
 }
 
@@ -357,7 +356,7 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
   this.minWidth = block.width = 0
   block.rendered = true
   this.consolidate(block, true)
-  this.synchronizeInputs(block)// no need to synchronize the data
+  this.synchronizeTiles(block)// no need to synchronize the data
   this.willRender_(block)
   this.renderDraw_(block)
   this.layoutConnections_(block)
@@ -402,6 +401,7 @@ ezP.DelegateSvg.prototype.consolidate = function (block, deep, force) {
       }
     }
   }
+  this.consolidateType(block)
 }
 
 /**

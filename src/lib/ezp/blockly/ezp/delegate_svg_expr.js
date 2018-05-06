@@ -446,7 +446,7 @@ ezP.DelegateSvg.Expr.makeSubclass('starred_expression', function () {
         check: ezP.T3.Expr.Check.expression,
         hole_value: 'name',
         didConnect: function(oldTargetConnection, oldConnection) {
-          this.ezp.consolidateSourceType()
+          this.ezp.consolidateSource()
         },
       },
     },

@@ -167,9 +167,9 @@ ezP.setup.register(function () {
   ezP.Style.insertCssRuleAt('.ezp-code-placeholder {fill: rgba(0, 0, 0, 0.4);}')
   ezP.Style.insertCssRuleAt('input.ezp-code-error {color: red;}')
   ezP.Style.insertCssRuleAt('text.ezp-code-error {fill: red;}')
+  ezP.Style.insertCssRuleAt('text.ezp-code-comment {fill: rgba(42, 132, 45, 0.8);}')
   ezP.Style.insertCssRuleAt('.ezp-code-disabled {color: #ccc;}')
 })
-
 
 ezP.Style.MenuIcon = {
   width: ezP.Font.space,

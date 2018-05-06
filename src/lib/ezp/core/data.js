@@ -38,6 +38,27 @@ ezP.Data = function(owner, key, model) {
   this.name = 'ezp:'+(this.model.name || this.key).toLowerCase()
   this.noUndo = model.noUndo
   this.disabled_ = false
+  var xml = model.xml
+  if (goog.isDefAndNotNull(xml)) {
+    this.attributeName = 'ezp:' +(xml && xml.attribute || key)
+  }
+  if (!model.setup_) {
+    model.setup_ = true
+    if (goog.isDefAndNotNull(xml)) {
+      if (!goog.isFunction(xml.toText)) {
+        delete xml.toText
+      }
+      if (!goog.isFunction(xml.fromText)) {
+        delete xml.fromText
+      }
+      if (!goog.isFunction(xml.toDom)) {
+        delete xml.toDom
+      }
+      if (!goog.isFunction(xml.fromDom)) {
+        delete xml.fromDom
+      }
+    }
+  }
 }
 
 /**
@@ -166,12 +187,12 @@ ezP.Data.prototype.toText = function() {
  * Set the value from the given text representation.
  * @param {Object} newValue
  */
-ezP.Data.prototype.fromText = function(txt) {
+ezP.Data.prototype.fromText = function(txt, dontValidate) {
   if (goog.isFunction(this.model.fromText)) {
-    this.model.fromText.call(this, newValue)
+    this.model.fromText.call(this, newValue, dontValidate)
     return
   }
-  this.set(txt)
+  dontValidate? this.internalSet(txt): this.set(txt)
 }
 
 /**
@@ -263,27 +284,14 @@ ezP.Data.prototype.synchronize = function(newValue) {
   if (goog.isFunction(this.model.synchronize)) {
     this.model.synchronize.call(this, newValue)
     return
+  } else if (this.model.synchronize === true) {
+    this.setFieldValue(this.toText())
+    return
   }
   var ezp = this.owner_
   var block = ezp.block_
   var key = 'synchronize' + this.upperKey
   ezp[key] && ezp[key].call(ezp, block, newValue)
-}
-
-/**
- * Consolidate the data.
- * May be overriden by the model.
- * @param {Object} newValue
- */
-ezP.Data.prototype.consolidate = function() {
-  if (goog.isFunction(this.model.consolidate)) {
-    this.model.consolidate.call(this)
-    return
-  }
-  var ezp = this.owner_
-  var block = ezp.block_
-  var key = 'consolidate' + this.upperKey
-  ezp[key] && ezp[key].call(ezp, block)
 }
 
 /**
@@ -462,5 +470,107 @@ ezP.Data.prototype.setFieldVisible = function (newValue, inputIndex, fieldKey) {
   var field = i.fields[fieldKey || this.key]
   if (field) {
     field.setVisible(newValue)
+  }
+}
+
+/**
+ * This is the method used to save data to an xml tree.
+ * If the receiver is not disabled, send its model a `toDom` message
+ * if relevant, send this message to the receiver. 
+ * For ezPython.
+ * @param {Element} xml the persistent element.
+ */
+ezP.Data.prototype.saveToDom = function(element) {
+  if (!this.isDisabled()) {
+    // in general, data should be saved
+    var xml = this.model.xml
+    if (xml === false) {
+      // only few data need not be saved
+      return
+    }
+    (xml && xml.toDom)?
+      xml.toDom.call(this, element):
+      this.toDom(element)
+  }
+}
+
+/**
+ * Does nothing if the data is disabled or if the model
+ * has a `false`valued xml property.
+ * This is the raw converter in the sense that 
+ * For ezPython.
+ * @param {Element} xml the persistent element.
+ */
+ezP.Data.prototype.toDom = function(element) {
+  if (!this.isDisabled()) {
+    // in general, data should be saved
+    var xml = this.model.xml
+    if (xml === false) {
+      // only few data need not be saved
+      return
+    }
+    var required = this.required || goog.isDefAndNotNull(xml) && xml.required
+    var txt = this.toText()
+    if (txt.length || required && (txt = '?')) {
+      if (xml && xml.text) {
+        var child = goog.dom.createTextNode(txt)
+        goog.dom.appendChild(element, child)
+      } else {
+        element.setAttribute(this.attributeName, txt)
+      }
+    }
+  }
+}
+
+/**
+ * Convert the block's data from a dom element.
+ * Aske the model first for a `fromDom` method, then the receiver.
+ * For ezPython.
+ * @param {Element} xml the persistent element.
+ * @return a dom element, void lists may return nothing
+ * @this a block delegate
+ */
+ezP.Data.prototype.loadFromDom = function(element) {
+  var xml = this.model.xml
+  if (xml === false) {
+    return
+  }
+  (xml && xml.fromDom)?
+    xml.fromDom.call(this, element):
+    this.fromDom(element)
+}
+
+/**
+ * Convert the block's data from a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {Element} xml the persistent element.
+ * @return a dom element, void lists may return nothing
+ * @this a block delegate
+ */
+ezP.Data.prototype.fromDom = function(element) {
+  var xml = this.model.xml
+  if (xml === false) {
+    return
+  }
+  var required = this.maybeRequired_ = this.required
+  if (xml && xml.text) {
+    for (var i = 0, child; (child = element.childNodes[i]); i++) {
+      if (child.nodeType === 3) {
+        var txt = child.nodeValue
+      }
+    }
+  } else {
+    var txt = element.getAttribute(this.attributeName)
+  }
+  if (goog.isDefAndNotNull(txt)) {
+    if (required && txt === '?') {
+      this.fromText('')
+    } else {
+      if (txt === '?') {
+        this.maybeRequired_ = true
+      }
+      this.fromText(txt, true) // do not validate, there might be an error while saving
+    }
   }
 }
