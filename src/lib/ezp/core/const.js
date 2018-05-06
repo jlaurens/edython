@@ -128,8 +128,10 @@ ezP.Key = {
   FILE: 'file',
   FLUSH: 'flush',
 
-  PREFIX: 'prefix',
-  SUFFIX: 'suffix',
+  PREFIX: 'prefix', // lowercase
+  SUFFIX: 'suffix', // lowercase
+  START: 'start', // lowercase
+  END: 'end', // lowercase
 
   LABEL: 'label', // lowercase
   CODE: 'code', // lowercase

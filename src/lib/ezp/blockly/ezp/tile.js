@@ -278,9 +278,9 @@ ezP.Tile.makeFields = function() {
       return field
     }
     ui.fromStartField = chain.apply(fromStart)
-    ui.fromStartField = chain(ezP.Key.MODIFIER, ezP.Key.PREFIX, ezP.Key.LABEL, ui.fromStartField)
+    ui.fromStartField = chain(ezP.Key.MODIFIER, ezP.Key.PREFIX, ezP.Key.START, ezP.Key.LABEL, ui.fromStartField)
     ui.toEndField = chain.apply(toEnd)
-    ui.toEndField = chain(ui.toEndField, ezP.Key.SUFFIX, ezP.Key.COMMENT_MARK, ezP.Key.COMMENT)
+    ui.toEndField = chain(ui.toEndField, ezP.Key.END, ezP.Key.SUFFIX, ezP.Key.COMMENT_MARK, ezP.Key.COMMENT)
     // we have exhausted all the fields that are already ordered
     // either explicitely or not
     goog.asserts.assert(unordered.length < 2,
