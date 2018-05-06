@@ -716,7 +716,7 @@ Ks = {
   },
   // 'from future import …': ezP.T3.Stmt.future_statement,
   'import …': ezP.T3.Stmt.import_stmt,
-  '# comment': ezP.T3.Stmt.comment_stmt,
+  '# comment': ezP.T3.Stmt.any_stmt,
   'global …': {
     type: ezP.T3.Stmt.global_nonlocal_stmt,
     subtype: 'global',

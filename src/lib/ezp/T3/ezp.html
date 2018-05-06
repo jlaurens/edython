@@ -7,12 +7,11 @@
 </head>
 <body>
 <pre>
-any_stmt ::= any statement
+any_stmt/stmt ::= any statement of nothing # with any comment or nothing, but at least one of them...
 call_stmt/call ::= call_expr
 builtin_print_expr/print ::= "print(" argument_list ")"
 builtin_print_stmt/print ::= builtin_print_expr
 builtin_input_expr/input ::= "input(" [any_argument] ")"
-comment_stmt/comment
 </pre>
 </body>
 </html>

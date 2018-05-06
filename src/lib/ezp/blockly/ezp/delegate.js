@@ -341,6 +341,13 @@ ezP.Delegate.Manager = function () {
 }()
 
 /**
+ * Model getter. Convenient shortcut.
+ */
+ezP.Do.getModel = function(type) {
+  return ezP.Delegate.Manager.getModel(ezP.T3.Stmt.comment_any)
+}
+
+/**
  * Model getter. Ask the constructor.
  */
 ezP.Delegate.prototype.getModel = function() {
@@ -844,7 +851,7 @@ ezP.Delegate.prototype.getStatementCount = function (block) {
       if (c8n.isConnected()) {
         var target = c8n.targetBlock()
         do {
-          hasActive = hasActive || (!target.disabled && target.type !== ezP.T3.Stmt.comment_stmt)
+          hasActive = hasActive || (!target.disabled && !target.ezp.isWhite(target))
           n += target.ezp.getStatementCount(target)
         } while ((target = target.getNextBlock()))
       }

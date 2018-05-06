@@ -166,7 +166,7 @@ ezP.DelegateSvg.prototype.toPythonStatementComponents = function (block, compone
       var out = target.ezp.toPythonStatementComponents(target, components, indent, true)
     }
   }
-  return out || (!block.disabled && block.type !== ezP.T3.Stmt.comment_stmt)
+  return out
 }
 
 goog.require('ezP.DelegateSvg.Expr')

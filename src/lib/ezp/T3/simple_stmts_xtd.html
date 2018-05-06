@@ -75,8 +75,8 @@ The type of the doctring is dynamically generated depending on its position.
 Rule: a docstring part becomes a top docstring if it is followed by import statements
 <pre>
 docstring_top_stmt ::= longstringliteral+{1}
-import_stmt >>> import_stmt | docstring_top_stmt | start_stmt | comment_stmt
-docstring_top_stmt >>> docstring_top_stmt | start_stmt | comment_stmt
+import_stmt >>> import_stmt | docstring_top_stmt | start_stmt | any_stmt
+docstring_top_stmt >>> docstring_top_stmt | start_stmt | any_stmt
 </pre>
 global_stmt ::=  "global" identifier ("," identifier)*
 nonlocal_stmt ::=  "nonlocal" identifier ("," identifier)*
@@ -88,11 +88,7 @@ non_void_identifier_list ::= identifier ("," identifier)*
 </pre>
 
 <pre>
-comment_stmt/comment ::= '# blah blah'
-</pre>
-
-<pre>
-future_statement >>> future_statement | comment_stmt | docstring_top_stmt | start_stmt | import_stmt
+future_statement >>> future_statement | any_stmt | docstring_top_stmt | start_stmt | import_stmt
 import_stmt >>> future_statement
 </pre>
 

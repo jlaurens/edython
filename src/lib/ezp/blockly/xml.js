@@ -629,17 +629,17 @@ ezP.Xml.domToBlock = function() {
       ezp.skipRendering = true
       try {
         ezP.Xml.fromDom(block, xmlBlock)
+        var state = xmlBlock.getAttribute(ezP.Xml.STATE)
+        if (state && state.toLowerCase() === ezP.Xml.LOCKED) {
+          ezp.lock(block)
+        }
+        // this block have been created from untrusted data
+        // We might need to fix some stuff before returning
+        // In particular, it will be the perfect place to setup variants
+        ezp.consolidate(block)
       } finally {
         ezp.skipRendering = saved
       }
-      var state = xmlBlock.getAttribute(ezP.Xml.STATE)
-      if (state && state.toLowerCase() === ezP.Xml.LOCKED) {
-        ezp.lock(block)
-      }
-      // this block have been created from untrusted data
-      // We might need to fix some stuff before returning
-      // In particular, it will be the perfect place to setup variants
-      ezp.consolidate(block)
       ezp.synchronizeData(block)
       ezp.synchronizeTiles(block)
     }
@@ -1350,8 +1350,6 @@ ezP.Xml.Global.domToBlock = function (xmlBlock, workspace) {
     }
   }
 }
-
-ezP.DelegateSvg.Stmt.comment_stmt.prototype.xml = ezP.Xml.Text
 
 goog.require('ezP.DelegateSvg.Try')
 

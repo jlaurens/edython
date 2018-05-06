@@ -413,91 +413,6 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = 
 }
 
 /**
- * Class for a DelegateSvg, comment_stmt.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.comment_stmt, {
-  data: {
-     comment_show: {
-      default: true,
-      validate: function(newValue) {
-        return {validated: true} // is it still necessary ?
-      },
-      synchronize: function(newValue) {
-        this.ui.fields.comment_mark.setVisible(true)
-        this.ui.fields.comment.setVisible(true)
-      },
-    },
-  },
-})
-
-/**
- * Initialize a block.
- * @param {!Blockly.Block} block to be initialized..
- * @extends {Blockly.Block}
- * @constructor
- */
-ezP.DelegateSvg.Stmt.comment_stmt.prototype.preInitSvg = function (block) {
-  ezP.DelegateSvg.Stmt.comment_stmt.superClass_.preInitSvg.call(this, block)
-  goog.dom.removeNode(this.svgSharpGroup_)
-  this.svgSharpGroup_ = undefined
-}
-
-/**
- * For comment statements, the comment show is always true.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- # @override
- */
-ezP.DelegateSvg.Stmt.prototype.getCommentShow = function (block) {
-  return true
-}
-
-/**
- * Render the leading # character for commented statement blocks.
- * Statement subclasses must override it.
- * @param io.
- * @private
- */
-ezP.DelegateSvg.Stmt.comment_stmt.prototype.renderDrawSharp_ = function (io) {
-}
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-ezP.DelegateSvg.Stmt.comment_stmt.prototype.populateContextMenuComment = function (block, mgr) {
-}
-
-/**
- * comment blocks are white.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
- * @param {!array} components the array of python code strings, will be joined to make the code.
- * @return None
- */
-ezP.DelegateSvg.Stmt.comment_stmt.prototype.isWhite = function (block) {
-  return true
-}
-
-/**
- * Do nothing, comment blocks are allways disabled.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
-the code.
- * @override
- * @return None
- */
-ezP.DelegateSvg.Stmt.comment_stmt.prototype.setDisabled = function (block, yorn) {
-  return
-}
-
-/**
  * Class for a DelegateSvg, expression_stmt.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
@@ -538,7 +453,9 @@ ezP.DelegateSvg.Stmt.makeSubclass('docstring_top_stmt', {
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
-ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt.comment_stmt.prototype.isWhite
+ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = function(block)  {
+  return true
+}
 
 /**
  * Class for a DelegateSvg, docstring_def_stmt.
@@ -565,7 +482,9 @@ console.warn('if_part and others conform to the new model and xml ?')
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
-ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = ezP.DelegateSvg.Stmt.comment_stmt.prototype.isWhite
+ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = function(block)  {
+  return true
+}
 
 /**
  * Get the subtype of the block.
@@ -643,28 +562,116 @@ ezP.DelegateSvg.Stmt.makeSubclass('return_stmt', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass('any_stmt', {
+ezP.DelegateSvg.Stmt.makeSubclass('any_stmt',{
   data: {
+    variant: {
+      INSTRUCTION: 0,
+      INSTRUCTION_COMMENT: 1,
+      COMMENT: 2,
+      all: [0, 1, 2],
+      default: 2,
+      xml: false,
+      didChange: function(oldValue, newValue) {
+        this.ui.fields.code.setVisible(newValue !== this.model.COMMENT)
+        this.data.comment_show.set(newValue !== this.model.INSTRUCTION)
+        this.data.code.required = newValue !== this.model.COMMENT
+      },
+      consolidate: function() {
+        if (this.data.code.maybeRequired_) {
+          delete this.data.code.maybeRequired_
+          this.data.code.fromText('')
+          if (this.get() === this.model.COMMENT) {
+            this.set(this.model.INSTRUCTION_COMMENT)
+          }
+        }
+      },
+    },
+    comment_show: {
+      didChange: function(oldValue, newValue) {
+        var data = this.data.variant
+        var current = data.get()
+        data.set(newValue? current || 1: 0)
+      },
+      xml: false,// do not save
+    },
     code: {
       synchronize: true,
       xml: {
         text: true,
       },
-    }
+    },
   },
   fields: {
     code: {
       endEditing: true,
+    },
+  },
+})
+
+/**
+ * comment blocks are white.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return None
+ */
+ezP.DelegateSvg.Stmt.any_stmt.prototype.isWhite = function (block) {
+  return this.data.variant.get() === this.data.variant.model.COMMENT
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+ezP.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var model = this.data.variant.model
+  var current = this.data.variant.get()
+  var comment = this.data.comment.toText()
+  var code = this.data.code.toText()
+  if (code.length > 32) {
+    var short_code = code.substring(0, 31)+'…'
+  }
+  if (comment.length > 32) {
+    var short_comment = comment.substring(0, 31)+'…'
+  }
+  var total = code.length+comment.length
+  if (total > 30) {
+    var short_code_all = code.substring(0, Math.floor(30 * code.length / total)+2)+'…'
+    var short_comment_all = comment.substring(0, Math.floor(30 * comment.length / total)+2)+'…'
+  }
+  var F = function(content, variant) {
+    if (variant !== current) {
+      var menuItem = new ezP.MenuItem(content, function() {
+        block.ezp.data.variant.set(variant)
+      })
+      mgr.addChild(menuItem)
     }
   }
-})
+  var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    ezP.Do.createSPAN('# ', 'ezp-code-reserved'),
+    ezP.Do.createSPAN(short_comment || comment || '…', 'ezp-code-comment'),
+  )
+  F(content, model.COMMENT)
+  var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    ezP.Do.createSPAN(short_code || code || '…', 'ezp-code'),
+  )
+  F(content, model.INSTRUCTION)
+  var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    ezP.Do.createSPAN(short_code_all || code || '…', 'ezp-code'),
+    ezP.Do.createSPAN(' # ', 'ezp-code-reserved'),
+    ezP.Do.createSPAN(short_comment_all || '…' || comment, 'ezp-code-comment'),
+  )
+  F(content, model.INSTRUCTION_COMMENT)
+ return ezP.DelegateSvg.Stmt.any_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || true
+}
 
 ezP.DelegateSvg.Stmt.T3s = [
   ezP.T3.Stmt.pass_stmt,
   ezP.T3.Stmt.break_stmt,
   ezP.T3.Stmt.continue_stmt,
   ezP.T3.Stmt.global_nonlocal_stmt,
-  ezP.T3.Stmt.comment_stmt,
   ezP.T3.Stmt.expression_stmt,
   ezP.T3.Stmt.docstring_top_stmt,
   ezP.T3.Stmt.docstring_def_stmt,

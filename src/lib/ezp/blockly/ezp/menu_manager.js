@@ -856,7 +856,7 @@ ezP.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
     case ezP.T3.Stmt.else_part:return Stmt2('else')
     case ezP.T3.Stmt.finally_part:return Stmt2('finally')
     case ezP.T3.Stmt.with_part: return Stmt1('with')
-    case ezP.T3.Stmt.comment_stmt:
+    case ezP.T3.Stmt.any_stmt:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN('#', 'ezp-code-reserved'),
       ezP.Do.createSPAN(' comment', 'ezp-code-placeholder'),
@@ -1049,7 +1049,7 @@ ezP.MenuManager.prototype.populate_before_after = function (block) {
     // ezP.T3.Stmt.import_stmt,
   ]
   var Us = [
-    ezP.T3.Stmt.comment_stmt,
+    ezP.T3.Stmt.comment_any,
     ezP.T3.Stmt.assignment_stmt,
     ezP.T3.Stmt.print_stmt,
     ezP.T3.Stmt.builtin_input_stmt,

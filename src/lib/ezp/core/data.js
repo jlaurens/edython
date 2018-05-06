@@ -111,7 +111,10 @@ ezP.Data.prototype.internalSet = function(newValue) {
       newValue = all
     }
   }
+  var oldValue = this.value_
+  this._willChange(oldValue, newValue)
   this.value_ = newValue
+  this._didChange(oldValue, newValue)
 }
 
 /**
@@ -315,10 +318,7 @@ ezP.Data.prototype.setTrusted = function (newValue) {
  * @param {Object} newValue
  */
 ezP.Data.prototype.setTrusted_ = function (newValue) {
-  var oldValue = this.value_
-  this._willChange(oldValue, newValue)
-  this.value_ = newValue
-  this._didChange(oldValue, newValue)
+  this.internalSet(newValue)
   this.synchronize(newValue)
 }
 

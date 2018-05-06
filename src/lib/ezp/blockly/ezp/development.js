@@ -262,10 +262,6 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.workspaceBlocks =
   ezP.T3.Expr.term,
 ]
 
-ezP.DelegateSvg.Stmt.comment_stmt.workspaceBlocks = [
-  ezP.T3.Stmt.comment_stmt,
-]
-
 ezP.DelegateSvg.Expr.shortliteral.workspaceBlocks = 
 ezP.DelegateSvg.Expr.numberliteral.workspaceBlocks = [
   ezP.T3.Expr.shortstringliteral,
@@ -338,7 +334,7 @@ ezP.DelegateSvg.Expr.longliteral.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Stmt.pass_stmt,
   ezP.T3.Stmt.break_stmt,
   ezP.T3.Stmt.continue_stmt,
-  ezP.T3.Stmt.comment_stmt,
+  ezP.T3.Stmt.any_stmt,
 ])
 
 ezP.DelegateSvg.Stmt.try_part.workspaceBlocks =
@@ -355,7 +351,7 @@ ezP.DelegateSvg.Stmt.raise_stmt.workspaceBlocks = ezP.Do.arraysMerged([
   ezP.T3.Stmt.else_part,
   ezP.T3.Stmt.finally_part,
   ezP.T3.Stmt.pass_stmt,
-  ezP.T3.Stmt.comment_stmt,
+  ezP.T3.Stmt.any_stmt,
 ])
 
 
