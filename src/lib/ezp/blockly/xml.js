@@ -61,7 +61,6 @@ ezP.Xml = {
   BUILTIN_CALL: 'ezp:builtin_call',
   GLOBAL: 'ezp:global',
   NONLOCAL: 'ezp:nonlocal',
-  PLACEHOLDER: 'ezp:placeholder',// convenient
 }
 
 console.warn('No ezP.Xml.CALL !!!!')
@@ -477,6 +476,42 @@ ezP.Xml.Data.fromDom = function(block, element) {
   }
 }
 
+goog.provide('ezP.Xml.Tile')
+
+/**
+ * Convert the block's data.
+ * List all the available data and converts them to xml.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {Element} xml the persistent element.
+ * @param {boolean} optNoId.
+ * @return a dom element, void lists may return nothing
+ * @this a block delegate
+ */
+ezP.Xml.Tile.toDom = function(block, element, optNoId, optNoName) {
+  var tile = block.ezp.ui.headTile
+  while (tile) {
+    tile.toDom(element, optNoId, optNoName)
+    tile = tile.nextTile
+  }
+}
+
+/**
+ * Convert the block's data from a dom element.
+ * For ezPython.
+ * @param {!Blockly.Block} block The block to be converted.
+ * @param {Element} xml the persistent element.
+ * @return a dom element, void lists may return nothing
+ * @this a block delegate
+ */
+ezP.Xml.Tile.fromDom = function(block, element) {
+  var tile = block.ezp.ui.headTile
+  while (tile) {
+    tile.fromDom(element)
+    tile = tile.nextTile
+  }
+}
+
 /**
  * Encode a block subtree as XML.
  * The xml element was created to hold what the block contains.
@@ -496,7 +531,6 @@ ezP.Xml.Data.fromDom = function(block, element) {
  * @return {!Element} Tree of XML elements, possibly null.
  */
 ezP.Xml.toDom = function (block, element, optNoId) {
-  ezP.Xml.Data.toDom(block, element, optNoId)
   var ezp = block.ezp
   var controller = ezp
   if ((controller && goog.isFunction(controller.toDom)) ||
@@ -504,6 +538,9 @@ ezP.Xml.toDom = function (block, element, optNoId) {
     ((controller = ezp.constructor.xml) && goog.isFunction(controller.toDom)) ||
     ((controller = ezp.constructor) && goog.isFunction(controller.toDom))) {
       return controller.toDom.call(ezp, block, element, optNoId)
+  } else {
+    ezP.Xml.Data.toDom(block, element, optNoId)
+    ezP.Xml.Tile.toDom(block, element, optNoId)
   }
 }
 
@@ -667,7 +704,6 @@ ezP.Xml.domToBlock = function() {
  * @return {!Element} Tree of XML elements, possibly null.
  */
 ezP.Xml.fromDom = function (block, element) {
-  ezP.Xml.Data.fromDom(block, element)
   var ezp = block.ezp
   var controller = ezp
   if ((controller &&
@@ -680,42 +716,13 @@ ezP.Xml.fromDom = function (block, element) {
     ((controller = ezP.DelegateSvg.Manager.get(block.type)) &&
     goog.isFunction(controller.fromDom))) {
     return controller.fromDom.call(ezp, block, element)
+  } else {
+    ezP.Xml.Data.fromDom(block, element)
+    ezP.Xml.Tile.fromDom(block, element)
   }
 }
 
 // General stuff
-
-goog.provide('ezP.Xml.Expr')
-
-/**
- * Convert the block's input list and next blocks to a dom element.
- * Expressions will write their data, then their input.
- * For ezPython.
- * @param {!Blockly.Block} block The block to be converted.
- * @param {Element} xml the persistent element.
- * @param {boolean} optNoId.
- * @return a dom element, void lists may return nothing
- * @this a block delegate
- */
-ezP.Xml.Expr.toDom = function(block, element, optNoId) {
-  ezP.Xml.Data.toDom(block, element)
-  ezP.Xml.InputList.toDom(block, element, optNoId)
-}
-
-ezP.DelegateSvg.Expr.prototype.xml = ezP.Xml.Expr
-
-/**
- * Convert the block's input list and next statement from a dom element.
- * For ezPython.
- * @param {!Blockly.Block} block The block to be converted.
- * @param {Element} xml the persistent element.
- * @return a dom element, void lists may return nothing
- * @this a block delegate
- */
-ezP.Xml.Expr.fromDom = function(block, element) {
-  ezP.Xml.Data.fromDom(block, element) 
-  ezP.Xml.InputList.fromDom(block, element) 
-}
 
 goog.provide('ezP.Xml.Stmt')
 
@@ -725,10 +732,10 @@ goog.provide('ezP.Xml.Stmt')
  * @param {!Blockly.Block} block The block to be converted.
  * @param {Element} xml the persistent element.
  * @param {boolean} optNoId.
- * @return a dom element, void lists may return nothing
+ * @return a dom element, void lists may return nothing at all
  * @this a block delegate
  */
-ezP.Xml.Stmt.toDom = function(block, element, optNoId) {
+ezP.Xml.Stmt.toDomX = function(block, element, optNoId) {
   ezP.Xml.Data.toDom(block, element) 
   ezP.Xml.InputList.toDom(block, element, optNoId)
   ezP.Xml.Flow.toDom(block, element, optNoId)  
@@ -2020,7 +2027,7 @@ goog.require('ezP.DelegateSvg.Term')
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise
  */
-ezP.DelegateSvg.Expr.term.prototype.tagName = function (block) {
+ezP.DelegateSvg.Expr.term.prototype.tagNameX = function (block) {
   return ezP.Xml.TERM
 }
 
@@ -2096,7 +2103,7 @@ ezP.DelegateSvg.Expr.term.prototype.toDomX = function(block, element, optNoId) {
  * @param {!Element} xml dom element.
  * For subclassers eventually
  */
-ezP.DelegateSvg.Expr.term.prototype.fromDom = function (block, element) {
+ezP.DelegateSvg.Expr.term.prototype.fromDomX = function (block, element) {
   ezP.Xml.Expr.fromDom(block, element)
   var model = this.data.variant.model
   var modifier = this.data.modifier.get()

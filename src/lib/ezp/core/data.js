@@ -39,7 +39,7 @@ ezP.Data = function(owner, key, model) {
   this.noUndo = model.noUndo
   this.disabled_ = false
   var xml = model.xml
-  if (goog.isDefAndNotNull(xml)) {
+  if (goog.isDefAndNotNull(xml) || xml !== false) {
     this.attributeName = 'ezp:' +(xml && xml.attribute || key)
   }
   if (!model.setup_) {
@@ -289,6 +289,7 @@ ezP.Data.prototype.synchronize = function(newValue) {
     return
   } else if (this.model.synchronize === true) {
     this.setFieldValue(this.toText())
+    this.setTileDisabled(this.disabled_)
     return
   }
   var ezp = this.owner_
@@ -390,7 +391,7 @@ ezP.Data.prototype.consolidate = function() {
  * @private
  */
 ezP.Data.prototype.isActive = function () {
-  return !!this.required || ! this.disabled_ && goog.isString(this.value_) && this.value_.length
+  return !!this.required || !this.disabled_ && goog.isString(this.value_) && this.value_.length
 }
 
 console.warn ('Change the model design for i_(\d): {...} to $1: {...}')
@@ -510,8 +511,9 @@ ezP.Data.prototype.toDom = function(element) {
       return
     }
     var required = this.required || goog.isDefAndNotNull(xml) && xml.required
+    var isText = xml && xml.text
     var txt = this.toText()
-    if (txt.length || required && (txt = '?')) {
+    if (txt.length || required && ((txt = isText? '?': ''), true)) {
       if (xml && xml.text) {
         var child = goog.dom.createTextNode(txt)
         goog.dom.appendChild(element, child)
@@ -553,8 +555,10 @@ ezP.Data.prototype.fromDom = function(element) {
   if (xml === false) {
     return
   }
-  var required = this.maybeRequired_ = this.required
-  if (xml && xml.text) {
+  var required = this.required
+  var isText = xml && xml.text
+  this.setRequiredFromDom(false)
+  if (isText) {
     for (var i = 0, child; (child = element.childNodes[i]); i++) {
       if (child.nodeType === 3) {
         var txt = child.nodeValue
@@ -567,10 +571,43 @@ ezP.Data.prototype.fromDom = function(element) {
     if (required && txt === '?') {
       this.fromText('')
     } else {
-      if (txt === '?') {
-        this.maybeRequired_ = true
+      if (isText && txt === '?'|| !isText && txt === '') {
+        this.setRequiredFromDom(true)
       }
       this.fromText(txt, true) // do not validate, there might be an error while saving
     }
+  } else if (required) {
+    this.fromText('', true)   
   }
 }
+
+/**
+ * Set the required status.
+ * When some data is required, an `?` might be used instead of nothing
+ * For ezPython.
+ */
+ezP.Data.prototype.setRequiredFromDom = function (newValue) {
+  this.required_from_dom = newValue
+}
+
+/**
+ * Get the required status.
+ * For ezPython.
+ * @param {boolean} newValue.
+ */
+ezP.Data.prototype.isRequiredFromDom = function () {
+  return this.required_from_dom
+}
+
+/**
+ * Clean the required status, changing the value if necessary.
+ * For ezPython.
+ * @param {boolean} newValue.
+ */
+ezP.Data.prototype.clearRequiredFromDom = function () {
+  if (this.isRequiredFromDom()) {
+    this.setRequiredFromDom(false)
+    this.fromText('', true)
+  }
+}
+

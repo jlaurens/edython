@@ -300,6 +300,7 @@ ezP.Tile.makeFields = function() {
  */
 ezP.Tile.prototype.setInput = function (input) {
   this.input = input
+  this.inputType = this.input.type
   this.connection = input.connection
   input.ezp.tile = this
   var c8n = this.connection
@@ -396,15 +397,13 @@ ezP.Tile.prototype.isRequiredToDom = function () {
   if (this.connection.targetBlock()) {
     return true
   }
+  if (this.required) {
+    return true
+  }
+  if (this.model.xml && this.model.xml.required) {
+    return true
+  }
   return !this.connection.ezp.optional_
-}
-
-/**
- * Set the required status.
- * For ezPython.
- */
-ezP.Tile.prototype.setRequiredFromDom = function (newValue) {
-  this.required_from = newValue
 }
 
 /**
@@ -413,7 +412,19 @@ ezP.Tile.prototype.setRequiredFromDom = function (newValue) {
  * @param {boolean} newValue.
  */
 ezP.Tile.prototype.isRequiredFromDom = function () {
-  return this.required_from
+  if (this.is_required_from_dom != this.is_required_from_dom || this.model.xml && this.model.xml.required) {
+    console.log('WTF: ', this.is_required_from_dom, this.is_required_from_dom || this.model.xml && this.model.xml.require)
+  }
+  return this.is_required_from_dom // || this.model.xml && this.model.xml.required
+}
+
+/**
+ * Set the required status.
+ * For ezPython.
+ * @param {boolean} newValue.
+ */
+ezP.Tile.prototype.setRequiredFromDom = function (newValue) {
+  this.is_required_from_dom = newValue
 }
 
 /**
@@ -488,3 +499,119 @@ ezP.Tile.prototype.setFieldValue = function (newValue, fieldKey) {
     }
   }
 }
+
+/**
+ * Convert the tile's connected target into the given xml element.
+ * List all the available data and converts them to xml.
+ * For ezPython.
+ * @param {Element} xml the persistent element.
+ * @param {boolean} optNoId.
+ * @return a dom element, void lists may return nothing
+ * @this a block delegate
+ */
+ezP.Tile.prototype.toDom = function(element, optNoId, optNoName) {
+  var xml = this.model.xml
+  if (!this.isDisabled() && (!goog.isDef(xml) || xml !== false)) {
+    var out = function() {
+      var c8n = this.connection
+      if (c8n) {
+        var target = c8n.targetBlock()
+        if (target) { // otherwise, there is nothing to remember
+          if (target.ezp.wrapped_) {
+            // wrapped blocks are just a convenient computational model.
+            // For lists only, we do create a further level
+            if (target.ezp instanceof ezP.DelegateSvg.List) {
+              var child = ezP.Xml.blockToDom(target, optNoId)
+              if (child.childNodes.length>0) {
+                if (!optNoName) {
+                  child.setAttribute(ezP.Xml.INPUT, this.key)
+                }
+                goog.dom.appendChild(element, child)
+                return child      
+              }
+            } else {
+              // let the target populate the given element
+              return ezP.Xml.toDom(target, element, optNoId)
+            }
+          } else {
+            var child = ezP.Xml.blockToDom(target, optNoId)
+            if (child.childNodes.length>0 || child.hasAttributes()) {
+              if (!optNoName) {
+                if (this.inputType === Blockly.INPUT_VALUE) {
+                  child.setAttribute(ezP.Xml.INPUT, this.key)
+                } else if (this.inputType === Blockly.NEXT_STATEMENT) {
+                  child.setAttribute(ezP.Xml.FLOW, this.key)
+                }
+              }
+              goog.dom.appendChild(element, child)
+              return child      
+            }
+          }
+        }
+      }
+    }.call(this)
+    if (!out && this.isRequiredToDom()) {
+      var child = goog.dom.createDom('ezp:placeholder')
+      child.setAttribute(ezP.Xml.INPUT, this.key)
+      goog.dom.appendChild(element, child)
+    }
+  }
+}
+
+/**
+ * Initialize the receiver from a dom element.
+ * Given an input and an element, initialize the input target
+ * block with data from the given element.
+ * The given element was created by the input's source block
+ * in a blockToDom method. If it contains a child element
+ * which input attribute is exactly the input's name,
+ * then we ask the input target block to fromDom.
+ * Target blocks are managed here too.
+ * No consistency test is made however.
+ * For ezPython.
+ * @param {Element} element a dom element in which to save the input
+ * @return the added child, if any
+ */
+ezP.Tile.prototype.fromDom = function(element) {
+  var xml = this.model.xml
+  if (!goog.isDef(xml) || xml !== false) {
+    this.setRequiredFromDom(false)
+    var c8n = this.connection
+    if (c8n) {
+      var target = c8n.targetBlock()
+      if (target && target.ezp.wrapped_ && !(target.ezp instanceof ezP.DelegateSvg.List)) {
+        input.setRequiredFromDom(true)
+        return ezP.Xml.fromDom(target, element)
+      }
+      // find an xml child with the proper input attribute
+      for (var i = 0, child; (child = element.childNodes[i++]);) {
+        if (goog.isFunction(child.getAttribute)) {
+          if (this.inputType === Blockly.INPUT_VALUE) {
+            var attribute = child.getAttribute(ezP.Xml.INPUT)
+          } else if (this.inputType === Blockly.NEXT_STATEMENT) {
+            var attribute = child.getAttribute(ezP.Xml.FLOW)
+          }
+        }
+        if (attribute === this.key) {
+          if (child.tagName && child.tagName.toLowerCase() === 'ezp:placeholder') {
+            this.setRequiredFromDom(true)
+            return true
+          }
+          if (target) {
+            return ezP.Xml.fromDom(target, child)
+          } else if ((target = Blockly.Xml.domToBlock(child, this.getWorkspace()))) {
+            // we could create a block form that child element
+            // then connect it
+            if (target.outputConnection && c8n.checkType_(target.outputConnection)) {
+              c8n.connect(target.outputConnection)
+            } else if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
+              c8n.connect(target.previousConnection)
+            }
+            return target
+          }
+        }
+      }
+    }
+  }
+}
+

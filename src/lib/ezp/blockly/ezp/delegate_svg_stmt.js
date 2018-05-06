@@ -577,8 +577,8 @@ ezP.DelegateSvg.Stmt.makeSubclass('any_stmt',{
         this.data.code.required = newValue !== this.model.COMMENT
       },
       consolidate: function() {
-        if (this.data.code.maybeRequired_) {
-          delete this.data.code.maybeRequired_
+        if (this.data.code.isRequiredFromDom()) {
+          this.data.code.setRequiredFromDom(false)
           this.data.code.fromText('')
           if (this.get() === this.model.COMMENT) {
             this.set(this.model.INSTRUCTION_COMMENT)
