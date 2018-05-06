@@ -360,7 +360,7 @@ ezP.DelegateSvg.Expr.makeSubclass('proper_slice', {
     lower_bound: {
       order: 1,
       fields: {
-        label: ':',
+        end: ':',
       },
       check: ezP.T3.Expr.Check.expression,
       optional: true,
@@ -585,20 +585,13 @@ ezP.DelegateSvg.Expr.makeSubclass('any', {
   data: {
     code: {
       default: '',
-      synchronize: function(block, newValue) {
-        this.setFieldValue(this.toText() || '')
-      },
+      synchronize: true,
     },
   },
-  tiles: {
+  fields: {
     code: {
-      order: 1,
-      fields: {
-        edit: {
-          endEditing: true,
-          placeholder: ezP.Msg.Placeholder.CODE,
-        },
-      },
+      endEditing: true,
+      placeholder: ezP.Msg.Placeholder.EXPRESSION,
     },
   },
   output: {
