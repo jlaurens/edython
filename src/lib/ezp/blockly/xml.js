@@ -799,20 +799,6 @@ ezP.Xml.Call.domToBlock = function(element, workspace) {
 
 // goog.provide('ezP.Xml.Global')
 
-/**
- * The xml tag name of this block, as it should appear in the saved data.
- * Default implementation just returns 'ezp:list' when this block is embedded
- * and the inherited value otherwise.
- * For ezPython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return true if the given value is accepted, false otherwise
- */
-ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.tagName = function (block) {
-  var current = block.ezp.data.subtype.get()
-  var subtypes = this.data.subtype.getAll()
-  return current === subtypes[0]? ezP.Xml.GLOBAL: ezP.Xml.NONLOCAL
-}
-
 // General stuff
 
 // goog.provide('ezP.Xml.Stmt')

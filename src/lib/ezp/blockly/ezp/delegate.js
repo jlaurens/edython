@@ -516,6 +516,7 @@ ezP.Delegate.prototype.initBlock = function (block) {
   } else if ((D = this.getModel().statement) && Object.keys(D).length) {
     if (D.key) {
       var input = block.appendStatementInput(D.key).setCheck(D.check) // Check ?
+      input.connection.ezp.model = D
     }
     if (D.next && D.next.check !== null) {
       block.setNextStatement(true, D.next.check)

@@ -90,8 +90,8 @@ ezP.DelegateSvg.Control.prototype.willRender_ = function (block) {
  * @extends {Blockly.Block}
  * @constructor
  */
-ezP.DelegateSvg.Control.prototype.preInitSvg = function (block) {
-  ezP.DelegateSvg.Control.superClass_.preInitSvg.call(this, block)
+ezP.DelegateSvg.Control.prototype.postInitSvg = function (block) {
+  ezP.DelegateSvg.Control.superClass_.postInitSvg.call(this, block)
   this.svgPathPlay_ = Blockly.utils.createSvgElement('path',
     {'class': 'ezp-path-play'}, block.svgGroup_)
   this.svgPathPlay_.setAttribute('d', this.playPathDef_(block, 0))

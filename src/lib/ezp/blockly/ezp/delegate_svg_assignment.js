@@ -432,86 +432,79 @@ goog.provide('ezP.DelegateSvg.AugAssign')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', function() {
-  var D = {
-    data: {
-      name: {
-        default: '',
-        validate: function(newValue) {
-          var type = ezP.Do.typeOfString(newValue)
-          return type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name?
-          {validated: newValue}: null
-        },
-        synchronize: function(newValue) {
-          this.setFieldValue(newValue || '')
-        },
+ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
+  data: {
+    variant: {
+      NAME_EXPRESSIONS: 0,
+      TARGET_EXPRESSIONS: 1,
+      all: [0, 1],
+      synchronize: function (newVariant) {
+        this.ui.tiles.name.setDisabled(newVariant)
+        this.ui.tiles.target.setDisabled(!newVariant)
       },
-      operator: {
-        default: '+=',
-        synchronize: function (newValue) {
-          this.setFieldValue(this.toText())
-        },
-        didChange: function(oldValue, newValue) {
-          this.data.numberOperator.set(newValue)
-          this.data.bitwiseOperator.set(newValue)
-        }
+    },
+    name: {
+      default: '',
+      validate: function(newValue) {
+        var type = ezP.Do.typeOfString(newValue)
+        return type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name?
+        {validated: newValue}: null
       },
-      numberOperator: {
-        all: ['+=','-=','*=','/=','//=','%=','**=','@='],
-        noUndo: true,
-        didChange: function(oldValue, newValue) {
-          this.data.operator.set(newValue)
-        },
+      synchronize: function(newValue) {
+        this.setFieldValue(newValue || '')
       },
-      bitwiseOperator: {
-        all: ['<<=', '>>=', '&=', '^=', '|='],
-        noUndo: true,
-        didChange: function(newValue) {
-          this.data.operator.set(newValue)
+    },
+    operator: {
+      default: '+=',
+      synchronize: true,
+      didChange: function(oldValue, newValue) {
+        this.data.numberOperator.set(newValue)
+        this.data.bitwiseOperator.set(newValue)
+      }
+    },
+    numberOperator: {
+      all: ['+=','-=','*=','/=','//=','%=','**=','@='],
+      noUndo: true,
+      xml: false,
+      didChange: function(oldValue, newValue) {
+        this.data.operator.set(newValue)
+      },
+    },
+    bitwiseOperator: {
+      all: ['<<=', '>>=', '&=', '^=', '|='],
+      noUndo: true,
+      xml: false,
+      didChange: function(newValue) {
+        this.data.operator.set(newValue)
+      },
+    },
+  },
+  tiles: {
+    name: {
+      order: 1,
+      fields: {
+        edit: {
+          placeholder: ezP.Msg.Placeholder.IDENTIFIER,
+          validate: true,
+          endEditing: true,
         },
       },
     },
-    tiles: {
-      name: {
-        order: 1,
-        fields: {
-          edit: {
-            placeholder: ezP.Msg.Placeholder.IDENTIFIER,
-            validate: function(txt) {
-              return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
-            },
-            endEditing: function () {
-              this.ezp.setData(this.getValue())
-              // this.ezp.data.fromText(this.getValue())
-            },
-          },
+    target: {
+      order: 2,
+      check: ezP.T3.Expr.Check.augtarget,
+    },
+    expressions: {
+      order: 3,
+      fields: {
+        operator: {// only one `operator` field
+          value: '',
         },
       },
-      target: {
-        order: 2,
-        check: ezP.T3.Expr.Check.augtarget,
-      },
-      expressions: {
-        order: 3,
-        fields: {
-          operator: {
-          },
-        },
-        wrap: ezP.T3.Expr.augassigned_list,
-      },
+      wrap: ezP.T3.Expr.augassigned_list,
     },
-  }
-  D.data.variant = {
-    NAME_EXPRESSIONS: 0,
-    TARGET_EXPRESSIONS: 1,
-    synchronize: function (newVariant) {
-      this.ui.tiles.name.setDisabled(newVariant)
-      this.ui.tiles.target.setDisabled(!newVariant)
-    },
-  }
-  D.data.variant.all = [D.data.variant.NAME_EXPRESSIONS, D.data.variant.TARGET_EXPRESSION]
-  return D
-} ())
+  },
+})
 
 console.warn('in initBlock,Search for field names corresponding to data names: model.data.foo -> model.u_*.foo')
 

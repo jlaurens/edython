@@ -65,16 +65,13 @@ ezP.DelegateSvg.Literal.makeSubclass('numberliteral', {
       },
       didChange: function(oldValue, newValue) {
         var type = newValue? ezP.Do.typeOfString(newValue): ezP.T3.Expr.integer
-        block.ezp.data.subtype.set(type)
-        return
+        this.data.subtype.set(type)
       },
-      synchronize: function(newValue) {
-        this.setFieldValue(this.toText() || '0', 1, ezP.Key.VALUE)
-      },
+      synchronize: true,
     },
   },
   fields: {
-    edit: {
+    value: {
       validate: true,
       endEditing: true,
       placeholder: ezP.Msg.Placeholder.NUMBER,
@@ -128,8 +125,8 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
         this.data.value.consolidate()
       },
       synchronize: function(newValue) {
-        this.setFieldValue(this.toText(), 1, 'start')
-        this.setFieldValue(this.toText(), 1, 'end')
+        this.ui.fields.start.setValue(this.toText())
+        this.ui.fields.end.setValue(this.toText())
       },
     },
     prefix: {
@@ -164,13 +161,14 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
     value: {
       default: '',
       didChange: function(oldValue, newValue) {
+        var data = this.data
         var F = function(xre, type) {
           var m = XRegExp.exec(newValue, xre)
           if (m) {
-            this.data.prefix.set(m.prefix||'')
-            this.data.delimiter.set(m.delimiter||"'")
-            this.data.content.set(m.content||'')
-            this.data.subtype.set(type)
+            data.prefix.set(m.prefix||'')
+            data.delimiter.set(m.delimiter||"'")
+            data.content.set(m.content||'')
+            data.subtype.set(type)
             return true
           }
           return false
@@ -197,7 +195,7 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
     start: {
       css: 'reserved',
     },
-    edit: {
+    content: { // this is the only really unordered field
       placeholder: function() {
         var block = this.sourceBlock_
         var ezp = block.ezp
@@ -210,11 +208,11 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
       },
       validate: true,
       onStartEditing: function () {
-        this.ezp.tile.fields.end.setVisible(false)
+        this.ezp.ui.fields.end.setVisible(false)
       },
       endEditing: function () {
-        this.ezp.setData(this.getValue(), 'content')
-        this.ezp.tile.fields.end.setVisible(true)
+        this.ezp.setData(this.getValue())
+        this.ezp.ui.fields.end.setVisible(true)
       },
     },
     end: {
@@ -378,13 +376,14 @@ ezP.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
     value: {
       default: '',
       didChange: function(oldValue, newValue) {
+        var data = this.data
         var F = function(xre, type) {
           var m = XRegExp.exec(newValue, xre)
           if (m) {
-            this.data.prefix.set(m.prefix||'')
-            this.data.delimiter.set(m.delimiter||"'''")
-            this.data.content.set(m.content||'')
-            this.data.subtype.set(type)
+            data.prefix.set(m.prefix||'')
+            data.delimiter.set(m.delimiter||"'''")
+            data.content.set(m.content||'')
+            data.subtype.set(type)
             return true  
           }
           return false
@@ -393,9 +392,9 @@ ezP.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
         || F(ezP.XRE.longstringliteralDouble, ezP.T3.Expr.longstringliteral)
         || F(ezP.XRE.longbytesliteralSingle, ezP.T3.Expr.longbytesliteral)
         || F(ezP.XRE.longbytesliteralDouble, ezP.T3.Expr.longbytesliteral)) {
-          this.removeError(block, ezP.Key.VALUE)
+          this.owner_.removeError(this.owner_.block_, ezP.Key.VALUE)
         } else {
-          this.setError(block, ezP.Key.VALUE, 'Bad string|bytes literal: '+
+          this.owner_.setError(this.owner_.block_, ezP.Key.VALUE, 'Bad string|bytes literal: '+
           (newValue.length>11?newValue.substr(0,10)+'…':newValue))
         }
       },

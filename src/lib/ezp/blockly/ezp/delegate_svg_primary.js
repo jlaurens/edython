@@ -26,17 +26,14 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Expr.makeSubclass('attributeref', {
   data: {
-    value: {
+    attribute: {
       default: '',
       validate: function(newValue) {
         var type = ezP.Do.typeOfString(newValue)
         return type === ezP.T3.Expr.builtin_name || type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name?
         {validated: newValue}: null
       },
-      synchronize: function(newValue) {
-        var field = this.ui[2].fields.value
-        this.setFieldValue(this.toText() || '', 2, ezP.Key.VALUE)
-      },
+      synchronize: true,
     },
   },
   tiles: {
@@ -51,15 +48,9 @@ ezP.DelegateSvg.Expr.makeSubclass('attributeref', {
       fields: {
         label: '.',
         edit: {
-          key: ezP.Key.VALUE,
-          edit: '',
+          validate: true,
+          endEditing: true,
           placeholder: ezP.Msg.Placeholder.ATTRIBUTE,
-          validate: function(txt) {
-            return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
-          },
-          endEditing: function () {
-            this.ezp.setData(this.getValue(), ezP.Key.VALUE)
-          },
         },
       },
     },

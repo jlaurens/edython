@@ -162,7 +162,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         // we must not find an aleady existing entry.
         goog.asserts.assert(i != tile.order,
         ezP.Do.format('Same order tile {0}/{1}', i, block.type))
-        if (i > tile.model.order) {
+        if (ordered[i].model.order > tile.model.order) {
           break
         }
       }
@@ -662,6 +662,7 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     f: 0, // field index
   }
   io.cursorX = this.getPaddingLeft(block)
+  io.offsetX = 0
   if (!block.outputConnection) {
     this.renderDrawSharp_(io)
     this.shouldSeparateField = false // when true, add a space to separate letters

@@ -79,6 +79,9 @@ ezP.DelegateSvg.List.makeSubclass('non_void_import_identifier_as_list', {
 ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
   data: {
     variant: {
+      IMPORT: 0,
+      FROM_MODULE_IMPORT: 1,
+      FROM_MODULE_IMPORT_STAR: 2,
       all: [0, 1, 2],
       synchronize: function(newValue) {
         // var disabled_1 = true, disabled_2 = true, disabled_3 = true, disabled_4 = true
@@ -87,22 +90,23 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         //   case 1: disabled_2 = disabled_3 = false; break
         //   case 2: disabled_2 = disabled_4 = false; break
         // }
-        this.ui.tiles.import_module.setDisabled(newValue != 0)
-        this.ui.tiles.from.setDisabled(newValue == 0)
-        this.ui.tiles.import.setDisabled(newValue != 1)
-        this.ui.tiles.import_star.setDisabled(newValue != 2)
+        var model = this.model
+        this.ui.tiles.import_module.setDisabled(newValue != model.IMPORT)
+        this.ui.tiles.from.setDisabled(newValue == model.IMPORT)
+        this.ui.tiles.import.setDisabled(newValue != model.FROM_MODULE_IMPORT)
+        this.ui.tiles.import_star.setDisabled(newValue != model.FROM_MODULE_IMPORT_STAR)
       },
+      xml: false,
     },
-    value: {
+    from: {
       validate: function(newValue) {
         var type = ezP.Do.typeOfString(newValue)
         var variant = this.data.variant.get()
-        return type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name || variant === 1 && (type === ezP.T3.Expr.parent_module)?
+        var model = this.data.variant.model
+        return type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name || variant === model.FROM_MODULE_IMPORT && (type === ezP.T3.Expr.parent_module)?
         {validated: newValue}: null
       },
-      synchronize: function(newValue) {
-        this.setFieldValue(this.toText() || '', 2, ezP.Key.FROM)
-      },
+      synchronize: true,
     },
   },
   tiles: {
@@ -118,15 +122,9 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       fields: {
         label: 'from',
         edit: {
-          key:ezP.Key.FROM,
-          edit: '',
+          validate: true,
+          endEditing: true,
           placeholder: ezP.Msg.Placeholder.MODULE,
-          validate: function(txt) {
-            return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue(), ezP.Key.VALUE)
-          },
-          endEditing: function () {
-            this.ezp.setData(this.getValue(), ezP.Key.VALUE)
-          },
         },
       },
       check: ezP.T3.Expr.Check.relative_module,

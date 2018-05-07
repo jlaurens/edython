@@ -368,23 +368,36 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.global_nonlocal_stmt, {
   data: {
     variant: {
       all: ['global', 'nonlocal'],
-      synchronize: function(newValue) {
-        this.ezp.setMainFieldValue(newValue || '', 'prefix')
-      },
+      synchronize: true,
+      xml: false,// special xml management
     },
   },
   fields: {
-    prefix: {
+    variant: {
       css: 'reserved',
     },
   },
   tiles: {
     identifiers: {
-      order: 3,
+      order: 1,
       wrap: ezP.T3.Expr.non_void_identifier_list,
     },
   },
 })
+
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * Default implementation just returns 'ezp:list' when this block is embedded
+ * and the inherited value otherwise.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.tagName = function (block) {
+  var model = this.data.variant.model
+  var current = this.data.variant.get()
+  return current === model.GLOBAL? 'ezp:global': 'ezp:nonlocal'
+}
 
 /**
  * Populate the context menu for the given block.

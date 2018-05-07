@@ -26,17 +26,15 @@ goog.require('ezP.DelegateSvg.Expr')
  */
 ezP.DelegateSvg.Expr.makeSubclass('Operator', {
   data: {
-    operator: {
-      synchronize: function(newValue) {
-        this.ui[2].fields.operator.setValue(newValue || '')
-      },
+    operator: { // only one field with that key
+      synchronize: true,
     },
   },
   tiles: {
     rhs: {
       order: 2,
       fields: {
-        operator: ''
+        operator: '',
       },
       hole_value: 'name',
     },
@@ -88,8 +86,7 @@ ezP.DelegateSvg.Operator.makeSubclass('u_expr_solid', {
     },
   },
   tiles: {
-    dummy: {
-      order: 2,
+    rhs: {
       check: ezP.T3.Expr.Check.u_expr,
     },
   },
@@ -148,10 +145,10 @@ ezP.DelegateSvg.Binary.makeModel = function(operators, check1, check3, operatorI
       },
     },
     tiles: {
-      left: {
+      lhs: {
         check: ezP.T3.Expr.Check[check1]
       },
-      right: {
+      rhs: {
         check: ezP.T3.Expr.Check[check3]
       },
     },
@@ -297,10 +294,10 @@ ezP.DelegateSvg.Binary.makeSubclass('object_comparison', {
     },
   },
   tiles: {
-    left: {
+    lhs: {
       check: ezP.T3.Expr.Check.comparison
     },
-    right: {
+    rhs: {
       css_class: 'ezp-code-reserved',
       check: ezP.T3.Expr.Check.comparison
     },
@@ -333,10 +330,10 @@ ezP.DelegateSvg.Binary.makeSubclass('or_test_solid', {
     }
   },
   tiles: {
-    left: {
+    lhs: {
       check: ezP.T3.Expr.Check.or_test
     },
-    right: {
+    rhs: {
       fields: {
         operator: {
           css: 'reserved',
@@ -362,10 +359,10 @@ ezP.DelegateSvg.Binary.makeSubclass('and_test_solid', {
     }
   },
   tiles: {
-    left: {
+    lhs: {
       check: ezP.T3.Expr.Check.and_test
     },
-    right: {
+    rhs: {
       fields: {
         operator: {
           css: 'reserved',
@@ -393,12 +390,12 @@ ezP.DelegateSvg.Operator.makeSubclass('power_solid', {
     },
   },
   tiles: {
-    argument: {
+    lhs: {
       order: 1,
       check: ezP.T3.Expr.Check.await_or_primary,
       hole_value: 'name',
     },
-    power: {
+    rhs: {
       order: 2,
       check: ezP.T3.Expr.Check.u_expr,
       hole_value: 'power',

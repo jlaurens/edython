@@ -55,8 +55,10 @@ ezP.Tile = function(owner, key, tileModel) {
   ezP.Tile.makeFields(this, this, tileModel.fields)
   if (tileModel.wrap) {
     this.setInput(block.appendWrapValueInput(key, tileModel.wrap, tileModel.optional, tileModel.hidden))
+    this.input.connection.ezp.model = tileModel
   } else if (tileModel.check) {
     this.setInput(block.appendValueInput(key))
+    this.input.connection.ezp.model = tileModel
   }
 }
 
@@ -309,7 +311,7 @@ ezP.Tile.prototype.setInput = function (input) {
     ezp.tile = this
     ezp.name_ = this.key
     if (this.model.plugged) {
-      ezp.plugged_ = D.plugged
+      ezp.plugged_ = this.model.plugged
     }
     if (this.model.suite && Object.keys(this.model.suite).length) {
       goog.mixin(ezp, this.model.suite)
