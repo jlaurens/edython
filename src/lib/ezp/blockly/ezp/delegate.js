@@ -514,9 +514,9 @@ ezP.Delegate.prototype.initBlock = function (block) {
       goog.mixin(ezp, D.suite)
     }
   } else if ((D = this.getModel().statement) && Object.keys(D).length) {
-    if (D.key) {
-      var input = block.appendStatementInput(D.key).setCheck(D.check) // Check ?
-      input.connection.ezp.model = D
+    if (D.suite) {
+      this.inputSuite = block.appendStatementInput('suite').setCheck(D.check) // Check ?
+      this.inputSuite.connection.ezp.model = D
     }
     if (D.next && D.next.check !== null) {
       block.setNextStatement(true, D.next.check)
@@ -849,6 +849,19 @@ ezP.Delegate.prototype.getStatementCount = function (block) {
   var e8r = block.ezp.inputEnumerator(block)
   while (e8r.next()) {
     var c8n = e8r.here.connection
+    if (c8n && c8n.type === Blockly.NEXT_STATEMENT) {
+      hasNext = true
+      if (c8n.isConnected()) {
+        var target = c8n.targetBlock()
+        do {
+          hasActive = hasActive || (!target.disabled && !target.ezp.isWhite(target))
+          n += target.ezp.getStatementCount(target)
+        } while ((target = target.getNextBlock()))
+      }
+    }
+  }
+  if (this.suiteInput) {
+     var c8n = this.suiteInput.connection
     if (c8n && c8n.type === Blockly.NEXT_STATEMENT) {
       hasNext = true
       if (c8n.isConnected()) {

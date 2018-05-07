@@ -1090,7 +1090,7 @@ ezP.MenuManager.prototype.populate_before_after = function (block) {
     }
     return false
   }
-  var eventDisabler = ezP.Events.Disabler()
+  Blockly.Events.disable()
   try {
     if ((c8n = block.nextConnection)) {
       var targetC8n = c8n.targetConnection
@@ -1115,7 +1115,7 @@ ezP.MenuManager.prototype.populate_before_after = function (block) {
       this.shouldSeparateInsertBefore(sep)
     }
   } finally {
-    eventDisabler.stop()
+    Blockly.Events.enable()
   }
 }
 

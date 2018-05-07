@@ -83,6 +83,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       FROM_MODULE_IMPORT: 1,
       FROM_MODULE_IMPORT_STAR: 2,
       all: [0, 1, 2],
+      default: 0,
       synchronize: function(newValue) {
         // var disabled_1 = true, disabled_2 = true, disabled_3 = true, disabled_4 = true
         // switch(newValue) {
@@ -92,11 +93,10 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         // }
         var model = this.model
         this.ui.tiles.import_module.setDisabled(newValue != model.IMPORT)
-        this.ui.tiles.from.setDisabled(newValue == model.IMPORT)
+        this.data.from.setDisabled(newValue == model.IMPORT)
         this.ui.tiles.import.setDisabled(newValue != model.FROM_MODULE_IMPORT)
         this.ui.tiles.import_star.setDisabled(newValue != model.FROM_MODULE_IMPORT_STAR)
       },
-      xml: false,
     },
     from: {
       validate: function(newValue) {
@@ -127,9 +127,6 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
           placeholder: ezP.Msg.Placeholder.MODULE,
         },
       },
-      check: ezP.T3.Expr.Check.relative_module,
-      plugged: ezP.T3.Expr.relative_module,
-      hole_value: 'module',
     },
     import: {
       order: 3,

@@ -236,6 +236,9 @@ ezP.DelegateSvg.prototype.preInitSvg = function(block) {
  * @param {!Blockly.Block} block to be initialized.
  */
 ezP.DelegateSvg.prototype.postInitSvg = function(block) {
+  if(this.svgPathContour_) {
+    return
+  }
   goog.dom.removeNode(block.svgPath_)
   delete block.svgPath_
   goog.dom.removeNode(block.svgPathLight_)
@@ -683,21 +686,6 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   if ((io.tile = this.ui.headTile)) {
     do {
       this.renderDrawTile_(io)
-      // if (tile.isDisabled()) {
-
-      // } else {
-      //   if ((io.field = tile.fromStartField)) {
-      //     do {
-      //       this.renderDrawField_(io)
-      //     } while((io.field = io.field.ezp.nextField))
-      //   }
-
-      //   if ((io.field = tile.fromStartField)) {
-      //     do {
-      //       this.renderDrawField_(io)
-      //     } while((io.field = io.field.ezp.nextField))
-      //   }    
-      // }
     } while ((io.tile = io.tile.nextTile))
   } else {
     for (; (io.input = block.inputList[io.i]); io.i++) {
@@ -729,6 +717,9 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
       }
     }
   }
+  if ((io.input = this.inputSuite)) {
+    this.renderDrawInput_(io)
+  }
   if ((io.field = this.ui.toEndField)) {
     do {
       this.renderDrawField_(io)
@@ -752,7 +743,7 @@ ezP.DelegateSvg.prototype.renderDrawTile_ = function (io) {
   goog.asserts.assert(root, 'Tile with no root')
   if (io.tile.isDisabled()) {
     root.setAttribute('display', 'none')
-  } else {
+  } else if (root) {
     root.removeAttribute('display')
     root.setAttribute('transform',
     'translate(' + io.cursorX + ', 0)')
@@ -773,6 +764,8 @@ ezP.DelegateSvg.prototype.renderDrawTile_ = function (io) {
     }
     io.cursorX += io.offsetX
     io.offsetX = 0
+  } else if ((io.input = io.tile.input)) {
+    this.renderDrawInput_(io)
   }
 }
 
@@ -2118,7 +2111,7 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
   // get the type:
   var prototypeName = action.type || action
   // create a block out of the undo mechanism
-  var disabler = new ezP.Events.Disabler()
+  Blockly.Events.disable()
   try {
     var candidate = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName, true)
     if (!candidate) {
@@ -2143,7 +2136,7 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
         candidate.select()
         candidate.bumpNeighbours_()
       } finally {
-        grouper.stop()
+        Blockly.Events.enable()
       }
       return candidate
     }

@@ -44,7 +44,7 @@ ezP.Tile = function(owner, key, tileModel) {
   goog.asserts.assert(owner, 'Missing tile owner')
   goog.asserts.assert(key, 'Missing tile key')
   goog.asserts.assert(tileModel, 'Missing tile model')
-   goog.asserts.assert(tileModel.order, 'Missing tile model order')
+  goog.asserts.assert(tileModel.order, 'Missing tile model order')
   this.owner = owner
   this.key = key
   this.model = tileModel

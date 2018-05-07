@@ -69,7 +69,7 @@ ezP.DelegateSvg.Expr.makeSubclass('attributeref', {
  */
 ezP.DelegateSvg.Expr.makeSubclass('slicing', {
   data: {
-    variant: {
+    variant: { // data named 'variant' have `xml = false`, by default
       all: [0, 1],
       synchronize: function(newValue) {
         this.ui.tiles.name.setDisabled(!!newValue)
@@ -135,10 +135,10 @@ ezP.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (blo
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(j !== current)
   }
-  var value = this.data.value.get()
+  var name = this.data.name.get()
   var content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    ezP.Do.createSPAN(value || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'),
+    ezP.Do.createSPAN(name || ezP.Msg.Placeholder.IDENTIFIER, name? 'ezp-code': 'ezp-code-placeholder'),
     ezP.Do.createSPAN('[…]', 'ezp-code'),
   )
   F(content, 0)

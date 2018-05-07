@@ -58,7 +58,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
   },
   fields: {
     prefix: {
-      label: '@',
+      value: '@',
       css: 'reserved',
     },
   },
@@ -68,12 +68,8 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
       fields: {
         edit: {
           placeholder: ezP.Msg.Placeholder.DECORATOR,
-          validate: function(txt) {
-            return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
-          },
-          endEditing: function () {
-            this.ezp.setData(this.getValue())
-          },
+          validate: true,
+          endEditing: true,
           // left_space: true,
         },
       },

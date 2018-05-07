@@ -66,37 +66,16 @@ Blockly.Events.Change.prototype.run = function(forward) {
   }
 };
 
-/**
- * Event disabler.
- */
-ezP.Events.Disabler = function() {
-  if (Blockly.Events.isEnabled()) {
-    Blockly.Events.disable()
-    return {
-      stop: function() {
-        if(this.fired) {
-          return
-        }
-        this.fired = true
-        Blockly.Events.enable()
-      }
-    }
-  } else {
-    return {
-      stop: function() {}
-    }
-  }
-}
-
+goog.provide('ezP.Events.Disabler')
 /**
  * Event disabler.
  */
 ezP.Events.Disabler.wrap = function(f) {
-  var disabler = new ezP.Events.Disabler()
+  Blockly.Events.disable()
   try {
     f()
   } finally {
-    disabler.stop()
+    Blockly.Events.enable()
   }
 }
 

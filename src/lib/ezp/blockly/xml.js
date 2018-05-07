@@ -510,18 +510,21 @@ ezP.Xml.toDom = function (block, element, optNoId) {
       tile.toDom(element, optNoId)
       tile = tile.nextTile
     }
-    // and the flow
-    var c8n = block.nextConnection
-    if (c8n) {
-      var target = c8n.targetBlock()
-      if(target) {
-        var child = Blockly.Xml.blockToDom(target, optNoId)
-        if (child) {
-          child.setAttribute(ezP.Xml.FLOW, ezP.Xml.NEXT)
-          goog.dom.appendChild(element, child)
+    // the suite and the flow
+    var statement = function(c8n, key) {
+      if (c8n) {
+        var target = c8n.targetBlock()
+        if(target) {
+          var child = Blockly.Xml.blockToDom(target, optNoId)
+          if (child) {
+            child.setAttribute(ezP.Xml.FLOW, key)
+            goog.dom.appendChild(element, child)
+          }
         }
       }
     }
+    statement(ezp.inputSuite && ezp.inputSuite.connection, ezP.Key.SUITE)
+    statement(block.nextConnection, ezP.Key.NEXT)
   }
 }
 
@@ -698,28 +701,32 @@ ezP.Xml.fromDom = function (block, element) {
   } else {
     ezP.Xml.Data.fromDom(block, element)
     // read tile
-    var tile = block.ezp.ui.headTile
+    var tile = ezp.ui.headTile
     while (tile) {
       tile.fromDom(element)
       tile = tile.nextTile
     }
-    // read flow
-    var c8n = block.nextConnection
-    if (c8n) {
-      for (var i = 0, child; (child = element.childNodes[i++]);) {
-        if (goog.isFunction(child.getAttribute) && (child.getAttribute(ezP.Xml.FLOW) === ezP.Xml.NEXT)) {
-          var target = Blockly.Xml.domToBlock(child, block.workspace)
-          if (target) {
-            // we could create a block from that child element
-            // then connect it to 
-            if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
-              c8n.connect(target.previousConnection)
+    var statement = function(c8n, key) {
+      if (c8n) {
+        for (var i = 0, child; (child = element.childNodes[i++]);) {
+          if (goog.isFunction(child.getAttribute) && (child.getAttribute(ezP.Xml.FLOW) === key)) {
+            var target = Blockly.Xml.domToBlock(child, block.workspace)
+            if (target) {
+              // we could create a block from that child element
+              // then connect it to 
+              if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
+                c8n.connect(target.previousConnection)
+              }
+              return target
             }
-            return target
           }
         }
       }
     }
+    // read flow and suite
+    var out = statement(block.nextConnection, ezP.Key.NEXT)
+    var out = statement(ezp.inputSuite && ezp.inputSuite.connection, ezP.Key.SUITE) || out
+    return out
   }
 }
 

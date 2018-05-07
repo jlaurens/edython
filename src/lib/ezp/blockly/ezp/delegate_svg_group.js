@@ -28,7 +28,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('Group', {
     suffix: ':',
   },
   statement: {
-    key: ezP.Key.SUITE,
+    suite: {},
   },
 }, ezP.DelegateSvg)
 

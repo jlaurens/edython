@@ -57,6 +57,8 @@ ezP.Data = function(owner, key, model) {
       if (!goog.isFunction(xml.fromDom)) {
         delete xml.fromDom
       }
+    } else if (key = 'variant') {
+      model.xml = false
     }
   }
 }
