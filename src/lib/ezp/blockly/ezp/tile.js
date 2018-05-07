@@ -405,7 +405,7 @@ ezP.Tile.prototype.isRequiredToDom = function () {
   if (this.model.xml && this.model.xml.required) {
     return true
   }
-  return !this.connection.ezp.optional_
+  return false
 }
 
 /**

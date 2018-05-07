@@ -243,6 +243,17 @@ ezP.MenuManager.prototype.showMenu = function (block, e) {
     this.menu.hide()
     return
   }
+  var ee = block.ezp.lastMouseDownEvent
+  if (ee) {
+    // this block was selected when the mouse down event was sent
+    if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
+      if (block === Blockly.selected) {
+        // if the block was already selected,
+        // try to select an input connection
+        ezP.SelectedConnection.set(block.ezp.lastSelectedConnection)
+      }
+    }
+  }
   var target = block.ezp.getMenuTarget(block)
   this.init(target, e)
   var me = this
@@ -354,7 +365,8 @@ ezP.Delegate.prototype.populateContextMenuLast_ = function (block, mgr) {
  */
 ezP.MenuManager.prototype.populateLast = function (block) {
   var menuItem
-  var holes = ezP.HoleFiller.getDeepHoles(block)
+  var c8n = ezP.SelectedConnection.get()
+  var holes = ezP.HoleFiller.getDeepHoles(c8n || block)
   menuItem = new ezP.MenuItem(
     ezP.Msg.FILL_DEEP_HOLES, function() {
       var grouper = new ezP.Events.Grouper()

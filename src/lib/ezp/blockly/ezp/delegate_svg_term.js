@@ -96,6 +96,15 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
           return {validated: newValue}
         },
       },
+      phantom: {
+        default: '',
+        didChange: function (oldValue, newValue) {
+          var field = this.ui.tiles.name.fields.edit
+          field.placeholderText_ = newValue
+          field.render_()
+        },
+        xml: false,
+      },
     },
     fields: {
       modifier: {
@@ -159,8 +168,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
           for (var i = 0, input;(input = source.inputList[i++]);) {
             if (input.connection === targetC8n) {
               if (input.ezp.model) {
-                var block = this.sourceBlock_
-                block.ezp.setPhantomValue(block, input.ezp.model.hole_value)
+                this.sourceBlock_.ezp.data.phantom.set(input.ezp.model.hole_value)
               }
               return
             }
@@ -170,7 +178,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
       didDisconnect: function(oldConnection) {
         // `this` is a connection's delegate
         var block = this.sourceBlock_
-        block.ezp.setPhantomValue(block, undefined)
+        block.ezp.data.phantom.set('')
       },
     }
   }
@@ -263,29 +271,6 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
  * @return whether the block should be wrapped
  */
 ezP.DelegateSvg.Expr.term.prototype.noBlockWrapped = function (block) {
-  return true
-}
-
-/**
- * Get the placeholderText.
- * @param {!Block} block.
- * @return the phantom value
- */
-ezP.DelegateSvg.Expr.term.prototype.getPhantomValue = function(block) {
-  var field = this.ui.tiles.name.fields.edit
-  return field.placeholderText_
-}
-
-/**
- * Set the placeholderText.
- * @param {!Block} block.
- * @param {!string} text.
- * @return true
- */
-ezP.DelegateSvg.Expr.term.prototype.setPhantomValue = function(block, text) {
-  var field = this.ui.tiles.name.fields.name
-  field.placeholderText_ = text
-  field.render_()
   return true
 }
 
@@ -416,7 +401,7 @@ ezP.DelegateSvg.Expr.term.prototype.makeTitle = function (block, variant) {
   }
   if (variant !== model.STAR) {
     var value = this.data.name.get()
-    args.push(ezP.Do.createSPAN(value || this.getPhantomValue(block) || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'))
+    args.push(ezP.Do.createSPAN(value || this.data.phantom.get() || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'))
     switch(variant) {
       case model.NAME_ANNOTATION:
       case model.STAR_NAME_ANNOTATION:

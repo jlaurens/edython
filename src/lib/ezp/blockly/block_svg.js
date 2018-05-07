@@ -421,6 +421,8 @@ ezP.BlockSvg.prototype.onMouseDown_ = function(e) {
   }
   // Next is not good design
   // remove any selected connection, if any
+  // but remember it for a contextual menu
+  this.ezp.lastSelectedConnection = ezP.SelectedConnection.get()
   ezP.SelectedConnection.set(null)
   this.ezp.selectedConnectionSource_ = null
   // Prepare the mouseUp event for an eventual connection selection
@@ -437,6 +439,7 @@ ezP.BlockSvg.prototype.onMouseDown_ = function(e) {
 ezP.DelegateSvg.prototype.onMouseUp_ = function(block, e) {
   var ee = this.lastMouseDownEvent
   if (ee) {
+    // this block was selected when the mouse ow event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       if (block === Blockly.selected) {
         // if the block was already selected,
@@ -445,7 +448,7 @@ ezP.DelegateSvg.prototype.onMouseUp_ = function(block, e) {
         if (c8n) {
           ezP.SelectedConnection.set(c8n)
         } else {
-          ezP.SelectedConnection.set(null)
+          ezP.SelectedConnection.set(this.lastSelectedConnection)
         }
       }
     } else {

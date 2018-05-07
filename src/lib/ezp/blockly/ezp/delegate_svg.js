@@ -878,7 +878,7 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
     if (!!target) {
       var root = target.getSvgRoot()
       if (!!root) {
-        root.setAttribute('transform', 'translate(' + io.cursorX + ', 0)')
+        root.setAttribute('transform', 'translate(' + (io.cursorX + io.offsetX) + ', 0)')
         if (!target.ezp.skipRendering) {
           target.ezp.shouldSeparateField = (target.ezp.wrapped_ ||target.ezp.locked_) && io.shouldSeparateField
         }
@@ -1301,9 +1301,7 @@ ezP.HoleFiller.getData = function(check, value) {
  */
 ezP.HoleFiller.getDeepHoles = function(block, holes) {
   var H = holes || []
-  var e8r = block.ezp.inputEnumerator(block)
-  while (e8r.next()) {
-    var c8n = e8r.here.connection
+  var getDeepHoles = function (c8n) {
     if (c8n && c8n.type === Blockly.INPUT_VALUE && (!c8n.ezp.disabled_ || c8n.ezp.wrapped_)) {
       var target = c8n.targetBlock()
       if (target) {
@@ -1311,6 +1309,14 @@ ezP.HoleFiller.getDeepHoles = function(block, holes) {
       } else if (c8n.ezp.hole_data) {
         H.push(c8n)
       }
+    }
+  }
+  if (block.getSourceBlock) {
+    getDeepHoles(block) 
+  } else {
+    var e8r = block.ezp.inputEnumerator(block)
+    while (e8r.next()) {
+      getDeepHoles(e8r.here.connection)
     }
   }
   return H
@@ -1336,8 +1342,8 @@ ezP.HoleFiller.fillDeepHoles = function(workspace, holes) {
           } else {
             B = ezP.DelegateSvg.newBlockComplete(workspace, data.type, true)
             if (data.value) {
-              B.ezp.setPhantomValue && B.ezp.setPhantomValue(B, data.value) ||
-              B.ezp.setValue && B.ezp.data.value.set(data.value)
+              B.ezp.data.phantom && B.ezp.data.phantom.set(data.value) ||
+              B.ezp.data.value && B.ezp.data.value.set(data.value)
             }
           }
           c8n.connect(B.outputConnection)

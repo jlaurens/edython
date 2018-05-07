@@ -393,6 +393,9 @@ ezP.DelegateSvg.Expr.makeSubclass('proper_slice', {
  * @constructor
  */
 ezP.DelegateSvg.Expr.makeSubclass('conditional_expression_solid', {
+  xml: {
+    tag: 'conditional_expression',
+  },
   tiles: {
     expression: {
       order: 1,

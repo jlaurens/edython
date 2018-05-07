@@ -296,6 +296,7 @@ Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
  * @return {!Element} Tree of XML elements, possibly null.
  */
 ezP.Xml.blockToDom = function (block, optNoId) {
+  ezP.Xml.registerAllTags()
   var ezp = block.ezp
   if (ezp.wrapped_  && !(ezp instanceof ezP.DelegateSvg.List)) {
     // a wrapped block does not create a new element on its own
@@ -341,7 +342,7 @@ goog.require('ezP.DelegateSvg.Expr')
  * @return true if the given value is accepted, false otherwise
  */
 ezP.Delegate.prototype.tagName = function (block) {
-  var tag = (this instanceof ezP.DelegateSvg.Expr? ezP.T3.Xml.toDom.Expr: ezP.T3.Xml.toDom.Stmt)[this.constructor.ezp.key]
+  var tag = this.constructor.ezp.tagName || (this instanceof ezP.DelegateSvg.Expr? ezP.T3.Xml.toDom.Expr: ezP.T3.Xml.toDom.Stmt)[this.constructor.ezp.key]
   return tag && 'ezp:'+tag || block.type
 }
 
@@ -567,6 +568,7 @@ ezP.Xml.registerAllTags = function() {
   }
   register('Expr')
   register('Stmt')
+  ezP.Xml.registerAllTags = function() {}
 }
 
 /**
@@ -588,6 +590,7 @@ ezP.Xml.registerAllTags = function() {
  * @return {!Blockly.Block} The root block created.
  */
 ezP.Xml.domToBlock = function() {
+  ezP.Xml.registerAllTags()
   var domToBlock = function(xmlBlock, workspace) {
     var block = null
     if (!xmlBlock.nodeName) {
