@@ -648,6 +648,10 @@ ezP.RenderedConnection.savedSetHidden = Blockly.RenderedConnection.prototype.set
  */
 Blockly.RenderedConnection.prototype.setHidden = function(hidden) {
   // ADDED by JL: 
+  if (!hidden && this.ezp.disabled_) {
+    // Disabled connections must stay hidden
+    return
+  }
   if (goog.isDef(this.ezp.hidden_)) {
     hidden = this.ezp.hidden_
   }

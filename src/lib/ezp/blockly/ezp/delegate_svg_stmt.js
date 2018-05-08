@@ -369,7 +369,6 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.global_nonlocal_stmt, {
     variant: {
       all: ['global', 'nonlocal'],
       synchronize: true,
-      xml: false,// special xml management
     },
   },
   fields: {

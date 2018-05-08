@@ -202,13 +202,16 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
     this.ui.tiles.definition.required = newValue === model.NAME_DEFINITION || newValue === model.NAME_ANNOTATION_DEFINITION
     var newModifier = newValue === model.STAR || newValue === model.STAR_NAME || newValue === model.STAR_NAME_ANNOTATION? '*': (newValue === model.STAR_STAR_NAME? '**': '')
     this.data.modifier.set(newModifier)
+    this.data.name.setDisabled(newValue === model.STAR)
+    this.data.alias.setDisabled(newValue !== model.NAME_ALIAS)
+  }
+  DD.synchronize = function(newValue) {    
+    var model = this.model
     this.ui.tiles.annotation.setDisabled(newValue !== model.NAME_ANNOTATION &&
     newValue !== model.STAR_NAME_ANNOTATION &&
     newValue !== model.NAME_ANNOTATION_DEFINITION)
     this.ui.tiles.definition.setDisabled(newValue !== model.NAME_DEFINITION &&
     newValue !== model.NAME_ANNOTATION_DEFINITION)
-    this.data.name.setDisabled(newValue === model.STAR)
-    this.data.alias.setDisabled(newValue !== model.NAME_ALIAS)
   }
   DD.consolidate = function() {    
     var newVariant = this.get()

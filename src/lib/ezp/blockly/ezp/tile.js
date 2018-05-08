@@ -82,6 +82,7 @@ ezP.Tile.prototype.init = function() {
     var field = this.fields[k]
     field.setSourceBlock(this.block) // is it necessary?
     field.ezp.tile = this
+    field.ezp.ui = this.ui
     field.init()
   }
   this.getBlock().getSvgRoot().appendChild(this.svgGroup_);
@@ -536,9 +537,9 @@ ezP.Tile.prototype.toDom = function(element, optNoId) {
             if (child.childNodes.length>0 || child.hasAttributes()) {
               if (!xml || !xml.noInputName) {
                 if (this.inputType === Blockly.INPUT_VALUE) {
-                  child.setAttribute(ezP.Xml.INPUT, this.key)
+                  child.setAttribute(ezP.XmlKey.INPUT, this.key)
                 } else if (this.inputType === Blockly.NEXT_STATEMENT) {
-                  child.setAttribute(ezP.Xml.FLOW, this.key)
+                  child.setAttribute(ezP.XmlKey.FLOW, this.key)
                 }
               }
               goog.dom.appendChild(element, child)
@@ -550,7 +551,7 @@ ezP.Tile.prototype.toDom = function(element, optNoId) {
     }.call(this)
     if (!out && this.isRequiredToDom()) {
       var child = goog.dom.createDom('ezp:placeholder')
-      child.setAttribute(ezP.Xml.INPUT, this.key)
+      child.setAttribute(ezP.XmlKey.INPUT, this.key)
       goog.dom.appendChild(element, child)
     }
   }

@@ -265,6 +265,7 @@ ezP.DelegateSvg.prototype.postInitSvg = function(block) {
     var field = this.ui.fields[k]
     field.setSourceBlock(block)
     field.init()
+    field.ezp.ui = this.ui
   }
   for (var k in this.ui.tiles) {
     var tile = this.ui.tiles[k]
@@ -528,14 +529,18 @@ ezP.DelegateSvg.prototype.collapsedPathDef_ = function () {
  * @private
  */
 ezP.DelegateSvg.prototype.renderDraw_ = function (block) {
-  block.height = ezP.Font.lineHeight()
-  var d = this.renderDrawModel_(block)
-  this.svgPathInline_.setAttribute('d', d)
-  var root = block.getRootBlock()
-  if (root.ezp) {
-    root.ezp.alignRightEdges_(root)
+  if (this.svgPathInline_) {
+    // if the above path does not exist
+    // the block is not yet ready for rendering
+    block.height = ezP.Font.lineHeight()
+    var d = this.renderDrawModel_(block)
+    this.svgPathInline_.setAttribute('d', d)
+    var root = block.getRootBlock()
+    if (root.ezp) {
+      root.ezp.alignRightEdges_(root)
+    }
+    this.updateAllPaths_(block)
   }
-  this.updateAllPaths_(block)
 }
 
 /**

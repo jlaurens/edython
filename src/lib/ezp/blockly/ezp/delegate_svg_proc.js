@@ -36,7 +36,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
       BUILTIN: 1,
       ARGUMENTS: 2,
       all: [0, 1, 2],
-      didChange: function(oldValue, newValue) { // would variants synchronize?
+      synchronize: function(newValue) { // would variants synchronize?
         var M = this.model
         this.data.dotted_name.setDisabled(newValue === M.BUILTIN) // disable the data not the tile
         this.data.builtin.setDisabled(newValue !== M.BUILTIN)
@@ -98,9 +98,6 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
         end: ')',
       },
       wrap: ezP.T3.Expr.argument_list,
-      xml: {
-        required: true,
-      },
     },
   },
   statement: {

@@ -352,50 +352,65 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
     // Move the duplicate to original position.
     var blockX = parseInt(xmlBlock.getAttribute('x'), 10);
     var blockY = parseInt(xmlBlock.getAttribute('y'), 10);
-    var metrics = this.getMetrics()
-    var scale = this.scale || 1;
-    var heightWidth = block.getHeightWidth();
-    var blockX = (metrics.viewLeft + metrics.viewWidth / 2) / scale - heightWidth.width / 2;
-    var blockY = (metrics.viewTop + metrics.viewHeight / 2)  / scale - heightWidth.height / 2;
     if (!isNaN(blockX) && !isNaN(blockY)) {
       if (this.RTL) {
         blockX = -blockX;
       }
       // Offset block until not clobbering another block and not in connection
       // distance with neighbouring blocks.
-      do {
-        var collide = false;
-        var allBlocks = this.getAllBlocks();
-        for (var i = 0, otherBlock; otherBlock = allBlocks[i]; i++) {
-          var otherXY = otherBlock.getRelativeToSurfaceXY();
-          if (Math.abs(blockX - otherXY.x) <= 10 &&
-              Math.abs(blockY - otherXY.y) <= 10) {
-            collide = true;
-            break;
-          }
-        }
-        if (!collide) {
-          // Check for blocks in snap range to any of its connections.
-          var connections = block.getConnections_(false);
-          for (var i = 0, connection; connection = connections[i]; i++) {
-            var neighbour = connection.closest(Blockly.SNAP_RADIUS,
-                new goog.math.Coordinate(blockX, blockY));
-            if (neighbour.connection) {
+      var allBlocks = this.getAllBlocks();
+      var avoidCollision = function () {
+        do {
+          var collide = false;
+          for (var i = 0, otherBlock; otherBlock = allBlocks[i]; i++) {
+            var otherXY = otherBlock.getRelativeToSurfaceXY();
+            if (Math.abs(blockX - otherXY.x) <= 10 &&
+                Math.abs(blockY - otherXY.y) <= 10) {
               collide = true;
               break;
             }
           }
-        }
-        if (collide) {
-          if (this.RTL) {
-            blockX -= Blockly.SNAP_RADIUS;
-          } else {
-            blockX += Blockly.SNAP_RADIUS;
+          if (!collide) {
+            // Check for blocks in snap range to any of its connections.
+            var connections = block.getConnections_(false);
+            for (var i = 0, connection; connection = connections[i]; i++) {
+              var neighbour = connection.closest(Blockly.SNAP_RADIUS,
+                  new goog.math.Coordinate(blockX, blockY));
+              if (neighbour.connection) {
+                collide = true;
+                break;
+              }
+            }
           }
-          blockY += Blockly.SNAP_RADIUS * 2;
-        }
-      } while (collide);
+          if (collide) {
+            blockX += Blockly.SNAP_RADIUS;
+            blockY += Blockly.SNAP_RADIUS * 2;
+          }
+        } while (collide);
+      }
+      avoidCollision()
+      // is the block in the visible area ?
+      var metrics = this.getMetrics()
+      var scale = this.scale || 1;
+      var heightWidth = block.getHeightWidth();
+      // the block is in the visible area if we see its center
+      var leftBound = metrics.viewLeft / scale - heightWidth.width / 2
+      var topBound = metrics.viewTop / scale - heightWidth.height / 2
+      var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - heightWidth.width / 2
+      var downBound = (metrics.viewTop + metrics.viewHeight) / scale - heightWidth.height / 2
+      var inVisibleArea = function() {
+        return blockX >= leftBound && blockX <= rightBound &&
+        blockY >= topBound && blockY <= downBound
+      }
+      if (!inVisibleArea()) {
+        blockX = (metrics.viewLeft + metrics.viewWidth / 2) / scale - heightWidth.width / 2;
+        blockY = (metrics.viewTop + metrics.viewHeight / 2)  / scale - heightWidth.height / 2;
+        avoidCollision()
+      }
       block.moveBy(blockX, blockY);
+      if (!inVisibleArea()) {
+        this.centerOnBlock(block.id)
+      }
     }
   } finally {
     Blockly.Events.enable()

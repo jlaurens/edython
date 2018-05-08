@@ -349,4 +349,7 @@ ezP.Const.Event = {
 ezP.XmlKey = {
   INPUT: 'ezp:input', // attribute name
   LIST: 'ezp:list',
+  FLOW: 'ezp:flow',
+  SUITE: 'ezp:suite',
+  NEXT: 'ezp:next',
 }

@@ -207,11 +207,11 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
         ezP.Msg.Placeholder.BYTES: ezP.Msg.Placeholder.STRING
       },
       validate: true,
-      onStartEditing: function () {
+      startEditing: function () {
         this.ezp.ui.fields.end.setVisible(false)
       },
       endEditing: function () {
-        this.ezp.setData(this.getValue())
+        this.ezp.data.set(this.getValue())
         this.ezp.ui.fields.end.setVisible(true)
       },
     },

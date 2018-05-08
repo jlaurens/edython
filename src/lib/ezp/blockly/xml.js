@@ -295,42 +295,48 @@ Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
  * @param {boolean} optNoId True if the encoder should skip the block id.
  * @return {!Element} Tree of XML elements, possibly null.
  */
-ezP.Xml.blockToDom = function (block, optNoId) {
-  ezP.Xml.registerAllTags()
-  var ezp = block.ezp
-  if (ezp.wrapped_  && !(ezp instanceof ezP.DelegateSvg.List)) {
-    // a wrapped block does not create a new element on its own
-    // it only can populate an already existing xml node.
-    // Except for list nodes.
-    return
-  }
-  var controller = ezp
-  if ((controller &&
-    goog.isFunction(controller.blockToDom)) ||
-    ((controller = ezp.xml) &&
-    goog.isFunction(controller.blockToDom)) ||
-    ((controller = ezp.constructor) &&
-    (controller = controller.xml) &&
-    goog.isFunction(controller.blockToDom)) ||
-    ((controller = ezp.constructor) &&
-    goog.isFunction(controller.blockToDom))) {
-    var element = controller.blockToDom.call(ezp, block, optNoId)
-  } else {
-    element = goog.dom.createDom(block.ezp.tagName(block))
-    if (!optNoId) {
-      element.setAttribute('id', block.id)
+ezP.Xml.blockToDom = function() {
+  var blockToDom = function (block, optNoId) {
+    var ezp = block.ezp
+    if (ezp.wrapped_  && !(ezp instanceof ezP.DelegateSvg.List)) {
+      // a wrapped block does not create a new element on its own
+      // it only can populate an already existing xml node.
+      // Except for list nodes.
+      return
     }
-    ezP.Xml.toDom(block, element, optNoId)
+    var controller = ezp
+    if ((controller &&
+      goog.isFunction(controller.blockToDom)) ||
+      ((controller = ezp.xml) &&
+      goog.isFunction(controller.blockToDom)) ||
+      ((controller = ezp.constructor) &&
+      (controller = controller.xml) &&
+      goog.isFunction(controller.blockToDom)) ||
+      ((controller = ezp.constructor) &&
+      goog.isFunction(controller.blockToDom))) {
+      var element = controller.blockToDom.call(ezp, block, optNoId)
+    } else {
+      element = goog.dom.createDom(block.ezp.tagName(block))
+      if (!optNoId) {
+        element.setAttribute('id', block.id)
+      }
+      ezP.Xml.toDom(block, element, optNoId)
+    }
+    // this is for the editor, not python
+    if (block.ezp.locked_) {
+      element.setAttribute(ezP.Xml.STATE, ezP.Xml.LOCKED)
+    }
+    if (block.ezp instanceof ezP.DelegateSvg.Expr && goog.isNull(element.getAttribute(ezP.Xml.INPUT))) {
+      element.setAttribute(ezP.Xml.INPUT, '')
+    }
+    return element
   }
-  // this is for the editor, not python
-  if (block.ezp.locked_) {
-    element.setAttribute(ezP.Xml.STATE, ezP.Xml.LOCKED)
+  return function(block, optNoId) {
+    ezP.Xml.registerAllTags()
+    ezP.Xml.blockToDom = blockToDom
+    return blockToDom(block, optNoId)
   }
-  if (block.ezp instanceof ezP.DelegateSvg.Expr && goog.isNull(element.getAttribute(ezP.Xml.INPUT))) {
-    element.setAttribute(ezP.Xml.INPUT, '')
-  }
-  return element
-}
+} ()
 
 goog.require('ezP.DelegateSvg.Expr')
 
@@ -442,7 +448,6 @@ ezP.Xml.Literal.domToBlock = function (element, workspace) {
       if (block) {
         var ezp = block.ezp
         ezp.data.value.set(text)
-        || ezp.validateValue(block, text)
         || ezp.data.content.setTrusted(text)
         return block
       }
@@ -526,7 +531,6 @@ ezP.Xml.toDom = function (block, element, optNoId) {
       tile.toDom(element, optNoId)
       tile = tile.nextTile
     }
-    // the list blocks have no tiles yet
     var blockToDom = function(c8n, name, key) {
       if (c8n && !c8n.ezp.wrapped_) {
         // wrapped blocks belong to tiles, they are managed from there
@@ -540,12 +544,13 @@ ezP.Xml.toDom = function (block, element, optNoId) {
         }
       }
     }
+    // the list blocks have no tiles yet
     for (var i = 0, input;(input = block.inputList[i++]);) {
       blockToDom(input.connection, ezP.Xml.INPUT, input.name)
     }
     // the suite and the flow
-    blockToDom(ezp.inputSuite && ezp.inputSuite.connection, ezP.Xml.FLOW, ezP.Key.SUITE)
-    blockToDom(block.nextConnection, ezP.Xml.FLOW, ezP.Key.NEXT)
+    blockToDom(ezp.inputSuite && ezp.inputSuite.connection, ezP.Xml.FLOW, ezP.XmlKey.SUITE)
+    blockToDom(block.nextConnection, ezP.Xml.FLOW, ezP.XmlKey.NEXT)
   }
 }
 
@@ -572,7 +577,7 @@ ezP.Xml.registerAllTags = function() {
         continue
       }
       // register as fromDom
-      console.log('register ', tag)
+      // console.log('register ', tag)
       var already = ezP.T3.Xml.fromDom[tag]
       if (goog.isArray(already)) {
         if (already.indexOf(type) < 0) {
@@ -594,7 +599,6 @@ ezP.Xml.registerAllTags = function() {
   }
   register('Expr')
   register('Stmt')
-  ezP.Xml.registerAllTags = function() {}
 }
 
 /**
@@ -616,7 +620,6 @@ ezP.Xml.registerAllTags = function() {
  * @return {!Blockly.Block} The root block created.
  */
 ezP.Xml.domToBlock = function() {
-  ezP.Xml.registerAllTags()
   var domToBlock = function(xmlBlock, workspace) {
     var block = null
     if (!xmlBlock.nodeName) {
@@ -626,7 +629,13 @@ ezP.Xml.domToBlock = function() {
     var name = xmlBlock.nodeName.toLowerCase()
     var prototypeName
     // 
-    // is there a simple correspondance with a known type
+    // is it a literal or something else special ?
+    if ((block = ezP.Xml.Literal.domToBlock(xmlBlock, workspace))
+    || (block = ezP.Xml.Comparison.domToBlock(xmlBlock, workspace))
+    || (block = ezP.Xml.Group.domToBlock(xmlBlock, workspace))
+    || (block = ezP.Xml.Call.domToBlock(xmlBlock, workspace))) {
+    } else
+  // is there a simple correspondance with a known type
     if ((prototypeName = ezP.T3.Xml.fromDom[name.substring(4)])) {
       if (goog.isArray(prototypeName)) {
         if (prototypeName.length === 1) {
@@ -645,13 +654,6 @@ ezP.Xml.domToBlock = function() {
         }
       }
       block = ezP.DelegateSvg.newBlockComplete(workspace, prototypeName, id)
-    }
-    // is it a literal or something else special ?
-    else if ((block = ezP.Xml.Literal.domToBlock(xmlBlock, workspace))
-    || (block = ezP.Xml.Comparison.domToBlock(xmlBlock, workspace))
-    || (block = ezP.Xml.Group.domToBlock(xmlBlock, workspace))
-    || (block = ezP.Xml.Call.domToBlock(xmlBlock, workspace))) {
-      
     } else {
       prototypeName = name
       var solid = prototypeName + '_s3d'
@@ -699,6 +701,7 @@ ezP.Xml.domToBlock = function() {
     return block
   }
   return function(xmlBlock, workspace) {
+    ezP.Xml.registerAllTags()
     ezP.Xml.domToBlock = domToBlock
     return domToBlock(xmlBlock, workspace)
   }
@@ -757,8 +760,8 @@ ezP.Xml.fromDom = function (block, element) {
       }
     }
     // read flow and suite
-    var out = statement(block.nextConnection, ezP.Key.NEXT)
-    var out = statement(ezp.inputSuite && ezp.inputSuite.connection, ezP.Key.SUITE) || out
+    var out = statement(block.nextConnection, ezP.XmlKey.NEXT)
+    var out = statement(ezp.inputSuite && ezp.inputSuite.connection, ezP.XmlKey.SUITE) || out
     return out
   }
 }
