@@ -38,20 +38,20 @@ ezP.DelegateSvg.Manager = ezP.Delegate.Manager
  */
 ezP.DelegateSvg.Manager.register = function (key) {
   var prototypeName = ezP.T3.Expr[key]
-  var delegateCtor = undefined
+  var delegateC9r = undefined
   var available = undefined
   if (prototypeName) {
     (key === 'numberliteral') && console.log('Registering expression', key)
-    delegateCtor = ezP.DelegateSvg.Expr[key]
+    delegateC9r = ezP.DelegateSvg.Expr[key]
     available = ezP.T3.Expr.Available
   } else if ((prototypeName = ezP.T3.Stmt[key])) {
     // console.log('Registering statement', key)
-    delegateCtor = ezP.DelegateSvg.Stmt[key]
+    delegateC9r = ezP.DelegateSvg.Stmt[key]
     available = ezP.T3.Stmt.Available
   } else {
     throw "Unknown block ezP.T3.Expr or ezP.T3.Stmt key: "+key
   }
-  ezP.DelegateSvg.Manager.registerDelegate_(prototypeName, delegateCtor)
+  ezP.DelegateSvg.Manager.registerDelegate_(prototypeName, delegateC9r)
   available.push(prototypeName)
 }
 

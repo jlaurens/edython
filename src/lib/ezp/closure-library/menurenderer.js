@@ -6,7 +6,7 @@
  * License CeCILL-B
  */
 /**
- * @fileoverview Renderer with css class in Ctor.
+ * @fileoverview Renderer with css class in C9r.
  *
  * @author jerome.laurens@u-bourgogne.fr
  */

@@ -58,19 +58,19 @@ ezP.Delegate.prototype.getBlock = function () {
  * Create one if it does not exist.
  * Closure used.
  */
-ezP.Delegate.getCtorEzp = function() {
+ezP.Delegate.getC9rEzp = function() {
   // one (almost hidden) shared constructor
-  var ezpCtor = function(key, owner) {
+  var ezpC9r = function(key, owner) {
     owner.ezp = this
     this.owner_ = owner
     this.key = key
     this.types = []
   }
-  return function(delegateCtor, key) {
-    if (delegateCtor.ezp) {
-      return delegateCtor.ezp
+  return function(delegateC9r, key) {
+    if (delegateC9r.ezp) {
+      return delegateC9r.ezp
     }
-    return new ezpCtor(key, delegateCtor)
+    return new ezpC9r(key, delegateC9r)
   }
 } ()
 
@@ -81,8 +81,8 @@ ezP.Delegate.getCtorEzp = function() {
  */
 ezP.Delegate.Manager = function () {
   var me = {}
-  var Ctors = Object.create(null)
-  var defaultCtor = undefined
+  var C9rs = Object.create(null)
+  var defaultC9r = undefined
   var defaultDelegate = undefined
   /**
    * Just adds a proper ezp object to the delegate.
@@ -90,10 +90,10 @@ ezP.Delegate.Manager = function () {
    * @param {string} key
    * @private
    */
-  me.prepareDelegate = function (delegateCtor, key) {
-    var ezp = ezP.Delegate.getCtorEzp(delegateCtor, key || '')
+  me.prepareDelegate = function (delegateC9r, key) {
+    var ezp = ezP.Delegate.getC9rEzp(delegateC9r, key || '')
     ezp.getModel || (ezp.getModel = function () {
-      return modeller(delegateCtor)
+      return modeller(delegateC9r)
     })
     return ezp
   }
@@ -138,37 +138,37 @@ ezP.Delegate.Manager = function () {
   }
   /**
    * Private modeller to provide the constructor with a complete getModel.
-   * @param {!Object} delegateCtor the constructor of a delegate. Must have an `ezp` namespace.
+   * @param {!Object} delegateC9r the constructor of a delegate. Must have an `ezp` namespace.
    * @param {?Object} insertModel  data and inputs entries are merged into the model.
    */
-  var modeller = function(delegateCtor, insertModel) {
-    var ezp = delegateCtor.ezp
+  var modeller = function(delegateC9r, insertModel) {
+    var ezp = delegateC9r.ezp
     goog.asserts.assert(ezp, 'Forbidden constructor, `ezp`is missing')
     if (ezp.model_) {
       return ezp.model_
     }
     var model = Object.create(null)
-    var c = delegateCtor.superClass_
+    var c = delegateC9r.superClass_
     if (c && (c = c.constructor) && c.ezp) {
       merger(model, modeller(c))
     }
-    if (delegateCtor.model__) {
-      if (goog.isFunction(delegateCtor.model__)) {
-        model = delegateCtor.model__(model)
-      } else if (Object.keys(delegateCtor.model__).length) {
-        merger(model, delegateCtor.model__)
+    if (delegateC9r.model__) {
+      if (goog.isFunction(delegateC9r.model__)) {
+        model = delegateC9r.model__(model)
+      } else if (Object.keys(delegateC9r.model__).length) {
+        merger(model, delegateC9r.model__)
       }
-      delete delegateCtor.model__
+      delete delegateC9r.model__
     }
     if (insertModel) {
       insertModel.data && merger(model.data, insertModel.data)
       insertModel.tiles && merger(model.tiles, insertModel.tiles)
     }
     // store that object permanently
-    delegateCtor.ezp.model_ = model
+    delegateC9r.ezp.model_ = model
     // now change the getModel to return this stored value
-    delegateCtor.ezp.getModel = function() {
-      return delegateCtor.ezp.model_
+    delegateC9r.ezp.getModel = function() {
+      return delegateC9r.ezp.model_
     }
     return model
   }
@@ -194,12 +194,12 @@ ezP.Delegate.Manager = function () {
     || ezP.T3.Expr[key] && ezP.Delegate.Svg && ezP.Delegate.Svg.Expr
     || ezP.T3.Stmt[key] && ezP.Delegate.Svg && ezP.Delegate.Svg.Stmt
     || parent
-    var delegateCtor = owner[key] = function (block) {
-      delegateCtor.superClass_.constructor.call(this, block)
+    var delegateC9r = owner[key] = function (block) {
+      delegateC9r.superClass_.constructor.call(this, block)
     }
-    goog.inherits(delegateCtor, parent)
-    me.prepareDelegate(delegateCtor, key)
-    ezP.Delegate.Manager.registerDelegate_(ezP.T3.Expr[key]||ezP.T3.Stmt[key], delegateCtor)
+    goog.inherits(delegateC9r, parent)
+    me.prepareDelegate(delegateC9r, key)
+    ezP.Delegate.Manager.registerDelegate_(ezP.T3.Expr[key]||ezP.T3.Stmt[key], delegateC9r)
     if (goog.isFunction(model)) {
       model = model()
     }
@@ -207,9 +207,9 @@ ezP.Delegate.Manager = function () {
       // manage the link: key
       var link, linkModel = model
       while((link = model.link)) {
-        var linkCtor = goog.isFunction(link)? link: me.get(link)
-        goog.asserts.assert(linkCtor, 'Not inserted: '+link)
-        var linkModel = linkCtor.ezp.getModel()
+        var linkC9r = goog.isFunction(link)? link: me.get(link)
+        goog.asserts.assert(linkC9r, 'Not inserted: '+link)
+        var linkModel = linkC9r.ezp.getModel()
         if (linkModel) {
           model = linkModel
         }
@@ -237,12 +237,12 @@ ezP.Delegate.Manager = function () {
           statement.next.check = ezP.T3.Stmt.Next[key]
         }
       }
-      delegateCtor.model__ = model // intermediate storage used by `modeller` in due time
+      delegateC9r.model__ = model // intermediate storage used by `modeller` in due time
     }
-    delegateCtor.makeSubclass = function(key, model, owner) {
-      return me.makeSubclass(key, model, delegateCtor, owner)
+    delegateC9r.makeSubclass = function(key, model, owner) {
+      return me.makeSubclass(key, model, delegateC9r, owner)
     }
-    return delegateCtor
+    return delegateC9r
   }
   /**
    * Delegate instance creator.
@@ -250,23 +250,23 @@ ezP.Delegate.Manager = function () {
    */
   me.create = function (block) {
     goog.asserts.assert(!goog.isString(block), 'API DID CHANGE, update!')
-    var delegateCtor = Ctors[block.type]
-    goog.asserts.assert(delegateCtor, 'No delegate for '+block.type)
-    return new delegateCtor(block)
+    var delegateC9r = C9rs[block.type]
+    goog.asserts.assert(delegateC9r, 'No delegate for '+block.type)
+    return new delegateC9r(block)
   }
   /**
    * Get the Delegate constructor for the given prototype name.
    * @param {?string} prototypeName Name of the language object containing
    */
   me.get = function (prototypeName) {
-    return Ctors[prototypeName]
+    return C9rs[prototypeName]
   }
   /**
    * Get the Delegate constructor for the given prototype name.
    * @param {?string} prototypeName Name of the language object containing
    */
   me.getTypes = function () {
-    return Object.keys(Ctors)
+    return Object.keys(C9rs)
   }
   /**
    * Get the input model for that prototypeName.
@@ -274,8 +274,8 @@ ezP.Delegate.Manager = function () {
    * @return void object if no delegate is registered for that name
    */
   me.getModel = function (prototypeName) {
-    var delegateCtor = Ctors[prototypeName]
-    return delegateCtor && delegateCtor.ezp.getModel() || Object.create(null)
+    var delegateC9r = C9rs[prototypeName]
+    return delegateC9r && delegateC9r.ezp.getModel() || Object.create(null)
   }
   /**
    * Delegate registrator.
@@ -289,12 +289,12 @@ ezP.Delegate.Manager = function () {
    * @param {Object} constructor
    * @private
    */
-  me.registerDelegate_ = function (prototypeName, delegateCtor, key) {
-    // console.log(prototypeName+' -> '+delegateCtor)
-    Ctors[prototypeName] = delegateCtor
+  me.registerDelegate_ = function (prototypeName, delegateC9r, key) {
+    // console.log(prototypeName+' -> '+delegateC9r)
+    C9rs[prototypeName] = delegateC9r
     // cache all the input, output and statement data at the prototype level
-    me.prepareDelegate(delegateCtor, key)
-    delegateCtor.ezp.types.push(prototypeName)
+    me.prepareDelegate(delegateC9r, key)
+    delegateC9r.ezp.types.push(prototypeName)
     Blockly.Blocks[prototypeName] = {}
   }
   /**
@@ -302,39 +302,39 @@ ezP.Delegate.Manager = function () {
    */
   me.register = function (key) {
     var prototypeName = ezP.T3.Expr[key]
-    var delegateCtor = undefined
+    var delegateC9r = undefined
     var available = undefined
     if (prototypeName) {
-      delegateCtor = ezP.Delegate[key]
+      delegateC9r = ezP.Delegate[key]
       available = ezP.T3.Expr.Available
     } else if ((prototypeName = ezP.T3.Stmt[key])) {
-      delegateCtor = ezP.Delegate[key]
+      delegateC9r = ezP.Delegate[key]
       available = ezP.T3.Stmt.Available
     } else {
       throw "Unknown block ezP.T3.Expr or ezP.T3.Stmt key: "+key
     }
-    me.registerDelegate_(prototypeName, delegateCtor, key)
+    me.registerDelegate_(prototypeName, delegateC9r, key)
     available.push(prototypeName)
   }
-  me.registerAll = function (keyedPrototypeNames, delegateCtor, fake) {
+  me.registerAll = function (keyedPrototypeNames, delegateC9r, fake) {
     for (var k in keyedPrototypeNames) {
       var prototypeName = keyedPrototypeNames[k]
       if (goog.isString(prototypeName)) {
 //        console.log('Registering', k)
-        me.registerDelegate_(prototypeName, delegateCtor, k)
+        me.registerDelegate_(prototypeName, delegateC9r, k)
         if (fake) {
           prototypeName = prototypeName.replace('ezp:', 'ezp:fake_')
 //          console.log('Registering', k)
-          me.registerDelegate_(prototypeName, delegateCtor, k)
+          me.registerDelegate_(prototypeName, delegateC9r, k)
         }
       }
     }
   }
   me.display = function() {
-    var keys = Object.keys(Ctors)
+    var keys = Object.keys(C9rs)
     for (var k=0; k<keys.length; k++) {
       var prototypeName = keys[k]
-      console.log(''+k+'->'+prototypeName+'->'+Ctors[prototypeName])
+      console.log(''+k+'->'+prototypeName+'->'+C9rs[prototypeName])
     }
   }
   return me
@@ -1055,6 +1055,9 @@ ezP.Delegate.prototype.setIncog = function (newValue) {
  * @private
  */
 ezP.Delegate.prototype.setIncog = function (block, incog) {
+  if (!this.incog_ === !incog) {
+    return
+  }
   if (incog) {
     if (this.incog_) {
       // The block is already incognito,

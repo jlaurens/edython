@@ -326,7 +326,7 @@ ezP.Xml.blockToDom = function() {
     return element
   }
   return function(block, optNoId) {
-    ezP.Xml.registerAllTags()
+    ezP.Xml.registerAllTags && ezP.Xml.registerAllTags()
     ezP.Xml.blockToDom = blockToDom
     return blockToDom(block, optNoId)
   }
@@ -581,7 +581,7 @@ ezP.Xml.registerAllTags = function() {
         }
       } else if (goog.isString(already)) {
         if (type != already) {
-          already = [already, type]
+          ezP.T3.Xml.fromDom[tag] = already = [already, type]
         }
       } else {
         ezP.T3.Xml.fromDom[tag] = type
@@ -595,6 +595,7 @@ ezP.Xml.registerAllTags = function() {
   }
   register('Expr')
   register('Stmt')
+  delete ezP.Xml.registerAllTags
 }
 
 /**
@@ -688,7 +689,7 @@ ezP.Xml.domToBlock = function() {
     return block
   }
   return function(xmlBlock, workspace) {
-    ezP.Xml.registerAllTags()
+    ezP.Xml.registerAllTags && ezP.Xml.registerAllTags()
     ezP.Xml.domToBlock = domToBlock
     return domToBlock(xmlBlock, workspace)
   }

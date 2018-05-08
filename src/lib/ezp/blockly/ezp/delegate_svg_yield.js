@@ -24,6 +24,9 @@ goog.require('ezP.DelegateSvg.Stmt')
  * @constructor
  */
 ezP.DelegateSvg.Expr.makeSubclass('yield_expression', {
+  xml: {
+    tag: 'yield',
+  },
   data: {
     variant: {
       YIELD: 0,
@@ -53,8 +56,8 @@ ezP.DelegateSvg.Expr.makeSubclass('yield_expression', {
         didLoad: function () {
           var variant = this.owner.data.variant
           variant.set(variant.model.YIELD_EXPRESSION)
-        }
-      }
+        },
+      },
     },
     from: {
       order: 2,
@@ -132,7 +135,7 @@ ezP.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = func
 ezP.DelegateSvg.List.makeSubclass('parenth_form', function() {
   var D = {
     check: ezP.T3.Expr.Check.non_void_starred_item_list,
-    unique: ezP.T3.Expr.yield_expression,
+    unique: [ezP.T3.Expr.yield_expression, ezP.T3.Expr.comprehension,],
     consolidator: ezP.Consolidator.List.Singled,
     empty: true,
     presep: ',',
@@ -142,6 +145,9 @@ ezP.DelegateSvg.List.makeSubclass('parenth_form', function() {
   goog.array.removeDuplicates(RA)
   D.all = RA
   return {
+    xml: {
+      tag: 'parenthesis',
+    },
     list: D,
     fields: {
       prefix: '(',

@@ -287,11 +287,15 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       all: [ezP.T3.Expr.identifier, ezP.T3.Expr.dotted_name, ],
     },
     variant: {
+      NAME_VALUE: 0,
+      NAME_ANNOTATION_VALUE: 1,
+      TARGET_VALUE: 2,
       all: [0, 1, 2],
       synchronize: function(newValue) {
-        this.ui.tiles.name.setIncog(newValue == 2)
-        this.ui.tiles.annotation.setIncog(newValue != 1)
-        this.ui.tiles.target.setIncog(newValue != 2)
+        var M = this.model
+        this.ui.tiles.name.setIncog(newValue == M.TARGET_VALUE)
+        this.ui.tiles.annotation.setIncog(newValue != M.NAME_ANNOTATION_VALUE)
+        this.ui.tiles.target.setIncog(newValue != M.TARGET_VALUE)
       },
     },
     name: {
@@ -352,7 +356,8 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
  * @private
  */
 ezP.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var value = this.data.value.get()
+  var name = this.data.name.get()
+  var M = this.data.variant.model
   var current = this.data.variant.get()
   var F = function(content, variant) {
     var menuItem = new ezP.MenuItem(content, function() {
@@ -363,22 +368,22 @@ ezP.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
   }
   var content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    ezP.Do.createSPAN(value || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'),
+    ezP.Do.createSPAN(name || ezP.Msg.Placeholder.IDENTIFIER, name? 'ezp-code': 'ezp-code-placeholder'),
     ezP.Do.createSPAN(' = …', 'ezp-code'),
   )
-  F(content, 0)
+  F(content, M.NAME_VALUE)
   var content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    ezP.Do.createSPAN(value || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'),
+    ezP.Do.createSPAN(name || ezP.Msg.Placeholder.IDENTIFIER, name? 'ezp-code': 'ezp-code-placeholder'),
     ezP.Do.createSPAN(': … = …', 'ezp-code'),
   )
-  F(content, 1)
+  F(content, M.NAME_ANNOTATION_VALUE)
   var content = ezP.Do.createSPAN('…,… = …,…', 'ezp-code')
   F(content, 2)
   mgr.shouldSeparate()
-  if (current != 2) {
+  if (current != M.TARGET_VALUE) {
     var menuItem = new ezP.MenuItem(ezP.Msg.RENAME, function() {
-        block.ezp.ui[1].fields.value.showEditor()
+        block.ezp.data.name.field.showEditor()
       })
     mgr.addChild(menuItem, true)
     mgr.shouldSeparate()

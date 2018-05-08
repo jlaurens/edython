@@ -66,11 +66,11 @@ if (Object.setPrototypeOf) {
 goog.require('ezP.setPrototypeOf')
 
 /**
- * Contrary to goog.inherits, does not erase the childCtor.prototype.
+ * Contrary to goog.inherits, does not erase the childC9r.prototype.
  * IE<11
  */
-ezP.inherits = function (childCtor, parentCtor) {
-  childCtor.superClass_ = parentCtor.prototype
-  Object.setPrototypeOf(childCtor.prototype, parentCtor.prototype)
-  childCtor.prototype.constructor = childCtor
+ezP.inherits = function (childC9r, parentC9r) {
+  childC9r.superClass_ = parentC9r.prototype
+  Object.setPrototypeOf(childC9r.prototype, parentC9r.prototype)
+  childC9r.prototype.constructor = childC9r
 }

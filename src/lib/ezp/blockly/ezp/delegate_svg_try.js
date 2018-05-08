@@ -40,6 +40,9 @@ ezP.DelegateSvg.Group.makeSubclass('try_part', {
 ezP.DelegateSvg.Group.makeSubclass('except_part', {
   data: {
     variant: {
+      EXCEPT: 0,
+      EXCEPT_EXPRESSION: 1,
+      EXCEPT_AS: 2,
       all: [0, 1, 2],
       didChange: function(oldValue, newValue) {
         var ezp = this.owner_
@@ -47,8 +50,11 @@ ezP.DelegateSvg.Group.makeSubclass('except_part', {
         ezp.consolidateType(block)
       },
       synchronize: function(newValue) {
-        this.ui.tiles.expression.setIncog(newValue < 1)
-        this.ui.tiles.as.setIncog(newValue < 2)
+        var M = this.model
+        this.ui.tiles.expression.setIncog(newValue === M.EXCEPT)
+        this.ui.tiles.expression.required = (newValue === M.EXCEPT_EXPRESSION)
+        this.ui.tiles.as.setIncog(newValue !== M.EXCEPT_AS)
+        this.ui.tiles.as.required = (newValue === M.EXCEPT_AS)
       },
     },
   },
@@ -60,6 +66,14 @@ ezP.DelegateSvg.Group.makeSubclass('except_part', {
       order: 1,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
+      xml: {
+        didLoad: function () {
+          var variant = this.owner.data.variant
+          if (variant.get() === variant.model.EXCEPT) {
+            variant.set(variant.model.EXCEPT_EXPRESSION)
+          }
+        },
+      },
     },
     as: {
       order: 2,
@@ -68,6 +82,12 @@ ezP.DelegateSvg.Group.makeSubclass('except_part', {
       },
       check: ezP.T3.Expr.identifier,
       hole_value: 'name',
+      xml: {
+        didLoad: function () {
+          var variant = this.owner.data.variant
+          variant.set(variant.model.EXCEPT_AS)
+        },
+      },
     },
   },
 })
@@ -97,6 +117,7 @@ ezP.DelegateSvg.Stmt.except_part.prototype.consolidateType = function (block) {
  * @private
  */
 ezP.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var M = this.data.variant.model
   var current = block.ezp.data.variant.get()
   var F = function(content, k) {
     var menuItem = new ezP.MenuItem(content, function() {
@@ -107,19 +128,19 @@ ezP.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function 
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
       goog.dom.createTextNode('except:'),
-    ), 0
+    ), M.EXCEPT
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN('except ', 'ezp-code-reserved'),
       goog.dom.createTextNode('…:'),
-    ), 1
+    ), M.EXCEPT_EXPRESSION
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN('except', 'ezp-code-reserved'),
       goog.dom.createTextNode(' … '),
       ezP.Do.createSPAN(' as', 'ezp-code-reserved'),
       goog.dom.createTextNode(' …:'),
-    ), 2
+    ), M.EXCEPT_AS
   )
   mgr.shouldSeparate()
   return ezP.DelegateSvg.Stmt.except_part.superClass_.populateContextMenuFirst_.call(this,block, mgr)
@@ -149,10 +170,16 @@ ezP.DelegateSvg.Group.makeSubclass('finally_part', {
 ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
   data: {
     variant: {
+      RAISE: 0,
+      RAISE_EXPRESSION: 1,
+      RAISE_FROM: 2,
       all: [0, 1, 2],
       synchronize: function(newValue) {
-        this.ui.tiles.expression.setIncog(newValue < 1)
-        this.ui.tiles.from.setIncog(newValue < 2)
+        var M = this.model
+        this.ui.tiles.expression.setIncog(newValue === M.RAISE)
+        this.ui.tiles.expression.required = (newValue === M.RAISE_EXPRESSION)
+        this.ui.tiles.from.setIncog(newValue !== M.RAISE_FROM)
+        this.ui.tiles.from.required = (newValue === M.RAISE_FROM)
       },
     },
   },
@@ -164,6 +191,14 @@ ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       order: 1,
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
+      xml: {
+        didLoad: function () {
+          var variant = this.owner.data.variant
+          if (variant.get() === variant.model.RAISE) {
+            variant.set(variant.model.RAISE_EXPRESSION)
+          }
+        },
+      },
     },
     from: {
       order: 2,
@@ -172,6 +207,12 @@ ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       },
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
+      xml: {
+        didLoad: function () {
+          var variant = this.owner.data.variant
+          variant.set(variant.model.RAISE_FROM)
+        },
+      },
     },
   },
 })
@@ -183,7 +224,8 @@ ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
  * @private
  */
 ezP.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var current = block.ezp.data.variant.get()
+  var M = this.data.variant.model
+  var current = this.data.variant.get()
   var F = function(content, k) {
     var menuItem = new ezP.MenuItem(content, function() {
       block.ezp.data.variant.set(k)
@@ -193,19 +235,19 @@ ezP.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
       goog.dom.createTextNode('raise'),
-    ), 0
+    ), M.RAISE
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN('raise ', 'ezp-code-reserved'),
       goog.dom.createTextNode('…'),
-    ), 1
+    ), M.RAISE_EXPRESSION
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN('raise', 'ezp-code-reserved'),
       goog.dom.createTextNode(' … '),
       ezP.Do.createSPAN(' from', 'ezp-code-reserved'),
       goog.dom.createTextNode(' …'),
-    ), 2
+    ), M.RAISE_FROM
   )
   mgr.shouldSeparate()
   return ezP.DelegateSvg.Stmt.raise_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
@@ -224,6 +266,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
       all: [0, 1],
       synchronize: function(newValue) {
         this.ui.tiles.expression.setIncog(!newValue)
+        this.ui.tiles.expression.required = !!newValue
       },
     },
   },
@@ -243,6 +286,12 @@ ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
       },
       check: ezP.T3.Expr.Check.expression,
       hole_value: 'expression',
+      xml: {
+        didLoad: function () {
+          var variant = this.owner.data.variant
+          variant.set(1)
+        },
+      },
     },
   },
 })

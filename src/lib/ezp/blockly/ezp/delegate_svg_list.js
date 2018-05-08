@@ -189,27 +189,6 @@ ezP.DelegateSvg.List.makeSubclass('starred_item_list', {
 })
 
 /**
- * Class for a DelegateSvg, parenth_form.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.starred_item_list.makeSubclass('parenth_form', {
-  list: {
-    check: ezP.T3.Expr.Check.starred_item,
-    empty: false,
-    presep: ',',
-    hole_value: 'name',
-  },
-  fields: {
-    prefix: '(',
-    suffix: ')',
-  },
-})
-
-/**
  * Class for a DelegateSvg, key_datum_list block.
  * This block may be sealed.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
@@ -296,6 +275,9 @@ ezP.DelegateSvg.List.makeSubclass('starred_item_list_comprehensive', function() 
  * @constructor
  */
 ezP.DelegateSvg.Expr.starred_item_list_comprehensive.makeSubclass('list_display', {
+  xml: {
+    tag: 'square_bracket',
+  },
   fields: {
     prefix: '[',
     suffix: ']',
@@ -336,6 +318,9 @@ ezP.DelegateSvg.List.makeSubclass('non_void_starred_item_list_comprehensive', fu
  * @constructor
  */
 ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive.makeSubclass('set_display', {
+  xml: {
+    tag: 'curly_bracket',
+  },
   fields: {
     prefix: '{',
     suffix: '}',

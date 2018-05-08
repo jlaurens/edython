@@ -389,7 +389,7 @@ ezP.Tile.prototype.isRequiredToDom = function () {
   if (!this.connection) {
     return false
   }
-  if (this.connection.targetBlock()) {
+  if (!this.connection.ezp.wrapped_ && this.connection.targetBlock()) {
     return true
   }
   if (this.required) {
