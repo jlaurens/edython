@@ -63,13 +63,36 @@ ezP.ConnectionDelegate.prototype.optional_ = false// must change to wrapper
 ezP.ConnectionDelegate.prototype.name_ = undefined// must change to wrapper
 
 /**
+ * Set the disabled state.
+ * Hide/show the connection from/to the databass and disable/enable the target's connections.
+ * @param {boolean} disabled
+ */
+ezP.ConnectionDelegate.prototype.setDisabled = function(disabled) {
+  if (this.disabled_ && disabled) {
+    // things were unlikely to change since
+    // the last time the connections have been disabled
+    return
+  }
+  var c8n = this.connection
+  if (disabled || !this.wrapped_) {
+    // We cannot enable wrapped connections
+    this.disabled_ = disabled
+    c8n.setHidden(disabled)
+  }
+  var target = c8n.targetBlock()
+  if (target) {
+    target.ezp.setConnectionsDisabled(target, disabled)
+  }
+}
+
+/**
  * Will connect.
  * Forwards to the model.
  * @param {Blockly.Connection} connection the connection owning the delegate
  * @param {Blockly.Connection} targetConnection
  */
 ezP.ConnectionDelegate.prototype.willConnect = function(targetConnection) {
-  goog.isFunction(this.model.willConnect) && this.model.willConnect.call(this.connection, targetConnection)
+  this.model && goog.isFunction(this.model.willConnect) && this.model.willConnect.call(this.connection, targetConnection)
 }
 
 /**
@@ -80,7 +103,7 @@ ezP.ConnectionDelegate.prototype.willConnect = function(targetConnection) {
  * @param {Blockly.Connection} oldConnection  what was previously connected to the actual connection.targetConnection
  */
 ezP.ConnectionDelegate.prototype.didConnect = function(oldTargetConnection, targetOldConnection) {
-  goog.isFunction(this.model.didConnect) && this.model.didConnect.call(this.connection, oldTargetConnection, targetOldConnection)
+  this.model && goog.isFunction(this.model.didConnect) && this.model.didConnect.call(this.connection, oldTargetConnection, targetOldConnection)
 }
 
 /**
@@ -89,7 +112,7 @@ ezP.ConnectionDelegate.prototype.didConnect = function(oldTargetConnection, targ
  * This can be overriden at block creation time.
  */
 ezP.ConnectionDelegate.prototype.willDisconnect = function() {
-  goog.isFunction(this.model.willDisconnect) && this.model.willDisconnect.call(this.connection)
+  this.model && goog.isFunction(this.model.willDisconnect) && this.model.willDisconnect.call(this.connection)
 }
 
 /**
@@ -100,7 +123,7 @@ ezP.ConnectionDelegate.prototype.willDisconnect = function() {
  * @param {Blockly.Connection} oldTargetConnection  what was previously connected to connection
  */
 ezP.ConnectionDelegate.prototype.didDisconnect = function(oldTargetConnection) {
-  goog.isFunction(this.model.didDisconnect) && this.model.didDisconnect.call(this.connection, oldTargetConnection)
+  this.model && goog.isFunction(this.model.didDisconnect) && this.model.didDisconnect.call(this.connection, oldTargetConnection)
 }
 
 /**
@@ -541,6 +564,9 @@ ezP.Connection.prototype.connect_ = function(childC8n) {
   parentC8n.ezp.didConnect(oldParentC8n, oldChildC8n)
   parent.ezp.didConnect(parent, parentC8n, oldChildC8n, oldParentC8n)
   child.ezp.didConnect(child, childC8n, oldParentC8n, oldChildC8n)
+  if (parentC8n.ezp.disabled_) {
+    child.ezp.setConnectionsDisabled(child, true)
+  }
 }
 
 /**

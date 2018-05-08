@@ -29,17 +29,28 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
   data: {
     builtin: {
       all: ['staticmethod', 'classmethod'],
-      synchronize: function(newValue) {
-        this.setFieldValue(newValue || '')
-      },
+      synchronize: true,
     },
     variant: {
-      all: ['DOTTED_NAME', 'BUILTIN', 'ARGUMENTS'],
-      synchronize: function(variant) {
-        this.ui.tiles.dotted_name.setDisabled(variant === 'BUILTIN')
-        this.ui.tiles.builtin.setDisabled(variant !== 'BUILTIN')
-        this.ui.tiles.arguments.setDisabled(variant !== 'ARGUMENTS')
+      DOTTED_NAME: 0,
+      BUILTIN: 1,
+      ARGUMENTS: 2,
+      all: [0, 1, 2],
+      didChange: function(oldValue, newValue) { // would variants synchronize?
+        var M = this.model
+        this.data.dotted_name.setDisabled(newValue === M.BUILTIN) // disable the data not the tile
+        this.data.builtin.setDisabled(newValue !== M.BUILTIN)
+        this.ui.tiles.arguments.setDisabled(newValue !== M.ARGUMENTS)
       },
+      consolidate: function() { // run after didChange but before synchronize
+        if (this.ui.tiles.arguments.isRequiredFromDom()) {
+          this.ui.tiles.arguments.setRequiredFromDom(false)
+          this.set(this.model.ARGUMENTS)
+        } else if (this.data.builtin.isRequiredFromDom()) {
+          this.data.builtin.setRequiredFromDom(false)
+          this.set(this.model.BUILTIN)          
+        }
+      }
     },
     subtype: {
       all: [ezP.T3.Expr.dotted_name, ezP.T3.Expr.identifier],
@@ -51,9 +62,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
         var subtype = ezP.Do.typeOfString(newValue)
         return (subtypes.indexOf(subtype)>= 0) && {validated: newValue} || null
       },
-      synchronize: function(newValue) {
-        this.setFieldValue(this.toText() || '')
-      },
+      synchronize: true,
     },
   },
   fields: {
@@ -67,9 +76,9 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
       order: 1,
       fields: {
         edit: {
-          placeholder: ezP.Msg.Placeholder.DECORATOR,
           validate: true,
           endEditing: true,
+          placeholder: ezP.Msg.Placeholder.DECORATOR,
           // left_space: true,
         },
       },
@@ -89,6 +98,9 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
         end: ')',
       },
       wrap: ezP.T3.Expr.argument_list,
+      xml: {
+        required: true,
+      },
     },
   },
   statement: {
@@ -120,28 +132,23 @@ ezP.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (b
   var builtin = this.data.builtin.get()
   var builtins = this.data.builtin.getAll()
   var i_b = builtins.indexOf(builtin)
+  var M = this.data.variant.model
   var variant = this.data.variant.get()
-  var variants = this.data.variant.getAll()
-  var i_v = variants.indexOf(variant)
-  if (variant === 'BUILTIN') {
-
-  }
-
   var menuItem = new ezP.MenuItem(
       ezP.Do.createSPAN('@'+builtins[0], 'ezp-code-reserved'),
       function() {
     block.ezp.data.builtin.set(0)
-    block.ezp.data.variant.set(1)
+    block.ezp.data.variant.set(M.BUILTIN)
   })
-  menuItem.setEnabled(i_b != 0 || i_v != 1)
+  menuItem.setEnabled(i_b != 0 || variant != M.BUILTIN)
   mgr.addChild(menuItem)
   menuItem = new ezP.MenuItem(
       ezP.Do.createSPAN('@'+builtins[1], 'ezp-code-reserved'),
       function() {
     block.ezp.data.builtin.set(1)
-    block.ezp.data.variant.set(1)
+    block.ezp.data.variant.set(M.BUILTIN)
   })
-  menuItem.setEnabled(i_b != 1 || i_v != 1)
+  menuItem.setEnabled(i_b != 1 || variant != M.BUILTIN)
   mgr.addChild(menuItem)
   menuItem = new ezP.MenuItem(
       goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
@@ -149,20 +156,20 @@ ezP.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (b
       ezP.Do.createSPAN(dotted_name || ezP.Msg.Placeholder.DECORATOR, !dotted_name && 'ezp-code-placeholder'),
     ),
       function() {
-    block.ezp.data.variant.set(0)
+    block.ezp.data.variant.set(M.DOTTED_NAME)
   })
-  menuItem.setEnabled(i_v !== 0)
+  menuItem.setEnabled(variant !== M.DOTTED_NAME)
   mgr.addChild(menuItem)
   menuItem = new ezP.MenuItem(
       goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN('@', 'ezp-code-reserved'),
-      ezP.Do.createSPAN(value || ezP.Msg.Placeholder.DECORATOR, !value && 'ezp-code-placeholder'),
+      ezP.Do.createSPAN(dotted_name || ezP.Msg.Placeholder.DECORATOR, !dotted_name && 'ezp-code-placeholder'),
       goog.dom.createTextNode('(…)')
     ),
       function() {
-    block.ezp.data.variant.set(2)
+    block.ezp.data.variant.set(M.ARGUMENTS)
   })
-  menuItem.setEnabled(i_v !== 2)
+  menuItem.setEnabled(variant !== M.ARGUMENTS)
   mgr.addChild(menuItem)
   mgr.shouldSeparate()
   return ezP.DelegateSvg.Stmt.decorator.superClass_.populateContextMenuFirst_.call(this, block, mgr)

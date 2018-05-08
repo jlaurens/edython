@@ -163,12 +163,12 @@ ezP.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
   var c8n = io.block.makeConnection_(Blockly.INPUT_VALUE)
   c8n.ezp.willConnect = function(c8n, otherC8n) {
     c8n.ezp.will_connect_ = true
-    this.sourceBlock_.ezp.will_connect_ = true
+    this.connection.sourceBlock_.ezp.will_connect_ = true
   }
   c8n.ezp.didConnect = function(c8n, otherC8n) {
     this.will_connect_ = false
     this.connection.sourceBlock_.ezp.will_connect_ = false
-    me.consolidate(this.sourceBlock_, true)
+    me.consolidate(this.connection.sourceBlock_, true)
   }
   var input = new Blockly.Input(Blockly.INPUT_VALUE, '!', io.block, c8n)
   ezP.Input.setupEzpData(input)

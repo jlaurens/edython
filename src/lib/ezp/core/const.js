@@ -268,7 +268,7 @@ ezP.XRE = {
     (?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl}|\\p{Mn}|\\p{Mc}|\\p{Nd}|\\p{Pc})*
   )$`, 'x'),
   id_wrapped: XRegExp(`^(?<id>.*?)\\.wrapped:(?<name>[a-zA-Z_][a-zA-Z_0-9]*)$`, 'x'),
-  solid: XRegExp(`^(?<core>.*?)_solid$`),
+  s3d: XRegExp(`^(?<core>.*?)_s3d$`),
   event_data: XRegExp(`^ezp:data:(?<key>.*?)$`),
   operator: XRegExp(`^[+\\-/%*@<>&^|=#]$`),
   comment: XRegExp(`^(?<value>[^\\r\\n]*)`),
@@ -344,4 +344,9 @@ ezP.Const.Event = {
   property: 'ezp:property',
   locked: 'ezp:locked',
   asynced: 'ezp:asynced',
+}
+
+ezP.XmlKey = {
+  INPUT: 'ezp:input', // attribute name
+  LIST: 'ezp:list',
 }

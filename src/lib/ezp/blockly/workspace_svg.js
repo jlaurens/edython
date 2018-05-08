@@ -357,79 +357,6 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
     var heightWidth = block.getHeightWidth();
     var blockX = (metrics.viewLeft + metrics.viewWidth / 2) / scale - heightWidth.width / 2;
     var blockY = (metrics.viewTop + metrics.viewHeight / 2)  / scale - heightWidth.height / 2;
-
-    /*
-
-    var blockX = 
-    var blockY = 
-  // XY is in workspace coordinates.
-  var xy = block.getRelativeToSurfaceXY();
-  // Height/width is in workspace units.
-  var metrics = this.getMetrics();
-  var scale = this.scale || 1;
-  var heightWidth = block.getHeightWidth();
-  xy.x = blockCenterX - heightWidth.width / 2
-  xy.y = blockCenterY - heightWidth.height / 2
-  blockCenterX = pixelX / scale
-  blockCenterY = pixelY / scale
- 
-  // Workspace scale, used to convert from workspace coordinates to pixels.
- 
-  // Center in pixels.  0, 0 is at the workspace origin.  These numbers may
-  // be negative.
- 
-  var blockCenterX = (metrics.contentLeft + metrics.viewWidth / 2) / scale
-  var blockCenterY = (metrics.contentTop + metrics.viewHeight / 2)  scale
-
-  // Scrolling to here would put the block in the top-left corner of the
-  // visible workspace.
-  var scrollToBlockX = pixelX - metrics.contentLeft;
-  var scrollToBlockY = pixelY - metrics.contentTop;
-
-  // viewHeight and viewWidth are in pixels.
-  var halfViewWidth = metrics.viewWidth / 2;
-  var halfViewHeight = metrics.viewHeight / 2;
-
-  // Put the block in the center of the visible workspace instead.
-  var scrollToCenterX = scrollToBlockX - halfViewWidth;
-  var scrollToCenterY = scrollToBlockY - halfViewHeight;
-
-  Blockly.hideChaff();
-  this.scrollbar.set(scrollToCenterX, scrollToCenterY);
-
-*/
-    /*
-    0
-absoluteTop
-:
-0
-contentHeight
-:
-2902.323907455013
-contentLeft
-:
--298
-contentTop
-:
--230
-contentWidth
-:
-966.8581648878082
-
-viewHeight
-:
-480
-viewLeft
-:
-68.8581648878083
-viewTop
-:
-200.91595153024082
-viewWidth
-:
-600
-
-​*/
     if (!isNaN(blockX) && !isNaN(blockY)) {
       if (this.RTL) {
         blockX = -blockX;
@@ -441,8 +368,8 @@ viewWidth
         var allBlocks = this.getAllBlocks();
         for (var i = 0, otherBlock; otherBlock = allBlocks[i]; i++) {
           var otherXY = otherBlock.getRelativeToSurfaceXY();
-          if (Math.abs(blockX - otherXY.x) <= 1 &&
-              Math.abs(blockY - otherXY.y) <= 1) {
+          if (Math.abs(blockX - otherXY.x) <= 10 &&
+              Math.abs(blockY - otherXY.y) <= 10) {
             collide = true;
             break;
           }

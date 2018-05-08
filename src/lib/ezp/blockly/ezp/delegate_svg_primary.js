@@ -182,6 +182,7 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
     },
     backup: {
       noUndo: true,
+      xml: false,
     },
     name: {
       all: ['range', 'list', 'set', 'len', 'sum'],
@@ -208,13 +209,9 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
       order: 1,
       fields: {
         edit: {
+          validate: true,
+          endEditing: true,
           placeholder: ezP.Msg.Placeholder.IDENTIFIER,
-          validate: function(txt) {
-            return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
-          },
-          endEditing: function () {
-            this.ezp.setData(this.getValue())
-          },
         },
       },
     },
@@ -243,9 +240,9 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
  */
 ezP.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
   var variant = this.data.variant.get()
-  var values = this.data.value.getAll()
-  var current = this.data.value.get()
-  var i = values.indexOf(current)
+  var names = this.data.name.getAll()
+  var current = this.data.name.get()
+  var i = names.indexOf(current)
   if (variant !== 0) {
     var oldValue = block.ezp.data.backup.get()
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -253,7 +250,7 @@ ezP.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
       ezP.Do.createSPAN('(…)', 'ezp-code'),
     )
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.value.setTrusted(oldValue || '')
+      block.ezp.data.name.setTrusted(oldValue || '')
       block.ezp.data.variant.set(0)
     })
     mgr.addChild(menuItem, true)
@@ -261,17 +258,17 @@ ezP.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
   var F = function(j) {
     // closure to catch j
     content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      ezP.Do.createSPAN(values[j], 'ezp-code-reserved'),
+      ezP.Do.createSPAN(names[j], 'ezp-code-reserved'),
       ezP.Do.createSPAN('(…)', 'ezp-code'),
     )
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.value.setTrusted(values[j])
+      block.ezp.data.name.setTrusted(names[j])
       block.ezp.data.variant.set(2)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(j !== i)
   }
-  for (var j = 0; j < values.length; j++) {
+  for (var j = 0; j < names.length; j++) {
     F (j)
   }
   if (variant !== 1) {
@@ -280,7 +277,7 @@ ezP.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
       ezP.Do.createSPAN('(…)', 'ezp-code'),
     )
     var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.value.setTrusted(oldValue || '')
+      block.ezp.data.name.setTrusted(oldValue || '')
       block.ezp.data.variant.set(1)
     })
     mgr.addChild(menuItem, true)

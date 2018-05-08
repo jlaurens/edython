@@ -45,17 +45,17 @@ ezP.DelegateSvg.Expr.workspaceBlocks = [
   ezP.T3.Expr.shortbytesliteral,
   ezP.T3.Expr.longstringliteral,
   ezP.T3.Expr.longbytesliteral,
-  ezP.T3.Expr.u_expr_solid,
-  ezP.T3.Expr.not_test_solid,
-  ezP.T3.Expr.power_solid,
-  ezP.T3.Expr.m_expr_solid,
-  ezP.T3.Expr.a_expr_solid,
-  ezP.T3.Expr.shift_expr_solid,
-  ezP.T3.Expr.and_expr_solid,
-  ezP.T3.Expr.xor_expr_solid,
-  ezP.T3.Expr.or_expr_solid,
-  ezP.T3.Expr.or_test_solid,
-  ezP.T3.Expr.and_test_solid,
+  ezP.T3.Expr.u_expr_s3d,
+  ezP.T3.Expr.not_test_s3d,
+  ezP.T3.Expr.power_s3d,
+  ezP.T3.Expr.m_expr_s3d,
+  ezP.T3.Expr.a_expr_s3d,
+  ezP.T3.Expr.shift_expr_s3d,
+  ezP.T3.Expr.and_expr_s3d,
+  ezP.T3.Expr.xor_expr_s3d,
+  ezP.T3.Expr.or_expr_s3d,
+  ezP.T3.Expr.or_test_s3d,
+  ezP.T3.Expr.and_test_s3d,
   ezP.T3.Expr.comprehension,
   ezP.T3.Expr.comp_for,
   ezP.T3.Expr.comp_if,
@@ -102,7 +102,7 @@ ezP.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks = ezP.DelegateS
 ezP.DelegateSvg.Stmt.import_stmt.workspaceBlocks = [
   ezP.T3.Expr.non_void_module_as_list,
   ezP.T3.Expr.import_module,
-  ezP.T3.Expr.module_as_solid,
+  ezP.T3.Expr.module_as_s3d,
   ezP.T3.Expr.term,
 ]
 
@@ -115,7 +115,7 @@ ezP.DelegateSvg.Expr.comprehension.workspaceBlocks = [
   ezP.T3.Expr.target_list,
   ezP.T3.Expr.comp_iter_list,
   ezP.T3.Expr.comprehension,
-  ezP.T3.Expr.key_datum_solid,
+  ezP.T3.Expr.key_datum_s3d,
   ezP.T3.Expr.dict_comprehension,
 ]
 
@@ -128,24 +128,24 @@ ezP.DelegateSvg.Expr.dict_comprehension.workspaceBlocks = [
   ezP.T3.Expr.comp_iter_list,
 ]
 
-ezP.DelegateSvg.Expr.a_expr_solid.workspaceBlocks = 
-ezP.DelegateSvg.Expr.m_expr_solid.workspaceBlocks = 
-ezP.DelegateSvg.Expr.u_expr_solid.workspaceBlocks = [
+ezP.DelegateSvg.Expr.a_expr_s3d.workspaceBlocks = 
+ezP.DelegateSvg.Expr.m_expr_s3d.workspaceBlocks = 
+ezP.DelegateSvg.Expr.u_expr_s3d.workspaceBlocks = [
   ezP.T3.Expr.term,
-  ezP.T3.Expr.a_expr_solid,
-  ezP.T3.Expr.m_expr_solid,
-  ezP.T3.Expr.u_expr_solid,
+  ezP.T3.Expr.a_expr_s3d,
+  ezP.T3.Expr.m_expr_s3d,
+  ezP.T3.Expr.u_expr_s3d,
 ]
 
-ezP.DelegateSvg.Expr.shift_expr_solid.workspaceBlocks = 
-ezP.DelegateSvg.Expr.and_expr_solid.workspaceBlocks = 
-ezP.DelegateSvg.Expr.xor_expr_solid.workspaceBlocks = 
-ezP.DelegateSvg.Expr.or_expr_solid.workspaceBlocks = [
+ezP.DelegateSvg.Expr.shift_expr_s3d.workspaceBlocks = 
+ezP.DelegateSvg.Expr.and_expr_s3d.workspaceBlocks = 
+ezP.DelegateSvg.Expr.xor_expr_s3d.workspaceBlocks = 
+ezP.DelegateSvg.Expr.or_expr_s3d.workspaceBlocks = [
   ezP.T3.Expr.term,
-  ezP.T3.Expr.shift_expr_solid,
-  ezP.T3.Expr.and_expr_solid,
-  ezP.T3.Expr.xor_expr_solid,
-  ezP.T3.Expr.or_expr_solid,
+  ezP.T3.Expr.shift_expr_s3d,
+  ezP.T3.Expr.and_expr_s3d,
+  ezP.T3.Expr.xor_expr_s3d,
+  ezP.T3.Expr.or_expr_s3d,
 ]
 
 ezP.DelegateSvg.Expr.number_comparison.workspaceBlocks = 
@@ -155,11 +155,11 @@ ezP.DelegateSvg.Expr.object_comparison.workspaceBlocks = [
   ezP.T3.Expr.object_comparison,
 ]
 
-ezP.DelegateSvg.Expr.and_test_solid.workspaceBlocks = 
-ezP.DelegateSvg.Expr.or_test_solid.workspaceBlocks = [
+ezP.DelegateSvg.Expr.and_test_s3d.workspaceBlocks = 
+ezP.DelegateSvg.Expr.or_test_s3d.workspaceBlocks = [
   ezP.T3.Expr.term,
-  ezP.T3.Expr.and_test_solid,
-  ezP.T3.Expr.or_test_solid,
+  ezP.T3.Expr.and_test_s3d,
+  ezP.T3.Expr.or_test_s3d,
 ]
 
 ezP.DelegateSvg.Expr.optional_expression_list.workspaceBlocks = [
@@ -169,7 +169,7 @@ ezP.DelegateSvg.Expr.optional_expression_list.workspaceBlocks = [
 ]
 
 ezP.DelegateSvg.Expr.key_datum_list_comprehensive.workspaceBlocks = [
-  ezP.T3.Expr.key_datum_solid,
+  ezP.T3.Expr.key_datum_s3d,
   ezP.T3.Expr.dict_comprehension,
   ezP.T3.Expr.key_datum_list_comprehensive,
 ]
@@ -186,7 +186,7 @@ ezP.DelegateSvg.Expr.yield_expression.workspaceBlocks = [
 
 ezP.DelegateSvg.Stmt.import_stmt.workspaceBlocks = [
   ezP.T3.Expr.term,
-  ezP.T3.Expr.module_as_solid,
+  ezP.T3.Expr.module_as_s3d,
   ezP.T3.Expr.non_void_module_as_list,
   ezP.T3.Expr.import_module,
   ezP.T3.Expr.non_void_import_identifier_as_list,
@@ -357,12 +357,12 @@ ezP.DelegateSvg.Stmt.raise_stmt.workspaceBlocks = ezP.Do.arraysMerged([
 
 // in progress
 
-ezP.DelegateSvg.Expr.power_solid.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Expr.power_solid,
+ezP.DelegateSvg.Expr.power_s3d.workspaceBlocks = ezP.Do.arraysMerged([
+  ezP.T3.Expr.power_s3d,
 ], ezP.T3.Expr.Check.await_or_primary, ezP.T3.Expr.Check.u_expr)
 
-ezP.DelegateSvg.Expr.conditional_expression_solid.workspaceBlocks = [
-  ezP.T3.Expr.conditional_expression_solid,
+ezP.DelegateSvg.Expr.conditional_expression_s3d.workspaceBlocks = [
+  ezP.T3.Expr.conditional_expression_s3d,
 ].concat(ezP.T3.Expr.Check.or_test).concat(ezP.T3.Expr.Check.expression)
 
 ezP.DelegateSvg.Expr.starred_item_list.workspaceBlocks = [
@@ -380,7 +380,7 @@ ezP.Do.arraysMerged(
   ezP.T3.Expr.parenth_form,
   ezP.T3.Expr.non_void_starred_item_list_comprehensive,
   ezP.T3.Expr.set_display,
-  ezP.T3.Expr.key_datum_solid,
+  ezP.T3.Expr.key_datum_s3d,
   ezP.T3.Expr.key_datum_list_comprehensive,
   ezP.T3.Expr.dict_display,
 ],

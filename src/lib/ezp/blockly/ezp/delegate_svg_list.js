@@ -65,8 +65,11 @@ ezP.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
     return
   }
   ezP.DelegateSvg.List.superClass_.consolidate.call(this, block, force)
+  if (this.connectionsDisabled) {
+    return
+  }
   this.consolidate_lock = true
-  try { 
+  try {
     this.consolidator.consolidate(block, force)
   } finally {
     delete this.consolidate_lock

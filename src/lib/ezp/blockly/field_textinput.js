@@ -365,6 +365,10 @@ ezP.FieldInput.prototype.setValue = function(newValue) {
  * @override
  */
 ezP.FieldInput.prototype.render_ = function() {
+  if (!this.textElement_) {
+    // not yet available
+    return
+  }
   ezP.FieldInput.superClass_.render_.call(this)
   if (this.ezp.error) {
     goog.dom.classlist.add(this.textElement_, 'ezp-code-error')

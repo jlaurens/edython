@@ -288,9 +288,9 @@ Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
  * it also depends on the enclosing block.
  * 4) Wrapped blocks other than lists will not add an xml child level.
  * As a consequence, this method just returns nothing for such blocks.
- * 5) solid blocks are named after their type which ezp:foo_solid.
+ * 5) solid blocks are named after their type which ezp:foo_s3d.
  * These block types correspond to an alternate in the python grammar.
- * The persistence storage may remember these blocks as ezp:foo instead of ezp:foo_solid.
+ * The persistence storage may remember these blocks as ezp:foo instead of ezp:foo_s3d.
  * @param {!Blockly.Block} block The root block to encode.
  * @param {boolean} optNoId True if the encoder should skip the block id.
  * @return {!Element} Tree of XML elements, possibly null.
@@ -336,7 +336,6 @@ goog.require('ezP.DelegateSvg.Expr')
 
 /**
  * The xml tag name of this block, as it should appear in the saved data.
- * Default implementation just returns the block type.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise
@@ -344,6 +343,19 @@ goog.require('ezP.DelegateSvg.Expr')
 ezP.Delegate.prototype.tagName = function (block) {
   var tag = this.constructor.ezp.tagName || (this instanceof ezP.DelegateSvg.Expr? ezP.T3.Xml.toDom.Expr: ezP.T3.Xml.toDom.Stmt)[this.constructor.ezp.key]
   return tag && 'ezp:'+tag || block.type
+}
+
+goog.require('ezP.DelegateSvg.List')
+
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * Default implementation just returns the block type.
+ * For ezPython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return true if the given value is accepted, false otherwise
+ */
+ezP.DelegateSvg.List.prototype.tagName = function (block) {
+  return block.getSurroundParent()? ezP.Xml.LIST: ezP.DelegateSvg.List.superClass_.tagName.call(this, block)
 }
 
 goog.provide('ezP.Xml.Text')
@@ -514,21 +526,26 @@ ezP.Xml.toDom = function (block, element, optNoId) {
       tile.toDom(element, optNoId)
       tile = tile.nextTile
     }
-    // the suite and the flow
-    var statement = function(c8n, key) {
-      if (c8n) {
+    // the list blocks have no tiles yet
+    var blockToDom = function(c8n, name, key) {
+      if (c8n && !c8n.ezp.wrapped_) {
+        // wrapped blocks belong to tiles, they are managed from there
         var target = c8n.targetBlock()
         if(target) {
           var child = Blockly.Xml.blockToDom(target, optNoId)
           if (child) {
-            child.setAttribute(ezP.Xml.FLOW, key)
+            child.setAttribute(name, key)
             goog.dom.appendChild(element, child)
           }
         }
       }
     }
-    statement(ezp.inputSuite && ezp.inputSuite.connection, ezP.Key.SUITE)
-    statement(block.nextConnection, ezP.Key.NEXT)
+    for (var i = 0, input;(input = block.inputList[i++]);) {
+      blockToDom(input.connection, ezP.Xml.INPUT, input.name)
+    }
+    // the suite and the flow
+    blockToDom(ezp.inputSuite && ezp.inputSuite.connection, ezP.Xml.FLOW, ezP.Key.SUITE)
+    blockToDom(block.nextConnection, ezP.Xml.FLOW, ezP.Key.NEXT)
   }
 }
 
@@ -544,25 +561,34 @@ ezP.Xml.registerAllTags = function() {
       var type = where[key]
       var model = ezP.Delegate.Manager.getModel(type)
       var tag = model && model.xml && model.xml.tag
-      if (goog.isString(tag) && tag.length) {
-        // register as fromDom
-        var already = ezP.T3.Xml.fromDom[tag]
-        if (goog.isArray(already)) {
-          if (already.indexOf(type) < 0) {
-            already.push(type)
-          }
-        } else if (goog.isString(already)) {
-          if (type != already) {
-            already = [already, type]
-          }
+      if (!goog.isString(tag)) {
+        var m = XRegExp.exec(type, ezP.XRE.s3d)
+        if (m) {
+          tag = m.core
         } else {
-          ezP.T3.Xml.fromDom[tag] = type
+          continue
         }
-        // register the reverse
-        var c9r = ezP.Delegate.Manager.get(type)
-        if (c9r) {
-          c9r.ezp.tagName = tag || ezP.T3.Xml.toDom[mode][key] || key
+      } else if (!tag.length) {
+        continue
+      }
+      // register as fromDom
+      console.log('register ', tag)
+      var already = ezP.T3.Xml.fromDom[tag]
+      if (goog.isArray(already)) {
+        if (already.indexOf(type) < 0) {
+          already.push(type)
         }
+      } else if (goog.isString(already)) {
+        if (type != already) {
+          already = [already, type]
+        }
+      } else {
+        ezP.T3.Xml.fromDom[tag] = type
+      }
+      // register the reverse
+      var c9r = ezP.Delegate.Manager.get(type)
+      if (c9r) {
+        c9r.ezp.tagName = tag || ezP.T3.Xml.toDom[mode][key] || key
       }
     }
   }
@@ -628,7 +654,7 @@ ezP.Xml.domToBlock = function() {
       
     } else {
       prototypeName = name
-      var solid = prototypeName + '_solid'
+      var solid = prototypeName + '_s3d'
       var controller = ezP.DelegateSvg.Manager.get(solid)
       if (controller) {
         if (controller.ezp && goog.isFunction(controller.ezp.domToBlock)) {
@@ -653,6 +679,7 @@ ezP.Xml.domToBlock = function() {
       // then fill it based on the xml data
       var saved = ezp.skipRendering
       ezp.skipRendering = true
+      ezp.setConnectionsDisabled(block, false) // some connections are disabled since initialization, they may be used in the dom element
       try {
         ezP.Xml.fromDom(block, xmlBlock)
         var state = xmlBlock.getAttribute(ezP.Xml.STATE)
@@ -1488,7 +1515,7 @@ ezP.Xml.Call.domToBlock = function(element, workspace) {
 //     var target = input.connection.targetBlock()
 //     if (target) {
 //       for (var i = 0, child;(child = element.childNodes[i++]);) {
-//         if (child.nodeName.toLowerCase() === 'ezp:list' && child.getAttribute(ezP.Xml.INPUT) === name) {
+//         if (child.nodeName.toLowerCase() === ezP.Xml.LIST && child.getAttribute(ezP.Xml.INPUT) === name) {
 //           ezP.Xml.fromDom(target, child)
 //           return true
 //         }
@@ -1558,7 +1585,7 @@ ezP.Xml.Call.domToBlock = function(element, workspace) {
 // ezP.DelegateSvg.Expr.any.prototype.xml = ezP.Xml.Text
 
 
-// ezP.DelegateSvg.Expr.proper_slice.prototype.xml = ezP.DelegateSvg.Expr.conditional_expression_solid.prototype.xml = ezP.Xml.InputList
+// ezP.DelegateSvg.Expr.proper_slice.prototype.xml = ezP.DelegateSvg.Expr.conditional_expression_s3d.prototype.xml = ezP.Xml.InputList
 
 
 // goog.provide('ezP.Xml.SingleInput')
@@ -1586,14 +1613,14 @@ ezP.Xml.Call.domToBlock = function(element, workspace) {
 //   return xml.childNodes.length && ezP.Xml.Input.fromDom(block.inputList[0], xml.childNodes[0])
 // }
 
-// ezP.DelegateSvg.Expr.not_test_solid.prototype.xml = ezP.Xml.SingleInput
+// ezP.DelegateSvg.Expr.not_test_s3d.prototype.xml = ezP.Xml.SingleInput
 
 // // ezP.DelegateSvg.Expr.T3s = [
 // //   ezP.DelegateSvg.Expr.proper_slice,
-// //   ezP.DelegateSvg.Expr.conditional_expression_solid,
+// //   ezP.DelegateSvg.Expr.conditional_expression_s3d,
 // //   ezP.DelegateSvg.Expr.or_expr_star,
 // //   ezP.DelegateSvg.Expr.or_expr_star_star,
-// //   ezP.DelegateSvg.Expr.not_test_solid,
+// //   ezP.DelegateSvg.Expr.not_test_s3d,
 // //   ezP.DelegateSvg.Expr.shortstringliteral,
 // //   ezP.DelegateSvg.Expr.shortbytesliteral,
 // //   ezP.DelegateSvg.Expr.longstringliteral,
@@ -1617,18 +1644,6 @@ ezP.Xml.Call.domToBlock = function(element, workspace) {
 // ezP.DelegateSvg.Literal.prototype.xml = ezP.Xml.Text
 
 // goog.require('ezP.DelegateSvg.List')
-
-// /**
-//  * The xml tag name of this block, as it should appear in the saved data.
-//  * Default implementation just returns 'ezp:list' when this block is embedded
-//  * and the inherited value otherwise.
-//  * For ezPython.
-//  * @param {!Blockly.Block} block The owner of the receiver.
-//  * @return true if the given value is accepted, false otherwise
-//  */
-// ezP.DelegateSvg.List.prototype.tagName = function (block) {
-//   return block.getSurroundParent()? ezP.Xml.LIST: ezP.DelegateSvg.List.superClass_.tagName.call(this, block)
-// }
 
 // /**
 //  * Convert the block to a dom element.
@@ -1753,9 +1768,9 @@ ezP.Xml.Call.domToBlock = function(element, workspace) {
 //  */
 // ezP.DelegateSvg.Operator.prototype.tagName = function (block) {
 //   var m = XRegExp.exec(block.type, ezP.XRE.solid)
-//   if (m) {
-//     return m.core
-//   }
+// if (m) {
+//   return m.core
+// }
 //   return block.type
 // }
 
@@ -1783,7 +1798,7 @@ ezP.Xml.Call.domToBlock = function(element, workspace) {
 // }
 
 // ezP.DelegateSvg.Operator.prototype.xml = ezP.Xml.Operator
-// ezP.DelegateSvg.Expr.power_solid.prototype.xml = ezP.Xml.Operator
+// ezP.DelegateSvg.Expr.power_s3d.prototype.xml = ezP.Xml.Operator
 
 
 // goog.require('ezP.DelegateSvg.AugAssign')
@@ -2064,7 +2079,7 @@ ezP.Xml.Call.domToBlock = function(element, workspace) {
 // ezP.DelegateSvg.Expr.comp_for.prototype.xml =
 // ezP.DelegateSvg.Expr.comp_if.prototype.xml =
 // ezP.DelegateSvg.Expr.comp_iter_list.prototype.xml =
-// ezP.DelegateSvg.Expr.key_datum_solid.prototype.xml =
+// ezP.DelegateSvg.Expr.key_datum_s3d.prototype.xml =
 // ezP.Xml.InputList
 
 // /**
@@ -2074,7 +2089,7 @@ ezP.Xml.Call.domToBlock = function(element, workspace) {
 //  * @param {boolean} optNoId true if no id is required.
 //  * For subclassers eventually
 //  */
-// ezP.DelegateSvg.Expr.key_datum_solid.prototype.xml =
+// ezP.DelegateSvg.Expr.key_datum_s3d.prototype.xml =
 // ezP.Xml.InputList
 
 

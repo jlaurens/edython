@@ -679,8 +679,10 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   io.shouldSeparateField = this.shouldSeparateField
   
   if ((io.field = this.ui.fromStartField)) {
+    io.f = 0
     do {
       this.renderDrawField_(io)
+      ++ io.f
     } while((io.field = io.field.ezp.nextField))
   }
   if ((io.tile = this.ui.headTile)) {
@@ -723,6 +725,7 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   if ((io.field = this.ui.toEndField)) {
     do {
       this.renderDrawField_(io)
+      io.f
     } while((io.field = io.field.ezp.nextField))
   }
   // enlarge the width if necessary
@@ -812,7 +815,7 @@ ezP.DelegateSvg.prototype.renderDrawField_ = function (io) {
           io.cursorX += ezP.Font.space
         }
         io.shouldSeparateField = ezP.XRE.id_continue.test(text[text.length-1]) || ezP.XRE.operator.test(text[text.length-1]) || text[text.length-1] === ':' || (text[text.length-1] === '.' && !io.field instanceof ezP.FieldTextInput)
-        io.starSymbol = (io.f === 0 && (text[text.length-1] === '@' || text[text.length-1] === '*'))
+        io.starSymbol = (io.f === 0 && (['*','@', '+', '-', '~'].indexOf(text[text.length-1])>=0))
       }
       var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
       root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
@@ -1151,25 +1154,40 @@ ezP.DelegateSvg.prototype.hasSelect = function (block) {
 }
 
 /**
- * Enable/Disable an input.
- * The default implementation does nothing.
- * Subclassers may enable/disable an input
- * depending on the context.
- * Even input with target may be disabled.
- * This status is a part of the state of the block.
- * It survives copy/paste but not undo/redo.
+ * Enable/Disable the connections of the block.
+ * A disabled block cannot enable its connections.
  * @param {!Block} block.
- * @param {!Input} input.
- * @param {!Boolean} enabled.
+ * @param {!Boolean} disabled.
  * @private
  */
-ezP.DelegateSvg.prototype.setInputEnabled = function (block, input, enabled) {
-  if (enabled == !input.disabled_) {
-    return enabled
+ezP.DelegateSvg.prototype.setConnectionsDisabled = function (block, disabled) {
+  if (disabled) {
+    if (this.connectionsDisabled) {
+      // The connections are already disabled,
+      // normally no change to the block tree
+      return
+    }
+  } else if (this.disabled) {
+    // enable the receiver before enabling its connections
+    return
   }
-  input.disabled_ = !enabled
-  input.setVisible(enabled)
-  input.connection.setHidden(!enabled)
+  this.connectionsDisabled = disabled
+  var setDisabled = function (input) {
+    var c8n = input && input.connection
+    c8n && c8n.ezp.setDisabled(disabled)
+  }
+  var tile = this.headTile
+  while (tile) {
+    setDisabled(tile.input)
+    tile = tile.nextTile
+  }
+  setDisabled(this.inputSuite)
+  for (var i = 0, input;(input = this.block_.inputList[i++]);) {
+    setDisabled(input)
+  }
+  if (!disabled) { // for lists mainly
+    this.consolidate(block) // no deep consolidation because connected blocs were consolidated above
+  }
 }
 
 /**

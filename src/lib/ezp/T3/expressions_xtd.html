@@ -83,8 +83,8 @@ non_void_starred_item_list_comprehensive ::= starred_item | comprehension
 </pre>
 <pre>
 key_datum_list_comprehensive ::= key_datum | dict_comprehension
-key_datum ::= key_datum_solid | or_expr_star_star
-key_datum_solid ::=  expression ":" expression
+key_datum ::= key_datum_s3d | or_expr_star_star
+key_datum_s3d ::=  expression ":" expression
 or_expr_star_star ::=  "**" or_expr
 </pre>
 The argument list is managed by the consolidator
@@ -135,10 +135,10 @@ lambda ::= "lambda" [parameter_list]: (expression | expression_no_cond)
 </pre>
 These are auxiliary types used to check connections.
 <pre>
-algebra_choice ::= m_expr_solid | a_expr_solid
-bitwise_choice ::= shift_expr_solid | and_expr_solid | xor_expr_solid | or_expr_solid
-boolean_choice ::= and_test_solid | or_test_solid
-unary_choice ::= u_expr_solid | not_test_solid
+algebra_choice ::= m_expr_s3d | a_expr_s3d
+bitwise_choice ::= shift_expr_s3d | and_expr_s3d | xor_expr_s3d | or_expr_s3d
+boolean_choice ::= and_test_s3d | or_test_s3d
+unary_choice ::= u_expr_s3d | not_test_s3d
 </pre>
 </body>
 </html>

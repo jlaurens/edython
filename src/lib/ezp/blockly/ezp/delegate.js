@@ -472,7 +472,7 @@ ezP.Delegate.prototype.type_ = undefined
  */
 ezP.Delegate.prototype.setupType = function (block, optNewType) {
   optNewType && (block.type = optNewType)
-  var m = /^ezp:((?:fake_)?((.*?)(?:_solid)?))$/.exec(block.type)
+  var m = /^ezp:((?:fake_)?((.*?)(?:_s3d)?))$/.exec(block.type)
   this.pythonType_ = m? m[1]: block.type
   this.type_ = m? 'ezp:'+m[2]: block.type
   this.xmlType_ = m? m[3]: block.type
@@ -721,7 +721,7 @@ ezP.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
         goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed '+target.type)
         input.connection.connect(target.outputConnection)
         target.ezp.makeBlockWrapped_(target)
-        target.ezp.completeWrapped_(target)  
+        target.ezp.completeWrapped_(target)
       } else {
         console.log('Maximum value reached in completeWrappedInput_ (circular)')
         this.ignoreCompleteWrapped = true

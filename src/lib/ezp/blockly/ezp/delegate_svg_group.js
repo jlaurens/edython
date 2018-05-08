@@ -457,14 +457,14 @@ ezP.DelegateSvg.Group.makeSubclass('with_part', {
 })
 
 /**
- * Class for a DelegateSvg, with_item_solid block.
+ * Class for a DelegateSvg, with_item_s3d block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('with_item_solid', {
+ezP.DelegateSvg.Expr.makeSubclass('with_item_s3d', {
   tiles: {
     expression: {
       order: 1,
@@ -489,5 +489,5 @@ ezP.DelegateSvg.Group.T3s = [
   ezP.T3.Stmt.while_part,
   ezP.T3.Stmt.with_part,
   ezP.T3.Stmt.for_part,
-  ezP.T3.Expr.with_item_solid,
+  ezP.T3.Expr.with_item_s3d,
 ]

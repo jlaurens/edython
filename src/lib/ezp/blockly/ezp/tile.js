@@ -319,7 +319,7 @@ ezP.Tile.prototype.setInput = function (input) {
     if (this.model.optional) {//svg
       ezp.optional_ = true
     }
-    ezp.disabled_ = this.model.disabled && !this.model.enabled
+    ezp.setDisabled(this.model.disabled && !this.model.enabled)
     var v
     if ((v = this.model.check)) {
       c8n.setCheck(v)
@@ -373,6 +373,8 @@ ezP.Tile.prototype.getTarget = function () {
  */
 ezP.Tile.prototype.setDisabled = function (newValue) {
   this.disabled = newValue
+  var c8n = this.input && this.input.connection
+  c8n && c8n.ezp.setDisabled(newValue)
   this.synchronize()
 }
 
@@ -414,7 +416,7 @@ ezP.Tile.prototype.isRequiredToDom = function () {
  * @param {boolean} newValue.
  */
 ezP.Tile.prototype.isRequiredFromDom = function () {
- return this.is_required_from_dom || this.model.xml && this.model.xml.required
+ return this.is_required_from_dom || !this.disabled && this.model.xml && this.model.xml.required
 }
 
 /**
@@ -437,19 +439,12 @@ ezP.Tile.prototype.synchronize = function () {
     return
   }
   var newValue = this.disabled
-  var oldValue = input.ezp.disabled_
-  if (!!oldValue === !!newValue) {
-    return
-  }
-  input.ezp.disabled_ = newValue
   var current = this.skipRendering
   this.skipRendering = true
-  input.setVisible(!newValue)
-  this.skipRendering = current
-  var c8n = input.connection
-  if (c8n) {
-    c8n.ezp.hidden_ = !!newValue // the hidden status will be forced
-    c8n.setHidden(newValue)
+  try {
+   input.setVisible(!newValue)
+  } finally {
+    this.skipRendering = current
   }
   if (input.isVisible()) {
     for (var __ = 0, field; (field = input.fieldRow[__]); ++__) {
@@ -462,6 +457,7 @@ ezP.Tile.prototype.synchronize = function () {
         }
       }
     }
+    var c8n = input.connection
     if (c8n) {
       var target = c8n.targetBlock()
       if (target) {
@@ -498,6 +494,8 @@ ezP.Tile.prototype.setFieldValue = function (newValue, fieldKey) {
     }
   }
 }
+
+goog.forwardDeclare('ezP.DelegateSvg.List')
 
 /**
  * Convert the tile's connected target into the given xml element.
@@ -580,7 +578,7 @@ ezP.Tile.prototype.fromDom = function(element) {
     if (c8n) {
       var target = c8n.targetBlock()
       if (target && target.ezp.wrapped_ && !(target.ezp instanceof ezP.DelegateSvg.List)) {
-        input.setRequiredFromDom(true)
+        this.setRequiredFromDom(true) // this is not sure, it depends on how the target read the dom
         return ezP.Xml.fromDom(target, element)
       }
       // find an xml child with the proper input attribute
@@ -598,6 +596,30 @@ ezP.Tile.prototype.fromDom = function(element) {
             return true
           }
           if (target) {
+            if (target.ezp instanceof ezP.DelegateSvg.List) {
+              for (var i = 0, grandChild;(grandChild = child.childNodes[i++]);) {
+                if (goog.isFunction(grandChild.getAttribute)) {
+                  var name = grandChild.getAttribute(ezP.XmlKey.INPUT)
+                  var input = target.ezp.getInput(target, name)
+                  if (input) {
+                    if (!input.connection) {
+                      console.warn('Missing connection')
+                    }
+                    var inputTarget = input.connection.targetBlock()
+                    if (inputTarget) {
+                      ezP.Xml.fromDom(inputTarget, grandChild)
+                    } else if ((inputTarget = ezP.Xml.domToBlock(grandChild, this.owner.block_.workspace))) {
+                      var targetC8n = inputTarget.outputConnection
+                      if (targetC8n && targetC8n.checkType_(input.connection)) {
+                        targetC8n.connect(input.connection)
+                        this.setRequiredFromDom(true)
+                      }
+                    }
+                  }
+                }
+              }
+              return true
+            }
             return ezP.Xml.fromDom(target, child)
           } else if ((target = Blockly.Xml.domToBlock(child, this.getWorkspace()))) {
             // we could create a block form that child element

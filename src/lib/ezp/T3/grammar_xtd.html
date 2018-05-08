@@ -115,50 +115,50 @@ test_nocond -> expression_nocond
 lambdef: 'lambda' [varargslist] ':' test
 lambdef_nocond: 'lambda' [varargslist] ':' test_nocond
 #or_test: and_test ( 'or' and_test)*
-or_test: and_test | or_test_solid
-or_test_solid: and_test 'or' or_test
+or_test: and_test | or_test_s3d
+or_test_s3d: and_test 'or' or_test
 #and_test: not_test ( 'and' not_test)*
-and_test: not_test | and_test_solid
-and_test_solid: not_test 'and' and_test
+and_test: not_test | and_test_s3d
+and_test_s3d: not_test 'and' and_test
 #not_test: 'not' not_test | comparison
-not_test: not_test_solid | comparison
-not_test_solid: 'not' not_test
+not_test: not_test_s3d | comparison
+not_test_s3d: 'not' not_test
 #comparison: expr (comp_op expr)*
-comparison: expr | comparison_solid
-comparison_solid: expr comp_op comparison
+comparison: expr | comparison_s3d
+comparison_s3d: expr comp_op comparison
 #comp_op: '<' | '>' | '==' | '>=' | '<=' | '<>' | '!=' | 'in' | 'not' 'in' | 'is' | 'is' 'not'
 #star_expr: '*' expr
 expr -> or_expr
 #expr: xor_expr ( '|' xor_expr)*
-expr: xor_expr | or_expr_solid
-or_expr_solid: xor_expr '|' expr
+expr: xor_expr | or_expr_s3d
+or_expr_s3d: xor_expr '|' expr
 #xor_expr: and_expr ( '^' and_expr)*
-xor_expr: and_expr | xor_expr_solid
-xor_expr_solid: and_expr '^' xor_expr
+xor_expr: and_expr | xor_expr_s3d
+xor_expr_s3d: and_expr '^' xor_expr
 #and_expr: shift_expr ( '&' shift_expr)*
-and_expr: shift_expr | and_expr_solid
-and_expr_solid: shift_expr '&' and_expr
+and_expr: shift_expr | and_expr_s3d
+and_expr_s3d: shift_expr '&' and_expr
 #shift_expr: arith_expr (( '<<' | '>>' ) arith_expr)*
-shift_expr: arith_expr | shift_expr_solid
-shift_expr_solid: arith_expr ( '<<' | '>>' ) shift_expr
+shift_expr: arith_expr | shift_expr_s3d
+shift_expr_s3d: arith_expr ( '<<' | '>>' ) shift_expr
 #arith_expr: term (( '+' | '-' ) term)*
-arith_expr: term | arith_expr_solid
-arith_expr_solid: term ( '+' | '-' ) arith_expr
+arith_expr: term | arith_expr_s3d
+arith_expr_s3d: term ( '+' | '-' ) arith_expr
 arith_expr -> a_expr
-arith_expr_solid -> a_expr_solid
+arith_expr_s3d -> a_expr_s3d
 #term: factor (( '*' | '@' | '/' | '%' | '//' ) factor)*
-term: factor | term_solid
-term_solid: factor ( '*' | '@' | '/' | '%' | '//' ) term
+term: factor | term_s3d
+term_s3d: factor ( '*' | '@' | '/' | '%' | '//' ) term
 term -> m_expr
-term_solid -> m_expr_solid
+term_s3d -> m_expr_s3d
 #factor: ( '+' | '-' | '~' ) factor | power
-factor: factor_solid | power
-factor_solid: ( '+' | '-' | '~' ) factor
+factor: factor_s3d | power
+factor_s3d: ( '+' | '-' | '~' ) factor
 factor -> u_expr
-factor_solid -> u_expr_solid
+factor_s3d -> u_expr_s3d
 #power: atom_expr [ '**' factor]
-power: atom_expr | power_solid
-power_solid: atom_expr '**' factor
+power: atom_expr | power_s3d
+power_s3d: atom_expr '**' factor
 
 NAME -> identifier
 
@@ -185,8 +185,8 @@ yield_expression_list: "yield" expression_list
 
 dict_display: "{" [key_datum_list | dict_comprehension] "}"
 key_datum_list: key_datum ("," key_datum)* [","]
-key_datum: key_datum_solid | or_expr_star_star
-key_datum_solid: expression ":" expression
+key_datum: key_datum_s3d | or_expr_star_star
+key_datum_s3d: expression ":" expression
 or_expr_star_star: "**" or_expr
 
 dict_comprehension: expression ":" expression comp_for

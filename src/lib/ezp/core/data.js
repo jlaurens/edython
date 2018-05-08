@@ -57,7 +57,7 @@ ezP.Data = function(owner, key, model) {
       if (!goog.isFunction(xml.fromDom)) {
         delete xml.fromDom
       }
-    } else if (key = 'variant') {
+    } else if (key === 'variant' || key === 'subtype') {
       model.xml = false
     }
   }
@@ -576,7 +576,7 @@ ezP.Data.prototype.fromDom = function(element) {
       if (isText && txt === '?'|| !isText && txt === '') {
         this.setRequiredFromDom(true)
       }
-      this.fromText(txt, true) // do not validate, there might be an error while saving
+      this.fromText(txt, true) // do not validate, there might be an error while saving, please check
     }
   } else if (required) {
     this.fromText('', true)   

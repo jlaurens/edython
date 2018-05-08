@@ -165,14 +165,14 @@ ezP.DelegateSvg.Expr.makeSubclass('dict_comprehension', {
 })
 
 /**
- * Class for a DelegateSvg, key_datum_solid block.
+ * Class for a DelegateSvg, key_datum_s3d block.
  * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('key_datum_solid', {
+ezP.DelegateSvg.Expr.makeSubclass('key_datum_s3d', {
   tiles: {
     key: {
       order: 1,
@@ -212,6 +212,6 @@ ezP.DelegateSvg.Comprehension.T3s = [
   ezP.T3.Expr.comp_iter_list,
   ezP.T3.Expr.dict_comprehension,
   ezP.T3.Expr.term,
-  ezP.T3.Expr.key_datum_solid,
+  ezP.T3.Expr.key_datum_s3d,
   ezP.T3.Expr.generator_expression
 ]

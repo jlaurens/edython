@@ -721,13 +721,13 @@ ezP.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
         goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
       )
     }
-    case ezP.T3.Expr.key_datum_solid:
+    case ezP.T3.Expr.key_datum_s3d:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN(': ', 'ezp-code'),
       ezP.Do.createSPAN('…', 'ezp-code-placeholder'),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
     )
-    case ezP.T3.Expr.defparameter_solid:
+    case ezP.T3.Expr.defparameter_s3d:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN('= ', 'ezp-code'),
       ezP.Do.createSPAN('…', 'ezp-code-placeholder'),
@@ -820,13 +820,13 @@ ezP.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
       ezP.Do.createSPAN(' …', 'ezp-code-placeholder'),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_RIGHT),
     )
-    case ezP.T3.Expr.module_as_solid:
-    case ezP.T3.Expr.import_identifier_as_solid:
+    case ezP.T3.Expr.module_as_s3d:
+    case ezP.T3.Expr.import_identifier_as_s3d:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN('as', 'ezp-code-reserved'),
       ezP.Do.createSPAN(' alias', 'ezp-code-placeholder'),
     )
-    case ezP.T3.Expr.u_expr_solid:
+    case ezP.T3.Expr.u_expr_s3d:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       ezP.Do.createSPAN('-', 'ezp-code'),
       goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
@@ -1150,7 +1150,7 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
     }
   }
   F.call(this, [
-    ezP.T3.Expr.u_expr_solid,
+    ezP.T3.Expr.u_expr_s3d,
     [ezP.T3.Expr.call_expr, ezP.Key.PRIMARY],
     ezP.T3.Expr.slicing,
     [ezP.T3.Expr.attributeref, ezP.Key.ATTRIBUTE],
@@ -1175,10 +1175,10 @@ ezP.MenuManager.prototype.populate_movable_parent = function (block) {
   ], true)
   F.call(this, [
     ezP.T3.Expr.parent_module,
-    ezP.T3.Expr.module_as_solid,
-    ezP.T3.Expr.import_identifier_as_solid,
-    [ezP.T3.Expr.key_datum_solid, ezP.Key.NAME],
-    [ezP.T3.Expr.defparameter_solid, ezP.Key.NAME],
+    ezP.T3.Expr.module_as_s3d,
+    ezP.T3.Expr.import_identifier_as_s3d,
+    [ezP.T3.Expr.key_datum_s3d, ezP.Key.NAME],
+    [ezP.T3.Expr.defparameter_s3d, ezP.Key.NAME],
     [ezP.T3.Expr.proper_slice, ezP.Key.UPPER_BOUND],
     [ezP.T3.Expr.proper_slice, ezP.Key.STRIDE],
     [ezP.T3.Expr.proper_slice, ezP.Key.LOWER_BOUND],

@@ -304,12 +304,12 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
   * dotted_name ::= identifier ("." identifier)*
   * parent_module ::= '.'+ [module]
   * identifier ::= 
-  * parameter_solid ::= identifier ":" expression
-  * defparameter_solid ::= parameter "=" expression
+  * parameter_s3d ::= identifier ":" expression
+  * defparameter_s3d ::= parameter "=" expression
   * keyword_item ::= identifier "=" expression
-  * module_as_solid ::= module "as" identifier
-  * import_identifier_as_solid ::= identifier "as" identifier
-  * (with parameter ::= identifier | parameter_solid)
+  * module_as_s3d ::= module "as" identifier
+  * import_identifier_as_s3d ::= identifier "as" identifier
+  * (with parameter ::= identifier | parameter_s3d)
   * (with module ::= dotted_name)
   */
   var variantData = this.data.variant
@@ -348,26 +348,26 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
           ezP.T3.Expr.star_expr,]
       break
       case model.NAME_ANNOTATION:
-        // parameter_solid ::= identifier ":" expression
-        check = [ezP.T3.Expr.parameter_solid]
+        // parameter_s3d ::= identifier ":" expression
+        check = [ezP.T3.Expr.parameter_s3d]
       break
       case model.STAR_NAME_ANNOTATION:
        check = [ezP.T3.Expr.parameter_star]
       break
       case model.NAME_ANNOTATION_DEFINITION:
-        // defparameter_solid ::= parameter "=" expression
-        check = [ezP.T3.Expr.defparameter_solid,]
+        // defparameter_s3d ::= parameter "=" expression
+        check = [ezP.T3.Expr.defparameter_s3d,]
       break
       case model.NAME_DEFINITION:
-        // defparameter_solid ::= parameter "=" expression
+        // defparameter_s3d ::= parameter "=" expression
         // keyword_item ::= identifier "=" expression
-        check = [ezP.T3.Expr.defparameter_solid,
+        check = [ezP.T3.Expr.defparameter_s3d,
           ezP.T3.Expr.keyword_item,]
       break
       case model.NAME_ALIAS:
-        // module_as_solid ::= module "as" identifier
-        // import_identifier_as_solid ::= identifier "as" identifier
-        check = nameType === ezP.T3.Expr.identifier? [ezP.T3.Expr.module_as_solid, ezP.T3.Expr.import_identifier_as_solid]: [ezP.T3.Expr.module_as_solid]
+        // module_as_s3d ::= module "as" identifier
+        // import_identifier_as_s3d ::= identifier "as" identifier
+        check = nameType === ezP.T3.Expr.identifier? [ezP.T3.Expr.module_as_s3d, ezP.T3.Expr.import_identifier_as_s3d]: [ezP.T3.Expr.module_as_s3d]
       break
       case model.STAR:
         check = [ezP.T3.Expr.parameter_star]
