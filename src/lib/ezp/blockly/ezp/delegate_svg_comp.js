@@ -190,21 +190,6 @@ ezP.DelegateSvg.Expr.makeSubclass('key_datum_s3d', {
   },
 })
 
-/**
- * Class for a DelegateSvg, generator expression block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.comprehension.makeSubclass('generator_expression', {
-  fields: {
-    prefix: '(',
-    suffix: ')',
-  },
-}, ezP.DelegateSvg.Expr)
-
 ezP.DelegateSvg.Comprehension.T3s = [
   ezP.T3.Expr.comprehension,
   ezP.T3.Expr.comp_for,
@@ -213,5 +198,4 @@ ezP.DelegateSvg.Comprehension.T3s = [
   ezP.T3.Expr.dict_comprehension,
   ezP.T3.Expr.term,
   ezP.T3.Expr.key_datum_s3d,
-  ezP.T3.Expr.generator_expression
 ]

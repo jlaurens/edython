@@ -66,8 +66,6 @@ ezP.DelegateSvg.Expr.workspaceBlocks = [
   ezP.T3.Expr.set_display,
   ezP.T3.Expr.dict_display,
   ezP.T3.Expr.dict_comprehension,
-  ezP.T3.Expr.generator_expression,
-  ezP.T3.Expr.yield_atom,
   ezP.T3.Expr.yield_expression,
   ezP.T3.Expr.yield_from_expression,
 ]
@@ -83,11 +81,9 @@ ezP.DelegateSvg.Expr.delimitedWorkspaceBlocks = [
   ezP.T3.Expr.list_display,
   ezP.T3.Expr.set_display,
   ezP.T3.Expr.dict_display,
-  ezP.T3.Expr.generator_expression,
   ezP.T3.Expr.starred_item_list,
   ezP.T3.Expr.parenth_target_list,
   ezP.T3.Expr.bracket_target_list,
-  ezP.T3.Expr.yield_atom,
 ]
 
 ezP.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks = ezP.DelegateSvg.Expr.argument_list.workspaceBlocks = ezP.Do.arraysMerged([
@@ -179,7 +175,6 @@ ezP.DelegateSvg.Expr.yield_expression.workspaceBlocks = [
   ezP.T3.Expr.term,
   ezP.T3.Expr.yield_expression,
   ezP.T3.Stmt.yield_stmt,
-  ezP.T3.Expr.yield_atom,
   ezP.T3.Expr.yield_expression_list,
   ezP.T3.Expr.yield_from_expression,
 ]
@@ -369,7 +364,6 @@ ezP.DelegateSvg.Expr.starred_item_list.workspaceBlocks = [
   ezP.T3.Expr.starred_item_list,
 ] .concat(ezP.T3.Expr.Check.starred_item)
 
-ezP.DelegateSvg.Expr.generator_expression.workspaceBlocks =
 ezP.DelegateSvg.Expr.dict_display.workspaceBlocks =
 ezP.DelegateSvg.Expr.set_display.workspaceBlocks =
 ezP.DelegateSvg.Expr.parenth_form.workspaceBlocks =
@@ -386,7 +380,6 @@ ezP.Do.arraysMerged(
 ],
 ezP.DelegateSvg.Expr.comprehension.workspaceBlocks,
 [
-  ezP.T3.Expr.generator_expression,
   ezP.T3.Expr.slice_list,
 ],
 )

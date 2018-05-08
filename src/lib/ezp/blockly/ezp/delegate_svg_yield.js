@@ -151,20 +151,6 @@ ezP.DelegateSvg.List.makeSubclass('parenth_form', function() {
 })
 
 /**
- * Class for a DelegateSvg, '(yield ..., ..., ...)'.
- * For ezPython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-ezP.DelegateSvg.Expr.yield_expression.makeSubclass('yield_atom', {
-  fields: {
-    prefix: '(',
-    suffix: ')',
-  },
-})
-
-/**
  * Class for a DelegateSvg, yield_stmt.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing

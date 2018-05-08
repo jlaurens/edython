@@ -663,11 +663,6 @@ Blockly.RenderedConnection.prototype.setHidden = function(hidden) {
   if (goog.isDef(this.ezp.hidden_)) {
     hidden = this.ezp.hidden_
   }
-  if (hidden && !this.hidden_) {
-    console.log('HIDDING A CONNECTION ' + this.sourceBlock_.id)
-  } else if (!hidden && this.hidden_) {
-    console.log('SHOWING A CONNECTION '+this.sourceBlock_.id)
-  }
   // DONE
   ezP.RenderedConnection.savedSetHidden.call(this, hidden)
 }
