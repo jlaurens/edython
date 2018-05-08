@@ -63,25 +63,33 @@ ezP.ConnectionDelegate.prototype.optional_ = false// must change to wrapper
 ezP.ConnectionDelegate.prototype.name_ = undefined// must change to wrapper
 
 /**
- * Set the disabled state.
- * Hide/show the connection from/to the databass and disable/enable the target's connections.
- * @param {boolean} disabled
+ * Get the incognito state.
+ * @param {boolean} incog
  */
-ezP.ConnectionDelegate.prototype.setDisabled = function(disabled) {
-  if (this.disabled_ && disabled) {
+ezP.ConnectionDelegate.prototype.isIncog = function(incog) {
+  return this.incog_
+}
+
+/**
+ * Set the incognito state.
+ * Hide/show the connection from/to the databass and disable/enable the target's connections.
+ * @param {boolean} incog
+ */
+ezP.ConnectionDelegate.prototype.setIncog = function(incog) {
+  if (this.incog_ && incog) {
     // things were unlikely to change since
     // the last time the connections have been disabled
     return
   }
   var c8n = this.connection
-  if (disabled || !this.wrapped_) {
+  if (incog || !this.wrapped_) {
     // We cannot enable wrapped connections
-    this.disabled_ = disabled
-    c8n.setHidden(disabled)
+    this.incog_ = incog
+    c8n.setHidden(incog)
   }
   var target = c8n.targetBlock()
   if (target) {
-    target.ezp.setConnectionsDisabled(target, disabled)
+    target.ezp.setIncog(target, incog)
   }
 }
 
@@ -402,7 +410,7 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
     if (c8nB.targetConnection) {
       return c8nB === c8nA.targetConnection
     }
-  } else if (c8nA.ezp.disabled_ || c8nB.ezp.disabled_ || c8nA.ezp.hidden_ || c8nB.ezp.hidden_) {
+  } else if (c8nA.ezp.incog_ || c8nB.ezp.incog_ || c8nA.ezp.hidden_ || c8nB.ezp.hidden_) {
     return c8nA === c8nB.targetConnection
   }
   var sourceA = c8nA.getSourceBlock()
@@ -564,9 +572,7 @@ ezP.Connection.prototype.connect_ = function(childC8n) {
   parentC8n.ezp.didConnect(oldParentC8n, oldChildC8n)
   parent.ezp.didConnect(parent, parentC8n, oldChildC8n, oldParentC8n)
   child.ezp.didConnect(child, childC8n, oldParentC8n, oldChildC8n)
-  if (parentC8n.ezp.disabled_) {
-    child.ezp.setConnectionsDisabled(child, true)
-  }
+  child.ezp.setIncog(child, parentC8n.ezp.isIncog())
 }
 
 /**
@@ -648,9 +654,14 @@ ezP.RenderedConnection.savedSetHidden = Blockly.RenderedConnection.prototype.set
  */
 Blockly.RenderedConnection.prototype.setHidden = function(hidden) {
   // ADDED by JL: 
-  if (!hidden && this.ezp.disabled_) {
-    // Disabled connections must stay hidden
+  if (!hidden && this.ezp.incog_) {
+    // Incog connections must stay hidden
     return
+  }
+  if (hidden) {
+    console.log('HIDDING A CONNECTION ' + this.sourceBlock_.id)
+  } else {
+    console.log('SHOWING A CONNECTION '+this.sourceBlock_.id)
   }
   if (goog.isDef(this.ezp.hidden_)) {
     hidden = this.ezp.hidden_
@@ -765,7 +776,7 @@ Blockly.Connection.lastConnectionInRow_ = function(startBlock, orphanBlock) {
   var newBlock = startBlock;
   var connection;
   while ((connection = Blockly.Connection.singleConnection_(
-      /** @type {!Blockly.Block} */ (newBlock), orphanBlock)) && !connection.ezp.disabled_) {
+      /** @type {!Blockly.Block} */ (newBlock), orphanBlock)) && !connection.ezp.incog_) {
     // '=' is intentional in line above.
     newBlock = connection.targetBlock();
     if (!newBlock || newBlock.isShadow()) {

@@ -65,7 +65,7 @@ ezP.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
     return
   }
   ezP.DelegateSvg.List.superClass_.consolidate.call(this, block, force)
-  if (this.connectionsDisabled) {
+  if (this.connectionsIncog) {
     return
   }
   this.consolidate_lock = true
@@ -107,18 +107,6 @@ ezP.DelegateSvg.List.prototype.consolidate = function (block, deep, force) {
 }
 
 // ezP.DelegateSvg.List.prototype.consolidator = undefined
-
-/**
- * Initialize the block.
- * Called by the block's init method.
- * For ezPython.
- * @param {!Block} block.
- * @private
- */
-ezP.DelegateSvg.List.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.List.superClass_.initBlock.call(this, block)
-  block.appendValueInput(ezP.Do.Name.middle_name)
-}
 
 /**
  * Clear the list af all items.

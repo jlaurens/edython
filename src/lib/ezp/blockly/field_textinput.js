@@ -64,9 +64,6 @@ ezP.FieldTextInput.prototype.init = function () {
   }
   // Build the DOM.
   this.fieldGroup_ = Blockly.utils.createSvgElement('g', {}, null)
-  if (!this.visible_) {
-    this.fieldGroup_.style.display = 'none'
-  }
   if (this.ezp.tile) {
     this.ezp.tile.getSvgRoot().appendChild(this.fieldGroup_)
   } else {

@@ -26,12 +26,21 @@ goog.require('ezP.DelegateSvg.Stmt')
 ezP.DelegateSvg.Expr.makeSubclass('yield_expression', {
   data: {
     variant: {
+      YIELD: 0,
+      YIELD_EXPRESSION: 1,
+      YIELD_FROM: 2,
       all: [0, 1, 2],
+      didChange: function(oldValue, newValue) {
+        var M = this.model
+        this.ui.tiles.expression.required = (newValue == M.YIELD_EXPRESSION)
+        this.ui.tiles.from.required = (newValue == M.YIELD_FROM)
+      },
       synchronize: function(newValue) {
-        this.ui.tiles.expression.setDisabled(newValue != 1)
-        this.ui.tiles.from.setDisabled(newValue != 2)
-      }
-    }
+        var M = this.model
+        this.ui.tiles.expression.setIncog(newValue != M.YIELD_EXPRESSION)
+        this.ui.tiles.from.setIncog(newValue != M.YIELD_FROM)
+      },
+    },
   },
   fields: {
     prefix: 'yield',
@@ -40,80 +49,28 @@ ezP.DelegateSvg.Expr.makeSubclass('yield_expression', {
     expression: {
       order: 1,
       wrap: ezP.T3.Expr.non_void_expression_list,
+      xml: {
+        didLoad: function () {
+          var variant = this.owner.data.variant
+          variant.set(variant.model.YIELD_EXPRESSION)
+        }
+      }
     },
     from: {
       order: 2,
       fields: {
         label: 'from',
       },
-      check: ezP.T3.Expr.Check.expression
+      check: ezP.T3.Expr.Check.expression,
+      xml: {
+        didLoad: function () {
+          var variant = this.owner.data.variant
+          variant.set(variant.model.YIELD_FROM)
+        }
+      }
     },
   },
 })
-
-/**
- * toDom.
- * @param {!Blockly.Block} block to be translated.
- * For subclassers eventually
- */
-ezP.DelegateSvg.Expr.yield_expression.prototype.XtoDom = function (block, element, optNoId) {
-  var yorn = ezP.DelegateSvg.Expr.yield_expression.toDom(block, element, optNoId)
-  if (yorn) {
-    // create a list element
-    var input = block.getInput(ezP.Key.LIST)
-    var target = input.connection.targetBlock()
-    if (target) {
-      var child = goog.dom.createDom('ezp:list')
-      if (ezP.Xml.toDom(target, child, optNoId)) {
-        goog.dom.appendChild(element, child)
-      } else {
-        element.setAttribute('mode', 'list')
-      }
-    } else {
-      element.setAttribute('mode', 'list')
-    }
-  } else {
-    ezP.Xml.namedInputToDom(block, ezP.Key.FROM, element, optNoId)
-  }
-}
-
-/**
- * v.
- * @param {!Blockly.Block} block to be initialized.
- * For subclassers eventually
- */
-ezP.DelegateSvg.Expr.yield_expression.prototype.XfromDom = function (block, xml) {
-  if (xml.getAttribute('mode') === 'list') {
-    ezP.DelegateSvg.Expr.yield_expression.setFromInputDisabled(block, true)
-  }
-  var done = false
-  for (var i = 0, child;(child = xml.childNodes[i++]);) {
-    if (child.nodeName) {
-      if (done) {
-        Blockly.Xml.domToBlock(child, block.workspace)
-      } else if (child.nodeName.toLowerCase() === ezP.Key.LIST) {
-        var input = block.getInput(ezP.Key.LIST)
-        var target = input.connection.targetBlock()
-        goog.asserts.assert(target, 'Missing wrapped list')
-        ezP.Xml.fromDom(target, child)
-        ezP.DelegateSvg.Expr.yield_expression.setFromInputDisabled(block, true)
-        done = true
-      } else {
-        var input = block.getInput(ezP.Key.FROM)
-        if ((target = input.connection.targetBlock())) {
-          ezP.Xml.fromDom(target, child)
-          done = true
-        } else if ((target = Blockly.Xml.domToBlock(child, block.workspace))) {
-          if (target.outputConnection && input.connection.checkType_(target.outputConnection)) {
-            input.connection.connect(target.outputConnection)
-            done = true
-          }
-        }
-        ezP.DelegateSvg.Expr.yield_expression.setFromInputDisabled(block, false)
-      }
-    }
-  }
-}
 
 /**
  * Populate the context menu for the given block.
@@ -125,6 +82,7 @@ ezP.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (bloc
   if (block.ezp.locked_) {
     return
   }
+  var M = this.data.variant.model
   var current = this.data.variant.get()
   var F = function(content, k) {
     var menuItem = new ezP.MenuItem(content, function() {
@@ -135,17 +93,17 @@ ezP.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (bloc
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
       goog.dom.createTextNode('yield'),
-    ), 0
+    ), M.YIELD
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
       ezP.Do.createSPAN('yield ', 'ezp-code-reserved'),
       goog.dom.createTextNode('…'),
-    ), 1
+    ), M.YIELD_EXPRESSION
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN('yield from', 'ezp-code-reserved'),
-      goog.dom.createTextNode(' …'),
-    ), 2
+      ezP.Do.createSPAN('yield from ', 'ezp-code-reserved'),
+      goog.dom.createTextNode('…'),
+    ), M.YIELD_FROM
   )
   mgr.shouldSeparate()
 }

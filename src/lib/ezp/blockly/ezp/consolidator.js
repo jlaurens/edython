@@ -283,7 +283,7 @@ ezP.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
     io.c8n.setHidden(true)
   } else if (io.i === 2 && 3 === io.list.length && io.noDynamicList) {
     io.c8n.setHidden(true)
-  } else {
+  } else if (!io.block.ezp.isIncog()) {
     io.c8n.setHidden(false)
   }
 }

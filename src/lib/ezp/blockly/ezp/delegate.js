@@ -1037,6 +1037,63 @@ ezP.Delegate.prototype.setDisabled = function (block, yorn) {
 }
 
 /**
+ * Set the disable state.
+ * For ezPython.
+ * @param {!bollean} newValue.
+ */
+ezP.Delegate.prototype.setIncog = function (newValue) {
+  this.incog = newValue
+  var c8n = this.input && this.input.connection
+  c8n && c8n.ezp.setIncog(newValue)
+  this.synchronize()
+}
+/**
+ * Enable/Disable the connections of the block.
+ * A disabled block cannot enable its connections.
+ * @param {!Block} block.
+ * @param {!Boolean} disabled.
+ * @private
+ */
+ezP.Delegate.prototype.setIncog = function (block, incog) {
+  if (incog) {
+    if (this.incog_) {
+      // The block is already incognito,
+      // normally no change to the block tree
+      return
+    }
+  } else if (block.disabled) {
+    // enable the block before enabling its connections
+    return
+  }
+  this.incog_ = incog
+  var setupIncog = function (input) {
+    var c8n = input && input.connection
+    c8n && c8n.ezp.setIncog(incog)
+  }
+  var tile = this.headTile
+  while (tile) {
+    setupIncog(tile.input)
+    tile = tile.nextTile
+  }
+  setupIncog(this.inputSuite)
+  for (var i = 0, input;(input = this.block_.inputList[i++]);) {
+    setupIncog(input)
+  }
+  if (!incog) { // for lists mainly
+    this.consolidate(block) // no deep consolidation because connected blocs were consolidated above
+  }
+}
+
+
+/**
+ * Get the disable state.
+ * For ezPython.
+ */
+ezP.Delegate.prototype.isIncog = function () {
+  return this.incog_
+}
+
+/**
  * The xml type of this block, as it should appear in the saved data.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.

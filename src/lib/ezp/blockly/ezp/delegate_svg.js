@@ -741,6 +741,7 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   return io.steps.join(' ')
 }
 
+console.warn('List consolidators for yield expression use 2 differnet inputs with "O" name')
 /**
  * Render the the tile in `io.tile`.
  * @param io.
@@ -749,7 +750,7 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
 ezP.DelegateSvg.prototype.renderDrawTile_ = function (io) {
   var root = io.tile.getSvgRoot()
   goog.asserts.assert(root, 'Tile with no root')
-  if (io.tile.isDisabled()) {
+  if (io.tile.isIncog()) {
     root.setAttribute('display', 'none')
   } else if (root) {
     root.removeAttribute('display')
@@ -1156,43 +1157,6 @@ ezP.DelegateSvg.prototype.makeBlockUnwrapped = function (block) {
  */
 ezP.DelegateSvg.prototype.hasSelect = function (block) {
   return goog.dom.classlist.contains(block.svgGroup_, 'ezp-select')
-}
-
-/**
- * Enable/Disable the connections of the block.
- * A disabled block cannot enable its connections.
- * @param {!Block} block.
- * @param {!Boolean} disabled.
- * @private
- */
-ezP.DelegateSvg.prototype.setConnectionsDisabled = function (block, disabled) {
-  if (disabled) {
-    if (this.connectionsDisabled) {
-      // The connections are already disabled,
-      // normally no change to the block tree
-      return
-    }
-  } else if (this.disabled) {
-    // enable the receiver before enabling its connections
-    return
-  }
-  this.connectionsDisabled = disabled
-  var setDisabled = function (input) {
-    var c8n = input && input.connection
-    c8n && c8n.ezp.setDisabled(disabled)
-  }
-  var tile = this.headTile
-  while (tile) {
-    setDisabled(tile.input)
-    tile = tile.nextTile
-  }
-  setDisabled(this.inputSuite)
-  for (var i = 0, input;(input = this.block_.inputList[i++]);) {
-    setDisabled(input)
-  }
-  if (!disabled) { // for lists mainly
-    this.consolidate(block) // no deep consolidation because connected blocs were consolidated above
-  }
 }
 
 /**

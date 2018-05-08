@@ -56,10 +56,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
       },
       alias: {
         default: '',
-        synchronize: function (block, newValue) {
-          this.setFieldValue(this.toText())
-          this.ui.tiles.alias.setDisabled(this.disabled_)
-        },
+        synchronize: true,
         validate: function (newValue) {
           var nameType = ezP.Do.typeOfString(newValue)
           return (nameType === ezP.T3.Expr.identifier) && {validated: newValue} || null
@@ -202,15 +199,15 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
     this.ui.tiles.definition.required = newValue === model.NAME_DEFINITION || newValue === model.NAME_ANNOTATION_DEFINITION
     var newModifier = newValue === model.STAR || newValue === model.STAR_NAME || newValue === model.STAR_NAME_ANNOTATION? '*': (newValue === model.STAR_STAR_NAME? '**': '')
     this.data.modifier.set(newModifier)
-    this.data.name.setDisabled(newValue === model.STAR)
-    this.data.alias.setDisabled(newValue !== model.NAME_ALIAS)
+    this.data.name.setIncog(newValue === model.STAR)
+    this.data.alias.setIncog(newValue !== model.NAME_ALIAS)
   }
   DD.synchronize = function(newValue) {    
     var model = this.model
-    this.ui.tiles.annotation.setDisabled(newValue !== model.NAME_ANNOTATION &&
+    this.ui.tiles.annotation.setIncog(newValue !== model.NAME_ANNOTATION &&
     newValue !== model.STAR_NAME_ANNOTATION &&
     newValue !== model.NAME_ANNOTATION_DEFINITION)
-    this.ui.tiles.definition.setDisabled(newValue !== model.NAME_DEFINITION &&
+    this.ui.tiles.definition.setIncog(newValue !== model.NAME_DEFINITION &&
     newValue !== model.NAME_ANNOTATION_DEFINITION)
   }
   DD.consolidate = function() {    

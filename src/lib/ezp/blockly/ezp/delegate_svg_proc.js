@@ -38,19 +38,10 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
       all: [0, 1, 2],
       synchronize: function(newValue) { // would variants synchronize?
         var M = this.model
-        this.data.dotted_name.setDisabled(newValue === M.BUILTIN) // disable the data not the tile
-        this.data.builtin.setDisabled(newValue !== M.BUILTIN)
-        this.ui.tiles.arguments.setDisabled(newValue !== M.ARGUMENTS)
+        this.data.dotted_name.setIncog(newValue === M.BUILTIN) // disable the data not the tile
+        this.data.builtin.setIncog(newValue !== M.BUILTIN)
+        this.ui.tiles.arguments.setIncog(newValue !== M.ARGUMENTS)
       },
-      consolidate: function() { // run after didChange but before synchronize
-        if (this.ui.tiles.arguments.isRequiredFromDom()) {
-          this.ui.tiles.arguments.setRequiredFromDom(false)
-          this.set(this.model.ARGUMENTS)
-        } else if (this.data.builtin.isRequiredFromDom()) {
-          this.data.builtin.setRequiredFromDom(false)
-          this.set(this.model.BUILTIN)          
-        }
-      }
     },
     subtype: {
       all: [ezP.T3.Expr.dotted_name, ezP.T3.Expr.identifier],
@@ -90,6 +81,12 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
           css: 'reserved',
         },
       },
+      xml: {
+        didLoad: function () {
+          var variant = this.owner.data.variant
+          variant.set(variant.model.BUILTIN)
+        },
+      },
     },
     arguments: {
       order: 3,
@@ -98,6 +95,12 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
         end: ')',
       },
       wrap: ezP.T3.Expr.argument_list,
+      xml: {
+        didLoad: function () {
+          var variant = this.owner.data.variant
+          variant.set(variant.model.ARGUMENTS)
+        },
+      },
     },
   },
   statement: {
@@ -186,7 +189,7 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
     variant: {
       all: [null, ezP.Key.TYPE],
       synchronize: function (newValue) {
-        this.ui.tiles.type.setDisabled(!newValue)
+        this.ui.tiles.type.setIncog(!newValue)
       },
     },
     name: {
@@ -282,7 +285,7 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
     variant: {
       all: [null, ezP.Key.ARGUMENTS],
       synchronize: function(newValue) {
-        this.ui.tiles.arguments.setDisabled(!newValue)
+        this.ui.tiles.arguments.setIncog(!newValue)
       },
     },
     name: {

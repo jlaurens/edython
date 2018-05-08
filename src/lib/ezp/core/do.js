@@ -363,6 +363,25 @@ ezP.Do.typeOfString = function (candidate) {
 }
 
 /**
+ * The css class for the given text
+ * For ezPython.
+ * @param {!Array} list indexed object.
+ * @param {!function} filter an optional filter.
+ * @return an enumerator
+ */
+ezP.Do.cssClassForText = function (txt) {
+  switch(ezP.Do.typeOfString(txt)) {
+    case ezP.T3.Expr.reserved_identifier:
+    case ezP.T3.Expr.reserved_keyword:
+    return 'ezp-code-reserved'
+    case ezP.T3.Expr.builtin_name:
+    return 'ezp-code-builtin'
+    default:
+    return 'ezp-code'
+  }
+}
+
+/**
  * List enumerator
  * For ezPython.
  * @param {!Array} list indexed object.

@@ -546,7 +546,9 @@ ezP.Xml.toDom = function (block, element, optNoId) {
     }
     // the list blocks have no tiles yet
     for (var i = 0, input;(input = block.inputList[i++]);) {
-      blockToDom(input.connection, ezP.Xml.INPUT, input.name)
+      if (!input.ezp.tile) {
+        blockToDom(input.connection, ezP.Xml.INPUT, input.name)
+      }
     }
     // the suite and the flow
     blockToDom(ezp.inputSuite && ezp.inputSuite.connection, ezP.Xml.FLOW, ezP.XmlKey.SUITE)
@@ -681,7 +683,7 @@ ezP.Xml.domToBlock = function() {
       // then fill it based on the xml data
       var saved = ezp.skipRendering
       ezp.skipRendering = true
-      ezp.setConnectionsDisabled(block, false) // some connections are disabled since initialization, they may be used in the dom element
+      ezp.setIncog(block, false) // some connections are disabled since initialization, they may be used in the dom element
       try {
         ezP.Xml.fromDom(block, xmlBlock)
         var state = xmlBlock.getAttribute(ezP.Xml.STATE)

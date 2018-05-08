@@ -37,7 +37,7 @@ ezP.Data = function(owner, key, model) {
   this.upperKey = key[0].toUpperCase()+key.slice(1)
   this.name = 'ezp:'+(this.model.name || this.key).toLowerCase()
   this.noUndo = model.noUndo
-  this.disabled_ = false
+  this.incog_ = false
   var xml = model.xml
   if (goog.isDefAndNotNull(xml) || xml !== false) {
     this.attributeName = 'ezp:' +(xml && xml.attribute || key)
@@ -291,7 +291,7 @@ ezP.Data.prototype.synchronize = function(newValue) {
     return
   } else if (this.model.synchronize === true) {
     this.setFieldValue(this.toText())
-    this.setTileDisabled(this.disabled_)
+    this.setTileIncog(this.incog_)
     return
   }
   var ezp = this.owner_
@@ -352,8 +352,8 @@ ezP.Data.prototype.set = function (newValue) {
  * Always synchronize, even when no value changed.
  * @param {Object} newValue
  */
-ezP.Data.prototype.setDisabled = function(newValue) {
-  this.disabled_ = newValue
+ezP.Data.prototype.setIncog = function(newValue) {
+  this.incog_ = newValue
   this.synchronize(this.value_)
 }
 /**
@@ -362,8 +362,8 @@ ezP.Data.prototype.setDisabled = function(newValue) {
  * Always synchronize, even when no value changed.
  * @param {Object} newValue
  */
-ezP.Data.prototype.isDisabled = function() {
-  return this.disabled_
+ezP.Data.prototype.isIncog = function() {
+  return this.incog_
 }
 
 /**
@@ -393,7 +393,7 @@ ezP.Data.prototype.consolidate = function() {
  * @private
  */
 ezP.Data.prototype.isActive = function () {
-  return !!this.required || !this.disabled_ && goog.isString(this.value_) && this.value_.length
+  return !!this.required || !this.incog_ && goog.isString(this.value_) && this.value_.length
 }
 
 console.warn ('Change the model design for i_(\d): {...} to $1: {...}')
@@ -431,9 +431,9 @@ ezP.Data.prototype.setFieldVisible = function (newValue) {
  * @param {!boolean} newValue.
  * @private
  */
-ezP.Data.prototype.setTileDisabled = function (newValue) {
+ezP.Data.prototype.setTileIncog = function (newValue) {
   goog.asserts.assert(this.tile || this.tile === null, 'Missing tile binding')
-  this.tile && this.tile.setDisabled(newValue)
+  this.tile && this.tile.setIncog(newValue)
 }
 
 /**
@@ -484,7 +484,7 @@ ezP.Data.prototype.setFieldVisible = function (newValue, inputIndex, fieldKey) {
  * @param {Element} xml the persistent element.
  */
 ezP.Data.prototype.saveToDom = function(element) {
-  if (!this.isDisabled()) {
+  if (!this.isIncog()) {
     // in general, data should be saved
     var xml = this.model.xml
     if (xml === false) {
@@ -505,7 +505,7 @@ ezP.Data.prototype.saveToDom = function(element) {
  * @param {Element} xml the persistent element.
  */
 ezP.Data.prototype.toDom = function(element) {
-  if (!this.isDisabled()) {
+  if (!this.isIncog()) {
     // in general, data should be saved
     var xml = this.model.xml
     if (xml === false) {
@@ -609,7 +609,8 @@ ezP.Data.prototype.isRequiredFromDom = function () {
 ezP.Data.prototype.clearRequiredFromDom = function () {
   if (this.isRequiredFromDom()) {
     this.setRequiredFromDom(false)
-    this.fromText('', true)
+    this.fromText('', true)// useful if the text was a '?'
+    return true
   }
 }
 

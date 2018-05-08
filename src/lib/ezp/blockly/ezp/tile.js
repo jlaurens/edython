@@ -74,9 +74,6 @@ ezP.Tile.prototype.init = function() {
   this.svgGroup_ = Blockly.utils.createSvgElement('g', {
     class: 'ezp-tile'
   }, null);
-  if (this.disabled_) {
-    this.svgGroup_.style.display = 'none';
-  }
   // init all the fields
   for (var k in this.fields) {
     var field = this.fields[k]
@@ -164,7 +161,7 @@ ezP.Tile.makeFields = function() {
         return
       }
       field = new ezP.FieldLabel(model)
-      field.ezp.css_class = 'ezp-code'
+      field.ezp.css_class = ezP.Do.cssClassForText(model)
     } else if (goog.isObject(model)) {
       setupModel(model)
       if (model.edit || model.validate || model.endEditing || model.startEditing) {
@@ -178,17 +175,7 @@ ezP.Tile.makeFields = function() {
       }
       field.ezp.model = model
       if (!(field.ezp.css_class = model.css_class || model.css && 'ezp-code-'+model.css)) {
-        switch(ezP.Do.typeOfString(field.getValue())) {
-          case ezP.T3.Expr.reserved_identifier:
-          case ezP.T3.Expr.reserved_keyword:
-          field.ezp.css_class = 'ezp-code-reserved'
-          break
-          case ezP.T3.Expr.builtin_name:
-          field.ezp.css_class = 'ezp-code-builtin'
-          break
-          default:
-          field.ezp.css_class = 'ezp-code'
-        }
+        field.ezp.css_class = ezP.Do.cssClassForText(field.getValue())
       }
       field.ezp.css_style = model.css_style
       field.ezp.order = model.order
@@ -320,7 +307,7 @@ ezP.Tile.prototype.setInput = function (input) {
     if (this.model.optional) {//svg
       ezp.optional_ = true
     }
-    ezp.setDisabled(this.model.disabled && !this.model.enabled)
+    ezp.setIncog(this.model.incog && !this.model.enabled)
     var v
     if ((v = this.model.check)) {
       c8n.setCheck(v)
@@ -372,10 +359,10 @@ ezP.Tile.prototype.getTarget = function () {
  * For ezPython.
  * @param {!bollean} newValue.
  */
-ezP.Tile.prototype.setDisabled = function (newValue) {
-  this.disabled = newValue
+ezP.Tile.prototype.setIncog = function (newValue) {
+  this.incog = newValue
   var c8n = this.input && this.input.connection
-  c8n && c8n.ezp.setDisabled(newValue)
+  c8n && c8n.ezp.setIncog(newValue)
   this.synchronize()
 }
 
@@ -383,8 +370,8 @@ ezP.Tile.prototype.setDisabled = function (newValue) {
  * Get the disable state.
  * For ezPython.
  */
-ezP.Tile.prototype.isDisabled = function () {
-  return this.disabled
+ezP.Tile.prototype.isIncog = function () {
+  return this.incog
 }
 
 /**
@@ -393,7 +380,7 @@ ezP.Tile.prototype.isDisabled = function () {
  * @param {boolean} newValue.
  */
 ezP.Tile.prototype.isRequiredToDom = function () {
-  if (this.disabled) {
+  if (this.incog) {
     return false
   }
   if (!this.connection) {
@@ -417,7 +404,7 @@ ezP.Tile.prototype.isRequiredToDom = function () {
  * @param {boolean} newValue.
  */
 ezP.Tile.prototype.isRequiredFromDom = function () {
- return this.is_required_from_dom || !this.disabled && this.model.xml && this.model.xml.required
+ return this.is_required_from_dom || !this.incog && this.model.xml && this.model.xml.required
 }
 
 /**
@@ -439,7 +426,7 @@ ezP.Tile.prototype.synchronize = function () {
   if (!input) {
     return
   }
-  var newValue = this.disabled
+  var newValue = this.incog
   var current = this.skipRendering
   this.skipRendering = true
   try {
@@ -509,7 +496,7 @@ goog.forwardDeclare('ezP.DelegateSvg.List')
  */
 ezP.Tile.prototype.toDom = function(element, optNoId) {
   var xml = this.model.xml
-  if (!this.isDisabled() && (!goog.isDef(xml) || xml !== false)) {
+  if (!this.isIncog() && (!goog.isDef(xml) || xml !== false)) {
     var out = function() {
       var c8n = this.connection
       if (c8n) {
@@ -577,64 +564,84 @@ ezP.Tile.prototype.fromDom = function(element) {
     this.setRequiredFromDom(false)
     var c8n = this.connection
     if (c8n) {
+      var out
       var target = c8n.targetBlock()
       if (target && target.ezp.wrapped_ && !(target.ezp instanceof ezP.DelegateSvg.List)) {
         this.setRequiredFromDom(true) // this is not sure, it depends on how the target read the dom
-        return ezP.Xml.fromDom(target, element)
-      }
+        out = ezP.Xml.fromDom(target, element)
+      } else {
       // find an xml child with the proper input attribute
-      for (var i = 0, child; (child = element.childNodes[i++]);) {
-        if (goog.isFunction(child.getAttribute)) {
-          if (this.inputType === Blockly.INPUT_VALUE) {
-            var attribute = child.getAttribute(ezP.Xml.INPUT)
-          } else if (this.inputType === Blockly.NEXT_STATEMENT) {
-            var attribute = child.getAttribute(ezP.Xml.FLOW)
+        for (var i = 0, child; (child = element.childNodes[i++]);) {
+          if (goog.isFunction(child.getAttribute)) {
+            if (this.inputType === Blockly.INPUT_VALUE) {
+              var attribute = child.getAttribute(ezP.Xml.INPUT)
+            } else if (this.inputType === Blockly.NEXT_STATEMENT) {
+              var attribute = child.getAttribute(ezP.Xml.FLOW)
+            }
           }
-        }
-        if (attribute === this.key) {
-          if (child.tagName && child.tagName.toLowerCase() === 'ezp:placeholder') {
-            this.setRequiredFromDom(true)
-            return true
-          }
-          if (target) {
-            if (target.ezp instanceof ezP.DelegateSvg.List) {
-              for (var i = 0, grandChild;(grandChild = child.childNodes[i++]);) {
-                if (goog.isFunction(grandChild.getAttribute)) {
-                  var name = grandChild.getAttribute(ezP.XmlKey.INPUT)
-                  var input = target.ezp.getInput(target, name)
-                  if (input) {
-                    if (!input.connection) {
-                      console.warn('Missing connection')
-                    }
-                    var inputTarget = input.connection.targetBlock()
-                    if (inputTarget) {
-                      ezP.Xml.fromDom(inputTarget, grandChild)
-                    } else if ((inputTarget = ezP.Xml.domToBlock(grandChild, this.owner.block_.workspace))) {
-                      var targetC8n = inputTarget.outputConnection
-                      if (targetC8n && targetC8n.checkType_(input.connection)) {
-                        targetC8n.connect(input.connection)
-                        this.setRequiredFromDom(true)
+          if (attribute === this.key) {
+            if (child.tagName && child.tagName.toLowerCase() === 'ezp:placeholder') {
+              this.setRequiredFromDom(true)
+              out = true
+            } else if (target) {
+              if (target.ezp instanceof ezP.DelegateSvg.List) {
+                for (var i = 0, grandChild;(grandChild = child.childNodes[i++]);) {
+                  if (goog.isFunction(grandChild.getAttribute)) {
+                    var name = grandChild.getAttribute(ezP.XmlKey.INPUT)
+                    var input = target.ezp.getInput(target, name)
+                    if (input) {
+                      if (!input.connection) {
+                        console.warn('Missing connection')
+                      }
+                      var inputTarget = input.connection.targetBlock()
+                      if (inputTarget) {
+                        ezP.Xml.fromDom(inputTarget, grandChild)
+                      } else if ((inputTarget = ezP.Xml.domToBlock(grandChild, this.owner.block_.workspace))) {
+                        var targetC8n = inputTarget.outputConnection
+                        if (targetC8n && targetC8n.checkType_(input.connection)) {
+                          targetC8n.connect(input.connection)
+                          this.setRequiredFromDom(true)
+                        }
                       }
                     }
                   }
                 }
+                out = true
+              } else {
+                out = ezP.Xml.fromDom(target, child)
               }
-              return true
+            } else if ((target = Blockly.Xml.domToBlock(child, this.getWorkspace()))) {
+              // we could create a block from that child element
+              // then connect it
+              if (target.outputConnection && c8n.checkType_(target.outputConnection)) {
+                c8n.connect(target.outputConnection)
+                this.setRequiredFromDom(true)
+              } else if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
+                c8n.connect(target.previousConnection)
+              }
+              out = target
             }
-            return ezP.Xml.fromDom(target, child)
-          } else if ((target = Blockly.Xml.domToBlock(child, this.getWorkspace()))) {
-            // we could create a block form that child element
-            // then connect it
-            if (target.outputConnection && c8n.checkType_(target.outputConnection)) {
-              c8n.connect(target.outputConnection)
-            } else if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
-              c8n.connect(target.previousConnection)
-            }
-            return target
           }
         }
       }
+      if (out) {
+        this.didLoad()
+      }
+      return out
     }
   }
 }
 
+/**
+ * Convert the tile's connected target into the given xml element.
+ * List all the available data and converts them to xml.
+ * For ezPython.
+ * @param {Element} xml the persistent element.
+ * @param {boolean} optNoId.
+ * @return a dom element, void lists may return nothing
+ * @this a block delegate
+ */
+ezP.Tile.prototype.didLoad = function() {
+  var xml = this.model.xml
+  xml && goog.isFunction(xml.didLoad) && xml.didLoad.call(this)
+}

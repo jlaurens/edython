@@ -47,8 +47,8 @@ ezP.DelegateSvg.Group.makeSubclass('except_part', {
         ezp.consolidateType(block)
       },
       synchronize: function(newValue) {
-        this.ui.tiles.expression.setDisabled(newValue < 1)
-        this.ui.tiles.as.setDisabled(newValue < 2)
+        this.ui.tiles.expression.setIncog(newValue < 1)
+        this.ui.tiles.as.setIncog(newValue < 2)
       },
     },
   },
@@ -151,8 +151,8 @@ ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
     variant: {
       all: [0, 1, 2],
       synchronize: function(newValue) {
-        this.ui.tiles.expression.setDisabled(newValue < 1)
-        this.ui.tiles.from.setDisabled(newValue < 2)
+        this.ui.tiles.expression.setIncog(newValue < 1)
+        this.ui.tiles.from.setIncog(newValue < 2)
       },
     },
   },
@@ -223,7 +223,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
     variant: {
       all: [0, 1],
       synchronize: function(newValue) {
-        this.ui.tiles.expression.setDisabled(!newValue)
+        this.ui.tiles.expression.setIncog(!newValue)
       },
     },
   },

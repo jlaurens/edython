@@ -48,9 +48,6 @@ ezP.FieldLabel.prototype.init = function () {
   if (this.ezp.css_class) {
     goog.dom.classlist.add(this.textElement_, this.ezp.css_class)
   }
-  if (!this.visible_) {
-    this.textElement_.style.display = 'none'
-  }
   if (this.ezp.tile) {
     this.ezp.tile.getSvgRoot().appendChild(this.textElement_)
   } else {

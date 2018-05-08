@@ -92,10 +92,10 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         //   case 2: disabled_2 = disabled_4 = false; break
         // }
         var model = this.model
-        this.ui.tiles.import_module.setDisabled(newValue != model.IMPORT)
-        this.data.from.setDisabled(newValue == model.IMPORT)
-        this.ui.tiles.import.setDisabled(newValue != model.FROM_MODULE_IMPORT)
-        this.ui.tiles.import_star.setDisabled(newValue != model.FROM_MODULE_IMPORT_STAR)
+        this.ui.tiles.import_module.setIncog(newValue != model.IMPORT)
+        this.data.from.setIncog(newValue == model.IMPORT)
+        this.ui.tiles.import.setIncog(newValue != model.FROM_MODULE_IMPORT)
+        this.ui.tiles.import_star.setIncog(newValue != model.FROM_MODULE_IMPORT_STAR)
       },
     },
     from: {

@@ -72,8 +72,8 @@ ezP.DelegateSvg.Expr.makeSubclass('slicing', {
     variant: { // data named 'variant' have `xml = false`, by default
       all: [0, 1],
       synchronize: function(newValue) {
-        this.ui.tiles.name.setDisabled(!!newValue)
-        this.ui.tiles.primary.setDisabled(!newValue)
+        this.ui.tiles.name.setIncog(!!newValue)
+        this.ui.tiles.primary.setIncog(!newValue)
       },
     },
     name: {
@@ -168,8 +168,8 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
       all: [0, 1, 2,],
       synchronize: function(newValue) {
         var withPrimary = newValue === 1
-        this.ui.tiles.name.setDisabled(withPrimary)
-        this.ui.tiles.primary.setDisabled(!withPrimary)
+        this.ui.tiles.name.setIncog(withPrimary)
+        this.ui.tiles.primary.setIncog(!withPrimary)
         var field = this.ui.tiles.name.fields.edit
         if (field.textElement_) {
           var withBuiltin = newValue === 2

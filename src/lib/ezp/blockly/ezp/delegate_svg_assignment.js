@@ -289,9 +289,9 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     variant: {
       all: [0, 1, 2],
       synchronize: function(newValue) {
-        this.ui.tiles.name.setDisabled(newValue == 2)
-        this.ui.tiles.annotation.setDisabled(newValue != 1)
-        this.ui.tiles.target.setDisabled(newValue != 2)
+        this.ui.tiles.name.setIncog(newValue == 2)
+        this.ui.tiles.annotation.setIncog(newValue != 1)
+        this.ui.tiles.target.setIncog(newValue != 2)
       },
     },
     name: {
@@ -439,8 +439,8 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       TARGET_EXPRESSIONS: 1,
       all: [0, 1],
       synchronize: function (newVariant) {
-        this.ui.tiles.name.setDisabled(newVariant)
-        this.ui.tiles.target.setDisabled(!newVariant)
+        this.ui.tiles.name.setIncog(newVariant)
+        this.ui.tiles.target.setIncog(!newVariant)
       },
     },
     name: {

@@ -576,15 +576,6 @@ ezP.DelegateSvg.Stmt.makeSubclass('any_stmt',{
         this.data.comment_show.set(newValue !== this.model.INSTRUCTION)
         this.data.code.required = newValue !== this.model.COMMENT
       },
-      consolidate: function() {
-        if (this.data.code.isRequiredFromDom()) {
-          this.data.code.setRequiredFromDom(false)
-          this.data.code.fromText('')
-          if (this.get() === this.model.COMMENT) {
-            this.set(this.model.INSTRUCTION_COMMENT)
-          }
-        }
-      },
     },
     comment_show: {
       didChange: function(oldValue, newValue) {
@@ -598,6 +589,13 @@ ezP.DelegateSvg.Stmt.makeSubclass('any_stmt',{
       synchronize: true,
       xml: {
         text: true,
+        didoad: function () {
+          var variant = this.owner.data.variant
+          if (variant.get() === variant.model.COMMENT) {
+            variant.set(variant.model.INSTRUCTION_COMMENT)
+          }
+          this.clearRequiredFromDom()
+        },
       },
     },
   },
