@@ -369,11 +369,11 @@ ezP.MenuManager.prototype.populateLast = function (block) {
   var holes = ezP.HoleFiller.getDeepHoles(c8n || block)
   menuItem = new ezP.MenuItem(
     ezP.Msg.FILL_DEEP_HOLES, function() {
-      var grouper = new ezP.Events.Grouper()
+      Blockly.Events.setGroup(true)
       try {
         ezP.HoleFiller.fillDeepHoles(block.workspace, holes)
       } finally {
-        grouper.stop()
+        Blockly.Events.setGroup(false)
       }
     })
     menuItem.setEnabled(holes.length > 0);
@@ -382,11 +382,11 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     if (block.ezp.canUnlock(block)) {
       menuItem = new ezP.MenuItem(ezP.Msg.UNLOCK_BLOCK,
         function(event) {
-          var grouper = new ezP.Events.Grouper()
+          Blockly.Events.setGroup(true)
           try {
             block.ezp.unlock(block)
           } finally {
-            grouper.stop()
+            Blockly.Events.setGroup(false)
           }
         }
       )
@@ -395,11 +395,11 @@ ezP.MenuManager.prototype.populateLast = function (block) {
     if (block.ezp.canLock(block)) {
       menuItem = new ezP.MenuItem(ezP.Msg.LOCK_BLOCK,
         function(event) {
-          var grouper = new ezP.Events.Grouper()
+          Blockly.Events.setGroup(true)
           try {
             block.ezp.lock(block)
           } finally {
-            grouper.stop()
+            Blockly.Events.setGroup(false)
           }
         }
       )
@@ -620,7 +620,7 @@ ezP.MenuManager.prototype.handleActionLast = function (block, event) {
         unwrapped = parent
       }
       // unwrapped is the topmost block or the first unwrapped parent
-      var grouper = new ezP.Events.Grouper()
+      Blockly.Events.setGroup(true)
       var returnState = false
       try {
         if (target === Blockly.selected && target != unwrapped) {
@@ -637,7 +637,7 @@ ezP.MenuManager.prototype.handleActionLast = function (block, event) {
         unwrapped.dispose(true, true)
         returnState = true
       } finally {
-        grouper.stop()
+        Blockly.Events.setGroup(false)
       }
       return returnState
     case ezP.ID.HELP:

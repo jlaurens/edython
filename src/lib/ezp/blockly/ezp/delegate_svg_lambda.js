@@ -327,7 +327,7 @@ ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
             ezP.Do.createSPAN(' )', 'ezp-code-disabled'),
           )
           mgr.addInsertChild(new ezP.MenuItem(content, function() {
-            var grouper = new ezP.Events.Grouper()
+            Blockly.Events.setGroup(true)
             try {
               var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term, true)
               B.ezp.skipRendering = true
@@ -335,9 +335,10 @@ ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
               B.ezp.data.variant.set(flags)
               B.ezp.skipRendering = false
               c8n.connect(B.outputConnection)
+              B.ezp.beReady(block)
               B.render()
             } finally {
-              grouper.stop()
+              Blockly.Events.setGroup(false)
             }
           }))
         }

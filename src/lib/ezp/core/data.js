@@ -38,6 +38,7 @@ ezP.Data = function(owner, key, model) {
   this.name = 'ezp:'+(this.model.name || this.key).toLowerCase()
   this.noUndo = model.noUndo
   this.incog_ = false
+  this.wait_ = 1 // start with 1 exactly
   var xml = model.xml
   if (goog.isDefAndNotNull(xml) || xml !== false) {
     this.attributeName = 'ezp:' +(xml && xml.attribute || key)
@@ -283,9 +284,13 @@ ezP.Data.prototype.noUndo = undefined
 /**
  * Synchronize the value of the property with the UI.
  * May be overriden by the model.
+ * Do nothing if the receiver should wait.
  * @param {Object} newValue
  */
 ezP.Data.prototype.synchronize = function(newValue) {
+  if (this.wait_) {
+    return
+  }
   if (goog.isFunction(this.model.synchronize)) {
     this.model.synchronize.call(this, newValue)
     return
@@ -370,10 +375,11 @@ ezP.Data.prototype.isIncog = function() {
  * Consolidate the value.
  * Should be overriden by the model.
  * Reentrant management here.
+ * Do nothing if the receiver should wait.
  * @param {Object} newValue
  */
 ezP.Data.prototype.consolidate = function() {
-  if (this.consolidate_lock) {
+  if (this.consolidate_lock || this.wait_) {
     return
   }
   if (goog.isFunction(this.model.consolidate)) {
@@ -455,6 +461,32 @@ ezP.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
     } finally {
       Blockly.Events.enable()
     }
+  }
+}
+
+/**
+ * The receiver is now ready to eventually synchronize and consolidate.
+ */
+ezP.Data.prototype.beReady = function () {
+  this.wait_ = 0
+}
+
+/**
+ * Set the wait status of the field.
+ * Any call to `waitOn` must be balanced by a call to `waitOff`
+ */
+ezP.Data.prototype.waitOn = function () {
+  return ++ this.wait_
+}
+
+/**
+ * Set the wait status of the field.
+ * Any call to `waitOn` must be balanced by a call to `waitOff`
+ */
+ezP.Data.prototype.waitOff = function () {
+  goog.asserts.assert(this.wait_>0, ezP.Do.format('Too  many `waitOn` {0}/{1}', this.key, this.owner.block_.type))
+  if (--this.wait_ == 0) {
+    this.consolidate()
   }
 }
 

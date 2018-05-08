@@ -196,10 +196,6 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   // We establish a bi directional bound between data, inputs and fields
   // now it is time to intialize the data
   this.initData(block)
-  // and find the appropriate type
-  this.consolidate(block)
-  this.synchronizeData(block)
-  this.synchronizeTiles(block)
 }
 console.warn('implement async and await, see above awaitable and asyncable')
 /**
@@ -397,6 +393,11 @@ ezP.DelegateSvg.prototype.consolidate = function (block, deep, force) {
     var data = this.data[k]
     data.consolidate()
   }
+  var tile = this.ui.headTile
+  while (tile) {
+    tile.consolidate()
+    tile = tile.nextTile
+  } 
   if (deep) {
     var e8r = block.ezp.inputEnumerator(block), x
     while (e8r.next()) {
@@ -1187,11 +1188,31 @@ ezP.DelegateSvg.prototype.delayedRender = function (block) {
 ezP.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id, initSvg) {
   var B = workspace.newBlock(prototypeName, goog.isString(id) && id)
   B.ezp.completeWrapped_(B)
-  B.ezp.consolidate(B, true)
   if (goog.isBoolean(id) && id || initSvg) {
     B.initSvg()
   }
   return B
+}
+
+/**
+ * When setup is finish.
+ * @param {!Block} block.
+ */
+ezP.DelegateSvg.prototype.beReady = function (block) {
+  var data = this.data
+  for (var k in data) {
+    data[k].beReady()
+  }
+  var tile = this.ui.headTile
+  while (tile) {
+    tile.beReady()
+    tile = tile.nextTile
+  }
+  this.consolidate(block, true)
+  this.synchronizeData(block)
+  this.synchronizeTiles(block)
+  this.skipRendering = 0
+  block.render()
 }
 
 /**
@@ -1332,6 +1353,7 @@ ezP.HoleFiller.fillDeepHoles = function(workspace, holes) {
               B.ezp.data.phantom && B.ezp.data.phantom.set(data.value) ||
               B.ezp.data.value && B.ezp.data.value.set(data.value)
             }
+            B.ezp.beReady(B)
           }
           c8n.connect(B.outputConnection)
         } catch(err) {
@@ -1359,7 +1381,7 @@ ezP.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
     var target = input.connection.targetBlock()
     var oldType = target? target.type: undefined
     if (newType != oldType) {
-      var grouper = new ezP.Events.Grouper()
+      Blockly.Events.setGroup(true)
       try {
         if (target) {
           target.unplug()
@@ -1368,7 +1390,7 @@ ezP.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
         this.completeWrappedInput_(block, input, newType)
         returnState = true
       } finally {
-        grouper.stop()        
+        Blockly.Events.setGroup(false)        
       }
     }
   }
@@ -2118,7 +2140,7 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
     var c8n, otherC8n, foundC8n
     var fin = function(prepare) {
       disabler.stop()
-      var grouper = new ezP.Events.Grouper()
+      Blockly.Events.setGroup(true)
       try {
         if (Blockly.Events.isEnabled()) {
           Blockly.Events.fire(new Blockly.Events.BlockCreate(candidate))
@@ -2126,10 +2148,11 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
         candidate.render()
         prepare && prepare()
         otherC8n.connect(c8n)
+        candidate.ezp.beReady(candidate)
         candidate.select()
         candidate.bumpNeighbours_()
       } finally {
-        Blockly.Events.enable()
+        Blockly.Events.setGroup(false)
       }
       return candidate
     }

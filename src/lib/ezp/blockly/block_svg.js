@@ -467,7 +467,7 @@ ezP.DelegateSvg.prototype.onMouseUp_ = function(block, e) {
  * @override
  */
 ezP.BlockSvg.prototype.dispose = function(healStack, animate) {
-  var grouper = new ezP.Events.Grouper()
+  Blockly.Events.setGroup(true)
   try {
     if (this === Blockly.selected) {
       // this block was selected, select the block below or above before deletion
@@ -482,7 +482,7 @@ ezP.BlockSvg.prototype.dispose = function(healStack, animate) {
     }
     ezP.BlockSvg.superClass_.dispose.call(this, healStack, animate)
   } finally {
-    grouper.stop()
+    Blockly.Events.setGroup(false)
   }
 }
 

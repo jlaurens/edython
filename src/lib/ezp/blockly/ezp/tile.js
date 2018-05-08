@@ -49,6 +49,7 @@ ezP.Tile = function(owner, key, tileModel) {
   this.key = key
   this.model = tileModel
   this.input = undefined
+  this.wait = 1
   var block = this.block = owner.block_
   goog.asserts.assert(block,
     ezP.Do.format('block must exist {0}/{1}', key))  
@@ -128,7 +129,7 @@ ezP.Tile.makeFields = function() {
   var startEditing = function () {
   }
   var endEditing = function () {
-    goog.asserts.assert(this.ezp.data, 'No data bound to field '+this.name+'/'+this.sourceBlock_.type)
+    goog.asserts.assert(this.ezp.data, 'No data bound to field '+this.key+'/'+this.sourceBlock_.type)
     this.ezp.data.fromText(this.getValue())
   }
   // Change some `... = true,` entrie to real functions
@@ -307,7 +308,6 @@ ezP.Tile.prototype.setInput = function (input) {
     if (this.model.optional) {//svg
       ezp.optional_ = true
     }
-    ezp.setIncog(this.model.incog && !this.model.enabled)
     var v
     if ((v = this.model.check)) {
       c8n.setCheck(v)
@@ -361,6 +361,9 @@ ezP.Tile.prototype.getTarget = function () {
  */
 ezP.Tile.prototype.setIncog = function (newValue) {
   this.incog = newValue
+  if (this.wait) {
+    return
+  }
   var c8n = this.input && this.input.connection
   c8n && c8n.ezp.setIncog(newValue)
   this.synchronize()
@@ -414,6 +417,48 @@ ezP.Tile.prototype.isRequiredFromDom = function () {
  */
 ezP.Tile.prototype.setRequiredFromDom = function (newValue) {
   this.is_required_from_dom = newValue
+}
+
+/**
+ * Consolidate the incog state.
+ * For ezPython.
+ * @param {!Blockly.Input} workspace The block's workspace.
+ */
+ezP.Tile.prototype.consolidate = function () {
+  if (this.wait) {
+    return
+  }
+  var c8n = this.input && this.input.connection
+  if (c8n) {
+    c8n.ezp.setIncog(this.isIncog())
+    c8n.ezp.wrapped_ && c8n.setHidden(true) // Don't ever connect any block to this
+  }
+}
+
+/**
+ * The receiver is now ready to eventually synchronize and consolidate.
+ */
+ezP.Tile.prototype.beReady = function () {
+  this.wait = 0
+}
+
+/**
+ * Set the wait status of the field.
+ * Any call to `waitOn` must be balanced by a call to `waitOff`
+ */
+ezP.Tile.prototype.waitOn = function () {
+  return ++ this.wait
+}
+
+/**
+ * Set the wait status of the field.
+ * Any call to `waitOn` must be balanced by a call to `waitOff`
+ */
+ezP.Tile.prototype.waitOff = function () {
+  goog.asserts.assert(this.wait>0, ezP.Do.format('Too  many `waitOn` {0}/{1}', this.key, this.owner.block_.type))
+  if (--this.wait == 0) {
+    this.consolidate()
+  }
 }
 
 /**

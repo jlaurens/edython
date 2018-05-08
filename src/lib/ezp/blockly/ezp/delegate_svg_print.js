@@ -77,26 +77,26 @@ ezP.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
       }
     }
     var insert = function(key) {
-      var grouper = new ezP.Events.Grouper()
+      Blockly.Events.setGroup(true)
       try {
         var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term, true)
         B.ezp.data.value.set(key)
         B.ezp.data.variant.set(2)
         var c8n = list.inputList[list.inputList.length-1].connection
         c8n.connect(B.outputConnection)  
-        block.ezp.consolidate(block)
+        block.ezp.beReady(block)
       } finally {
-        grouper.stop()
+        Blockly.Events.setGroup(false)
       }
     }
     var remove = function(key) {
-      var grouper = new ezP.Events.Grouper()
+      Blockly.Events.setGroup(true)
       try {
         var B = has[key]
         B.unplug()
         B.dispose()
       } finally {
-        grouper.stop()
+        Blockly.Events.setGroup(false)
       }
     }
     var F = function(candidate) {
@@ -156,7 +156,7 @@ ezP.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
       }
     }
     var insert = function(key) {
-      var grouper = new ezP.Events.Grouper()
+      Blockly.Events.setGroup(true)
       try {
         var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term, true)
         B.ezp.data.value.set(key)
@@ -164,19 +164,19 @@ ezP.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
         // we assume that inputList is not void
         var c8n = list.inputList[list.inputList.length-1].connection
         c8n.connect(B.outputConnection)  
-        block.ezp.consolidate(block)
+        block.ezp.beReady(block)
       } finally {
-        grouper.stop()
+        Blockly.Events.setGroup(false)
       }
     }
     var remove = function(key) {
-      var grouper = new ezP.Events.Grouper()
+      Blockly.Events.setGroup(true)
       try {
         var B = has[key]
         B.unplug()
         B.dispose()
       } finally {
-        grouper.stop()
+        Blockly.Events.setGroup(false)
       }
     }
     var F = function(candidate) {

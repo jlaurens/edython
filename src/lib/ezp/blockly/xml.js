@@ -103,10 +103,6 @@ Blockly.Xml.domToWorkspace = function(xml, workspace) {
   // children beyond the lists' length.  Trust the length, do not use the
   // looping pattern of checking the index for an object.
   var childCount = xml.childNodes.length;
-  var existingGroup = Blockly.Events.getGroup();
-  if (!existingGroup) {
-    var grouper = new ezP.Events.Grouper();
-  }
 
   // Disable workspace resizes as an optimization.
   if (workspace.setResizesEnabled) {
@@ -135,7 +131,7 @@ Blockly.Xml.domToWorkspace = function(xml, workspace) {
     }
     return block
   }
-  
+  Blockly.Events.setGroup(true)
   var variablesFirst = true;
   try {
     for (var i = 0; i < childCount; i++) {
@@ -174,9 +170,7 @@ Blockly.Xml.domToWorkspace = function(xml, workspace) {
       }
     }
   } finally {
-    if (!existingGroup) {
-      grouper.stop();
-    }
+    Blockly.Events.setGroup(false)
     Blockly.Field.stopCache();
   }
   // Re-enable workspace resizing.
@@ -681,24 +675,15 @@ ezP.Xml.domToBlock = function() {
       var ezp = block.ezp
   //    console.log('Block created from dom:', xmlBlock, block.type, block.id)
       // then fill it based on the xml data
-      var saved = ezp.skipRendering
-      ezp.skipRendering = true
-      ezp.setIncog(block, false) // some connections are disabled since initialization, they may be used in the dom element
-      try {
-        ezP.Xml.fromDom(block, xmlBlock)
-        var state = xmlBlock.getAttribute(ezP.Xml.STATE)
-        if (state && state.toLowerCase() === ezP.Xml.LOCKED) {
-          ezp.lock(block)
-        }
-        // this block have been created from untrusted data
-        // We might need to fix some stuff before returning
-        // In particular, it will be the perfect place to setup variants
-        ezp.consolidate(block)
-      } finally {
-        ezp.skipRendering = saved
+      ezP.Xml.fromDom(block, xmlBlock)
+      var state = xmlBlock.getAttribute(ezP.Xml.STATE)
+      if (state && state.toLowerCase() === ezP.Xml.LOCKED) {
+        ezp.lock(block)
       }
-      ezp.synchronizeData(block)
-      ezp.synchronizeTiles(block)
+      // this block have been created from untrusted data
+      // We might need to fix some stuff before returning
+      // In particular, it will be the perfect place to setup variants
+      ezp.beReady(block)
     }
     return block
   }
@@ -737,6 +722,10 @@ ezP.Xml.fromDom = function (block, element) {
     goog.isFunction(controller.fromDom))) {
     return controller.fromDom.call(ezp, block, element)
   } else {
+    var data = ezp.data
+    for (var k in data) {
+      data[k].waitOn()
+    }
     ezP.Xml.Data.fromDom(block, element)
     // read tile
     var tile = ezp.ui.headTile

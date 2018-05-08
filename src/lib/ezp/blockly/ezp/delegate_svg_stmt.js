@@ -213,7 +213,7 @@ ezP.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
     Blockly.Events.enable()
     var parentC8n = parentBlock.nextConnection
     if (parentC8n) {
-      var grouper = new ezP.Events.Grouper()
+      Blockly.Events.setGroup(true)
       try {
         if (Blockly.Events.isEnabled()) {
           Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
@@ -230,7 +230,7 @@ ezP.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
           var my_xy = parentBlock.getRelativeToSurfaceXY();
           parentBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
         }
-        parentBlock.ezp.consolidate(parentBlock, true)
+        parentBlock.ezp.beReady(parentBlock)
         var holes = ezP.HoleFiller.getDeepHoles(parentBlock)
         ezP.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
         parentBlock.render()
@@ -239,7 +239,7 @@ ezP.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
           parentBlock.select()
         }
       } finally {
-        grouper.stop()
+        Blockly.Events.setGroup(false)
       }
     }
   }
@@ -258,7 +258,7 @@ ezP.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
  * @return the created block
  */
 ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototypeName) {
-  var grouper = new ezP.Events.Grouper()
+  Blockly.Events.setGroup(true)
   try {
     var blockAfter = ezP.DelegateSvg.newBlockComplete(block.workspace, belowPrototypeName, true)
     var c8n = block.nextConnection
@@ -269,7 +269,7 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
         targetC8n.connect(blockAfter.nextConnection)
       }
     }
-    blockAfter.ezp.consolidate(blockAfter, true)
+    blockAfter.ezp.beReady(blockAfter)
     var holes = ezP.HoleFiller.getDeepHoles(blockAfter)
     ezP.HoleFiller.fillDeepHoles(blockAfter.workspace, holes)
     blockAfter.render()
@@ -278,7 +278,7 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
       blockAfter.select()
     }
   } finally {
-    grouper.stop()
+    Blockly.Events.setGroup(false)
   }
   return blockAfter
 }

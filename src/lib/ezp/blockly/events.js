@@ -79,24 +79,6 @@ ezP.Events.Disabler.wrap = function(f) {
   }
 }
 
-/**
- * Event disabler.
- */
-ezP.Events.Grouper = function() {
-  if (Blockly.Events.getGroup()) {
-    return {
-      stop: function() {}
-    }
-  } else {
-    Blockly.Events.setGroup(true)
-    return {
-      stop: function() {
-        Blockly.Events.setGroup(false)
-      }
-    }
-  }
-}
-
 goog.require('ezP.Data')
 
 /**
@@ -105,7 +87,7 @@ goog.require('ezP.Data')
 * @param {Object} newValue
 */
 ezP.Data.prototype.setTrusted_ = function (newValue) {
-  var grouper = new ezP.Events.Grouper()
+  Blockly.Events.setGroup(true)
   var ezp = this.owner_
   var block = ezp.block_
   var old = ezp.skipRendering
@@ -125,6 +107,6 @@ ezP.Data.prototype.setTrusted_ = function (newValue) {
     !old && block.render() // render now or possibly later ?
   } finally {
     ezp.skipRendering = old
-    grouper.stop()
+    Blockly.Events.setGroup(false)
   }
 }

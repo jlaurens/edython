@@ -650,6 +650,8 @@ ezP.RenderedConnection.savedSetHidden = Blockly.RenderedConnection.prototype.set
 /**
  * Set whether this connections is hidden (not tracked in a database) or not.
  * The delegate's hidden_ property takes precedence over `hidden`parameter.
+ * There is a timeout sent by blockly to show connections.
+ * In fact we bypass the real method if the connection is not epected to show.
  * @param {boolean} hidden True if connection is hidden.
  */
 Blockly.RenderedConnection.prototype.setHidden = function(hidden) {
@@ -658,13 +660,13 @@ Blockly.RenderedConnection.prototype.setHidden = function(hidden) {
     // Incog connections must stay hidden
     return
   }
-  if (hidden) {
-    console.log('HIDDING A CONNECTION ' + this.sourceBlock_.id)
-  } else {
-    console.log('SHOWING A CONNECTION '+this.sourceBlock_.id)
-  }
   if (goog.isDef(this.ezp.hidden_)) {
     hidden = this.ezp.hidden_
+  }
+  if (hidden && !this.hidden_) {
+    console.log('HIDDING A CONNECTION ' + this.sourceBlock_.id)
+  } else if (!hidden && this.hidden_) {
+    console.log('SHOWING A CONNECTION '+this.sourceBlock_.id)
   }
   // DONE
   ezP.RenderedConnection.savedSetHidden.call(this, hidden)

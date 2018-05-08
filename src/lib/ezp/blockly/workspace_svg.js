@@ -243,7 +243,7 @@ Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function(workspace
   var x = offset.x
   var y = offset.y
   var i = 0
-  var grouper = new ezP.Events.Grouper()
+  Blockly.Events.setGroup(true)
   try {
     for (; i<types.length; i++) {
       this.addElementInWorkspaceBlocks(workspaceXMLElement, types[i], x, y)
@@ -261,7 +261,7 @@ Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function(workspace
       y += step.y
     }
   } finally {
-    grouper.stop()
+    Blockly.Events.setGroup(false)
   }
   return {x: x, y: y}
 }
@@ -295,7 +295,7 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
       targetC8n = null
     }
     if (targetC8n  && c8n.checkType_(targetC8n)) {
-      var grouper = new ezP.Events.Grouper()
+      Blockly.Events.setGroup(true)
       try {
         if (Blockly.Events.isEnabled()) {
           Blockly.Events.fire(new Blockly.Events.BlockCreate(block))
@@ -339,7 +339,7 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
           ezP.SelectedConnection.set(c8n)
         }
       } finally {
-        grouper.stop()
+        Blockly.Events.setGroup(false)
       }
       return
     } else if (block) {

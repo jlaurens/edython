@@ -103,7 +103,7 @@ ezP.DelegateSvg.Expr.prototype.canReplaceBlock = function (block, other) {
  */
 ezP.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
   if (other) {
-    var grouper = new ezP.Events.Grouper()
+    Blockly.Events.setGroup(true)
     try {
       console.log('**** replaceBlock', block, other)
       var c8n = other.outputConnection
@@ -126,7 +126,7 @@ ezP.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
       }
     } finally {
       other.dispose(true)   
-      grouper.stop()
+      Blockly.Events.setGroup(false)
     }
   }
 }
@@ -246,6 +246,7 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
   var parentBlock
   ezP.Events.Disabler.wrap(function() {
     parentBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName, true)
+    parentBlock.beReady()
     parentBlock.ezp.data.subtype.set(subtype)
   })
   
@@ -296,7 +297,7 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
   // Next connections should be connected
   var outputC8n = block.outputConnection
   if (parentInputC8n && parentInputC8n.checkType_(outputC8n)) {
-    var grouper = new ezP.Events.Grouper()
+    Blockly.Events.setGroup(true)
     try {
       if (Blockly.Events.isEnabled()) {
         Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
@@ -338,7 +339,7 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
         bumper.bumpNeighbours_()
       }  
     } finally {
-      grouper.stop()
+      Blockly.Events.setGroup(false)
     }
   } else {
     parentBlock.dispose(true)

@@ -144,7 +144,8 @@ ezP.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
   }
   this.ezp.isEditing = true
   this.editRect_ && goog.dom.classlist.add(this.editRect_, 'ezp-editing')
-  this.ezp.grouper_ = new ezP.Events.Grouper()
+  Blockly.Events.setGroup(true)
+  this.ezp.grouper_ = Blockly.Events.getGroup()
   this.onStartEditing_ && this.onStartEditing_()
   this.ezp.onStartEditing_ && this.ezp.onStartEditing_.call(this)
   var model = this.ezp.model
@@ -243,7 +244,10 @@ ezP.FieldTextInput.prototype.widgetDispose_ = function () {
     }
     var block = field.sourceBlock_
     block.ezp.endEditingField && block.ezp.endEditingField(block, field)  
-    field.ezp.grouper_ && field.ezp.grouper_.stop()
+    if (field.ezp.grouper_) {
+      Blockly.Events.setGroup(false)
+      delete field.ezp.grouper_
+    }
     field.render_()
     block.render()
     ezP.FieldTextInput.superClass_.widgetDispose_.call(field)

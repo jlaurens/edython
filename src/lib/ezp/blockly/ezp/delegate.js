@@ -940,7 +940,7 @@ ezP.Delegate.prototype.setDisabled = function (block, yorn) {
     // nothing to do the block is already in the good state
     return
   }
-  var grouper = new ezP.Events.Grouper()
+  Blockly.Events.setGroup(true)
   var previous, next
   try {
     if (yorn) {
@@ -1032,7 +1032,7 @@ ezP.Delegate.prototype.setDisabled = function (block, yorn) {
       }
     }
   } finally {
-    grouper.stop()
+    Blockly.Events.setGroup(false)
   }
 }
 
@@ -1070,7 +1070,7 @@ ezP.Delegate.prototype.setIncog = function (block, incog) {
     var c8n = input && input.connection
     c8n && c8n.ezp.setIncog(incog)
   }
-  var tile = this.headTile
+  var tile = this.ui.headTile
   while (tile) {
     setupIncog(tile.input)
     tile = tile.nextTile
