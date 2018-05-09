@@ -118,6 +118,14 @@ edY.DelegateSvg.Literal.makeSubclass('shortliteral', {
   data: {
     subtype: {
       all:[edY.T3.Expr.shortstringliteral, edY.T3.Expr.shortbytesliteral],
+      getPossible: function (prefix, content) {
+        var delimiter = this.data.delimiter.get()
+        var value = ''+prefix+delimiter+content+delimiter
+        return !!XRegExp.exec(value, edY.XRE.shortbytesliteralSingle) && edY.T3.Expr.shortbytesliteral ||
+        !!XRegExp.exec(value, edY.XRE.shortbytesliteralDouble) && edY.T3.Expr.shortbytesliteral ||
+        !!XRegExp.exec(value, edY.XRE.shortstringliteralSingle) && edY.T3.Expr.shortstringliteral ||
+        !!XRegExp.exec(value, edY.XRE.shortstringliteralDouble) && edY.T3.Expr.shortstringliteral
+      }
     },
     delimiter: {
       all: ["'", '"'],
@@ -138,7 +146,7 @@ edY.DelegateSvg.Literal.makeSubclass('shortliteral', {
       },
       validate: function(newValue) {
         var content = this.data.content.get()
-        return (!goog.isDef(content) || this.owner_.getPossibleSubtype(newValue, content)) && {validated: newValue}
+        return (!goog.isDef(content) || this.data.subtype.model.getPossible.call(this, newValue, content)) && {validated: newValue}
       },
       synchronize: function(newValue) {
         this.synchronize()
@@ -152,8 +160,9 @@ edY.DelegateSvg.Literal.makeSubclass('shortliteral', {
       },
       validate: function(newValue) {
         var prefix = this.data.prefix.get()
-        return (!goog.isDef(prefix) || this.owner_.getPossibleSubtype(prefix, newValue)) && {validated: newValue} || null
+        return (!goog.isDef(prefix) || this.data.subtype.model.getPossible.call(this, prefix, newValue)) && {validated: newValue} || null
       },
+
       synchronize: true,
     },
     value: {
@@ -223,53 +232,6 @@ edY.DelegateSvg.Literal.makeSubclass('shortliteral', {
 })
 
 /**
- * Get the possible subtype from both prefix and content.
- * @param {!Blockly.Block} block to be initialized.
- * @param {string} prefix
- * @param {string} content
- * @return one of the two possible subtypes or undefined when the input does not fit.
- */
-edY.DelegateSvg.Expr.shortliteral.prototype.getPossibleSubtype = function (prefix, content) {
-  var delimiter = this.data.delimiter.get()
-  var value = ''+prefix+delimiter+content+delimiter
-  return !!XRegExp.exec(value, edY.XRE.shortbytesliteralSingle) && edY.T3.Expr.shortbytesliteral ||
-  !!XRegExp.exec(value, edY.XRE.shortbytesliteralDouble) && edY.T3.Expr.shortbytesliteral ||
-  !!XRegExp.exec(value, edY.XRE.shortstringliteralSingle) && edY.T3.Expr.shortstringliteral ||
-  !!XRegExp.exec(value, edY.XRE.shortstringliteralDouble) && edY.T3.Expr.shortstringliteral
-}
-
-console.warn('Change the initData below')
-/**
- * Init all the properties of the block.
- * @param {!Blockly.Block} block to be initialized..
- */
-edY.DelegateSvg.Expr.shortliteral.prototype.initXData = function(block) {
-  // first the delimiters in the variant property
-  var field = this.ui[1].fields.start
-  var variant = field.getValue() || this.data.delimiter.getAll()[0]
-  this.data.delimiter.set(variant)
-  // validating the prefix depends on the delimiter,
-  // hence the variant, to be initialized
-  var field = this.ui.fields.prefix
-  var prefix = field.getValue() || this.data.prefix.get()
-  var content = this.ui[1].fields.value.getValue() || ''
-  if (this.getPossibleSubtype(prefix, content)) {
-    this.data.prefix.setTrusted(prefix)
-    this.data.content.setTrusted(content)
-  } else {
-    this.data.content.setTrusted(content)
-    var modifiers = this.data.prefix.get()
-    for (var i = 0; i < modifiers.length; i++) {
-      prefix = modifiers[i]
-      if (this.data.prefix.set(prefix)) {
-        break
-      }
-    }
-  }
-  this.consolidateValue(block)
-}
-
-/**
  * Set the type dynamically from the prefix.
  * @param {!Blockly.Block} block the owner of the receiver
  */
@@ -300,8 +262,9 @@ edY.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr)
   var current = this.data.prefix.get()
   var delimiter = this.data.delimiter.get()
   var content = this.data.content.get()
-  var can_b = !!this.getPossibleSubtype('b', content)
-  var can_f = !!this.getPossibleSubtype('f', content)
+  var subtype = this.data.subtype
+  var can_b = !!subtype.model.getPossible.call(subtype, 'b', content)
+  var can_f = !!subtype.model.getPossible.call(subtype, 'f', content)
   var item = function(msg, prefix) {
     if (prefix !== current) {
       var title = goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -367,6 +330,14 @@ edY.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
   data: {
     subtype: {
       all: [edY.T3.Expr.longstringliteral, edY.T3.Expr.longbytesliteral],
+      getPossible: function (prefix, content) {
+        var delimiter = this.data.delimiter.get()
+        var value = ''+prefix+delimiter+content+delimiter
+        return !!XRegExp.exec(value, edY.XRE.longbytesliteralSingle) && edY.T3.Expr.longbytesliteral ||
+        !!XRegExp.exec(value, edY.XRE.longbytesliteralDouble) && edY.T3.Expr.longbytesliteral ||
+        !!XRegExp.exec(value, edY.XRE.longstringliteralSingle) && edY.T3.Expr.longstringliteral ||
+        !!XRegExp.exec(value, edY.XRE.longstringliteralDouble) && edY.T3.Expr.longstringliteral
+      },
     },
     delimiter: {
       all: ["'''", '"""'],
@@ -402,22 +373,6 @@ edY.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
     check: edY.T3.Expr.longstringliteral,
   },
 })
-
-/**
- * Get the subtype from both prefix and content.
- * @param {!Blockly.Block} block to be initialized.
- * @param {string} prefix
- * @param {string} content
- * @return one of the two possible subtypes or undefined when the input does not fit.
- */
-edY.DelegateSvg.Expr.longliteral.prototype.getPossibleSubtype = function (prefix, content) {
-  var delimiter = this.data.delimiter.get()
-  var value = ''+prefix+delimiter+content+delimiter
-  return !!XRegExp.exec(value, edY.XRE.longbytesliteralSingle) && edY.T3.Expr.longbytesliteral ||
-  !!XRegExp.exec(value, edY.XRE.longbytesliteralDouble) && edY.T3.Expr.longbytesliteral ||
-  !!XRegExp.exec(value, edY.XRE.longstringliteralSingle) && edY.T3.Expr.longstringliteral ||
-  !!XRegExp.exec(value, edY.XRE.longstringliteralDouble) && edY.T3.Expr.longstringliteral
-}
 
 edY.DelegateSvg.Literal.T3s = [
   edY.T3.Expr.shortliteral,

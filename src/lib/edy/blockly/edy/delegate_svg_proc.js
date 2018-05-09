@@ -203,22 +203,15 @@ edY.DelegateSvg.Group.makeSubclass('funcdef_part', {
   },
   fields: {
     prefix: 'def',
+    name: {
+      validate: true,
+      endEditing: true,
+      placeholder: edY.Msg.Placeholder.IDENTIFIER,
+    },
   },
   tiles: {
-    name: {
-      order: 1,
-      fields: {
-        edit: {
-          placeholder: edY.Msg.Placeholder.IDENTIFIER,
-          validate: function(txt) {
-            return this.edy.validateData(goog.isDef(txt)? txt: this.getValue())
-          },
-          endEditing: true,
-        },
-      },
-    },
     parameters: {
-      order: 2,
+      order: 1,
       fields: {
         start: '(',
         end: ')',
@@ -226,7 +219,7 @@ edY.DelegateSvg.Group.makeSubclass('funcdef_part', {
       wrap: edY.T3.Expr.parameter_list,
     },
     type: {
-      order: 3,
+      order: 2,
       fields: {
         label: '->',
       },
