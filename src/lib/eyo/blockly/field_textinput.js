@@ -424,7 +424,6 @@ eYo.FieldHelper.prototype.getData_ = function (key) {
  * @param {string|null} key  The data key, when null or undefined, ths receiver's key.
  */
 eYo.FieldHelper.prototype.validate = function (txt) {
-  console.log('FieldHelper validate:', txt)
   var v = this.getData_().validate(goog.isDef(txt)? txt: this.owner_.getValue())
   return v === null? v: (goog.isDef(v) && goog.isDef(v.validated)? v.validated: txt)
 }

@@ -185,11 +185,7 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
     name: {
       all: ['range', 'list', 'set', 'len', 'sum'],
       validate: function(newValue) {
-        if (newValue === 'range') {
-          console.log('validating range')
-        }
         var type = eYo.Do.typeOfString(newValue)
-        console.log(type, newValue)
         return type === eYo.T3.Expr.builtin_name || type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name?
         {validated: newValue}: null
       },
