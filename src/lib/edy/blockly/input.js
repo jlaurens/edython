@@ -25,21 +25,23 @@ goog.require('Blockly.Input')
  * For edython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-edY.Input.setupEzpData = function (input, data) {
-  if (!input.edy) {
-    input.edy = {
-      fields: {},
-      // sealed_: false, // blocks are not sealed
-      // s7r_: false,// consolidator, whether the input is a separator
-    }
-    if (data) {
-      goog.mixin(input.edy, data)
-    }
-    var connection = input.connection
-    if (connection) {
-      connection.edy.name_ = input.name // the connection remembers the name of the input such that checking is fine grained.
-    }  
+edY.Input.setupEdY = function () {
+  var beReady = function() {
+    var c8n = this.owner.connection
+    c8n && c8n.edy.beReady()
   }
-}
+  return function (input) {
+    if (!input.edy) {
+      input.edy = {
+        owner: input,
+        beReady: beReady,
+      }
+      var c8n = input.connection
+      if (c8n) {
+        c8n.edy.name_ = input.name // the connection remembers the name of the input such that checking is fine grained.
+      }  
+    }
+  }
+} ()
 
 Blockly.Input.prototype.edy = undefined

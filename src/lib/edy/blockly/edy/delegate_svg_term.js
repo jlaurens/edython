@@ -31,10 +31,10 @@ edY.DelegateSvg.Expr.makeSubclass(edY.T3.Expr.term, function() {
       modifier: {
         all: ['', '*', '**'],
         noUndo: true,
-        synchronize: function(newValue) {
-          this.setFieldValue(newValue)
-          this.setFieldVisible(newValue.length>0)
+        didChange: function(oldValue, newValue) {
+          this.setIncog(!newValue ||!newValue.length)
         },
+        synchronize: true,
       },
       name: {
         default: '',

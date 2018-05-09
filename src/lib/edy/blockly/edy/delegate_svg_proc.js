@@ -198,9 +198,7 @@ edY.DelegateSvg.Group.makeSubclass('funcdef_part', {
         var type = edY.Do.typeOfString(newValue)
         return type === edY.T3.Expr.identifier? {validated: newValue}: null
       },
-      synchronize: function(newValue) {
-        this.setFieldValue(this.toText())
-      },      
+      synchronize: true,      
     },
   },
   fields: {
@@ -215,9 +213,7 @@ edY.DelegateSvg.Group.makeSubclass('funcdef_part', {
           validate: function(txt) {
             return this.edy.validateData(goog.isDef(txt)? txt: this.getValue())
           },
-          endEditing: function () {
-            this.edy.setData(this.getValue())
-          },
+          endEditing: true,
         },
       },
     },
@@ -294,9 +290,7 @@ edY.DelegateSvg.Group.makeSubclass('classdef_part', {
         var type = edY.Do.typeOfString(newValue)
         return type === edY.T3.Expr.identifier? {validated: newValue}: null
       },
-      synchronize: function(newValue) {
-        this.setFieldValue(this.toText())
-      },
+      synchronize: true,
     },
   },
   fields: {

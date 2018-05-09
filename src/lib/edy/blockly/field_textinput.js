@@ -424,26 +424,28 @@ edY.FieldHelper.prototype.getData_ = function (key) {
 }
 
 /**
- * Set the keyed data of the source block to the given value.
- * Eventual problem: there might be some kind of formatting such that
- * the data stored and the data shown in the ui are not the same.
- * There is no step for such a translation but the need did not occur yet.
+ * Validate the keyed data of the source block.
+ * Asks the data object to do so.
+ * The bound data must exist.
  * @param {Object} newValue
  * @param {string|null} key  The data key, when null or undefined, ths receiver's key.
- * @constructor
  */
-edY.FieldHelper.prototype.setData = function (newValue, key) {
-  this.getData_(key).set(newValue)
+edY.FieldHelper.prototype.validate = function (txt) {
+  console.log('FieldHelper validate:', txt)
+  var v = this.getData_().validate(goog.isDef(txt)? txt: this.owner_.getValue())
+  return v === null? v: (goog.isDef(v) && goog.isDef(v.validated)? v.validated: txt)
 }
 
 /**
  * Validate the keyed data of the source block.
+ * Asks the data object to do so.
+ * The bound data must exist.
  * @param {Object} newValue
  * @param {string|null} key  The data key, when null or undefined, ths receiver's key.
- * @constructor
  */
-edY.FieldHelper.prototype.validate = function (txt) {
-    var d = this.data
-    var v = d && d.validate(goog.isDef(txt)? txt: this.getValue())
-    return v? (goog.isDef(v.validated)? v.validated: null): txt
+edY.FieldHelper.prototype.validateIfData = function (txt) {
+  if (this.data) {
+    return this.validate(txt)
+  }
+  return txt
 }

@@ -68,7 +68,7 @@ edY.Block.prototype.dispose = function(healStack) {
  */
 edY.Block.prototype.appendInput_ = function (type, name) {
   var input = edY.Block.superClass_.appendInput_.call(this, type, name)
-  edY.Input.setupEzpData(input)
+  edY.Input.setupEdY(input)
   return input
 }
 

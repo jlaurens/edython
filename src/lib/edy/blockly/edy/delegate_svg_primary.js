@@ -165,19 +165,17 @@ edY.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (blo
 edY.DelegateSvg.Expr.makeSubclass('call_expr', {
   data: {
     variant: {
+      NAME: 0,
+      BUILTIN: 1,
+      EXPRESSION: 2,
       all: [0, 1, 2,],
       synchronize: function(newValue) {
-        var withPrimary = newValue === 1
-        this.ui.tiles.name.setIncog(withPrimary)
-        this.ui.tiles.primary.setIncog(!withPrimary)
-        var field = this.ui.tiles.name.fields.edit
-        if (field.textElement_) {
-          var withBuiltin = newValue === 2
-          var i = withBuiltin? 0: 1
-          var ra = ['edy-code', 'edy-code-reserved']
-          goog.dom.classlist.remove(field.textElement_, ra[i])
-          goog.dom.classlist.add(field.textElement_, ra[1-i])
-        }
+        var M = this.model
+        var withExpression = newValue === M.EXPRESSION
+        this.data.name.setIncog(withExpression)
+        this.data.name.required = newValue === M.NAME
+        this.ui.tiles.expression.setIncog(!withExpression)
+        this.ui.tiles.expression.required = withExpression
       },
     },
     backup: {
@@ -187,42 +185,65 @@ edY.DelegateSvg.Expr.makeSubclass('call_expr', {
     name: {
       all: ['range', 'list', 'set', 'len', 'sum'],
       validate: function(newValue) {
+        if (newValue === 'range') {
+          console.log('validating range')
+        }
         var type = edY.Do.typeOfString(newValue)
+        console.log(type, newValue)
         return type === edY.T3.Expr.builtin_name || type === edY.T3.Expr.identifier || type === edY.T3.Expr.dotted_name?
         {validated: newValue}: null
       },
       didChange: function(oldValue, newValue) {
-        var builtin = this.getAll().indexOf(newValue) >= 0
-        var variant = this.data.variant.get() || 0
-        this.data.variant.set(variant%2 | (builtin? 2: 0))
+        var M = this.data.variant.model
+        var variant = this.data.variant.get()
+        if (variant !== M.EXPRESSION) {
+          var builtin = this.getAll().indexOf(newValue) >= 0
+          var variant = this.data.variant.get() || 0
+          this.data.variant.set(builtin? M.BUILTIN: M.NAME)
+        }
         if (!builtin) {
           this.data.backup.set(newValue)
         }
       },
-      synchronize: function(newValue) {
-        this.setFieldValue(this.toText())
+      synchronize: function () {
+        this.synchronize()
+        var field = this.field
+        var element = this.field && this.field.textElement_
+        if (element) {
+          var variant = this.data.variant
+          var i = variant.get() == variant.model.BUILTIN? 0: 1
+          var ra = ['edy-code', 'edy-code-reserved']
+          goog.dom.classlist.remove(element, ra[i])
+          goog.dom.classlist.add(element, ra[1-i])
+        }
+      },
+      consolidate: function () {
+        this.didChange(undefined, this.get())
       },
     },
   },
-  tiles: {
+  fields: {
     name: {
-      order: 1,
-      fields: {
-        edit: {
-          validate: true,
-          endEditing: true,
-          placeholder: edY.Msg.Placeholder.IDENTIFIER,
-        },
-      },
+      validate: true,
+      endEditing: true,
+      placeholder: edY.Msg.Placeholder.IDENTIFIER,
     },
-    primary: {
-      order: 2,
+  },
+  tiles: {
+    expression: {
+      order: 1,
       check: edY.T3.Expr.Check.primary,
       plugged: edY.T3.Expr.primary,
       hole_value: 'primary',
+      xml: {
+        didLoad: function () {
+          var variant = this.owner.data.variant
+          variant.set(variant.model.EXPRESSION)
+        },
+      },
     },
     arguments: {
-      order: 3,
+      order: 1,
       fields: {
         start: '(',
         end: ')',
@@ -239,6 +260,7 @@ edY.DelegateSvg.Expr.makeSubclass('call_expr', {
  * @private
  */
 edY.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
+  var M = this.data.variant.model
   var variant = this.data.variant.get()
   var names = this.data.name.getAll()
   var current = this.data.name.get()
@@ -251,7 +273,7 @@ edY.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
     )
     var menuItem = new edY.MenuItem(content, function() {
       block.edy.data.name.setTrusted(oldValue || '')
-      block.edy.data.variant.set(0)
+      block.edy.data.variant.set(M.NAME)
     })
     mgr.addChild(menuItem, true)
   }
@@ -263,7 +285,7 @@ edY.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
     )
     var menuItem = new edY.MenuItem(content, function() {
       block.edy.data.name.setTrusted(names[j])
-      block.edy.data.variant.set(2)
+      block.edy.data.variant.set(M.BUILTIN)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(j !== i)
@@ -271,14 +293,14 @@ edY.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
   for (var j = 0; j < names.length; j++) {
     F (j)
   }
-  if (variant !== 1) {
+  if (variant !== M.EXPRESSION) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       edY.Do.createSPAN(edY.Msg.Placeholder.EXPRESSION, 'edy-code-placeholder'),
       edY.Do.createSPAN('(…)', 'edy-code'),
     )
     var menuItem = new edY.MenuItem(content, function() {
       block.edy.data.name.setTrusted(oldValue || '')
-      block.edy.data.variant.set(1)
+      block.edy.data.variant.set(M.EXPRESSION)
     })
     mgr.addChild(menuItem, true)
   }

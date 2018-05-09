@@ -63,6 +63,15 @@ edY.ConnectionDelegate.prototype.optional_ = false// must change to wrapper
 edY.ConnectionDelegate.prototype.name_ = undefined// must change to wrapper
 
 /**
+ * initSvg the target block.
+ * @param {boolean} incog
+ */
+edY.ConnectionDelegate.prototype.beReady = function() {
+  var target = this.connection.targetBlock()
+  target && target.edy.beReady(target)
+}
+
+/**
  * Get the incognito state.
  * @param {boolean} incog
  */
@@ -532,6 +541,7 @@ edY.Connection.prototype.connect_ = function(childC8n) {
       }
     }
     child.edy.makeBlockWrapped_(child)
+    child.id = parent.id+'.wrapped:'+parentC8n.edy.name_
   } else {
     // if this connection was selected, the newly connected block should be selected too
     if (parentC8n === edY.SelectedConnection.get()) {
@@ -573,6 +583,7 @@ edY.Connection.prototype.connect_ = function(childC8n) {
   parent.edy.didConnect(parent, parentC8n, oldChildC8n, oldParentC8n)
   child.edy.didConnect(child, childC8n, oldParentC8n, oldChildC8n)
   child.edy.setIncog(child, parentC8n.edy.isIncog())
+  parent.render()
 }
 
 /**
@@ -615,6 +626,7 @@ edY.Connection.prototype.disconnectInternal_ = function(parentBlock,
   childBlock.edy.didDisconnect(childBlock, childC8n, parentC8n)
   parentC8n.edy.didDisconnect(childC8n)
   childC8n.edy.didDisconnect(parentC8n)
+  parentBlock.render()
 }
 
 Blockly.Connection.uniqueConnection_original = Blockly.Connection.uniqueConnection_

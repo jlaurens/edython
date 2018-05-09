@@ -58,7 +58,7 @@ edY.Delegate.prototype.getBlock = function () {
  * Create one if it does not exist.
  * Closure used.
  */
-edY.Delegate.getC9rEzp = function() {
+edY.Delegate.getC9rEdY = function() {
   // one (almost hidden) shared constructor
   var edyC9r = function(key, owner) {
     owner.edy = this
@@ -91,7 +91,7 @@ edY.Delegate.Manager = function () {
    * @private
    */
   me.prepareDelegate = function (delegateC9r, key) {
-    var edy = edY.Delegate.getC9rEzp(delegateC9r, key || '')
+    var edy = edY.Delegate.getC9rEdY(delegateC9r, key || '')
     edy.getModel || (edy.getModel = function () {
       return modeller(delegateC9r)
     })
@@ -709,26 +709,15 @@ edY.Delegate.prototype.getUnwrapped = function (block) {
 edY.Delegate.prototype.completeWrappedInput_ = function (block, input, prototypeName) {
   if (!!input) {
     var target = input.connection.targetBlock()
-    if (!!target) {
-      target.edy.makeBlockWrapped_(target)
-      target.edy.completeWrapped_(target)
-    } else {
+    if (!target) {
       goog.asserts.assert(prototypeName, 'Missing wrapping prototype name in block '+block.type)
-      if (edY.Delegate.wrappedFireWall > 0) {
-        --edY.Delegate.wrappedFireWall
-        var target = block.workspace.newBlock(prototypeName)
-        goog.asserts.assert(target, 'completeWrapped_ failed: '+ prototypeName);
-        goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed '+target.type)
-        input.connection.connect(target.outputConnection)
-        target.edy.makeBlockWrapped_(target)
-        target.edy.completeWrapped_(target)
-      } else {
-        console.log('Maximum value reached in completeWrappedInput_ (circular)')
-        this.ignoreCompleteWrapped = true
-        return
-      }
+      goog.asserts.assert(edY.Delegate.wrappedFireWall, 'ERROR: Maximum value reached in completeWrappedInput_ (circular)')
+      --edY.Delegate.wrappedFireWall
+      var target = edY.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
+      goog.asserts.assert(target, 'completeWrapped_ failed: '+ prototypeName);
+      goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed '+target.type)
+      input.connection.connect(target.outputConnection)
     }
-    target.id = block.id+'.wrapped:'+input.name
   }
 }
 

@@ -751,6 +751,28 @@ edY.Xml.fromDom = function (block, element) {
         }
       }
     }
+    if (edy instanceof edY.DelegateSvg.List) {
+      for (var i = 0, child;(child = element.childNodes[i++]);) {
+        if (goog.isFunction(child.getAttribute)) {
+          var name = child.getAttribute(edY.XmlKey.INPUT)
+          var input = edy.getInput(block, name)
+          if (input) {
+            if (!input.connection) {
+              console.warn('Missing connection')
+            }
+            var inputTarget = input.connection.targetBlock()
+            if (inputTarget) {
+              edY.Xml.fromDom(inputTarget, child)
+            } else if ((inputTarget = edY.Xml.domToBlock(child, block.workspace))) {
+              var targetC8n = inputTarget.outputConnection
+              if (targetC8n && targetC8n.checkType_(input.connection)) {
+                targetC8n.connect(input.connection)
+              }
+            }
+          }
+        }
+      }
+    }
     // read flow and suite
     var out = statement(block.nextConnection, edY.XmlKey.NEXT)
     var out = statement(edy.inputSuite && edy.inputSuite.connection, edY.XmlKey.SUITE) || out

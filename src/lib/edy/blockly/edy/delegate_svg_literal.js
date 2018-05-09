@@ -88,7 +88,7 @@ edY.DelegateSvg.Literal.makeSubclass('numberliteral', {
  * @private
  */
 edY.DelegateSvg.Expr.numberliteral.prototype.showEditor = function (block) {
-  this.ui[1].fields.value.showEditor_()
+  this.data.value.field.showEditor_()
 }
 
 /**
@@ -141,7 +141,7 @@ edY.DelegateSvg.Literal.makeSubclass('shortliteral', {
         return (!goog.isDef(content) || this.owner_.getPossibleSubtype(newValue, content)) && {validated: newValue}
       },
       synchronize: function(newValue) {
-        this.setFieldValue(this.toText())
+        this.synchronize()
         this.ui.fields.prefix.setVisible(!!newValue && !!newValue.length)
       },
     },
@@ -154,9 +154,7 @@ edY.DelegateSvg.Literal.makeSubclass('shortliteral', {
         var prefix = this.data.prefix.get()
         return (!goog.isDef(prefix) || this.owner_.getPossibleSubtype(prefix, newValue)) && {validated: newValue} || null
       },
-      synchronize: function(newValue) {
-        this.setFieldValue(this.toText() || '', 1)
-      },
+      synchronize: true,
     },
     value: {
       default: '',

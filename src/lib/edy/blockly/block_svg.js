@@ -49,7 +49,7 @@ edY.BlockSvg.prototype.init = function() {
   this.edy.initBlock(this)
   this.edy.skipRendering = false
 }
-
+console.warn('++skipRendering, --skipRendering')
 /**
  * Create and initialize the SVG representation of the block.
  * May be called more than once.
@@ -58,7 +58,6 @@ edY.BlockSvg.prototype.initSvg = function() {
   this.edy.preInitSvg(this)
   edY.BlockSvg.superClass_.initSvg.call(this)
   this.edy.postInitSvg(this)
-  this.edy.initSvgWrap(this)
 };
 
 /**
@@ -82,7 +81,9 @@ edY.BlockSvg.CORNER_RADIUS = 3
  *   If true, also render block's parent, grandparent, etc.  Defaults to true.
  */
 edY.BlockSvg.prototype.render = function (optBubble) {
-  this.edy.render(this, optBubble)
+  if (this.workspace) {
+    this.edy.render(this, optBubble)
+  }
 }
 
 /**
@@ -96,7 +97,7 @@ edY.BlockSvg.prototype.getInput = function (name) {
     input = edY.BlockSvg.superClass_.getInput.call(this, name)
   }
   if (input) {
-    edY.Input.setupEzpData(input)
+    edY.Input.setupEdY(input)
   }
   return input
 }

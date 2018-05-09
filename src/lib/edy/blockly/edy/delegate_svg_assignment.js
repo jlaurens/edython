@@ -305,9 +305,7 @@ edY.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         var type = edY.Do.typeOfString(newValue)
         return types.indexOf(type) >= 0? {validated: newValue}: null
       },
-      synchronize: function(newValue) {
-        this.setFieldValue(this.toText() || '')
-      },
+      synchronize: true,
     },
   },
   tiles: {
@@ -455,9 +453,7 @@ edY.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
         return type === edY.T3.Expr.identifier || type === edY.T3.Expr.dotted_name?
         {validated: newValue}: null
       },
-      synchronize: function(newValue) {
-        this.setFieldValue(newValue || '')
-      },
+      synchronize: true,
     },
     operator: {
       default: '+=',

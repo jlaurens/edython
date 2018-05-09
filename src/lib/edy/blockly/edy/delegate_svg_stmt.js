@@ -372,7 +372,7 @@ edY.DelegateSvg.Stmt.makeSubclass(edY.T3.Stmt.global_nonlocal_stmt, {
     variant: {
       GLOBAL: 0,
       NONLOCAL: 1,
-      all: [0, 1],
+      all: ['global', 'nonlocal'],
       synchronize: true,
     },
   },
@@ -410,9 +410,11 @@ edY.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.tagName = function (block) {
  * @private
  */
 edY.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var variants = this.data.variant.getAll()
+  var M = this.data.variant.model
   var current = block.edy.data.variant.get()
-  var F = function(key) {
+  var variants = block.edy.data.variant.getAll()
+  var F = function(i) {
+    var key = variants[i]
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
       edY.Do.createSPAN(key, 'edy-code-reserved'),
       edY.Do.createSPAN(' …', 'edy-code-placeholder'),
@@ -423,8 +425,8 @@ edY.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = 
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)
   }
-  F(variants[0])
-  F(variants[1])
+  F(M.GLOBAL)
+  F(M.NONLOCAL)
   mgr.shouldSeparate()
   return edY.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
@@ -492,37 +494,6 @@ edY.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = function(block)  {
 }
 
 /**
- * Get the subtype of the block.
- * The default implementation does nothing.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is return, when defined or not null.
- * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return None
- */
-edY.DelegateSvg.Stmt.docstring_top_stmt.prototype.getSubtype = edY.DelegateSvg.Stmt.docstring_def_stmt.prototype.getSubtype = function (block) {
-  var target = this.ui[1].input.connection.targetBlock()
-  return target? target.edy.getSuptype(target): undefined
-}
-
-/**
- * Set the subtype of the block.
- * Subclassers may use this to fine tune their own settings.
- * The only constrain is that a string is expected.
- * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {string} subtype Is a function.
- * @return true if the receiver supports subtyping, false otherwise
- */
-edY.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = edY.DelegateSvg.Stmt.docstring_def_stmt.prototype.setSubtype = function (block, subtype) {
-  var target = this.ui[1].input.connection.targetBlock()
-  if (target) {
-    target.edy.data.subtype.set(subtype)
-  }
-  return true
-}
-
-/**
  * Class for a DelegateSvg, del_stmt.
  * For edython.
  * @param {?string} prototypeName Name of the language object containing
@@ -561,7 +532,7 @@ edY.DelegateSvg.Stmt.makeSubclass('return_stmt', {
 })
 
 /**
- * Class for a DelegateSvg, return_stmt.
+ * Class for a DelegateSvg, any_stmt.
  * For edython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
@@ -599,7 +570,6 @@ edY.DelegateSvg.Stmt.makeSubclass('any_stmt',{
           if (variant.get() === variant.model.COMMENT) {
             variant.set(variant.model.INSTRUCTION_COMMENT)
           }
-          this.clearRequiredFromDom()
         },
       },
     },

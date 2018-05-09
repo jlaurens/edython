@@ -171,7 +171,7 @@ edY.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
     me.consolidate(this.connection.sourceBlock_, true)
   }
   var input = new Blockly.Input(Blockly.INPUT_VALUE, '!', io.block, c8n)
-  edY.Input.setupEzpData(input)
+  edY.Input.setupEdY(input)
   io.list.splice(io.i, 0, input)
   io.edited = true
   this.setupIO(io)
@@ -228,7 +228,7 @@ edY.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = und
   io.edy.n = io.n
   io.edy.presep = io.presep
   io.edy.postsep = io.postsep
-  io.edy.s7r_ = io.c8n.edy.s7r_ = false
+  io.c8n.edy.s7r_ = false
   var check = this.getCheck(io)
   if (name && name.length) {
     io.input.name = name
@@ -255,7 +255,7 @@ edY.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
   if (name && name.length) {
     io.input.name = name
   }
-  io.edy.s7r_ = io.c8n.edy.s7r_ = true
+  io.c8n.edy.s7r_ = true
   if (extreme || !io.edy.presep.length && io.edy.postsep.length) {
     while (io.input.fieldRow.length) {
       io.input.fieldRow.shift().dispose()
@@ -401,7 +401,7 @@ edY.Consolidator.List.prototype.consolidate_unconnected = function(io) {
   this.setupIO(io, 0)
   if (!!io.edy) {
     while (true) {
-      if (io.edy.s7r_) {
+      if (io.c8n.edy.s7r_) {
         this.disposeAtI(io)
         if (this.setupIO(io, 0)) {
           continue
@@ -545,7 +545,7 @@ edY.Consolidator.List.prototype.getInput = function (block, name) {
     if (!!io.edy) {
       io.presep = io.edy.presep || io.presep
       io.postsep = io.edy.postsep || io.postsep
-      if (!io.edy.s7r_) {
+      if (!io.c8n.edy.s7r_) {
         var o = edY.Do.Name.getOrder(io.input.name, name)
         if (!o) {
           return io.input

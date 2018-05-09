@@ -433,8 +433,6 @@ edY.Do.Enumerator = function (list, filter) {
   return me
 }
 
-console.warn('synchronizeFoo has another argument')
-
 /**
  * Get the flag given the position as argument.
  * Positions are given 1 based

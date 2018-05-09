@@ -168,14 +168,17 @@ edY.Data.prototype.getAll = function() {
  * @param {Object} newValue
  */
 edY.Data.prototype.validate = function(newValue) {
-  if (goog.isFunction(this.model.validate)) {
-    return this.model.validate.call(this, newValue)
+  if (!this.lock_model_validate && goog.isFunction(this.model.validate)) {
+    try {
+      this.lock_model_validate = true
+      var out = this.model.validate.call(this, newValue)
+    } finally {
+      delete this.lock_model_validate
+    }
+    return out
   }
-  var edy = this.owner_
-  var block = edy.block_
-  var key = 'validate' + this.upperKey
   var all = this.getAll()
-  return edy[key] && edy[key].call(edy, block, newValue) || (!all || all.indexOf(newValue) >= 0) && {validated: newValue} || null
+  return (!all || all.indexOf(newValue) >= 0) && {validated: newValue} || null
 }
 
 /**
@@ -211,13 +214,17 @@ edY.Data.prototype.fromText = function(txt, dontValidate) {
  */
 edY.Data.prototype.willChange = function(oldValue, newValue) {
   if (goog.isFunction(this.model.willChange)) {
-    this.model.willChange.call(this, oldValue, newValue)
+    if (this.model_willChange_lock) {
+      return
+    }
+    this.model_willChange_lock = true
+    try {
+      this.model.willChange.call(this, oldValue, newValue)
+    } finally {
+      delete this.model_willChange_lock
+    }
     return
   }
-  var edy = this.owner_
-  var block = edy.block_
-  var key = 'willChange' + this.upperKey
-  edy[key] && edy[key].call(edy, block, oldValue, newValue)
 }
 
 /**
@@ -248,13 +255,17 @@ edY.Data.prototype._willChange = function(oldValue, newValue) {
  */
 edY.Data.prototype.didChange = function(oldValue, newValue) {
   if (goog.isFunction(this.model.didChange)) {
-    this.model.didChange.call(this, oldValue, newValue)
+    if (this.model_didChange_lock) {
+      return
+    }
+    this.model_didChange_lock = true
+    try {
+      this.model.didChange.call(this, oldValue, newValue)
+    } finally {
+      delete this.model_didChange_lock
+    }
     return
   }
-  var edy = this.owner_
-  var block = edy.block_
-  var key = 'didChange' + this.upperKey
-  edy[key] && edy[key].call(edy, block, oldValue, newValue)
 }
 
 /**
@@ -285,24 +296,47 @@ edY.Data.prototype.noUndo = undefined
  * Synchronize the value of the property with the UI.
  * May be overriden by the model.
  * Do nothing if the receiver should wait.
+ * When not overriden by the model, updates the field and tile state.
+ * We can call `this.synchronize()` from the model.
+ * `synchronize: true`, and
+ * synchronize: function() { this.synchronize()} are equivalent.
+ * Raises when not bound to some field or tile, in the non model variant.
  * @param {Object} newValue
  */
 edY.Data.prototype.synchronize = function(newValue) {
   if (this.wait_) {
     return
   }
-  if (goog.isFunction(this.model.synchronize)) {
-    this.model.synchronize.call(this, newValue)
-    return
-  } else if (this.model.synchronize === true) {
-    this.setFieldValue(this.toText())
-    this.setTileIncog(this.incog_)
-    return
+  if (this.model_synchronize_lock || this.model.synchronize === true) {
+    goog.asserts.assert(this.field || this.tile, 'No field nor tile bound. '+this.key+'/'+this.owner_.block_.type)
+    if (this.field) {
+      Blockly.Events.disable()
+      try {
+        this.field.setValue(this.toText())
+      } finally {
+        Blockly.Events.enable()
+      }
+      this.field.setVisible(!this.isIncog())
+    }
+    this.tile && this.tile.setIncog(this.isIncog())
+  } else if (goog.isFunction(this.model.synchronize)) {
+    this.model_synchronize_lock = true
+    try {
+      this.model.synchronize.call(this, newValue)
+    } finally {
+      delete this.model_synchronize_lock
+    }
   }
-  var edy = this.owner_
-  var block = edy.block_
-  var key = 'synchronize' + this.upperKey
-  edy[key] && edy[key].call(edy, block, newValue)
+}
+
+/**
+ * Synchronize the value of the property with the UI only when bounded.
+ * @param {Object} newValue
+ */
+edY.Data.prototype.synchronizeIfUI = function(newValue) {
+  if (this.field || this.tile || this.model.synchronize) {
+    this.synchronize(newValue)
+  }
 }
 
 /**
@@ -327,7 +361,7 @@ edY.Data.prototype.setTrusted = function (newValue) {
  */
 edY.Data.prototype.setTrusted_ = function (newValue) {
   this.internalSet(newValue)
-  this.synchronize(newValue)
+  this.synchronizeIfUI(newValue)
 }
 
 /**
@@ -344,7 +378,7 @@ edY.Data.prototype.set = function (newValue) {
     }
   }
   if ((this.value_ === newValue) || !(newValue = this.validate(newValue)) || !goog.isDef(newValue = newValue.validated)) {
-    this.synchronize(this.value_)
+    this.synchronizeIfUI(this.value_)
     return false
   }
   this.setTrusted_(newValue)
@@ -359,12 +393,10 @@ edY.Data.prototype.set = function (newValue) {
  */
 edY.Data.prototype.setIncog = function(newValue) {
   this.incog_ = newValue
-  this.synchronize(this.value_)
+  this.synchronizeIfUI(this.value_)
 }
 /**
- * Disabled data correspond to diabled input.
- * Changing this value will cause an UI synchronization.
- * Always synchronize, even when no value changed.
+ * Whether the data is incognito.
  * @param {Object} newValue
  */
 edY.Data.prototype.isIncog = function() {
@@ -379,15 +411,18 @@ edY.Data.prototype.isIncog = function() {
  * @param {Object} newValue
  */
 edY.Data.prototype.consolidate = function() {
-  if (this.consolidate_lock || this.wait_) {
+  if (this.wait_) {
     return
   }
   if (goog.isFunction(this.model.consolidate)) {
-    this.consolidate_lock = true
+    if (this.model_consolidate_lock) {
+      return
+    }
+    this.model_consolidate_lock = true
     try {
       this.model.consolidate.call(this)
     } finally {
-      delete this.consolidate_lock
+      delete this.model_consolidate_lock
     }
   }
 }
@@ -400,46 +435,6 @@ edY.Data.prototype.consolidate = function() {
  */
 edY.Data.prototype.isActive = function () {
   return !!this.required || !this.incog_ && goog.isString(this.value_) && this.value_.length
-}
-
-console.warn ('Change the model design for i_(\d): {...} to $1: {...}')
-/**
- * Set the value of the main field given by its key.
- * @param {!Object} newValue.
- * @param {!number} inputIndex  of the input in the model (i_1, i_2...) 
- * When false, this corresponds to the fields that are not
- * part of an input, like the modifier field.
- * @param {string|null} fieldKey  of the input holder in the ui object 
- * @param {boolean} noUndo  true when no undo tracking should be performed. 
- * @private
- */
-edY.Data.prototype.setFieldValue = function (newValue) {
-  goog.asserts.assert(this.field, 'No field bound. '+this.key+'/'+this.owner_.block_.type)
-  Blockly.Events.disable()
-  try {
-    this.field.setValue(newValue)
-  } finally {
-    Blockly.Events.enable()
-  }
-}
-
-/**
- * Set the visible status of the field in the input given by its index
- * and the key.
- * @param {!Object} newValue.
- */
-edY.Data.prototype.setFieldVisible = function (newValue) {
-  this.field.setVisible(newValue)
-}
-
-/**
- * Set the enable/disable status of the given input.
- * @param {!boolean} newValue.
- * @private
- */
-edY.Data.prototype.setTileIncog = function (newValue) {
-  goog.asserts.assert(this.tile || this.tile === null, 'Missing tile binding')
-  this.tile && this.tile.setIncog(newValue)
 }
 
 /**
@@ -487,24 +482,6 @@ edY.Data.prototype.waitOff = function () {
   goog.asserts.assert(this.wait_>0, edY.Do.format('Too  many `waitOn` {0}/{1}', this.key, this.owner.block_.type))
   if (--this.wait_ == 0) {
     this.consolidate()
-  }
-}
-
-/**
- * Set the visible status of the field in the input given by its index
- * and the key.
- * @param {!Object} newValue.
- * @param {!number} inputIndex  of the input in the model (i_1, i_2...) 
- * When false, this corresponds to the fields that are not
- * part of an input, like the modifier field.
- * @param {string|null} fieldKey  of the input holder in the ui object 
- * @private
- */
-edY.Data.prototype.setFieldVisible = function (newValue, inputIndex, fieldKey) {
-  var i = inputIndex && this.ui[inputIndex] || this.ui
-  var field = i.fields[fieldKey || this.key]
-  if (field) {
-    field.setVisible(newValue)
   }
 }
 

@@ -256,17 +256,6 @@ edY.DelegateSvg.prototype.postInitSvg = function(block) {
     {'class': 'edy-path-selected'}, null)
   Blockly.utils.addClass(/** @type {!Element} */ (block.svgGroup_),
     'edy-block')
-  // install all the fields and tiles in the DOM
-  for (var k in this.ui.fields) {
-    var field = this.ui.fields[k]
-    field.setSourceBlock(block)
-    field.init()
-    field.edy.ui = this.ui
-  }
-  for (var k in this.ui.tiles) {
-    var tile = this.ui.tiles[k]
-    tile.init()
-  }
 }
 
 /**
@@ -292,9 +281,10 @@ edY.DelegateSvg.prototype.getField = function(block, name) {
  * May be used at the end of an initialization process.
  */
 edY.DelegateSvg.prototype.synchronizeTiles = function(block) {
-  var tiles = this.ui.tiles
-  for (var k in tiles) {
-    tiles[k].synchronize()
+  var tile = this.ui.headTile
+  while (tile) {
+    tile.synchronize()
+    tile = tile.nextTile
   }
 }
 
@@ -317,24 +307,6 @@ edY.DelegateSvg.prototype.getMenuTarget = function(block) {
 }
 
 /**
- * Create and initialize the SVG representation of the child blocks wrapped in the given block.
- * May be called more than once.
- * @param {!Blockly.Block} block to be initialized..
- */
-edY.DelegateSvg.prototype.initSvgWrap = function(block) {
-  if (this.wrappedInputs_) {
-    // do not delete this at the end
-    for (var i = 0; i < this.wrappedInputs_.length; i++) {
-      var data = this.wrappedInputs_[i]
-      var target = data[0].connection.targetBlock()
-      if (target) {
-        target.initSvg()
-      }
-    }
-  }
-};
-
-/**
  * Render the block.
  * Lays out and reflows a block based on its contents and settings.
  * @param {!Block} block.
@@ -355,8 +327,6 @@ edY.DelegateSvg.prototype.render = function (block, optBubble) {
   Blockly.Field.startCache()
   this.minWidth = block.width = 0
   block.rendered = true
-  this.consolidate(block, true)
-  this.synchronizeTiles(block)// no need to synchronize the data
   this.willRender_(block)
   this.renderDraw_(block)
   this.layoutConnections_(block)
@@ -1199,20 +1169,29 @@ edY.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id, initS
  * @param {!Block} block.
  */
 edY.DelegateSvg.prototype.beReady = function (block) {
+  block.initSvg()
   var data = this.data
   for (var k in data) {
     data[k].beReady()
+  }
+  // install all the fields and tiles in the DOM
+  for (var k in this.ui.fields) {
+    var field = this.ui.fields[k]
+    field.setSourceBlock(block)
+    field.init()
+    field.edy.ui = this.ui
   }
   var tile = this.ui.headTile
   while (tile) {
     tile.beReady()
     tile = tile.nextTile
   }
-  this.consolidate(block, true)
+  this.inputSuite && this.inputSuite.edy.beReady()
+  this.nextConnection && this.nextConnection.edy.beReady()
+  this.consolidate(block)
   this.synchronizeData(block)
   this.synchronizeTiles(block)
   this.skipRendering = 0
-  block.render()
 }
 
 /**

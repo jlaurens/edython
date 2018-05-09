@@ -66,8 +66,9 @@ edY.Tile = function(owner, key, tileModel) {
 /**
  * Install this tile on a block.
  */
-edY.Tile.prototype.init = function() {
-  if (this.svgRoot_) {
+edY.Tile.prototype.beReady = function() {
+  this.wait = 0
+  if (this.svgGroup_) {
     // Tile has already been initialized once.
     return;
   }
@@ -83,9 +84,9 @@ edY.Tile.prototype.init = function() {
     field.edy.ui = this.ui
     field.init()
   }
-  this.getBlock().getSvgRoot().appendChild(this.svgGroup_);
-  // this.render_();
-};
+  this.getBlock().getSvgRoot().appendChild(this.svgGroup_)
+  this.input && this.input.edy.beReady()
+}
 console.warn('What would be a tile rendering?')
 /**
  * The DOM SVG group representing this tile.
@@ -124,7 +125,8 @@ edY.Tile.makeFields = function() {
   // default helper functions for an editable field bound to a data object
   // `this` is an instance of  edY.FieldInput
   var validate = function (txt) {
-      return this.edy.validate.call(this, txt)
+    // `this` is a field
+    return this.edy.validate(txt)
   }
   var startEditing = function () {
   }
@@ -436,13 +438,6 @@ edY.Tile.prototype.consolidate = function () {
 }
 
 /**
- * The receiver is now ready to eventually synchronize and consolidate.
- */
-edY.Tile.prototype.beReady = function () {
-  this.wait = 0
-}
-
-/**
  * Set the wait status of the field.
  * Any call to `waitOn` must be balanced by a call to `waitOff`
  */
@@ -504,28 +499,6 @@ edY.Tile.prototype.synchronize = function () {
     }
   }
   this.owner.delayedRender(this.block)
-}
-
-/**
- * Set the value of the field in the input given by its index
- * and the key.
- * @param {!Object} newValue.
- * @param {string} fieldKey  of the input holder in the owner object 
- * @private
- */
-edY.Tile.prototype.setFieldValue = function (newValue, fieldKey) {
-  var field = this.fields[fieldKey]
-  if (field) {
-    if (Blockly.Events.isEnabled()) {
-      Blockly.Events.disable()
-      var enable = true
-    }
-    try {
-      field.setValue(newValue)
-    } finally {
-      enable && Blockly.Events.enable()
-    }
-  }
 }
 
 goog.forwardDeclare('edY.DelegateSvg.List')
