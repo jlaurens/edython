@@ -1328,11 +1328,11 @@ eYo.HoleFiller.fillDeepHoles = function(workspace, holes) {
             var B = data.filler(workspace)
           } else {
             B = eYo.DelegateSvg.newBlockComplete(workspace, data.type, true)
+            B.eyo.beReady(B)
             if (data.value) {
               B.eyo.data.phantom && B.eyo.data.phantom.set(data.value) ||
               B.eyo.data.value && B.eyo.data.value.set(data.value)
             }
-            B.eyo.beReady(B)
           }
           c8n.connect(B.outputConnection)
         } catch(err) {

@@ -171,7 +171,7 @@ eYo.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
     me.consolidate(this.connection.sourceBlock_, true)
   }
   var input = new Blockly.Input(Blockly.INPUT_VALUE, '!', io.block, c8n)
-  eYo.Input.setupEdY(input)
+  eYo.Input.setupEyO(input)
   io.list.splice(io.i, 0, input)
   io.edited = true
   this.setupIO(io)

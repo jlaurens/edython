@@ -97,7 +97,7 @@ eYo.BlockSvg.prototype.getInput = function (name) {
     input = eYo.BlockSvg.superClass_.getInput.call(this, name)
   }
   if (input) {
-    eYo.Input.setupEdY(input)
+    eYo.Input.setupEyO(input)
   }
   return input
 }

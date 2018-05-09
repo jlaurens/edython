@@ -25,7 +25,7 @@ goog.require('Blockly.Input')
  * For edython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-eYo.Input.setupEdY = function () {
+eYo.Input.setupEyO = function () {
   var beReady = function() {
     var c8n = this.owner.connection
     c8n && c8n.eyo.beReady()
