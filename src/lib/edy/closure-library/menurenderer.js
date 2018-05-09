@@ -11,28 +11,28 @@
  * @author jerome.laurens@u-bourgogne.fr
  */
 
-goog.provide('ezP.MenuRenderer')
+goog.provide('edY.MenuRenderer')
 
-goog.require('ezP')
+goog.require('edY')
 goog.require('goog.ui.MenuRenderer')
 
 /**
- * Default renderer for {@link ezP.Menu}s, based on {@link
+ * Default renderer for {@link edY.Menu}s, based on {@link
  * goog.ui.Menu}.
  * JL: default menu class changed.
  * @param {string=} optAriaRole Optional ARIA role used for the element.
  * @constructor
  * @extends {goog.ui.ContainerRenderer}
  */
-ezP.MenuRenderer = function (optAriaRole) {
+edY.MenuRenderer = function (optAriaRole) {
   goog.ui.MenuRenderer.call(this, optAriaRole)
 }
-goog.inherits(ezP.MenuRenderer, goog.ui.MenuRenderer)
-goog.addSingletonGetter(ezP.MenuRenderer)
+goog.inherits(edY.MenuRenderer, goog.ui.MenuRenderer)
+goog.addSingletonGetter(edY.MenuRenderer)
 
-ezP.MenuRenderer.CSS_CLASS = 'ezp-menu'
+edY.MenuRenderer.CSS_CLASS = 'edy-menu'
 
 /** @override */
-ezP.MenuRenderer.prototype.getCssClass = function () {
-  return ezP.MenuRenderer.CSS_CLASS
+edY.MenuRenderer.prototype.getCssClass = function () {
+  return edY.MenuRenderer.CSS_CLASS
 }

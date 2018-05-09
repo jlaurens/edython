@@ -11,14 +11,14 @@
  */
 'use strict'
 
-goog.require('ezP.Data')
-goog.provide('ezP.Data.Test')
+goog.require('edY.Data')
+goog.provide('edY.Data.Test')
 
-ezP.Data.Test.run = function() {
-  for (var x in ezP.Data.Test) {
+edY.Data.Test.run = function() {
+  for (var x in edY.Data.Test) {
     if (x !== 'run' && x.startsWith('run')) {
       console.log('Test:', x)
-      ezP.Data.Test[x]()
+      edY.Data.Test[x]()
     }
   }
 }

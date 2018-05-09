@@ -13,7 +13,7 @@ module.exports = {
     __static: true,
     goog: true,
     Blockly: true,
-    ezP: true
+    edY: true
   },
   plugins: [
     'html'

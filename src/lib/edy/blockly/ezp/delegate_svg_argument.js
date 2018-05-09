@@ -11,23 +11,23 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Argument')
+goog.provide('edY.DelegateSvg.Argument')
 
-goog.require('ezP.DelegateSvg.List')
+goog.require('edY.DelegateSvg.List')
 
 /**
  * Class for a DelegateSvg, keyword_item block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('keyword_item', {
+edY.DelegateSvg.Expr.makeSubclass('keyword_item', {
   tiles: {
     identifier: {
       order: 1,
-      check: ezP.T3.Expr.identifier,
+      check: edY.T3.Expr.identifier,
       hole_value: 'key',
     },
     expression: {
@@ -35,7 +35,7 @@ ezP.DelegateSvg.Expr.makeSubclass('keyword_item', {
       fields: {
         label: '=',
       },
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
       hole_value: 'value',
     },
   },
@@ -50,28 +50,28 @@ ezP.DelegateSvg.Expr.makeSubclass('keyword_item', {
  * Main entry: consolidate
  * @param {!String} single, the required type for a single element....
  */
-// ezP.Consolidator.Arguments = function() {
-//   ezP.Consolidator.Arguments.superClass_.constructor.call(this, ezP.Consolidator.Arguments.data)
+// edY.Consolidator.Arguments = function() {
+//   edY.Consolidator.Arguments.superClass_.constructor.call(this, edY.Consolidator.Arguments.data)
 // }
-// goog.inherits(ezP.Consolidator.Arguments, ezP.Consolidator.List)
+// goog.inherits(edY.Consolidator.Arguments, edY.Consolidator.List)
 
-// ezP.Consolidator.Arguments.data = {
+// edY.Consolidator.Arguments.data = {
 //   check: null,
 //   empty: true,
 //   presep: ',',
 // }
-ezP.Consolidator.List.makeSubclass('Arguments', {
+edY.Consolidator.List.makeSubclass('Arguments', {
   check: null,
   empty: true,
   presep: ',',
-}, ezP.Consolidator.List, ezP.Consolidator)
+}, edY.Consolidator.List, edY.Consolidator)
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
  * @param {!Blockly.Block} block, owner or the receiver.
  */
-ezP.Consolidator.Arguments.prototype.getIO = function(block) {
-  var io = ezP.Consolidator.Arguments.superClass_.getIO.call(this, block)
+edY.Consolidator.Arguments.prototype.getIO = function(block) {
+  var io = edY.Consolidator.Arguments.superClass_.getIO.call(this, block)
   io.first_keyword = io.last_positional = io.unique = -1
   return io
 }
@@ -81,7 +81,7 @@ ezP.Consolidator.Arguments.prototype.getIO = function(block) {
  * there might be unwanted things.
  * @param {object} io
  */
-ezP.Consolidator.Arguments.prototype.doCleanup = function () {
+edY.Consolidator.Arguments.prototype.doCleanup = function () {
   // preparation: walk through the list of inputs and
   // find the key inputs
   var Type = {
@@ -101,10 +101,10 @@ ezP.Consolidator.Arguments.prototype.doCleanup = function () {
       return Type.UNCONNECTED
     }
     var check = target.check_
-    if (goog.array.contains(check, ezP.T3.Expr.comprehension)) {
+    if (goog.array.contains(check, edY.T3.Expr.comprehension)) {
       io.unique = io.i
       return Type.COMPREHENSION
-    } else if (goog.array.contains(check, ezP.T3.Expr.expression_star_star) || goog.array.contains(check, ezP.T3.Expr.keyword_item)) {
+    } else if (goog.array.contains(check, edY.T3.Expr.expression_star_star) || goog.array.contains(check, edY.T3.Expr.keyword_item)) {
       return Type.KEYWORD
     } else {
       return Type.ARGUMENT
@@ -113,8 +113,8 @@ ezP.Consolidator.Arguments.prototype.doCleanup = function () {
   var setupFirst = function (io) {
     io.first_keyword = io.last_positional = io.unique = -1
     this.setupIO(io, 0)
-    while (!!io.ezp&& io.unique < 1) {
-      switch ((io.ezp.parameter_type_ = getCheckType(io))) {
+    while (!!io.edy&& io.unique < 1) {
+      switch ((io.edy.parameter_type_ = getCheckType(io))) {
         case Type.ARGUMENT:
         io.last_positional = io.i
         break
@@ -130,7 +130,7 @@ ezP.Consolidator.Arguments.prototype.doCleanup = function () {
     }
   }
   return function(io) {
-    ezP.Consolidator.Arguments.superClass_.doCleanup.call(this, io)
+    edY.Consolidator.Arguments.superClass_.doCleanup.call(this, io)
     setupFirst.call(this, io)
     if (io.unique >= 0) {
       // remove whatever comes before and after the io.unique
@@ -145,12 +145,12 @@ ezP.Consolidator.Arguments.prototype.doCleanup = function () {
         this.setupIO(io)
       }
     } else
-    // move parameters that are not placed correctly (in ezP sense)
+    // move parameters that are not placed correctly (in edY sense)
     if (io.first_keyword>=0) {
       while (io.first_keyword < io.last_positional) {
         this.setupIO(io, io.first_keyword + 2)
         while (io.i <= io.last_positional) {
-          if (io.ezp.parameter_type_ === Type.ARGUMENT) {
+          if (io.edy.parameter_type_ === Type.ARGUMENT) {
             // move this to io.first_keyword
             var c8n = io.c8n
             var target = c8n.targetConnection
@@ -181,7 +181,7 @@ ezP.Consolidator.Arguments.prototype.doCleanup = function () {
  * This does not suppose that the list of input has been completely consolidated
  * @param {!Object} io parameter.
  */
-ezP.Consolidator.Arguments.prototype.getCheck = function() {
+edY.Consolidator.Arguments.prototype.getCheck = function() {
   var cache = {}
   return function (io) {
     var can_positional, can_keyword, can_comprehension
@@ -212,15 +212,15 @@ ezP.Consolidator.Arguments.prototype.getCheck = function() {
     }
     out = []
     if (can_positional) {
-      out = ezP.T3.Expr.Check.expression.slice()
-      out.push(ezP.T3.Expr.expression_star)      
+      out = edY.T3.Expr.Check.expression.slice()
+      out.push(edY.T3.Expr.expression_star)      
     }
     if (can_keyword) {
-      out.push(ezP.T3.Expr.keyword_item)
-      out.push(ezP.T3.Expr.expression_star_star)      
+      out.push(edY.T3.Expr.keyword_item)
+      out.push(edY.T3.Expr.expression_star_star)      
     }
     if (can_comprehension) {
-      out.push(ezP.T3.Expr.comprehension)      
+      out.push(edY.T3.Expr.comprehension)      
     }
     return cache[K] = out
   }
@@ -229,16 +229,16 @@ ezP.Consolidator.Arguments.prototype.getCheck = function() {
 /**
  * Class for a DelegateSvg, argument_list block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('argument_list', {
+edY.DelegateSvg.List.makeSubclass('argument_list', {
   list: {
-    check: ezP.T3.Expr.Check.argument_any,
-    consolidator: ezP.Consolidator.List,
+    check: edY.T3.Expr.Check.argument_any,
+    consolidator: edY.Consolidator.List,
     empty: true,
     presep: ',',
     hole_value: 'name',
@@ -248,24 +248,24 @@ ezP.DelegateSvg.List.makeSubclass('argument_list', {
 /**
  * Class for a DelegateSvg, argument_list_comprehensive block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('argument_list_comprehensive', {
+edY.DelegateSvg.List.makeSubclass('argument_list_comprehensive', {
   list: {
-    consolidator: ezP.Consolidator.Arguments,
+    consolidator: edY.Consolidator.Arguments,
     empty: true,
     presep: ',',
     hole_value: 'name',
   },
 })
 
-ezP.DelegateSvg.Argument.T3s = [
-  ezP.T3.Expr.keyword_item,
-  ezP.T3.Expr.starred_expression, // from Expr
-  ezP.T3.Expr.argument_list,
-  ezP.T3.Expr.argument_list_comprehensive,
+edY.DelegateSvg.Argument.T3s = [
+  edY.T3.Expr.keyword_item,
+  edY.T3.Expr.starred_expression, // from Expr
+  edY.T3.Expr.argument_list,
+  edY.T3.Expr.argument_list_comprehensive,
 ]

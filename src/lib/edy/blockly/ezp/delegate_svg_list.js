@@ -11,30 +11,30 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.List')
+goog.provide('edY.DelegateSvg.List')
 
-goog.require('ezP.Consolidator.List')
-goog.require('ezP.DelegateSvg.Expr')
+goog.require('edY.Consolidator.List')
+goog.require('edY.DelegateSvg.Expr')
 
 /**
  * Class for a DelegateSvg, value block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('List', {
+edY.DelegateSvg.Expr.makeSubclass('List', {
   list: {},
-}, ezP.DelegateSvg)
+}, edY.DelegateSvg)
 
 /**
  * Will render the block.
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.List.prototype.willRender_ = function (block) {
-  ezP.DelegateSvg.List.superClass_.willRender_.call(this, block)
+edY.DelegateSvg.List.prototype.willRender_ = function (block) {
+  edY.DelegateSvg.List.superClass_.willRender_.call(this, block)
   this.consolidate(block)
 }
 
@@ -44,7 +44,7 @@ ezP.DelegateSvg.List.prototype.willRender_ = function (block) {
  * @param {string} name The name of the input.
  * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
  */
-ezP.DelegateSvg.List.prototype.getInput = function (block, name) {
+edY.DelegateSvg.List.prototype.getInput = function (block, name) {
   this.createConsolidator(block)
   return this.consolidator.getInput(block, name)
 }
@@ -56,7 +56,7 @@ ezP.DelegateSvg.List.prototype.getInput = function (block, name) {
  * 
  * @param {!Block} block.
  */
-ezP.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
+edY.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
   if (this.consolidate_lock || this.will_connect_) {
     // reentrant flag or wait for the new connection
     // to be established before consolidating
@@ -64,7 +64,7 @@ ezP.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
     // may cause rerendering ad vitam eternam.
     return
   }
-  ezP.DelegateSvg.List.superClass_.consolidate.call(this, block, force)
+  edY.DelegateSvg.List.superClass_.consolidate.call(this, block, force)
   if (this.connectionsIncog) {
     return
   }
@@ -83,13 +83,13 @@ ezP.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
  * 
  * @param {!Block} block.
  */
-ezP.DelegateSvg.List.prototype.createConsolidator = function (block) {
+edY.DelegateSvg.List.prototype.createConsolidator = function (block) {
   if (!this.consolidator) {
-    var D = ezP.DelegateSvg.Manager.getModel(block.type).list
+    var D = edY.DelegateSvg.Manager.getModel(block.type).list
     goog.asserts.assert(D, 'inputModel__.list is missing in '+block.type)
-    var C10r = D.consolidator || ezP.Consolidator.List
+    var C10r = D.consolidator || edY.Consolidator.List
     this.consolidator = new C10r(D)
-    goog.asserts.assert(this.consolidator, ezP.Do.format('Could not create the consolidator {0}', block.type))
+    goog.asserts.assert(this.consolidator, edY.Do.format('Could not create the consolidator {0}', block.type))
   }
 }
 
@@ -100,13 +100,13 @@ ezP.DelegateSvg.List.prototype.createConsolidator = function (block) {
  * 
  * @param {!Block} block.
  */
-ezP.DelegateSvg.List.prototype.consolidate = function (block, deep, force) {
+edY.DelegateSvg.List.prototype.consolidate = function (block, deep, force) {
   this.createConsolidator(block)
-  this.consolidate = ezP.DelegateSvg.List.prototype.consolidate_
+  this.consolidate = edY.DelegateSvg.List.prototype.consolidate_
   this.consolidate(block, force)// this is not recursive
 }
 
-// ezP.DelegateSvg.List.prototype.consolidator = undefined
+// edY.DelegateSvg.List.prototype.consolidator = undefined
 
 /**
  * Clear the list af all items.
@@ -114,7 +114,7 @@ ezP.DelegateSvg.List.prototype.consolidate = function (block, deep, force) {
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.List.prototype.removeItems = function(block) {
+edY.DelegateSvg.List.prototype.removeItems = function(block) {
   var list = block.inputList
   var i = 0
   var input
@@ -137,15 +137,15 @@ ezP.DelegateSvg.List.prototype.removeItems = function(block) {
 /**
  * Class for a DelegateSvg, optional expression_list block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('optional_expression_list', {
+edY.DelegateSvg.List.makeSubclass('optional_expression_list', {
   list: {
-    check: ezP.T3.Expr.Check.expression,
+    check: edY.T3.Expr.Check.expression,
     empty: true,
     presep: ',',
     hole_value: 'name',
@@ -155,15 +155,15 @@ ezP.DelegateSvg.List.makeSubclass('optional_expression_list', {
 /**
  * Class for a DelegateSvg, expression_list block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('non_void_expression_list', {
+edY.DelegateSvg.List.makeSubclass('non_void_expression_list', {
   list: {
-    check: ezP.T3.Expr.Check.expression,
+    check: edY.T3.Expr.Check.expression,
     empty: false,
     presep: ',',
     hole_value: 'name',
@@ -173,15 +173,15 @@ ezP.DelegateSvg.List.makeSubclass('non_void_expression_list', {
 /**
  * Class for a DelegateSvg, starred_item_list block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('starred_item_list', {
+edY.DelegateSvg.List.makeSubclass('starred_item_list', {
   list: {
-    check: ezP.T3.Expr.Check.starred_item,
+    check: edY.T3.Expr.Check.starred_item,
     empty: false,
     presep: ',',
     hole_value: 'name',
@@ -191,15 +191,15 @@ ezP.DelegateSvg.List.makeSubclass('starred_item_list', {
 /**
  * Class for a DelegateSvg, key_datum_list block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('key_datum_list', {
+edY.DelegateSvg.List.makeSubclass('key_datum_list', {
   list: {
-    check: ezP.T3.Expr.Check.key_datum,
+    check: edY.T3.Expr.Check.key_datum,
     empty: true,
     presep: ',',
   },
@@ -208,15 +208,15 @@ ezP.DelegateSvg.List.makeSubclass('key_datum_list', {
 /**
  * Class for a DelegateSvg, starred_item_list_comprehensive block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('starred_item_list', {
+edY.DelegateSvg.List.makeSubclass('starred_item_list', {
     list: {
-    check: ezP.T3.Expr.Check.non_void_starred_item_list,
+    check: edY.T3.Expr.Check.non_void_starred_item_list,
     empty: true,
     presep: ',',
     hole_value: 'name',
@@ -226,15 +226,15 @@ ezP.DelegateSvg.List.makeSubclass('starred_item_list', {
 /**
  * Class for a DelegateSvg, starred_item_list_comprehensive block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('non_void_starred_item_list', {
+edY.DelegateSvg.List.makeSubclass('non_void_starred_item_list', {
     list: {
-    check: ezP.T3.Expr.Check.non_void_starred_item_list,
+    check: edY.T3.Expr.Check.non_void_starred_item_list,
     empty: false,
     presep: ',',
     hole_value: 'name',
@@ -244,17 +244,17 @@ ezP.DelegateSvg.List.makeSubclass('non_void_starred_item_list', {
 /**
  * Class for a DelegateSvg, starred_item_list_comprehensive block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('starred_item_list_comprehensive', function() {
+edY.DelegateSvg.List.makeSubclass('starred_item_list_comprehensive', function() {
   var D = {
-    check: ezP.T3.Expr.Check.non_void_starred_item_list,
-    unique: ezP.T3.Expr.comprehension,
-    consolidator: ezP.Consolidator.List.Singled,
+    check: edY.T3.Expr.Check.non_void_starred_item_list,
+    unique: edY.T3.Expr.comprehension,
+    consolidator: edY.Consolidator.List.Singled,
     empty: true,
     presep: ',',
     hole_value: 'name',
@@ -274,7 +274,7 @@ ezP.DelegateSvg.List.makeSubclass('starred_item_list_comprehensive', function() 
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.starred_item_list_comprehensive.makeSubclass('list_display', {
+edY.DelegateSvg.Expr.starred_item_list_comprehensive.makeSubclass('list_display', {
   xml: {
     tag: 'square_bracket',
   },
@@ -287,17 +287,17 @@ ezP.DelegateSvg.Expr.starred_item_list_comprehensive.makeSubclass('list_display'
 /**
  * Class for a DelegateSvg, non_void_starred_item_list_comprehensive block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('non_void_starred_item_list_comprehensive', function() {
+edY.DelegateSvg.List.makeSubclass('non_void_starred_item_list_comprehensive', function() {
   var D = {
-    check: ezP.T3.Expr.Check.non_void_starred_item_list,
-    unique: ezP.T3.Expr.comprehension,
-    consolidator: ezP.Consolidator.List.Singled,
+    check: edY.T3.Expr.Check.non_void_starred_item_list,
+    unique: edY.T3.Expr.comprehension,
+    consolidator: edY.Consolidator.List.Singled,
     empty: false,
     presep: ',',
     hole_value: 'name',
@@ -317,7 +317,7 @@ ezP.DelegateSvg.List.makeSubclass('non_void_starred_item_list_comprehensive', fu
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive.makeSubclass('set_display', {
+edY.DelegateSvg.Expr.non_void_starred_item_list_comprehensive.makeSubclass('set_display', {
   xml: {
     tag: 'curly_bracket',
   },
@@ -330,17 +330,17 @@ ezP.DelegateSvg.Expr.non_void_starred_item_list_comprehensive.makeSubclass('set_
 /**
  * Class for a DelegateSvg, key_datum_list_comprehensive block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('key_datum_list_comprehensive', function() {
+edY.DelegateSvg.List.makeSubclass('key_datum_list_comprehensive', function() {
   var D = {
-    check: ezP.T3.Expr.Check.key_datum_list,
-    unique: ezP.T3.Expr.dict_comprehension,
-    consolidator: ezP.Consolidator.List.Singled,
+    check: edY.T3.Expr.Check.key_datum_list,
+    unique: edY.T3.Expr.dict_comprehension,
+    consolidator: edY.Consolidator.List.Singled,
     empty: true,
     presep: ',',
   }
@@ -359,7 +359,7 @@ ezP.DelegateSvg.List.makeSubclass('key_datum_list_comprehensive', function() {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.key_datum_list_comprehensive.makeSubclass('dict_display', {
+edY.DelegateSvg.Expr.key_datum_list_comprehensive.makeSubclass('dict_display', {
   fields: {
     prefix: '{',
     suffix: '}',
@@ -369,15 +369,15 @@ ezP.DelegateSvg.Expr.key_datum_list_comprehensive.makeSubclass('dict_display', {
 /**
  * Class for a DelegateSvg, slice_list block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('slice_list', {
+edY.DelegateSvg.List.makeSubclass('slice_list', {
   list: {
-    check: ezP.T3.Expr.Check.slice_item,
+    check: edY.T3.Expr.Check.slice_item,
     empty: false,
     presep: ',',
   },
@@ -386,39 +386,39 @@ ezP.DelegateSvg.List.makeSubclass('slice_list', {
 /**
  * Class for a DelegateSvg, with_item_list block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('with_item_list', {
+edY.DelegateSvg.List.makeSubclass('with_item_list', {
   list: {
-    check: ezP.T3.Expr.Check.with_item,
+    check: edY.T3.Expr.Check.with_item,
     empty: false,
     presep: ',',
     hole_value: 'nom',
   },
 })
 
-ezP.DelegateSvg.List.T3s = [
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.starred_expression,
-  ezP.T3.Expr.comprehension,
-  ezP.T3.Expr.dict_comprehension,
-  ezP.T3.Expr.key_datum,
-  ezP.T3.Expr.optional_expression_list,
-  ezP.T3.Expr.non_void_expression_list,
-  ezP.T3.Expr.starred_item_list,
-  ezP.T3.Expr.parenth_form,
-  ezP.T3.Expr.key_datum_list,
-  ezP.T3.Expr.starred_item_list_comprehensive,
-  ezP.T3.Expr.list_display,
-  ezP.T3.Expr.non_void_starred_item_list_comprehensive,
-  ezP.T3.Expr.set_display,
-  ezP.T3.Expr.key_datum_list_comprehensive,
-  ezP.T3.Expr.dict_display,
-  ezP.T3.Expr.slice_list,
-  ezP.T3.Expr.dict_display,
-  ezP.T3.Expr.with_item_list,
+edY.DelegateSvg.List.T3s = [
+  edY.T3.Expr.term,
+  edY.T3.Expr.starred_expression,
+  edY.T3.Expr.comprehension,
+  edY.T3.Expr.dict_comprehension,
+  edY.T3.Expr.key_datum,
+  edY.T3.Expr.optional_expression_list,
+  edY.T3.Expr.non_void_expression_list,
+  edY.T3.Expr.starred_item_list,
+  edY.T3.Expr.parenth_form,
+  edY.T3.Expr.key_datum_list,
+  edY.T3.Expr.starred_item_list_comprehensive,
+  edY.T3.Expr.list_display,
+  edY.T3.Expr.non_void_starred_item_list_comprehensive,
+  edY.T3.Expr.set_display,
+  edY.T3.Expr.key_datum_list_comprehensive,
+  edY.T3.Expr.dict_display,
+  edY.T3.Expr.slice_list,
+  edY.T3.Expr.dict_display,
+  edY.T3.Expr.with_item_list,
 ]

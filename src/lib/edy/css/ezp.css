@@ -6,22 +6,22 @@ body {
   margin:0px;
 }
 
-.ezp-no-options .ezp-menuitem-checkbox, .ezp-hidden {
+.edy-no-options .edy-menuitem-checkbox, .edy-hidden {
   display: none;
 }
-.ezp-checkbox-icon-mark{
+.edy-checkbox-icon-mark{
   stroke: none;
   fill: white;
 }
-.ezp-checkbox-icon-mark.ezp-checked {
+.edy-checkbox-icon-mark.edy-checked {
   fill: black;
 }
 
-.ezp-block.hidden {
+.edy-block.hidden {
   display: none;
 }
 
-.ezp-menu {
+.edy-menu {
   background: #fff;
   border-color: #ccc #666 #666 #ccc;
   border-style: solid;
@@ -35,7 +35,7 @@ body {
   z-index: 20000; /* Arbitrary, but some apps depend on it... */
 }
 
-.ezp-print-block-menu, .ezp-options-menu, .ezp-options-code-menu {
+.edy-print-block-menu, .edy-options-menu, .edy-options-code-menu {
   background: #fff;
   border-color: #ccc #666 #666 #ccc;
   border-style: solid;
@@ -49,33 +49,33 @@ body {
   z-index: 20000; /* Arbitrary, but some apps depend on it... */
 }
 
-.ezp-menuitem-code:hover {
+.edy-menuitem-code:hover {
   background-color: #d6e9f8;
 /*  border-color: #d6e9f8;
   border-style: dotted;
   border-width: 1px 0;*/
 }
 
-.ezp-menu-icon,
-.ezp-path-play {
+.edy-menu-icon,
+.edy-path-play {
   opacity: 0.05;
   -moz-opacity: 0.05;
   filter: alpha(opacity=5);
 }
-.ezp-select .ezp-menu-icon,
-.ezp-menu-icon:hover,
-.ezp-path-play:hover {
+.edy-select .edy-menu-icon,
+.edy-menu-icon:hover,
+.edy-path-play:hover {
   opacity: 0.3;
   -moz-opacity: 0.3;
   filter: alpha(opacity=30);
   cursor: pointer;
 }
 
-.ezp-menuitem, .ezp-submenu {
+.edy-menuitem, .edy-submenu {
   color: #000;
   font: normal 13px Arial, sans-serif;
 }
-.ezp-menuitem, .ezp-submenu, .ezp-menuitem-code, .ezp-menuitem-var {
+.edy-menuitem, .edy-submenu, .edy-menuitem-code, .edy-menuitem-var {
   list-style: none;
   margin: 0;
   /* 28px on the left for icon or checkbox; 7em on the right for shortcut. */
@@ -87,36 +87,36 @@ body {
  * If a menu doesn't have items with shortcuts, leave just enough room for
  * submenu arrows, if they are rendered.
  */
-.ezp-accel.ezp-menuitem,
-.ezp-accel.ezp-submenu {
+.edy-accel.edy-menuitem,
+.edy-accel.edy-submenu {
   padding-right: 7em;
 }
 
-.ezp-nosubmenu .ezp-noaccel.ezp-menuitem-code,
-.ezp-nosubmenu .ezp-noaccel.ezp-menuitem-var {
+.edy-nosubmenu .edy-noaccel.edy-menuitem-code,
+.edy-nosubmenu .edy-noaccel.edy-menuitem-var {
   padding-right: 8px;
 }
 
 /* State: disabled. */
-.ezp-menuitem-disabled .ezp-menuitem-accel,
-.ezp-menuitem-disabled .ezp-menuitem-content,
-.ezp-menuitem-code-disabled,
-.ezp-menuitem-code-disabled .ezp-code-reserved,
-.ezp-submenu-disabled .ezp-submenu-content,
-.ezp-submenu-disabled .ezp-submenu-arrow {
+.edy-menuitem-disabled .edy-menuitem-accel,
+.edy-menuitem-disabled .edy-menuitem-content,
+.edy-menuitem-code-disabled,
+.edy-menuitem-code-disabled .edy-code-reserved,
+.edy-submenu-disabled .edy-submenu-content,
+.edy-submenu-disabled .edy-submenu-arrow {
   color: #ccc !important;
 }
-.ezp-menuitem-disabled .ezp-menuitem-icon {
+.edy-menuitem-disabled .edy-menuitem-icon {
   opacity: 0.3;
   -moz-opacity: 0.3;
   filter: alpha(opacity=30);
 }
 
 /* State: hover. */
-.ezp-menuitem-highlight,
-.ezp-menuitem-code-highlight,
-.ezp-submenu-highlight,
-.ezp-menuitem-hover {
+.edy-menuitem-highlight,
+.edy-menuitem-code-highlight,
+.edy-submenu-highlight,
+.edy-menuitem-hover {
   background-color: #d6e9f8;
   /* Use an explicit top and bottom border so that the selection is visible
    * in high contrast mode. */
@@ -128,8 +128,8 @@ body {
 }
 
 /* State: selected/checked. */
-.ezp-menuitem-checkbox,
-.ezp-menuitem-icon {
+.edy-menuitem-checkbox,
+.edy-menuitem-icon {
   background-repeat: no-repeat;
   height: 16px;
   left: 6px;
@@ -140,7 +140,7 @@ body {
 }
 
 /* Keyboard shortcut ("accelerator") style. */
-.ezp-menuitem-accel {
+.edy-menuitem-accel {
   color: #999;
   /* Keyboard shortcuts are untranslated; always left-to-right. */
   /* @noflip */ direction: ltr;
@@ -152,17 +152,17 @@ body {
 }
 
 /* Mnemonic styles. */
-.ezp-menuitem-mnemonic-hint {
+.edy-menuitem-mnemonic-hint {
   text-decoration: underline;
 }
 
-.ezp-menuitem-mnemonic-separator {
+.edy-menuitem-mnemonic-separator {
   color: #999;
   font-size: 12px;
   padding-left: 4px;
 }
 
-.ezp-submenu-arrow {
+.edy-submenu-arrow {
   color: #000;
   left: auto;
   padding-right: 4px;
@@ -176,7 +176,7 @@ body {
 
 /* BiDi override. */
 /* @noflip */
-.ezp-menuitem-rtl .ezp-submenu-arrow {
+.edy-menuitem-rtl .edy-submenu-arrow {
   text-align: left;
   left: 0;
   right: auto;
@@ -184,15 +184,15 @@ body {
 }
 
 /* State: disabled. */
-.ezp-menuitem-disabled .ezp-submenu-arrow {
+.edy-menuitem-disabled .edy-submenu-arrow {
   color: #ccc;
 }
 
-.ezp-menuitem-content {
+.edy-menuitem-content {
   padding: 0;
 }
 
-.ezp-modal-dialog {
+.edy-modal-dialog {
   width: 400px;
   background: #fff;
   border: 0.5px solid #ccc;
@@ -205,21 +205,21 @@ body {
   z-index: 100;
 }
 
-.ezp-modal-dialog a,
-.ezp-modal-dialog a:link,
-.ezp-modal-dialog a:visited  {
+.edy-modal-dialog a,
+.edy-modal-dialog a:link,
+.edy-modal-dialog a:visited  {
   color: #06c;
   cursor: pointer;
 }
 
-.ezp-modal-dialog-bg {
+.edy-modal-dialog-bg {
   background: #666;
   left: 0;
   position: absolute;
   top: 0;
 }
 
-.ezp-modal-dialog-title {
+.edy-modal-dialog-title {
   color: #000;
   cursor: pointer;
   font-size: 120%;
@@ -233,7 +233,7 @@ body {
   _zoom: 1; /* Ensures proper width in IE6 RTL. */
 }
 
-.ezp-modal-dialog-title-close {
+.edy-modal-dialog-title-close {
   /* Client apps may override the URL at which they serve the sprite. */
   background: #fff url(../img/close.png) no-repeat 0 0;
   background-size: 100% auto;
@@ -245,18 +245,18 @@ body {
   width: 15px;
   vertical-align: middle;
 }
-.ezp-modal-dialog-content {
+.edy-modal-dialog-content {
   background-color: #fff;
   padding: 8px;
   padding-bottom:40px;
 }
-.ezp-modal-dialog-buttons {
+.edy-modal-dialog-buttons {
   position: absolute;
   right:8px;
   bottom:8px;
   padding: 4px;
 }
-.ezp-modal-dialog button.goog-buttonset-default {
+.edy-modal-dialog button.goog-buttonset-default {
   padding: 4px 8px;
   border-color: #666;
   border-radius: 6px;
@@ -264,7 +264,7 @@ body {
   font-family: arial, sans-serif;
   font-size: 13px;
 }
-.ezp-html-input {
+.edy-html-input {
   border: none;
   border-radius: 4px;
   height: 100%;

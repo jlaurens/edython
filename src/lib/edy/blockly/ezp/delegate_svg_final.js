@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Final')
+goog.provide('edY.DelegateSvg.Final')
 
 /**
  * Final processing of delegates.

@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Operator')
+goog.provide('edY.DelegateSvg.Operator')
 
-goog.require('ezP.DelegateSvg.Expr')
+goog.require('edY.DelegateSvg.Expr')
 
 /**
  * Class for a DelegateSvg, [...] op ... block.
@@ -24,7 +24,7 @@ goog.require('ezP.DelegateSvg.Expr')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('Operator', {
+edY.DelegateSvg.Expr.makeSubclass('Operator', {
   data: {
     operator: { // only one field with that key
       synchronize: true,
@@ -39,7 +39,7 @@ ezP.DelegateSvg.Expr.makeSubclass('Operator', {
       hole_value: 'name',
     },
   },
-}, ezP.DelegateSvg)
+}, edY.DelegateSvg)
 
 /**
  * Get the content for the menu item.
@@ -47,26 +47,26 @@ ezP.DelegateSvg.Expr.makeSubclass('Operator', {
  * @param {string} op op is the label
  * @private
  */
-ezP.DelegateSvg.Operator.prototype.makeTitle = /* function (block, op) {
+edY.DelegateSvg.Operator.prototype.makeTitle = /* function (block, op) {
 } */ undefined
 
 /**
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-ezP.DelegateSvg.Operator.prototype.getMenuTarget = function(block) {
+edY.DelegateSvg.Operator.prototype.getMenuTarget = function(block) {
   return block
 }
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, mgr) {
+edY.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var yorn = mgr.populateProperties(block, 'operator')
-  return ezP.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
+  return edY.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
 //////////////////////  u_expr_s3d  /////////////////////////
@@ -79,7 +79,7 @@ ezP.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Operator.makeSubclass('u_expr_s3d', {
+edY.DelegateSvg.Operator.makeSubclass('u_expr_s3d', {
   data: {
     operator: {
       all: ['-', '+', '~'],
@@ -87,7 +87,7 @@ ezP.DelegateSvg.Operator.makeSubclass('u_expr_s3d', {
   },
   tiles: {
     rhs: {
-      check: ezP.T3.Expr.Check.u_expr,
+      check: edY.T3.Expr.Check.u_expr,
     },
   },
 })
@@ -98,7 +98,7 @@ ezP.DelegateSvg.Operator.makeSubclass('u_expr_s3d', {
  * @param {string} op op is the operator
  * @private
  */
-ezP.DelegateSvg.Expr.u_expr_s3d.prototype.makeTitle = function (block, op) {
+edY.DelegateSvg.Expr.u_expr_s3d.prototype.makeTitle = function (block, op) {
   return op+' …'
 }
 
@@ -110,14 +110,14 @@ ezP.DelegateSvg.Expr.u_expr_s3d.prototype.makeTitle = function (block, op) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Operator.makeSubclass('Binary',{
+edY.DelegateSvg.Operator.makeSubclass('Binary',{
   tiles: {
     lhs: {
       order: 1,
       hole_value: 'name',
     },
   },
-}, ezP.DelegateSvg)
+}, edY.DelegateSvg)
 
 /**
  * Get the content for the menu item.
@@ -125,7 +125,7 @@ ezP.DelegateSvg.Operator.makeSubclass('Binary',{
  * @param {string} op op is the operator
  * @private
  */
-ezP.DelegateSvg.Binary.prototype.makeTitle = function (block, op) {
+edY.DelegateSvg.Binary.prototype.makeTitle = function (block, op) {
   return '… '+ op +' …'
 }
 
@@ -136,7 +136,7 @@ ezP.DelegateSvg.Binary.prototype.makeTitle = function (block, op) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Binary.makeModel = function(operators, check1, check3, operatorIndex) {
+edY.DelegateSvg.Binary.makeModel = function(operators, check1, check3, operatorIndex) {
   return {
     data: {
       operator: {
@@ -146,10 +146,10 @@ ezP.DelegateSvg.Binary.makeModel = function(operators, check1, check3, operatorI
     },
     tiles: {
       lhs: {
-        check: ezP.T3.Expr.Check[check1]
+        check: edY.T3.Expr.Check[check1]
       },
       rhs: {
-        check: ezP.T3.Expr.Check[check3]
+        check: edY.T3.Expr.Check[check3]
       },
     },
   }
@@ -163,9 +163,9 @@ ezP.DelegateSvg.Binary.makeModel = function(operators, check1, check3, operatorI
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Binary.makeSubclass(
+edY.DelegateSvg.Binary.makeSubclass(
   'm_expr_s3d',
-  ezP.DelegateSvg.Binary.makeModel(
+  edY.DelegateSvg.Binary.makeModel(
     ['*', '//', '/', '%', '@'],
     'm_expr',
     'u_expr',
@@ -180,9 +180,9 @@ ezP.DelegateSvg.Binary.makeSubclass(
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Binary.makeSubclass(
+edY.DelegateSvg.Binary.makeSubclass(
   'a_expr_s3d',
-  ezP.DelegateSvg.Binary.makeModel(
+  edY.DelegateSvg.Binary.makeModel(
     ['+', '-'],
     'a_expr',
     'm_expr',
@@ -197,9 +197,9 @@ ezP.DelegateSvg.Binary.makeSubclass(
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Binary.makeSubclass(
+edY.DelegateSvg.Binary.makeSubclass(
   'shift_expr_s3d',
-  ezP.DelegateSvg.Binary.makeModel(
+  edY.DelegateSvg.Binary.makeModel(
     ['<<', '>>'],
     'shift_expr',
     'a_expr',
@@ -214,9 +214,9 @@ ezP.DelegateSvg.Binary.makeSubclass(
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Binary.makeSubclass(
+edY.DelegateSvg.Binary.makeSubclass(
   'and_expr_s3d',
-  ezP.DelegateSvg.Binary.makeModel(
+  edY.DelegateSvg.Binary.makeModel(
     ['&'],
     'and_expr',
     'shift_expr',
@@ -231,9 +231,9 @@ ezP.DelegateSvg.Binary.makeSubclass(
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Binary.makeSubclass(
+edY.DelegateSvg.Binary.makeSubclass(
   'xor_expr_s3d',
-  ezP.DelegateSvg.Binary.makeModel(
+  edY.DelegateSvg.Binary.makeModel(
     ['^'],
     'xor_expr',
     'and_expr',
@@ -248,9 +248,9 @@ ezP.DelegateSvg.Binary.makeSubclass(
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Binary.makeSubclass(
+edY.DelegateSvg.Binary.makeSubclass(
   'or_expr_s3d',
-  ezP.DelegateSvg.Binary.makeModel(
+  edY.DelegateSvg.Binary.makeModel(
     ['|'],
     'or_expr',
     'or_expr',
@@ -267,9 +267,9 @@ ezP.DelegateSvg.Binary.makeSubclass(
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Binary.makeSubclass(
+edY.DelegateSvg.Binary.makeSubclass(
   'number_comparison',
-  ezP.DelegateSvg.Binary.makeModel(
+  edY.DelegateSvg.Binary.makeModel(
     ['<', '>', '==', '>=', '<=', '!='],
     'comparison',
     'comparison',
@@ -286,7 +286,7 @@ console.log('where is the operator displayed ?')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Binary.makeSubclass('object_comparison', {
+edY.DelegateSvg.Binary.makeSubclass('object_comparison', {
   data: {
     operator: {
       all: ['is', 'is not', 'in', 'not in'],
@@ -295,11 +295,11 @@ ezP.DelegateSvg.Binary.makeSubclass('object_comparison', {
   },
   tiles: {
     lhs: {
-      check: ezP.T3.Expr.Check.comparison
+      check: edY.T3.Expr.Check.comparison
     },
     rhs: {
-      css_class: 'ezp-code-reserved',
-      check: ezP.T3.Expr.Check.comparison
+      css_class: 'edy-code-reserved',
+      check: edY.T3.Expr.Check.comparison
     },
   },
 })
@@ -310,8 +310,8 @@ ezP.DelegateSvg.Binary.makeSubclass('object_comparison', {
  * @param {string} op op is the operator
  * @private
  */
-ezP.DelegateSvg.Expr.object_comparison.prototype.makeTitle = function (block, op) {
-  return ezP.Do.createSPAN(op, 'ezp-code-reserved')
+edY.DelegateSvg.Expr.object_comparison.prototype.makeTitle = function (block, op) {
+  return edY.Do.createSPAN(op, 'edy-code-reserved')
 }
 
 /**
@@ -323,7 +323,7 @@ ezP.DelegateSvg.Expr.object_comparison.prototype.makeTitle = function (block, op
  * @constructor
  */
 console.warn('Check the css-class below, does it belong there?')
-ezP.DelegateSvg.Binary.makeSubclass('or_test_s3d', {
+edY.DelegateSvg.Binary.makeSubclass('or_test_s3d', {
   data: {
     operator: {
       all: ['or'],
@@ -331,7 +331,7 @@ ezP.DelegateSvg.Binary.makeSubclass('or_test_s3d', {
   },
   tiles: {
     lhs: {
-      check: ezP.T3.Expr.Check.or_test
+      check: edY.T3.Expr.Check.or_test
     },
     rhs: {
       fields: {
@@ -339,7 +339,7 @@ ezP.DelegateSvg.Binary.makeSubclass('or_test_s3d', {
           css: 'reserved',
         },
       },
-      check: ezP.T3.Expr.Check.and_test
+      check: edY.T3.Expr.Check.and_test
     },
   },
 })
@@ -352,7 +352,7 @@ ezP.DelegateSvg.Binary.makeSubclass('or_test_s3d', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Binary.makeSubclass('and_test_s3d', {
+edY.DelegateSvg.Binary.makeSubclass('and_test_s3d', {
   data: {
     operator: {
       all: ['and'],
@@ -360,7 +360,7 @@ ezP.DelegateSvg.Binary.makeSubclass('and_test_s3d', {
   },
   tiles: {
     lhs: {
-      check: ezP.T3.Expr.Check.and_test
+      check: edY.T3.Expr.Check.and_test
     },
     rhs: {
       fields: {
@@ -368,7 +368,7 @@ ezP.DelegateSvg.Binary.makeSubclass('and_test_s3d', {
           css: 'reserved',
         }
       },
-      check: ezP.T3.Expr.Check.not_test
+      check: edY.T3.Expr.Check.not_test
     },
   },
 })
@@ -383,7 +383,7 @@ ezP.DelegateSvg.Binary.makeSubclass('and_test_s3d', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Operator.makeSubclass('power_s3d', {
+edY.DelegateSvg.Operator.makeSubclass('power_s3d', {
   data: {
     operator: {
       default: '**',
@@ -392,28 +392,28 @@ ezP.DelegateSvg.Operator.makeSubclass('power_s3d', {
   tiles: {
     lhs: {
       order: 1,
-      check: ezP.T3.Expr.Check.await_or_primary,
+      check: edY.T3.Expr.Check.await_or_primary,
       hole_value: 'name',
     },
     rhs: {
       order: 2,
-      check: ezP.T3.Expr.Check.u_expr,
+      check: edY.T3.Expr.Check.u_expr,
       hole_value: 'power',
     },
   },
 })
 
-ezP.DelegateSvg.Operator.T3s = [
-  ezP.T3.Expr.u_expr_s3d,
-  ezP.T3.Expr.m_expr_s3d,
-  ezP.T3.Expr.a_expr_s3d,
-  ezP.T3.Expr.shift_expr_s3d,
-  ezP.T3.Expr.and_expr_s3d,
-  ezP.T3.Expr.xor_expr_s3d,
-  ezP.T3.Expr.or_expr_s3d,
-  ezP.T3.Expr.number_comparison,
-  ezP.T3.Expr.object_comparison,
-  ezP.T3.Expr.or_test_s3d,
-  ezP.T3.Expr.and_test_s3d,
-  ezP.T3.Expr.power_s3d,
+edY.DelegateSvg.Operator.T3s = [
+  edY.T3.Expr.u_expr_s3d,
+  edY.T3.Expr.m_expr_s3d,
+  edY.T3.Expr.a_expr_s3d,
+  edY.T3.Expr.shift_expr_s3d,
+  edY.T3.Expr.and_expr_s3d,
+  edY.T3.Expr.xor_expr_s3d,
+  edY.T3.Expr.or_expr_s3d,
+  edY.T3.Expr.number_comparison,
+  edY.T3.Expr.object_comparison,
+  edY.T3.Expr.or_test_s3d,
+  edY.T3.Expr.and_test_s3d,
+  edY.T3.Expr.power_s3d,
 ]

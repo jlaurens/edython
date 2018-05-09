@@ -11,21 +11,21 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Term')
+goog.provide('edY.DelegateSvg.Term')
 
-goog.require('ezP.MenuItem')
-goog.require('ezP.FieldInput')
-goog.require('ezP.Style')
+goog.require('edY.MenuItem')
+goog.require('edY.FieldInput')
+goog.require('edY.Style')
 
 /**
  * Class for a DelegateSvg, term block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
+edY.DelegateSvg.Expr.makeSubclass(edY.T3.Expr.term, function() {
   var D = {
     data: {
       modifier: {
@@ -39,7 +39,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
       name: {
         default: '',
         validate: function (newValue) {
-          var nameType = ezP.Do.typeOfString(newValue)
+          var nameType = edY.Do.typeOfString(newValue)
           if (nameType) {
             var expected = this.data.variant.model.byNameType[nameType]
             if (expected && (expected.indexOf(this.data.variant.get()) >= 0)) {
@@ -49,7 +49,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
           return null
         },
         didChange: function(oldValue, newValue) {
-          var nameType = newValue? ezP.Do.typeOfString(newValue): ezP.T3.Expr.identifier
+          var nameType = newValue? edY.Do.typeOfString(newValue): edY.T3.Expr.identifier
           this.data.nameType.set(nameType)
         },
         synchronize: true,
@@ -58,14 +58,14 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
         default: '',
         synchronize: true,
         validate: function (newValue) {
-          var nameType = ezP.Do.typeOfString(newValue)
-          return (nameType === ezP.T3.Expr.identifier) && {validated: newValue} || null
+          var nameType = edY.Do.typeOfString(newValue)
+          return (nameType === edY.T3.Expr.identifier) && {validated: newValue} || null
         },
       }, // new
       nameType: {
-        all: [ezP.T3.Expr.identifier,
-        ezP.T3.Expr.dotted_name,
-        ezP.T3.Expr.parent_module],
+        all: [edY.T3.Expr.identifier,
+        edY.T3.Expr.dotted_name,
+        edY.T3.Expr.parent_module],
         noUndo: true,
         xml: false,
       },
@@ -114,7 +114,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
         order: 1,
         fields: {
           edit: {
-            placeholder: ezP.Msg.Placeholder.TERM,
+            placeholder: edY.Msg.Placeholder.TERM,
             validate: true,
             endEditing: true,
           },
@@ -128,7 +128,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
             css: 'reserved',
           },
         },
-        check: ezP.T3.Expr.Check.expression,
+        check: edY.T3.Expr.Check.expression,
         hole_value: 'expression',
       },
       definition: {
@@ -139,7 +139,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
             css: 'reserved',
           },
         },
-        check: ezP.T3.Expr.Check.expression,
+        check: edY.T3.Expr.Check.expression,
         hole_value: 'expression',
       },
       alias: {
@@ -147,7 +147,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
         fields: {
           label: 'as',
           edit: {
-            placeholder: ezP.Msg.Placeholder.ALIAS,
+            placeholder: edY.Msg.Placeholder.ALIAS,
             validate: true,
             endEditing: true,
           },
@@ -159,13 +159,13 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
         // `this` is a connection
         var targetC8n = this.targetConnection
         var source = targetC8n.sourceBlock_
-        if (source.ezp instanceof ezP.DelegateSvg.List) {
+        if (source.edy instanceof edY.DelegateSvg.List) {
           // do nothing ?
         } else {
           for (var i = 0, input;(input = source.inputList[i++]);) {
             if (input.connection === targetC8n) {
-              if (input.ezp.model) {
-                this.sourceBlock_.ezp.data.phantom.set(input.ezp.model.hole_value)
+              if (input.edy.model) {
+                this.sourceBlock_.edy.data.phantom.set(input.edy.model.hole_value)
               }
               return
             }
@@ -175,7 +175,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
       didDisconnect: function(oldConnection) {
         // `this` is a connection's delegate
         var block = this.sourceBlock_
-        block.ezp.data.phantom.set('')
+        block.edy.data.phantom.set('')
       },
     }
   }
@@ -188,9 +188,9 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
     DD.all.push(i)
   }
   var DDD = DD.byNameType = Object.create(null)
-  DDD[ezP.T3.Expr.identifier] = DD.all
-  DDD[ezP.T3.Expr.dotted_name] = [DD.NAME, DD.NAME_ALIAS, DD.STAR_NAME, DD.STAR]
-  DDD[ezP.T3.Expr.parent_module] = [DD.NAME,]
+  DDD[edY.T3.Expr.identifier] = DD.all
+  DDD[edY.T3.Expr.dotted_name] = [DD.NAME, DD.NAME_ALIAS, DD.STAR_NAME, DD.STAR]
+  DDD[edY.T3.Expr.parent_module] = [DD.NAME,]
   DD.didChange = function(oldValue, newValue) {
     var model = this.model
     this.data.name.required = newValue === model.STAR_NAME
@@ -270,7 +270,7 @@ ezP.DelegateSvg.Expr.makeSubclass(ezP.T3.Expr.term, function() {
  * @param {!Block} block.
  * @return whether the block should be wrapped
  */
-ezP.DelegateSvg.Expr.term.prototype.noBlockWrapped = function (block) {
+edY.DelegateSvg.Expr.term.prototype.noBlockWrapped = function (block) {
   return true
 }
 
@@ -279,7 +279,7 @@ ezP.DelegateSvg.Expr.term.prototype.noBlockWrapped = function (block) {
  * @param {!Blockly.Block} block The block.
  * @private
  */
-ezP.DelegateSvg.Expr.term.prototype.showEditor = function (block) {
+edY.DelegateSvg.Expr.term.prototype.showEditor = function (block) {
   this.ui.tiles.name.fields.edit.showEditor_()
 }
 
@@ -290,8 +290,8 @@ ezP.DelegateSvg.Expr.term.prototype.showEditor = function (block) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
-  ezP.DelegateSvg.Expr.term.superClass_.consolidateType.call(this, block)
+edY.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
+  edY.DelegateSvg.Expr.term.superClass_.consolidateType.call(this, block)
 /*
   * The possible types for the blocks are all expression types, namely
   // * expression_star ::= "*" expression
@@ -318,59 +318,59 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
   var nameType = this.data.nameType.get()
   var j = this.data.nameType.getAll().indexOf(nameType)
   var check
-  if (nameType === ezP.T3.Expr.parent_module) {
+  if (nameType === edY.T3.Expr.parent_module) {
     check = nameType
   } else {
     switch(variant) {
       case model.NAME:
-        check = nameType === ezP.T3.Expr.identifier?
-        nameType: [ezP.T3.Expr.dotted_name, ezP.T3.Expr.attributeref, ]
+        check = nameType === edY.T3.Expr.identifier?
+        nameType: [edY.T3.Expr.dotted_name, edY.T3.Expr.attributeref, ]
       break
       case model.STAR_STAR_NAME:
         // expression_star_star ::= "**" expression
         // parameter_star_star ::= "**" parameter
-        check = nameType === ezP.T3.Expr.identifier?[ezP.T3.Expr.expression_star_star,
-          ezP.T3.Expr.parameter_star_star]:
-        [ezP.T3.Expr.expression_star_star]
+        check = nameType === edY.T3.Expr.identifier?[edY.T3.Expr.expression_star_star,
+          edY.T3.Expr.parameter_star_star]:
+        [edY.T3.Expr.expression_star_star]
       break
       case model.STAR_NAME:
         // expression_star ::= "*" expression
         // parameter_star ::= "*" [parameter]
         // target_star ::= "*" target
         // star_expr ::= "*" or_expr
-        check = nameType === ezP.T3.Expr.identifier?
-        [ezP.T3.Expr.expression_star,
-          ezP.T3.Expr.parameter_star,
-          ezP.T3.Expr.target_star,
-          ezP.T3.Expr.star_expr,]:
-        [ezP.T3.Expr.expression_star,
-          ezP.T3.Expr.target_star,
-          ezP.T3.Expr.star_expr,]
+        check = nameType === edY.T3.Expr.identifier?
+        [edY.T3.Expr.expression_star,
+          edY.T3.Expr.parameter_star,
+          edY.T3.Expr.target_star,
+          edY.T3.Expr.star_expr,]:
+        [edY.T3.Expr.expression_star,
+          edY.T3.Expr.target_star,
+          edY.T3.Expr.star_expr,]
       break
       case model.NAME_ANNOTATION:
         // parameter_s3d ::= identifier ":" expression
-        check = [ezP.T3.Expr.parameter_s3d]
+        check = [edY.T3.Expr.parameter_s3d]
       break
       case model.STAR_NAME_ANNOTATION:
-       check = [ezP.T3.Expr.parameter_star]
+       check = [edY.T3.Expr.parameter_star]
       break
       case model.NAME_ANNOTATION_DEFINITION:
         // defparameter_s3d ::= parameter "=" expression
-        check = [ezP.T3.Expr.defparameter_s3d,]
+        check = [edY.T3.Expr.defparameter_s3d,]
       break
       case model.NAME_DEFINITION:
         // defparameter_s3d ::= parameter "=" expression
         // keyword_item ::= identifier "=" expression
-        check = [ezP.T3.Expr.defparameter_s3d,
-          ezP.T3.Expr.keyword_item,]
+        check = [edY.T3.Expr.defparameter_s3d,
+          edY.T3.Expr.keyword_item,]
       break
       case model.NAME_ALIAS:
         // module_as_s3d ::= module "as" identifier
         // import_identifier_as_s3d ::= identifier "as" identifier
-        check = nameType === ezP.T3.Expr.identifier? [ezP.T3.Expr.module_as_s3d, ezP.T3.Expr.import_identifier_as_s3d]: [ezP.T3.Expr.module_as_s3d]
+        check = nameType === edY.T3.Expr.identifier? [edY.T3.Expr.module_as_s3d, edY.T3.Expr.import_identifier_as_s3d]: [edY.T3.Expr.module_as_s3d]
       break
       case model.STAR:
-        check = [ezP.T3.Expr.parameter_star]
+        check = [edY.T3.Expr.parameter_star]
       break
     }
   }
@@ -383,7 +383,7 @@ ezP.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
  * @param {string} op op is the operator
  * @private
  */
-ezP.DelegateSvg.Expr.term.prototype.makeTitle = function (block, variant) {
+edY.DelegateSvg.Expr.term.prototype.makeTitle = function (block, variant) {
   var model = this.data.variant.model
   if (!goog.isDef(variant)) {
     variant = variantData.get()
@@ -393,29 +393,29 @@ ezP.DelegateSvg.Expr.term.prototype.makeTitle = function (block, variant) {
     case model.STAR_NAME:
     case model.STAR_NAME_ANNOTATION:
     case model.STAR:
-    args.push(ezP.Do.createSPAN('*', 'ezp-code-reserved'))
+    args.push(edY.Do.createSPAN('*', 'edy-code-reserved'))
     break
     case model.STAR_STAR_NAME:
-    args.push(ezP.Do.createSPAN('**', 'ezp-code-reserved'))
+    args.push(edY.Do.createSPAN('**', 'edy-code-reserved'))
     break
   }
   if (variant !== model.STAR) {
     var value = this.data.name.get()
-    args.push(ezP.Do.createSPAN(value || this.data.phantom.get() || ezP.Msg.Placeholder.IDENTIFIER, value? 'ezp-code': 'ezp-code-placeholder'))
+    args.push(edY.Do.createSPAN(value || this.data.phantom.get() || edY.Msg.Placeholder.IDENTIFIER, value? 'edy-code': 'edy-code-placeholder'))
     switch(variant) {
       case model.NAME_ANNOTATION:
       case model.STAR_NAME_ANNOTATION:
       case model.NAME_ANNOTATION_DEFINITION:
-        args.push(ezP.Do.createSPAN(':', 'ezp-code-reserved'), ezP.Do.createSPAN(' …', 'ezp-code-placeholder'))
+        args.push(edY.Do.createSPAN(':', 'edy-code-reserved'), edY.Do.createSPAN(' …', 'edy-code-placeholder'))
       break
     }
     switch(variant) {
       case model.NAME_ANNOTATION_DEFINITION:
       case model.NAME_DEFINITION:
-        args.push(ezP.Do.createSPAN(' = ', 'ezp-code-reserved'), ezP.Do.createSPAN('…', 'ezp-code-placeholder'))
+        args.push(edY.Do.createSPAN(' = ', 'edy-code-reserved'), edY.Do.createSPAN('…', 'edy-code-placeholder'))
       break
       case model.NAME_ALIAS:
-        args.push(ezP.Do.createSPAN(' as ', 'ezp-code-reserved'), ezP.Do.createSPAN('…', 'ezp-code-placeholder'))
+        args.push(edY.Do.createSPAN(' as ', 'edy-code-reserved'), edY.Do.createSPAN('…', 'edy-code-placeholder'))
       break
     }
   }
@@ -425,18 +425,18 @@ ezP.DelegateSvg.Expr.term.prototype.makeTitle = function (block, variant) {
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.term.prototype.populateContextMenuFirst_ = function (block, mgr) {
+edY.DelegateSvg.Expr.term.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var current = this.data.variant.get()
   var F = function(variant) {
     if (variant !== current) {
-      var title = block.ezp.makeTitle(block, variant)
-      var menuItem = new ezP.MenuItem(title, function() {
+      var title = block.edy.makeTitle(block, variant)
+      var menuItem = new edY.MenuItem(title, function() {
         Blockly.Events.setGroup(true)
         try {
-          block.ezp.data.variant.set(variant)
+          block.edy.data.variant.set(variant)
         } finally {
           Blockly.Events.setGroup(false)
         }
@@ -449,15 +449,15 @@ ezP.DelegateSvg.Expr.term.prototype.populateContextMenuFirst_ = function (block,
     F(variants[i])
   }
   mgr.shouldSeparate()
-  var menuItem = new ezP.MenuItem(ezP.Msg.RENAME, function() {
-      block.ezp.showEditor()
+  var menuItem = new edY.MenuItem(edY.Msg.RENAME, function() {
+      block.edy.showEditor()
     })
   mgr.addChild(menuItem, true)
   mgr.shouldSeparate()
-  ezP.DelegateSvg.Expr.term.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  edY.DelegateSvg.Expr.term.superClass_.populateContextMenuFirst_.call(this,block, mgr)
   return true
 }
 
-ezP.DelegateSvg.Term.T3s = [
-  ezP.T3.Expr.term,
+edY.DelegateSvg.Term.T3s = [
+  edY.T3.Expr.term,
 ]

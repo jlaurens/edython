@@ -13,7 +13,7 @@ thumbs.db
 /src/fonts/**
 /node_modules
 /sandbox/**
-/src/lib/ezp/scripts/build
+/src/lib/edy/scripts/build
 /**/python_workbench
 /**/.idea
 /**/*.ipynb

@@ -14,10 +14,10 @@
  * @see ../demos/submenus2.html
  */
 
-goog.provide('ezP.SubMenu')
+goog.provide('edY.SubMenu')
 
 goog.require('goog.ui.SubMenu')
-goog.require('ezP.MenuRenderer')
+goog.require('edY.MenuRenderer')
 
 /**
  * Class representing a submenu that can be added as an item to other menus.
@@ -33,20 +33,20 @@ goog.require('ezP.MenuRenderer')
  * @constructor
  * @extends {goog.ui.SubMenu}
  */
-ezP.SubMenu = function (content, optModel, optDomHelper, optRenderer) {
+edY.SubMenu = function (content, optModel, optDomHelper, optRenderer) {
   goog.ui.SubMenu.call(
     this, content, optModel, optDomHelper,
-    optRenderer || ezP.SubMenuRenderer.getInstance())
+    optRenderer || edY.SubMenuRenderer.getInstance())
 }
-goog.inherits(ezP.SubMenu, goog.ui.SubMenu)
-goog.tagUnsealableClass(ezP.SubMenu)
+goog.inherits(edY.SubMenu, goog.ui.SubMenu)
+goog.tagUnsealableClass(edY.SubMenu)
 
 /**
  * Sets the visiblility of the sub menu.
  * @param {boolean} visible Whether to show menu.
  * @private
  */
-ezP.SubMenu.prototype.setSubMenuVisible_ = function (visible) {
+edY.SubMenu.prototype.setSubMenuVisible_ = function (visible) {
   // Unhighlighting the menuitems if closing the menu so the event handlers can
   // determine the correct state.
   var subMenu = this.getMenu()
@@ -86,10 +86,10 @@ ezP.SubMenu.prototype.setSubMenuVisible_ = function (visible) {
  * Gets a reference to the submenu's actual menu.
  * @return {!goog.ui.Menu} Reference to the object representing the sub menu.
  */
-ezP.SubMenu.prototype.getMenu = function () {
+edY.SubMenu.prototype.getMenu = function () {
   if (!this.subMenu_) {
     this.setMenu(
-      new ezP.Menu(this.getDomHelper()), /* opt_internal */ true)
+      new edY.Menu(this.getDomHelper()), /* opt_internal */ true)
   } else if (this.externalSubMenu_ && this.subMenu_.getParent() !== this) {
     // Since it is possible for the same popup menu to be attached to multiple
     // submenus, we need to ensure that it has the correct parent event target.

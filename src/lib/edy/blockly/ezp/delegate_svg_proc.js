@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Proc')
+goog.provide('edY.DelegateSvg.Proc')
 
-goog.require('ezP.DelegateSvg.Term')
-goog.require('ezP.DelegateSvg.Group')
-goog.require('ezP.MenuItem')
+goog.require('edY.DelegateSvg.Term')
+goog.require('edY.DelegateSvg.Group')
+goog.require('edY.MenuItem')
 
 /**
  * Class for a DelegateSvg, decorator.
@@ -24,8 +24,8 @@ goog.require('ezP.MenuItem')
  *     type-specific functions for this block.
  * @constructor
  */
-//  decorator            /*   ::= "@" dotted_name ["(" [argument_list [","]] ")"]    */ : "ezp:decorator",
-ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
+//  decorator            /*   ::= "@" dotted_name ["(" [argument_list [","]] ")"]    */ : "edy:decorator",
+edY.DelegateSvg.Stmt.makeSubclass(edY.T3.Stmt.decorator, {
   data: {
     builtin: {
       all: ['staticmethod', 'classmethod'],
@@ -44,13 +44,13 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
       },
     },
     subtype: {
-      all: [ezP.T3.Expr.dotted_name, ezP.T3.Expr.identifier],
+      all: [edY.T3.Expr.dotted_name, edY.T3.Expr.identifier],
     },
     dotted_name: {
       default: '',
       validate: function(newValue) {
         var subtypes = this.data.subtype.getAll()
-        var subtype = ezP.Do.typeOfString(newValue)
+        var subtype = edY.Do.typeOfString(newValue)
         return (subtypes.indexOf(subtype)>= 0) && {validated: newValue} || null
       },
       synchronize: true,
@@ -69,7 +69,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
         edit: {
           validate: true,
           endEditing: true,
-          placeholder: ezP.Msg.Placeholder.DECORATOR,
+          placeholder: edY.Msg.Placeholder.DECORATOR,
           // left_space: true,
         },
       },
@@ -94,7 +94,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
         start: '(',
         end: ')',
       },
-      wrap: ezP.T3.Expr.argument_list,
+      wrap: edY.T3.Expr.argument_list,
       xml: {
         didLoad: function () {
           var variant = this.owner.data.variant
@@ -117,62 +117,62 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.decorator, {
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
-ezP.DelegateSvg.Stmt.decorator.prototype.isWhite = function (block) {
+edY.DelegateSvg.Stmt.decorator.prototype.isWhite = function (block) {
   return block.nextConnection.isConnected()
 }
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-ezP.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (block, mgr) {
+edY.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var dotted_name = this.data.dotted_name.get()
   var builtin = this.data.builtin.get()
   var builtins = this.data.builtin.getAll()
   var i_b = builtins.indexOf(builtin)
   var M = this.data.variant.model
   var variant = this.data.variant.get()
-  var menuItem = new ezP.MenuItem(
-      ezP.Do.createSPAN('@'+builtins[0], 'ezp-code-reserved'),
+  var menuItem = new edY.MenuItem(
+      edY.Do.createSPAN('@'+builtins[0], 'edy-code-reserved'),
       function() {
-    block.ezp.data.builtin.set(0)
-    block.ezp.data.variant.set(M.BUILTIN)
+    block.edy.data.builtin.set(0)
+    block.edy.data.variant.set(M.BUILTIN)
   })
   menuItem.setEnabled(i_b != 0 || variant != M.BUILTIN)
   mgr.addChild(menuItem)
-  menuItem = new ezP.MenuItem(
-      ezP.Do.createSPAN('@'+builtins[1], 'ezp-code-reserved'),
+  menuItem = new edY.MenuItem(
+      edY.Do.createSPAN('@'+builtins[1], 'edy-code-reserved'),
       function() {
-    block.ezp.data.builtin.set(1)
-    block.ezp.data.variant.set(M.BUILTIN)
+    block.edy.data.builtin.set(1)
+    block.edy.data.variant.set(M.BUILTIN)
   })
   menuItem.setEnabled(i_b != 1 || variant != M.BUILTIN)
   mgr.addChild(menuItem)
-  menuItem = new ezP.MenuItem(
-      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN('@', 'ezp-code-reserved'),
-      ezP.Do.createSPAN(dotted_name || ezP.Msg.Placeholder.DECORATOR, !dotted_name && 'ezp-code-placeholder'),
+  menuItem = new edY.MenuItem(
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+      edY.Do.createSPAN('@', 'edy-code-reserved'),
+      edY.Do.createSPAN(dotted_name || edY.Msg.Placeholder.DECORATOR, !dotted_name && 'edy-code-placeholder'),
     ),
       function() {
-    block.ezp.data.variant.set(M.DOTTED_NAME)
+    block.edy.data.variant.set(M.DOTTED_NAME)
   })
   menuItem.setEnabled(variant !== M.DOTTED_NAME)
   mgr.addChild(menuItem)
-  menuItem = new ezP.MenuItem(
-      goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN('@', 'ezp-code-reserved'),
-      ezP.Do.createSPAN(dotted_name || ezP.Msg.Placeholder.DECORATOR, !dotted_name && 'ezp-code-placeholder'),
+  menuItem = new edY.MenuItem(
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+      edY.Do.createSPAN('@', 'edy-code-reserved'),
+      edY.Do.createSPAN(dotted_name || edY.Msg.Placeholder.DECORATOR, !dotted_name && 'edy-code-placeholder'),
       goog.dom.createTextNode('(…)')
     ),
       function() {
-    block.ezp.data.variant.set(M.ARGUMENTS)
+    block.edy.data.variant.set(M.ARGUMENTS)
   })
   menuItem.setEnabled(variant !== M.ARGUMENTS)
   mgr.addChild(menuItem)
   mgr.shouldSeparate()
-  return ezP.DelegateSvg.Stmt.decorator.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return edY.DelegateSvg.Stmt.decorator.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 /**
@@ -184,10 +184,10 @@ ezP.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (b
  */
  // funcdef_part ::= ["async"] "def" funcname "(" [parameter_list] ")" ["->" expression] ":" SUITE
 
-ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
+edY.DelegateSvg.Group.makeSubclass('funcdef_part', {
   data: {
     variant: {
-      all: [null, ezP.Key.TYPE],
+      all: [null, edY.Key.TYPE],
       synchronize: function (newValue) {
         this.ui.tiles.type.setIncog(!newValue)
       },
@@ -195,8 +195,8 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
     name: {
       default: '',
       validate: function(newValue) {
-        var type = ezP.Do.typeOfString(newValue)
-        return type === ezP.T3.Expr.identifier? {validated: newValue}: null
+        var type = edY.Do.typeOfString(newValue)
+        return type === edY.T3.Expr.identifier? {validated: newValue}: null
       },
       synchronize: function(newValue) {
         this.setFieldValue(this.toText())
@@ -211,12 +211,12 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
       order: 1,
       fields: {
         edit: {
-          placeholder: ezP.Msg.Placeholder.IDENTIFIER,
+          placeholder: edY.Msg.Placeholder.IDENTIFIER,
           validate: function(txt) {
-            return this.ezp.validateData(goog.isDef(txt)? txt: this.getValue())
+            return this.edy.validateData(goog.isDef(txt)? txt: this.getValue())
           },
           endEditing: function () {
-            this.ezp.setData(this.getValue())
+            this.edy.setData(this.getValue())
           },
         },
       },
@@ -227,14 +227,14 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
         start: '(',
         end: ')',
       },
-      wrap: ezP.T3.Expr.parameter_list,
+      wrap: edY.T3.Expr.parameter_list,
     },
     type: {
       order: 3,
       fields: {
         label: '->',
       },
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
     },
   },
 })
@@ -242,31 +242,31 @@ ezP.DelegateSvg.Group.makeSubclass('funcdef_part', {
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
+edY.DelegateSvg.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var variants = this.data.variant.getAll()
-  var variant = block.ezp.data.variant.get()
+  var variant = block.edy.data.variant.get()
   var F = function(content, key) {
-    var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.variant.set(key)
+    var menuItem = new edY.MenuItem(content, function() {
+      block.edy.data.variant.set(key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== variant)
   }
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN('def', 'ezp-code-reserved'),
-      ezP.Do.createSPAN(' f', 'ezp-code-placeholder'),
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+      edY.Do.createSPAN('def', 'edy-code-reserved'),
+      edY.Do.createSPAN(' f', 'edy-code-placeholder'),
       goog.dom.createTextNode('(…)'),
     ), variants[0])
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN('def', 'ezp-code-reserved'),
-      ezP.Do.createSPAN(' f', 'ezp-code-placeholder'),
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+      edY.Do.createSPAN('def', 'edy-code-reserved'),
+      edY.Do.createSPAN(' f', 'edy-code-placeholder'),
       goog.dom.createTextNode('(…) -> …'),
   ), variants[1])
   mgr.shouldSeparate()
-  return ezP.DelegateSvg.Stmt.funcdef_part.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  return edY.DelegateSvg.Stmt.funcdef_part.superClass_.populateContextMenuFirst_.call(this,block, mgr)
 }
 
 /*
@@ -280,10 +280,10 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
+edY.DelegateSvg.Group.makeSubclass('classdef_part', {
   data: {
     variant: {
-      all: [null, ezP.Key.ARGUMENTS],
+      all: [null, edY.Key.ARGUMENTS],
       synchronize: function(newValue) {
         this.ui.tiles.arguments.setIncog(!newValue)
       },
@@ -291,8 +291,8 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
     name: {
       default: '',
       validate: function(newValue) {
-        var type = ezP.Do.typeOfString(newValue)
-        return type === ezP.T3.Expr.identifier? {validated: newValue}: null
+        var type = edY.Do.typeOfString(newValue)
+        return type === edY.T3.Expr.identifier? {validated: newValue}: null
       },
       synchronize: function(newValue) {
         this.setFieldValue(this.toText())
@@ -311,7 +311,7 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
         edit: {
           validate: true,
           endEditing: true,
-          placeholder: ezP.Msg.Placeholder.IDENTIFIER,
+          placeholder: edY.Msg.Placeholder.IDENTIFIER,
         },
       },
     },
@@ -321,7 +321,7 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
         start: '(',
         end: ')',
       },
-      wrap: ezP.T3.Expr.argument_list,
+      wrap: edY.T3.Expr.argument_list,
     },
   },
 })
@@ -329,35 +329,35 @@ ezP.DelegateSvg.Group.makeSubclass('classdef_part', {
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
+edY.DelegateSvg.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var variants = this.data.variant.getAll()
-  var variant = block.ezp.data.variant.get()
+  var variant = block.edy.data.variant.get()
   var F = function(content, key) {
-    var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.variant.set(key)
+    var menuItem = new edY.MenuItem(content, function() {
+      block.edy.data.variant.set(key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== variant)
   }
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN('class', 'ezp-code-reserved'),
-      ezP.Do.createSPAN(' name', 'ezp-code-placeholder'),
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+      edY.Do.createSPAN('class', 'edy-code-reserved'),
+      edY.Do.createSPAN(' name', 'edy-code-placeholder'),
     ), variants[0])
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN('class', 'ezp-code-reserved'),
-      ezP.Do.createSPAN(' name', 'ezp-code-placeholder'),
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+      edY.Do.createSPAN('class', 'edy-code-reserved'),
+      edY.Do.createSPAN(' name', 'edy-code-placeholder'),
       goog.dom.createTextNode('(…)'),
   ), variants[1])
   mgr.shouldSeparate()
-  return ezP.DelegateSvg.Stmt.classdef_part.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  return edY.DelegateSvg.Stmt.classdef_part.superClass_.populateContextMenuFirst_.call(this,block, mgr)
 }
 
-ezP.DelegateSvg.Proc.T3s = [
-  ezP.T3.Expr.term,
-  ezP.T3.Stmt.decorator,
-  ezP.T3.Stmt.funcdef_part,
-  ezP.T3.Stmt.classdef_part,
+edY.DelegateSvg.Proc.T3s = [
+  edY.T3.Expr.term,
+  edY.T3.Stmt.decorator,
+  edY.T3.Stmt.funcdef_part,
+  edY.T3.Stmt.classdef_part,
 ]

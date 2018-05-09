@@ -11,14 +11,14 @@
  */
 'use strict'
 
-goog.provide('ezP.BlockSvg')
+goog.provide('edY.BlockSvg')
 
-goog.require('ezP.Block')
-goog.require('ezP.DelegateSvg')
+goog.require('edY.Block')
+goog.require('edY.DelegateSvg')
 goog.require('Blockly.BlockSvg')
-goog.forwardDeclare('ezP.MenuManager')
+goog.forwardDeclare('edY.MenuManager')
 
-ezP.inherits(Blockly.BlockSvg, ezP.Block)
+edY.inherits(Blockly.BlockSvg, edY.Block)
 
 /**
  * Class for a block's SVG representation.
@@ -32,11 +32,11 @@ ezP.inherits(Blockly.BlockSvg, ezP.Block)
  * @extends {Blockly.Block}
  * @constructor
  */
-ezP.BlockSvg = function (workspace, prototypeName, optId) {
-  ezP.BlockSvg.superClass_.constructor.call(this,
+edY.BlockSvg = function (workspace, prototypeName, optId) {
+  edY.BlockSvg.superClass_.constructor.call(this,
     workspace, prototypeName, optId)
 }
-goog.inherits(ezP.BlockSvg, Blockly.BlockSvg)
+goog.inherits(edY.BlockSvg, Blockly.BlockSvg)
 
 /**
  * Initialize the block.
@@ -44,21 +44,21 @@ goog.inherits(ezP.BlockSvg, Blockly.BlockSvg)
  * No rendering of that block is done during that process,
  * linked blocks may render though.
  */
-ezP.BlockSvg.prototype.init = function() {
-  this.ezp.skipRendering = true
-  this.ezp.initBlock(this)
-  this.ezp.skipRendering = false
+edY.BlockSvg.prototype.init = function() {
+  this.edy.skipRendering = true
+  this.edy.initBlock(this)
+  this.edy.skipRendering = false
 }
 
 /**
  * Create and initialize the SVG representation of the block.
  * May be called more than once.
  */
-ezP.BlockSvg.prototype.initSvg = function() {
-  this.ezp.preInitSvg(this)
-  ezP.BlockSvg.superClass_.initSvg.call(this)
-  this.ezp.postInitSvg(this)
-  this.ezp.initSvgWrap(this)
+edY.BlockSvg.prototype.initSvg = function() {
+  this.edy.preInitSvg(this)
+  edY.BlockSvg.superClass_.initSvg.call(this)
+  this.edy.postInitSvg(this)
+  this.edy.initSvgWrap(this)
 };
 
 /**
@@ -69,11 +69,11 @@ ezP.BlockSvg.prototype.initSvg = function() {
  * @param {string} name The name of the field.
  * @return {Blockly.Field} Named field, or null if field does not exist.
  */
-ezP.BlockSvg.prototype.getField = function(name) {
-  return ezP.BlockSvg.superClass_.getField.call(this, name) || this.ezp.getField(this, name)
+edY.BlockSvg.prototype.getField = function(name) {
+  return edY.BlockSvg.superClass_.getField.call(this, name) || this.edy.getField(this, name)
 }
 
-ezP.BlockSvg.CORNER_RADIUS = 3
+edY.BlockSvg.CORNER_RADIUS = 3
 
 /**
  * Render the block.
@@ -81,8 +81,8 @@ ezP.BlockSvg.CORNER_RADIUS = 3
  * @param {boolean=} optBubble If false, just render this block.
  *   If true, also render block's parent, grandparent, etc.  Defaults to true.
  */
-ezP.BlockSvg.prototype.render = function (optBubble) {
-  this.ezp.render(this, optBubble)
+edY.BlockSvg.prototype.render = function (optBubble) {
+  this.edy.render(this, optBubble)
 }
 
 /**
@@ -90,13 +90,13 @@ ezP.BlockSvg.prototype.render = function (optBubble) {
  * @param {string} name The name of the input.
  * @return {Blockly.Input} The input object, or null if input does not exist.
  */
-ezP.BlockSvg.prototype.getInput = function (name) {
-  var input = this.ezp.getInput(this, name)
+edY.BlockSvg.prototype.getInput = function (name) {
+  var input = this.edy.getInput(this, name)
   if (!input) {
-    input = ezP.BlockSvg.superClass_.getInput.call(this, name)
+    input = edY.BlockSvg.superClass_.getInput.call(this, name)
   }
   if (input) {
-    ezP.Input.setupEzpData(input)
+    edY.Input.setupEzpData(input)
   }
   return input
 }
@@ -105,28 +105,28 @@ ezP.BlockSvg.prototype.getInput = function (name) {
  * Select this block.  Highlight it visually.
  * Wrapped blocks are not selectable.
  */
-ezP.BlockSvg.prototype.select = function() {
+edY.BlockSvg.prototype.select = function() {
   if (!this.workspace) {
     return
   }
-  if (!this.ezp.selectedConnection && this.ezp.wrapped_ && this.getSurroundParent()) {
+  if (!this.edy.selectedConnection && this.edy.wrapped_ && this.getSurroundParent()) {
     // Wrapped blocks should not be selected.
     this.getSurroundParent().select();
     return;
   }
-  var more = this.ezp.selectedConnection || this.ezp.selectedConnectionSource_ && this.ezp.selectedConnectionSource_.ezp.selectedConnection
-  ezP.BlockSvg.superClass_.select.call(this)
+  var more = this.edy.selectedConnection || this.edy.selectedConnectionSource_ && this.edy.selectedConnectionSource_.edy.selectedConnection
+  edY.BlockSvg.superClass_.select.call(this)
   if (more) {
-    if (this.ezp.svgPathHighlight_ && this.ezp.svgPathHighlight_.parentNode) {
-      goog.dom.removeNode(this.ezp.svgPathHighlight_)
+    if (this.edy.svgPathHighlight_ && this.edy.svgPathHighlight_.parentNode) {
+      goog.dom.removeNode(this.edy.svgPathHighlight_)
     }
-  } else if (this.ezp.svgPathHighlight_ && !this.ezp.svgPathHighlight_.parentNode) {
-    this.svgGroup_.appendChild(this.ezp.svgPathHighlight_)
+  } else if (this.edy.svgPathHighlight_ && !this.edy.svgPathHighlight_.parentNode) {
+    this.svgGroup_.appendChild(this.edy.svgPathHighlight_)
   }
-  if (!this.ezp.canEdit_) {
+  if (!this.edy.canEdit_) {
     var block = this
     setTimeout(function() {
-      block.ezp.canEdit_ = true
+      block.edy.canEdit_ = true
     }, 10)
   }
 }
@@ -136,14 +136,14 @@ ezP.BlockSvg.prototype.select = function() {
  * If there is a selected connection, it is removed.
  * Unselect is used from click handling methods.
  */
-ezP.BlockSvg.prototype.unselect = function() {
-  ezP.BlockSvg.superClass_.unselect.call(this)
-  this.ezp.canEdit_ = false
-  var B = this.ezp.selectedConnectionSource_
+edY.BlockSvg.prototype.unselect = function() {
+  edY.BlockSvg.superClass_.unselect.call(this)
+  this.edy.canEdit_ = false
+  var B = this.edy.selectedConnectionSource_
   if (B) {
     B.removeSelect()
-    B.ezp.selectedConnection = null
-    this.ezp.selectedConnectionSource_ = null
+    B.edy.selectedConnection = null
+    this.edy.selectedConnectionSource_ = null
   }
   this.removeSelect()
 }
@@ -154,29 +154,29 @@ ezP.BlockSvg.prototype.unselect = function() {
  * If the block is wrapped, the first parent which is not wrapped will be
  * selected.
  */
-ezP.BlockSvg.prototype.addSelect = function () {
-  if (this.ezp.selectedConnection) {
-    if (!this.ezp.svgPathConnection_ || this.ezp.svgPathConnection_.parentNode) {
+edY.BlockSvg.prototype.addSelect = function () {
+  if (this.edy.selectedConnection) {
+    if (!this.edy.svgPathConnection_ || this.edy.svgPathConnection_.parentNode) {
       return
     }
-    this.svgGroup_.appendChild(this.ezp.svgPathConnection_)
-  } else if (!this.ezp.wrapped_) {
-    var hasSelectedConnection = this.ezp.selectedConnectionSource_ && this.ezp.selectedConnectionSource_.ezp.selectedConnection
-    if (this.ezp.svgPathHighlight_) {
-      if (this.ezp.svgPathHighlight_.parentNode && hasSelectedConnection) {
-        goog.dom.removeNode(this.ezp.svgPathHighlight_)
-      } else if (!this.ezp.svgPathHighlight_.parentNode && !hasSelectedConnection) {
-        this.svgGroup_.appendChild(this.ezp.svgPathHighlight_)
+    this.svgGroup_.appendChild(this.edy.svgPathConnection_)
+  } else if (!this.edy.wrapped_) {
+    var hasSelectedConnection = this.edy.selectedConnectionSource_ && this.edy.selectedConnectionSource_.edy.selectedConnection
+    if (this.edy.svgPathHighlight_) {
+      if (this.edy.svgPathHighlight_.parentNode && hasSelectedConnection) {
+        goog.dom.removeNode(this.edy.svgPathHighlight_)
+      } else if (!this.edy.svgPathHighlight_.parentNode && !hasSelectedConnection) {
+        this.svgGroup_.appendChild(this.edy.svgPathHighlight_)
       }
     }
   }
-  if (goog.dom.classlist.contains(this.svgGroup_, 'ezp-select')) {
+  if (goog.dom.classlist.contains(this.svgGroup_, 'edy-select')) {
     return
   }
-  goog.dom.classlist.add(this.svgGroup_, 'ezp-select')
+  goog.dom.classlist.add(this.svgGroup_, 'edy-select')
   // ensure that the svgGroup is the last in the list
   this.bringToFront()
-  var e8r = this.ezp.inputEnumerator(this)
+  var e8r = this.edy.inputEnumerator(this)
   while (e8r.next()) {
     for (var j = 0, field; (field = e8r.here.fieldRow[j++]);) {
       if (goog.isFunction(field.addSelect)) {
@@ -189,32 +189,32 @@ ezP.BlockSvg.prototype.addSelect = function () {
 /**
  * Unselect this block.  Remove its highlighting.
  */
-ezP.BlockSvg.prototype.removeSelect = function () {
-  if (this.ezp.wrapped_) {
-    if (!this.ezp.svgPathConnection_ || !this.ezp.svgPathConnection_.parentNode) {
+edY.BlockSvg.prototype.removeSelect = function () {
+  if (this.edy.wrapped_) {
+    if (!this.edy.svgPathConnection_ || !this.edy.svgPathConnection_.parentNode) {
       return
     }
   } else {
-    if ((!this.ezp.svgPathHighlight_ || !this.ezp.svgPathHighlight_.parentNode)
-      && (!this.ezp.svgPathConnection_ || !this.ezp.svgPathConnection_.parentNode)) {
+    if ((!this.edy.svgPathHighlight_ || !this.edy.svgPathHighlight_.parentNode)
+      && (!this.edy.svgPathConnection_ || !this.edy.svgPathConnection_.parentNode)) {
         if (this.svgGroup_) { // how come that we must test that?
-          Blockly.utils.removeClass(this.svgGroup_, 'ezp-select')
+          Blockly.utils.removeClass(this.svgGroup_, 'edy-select')
         }
         return
     }
-    goog.dom.removeNode(this.ezp.svgPathHighlight_)
+    goog.dom.removeNode(this.edy.svgPathHighlight_)
   }
   if (this.svgGroup_) {
-    Blockly.utils.removeClass(this.svgGroup_, 'ezp-select')
+    Blockly.utils.removeClass(this.svgGroup_, 'edy-select')
   }
-  if (this.ezp.svgPathConnection_ && this.ezp.svgPathConnection_.parentNode) {
-    goog.dom.removeNode(this.ezp.svgPathConnection_)
+  if (this.edy.svgPathConnection_ && this.edy.svgPathConnection_.parentNode) {
+    goog.dom.removeNode(this.edy.svgPathConnection_)
   }
   var B
-  if (!this.ezp.selectedConnection || ((B = Blockly.selected) && B.selectedConnectionSource_ != this)) {
-    goog.dom.removeNode(this.ezp.svgPathConnection_)
+  if (!this.edy.selectedConnection || ((B = Blockly.selected) && B.selectedConnectionSource_ != this)) {
+    goog.dom.removeNode(this.edy.svgPathConnection_)
   }
-  var e8r = this.ezp.inputEnumerator(this)
+  var e8r = this.edy.inputEnumerator(this)
   while (e8r.next()) {
     for (var j = 0, field; (field = e8r.here.fieldRow[j++]);) {
       if (goog.isFunction(field.removeSelect)) {
@@ -229,16 +229,16 @@ ezP.BlockSvg.prototype.removeSelect = function () {
  * Place the highlighting path at the end.
  * @param {Blockly.BlockSvg} newParent New parent block.
  */
-ezP.BlockSvg.prototype.setParent = function (newParent) {
-  ezP.BlockSvg.superClass_.setParent.call(this, newParent)
-  if ((this.ezp.svgPathHighlight_ &&
-      this.svgGroup_ === this.ezp.svgPathHighlight_.parentElement) || (this.ezp.svgPathConnection_ &&
-        this.svgGroup_ === this.ezp.svgPathConnection_.parentElement)) {
+edY.BlockSvg.prototype.setParent = function (newParent) {
+  edY.BlockSvg.superClass_.setParent.call(this, newParent)
+  if ((this.edy.svgPathHighlight_ &&
+      this.svgGroup_ === this.edy.svgPathHighlight_.parentElement) || (this.edy.svgPathConnection_ &&
+        this.svgGroup_ === this.edy.svgPathConnection_.parentElement)) {
     this.removeSelect()
     this.addSelect()
-  } else if (newParent && ((newParent.ezp.svgPathHighlight_ &&
-      newParent.svgGroup_ === newParent.ezp.svgPathHighlight_.parentElement) || (newParent.ezp.svgPathConnection_ &&
-      newParent.svgGroup_ === newParent.ezp.svgPathConnection_.parentElement))) {
+  } else if (newParent && ((newParent.edy.svgPathHighlight_ &&
+      newParent.svgGroup_ === newParent.edy.svgPathHighlight_.parentElement) || (newParent.edy.svgPathConnection_ &&
+      newParent.svgGroup_ === newParent.edy.svgPathConnection_.parentElement))) {
     newParent.removeSelect()
     newParent.addSelect()
   }
@@ -247,8 +247,8 @@ ezP.BlockSvg.prototype.setParent = function (newParent) {
 /**
  * Play some UI effects (sound, ripple) after a connection has been established.
  */
-ezP.BlockSvg.prototype.connectionUiEffect = function () {
-  if (this.ezp) {
+edY.BlockSvg.prototype.connectionUiEffect = function () {
+  if (this.edy) {
     this.workspace.getAudioManager().play('click')
     if (this.workspace.scale < 1) {
       return // Too small to care about visual effects.
@@ -269,10 +269,10 @@ ezP.BlockSvg.prototype.connectionUiEffect = function () {
         this.workspace.getParentSvg())
     }
     // Start the animation.
-    ezP.BlockSvg.connectionUiStep_(ripple, new Date(), this.workspace.scale)
+    edY.BlockSvg.connectionUiStep_(ripple, new Date(), this.workspace.scale)
     return
   }
-  ezP.BlockSvg.superClass_.connectionUiEffect.call(this)
+  edY.BlockSvg.superClass_.connectionUiEffect.call(this)
 }
 
 /**
@@ -282,7 +282,7 @@ ezP.BlockSvg.prototype.connectionUiEffect = function () {
  * @param {number} workspaceScale Scale of workspace.
  * @private
  */
-ezP.BlockSvg.connectionUiStep_ = function (ripple, start, workspaceScale) {
+edY.BlockSvg.connectionUiStep_ = function (ripple, start, workspaceScale) {
   var ms = new Date() - start
   var percent = ms / 200
   if (percent > 1) {
@@ -290,7 +290,7 @@ ezP.BlockSvg.connectionUiStep_ = function (ripple, start, workspaceScale) {
   } else {
     ripple.style.opacity = 8 * Math.pow(percent, 2) * Math.pow(1-percent,2)
     Blockly.BlockSvg.disconnectUiStop_.pid_ = setTimeout(
-      ezP.BlockSvg.connectionUiStep_, 10, ripple, start, workspaceScale)
+      edY.BlockSvg.connectionUiStep_, 10, ripple, start, workspaceScale)
   }
 }
 
@@ -300,7 +300,7 @@ ezP.BlockSvg.connectionUiStep_ = function (ripple, start, workspaceScale) {
  * @return {!{height: number, width: number}} Object with height and width
  *    properties in workspace units.
  */
-ezP.BlockSvg.prototype.getHeightWidth = function () {
+edY.BlockSvg.prototype.getHeightWidth = function () {
   var height = this.height
   var width = this.width
   // Recursively add size of subsequent blocks.
@@ -318,7 +318,7 @@ ezP.BlockSvg.prototype.getHeightWidth = function () {
  * By pass Blockly.BlockSvg.prototype.setCollapsed
  * @param {boolean} collapsed True if collapsed.
  */
-ezP.BlockSvg.prototype.setCollapsed = function (collapsed) {
+edY.BlockSvg.prototype.setCollapsed = function (collapsed) {
   if (this.collapsed_ === collapsed) {
     return
   }
@@ -351,7 +351,7 @@ ezP.BlockSvg.prototype.setCollapsed = function (collapsed) {
  * Enable or disable a block. Noop. Disabled blocks start with '#'.
  * @override
  */
-ezP.BlockSvg.prototype.updateDisabled = function () {
+edY.BlockSvg.prototype.updateDisabled = function () {
   this.render()
 }
 
@@ -359,7 +359,7 @@ ezP.BlockSvg.prototype.updateDisabled = function () {
  * Noop. Bypass the inherited method.
  * @override
  */
-ezP.BlockSvg.prototype.updateColour = function () {
+edY.BlockSvg.prototype.updateColour = function () {
 
 }
 
@@ -368,12 +368,12 @@ ezP.BlockSvg.prototype.updateColour = function () {
  * @param {!Event} e Mouse event.
  * @private
  */
-ezP.BlockSvg.prototype.showContextMenu_ = function (e) {
+edY.BlockSvg.prototype.showContextMenu_ = function (e) {
   // this part is copied as is from the parent's implementation. Is it relevant ?
   if (this.workspace.options.readOnly || !this.contextMenu) {
     return
   }
-  ezP.MenuManager.shared().showMenu(this, e)
+  edY.MenuManager.shared().showMenu(this, e)
 }
 
 /**
@@ -389,9 +389,9 @@ ezP.BlockSvg.prototype.showContextMenu_ = function (e) {
  * @param {!Event} e Mouse down event or touch start event.
  * @private
  */
-// ezP.BlockSvg.prototype.onMouseUp_ = function(e) {
+// edY.BlockSvg.prototype.onMouseUp_ = function(e) {
 //   console.log('onMouseUp_ YES')
-//   ezP.BlockSvg.superClass_.onMouseUp_.call(this, e)
+//   edY.BlockSvg.superClass_.onMouseUp_.call(this, e)
 // }
 
 /**
@@ -407,13 +407,13 @@ ezP.BlockSvg.prototype.showContextMenu_ = function (e) {
  * @param {!Event} e Mouse down event or touch start event.
  * @private
  */
-ezP.BlockSvg.prototype.onMouseDown_ = function(e) {
-  if (this.ezp.wrapped_) {
+edY.BlockSvg.prototype.onMouseDown_ = function(e) {
+  if (this.edy.wrapped_) {
     // mouse down on a wrapped block means dragging
     // but dragging is not allowd for that blocks
     return
   }
-  if (this.ezp.locked_) {
+  if (this.edy.locked_) {
     var parent = this.getSurroundParent()
     if (parent) {
       return
@@ -422,12 +422,12 @@ ezP.BlockSvg.prototype.onMouseDown_ = function(e) {
   // Next is not good design
   // remove any selected connection, if any
   // but remember it for a contextual menu
-  this.ezp.lastSelectedConnection = ezP.SelectedConnection.get()
-  ezP.SelectedConnection.set(null)
-  this.ezp.selectedConnectionSource_ = null
+  this.edy.lastSelectedConnection = edY.SelectedConnection.get()
+  edY.SelectedConnection.set(null)
+  this.edy.selectedConnectionSource_ = null
   // Prepare the mouseUp event for an eventual connection selection
-  this.ezp.lastMouseDownEvent = this === Blockly.selected? e: null
-  ezP.BlockSvg.superClass_.onMouseDown_.call(this, e)
+  this.edy.lastMouseDownEvent = this === Blockly.selected? e: null
+  edY.BlockSvg.superClass_.onMouseDown_.call(this, e)
 }
 
 /**
@@ -436,7 +436,7 @@ ezP.BlockSvg.prototype.onMouseDown_ = function(e) {
  * Then, the higlighted path of the source blocks is not the outline of the block
  * but the shape of the connection as it shows when blocks are moved close enough.
  */
-ezP.DelegateSvg.prototype.onMouseUp_ = function(block, e) {
+edY.DelegateSvg.prototype.onMouseUp_ = function(block, e) {
   var ee = this.lastMouseDownEvent
   if (ee) {
     // this block was selected when the mouse ow event was sent
@@ -446,13 +446,13 @@ ezP.DelegateSvg.prototype.onMouseUp_ = function(block, e) {
         // try to select an input connection
         var c8n = this.getConnectionForEvent(block, e)
         if (c8n) {
-          ezP.SelectedConnection.set(c8n)
+          edY.SelectedConnection.set(c8n)
         } else {
-          ezP.SelectedConnection.set(this.lastSelectedConnection)
+          edY.SelectedConnection.set(this.lastSelectedConnection)
         }
       }
     } else {
-      ezP.SelectedConnection.set(null)
+      edY.SelectedConnection.set(null)
     }
   }
 }
@@ -466,7 +466,7 @@ ezP.DelegateSvg.prototype.onMouseUp_ = function(block, e) {
  * @param {boolean} animate If true, show a disposal animation and sound.
  * @override
  */
-ezP.BlockSvg.prototype.dispose = function(healStack, animate) {
+edY.BlockSvg.prototype.dispose = function(healStack, animate) {
   Blockly.Events.setGroup(true)
   try {
     if (this === Blockly.selected) {
@@ -477,10 +477,10 @@ ezP.BlockSvg.prototype.dispose = function(healStack, animate) {
       } else if ((c8n = this.outputConnection) && (c8n = c8n.targetConnection)) {
         target = c8n.sourceBlock_
         target.select()
-        ezP.SelectedConnection.set(c8n)
+        edY.SelectedConnection.set(c8n)
       }
     }
-    ezP.BlockSvg.superClass_.dispose.call(this, healStack, animate)
+    edY.BlockSvg.superClass_.dispose.call(this, healStack, animate)
   } finally {
     Blockly.Events.setGroup(false)
   }
@@ -497,8 +497,8 @@ ezP.BlockSvg.prototype.dispose = function(healStack, animate) {
  * @package
  * @override
  */
-ezP.BlockSvg.prototype.bringToFront = function() {
+edY.BlockSvg.prototype.bringToFront = function() {
   if (this === Blockly.selected) {
-    ezP.BlockSvg.superClass_.bringToFront.call(this)
+    edY.BlockSvg.superClass_.bringToFront.call(this)
   }
 }

@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('ezP.Draw')
+goog.provide('edY.Draw')
 
-goog.require('ezP.DelegateSvg')
+goog.require('edY.DelegateSvg')
 
 /**
  * Draw controller.

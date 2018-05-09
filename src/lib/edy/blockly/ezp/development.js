@@ -13,12 +13,12 @@
  */
 'use strict'
 
-goog.provide('ezP.Development')
+goog.provide('edY.Development')
 
-goog.require('ezP.DelegateSvg')
-goog.require('ezP.DelegateSvg.Import')
+goog.require('edY.DelegateSvg')
+goog.require('edY.DelegateSvg.Import')
 
-ezP.Do.arraysMerged = function(/* list of arrays */) {
+edY.Do.arraysMerged = function(/* list of arrays */) {
   var RA = []
   for (var i = 0, Xs; Xs = arguments[i++];) {
     goog.array.extend(RA,Xs)
@@ -33,41 +33,41 @@ ezP.Do.arraysMerged = function(/* list of arrays */) {
  * related to the given delegate.
  * in order to load the corresponding blocks in the workspace,
  * issue the following command in your main html file
- * ezP.DelegateSvg.(Expr|Stmt).(prototype).workspaceBlocks, 5, offset, step)
+ * edY.DelegateSvg.(Expr|Stmt).(prototype).workspaceBlocks, 5, offset, step)
  */
-ezP.DelegateSvg.workspaceBlocks = []
+edY.DelegateSvg.workspaceBlocks = []
 
-ezP.DelegateSvg.Expr.workspaceBlocks = [
-  ezP.T3.Expr.floatnumber,
-/*  ezP.T3.Expr.integer,
-  ezP.T3.Expr.imagnumber,
-  ezP.T3.Expr.shortstringliteral,
-  ezP.T3.Expr.shortbytesliteral,
-  ezP.T3.Expr.longstringliteral,
-  ezP.T3.Expr.longbytesliteral,
-  ezP.T3.Expr.u_expr_s3d,
-  ezP.T3.Expr.not_test_s3d,
-  ezP.T3.Expr.power_s3d,
-  ezP.T3.Expr.m_expr_s3d,
-  ezP.T3.Expr.a_expr_s3d,
-  ezP.T3.Expr.shift_expr_s3d,
-  ezP.T3.Expr.and_expr_s3d,
-  ezP.T3.Expr.xor_expr_s3d,
-  ezP.T3.Expr.or_expr_s3d,
-  ezP.T3.Expr.or_test_s3d,
-  ezP.T3.Expr.and_test_s3d,
-  ezP.T3.Expr.comprehension,
-  ezP.T3.Expr.comp_for,
-  ezP.T3.Expr.comp_if,
+edY.DelegateSvg.Expr.workspaceBlocks = [
+  edY.T3.Expr.floatnumber,
+/*  edY.T3.Expr.integer,
+  edY.T3.Expr.imagnumber,
+  edY.T3.Expr.shortstringliteral,
+  edY.T3.Expr.shortbytesliteral,
+  edY.T3.Expr.longstringliteral,
+  edY.T3.Expr.longbytesliteral,
+  edY.T3.Expr.u_expr_s3d,
+  edY.T3.Expr.not_test_s3d,
+  edY.T3.Expr.power_s3d,
+  edY.T3.Expr.m_expr_s3d,
+  edY.T3.Expr.a_expr_s3d,
+  edY.T3.Expr.shift_expr_s3d,
+  edY.T3.Expr.and_expr_s3d,
+  edY.T3.Expr.xor_expr_s3d,
+  edY.T3.Expr.or_expr_s3d,
+  edY.T3.Expr.or_test_s3d,
+  edY.T3.Expr.and_test_s3d,
+  edY.T3.Expr.comprehension,
+  edY.T3.Expr.comp_for,
+  edY.T3.Expr.comp_if,
   */
-  ezP.T3.Expr.non_void_expression_list,
-  ezP.T3.Expr.parenth_form,
-  ezP.T3.Expr.list_display,
-  ezP.T3.Expr.set_display,
-  ezP.T3.Expr.dict_display,
-  ezP.T3.Expr.dict_comprehension,
-  ezP.T3.Expr.yield_expression,
-  ezP.T3.Expr.yield_from_expression,
+  edY.T3.Expr.non_void_expression_list,
+  edY.T3.Expr.parenth_form,
+  edY.T3.Expr.list_display,
+  edY.T3.Expr.set_display,
+  edY.T3.Expr.dict_display,
+  edY.T3.Expr.dict_comprehension,
+  edY.T3.Expr.yield_expression,
+  edY.T3.Expr.yield_from_expression,
 ]
 
 /**
@@ -76,350 +76,350 @@ ezP.DelegateSvg.Expr.workspaceBlocks = [
  * related to the given delegate.
  */
 
-ezP.DelegateSvg.Expr.delimitedWorkspaceBlocks = [
-  ezP.T3.Expr.parenth_form,
-  ezP.T3.Expr.list_display,
-  ezP.T3.Expr.set_display,
-  ezP.T3.Expr.dict_display,
-  ezP.T3.Expr.starred_item_list,
-  ezP.T3.Expr.parenth_target_list,
-  ezP.T3.Expr.bracket_target_list,
+edY.DelegateSvg.Expr.delimitedWorkspaceBlocks = [
+  edY.T3.Expr.parenth_form,
+  edY.T3.Expr.list_display,
+  edY.T3.Expr.set_display,
+  edY.T3.Expr.dict_display,
+  edY.T3.Expr.starred_item_list,
+  edY.T3.Expr.parenth_target_list,
+  edY.T3.Expr.bracket_target_list,
 ]
 
-ezP.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks = ezP.DelegateSvg.Expr.argument_list.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Expr.argument_list,
-  ezP.T3.Expr.keyword_item,
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.argument_list_comprehensive,
-  ezP.T3.Expr.comprehension,
-] , null/*ezP.T3.Expr.Check.expression*/)
+edY.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks = edY.DelegateSvg.Expr.argument_list.workspaceBlocks = edY.Do.arraysMerged([
+  edY.T3.Expr.argument_list,
+  edY.T3.Expr.keyword_item,
+  edY.T3.Expr.term,
+  edY.T3.Expr.argument_list_comprehensive,
+  edY.T3.Expr.comprehension,
+] , null/*edY.T3.Expr.Check.expression*/)
 
 
-ezP.DelegateSvg.Stmt.import_stmt.workspaceBlocks = [
-  ezP.T3.Expr.non_void_module_as_list,
-  ezP.T3.Expr.import_module,
-  ezP.T3.Expr.module_as_s3d,
-  ezP.T3.Expr.term,
+edY.DelegateSvg.Stmt.import_stmt.workspaceBlocks = [
+  edY.T3.Expr.non_void_module_as_list,
+  edY.T3.Expr.import_module,
+  edY.T3.Expr.module_as_s3d,
+  edY.T3.Expr.term,
 ]
 
 
-ezP.DelegateSvg.Expr.dict_comprehension.workspaceBlocks =
-ezP.DelegateSvg.Expr.comprehension.workspaceBlocks = [
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.comp_for,
-  ezP.T3.Expr.comp_if,
-  ezP.T3.Expr.target_list,
-  ezP.T3.Expr.comp_iter_list,
-  ezP.T3.Expr.comprehension,
-  ezP.T3.Expr.key_datum_s3d,
-  ezP.T3.Expr.dict_comprehension,
+edY.DelegateSvg.Expr.dict_comprehension.workspaceBlocks =
+edY.DelegateSvg.Expr.comprehension.workspaceBlocks = [
+  edY.T3.Expr.term,
+  edY.T3.Expr.comp_for,
+  edY.T3.Expr.comp_if,
+  edY.T3.Expr.target_list,
+  edY.T3.Expr.comp_iter_list,
+  edY.T3.Expr.comprehension,
+  edY.T3.Expr.key_datum_s3d,
+  edY.T3.Expr.dict_comprehension,
 ]
 
-ezP.DelegateSvg.Expr.dict_comprehension.workspaceBlocks = [
-  ezP.T3.Expr.comprehension,
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.comp_for,
-  ezP.T3.Expr.comp_if,
-  ezP.T3.Expr.target_list,
-  ezP.T3.Expr.comp_iter_list,
+edY.DelegateSvg.Expr.dict_comprehension.workspaceBlocks = [
+  edY.T3.Expr.comprehension,
+  edY.T3.Expr.term,
+  edY.T3.Expr.comp_for,
+  edY.T3.Expr.comp_if,
+  edY.T3.Expr.target_list,
+  edY.T3.Expr.comp_iter_list,
 ]
 
-ezP.DelegateSvg.Expr.a_expr_s3d.workspaceBlocks = 
-ezP.DelegateSvg.Expr.m_expr_s3d.workspaceBlocks = 
-ezP.DelegateSvg.Expr.u_expr_s3d.workspaceBlocks = [
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.a_expr_s3d,
-  ezP.T3.Expr.m_expr_s3d,
-  ezP.T3.Expr.u_expr_s3d,
+edY.DelegateSvg.Expr.a_expr_s3d.workspaceBlocks = 
+edY.DelegateSvg.Expr.m_expr_s3d.workspaceBlocks = 
+edY.DelegateSvg.Expr.u_expr_s3d.workspaceBlocks = [
+  edY.T3.Expr.term,
+  edY.T3.Expr.a_expr_s3d,
+  edY.T3.Expr.m_expr_s3d,
+  edY.T3.Expr.u_expr_s3d,
 ]
 
-ezP.DelegateSvg.Expr.shift_expr_s3d.workspaceBlocks = 
-ezP.DelegateSvg.Expr.and_expr_s3d.workspaceBlocks = 
-ezP.DelegateSvg.Expr.xor_expr_s3d.workspaceBlocks = 
-ezP.DelegateSvg.Expr.or_expr_s3d.workspaceBlocks = [
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.shift_expr_s3d,
-  ezP.T3.Expr.and_expr_s3d,
-  ezP.T3.Expr.xor_expr_s3d,
-  ezP.T3.Expr.or_expr_s3d,
+edY.DelegateSvg.Expr.shift_expr_s3d.workspaceBlocks = 
+edY.DelegateSvg.Expr.and_expr_s3d.workspaceBlocks = 
+edY.DelegateSvg.Expr.xor_expr_s3d.workspaceBlocks = 
+edY.DelegateSvg.Expr.or_expr_s3d.workspaceBlocks = [
+  edY.T3.Expr.term,
+  edY.T3.Expr.shift_expr_s3d,
+  edY.T3.Expr.and_expr_s3d,
+  edY.T3.Expr.xor_expr_s3d,
+  edY.T3.Expr.or_expr_s3d,
 ]
 
-ezP.DelegateSvg.Expr.number_comparison.workspaceBlocks = 
-ezP.DelegateSvg.Expr.object_comparison.workspaceBlocks = [
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.number_comparison,
-  ezP.T3.Expr.object_comparison,
+edY.DelegateSvg.Expr.number_comparison.workspaceBlocks = 
+edY.DelegateSvg.Expr.object_comparison.workspaceBlocks = [
+  edY.T3.Expr.term,
+  edY.T3.Expr.number_comparison,
+  edY.T3.Expr.object_comparison,
 ]
 
-ezP.DelegateSvg.Expr.and_test_s3d.workspaceBlocks = 
-ezP.DelegateSvg.Expr.or_test_s3d.workspaceBlocks = [
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.and_test_s3d,
-  ezP.T3.Expr.or_test_s3d,
+edY.DelegateSvg.Expr.and_test_s3d.workspaceBlocks = 
+edY.DelegateSvg.Expr.or_test_s3d.workspaceBlocks = [
+  edY.T3.Expr.term,
+  edY.T3.Expr.and_test_s3d,
+  edY.T3.Expr.or_test_s3d,
 ]
 
-ezP.DelegateSvg.Expr.optional_expression_list.workspaceBlocks = [
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.optional_expression_list,
+edY.DelegateSvg.Expr.optional_expression_list.workspaceBlocks = [
+  edY.T3.Expr.term,
+  edY.T3.Expr.term,
+  edY.T3.Expr.optional_expression_list,
 ]
 
-ezP.DelegateSvg.Expr.key_datum_list_comprehensive.workspaceBlocks = [
-  ezP.T3.Expr.key_datum_s3d,
-  ezP.T3.Expr.dict_comprehension,
-  ezP.T3.Expr.key_datum_list_comprehensive,
+edY.DelegateSvg.Expr.key_datum_list_comprehensive.workspaceBlocks = [
+  edY.T3.Expr.key_datum_s3d,
+  edY.T3.Expr.dict_comprehension,
+  edY.T3.Expr.key_datum_list_comprehensive,
 ]
 
-ezP.DelegateSvg.Stmt.yield_stmt.workspaceBlocks =
-ezP.DelegateSvg.Expr.yield_expression.workspaceBlocks = [
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.yield_expression,
-  ezP.T3.Stmt.yield_stmt,
-  ezP.T3.Expr.yield_expression_list,
-  ezP.T3.Expr.yield_from_expression,
+edY.DelegateSvg.Stmt.yield_stmt.workspaceBlocks =
+edY.DelegateSvg.Expr.yield_expression.workspaceBlocks = [
+  edY.T3.Expr.term,
+  edY.T3.Expr.yield_expression,
+  edY.T3.Stmt.yield_stmt,
+  edY.T3.Expr.yield_expression_list,
+  edY.T3.Expr.yield_from_expression,
 ]
 
-ezP.DelegateSvg.Stmt.import_stmt.workspaceBlocks = [
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.module_as_s3d,
-  ezP.T3.Expr.non_void_module_as_list,
-  ezP.T3.Expr.import_module,
-  ezP.T3.Expr.non_void_import_identifier_as_list,
-  ezP.T3.Expr.parent_module,
-  ezP.T3.Expr.from_relative_module_import,
-  ezP.T3.Stmt.import_stmt,
-  ezP.T3.Expr.from_module_import,
-  ezP.T3.Expr.import_module,
-  ezP.T3.Stmt.future_statement,
+edY.DelegateSvg.Stmt.import_stmt.workspaceBlocks = [
+  edY.T3.Expr.term,
+  edY.T3.Expr.module_as_s3d,
+  edY.T3.Expr.non_void_module_as_list,
+  edY.T3.Expr.import_module,
+  edY.T3.Expr.non_void_import_identifier_as_list,
+  edY.T3.Expr.parent_module,
+  edY.T3.Expr.from_relative_module_import,
+  edY.T3.Stmt.import_stmt,
+  edY.T3.Expr.from_module_import,
+  edY.T3.Expr.import_module,
+  edY.T3.Stmt.future_statement,
 ]
 
-ezP.DelegateSvg.Stmt.if_part.workspaceBlocks =
-ezP.DelegateSvg.Stmt.while_part.workspaceBlocks =
-ezP.DelegateSvg.Stmt.for_part.workspaceBlocks =
-ezP.DelegateSvg.Stmt.with_part.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Stmt.if_part,
-  ezP.T3.Stmt.elif_part,
-  ezP.T3.Stmt.else_part,
-  ezP.T3.Stmt.while_part,
-  ezP.T3.Stmt.for_part,
-  ezP.T3.Stmt.with_part,
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.target_list,
-  ezP.T3.Expr.expression_list,
-  ezP.T3.Expr.with_item_list,
+edY.DelegateSvg.Stmt.if_part.workspaceBlocks =
+edY.DelegateSvg.Stmt.while_part.workspaceBlocks =
+edY.DelegateSvg.Stmt.for_part.workspaceBlocks =
+edY.DelegateSvg.Stmt.with_part.workspaceBlocks = edY.Do.arraysMerged([
+  edY.T3.Stmt.if_part,
+  edY.T3.Stmt.elif_part,
+  edY.T3.Stmt.else_part,
+  edY.T3.Stmt.while_part,
+  edY.T3.Stmt.for_part,
+  edY.T3.Stmt.with_part,
+  edY.T3.Expr.term,
+  edY.T3.Expr.target_list,
+  edY.T3.Expr.expression_list,
+  edY.T3.Expr.with_item_list,
 ],
-ezP.T3.Expr.Check.expression)
+edY.T3.Expr.Check.expression)
 
-ezP.DelegateSvg.Expr.lambda.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Expr.parameter_list,
-  ezP.T3.Expr.lambda,
-  ezP.T3.Expr.term,
+edY.DelegateSvg.Expr.lambda.workspaceBlocks = edY.Do.arraysMerged([
+  edY.T3.Expr.parameter_list,
+  edY.T3.Expr.lambda,
+  edY.T3.Expr.term,
 ],
-ezP.T3.Expr.Check.expression,
-ezP.T3.Expr.Check.expression_nocond,
+edY.T3.Expr.Check.expression,
+edY.T3.Expr.Check.expression_nocond,
 )
 
-ezP.DelegateSvg.Expr.parameter_list.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Expr.parameter_list,
-  ezP.T3.Expr.term,
+edY.DelegateSvg.Expr.parameter_list.workspaceBlocks = edY.Do.arraysMerged([
+  edY.T3.Expr.parameter_list,
+  edY.T3.Expr.term,
 ],
 )
 
-ezP.DelegateSvg.Stmt.expression_stmt.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Stmt.expression_stmt,
+edY.DelegateSvg.Stmt.expression_stmt.workspaceBlocks = edY.Do.arraysMerged([
+  edY.T3.Stmt.expression_stmt,
 ],
-ezP.T3.Expr.Check.expression,
+edY.T3.Expr.Check.expression,
 )
 
-ezP.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks = ezP.DelegateSvg.Expr.argument_list.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Expr.argument_list,
-  ezP.T3.Expr.starred_expression,
-  ezP.T3.Expr.keyword_item,
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.argument_list_comprehensive,
-  ezP.T3.Expr.comprehension,
-] , null/*ezP.T3.Expr.Check.expression*/)
+edY.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks = edY.DelegateSvg.Expr.argument_list.workspaceBlocks = edY.Do.arraysMerged([
+  edY.T3.Expr.argument_list,
+  edY.T3.Expr.starred_expression,
+  edY.T3.Expr.keyword_item,
+  edY.T3.Expr.term,
+  edY.T3.Expr.argument_list_comprehensive,
+  edY.T3.Expr.comprehension,
+] , null/*edY.T3.Expr.Check.expression*/)
 
-ezP.DelegateSvg.Expr.builtin_input_expr.workspaceBlocks = 
-ezP.DelegateSvg.Stmt.builtin_print_stmt.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Expr.builtin_input_expr,
-  ezP.T3.Expr.builtin_input_stmt,
-  ezP.T3.Expr.builtin_print_expr,
-  ezP.T3.Stmt.builtin_print_stmt,
+edY.DelegateSvg.Expr.builtin_input_expr.workspaceBlocks = 
+edY.DelegateSvg.Stmt.builtin_print_stmt.workspaceBlocks = edY.Do.arraysMerged([
+  edY.T3.Expr.builtin_input_expr,
+  edY.T3.Expr.builtin_input_stmt,
+  edY.T3.Expr.builtin_print_expr,
+  edY.T3.Stmt.builtin_print_stmt,
 ],
-ezP.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks,
+edY.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks,
 )
 
-ezP.DelegateSvg.Stmt.global_nonlocal_stmt.workspaceBlocks =
+edY.DelegateSvg.Stmt.global_nonlocal_stmt.workspaceBlocks =
 [
-  ezP.T3.Stmt.global_nonlocal_stmt,
-  ezP.T3.Expr.non_void_identifier_list,
-  ezP.T3.Expr.term,
+  edY.T3.Stmt.global_nonlocal_stmt,
+  edY.T3.Expr.non_void_identifier_list,
+  edY.T3.Expr.term,
 ]
 
-ezP.DelegateSvg.Expr.shortliteral.workspaceBlocks = 
-ezP.DelegateSvg.Expr.numberliteral.workspaceBlocks = [
-  ezP.T3.Expr.shortstringliteral,
-  ezP.T3.Expr.integer,
-  ezP.T3.Expr.floatnumber,
-  ezP.T3.Expr.imagnumber,
+edY.DelegateSvg.Expr.shortliteral.workspaceBlocks = 
+edY.DelegateSvg.Expr.numberliteral.workspaceBlocks = [
+  edY.T3.Expr.shortstringliteral,
+  edY.T3.Expr.integer,
+  edY.T3.Expr.floatnumber,
+  edY.T3.Expr.imagnumber,
 ]
 
-ezP.DelegateSvg.Expr.starred_item_list_comprehensive.workspaceBlocks = [
-  ezP.T3.Expr.starred_item_list_comprehensive,
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.comprehension,
+edY.DelegateSvg.Expr.starred_item_list_comprehensive.workspaceBlocks = [
+  edY.T3.Expr.starred_item_list_comprehensive,
+  edY.T3.Expr.term,
+  edY.T3.Expr.comprehension,
 ]
 
-ezP.DelegateSvg.Expr.list_display.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Expr.starred_item_list_comprehensive,
-  ezP.T3.Expr.list_display,
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.star_expr,
-  ezP.T3.Expr.comprehension,
-], ezP.T3.Expr.Check.starred_item)
+edY.DelegateSvg.Expr.list_display.workspaceBlocks = edY.Do.arraysMerged([
+  edY.T3.Expr.starred_item_list_comprehensive,
+  edY.T3.Expr.list_display,
+  edY.T3.Expr.term,
+  edY.T3.Expr.star_expr,
+  edY.T3.Expr.comprehension,
+], edY.T3.Expr.Check.starred_item)
 
-ezP.DelegateSvg.Stmt.decorator.workspaceBlocks =
-ezP.DelegateSvg.Stmt.funcdef_part.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Stmt.decorator,
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.dotted_name,
-  ezP.T3.Stmt.funcdef_part,
-  ezP.T3.Stmt.classdef_part,
+edY.DelegateSvg.Stmt.decorator.workspaceBlocks =
+edY.DelegateSvg.Stmt.funcdef_part.workspaceBlocks = edY.Do.arraysMerged([
+  edY.T3.Stmt.decorator,
+  edY.T3.Expr.term,
+  edY.T3.Expr.dotted_name,
+  edY.T3.Stmt.funcdef_part,
+  edY.T3.Stmt.classdef_part,
 ],
-ezP.DelegateSvg.Expr.parameter_list.workspaceBlocks)
+edY.DelegateSvg.Expr.parameter_list.workspaceBlocks)
 
-ezP.DelegateSvg.Stmt.classdef_part.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Stmt.decorator,
-  ezP.T3.Stmt.classdef_part,
-  ezP.T3.Stmt.assignment_stmt,
+edY.DelegateSvg.Stmt.classdef_part.workspaceBlocks = edY.Do.arraysMerged([
+  edY.T3.Stmt.decorator,
+  edY.T3.Stmt.classdef_part,
+  edY.T3.Stmt.assignment_stmt,
 ],
-ezP.DelegateSvg.Expr.argument_list.workspaceBlocks)
+edY.DelegateSvg.Expr.argument_list.workspaceBlocks)
 
-ezP.DelegateSvg.Stmt.assignment_stmt.workspaceBlocks =
-ezP.DelegateSvg.Expr.target_list.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Stmt.assignment_stmt,
-  ezP.T3.Expr.target_list,
-  ezP.T3.Expr.void_target_list,
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.yield_expression,
+edY.DelegateSvg.Stmt.assignment_stmt.workspaceBlocks =
+edY.DelegateSvg.Expr.target_list.workspaceBlocks = edY.Do.arraysMerged([
+  edY.T3.Stmt.assignment_stmt,
+  edY.T3.Expr.target_list,
+  edY.T3.Expr.void_target_list,
+  edY.T3.Expr.term,
+  edY.T3.Expr.yield_expression,
 ],
-ezP.T3.Expr.Check.assigned_list,
-ezP.T3.Expr.Check.target_unstar,
-ezP.T3.Expr.Check.target,
-ezP.T3.Expr.Check.slice_item,
-ezP.T3.Expr.Check.assigned_expression)
+edY.T3.Expr.Check.assigned_list,
+edY.T3.Expr.Check.target_unstar,
+edY.T3.Expr.Check.target,
+edY.T3.Expr.Check.slice_item,
+edY.T3.Expr.Check.assigned_expression)
 
-ezP.DelegateSvg.Stmt.augmented_assignment_stmt.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Stmt.augmented_assignment_stmt,
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.yield_expression_list,
-  ezP.T3.Expr.yield_from_expression,
-  ezP.T3.Expr.augassign_list,
+edY.DelegateSvg.Stmt.augmented_assignment_stmt.workspaceBlocks = edY.Do.arraysMerged([
+  edY.T3.Stmt.augmented_assignment_stmt,
+  edY.T3.Expr.term,
+  edY.T3.Expr.yield_expression_list,
+  edY.T3.Expr.yield_from_expression,
+  edY.T3.Expr.augassign_list,
 ],
-ezP.T3.Expr.Check.augassign_list)
+edY.T3.Expr.Check.augassign_list)
 
-ezP.DelegateSvg.Expr.longliteral.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Expr.longstringliteral,
-  ezP.T3.Stmt.docstring_top_stmt,
-  ezP.T3.Stmt.docstring_def_stmt,
-  ezP.T3.Stmt.funcdef_part,
-  ezP.T3.Stmt.classdef_part,
-  ezP.T3.Stmt.import_stmt,
-  ezP.T3.Stmt.pass_stmt,
-  ezP.T3.Stmt.break_stmt,
-  ezP.T3.Stmt.continue_stmt,
-  ezP.T3.Stmt.any_stmt,
+edY.DelegateSvg.Expr.longliteral.workspaceBlocks = edY.Do.arraysMerged([
+  edY.T3.Expr.longstringliteral,
+  edY.T3.Stmt.docstring_top_stmt,
+  edY.T3.Stmt.docstring_def_stmt,
+  edY.T3.Stmt.funcdef_part,
+  edY.T3.Stmt.classdef_part,
+  edY.T3.Stmt.import_stmt,
+  edY.T3.Stmt.pass_stmt,
+  edY.T3.Stmt.break_stmt,
+  edY.T3.Stmt.continue_stmt,
+  edY.T3.Stmt.any_stmt,
 ])
 
-ezP.DelegateSvg.Stmt.try_part.workspaceBlocks =
-ezP.DelegateSvg.Stmt.raise_stmt.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.expression_from,
-  ezP.T3.Stmt.raise_stmt,
-  ezP.T3.Expr.longstringliteral,
-  ezP.T3.Expr.term,
-  ezP.T3.Stmt.try_part,
-  ezP.T3.Stmt.except_part,
-  ezP.T3.Expr.expression_as_name,
-  ezP.T3.Stmt.void_except_part,
-  ezP.T3.Stmt.else_part,
-  ezP.T3.Stmt.finally_part,
-  ezP.T3.Stmt.pass_stmt,
-  ezP.T3.Stmt.any_stmt,
+edY.DelegateSvg.Stmt.try_part.workspaceBlocks =
+edY.DelegateSvg.Stmt.raise_stmt.workspaceBlocks = edY.Do.arraysMerged([
+  edY.T3.Expr.term,
+  edY.T3.Expr.expression_from,
+  edY.T3.Stmt.raise_stmt,
+  edY.T3.Expr.longstringliteral,
+  edY.T3.Expr.term,
+  edY.T3.Stmt.try_part,
+  edY.T3.Stmt.except_part,
+  edY.T3.Expr.expression_as_name,
+  edY.T3.Stmt.void_except_part,
+  edY.T3.Stmt.else_part,
+  edY.T3.Stmt.finally_part,
+  edY.T3.Stmt.pass_stmt,
+  edY.T3.Stmt.any_stmt,
 ])
 
 
 // in progress
 
-ezP.DelegateSvg.Expr.power_s3d.workspaceBlocks = ezP.Do.arraysMerged([
-  ezP.T3.Expr.power_s3d,
-], ezP.T3.Expr.Check.await_or_primary, ezP.T3.Expr.Check.u_expr)
+edY.DelegateSvg.Expr.power_s3d.workspaceBlocks = edY.Do.arraysMerged([
+  edY.T3.Expr.power_s3d,
+], edY.T3.Expr.Check.await_or_primary, edY.T3.Expr.Check.u_expr)
 
-ezP.DelegateSvg.Expr.conditional_expression_s3d.workspaceBlocks = [
-  ezP.T3.Expr.conditional_expression_s3d,
-].concat(ezP.T3.Expr.Check.or_test).concat(ezP.T3.Expr.Check.expression)
+edY.DelegateSvg.Expr.conditional_expression_s3d.workspaceBlocks = [
+  edY.T3.Expr.conditional_expression_s3d,
+].concat(edY.T3.Expr.Check.or_test).concat(edY.T3.Expr.Check.expression)
 
-ezP.DelegateSvg.Expr.starred_item_list.workspaceBlocks = [
-  ezP.T3.Expr.starred_item_list,
-] .concat(ezP.T3.Expr.Check.starred_item)
+edY.DelegateSvg.Expr.starred_item_list.workspaceBlocks = [
+  edY.T3.Expr.starred_item_list,
+] .concat(edY.T3.Expr.Check.starred_item)
 
-ezP.DelegateSvg.Expr.dict_display.workspaceBlocks =
-ezP.DelegateSvg.Expr.set_display.workspaceBlocks =
-ezP.DelegateSvg.Expr.parenth_form.workspaceBlocks =
-ezP.Do.arraysMerged(
+edY.DelegateSvg.Expr.dict_display.workspaceBlocks =
+edY.DelegateSvg.Expr.set_display.workspaceBlocks =
+edY.DelegateSvg.Expr.parenth_form.workspaceBlocks =
+edY.Do.arraysMerged(
 [
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.starred_item_list,
-  ezP.T3.Expr.parenth_form,
-  ezP.T3.Expr.non_void_starred_item_list_comprehensive,
-  ezP.T3.Expr.set_display,
-  ezP.T3.Expr.key_datum_s3d,
-  ezP.T3.Expr.key_datum_list_comprehensive,
-  ezP.T3.Expr.dict_display,
+  edY.T3.Expr.term,
+  edY.T3.Expr.starred_item_list,
+  edY.T3.Expr.parenth_form,
+  edY.T3.Expr.non_void_starred_item_list_comprehensive,
+  edY.T3.Expr.set_display,
+  edY.T3.Expr.key_datum_s3d,
+  edY.T3.Expr.key_datum_list_comprehensive,
+  edY.T3.Expr.dict_display,
 ],
-ezP.DelegateSvg.Expr.comprehension.workspaceBlocks,
+edY.DelegateSvg.Expr.comprehension.workspaceBlocks,
 [
-  ezP.T3.Expr.slice_list,
+  edY.T3.Expr.slice_list,
 ],
 )
 
-goog.require('ezP.DelegateSvg.Expr'),
-goog.require('ezP.DelegateSvg.Term'),
-goog.require('ezP.DelegateSvg.Literal'),
-goog.require('ezP.DelegateSvg.Operator'),
-goog.require('ezP.DelegateSvg.Argument'),
-goog.require('ezP.DelegateSvg.Assignment'),
-goog.require('ezP.DelegateSvg.Comprehension'),
-goog.require('ezP.DelegateSvg.Control'),
-goog.require('ezP.DelegateSvg.List'),
-goog.require('ezP.DelegateSvg.Group'),
-goog.require('ezP.DelegateSvg.Import'),
-goog.require('ezP.DelegateSvg.Lambda'),
-goog.require('ezP.DelegateSvg.Primary'),
-goog.require('ezP.DelegateSvg.Print'),
-goog.require('ezP.DelegateSvg.Proc'),
-goog.require('ezP.DelegateSvg.Stmt'),
-goog.require('ezP.DelegateSvg.Try'),
-goog.require('ezP.DelegateSvg.Yield'),
+goog.require('edY.DelegateSvg.Expr'),
+goog.require('edY.DelegateSvg.Term'),
+goog.require('edY.DelegateSvg.Literal'),
+goog.require('edY.DelegateSvg.Operator'),
+goog.require('edY.DelegateSvg.Argument'),
+goog.require('edY.DelegateSvg.Assignment'),
+goog.require('edY.DelegateSvg.Comprehension'),
+goog.require('edY.DelegateSvg.Control'),
+goog.require('edY.DelegateSvg.List'),
+goog.require('edY.DelegateSvg.Group'),
+goog.require('edY.DelegateSvg.Import'),
+goog.require('edY.DelegateSvg.Lambda'),
+goog.require('edY.DelegateSvg.Primary'),
+goog.require('edY.DelegateSvg.Print'),
+goog.require('edY.DelegateSvg.Proc'),
+goog.require('edY.DelegateSvg.Stmt'),
+goog.require('edY.DelegateSvg.Try'),
+goog.require('edY.DelegateSvg.Yield'),
 
-ezP.DelegateSvg.T3s = ezP.Do.arraysMerged(
-  ezP.DelegateSvg.Expr.T3s,
-  ezP.DelegateSvg.Term.T3s,
-  ezP.DelegateSvg.Literal.T3s,
-  ezP.DelegateSvg.Operator.T3s,
-  ezP.DelegateSvg.Argument.T3s,
-  ezP.DelegateSvg.Assignment.T3s,
-  ezP.DelegateSvg.Comprehension.T3s,
-  ezP.DelegateSvg.Control.T3s,
-  ezP.DelegateSvg.List.T3s,
-  ezP.DelegateSvg.Group.T3s,
-  ezP.DelegateSvg.Import.T3s,
-  ezP.DelegateSvg.Lambda.T3s,
-  ezP.DelegateSvg.Primary.T3s,
-  ezP.DelegateSvg.Print.T3s,
-  ezP.DelegateSvg.Proc.T3s,
-  ezP.DelegateSvg.Stmt.T3s,
-  ezP.DelegateSvg.Try.T3s,
-  ezP.DelegateSvg.Yield.T3s,
+edY.DelegateSvg.T3s = edY.Do.arraysMerged(
+  edY.DelegateSvg.Expr.T3s,
+  edY.DelegateSvg.Term.T3s,
+  edY.DelegateSvg.Literal.T3s,
+  edY.DelegateSvg.Operator.T3s,
+  edY.DelegateSvg.Argument.T3s,
+  edY.DelegateSvg.Assignment.T3s,
+  edY.DelegateSvg.Comprehension.T3s,
+  edY.DelegateSvg.Control.T3s,
+  edY.DelegateSvg.List.T3s,
+  edY.DelegateSvg.Group.T3s,
+  edY.DelegateSvg.Import.T3s,
+  edY.DelegateSvg.Lambda.T3s,
+  edY.DelegateSvg.Primary.T3s,
+  edY.DelegateSvg.Print.T3s,
+  edY.DelegateSvg.Proc.T3s,
+  edY.DelegateSvg.Stmt.T3s,
+  edY.DelegateSvg.Try.T3s,
+  edY.DelegateSvg.Yield.T3s,
 )

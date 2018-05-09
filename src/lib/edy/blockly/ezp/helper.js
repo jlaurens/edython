@@ -16,7 +16,7 @@
  */
 'use strict'
 
-goog.provide('ezP.Helper')
+goog.provide('edY.Helper')
 
 goog.require('goog.Disposable')
 
@@ -24,8 +24,8 @@ goog.require('goog.Disposable')
  * Class for a an object helper for ezPython related subclasses.
  * @constructor
  */
-ezP.Helper = function () {
-  ezP.Helper.superClass_.constructor.call(this)
+edY.Helper = function () {
+  edY.Helper.superClass_.constructor.call(this)
   this.options = {}
 }
-goog.inherits(ezP.Helper, goog.Disposable)
+goog.inherits(edY.Helper, goog.Disposable)

@@ -11,13 +11,13 @@
  */
 'use strict'
 
-goog.provide('ezP.Input')
+goog.provide('edY.Input')
 
-goog.require('ezP')
+goog.require('edY')
 goog.require('Blockly.Input')
 
 /**
- * Add an ezp object to an input to store extra information.
+ * Add an edy object to an input to store extra information.
  * All this extra information is gathered under a dedicated namespace
  * to avoid name collisions.
  * This is not a delegate because there are few informations or actions needed.
@@ -25,21 +25,21 @@ goog.require('Blockly.Input')
  * For ezPython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-ezP.Input.setupEzpData = function (input, data) {
-  if (!input.ezp) {
-    input.ezp = {
+edY.Input.setupEzpData = function (input, data) {
+  if (!input.edy) {
+    input.edy = {
       fields: {},
       // sealed_: false, // blocks are not sealed
       // s7r_: false,// consolidator, whether the input is a separator
     }
     if (data) {
-      goog.mixin(input.ezp, data)
+      goog.mixin(input.edy, data)
     }
     var connection = input.connection
     if (connection) {
-      connection.ezp.name_ = input.name // the connection remembers the name of the input such that checking is fine grained.
+      connection.edy.name_ = input.name // the connection remembers the name of the input such that checking is fine grained.
     }  
   }
 }
 
-Blockly.Input.prototype.ezp = undefined
+Blockly.Input.prototype.edy = undefined

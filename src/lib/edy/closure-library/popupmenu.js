@@ -9,7 +9,7 @@
  * @fileoverview The goog.ui.PopupMenu with custom class, at least.
  */
 
-goog.provide('ezP.PopupMenu')
+goog.provide('edY.PopupMenu')
 
 goog.require('goog.ui.PopupMenu')
 
@@ -21,9 +21,9 @@ goog.require('goog.ui.PopupMenu')
  * @extends {goog.ui.Menu}
  * @constructor
  */
-ezP.PopupMenu = function (optDomHelper, optRenderer) {
+edY.PopupMenu = function (optDomHelper, optRenderer) {
   goog.ui.PopupMenu.call(this, optDomHelper,
-    optRenderer || ezP.MenuRenderer.getInstance())
+    optRenderer || edY.MenuRenderer.getInstance())
 }
-goog.inherits(ezP.PopupMenu, goog.ui.PopupMenu)
-goog.tagUnsealableClass(ezP.PopupMenu)
+goog.inherits(edY.PopupMenu, goog.ui.PopupMenu)
+goog.tagUnsealableClass(edY.PopupMenu)

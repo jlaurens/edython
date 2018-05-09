@@ -17,7 +17,7 @@
  *
  */
 
-goog.provide('ezP.SubMenuRenderer')
+goog.provide('edY.SubMenuRenderer')
 
 goog.require('goog.ui.SubMenuRenderer')
 
@@ -36,21 +36,21 @@ goog.require('goog.ui.SubMenuRenderer')
  * @extends {goog.ui.MenuItemRenderer}
  * @final
  */
-ezP.SubMenuRenderer = function () {
+edY.SubMenuRenderer = function () {
   goog.ui.SubMenuRenderer.call(this)
 }
-goog.inherits(ezP.SubMenuRenderer, goog.ui.SubMenuRenderer)
-goog.addSingletonGetter(ezP.SubMenuRenderer)
+goog.inherits(edY.SubMenuRenderer, goog.ui.SubMenuRenderer)
+goog.addSingletonGetter(edY.SubMenuRenderer)
 
 /**
 * Default CSS class to be applied to the root element of components rendered
 * by this renderer.
 * @type {string}
 */
-ezP.SubMenuRenderer.CSS_CLASS = goog.getCssName('ezp-submenu')
+edY.SubMenuRenderer.CSS_CLASS = goog.getCssName('edy-submenu')
 
-ezP.SubMenuRenderer.prototype.getCssClass = function () {
-  return ezP.SubMenuRenderer.CSS_CLASS
+edY.SubMenuRenderer.prototype.getCssClass = function () {
+  return edY.SubMenuRenderer.CSS_CLASS
 }
 
 // /**
@@ -70,10 +70,10 @@ ezP.SubMenuRenderer.prototype.getCssClass = function () {
  * @return {!Element} Root element for the item.
  * @override
  */
-ezP.SubMenuRenderer.prototype.createDom = function (control) {
+edY.SubMenuRenderer.prototype.createDom = function (control) {
   var subMenu = /** @type {goog.ui.SubMenu} */ (control)
   var element =
-    ezP.SubMenuRenderer.superClass_.createDom.call(this, subMenu)
+    edY.SubMenuRenderer.superClass_.createDom.call(this, subMenu)
   goog.dom.classlist.remove(element, goog.ui.SubMenuRenderer.CSS_CLASS)
   return element
 }
@@ -124,7 +124,7 @@ ezP.SubMenuRenderer.prototype.createDom = function (control) {
  *     set as the item's content.
  * @override
  */
-ezP.SubMenuRenderer.prototype.setContent = function (element, content) {
+edY.SubMenuRenderer.prototype.setContent = function (element, content) {
   // Save the submenu arrow element, if present.
   var contentElement = this.getContentElement(element)
   var arrowElement = contentElement && contentElement.lastChild

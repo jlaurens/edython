@@ -11,10 +11,10 @@
  */
 'use strict'
 
-goog.provide('ezP.Python.start_stmt')
+goog.provide('edY.Python.start_stmt')
 
-goog.require('ezP.DelegateSvg.start_stmt')
+goog.require('edY.DelegateSvg.start_stmt')
 
-Blockly.Python[ezP.T3.start_stmt] = function (block) {
+Blockly.Python[edY.T3.start_stmt] = function (block) {
   return '# main'
 }

@@ -16,21 +16,21 @@
  * Events fired as a result of actions in Blockly's editor.
  * @namespace Blockly.Events
  */
-goog.provide('ezP.Events');
+goog.provide('edY.Events');
 
 goog.require('Blockly.Events');
-goog.require('ezP.Const');
-goog.require('ezP.Do');
+goog.require('edY.Const');
+goog.require('edY.Do');
 
-ezP.Do.Events_Change_prototype_run =
+edY.Do.Events_Change_prototype_run =
 Blockly.Events.Change.prototype.run
 /**
  * Run a change event.
  * @param {boolean} forward True if run forward, false if run backward (undo).
  */
 Blockly.Events.Change.prototype.run = function(forward) {
-  if (!this.element.startsWith('ezp:')) {
-    ezP.Do.Events_Change_prototype_run.call(this, forward)
+  if (!this.element.startsWith('edy:')) {
+    edY.Do.Events_Change_prototype_run.call(this, forward)
     return
   }
   var workspace = this.getEventWorkspace_();
@@ -45,20 +45,20 @@ Blockly.Events.Change.prototype.run = function(forward) {
   }
   var value = forward ? this.newValue : this.oldValue;
   switch (this.element) {
-    case ezP.Const.Event.locked:
+    case edY.Const.Event.locked:
       if (value) {
-        block.ezp.lock(block)
+        block.edy.lock(block)
       } else {
-        block.ezp.unlock(block)
+        block.edy.unlock(block)
       }
       break;
-    case ezP.Const.Event.awaited:
-      block.ezp.setAwaited(block, value)
+    case edY.Const.Event.awaited:
+      block.edy.setAwaited(block, value)
       break;
     default:
-      var m = XRegExp.exec(this.element, ezP.XRE.event_data)
+      var m = XRegExp.exec(this.element, edY.XRE.event_data)
       var data
-      if (m && (data = block.ezp.data[m.key])) {
+      if (m && (data = block.edy.data[m.key])) {
         data.set(value)
       } else {
         console.warn('Unknown change type: ' + this.element);
@@ -66,11 +66,11 @@ Blockly.Events.Change.prototype.run = function(forward) {
   }
 };
 
-goog.provide('ezP.Events.Disabler')
+goog.provide('edY.Events.Disabler')
 /**
  * Event disabler.
  */
-ezP.Events.Disabler.wrap = function(f) {
+edY.Events.Disabler.wrap = function(f) {
   Blockly.Events.disable()
   try {
     f()
@@ -79,34 +79,34 @@ ezP.Events.Disabler.wrap = function(f) {
   }
 }
 
-goog.require('ezP.Data')
+goog.require('edY.Data')
 
 /**
 * set the value of the property,
 * without validation but with undo and synchronization
 * @param {Object} newValue
 */
-ezP.Data.prototype.setTrusted_ = function (newValue) {
+edY.Data.prototype.setTrusted_ = function (newValue) {
   Blockly.Events.setGroup(true)
-  var ezp = this.owner_
-  var block = ezp.block_
-  var old = ezp.skipRendering
+  var edy = this.owner_
+  var block = edy.block_
+  var old = edy.skipRendering
   try {
-    ezp.skipRendering = true
+    edy.skipRendering = true
     var oldValue = this.value_
     this._willChange(oldValue, newValue)
     if (!this.noUndo && Blockly.Events.isEnabled()) {
       Blockly.Events.fire(new Blockly.Events.BlockChange(
-      block, ezP.Const.Event.DATA+this.key, null, oldValue, newValue))
+      block, edY.Const.Event.DATA+this.key, null, oldValue, newValue))
     }
     this.value_ = newValue
     this._didChange(oldValue, newValue)
-    ezp.consolidate(block)
+    edy.consolidate(block)
     this.synchronize(newValue)
-    ezp.skipRendering = old
+    edy.skipRendering = old
     !old && block.render() // render now or possibly later ?
   } finally {
-    ezp.skipRendering = old
+    edy.skipRendering = old
     Blockly.Events.setGroup(false)
   }
 }

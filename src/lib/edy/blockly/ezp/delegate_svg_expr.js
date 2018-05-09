@@ -11,36 +11,36 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Expr')
+goog.provide('edY.DelegateSvg.Expr')
 
-goog.require('ezP.DelegateSvg')
-goog.require('ezP.T3.All')
-goog.require('ezP.KeyHandler')
+goog.require('edY.DelegateSvg')
+goog.require('edY.T3.All')
+goog.require('edY.KeyHandler')
 
 /**
  * Class for a DelegateSvg, value block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.makeSubclass('Expr')
+edY.DelegateSvg.makeSubclass('Expr')
 console.warn('Problem above')
 // Default delegate for all expression blocks
-ezP.Delegate.Manager.registerAll(ezP.T3.Expr, ezP.DelegateSvg.Expr, true)
+edY.Delegate.Manager.registerAll(edY.T3.Expr, edY.DelegateSvg.Expr, true)
 
-ezP.DelegateSvg.Expr.prototype.shapePathDef_ =
-  ezP.DelegateSvg.Expr.prototype.contourPathDef_ =
-    ezP.DelegateSvg.Expr.prototype.highlightPathDef_ =
-      ezP.DelegateSvg.Expr.prototype.valuePathDef_
+edY.DelegateSvg.Expr.prototype.shapePathDef_ =
+  edY.DelegateSvg.Expr.prototype.contourPathDef_ =
+    edY.DelegateSvg.Expr.prototype.highlightPathDef_ =
+      edY.DelegateSvg.Expr.prototype.valuePathDef_
 
 /**
  * Render one input of value block.
  * @param io.
  * @private
  */
-ezP.DelegateSvg.Expr.prototype.renderDrawInput_ = function (io) {
+edY.DelegateSvg.Expr.prototype.renderDrawInput_ = function (io) {
   this.renderDrawDummyInput_(io) ||
     this.renderDrawValueInput_(io)
 }
@@ -51,7 +51,7 @@ ezP.DelegateSvg.Expr.prototype.renderDrawInput_ = function (io) {
  * @param io.
  * @private
  */
-ezP.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
+edY.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
   return
 }
 
@@ -63,8 +63,8 @@ ezP.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
  * @param {!Blockly.Connection} oldTargetConnection what was previously connected in the block
  * @param {!Blockly.Connection} oldConnection what was previously connected to the new targetConnection
  */
-ezP.DelegateSvg.Expr.prototype.didConnect = function(block, connection, oldTargetConnection, oldConnection) {
-  ezP.DelegateSvg.Expr.superClass_.didConnect.call(this, block, connection, oldTargetConnection, oldConnection)
+edY.DelegateSvg.Expr.prototype.didConnect = function(block, connection, oldTargetConnection, oldConnection) {
+  edY.DelegateSvg.Expr.superClass_.didConnect.call(this, block, connection, oldTargetConnection, oldConnection)
   if (block === Blockly.selected && this.locked_) {
     var parent = block.getSurroundParent()
     parent && parent.select()
@@ -79,7 +79,7 @@ ezP.DelegateSvg.Expr.prototype.didConnect = function(block, connection, oldTarge
  * @param {!Block} block.
 * @param {!Block} other the block to be replaced
   */
-ezP.DelegateSvg.Expr.prototype.canReplaceBlock = function (block, other) {
+edY.DelegateSvg.Expr.prototype.canReplaceBlock = function (block, other) {
   if (other) {
     var c8n = other.outputConnection
     if (!c8n) {
@@ -101,7 +101,7 @@ ezP.DelegateSvg.Expr.prototype.canReplaceBlock = function (block, other) {
  * The connection cannot always establish.
  * @param {!Block} block.
  */
-ezP.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
+edY.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
   if (other) {
     Blockly.Events.setGroup(true)
     try {
@@ -113,11 +113,11 @@ ezP.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
       if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(block.outputConnection)) {
         // the other block has an output connection that can connect to the block's one
         var source = c8n.sourceBlock_
-        var selected = source.ezp.hasSelect(source)
+        var selected = source.edy.hasSelect(source)
         // next operations may unselect the block
-        var old = source.ezp.consolidating_
+        var old = source.edy.consolidating_
         c8n.connect(block.outputConnection)
-        source.ezp.consolidating_ = old
+        source.edy.consolidating_ = old
         if (selected) {
           source.select()
         }
@@ -137,8 +137,8 @@ ezP.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Expr.prototype.willRender_ = function (block) {
-  ezP.DelegateSvg.Expr.superClass_.willRender_.call(this, block)
+edY.DelegateSvg.Expr.prototype.willRender_ = function (block) {
+  edY.DelegateSvg.Expr.superClass_.willRender_.call(this, block)
   var field = this.ui.fields.await
   if (field) {
     field.setVisible(this.await_)
@@ -152,7 +152,7 @@ ezP.DelegateSvg.Expr.prototype.willRender_ = function (block) {
  * @param {!Blockly.Block} block The block owning the receiver.
  * @return yes or no
  */
-ezP.DelegateSvg.Expr.prototype.awaitable = function (block) {
+edY.DelegateSvg.Expr.prototype.awaitable = function (block) {
   if (!this.ui.fields.await) {
     return false
   }
@@ -161,8 +161,8 @@ ezP.DelegateSvg.Expr.prototype.awaitable = function (block) {
     return true
   }
   do {
-    if (parent.type === ezP.T3.Stmt.funcdef_part) {
-      return !!parent.ezp.async_
+    if (parent.type === edY.T3.Stmt.funcdef_part) {
+      return !!parent.edy.async_
     }
   } while((parent = parent.getParent()))
   return false
@@ -171,26 +171,26 @@ ezP.DelegateSvg.Expr.prototype.awaitable = function (block) {
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var yorn = ezP.DelegateSvg.Expr.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+edY.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var yorn = edY.DelegateSvg.Expr.superClass_.populateContextMenuFirst_.call(this,block, mgr)
   var field = this.ui.fields.await
   if (this.await_ || this.awaitable && this.awaitable(block)) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      ezP.Do.createSPAN('await', 'ezp-code-reserved'),
-      goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
+      edY.Do.createSPAN('await', 'edy-code-reserved'),
+      goog.dom.createTextNode(' '+edY.Msg.AT_THE_LEFT),
     )
     if (this.await_) {
       mgr.shouldSeparateRemove()
-      mgr.addRemoveChild(new ezP.MenuItem(content, function() {
-        block.ezp.setAwaited(block, false)
+      mgr.addRemoveChild(new edY.MenuItem(content, function() {
+        block.edy.setAwaited(block, false)
       }))
     } else {
       mgr.shouldSeparateInsert()
-      mgr.addInsertChild(new ezP.MenuItem(content, function() {
-        block.ezp.setAwaited(block, true)
+      mgr.addInsertChild(new edY.MenuItem(content, function() {
+        block.edy.setAwaited(block, true)
       }))
     }
   }
@@ -206,12 +206,12 @@ ezP.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr)
  * @param {string} prototypeName.
  * @param {string} parentInputName, which parent's connection to use
  */
-ezP.DelegateSvg.Expr.prototype.canInsertParent = function(block, prototypeName, subtype, parentInputName) {
+edY.DelegateSvg.Expr.prototype.canInsertParent = function(block, prototypeName, subtype, parentInputName) {
   var can = false
   Blockly.Events.disable()
   try {
    var B = block.workspace.newBlock(prototypeName)
-    B.ezp.data.subtype.set(subtype)
+    B.edy.data.subtype.set(subtype)
     var input = B.getInput(parentInputName)
     goog.asserts.assert(input, 'No input named '+parentInputName)
     var c8n = input.connection
@@ -240,14 +240,14 @@ ezP.DelegateSvg.Expr.prototype.canInsertParent = function(block, prototypeName, 
  * @param {boolean} fill_holes whether holes should be filled
  * @return the created block
  */
-ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeName, subtype, parentInputName, fill_holes) {
+edY.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeName, subtype, parentInputName, fill_holes) {
 //  console.log('insertParent', block, parentPrototypeName, subtype, parentInputName)
-  ezP.Events.disable()
+  edY.Events.disable()
   var parentBlock
-  ezP.Events.Disabler.wrap(function() {
-    parentBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName, true)
+  edY.Events.Disabler.wrap(function() {
+    parentBlock = edY.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName, true)
     parentBlock.beReady()
-    parentBlock.ezp.data.subtype.set(subtype)
+    parentBlock.edy.data.subtype.set(subtype)
   })
   
   console.log('block created of type', parentPrototypeName)
@@ -256,20 +256,20 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
     goog.asserts.assert(parentInput, 'No input named '+parentInputName)
     parentInputC8n = parentInput.connection
     goog.asserts.assert(parentInputC8n, 'Unexpected dummy input '+parentInputName)
-  } else if ((parentInput = parentBlock.getInput(ezP.Key.LIST))) {
+  } else if ((parentInput = parentBlock.getInput(edY.Key.LIST))) {
     var list = parentInput.connection.targetBlock()
     goog.asserts.assert(list, 'Missing list block inside '+block.type)
     // the list has many potential inputs,
     // none of them is actually connected because this is very fresh
     // get the middle input.
-    parentInput = list.getInput(ezP.Do.Name.middle_name)
+    parentInput = list.getInput(edY.Do.Name.middle_name)
     parentInputC8n = parentInput.connection
     goog.asserts.assert(parentInputC8n, 'Unexpected dummy input '+parentInputName)
   } else {
     // find the first connection that can accept block
     var findC8n = function(B) {
       var foundC8n, target
-      const e8r = B.ezp.inputEnumerator(B)
+      const e8r = B.edy.inputEnumerator(B)
       while (e8r.next()) {
         var c8n = e8r.here.connection
         if (c8n) {
@@ -280,7 +280,7 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
             candidate = findC8n(target)
           }
           if (candidate) {
-            if (candidate.ezp.name === parentInputName) {
+            if (candidate.edy.name === parentInputName) {
               foundC8n = candidate
               break
             }
@@ -331,8 +331,8 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
       }
       parentInputC8n.connect(outputC8n)
       if (fill_holes) {
-        var holes = ezP.HoleFiller.getDeepHoles(parentBlock)
-        ezP.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
+        var holes = edY.HoleFiller.getDeepHoles(parentBlock)
+        edY.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
       }
       parentBlock.render()
       if (bumper) {
@@ -350,26 +350,26 @@ ezP.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
 
 /**
  * Class for a DelegateSvg, proper_slice block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('proper_slice', {
+edY.DelegateSvg.Expr.makeSubclass('proper_slice', {
   tiles: {
     lower_bound: {
       order: 1,
       fields: {
         end: ':',
       },
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
       optional: true,
       hole_value: 'lower',
     },
     upper_bound: {
       order: 2,
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
       optional: true,
       hole_value: 'upper',
     },
@@ -378,7 +378,7 @@ ezP.DelegateSvg.Expr.makeSubclass('proper_slice', {
       fields: {
         start: ':',
       },
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
       optional: true,
       hole_value: 'stride',
     },
@@ -387,20 +387,20 @@ ezP.DelegateSvg.Expr.makeSubclass('proper_slice', {
 
 /**
  * Class for a DelegateSvg, conditional_expression_s3d block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('conditional_expression_s3d', {
+edY.DelegateSvg.Expr.makeSubclass('conditional_expression_s3d', {
   xml: {
     tag: 'conditional_expression',
   },
   tiles: {
     expression: {
       order: 1,
-      check: ezP.T3.Expr.Check.or_test,
+      check: edY.T3.Expr.Check.or_test,
       hole_value: 'name',
     },
     if: {
@@ -408,7 +408,7 @@ ezP.DelegateSvg.Expr.makeSubclass('conditional_expression_s3d', {
       fields: {
         label: 'if',
       },
-      check: ezP.T3.Expr.Check.or_test,
+      check: edY.T3.Expr.Check.or_test,
       hole_value: 'condition',
     },
     else: {
@@ -416,7 +416,7 @@ ezP.DelegateSvg.Expr.makeSubclass('conditional_expression_s3d', {
       fields: {
         label: 'else',
       },
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
       hole_value: 'alternate',
     },
   },
@@ -429,7 +429,7 @@ ezP.DelegateSvg.Expr.makeSubclass('conditional_expression_s3d', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('starred_expression', {
+edY.DelegateSvg.Expr.makeSubclass('starred_expression', {
   data: {
     modifier: {
       STAR: '*',
@@ -446,10 +446,10 @@ ezP.DelegateSvg.Expr.makeSubclass('starred_expression', {
   tiles: {
     expression: {
       order: 1,
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
       hole_value: 'name',
       didConnect: function(oldTargetConnection, oldConnection) {
-        this.ezp.consolidateSource()
+        this.edy.consolidateSource()
       },
     },
   },
@@ -459,11 +459,11 @@ ezP.DelegateSvg.Expr.makeSubclass('starred_expression', {
  * Set the type dynamically from the modifier.
  * @param {!Blockly.Block} block the owner of the receiver
  */
-ezP.DelegateSvg.Expr.starred_expression.prototype.consolidateType = function(block) {
+edY.DelegateSvg.Expr.starred_expression.prototype.consolidateType = function(block) {
   // one of 4 types depending on the modifier and the connected stuff:
   // expression_star, expression_star_star, or_expr_star_star, star_expr
-  // ezP.T3.Expr.Check.expression
-  // ezP.T3.Expr.Check.or_expr
+  // edY.T3.Expr.Check.expression
+  // edY.T3.Expr.Check.or_expr
   var data = this.data.modifier
   var withOneStar = data.get() === data.model.STAR
   var c8n = this.ui.tiles.expression.connection
@@ -474,7 +474,7 @@ ezP.DelegateSvg.Expr.starred_expression.prototype.consolidateType = function(blo
     no_or_expr = function() {
       for (var i = 0; i < targetCheck.length; i++) {
         var type = targetCheck[i]
-        if (ezP.T3.Expr.Check.or_expr.indexOf(type) >= 0) {
+        if (edY.T3.Expr.Check.or_expr.indexOf(type) >= 0) {
           return false
         }
       }
@@ -482,9 +482,9 @@ ezP.DelegateSvg.Expr.starred_expression.prototype.consolidateType = function(blo
     } ()
   }
   if (no_or_expr) {
-    var check = withOneStar? ezP.T3.Expr.expression_star: ezP.T3.Expr.expression_star_star
+    var check = withOneStar? edY.T3.Expr.expression_star: edY.T3.Expr.expression_star_star
   } else {
-    var check = withOneStar? [ezP.T3.Expr.star_expr, ezP.T3.Expr.expression_star]: [ezP.T3.Expr.or_expr_star_star, ezP.T3.Expr.expression_star_star]
+    var check = withOneStar? [edY.T3.Expr.star_expr, edY.T3.Expr.expression_star]: [edY.T3.Expr.or_expr_star_star, edY.T3.Expr.expression_star_star]
   }
   block.outputConnection.setCheck(check)
 }
@@ -495,20 +495,20 @@ ezP.DelegateSvg.Expr.starred_expression.prototype.consolidateType = function(blo
  * @param {string} op op is the operator
  * @private
  */
-ezP.DelegateSvg.Expr.starred_expression.prototype.makeTitle = function (block, op) {
-  return ezP.Do.createSPAN(op, 'ezp-code-reserved')
+edY.DelegateSvg.Expr.starred_expression.prototype.makeTitle = function (block, op) {
+  return edY.Do.createSPAN(op, 'edy-code-reserved')
 }
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.starred_expression.prototype.populateContextMenuFirst_ = function (block, mgr) {
+edY.DelegateSvg.Expr.starred_expression.prototype.populateContextMenuFirst_ = function (block, mgr) {
   mgr.populateProperties(block, 'modifier')
   mgr.shouldSeparateInsert()
-  ezP.DelegateSvg.Expr.starred_expression.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  edY.DelegateSvg.Expr.starred_expression.superClass_.populateContextMenuFirst_.call(this, block, mgr)
   return true
 }
 
@@ -520,14 +520,14 @@ ezP.DelegateSvg.Expr.starred_expression.prototype.populateContextMenuFirst_ = fu
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Expr.makeSubclass('not_test_s3d', {
+edY.DelegateSvg.Expr.makeSubclass('not_test_s3d', {
   tiles: {
     expression: {
       order: 1,
       fields: {
         label: 'not',
       },
-      check: ezP.T3.Expr.Check.not_test,
+      check: edY.T3.Expr.Check.not_test,
       hole_value: 'name',
     },
   },
@@ -540,7 +540,7 @@ ezP.DelegateSvg.Expr.makeSubclass('not_test_s3d', {
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Expr.makeSubclass('builtin_object', {
+edY.DelegateSvg.Expr.makeSubclass('builtin_object', {
   data: {
     value: {
       all: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
@@ -557,13 +557,13 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_object', {
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = function (block, mgr) {
+edY.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = function (block, mgr) {
   mgr.populateProperties(block, 'value')
   mgr.shouldSeparateInsert()
-  ezP.DelegateSvg.Expr.builtin_object.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  edY.DelegateSvg.Expr.builtin_object.superClass_.populateContextMenuFirst_.call(this, block, mgr)
   return true
 }
 
@@ -573,8 +573,8 @@ ezP.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = functi
  * @param {string} op op is the operator
  * @private
  */
-ezP.DelegateSvg.Expr.builtin_object.prototype.makeTitle = function (block, op) {
-  return ezP.Do.createSPAN(op, 'ezp-code-reserved')
+edY.DelegateSvg.Expr.builtin_object.prototype.makeTitle = function (block, op) {
+  return edY.Do.createSPAN(op, 'edy-code-reserved')
 }
 
 console.warn('Add some to|from dom hints in the data model')
@@ -585,7 +585,7 @@ console.warn('Add some to|from dom hints in the data model')
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Expr.makeSubclass('any', {
+edY.DelegateSvg.Expr.makeSubclass('any', {
   data: {
     code: {
       default: '',
@@ -595,7 +595,7 @@ ezP.DelegateSvg.Expr.makeSubclass('any', {
   fields: {
     code: {
       endEditing: true,
-      placeholder: ezP.Msg.Placeholder.EXPRESSION,
+      placeholder: edY.Msg.Placeholder.EXPRESSION,
     },
   },
   output: {
@@ -604,11 +604,11 @@ ezP.DelegateSvg.Expr.makeSubclass('any', {
 })
 console.warn('value and subtype')
 
-ezP.DelegateSvg.Expr.T3s = [
-  ezP.T3.Expr.proper_slice,
-  ezP.T3.Expr.conditional_expression_s3d,
-  ezP.T3.Expr.starred_expression,
-  ezP.T3.Expr.not_test_s3d,
-  ezP.T3.Expr.builtin_object,
-  ezP.T3.Expr.any,
+edY.DelegateSvg.Expr.T3s = [
+  edY.T3.Expr.proper_slice,
+  edY.T3.Expr.conditional_expression_s3d,
+  edY.T3.Expr.starred_expression,
+  edY.T3.Expr.not_test_s3d,
+  edY.T3.Expr.builtin_object,
+  edY.T3.Expr.any,
 ]

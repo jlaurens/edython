@@ -17,7 +17,7 @@
     name: 'page-content',
     methods: {
       onDrag (size) {
-        window.ezP.Vue.getBus().$emit('size-did-change', size)
+        window.edY.Vue.getBus().$emit('size-did-change', size)
       }
     },
     components: {

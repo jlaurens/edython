@@ -11,30 +11,30 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Stmt')
+goog.provide('edY.DelegateSvg.Stmt')
 
-goog.require('ezP.DelegateSvg.List')
-goog.require('ezP.DelegateSvg.Expr')
-goog.require('ezP.DelegateSvg.Operator')
+goog.require('edY.DelegateSvg.List')
+goog.require('edY.DelegateSvg.Expr')
+goog.require('edY.DelegateSvg.Operator')
 
 console.warn('gather fooData -> data.foo')
 /**
  * Class for a DelegateSvg, statement block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.makeSubclass('Stmt', {
+edY.DelegateSvg.makeSubclass('Stmt', {
   data: {
     comment: {
       default: '',
       validate: function(newValue) {
-        return {validated: XRegExp.exec(newValue, ezP.XRE.comment).value || ''}
+        return {validated: XRegExp.exec(newValue, edY.XRE.comment).value || ''}
       },
       synchronize: true,
-      placeholderText: ezP.Msg.Placeholder.COMMENT,
+      placeholderText: edY.Msg.Placeholder.COMMENT,
       xml: {
         toDom: function(element) {
           if (this.data.comment_show.get()) {
@@ -70,12 +70,12 @@ ezP.DelegateSvg.makeSubclass('Stmt', {
     comment: {
       validate: true,
       endEditing: true,
-      placeholder: ezP.Msg.Placeholder.COMMENT,
+      placeholder: edY.Msg.Placeholder.COMMENT,
       css: 'comment',
     },
   },
 })
-ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.DelegateSvg.Stmt, true)
+edY.Delegate.Manager.registerAll(edY.T3.Stmt, edY.DelegateSvg.Stmt, true)
 
 /**
  * Initialize a block.
@@ -83,10 +83,10 @@ ezP.Delegate.Manager.registerAll(ezP.T3.Stmt, ezP.DelegateSvg.Stmt, true)
  * @extends {Blockly.Block}
  * @constructor
  */
-ezP.DelegateSvg.Stmt.prototype.postInitSvg = function (block) {
-  ezP.DelegateSvg.Stmt.superClass_.postInitSvg.call(this, block)
+edY.DelegateSvg.Stmt.prototype.postInitSvg = function (block) {
+  edY.DelegateSvg.Stmt.superClass_.postInitSvg.call(this, block)
   this.svgSharpGroup_ = Blockly.utils.createSvgElement('g',
-    {'class': 'ezp-sharp-group'}, null)
+    {'class': 'edy-sharp-group'}, null)
   goog.dom.insertSiblingAfter(this.svgSharpGroup_, this.svgPathContour_)
 }
 
@@ -95,10 +95,10 @@ ezP.DelegateSvg.Stmt.prototype.postInitSvg = function (block) {
  * disposable objects...
  * @protected
  */
-ezP.DelegateSvg.Stmt.prototype.disposeInternal = function () {
+edY.DelegateSvg.Stmt.prototype.disposeInternal = function () {
   goog.dom.removeNode(this.svgSharpGroup_)
   this.svgSharpGroup_ = undefined
-  ezP.DelegateSvg.superClass_.disposeInternal.call(this)
+  edY.DelegateSvg.superClass_.disposeInternal.call(this)
 }
 
 /**
@@ -106,12 +106,12 @@ ezP.DelegateSvg.Stmt.prototype.disposeInternal = function () {
  * @param {!Blockly.Block} block.
  * @private
  */
-ezP.DelegateSvg.Stmt.prototype.statementPathDef_ = function (block) {
+edY.DelegateSvg.Stmt.prototype.statementPathDef_ = function (block) {
   /* eslint-disable indent */
   var w = block.width
   var h = block.height
   var steps = ['m ' + w + ',0 v ' + h]
-  var r = ezP.Style.Path.radius()
+  var r = edY.Style.Path.radius()
   var a = ' a ' + r + ', ' + r + ' 0 0 1 '
   var c8n = block.nextConnection
   if (c8n && c8n.isConnected()) {
@@ -129,10 +129,10 @@ ezP.DelegateSvg.Stmt.prototype.statementPathDef_ = function (block) {
   return steps.join(' ')
 } /* eslint-enable indent */
 
-ezP.DelegateSvg.Stmt.prototype.shapePathDef_ =
-  ezP.DelegateSvg.Stmt.prototype.contourPathDef_ =
-    ezP.DelegateSvg.Stmt.prototype.highlightPathDef_ =
-      ezP.DelegateSvg.Stmt.prototype.statementPathDef_
+edY.DelegateSvg.Stmt.prototype.shapePathDef_ =
+  edY.DelegateSvg.Stmt.prototype.contourPathDef_ =
+    edY.DelegateSvg.Stmt.prototype.highlightPathDef_ =
+      edY.DelegateSvg.Stmt.prototype.statementPathDef_
 
 /**
  * Render the leading # character for disabled statement blocks.
@@ -140,12 +140,12 @@ ezP.DelegateSvg.Stmt.prototype.shapePathDef_ =
  * @private
  * @override
  */
-ezP.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
+edY.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
   if (io.block.disabled) {
     var children = goog.dom.getChildren(this.svgSharpGroup_)
     var length = children.length
     if (!length) {
-      var y = ezP.Font.totalAscent
+      var y = edY.Font.totalAscent
       var text = Blockly.utils.createSvgElement('text',
         {'x': 0, 'y': y},
         this.svgSharpGroup_)
@@ -153,9 +153,9 @@ ezP.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
       text.appendChild(document.createTextNode('#'))
       length = 1
     }
-    var expected = io.block.ezp.getStatementCount(io.block)
+    var expected = io.block.edy.getStatementCount(io.block)
     while (length < expected) {
-      y = ezP.Font.totalAscent + length * ezP.Font.lineHeight()
+      y = edY.Font.totalAscent + length * edY.Font.lineHeight()
       text = Blockly.utils.createSvgElement('text',
         {'x': 0, 'y': y},
         this.svgSharpGroup_)
@@ -168,8 +168,8 @@ ezP.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
       this.svgSharpGroup_.removeChild(text)
     }
     this.svgSharpGroup_.setAttribute('transform', 'translate(' + (io.cursorX) +
-        ', ' + ezP.Padding.t() + ')')
-    io.cursorX += 2*ezP.Font.space
+        ', ' + edY.Padding.t() + ')')
+    io.cursorX += 2*edY.Font.space
   } else {
     goog.dom.removeChildren(this.svgSharpGroup_)
   }
@@ -180,7 +180,7 @@ ezP.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
  * @param io.
  * @private
  */
-ezP.DelegateSvg.Stmt.prototype.renderDrawInput_ = function (io) {
+edY.DelegateSvg.Stmt.prototype.renderDrawInput_ = function (io) {
   this.renderDrawDummyInput_(io) ||
     this.renderDrawValueInput_(io)
 }
@@ -190,8 +190,8 @@ ezP.DelegateSvg.Stmt.prototype.renderDrawInput_ = function (io) {
  * @param {!Blockly.Block} block.
  * @protected
  */
-ezP.DelegateSvg.Stmt.prototype.minBlockWidth = function (block) {
-  return ezP.Font.tabWidth
+edY.DelegateSvg.Stmt.prototype.minBlockWidth = function (block) {
+  return edY.Font.tabWidth
 }
 
 /**
@@ -205,11 +205,11 @@ ezP.DelegateSvg.Stmt.prototype.minBlockWidth = function (block) {
  * @param {string} parentInputName, which parent's connection to use
  * @return the created block
  */
-ezP.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeName, subtype) {
+edY.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeName, subtype) {
   var c8n = block.previousConnection
   if (c8n) {
     Blockly.Events.disable()
-    var parentBlock = ezP.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName, true)
+    var parentBlock = edY.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName, true)
     Blockly.Events.enable()
     var parentC8n = parentBlock.nextConnection
     if (parentC8n) {
@@ -218,7 +218,7 @@ ezP.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
         if (Blockly.Events.isEnabled()) {
           Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
         }
-        parentBlock.ezp.data.subtype.set(subtype)
+        parentBlock.edy.data.subtype.set(subtype)
         var targetC8n = c8n.targetConnection
         if (targetC8n) {
           targetC8n.disconnect()
@@ -230,9 +230,9 @@ ezP.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
           var my_xy = parentBlock.getRelativeToSurfaceXY();
           parentBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
         }
-        parentBlock.ezp.beReady(parentBlock)
-        var holes = ezP.HoleFiller.getDeepHoles(parentBlock)
-        ezP.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
+        parentBlock.edy.beReady(parentBlock)
+        var holes = edY.HoleFiller.getDeepHoles(parentBlock)
+        edY.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
         parentBlock.render()
         c8n.connect(parentC8n)
         if (Blockly.selected === block) {
@@ -257,10 +257,10 @@ ezP.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
  * @param {string} parentInputName, which parent's connection to use
  * @return the created block
  */
-ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototypeName) {
+edY.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototypeName) {
   Blockly.Events.setGroup(true)
   try {
-    var blockAfter = ezP.DelegateSvg.newBlockComplete(block.workspace, belowPrototypeName, true)
+    var blockAfter = edY.DelegateSvg.newBlockComplete(block.workspace, belowPrototypeName, true)
     var c8n = block.nextConnection
     var targetC8n = c8n.targetConnection
     if (targetC8n) {
@@ -269,9 +269,9 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
         targetC8n.connect(blockAfter.nextConnection)
       }
     }
-    blockAfter.ezp.beReady(blockAfter)
-    var holes = ezP.HoleFiller.getDeepHoles(blockAfter)
-    ezP.HoleFiller.fillDeepHoles(blockAfter.workspace, holes)
+    blockAfter.edy.beReady(blockAfter)
+    var holes = edY.HoleFiller.getDeepHoles(blockAfter)
+    edY.HoleFiller.fillDeepHoles(blockAfter.workspace, holes)
     blockAfter.render()
     block.nextConnection.connect(blockAfter.previousConnection)
     if (Blockly.selected === block) {
@@ -286,15 +286,15 @@ ezP.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (block, mgr) {
+edY.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (block, mgr) {
   var show = this.data.comment_show.get()
   var content =
-  ezP.Do.createSPAN(show? ezP.Msg.Placeholder.REMOVE_COMMENT: ezP.Msg.Placeholder.ADD_COMMENT, null)
-  var menuItem = new ezP.MenuItem(content, function() {
-    block.ezp.data.comment_show.set(!show)
+  edY.Do.createSPAN(show? edY.Msg.Placeholder.REMOVE_COMMENT: edY.Msg.Placeholder.ADD_COMMENT, null)
+  var menuItem = new edY.MenuItem(content, function() {
+    block.edy.data.comment_show.set(!show)
   })
   mgr.addChild(menuItem, true)
   return true
@@ -307,7 +307,7 @@ ezP.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (block, mgr
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.pass_stmt, {
+edY.DelegateSvg.Stmt.makeSubclass(edY.T3.Stmt.pass_stmt, {
   fields: {
     label: 'pass',
   },
@@ -320,7 +320,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.pass_stmt, {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.break_stmt, {
+edY.DelegateSvg.Stmt.makeSubclass(edY.T3.Stmt.break_stmt, {
   fields: {
     label: 'break',
   },
@@ -333,7 +333,7 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.break_stmt, {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.continue_stmt, {
+edY.DelegateSvg.Stmt.makeSubclass(edY.T3.Stmt.continue_stmt, {
   fields: {
     label: 'continue',
   },
@@ -343,15 +343,15 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.continue_stmt, {
 /**
  * Class for a DelegateSvg, non_void_identifier_list block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass(ezP.T3.Expr.non_void_identifier_list, {
+edY.DelegateSvg.List.makeSubclass(edY.T3.Expr.non_void_identifier_list, {
   list: {
-    check: ezP.T3.Expr.Check.non_void_identifier_list,
+    check: edY.T3.Expr.Check.non_void_identifier_list,
     empty: false,
     presep: ',',
   },
@@ -364,7 +364,7 @@ ezP.DelegateSvg.List.makeSubclass(ezP.T3.Expr.non_void_identifier_list, {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.global_nonlocal_stmt, {
+edY.DelegateSvg.Stmt.makeSubclass(edY.T3.Stmt.global_nonlocal_stmt, {
   data: {
     variant: {
       all: ['global', 'nonlocal'],
@@ -379,41 +379,41 @@ ezP.DelegateSvg.Stmt.makeSubclass(ezP.T3.Stmt.global_nonlocal_stmt, {
   tiles: {
     identifiers: {
       order: 1,
-      wrap: ezP.T3.Expr.non_void_identifier_list,
+      wrap: edY.T3.Expr.non_void_identifier_list,
     },
   },
 })
 
 /**
  * The xml tag name of this block, as it should appear in the saved data.
- * Default implementation just returns 'ezp:list' when this block is embedded
+ * Default implementation just returns 'edy:list' when this block is embedded
  * and the inherited value otherwise.
  * For ezPython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise
  */
-ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.tagName = function (block) {
+edY.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.tagName = function (block) {
   var model = this.data.variant.model
   var current = this.data.variant.get()
-  return current === model.GLOBAL? 'ezp:global': 'ezp:nonlocal'
+  return current === model.GLOBAL? 'edy:global': 'edy:nonlocal'
 }
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+edY.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var subtypes = this.data.subtype.getAll()
-  var current = block.ezp.data.subtype.get()
+  var current = block.edy.data.subtype.get()
   var F = function(key) {
-    var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN(key, 'ezp-code-reserved'),
-      ezP.Do.createSPAN(' …', 'ezp-code-placeholder'),
+    var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+      edY.Do.createSPAN(key, 'edy-code-reserved'),
+      edY.Do.createSPAN(' …', 'edy-code-placeholder'),
     )
-    var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.subtype.set(key)
+    var menuItem = new edY.MenuItem(content, function() {
+      block.edy.data.subtype.set(key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)
@@ -421,7 +421,7 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = 
   F(subtypes[0])
   F(subtypes[1])
   mgr.shouldSeparate()
-  return ezP.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return edY.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 /**
@@ -431,11 +431,11 @@ ezP.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = 
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
+edY.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
   tiles: {
     expression: {
       order: 1,
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
     },
   },
 })
@@ -448,8 +448,8 @@ ezP.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass('docstring_top_stmt', {
-  link: ezP.T3.Expr.longliteral,
+edY.DelegateSvg.Stmt.makeSubclass('docstring_top_stmt', {
+  link: edY.T3.Expr.longliteral,
 })
 
 /**
@@ -459,7 +459,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('docstring_top_stmt', {
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
-ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = function(block)  {
+edY.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = function(block)  {
   return true
 }
 
@@ -470,8 +470,8 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = function(block)  {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass('docstring_def_stmt', {
-  link: ezP.T3.Expr.longliteral,
+edY.DelegateSvg.Stmt.makeSubclass('docstring_def_stmt', {
+  link: edY.T3.Expr.longliteral,
 })
 
 console.warn('if_part and others conform to the new model and xml ?')
@@ -482,7 +482,7 @@ console.warn('if_part and others conform to the new model and xml ?')
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
-ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = function(block)  {
+edY.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = function(block)  {
   return true
 }
 
@@ -495,9 +495,9 @@ ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = function(block)  {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return None
  */
-ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.getSubtype = ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.getSubtype = function (block) {
+edY.DelegateSvg.Stmt.docstring_top_stmt.prototype.getSubtype = edY.DelegateSvg.Stmt.docstring_def_stmt.prototype.getSubtype = function (block) {
   var target = this.ui[1].input.connection.targetBlock()
-  return target? target.ezp.getSuptype(target): undefined
+  return target? target.edy.getSuptype(target): undefined
 }
 
 /**
@@ -509,10 +509,10 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.getSubtype = ezP.DelegateSvg.S
  * @param {string} subtype Is a function.
  * @return true if the receiver supports subtyping, false otherwise
  */
-ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.Stmt.docstring_def_stmt.prototype.setSubtype = function (block, subtype) {
+edY.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = edY.DelegateSvg.Stmt.docstring_def_stmt.prototype.setSubtype = function (block, subtype) {
   var target = this.ui[1].input.connection.targetBlock()
   if (target) {
-    target.ezp.data.subtype.set(subtype)
+    target.edy.data.subtype.set(subtype)
   }
   return true
 }
@@ -524,14 +524,14 @@ ezP.DelegateSvg.Stmt.docstring_top_stmt.prototype.setSubtype = ezP.DelegateSvg.S
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass('del_stmt', {
+edY.DelegateSvg.Stmt.makeSubclass('del_stmt', {
   tiles: {
     del: {
       order: 1,
       fields: {
         label: 'del',
       },
-      wrap: ezP.T3.Expr.target_list,
+      wrap: edY.T3.Expr.target_list,
     },
   },
 })
@@ -543,14 +543,14 @@ ezP.DelegateSvg.Stmt.makeSubclass('del_stmt', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass('return_stmt', {
+edY.DelegateSvg.Stmt.makeSubclass('return_stmt', {
   tiles: {
     return: {
       order: 1,
       fields: {
         label: 'return',
       },
-      wrap: ezP.T3.Expr.expression_list,
+      wrap: edY.T3.Expr.expression_list,
     },
   },
 })
@@ -562,7 +562,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('return_stmt', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass('any_stmt',{
+edY.DelegateSvg.Stmt.makeSubclass('any_stmt',{
   data: {
     variant: {
       INSTRUCTION: 0,
@@ -613,17 +613,17 @@ ezP.DelegateSvg.Stmt.makeSubclass('any_stmt',{
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
-ezP.DelegateSvg.Stmt.any_stmt.prototype.isWhite = function (block) {
+edY.DelegateSvg.Stmt.any_stmt.prototype.isWhite = function (block) {
   return this.data.variant.get() === this.data.variant.model.COMMENT
 }
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+edY.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var model = this.data.variant.model
   var current = this.data.variant.get()
   var comment = this.data.comment.toText()
@@ -641,39 +641,39 @@ ezP.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (bl
   }
   var F = function(content, variant) {
     if (variant !== current) {
-      var menuItem = new ezP.MenuItem(content, function() {
-        block.ezp.data.variant.set(variant)
+      var menuItem = new edY.MenuItem(content, function() {
+        block.edy.data.variant.set(variant)
       })
       mgr.addChild(menuItem)
     }
   }
   var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    ezP.Do.createSPAN('# ', 'ezp-code-reserved'),
-    ezP.Do.createSPAN(short_comment || comment || '…', 'ezp-code-comment'),
+    edY.Do.createSPAN('# ', 'edy-code-reserved'),
+    edY.Do.createSPAN(short_comment || comment || '…', 'edy-code-comment'),
   )
   F(content, model.COMMENT)
   var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    ezP.Do.createSPAN(short_code || code || '…', 'ezp-code'),
+    edY.Do.createSPAN(short_code || code || '…', 'edy-code'),
   )
   F(content, model.INSTRUCTION)
   var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    ezP.Do.createSPAN(short_code_all || code || '…', 'ezp-code'),
-    ezP.Do.createSPAN(' # ', 'ezp-code-reserved'),
-    ezP.Do.createSPAN(short_comment_all || '…' || comment, 'ezp-code-comment'),
+    edY.Do.createSPAN(short_code_all || code || '…', 'edy-code'),
+    edY.Do.createSPAN(' # ', 'edy-code-reserved'),
+    edY.Do.createSPAN(short_comment_all || '…' || comment, 'edy-code-comment'),
   )
   F(content, model.INSTRUCTION_COMMENT)
- return ezP.DelegateSvg.Stmt.any_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || true
+ return edY.DelegateSvg.Stmt.any_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || true
 }
 
-ezP.DelegateSvg.Stmt.T3s = [
-  ezP.T3.Stmt.pass_stmt,
-  ezP.T3.Stmt.break_stmt,
-  ezP.T3.Stmt.continue_stmt,
-  ezP.T3.Stmt.global_nonlocal_stmt,
-  ezP.T3.Stmt.expression_stmt,
-  ezP.T3.Stmt.docstring_top_stmt,
-  ezP.T3.Stmt.docstring_def_stmt,
-  ezP.T3.Stmt.del_stmt,
-  ezP.T3.Stmt.return_stmt,
-  ezP.T3.Stmt.any_stmt,
+edY.DelegateSvg.Stmt.T3s = [
+  edY.T3.Stmt.pass_stmt,
+  edY.T3.Stmt.break_stmt,
+  edY.T3.Stmt.continue_stmt,
+  edY.T3.Stmt.global_nonlocal_stmt,
+  edY.T3.Stmt.expression_stmt,
+  edY.T3.Stmt.docstring_top_stmt,
+  edY.T3.Stmt.docstring_def_stmt,
+  edY.T3.Stmt.del_stmt,
+  edY.T3.Stmt.return_stmt,
+  edY.T3.Stmt.any_stmt,
 ]

@@ -229,8 +229,8 @@ class Formatter:
         Feed the T3_data_ with expression types.
         :return:
         """
-        template = '  {:<25} /*   ::= {:<50} ({}) */ : "ezp:{}",'
-        self.append('ezP.T3.Expr = {')
+        template = '  {:<25} /*   ::= {:<50} ({}) */ : "edy:{}",'
+        self.append('edY.T3.Expr = {')
         self.append('// core expressions')
         for t in self.get_expressions():
             if not t.is_list and not t.is_wrapper:
@@ -250,8 +250,8 @@ class Formatter:
         self.append('}')
 
     def feed_statements(self):
-        template = '  {:<25} /*   ::= {:<50} ({}) */ : "ezp:{}",'
-        self.append('ezP.T3.Stmt = {')
+        template = '  {:<25} /*   ::= {:<50} ({}) */ : "edy:{}",'
+        self.append('edY.T3.Stmt = {')
         self.append('// part statements')
         for t in self.get_statements():
             if t.is_part:
@@ -270,13 +270,13 @@ class Formatter:
         self.append('// aliases')
         for t in self.Ts:
             if t.alias and t.name != t.alias.name:
-                self.append('ezP.T3.Expr.{} = ezP.T3.Expr.{}'.format(t.name, t.alias.name))
+                self.append('edY.T3.Expr.{} = edY.T3.Expr.{}'.format(t.name, t.alias.name))
 
     def feed_alias_checks(self):
         self.append('// alias checks')
         for t in self.Ts:
             if t.alias and t.name != t.alias.name:
-                self.append('ezP.T3.Expr.Check.{} = ezP.T3.Expr.Check.{}'.format(t.name, t.alias.name))
+                self.append('edY.T3.Expr.Check.{} = edY.T3.Expr.Check.{}'.format(t.name, t.alias.name))
 
     def feed_special_aliases(self):
         self.append('// special aliases, some types that change naming across the documentation')
@@ -284,11 +284,11 @@ class Formatter:
             'or_expr_star': 'star_expr',
         }
         for k, v in special.items():
-            self.append('ezP.T3.Expr.{} = ezP.T3.Expr.{}'.format(k, v))
+            self.append('edY.T3.Expr.{} = edY.T3.Expr.{}'.format(k, v))
 
     def feed_expression_checks(self):
-        self.append('ezP.T3.Expr.Check = {')
-        template = '    ezP.T3.Expr.{},'
+        self.append('edY.T3.Expr.Check = {')
+        template = '    edY.T3.Expr.{},'
         for t in self.get_expressions():
             checks = t.get_checks()
             if (not t.alias or t.name == t.alias.name) and not t.same_checks and len(checks):
@@ -301,12 +301,12 @@ class Formatter:
         self.append('\n// same checks')
         for t in self.get_expressions():
             if t.same_checks:
-                self.append('ezP.T3.Expr.Check.{} = ezP.T3.Expr.Check.{}'.format(t.name, t.same_checks.name))
+                self.append('edY.T3.Expr.Check.{} = edY.T3.Expr.Check.{}'.format(t.name, t.same_checks.name))
 
     def feed_statement_previous(self):
-        self.append('ezP.T3.Stmt.Previous = {')
-        template = '    ezP.T3.Stmt.{},'
-        template_name = '    ezP.T3.Stmt.{}+"."+ezP.Key.{},'
+        self.append('edY.T3.Stmt.Previous = {')
+        template = '    edY.T3.Stmt.{},'
+        template_name = '    edY.T3.Stmt.{}+"."+edY.Key.{},'
         for t in self.get_statements():
             try:
                 if len(t.is_below):
@@ -322,9 +322,9 @@ class Formatter:
         self.append('}\n')
 
     def feed_statement_next(self):
-        self.append('ezP.T3.Stmt.Next = {')
-        template = '    ezP.T3.Stmt.{},'
-        template_name = '    ezP.T3.Stmt.{}+"."+ezP.Key.{},'
+        self.append('edY.T3.Stmt.Next = {')
+        template = '    edY.T3.Stmt.{},'
+        template_name = '    edY.T3.Stmt.{}+"."+edY.Key.{},'
         for t in self.get_statements():
             try:
                 if len(t.is_above):
@@ -340,25 +340,25 @@ class Formatter:
         self.append('}\n')
 
     def feed_statement_any(self):
-        self.append('ezP.T3.Stmt.Any = [ // count {}'.format(len(self.get_statements())))
-        template = '    ezP.T3.Stmt.{},'
+        self.append('edY.T3.Stmt.Any = [ // count {}'.format(len(self.get_statements())))
+        template = '    edY.T3.Stmt.{},'
         for t in self.get_statements():
             self.append(template.format(t.name))
         self.append(']\n')
 
     def feed_expression_available(self):
-        self.append('ezP.T3.Expr.Available = []')
+        self.append('edY.T3.Expr.Available = []')
 
     def feed_statement_available(self):
-        self.append('ezP.T3.Stmt.Available = []')
+        self.append('edY.T3.Stmt.Available = []')
 
     def feed_xml_tags(self):
-        self.append('''ezP.T3.Xml = {
+        self.append('''edY.T3.Xml = {
     toDom: {},
 }''')
         from_dom = {}
         Ts = [t for t in self.types if t.is_stmt and t.to_dom and len(t.to_dom) == 1]
-        self.append('ezP.T3.Xml.toDom.Stmt = {{ // count {}'.format(len(Ts)))
+        self.append('edY.T3.Xml.toDom.Stmt = {{ // count {}'.format(len(Ts)))
         template = "    {}: '{}',"
         for t in Ts:
             k = t.to_dom[0]
@@ -369,7 +369,7 @@ class Formatter:
         self.append('}\n')
 
         Ts = [t for t in self.types if not t.is_stmt and t.to_dom and len(t.to_dom) == 1]
-        self.append('ezP.T3.Xml.toDom.Expr = {{ // count {}'.format(len(Ts)))
+        self.append('edY.T3.Xml.toDom.Expr = {{ // count {}'.format(len(Ts)))
         template = "    {}: '{}',"
         for t in Ts:
             k = t.to_dom[0]
@@ -380,34 +380,34 @@ class Formatter:
         self.append('}\n')
 
         Ts = [(k, v) for k, v in from_dom.items()]
-        self.append('ezP.T3.Xml.fromDom = {{ // count {}'.format(len(Ts)))
+        self.append('edY.T3.Xml.fromDom = {{ // count {}'.format(len(Ts)))
         template = "    {}: {},"
         for k,v in Ts:
             if len(v) == 1:
                 t = v[0]
                 prefix = 'Stmt' if t.is_stmt else 'Expr'
-                self.append(template.format(k, 'ezP.T3.' + prefix + '.' + t.name))
+                self.append(template.format(k, 'edY.T3.' + prefix + '.' + t.name))
             else:
                 ra = []
                 for t in v:
-                    ra.append('ezP.T3.'+('Stmt' if t.is_stmt else 'Expr') + '.' + t.name)
+                    ra.append('edY.T3.'+('Stmt' if t.is_stmt else 'Expr') + '.' + t.name)
                 self.append(template.format(k, '[' + ', '.join(ra) + ']'))
         self.append('}\n')
 
     def get_T3_data(self):
         self.append("""/**
- * @name ezP.T3
+ * @name edY.T3
  * @namespace
  **/
 
-goog.provide('ezP.T3')
-goog.provide('ezP.T3.Expr')
-goog.provide('ezP.T3.Stmt')
+goog.provide('edY.T3')
+goog.provide('edY.T3.Expr')
+goog.provide('edY.T3.Stmt')
 
-goog.require('ezP')
+goog.require('edY')
 
 """)
-        self.append('ezP.T3 = {}\n')
+        self.append('edY.T3 = {}\n')
         self.feed_statements()
         self.append('')
         self.feed_statement_previous()
@@ -437,67 +437,67 @@ goog.require('ezP')
         :return: None
         """
         self.append("""/**
- * @name ezP.T3.All
+ * @name edY.T3.All
  * @namespace
  **/
 
-goog.provide('ezP.T3.All')
+goog.provide('edY.T3.All')
 
-goog.require('ezP.T3')
+goog.require('edY.T3')
 
 """)
         Ts = sorted((t for t in self.get_expressions() if not t.ignored), key=lambda t: t.name)
-        self.append('ezP.T3.All = {}')
-        template = '    ezP.T3.Expr.{},'
+        self.append('edY.T3.All = {}')
+        template = '    edY.T3.Expr.{},'
         TTs = [t for t in Ts if not t.is_list and not t.is_wrapper]
-        self.append('ezP.T3.All.core_expressions = [ // count {}'.format(len(TTs)))
+        self.append('edY.T3.All.core_expressions = [ // count {}'.format(len(TTs)))
         for t in TTs:
             self.append(template.format(t.name))
         self.append(']')
         TTs = [t for t in Ts if t.is_list]
-        self.append('ezP.T3.All.lists = [ // count {}'.format(len(TTs)))
+        self.append('edY.T3.All.lists = [ // count {}'.format(len(TTs)))
         for t in Ts:
             if t.is_list:
                 self.append(template.format(t.name))
         self.append(']')
         TTs = [t for t in Ts if t.is_wrapper and not t.alias]
-        self.append('ezP.T3.All.wrappers = [ // count {}'.format(len(TTs)))
+        self.append('edY.T3.All.wrappers = [ // count {}'.format(len(TTs)))
         for t in TTs:
             self.append(template.format(t.name))
         self.append(']')
         Ts = sorted(self.get_statements(), key=lambda t: t.name)
-        template = '    ezP.T3.Stmt.{},'
+        template = '    edY.T3.Stmt.{},'
         TTs = [t for t in Ts if t.is_part]
-        self.append('ezP.T3.All.part_statements = [ // count {}'.format(len(TTs)))
+        self.append('edY.T3.All.part_statements = [ // count {}'.format(len(TTs)))
         for t in TTs:
             self.append(template.format(t.name))
         self.append(']')
         TTs = [t for t in Ts if t.is_part and not t.is_compound]
-        self.append('ezP.T3.All.simple_statements = [ // count {}'.format(len(TTs)))
+        self.append('edY.T3.All.simple_statements = [ // count {}'.format(len(TTs)))
         for t in TTs:
             self.append(template.format(t.name))
         self.append(']')
         TTs = [t for t in Ts if t.is_compound]
-        self.append('ezP.T3.All.compound_statements = [ // count {}'.format(len(TTs)))
+        self.append('edY.T3.All.compound_statements = [ // count {}'.format(len(TTs)))
         for t in TTs:
             self.append(template.format(t.name))
         self.append(']')
         self.append('''
-ezP.T3.All.containsStatement = function(prototypeName) {
-  return ezP.T3.All.part_statements.indexOf(prototypeName)>=0
-  || ezP.T3.All.simple_statements.indexOf(prototypeName)>=0
-  || ezP.T3.All.compound_statements.indexOf(prototypeName)>=0
+edY.T3.All.containsStatement = function(prototypeName) {
+  return edY.T3.All.part_statements.indexOf(prototypeName)>=0
+  || edY.T3.All.simple_statements.indexOf(prototypeName)>=0
+  || edY.T3.All.compound_statements.indexOf(prototypeName)>=0
 }
 
-ezP.T3.All.containsExpression = function(prototypeName) {
-  return ezP.T3.All.core_expressions.indexOf(prototypeName)>=0
-  || ezP.T3.All.lists.indexOf(prototypeName)>=0
-  || ezP.T3.All.wrappers.indexOf(prototypeName)>=0
+edY.T3.All.containsExpression = function(prototypeName) {
+  return edY.T3.All.core_expressions.indexOf(prototypeName)>=0
+  || edY.T3.All.lists.indexOf(prototypeName)>=0
+  || edY.T3.All.wrappers.indexOf(prototypeName)>=0
 }
 
-ezP.T3.All.contains = function(type) {
-  return ezP.T3.All.containsStatement(prototypeName)
-  || ezP.T3.All.containsExpression(prototypeName)
+edY.T3.All.contains = function(type) {
+  return edY.T3.All.containsStatement(prototypeName)
+  || edY.T3.All.containsExpression(prototypeName)
 }
 
 ''')

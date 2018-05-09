@@ -11,13 +11,13 @@
  */
 'use strict'
 
-goog.provide('ezP.WorkspaceSvg')
+goog.provide('edY.WorkspaceSvg')
 
 goog.require('Blockly.WorkspaceSvg')
-goog.require('ezP.BlockSvg')
-goog.require('ezP.Workspace')
+goog.require('edY.BlockSvg')
+goog.require('edY.Workspace')
 
-ezP.inherits(Blockly.WorkspaceSvg, ezP.Workspace)
+edY.inherits(Blockly.WorkspaceSvg, edY.Workspace)
 
 /**
  * Obtain a newly created block.
@@ -29,8 +29,8 @@ ezP.inherits(Blockly.WorkspaceSvg, ezP.Workspace)
  * @return {!Blockly.BlockSvg} The created block.
  */
 Blockly.WorkspaceSvg.prototype.newBlock = function (prototypeName, optId) {
-  if (prototypeName.startsWith('ezp:')) {
-    return new ezP.BlockSvg(this, prototypeName, optId)
+  if (prototypeName.startsWith('edy:')) {
+    return new edY.BlockSvg(this, prototypeName, optId)
   } else {
     return new Blockly.BlockSvg(this, prototypeName, optId)
   }
@@ -152,7 +152,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function(e) {
   var deleteList = [];
   function addDeletableBlocks(block) {
     if (block.isDeletable()) {
-      deleteList = deleteList.concat(block.ezp.getWrappedDescendants(block));
+      deleteList = deleteList.concat(block.edy.getWrappedDescendants(block));
     } else {
       var children = block.getChildren();
       for (var i = 0; i < children.length; i++) {
@@ -213,8 +213,8 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function(e) {
  */
 Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function(workspaceXMLElement, type, x, y) {
   var core = type.substring(4)
-  var shortcut = (this instanceof ezP.DelegateSvg.Expr? ezP.T3.Xml.toDom.Expr: ezP.T3.Xml.toDom.Stmt)[core]
-  var tag = shortcut && 'ezp:' + shortcut || type, text = undefined
+  var shortcut = (this instanceof edY.DelegateSvg.Expr? edY.T3.Xml.toDom.Expr: edY.T3.Xml.toDom.Stmt)[core]
+  var tag = shortcut && 'edy:' + shortcut || type, text = undefined
   console.log('new workspace element:', type, tag)
   var child = goog.dom.createElement(tag)
   child.setAttribute('x', x)
@@ -238,7 +238,7 @@ Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function(workspaceX
  * @private
  */
 Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function(workspaceXMLElement, types, n_col, offset, step) {
-  workspaceXMLElement.setAttribute('xmlns:ezp', 'urn:ezpython:1.0')
+  workspaceXMLElement.setAttribute('xmlns:edy', 'urn:ezpython:1.0')
   var n = 0
   var x = offset.x
   var y = offset.y
@@ -281,7 +281,7 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
     this.currentGesture_.cancel();  // Dragging while pasting?  No.
   }
   var c8n, targetC8n
-  if ((c8n = ezP.SelectedConnection.get())) {
+  if ((c8n = edY.SelectedConnection.get())) {
     try {
       var block = Blockly.Xml.domToBlock(xmlBlock, this);
       if (c8n.type === Blockly.INPUT_VALUE) {
@@ -326,17 +326,17 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
         if (c8n.type === Blockly.INPUT_VALUE) {
           var parent = block
           do {
-            var e8r = parent.ezp.inputEnumerator(parent)
+            var e8r = parent.edy.inputEnumerator(parent)
             while (e8r.next()) {
-              if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && ! c8n.ezp.optional_ && !c8n.targetConnection) {
-                ezP.SelectedConnection.set(c8n)
+              if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && ! c8n.edy.optional_ && !c8n.targetConnection) {
+                edY.SelectedConnection.set(c8n)
                 parent = null
                 break
               }
             }
           } while (parent && (parent = parent.getSurroundParent(parent)))
         } else if ((c8n = block.nextConnection)) {
-          ezP.SelectedConnection.set(c8n)
+          edY.SelectedConnection.set(c8n)
         }
       } finally {
         Blockly.Events.setGroup(false)

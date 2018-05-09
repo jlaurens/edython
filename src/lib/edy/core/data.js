@@ -6,14 +6,14 @@
  * License CeCILL-B
  */
 /**
- * @fileoverview ezP.Data is a class for a data controller.
+ * @fileoverview edY.Data is a class for a data controller.
  * It merely provides the API.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.require('ezP')
-goog.provide('ezP.Data')
+goog.require('edY')
+goog.provide('edY.Data')
 
 /**
  * Base property constructor.
@@ -24,7 +24,7 @@ goog.provide('ezP.Data')
  * It is shared by all data controllers belonging to the same kind
  * of owner. Great care should be taken when editing this model.
  */
-ezP.Data = function(owner, key, model) {
+edY.Data = function(owner, key, model) {
   goog.asserts.assert(owner, 'Missing owner')
   goog.asserts.assert(key, 'Missing key')
   goog.asserts.assert(model, 'Missing model')
@@ -35,13 +35,13 @@ ezP.Data = function(owner, key, model) {
   this.key = key
   this.model = model
   this.upperKey = key[0].toUpperCase()+key.slice(1)
-  this.name = 'ezp:'+(this.model.name || this.key).toLowerCase()
+  this.name = 'edy:'+(this.model.name || this.key).toLowerCase()
   this.noUndo = model.noUndo
   this.incog_ = false
   this.wait_ = 1 // start with 1 exactly
   var xml = model.xml
   if (goog.isDefAndNotNull(xml) || xml !== false) {
-    this.attributeName = 'ezp:' +(xml && xml.attribute || key)
+    this.attributeName = 'edy:' +(xml && xml.attribute || key)
   }
   if (!model.setup_) {
     model.setup_ = true
@@ -68,7 +68,7 @@ ezP.Data = function(owner, key, model) {
  * Get the owner of the data.
  * Actually, this is a block delegate.
  */
-ezP.Data.prototype.getOwner = function() {
+edY.Data.prototype.getOwner = function() {
   return this.owner_
 }
 
@@ -76,7 +76,7 @@ ezP.Data.prototype.getOwner = function() {
  * Get the value of the data
  * @param {Object} newValue
  */
-ezP.Data.prototype.get = function() {
+edY.Data.prototype.get = function() {
   if (goog.isDef(this.value_) || this.lock_get) {
     return this.value_
   }
@@ -98,7 +98,7 @@ ezP.Data.prototype.get = function() {
  * and the result is used as default.
  * May be overriden by the model.
  */
-ezP.Data.prototype.default = undefined
+edY.Data.prototype.default = undefined
 
 /**
  * Set the value with no extra task.
@@ -107,7 +107,7 @@ ezP.Data.prototype.default = undefined
  * If the given value is an index, use instead the corresponding
  * item in the `getAll()` array.
  */
-ezP.Data.prototype.internalSet = function(newValue) {
+edY.Data.prototype.internalSet = function(newValue) {
   if (goog.isNumber(newValue)) {
     var all = this.getAll()
     if (all && goog.isDefAndNotNull(all = all[newValue])) {
@@ -128,7 +128,7 @@ ezP.Data.prototype.internalSet = function(newValue) {
  * then the initial value will be foo,
  * even if it is not a valid data.
  */
-ezP.Data.prototype.init = function() {
+edY.Data.prototype.init = function() {
   if (goog.isFunction(this.model.init)) {
     this.model.init.call(this)
     return
@@ -152,12 +152,12 @@ ezP.Data.prototype.init = function() {
  * Do not use this directly because this can be a function.
  * Always use `getAll` instead.
  */
-ezP.Data.prototype.all = undefined
+edY.Data.prototype.all = undefined
 
 /**
  * Get all the values.
  */
-ezP.Data.prototype.getAll = function() {
+edY.Data.prototype.getAll = function() {
   var all = this.model.all
   return goog.isArray(all) && all || goog.isFunction(all) && goog.isArray(all = all()) && all 
 }
@@ -167,22 +167,22 @@ ezP.Data.prototype.getAll = function() {
  * May be overriden by the model.
  * @param {Object} newValue
  */
-ezP.Data.prototype.validate = function(newValue) {
+edY.Data.prototype.validate = function(newValue) {
   if (goog.isFunction(this.model.validate)) {
     return this.model.validate.call(this, newValue)
   }
-  var ezp = this.owner_
-  var block = ezp.block_
+  var edy = this.owner_
+  var block = edy.block_
   var key = 'validate' + this.upperKey
   var all = this.getAll()
-  return ezp[key] && ezp[key].call(ezp, block, newValue) || (!all || all.indexOf(newValue) >= 0) && {validated: newValue} || null
+  return edy[key] && edy[key].call(edy, block, newValue) || (!all || all.indexOf(newValue) >= 0) && {validated: newValue} || null
 }
 
 /**
  * Returns the text representation of the data.
  * @param {Object} newValue
  */
-ezP.Data.prototype.toText = function() {
+edY.Data.prototype.toText = function() {
   if (goog.isFunction(this.model.toText)) {
     return this.model.toText.call(this, newValue)
   }
@@ -193,7 +193,7 @@ ezP.Data.prototype.toText = function() {
  * Set the value from the given text representation.
  * @param {Object} newValue
  */
-ezP.Data.prototype.fromText = function(txt, dontValidate) {
+edY.Data.prototype.fromText = function(txt, dontValidate) {
   if (goog.isFunction(this.model.fromText)) {
     this.model.fromText.call(this, newValue, dontValidate)
     return
@@ -209,15 +209,15 @@ ezP.Data.prototype.fromText = function(txt, dontValidate) {
  * @param {Object} newValue
  * @return undefined
  */
-ezP.Data.prototype.willChange = function(oldValue, newValue) {
+edY.Data.prototype.willChange = function(oldValue, newValue) {
   if (goog.isFunction(this.model.willChange)) {
     this.model.willChange.call(this, oldValue, newValue)
     return
   }
-  var ezp = this.owner_
-  var block = ezp.block_
+  var edy = this.owner_
+  var block = edy.block_
   var key = 'willChange' + this.upperKey
-  ezp[key] && ezp[key].call(ezp, block, oldValue, newValue)
+  edy[key] && edy[key].call(edy, block, oldValue, newValue)
 }
 
 /**
@@ -226,7 +226,7 @@ ezP.Data.prototype.willChange = function(oldValue, newValue) {
  * @param {Object} newValue
  * @return undefined
  */
-ezP.Data.prototype._willChange = function(oldValue, newValue) {
+edY.Data.prototype._willChange = function(oldValue, newValue) {
   if (this.lock_willChange) {
     return
   }
@@ -246,15 +246,15 @@ ezP.Data.prototype._willChange = function(oldValue, newValue) {
  * @param {Object} newValue
  * @return undefined
  */
-ezP.Data.prototype.didChange = function(oldValue, newValue) {
+edY.Data.prototype.didChange = function(oldValue, newValue) {
   if (goog.isFunction(this.model.didChange)) {
     this.model.didChange.call(this, oldValue, newValue)
     return
   }
-  var ezp = this.owner_
-  var block = ezp.block_
+  var edy = this.owner_
+  var block = edy.block_
   var key = 'didChange' + this.upperKey
-  ezp[key] && ezp[key].call(ezp, block, oldValue, newValue)
+  edy[key] && edy[key].call(edy, block, oldValue, newValue)
 }
 
 /**
@@ -263,7 +263,7 @@ ezP.Data.prototype.didChange = function(oldValue, newValue) {
  * @param {Object} newValue
  * @return undefined
  */
-ezP.Data.prototype._didChange = function(oldValue, newValue) {
+edY.Data.prototype._didChange = function(oldValue, newValue) {
   if (this.lock_didChange) {
     return
   }
@@ -279,7 +279,7 @@ ezP.Data.prototype._didChange = function(oldValue, newValue) {
  * Wether a value change fires an undo event.
  * May be overriden by the model.
  */
-ezP.Data.prototype.noUndo = undefined
+edY.Data.prototype.noUndo = undefined
 
 /**
  * Synchronize the value of the property with the UI.
@@ -287,7 +287,7 @@ ezP.Data.prototype.noUndo = undefined
  * Do nothing if the receiver should wait.
  * @param {Object} newValue
  */
-ezP.Data.prototype.synchronize = function(newValue) {
+edY.Data.prototype.synchronize = function(newValue) {
   if (this.wait_) {
     return
   }
@@ -299,10 +299,10 @@ ezP.Data.prototype.synchronize = function(newValue) {
     this.setTileIncog(this.incog_)
     return
   }
-  var ezp = this.owner_
-  var block = ezp.block_
+  var edy = this.owner_
+  var block = edy.block_
   var key = 'synchronize' + this.upperKey
-  ezp[key] && ezp[key].call(ezp, block, newValue)
+  edy[key] && edy[key].call(edy, block, newValue)
 }
 
 /**
@@ -311,7 +311,7 @@ ezP.Data.prototype.synchronize = function(newValue) {
  * in the `getAll()` array.
  * @param {Object} newValue
  */
-ezP.Data.prototype.setTrusted = function (newValue) {
+edY.Data.prototype.setTrusted = function (newValue) {
   if (goog.isNumber(newValue)) {
     var all = this.getAll()
     if (all && goog.isDefAndNotNull(all = all[newValue])) {
@@ -325,7 +325,7 @@ ezP.Data.prototype.setTrusted = function (newValue) {
  * set the value of the property without any validation.
  * @param {Object} newValue
  */
-ezP.Data.prototype.setTrusted_ = function (newValue) {
+edY.Data.prototype.setTrusted_ = function (newValue) {
   this.internalSet(newValue)
   this.synchronize(newValue)
 }
@@ -336,7 +336,7 @@ ezP.Data.prototype.setTrusted_ = function (newValue) {
  * Always synchronize, even when no value changed.
  * @param {Object} newValue
  */
-ezP.Data.prototype.set = function (newValue) {
+edY.Data.prototype.set = function (newValue) {
   if (goog.isNumber(newValue)) {
     var all = this.getAll()
     if (all && goog.isDefAndNotNull(all = all[newValue])) {
@@ -357,7 +357,7 @@ ezP.Data.prototype.set = function (newValue) {
  * Always synchronize, even when no value changed.
  * @param {Object} newValue
  */
-ezP.Data.prototype.setIncog = function(newValue) {
+edY.Data.prototype.setIncog = function(newValue) {
   this.incog_ = newValue
   this.synchronize(this.value_)
 }
@@ -367,7 +367,7 @@ ezP.Data.prototype.setIncog = function(newValue) {
  * Always synchronize, even when no value changed.
  * @param {Object} newValue
  */
-ezP.Data.prototype.isIncog = function() {
+edY.Data.prototype.isIncog = function() {
   return this.incog_
 }
 
@@ -378,7 +378,7 @@ ezP.Data.prototype.isIncog = function() {
  * Do nothing if the receiver should wait.
  * @param {Object} newValue
  */
-ezP.Data.prototype.consolidate = function() {
+edY.Data.prototype.consolidate = function() {
   if (this.consolidate_lock || this.wait_) {
     return
   }
@@ -398,7 +398,7 @@ ezP.Data.prototype.consolidate = function() {
  * @param {!boolean} newValue.
  * @private
  */
-ezP.Data.prototype.isActive = function () {
+edY.Data.prototype.isActive = function () {
   return !!this.required || !this.incog_ && goog.isString(this.value_) && this.value_.length
 }
 
@@ -413,7 +413,7 @@ console.warn ('Change the model design for i_(\d): {...} to $1: {...}')
  * @param {boolean} noUndo  true when no undo tracking should be performed. 
  * @private
  */
-ezP.Data.prototype.setFieldValue = function (newValue) {
+edY.Data.prototype.setFieldValue = function (newValue) {
   goog.asserts.assert(this.field, 'No field bound. '+this.key+'/'+this.owner_.block_.type)
   Blockly.Events.disable()
   try {
@@ -428,7 +428,7 @@ ezP.Data.prototype.setFieldValue = function (newValue) {
  * and the key.
  * @param {!Object} newValue.
  */
-ezP.Data.prototype.setFieldVisible = function (newValue) {
+edY.Data.prototype.setFieldVisible = function (newValue) {
   this.field.setVisible(newValue)
 }
 
@@ -437,7 +437,7 @@ ezP.Data.prototype.setFieldVisible = function (newValue) {
  * @param {!boolean} newValue.
  * @private
  */
-ezP.Data.prototype.setTileIncog = function (newValue) {
+edY.Data.prototype.setTileIncog = function (newValue) {
   goog.asserts.assert(this.tile || this.tile === null, 'Missing tile binding')
   this.tile && this.tile.setIncog(newValue)
 }
@@ -452,7 +452,7 @@ ezP.Data.prototype.setTileIncog = function (newValue) {
  * @param {boolean} noUndo  true when no undo tracking should be performed. 
  * @private
  */
-ezP.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
+edY.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
   var field = this.ui.fields[fieldKey || this.key]
   if (field) {
     Blockly.Events.disable()
@@ -467,7 +467,7 @@ ezP.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
 /**
  * The receiver is now ready to eventually synchronize and consolidate.
  */
-ezP.Data.prototype.beReady = function () {
+edY.Data.prototype.beReady = function () {
   this.wait_ = 0
 }
 
@@ -475,7 +475,7 @@ ezP.Data.prototype.beReady = function () {
  * Set the wait status of the field.
  * Any call to `waitOn` must be balanced by a call to `waitOff`
  */
-ezP.Data.prototype.waitOn = function () {
+edY.Data.prototype.waitOn = function () {
   return ++ this.wait_
 }
 
@@ -483,8 +483,8 @@ ezP.Data.prototype.waitOn = function () {
  * Set the wait status of the field.
  * Any call to `waitOn` must be balanced by a call to `waitOff`
  */
-ezP.Data.prototype.waitOff = function () {
-  goog.asserts.assert(this.wait_>0, ezP.Do.format('Too  many `waitOn` {0}/{1}', this.key, this.owner.block_.type))
+edY.Data.prototype.waitOff = function () {
+  goog.asserts.assert(this.wait_>0, edY.Do.format('Too  many `waitOn` {0}/{1}', this.key, this.owner.block_.type))
   if (--this.wait_ == 0) {
     this.consolidate()
   }
@@ -500,7 +500,7 @@ ezP.Data.prototype.waitOff = function () {
  * @param {string|null} fieldKey  of the input holder in the ui object 
  * @private
  */
-ezP.Data.prototype.setFieldVisible = function (newValue, inputIndex, fieldKey) {
+edY.Data.prototype.setFieldVisible = function (newValue, inputIndex, fieldKey) {
   var i = inputIndex && this.ui[inputIndex] || this.ui
   var field = i.fields[fieldKey || this.key]
   if (field) {
@@ -515,7 +515,7 @@ ezP.Data.prototype.setFieldVisible = function (newValue, inputIndex, fieldKey) {
  * For ezPython.
  * @param {Element} xml the persistent element.
  */
-ezP.Data.prototype.saveToDom = function(element) {
+edY.Data.prototype.saveToDom = function(element) {
   if (!this.isIncog()) {
     // in general, data should be saved
     var xml = this.model.xml
@@ -536,7 +536,7 @@ ezP.Data.prototype.saveToDom = function(element) {
  * For ezPython.
  * @param {Element} xml the persistent element.
  */
-ezP.Data.prototype.toDom = function(element) {
+edY.Data.prototype.toDom = function(element) {
   if (!this.isIncog()) {
     // in general, data should be saved
     var xml = this.model.xml
@@ -566,7 +566,7 @@ ezP.Data.prototype.toDom = function(element) {
  * @return a dom element, void lists may return nothing
  * @this a block delegate
  */
-ezP.Data.prototype.loadFromDom = function(element) {
+edY.Data.prototype.loadFromDom = function(element) {
   var xml = this.model.xml
   if (xml === false) {
     return
@@ -584,7 +584,7 @@ ezP.Data.prototype.loadFromDom = function(element) {
  * @return a dom element, void lists may return nothing
  * @this a block delegate
  */
-ezP.Data.prototype.fromDom = function(element) {
+edY.Data.prototype.fromDom = function(element) {
   var xml = this.model.xml
   if (xml === false) {
     return
@@ -620,7 +620,7 @@ ezP.Data.prototype.fromDom = function(element) {
  * When some data is required, an `?` might be used instead of nothing
  * For ezPython.
  */
-ezP.Data.prototype.setRequiredFromDom = function (newValue) {
+edY.Data.prototype.setRequiredFromDom = function (newValue) {
   this.required_from_dom = newValue
 }
 
@@ -629,7 +629,7 @@ ezP.Data.prototype.setRequiredFromDom = function (newValue) {
  * For ezPython.
  * @param {boolean} newValue.
  */
-ezP.Data.prototype.isRequiredFromDom = function () {
+edY.Data.prototype.isRequiredFromDom = function () {
   return this.required_from_dom
 }
 
@@ -638,7 +638,7 @@ ezP.Data.prototype.isRequiredFromDom = function () {
  * For ezPython.
  * @param {boolean} newValue.
  */
-ezP.Data.prototype.clearRequiredFromDom = function () {
+edY.Data.prototype.clearRequiredFromDom = function () {
   if (this.isRequiredFromDom()) {
     this.setRequiredFromDom(false)
     this.fromText('', true)// useful if the text was a '?'

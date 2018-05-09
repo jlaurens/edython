@@ -12,20 +12,20 @@
  */
 'use strict'
 
-goog.provide('ezP.RenderedConnection')
+goog.provide('edY.RenderedConnection')
 
 goog.require('Blockly.RenderedConnection')
 goog.require('Blockly.Connection')
 
-goog.require('ezP.Const')
-goog.require('ezP.T3')
+goog.require('edY.Const')
+goog.require('edY.T3')
 
 /**
  * Class for a connection delegate.
  * @param {Blockly.Connection} connection the connection owning the delegate
  * @constructor
  */
-ezP.ConnectionDelegate = function (connection) {
+edY.ConnectionDelegate = function (connection) {
   this.connection = connection
 }
 
@@ -34,39 +34,39 @@ ezP.ConnectionDelegate = function (connection) {
  * Used in lists.
  * @constructor
  */
-ezP.ConnectionDelegate.prototype.plugged_ = undefined
+edY.ConnectionDelegate.prototype.plugged_ = undefined
 
 /**
  * Whether the connection is a separator.
  * Used in lists.
  * @constructor
  */
-ezP.ConnectionDelegate.prototype.s7r_ = false
+edY.ConnectionDelegate.prototype.s7r_ = false
 
 /**
  * Whether the connection is a wrapper.
  * @constructor
  */
-ezP.ConnectionDelegate.prototype.wrapped_ = false// must change to wrapper
+edY.ConnectionDelegate.prototype.wrapped_ = false// must change to wrapper
 
 /**
  * Whether the connection is otionally connected.
  * @constructor
  */
-ezP.ConnectionDelegate.prototype.optional_ = false// must change to wrapper
+edY.ConnectionDelegate.prototype.optional_ = false// must change to wrapper
 
 /**
  * name of the connection.
  * See identifier
  * @constructor
  */
-ezP.ConnectionDelegate.prototype.name_ = undefined// must change to wrapper
+edY.ConnectionDelegate.prototype.name_ = undefined// must change to wrapper
 
 /**
  * Get the incognito state.
  * @param {boolean} incog
  */
-ezP.ConnectionDelegate.prototype.isIncog = function(incog) {
+edY.ConnectionDelegate.prototype.isIncog = function(incog) {
   return this.incog_
 }
 
@@ -75,7 +75,7 @@ ezP.ConnectionDelegate.prototype.isIncog = function(incog) {
  * Hide/show the connection from/to the databass and disable/enable the target's connections.
  * @param {boolean} incog
  */
-ezP.ConnectionDelegate.prototype.setIncog = function(incog) {
+edY.ConnectionDelegate.prototype.setIncog = function(incog) {
   if (this.incog_ && incog) {
     // things were unlikely to change since
     // the last time the connections have been disabled
@@ -89,7 +89,7 @@ ezP.ConnectionDelegate.prototype.setIncog = function(incog) {
   }
   var target = c8n.targetBlock()
   if (target) {
-    target.ezp.setIncog(target, incog)
+    target.edy.setIncog(target, incog)
   }
 }
 
@@ -99,7 +99,7 @@ ezP.ConnectionDelegate.prototype.setIncog = function(incog) {
  * @param {Blockly.Connection} connection the connection owning the delegate
  * @param {Blockly.Connection} targetConnection
  */
-ezP.ConnectionDelegate.prototype.willConnect = function(targetConnection) {
+edY.ConnectionDelegate.prototype.willConnect = function(targetConnection) {
   this.model && goog.isFunction(this.model.willConnect) && this.model.willConnect.call(this.connection, targetConnection)
 }
 
@@ -110,7 +110,7 @@ ezP.ConnectionDelegate.prototype.willConnect = function(targetConnection) {
  * @param {Blockly.Connection} oldTargetConnection  what was previously connected to connection
  * @param {Blockly.Connection} oldConnection  what was previously connected to the actual connection.targetConnection
  */
-ezP.ConnectionDelegate.prototype.didConnect = function(oldTargetConnection, targetOldConnection) {
+edY.ConnectionDelegate.prototype.didConnect = function(oldTargetConnection, targetOldConnection) {
   this.model && goog.isFunction(this.model.didConnect) && this.model.didConnect.call(this.connection, oldTargetConnection, targetOldConnection)
 }
 
@@ -119,7 +119,7 @@ ezP.ConnectionDelegate.prototype.didConnect = function(oldTargetConnection, targ
  * Default implementation does nothing.
  * This can be overriden at block creation time.
  */
-ezP.ConnectionDelegate.prototype.willDisconnect = function() {
+edY.ConnectionDelegate.prototype.willDisconnect = function() {
   this.model && goog.isFunction(this.model.willDisconnect) && this.model.willDisconnect.call(this.connection)
 }
 
@@ -130,7 +130,7 @@ ezP.ConnectionDelegate.prototype.willDisconnect = function() {
  * @param {Blockly.Connection} connection  the connection owning the delegate
  * @param {Blockly.Connection} oldTargetConnection  what was previously connected to connection
  */
-ezP.ConnectionDelegate.prototype.didDisconnect = function(oldTargetConnection) {
+edY.ConnectionDelegate.prototype.didDisconnect = function(oldTargetConnection) {
   this.model && goog.isFunction(this.model.didDisconnect) && this.model.didDisconnect.call(this.connection, oldTargetConnection)
 }
 
@@ -139,7 +139,7 @@ ezP.ConnectionDelegate.prototype.didDisconnect = function(oldTargetConnection) {
  * The default implementation just returns the connection's check_.
  * @return the connection's check_ array.
  */
-ezP.ConnectionDelegate.prototype.getCheck = function() {
+edY.ConnectionDelegate.prototype.getCheck = function() {
   return this.connection.check_
 }
 
@@ -149,7 +149,7 @@ ezP.ConnectionDelegate.prototype.getCheck = function() {
  * @return {boolean} True if the connection is the block's next one.
  * @private
  */
-ezP.ConnectionDelegate.prototype.isNext = function() {
+edY.ConnectionDelegate.prototype.isNext = function() {
   return this.connection === this.connection.getSourceBlock().nextConnection
 }
 
@@ -159,7 +159,7 @@ ezP.ConnectionDelegate.prototype.isNext = function() {
  * @return {boolean} True if the connection is the block's previous one.
  * @private
  */
-ezP.ConnectionDelegate.prototype.isPrevious = function() {
+edY.ConnectionDelegate.prototype.isPrevious = function() {
   return this.connection === this.connection.getSourceBlock().previousConnection
 }
 
@@ -169,9 +169,9 @@ ezP.ConnectionDelegate.prototype.isPrevious = function() {
  * whatever its source block status may be.
  * @return a connection, possibly undefined
  */
-ezP.ConnectionDelegate.prototype.getConnectionAbove = function() {
+edY.ConnectionDelegate.prototype.getConnectionAbove = function() {
   var previous = this.connection.getSourceBlock().previousConnection
-  if (previous && !previous.ezp.name_ && (previous = previous.targetBlock())) {
+  if (previous && !previous.edy.name_ && (previous = previous.targetBlock())) {
     switch(this.connection.type) {
       case Blockly.NEXT_STATEMENT: return previous.nextConnection
       case Blockly.PREVIOUS_STATEMENT: return previous.previousConnection
@@ -184,10 +184,10 @@ ezP.ConnectionDelegate.prototype.getConnectionAbove = function() {
  * Get the connection of the same kind on the block below.
  * If the connection is named, returns the connection, whatever ist source block
  * status may be.
- * @param F optional function defaults to !argument.ezp.isWhite(argument)
+ * @param F optional function defaults to !argument.edy.isWhite(argument)
  * @return a connection, possibly undefined
  */
-ezP.ConnectionDelegate.prototype.getConnectionBelow = function() {
+edY.ConnectionDelegate.prototype.getConnectionBelow = function() {
   var next = this.connection.getSourceBlock().nextConnection
   if (next && (next = next.targetBlock())) {
     switch(this.connection.type) {
@@ -206,12 +206,12 @@ ezP.ConnectionDelegate.prototype.getConnectionBelow = function() {
  * and so on.
  * If the connection is named, returns the connection, whatever its source block
  * status may be.
- * @param F optional function defaults to !argument.ezp.isWhite(argument)
+ * @param F optional function defaults to !argument.edy.isWhite(argument)
  * @return a connection, possibly undefined
  */
-ezP.ConnectionDelegate.prototype.getBlackConnection = function(F) {
+edY.ConnectionDelegate.prototype.getBlackConnection = function(F) {
   var F = F || function(block) {
-    return !block.ezp.isWhite(block)
+    return !block.edy.isWhite(block)
   }
   var c8n = this.connection
   var block = c8n.getSourceBlock()
@@ -231,7 +231,7 @@ ezP.ConnectionDelegate.prototype.getBlackConnection = function(F) {
     // whether the surrounding block is disabled or not has no importance
     return c8n
   }
-  while ((c8n = otherConnection(block)) && (c8n = c8n.targetConnection) && !(c8n.ezp.name_) && !((block = c8n.getSourceBlock()) && F(block))) {}
+  while ((c8n = otherConnection(block)) && (c8n = c8n.targetConnection) && !(c8n.edy.name_) && !((block = c8n.getSourceBlock()) && F(block))) {}
   return c8n
 }
 
@@ -242,20 +242,20 @@ ezP.ConnectionDelegate.prototype.getBlackConnection = function(F) {
  * @return {boolean} True if the connection is the block's next one.
  * @private
  */
-ezP.ConnectionDelegate.prototype.getBlackTargetConnection = function() {
+edY.ConnectionDelegate.prototype.getBlackTargetConnection = function() {
   var c8n = this.connection.targetConnection
   if (!c8n) {
     return undefined
   }
   var block = c8n.getSourceBlock()
-  if (!block.ezp.isWhite(block)) {
+  if (!block.edy.isWhite(block)) {
     return c8n
   }
-  if (c8n.ezp.isPrevious()) {
+  if (c8n.edy.isPrevious()) {
     var F = function(block) {
       return block.nextConnection
     }
-  } else if (c8n.ezp.isNext()) {
+  } else if (c8n.edy.isNext()) {
     var F = function(block) {
       return block.previousConnection
     }
@@ -268,7 +268,7 @@ ezP.ConnectionDelegate.prototype.getBlackTargetConnection = function() {
     || !(block = c8n.getSourceBlock())) {
       return undefined
     }
-    if (!block.ezp.isWhite(block)) {
+    if (!block.edy.isWhite(block)) {
       return c8n
     }
   } while (true)
@@ -281,27 +281,27 @@ ezP.ConnectionDelegate.prototype.getBlackTargetConnection = function() {
  * @extends {Blockly.Connection}
  * @constructor
  */
-ezP.Connection = function (source, type) {
-  ezP.Connection.superClass_.constructor.call(this, source, type)
-  this.ezp = new ezP.ConnectionDelegate(this)
+edY.Connection = function (source, type) {
+  edY.Connection.superClass_.constructor.call(this, source, type)
+  this.edy = new edY.ConnectionDelegate(this)
 }
-goog.inherits(ezP.Connection, Blockly.Connection)
-ezP.inherits(Blockly.RenderedConnection, ezP.Connection)
+goog.inherits(edY.Connection, Blockly.Connection)
+edY.inherits(Blockly.RenderedConnection, edY.Connection)
 
-ezP.Connection.prototype.highlight = Blockly.RenderedConnection.prototype.highlight
+edY.Connection.prototype.highlight = Blockly.RenderedConnection.prototype.highlight
 
 /**
  * Every connection has a delegate.
  */
-ezP.Connection.prototype.ezp = undefined
+edY.Connection.prototype.edy = undefined
 
 /**
  * Add highlighting around this connection.
  */
 Blockly.RenderedConnection.prototype.highlight = function () {
   var block = this.sourceBlock_
-  if (block && block.ezp) {
-    block.ezp.highlightConnection(block, this)
+  if (block && block.edy) {
+    block.edy.highlightConnection(block, this)
     return
   }
   Blockly.RenderedConnection.superClass_.highlight.call(this)
@@ -365,15 +365,15 @@ Blockly.RenderedConnection.prototype.bumpAwayFrom_ = function (staticConnection)
  *     workspace units.
  * @return {boolean} True if the connection is allowed, false otherwise.
  */
-ezP.Connection.prototype.isConnectionAllowed = function(candidate,
+edY.Connection.prototype.isConnectionAllowed = function(candidate,
   maxRadius) {
-  if (this.ezp.wrapped_ || candidate.ezp.wrapped_) {
+  if (this.edy.wrapped_ || candidate.edy.wrapped_) {
     return false
   }
-  var yorn = ezP.Connection.superClass_.isConnectionAllowed.call(this,
+  var yorn = edY.Connection.superClass_.isConnectionAllowed.call(this,
   candidate)
   if (yorn) {
-    ezP.Connection.superClass_.isConnectionAllowed.call(this,
+    edY.Connection.superClass_.isConnectionAllowed.call(this,
       candidate)
   }
   return yorn
@@ -387,42 +387,42 @@ ezP.Connection.prototype.isConnectionAllowed = function(candidate,
  * @return {boolean} True if the connections share a type.
  * @private
  */
-ezP.Connection.prototype.checkType_ = function(otherConnection) {
+edY.Connection.prototype.checkType_ = function(otherConnection) {
   if (!Blockly.Events.recordUndo) {
     // we are undoing or redoing
     // we will most certainly reach a state that was valid
     // some time ago
     return true
   }
-  var c8nA = this.ezp.getBlackConnection()
-  var c8nB = otherConnection.ezp.getBlackConnection()
+  var c8nA = this.edy.getBlackConnection()
+  var c8nB = otherConnection.edy.getBlackConnection()
   if (!c8nA || !c8nB) {
     return true
   }
   // short stop if one of the connection is hidden or disabled
   // except when we try to establish a connection with a wrapped block.
   // in either case, returns true iff the connetion is aready established
-  if (c8nA.ezp.wrapped_) {
+  if (c8nA.edy.wrapped_) {
     if (c8nA.targetConnection) {
       return c8nA === c8nB.targetConnection
     }
-  } else if (c8nB.ezp.wrapped_) {
+  } else if (c8nB.edy.wrapped_) {
     if (c8nB.targetConnection) {
       return c8nB === c8nA.targetConnection
     }
-  } else if (c8nA.ezp.incog_ || c8nB.ezp.incog_ || c8nA.ezp.hidden_ || c8nB.ezp.hidden_) {
+  } else if (c8nA.edy.incog_ || c8nB.edy.incog_ || c8nA.edy.hidden_ || c8nB.edy.hidden_) {
     return c8nA === c8nB.targetConnection
   }
   var sourceA = c8nA.getSourceBlock()
   var sourceB = c8nB.getSourceBlock()
   var typeA = sourceA.type
   var typeB = sourceB.type
-  if (typeA.indexOf('ezp:') === 0 && typeB.indexOf('ezp:') === 0) {
+  if (typeA.indexOf('edy:') === 0 && typeB.indexOf('edy:') === 0) {
     var checkA = c8nA.check_
     var checkB = c8nB.check_
-    if (c8nA.ezp.name_) {
+    if (c8nA.edy.name_) {
       // c8nA is the connection of an input
-      if (sourceA.ezp.locked_) {
+      if (sourceA.edy.locked_) {
         return false
       }
       // connections are inline
@@ -452,10 +452,10 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
         }
       }
       return !checkA || checkA.indexOf(typeB)>=0 || checkA.indexOf(typeB+'.'+c8nB.name_)>=0 || checkA.indexOf('.'+c8nB.name_)>=0
-    } /* if (c8nA.ezp.name_) */
-    if (c8nB.ezp.name_) {
+    } /* if (c8nA.edy.name_) */
+    if (c8nB.edy.name_) {
       // c8nB is the connection of an input
-      if (sourceB.ezp.locked_) {
+      if (sourceB.edy.locked_) {
         return false
       }
       // connections are inline
@@ -485,7 +485,7 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
         }
       }
       return !checkB || checkB.indexOf(typeA)>=0 || checkB.indexOf(typeA+'.'+c8nA.name_)>=0 || checkB.indexOf('.'+c8nA.name_)>=0
-    } /* if (c8nB.ezp.name_) */
+    } /* if (c8nB.edy.name_) */
     if (checkA && checkA.indexOf(typeB)<0) {
       return false
     }
@@ -494,7 +494,7 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
     }
     return true
   }
-  return ezP.Connection.superClass_.checkType_.call(this, otherConnection)
+  return edY.Connection.superClass_.checkType_.call(this, otherConnection)
 }
 
 /**
@@ -504,37 +504,37 @@ ezP.Connection.prototype.checkType_ = function(otherConnection) {
  * @param {!Blockly.Connection} childConnection Connection on inferior block.
  * @private
  */
-ezP.Connection.prototype.connect_ = function(childC8n) {
+edY.Connection.prototype.connect_ = function(childC8n) {
   // `this` is actually the parentC8n
   var parentC8n = this
   var parent = parentC8n.sourceBlock_
   var child = childC8n.sourceBlock_
   var oldChildC8n = parentC8n.targetConnection
   var oldParentC8n = childC8n.targetConnection
-  parentC8n.ezp.willConnect(childC8n)
-  childC8n.ezp.willConnect(parentC8n)
-  parent.ezp.willConnect(parent, parentC8n, childC8n)
-  child.ezp.willConnect(child, childC8n, parentC8n)
-  ezP.Connection.superClass_.connect_.call(parentC8n, childC8n)
-  if (parentC8n.ezp.plugged_) {
-    child.ezp.plugged_ = parentC8n.ezp.plugged_
-    console.log('plugged_ is', child.ezp.plugged_)
+  parentC8n.edy.willConnect(childC8n)
+  childC8n.edy.willConnect(parentC8n)
+  parent.edy.willConnect(parent, parentC8n, childC8n)
+  child.edy.willConnect(child, childC8n, parentC8n)
+  edY.Connection.superClass_.connect_.call(parentC8n, childC8n)
+  if (parentC8n.edy.plugged_) {
+    child.edy.plugged_ = parentC8n.edy.plugged_
+    console.log('plugged_ is', child.edy.plugged_)
   }
-  if (parentC8n.ezp.wrapped_) {
-    if (child.ezp.hasSelect(child)) { // Blockly.selected === child
+  if (parentC8n.edy.wrapped_) {
+    if (child.edy.hasSelect(child)) { // Blockly.selected === child
       child.unselect()
       var P = child
       while ((P = P.getSurroundParent())) {
-        if (!P.ezp.wrapped_) {
+        if (!P.edy.wrapped_) {
           P.select()
           break
         }
       }
     }
-    child.ezp.makeBlockWrapped_(child)
+    child.edy.makeBlockWrapped_(child)
   } else {
     // if this connection was selected, the newly connected block should be selected too
-    if (parentC8n === ezP.SelectedConnection.get()) {
+    if (parentC8n === edY.SelectedConnection.get()) {
       P = parent
       do {
         if (P === Blockly.selected) {
@@ -547,7 +547,7 @@ ezP.Connection.prototype.connect_ = function(childC8n) {
   if (oldChildC8n && childC8n !== oldChildC8n) {
     var oldChild = oldChildC8n.sourceBlock_
     if (oldChild) {
-      if (oldChild.ezp.wrapped_) {
+      if (oldChild.edy.wrapped_) {
         if (Blockly.Events.recordUndo) {
           oldChild.dispose(true)
         }
@@ -568,11 +568,11 @@ ezP.Connection.prototype.connect_ = function(childC8n) {
       }
     }
   }
-  childC8n.ezp.didConnect(oldChildC8n, oldParentC8n)
-  parentC8n.ezp.didConnect(oldParentC8n, oldChildC8n)
-  parent.ezp.didConnect(parent, parentC8n, oldChildC8n, oldParentC8n)
-  child.ezp.didConnect(child, childC8n, oldParentC8n, oldChildC8n)
-  child.ezp.setIncog(child, parentC8n.ezp.isIncog())
+  childC8n.edy.didConnect(oldChildC8n, oldParentC8n)
+  parentC8n.edy.didConnect(oldParentC8n, oldChildC8n)
+  parent.edy.didConnect(parent, parentC8n, oldChildC8n, oldParentC8n)
+  child.edy.didConnect(child, childC8n, oldParentC8n, oldChildC8n)
+  child.edy.setIncog(child, parentC8n.edy.isIncog())
 }
 
 /**
@@ -582,7 +582,7 @@ ezP.Connection.prototype.connect_ = function(childC8n) {
  * @param {!Blockly.Block} childBlock The inferior block.
  * @private
  */
-ezP.Connection.prototype.disconnectInternal_ = function(parentBlock,
+edY.Connection.prototype.disconnectInternal_ = function(parentBlock,
   childBlock) {
   var block = this.sourceBlock_
   if (block === parentBlock) {
@@ -592,29 +592,29 @@ ezP.Connection.prototype.disconnectInternal_ = function(parentBlock,
     var parentC8n = this.targetConnection
     var childC8n = this
   }
-  parentC8n.ezp.willDisconnect()
-  childC8n.ezp.willDisconnect()
-  parentBlock.ezp.willDisconnect(parentBlock, parentC8n)
-  childBlock.ezp.willDisconnect(childBlock, childC8n)
-  if (parentC8n.ezp.wrapped_) {
+  parentC8n.edy.willDisconnect()
+  childC8n.edy.willDisconnect()
+  parentBlock.edy.willDisconnect(parentBlock, parentC8n)
+  childBlock.edy.willDisconnect(childBlock, childC8n)
+  if (parentC8n.edy.wrapped_) {
     // currently unwrapping a block,
     // this occurs while removing the parent
     // if the parent was selected, select the child
-    childBlock.ezp.makeBlockUnwrapped_(childBlock)
-    if(parentBlock.ezp.hasSelect(parentBlock)) {
+    childBlock.edy.makeBlockUnwrapped_(childBlock)
+    if(parentBlock.edy.hasSelect(parentBlock)) {
       parentBlock.unselect()
       childBlock.select()
     }
   }
-  ezP.Connection.superClass_.disconnectInternal_.call(this, parentBlock, childBlock)
-  if (childBlock.ezp.plugged_) {
-    console.log('plugged_ was', childBlock.ezp.plugged_)
-    childBlock.ezp.plugged_ = undefined
+  edY.Connection.superClass_.disconnectInternal_.call(this, parentBlock, childBlock)
+  if (childBlock.edy.plugged_) {
+    console.log('plugged_ was', childBlock.edy.plugged_)
+    childBlock.edy.plugged_ = undefined
   }
-  parentBlock.ezp.didDisconnect(parentBlock, parentC8n, childC8n)
-  childBlock.ezp.didDisconnect(childBlock, childC8n, parentC8n)
-  parentC8n.ezp.didDisconnect(childC8n)
-  childC8n.ezp.didDisconnect(parentC8n)
+  parentBlock.edy.didDisconnect(parentBlock, parentC8n, childC8n)
+  childBlock.edy.didDisconnect(childBlock, childC8n, parentC8n)
+  parentC8n.edy.didDisconnect(childC8n)
+  childC8n.edy.didDisconnect(parentC8n)
 }
 
 Blockly.Connection.uniqueConnection_original = Blockly.Connection.uniqueConnection_
@@ -632,7 +632,7 @@ Blockly.Connection.uniqueConnection_original = Blockly.Connection.uniqueConnecti
  * @override
  */
 Blockly.Connection.uniqueConnection_ = function(block, orphanBlock) {
-  var e8r = block.ezp.inputEnumerator(block)
+  var e8r = block.edy.inputEnumerator(block)
   while (e8r.next()) {
     var c8n = e8r.here.connection;
     if (c8n && c8n.type == Blockly.INPUT_VALUE &&
@@ -645,7 +645,7 @@ Blockly.Connection.uniqueConnection_ = function(block, orphanBlock) {
   return null;
 }
 
-ezP.RenderedConnection.savedSetHidden = Blockly.RenderedConnection.prototype.setHidden
+edY.RenderedConnection.savedSetHidden = Blockly.RenderedConnection.prototype.setHidden
 
 /**
  * Set whether this connections is hidden (not tracked in a database) or not.
@@ -656,15 +656,15 @@ ezP.RenderedConnection.savedSetHidden = Blockly.RenderedConnection.prototype.set
  */
 Blockly.RenderedConnection.prototype.setHidden = function(hidden) {
   // ADDED by JL: 
-  if (!hidden && this.ezp.incog_) {
+  if (!hidden && this.edy.incog_) {
     // Incog connections must stay hidden
     return
   }
-  if (goog.isDef(this.ezp.hidden_)) {
-    hidden = this.ezp.hidden_
+  if (goog.isDef(this.edy.hidden_)) {
+    hidden = this.edy.hidden_
   }
   // DONE
-  ezP.RenderedConnection.savedSetHidden.call(this, hidden)
+  edY.RenderedConnection.savedSetHidden.call(this, hidden)
 }
 
 /**
@@ -709,27 +709,27 @@ Blockly.RenderedConnection.prototype.closest = function(maxLimit, dx, dy) {
   return this.dbOpposite_.searchForClosest(this, maxLimit, dx, dy);
 };
 
-ezP.RenderedConnection.savedDispose = Blockly.Connection.prototype.dispose
+edY.RenderedConnection.savedDispose = Blockly.Connection.prototype.dispose
 /**
  * Sever all links to this connection (not including from the source object).
  */
 Blockly.Connection.prototype.dispose = function() {
-  if (this === ezP.SelectedConnection.get()) {
-    ezP.SelectedConnection.set(null)
+  if (this === edY.SelectedConnection.get()) {
+    edY.SelectedConnection.set(null)
   }
-  ezP.RenderedConnection.savedDispose.call(this)
+  edY.RenderedConnection.savedDispose.call(this)
 }
 
-ezP.RenderedConnection.onCheckChanged_ = Blockly.RenderedConnection.prototype.onCheckChanged_
+edY.RenderedConnection.onCheckChanged_ = Blockly.RenderedConnection.prototype.onCheckChanged_
 /**
  * Function to be called when this connection's compatible types have changed.
  * @private
  */
 Blockly.RenderedConnection.prototype.onCheckChanged_ = function() {
-  ezP.RenderedConnection.onCheckChanged_.call(this)
+  edY.RenderedConnection.onCheckChanged_.call(this)
   var block = this.targetBlock()
   if (block) {
-    block.ezp.consolidate(block, false, true)
+    block.edy.consolidate(block, false, true)
   }
 }
 
@@ -773,7 +773,7 @@ Blockly.Connection.lastConnectionInRow_ = function(startBlock, orphanBlock) {
   var newBlock = startBlock;
   var connection;
   while ((connection = Blockly.Connection.singleConnection_(
-      /** @type {!Blockly.Block} */ (newBlock), orphanBlock)) && !connection.ezp.incog_) {
+      /** @type {!Blockly.Block} */ (newBlock), orphanBlock)) && !connection.edy.incog_) {
     // '=' is intentional in line above.
     newBlock = connection.targetBlock();
     if (!newBlock || newBlock.isShadow()) {
@@ -785,7 +785,7 @@ Blockly.Connection.lastConnectionInRow_ = function(startBlock, orphanBlock) {
 
 /**
  * Walks down a row a blocks, at each stage */
-ezP.ConnectionDelegate.prototype.consolidateSource = function() {
+edY.ConnectionDelegate.prototype.consolidateSource = function() {
   var block = this.connection.getSourceBlock()
-  block.ezp.consolidate(block)
+  block.edy.consolidate(block)
 }

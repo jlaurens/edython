@@ -11,12 +11,12 @@
  */
 'use strict'
 
-goog.provide('ezP.Consolidator.List')
+goog.provide('edY.Consolidator.List')
 
-goog.require('ezP.Const')
-goog.require('ezP.Input')
-goog.require('ezP.Do')
-goog.require('ezP.DelegateSvg')
+goog.require('edY.Const')
+goog.require('edY.Input')
+goog.require('edY.Do')
+goog.require('edY.DelegateSvg')
 
 
 /**
@@ -30,7 +30,7 @@ goog.require('ezP.DelegateSvg')
  * TODO: use singletons...
  * @param {!Object} data, all the data needed
  */
-ezP.Consolidator = function(d) {
+edY.Consolidator = function(d) {
   this.data = {}
   var D = this.constructor.data_
   if (D) {
@@ -48,12 +48,12 @@ ezP.Consolidator = function(d) {
  * Removes empty place holders
  * @param {!Block} block, to be consolidated....
  */
-ezP.Consolidator.prototype.consolidate = undefined
+edY.Consolidator.prototype.consolidate = undefined
 
 /**
  * Init. Not implemented. No parameter, no return.
  */
-ezP.Consolidator.prototype.init = undefined
+edY.Consolidator.prototype.init = undefined
 
 /**
  * Create a subclass of a consolidator.
@@ -62,8 +62,8 @@ ezP.Consolidator.prototype.init = undefined
  * and allow inheritance.
  * @param {!Object} data.
  */
-ezP.Consolidator.makeSubclass = function(key, data, C10r, owner) {
-  C10r = C10r || ezP.Consolidator
+edY.Consolidator.makeSubclass = function(key, data, C10r, owner) {
+  C10r = C10r || edY.Consolidator
   owner = owner || C10r
   var subclass = owner[key] = function(d) {
     subclass.superClass_.constructor.call(this, d)
@@ -80,7 +80,7 @@ ezP.Consolidator.makeSubclass = function(key, data, C10r, owner) {
     goog.mixin(subclass.data_, data)
   }
   subclass.makeSubclass = function(key, data, C10r, owner) {
-    ezP.Consolidator.makeSubclass(key, data, C10r || subclass, owner)
+    edY.Consolidator.makeSubclass(key, data, C10r || subclass, owner)
   }
 }
 
@@ -96,16 +96,16 @@ ezP.Consolidator.makeSubclass = function(key, data, C10r, owner) {
  * dynamically.
  * @param {!Object} data, all the data needed
  */
-ezP.Consolidator.makeSubclass('List')
+edY.Consolidator.makeSubclass('List')
 
 /**
  * Initialize the list consolidator.
  * @param {!Object} io parameter.
  */
-ezP.Consolidator.List.prototype.init = function() {
+edY.Consolidator.List.prototype.init = function() {
   goog.asserts.assert(goog.isDef(this.data.check), 'List consolidators must check their objects')
   if (this.data.unique) {
-    this.data.unique = ezP.Do.ensureArray(this.data.unique)
+    this.data.unique = edY.Do.ensureArray(this.data.unique)
   }
 }
 
@@ -114,17 +114,17 @@ ezP.Consolidator.List.prototype.init = function() {
  * Called when the input list has changed and or the index has changed.
  * @param {!Object} io parameter.
  */
-ezP.Consolidator.List.prototype.setupIO = function (io, i) {
+edY.Consolidator.List.prototype.setupIO = function (io, i) {
   if (i !== undefined) {
     io.i = i
   }
   if ((io.input = io.list[io.i])) {
-    io.ezp = io.input.ezp
+    io.edy = io.input.edy
     io.c8n = io.input.connection
-    goog.asserts.assert(!io.ezp || !!io.c8n, 'List items must have a connection')
+    goog.asserts.assert(!io.edy || !!io.c8n, 'List items must have a connection')
     return true
   } else {
-    io.ezp = io.c8n = null
+    io.edy = io.c8n = null
     return false
   }
 }
@@ -134,7 +134,7 @@ ezP.Consolidator.List.prototype.setupIO = function (io, i) {
  * @param {!Object} io parameter.
  * @return boolean, false when at end
  */
-ezP.Consolidator.List.prototype.nextInput = function (io) {
+edY.Consolidator.List.prototype.nextInput = function (io) {
   ++io.i
   return this.setupIO(io)
 }
@@ -144,8 +144,8 @@ ezP.Consolidator.List.prototype.nextInput = function (io) {
  * @param {!Object} io parameter.
  * @return boolean, true when connected.
  */
-ezP.Consolidator.List.prototype.willBeConnected = function (io) {
-  return io.ezp && (io.c8n.targetConnection || io.ezp.will_connect_)
+edY.Consolidator.List.prototype.willBeConnected = function (io) {
+  return io.edy && (io.c8n.targetConnection || io.edy.will_connect_)
 }
 
 /**
@@ -155,23 +155,23 @@ ezP.Consolidator.List.prototype.willBeConnected = function (io) {
  * @param {number} i. When undefined, take io.i
  * @return {Blockly.Input}, the input inserted.
  */
-ezP.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
+edY.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
   var me = this
   if (goog.isNumber(i)) {
     io.i = i
   }
   var c8n = io.block.makeConnection_(Blockly.INPUT_VALUE)
-  c8n.ezp.willConnect = function(c8n, otherC8n) {
-    c8n.ezp.will_connect_ = true
-    this.connection.sourceBlock_.ezp.will_connect_ = true
+  c8n.edy.willConnect = function(c8n, otherC8n) {
+    c8n.edy.will_connect_ = true
+    this.connection.sourceBlock_.edy.will_connect_ = true
   }
-  c8n.ezp.didConnect = function(c8n, otherC8n) {
+  c8n.edy.didConnect = function(c8n, otherC8n) {
     this.will_connect_ = false
-    this.connection.sourceBlock_.ezp.will_connect_ = false
+    this.connection.sourceBlock_.edy.will_connect_ = false
     me.consolidate(this.connection.sourceBlock_, true)
   }
   var input = new Blockly.Input(Blockly.INPUT_VALUE, '!', io.block, c8n)
-  ezP.Input.setupEzpData(input)
+  edY.Input.setupEzpData(input)
   io.list.splice(io.i, 0, input)
   io.edited = true
   this.setupIO(io)
@@ -185,7 +185,7 @@ ezP.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
  * @param {!Object} io parameter.
  * @return boolean, whether the io is at end.
  */
-ezP.Consolidator.List.prototype.disposeAtI = function (io, i) {
+edY.Consolidator.List.prototype.disposeAtI = function (io, i) {
   if (!goog.isNumber(i)) {
     i = io.i
   }
@@ -203,7 +203,7 @@ ezP.Consolidator.List.prototype.disposeAtI = function (io, i) {
  * In all other situations, return `check`.
  * @param {!Object} io parameter.
  */
-ezP.Consolidator.List.prototype.getCheck = function (io) {
+edY.Consolidator.List.prototype.getCheck = function (io) {
   if (this.data.all) {
     if (io.unique || io.list.length === 1) {
       // a single block or no block at all
@@ -224,21 +224,21 @@ ezP.Consolidator.List.prototype.getCheck = function (io) {
  * Finalize the current input as a placeholder.
  * @param {!Object} io parameter.
  */
-ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = undefined, optional = false) {
-  io.ezp.n = io.n
-  io.ezp.presep = io.presep
-  io.ezp.postsep = io.postsep
-  io.ezp.s7r_ = io.c8n.ezp.s7r_ = false
+edY.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = undefined, optional = false) {
+  io.edy.n = io.n
+  io.edy.presep = io.presep
+  io.edy.postsep = io.postsep
+  io.edy.s7r_ = io.c8n.edy.s7r_ = false
   var check = this.getCheck(io)
   if (name && name.length) {
     io.input.name = name
   }
   io.input.setCheck(check)
-  io.c8n.ezp.optional_ = optional
-  io.c8n.ezp.plugged_ = this.plugged
+  io.c8n.edy.optional_ = optional
+  io.c8n.edy.plugged_ = this.plugged
   if (!io.connected && !this.data.empty && !io.c8n.isConnected()) {
-    var value = ezP.DelegateSvg.Manager.getModel(io.block.type).list.hole_value
-    io.c8n.ezp.hole_data = ezP.HoleFiller.getData(check, value)
+    var value = edY.DelegateSvg.Manager.getModel(io.block.type).list.hole_value
+    io.c8n.edy.hole_data = edY.HoleFiller.getData(check, value)
   }
   while (io.input.fieldRow.length) {
     io.input.fieldRow.shift().dispose()
@@ -249,41 +249,41 @@ ezP.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = und
  * Finalize the current input as a separator.
  * @param {!Object} io parameter.
  */
-ezP.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, name) {
-  io.ezp.presep = io.presep || ''
-  io.ezp.postsep = io.postsep || ''
+edY.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, name) {
+  io.edy.presep = io.presep || ''
+  io.edy.postsep = io.postsep || ''
   if (name && name.length) {
     io.input.name = name
   }
-  io.ezp.s7r_ = io.c8n.ezp.s7r_ = true
-  if (extreme || !io.ezp.presep.length && io.ezp.postsep.length) {
+  io.edy.s7r_ = io.c8n.edy.s7r_ = true
+  if (extreme || !io.edy.presep.length && io.edy.postsep.length) {
     while (io.input.fieldRow.length) {
       io.input.fieldRow.shift().dispose()
     }
   } else if (!io.input.fieldRow.length) {
     var f = function(sep, suffix) {
-      var field = new ezP.FieldLabel(sep)
+      var field = new edY.FieldLabel(sep)
       io.input.fieldRow.splice(0, 0, field)
       field.setSourceBlock(io.block)
       if (io.block.rendered) {
         field.init()
       }
-      field.ezp.suffix = suffix
+      field.edy.suffix = suffix
     }
-    var sep = io.ezp.presep || this.data.presep
+    var sep = io.edy.presep || this.data.presep
     sep && sep.length && f(sep)
-    var sep = io.ezp.postsep || this.data.postsep
+    var sep = io.edy.postsep || this.data.postsep
     sep && sep.length && f(sep, true)
   }
   io.input.setCheck(this.getCheck(io))
-  io.input.connection.ezp.plugged_ = this.data.plugged
-  if (io.block.ezp.locked_) {
+  io.input.connection.edy.plugged_ = this.data.plugged
+  if (io.block.edy.locked_) {
     io.c8n.setHidden(true)
   } else if (io.i === 0 && io.noLeftSeparator && io.list.length > 1) {
     io.c8n.setHidden(true)
   } else if (io.i === 2 && 3 === io.list.length && io.noDynamicList) {
     io.c8n.setHidden(true)
-  } else if (!io.block.ezp.isIncog()) {
+  } else if (!io.block.edy.isIncog()) {
     io.c8n.setHidden(false)
   }
 }
@@ -296,7 +296,7 @@ ezP.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
  * @param {!Object} io parameter.
  * @return yes exactly if there are more input
  */
-ezP.Consolidator.List.prototype.consolidate_connected = function(io) {
+edY.Consolidator.List.prototype.consolidate_connected = function(io) {
   // ensure that there is one input after,
   // which is not connected
   if (!this.nextInput(io) || this.willBeConnected(io)) {
@@ -312,7 +312,7 @@ ezP.Consolidator.List.prototype.consolidate_connected = function(io) {
  * @param {!Object} io parameter.
  * @return yes exactly if there are more input
  */
-ezP.Consolidator.List.prototype.consolidate_first_connected = function(io) {
+edY.Consolidator.List.prototype.consolidate_first_connected = function(io) {
   // let subclassers catch this if they want to.
   if (!this.consolidate_single(io)) {
     // nothing more to consolidate
@@ -341,7 +341,7 @@ ezP.Consolidator.List.prototype.consolidate_first_connected = function(io) {
  * @param {!Object} io parameter.
  * @return yes exactly if there are more input
  */
-ezP.Consolidator.List.prototype.consolidate_single = function(io) {
+edY.Consolidator.List.prototype.consolidate_single = function(io) {
   if (io.unique) {
     // remove whatever precedes it, even the very first separator
     var j = io.list.indexOf(io.unique)
@@ -362,12 +362,12 @@ ezP.Consolidator.List.prototype.consolidate_single = function(io) {
  * @param {!Object} io parameter.
  * @param {!boolean} gobble whether to gobble intermediate inputs.
  */
-ezP.Consolidator.List.prototype.walk_to_next_connected = function(io, gobble) {
+edY.Consolidator.List.prototype.walk_to_next_connected = function(io, gobble) {
   // things are different if one of the inputs is connected
-  while (!!io.ezp) {
+  while (!!io.edy) {
     if (this.willBeConnected(io)) {
-      io.presep = io.ezp.presep || this.data.presep
-      io.postsep = io.ezp.postsep || this.data.postsep
+      io.presep = io.edy.presep || this.data.presep
+      io.postsep = io.edy.postsep || this.data.postsep
       // manage the unique input
       if (this.data.unique && !io.unique
         && io.c8n.targetConnection && function(my) {
@@ -394,14 +394,14 @@ ezP.Consolidator.List.prototype.walk_to_next_connected = function(io, gobble) {
  * create of if none exists.
  * @param {!Object} io parameter.
  */
-ezP.Consolidator.List.prototype.consolidate_unconnected = function(io) {
+edY.Consolidator.List.prototype.consolidate_unconnected = function(io) {
   // remove any separator up to the first placeholder
   // This is because the placeholder may have been connected
   // before, undoing will be easier.
   this.setupIO(io, 0)
-  if (!!io.ezp) {
+  if (!!io.edy) {
     while (true) {
-      if (io.ezp.s7r_) {
+      if (io.edy.s7r_) {
         this.disposeAtI(io)
         if (this.setupIO(io, 0)) {
           continue
@@ -419,7 +419,7 @@ ezP.Consolidator.List.prototype.consolidate_unconnected = function(io) {
       --io.i
       this.setupIO(io)
       this.doFinalizePlaceholder(io,
-        ezP.Do.Name.middle_name, this.data.empty)
+        edY.Do.Name.middle_name, this.data.empty)
       return
     }
     // unreachable code
@@ -427,7 +427,7 @@ ezP.Consolidator.List.prototype.consolidate_unconnected = function(io) {
   // create an input
   this.insertPlaceholder(io)
   this.doFinalizePlaceholder(io,
-    ezP.Do.Name.middle_name, this.data.empty)
+    edY.Do.Name.middle_name, this.data.empty)
 }
 
 /**
@@ -437,7 +437,7 @@ ezP.Consolidator.List.prototype.consolidate_unconnected = function(io) {
  * Default implementation does nothing.
  * @param {!Object} io parameter.
  */
-ezP.Consolidator.List.prototype.doCleanup = function(io) {
+edY.Consolidator.List.prototype.doCleanup = function(io) {
 }
 
 /**
@@ -449,15 +449,15 @@ ezP.Consolidator.List.prototype.doCleanup = function(io) {
  * set the separator property when not connected.
  * @param {!Object} io parameter.
  */
-ezP.Consolidator.List.prototype.doFinalize = function(io) {
+edY.Consolidator.List.prototype.doFinalize = function(io) {
   this.setupIO(io, 0)
   if (io.list.length === 1) {
     this.doFinalizePlaceholder(io, undefined, this.data.empty)
     return
   }
-  var previous = ezP.Do.Name.min_name
+  var previous = edY.Do.Name.min_name
   var next = io.list[io.i + 1].name
-  var name = ezP.Do.Name.getBetween(previous, next)
+  var name = edY.Do.Name.getBetween(previous, next)
   this.doFinalizeSeparator(io, true, name)
   this.nextInput(io)
   this.doFinalizePlaceholder(io)
@@ -465,12 +465,12 @@ ezP.Consolidator.List.prototype.doFinalize = function(io) {
   while (this.nextInput(io)) {
     if (io.i === io.list.length - 1) {
       // last separator
-      next = ezP.Do.Name.max_name
-      name = ezP.Do.Name.getBetween(previous, next)
+      next = edY.Do.Name.max_name
+      name = edY.Do.Name.getBetween(previous, next)
       this.doFinalizeSeparator(io, true, name)
     } else {
       next = io.list[io.i + 1].name
-      name = ezP.Do.Name.getBetween(previous, next)
+      name = edY.Do.Name.getBetween(previous, next)
       this.doFinalizeSeparator(io, false, name)
       previous = next
       this.nextInput(io)
@@ -484,17 +484,17 @@ ezP.Consolidator.List.prototype.doFinalize = function(io) {
  * Subclassers may add their own stuff to io.
  * @param {Object} io, parameters....
  */
-ezP.Consolidator.List.prototype.getIO = function(block) {
-  var unwrapped = block.ezp.getUnwrapped(block)
+edY.Consolidator.List.prototype.getIO = function(block) {
+  var unwrapped = block.edy.getUnwrapped(block)
   var io = {
     block: block,
-    noLeftSeparator: (block.workspace.ezp.options.noLeftSeparator 
-      || block.workspace.ezp.options.noDynamicList)
+    noLeftSeparator: (block.workspace.edy.options.noLeftSeparator 
+      || block.workspace.edy.options.noDynamicList)
       && (!unwrapped
-        || (!unwrapped.ezp.withLeftSeparator_ && !unwrapped.ezp.withDynamicList_)),
-    noDynamicList: (block.workspace.ezp.options.noDynamicList)
+        || (!unwrapped.edy.withLeftSeparator_ && !unwrapped.edy.withDynamicList_)),
+    noDynamicList: (block.workspace.edy.options.noDynamicList)
       && (!unwrapped
-        || !unwrapped.ezp.withDynamicList_),
+        || !unwrapped.edy.withDynamicList_),
     list: block.inputList,
     presep: this.data.presep,
     postsep: this.data.postsep,
@@ -509,7 +509,7 @@ ezP.Consolidator.List.prototype.getIO = function(block) {
  * @param {!Block} block, to be consolidated....
  * @param {boolean} force, true if no shortcut is allowed.
  */
-ezP.Consolidator.List.prototype.consolidate = function(block, force) {
+edY.Consolidator.List.prototype.consolidate = function(block, force) {
   var io = this.getIO(block)
   // things are different if one of the inputs is connected
   if (this.walk_to_next_connected(io)) {
@@ -533,8 +533,8 @@ ezP.Consolidator.List.prototype.consolidate = function(block, force) {
  * @param {string} name The name of the input.
  * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
  */
-ezP.Consolidator.List.prototype.getInput = function (block, name) {
-  // name = ezP.Do.Name.getNormalized(name) not here
+edY.Consolidator.List.prototype.getInput = function (block, name) {
+  // name = edY.Do.Name.getNormalized(name) not here
   if (!name || !name.length) {
     return null
   }
@@ -542,11 +542,11 @@ ezP.Consolidator.List.prototype.getInput = function (block, name) {
   var j = -1
   var io = this.getIO(block)
   do {
-    if (!!io.ezp) {
-      io.presep = io.ezp.presep || io.presep
-      io.postsep = io.ezp.postsep || io.postsep
-      if (!io.ezp.s7r_) {
-        var o = ezP.Do.Name.getOrder(io.input.name, name)
+    if (!!io.edy) {
+      io.presep = io.edy.presep || io.presep
+      io.postsep = io.edy.postsep || io.postsep
+      if (!io.edy.s7r_) {
+        var o = edY.Do.Name.getOrder(io.input.name, name)
         if (!o) {
           return io.input
         }
@@ -584,7 +584,7 @@ ezP.Consolidator.List.prototype.getInput = function (block, name) {
  * @param {object} io argument object
  * @return the next keyword item input, undefined when at end.
  */
-ezP.Consolidator.List.prototype.nextInputForType = function(io, type) {
+edY.Consolidator.List.prototype.nextInputForType = function(io, type) {
   while (this.nextInput(io)) {
     var target = io.c8n.targetConnection
     if (target) {
@@ -603,7 +603,7 @@ ezP.Consolidator.List.prototype.nextInputForType = function(io, type) {
  * @param {object} io argument object
  * @return the next keyword item input, undefined when at end.
  */
-ezP.Consolidator.List.prototype.hasInputForType = function(block, type) {
+edY.Consolidator.List.prototype.hasInputForType = function(block, type) {
   var io = this.getIO(block)
   return !!this.nextInputForType(io, type)
 }
@@ -622,4 +622,4 @@ ezP.Consolidator.List.prototype.hasInputForType = function(block, type) {
  * There should not exist blocks that provide both types.
  * @param {!Object} data data structure that contains the model....
  */
-ezP.Consolidator.List.makeSubclass('Singled')
+edY.Consolidator.List.makeSubclass('Singled')

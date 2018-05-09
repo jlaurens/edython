@@ -1,1 +1,1 @@
-goog.provide('ezP.Msg')
+goog.provide('edY.Msg')

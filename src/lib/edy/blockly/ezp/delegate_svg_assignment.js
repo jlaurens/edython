@@ -11,13 +11,13 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Assignment')
+goog.provide('edY.DelegateSvg.Assignment')
 
-goog.require('ezP.DelegateSvg.Term')
-goog.require('ezP.DelegateSvg.List')
-goog.require('ezP.DelegateSvg.Stmt')
+goog.require('edY.DelegateSvg.Term')
+goog.require('edY.DelegateSvg.List')
+goog.require('edY.DelegateSvg.Stmt')
 
-//["ezp:attributeref", "ezp:subscription", "ezp:slicing", "ezp:parenth_target_list", "ezp:bracket_target_list", "ezp:target_star", "ezp:identifier", "ezp:any"]
+//["edy:attributeref", "edy:subscription", "edy:slicing", "edy:parenth_target_list", "edy:bracket_target_list", "edy:target_star", "edy:identifier", "edy:any"]
 
 /**
  * Class for a DelegateSvg, '*...' block.
@@ -26,17 +26,17 @@ goog.require('ezP.DelegateSvg.Stmt')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('target_star', {
+edY.DelegateSvg.Expr.makeSubclass('target_star', {
   tiles: {
     expression: {
       order: 1,
       fields: {
         label: {
           value: '*',
-          css_class: 'ezp-code-reserved',
+          css_class: 'edy-code-reserved',
         },
       },
-      check: ezP.T3.Expr.Check.target,
+      check: edY.T3.Expr.Check.target,
       hole_value: 'target',
     },
   },
@@ -49,22 +49,22 @@ ezP.DelegateSvg.Expr.makeSubclass('target_star', {
  * Main entry: consolidate
  * @param {!String} single, the required type for a single element....
  */
-ezP.Consolidator.List.Target = function(D) {
+edY.Consolidator.List.Target = function(D) {
   var d = {}
-  goog.mixin(d, ezP.Consolidator.List.Target.data)
+  goog.mixin(d, edY.Consolidator.List.Target.data)
   goog.mixin(d, D)
-  ezP.Consolidator.List.Target.superClass_.constructor.call(this, d)
+  edY.Consolidator.List.Target.superClass_.constructor.call(this, d)
 }
-goog.inherits(ezP.Consolidator.List.Target, ezP.Consolidator.List)
+goog.inherits(edY.Consolidator.List.Target, edY.Consolidator.List)
 
-ezP.Consolidator.List.Target.data = {
+edY.Consolidator.List.Target.data = {
   hole_value: 'name',
   check: null,
   empty: false,
   presep: ',',
 }
 
-ezP.Consolidator.List.makeSubclass('Target', {
+edY.Consolidator.List.makeSubclass('Target', {
   hole_value: 'name',
   check: null,
   empty: false,
@@ -76,15 +76,15 @@ ezP.Consolidator.List.makeSubclass('Target', {
  * Main entry: consolidate
  * @param {!String} single, the required type for a single element....
  */
-ezP.Consolidator.List.Target.Void = function(D) {
+edY.Consolidator.List.Target.Void = function(D) {
   var d = {}
-  goog.mixin(d, ezP.Consolidator.List.Target.Void.data)
+  goog.mixin(d, edY.Consolidator.List.Target.Void.data)
   goog.mixin(d, D)
-  ezP.Consolidator.List.Target.Void.superClass_.constructor.call(this, d)
+  edY.Consolidator.List.Target.Void.superClass_.constructor.call(this, d)
 }
-goog.inherits(ezP.Consolidator.List.Target.Void, ezP.Consolidator.List.Target)
+goog.inherits(edY.Consolidator.List.Target.Void, edY.Consolidator.List.Target)
 
-ezP.Consolidator.List.Target.Void.data = {
+edY.Consolidator.List.Target.Void.data = {
   hole_value: 'name',
   check: null,
   empty: true,
@@ -96,8 +96,8 @@ ezP.Consolidator.List.Target.Void.data = {
  * Subclassers may add their own stuff to io.
  * @param {!Blockly.Block} block, owner or the receiver.
  */
-ezP.Consolidator.List.Target.prototype.getIO = function(block) {
-  var io = ezP.Consolidator.List.Target.superClass_.getIO.call(this, block)
+edY.Consolidator.List.Target.prototype.getIO = function(block) {
+  var io = edY.Consolidator.List.Target.superClass_.getIO.call(this, block)
   io.first_starred = io.last = -1
   return io
 }
@@ -107,7 +107,7 @@ ezP.Consolidator.List.Target.prototype.getIO = function(block) {
  * there might be unwanted things.
  * @param {object} io
  */
-ezP.Consolidator.List.Target.prototype.doCleanup = function () {
+edY.Consolidator.List.Target.prototype.doCleanup = function () {
   // preparation: walk through the list of inputs and
   // find the first_starred input
   var Type = {
@@ -126,7 +126,7 @@ ezP.Consolidator.List.Target.prototype.doCleanup = function () {
       return Type.UNCONNECTED
     }
     var check = target.check_
-    if (goog.array.contains(check, ezP.T3.Expr.target_star)) {
+    if (goog.array.contains(check, edY.T3.Expr.target_star)) {
       return Type.STARRED
     } else {
       return Type.OTHER
@@ -135,25 +135,25 @@ ezP.Consolidator.List.Target.prototype.doCleanup = function () {
   var setupFirst = function (io) {
     io.first_starred = io.last = -1
     this.setupIO(io, 0)
-    while (!!io.ezp) {
-      if ((io.ezp.parameter_type_ = getCheckType.call(this, io)) === Type.STARRED) {
+    while (!!io.edy) {
+      if ((io.edy.parameter_type_ = getCheckType.call(this, io)) === Type.STARRED) {
         if (io.first_starred < 0) {
           io.first_starred = io.i
         }
-      } else if (io.ezp.parameter_type_ === Type.OTHER) {
+      } else if (io.edy.parameter_type_ === Type.OTHER) {
         io.last = io.i
       }
       this.nextInput(io)
     }
   }
   return function(io) {
-    ezP.Consolidator.List.Target.superClass_.doCleanup.call(this, io)
+    edY.Consolidator.List.Target.superClass_.doCleanup.call(this, io)
     setupFirst.call(this, io)
     if (io.first_starred>=0) {
       // ther must be only one starred
       this.setupIO(io, io.first_starred + 2)
-      while (!!io.ezp) {
-        if (io.ezp.parameter_type_ === Type.STARRED) {
+      while (!!io.edy) {
+        if (io.edy.parameter_type_ === Type.STARRED) {
           // disconnect this
           var c8n = io.c8n
           var target = c8n.targetConnection
@@ -174,26 +174,26 @@ ezP.Consolidator.List.Target.prototype.doCleanup = function () {
  * This does not suppose that the list of input has been completely consolidated
  * @param {!Object} io parameter.
  */
-ezP.Consolidator.List.Target.prototype.getCheck = function (io) {
+edY.Consolidator.List.Target.prototype.getCheck = function (io) {
   if (io.first_starred < 0 || io.i === io.first_starred) {
-    return ezP.T3.Expr.Check.target
+    return edY.T3.Expr.Check.target
   } else {
-    return ezP.T3.Expr.Check.target_unstar
+    return edY.T3.Expr.Check.target_unstar
   }
 }
 
 /**
  * Class for a DelegateSvg, target_list block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('target_list', {
+edY.DelegateSvg.List.makeSubclass('target_list', {
   list: {
-    consolidator: ezP.Consolidator.List.Target,
+    consolidator: edY.Consolidator.List.Target,
     hole_value: 'name',
   },
 })
@@ -201,15 +201,15 @@ ezP.DelegateSvg.List.makeSubclass('target_list', {
 /**
  * Class for a DelegateSvg, void_target_list block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('void_target_list', {
+edY.DelegateSvg.List.makeSubclass('void_target_list', {
   list: {
-    consolidator: ezP.Consolidator.List.Target,
+    consolidator: edY.Consolidator.List.Target,
     empty: true,
     hole_value: 'name',
   },
@@ -218,13 +218,13 @@ ezP.DelegateSvg.List.makeSubclass('void_target_list', {
 /**
  * Class for a DelegateSvg, parenth_target_list block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.void_target_list.makeSubclass('parenth_target_list', {
+edY.DelegateSvg.Expr.void_target_list.makeSubclass('parenth_target_list', {
   fields: {
     prefix: {
       value: '(',
@@ -238,13 +238,13 @@ ezP.DelegateSvg.Expr.void_target_list.makeSubclass('parenth_target_list', {
 /**
  * Class for a DelegateSvg, bracket_target_list block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.void_target_list.makeSubclass('bracket_target_list', {
+edY.DelegateSvg.Expr.void_target_list.makeSubclass('bracket_target_list', {
   fields: {
     prefix: {
       value: '[',
@@ -255,20 +255,20 @@ ezP.DelegateSvg.Expr.void_target_list.makeSubclass('bracket_target_list', {
   },
 })
 
-goog.provide('ezP.DelegateSvg.Stmt.assignment_stmt')
+goog.provide('edY.DelegateSvg.Stmt.assignment_stmt')
 
 /**
  * Class for a DelegateSvg, target_list_list block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('target_list_list', {
+edY.DelegateSvg.List.makeSubclass('target_list_list', {
   list: {
-    check: ezP.T3.Expr.target_list,
+    check: edY.T3.Expr.target_list,
     empty: false,
     postsep: '=',
   },
@@ -281,10 +281,10 @@ ezP.DelegateSvg.List.makeSubclass('target_list_list', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
+edY.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
   data: {
     subtype: {
-      all: [ezP.T3.Expr.identifier, ezP.T3.Expr.dotted_name, ],
+      all: [edY.T3.Expr.identifier, edY.T3.Expr.dotted_name, ],
     },
     variant: {
       NAME_VALUE: 0,
@@ -302,7 +302,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       default: '',
       validate: function(newValue) {
         var types = this.data.subtype.getAll()
-        var type = ezP.Do.typeOfString(newValue)
+        var type = edY.Do.typeOfString(newValue)
         return types.indexOf(type) >= 0? {validated: newValue}: null
       },
       synchronize: function(newValue) {
@@ -315,7 +315,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       order: 1,
       fields: {
         edit: {
-          placeholder: ezP.Msg.Placeholder.IDENTIFIER,
+          placeholder: edY.Msg.Placeholder.IDENTIFIER,
           validate: true,
           endEditing: true,
         },
@@ -329,12 +329,12 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
           css: 'reserved',
         },
       },
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
     target: {
       order: 3,
-      wrap: ezP.T3.Expr.target_list_list,
+      wrap: edY.T3.Expr.target_list_list,
     },
     assigned: {
       order: 4,
@@ -344,7 +344,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
           css: 'reserved',
         },
       },
-      wrap: ezP.T3.Expr.assigned_list,
+      wrap: edY.T3.Expr.assigned_list,
     },
   },
 })
@@ -352,51 +352,51 @@ ezP.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+edY.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var name = this.data.name.get()
   var M = this.data.variant.model
   var current = this.data.variant.get()
   var F = function(content, variant) {
-    var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.variant.set(variant)
+    var menuItem = new edY.MenuItem(content, function() {
+      block.edy.data.variant.set(variant)
     })
     menuItem.setEnabled(variant != current)
     mgr.addChild(menuItem, true)
   }
   var content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    ezP.Do.createSPAN(name || ezP.Msg.Placeholder.IDENTIFIER, name? 'ezp-code': 'ezp-code-placeholder'),
-    ezP.Do.createSPAN(' = …', 'ezp-code'),
+    edY.Do.createSPAN(name || edY.Msg.Placeholder.IDENTIFIER, name? 'edy-code': 'edy-code-placeholder'),
+    edY.Do.createSPAN(' = …', 'edy-code'),
   )
   F(content, M.NAME_VALUE)
   var content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    ezP.Do.createSPAN(name || ezP.Msg.Placeholder.IDENTIFIER, name? 'ezp-code': 'ezp-code-placeholder'),
-    ezP.Do.createSPAN(': … = …', 'ezp-code'),
+    edY.Do.createSPAN(name || edY.Msg.Placeholder.IDENTIFIER, name? 'edy-code': 'edy-code-placeholder'),
+    edY.Do.createSPAN(': … = …', 'edy-code'),
   )
   F(content, M.NAME_ANNOTATION_VALUE)
-  var content = ezP.Do.createSPAN('…,… = …,…', 'ezp-code')
+  var content = edY.Do.createSPAN('…,… = …,…', 'edy-code')
   F(content, 2)
   mgr.shouldSeparate()
   if (current != M.TARGET_VALUE) {
-    var menuItem = new ezP.MenuItem(ezP.Msg.RENAME, function() {
-        block.ezp.data.name.field.showEditor()
+    var menuItem = new edY.MenuItem(edY.Msg.RENAME, function() {
+        block.edy.data.name.field.showEditor()
       })
     mgr.addChild(menuItem, true)
     mgr.shouldSeparate()
   }
-  ezP.DelegateSvg.Stmt.assignment_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  edY.DelegateSvg.Stmt.assignment_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
   return true
 }
 
-ezP.DelegateSvg.List.makeSubclass('assigned_list', function() {
+edY.DelegateSvg.List.makeSubclass('assigned_list', function() {
   var D = {
-    check: ezP.T3.Expr.Check.starred_item,
-    unique: ezP.T3.Expr.yield_expression,
-    consolidator: ezP.Consolidator.List.Singled,
+    check: edY.T3.Expr.Check.starred_item,
+    unique: edY.T3.Expr.yield_expression,
+    consolidator: edY.Consolidator.List.Singled,
     empty: false,
     presep: ',',
   }
@@ -408,11 +408,11 @@ ezP.DelegateSvg.List.makeSubclass('assigned_list', function() {
   }
 })
 
-ezP.DelegateSvg.List.makeSubclass('augassigned_list', function() {
+edY.DelegateSvg.List.makeSubclass('augassigned_list', function() {
   var D = {
-    check: ezP.T3.Expr.Check.expression,
-    unique: ezP.T3.Expr.yield_expression,
-    consolidator: ezP.Consolidator.List.Singled,
+    check: edY.T3.Expr.Check.expression,
+    unique: edY.T3.Expr.yield_expression,
+    consolidator: edY.Consolidator.List.Singled,
     empty: false,
     presep: ',',
   }
@@ -424,7 +424,7 @@ ezP.DelegateSvg.List.makeSubclass('augassigned_list', function() {
   }
 })
 
-goog.provide('ezP.DelegateSvg.AugAssign')
+goog.provide('edY.DelegateSvg.AugAssign')
 
 /**
  * Class for a DelegateSvg, augmented_assignment_stmt block.
@@ -437,7 +437,7 @@ goog.provide('ezP.DelegateSvg.AugAssign')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
+edY.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
   data: {
     variant: {
       NAME_EXPRESSIONS: 0,
@@ -451,8 +451,8 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
     name: {
       default: '',
       validate: function(newValue) {
-        var type = ezP.Do.typeOfString(newValue)
-        return type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name?
+        var type = edY.Do.typeOfString(newValue)
+        return type === edY.T3.Expr.identifier || type === edY.T3.Expr.dotted_name?
         {validated: newValue}: null
       },
       synchronize: function(newValue) {
@@ -489,7 +489,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       order: 1,
       fields: {
         edit: {
-          placeholder: ezP.Msg.Placeholder.IDENTIFIER,
+          placeholder: edY.Msg.Placeholder.IDENTIFIER,
           validate: true,
           endEditing: true,
         },
@@ -497,7 +497,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
     },
     target: {
       order: 2,
-      check: ezP.T3.Expr.Check.augtarget,
+      check: edY.T3.Expr.Check.augtarget,
     },
     expressions: {
       order: 3,
@@ -506,7 +506,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
           value: '',
         },
       },
-      wrap: ezP.T3.Expr.augassigned_list,
+      wrap: edY.T3.Expr.augassigned_list,
     },
   },
 })
@@ -516,17 +516,17 @@ console.warn('in initBlock,Search for field names corresponding to data names: m
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+edY.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var variantData = this.data.variant
   var model = variantData.model
   const current = variantData.get()
-  var withTarget = ezP.Do.getVariantFlag(current, model.TARGET)
+  var withTarget = edY.Do.getVariantFlag(current, model.TARGET)
   var name = this.data.name.get()
   var operator = this.data.operator.get()
-  var withBitwise = ezP.Do.getVariantFlag(current, model.BITWISE)
+  var withBitwise = edY.Do.getVariantFlag(current, model.BITWISE)
   var operators = withBitwise? 
   this.data.bitwiseOperator.getAll():
   this.data.numberOperator.getAll()
@@ -535,14 +535,14 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
     if (op !== operator) {
       var content =
       goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        withTarget? ezP.Do.createSPAN('…', 'ezp-code'):
-        ezP.Do.createSPAN(name || ezP.Msg.Placeholder.IDENTIFIER, name? 'ezp-code': 'ezp-code-placeholder'),
-        ezP.Do.createSPAN(' '+op+' ', 'ezp-code'),
-        ezP.Do.createSPAN('…', 'ezp-code'),
+        withTarget? edY.Do.createSPAN('…', 'edy-code'):
+        edY.Do.createSPAN(name || edY.Msg.Placeholder.IDENTIFIER, name? 'edy-code': 'edy-code-placeholder'),
+        edY.Do.createSPAN(' '+op+' ', 'edy-code'),
+        edY.Do.createSPAN('…', 'edy-code'),
       )
-      var menuItem = new ezP.MenuItem(content, function() {
+      var menuItem = new edY.MenuItem(content, function() {
         console.log('Change', withBitwise?'bitwise':'number', 'operator to', op)
-        withBitwise? block.ezp.data.bitwiseOperator.set(op): block.ezp.data.numberOperator.set(op)
+        withBitwise? block.edy.data.bitwiseOperator.set(op): block.edy.data.numberOperator.set(op)
       })
       mgr.addChild(menuItem, true)
     }
@@ -553,8 +553,8 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
   mgr.shouldSeparate()
   var F = function(variant, content) {
     if (variant !== current) {
-      var menuItem = new ezP.MenuItem(content, function() {
-        block.ezp.data.variant.set(variant)
+      var menuItem = new edY.MenuItem(content, function() {
+        block.edy.data.variant.set(variant)
       })
       mgr.addChild(menuItem, true)
     }
@@ -562,38 +562,38 @@ ezP.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
   var variant = model.NAME_EXPRESSIONS
   var content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    ezP.Do.createSPAN(name || ezP.Msg.Placeholder.IDENTIFIER, name? 'ezp-code': 'ezp-code-placeholder'),
-    ezP.Do.createSPAN(' '+operator+' …', 'ezp-code'),
+    edY.Do.createSPAN(name || edY.Msg.Placeholder.IDENTIFIER, name? 'edy-code': 'edy-code-placeholder'),
+    edY.Do.createSPAN(' '+operator+' …', 'edy-code'),
   )
   F(model.NAME_EXPRESSIONS, content)
   var content =
-  goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+  goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
     goog.dom.createTextNode('… '+operator+' …'),
   )
   F(model.TARGET_EXPRESSIONS, content)
   mgr.shouldSeparate()
   var content =
-  ezP.Do.createSPAN(withBitwise? '+=, -=, /= …': '<<=, >>=, &= …', 'ezp-code')
-  var menuItem = function(ezp) {
-    return new ezP.MenuItem(content, function() {
-      ezp.data.operator.set(withBitwise? ezp.data.bitwiseOperator.toText(): ezp.data.numberOperator.toText())
+  edY.Do.createSPAN(withBitwise? '+=, -=, /= …': '<<=, >>=, &= …', 'edy-code')
+  var menuItem = function(edy) {
+    return new edY.MenuItem(content, function() {
+      edy.data.operator.set(withBitwise? edy.data.bitwiseOperator.toText(): edy.data.numberOperator.toText())
   })
   } (this)
   mgr.addChild(menuItem, true)
   mgr.shouldSeparate()
-  return ezP.DelegateSvg.Stmt.augmented_assignment_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return edY.DelegateSvg.Stmt.augmented_assignment_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
-ezP.DelegateSvg.Assignment.T3s = [
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.yield_expression,
-  ezP.T3.Expr.target_list,
-  ezP.T3.Expr.target_list_list,
-  ezP.T3.Expr.void_target_list,
-  ezP.T3.Expr.parenth_target_list,
-  ezP.T3.Expr.bracket_target_list,
-  ezP.T3.Stmt.assignment_stmt,
-  ezP.T3.Expr.assigned_list,
-  ezP.T3.Expr.augassigned_list,
-  ezP.T3.Stmt.augmented_assignment_stmt,
+edY.DelegateSvg.Assignment.T3s = [
+  edY.T3.Expr.term,
+  edY.T3.Expr.yield_expression,
+  edY.T3.Expr.target_list,
+  edY.T3.Expr.target_list_list,
+  edY.T3.Expr.void_target_list,
+  edY.T3.Expr.parenth_target_list,
+  edY.T3.Expr.bracket_target_list,
+  edY.T3.Stmt.assignment_stmt,
+  edY.T3.Expr.assigned_list,
+  edY.T3.Expr.augassigned_list,
+  edY.T3.Stmt.augmented_assignment_stmt,
 ]

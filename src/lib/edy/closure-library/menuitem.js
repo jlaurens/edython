@@ -19,15 +19,15 @@
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 
-goog.provide('ezP.MenuItem')
-goog.provide('ezP.MenuItemCode')
-goog.provide('ezP.MenuItemVar')
-goog.provide('ezP.Separator')
+goog.provide('edY.MenuItem')
+goog.provide('edY.MenuItemCode')
+goog.provide('edY.MenuItemVar')
+goog.provide('edY.Separator')
 
 goog.require('goog.ui.MenuItem')
 goog.require('goog.ui.Separator')
-goog.require('ezP.MenuItemRenderer')
-goog.require('ezP.SeparatorRenderer')
+goog.require('edY.MenuItemRenderer')
+goog.require('edY.SeparatorRenderer')
 
 // goog.forwardDeclare('goog.ui.Menu'); // circular
 
@@ -44,15 +44,15 @@ goog.require('ezP.SeparatorRenderer')
  * @constructor
  * @extends {goog.ui.Control}
  */
-ezP.MenuItem = function (content, optModel, optDomHelper, optRenderer) {
+edY.MenuItem = function (content, optModel, optDomHelper, optRenderer) {
   goog.ui.Control.call(
-    this, content, optRenderer || ezP.MenuItemRenderer.getInstance(),
+    this, content, optRenderer || edY.MenuItemRenderer.getInstance(),
     optDomHelper)
   this.setValue(optModel)
   this.setCheckable(false)
 }
-goog.inherits(ezP.MenuItem, goog.ui.MenuItem)
-goog.tagUnsealableClass(ezP.MenuItem)
+goog.inherits(edY.MenuItem, goog.ui.MenuItem)
+goog.tagUnsealableClass(edY.MenuItem)
 
 /**
  * The class set on an element that contains a parenthetical mnemonic key hint.
@@ -64,24 +64,24 @@ goog.tagUnsealableClass(ezP.MenuItem)
  * @type {string}
  * @private
  */
-ezP.MenuItem.MNEMONIC_WRAPPER_CLASS_ =
-    ezP.MenuItemRenderer.CSS_CLASS + '-mnemonic-separator'
+edY.MenuItem.MNEMONIC_WRAPPER_CLASS_ =
+    edY.MenuItemRenderer.CSS_CLASS + '-mnemonic-separator'
 
 /**
  * The class set on an element that contains a keyboard accelerator hint.
  * @type {string}
  */
-goog.ui.MenuItem.ACCELERATOR_CLASS = ezP.MenuItemRenderer.CSS_CLASS + '-accel'
+goog.ui.MenuItem.ACCELERATOR_CLASS = edY.MenuItemRenderer.CSS_CLASS + '-accel'
 
 /**
  * Returns the text caption of the component while ignoring accelerators.
  * @override
  */
-ezP.MenuItem.prototype.getCaption = function () {
+edY.MenuItem.prototype.getCaption = function () {
   var content = this.getContent()
   if (goog.isArray(content)) {
-    var acceleratorClass = ezP.MenuItem.ACCELERATOR_CLASS
-    var mnemonicWrapClass = ezP.MenuItem.MNEMONIC_WRAPPER_CLASS_
+    var acceleratorClass = edY.MenuItem.ACCELERATOR_CLASS
+    var mnemonicWrapClass = edY.MenuItem.MNEMONIC_WRAPPER_CLASS_
     var caption =
         goog.array
           .map(
@@ -108,13 +108,13 @@ ezP.MenuItem.prototype.getCaption = function () {
  * @return {?string} The keyboard accelerator text, or null if the menu item
  *     doesn't have one.
  */
-ezP.MenuItem.prototype.getAccelerator = function () {
+edY.MenuItem.prototype.getAccelerator = function () {
   var dom = this.getDomHelper()
   var content = this.getContent()
   if (goog.isArray(content)) {
     var acceleratorEl = goog.array.find(content, function (e) {
       return goog.dom.classlist.contains(
-        /** @type {!Element} */ (e), ezP.MenuItem.ACCELERATOR_CLASS)
+        /** @type {!Element} */ (e), edY.MenuItem.ACCELERATOR_CLASS)
     })
     if (acceleratorEl) {
       return dom.getTextContent(acceleratorEl)
@@ -136,14 +136,14 @@ ezP.MenuItem.prototype.getAccelerator = function () {
  * @constructor
  * @extends {goog.ui.Control}
  */
-ezP.MenuItem = function (content, optModel, optDomHelper, optRenderer) {
+edY.MenuItem = function (content, optModel, optDomHelper, optRenderer) {
   goog.ui.Control.call(
-    this, content, optRenderer || ezP.MenuItemRenderer.getInstance(),
+    this, content, optRenderer || edY.MenuItemRenderer.getInstance(),
     optDomHelper)
   this.setValue(optModel)
 }
-goog.inherits(ezP.MenuItem, goog.ui.MenuItem)
-goog.tagUnsealableClass(ezP.MenuItem)
+goog.inherits(edY.MenuItem, goog.ui.MenuItem)
+goog.tagUnsealableClass(edY.MenuItem)
 
 /**
  * Class representing a piece of code in a menu.
@@ -158,13 +158,13 @@ goog.tagUnsealableClass(ezP.MenuItem)
  * @constructor
  * @extends {goog.ui.MenuItem}
  */
-ezP.MenuItemCode = function (content, optModel, optDomHelper, optRenderer) {
+edY.MenuItemCode = function (content, optModel, optDomHelper, optRenderer) {
   goog.ui.MenuItem.call(
     this, content, optModel,
-    optDomHelper, optRenderer || ezP.MenuItemCodeRenderer.getInstance())
+    optDomHelper, optRenderer || edY.MenuItemCodeRenderer.getInstance())
 }
-goog.inherits(ezP.MenuItemCode, goog.ui.MenuItem)
-goog.tagUnsealableClass(ezP.MenuItemCode)
+goog.inherits(edY.MenuItemCode, goog.ui.MenuItem)
+goog.tagUnsealableClass(edY.MenuItemCode)
 
 /**
  * Class representing an item for a variable in a menu.
@@ -175,15 +175,15 @@ goog.tagUnsealableClass(ezP.MenuItemCode)
  * @param {String} action, string identifying the action.
  * @param {String} value, value associated to the action.
  * @constructor
- * @extends {ezP.SimpleMenuItemCode}
+ * @extends {edY.SimpleMenuItemCode}
  */
-ezP.SimpleMenuItemCode = function (content, action, value) {
-  ezP.SimpleMenuItemCode.superClass_.constructor.call(
+edY.SimpleMenuItemCode = function (content, action, value) {
+  edY.SimpleMenuItemCode.superClass_.constructor.call(
     this, content, [action, value],
-    undefined, ezP.MenuItemCodeRenderer.getInstance())
+    undefined, edY.MenuItemCodeRenderer.getInstance())
 }
-goog.inherits(ezP.SimpleMenuItemCode, ezP.MenuItemCode)
-goog.tagUnsealableClass(ezP.SimpleMenuItemCode)
+goog.inherits(edY.SimpleMenuItemCode, edY.MenuItemCode)
+goog.tagUnsealableClass(edY.SimpleMenuItemCode)
 
 /**
  * Class representing an item for a variable in a menu.
@@ -198,29 +198,29 @@ goog.tagUnsealableClass(ezP.SimpleMenuItemCode)
  * @constructor
  * @extends {goog.ui.MenuItem}
  */
-ezP.MenuItemVar = function (content, optModel, optDomHelper, optRenderer) {
+edY.MenuItemVar = function (content, optModel, optDomHelper, optRenderer) {
   goog.ui.Control.call(
-    this, content, optRenderer || ezP.MenuItemVarRenderer.getInstance(),
+    this, content, optRenderer || edY.MenuItemVarRenderer.getInstance(),
     optDomHelper)
   this.setValue(optModel)
 }
-goog.inherits(ezP.MenuItemVar, goog.ui.MenuItem)
-goog.tagUnsealableClass(ezP.MenuItemVar)
+goog.inherits(edY.MenuItemVar, goog.ui.MenuItem)
+goog.tagUnsealableClass(edY.MenuItemVar)
 
 /**
  * Class representing a separator.  Although it extends {@link goog.ui.Control},
  * the Separator class doesn't allocate any event handlers, nor does it change
  * its appearance on mouseover, etc.
  * @param {goog.ui.MenuSeparatorRenderer=} optRenderer Renderer to render or
- *    decorate the separator; defaults to {@link ezP.MenuSeparatorRenderer}.
+ *    decorate the separator; defaults to {@link edY.MenuSeparatorRenderer}.
  * @param {goog.dom.DomHelper=} optDomHelper Optional DOM helper, used for
  *    document interaction.
  * @constructor
  * @extends {goog.ui.Control}
  */
-ezP.Separator = function (optRenderer, optDomHelper) {
-  ezP.Separator.superClass_.constructor.call(
-    this, optRenderer || ezP.MenuSeparatorRenderer.getInstance(),
+edY.Separator = function (optRenderer, optDomHelper) {
+  edY.Separator.superClass_.constructor.call(
+    this, optRenderer || edY.MenuSeparatorRenderer.getInstance(),
     optDomHelper)
 }
-goog.inherits(ezP.Separator, goog.ui.Separator)
+goog.inherits(edY.Separator, goog.ui.Separator)

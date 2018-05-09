@@ -11,10 +11,10 @@
  */
 'use strict'
 
-goog.provide('ezP.Block')
+goog.provide('edY.Block')
 goog.require('Blockly.Block')
-goog.forwardDeclare('ezP.Delegate')
-goog.forwardDeclare('ezP.T3.All')
+goog.forwardDeclare('edY.Delegate')
+goog.forwardDeclare('edY.T3.All')
 
 /**
  * Class for a block.
@@ -28,18 +28,18 @@ goog.forwardDeclare('ezP.T3.All')
  * @extends {Blockly.Block}
  * @constructor
  */
-ezP.Block = function (workspace, prototypeName, optId) {
+edY.Block = function (workspace, prototypeName, optId) {
   this.type = prototypeName
-  this.ezp = ezP.Delegate.Manager.create(this)
-  ezP.Block.superClass_.constructor.call(this, workspace, prototypeName, optId)
+  this.edy = edY.Delegate.Manager.create(this)
+  edY.Block.superClass_.constructor.call(this, workspace, prototypeName, optId)
 }
-goog.inherits(ezP.Block, Blockly.Block)
+goog.inherits(edY.Block, Blockly.Block)
 
 /**
  * Dispose the delegate too.
  * @param {number|string} colour HSV hue value, or #RRGGBB string.
  */
-ezP.Block.prototype.dispose = function(healStack) {
+edY.Block.prototype.dispose = function(healStack) {
   if (this === Blockly.selected) {
     // this block was selected, select the block below or above before deletion
     //this does not work most probably because it is the wrong place
@@ -50,10 +50,10 @@ ezP.Block.prototype.dispose = function(healStack) {
       setTimeout(function() {target.select()}, 100)// broken for outputConnection ?
     }
   }
-  if (this.ezp) {
-    this.ezp.deinitBlock(this)
+  if (this.edy) {
+    this.edy.deinitBlock(this)
   }
-  ezP.Block.superClass_.dispose.call(this, healStack)
+  edY.Block.superClass_.dispose.call(this, healStack)
 }
 
 /**
@@ -66,9 +66,9 @@ ezP.Block.prototype.dispose = function(healStack) {
  * @private
  * @override
  */
-ezP.Block.prototype.appendInput_ = function (type, name) {
-  var input = ezP.Block.superClass_.appendInput_.call(this, type, name)
-  ezP.Input.setupEzpData(input)
+edY.Block.prototype.appendInput_ = function (type, name) {
+  var input = edY.Block.superClass_.appendInput_.call(this, type, name)
+  edY.Input.setupEzpData(input)
   return input
 }
 
@@ -78,9 +78,9 @@ ezP.Block.prototype.appendInput_ = function (type, name) {
  * @param {boolean} hidden True if connections are hidden.
  * @override
  */
-ezP.Block.prototype.setConnectionsHidden = function (hidden) {
-  ezP.Block.superClass_.setConnectionsHidden.call(this, hidden)
-  this.ezp.setConnectionsHidden(this, hidden)
+edY.Block.prototype.setConnectionsHidden = function (hidden) {
+  edY.Block.superClass_.setConnectionsHidden.call(this, hidden)
+  this.edy.setConnectionsHidden(this, hidden)
 }
 
 /**
@@ -89,13 +89,13 @@ ezP.Block.prototype.setConnectionsHidden = function (hidden) {
  * only FieldInput's are considered.
  * @return {!Array.<string>} List of variable names.
  */
-ezP.Block.prototype.getVars = function () {
+edY.Block.prototype.getVars = function () {
   var vars = []
   var i = 0, input
   for (; (input = this.inputList[i]); i++) {
     var j = 0, field
     for (; (field = input.fieldRow[j]); j++) {
-      if (field instanceof ezP.FieldInput) {
+      if (field instanceof edY.FieldInput) {
         vars.push(field.getText())
       }
     }
@@ -109,12 +109,12 @@ ezP.Block.prototype.getVars = function () {
  * @param {string} oldName Previous name of variable.
  * @param {string} newName Renamed variable.
  */
-ezP.Block.prototype.renameVar = function (oldName, newName) {
+edY.Block.prototype.renameVar = function (oldName, newName) {
   var i = 0, input
   for (; (input = this.inputList[i]); i++) {
     var j = 0, field
     for (; (field = input.fieldRow[j]); j++) {
-      if (field instanceof ezP.FieldInput &&
+      if (field instanceof edY.FieldInput &&
           Blockly.Names.equals(oldName, field.getText())) {
         field.setText(newName)
       }
@@ -128,12 +128,12 @@ ezP.Block.prototype.renameVar = function (oldName, newName) {
  * @param {string} oldVarId Previous variable.
  * @param {string} newVarId Replacement variable.
  */
-ezP.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
+edY.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
   var i = 0, input
   for (; (input = this.inputList[i]); i++) {
     var j = 0, field
     for (; (field = input.fieldRow[j]); j++) {
-      if (field instanceof ezP.FieldInput &&
+      if (field instanceof edY.FieldInput &&
           Blockly.Names.equals(oldVarId, field.getValue())) {
         field.setValue(newVarId)
       }
@@ -143,22 +143,22 @@ ezP.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
 
 /**
  * Shortcut for appending a sealed value input row.
- * Add a 'true' ezp.wrapped_ attribute to the connection and register the newly created input to be filled later.
+ * Add a 'true' edy.wrapped_ attribute to the connection and register the newly created input to be filled later.
  * @param {string} name Language-neutral identifier which may used to find this
  *     input again.  Should be unique to this block.
  * @return {!Blockly.Input} The input object created.
  */
-ezP.Block.prototype.appendWrapValueInput = function(name, prototypeName, optional, hidden) {
+edY.Block.prototype.appendWrapValueInput = function(name, prototypeName, optional, hidden) {
   goog.asserts.assert(prototypeName, 'Missing prototypeName, no block to seal')
-  goog.asserts.assert(ezP.T3.All.containsExpression(prototypeName), 'Unnown prototypeName, no block to seal '+prototypeName)
+  goog.asserts.assert(edY.T3.All.containsExpression(prototypeName), 'Unnown prototypeName, no block to seal '+prototypeName)
   var input = this.appendValueInput(name)
-  input.connection.ezp.wrapped_ = true
-  input.connection.ezp.optional_ = optional
-  if (!this.ezp.wrappedInputs_) {
-    this.ezp.wrappedInputs_ = []
+  input.connection.edy.wrapped_ = true
+  input.connection.edy.optional_ = optional
+  if (!this.edy.wrappedInputs_) {
+    this.edy.wrappedInputs_ = []
   }
   if (!optional) {
-    this.ezp.wrappedInputs_.push([input, prototypeName])
+    this.edy.wrappedInputs_.push([input, prototypeName])
   }
   return input
 }
@@ -171,10 +171,10 @@ ezP.Block.prototype.appendWrapValueInput = function(name, prototypeName, optiona
  *     of returned types.  Null or undefined if any type could be returned
  *     (e.g. variable get).
  */
-ezP.Block.prototype.setOutput = function(newBoolean, opt_check) {
+edY.Block.prototype.setOutput = function(newBoolean, opt_check) {
   if (newBoolean) {
-    goog.asserts.assert(!!opt_check || !this.type.startsWith('ezp:expr_') || this.type.startsWith('ezp:expr_fake'),
-      'ezP output connection must be types for '+this.type)
+    goog.asserts.assert(!!opt_check || !this.type.startsWith('edy:expr_') || this.type.startsWith('edy:expr_fake'),
+      'edY output connection must be types for '+this.type)
   }
-  ezP.Block.superClass_.setOutput.call(this, newBoolean, opt_check)
+  edY.Block.superClass_.setOutput.call(this, newBoolean, opt_check)
 }

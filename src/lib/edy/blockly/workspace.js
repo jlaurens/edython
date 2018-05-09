@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.provide('ezP.Workspace')
+goog.provide('edY.Workspace')
 
 goog.require('Blockly.Workspace')
-goog.require('ezP.Helper')
-goog.require('ezP.Block')
+goog.require('edY.Helper')
+goog.require('edY.Block')
 
 /**
  * Class for a workspace.  This is a data structure that contains blocks.
@@ -23,11 +23,11 @@ goog.require('ezP.Block')
  * @param {Blockly.Options} optOptions Dictionary of options.
  * @constructor
  */
-ezP.Workspace = function (optOptions) {
-  ezP.Workspace.superClass_.constructor.call(this, optOptions)
-  this.ezp = new ezP.Helper()
+edY.Workspace = function (optOptions) {
+  edY.Workspace.superClass_.constructor.call(this, optOptions)
+  this.edy = new edY.Helper()
 }
-goog.inherits(ezP.Workspace, Blockly.Workspace)
+goog.inherits(edY.Workspace, Blockly.Workspace)
 
 /**
  * Dispose of this workspace.
@@ -36,8 +36,8 @@ goog.inherits(ezP.Workspace, Blockly.Workspace)
 Blockly.Workspace.prototype.dispose = function () {
   this.listeners_.length = 0
   this.clear()
-  this.ezp.dispose()
-  this.ezp = null
+  this.edy.dispose()
+  this.edy = null
   // Remove from workspace database.
   delete Blockly.Workspace.WorkspaceDB_[this.id]
 }
@@ -51,15 +51,15 @@ Blockly.Workspace.prototype.dispose = function () {
  *     create a new id.
  * @return {!Blockly.Block} The created block.
  */
-ezP.Workspace.prototype.newBlock = function (prototypeName, optId) {
-  if (prototypeName.startsWith('ezp:')) {
-    return new ezP.Block(this, prototypeName, optId)
+edY.Workspace.prototype.newBlock = function (prototypeName, optId) {
+  if (prototypeName.startsWith('edy:')) {
+    return new edY.Block(this, prototypeName, optId)
   } else {
     return new Blockly.Block(this, prototypeName, optId)
   }
 }
 
-ezP.Workspace.prototype.logAllConnections = function (comment) {
+edY.Workspace.prototype.logAllConnections = function (comment) {
   comment = comment || ''
   var dbList = this.connectionDBList
   console.log(comment + '> Blockly.INPUT_VALUE connections')
@@ -89,14 +89,14 @@ ezP.Workspace.prototype.logAllConnections = function (comment) {
  * @param {string} name Name of variable.
  * @return {!Array.<!Blockly.Block>} Array of block usages.
  */
-ezP.Workspace.prototype.getVariableUses = function (name, all) {
-  var uses = all ? ezP.Workspace.superClass_.getVariableUses.call(name) : []
+edY.Workspace.prototype.getVariableUses = function (name, all) {
+  var uses = all ? edY.Workspace.superClass_.getVariableUses.call(name) : []
   var blocks = this.getAllBlocks()
   // Iterate through every block and check the name.
   for (var i = 0; i < blocks.length; i++) {
-    var ezp = blocks[i].ezp
-    if (ezp) {
-      var blockVariables = ezp.getVars(blocks[i])
+    var edy = blocks[i].edy
+    if (edy) {
+      var blockVariables = edy.getVars(blocks[i])
       if (blockVariables) {
         for (var j = 0; j < blockVariables.length; j++) {
           var varName = blockVariables[j]
@@ -116,15 +116,15 @@ ezP.Workspace.prototype.getVariableUses = function (name, all) {
  * @param {string} id ID of block to find.
  * @return {Blockly.Block} The sought after block or null if not found.
  */
-ezP.Workspace.savedGetBlockById = Blockly.Workspace.prototype.getBlockById
+edY.Workspace.savedGetBlockById = Blockly.Workspace.prototype.getBlockById
 Blockly.Workspace.prototype.getBlockById = function(id) {
-  var block = ezP.Workspace.savedGetBlockById.call(this, id)
+  var block = edY.Workspace.savedGetBlockById.call(this, id)
   if (block) {
     return block
   }
-  var m = XRegExp.exec(id, ezP.XRE.id_wrapped)
-  if (m && (block = ezP.Workspace.savedGetBlockById.call(this, m.id))) {
-    var e8r = block.ezp.inputEnumerator(block)
+  var m = XRegExp.exec(id, edY.XRE.id_wrapped)
+  if (m && (block = edY.Workspace.savedGetBlockById.call(this, m.id))) {
+    var e8r = block.edy.inputEnumerator(block)
     while (e8r.next()) {
       var c8n = e8r.here.connection
       if (c8n) {

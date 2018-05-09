@@ -14,13 +14,13 @@ if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 alert('MAIN')
-if (!window.ezP) {
-  alert('ERROR: ezP is not properly installed, nothing will work as expected.')
-  window.ezP = {}
+if (!window.edY) {
+  alert('ERROR: edY is not properly installed, nothing will work as expected.')
+  window.edY = {}
 }
-alert(ezP.DelegateSvg)
-alert(ezP.Delegate)
-window.ezP.Vue = {
+alert(edY.DelegateSvg)
+alert(edY.Delegate)
+window.edY.Vue = {
   getBus: function () {
     return this.bus_ || (this.bus_ = new Vue())
   }

@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('ezP.Tile')
+goog.provide('edY.Tile')
 
-goog.require('ezP.Do')
+goog.require('edY.Do')
 
 goog.require('Blockly.Input')
 
@@ -40,7 +40,7 @@ goog.require('Blockly.Input')
  * @param {!string} key  One of the keys in `tiles` section of the model.
  * @param {!Object} tileModel  the model for the given key i the above mention section.
  */
-ezP.Tile = function(owner, key, tileModel) {
+edY.Tile = function(owner, key, tileModel) {
   goog.asserts.assert(owner, 'Missing tile owner')
   goog.asserts.assert(key, 'Missing tile key')
   goog.asserts.assert(tileModel, 'Missing tile model')
@@ -52,35 +52,35 @@ ezP.Tile = function(owner, key, tileModel) {
   this.wait = 1
   var block = this.block = owner.block_
   goog.asserts.assert(block,
-    ezP.Do.format('block must exist {0}/{1}', key))  
-  ezP.Tile.makeFields(this, this, tileModel.fields)
+    edY.Do.format('block must exist {0}/{1}', key))  
+  edY.Tile.makeFields(this, this, tileModel.fields)
   if (tileModel.wrap) {
     this.setInput(block.appendWrapValueInput(key, tileModel.wrap, tileModel.optional, tileModel.hidden))
-    this.input.connection.ezp.model = tileModel
+    this.input.connection.edy.model = tileModel
   } else if (tileModel.check) {
     this.setInput(block.appendValueInput(key))
-    this.input.connection.ezp.model = tileModel
+    this.input.connection.edy.model = tileModel
   }
 }
 
 /**
  * Install this tile on a block.
  */
-ezP.Tile.prototype.init = function() {
+edY.Tile.prototype.init = function() {
   if (this.svgRoot_) {
     // Tile has already been initialized once.
     return;
   }
   // Build the DOM.
   this.svgGroup_ = Blockly.utils.createSvgElement('g', {
-    class: 'ezp-tile'
+    class: 'edy-tile'
   }, null);
   // init all the fields
   for (var k in this.fields) {
     var field = this.fields[k]
     field.setSourceBlock(this.block) // is it necessary?
-    field.ezp.tile = this
-    field.ezp.ui = this.ui
+    field.edy.tile = this
+    field.edy.ui = this.ui
     field.init()
   }
   this.getBlock().getSvgRoot().appendChild(this.svgGroup_);
@@ -90,14 +90,14 @@ console.warn('What would be a tile rendering?')
 /**
  * The DOM SVG group representing this tile.
  */
-ezP.Tile.prototype.getSvgRoot = function() {
+edY.Tile.prototype.getSvgRoot = function() {
   return this.svgGroup_
 };
 
 /**
  * Dispose of all DOM objects belonging to this tile.
  */
-ezP.Tile.prototype.dispose = function() {
+edY.Tile.prototype.dispose = function() {
   goog.dom.removeNode(this.svgGroup_);
   this.svgGroup_ = null;
   this.owner = null
@@ -108,8 +108,8 @@ ezP.Tile.prototype.dispose = function() {
   this.ui = null
 }
 
-goog.require('ezP.FieldLabel')
-goog.require('ezP.FieldInput')
+goog.require('edY.FieldLabel')
+goog.require('edY.FieldInput')
 
 
 /**
@@ -119,18 +119,18 @@ goog.require('ezP.FieldInput')
  * @param {!Object} ui
  * @param {!Object} fieldsModel
  */
-ezP.Tile.makeFields = function() {
+edY.Tile.makeFields = function() {
   // This is a closure
   // default helper functions for an editable field bound to a data object
-  // `this` is an instance of  ezP.FieldInput
+  // `this` is an instance of  edY.FieldInput
   var validate = function (txt) {
-      return this.ezp.validate.call(this, txt)
+      return this.edy.validate.call(this, txt)
   }
   var startEditing = function () {
   }
   var endEditing = function () {
-    goog.asserts.assert(this.ezp.data, 'No data bound to field '+this.key+'/'+this.sourceBlock_.type)
-    this.ezp.data.fromText(this.getValue())
+    goog.asserts.assert(this.edy.data, 'No data bound to field '+this.key+'/'+this.sourceBlock_.type)
+    this.edy.data.fromText(this.getValue())
   }
   // Change some `... = true,` entrie to real functions
   var setupModel = function(model) {
@@ -161,29 +161,29 @@ ezP.Tile.makeFields = function() {
       if (model.startsWith('css')) {
         return
       }
-      field = new ezP.FieldLabel(model)
-      field.ezp.css_class = ezP.Do.cssClassForText(model)
+      field = new edY.FieldLabel(model)
+      field.edy.css_class = edY.Do.cssClassForText(model)
     } else if (goog.isObject(model)) {
       setupModel(model)
       if (model.edit || model.validate || model.endEditing || model.startEditing) {
         // this is an ediable field
-        field = new ezP.FieldInput(model.edit || '', model.validate, fieldName)
+        field = new edY.FieldInput(model.edit || '', model.validate, fieldName)
       } else if (goog.isDefAndNotNull(model.value) || goog.isDefAndNotNull(model.css)) {
         // this is just a label field
-        field = new ezP.FieldLabel(model.value || '')
+        field = new edY.FieldLabel(model.value || '')
       } else { // other entries are ignored
         return
       }
-      field.ezp.model = model
-      if (!(field.ezp.css_class = model.css_class || model.css && 'ezp-code-'+model.css)) {
-        field.ezp.css_class = ezP.Do.cssClassForText(field.getValue())
+      field.edy.model = model
+      if (!(field.edy.css_class = model.css_class || model.css && 'edy-code-'+model.css)) {
+        field.edy.css_class = edY.Do.cssClassForText(field.getValue())
       }
-      field.ezp.css_style = model.css_style
-      field.ezp.order = model.order
+      field.edy.css_style = model.css_style
+      field.edy.order = model.order
     } else {
       return
     }
-    field.name = field.ezp.key = fieldName // main fields have identical name and key
+    field.name = field.edy.key = fieldName // main fields have identical name and key
     return field
   }
   return function (owner, ui, fieldsModel) {
@@ -208,22 +208,22 @@ ezP.Tile.makeFields = function() {
     var toEnd = [] // // fields ordered to the end
     for(var key in ui.fields) {
       var field = ui.fields[key]
-      var order = field.ezp.order
+      var order = field.edy.order
       if (order) {
         goog.asserts.assert(!byOrder[order],
-        ezP.Do.format('Fields with the same order  {0} = {1} / {2}',
+        edY.Do.format('Fields with the same order  {0} = {1} / {2}',
         byOrder[order].name, field.name, field.sourceBlock_.type))
         byOrder[order] = field
         if (order>0) {
           for (var i = 0; i < fromStart.length; i++) {
-            if (fromStart[i].ezp.order > order) {
+            if (fromStart[i].edy.order > order) {
               break
             }
           }
           fromStart.splice(i, 0, field)
         } else if (order<0) {
           for (var i = 0; i < toEnd.length; i++) {
-            if (toEnd[i].ezp.order < order) {
+            if (toEnd[i].edy.order < order) {
               break
             }
           }
@@ -234,7 +234,7 @@ ezP.Tile.makeFields = function() {
       }
     }
     // now order the fields in linked lists
-    // Next returns the first field in a chain field.ezp.nextField -> ...
+    // Next returns the first field in a chain field.edy.nextField -> ...
     // The chain is built from the list of arguments
     // arguments are either field names or fields
     var chain = function() {
@@ -248,38 +248,38 @@ ezP.Tile.makeFields = function() {
               unordered.splice(j, 1);
             }
           }
-          var ezp = field.ezp.ezpLast_ || field.ezp
+          var edy = field.edy.ezpLast_ || field.edy
           for (i++; i < arguments.length; i++) {
             var fieldName = arguments[i]
-            if ((ezp.nextField = goog.isString(fieldName)? ui.fields[fieldName]: fieldName)) {
+            if ((edy.nextField = goog.isString(fieldName)? ui.fields[fieldName]: fieldName)) {
               var j = unordered.length
               while (j--) {
-                if(unordered[j] === ezp.nextField) {
+                if(unordered[j] === edy.nextField) {
                   unordered.splice(j, 1);
                 }
               }
-              ezp = ezp.nextField.ezp
-              delete ezp.ezpLast_
+              edy = edy.nextField.edy
+              delete edy.ezpLast_
             }
           }
-          field.ezp.ezpLast_ = ezp
+          field.edy.ezpLast_ = edy
           break
         }
       }
       return field
     }
     ui.fromStartField = chain.apply(fromStart)
-    ui.fromStartField = chain(ezP.Key.MODIFIER, ezP.Key.PREFIX, ezP.Key.START, ezP.Key.LABEL, ui.fromStartField)
+    ui.fromStartField = chain(edY.Key.MODIFIER, edY.Key.PREFIX, edY.Key.START, edY.Key.LABEL, ui.fromStartField)
     ui.toEndField = chain.apply(toEnd)
-    ui.toEndField = chain(ui.toEndField, ezP.Key.END, ezP.Key.SUFFIX, ezP.Key.COMMENT_MARK, ezP.Key.COMMENT)
+    ui.toEndField = chain(ui.toEndField, edY.Key.END, edY.Key.SUFFIX, edY.Key.COMMENT_MARK, edY.Key.COMMENT)
     // we have exhausted all the fields that are already ordered
     // either explicitely or not
     goog.asserts.assert(unordered.length < 2,
-    ezP.Do.format('Too many unordered fields in {0}/{1}',key, JSON.stringify(model)))
+    edY.Do.format('Too many unordered fields in {0}/{1}',key, JSON.stringify(model)))
     unordered[0] && (ui.fromStartField = chain(ui.fromStartField, unordered[0]))
-    ui.fromStartField && delete ui.fromStartField.ezp.ezpLast_
-    ui.toEndField && delete ui.toEndField.ezp.ezpLast_
-    ui.fields.comment && (ui.fields.comment.ezp.comment = true)
+    ui.fromStartField && delete ui.fromStartField.edy.ezpLast_
+    ui.toEndField && delete ui.toEndField.edy.ezpLast_
+    ui.fields.comment && (ui.fields.comment.edy.comment = true)
   }
 } ()
 
@@ -289,29 +289,29 @@ ezP.Tile.makeFields = function() {
  * For ezPython.
  * @param {!Blockly.Input} input
  */
-ezP.Tile.prototype.setInput = function (input) {
+edY.Tile.prototype.setInput = function (input) {
   this.input = input
   this.inputType = this.input.type
   this.connection = input.connection
-  input.ezp.tile = this
+  input.edy.tile = this
   var c8n = this.connection
   if (c8n) {
-    var ezp = c8n.ezp
-    ezp.tile = this
-    ezp.name_ = this.key
+    var edy = c8n.edy
+    edy.tile = this
+    edy.name_ = this.key
     if (this.model.plugged) {
-      ezp.plugged_ = this.model.plugged
+      edy.plugged_ = this.model.plugged
     }
     if (this.model.suite && Object.keys(this.model.suite).length) {
-      goog.mixin(ezp, this.model.suite)
+      goog.mixin(edy, this.model.suite)
     }
     if (this.model.optional) {//svg
-      ezp.optional_ = true
+      edy.optional_ = true
     }
     var v
     if ((v = this.model.check)) {
       c8n.setCheck(v)
-      ezp.hole_data = ezP.HoleFiller.getData(v, this.model.hole_value)
+      edy.hole_data = edY.HoleFiller.getData(v, this.model.hole_value)
     } else if ((v = this.model.check = this.model.wrap)) {
       c8n.setCheck(v)
     }
@@ -323,7 +323,7 @@ ezP.Tile.prototype.setInput = function (input) {
  * For ezPython.
  * @param {boolean} newValue.
  */
-ezP.Tile.prototype.getBlock = function () {
+edY.Tile.prototype.getBlock = function () {
   return this.block
 }
 
@@ -332,7 +332,7 @@ ezP.Tile.prototype.getBlock = function () {
  * For ezPython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-ezP.Tile.prototype.getConnection = function () {
+edY.Tile.prototype.getConnection = function () {
   return this.input && this.input.connection
 }
 
@@ -341,7 +341,7 @@ ezP.Tile.prototype.getConnection = function () {
  * For ezPython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-ezP.Tile.prototype.getWorkspace = function () {
+edY.Tile.prototype.getWorkspace = function () {
   return this.connection && this.connection.sourceBlock_.workspace
 }
 
@@ -350,7 +350,7 @@ ezP.Tile.prototype.getWorkspace = function () {
  * For ezPython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-ezP.Tile.prototype.getTarget = function () {
+edY.Tile.prototype.getTarget = function () {
   return this.connection && this.connection.targetBlock()
 }
 
@@ -359,13 +359,13 @@ ezP.Tile.prototype.getTarget = function () {
  * For ezPython.
  * @param {!bollean} newValue.
  */
-ezP.Tile.prototype.setIncog = function (newValue) {
+edY.Tile.prototype.setIncog = function (newValue) {
   this.incog = newValue
   if (this.wait) {
     return
   }
   var c8n = this.input && this.input.connection
-  c8n && c8n.ezp.setIncog(newValue)
+  c8n && c8n.edy.setIncog(newValue)
   this.synchronize()
 }
 
@@ -373,7 +373,7 @@ ezP.Tile.prototype.setIncog = function (newValue) {
  * Get the disable state.
  * For ezPython.
  */
-ezP.Tile.prototype.isIncog = function () {
+edY.Tile.prototype.isIncog = function () {
   return this.incog
 }
 
@@ -382,14 +382,14 @@ ezP.Tile.prototype.isIncog = function () {
  * For ezPython.
  * @param {boolean} newValue.
  */
-ezP.Tile.prototype.isRequiredToDom = function () {
+edY.Tile.prototype.isRequiredToDom = function () {
   if (this.incog) {
     return false
   }
   if (!this.connection) {
     return false
   }
-  if (!this.connection.ezp.wrapped_ && this.connection.targetBlock()) {
+  if (!this.connection.edy.wrapped_ && this.connection.targetBlock()) {
     return true
   }
   if (this.required) {
@@ -406,7 +406,7 @@ ezP.Tile.prototype.isRequiredToDom = function () {
  * For ezPython.
  * @param {boolean} newValue.
  */
-ezP.Tile.prototype.isRequiredFromDom = function () {
+edY.Tile.prototype.isRequiredFromDom = function () {
  return this.is_required_from_dom || !this.incog && this.model.xml && this.model.xml.required
 }
 
@@ -415,7 +415,7 @@ ezP.Tile.prototype.isRequiredFromDom = function () {
  * For ezPython.
  * @param {boolean} newValue.
  */
-ezP.Tile.prototype.setRequiredFromDom = function (newValue) {
+edY.Tile.prototype.setRequiredFromDom = function (newValue) {
   this.is_required_from_dom = newValue
 }
 
@@ -424,21 +424,21 @@ ezP.Tile.prototype.setRequiredFromDom = function (newValue) {
  * For ezPython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-ezP.Tile.prototype.consolidate = function () {
+edY.Tile.prototype.consolidate = function () {
   if (this.wait) {
     return
   }
   var c8n = this.input && this.input.connection
   if (c8n) {
-    c8n.ezp.setIncog(this.isIncog())
-    c8n.ezp.wrapped_ && c8n.setHidden(true) // Don't ever connect any block to this
+    c8n.edy.setIncog(this.isIncog())
+    c8n.edy.wrapped_ && c8n.setHidden(true) // Don't ever connect any block to this
   }
 }
 
 /**
  * The receiver is now ready to eventually synchronize and consolidate.
  */
-ezP.Tile.prototype.beReady = function () {
+edY.Tile.prototype.beReady = function () {
   this.wait = 0
 }
 
@@ -446,7 +446,7 @@ ezP.Tile.prototype.beReady = function () {
  * Set the wait status of the field.
  * Any call to `waitOn` must be balanced by a call to `waitOff`
  */
-ezP.Tile.prototype.waitOn = function () {
+edY.Tile.prototype.waitOn = function () {
   return ++ this.wait
 }
 
@@ -454,8 +454,8 @@ ezP.Tile.prototype.waitOn = function () {
  * Set the wait status of the field.
  * Any call to `waitOn` must be balanced by a call to `waitOff`
  */
-ezP.Tile.prototype.waitOff = function () {
-  goog.asserts.assert(this.wait>0, ezP.Do.format('Too  many `waitOn` {0}/{1}', this.key, this.owner.block_.type))
+edY.Tile.prototype.waitOff = function () {
+  goog.asserts.assert(this.wait>0, edY.Do.format('Too  many `waitOn` {0}/{1}', this.key, this.owner.block_.type))
   if (--this.wait == 0) {
     this.consolidate()
   }
@@ -466,7 +466,7 @@ ezP.Tile.prototype.waitOff = function () {
  * For ezPython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-ezP.Tile.prototype.synchronize = function () {
+edY.Tile.prototype.synchronize = function () {
   var input = this.input
   if (!input) {
     return
@@ -513,7 +513,7 @@ ezP.Tile.prototype.synchronize = function () {
  * @param {string} fieldKey  of the input holder in the owner object 
  * @private
  */
-ezP.Tile.prototype.setFieldValue = function (newValue, fieldKey) {
+edY.Tile.prototype.setFieldValue = function (newValue, fieldKey) {
   var field = this.fields[fieldKey]
   if (field) {
     if (Blockly.Events.isEnabled()) {
@@ -528,7 +528,7 @@ ezP.Tile.prototype.setFieldValue = function (newValue, fieldKey) {
   }
 }
 
-goog.forwardDeclare('ezP.DelegateSvg.List')
+goog.forwardDeclare('edY.DelegateSvg.List')
 
 /**
  * Convert the tile's connected target into the given xml element.
@@ -539,7 +539,7 @@ goog.forwardDeclare('ezP.DelegateSvg.List')
  * @return a dom element, void lists may return nothing
  * @this a block delegate
  */
-ezP.Tile.prototype.toDom = function(element, optNoId) {
+edY.Tile.prototype.toDom = function(element, optNoId) {
   var xml = this.model.xml
   if (!this.isIncog() && (!goog.isDef(xml) || xml !== false)) {
     var out = function() {
@@ -547,31 +547,31 @@ ezP.Tile.prototype.toDom = function(element, optNoId) {
       if (c8n) {
         var target = c8n.targetBlock()
         if (target) { // otherwise, there is nothing to remember
-          if (target.ezp.wrapped_) {
+          if (target.edy.wrapped_) {
             // wrapped blocks are just a convenient computational model.
             // For lists only, we do create a further level
             // Actually, every wrapped block is a list
-            if (target.ezp instanceof ezP.DelegateSvg.List) {
-              var child = ezP.Xml.blockToDom(target, optNoId)
+            if (target.edy instanceof edY.DelegateSvg.List) {
+              var child = edY.Xml.blockToDom(target, optNoId)
               if (child.childNodes.length>0) {
                 if (!xml || !xml.noInputName) {
-                  child.setAttribute(ezP.Xml.INPUT, this.key)
+                  child.setAttribute(edY.Xml.INPUT, this.key)
                 }
                 goog.dom.appendChild(element, child)
                 return child      
               }
             } else {
               // let the target populate the given element
-              return ezP.Xml.toDom(target, element, optNoId)
+              return edY.Xml.toDom(target, element, optNoId)
             }
           } else {
-            var child = ezP.Xml.blockToDom(target, optNoId)
+            var child = edY.Xml.blockToDom(target, optNoId)
             if (child.childNodes.length>0 || child.hasAttributes()) {
               if (!xml || !xml.noInputName) {
                 if (this.inputType === Blockly.INPUT_VALUE) {
-                  child.setAttribute(ezP.XmlKey.INPUT, this.key)
+                  child.setAttribute(edY.XmlKey.INPUT, this.key)
                 } else if (this.inputType === Blockly.NEXT_STATEMENT) {
-                  child.setAttribute(ezP.XmlKey.FLOW, this.key)
+                  child.setAttribute(edY.XmlKey.FLOW, this.key)
                 }
               }
               goog.dom.appendChild(element, child)
@@ -582,8 +582,8 @@ ezP.Tile.prototype.toDom = function(element, optNoId) {
       }
     }.call(this)
     if (!out && this.isRequiredToDom()) {
-      var child = goog.dom.createDom('ezp:placeholder')
-      child.setAttribute(ezP.XmlKey.INPUT, this.key)
+      var child = goog.dom.createDom('edy:placeholder')
+      child.setAttribute(edY.XmlKey.INPUT, this.key)
       goog.dom.appendChild(element, child)
     }
   }
@@ -603,7 +603,7 @@ ezP.Tile.prototype.toDom = function(element, optNoId) {
  * @param {Element} element a dom element in which to save the input
  * @return the added child, if any
  */
-ezP.Tile.prototype.fromDom = function(element) {
+edY.Tile.prototype.fromDom = function(element) {
   var xml = this.model.xml
   if (!goog.isDef(xml) || xml !== false) {
     this.setRequiredFromDom(false)
@@ -611,37 +611,37 @@ ezP.Tile.prototype.fromDom = function(element) {
     if (c8n) {
       var out
       var target = c8n.targetBlock()
-      if (target && target.ezp.wrapped_ && !(target.ezp instanceof ezP.DelegateSvg.List)) {
+      if (target && target.edy.wrapped_ && !(target.edy instanceof edY.DelegateSvg.List)) {
         this.setRequiredFromDom(true) // this is not sure, it depends on how the target read the dom
-        out = ezP.Xml.fromDom(target, element)
+        out = edY.Xml.fromDom(target, element)
       } else {
       // find an xml child with the proper input attribute
         for (var i = 0, child; (child = element.childNodes[i++]);) {
           if (goog.isFunction(child.getAttribute)) {
             if (this.inputType === Blockly.INPUT_VALUE) {
-              var attribute = child.getAttribute(ezP.Xml.INPUT)
+              var attribute = child.getAttribute(edY.Xml.INPUT)
             } else if (this.inputType === Blockly.NEXT_STATEMENT) {
-              var attribute = child.getAttribute(ezP.Xml.FLOW)
+              var attribute = child.getAttribute(edY.Xml.FLOW)
             }
           }
           if (attribute === this.key) {
-            if (child.tagName && child.tagName.toLowerCase() === 'ezp:placeholder') {
+            if (child.tagName && child.tagName.toLowerCase() === 'edy:placeholder') {
               this.setRequiredFromDom(true)
               out = true
             } else if (target) {
-              if (target.ezp instanceof ezP.DelegateSvg.List) {
+              if (target.edy instanceof edY.DelegateSvg.List) {
                 for (var i = 0, grandChild;(grandChild = child.childNodes[i++]);) {
                   if (goog.isFunction(grandChild.getAttribute)) {
-                    var name = grandChild.getAttribute(ezP.XmlKey.INPUT)
-                    var input = target.ezp.getInput(target, name)
+                    var name = grandChild.getAttribute(edY.XmlKey.INPUT)
+                    var input = target.edy.getInput(target, name)
                     if (input) {
                       if (!input.connection) {
                         console.warn('Missing connection')
                       }
                       var inputTarget = input.connection.targetBlock()
                       if (inputTarget) {
-                        ezP.Xml.fromDom(inputTarget, grandChild)
-                      } else if ((inputTarget = ezP.Xml.domToBlock(grandChild, this.owner.block_.workspace))) {
+                        edY.Xml.fromDom(inputTarget, grandChild)
+                      } else if ((inputTarget = edY.Xml.domToBlock(grandChild, this.owner.block_.workspace))) {
                         var targetC8n = inputTarget.outputConnection
                         if (targetC8n && targetC8n.checkType_(input.connection)) {
                           targetC8n.connect(input.connection)
@@ -653,7 +653,7 @@ ezP.Tile.prototype.fromDom = function(element) {
                 }
                 out = true
               } else {
-                out = ezP.Xml.fromDom(target, child)
+                out = edY.Xml.fromDom(target, child)
               }
             } else if ((target = Blockly.Xml.domToBlock(child, this.getWorkspace()))) {
               // we could create a block from that child element
@@ -686,7 +686,7 @@ ezP.Tile.prototype.fromDom = function(element) {
  * @return a dom element, void lists may return nothing
  * @this a block delegate
  */
-ezP.Tile.prototype.didLoad = function() {
+edY.Tile.prototype.didLoad = function() {
   var xml = this.model.xml
   xml && goog.isFunction(xml.didLoad) && xml.didLoad.call(this)
 }

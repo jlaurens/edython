@@ -11,16 +11,16 @@
  */
 'use strict'
 
-goog.provide('ezP.KeyHandler')
-goog.provide('ezP.KeyHandlerMenu')
+goog.provide('edY.KeyHandler')
+goog.provide('edY.KeyHandlerMenu')
 
-goog.require('ezP.DelegateSvg')
-goog.require('ezP.PopupMenu')
+goog.require('edY.DelegateSvg')
+goog.require('edY.PopupMenu')
 
-ezP.KeyHandlerMenu = function(opt_domHelper, opt_renderer) {
-  ezP.KeyHandlerMenu.superClass_.constructor.call(this, opt_domHelper, opt_renderer)
+edY.KeyHandlerMenu = function(opt_domHelper, opt_renderer) {
+  edY.KeyHandlerMenu.superClass_.constructor.call(this, opt_domHelper, opt_renderer)
 }
-goog.inherits(ezP.KeyHandlerMenu, ezP.PopupMenu)
+goog.inherits(edY.KeyHandlerMenu, edY.PopupMenu)
 
 /**
  * Attempts to handle a keyboard event; returns true if the event was handled,
@@ -31,12 +31,12 @@ goog.inherits(ezP.KeyHandlerMenu, ezP.PopupMenu)
  * @return {boolean} Whether the event was handled by the container (or one of
  *     its children).
  */
-ezP.KeyHandlerMenu.prototype.handleKeyEventInternal = function(e) {
+edY.KeyHandlerMenu.prototype.handleKeyEventInternal = function(e) {
   // Give the highlighted control the chance to handle the key event.
-  if (ezP.KeyHandlerMenu.superClass_.handleKeyEventInternal.call(this, e)) {
+  if (edY.KeyHandlerMenu.superClass_.handleKeyEventInternal.call(this, e)) {
     return true
   }
-  return this.ezp.handleMenuKeyEvent(e)
+  return this.edy.handleMenuKeyEvent(e)
 };
 
 console.warn('Problem inserting a print block')
@@ -45,14 +45,14 @@ console.warn('Problem inserting a print block')
  * For ezPython.
  * @param {!constructor} constructor is either a constructor or the name of a constructor.
  */
-ezP.KeyHandler = function() {
+edY.KeyHandler = function() {
   var me = {MAX_CHILD_COUNT: 20}
   var keys_ = []
   var shortcuts_ = [] // an array of {key: ..., action: ...} objects
   var current_ = []
   var target_
-  var menu_ = new ezP.KeyHandlerMenu(/*undefined, ContextMenuRenderer*/)
-  menu_.ezp = me
+  var menu_ = new edY.KeyHandlerMenu(/*undefined, ContextMenuRenderer*/)
+  menu_.edy = me
 /**
  * Setup the shared key handler.
  * For ezPython.
@@ -134,15 +134,15 @@ ezP.KeyHandler = function() {
     // otherwise, take the first shortcut and pass it to handleAction
     // if the selected block supports subtypes, then set it
     var B = Blockly.selected
-    var c8n = ezP.SelectedConnection.get()
-    if (B && !c8n && B.ezp.data.subtype.set(shortcut)) {
+    var c8n = edY.SelectedConnection.get()
+    if (B && !c8n && B.edy.data.subtype.set(shortcut)) {
       return
     }
-    var type = ezP.Do.typeOfString(shortcut)
+    var type = edY.Do.typeOfString(shortcut)
     if (me.handleType(type, shortcut)) {
       return
     }
-    if (B && B.ezp.data.subtype.set(shortcut)) {
+    if (B && B.edy.data.subtype.set(shortcut)) {
       return
     }
     if (current_.length) {
@@ -154,23 +154,23 @@ ezP.KeyHandler = function() {
 
   me.handleType = function (type, subtype) {
     console.log('me.handleType',type, subtype)
-    if (ezP.DelegateSvg.Manager.get(type)) {
+    if (edY.DelegateSvg.Manager.get(type)) {
       var B = Blockly.selected
       if (B) {
-        var c8n = ezP.SelectedConnection.get()
+        var c8n = edY.SelectedConnection.get()
         if (c8n) {
           var c8nType = c8n.type
           var newB
-          if ((newB = B.ezp.insertBlockOfType(B, type, subtype)) || (newB = B.ezp.insertParent(B, type, subtype))) {
+          if ((newB = B.edy.insertBlockOfType(B, type, subtype)) || (newB = B.edy.insertParent(B, type, subtype))) {
             // There was a selected connection,
             // we try to select another one, with possibly the same type
             // First we take a look at B : is there an unconnected input connection
             var doFirst = function(block, type) {
-              var e8r = block.ezp.inputEnumerator(block)
+              var e8r = block.edy.inputEnumerator(block)
               while (e8r.next()) {
                 if ((c8n = e8r.here.connection) && c8n.type === type) {
                   if (!c8n.hidden_ && !c8n.targetConnection) {
-                    ezP.SelectedConnection.set(c8n)
+                    edY.SelectedConnection.set(c8n)
                     return true
                   } else if (c8n.targetConnection) {
                     return doFirst(c8n.targetBlock(), type)
@@ -181,26 +181,26 @@ ezP.KeyHandler = function() {
             if (doFirst(newB, Blockly.INPUT_VALUE)) {
               return true
             } else if ((c8n === B.nextConnection) && (c8n = newB.nextConnection) && !c8n.hidden_) {
-              ezP.SelectedConnection.set(c8n)
+              edY.SelectedConnection.set(c8n)
               return true
             }
-            ezP.SelectedConnection.set(null)
+            edY.SelectedConnection.set(null)
             newB.select()
             return true
           }
         }
-        if ((newB = B.ezp.insertBlockOfType(B, type, subtype)) || (newB = B.ezp.insertParent(B, type, subtype))) {
+        if ((newB = B.edy.insertBlockOfType(B, type, subtype)) || (newB = B.edy.insertParent(B, type, subtype))) {
           var parent = B
           do {
-            var e8r = parent.ezp.inputEnumerator(parent)
+            var e8r = parent.edy.inputEnumerator(parent)
             while (e8r.next()) {
-              if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && ! c8n.ezp.optional_ && ! c8n.targetConnection) {
-                ezP.SelectedConnection.set(c8n)
+              if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && ! c8n.edy.optional_ && ! c8n.targetConnection) {
+                edY.SelectedConnection.set(c8n)
                 return true
               }
             }
           } while ((parent = parent.getSurroundParent(parent)))
-          ezP.SelectedConnection.set(null)
+          edY.SelectedConnection.set(null)
           newB.select()
           return true
         }
@@ -235,12 +235,12 @@ ezP.KeyHandler = function() {
       // if As[0] is void or does not end with a letter
       // if the shortcut starts with one, left bonus
       if (As.length > 1) {
-        if (ezP.XRE.id_continue.test(As[1]) && (!As[0].length || !ezP.XRE.id_continue.test(As[0]))) {
+        if (edY.XRE.id_continue.test(As[1]) && (!As[0].length || !edY.XRE.id_continue.test(As[0]))) {
           var bonusA = true
         }
       }
       if (Bs.length > 1) {
-        if (ezP.XRE.id_continue.test(Bs[1]) && (!Bs[0].length || !ezP.XRE.id_continue.test(Bs[0]))) {
+        if (edY.XRE.id_continue.test(Bs[1]) && (!Bs[0].length || !edY.XRE.id_continue.test(Bs[0]))) {
           var bonusB = true
         }
       }
@@ -254,12 +254,12 @@ ezP.KeyHandler = function() {
       // if the shortcut starts with one, right bonus
       bonusA = bonusB = false
       if (As.length > 2) {
-        if (ezP.XRE.id_continue.test(As[As.length-2]) && (!As[As.length-1].length || !ezP.XRE.id_continue.test(As[As.length-1][0]))) {
+        if (edY.XRE.id_continue.test(As[As.length-2]) && (!As[As.length-1].length || !edY.XRE.id_continue.test(As[As.length-1][0]))) {
           var bonusA = true
         }
       }
       if (Bs.length > 2) {
-        if (ezP.XRE.id_continue.test(Bs[Bs.length-2]) && (!Bs[Bs.length-1].length || !ezP.XRE.id_continue.test(Bs[Bs.length-1][0]))) {
+        if (edY.XRE.id_continue.test(Bs[Bs.length-2]) && (!Bs[Bs.length-1].length || !edY.XRE.id_continue.test(Bs[Bs.length-1][0]))) {
           var bonusB = true
         }
       }
@@ -342,28 +342,28 @@ ezP.KeyHandler = function() {
     }
     MI = menu_.getChildAt(0)
     var k = keys_.join('')
-    var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-    ezP.Do.createSPAN(k, 'ezp-code-emph'))
+    var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+    edY.Do.createSPAN(k, 'edy-code-emph'))
     MI.setContent(content)
     MI.getModel().key = k
     if (current_.length) {
       if (menu_.getChildCount()<2) {
-        menu_.addChild(new ezP.Separator(), true)
+        menu_.addChild(new edY.Separator(), true)
       }
       for (var i = 0, s; (s = current_[i]); i++) {
         Cs = s.components
         var j = 0, c = Cs[j++], d
-        var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+        var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
           goog.dom.createTextNode(c))
         while ((d = Cs[j++]) != undefined && (c = Cs[j++]) != undefined) {
-          content.appendChild(ezP.Do.createSPAN(d, 'ezp-code-emph'))
+          content.appendChild(edY.Do.createSPAN(d, 'edy-code-emph'))
           content.appendChild(goog.dom.createTextNode(c))
         }
         if ((MI = menu_.getChildAt(i+2))) {
           MI.setModel(s)
           MI.setContent(content)
         } else {
-          MI = new ezP.MenuItem(content, s)
+          MI = new edY.MenuItem(content, s)
           menu_.addChild(MI, true)
         }
         if (s === highlighted) {
@@ -386,8 +386,8 @@ ezP.KeyHandler = function() {
       return
     }
     keys_.push(sep)
-    var content = ezP.Do.createSPAN(sep, 'ezp-code-emph')
-    var MI = new ezP.MenuItem(content, {key: sep, action: me.handleFirstMenuItemAction})
+    var content = edY.Do.createSPAN(sep, 'edy-code-emph')
+    var MI = new edY.MenuItem(content, {key: sep, action: me.handleFirstMenuItemAction})
     menu_.addChild(MI, true)
 
     // initialize the shortcuts to hold informations
@@ -403,16 +403,16 @@ ezP.KeyHandler = function() {
       }
     }
     if (current_.length) {
-      menu_.addChild(new ezP.Separator(), true)
+      menu_.addChild(new edY.Separator(), true)
     }
     i = 0
     while ( i < me.MAX_CHILD_COUNT && (shortcut = current_[i++])) {
-      var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
+      var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
         goog.dom.createTextNode(shortcut.components[0]),
-        ezP.Do.createSPAN(shortcut.components[1], 'ezp-code-emph'),
+        edY.Do.createSPAN(shortcut.components[1], 'edy-code-emph'),
         goog.dom.createTextNode(shortcut.components[2]),
       )
-      var MI = new ezP.MenuItem(content, shortcut)
+      var MI = new edY.MenuItem(content, shortcut)
       menu_.addChild(MI, true)
     }
     return
@@ -444,10 +444,10 @@ ezP.KeyHandler = function() {
         return
       }
     } else if (k === 'enter' || k === 'return') {
-      if ((B = Blockly.selected) && B.ezp.showEditor) {
+      if ((B = Blockly.selected) && B.edy.showEditor) {
         event.preventDefault()
         event.stopPropagation()
-        B.ezp.showEditor(B)
+        B.edy.showEditor(B)
         return
       }
     }
@@ -455,7 +455,7 @@ ezP.KeyHandler = function() {
       if (K === ' ') {
         event.preventDefault()
         event.stopPropagation()
-        ezP.MenuManager.shared().showMenu(B, event)
+        edY.MenuManager.shared().showMenu(B, event)
         return
       }
       keys_ = []
@@ -487,8 +487,8 @@ ezP.KeyHandler = function() {
             }
           })    
         }
-        var scaledHeight = ezP.Font.lineHeight() * B.workspace.scale
-        var c8n = ezP.SelectedConnection.get()
+        var scaledHeight = edY.Font.lineHeight() * B.workspace.scale
+        var c8n = edY.SelectedConnection.get()
         if (c8n && c8n.sourceBlock_) {
           var xy = goog.style.getPageOffset(c8n.sourceBlock_.svgGroup_)
           var xxyy = c8n.offsetInBlock_.clone().scale(B.workspace.scale)
@@ -502,20 +502,20 @@ ezP.KeyHandler = function() {
         var F = function (f) {
           event.preventDefault()
           event.stopPropagation()
-          f.call(B.ezp, B)
+          f.call(B.edy, B)
         }  
         switch(k) {
-          case 'arrowdown': return F(B.ezp.selectBlockBelow)
-          case 'arrowup': return F(B.ezp.selectBlockAbove)
-          case 'arrowleft': return F(B.ezp.selectBlockLeft)
-          case 'arrowright': return F(B.ezp.selectBlockRight)
+          case 'arrowdown': return F(B.edy.selectBlockBelow)
+          case 'arrowup': return F(B.edy.selectBlockAbove)
+          case 'arrowleft': return F(B.edy.selectBlockLeft)
+          case 'arrowright': return F(B.edy.selectBlockRight)
         }  
       }
     } else {
       var F = function (f) {
         event.preventDefault()
         event.stopPropagation()
-        var block = ezP.DelegateSvg.getBestBlock(workspace, f)
+        var block = edY.DelegateSvg.getBestBlock(workspace, f)
         if (block) {
           block.select()
         }
@@ -532,50 +532,50 @@ ezP.KeyHandler = function() {
   return me
 } ()
 
-ezP.KeyHandler.register('if', ezP.T3.Stmt.if_part)
+edY.KeyHandler.register('if', edY.T3.Stmt.if_part)
 
 var Ks = {
-  'start': ezP.T3.Stmt.start_stmt,
-  'if': ezP.T3.Stmt.if_part,
-  'elif': ezP.T3.Stmt.elif_part,
-  'else':  ezP.T3.Stmt.else_part,
-  'class': ezP.T3.Stmt.classdef_part,
+  'start': edY.T3.Stmt.start_stmt,
+  'if': edY.T3.Stmt.if_part,
+  'elif': edY.T3.Stmt.elif_part,
+  'else':  edY.T3.Stmt.else_part,
+  'class': edY.T3.Stmt.classdef_part,
   'except': {
-    type: ezP.T3.Stmt.except_part,
+    type: edY.T3.Stmt.except_part,
     subtype: 0,
   },
   'except …': {
-    type: ezP.T3.Stmt.except_part,
+    type: edY.T3.Stmt.except_part,
     subtype: 1,
   },
   'except … as …': {
-    type: ezP.T3.Stmt.except_part,
+    type: edY.T3.Stmt.except_part,
     subtype: 2,
   },
-  'finally': ezP.T3.Stmt.finally_part,
-  'for': ezP.T3.Stmt.for_part,
-  '@': ezP.T3.Stmt.decorator,
-  'def': ezP.T3.Stmt.funcdef_part,
-  'import': ezP.T3.Stmt.import_stmt,
-  'try': ezP.T3.Stmt.try_part,
-  'while': ezP.T3.Stmt.while_part,
-  'with': ezP.T3.Stmt.with_part,
-  'lambda': ezP.T3.Expr.lambda_expr,
-  '… if … else …': ezP.T3.Expr.conditional_expression_s3d,
-  'identifier': ezP.T3.Expr.identifier,
-  'name': ezP.T3.Expr.identifier,
+  'finally': edY.T3.Stmt.finally_part,
+  'for': edY.T3.Stmt.for_part,
+  '@': edY.T3.Stmt.decorator,
+  'def': edY.T3.Stmt.funcdef_part,
+  'import': edY.T3.Stmt.import_stmt,
+  'try': edY.T3.Stmt.try_part,
+  'while': edY.T3.Stmt.while_part,
+  'with': edY.T3.Stmt.with_part,
+  'lambda': edY.T3.Expr.lambda_expr,
+  '… if … else …': edY.T3.Expr.conditional_expression_s3d,
+  'identifier': edY.T3.Expr.identifier,
+  'name': edY.T3.Expr.identifier,
   'not': function(key) {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
-      if (parent && (parent.type === ezP.T3.Expr.not_test_s3d)) {
-        B.ezp.replaceBlock(B, parent)
+      if (parent && (parent.type === edY.T3.Expr.not_test_s3d)) {
+        B.edy.replaceBlock(B, parent)
         return
       }
-      if (ezP.SelectedConnection.get()) {
-        B.ezp.insertBlockOfType(B, ezP.T3.Expr.not_test_s3d)
+      if (edY.SelectedConnection.get()) {
+        B.edy.insertBlockOfType(B, edY.T3.Expr.not_test_s3d)
       } else {
-        B.ezp.insertParent(B, ezP.T3.Expr.not_test_s3d)
+        B.edy.insertParent(B, edY.T3.Expr.not_test_s3d)
       }
     }
   },                                    
@@ -583,14 +583,14 @@ var Ks = {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
-      if (parent && (parent.type === ezP.T3.Expr.u_expr_s3d) && parent.ezp.data.subtype.get() === '-') {
-        B.ezp.replaceBlock(B, parent)
+      if (parent && (parent.type === edY.T3.Expr.u_expr_s3d) && parent.edy.data.subtype.get() === '-') {
+        B.edy.replaceBlock(B, parent)
         return
       }
-      if (ezP.SelectedConnection.get()) {
-        B.ezp.insertBlockOfType(B, ezP.T3.Expr.u_expr_s3d, '-')
+      if (edY.SelectedConnection.get()) {
+        B.edy.insertBlockOfType(B, edY.T3.Expr.u_expr_s3d, '-')
       } else {
-        B.ezp.insertParent(B, ezP.T3.Expr.u_expr_s3d, '-')
+        B.edy.insertParent(B, edY.T3.Expr.u_expr_s3d, '-')
       }
     }
   },                                    
@@ -598,191 +598,191 @@ var Ks = {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
-      if (parent && (parent.type === ezP.T3.Expr.u_expr_s3d) && parent.ezp.data.subtype.get() === '~') {
-        B.ezp.replaceBlock(B, parent)
+      if (parent && (parent.type === edY.T3.Expr.u_expr_s3d) && parent.edy.data.subtype.get() === '~') {
+        B.edy.replaceBlock(B, parent)
         return
       }
-      if (ezP.SelectedConnection.get()) {
-        B.ezp.insertBlockOfType(B, ezP.T3.Expr.u_expr_s3d, '~')
+      if (edY.SelectedConnection.get()) {
+        B.edy.insertBlockOfType(B, edY.T3.Expr.u_expr_s3d, '~')
       } else {
-        B.ezp.insertParent(B, ezP.T3.Expr.u_expr_s3d, '~')
+        B.edy.insertParent(B, edY.T3.Expr.u_expr_s3d, '~')
       }
     }
   },
 }
 var K
 for (K in Ks) {
-  ezP.KeyHandler.register(K, Ks[K]);
+  edY.KeyHandler.register(K, Ks[K]);
 }
 Ks = {
   '+': {
-    type: ezP.T3.Expr.a_expr_s3d,
+    type: edY.T3.Expr.a_expr_s3d,
     subtype: '+',
-    input: ezP.Key.LHS,
+    input: edY.Key.LHS,
   },
   '-': {
-    type: ezP.T3.Expr.a_expr_s3d,
+    type: edY.T3.Expr.a_expr_s3d,
     subtype: '-',
-    input: ezP.Key.LHS,
+    input: edY.Key.LHS,
   },
   '*': {
-    type: ezP.T3.Expr.m_expr_s3d,
+    type: edY.T3.Expr.m_expr_s3d,
     subtype: '*',
-    input: ezP.Key.LHS,
+    input: edY.Key.LHS,
   },
   '//': {
-    type: ezP.T3.Expr.m_expr_s3d,
+    type: edY.T3.Expr.m_expr_s3d,
     subtype: '//',
-    input: ezP.Key.LHS,
+    input: edY.Key.LHS,
   },
   '/': {
-    type: ezP.T3.Expr.m_expr_s3d,
+    type: edY.T3.Expr.m_expr_s3d,
     subtype: '/',
-    input: ezP.Key.LHS,
+    input: edY.Key.LHS,
   },
   '%': {
-    type: ezP.T3.Expr.m_expr_s3d,
+    type: edY.T3.Expr.m_expr_s3d,
     subtype: '%',
-    input: ezP.Key.LHS,
+    input: edY.Key.LHS,
   },
   '@': {
-    type: ezP.T3.Expr.m_expr_s3d,
+    type: edY.T3.Expr.m_expr_s3d,
     subtype: '@',
-    input: ezP.Key.LHS,
+    input: edY.Key.LHS,
   },
   '<<': {
-    type: ezP.T3.Expr.shift_expr_s3d,
+    type: edY.T3.Expr.shift_expr_s3d,
     subtype: '<<',
-    input: ezP.Key.LHS,
+    input: edY.Key.LHS,
   },
   '>>': {
-    type: ezP.T3.Expr.shift_expr_s3d,
+    type: edY.T3.Expr.shift_expr_s3d,
     subtype: '>>',
-    input: ezP.Key.LHS,
+    input: edY.Key.LHS,
   },
-  '&': ezP.T3.Expr.and_expr_s3d,
-  '^': ezP.T3.Expr.xor_expr_s3d,
-  '|': ezP.T3.Expr.or_expr_s3d,
-  'or': ezP.T3.Expr.or_test_s3d,
-  'and': ezP.T3.Expr.and_test_s3d,
+  '&': edY.T3.Expr.and_expr_s3d,
+  '^': edY.T3.Expr.xor_expr_s3d,
+  '|': edY.T3.Expr.or_expr_s3d,
+  'or': edY.T3.Expr.or_test_s3d,
+  'and': edY.T3.Expr.and_test_s3d,
 }
 for (K in Ks) {
-  ezP.KeyHandler.register('… '+K+' …', Ks[K]);
+  edY.KeyHandler.register('… '+K+' …', Ks[K]);
 }
 Ks = ['True', 'False', 'None', '...']
 for (var i = 0; (K = Ks[i++]); ) {
-  ezP.KeyHandler.register(K, {
-    type: ezP.T3.Expr.builtin_object,
+  edY.KeyHandler.register(K, {
+    type: edY.T3.Expr.builtin_object,
     subtype: K,
   });
 }
 Ks = ['is', 'is not', 'in', 'not in']
 for (var i = 0; (K = Ks[i++]); ) {
-  ezP.KeyHandler.register('… '+K+' …', {
-    type: ezP.T3.Expr.object_comparison,
+  edY.KeyHandler.register('… '+K+' …', {
+    type: edY.T3.Expr.object_comparison,
     subtype: K,
   });
 }
 Ks = ['<', '>', '==', '>=', '<=', '!=']
 for (var i = 0; (K = Ks[i++]); ) {
-  ezP.KeyHandler.register('… '+K+' …', {
-    type: ezP.T3.Expr.number_comparison,
+  edY.KeyHandler.register('… '+K+' …', {
+    type: edY.T3.Expr.number_comparison,
     subtype: K,
   });
 }
 
 Ks = {
-  '… = …': ezP.T3.Stmt.assignment_stmt,
-  '…:… = …': ezP.T3.Stmt.annotated_assignment_stmt,
-  'start': ezP.T3.Stmt.start_stmt,
-  'assert …': ezP.T3.Stmt.assert_stmt,
-  'pass': ezP.T3.Stmt.pass_stmt,
-  'break': ezP.T3.Stmt.break_stmt,
-  'continue': ezP.T3.Stmt.continue_stmt,
-  'del …': ezP.T3.Stmt.del_stmt,
-  'return …': ezP.T3.Stmt.return_stmt,
-  'yield …': ezP.T3.Stmt.yield_stmt,
+  '… = …': edY.T3.Stmt.assignment_stmt,
+  '…:… = …': edY.T3.Stmt.annotated_assignment_stmt,
+  'start': edY.T3.Stmt.start_stmt,
+  'assert …': edY.T3.Stmt.assert_stmt,
+  'pass': edY.T3.Stmt.pass_stmt,
+  'break': edY.T3.Stmt.break_stmt,
+  'continue': edY.T3.Stmt.continue_stmt,
+  'del …': edY.T3.Stmt.del_stmt,
+  'return …': edY.T3.Stmt.return_stmt,
+  'yield …': edY.T3.Stmt.yield_stmt,
   'raise': {
-    type: ezP.T3.Stmt.raise_stmt,
+    type: edY.T3.Stmt.raise_stmt,
     subtype: 0,
   },
   'raise …': {
-    type: ezP.T3.Stmt.raise_stmt,
+    type: edY.T3.Stmt.raise_stmt,
     subtype: 1,
   },
   'raise … from …': {
-    type: ezP.T3.Stmt.raise_stmt,
+    type: edY.T3.Stmt.raise_stmt,
     subtype: 2,
   },
-  // 'from future import …': ezP.T3.Stmt.future_statement,
-  'import …': ezP.T3.Stmt.import_stmt,
-  '# comment': ezP.T3.Stmt.any_stmt,
+  // 'from future import …': edY.T3.Stmt.future_statement,
+  'import …': edY.T3.Stmt.import_stmt,
+  '# comment': edY.T3.Stmt.any_stmt,
   'global …': {
-    type: ezP.T3.Stmt.global_nonlocal_stmt,
+    type: edY.T3.Stmt.global_nonlocal_stmt,
     subtype: 'global',
   },
   'nonlocal …': {
-    type: ezP.T3.Stmt.global_nonlocal_stmt,
+    type: edY.T3.Stmt.global_nonlocal_stmt,
     subtype: 'nonlocal',
   },
-  '@decorator': ezP.T3.Stmt.decorator,
-  '"""…"""(def)': ezP.T3.Stmt.docstring_def_stmt,
-  "'''…'''(def)": ezP.T3.Stmt.docstring_def_stmt,
+  '@decorator': edY.T3.Stmt.decorator,
+  '"""…"""(def)': edY.T3.Stmt.docstring_def_stmt,
+  "'''…'''(def)": edY.T3.Stmt.docstring_def_stmt,
   '"""…"""': {
-    type: ezP.T3.Expr.longstringliteral,
+    type: edY.T3.Expr.longstringliteral,
     subtype: '"""',
   },
   "'''…'''": {
-    type: ezP.T3.Expr.longstringliteral,
+    type: edY.T3.Expr.longstringliteral,
     subtype: "'''",
   },
-  'print(…)': ezP.T3.Stmt.builtin_print_stmt,
-  'input(…)': ezP.T3.Expr.builtin_input_expr,
+  'print(…)': edY.T3.Stmt.builtin_print_stmt,
+  'input(…)': edY.T3.Expr.builtin_input_expr,
   'range(…)': {
-    type: ezP.T3.Expr.builtin_call_expr,
+    type: edY.T3.Expr.builtin_call_expr,
     subtype: 'range',
-    key: ezP.Key.UPPER_BOUND,
+    key: edY.Key.UPPER_BOUND,
   },
   'list(…)': {
-    type: ezP.T3.Expr.builtin_call_expr,
+    type: edY.T3.Expr.builtin_call_expr,
     subtype: 'list',
   },
   'set(…)': {
-    type: ezP.T3.Expr.builtin_call_expr,
+    type: edY.T3.Expr.builtin_call_expr,
     subtype: 'set',
   },
   'len(…)': {
-    type: ezP.T3.Expr.builtin_call_expr,
+    type: edY.T3.Expr.builtin_call_expr,
     subtype: 'len',
   },
   'sum(…)': {
-    type: ezP.T3.Expr.builtin_call_expr,
+    type: edY.T3.Expr.builtin_call_expr,
     subtype: 'sum',
   },
-  'module as alias': ezP.T3.Expr.module_as_s3d,
-  '(…)': ezP.T3.Expr.parenth_form,
-  '[…]': ezP.T3.Expr.list_display,
-  '{…:…}': ezP.T3.Expr.dict_display,
-  '{…}': ezP.T3.Expr.set_display,
+  'module as alias': edY.T3.Expr.module_as_s3d,
+  '(…)': edY.T3.Expr.parenth_form,
+  '[…]': edY.T3.Expr.list_display,
+  '{…:…}': edY.T3.Expr.dict_display,
+  '{…}': edY.T3.Expr.set_display,
 }
 console.warn('Implement support for `key` in range above')
 console.warn('Problem when there can be both a statement and an expression for the same shortcut')
 var K
 for (K in Ks) {
-  ezP.KeyHandler.register(K, Ks[K]);
+  edY.KeyHandler.register(K, Ks[K]);
 }
 
 Ks = ['+=', '-=', '*=', '@=', '/=', '//=', '%=', '**=',]
 for (var i = 0; (K = Ks[i++]); ) {
-  ezP.KeyHandler.register('… '+K+' …', {
-    type: ezP.T3.Stmt.augmented_assignment_stmt,
+  edY.KeyHandler.register('… '+K+' …', {
+    type: edY.T3.Stmt.augmented_assignment_stmt,
     subtype: K,
   });
 }
 Ks = ['>>=', '<<=', '&=', '^=', '|=',]
 for (var i = 0; (K = Ks[i++]); ) {
-  ezP.KeyHandler.register('… '+K+' …', {
-    type: ezP.T3.Stmt.augassign_bitwise_stmt,
+  edY.KeyHandler.register('… '+K+' …', {
+    type: edY.T3.Stmt.augassign_bitwise_stmt,
     subtype: K,
   });
 }

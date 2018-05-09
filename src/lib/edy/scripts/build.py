@@ -7,7 +7,7 @@
 
 # Usage: build.py.
 
-# This script generates ezp-closure-library_compressed.js.
+# This script generates edy-closure-library_compressed.js.
 
 import sys
 if sys.version_info[0] < 3:

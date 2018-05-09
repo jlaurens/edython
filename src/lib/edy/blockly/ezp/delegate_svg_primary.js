@@ -11,26 +11,26 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Primary')
+goog.provide('edY.DelegateSvg.Primary')
 
-goog.require('ezP.DelegateSvg.Expr')
+goog.require('edY.DelegateSvg.Expr')
 
 
 /**
  * Class for a DelegateSvg, attributeref.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('attributeref', {
+edY.DelegateSvg.Expr.makeSubclass('attributeref', {
   data: {
     attribute: {
       default: '',
       validate: function(newValue) {
-        var type = ezP.Do.typeOfString(newValue)
-        return type === ezP.T3.Expr.builtin_name || type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name?
+        var type = edY.Do.typeOfString(newValue)
+        return type === edY.T3.Expr.builtin_name || type === edY.T3.Expr.identifier || type === edY.T3.Expr.dotted_name?
         {validated: newValue}: null
       },
       synchronize: true,
@@ -39,8 +39,8 @@ ezP.DelegateSvg.Expr.makeSubclass('attributeref', {
   tiles: {
     primary: {
       order: 1,
-      check: ezP.T3.Expr.Check.primary,
-      plugged: ezP.T3.Expr.primary,
+      check: edY.T3.Expr.Check.primary,
+      plugged: edY.T3.Expr.primary,
       hole_value: 'primary',
     },
     attribute: {
@@ -50,7 +50,7 @@ ezP.DelegateSvg.Expr.makeSubclass('attributeref', {
         edit: {
           validate: true,
           endEditing: true,
-          placeholder: ezP.Msg.Placeholder.ATTRIBUTE,
+          placeholder: edY.Msg.Placeholder.ATTRIBUTE,
         },
       },
     },
@@ -61,13 +61,13 @@ ezP.DelegateSvg.Expr.makeSubclass('attributeref', {
  * Class for a DelegateSvg, subscription and slicing.
  * Due to the ambibuity, it is implemented only once for both.
  * Slicing is richer.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('slicing', {
+edY.DelegateSvg.Expr.makeSubclass('slicing', {
   data: {
     variant: { // data named 'variant' have `xml = false`, by default
       all: [0, 1],
@@ -79,8 +79,8 @@ ezP.DelegateSvg.Expr.makeSubclass('slicing', {
     name: {
       default: '',
       validate: function(newValue) {
-        var type = ezP.Do.typeOfString(newValue)
-        return type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name?
+        var type = edY.Do.typeOfString(newValue)
+        return type === edY.T3.Expr.identifier || type === edY.T3.Expr.dotted_name?
         {validated: newValue}: null
       },
       synchronize: true,
@@ -93,14 +93,14 @@ ezP.DelegateSvg.Expr.makeSubclass('slicing', {
         edit: {
           validate: true,
           endEditing: true,
-          placeholder: ezP.Msg.Placeholder.IDENTIFIER,
+          placeholder: edY.Msg.Placeholder.IDENTIFIER,
         },
       },
     },
     primary: {
       order: 2,
-      check: ezP.T3.Expr.Check.primary,
-      plugged: ezP.T3.Expr.primary,
+      check: edY.T3.Expr.Check.primary,
+      plugged: edY.T3.Expr.primary,
       hole_value: 'primary',
     },
     slice: {
@@ -109,28 +109,28 @@ ezP.DelegateSvg.Expr.makeSubclass('slicing', {
         start: '[',
         end: ']',
       },
-      wrap: ezP.T3.Expr.slice_list,
+      wrap: edY.T3.Expr.slice_list,
     },
   },
   output: {
-    check: [ezP.T3.Expr.subscription, ezP.T3.Expr.slicing],
+    check: [edY.T3.Expr.subscription, edY.T3.Expr.slicing],
   },
 })
 
-ezP.DelegateSvg.Expr.subscription = ezP.DelegateSvg.Expr.slicing
-ezP.DelegateSvg.Manager.register('subscription')
+edY.DelegateSvg.Expr.subscription = edY.DelegateSvg.Expr.slicing
+edY.DelegateSvg.Manager.register('subscription')
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (block, mgr) {
+edY.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var current = this.data.variant.get()? 1: 0
   var F = function(content, j) {
-    var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.variant.set(j)
+    var menuItem = new edY.MenuItem(content, function() {
+      block.edy.data.variant.set(j)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(j !== current)
@@ -138,31 +138,31 @@ ezP.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (blo
   var name = this.data.name.get()
   var content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    ezP.Do.createSPAN(name || ezP.Msg.Placeholder.IDENTIFIER, name? 'ezp-code': 'ezp-code-placeholder'),
-    ezP.Do.createSPAN('[…]', 'ezp-code'),
+    edY.Do.createSPAN(name || edY.Msg.Placeholder.IDENTIFIER, name? 'edy-code': 'edy-code-placeholder'),
+    edY.Do.createSPAN('[…]', 'edy-code'),
   )
   F(content, 0)
   var content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    ezP.Do.createSPAN(ezP.Msg.Placeholder.EXPRESSION, 'ezp-code-placeholder'),
-    ezP.Do.createSPAN('[…]', 'ezp-code'),
+    edY.Do.createSPAN(edY.Msg.Placeholder.EXPRESSION, 'edy-code-placeholder'),
+    edY.Do.createSPAN('[…]', 'edy-code'),
   )
   F(content, 1)
   mgr.shouldSeparateInsert()
-  return ezP.DelegateSvg.Expr.slicing.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return edY.DelegateSvg.Expr.slicing.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 /**
  * Class for a DelegateSvg, call block.
  * As call is already a reserved message in javascript,
  * we use call_expr instead.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
+edY.DelegateSvg.Expr.makeSubclass('call_expr', {
   data: {
     variant: {
       all: [0, 1, 2,],
@@ -174,7 +174,7 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
         if (field.textElement_) {
           var withBuiltin = newValue === 2
           var i = withBuiltin? 0: 1
-          var ra = ['ezp-code', 'ezp-code-reserved']
+          var ra = ['edy-code', 'edy-code-reserved']
           goog.dom.classlist.remove(field.textElement_, ra[i])
           goog.dom.classlist.add(field.textElement_, ra[1-i])
         }
@@ -187,8 +187,8 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
     name: {
       all: ['range', 'list', 'set', 'len', 'sum'],
       validate: function(newValue) {
-        var type = ezP.Do.typeOfString(newValue)
-        return type === ezP.T3.Expr.builtin_name || type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name?
+        var type = edY.Do.typeOfString(newValue)
+        return type === edY.T3.Expr.builtin_name || type === edY.T3.Expr.identifier || type === edY.T3.Expr.dotted_name?
         {validated: newValue}: null
       },
       didChange: function(oldValue, newValue) {
@@ -211,14 +211,14 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
         edit: {
           validate: true,
           endEditing: true,
-          placeholder: ezP.Msg.Placeholder.IDENTIFIER,
+          placeholder: edY.Msg.Placeholder.IDENTIFIER,
         },
       },
     },
     primary: {
       order: 2,
-      check: ezP.T3.Expr.Check.primary,
-      plugged: ezP.T3.Expr.primary,
+      check: edY.T3.Expr.Check.primary,
+      plugged: edY.T3.Expr.primary,
       hole_value: 'primary',
     },
     arguments: {
@@ -227,7 +227,7 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
         start: '(',
         end: ')',
       },
-      wrap: ezP.T3.Expr.argument_list,
+      wrap: edY.T3.Expr.argument_list,
     },
   },
 })
@@ -235,35 +235,35 @@ ezP.DelegateSvg.Expr.makeSubclass('call_expr', {
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
+edY.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
   var variant = this.data.variant.get()
   var names = this.data.name.getAll()
   var current = this.data.name.get()
   var i = names.indexOf(current)
   if (variant !== 0) {
-    var oldValue = block.ezp.data.backup.get()
+    var oldValue = block.edy.data.backup.get()
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      oldValue? ezP.Do.createSPAN(oldValue, 'ezp-code'): ezP.Do.createSPAN(ezP.Msg.Placeholder.IDENTIFIER, 'ezp-code-placeholder'),
-      ezP.Do.createSPAN('(…)', 'ezp-code'),
+      oldValue? edY.Do.createSPAN(oldValue, 'edy-code'): edY.Do.createSPAN(edY.Msg.Placeholder.IDENTIFIER, 'edy-code-placeholder'),
+      edY.Do.createSPAN('(…)', 'edy-code'),
     )
-    var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.name.setTrusted(oldValue || '')
-      block.ezp.data.variant.set(0)
+    var menuItem = new edY.MenuItem(content, function() {
+      block.edy.data.name.setTrusted(oldValue || '')
+      block.edy.data.variant.set(0)
     })
     mgr.addChild(menuItem, true)
   }
   var F = function(j) {
     // closure to catch j
     content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      ezP.Do.createSPAN(names[j], 'ezp-code-reserved'),
-      ezP.Do.createSPAN('(…)', 'ezp-code'),
+      edY.Do.createSPAN(names[j], 'edy-code-reserved'),
+      edY.Do.createSPAN('(…)', 'edy-code'),
     )
-    var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.name.setTrusted(names[j])
-      block.ezp.data.variant.set(2)
+    var menuItem = new edY.MenuItem(content, function() {
+      block.edy.data.name.setTrusted(names[j])
+      block.edy.data.variant.set(2)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(j !== i)
@@ -273,12 +273,12 @@ ezP.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
   }
   if (variant !== 1) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      ezP.Do.createSPAN(ezP.Msg.Placeholder.EXPRESSION, 'ezp-code-placeholder'),
-      ezP.Do.createSPAN('(…)', 'ezp-code'),
+      edY.Do.createSPAN(edY.Msg.Placeholder.EXPRESSION, 'edy-code-placeholder'),
+      edY.Do.createSPAN('(…)', 'edy-code'),
     )
-    var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.name.setTrusted(oldValue || '')
-      block.ezp.data.variant.set(1)
+    var menuItem = new edY.MenuItem(content, function() {
+      block.edy.data.name.setTrusted(oldValue || '')
+      block.edy.data.variant.set(1)
     })
     mgr.addChild(menuItem, true)
   }
@@ -288,42 +288,42 @@ ezP.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  ezP.DelegateSvg.Expr.call_expr.populateMenu.call(this, block, mgr)
-  return ezP.DelegateSvg.Expr.call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+edY.DelegateSvg.Expr.call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  edY.DelegateSvg.Expr.call_expr.populateMenu.call(this, block, mgr)
+  return edY.DelegateSvg.Expr.call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 /**
  * Class for a DelegateSvg, call statement block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass('call_stmt', {
-  link: ezP.T3.Expr.call_expr,
+edY.DelegateSvg.Stmt.makeSubclass('call_stmt', {
+  link: edY.T3.Expr.call_expr,
 })
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Stmt.call_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  ezP.DelegateSvg.Expr.call_expr.populateMenu.call(this, block, mgr)
-  return ezP.DelegateSvg.Stmt.call_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+edY.DelegateSvg.Stmt.call_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  edY.DelegateSvg.Expr.call_expr.populateMenu.call(this, block, mgr)
+  return edY.DelegateSvg.Stmt.call_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
-ezP.DelegateSvg.Primary.T3s = [
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.attributeref,
-  ezP.T3.Expr.slicing,
-  ezP.T3.Expr.subscription,
-  ezP.T3.Expr.call_expr,
-  ezP.T3.Stmt.call_stmt,
+edY.DelegateSvg.Primary.T3s = [
+  edY.T3.Expr.term,
+  edY.T3.Expr.attributeref,
+  edY.T3.Expr.slicing,
+  edY.T3.Expr.subscription,
+  edY.T3.Expr.call_expr,
+  edY.T3.Stmt.call_stmt,
 ]

@@ -11,10 +11,10 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Yield')
+goog.provide('edY.DelegateSvg.Yield')
 
-goog.require('ezP.DelegateSvg.List')
-goog.require('ezP.DelegateSvg.Stmt')
+goog.require('edY.DelegateSvg.List')
+goog.require('edY.DelegateSvg.Stmt')
 
 /**
  * Class for a DelegateSvg, yield_expression.
@@ -23,7 +23,7 @@ goog.require('ezP.DelegateSvg.Stmt')
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('yield_expression', {
+edY.DelegateSvg.Expr.makeSubclass('yield_expression', {
   xml: {
     tag: 'yield',
   },
@@ -51,7 +51,7 @@ ezP.DelegateSvg.Expr.makeSubclass('yield_expression', {
   tiles: {
     expression: {
       order: 1,
-      wrap: ezP.T3.Expr.non_void_expression_list,
+      wrap: edY.T3.Expr.non_void_expression_list,
       xml: {
         didLoad: function () {
           var variant = this.owner.data.variant
@@ -64,7 +64,7 @@ ezP.DelegateSvg.Expr.makeSubclass('yield_expression', {
       fields: {
         label: 'from',
       },
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
       xml: {
         didLoad: function () {
           var variant = this.owner.data.variant
@@ -78,33 +78,33 @@ ezP.DelegateSvg.Expr.makeSubclass('yield_expression', {
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr, mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr, mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (block, mgr) {
-  if (block.ezp.locked_) {
+edY.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (block, mgr) {
+  if (block.edy.locked_) {
     return
   }
   var M = this.data.variant.model
   var current = this.data.variant.get()
   var F = function(content, k) {
-    var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.variant.set(k)
+    var menuItem = new edY.MenuItem(content, function() {
+      block.edy.data.variant.set(k)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
   }
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code-reserved',
       goog.dom.createTextNode('yield'),
     ), M.YIELD
   )
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN('yield ', 'ezp-code-reserved'),
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+      edY.Do.createSPAN('yield ', 'edy-code-reserved'),
       goog.dom.createTextNode('…'),
     ), M.YIELD_EXPRESSION
   )
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN('yield from ', 'ezp-code-reserved'),
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+      edY.Do.createSPAN('yield from ', 'edy-code-reserved'),
       goog.dom.createTextNode('…'),
     ), M.YIELD_FROM
   )
@@ -114,29 +114,29 @@ ezP.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (bloc
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr, mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr, mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var yorn = ezP.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_.call(this, block, mgr)
-  return ezP.DelegateSvg.Expr.yield_expression.superClass_.populateContextMenuFirst_.call(this,block, mgr) || yorn
+edY.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var yorn = edY.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_.call(this, block, mgr)
+  return edY.DelegateSvg.Expr.yield_expression.superClass_.populateContextMenuFirst_.call(this,block, mgr) || yorn
 }
 
 
 /**
  * Class for a DelegateSvg, starred_item_list_or_yield block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('parenth_form', function() {
+edY.DelegateSvg.List.makeSubclass('parenth_form', function() {
   var D = {
-    check: ezP.T3.Expr.Check.non_void_starred_item_list,
-    unique: [ezP.T3.Expr.yield_expression, ezP.T3.Expr.comprehension,],
-    consolidator: ezP.Consolidator.List.Singled,
+    check: edY.T3.Expr.Check.non_void_starred_item_list,
+    unique: [edY.T3.Expr.yield_expression, edY.T3.Expr.comprehension,],
+    consolidator: edY.Consolidator.List.Singled,
     empty: true,
     presep: ',',
     hole_value: 'name',
@@ -163,24 +163,24 @@ ezP.DelegateSvg.List.makeSubclass('parenth_form', function() {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass('yield_stmt', {
-  link: ezP.T3.Expr.yield_expression,
+edY.DelegateSvg.Stmt.makeSubclass('yield_stmt', {
+  link: edY.T3.Expr.yield_expression,
 })
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr, mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr, mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  ezP.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_.call(this, block, mgr)
-  return ezP.DelegateSvg.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+edY.DelegateSvg.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  edY.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_.call(this, block, mgr)
+  return edY.DelegateSvg.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
 }
 
-ezP.DelegateSvg.Yield.T3s = [
-  ezP.T3.Expr.yield_expression,
-  ezP.T3.Stmt.yield_stmt,
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.parenth_form,
+edY.DelegateSvg.Yield.T3s = [
+  edY.T3.Expr.yield_expression,
+  edY.T3.Stmt.yield_stmt,
+  edY.T3.Expr.term,
+  edY.T3.Expr.parenth_form,
 ]

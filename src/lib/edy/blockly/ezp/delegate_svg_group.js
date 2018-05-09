@@ -11,42 +11,42 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Group')
+goog.provide('edY.DelegateSvg.Group')
 
-goog.require('ezP.DelegateSvg.Stmt')
+goog.require('edY.DelegateSvg.Stmt')
 
 /**
  * Class for a DelegateSvg, statement block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass('Group', {
+edY.DelegateSvg.Stmt.makeSubclass('Group', {
   fields: {
     suffix: ':',
   },
   statement: {
     suite: {},
   },
-}, ezP.DelegateSvg)
+}, edY.DelegateSvg)
 
 /**
  * Block path.
  * @param {!Blockly.Block} block.
  * @private
  */
-ezP.DelegateSvg.Group.prototype.groupShapePathDef_ = function (block) {
+edY.DelegateSvg.Group.prototype.groupShapePathDef_ = function (block) {
   /* eslint-disable indent */
   var w = block.width
-  var line = ezP.Font.lineHeight()
+  var line = edY.Font.lineHeight()
   var h = block.isCollapsed() ? 2 * line : block.height
   var steps = ['m ' + w + ',0 v ' + line]
   h -= line
-  var r = ezP.Style.Path.radius()
+  var r = edY.Style.Path.radius()
   var a = ' a ' + r + ', ' + r + ' 0 0 0 '
-  var t = ezP.Font.tabWidth
+  var t = edY.Font.tabWidth
   w -= t + r
   steps.push('h ' + (-w))
   steps.push(a + (-r) + ',' + r)
@@ -73,13 +73,13 @@ ezP.DelegateSvg.Group.prototype.groupShapePathDef_ = function (block) {
  * @param {!Blockly.Block} block.
  * @private
  */
-ezP.DelegateSvg.Group.prototype.groupContourPathDef_ = function (block) {
+edY.DelegateSvg.Group.prototype.groupContourPathDef_ = function (block) {
   /* eslint-disable indent */
   var w = block.width
-  var line = ezP.Font.lineHeight()
+  var line = edY.Font.lineHeight()
   var h = block.isCollapsed() ? 2 * line : block.height
-  var t = ezP.Font.tabWidth
-  var r = ezP.Style.Path.radius()
+  var t = edY.Font.tabWidth
+  var r = edY.Style.Path.radius()
   var a = ' a ' + r + ', ' + r + ' 0 0 0 '
   var previous = this.hasPreviousStatement_(block)
   var next = this.hasNextStatement_(block)
@@ -116,41 +116,41 @@ ezP.DelegateSvg.Group.prototype.groupContourPathDef_ = function (block) {
  * @param {!Blockly.Block} block.
  * @private
  */
-ezP.DelegateSvg.Group.prototype.collapsedPathDef_ = function (block) {
+edY.DelegateSvg.Group.prototype.collapsedPathDef_ = function (block) {
   /* eslint-disable indent */
   if (block.isCollapsed()) {
-    var line = ezP.Font.lineHeight()
-    var t = ezP.Font.tabWidth
-    var r = ezP.Style.Path.radius()
+    var line = edY.Font.lineHeight()
+    var t = edY.Font.tabWidth
+    var r = edY.Style.Path.radius()
     return 'm ' + block.width + ',' + line + ' v ' + (line - r) / 2 +
     ' m -' + r + ',' + r / 2 + ' l ' + 2 * r + ',' + (-r) +
     ' M ' + (t + r) + ',' + (2 * line) + ' H ' + block.width + ' v ' + (r - line) / 2 +
     ' m -' + r + ',' + r / 2 + ' l ' + 2 * r + ',' + (-r)
   }
-  return ezP.DelegateSvg.Group.superClass_.collapsedPathDef_.call(this, block)
+  return edY.DelegateSvg.Group.superClass_.collapsedPathDef_.call(this, block)
 } /* eslint-enable indent */
 
-ezP.DelegateSvg.Group.prototype.shapePathDef_ =
-  ezP.DelegateSvg.Group.prototype.contourPathDef_ =
-    ezP.DelegateSvg.Group.prototype.highlightPathDef_ =
-      ezP.DelegateSvg.Group.prototype.groupShapePathDef_
+edY.DelegateSvg.Group.prototype.shapePathDef_ =
+  edY.DelegateSvg.Group.prototype.contourPathDef_ =
+    edY.DelegateSvg.Group.prototype.highlightPathDef_ =
+      edY.DelegateSvg.Group.prototype.groupShapePathDef_
 
 /**
  * Render an input of a group block.
  * @param io parameter.
  * @private
  */
-ezP.DelegateSvg.Group.prototype.renderDrawNextStatementInput_ = function (io) {
+edY.DelegateSvg.Group.prototype.renderDrawNextStatementInput_ = function (io) {
   /* eslint-disable indent */
   if (!io.canStatement || io.input.type !== Blockly.NEXT_STATEMENT) {
     return false
   }
-  io.MinMaxCursorX = 2 * ezP.Font.tabWidth
+  io.MinMaxCursorX = 2 * edY.Font.tabWidth
   io.canStatement = false
   var c8n = io.input.connection
       // this must be the last one
   if (c8n) {
-    c8n.setOffsetInBlock(ezP.Font.tabWidth, ezP.Font.lineHeight())
+    c8n.setOffsetInBlock(edY.Font.tabWidth, edY.Font.lineHeight())
     if (c8n.isConnected()) {
       var target = c8n.targetBlock()
       var root = target.getSvgRoot()
@@ -158,7 +158,7 @@ ezP.DelegateSvg.Group.prototype.renderDrawNextStatementInput_ = function (io) {
         target.render()
       }
     }
-    io.block.height = ezP.Font.lineHeight() * io.block.ezp.getStatementCount(io.block)
+    io.block.height = edY.Font.lineHeight() * io.block.edy.getStatementCount(io.block)
   }
   return true
 } /* eslint-enable indent */
@@ -168,7 +168,7 @@ ezP.DelegateSvg.Group.prototype.renderDrawNextStatementInput_ = function (io) {
  * @param io.
  * @private
  */
-ezP.DelegateSvg.Group.prototype.renderDrawInput_ = function (io) {
+edY.DelegateSvg.Group.prototype.renderDrawInput_ = function (io) {
   this.renderDrawDummyInput_(io) ||
     this.renderDrawValueInput_(io) ||
       this.renderDrawNextStatementInput_(io)
@@ -177,7 +177,7 @@ ezP.DelegateSvg.Group.prototype.renderDrawInput_ = function (io) {
 /**
  * @param {!Blockly.Connection} c8n The connection to highlight.
  */
-ezP.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
+edY.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
   var steps
   var block = c8n.sourceBlock_
   if (c8n.type === Blockly.INPUT_VALUE) {
@@ -189,20 +189,20 @@ ezP.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
   } else if (c8n.type === Blockly.OUTPUT_VALUE) {
     steps = 'm 0,0 ' + Blockly.BlockSvg.TAB_PATH_DOWN + ' v 5'
   } else if (c8n.type === Blockly.NEXT_STATEMENT) {
-    var r = ezP.Style.Path.Selected.width / 2
+    var r = edY.Style.Path.Selected.width / 2
     var a = ' a ' + r + ',' + r + ' 0 0 0 0,'
     if (c8n.offsetInBlock_.x > 0) {
-      steps = 'm 0,' + (-r) + a + (2 * r) + ' h ' + (block.width - ezP.Font.tabWidth) + a + (-2 * r) + ' z'
+      steps = 'm 0,' + (-r) + a + (2 * r) + ' h ' + (block.width - edY.Font.tabWidth) + a + (-2 * r) + ' z'
     } else {
-      steps = 'm 0,' + (-r) + a + (2 * r) + ' h ' + (ezP.Font.tabWidth + ezP.Style.Path.radius()) + a + (-2 * r) + ' z'
+      steps = 'm 0,' + (-r) + a + (2 * r) + ' h ' + (edY.Font.tabWidth + edY.Style.Path.radius()) + a + (-2 * r) + ' z'
     }
   } else if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
-    r = ezP.Style.Path.Selected.width / 2
+    r = edY.Style.Path.Selected.width / 2
     a = ' a ' + r + ',' + r + ' 0 0 0 0,'
     if (c8n.offsetInBlock_.x > 0) {
-      steps = 'm 0,' + (-r) + a + (2 * r) + ' h ' + (block.width - ezP.Font.tabWidth) + a + (-2 * r) + ' z'
+      steps = 'm 0,' + (-r) + a + (2 * r) + ' h ' + (block.width - edY.Font.tabWidth) + a + (-2 * r) + ' z'
     } else {
-      steps = 'm 0,' + (-r) + a + (2 * r) + ' h ' + (ezP.Font.tabWidth + ezP.Style.Path.radius()) + a + (-2 * r) + ' z'
+      steps = 'm 0,' + (-r) + a + (2 * r) + ' h ' + (edY.Font.tabWidth + edY.Style.Path.radius()) + a + (-2 * r) + ' z'
     }
   }
   var xy = block.getRelativeToSurfaceXY()
@@ -218,20 +218,20 @@ ezP.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
 
 /**
  * Class for a DelegateSvg, if_part block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Group.makeSubclass('if_part', {
+edY.DelegateSvg.Group.makeSubclass('if_part', {
   fields: {
     label: 'if',
   },
   tiles: {
     if: {
       order: 1,
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
       hole_value: 'condition',
     },
   },
@@ -239,20 +239,20 @@ ezP.DelegateSvg.Group.makeSubclass('if_part', {
 
 /**
  * Class for a DelegateSvg, elif_part block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Group.makeSubclass('elif_part', {
+edY.DelegateSvg.Group.makeSubclass('elif_part', {
   fields: {
     label: 'elif',
   },
   tiles: {
     elif: {
       order: 1,
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
       hole_value: 'condition',
     },
   },
@@ -260,7 +260,7 @@ ezP.DelegateSvg.Group.makeSubclass('elif_part', {
 
 /**
  * Class for a DelegateSvg, else_part block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * The else block connection model is more complex than for other blocks.
  * Where can this block appear?
  * - after an if or an elif
@@ -274,25 +274,25 @@ ezP.DelegateSvg.Group.makeSubclass('elif_part', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Group.makeSubclass('else_part', {
+edY.DelegateSvg.Group.makeSubclass('else_part', {
   fields: {
     label: 'else',
   },
   statement: {
     previous : {
       didConnect: function(oldTargetConnection, oldConnection) {
-        this.ezp.consolidateSource()
+        this.edy.consolidateSource()
       },
       didDisconnect: function(oldConnection) {
-        this.ezp.consolidateSource()
+        this.edy.consolidateSource()
       },
     },
   },
 })
 
-ezP.DelegateSvg.Stmt.last_else_part = ezP.DelegateSvg.Stmt.try_else_part = ezP.DelegateSvg.Stmt.else_part
-ezP.DelegateSvg.Manager.register('try_else_part')
-ezP.DelegateSvg.Manager.register('last_else_part')
+edY.DelegateSvg.Stmt.last_else_part = edY.DelegateSvg.Stmt.try_else_part = edY.DelegateSvg.Stmt.else_part
+edY.DelegateSvg.Manager.register('try_else_part')
+edY.DelegateSvg.Manager.register('last_else_part')
 
 /**
  * This block may have one of 3 types: else_part, last_else_part, try_else_part.
@@ -301,14 +301,14 @@ ezP.DelegateSvg.Manager.register('last_else_part')
  * and conversely. If the block can be of both types, then it is of type else_part.
  * First the previous connection tries to constrain the type,
  * then the next connection.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
-  var T3 = ezP.T3.Stmt
+edY.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
+  var T3 = edY.T3.Stmt
   var expected = T3.else_part
   var P = T3.Previous.else_part
   var N = T3.Next.else_part
@@ -347,20 +347,20 @@ ezP.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
 
 /**
  * Class for a DelegateSvg, while_part block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Group.makeSubclass('while_part', {
+edY.DelegateSvg.Group.makeSubclass('while_part', {
   fields: {
     label: 'while',
   },
   tiles: {
     while: {
       order: 1,
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
       hole_value: 'condition',
     },
   },
@@ -372,8 +372,8 @@ ezP.DelegateSvg.Group.makeSubclass('while_part', {
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.Group.prototype.willRender_ = function (block) {
-  ezP.DelegateSvg.Group.superClass_.willRender_.call(this, block)
+edY.DelegateSvg.Group.prototype.willRender_ = function (block) {
+  edY.DelegateSvg.Group.superClass_.willRender_.call(this, block)
   var field = this.ui.fields.async
   if (field) {
     field.setVisible(this.async_)
@@ -383,46 +383,46 @@ ezP.DelegateSvg.Group.prototype.willRender_ = function (block) {
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  if (block.ezp.ui.fields.async) {
+edY.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  if (block.edy.ui.fields.async) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      ezP.Do.createSPAN('async', 'ezp-code-reserved'),
-      goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
+      edY.Do.createSPAN('async', 'edy-code-reserved'),
+      goog.dom.createTextNode(' '+edY.Msg.AT_THE_LEFT),
     )
-    if (block.ezp.getProperty(block, ezP.Key.ASYNC)) {
-      mgr.addRemoveChild(new ezP.MenuItem(content, function() {
-        block.ezp.setProperty(block, ezP.Key.ASYNC, false)
+    if (block.edy.getProperty(block, edY.Key.ASYNC)) {
+      mgr.addRemoveChild(new edY.MenuItem(content, function() {
+        block.edy.setProperty(block, edY.Key.ASYNC, false)
       }))
       mgr.shouldSeparateRemove()
     } else {
-      mgr.addInsertChild(new ezP.MenuItem(content, function() {
-        block.ezp.setProperty(block, ezP.Key.ASYNC, true)
+      mgr.addInsertChild(new edY.MenuItem(content, function() {
+        block.edy.setProperty(block, edY.Key.ASYNC, true)
       }))
       mgr.shouldSeparateInsert()
     }
   }
-  return ezP.DelegateSvg.Group.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  return edY.DelegateSvg.Group.superClass_.populateContextMenuFirst_.call(this,block, mgr)
 }
 
 /**
  * Class for a DelegateSvg, for_part block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Group.makeSubclass('for_part', {
+edY.DelegateSvg.Group.makeSubclass('for_part', {
   tiles: {
     for: {
       order: 1,
       fields: {
         label: 'for',
       },
-      wrap: ezP.T3.Expr.target_list,
+      wrap: edY.T3.Expr.target_list,
       hole_value: 'element',
     },
     in: {
@@ -430,7 +430,7 @@ ezP.DelegateSvg.Group.makeSubclass('for_part', {
       fields: {
         label: 'in',
       },
-      wrap: ezP.T3.Expr.expression_list,
+      wrap: edY.T3.Expr.expression_list,
       hole_value: 'set',
     },
   },
@@ -438,37 +438,37 @@ ezP.DelegateSvg.Group.makeSubclass('for_part', {
 
 /**
  * Class for a DelegateSvg, with_part block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Group.makeSubclass('with_part', {
+edY.DelegateSvg.Group.makeSubclass('with_part', {
   tiles: {
     with: {
       order: 1,
       fields: {
         label: 'with',
       },
-      wrap: ezP.T3.Expr.with_item_list,
+      wrap: edY.T3.Expr.with_item_list,
     },
   },
 })
 
 /**
  * Class for a DelegateSvg, with_item_s3d block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('with_item_s3d', {
+edY.DelegateSvg.Expr.makeSubclass('with_item_s3d', {
   tiles: {
     expression: {
       order: 1,
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
     target: {
@@ -476,18 +476,18 @@ ezP.DelegateSvg.Expr.makeSubclass('with_item_s3d', {
       fields: {
         label: 'as',
       },
-      check: ezP.T3.Expr.Check.target,
+      check: edY.T3.Expr.Check.target,
       hole_value: 'target',
     },
   },
 })
 
-ezP.DelegateSvg.Group.T3s = [
-  ezP.T3.Stmt.if_part,
-  ezP.T3.Stmt.elif_part,
-  ezP.T3.Stmt.else_part,
-  ezP.T3.Stmt.while_part,
-  ezP.T3.Stmt.with_part,
-  ezP.T3.Stmt.for_part,
-  ezP.T3.Expr.with_item_s3d,
+edY.DelegateSvg.Group.T3s = [
+  edY.T3.Stmt.if_part,
+  edY.T3.Stmt.elif_part,
+  edY.T3.Stmt.else_part,
+  edY.T3.Stmt.while_part,
+  edY.T3.Stmt.with_part,
+  edY.T3.Stmt.for_part,
+  edY.T3.Expr.with_item_s3d,
 ]

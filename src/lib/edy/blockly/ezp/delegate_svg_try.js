@@ -11,19 +11,19 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Try')
+goog.provide('edY.DelegateSvg.Try')
 
-goog.require('ezP.DelegateSvg.Group')
+goog.require('edY.DelegateSvg.Group')
 
 /**
  * Class for a DelegateSvg, try_part block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Group.makeSubclass('try_part', {
+edY.DelegateSvg.Group.makeSubclass('try_part', {
   fields: {
     prefix: 'try',
   },
@@ -31,13 +31,13 @@ ezP.DelegateSvg.Group.makeSubclass('try_part', {
 
 /**
  * Class for a DelegateSvg, except_part block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Group.makeSubclass('except_part', {
+edY.DelegateSvg.Group.makeSubclass('except_part', {
   data: {
     variant: {
       EXCEPT: 0,
@@ -45,9 +45,9 @@ ezP.DelegateSvg.Group.makeSubclass('except_part', {
       EXCEPT_AS: 2,
       all: [0, 1, 2],
       didChange: function(oldValue, newValue) {
-        var ezp = this.owner_
-        var block = ezp.block_
-        ezp.consolidateType(block)
+        var edy = this.owner_
+        var block = edy.block_
+        edy.consolidateType(block)
       },
       synchronize: function(newValue) {
         var M = this.model
@@ -64,7 +64,7 @@ ezP.DelegateSvg.Group.makeSubclass('except_part', {
   tiles: {
     expression: {
       order: 1,
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
       hole_value: 'expression',
       xml: {
         didLoad: function () {
@@ -80,7 +80,7 @@ ezP.DelegateSvg.Group.makeSubclass('except_part', {
       fields: {
         label: 'as',
       },
-      check: ezP.T3.Expr.identifier,
+      check: edY.T3.Expr.identifier,
       hole_value: 'name',
       xml: {
         didLoad: function () {
@@ -99,62 +99,62 @@ ezP.DelegateSvg.Group.makeSubclass('except_part', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.except_part.prototype.consolidateType = function (block) {
+edY.DelegateSvg.Stmt.except_part.prototype.consolidateType = function (block) {
   var variant = this.data.variant.get()
   var F = function(k) {
-    this.setupType(block, ezP.T3.Stmt[k])
-    block.nextConnection.setCheck(ezP.T3.Stmt.Next[k])
-    block.previousConnection.setCheck(ezP.T3.Stmt.Previous[k])
+    this.setupType(block, edY.T3.Stmt[k])
+    block.nextConnection.setCheck(edY.T3.Stmt.Next[k])
+    block.previousConnection.setCheck(edY.T3.Stmt.Previous[k])
   }
   F.call(this, variant > 0? 'except_part': 'void_except_part')
-  ezP.DelegateSvg.Stmt.except_part.superClass_.consolidateType.call(this, block)
+  edY.DelegateSvg.Stmt.except_part.superClass_.consolidateType.call(this, block)
 }
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
+edY.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var M = this.data.variant.model
-  var current = block.ezp.data.variant.get()
+  var current = block.edy.data.variant.get()
   var F = function(content, k) {
-    var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.variant.set(k)
+    var menuItem = new edY.MenuItem(content, function() {
+      block.edy.data.variant.set(k)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
   }
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code-reserved',
       goog.dom.createTextNode('except:'),
     ), M.EXCEPT
   )
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN('except ', 'ezp-code-reserved'),
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+      edY.Do.createSPAN('except ', 'edy-code-reserved'),
       goog.dom.createTextNode('…:'),
     ), M.EXCEPT_EXPRESSION
   )
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN('except', 'ezp-code-reserved'),
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+      edY.Do.createSPAN('except', 'edy-code-reserved'),
       goog.dom.createTextNode(' … '),
-      ezP.Do.createSPAN(' as', 'ezp-code-reserved'),
+      edY.Do.createSPAN(' as', 'edy-code-reserved'),
       goog.dom.createTextNode(' …:'),
     ), M.EXCEPT_AS
   )
   mgr.shouldSeparate()
-  return ezP.DelegateSvg.Stmt.except_part.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  return edY.DelegateSvg.Stmt.except_part.superClass_.populateContextMenuFirst_.call(this,block, mgr)
 }
 
 /**
  * Class for a DelegateSvg, finally_part block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Group.makeSubclass('finally_part', {
+edY.DelegateSvg.Group.makeSubclass('finally_part', {
   fields: {
     prefix: 'finally',
   }
@@ -167,7 +167,7 @@ ezP.DelegateSvg.Group.makeSubclass('finally_part', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
+edY.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
   data: {
     variant: {
       RAISE: 0,
@@ -189,7 +189,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
   tiles: {
     expression: {
       order: 1,
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
       hole_value: 'expression',
       xml: {
         didLoad: function () {
@@ -205,7 +205,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       fields: {
         label: 'from',
       },
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
       hole_value: 'expression',
       xml: {
         didLoad: function () {
@@ -220,37 +220,37 @@ ezP.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+edY.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var M = this.data.variant.model
   var current = this.data.variant.get()
   var F = function(content, k) {
-    var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.variant.set(k)
+    var menuItem = new edY.MenuItem(content, function() {
+      block.edy.data.variant.set(k)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
   }
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code-reserved',
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code-reserved',
       goog.dom.createTextNode('raise'),
     ), M.RAISE
   )
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN('raise ', 'ezp-code-reserved'),
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+      edY.Do.createSPAN('raise ', 'edy-code-reserved'),
       goog.dom.createTextNode('…'),
     ), M.RAISE_EXPRESSION
   )
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN('raise', 'ezp-code-reserved'),
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+      edY.Do.createSPAN('raise', 'edy-code-reserved'),
       goog.dom.createTextNode(' … '),
-      ezP.Do.createSPAN(' from', 'ezp-code-reserved'),
+      edY.Do.createSPAN(' from', 'edy-code-reserved'),
       goog.dom.createTextNode(' …'),
     ), M.RAISE_FROM
   )
   mgr.shouldSeparate()
-  return ezP.DelegateSvg.Stmt.raise_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  return edY.DelegateSvg.Stmt.raise_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
 }
 
 /**
@@ -260,7 +260,7 @@ ezP.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
+edY.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
   data: {
     variant: {
       all: [0, 1],
@@ -276,7 +276,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
   tiles: {
     assert: {
       order: 1,
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
       hole_value: 'expression',
     },
     expression: {
@@ -284,7 +284,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
       fields: {
         label: ',',
       },
-      check: ezP.T3.Expr.Check.expression,
+      check: edY.T3.Expr.Check.expression,
       hole_value: 'expression',
       xml: {
         didLoad: function () {
@@ -299,36 +299,36 @@ ezP.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var current = block.ezp.data.variant.get()
+edY.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var current = block.edy.data.variant.get()
   var F = function(content, key) {
-    var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.variant.set(key)
+    var menuItem = new edY.MenuItem(content, function() {
+      block.edy.data.variant.set(key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)
   }
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN('assert ', 'ezp-code-reserved'),
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+      edY.Do.createSPAN('assert ', 'edy-code-reserved'),
       goog.dom.createTextNode('…'),
     ), 0
   )
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-      ezP.Do.createSPAN('assert ', 'ezp-code-reserved'),
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+      edY.Do.createSPAN('assert ', 'edy-code-reserved'),
       goog.dom.createTextNode('…, …'),
     ), 1
   )
   mgr.shouldSeparate()
-  return ezP.DelegateSvg.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  return edY.DelegateSvg.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
 }
 
-ezP.DelegateSvg.Try.T3s = [
-  ezP.T3.Stmt.try_part,
-  ezP.T3.Stmt.except_part,
-  ezP.T3.Stmt.finally_part,
-  ezP.T3.Stmt.raise_stmt,
-  ezP.T3.Stmt.assert_stmt,
+edY.DelegateSvg.Try.T3s = [
+  edY.T3.Stmt.try_part,
+  edY.T3.Stmt.except_part,
+  edY.T3.Stmt.finally_part,
+  edY.T3.Stmt.raise_stmt,
+  edY.T3.Stmt.assert_stmt,
 ]

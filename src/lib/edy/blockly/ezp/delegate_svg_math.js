@@ -11,6 +11,6 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Math')
+goog.provide('edY.DelegateSvg.Math')
 
-goog.require('ezP.DelegateSvg.Expr')
+goog.require('edY.DelegateSvg.Expr')

@@ -11,10 +11,10 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Import')
+goog.provide('edY.DelegateSvg.Import')
 
-goog.require('ezP.DelegateSvg.List')
-goog.require('ezP.DelegateSvg.Stmt')
+goog.require('edY.DelegateSvg.List')
+goog.require('edY.DelegateSvg.Stmt')
 
 /////////////////     module_as      ///////////////////
 /*
@@ -32,15 +32,15 @@ module_name ::= identifier
 /**
  * Class for a DelegateSvg, non_void_module_as_list block.
  * This block may be wrapped.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('non_void_module_as_list', {
+edY.DelegateSvg.List.makeSubclass('non_void_module_as_list', {
   list: {
-    check: ezP.T3.Expr.Check.non_void_module_as_list,
+    check: edY.T3.Expr.Check.non_void_module_as_list,
     empty: false,
     presep: ',',
     hole_value: 'module',
@@ -50,15 +50,15 @@ ezP.DelegateSvg.List.makeSubclass('non_void_module_as_list', {
 /**
  * Class for a DelegateSvg, non_void_import_identifier_as_list block.
  * This block may be wrapped.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('non_void_import_identifier_as_list', {
+edY.DelegateSvg.List.makeSubclass('non_void_import_identifier_as_list', {
   list: {
-    check: ezP.T3.Expr.Check.non_void_import_identifier_as_list,
+    check: edY.T3.Expr.Check.non_void_import_identifier_as_list,
     empty: false,
     presep: ',',
     hole_value: 'name',
@@ -76,7 +76,7 @@ ezP.DelegateSvg.List.makeSubclass('non_void_import_identifier_as_list', {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
+edY.DelegateSvg.Stmt.makeSubclass('import_stmt', {
   data: {
     variant: {
       IMPORT: 0,
@@ -100,10 +100,10 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
     },
     from: {
       validate: function(newValue) {
-        var type = ezP.Do.typeOfString(newValue)
+        var type = edY.Do.typeOfString(newValue)
         var variant = this.data.variant.get()
         var model = this.data.variant.model
-        return type === ezP.T3.Expr.identifier || type === ezP.T3.Expr.dotted_name || variant === model.FROM_MODULE_IMPORT && (type === ezP.T3.Expr.parent_module)?
+        return type === edY.T3.Expr.identifier || type === edY.T3.Expr.dotted_name || variant === model.FROM_MODULE_IMPORT && (type === edY.T3.Expr.parent_module)?
         {validated: newValue}: null
       },
       synchronize: true,
@@ -115,7 +115,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       fields: {
         label: 'import',
       },
-      wrap: ezP.T3.Expr.non_void_module_as_list,
+      wrap: edY.T3.Expr.non_void_module_as_list,
     },
     from: {
       order: 2,
@@ -124,7 +124,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         edit: {
           validate: true,
           endEditing: true,
-          placeholder: ezP.Msg.Placeholder.MODULE,
+          placeholder: edY.Msg.Placeholder.MODULE,
         },
       },
     },
@@ -133,7 +133,7 @@ ezP.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       fields: {
         label: 'import',
       },
-      wrap: ezP.T3.Expr.non_void_import_identifier_as_list,
+      wrap: edY.T3.Expr.non_void_import_identifier_as_list,
     },
     import_star: {
       order: 4,
@@ -150,47 +150,47 @@ console.log('When read from dom, if the read data is not valid, what to do?')
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-ezP.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function(block) {
+edY.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function(block) {
   return block
 }
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var current = block.ezp.data.variant.get()
+edY.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var current = block.edy.data.variant.get()
   var F = function(content, variant) {
-    var menuItem = new ezP.MenuItem(content, function() {
-      block.ezp.data.variant.set(variant)
+    var menuItem = new edY.MenuItem(content, function() {
+      block.edy.data.variant.set(variant)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(variant !== current)
   }
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-    ezP.Do.createSPAN('import ', 'ezp-code-reserved'),
-    ezP.Do.createSPAN('module', 'ezp-code-placeholder'),
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+    edY.Do.createSPAN('import ', 'edy-code-reserved'),
+    edY.Do.createSPAN('module', 'edy-code-placeholder'),
     goog.dom.createTextNode(' ['),
-    ezP.Do.createSPAN('as', 'ezp-code-reserved'),
+    edY.Do.createSPAN('as', 'edy-code-reserved'),
     goog.dom.createTextNode(' ...]'),
   ), 0)
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-    ezP.Do.createSPAN('from ', 'ezp-code-reserved'),
-    ezP.Do.createSPAN('module ', 'ezp-code-placeholder'),
-    ezP.Do.createSPAN('import ', 'ezp-code-reserved'),
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+    edY.Do.createSPAN('from ', 'edy-code-reserved'),
+    edY.Do.createSPAN('module ', 'edy-code-placeholder'),
+    edY.Do.createSPAN('import ', 'edy-code-reserved'),
     goog.dom.createTextNode('… ['),
-    ezP.Do.createSPAN('as', 'ezp-code-reserved'),
+    edY.Do.createSPAN('as', 'edy-code-reserved'),
     goog.dom.createTextNode(' …]'),
   ), 1)
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-    ezP.Do.createSPAN('from ', 'ezp-code-reserved'),
-    ezP.Do.createSPAN('module ', 'ezp-code-placeholder'),
-    ezP.Do.createSPAN('import *', 'ezp-code-reserved'),
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+    edY.Do.createSPAN('from ', 'edy-code-reserved'),
+    edY.Do.createSPAN('module ', 'edy-code-placeholder'),
+    edY.Do.createSPAN('import *', 'edy-code-reserved'),
   ), 2)
   mgr.shouldSeparate()
-  return ezP.DelegateSvg.Stmt.import_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  return edY.DelegateSvg.Stmt.import_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
 }
 
 /////////// future
@@ -202,7 +202,7 @@ ezP.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass('future_statement', {
+edY.DelegateSvg.Stmt.makeSubclass('future_statement', {
   tiles: {
     list: {
       order: 1,
@@ -212,15 +212,15 @@ ezP.DelegateSvg.Stmt.makeSubclass('future_statement', {
           css: 'reserved',
         }
       },
-      wrap: ezP.T3.Expr.non_void_import_identifier_as_list,
+      wrap: edY.T3.Expr.non_void_import_identifier_as_list,
     },
   },
 })
 
-ezP.DelegateSvg.Import.T3s = [
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.non_void_module_as_list,
-  ezP.T3.Expr.non_void_import_identifier_as_list,
-  ezP.T3.Stmt.import_stmt,
-  ezP.T3.Stmt.future_statement,  
+edY.DelegateSvg.Import.T3s = [
+  edY.T3.Expr.term,
+  edY.T3.Expr.non_void_module_as_list,
+  edY.T3.Expr.non_void_import_identifier_as_list,
+  edY.T3.Stmt.import_stmt,
+  edY.T3.Stmt.future_statement,  
 ]

@@ -11,47 +11,47 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg')
-goog.provide('ezP.HoleFiller')
+goog.provide('edY.DelegateSvg')
+goog.provide('edY.HoleFiller')
 
-goog.require('ezP.Delegate')
-goog.forwardDeclare('ezP.BlockSvg')
+goog.require('edY.Delegate')
+goog.forwardDeclare('edY.BlockSvg')
 
 /**
  * Class for a DelegateSvg.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.Delegate.makeSubclass('Svg')
+edY.Delegate.makeSubclass('Svg')
 
 // Mimic Blockly naming convention
-ezP.DelegateSvg = ezP.Delegate.Svg
+edY.DelegateSvg = edY.Delegate.Svg
 
-ezP.DelegateSvg.Manager = ezP.Delegate.Manager
+edY.DelegateSvg.Manager = edY.Delegate.Manager
 
 /**
  * Method to register an expression or a statement block.
  * The delegate is searched as a DelegateSvg element
  */
-ezP.DelegateSvg.Manager.register = function (key) {
-  var prototypeName = ezP.T3.Expr[key]
+edY.DelegateSvg.Manager.register = function (key) {
+  var prototypeName = edY.T3.Expr[key]
   var delegateC9r = undefined
   var available = undefined
   if (prototypeName) {
     (key === 'numberliteral') && console.log('Registering expression', key)
-    delegateC9r = ezP.DelegateSvg.Expr[key]
-    available = ezP.T3.Expr.Available
-  } else if ((prototypeName = ezP.T3.Stmt[key])) {
+    delegateC9r = edY.DelegateSvg.Expr[key]
+    available = edY.T3.Expr.Available
+  } else if ((prototypeName = edY.T3.Stmt[key])) {
     // console.log('Registering statement', key)
-    delegateC9r = ezP.DelegateSvg.Stmt[key]
-    available = ezP.T3.Stmt.Available
+    delegateC9r = edY.DelegateSvg.Stmt[key]
+    available = edY.T3.Stmt.Available
   } else {
-    throw "Unknown block ezP.T3.Expr or ezP.T3.Stmt key: "+key
+    throw "Unknown block edY.T3.Expr or edY.T3.Stmt key: "+key
   }
-  ezP.DelegateSvg.Manager.registerDelegate_(prototypeName, delegateC9r)
+  edY.DelegateSvg.Manager.registerDelegate_(prototypeName, delegateC9r)
   available.push(prototypeName)
 }
 
@@ -59,38 +59,38 @@ ezP.DelegateSvg.Manager.register = function (key) {
  * This is the shape used to draw the outline of a block
  * @private
  */
-ezP.DelegateSvg.prototype.svgPathShape_ = undefined
+edY.DelegateSvg.prototype.svgPathShape_ = undefined
 
 /**
  * This is the shape used to draw the background of a block
  * @private
  */
-ezP.DelegateSvg.prototype.svgPathContour_ = undefined
+edY.DelegateSvg.prototype.svgPathContour_ = undefined
 
 /**
  * This is the shape used to draw a collapsed block.
  * Background or outline ?
  * @private
  */
-ezP.DelegateSvg.prototype.svgPathCollapsed_ = undefined
+edY.DelegateSvg.prototype.svgPathCollapsed_ = undefined
 
 /**
  * This is the shape used to draw a block...
  * @private
  */
-ezP.DelegateSvg.prototype.svgPathInline_ = undefined
+edY.DelegateSvg.prototype.svgPathInline_ = undefined
 
 /**
  * This is the shape used to draw an highlighted block contour.
  * @private
  */
-ezP.DelegateSvg.prototype.svgPathHighlight_ = undefined
+edY.DelegateSvg.prototype.svgPathHighlight_ = undefined
 
 /**
  * This is the shape used to draw an highlighted connection contour.
  * @private
  */
-ezP.DelegateSvg.prototype.svgPathConnection_ = undefined
+edY.DelegateSvg.prototype.svgPathConnection_ = undefined
 
 /**
  * When set, used to create an input value.
@@ -106,7 +106,7 @@ ezP.DelegateSvg.prototype.svgPathConnection_ = undefined
 
 console.warn('Beware of quotes in string literals')
 
-goog.require('ezP.Tile')
+goog.require('edY.Tile')
 
 /**
  * Create and initialize the various paths.
@@ -118,8 +118,8 @@ goog.require('ezP.Tile')
  * below.
  * @param {!Blockly.Block} block to be initialized..
  */
-ezP.DelegateSvg.prototype.initBlock = function(block) {
-  ezP.DelegateSvg.superClass_.initBlock.call(this, block)
+edY.DelegateSvg.prototype.initBlock = function(block) {
+  edY.DelegateSvg.superClass_.initBlock.call(this, block)
   // block.setInputsInline(true)
   block.setTooltip('')
   block.setHelpUrl('')
@@ -133,7 +133,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       var insert = tileModel.insert
       var tile, nextTile
       if (insert) {
-        var model = ezP.DelegateSvg.Manager.getModel(insert)
+        var model = edY.DelegateSvg.Manager.getModel(insert)
         if (model) {
           makeTiles(owner, model.tiles)
           if ((tile = ui.headTile)) {
@@ -141,7 +141,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
             nextTile = tile
             do {
               goog.asserts.assert(!goog.isDef(tiles[nextTile.key]),
-              ezP.Do.format('Duplicate inserted tile key {0}/{1}/{2}', nextTile.key, insert, block.type))
+              edY.Do.format('Duplicate inserted tile key {0}/{1}/{2}', nextTile.key, insert, block.type))
               tiles[nextTile.key] = tile
             } while ((nextTile = nextTile.nextTile))
           } else {
@@ -150,9 +150,9 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
         } else {
           continue
         }
-      } else if (goog.isObject(tileModel) && (tile = new ezP.Tile(owner, k, tileModel))) {
+      } else if (goog.isObject(tileModel) && (tile = new edY.Tile(owner, k, tileModel))) {
         goog.asserts.assert(!goog.isDef(tiles[k]),
-        ezP.Do.format('Duplicate tile key {0}/{1}', k, block.type))
+        edY.Do.format('Duplicate tile key {0}/{1}', k, block.type))
         tiles[k] = tile
       } else {
         continue
@@ -161,7 +161,7 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
       for (var i = 0; i < ordered.length; i++) {
         // we must not find an aleady existing entry.
         goog.asserts.assert(i != tile.order,
-        ezP.Do.format('Same order tile {0}/{1}', i, block.type))
+        edY.Do.format('Same order tile {0}/{1}', i, block.type))
         if (ordered[i].model.order > tile.model.order) {
           break
         }
@@ -181,13 +181,13 @@ ezP.DelegateSvg.prototype.initBlock = function(block) {
   }
   var model = this.getModel()
   makeTiles(this, model.tiles)
-  ezP.Tile.makeFields(this, ui, model.fields)
+  edY.Tile.makeFields(this, ui, model.fields)
   // now initialize all the fields
   this.ui = ui
   if (!block.workspace.options.readOnly && !this.eventsInit_) {
     Blockly.bindEventWithChecks_(block.getSvgRoot(), 'mouseup', block,
     function(e) {
-      block.ezp.onMouseUp_(block, e)
+      block.edy.onMouseUp_(block, e)
     })
   }
   this.eventsInit_ = true;
@@ -202,7 +202,7 @@ console.warn('implement async and await, see above awaitable and asyncable')
  * Revert operation of initBlock.
  * @param {!Blockly.Block} block to be initialized..
  */
-ezP.DelegateSvg.prototype.deinitBlock = function(block) {
+edY.DelegateSvg.prototype.deinitBlock = function(block) {
   goog.dom.removeNode(this.svgPathShape_)
   this.svgPathShape_ = undefined
   goog.dom.removeNode(this.svgPathContour_)
@@ -215,7 +215,7 @@ ezP.DelegateSvg.prototype.deinitBlock = function(block) {
   this.svgPathHighlight_ = undefined
   goog.dom.removeNode(this.svgPathConnection_)
   this.svgPathConnection_ = undefined
-  ezP.DelegateSvg.superClass_.deinitBlock.call(this, block)
+  edY.DelegateSvg.superClass_.deinitBlock.call(this, block)
 }
 
 /**
@@ -223,7 +223,7 @@ ezP.DelegateSvg.prototype.deinitBlock = function(block) {
  * May be called more than once.
  * @param {!Blockly.Block} block to be initialized..
  */
-ezP.DelegateSvg.prototype.preInitSvg = function(block) {
+edY.DelegateSvg.prototype.preInitSvg = function(block) {
 }
 
 /**
@@ -231,7 +231,7 @@ ezP.DelegateSvg.prototype.preInitSvg = function(block) {
  * May be called more than once.
  * @param {!Blockly.Block} block to be initialized.
  */
-ezP.DelegateSvg.prototype.postInitSvg = function(block) {
+edY.DelegateSvg.prototype.postInitSvg = function(block) {
   if(this.svgPathContour_) {
     return
   }
@@ -242,26 +242,26 @@ ezP.DelegateSvg.prototype.postInitSvg = function(block) {
   goog.dom.removeNode(block.svgPathDark_)
   delete block.svgPathDark_
     this.svgPathInline_ = Blockly.utils.createSvgElement('path',
-    {'class': 'ezp-path-contour'}, null)
+    {'class': 'edy-path-contour'}, null)
   goog.dom.insertChildAt(block.svgGroup_, this.svgPathInline_, 0)
-  this.svgPathCollapsed_ = Blockly.utils.createSvgElement('path', {'class': 'ezp-path-collapsed'}, null)
+  this.svgPathCollapsed_ = Blockly.utils.createSvgElement('path', {'class': 'edy-path-collapsed'}, null)
   goog.dom.insertChildAt(block.svgGroup_, this.svgPathCollapsed_, 0)
-  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {'class': 'ezp-path-contour'}, null)
+  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {'class': 'edy-path-contour'}, null)
   goog.dom.insertChildAt(block.svgGroup_, this.svgPathContour_, 0)
-  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {'class': 'ezp-path-shape'}, null)
+  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {'class': 'edy-path-shape'}, null)
   goog.dom.insertChildAt(block.svgGroup_, this.svgPathShape_, 0)
   this.svgPathHighlight_ = Blockly.utils.createSvgElement('path',
-    {'class': 'ezp-path-selected'}, null)
+    {'class': 'edy-path-selected'}, null)
   this.svgPathConnection_ = Blockly.utils.createSvgElement('path',
-    {'class': 'ezp-path-selected'}, null)
+    {'class': 'edy-path-selected'}, null)
   Blockly.utils.addClass(/** @type {!Element} */ (block.svgGroup_),
-    'ezp-block')
+    'edy-block')
   // install all the fields and tiles in the DOM
   for (var k in this.ui.fields) {
     var field = this.ui.fields[k]
     field.setSourceBlock(block)
     field.init()
-    field.ezp.ui = this.ui
+    field.edy.ui = this.ui
   }
   for (var k in this.ui.tiles) {
     var tile = this.ui.tiles[k]
@@ -275,7 +275,7 @@ ezP.DelegateSvg.prototype.postInitSvg = function(block) {
  * @param {string} name The name of the field.
  * @return {Blockly.Field} Named field, or null if field does not exist.
  */
-ezP.DelegateSvg.prototype.getField = function(block, name) {
+edY.DelegateSvg.prototype.getField = function(block, name) {
   var fields = this.ui.fields
   for(var key in fields) {
     var field = fields[key]
@@ -291,7 +291,7 @@ ezP.DelegateSvg.prototype.getField = function(block, name) {
  * Sends a `synchronize` message to all tiles.
  * May be used at the end of an initialization process.
  */
-ezP.DelegateSvg.prototype.synchronizeTiles = function(block) {
+edY.DelegateSvg.prototype.synchronizeTiles = function(block) {
   var tiles = this.ui.tiles
   for (var k in tiles) {
     tiles[k].synchronize()
@@ -302,16 +302,16 @@ ezP.DelegateSvg.prototype.synchronizeTiles = function(block) {
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-ezP.DelegateSvg.prototype.getMenuTarget = function(block) {
+edY.DelegateSvg.prototype.getMenuTarget = function(block) {
   var wrapped
   if (this.ui.wrap && (wrapped = this.ui.wrap.input.connection.targetBlock())) {
-    return wrapped.ezp.getMenuTarget(wrapped)
+    return wrapped.edy.getMenuTarget(wrapped)
   }
   if (this.wrappedInputs_ && this.wrappedInputs_.length === 1 &&
     (wrapped = this.wrappedInputs_[0][0].connection.targetBlock())) {
       // if there are more than one wrapped block,
       // then we choose none of them
-    return wrapped.ezp.getMenuTarget(wrapped)
+    return wrapped.edy.getMenuTarget(wrapped)
   }
   return block
 }
@@ -321,7 +321,7 @@ ezP.DelegateSvg.prototype.getMenuTarget = function(block) {
  * May be called more than once.
  * @param {!Blockly.Block} block to be initialized..
  */
-ezP.DelegateSvg.prototype.initSvgWrap = function(block) {
+edY.DelegateSvg.prototype.initSvgWrap = function(block) {
   if (this.wrappedInputs_) {
     // do not delete this at the end
     for (var i = 0; i < this.wrappedInputs_.length; i++) {
@@ -341,7 +341,7 @@ ezP.DelegateSvg.prototype.initSvgWrap = function(block) {
  * @param {boolean=} optBubble If false, just render this block.
  *   If true, also render block's parent, grandparent, etc.  Defaults to true.
  */
-ezP.DelegateSvg.prototype.render = function (block, optBubble) {
+edY.DelegateSvg.prototype.render = function (block, optBubble) {
   if (this.skipRendering) {
     return
   }
@@ -388,7 +388,7 @@ ezP.DelegateSvg.prototype.render = function (block, optBubble) {
  * List managers will use consolidators to help list management.
  * @param {!Block} block.
  */
-ezP.DelegateSvg.prototype.consolidate = function (block, deep, force) {
+edY.DelegateSvg.prototype.consolidate = function (block, deep, force) {
   for (var k in this.data) {
     var data = this.data[k]
     data.consolidate()
@@ -399,10 +399,10 @@ ezP.DelegateSvg.prototype.consolidate = function (block, deep, force) {
     tile = tile.nextTile
   } 
   if (deep) {
-    var e8r = block.ezp.inputEnumerator(block), x
+    var e8r = block.edy.inputEnumerator(block), x
     while (e8r.next()) {
       if ((x = e8r.here.connection) && (x = x.targetBlock())) {
-        x.ezp.consolidate(x, deep, force)
+        x.edy.consolidate(x, deep, force)
       }
     }
   }
@@ -412,10 +412,10 @@ ezP.DelegateSvg.prototype.consolidate = function (block, deep, force) {
 /**
  * Whether the block is sealed to its parent.
  * The sealed status is decided at init time.
- * The corresponding input.ezp.connection.wrapped_ is set to true.
+ * The corresponding input.edy.connection.wrapped_ is set to true.
  * @private
  */
-ezP.DelegateSvg.prototype.wrapped_ = undefined
+edY.DelegateSvg.prototype.wrapped_ = undefined
 
 /**
  * Will draw the block. Default implementation does nothing.
@@ -423,12 +423,12 @@ ezP.DelegateSvg.prototype.wrapped_ = undefined
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.willRender_ = function (block) {
+edY.DelegateSvg.prototype.willRender_ = function (block) {
   if (block.svgGroup_) {
     if (this.locked_ && block.outputConnection && block.getSurroundParent()) {
-      goog.dom.classlist.add(/** @type {!Element} */(block.svgGroup_), 'ezp-locked')
+      goog.dom.classlist.add(/** @type {!Element} */(block.svgGroup_), 'edy-locked')
     } else {
-      goog.dom.classlist.remove(/** @type {!Element} */(block.svgGroup_), 'ezp-locked')
+      goog.dom.classlist.remove(/** @type {!Element} */(block.svgGroup_), 'edy-locked')
     }
   }
   // change the class of the shape on error
@@ -437,7 +437,7 @@ ezP.DelegateSvg.prototype.willRender_ = function (block) {
   goog.dom.classlist.remove
   var FF = function(elt) {
     if (/** @type {!Element} */(elt)) {
-      F(elt, 'ezp-error')
+      F(elt, 'edy-error')
     }
   }
   FF(this.svgPathShape_)
@@ -452,7 +452,7 @@ ezP.DelegateSvg.prototype.willRender_ = function (block) {
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.didRender_ = function (block) {
+edY.DelegateSvg.prototype.didRender_ = function (block) {
 }
 
 /**
@@ -460,7 +460,7 @@ ezP.DelegateSvg.prototype.didRender_ = function (block) {
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.layoutConnections_ = function (block) {
+edY.DelegateSvg.prototype.layoutConnections_ = function (block) {
   if (block.outputConnection) {
     block.outputConnection.setOffsetInBlock(0, 0)
   } else {
@@ -469,7 +469,7 @@ ezP.DelegateSvg.prototype.layoutConnections_ = function (block) {
     }
     if (block.nextConnection) {
       if (block.isCollapsed()) {
-        block.nextConnection.setOffsetInBlock(0, 2 * ezP.Font.lineHeight())
+        block.nextConnection.setOffsetInBlock(0, 2 * edY.Font.lineHeight())
       } else {
         block.nextConnection.setOffsetInBlock(0, block.height)
       }
@@ -480,36 +480,36 @@ ezP.DelegateSvg.prototype.layoutConnections_ = function (block) {
 /**
  * Block shape. Default implementation throws.
  * Subclasses must override it. Used in renderDraw_.
- * @param {!ezP.Block} block.
+ * @param {!edY.Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.shapePathDef_ = function (block) {
+edY.DelegateSvg.prototype.shapePathDef_ = function (block) {
   goog.asserts.assert(false, 'shapePathDef_ must be overriden by ' + this)
 }
 
 /**
  * Block outline. Default implementation forwards to shapePathDef_.
- * @param {!ezP.Block} block.
+ * @param {!edY.Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.contourPathDef_ = ezP.DelegateSvg.prototype.shapePathDef_
+edY.DelegateSvg.prototype.contourPathDef_ = edY.DelegateSvg.prototype.shapePathDef_
 
 /**
  * Highlighted block outline. Default implementation forwards to shapePathDef_.
- * @param {!ezP.Block} block.
+ * @param {!edY.Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.highlightPathDef_ = ezP.DelegateSvg.prototype.shapePathDef_
+edY.DelegateSvg.prototype.highlightPathDef_ = edY.DelegateSvg.prototype.shapePathDef_
 
 /**
  * Highlighted connection outline.
  * When a block is selected and one of its connection is also selected
  * the ui displays a bold line on the connection. When the block has wrapped input,
  * the selected connection may belong to a wrapped block.
- * @param {!ezP.Block} block.
+ * @param {!edY.Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.connectionPathDef_ = function (block) {
+edY.DelegateSvg.prototype.connectionPathDef_ = function (block) {
   return this.selectedConnection?
     this.highlightConnectionPathDef(block, this.selectedConnection):
     ''
@@ -517,28 +517,28 @@ ezP.DelegateSvg.prototype.connectionPathDef_ = function (block) {
 
 /**
  * Extra disabled block outline. Default implementation return a void string.
- * @param {!ezP.Block} block.
+ * @param {!edY.Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.collapsedPathDef_ = function () {
+edY.DelegateSvg.prototype.collapsedPathDef_ = function () {
   return ''
 }
 
 /**
  * Draw the path of the block.
- * @param {!ezP.Block} block.
+ * @param {!edY.Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.renderDraw_ = function (block) {
+edY.DelegateSvg.prototype.renderDraw_ = function (block) {
   if (this.svgPathInline_) {
     // if the above path does not exist
     // the block is not yet ready for rendering
-    block.height = ezP.Font.lineHeight()
+    block.height = edY.Font.lineHeight()
     var d = this.renderDrawModel_(block)
     this.svgPathInline_.setAttribute('d', d)
     var root = block.getRootBlock()
-    if (root.ezp) {
-      root.ezp.alignRightEdges_(root)
+    if (root.edy) {
+      root.edy.alignRightEdges_(root)
     }
     this.updateAllPaths_(block)
   }
@@ -547,30 +547,30 @@ ezP.DelegateSvg.prototype.renderDraw_ = function (block) {
 /**
  * Align the right edges by changing the size of all the connected statement blocks.
  * The default implementation does nothing.
- * @param {!ezP.Block} block.
+ * @param {!edY.Block} block.
  * @protected
  */
-ezP.DelegateSvg.prototype.alignRightEdges_ = function (block) {
+edY.DelegateSvg.prototype.alignRightEdges_ = function (block) {
   var right = 0
-  var ntor = ezP.StatementBlockEnumerator(block)
+  var ntor = edY.StatementBlockEnumerator(block)
   var b
-  var t = ezP.Font.tabWidth
+  var t = edY.Font.tabWidth
   while ((b = ntor.next())) {
-    if (b.ezp) {
-      if (b.ezp.minWidth) {
-        right = Math.max(right, b.ezp.minWidth + t * ntor.depth())
+    if (b.edy) {
+      if (b.edy.minWidth) {
+        right = Math.max(right, b.edy.minWidth + t * ntor.depth())
       } else {
         return
       }
     }
   }
-  ntor = ezP.StatementBlockEnumerator(block)
+  ntor = edY.StatementBlockEnumerator(block)
   while ((b = ntor.next())) {
-    if (b.ezp) {
+    if (b.edy) {
       var width = right - t * ntor.depth()
       if (b.width !== width) {
         b.width = width
-        b.ezp.updateAllPaths_(b)
+        b.edy.updateAllPaths_(b)
       }
     }
   }
@@ -578,10 +578,10 @@ ezP.DelegateSvg.prototype.alignRightEdges_ = function (block) {
 
 /**
  * Compute the paths of the block depending on its size.
- * @param {!ezP.Block} block.
+ * @param {!edY.Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.updatePath_ = function (block, path, def) {
+edY.DelegateSvg.prototype.updatePath_ = function (block, path, def) {
   if (!!path) {
     if (def) {
       path.setAttribute('d', def.call(this,block))
@@ -593,10 +593,10 @@ ezP.DelegateSvg.prototype.updatePath_ = function (block, path, def) {
 
 /**
  * Compute the paths of the block depending on its size.
- * @param {!ezP.Block} block.
+ * @param {!edY.Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.updateAllPaths_ = function (block) {
+edY.DelegateSvg.prototype.updateAllPaths_ = function (block) {
   if (this.wrapped_) {
     this.updatePath_(block, this.svgPathContour_)
     this.updatePath_(block, this.svgPathShape_)
@@ -617,13 +617,13 @@ ezP.DelegateSvg.prototype.updateAllPaths_ = function (block) {
  * @param {!Blockly.Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.getPaddingLeft = function (block) {
+edY.DelegateSvg.prototype.getPaddingLeft = function (block) {
   if (this.wrapped_) {
     return 0
   } else if (block.outputConnection) {
-    return this.locked_ && block.getSurroundParent()? 0: ezP.Font.space
+    return this.locked_ && block.getSurroundParent()? 0: edY.Font.space
   } else {
-    return ezP.Padding.l()
+    return edY.Padding.l()
   }  
 }
 
@@ -632,13 +632,13 @@ ezP.DelegateSvg.prototype.getPaddingLeft = function (block) {
  * @param {!Blockly.Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.getPaddingRight = function (block) {
+edY.DelegateSvg.prototype.getPaddingRight = function (block) {
   if (this.wrapped_) {
     return 0
   } else if (block.outputConnection) {
-    return this.locked_ && block.getSurroundParent()? 0: ezP.Font.space
+    return this.locked_ && block.getSurroundParent()? 0: edY.Font.space
   } else {
-    return ezP.Padding.r()
+    return edY.Padding.r()
   }  
 }
 
@@ -647,7 +647,7 @@ ezP.DelegateSvg.prototype.getPaddingRight = function (block) {
  * @param {!Blockly.Block} block.
  * @protected
  */
-ezP.DelegateSvg.prototype.minBlockWidth = function (block) {
+edY.DelegateSvg.prototype.minBlockWidth = function (block) {
   return 0
 }
 
@@ -656,7 +656,7 @@ ezP.DelegateSvg.prototype.minBlockWidth = function (block) {
  * @param {!Blockly.Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
+edY.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   /* eslint-disable indent */
   var io = {
     block: block,
@@ -689,7 +689,7 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     do {
       this.renderDrawField_(io)
       ++ io.f
-    } while((io.field = io.field.ezp.nextField))
+    } while((io.field = io.field.edy.nextField))
   }
   if ((io.tile = this.ui.headTile)) {
     do {
@@ -697,8 +697,8 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     } while ((io.tile = io.tile.nextTile))
   } else {
     for (; (io.input = block.inputList[io.i]); io.i++) {
-      goog.asserts.assert(io.input.ezp, 'Input with no ezp '+io.input.name+' in block '+block.type)
-      io.inputDisabled = io.input.ezp.disabled_
+      goog.asserts.assert(io.input.edy, 'Input with no edy '+io.input.name+' in block '+block.type)
+      io.inputDisabled = io.input.edy.disabled_
       if (io.input.isVisible() && !io.inputDisabled) {
         this.renderDrawInput_(io)
       } else {
@@ -732,7 +732,7 @@ ezP.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     do {
       this.renderDrawField_(io)
       io.f
-    } while((io.field = io.field.ezp.nextField))
+    } while((io.field = io.field.edy.nextField))
   }
   // enlarge the width if necessary
   io.cursorX = Math.max(io.cursorX, this.minBlockWidth())
@@ -748,7 +748,7 @@ console.warn('List consolidators for yield expression use 2 differnet inputs wit
  * @param io.
  * @private
  */
-ezP.DelegateSvg.prototype.renderDrawTile_ = function (io) {
+edY.DelegateSvg.prototype.renderDrawTile_ = function (io) {
   var root = io.tile.getSvgRoot()
   goog.asserts.assert(root, 'Tile with no root')
   if (io.tile.isIncog()) {
@@ -762,7 +762,7 @@ ezP.DelegateSvg.prototype.renderDrawTile_ = function (io) {
     if ((io.field = io.tile.fromStartField)) {
       do {
         this.renderDrawField_(io)
-      } while((io.field = io.field.ezp.nextField))
+      } while((io.field = io.field.edy.nextField))
     }
     if ((io.input = io.tile.input)) {
       this.renderDrawInput_(io)
@@ -770,7 +770,7 @@ ezP.DelegateSvg.prototype.renderDrawTile_ = function (io) {
     if ((io.field = io.tile.toEndField)) {
       do {
         this.renderDrawField_(io)
-      } while((io.field = io.field.ezp.nextField))
+      } while((io.field = io.field.edy.nextField))
     }
     io.cursorX += io.offsetX
     io.offsetX = 0
@@ -785,7 +785,7 @@ ezP.DelegateSvg.prototype.renderDrawTile_ = function (io) {
  * @param io.
  * @private
  */
-ezP.DelegateSvg.prototype.renderDrawSharp_ = function (io) {
+edY.DelegateSvg.prototype.renderDrawSharp_ = function (io) {
   goog.asserts.assert(false, 'renderDrawSharp_ must be overriden by ' + io.block.type)
 }
 
@@ -795,7 +795,7 @@ ezP.DelegateSvg.prototype.renderDrawSharp_ = function (io) {
  * @param io.
  * @private
  */
-ezP.DelegateSvg.prototype.renderDrawInput_ = function (io) {
+edY.DelegateSvg.prototype.renderDrawInput_ = function (io) {
   goog.asserts.assert(false, 'renderDrawInput_ must be overriden by ' + this)
 }
 
@@ -805,7 +805,7 @@ ezP.DelegateSvg.prototype.renderDrawInput_ = function (io) {
  * @param io An input/output record.
  * @private
  */
-ezP.DelegateSvg.prototype.renderDrawField_ = function (io) {
+edY.DelegateSvg.prototype.renderDrawField_ = function (io) {
   var root = io.field.getSvgRoot()
   if (root) {
     if (!io.field.isVisible()) {
@@ -813,24 +813,24 @@ ezP.DelegateSvg.prototype.renderDrawField_ = function (io) {
     } else {
       root.removeAttribute('display')
       var text = io.field.getDisplayText_()
-      var ezp = io.field.ezp
+      var edy = io.field.edy
       if (text.length) {
         // if the text is void, it can not change whether
         // the last character was a letter or not
-        if (io.shouldSeparateField && !io.starSymbol && (ezP.XRE.operator.test(text[0]) || text[0] === '.' || ezP.XRE.id_continue.test(text[0]) || ezp.isEditing)) {
+        if (io.shouldSeparateField && !io.starSymbol && (edY.XRE.operator.test(text[0]) || text[0] === '.' || edY.XRE.id_continue.test(text[0]) || edy.isEditing)) {
           // add a separation
-          io.cursorX += ezP.Font.space
+          io.cursorX += edY.Font.space
         }
-        io.shouldSeparateField = ezP.XRE.id_continue.test(text[text.length-1]) || ezP.XRE.operator.test(text[text.length-1]) || text[text.length-1] === ':' || (text[text.length-1] === '.' && !io.field instanceof ezP.FieldTextInput)
+        io.shouldSeparateField = edY.XRE.id_continue.test(text[text.length-1]) || edY.XRE.operator.test(text[text.length-1]) || text[text.length-1] === ':' || (text[text.length-1] === '.' && !io.field instanceof edY.FieldTextInput)
         io.starSymbol = (io.f === 0 && (['*','@', '+', '-', '~'].indexOf(text[text.length-1])>=0))
       }
-      var x_shift = ezp && !io.block.ezp.wrapped_? ezp.x_shift || 0: 0
+      var x_shift = edy && !io.block.edy.wrapped_? edy.x_shift || 0: 0
       root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
-        ', ' + ezP.Padding.t() + ')')
+        ', ' + edY.Padding.t() + ')')
       var size = io.field.getSize()
       io.cursorX += size.width
-      if (ezp.isEditing) {
-        io.cursorX += ezP.Font.space
+      if (edy.isEditing) {
+        io.cursorX += edY.Font.space
       }
     }       
   } else {
@@ -846,11 +846,11 @@ ezP.DelegateSvg.prototype.renderDrawField_ = function (io) {
  * @return the delta of io.cursorX
  * @private
  */
-ezP.DelegateSvg.prototype.renderDrawFields_ = function (io, only_prefix) {
+edY.DelegateSvg.prototype.renderDrawFields_ = function (io, only_prefix) {
   var here = io.cursorX
   io.f = 0
   for (; (io.field = io.input.fieldRow[io.f]); ++io.f) {
-    if (!!only_prefix === !io.field.ezp.suffix) {
+    if (!!only_prefix === !io.field.edy.suffix) {
       this.renderDrawField_(io)
     }
   }
@@ -862,7 +862,7 @@ ezP.DelegateSvg.prototype.renderDrawFields_ = function (io, only_prefix) {
  * @param io An input/output record.
  * @private
  */
-ezP.DelegateSvg.prototype.renderDrawDummyInput_ = function (io) {
+edY.DelegateSvg.prototype.renderDrawDummyInput_ = function (io) {
   if (!io.canDummy || io.input.type !== Blockly.DUMMY_INPUT) {
     return false
   }
@@ -876,7 +876,7 @@ ezP.DelegateSvg.prototype.renderDrawDummyInput_ = function (io) {
  * @param io the input/output argument.
  * @private
  */
-ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
+edY.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   if (!io.canValue || io.input.type !== Blockly.INPUT_VALUE) {
     return false
   }
@@ -889,19 +889,19 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       var root = target.getSvgRoot()
       if (!!root) {
         root.setAttribute('transform', 'translate(' + (io.cursorX + io.offsetX) + ', 0)')
-        if (!target.ezp.skipRendering) {
-          target.ezp.shouldSeparateField = (target.ezp.wrapped_ ||target.ezp.locked_) && io.shouldSeparateField
+        if (!target.edy.skipRendering) {
+          target.edy.shouldSeparateField = (target.edy.wrapped_ ||target.edy.locked_) && io.shouldSeparateField
         }
         target.render()
-        io.shouldSeparateField = (target.ezp.wrapped_ ||target.ezp.locked_) && target.ezp.shouldSeparateField
+        io.shouldSeparateField = (target.edy.wrapped_ ||target.edy.locked_) && target.edy.shouldSeparateField
         var bBox = target.getHeightWidth()
         io.cursorX += bBox.width
       }
     } else if (!this.locked_ && !c8n.hidden_) {
       // locked blocks won't display any placeholder
       // (input with no target)
-      var ezp = c8n.ezp
-      var pw = ezp.s7r_ || ezp.optional_?
+      var edy = c8n.edy
+      var pw = edy.s7r_ || edy.optional_?
       this.carretPathDefWidth_(io.cursorX+io.offsetX):
       this.placeHolderPathDefWidth_(io.cursorX+io.offsetX)
       io.steps.push(pw.d)
@@ -921,15 +921,15 @@ ezP.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
  * @param {goog.size} size.
  * @private
  */
-ezP.DelegateSvg.prototype.valuePathDef_ = function (size) {
+edY.DelegateSvg.prototype.valuePathDef_ = function (size) {
   /* eslint-disable indent */
   // Top edge.
-  var p = ezP.Padding.h()
+  var p = edY.Padding.h()
   var r = (p ** 2 + size.height ** 2 / 4) / 2 / p
-  var dx = (ezP.Font.space - p) / 2
+  var dx = (edY.Font.space - p) / 2
   var a = ' a ' + r + ', ' + r + ' 0 0 1 0,'
-  var h = size.height + 2 * ezP.Margin.V
-  return 'm ' + (size.width - ezP.Font.space + dx) + ',-' + ezP.Margin.V + a +
+  var h = size.height + 2 * edY.Margin.V
+  return 'm ' + (size.width - edY.Font.space + dx) + ',-' + edY.Margin.V + a +
   h + 'H ' + (dx + p) + a + (-h) + ' z'
 } /* eslint-enable indent */
 
@@ -938,15 +938,15 @@ ezP.DelegateSvg.prototype.valuePathDef_ = function (size) {
  * @param {goog.size} size.
  * @private
  */
-ezP.DelegateSvg.prototype.outPathDef_ = function () {
+edY.DelegateSvg.prototype.outPathDef_ = function () {
   /* eslint-disable indent */
   // Top edge.
-  var p = ezP.Padding.h()
-  var r = (p ** 2 + ezP.Font.lineHeight() ** 2 / 4) / 2 / p
-  var dx = (ezP.Font.space - p) / 2
+  var p = edY.Padding.h()
+  var r = (p ** 2 + edY.Font.lineHeight() ** 2 / 4) / 2 / p
+  var dx = (edY.Font.space - p) / 2
   var a = ' a ' + r + ', ' + r + ' 0 0 1 0,'
-  var h = ezP.Font.lineHeight() + 2 * ezP.Margin.V
-  return 'm ' + (dx + p) + ',' + (h - ezP.Margin.V) + a + (-h)
+  var h = edY.Font.lineHeight() + 2 * edY.Margin.V
+  return 'm ' + (dx + p) + ',' + (h - edY.Margin.V) + a + (-h)
 } /* eslint-enable indent */
 
 /**
@@ -955,16 +955,16 @@ ezP.DelegateSvg.prototype.outPathDef_ = function () {
  * @param {Number} x position.
  * @private
  */
-ezP.DelegateSvg.prototype.carretPathDefWidth_ = function (cursorX) {
+edY.DelegateSvg.prototype.carretPathDefWidth_ = function (cursorX) {
   /* eslint-disable indent */
-  var size = {width:ezP.Font.space, height: ezP.Font.lineHeight()}
-  var p = ezP.Padding.h()
+  var size = {width:edY.Font.space, height: edY.Font.lineHeight()}
+  var p = edY.Padding.h()
   var r = (p ** 2 + size.height ** 2 / 4) / 2 / p
-  var dy = ezP.Padding.v() + ezP.Font.descent / 2
+  var dy = edY.Padding.v() + edY.Font.descent / 2
   var a = ' a ' + r + ', ' + r + ' 0 0 1 0,'
-  var h = size.height + 2 * ezP.Margin.V
+  var h = size.height + 2 * edY.Margin.V
   var d = 'M ' + (cursorX + size.width/2) +
-  ',' + (ezP.Margin.V + dy) + a + (h - 2 * dy) + a + (-h + 2 * dy) + ' z'
+  ',' + (edY.Margin.V + dy) + a + (h - 2 * dy) + a + (-h + 2 * dy) + ' z'
   return {width: size.width, d: d}
 } /* eslint-enable indent */
 
@@ -974,16 +974,16 @@ ezP.DelegateSvg.prototype.carretPathDefWidth_ = function (cursorX) {
  * @param {Number} x position.
  * @private
  */
-ezP.DelegateSvg.prototype.placeHolderPathDefWidth_ = function (cursorX) {
+edY.DelegateSvg.prototype.placeHolderPathDefWidth_ = function (cursorX) {
   /* eslint-disable indent */
-  var size = {width: 3 * ezP.Font.space, height: ezP.Font.lineHeight()}
-  var p = ezP.Padding.h()
+  var size = {width: 3 * edY.Font.space, height: edY.Font.lineHeight()}
+  var p = edY.Padding.h()
   var r = (p ** 2 + size.height ** 2 / 4) / 2 / p
-  var dy = ezP.Padding.v() + ezP.Font.descent / 2
+  var dy = edY.Padding.v() + edY.Font.descent / 2
   var a = ' a ' + r + ', ' + r + ' 0 0 1 0,'
-  var h = size.height + 2 * ezP.Margin.V
+  var h = size.height + 2 * edY.Margin.V
   var d = 'M ' + (cursorX + size.width - p) +
-  ',' + (ezP.Margin.V + dy) + a + (h - 2 * dy) +
+  ',' + (edY.Margin.V + dy) + a + (h - 2 * dy) +
   'h -' + (size.width - 2 * p) + a + (-h + 2 * dy) + ' z'
   return {width: size.width, d: d}
 } /* eslint-enable indent */
@@ -992,13 +992,13 @@ ezP.DelegateSvg.prototype.placeHolderPathDefWidth_ = function (cursorX) {
  * @param {!Blockly.Block} block The owner of the delegate.
  * @param {!Blockly.Connection} c8n The connection to highlight.
  */
-ezP.DelegateSvg.prototype.highlightConnectionPathDef = function (block, c8n) {
+edY.DelegateSvg.prototype.highlightConnectionPathDef = function (block, c8n) {
   var steps = ''
   var block = c8n.sourceBlock_
   if (c8n.type === Blockly.INPUT_VALUE) {
     if (c8n.isConnected()) {
       steps = this.valuePathDef_(c8n.targetBlock())
-    } else if (c8n.ezp.s7r_ || c8n.ezp.optional_) {
+    } else if (c8n.edy.s7r_ || c8n.edy.optional_) {
       steps = this.carretPathDefWidth_(c8n.offsetInBlock_.x).d
     } else {
       steps = this.placeHolderPathDefWidth_(c8n.offsetInBlock_.x).d
@@ -1006,18 +1006,18 @@ ezP.DelegateSvg.prototype.highlightConnectionPathDef = function (block, c8n) {
   } else if (c8n.type === Blockly.OUTPUT_VALUE) {
     steps = this.valuePathDef_(block)
   } else {
-    var r = ezP.Style.Path.Selected.width / 2
+    var r = edY.Style.Path.Selected.width / 2
     var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
     if (c8n === block.previousConnection) {
       steps = 'm ' + block.width + ',' + (-r) + a + (2 * r) + ' h ' + (-block.width) + a + (-2 * r) + ' z'
     } else if (c8n === block.nextConnection) {
-      if (block.height > ezP.Font.lineHeight()) { // this is not clean design
-        steps = 'm ' + (ezP.Font.tabWidth+ezP.Style.Path.radius()) + ',' + (block.height-r) + a + (2 * r) + ' h ' + (-ezP.Font.tabWidth-ezP.Style.Path.radius()) + a + (-2 * r) + ' z'
+      if (block.height > edY.Font.lineHeight()) { // this is not clean design
+        steps = 'm ' + (edY.Font.tabWidth+edY.Style.Path.radius()) + ',' + (block.height-r) + a + (2 * r) + ' h ' + (-edY.Font.tabWidth-edY.Style.Path.radius()) + a + (-2 * r) + ' z'
       } else {
         steps = 'm ' + block.width + ',' + (block.height-r) + a + (2 * r) + ' h ' + (-block.width) + a + (-2 * r) + ' z'        
       }
     } else {
-      steps = 'm ' + (block.width) + ',' + (-r+ezP.Font.lineHeight()) + a + (2 * r) + ' h ' + (ezP.Font.tabWidth-block.width) + a + (-2 * r) + ' z'
+      steps = 'm ' + (block.width) + ',' + (-r+edY.Font.lineHeight()) + a + (2 * r) + ' h ' + (edY.Font.tabWidth-block.width) + a + (-2 * r) + ' z'
     }
   }
   return steps
@@ -1026,12 +1026,12 @@ ezP.DelegateSvg.prototype.highlightConnectionPathDef = function (block, c8n) {
 /**
  * @param {!Blockly.Connection} c8n The connection to highlight.
  */
-ezP.DelegateSvg.prototype.highlightConnection = function (block, c8n) {
+edY.DelegateSvg.prototype.highlightConnection = function (block, c8n) {
   var steps
   if (c8n.type === Blockly.INPUT_VALUE) {
     if (c8n.isConnected()) {
       steps = this.valuePathDef_(c8n.targetBlock())
-    } else if (c8n.ezp.s7r_ || c8n.ezp.optional_) {
+    } else if (c8n.edy.s7r_ || c8n.edy.optional_) {
       steps = this.carretPathDefWidth_(0).d
     } else {
       steps = this.placeHolderPathDefWidth_(0).d
@@ -1039,7 +1039,7 @@ ezP.DelegateSvg.prototype.highlightConnection = function (block, c8n) {
   } else if (c8n.type === Blockly.OUTPUT_VALUE) {
     steps = this.valuePathDef_(block)
   } else {
-    var r = ezP.Style.Path.Selected.width / 2
+    var r = edY.Style.Path.Selected.width / 2
     var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
     steps = 'm ' + block.width + ',' + (-r) + a + (2 * r) + ' h ' + (-block.width) + a + (-2 * r) + ' z'
   }
@@ -1059,7 +1059,7 @@ ezP.DelegateSvg.prototype.highlightConnection = function (block, c8n) {
  * @param {string} name The name of the input.
  * @return {Blockly.Input} The input object, or null if input does not exist. Input that are disabled are skipped.
  */
-ezP.DelegateSvg.prototype.getInput = function (block, name) {
+edY.DelegateSvg.prototype.getInput = function (block, name) {
   var e8r = this.inputEnumerator(block)
   while (e8r.next()) {
     if (e8r.here.name === name) {
@@ -1076,11 +1076,11 @@ ezP.DelegateSvg.prototype.getInput = function (block, name) {
  * @param {!Blockly.Block} block The root of the enumeration.
  * @constructor
  */
-ezP.StatementBlockEnumerator = function (block) {
+edY.StatementBlockEnumerator = function (block) {
   var b
   var bs = [block]
   var e8r
-  var e8rs = [block.ezp.inputEnumerator(block)]
+  var e8rs = [block.edy.inputEnumerator(block)]
   var input, next
   var me = {}
   me.next = function () {
@@ -1099,14 +1099,14 @@ ezP.StatementBlockEnumerator = function (block) {
             bs.unshift(b)
             e8rs.unshift(e8r)
             bs.unshift(next)
-            e8rs.unshift(next.ezp.inputEnumerator(next))
+            e8rs.unshift(next.edy.inputEnumerator(next))
             return next
           }
         }
       }
       if ((b = b.getNextBlock())) {
         bs.unshift(b)
-        e8rs.unshift(b.ezp.inputEnumerator(b))
+        e8rs.unshift(b.edy.inputEnumerator(b))
         return b
       }
     }
@@ -1115,8 +1115,8 @@ ezP.StatementBlockEnumerator = function (block) {
   return me
 }
 
-ezP.DelegateSvg.prototype.nextStatementCheck = undefined
-ezP.DelegateSvg.prototype.previousStatementCheck = undefined
+edY.DelegateSvg.prototype.nextStatementCheck = undefined
+edY.DelegateSvg.prototype.previousStatementCheck = undefined
 
 /**
  * The default implementation does nothing.
@@ -1124,8 +1124,8 @@ ezP.DelegateSvg.prototype.previousStatementCheck = undefined
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.makeBlockWrapped = function (block) {
-  ezP.DelegateSvg.superClass_.makeBlockWrapped.call(this, block)
+edY.DelegateSvg.prototype.makeBlockWrapped = function (block) {
+  edY.DelegateSvg.superClass_.makeBlockWrapped.call(this, block)
   goog.asserts.assert(!this.hasSelect(block), 'Deselect block before')
   block.initSvg()
   goog.dom.removeNode(this.svgPathShape_)
@@ -1142,11 +1142,11 @@ ezP.DelegateSvg.prototype.makeBlockWrapped = function (block) {
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.makeBlockUnwrapped = function (block) {
-  ezP.DelegateSvg.superClass_.makeBlockUnwrapped.call(this, block)
-  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {'class': 'ezp-path-contour'}, null)
+edY.DelegateSvg.prototype.makeBlockUnwrapped = function (block) {
+  edY.DelegateSvg.superClass_.makeBlockUnwrapped.call(this, block)
+  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {'class': 'edy-path-contour'}, null)
   goog.dom.insertChildAt(block.svgGroup_, this.svgPathContour_, 0)
-  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {'class': 'ezp-path-shape'}, null)
+  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {'class': 'edy-path-shape'}, null)
   goog.dom.insertChildAt(block.svgGroup_, this.svgPathShape_, 0)
 }
 
@@ -1156,8 +1156,8 @@ ezP.DelegateSvg.prototype.makeBlockUnwrapped = function (block) {
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.hasSelect = function (block) {
-  return goog.dom.classlist.contains(block.svgGroup_, 'ezp-select')
+edY.DelegateSvg.prototype.hasSelect = function (block) {
+  return goog.dom.classlist.contains(block.svgGroup_, 'edy-select')
 }
 
 /**
@@ -1165,10 +1165,10 @@ ezP.DelegateSvg.prototype.hasSelect = function (block) {
  * @param {!Block} block.
  * @private
  */
-ezP.DelegateSvg.prototype.delayedRender = function (block) {
+edY.DelegateSvg.prototype.delayedRender = function (block) {
   if (!goog.isDef(this.delayedRender)) {
     this.delayedRender = setTimeout(function(){
-      delete block.ezp.delayedRender
+      delete block.edy.delayedRender
       if (block.workspace) {
         block.render()
       }
@@ -1185,9 +1185,9 @@ ezP.DelegateSvg.prototype.delayedRender = function (block) {
  * @param {!String} prototypeName.
  * @private
  */
-ezP.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id, initSvg) {
+edY.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id, initSvg) {
   var B = workspace.newBlock(prototypeName, goog.isString(id) && id)
-  B.ezp.completeWrapped_(B)
+  B.edy.completeWrapped_(B)
   if (goog.isBoolean(id) && id || initSvg) {
     B.initSvg()
   }
@@ -1198,7 +1198,7 @@ ezP.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id, initS
  * When setup is finish.
  * @param {!Block} block.
  */
-ezP.DelegateSvg.prototype.beReady = function (block) {
+edY.DelegateSvg.prototype.beReady = function (block) {
   var data = this.data
   for (var k in data) {
     data[k].beReady()
@@ -1225,7 +1225,7 @@ ezP.DelegateSvg.prototype.beReady = function (block) {
  * @param {!String} variant.
  * @private
  */
-ezP.DelegateSvg.prototype.prepareForWorkspace = function (block, workspace, x, y, variant) {
+edY.DelegateSvg.prototype.prepareForWorkspace = function (block, workspace, x, y, variant) {
   
 }
 
@@ -1235,10 +1235,10 @@ ezP.DelegateSvg.prototype.prepareForWorkspace = function (block, workspace, x, y
  * Wrapped blocks will return the parent's answer.
  * @param {!Blockly.Block} block The block.
  */
-ezP.DelegateSvg.prototype.getPythonType = function (block) {
+edY.DelegateSvg.prototype.getPythonType = function (block) {
   if (this.wrapped_) {
     var parent = block.getParent()
-    return parent.ezp.getPythonType(parent)
+    return parent.edy.getPythonType(parent)
   }
   return this.pythonType_
 }
@@ -1252,7 +1252,7 @@ ezP.DelegateSvg.prototype.getPythonType = function (block) {
  * @param {string} prototypeName.
  * @param {string} surroundInputName, which parent's connection to use
  */
-ezP.DelegateSvg.prototype.canInsertParent = function(block, prototypeName, subtype, surroundInputName) {
+edY.DelegateSvg.prototype.canInsertParent = function(block, prototypeName, subtype, surroundInputName) {
   var can = false
   return can
 }
@@ -1269,7 +1269,7 @@ ezP.DelegateSvg.prototype.canInsertParent = function(block, prototypeName, subty
  * @param {string} subtype, for subclassers
  * @return the created block
  */
-ezP.DelegateSvg.prototype.insertParent = function(block, surroundPrototypeName, subtype, surroundInputName) {
+edY.DelegateSvg.prototype.insertParent = function(block, surroundPrototypeName, subtype, surroundInputName) {
   goog.asserts.assert(false, 'Must be subclassed')
 }
 
@@ -1279,20 +1279,20 @@ ezP.DelegateSvg.prototype.insertParent = function(block, surroundPrototypeName, 
  * @param {objet} value value of the block that will fill the hole, a string for an identifier block.
  * @private
  */
-ezP.HoleFiller.getData = function(check, value) {
+edY.HoleFiller.getData = function(check, value) {
   var data
   if (goog.isFunction(value)) {
     data = {
       filler: value,
     }
-  } else if (check.indexOf(ezP.T3.Expr.identifier) >= 0) {
+  } else if (check.indexOf(edY.T3.Expr.identifier) >= 0) {
     if (value) {
       data = {
-        type: ezP.T3.Expr.term,
+        type: edY.T3.Expr.term,
         value: value,
       }
     }
-  } else if(check.length === 1 && ezP.T3.All.core_expressions.indexOf(check[0])>=0) {
+  } else if(check.length === 1 && edY.T3.All.core_expressions.indexOf(check[0])>=0) {
     data = {
       type: check[0],
       value: value,
@@ -1307,14 +1307,14 @@ ezP.HoleFiller.getData = function(check, value) {
  * @param {Array} holes whengiven the is the array to be filled
  * @return an array of conections, holes if given.
  */
-ezP.HoleFiller.getDeepHoles = function(block, holes) {
+edY.HoleFiller.getDeepHoles = function(block, holes) {
   var H = holes || []
   var getDeepHoles = function (c8n) {
-    if (c8n && c8n.type === Blockly.INPUT_VALUE && (!c8n.ezp.disabled_ || c8n.ezp.wrapped_)) {
+    if (c8n && c8n.type === Blockly.INPUT_VALUE && (!c8n.edy.disabled_ || c8n.edy.wrapped_)) {
       var target = c8n.targetBlock()
       if (target) {
-        ezP.HoleFiller.getDeepHoles(target, H)
-      } else if (c8n.ezp.hole_data) {
+        edY.HoleFiller.getDeepHoles(target, H)
+      } else if (c8n.edy.hole_data) {
         H.push(c8n)
       }
     }
@@ -1322,7 +1322,7 @@ ezP.HoleFiller.getDeepHoles = function(block, holes) {
   if (block.getSourceBlock) {
     getDeepHoles(block) 
   } else {
-    var e8r = block.ezp.inputEnumerator(block)
+    var e8r = block.edy.inputEnumerator(block)
     while (e8r.next()) {
       getDeepHoles(e8r.here.connection)
     }
@@ -1337,23 +1337,23 @@ ezP.HoleFiller.getDeepHoles = function(block, holes) {
  * Should not be called directly
  * @param {!Blockly.Block} block to be initialized..
  */
-ezP.HoleFiller.fillDeepHoles = function(workspace, holes) {
+edY.HoleFiller.fillDeepHoles = function(workspace, holes) {
   var i = 0
   for (; i < holes.length; ++i) {
     var c8n = holes[i]
     if (c8n && c8n.type === Blockly.INPUT_VALUE && !c8n.isConnected()) {
-      var data = c8n.ezp.hole_data
+      var data = c8n.edy.hole_data
       if (data) {
         try {
           if (data.filler) {
             var B = data.filler(workspace)
           } else {
-            B = ezP.DelegateSvg.newBlockComplete(workspace, data.type, true)
+            B = edY.DelegateSvg.newBlockComplete(workspace, data.type, true)
             if (data.value) {
-              B.ezp.data.phantom && B.ezp.data.phantom.set(data.value) ||
-              B.ezp.data.value && B.ezp.data.value.set(data.value)
+              B.edy.data.phantom && B.edy.data.phantom.set(data.value) ||
+              B.edy.data.value && B.edy.data.value.set(data.value)
             }
-            B.ezp.beReady(B)
+            B.edy.beReady(B)
           }
           c8n.connect(B.outputConnection)
         } catch(err) {
@@ -1374,7 +1374,7 @@ ezP.HoleFiller.fillDeepHoles = function(workspace, holes) {
  * @return yorn whether a change has been made
  * the MenuItem selected within menu.
  */
-ezP.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
+edY.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
   var input = block.getInput(key)
   var returnState = false
   if (input) {
@@ -1407,7 +1407,7 @@ ezP.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
  * @return {!goog.math.Rect}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
-ezP.DelegateSvg.prototype.getGlobalBoundingRect = function(block) {
+edY.DelegateSvg.prototype.getGlobalBoundingRect = function(block) {
   var R = this.getBoundingRect(block)
   R.scale(block.workspace.scale)
   R.translate(block.workspace.getOriginOffsetInPixels())
@@ -1424,7 +1424,7 @@ ezP.DelegateSvg.prototype.getGlobalBoundingRect = function(block) {
  * @return {!goog.math.Rect}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
-ezP.DelegateSvg.prototype.getBoundingRect = function(block) {
+edY.DelegateSvg.prototype.getBoundingRect = function(block) {
   return goog.math.Rect.createFromPositionAndSize(
     block.getRelativeToSurfaceXY(),
     block.getHeightWidth()
@@ -1441,7 +1441,7 @@ ezP.DelegateSvg.prototype.getBoundingRect = function(block) {
  * @return {!goog.math.Box}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
-ezP.DelegateSvg.prototype.getBoundingBox = function(block) {
+edY.DelegateSvg.prototype.getBoundingBox = function(block) {
   return this.getBoundingRect(block).toBox()
 }
 
@@ -1452,10 +1452,10 @@ ezP.DelegateSvg.prototype.getBoundingBox = function(block) {
  * @param {function} distance is a function.
  * @return None
  */
-ezP.DelegateSvg.getBestBlock = function (workspace, weight) {
+edY.DelegateSvg.getBestBlock = function (workspace, weight) {
   var smallest = Infinity, best
   for (var i = 0, top; (top = workspace.topBlocks_[i++]);) {
-    var box = top.ezp.getBoundingRect(top)
+    var box = top.edy.getBoundingRect(top)
     var w = weight(box.getCenter())
     if (w < smallest) {
       smallest = w
@@ -1472,18 +1472,18 @@ ezP.DelegateSvg.getBestBlock = function (workspace, weight) {
  * @param {function} distance is a function.
  * @return None
  */
-ezP.DelegateSvg.prototype.getBestBlock = function (block, distance) {
+edY.DelegateSvg.prototype.getBestBlock = function (block, distance) {
   const a = this.getBoundingBox(block)
   var smallest = {}, best
   for (var i = 0, top; (top = block.workspace.topBlocks_[i++]);) {
     if (top === block) {
       continue
     }
-    var b = top.ezp.getBoundingBox(top)
+    var b = top.edy.getBoundingBox(top)
     var target = top
     var c8n
     while ((c8n = target.nextConnection) && (target = c8n.targetBlock())) {
-      b.expandToInclude(target.ezp.getBoundingBox(target))
+      b.expandToInclude(target.edy.getBoundingBox(target))
     }
     var d = distance(a, b)
     if (d.major && (!smallest.major || d.major < smallest.major)) {
@@ -1503,20 +1503,20 @@ ezP.DelegateSvg.prototype.getBestBlock = function (block, distance) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return None
  */
-ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
+edY.DelegateSvg.prototype.selectBlockLeft = function (block) {
   var target = this.selectedConnectionSource_
   if (target && target !== block) {
-    target.ezp.selectBlockLeft(target)
+    target.edy.selectBlockLeft(target)
     return
   }
   var doLast = function(B) {
-    var e8r = B.ezp.inputEnumerator(B)
+    var e8r = B.edy.inputEnumerator(B)
     e8r.end()
     while (e8r.previous()) {
       var c8n = e8r.here.connection
-      if (c8n && (!c8n.hidden_ || c8n.ezp.wrapped_) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+      if (c8n && (!c8n.hidden_ || c8n.edy.wrapped_) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
         var target = c8n.targetBlock()
-        if (!target || (!target.ezp.wrapped_ && !target.ezp.locked_) || (c8n = doLast(target))) {
+        if (!target || (!target.edy.wrapped_ && !target.edy.locked_) || (c8n = doLast(target))) {
           return c8n
         }
       }
@@ -1529,17 +1529,17 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
     if (!target) {
       return false
     }
-    if (!target.ezp.wrapped_ && !target.ezp.locked_) {
-      ezP.SelectedConnection.set(null)
+    if (!target.edy.wrapped_ && !target.edy.locked_) {
+      edY.SelectedConnection.set(null)
       target.select()
       return true
     }
     if ((c8n = doLast(target))) {
       if ((target = c8n.targetBlock())) {
-        ezP.SelectedConnection.set(null)
+        edY.SelectedConnection.set(null)
         target.select()
       } else {
-        ezP.SelectedConnection.set(c8n)
+        edY.SelectedConnection.set(c8n)
       }
       return true
     }
@@ -1552,25 +1552,25 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
     // do not select a connection
     // if there is no unwrapped surround parent
     var parent = B
-    while (parent.ezp.wrapped_ || parent.ezp.locked_) {
+    while (parent.edy.wrapped_ || parent.edy.locked_) {
       if (!(parent = parent.getSurroundParent())) {
         return false
       }
     }
-    ezP.SelectedConnection.set(c8n)
+    edY.SelectedConnection.set(c8n)
     return true
   }
   if ((c8n = this.selectedConnection)) {
     if (c8n === block.nextStatement) {
     } else if (c8n.type !== Blockly.NEXT_STATEMENT) {
       // select the previous non statement input if any
-      var e8r = block.ezp.inputEnumerator(block)
+      var e8r = block.edy.inputEnumerator(block)
       while (e8r.next()) {
         if (e8r.here.connection && c8n === e8r.here.connection) {
           // found it, step down
           e8r.previous()
           while (e8r.previous()) {
-            if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.ezp.wrapped_) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+            if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.edy.wrapped_) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
               if (selectConnection(block)) {
                 return true
               }
@@ -1585,7 +1585,7 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
           // found it, step down
           e8r.previous()
           while (e8r.previous()) {
-            if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.ezp.wrapped_) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+            if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.edy.wrapped_) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
               if (selectConnection(block)) {
                 return true
               }
@@ -1594,21 +1594,21 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
           break
         }
       }
-    } else if (!block.ezp.wrapped_ && !block.ezp.locked_) {
-      ezP.SelectedConnection.set(null)
+    } else if (!block.edy.wrapped_ && !block.edy.locked_) {
+      edY.SelectedConnection.set(null)
       block.select()
       return true
     }
   }
   if ((parent = block.getSurroundParent())) {
     // select the previous non statement input if any
-    var e8r = parent.ezp.inputEnumerator(parent)
+    var e8r = parent.edy.inputEnumerator(parent)
     while (e8r.next()) {
-      if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.ezp.wrapped_) && block === c8n.targetBlock()) {
+      if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.edy.wrapped_) && block === c8n.targetBlock()) {
         // found it, step down
         e8r.previous()
         while (e8r.previous()) {
-          if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.ezp.wrapped_) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+          if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.edy.wrapped_) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
             if (selectConnection(c8n)) {
               return true
             }
@@ -1618,8 +1618,8 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
       }
     }
     do {
-      if (!parent.ezp.wrapped_ && !parent.ezp.locked_) {
-        ezP.SelectedConnection.set(null)
+      if (!parent.edy.wrapped_ && !parent.edy.locked_) {
+        edY.SelectedConnection.set(null)
         parent.select()
         return true
       }
@@ -1629,7 +1629,7 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
   do {
     parent = target
   } while ((target = parent.getSurroundParent()))
-  target = parent.ezp.getBestBlock(parent, function(a, b) {
+  target = parent.edy.getBestBlock(parent, function(a, b) {
     if (a.left <= b.left) {
       return {}
     }
@@ -1657,18 +1657,18 @@ ezP.DelegateSvg.prototype.selectBlockLeft = function (block) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return yorn
  */
-ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
+edY.DelegateSvg.prototype.selectBlockRight = function (block) {
   var target = this.selectedConnectionSource_
   if (target && target !== block) {
-    return target.ezp.selectBlockRight(target)
+    return target.edy.selectBlockRight(target)
   }
   var parent, input, c8n
   var selectTarget = function() {
     if (target = c8n.targetBlock()) {
-      if (target.ezp.wrapped_ || target.ezp.locked_) {
-        return target.ezp.selectBlockRight(target)
+      if (target.edy.wrapped_ || target.edy.locked_) {
+        return target.edy.selectBlockRight(target)
       } else {
-        ezP.SelectedConnection.set(null)
+        edY.SelectedConnection.set(null)
         target.select()
         return true
       }
@@ -1676,17 +1676,17 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
     return false
   }
   var selectConnection = function() {
-    if (c8n.hidden_ && !c8n.ezp.wrapped_) {
+    if (c8n.hidden_ && !c8n.edy.wrapped_) {
       return false
     }
     if (!selectTarget()) {
       parent = block
-      while (parent.ezp.wrapped_ || parent.ezp.locked_) {
+      while (parent.edy.wrapped_ || parent.edy.locked_) {
         if (!(parent = parent.getSurroundParent())) {
           return false
         }
       }
-      ezP.SelectedConnection.set(c8n)
+      edY.SelectedConnection.set(c8n)
     }
     return true
   }
@@ -1694,7 +1694,7 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
     if (c8n.type === Blockly.NEXT_STATEMENT) {
       if (c8n === block.nextConnection) {
         // select the target block (if any) when the nextConnection is in horizontal mode
-        if (c8n.ezp.isAtRight) {
+        if (c8n.edy.isAtRight) {
           if (selectTarget()) {
             return true
           }
@@ -1708,7 +1708,7 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
     } else {
       // select the connection following `this.selectedConnection`
       // which not a NEXT_STATEMENT one, if any
-      var e8r = block.ezp.inputEnumerator(block)
+      var e8r = block.edy.inputEnumerator(block)
       while (e8r.next()) {
         if (e8r.here.connection && c8n === e8r.here.connection) {
           // found it
@@ -1734,7 +1734,7 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
     }
   } else {
     // select the first non statement connection
-    var e8r = block.ezp.inputEnumerator(block)
+    var e8r = block.edy.inputEnumerator(block)
     while (e8r.next()) {
       if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
         if (selectConnection()) {
@@ -1758,7 +1758,7 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
     // only when a value input is connected to the block
     target = block
     while ((parent = target.getSurroundParent())) {
-      var e8r = parent.ezp.inputEnumerator(parent)
+      var e8r = parent.edy.inputEnumerator(parent)
       while (e8r.next()) {
         if ((c8n = e8r.here.connection) && (target === c8n.targetBlock())) {
           if (c8n.type === Blockly.NEXT_STATEMENT) {
@@ -1789,10 +1789,10 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
     }
     target = block
     while ((parent = target.getSurroundParent())) {
-      var e8r = parent.ezp.inputEnumerator(parent)
+      var e8r = parent.edy.inputEnumerator(parent)
       while (e8r.next()) {
         if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT) && (target = c8n.targetBlock()) && (target !== block)) {
-          ezP.SelectedConnection.set(null)
+          edY.SelectedConnection.set(null)
           target.select()
           return true
         }
@@ -1805,7 +1805,7 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
   do {
     parent = target
   } while ((target = parent.getSurroundParent()))
-  target = parent.ezp.getBestBlock(parent, function(a, b) {
+  target = parent.edy.getBestBlock(parent, function(a, b) {
     if (a.right >= b.right) {
       return {}
     }
@@ -1822,7 +1822,7 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
     }
   })
   if (target) {
-    ezP.SelectedConnection.set(null)
+    edY.SelectedConnection.set(null)
     target.select()
     return true
   }
@@ -1834,28 +1834,28 @@ ezP.DelegateSvg.prototype.selectBlockRight = function (block) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return None
  */
-ezP.DelegateSvg.prototype.selectBlockAbove = function (block) {
+edY.DelegateSvg.prototype.selectBlockAbove = function (block) {
   var target = this.selectedConnectionSource_
   if (target && target !== block) {
-    target.ezp.selectBlockAbove(target)
+    target.edy.selectBlockAbove(target)
     return
   }
   var c8n
   if ((c8n = this.selectedConnection)) {
     if (c8n === block.previousConnection) {
       if ((target = c8n.targetBlock())) {
-        ezP.SelectedConnection.set(null)
+        edY.SelectedConnection.set(null)
         target.select()
         return
       }
     } else {
-      ezP.SelectedConnection.set(null)
+      edY.SelectedConnection.set(null)
       block.select()
       return
     }
   } else if ((c8n = block.previousConnection)) {
     block.select()
-    ezP.SelectedConnection.set(block.previousConnection)
+    edY.SelectedConnection.set(block.previousConnection)
     return
   }
   var parent
@@ -1867,7 +1867,7 @@ ezP.DelegateSvg.prototype.selectBlockAbove = function (block) {
       return
     }
   } while ((target = parent.getParent()))
-  target = parent.ezp.getBestBlock(parent, function(a, b) {
+  target = parent.edy.getBestBlock(parent, function(a, b) {
     if (a.top <= b.top) {
       return {}
     }
@@ -1894,32 +1894,32 @@ ezP.DelegateSvg.prototype.selectBlockAbove = function (block) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return None
  */
-ezP.DelegateSvg.prototype.selectBlockBelow = function (block) {
+edY.DelegateSvg.prototype.selectBlockBelow = function (block) {
   var target = this.selectedConnectionSource_
   if (target && target !== block) {
-    target.ezp.selectBlockBelow(target)
+    target.edy.selectBlockBelow(target)
     return
   }
   var parent, c8n
   if ((c8n = this.selectedConnection)) {
     if (c8n === block.previousConnection) {
-      ezP.SelectedConnection.set(null)
+      edY.SelectedConnection.set(null)
       block.select()
       return
     } else if (c8n === block.nextConnection) {
       if ((target = c8n.targetBlock())) {
-        ezP.SelectedConnection.set(null)
+        edY.SelectedConnection.set(null)
         target.select()
         return
       }
     } else if (block.nextConnection) {
       block.select()
-      ezP.SelectedConnection.set(block.nextConnection)
+      edY.SelectedConnection.set(block.nextConnection)
       return
     }
   } else if (block.nextConnection) {
     block.select()
-    ezP.SelectedConnection.set(block.nextConnection)
+    edY.SelectedConnection.set(block.nextConnection)
     return
   }
   target = block
@@ -1931,7 +1931,7 @@ ezP.DelegateSvg.prototype.selectBlockBelow = function (block) {
     }
   } while ((target = parent.getSurroundParent()))
 
-  target = parent.ezp.getBestBlock(parent, function(a, b) {
+  target = parent.edy.getBestBlock(parent, function(a, b) {
     if (a.bottom >= b.bottom) {
       return {}
     }
@@ -1961,28 +1961,28 @@ ezP.DelegateSvg.prototype.selectBlockBelow = function (block) {
  * @param {Object} e in general a mouse down event
  * @return None
  */
-ezP.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
+edY.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
   var where = new goog.math.Coordinate(e.clientX, e.clientY)
   where = goog.math.Coordinate.difference(where, block.workspace.getOriginOffsetInPixels())
   where.scale(1/block.workspace.scale)
   var rect = this.getBoundingRect(block)
   where = goog.math.Coordinate.difference(where, rect.getTopLeft())
-  var e8r = block.ezp.inputEnumerator(block)
+  var e8r = block.edy.inputEnumerator(block)
   while (e8r.next()) {
     var c8n = e8r.here.connection
-    if (c8n && (!c8n.hidden_ || c8n.ezp.wrapped_)) {
+    if (c8n && (!c8n.hidden_ || c8n.edy.wrapped_)) {
       if (c8n.type === Blockly.INPUT_VALUE) {
         var target = c8n.targetBlock()
         if (target) {
-          if ((c8n = target.ezp.getConnectionForEvent(target, e))) {
+          if ((c8n = target.edy.getConnectionForEvent(target, e))) {
             return c8n
           }
         } else {
           var R = new goog.math.Rect(
-            c8n.offsetInBlock_.x - ezP.Font.space/2,
-            c8n.offsetInBlock_.y + ezP.Font.space/2,
-            c8n.ezp.optional_ || c8n.ezp.s7r_? 2*ezP.Font.space: 4*ezP.Font.space,
-            ezP.Font.lineHeight() - ezP.Font.space,        
+            c8n.offsetInBlock_.x - edY.Font.space/2,
+            c8n.offsetInBlock_.y + edY.Font.space/2,
+            c8n.edy.optional_ || c8n.edy.s7r_? 2*edY.Font.space: 4*edY.Font.space,
+            edY.Font.lineHeight() - edY.Font.space,        
           )
           if (R.contains(where)) {
             return c8n
@@ -1991,9 +1991,9 @@ ezP.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
       } else if (c8n.type === Blockly.NEXT_STATEMENT) {
         var R = new goog.math.Rect(
           c8n.offsetInBlock_.x,
-          c8n.offsetInBlock_.y - ezP.Font.space/2,
-          ezP.Font.tabWidth,
-          ezP.Font.space,        
+          c8n.offsetInBlock_.y - edY.Font.space/2,
+          edY.Font.tabWidth,
+          edY.Font.space,        
         )
         if (R.contains(where)) {
           return c8n
@@ -2006,26 +2006,26 @@ ezP.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
       c8n.offsetInBlock_.x,
       c8n.offsetInBlock_.y,
       rect.width,
-      ezP.Font.space/2,        
+      edY.Font.space/2,        
     )
     if (R.contains(where)) {
       return c8n
     }  
   }
   if ((c8n = block.nextConnection) && !c8n.hidden) {
-    if (rect.height > ezP.Font.lineHeight()) {// Not the cleanest design
+    if (rect.height > edY.Font.lineHeight()) {// Not the cleanest design
       var R = new goog.math.Rect(
         c8n.offsetInBlock_.x,
-        c8n.offsetInBlock_.y - ezP.Font.space/2,
-        ezP.Font.tabWidth + ezP.Style.Path.radius(),// R U sure?
-        ezP.Font.space/2,        
+        c8n.offsetInBlock_.y - edY.Font.space/2,
+        edY.Font.tabWidth + edY.Style.Path.radius(),// R U sure?
+        edY.Font.space/2,        
       )  
     } else {
       var R = new goog.math.Rect(
         c8n.offsetInBlock_.x,
-        c8n.offsetInBlock_.y - ezP.Font.space/2,
+        c8n.offsetInBlock_.y - edY.Font.space/2,
         rect.width,
-        ezP.Font.space/2,        
+        edY.Font.space/2,        
       )  
     }
     if (R.contains(where)) {
@@ -2040,7 +2040,7 @@ ezP.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
  * Then, the higlighted path of the source blocks is not the outline of the block
  * but the shape of the connection as it shows when blocks are moved close enough.
  */
-ezP.SelectedConnection = function() {
+edY.SelectedConnection = function() {
   var c8n_
   var me = {
     /**
@@ -2054,14 +2054,14 @@ ezP.SelectedConnection = function() {
       if (connection) {
         var block = connection.getSourceBlock()
         if (block) {
-          if (block.ezp.locked_) {
+          if (block.edy.locked_) {
             return
           }
           if (connection === block.previousConnection && connection.targetConnection) {
             connection = connection.targetConnection
             var unwrapped = block = connection.getSourceBlock()
             do {
-              if (!unwrapped.ezp.wrapped_) {
+              if (!unwrapped.edy.wrapped_) {
                 unwrapped.select()
                 unwrapped.bringToFront()
                 break
@@ -2074,14 +2074,14 @@ ezP.SelectedConnection = function() {
         if (c8n_) {
           var oldBlock = c8n_.getSourceBlock()
           if (oldBlock) {
-            oldBlock.ezp.selectedConnection = null
-            oldBlock.ezp.selectedConnectionSource_ = null
+            oldBlock.edy.selectedConnection = null
+            oldBlock.edy.selectedConnectionSource_ = null
             oldBlock.removeSelect()
             if (oldBlock === Blockly.selected) {
-              oldBlock.ezp.updateAllPaths_(oldBlock)
+              oldBlock.edy.updateAllPaths_(oldBlock)
               oldBlock.addSelect()
             } else if ((B = Blockly.selected)) {
-              B.ezp.selectedConnectionSource_ = null
+              B.edy.selectedConnectionSource_ = null
               B.removeSelect()
               B.addSelect()
             }
@@ -2092,16 +2092,16 @@ ezP.SelectedConnection = function() {
           var block = connection.getSourceBlock()
           if (block) {
             var unwrapped = block
-            while (unwrapped.ezp.wrapped_) {
+            while (unwrapped.edy.wrapped_) {
               if (!(unwrapped = unwrapped.getSurroundParent())) {
                 return
               }
             }
-            block.ezp.selectedConnection = c8n_ = connection
-            unwrapped.ezp.selectedConnectionSource_ = block
+            block.edy.selectedConnection = c8n_ = connection
+            unwrapped.edy.selectedConnectionSource_ = block
             unwrapped.select()
             block.removeSelect()
-            block.ezp.updateAllPaths_(block)
+            block.edy.updateAllPaths_(block)
             block.addSelect()
           }
         }
@@ -2119,7 +2119,7 @@ ezP.SelectedConnection = function() {
  * @param {string} subtype the subtype of the block to insert.
  * @return the block that was inserted
  */
-ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) {
+edY.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) {
   if (!action) {
     return null
   }
@@ -2128,13 +2128,13 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
   // create a block out of the undo mechanism
   Blockly.Events.disable()
   try {
-    var candidate = ezP.DelegateSvg.newBlockComplete(block.workspace, prototypeName, true)
+    var candidate = edY.DelegateSvg.newBlockComplete(block.workspace, prototypeName, true)
     if (!candidate) {
       disabler.stop()
       return
     }
     var c8n_N = action.subtype || subtype
-    if (candidate.ezp.data.subtype.set(c8n_N)) {
+    if (candidate.edy.data.subtype.set(c8n_N)) {
       c8n_N = undefined
     }
     var c8n, otherC8n, foundC8n
@@ -2148,7 +2148,7 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
         candidate.render()
         prepare && prepare()
         otherC8n.connect(c8n)
-        candidate.ezp.beReady(candidate)
+        candidate.edy.beReady(candidate)
         candidate.select()
         candidate.bumpNeighbours_()
       } finally {
@@ -2156,7 +2156,7 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
       }
       return candidate
     }
-    if ((otherC8n = ezP.SelectedConnection.get())) {
+    if ((otherC8n = edY.SelectedConnection.get())) {
       var otherSource = otherC8n.getSourceBlock()
       if (otherC8n.type === Blockly.INPUT_VALUE) {
         if ((c8n = candidate.outputConnection)&& c8n.checkType_(otherC8n)) {
@@ -2198,7 +2198,7 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
       // try to find a free connection in a block
       // When not undefined, the returned connection can connect to c8n.
       var findC8n = function(block) {
-        var e8r = block.ezp.inputEnumerator(block)
+        var e8r = block.edy.inputEnumerator(block)
         var otherC8n, foundC8n, target
         while (e8r.next()) {
           if ((foundC8n = e8r.here.connection) && foundC8n.type === Blockly.INPUT_VALUE) {
@@ -2209,7 +2209,7 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
             } else if (!c8n.checkType_(foundC8n)) {
               continue
             }
-            if (!foundC8n.ezp.s7r_ && (!c8n_N || foundC8n.ezp.name_ === c8n_N)) {
+            if (!foundC8n.edy.s7r_ && (!c8n_N || foundC8n.edy.name_ === c8n_N)) {
               // we have found a connection
               // which s not a separator and
               // with the expected name
@@ -2219,7 +2219,7 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
             // then remember this connection and continue the loop
             // We remember the last separator connection
             // of the first which is not a separator
-            if (!otherC8n || otherC8n.ezp.s7r_) {
+            if (!otherC8n || otherC8n.edy.s7r_) {
               otherC8n = foundC8n
             }
           }
@@ -2278,19 +2278,19 @@ ezP.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return boolean
  */
-ezP.DelegateSvg.prototype.canLock = function (block) {
+edY.DelegateSvg.prototype.canLock = function (block) {
   if (this.locked_) {
     return true
   }
   // list all the input for a non optional connection with no target
-  var e8r = block.ezp.inputEnumerator(block), c8n, target
+  var e8r = block.edy.inputEnumerator(block), c8n, target
   while (e8r.next()) {
     if ((c8n = e8r.here.connection)) {
       if ((target = c8n.targetBlock())) {
-        if (!target.ezp.canLock(target)) {
+        if (!target.edy.canLock(target)) {
           return false
         }
-      } else if (!c8n.ezp.optional_ && !c8n.ezp.s7r_) {
+      } else if (!c8n.edy.optional_ && !c8n.edy.s7r_) {
         return false
       }
     }
@@ -2303,16 +2303,16 @@ ezP.DelegateSvg.prototype.canLock = function (block) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return boolean, true only if there is something to unlock
  */
-ezP.DelegateSvg.prototype.canUnlock = function (block) {
+edY.DelegateSvg.prototype.canUnlock = function (block) {
   if (this.locked_) {
     return true
   }
   // list all the input for a non optional connection with no target
-  var e8r = block.ezp.inputEnumerator(block), c8n, target
+  var e8r = block.edy.inputEnumerator(block), c8n, target
   while (e8r.next()) {
     if ((c8n = e8r.here.connection)) {
       if ((target = c8n.targetBlock())) {
-        if (target.ezp.canUnlock(target)) {
+        if (target.edy.canUnlock(target)) {
           return true
         }
       }
@@ -2327,28 +2327,28 @@ ezP.DelegateSvg.prototype.canUnlock = function (block) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return the number of block locked
  */
-ezP.DelegateSvg.prototype.lock = function (block) {
+edY.DelegateSvg.prototype.lock = function (block) {
   var ans = 0
-  if (this.locked_ || !block.ezp.canLock(block)) {
+  if (this.locked_ || !block.edy.canLock(block)) {
     return ans
   }
   if (Blockly.Events.isEnabled()) {
     Blockly.Events.fire(new Blockly.Events.BlockChange(
-    block, ezP.Const.Event.locked, null, this.locked_, true))
+    block, edY.Const.Event.locked, null, this.locked_, true))
   }
   this.locked_ = true
-  if (block === ezP.SelectedConnection.set)
-  ezP.SelectedConnection.set(null)
+  if (block === edY.SelectedConnection.set)
+  edY.SelectedConnection.set(null)
   // list all the input for connections with a target
   var c8n
-  if ((c8n = ezP.SelectedConnection.get()) && (block === c8n.getSourceBlock())) {
-    ezP.SelectedConnection.set(null)
+  if ((c8n = edY.SelectedConnection.get()) && (block === c8n.getSourceBlock())) {
+    edY.SelectedConnection.set(null)
   }
-  var e8r = block.ezp.inputEnumerator(block), otherC8n, foundC8n, target
+  var e8r = block.edy.inputEnumerator(block), otherC8n, foundC8n, target
   while (e8r.next()) {
     if ((c8n = e8r.here.connection)) {
       if ((target = c8n.targetBlock())) {
-        ans += target.ezp.lock(target)
+        ans += target.edy.lock(target)
       }
       if (c8n.type === Blockly.INPUT_VALUE) {
         c8n.setHidden(true)
@@ -2357,13 +2357,13 @@ ezP.DelegateSvg.prototype.lock = function (block) {
   }
   if ((c8n = block.nextConnection)) {
     if ((target = c8n.targetBlock())) {
-      ans += target.ezp.lock(target)
+      ans += target.edy.lock(target)
     }
   }
   if (block === Blockly.selected) {
     var parent = block
     while ((parent = parent.getSurroundParent())) {
-      if (!parent.ezp.wrapped_ && ! parent.ezp.locked_) {
+      if (!parent.edy.wrapped_ && ! parent.edy.locked_) {
         parent.select()
         break
       }
@@ -2379,26 +2379,26 @@ ezP.DelegateSvg.prototype.lock = function (block) {
  * @param {boolean} deep Whether to unlock statements too.
  * @return the number of block locked
  */
-ezP.DelegateSvg.prototype.unlock = function (block, shallow) {
+edY.DelegateSvg.prototype.unlock = function (block, shallow) {
   var ans = 0
   if (Blockly.Events.isEnabled()) {
     Blockly.Events.fire(new Blockly.Events.BlockChange(
-    block, ezP.Const.Event.locked, null, this.locked_, false))
+    block, edY.Const.Event.locked, null, this.locked_, false))
   }
   this.locked_ = false
   // list all the input for connections with a target
-  var e8r = block.ezp.inputEnumerator(block), c8n, target
+  var e8r = block.edy.inputEnumerator(block), c8n, target
   while (e8r.next()) {
     if ((c8n = e8r.here.connection)) {
       if ((!shallow || c8n.type === Blockly.INPUT_VALUE) && (target = c8n.targetBlock())) {
-        ans += target.ezp.unlock(target, shallow)
+        ans += target.edy.unlock(target, shallow)
       }
       c8n.setHidden(false)
     }
   }
   if (!shallow && (c8n = block.nextConnection)) {
     if ((target = c8n.targetBlock())) {
-      ans += target.ezp.unlock(target)
+      ans += target.edy.unlock(target)
     }
   }
   (block.getSurroundParent()||block).render()

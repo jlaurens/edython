@@ -12,20 +12,20 @@
 'use strict'
 
 /**
- * @name ezP.Const
+ * @name edY.Const
  * @namespace
  **/
-goog.provide('ezP.Const')
-goog.provide('ezP.ID')
+goog.provide('edY.Const')
+goog.provide('edY.ID')
 
-goog.require('ezP')
+goog.require('edY')
 
-ezP.Const = {
+edY.Const = {
   ABOVE: 'ABOVE',// not for block definition
   BELOW: 'BELOW',
 }
 
-ezP.Const.Field = {
+edY.Const.Field = {
   // IN PROGRESS
   VAR: 'VAR',
   STARS: 'STARS',
@@ -42,8 +42,8 @@ ezP.Const.Field = {
   NCSTR: 'NCSTR'
 }
 
-console.warn('avoid ezP.Key.LIST: not enough discriminating')
-ezP.Key = {  
+console.warn('avoid edY.Key.LIST: not enough discriminating')
+edY.Key = {  
   TERM: 'term',// this MUST be in lower case
   TARGET: 'target',
   ASSIGNED: 'assigned',
@@ -160,7 +160,7 @@ ezP.Key = {
 
 XRegExp.install('astral')// python supports astral
 
-ezP.XRE = {
+edY.XRE = {
   integer:/^-?(?:(([1-9][0-9]*)|(0+))|(0(?:o|O)[0-7]+)|(0(?:x|X)[0-9a-fA-F]+)|(0(?:b|B)[01]+))$/,// group 1: decinteger, 2: octinteger, 3: hexinteger, 4: bininteger
   integer: XRegExp(
     `^(?<sign>-)?(?:
@@ -269,7 +269,7 @@ ezP.XRE = {
   )$`, 'x'),
   id_wrapped: XRegExp(`^(?<id>.*?)\\.wrapped:(?<name>[a-zA-Z_][a-zA-Z_0-9]*)$`, 'x'),
   s3d: XRegExp(`^(?<core>.*?)_s3d$`),
-  event_data: XRegExp(`^ezp:data:(?<key>.*?)$`),
+  event_data: XRegExp(`^edy:data:(?<key>.*?)$`),
   operator: XRegExp(`^[+\\-/%*@<>&^|=#]$`),
   comment: XRegExp(`^(?<value>[^\\r\\n]*)`),
 }
@@ -339,17 +339,17 @@ goog.asserts.assert('0e+0'.match(RE.exponentfloat), 'FAILURE')
 goog.asserts.assert('0e-0'.match(RE.exponentfloat), 'FAILURE')
 */
 
-ezP.Const.Event = {
-  DATA: 'ezp:data:',
-  property: 'ezp:property',
-  locked: 'ezp:locked',
-  asynced: 'ezp:asynced',
+edY.Const.Event = {
+  DATA: 'edy:data:',
+  property: 'edy:property',
+  locked: 'edy:locked',
+  asynced: 'edy:asynced',
 }
 
-ezP.XmlKey = {
-  INPUT: 'ezp:input', // attribute name
-  LIST: 'ezp:list',
-  FLOW: 'ezp:flow',
-  SUITE: 'ezp:suite',
-  NEXT: 'ezp:next',
+edY.XmlKey = {
+  INPUT: 'edy:input', // attribute name
+  LIST: 'edy:list',
+  FLOW: 'edy:flow',
+  SUITE: 'edy:suite',
+  NEXT: 'edy:next',
 }

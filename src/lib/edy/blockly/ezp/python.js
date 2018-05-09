@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('ezP.Python')
+goog.provide('edY.Python')
 
-goog.require('ezP')
+goog.require('edY')
 
 /*
  * List of all the python keywords as given by
@@ -23,7 +23,7 @@ goog.require('ezP')
  * @author{Jérôme LAURENS}
  *
  */
-ezP.Python.KWs = [[], [],
+edY.Python.KWs = [[], [],
   ['as', 'if', 'in', 'is', 'or'],
   ['and', 'def', 'del', 'for', 'not', 'try'],
   ['None', 'True', 'elif', 'else', 'from', 'pass', 'with'],
@@ -36,12 +36,12 @@ ezP.Python.KWs = [[], [],
  * Whereas a string is a python keyword.
  * @param {string} type The type of the connection.
  */
-ezP.Python.isKeyword = function (s) {
-  var KWs = ezP.Python.KWs[s.length]
+edY.Python.isKeyword = function (s) {
+  var KWs = edY.Python.KWs[s.length]
   return KWs && KWs.indexOf(s) >= 0
 }
 
-goog.require('ezP.Delegate')
+goog.require('edY.Delegate')
 
 /**
  * Convert the block to python code.
@@ -49,11 +49,11 @@ goog.require('ezP.Delegate')
  * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
  * @constructor
  */
-ezP.Delegate.prototype.toPython = function (block) {
+edY.Delegate.prototype.toPython = function (block) {
   goog.asserts.assert(false, 'Missing toPython implementation for '+block.type)
 }
 
-goog.require('ezP.DelegateSvg')
+goog.require('edY.DelegateSvg')
 
 /**
  * Convert the block to python code.
@@ -61,7 +61,7 @@ goog.require('ezP.DelegateSvg')
  * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
  * @return some python code
  */
-ezP.DelegateSvg.prototype.toPythonExpression = function (block) {
+edY.DelegateSvg.prototype.toPythonExpression = function (block) {
   var components = []
   this.toPythonExpressionComponents(block, components)
   return components.join('')
@@ -74,7 +74,7 @@ ezP.DelegateSvg.prototype.toPythonExpression = function (block) {
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return the last element of components
  */
-ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, components) {
+edY.DelegateSvg.prototype.toPythonExpressionComponents = function (block, components) {
   var last = components[components.length-1]
   var c8n, target
   var FFF = function(x, is_operator) {
@@ -84,9 +84,9 @@ ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
       } else {
         if (last && last.length) {
           var mustSeparate = last[last.length-1].match(/[,;:]/)
-          var maySeparate = mustSeparate || ezP.XRE.id_continue.test(last[last.length-1])
+          var maySeparate = mustSeparate || edY.XRE.id_continue.test(last[last.length-1])
         }
-        if (mustSeparate || (maySeparate && ezP.XRE.id_continue.test(x[0]))) {
+        if (mustSeparate || (maySeparate && edY.XRE.id_continue.test(x[0]))) {
           components.push(' ')
         }
       }
@@ -108,8 +108,8 @@ ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
     FF(D.fields.identifier) || FF(D.fields.input) || FF(D.fields.comment) || FF(D.fields.number) || FF(D.fields.string) || FF(D.fields.longString) || FF(D.fields.operator, true)
     if ((c8n = D.input.connection)) {
       if ((target = c8n.targetBlock())) {
-        FFF(target.ezp.toPythonExpression(target))
-      } else if (!c8n.ezp.optional_) {
+        FFF(target.edy.toPythonExpression(target))
+      } else if (!c8n.edy.optional_) {
         last = '<MISSING '+D.input.name+'>'
         components.push(last)
       }
@@ -129,7 +129,7 @@ ezP.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
  * @param {!string}indent, the indentation level for the .
  * @return some python code
  */
-ezP.DelegateSvg.prototype.toPythonStatement = function (block, indent, is_deep) {
+edY.DelegateSvg.prototype.toPythonStatement = function (block, indent, is_deep) {
   var components = []
   this.toPythonStatementComponents(block, components, indent, is_deep)
   return components.join('\n')
@@ -142,7 +142,7 @@ ezP.DelegateSvg.prototype.toPythonStatement = function (block, indent, is_deep) 
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
-ezP.DelegateSvg.prototype.toPythonStatementComponents = function (block, components, indent, is_deep) {
+edY.DelegateSvg.prototype.toPythonStatementComponents = function (block, components, indent, is_deep) {
   var Cs = []
   if (block.disabled && indent.indexOf('#') < 0) {
     indent += '# '
@@ -154,7 +154,7 @@ ezP.DelegateSvg.prototype.toPythonStatementComponents = function (block, compone
       var c8n = input.connection
       if (c8n) {
         var target = c8n.targetBlock()
-        if (target && !target.ezp.toPythonStatementComponents(target, components, indent+'    ', true) || !target && !c8n.ezp.optional_) {
+        if (target && !target.edy.toPythonStatementComponents(target, components, indent+'    ', true) || !target && !c8n.edy.optional_) {
           components.push(indent+'    <MISSING '+input.name+'>')
         }
       }
@@ -163,13 +163,13 @@ ezP.DelegateSvg.prototype.toPythonStatementComponents = function (block, compone
   if (is_deep && block.nextConnection) {
     var target = block.nextConnection.targetBlock()
     if (target) {
-      var out = target.ezp.toPythonStatementComponents(target, components, indent, true)
+      var out = target.edy.toPythonStatementComponents(target, components, indent, true)
     }
   }
   return out
 }
 
-goog.require('ezP.DelegateSvg.Expr')
+goog.require('edY.DelegateSvg.Expr')
 
 /**
  * Convert the block to python code.
@@ -177,11 +177,11 @@ goog.require('ezP.DelegateSvg.Expr')
  * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
  * @return some python code
  */
-ezP.DelegateSvg.Expr.prototype.toPython = function (block, is_deep) {
+edY.DelegateSvg.Expr.prototype.toPython = function (block, is_deep) {
   return this.toPythonExpression(block)
 }
 
-goog.require('ezP.DelegateSvg.List')
+goog.require('edY.DelegateSvg.List')
 
 /**
  * Convert the block to python code components.
@@ -190,18 +190,18 @@ goog.require('ezP.DelegateSvg.List')
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return the last element of components
  */
-ezP.DelegateSvg.List.prototype.toPythonExpressionComponents = function (block, components) {
+edY.DelegateSvg.List.prototype.toPythonExpressionComponents = function (block, components) {
   this.consolidate(block)
   var last = components[components.length-1]
-  var e8r = block.ezp.inputEnumerator(block)
+  var e8r = block.edy.inputEnumerator(block)
   while (e8r.next()) {
     var c8n = e8r.here.connection
     if (c8n) {
       var target = c8n.targetBlock()
       if (target) {
-        last = target.ezp.toPythonExpressionComponents(target, components)
+        last = target.edy.toPythonExpressionComponents(target, components)
         // NEWLINE
-      } else if (!c8n.ezp.optional_ && !c8n.ezp.s7r_) {
+      } else if (!c8n.edy.optional_ && !c8n.edy.s7r_) {
         last = '<MISSING ELEMENT>'
         components.push(last)
         // NEWLINE
@@ -211,9 +211,9 @@ ezP.DelegateSvg.List.prototype.toPythonExpressionComponents = function (block, c
           if (x.length) {
             if (last && last.length) {
               var mustSeparate = last[last.length-1].match(/[,;:]/)
-              var maySeparate = mustSeparate || ezP.XRE.id_continue.test(last[last.length-1])
+              var maySeparate = mustSeparate || edY.XRE.id_continue.test(last[last.length-1])
             }
-            if (mustSeparate || (maySeparate && ezP.XRE.id_continue.test(x[0]))) {
+            if (mustSeparate || (maySeparate && edY.XRE.id_continue.test(x[0]))) {
               components.push(' ')
             }
             components.push(x)
@@ -226,7 +226,7 @@ ezP.DelegateSvg.List.prototype.toPythonExpressionComponents = function (block, c
   return last
 }
 
-goog.require('ezP.DelegateSvg.Stmt')
+goog.require('edY.DelegateSvg.Stmt')
 
 /**
  * Convert the block to python code.
@@ -234,11 +234,11 @@ goog.require('ezP.DelegateSvg.Stmt')
  * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
  * @return some python code
  */
-ezP.DelegateSvg.Stmt.prototype.toPython = function (block, is_deep) {
+edY.DelegateSvg.Stmt.prototype.toPython = function (block, is_deep) {
   return this.toPythonStatement(block, '', is_deep)
 }
 
-goog.require('ezP.DelegateSvg.Control')
+goog.require('edY.DelegateSvg.Control')
 
 /**
  * Convert the block to python code.
@@ -246,6 +246,6 @@ goog.require('ezP.DelegateSvg.Control')
  * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
  * @constructor
  */
-ezP.DelegateSvg.Control.prototype.toPython = function (block, is_deep) {
+edY.DelegateSvg.Control.prototype.toPython = function (block, is_deep) {
   return this.toPythonStatement(block, '', is_deep)
 }

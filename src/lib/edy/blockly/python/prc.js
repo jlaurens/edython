@@ -11,12 +11,12 @@
  */
 'use strict'
 
-goog.provide('ezP.Python.ezp:prc')
+goog.provide('edY.Python.edy:prc')
 
-goog.require('ezP.Python.ezp:grp')
+goog.require('edY.Python.edy:grp')
 
-Blockly.Python[ezP.Const.Prc.DEF] = function (block) {
-  var DEF = ezP.Python.valueToCode(block, ezP.Const.Field.DEF,
+Blockly.Python[edY.Const.Prc.DEF] = function (block) {
+  var DEF = edY.Python.valueToCode(block, edY.Const.Field.DEF,
     Blockly.Python.ORDER_NONE)
   var branch = Blockly.Python.statementToCode(block, 'SUITE')
   if (!branch.length) {
@@ -25,10 +25,10 @@ Blockly.Python[ezP.Const.Prc.DEF] = function (block) {
   return 'def ' + (DEF.length ? DEF : 'MISSING_DEF') + ':\n' + branch
 }
 
-Blockly.Python[ezP.Const.Prc.CLASS] = function (block) {
-  var CLASS = ezP.Python.valueToCode(block, ezP.Const.Field.CLASS,
+Blockly.Python[edY.Const.Prc.CLASS] = function (block) {
+  var CLASS = edY.Python.valueToCode(block, edY.Const.Field.CLASS,
     Blockly.Python.ORDER_NONE)
-  var NCSTR = ezP.Python.valueToCode(block, ezP.Const.Field.NCSTR,
+  var NCSTR = edY.Python.valueToCode(block, edY.Const.Field.NCSTR,
     Blockly.Python.ORDER_NONE)
   var branch = Blockly.Python.statementToCode(block, 'SUITE')
   if (!branch.length) {

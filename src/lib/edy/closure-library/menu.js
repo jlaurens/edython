@@ -21,13 +21,13 @@
 
 /**
  * @fileoverview A base menu class that supports key and mouse events...
- * ezP: 'goog' changed to 'ezP' in class names.
+ * edY: 'goog' changed to 'edY' in class names.
  */
 
-goog.provide('ezP.Menu')
+goog.provide('edY.Menu')
 
 goog.require('goog.ui.Menu')
-goog.require('ezP.MenuRenderer')
+goog.require('edY.MenuRenderer')
 
 // TODO(robbyw): Reverse constructor argument order for consistency.
 /**
@@ -38,10 +38,10 @@ goog.require('ezP.MenuRenderer')
  * @constructor
  * @extends {goog.ui.Container}
  */
-ezP.Menu = function (optDomHelper, optRenderer) {
-  ezP.Menu.superClass_.constructor.call(
+edY.Menu = function (optDomHelper, optRenderer) {
+  edY.Menu.superClass_.constructor.call(
     this, optDomHelper,
-    optRenderer || ezP.MenuRenderer.getInstance())
+    optRenderer || edY.MenuRenderer.getInstance())
 }
-goog.inherits(ezP.Menu, goog.ui.Menu)
-goog.tagUnsealableClass(ezP.Menu)
+goog.inherits(edY.Menu, goog.ui.Menu)
+goog.tagUnsealableClass(edY.Menu)

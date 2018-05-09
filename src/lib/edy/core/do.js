@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.provide('ezP.Do')
+goog.provide('edY.Do')
 
-goog.require('ezP.Const')
+goog.require('edY.Const')
 
-ezP.Do.Name = function () {
+edY.Do.Name = function () {
   // characters are in ]MIN, MAX[
   var MIN = 32
   var MAX = 127
@@ -275,52 +275,52 @@ ezP.Do.Name = function () {
   return me
 } ()
 
-ezP.Do.ensureArray = function (object) {
+edY.Do.ensureArray = function (object) {
   return goog.isArray(object)? object: (object? [object]: object)
 }
 
-ezP.Do.createSPAN = function(text,css) {
+edY.Do.createSPAN = function(text,css) {
   return goog.dom.createDom(goog.dom.TagName.SPAN, css || null,
     goog.dom.createTextNode(text),
   )
 }
 
-goog.require('ezP.T3')
+goog.require('edY.T3')
 
-ezP.T3.Expr.reserved_identifier = 'reserved identifier'
-ezP.T3.Expr.reserved_keyword = 'reserved keyword'
-ezP.T3.Expr.builtin_name = 'builtin name'
+edY.T3.Expr.reserved_identifier = 'reserved identifier'
+edY.T3.Expr.reserved_keyword = 'reserved keyword'
+edY.T3.Expr.builtin_name = 'builtin name'
 
 /**
  * What is the type of this string? an identifier, a number, a reserved word ?
  * For ezPython.
  * @return the type of this candidate
  */
-ezP.Do.typeOfString = function (candidate) {
+edY.Do.typeOfString = function (candidate) {
   if (!goog.isString(candidate)) {
     return
   }
   if (['False', 'None', 'True'].indexOf(candidate)>=0) {
-    return ezP.T3.Expr.reserved_identifier
+    return edY.T3.Expr.reserved_identifier
   }
   if (['class', 'finally', 'is', 'return', 'continue', 'for', 'lambda', 'try', 'def', 'from', 'nonlocal', 'while', 'and', 'del', 'global', 'not', 'with', 'as', 'elif', 'if', 'or', 'yield', 'assert', 'else', 'import', 'pass', 'break', 'except', 'in', 'raise'].indexOf(candidate)>=0) {
-    return ezP.T3.Expr.reserved_keyword
+    return edY.T3.Expr.reserved_keyword
   }
   if (['print', 'input', 'range', 'list', 'len', 'sum'].indexOf(candidate)>=0) {
-    return ezP.T3.Expr.builtin_name
+    return edY.T3.Expr.builtin_name
   }
   // is it a number ?
-  if (ezP.XRE.integer.exec(candidate)) {
-    return ezP.T3.Expr.integer
+  if (edY.XRE.integer.exec(candidate)) {
+    return edY.T3.Expr.integer
   }
-  if (ezP.XRE.floatnumber.exec(candidate)) {
-    return ezP.T3.Expr.floatnumber
+  if (edY.XRE.floatnumber.exec(candidate)) {
+    return edY.T3.Expr.floatnumber
   }
-  if (ezP.XRE.imagnumber.exec(candidate)) {
-    return ezP.T3.Expr.imagnumber
+  if (edY.XRE.imagnumber.exec(candidate)) {
+    return edY.T3.Expr.imagnumber
   }
   if (candidate === 'start') {
-    return ezP.T3.Stmt.start_stmt
+    return edY.T3.Stmt.start_stmt
   }
   var components = candidate.split('.')
   if (components.length > 1) {
@@ -336,28 +336,28 @@ ezP.Do.typeOfString = function (candidate) {
     }
     for (; i < components.length; i++) {
       var c = components[i]
-      if(!ezP.XRE.identifier.exec(c)) {
+      if(!edY.XRE.identifier.exec(c)) {
         dotted_name = false
         break
       }
     }
     if (dotted_name) {
-      return goog.isDef(first) && first>0? ezP.T3.Expr.parent_module: ezP.T3.Expr.dotted_name
+      return goog.isDef(first) && first>0? edY.T3.Expr.parent_module: edY.T3.Expr.dotted_name
     }
-  } else if (ezP.XRE.identifier.exec(candidate)) {
-    return ezP.T3.Expr.identifier
+  } else if (edY.XRE.identifier.exec(candidate)) {
+    return edY.T3.Expr.identifier
   }
-  if (ezP.XRE.shortstringliteralSingle.exec(candidate) || ezP.XRE.shortstringliteralDouble.exec(candidate)) {
-    return ezP.T3.Expr.shortstringliteral
+  if (edY.XRE.shortstringliteralSingle.exec(candidate) || edY.XRE.shortstringliteralDouble.exec(candidate)) {
+    return edY.T3.Expr.shortstringliteral
   }
-  if (ezP.XRE.shortbytesliteralSingle.exec(candidate) || ezP.XRE.shortbytesliteralDouble.exec(candidate)) {
-    return ezP.T3.Expr.shortbytesliteral
+  if (edY.XRE.shortbytesliteralSingle.exec(candidate) || edY.XRE.shortbytesliteralDouble.exec(candidate)) {
+    return edY.T3.Expr.shortbytesliteral
   }
-  if (ezP.XRE.longstringliteralSingle.exec(candidate) || ezP.XRE.longstringliteralDouble.exec(candidate)) {
-    return ezP.T3.Expr.longstringliteral
+  if (edY.XRE.longstringliteralSingle.exec(candidate) || edY.XRE.longstringliteralDouble.exec(candidate)) {
+    return edY.T3.Expr.longstringliteral
   }
-  if (ezP.XRE.longbytesliteralSingle.exec(candidate) || ezP.XRE.longbytesliteralDouble.exec(candidate)) {
-    return ezP.T3.Expr.longbytesliteral
+  if (edY.XRE.longbytesliteralSingle.exec(candidate) || edY.XRE.longbytesliteralDouble.exec(candidate)) {
+    return edY.T3.Expr.longbytesliteral
   }
   return undefined
 }
@@ -369,15 +369,15 @@ ezP.Do.typeOfString = function (candidate) {
  * @param {!function} filter an optional filter.
  * @return an enumerator
  */
-ezP.Do.cssClassForText = function (txt) {
-  switch(ezP.Do.typeOfString(txt)) {
-    case ezP.T3.Expr.reserved_identifier:
-    case ezP.T3.Expr.reserved_keyword:
-    return 'ezp-code-reserved'
-    case ezP.T3.Expr.builtin_name:
-    return 'ezp-code-builtin'
+edY.Do.cssClassForText = function (txt) {
+  switch(edY.Do.typeOfString(txt)) {
+    case edY.T3.Expr.reserved_identifier:
+    case edY.T3.Expr.reserved_keyword:
+    return 'edy-code-reserved'
+    case edY.T3.Expr.builtin_name:
+    return 'edy-code-builtin'
     default:
-    return 'ezp-code'
+    return 'edy-code'
   }
 }
 
@@ -388,7 +388,7 @@ ezP.Do.cssClassForText = function (txt) {
  * @param {!function} filter an optional filter.
  * @return an enumerator
  */
-ezP.Do.Enumerator = function (list, filter) {
+edY.Do.Enumerator = function (list, filter) {
   if (goog.isFunction(filter)) {
     var filter = filter
   }
@@ -440,7 +440,7 @@ console.warn('synchronizeFoo has another argument')
  * Positions are given 1 based
  * For ezPython.
  */
- ezP.Do.getVariantFlag = function(variant, position) {
+ edY.Do.getVariantFlag = function(variant, position) {
   return variant & 1 << (  position - 1)
  }
 
@@ -450,7 +450,7 @@ console.warn('synchronizeFoo has another argument')
  * Positions are given 1 based
  * For ezPython.
  */
- ezP.Do.makeVariantFlags = function(variant) {
+ edY.Do.makeVariantFlags = function(variant) {
   for(var i = 1; i < arguments.length; i++) {
     var position = arguments[i]
     if (position < 0) {
@@ -469,7 +469,7 @@ console.warn('synchronizeFoo has another argument')
  * @param {!function} filter an optional filter.
  * @return an enumerator
  */
-ezP.Do.hasOwnProperty = function (object, key) {
+edY.Do.hasOwnProperty = function (object, key) {
   return Object.prototype.hasOwnProperty.call(object, key)
 }
 
@@ -480,7 +480,7 @@ ezP.Do.hasOwnProperty = function (object, key) {
  * @param {!function} filter an optional filter.
  * @return an enumerator
  */
-ezP.Do.format = function(format) {
+edY.Do.format = function(format) {
   var args = Array.prototype.slice.call(arguments, 1);
   return format.replace(/{(\d+)}/g, function(match, number) { 
     return goog.isDef(args[number])? args[number]: match

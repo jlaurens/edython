@@ -11,13 +11,13 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Lambda')
+goog.provide('edY.DelegateSvg.Lambda')
 
 
-goog.provide('ezP.DelegateSvg.Parameter')
+goog.provide('edY.DelegateSvg.Parameter')
 
-goog.require('ezP.DelegateSvg.List')
-goog.require('ezP.DelegateSvg.Term')
+goog.require('edY.DelegateSvg.List')
+goog.require('edY.DelegateSvg.Term')
 
 /**
  * List consolidator for parameter list.
@@ -35,22 +35,22 @@ goog.require('ezP.DelegateSvg.Term')
  *    must also have a default value...
  * All the inputs are connectedÒ.
  */
-// ezP.Consolidator.Parameter = function() {
-//   ezP.Consolidator.Parameter.superClass_.constructor.call(this, ezP.Consolidator.Parameter.data)
+// edY.Consolidator.Parameter = function() {
+//   edY.Consolidator.Parameter.superClass_.constructor.call(this, edY.Consolidator.Parameter.data)
 // }
-// goog.inherits(ezP.Consolidator.Parameter, ezP.Consolidator.List)
+// goog.inherits(edY.Consolidator.Parameter, edY.Consolidator.List)
 
-// ezP.Consolidator.Parameter.data = {
-//   check: ezP.T3.Expr.Check.primary,
+// edY.Consolidator.Parameter.data = {
+//   check: edY.T3.Expr.Check.primary,
 //   empty: true,
 //   presep: ',',
 // }
 
-ezP.Consolidator.List.makeSubclass('Parameter', {
-  check: ezP.T3.Expr.Check.primary,
+edY.Consolidator.List.makeSubclass('Parameter', {
+  check: edY.T3.Expr.Check.primary,
   empty: true,
   presep: ',',
-}, ezP.Consolidator.List, ezP.Consolidator)
+}, edY.Consolidator.List, edY.Consolidator)
 /**
  * Consolidate a connected input but the first one.
  * Does nothing if this is the last input of '**' type.
@@ -58,15 +58,15 @@ ezP.Consolidator.List.makeSubclass('Parameter', {
  * @return yes exactly if there are more input
  * @override
  */
-ezP.Consolidator.Parameter.prototype.consolidate_connected = function(io) {
+edY.Consolidator.Parameter.prototype.consolidate_connected = function(io) {
   if (io.i + 1 ===  io.list.length) {
     var check = io.c8n.targetConnection.check_
-    if (goog.array.contains(check, ezP.T3.Expr.parameter_star_star)) {
+    if (goog.array.contains(check, edY.T3.Expr.parameter_star_star)) {
       // do not add a separator after
       return false
     }
   }
-  return ezP.Consolidator.Parameter.superClass_.consolidate_connected.call(this, io)
+  return edY.Consolidator.Parameter.superClass_.consolidate_connected.call(this, io)
 }
 
 /**
@@ -74,8 +74,8 @@ ezP.Consolidator.Parameter.prototype.consolidate_connected = function(io) {
  * Subclassers may add their own stuff to io.
  * @param {!Blockly.block} block owner of the receiver
  */
-ezP.Consolidator.Parameter.prototype.getIO = function(block) {
-  var io = ezP.Consolidator.Parameter.superClass_.getIO.call(this, block)
+edY.Consolidator.Parameter.prototype.getIO = function(block) {
+  var io = edY.Consolidator.Parameter.superClass_.getIO.call(this, block)
   io.first_star_star = io.first_star = io.first_default = io.last_default = -1
   return io
 }
@@ -84,7 +84,7 @@ ezP.Consolidator.Parameter.prototype.getIO = function(block) {
  * Once the whole list has been managed,
  * there might be unwanted things.
  */
-ezP.Consolidator.Parameter.prototype.doCleanup = function () {
+edY.Consolidator.Parameter.prototype.doCleanup = function () {
   // preparation: walk through the list of inputs and
   // find the key inputs
   var Type = {
@@ -105,13 +105,13 @@ ezP.Consolidator.Parameter.prototype.doCleanup = function () {
       return Type.unconnected
     }
     var check = target.check_
-    if (goog.array.contains(check,ezP.T3.Expr.parameter_star)) {
+    if (goog.array.contains(check,edY.T3.Expr.parameter_star)) {
       return Type.star
-    } else if (goog.array.contains(check,ezP.T3.Expr.parameter_star)) {
+    } else if (goog.array.contains(check,edY.T3.Expr.parameter_star)) {
       return Type.star
-    } else if (goog.array.contains(check,ezP.T3.Expr.parameter_star_star)) {
+    } else if (goog.array.contains(check,edY.T3.Expr.parameter_star_star)) {
       return Type.star_star
-    } else if (goog.array.contains(check,ezP.T3.Expr.defparameter_s3d)) {
+    } else if (goog.array.contains(check,edY.T3.Expr.defparameter_s3d)) {
       return Type.default
     } else {
       return Type.parameter
@@ -121,8 +121,8 @@ ezP.Consolidator.Parameter.prototype.doCleanup = function () {
     io.first_star_star = io.min_first_star = io.first_star = io.first_default = io.last_default = -1
     var last_default = -1
     this.setupIO(io, 0)
-    while (!!io.ezp) {
-      switch((io.ezp.parameter_type_ = getCheckType(io))) {
+    while (!!io.edy) {
+      switch((io.edy.parameter_type_ = getCheckType(io))) {
         case Type.star_star:
         if (io.first_star_star < 0) {
           io.first_star_star = io.i
@@ -154,7 +154,7 @@ ezP.Consolidator.Parameter.prototype.doCleanup = function () {
     }
   }
   return function(io) {
-    ezP.Consolidator.Parameter.superClass_.doCleanup.call(this, io)
+    edY.Consolidator.Parameter.superClass_.doCleanup.call(this, io)
     setupFirst.call(this, io)
     // there must be an only one
     // first remove all the extra ** parameters
@@ -162,7 +162,7 @@ ezP.Consolidator.Parameter.prototype.doCleanup = function () {
     if (i>=0 && i+2 < io.list.length) {
       io.i = i+2
       while (this.setupIO(io)) {
-        if (io.ezp.parameter_type_ == Type.star_star) {
+        if (io.edy.parameter_type_ == Type.star_star) {
           this.disposeAtI(io)
           this.disposeAtI(io)
         } else {
@@ -170,7 +170,7 @@ ezP.Consolidator.Parameter.prototype.doCleanup = function () {
         }
       }
       if (i+2 < io.list.length) {
-        io.ezp.edited = true
+        io.edy.edited = true
         this.setupIO(io, i)
         // move this parameter to the end of the list and hide a space
         // 1) disconnect the '**' from its input
@@ -203,7 +203,7 @@ ezP.Consolidator.Parameter.prototype.doCleanup = function () {
     if (i>=0) {
       io.i = i+2
       while (this.setupIO(io)) {
-        if (io.ezp.parameter_type_ === Type.star) {
+        if (io.edy.parameter_type_ === Type.star) {
           this.disposeAtI(io)
           this.disposeAtI(io)
         } else {
@@ -216,7 +216,7 @@ ezP.Consolidator.Parameter.prototype.doCleanup = function () {
     if (io.last_default >= 0 && io.last_default + 4 <= io.first_star) {
       // it means that io.last_default + 2 is a no default parameter
       // we must move the '*' block at io.last_default + 2
-      io.ezp.edited = true
+      io.edy.edited = true
       this.setupIO(io, io.first_star)
       var c8n = io.c8n
       var targetC8n = c8n.targetConnection
@@ -243,7 +243,7 @@ ezP.Consolidator.Parameter.prototype.doCleanup = function () {
  * This does not suppose that the list of input has been completely consolidated
  * @param {!Object} io parameter.
  */
-ezP.Consolidator.Parameter.prototype.getCheck = function() {
+edY.Consolidator.Parameter.prototype.getCheck = function() {
   var cache = {}
   return function (io) {
     var can_star_star = (io.first_star_star < 0 && io.i + 3  > io.list.length )
@@ -270,16 +270,16 @@ ezP.Consolidator.Parameter.prototype.getCheck = function() {
     }
     out = []
     if (can_parameter) {
-      out = ezP.T3.Expr.Check.parameter.slice()
+      out = edY.T3.Expr.Check.parameter.slice()
     }
     if (can_default) {
-      out.push(ezP.T3.Expr.defparameter_s3d)
+      out.push(edY.T3.Expr.defparameter_s3d)
     }
     if (can_star) {
-      out.push(ezP.T3.Expr.parameter_star)      
+      out.push(edY.T3.Expr.parameter_star)      
     }
     if (can_star_star) {
-      out.push(ezP.T3.Expr.parameter_star_star)      
+      out.push(edY.T3.Expr.parameter_star_star)      
     }
     return cache[K] = out
   }
@@ -288,54 +288,54 @@ ezP.Consolidator.Parameter.prototype.getCheck = function() {
 /**
  * Class for a DelegateSvg, parameter_list block.
  * This block may be sealed.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.List.makeSubclass('parameter_list', {
+edY.DelegateSvg.List.makeSubclass('parameter_list', {
   list: {
-    consolidator: ezP.Consolidator.Parameter,
+    consolidator: edY.Consolidator.Parameter,
   },
 })
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var e8r = block.ezp.inputEnumerator(block)
+edY.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var e8r = block.edy.inputEnumerator(block)
   var F = function(modifier, flags, msg) {
     var BB
-    ezP.Events.Disabler.wrap(function() {
-      BB = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term, true)
-      BB.ezp.skipRendering = true
-      BB.ezp.data.modifier.set(modifier)
-      BB.ezp.data.variant.set(flags)
+    edY.Events.Disabler.wrap(function() {
+      BB = edY.DelegateSvg.newBlockComplete(block.workspace, edY.T3.Expr.term, true)
+      BB.edy.skipRendering = true
+      BB.edy.data.modifier.set(modifier)
+      BB.edy.data.variant.set(flags)
     })
     e8r.end()
     while(e8r.previous()) {
       var c8n = e8r.here.connection
       if (c8n && !c8n.targetConnection) {
         if (c8n.checkType_(BB.outputConnection)) {
-          var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'ezp-code',
-            ezP.Do.createSPAN('( ', 'ezp-code-disabled'),
-            ezP.Do.createSPAN(msg),
-            ezP.Do.createSPAN(' )', 'ezp-code-disabled'),
+          var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
+            edY.Do.createSPAN('( ', 'edy-code-disabled'),
+            edY.Do.createSPAN(msg),
+            edY.Do.createSPAN(' )', 'edy-code-disabled'),
           )
-          mgr.addInsertChild(new ezP.MenuItem(content, function() {
+          mgr.addInsertChild(new edY.MenuItem(content, function() {
             Blockly.Events.setGroup(true)
             try {
-              var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term, true)
-              B.ezp.skipRendering = true
-              B.ezp.data.modifier.set(modifier)
-              B.ezp.data.variant.set(flags)
-              B.ezp.skipRendering = false
+              var B = edY.DelegateSvg.newBlockComplete(block.workspace, edY.T3.Expr.term, true)
+              B.edy.skipRendering = true
+              B.edy.data.modifier.set(modifier)
+              B.edy.data.variant.set(flags)
+              B.edy.skipRendering = false
               c8n.connect(B.outputConnection)
-              B.ezp.beReady(block)
+              B.edy.beReady(block)
               B.render()
             } finally {
               Blockly.Events.setGroup(false)
@@ -344,7 +344,7 @@ ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
         }
       }
     }
-    ezP.Events.Disabler.wrap(function() {
+    edY.Events.Disabler.wrap(function() {
       BB.dispose(true)
     })
   }
@@ -355,7 +355,7 @@ ezP.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
   F('*', 0, '*…')
   F('**', 0, '**…')
   mgr.shouldSeparateInsert()
-  ezP.DelegateSvg.Expr.parameter_list.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  edY.DelegateSvg.Expr.parameter_list.superClass_.populateContextMenuFirst_.call(this,block, mgr)
   return true
 }
 
@@ -369,70 +369,70 @@ console.warn('Use a modifier field for * and ** (instead of await and async too)
  * expression. Whenever one of the connections connects or disconnects,
  * the checking policy changes accordingly. See the `updateLambdaCheck`
  * method of the connection's delegate.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('lambda', {
+edY.DelegateSvg.Expr.makeSubclass('lambda', {
   tiles: {
     parameters: {
       order: 1,
       fields: {
         label: 'lambda',
       },
-      wrap: ezP.T3.Expr.parameter_list,
+      wrap: edY.T3.Expr.parameter_list,
     },
     expression: {
       order: 3,
       fields: {
         label: ':',
       },
-      check: ezP.T3.Expr.Check.expression.concat(ezP.T3.Expr.Check.expression_nocond),
+      check: edY.T3.Expr.Check.expression.concat(edY.T3.Expr.Check.expression_nocond),
       didConnect: function(oldTargetConnection, oldConnectionn) {
         // `this` is a connection
-        this.ezp.updateLambdaCheck()
+        this.edy.updateLambdaCheck()
       },
       didDisconnect: function(oldConnection) {
         // `this` is a connection
-        this.ezp.updateLambdaCheck()
+        this.edy.updateLambdaCheck()
       },
     },
   },
   output: {
-    check: [ezP.T3.Expr.lambda_expr, ezP.T3.Expr.lambda_expr_nocond],
+    check: [edY.T3.Expr.lambda_expr, edY.T3.Expr.lambda_expr_nocond],
     didConnect: function(oldTargetConnection, oldConnection) {
-      this.ezp.consolidateSource()
+      this.edy.consolidateSource()
     },
     didDisconnect: function(oldConnection) {
-      this.ezp.consolidateSource()
+      this.edy.consolidateSource()
     },
   },
 })
 
-ezP.ConnectionDelegate.prototype.consolidateType = function(block) {
+edY.ConnectionDelegate.prototype.consolidateType = function(block) {
   var c8nOut = block.outputConnection
-  var input = block.getInput(ezP.Key.EXPRESSION)
+  var input = block.getInput(edY.Key.EXPRESSION)
   var c8nIn = input.connection
   var nocond_only_out = false
   var targetC8n = c8nOut.targetConnection
   if (targetC8n) {
-    var nocond_only_out = targetC8n.check_.indexOf(ezP.T3.Expr.lambda_expr) < 0
+    var nocond_only_out = targetC8n.check_.indexOf(edY.T3.Expr.lambda_expr) < 0
   }
   var cond_in = true // cond are accepted by default
   var nocond_in = true // nocond not accepted by default
   targetC8n = c8nIn.targetConnection
   if (targetC8n) {
     cond_in = false
-    for (var i = 0, t; (t = ezP.T3.Expr.Check.expression[++i]);) {
+    for (var i = 0, t; (t = edY.T3.Expr.Check.expression[++i]);) {
       if (targetC8n.check_.indexOf(t) >= 0) {
         cond_in = true
         break
       }
     }
     nocond_in = false
-    for (var i = 0, t; (t = ezP.T3.Expr.Check.expression_nocond[++i]);) {
+    for (var i = 0, t; (t = edY.T3.Expr.Check.expression_nocond[++i]);) {
       if (targetC8n.check_.indexOf(t) >= 0) {
         nocond_in = true
         break
@@ -440,17 +440,17 @@ ezP.ConnectionDelegate.prototype.consolidateType = function(block) {
     }
   }
   c8nIn.setCheck(nocond_only_out?
-    ezP.T3.Expr.Check.expression_nocond:
-    ezP.T3.Expr.Check.expression.concat(ezP.T3.Expr.Check.expression_nocond))
+    edY.T3.Expr.Check.expression_nocond:
+    edY.T3.Expr.Check.expression.concat(edY.T3.Expr.Check.expression_nocond))
   c8nOut.setCheck(
-    (cond_in?[ezP.T3.Expr.lambda_expr]: []).concat(nocond_in?[ezP.T3.Expr.lambda_expr_nocond]: [])
+    (cond_in?[edY.T3.Expr.lambda_expr]: []).concat(nocond_in?[edY.T3.Expr.lambda_expr_nocond]: [])
   )
 }
 
-ezP.DelegateSvg.Lambda.T3s = [
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.parameter_list,
-  ezP.T3.Expr.lambda,
+edY.DelegateSvg.Lambda.T3s = [
+  edY.T3.Expr.term,
+  edY.T3.Expr.parameter_list,
+  edY.T3.Expr.lambda,
 ]
 
 console.warn('no_cond not tested.')

@@ -11,50 +11,50 @@
  */
 'use strict'
 
-goog.provide('ezP.ui')
-goog.provide('ezP.Style')
+goog.provide('edY.ui')
+goog.provide('edY.Style')
 
-goog.require('ezP')
+goog.require('edY')
 
 /**
  * The richness of block colours, regardless of the hue.
  * Must be in the range of 0 (inclusive) to 1 (exclusive).
  */
-ezP.HSV_SATURATION = 5 / 255
+edY.HSV_SATURATION = 5 / 255
 
 /**
  * The intensity of block colours, regardless of the hue.
  * Must be in the range of 0 (inclusive) to 1 (exclusive).
  */
-ezP.HSV_VALUE = 1
+edY.HSV_VALUE = 1
 
 /**
  * Convert a hue (HSV model) into an RGB hex triplet.
  * @param {number} hue Hue on a colour wheel (0-360).
  * @return {string} RGB code, e.g. '#5ba65b'.
  */
-ezP.hueToRgb = function (hue) {
-  return goog.color.hsvToHex(hue, ezP.HSV_SATURATION, ezP.HSV_VALUE * 255)
+edY.hueToRgb = function (hue) {
+  return goog.color.hsvToHex(hue, edY.HSV_SATURATION, edY.HSV_VALUE * 255)
 }
 
-ezP.Style = {}
+edY.Style = {}
 
-ezP.Style.weight = function (x) {
+edY.Style.weight = function (x) {
   return x / (1 + x)// 0↦0, 1↦1/2, 2↦2/3, 3↦3/4, ∞↦1
 }
 
-ezP.Padding = {}
-ezP.Padding.l = ezP.Padding.r = ezP.Padding.h =
-  function () { return 8 * ezP.Style.weight(ezP.Font.size / 10) }
-ezP.Padding.t = ezP.Padding.b = ezP.Padding.v =
-  function () { return 6 * ezP.Style.weight(ezP.Font.size / 10) }
+edY.Padding = {}
+edY.Padding.l = edY.Padding.r = edY.Padding.h =
+  function () { return 8 * edY.Style.weight(edY.Font.size / 10) }
+edY.Padding.t = edY.Padding.b = edY.Padding.v =
+  function () { return 6 * edY.Style.weight(edY.Font.size / 10) }
 
-ezP.Margin = {T: 0, L: 0, B: 0, R: 0, H: 0, V: 0}
+edY.Margin = {T: 0, L: 0, B: 0, R: 0, H: 0, V: 0}
 
 /**
  * Point size of text.
  */
-ezP.Font = function (ascent) {
+edY.Font = function (ascent) {
   var my = {}
   my.updateAscent = function (ascent) {
     my.ascent = my.size = ascent
@@ -68,7 +68,7 @@ ezP.Font = function (ascent) {
     return my
   }
   my.lineHeight = function () {
-    return ezP.Font.height + ezP.Padding.t() + ezP.Padding.b()
+    return edY.Font.height + edY.Padding.t() + edY.Padding.b()
   }
   return my.updateAscent(ascent)
 }(10)
@@ -76,28 +76,28 @@ ezP.Font = function (ascent) {
 /**
  * Offset of the text editor.
  */
-ezP.EditorOffset = {x: 0, y: 0}
+edY.EditorOffset = {x: 0, y: 0}
 
 /**
  * Setupt the offset of the text editor.
  */
-ezP.setup.register(function () {
+edY.setup.register(function () {
   var CHROME = {x: 1, y: -0.5}
   var GECKO = {x: 0, y: -1}
   var WEBKIT = {x: 1, y: -1}
   if (goog.userAgent.GECKO) {
-    ezP.EditorOffset = GECKO
+    edY.EditorOffset = GECKO
   } else if (goog.userAgent.WEBKIT) {
     var userAgent = goog.userAgent.getNavigator().userAgent
     if (userAgent && userAgent.search('Chrome') >= 0) {
-      ezP.EditorOffset = CHROME
+      edY.EditorOffset = CHROME
     } else {
-      ezP.EditorOffset = WEBKIT
+      edY.EditorOffset = WEBKIT
     }
   }
 })
 
-ezP.Style.Path = {
+edY.Style.Path = {
   Selected: {
     'colour': '#fc3',
     'width': 2.5
@@ -107,24 +107,24 @@ ezP.Style.Path = {
   },
   'colour': goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 9 / 10)),
   'width': 1.5, // px
-  'radius': function () { return ezP.Font.space * 0.75 }
+  'radius': function () { return edY.Font.space * 0.75 }
 }
-ezP.Style.MenuItem = {
-  'padding-h': ezP.Padding.t,
-  'padding-v': ezP.Padding.t
+edY.Style.MenuItem = {
+  'padding-h': edY.Padding.t,
+  'padding-v': edY.Padding.t
 }
-ezP.Style.CheckBox = {
+edY.Style.CheckBox = {
   'padding': 1.5// px
 }
 
-ezP.Style.Edit = {
+edY.Style.Edit = {
   padding_h: 1,
   padding_v: 0,
   radius: 2,
   width: 0.5,
 }
 
-ezP.Style.insertCssRuleAt = (function () {
+edY.Style.insertCssRuleAt = (function () {
   var style = document.createElement('style')
   document.head.appendChild(style)
   var sheet = style.sheet
@@ -137,51 +137,51 @@ ezP.Style.insertCssRuleAt = (function () {
 /**
  * Setup the font style, amongst others.
  */
-ezP.setup.register(function () {
-  ezP.Style.insertCssRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono.woff')format('woff');font-weight: normal;font-style: normal;}")
-  ezP.Style.insertCssRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono-Bold.woff')format('woff');font-weight: bold;font-style: normal;}")
-  ezP.Style.insertCssRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono-Oblique.woff')format('woff');font-weight: normal;font-style: oblique;}")
-  ezP.Style.insertCssRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono-BoldOblique.woff')format('woff');font-weight: bold;font-style: oblique;}")
-  ezP.Style.insertCssRuleAt('.ezp-block .blocklyText, .ezp-var, .ezp-label, .ezp-code, .ezp-code-reserved, .ezp-code-builtin, .ezp-code-comment, .ezp-code-placeholder, .ezp-sharp-group{\n' + ezP.Font.style + ';\n}\n')
-  ezP.Style.insertCssRuleAt('.ezp-error.ezp-path-selected, .ezp-error.ezp-path-shape, .ezp-error.ezp-path-contour {stroke: ' + ezP.Style.Path.Error.colour + ';}')
-  ezP.Style.insertCssRuleAt('.ezp-path-selected{stroke: ' + ezP.Style.Path.Selected.colour + ';stroke-width: ' + ezP.Style.Path.Selected.width + 'px;fill: none;}')
-  ezP.Style.insertCssRuleAt('.ezp-select .ezp-path-contour{stroke: ' + ezP.Style.Path.Selected.colour + ';}')
-  ezP.Style.insertCssRuleAt('.ezp-select .ezp-path-contour.ezp-error{stroke: ' + ezP.Style.Path.Error.colour + ';}')
-  ezP.Style.insertCssRuleAt('.blocklyHighlightedConnectionPath{stroke: ' + ezP.Style.Path.Selected.colour + ';stroke-width: ' + ezP.Style.Path.Selected.width + 'px;fill: none;}')
-  ezP.Style.insertCssRuleAt('.blocklyHighlightedConnectionPathH{fill: ' + ezP.Style.Path.Selected.colour + ';stroke: none;}')
-  ezP.Style.insertCssRuleAt('.ezp-checkbox-icon-rect{stroke: ' + ezP.Style.Path.colour + ';stroke-width: ' + ezP.Style.Path.width + 'px;fill: white;}')
-  ezP.Style.insertCssRuleAt('.ezp-locked>.ezp-path-contour, .ezp-locked>.ezp-path-shape{display: none}')
-  ezP.Style.insertCssRuleAt('.ezp-path-shape{stroke: none;fill: white;fill-opacity:0.9}')
-  ezP.Style.insertCssRuleAt('.ezp-path-contour, .ezp-path-collapsed {stroke: ' + ezP.Style.Path.colour + ';stroke-width: ' + ezP.Style.Path.width + 'px;fill: none;}')
-  ezP.Style.insertCssRuleAt('.ezp-none {stroke:none;fill:none;}')
-  ezP.Style.insertCssRuleAt('.ezp-edit {stroke: ' + ezP.Style.Path.colour + ';stroke-width: '+ezP.Style.Edit.width+'px;fill: none;}')
-  ezP.Style.insertCssRuleAt('rect.ezp-editing, .ezp-locked  .ezp-edit {stroke: none;}')
-  ezP.Style.insertCssRuleAt('.ezp-path-dotted{stroke: ' + ezP.Style.Path.colour + ';stroke-width: ' + (ezP.Style.Path.width * 1.5) + 'px;stroke-linecap:round;stroke-dasharray:0 ' + ezP.Font.space / 2 + ';}')
-  ezP.Style.insertCssRuleAt('.ezp-no-path{display:none;}', 5)
-  ezP.Style.insertCssRuleAt('.ezp-code-emph {font-weight: bold;}')
-  ezP.Style.insertCssRuleAt('.ezp-code-reserved, .ezp-code-builtin, .ezp-sharp-group {font-weight:bold;color: rgba(0, 84, 147, 0.75);fill: rgba(0, 84, 147, 0.75);}')
-  ezP.Style.insertCssRuleAt('.ezp-code-builtin {font-weight:bold;color: rgba(60, 0, 145, 0.75);fill: rgba(60, 0, 145, 0.75);}')
-  ezP.Style.insertCssRuleAt('.ezp-menuitem-disabled .ezp-code-reserved {color: rgba(60, 0, 145, 0.3);fill: rgba(0, 84, 147, 0.3);}')
-  ezP.Style.insertCssRuleAt('.ezp-menuitem-disabled .ezp-code-builtin {font-weight:bold;color: rgba(60, 0, 145, 0.3);fill: rgba(60, 0, 145, 0.3);}')
-  ezP.Style.insertCssRuleAt('.ezp-code-placeholder, .ezp-code-comment {font-style: oblique;}')
-  ezP.Style.insertCssRuleAt('.ezp-code-placeholder {fill: rgba(0, 0, 0, 0.4);}')
-  ezP.Style.insertCssRuleAt('input.ezp-code-error {color: red;}')
-  ezP.Style.insertCssRuleAt('text.ezp-code-error {fill: red;}')
-  ezP.Style.insertCssRuleAt('text.ezp-code-comment {fill: rgba(42, 132, 45, 0.8);}')
-  ezP.Style.insertCssRuleAt('.ezp-code-disabled {color: #ccc;}')
+edY.setup.register(function () {
+  edY.Style.insertCssRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono.woff')format('woff');font-weight: normal;font-style: normal;}")
+  edY.Style.insertCssRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono-Bold.woff')format('woff');font-weight: bold;font-style: normal;}")
+  edY.Style.insertCssRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono-Oblique.woff')format('woff');font-weight: normal;font-style: oblique;}")
+  edY.Style.insertCssRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono-BoldOblique.woff')format('woff');font-weight: bold;font-style: oblique;}")
+  edY.Style.insertCssRuleAt('.edy-block .blocklyText, .edy-var, .edy-label, .edy-code, .edy-code-reserved, .edy-code-builtin, .edy-code-comment, .edy-code-placeholder, .edy-sharp-group{\n' + edY.Font.style + ';\n}\n')
+  edY.Style.insertCssRuleAt('.edy-error.edy-path-selected, .edy-error.edy-path-shape, .edy-error.edy-path-contour {stroke: ' + edY.Style.Path.Error.colour + ';}')
+  edY.Style.insertCssRuleAt('.edy-path-selected{stroke: ' + edY.Style.Path.Selected.colour + ';stroke-width: ' + edY.Style.Path.Selected.width + 'px;fill: none;}')
+  edY.Style.insertCssRuleAt('.edy-select .edy-path-contour{stroke: ' + edY.Style.Path.Selected.colour + ';}')
+  edY.Style.insertCssRuleAt('.edy-select .edy-path-contour.edy-error{stroke: ' + edY.Style.Path.Error.colour + ';}')
+  edY.Style.insertCssRuleAt('.blocklyHighlightedConnectionPath{stroke: ' + edY.Style.Path.Selected.colour + ';stroke-width: ' + edY.Style.Path.Selected.width + 'px;fill: none;}')
+  edY.Style.insertCssRuleAt('.blocklyHighlightedConnectionPathH{fill: ' + edY.Style.Path.Selected.colour + ';stroke: none;}')
+  edY.Style.insertCssRuleAt('.edy-checkbox-icon-rect{stroke: ' + edY.Style.Path.colour + ';stroke-width: ' + edY.Style.Path.width + 'px;fill: white;}')
+  edY.Style.insertCssRuleAt('.edy-locked>.edy-path-contour, .edy-locked>.edy-path-shape{display: none}')
+  edY.Style.insertCssRuleAt('.edy-path-shape{stroke: none;fill: white;fill-opacity:0.9}')
+  edY.Style.insertCssRuleAt('.edy-path-contour, .edy-path-collapsed {stroke: ' + edY.Style.Path.colour + ';stroke-width: ' + edY.Style.Path.width + 'px;fill: none;}')
+  edY.Style.insertCssRuleAt('.edy-none {stroke:none;fill:none;}')
+  edY.Style.insertCssRuleAt('.edy-edit {stroke: ' + edY.Style.Path.colour + ';stroke-width: '+edY.Style.Edit.width+'px;fill: none;}')
+  edY.Style.insertCssRuleAt('rect.edy-editing, .edy-locked  .edy-edit {stroke: none;}')
+  edY.Style.insertCssRuleAt('.edy-path-dotted{stroke: ' + edY.Style.Path.colour + ';stroke-width: ' + (edY.Style.Path.width * 1.5) + 'px;stroke-linecap:round;stroke-dasharray:0 ' + edY.Font.space / 2 + ';}')
+  edY.Style.insertCssRuleAt('.edy-no-path{display:none;}', 5)
+  edY.Style.insertCssRuleAt('.edy-code-emph {font-weight: bold;}')
+  edY.Style.insertCssRuleAt('.edy-code-reserved, .edy-code-builtin, .edy-sharp-group {font-weight:bold;color: rgba(0, 84, 147, 0.75);fill: rgba(0, 84, 147, 0.75);}')
+  edY.Style.insertCssRuleAt('.edy-code-builtin {font-weight:bold;color: rgba(60, 0, 145, 0.75);fill: rgba(60, 0, 145, 0.75);}')
+  edY.Style.insertCssRuleAt('.edy-menuitem-disabled .edy-code-reserved {color: rgba(60, 0, 145, 0.3);fill: rgba(0, 84, 147, 0.3);}')
+  edY.Style.insertCssRuleAt('.edy-menuitem-disabled .edy-code-builtin {font-weight:bold;color: rgba(60, 0, 145, 0.3);fill: rgba(60, 0, 145, 0.3);}')
+  edY.Style.insertCssRuleAt('.edy-code-placeholder, .edy-code-comment {font-style: oblique;}')
+  edY.Style.insertCssRuleAt('.edy-code-placeholder {fill: rgba(0, 0, 0, 0.4);}')
+  edY.Style.insertCssRuleAt('input.edy-code-error {color: red;}')
+  edY.Style.insertCssRuleAt('text.edy-code-error {fill: red;}')
+  edY.Style.insertCssRuleAt('text.edy-code-comment {fill: rgba(42, 132, 45, 0.8);}')
+  edY.Style.insertCssRuleAt('.edy-code-disabled {color: #ccc;}')
 })
 
-ezP.Style.MenuIcon = {
-  width: ezP.Font.space,
+edY.Style.MenuIcon = {
+  width: edY.Font.space,
   color: 'black'
 }
 
-ezP.Style.MenuIcon.path = function (g) {
+edY.Style.MenuIcon.path = function (g) {
   var E = Blockly.utils.createSvgElement('g',
-    {'class': 'ezp-menu-icon', 'opacity': 0.1}, g)
-  E.style.fill = ezP.Style.MenuIcon.color
-  var h = ezP.Font.height
-  var w = ezP.Style.MenuIcon.width
+    {'class': 'edy-menu-icon', 'opacity': 0.1}, g)
+  E.style.fill = edY.Style.MenuIcon.color
+  var h = edY.Font.height
+  var w = edY.Style.MenuIcon.width
   var r = h / 8
   Blockly.utils.createSvgElement('rect',
     {'x': '0',

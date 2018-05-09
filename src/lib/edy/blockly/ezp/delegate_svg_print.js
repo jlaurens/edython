@@ -11,21 +11,21 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Print')
+goog.provide('edY.DelegateSvg.Print')
 
-goog.require('ezP.DelegateSvg.Stmt')
-goog.require('ezP.DelegateSvg.List')
+goog.require('edY.DelegateSvg.Stmt')
+goog.require('edY.DelegateSvg.List')
 
 console.warn('Move this block to the builtin blocks, with contextual consolidator and argument list')
 /**
  * Class for a DelegateSvg, print block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('builtin_print_expr', {
+edY.DelegateSvg.Expr.makeSubclass('builtin_print_expr', {
   fields: {
     label: {
       value: 'print',
@@ -39,11 +39,11 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_print_expr', {
         start: '(',
         end: ')',
       },
-      wrap: ezP.T3.Expr.argument_list_comprehensive,
+      wrap: edY.T3.Expr.argument_list_comprehensive,
     },
   },
   output: {
-    check: [ezP.T3.Expr.builtin_print_expr, ezP.T3.Expr.call_expr],
+    check: [edY.T3.Expr.builtin_print_expr, edY.T3.Expr.call_expr],
   },
 })
 
@@ -51,40 +51,40 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_print_expr', {
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-ezP.DelegateSvg.Expr.builtin_print_expr.prototype.getMenuTarget = function(block) {
+edY.DelegateSvg.Expr.builtin_print_expr.prototype.getMenuTarget = function(block) {
   return block
 }
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-ezP.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
+edY.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var menu = mgr.Menu
-  var list = block.getInput(ezP.Key.ARGUMENTS).connection.targetBlock()
-  var c10r = list.ezp.consolidator
+  var list = block.getInput(edY.Key.ARGUMENTS).connection.targetBlock()
+  var c10r = list.edy.consolidator
   var yorn = false
-  if (!c10r.hasInputForType(list, ezP.T3.Expr.comprehension)) {
+  if (!c10r.hasInputForType(list, edY.T3.Expr.comprehension)) {
     var has = {}
     var io = c10r.getIO(list)
     var input
-    while ((input = c10r.nextInputForType(io, ezP.T3.Expr.keyword_item))) {
+    while ((input = c10r.nextInputForType(io, edY.T3.Expr.keyword_item))) {
       var target = input.connection.targetBlock()
       if (target) {
-        has[target.ezp.data.value.get()] = target
+        has[target.edy.data.value.get()] = target
       }
     }
     var insert = function(key) {
       Blockly.Events.setGroup(true)
       try {
-        var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term, true)
-        B.ezp.data.value.set(key)
-        B.ezp.data.variant.set(2)
+        var B = edY.DelegateSvg.newBlockComplete(block.workspace, edY.T3.Expr.term, true)
+        B.edy.data.value.set(key)
+        B.edy.data.variant.set(2)
         var c8n = list.inputList[list.inputList.length-1].connection
         c8n.connect(B.outputConnection)  
-        block.ezp.beReady(block)
+        block.edy.beReady(block)
       } finally {
         Blockly.Events.setGroup(false)
       }
@@ -100,8 +100,8 @@ ezP.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
       }
     }
     var F = function(candidate) {
-      var menuItem = new ezP.MenuItem(
-        ezP.Do.createSPAN(candidate+' = …', 'ezp-code'),
+      var menuItem = new edY.MenuItem(
+        edY.Do.createSPAN(candidate+' = …', 'edy-code'),
         has[candidate]? function() {
           remove(candidate)
         }: function() {
@@ -119,52 +119,52 @@ ezP.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
     F('file')
     yorn = true
   }
-  return ezP.DelegateSvg.Expr.builtin_print_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
+  return edY.DelegateSvg.Expr.builtin_print_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
 /**
  * Class for a DelegateSvg, print_stmt block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Stmt.makeSubclass('builtin_print_stmt', {
-   link: ezP.T3.Expr.builtin_print_expr,
+edY.DelegateSvg.Stmt.makeSubclass('builtin_print_stmt', {
+   link: edY.T3.Expr.builtin_print_expr,
 })
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-ezP.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+edY.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var menu = mgr.Menu
-  var list = block.getInput(ezP.Key.ARGUMENTS).connection.targetBlock()
-  var c10r = list.ezp.consolidator
+  var list = block.getInput(edY.Key.ARGUMENTS).connection.targetBlock()
+  var c10r = list.edy.consolidator
   var yorn = false
-  if (!c10r.hasInputForType(list, ezP.T3.Expr.comprehension)) {
+  if (!c10r.hasInputForType(list, edY.T3.Expr.comprehension)) {
     var has = {}
     var io = c10r.getIO(list)
     var input
-    while ((input = c10r.nextInputForType(io, ezP.T3.Expr.keyword_item))) {
+    while ((input = c10r.nextInputForType(io, edY.T3.Expr.keyword_item))) {
       var target = input.connection.targetBlock()
       if (target) {
-        has[target.ezp.data.value.get()] = target
+        has[target.edy.data.value.get()] = target
       }
     }
     var insert = function(key) {
       Blockly.Events.setGroup(true)
       try {
-        var B = ezP.DelegateSvg.newBlockComplete(block.workspace, ezP.T3.Expr.term, true)
-        B.ezp.data.value.set(key)
-        B.ezp.data.variant.set(2)
+        var B = edY.DelegateSvg.newBlockComplete(block.workspace, edY.T3.Expr.term, true)
+        B.edy.data.value.set(key)
+        B.edy.data.variant.set(2)
         // we assume that inputList is not void
         var c8n = list.inputList[list.inputList.length-1].connection
         c8n.connect(B.outputConnection)  
-        block.ezp.beReady(block)
+        block.edy.beReady(block)
       } finally {
         Blockly.Events.setGroup(false)
       }
@@ -180,8 +180,8 @@ ezP.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
       }
     }
     var F = function(candidate) {
-      var menuItem = new ezP.MenuItem(
-        ezP.Do.createSPAN(candidate+' = …', 'ezp-code'),
+      var menuItem = new edY.MenuItem(
+        edY.Do.createSPAN(candidate+' = …', 'edy-code'),
         has[candidate]? function() {
           remove(candidate)
         }: function() {
@@ -199,18 +199,18 @@ ezP.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
     F('file')
     yorn = true
   }
-  return ezP.DelegateSvg.Stmt.builtin_print_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
+  return edY.DelegateSvg.Stmt.builtin_print_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
 /**
  * Class for a DelegateSvg, input block.
- * Not normally called directly, ezP.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
  * For ezPython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.makeSubclass('builtin_input_expr', {
+edY.DelegateSvg.Expr.makeSubclass('builtin_input_expr', {
   fields: {
     label: {
       value: 'input',
@@ -223,18 +223,18 @@ ezP.DelegateSvg.Expr.makeSubclass('builtin_input_expr', {
         start: '(',
         end: ')',
       },
-      check: ezP.T3.Expr.Check.argument_any,
+      check: edY.T3.Expr.Check.argument_any,
       optional: true,
     },
   },
   output: {
-    check: [ezP.T3.Expr.builtin_input_expr, ezP.T3.Expr.call_expr],
+    check: [edY.T3.Expr.builtin_input_expr, edY.T3.Expr.call_expr],
   },
 })
 
-ezP.DelegateSvg.Print.T3s = [
-  ezP.T3.Expr.term,
-  ezP.T3.Expr.builtin_print_expr,
-  ezP.T3.Stmt.builtin_print_stmt,
-  ezP.T3.Expr.builtin_input_expr,
+edY.DelegateSvg.Print.T3s = [
+  edY.T3.Expr.term,
+  edY.T3.Expr.builtin_print_expr,
+  edY.T3.Stmt.builtin_print_stmt,
+  edY.T3.Expr.builtin_input_expr,
 ]

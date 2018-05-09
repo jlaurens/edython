@@ -11,10 +11,10 @@
  */
 'use strict'
 
-goog.provide('ezP.FieldLabel')
+goog.provide('edY.FieldLabel')
 
 goog.require('Blockly.FieldLabel')
-goog.require('ezP.Block')
+goog.require('edY.Block')
 
 /**
  * Class for a non-editable field.
@@ -24,32 +24,32 @@ goog.require('ezP.Block')
  * @extends {Blockly.Field}
  * @constructor
  */
-ezP.FieldLabel = function (text, optClass) {
-  ezP.FieldLabel.superClass_.constructor.call(this, text, optClass)
-  this.size_ = new goog.math.Size(0, ezP.Font.height)
-  this.ezp = {}
+edY.FieldLabel = function (text, optClass) {
+  edY.FieldLabel.superClass_.constructor.call(this, text, optClass)
+  this.size_ = new goog.math.Size(0, edY.Font.height)
+  this.edy = {}
 }
-goog.inherits(ezP.FieldLabel, Blockly.FieldLabel)
+goog.inherits(edY.FieldLabel, Blockly.FieldLabel)
 
 /**
  * Install this text on a block.
  */
-ezP.FieldLabel.prototype.init = function () {
+edY.FieldLabel.prototype.init = function () {
   if (this.textElement_) {
     // Text has already been initialized once.
     return
   }
   // Build the DOM.
   this.textElement_ = Blockly.utils.createSvgElement('text',
-    {'class': 'ezp-label', 'y': ezP.Font.totalAscent}, null)
+    {'class': 'edy-label', 'y': edY.Font.totalAscent}, null)
   if (this.class_) {
     goog.dom.classlist.add(this.textElement_, this.class_)
   }
-  if (this.ezp.css_class) {
-    goog.dom.classlist.add(this.textElement_, this.ezp.css_class)
+  if (this.edy.css_class) {
+    goog.dom.classlist.add(this.textElement_, this.edy.css_class)
   }
-  if (this.ezp.tile) {
-    this.ezp.tile.getSvgRoot().appendChild(this.textElement_)
+  if (this.edy.tile) {
+    this.edy.tile.getSvgRoot().appendChild(this.textElement_)
   } else {
     this.sourceBlock_.getSvgRoot().appendChild(this.textElement_)
   }
@@ -69,7 +69,7 @@ ezP.FieldLabel.prototype.init = function () {
 Blockly.Field.prototype.updateWidth = function () {
   var width = Blockly.Field.getCachedWidth(this.textElement_)
   if (this.borderRect_) {
-    this.borderRect_.setAttribute('width', width+2*ezP.Style.Edit.padding_h)
+    this.borderRect_.setAttribute('width', width+2*edY.Style.Edit.padding_h)
   }
   this.size_.width = width
 }
@@ -79,13 +79,13 @@ Blockly.Field.prototype.updateWidth = function () {
  * when the value has changed.
  * @param {string} newValue New value.
  */
-ezP.FieldLabel.prototype.setValue = function(newValue) {
+edY.FieldLabel.prototype.setValue = function(newValue) {
   var oldValue = this.getText()
-  ezP.FieldLabel.superClass_.setValue.call(this, newValue)
+  edY.FieldLabel.superClass_.setValue.call(this, newValue)
   if (this.name) {
     var block = this.sourceBlock_
-    if (block && block.ezp.fieldValueDidChange) {
-      block.ezp.fieldValueDidChange(block, this.name, oldValue)
+    if (block && block.edy.fieldValueDidChange) {
+      block.edy.fieldValueDidChange(block, this.name, oldValue)
     }
   }
 }

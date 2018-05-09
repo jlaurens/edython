@@ -9,33 +9,33 @@
  * @fileoverview Renderer for {@link goog.ui.MenuItem}s.
  * Twisted to fit print options and alike.
  * A menu separator is
- * <div class="ezp-menuseparator"></div>
+ * <div class="edy-menuseparator"></div>
  * and a menu item is
- * <div class="ezp-menuitem"></div>
- * <div class="ezp-menuitem">
- *   <div class="ezp-menuitem-content">
- *     <div class="ezp-menuitem-checkbox">...</div>
+ * <div class="edy-menuitem"></div>
+ * <div class="edy-menuitem">
+ *   <div class="edy-menuitem-content">
+ *     <div class="edy-menuitem-checkbox">...</div>
  *       content
  *     </div>
  *   </div>
  * </div>
  * Known classes for menu items are
- * ezp-code, for code snippets
- * ezp-with-accel, to reserve room for a key shortcut (accelerator)
- * ezp-with-checkbox, to reserve room for a checkbox
+ * edy-code, for code snippets
+ * edy-with-accel, to reserve room for a key shortcut (accelerator)
+ * edy-with-checkbox, to reserve room for a checkbox
  * See the subemnu renderer for submenus.
  * @author jerome.laurens@u-bourgogne.fr
  */
 
-goog.provide('ezP.MenuItemRenderer')
-goog.provide('ezP.KeyValueMenuItemRenderer')
-goog.provide('ezP.NoOptionMenuItemRenderer')
-goog.provide('ezP.MenuItemCodeRenderer')
-goog.provide('ezP.MenuItemVarRenderer')
-goog.provide('ezP.SeparatorRenderer')
+goog.provide('edY.MenuItemRenderer')
+goog.provide('edY.KeyValueMenuItemRenderer')
+goog.provide('edY.NoOptionMenuItemRenderer')
+goog.provide('edY.MenuItemCodeRenderer')
+goog.provide('edY.MenuItemVarRenderer')
+goog.provide('edY.SeparatorRenderer')
 
 goog.require('goog.ui.MenuItemRenderer')
-goog.require('ezP.Style')
+goog.require('edY.Style')
 
 /**
  * Sets the css class of the control renderer.
@@ -52,7 +52,7 @@ goog.require('ezP.Style')
  * setControlRendererCssClass(renderer, cssClass[, style](, name, style)*)
  * 
  */
-ezP.Style.setControlRendererCssClass = (function () {
+edY.Style.setControlRendererCssClass = (function () {
   var helper = function (name, dict) {
     var RA = []
     for (var k in dict) {
@@ -63,7 +63,7 @@ ezP.Style.setControlRendererCssClass = (function () {
       }
     }
     var rule = '.' + name + '{\n' + RA.join('') + '\n}'
-    ezP.Style.insertCssRuleAt(rule)
+    edY.Style.insertCssRuleAt(rule)
   }
   return function (renderer, cssClass) {
     goog.addSingletonGetter(renderer)
@@ -95,19 +95,19 @@ ezP.Style.setControlRendererCssClass = (function () {
 /**
  * Renderer for menu items separators.
  * Create the dom element:
- * <div class="ezp-menuseparator"></div>
+ * <div class="edy-menuseparator"></div>
  * @constructor
  * @extends {goog.ui.MenuSeparatorRenderer}
  */
-ezP.MenuSeparatorRenderer = function () {
+edY.MenuSeparatorRenderer = function () {
   goog.ui.MenuSeparatorRenderer.call(this)
 }
-goog.inherits(ezP.MenuSeparatorRenderer, goog.ui.MenuSeparatorRenderer)
-goog.addSingletonGetter(ezP.MenuSeparatorRenderer)
+goog.inherits(edY.MenuSeparatorRenderer, goog.ui.MenuSeparatorRenderer)
+goog.addSingletonGetter(edY.MenuSeparatorRenderer)
 
-ezP.Style.setControlRendererCssClass(
-  ezP.MenuSeparatorRenderer,
-  'ezp-menuseparator',
+edY.Style.setControlRendererCssClass(
+  edY.MenuSeparatorRenderer,
+  'edy-menuseparator',
   { 'border-top': '1px solid #ccc',
     'margin': 0,
     'padding': 0}
@@ -121,12 +121,12 @@ ezP.Style.setControlRendererCssClass(
 
 // NB: take a look at goog.ui.ControlRenderer.getCustomRenderer
 
-ezP.MenuItemRenderer = function () {
+edY.MenuItemRenderer = function () {
   goog.ui.MenuItemRenderer.call(this)
 }
 
-goog.inherits(ezP.MenuItemRenderer, goog.ui.MenuItemRenderer)
-goog.addSingletonGetter(ezP.MenuItemRenderer)
+goog.inherits(edY.MenuItemRenderer, goog.ui.MenuItemRenderer)
+goog.addSingletonGetter(edY.MenuItemRenderer)
 
 /**
  * Overrides {@link goog.ui.MenuItemRenderer#createDom} by adding extra markup
@@ -135,14 +135,14 @@ goog.addSingletonGetter(ezP.MenuItemRenderer)
  * @return {Element} Root element for the item.
  * @override
  */
-ezP.MenuItemRenderer.prototype.createDom = function (item) {
-  var element = ezP.MenuItemRenderer.superClass_.createDom.call(this, item)
+edY.MenuItemRenderer.prototype.createDom = function (item) {
+  var element = edY.MenuItemRenderer.superClass_.createDom.call(this, item)
   return element
 }
 
-ezP.Style.setControlRendererCssClass(
-  ezP.MenuItemRenderer,
-  'ezp-menuitem',
+edY.Style.setControlRendererCssClass(
+  edY.MenuItemRenderer,
+  'edy-menuitem',
   'content',
   {'padding': '4px 6px'},
   'hover', // hover or highlight?
@@ -159,29 +159,29 @@ ezP.Style.setControlRendererCssClass(
  *     (undefined if none).
  * @override
  */
-ezP.MenuItemRenderer.prototype.getClassForState = function (state) {
-  return ezP.MenuItemRenderer.superClass_.getClassForState.call(
+edY.MenuItemRenderer.prototype.getClassForState = function (state) {
+  return edY.MenuItemRenderer.superClass_.getClassForState.call(
     this, state)
 }
 
-ezP.KeyValueMenuItemRenderer = function () {
+edY.KeyValueMenuItemRenderer = function () {
   goog.ui.MenuItemRenderer.call(this)
 }
 
-goog.inherits(ezP.KeyValueMenuItemRenderer, goog.ui.MenuItemRenderer)
-goog.addSingletonGetter(ezP.KeyValueMenuItemRenderer)
+goog.inherits(edY.KeyValueMenuItemRenderer, goog.ui.MenuItemRenderer)
+goog.addSingletonGetter(edY.KeyValueMenuItemRenderer)
 
-ezP.Style.setControlRendererCssClass(
-  ezP.KeyValueMenuItemRenderer,
-  'ezp-menuitem-code',
+edY.Style.setControlRendererCssClass(
+  edY.KeyValueMenuItemRenderer,
+  'edy-menuitem-code',
   'content',
-  {'padding': '4px 6px 4px ' + (ezP.Font.space + 12) + 'px;'},
+  {'padding': '4px 6px 4px ' + (edY.Font.space + 12) + 'px;'},
   'hover',
   {'background-color': '#d6e9f8'}
 )
 
 /** @override */
-ezP.KeyValueMenuItemRenderer.prototype.makeTitleElement = function (element) {
+edY.KeyValueMenuItemRenderer.prototype.makeTitleElement = function (element) {
   return /** @type {Element} */ (element && element.firstChild)
 }
 
@@ -194,7 +194,7 @@ ezP.KeyValueMenuItemRenderer.prototype.makeTitleElement = function (element) {
  * @return {Element} Decorated element.
  * @override
  */
-ezP.KeyValueMenuItemRenderer.prototype.decorate = function (item, element) {
+edY.KeyValueMenuItemRenderer.prototype.decorate = function (item, element) {
   goog.asserts.assert(element)
   if (!this.hasContentStructure(element)) {
     element.appendChild(
@@ -202,7 +202,7 @@ ezP.KeyValueMenuItemRenderer.prototype.decorate = function (item, element) {
   }
   (/** @type {goog.ui.MenuItem} */ (item)).setCheckable(true)
   this.setCheckable(item, element, true)
-  return ezP.KeyValueMenuItemRenderer.superClass_.decorate.call(
+  return edY.KeyValueMenuItemRenderer.superClass_.decorate.call(
     this, item, element)
 }
 
@@ -216,7 +216,7 @@ ezP.KeyValueMenuItemRenderer.prototype.decorate = function (item, element) {
 //  *     set as the item's content.
 //  * @override
 //  */
-// ezP.KeyValueMenuItemRenderer.prototype.setContent = function(element, content) {
+// edY.KeyValueMenuItemRenderer.prototype.setContent = function(element, content) {
 //   // Save the checkbox element, if present.
 //   var contentElement = this.getContentElement(element)
 //   var checkBoxElement =
@@ -236,7 +236,7 @@ ezP.KeyValueMenuItemRenderer.prototype.decorate = function (item, element) {
  * @return {boolean} Whether the element appears to have a proper menu item DOM.
  * @protected
  */
-ezP.KeyValueMenuItemRenderer.prototype.hasContentStructure = function (element) {
+edY.KeyValueMenuItemRenderer.prototype.hasContentStructure = function (element) {
   var child = goog.dom.getFirstElementChild(element)
   var contentClassName = this.getCompositeCssClass_(
     goog.ui.MenuItemRenderer.CompositeCssClassIndex_.CONTENT)
@@ -252,30 +252,30 @@ ezP.KeyValueMenuItemRenderer.prototype.hasContentStructure = function (element) 
  * @param {boolean} enable Whether to add or remove the checkbox structure.
  * @protected
  */
-ezP.KeyValueMenuItemRenderer.prototype.setEnableCheckBoxStructure = function (
+edY.KeyValueMenuItemRenderer.prototype.setEnableCheckBoxStructure = function (
   item, element, enable) {
   this.setAriaRole(element, item.getPreferredAriaRole())
   this.setAriaStates(item, element)
   var contentElement = this.getContentElement(element)
   if (!item.ezpDomMark) {
-    goog.dom.classlist.add(element, 'ezp-with-checkbox')
+    goog.dom.classlist.add(element, 'edy-with-checkbox')
     var checkboxClassName = this.getCompositeCssClass_(
       goog.ui.MenuItemRenderer.CompositeCssClassIndex_.CHECKBOX)
     var x = 2
-    var d = ezP.Font.space + 2 * x
+    var d = edY.Font.space + 2 * x
     var el = item.getDomHelper().createDom(
       goog.dom.TagName.DIV, checkboxClassName)
     el.style.display = 'inline'
     el.style.position = 'relative'
     el.style.width = d + 'px'
-    el.style.height = ezP.Font.lineHeight + 'px'
-    el.style.left = (-ezP.Font.space/2) + 'px'
+    el.style.height = edY.Font.lineHeight + 'px'
+    el.style.left = (-edY.Font.space/2) + 'px'
     el.style.top = x + 'px'
     contentElement.insertBefore(el, contentElement.firstChild || null)
     var svg = Blockly.utils.createSvgElement('svg',
-      {'class': 'ezp-checkbox-icon', 'height': d, 'width': d}, el)
+      {'class': 'edy-checkbox-icon', 'height': d, 'width': d}, el)
     Blockly.utils.createSvgElement('rect',
-      {'class': 'ezp-checkbox-icon-rect',
+      {'class': 'edy-checkbox-icon-rect',
         'x': '0',
         'y': '0',
         'rx': x * 1.25,
@@ -285,7 +285,7 @@ ezP.KeyValueMenuItemRenderer.prototype.setEnableCheckBoxStructure = function (
       svg)
     d = d - 2 * x
     item.ezpMark = Blockly.utils.createSvgElement('rect',
-      {'class': 'ezp-checkbox-icon-mark',
+      {'class': 'edy-checkbox-icon-mark',
         'x': x,
         'y': x,
         'rx': x,
@@ -296,13 +296,13 @@ ezP.KeyValueMenuItemRenderer.prototype.setEnableCheckBoxStructure = function (
     item.ezpMark.style.opacity = 0.5
   }
   if (item.isChecked()) {
-    Blockly.utils.addClass(item.ezpMark, 'ezp-checked')
+    Blockly.utils.addClass(item.ezpMark, 'edy-checked')
   } else {
-    Blockly.utils.removeClass(item.ezpMark, 'ezp-checked')
+    Blockly.utils.removeClass(item.ezpMark, 'edy-checked')
   }
 }
 
-ezP.Style.insertCssRuleAt('.ezp-menuitem.ezp-with-checkbox, .ezp-menuitem-code.ezp-with-checkbox{padding-left: '+(8+ezP.Font.space/2)+'px;}')
+edY.Style.insertCssRuleAt('.edy-menuitem.edy-with-checkbox, .edy-menuitem-code.edy-with-checkbox{padding-left: '+(8+edY.Font.space/2)+'px;}')
 
 /**
  * Takes a single CSS class name which may represent a component state, and
@@ -315,7 +315,7 @@ ezP.Style.insertCssRuleAt('.ezp-menuitem.ezp-with-checkbox, .ezp-menuitem-code.e
  *     to the given CSS class (0x00 if none).
  * @override
  */
-ezP.KeyValueMenuItemRenderer.prototype.getStateFromClass = function (className) {
+edY.KeyValueMenuItemRenderer.prototype.getStateFromClass = function (className) {
   return goog.ui.MenuItemRenderer.superClass_.getStateFromClass.call(
     this, className)
 }
@@ -324,8 +324,8 @@ ezP.KeyValueMenuItemRenderer.prototype.getStateFromClass = function (className) 
  * Default renderer for {@link goog.ui.MenuItem}s.  Each item has the following
  * structure:
  *
- *    <div class="ezp-menuitem">
- *      <div class="ezp-menuitem-content">
+ *    <div class="edy-menuitem">
+ *      <div class="edy-menuitem-content">
  *        ...(menu item contents)...
  *      </div>
  *    </div>
@@ -334,19 +334,19 @@ ezP.KeyValueMenuItemRenderer.prototype.getStateFromClass = function (className) 
  * @extends {goog.ui.ControlRenderer}
  */
 
-ezP.NoOptionMenuItemRenderer = function () {
+edY.NoOptionMenuItemRenderer = function () {
   goog.ui.MenuItemRenderer.call(this)
 }
 
-goog.inherits(ezP.NoOptionMenuItemRenderer, goog.ui.MenuItemRenderer)
-goog.addSingletonGetter(ezP.NoOptionMenuItemRenderer)
+goog.inherits(edY.NoOptionMenuItemRenderer, goog.ui.MenuItemRenderer)
+goog.addSingletonGetter(edY.NoOptionMenuItemRenderer)
 
-ezP.Style.setControlRendererCssClass(
-  ezP.NoOptionMenuItemRenderer,
-  'ezp-menuitem'
+edY.Style.setControlRendererCssClass(
+  edY.NoOptionMenuItemRenderer,
+  'edy-menuitem'
 )
-ezP.NoOptionMenuItemRenderer.prototype.getClassForState =
-  ezP.MenuItemRenderer.prototype.getClassForState
+edY.NoOptionMenuItemRenderer.prototype.getClassForState =
+  edY.MenuItemRenderer.prototype.getClassForState
 
 /**
  * Overrides {@link goog.ui.ControlRenderer#decorate} by initializing the
@@ -357,13 +357,13 @@ ezP.NoOptionMenuItemRenderer.prototype.getClassForState =
  * @return {Element} Decorated element.
  * @override
  */
-ezP.NoOptionMenuItemRenderer.prototype.decorate = function (item, element) {
+edY.NoOptionMenuItemRenderer.prototype.decorate = function (item, element) {
   goog.asserts.assert(element)
   if (!this.hasContentStructure(element)) {
     element.appendChild(
       this.createContent(element.childNodes, item.getDomHelper()))
   }
-  return ezP.NoOptionMenuItemRenderer.superClass_.decorate.call(
+  return edY.NoOptionMenuItemRenderer.superClass_.decorate.call(
     this, item, element)
 }
 
@@ -373,18 +373,18 @@ ezP.NoOptionMenuItemRenderer.prototype.decorate = function (item, element) {
  * @extends {goog.ui.MenuItemRenderer}
  */
 
-ezP.MenuItemCodeRenderer = function () {
-  ezP.MenuItemCodeRenderer.superClass_.constructor.call(this)
+edY.MenuItemCodeRenderer = function () {
+  edY.MenuItemCodeRenderer.superClass_.constructor.call(this)
 }
 
-goog.inherits(ezP.MenuItemCodeRenderer, ezP.MenuItemRenderer)
-goog.addSingletonGetter(ezP.MenuItemCodeRenderer)
+goog.inherits(edY.MenuItemCodeRenderer, edY.MenuItemRenderer)
+goog.addSingletonGetter(edY.MenuItemCodeRenderer)
 
-ezP.Style.setControlRendererCssClass(
-  ezP.MenuItemCodeRenderer,
-  'ezp-menuitem-code',
+edY.Style.setControlRendererCssClass(
+  edY.MenuItemCodeRenderer,
+  'edy-menuitem-code',
   '-content',
-  {'': ezP.Font.style},
+  {'': edY.Font.style},
   ':hover',
   {'background-color': '#d6e9f8'}
 )
@@ -398,12 +398,12 @@ ezP.Style.setControlRendererCssClass(
  * @param {boolean} enable Whether to add or remove the checkbox structure.
  * @protected
  */
-ezP.MenuItemCodeRenderer.prototype.setEnableCheckBoxStructure = function (
+edY.MenuItemCodeRenderer.prototype.setEnableCheckBoxStructure = function (
   item, element, enable) {
-  ezP.MenuItemCodeRenderer.superClass_.setEnableCheckBoxStructure.call(this,
+  edY.MenuItemCodeRenderer.superClass_.setEnableCheckBoxStructure.call(this,
     item, element, enable)
   if (item.isSupportedState(goog.ui.Component.State.CHECKED)) {
-    goog.dom.classlist.add(element, 'ezp-with-checkbox')
+    goog.dom.classlist.add(element, 'edy-with-checkbox')
   }
 }
 
@@ -413,18 +413,18 @@ ezP.MenuItemCodeRenderer.prototype.setEnableCheckBoxStructure = function (
  * @extends {goog.ui.MenuItemRenderer}
  */
 
-ezP.MenuItemVarRenderer = function () {
-  ezP.MenuItemRenderer.call(this)
+edY.MenuItemVarRenderer = function () {
+  edY.MenuItemRenderer.call(this)
 }
 
-goog.inherits(ezP.MenuItemVarRenderer, ezP.MenuItemRenderer)
-goog.addSingletonGetter(ezP.MenuItemVarRenderer)
+goog.inherits(edY.MenuItemVarRenderer, edY.MenuItemRenderer)
+goog.addSingletonGetter(edY.MenuItemVarRenderer)
 
-ezP.Style.setControlRendererCssClass(
-  ezP.MenuItemVarRenderer,
-  'ezp-menuitem-var',
+edY.Style.setControlRendererCssClass(
+  edY.MenuItemVarRenderer,
+  'edy-menuitem-var',
   '-content',
-  {'': ezP.Font.style},
+  {'': edY.Font.style},
   ':hover',
   {'background-color': '#d6e9f8'}
 )

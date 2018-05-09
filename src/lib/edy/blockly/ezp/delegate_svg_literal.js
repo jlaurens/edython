@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.provide('ezP.DelegateSvg.Literal')
+goog.provide('edY.DelegateSvg.Literal')
 
-goog.require('ezP.DelegateSvg.Expr')
+goog.require('edY.DelegateSvg.Expr')
 
-goog.provide('ezP.DelegateSvg.Expr.numberliteral')
+goog.provide('edY.DelegateSvg.Expr.numberliteral')
 
 /**
 * Class for a DelegateSvg, number: integer, floatnumber or imagnumber.
@@ -24,13 +24,13 @@ goog.provide('ezP.DelegateSvg.Expr.numberliteral')
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Expr.makeSubclass('Literal', {
+edY.DelegateSvg.Expr.makeSubclass('Literal', {
   data: {
     content: {
       default: '',
     },
   },
-}, ezP.DelegateSvg)
+}, edY.DelegateSvg)
 
 /**
  * The xml type of this block, as it should appear in the saved data.
@@ -39,7 +39,7 @@ ezP.DelegateSvg.Expr.makeSubclass('Literal', {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise
  */
-ezP.DelegateSvg.Literal.prototype.xmlType = function (block) {
+edY.DelegateSvg.Literal.prototype.xmlType = function (block) {
   return null
 }
 
@@ -50,21 +50,21 @@ ezP.DelegateSvg.Literal.prototype.xmlType = function (block) {
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Literal.makeSubclass('numberliteral', {
+edY.DelegateSvg.Literal.makeSubclass('numberliteral', {
   data: {
     subtype: {
-      all: [ezP.T3.Expr.integer, ezP.T3.Expr.floatnumber, ezP.T3.Expr.imagnumber],
+      all: [edY.T3.Expr.integer, edY.T3.Expr.floatnumber, edY.T3.Expr.imagnumber],
       noUndo: true,
     },
     value: {
       default: '0',
       validate: function(newValue) {
         var subtypes = this.data.subtype.getAll()
-        var subtype = ezP.Do.typeOfString(newValue)
+        var subtype = edY.Do.typeOfString(newValue)
         return (subtypes.indexOf(subtype)>= 0) && {validated: newValue} || null
       },
       didChange: function(oldValue, newValue) {
-        var type = newValue? ezP.Do.typeOfString(newValue): ezP.T3.Expr.integer
+        var type = newValue? edY.Do.typeOfString(newValue): edY.T3.Expr.integer
         this.data.subtype.set(type)
       },
       synchronize: true,
@@ -74,11 +74,11 @@ ezP.DelegateSvg.Literal.makeSubclass('numberliteral', {
     value: {
       validate: true,
       endEditing: true,
-      placeholder: ezP.Msg.Placeholder.NUMBER,
+      placeholder: edY.Msg.Placeholder.NUMBER,
     },
   },
   output: {
-    check: ezP.T3.Expr.integer,
+    check: edY.T3.Expr.integer,
   },
 })
 
@@ -87,7 +87,7 @@ ezP.DelegateSvg.Literal.makeSubclass('numberliteral', {
  * @param {!Blockly.Block} block The block.
  * @private
  */
-ezP.DelegateSvg.Expr.numberliteral.prototype.showEditor = function (block) {
+edY.DelegateSvg.Expr.numberliteral.prototype.showEditor = function (block) {
   this.ui[1].fields.value.showEditor_()
 }
 
@@ -98,13 +98,13 @@ ezP.DelegateSvg.Expr.numberliteral.prototype.showEditor = function (block) {
  *     type-specific functions for this block.
  * @constructor
  */
-ezP.DelegateSvg.Expr.numberliteral.prototype.consolidateType = function (block) {
+edY.DelegateSvg.Expr.numberliteral.prototype.consolidateType = function (block) {
   var subtype = this.data.subtype.get()
   block.outputConnection.setCheck(subtype)
-  ezP.DelegateSvg.Expr.term.superClass_.consolidateType.call(this, block)
+  edY.DelegateSvg.Expr.term.superClass_.consolidateType.call(this, block)
 }
 
-goog.provide('ezP.DelegateSvg.Expr.shortliteral')
+goog.provide('edY.DelegateSvg.Expr.shortliteral')
 
 /**
 * Class for a DelegateSvg, string litteral.
@@ -114,10 +114,10 @@ goog.provide('ezP.DelegateSvg.Expr.shortliteral')
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
+edY.DelegateSvg.Literal.makeSubclass('shortliteral', {
   data: {
     subtype: {
-      all:[ezP.T3.Expr.shortstringliteral, ezP.T3.Expr.shortbytesliteral],
+      all:[edY.T3.Expr.shortstringliteral, edY.T3.Expr.shortbytesliteral],
     },
     delimiter: {
       all: ["'", '"'],
@@ -173,10 +173,10 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
           }
           return false
         }
-        F(ezP.XRE.shortstringliteralSingle, ezP.T3.Expr.shortstringliteral)
-        || F(ezP.XRE.shortstringliteralDouble, ezP.T3.Expr.shortstringliteral)
-        || F(ezP.XRE.shortbytesliteralSingle, ezP.T3.Expr.shortbytesliteral)
-        || F(ezP.XRE.shortbytesliteralDouble, ezP.T3.Expr.shortbytesliteral)
+        F(edY.XRE.shortstringliteralSingle, edY.T3.Expr.shortstringliteral)
+        || F(edY.XRE.shortstringliteralDouble, edY.T3.Expr.shortstringliteral)
+        || F(edY.XRE.shortbytesliteralSingle, edY.T3.Expr.shortbytesliteral)
+        || F(edY.XRE.shortbytesliteralDouble, edY.T3.Expr.shortbytesliteral)
       },
       consolidate: function() {
         var prefix = this.data.prefix.get()
@@ -198,21 +198,21 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
     content: { // this is the only really unordered field
       placeholder: function() {
         var block = this.sourceBlock_
-        var ezp = block.ezp
+        var edy = block.edy
         if (this.placeholderText_) {
           return this.placeholderText_
         }
-        var subtype = ezp.data.subtype.get()
-        return subtype === ezP.T3.Expr.shortbytesliteral || subtype === ezP.T3.Expr.shortbytesliteral?
-        ezP.Msg.Placeholder.BYTES: ezP.Msg.Placeholder.STRING
+        var subtype = edy.data.subtype.get()
+        return subtype === edY.T3.Expr.shortbytesliteral || subtype === edY.T3.Expr.shortbytesliteral?
+        edY.Msg.Placeholder.BYTES: edY.Msg.Placeholder.STRING
       },
       validate: true,
       startEditing: function () {
-        this.ezp.ui.fields.end.setVisible(false)
+        this.edy.ui.fields.end.setVisible(false)
       },
       endEditing: function () {
-        this.ezp.data.set(this.getValue())
-        this.ezp.ui.fields.end.setVisible(true)
+        this.edy.data.set(this.getValue())
+        this.edy.ui.fields.end.setVisible(true)
       },
     },
     end: {
@@ -220,7 +220,7 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
     },
   },
   output: {
-    check: ezP.T3.Expr.shortstringliteral,
+    check: edY.T3.Expr.shortstringliteral,
   }
 })
 
@@ -231,13 +231,13 @@ ezP.DelegateSvg.Literal.makeSubclass('shortliteral', {
  * @param {string} content
  * @return one of the two possible subtypes or undefined when the input does not fit.
  */
-ezP.DelegateSvg.Expr.shortliteral.prototype.getPossibleSubtype = function (prefix, content) {
+edY.DelegateSvg.Expr.shortliteral.prototype.getPossibleSubtype = function (prefix, content) {
   var delimiter = this.data.delimiter.get()
   var value = ''+prefix+delimiter+content+delimiter
-  return !!XRegExp.exec(value, ezP.XRE.shortbytesliteralSingle) && ezP.T3.Expr.shortbytesliteral ||
-  !!XRegExp.exec(value, ezP.XRE.shortbytesliteralDouble) && ezP.T3.Expr.shortbytesliteral ||
-  !!XRegExp.exec(value, ezP.XRE.shortstringliteralSingle) && ezP.T3.Expr.shortstringliteral ||
-  !!XRegExp.exec(value, ezP.XRE.shortstringliteralDouble) && ezP.T3.Expr.shortstringliteral
+  return !!XRegExp.exec(value, edY.XRE.shortbytesliteralSingle) && edY.T3.Expr.shortbytesliteral ||
+  !!XRegExp.exec(value, edY.XRE.shortbytesliteralDouble) && edY.T3.Expr.shortbytesliteral ||
+  !!XRegExp.exec(value, edY.XRE.shortstringliteralSingle) && edY.T3.Expr.shortstringliteral ||
+  !!XRegExp.exec(value, edY.XRE.shortstringliteralDouble) && edY.T3.Expr.shortstringliteral
 }
 
 console.warn('Change the initData below')
@@ -245,7 +245,7 @@ console.warn('Change the initData below')
  * Init all the properties of the block.
  * @param {!Blockly.Block} block to be initialized..
  */
-ezP.DelegateSvg.Expr.shortliteral.prototype.initXData = function(block) {
+edY.DelegateSvg.Expr.shortliteral.prototype.initXData = function(block) {
   // first the delimiters in the variant property
   var field = this.ui[1].fields.start
   var variant = field.getValue() || this.data.delimiter.getAll()[0]
@@ -275,7 +275,7 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.initXData = function(block) {
  * Set the type dynamically from the prefix.
  * @param {!Blockly.Block} block the owner of the receiver
  */
-ezP.DelegateSvg.Expr.shortliteral.prototype.consolidateType = function(block) {
+edY.DelegateSvg.Expr.shortliteral.prototype.consolidateType = function(block) {
   var type = this.data.subtype.get()
   block.outputConnection.setCheck([type])
 }
@@ -286,17 +286,17 @@ ezP.DelegateSvg.Expr.shortliteral.prototype.consolidateType = function(block) {
  * @param {string} op op is the operator
  * @private
  */
-ezP.DelegateSvg.Expr.shortliteral.prototype.makeTitle = function (block, variant) {
-  return ezP.Do.createSPAN(variant + '…' + variant, 'ezp-code')
+edY.DelegateSvg.Expr.shortliteral.prototype.makeTitle = function (block, variant) {
+  return edY.Do.createSPAN(variant + '…' + variant, 'edy-code')
 }
 
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr) {
+edY.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr) {
   mgr.populateProperties(block, 'delimiter')
   mgr.separate()
   var current = this.data.prefix.get()
@@ -307,11 +307,11 @@ ezP.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr)
   var item = function(msg, prefix) {
     if (prefix !== current) {
       var title = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        ezP.Do.createSPAN(msg, 'ezp-code'),
-        goog.dom.createTextNode(' '+ezP.Msg.AT_THE_LEFT),
+        edY.Do.createSPAN(msg, 'edy-code'),
+        goog.dom.createTextNode(' '+edY.Msg.AT_THE_LEFT),
       )
-      return new ezP.MenuItem(title, function() {
-        block.ezp.data.prefix.set(prefix)
+      return new edY.MenuItem(title, function() {
+        block.edy.data.prefix.set(prefix)
       })
     }
   }
@@ -346,16 +346,16 @@ ezP.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr)
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
- * @param {!ezP.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!edY.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-ezP.DelegateSvg.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  ezP.DelegateSvg.Literal.literalPopulateContextMenuFirst_.call(this, block, mgr)
-  ezP.DelegateSvg.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+edY.DelegateSvg.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  edY.DelegateSvg.Literal.literalPopulateContextMenuFirst_.call(this, block, mgr)
+  edY.DelegateSvg.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this,block, mgr)
   return true
 }
 
-goog.provide('ezP.DelegateSvg.Expr.longliteral')
+goog.provide('edY.DelegateSvg.Expr.longliteral')
 
 /**
 * Class for a DelegateSvg, docstring (expression).
@@ -365,10 +365,10 @@ goog.provide('ezP.DelegateSvg.Expr.longliteral')
 *     type-specific functions for this block.
 * @constructor
 */
-ezP.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
+edY.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
   data: {
     subtype: {
-      all: [ezP.T3.Expr.longstringliteral, ezP.T3.Expr.longbytesliteral],
+      all: [edY.T3.Expr.longstringliteral, edY.T3.Expr.longbytesliteral],
     },
     delimiter: {
       all: ["'''", '"""'],
@@ -388,20 +388,20 @@ ezP.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
           }
           return false
         }
-        if (F(ezP.XRE.longstringliteralSingle, ezP.T3.Expr.longstringliteral)
-        || F(ezP.XRE.longstringliteralDouble, ezP.T3.Expr.longstringliteral)
-        || F(ezP.XRE.longbytesliteralSingle, ezP.T3.Expr.longbytesliteral)
-        || F(ezP.XRE.longbytesliteralDouble, ezP.T3.Expr.longbytesliteral)) {
-          this.owner_.removeError(this.owner_.block_, ezP.Key.VALUE)
+        if (F(edY.XRE.longstringliteralSingle, edY.T3.Expr.longstringliteral)
+        || F(edY.XRE.longstringliteralDouble, edY.T3.Expr.longstringliteral)
+        || F(edY.XRE.longbytesliteralSingle, edY.T3.Expr.longbytesliteral)
+        || F(edY.XRE.longbytesliteralDouble, edY.T3.Expr.longbytesliteral)) {
+          this.owner_.removeError(this.owner_.block_, edY.Key.VALUE)
         } else {
-          this.owner_.setError(this.owner_.block_, ezP.Key.VALUE, 'Bad string|bytes literal: '+
+          this.owner_.setError(this.owner_.block_, edY.Key.VALUE, 'Bad string|bytes literal: '+
           (newValue.length>11?newValue.substr(0,10)+'…':newValue))
         }
       },
     }
   },
   output: {
-    check: ezP.T3.Expr.longstringliteral,
+    check: edY.T3.Expr.longstringliteral,
   },
 })
 
@@ -412,17 +412,17 @@ ezP.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
  * @param {string} content
  * @return one of the two possible subtypes or undefined when the input does not fit.
  */
-ezP.DelegateSvg.Expr.longliteral.prototype.getPossibleSubtype = function (prefix, content) {
+edY.DelegateSvg.Expr.longliteral.prototype.getPossibleSubtype = function (prefix, content) {
   var delimiter = this.data.delimiter.get()
   var value = ''+prefix+delimiter+content+delimiter
-  return !!XRegExp.exec(value, ezP.XRE.longbytesliteralSingle) && ezP.T3.Expr.longbytesliteral ||
-  !!XRegExp.exec(value, ezP.XRE.longbytesliteralDouble) && ezP.T3.Expr.longbytesliteral ||
-  !!XRegExp.exec(value, ezP.XRE.longstringliteralSingle) && ezP.T3.Expr.longstringliteral ||
-  !!XRegExp.exec(value, ezP.XRE.longstringliteralDouble) && ezP.T3.Expr.longstringliteral
+  return !!XRegExp.exec(value, edY.XRE.longbytesliteralSingle) && edY.T3.Expr.longbytesliteral ||
+  !!XRegExp.exec(value, edY.XRE.longbytesliteralDouble) && edY.T3.Expr.longbytesliteral ||
+  !!XRegExp.exec(value, edY.XRE.longstringliteralSingle) && edY.T3.Expr.longstringliteral ||
+  !!XRegExp.exec(value, edY.XRE.longstringliteralDouble) && edY.T3.Expr.longstringliteral
 }
 
-ezP.DelegateSvg.Literal.T3s = [
-  ezP.T3.Expr.shortliteral,
-  ezP.T3.Expr.longliteral,
-  ezP.T3.Expr.numberliteral,
+edY.DelegateSvg.Literal.T3s = [
+  edY.T3.Expr.shortliteral,
+  edY.T3.Expr.longliteral,
+  edY.T3.Expr.numberliteral,
   ]

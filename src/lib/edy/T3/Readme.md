@@ -14,6 +14,6 @@ some extensions are added in `expressions_xtd.html` and
 Both must be loaded after the original file, and in that order.
 
 The result is a `T3.js` file that should be copied in folder
-`.../ezp/blockly/ezp/`
+`.../edy/blockly/edy/`
 
 
