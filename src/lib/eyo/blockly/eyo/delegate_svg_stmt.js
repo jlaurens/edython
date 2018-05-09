@@ -1,0 +1,654 @@
+/**
+ * edython
+ *
+ * Copyright 2018 Jérôme LAURENS.
+ *
+ * License CeCILL-B
+ */
+/**
+ * @fileoverview BlockSvg delegates for edython.
+ * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
+ */
+'use strict'
+
+goog.provide('eYo.DelegateSvg.Stmt')
+
+goog.require('eYo.DelegateSvg.List')
+goog.require('eYo.DelegateSvg.Expr')
+goog.require('eYo.DelegateSvg.Operator')
+
+/**
+ * Class for a DelegateSvg, statement block.
+ * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * For edython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+eYo.DelegateSvg.makeSubclass('Stmt', {
+  data: {
+    comment: {
+      default: '',
+      validate: function(newValue) {
+        return {validated: XRegExp.exec(newValue, eYo.XRE.comment).value || ''}
+      },
+      synchronize: true,
+      placeholderText: eYo.Msg.Placeholder.COMMENT,
+      xml: {
+        toDom: function(element) {
+          if (this.data.comment_show.get()) {
+            element.setAttribute(this.attributeName, this.toText())
+          }
+        },
+        fromDom: function(element) {
+          var comment = element.getAttribute(this.attributeName)
+          if (goog.isDefAndNotNull(comment)) {
+            this.fromText(comment)
+            this.data.comment_show.set(true)
+          }
+        },
+      }
+    },
+    comment_show: {
+      default: false,
+      validate: function(newValue) {
+        return {validated: newValue} // is it still necessary ?
+      },
+      synchronize: function(newValue) {
+        this.ui.fields.comment_mark.setVisible(!!newValue)
+        this.ui.fields.comment.setVisible(!!newValue)
+      },
+      xml: false,// do not save
+    },
+  },
+  fields: {
+    comment_mark: {
+      value: '#',
+      css: 'reserved',
+    },
+    comment: {
+      validate: true,
+      endEditing: true,
+      placeholder: eYo.Msg.Placeholder.COMMENT,
+      css: 'comment',
+    },
+  },
+})
+eYo.Delegate.Manager.registerAll(eYo.T3.Stmt, eYo.DelegateSvg.Stmt, true)
+
+/**
+ * Initialize a block.
+ * @param {!Blockly.Block} block to be initialized..
+ * @extends {Blockly.Block}
+ * @constructor
+ */
+eYo.DelegateSvg.Stmt.prototype.postInitSvg = function (block) {
+  if (this.svgSharpGroup_) {
+    return
+  }
+  eYo.DelegateSvg.Stmt.superClass_.postInitSvg.call(this, block)
+  goog.asserts.assert(this.svgPathContour_, 'Missing svgPathContour_')
+  this.svgSharpGroup_ = Blockly.utils.createSvgElement('g',
+    {'class': 'eyo-sharp-group'}, null)
+  goog.dom.insertSiblingAfter(this.svgSharpGroup_, this.svgPathContour_)
+}
+
+/**
+ * Deletes or nulls out any references to COM objects, DOM nodes, or other
+ * disposable objects...
+ * @protected
+ */
+eYo.DelegateSvg.Stmt.prototype.disposeInternal = function () {
+  goog.dom.removeNode(this.svgSharpGroup_)
+  this.svgSharpGroup_ = undefined
+  eYo.DelegateSvg.superClass_.disposeInternal.call(this)
+}
+
+/**
+ * Statement block path.
+ * @param {!Blockly.Block} block.
+ * @private
+ */
+eYo.DelegateSvg.Stmt.prototype.statementPathDef_ = function (block) {
+  /* eslint-disable indent */
+  var w = block.width
+  var h = block.height
+  var steps = ['m ' + w + ',0 v ' + h]
+  var r = eYo.Style.Path.radius()
+  var a = ' a ' + r + ', ' + r + ' 0 0 1 '
+  var c8n = block.nextConnection
+  if (c8n && c8n.isConnected()) {
+    steps.push('h ' + (-w))
+  } else {
+    steps.push('h ' + (-w + r) + a + (-r) + ',' + (-r))
+    h -= r
+  }
+  c8n = block.previousConnection
+  if (c8n && c8n.isConnected() && c8n.targetBlock().getNextBlock() === block) {
+    steps.push('v ' + (-h) + ' z')
+  } else {
+    steps.push('v ' + (-h + r) + a + r + ',' + (-r) + ' z')
+  }
+  return steps.join(' ')
+} /* eslint-enable indent */
+
+eYo.DelegateSvg.Stmt.prototype.shapePathDef_ =
+  eYo.DelegateSvg.Stmt.prototype.contourPathDef_ =
+    eYo.DelegateSvg.Stmt.prototype.highlightPathDef_ =
+      eYo.DelegateSvg.Stmt.prototype.statementPathDef_
+
+/**
+ * Render the leading # character for disabled statement blocks.
+ * @param io.
+ * @private
+ * @override
+ */
+eYo.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
+  if (io.block.disabled) {
+    var children = goog.dom.getChildren(this.svgSharpGroup_)
+    var length = children.length
+    if (!length) {
+      var y = eYo.Font.totalAscent
+      var text = Blockly.utils.createSvgElement('text',
+        {'x': 0, 'y': y},
+        this.svgSharpGroup_)
+      this.svgSharpGroup_.appendChild(text)
+      text.appendChild(document.createTextNode('#'))
+      length = 1
+    }
+    var expected = io.block.eyo.getStatementCount(io.block)
+    while (length < expected) {
+      y = eYo.Font.totalAscent + length * eYo.Font.lineHeight()
+      text = Blockly.utils.createSvgElement('text',
+        {'x': 0, 'y': y},
+        this.svgSharpGroup_)
+      this.svgSharpGroup_.appendChild(text)
+      text.appendChild(document.createTextNode('#'))
+      ++length
+    }
+    while (length > expected) {
+      text = children[--length]
+      this.svgSharpGroup_.removeChild(text)
+    }
+    this.svgSharpGroup_.setAttribute('transform', 'translate(' + (io.cursorX) +
+        ', ' + eYo.Padding.t() + ')')
+    io.cursorX += 2*eYo.Font.space
+  } else {
+    goog.dom.removeChildren(this.svgSharpGroup_)
+  }
+}
+
+/**
+ * Render one input of value block.
+ * @param io.
+ * @private
+ */
+eYo.DelegateSvg.Stmt.prototype.renderDrawInput_ = function (io) {
+  this.renderDrawDummyInput_(io) ||
+    this.renderDrawValueInput_(io)
+}
+
+/**
+ * Render the inputs of the block.
+ * @param {!Blockly.Block} block.
+ * @protected
+ */
+eYo.DelegateSvg.Stmt.prototype.minBlockWidth = function (block) {
+  return eYo.Font.tabWidth
+}
+
+/**
+ * Insert a block above.
+ * If the block's previous connection is connected,
+ * connects the block above to it.
+ * The connection cannot always establish.
+ * The holes are filled.
+ * @param {!Block} block.
+ * @param {string} prototypeName.
+ * @param {string} parentInputName, which parent's connection to use
+ * @return the created block
+ */
+eYo.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeName, subtype) {
+  var c8n = block.previousConnection
+  if (c8n) {
+    Blockly.Events.disable()
+    var parentBlock = eYo.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName, true)
+    Blockly.Events.enable()
+    var parentC8n = parentBlock.nextConnection
+    if (parentC8n) {
+      Blockly.Events.setGroup(true)
+      try {
+        if (Blockly.Events.isEnabled()) {
+          Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
+        }
+        parentBlock.eyo.data.subtype.set(subtype)
+        var targetC8n = c8n.targetConnection
+        if (targetC8n) {
+          targetC8n.disconnect()
+          if (parentBlock.previousConnection) {
+            targetC8n.connect(parentBlock.previousConnection)
+          }
+        } else {
+          var its_xy = block.getRelativeToSurfaceXY();
+          var my_xy = parentBlock.getRelativeToSurfaceXY();
+          parentBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+        }
+        parentBlock.eyo.beReady(parentBlock)
+        var holes = eYo.HoleFiller.getDeepHoles(parentBlock)
+        eYo.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
+        parentBlock.render()
+        c8n.connect(parentC8n)
+        if (Blockly.selected === block) {
+          parentBlock.select()
+        }
+      } finally {
+        Blockly.Events.setGroup(false)
+      }
+    }
+  }
+  return parentBlock
+}
+
+/**
+ * Insert a block below.
+ * If the block's next connection is connected,
+ * connects the block below to it.
+ * The connection cannot always establish.
+ * The holes are filled.
+ * @param {!Block} block.
+ * @param {string} prototypeName.
+ * @param {string} parentInputName, which parent's connection to use
+ * @return the created block
+ */
+eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototypeName) {
+  Blockly.Events.setGroup(true)
+  try {
+    var blockAfter = eYo.DelegateSvg.newBlockComplete(block.workspace, belowPrototypeName, true)
+    var c8n = block.nextConnection
+    var targetC8n = c8n.targetConnection
+    if (targetC8n) {
+      targetC8n.disconnect()
+      if (targetC8n.checkType_(blockAfter.nextConnection)) {
+        targetC8n.connect(blockAfter.nextConnection)
+      }
+    }
+    blockAfter.eyo.beReady(blockAfter)
+    var holes = eYo.HoleFiller.getDeepHoles(blockAfter)
+    eYo.HoleFiller.fillDeepHoles(blockAfter.workspace, holes)
+    blockAfter.render()
+    block.nextConnection.connect(blockAfter.previousConnection)
+    if (Blockly.selected === block) {
+      blockAfter.select()
+    }
+  } finally {
+    Blockly.Events.setGroup(false)
+  }
+  return blockAfter
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+eYo.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (block, mgr) {
+  var show = this.data.comment_show.get()
+  var content =
+  eYo.Do.createSPAN(show? eYo.Msg.Placeholder.REMOVE_COMMENT: eYo.Msg.Placeholder.ADD_COMMENT, null)
+  var menuItem = new eYo.MenuItem(content, function() {
+    block.eyo.data.comment_show.set(!show)
+  })
+  mgr.addChild(menuItem, true)
+  return true
+}
+
+/**
+ * Class for a DelegateSvg, pass_stmt.
+ * For edython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.pass_stmt, {
+  fields: {
+    label: 'pass',
+  },
+})
+
+/**
+ * Class for a DelegateSvg, break_stmt.
+ * For edython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.break_stmt, {
+  fields: {
+    label: 'break',
+  },
+})
+
+/**
+ * Class for a DelegateSvg, continue_stmt.
+ * For edython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.continue_stmt, {
+  fields: {
+    label: 'continue',
+  },
+})
+
+////////// gobal/nonlocal statement
+/**
+ * Class for a DelegateSvg, non_void_identifier_list block.
+ * This block may be sealed.
+ * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * For edython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+eYo.DelegateSvg.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
+  list: {
+    check: eYo.T3.Expr.Check.non_void_identifier_list,
+    empty: false,
+    presep: ',',
+  },
+})
+
+/**
+ * Class for a DelegateSvg, global_nonlocal_expr.
+ * For edython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_nonlocal_stmt, {
+  data: {
+    variant: {
+      GLOBAL: 0,
+      NONLOCAL: 1,
+      all: ['global', 'nonlocal'],
+      synchronize: true,
+    },
+  },
+  fields: {
+    variant: {
+      css: 'reserved',
+    },
+  },
+  tiles: {
+    identifiers: {
+      order: 1,
+      wrap: eYo.T3.Expr.non_void_identifier_list,
+    },
+  },
+})
+
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * Default implementation just returns 'eyo:list' when this block is embedded
+ * and the inherited value otherwise.
+ * For edython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return true if the given value is accepted, false otherwise
+ */
+eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.tagName = function (block) {
+  var M = this.data.variant.model
+  var current = this.data.variant.get()
+  return current === M.GLOBAL? 'eyo:global': 'eyo:nonlocal'
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var M = this.data.variant.model
+  var current = block.eyo.data.variant.get()
+  var variants = block.eyo.data.variant.getAll()
+  var F = function(i) {
+    var key = variants[i]
+    var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
+      eYo.Do.createSPAN(key, 'eyo-code-reserved'),
+      eYo.Do.createSPAN(' …', 'eyo-code-placeholder'),
+    )
+    var menuItem = new eYo.MenuItem(content, function() {
+      block.eyo.data.variant.set(key)
+    })
+    mgr.addChild(menuItem, true)
+    menuItem.setEnabled(key !== current)
+  }
+  F(M.GLOBAL)
+  F(M.NONLOCAL)
+  mgr.shouldSeparate()
+  return eYo.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+}
+
+/**
+ * Class for a DelegateSvg, expression_stmt.
+ * For edython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
+  tiles: {
+    expression: {
+      order: 1,
+      check: eYo.T3.Expr.Check.expression,
+    },
+  },
+})
+
+
+/**
+ * Class for a DelegateSvg, docstring_top_stmt.
+ * For edython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+eYo.DelegateSvg.Stmt.makeSubclass('docstring_top_stmt', {
+  link: eYo.T3.Expr.longliteral,
+})
+
+/**
+ * docstring blocks are white, to be confirmed.
+ * For edython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return None
+ */
+eYo.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = function(block)  {
+  return true
+}
+
+/**
+ * Class for a DelegateSvg, docstring_def_stmt.
+ * For edython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+eYo.DelegateSvg.Stmt.makeSubclass('docstring_def_stmt', {
+  link: eYo.T3.Expr.longliteral,
+})
+
+console.warn('if_part and others conform to the new model and xml ?')
+/**
+ * docstring blocks are white.
+ * For edython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return None
+ */
+eYo.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = function(block)  {
+  return true
+}
+
+/**
+ * Class for a DelegateSvg, del_stmt.
+ * For edython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+eYo.DelegateSvg.Stmt.makeSubclass('del_stmt', {
+  tiles: {
+    del: {
+      order: 1,
+      fields: {
+        label: 'del',
+      },
+      wrap: eYo.T3.Expr.target_list,
+    },
+  },
+})
+
+/**
+ * Class for a DelegateSvg, return_stmt.
+ * For edython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+eYo.DelegateSvg.Stmt.makeSubclass('return_stmt', {
+  tiles: {
+    return: {
+      order: 1,
+      fields: {
+        label: 'return',
+      },
+      wrap: eYo.T3.Expr.expression_list,
+    },
+  },
+})
+
+/**
+ * Class for a DelegateSvg, any_stmt.
+ * For edython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
+  data: {
+    variant: {
+      INSTRUCTION: 0,
+      INSTRUCTION_COMMENT: 1,
+      COMMENT: 2,
+      all: [0, 1, 2],
+      default: 2,
+      xml: false,
+      didChange: function(oldValue, newValue) {
+        this.ui.fields.code.setVisible(newValue !== this.model.COMMENT)
+        this.data.comment_show.set(newValue !== this.model.INSTRUCTION)
+        this.data.code.required = newValue !== this.model.COMMENT
+      },
+    },
+    comment_show: {
+      didChange: function(oldValue, newValue) {
+        var data = this.data.variant
+        var current = data.get()
+        data.set(newValue? current || 1: 0)
+      },
+      xml: false,// do not save
+    },
+    code: {
+      synchronize: true,
+      xml: {
+        text: true,
+        didoad: function () {
+          var variant = this.owner.data.variant
+          if (variant.get() === variant.model.COMMENT) {
+            variant.set(variant.model.INSTRUCTION_COMMENT)
+          }
+        },
+      },
+    },
+  },
+  fields: {
+    code: {
+      endEditing: true,
+    },
+  },
+})
+
+/**
+ * comment blocks are white.
+ * For edython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return None
+ */
+eYo.DelegateSvg.Stmt.any_stmt.prototype.isWhite = function (block) {
+  return this.data.variant.get() === this.data.variant.model.COMMENT
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+eYo.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var model = this.data.variant.model
+  var current = this.data.variant.get()
+  var comment = this.data.comment.toText()
+  var code = this.data.code.toText()
+  if (code.length > 32) {
+    var short_code = code.substring(0, 31)+'…'
+  }
+  if (comment.length > 32) {
+    var short_comment = comment.substring(0, 31)+'…'
+  }
+  var total = code.length+comment.length
+  if (total > 30) {
+    var short_code_all = code.substring(0, Math.floor(30 * code.length / total)+2)+'…'
+    var short_comment_all = comment.substring(0, Math.floor(30 * comment.length / total)+2)+'…'
+  }
+  var F = function(content, variant) {
+    if (variant !== current) {
+      var menuItem = new eYo.MenuItem(content, function() {
+        block.eyo.data.variant.set(variant)
+      })
+      mgr.addChild(menuItem)
+    }
+  }
+  var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    eYo.Do.createSPAN('# ', 'eyo-code-reserved'),
+    eYo.Do.createSPAN(short_comment || comment || '…', 'eyo-code-comment'),
+  )
+  F(content, model.COMMENT)
+  var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    eYo.Do.createSPAN(short_code || code || '…', 'eyo-code'),
+  )
+  F(content, model.INSTRUCTION)
+  var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    eYo.Do.createSPAN(short_code_all || code || '…', 'eyo-code'),
+    eYo.Do.createSPAN(' # ', 'eyo-code-reserved'),
+    eYo.Do.createSPAN(short_comment_all || '…' || comment, 'eyo-code-comment'),
+  )
+  F(content, model.INSTRUCTION_COMMENT)
+ return eYo.DelegateSvg.Stmt.any_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || true
+}
+
+eYo.DelegateSvg.Stmt.T3s = [
+  eYo.T3.Stmt.pass_stmt,
+  eYo.T3.Stmt.break_stmt,
+  eYo.T3.Stmt.continue_stmt,
+  eYo.T3.Stmt.global_nonlocal_stmt,
+  eYo.T3.Stmt.expression_stmt,
+  eYo.T3.Stmt.docstring_top_stmt,
+  eYo.T3.Stmt.docstring_def_stmt,
+  eYo.T3.Stmt.del_stmt,
+  eYo.T3.Stmt.return_stmt,
+  eYo.T3.Stmt.any_stmt,
+]
