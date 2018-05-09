@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Renderer for {@link goog.ui.SubMenu}s ezPython.
+ * @fileoverview Renderer for {@link goog.ui.SubMenu}s edython.
  *
  */
 

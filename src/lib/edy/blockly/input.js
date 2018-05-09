@@ -1,12 +1,12 @@
 /**
- * ezPython
+ * edython
  *
  * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
 /**
- * @fileoverview Input extension for ezPython.
+ * @fileoverview Input extension for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -22,7 +22,7 @@ goog.require('Blockly.Input')
  * to avoid name collisions.
  * This is not a delegate because there are few informations or actions needed.
  * Subclassing would not fit here.
- * For ezPython.
+ * For edython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
 edY.Input.setupEzpData = function (input, data) {

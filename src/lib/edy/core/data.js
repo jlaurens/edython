@@ -1,5 +1,5 @@
 /**
- * ezPython
+ * edython
  *
  * Copyright 2018 Jérôme LAURENS.
  *
@@ -17,7 +17,7 @@ goog.provide('edY.Data')
 
 /**
  * Base property constructor.
- * For ezPython.
+ * For edython.
  * @param {!Object} owner The object owning the data.
  * @param {!string} key name of the data.
  * @param {!Object} model contains methods and properties.
@@ -512,7 +512,7 @@ edY.Data.prototype.setFieldVisible = function (newValue, inputIndex, fieldKey) {
  * This is the method used to save data to an xml tree.
  * If the receiver is not disabled, send its model a `toDom` message
  * if relevant, send this message to the receiver. 
- * For ezPython.
+ * For edython.
  * @param {Element} xml the persistent element.
  */
 edY.Data.prototype.saveToDom = function(element) {
@@ -533,7 +533,7 @@ edY.Data.prototype.saveToDom = function(element) {
  * Does nothing if the data is disabled or if the model
  * has a `false`valued xml property.
  * This is the raw converter in the sense that 
- * For ezPython.
+ * For edython.
  * @param {Element} xml the persistent element.
  */
 edY.Data.prototype.toDom = function(element) {
@@ -561,7 +561,7 @@ edY.Data.prototype.toDom = function(element) {
 /**
  * Convert the block's data from a dom element.
  * Aske the model first for a `fromDom` method, then the receiver.
- * For ezPython.
+ * For edython.
  * @param {Element} xml the persistent element.
  * @return a dom element, void lists may return nothing
  * @this a block delegate
@@ -578,7 +578,7 @@ edY.Data.prototype.loadFromDom = function(element) {
 
 /**
  * Convert the block's data from a dom element.
- * For ezPython.
+ * For edython.
  * @param {!Blockly.Block} block The block to be converted.
  * @param {Element} xml the persistent element.
  * @return a dom element, void lists may return nothing
@@ -618,7 +618,7 @@ edY.Data.prototype.fromDom = function(element) {
 /**
  * Set the required status.
  * When some data is required, an `?` might be used instead of nothing
- * For ezPython.
+ * For edython.
  */
 edY.Data.prototype.setRequiredFromDom = function (newValue) {
   this.required_from_dom = newValue
@@ -626,7 +626,7 @@ edY.Data.prototype.setRequiredFromDom = function (newValue) {
 
 /**
  * Get the required status.
- * For ezPython.
+ * For edython.
  * @param {boolean} newValue.
  */
 edY.Data.prototype.isRequiredFromDom = function () {
@@ -635,7 +635,7 @@ edY.Data.prototype.isRequiredFromDom = function () {
 
 /**
  * Clean the required status, changing the value if necessary.
- * For ezPython.
+ * For edython.
  * @param {boolean} newValue.
  */
 edY.Data.prototype.clearRequiredFromDom = function () {

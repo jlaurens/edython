@@ -1,5 +1,5 @@
 /**
- * ezPython
+ * edython
  *
  * Copyright 2018 Jérôme LAURENS.
  *
@@ -13,8 +13,8 @@
  * 2) domToBlock, to create a block from an xml tree.
  * 3) toDom, to convert the block content, into an existing xml element
  * 4) fromDom, to convert the content of an existing element into a block.
- * The Blockly original methods are overriden to manage the ezPython blocks.
- * The xml nodes concerning ezPython all pertain to the `edy` namespace.
+ * The Blockly original methods are overriden to manage the edython blocks.
+ * The xml nodes concerning edython all pertain to the `edy` namespace.
  * There are separate xml nodes for statements and expressions,
  * the latter are characterized by an input attribute, which may be
  * a void string. This is useful for call expression that can appear as
@@ -109,7 +109,7 @@ Blockly.Xml.domToWorkspace = function(xml, workspace) {
     workspace.setResizesEnabled(false);
   }
 
-  // This part is the custom part for ezPython
+  // This part is the custom part for edython
   var newBlock = function(xmlChild) {
     var block
     if (xmlChild && goog.isFunction(xmlChild.getAttribute)) {
@@ -165,7 +165,7 @@ Blockly.Xml.domToWorkspace = function(xml, workspace) {
         }
         variablesFirst = false;
       } else {
-        // for ezPython
+        // for edython
         newBlock(xmlChild)
       }
     }
@@ -336,7 +336,7 @@ goog.require('edY.DelegateSvg.Expr')
 
 /**
  * The xml tag name of this block, as it should appear in the saved data.
- * For ezPython.
+ * For edython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise
  */
@@ -350,7 +350,7 @@ goog.require('edY.DelegateSvg.List')
 /**
  * The xml tag name of this block, as it should appear in the saved data.
  * Default implementation just returns the block type.
- * For ezPython.
+ * For edython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise
  */
@@ -362,7 +362,7 @@ goog.provide('edY.Xml.Text')
 
 /**
  * Convert the block's value to a text dom element.
- * For ezPython.
+ * For edython.
  * @param {!Blockly.Block} block The block to be converted.
  * @param {Element} xml the persistent element.
  * @return a dom element
@@ -378,7 +378,7 @@ edY.Xml.Text.toDom = function(block, element, optNoId) {
 
 /**
  * Convert the block from a dom element.
- * For ezPython.
+ * For edython.
  * @param {!Blockly.Block} block The block to be converted.
  * @param {Element} xml the persistent element.
  * @return a dom element
@@ -397,7 +397,7 @@ goog.require('edY.DelegateSvg.Literal')
 /**
  * The xml tag name of this block, as it should appear in the saved data.
  * Default implementation just returns 'edy:literal'
- * For ezPython.
+ * For edython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise
  */
@@ -455,7 +455,7 @@ goog.provide('edY.Xml.Data')
 /**
  * Convert the block's data.
  * List all the available data and converts them to xml.
- * For ezPython.
+ * For edython.
  * @param {!Blockly.Block} block The block to be converted.
  * @param {Element} xml the persistent element.
  * @param {boolean} optNoId.
@@ -472,7 +472,7 @@ edY.Xml.Data.toDom = function(block, element, optNoId) {
 
 /**
  * Convert the block's data from a dom element.
- * For ezPython.
+ * For edython.
  * @param {!Blockly.Block} block The block to be converted.
  * @param {Element} xml the persistent element.
  * @return a dom element, void lists may return nothing
@@ -602,7 +602,7 @@ edY.Xml.registerAllTags = function() {
  * Decode an XML block tag and create a block (and possibly sub blocks)
  * on the workspace.
  * Try to decode a literal or other special node.
- * If that does not work, try to deconde ans ezPython block,
+ * If that does not work, try to deconde ans edython block,
  * if that still does not work, fall down to the original
  * Blockly's method.
  * We have 2 hooks levels.
@@ -840,7 +840,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 
 // /**
 //  * Convert the block's input list and next blocks to a dom element.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
 //  * @param {boolean} optNoId.
@@ -855,7 +855,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 
 // /**
 //  * Convert the block's input list and next statement from a dom element.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
 //  * @return a dom element, void lists may return nothing
@@ -891,7 +891,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 //  * What are the criteria to decide if an input is require or not?
 //  * When writing to dom, such an input must not be disabled,
 //  * and must have some data or be marked as required.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!edY.Input} input  the input to be saved.
 //  * @param {Element} element a dom element in which to save the input
 //  * @param {boolean} optNoId.
@@ -952,7 +952,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 //  * then we ask the input target block to fromDom.
 //  * Target blocks are managed here too.
 //  * No consistency test is made however.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!edY.Input} block The block to be converted.
 //  * @param {Element} element a dom element in which to save the input
 //  * @return the added child, if any
@@ -1001,7 +1001,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 
 // /**
 //  * Convert the block's input with the given name to a dom element.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {string} name The name of the input
 //  * @param {Element} element a dom element in which to save the input
@@ -1018,7 +1018,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 
 // /**
 //  * Convert the block's input with the given name to a dom element.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {string} name The name of the input
 //  * @param {Element} element a dom element in which to save the input
@@ -1037,7 +1037,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 
 // /**
 //  * Convert the block's input list from a dom element.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
 //  * @param {boolean} optNoId.
@@ -1059,7 +1059,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 //  * Convert the delagate's input list from a dom element.
 //  * We filtered out disabled inputs while saving,
 //  * we do not while loading.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
 //  * @return a dom element, void lists may return nothing
@@ -1092,7 +1092,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 
 // /**
 //  * Convert the block's next statements to a dom element.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
 //  * @param {boolean} optNoId.
@@ -1114,7 +1114,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 
 // /**
 //  * Convert the block's next statement from a dom element.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
 //  * @return a dom element, void lists may return nothing
@@ -1147,7 +1147,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 // /**
 //  * Convert the block to a dom element.
 //  * Transfer control to the first input that is not disabled.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
 //  * @param {boolean} optNoId.
@@ -1172,7 +1172,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 //  * known until the end.
 //  * List blocks are expected to contain only expressions,
 //  * no statements.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
 //  * @return a dom element, void lists may return nothing
@@ -1471,7 +1471,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 
 // /**
 //  * Convert the block's input list with the given name to a dom element.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
 //  * @param {boolean} optNoId.
@@ -1495,7 +1495,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 
 // /**
 //  * Convert the block's input list with the given name to a dom element.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {string} name.
 //  * @param {Element} xml the persistent element.
@@ -1587,7 +1587,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 
 // /**
 //  * Convert the block's input list from a dom element.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
 //  * @param {boolean} optNoId.
@@ -1599,7 +1599,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 
 // /**
 //  * Convert the block's input list from a dom element.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
 //  * @return a dom element, void lists may return nothing
@@ -1634,7 +1634,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 
 // /**
 //  * Convert the block to a dom element and vice versa.
-//  * For ezPython.
+//  * For edython.
 //  */
 // edY.DelegateSvg.Literal.prototype.xml = edY.Xml.Text
 
@@ -1643,7 +1643,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 // /**
 //  * Convert the block to a dom element.
 //  * Called at the end of blockToDom.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
 //  * @param {boolean} optNoId.
@@ -1661,7 +1661,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 //  * known until the end.
 //  * List blocks are expected to contain only expressions,
 //  * no statements.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
 //  * @return a dom element, void lists may return nothing
@@ -1706,7 +1706,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 //  * The xml tag name of this block, as it should appear in the saved data.
 //  * Default implementation just returns 'edy:list' when this block is embedded
 //  * and the inherited value otherwise.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The owner of the receiver.
 //  * @return true if the given value is accepted, false otherwise
 //  */
@@ -1757,7 +1757,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 // /**
 //  * The xml tag name of this block, as it should appear in the saved data.
 //  * Default implementation just returns 'expr'
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The owner of the receiver.
 //  * @return true if the given value is accepted, false otherwise
 //  */
@@ -1853,7 +1853,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 // /**
 //  * Convert the block to a dom element.
 //  * Called at the end of blockToDom.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
 //  * @param {boolean} optNoId.
@@ -1884,7 +1884,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 // /**
 //  * Convert the block to a dom element.
 //  * Called at the end of blockToDom.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
 //  * @param {boolean} optNoId.
@@ -1928,7 +1928,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 // /**
 //  * The xml tag name of this block, as it should appear in the saved data.
 //  * Default implementation just returns the block type.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The owner of the receiver.
 //  * @return true if the given value is accepted, false otherwise
 //  */
@@ -1939,7 +1939,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 // /**
 //  * Convert the block to a dom element.
 //  * Called at the end of blockToDom.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
 //  * @param {boolean} optNoId.
@@ -2046,7 +2046,7 @@ edY.Xml.Call.domToBlock = function(element, workspace) {
 // /**
 //  * The xml tag name of this block, as it should appear in the saved data.
 //  * Default implementation just returns the block type.
-//  * For ezPython.
+//  * For edython.
 //  * @param {!Blockly.Block} block The owner of the receiver.
 //  * @return true if the given value is accepted, false otherwise
 //  */

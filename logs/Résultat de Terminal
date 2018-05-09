@@ -6,8 +6,8 @@ Applications		Mail			Untitled1.ipynb
 Desktop			Movies			eclipse
 Documents		Music			epsilonwriter
 Downloads		Pictures		global.js
-JLaurens-3:~ enseignants$ cd /Volumes/Users/ezPython/github/ezPython
-JLaurens-3:ezPython enseignants$ ls
+JLaurens-3:~ enseignants$ cd /Volumes/Users/edython/github/edython
+JLaurens-3:edython enseignants$ ls
 Licence_CeCILL-B_V1-en.html	gfx
 Licence_CeCILL-B_V1-fr.html	node_modules
 README-dev.md			package-lock.json
@@ -17,10 +17,10 @@ build				src
 build.log			static
 dist				test
 fonts
-JLaurens-3:ezPython enseignants$ date -u; npm run build:dir; date -u
+JLaurens-3:edython enseignants$ date -u; npm run build:dir; date -u
 Mar 19 déc 2017 18:35:31 UTC
 
-> edython@0.0.0 build:dir /Volumes/Users/ezPython/github/ezPython
+> edython@0.0.0 build:dir /Volumes/Users/edython/github/edython
 > node .electron-vue/build.js && electron-builder --dir
 
 
@@ -94,7 +94,7 @@ Mar 19 déc 2017 18:35:31 UTC
      @ ./src/renderer/main.js
     
     ERROR in ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/renderer/components/Page/Content/Blockly.vue
-    Module not found: Error: Can't resolve 'row-loader' in '/Volumes/Users/ezPython/github/ezPython'
+    Module not found: Error: Can't resolve 'row-loader' in '/Volumes/Users/edython/github/edython'
      @ ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/renderer/components/Page/Content/Blockly.vue 5:0-79
      @ ./src/renderer/components/Page/Content/Blockly.vue
      @ ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/renderer/components/Page/Content.vue
@@ -105,7 +105,7 @@ Mar 19 déc 2017 18:35:31 UTC
      @ ./src/renderer/main.js
     
     ERROR in ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/renderer/components/Page/Content/Blockly.vue
-    Module not found: Error: Can't resolve 'row-loader' in '/Volumes/Users/ezPython/github/ezPython'
+    Module not found: Error: Can't resolve 'row-loader' in '/Volumes/Users/edython/github/edython'
      @ ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/renderer/components/Page/Content/Blockly.vue 7:0-83
      @ ./src/renderer/components/Page/Content/Blockly.vue
      @ ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/renderer/components/Page/Content.vue
@@ -170,4 +170,4 @@ npm ERR! This is probably not a problem with npm. There is likely additional log
 npm ERR! A complete log of this run can be found in:
 npm ERR!     /Users/jlaurens/.npm/_logs/2017-12-19T18_43_21_376Z-debug.log
 Mar 19 déc 2017 18:43:21 UTC
-JLaurens-3:ezPython enseignants$ 
+JLaurens-3:edython enseignants$ 

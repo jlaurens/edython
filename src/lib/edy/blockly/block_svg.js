@@ -1,12 +1,12 @@
 /**
- * ezPython
+ * edython
  *
  * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
 /**
- * @fileoverview BlockSvg for ezPython.
+ * @fileoverview BlockSvg for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -23,7 +23,7 @@ edY.inherits(Blockly.BlockSvg, edY.Block)
 /**
  * Class for a block's SVG representation.
  * Not normally called directly, workspace.newBlock() is preferred.
- * For ezPython.
+ * For edython.
  * @param {!Blockly.Workspace} workspace The block's workspace.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.

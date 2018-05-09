@@ -1,5 +1,5 @@
 /*
- * ezPython
+ * edython
  *
  * Copyright 2018 Jérôme LAURENS.
  *
@@ -7,7 +7,7 @@
  */
 
 /**
- * @fileoverview utilities for ezPython.
+ * @fileoverview utilities for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'

@@ -1,6 +1,6 @@
-# ezPython fonts
+# edython fonts
 
-ezPython is using the DejaVuSans fonts.
+edython is using the DejaVuSans fonts.
 They are expected to be packaged into an offline application and download by an
 online application.
 

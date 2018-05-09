@@ -1,5 +1,5 @@
 /**
- * ezPython
+ * edython
  *
  * Copyright 2018 Jérôme LAURENS.
  *

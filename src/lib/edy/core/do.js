@@ -1,5 +1,5 @@
 /**
- * ezPython
+ * edython
  *
  * Copyright 2018 Jérôme LAURENS.
  *
@@ -293,7 +293,7 @@ edY.T3.Expr.builtin_name = 'builtin name'
 
 /**
  * What is the type of this string? an identifier, a number, a reserved word ?
- * For ezPython.
+ * For edython.
  * @return the type of this candidate
  */
 edY.Do.typeOfString = function (candidate) {
@@ -364,7 +364,7 @@ edY.Do.typeOfString = function (candidate) {
 
 /**
  * The css class for the given text
- * For ezPython.
+ * For edython.
  * @param {!Array} list indexed object.
  * @param {!function} filter an optional filter.
  * @return an enumerator
@@ -383,7 +383,7 @@ edY.Do.cssClassForText = function (txt) {
 
 /**
  * List enumerator
- * For ezPython.
+ * For edython.
  * @param {!Array} list indexed object.
  * @param {!function} filter an optional filter.
  * @return an enumerator
@@ -438,7 +438,7 @@ console.warn('synchronizeFoo has another argument')
 /**
  * Get the flag given the position as argument.
  * Positions are given 1 based
- * For ezPython.
+ * For edython.
  */
  edY.Do.getVariantFlag = function(variant, position) {
   return variant & 1 << (  position - 1)
@@ -448,7 +448,7 @@ console.warn('synchronizeFoo has another argument')
  * set the flags given the positions as arguments.
  * if the position is negative, unset the symmetric bit
  * Positions are given 1 based
- * For ezPython.
+ * For edython.
  */
  edY.Do.makeVariantFlags = function(variant) {
   for(var i = 1; i < arguments.length; i++) {
@@ -464,7 +464,7 @@ console.warn('synchronizeFoo has another argument')
 
 /**
  * Convenient shortcut
- * For ezPython.
+ * For edython.
  * @param {!Array} list indexed object.
  * @param {!function} filter an optional filter.
  * @return an enumerator
@@ -475,7 +475,7 @@ edY.Do.hasOwnProperty = function (object, key) {
 
 /**
  * Convenient format
- * For ezPython.
+ * For edython.
  * @param {!Array} list indexed object.
  * @param {!function} filter an optional filter.
  * @return an enumerator

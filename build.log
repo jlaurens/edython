@@ -1,5 +1,5 @@
 
-> edython@0.0.0 build:dir /Volumes/Users/ezPython/github/ezPython
+> edython@0.0.0 build:dir /Volumes/Users/edython/github/edython
 > node .electron-vue/build.js && electron-builder --dir
 
 

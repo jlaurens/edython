@@ -27,9 +27,9 @@ We see the configuration for the latter.
 git submodule add https://github.com/slevithan/xregexp
 
 
-# ezPython Block design
+# edython Block design
 
-ezPython block design is independant from Blockly's,
+edython block design is independant from Blockly's,
 but uses Blockly's features internally
 
 ## General overview
@@ -46,7 +46,7 @@ https://docs.python.org/3/reference/compound_stmts.html
 
 It was a choice not to follow the grammar description because names are more cryptic there.
 
-There is not a one to one correspondance between the documentation above and the blocks. In general, statements are described quite exactly by blocks, but expressions have sometimes been split due to code reuse. For example, target_list is an ezPython block, it is part of different expressions but it is not a python expression on its own.
+There is not a one to one correspondance between the documentation above and the blocks. In general, statements are described quite exactly by blocks, but expressions have sometimes been split due to code reuse. For example, target_list is an edython block, it is part of different expressions but it is not a python expression on its own.
 
 ## Block differentiation
 
@@ -54,13 +54,13 @@ Blocks are different because their data model is different or because their beha
 
 ## Block implementation
 
-ezPython blocks are Blockly's BlockSvg subclasses.
+edython blocks are Blockly's BlockSvg subclasses.
 They basically use the same input and connection design.
 But extension was made to override Blocly's original behaviour. A delegation design is used to store additional methods and to store additional data.
 
 ## Block creation
 
-If the prototype name starts with 'edy:' then the created block is a subclass of BlockSvg with ezPython's extended features. If not, the creation process falls down to Blockly's.
+If the prototype name starts with 'edy:' then the created block is a subclass of BlockSvg with edython's extended features. If not, the creation process falls down to Blockly's.
 
 For that purpose, some workspace methods have been overriden.
 

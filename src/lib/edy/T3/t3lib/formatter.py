@@ -201,14 +201,14 @@ class Formatter:
             yield t
 
     preamble = """/**
- * ezPython
+ * edython
  *
  * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
 /**
- * @fileoverview Type constants for ezPython, used as blocks prototypes.
+ * @fileoverview Type constants for edython, used as blocks prototypes.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'

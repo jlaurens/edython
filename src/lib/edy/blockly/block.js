@@ -1,12 +1,12 @@
 /**
- * ezPython
+ * edython
  *
  * Copyright 2018 Jérôme LAURENS.
  *
  * License CeCILL-B
  */
 /**
- * @fileoverview Block for ezPython.
+ * @fileoverview Block for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -19,7 +19,7 @@ goog.forwardDeclare('edY.T3.All')
 /**
  * Class for a block.
  * Not normally called directly, workspace.newBlock() is preferred.
- * For ezPython.
+ * For edython.
  * @param {!Blockly.Workspace} workspace The block's workspace.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
