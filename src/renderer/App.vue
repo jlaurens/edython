@@ -6,7 +6,7 @@
 
 <script>
   export default {
-    name: 'ezpython'
+    name: 'edython'
   }
 </script>
 

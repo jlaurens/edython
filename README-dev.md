@@ -93,7 +93,7 @@ The delegate stores both data specific to the block and methods, which are not h
 Input and connections also have extensions.
 
 In order to avoid name collisions, the object and the connection delegates are instance objects named `edy`.
-The input only stores data, its delegate is just a basic object named `ezpData`.
+The input only stores data, its delegate is just a basic object named `edyData`.
 
 Delegates follow a class hierarchy to manage some functionality of blocks. The roots are edy.Delegate and edY.DelegateSvg. Their children are edy.Delegate.Expr for expressions and edy.Delegate.Stmt for statements. Each prototype name corresponds to a delegate class.
 

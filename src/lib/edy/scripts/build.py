@@ -64,7 +64,7 @@ class Gen_compressed(threading.Thread):
     return filenames
 
   def run(self):
-    target_filename = "ezp_compressed.js"
+    target_filename = "edy_compressed.js"
     # Define the parameters for the POST request.
     params = [
         ("compilation_level", "SIMPLE_OPTIMIZATIONS"),

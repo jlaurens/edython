@@ -248,7 +248,7 @@ edY.Tile.makeFields = function() {
               unordered.splice(j, 1);
             }
           }
-          var edy = field.edy.ezpLast_ || field.edy
+          var edy = field.edy.edyLast_ || field.edy
           for (i++; i < arguments.length; i++) {
             var fieldName = arguments[i]
             if ((edy.nextField = goog.isString(fieldName)? ui.fields[fieldName]: fieldName)) {
@@ -259,10 +259,10 @@ edY.Tile.makeFields = function() {
                 }
               }
               edy = edy.nextField.edy
-              delete edy.ezpLast_
+              delete edy.edyLast_
             }
           }
-          field.edy.ezpLast_ = edy
+          field.edy.edyLast_ = edy
           break
         }
       }
@@ -277,8 +277,8 @@ edY.Tile.makeFields = function() {
     goog.asserts.assert(unordered.length < 2,
     edY.Do.format('Too many unordered fields in {0}/{1}',key, JSON.stringify(model)))
     unordered[0] && (ui.fromStartField = chain(ui.fromStartField, unordered[0]))
-    ui.fromStartField && delete ui.fromStartField.edy.ezpLast_
-    ui.toEndField && delete ui.toEndField.edy.ezpLast_
+    ui.fromStartField && delete ui.fromStartField.edy.edyLast_
+    ui.toEndField && delete ui.toEndField.edy.edyLast_
     ui.fields.comment && (ui.fields.comment.edy.comment = true)
   }
 } ()

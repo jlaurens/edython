@@ -10,5 +10,5 @@ sips -z 32 32     MyIcon.iconset/icon_32x32@2x.png --out MyIcon.iconset/icon_32x
 sips -z 32 32     MyIcon.iconset/icon_32x32.png --out MyIcon.iconset/icon_16x16@2x.png
 sips -z 16 16     MyIcon.iconset/icon_32x32.png --out MyIcon.iconset/icon_16x16.png
 iconutil -c icns MyIcon.iconset
-mv MyIcon.icns ezpython.icns
+mv MyIcon.icns edython.icns
 rm -R MyIcon.iconset

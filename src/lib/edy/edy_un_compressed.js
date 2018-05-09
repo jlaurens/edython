@@ -6028,7 +6028,7 @@ return b};
 edY.Block.prototype.tupleConsolidateEZP_=function(){this.edy&&this.edy.tupleConsolidate(this)};
 edY.STATUS="6029"
 edY.Block.prototype.appendInput_=function(a,b){var c=edY.Block.superClass_.appendInput_.call(this,a,b);
-a===Blockly.INPUT_VALUE&&b.match(/^(?:TUPLE|S7R)_\d+_\d+$/g)&&(c.ezpTuple=c.ezpTuple||{});
+a===Blockly.INPUT_VALUE&&b.match(/^(?:TUPLE|S7R)_\d+_\d+$/g)&&(c.edyTuple=c.edyTuple||{});
 return c};
 edY.STATUS="6033"
 edY.Block.prototype.setConnectionsHidden=function(a){edY.Block.superClass_.setConnectionsHidden.call(this,a);
@@ -6147,12 +6147,12 @@ Blockly.ContextMenu.currentBlock=this}};
 edY.BlockSvg.prototype.updateDisabled=function(){this.render()};
 edY.BlockSvg.prototype.updateColour=function(){};
 edY.Const=edY.Const||{};
-edY.Const.Val={DEFAULT:"ezp_expr",ANY:"ezp_expr_any",GET:"ezp_expr_get",TEXT:"ezp_expr_text",TFN:"ezp_expr_tfn",OP:"ezp_expr_op",UNRY:"ezp_expr_unry",BOOL:"ezp_expr_bool",TUPLE:"ezp_expr_tuple",RANGE:"ezp_expr_range",MINUS:"ezp_expr_minus"};
-edY.Const.Stmt={DEFAULT:"ezp_stmt",ANY:"ezp_stmt_any",SET:"ezp_stmt_set",PRINT:"ezp_stmt_print",BCP:"ezp_stmt_bcp"};
+edY.Const.Val={DEFAULT:"edy_expr",ANY:"edy_expr_any",GET:"edy_expr_get",TEXT:"edy_expr_text",TFN:"edy_expr_tfn",OP:"edy_expr_op",UNRY:"edy_expr_unry",BOOL:"edy_expr_bool",TUPLE:"edy_expr_tuple",RANGE:"edy_expr_range",MINUS:"edy_expr_minus"};
+edY.Const.Stmt={DEFAULT:"edy_stmt",ANY:"edy_stmt_any",SET:"edy_stmt_set",PRINT:"edy_stmt_print",BCP:"edy_stmt_bcp"};
 
-edY.Const.Grp={DEFAULT:"ezp_grp",ANY:"ezp_grp_any",IF:"ezp_grp_if",ELIF:"ezp_grp_elif",ELSE:"ezp_grp_else",FOR:"ezp_grp_for",WHILE:"ezp_grp_while",WITH:"ezp_grp_with"};
-edY.Const.Prc={DEFAULT:"ezp_prc",ANY:"ezp_prc_any",DEF:"ezp_prc_def",CLASS:"ezp_prc_class"};
-edY.Const.Ctl={DEFAULT:"ezp_ctl",MAIN:"ezp_ctl_main"};
+edY.Const.Grp={DEFAULT:"edy_grp",ANY:"edy_grp_any",IF:"edy_grp_if",ELIF:"edy_grp_elif",ELSE:"edy_grp_else",FOR:"edy_grp_for",WHILE:"edy_grp_while",WITH:"edy_grp_with"};
+edY.Const.Prc={DEFAULT:"edy_prc",ANY:"edy_prc_any",DEF:"edy_prc_def",CLASS:"edy_prc_class"};
+edY.Const.Ctl={DEFAULT:"edy_ctl",MAIN:"edy_ctl_main"};
 edY.Const.Field={VAR:"VAR",ANY:"ANY",TEXT:"TEXT",TFN:"TFN",OP:"OP",STT:"STT",BCP:"BCP",DEF:"DEF",CLASS:"CLASS",NCSTR:"NCSTR"};
 
 edY.Key={ANY:"ANY",LHS:"LHS",RHS:"RHS",SEP:"SEP",END:"END",FILE:"FILE",FLUSH:"FLUSH",OPTIONS:"OPTIONS",COND:"COND",TGT:"TGT",LST:"LST",DO:"DO"};
@@ -6275,10 +6275,10 @@ edY.FieldDropdown.prototype.deserializeXml=function(a){this.setValue(a.getAttrib
 edY.FieldOptionsCode=function(a,b){edY.FieldOptionsCode.superClass_.constructor.call(this,a,b);
 this.imageJson_=null};
 goog.inherits(edY.FieldOptionsCode,Blockly.FieldDropdown);
-edY.FieldOptionsCode.CSS_CLASS="ezp_options_code";
+edY.FieldOptionsCode.CSS_CLASS="edy_options_code";
 edY.FieldOptionsCode.prototype.init=function(){edY.FieldOptionsCode.superClass_.init.call(this);
 this.arrow_=edY.Style.MenuIcon.path(this.fieldGroup_)};
-edY.FieldOptionsCode.CSS_MENU_CLASS="ezp_options_code-menu";
+edY.FieldOptionsCode.CSS_MENU_CLASS="edy_options_code-menu";
 
 edY.Style.insertCssRuleAt("."+edY.FieldOptionsCode.CSS_MENU_CLASS+"{\n"+edY.Font.style+";\n}\n");
 
@@ -6441,7 +6441,7 @@ return!!a&&goog.dom.classlist.contains(a,b)};
 edY.KeyValueMenuItemRenderer.prototype.setEnableCheckBoxStructure=function(a,b,c){this.setAriaRole(b,a.getPreferredAriaRole());
 this.setAriaStates(a,b);
 c=this.getContentElement(b);
-if(!a.ezpDomMark){var d=this.getCompositeCssClass_(goog.ui.MenuItemRenderer.CompositeCssClassIndex_.CHECKBOX);
+if(!a.edyDomMark){var d=this.getCompositeCssClass_(goog.ui.MenuItemRenderer.CompositeCssClassIndex_.CHECKBOX);
 b=edY.Font.space+4;
 d=a.getDomHelper().createDom("DIV",d);
 d.style.display="inline";
@@ -6455,8 +6455,8 @@ c.insertBefore(d,c.firstChild||null);
 c=Blockly.utils.createSvgElement("svg",{"class":"edy-checkbox-icon",height:b,width:b},d);
 Blockly.utils.createSvgElement("rect",{"class":"edy-checkbox-icon-rect",x:"0",y:"0",rx:2.5,ry:2.5,height:b,width:b},c);
 b-=4;
-a.ezpMark=Blockly.utils.createSvgElement("rect",{"class":"edy-checkbox-icon-mark",x:2,y:2,rx:2,ry:2,height:b,width:b},c);
-a.ezpMark.style.opacity=.5}a.isChecked()?Blockly.utils.addClass(a.ezpMark,"edy-checked"):Blockly.utils.removeClass(a.ezpMark,"edy-checked")};
+a.edyMark=Blockly.utils.createSvgElement("rect",{"class":"edy-checkbox-icon-mark",x:2,y:2,rx:2,ry:2,height:b,width:b},c);
+a.edyMark.style.opacity=.5}a.isChecked()?Blockly.utils.addClass(a.edyMark,"edy-checked"):Blockly.utils.removeClass(a.edyMark,"edy-checked")};
 edY.KeyValueMenuItemRenderer.prototype.getStateFromClass=function(a){return goog.ui.MenuItemRenderer.superClass_.getStateFromClass.call(this,a)};
 edY.NoOptionMenuItemRenderer=function(){goog.ui.MenuItemRenderer.call(this)};
 goog.inherits(edY.NoOptionMenuItemRenderer,goog.ui.MenuItemRenderer);
@@ -6599,13 +6599,13 @@ else throw Error("Unsupported variables menu action: "+f);
 edY.Msg={};
 edY.FieldVariable=function(a,b,c){edY.FieldVariable.superClass_.constructor.call(this,a,b,c)};
 goog.inherits(edY.FieldVariable,Blockly.FieldVariable);
-edY.FieldVariable.CSS_CLASS="ezp_no_options";
+edY.FieldVariable.CSS_CLASS="edy_no_options";
 
 edY.FieldVariable.prototype.init=function(){this.fieldGroup_||(this.fieldGroup_=Blockly.utils.createSvgElement("g",{},null),this.sourceBlock_.getSvgRoot().appendChild(this.fieldGroup_),this.visible_||(this.fieldGroup_.style.display="none"),this.textElement_=Blockly.utils.createSvgElement("text",{"class":"edy-code",y:edY.Font.totalAscent},this.fieldGroup_),this.menuIcon_=edY.Style.MenuIcon.path(this.fieldGroup_),this.mouseDownWrapper_=Blockly.bindEventWithChecks_(this.menuIcon_,"mousedown",this,this.onMouseDown_),
 this.borderRect_=this.textElement_,this.updateEditable(),this.initModel())};
 edY.FieldVariable.prototype.initModel=function(){if(!this.getText())this.setValue(Blockly.Variables.generateUniqueName(this.sourceBlock_.isInFlyout?this.sourceBlock_.workspace.targetWorkspace:this.sourceBlock_.workspace));
 else if(!this.data.value.get(){var a=this.getText();
-this.ezp_varId_=(this.sourceBlock_.workspace.getVariableById(a)||this.sourceBlock_.workspace.getVariable(a)||this.sourceBlock_.workspace.createVariable(a)).getId()}};
+this.edy_varId_=(this.sourceBlock_.workspace.getVariableById(a)||this.sourceBlock_.workspace.getVariable(a)||this.sourceBlock_.workspace.createVariable(a)).getId()}};
 
 edY.FieldVariable.prototype.render_=function(){if(this.visible_){goog.dom.removeChildren(this.textElement_);
 var a=document.createTextNode(this.getDisplayText_());
@@ -6616,11 +6616,11 @@ this.size_.width=Blockly.Field.getCachedWidth(this.textElement_);
 this.menuIcon_.setAttribute("transform","translate("+this.size_.width+",0)");
 this.size_.width+=edY.Font.space}else this.size_.width=0};
 
-edY.FieldVariable.prototype.getValue=function(){return this.ezp_varId_};
+edY.FieldVariable.prototype.getValue=function(){return this.edy_varId_};
 
 edY.FieldVariable.prototype.setValue=function(a){if(a)if(this.isEditingIdentifier_)this.setText(a);
 else{var b=a;
-this.sourceBlock_&&(a=this.sourceBlock_.workspace.getVariableById(a)||this.sourceBlock_.workspace.getVariable(a)||this.sourceBlock_.workspace.createVariable(a))&&(Blockly.Events.isEnabled()&&Blockly.Events.fire(new Blockly.Events.BlockChange(this.sourceBlock_,"field",this.name,this.ezp_varId_,a.getId())),this.ezp_varId_=a.getId(),b=a.name);
+this.sourceBlock_&&(a=this.sourceBlock_.workspace.getVariableById(a)||this.sourceBlock_.workspace.getVariable(a)||this.sourceBlock_.workspace.createVariable(a))&&(Blockly.Events.isEnabled()&&Blockly.Events.fire(new Blockly.Events.BlockChange(this.sourceBlock_,"field",this.name,this.edy_varId_,a.getId())),this.edy_varId_=a.getId(),b=a.name);
 this.setText(b)}};
 
 edY.FieldVariable.prototype.getVariableTypes_=function(){var a=this.variableTypes;
@@ -6691,11 +6691,11 @@ this.setPreviousStatement(!1);
 this.setNextStatement(!0);
 this.setTooltip(edY.Msg.CONNECT_MAIN_BLOCK_DLG_TOOLTIP);
 this.setHelpUrl("")}};
-edY.FieldPrintOptions=function(a,b){this.ezpState={};
+edY.FieldPrintOptions=function(a,b){this.edyState={};
 edY.FieldPrintOptions.superClass_.constructor.call(this,a,b);
-this.ezpState={}};
+this.edyState={}};
 goog.inherits(edY.FieldPrintOptions,Blockly.FieldDropdown);
-edY.FieldPrintOptions.CSS_CLASS="ezp_options";
+edY.FieldPrintOptions.CSS_CLASS="edy_options";
 edY.FieldPrintOptions.prototype.init=function(){this.text_=null;
 edY.FieldPrintOptions.superClass_.init.call(this);
 goog.dom.removeNode(this.borderRect_);
@@ -6957,10 +6957,10 @@ edY.Delegate.prototype.tupleConsolidate=function(a){var b=this.tupleConsolidator
 b||(b=this.tupleConsolidator=new edY.TupleConsolidator_);
 b(a)};
 
-edY.TupleConsolidator_=function(){var a,b,c,d,e,f,g,h,k,l,m,n,t,p,u=function(a){return(d=b[c])?(e=d.ezpTuple,p=d.connection,goog.asserts.assert(!e||p,"Tuple item must have a connection"),d):e=p=null},q=function(){++c;
+edY.TupleConsolidator_=function(){var a,b,c,d,e,f,g,h,k,l,m,n,t,p,u=function(a){return(d=b[c])?(e=d.edyTuple,p=d.connection,goog.asserts.assert(!e||p,"Tuple item must have a connection"),d):e=p=null},q=function(){++c;
 return u()},z=function(a){g=0;
 c=k;
-return u()},v=function(){return d&&(e=d.ezpTuple)},r=function(a){b[a].dispose();
+return u()},v=function(){return d&&(e=d.edyTuple)},r=function(a){b[a].dispose();
 b.splice(a,1);
 --l},w=function(){b[c].dispose();
 b.splice(c,1);
@@ -6972,7 +6972,7 @@ a<c;
 d=new Blockly.Input(Blockly.INPUT_VALUE,"_",a,p);
 b.splice(c,0,d);
 ++l;
-e=d.ezpTuple={}},B=function(a){e.grp=f;
+e=d.edyTuple={}},B=function(a){e.grp=f;
 e.n=g;
 e.sep=h;
 d.name="S7R_"+f+"_"+g;
@@ -6994,7 +6994,7 @@ do{if(p.isConnected())++m,a=e.isSeparator=
 !1;
 else if(a)r(c--);
 else if(!e.isSeparator){for(;
-c>k&&b[c-1].ezpTuple.isSeparator;
+c>k&&b[c-1].edyTuple.isSeparator;
 )r(--c);
 a=e.isSeparator=!0;
 var d=c}if(!n||m<n){if(!q()||!v())break}else{for(;
@@ -7002,7 +7002,7 @@ q()&&v();
 )if(p.isConnected())p.targetBlock().unplug(),w();
 else if(a)r(c--);
 else if(!e.isSeparator){for(;
-c>k&&b[c-1].ezpTuple.isSeparator;
+c>k&&b[c-1].edyTuple.isSeparator;
 )r(--c);
 a=e.isSeparator=!0}break}}while(1);
 l=c;
@@ -7055,22 +7055,22 @@ if(null!==e&&c>=e)return null;
 this.tupleConsolidate(a);
 for(var f=a.inputList,g=0;
 e=f[g];
-){var h=e.ezpTuple;
+){var h=e.edyTuple;
 if(h&&h.grp===d){var k=0;
 do if(h.isSeparator)var l=h.sep;
 else{if(h.n===c)return e;
-++k}while((e=f[++g])&&(h=e.ezpTuple)&&h.grp===d);
+++k}while((e=f[++g])&&(h=e.edyTuple)&&h.grp===d);
 e=this.getInputTupleMax(a,
 d);
 if(null!==e&&k+1>=e)break;
 k=a.makeConnection_(Blockly.INPUT_VALUE);
 e=new Blockly.Input(Blockly.INPUT_VALUE,"S7R_"+d+"_"+(c+1),a,k);
-h=e.ezpTuple={grp:d,n:c+1,sep:l,isSeparator:!0};
+h=e.edyTuple={grp:d,n:c+1,sep:l,isSeparator:!0};
 e.appendField(new Blockly.FieldLabel(h.sep||","));
 f.splice(g,0,e);
 k=a.makeConnection_(Blockly.INPUT_VALUE);
 e=new Blockly.Input(Blockly.INPUT_VALUE,b,a,k);
-e.ezpTuple={grp:d,n:c,sep:l};
+e.edyTuple={grp:d,n:c,sep:l};
 f.splice(g,0,e);
 return e}++g}return null};
 edY.Delegate.prototype.setConnectionsHidden=function(a,b){};
@@ -7183,7 +7183,7 @@ this.renderDrawFields_(a);
 return!0};
 
 edY.DelegateSvg.prototype.renderDrawTupleInput_=function(a){if(!a.canTuple)return!1;
-var b=a.tiles.ezpTuple;
+var b=a.tiles.edyTuple;
 if(!b)return!1;
 var c=a.tiles.connection;
 this.renderDrawFields_(a);
@@ -7324,7 +7324,7 @@ edY.DelegateSvg.Stmt.Print.prototype.getInput=function(a,b){var c=this.getInputT
 return null===c?edY.DelegateSvg.Stmt.Print.superClass_.getInput.call(this,a,b):c};
 
 edY.DelegateSvg.Stmt.Print.prototype.renderDrawInput_=function(a){this.renderDrawDummyInput_(a)||this.renderDrawTupleInput_(a)&&this.didRenderDrawTupleInput_(a)||this.willRenderDrawValueInput_(a)&&this.renderDrawValueInput_(a)};
-edY.DelegateSvg.Stmt.Print.prototype.didRenderDrawTupleInput_=function(a){a.tiles.ezpTuple.isSeparator&&(a.separatorC8n=a.tiles.connection);
+edY.DelegateSvg.Stmt.Print.prototype.didRenderDrawTupleInput_=function(a){a.tiles.edyTuple.isSeparator&&(a.separatorC8n=a.tiles.connection);
 return!0};
 
 edY.DelegateSvg.Stmt.Print.prototype.willRenderDrawValueInput_=function(a){if(a.separatorC8n){var b=this.getPrintState_(),c;
@@ -7504,7 +7504,7 @@ edY.DelegateSvg.Manager.register('RANGE');
 edY.DelegateSvg.Expr.Range.prototype.getInputTupleMax=function(a,b){return b?0:3};
 edY.FieldOptions=function(a,b){edY.FieldOptions.superClass_.constructor.call(this,a,b)};
 goog.inherits(edY.FieldOptions,Blockly.FieldDropdown);
-edY.FieldOptions.CSS_CLASS="ezp_options";
+edY.FieldOptions.CSS_CLASS="edy_options";
 edY.FieldOptions.prototype.init=function(){edY.FieldOptions.superClass_.init.call(this);
 goog.dom.removeNode(this.borderRect_);
 this.borderRect_=this.textElement_;
@@ -7566,7 +7566,7 @@ return a};
 
 edY.FieldOptions.prototype.deserializeXml=function(a){this.setValue(a.getAttribute("value")||"")};
 edY.Python={};
-edY.Python.ezp_expr={};
+edY.Python.edy_expr={};
 Blockly.Python.INDENT="    ";
 Blockly.Python.finish=function(a){return a};
 edY.Python.valueToCode=function(a,b,c){a=Blockly.Python.valueToCode(a,b,c);
@@ -7593,7 +7593,7 @@ if(Blockly.Block.prototype.getInput.call(a,e)){var f=edY.Python.valueToCode(a,e,
 c.push(f.length?f:"MISSING_"+e);
 ++d}else break}return[c.join(", "),Blockly.Python.ORDER_COLLECTION]};
 Blockly.Python[edY.Const.Expr.RANGE]=function(a){return["range("+Blockly.Python[edY.Const.Expr.TUPLE](a)[0]+")",Blockly.Python.ORDER_FUNCTION_CALL]};
-edY.Python.ezp_stmt={};
+edY.Python.edy_stmt={};
 Blockly.Python[edY.Const.Stmt.SET]=function(a){var b=edY.Python.valueToCode(a,edY.Key.RHS,Blockly.Python.ORDER_NONE)||"None";
 return a.getField(edY.Key.VAR).getText()+" = "+b+"\n"};
 Blockly.Python[edY.Const.Stmt.ANY]=function(a){a=a.getField(edY.Key.STT).getText();
@@ -7606,9 +7606,9 @@ for(var d in c)if(c[d]){var e=edY.Python.valueToCode(a,d,Blockly.Python.ORDER_CO
 b.push(d.toLowerCase()+" = "+(e.length?e:"MISSING_OPTION"))}b=b.join(", ")}return"print("+b+")\n"};
 Blockly.Python[edY.Const.Stmt.BCP]=function(a){a=a.getField(edY.Key.BCP).getText();
 return a.length?a:"MISSING_STATEMENT\n"};
-edY.Python.ezp_ctl={};
+edY.Python.edy_ctl={};
 Blockly.Python[edY.Const.Ctl.MAIN]=function(a){return""};
-edY.Python.ezp_grp={};
+edY.Python.edy_grp={};
 Blockly.Python[edY.Const.Grp.ANY]=function(a){var b=a.getField(edY.Key.STT).getText();
 a=Blockly.Python.statementToCode(a,"DO");
 a.length||(a=Blockly.Python.leftLines("MISSING_STATEMENT\n",Blockly.Python.INDENT));
@@ -7636,7 +7636,7 @@ Blockly.Python[edY.Const.Grp.FOR]=function(a){var b=edY.Python.valueToCode(a,edY
 a=Blockly.Python.statementToCode(a,edY.Key.DO);
 a.length||(a=Blockly.Python.leftLines("MISSING_STATEMENT\n",Blockly.Python.INDENT));
 return"for "+(b.length?b:"MISSING_TARGET")+" in "+(c.length?c:"MISSING_LIST")+":\n"+a};
-edY.Python.ezp_prc={};
+edY.Python.edy_prc={};
 Blockly.Python[edY.Const.Prc.DEF]=function(a){var b=edY.Python.valueToCode(a,edY.Key.DEF,Blockly.Python.ORDER_NONE);
 a=Blockly.Python.statementToCode(a,"DO");
 a.length||(a=Blockly.Python.leftLines("MISSING_STATEMENT\n",Blockly.Python.INDENT));
@@ -7691,7 +7691,7 @@ this.clear();
 this.edy.dispose();
 this.edy=null;
 delete Blockly.Workspace.WorkspaceDB_[this.id]};
-edY.Workspace.prototype.newBlock=function(a,b){return a.startsWith("ezp_")?new edY.Block(this,a,b):new Blockly.Block(this,a,b)};
+edY.Workspace.prototype.newBlock=function(a,b){return a.startsWith("edy_")?new edY.Block(this,a,b):new Blockly.Block(this,a,b)};
 
 edY.Workspace.prototype.logAllConnections=function(a){a=a||"";
 var b=this.connectionDBList;
@@ -7724,7 +7724,7 @@ g++){var h=f[g];
 h&&a&&Blockly.Names.equals(h,a)&&c.push(d[e])}}return c};
 edY.WorkspaceSvg={};
 edY.inherits(Blockly.WorkspaceSvg,edY.Workspace);
-Blockly.WorkspaceSvg.prototype.newBlock=function(a,b){return a.startsWith("ezp_")?new edY.BlockSvg(this,a,b):new Blockly.BlockSvg(this,a,b)};
+Blockly.WorkspaceSvg.prototype.newBlock=function(a,b){return a.startsWith("edy_")?new edY.BlockSvg(this,a,b):new Blockly.BlockSvg(this,a,b)};
 
 Blockly.Workspace.prototype.logAllConnections=function(a){a=a||"";
 var b=this.connectionDBList;

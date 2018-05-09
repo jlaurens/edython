@@ -1,5 +1,5 @@
 {
-  "name": "ezpython",
+  "name": "edython",
   "version": "0.0.0",
   "author": "jlaurens <jerome.laurens@u-bourgogne.fr>",
   "description": "Python made easy with Bmockly and Brython",
@@ -22,8 +22,8 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "ezpython",
-    "appId": "fr.u-bourgogne.ezpython",
+    "productName": "edython",
+    "appId": "fr.u-bourgogne.edython",
     "directories": {
       "output": "build"
     },

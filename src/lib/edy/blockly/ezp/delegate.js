@@ -60,7 +60,7 @@ edY.Delegate.prototype.getBlock = function () {
  */
 edY.Delegate.getC9rEzp = function() {
   // one (almost hidden) shared constructor
-  var ezpC9r = function(key, owner) {
+  var edyC9r = function(key, owner) {
     owner.edy = this
     this.owner_ = owner
     this.key = key
@@ -70,7 +70,7 @@ edY.Delegate.getC9rEzp = function() {
     if (delegateC9r.edy) {
       return delegateC9r.edy
     }
-    return new ezpC9r(key, delegateC9r)
+    return new edyC9r(key, delegateC9r)
   }
 } ()
 

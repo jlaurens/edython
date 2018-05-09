@@ -257,7 +257,7 @@ edY.KeyValueMenuItemRenderer.prototype.setEnableCheckBoxStructure = function (
   this.setAriaRole(element, item.getPreferredAriaRole())
   this.setAriaStates(item, element)
   var contentElement = this.getContentElement(element)
-  if (!item.ezpDomMark) {
+  if (!item.edyDomMark) {
     goog.dom.classlist.add(element, 'edy-with-checkbox')
     var checkboxClassName = this.getCompositeCssClass_(
       goog.ui.MenuItemRenderer.CompositeCssClassIndex_.CHECKBOX)
@@ -284,7 +284,7 @@ edY.KeyValueMenuItemRenderer.prototype.setEnableCheckBoxStructure = function (
         'width': d},
       svg)
     d = d - 2 * x
-    item.ezpMark = Blockly.utils.createSvgElement('rect',
+    item.edyMark = Blockly.utils.createSvgElement('rect',
       {'class': 'edy-checkbox-icon-mark',
         'x': x,
         'y': x,
@@ -293,12 +293,12 @@ edY.KeyValueMenuItemRenderer.prototype.setEnableCheckBoxStructure = function (
         'height': d,
         'width': d},
       svg)
-    item.ezpMark.style.opacity = 0.5
+    item.edyMark.style.opacity = 0.5
   }
   if (item.isChecked()) {
-    Blockly.utils.addClass(item.ezpMark, 'edy-checked')
+    Blockly.utils.addClass(item.edyMark, 'edy-checked')
   } else {
-    Blockly.utils.removeClass(item.ezpMark, 'edy-checked')
+    Blockly.utils.removeClass(item.edyMark, 'edy-checked')
   }
 }
 

@@ -141,8 +141,8 @@ let rendererConfig = {
       to: path.resolve(__dirname, '../dist/electron/lib/blockly/blockly_compressed.js')
     }], {debug: 'debug'}),
     new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, '../src/lib/edy/ezp_compressed.js'),
-      to: path.resolve(__dirname, '../dist/electron/lib/edy/ezp_compressed.js')
+      { from: path.resolve(__dirname, '../src/lib/edy/edy_compressed.js'),
+      to: path.resolve(__dirname, '../dist/electron/lib/edy/edy_compressed.js')
     }], {debug: 'debug'})
   ],
   output: {

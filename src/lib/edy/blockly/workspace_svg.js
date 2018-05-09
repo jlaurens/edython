@@ -238,7 +238,7 @@ Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function(workspaceX
  * @private
  */
 Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function(workspaceXMLElement, types, n_col, offset, step) {
-  workspaceXMLElement.setAttribute('xmlns:edy', 'urn:ezpython:1.0')
+  workspaceXMLElement.setAttribute('xmlns:edy', 'urn:edython:1.0')
   var n = 0
   var x = offset.x
   var y = offset.y

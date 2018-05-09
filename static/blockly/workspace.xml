@@ -1,8 +1,8 @@
 <xml 
   xmlns="http://www.w3.org/1999/xhtml" id="blockly-workspace-data" style="display:none">
-  <block type="ezp_val_tuple" x="50" y="50">
+  <block type="edy_val_tuple" x="50" y="50">
     <value name="TUPLE_0_0">
-      <block type="ezp_val_any">
+      <block type="edy_val_any">
         <field name="ANY" value="TUPLE_0_0" />
       </block>
     </value>

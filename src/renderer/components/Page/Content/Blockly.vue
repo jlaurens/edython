@@ -81,7 +81,7 @@
           b.render()
           /* function generate () {
             var code = Blockly.Python.workspaceToCode(edY.workspace)
-            window.document.getElementById('ezp_code_output').value = code
+            window.document.getElementById('edy_code_output').value = code
           } */
         })
       }

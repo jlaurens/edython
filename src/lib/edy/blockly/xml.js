@@ -72,7 +72,7 @@ console.warn('No edY.Xml.CALL !!!!')
  * @return {string} Value representation.
  */
 Blockly.Xml.domToText = function(dom) {
-  dom.setAttribute('xmlns:edy', 'urn:ezpython:1.0')
+  dom.setAttribute('xmlns:edy', 'urn:edython:1.0')
   var oSerializer = new XMLSerializer();
   return oSerializer.serializeToString(dom);
 };

@@ -1,4 +1,4 @@
-# ezpython
+# edython
 
 > Python made easy with Blockly and Brython
 
