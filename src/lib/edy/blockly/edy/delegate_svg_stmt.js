@@ -17,7 +17,6 @@ goog.require('edY.DelegateSvg.List')
 goog.require('edY.DelegateSvg.Expr')
 goog.require('edY.DelegateSvg.Operator')
 
-console.warn('gather fooData -> data.foo')
 /**
  * Class for a DelegateSvg, statement block.
  * Not normally called directly, edY.DelegateSvg.create(...) is preferred.
@@ -84,7 +83,11 @@ edY.Delegate.Manager.registerAll(edY.T3.Stmt, edY.DelegateSvg.Stmt, true)
  * @constructor
  */
 edY.DelegateSvg.Stmt.prototype.postInitSvg = function (block) {
+  if (this.svgSharpGroup_) {
+    return
+  }
   edY.DelegateSvg.Stmt.superClass_.postInitSvg.call(this, block)
+  goog.asserts.assert(this.svgPathContour_, 'Missing svgPathContour_')
   this.svgSharpGroup_ = Blockly.utils.createSvgElement('g',
     {'class': 'edy-sharp-group'}, null)
   goog.dom.insertSiblingAfter(this.svgSharpGroup_, this.svgPathContour_)
@@ -367,7 +370,9 @@ edY.DelegateSvg.List.makeSubclass(edY.T3.Expr.non_void_identifier_list, {
 edY.DelegateSvg.Stmt.makeSubclass(edY.T3.Stmt.global_nonlocal_stmt, {
   data: {
     variant: {
-      all: ['global', 'nonlocal'],
+      GLOBAL: 0,
+      NONLOCAL: 1,
+      all: [0, 1],
       synchronize: true,
     },
   },
@@ -393,9 +398,9 @@ edY.DelegateSvg.Stmt.makeSubclass(edY.T3.Stmt.global_nonlocal_stmt, {
  * @return true if the given value is accepted, false otherwise
  */
 edY.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.tagName = function (block) {
-  var model = this.data.variant.model
+  var M = this.data.variant.model
   var current = this.data.variant.get()
-  return current === model.GLOBAL? 'edy:global': 'edy:nonlocal'
+  return current === M.GLOBAL? 'edy:global': 'edy:nonlocal'
 }
 
 /**
@@ -405,21 +410,21 @@ edY.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.tagName = function (block) {
  * @private
  */
 edY.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var subtypes = this.data.subtype.getAll()
-  var current = block.edy.data.subtype.get()
+  var variants = this.data.variant.getAll()
+  var current = block.edy.data.variant.get()
   var F = function(key) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'edy-code',
       edY.Do.createSPAN(key, 'edy-code-reserved'),
       edY.Do.createSPAN(' …', 'edy-code-placeholder'),
     )
     var menuItem = new edY.MenuItem(content, function() {
-      block.edy.data.subtype.set(key)
+      block.edy.data.variant.set(key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)
   }
-  F(subtypes[0])
-  F(subtypes[1])
+  F(variants[0])
+  F(variants[1])
   mgr.shouldSeparate()
   return edY.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
