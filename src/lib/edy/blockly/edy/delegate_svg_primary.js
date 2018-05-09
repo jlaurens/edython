@@ -196,8 +196,8 @@ edY.DelegateSvg.Expr.makeSubclass('call_expr', {
       didChange: function(oldValue, newValue) {
         var M = this.data.variant.model
         var variant = this.data.variant.get()
+        var builtin = this.getAll().indexOf(newValue) >= 0
         if (variant !== M.EXPRESSION) {
-          var builtin = this.getAll().indexOf(newValue) >= 0
           var variant = this.data.variant.get() || 0
           this.data.variant.set(builtin? M.BUILTIN: M.NAME)
         }

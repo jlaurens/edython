@@ -355,7 +355,7 @@ goog.require('edY.DelegateSvg.List')
  * @return true if the given value is accepted, false otherwise
  */
 edY.DelegateSvg.List.prototype.tagName = function (block) {
-  return block.getSurroundParent()? edY.Xml.LIST: edY.DelegateSvg.List.superClass_.tagName.call(this, block)
+  return block.edy.wrapped_? edY.Xml.LIST: edY.DelegateSvg.List.superClass_.tagName.call(this, block)
 }
 
 goog.provide('edY.Xml.Text')

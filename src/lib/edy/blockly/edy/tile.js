@@ -131,8 +131,14 @@ edY.Tile.makeFields = function() {
   var startEditing = function () {
   }
   var endEditing = function () {
-    goog.asserts.assert(this.edy.data, 'No data bound to field '+this.key+'/'+this.sourceBlock_.type)
-    this.edy.data.fromText(this.getValue())
+    var data = this.edy.data
+    goog.asserts.assert(data, 'No data bound to field '+this.key+'/'+this.sourceBlock_.type)
+    var result = this.callValidator(this.getValue())
+    if (result !== null) {
+      data.fromText(result)
+    } else {
+      this.setValue(data.toText())
+    }
   }
   // Change some `... = true,` entrie to real functions
   var setupModel = function(model) {

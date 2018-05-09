@@ -275,10 +275,8 @@ edY.FieldTextInput.prototype.validate_ = function() {
     valid = this.callValidator(htmlInput.value);
   }
   if (valid === null) {
-    this.edy.error = true
     goog.dom.classlist.add(edY.FieldTextInput.htmlInput_, 'edy-code-error')
   } else {
-    this.edy.error = false
     goog.dom.classlist.remove(edY.FieldTextInput.htmlInput_, 'edy-code-error')
   }
 };
@@ -371,12 +369,7 @@ edY.FieldInput.prototype.render_ = function() {
     return
   }
   edY.FieldInput.superClass_.render_.call(this)
-  if (this.edy.error) {
-    goog.dom.classlist.add(this.textElement_, 'edy-code-error')
-  } else {
-    goog.dom.classlist.remove(this.textElement_, 'edy-code-error')
-  }
-  if (this.edy.placeholder) {
+if (this.edy.placeholder) {
     goog.dom.classlist.add(this.textElement_, 'edy-code-placeholder')
   } else {
     goog.dom.classlist.remove(this.textElement_, 'edy-code-placeholder')

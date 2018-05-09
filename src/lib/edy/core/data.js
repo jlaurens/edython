@@ -194,14 +194,29 @@ edY.Data.prototype.toText = function() {
 
 /**
  * Set the value from the given text representation.
+ * Calls the model, reentrant.
  * @param {Object} newValue
  */
 edY.Data.prototype.fromText = function(txt, dontValidate) {
-  if (goog.isFunction(this.model.fromText)) {
-    this.model.fromText.call(this, newValue, dontValidate)
-    return
+  if (!this.model_fromText_lock) {
+    if (goog.isFunction(this.model.fromText)) {
+      this.model_fromText_lock = true
+      try {
+        this.model.fromText.call(this, newValue, dontValidate)
+      } finally {
+        delete this.model_fromText_lock
+      }
+      return
+    }
   }
-  dontValidate? this.internalSet(txt): this.set(txt)
+  if (dontValidate) {
+    if ((this.value_ === newValue) || !(newValue = this.validate(newValue)) || !goog.isDef(newValue = newValue.validated)) {
+      this.error = true
+    }
+    this.internalSet(txt)
+  } else {
+    this.set(txt)
+  }
 }
 
 /**
@@ -309,14 +324,23 @@ edY.Data.prototype.synchronize = function(newValue) {
   }
   if (this.model_synchronize_lock || this.model.synchronize === true) {
     goog.asserts.assert(this.field || this.tile, 'No field nor tile bound. '+this.key+'/'+this.owner_.block_.type)
-    if (this.field) {
+    var field = this.field
+    if (field) {
       Blockly.Events.disable()
       try {
-        this.field.setValue(this.toText())
+        field.setValue(this.toText())
       } finally {
         Blockly.Events.enable()
       }
-      this.field.setVisible(!this.isIncog())
+      field.setVisible(!this.isIncog())
+      var element = field.textElement_
+      if (element) {
+        if (this.error) {
+          goog.dom.classlist.add(element, 'edy-code-error')
+        } else {
+          goog.dom.classlist.remove(element, 'edy-code-error')
+        }
+      }
     }
     this.tile && this.tile.setIncog(this.isIncog())
   } else if (goog.isFunction(this.model.synchronize)) {
@@ -360,6 +384,7 @@ edY.Data.prototype.setTrusted = function (newValue) {
  * @param {Object} newValue
  */
 edY.Data.prototype.setTrusted_ = function (newValue) {
+  this.error = false
   this.internalSet(newValue)
   this.synchronizeIfUI(newValue)
 }
@@ -580,7 +605,7 @@ edY.Data.prototype.fromDom = function(element) {
   }
   if (goog.isDefAndNotNull(txt)) {
     if (required && txt === '?') {
-      this.fromText('')
+      this.fromText('', true)
     } else {
       if (isText && txt === '?'|| !isText && txt === '') {
         this.setRequiredFromDom(true)
