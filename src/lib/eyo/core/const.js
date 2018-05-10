@@ -43,7 +43,7 @@ eYo.Const.Field = {
 }
 
 console.warn('avoid eYo.Key.LIST: not enough discriminating')
-eYo.Key = {  
+eYo.Key = {
   TERM: 'term',// this MUST be in lower case
   TARGET: 'target',
   ASSIGNED: 'assigned',
@@ -76,17 +76,17 @@ eYo.Key = {
   VARIANT: 'variant',// this MUST be in lower case
   ALIAS: 'alias',// this MUST be in lower case
   BUILTIN: 'builtin',// this MUST be in lower case
-  
+
   EDIT: 'edit',// this MUST be in lower case
-    
+
   LIST: 'list',// avoid this one when possibe
-  
+
   ASYNC: 'async',
   AWAIT: 'await',
 
   SUITE: 'suite',// this MUST be in lower case
   COMP_FOR: 'comp_for',
-  
+
   NAME: 'name',
   DOTTED_NAME: 'dotted_name',
   ANNOTATION: 'annotation',
@@ -122,7 +122,7 @@ eYo.Key = {
   ALT: 'alt',// this MUST be in camelcase
 
   WRAP: 'wrap',
-  
+
   END: 'end',
   SEP: 'sep',
   FILE: 'file',
@@ -142,7 +142,7 @@ eYo.Key = {
   STRING: 'string', // lowercase
   LONG_STRING: 'longString', // lowercase
   START: 'start', // lowercase
-  
+
   // IN PROGRESS
   ANY: 'ANY',
 
@@ -178,7 +178,7 @@ eYo.XRE = {
     )$`, 'x'),
   imagnumber: XRegExp(
     `^(?<sign>-)?(?:
-      (?<number> 
+      (?<number>
         [0-9]*\\.[0-9]+|
         [0-9]+\\.?|
         (?:
@@ -272,6 +272,7 @@ eYo.XRE = {
   event_data: XRegExp(`^eyo:data:(?<key>.*?)$`),
   operator: XRegExp(`^[+\\-/%*@<>&^|=#]$`),
   comment: XRegExp(`^(?<value>[^\\r\\n]*)`),
+  upper: XRegExp(`^[A-Z_]*$`),
 }
 
 /*

@@ -206,7 +206,7 @@ eYo.Delegate.Manager = function () {
     if (key.indexOf('eyo:') >= 0) {
       key = key.substring(4)
     }
-    owner = owner 
+    owner = owner
     || eYo.T3.Expr[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Expr
     || eYo.T3.Stmt[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Stmt
     || parent
@@ -299,7 +299,7 @@ eYo.Delegate.Manager = function () {
    * some kind of introspection.
    * Computes and caches the model
    * only once from the creation of the delegate.
-   * 
+   *
    * The last delegate registered for a given prototype name wins.
    * @param {?string} prototypeName Name of the language object containing
    * @param {Object} constructor
@@ -1160,4 +1160,3 @@ eYo.Delegate.prototype.getError = function (block, key) {
 eYo.Delegate.prototype.removeError = function (block, key) {
   delete this.errors[key]
 }
-

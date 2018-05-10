@@ -62,6 +62,11 @@ eYo.Data = function(owner, key, model) {
       model.xml = false
     }
   }
+  for (var k in model) {
+    if (XRegExp.exec(k, eYo.XRE.upper)) {
+      this[k] = model[k]
+    }
+  }
 }
 
 /**
@@ -370,10 +375,15 @@ eYo.Data.prototype.synchronizeIfUI = function(newValue) {
  * @param {Object} newValue
  */
 eYo.Data.prototype.setTrusted = function (newValue) {
+  if (goog.isString(newValue)) {
+    if ((x = this.model[x])) {
+      newValue = x
+    }
+  }
   if (goog.isNumber(newValue)) {
-    var all = this.getAll()
-    if (all && goog.isDefAndNotNull(all = all[newValue])) {
-      newValue = all
+    var x = this.getAll()
+    if (x && goog.isDefAndNotNull(x = x[newValue])) {
+      newValue = x
     }
   }
   this.setTrusted_(newValue)

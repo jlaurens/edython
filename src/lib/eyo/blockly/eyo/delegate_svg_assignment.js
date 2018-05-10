@@ -284,7 +284,7 @@ eYo.DelegateSvg.List.makeSubclass('target_list_list', {
 eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
   data: {
     subtype: {
-      all: [eYo.T3.Expr.identifier, eYo.T3.Expr.dotted_name, ],
+      all: [eYo.T3.Expr.identifier, eYo.T3.Expr.dotted_name,],
     },
     variant: {
       NAME_VALUE: 0,
@@ -293,7 +293,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       all: [0, 1, 2],
       synchronize: function(newValue) {
         var M = this.model
-        this.ui.tiles.name.setIncog(newValue == M.TARGET_VALUE)
+        this.data.name.setIncog(newValue == M.TARGET_VALUE)
         this.ui.tiles.annotation.setIncog(newValue != M.NAME_ANNOTATION_VALUE)
         this.ui.tiles.target.setIncog(newValue != M.TARGET_VALUE)
       },
@@ -429,7 +429,7 @@ goog.provide('eYo.DelegateSvg.AugAssign')
  * Multiple ops.
  * As there are many possible operators, we split the list into
  * number operators (+=, -=, /= ...) and bitwise operators (<<=, >>=,...)
- * 
+ *
  * For edython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
@@ -523,7 +523,7 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
   var name = this.data.name.get()
   var operator = this.data.operator.get()
   var withBitwise = eYo.Do.getVariantFlag(current, model.BITWISE)
-  var operators = withBitwise? 
+  var operators = withBitwise?
   this.data.bitwiseOperator.getAll():
   this.data.numberOperator.getAll()
   var F = function(i) {

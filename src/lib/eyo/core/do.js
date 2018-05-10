@@ -480,7 +480,7 @@ eYo.Do.hasOwnProperty = function (object, key) {
  */
 eYo.Do.format = function(format) {
   var args = Array.prototype.slice.call(arguments, 1);
-  return format.replace(/{(\d+)}/g, function(match, number) { 
+  return format.replace(/{(\d+)}/g, function(match, number) {
     return goog.isDef(args[number])? args[number]: match
   })
 }

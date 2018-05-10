@@ -529,13 +529,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
       default: 2,
       xml: false,
       didChange: function(oldValue, newValue) {
-        this.data.code.required = newValue !== this.model.COMMENT
-        this.data.code.setIncog(newValue === this.model.COMMENT)
-        this.data.comment.required = newValue === this.model.CODE_COMMENT
-        this.data.comment.setIncog(newValue === this.model.CODE)
+        this.data.code.required = newValue !== this.COMMENT
+        this.data.code.setIncog(newValue === this.COMMENT)
+        this.data.comment.required = newValue === this.CODE_COMMENT
+        this.data.comment.setIncog(newValue === this.CODE)
       },
       consolidate: function () {
-        var M = this.model
         var withCode = this.data.code.isRequiredFromDom()
         this.data.code.clearRequiredFromDom()
         var withComment = this.data.comment.isRequiredFromDom()
@@ -543,12 +542,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
         var current = this.get()
         if (withComment) {
           if (withCode) {
-            this.set(M.CODE_COMMENT)
+            this.set(this.CODE_COMMENT)
           } else {
-            this.set(M.COMMENT)
+            this.set(this.COMMENT)
           }
         } else if (withCode) {
-          this.set(M.CODE)
+          this.set(this.CODE)
         }
       }
     },
@@ -584,8 +583,8 @@ eYo.DelegateSvg.Stmt.any_stmt.prototype.isWhite = function (block) {
  * @private
  */
 eYo.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var model = this.data.variant.model
-  var current = this.data.variant.get()
+  var data = this.data.variant
+  var current = data.get()
   var comment = this.data.comment.toText()
   var code = this.data.code.toText()
   if (code.length > 32) {
@@ -611,17 +610,17 @@ eYo.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (bl
     eYo.Do.createSPAN('# ', 'eyo-code-reserved'),
     eYo.Do.createSPAN(short_comment || comment || '…', 'eyo-code-comment'),
   )
-  F(content, model.COMMENT)
+  F(content, data.COMMENT)
   var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN(short_code || code || '…', 'eyo-code'),
   )
-  F(content, model.CODE)
+  F(content, data.CODE)
   var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN(short_code_all || code || '…', 'eyo-code'),
     eYo.Do.createSPAN(' # ', 'eyo-code-reserved'),
     eYo.Do.createSPAN(short_comment_all || '…' || comment, 'eyo-code-comment'),
   )
-  F(content, model.CODE_COMMENT)
+  F(content, data.CODE_COMMENT)
  return eYo.DelegateSvg.Stmt.any_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || true
 }
 
