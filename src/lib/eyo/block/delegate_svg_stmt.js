@@ -27,12 +27,34 @@ goog.require('eYo.DelegateSvg.Operator')
  */
 eYo.DelegateSvg.makeSubclass('Stmt', {
   data: {
+    variant: { // variant are very useful with undo/redo
+      NO_COMMENT: 0,
+      COMMENT: 1,
+      order:1000, // initialization comes last
+      all: [0, 1],
+      init: 0,
+      xml: false,
+      didChange: function(oldValue, newValue) {
+        this.data.comment.required = newValue === this.COMMENT
+        this.data.comment.setIncog(newValue === this.NO_COMMENT)
+      },
+      consolidate: function () {
+        var withComment = !this.data.comment.isIncog()
+        if (withComment) {
+          this.set(this.COMMENT)
+        } else {
+          this.set(this.NO_COMMENT)
+        }
+      },
+    },
     comment: {
       init: function() {
         this.setIncog(true)
         this.init('')
       },
-      // didChange is left for subclassers
+      didChange: function(oldValue, newValue) {
+        this.data.variant.consolidate()
+      },
       validate: function(newValue) {
         return {validated: XRegExp.exec(newValue, eYo.XRE.comment).value || ''}
       },

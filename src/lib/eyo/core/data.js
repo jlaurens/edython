@@ -112,9 +112,9 @@ eYo.Data.prototype.internalSet = function(newValue) {
     }
   }
   var oldValue = this.value_
-  this._willChange(oldValue, newValue)
+  this.willChange(oldValue, newValue)
   this.value_ = newValue
-  this._didChange(oldValue, newValue)
+  this.didChange(oldValue, newValue)
 }
 
 /**
@@ -236,33 +236,23 @@ eYo.Data.prototype.fromText = function(txt, dontValidate) {
  * @return undefined
  */
 eYo.Data.prototype.willChange = function(oldValue, newValue) {
-  if (goog.isFunction(this.model.willChange)) {
-    if (this.model_willChange_lock) {
-      return
-    }
-    this.model_willChange_lock = true
-    try {
-      this.model.willChange.call(this, oldValue, newValue)
-    } finally {
-      delete this.model_willChange_lock
-    }
-    return
-  }
-}
-
-/**
- * Private wrapper over willChange
- * @param {Object} oldValue
- * @param {Object} newValue
- * @return undefined
- */
-eYo.Data.prototype._willChange = function(oldValue, newValue) {
   if (this.lock_willChange) {
     return
   }
   try {
     this.lock_willChange = true
-    this.willChange(oldValue, newValue)
+    if (goog.isFunction(this.model.willChange)) {
+      if (this.model_willChange_lock) {
+        return
+      }
+      this.model_willChange_lock = true
+      try {
+        this.model.willChange.call(this, oldValue, newValue)
+      } finally {
+        delete this.model_willChange_lock
+      }
+      return
+    }
   } finally {
     delete this.lock_willChange
   }
@@ -277,35 +267,25 @@ eYo.Data.prototype._willChange = function(oldValue, newValue) {
  * @return undefined
  */
 eYo.Data.prototype.didChange = function(oldValue, newValue) {
-  if (goog.isFunction(this.model.didChange)) {
-    if (this.model_didChange_lock) {
+  if (this.didChange_lock) {
+    return
+  }
+  this.didChange_lock = true
+  try {
+    if (goog.isFunction(this.model.didChange)) {
+      if (this.model_didChange_lock) {
+        return
+      }
+      this.model_didChange_lock = true
+      try {
+        this.model.didChange.call(this, oldValue, newValue)
+      } finally {
+        delete this.model_didChange_lock
+      }
       return
     }
-    this.model_didChange_lock = true
-    try {
-      this.model.didChange.call(this, oldValue, newValue)
-    } finally {
-      delete this.model_didChange_lock
-    }
-    return
-  }
-}
-
-/**
- * Private wrapper over didChange
- * @param {Object} oldValue
- * @param {Object} newValue
- * @return undefined
- */
-eYo.Data.prototype._didChange = function(oldValue, newValue) {
-  if (this.lock_didChange) {
-    return
-  }
-  try {
-    this.lock_didChange = true
-    this.didChange(oldValue, newValue)
   } finally {
-    delete this.lock_didChange
+    delete this.didChange_lock
   }
 }
 
@@ -433,7 +413,7 @@ eYo.Data.prototype.set = function (newValue) {
 eYo.Data.prototype.setIncog = function(newValue) {
   if (!this.incog_ !== !newValue) {
     this.incog_ = newValue
-    this._didChange(this.value_, this.value_)
+    this.didChange(this.value_, this.value_)
     this.synchronizeIfUI(this.value_)
   }
 }

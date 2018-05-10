@@ -94,13 +94,13 @@ eYo.Data.prototype.setTrusted_ = function (newValue) {
   try {
     eyo.skipRendering = true
     var oldValue = this.value_
-    this._willChange(oldValue, newValue)
+    this.willChange(oldValue, newValue)
     if (!this.noUndo && Blockly.Events.isEnabled()) {
       Blockly.Events.fire(new Blockly.Events.BlockChange(
       block, eYo.Const.Event.DATA+this.key, null, oldValue, newValue))
     }
     this.value_ = newValue
-    this._didChange(oldValue, newValue)
+    this.didChange(oldValue, newValue)
     eyo.consolidate(block)
     this.synchronize(newValue)
     eyo.skipRendering = old
