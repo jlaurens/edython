@@ -29,7 +29,7 @@ goog.require('Blockly.Input')
  * 3) start field
  * 4) either editable field, value input of wrapped block.
  * 5) end field
- * 
+ *
   // we assume that one input model only contains at most one of
   // - editable field
   // - value input, check: key
@@ -52,7 +52,7 @@ eYo.Tile = function(owner, key, tileModel) {
   this.wait = 1
   var block = this.block = owner.block_
   goog.asserts.assert(block,
-    eYo.Do.format('block must exist {0}/{1}', key))  
+    eYo.Do.format('block must exist {0}/{1}', key))
   eYo.Tile.makeFields(this, this, tileModel.fields)
   if (tileModel.wrap) {
     this.setInput(block.appendWrapValueInput(key, tileModel.wrap, tileModel.optional, tileModel.hidden))
@@ -60,6 +60,24 @@ eYo.Tile = function(owner, key, tileModel) {
   } else if (tileModel.check) {
     this.setInput(block.appendValueInput(key))
     this.input.connection.eyo.model = tileModel
+  }
+}
+
+/**
+ * Init the tile.
+ */
+eYo.Tile.prototype.init = function() {
+  var init = this.model.init
+  if (goog.isFunction(init)) {
+    if (!this.model_init_lock) {
+      this.model_init_lock = true
+      try {
+        init.call(this)
+      } finally {
+        delete this.model_init_lock
+      }
+      return
+    }
   }
 }
 
@@ -76,15 +94,16 @@ eYo.Tile.prototype.beReady = function() {
   this.svgGroup_ = Blockly.utils.createSvgElement('g', {
     class: 'eyo-tile'
   }, null);
+  this.getBlock().getSvgRoot().appendChild(this.svgGroup_)
+  this.init()
   // init all the fields
   for (var k in this.fields) {
     var field = this.fields[k]
-    field.setSourceBlock(this.block) // is it necessary?
+    field.setSourceBlock(this.block)
     field.eyo.tile = this
     field.eyo.ui = this.ui
-    field.init()
+    field.init()// installs in the owner's group, not the block group
   }
-  this.getBlock().getSvgRoot().appendChild(this.svgGroup_)
   this.input && this.input.eyo.beReady()
 }
 console.warn('What would be a tile rendering?')
@@ -208,7 +227,7 @@ eYo.Tile.makeFields = function() {
       }
     }
     // now order
-    // fields must not have the same order 
+    // fields must not have the same order
     // some default fields have predefined order
     var byOrder = Object.create(null)
     var unordered = []
@@ -428,6 +447,21 @@ eYo.Tile.prototype.setRequiredFromDom = function (newValue) {
 }
 
 /**
+ * Clean the required status, changing the value if necessary.
+ * For edython.
+ * @param {boolean} newValue.
+ */
+eYo.Tile.prototype.whenRequiredFromDom = function (helper) {
+  if (this.isRequiredFromDom()) {
+    this.setRequiredFromDom(false)
+    if (goog.isFunction(helper)) {
+      helper.call(this)
+    }
+    return true
+  }
+}
+
+/**
  * Consolidate the incog state.
  * For edython.
  * @param {!Blockly.Input} workspace The block's workspace.
@@ -518,53 +552,66 @@ goog.forwardDeclare('eYo.DelegateSvg.List')
  * @return a dom element, void lists may return nothing
  * @this a block delegate
  */
-eYo.Tile.prototype.toDom = function(element, optNoId) {
+eYo.Tile.prototype.save = function(element, optNoId) {
+  if (this.isIncog()) {
+    return
+  }
   var xml = this.model.xml
-  if (!this.isIncog() && (!goog.isDef(xml) || xml !== false)) {
-    var out = function() {
-      var c8n = this.connection
-      if (c8n) {
-        var target = c8n.targetBlock()
-        if (target) { // otherwise, there is nothing to remember
-          if (target.eyo.wrapped_) {
-            // wrapped blocks are just a convenient computational model.
-            // For lists only, we do create a further level
-            // Actually, every wrapped block is a list
-            if (target.eyo instanceof eYo.DelegateSvg.List) {
-              var child = eYo.Xml.blockToDom(target, optNoId)
-              if (child.childNodes.length>0) {
-                if (!xml || !xml.noInputName) {
-                  child.setAttribute(eYo.Xml.INPUT, this.key)
-                }
-                goog.dom.appendChild(element, child)
-                return child      
-              }
-            } else {
-              // let the target populate the given element
-              return eYo.Xml.toDom(target, element, optNoId)
-            }
-          } else {
+  if (xml === false) {
+    return
+  }
+  if (!this.xml_save_lock && goog.isDef(xml) && goog.isFunction(xml.save)) {
+    this.xml_save_lock = true
+    try {
+      xml.save.call(this, element, optNoId)
+    } finally {
+      delete this.xml_save_lock
+    }
+    return
+  }
+  var out = function() {
+    var c8n = this.connection
+    if (c8n) {
+      var target = c8n.targetBlock()
+      if (target) { // otherwise, there is nothing to remember
+        if (target.eyo.wrapped_) {
+          // wrapped blocks are just a convenient computational model.
+          // For lists only, we do create a further level
+          // Actually, every wrapped block is a list
+          if (target.eyo instanceof eYo.DelegateSvg.List) {
             var child = eYo.Xml.blockToDom(target, optNoId)
-            if (child.childNodes.length>0 || child.hasAttributes()) {
+            if (child.childNodes.length>0) {
               if (!xml || !xml.noInputName) {
-                if (this.inputType === Blockly.INPUT_VALUE) {
-                  child.setAttribute(eYo.XmlKey.INPUT, this.key)
-                } else if (this.inputType === Blockly.NEXT_STATEMENT) {
-                  child.setAttribute(eYo.XmlKey.FLOW, this.key)
-                }
+                child.setAttribute(eYo.Xml.INPUT, this.key)
               }
               goog.dom.appendChild(element, child)
-              return child      
+              return child
             }
+          } else {
+            // let the target populate the given element
+            return eYo.Xml.toDom(target, element, optNoId)
+          }
+        } else {
+          var child = eYo.Xml.blockToDom(target, optNoId)
+          if (child.childNodes.length>0 || child.hasAttributes()) {
+            if (!xml || !xml.noInputName) {
+              if (this.inputType === Blockly.INPUT_VALUE) {
+                child.setAttribute(eYo.XmlKey.INPUT, this.key)
+              } else if (this.inputType === Blockly.NEXT_STATEMENT) {
+                child.setAttribute(eYo.XmlKey.FLOW, this.key)
+              }
+            }
+            goog.dom.appendChild(element, child)
+            return child
           }
         }
       }
-    }.call(this)
-    if (!out && this.isRequiredToDom()) {
-      var child = goog.dom.createDom('eyo:placeholder')
-      child.setAttribute(eYo.XmlKey.INPUT, this.key)
-      goog.dom.appendChild(element, child)
     }
+  }.call(this)
+  if (!out && this.isRequiredToDom()) {
+    var child = goog.dom.createDom('eyo:placeholder')
+    child.setAttribute(eYo.XmlKey.INPUT, this.key)
+    goog.dom.appendChild(element, child)
   }
 }
 
@@ -582,90 +629,83 @@ eYo.Tile.prototype.toDom = function(element, optNoId) {
  * @param {Element} element a dom element in which to save the input
  * @return the added child, if any
  */
-eYo.Tile.prototype.fromDom = function(element) {
+eYo.Tile.prototype.load = function(element) {
   var xml = this.model.xml
-  if (!goog.isDef(xml) || xml !== false) {
-    this.setRequiredFromDom(false)
-    var c8n = this.connection
-    if (c8n) {
-      var out
-      var target = c8n.targetBlock()
-      if (target && target.eyo.wrapped_ && !(target.eyo instanceof eYo.DelegateSvg.List)) {
-        this.setRequiredFromDom(true) // this is not sure, it depends on how the target read the dom
-        out = eYo.Xml.fromDom(target, element)
-      } else {
-      // find an xml child with the proper input attribute
-        for (var i = 0, child; (child = element.childNodes[i++]);) {
-          if (goog.isFunction(child.getAttribute)) {
-            if (this.inputType === Blockly.INPUT_VALUE) {
-              var attribute = child.getAttribute(eYo.Xml.INPUT)
-            } else if (this.inputType === Blockly.NEXT_STATEMENT) {
-              var attribute = child.getAttribute(eYo.Xml.FLOW)
-            }
+  if (xml === false) {
+    return
+  }
+  if (!this.xml_load_lock && xml && goog.isFunction(xml.load)) {
+    this.xml_load_lock = true
+    try {
+      xml.load.call(this, element)
+    } finally {
+      delete this.xml_load_lock
+    }
+    return
+  }
+  this.setRequiredFromDom(false)
+  var c8n = this.connection
+  if (c8n) {
+    var out
+    var target = c8n.targetBlock()
+    if (target && target.eyo.wrapped_ && !(target.eyo instanceof eYo.DelegateSvg.List)) {
+      this.setRequiredFromDom(true) // this is not sure, it depends on how the target read the dom
+      out = eYo.Xml.fromDom(target, element)
+    } else {
+    // find an xml child with the proper input attribute
+      for (var i = 0, child; (child = element.childNodes[i++]);) {
+        if (goog.isFunction(child.getAttribute)) {
+          if (this.inputType === Blockly.INPUT_VALUE) {
+            var attribute = child.getAttribute(eYo.Xml.INPUT)
+          } else if (this.inputType === Blockly.NEXT_STATEMENT) {
+            var attribute = child.getAttribute(eYo.Xml.FLOW)
           }
-          if (attribute === this.key) {
-            if (child.tagName && child.tagName.toLowerCase() === 'eyo:placeholder') {
-              this.setRequiredFromDom(true)
-              out = true
-            } else if (target) {
-              if (target.eyo instanceof eYo.DelegateSvg.List) {
-                for (var i = 0, grandChild;(grandChild = child.childNodes[i++]);) {
-                  if (goog.isFunction(grandChild.getAttribute)) {
-                    var name = grandChild.getAttribute(eYo.XmlKey.INPUT)
-                    var input = target.eyo.getInput(target, name)
-                    if (input) {
-                      if (!input.connection) {
-                        console.warn('Missing connection')
-                      }
-                      var inputTarget = input.connection.targetBlock()
-                      if (inputTarget) {
-                        eYo.Xml.fromDom(inputTarget, grandChild)
-                      } else if ((inputTarget = eYo.Xml.domToBlock(grandChild, this.owner.block_.workspace))) {
-                        var targetC8n = inputTarget.outputConnection
-                        if (targetC8n && targetC8n.checkType_(input.connection)) {
-                          targetC8n.connect(input.connection)
-                          this.setRequiredFromDom(true)
-                        }
+        }
+        if (attribute === this.key) {
+          if (child.tagName && child.tagName.toLowerCase() === 'eyo:placeholder') {
+            this.setRequiredFromDom(true)
+            out = true
+          } else if (target) {
+            if (target.eyo instanceof eYo.DelegateSvg.List) {
+              for (var i = 0, grandChild;(grandChild = child.childNodes[i++]);) {
+                if (goog.isFunction(grandChild.getAttribute)) {
+                  var name = grandChild.getAttribute(eYo.XmlKey.INPUT)
+                  var input = target.eyo.getInput(target, name)
+                  if (input) {
+                    if (!input.connection) {
+                      console.warn('Missing connection')
+                    }
+                    var inputTarget = input.connection.targetBlock()
+                    if (inputTarget) {
+                      eYo.Xml.fromDom(inputTarget, grandChild)
+                    } else if ((inputTarget = eYo.Xml.domToBlock(grandChild, this.owner.block_.workspace))) {
+                      var targetC8n = inputTarget.outputConnection
+                      if (targetC8n && targetC8n.checkType_(input.connection)) {
+                        targetC8n.connect(input.connection)
+                        this.setRequiredFromDom(true)
                       }
                     }
                   }
                 }
-                out = true
-              } else {
-                out = eYo.Xml.fromDom(target, child)
               }
-            } else if ((target = Blockly.Xml.domToBlock(child, this.getWorkspace()))) {
-              // we could create a block from that child element
-              // then connect it
-              if (target.outputConnection && c8n.checkType_(target.outputConnection)) {
-                c8n.connect(target.outputConnection)
-                this.setRequiredFromDom(true)
-              } else if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
-                c8n.connect(target.previousConnection)
-              }
-              out = target
+              out = true
+            } else {
+              out = eYo.Xml.fromDom(target, child)
             }
+          } else if ((target = Blockly.Xml.domToBlock(child, this.getWorkspace()))) {
+            // we could create a block from that child element
+            // then connect it
+            if (target.outputConnection && c8n.checkType_(target.outputConnection)) {
+              c8n.connect(target.outputConnection)
+              this.setRequiredFromDom(true)
+            } else if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
+              c8n.connect(target.previousConnection)
+            }
+            out = target
           }
         }
       }
-      if (out) {
-        this.didLoad()
-      }
-      return out
     }
+    return out
   }
-}
-
-/**
- * Convert the tile's connected target into the given xml element.
- * List all the available data and converts them to xml.
- * For edython.
- * @param {Element} xml the persistent element.
- * @param {boolean} optNoId.
- * @return a dom element, void lists may return nothing
- * @this a block delegate
- */
-eYo.Tile.prototype.didLoad = function() {
-  var xml = this.model.xml
-  xml && goog.isFunction(xml.didLoad) && xml.didLoad.call(this)
 }

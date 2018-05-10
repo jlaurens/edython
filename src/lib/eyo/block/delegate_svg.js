@@ -131,19 +131,19 @@ eYo.DelegateSvg.prototype.initBlock = function(block) {
       var tileModel = tilesModel[k]
       var order = tileModel.order
       var insert = tileModel.insert
-      var tile, nextTile
+      var tile, next
       if (insert) {
         var model = eYo.DelegateSvg.Manager.getModel(insert)
         if (model) {
           makeTiles(owner, model.tiles)
           if ((tile = ui.headTile)) {
             delete ui.tiles
-            nextTile = tile
+            next = tile
             do {
-              goog.asserts.assert(!goog.isDef(tiles[nextTile.key]),
-              eYo.Do.format('Duplicate inserted tile key {0}/{1}/{2}', nextTile.key, insert, block.type))
-              tiles[nextTile.key] = tile
-            } while ((nextTile = nextTile.nextTile))
+              goog.asserts.assert(!goog.isDef(tiles[next.key]),
+              eYo.Do.format('Duplicate inserted tile key {0}/{1}/{2}', next.key, insert, block.type))
+              tiles[next.key] = next
+            } while ((next = next.next))
           } else {
             continue
           }
@@ -170,10 +170,10 @@ eYo.DelegateSvg.prototype.initBlock = function(block) {
     }
     if ((tile = ordered[0])) {
       i = 1
-      while ((nextTile = ordered[i++])) {
-        tile.nextTile = nextTile
-        nextTile.previousTile = tile
-        tile = nextTile
+      while ((next = ordered[i++])) {
+        tile.next = next
+        next.previous = tile
+        tile = next
       }
     }
     ui.headTile = ordered[0]
@@ -281,11 +281,9 @@ eYo.DelegateSvg.prototype.getField = function(block, name) {
  * May be used at the end of an initialization process.
  */
 eYo.DelegateSvg.prototype.synchronizeTiles = function(block) {
-  var tile = this.ui.headTile
-  while (tile) {
-    tile.synchronize()
-    tile = tile.nextTile
-  }
+  this.foreachTile(function () {
+    this.synchronize()
+  })
 }
 
 /**
@@ -360,16 +358,12 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
  * @param {!Block} block.
  */
 eYo.DelegateSvg.prototype.consolidate = function (block, deep, force) {
-  var data = this.headData
-  while (data) {
-    data.consolidate()
-    data = data.next
-  }
-  var tile = this.ui.headTile
-  while (tile) {
-    tile.consolidate()
-    tile = tile.nextTile
-  }
+  this.foreachData(function () {
+    this.consolidate()
+  })
+  this.foreachTile(function () {
+    this.consolidate()
+  })
   if (deep) {
     var e8r = block.eyo.inputEnumerator(block), x
     while (e8r.next()) {
@@ -666,7 +660,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   if ((io.tile = this.ui.headTile)) {
     do {
       this.renderDrawTile_(io)
-    } while ((io.tile = io.tile.nextTile))
+    } while ((io.tile = io.tile.next))
   } else {
     for (; (io.input = block.inputList[io.i]); io.i++) {
       goog.asserts.assert(io.input.eyo, 'Input with no eyo '+io.input.name+' in block '+block.type)
@@ -1172,11 +1166,9 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id, initS
  */
 eYo.DelegateSvg.prototype.beReady = function (block) {
   block.initSvg()
-  var data = this.headData
-  while (data) {
-    data.beReady()
-    data = data.next
-  }
+  this.foreachData(function () {
+    this.beReady()
+  })
   // install all the fields and tiles in the DOM
   for (var k in this.ui.fields) {
     var field = this.ui.fields[k]
@@ -1184,11 +1176,9 @@ eYo.DelegateSvg.prototype.beReady = function (block) {
     field.init()
     field.eyo.ui = this.ui
   }
-  var tile = this.ui.headTile
-  while (tile) {
-    tile.beReady()
-    tile = tile.nextTile
-  }
+  this.foreachTile(function () {
+    this.beReady()
+  })
   this.inputSuite && this.inputSuite.eyo.beReady()
   this.nextConnection && this.nextConnection.eyo.beReady()
   this.consolidate(block)

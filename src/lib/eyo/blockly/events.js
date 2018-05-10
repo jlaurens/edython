@@ -66,6 +66,33 @@ Blockly.Events.Change.prototype.run = function(forward) {
   }
 };
 
+/**
+ * Start or stop a group.
+ * @param {boolean|string} state True to start new group, false to end group.
+ *   String to set group explicitly.
+ */
+eYo.Events.setGroup = function () {
+  var level = 0
+  return function(state) {
+    if (goog.isString(state)) {
+      Blockly.Events.setGroup(state)
+      level = 1
+    } else if (state) {
+      if (!level++) {
+        Blockly.Events.setGroup(true)
+      }
+    } else {
+      if (level > 0) {
+        --level
+      }
+      if (!level) {
+        Blockly.Events.setGroup(false)
+      }
+    }
+  }
+} ()
+
+
 goog.provide('eYo.Events.Disabler')
 /**
  * Event disabler.
@@ -87,7 +114,7 @@ goog.require('eYo.Data')
 * @param {Object} newValue
 */
 eYo.Data.prototype.setTrusted_ = function (newValue) {
-  Blockly.Events.setGroup(true)
+  eYo.Events.setGroup(true)
   var eyo = this.owner_
   var block = eyo.block_
   var old = eyo.skipRendering
@@ -107,6 +134,6 @@ eYo.Data.prototype.setTrusted_ = function (newValue) {
     !old && block.render() // render now or possibly later ?
   } finally {
     eyo.skipRendering = old
-    Blockly.Events.setGroup(false)
+    eYo.Events.setGroup(false)
   }
 }

@@ -463,7 +463,7 @@ goog.provide('eYo.Xml.Data')
  * @this a block delegate
  */
 eYo.Xml.Data.toDom = function(block, element, optNoId) {
-  block.eyo.forEachData(function () {
+  block.eyo.foreachData(function () {
     this.save(element)
   })
 }
@@ -478,7 +478,7 @@ eYo.Xml.Data.toDom = function(block, element, optNoId) {
  */
 eYo.Xml.Data.fromDom = function(block, element) {
   var hasText
-  block.eyo.forEachData(function () {
+  block.eyo.foreachData(function () {
     this.load(element)
     // Consistency section, to be removed
     var xml = this.model.xml
@@ -519,11 +519,9 @@ eYo.Xml.toDom = function (block, element, optNoId) {
   } else {
     eYo.Xml.Data.toDom(block, element, optNoId)
     // save tiles
-    var tile = block.eyo.ui.headTile
-    while (tile) {
-      tile.toDom(element, optNoId)
-      tile = tile.nextTile
-    }
+    block.eyo.foreachTile(function () {
+      this.save(element, optNoId)
+    })
     var blockToDom = function(c8n, name, key) {
       if (c8n && !c8n.eyo.wrapped_) {
         // wrapped blocks belong to tiles, they are managed from there
@@ -728,11 +726,9 @@ eYo.Xml.fromDom = function (block, element) {
     }
     eYo.Xml.Data.fromDom(block, element)
     // read tile
-    var tile = eyo.ui.headTile
-    while (tile) {
-      tile.fromDom(element)
-      tile = tile.nextTile
-    }
+    eyo.foreachTile(function () {
+      this.load(element)
+    })
     var statement = function(c8n, key) {
       if (c8n) {
         for (var i = 0, child; (child = element.childNodes[i++]);) {

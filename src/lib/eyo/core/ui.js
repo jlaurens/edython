@@ -105,7 +105,7 @@ eYo.Style.Path = {
   Error: {
     'colour': '#c33',
   },
-  'colour': goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 9 / 10)),
+  'colour': goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 92 / 100)),
   'width': 1.5, // px
   'radius': function () { return eYo.Font.space * 0.75 }
 }

@@ -71,10 +71,17 @@ eYo.Data = function(owner, key, model) {
 
 /**
  * Get the owner of the data.
- * Actually, this is a block delegate.
+ * Actually, it returns a block delegate.
  */
 eYo.Data.prototype.getOwner = function() {
   return this.owner_
+}
+
+/**
+ * Get the type of the underlying block.
+ */
+eYo.Data.prototype.getType = function() {
+  return this.owner_.block_.type
 }
 
 /**
@@ -145,12 +152,13 @@ eYo.Data.prototype.init = function(newValue) {
       }
       return
     }
-    var all = this.getAll()
-    if (all && all.length) {
-      this.internalSet(all[0])
-    }
   } else if (goog.isDef(init)) {
     this.internalSet(init)
+    return
+  }
+  var all = this.getAll()
+  if (all && all.length) {
+    this.internalSet(all[0])
   }
 }
 
@@ -311,7 +319,7 @@ eYo.Data.prototype.synchronize = function(newValue) {
     return
   }
   if (this.model_synchronize_lock || this.model.synchronize === true) {
-    goog.asserts.assert(this.field || this.tile, 'No field nor tile bound. '+this.key+'/'+this.owner_.block_.type)
+    goog.asserts.assert(this.field || this.tile, 'No field nor tile bound. '+this.key+'/'+this.getType())
     var field = this.field
     if (field) {
       Blockly.Events.disable()
@@ -501,37 +509,17 @@ eYo.Data.prototype.waitOn = function () {
  * Any call to `waitOn` must be balanced by a call to `waitOff`
  */
 eYo.Data.prototype.waitOff = function () {
-  goog.asserts.assert(this.wait_>0, eYo.Do.format('Too  many `waitOn` {0}/{1}', this.key, this.owner.block_.type))
+  goog.asserts.assert(this.wait_>0, eYo.Do.format('Too  many `waitOn` {0}/{1}',
+    this.key, this.getType()))
   if (--this.wait_ == 0) {
     this.consolidate()
   }
 }
 
 /**
- * This is the method used to save data to an xml tree.
- * If the receiver is not disabled, send its model a `toDom` message
- * if relevant, send this message to the receiver.
- * For edython.
- * @param {Element} xml the persistent element.
- */
-eYo.Data.prototype.saveToDom = function(element) {
-  if (!this.isIncog()) {
-    // in general, data should be saved
-    var xml = this.model.xml
-    if (xml === false) {
-      // only few data need not be saved
-      return
-    }
-    (xml && xml.toDom)?
-      xml.toDom.call(this, element):
-      this.toDom(element)
-  }
-}
-
-/**
  * Does nothing if the data is disabled or if the model
  * has a `false`valued xml property.
- * This is the raw converter in the sense that
+ * Saves the data to the given element.
  * For edython.
  * @param {Element} xml the persistent element.
  */
@@ -541,6 +529,15 @@ eYo.Data.prototype.save = function(element) {
     var xml = this.model.xml
     if (xml === false) {
       // only few data need not be saved
+      return
+    }
+    if (!this.xml_save_lock && goog.isDef(xml) && goog.isFunction(xml.save)) {
+      this.xml_save_lock = true
+      try {
+        xml.save.call(this, element)
+      } finally {
+        delete this.xml_save_lock
+      }
       return
     }
     var required = this.required || goog.isDefAndNotNull(xml) && xml.required
@@ -570,12 +567,12 @@ eYo.Data.prototype.load = function(element) {
   if (xml === false) {
     return
   }
-  if (!this.model_load_lock && xml && goog.isFunction(xml.load)) {
-    this.model_load_lock = true
+  if (!this.xml_load_lock && xml && goog.isFunction(xml.load)) {
+    this.xml_load_lock = true
     try {
       xml.load.call(this, element)
     } finally {
-      delete this.model_load_lock
+      delete this.xml_load_lock
     }
     return
   }

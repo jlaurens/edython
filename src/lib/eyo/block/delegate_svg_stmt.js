@@ -27,7 +27,7 @@ goog.require('eYo.DelegateSvg.Operator')
  */
 eYo.DelegateSvg.makeSubclass('Stmt', {
   data: {
-    variant: { // variant are very useful with undo/redo
+    comment_variant: { // variant are very useful with undo/redo
       NO_COMMENT: 0,
       COMMENT: 1,
       order:1000, // initialization comes last
@@ -39,12 +39,7 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
         this.data.comment.setIncog(newValue === this.NO_COMMENT)
       },
       consolidate: function () {
-        var withComment = !this.data.comment.isIncog()
-        if (withComment) {
-          this.set(this.COMMENT)
-        } else {
-          this.set(this.NO_COMMENT)
-        }
+        this.set(this.data.comment.isIncog()? this.NO_COMMENT: this.COMMENT)
       },
     },
     comment: {
@@ -53,7 +48,7 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
         this.init('')
       },
       didChange: function(oldValue, newValue) {
-        this.data.variant.consolidate()
+        this.data.comment_variant.consolidate()
       },
       validate: function(newValue) {
         return {validated: XRegExp.exec(newValue, eYo.XRE.comment).value || ''}
@@ -68,7 +63,7 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
           this.load(element)
           this.whenRequiredFromDom(function () {
             this.setIncog(false)
-          })
+          }) || this.toText().length && this.setIncog(false)
         },
       },
     },
@@ -444,23 +439,6 @@ eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = 
 }
 
 /**
- * Class for a DelegateSvg, expression_stmt.
- * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
-  tiles: {
-    expression: {
-      order: 1,
-      check: eYo.T3.Expr.Check.expression,
-    },
-  },
-})
-
-
-/**
  * Class for a DelegateSvg, docstring_top_stmt.
  * For edython.
  * @param {?string} prototypeName Name of the language object containing
@@ -544,6 +522,22 @@ eYo.DelegateSvg.Stmt.makeSubclass('return_stmt', {
 })
 
 /**
+ * Class for a DelegateSvg, expression_stmt.
+ * For edython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
+  tiles: {
+    expression: {
+      order: 1,
+      check: eYo.T3.Expr.Check.expression,
+    },
+  },
+})
+
+/**
  * Class for a DelegateSvg, any_stmt.
  * For edython.
  * @param {?string} prototypeName Name of the language object containing
@@ -555,26 +549,45 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
     variant: {
       CODE: 0,
       CODE_COMMENT: 1,
-      COMMENT: 2,
-      order:1000, // initialization comes last
-      all: [0, 1, 2],
+      EXPRESSION: 2,
+      EXPRESSION_COMMENT: 3,
+      COMMENT: 5,
+      order:10000, // initialization comes last
+      all: [0, 1, 2, 3, 5, 5],
       init: 2,
       xml: false,
       didChange: function(oldValue, newValue) {
-        this.data.code.required = newValue !== this.COMMENT
-        this.data.code.setIncog(newValue === this.COMMENT)
-        this.data.comment.required = newValue === this.CODE_COMMENT
-        this.data.comment.setIncog(newValue === this.CODE)
+        this.data.code.required = newValue < this.EXPRESSION
+        this.data.code.setIncog(newValue > this.CODE_COMMENT)
+        this.data.comment.required = (newValue % 2) && newValue !== this.COMMENT
+        this.data.comment.setIncog(!(newValue % 2))
+        this.ui.tiles.expression.required = newValue < this.COMMENT
+        && newValue > this.CODE_COMMENT
+        this.ui.tiles.expression.setIncog(newValue < this.EXPRESSION
+        || newValue > this.EXPRESSION_COMMENT)
       },
       consolidate: function () {
         var withCode = !this.data.code.isIncog()
+        var withExpression = !this.ui.tiles.expression.isIncog()
         var withComment = !this.data.comment.isIncog()
-        this.data.comment.clearRequiredFromDom()
         if (withCode) {
           if (withComment) {
             this.set(this.CODE_COMMENT)
           } else {
+            if (withExpression) {
+              console.warn(eYo.Do.format(
+                'Block with both code and expression {0}/{1}',
+                this.key,
+                this.getType(),
+              ))
+            }
             this.set(this.CODE)
+          }
+        } else if (withExpression) {
+          if (withComment) {
+            this.set(this.EXPRESSION_COMMENT)
+          } else {
+            this.set(this.EXPRESSION)
           }
         } else {
           this.set(this.COMMENT)
@@ -595,11 +608,15 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
           this.load(element)
           this.whenRequiredFromDom(function () {
             this.setIncog(false)
-          })
+          }) || this.toText().length && this.setIncog(false)
         },
       },
     },
     comment: {
+      init: function () {
+        this.init('')
+        this.setIncog(true)
+      },
       didChange: function (oldVAlue, newValue) {
         var variant = this.data.variant
         if (this.isIncog() && variant.get() === variant.COMMENT) {
@@ -612,6 +629,24 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
     code: {
       endEditing: true,
     },
+  },
+  tiles: {
+    expression: {
+      order: 1,
+      check: eYo.T3.Expr.Check.expression,
+      init: function () {
+        this.init()
+        this.setIncog(true)
+      },
+      xml: {
+        load: function (element) {
+          this.load(element)
+          this.whenRequiredFromDom(function () {
+            this.setIncog(false)
+          }) || this.getTarget() && this.setIncog(false)
+        },
+      },
+    }
   },
 })
 
@@ -651,26 +686,41 @@ eYo.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (bl
   var F = function(content, variant) {
     if (variant !== current) {
       var menuItem = new eYo.MenuItem(content, function() {
-        block.eyo.data.variant.set(variant)
+        data.set(variant)
       })
       mgr.addChild(menuItem)
     }
   }
   var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN('# ', 'eyo-code-reserved'),
-    eYo.Do.createSPAN(short_comment || comment || '…', 'eyo-code-comment'),
+    eYo.Do.createSPAN(short_comment || comment || eYo.Msg.Placeholder.COMMENT,
+      'eyo-code-comment'),
   )
   F(content, data.COMMENT)
   var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    eYo.Do.createSPAN(short_code || code || '…', 'eyo-code'),
+    eYo.Do.createSPAN(short_code || code || eYo.Msg.Placeholder.CODE,
+      'eyo-code'),
   )
   F(content, data.CODE)
   var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    eYo.Do.createSPAN(short_code_all || code || '…', 'eyo-code'),
+    eYo.Do.createSPAN(short_code_all || code || eYo.Msg.Placeholder.CODE,
+      'eyo-code'),
     eYo.Do.createSPAN(' # ', 'eyo-code-reserved'),
-    eYo.Do.createSPAN(short_comment_all || '…' || comment, 'eyo-code-comment'),
+    eYo.Do.createSPAN(short_comment_all || comment || eYo.Msg.Placeholder.COMMENT,
+      'eyo-code-comment'),
   )
   F(content, data.CODE_COMMENT)
+  var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    eYo.Do.createSPAN('…', 'eyo-code'),
+  )
+  F(content, data.EXPRESSION)
+  var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    eYo.Do.createSPAN('…', 'eyo-code'),
+    eYo.Do.createSPAN(' # ', 'eyo-code-reserved'),
+    eYo.Do.createSPAN(short_comment_all || eYo.Msg.Placeholder.COMMENT,
+      'eyo-code-comment'),
+  )
+  F(content, data.EXPRESSION_COMMENT)
  return eYo.DelegateSvg.Stmt.any_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || true
 }
 

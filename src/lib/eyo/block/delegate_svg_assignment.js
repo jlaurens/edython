@@ -283,27 +283,23 @@ eYo.DelegateSvg.List.makeSubclass('target_list_list', {
  */
 eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
   data: {
-    subtype: {
-      all: [eYo.T3.Expr.identifier, eYo.T3.Expr.dotted_name,],
-    },
     variant: {
       NAME_VALUE: 0,
       NAME_ANNOTATION_VALUE: 1,
       TARGET_VALUE: 2,
       all: [0, 1, 2],
       synchronize: function(newValue) {
-        var M = this.model
-        this.data.name.setIncog(newValue == M.TARGET_VALUE)
-        this.ui.tiles.annotation.setIncog(newValue != M.NAME_ANNOTATION_VALUE)
-        this.ui.tiles.target.setIncog(newValue != M.TARGET_VALUE)
+        this.data.name.setIncog(newValue == this.TARGET_VALUE)
+        this.ui.tiles.annotation.setIncog(newValue != this.NAME_ANNOTATION_VALUE)
+        this.ui.tiles.target.setIncog(newValue != this.TARGET_VALUE)
       },
     },
     name: {
       init: '',
+      subtypes: [eYo.T3.Expr.identifier, eYo.T3.Expr.dotted_name,],
       validate: function(newValue) {
-        var types = this.data.subtype.getAll()
-        var type = eYo.Do.typeOfString(newValue)
-        return types.indexOf(type) >= 0? {validated: newValue}: null
+        var t = eYo.Do.typeOfString(newValue)
+        return this.model.subtypes.indexOf(t) >= 0? {validated: newValue}: null
       },
       synchronize: true,
     },
@@ -469,14 +465,20 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       xml: false,
       didChange: function(oldValue, newValue) {
         this.data.operator.set(newValue)
+        if (this.data.operator.get() === this.get()) {
+          this.data.operator.bitwise = false
+        }
       },
     },
     bitwiseOperator: {
       all: ['<<=', '>>=', '&=', '^=', '|='],
       noUndo: true,
       xml: false,
-      didChange: function(newValue) {
+      didChange: function(oldValue, newValue) {
         this.data.operator.set(newValue)
+        if (this.data.operator.get() === this.get()) {
+          this.data.operator.bitwise = true
+        }
       },
     },
   },
@@ -514,13 +516,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
  * @private
  */
 eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var variantData = this.data.variant
-  var model = variantData.model
-  const current = variantData.get()
-  var withTarget = eYo.Do.getVariantFlag(current, model.TARGET)
+  var variant = this.data.variant
+  const current = variant.get()
+  var withTarget = current === variant.TARGET_EXPRESSIONS
   var name = this.data.name.get()
   var operator = this.data.operator.get()
-  var withBitwise = eYo.Do.getVariantFlag(current, model.BITWISE)
+  var withBitwise = this.data.operator.bitwise
   var operators = withBitwise?
   this.data.bitwiseOperator.getAll():
   this.data.numberOperator.getAll()
@@ -545,32 +546,32 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
     F(i)
   }
   mgr.shouldSeparate()
-  var F = function(variant, content) {
-    if (variant !== current) {
+  var F = function(value, content) {
+    if (value !== current) {
       var menuItem = new eYo.MenuItem(content, function() {
-        block.eyo.data.variant.set(variant)
+        variant.set(value)
       })
       mgr.addChild(menuItem, true)
     }
   }
-  var variant = model.NAME_EXPRESSIONS
   var content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN(name || eYo.Msg.Placeholder.IDENTIFIER, name? 'eyo-code': 'eyo-code-placeholder'),
     eYo.Do.createSPAN(' '+operator+' …', 'eyo-code'),
   )
-  F(model.NAME_EXPRESSIONS, content)
+  F(variant.NAME_EXPRESSIONS, content)
   var content =
   goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     goog.dom.createTextNode('… '+operator+' …'),
   )
-  F(model.TARGET_EXPRESSIONS, content)
+  F(variant.TARGET_EXPRESSIONS, content)
   mgr.shouldSeparate()
   var content =
   eYo.Do.createSPAN(withBitwise? '+=, -=, /= …': '<<=, >>=, &= …', 'eyo-code')
   var menuItem = function(eyo) {
     return new eYo.MenuItem(content, function() {
-      eyo.data.operator.set(withBitwise? eyo.data.bitwiseOperator.toText(): eyo.data.numberOperator.toText())
+      eyo.data.operator.set(withBitwise?
+        eyo.data.numberOperator.get(): eyo.data.bitwiseOperator.get())
   })
   } (this)
   mgr.addChild(menuItem, true)

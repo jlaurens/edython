@@ -390,11 +390,25 @@ eYo.Delegate.prototype.consolidateType = function (block) {
 }
 
 /**
- * execute the given function for the receiver and its next sibling.
+ * execute the given function for head tile of the receiver and its next sibling.
  * For edython.
  * @param {boolean} newValue.
  */
-eYo.Delegate.prototype.forEachData = function (helper) {
+eYo.Delegate.prototype.foreachTile = function (helper) {
+  var tile = this.ui.headTile
+  if (tile && goog.isFunction(helper)) {
+    do {
+        helper.call(tile)
+    } while ((tile = tile.next))
+  }
+}
+
+/**
+ * execute the given function for the head data of the receiver and its next sibling.
+ * For edython.
+ * @param {boolean} newValue.
+ */
+eYo.Delegate.prototype.foreachData = function (helper) {
   var data = this.headData
   if (data && goog.isFunction(helper)) {
     do {
@@ -452,7 +466,7 @@ eYo.Delegate.prototype.initData = function() {
     init.call(this)
     return
   }
-  this.forEachData(function () {
+  this.foreachData(function () {
     this.init()
   })
 }
@@ -462,7 +476,7 @@ eYo.Delegate.prototype.initData = function() {
  * Sends a `synchronize` message to all data controllers.
  */
 eYo.Delegate.prototype.synchronizeData = function(block) {
-  this.forEachData(function () {
+  this.foreachData(function () {
     this.synchronize(this.get())
   })
 }
@@ -1091,7 +1105,7 @@ eYo.Delegate.prototype.setIncog = function (block, incog) {
   var tile = this.ui.headTile
   while (tile) {
     setupIncog(tile.input)
-    tile = tile.nextTile
+    tile = tile.next
   }
   setupIncog(this.inputSuite)
   for (var i = 0, input;(input = this.block_.inputList[i++]);) {
