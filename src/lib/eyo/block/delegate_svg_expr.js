@@ -15,7 +15,6 @@ goog.provide('eYo.DelegateSvg.Expr')
 
 goog.require('eYo.DelegateSvg')
 goog.require('eYo.T3.All')
-goog.require('eYo.KeyHandler')
 
 /**
  * Class for a DelegateSvg, value block.
@@ -26,7 +25,7 @@ goog.require('eYo.KeyHandler')
  * @constructor
  */
 eYo.DelegateSvg.makeSubclass('Expr')
-console.warn('Problem above')
+
 // Default delegate for all expression blocks
 eYo.Delegate.Manager.registerAll(eYo.T3.Expr, eYo.DelegateSvg.Expr, true)
 
@@ -122,10 +121,10 @@ eYo.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
           source.select()
         }
       } else {
-        block.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y) 
+        block.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)
       }
     } finally {
-      other.dispose(true)   
+      other.dispose(true)
       Blockly.Events.setGroup(false)
     }
   }
@@ -249,7 +248,7 @@ eYo.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
     parentBlock.beReady()
     parentBlock.eyo.data.subtype.set(subtype)
   })
-  
+
   console.log('block created of type', parentPrototypeName)
   if (parentInputName) {
     var parentInput = parentBlock.getInput(parentInputName)
@@ -327,7 +326,7 @@ eYo.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
       } else {
         var its_xy = block.getRelativeToSurfaceXY();
         var my_xy = parentBlock.getRelativeToSurfaceXY();
-        parentBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+        parentBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)
       }
       parentInputC8n.connect(outputC8n)
       if (fill_holes) {
@@ -337,7 +336,7 @@ eYo.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
       parentBlock.render()
       if (bumper) {
         bumper.bumpNeighbours_()
-      }  
+      }
     } finally {
       Blockly.Events.setGroup(false)
     }
@@ -577,7 +576,6 @@ eYo.DelegateSvg.Expr.builtin_object.prototype.makeTitle = function (block, op) {
   return eYo.Do.createSPAN(op, 'eyo-code-reserved')
 }
 
-console.warn('Add some to|from dom hints in the data model')
 /**
 * Class for a DelegateSvg, any object.
 * For edython.
@@ -588,7 +586,7 @@ console.warn('Add some to|from dom hints in the data model')
 eYo.DelegateSvg.Expr.makeSubclass('any', {
   data: {
     code: {
-      default: '',
+      init: '',
       synchronize: true,
     },
   },

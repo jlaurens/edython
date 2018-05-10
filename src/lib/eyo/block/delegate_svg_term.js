@@ -37,7 +37,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function() {
         synchronize: true,
       },
       name: {
-        default: '',
+        init: '',
         validate: function (newValue) {
           var nameType = eYo.Do.typeOfString(newValue)
           if (nameType) {
@@ -55,7 +55,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function() {
         synchronize: true,
       },
       alias: {
-        default: '',
+        init: '',
         synchronize: true,
         validate: function (newValue) {
           var nameType = eYo.Do.typeOfString(newValue)
@@ -94,7 +94,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function() {
         },
       },
       phantom: {
-        default: '',
+        init: '',
         didChange: function (oldValue, newValue) {
           var field = this.ui.tiles.name.fields.edit
           field.placeholderText_ = newValue

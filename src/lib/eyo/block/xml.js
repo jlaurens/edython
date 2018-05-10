@@ -463,11 +463,9 @@ goog.provide('eYo.Xml.Data')
  * @this a block delegate
  */
 eYo.Xml.Data.toDom = function(block, element, optNoId) {
-  var hasText = false
-  for(var key in block.eyo.data) {
-    var data = block.eyo.data[key]
-    data.saveToDom(element)
-  }
+  block.eyo.forEachData(function () {
+    this.save(element)
+  })
 }
 
 /**
@@ -480,15 +478,16 @@ eYo.Xml.Data.toDom = function(block, element, optNoId) {
  */
 eYo.Xml.Data.fromDom = function(block, element) {
   var hasText
-  for(var key in block.eyo.data) {
-    var data = block.eyo.data[key]
-    data.loadFromDom(element)
+  block.eyo.forEachData(function () {
+    this.load(element)
     // Consistency section, to be removed
-    var xml = data.model.xml
-    goog.asserts.assert(!xml || !xml.text || !hasText,
-      eYo.Do.format('Only one text node {0}/{1}', key, block.type))
-    hasText = xml && xml.text
-  }
+    var xml = this.model.xml
+    if(hasText && xml && xml.text) {
+      console.log(eYo.Do.format('Only one text node {0}/{1}',
+      this.key, block.type))
+    }
+    hasText = hasText || xml && xml.text
+  })
 }
 
 /**
@@ -552,7 +551,7 @@ eYo.Xml.toDom = function (block, element, optNoId) {
 
 /**
  * Registers all the known models for their tags
- * 
+ *
  */
 eYo.Xml.registerAllTags = function() {
   // mode is one of 'Expr' and 'Stmt'
@@ -611,7 +610,7 @@ eYo.Xml.registerAllTags = function() {
  * A controller is either the xml instance of a constructor,
  * of the constructor itself.
  * Is it really headless ?
- * 
+ *
  * @param {!Element} xmlBlock XML block element.
  * @param {!Blockly.Workspace} workspace The workspace.
  * @return {!Blockly.Block} The root block created.
@@ -625,7 +624,7 @@ eYo.Xml.domToBlock = function() {
     var id = xmlBlock.getAttribute('id')
     var name = xmlBlock.nodeName.toLowerCase()
     var prototypeName
-    // 
+    //
     // is it a literal or something else special ?
     if ((block = eYo.Xml.Literal.domToBlock(xmlBlock, workspace))
     || (block = eYo.Xml.Comparison.domToBlock(xmlBlock, workspace))
@@ -741,7 +740,7 @@ eYo.Xml.fromDom = function (block, element) {
             var target = Blockly.Xml.domToBlock(child, block.workspace)
             if (target) {
               // we could create a block from that child element
-              // then connect it to 
+              // then connect it to
               if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
                 c8n.connect(target.previousConnection)
               }
@@ -806,7 +805,7 @@ eYo.Xml.Comparison.domToBlock = function (element, workspace) {
     } else {
       return block
     }
-    eYo.Xml.fromDom(block, element)    
+    eYo.Xml.fromDom(block, element)
     return block
   }
 }
@@ -854,6 +853,20 @@ eYo.Xml.Call.domToBlock = function(element, workspace) {
   }
 }
 
+/**
+ * Compare the blocks by comparing their xml representation.
+ * Usefull for testing.
+ * For edython.
+ * @param {!Blockly.Block} lhs.
+ * @param {!Blockly.Block} rhs.
+ * @return an enumerator
+ */
+eYo.Xml.compareBlocks = function(lhs, rhs) {
+  var xmlL = eYo.Xml.blockToDom(lhs, false)
+  var xmlR = eYo.Xml.blockToDom(rhs, false)
+  return xmlL < xmlR? -1: (xmlL < xmlR? 1: 0)
+}
+
 // goog.provide('eYo.Xml.Global')
 
 // General stuff
@@ -870,9 +883,9 @@ eYo.Xml.Call.domToBlock = function(element, workspace) {
 //  * @this a block delegate
 //  */
 // eYo.Xml.Stmt.toDomX = function(block, element, optNoId) {
-//   eYo.Xml.Data.toDom(block, element) 
+//   eYo.Xml.Data.toDom(block, element)
 //   eYo.Xml.InputList.toDom(block, element, optNoId)
-//   eYo.Xml.Flow.toDom(block, element, optNoId)  
+//   eYo.Xml.Flow.toDom(block, element, optNoId)
 // }
 
 // /**
@@ -884,9 +897,9 @@ eYo.Xml.Call.domToBlock = function(element, workspace) {
 //  * @this a block delegate
 //  */
 // eYo.Xml.Stmt.fromDomX = function(block, element) {
-//   eYo.Xml.Data.fromDom(block, element) 
+//   eYo.Xml.Data.fromDom(block, element)
 //   eYo.Xml.InputList.fromDom(block, element)
-//   eYo.Xml.Flow.fromDom(block, element)  
+//   eYo.Xml.Flow.fromDom(block, element)
 // }
 
 // //////////////  basic methods
@@ -934,7 +947,7 @@ eYo.Xml.Call.domToBlock = function(element, workspace) {
 //               child.setAttribute(eYo.Xml.INPUT, input.key)
 //             }
 //             goog.dom.appendChild(element, child)
-//             return child      
+//             return child
 //           }
 //         } else {
 //           // let the target populate the given element
@@ -951,7 +964,7 @@ eYo.Xml.Call.domToBlock = function(element, workspace) {
 //             }
 //           }
 //           goog.dom.appendChild(element, child)
-//           return child      
+//           return child
 //         }
 //       }
 //     }
@@ -1149,7 +1162,7 @@ eYo.Xml.Call.domToBlock = function(element, workspace) {
 //         var target = Blockly.Xml.domToBlock(child, block.workspace)
 //         if (target) {
 //           // we could create a block form that child element
-//           // then connect it to 
+//           // then connect it to
 //           if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
 //             c8n.connect(target.previousConnection)
 //           }
@@ -1709,7 +1722,7 @@ eYo.Xml.Call.domToBlock = function(element, workspace) {
 //             } else if ((target = Blockly.Xml.domToBlock(xmlChild, input.sourceBlock_.workspace))) {
 //               out = target
 //               // we could create a block form that child element
-//               // then connect it to 
+//               // then connect it to
 //               if (target.outputConnection && c8n.checkType_(target.outputConnection)) {
 //                 c8n.connect(target.outputConnection)
 //               } else if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
@@ -1758,7 +1771,7 @@ eYo.Xml.Call.domToBlock = function(element, workspace) {
 //             } else if ((target = Blockly.Xml.domToBlock(xmlChild, input.sourceBlock_.workspace))) {
 //               out = target
 //               // we could create a block form that child element
-//               // then connect it to 
+//               // then connect it to
 //               if (target.outputConnection && c8n.checkType_(target.outputConnection)) {
 //                 c8n.connect(target.outputConnection)
 //               } else if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
@@ -1918,7 +1931,7 @@ eYo.Xml.Call.domToBlock = function(element, workspace) {
 //     eYo.Xml.Input.Named.toDom(block, eYo.Key.PRIMARY, element, optNoId)
 //   } else {
 //     var text = this.data.value.get()
-//     element.setAttribute(eYo.Xml.VALUE, text || '?')  
+//     element.setAttribute(eYo.Xml.VALUE, text || '?')
 //   }
 //   return eYo.Xml.Input.Named.toDom(block, eYo.Key.SLICE, element, optNoId)
 // }
@@ -2224,4 +2237,3 @@ eYo.Xml.Call.domToBlock = function(element, workspace) {
 //   block.eyo.data.modifier.fromDomAttribute(element)
 //   eYo.Xml.Input.Named.fromDom(block, eYo.Key.EXPRESSION, element)
 // }
-

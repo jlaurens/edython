@@ -390,6 +390,20 @@ eYo.Delegate.prototype.consolidateType = function (block) {
 }
 
 /**
+ * execute the given function for the receiver and its next sibling.
+ * For edython.
+ * @param {boolean} newValue.
+ */
+eYo.Delegate.prototype.forEachData = function (helper) {
+  var data = this.headData
+  if (data && goog.isFunction(helper)) {
+    do {
+        helper.call(data)
+    } while ((data = data.next))
+  }
+}
+
+/**
  * Initialize the data.
  * Bind data and fields.
  * We assume that if data and fields share the same name,
@@ -438,25 +452,19 @@ eYo.Delegate.prototype.initData = function() {
     init.call(this)
     return
   }
-  var data = this.headData
-  while (data) {
-    data.init()
-    data = data.next
-  }
+  this.forEachData(function () {
+    this.init()
+  })
 }
 
 /**
  * Synchronize the data to the UI.
  * Sends a `synchronize` message to all data controllers.
- * May be used at the end of an initialization process
- * where we use only data's `internalSet` method.
  */
 eYo.Delegate.prototype.synchronizeData = function(block) {
-  var data = this.headData
-  while (data) {
-    data.synchronize(data.get())
-    data = data.next
-  }
+  this.forEachData(function () {
+    this.synchronize(this.get())
+  })
 }
 
 /**

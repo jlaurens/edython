@@ -42,7 +42,6 @@ eYo.Const.Field = {
   NCSTR: 'NCSTR'
 }
 
-console.warn('avoid eYo.Key.LIST: not enough discriminating')
 eYo.Key = {
   TERM: 'term',// this MUST be in lower case
   TARGET: 'target',

@@ -27,7 +27,7 @@ goog.require('eYo.DelegateSvg.Expr')
 eYo.DelegateSvg.Expr.makeSubclass('attributeref', {
   data: {
     attribute: {
-      default: '',
+      init: '',
       validate: function(newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type === eYo.T3.Expr.builtin_name || type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name?
@@ -77,7 +77,7 @@ eYo.DelegateSvg.Expr.makeSubclass('slicing', {
       },
     },
     name: {
-      default: '',
+      init: '',
       validate: function(newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name?

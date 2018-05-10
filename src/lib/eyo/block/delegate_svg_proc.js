@@ -43,13 +43,11 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.decorator, {
         this.ui.tiles.arguments.setIncog(newValue !== M.ARGUMENTS)
       },
     },
-    subtype: {
-      all: [eYo.T3.Expr.dotted_name, eYo.T3.Expr.identifier],
-    },
     dotted_name: {
-      default: '',
+      all: [eYo.T3.Expr.dotted_name, eYo.T3.Expr.identifier],
+      init: '',
       validate: function(newValue) {
-        var subtypes = this.data.subtype.getAll()
+        var subtypes = this.getAll()
         var subtype = eYo.Do.typeOfString(newValue)
         return (subtypes.indexOf(subtype)>= 0) && {validated: newValue} || null
       },
@@ -193,12 +191,12 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
       },
     },
     name: {
-      default: '',
+      init: '',
       validate: function(newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type === eYo.T3.Expr.identifier? {validated: newValue}: null
       },
-      synchronize: true,      
+      synchronize: true,
     },
   },
   fields: {
@@ -278,7 +276,7 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
       },
     },
     name: {
-      default: '',
+      init: '',
       validate: function(newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type === eYo.T3.Expr.identifier? {validated: newValue}: null

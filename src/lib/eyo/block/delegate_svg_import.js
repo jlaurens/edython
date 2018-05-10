@@ -83,7 +83,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       FROM_MODULE_IMPORT: 1,
       FROM_MODULE_IMPORT_STAR: 2,
       all: [0, 1, 2],
-      default: 0,
+      init: 0,
       synchronize: function(newValue) {
         // var disabled_1 = true, disabled_2 = true, disabled_3 = true, disabled_4 = true
         // switch(newValue) {

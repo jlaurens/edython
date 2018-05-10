@@ -97,20 +97,12 @@ eYo.Data.prototype.get = function() {
 }
 
 /**
- * When not undefined, this is the default used to initialize
- * the value. May be an index in the the `all` array.
- * If this is a function it is evaluated with no argument
- * and the result is used as default.
- * May be overriden by the model.
- */
-eYo.Data.prototype.default = undefined
-
-/**
  * Set the value with no extra task.
  * The `set` method will use hooks before and after the change.
  * No such thing here.
  * If the given value is an index, use instead the corresponding
  * item in the `getAll()` array.
+ * @param {Object} newValue
  */
 eYo.Data.prototype.internalSet = function(newValue) {
   if (goog.isNumber(newValue)) {
@@ -127,27 +119,38 @@ eYo.Data.prototype.internalSet = function(newValue) {
 
 /**
  * Init the value of the property.
- * May be overriden by the model.
- * If the model contains:
- * default: foo,
- * then the initial value will be foo,
+ * If `newValue` is defined, it is used as is and nothing more is performed.
+ * Otherwise, if the model contains:
+ * `init: foo,`
+ * then the initial value will be based on `foo`,
  * even if it is not a valid data.
+ * If `foo` is a function, it is evaluated.
+ * Within the scope of this model function `this` is the receiver
+ * and `this.init(foo)` may be used to initialize the data.
+ * @param {Object} newValue
  */
-eYo.Data.prototype.init = function() {
-  if (goog.isFunction(this.model.init)) {
-    this.model.init.call(this)
+eYo.Data.prototype.init = function(newValue) {
+  if (goog.isDef(newValue)) {
+    this.internalSet(newValue)
     return
   }
-  if (goog.isFunction(this.model.default)) {
-    this.internalSet(this.model.default.call(this))
-  } else if (goog.isDefAndNotNull(this.model.default)) {
-    this.internalSet(this.model.default)
-  } else {
-    // initialize the data with the first object of the `all` array
+  var init = this.model.init
+  if (goog.isFunction(init)) {
+    if (!this.model_init_lock) {
+      this.model_init_lock = true
+      try {
+        init.call(this)
+      } finally {
+        delete this.model_init_lock
+      }
+      return
+    }
     var all = this.getAll()
     if (all && all.length) {
       this.internalSet(all[0])
     }
+  } else if (goog.isDef(init)) {
+    this.internalSet(init)
   }
 }
 
@@ -356,6 +359,7 @@ eYo.Data.prototype.synchronize = function(newValue) {
       delete this.model_synchronize_lock
     }
   }
+  this.owner_ && this.owner_.render && this.owner_.render()
 }
 
 /**
@@ -551,7 +555,7 @@ eYo.Data.prototype.saveToDom = function(element) {
  * For edython.
  * @param {Element} xml the persistent element.
  */
-eYo.Data.prototype.toDom = function(element) {
+eYo.Data.prototype.save = function(element) {
   if (!this.isIncog()) {
     // in general, data should be saved
     var xml = this.model.xml
@@ -575,33 +579,24 @@ eYo.Data.prototype.toDom = function(element) {
 
 /**
  * Convert the block's data from a dom element.
- * Aske the model first for a `fromDom` method, then the receiver.
- * For edython.
- * @param {Element} xml the persistent element.
- * @return a dom element, void lists may return nothing
- * @this a block delegate
- */
-eYo.Data.prototype.loadFromDom = function(element) {
-  var xml = this.model.xml
-  if (xml === false) {
-    return
-  }
-  (xml && xml.fromDom)?
-    xml.fromDom.call(this, element):
-    this.fromDom(element)
-}
-
-/**
- * Convert the block's data from a dom element.
  * For edython.
  * @param {!Blockly.Block} block The block to be converted.
  * @param {Element} xml the persistent element.
  * @return a dom element, void lists may return nothing
  * @this a block delegate
  */
-eYo.Data.prototype.fromDom = function(element) {
+eYo.Data.prototype.load = function(element) {
   var xml = this.model.xml
   if (xml === false) {
+    return
+  }
+  if (!this.model_load_lock && xml && goog.isFunction(xml.load)) {
+    this.model_load_lock = true
+    try {
+      xml.load.call(this, element)
+    } finally {
+      delete this.model_load_lock
+    }
     return
   }
   var required = this.required
@@ -657,6 +652,22 @@ eYo.Data.prototype.clearRequiredFromDom = function () {
   if (this.isRequiredFromDom()) {
     this.setRequiredFromDom(false)
     this.fromText('', true)// useful if the text was a '?'
+    return true
+  }
+}
+
+/**
+ * Clean the required status, changing the value if necessary.
+ * For edython.
+ * @param {boolean} newValue.
+ */
+eYo.Data.prototype.whenRequiredFromDom = function (helper) {
+  if (this.isRequiredFromDom()) {
+    this.setRequiredFromDom(false)
+    this.fromText('', true)// useful if the text was a '?'
+    if (goog.isFunction(helper)) {
+      helper.call(this)
+    }
     return true
   }
 }

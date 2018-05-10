@@ -141,7 +141,7 @@ eYo.DelegateSvg.Binary.makeModel = function(operators, check1, check3, operatorI
     data: {
       operator: {
         all: operators,
-        default: operatorIndex || 0,
+        init: operatorIndex || 0,
       },
     },
     tiles: {
@@ -290,7 +290,7 @@ eYo.DelegateSvg.Binary.makeSubclass('object_comparison', {
   data: {
     operator: {
       all: ['is', 'is not', 'in', 'not in'],
-      default: 2,
+      init: 2,
     },
   },
   tiles: {
@@ -386,7 +386,7 @@ eYo.DelegateSvg.Binary.makeSubclass('and_test_s3d', {
 eYo.DelegateSvg.Operator.makeSubclass('power_s3d', {
   data: {
     operator: {
-      default: '**',
+      init: '**',
     },
   },
   tiles: {

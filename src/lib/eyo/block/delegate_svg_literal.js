@@ -27,7 +27,7 @@ goog.provide('eYo.DelegateSvg.Expr.numberliteral')
 eYo.DelegateSvg.Expr.makeSubclass('Literal', {
   data: {
     content: {
-      default: '',
+      init: '',
     },
   },
 }, eYo.DelegateSvg)
@@ -57,7 +57,7 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
       noUndo: true,
     },
     value: {
-      default: '0',
+      init: '0',
       validate: function(newValue) {
         var subtypes = this.data.subtype.getAll()
         var subtype = eYo.Do.typeOfString(newValue)
@@ -154,7 +154,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       },
     },
     content: {
-      default: '',
+      init: '',
       didChange: function(oldValue, newValue) {
         this.data.value.consolidate()
       },
@@ -166,7 +166,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       synchronize: true,
     },
     value: {
-      default: '',
+      init: '',
       didChange: function(oldValue, newValue) {
         var data = this.data
         var F = function(xre, type) {
@@ -343,7 +343,7 @@ eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
       all: ["'''", '"""'],
     },
     value: {
-      default: '',
+      init: '',
       didChange: function(oldValue, newValue) {
         var data = this.data
         var F = function(xre, type) {

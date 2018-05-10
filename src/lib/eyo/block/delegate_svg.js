@@ -323,6 +323,7 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
   //   block.dispose()
   //   return
   // }
+  block = block || this.block_
   this.skipRendering = true
   Blockly.Field.startCache()
   this.minWidth = block.width = 0
@@ -368,7 +369,7 @@ eYo.DelegateSvg.prototype.consolidate = function (block, deep, force) {
   while (tile) {
     tile.consolidate()
     tile = tile.nextTile
-  } 
+  }
   if (deep) {
     var e8r = block.eyo.inputEnumerator(block), x
     while (e8r.next()) {
@@ -595,7 +596,7 @@ eYo.DelegateSvg.prototype.getPaddingLeft = function (block) {
     return this.locked_ && block.getSurroundParent()? 0: eYo.Font.space
   } else {
     return eYo.Padding.l()
-  }  
+  }
 }
 
 /**
@@ -610,7 +611,7 @@ eYo.DelegateSvg.prototype.getPaddingRight = function (block) {
     return this.locked_ && block.getSurroundParent()? 0: eYo.Font.space
   } else {
     return eYo.Padding.r()
-  }  
+  }
 }
 
 /**
@@ -654,7 +655,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     this.shouldSeparateField = false
   }
   io.shouldSeparateField = this.shouldSeparateField
-  
+
   if ((io.field = this.ui.fromStartField)) {
     io.f = 0
     do {
@@ -772,7 +773,7 @@ eYo.DelegateSvg.prototype.renderDrawInput_ = function (io) {
 
 /**
  * Render the field at io.field, which must be defined.
- * 
+ *
  * @param io An input/output record.
  * @private
  */
@@ -803,7 +804,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
       if (eyo.isEditing) {
         io.cursorX += eYo.Font.space
       }
-    }       
+    }
   } else {
     console.log('Field with no root: did you ...initSvg()?')
   }
@@ -811,9 +812,9 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
 
 /**
  * Render the fields of a block input.
- * 
+ *
  * @param io An input/output record.
- * @param only_prefix boolean 
+ * @param only_prefix boolean
  * @return the delta of io.cursorX
  * @private
  */
@@ -985,7 +986,7 @@ eYo.DelegateSvg.prototype.highlightConnectionPathDef = function (block, c8n) {
       if (block.height > eYo.Font.lineHeight()) { // this is not clean design
         steps = 'm ' + (eYo.Font.tabWidth+eYo.Style.Path.radius()) + ',' + (block.height-r) + a + (2 * r) + ' h ' + (-eYo.Font.tabWidth-eYo.Style.Path.radius()) + a + (-2 * r) + ' z'
       } else {
-        steps = 'm ' + block.width + ',' + (block.height-r) + a + (2 * r) + ' h ' + (-block.width) + a + (-2 * r) + ' z'        
+        steps = 'm ' + block.width + ',' + (block.height-r) + a + (2 * r) + ' h ' + (-block.width) + a + (-2 * r) + ' z'
       }
     } else {
       steps = 'm ' + (block.width) + ',' + (-r+eYo.Font.lineHeight()) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth-block.width) + a + (-2 * r) + ' z'
@@ -1207,7 +1208,7 @@ eYo.DelegateSvg.prototype.beReady = function (block) {
  * @private
  */
 eYo.DelegateSvg.prototype.prepareForWorkspace = function (block, workspace, x, y, variant) {
-  
+
 }
 
 /**
@@ -1301,7 +1302,7 @@ eYo.HoleFiller.getDeepHoles = function(block, holes) {
     }
   }
   if (block.getSourceBlock) {
-    getDeepHoles(block) 
+    getDeepHoles(block)
   } else {
     var e8r = block.eyo.inputEnumerator(block)
     while (e8r.next()) {
@@ -1371,7 +1372,7 @@ eYo.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
         this.completeWrappedInput_(block, input, newType)
         returnState = true
       } finally {
-        Blockly.Events.setGroup(false)        
+        Blockly.Events.setGroup(false)
       }
     }
   }
@@ -1936,7 +1937,7 @@ eYo.DelegateSvg.prototype.selectBlockBelow = function (block) {
 /**
  * Get the input for the given event.
  * The block is already rendered once.
- * 
+ *
  * For edython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @param {Object} e in general a mouse down event
@@ -1963,7 +1964,7 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
             c8n.offsetInBlock_.x - eYo.Font.space/2,
             c8n.offsetInBlock_.y + eYo.Font.space/2,
             c8n.eyo.optional_ || c8n.eyo.s7r_? 2*eYo.Font.space: 4*eYo.Font.space,
-            eYo.Font.lineHeight() - eYo.Font.space,        
+            eYo.Font.lineHeight() - eYo.Font.space,
           )
           if (R.contains(where)) {
             return c8n
@@ -1974,11 +1975,11 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
           c8n.offsetInBlock_.x,
           c8n.offsetInBlock_.y - eYo.Font.space/2,
           eYo.Font.tabWidth,
-          eYo.Font.space,        
+          eYo.Font.space,
         )
         if (R.contains(where)) {
           return c8n
-        }        
+        }
       }
     }
   }
@@ -1987,11 +1988,11 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
       c8n.offsetInBlock_.x,
       c8n.offsetInBlock_.y,
       rect.width,
-      eYo.Font.space/2,        
+      eYo.Font.space/2,
     )
     if (R.contains(where)) {
       return c8n
-    }  
+    }
   }
   if ((c8n = block.nextConnection) && !c8n.hidden) {
     if (rect.height > eYo.Font.lineHeight()) {// Not the cleanest design
@@ -1999,19 +2000,19 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
         c8n.offsetInBlock_.x,
         c8n.offsetInBlock_.y - eYo.Font.space/2,
         eYo.Font.tabWidth + eYo.Style.Path.radius(),// R U sure?
-        eYo.Font.space/2,        
-      )  
+        eYo.Font.space/2,
+      )
     } else {
       var R = new goog.math.Rect(
         c8n.offsetInBlock_.x,
         c8n.offsetInBlock_.y - eYo.Font.space/2,
         rect.width,
-        eYo.Font.space/2,        
-      )  
+        eYo.Font.space/2,
+      )
     }
     if (R.contains(where)) {
       return c8n
-    }  
+    }
   }
 }
 

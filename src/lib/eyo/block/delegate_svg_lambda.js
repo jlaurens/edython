@@ -90,7 +90,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = function () {
   var Type = {
     unconnected: 0,
     parameter: 1,
-    default: 2,
+    init: 2,
     star: 3,
     star_star: 4,
   }

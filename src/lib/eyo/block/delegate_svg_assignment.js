@@ -299,7 +299,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       },
     },
     name: {
-      default: '',
+      init: '',
       validate: function(newValue) {
         var types = this.data.subtype.getAll()
         var type = eYo.Do.typeOfString(newValue)
@@ -447,7 +447,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       },
     },
     name: {
-      default: '',
+      init: '',
       validate: function(newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name?
@@ -456,7 +456,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       synchronize: true,
     },
     operator: {
-      default: '+=',
+      init: '+=',
       synchronize: true,
       didChange: function(oldValue, newValue) {
         this.data.numberOperator.set(newValue)
@@ -506,8 +506,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
     },
   },
 })
-
-console.warn('in initBlock,Search for field names corresponding to data names: model.data.foo -> model.u_*.foo')
 
 /**
  * Populate the context menu for the given block.

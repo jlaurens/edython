@@ -28,17 +28,27 @@ goog.require('eYo.DelegateSvg.Operator')
 eYo.DelegateSvg.makeSubclass('Stmt', {
   data: {
     comment: {
-      default: '',
+      init: function() {
+        this.setIncog(true)
+        this.init('')
+      },
+      // didChange is left for subclassers
       validate: function(newValue) {
         return {validated: XRegExp.exec(newValue, eYo.XRE.comment).value || ''}
-      },
-      synchronizeMark: function (me) {
       },
       synchronize: function (newValue) {
         this.synchronize(newValue)
         this.ui.fields.comment_mark.setVisible(!this.isIncog())
       },
       placeholderText: eYo.Msg.Placeholder.COMMENT,
+      xml: {
+        load: function (element) {
+          this.load(element)
+          this.whenRequiredFromDom(function () {
+            this.setIncog(false)
+          })
+        },
+      },
     },
   },
   fields: {
@@ -273,11 +283,11 @@ eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
  * @private
  */
 eYo.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (block, mgr) {
-  var show = this.data.comment.isIncog()
+  var show = !this.data.comment.isIncog()
   var content =
   eYo.Do.createSPAN(show? eYo.Msg.Placeholder.REMOVE_COMMENT: eYo.Msg.Placeholder.ADD_COMMENT, null)
   var menuItem = new eYo.MenuItem(content, function() {
-    block.eyo.data.comment.setIncog(!show)
+    block.eyo.data.comment.setIncog(show)
   })
   mgr.addChild(menuItem, true)
   return true
@@ -524,9 +534,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
       CODE: 0,
       CODE_COMMENT: 1,
       COMMENT: 2,
-      order:100, // initialization comes last
+      order:1000, // initialization comes last
       all: [0, 1, 2],
-      default: 2,
+      init: 2,
       xml: false,
       didChange: function(oldValue, newValue) {
         this.data.code.required = newValue !== this.COMMENT
@@ -535,26 +545,44 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
         this.data.comment.setIncog(newValue === this.CODE)
       },
       consolidate: function () {
-        var withCode = this.data.code.isRequiredFromDom()
-        this.data.code.clearRequiredFromDom()
-        var withComment = this.data.comment.isRequiredFromDom()
+        var withCode = !this.data.code.isIncog()
+        var withComment = !this.data.comment.isIncog()
         this.data.comment.clearRequiredFromDom()
-        var current = this.get()
-        if (withComment) {
-          if (withCode) {
+        if (withCode) {
+          if (withComment) {
             this.set(this.CODE_COMMENT)
           } else {
-            this.set(this.COMMENT)
+            this.set(this.CODE)
           }
-        } else if (withCode) {
-          this.set(this.CODE)
+        } else {
+          this.set(this.COMMENT)
         }
-      }
+      },
     },
     code: {
       synchronize: true,
+      didChange: function (oldVAlue, newValue) {
+        var variant = this.data.variant
+        if (this.isIncog() && variant.get() === variant.CODE) {
+          variant.set(variant.COMMENT)
+        }
+      },
       xml: {
         text: true,
+        load: function (element) {
+          this.load(element)
+          this.whenRequiredFromDom(function () {
+            this.setIncog(false)
+          })
+        },
+      },
+    },
+    comment: {
+      didChange: function (oldVAlue, newValue) {
+        var variant = this.data.variant
+        if (this.isIncog() && variant.get() === variant.COMMENT) {
+          variant.set(variant.CODE)
+        }
       },
     },
   },
