@@ -32,33 +32,13 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       validate: function(newValue) {
         return {validated: XRegExp.exec(newValue, eYo.XRE.comment).value || ''}
       },
-      synchronize: true,
+      synchronizeMark: function (me) {
+      },
+      synchronize: function (newValue) {
+        this.synchronize(newValue)
+        this.ui.fields.comment_mark.setVisible(!this.isIncog())
+      },
       placeholderText: eYo.Msg.Placeholder.COMMENT,
-      xml: {
-        toDom: function(element) {
-          if (this.data.comment_show.get()) {
-            element.setAttribute(this.attributeName, this.toText())
-          }
-        },
-        fromDom: function(element) {
-          var comment = element.getAttribute(this.attributeName)
-          if (goog.isDefAndNotNull(comment)) {
-            this.fromText(comment)
-            this.data.comment_show.set(true)
-          }
-        },
-      }
-    },
-    comment_show: {
-      default: false,
-      validate: function(newValue) {
-        return {validated: newValue} // is it still necessary ?
-      },
-      synchronize: function(newValue) {
-        this.ui.fields.comment_mark.setVisible(!!newValue)
-        this.ui.fields.comment.setVisible(!!newValue)
-      },
-      xml: false,// do not save
     },
   },
   fields: {
@@ -231,7 +211,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
         } else {
           var its_xy = block.getRelativeToSurfaceXY();
           var my_xy = parentBlock.getRelativeToSurfaceXY();
-          parentBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)    
+          parentBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)
         }
         parentBlock.eyo.beReady(parentBlock)
         var holes = eYo.HoleFiller.getDeepHoles(parentBlock)
@@ -293,11 +273,11 @@ eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
  * @private
  */
 eYo.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (block, mgr) {
-  var show = this.data.comment_show.get()
+  var show = this.data.comment.isIncog()
   var content =
   eYo.Do.createSPAN(show? eYo.Msg.Placeholder.REMOVE_COMMENT: eYo.Msg.Placeholder.ADD_COMMENT, null)
   var menuItem = new eYo.MenuItem(content, function() {
-    block.eyo.data.comment_show.set(!show)
+    block.eyo.data.comment.setIncog(!show)
   })
   mgr.addChild(menuItem, true)
   return true
@@ -541,36 +521,41 @@ eYo.DelegateSvg.Stmt.makeSubclass('return_stmt', {
 eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
   data: {
     variant: {
-      INSTRUCTION: 0,
-      INSTRUCTION_COMMENT: 1,
+      CODE: 0,
+      CODE_COMMENT: 1,
       COMMENT: 2,
+      order:100, // initialization comes last
       all: [0, 1, 2],
       default: 2,
       xml: false,
       didChange: function(oldValue, newValue) {
-        this.ui.fields.code.setVisible(newValue !== this.model.COMMENT)
-        this.data.comment_show.set(newValue !== this.model.INSTRUCTION)
         this.data.code.required = newValue !== this.model.COMMENT
+        this.data.code.setIncog(newValue === this.model.COMMENT)
+        this.data.comment.required = newValue === this.model.CODE_COMMENT
+        this.data.comment.setIncog(newValue === this.model.CODE)
       },
-    },
-    comment_show: {
-      didChange: function(oldValue, newValue) {
-        var data = this.data.variant
-        var current = data.get()
-        data.set(newValue? current || 1: 0)
-      },
-      xml: false,// do not save
+      consolidate: function () {
+        var M = this.model
+        var withCode = this.data.code.isRequiredFromDom()
+        this.data.code.clearRequiredFromDom()
+        var withComment = this.data.comment.isRequiredFromDom()
+        this.data.comment.clearRequiredFromDom()
+        var current = this.get()
+        if (withComment) {
+          if (withCode) {
+            this.set(M.CODE_COMMENT)
+          } else {
+            this.set(M.COMMENT)
+          }
+        } else if (withCode) {
+          this.set(M.CODE)
+        }
+      }
     },
     code: {
       synchronize: true,
       xml: {
         text: true,
-        didoad: function () {
-          var variant = this.owner.data.variant
-          if (variant.get() === variant.model.COMMENT) {
-            variant.set(variant.model.INSTRUCTION_COMMENT)
-          }
-        },
       },
     },
   },
@@ -630,13 +615,13 @@ eYo.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (bl
   var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN(short_code || code || '…', 'eyo-code'),
   )
-  F(content, model.INSTRUCTION)
+  F(content, model.CODE)
   var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN(short_code_all || code || '…', 'eyo-code'),
     eYo.Do.createSPAN(' # ', 'eyo-code-reserved'),
     eYo.Do.createSPAN(short_comment_all || '…' || comment, 'eyo-code-comment'),
   )
-  F(content, model.INSTRUCTION_COMMENT)
+  F(content, model.CODE_COMMENT)
  return eYo.DelegateSvg.Stmt.any_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || true
 }
 

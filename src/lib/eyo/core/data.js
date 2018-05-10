@@ -159,7 +159,7 @@ eYo.Data.prototype.all = undefined
  */
 eYo.Data.prototype.getAll = function() {
   var all = this.model.all
-  return goog.isArray(all) && all || goog.isFunction(all) && goog.isArray(all = all()) && all 
+  return goog.isArray(all) && all || goog.isFunction(all) && goog.isArray(all = all()) && all
 }
 
 /**
@@ -210,7 +210,7 @@ eYo.Data.prototype.fromText = function(txt, dontValidate) {
     }
   }
   if (dontValidate) {
-    if ((this.value_ === newValue) || !(newValue = this.validate(newValue)) || !goog.isDef(newValue = newValue.validated)) {
+    if ((this.value_ === txt) || !(txt = this.validate(txt)) || !goog.isDef(txt = txt.validated)) {
       this.error = true
     }
     this.internalSet(txt)
@@ -417,8 +417,11 @@ eYo.Data.prototype.set = function (newValue) {
  * @param {Object} newValue
  */
 eYo.Data.prototype.setIncog = function(newValue) {
-  this.incog_ = newValue
-  this.synchronizeIfUI(this.value_)
+  if (!this.incog_ !== !newValue) {
+    this.incog_ = newValue
+    this._didChange(this.value_, this.value_)
+    this.synchronizeIfUI(this.value_)
+  }
 }
 /**
  * Whether the data is incognito.
@@ -454,7 +457,7 @@ eYo.Data.prototype.consolidate = function() {
 
 /**
  * An active data is not explicitely disabled, and does contain text.
- * @param {!number} index  of the input older in the ui object 
+ * @param {!number} index  of the input older in the ui object
  * @param {!boolean} newValue.
  * @private
  */
@@ -465,11 +468,11 @@ eYo.Data.prototype.isActive = function () {
 /**
  * Set the value of the main field given by its key.
  * @param {!Object} newValue.
- * @param {!number} inputIndex  of the input in the model (i_1, i_2...) 
+ * @param {!number} inputIndex  of the input in the model (i_1, i_2...)
  * When false, this corresponds to the fields that are not
  * part of an input, like the modifier field.
- * @param {string|null} fieldKey  of the input holder in the ui object 
- * @param {boolean} noUndo  true when no undo tracking should be performed. 
+ * @param {string|null} fieldKey  of the input holder in the ui object
+ * @param {boolean} noUndo  true when no undo tracking should be performed.
  * @private
  */
 eYo.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
@@ -513,7 +516,7 @@ eYo.Data.prototype.waitOff = function () {
 /**
  * This is the method used to save data to an xml tree.
  * If the receiver is not disabled, send its model a `toDom` message
- * if relevant, send this message to the receiver. 
+ * if relevant, send this message to the receiver.
  * For edython.
  * @param {Element} xml the persistent element.
  */
@@ -534,7 +537,7 @@ eYo.Data.prototype.saveToDom = function(element) {
 /**
  * Does nothing if the data is disabled or if the model
  * has a `false`valued xml property.
- * This is the raw converter in the sense that 
+ * This is the raw converter in the sense that
  * For edython.
  * @param {Element} xml the persistent element.
  */
@@ -613,7 +616,7 @@ eYo.Data.prototype.fromDom = function(element) {
       this.fromText(txt, true) // do not validate, there might be an error while saving, please check
     }
   } else if (required) {
-    this.fromText('', true)   
+    this.fromText('', true)
   }
 }
 
@@ -647,4 +650,3 @@ eYo.Data.prototype.clearRequiredFromDom = function () {
     return true
   }
 }
-

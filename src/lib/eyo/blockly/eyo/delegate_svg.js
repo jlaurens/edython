@@ -359,9 +359,10 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
  * @param {!Block} block.
  */
 eYo.DelegateSvg.prototype.consolidate = function (block, deep, force) {
-  for (var k in this.data) {
-    var data = this.data[k]
+  var data = this.headData
+  while (data) {
     data.consolidate()
+    data = data.next
   }
   var tile = this.ui.headTile
   while (tile) {
@@ -1170,9 +1171,10 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id, initS
  */
 eYo.DelegateSvg.prototype.beReady = function (block) {
   block.initSvg()
-  var data = this.data
-  for (var k in data) {
-    data[k].beReady()
+  var data = this.headData
+  while (data) {
+    data.beReady()
+    data = data.next
   }
   // install all the fields and tiles in the DOM
   for (var k in this.ui.fields) {
@@ -1289,7 +1291,7 @@ eYo.HoleFiller.getData = function(check, value) {
 eYo.HoleFiller.getDeepHoles = function(block, holes) {
   var H = holes || []
   var getDeepHoles = function (c8n) {
-    if (c8n && c8n.type === Blockly.INPUT_VALUE && (!c8n.eyo.disabled_ || c8n.eyo.wrapped_)) {
+    if (c8n && c8n.type === Blockly.INPUT_VALUE && ((!c8n.eyo.disabled_ && !c8n.eyo.incog_) || c8n.eyo.wrapped_)) {
       var target = c8n.targetBlock()
       if (target) {
         eYo.HoleFiller.getDeepHoles(target, H)

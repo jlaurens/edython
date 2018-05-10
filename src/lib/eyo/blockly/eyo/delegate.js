@@ -36,9 +36,25 @@ eYo.Delegate = function (block) {
   block.eyo = this
   var data = this.data = Object.create(null) // just a hash
   var dataModel = this.getModel().data
+  var byOrder = []
   for (var k in dataModel) {
     if (eYo.Do.hasOwnProperty(dataModel, k)) {
-      data[k] = new eYo.Data(this, k, dataModel[k])
+      var d = new eYo.Data(this, k, dataModel[k])
+      data[k] = d
+      for (var i = 0, dd;(dd = byOrder[i]); ++i) {
+        if (dd.model.order > d.model.order) {
+          break
+        }
+      }
+      byOrder.splice(i, 0, d)
+    }
+  }
+  var d = this.headData = byOrder[0]
+  if (d) {
+    for (var i = 1, dd;(dd = byOrder[i]); ++i) {
+      d.next = dd
+      dd.previous = d
+      d = dd
     }
   }
 }
@@ -422,9 +438,10 @@ eYo.Delegate.prototype.initData = function() {
     init.call(this)
     return
   }
-  var data = this.data
-  for (var k in data) {
-    data[k].init()
+  var data = this.headData
+  while (data) {
+    data.init()
+    data = data.next
   }
 }
 
@@ -435,9 +452,10 @@ eYo.Delegate.prototype.initData = function() {
  * where we use only data's `internalSet` method.
  */
 eYo.Delegate.prototype.synchronizeData = function(block) {
-  var data = this.data
-  for (var k in data) {
-    data[k].synchronize(data[k].get())
+  var data = this.headData
+  while (data) {
+    data.synchronize(data.get())
+    data = data.next
   }
 }
 
