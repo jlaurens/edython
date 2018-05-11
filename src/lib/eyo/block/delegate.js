@@ -1066,17 +1066,6 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
 }
 
 /**
- * Set the disable state.
- * For edython.
- * @param {!bollean} newValue.
- */
-eYo.Delegate.prototype.setIncog = function (newValue) {
-  this.incog = newValue
-  var c8n = this.input && this.input.connection
-  c8n && c8n.eyo.setIncog(newValue)
-  this.synchronize()
-}
-/**
  * Enable/Disable the connections of the block.
  * A disabled block cannot enable its connections.
  * @param {!Block} block.

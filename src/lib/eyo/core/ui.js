@@ -105,8 +105,8 @@ eYo.Style.Path = {
   Error: {
     'colour': '#c33',
   },
-  'colour': goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 92 / 100)),
-  'inner_colour': goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 97 / 100)),
+  'colour': goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 90 / 100)),
+  'inner_colour': goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 95 / 100)),
   'width': 1.5, // px
   'radius': function () { return eYo.Font.space * 0.75 }
 }
@@ -152,8 +152,9 @@ eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt('.blocklyHighlightedConnectionPathH{fill: ' + eYo.Style.Path.Selected.colour + ';stroke: none;}')
   eYo.Style.insertCssRuleAt('.eyo-checkbox-icon-rect{stroke: ' + eYo.Style.Path.colour + ';stroke-width: ' + eYo.Style.Path.width + 'px;fill: white;}')
   eYo.Style.insertCssRuleAt('.eyo-locked>.eyo-path-contour, .eyo-locked>.eyo-path-shape{display: none}')
-  eYo.Style.insertCssRuleAt('.eyo-path-shape{stroke: none;fill: white;fill-opacity:0.9}')
-  eYo.Style.insertCssRuleAt('.eyo-path-contour, .eyo-path-collapsed {stroke: ' + eYo.Style.Path.colour + ';stroke-width: ' + eYo.Style.Path.width + 'px;fill: none;}')
+  eYo.Style.insertCssRuleAt('.eyo-path-shape{stroke: none;fill: white;fill-opacity:0.85}')
+  eYo.Style.insertCssRuleAt('.eyo-path-contour, .eyo-path-collapsed {stroke: ' + eYo.Style.Path.colour + ';stroke-width: ' + eYo.Style.Path.width + 'px;fill: none;pointer-events: all;}')
+  eYo.Style.insertCssRuleAt('.eyo-inner .eyo-path-contour, .eyo-inner .eyo-path-collapsed {stroke: ' + eYo.Style.Path.inner_colour + ';}')
   eYo.Style.insertCssRuleAt('.eyo-none {stroke:none;fill:none;}')
   eYo.Style.insertCssRuleAt('.eyo-edit {stroke: ' + eYo.Style.Path.colour + ';stroke-width: '+eYo.Style.Edit.width+'px;fill: none;}')
   eYo.Style.insertCssRuleAt('rect.eyo-editing, .eyo-locked  .eyo-edit {stroke: none;}')

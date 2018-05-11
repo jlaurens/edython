@@ -36,6 +36,41 @@ Blockly.WorkspaceSvg.prototype.newBlock = function (prototypeName, optId) {
   }
 }
 
+/**
+ * Handle a mouse-down on SVG drawing surface.
+ * Overriden by JL
+ * @param {!Event} e Mouse down event.
+ * @private
+ */
+eYo.WorkspaceSvg.onMouseDown_saved =
+Blockly.WorkspaceSvg.prototype.onMouseDown_
+Blockly.WorkspaceSvg.prototype.onMouseDown_ = function(e) {
+  if (Blockly.WidgetDiv.DIV.INPUT) {
+    Blockly.WidgetDiv.hide()
+  } else {
+    eYo.WorkspaceSvg.onMouseDown_saved.call(thid, e)
+  }
+};
+
+goog.provide('eYo.Gesture')
+/**
+ * Handle a mousedown/touchstart event on a workspace.
+ * This is overriden because
+ * `Blockly.WorkspaceSvg.prototype.onMouseDown_`
+ * cannot.
+ * @param {!Event} e A mouse down or touch start event.
+ * @param {!Blockly.Workspace} ws The workspace the event hit.
+ * @package
+ */
+eYo.Gesture.handleWsStart_saved = Blockly.Gesture.prototype.handleWsStart
+Blockly.Gesture.prototype.handleWsStart = function(e, ws) {
+  if (Blockly.WidgetDiv.DIV.childNodes.length) {
+    Blockly.WidgetDiv.hide()
+  } else {
+    eYo.Gesture.handleWsStart_saved.call(this, e, ws)
+  }
+};
+
 Blockly.Workspace.prototype.logAllConnections = function (comment) {
   comment = comment || ''
   var dbList = this.connectionDBList
@@ -419,4 +454,16 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
     Blockly.Events.fire(new Blockly.Events.BlockCreate(block));
   }
   block.select();
+};
+
+/**
+ * Handle a mouse-down on SVG drawing surface.
+ * @param {!Event} e Mouse down event.
+ * @private
+ */
+Blockly.WorkspaceSvg.prototype.onMouseDown_ = function(e) {
+  var gesture = this.getGesture(e);
+  if (gesture) {
+    gesture.handleWsStart(e, this);
+  }
 };

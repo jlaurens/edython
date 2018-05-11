@@ -184,13 +184,6 @@ eYo.DelegateSvg.prototype.initBlock = function(block) {
   eYo.Tile.makeFields(this, ui, model.fields)
   // now initialize all the fields
   this.ui = ui
-  if (!block.workspace.options.readOnly && !this.eventsInit_) {
-    Blockly.bindEventWithChecks_(block.getSvgRoot(), 'mouseup', block,
-    function(e) {
-      block.eyo.onMouseUp_(block, e)
-    })
-  }
-  this.eventsInit_ = true;
   // wait until the end to set the subtype because it causes rendering
   // bind the data and the ui when relevant.
   // We establish a bi directional bound between data, inputs and fields
@@ -203,6 +196,9 @@ console.warn('implement async and await, see above awaitable and asyncable')
  * @param {!Blockly.Block} block to be initialized..
  */
 eYo.DelegateSvg.prototype.deinitBlock = function(block) {
+  goog.dom.removeNode(this.svgRoot_)
+  this.svgRoot_ = undefined
+  // just in case the path were not already removed as child or a removed parent
   goog.dom.removeNode(this.svgPathShape_)
   this.svgPathShape_ = undefined
   goog.dom.removeNode(this.svgPathContour_)
@@ -241,21 +237,110 @@ eYo.DelegateSvg.prototype.postInitSvg = function(block) {
   delete block.svgPathLight_
   goog.dom.removeNode(block.svgPathDark_)
   delete block.svgPathDark_
-    this.svgPathInline_ = Blockly.utils.createSvgElement('path',
-    {'class': 'eyo-path-contour'}, null)
-  goog.dom.insertChildAt(block.svgGroup_, this.svgPathInline_, 0)
-  this.svgPathCollapsed_ = Blockly.utils.createSvgElement('path', {'class': 'eyo-path-collapsed'}, null)
-  goog.dom.insertChildAt(block.svgGroup_, this.svgPathCollapsed_, 0)
-  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {'class': 'eyo-path-contour'}, null)
-  goog.dom.insertChildAt(block.svgGroup_, this.svgPathContour_, 0)
-  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {'class': 'eyo-path-shape'}, null)
-  goog.dom.insertChildAt(block.svgGroup_, this.svgPathShape_, 0)
-  this.svgPathHighlight_ = Blockly.utils.createSvgElement('path',
-    {'class': 'eyo-path-selected'}, null)
-  this.svgPathConnection_ = Blockly.utils.createSvgElement('path',
-    {'class': 'eyo-path-selected'}, null)
-  Blockly.utils.addClass(/** @type {!Element} */ (block.svgGroup_),
+  // this.svgRoot_ = block.svgGroup_
+  // block.svgGroup_ = Blockly.utils.createSvgElement('g',
+  //   {'class': 'eyo-root'}, null)
+  // goog.dom.insertChildAt(this.svgRoot_, block.svgGroup_, 0)
+  this.svgPathInline_ = Blockly.utils.createSvgElement('path', {
+    'class': 'eyo-path-contour',
+  }, null)
+  this.svgPathCollapsed_ = Blockly.utils.createSvgElement('path', {
+    'class': 'eyo-path-collapsed',
+  }, null)
+  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {
+    'class': 'eyo-path-contour',
+  }, null)
+  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {
+    'class': 'eyo-path-shape',
+  }, null)
+  this.svgPathHighlight_ = Blockly.utils.createSvgElement('path', {
+    'class': 'eyo-path-selected',
+  }, null)
+  this.svgPathConnection_ = Blockly.utils.createSvgElement('path', {
+    'class': 'eyo-path-selected',
+  }, null)
+  this.svgContourGroup_ = Blockly.utils.createSvgElement('g',
+    {'class': 'eyo-contour'}, null)
+  goog.dom.appendChild(this.svgContourGroup_, this.svgPathInline_)
+  goog.dom.appendChild(this.svgContourGroup_, this.svgPathCollapsed_)
+  goog.dom.appendChild(this.svgContourGroup_, this.svgPathContour_)
+  this.svgShapeGroup_ = Blockly.utils.createSvgElement('g',
+    {'class': 'eyo-shape'}, null)
+  goog.dom.appendChild(this.svgShapeGroup_, this.svgPathShape_)
+  goog.dom.classlist.add(/** @type {!Element} */ (block.svgGroup_),
     'eyo-block')
+  if (!block.workspace.options.readOnly && !this.eventsInit_) {
+    Blockly.bindEventWithChecks_(
+      block.svgGroup_, 'mousedown', block, block.onMouseDown_);
+    Blockly.bindEventWithChecks_(
+      block.svgGroup_, 'mouseup', block, block.onMouseUp_)
+  }
+  this.eventsInit_ = true;
+}
+
+/**
+ * Called when the parent will just change.
+ * @param {!Blockly.Block} block to be initialized.
+ */
+eYo.DelegateSvg.prototype.parentWillChange = function (block, newParent) {
+  // This is the original code found in
+  // `Blockly.BlockSvg.prototype.setParent`
+  if (block.parentBlock_) {
+    var svgRoot = block.getSvgRoot()
+    if (svgRoot) {
+      // Move this block up the DOM.  Keep track of x/y translations.
+      var xy = block.getRelativeToSurfaceXY()
+      block.workspace.getCanvas().appendChild(svgRoot)
+      svgRoot.setAttribute('transform', 'translate(' + xy.x + ',' + xy.y + ')')
+      if (this.svgContourGroup_) {
+        goog.dom.insertChildAt(svgRoot, this.svgContourGroup_, 0)
+        this.svgContourGroup_.removeAttribute('transform')
+        goog.dom.classlist.remove(/** @type {!Element} */(this.svgContourGroup_),
+        'eyo-inner')
+        goog.dom.insertSiblingBefore(this.svgShapeGroup_, this.svgContourGroup_)
+        this.svgShapeGroup_.removeAttribute('transform')
+        goog.dom.classlist.remove(/** @type {!Element} */(this.svgShapeGroup_),
+        'eyo-inner')
+      }
+    }
+  }
+}
+
+/**
+ * Called when the parent did just change.
+ * @param {!Blockly.Block} block to be initialized.
+ */
+eYo.DelegateSvg.prototype.parentDidChange = function (block, newParent) {
+  // This is the original code found in
+  // `Blockly.BlockSvg.prototype.setParent`
+  if (newParent) {
+    var svgRoot = block.getSvgRoot()
+    var oldXY = block.getRelativeToSurfaceXY();
+    newParent.getSvgRoot().appendChild(svgRoot);
+    var newXY = block.getRelativeToSurfaceXY();
+    // Move the connections to match the child's new position.
+    block.moveConnections_(newXY.x - oldXY.x, newXY.y - oldXY.y);
+    if (this.svgContourGroup_ && newParent.eyo.svgContourGroup_) {
+      goog.dom.insertChildAt(newParent.eyo.svgContourGroup_,
+        this.svgContourGroup_, 0)
+      goog.dom.classlist.add(/** @type {!Element} */(this.svgContourGroup_),
+      'eyo-inner')
+      goog.dom.appendChild(newParent.eyo.svgShapeGroup_,
+        this.svgShapeGroup_)
+      goog.dom.classlist.add(/** @type {!Element} */(this.svgShapeGroup_),
+      'eyo-inner')
+    }
+  }
+}
+
+/**
+ * Insert the svg root of the head tile in the svg group of the receiver
+ * at the exact location where it belongs.
+ */
+eYo.DelegateSvg.prototype.svgInsertHeadTile = function() {
+  if (this.ui.headTile) {
+    goog.dom.appendChild(this.block_.getSvgRoot(), this.ui.headTile.getSvgRoot())
+  }
 }
 
 /**
@@ -683,6 +768,10 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
             var root = io.target.getSvgRoot()
             if (root) {
               root.setAttribute('display', 'none')
+              if (io.target.eyo.svgContourGroup_) {
+                io.target.eyo.svgContourGroup_.setAttribute('display', 'none')
+                io.target.eyo.svgShapeGroup_.setAttribute('display', 'none')
+              }
             } else {
               console.log('Block with no root: did you ...initSvg()?')
             }
@@ -708,7 +797,6 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   return io.steps.join(' ')
 }
 
-console.warn('List consolidators for yield expression use 2 differnet inputs with "O" name')
 /**
  * Render the the tile in `io.tile`.
  * @param io.
@@ -719,7 +807,7 @@ eYo.DelegateSvg.prototype.renderDrawTile_ = function (io) {
   goog.asserts.assert(root, 'Tile with no root')
   if (io.tile.isIncog()) {
     root.setAttribute('display', 'none')
-  } else if (root) {
+  } else {
     root.removeAttribute('display')
     root.setAttribute('transform',
     'translate(' + io.cursorX + ', 0)')
@@ -740,8 +828,6 @@ eYo.DelegateSvg.prototype.renderDrawTile_ = function (io) {
     }
     io.cursorX += io.offsetX
     io.offsetX = 0
-  } else if ((io.input = io.tile.input)) {
-    this.renderDrawInput_(io)
   }
 }
 
@@ -849,12 +935,18 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   var delta = this.renderDrawFields_(io, true)
   var c8n = io.input.connection
   if (c8n) {// once `&&!c8n.hidden_` was there, bad idea but why was it here?
-    c8n.setOffsetInBlock(io.cursorX+io.offsetX, 0)
+    var cursorX = io.cursorX+io.offsetX
+    c8n.setOffsetInBlock(cursorX, 0)
     var target = c8n.targetBlock()
     if (!!target) {
       var root = target.getSvgRoot()
       if (!!root) {
-        root.setAttribute('transform', 'translate(' + (io.cursorX + io.offsetX) + ', 0)')
+        var translate = 'translate(' + cursorX + ', 0)'
+        root.setAttribute('transform', translate)
+        if (target.eyo.svgContourGroup_) {
+          target.eyo.svgContourGroup_.setAttribute('transform', translate)
+          target.eyo.svgShapeGroup_.setAttribute('transform', translate)
+        }
         if (!target.eyo.skipRendering) {
           target.eyo.shouldSeparateField = (target.eyo.wrapped_ ||target.eyo.locked_) && io.shouldSeparateField
         }
@@ -868,8 +960,8 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       // (input with no target)
       var eyo = c8n.eyo
       var pw = eyo.s7r_ || eyo.optional_?
-      this.carretPathDefWidth_(io.cursorX+io.offsetX):
-      this.placeHolderPathDefWidth_(io.cursorX+io.offsetX)
+      this.carretPathDefWidth_(cursorX):
+      this.placeHolderPathDefWidth_(cursorX)
       io.steps.push(pw.d)
       io.cursorX += pw.width
       if (pw.width) {
@@ -1094,26 +1186,22 @@ eYo.DelegateSvg.prototype.makeBlockWrapped = function (block) {
   eYo.DelegateSvg.superClass_.makeBlockWrapped.call(this, block)
   goog.asserts.assert(!this.hasSelect(block), 'Deselect block before')
   block.initSvg()
-  goog.dom.removeNode(this.svgPathShape_)
-  delete this.svgPathShape_
-  this.svgPathShape_ = undefined
-  goog.dom.removeNode(this.svgPathContour_)
-  delete this.svgPathContour_
-  this.svgPathContour_ = undefined
+  this.svgPathShape_.setAttribute('display', 'none')
+  this.svgPathContour_.setAttribute('display', 'none')
 }
 
 /**
- * The default implementation does nothing.
- * Subclassers will override this but won't call it.
+ * Creates the contour path.
+ * Does nothing if this contour already exists.
  * @param {!Block} block.
  * @private
  */
 eYo.DelegateSvg.prototype.makeBlockUnwrapped = function (block) {
-  eYo.DelegateSvg.superClass_.makeBlockUnwrapped.call(this, block)
-  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {'class': 'eyo-path-contour'}, null)
-  goog.dom.insertChildAt(block.svgGroup_, this.svgPathContour_, 0)
-  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {'class': 'eyo-path-shape'}, null)
-  goog.dom.insertChildAt(block.svgGroup_, this.svgPathShape_, 0)
+  if (this.svgPathContour_) {
+    eYo.DelegateSvg.superClass_.makeBlockUnwrapped.call(this, block)
+    this.svgPathContour_.removeAttribute('display')
+    this.svgPathShape_.removeAttribute('display')
+  }
 }
 
 /**
@@ -1184,6 +1272,22 @@ eYo.DelegateSvg.prototype.beReady = function (block) {
   this.consolidate(block)
   this.synchronizeData(block)
   this.synchronizeTiles(block)
+  var parent = block.outputConnection && block.outputConnection.targetBlock()
+  if (parent && parent.eyo.svgContourGroup_) {
+    goog.dom.insertChildAt(parent.eyo.svgContourGroup_, this.svgContourGroup_, 0)
+    goog.dom.classlist.add(/** @type {!Element} */(this.svgContourGroup_),
+    'eyo-inner')
+    goog.dom.appendChild(parent.eyo.svgShapeGroup_, this.svgShapeGroup_)
+    goog.dom.classlist.add(/** @type {!Element} */(this.svgShapeGroup_),
+    'eyo-inner')
+  } else {
+    goog.dom.insertChildAt(block.svgGroup_, this.svgContourGroup_, 0)
+    goog.dom.classlist.remove(/** @type {!Element} */(this.svgContourGroup_),
+    'eyo-inner')
+    goog.dom.insertSiblingBefore(this.svgShapeGroup_, this.svgContourGroup_)
+    goog.dom.classlist.remove(/** @type {!Element} */(this.svgShapeGroup_),
+    'eyo-inner')
+  }
   this.skipRendering = 0
 }
 

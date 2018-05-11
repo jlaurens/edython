@@ -105,6 +105,17 @@ eYo.FieldTextInput.prototype.init = function () {
  * the approximated width on IE/Edge when `getComputedTextLength` fails. Once
  * it eventually does succeed, the result will be cached.
  **/
+eYo.FieldTextInput.prototype.onMouseDown_ = function (e) {
+  if (Blockly.selected === this.sourceBlock_) {
+    eYo.FieldTextInput.superClass_.onMouseDown_.call(this, e)
+  }
+}
+
+/**
+ * Updates the width of the field. This calls getCachedWidth which won't cache
+ * the approximated width on IE/Edge when `getComputedTextLength` fails. Once
+ * it eventually does succeed, the result will be cached.
+ **/
 eYo.FieldTextInput.prototype.updateWidth = function () {
   eYo.FieldTextInput.superClass_.updateWidth.call(this)
   var width = Blockly.Field.getCachedWidth(this.textElement_)
@@ -199,7 +210,7 @@ eYo.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
   var htmlInput =
       goog.dom.createDom(goog.dom.TagName.INPUT, 'eyo-html-input')
   htmlInput.setAttribute('spellcheck', this.spellcheck_)
-  
+
   goog.dom.classlist.add(div, this.cssClass)
   goog.dom.classlist.add(htmlInput, this.cssClass)
   if (this.eyo.comment) {
@@ -243,7 +254,7 @@ eYo.FieldTextInput.prototype.widgetDispose_ = function () {
       }
     }
     var block = field.sourceBlock_
-    block.eyo.endEditingField && block.eyo.endEditingField(block, field)  
+    block.eyo.endEditingField && block.eyo.endEditingField(block, field)
     if (field.eyo.grouper_) {
       Blockly.Events.setGroup(false)
       delete field.eyo.grouper_
@@ -354,7 +365,7 @@ eYo.FieldInput.prototype.placeholderText = function() {
  * @param {string} newValue New value.
  */
 eYo.FieldInput.prototype.setValue = function(newValue) {
-  this.eyo.placeholder = !newValue || !newValue.length 
+  this.eyo.placeholder = !newValue || !newValue.length
   eYo.FieldInput.superClass_.setValue.call(this, newValue)
 }
 

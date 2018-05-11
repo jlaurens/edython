@@ -64,9 +64,11 @@ eYo.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
  */
 eYo.DelegateSvg.Expr.prototype.didConnect = function(block, connection, oldTargetConnection, oldConnection) {
   eYo.DelegateSvg.Expr.superClass_.didConnect.call(this, block, connection, oldTargetConnection, oldConnection)
-  if (block === Blockly.selected && this.locked_) {
-    var parent = block.getSurroundParent()
-    parent && parent.select()
+  if (connection.type === Blockly.OUTPUT_VALUE) {
+    var parent = connection.targetBlock()
+    if (block === Blockly.selected && this.locked_) {
+      parent.select()
+    }
   }
 }
 

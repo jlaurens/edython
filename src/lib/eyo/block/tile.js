@@ -94,7 +94,12 @@ eYo.Tile.prototype.beReady = function() {
   this.svgGroup_ = Blockly.utils.createSvgElement('g', {
     class: 'eyo-tile'
   }, null);
-  this.getBlock().getSvgRoot().appendChild(this.svgGroup_)
+  if (this.previous) {
+    goog.dom.insertSiblingAfter(this.svgGroup_, this.previous.svgGroup_)
+  } else {
+    this.owner.svgInsertHeadTile()
+  }
+//  this.getBlock().getSvgRoot().appendChild(this.svgGroup_)
   this.init()
   // init all the fields
   for (var k in this.fields) {
@@ -112,6 +117,18 @@ console.warn('What would be a tile rendering?')
  */
 eYo.Tile.prototype.getSvgRoot = function() {
   return this.svgGroup_
+};
+
+/**
+ * Transitional: when a block is connected, its svg root is installed
+ * in another block's one. Here we move it to a tile svg root, if relevant.
+ * @param {!Blockly.Block} block to be initialized.
+ */
+eYo.Tile.prototype.takeSvgOwnership = function(block) {
+  var root = block.getSvgRoot()
+  if (root) {
+    console.log('MOVE IT TO THE TAIL ?')
+  }
 };
 
 /**
