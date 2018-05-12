@@ -218,9 +218,6 @@ eYo.Consolidator.Arguments.prototype.getCheck = function() {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('argument_list', {
   list: {

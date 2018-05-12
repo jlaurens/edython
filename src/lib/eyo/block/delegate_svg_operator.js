@@ -20,9 +20,6 @@ goog.require('eYo.DelegateSvg.Expr')
  * Multiple ops.
  * Abstract class.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('Operator', {
   data: {
@@ -75,9 +72,6 @@ eYo.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
  * Class for a DelegateSvg, unary op ... block.
  * u_expr_s3d.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Operator.makeSubclass('u_expr_s3d', {
   data: {
@@ -106,9 +100,6 @@ eYo.DelegateSvg.Expr.u_expr_s3d.prototype.makeTitle = function (block, op) {
  * Class for a DelegateSvg, ... op ... block.
  * Multiple ops.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Operator.makeSubclass('Binary',{
   tiles: {
@@ -159,9 +150,6 @@ eYo.DelegateSvg.Binary.makeModel = function(operators, check1, check3, operatorI
  * Class for a DelegateSvg, m_expr_s3d block.
  * Multiple ops.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Binary.makeSubclass(
   'm_expr_s3d',
@@ -176,9 +164,6 @@ eYo.DelegateSvg.Binary.makeSubclass(
  * Class for a DelegateSvg, a_expr_s3d block.
  * Multiple ops.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Binary.makeSubclass(
   'a_expr_s3d',
@@ -193,9 +178,6 @@ eYo.DelegateSvg.Binary.makeSubclass(
  * Class for a DelegateSvg, shift_expr_s3d block.
  * Multiple ops.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Binary.makeSubclass(
   'shift_expr_s3d',
@@ -210,9 +192,6 @@ eYo.DelegateSvg.Binary.makeSubclass(
  * Class for a DelegateSvg, and_expr_s3d block.
  * Multiple ops.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Binary.makeSubclass(
   'and_expr_s3d',
@@ -227,9 +206,6 @@ eYo.DelegateSvg.Binary.makeSubclass(
  * Class for a DelegateSvg, xor_expr_s3d block.
  * Multiple ops.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Binary.makeSubclass(
   'xor_expr_s3d',
@@ -244,9 +220,6 @@ eYo.DelegateSvg.Binary.makeSubclass(
  * Class for a DelegateSvg, or_expr_s3d block.
  * Multiple ops.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Binary.makeSubclass(
   'or_expr_s3d',
@@ -263,9 +236,6 @@ eYo.DelegateSvg.Binary.makeSubclass(
  * Maybe we should make a flat version in order to compare the blocks
  * if necessary ever.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Binary.makeSubclass(
   'number_comparison',
@@ -282,9 +252,6 @@ console.log('where is the operator displayed ?')
  * Maybe we should make a flat version in order to compare the blocks
  * if necessary ever.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Binary.makeSubclass('object_comparison', {
   data: {
@@ -348,9 +315,6 @@ eYo.DelegateSvg.Binary.makeSubclass('or_test_s3d', {
  * Class for a DelegateSvg, and_test_s3d block.
  * Multiple ops.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Binary.makeSubclass('and_test_s3d', {
   data: {
@@ -379,9 +343,6 @@ eYo.DelegateSvg.Binary.makeSubclass('and_test_s3d', {
  * power_s3d ::= await_or_primary "**" u_expr
  * This one is not a binary.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Operator.makeSubclass('power_s3d', {
   data: {

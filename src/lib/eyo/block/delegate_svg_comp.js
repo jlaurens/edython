@@ -19,9 +19,6 @@ goog.require('eYo.DelegateSvg.Expr')
  * Class for a DelegateSvg, comprehension value block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('comprehension', {
   tiles: {
@@ -56,9 +53,6 @@ eYo.DelegateSvg.Expr.makeSubclass('comprehension', {
  * Class for a DelegateSvg, comp_for block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('comp_for', {
   tiles: {
@@ -84,9 +78,6 @@ eYo.DelegateSvg.Expr.makeSubclass('comp_for', {
  * Class for a DelegateSvg, comp_if block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('comp_if', {
   tiles: {
@@ -106,9 +97,6 @@ eYo.DelegateSvg.Expr.makeSubclass('comp_if', {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('comp_iter_list', {
   list: {
@@ -168,9 +156,6 @@ eYo.DelegateSvg.Expr.makeSubclass('dict_comprehension', {
  * Class for a DelegateSvg, key_datum_s3d block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('key_datum_s3d', {
   tiles: {

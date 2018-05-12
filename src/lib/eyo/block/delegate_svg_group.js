@@ -19,9 +19,6 @@ goog.require('eYo.DelegateSvg.Stmt')
  * Class for a DelegateSvg, statement block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('Group', {
   fields: {
@@ -220,9 +217,6 @@ eYo.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
  * Class for a DelegateSvg, if_part block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Group.makeSubclass('if_part', {
   fields: {
@@ -241,9 +235,6 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
  * Class for a DelegateSvg, elif_part block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Group.makeSubclass('elif_part', {
   fields: {
@@ -270,9 +261,6 @@ eYo.DelegateSvg.Group.makeSubclass('elif_part', {
  * - before a finally
  * It is always the last box of the sequence, except when before a finally
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Group.makeSubclass('else_part', {
   fields: {
@@ -349,9 +337,6 @@ eYo.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
  * Class for a DelegateSvg, while_part block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Group.makeSubclass('while_part', {
   fields: {
@@ -411,9 +396,6 @@ eYo.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (block, mgr
  * Class for a DelegateSvg, for_part block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Group.makeSubclass('for_part', {
   tiles: {
@@ -440,9 +422,6 @@ eYo.DelegateSvg.Group.makeSubclass('for_part', {
  * Class for a DelegateSvg, with_part block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Group.makeSubclass('with_part', {
   tiles: {
@@ -460,9 +439,6 @@ eYo.DelegateSvg.Group.makeSubclass('with_part', {
  * Class for a DelegateSvg, with_item_s3d block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('with_item_s3d', {
   tiles: {

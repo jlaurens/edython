@@ -290,9 +290,6 @@ eYo.Consolidator.Parameter.prototype.getCheck = function() {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('parameter_list', {
   list: {
@@ -371,9 +368,6 @@ console.warn('Use a modifier field for * and ** (instead of await and async too)
  * method of the connection's delegate.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('lambda', {
   tiles: {

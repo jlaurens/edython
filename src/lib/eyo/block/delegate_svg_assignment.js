@@ -406,9 +406,6 @@ goog.provide('eYo.DelegateSvg.AugAssign')
  * number operators (+=, -=, /= ...) and bitwise operators (<<=, >>=,...)
  *
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
   data: {

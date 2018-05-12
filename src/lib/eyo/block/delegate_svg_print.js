@@ -21,9 +21,6 @@ console.warn('Move this block to the builtin blocks, with contextual consolidato
  * Class for a DelegateSvg, print block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('builtin_print_expr', {
   fields: {
@@ -126,9 +123,6 @@ eYo.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
  * Class for a DelegateSvg, print_stmt block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('builtin_print_stmt', {
    link: eYo.T3.Expr.builtin_print_expr,
@@ -206,9 +200,6 @@ eYo.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
  * Class for a DelegateSvg, input block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('builtin_input_expr', {
   fields: {

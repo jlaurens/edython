@@ -21,9 +21,6 @@ goog.require('eYo.DelegateSvg.Operator')
  * Class for a DelegateSvg, statement block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.makeSubclass('Stmt', {
   data: {
@@ -313,9 +310,6 @@ eYo.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (block, mgr
 /**
  * Class for a DelegateSvg, pass_stmt.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.pass_stmt, {
   fields: {
@@ -326,9 +320,6 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.pass_stmt, {
 /**
  * Class for a DelegateSvg, break_stmt.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.break_stmt, {
   fields: {
@@ -339,9 +330,6 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.break_stmt, {
 /**
  * Class for a DelegateSvg, continue_stmt.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.continue_stmt, {
   fields: {
@@ -355,9 +343,6 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.continue_stmt, {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
   list: {
@@ -370,9 +355,6 @@ eYo.DelegateSvg.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
 /**
  * Class for a DelegateSvg, global_nonlocal_expr.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_nonlocal_stmt, {
   data: {
@@ -441,9 +423,6 @@ eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = 
 /**
  * Class for a DelegateSvg, docstring_top_stmt.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('docstring_top_stmt', {
   link: eYo.T3.Expr.longliteral,
@@ -463,9 +442,6 @@ eYo.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = function(block)  {
 /**
  * Class for a DelegateSvg, docstring_def_stmt.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('docstring_def_stmt', {
   link: eYo.T3.Expr.longliteral,
@@ -486,9 +462,6 @@ eYo.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = function(block)  {
 /**
  * Class for a DelegateSvg, del_stmt.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('del_stmt', {
   tiles: {
@@ -505,9 +478,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('del_stmt', {
 /**
  * Class for a DelegateSvg, return_stmt.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('return_stmt', {
   tiles: {
@@ -524,9 +494,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('return_stmt', {
 /**
  * Class for a DelegateSvg, expression_stmt.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
   tiles: {
@@ -540,9 +507,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
 /**
  * Class for a DelegateSvg, any_stmt.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
   data: {

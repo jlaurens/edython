@@ -21,9 +21,6 @@ goog.require('eYo.Style')
  * Class for a DelegateSvg, term block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function() {
   var D = {

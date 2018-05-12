@@ -34,9 +34,6 @@ module_name ::= identifier
  * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('non_void_module_as_list', {
   list: {
@@ -52,9 +49,6 @@ eYo.DelegateSvg.List.makeSubclass('non_void_module_as_list', {
  * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('non_void_import_identifier_as_list', {
   list: {
@@ -72,9 +66,6 @@ eYo.DelegateSvg.List.makeSubclass('non_void_import_identifier_as_list', {
  * Class for a DelegateSvg, import_stmt.
  * The value property is used to store the module.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
   data: {
@@ -198,9 +189,6 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
 /**
  * Class for a DelegateSvg, future_statement.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('future_statement', {
   tiles: {

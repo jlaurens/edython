@@ -18,9 +18,6 @@ goog.require('eYo.DelegateSvg.Stmt')
  * Class for a DelegateSvg, control block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('Control', null, eYo.DelegateSvg)
 
@@ -156,9 +153,6 @@ eYo.DelegateSvg.Control.prototype.renderDrawSharp_ = function (io) {
  * Class for a DelegateSvg, start_stmt.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Control.makeSubclass('start_stmt', {
   statement: {

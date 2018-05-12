@@ -20,9 +20,6 @@ goog.require('eYo.DelegateSvg.Expr')
  * Class for a DelegateSvg, attributeref.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('attributeref', {
   data: {
@@ -63,9 +60,6 @@ eYo.DelegateSvg.Expr.makeSubclass('attributeref', {
  * Slicing is richer.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('slicing', {
   data: {
@@ -158,9 +152,6 @@ eYo.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (blo
  * we use call_expr instead.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
   data: {
@@ -318,9 +309,6 @@ eYo.DelegateSvg.Expr.call_expr.prototype.populateContextMenuFirst_ = function (b
  * Class for a DelegateSvg, call statement block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('call_stmt', {
   link: eYo.T3.Expr.call_expr,

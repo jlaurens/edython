@@ -19,9 +19,6 @@ goog.require('eYo.DelegateSvg.Group')
  * Class for a DelegateSvg, try_part block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Group.makeSubclass('try_part', {
   fields: {
@@ -33,9 +30,6 @@ eYo.DelegateSvg.Group.makeSubclass('try_part', {
  * Class for a DelegateSvg, except_part block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Group.makeSubclass('except_part', {
   data: {
@@ -150,9 +144,6 @@ eYo.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function 
  * Class for a DelegateSvg, finally_part block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Group.makeSubclass('finally_part', {
   fields: {
@@ -163,9 +154,6 @@ eYo.DelegateSvg.Group.makeSubclass('finally_part', {
 /**
  * Class for a DelegateSvg, raise_stmt.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
   data: {
@@ -256,9 +244,6 @@ eYo.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (
 /**
  * Class for a DelegateSvg, assert_stmt.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
   data: {

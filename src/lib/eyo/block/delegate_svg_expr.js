@@ -20,9 +20,6 @@ goog.require('eYo.T3.All')
  * Class for a DelegateSvg, value block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.makeSubclass('Expr')
 
@@ -353,9 +350,6 @@ eYo.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
  * Class for a DelegateSvg, proper_slice block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
   tiles: {
@@ -390,9 +384,6 @@ eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
  * Class for a DelegateSvg, conditional_expression_s3d block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('conditional_expression_s3d', {
   xml: {
@@ -426,9 +417,6 @@ eYo.DelegateSvg.Expr.makeSubclass('conditional_expression_s3d', {
 /**
  * Class for a DelegateSvg, '*...' block.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('starred_expression', {
   data: {

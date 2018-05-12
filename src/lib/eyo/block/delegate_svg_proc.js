@@ -263,9 +263,6 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
 /**
  * Class for a DelegateSvg, classdef_part block.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
   data: {
