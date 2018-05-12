@@ -294,9 +294,9 @@ eYo.Tile.makeFields = function() {
           }
           var eyo = field.eyo.edyLast_ || field.eyo
           for (i++; i < arguments.length; i++) {
-            var fieldName = arguments[i]
+            fieldName = arguments[i]
             if ((eyo.nextField = goog.isString(fieldName)? ui.fields[fieldName]: fieldName)) {
-              var j = unordered.length
+              j = unordered.length
               while (j--) {
                 if(unordered[j] === eyo.nextField) {
                   unordered.splice(j, 1);
@@ -365,7 +365,7 @@ eYo.Tile.prototype.setInput = function (input) {
 /**
  * Get the block.
  * For edython.
- * @param {boolean} newValue.
+ * @param {boolean} newValue
  */
 eYo.Tile.prototype.getBlock = function () {
   return this.block
@@ -401,7 +401,7 @@ eYo.Tile.prototype.getTarget = function () {
 /**
  * Set the disable state.
  * For edython.
- * @param {!bollean} newValue.
+ * @param {!bollean} newValue
  */
 eYo.Tile.prototype.setIncog = function (newValue) {
   this.incog = newValue
@@ -424,7 +424,7 @@ eYo.Tile.prototype.isIncog = function () {
 /**
  * Get the required status.
  * For edython.
- * @param {boolean} newValue.
+ * @param {boolean} newValue
  */
 eYo.Tile.prototype.isRequiredToDom = function () {
   if (this.incog) {
@@ -448,7 +448,7 @@ eYo.Tile.prototype.isRequiredToDom = function () {
 /**
  * Get the required status.
  * For edython.
- * @param {boolean} newValue.
+ * @param {boolean} newValue
  */
 eYo.Tile.prototype.isRequiredFromDom = function () {
  return this.is_required_from_dom || !this.incog && this.model.xml && this.model.xml.required
@@ -457,7 +457,7 @@ eYo.Tile.prototype.isRequiredFromDom = function () {
 /**
  * Set the required status.
  * For edython.
- * @param {boolean} newValue.
+ * @param {boolean} newValue
  */
 eYo.Tile.prototype.setRequiredFromDom = function (newValue) {
   this.is_required_from_dom = newValue
@@ -466,7 +466,7 @@ eYo.Tile.prototype.setRequiredFromDom = function (newValue) {
 /**
  * Clean the required status, changing the value if necessary.
  * For edython.
- * @param {boolean} newValue.
+ * @param {boolean} newValue
  */
 eYo.Tile.prototype.whenRequiredFromDom = function (helper) {
   if (this.isRequiredFromDom()) {
@@ -565,7 +565,7 @@ goog.forwardDeclare('eYo.DelegateSvg.List')
  * List all the available data and converts them to xml.
  * For edython.
  * @param {Element} xml the persistent element.
- * @param {boolean} optNoId.
+ * @param {boolean} optNoId
  * @return a dom element, void lists may return nothing
  * @this a block delegate
  */

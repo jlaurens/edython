@@ -460,7 +460,7 @@ eYo.Data.prototype.consolidate = function() {
 /**
  * An active data is not explicitely disabled, and does contain text.
  * @param {!number} index  of the input older in the ui object
- * @param {!boolean} newValue.
+ * @param {!boolean} newValue
  * @private
  */
 eYo.Data.prototype.isActive = function () {
@@ -469,7 +469,7 @@ eYo.Data.prototype.isActive = function () {
 
 /**
  * Set the value of the main field given by its key.
- * @param {!Object} newValue.
+ * @param {!Object} newValue
  * @param {!number} inputIndex  of the input in the model (i_1, i_2...)
  * When false, this corresponds to the fields that are not
  * part of an input, like the modifier field.
@@ -614,7 +614,7 @@ eYo.Data.prototype.setRequiredFromDom = function (newValue) {
 /**
  * Get the required status.
  * For edython.
- * @param {boolean} newValue.
+ * @param {boolean} newValue
  */
 eYo.Data.prototype.isRequiredFromDom = function () {
   return this.required_from_dom
@@ -623,7 +623,7 @@ eYo.Data.prototype.isRequiredFromDom = function () {
 /**
  * Clean the required status, changing the value if necessary.
  * For edython.
- * @param {boolean} newValue.
+ * @param {boolean} newValue
  */
 eYo.Data.prototype.clearRequiredFromDom = function () {
   if (this.isRequiredFromDom()) {
@@ -636,7 +636,7 @@ eYo.Data.prototype.clearRequiredFromDom = function () {
 /**
  * Clean the required status, changing the value if necessary.
  * For edython.
- * @param {boolean} newValue.
+ * @param {boolean} newValue
  */
 eYo.Data.prototype.whenRequiredFromDom = function (helper) {
   if (this.isRequiredFromDom()) {

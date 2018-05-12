@@ -267,7 +267,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function() {
 /**
  * Some block should not be wrapped.
  * Default implementation returns false
- * @param {!Block} block.
+ * @param {!Block} block
  * @return whether the block should be wrapped
  */
 eYo.DelegateSvg.Expr.term.prototype.noBlockWrapped = function (block) {

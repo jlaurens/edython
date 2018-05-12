@@ -60,7 +60,7 @@ eYo.Consolidator.prototype.init = undefined
  * This is the preferred method to create consolidator classes.
  * The main purpose is to manage the shared data model
  * and allow inheritance.
- * @param {!Object} data.
+ * @param {!Object} data
  */
 eYo.Consolidator.makeSubclass = function(key, data, C10r, owner) {
   C10r = C10r || eYo.Consolidator
@@ -152,7 +152,7 @@ eYo.Consolidator.List.prototype.willBeConnected = function (io) {
  * Insert a placeholder at the given index.
  * io is properly set up at the end.
  * @param {!Object} io parameter.
- * @param {number} i. When undefined, take io.i
+ * @param {number} i When undefined, take io.i
  * @return {Blockly.Input}, the input inserted.
  */
 eYo.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
@@ -272,7 +272,7 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
     }
     var sep = io.eyo.presep || this.data.presep
     sep && sep.length && f(sep)
-    var sep = io.eyo.postsep || this.data.postsep
+    sep = io.eyo.postsep || this.data.postsep
     sep && sep.length && f(sep, true)
   }
   io.input.setCheck(this.getCheck(io))
@@ -358,7 +358,7 @@ eYo.Consolidator.List.prototype.consolidate_single = function(io) {
 }
 
 /**
- * Find the next connected input. 
+ * Find the next connected input.
  * @param {!Object} io parameter.
  * @param {!boolean} gobble whether to gobble intermediate inputs.
  */
@@ -380,9 +380,9 @@ eYo.Consolidator.List.prototype.walk_to_next_connected = function(io, gobble) {
       return true
     }
     if (gobble) {
-      this.disposeAtI(io) 
+      this.disposeAtI(io)
     } else {
-      this.nextInput(io)  
+      this.nextInput(io)
     }
   }
   return false
@@ -488,7 +488,7 @@ eYo.Consolidator.List.prototype.getIO = function(block) {
   var unwrapped = block.eyo.getUnwrapped(block)
   var io = {
     block: block,
-    noLeftSeparator: (block.workspace.eyo.options.noLeftSeparator 
+    noLeftSeparator: (block.workspace.eyo.options.noLeftSeparator
       || block.workspace.eyo.options.noDynamicList)
       && (!unwrapped
         || (!unwrapped.eyo.withLeftSeparator_ && !unwrapped.eyo.withDynamicList_)),
@@ -529,7 +529,7 @@ eYo.Consolidator.List.prototype.consolidate = function(block, force) {
 
 /**
  * Fetches the named input object
- * @param {!Block} block.
+ * @param {!Block} block
  * @param {string} name The name of the input.
  * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
  */

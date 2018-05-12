@@ -410,7 +410,7 @@ eYo.DelegateSvg.Literal.prototype.xml = eYo.Xml.Text
 goog.provide('eYo.Xml.Literal')
 /**
  * Try to create a comparison block from the given element.
- * @param {!Blockly.Block} block.
+ * @param {!Blockly.Block} block
  * @param {!Element} element dom element to be completed.
  * @override
  */
@@ -458,7 +458,7 @@ goog.provide('eYo.Xml.Data')
  * For edython.
  * @param {!Blockly.Block} block The block to be converted.
  * @param {Element} xml the persistent element.
- * @param {boolean} optNoId.
+ * @param {boolean} optNoId
  * @return a dom element, void lists may return nothing
  * @this a block delegate
  */
@@ -770,7 +770,7 @@ eYo.Xml.fromDom = function (block, element) {
     }
     // read flow and suite
     var out = statement(block.nextConnection, eYo.XmlKey.NEXT)
-    var out = statement(eyo.inputSuite && eyo.inputSuite.connection, eYo.XmlKey.SUITE) || out
+    out = statement(eyo.inputSuite && eyo.inputSuite.connection, eYo.XmlKey.SUITE) || out
     return out
   }
 }
@@ -780,7 +780,7 @@ goog.require('eYo.DelegateSvg.Operator')
 
 /**
  * Try to create a comparison block from the given element.
- * @param {!Blockly.Block} block.
+ * @param {!Blockly.Block} block
  * @param {!Element} element dom element to be completed.
  * @override
  */
@@ -811,7 +811,7 @@ goog.provide('eYo.Xml.Group')
 
 /**
  * Set the operator from the element's tagName.
- * @param {!Blockly.Block} block.
+ * @param {!Blockly.Block} block
  * @param {!Element} element dom element to be completed.
  * @override
  */
@@ -853,8 +853,8 @@ eYo.Xml.Call.domToBlock = function(element, workspace) {
  * Compare the blocks by comparing their xml representation.
  * Usefull for testing.
  * For edython.
- * @param {!Blockly.Block} lhs.
- * @param {!Blockly.Block} rhs.
+ * @param {!Blockly.Block} lhs
+ * @param {!Blockly.Block} rhs
  * @return an enumerator
  */
 eYo.Xml.compareBlocks = function(lhs, rhs) {
@@ -874,7 +874,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 //  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
-//  * @param {boolean} optNoId.
+//  * @param {boolean} optNoId
 //  * @return a dom element, void lists may return nothing at all
 //  * @this a block delegate
 //  */
@@ -925,8 +925,8 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 //  * For edython.
 //  * @param {!eYo.Input} input  the input to be saved.
 //  * @param {Element} element a dom element in which to save the input
-//  * @param {boolean} optNoId.
-//  * @param {boolean} optNoName. For lists, if there is no ambiguity, we can avoid the use of the input attribute.
+//  * @param {boolean} optNoId
+//  * @param {boolean} optNoName For lists, if there is no ambiguity, we can avoid the use of the input attribute.
 //  * @return the added child, if any
 //  */
 // eYo.Xml.Input.toDom = function(input, element, optNoId, optNoName) {
@@ -1036,7 +1036,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {string} name The name of the input
 //  * @param {Element} element a dom element in which to save the input
-//  * @param {boolean} optNoId.
+//  * @param {boolean} optNoId
 //  * @return the added child, if any
 //  */
 // eYo.Xml.Input.Named.toDom = function(block, name, element, optNoId, withPlaceholder) {
@@ -1071,7 +1071,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 //  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
-//  * @param {boolean} optNoId.
+//  * @param {boolean} optNoId
 //  * @return a dom element, void lists may return nothing
 //  */
 // eYo.Xml.InputList.toDom = function(block, element, optNoId) {
@@ -1126,7 +1126,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 //  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
-//  * @param {boolean} optNoId.
+//  * @param {boolean} optNoId
 //  * @return a dom element, void lists may return nothing
 //  */
 // eYo.Xml.Flow.toDom = function(block, element, optNoId) {
@@ -1181,7 +1181,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 //  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
-//  * @param {boolean} optNoId.
+//  * @param {boolean} optNoId
 //  * @return a dom element
 //  */
 // eYo.DelegateSvg.Stmt.import_stmt.prototype.toDom = function(block, element, optNoId) {
@@ -1233,7 +1233,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 
 // /**
 //  * Records the operator as attribute.
-//  * @param {!Blockly.Block} block.
+//  * @param {!Blockly.Block} block
 //  * @param {!Element} element dom element to be completed.
 //  * @override
 //  */
@@ -1252,7 +1252,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 
 // /**
 //  * Set the value from the attribute.
-//  * @param {!Blockly.Block} block.
+//  * @param {!Blockly.Block} block
 //  * @param {!Element} element dom element to be completed.
 //  * @override
 //  */
@@ -1290,7 +1290,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 
 // /**
 //  * Records the operator as attribute.
-//  * @param {!Blockly.Block} block.
+//  * @param {!Blockly.Block} block
 //  * @param {!Element} element dom element to be completed.
 //  * @override
 //  */
@@ -1310,7 +1310,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 
 // /**
 //  * Set the value from the attribute.
-//  * @param {!Blockly.Block} block.
+//  * @param {!Blockly.Block} block
 //  * @param {!Element} element dom element to be completed.
 //  * @override
 //  */
@@ -1333,7 +1333,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 
 // /**
 //  * Records the operator as attribute.
-//  * @param {!Blockly.Block} block.
+//  * @param {!Blockly.Block} block
 //  * @param {!Element} element dom element to be completed.
 //  * @override
 //  */
@@ -1352,7 +1352,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 
 // /**
 //  * Set the value from the attribute.
-//  * @param {!Blockly.Block} block.
+//  * @param {!Blockly.Block} block
 //  * @param {!Element} element dom element to be completed.
 //  * @override
 //  */
@@ -1372,7 +1372,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 
 // /**
 //  * Set the value from the attribute.
-//  * @param {!Blockly.Block} block.
+//  * @param {!Blockly.Block} block
 //  * @param {!Element} element dom element to be completed.
 //  * @override
 //  */
@@ -1399,7 +1399,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 
 // /**
 //  * Set the value from the attribute.
-//  * @param {!Blockly.Block} block.
+//  * @param {!Blockly.Block} block
 //  * @param {!Element} element dom element to be completed.
 //  * @override
 //  */
@@ -1412,7 +1412,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 
 // /**
 //  * Set the value from the attribute.
-//  * @param {!Blockly.Block} block.
+//  * @param {!Blockly.Block} block
 //  * @param {!Element} element dom element to be completed.
 //  * @override
 //  */
@@ -1505,7 +1505,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 //  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
-//  * @param {boolean} optNoId.
+//  * @param {boolean} optNoId
 //  * @return a dom element, void lists may return nothing
 //  */
 // eYo.Xml.namedListInputToDom = function(block, name, element, optNoId) {
@@ -1528,7 +1528,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 //  * Convert the block's input list with the given name to a dom element.
 //  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
-//  * @param {string} name.
+//  * @param {string} name
 //  * @param {Element} xml the persistent element.
 //  * @return a dom element, void lists may return nothing
 //  */
@@ -1582,7 +1582,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 
 // /**
 //  * Records the subtype as 'value' attribute.
-//  * @param {!Blockly.Block} block.
+//  * @param {!Blockly.Block} block
 //  * @param {!Element} element dom element to be completed.
 //  * @override
 //  */
@@ -1593,7 +1593,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 
 // /**
 //  * Set the value from the attribute.
-//  * @param {!Blockly.Block} block.
+//  * @param {!Blockly.Block} block
 //  * @param {!Element} element dom element to be completed.
 //  * @override
 //  */
@@ -1621,7 +1621,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 //  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
-//  * @param {boolean} optNoId.
+//  * @param {boolean} optNoId
 //  * @return a dom element
 //  */
 // eYo.Xml.SingleInput.toDom = function(block, element, optNoId) {
@@ -1677,7 +1677,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 //  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
-//  * @param {boolean} optNoId.
+//  * @param {boolean} optNoId
 //  * @return a dom element
 //  */
 // eYo.DelegateSvg.List.prototype.toDom = function(block, element, optNoId) {
@@ -1802,7 +1802,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 
 // /**
 //  * Records the operator as attribute.
-//  * @param {!Blockly.Block} block.
+//  * @param {!Blockly.Block} block
 //  * @param {!Element} element dom element to be completed.
 //  * @override
 //  */
@@ -1814,7 +1814,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 
 // /**
 //  * Set the operator from the attribute.
-//  * @param {!Blockly.Block} block.
+//  * @param {!Blockly.Block} block
 //  * @param {!Element} element dom element to be completed.
 //  * @override
 //  */
@@ -1831,7 +1831,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 
 // /**
 //  * Records the operator as attribute.
-//  * @param {!Blockly.Block} block.
+//  * @param {!Blockly.Block} block
 //  * @param {!Element} element dom element to be completed.
 //  * @override
 //  */
@@ -1854,7 +1854,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 
 // /**
 //  * Set the augmented_assignment_stmt from the element.
-//  * @param {!Blockly.Block} block.
+//  * @param {!Blockly.Block} block
 //  * @param {!Element} element dom element to be completed.
 //  * @override
 //  */
@@ -1887,7 +1887,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 //  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
-//  * @param {boolean} optNoId.
+//  * @param {boolean} optNoId
 //  * @return a dom element
 //  */
 // eYo.DelegateSvg.Expr.attributeref.prototype.toDom = function(block, element, optNoId) {
@@ -1918,7 +1918,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 //  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
-//  * @param {boolean} optNoId.
+//  * @param {boolean} optNoId
 //  * @return a dom element
 //  */
 // eYo.DelegateSvg.Expr.slicing.prototype.toDom = function(block, element, optNoId) {
@@ -1973,7 +1973,7 @@ eYo.Xml.compareBlocks = function(lhs, rhs) {
 //  * For edython.
 //  * @param {!Blockly.Block} block The block to be converted.
 //  * @param {Element} xml the persistent element.
-//  * @param {boolean} optNoId.
+//  * @param {boolean} optNoId
 //  * @return a dom element
 //  */
 // eYo.DelegateSvg.Expr.term.prototype.toDomX = function(block, element, optNoId) {

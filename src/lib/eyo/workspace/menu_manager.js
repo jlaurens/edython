@@ -496,7 +496,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
   menuItem.setEnabled(!!url)
   this.addChild(menuItem, true)
   this.separate()
-  
+
   menuItem = new eYo.MenuItem(
     block.eyo.getPythonType(block), function(event) {
       var xmlDom = Blockly.Xml.blockToDom(block, true)
@@ -511,7 +511,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
     block.eyo.getPythonType(block)+' python code',
     function(b, e) {
       console.log('Python code for', block.type)
-      console.log(block.eyo.toPython(block))  
+      console.log(block.eyo.toPython(block))
     })
   menuItem.setEnabled(true)
   this.addChild(menuItem, true)
@@ -520,7 +520,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
     block.eyo.getPythonType(block)+' python code (deep)',
     function(b, e) {
       console.log('Python code for', block.type)
-      console.log(block.eyo.toPython(block, true))  
+      console.log(block.eyo.toPython(block, true))
     })
   menuItem.setEnabled(true)
   this.addChild(menuItem, true)
@@ -611,7 +611,7 @@ eYo.MenuManager.prototype.handleActionLast = function (block, event) {
     target.setCollapsed(true)
       return true
     case eYo.ID.TOGGLE_ENABLE_BLOCK:
-    target.eyo.setDisabled(target, !target.disabled)  
+    target.eyo.setDisabled(target, !target.disabled)
       return true
     case eYo.ID.DELETE_BLOCK:
       var unwrapped = target
@@ -625,7 +625,7 @@ eYo.MenuManager.prototype.handleActionLast = function (block, event) {
       try {
         if (target === Blockly.selected && target != unwrapped) {
           // this block was selected, select the block below or above before deletion
-          var c8n, target
+          var c8n
           if (((c8n = unwrapped.nextConnection) && (target = c8n.targetBlock())) || ((c8n = unwrapped.previousConnection) && (target = c8n.targetBlock()))) {
             target.select()
           } else if ((c8n = unwrapped.outputConnection) && (c8n = c8n.targetConnection)) {
@@ -700,7 +700,7 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
     )
   }
   switch(type) {
-    case eYo.T3.Expr.parent_module: 
+    case eYo.T3.Expr.parent_module:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('.', 'eyo-code'),
       goog.dom.createTextNode(' '+eYo.Msg.AT_THE_LEFT),
@@ -830,12 +830,12 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('-', 'eyo-code'),
       goog.dom.createTextNode(' '+eYo.Msg.AT_THE_LEFT),
-    ) 
+    )
     case eYo.T3.Expr.imagnumber:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('j', 'eyo-code'),
       goog.dom.createTextNode(' '+eYo.Msg.AT_THE_RIGHT),
-    ) 
+    )
     case eYo.T3.Expr.parenth_form:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('(', 'eyo-code'),
@@ -966,7 +966,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
           block.eyo.insertParent(block, parent_type, parent_subtype)
         })
         mgr.addInsertChild(MI)
-        return true  
+        return true
       }
       return false
     }
@@ -1209,7 +1209,7 @@ eYo.MenuManager.prototype.populate_wrap_alternate = function (block, key) {
         menuItem.setEnabled(data.type != target.type)
         this.addChild(menuItem, true)
         if (data.css_class) {
-          goog.dom.classlist.add( menuItem.getElement().firstChild, data.css_class) 
+          goog.dom.classlist.add( menuItem.getElement().firstChild, data.css_class)
         }
       }
       for (var _ = 0, d; (d = eyo.menuData[_++]);) {

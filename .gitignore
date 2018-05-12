@@ -24,3 +24,4 @@ thumbs.db
 /**/__pycache__
 /**/UnicodeData.txt
 /**/xregexp-all/xregexp-all.js
+/bin/compiler-latest/**

@@ -30,7 +30,7 @@ eYo.DelegateSvg.Expr.makeSubclass('List', {
 
 /**
  * Will render the block.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.DelegateSvg.List.prototype.willRender_ = function (block) {
@@ -40,7 +40,7 @@ eYo.DelegateSvg.List.prototype.willRender_ = function (block) {
 
 /**
  * Fetches the named input object, getInput.
- * @param {!Block} block.
+ * @param {!Block} block
  * @param {string} name The name of the input.
  * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
  */
@@ -54,7 +54,7 @@ eYo.DelegateSvg.List.prototype.getInput = function (block, name) {
  * Removes empty place holders.
  * This must not be overriden.
  * 
- * @param {!Block} block.
+ * @param {!Block} block
  */
 eYo.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
   if (this.consolidate_lock || this.will_connect_) {
@@ -81,7 +81,7 @@ eYo.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
  * Removes empty place holders.
  * This must not be overriden.
  * 
- * @param {!Block} block.
+ * @param {!Block} block
  */
 eYo.DelegateSvg.List.prototype.createConsolidator = function (block) {
   if (!this.consolidator) {
@@ -98,7 +98,7 @@ eYo.DelegateSvg.List.prototype.createConsolidator = function (block) {
  * Removes empty place holders.
  * This must not be overriden.
  * 
- * @param {!Block} block.
+ * @param {!Block} block
  */
 eYo.DelegateSvg.List.prototype.consolidate = function (block, deep, force) {
   this.createConsolidator(block)
@@ -111,7 +111,7 @@ eYo.DelegateSvg.List.prototype.consolidate = function (block, deep, force) {
 /**
  * Clear the list af all items.
  * For edython.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.DelegateSvg.List.prototype.removeItems = function(block) {

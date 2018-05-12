@@ -113,7 +113,7 @@ eYo.DelegateSvg.Stmt.prototype.disposeInternal = function () {
 
 /**
  * Statement block path.
- * @param {!Blockly.Block} block.
+ * @param {!Blockly.Block} block
  * @private
  */
 eYo.DelegateSvg.Stmt.prototype.statementPathDef_ = function (block) {
@@ -146,7 +146,7 @@ eYo.DelegateSvg.Stmt.prototype.shapePathDef_ =
 
 /**
  * Render the leading # character for disabled statement blocks.
- * @param io.
+ * @param io
  * @private
  * @override
  */
@@ -187,7 +187,7 @@ eYo.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
 
 /**
  * Render one input of value block.
- * @param io.
+ * @param io
  * @private
  */
 eYo.DelegateSvg.Stmt.prototype.renderDrawInput_ = function (io) {
@@ -197,7 +197,7 @@ eYo.DelegateSvg.Stmt.prototype.renderDrawInput_ = function (io) {
 
 /**
  * Render the inputs of the block.
- * @param {!Blockly.Block} block.
+ * @param {!Blockly.Block} block
  * @protected
  */
 eYo.DelegateSvg.Stmt.prototype.minBlockWidth = function (block) {
@@ -210,8 +210,8 @@ eYo.DelegateSvg.Stmt.prototype.minBlockWidth = function (block) {
  * connects the block above to it.
  * The connection cannot always establish.
  * The holes are filled.
- * @param {!Block} block.
- * @param {string} prototypeName.
+ * @param {!Block} block
+ * @param {string} prototypeName
  * @param {string} parentInputName, which parent's connection to use
  * @return the created block
  */
@@ -262,8 +262,8 @@ eYo.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
  * connects the block below to it.
  * The connection cannot always establish.
  * The holes are filled.
- * @param {!Block} block.
- * @param {string} prototypeName.
+ * @param {!Block} block
+ * @param {string} prototypeName
  * @param {string} parentInputName, which parent's connection to use
  * @return the created block
  */
@@ -697,12 +697,12 @@ eYo.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (bl
       'eyo-code-comment'),
   )
   F(content, data.COMMENT)
-  var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+  content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN(short_code || code || eYo.Msg.Placeholder.CODE,
       'eyo-code'),
   )
   F(content, data.CODE)
-  var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+  content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN(short_code_all || code || eYo.Msg.Placeholder.CODE,
       'eyo-code'),
     eYo.Do.createSPAN(' # ', 'eyo-code-reserved'),
@@ -710,18 +710,18 @@ eYo.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (bl
       'eyo-code-comment'),
   )
   F(content, data.CODE_COMMENT)
-  var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+  content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN('…', 'eyo-code'),
   )
   F(content, data.EXPRESSION)
-  var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+  content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN('…', 'eyo-code'),
     eYo.Do.createSPAN(' # ', 'eyo-code-reserved'),
     eYo.Do.createSPAN(short_comment_all || eYo.Msg.Placeholder.COMMENT,
       'eyo-code-comment'),
   )
   F(content, data.EXPRESSION_COMMENT)
- return eYo.DelegateSvg.Stmt.any_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || true
+  return eYo.DelegateSvg.Stmt.any_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || true
 }
 
 eYo.DelegateSvg.Stmt.T3s = [

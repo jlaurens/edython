@@ -142,7 +142,7 @@ eYo.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (blo
     eYo.Do.createSPAN('[…]', 'eyo-code'),
   )
   F(content, 0)
-  var content =
+  content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN(eYo.Msg.Placeholder.EXPRESSION, 'eyo-code-placeholder'),
     eYo.Do.createSPAN('[…]', 'eyo-code'),

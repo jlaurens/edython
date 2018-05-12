@@ -34,7 +34,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('Group', {
 
 /**
  * Block path.
- * @param {!Blockly.Block} block.
+ * @param {!Blockly.Block} block
  * @private
  */
 eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function (block) {
@@ -70,7 +70,7 @@ eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function (block) {
 
 /**
  * Block path.
- * @param {!Blockly.Block} block.
+ * @param {!Blockly.Block} block
  * @private
  */
 eYo.DelegateSvg.Group.prototype.groupContourPathDef_ = function (block) {
@@ -113,7 +113,7 @@ eYo.DelegateSvg.Group.prototype.groupContourPathDef_ = function (block) {
 
 /**
  * Block path.
- * @param {!Blockly.Block} block.
+ * @param {!Blockly.Block} block
  * @private
  */
 eYo.DelegateSvg.Group.prototype.collapsedPathDef_ = function (block) {
@@ -165,7 +165,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawNextStatementInput_ = function (io) {
 
 /**
  * Render one input of value block.
- * @param io.
+ * @param io
  * @private
  */
 eYo.DelegateSvg.Group.prototype.renderDrawInput_ = function (io) {
@@ -179,7 +179,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawInput_ = function (io) {
  */
 eYo.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
   var steps
-  var block = c8n.sourceBlock_
+  block = c8n.sourceBlock_
   if (c8n.type === Blockly.INPUT_VALUE) {
     if (c8n.isConnected()) {
       steps = this.valuePathDef_(c8n.targetBlock())
@@ -369,7 +369,7 @@ eYo.DelegateSvg.Group.makeSubclass('while_part', {
 /**
  * Will draw the block. Default implementation does nothing.
  * The print statement needs some preparation before drawing.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.DelegateSvg.Group.prototype.willRender_ = function (block) {

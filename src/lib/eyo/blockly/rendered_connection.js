@@ -219,7 +219,7 @@ eYo.ConnectionDelegate.prototype.getConnectionBelow = function() {
  * @return a connection, possibly undefined
  */
 eYo.ConnectionDelegate.prototype.getBlackConnection = function(F) {
-  var F = F || function(block) {
+  F = F || function(block) {
     return !block.eyo.isWhite(block)
   }
   var c8n = this.connection
@@ -635,7 +635,7 @@ Blockly.Connection.uniqueConnection_original = Blockly.Connection.uniqueConnecti
  * Does the given block have one and only one connection point that will accept
  * an orphaned block?
  * Returns the first free connection that can accept the orphan
- * 
+ *
  * @param {!Blockly.Block} block The superior block.
  * @param {!Blockly.Block} orphanBlock The inferior block.
  * @return {Blockly.Connection} The suitable connection point on 'block',
@@ -667,7 +667,7 @@ eYo.RenderedConnection.savedSetHidden = Blockly.RenderedConnection.prototype.set
  * @param {boolean} hidden True if connection is hidden.
  */
 Blockly.RenderedConnection.prototype.setHidden = function(hidden) {
-  // ADDED by JL: 
+  // ADDED by JL:
   if (!hidden && this.eyo.incog_) {
     // Incog connections must stay hidden
     return

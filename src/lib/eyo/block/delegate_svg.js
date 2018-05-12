@@ -392,7 +392,7 @@ eYo.DelegateSvg.prototype.getMenuTarget = function(block) {
 /**
  * Render the block.
  * Lays out and reflows a block based on its contents and settings.
- * @param {!Block} block.
+ * @param {!Block} block
  * @param {boolean=} optBubble If false, just render this block.
  *   If true, also render block's parent, grandparent, etc.  Defaults to true.
  */
@@ -440,7 +440,7 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
  * This message is sent when the block is retrieved from some
  * untrusted xml data.
  * List managers will use consolidators to help list management.
- * @param {!Block} block.
+ * @param {!Block} block
  */
 eYo.DelegateSvg.prototype.consolidate = function (block, deep, force) {
   this.foreachData(function () {
@@ -471,7 +471,7 @@ eYo.DelegateSvg.prototype.wrapped_ = undefined
 /**
  * Will draw the block. Default implementation does nothing.
  * The print statement needs some preparation before drawing.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.willRender_ = function (block) {
@@ -500,7 +500,7 @@ eYo.DelegateSvg.prototype.willRender_ = function (block) {
 /**
  * Did draw the block. Default implementation does nothing.
  * The print statement needs some preparation before drawing.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.didRender_ = function (block) {
@@ -508,7 +508,7 @@ eYo.DelegateSvg.prototype.didRender_ = function (block) {
 
 /**
  * Layout previous, next and output block connections.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.layoutConnections_ = function (block) {
@@ -531,7 +531,7 @@ eYo.DelegateSvg.prototype.layoutConnections_ = function (block) {
 /**
  * Block shape. Default implementation throws.
  * Subclasses must override it. Used in renderDraw_.
- * @param {!eYo.Block} block.
+ * @param {!eYo.Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.shapePathDef_ = function (block) {
@@ -540,14 +540,14 @@ eYo.DelegateSvg.prototype.shapePathDef_ = function (block) {
 
 /**
  * Block outline. Default implementation forwards to shapePathDef_.
- * @param {!eYo.Block} block.
+ * @param {!eYo.Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.contourPathDef_ = eYo.DelegateSvg.prototype.shapePathDef_
 
 /**
  * Highlighted block outline. Default implementation forwards to shapePathDef_.
- * @param {!eYo.Block} block.
+ * @param {!eYo.Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.highlightPathDef_ = eYo.DelegateSvg.prototype.shapePathDef_
@@ -557,7 +557,7 @@ eYo.DelegateSvg.prototype.highlightPathDef_ = eYo.DelegateSvg.prototype.shapePat
  * When a block is selected and one of its connection is also selected
  * the ui displays a bold line on the connection. When the block has wrapped input,
  * the selected connection may belong to a wrapped block.
- * @param {!eYo.Block} block.
+ * @param {!eYo.Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.connectionPathDef_ = function (block) {
@@ -568,7 +568,7 @@ eYo.DelegateSvg.prototype.connectionPathDef_ = function (block) {
 
 /**
  * Extra disabled block outline. Default implementation return a void string.
- * @param {!eYo.Block} block.
+ * @param {!eYo.Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.collapsedPathDef_ = function () {
@@ -577,7 +577,7 @@ eYo.DelegateSvg.prototype.collapsedPathDef_ = function () {
 
 /**
  * Draw the path of the block.
- * @param {!eYo.Block} block.
+ * @param {!eYo.Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.renderDraw_ = function (block) {
@@ -598,7 +598,7 @@ eYo.DelegateSvg.prototype.renderDraw_ = function (block) {
 /**
  * Align the right edges by changing the size of all the connected statement blocks.
  * The default implementation does nothing.
- * @param {!eYo.Block} block.
+ * @param {!eYo.Block} block
  * @protected
  */
 eYo.DelegateSvg.prototype.alignRightEdges_ = function (block) {
@@ -629,7 +629,7 @@ eYo.DelegateSvg.prototype.alignRightEdges_ = function (block) {
 
 /**
  * Compute the paths of the block depending on its size.
- * @param {!eYo.Block} block.
+ * @param {!eYo.Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.updatePath_ = function (block, path, def) {
@@ -644,7 +644,7 @@ eYo.DelegateSvg.prototype.updatePath_ = function (block, path, def) {
 
 /**
  * Compute the paths of the block depending on its size.
- * @param {!eYo.Block} block.
+ * @param {!eYo.Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.updateAllPaths_ = function (block) {
@@ -665,7 +665,7 @@ eYo.DelegateSvg.prototype.updateAllPaths_ = function (block) {
 
 /**
  * The left padding of a block.
- * @param {!Blockly.Block} block.
+ * @param {!Blockly.Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.getPaddingLeft = function (block) {
@@ -680,7 +680,7 @@ eYo.DelegateSvg.prototype.getPaddingLeft = function (block) {
 
 /**
  * The right padding of a block.
- * @param {!Blockly.Block} block.
+ * @param {!Blockly.Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.getPaddingRight = function (block) {
@@ -695,7 +695,7 @@ eYo.DelegateSvg.prototype.getPaddingRight = function (block) {
 
 /**
  * Render the inputs of the block.
- * @param {!Blockly.Block} block.
+ * @param {!Blockly.Block} block
  * @protected
  */
 eYo.DelegateSvg.prototype.minBlockWidth = function (block) {
@@ -704,7 +704,7 @@ eYo.DelegateSvg.prototype.minBlockWidth = function (block) {
 
 /**
  * Render the inputs, the fields and the tiles of the block.
- * @param {!Blockly.Block} block.
+ * @param {!Blockly.Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
@@ -799,7 +799,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
 
 /**
  * Render the the tile in `io.tile`.
- * @param io.
+ * @param io
  * @private
  */
 eYo.DelegateSvg.prototype.renderDrawTile_ = function (io) {
@@ -834,7 +834,7 @@ eYo.DelegateSvg.prototype.renderDrawTile_ = function (io) {
 /**
  * Render the leading # character for collapsed statement blocks.
  * Statement subclasses must override it.
- * @param io.
+ * @param io
  * @private
  */
 eYo.DelegateSvg.prototype.renderDrawSharp_ = function (io) {
@@ -844,7 +844,7 @@ eYo.DelegateSvg.prototype.renderDrawSharp_ = function (io) {
 /**
  * Render one input. Default implementation throws.
  * Subclasses must override it.
- * @param io.
+ * @param io
  * @private
  */
 eYo.DelegateSvg.prototype.renderDrawInput_ = function (io) {
@@ -976,7 +976,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
 
 /**
  * Block path.
- * @param {goog.size} size.
+ * @param {goog.size} size
  * @private
  */
 eYo.DelegateSvg.prototype.valuePathDef_ = function (size) {
@@ -993,7 +993,7 @@ eYo.DelegateSvg.prototype.valuePathDef_ = function (size) {
 
 /**
  * Block path.
- * @param {goog.size} size.
+ * @param {goog.size} size
  * @private
  */
 eYo.DelegateSvg.prototype.outPathDef_ = function () {
@@ -1009,7 +1009,7 @@ eYo.DelegateSvg.prototype.outPathDef_ = function () {
 
 /**
  * Block path.
- * @param {Number} height.
+ * @param {Number} height
  * @param {Number} x position.
  * @private
  */
@@ -1028,7 +1028,7 @@ eYo.DelegateSvg.prototype.carretPathDefWidth_ = function (cursorX) {
 
 /**
  * Block path.
- * @param {Number} height.
+ * @param {Number} height
  * @param {Number} x position.
  * @private
  */
@@ -1052,7 +1052,7 @@ eYo.DelegateSvg.prototype.placeHolderPathDefWidth_ = function (cursorX) {
  */
 eYo.DelegateSvg.prototype.highlightConnectionPathDef = function (block, c8n) {
   var steps = ''
-  var block = c8n.sourceBlock_
+  block = c8n.sourceBlock_
   if (c8n.type === Blockly.INPUT_VALUE) {
     if (c8n.isConnected()) {
       steps = this.valuePathDef_(c8n.targetBlock())
@@ -1179,7 +1179,7 @@ eYo.DelegateSvg.prototype.previousStatementCheck = undefined
 /**
  * The default implementation does nothing.
  * Subclassers will override this but won't call it.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.makeBlockWrapped = function (block) {
@@ -1193,7 +1193,7 @@ eYo.DelegateSvg.prototype.makeBlockWrapped = function (block) {
 /**
  * Creates the contour path.
  * Does nothing if this contour already exists.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.makeBlockUnwrapped = function (block) {
@@ -1207,7 +1207,7 @@ eYo.DelegateSvg.prototype.makeBlockUnwrapped = function (block) {
 /**
  * Whether the block is selected.
  * Subclassers will override this but won't call it.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.hasSelect = function (block) {
@@ -1216,7 +1216,7 @@ eYo.DelegateSvg.prototype.hasSelect = function (block) {
 
 /**
  * Set the enable/disable status of the given block.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.delayedRender = function (block) {
@@ -1235,8 +1235,8 @@ eYo.DelegateSvg.prototype.delayedRender = function (block) {
  * This is the expected way to create the block.
  * The is a caveat due to proper timing in initializing the svg.
  * Whether blocks are headless or not is not clearly designed in Blockly.
- * @param {!WorkspaceSvg} workspace.
- * @param {!String} prototypeName.
+ * @param {!WorkspaceSvg} workspace
+ * @param {!String} prototypeName
  * @private
  */
 eYo.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id, initSvg) {
@@ -1250,7 +1250,7 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id, initS
 
 /**
  * When setup is finish.
- * @param {!Block} block.
+ * @param {!Block} block
  */
 eYo.DelegateSvg.prototype.beReady = function (block) {
   block.initSvg()
@@ -1294,11 +1294,11 @@ eYo.DelegateSvg.prototype.beReady = function (block) {
 /**
  * Prepare the block to be displayed in the given workspace.
  * Nothing implemented yet
- * @param {!Block} block.
- * @param {!WorkspaceSvg} workspace.
- * @param {!Number} x.
- * @param {!Number} y.
- * @param {!String} variant.
+ * @param {!Block} block
+ * @param {!WorkspaceSvg} workspace
+ * @param {!Number} x
+ * @param {!Number} y
+ * @param {!String} variant
  * @private
  */
 eYo.DelegateSvg.prototype.prepareForWorkspace = function (block, workspace, x, y, variant) {
@@ -1324,8 +1324,8 @@ eYo.DelegateSvg.prototype.getPythonType = function (block) {
  * If the block's output connection is connected,
  * can connect the parent's output to it?
  * The connection cannot always establish.
- * @param {!Block} block.
- * @param {string} prototypeName.
+ * @param {!Block} block
+ * @param {string} prototypeName
  * @param {string} surroundInputName, which parent's connection to use
  */
 eYo.DelegateSvg.prototype.canInsertParent = function(block, prototypeName, subtype, surroundInputName) {
@@ -1339,8 +1339,8 @@ eYo.DelegateSvg.prototype.canInsertParent = function(block, prototypeName, subty
  * connects the parent's output to it.
  * The connection cannot always establish.
  * The holes are filled.
- * @param {!Block} block.
- * @param {string} prototypeName.
+ * @param {!Block} block
+ * @param {string} prototypeName
  * @param {string} surroundInputName, which parent's connection to use
  * @param {string} subtype, for subclassers
  * @return the created block
@@ -1379,7 +1379,7 @@ eYo.HoleFiller.getData = function(check, value) {
 
 /**
  * Get an array of the deep connections that can be filled.
- * @param {!Block} block.
+ * @param {!Block} block
  * @param {Array} holes whengiven the is the array to be filled
  * @return an array of conections, holes if given.
  */

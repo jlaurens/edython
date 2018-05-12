@@ -268,7 +268,6 @@ eYo.FieldTextInput.prototype.widgetDispose_ = function () {
 
 /**
  * Override to noop.
- * @inherited
  */
 eYo.FieldTextInput.prototype.updateEditable = function() {
 };

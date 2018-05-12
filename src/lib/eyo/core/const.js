@@ -122,7 +122,6 @@ eYo.Key = {
 
   WRAP: 'wrap',
 
-  END: 'end',
   SEP: 'sep',
   FILE: 'file',
   FLUSH: 'flush',
@@ -140,7 +139,6 @@ eYo.Key = {
   NUMBER: 'number', // lowercase
   STRING: 'string', // lowercase
   LONG_STRING: 'longString', // lowercase
-  START: 'start', // lowercase
 
   // IN PROGRESS
   ANY: 'ANY',
@@ -160,7 +158,6 @@ eYo.Key = {
 XRegExp.install('astral')// python supports astral
 
 eYo.XRE = {
-  integer:/^-?(?:(([1-9][0-9]*)|(0+))|(0(?:o|O)[0-7]+)|(0(?:x|X)[0-9a-fA-F]+)|(0(?:b|B)[01]+))$/,// group 1: decinteger, 2: octinteger, 3: hexinteger, 4: bininteger
   integer: XRegExp(
     `^(?<sign>-)?(?:
     ((?<decinteger>  (?<nonzero>[1-9][0-9]*) | (?<zero>0+) ) |

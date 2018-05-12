@@ -302,12 +302,12 @@ class Types:
 
     def make_link(self):
         for t in self:
-            try:
-                a = self.links[t.name]
+            a = self.links.get(t.name)
+            if a is not None:
                 t.old_name = t.name
                 t.name = a
+                t.alias = self.get_type(a)
                 print('**** AS:', t.old_name, '->', t.name)
-            except: pass
 
     def make_shallow(self):
         more_t = {}

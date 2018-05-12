@@ -276,10 +276,10 @@ eYo.Consolidator.Parameter.prototype.getCheck = function() {
       out.push(eYo.T3.Expr.defparameter_s3d)
     }
     if (can_star) {
-      out.push(eYo.T3.Expr.parameter_star)      
+      out.push(eYo.T3.Expr.parameter_star)
     }
     if (can_star_star) {
-      out.push(eYo.T3.Expr.parameter_star_star)      
+      out.push(eYo.T3.Expr.parameter_star_star)
     }
     return cache[K] = out
   }
@@ -418,7 +418,7 @@ eYo.ConnectionDelegate.prototype.consolidateType = function(block) {
   var nocond_only_out = false
   var targetC8n = c8nOut.targetConnection
   if (targetC8n) {
-    var nocond_only_out = targetC8n.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0
+    nocond_only_out = targetC8n.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0
   }
   var cond_in = true // cond are accepted by default
   var nocond_in = true // nocond not accepted by default

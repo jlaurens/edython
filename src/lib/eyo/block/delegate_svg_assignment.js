@@ -366,13 +366,13 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
     eYo.Do.createSPAN(' = …', 'eyo-code'),
   )
   F(content, M.NAME_VALUE)
-  var content =
+  content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN(name || eYo.Msg.Placeholder.IDENTIFIER, name? 'eyo-code': 'eyo-code-placeholder'),
     eYo.Do.createSPAN(': … = …', 'eyo-code'),
   )
   F(content, M.NAME_ANNOTATION_VALUE)
-  var content = eYo.Do.createSPAN('…,… = …,…', 'eyo-code')
+  content = eYo.Do.createSPAN('…,… = …,…', 'eyo-code')
   F(content, 2)
   mgr.shouldSeparate()
   if (current != M.TARGET_VALUE) {
@@ -546,7 +546,7 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
     F(i)
   }
   mgr.shouldSeparate()
-  var F = function(value, content) {
+  F = function(value, content) {
     if (value !== current) {
       var menuItem = new eYo.MenuItem(content, function() {
         variant.set(value)
@@ -560,13 +560,13 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
     eYo.Do.createSPAN(' '+operator+' …', 'eyo-code'),
   )
   F(variant.NAME_EXPRESSIONS, content)
-  var content =
+  content =
   goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     goog.dom.createTextNode('… '+operator+' …'),
   )
   F(variant.TARGET_EXPRESSIONS, content)
   mgr.shouldSeparate()
-  var content =
+  content =
   eYo.Do.createSPAN(withBitwise? '+=, -=, /= …': '<<=, >>=, &= …', 'eyo-code')
   var menuItem = function(eyo) {
     return new eYo.MenuItem(content, function() {

@@ -389,9 +389,6 @@ eYo.Do.cssClassForText = function (txt) {
  * @return an enumerator
  */
 eYo.Do.Enumerator = function (list, filter) {
-  if (goog.isFunction(filter)) {
-    var filter = filter
-  }
   var i = 0, me = {here: undefined}
   me.start = function() {
     i = 0
@@ -415,7 +412,7 @@ eYo.Do.Enumerator = function (list, filter) {
   }
   me.next = function() {
     while ((me.here = next_())) {
-      if (!filter || filter(me.here)) {
+      if (!goog.isFunction(filter) || filter(me.here)) {
         break
       }
     }
