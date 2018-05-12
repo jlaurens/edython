@@ -21,9 +21,6 @@ goog.forwardDeclare('eYo.BlockSvg')
  * Class for a DelegateSvg.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.Delegate.makeSubclass('Svg')
 
@@ -786,7 +783,6 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   if ((io.field = this.ui.toEndField)) {
     do {
       this.renderDrawField_(io)
-      io.f
     } while((io.field = io.field.eyo.nextField))
   }
   // enlarge the width if necessary
@@ -1524,8 +1520,8 @@ eYo.DelegateSvg.prototype.getBoundingBox = function(block) {
 /**
  * Get the closest box, according to the filter.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {function} distance is a function.
+ * @param {!Blockly.Workspace} workspace The owner of the receiver.
+ * @param {function(point): number} weight is a function.
  * @return None
  */
 eYo.DelegateSvg.getBestBlock = function (workspace, weight) {
@@ -1545,7 +1541,7 @@ eYo.DelegateSvg.getBestBlock = function (workspace, weight) {
  * Get the closest box, according to the filter.
  * For edython.
  * @param {!Blockly.Block} block The owner of the receiver.
- * @param {function} distance is a function.
+ * @param {function(point, point): number} distance is a function.
  * @return None
  */
 eYo.DelegateSvg.prototype.getBestBlock = function (block, distance) {

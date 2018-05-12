@@ -94,7 +94,6 @@ eYo.Consolidator.makeSubclass = function(key, data, C10r, owner) {
  * The undo/redo management is based on the name
  * of the input, which means that naming should be done
  * dynamically.
- * @param {!Object} data, all the data needed
  */
 eYo.Consolidator.makeSubclass('List')
 
@@ -620,6 +619,5 @@ eYo.Consolidator.List.prototype.hasInputForType = function(block, type) {
  * or only one block of type single.
  * Both given types must be orthogonal.
  * There should not exist blocks that provide both types.
- * @param {!Object} data data structure that contains the model....
  */
 eYo.Consolidator.List.makeSubclass('Singled')

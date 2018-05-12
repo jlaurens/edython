@@ -22,9 +22,6 @@ goog.require('eYo.DelegateSvg.Stmt')
 /**
  * Class for a DelegateSvg, '*...' block.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('target_star', {
   tiles: {
@@ -187,9 +184,6 @@ eYo.Consolidator.List.Target.prototype.getCheck = function (io) {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('target_list', {
   list: {
@@ -203,9 +197,6 @@ eYo.DelegateSvg.List.makeSubclass('target_list', {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('void_target_list', {
   list: {
@@ -220,9 +211,6 @@ eYo.DelegateSvg.List.makeSubclass('void_target_list', {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.void_target_list.makeSubclass('parenth_target_list', {
   fields: {
@@ -240,9 +228,6 @@ eYo.DelegateSvg.Expr.void_target_list.makeSubclass('parenth_target_list', {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.void_target_list.makeSubclass('bracket_target_list', {
   fields: {
@@ -262,9 +247,6 @@ goog.provide('eYo.DelegateSvg.Stmt.assignment_stmt')
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('target_list_list', {
   list: {
@@ -277,9 +259,6 @@ eYo.DelegateSvg.List.makeSubclass('target_list_list', {
 /**
  * Class for a DelegateSvg, assignment_stmt.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
   data: {
