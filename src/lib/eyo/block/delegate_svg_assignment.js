@@ -13,6 +13,7 @@
 
 goog.provide('eYo.DelegateSvg.Assignment')
 
+goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Term')
 goog.require('eYo.DelegateSvg.List')
 goog.require('eYo.DelegateSvg.Stmt')
@@ -22,9 +23,6 @@ goog.require('eYo.DelegateSvg.Stmt')
 /**
  * Class for a DelegateSvg, '*...' block.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('target_star', {
   tiles: {
@@ -187,9 +185,6 @@ eYo.Consolidator.List.Target.prototype.getCheck = function (io) {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('target_list', {
   list: {
@@ -203,9 +198,6 @@ eYo.DelegateSvg.List.makeSubclass('target_list', {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('void_target_list', {
   list: {
@@ -220,9 +212,6 @@ eYo.DelegateSvg.List.makeSubclass('void_target_list', {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.void_target_list.makeSubclass('parenth_target_list', {
   fields: {
@@ -240,9 +229,6 @@ eYo.DelegateSvg.Expr.void_target_list.makeSubclass('parenth_target_list', {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.void_target_list.makeSubclass('bracket_target_list', {
   fields: {
@@ -262,9 +248,6 @@ goog.provide('eYo.DelegateSvg.Stmt.assignment_stmt')
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('target_list_list', {
   list: {
@@ -277,9 +260,6 @@ eYo.DelegateSvg.List.makeSubclass('target_list_list', {
 /**
  * Class for a DelegateSvg, assignment_stmt.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
   data: {
@@ -288,7 +268,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       NAME_ANNOTATION_VALUE: 1,
       TARGET_VALUE: 2,
       all: [0, 1, 2],
-      synchronize: function(newValue) {
+      synchronize: /** @suppress {globalThis} */ function(newValue) {
         this.data.name.setIncog(newValue == this.TARGET_VALUE)
         this.ui.tiles.annotation.setIncog(newValue != this.NAME_ANNOTATION_VALUE)
         this.ui.tiles.target.setIncog(newValue != this.TARGET_VALUE)
@@ -297,7 +277,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     name: {
       init: '',
       subtypes: [eYo.T3.Expr.identifier, eYo.T3.Expr.dotted_name,],
-      validate: function(newValue) {
+      validate: /** @suppress {globalThis} */ function(newValue) {
         var t = eYo.Do.typeOfString(newValue)
         return this.model.subtypes.indexOf(t) >= 0? {validated: newValue}: null
       },
@@ -366,13 +346,13 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
     eYo.Do.createSPAN(' = …', 'eyo-code'),
   )
   F(content, M.NAME_VALUE)
-  var content =
+  content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN(name || eYo.Msg.Placeholder.IDENTIFIER, name? 'eyo-code': 'eyo-code-placeholder'),
     eYo.Do.createSPAN(': … = …', 'eyo-code'),
   )
   F(content, M.NAME_ANNOTATION_VALUE)
-  var content = eYo.Do.createSPAN('…,… = …,…', 'eyo-code')
+  content = eYo.Do.createSPAN('…,… = …,…', 'eyo-code')
   F(content, 2)
   mgr.shouldSeparate()
   if (current != M.TARGET_VALUE) {
@@ -425,11 +405,7 @@ goog.provide('eYo.DelegateSvg.AugAssign')
  * Multiple ops.
  * As there are many possible operators, we split the list into
  * number operators (+=, -=, /= ...) and bitwise operators (<<=, >>=,...)
- *
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
   data: {
@@ -437,14 +413,14 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       NAME_EXPRESSIONS: 0,
       TARGET_EXPRESSIONS: 1,
       all: [0, 1],
-      synchronize: function (newVariant) {
+      synchronize: /** @suppress {globalThis} */ function (newVariant) {
         this.ui.tiles.name.setIncog(newVariant)
         this.ui.tiles.target.setIncog(!newVariant)
       },
     },
     name: {
       init: '',
-      validate: function(newValue) {
+      validate: /** @suppress {globalThis} */ function(newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name?
         {validated: newValue}: null
@@ -454,7 +430,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
     operator: {
       init: '+=',
       synchronize: true,
-      didChange: function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
         this.data.numberOperator.set(newValue)
         this.data.bitwiseOperator.set(newValue)
       }
@@ -463,7 +439,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       all: ['+=','-=','*=','/=','//=','%=','**=','@='],
       noUndo: true,
       xml: false,
-      didChange: function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
         this.data.operator.set(newValue)
         if (this.data.operator.get() === this.get()) {
           this.data.operator.bitwise = false
@@ -474,7 +450,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       all: ['<<=', '>>=', '&=', '^=', '|='],
       noUndo: true,
       xml: false,
-      didChange: function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
         this.data.operator.set(newValue)
         if (this.data.operator.get() === this.get()) {
           this.data.operator.bitwise = true
@@ -546,7 +522,7 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
     F(i)
   }
   mgr.shouldSeparate()
-  var F = function(value, content) {
+  F = function(value, content) {
     if (value !== current) {
       var menuItem = new eYo.MenuItem(content, function() {
         variant.set(value)
@@ -560,13 +536,13 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
     eYo.Do.createSPAN(' '+operator+' …', 'eyo-code'),
   )
   F(variant.NAME_EXPRESSIONS, content)
-  var content =
+  content =
   goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     goog.dom.createTextNode('… '+operator+' …'),
   )
   F(variant.TARGET_EXPRESSIONS, content)
   mgr.shouldSeparate()
-  var content =
+  content =
   eYo.Do.createSPAN(withBitwise? '+=, -=, /= …': '<<=, >>=, &= …', 'eyo-code')
   var menuItem = function(eyo) {
     return new eYo.MenuItem(content, function() {

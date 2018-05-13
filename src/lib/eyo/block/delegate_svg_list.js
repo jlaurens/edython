@@ -20,9 +20,6 @@ goog.require('eYo.DelegateSvg.Expr')
  * Class for a DelegateSvg, value block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('List', {
   list: {},
@@ -30,7 +27,7 @@ eYo.DelegateSvg.Expr.makeSubclass('List', {
 
 /**
  * Will render the block.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.DelegateSvg.List.prototype.willRender_ = function (block) {
@@ -40,7 +37,7 @@ eYo.DelegateSvg.List.prototype.willRender_ = function (block) {
 
 /**
  * Fetches the named input object, getInput.
- * @param {!Block} block.
+ * @param {!Block} block
  * @param {string} name The name of the input.
  * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
  */
@@ -54,7 +51,7 @@ eYo.DelegateSvg.List.prototype.getInput = function (block, name) {
  * Removes empty place holders.
  * This must not be overriden.
  * 
- * @param {!Block} block.
+ * @param {!Block} block
  */
 eYo.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
   if (this.consolidate_lock || this.will_connect_) {
@@ -81,7 +78,7 @@ eYo.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
  * Removes empty place holders.
  * This must not be overriden.
  * 
- * @param {!Block} block.
+ * @param {!Block} block
  */
 eYo.DelegateSvg.List.prototype.createConsolidator = function (block) {
   if (!this.consolidator) {
@@ -98,7 +95,7 @@ eYo.DelegateSvg.List.prototype.createConsolidator = function (block) {
  * Removes empty place holders.
  * This must not be overriden.
  * 
- * @param {!Block} block.
+ * @param {!Block} block
  */
 eYo.DelegateSvg.List.prototype.consolidate = function (block, deep, force) {
   this.createConsolidator(block)
@@ -111,7 +108,7 @@ eYo.DelegateSvg.List.prototype.consolidate = function (block, deep, force) {
 /**
  * Clear the list af all items.
  * For edython.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.DelegateSvg.List.prototype.removeItems = function(block) {
@@ -139,9 +136,6 @@ eYo.DelegateSvg.List.prototype.removeItems = function(block) {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('optional_expression_list', {
   list: {
@@ -157,9 +151,6 @@ eYo.DelegateSvg.List.makeSubclass('optional_expression_list', {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('non_void_expression_list', {
   list: {
@@ -175,9 +166,6 @@ eYo.DelegateSvg.List.makeSubclass('non_void_expression_list', {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
   list: {
@@ -193,9 +181,6 @@ eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('key_datum_list', {
   list: {
@@ -210,9 +195,6 @@ eYo.DelegateSvg.List.makeSubclass('key_datum_list', {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
     list: {
@@ -228,9 +210,6 @@ eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('non_void_starred_item_list', {
     list: {
@@ -246,9 +225,6 @@ eYo.DelegateSvg.List.makeSubclass('non_void_starred_item_list', {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('starred_item_list_comprehensive', function() {
   var D = {
@@ -270,9 +246,6 @@ eYo.DelegateSvg.List.makeSubclass('starred_item_list_comprehensive', function() 
 /**
  * Class for a DelegateSvg, list_display block.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.starred_item_list_comprehensive.makeSubclass('list_display', {
   xml: {
@@ -289,9 +262,6 @@ eYo.DelegateSvg.Expr.starred_item_list_comprehensive.makeSubclass('list_display'
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('non_void_starred_item_list_comprehensive', function() {
   var D = {
@@ -313,9 +283,6 @@ eYo.DelegateSvg.List.makeSubclass('non_void_starred_item_list_comprehensive', fu
 /**
  * Class for a DelegateSvg, set_display block.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.non_void_starred_item_list_comprehensive.makeSubclass('set_display', {
   xml: {
@@ -332,9 +299,6 @@ eYo.DelegateSvg.Expr.non_void_starred_item_list_comprehensive.makeSubclass('set_
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('key_datum_list_comprehensive', function() {
   var D = {
@@ -355,9 +319,6 @@ eYo.DelegateSvg.List.makeSubclass('key_datum_list_comprehensive', function() {
 /**
  * Class for a DelegateSvg, dict_display block.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.key_datum_list_comprehensive.makeSubclass('dict_display', {
   fields: {
@@ -371,9 +332,6 @@ eYo.DelegateSvg.Expr.key_datum_list_comprehensive.makeSubclass('dict_display', {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('slice_list', {
   list: {
@@ -388,9 +346,6 @@ eYo.DelegateSvg.List.makeSubclass('slice_list', {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('with_item_list', {
   list: {

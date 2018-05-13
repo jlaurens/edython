@@ -19,9 +19,6 @@ goog.require('eYo.DelegateSvg.List')
  * Class for a DelegateSvg, keyword_item block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('keyword_item', {
   tiles: {
@@ -48,23 +45,13 @@ eYo.DelegateSvg.Expr.makeSubclass('keyword_item', {
  * 2) positional arguments come first, id est expression and starred expressions
  * 3) then come keyword items or double starred expressions
  * Main entry: consolidate
- * @param {!String} single, the required type for a single element....
  */
-// eYo.Consolidator.Arguments = function() {
-//   eYo.Consolidator.Arguments.superClass_.constructor.call(this, eYo.Consolidator.Arguments.data)
-// }
-// goog.inherits(eYo.Consolidator.Arguments, eYo.Consolidator.List)
-
-// eYo.Consolidator.Arguments.data = {
-//   check: null,
-//   empty: true,
-//   presep: ',',
-// }
 eYo.Consolidator.List.makeSubclass('Arguments', {
   check: null,
   empty: true,
   presep: ',',
 }, eYo.Consolidator.List, eYo.Consolidator)
+
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
@@ -213,14 +200,14 @@ eYo.Consolidator.Arguments.prototype.getCheck = function() {
     out = []
     if (can_positional) {
       out = eYo.T3.Expr.Check.expression.slice()
-      out.push(eYo.T3.Expr.expression_star)      
+      out.push(eYo.T3.Expr.expression_star)
     }
     if (can_keyword) {
       out.push(eYo.T3.Expr.keyword_item)
-      out.push(eYo.T3.Expr.expression_star_star)      
+      out.push(eYo.T3.Expr.expression_star_star)
     }
     if (can_comprehension) {
-      out.push(eYo.T3.Expr.comprehension)      
+      out.push(eYo.T3.Expr.comprehension)
     }
     return cache[K] = out
   }
@@ -231,9 +218,6 @@ eYo.Consolidator.Arguments.prototype.getCheck = function() {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('argument_list', {
   list: {
@@ -250,9 +234,6 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('argument_list_comprehensive', {
   list: {

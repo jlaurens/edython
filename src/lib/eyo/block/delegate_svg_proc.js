@@ -13,6 +13,7 @@
 
 goog.provide('eYo.DelegateSvg.Proc')
 
+goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Term')
 goog.require('eYo.DelegateSvg.Group')
 goog.require('eYo.MenuItem')
@@ -20,11 +21,7 @@ goog.require('eYo.MenuItem')
 /**
  * Class for a DelegateSvg, decorator.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
-//  decorator            /*   ::= "@" dotted_name ["(" [argument_list [","]] ")"]    */ : "eyo:decorator",
 eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.decorator, {
   data: {
     builtin: {
@@ -36,7 +33,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.decorator, {
       BUILTIN: 1,
       ARGUMENTS: 2,
       all: [0, 1, 2],
-      synchronize: function(newValue) { // would variants synchronize?
+      synchronize: /** @suppress {globalThis} */ function(newValue) { // would variants synchronize?
         var M = this.model
         this.data.dotted_name.setIncog(newValue === M.BUILTIN) // disable the data not the tile
         this.data.builtin.setIncog(newValue !== M.BUILTIN)
@@ -46,7 +43,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.decorator, {
     dotted_name: {
       all: [eYo.T3.Expr.dotted_name, eYo.T3.Expr.identifier],
       init: '',
-      validate: function(newValue) {
+      validate: /** @suppress {globalThis} */ function(newValue) {
         var subtypes = this.getAll()
         var subtype = eYo.Do.typeOfString(newValue)
         return (subtypes.indexOf(subtype)>= 0) && {validated: newValue} || null
@@ -80,7 +77,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.decorator, {
         },
       },
       xml: {
-        didLoad: function () {
+        didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
           variant.set(variant.model.BUILTIN)
         },
@@ -94,7 +91,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.decorator, {
       },
       wrap: eYo.T3.Expr.argument_list,
       xml: {
-        didLoad: function () {
+        didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
           variant.set(variant.model.ARGUMENTS)
         },
@@ -176,23 +173,18 @@ eYo.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (b
 /**
  * Class for a DelegateSvg, funcdef_part.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
- // funcdef_part ::= ["async"] "def" funcname "(" [parameter_list] ")" ["->" expression] ":" SUITE
-
 eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
   data: {
     variant: {
       all: [null, eYo.Key.TYPE],
-      synchronize: function (newValue) {
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.ui.tiles.type.setIncog(!newValue)
       },
     },
     name: {
       init: '',
-      validate: function(newValue) {
+      validate: /** @suppress {globalThis} */ function(newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type === eYo.T3.Expr.identifier? {validated: newValue}: null
       },
@@ -263,21 +255,18 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
 /**
  * Class for a DelegateSvg, classdef_part block.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
   data: {
     variant: {
       all: [null, eYo.Key.ARGUMENTS],
-      synchronize: function(newValue) {
+      synchronize: /** @suppress {globalThis} */ function(newValue) {
         this.ui.tiles.arguments.setIncog(!newValue)
       },
     },
     name: {
       init: '',
-      validate: function(newValue) {
+      validate: /** @suppress {globalThis} */ function(newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type === eYo.T3.Expr.identifier? {validated: newValue}: null
       },

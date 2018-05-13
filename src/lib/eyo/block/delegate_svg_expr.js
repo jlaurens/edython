@@ -13,6 +13,7 @@
 
 goog.provide('eYo.DelegateSvg.Expr')
 
+goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg')
 goog.require('eYo.T3.All')
 
@@ -20,9 +21,6 @@ goog.require('eYo.T3.All')
  * Class for a DelegateSvg, value block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.makeSubclass('Expr')
 
@@ -36,7 +34,7 @@ eYo.DelegateSvg.Expr.prototype.shapePathDef_ =
 
 /**
  * Render one input of value block.
- * @param io.
+ * @param io
  * @private
  */
 eYo.DelegateSvg.Expr.prototype.renderDrawInput_ = function (io) {
@@ -47,7 +45,7 @@ eYo.DelegateSvg.Expr.prototype.renderDrawInput_ = function (io) {
 /**
  * Render the leading # character for collapsed statement blocks.
  * Statement subclasses must override it.
- * @param io.
+ * @param io
  * @private
  */
 eYo.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
@@ -64,9 +62,11 @@ eYo.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
  */
 eYo.DelegateSvg.Expr.prototype.didConnect = function(block, connection, oldTargetConnection, oldConnection) {
   eYo.DelegateSvg.Expr.superClass_.didConnect.call(this, block, connection, oldTargetConnection, oldConnection)
-  if (block === Blockly.selected && this.locked_) {
-    var parent = block.getSurroundParent()
-    parent && parent.select()
+  if (connection.type === Blockly.OUTPUT_VALUE) {
+    var parent = connection.targetBlock()
+    if (block === Blockly.selected && this.locked_) {
+      parent.select()
+    }
   }
 }
 
@@ -75,7 +75,7 @@ eYo.DelegateSvg.Expr.prototype.didConnect = function(block, connection, oldTarge
  * If the parent's output connection is connected,
  * can connect the block's output connection to it?
  * The connection cannot always establish.
- * @param {!Block} block.
+ * @param {!Block} block
 * @param {!Block} other the block to be replaced
   */
 eYo.DelegateSvg.Expr.prototype.canReplaceBlock = function (block, other) {
@@ -98,7 +98,7 @@ eYo.DelegateSvg.Expr.prototype.canReplaceBlock = function (block, other) {
  * If the parent's output connection is connected,
  * connects the block's output connection to it.
  * The connection cannot always establish.
- * @param {!Block} block.
+ * @param {!Block} block
  */
 eYo.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
   if (other) {
@@ -133,7 +133,7 @@ eYo.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
 /**
  * Will draw the block. Default implementation does nothing.
  * The print statement needs some preparation before drawing.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.DelegateSvg.Expr.prototype.willRender_ = function (block) {
@@ -184,12 +184,12 @@ eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr)
     if (this.await_) {
       mgr.shouldSeparateRemove()
       mgr.addRemoveChild(new eYo.MenuItem(content, function() {
-        block.eyo.setAwaited(block, false)
+        block.eyo.data.await.set(false)
       }))
     } else {
       mgr.shouldSeparateInsert()
       mgr.addInsertChild(new eYo.MenuItem(content, function() {
-        block.eyo.setAwaited(block, true)
+        block.eyo.data.await.set(true)
       }))
     }
   }
@@ -201,8 +201,8 @@ eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr)
  * If the block's output connection is connected,
  * can connect the parent's output to it?
  * The connection cannot always establish.
- * @param {!Block} block.
- * @param {string} prototypeName.
+ * @param {!Block} block
+ * @param {string} prototypeName
  * @param {string} parentInputName, which parent's connection to use
  */
 eYo.DelegateSvg.Expr.prototype.canInsertParent = function(block, prototypeName, subtype, parentInputName) {
@@ -233,8 +233,8 @@ eYo.DelegateSvg.Expr.prototype.canInsertParent = function(block, prototypeName, 
  * connects the parent's output to it.
  * The connection cannot always establish.
  * The holes are filled when fill_holes is true.
- * @param {!Block} block.
- * @param {string} prototypeName.
+ * @param {!Block} block
+ * @param {string} prototypeName
  * @param {string} parentInputName, which parent's connection to use
  * @param {boolean} fill_holes whether holes should be filled
  * @return the created block
@@ -310,7 +310,7 @@ eYo.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
         B = undefined
         targetC8n = undefined
       }
-      var targetC8n = outputC8n.targetConnection
+      targetC8n = outputC8n.targetConnection
       var bumper
       if (targetC8n) {
         targetC8n.disconnect()
@@ -351,9 +351,6 @@ eYo.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
  * Class for a DelegateSvg, proper_slice block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
   tiles: {
@@ -388,9 +385,6 @@ eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
  * Class for a DelegateSvg, conditional_expression_s3d block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('conditional_expression_s3d', {
   xml: {
@@ -424,9 +418,6 @@ eYo.DelegateSvg.Expr.makeSubclass('conditional_expression_s3d', {
 /**
  * Class for a DelegateSvg, '*...' block.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('starred_expression', {
   data: {
@@ -447,7 +438,7 @@ eYo.DelegateSvg.Expr.makeSubclass('starred_expression', {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
       hole_value: 'name',
-      didConnect: function(oldTargetConnection, oldConnection) {
+      didConnect: /** @suppress {globalThis} */ function(oldTargetConnection, oldConnection) {
         this.eyo.consolidateSource()
       },
     },
@@ -512,13 +503,10 @@ eYo.DelegateSvg.Expr.starred_expression.prototype.populateContextMenuFirst_ = fu
 }
 
 /**
-* Class for a DelegateSvg, not_test_s3d.
-* This is not an Operator subclass because 'not' is a reserved word.
-* For edython.
-* @param {?string} prototypeName Name of the language object containing
-*     type-specific functions for this block.
-* @constructor
-*/
+ * Class for a DelegateSvg, not_test_s3d.
+ * This is not an Operator subclass because 'not' is a reserved word.
+ * For edython.
+ */
 eYo.DelegateSvg.Expr.makeSubclass('not_test_s3d', {
   tiles: {
     expression: {
@@ -533,12 +521,9 @@ eYo.DelegateSvg.Expr.makeSubclass('not_test_s3d', {
 })
 
 /**
-* Class for a DelegateSvg, builtin object.
-* For edython.
-* @param {?string} prototypeName Name of the language object containing
-*     type-specific functions for this block.
-* @constructor
-*/
+ * Class for a DelegateSvg, builtin object.
+ * For edython.
+ */
 eYo.DelegateSvg.Expr.makeSubclass('builtin_object', {
   data: {
     value: {
@@ -577,12 +562,9 @@ eYo.DelegateSvg.Expr.builtin_object.prototype.makeTitle = function (block, op) {
 }
 
 /**
-* Class for a DelegateSvg, any object.
-* For edython.
-* @param {?string} prototypeName Name of the language object containing
-*     type-specific functions for this block.
-* @constructor
-*/
+ * Class for a DelegateSvg, any object.
+ * For edython.
+ */
 eYo.DelegateSvg.Expr.makeSubclass('any', {
   data: {
     code: {

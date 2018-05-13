@@ -13,6 +13,7 @@
 'use strict'
 
 goog.provide('eYo.RenderedConnection')
+goog.provide('eYo.ConnectionDelegate')
 
 goog.require('Blockly.RenderedConnection')
 goog.require('Blockly.Connection')
@@ -63,8 +64,7 @@ eYo.ConnectionDelegate.prototype.optional_ = false// must change to wrapper
 eYo.ConnectionDelegate.prototype.name_ = undefined// must change to wrapper
 
 /**
- * initSvg the target block.
- * @param {boolean} incog
+ * `beReady` the target block.
  */
 eYo.ConnectionDelegate.prototype.beReady = function() {
   var target = this.connection.targetBlock()
@@ -73,9 +73,8 @@ eYo.ConnectionDelegate.prototype.beReady = function() {
 
 /**
  * Get the incognito state.
- * @param {boolean} incog
  */
-eYo.ConnectionDelegate.prototype.isIncog = function(incog) {
+eYo.ConnectionDelegate.prototype.isIncog = function() {
   return this.incog_
 }
 
@@ -116,8 +115,10 @@ eYo.ConnectionDelegate.prototype.willConnect = function(targetConnection) {
  * Did connect.
  * Default implementation does nothing.
  * This can be overriden at block creation time.
- * @param {Blockly.Connection} oldTargetConnection  what was previously connected to connection
- * @param {Blockly.Connection} oldConnection  what was previously connected to the actual connection.targetConnection
+ * @param {Blockly.Connection} oldTargetConnection
+ *     what was previously connected to connection
+ * @param {Blockly.Connection} targetOldConnection
+ *     what was previously connected to the actual connection.targetConnection
  */
 eYo.ConnectionDelegate.prototype.didConnect = function(oldTargetConnection, targetOldConnection) {
   this.model && goog.isFunction(this.model.didConnect) && this.model.didConnect.call(this.connection, oldTargetConnection, targetOldConnection)
@@ -147,6 +148,7 @@ eYo.ConnectionDelegate.prototype.didDisconnect = function(oldTargetConnection) {
  * get the check_ array. This is a dynamic method.
  * The default implementation just returns the connection's check_.
  * @return the connection's check_ array.
+ * @suppress {accessControls}
  */
 eYo.ConnectionDelegate.prototype.getCheck = function() {
   return this.connection.check_
@@ -154,7 +156,6 @@ eYo.ConnectionDelegate.prototype.getCheck = function() {
 
 /**
  * Is it a next connection.
- * @param {!Blockly.Connection} otherConnection Connection to compare against.
  * @return {boolean} True if the connection is the block's next one.
  * @private
  */
@@ -164,7 +165,6 @@ eYo.ConnectionDelegate.prototype.isNext = function() {
 
 /**
  * Is it a next connection.
- * @param {!Blockly.Connection} otherConnection Connection to compare against.
  * @return {boolean} True if the connection is the block's previous one.
  * @private
  */
@@ -193,7 +193,6 @@ eYo.ConnectionDelegate.prototype.getConnectionAbove = function() {
  * Get the connection of the same kind on the block below.
  * If the connection is named, returns the connection, whatever ist source block
  * status may be.
- * @param F optional function defaults to !argument.eyo.isWhite(argument)
  * @return a connection, possibly undefined
  */
 eYo.ConnectionDelegate.prototype.getConnectionBelow = function() {
@@ -219,7 +218,7 @@ eYo.ConnectionDelegate.prototype.getConnectionBelow = function() {
  * @return a connection, possibly undefined
  */
 eYo.ConnectionDelegate.prototype.getBlackConnection = function(F) {
-  var F = F || function(block) {
+  F = F || function(block) {
     return !block.eyo.isWhite(block)
   }
   var c8n = this.connection
@@ -247,8 +246,7 @@ eYo.ConnectionDelegate.prototype.getBlackConnection = function(F) {
 /**
  * Return the black target connection.
  * Traverses the white blocks
- * @param {!Blockly.Connection} otherConnection Connection to compare against.
- * @return {boolean} True if the connection is the block's next one.
+ * @return {?Blockly.Connection} True if the connection is the block's next one.
  * @private
  */
 eYo.ConnectionDelegate.prototype.getBlackTargetConnection = function() {
@@ -265,7 +263,7 @@ eYo.ConnectionDelegate.prototype.getBlackTargetConnection = function() {
       return block.nextConnection
     }
   } else if (c8n.eyo.isNext()) {
-    var F = function(block) {
+    F = function(block) {
       return block.previousConnection
     }
   } else {
@@ -306,9 +304,10 @@ eYo.Connection.prototype.eyo = undefined
 
 /**
  * Add highlighting around this connection.
+ * @suppress {accessControls}
  */
 Blockly.RenderedConnection.prototype.highlight = function () {
-  var block = this.sourceBlock_
+  var block = this.getSourceBlock()
   if (block && block.eyo) {
     block.eyo.highlightConnection(block, this)
     return
@@ -322,6 +321,7 @@ Blockly.RenderedConnection.prototype.highlight = function () {
  * @param {!Blockly.Connection} staticConnection The connection to move away
  *     from.
  * @private
+ * @suppress {accessControls}
  */
 Blockly.RenderedConnection.prototype.bumpAwayFrom_ = function (staticConnection) {
   if (this.sourceBlock_.workspace.isDragging()) {
@@ -370,12 +370,9 @@ Blockly.RenderedConnection.prototype.bumpAwayFrom_ = function (staticConnection)
  * Check if the two connections can be dragged to connect to each other.
  * A sealed connection is never allowed.
  * @param {!Blockly.Connection} candidate A nearby connection to check.
- * @param {number} maxRadius The maximum radius allowed for connections, in
- *     workspace units.
  * @return {boolean} True if the connection is allowed, false otherwise.
  */
-eYo.Connection.prototype.isConnectionAllowed = function(candidate,
-  maxRadius) {
+eYo.Connection.prototype.isConnectionAllowed = function(candidate) {
   if (this.eyo.wrapped_ || candidate.eyo.wrapped_) {
     return false
   }
@@ -395,6 +392,7 @@ eYo.Connection.prototype.isConnectionAllowed = function(candidate,
  * @param {!Blockly.Connection} otherConnection Connection to compare against.
  * @return {boolean} True if the connections share a type.
  * @private
+ * @suppress {accessControls}
  */
 eYo.Connection.prototype.checkType_ = function(otherConnection) {
   if (!Blockly.Events.recordUndo) {
@@ -510,8 +508,9 @@ eYo.Connection.prototype.checkType_ = function(otherConnection) {
  * Connect two connections together.  This is the connection on the superior
  * block.
  * Add hooks to allow customization.
- * @param {!Blockly.Connection} childConnection Connection on inferior block.
+ * @param {!Blockly.Connection} childC8n Connection on inferior block.
  * @private
+ * @suppress {accessControls}
  */
 eYo.Connection.prototype.connect_ = function(childC8n) {
   // `this` is actually the parentC8n
@@ -592,10 +591,11 @@ eYo.Connection.prototype.connect_ = function(childC8n) {
  * @param {!Blockly.Block} parentBlock The superior block.
  * @param {!Blockly.Block} childBlock The inferior block.
  * @private
+ * @suppress {accessControls}
  */
 eYo.Connection.prototype.disconnectInternal_ = function(parentBlock,
   childBlock) {
-  var block = this.sourceBlock_
+  var block = this.getSourceBlock()
   if (block === parentBlock) {
     var parentC8n = this
     var childC8n = this.targetConnection
@@ -635,13 +635,14 @@ Blockly.Connection.uniqueConnection_original = Blockly.Connection.uniqueConnecti
  * Does the given block have one and only one connection point that will accept
  * an orphaned block?
  * Returns the first free connection that can accept the orphan
- * 
+ *
  * @param {!Blockly.Block} block The superior block.
  * @param {!Blockly.Block} orphanBlock The inferior block.
  * @return {Blockly.Connection} The suitable connection point on 'block',
  *     or null.
  * @private
  * @override
+ * @suppress {accessControls}
  */
 Blockly.Connection.uniqueConnection_ = function(block, orphanBlock) {
   var e8r = block.eyo.inputEnumerator(block)
@@ -667,7 +668,7 @@ eYo.RenderedConnection.savedSetHidden = Blockly.RenderedConnection.prototype.set
  * @param {boolean} hidden True if connection is hidden.
  */
 Blockly.RenderedConnection.prototype.setHidden = function(hidden) {
-  // ADDED by JL: 
+  // ADDED by JL:
   if (!hidden && this.eyo.incog_) {
     // Incog connections must stay hidden
     return
@@ -681,8 +682,9 @@ Blockly.RenderedConnection.prototype.setHidden = function(hidden) {
 
 /**
  * Change the connection's coordinates.
- * @param {number} x New absolute x coordinate, in workspace coordinates.
- * @param {number} y New absolute y coordinate, in workspace coordinates.
+ * @param {goog.math.Coordinate} x New absolute x coordinate, in workspace coordinates.
+ * @param {goog.math.Coordinate} y New absolute y coordinate, in workspace coordinates.
+ * @suppress {accessControls}
  */
 Blockly.RenderedConnection.prototype.moveTo = function(x, y) {
   // ADDED by JL: do nothing when the connection did not move
@@ -703,27 +705,29 @@ Blockly.RenderedConnection.prototype.moveTo = function(x, y) {
 /**
  * Find the closest compatible connection to this connection.
  * All parameters are in workspace units.
- * @param {number} maxLimit The maximum radius to another connection.
- * @param {number} dx Horizontal offset between this connection's location
+ * @param {goog.math.Coordinate} maxLimit The maximum radius to another connection.
+ * @param {goog.math.Coordinate} dx Horizontal offset between this connection's location
  *     in the database and the current location (as a result of dragging).
- * @param {number} dy Vertical offset between this connection's location
+ * @param {goog.math.Coordinate} dy Vertical offset between this connection's location
  *     in the database and the current location (as a result of dragging).
  * @return {!{connection: ?Blockly.Connection, radius: number}} Contains two
  *     properties: 'connection' which is either another connection or null,
  *     and 'radius' which is the distance.
+ * @suppress{accessControls}
  */
-Blockly.RenderedConnection.prototype.closest = function(maxLimit, dx, dy) {
+Blockly.RenderedConnection.prototype.closest = function(maxLimit, dxy, dy) {
   // BEGIN ADDENDUM by JL
   if(this.hidden_) {
     return {}
   }
   // END ADDENDUM ny JL
-  return this.dbOpposite_.searchForClosest(this, maxLimit, dx, dy);
+  return this.dbOpposite_.searchForClosest(this, maxLimit, dxy);
 };
 
 eYo.RenderedConnection.savedDispose = Blockly.Connection.prototype.dispose
 /**
  * Sever all links to this connection (not including from the source object).
+ * @suppress{accessControls}
  */
 Blockly.Connection.prototype.dispose = function() {
   if (this === eYo.SelectedConnection.get()) {
@@ -731,11 +735,12 @@ Blockly.Connection.prototype.dispose = function() {
   }
   eYo.RenderedConnection.savedDispose.call(this)
 }
-
+/** @suppress{accessControls} */
 eYo.RenderedConnection.onCheckChanged_ = Blockly.RenderedConnection.prototype.onCheckChanged_
 /**
  * Function to be called when this connection's compatible types have changed.
  * @private
+ * @suppress{accessControls}
  */
 Blockly.RenderedConnection.prototype.onCheckChanged_ = function() {
   eYo.RenderedConnection.onCheckChanged_.call(this)
@@ -753,9 +758,10 @@ Blockly.RenderedConnection.prototype.onCheckChanged_ = function() {
  * @return {Blockly.Connection} The suitable connection point on 'block',
  *     or null.
  * @private
+ * @suppress{accessControls}
  */
 Blockly.Connection.singleConnection_ = function(block, orphanBlock) {
-  var connection = false;
+  var connection = null;
   for (var i = 0; i < block.inputList.length; i++) {
     var thisConnection = block.inputList[i].connection;
     if (thisConnection && thisConnection.type == Blockly.INPUT_VALUE &&
@@ -779,6 +785,7 @@ Blockly.Connection.singleConnection_ = function(block, orphanBlock) {
  * @param {!Blockly.Block} orphanBlock The block that is looking for a home.
  * @return {Blockly.Connection} The suitable connection point on the chain
  *    of blocks, or null.
+ * @suppress{accessControls}
  * @private
  */
 Blockly.Connection.lastConnectionInRow_ = function(startBlock, orphanBlock) {

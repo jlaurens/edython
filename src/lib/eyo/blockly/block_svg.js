@@ -29,7 +29,7 @@ eYo.inherits(Blockly.BlockSvg, eYo.Block)
  *     type-specific functions for this block.
  * @param {string=} optId Optional ID.  Use this ID if provided, otherwise
  *     create a new id.
- * @extends {Blockly.Block}
+ * @extends {Blockly.BlockSvg}
  * @constructor
  */
 eYo.BlockSvg = function (workspace, prototypeName, optId) {
@@ -56,7 +56,14 @@ console.warn('++skipRendering, --skipRendering')
  */
 eYo.BlockSvg.prototype.initSvg = function() {
   this.eyo.preInitSvg(this)
-  eYo.BlockSvg.superClass_.initSvg.call(this)
+  goog.asserts.assert(this.workspace.rendered, 'Workspace is headless.');
+  for (var i = 0, input; input = this.inputList[i]; i++) {
+    input.init();
+  }
+
+  if (!this.getSvgRoot().parentNode) {
+    this.workspace.getCanvas().appendChild(this.getSvgRoot());
+  }
   this.eyo.postInitSvg(this)
 };
 
@@ -133,7 +140,7 @@ eYo.BlockSvg.prototype.select = function() {
 }
 
 /**
- * Unselect this block.  
+ * Unselect this block.
  * If there is a selected connection, it is removed.
  * Unselect is used from click handling methods.
  */
@@ -231,7 +238,12 @@ eYo.BlockSvg.prototype.removeSelect = function () {
  * @param {Blockly.BlockSvg} newParent New parent block.
  */
 eYo.BlockSvg.prototype.setParent = function (newParent) {
+  if (newParent == this.parentBlock_) {
+    return;
+  }
+  this.eyo.parentWillChange(this, newParent)
   eYo.BlockSvg.superClass_.setParent.call(this, newParent)
+  this.eyo.parentDidChange(this, newParent)
   if ((this.eyo.svgPathHighlight_ &&
       this.svgGroup_ === this.eyo.svgPathHighlight_.parentElement) || (this.eyo.svgPathConnection_ &&
         this.svgGroup_ === this.eyo.svgPathConnection_.parentElement)) {
@@ -437,19 +449,19 @@ eYo.BlockSvg.prototype.onMouseDown_ = function(e) {
  * Then, the higlighted path of the source blocks is not the outline of the block
  * but the shape of the connection as it shows when blocks are moved close enough.
  */
-eYo.DelegateSvg.prototype.onMouseUp_ = function(block, e) {
-  var ee = this.lastMouseDownEvent
+eYo.BlockSvg.prototype.onMouseUp_ = function(e) {
+  var ee = this.eyo.lastMouseDownEvent
   if (ee) {
     // this block was selected when the mouse ow event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
-      if (block === Blockly.selected) {
+      if (this === Blockly.selected) {
         // if the block was already selected,
         // try to select an input connection
-        var c8n = this.getConnectionForEvent(block, e)
+        var c8n = this.eyo.getConnectionForEvent(this, e)
         if (c8n) {
           eYo.SelectedConnection.set(c8n)
         } else {
-          eYo.SelectedConnection.set(this.lastSelectedConnection)
+          eYo.SelectedConnection.set(this.eyo.lastSelectedConnection)
         }
       }
     } else {

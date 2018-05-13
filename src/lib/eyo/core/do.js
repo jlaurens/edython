@@ -110,7 +110,7 @@ eYo.Do.Name = function () {
     var i = 0
     var seen = -1 // last index where there is MIN+1
     while (true) {
-      var code = lhs.charCodeAt(i)
+      var code = name.charCodeAt(i)
       if (isNaN(code)) {
         if (seen<0) {
           return name
@@ -127,7 +127,7 @@ eYo.Do.Name = function () {
         i = 0
         seen = -1
         while (true) {
-          code = lhs.charCodeAt(i)
+          code = name.charCodeAt(i)
           if (isNaN(code)) {
             if (seen<0) {
               return RA.join('')
@@ -365,9 +365,8 @@ eYo.Do.typeOfString = function (candidate) {
 /**
  * The css class for the given text
  * For edython.
- * @param {!Array} list indexed object.
- * @param {!function} filter an optional filter.
- * @return an enumerator
+ * @param {!string} txt The text to be tested.
+ * @return {string}
  */
 eYo.Do.cssClassForText = function (txt) {
   switch(eYo.Do.typeOfString(txt)) {
@@ -385,13 +384,10 @@ eYo.Do.cssClassForText = function (txt) {
  * List enumerator
  * For edython.
  * @param {!Array} list indexed object.
- * @param {!function} filter an optional filter.
- * @return an enumerator
+ * @param {!function(Object): boolean} filter an optional filter.
+ * @return {Object} an enumerator
  */
 eYo.Do.Enumerator = function (list, filter) {
-  if (goog.isFunction(filter)) {
-    var filter = filter
-  }
   var i = 0, me = {here: undefined}
   me.start = function() {
     i = 0
@@ -415,7 +411,7 @@ eYo.Do.Enumerator = function (list, filter) {
   }
   me.next = function() {
     while ((me.here = next_())) {
-      if (!filter || filter(me.here)) {
+      if (!goog.isFunction(filter) || filter(me.here)) {
         break
       }
     }
@@ -434,38 +430,11 @@ eYo.Do.Enumerator = function (list, filter) {
 }
 
 /**
- * Get the flag given the position as argument.
- * Positions are given 1 based
- * For edython.
- */
- eYo.Do.getVariantFlag = function(variant, position) {
-  return variant & 1 << (  position - 1)
- }
-
-/**
- * set the flags given the positions as arguments.
- * if the position is negative, unset the symmetric bit
- * Positions are given 1 based
- * For edython.
- */
- eYo.Do.makeVariantFlags = function(variant) {
-  for(var i = 1; i < arguments.length; i++) {
-    var position = arguments[i]
-    if (position < 0) {
-      variant ^= 1 << (- position - 1 )
-    } else if (position > 0) {
-      variant |= 1 << (  position - 1)
-    }
-  }
-  return variant
-}
-
-/**
  * Convenient shortcut
  * For edython.
- * @param {!Array} list indexed object.
- * @param {!function} filter an optional filter.
- * @return an enumerator
+ * @param {!Object} object
+ * @param {!string} key
+ * @return {boolean}
  */
 eYo.Do.hasOwnProperty = function (object, key) {
   return Object.prototype.hasOwnProperty.call(object, key)
@@ -474,9 +443,9 @@ eYo.Do.hasOwnProperty = function (object, key) {
 /**
  * Convenient format
  * For edython.
- * @param {!Array} list indexed object.
- * @param {!function} filter an optional filter.
- * @return an enumerator
+ * @param {!string} format
+ * @param {...} args
+ * @return {string}
  */
 eYo.Do.format = function(format) {
   var args = Array.prototype.slice.call(arguments, 1);

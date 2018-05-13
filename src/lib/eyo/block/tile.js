@@ -39,6 +39,7 @@ goog.require('Blockly.Input')
  * @param {!Object} owner  The owner is a block delegate.
  * @param {!string} key  One of the keys in `tiles` section of the model.
  * @param {!Object} tileModel  the model for the given key i the above mention section.
+ * @constructor
  */
 eYo.Tile = function(owner, key, tileModel) {
   goog.asserts.assert(owner, 'Missing tile owner')
@@ -94,7 +95,12 @@ eYo.Tile.prototype.beReady = function() {
   this.svgGroup_ = Blockly.utils.createSvgElement('g', {
     class: 'eyo-tile'
   }, null);
-  this.getBlock().getSvgRoot().appendChild(this.svgGroup_)
+  if (this.previous) {
+    goog.dom.insertSiblingAfter(this.svgGroup_, this.previous.svgGroup_)
+  } else {
+    this.owner.svgInsertHeadTile()
+  }
+//  this.getBlock().getSvgRoot().appendChild(this.svgGroup_)
   this.init()
   // init all the fields
   for (var k in this.fields) {
@@ -112,6 +118,18 @@ console.warn('What would be a tile rendering?')
  */
 eYo.Tile.prototype.getSvgRoot = function() {
   return this.svgGroup_
+};
+
+/**
+ * Transitional: when a block is connected, its svg root is installed
+ * in another block's one. Here we move it to a tile svg root, if relevant.
+ * @param {!Blockly.Block} block to be initialized.
+ */
+eYo.Tile.prototype.takeSvgOwnership = function(block) {
+  var root = block.getSvgRoot()
+  if (root) {
+    console.log('MOVE IT TO THE TAIL ?')
+  }
 };
 
 /**
@@ -277,9 +295,9 @@ eYo.Tile.makeFields = function() {
           }
           var eyo = field.eyo.edyLast_ || field.eyo
           for (i++; i < arguments.length; i++) {
-            var fieldName = arguments[i]
+            fieldName = arguments[i]
             if ((eyo.nextField = goog.isString(fieldName)? ui.fields[fieldName]: fieldName)) {
-              var j = unordered.length
+              j = unordered.length
               while (j--) {
                 if(unordered[j] === eyo.nextField) {
                   unordered.splice(j, 1);
@@ -348,7 +366,7 @@ eYo.Tile.prototype.setInput = function (input) {
 /**
  * Get the block.
  * For edython.
- * @param {boolean} newValue.
+ * @param {boolean} newValue
  */
 eYo.Tile.prototype.getBlock = function () {
   return this.block
@@ -384,7 +402,7 @@ eYo.Tile.prototype.getTarget = function () {
 /**
  * Set the disable state.
  * For edython.
- * @param {!bollean} newValue.
+ * @param {!bollean} newValue
  */
 eYo.Tile.prototype.setIncog = function (newValue) {
   this.incog = newValue
@@ -407,7 +425,7 @@ eYo.Tile.prototype.isIncog = function () {
 /**
  * Get the required status.
  * For edython.
- * @param {boolean} newValue.
+ * @param {boolean} newValue
  */
 eYo.Tile.prototype.isRequiredToDom = function () {
   if (this.incog) {
@@ -431,7 +449,7 @@ eYo.Tile.prototype.isRequiredToDom = function () {
 /**
  * Get the required status.
  * For edython.
- * @param {boolean} newValue.
+ * @param {boolean} newValue
  */
 eYo.Tile.prototype.isRequiredFromDom = function () {
  return this.is_required_from_dom || !this.incog && this.model.xml && this.model.xml.required
@@ -440,7 +458,7 @@ eYo.Tile.prototype.isRequiredFromDom = function () {
 /**
  * Set the required status.
  * For edython.
- * @param {boolean} newValue.
+ * @param {boolean} newValue
  */
 eYo.Tile.prototype.setRequiredFromDom = function (newValue) {
   this.is_required_from_dom = newValue
@@ -449,7 +467,7 @@ eYo.Tile.prototype.setRequiredFromDom = function (newValue) {
 /**
  * Clean the required status, changing the value if necessary.
  * For edython.
- * @param {boolean} newValue.
+ * @param {boolean} newValue
  */
 eYo.Tile.prototype.whenRequiredFromDom = function (helper) {
   if (this.isRequiredFromDom()) {
@@ -548,7 +566,7 @@ goog.forwardDeclare('eYo.DelegateSvg.List')
  * List all the available data and converts them to xml.
  * For edython.
  * @param {Element} xml the persistent element.
- * @param {boolean} optNoId.
+ * @param {boolean} optNoId
  * @return a dom element, void lists may return nothing
  * @this a block delegate
  */

@@ -197,7 +197,7 @@ class Formatter:
             yield t
 
     def get_expressions(self):
-        for t in (t for t in self if not t.is_stmt):
+        for t in (t for t in self if not t.is_stmt and not t.alias):
             yield t
 
     preamble = """/**
@@ -357,7 +357,7 @@ class Formatter:
     toDom: {},
 }''')
         from_dom = {}
-        Ts = [t for t in self.types if t.is_stmt and t.to_dom and len(t.to_dom) == 1]
+        Ts = [t for t in self.get_statements() if t.to_dom and len(t.to_dom) == 1]
         self.append('eYo.T3.Xml.toDom.Stmt = {{ // count {}'.format(len(Ts)))
         template = "    {}: '{}',"
         for t in Ts:
@@ -368,7 +368,7 @@ class Formatter:
             from_dom[k].append(t)
         self.append('}\n')
 
-        Ts = [t for t in self.types if not t.is_stmt and t.to_dom and len(t.to_dom) == 1]
+        Ts = [t for t in self.get_expressions() if t.to_dom and len(t.to_dom) == 1]
         self.append('eYo.T3.Xml.toDom.Expr = {{ // count {}'.format(len(Ts)))
         template = "    {}: '{}',"
         for t in Ts:
@@ -407,7 +407,6 @@ goog.provide('eYo.T3.Stmt')
 goog.require('eYo')
 
 """)
-        self.append('eYo.T3 = {}\n')
         self.feed_statements()
         self.append('')
         self.feed_statement_previous()
@@ -483,21 +482,21 @@ goog.require('eYo.T3')
             self.append(template.format(t.name))
         self.append(']')
         self.append('''
-eYo.T3.All.containsStatement = function(prototypeName) {
-  return eYo.T3.All.part_statements.indexOf(prototypeName)>=0
-  || eYo.T3.All.simple_statements.indexOf(prototypeName)>=0
-  || eYo.T3.All.compound_statements.indexOf(prototypeName)>=0
+eYo.T3.All.containsStatement = function(type) {
+  return eYo.T3.All.part_statements.indexOf(type)>=0
+  || eYo.T3.All.simple_statements.indexOf(type)>=0
+  || eYo.T3.All.compound_statements.indexOf(type)>=0
 }
 
-eYo.T3.All.containsExpression = function(prototypeName) {
-  return eYo.T3.All.core_expressions.indexOf(prototypeName)>=0
-  || eYo.T3.All.lists.indexOf(prototypeName)>=0
-  || eYo.T3.All.wrappers.indexOf(prototypeName)>=0
+eYo.T3.All.containsExpression = function(type) {
+  return eYo.T3.All.core_expressions.indexOf(type)>=0
+  || eYo.T3.All.lists.indexOf(type)>=0
+  || eYo.T3.All.wrappers.indexOf(type)>=0
 }
 
 eYo.T3.All.contains = function(type) {
-  return eYo.T3.All.containsStatement(prototypeName)
-  || eYo.T3.All.containsExpression(prototypeName)
+  return eYo.T3.All.containsStatement(type)
+  || eYo.T3.All.containsExpression(type)
 }
 
 ''')

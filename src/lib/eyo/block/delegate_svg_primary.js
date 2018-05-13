@@ -13,22 +13,19 @@
 
 goog.provide('eYo.DelegateSvg.Primary')
 
+goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Expr')
-
 
 /**
  * Class for a DelegateSvg, attributeref.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('attributeref', {
   data: {
     attribute: {
       init: '',
-      validate: function(newValue) {
+      validate: /** @suppress {globalThis} */ function(newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type === eYo.T3.Expr.builtin_name || type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name?
         {validated: newValue}: null
@@ -63,22 +60,19 @@ eYo.DelegateSvg.Expr.makeSubclass('attributeref', {
  * Slicing is richer.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('slicing', {
   data: {
     variant: { // data named 'variant' have `xml = false`, by default
       all: [0, 1],
-      synchronize: function(newValue) {
+      synchronize: /** @suppress {globalThis} */ function(newValue) {
         this.ui.tiles.name.setIncog(!!newValue)
         this.ui.tiles.primary.setIncog(!newValue)
       },
     },
     name: {
       init: '',
-      validate: function(newValue) {
+      validate: /** @suppress {globalThis} */ function(newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name?
         {validated: newValue}: null
@@ -142,7 +136,7 @@ eYo.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (blo
     eYo.Do.createSPAN('[…]', 'eyo-code'),
   )
   F(content, 0)
-  var content =
+  content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN(eYo.Msg.Placeholder.EXPRESSION, 'eyo-code-placeholder'),
     eYo.Do.createSPAN('[…]', 'eyo-code'),
@@ -158,9 +152,6 @@ eYo.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (blo
  * we use call_expr instead.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
   data: {
@@ -169,7 +160,7 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
       BUILTIN: 1,
       EXPRESSION: 2,
       all: [0, 1, 2,],
-      synchronize: function(newValue) {
+      synchronize: /** @suppress {globalThis} */ function(newValue) {
         var M = this.model
         var withExpression = newValue === M.EXPRESSION
         this.data.name.setIncog(withExpression)
@@ -184,24 +175,24 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
     },
     name: {
       all: ['range', 'list', 'set', 'len', 'sum'],
-      validate: function(newValue) {
+      validate: /** @suppress {globalThis} */ function(newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type === eYo.T3.Expr.builtin_name || type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name?
         {validated: newValue}: null
       },
-      didChange: function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
         var M = this.data.variant.model
         var variant = this.data.variant.get()
         var builtin = this.getAll().indexOf(newValue) >= 0
         if (variant !== M.EXPRESSION) {
-          var variant = this.data.variant.get() || 0
+          variant = this.data.variant.get() || 0
           this.data.variant.set(builtin? M.BUILTIN: M.NAME)
         }
         if (!builtin) {
           this.data.backup.set(newValue)
         }
       },
-      synchronize: function () {
+      synchronize: /** @suppress {globalThis} */ function () {
         this.synchronize()
         var field = this.field
         var element = this.field && this.field.textElement_
@@ -213,7 +204,7 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
           goog.dom.classlist.add(element, ra[1-i])
         }
       },
-      consolidate: function () {
+      consolidate: /** @suppress {globalThis} */ function () {
         this.didChange(undefined, this.get())
       },
     },
@@ -232,7 +223,7 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
       plugged: eYo.T3.Expr.primary,
       hole_value: 'primary',
       xml: {
-        didLoad: function () {
+        didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
           variant.set(variant.model.EXPRESSION)
         },
@@ -254,7 +245,8 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
  * @param {!Blockly.Block} block The block.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
- */
+ * @suppress {globalThis}
+*/
 eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
   var M = this.data.variant.model
   var variant = this.data.variant.get()
@@ -318,9 +310,6 @@ eYo.DelegateSvg.Expr.call_expr.prototype.populateContextMenuFirst_ = function (b
  * Class for a DelegateSvg, call statement block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('call_stmt', {
   link: eYo.T3.Expr.call_expr,

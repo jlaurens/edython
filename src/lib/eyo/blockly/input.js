@@ -39,9 +39,62 @@ eYo.Input.setupEyO = function () {
       var c8n = input.connection
       if (c8n) {
         c8n.eyo.name_ = input.name // the connection remembers the name of the input such that checking is fine grained.
-      }  
+      }
     }
   }
 } ()
 
 Blockly.Input.prototype.eyo = undefined
+
+/**
+ * Sets whether this input is visible or not.
+ * Used to collapse/uncollapse a block.
+ * Overriden to remve the `style.display` use.
+ * Only the display attribute.
+ * @param {boolean} visible True if visible.
+ * @return {!Array.<!Blockly.Block>} List of blocks to render.
+ * @suppress {accessControls}
+ */
+Blockly.Input.prototype.setVisible = function(visible) {
+  var renderList = [];
+  if (this.visible_ == visible) {
+    return renderList;
+  }
+  this.visible_ = visible;
+
+  for (var y = 0, field; field = this.fieldRow[y]; y++) {
+    field.setVisible(visible);
+  }
+  if (this.connection) {
+    // Has a connection.
+    if (visible) {
+      renderList = this.connection.unhideAll();
+    } else {
+      this.connection.hideAll();
+    }
+    var child = this.connection.targetBlock();
+    if (child) {
+      if (visible) {
+        child.getSvgRoot().removeAttribute('display')
+        if (child.eyo.svgContourGroup_) {
+          child.eyo.svgContourGroup_.removeAttribute('display')
+          child.eyo.svgShapeGroup_.removeAttribute('display')
+        }
+      } else {
+        child.getSvgRoot().setAttribute('display', 'none')
+        if (child.eyo.svgContourGroup_) {
+          child.eyo.svgContourGroup_.setAttribute('display', 'none')
+          child.eyo.svgShapeGroup_.setAttribute('display', 'none')
+        }
+        child.rendered = false;
+      }
+      // JL: Almost original code.
+      // var display = visible ? 'block' : 'none';
+      // child.getSvgRoot().style.display = display;
+      // if (!visible) {
+      //   child.rendered = false;
+      // }
+    }
+  }
+  return renderList;
+};

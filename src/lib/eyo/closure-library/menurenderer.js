@@ -25,7 +25,7 @@ goog.require('goog.ui.MenuRenderer')
  * @extends {goog.ui.ContainerRenderer}
  */
 eYo.MenuRenderer = function (optAriaRole) {
-  goog.ui.MenuRenderer.call(this, optAriaRole)
+  goog.ui.MenuRenderer.call(/** goog.ui.MenuRenderer */this, optAriaRole)
 }
 goog.inherits(eYo.MenuRenderer, goog.ui.MenuRenderer)
 goog.addSingletonGetter(eYo.MenuRenderer)

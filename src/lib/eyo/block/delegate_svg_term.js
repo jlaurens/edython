@@ -13,6 +13,7 @@
 
 goog.provide('eYo.DelegateSvg.Term')
 
+goog.require('eYo.Msg')
 goog.require('eYo.MenuItem')
 goog.require('eYo.FieldInput')
 goog.require('eYo.Style')
@@ -21,9 +22,6 @@ goog.require('eYo.Style')
  * Class for a DelegateSvg, term block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function() {
   var D = {
@@ -31,14 +29,14 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function() {
       modifier: {
         all: ['', '*', '**'],
         noUndo: true,
-        didChange: function(oldValue, newValue) {
+        didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
           this.setIncog(!newValue ||!newValue.length)
         },
         synchronize: true,
       },
       name: {
         init: '',
-        validate: function (newValue) {
+        validate: /** @suppress {globalThis} */ function (newValue) {
           var nameType = eYo.Do.typeOfString(newValue)
           if (nameType) {
             var expected = this.data.variant.model.byNameType[nameType]
@@ -48,7 +46,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function() {
           }
           return null
         },
-        didChange: function(oldValue, newValue) {
+        didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
           var nameType = newValue? eYo.Do.typeOfString(newValue): eYo.T3.Expr.identifier
           this.data.nameType.set(nameType)
         },
@@ -57,7 +55,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function() {
       alias: {
         init: '',
         synchronize: true,
-        validate: function (newValue) {
+        validate: /** @suppress {globalThis} */ function (newValue) {
           var nameType = eYo.Do.typeOfString(newValue)
           return (nameType === eYo.T3.Expr.identifier) && {validated: newValue} || null
         },
@@ -70,7 +68,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function() {
         xml: false,
       },
       variant: {
-        validate: function (newValue) {
+        validate: /** @suppress {globalThis} */ function (newValue) {
           // this may be called very early
           var values = this.getAll()
           if (values.indexOf(newValue) < 0) {
@@ -88,14 +86,14 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function() {
             if (expected) {
               return {validated: expected.indexOf(newValue) < 0? expected[0]: newValue}
             }
-            return {validated: values[0]}   
+            return {validated: values[0]}
           }
           return {validated: newValue}
         },
       },
       phantom: {
         init: '',
-        didChange: function (oldValue, newValue) {
+        didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
           var field = this.ui.tiles.name.fields.edit
           field.placeholderText_ = newValue
           field.render_()
@@ -155,7 +153,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function() {
       },
     },
     output: {
-      didConnect: function(oldTargetConnection, oldConnection) {
+      didConnect: /** @suppress {globalThis} */ function(oldTargetConnection, oldConnection) {
         // `this` is a connection
         var targetC8n = this.targetConnection
         var source = targetC8n.sourceBlock_
@@ -172,7 +170,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function() {
           }
         }
       },
-      didDisconnect: function(oldConnection) {
+      didDisconnect: /** @suppress {globalThis} */ function(oldConnection) {
         // `this` is a connection's delegate
         var block = this.sourceBlock_
         block.eyo.data.phantom.set('')
@@ -202,7 +200,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function() {
     this.data.name.setIncog(newValue === model.STAR)
     this.data.alias.setIncog(newValue !== model.NAME_ALIAS)
   }
-  DD.synchronize = function(newValue) {    
+  DD.synchronize = function(newValue) {
     var model = this.model
     this.ui.tiles.annotation.setIncog(newValue !== model.NAME_ANNOTATION &&
     newValue !== model.STAR_NAME_ANNOTATION &&
@@ -210,7 +208,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function() {
     this.ui.tiles.definition.setIncog(newValue !== model.NAME_DEFINITION &&
     newValue !== model.NAME_ANNOTATION_DEFINITION)
   }
-  DD.consolidate = function() {    
+  DD.consolidate = function() {
     var newVariant = this.get()
     var model = this.model
     var modifier = this.data.modifier.get()
@@ -267,7 +265,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function() {
 /**
  * Some block should not be wrapped.
  * Default implementation returns false
- * @param {!Block} block.
+ * @param {!Block} block
  * @return whether the block should be wrapped
  */
 eYo.DelegateSvg.Expr.term.prototype.noBlockWrapped = function (block) {
@@ -303,7 +301,7 @@ eYo.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
   * attributeref ::= primary "." identifier
   * dotted_name ::= identifier ("." identifier)*
   * parent_module ::= '.'+ [module]
-  * identifier ::= 
+  * identifier ::=
   * parameter_s3d ::= identifier ":" expression
   * defparameter_s3d ::= parameter "=" expression
   * keyword_item ::= identifier "=" expression
@@ -386,7 +384,7 @@ eYo.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
 eYo.DelegateSvg.Expr.term.prototype.makeTitle = function (block, variant) {
   var model = this.data.variant.model
   if (!goog.isDef(variant)) {
-    variant = variantData.get()
+    variant = this.data.variant.get()
   }
   var args = [goog.dom.TagName.SPAN, null]
   switch(variant) {

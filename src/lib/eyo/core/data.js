@@ -23,6 +23,7 @@ goog.provide('eYo.Data')
  * @param {!Object} model contains methods and properties.
  * It is shared by all data controllers belonging to the same kind
  * of owner. Great care should be taken when editing this model.
+ * @constructor
  */
 eYo.Data = function(owner, key, model) {
   goog.asserts.assert(owner, 'Missing owner')
@@ -31,7 +32,7 @@ eYo.Data = function(owner, key, model) {
   this.owner_ = owner // circular reference
   this.ui = owner.ui
   this.data = owner.data
-  this.value_ = undefined
+  this.value_ = /** Object|null */ undefined
   this.key = key
   this.model = model
   this.upperKey = key[0].toUpperCase()+key.slice(1)
@@ -199,11 +200,16 @@ eYo.Data.prototype.validate = function(newValue) {
 
 /**
  * Returns the text representation of the data.
- * @param {Object} newValue
+ * @param {?Object} newValue
  */
-eYo.Data.prototype.toText = function() {
-  if (goog.isFunction(this.model.toText)) {
-    return this.model.toText.call(this, newValue)
+eYo.Data.prototype.toText = function(newValue = undefined) {
+  if (!this.toText_locked && goog.isFunction(this.model.toText)) {
+    this.toText_locked = true
+    try {
+      return this.model.toText.call(this, newValue)
+    } finally {
+      delete this.toText_locked
+    }
   }
   return this.get() || ''
 }
@@ -211,14 +217,15 @@ eYo.Data.prototype.toText = function() {
 /**
  * Set the value from the given text representation.
  * Calls the model, reentrant.
- * @param {Object} newValue
+ * @param {Object} txt
+ * @param {boolean=} dontValidate
  */
 eYo.Data.prototype.fromText = function(txt, dontValidate) {
   if (!this.model_fromText_lock) {
     if (goog.isFunction(this.model.fromText)) {
       this.model_fromText_lock = true
       try {
-        this.model.fromText.call(this, newValue, dontValidate)
+        this.model.fromText.call(this, txt, dontValidate)
       } finally {
         delete this.model_fromText_lock
       }
@@ -427,7 +434,6 @@ eYo.Data.prototype.setIncog = function(newValue) {
 }
 /**
  * Whether the data is incognito.
- * @param {Object} newValue
  */
 eYo.Data.prototype.isIncog = function() {
   return this.incog_
@@ -438,7 +444,6 @@ eYo.Data.prototype.isIncog = function() {
  * Should be overriden by the model.
  * Reentrant management here.
  * Do nothing if the receiver should wait.
- * @param {Object} newValue
  */
 eYo.Data.prototype.consolidate = function() {
   if (this.wait_) {
@@ -459,8 +464,6 @@ eYo.Data.prototype.consolidate = function() {
 
 /**
  * An active data is not explicitely disabled, and does contain text.
- * @param {!number} index  of the input older in the ui object
- * @param {!boolean} newValue.
  * @private
  */
 eYo.Data.prototype.isActive = function () {
@@ -469,10 +472,7 @@ eYo.Data.prototype.isActive = function () {
 
 /**
  * Set the value of the main field given by its key.
- * @param {!Object} newValue.
- * @param {!number} inputIndex  of the input in the model (i_1, i_2...)
- * When false, this corresponds to the fields that are not
- * part of an input, like the modifier field.
+ * @param {!Object} newValue
  * @param {string|null} fieldKey  of the input holder in the ui object
  * @param {boolean} noUndo  true when no undo tracking should be performed.
  * @private
@@ -521,7 +521,7 @@ eYo.Data.prototype.waitOff = function () {
  * has a `false`valued xml property.
  * Saves the data to the given element.
  * For edython.
- * @param {Element} xml the persistent element.
+ * @param {Element} element the persistent element.
  */
 eYo.Data.prototype.save = function(element) {
   if (!this.isIncog()) {
@@ -557,10 +557,7 @@ eYo.Data.prototype.save = function(element) {
 /**
  * Convert the block's data from a dom element.
  * For edython.
- * @param {!Blockly.Block} block The block to be converted.
  * @param {Element} xml the persistent element.
- * @return a dom element, void lists may return nothing
- * @this a block delegate
  */
 eYo.Data.prototype.load = function(element) {
   var xml = this.model.xml
@@ -614,7 +611,6 @@ eYo.Data.prototype.setRequiredFromDom = function (newValue) {
 /**
  * Get the required status.
  * For edython.
- * @param {boolean} newValue.
  */
 eYo.Data.prototype.isRequiredFromDom = function () {
   return this.required_from_dom
@@ -623,7 +619,6 @@ eYo.Data.prototype.isRequiredFromDom = function () {
 /**
  * Clean the required status, changing the value if necessary.
  * For edython.
- * @param {boolean} newValue.
  */
 eYo.Data.prototype.clearRequiredFromDom = function () {
   if (this.isRequiredFromDom()) {
@@ -636,7 +631,7 @@ eYo.Data.prototype.clearRequiredFromDom = function () {
 /**
  * Clean the required status, changing the value if necessary.
  * For edython.
- * @param {boolean} newValue.
+ * @param {function()} helper
  */
 eYo.Data.prototype.whenRequiredFromDom = function (helper) {
   if (this.isRequiredFromDom()) {

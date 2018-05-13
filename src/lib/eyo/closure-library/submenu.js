@@ -45,6 +45,7 @@ goog.tagUnsealableClass(eYo.SubMenu)
  * Sets the visiblility of the sub menu.
  * @param {boolean} visible Whether to show menu.
  * @private
+ * @suppress{accessControls}
  */
 eYo.SubMenu.prototype.setSubMenuVisible_ = function (visible) {
   // Unhighlighting the menuitems if closing the menu so the event handlers can
@@ -85,6 +86,7 @@ eYo.SubMenu.prototype.setSubMenuVisible_ = function (visible) {
 /**
  * Gets a reference to the submenu's actual menu.
  * @return {!goog.ui.Menu} Reference to the object representing the sub menu.
+ * @suppress{accessControls}
  */
 eYo.SubMenu.prototype.getMenu = function () {
   if (!this.subMenu_) {

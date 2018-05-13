@@ -12,12 +12,11 @@
 'use strict'
 
 goog.provide('eYo.DelegateSvg.Lambda')
-
-
 goog.provide('eYo.DelegateSvg.Parameter')
 
 goog.require('eYo.DelegateSvg.List')
 goog.require('eYo.DelegateSvg.Term')
+goog.require('eYo.ConnectionDelegate')
 
 /**
  * List consolidator for parameter list.
@@ -276,10 +275,10 @@ eYo.Consolidator.Parameter.prototype.getCheck = function() {
       out.push(eYo.T3.Expr.defparameter_s3d)
     }
     if (can_star) {
-      out.push(eYo.T3.Expr.parameter_star)      
+      out.push(eYo.T3.Expr.parameter_star)
     }
     if (can_star_star) {
-      out.push(eYo.T3.Expr.parameter_star_star)      
+      out.push(eYo.T3.Expr.parameter_star_star)
     }
     return cache[K] = out
   }
@@ -290,9 +289,6 @@ eYo.Consolidator.Parameter.prototype.getCheck = function() {
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.List.makeSubclass('parameter_list', {
   list: {
@@ -371,9 +367,6 @@ console.warn('Use a modifier field for * and ** (instead of await and async too)
  * method of the connection's delegate.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.makeSubclass('lambda', {
   tiles: {
@@ -390,11 +383,11 @@ eYo.DelegateSvg.Expr.makeSubclass('lambda', {
         label: ':',
       },
       check: eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond),
-      didConnect: function(oldTargetConnection, oldConnectionn) {
+      didConnect: /** @suppress {globalThis} */ function(oldTargetConnection, oldConnectionn) {
         // `this` is a connection
         this.eyo.updateLambdaCheck()
       },
-      didDisconnect: function(oldConnection) {
+      didDisconnect: /** @suppress {globalThis} */ function(oldConnection) {
         // `this` is a connection
         this.eyo.updateLambdaCheck()
       },
@@ -402,10 +395,10 @@ eYo.DelegateSvg.Expr.makeSubclass('lambda', {
   },
   output: {
     check: [eYo.T3.Expr.lambda_expr, eYo.T3.Expr.lambda_expr_nocond],
-    didConnect: function(oldTargetConnection, oldConnection) {
+    didConnect: /** @suppress {globalThis} */ function(oldTargetConnection, oldConnection) {
       this.eyo.consolidateSource()
     },
-    didDisconnect: function(oldConnection) {
+    didDisconnect: /** @suppress {globalThis} */ function(oldConnection) {
       this.eyo.consolidateSource()
     },
   },
@@ -418,7 +411,7 @@ eYo.ConnectionDelegate.prototype.consolidateType = function(block) {
   var nocond_only_out = false
   var targetC8n = c8nOut.targetConnection
   if (targetC8n) {
-    var nocond_only_out = targetC8n.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0
+    nocond_only_out = targetC8n.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0
   }
   var cond_in = true // cond are accepted by default
   var nocond_in = true // nocond not accepted by default

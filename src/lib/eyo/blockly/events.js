@@ -27,6 +27,7 @@ Blockly.Events.Change.prototype.run
 /**
  * Run a change event.
  * @param {boolean} forward True if run forward, false if run backward (undo).
+ * @suppress{accessControls}
  */
 Blockly.Events.Change.prototype.run = function(forward) {
   if (!this.element.startsWith('eyo:')) {
@@ -51,9 +52,6 @@ Blockly.Events.Change.prototype.run = function(forward) {
       } else {
         block.eyo.unlock(block)
       }
-      break;
-    case eYo.Const.Event.awaited:
-      block.eyo.setAwaited(block, value)
       break;
     default:
       var m = XRegExp.exec(this.element, eYo.XRE.event_data)

@@ -63,7 +63,7 @@ goog.inherits(eYo.Delegate, eYo.Helper)
 /**
  * Get the block.
  * For edython.
- * @param {boolean} newValue.
+ * @param {boolean} newValue
  */
 eYo.Delegate.prototype.getBlock = function () {
   return this.block_
@@ -225,7 +225,7 @@ eYo.Delegate.Manager = function () {
       while((link = model.link)) {
         var linkC9r = goog.isFunction(link)? link: me.get(link)
         goog.asserts.assert(linkC9r, 'Not inserted: '+link)
-        var linkModel = linkC9r.eyo.getModel()
+        linkModel = linkC9r.eyo.getModel()
         if (linkModel) {
           model = linkModel
         }
@@ -392,7 +392,7 @@ eYo.Delegate.prototype.consolidateType = function (block) {
 /**
  * execute the given function for head tile of the receiver and its next sibling.
  * For edython.
- * @param {boolean} newValue.
+ * @param {boolean} newValue
  */
 eYo.Delegate.prototype.foreachTile = function (helper) {
   var tile = this.ui.headTile
@@ -406,7 +406,7 @@ eYo.Delegate.prototype.foreachTile = function (helper) {
 /**
  * execute the given function for the head data of the receiver and its next sibling.
  * For edython.
- * @param {boolean} newValue.
+ * @param {boolean} newValue
  */
 eYo.Delegate.prototype.foreachData = function (helper) {
   var data = this.headData
@@ -579,7 +579,7 @@ eYo.Delegate.prototype.deinitBlock = function (block) {
 
 /**
  * Whether the block has a previous statement.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.Delegate.prototype.hasPreviousStatement_ = function (block) {
@@ -590,7 +590,7 @@ eYo.Delegate.prototype.hasPreviousStatement_ = function (block) {
 
 /**
  * Whether the block has a next statement.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.Delegate.prototype.hasNextStatement_ = function (block) {
@@ -599,7 +599,7 @@ eYo.Delegate.prototype.hasNextStatement_ = function (block) {
 
 /**
  * The default implementation does nothing.
- * @param {!Blockly.Block} block.
+ * @param {!Blockly.Block} block
  * @param {boolean} hidden True if connections are hidden.
  */
 eYo.Delegate.prototype.setConnectionsHidden = function (block, hidden) {
@@ -624,7 +624,7 @@ eYo.Delegate.prototype.getVars = function (block) {
 /**
  * Same as Block's getDescendants except that it
  * includes this block in the list only when not sealed.
- * @param {!Blockly.Block} block.
+ * @param {!Blockly.Block} block
  * @return {!Array.<!Blockly.Block>} Flattened array of blocks.
  */
 eYo.Delegate.prototype.getWrappedDescendants = function(block) {
@@ -644,7 +644,7 @@ eYo.Delegate.prototype.getWrappedDescendants = function(block) {
  * The default implementation connects all the blocks from the wrappedInputs_ list.
  * Subclassers will evntually create appropriate new nodes
  * and connect it to any sealed connection.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.Delegate.prototype.completeWrapped_ = function (block) {
@@ -660,7 +660,7 @@ eYo.Delegate.prototype.completeWrapped_ = function (block) {
 /**
  * The default implementation does nothing.
  * Subclassers will override this but won't call it.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.Delegate.prototype.makeBlockWrapped = function (block) {
@@ -669,7 +669,7 @@ eYo.Delegate.prototype.makeBlockWrapped = function (block) {
 /**
  * The default implementation is false.
  * Subclassers will override this but won't call it.
- * @param {!Block} block.
+ * @param {!Block} block
  */
 eYo.Delegate.prototype.canUnwrap = function(block) {
   return false
@@ -678,7 +678,7 @@ eYo.Delegate.prototype.canUnwrap = function(block) {
 /**
  * The default implementation does nothing.
  * Subclassers will override this but won't call it.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.Delegate.prototype.makeBlockUnwrapped = function (block) {
@@ -686,7 +686,7 @@ eYo.Delegate.prototype.makeBlockUnwrapped = function (block) {
 
 /**
  * The wrapped blocks are special.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.Delegate.prototype.makeBlockWrapped_ = function (block) {
@@ -699,7 +699,7 @@ eYo.Delegate.prototype.makeBlockWrapped_ = function (block) {
 /**
  * Some block should not be wrapped.
  * Default implementation returns false
- * @param {!Block} block.
+ * @param {!Block} block
  * @return whether the block should be wrapped
  */
 eYo.Delegate.prototype.noBlockWrapped = function (block) {
@@ -708,7 +708,7 @@ eYo.Delegate.prototype.noBlockWrapped = function (block) {
 
 /**
  * The wrapped blocks are special.
- * @param {!Block} block.
+ * @param {!Block} block
  * @private
  */
 eYo.Delegate.prototype.makeBlockUnwrapped_ = function (block) {
@@ -720,9 +720,9 @@ eYo.Delegate.prototype.makeBlockUnwrapped_ = function (block) {
 
 /**
  * Get the first enclosing unwrapped block.
- * @param {!Block} block.
- * @param {!Input} input.
- * @param {!String} prototypeName.
+ * @param {!Block} block
+ * @param {!Input} input
+ * @param {!String} prototypeName
  * @return yorn whether a change has been made
  * @private
  */
@@ -740,9 +740,9 @@ eYo.Delegate.prototype.getUnwrapped = function (block) {
  * Complete the wrapped block.
  * When created from dom, the connections are established
  * but the nodes were not created sealed.
- * @param {!Block} block.
- * @param {!Input} input.
- * @param {!String} prototypeName.
+ * @param {!Block} block
+ * @param {!Input} input
+ * @param {!String} prototypeName
  * @return yorn whether a change has been made
  * @private
  */
@@ -753,7 +753,7 @@ eYo.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
       goog.asserts.assert(prototypeName, 'Missing wrapping prototype name in block '+block.type)
       goog.asserts.assert(eYo.Delegate.wrappedFireWall, 'ERROR: Maximum value reached in completeWrappedInput_ (circular)')
       --eYo.Delegate.wrappedFireWall
-      var target = eYo.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
+      target = eYo.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
       goog.asserts.assert(target, 'completeWrapped_ failed: '+ prototypeName);
       goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed '+target.type)
       input.connection.connect(target.outputConnection)
@@ -815,7 +815,7 @@ eYo.Delegate.prototype.plugged_ = undefined
  * If the parent's output connection is connected,
  * can connect the block's output connection to it?
  * The connection cannot always establish.
- * @param {!Block} block.
+ * @param {!Block} block
  * @param {!Block} other the block to be replaced
  */
 eYo.Delegate.prototype.canReplaceBlock = function (block, other) {
@@ -834,7 +834,7 @@ eYo.Delegate.prototype.removeInput = function(block, input, opt_quiet) {
   if (input.block === block) {
     if (input.connection && input.connection.isConnected()) {
       input.connection.setShadowDom(null);
-      var block = input.connection.targetBlock();
+      block = input.connection.targetBlock();
       block.unplug();
     }
     input.dispose();
@@ -842,7 +842,7 @@ eYo.Delegate.prototype.removeInput = function(block, input, opt_quiet) {
     return;
   }
   if (!opt_quiet) {
-    goog.asserts.fail('Input "%s" not found.', name);
+    goog.asserts.fail('Inconsistent data.');
   }
 }
 
@@ -1066,21 +1066,10 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
 }
 
 /**
- * Set the disable state.
- * For edython.
- * @param {!bollean} newValue.
- */
-eYo.Delegate.prototype.setIncog = function (newValue) {
-  this.incog = newValue
-  var c8n = this.input && this.input.connection
-  c8n && c8n.eyo.setIncog(newValue)
-  this.synchronize()
-}
-/**
  * Enable/Disable the connections of the block.
  * A disabled block cannot enable its connections.
- * @param {!Block} block.
- * @param {!Boolean} disabled.
+ * @param {!Block} block
+ * @param {!Boolean} disabled
  * @private
  */
 eYo.Delegate.prototype.setIncog = function (block, incog) {

@@ -19,9 +19,6 @@ goog.require('eYo.DelegateSvg.Group')
  * Class for a DelegateSvg, try_part block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Group.makeSubclass('try_part', {
   fields: {
@@ -33,9 +30,6 @@ eYo.DelegateSvg.Group.makeSubclass('try_part', {
  * Class for a DelegateSvg, except_part block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Group.makeSubclass('except_part', {
   data: {
@@ -44,12 +38,12 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       EXCEPT_EXPRESSION: 1,
       EXCEPT_AS: 2,
       all: [0, 1, 2],
-      didChange: function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
         var eyo = this.owner_
         var block = eyo.block_
         eyo.consolidateType(block)
       },
-      synchronize: function(newValue) {
+      synchronize: /** @suppress {globalThis} */ function(newValue) {
         var M = this.model
         this.ui.tiles.expression.setIncog(newValue === M.EXCEPT)
         this.ui.tiles.expression.required = (newValue === M.EXCEPT_EXPRESSION)
@@ -67,7 +61,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       check: eYo.T3.Expr.Check.expression,
       hole_value: 'expression',
       xml: {
-        didLoad: function () {
+        didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
           if (variant.get() === variant.model.EXCEPT) {
             variant.set(variant.model.EXCEPT_EXPRESSION)
@@ -83,7 +77,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       check: eYo.T3.Expr.identifier,
       hole_value: 'name',
       xml: {
-        didLoad: function () {
+        didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
           variant.set(variant.model.EXCEPT_AS)
         },
@@ -150,9 +144,6 @@ eYo.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function 
  * Class for a DelegateSvg, finally_part block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Group.makeSubclass('finally_part', {
   fields: {
@@ -163,9 +154,6 @@ eYo.DelegateSvg.Group.makeSubclass('finally_part', {
 /**
  * Class for a DelegateSvg, raise_stmt.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
   data: {
@@ -174,7 +162,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       RAISE_EXPRESSION: 1,
       RAISE_FROM: 2,
       all: [0, 1, 2],
-      synchronize: function(newValue) {
+      synchronize: /** @suppress {globalThis} */ function(newValue) {
         var M = this.model
         this.ui.tiles.expression.setIncog(newValue === M.RAISE)
         this.ui.tiles.expression.required = (newValue === M.RAISE_EXPRESSION)
@@ -192,7 +180,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       check: eYo.T3.Expr.Check.expression,
       hole_value: 'expression',
       xml: {
-        didLoad: function () {
+        didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
           if (variant.get() === variant.model.RAISE) {
             variant.set(variant.model.RAISE_EXPRESSION)
@@ -208,7 +196,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       check: eYo.T3.Expr.Check.expression,
       hole_value: 'expression',
       xml: {
-        didLoad: function () {
+        didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
           variant.set(variant.model.RAISE_FROM)
         },
@@ -256,15 +244,12 @@ eYo.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (
 /**
  * Class for a DelegateSvg, assert_stmt.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
   data: {
     variant: {
       all: [0, 1],
-      synchronize: function(newValue) {
+      synchronize: /** @suppress {globalThis} */ function(newValue) {
         this.ui.tiles.expression.setIncog(!newValue)
         this.ui.tiles.expression.required = !!newValue
       },
@@ -287,7 +272,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
       check: eYo.T3.Expr.Check.expression,
       hole_value: 'expression',
       xml: {
-        didLoad: function () {
+        didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
           variant.set(1)
         },

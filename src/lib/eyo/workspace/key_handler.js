@@ -92,7 +92,7 @@ eYo.KeyHandler = function() {
    * split('foo', 'o') -> ['f', 'o']
    * split('bar', 'r') -> ['ba', '']
    * split('foo', 'b') -> undefined
-   * @param {string} key 
+   * @param {string} key
    * @param {string} sep
    * @return an array of 2 elements, what is before sep and what is after
    */
@@ -116,12 +116,12 @@ eYo.KeyHandler = function() {
       }
     } else if (k === 'backspace') {
       event.preventDefault()
-      event.stopPropagation()  
+      event.stopPropagation()
       K = undefined
     }
     if (me.updateMenu(K)) {
       event.preventDefault()
-      event.stopPropagation()  
+      event.stopPropagation()
       return true
     }
     return false
@@ -353,7 +353,7 @@ eYo.KeyHandler = function() {
       for (var i = 0, s; (s = current_[i]); i++) {
         Cs = s.components
         var j = 0, c = Cs[j++], d
-        var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
+        content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
           goog.dom.createTextNode(c))
         while ((d = Cs[j++]) != undefined && (c = Cs[j++]) != undefined) {
           content.appendChild(eYo.Do.createSPAN(d, 'eyo-code-emph'))
@@ -371,11 +371,11 @@ eYo.KeyHandler = function() {
         }
       }
       while ((MI = menu_.getChildAt(i+2))) {
-        menu_.removeChild(MI, true)      
+        menu_.removeChild(MI, true)
       }
     } else {
       while ((MI = menu_.getChildAt(1))) {
-        menu_.removeChild(MI, true)      
+        menu_.removeChild(MI, true)
       }
     }
   }
@@ -407,16 +407,16 @@ eYo.KeyHandler = function() {
     }
     i = 0
     while ( i < me.MAX_CHILD_COUNT && (shortcut = current_[i++])) {
-      var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
+      content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
         goog.dom.createTextNode(shortcut.components[0]),
         eYo.Do.createSPAN(shortcut.components[1], 'eyo-code-emph'),
         goog.dom.createTextNode(shortcut.components[2]),
       )
-      var MI = new eYo.MenuItem(content, shortcut)
+      MI = new eYo.MenuItem(content, shortcut)
       menu_.addChild(MI, true)
     }
     return
-  }  
+  }
   me.handleKeyDown_ = function(event) {
     if (menu_.isVisible() || event.metaKey) {
       // let someone else catch that event
@@ -462,7 +462,7 @@ eYo.KeyHandler = function() {
       me.populateMenu(K)
       if (menu_.getChildCount()) {
         event.preventDefault()
-        event.stopPropagation()  
+        event.stopPropagation()
         if (!menu_.inDocument_) {
           menu_.render()
         }
@@ -485,7 +485,7 @@ eYo.KeyHandler = function() {
                 }, 100)// TODO be sure that this 100 is suffisant
               }
             }
-          })    
+          })
         }
         var scaledHeight = eYo.Font.lineHeight() * B.workspace.scale
         var c8n = eYo.SelectedConnection.get()
@@ -503,19 +503,19 @@ eYo.KeyHandler = function() {
           event.preventDefault()
           event.stopPropagation()
           f.call(B.eyo, B)
-        }  
+        }
         switch(k) {
           case 'arrowdown': return F(B.eyo.selectBlockBelow)
           case 'arrowup': return F(B.eyo.selectBlockAbove)
           case 'arrowleft': return F(B.eyo.selectBlockLeft)
           case 'arrowright': return F(B.eyo.selectBlockRight)
-        }  
+        }
       }
     } else {
       var F = function (f) {
         event.preventDefault()
         event.stopPropagation()
-        var block = eYo.DelegateSvg.getBestBlock(workspace, f)
+        var block = eYo.DelegateSvg.getBestBlock(B.workspace, f)
         if (block) {
           block.select()
         }
@@ -578,7 +578,7 @@ var Ks = {
         B.eyo.insertParent(B, eYo.T3.Expr.not_test_s3d)
       }
     }
-  },                                    
+  },
   '±': function(key) {
     var B = Blockly.selected
     if (B) {
@@ -593,7 +593,7 @@ var Ks = {
         B.eyo.insertParent(B, eYo.T3.Expr.u_expr_s3d, '-')
       }
     }
-  },                                    
+  },
   '~': function(key) {
     var B = Blockly.selected
     if (B) {
@@ -677,14 +677,14 @@ for (var i = 0; (K = Ks[i++]); ) {
   });
 }
 Ks = ['is', 'is not', 'in', 'not in']
-for (var i = 0; (K = Ks[i++]); ) {
+for (i = 0; (K = Ks[i++]); ) {
   eYo.KeyHandler.register('… '+K+' …', {
     type: eYo.T3.Expr.object_comparison,
     subtype: K,
   });
 }
 Ks = ['<', '>', '==', '>=', '<=', '!=']
-for (var i = 0; (K = Ks[i++]); ) {
+for (i = 0; (K = Ks[i++]); ) {
   eYo.KeyHandler.register('… '+K+' …', {
     type: eYo.T3.Expr.number_comparison,
     subtype: K,
@@ -745,19 +745,19 @@ Ks = {
   },
   'list(…)': {
     type: eYo.T3.Expr.builtin_call_expr,
-    subtype: 'list',
+    callee: 'list',
   },
   'set(…)': {
     type: eYo.T3.Expr.builtin_call_expr,
-    subtype: 'set',
+    callee: 'set',
   },
   'len(…)': {
     type: eYo.T3.Expr.builtin_call_expr,
-    subtype: 'len',
+    callee: 'len',
   },
   'sum(…)': {
     type: eYo.T3.Expr.builtin_call_expr,
-    subtype: 'sum',
+    callee: 'sum',
   },
   'module as alias': eYo.T3.Expr.module_as_s3d,
   '(…)': eYo.T3.Expr.parenth_form,
@@ -767,22 +767,14 @@ Ks = {
 }
 console.warn('Implement support for `key` in range above')
 console.warn('Problem when there can be both a statement and an expression for the same shortcut')
-var K
 for (K in Ks) {
   eYo.KeyHandler.register(K, Ks[K]);
 }
 
-Ks = ['+=', '-=', '*=', '@=', '/=', '//=', '%=', '**=',]
-for (var i = 0; (K = Ks[i++]); ) {
+Ks = ['+=', '-=', '*=', '@=', '/=', '//=', '%=', '**=','>>=', '<<=', '&=', '^=', '|=',]
+for (i = 0; (K = Ks[i++]); ) {
   eYo.KeyHandler.register('… '+K+' …', {
     type: eYo.T3.Stmt.augmented_assignment_stmt,
-    subtype: K,
-  });
-}
-Ks = ['>>=', '<<=', '&=', '^=', '|=',]
-for (var i = 0; (K = Ks[i++]); ) {
-  eYo.KeyHandler.register('… '+K+' …', {
-    type: eYo.T3.Stmt.augassign_bitwise_stmt,
-    subtype: K,
+    operator: K,
   });
 }

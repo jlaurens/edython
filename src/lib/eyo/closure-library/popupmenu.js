@@ -23,7 +23,7 @@ goog.require('goog.ui.PopupMenu')
  */
 eYo.PopupMenu = function (optDomHelper, optRenderer) {
   goog.ui.PopupMenu.call(this, optDomHelper,
-    optRenderer || eYo.MenuRenderer.getInstance())
+    optRenderer || /** goog.ui.MenuRenderer */ eYo.MenuRenderer.getInstance())
 }
 goog.inherits(eYo.PopupMenu, goog.ui.PopupMenu)
 goog.tagUnsealableClass(eYo.PopupMenu)

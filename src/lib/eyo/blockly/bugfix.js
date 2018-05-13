@@ -1,3 +1,5 @@
+goog.require('Blockly.BlockDragger')
+goog.require('Blockly.BlockSvg.render')
 
 /**
  * Finish a block drag and put the block back on the workspace.
@@ -5,6 +7,7 @@
  * @param {!goog.math.Coordinate} currentDragDeltaXY How far the pointer has
  *     moved from the position at the start of the drag, in pixel units.
  * @package
+ * @suppress {accessControls, duplicate}
  */
 Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
   // Make sure internal state is fresh.
@@ -30,8 +33,11 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
   }
   this.workspace_.setResizesEnabled(true);
 
-  if (this.workspace_.toolbox_) {
-    this.workspace_.toolbox_.removeDeleteStyle();
+  var toolbox = this.workspace_.getToolbox();
+  if (toolbox) {
+    var style = this.draggingBlock_.isDeletable() ? 'blocklyToolboxDelete' :
+        'blocklyToolboxGrab';
+    toolbox.removeStyle(style);
   }
   Blockly.Events.setGroup(false);
 };

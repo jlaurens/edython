@@ -40,7 +40,7 @@ goog.require('eYo.MenuRenderer')
  */
 eYo.Menu = function (optDomHelper, optRenderer) {
   eYo.Menu.superClass_.constructor.call(
-    this, optDomHelper,
+    /** goog.ui.Menu */ this, optDomHelper,
     optRenderer || eYo.MenuRenderer.getInstance())
 }
 goog.inherits(eYo.Menu, goog.ui.Menu)

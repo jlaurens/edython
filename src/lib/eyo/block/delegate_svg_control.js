@@ -12,21 +12,19 @@
 'use strict'
 
 goog.provide('eYo.DelegateSvg.Control')
+goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Stmt')
 
 /**
  * Class for a DelegateSvg, control block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Stmt.makeSubclass('Control', null, eYo.DelegateSvg)
 
 /**
  * Control block path.
- * @param {!Blockly.Block} block.
+ * @param {!Blockly.Block} block
  * @private
  */
 eYo.DelegateSvg.Control.prototype.playPathDef_ = function (block, cursorX) {
@@ -44,7 +42,7 @@ eYo.DelegateSvg.Control.prototype.playPathDef_ = function (block, cursorX) {
 
 /**
  * Control block path.
- * @param {!Blockly.Block} block.
+ * @param {!Blockly.Block} block
  * @private
  */
 eYo.DelegateSvg.Control.prototype.controlPathDef_ = function (block) {
@@ -137,7 +135,7 @@ eYo.DelegateSvg.Control.prototype.disposeInternal = function () {
 
 /**
  * Render one input of value block.
- * @param io.
+ * @param io
  * @private
  */
 eYo.DelegateSvg.Control.prototype.renderDrawInput_ = function (io) {
@@ -146,7 +144,7 @@ eYo.DelegateSvg.Control.prototype.renderDrawInput_ = function (io) {
 /**
  * Render the leading # character for commented statement blocks.
  * Statement subclasses must override it.
- * @param io.
+ * @param io
  * @private
  */
 eYo.DelegateSvg.Control.prototype.renderDrawSharp_ = function (io) {
@@ -156,9 +154,6 @@ eYo.DelegateSvg.Control.prototype.renderDrawSharp_ = function (io) {
  * Class for a DelegateSvg, start_stmt.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Control.makeSubclass('start_stmt', {
   statement: {

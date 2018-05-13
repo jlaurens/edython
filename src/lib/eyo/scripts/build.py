@@ -21,7 +21,7 @@ import errno, glob, http.client, json, os, re, subprocess, threading, urllib
 import importlib.util
 
 def import_module_at(name, fullpath):
-  """Import a module givn its full path, returns the module"""
+  """Import a module given its full path, returns the module"""
   spec = importlib.util.spec_from_file_location(name, fullpath)
   module = importlib.util.module_from_spec(spec)
   spec.loader.exec_module(module)

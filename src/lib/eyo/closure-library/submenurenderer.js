@@ -37,7 +37,7 @@ goog.require('goog.ui.SubMenuRenderer')
  * @final
  */
 eYo.SubMenuRenderer = function () {
-  goog.ui.SubMenuRenderer.call(this)
+  goog.ui.SubMenuRenderer.call(this, undefined)
 }
 goog.inherits(eYo.SubMenuRenderer, goog.ui.SubMenuRenderer)
 goog.addSingletonGetter(eYo.SubMenuRenderer)
@@ -150,6 +150,7 @@ eYo.SubMenuRenderer.prototype.setContent = function (element, content) {
  * @param {goog.ui.Control} control goog.ui.SubMenu whose DOM is to be
  *     initialized as it enters the document.
  * @override
+ * @suppress{accessControls}
  */
 goog.ui.SubMenuRenderer.prototype.initializeDom = function (control) {
   var subMenu = /** @type {goog.ui.SubMenu} */ (control)
@@ -175,6 +176,7 @@ goog.ui.SubMenuRenderer.prototype.initializeDom = function (control) {
  * @param {goog.ui.SubMenu} subMenu SubMenu to render.
  * @param {Element} element Element to decorate.
  * @private
+ * @suppress{accessControls}
  */
 goog.ui.SubMenuRenderer.prototype.addArrow_ = function (subMenu, element) {
   var arrow = subMenu.getDomHelper().createDom(goog.dom.TagName.SPAN)
