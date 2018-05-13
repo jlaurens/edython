@@ -17,6 +17,7 @@ goog.require('eYo.Msg')
 goog.require('eYo.T3')
 goog.require('eYo.DelegateSvg')
 goog.require('eYo.MenuItem')
+goog.require('eYo.Separator')
 
 /**
  * The block that handles the context menu is not always the one

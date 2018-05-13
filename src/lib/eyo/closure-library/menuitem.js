@@ -141,3 +141,21 @@ eYo.MenuItem = function (content, optModel, optDomHelper, optRenderer) {
 }
 goog.inherits(eYo.MenuItem, goog.ui.MenuItem)
 goog.tagUnsealableClass(eYo.MenuItem)
+
+/**
+ * Class representing a separator.  Although it extends {@link goog.ui.Control},
+ * the Separator class doesn't allocate any event handlers, nor does it change
+ * its appearance on mouseover, etc.
+ * @param {goog.ui.MenuSeparatorRenderer=} optRenderer Renderer to render or
+ *    decorate the separator; defaults to {@link ezP.MenuSeparatorRenderer}.
+ * @param {goog.dom.DomHelper=} optDomHelper Optional DOM helper, used for
+ *    document interaction.
+ * @constructor
+ * @extends {goog.ui.Control}
+ */
+eYo.Separator = function (optRenderer, optDomHelper) {
+  eYo.Separator.superClass_.constructor.call(
+    this, optRenderer || eYo.MenuSeparatorRenderer.getInstance(),
+    optDomHelper)
+}
+goog.inherits(eYo.Separator, goog.ui.Separator)

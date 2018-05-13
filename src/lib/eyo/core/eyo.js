@@ -15,8 +15,11 @@
 /**
  * @name eYo
  * @namespace
- **/
+ */
 goog.provide('eYo')
+
+/** @define {string} */
+eYo.BUILD_DATE = ''
 
 /**
  * Setup.
@@ -30,7 +33,7 @@ eYo.setup = (function () {
     i11rs = undefined
   }
   me.register = function (i11r) {
-    goog.asserts.assert(i11rs)
+    goog.asserts.assert(goog.isFunction(i11r))
     i11rs.push(i11r)
   }
   return me

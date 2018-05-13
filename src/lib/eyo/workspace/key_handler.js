@@ -16,6 +16,8 @@ goog.provide('eYo.KeyHandlerMenu')
 
 goog.require('eYo.DelegateSvg')
 goog.require('eYo.PopupMenu')
+goog.require('eYo.MenuItem')
+goog.require('eYo.Separator')
 
 eYo.KeyHandlerMenu = function(opt_domHelper, opt_renderer) {
   eYo.KeyHandlerMenu.superClass_.constructor.call(this, opt_domHelper, opt_renderer)
