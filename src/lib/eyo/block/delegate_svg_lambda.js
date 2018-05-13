@@ -161,7 +161,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (function () {
     if (i >= 0 && i + 2 < io.list.length) {
       io.i = i + 2
       while (this.setupIO(io)) {
-        if (io.eyo.parameter_type_ == Type.star_star) {
+        if (io.eyo.parameter_type_ === Type.star_star) {
           this.disposeAtI(io)
           this.disposeAtI(io)
         } else {
@@ -217,13 +217,13 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (function () {
       // we must move the '*' block at io.last_default + 2
       io.eyo.edited = true
       this.setupIO(io, io.first_star)
-      var c8n = io.c8n
-      var targetC8n = c8n.targetConnection
+      c8n = io.c8n
+      targetC8n = c8n.targetConnection
       c8n.disconnect()
       while (true) {
         this.setupIO(io, io.i - 2)
-        var nextC8n = io.c8n
-        var nextTargetC8n = c8n.targetConnection
+        nextC8n = io.c8n
+        nextTargetC8n = c8n.targetConnection
         nextC8n.disconnect()
         c8n.connect(nextTargetC8n)
         c8n = nextC8n
@@ -246,8 +246,8 @@ eYo.Consolidator.Parameter.prototype.getCheck = (function () {
   var cache = {}
   return function (io) {
     var can_star_star = (io.first_star_star < 0 && io.i + 3 > io.list.length) ||
-    io.first_star_star == io.i
-    var can_star = (io.first_star < 0 && io.min_first_star <= io.i && (io.last_default < 0 || io.i <= io.last_default + 2)) || io.first_star == io.i || io.list.length == 1
+    io.first_star_star === io.i
+    var can_star = (io.first_star < 0 && io.min_first_star <= io.i && (io.last_default < 0 || io.i <= io.last_default + 2)) || io.first_star === io.i || io.list.length === 1
     var can_parameter = io.first_default < 0 || io.i <= io.first_default || io.first_star < 0 || io.i <= io.first_star
     var can_default = io.first_star < 0 || io.i > io.first_star - 3 || (io.last_default < 0 && io.last_default - 2 < io.i)
     var K = 0
@@ -280,7 +280,7 @@ eYo.Consolidator.Parameter.prototype.getCheck = (function () {
     if (can_star_star) {
       out.push(eYo.T3.Expr.parameter_star_star)
     }
-    return cache[K] = out
+    return (cache[K] = out)
   }
 }())
 
@@ -425,7 +425,7 @@ eYo.ConnectionDelegate.prototype.consolidateType = function (block) {
       }
     }
     nocond_in = false
-    for (var i = 0, t; (t = eYo.T3.Expr.Check.expression_nocond[++i]);) {
+    for (i = 0; (t = eYo.T3.Expr.Check.expression_nocond[++i]);) {
       if (targetC8n.check_.indexOf(t) >= 0) {
         nocond_in = true
         break

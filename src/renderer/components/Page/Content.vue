@@ -17,7 +17,7 @@
     name: 'page-content',
     methods: {
       onDrag (size) {
-        window.edY.Vue.getBus().$emit('size-did-change', size)
+        window.eYo.Vue.getBus().$emit('size-did-change', size)
       }
     },
     components: {

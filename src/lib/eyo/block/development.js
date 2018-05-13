@@ -38,7 +38,7 @@ goog.require('eYo.DelegateSvg.Yield')
 
 eYo.Do.arraysMerged = function (/* list of arrays */) {
   var RA = []
-  for (var i = 0, Xs; Xs = arguments[i++];) {
+  for (var i = 0, Xs; (Xs = arguments[i++]);) {
     goog.array.extend(RA, Xs)
   }
   goog.array.removeDuplicates(RA)

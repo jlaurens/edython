@@ -232,7 +232,7 @@ eYo.ConnectionDelegate.prototype.getBlackConnection = function (F) {
       return block.nextConnection
     }
   } else if (this.isNext()) {
-    var otherConnection = function (block) {
+    otherConnection = function (block) {
       return block.previousConnection
     }
   } else {
@@ -481,7 +481,7 @@ eYo.Connection.prototype.checkType_ = function (otherConnection) {
         return false
       } else if (checkB) {
         if (checkA) {
-          for (var i = 0, t; (t = checkB[i++]);) {
+          for (i = 0; (t = checkB[i++]);) {
             if (checkA.indexOf(t) >= 0) {
               return true
             }
@@ -601,8 +601,8 @@ eYo.Connection.prototype.disconnectInternal_ = function (parentBlock,
     var parentC8n = this
     var childC8n = this.targetConnection
   } else {
-    var parentC8n = this.targetConnection
-    var childC8n = this
+    parentC8n = this.targetConnection
+    childC8n = this
   }
   parentC8n.eyo.willDisconnect()
   childC8n.eyo.willDisconnect()
@@ -649,7 +649,7 @@ Blockly.Connection.uniqueConnection_ = function (block, orphanBlock) {
   var e8r = block.eyo.inputEnumerator(block)
   while (e8r.next()) {
     var c8n = e8r.here.connection
-    if (c8n && c8n.type == Blockly.INPUT_VALUE &&
+    if (c8n && c8n.type === Blockly.INPUT_VALUE &&
         orphanBlock.outputConnection.checkType_(c8n)) {
       if (!c8n.isConnected()) {
         return c8n
@@ -765,7 +765,7 @@ Blockly.Connection.singleConnection_ = function (block, orphanBlock) {
   var connection = null
   for (var i = 0; i < block.inputList.length; i++) {
     var thisConnection = block.inputList[i].connection
-    if (thisConnection && thisConnection.type == Blockly.INPUT_VALUE &&
+    if (thisConnection && thisConnection.type === Blockly.INPUT_VALUE &&
         orphanBlock.outputConnection.checkType_(thisConnection)) {
       if (connection) {
         return null // More than one connection.

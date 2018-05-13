@@ -14,13 +14,13 @@ if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 alert('MAIN')
-if (!window.edY) {
-  alert('ERROR: edY is not properly installed, nothing will work as expected.')
-  window.edY = {}
+if (!window.eYo) {
+  alert('ERROR: eYo is not properly installed, nothing will work as expected.')
+  window.eYo = {}
 }
-alert(edY.DelegateSvg)
-alert(edY.Delegate)
-window.edY.Vue = {
+alert(eYo.DelegateSvg)
+alert(eYo.Delegate)
+window.eYo.Vue = {
   getBus: function () {
     return this.bus_ || (this.bus_ = new Vue())
   }

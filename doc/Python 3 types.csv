@@ -1,686 +1,686 @@
-edY.Type.Xpr.Rqrcomparison = [
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.or_expr_,
-    edY.Type.Xpr.call,
-    edY.Type.Xpr.a_expr_,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.and_expr_,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.comparison_,
-    edY.Type.Xpr.xor_expr_,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.m_expr_,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.shift_expr_
+eYo.Type.Xpr.Rqrcomparison = [
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.or_expr_,
+    eYo.Type.Xpr.call,
+    eYo.Type.Xpr.a_expr_,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.and_expr_,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.comparison_,
+    eYo.Type.Xpr.xor_expr_,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.m_expr_,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.shift_expr_
     ]
-edY.Type.Xpr.Rqrcomparison_ = [
+eYo.Type.Xpr.Rqrcomparison_ = [
     
     ]
-edY.Type.Xpr.Rqrand_test = [
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.and_test_,
-    edY.Type.Xpr.not_test_,
-    edY.Type.Xpr.or_expr_,
-    edY.Type.Xpr.call,
-    edY.Type.Xpr.a_expr_,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.and_expr_,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.comparison_,
-    edY.Type.Xpr.xor_expr_,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.m_expr_,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.shift_expr_
+eYo.Type.Xpr.Rqrand_test = [
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.and_test_,
+    eYo.Type.Xpr.not_test_,
+    eYo.Type.Xpr.or_expr_,
+    eYo.Type.Xpr.call,
+    eYo.Type.Xpr.a_expr_,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.and_expr_,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.comparison_,
+    eYo.Type.Xpr.xor_expr_,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.m_expr_,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.shift_expr_
     ]
-edY.Type.Xpr.Rqrand_test_ = [
+eYo.Type.Xpr.Rqrand_test_ = [
     
     ]
-edY.Type.Xpr.Rqrnot_test = [
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.not_test_,
-    edY.Type.Xpr.or_expr_,
-    edY.Type.Xpr.call,
-    edY.Type.Xpr.a_expr_,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.and_expr_,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.comparison_,
-    edY.Type.Xpr.xor_expr_,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.m_expr_,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.shift_expr_
+eYo.Type.Xpr.Rqrnot_test = [
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.not_test_,
+    eYo.Type.Xpr.or_expr_,
+    eYo.Type.Xpr.call,
+    eYo.Type.Xpr.a_expr_,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.and_expr_,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.comparison_,
+    eYo.Type.Xpr.xor_expr_,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.m_expr_,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.shift_expr_
     ]
-edY.Type.Xpr.Rqrnot_test_ = [
+eYo.Type.Xpr.Rqrnot_test_ = [
     
     ]
-edY.Type.Xpr.Rqror_test = [
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.or_test_,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.and_test_,
-    edY.Type.Xpr.not_test_,
-    edY.Type.Xpr.or_expr_,
-    edY.Type.Xpr.call,
-    edY.Type.Xpr.a_expr_,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.and_expr_,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.comparison_,
-    edY.Type.Xpr.xor_expr_,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.m_expr_,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.shift_expr_
+eYo.Type.Xpr.Rqror_test = [
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.or_test_,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.and_test_,
+    eYo.Type.Xpr.not_test_,
+    eYo.Type.Xpr.or_expr_,
+    eYo.Type.Xpr.call,
+    eYo.Type.Xpr.a_expr_,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.and_expr_,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.comparison_,
+    eYo.Type.Xpr.xor_expr_,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.m_expr_,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.shift_expr_
     ]
-edY.Type.Xpr.Rqror_test_ = [
+eYo.Type.Xpr.Rqror_test_ = [
     
     ]
-edY.Type.Xpr.Rqrconditional_expression = [
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.or_test_,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.and_test_,
-    edY.Type.Xpr.not_test_,
-    edY.Type.Xpr.or_expr_,
-    edY.Type.Xpr.call,
-    edY.Type.Xpr.a_expr_,
-    edY.Type.Xpr.conditional_expression_,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.and_expr_,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.comparison_,
-    edY.Type.Xpr.xor_expr_,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.m_expr_,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.shift_expr_
+eYo.Type.Xpr.Rqrconditional_expression = [
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.or_test_,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.and_test_,
+    eYo.Type.Xpr.not_test_,
+    eYo.Type.Xpr.or_expr_,
+    eYo.Type.Xpr.call,
+    eYo.Type.Xpr.a_expr_,
+    eYo.Type.Xpr.conditional_expression_,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.and_expr_,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.comparison_,
+    eYo.Type.Xpr.xor_expr_,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.m_expr_,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.shift_expr_
     ]
-edY.Type.Xpr.Rqrconditional_expression_ = [
+eYo.Type.Xpr.Rqrconditional_expression_ = [
     
     ]
-edY.Type.Xpr.Rqrexpression = [
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.or_test_,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.and_test_,
-    edY.Type.Xpr.not_test_,
-    edY.Type.Xpr.call,
-    edY.Type.Xpr.or_expr_,
-    edY.Type.Xpr.a_expr_,
-    edY.Type.Xpr.conditional_expression_,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.lambda_expr,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.and_expr_,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.comparison_,
-    edY.Type.Xpr.xor_expr_,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.m_expr_,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.shift_expr_
+eYo.Type.Xpr.Rqrexpression = [
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.or_test_,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.and_test_,
+    eYo.Type.Xpr.not_test_,
+    eYo.Type.Xpr.call,
+    eYo.Type.Xpr.or_expr_,
+    eYo.Type.Xpr.a_expr_,
+    eYo.Type.Xpr.conditional_expression_,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.lambda_expr,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.and_expr_,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.comparison_,
+    eYo.Type.Xpr.xor_expr_,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.m_expr_,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.shift_expr_
     ]
-edY.Type.Xpr.Rqrexpression_nocond = [
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.or_test_,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.and_test_,
-    edY.Type.Xpr.not_test_,
-    edY.Type.Xpr.or_expr_,
-    edY.Type.Xpr.call,
-    edY.Type.Xpr.a_expr_,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.and_expr_,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.lambda_expr_nocond,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.comparison_,
-    edY.Type.Xpr.xor_expr_,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.m_expr_,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.shift_expr_
+eYo.Type.Xpr.Rqrexpression_nocond = [
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.or_test_,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.and_test_,
+    eYo.Type.Xpr.not_test_,
+    eYo.Type.Xpr.or_expr_,
+    eYo.Type.Xpr.call,
+    eYo.Type.Xpr.a_expr_,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.and_expr_,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.lambda_expr_nocond,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.comparison_,
+    eYo.Type.Xpr.xor_expr_,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.m_expr_,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.shift_expr_
     ]
-edY.Type.Xpr.Rqrlambda_expr = [
+eYo.Type.Xpr.Rqrlambda_expr = [
     
     ]
-edY.Type.Xpr.Rqrlambda_expr_nocond = [
+eYo.Type.Xpr.Rqrlambda_expr_nocond = [
     
     ]
-edY.Type.Xpr.Rqrexpression_list = [
+eYo.Type.Xpr.Rqrexpression_list = [
     
     ]
-edY.Type.Xpr.Rqrstarred_expression = [
+eYo.Type.Xpr.Rqrstarred_expression = [
     
     ]
-edY.Type.Xpr.Rqrstarred_item = [
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.or_test_,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.and_test_,
-    edY.Type.Xpr.not_test_,
-    edY.Type.Xpr.or_expr_,
-    edY.Type.Xpr.call,
-    edY.Type.Xpr.starred_item_,
-    edY.Type.Xpr.a_expr_,
-    edY.Type.Xpr.conditional_expression_,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.lambda_expr,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.and_expr_,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.comparison_,
-    edY.Type.Xpr.xor_expr_,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.m_expr_,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.shift_expr_
+eYo.Type.Xpr.Rqrstarred_item = [
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.or_test_,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.and_test_,
+    eYo.Type.Xpr.not_test_,
+    eYo.Type.Xpr.or_expr_,
+    eYo.Type.Xpr.call,
+    eYo.Type.Xpr.starred_item_,
+    eYo.Type.Xpr.a_expr_,
+    eYo.Type.Xpr.conditional_expression_,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.lambda_expr,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.and_expr_,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.comparison_,
+    eYo.Type.Xpr.xor_expr_,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.m_expr_,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.shift_expr_
     ]
-edY.Type.Xpr.Rqrstarred_item_ = [
+eYo.Type.Xpr.Rqrstarred_item_ = [
     
     ]
-edY.Type.Xpr.Rqrstarred_list = [
+eYo.Type.Xpr.Rqrstarred_list = [
     
     ]
-edY.Type.Xpr.Rqratom = [
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.identifier
+eYo.Type.Xpr.Rqratom = [
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.identifier
     ]
-edY.Type.Xpr.Rqrenclosure = [
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.yield_atom
+eYo.Type.Xpr.Rqrenclosure = [
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.yield_atom
     ]
-edY.Type.Xpr.Rqridentifier = [
+eYo.Type.Xpr.Rqridentifier = [
     
     ]
-edY.Type.Xpr.Rqrliteral = [
+eYo.Type.Xpr.Rqrliteral = [
     
     ]
-edY.Type.Xpr.Rqrparenth_form = [
+eYo.Type.Xpr.Rqrparenth_form = [
     
     ]
-edY.Type.Xpr.Rqrcomp_for = [
+eYo.Type.Xpr.Rqrcomp_for = [
     
     ]
-edY.Type.Xpr.Rqrcomp_if = [
+eYo.Type.Xpr.Rqrcomp_if = [
     
     ]
-edY.Type.Xpr.Rqrcomp_iter = [
-    edY.Type.Xpr.comp_if,
-    edY.Type.Xpr.comp_for
+eYo.Type.Xpr.Rqrcomp_iter = [
+    eYo.Type.Xpr.comp_if,
+    eYo.Type.Xpr.comp_for
     ]
-edY.Type.Xpr.Rqrcomprehension = [
+eYo.Type.Xpr.Rqrcomprehension = [
     
     ]
-edY.Type.Xpr.Rqrdisplay_slc_ = [
-    edY.Type.Xpr.starred_list,
-    edY.Type.Xpr.comprehension
+eYo.Type.Xpr.Rqrdisplay_slc_ = [
+    eYo.Type.Xpr.starred_list,
+    eYo.Type.Xpr.comprehension
     ]
-edY.Type.Xpr.Rqrlist_display = [
+eYo.Type.Xpr.Rqrlist_display = [
     
     ]
-edY.Type.Xpr.Rqrset_display = [
+eYo.Type.Xpr.Rqrset_display = [
     
     ]
-edY.Type.Xpr.Rqrdict_comprehension = [
+eYo.Type.Xpr.Rqrdict_comprehension = [
     
     ]
-edY.Type.Xpr.Rqrdict_display = [
+eYo.Type.Xpr.Rqrdict_display = [
     
     ]
-edY.Type.Xpr.Rqrdict_display_ = [
-    edY.Type.Xpr.dict_comprehension,
-    edY.Type.Xpr.key_datum_list
+eYo.Type.Xpr.Rqrdict_display_ = [
+    eYo.Type.Xpr.dict_comprehension,
+    eYo.Type.Xpr.key_datum_list
     ]
-edY.Type.Xpr.Rqrkey_datum = [
-    edY.Type.Xpr.key_datum_kvargs,
-    edY.Type.Xpr.key_datum_kv
+eYo.Type.Xpr.Rqrkey_datum = [
+    eYo.Type.Xpr.key_datum_kvargs,
+    eYo.Type.Xpr.key_datum_kv
     ]
-edY.Type.Xpr.Rqrkey_datum_kv = [
+eYo.Type.Xpr.Rqrkey_datum_kv = [
     
     ]
-edY.Type.Xpr.Rqrkey_datum_kvargs = [
+eYo.Type.Xpr.Rqrkey_datum_kvargs = [
     
     ]
-edY.Type.Xpr.Rqrkey_datum_list = [
+eYo.Type.Xpr.Rqrkey_datum_list = [
     
     ]
-edY.Type.Xpr.Rqrgenerator_expression = [
+eYo.Type.Xpr.Rqrgenerator_expression = [
     
     ]
-edY.Type.Xpr.Rqryield_atom = [
+eYo.Type.Xpr.Rqryield_atom = [
     
     ]
-edY.Type.Xpr.Rqryield_expression = [
-    edY.Type.Xpr.yield_expression_list,
-    edY.Type.Xpr.yield_expression_from
+eYo.Type.Xpr.Rqryield_expression = [
+    eYo.Type.Xpr.yield_expression_list,
+    eYo.Type.Xpr.yield_expression_from
     ]
-edY.Type.Xpr.Rqryield_expression_from = [
+eYo.Type.Xpr.Rqryield_expression_from = [
     
     ]
-edY.Type.Xpr.Rqryield_expression_list = [
+eYo.Type.Xpr.Rqryield_expression_list = [
     
     ]
-edY.Type.Xpr.Rqrprimary = [
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.call
+eYo.Type.Xpr.Rqrprimary = [
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.call
     ]
-edY.Type.Xpr.Rqrattributeref = [
+eYo.Type.Xpr.Rqrattributeref = [
     
     ]
-edY.Type.Xpr.Rqrsubscription = [
+eYo.Type.Xpr.Rqrsubscription = [
     
     ]
-edY.Type.Xpr.Rqrlower_bound = [
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.or_test_,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.and_test_,
-    edY.Type.Xpr.not_test_,
-    edY.Type.Xpr.call,
-    edY.Type.Xpr.or_expr_,
-    edY.Type.Xpr.a_expr_,
-    edY.Type.Xpr.conditional_expression_,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.lambda_expr,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.and_expr_,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.comparison_,
-    edY.Type.Xpr.xor_expr_,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.m_expr_,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.shift_expr_
+eYo.Type.Xpr.Rqrlower_bound = [
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.or_test_,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.and_test_,
+    eYo.Type.Xpr.not_test_,
+    eYo.Type.Xpr.call,
+    eYo.Type.Xpr.or_expr_,
+    eYo.Type.Xpr.a_expr_,
+    eYo.Type.Xpr.conditional_expression_,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.lambda_expr,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.and_expr_,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.comparison_,
+    eYo.Type.Xpr.xor_expr_,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.m_expr_,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.shift_expr_
     ]
-edY.Type.Xpr.Rqrproper_slice = [
+eYo.Type.Xpr.Rqrproper_slice = [
     
     ]
-edY.Type.Xpr.Rqrslice_item = [
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.or_test_,
-    edY.Type.Xpr.proper_slice,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.and_test_,
-    edY.Type.Xpr.not_test_,
-    edY.Type.Xpr.call,
-    edY.Type.Xpr.or_expr_,
-    edY.Type.Xpr.a_expr_,
-    edY.Type.Xpr.conditional_expression_,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.lambda_expr,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.and_expr_,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.comparison_,
-    edY.Type.Xpr.xor_expr_,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.m_expr_,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.shift_expr_
+eYo.Type.Xpr.Rqrslice_item = [
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.or_test_,
+    eYo.Type.Xpr.proper_slice,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.and_test_,
+    eYo.Type.Xpr.not_test_,
+    eYo.Type.Xpr.call,
+    eYo.Type.Xpr.or_expr_,
+    eYo.Type.Xpr.a_expr_,
+    eYo.Type.Xpr.conditional_expression_,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.lambda_expr,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.and_expr_,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.comparison_,
+    eYo.Type.Xpr.xor_expr_,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.m_expr_,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.shift_expr_
     ]
-edY.Type.Xpr.Rqrslice_list = [
+eYo.Type.Xpr.Rqrslice_list = [
     
     ]
-edY.Type.Xpr.Rqrslicing = [
+eYo.Type.Xpr.Rqrslicing = [
     
     ]
-edY.Type.Xpr.Rqrstride = [
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.or_test_,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.and_test_,
-    edY.Type.Xpr.not_test_,
-    edY.Type.Xpr.or_expr_,
-    edY.Type.Xpr.call,
-    edY.Type.Xpr.a_expr_,
-    edY.Type.Xpr.conditional_expression_,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.lambda_expr,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.and_expr_,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.comparison_,
-    edY.Type.Xpr.xor_expr_,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.m_expr_,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.shift_expr_
+eYo.Type.Xpr.Rqrstride = [
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.or_test_,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.and_test_,
+    eYo.Type.Xpr.not_test_,
+    eYo.Type.Xpr.or_expr_,
+    eYo.Type.Xpr.call,
+    eYo.Type.Xpr.a_expr_,
+    eYo.Type.Xpr.conditional_expression_,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.lambda_expr,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.and_expr_,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.comparison_,
+    eYo.Type.Xpr.xor_expr_,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.m_expr_,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.shift_expr_
     ]
-edY.Type.Xpr.Rqrupper_bound = [
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.or_test_,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.and_test_,
-    edY.Type.Xpr.not_test_,
-    edY.Type.Xpr.or_expr_,
-    edY.Type.Xpr.call,
-    edY.Type.Xpr.a_expr_,
-    edY.Type.Xpr.conditional_expression_,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.lambda_expr,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.and_expr_,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.comparison_,
-    edY.Type.Xpr.xor_expr_,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.m_expr_,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.shift_expr_
+eYo.Type.Xpr.Rqrupper_bound = [
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.or_test_,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.and_test_,
+    eYo.Type.Xpr.not_test_,
+    eYo.Type.Xpr.or_expr_,
+    eYo.Type.Xpr.call,
+    eYo.Type.Xpr.a_expr_,
+    eYo.Type.Xpr.conditional_expression_,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.lambda_expr,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.and_expr_,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.comparison_,
+    eYo.Type.Xpr.xor_expr_,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.m_expr_,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.shift_expr_
     ]
-edY.Type.Xpr.Rqrargument_list = [
+eYo.Type.Xpr.Rqrargument_list = [
     
     ]
-edY.Type.Xpr.Rqrcall = [
+eYo.Type.Xpr.Rqrcall = [
     
     ]
-edY.Type.Xpr.Rqrkeyword_item = [
+eYo.Type.Xpr.Rqrkeyword_item = [
     
     ]
-edY.Type.Xpr.Rqrkeywords_arguments = [
+eYo.Type.Xpr.Rqrkeywords_arguments = [
     
     ]
-edY.Type.Xpr.Rqrpositional_arguments = [
+eYo.Type.Xpr.Rqrpositional_arguments = [
     
     ]
-edY.Type.Xpr.Rqrstarred_and_keywords = [
+eYo.Type.Xpr.Rqrstarred_and_keywords = [
     
     ]
-edY.Type.Xpr.Rqrawait_expr = [
+eYo.Type.Xpr.Rqrawait_expr = [
     
     ]
-edY.Type.Xpr.Rqrpower = [
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.call
+eYo.Type.Xpr.Rqrpower = [
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.call
     ]
-edY.Type.Xpr.Rqrpower_expr_ = [
+eYo.Type.Xpr.Rqrpower_expr_ = [
     
     ]
-edY.Type.Xpr.Rqru_expr = [
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.call,
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.slicing
+eYo.Type.Xpr.Rqru_expr = [
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.call,
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.slicing
     ]
-edY.Type.Xpr.Rqru_expr_ = [
+eYo.Type.Xpr.Rqru_expr_ = [
     
     ]
-edY.Type.Xpr.Rqra_expr = [
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.call,
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.m_expr_,
-    edY.Type.Xpr.a_expr_,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.slicing
+eYo.Type.Xpr.Rqra_expr = [
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.call,
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.m_expr_,
+    eYo.Type.Xpr.a_expr_,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.slicing
     ]
-edY.Type.Xpr.Rqra_expr_ = [
+eYo.Type.Xpr.Rqra_expr_ = [
     
     ]
-edY.Type.Xpr.Rqrm_expr = [
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.m_expr_,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.call
+eYo.Type.Xpr.Rqrm_expr = [
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.m_expr_,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.call
     ]
-edY.Type.Xpr.Rqrm_expr_ = [
+eYo.Type.Xpr.Rqrm_expr_ = [
     
     ]
-edY.Type.Xpr.Rqrshift_expr = [
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.call,
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.m_expr_,
-    edY.Type.Xpr.a_expr_,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.shift_expr_
+eYo.Type.Xpr.Rqrshift_expr = [
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.call,
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.m_expr_,
+    eYo.Type.Xpr.a_expr_,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.shift_expr_
     ]
-edY.Type.Xpr.Rqrshift_expr_ = [
+eYo.Type.Xpr.Rqrshift_expr_ = [
     
     ]
-edY.Type.Xpr.Rqrand_expr = [
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.and_expr_,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.call,
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.m_expr_,
-    edY.Type.Xpr.a_expr_,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.shift_expr_
+eYo.Type.Xpr.Rqrand_expr = [
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.and_expr_,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.call,
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.m_expr_,
+    eYo.Type.Xpr.a_expr_,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.shift_expr_
     ]
-edY.Type.Xpr.Rqrand_expr_ = [
+eYo.Type.Xpr.Rqrand_expr_ = [
     
     ]
-edY.Type.Xpr.Rqror_expr = [
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.and_expr_,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.xor_expr_,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.or_expr_,
-    edY.Type.Xpr.call,
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.m_expr_,
-    edY.Type.Xpr.a_expr_,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.shift_expr_
+eYo.Type.Xpr.Rqror_expr = [
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.and_expr_,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.xor_expr_,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.or_expr_,
+    eYo.Type.Xpr.call,
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.m_expr_,
+    eYo.Type.Xpr.a_expr_,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.shift_expr_
     ]
-edY.Type.Xpr.Rqror_expr_ = [
+eYo.Type.Xpr.Rqror_expr_ = [
     
     ]
-edY.Type.Xpr.Rqrxor_expr = [
-    edY.Type.Xpr.power_expr_,
-    edY.Type.Xpr.list_display,
-    edY.Type.Xpr.set_display,
-    edY.Type.Xpr.and_expr_,
-    edY.Type.Xpr.attributeref,
-    edY.Type.Xpr.parenth_form,
-    edY.Type.Xpr.subscription,
-    edY.Type.Xpr.literal,
-    edY.Type.Xpr.yield_atom,
-    edY.Type.Xpr.generator_expression,
-    edY.Type.Xpr.xor_expr_,
-    edY.Type.Xpr.u_expr_,
-    edY.Type.Xpr.call,
-    edY.Type.Xpr.dict_display,
-    edY.Type.Xpr.m_expr_,
-    edY.Type.Xpr.a_expr_,
-    edY.Type.Xpr.identifier,
-    edY.Type.Xpr.await_expr,
-    edY.Type.Xpr.slicing,
-    edY.Type.Xpr.shift_expr_
+eYo.Type.Xpr.Rqrxor_expr = [
+    eYo.Type.Xpr.power_expr_,
+    eYo.Type.Xpr.list_display,
+    eYo.Type.Xpr.set_display,
+    eYo.Type.Xpr.and_expr_,
+    eYo.Type.Xpr.attributeref,
+    eYo.Type.Xpr.parenth_form,
+    eYo.Type.Xpr.subscription,
+    eYo.Type.Xpr.literal,
+    eYo.Type.Xpr.yield_atom,
+    eYo.Type.Xpr.generator_expression,
+    eYo.Type.Xpr.xor_expr_,
+    eYo.Type.Xpr.u_expr_,
+    eYo.Type.Xpr.call,
+    eYo.Type.Xpr.dict_display,
+    eYo.Type.Xpr.m_expr_,
+    eYo.Type.Xpr.a_expr_,
+    eYo.Type.Xpr.identifier,
+    eYo.Type.Xpr.await_expr,
+    eYo.Type.Xpr.slicing,
+    eYo.Type.Xpr.shift_expr_
     ]
-edY.Type.Xpr.Rqrxor_expr_ = [
+eYo.Type.Xpr.Rqrxor_expr_ = [
     
     ]

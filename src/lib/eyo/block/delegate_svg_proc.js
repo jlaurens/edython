@@ -52,7 +52,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.decorator, {
       validate: /** @suppress {globalThis} */ function (newValue) {
         var subtypes = this.getAll()
         var subtype = eYo.Do.typeOfString(newValue)
-        return (subtypes.indexOf(subtype) >= 0) && {validated: newValue} || null
+        return ((subtypes.indexOf(subtype) >= 0) && {validated: newValue}) || null
       },
       synchronize: true
     }
@@ -154,9 +154,9 @@ eYo.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (b
   var properties = this.data.property.getAll()
   var j_p = properties.indexOf(property)
   var F = function (content, variant, i, j) {
-    if (current != variant ||
-      goog.isDefAndNotNull(i) && i != i_b ||
-      goog.isDefAndNotNull(j) && j != j_p) {
+    if (current !== variant ||
+      (goog.isDefAndNotNull(i) && i !== i_b) ||
+      (goog.isDefAndNotNull(j) && j !== j_p)) {
       var menuItem = new eYo.MenuItem(content, function () {
         if (goog.isDef(i)) {
           block.eyo.data.builtin.set(i)

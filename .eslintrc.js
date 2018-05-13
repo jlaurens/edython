@@ -13,7 +13,8 @@ module.exports = {
     __static: true,
     goog: true,
     Blockly: true,
-    edY: true
+    eYo: true,
+    XRegExp: true,
   },
   plugins: [
     'html'
@@ -25,6 +26,7 @@ module.exports = {
     // allow async-await
     'generator-star-spacing': 0,
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+    'camelcase': 'off',
   }
 }

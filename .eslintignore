@@ -6,3 +6,5 @@ src/lib/closure-library/**
 src/lib/closure-library/**
 src/lib/xregexp/**
 src/lib/xregexp-all/**
+src/lib/T3/**
+src/lib/externs/

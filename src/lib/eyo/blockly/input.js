@@ -57,12 +57,12 @@ Blockly.Input.prototype.eyo = undefined
  */
 Blockly.Input.prototype.setVisible = function (visible) {
   var renderList = []
-  if (this.visible_ == visible) {
+  if (this.visible_ === visible) {
     return renderList
   }
   this.visible_ = visible
 
-  for (var y = 0, field; field = this.fieldRow[y]; y++) {
+  for (var y = 0, field; (field = this.fieldRow[y]); y++) {
     field.setVisible(visible)
   }
   if (this.connection) {

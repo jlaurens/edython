@@ -229,7 +229,7 @@ class Formatter:
         Feed the T3_data_ with expression types.
         :return:
         """
-        template = '  {:<25} /*   ::= {:<50} ({}) */ : "eyo:{}",'
+        template = '  {:<25} : /*   ::= {:<50} ({}) */ "eyo:{}",'
         self.append('eYo.T3.Expr = {')
         self.append('// core expressions')
         for t in self.get_expressions():
@@ -250,7 +250,7 @@ class Formatter:
         self.append('}')
 
     def feed_statements(self):
-        template = '  {:<25} /*   ::= {:<50} ({}) */ : "eyo:{}",'
+        template = '  {:<25}: /*   ::= {:<50} ({}) */ "eyo:{}",'
         self.append('eYo.T3.Stmt = {')
         self.append('// part statements')
         for t in self.get_statements():
@@ -400,11 +400,11 @@ class Formatter:
  * @namespace
  **/
 
+goog.require('eYo')
+
 goog.provide('eYo.T3')
 goog.provide('eYo.T3.Expr')
 goog.provide('eYo.T3.Stmt')
-
-goog.require('eYo')
 
 """)
         self.feed_statements()

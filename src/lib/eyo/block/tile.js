@@ -218,7 +218,7 @@ eYo.Tile.makeFields = (function () {
         return
       }
       field.eyo.model = model
-      if (!(field.eyo.css_class = model.css_class || model.css && 'eyo-code-' + model.css)) {
+      if (!(field.eyo.css_class = model.css_class || (model.css && 'eyo-code-' + model.css))) {
         field.eyo.css_class = eYo.Do.cssClassForText(field.getValue())
       }
       field.eyo.css_style = model.css_style
@@ -249,8 +249,8 @@ eYo.Tile.makeFields = (function () {
     var unordered = []
     var fromStart = [] // fields ordered from the beginning
     var toEnd = [] // // fields ordered to the end
-    for (var key in ui.fields) {
-      var field = ui.fields[key]
+    for (key in ui.fields) {
+      field = ui.fields[key]
       var order = field.eyo.order
       if (order) {
         goog.asserts.assert(!byOrder[order],
@@ -265,7 +265,7 @@ eYo.Tile.makeFields = (function () {
           }
           fromStart.splice(i, 0, field)
         } else if (order < 0) {
-          for (var i = 0; i < toEnd.length; i++) {
+          for (i = 0; i < toEnd.length; i++) {
             if (toEnd[i].eyo.order < order) {
               break
             }
@@ -450,7 +450,7 @@ eYo.Tile.prototype.isRequiredToDom = function () {
  * @param {boolean} newValue
  */
 eYo.Tile.prototype.isRequiredFromDom = function () {
-  return this.is_required_from_dom || !this.incog && this.model.xml && this.model.xml.required
+  return this.is_required_from_dom || (!this.incog && this.model.xml && this.model.xml.required)
 }
 
 /**
@@ -507,7 +507,7 @@ eYo.Tile.prototype.waitOn = function () {
  */
 eYo.Tile.prototype.waitOff = function () {
   goog.asserts.assert(this.wait > 0, eYo.Do.format('Too  many `waitOn` {0}/{1}', this.key, this.owner.block_.type))
-  if (--this.wait == 0) {
+  if (--this.wait === 0) {
     this.consolidate()
   }
 }
@@ -545,7 +545,7 @@ eYo.Tile.prototype.synchronize = function () {
     if (c8n) {
       var target = c8n.targetBlock()
       if (target) {
-        var root = target.getSvgRoot()
+        root = target.getSvgRoot()
         if (root) {
           root.removeAttribute('display')
         } else {
@@ -608,7 +608,7 @@ eYo.Tile.prototype.save = function (element, optNoId) {
             return eYo.Xml.toDom(target, element, optNoId)
           }
         } else {
-          var child = eYo.Xml.blockToDom(target, optNoId)
+          child = eYo.Xml.blockToDom(target, optNoId)
           if (child.childNodes.length > 0 || child.hasAttributes()) {
             if (!xml || !xml.noInputName) {
               if (this.inputType === Blockly.INPUT_VALUE) {
@@ -674,7 +674,7 @@ eYo.Tile.prototype.load = function (element) {
           if (this.inputType === Blockly.INPUT_VALUE) {
             var attribute = child.getAttribute(eYo.Xml.INPUT)
           } else if (this.inputType === Blockly.NEXT_STATEMENT) {
-            var attribute = child.getAttribute(eYo.Xml.FLOW)
+            attribute = child.getAttribute(eYo.Xml.FLOW)
           }
         }
         if (attribute === this.key) {
@@ -683,7 +683,8 @@ eYo.Tile.prototype.load = function (element) {
             out = true
           } else if (target) {
             if (target.eyo instanceof eYo.DelegateSvg.List) {
-              for (var i = 0, grandChild; (grandChild = child.childNodes[i++]);) {
+              var grandChild
+              for (i = 0; (grandChild = child.childNodes[i++]);) {
                 if (goog.isFunction(grandChild.getAttribute)) {
                   var name = grandChild.getAttribute(eYo.XmlKey.INPUT)
                   var input = target.eyo.getInput(target, name)

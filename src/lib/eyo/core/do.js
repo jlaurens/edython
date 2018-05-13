@@ -77,7 +77,10 @@ eYo.Do.Name = (function () {
   me.getDelta = function (lhs, rhs) {
     // turn rhs and lhs into an array
     // of char codes relative to min
-    var L = [], R = [], l, r, i = 0
+    var L = []
+    var R = []
+    var l, r
+    var i = 0
     while (true) {
       l = lhs.charCodeAt(i)
       r = rhs.charCodeAt(i)
@@ -104,7 +107,7 @@ eYo.Do.Name = (function () {
     // where BASE ::= MAX - MIN
     // find the difference R - L
     var delta = []
-    i = L.length // == R.length
+    i = L.length // === R.length
     var carry = 0
     var different = false
     while (i--) {
@@ -118,7 +121,7 @@ eYo.Do.Name = (function () {
       } else if (r > l) {
         different = true
         delta.unshift(r - l)
-      } else if (r == l) {
+      } else if (r === l) {
         delta.unshift(r - l)
       } else /* if (r < l) */{
         different = true
@@ -202,7 +205,8 @@ eYo.Do.Name = (function () {
    * undefined if one of lhs or rhs does not have the proper format
    */
   me.getOrder = function (lhs, rhs) {
-    var l, r, i = 0
+    var l, r
+    var i = 0
     while (true) {
       l = lhs.charCodeAt(i)
       r = rhs.charCodeAt(i)
@@ -361,7 +365,8 @@ eYo.Do.typeOfString = function (candidate) {
   }
   var components = candidate.split('.')
   if (components.length > 1) {
-    var dotted_name = true, first
+    var dotted_name = true
+    var first
     // skip the void components
     for (var i = 0; i < components.length;) {
       var c = components[i]
@@ -372,7 +377,7 @@ eYo.Do.typeOfString = function (candidate) {
       i++
     }
     for (; i < components.length; i++) {
-      var c = components[i]
+      c = components[i]
       if (!eYo.XRE.identifier.exec(c)) {
         dotted_name = false
         break
@@ -425,7 +430,8 @@ eYo.Do.cssClassForText = function (txt) {
  * @return {Object} an enumerator
  */
 eYo.Do.Enumerator = function (list, filter) {
-  var i = 0, me = {here: undefined}
+  var i = 0
+  var me = {here: undefined}
   me.start = function () {
     i = 0
     me.here = undefined

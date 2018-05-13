@@ -172,7 +172,7 @@ eYo.Consolidator.Arguments.prototype.getCheck = (function () {
   var cache = {}
   return function (io) {
     var can_positional, can_keyword, can_comprehension
-    if (io.unique >= 0 || io.list.length === 1 || io.list.length === 3 && io.i === 1) {
+    if (io.unique >= 0 || io.list.length === 1 || (io.list.length === 3 && io.i === 1)) {
       can_positional = can_keyword = can_comprehension = true
     } else {
       can_comprehension = false
@@ -209,7 +209,7 @@ eYo.Consolidator.Arguments.prototype.getCheck = (function () {
     if (can_comprehension) {
       out.push(eYo.T3.Expr.comprehension)
     }
-    return cache[K] = out
+    return (cache[K] = out)
   }
 }())
 

@@ -83,10 +83,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         //   case 2: disabled_2 = disabled_4 = false; break
         // }
         var model = this.model
-        this.ui.tiles.import_module.setIncog(newValue != model.IMPORT)
-        this.data.from.setIncog(newValue == model.IMPORT)
-        this.ui.tiles.import.setIncog(newValue != model.FROM_MODULE_IMPORT)
-        this.ui.tiles.import_star.setIncog(newValue != model.FROM_MODULE_IMPORT_STAR)
+        this.ui.tiles.import_module.setIncog(newValue !== model.IMPORT)
+        this.data.from.setIncog(newValue === model.IMPORT)
+        this.ui.tiles.import.setIncog(newValue !== model.FROM_MODULE_IMPORT)
+        this.ui.tiles.import_star.setIncog(newValue !== model.FROM_MODULE_IMPORT_STAR)
       }
     },
     from: {
@@ -94,7 +94,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         var type = eYo.Do.typeOfString(newValue)
         var variant = this.data.variant.get()
         var model = this.data.variant.model
-        return type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name || variant === model.FROM_MODULE_IMPORT && (type === eYo.T3.Expr.parent_module)
+        return type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name || (variant === model.FROM_MODULE_IMPORT && (type === eYo.T3.Expr.parent_module))
           ? {validated: newValue} : null
       },
       synchronize: true

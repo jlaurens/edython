@@ -91,10 +91,8 @@ eYo.Block.prototype.setConnectionsHidden = function (hidden) {
  */
 eYo.Block.prototype.getVars = function () {
   var vars = []
-  var i = 0, input
-  for (; (input = this.inputList[i]); i++) {
-    var j = 0, field
-    for (; (field = input.fieldRow[j]); j++) {
+  for (var i = 0, input; (input = this.inputList[i]); i++) {
+    for (var j = 0, field; (field = input.fieldRow[j]); j++) {
       if (field instanceof eYo.FieldInput) {
         vars.push(field.getText())
       }
@@ -110,10 +108,8 @@ eYo.Block.prototype.getVars = function () {
  * @param {string} newName Renamed variable.
  */
 eYo.Block.prototype.renameVar = function (oldName, newName) {
-  var i = 0, input
-  for (; (input = this.inputList[i]); i++) {
-    var j = 0, field
-    for (; (field = input.fieldRow[j]); j++) {
+  for (var i = 0, input; (input = this.inputList[i]); i++) {
+    for (var j = 0, field; (field = input.fieldRow[j]); j++) {
       if (field instanceof eYo.FieldInput &&
           Blockly.Names.equals(oldName, field.getText())) {
         field.setText(newName)
@@ -129,10 +125,8 @@ eYo.Block.prototype.renameVar = function (oldName, newName) {
  * @param {string} newVarId Replacement variable.
  */
 eYo.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
-  var i = 0, input
-  for (; (input = this.inputList[i]); i++) {
-    var j = 0, field
-    for (; (field = input.fieldRow[j]); j++) {
+  for (var i = 0, input; (input = this.inputList[i]); i++) {
+    for (var j = 0, field; (field = input.fieldRow[j]); j++) {
       if (field instanceof eYo.FieldInput &&
           Blockly.Names.equals(oldVarId, field.getValue())) {
         field.setValue(newVarId)

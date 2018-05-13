@@ -1,4 +1,4 @@
-    #edy-main .split {
+    #eyo-main .split {
       -webkit-box-sizing: border-box;
       -moz-box-sizing: border-box;
       box-sizing: border-box;
@@ -6,29 +6,29 @@
       overflow-x: hidden;
     }
 
-    #edy-main .gutter {
+    #eyo-main .gutter {
       background-color: rgb(240, 240, 240);
       background-repeat: no-repeat;
       background-position: 50%;
     }
 
-    #edy-main .gutter.gutter-horizontal {
+    #eyo-main .gutter.gutter-horizontal {
       background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
       cursor: ew-resize;
     }
 
-    #edy-main .gutter.gutter-vertical {
+    #eyo-main .gutter.gutter-vertical {
       background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=');
       cursor: ns-resize;
     }
 
-    #edy-main .split.split-horizontal,
+    #eyo-main .split.split-horizontal,
     .gutter.gutter-horizontal {
       height: 100%;
       float: left;
     }
 
-    #edy-main.container {
+    #eyo-main.container {
       width: 100%;
       max-width: 100%;
       padding: 0;

@@ -54,43 +54,43 @@ Mar 19 déc 2017 18:35:31 UTC
      styles.css  10.3 kB       0  renderer
       [18] ./node_modules/vue/dist/vue.esm.js 287 kB {0} [built]
       [60] ./src/renderer/main.js 2.79 kB {0} [built]
-     [177] ./src/lib/edy/blockly/xml.js 9.78 kB {0} [built]
-     [195] ./src/lib/edy/blockly/edy/blocks-val.js 3.57 kB {0} [built]
-     [196] ./src/lib/edy/blockly/edy/blocks-stt.js 2.55 kB {0} [built]
-     [197] ./src/lib/edy/blockly/edy/blocks-grp.js 3.37 kB {0} [built]
-     [198] ./src/lib/edy/blockly/edy/blocks-ctl.js 544 bytes {0} [built]
-     [199] ./src/lib/edy/blockly/edy/blocks-prc.js 1.61 kB {0} [built]
-     [200] ./src/lib/edy/blockly/edy/blocks-xtd.js 920 bytes {0} [built]
-     [201] ./src/lib/edy/blockly/rendered_connection.js 3.58 kB {0} [built]
-     [202] ./src/lib/edy/blockly/python/val.js 2.81 kB {0} [built]
-     [203] ./src/lib/edy/blockly/python/stt.js 1.22 kB {0} [built]
-     [204] ./src/lib/edy/blockly/python/grp.js 2.5 kB {0} [built]
-     [205] ./src/lib/edy/blockly/python/prc.js 1.04 kB {0} [built]
-     [206] ./src/lib/edy/blockly/python/ctl.js 161 bytes {0} [built]
+     [177] ./src/lib/eyo/blockly/xml.js 9.78 kB {0} [built]
+     [195] ./src/lib/eyo/blockly/eyo/blocks-val.js 3.57 kB {0} [built]
+     [196] ./src/lib/eyo/blockly/eyo/blocks-stt.js 2.55 kB {0} [built]
+     [197] ./src/lib/eyo/blockly/eyo/blocks-grp.js 3.37 kB {0} [built]
+     [198] ./src/lib/eyo/blockly/eyo/blocks-ctl.js 544 bytes {0} [built]
+     [199] ./src/lib/eyo/blockly/eyo/blocks-prc.js 1.61 kB {0} [built]
+     [200] ./src/lib/eyo/blockly/eyo/blocks-xtd.js 920 bytes {0} [built]
+     [201] ./src/lib/eyo/blockly/rendered_connection.js 3.58 kB {0} [built]
+     [202] ./src/lib/eyo/blockly/python/val.js 2.81 kB {0} [built]
+     [203] ./src/lib/eyo/blockly/python/stt.js 1.22 kB {0} [built]
+     [204] ./src/lib/eyo/blockly/python/grp.js 2.5 kB {0} [built]
+     [205] ./src/lib/eyo/blockly/python/prc.js 1.04 kB {0} [built]
+     [206] ./src/lib/eyo/blockly/python/ctl.js 161 bytes {0} [built]
         + 209 hidden modules
     
-    ERROR in ./node_modules/css-loader!./node_modules/extract-text-webpack-plugin/dist/loader.js?{"omit":1,"remove":true}!./node_modules/style-loader!./node_modules/css-loader!./src/lib/edy/css/edy.css
+    ERROR in ./node_modules/css-loader!./node_modules/extract-text-webpack-plugin/dist/loader.js?{"omit":1,"remove":true}!./node_modules/style-loader!./node_modules/css-loader!./src/lib/eyo/css/eyo.css
     Module build failed: Unknown word (1:1)
     
     > 1 | // removed by extract-text-webpack-plugin
         | ^
     
-     @ ./node_modules/css-loader!./node_modules/extract-text-webpack-plugin/dist/loader.js?{"omit":1,"remove":true}!./node_modules/style-loader!./node_modules/css-loader!./src/lib/edy/css/edy.css
-     @ ./src/lib/edy/css/edy.css
+     @ ./node_modules/css-loader!./node_modules/extract-text-webpack-plugin/dist/loader.js?{"omit":1,"remove":true}!./node_modules/style-loader!./node_modules/css-loader!./src/lib/eyo/css/eyo.css
+     @ ./src/lib/eyo/css/eyo.css
      @ ./src/renderer/main.js
     
-    ERROR in ./node_modules/css-loader!./node_modules/extract-text-webpack-plugin/dist/loader.js?{"omit":1,"remove":true}!./node_modules/style-loader!./node_modules/css-loader!./src/lib/edy/css/edy.css
+    ERROR in ./node_modules/css-loader!./node_modules/extract-text-webpack-plugin/dist/loader.js?{"omit":1,"remove":true}!./node_modules/style-loader!./node_modules/css-loader!./src/lib/eyo/css/eyo.css
     Module build failed: Unknown word (5:1)
     
       3 | // load the styles
-      4 | var content = require("!!../../../../node_modules/css-loader/index.js!./edy.css");
+      4 | var content = require("!!../../../../node_modules/css-loader/index.js!./eyo.css");
     > 5 | if(typeof content === 'string') content = [[module.id, content, '']];
         | ^
       6 | // Prepare cssTransformation
       7 | var transform;
       8 | 
     
-     @ ./src/lib/edy/css/edy.css 4:14-251 18:2-22:4 19:20-257
+     @ ./src/lib/eyo/css/eyo.css 4:14-251 18:2-22:4 19:20-257
      @ ./src/renderer/main.js
     
     ERROR in ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/renderer/components/Page/Content/Blockly.vue
@@ -150,13 +150,13 @@ Mar 19 déc 2017 18:35:31 UTC
     Child extract-text-webpack-plugin node_modules/extract-text-webpack-plugin/dist node_modules/css-loader/index.js?minimize!node_modules/vue-loader/lib/style-compiler/index.js?{"vue":true,"id":"data-v-18deffe0","scoped":false,"hasInlineConfig":false}!node_modules/vue-loader/lib/selector.js?type=styles&index=0!src/renderer/components/Page/Content/Blockly/Workspace.vue:
            [0] ./node_modules/css-loader?minimize!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-18deffe0","scoped":false,"hasInlineConfig":false}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/renderer/components/Page/Content/Blockly/Workspace.vue 268 bytes {0} [built]
            [1] ./node_modules/css-loader/lib/css-base.js 2.26 kB {0} [built]
-    Child extract-text-webpack-plugin node_modules/extract-text-webpack-plugin/dist node_modules/css-loader/index.js!node_modules/extract-text-webpack-plugin/dist/loader.js??ref--8-0!node_modules/style-loader/index.js!node_modules/css-loader/index.js!src/lib/edy/css/edy.css:
-           [0] ./node_modules/css-loader!./node_modules/extract-text-webpack-plugin/dist/loader.js?{"omit":1,"remove":true}!./node_modules/style-loader!./node_modules/css-loader!./src/lib/edy/css/edy.css 172 bytes {0} [built]
+    Child extract-text-webpack-plugin node_modules/extract-text-webpack-plugin/dist node_modules/css-loader/index.js!node_modules/extract-text-webpack-plugin/dist/loader.js??ref--8-0!node_modules/style-loader/index.js!node_modules/css-loader/index.js!src/lib/eyo/css/eyo.css:
+           [0] ./node_modules/css-loader!./node_modules/extract-text-webpack-plugin/dist/loader.js?{"omit":1,"remove":true}!./node_modules/style-loader!./node_modules/css-loader!./src/lib/eyo/css/eyo.css 172 bytes {0} [built]
            [1] ./node_modules/css-loader/lib/css-base.js 2.26 kB {0} [built]
-    Child extract-text-webpack-plugin node_modules/extract-text-webpack-plugin/dist node_modules/css-loader/index.js!src/lib/edy/css/edy.css:
-           [0] ./node_modules/css-loader!./src/lib/edy/css/edy.css 4.86 kB {0} [built]
+    Child extract-text-webpack-plugin node_modules/extract-text-webpack-plugin/dist node_modules/css-loader/index.js!src/lib/eyo/css/eyo.css:
+           [0] ./node_modules/css-loader!./src/lib/eyo/css/eyo.css 4.86 kB {0} [built]
            [1] ./node_modules/css-loader/lib/css-base.js 2.26 kB {0} [built]
-           [2] ./src/lib/edy/img/close.png 4.88 kB {0} [built]
+           [2] ./src/lib/eyo/img/close.png 4.88 kB {0} [built]
 
 
 npm ERR! code ELIFECYCLE

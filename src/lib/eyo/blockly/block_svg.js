@@ -58,7 +58,7 @@ console.warn('++skipRendering, --skipRendering')
 eYo.BlockSvg.prototype.initSvg = function () {
   this.eyo.preInitSvg(this)
   goog.asserts.assert(this.workspace.rendered, 'Workspace is headless.')
-  for (var i = 0, input; input = this.inputList[i]; i++) {
+  for (var i = 0, input; (input = this.inputList[i]); i++) {
     input.init()
   }
 
@@ -123,7 +123,7 @@ eYo.BlockSvg.prototype.select = function () {
     this.getSurroundParent().select()
     return
   }
-  var more = this.eyo.selectedConnection || this.eyo.selectedConnectionSource_ && this.eyo.selectedConnectionSource_.eyo.selectedConnection
+  var more = this.eyo.selectedConnection || (this.eyo.selectedConnectionSource_ && this.eyo.selectedConnectionSource_.eyo.selectedConnection)
   eYo.BlockSvg.superClass_.select.call(this)
   if (more) {
     if (this.eyo.svgPathHighlight_ && this.eyo.svgPathHighlight_.parentNode) {
@@ -220,7 +220,7 @@ eYo.BlockSvg.prototype.removeSelect = function () {
     goog.dom.removeNode(this.eyo.svgPathConnection_)
   }
   var B
-  if (!this.eyo.selectedConnection || ((B = Blockly.selected) && B.selectedConnectionSource_ != this)) {
+  if (!this.eyo.selectedConnection || ((B = Blockly.selected) && B.selectedConnectionSource_ !== this)) {
     goog.dom.removeNode(this.eyo.svgPathConnection_)
   }
   var e8r = this.eyo.inputEnumerator(this)
@@ -239,7 +239,7 @@ eYo.BlockSvg.prototype.removeSelect = function () {
  * @param {Blockly.BlockSvg} newParent New parent block.
  */
 eYo.BlockSvg.prototype.setParent = function (newParent) {
-  if (newParent == this.parentBlock_) {
+  if (newParent === this.parentBlock_) {
     return
   }
   this.eyo.parentWillChange(this, newParent)

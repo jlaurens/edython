@@ -42,7 +42,7 @@ eYo.Data = function (owner, key, model) {
   this.wait_ = 1 // start with 1 exactly
   var xml = model.xml
   if (goog.isDefAndNotNull(xml) || xml !== false) {
-    this.attributeName = 'eyo:' + (xml && xml.attribute || key)
+    this.attributeName = 'eyo:' + ((xml && xml.attribute) || key)
   }
   if (!model.setup_) {
     model.setup_ = true
@@ -176,7 +176,7 @@ eYo.Data.prototype.all = undefined
  */
 eYo.Data.prototype.getAll = function () {
   var all = this.model.all
-  return goog.isArray(all) && all || goog.isFunction(all) && goog.isArray(all = all()) && all
+  return (goog.isArray(all) && all) || (goog.isFunction(all) && goog.isArray(all = all()) && all)
 }
 
 /**
@@ -195,7 +195,7 @@ eYo.Data.prototype.validate = function (newValue) {
     return out
   }
   var all = this.getAll()
-  return (!all || all.indexOf(newValue) >= 0) && {validated: newValue} || null
+  return !all || (all.indexOf(newValue) >= 0 && {validated: newValue}) || null
 }
 
 /**
@@ -233,7 +233,7 @@ eYo.Data.prototype.fromText = function (txt, dontValidate) {
     }
   }
   if (dontValidate) {
-    if ((this.value_ === txt) || !(txt = this.validate(txt)) || !goog.isDef(txt = txt.validated)) {
+    if ((this.value_ === txt) || !(txt = this.validate(txt)) || !goog.isDef((txt = txt.validated))) {
       this.error = true
     }
     this.internalSet(txt)
@@ -375,13 +375,12 @@ eYo.Data.prototype.synchronizeIfUI = function (newValue) {
  */
 eYo.Data.prototype.setTrusted = function (newValue) {
   if (goog.isString(newValue)) {
-    if ((x = this.model[x])) {
-      newValue = x
-    }
+    var x = this.model[newValue]
+    !x || (newValue = x)
   }
   if (goog.isNumber(newValue)) {
-    var x = this.getAll()
-    if (x && goog.isDefAndNotNull(x = x[newValue])) {
+    x = this.getAll()
+    if (x && goog.isDefAndNotNull((x = x[newValue]))) {
       newValue = x
     }
   }
@@ -411,7 +410,7 @@ eYo.Data.prototype.set = function (newValue) {
       newValue = all
     }
   }
-  if ((this.value_ === newValue) || !(newValue = this.validate(newValue)) || !goog.isDef(newValue = newValue.validated)) {
+  if ((this.value_ === newValue) || !(newValue = this.validate(newValue)) || !goog.isDef(newValue = newValue.validated)) {
     this.synchronizeIfUI(this.value_)
     return false
   }
@@ -467,7 +466,7 @@ eYo.Data.prototype.consolidate = function () {
  * @private
  */
 eYo.Data.prototype.isActive = function () {
-  return !!this.required || !this.incog_ && goog.isString(this.value_) && this.value_.length
+  return !!this.required || (!this.incog_ && goog.isString(this.value_) && this.value_.length)
 }
 
 /**
@@ -511,7 +510,7 @@ eYo.Data.prototype.waitOn = function () {
 eYo.Data.prototype.waitOff = function () {
   goog.asserts.assert(this.wait_ > 0, eYo.Do.format('Too  many `waitOn` {0}/{1}',
     this.key, this.getType()))
-  if (--this.wait_ == 0) {
+  if (--this.wait_ === 0) {
     this.consolidate()
   }
 }
@@ -540,10 +539,10 @@ eYo.Data.prototype.save = function (element) {
       }
       return
     }
-    var required = this.required || goog.isDefAndNotNull(xml) && xml.required
+    var required = this.required || (goog.isDefAndNotNull(xml) && xml.required)
     var isText = xml && xml.text
     var txt = this.toText()
-    if (txt.length || required && ((txt = isText ? '?' : ''), true)) {
+    if (txt.length || (required && ((txt = isText ? '?' : ''), true))) {
       if (xml && xml.text) {
         var child = goog.dom.createTextNode(txt)
         goog.dom.appendChild(element, child)
@@ -583,13 +582,13 @@ eYo.Data.prototype.load = function (element) {
       }
     }
   } else {
-    var txt = element.getAttribute(this.attributeName)
+    txt = element.getAttribute(this.attributeName)
   }
   if (goog.isDefAndNotNull(txt)) {
     if (required && txt === '?') {
       this.fromText('', true)
     } else {
-      if (isText && txt === '?' || !isText && txt === '') {
+      if ((isText && txt === '?') || (!isText && txt === '')) {
         this.setRequiredFromDom(true)
       }
       this.fromText(txt, true) // do not validate, there might be an error while saving, please check

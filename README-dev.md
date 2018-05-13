@@ -57,7 +57,7 @@ But extension was made to override Blocly's original behaviour. A delegation des
 
 ## Block creation
 
-If the prototype name starts with 'edy:' then the created block is a subclass of BlockSvg with edython's extended features. If not, the creation process falls down to Blockly's.
+If the prototype name starts with 'eyo:' then the created block is a subclass of BlockSvg with edython's extended features. If not, the creation process falls down to Blockly's.
 
 For that purpose, some workspace methods have been overriden.
 
@@ -89,12 +89,12 @@ The delegate stores both data specific to the block and methods, which are not h
 
 Input and connections also have extensions.
 
-In order to avoid name collisions, the object and the connection delegates are instance objects named `edy`.
+In order to avoid name collisions, the object and the connection delegates are instance objects named `eyo`.
 The input only stores data, its delegate is just a basic object named `edyData`.
 
-Delegates follow a class hierarchy to manage some functionality of blocks. The roots are edy.Delegate and edY.DelegateSvg. Their children are edy.Delegate.Expr for expressions and edy.Delegate.Stmt for statements. Each prototype name corresponds to a delegate class.
+Delegates follow a class hierarchy to manage some functionality of blocks. The roots are eyo.Delegate and eYo.DelegateSvg. Their children are eyo.Delegate.Expr for expressions and eyo.Delegate.Stmt for statements. Each prototype name corresponds to a delegate class.
 
-All the edy.Delegate.Expr subclasses share the same methods to draw their blocks, the same holds for edy.Delegate.Stmt.subclasses. These methods are different for statement blocks and expressin blocks, but they may share some parts because the input model may be the same.
+All the eyo.Delegate.Expr subclasses share the same methods to draw their blocks, the same holds for eyo.Delegate.Stmt.subclasses. These methods are different for statement blocks and expressin blocks, but they may share some parts because the input model may be the same.
 To allow code reuse between this to branches of the delagation class hieararchy, we rely on some controller design.
 
 ## Controller model

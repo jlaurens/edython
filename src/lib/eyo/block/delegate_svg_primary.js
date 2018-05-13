@@ -195,10 +195,10 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
       synchronize: /** @suppress {globalThis} */ function () {
         this.synchronize()
         var field = this.field
-        var element = this.field && this.field.textElement_
+        var element = field && field.textElement_
         if (element) {
           var variant = this.data.variant
-          var i = variant.get() == variant.model.BUILTIN ? 0 : 1
+          var i = variant.get() === variant.model.BUILTIN ? 0 : 1
           var ra = ['eyo-code', 'eyo-code-reserved']
           goog.dom.classlist.remove(element, ra[i])
           goog.dom.classlist.add(element, ra[1 - i])
@@ -282,11 +282,11 @@ eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
     F(j)
   }
   if (variant !== M.EXPRESSION) {
-    var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN(eYo.Msg.Placeholder.EXPRESSION, 'eyo-code-placeholder'),
       eYo.Do.createSPAN('(…)', 'eyo-code')
     )
-    var menuItem = new eYo.MenuItem(content, function () {
+    menuItem = new eYo.MenuItem(content, function () {
       block.eyo.data.name.setTrusted(oldValue || '')
       block.eyo.data.variant.set(M.EXPRESSION)
     })

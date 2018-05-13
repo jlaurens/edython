@@ -143,7 +143,6 @@ eYo.DelegateSvg.prototype.toPythonStatement = function (block, indent, is_deep) 
  * @return None
  */
 eYo.DelegateSvg.prototype.toPythonStatementComponents = function (block, components, indent, is_deep) {
-  var Cs = []
   if (block.disabled && indent.indexOf('#') < 0) {
     indent += '# '
   }
@@ -154,15 +153,14 @@ eYo.DelegateSvg.prototype.toPythonStatementComponents = function (block, compone
       var c8n = input.connection
       if (c8n) {
         var target = c8n.targetBlock()
-        if (target && !target.eyo.toPythonStatementComponents(target, components, indent + '    ', true) || !target && !c8n.eyo.optional_) {
+        if ((target && !target.eyo.toPythonStatementComponents(target, components, indent + '    ', true)) || (!target && !c8n.eyo.optional_)) {
           components.push(indent + '    <MISSING ' + input.name + '>')
         }
       }
     }
   }
   if (is_deep && block.nextConnection) {
-    var target = block.nextConnection.targetBlock()
-    if (target) {
+    if ((target = block.nextConnection.targetBlock())) {
       var out = target.eyo.toPythonStatementComponents(target, components, indent, true)
     }
   }

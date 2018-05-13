@@ -152,7 +152,6 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (function () {
         if (io.eyo.parameter_type_ === Type.STARRED) {
           // disconnect this
           var c8n = io.c8n
-          var target = c8n.targetConnection
           c8n.disconnect()
           // remove that input and the next one
           this.disposeAtI(io, io.i)
@@ -267,9 +266,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       TARGET_VALUE: 2,
       all: [0, 1, 2],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.data.name.setIncog(newValue == this.TARGET_VALUE)
-        this.ui.tiles.annotation.setIncog(newValue != this.NAME_ANNOTATION_VALUE)
-        this.ui.tiles.target.setIncog(newValue != this.TARGET_VALUE)
+        this.data.name.setIncog(newValue === this.TARGET_VALUE)
+        this.ui.tiles.annotation.setIncog(newValue !== this.NAME_ANNOTATION_VALUE)
+        this.ui.tiles.target.setIncog(newValue !== this.TARGET_VALUE)
       }
     },
     name: {
@@ -335,7 +334,7 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
     var menuItem = new eYo.MenuItem(content, function () {
       block.eyo.data.variant.set(variant)
     })
-    menuItem.setEnabled(variant != current)
+    menuItem.setEnabled(variant !== current)
     mgr.addChild(menuItem, true)
   }
   var content =
@@ -353,7 +352,7 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
   content = eYo.Do.createSPAN('…,… = …,…', 'eyo-code')
   F(content, 2)
   mgr.shouldSeparate()
-  if (current != M.TARGET_VALUE) {
+  if (current !== M.TARGET_VALUE) {
     var menuItem = new eYo.MenuItem(eYo.Msg.RENAME, function () {
       block.eyo.data.name.field.showEditor()
     })

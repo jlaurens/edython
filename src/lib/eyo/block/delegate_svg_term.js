@@ -57,7 +57,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
         synchronize: true,
         validate: /** @suppress {globalThis} */ function (newValue) {
           var nameType = eYo.Do.typeOfString(newValue)
-          return (nameType === eYo.T3.Expr.identifier) && {validated: newValue} || null
+          return (nameType === (eYo.T3.Expr.identifier) && {validated: newValue}) || null
         }
       }, // new
       nameType: {
@@ -314,7 +314,6 @@ eYo.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
   var model = variantData.model
   var variant = variantData.get()
   var nameType = this.data.nameType.get()
-  var j = this.data.nameType.getAll().indexOf(nameType)
   var check
   if (nameType === eYo.T3.Expr.parent_module) {
     check = nameType
@@ -322,7 +321,7 @@ eYo.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
     switch (variant) {
     case model.NAME:
       check = nameType === eYo.T3.Expr.identifier
-        ? nameType : [eYo.T3.Expr.dotted_name, eYo.T3.Expr.attributeref ]
+        ? nameType : [eYo.T3.Expr.dotted_name, eYo.T3.Expr.attributeref]
       break
     case model.STAR_STAR_NAME:
       // expression_star_star ::= "**" expression

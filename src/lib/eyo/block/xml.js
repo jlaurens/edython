@@ -137,8 +137,8 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) 
     for (var i = 0; i < childCount; i++) {
       var xmlChild = xml.childNodes[i]
       var name = xmlChild.nodeName.toLowerCase()
-      if (name == 'block' ||
-        (name == 'shadow' && !Blockly.Events.recordUndo)) {
+      if (name === 'block' ||
+        (name === 'shadow' && !Blockly.Events.recordUndo)) {
         // Allow top-level shadow blocks if recordUndo is disabled since
         // that means an undo is in progress.  Such a block is expected
         // to be moved to a nested destination in the next operation.
@@ -152,10 +152,10 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) 
           block.moveBy(workspace.RTL ? width - blockX : blockX, blockY)
         }
         variablesFirst = false
-      } else if (name == 'shadow') {
+      } else if (name === 'shadow') {
         goog.asserts.fail('Shadow block cannot be a top-level block.')
         variablesFirst = false
-      } else if (name == 'variables') {
+      } else if (name === 'variables') {
         if (variablesFirst) {
           Blockly.Xml.domToVariables(xmlChild, workspace)
         } else {
@@ -345,7 +345,7 @@ goog.require('eYo.DelegateSvg.Expr')
  */
 eYo.Delegate.prototype.tagName = function (block) {
   var tag = this.constructor.eyo.tagName || (this instanceof eYo.DelegateSvg.Expr ? eYo.T3.Xml.toDom.Expr : eYo.T3.Xml.toDom.Stmt)[this.constructor.eyo.key]
-  return tag && 'eyo:' + tag || block.type
+  return (tag && 'eyo:' + tag) || block.type
 }
 
 goog.require('eYo.DelegateSvg.List')
@@ -435,11 +435,11 @@ eYo.Xml.Literal.domToBlock = function (element, workspace) {
         break
       case eYo.T3.Expr.shortstringliteral:
       case eYo.T3.Expr.shortbytesliteral:
-        var block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.shortliteral, id)
+        block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.shortliteral, id)
         break
       case eYo.T3.Expr.longstringliteral:
       case eYo.T3.Expr.longbytesliteral:
-        var block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.longliteral, id)
+        block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.longliteral, id)
         break
       }
       if (block) {
@@ -489,7 +489,7 @@ eYo.Xml.Data.fromDom = function (block, element) {
       console.log(eYo.Do.format('Only one text node {0}/{1}',
         this.key, block.type))
     }
-    hasText = hasText || xml && xml.text
+    hasText = hasText || (xml && xml.text)
   })
 }
 
@@ -580,7 +580,7 @@ eYo.Xml.registerAllTags = function () {
           already.push(type)
         }
       } else if (goog.isString(already)) {
-        if (type != already) {
+        if (type !== already) {
           eYo.T3.Xml.fromDom[tag] = already = [already, type]
         }
       } else {
@@ -795,7 +795,8 @@ eYo.Xml.Comparison.domToBlock = function (element, workspace) {
   var id = element.getAttribute('id')
   if (prototypeName === eYo.Xml.COMPARISON) {
     var op = element.getAttribute(eYo.Key.OPERATOR)
-    var C8r, model, type = eYo.T3.Expr.number_comparison
+    var C8r, model
+    var type = eYo.T3.Expr.number_comparison
     if ((C8r = eYo.DelegateSvg.Manager.get(type)) &&
     (model = C8r.eyo.getModel().tiles) &&
     model.operators &&
@@ -2137,14 +2138,14 @@ eYo.Xml.compareBlocks = function (lhs, rhs) {
 //  */
 // eYo.DelegateSvg.Stmt.assignment_stmt.prototype.xml.toDom = function (block, element, optNoId) {
 //   var variant = this.data.variant.get()
-//   if (variant == 2) {
+//   if (variant === 2) {
 //     eYo.Xml.Input.Named.toDom(block, eYo.Key.TARGET, element, optNoId, true)
 //   } else {
 //     var text = this.data.value.get()
 //     if (text && text.length) {
 //       element.setAttribute(eYo.Xml.VALUE, text || '?')
 //     }
-//     if (variant == 1) {
+//     if (variant === 1) {
 //       eYo.Xml.Input.Named.toDom(block, eYo.Key.ANNOTATION, element, optNoId, true)
 //     }
 //   }

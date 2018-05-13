@@ -160,7 +160,6 @@ eYo.KeyHandler = (function () {
       if (B) {
         var c8n = eYo.SelectedConnection.get()
         if (c8n) {
-          var c8nType = c8n.type
           var newB
           if ((newB = B.eyo.insertBlockOfType(B, type, subtype)) || (newB = B.eyo.insertParent(B, type, subtype))) {
             // There was a selected connection,
@@ -257,13 +256,13 @@ eYo.KeyHandler = (function () {
       if (As.length > 2) {
         if (eYo.XRE.id_continue.test(As[As.length - 2]) && (!As[As.length - 1].length ||
           !eYo.XRE.id_continue.test(As[As.length - 1][0]))) {
-          var bonusA = true
+          bonusA = true
         }
       }
       if (Bs.length > 2) {
         if (eYo.XRE.id_continue.test(Bs[Bs.length - 2]) && (!Bs[Bs.length - 1].length ||
           !eYo.XRE.id_continue.test(Bs[Bs.length - 1][0]))) {
-          var bonusB = true
+          bonusB = true
         }
       }
       if (bonusA && !bonusB) {
@@ -322,9 +321,9 @@ eYo.KeyHandler = (function () {
     } else if (sep.length === 1) {
       if (current_) {
         keys_.push(sep)
-        for (var i = 0, s; (s = current_[i++]);) {
-          var Cs = s.components
-          var last = Cs[Cs.length - 1]
+        for (i = 0; (s = current_[i++]);) {
+          Cs = s.components
+          last = Cs[Cs.length - 1]
           var split = me.split(last, sep)
           if (split) {
             Cs.splice(Cs.length - 1, 1, split[0], sep, split[1])
@@ -353,12 +352,14 @@ eYo.KeyHandler = (function () {
       if (menu_.getChildCount() < 2) {
         menu_.addChild(new eYo.Separator(), true)
       }
-      for (var i = 0, s; (s = current_[i]); i++) {
+      for (i = 0; (s = current_[i]); i++) {
         Cs = s.components
-        var j = 0, c = Cs[j++], d
+        var j = 0
+        var c = Cs[j++]
+        var d
         content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
           goog.dom.createTextNode(c))
-        while ((d = Cs[j++]) != undefined && (c = Cs[j++]) != undefined) {
+        while ((d = Cs[j++]) !== undefined && (c = Cs[j++]) !== undefined) {
           content.appendChild(eYo.Do.createSPAN(d, 'eyo-code-emph'))
           content.appendChild(goog.dom.createTextNode(c))
         }
@@ -396,7 +397,8 @@ eYo.KeyHandler = (function () {
     // initialize the shortcuts to hold informations
     // - to build the menuitem content
     // - to sort and filter the menu items
-    var i = 0, shortcut, split
+    var i = 0
+    var shortcut, split
     while ((shortcut = shortcuts_[i++])) {
       if ((split = me.split(shortcut.key, sep))) {
         shortcut.components = [split[0], sep, split[1]]
@@ -481,8 +483,8 @@ eYo.KeyHandler = (function () {
                     console.log('************* I have already listened!')
                     return
                   }
-                  me.alreadyListened = true
-                  shortcut.key && me.handleAction(shortcut) ||
+                  me.alreadyListened = true;
+                  (shortcut.key && me.handleAction(shortcut)) ||
                   me.handleFirstMenuItemAction(shortcut)
                 }, 100)// TODO be sure that this 100 is suffisant
               }
@@ -496,7 +498,7 @@ eYo.KeyHandler = (function () {
           var xxyy = c8n.offsetInBlock_.clone().scale(B.workspace.scale)
           xy.translate(xxyy)
         } else {
-          var xy = goog.style.getPageOffset(B.svgGroup_)
+          xy = goog.style.getPageOffset(B.svgGroup_)
         }
         menu_.showMenu(B.svgGroup_, xy.x, xy.y + scaledHeight + 2)
         menu_.highlightFirst()
@@ -518,7 +520,7 @@ eYo.KeyHandler = (function () {
       }
     } else {
       // B is not always a block!
-      var F = function (f) {
+      F = function (f) {
         event.preventDefault()
         event.stopPropagation()
         var block = eYo.DelegateSvg.getBestBlock(eYo.Session.workspace, f)

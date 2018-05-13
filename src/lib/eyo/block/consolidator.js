@@ -11,8 +11,10 @@
  */
 'use strict'
 
+goog.provide('eYo.Consolidator')
 goog.provide('eYo.Consolidator.List')
 
+goog.require('eYo')
 goog.require('eYo.Const')
 goog.require('eYo.Input')
 goog.require('eYo.Do')
@@ -255,7 +257,7 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
     io.input.name = name
   }
   io.c8n.eyo.s7r_ = true
-  if (extreme || !io.eyo.presep.length && io.eyo.postsep.length) {
+  if (extreme || (!io.eyo.presep.length && io.eyo.postsep.length)) {
     while (io.input.fieldRow.length) {
       io.input.fieldRow.shift().dispose()
     }

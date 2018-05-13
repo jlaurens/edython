@@ -40,7 +40,7 @@ eYo.FieldHelper = function (owner) {
  * @suppress{accessControls}
  */
 eYo.FieldTextInput = function (text, optValidator) {
-  new eYo.FieldHelper(this)
+  this.eyo = new eYo.FieldHelper(this)
   eYo.FieldTextInput.superClass_.constructor.call(this, text,
     optValidator)
 }
@@ -358,7 +358,7 @@ eYo.FieldInput.prototype.placeholderText = function () {
     var model = this.eyo && this.eyo.model
     if (model) {
       var placeholder = model.placeholder
-      return goog.isString(placeholder) && placeholder || goog.isFunction(placeholder) && placeholder.call(this)
+      return (goog.isString(placeholder) && placeholder) || (goog.isFunction(placeholder) && placeholder.call(this))
     }
   }.call(this)) || eYo.Msg.Placeholder.CODE
 }

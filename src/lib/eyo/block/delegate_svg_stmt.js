@@ -61,7 +61,7 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
           this.load(element)
           this.whenRequiredFromDom(function () {
             this.setIncog(false)
-          }) || this.toText().length && this.setIncog(false)
+          }) || (this.toText().length && this.setIncog(false))
         }
       }
     }
@@ -573,7 +573,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
           this.load(element)
           this.whenRequiredFromDom(function () {
             this.setIncog(false)
-          }) || this.toText().length && this.setIncog(false)
+          }) || (this.toText().length && this.setIncog(false))
         }
       }
     },
@@ -608,7 +608,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
           this.load(element)
           this.whenRequiredFromDom(function () {
             this.setIncog(false)
-          }) || this.getTarget() && this.setIncog(false)
+          }) || (this.getTarget() && this.setIncog(false))
         }
       }
     }

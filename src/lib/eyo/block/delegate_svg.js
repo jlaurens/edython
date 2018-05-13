@@ -35,8 +35,7 @@ eYo.DelegateSvg.Manager = eYo.Delegate.Manager
  */
 eYo.DelegateSvg.Manager.register = function (key) {
   var prototypeName = eYo.T3.Expr[key]
-  var delegateC9r = undefined
-  var available = undefined
+  var delegateC9r, available
   if (prototypeName) {
     (key === 'numberliteral') && console.log('Registering expression', key)
     delegateC9r = eYo.DelegateSvg.Expr[key]
@@ -46,7 +45,7 @@ eYo.DelegateSvg.Manager.register = function (key) {
     delegateC9r = eYo.DelegateSvg.Stmt[key]
     available = eYo.T3.Stmt.Available
   } else {
-    throw 'Unknown block eYo.T3.Expr or eYo.T3.Stmt key: ' + key
+    throw new Error('Unknown block eYo.T3.Expr or eYo.T3.Stmt key: ' + key)
   }
   eYo.DelegateSvg.Manager.registerDelegate_(prototypeName, delegateC9r)
   available.push(prototypeName)
@@ -163,7 +162,7 @@ eYo.DelegateSvg.prototype.initBlock = function (block) {
       tile.order = order
       for (var i = 0; i < ordered.length; i++) {
         // we must not find an aleady existing entry.
-        goog.asserts.assert(i != tile.order,
+        goog.asserts.assert(i !== tile.order,
           eYo.Do.format('Same order tile {0}/{1}', i, block.type))
         if (ordered[i].model.order > tile.model.order) {
           break
@@ -453,7 +452,8 @@ eYo.DelegateSvg.prototype.consolidate = function (block, deep, force) {
     this.consolidate()
   })
   if (deep) {
-    var e8r = block.eyo.inputEnumerator(block), x
+    var e8r = block.eyo.inputEnumerator(block)
+    var x
     while (e8r.next()) {
       if ((x = e8r.here.connection) && (x = x.targetBlock())) {
         x.eyo.consolidate(x, deep, force)
@@ -733,7 +733,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     // only blocks with outputConnection may be stacked horizontally
     // such that visual letter separation may be a problem
     // For other blocks, there is no text field rendered to the left
-  } else if (!block.outputConnection.isConnected() || !this.wrapped_ && !this.locked_) {
+  } else if (!block.outputConnection.isConnected() || (!this.wrapped_ && !this.locked_)) {
     // the left part of the contour is the visual separator
     this.shouldSeparateField = false
   }
@@ -769,8 +769,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
         }
         if ((io.c8n = io.input.connection)) {
           if ((io.target = io.c8n.targetBlock())) {
-            var root = io.target.getSvgRoot()
-            if (root) {
+            if ((root = io.target.getSvgRoot())) {
               root.setAttribute('display', 'none')
               if (io.target.eyo.svgContourGroup_) {
                 io.target.eyo.svgContourGroup_.setAttribute('display', 'none')
@@ -938,7 +937,6 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   if (!io.canValue || io.input.type !== Blockly.INPUT_VALUE) {
     return false
   }
-  var delta = this.renderDrawFields_(io, true)
   var c8n = io.input.connection
   if (c8n) { // once `&&!c8n.hidden_` was there, bad idea but why was it here?
     var cursorX = io.cursorX + io.offsetX
@@ -1145,7 +1143,7 @@ eYo.StatementBlockEnumerator = function (block) {
   var bs = [block]
   var e8r
   var e8rs = [block.eyo.inputEnumerator(block)]
-  var input, next
+  var next
   var me = {}
   me.next = function () {
     me.next = me.next_
@@ -1248,7 +1246,7 @@ eYo.DelegateSvg.prototype.delayedRender = function (block) {
 eYo.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id, initSvg) {
   var B = workspace.newBlock(prototypeName, goog.isString(id) && id)
   B.eyo.completeWrapped_(B)
-  if (goog.isBoolean(id) && id || initSvg) {
+  if ((goog.isBoolean(id) && id) || initSvg) {
     B.initSvg()
   }
   return B
@@ -1433,8 +1431,8 @@ eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
             B = eYo.DelegateSvg.newBlockComplete(workspace, data.type, true)
             B.eyo.beReady(B)
             if (data.value) {
-              B.eyo.data.phantom && B.eyo.data.phantom.set(data.value) ||
-              B.eyo.data.value && B.eyo.data.value.set(data.value)
+              (B.eyo.data.phantom && B.eyo.data.phantom.set(data.value)) ||
+              (B.eyo.data.value && B.eyo.data.value.set(data.value))
             }
           }
           c8n.connect(B.outputConnection)
@@ -1462,7 +1460,7 @@ eYo.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
   if (input) {
     var target = input.connection.targetBlock()
     var oldType = target ? target.type : undefined
-    if (newType != oldType) {
+    if (newType !== oldType) {
       Blockly.Events.setGroup(true)
       try {
         if (target) {
@@ -1535,7 +1533,8 @@ eYo.DelegateSvg.prototype.getBoundingBox = function (block) {
  * @return None
  */
 eYo.DelegateSvg.getBestBlock = function (workspace, weight) {
-  var smallest = Infinity, best
+  var smallest = Infinity
+  var best
   for (var i = 0, top; (top = workspace.topBlocks_[i++]);) {
     var box = top.eyo.getBoundingRect(top)
     var w = weight(box.getCenter())
@@ -1556,7 +1555,8 @@ eYo.DelegateSvg.getBestBlock = function (workspace, weight) {
  */
 eYo.DelegateSvg.prototype.getBestBlock = function (block, distance) {
   const a = this.getBoundingBox(block)
-  var smallest = {}, best
+  var smallest = {}
+  var best
   for (var i = 0, top; (top = block.workspace.topBlocks_[i++]);) {
     if (top === block) {
       continue
@@ -1605,7 +1605,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function (block) {
     }
     return null
   }
-  var parent, input, c8n
+  var parent, c8n
   var selectTarget = function (c8n) {
     var target = c8n.targetBlock()
     if (!target) {
@@ -1684,7 +1684,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function (block) {
   }
   if ((parent = block.getSurroundParent())) {
     // select the previous non statement input if any
-    var e8r = parent.eyo.inputEnumerator(parent)
+    e8r = parent.eyo.inputEnumerator(parent)
     while (e8r.next()) {
       if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.eyo.wrapped_) && block === c8n.targetBlock()) {
         // found it, step down
@@ -1744,9 +1744,9 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
   if (target && target !== block) {
     return target.eyo.selectBlockRight(target)
   }
-  var parent, input, c8n
+  var parent, c8n
   var selectTarget = function () {
-    if (target = c8n.targetBlock()) {
+    if ((target = c8n.targetBlock())) {
       if (target.eyo.wrapped_ || target.eyo.locked_) {
         return target.eyo.selectBlockRight(target)
       } else {
@@ -1816,7 +1816,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
     }
   } else {
     // select the first non statement connection
-    var e8r = block.eyo.inputEnumerator(block)
+    e8r = block.eyo.inputEnumerator(block)
     while (e8r.next()) {
       if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
         if (selectConnection()) {
@@ -1840,7 +1840,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
     // only when a value input is connected to the block
     target = block
     while ((parent = target.getSurroundParent())) {
-      var e8r = parent.eyo.inputEnumerator(parent)
+      e8r = parent.eyo.inputEnumerator(parent)
       while (e8r.next()) {
         if ((c8n = e8r.here.connection) && (target === c8n.targetBlock())) {
           if (c8n.type === Blockly.NEXT_STATEMENT) {
@@ -1871,7 +1871,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
     }
     target = block
     while ((parent = target.getSurroundParent())) {
-      var e8r = parent.eyo.inputEnumerator(parent)
+      e8r = parent.eyo.inputEnumerator(parent)
       while (e8r.next()) {
         if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT) && (target = c8n.targetBlock()) && (target !== block)) {
           eYo.SelectedConnection.set(null)
@@ -2071,7 +2071,7 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
           }
         }
       } else if (c8n.type === Blockly.NEXT_STATEMENT) {
-        var R = new goog.math.Rect(
+        R = new goog.math.Rect(
           c8n.offsetInBlock_.x,
           c8n.offsetInBlock_.y - eYo.Font.space / 2,
           eYo.Font.tabWidth,
@@ -2084,7 +2084,7 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
     }
   }
   if ((c8n = block.previousConnection) && !c8n.hidden) {
-    var R = new goog.math.Rect(
+    R = new goog.math.Rect(
       c8n.offsetInBlock_.x,
       c8n.offsetInBlock_.y,
       rect.width,
@@ -2096,14 +2096,14 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
   }
   if ((c8n = block.nextConnection) && !c8n.hidden) {
     if (rect.height > eYo.Font.lineHeight()) { // Not the cleanest design
-      var R = new goog.math.Rect(
+      R = new goog.math.Rect(
         c8n.offsetInBlock_.x,
         c8n.offsetInBlock_.y - eYo.Font.space / 2,
         eYo.Font.tabWidth + eYo.Style.Path.radius(), // R U sure?
         eYo.Font.space / 2
       )
     } else {
-      var R = new goog.math.Rect(
+      R = new goog.math.Rect(
         c8n.offsetInBlock_.x,
         c8n.offsetInBlock_.y - eYo.Font.space / 2,
         rect.width,
@@ -2171,9 +2171,8 @@ eYo.SelectedConnection = (function () {
           c8n_ = null
         }
         if (connection) {
-          var block = connection.getSourceBlock()
-          if (block) {
-            var unwrapped = block
+          if ((block = connection.getSourceBlock())) {
+            unwrapped = block
             while (unwrapped.eyo.wrapped_) {
               if (!(unwrapped = unwrapped.getSurroundParent())) {
                 return
@@ -2218,7 +2217,7 @@ eYo.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
     if (candidate.eyo.data.subtype.set(c8n_N)) {
       c8n_N = undefined
     }
-    var c8n, otherC8n, foundC8n
+    var c8n, otherC8n
     var fin = function (prepare) {
       Blockly.Events.enable()
       eYo.Events.setGroup(true)
@@ -2264,8 +2263,7 @@ eYo.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
         }
       } else if (otherC8n.type === Blockly.NEXT_STATEMENT) {
         if ((c8n = candidate.previousConnection) && c8n.checkType_(otherC8n)) {
-          var targetC8n = otherC8n.targetConnection
-          if (targetC8n && candidate.nextConnection &&
+          if ((targetC8n = otherC8n.targetConnection) && candidate.nextConnection &&
             targetC8n.checkType_(candidate.nextConnection)) {
             return fin(function () {
               targetC8n.connect(candidate.previousConnection)
@@ -2365,7 +2363,8 @@ eYo.DelegateSvg.prototype.canLock = function (block) {
     return true
   }
   // list all the input for a non optional connection with no target
-  var e8r = block.eyo.inputEnumerator(block), c8n, target
+  var e8r = block.eyo.inputEnumerator(block)
+  var c8n, target
   while (e8r.next()) {
     if ((c8n = e8r.here.connection)) {
       if ((target = c8n.targetBlock())) {
@@ -2390,7 +2389,8 @@ eYo.DelegateSvg.prototype.canUnlock = function (block) {
     return true
   }
   // list all the input for a non optional connection with no target
-  var e8r = block.eyo.inputEnumerator(block), c8n, target
+  var e8r = block.eyo.inputEnumerator(block)
+  var c8n, target
   while (e8r.next()) {
     if ((c8n = e8r.here.connection)) {
       if ((target = c8n.targetBlock())) {
@@ -2425,7 +2425,8 @@ eYo.DelegateSvg.prototype.lock = function (block) {
   if ((c8n = eYo.SelectedConnection.get()) && (block === c8n.getSourceBlock())) {
     eYo.SelectedConnection.set(null)
   }
-  var e8r = block.eyo.inputEnumerator(block), otherC8n, foundC8n, target
+  var e8r = block.eyo.inputEnumerator(block)
+  var target
   while (e8r.next()) {
     if ((c8n = e8r.here.connection)) {
       if ((target = c8n.targetBlock())) {
@@ -2468,7 +2469,8 @@ eYo.DelegateSvg.prototype.unlock = function (block, shallow) {
   }
   this.locked_ = false
   // list all the input for connections with a target
-  var e8r = block.eyo.inputEnumerator(block), c8n, target
+  var e8r = block.eyo.inputEnumerator(block)
+  var c8n, target
   while (e8r.next()) {
     if ((c8n = e8r.here.connection)) {
       if ((!shallow || c8n.type === Blockly.INPUT_VALUE) && (target = c8n.targetBlock())) {

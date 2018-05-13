@@ -175,8 +175,7 @@ eYo.DelegateSvg.Expr.prototype.awaitable = function (block) {
  */
 eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var yorn = eYo.DelegateSvg.Expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
-  var field = this.ui.fields.await
-  if (this.await_ || this.awaitable && this.awaitable(block)) {
+  if (this.await_ || (this.awaitable && this.awaitable(block))) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('await', 'eyo-code-reserved'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
@@ -252,7 +251,7 @@ eYo.DelegateSvg.Expr.prototype.insertParent = function (block, parentPrototypeNa
   if (parentInputName) {
     var parentInput = parentBlock.getInput(parentInputName)
     goog.asserts.assert(parentInput, 'No input named ' + parentInputName)
-    parentInputC8n = parentInput.connection
+    var parentInputC8n = parentInput.connection
     goog.asserts.assert(parentInputC8n, 'Unexpected dummy input ' + parentInputName)
   } else if ((parentInput = parentBlock.getInput(eYo.Key.LIST))) {
     var list = parentInput.connection.targetBlock()
@@ -290,7 +289,7 @@ eYo.DelegateSvg.Expr.prototype.insertParent = function (block, parentPrototypeNa
       }
       return foundC8n
     }
-    var parentInputC8n = findC8n(parentBlock)
+    parentInputC8n = findC8n(parentBlock)
   }
   // Next connections should be connected
   var outputC8n = block.outputConnection
@@ -323,8 +322,8 @@ eYo.DelegateSvg.Expr.prototype.insertParent = function (block, parentPrototypeNa
         }
         targetC8n = undefined
       } else {
-        var its_xy = block.getRelativeToSurfaceXY()
-        var my_xy = parentBlock.getRelativeToSurfaceXY()
+        its_xy = block.getRelativeToSurfaceXY()
+        my_xy = parentBlock.getRelativeToSurfaceXY()
         parentBlock.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
       }
       parentInputC8n.connect(outputC8n)
@@ -473,7 +472,7 @@ eYo.DelegateSvg.Expr.starred_expression.prototype.consolidateType = function (bl
   if (no_or_expr) {
     var check = withOneStar ? eYo.T3.Expr.expression_star : eYo.T3.Expr.expression_star_star
   } else {
-    var check = withOneStar ? [eYo.T3.Expr.star_expr, eYo.T3.Expr.expression_star] : [eYo.T3.Expr.or_expr_star_star, eYo.T3.Expr.expression_star_star]
+    check = withOneStar ? [eYo.T3.Expr.star_expr, eYo.T3.Expr.expression_star] : [eYo.T3.Expr.or_expr_star_star, eYo.T3.Expr.expression_star_star]
   }
   block.outputConnection.setCheck(check)
 }

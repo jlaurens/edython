@@ -33,13 +33,13 @@
         blocklyDiv.style.width = blocklyArea.offsetWidth + 'px'
         blocklyDiv.style.height = blocklyArea.offsetHeight + 'px'
         if (window.Blockly) {
-          window.Blockly.svgResize(window.edY.workspace)
+          window.Blockly.svgResize(window.eYo.workspace)
         }
       }
     },
     mounted: function () {
-      var edY = window.edY
-      edY.Vue.getBus().$on('size-did-change', this.resize)
+      var eYo = window.eYo
+      eYo.Vue.getBus().$on('size-did-change', this.resize)
       window.addEventListener('resize', this.resize, false)
       var Blockly = window.Blockly
       if (Blockly) {
@@ -66,21 +66,21 @@
           var dom = Blockly.Xml.textToDom(toolbarData)
           self.options.toolbox = dom
           let blocklyDiv = document.getElementById('blockly-workspace')
-          edY.workspace = Blockly.inject(blocklyDiv, self.options)
-          edY.setup(edY.workspace)
+          eYo.workspace = Blockly.inject(blocklyDiv, self.options)
+          eYo.setup(eYo.workspace)
           dom = Blockly.Xml.textToDom(workspaceData)
-          Blockly.Xml.domToWorkspace(dom, edY.workspace)
+          Blockly.Xml.domToWorkspace(dom, eYo.workspace)
           self.resize()
-          var b = edY.workspace.newBlock(edY.Const.Grp.FOR)
+          var b = eYo.workspace.newBlock(eYo.Const.Grp.FOR)
           b.initSvg()
           b.moveBy(50, 150)
           b.render()
-          b = edY.workspace.newBlock(edY.Const.Val.GET)
+          b = eYo.workspace.newBlock(eYo.Const.Val.GET)
           b.initSvg()
           b.moveBy(50, 100)
           b.render()
           /* function generate () {
-            var code = Blockly.Python.workspaceToCode(edY.workspace)
+            var code = Blockly.Python.workspaceToCode(eYo.workspace)
             window.document.getElementById('edy_code_output').value = code
           } */
         })

@@ -185,7 +185,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
       }
     }
   }
-  for (var i = 0; i < topBlocks.length; i++) {
+  for (i = 0; i < topBlocks.length; i++) {
     addDeletableBlocks(topBlocks[i])
   }
 
@@ -203,7 +203,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
   }
 
   var deleteOption = {
-    text: deleteList.length == 1 ? eYo.Msg.DELETE_BLOCK
+    text: deleteList.length === 1 ? eYo.Msg.DELETE_BLOCK
       : Blockly.Msg.DELETE_X_BLOCKS.replace('%1', String(deleteList.length)),
     enabled: deleteList.length > 0,
     callback: function () {
@@ -239,7 +239,8 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
 Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function (workspaceXMLElement, type, x, y) {
   var core = type.substring(4)
   var shortcut = (this instanceof eYo.DelegateSvg.Expr ? eYo.T3.Xml.toDom.Expr : eYo.T3.Xml.toDom.Stmt)[core]
-  var tag = shortcut && 'eyo:' + shortcut || type, text = undefined
+  var tag = (shortcut && 'eyo:' + shortcut) || type
+  var text
   console.log('new workspace element:', type, tag)
   var child = goog.dom.createElement(tag)
   child.setAttribute('x', x)
@@ -374,7 +375,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
   }
   Blockly.Events.disable(true)
   try {
-    var block = Blockly.Xml.domToBlock(xmlBlock, this)
+    block = Blockly.Xml.domToBlock(xmlBlock, this)
     // Move the duplicate to original position.
     var blockX = parseInt(xmlBlock.getAttribute('x'), 10)
     var blockY = parseInt(xmlBlock.getAttribute('y'), 10)
@@ -388,7 +389,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
       var avoidCollision = function () {
         do {
           var collide = false
-          for (var i = 0, otherBlock; otherBlock = allBlocks[i]; i++) {
+          for (var i = 0, otherBlock; (otherBlock = allBlocks[i]); i++) {
             var otherXY = otherBlock.getRelativeToSurfaceXY()
             if (Math.abs(blockX - otherXY.x) <= 10 &&
                 Math.abs(blockY - otherXY.y) <= 10) {
@@ -399,7 +400,8 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
           if (!collide) {
             // Check for blocks in snap range to any of its connections.
             var connections = block.getConnections_(false)
-            for (var i = 0, connection; connection = connections[i]; i++) {
+            var connection
+            for (i = 0; (connection = connections[i]); i++) {
               var neighbour = connection.closest(Blockly.SNAP_RADIUS,
                 new goog.math.Coordinate(blockX, blockY))
               if (neighbour.connection) {

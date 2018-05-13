@@ -59,7 +59,6 @@ eYo.DelegateSvg.Expr.builtin_print_expr.prototype.getMenuTarget = function (bloc
  * @override
  */
 eYo.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var menu = mgr.Menu
   var list = block.getInput(eYo.Key.ARGUMENTS).connection.targetBlock()
   var c10r = list.eyo.consolidator
   var yorn = false
@@ -96,7 +95,7 @@ eYo.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
         Blockly.Events.setGroup(false)
       }
     }
-    var F = function (candidate) {
+    var F = function (candidate) {
       var menuItem = new eYo.MenuItem(
         eYo.Do.createSPAN(candidate + ' = …', 'eyo-code'),
         has[candidate] ? function () {
@@ -135,7 +134,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('builtin_print_stmt', {
  * @override
  */
 eYo.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var menu = mgr.Menu
   var list = block.getInput(eYo.Key.ARGUMENTS).connection.targetBlock()
   var c10r = list.eyo.consolidator
   var yorn = false
@@ -173,7 +171,7 @@ eYo.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
         Blockly.Events.setGroup(false)
       }
     }
-    var F = function (candidate) {
+    var F = function (candidate) {
       var menuItem = new eYo.MenuItem(
         eYo.Do.createSPAN(candidate + ' = …', 'eyo-code'),
         has[candidate] ? function () {

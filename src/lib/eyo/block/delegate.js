@@ -49,9 +49,8 @@ eYo.Delegate = function (block) {
       byOrder.splice(i, 0, d)
     }
   }
-  var d = this.headData = byOrder[0]
-  if (d) {
-    for (var i = 1, dd; (dd = byOrder[i]); ++i) {
+  if ((d = this.headData = byOrder[0])) {
+    for (i = 1; (dd = byOrder[i]); ++i) {
       d.next = dd
       dd.previous = d
       d = dd
@@ -74,9 +73,9 @@ eYo.Delegate.prototype.getBlock = function () {
  * Create one if it does not exist.
  * Closure used.
  */
-eYo.Delegate.getC9rEdY = (function () {
+eYo.Delegate.getC9rEyO = (function () {
   // one (almost hidden) shared constructor
-  var edyC9r = function (key, owner) {
+  var EyOC9r = function (key, owner) {
     owner.eyo = this
     this.owner_ = owner
     this.key = key
@@ -86,7 +85,7 @@ eYo.Delegate.getC9rEdY = (function () {
     if (delegateC9r.eyo) {
       return delegateC9r.eyo
     }
-    return new edyC9r(key, delegateC9r)
+    return new EyOC9r(key, delegateC9r)
   }
 }())
 
@@ -97,8 +96,6 @@ eYo.Delegate.getC9rEdY = (function () {
 eYo.Delegate.Manager = (function () {
   var me = {}
   var C9rs = Object.create(null)
-  var defaultC9r = undefined
-  var defaultDelegate = undefined
   /**
    * Just adds a proper eyo object to the delegate.
    * @param {Object} constructor
@@ -106,7 +103,7 @@ eYo.Delegate.Manager = (function () {
    * @private
    */
   me.prepareDelegate = function (delegateC9r, key) {
-    var eyo = eYo.Delegate.getC9rEdY(delegateC9r, key || '')
+    var eyo = eYo.Delegate.getC9rEyO(delegateC9r, key || '')
     eyo.getModel || (eyo.getModel = function () {
       return modeller(delegateC9r)
     })
@@ -206,8 +203,8 @@ eYo.Delegate.Manager = (function () {
       key = key.substring(4)
     }
     owner = owner ||
-    eYo.T3.Expr[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Expr ||
-    eYo.T3.Stmt[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Stmt ||
+    (eYo.T3.Expr[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Expr) ||
+    (eYo.T3.Stmt[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Stmt) ||
     parent
     var delegateC9r = owner[key] = function (block) {
       delegateC9r.superClass_.constructor.call(this, block)
@@ -220,7 +217,8 @@ eYo.Delegate.Manager = (function () {
     }
     if (model) {
       // manage the link: key
-      var link, linkModel = model
+      var link
+      var linkModel = model
       while ((link = model.link)) {
         var linkC9r = goog.isFunction(link) ? link : me.get(link)
         goog.asserts.assert(linkC9r, 'Not inserted: ' + link)
@@ -265,9 +263,9 @@ eYo.Delegate.Manager = (function () {
    */
   me.create = function (block) {
     goog.asserts.assert(!goog.isString(block), 'API DID CHANGE, update!')
-    var delegateC9r = C9rs[block.type]
-    goog.asserts.assert(delegateC9r, 'No delegate for ' + block.type)
-    return new delegateC9r(block)
+    var DelegateC9r = C9rs[block.type]
+    goog.asserts.assert(DelegateC9r, 'No delegate for ' + block.type)
+    return new DelegateC9r(block)
   }
   /**
    * Get the Delegate constructor for the given prototype name.
@@ -290,7 +288,7 @@ eYo.Delegate.Manager = (function () {
    */
   me.getModel = function (prototypeName) {
     var delegateC9r = C9rs[prototypeName]
-    return delegateC9r && delegateC9r.eyo.getModel() || Object.create(null)
+    return (delegateC9r && delegateC9r.eyo.getModel()) || Object.create(null)
   }
   /**
    * Delegate registrator.
@@ -317,8 +315,7 @@ eYo.Delegate.Manager = (function () {
    */
   me.register = function (key) {
     var prototypeName = eYo.T3.Expr[key]
-    var delegateC9r = undefined
-    var available = undefined
+    var delegateC9r, available
     if (prototypeName) {
       delegateC9r = eYo.Delegate[key]
       available = eYo.T3.Expr.Available
@@ -326,7 +323,7 @@ eYo.Delegate.Manager = (function () {
       delegateC9r = eYo.Delegate[key]
       available = eYo.T3.Stmt.Available
     } else {
-      throw 'Unknown block eYo.T3.Expr or eYo.T3.Stmt key: ' + key
+      throw new Error('Unknown block eYo.T3.Expr or eYo.T3.Stmt key: ' + key)
     }
     me.registerDelegate_(prototypeName, delegateC9r, key)
     available.push(prototypeName)
@@ -445,7 +442,7 @@ eYo.Delegate.prototype.initData = function () {
       data.tile = null
       data.field.eyo.data = data
     } else {
-      for (var kk in this.ui.tiles) {
+      for (kk in this.ui.tiles) {
         tile = this.ui.tiles[kk]
         if ((data.field = tile.fields[k])) {
           data.tile = tile
@@ -631,7 +628,7 @@ eYo.Delegate.prototype.getWrappedDescendants = function (block) {
   if (!this.wrapped_) {
     blocks.push(block)
   }
-  for (var child, x = 0; child = block.childBlocks_[x]; x++) {
+  for (var child, x = 0; (child = block.childBlocks_[x]); x++) {
     blocks.push.apply(blocks, child.eyo.getWrappedDescendants(child))
   }
   return blocks
@@ -836,8 +833,8 @@ eYo.Delegate.prototype.removeInput = function (block, input, opt_quiet) {
       block = input.connection.targetBlock()
       block.unplug()
     }
+    goog.array.remove(this.inputList, input)
     input.dispose()
-    this.inputList.splice(i, 1)
     return
   }
   if (!opt_quiet) {
@@ -889,11 +886,11 @@ eYo.Delegate.prototype.getStatementCount = function (block) {
     }
   }
   if (this.suiteInput) {
-    var c8n = this.suiteInput.connection
+    c8n = this.suiteInput.connection
     if (c8n && c8n.type === Blockly.NEXT_STATEMENT) {
       hasNext = true
       if (c8n.isConnected()) {
-        var target = c8n.targetBlock()
+        target = c8n.targetBlock()
         do {
           hasActive = hasActive || (!target.disabled && !target.eyo.isWhite(target))
           n += target.eyo.getStatementCount(target)
@@ -1033,10 +1030,12 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
           // stop before the black connection found just above
           next = previous.targetConnection
           do {
-            var target = next.getSourceBlock()
+            target = next.getSourceBlock()
             if (target.disabled) {
+              // beware of some side effet below
+              // bad design, things have changed since then...
               target.disabled = false
-              var check = previous.checkType_(next)
+              check = previous.checkType_(next)
               target.disabled = true
               if (check) {
                 target.setDisabled(false)

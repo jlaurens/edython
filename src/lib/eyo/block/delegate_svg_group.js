@@ -316,7 +316,7 @@ eYo.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
   } else if ((targetConnection = block.nextConnection.targetConnection)) {
     // the previous connection did not add any constrain
     // may be the next connection will?
-    var target = targetConnection.getSourceBlock()
+    target = targetConnection.getSourceBlock()
     if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(target.type) < 0)) {
       expected = T3.try_else_part
       P = T3.Previous.try_else_part
