@@ -6,7 +6,7 @@
  * License CeCILL-B
  */
 /**
- * @fileoverview Workspace override.
+ * @fileoverview Various messages to be localized, if relevant.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -85,6 +85,24 @@ goog.provide('eYo.Msg.Placeholder')
 /** @export */ eYo.Msg.USE_SINGLE_QUOTE = "'...'"
 
 /** @export */ eYo.Msg.USE_DOUBLE_QUOTES = '"..."'
+
+/** @export */ eYo.Msg.HELP = 'Aide'
+/** @export */ eYo.Msg.UNDO = 'Annuler'
+/** @export */ eYo.Msg.REDO = 'Refaire'
+/** @export */ eYo.Msg.CLEAN_UP = 'Ranger'
+/** @export */ eYo.Msg.DUPLICATE_BLOCK = 'Dupliquer'
+/** @export */ eYo.Msg.DUPLICATE_X_BLOCKS = 'Dupliquer {0}} blocs'
+/** @export */ eYo.Msg.ADD_COMMENT = 'Ajouter un commentaire'
+/** @export */ eYo.Msg.REMOVE_COMMENT = 'Supprimer le commentaire'
+/** @export */ eYo.Msg.EXPAND_BLOCK = 'Déplier'
+/** @export */ eYo.Msg.EXPAND_ALL = 'Tout déplier'
+/** @export */ eYo.Msg.COLLAPSE_BLOCK = 'Replier'
+/** @export */ eYo.Msg.ENABLE_BLOCK = 'Activer'
+/** @export */ eYo.Msg.DISABLE_BLOCK = 'Désactiver'
+/** @export */ eYo.Msg.DELETE_BLOCK = 'Supprimer'
+/** @export */ eYo.Msg.DELETE_X_BLOCKS = 'Supprimer {0} blocs'
+/** @export */ eYo.Msg.DELETE_ALL_BLOCKS = 'Supprimer tout'
+/** @export */ eYo.Msg.CHANGE_VALUE_TITLE = 'Changer la valeur'
 
 /** @export */ eYo.Msg.MISSING_KEY = 'Missing key'
 /** @export */ eYo.Msg.MISSING_VALUE = 'Missing value'

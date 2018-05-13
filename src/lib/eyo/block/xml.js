@@ -79,13 +79,13 @@ Blockly.Xml.domToText = function(dom) {
 
 /**
  * Decode an XML DOM and create blocks on the workspace.
- * @overriden to support other kind of blocks
+ * overriden to support other kind of blocks
  * This is a copy with a tiny formal modification.
  * @param {!Element} xml XML DOM.
  * @param {!Blockly.Workspace} workspace The workspace.
  * @return {Array.<string>} An array containing new block IDs.
  */
-Blockly.Xml.domToWorkspace = function(xml, workspace) {
+Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function(xml, workspace) {
   if (xml instanceof Blockly.Workspace) {
     var swap = xml;
     xml = workspace;
@@ -179,6 +179,8 @@ Blockly.Xml.domToWorkspace = function(xml, workspace) {
   }
   return newBlockIds;
 };
+
+goog.exportSymbol('eYo.Xml.domToWorkspace', eYo.Xml.domToWorkspace);
 
 /**
  * Encode a block subtree as XML.
@@ -331,6 +333,8 @@ eYo.Xml.blockToDom = function() {
     return blockToDom(block, optNoId)
   }
 } ()
+
+goog.exportSymbol('eYo.Xml.blockToDom', eYo.Xml.blockToDom);
 
 goog.require('eYo.DelegateSvg.Expr')
 
@@ -691,6 +695,8 @@ eYo.Xml.domToBlock = function() {
     return domToBlock(xmlBlock, workspace)
   }
 } ()
+
+goog.exportSymbol('eYo.Xml.domToBlock', eYo.Xml.domToBlock);
 
 /**
  * Decode a block subtree from XML.

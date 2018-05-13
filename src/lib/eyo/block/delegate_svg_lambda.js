@@ -12,12 +12,11 @@
 'use strict'
 
 goog.provide('eYo.DelegateSvg.Lambda')
-
-
 goog.provide('eYo.DelegateSvg.Parameter')
 
 goog.require('eYo.DelegateSvg.List')
 goog.require('eYo.DelegateSvg.Term')
+goog.require('eYo.ConnectionDelegate')
 
 /**
  * List consolidator for parameter list.
@@ -384,11 +383,11 @@ eYo.DelegateSvg.Expr.makeSubclass('lambda', {
         label: ':',
       },
       check: eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond),
-      didConnect: function(oldTargetConnection, oldConnectionn) {
+      didConnect: /** @suppress {globalThis} */ function(oldTargetConnection, oldConnectionn) {
         // `this` is a connection
         this.eyo.updateLambdaCheck()
       },
-      didDisconnect: function(oldConnection) {
+      didDisconnect: /** @suppress {globalThis} */ function(oldConnection) {
         // `this` is a connection
         this.eyo.updateLambdaCheck()
       },
@@ -396,10 +395,10 @@ eYo.DelegateSvg.Expr.makeSubclass('lambda', {
   },
   output: {
     check: [eYo.T3.Expr.lambda_expr, eYo.T3.Expr.lambda_expr_nocond],
-    didConnect: function(oldTargetConnection, oldConnection) {
+    didConnect: /** @suppress {globalThis} */ function(oldTargetConnection, oldConnection) {
       this.eyo.consolidateSource()
     },
-    didDisconnect: function(oldConnection) {
+    didDisconnect: /** @suppress {globalThis} */ function(oldConnection) {
       this.eyo.consolidateSource()
     },
   },

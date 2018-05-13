@@ -13,7 +13,7 @@
 'use strict'
 
 /**
- * @name EZP
+ * @name eYo
  * @namespace
  **/
 goog.provide('eYo')
@@ -60,10 +60,7 @@ eYo.replaceRuleProperty = function (selectorText, propertyName, value, priority)
   }
 }
 
-if (Object.setPrototypeOf) {
-  goog.provide('eYo.setPrototypeOf')
-}
-goog.require('eYo.setPrototypeOf')
+goog.asserts.assert(Object.setPrototypeOf, 'No setPrototypeOf, buy a new computer')
 
 /**
  * Contrary to goog.inherits, does not erase the childC9r.prototype.

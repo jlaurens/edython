@@ -21,7 +21,7 @@ goog.require('eYo.Block')
  * The only purpose is to start with a different height.
  * @param {string} text The initial content of the field.
  * @param {string=} optClass Optional CSS class for the field's text.
- * @extends {Blockly.Field}
+ * @extends {Blockly.FieldLabel}
  * @constructor
  */
 eYo.FieldLabel = function (text, optClass) {
@@ -33,6 +33,7 @@ goog.inherits(eYo.FieldLabel, Blockly.FieldLabel)
 
 /**
  * Install this text on a block.
+ * @suppress{accessControls}
  */
 eYo.FieldLabel.prototype.init = function () {
   if (this.textElement_) {
@@ -53,7 +54,6 @@ eYo.FieldLabel.prototype.init = function () {
   } else {
     this.sourceBlock_.getSvgRoot().appendChild(this.textElement_)
   }
-
   // Configure the field to be transparent with respect to tooltips.
   this.textElement_.tooltip = this.sourceBlock_
   Blockly.Tooltip.bindMouseEvents(this.textElement_)
@@ -65,7 +65,8 @@ eYo.FieldLabel.prototype.init = function () {
  * Updates the width of the field. This calls getCachedWidth which won't cache
  * the approximated width on IE/Edge when `getComputedTextLength` fails. Once
  * it eventually does succeed, the result will be cached.
- **/
+ * @suppress{accessControls}
+ */
 Blockly.Field.prototype.updateWidth = function () {
   var width = Blockly.Field.getCachedWidth(this.textElement_)
   if (this.borderRect_) {

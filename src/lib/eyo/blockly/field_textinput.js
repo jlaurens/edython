@@ -13,11 +13,10 @@
 
 goog.provide('eYo.FieldTextInput')
 goog.provide('eYo.FieldInput')
-
-goog.require('Blockly.FieldTextInput')
-
 goog.provide('eYo.FieldHelper')
 
+goog.require('eYo.Msg')
+goog.require('Blockly.FieldTextInput')
 
 /**
  * Class for an editable text field helper.
@@ -36,8 +35,9 @@ eYo.FieldHelper = function (owner) {
  *     to validate any constraints on what the user entered.  Takes the new
  *     text as an argument and returns either the accepted text, a replacement
  *     text, or null to abort the change.
- * @extends {Blockly.Field}
+ * @extends {Blockly.FieldTextInput}
  * @constructor
+ * @suppress{accessControls}
  */
 eYo.FieldTextInput = function (text, optValidator) {
   new eYo.FieldHelper(this)
@@ -56,6 +56,7 @@ eYo.FieldTextInput.htmlInput_ = null;
 
 /**
  * Install this field on a block.
+ * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.init = function () {
   if (this.fieldGroup_) {
@@ -101,9 +102,7 @@ eYo.FieldTextInput.prototype.init = function () {
 }
 
 /**
- * Updates the width of the field. This calls getCachedWidth which won't cache
- * the approximated width on IE/Edge when `getComputedTextLength` fails. Once
- * it eventually does succeed, the result will be cached.
+ * The block must be selected before the text field would become editable.
  **/
 eYo.FieldTextInput.prototype.onMouseDown_ = function (e) {
   if (Blockly.selected === this.sourceBlock_) {
@@ -147,6 +146,7 @@ eYo.FieldTextInput.prototype.cssClass = 'eyo-code'
  * @param {boolean=} optQuietInput True if editor should be created without
  *     focus.  Defaults to false.
  * @private
+ * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
   var block = this.sourceBlock_
@@ -187,9 +187,9 @@ eYo.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
  */
 eYo.FieldTextInput.prototype.showPromptEditor_ = function () {
   var field = this
-  Blockly.prompt(Blockly.Msg.CHANGE_VALUE_TITLE, this.text_,
+  Blockly.prompt(eYo.Msg.CHANGE_VALUE_TITLE, this.text_,
     function (newValue) {
-      if (field.sourceBlock_) {
+      if (field.getSourceBlock()) {
         newValue = field.callValidator(newValue)
       }
       field.setValue(newValue)
@@ -201,6 +201,7 @@ eYo.FieldTextInput.prototype.showPromptEditor_ = function () {
  * @param {boolean} quietInput True if editor should be created without
  *     focus.
  * @private
+ * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
   var dispose = this.widgetDispose_()
@@ -236,6 +237,7 @@ eYo.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
  * text field's elements.
  * @return {!Function} Closure to call on destruction of the WidgetDiv.
  * @private
+ * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.widgetDispose_ = function () {
   var field = this
@@ -294,6 +296,7 @@ eYo.FieldTextInput.prototype.validate_ = function() {
 /**
  * Resize the editor and the underlying block to fit the text. Adds an horizontal space to hold the next character.
  * @private
+ * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.resizeEditor_ = function () {
   if (this.fieldGroup_) {
@@ -314,6 +317,7 @@ eYo.FieldTextInput.prototype.resizeEditor_ = function () {
  *     to validate any constraints on what the user entered.  Takes the new
  *     text as an argument and returns either the accepted text, a replacement
  *     text, or null to abort the change.
+ * @param {string=} key
  * @extends {eYo.FieldTextInput}
  * @constructor
  */
@@ -331,6 +335,7 @@ goog.inherits(eYo.FieldInput, eYo.FieldTextInput)
  * due to ellipsis, and other formatting.
  * @return {string} Currently displayed text.
  * @private
+ * @suppress{accessControls}
  */
 eYo.FieldInput.prototype.getDisplayText_ = function() {
   if (this.eyo.placeholder && !this.eyo.isEditing) {
@@ -372,6 +377,7 @@ eYo.FieldInput.prototype.setValue = function(newValue) {
  * Adds a 'eyo-code-error' class in case of error.
  * @private
  * @override
+ * @suppress{accessControls}
  */
 eYo.FieldInput.prototype.render_ = function() {
   if (!this.textElement_) {
@@ -393,14 +399,14 @@ if (this.eyo.placeholder) {
 
 /**
  * Default method to start editing.
- * @this is a field owning an helper
+ * @this {Object} is a field owning an helper
  */
 eYo.FieldHelper.onStartEditing = function () {
 }
 
 /**
  * Default method to end editing.
- * @this is a field owning an helper
+ * @this {Object} is a field owning an helper
  */
 eYo.FieldHelper.onEndEditing = function () {
   this.eyo.data.fromText(this.getValue())
@@ -411,9 +417,7 @@ eYo.FieldHelper.onEndEditing = function () {
  * Eventual problem: there might be some kind of formatting such that
  * the data stored and the data shown in the ui are not the same.
  * There is no step for such a translation but the need did not occur yet.
- * @param {Object} newValue
  * @param {string|null} key  The data key, when null or undefined, ths receiver's key.
- * @constructor
  */
 eYo.FieldHelper.prototype.getData_ = function (key) {
   var data = this.data
@@ -430,8 +434,7 @@ eYo.FieldHelper.prototype.getData_ = function (key) {
  * Validate the keyed data of the source block.
  * Asks the data object to do so.
  * The bound data must exist.
- * @param {Object} newValue
- * @param {string|null} key  The data key, when null or undefined, ths receiver's key.
+ * @param {Object} txt
  */
 eYo.FieldHelper.prototype.validate = function (txt) {
   var v = this.getData_().validate(goog.isDef(txt)? txt: this.owner_.getValue())
@@ -442,8 +445,7 @@ eYo.FieldHelper.prototype.validate = function (txt) {
  * Validate the keyed data of the source block.
  * Asks the data object to do so.
  * The bound data must exist.
- * @param {Object} newValue
- * @param {string|null} key  The data key, when null or undefined, ths receiver's key.
+ * @param {Object} txt
  */
 eYo.FieldHelper.prototype.validateIfData = function (txt) {
   if (this.data) {

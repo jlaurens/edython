@@ -15,7 +15,7 @@ goog.provide('eYo.Python')
 
 goog.require('eYo')
 
-/*
+/**
  * List of all the python keywords as given by
  * import keyword; print(keyword.kwlist)
  * as of Python 3.5.
@@ -217,7 +217,7 @@ eYo.DelegateSvg.List.prototype.toPythonExpressionComponents = function (block, c
               components.push(' ')
             }
             components.push(x)
-            last = x              
+            last = x
           }
         }
       }

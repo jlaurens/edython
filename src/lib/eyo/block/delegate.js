@@ -842,7 +842,7 @@ eYo.Delegate.prototype.removeInput = function(block, input, opt_quiet) {
     return;
   }
   if (!opt_quiet) {
-    goog.asserts.fail('Input "%s" not found.', name);
+    goog.asserts.fail('Inconsistent data.');
   }
 }
 

@@ -13,6 +13,7 @@
 
 goog.provide('eYo.WorkspaceSvg')
 
+goog.require('eYo.Msg')
 goog.require('Blockly.WorkspaceSvg')
 goog.require('eYo.BlockSvg')
 goog.require('eYo.Workspace')
@@ -26,7 +27,8 @@ eYo.inherits(Blockly.WorkspaceSvg, eYo.Workspace)
  *     type-specific functions for this block.
  * @param {string=} optId Optional ID.  Use this ID if provided, otherwise
  *     create a new id.
- * @return {!Blockly.BlockSvg} The created block.
+ * @return {!Blockly.BlockSvg|eYo.BlockSvg} The created block.
+ * @suppress{accessControls}
  */
 Blockly.WorkspaceSvg.prototype.newBlock = function (prototypeName, optId) {
   if (prototypeName.startsWith('eyo:')) {
@@ -35,22 +37,6 @@ Blockly.WorkspaceSvg.prototype.newBlock = function (prototypeName, optId) {
     return new Blockly.BlockSvg(this, prototypeName, optId)
   }
 }
-
-/**
- * Handle a mouse-down on SVG drawing surface.
- * Overriden by JL
- * @param {!Event} e Mouse down event.
- * @private
- */
-eYo.WorkspaceSvg.onMouseDown_saved =
-Blockly.WorkspaceSvg.prototype.onMouseDown_
-Blockly.WorkspaceSvg.prototype.onMouseDown_ = function(e) {
-  if (Blockly.WidgetDiv.DIV.INPUT) {
-    Blockly.WidgetDiv.hide()
-  } else {
-    eYo.WorkspaceSvg.onMouseDown_saved.call(thid, e)
-  }
-};
 
 goog.provide('eYo.Gesture')
 /**
@@ -61,6 +47,7 @@ goog.provide('eYo.Gesture')
  * @param {!Event} e A mouse down or touch start event.
  * @param {!Blockly.Workspace} ws The workspace the event hit.
  * @package
+ * @suppress{accessControls}
  */
 eYo.Gesture.handleWsStart_saved = Blockly.Gesture.prototype.handleWsStart
 Blockly.Gesture.prototype.handleWsStart = function(e, ws) {
@@ -100,6 +87,7 @@ Blockly.Workspace.prototype.logAllConnections = function (comment) {
  * Show the context menu for the workspace.
  * @param {!Event} e Mouse event.
  * @private
+ * @suppress{accessControls}
  */
 Blockly.WorkspaceSvg.prototype.showContextMenu_ = function(e) {
   if (this.options.readOnly || this.isFlyout) {
@@ -175,7 +163,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function(e) {
 
     // Option to expand top blocks.
     var expandOption = {enabled: hasCollapsedBlocks};
-    expandOption.text = Blockly.Msg.EXPAND_ALL;
+    expandOption.text = eYo.Msg.EXPAND_ALL;
     expandOption.callback = function() {
       toggleOption(false);
     };
@@ -210,11 +198,10 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function(e) {
         deleteNext();
       }
     }
-    grouper.stop();
   }
 
   var deleteOption = {
-    text: deleteList.length == 1 ? Blockly.Msg.DELETE_BLOCK :
+    text: deleteList.length == 1 ? eYo.Msg.DELETE_BLOCK :
         Blockly.Msg.DELETE_X_BLOCKS.replace('%1', String(deleteList.length)),
     enabled: deleteList.length > 0,
     callback: function() {
@@ -224,7 +211,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function(e) {
       if (deleteList.length < 2 ) {
         deleteNext();
       } else {
-        Blockly.confirm(Blockly.Msg.DELETE_ALL_BLOCKS.
+        Blockly.confirm(eYo.Msg.DELETE_ALL_BLOCKS.
             replace('%1', deleteList.length),
             function(ok) {
               if (ok) {
@@ -241,9 +228,10 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function(e) {
 
 /**
  * Populate a dom element to make a workspace.
- * @param {!Element} workspaceXMLElementMouse dom element to populate, in general the workspace in the main html file.
+ * @param {!Element} workspaceXMLElement dom element to populate, in general the workspace in the main html file.
  * @param {!String} type, prototype of the block.
- * @param {!Object} offset, with x and y attributes
+ * @param {!number} x
+ * @param {!number} y
  * @private
  */
 Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function(workspaceXMLElement, type, x, y) {
@@ -267,7 +255,7 @@ Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function(workspaceX
  * This should be replaced by a direct method that creates a block and place it at the right position.
  * @param {!Element} workspaceXMLElementMouse dom element to populate, in general the workspaceBlocks in the main html file.
  * @param {!Array} types, list of prototypes.
- * @param {!Integer} n_col the number of columns to use.
+ * @param {!integer} n_col the number of columns to use.
  * @param {!Object} offset, with x and y attributes
  * @param {!Object} step, with x and y attributes
  * @private
@@ -306,6 +294,7 @@ Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function(workspace
  * Take into account the selected connection if any.
  * @param {!Element} xmlBlock XML block element.
  * @override
+ * @suppress {accessControls}
  */
 Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
   if (!this.rendered || xmlBlock.getElementsByTagName('block').length >=
@@ -346,12 +335,12 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
           // This is where the targetC8n should be once the
           // connection has been made
           var xyxy = targetC8n.offsetInBlock_.clone()
-          xy_block = targetC8n.sourceBlock_.getRelativeToSurfaceXY()
+          xy_block = targetC8n.getSourceBlock().getRelativeToSurfaceXY()
           xyxy.translate(xy_block.x, xy_block.y)
           // This is where the targetC8n is
           xyxy.scale(-1)
           xy.translate(xyxy.x, xyxy.y)
-          targetC8n.sourceBlock_.moveBy(xy.x, xy.y)
+          targetC8n.getSourceBlock().moveBy(xy.x, xy.y)
         }
         c8n.connect(targetC8n)
         if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
@@ -369,7 +358,7 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
                 break
               }
             }
-          } while (parent && (parent = parent.getSurroundParent(parent)))
+          } while (parent && (parent = parent.getSurroundParent()))
         } else if ((c8n = block.nextConnection)) {
           eYo.SelectedConnection.set(c8n)
         }
@@ -378,10 +367,10 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
       }
       return
     } else if (block) {
-      block.dispose()
+      block.dispose(true)
     }
   }
-  Blockly.Events.disable()
+  Blockly.Events.disable(true)
   try {
     var block = Blockly.Xml.domToBlock(xmlBlock, this);
     // Move the duplicate to original position.
@@ -460,6 +449,7 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
  * Handle a mouse-down on SVG drawing surface.
  * @param {!Event} e Mouse down event.
  * @private
+ * @suppress {accessControls}
  */
 Blockly.WorkspaceSvg.prototype.onMouseDown_ = function(e) {
   var gesture = this.getGesture(e);

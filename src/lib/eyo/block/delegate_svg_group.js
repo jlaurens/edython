@@ -13,6 +13,7 @@
 
 goog.provide('eYo.DelegateSvg.Group')
 
+goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Stmt')
 
 /**
@@ -81,7 +82,7 @@ eYo.DelegateSvg.Group.prototype.groupContourPathDef_ = function (block) {
   var previous = this.hasPreviousStatement_(block)
   var next = this.hasNextStatement_(block)
   if (previous) {
-    steps = ['m 0,0 h ' + w]
+    var steps = ['m 0,0 h ' + w]
   } else {
     steps = ['m ' + r + ',0 h ' + (w - r)]
   }
@@ -268,10 +269,10 @@ eYo.DelegateSvg.Group.makeSubclass('else_part', {
   },
   statement: {
     previous : {
-      didConnect: function(oldTargetConnection, oldConnection) {
+      didConnect: /** @suppress {globalThis} */ function(oldTargetConnection, oldConnection) {
         this.eyo.consolidateSource()
       },
-      didDisconnect: function(oldConnection) {
+      didDisconnect: /** @suppress {globalThis} */ function(oldConnection) {
         this.eyo.consolidateSource()
       },
     },

@@ -39,6 +39,7 @@ goog.require('Blockly.Input')
  * @param {!Object} owner  The owner is a block delegate.
  * @param {!string} key  One of the keys in `tiles` section of the model.
  * @param {!Object} tileModel  the model for the given key i the above mention section.
+ * @constructor
  */
 eYo.Tile = function(owner, key, tileModel) {
   goog.asserts.assert(owner, 'Missing tile owner')

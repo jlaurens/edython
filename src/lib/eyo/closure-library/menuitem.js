@@ -20,14 +20,11 @@
  */
 
 goog.provide('eYo.MenuItem')
-goog.provide('eYo.MenuItemCode')
-goog.provide('eYo.MenuItemVar')
 goog.provide('eYo.Separator')
 
 goog.require('goog.ui.MenuItem')
 goog.require('goog.ui.Separator')
 goog.require('eYo.MenuItemRenderer')
-goog.require('eYo.SeparatorRenderer')
 
 // goog.forwardDeclare('goog.ui.Menu'); // circular
 
@@ -144,83 +141,3 @@ eYo.MenuItem = function (content, optModel, optDomHelper, optRenderer) {
 }
 goog.inherits(eYo.MenuItem, goog.ui.MenuItem)
 goog.tagUnsealableClass(eYo.MenuItem)
-
-/**
- * Class representing a piece of code in a menu.
- *
- * @param {goog.ui.ControlContent} content Text caption or DOM structure to
- *     display as the content of the item (use to add icons or styling to
- *     menus).
- * @param {*=} optModel Data/model associated with the menu item.
- * @param {goog.dom.DomHelper=} optDomHelper Optional DOM helper used for
- *     document interactions.
- * @param {goog.ui.MenuItemRenderer=} optRenderer Optional renderer.
- * @constructor
- * @extends {goog.ui.MenuItem}
- */
-eYo.MenuItemCode = function (content, optModel, optDomHelper, optRenderer) {
-  goog.ui.MenuItem.call(
-    this, content, optModel,
-    optDomHelper, optRenderer || eYo.MenuItemCodeRenderer.getInstance())
-}
-goog.inherits(eYo.MenuItemCode, goog.ui.MenuItem)
-goog.tagUnsealableClass(eYo.MenuItemCode)
-
-/**
- * Class representing an item for a variable in a menu.
- *
- * @param {goog.ui.ControlContent} content Text caption or DOM structure to
- *     display as the content of the item (use to add icons or styling to
- *     menus).
- * @param {String} action, string identifying the action.
- * @param {String} value, value associated to the action.
- * @constructor
- * @extends {eYo.SimpleMenuItemCode}
- */
-eYo.SimpleMenuItemCode = function (content, action, value) {
-  eYo.SimpleMenuItemCode.superClass_.constructor.call(
-    this, content, [action, value],
-    undefined, eYo.MenuItemCodeRenderer.getInstance())
-}
-goog.inherits(eYo.SimpleMenuItemCode, eYo.MenuItemCode)
-goog.tagUnsealableClass(eYo.SimpleMenuItemCode)
-
-/**
- * Class representing an item for a variable in a menu.
- *
- * @param {goog.ui.ControlContent} content Text caption or DOM structure to
- *     display as the content of the item (use to add icons or styling to
- *     menus).
- * @param {*=} optModel Data/model associated with the menu item.
- * @param {goog.dom.DomHelper=} optDomHelper Optional DOM helper used for
- *     document interactions.
- * @param {goog.ui.MenuItemRenderer=} optRenderer Optional renderer.
- * @constructor
- * @extends {goog.ui.MenuItem}
- */
-eYo.MenuItemVar = function (content, optModel, optDomHelper, optRenderer) {
-  goog.ui.Control.call(
-    this, content, optRenderer || eYo.MenuItemVarRenderer.getInstance(),
-    optDomHelper)
-  this.setValue(optModel)
-}
-goog.inherits(eYo.MenuItemVar, goog.ui.MenuItem)
-goog.tagUnsealableClass(eYo.MenuItemVar)
-
-/**
- * Class representing a separator.  Although it extends {@link goog.ui.Control},
- * the Separator class doesn't allocate any event handlers, nor does it change
- * its appearance on mouseover, etc.
- * @param {goog.ui.MenuSeparatorRenderer=} optRenderer Renderer to render or
- *    decorate the separator; defaults to {@link eYo.MenuSeparatorRenderer}.
- * @param {goog.dom.DomHelper=} optDomHelper Optional DOM helper, used for
- *    document interaction.
- * @constructor
- * @extends {goog.ui.Control}
- */
-eYo.Separator = function (optRenderer, optDomHelper) {
-  eYo.Separator.superClass_.constructor.call(
-    this, optRenderer || eYo.MenuSeparatorRenderer.getInstance(),
-    optDomHelper)
-}
-goog.inherits(eYo.Separator, goog.ui.Separator)

@@ -53,6 +53,7 @@ Blockly.Input.prototype.eyo = undefined
  * Only the display attribute.
  * @param {boolean} visible True if visible.
  * @return {!Array.<!Blockly.Block>} List of blocks to render.
+ * @suppress {accessControls}
  */
 Blockly.Input.prototype.setVisible = function(visible) {
   var renderList = [];

@@ -285,11 +285,7 @@ eYo.DelegateSvg.Expr.object_comparison.prototype.makeTitle = function (block, op
  * Class for a DelegateSvg, or_test_s3d block.
  * Multiple ops.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
-console.warn('Check the css-class below, does it belong there?')
 eYo.DelegateSvg.Binary.makeSubclass('or_test_s3d', {
   data: {
     operator: {

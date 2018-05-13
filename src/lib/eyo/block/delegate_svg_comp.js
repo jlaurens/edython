@@ -103,18 +103,14 @@ eYo.DelegateSvg.List.makeSubclass('comp_iter_list', {
     check: eYo.T3.Expr.Check.comp_iter,
     empty: true,
     presep: ',',
-  },  
+  },
 })
 
 /**
  * Class for a DelegateSvg, dict comprehension value block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
  */
-// dict_comprehension ::= expression ":" expression comp_for
 eYo.DelegateSvg.Expr.makeSubclass('dict_comprehension', {
   tiles: {
     key: {
@@ -148,7 +144,7 @@ eYo.DelegateSvg.Expr.makeSubclass('dict_comprehension', {
     for_if: { // that name is so ugly
       order: 5,
       wrap: eYo.T3.Expr.comp_iter_list,
-    },  
+    },
   },
 })
 

@@ -32,6 +32,7 @@ goog.inherits(eYo.Workspace, Blockly.Workspace)
 /**
  * Dispose of this workspace.
  * Unlink from all DOM elements to prevent memory leaks.
+ * @suppress{accessControls}
  */
 Blockly.Workspace.prototype.dispose = function () {
   this.listeners_.length = 0
@@ -53,9 +54,9 @@ Blockly.Workspace.prototype.dispose = function () {
  */
 eYo.Workspace.prototype.newBlock = function (prototypeName, optId) {
   if (prototypeName.startsWith('eyo:')) {
-    return new eYo.Block(this, prototypeName, optId)
+    return new eYo.Block(/** Blockly.Workspace */ this, prototypeName, optId)
   } else {
-    return new Blockly.Block(this, prototypeName, optId)
+    return new Blockly.Block(/** Blockly.Workspace */ this, prototypeName, optId)
   }
 }
 
@@ -114,7 +115,7 @@ eYo.Workspace.prototype.getVariableUses = function (name, all) {
 /**
  * Find the block on this workspace with the specified ID.
  * @param {string} id ID of block to find.
- * @return {Blockly.Block} The sought after block or null if not found.
+ * @return {?Blockly.Block} The sought after block or null if not found.
  */
 eYo.Workspace.savedGetBlockById = Blockly.Workspace.prototype.getBlockById
 Blockly.Workspace.prototype.getBlockById = function(id) {

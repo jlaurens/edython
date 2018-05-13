@@ -28,7 +28,8 @@ goog.require('eYo.DelegateSvg')
  * These are implemented as potential singletons but are not used as is.
  * Extra initialization may be performed by the init function.
  * TODO: use singletons...
- * @param {!Object} data, all the data needed
+ * @param {!Object} d, all the data needed
+ * @constructor
  */
 eYo.Consolidator = function(d) {
   this.data = {}

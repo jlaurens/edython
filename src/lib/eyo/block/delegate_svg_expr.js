@@ -13,6 +13,7 @@
 
 goog.provide('eYo.DelegateSvg.Expr')
 
+goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg')
 goog.require('eYo.T3.All')
 
@@ -183,12 +184,12 @@ eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr)
     if (this.await_) {
       mgr.shouldSeparateRemove()
       mgr.addRemoveChild(new eYo.MenuItem(content, function() {
-        block.eyo.setAwaited(block, false)
+        block.eyo.data.await.set(false)
       }))
     } else {
       mgr.shouldSeparateInsert()
       mgr.addInsertChild(new eYo.MenuItem(content, function() {
-        block.eyo.setAwaited(block, true)
+        block.eyo.data.await.set(true)
       }))
     }
   }
@@ -437,7 +438,7 @@ eYo.DelegateSvg.Expr.makeSubclass('starred_expression', {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
       hole_value: 'name',
-      didConnect: function(oldTargetConnection, oldConnection) {
+      didConnect: /** @suppress {globalThis} */ function(oldTargetConnection, oldConnection) {
         this.eyo.consolidateSource()
       },
     },
@@ -502,13 +503,10 @@ eYo.DelegateSvg.Expr.starred_expression.prototype.populateContextMenuFirst_ = fu
 }
 
 /**
-* Class for a DelegateSvg, not_test_s3d.
-* This is not an Operator subclass because 'not' is a reserved word.
-* For edython.
-* @param {?string} prototypeName Name of the language object containing
-*     type-specific functions for this block.
-* @constructor
-*/
+ * Class for a DelegateSvg, not_test_s3d.
+ * This is not an Operator subclass because 'not' is a reserved word.
+ * For edython.
+ */
 eYo.DelegateSvg.Expr.makeSubclass('not_test_s3d', {
   tiles: {
     expression: {
@@ -523,12 +521,9 @@ eYo.DelegateSvg.Expr.makeSubclass('not_test_s3d', {
 })
 
 /**
-* Class for a DelegateSvg, builtin object.
-* For edython.
-* @param {?string} prototypeName Name of the language object containing
-*     type-specific functions for this block.
-* @constructor
-*/
+ * Class for a DelegateSvg, builtin object.
+ * For edython.
+ */
 eYo.DelegateSvg.Expr.makeSubclass('builtin_object', {
   data: {
     value: {
@@ -567,12 +562,9 @@ eYo.DelegateSvg.Expr.builtin_object.prototype.makeTitle = function (block, op) {
 }
 
 /**
-* Class for a DelegateSvg, any object.
-* For edython.
-* @param {?string} prototypeName Name of the language object containing
-*     type-specific functions for this block.
-* @constructor
-*/
+ * Class for a DelegateSvg, any object.
+ * For edython.
+ */
 eYo.DelegateSvg.Expr.makeSubclass('any', {
   data: {
     code: {

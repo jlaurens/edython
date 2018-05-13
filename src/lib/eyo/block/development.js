@@ -17,6 +17,24 @@ goog.provide('eYo.Development')
 
 goog.require('eYo.DelegateSvg')
 goog.require('eYo.DelegateSvg.Import')
+goog.require('eYo.DelegateSvg.Expr')
+goog.require('eYo.DelegateSvg.Term')
+goog.require('eYo.DelegateSvg.Literal')
+goog.require('eYo.DelegateSvg.Operator')
+goog.require('eYo.DelegateSvg.Argument')
+goog.require('eYo.DelegateSvg.Assignment')
+goog.require('eYo.DelegateSvg.Comprehension')
+goog.require('eYo.DelegateSvg.Control')
+goog.require('eYo.DelegateSvg.List')
+goog.require('eYo.DelegateSvg.Group')
+goog.require('eYo.DelegateSvg.Import')
+goog.require('eYo.DelegateSvg.Lambda')
+goog.require('eYo.DelegateSvg.Primary')
+goog.require('eYo.DelegateSvg.Print')
+goog.require('eYo.DelegateSvg.Proc')
+goog.require('eYo.DelegateSvg.Stmt')
+goog.require('eYo.DelegateSvg.Try')
+goog.require('eYo.DelegateSvg.Yield')
 
 eYo.Do.arraysMerged = function(/* list of arrays */) {
   var RA = []
@@ -26,6 +44,27 @@ eYo.Do.arraysMerged = function(/* list of arrays */) {
   goog.array.removeDuplicates(RA)
   return RA
 }
+
+eYo.DelegateSvg.T3s = eYo.Do.arraysMerged(
+  eYo.DelegateSvg.Expr.T3s,
+  eYo.DelegateSvg.Term.T3s,
+  eYo.DelegateSvg.Literal.T3s,
+  eYo.DelegateSvg.Operator.T3s,
+  eYo.DelegateSvg.Argument.T3s,
+  eYo.DelegateSvg.Assignment.T3s,
+  eYo.DelegateSvg.Comprehension.T3s,
+  eYo.DelegateSvg.Control.T3s,
+  eYo.DelegateSvg.List.T3s,
+  eYo.DelegateSvg.Group.T3s,
+  eYo.DelegateSvg.Import.T3s,
+  eYo.DelegateSvg.Lambda.T3s,
+  eYo.DelegateSvg.Primary.T3s,
+  eYo.DelegateSvg.Print.T3s,
+  eYo.DelegateSvg.Proc.T3s,
+  eYo.DelegateSvg.Stmt.T3s,
+  eYo.DelegateSvg.Try.T3s,
+  eYo.DelegateSvg.Yield.T3s,
+)
 
 /**
  * Useful for development purposes only.
@@ -124,8 +163,8 @@ eYo.DelegateSvg.Expr.dict_comprehension.workspaceBlocks = [
   eYo.T3.Expr.comp_iter_list,
 ]
 
-eYo.DelegateSvg.Expr.a_expr_s3d.workspaceBlocks = 
-eYo.DelegateSvg.Expr.m_expr_s3d.workspaceBlocks = 
+eYo.DelegateSvg.Expr.a_expr_s3d.workspaceBlocks =
+eYo.DelegateSvg.Expr.m_expr_s3d.workspaceBlocks =
 eYo.DelegateSvg.Expr.u_expr_s3d.workspaceBlocks = [
   eYo.T3.Expr.term,
   eYo.T3.Expr.a_expr_s3d,
@@ -133,9 +172,9 @@ eYo.DelegateSvg.Expr.u_expr_s3d.workspaceBlocks = [
   eYo.T3.Expr.u_expr_s3d,
 ]
 
-eYo.DelegateSvg.Expr.shift_expr_s3d.workspaceBlocks = 
-eYo.DelegateSvg.Expr.and_expr_s3d.workspaceBlocks = 
-eYo.DelegateSvg.Expr.xor_expr_s3d.workspaceBlocks = 
+eYo.DelegateSvg.Expr.shift_expr_s3d.workspaceBlocks =
+eYo.DelegateSvg.Expr.and_expr_s3d.workspaceBlocks =
+eYo.DelegateSvg.Expr.xor_expr_s3d.workspaceBlocks =
 eYo.DelegateSvg.Expr.or_expr_s3d.workspaceBlocks = [
   eYo.T3.Expr.term,
   eYo.T3.Expr.shift_expr_s3d,
@@ -144,14 +183,14 @@ eYo.DelegateSvg.Expr.or_expr_s3d.workspaceBlocks = [
   eYo.T3.Expr.or_expr_s3d,
 ]
 
-eYo.DelegateSvg.Expr.number_comparison.workspaceBlocks = 
+eYo.DelegateSvg.Expr.number_comparison.workspaceBlocks =
 eYo.DelegateSvg.Expr.object_comparison.workspaceBlocks = [
   eYo.T3.Expr.term,
   eYo.T3.Expr.number_comparison,
   eYo.T3.Expr.object_comparison,
 ]
 
-eYo.DelegateSvg.Expr.and_test_s3d.workspaceBlocks = 
+eYo.DelegateSvg.Expr.and_test_s3d.workspaceBlocks =
 eYo.DelegateSvg.Expr.or_test_s3d.workspaceBlocks = [
   eYo.T3.Expr.term,
   eYo.T3.Expr.and_test_s3d,
@@ -240,7 +279,7 @@ eYo.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks = eYo.DelegateS
   eYo.T3.Expr.comprehension,
 ] , null/*eYo.T3.Expr.Check.expression*/)
 
-eYo.DelegateSvg.Expr.builtin_input_expr.workspaceBlocks = 
+eYo.DelegateSvg.Expr.builtin_input_expr.workspaceBlocks =
 eYo.DelegateSvg.Stmt.builtin_print_stmt.workspaceBlocks = eYo.Do.arraysMerged([
   eYo.T3.Expr.builtin_input_expr,
   eYo.T3.Expr.builtin_input_stmt,
@@ -257,7 +296,7 @@ eYo.DelegateSvg.Stmt.global_nonlocal_stmt.workspaceBlocks =
   eYo.T3.Expr.term,
 ]
 
-eYo.DelegateSvg.Expr.shortliteral.workspaceBlocks = 
+eYo.DelegateSvg.Expr.shortliteral.workspaceBlocks =
 eYo.DelegateSvg.Expr.numberliteral.workspaceBlocks = [
   eYo.T3.Expr.shortstringliteral,
   eYo.T3.Expr.integer,
@@ -382,44 +421,4 @@ eYo.DelegateSvg.Expr.comprehension.workspaceBlocks,
 [
   eYo.T3.Expr.slice_list,
 ],
-)
-
-goog.require('eYo.DelegateSvg.Expr'),
-goog.require('eYo.DelegateSvg.Term'),
-goog.require('eYo.DelegateSvg.Literal'),
-goog.require('eYo.DelegateSvg.Operator'),
-goog.require('eYo.DelegateSvg.Argument'),
-goog.require('eYo.DelegateSvg.Assignment'),
-goog.require('eYo.DelegateSvg.Comprehension'),
-goog.require('eYo.DelegateSvg.Control'),
-goog.require('eYo.DelegateSvg.List'),
-goog.require('eYo.DelegateSvg.Group'),
-goog.require('eYo.DelegateSvg.Import'),
-goog.require('eYo.DelegateSvg.Lambda'),
-goog.require('eYo.DelegateSvg.Primary'),
-goog.require('eYo.DelegateSvg.Print'),
-goog.require('eYo.DelegateSvg.Proc'),
-goog.require('eYo.DelegateSvg.Stmt'),
-goog.require('eYo.DelegateSvg.Try'),
-goog.require('eYo.DelegateSvg.Yield'),
-
-eYo.DelegateSvg.T3s = eYo.Do.arraysMerged(
-  eYo.DelegateSvg.Expr.T3s,
-  eYo.DelegateSvg.Term.T3s,
-  eYo.DelegateSvg.Literal.T3s,
-  eYo.DelegateSvg.Operator.T3s,
-  eYo.DelegateSvg.Argument.T3s,
-  eYo.DelegateSvg.Assignment.T3s,
-  eYo.DelegateSvg.Comprehension.T3s,
-  eYo.DelegateSvg.Control.T3s,
-  eYo.DelegateSvg.List.T3s,
-  eYo.DelegateSvg.Group.T3s,
-  eYo.DelegateSvg.Import.T3s,
-  eYo.DelegateSvg.Lambda.T3s,
-  eYo.DelegateSvg.Primary.T3s,
-  eYo.DelegateSvg.Print.T3s,
-  eYo.DelegateSvg.Proc.T3s,
-  eYo.DelegateSvg.Stmt.T3s,
-  eYo.DelegateSvg.Try.T3s,
-  eYo.DelegateSvg.Yield.T3s,
 )

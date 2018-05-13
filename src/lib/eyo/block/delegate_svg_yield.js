@@ -30,12 +30,12 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
       YIELD_EXPRESSION: 1,
       YIELD_FROM: 2,
       all: [0, 1, 2],
-      didChange: function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
         var M = this.model
         this.ui.tiles.expression.required = (newValue == M.YIELD_EXPRESSION)
         this.ui.tiles.from.required = (newValue == M.YIELD_FROM)
       },
-      synchronize: function(newValue) {
+      synchronize: /** @suppress {globalThis} */ function(newValue) {
         var M = this.model
         this.ui.tiles.expression.setIncog(newValue != M.YIELD_EXPRESSION)
         this.ui.tiles.from.setIncog(newValue != M.YIELD_FROM)
@@ -50,7 +50,7 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
       order: 1,
       wrap: eYo.T3.Expr.non_void_expression_list,
       xml: {
-        didLoad: function () {
+        didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
           variant.set(variant.model.YIELD_EXPRESSION)
         },
@@ -63,7 +63,7 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
       },
       check: eYo.T3.Expr.Check.expression,
       xml: {
-        didLoad: function () {
+        didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
           variant.set(variant.model.YIELD_FROM)
         }
@@ -76,6 +76,7 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @param {!eYo.MenuManager} mgr, mgr.menu is the menu to populate.
+ * @this {eYo.Delegate}
  * @private
  */
 eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (block, mgr) {

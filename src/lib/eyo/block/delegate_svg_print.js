@@ -101,7 +101,7 @@ eYo.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
         eYo.Do.createSPAN(candidate+' = …', 'eyo-code'),
         has[candidate]? function() {
           remove(candidate)
-        }: function() {
+        }: /** @suppress {globalThis} */ function() {
           insert(candidate)
         }
       )
@@ -178,7 +178,7 @@ eYo.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
         eYo.Do.createSPAN(candidate+' = …', 'eyo-code'),
         has[candidate]? function() {
           remove(candidate)
-        }: function() {
+        }: /** @suppress {globalThis} */ function() {
           insert(candidate)
         }
       )

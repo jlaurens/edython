@@ -54,12 +54,14 @@ eYo.DelegateSvg.Manager.register = function (key) {
 
 /**
  * This is the shape used to draw the outline of a block
+ * @type {SVGPathElement}
  * @private
  */
 eYo.DelegateSvg.prototype.svgPathShape_ = undefined
 
 /**
  * This is the shape used to draw the background of a block
+ * @type {SVGPathElement}
  * @private
  */
 eYo.DelegateSvg.prototype.svgPathContour_ = undefined
@@ -67,24 +69,28 @@ eYo.DelegateSvg.prototype.svgPathContour_ = undefined
 /**
  * This is the shape used to draw a collapsed block.
  * Background or outline ?
+ * @type {SVGPathElement}
  * @private
  */
 eYo.DelegateSvg.prototype.svgPathCollapsed_ = undefined
 
 /**
  * This is the shape used to draw a block...
+ * @type {SVGPathElement}
  * @private
  */
 eYo.DelegateSvg.prototype.svgPathInline_ = undefined
 
 /**
  * This is the shape used to draw an highlighted block contour.
+ * @type {SVGPathElement}
  * @private
  */
 eYo.DelegateSvg.prototype.svgPathHighlight_ = undefined
 
 /**
  * This is the shape used to draw an highlighted connection contour.
+ * @type {SVGPathElement}
  * @private
  */
 eYo.DelegateSvg.prototype.svgPathConnection_ = undefined
@@ -717,6 +723,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     i: 0, // input index
     i_max: block.inputList.length,
     f: 0, // field index
+    /** ?Object */ field: undefined
   }
   io.cursorX = this.getPaddingLeft(block)
   io.offsetX = 0
@@ -869,7 +876,10 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
           // add a separation
           io.cursorX += eYo.Font.space
         }
-        io.shouldSeparateField = eYo.XRE.id_continue.test(text[text.length-1]) || eYo.XRE.operator.test(text[text.length-1]) || text[text.length-1] === ':' || (text[text.length-1] === '.' && !io.field instanceof eYo.FieldTextInput)
+        io.shouldSeparateField = eYo.XRE.id_continue.test(text[text.length-1])
+        || eYo.XRE.operator.test(text[text.length-1])
+        || text[text.length-1] === ':'
+        || (text[text.length-1] === '.' && !/** Object */(io.field) instanceof eYo.FieldTextInput)
         io.starSymbol = (io.f === 0 && (['*','@', '+', '-', '~'].indexOf(text[text.length-1])>=0))
       }
       var x_shift = eyo && !io.block.eyo.wrapped_? eyo.x_shift || 0: 0
@@ -1379,7 +1389,7 @@ eYo.HoleFiller.getData = function(check, value) {
  * @param {Array} holes whengiven the is the array to be filled
  * @return an array of conections, holes if given.
  */
-eYo.HoleFiller.getDeepHoles = function(block, holes) {
+eYo.HoleFiller.getDeepHoles = function(block, holes = undefined) {
   var H = holes || []
   var getDeepHoles = function (c8n) {
     if (c8n && c8n.type === Blockly.INPUT_VALUE && ((!c8n.eyo.disabled_ && !c8n.eyo.incog_) || c8n.eyo.wrapped_)) {
@@ -1391,7 +1401,7 @@ eYo.HoleFiller.getDeepHoles = function(block, holes) {
       }
     }
   }
-  if (block.getSourceBlock) {
+  if (goog.isDef(block.getSourceBlock)) {// this is a connection...
     getDeepHoles(block)
   } else {
     var e8r = block.eyo.inputEnumerator(block)
@@ -2118,10 +2128,10 @@ eYo.SelectedConnection = function() {
     /**
      * Lazy getter
     */
-    get: function() {
+    get: /** @suppress {globalThis} */ function() {
       return c8n_
     },
-    set: function(connection) {
+    set: /** @suppress {globalThis} */ function(connection) {
       var B
       if (connection) {
         var block = connection.getSourceBlock()
@@ -2202,7 +2212,6 @@ eYo.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
   try {
     var candidate = eYo.DelegateSvg.newBlockComplete(block.workspace, prototypeName, true)
     if (!candidate) {
-      disabler.stop()
       return
     }
     var c8n_N = action.subtype || subtype
@@ -2211,8 +2220,8 @@ eYo.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
     }
     var c8n, otherC8n, foundC8n
     var fin = function(prepare) {
-      disabler.stop()
-      Blockly.Events.setGroup(true)
+      Blockly.Events.enable()
+      eYo.Events.setGroup(true)
       try {
         if (Blockly.Events.isEnabled()) {
           Blockly.Events.fire(new Blockly.Events.BlockCreate(candidate))
@@ -2224,7 +2233,8 @@ eYo.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
         candidate.select()
         candidate.bumpNeighbours_()
       } finally {
-        Blockly.Events.setGroup(false)
+        eYo.Events.setGroup(false)
+        Blockly.Events.disable()
       }
       return candidate
     }
@@ -2340,10 +2350,10 @@ eYo.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
       candidate.dispose(true)
     }
   } finally {
-    disabler.stop()
+    Blockly.Events.enable()
   }
 }
-
+console.warn('Use eYo.vents.setGroup(...)')
 /**
  * Whether the given block can lock.
  * For edython.

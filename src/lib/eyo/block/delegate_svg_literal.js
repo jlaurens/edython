@@ -12,18 +12,15 @@
 'use strict'
 
 goog.provide('eYo.DelegateSvg.Literal')
-
-goog.require('eYo.DelegateSvg.Expr')
-
 goog.provide('eYo.DelegateSvg.Expr.numberliteral')
 
+goog.require('eYo.Msg')
+goog.require('eYo.DelegateSvg.Expr')
+
 /**
-* Class for a DelegateSvg, number: integer, floatnumber or imagnumber.
-* For edython.
-* @param {?string} prototypeName Name of the language object containing
-*     type-specific functions for this block.
-* @constructor
-*/
+ * Class for a DelegateSvg, number: integer, floatnumber or imagnumber.
+ * For edython.
+ */
 eYo.DelegateSvg.Expr.makeSubclass('Literal', {
   data: {
     content: {
@@ -44,12 +41,9 @@ eYo.DelegateSvg.Literal.prototype.xmlType = function (block) {
 }
 
 /**
-* Class for a DelegateSvg, number: integer, floatnumber or imagnumber.
-* For edython.
-* @param {?string} prototypeName Name of the language object containing
-*     type-specific functions for this block.
-* @constructor
-*/
+ * Class for a DelegateSvg, number: integer, floatnumber or imagnumber.
+ * For edython.
+ */
 eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
   data: {
     subtype: {
@@ -58,12 +52,12 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
     },
     value: {
       init: '0',
-      validate: function(newValue) {
+      validate: /** @suppress {globalThis} */ function(newValue) {
         var subtypes = this.data.subtype.getAll()
         var subtype = eYo.Do.typeOfString(newValue)
         return (subtypes.indexOf(subtype)>= 0) && {validated: newValue} || null
       },
-      didChange: function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
         var type = newValue? eYo.Do.typeOfString(newValue): eYo.T3.Expr.integer
         this.data.subtype.set(type)
       },
@@ -107,18 +101,15 @@ eYo.DelegateSvg.Expr.numberliteral.prototype.consolidateType = function (block) 
 goog.provide('eYo.DelegateSvg.Expr.shortliteral')
 
 /**
-* Class for a DelegateSvg, string litteral.
-* The subtype is the kind of delimiters used.
-* For edython.
-* @param {?string} prototypeName Name of the language object containing
-*     type-specific functions for this block.
-* @constructor
-*/
+ * Class for a DelegateSvg, string litteral.
+ * The subtype is the kind of delimiters used.
+ * For edython.
+ */
 eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
   data: {
     subtype: {
       all:[eYo.T3.Expr.shortstringliteral, eYo.T3.Expr.shortbytesliteral],
-      getPossible: function (prefix, content) {
+      getPossible: /** @suppress {globalThis} */ function (prefix, content) {
         var delimiter = this.data.delimiter.get()
         var value = ''+prefix+delimiter+content+delimiter
         return !!XRegExp.exec(value, eYo.XRE.shortbytesliteralSingle) && eYo.T3.Expr.shortbytesliteral ||
@@ -129,10 +120,10 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
     },
     delimiter: {
       all: ["'", '"'],
-      didChange: function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
         this.data.value.consolidate()
       },
-      synchronize: function(newValue) {
+      synchronize: /** @suppress {globalThis} */ function(newValue) {
         this.ui.fields.start.setValue(this.toText())
         this.ui.fields.end.setValue(this.toText())
       },
@@ -141,24 +132,24 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       all: ['', 'r', 'u', 'R', 'U', 'f', 'F',
     'fr', 'Fr', 'fR', 'FR', 'rf', 'rF', 'Rf', 'RF',
     'b', 'B', 'br', 'Br', 'bR', 'BR', 'rb', 'rB', 'Rb', 'RB'],
-      didChange: function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
         this.data.value.consolidate()
       },
-      validate: function(newValue) {
+      validate: /** @suppress {globalThis} */ function(newValue) {
         var content = this.data.content.get()
         return (!goog.isDef(content) || this.data.subtype.model.getPossible.call(this, newValue, content)) && {validated: newValue}
       },
-      synchronize: function(newValue) {
+      synchronize: /** @suppress {globalThis} */ function(newValue) {
         this.synchronize()
         this.ui.fields.prefix.setVisible(!!newValue && !!newValue.length)
       },
     },
     content: {
       init: '',
-      didChange: function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
         this.data.value.consolidate()
       },
-      validate: function(newValue) {
+      validate: /** @suppress {globalThis} */ function(newValue) {
         var prefix = this.data.prefix.get()
         return (!goog.isDef(prefix) || this.data.subtype.model.getPossible.call(this, prefix, newValue)) && {validated: newValue} || null
       },
@@ -167,7 +158,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
     },
     value: {
       init: '',
-      didChange: function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
         var data = this.data
         var F = function(xre, type) {
           var m = XRegExp.exec(newValue, xre)
@@ -185,7 +176,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         || F(eYo.XRE.shortbytesliteralSingle, eYo.T3.Expr.shortbytesliteral)
         || F(eYo.XRE.shortbytesliteralDouble, eYo.T3.Expr.shortbytesliteral)
       },
-      consolidate: function() {
+      consolidate: /** @suppress {globalThis} */ function() {
         var prefix = this.data.prefix.get()
         var delimiter = this.data.delimiter.get()
         var content = this.data.content.get()
@@ -203,7 +194,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       css: 'reserved',
     },
     content: { // this is the only really unordered field
-      placeholder: function() {
+      placeholder: /** @suppress {globalThis} */ function() {
         var block = this.sourceBlock_
         var eyo = block.eyo
         if (this.placeholderText_) {
@@ -214,10 +205,10 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         eYo.Msg.Placeholder.BYTES: eYo.Msg.Placeholder.STRING
       },
       validate: true,
-      startEditing: function () {
+      startEditing: /** @suppress {globalThis} */ function () {
         this.eyo.ui.fields.end.setVisible(false)
       },
-      endEditing: function () {
+      endEditing: /** @suppress {globalThis} */ function () {
         this.eyo.data.set(this.getValue())
         this.eyo.ui.fields.end.setVisible(true)
       },
@@ -255,7 +246,8 @@ eYo.DelegateSvg.Expr.shortliteral.prototype.makeTitle = function (block, variant
  * @param {!Blockly.Block} block The block.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
- */
+ * @suppress {globalThis}
+*/
 eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr) {
   mgr.populateProperties(block, 'delimiter')
   mgr.separate()
@@ -319,18 +311,15 @@ eYo.DelegateSvg.Expr.shortliteral.prototype.populateContextMenuFirst_ = function
 goog.provide('eYo.DelegateSvg.Expr.longliteral')
 
 /**
-* Class for a DelegateSvg, docstring (expression).
-* The subtype is the kind of delimiters used.
-* For edython.
-* @param {?string} prototypeName Name of the language object containing
-*     type-specific functions for this block.
-* @constructor
-*/
+ * Class for a DelegateSvg, docstring (expression).
+ * The subtype is the kind of delimiters used.
+ * For edython.
+ */
 eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
   data: {
     subtype: {
       all: [eYo.T3.Expr.longstringliteral, eYo.T3.Expr.longbytesliteral],
-      getPossible: function (prefix, content) {
+      getPossible: /** @suppress {globalThis} */ function (prefix, content) {
         var delimiter = this.data.delimiter.get()
         var value = ''+prefix+delimiter+content+delimiter
         return !!XRegExp.exec(value, eYo.XRE.longbytesliteralSingle) && eYo.T3.Expr.longbytesliteral ||
@@ -344,7 +333,7 @@ eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
     },
     value: {
       init: '',
-      didChange: function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
         var data = this.data
         var F = function(xre, type) {
           var m = XRegExp.exec(newValue, xre)
@@ -353,7 +342,7 @@ eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
             data.delimiter.set(m.delimiter||"'''")
             data.content.set(m.content||'')
             data.subtype.set(type)
-            return true  
+            return true
           }
           return false
         }

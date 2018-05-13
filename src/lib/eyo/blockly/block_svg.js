@@ -29,7 +29,7 @@ eYo.inherits(Blockly.BlockSvg, eYo.Block)
  *     type-specific functions for this block.
  * @param {string=} optId Optional ID.  Use this ID if provided, otherwise
  *     create a new id.
- * @extends {Blockly.Block}
+ * @extends {Blockly.BlockSvg}
  * @constructor
  */
 eYo.BlockSvg = function (workspace, prototypeName, optId) {
@@ -238,7 +238,12 @@ eYo.BlockSvg.prototype.removeSelect = function () {
  * @param {Blockly.BlockSvg} newParent New parent block.
  */
 eYo.BlockSvg.prototype.setParent = function (newParent) {
+  if (newParent == this.parentBlock_) {
+    return;
+  }
+  this.eyo.parentWillChange(this, newParent)
   eYo.BlockSvg.superClass_.setParent.call(this, newParent)
+  this.eyo.parentDidChange(this, newParent)
   if ((this.eyo.svgPathHighlight_ &&
       this.svgGroup_ === this.eyo.svgPathHighlight_.parentElement) || (this.eyo.svgPathConnection_ &&
         this.svgGroup_ === this.eyo.svgPathConnection_.parentElement)) {

@@ -12,6 +12,7 @@
 'use strict'
 
 goog.provide('eYo.DelegateSvg.Control')
+goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Stmt')
 
 /**

@@ -13,6 +13,7 @@
 
 goog.provide('eYo.DelegateSvg.Assignment')
 
+goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Term')
 goog.require('eYo.DelegateSvg.List')
 goog.require('eYo.DelegateSvg.Stmt')
@@ -267,7 +268,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       NAME_ANNOTATION_VALUE: 1,
       TARGET_VALUE: 2,
       all: [0, 1, 2],
-      synchronize: function(newValue) {
+      synchronize: /** @suppress {globalThis} */ function(newValue) {
         this.data.name.setIncog(newValue == this.TARGET_VALUE)
         this.ui.tiles.annotation.setIncog(newValue != this.NAME_ANNOTATION_VALUE)
         this.ui.tiles.target.setIncog(newValue != this.TARGET_VALUE)
@@ -276,7 +277,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     name: {
       init: '',
       subtypes: [eYo.T3.Expr.identifier, eYo.T3.Expr.dotted_name,],
-      validate: function(newValue) {
+      validate: /** @suppress {globalThis} */ function(newValue) {
         var t = eYo.Do.typeOfString(newValue)
         return this.model.subtypes.indexOf(t) >= 0? {validated: newValue}: null
       },
@@ -404,7 +405,6 @@ goog.provide('eYo.DelegateSvg.AugAssign')
  * Multiple ops.
  * As there are many possible operators, we split the list into
  * number operators (+=, -=, /= ...) and bitwise operators (<<=, >>=,...)
- *
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
@@ -413,14 +413,14 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       NAME_EXPRESSIONS: 0,
       TARGET_EXPRESSIONS: 1,
       all: [0, 1],
-      synchronize: function (newVariant) {
+      synchronize: /** @suppress {globalThis} */ function (newVariant) {
         this.ui.tiles.name.setIncog(newVariant)
         this.ui.tiles.target.setIncog(!newVariant)
       },
     },
     name: {
       init: '',
-      validate: function(newValue) {
+      validate: /** @suppress {globalThis} */ function(newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name?
         {validated: newValue}: null
@@ -430,7 +430,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
     operator: {
       init: '+=',
       synchronize: true,
-      didChange: function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
         this.data.numberOperator.set(newValue)
         this.data.bitwiseOperator.set(newValue)
       }
@@ -439,7 +439,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       all: ['+=','-=','*=','/=','//=','%=','**=','@='],
       noUndo: true,
       xml: false,
-      didChange: function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
         this.data.operator.set(newValue)
         if (this.data.operator.get() === this.get()) {
           this.data.operator.bitwise = false
@@ -450,7 +450,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       all: ['<<=', '>>=', '&=', '^=', '|='],
       noUndo: true,
       xml: false,
-      didChange: function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
         this.data.operator.set(newValue)
         if (this.data.operator.get() === this.get()) {
           this.data.operator.bitwise = true

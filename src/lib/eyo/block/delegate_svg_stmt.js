@@ -13,6 +13,7 @@
 
 goog.provide('eYo.DelegateSvg.Stmt')
 
+goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.List')
 goog.require('eYo.DelegateSvg.Expr')
 goog.require('eYo.DelegateSvg.Operator')
@@ -31,32 +32,32 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       all: [0, 1],
       init: 0,
       xml: false,
-      didChange: function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
         this.data.comment.required = newValue === this.COMMENT
         this.data.comment.setIncog(newValue === this.NO_COMMENT)
       },
-      consolidate: function () {
+      consolidate: /** @suppress {globalThis} */ function () {
         this.set(this.data.comment.isIncog()? this.NO_COMMENT: this.COMMENT)
       },
     },
     comment: {
-      init: function() {
+      init: /** @suppress {globalThis} */ function() {
         this.setIncog(true)
         this.init('')
       },
-      didChange: function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
         this.data.comment_variant.consolidate()
       },
-      validate: function(newValue) {
+      validate: /** @suppress {globalThis} */ function(newValue) {
         return {validated: XRegExp.exec(newValue, eYo.XRE.comment).value || ''}
       },
-      synchronize: function (newValue) {
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         this.ui.fields.comment_mark.setVisible(!this.isIncog())
       },
       placeholderText: eYo.Msg.Placeholder.COMMENT,
       xml: {
-        load: function (element) {
+        load: /** @suppress {globalThis} */ function (element) {
           this.load(element)
           this.whenRequiredFromDom(function () {
             this.setIncog(false)
@@ -520,7 +521,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
       all: [0, 1, 2, 3, 5, 5],
       init: 2,
       xml: false,
-      didChange: function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
         this.data.code.required = newValue < this.EXPRESSION
         this.data.code.setIncog(newValue > this.CODE_COMMENT)
         this.data.comment.required = (newValue % 2) && newValue !== this.COMMENT
@@ -530,7 +531,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
         this.ui.tiles.expression.setIncog(newValue < this.EXPRESSION
         || newValue > this.EXPRESSION_COMMENT)
       },
-      consolidate: function () {
+      consolidate: /** @suppress {globalThis} */ function () {
         var withCode = !this.data.code.isIncog()
         var withExpression = !this.ui.tiles.expression.isIncog()
         var withComment = !this.data.comment.isIncog()
@@ -560,7 +561,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
     },
     code: {
       synchronize: true,
-      didChange: function (oldVAlue, newValue) {
+      didChange: /** @suppress {globalThis} */ function (oldVAlue, newValue) {
         var variant = this.data.variant
         if (this.isIncog() && variant.get() === variant.CODE) {
           variant.set(variant.COMMENT)
@@ -568,7 +569,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
       },
       xml: {
         text: true,
-        load: function (element) {
+        load: /** @suppress {globalThis} */ function (element) {
           this.load(element)
           this.whenRequiredFromDom(function () {
             this.setIncog(false)
@@ -577,11 +578,11 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
       },
     },
     comment: {
-      init: function () {
+      init: /** @suppress {globalThis} */ function () {
         this.init('')
         this.setIncog(true)
       },
-      didChange: function (oldVAlue, newValue) {
+      didChange: /** @suppress {globalThis} */ function (oldVAlue, newValue) {
         var variant = this.data.variant
         if (this.isIncog() && variant.get() === variant.COMMENT) {
           variant.set(variant.CODE)
@@ -598,12 +599,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
-      init: function () {
+      init: /** @suppress {globalThis} */ function () {
         this.init()
         this.setIncog(true)
       },
       xml: {
-        load: function (element) {
+        load: /** @suppress {globalThis} */ function (element) {
           this.load(element)
           this.whenRequiredFromDom(function () {
             this.setIncog(false)

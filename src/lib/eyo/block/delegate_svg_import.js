@@ -13,6 +13,7 @@
 
 goog.provide('eYo.DelegateSvg.Import')
 
+goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.List')
 goog.require('eYo.DelegateSvg.Stmt')
 
@@ -75,7 +76,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       FROM_MODULE_IMPORT_STAR: 2,
       all: [0, 1, 2],
       init: 0,
-      synchronize: function(newValue) {
+      synchronize: /** @suppress {globalThis} */ function(newValue) {
         // var disabled_1 = true, disabled_2 = true, disabled_3 = true, disabled_4 = true
         // switch(newValue) {
         //   case 0: disabled_1 = false; break
@@ -90,7 +91,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       },
     },
     from: {
-      validate: function(newValue) {
+      validate: /** @suppress {globalThis} */ function(newValue) {
         var type = eYo.Do.typeOfString(newValue)
         var variant = this.data.variant.get()
         var model = this.data.variant.model
@@ -210,5 +211,5 @@ eYo.DelegateSvg.Import.T3s = [
   eYo.T3.Expr.non_void_module_as_list,
   eYo.T3.Expr.non_void_import_identifier_as_list,
   eYo.T3.Stmt.import_stmt,
-  eYo.T3.Stmt.future_statement,  
+  eYo.T3.Stmt.future_statement,
 ]

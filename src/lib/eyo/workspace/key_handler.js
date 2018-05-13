@@ -515,7 +515,7 @@ eYo.KeyHandler = function() {
       var F = function (f) {
         event.preventDefault()
         event.stopPropagation()
-        var block = eYo.DelegateSvg.getBestBlock(workspace, f)
+        var block = eYo.DelegateSvg.getBestBlock(B.workspace, f)
         if (block) {
           block.select()
         }
@@ -677,14 +677,14 @@ for (var i = 0; (K = Ks[i++]); ) {
   });
 }
 Ks = ['is', 'is not', 'in', 'not in']
-for (var i = 0; (K = Ks[i++]); ) {
+for (i = 0; (K = Ks[i++]); ) {
   eYo.KeyHandler.register('… '+K+' …', {
     type: eYo.T3.Expr.object_comparison,
     subtype: K,
   });
 }
 Ks = ['<', '>', '==', '>=', '<=', '!=']
-for (var i = 0; (K = Ks[i++]); ) {
+for (i = 0; (K = Ks[i++]); ) {
   eYo.KeyHandler.register('… '+K+' …', {
     type: eYo.T3.Expr.number_comparison,
     subtype: K,
@@ -745,19 +745,19 @@ Ks = {
   },
   'list(…)': {
     type: eYo.T3.Expr.builtin_call_expr,
-    subtype: 'list',
+    callee: 'list',
   },
   'set(…)': {
     type: eYo.T3.Expr.builtin_call_expr,
-    subtype: 'set',
+    callee: 'set',
   },
   'len(…)': {
     type: eYo.T3.Expr.builtin_call_expr,
-    subtype: 'len',
+    callee: 'len',
   },
   'sum(…)': {
     type: eYo.T3.Expr.builtin_call_expr,
-    subtype: 'sum',
+    callee: 'sum',
   },
   'module as alias': eYo.T3.Expr.module_as_s3d,
   '(…)': eYo.T3.Expr.parenth_form,
@@ -771,17 +771,10 @@ for (K in Ks) {
   eYo.KeyHandler.register(K, Ks[K]);
 }
 
-Ks = ['+=', '-=', '*=', '@=', '/=', '//=', '%=', '**=',]
-for (var i = 0; (K = Ks[i++]); ) {
+Ks = ['+=', '-=', '*=', '@=', '/=', '//=', '%=', '**=','>>=', '<<=', '&=', '^=', '|=',]
+for (i = 0; (K = Ks[i++]); ) {
   eYo.KeyHandler.register('… '+K+' …', {
     type: eYo.T3.Stmt.augmented_assignment_stmt,
-    subtype: K,
-  });
-}
-Ks = ['>>=', '<<=', '&=', '^=', '|=',]
-for (var i = 0; (K = Ks[i++]); ) {
-  eYo.KeyHandler.register('… '+K+' …', {
-    type: eYo.T3.Stmt.augassign_bitwise_stmt,
-    subtype: K,
+    operator: K,
   });
 }

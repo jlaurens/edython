@@ -482,21 +482,21 @@ goog.require('eYo.T3')
             self.append(template.format(t.name))
         self.append(']')
         self.append('''
-eYo.T3.All.containsStatement = function(prototypeName) {
-  return eYo.T3.All.part_statements.indexOf(prototypeName)>=0
-  || eYo.T3.All.simple_statements.indexOf(prototypeName)>=0
-  || eYo.T3.All.compound_statements.indexOf(prototypeName)>=0
+eYo.T3.All.containsStatement = function(type) {
+  return eYo.T3.All.part_statements.indexOf(type)>=0
+  || eYo.T3.All.simple_statements.indexOf(type)>=0
+  || eYo.T3.All.compound_statements.indexOf(type)>=0
 }
 
-eYo.T3.All.containsExpression = function(prototypeName) {
-  return eYo.T3.All.core_expressions.indexOf(prototypeName)>=0
-  || eYo.T3.All.lists.indexOf(prototypeName)>=0
-  || eYo.T3.All.wrappers.indexOf(prototypeName)>=0
+eYo.T3.All.containsExpression = function(type) {
+  return eYo.T3.All.core_expressions.indexOf(type)>=0
+  || eYo.T3.All.lists.indexOf(type)>=0
+  || eYo.T3.All.wrappers.indexOf(type)>=0
 }
 
 eYo.T3.All.contains = function(type) {
-  return eYo.T3.All.containsStatement(prototypeName)
-  || eYo.T3.All.containsExpression(prototypeName)
+  return eYo.T3.All.containsStatement(type)
+  || eYo.T3.All.containsExpression(type)
 }
 
 ''')
