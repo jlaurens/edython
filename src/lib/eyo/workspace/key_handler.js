@@ -19,7 +19,7 @@ goog.require('eYo.PopupMenu')
 goog.require('eYo.MenuItem')
 goog.require('eYo.Separator')
 
-eYo.KeyHandlerMenu = function(opt_domHelper, opt_renderer) {
+eYo.KeyHandlerMenu = function (opt_domHelper, opt_renderer) {
   eYo.KeyHandlerMenu.superClass_.constructor.call(this, opt_domHelper, opt_renderer)
 }
 goog.inherits(eYo.KeyHandlerMenu, eYo.PopupMenu)
@@ -33,13 +33,13 @@ goog.inherits(eYo.KeyHandlerMenu, eYo.PopupMenu)
  * @return {boolean} Whether the event was handled by the container (or one of
  *     its children).
  */
-eYo.KeyHandlerMenu.prototype.handleKeyEventInternal = function(e) {
+eYo.KeyHandlerMenu.prototype.handleKeyEventInternal = function (e) {
   // Give the highlighted control the chance to handle the key event.
   if (eYo.KeyHandlerMenu.superClass_.handleKeyEventInternal.call(this, e)) {
     return true
   }
   return this.eyo.handleMenuKeyEvent(e)
-};
+}
 
 console.warn('Problem inserting a print block')
 /**
@@ -47,42 +47,42 @@ console.warn('Problem inserting a print block')
  * For edython.
  * @param {!constructor} constructor is either a constructor or the name of a constructor.
  */
-eYo.KeyHandler = function() {
+eYo.KeyHandler = (function () {
   var me = {MAX_CHILD_COUNT: 20}
   var keys_ = []
   var shortcuts_ = [] // an array of {key: ..., action: ...} objects
   var current_ = []
   var target_
-  var menu_ = new eYo.KeyHandlerMenu(/*undefined, ContextMenuRenderer*/)
+  var menu_ = new eYo.KeyHandlerMenu(/* undefined, ContextMenuRenderer */)
   menu_.eyo = me
-/**
+  /**
  * Setup the shared key handler.
  * For edython.
  * @param {!constructor} constructor is either a constructor or the name of a constructor.
  */
-  me.setup = function(document) {
+  me.setup = function (document) {
     target_ = document
     goog.events.listen(
       document, goog.events.EventType.KEYDOWN, me.handleKeyDown_,
       undefined /* opt_capture */, me
     )
   }
-  me.register = function(key, action) {
+  me.register = function (key, action) {
     // manage duplicates
     if (key.length) {
-      goog.asserts.assert(action, 'No action to register for '+key)
+      goog.asserts.assert(action, 'No action to register for ' + key)
       for (var i = 0, s; (s = shortcuts_[i]); i++) {
         if (s.key === key) {
           shortcuts_[i] = {
             key: key,
-            action: action,
+            action: action
           }
           return
         }
       }
       shortcuts_.push({
         key: key,
-        action: action,
+        action: action
       })
     }
   }
@@ -103,7 +103,7 @@ eYo.KeyHandler = function() {
     if (i < 0) {
       return undefined
     }
-    return [key.substring(0, i), key.substring(i+sep.length)]
+    return [key.substring(0, i), key.substring(i + sep.length)]
   }
   me.handleMenuKeyEvent = function (event) {
     var K = event.key
@@ -150,12 +150,11 @@ eYo.KeyHandler = function() {
     if (current_.length) {
       shortcut = current_[0]
       me.handleAction(shortcut)
-      return
     }
   }
 
   me.handleType = function (type, subtype) {
-    console.log('me.handleType',type, subtype)
+    console.log('me.handleType', type, subtype)
     if (eYo.DelegateSvg.Manager.get(type)) {
       var B = Blockly.selected
       if (B) {
@@ -167,7 +166,7 @@ eYo.KeyHandler = function() {
             // There was a selected connection,
             // we try to select another one, with possibly the same type
             // First we take a look at B : is there an unconnected input connection
-            var doFirst = function(block, type) {
+            var doFirst = function (block, type) {
               var e8r = block.eyo.inputEnumerator(block)
               while (e8r.next()) {
                 if ((c8n = e8r.here.connection) && c8n.type === type) {
@@ -196,7 +195,7 @@ eYo.KeyHandler = function() {
           do {
             var e8r = parent.eyo.inputEnumerator(parent)
             while (e8r.next()) {
-              if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && ! c8n.eyo.optional_ && ! c8n.targetConnection) {
+              if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && !c8n.eyo.optional_ && !c8n.targetConnection) {
                 eYo.SelectedConnection.set(c8n)
                 return true
               }
@@ -213,7 +212,7 @@ eYo.KeyHandler = function() {
   }
 
   me.handleAction = function (shortcut) {
-    console.log('me.handleAction',shortcut)
+    console.log('me.handleAction', shortcut)
     if (goog.isFunction(shortcut.action)) {
       shortcut.action(shortcut.key)
     } else if (shortcut.action) {
@@ -229,9 +228,9 @@ eYo.KeyHandler = function() {
    * @param {Object} shortcut
    * @private
    */
-  me.insertShortcutInArray_ = function(shortcut, current_) {
+  me.insertShortcutInArray_ = function (shortcut, current_) {
     var lhs = shortcut.components
-    var compare = function(As, Bs) {
+    var compare = function (As, Bs) {
       // put in front strings when there is a full match
       // For example "module as name" should come before "assert" for "as"
       // if As[0] is void or does not end with a letter
@@ -256,14 +255,14 @@ eYo.KeyHandler = function() {
       // if the shortcut starts with one, right bonus
       bonusA = bonusB = false
       if (As.length > 2) {
-        if (eYo.XRE.id_continue.test(As[As.length-2]) && (!As[As.length-1].length
-          || !eYo.XRE.id_continue.test(As[As.length-1][0]))) {
+        if (eYo.XRE.id_continue.test(As[As.length - 2]) && (!As[As.length - 1].length ||
+          !eYo.XRE.id_continue.test(As[As.length - 1][0]))) {
           var bonusA = true
         }
       }
       if (Bs.length > 2) {
-        if (eYo.XRE.id_continue.test(Bs[Bs.length-2]) && (!Bs[Bs.length-1].length
-          || !eYo.XRE.id_continue.test(Bs[Bs.length-1][0]))) {
+        if (eYo.XRE.id_continue.test(Bs[Bs.length - 2]) && (!Bs[Bs.length - 1].length ||
+          !eYo.XRE.id_continue.test(Bs[Bs.length - 1][0]))) {
           var bonusB = true
         }
       }
@@ -286,9 +285,9 @@ eYo.KeyHandler = function() {
       }
       return 0
     }
-    for (var j = 0, s;(s = current_[j]); j++) {
+    for (var j = 0, s; (s = current_[j]); j++) {
       var cmp = compare(lhs, s.components)
-      if (cmp<=0) {
+      if (cmp <= 0) {
         break
       }
     }
@@ -304,13 +303,13 @@ eYo.KeyHandler = function() {
         if (l < 3) {
           return
         }
-        for (var i = 0, s; (s = shortcuts_[i++]); ) {
+        for (var i = 0, s; (s = shortcuts_[i++]);) {
           var Cs = s.components
           if (Cs) {
             if (Cs.length === l) {
               me.insertShortcutInArray_(s, newCurrent)
             } else if (Cs.length > l) {
-              var last = Cs.slice(Cs.length-3, Cs.length).join('')
+              var last = Cs.slice(Cs.length - 3, Cs.length).join('')
               Cs.splice(Cs.length - 3, 3, last)
               me.insertShortcutInArray_(s, newCurrent)
             }
@@ -323,12 +322,12 @@ eYo.KeyHandler = function() {
     } else if (sep.length === 1) {
       if (current_) {
         keys_.push(sep)
-        for (var i = 0, s; (s = current_[i++]); ) {
+        for (var i = 0, s; (s = current_[i++]);) {
           var Cs = s.components
-          var last = Cs[Cs.length-1]
+          var last = Cs[Cs.length - 1]
           var split = me.split(last, sep)
           if (split) {
-            Cs.splice(Cs.length-1, 1, split[0], sep, split[1])
+            Cs.splice(Cs.length - 1, 1, split[0], sep, split[1])
             me.insertShortcutInArray_(s, newCurrent)
           }
         }
@@ -347,11 +346,11 @@ eYo.KeyHandler = function() {
     MI = menu_.getChildAt(0)
     var k = keys_.join('')
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.Do.createSPAN(k, 'eyo-code-emph'))
+      eYo.Do.createSPAN(k, 'eyo-code-emph'))
     MI.setContent(content)
     MI.getModel().key = k
     if (current_.length) {
-      if (menu_.getChildCount()<2) {
+      if (menu_.getChildCount() < 2) {
         menu_.addChild(new eYo.Separator(), true)
       }
       for (var i = 0, s; (s = current_[i]); i++) {
@@ -363,7 +362,7 @@ eYo.KeyHandler = function() {
           content.appendChild(eYo.Do.createSPAN(d, 'eyo-code-emph'))
           content.appendChild(goog.dom.createTextNode(c))
         }
-        if ((MI = menu_.getChildAt(i+2))) {
+        if ((MI = menu_.getChildAt(i + 2))) {
           MI.setModel(s)
           MI.setContent(content)
         } else {
@@ -374,7 +373,7 @@ eYo.KeyHandler = function() {
           menu_.setHighlighted(MI)
         }
       }
-      while ((MI = menu_.getChildAt(i+2))) {
+      while ((MI = menu_.getChildAt(i + 2))) {
         menu_.removeChild(MI, true)
       }
     } else {
@@ -410,18 +409,17 @@ eYo.KeyHandler = function() {
       menu_.addChild(new eYo.Separator(), true)
     }
     i = 0
-    while ( i < me.MAX_CHILD_COUNT && (shortcut = current_[i++])) {
+    while (i < me.MAX_CHILD_COUNT && (shortcut = current_[i++])) {
       content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
         goog.dom.createTextNode(shortcut.components[0]),
         eYo.Do.createSPAN(shortcut.components[1], 'eyo-code-emph'),
-        goog.dom.createTextNode(shortcut.components[2]),
+        goog.dom.createTextNode(shortcut.components[2])
       )
       MI = new eYo.MenuItem(content, shortcut)
       menu_.addChild(MI, true)
     }
-    return
   }
-  me.handleKeyDown_ = function(event) {
+  me.handleKeyDown_ = function (event) {
     if (menu_.isVisible() || event.metaKey) {
       // let someone else catch that event
       return
@@ -478,14 +476,14 @@ eYo.KeyHandler = function() {
             if (target) {
               var shortcut = target.getModel()
               if (shortcut) {
-                setTimeout(function () {// try/finally?
+                setTimeout(function () { // try/finally?
                   if (me.alreadyListened_) {
                     console.log('************* I have already listened!')
                     return
                   }
                   me.alreadyListened = true
-                  shortcut.key && me.handleAction(shortcut)
-                  || me.handleFirstMenuItemAction(shortcut)
+                  shortcut.key && me.handleAction(shortcut) ||
+                  me.handleFirstMenuItemAction(shortcut)
                 }, 100)// TODO be sure that this 100 is suffisant
               }
             }
@@ -500,7 +498,7 @@ eYo.KeyHandler = function() {
         } else {
           var xy = goog.style.getPageOffset(B.svgGroup_)
         }
-        menu_.showMenu(B.svgGroup_, xy.x, xy.y + scaledHeight+2)
+        menu_.showMenu(B.svgGroup_, xy.x, xy.y + scaledHeight + 2)
         menu_.highlightFirst()
       } else {
         var F = function (f) {
@@ -511,11 +509,11 @@ eYo.KeyHandler = function() {
             B.workspace.centerOnBlock(B.id)
           }
         }
-        switch(k) {
-          case 'arrowdown': return F(B.eyo.selectBlockBelow)
-          case 'arrowup': return F(B.eyo.selectBlockAbove)
-          case 'arrowleft': return F(B.eyo.selectBlockLeft)
-          case 'arrowright': return F(B.eyo.selectBlockRight)
+        switch (k) {
+        case 'arrowdown': return F(B.eyo.selectBlockBelow)
+        case 'arrowup': return F(B.eyo.selectBlockAbove)
+        case 'arrowleft': return F(B.eyo.selectBlockLeft)
+        case 'arrowright': return F(B.eyo.selectBlockRight)
         }
       }
     } else {
@@ -531,17 +529,16 @@ eYo.KeyHandler = function() {
           }
         }
       }
-      switch(k) {
-        case 'arrowdown': F(function(P) {return P.y}); return
-        case 'arrowup': F(function(P) {return -P.y}); return
-        case 'arrowleft': F(function(P) {return -P.x}); return
-        case 'arrowright': F(function(P) {return P.x}); return
+      switch (k) {
+      case 'arrowdown': F(function (P) { return P.y }); return
+      case 'arrowup': F(function (P) { return -P.y }); return
+      case 'arrowleft': F(function (P) { return -P.x }); return
+      case 'arrowright': F(function (P) { return P.x })
       }
     }
-    return
   }
   return me
-} ()
+}())
 
 eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)
 
@@ -549,19 +546,19 @@ var Ks = {
   'start': eYo.T3.Stmt.start_stmt,
   'if': eYo.T3.Stmt.if_part,
   'elif': eYo.T3.Stmt.elif_part,
-  'else':  eYo.T3.Stmt.else_part,
+  'else': eYo.T3.Stmt.else_part,
   'class': eYo.T3.Stmt.classdef_part,
   'except': {
     type: eYo.T3.Stmt.except_part,
-    subtype: 0,
+    subtype: 0
   },
   'except …': {
     type: eYo.T3.Stmt.except_part,
-    subtype: 1,
+    subtype: 1
   },
   'except … as …': {
     type: eYo.T3.Stmt.except_part,
-    subtype: 2,
+    subtype: 2
   },
   'finally': eYo.T3.Stmt.finally_part,
   'for': eYo.T3.Stmt.for_part,
@@ -575,7 +572,7 @@ var Ks = {
   '… if … else …': eYo.T3.Expr.conditional_expression_s3d,
   'identifier': eYo.T3.Expr.identifier,
   'name': eYo.T3.Expr.identifier,
-  'not': function(key) {
+  'not': function (key) {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
@@ -590,7 +587,7 @@ var Ks = {
       }
     }
   },
-  '±': function(key) {
+  '±': function (key) {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
@@ -605,7 +602,7 @@ var Ks = {
       }
     }
   },
-  '~': function(key) {
+  '~': function (key) {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
@@ -619,87 +616,87 @@ var Ks = {
         B.eyo.insertParent(B, eYo.T3.Expr.u_expr_s3d, '~')
       }
     }
-  },
+  }
 }
 var K
 for (K in Ks) {
-  eYo.KeyHandler.register(K, Ks[K]);
+  eYo.KeyHandler.register(K, Ks[K])
 }
 Ks = {
   '+': {
     type: eYo.T3.Expr.a_expr_s3d,
     subtype: '+',
-    input: eYo.Key.LHS,
+    input: eYo.Key.LHS
   },
   '-': {
     type: eYo.T3.Expr.a_expr_s3d,
     subtype: '-',
-    input: eYo.Key.LHS,
+    input: eYo.Key.LHS
   },
   '*': {
     type: eYo.T3.Expr.m_expr_s3d,
     subtype: '*',
-    input: eYo.Key.LHS,
+    input: eYo.Key.LHS
   },
   '//': {
     type: eYo.T3.Expr.m_expr_s3d,
     subtype: '//',
-    input: eYo.Key.LHS,
+    input: eYo.Key.LHS
   },
   '/': {
     type: eYo.T3.Expr.m_expr_s3d,
     subtype: '/',
-    input: eYo.Key.LHS,
+    input: eYo.Key.LHS
   },
   '%': {
     type: eYo.T3.Expr.m_expr_s3d,
     subtype: '%',
-    input: eYo.Key.LHS,
+    input: eYo.Key.LHS
   },
   '@': {
     type: eYo.T3.Expr.m_expr_s3d,
     subtype: '@',
-    input: eYo.Key.LHS,
+    input: eYo.Key.LHS
   },
   '<<': {
     type: eYo.T3.Expr.shift_expr_s3d,
     subtype: '<<',
-    input: eYo.Key.LHS,
+    input: eYo.Key.LHS
   },
   '>>': {
     type: eYo.T3.Expr.shift_expr_s3d,
     subtype: '>>',
-    input: eYo.Key.LHS,
+    input: eYo.Key.LHS
   },
   '&': eYo.T3.Expr.and_expr_s3d,
   '^': eYo.T3.Expr.xor_expr_s3d,
   '|': eYo.T3.Expr.or_expr_s3d,
   'or': eYo.T3.Expr.or_test_s3d,
-  'and': eYo.T3.Expr.and_test_s3d,
+  'and': eYo.T3.Expr.and_test_s3d
 }
 for (K in Ks) {
-  eYo.KeyHandler.register('… '+K+' …', Ks[K]);
+  eYo.KeyHandler.register('… ' + K + ' …', Ks[K])
 }
 Ks = ['True', 'False', 'None', '...']
-for (var i = 0; (K = Ks[i++]); ) {
+for (var i = 0; (K = Ks[i++]);) {
   eYo.KeyHandler.register(K, {
     type: eYo.T3.Expr.builtin_object,
-    subtype: K,
-  });
+    subtype: K
+  })
 }
 Ks = ['is', 'is not', 'in', 'not in']
-for (i = 0; (K = Ks[i++]); ) {
-  eYo.KeyHandler.register('… '+K+' …', {
+for (i = 0; (K = Ks[i++]);) {
+  eYo.KeyHandler.register('… ' + K + ' …', {
     type: eYo.T3.Expr.object_comparison,
-    subtype: K,
-  });
+    subtype: K
+  })
 }
 Ks = ['<', '>', '==', '>=', '<=', '!=']
-for (i = 0; (K = Ks[i++]); ) {
-  eYo.KeyHandler.register('… '+K+' …', {
+for (i = 0; (K = Ks[i++]);) {
+  eYo.KeyHandler.register('… ' + K + ' …', {
     type: eYo.T3.Expr.number_comparison,
-    subtype: K,
-  });
+    subtype: K
+  })
 }
 
 Ks = {
@@ -715,77 +712,77 @@ Ks = {
   'yield …': eYo.T3.Stmt.yield_stmt,
   'raise': {
     type: eYo.T3.Stmt.raise_stmt,
-    subtype: 0,
+    subtype: 0
   },
   'raise …': {
     type: eYo.T3.Stmt.raise_stmt,
-    subtype: 1,
+    subtype: 1
   },
   'raise … from …': {
     type: eYo.T3.Stmt.raise_stmt,
-    subtype: 2,
+    subtype: 2
   },
   // 'from future import …': eYo.T3.Stmt.future_statement,
   'import …': eYo.T3.Stmt.import_stmt,
   '# comment': eYo.T3.Stmt.any_stmt,
   'global …': {
     type: eYo.T3.Stmt.global_nonlocal_stmt,
-    subtype: 'global',
+    subtype: 'global'
   },
   'nonlocal …': {
     type: eYo.T3.Stmt.global_nonlocal_stmt,
-    subtype: 'nonlocal',
+    subtype: 'nonlocal'
   },
   '@decorator': eYo.T3.Stmt.decorator,
   '"""…"""(def)': eYo.T3.Stmt.docstring_def_stmt,
   "'''…'''(def)": eYo.T3.Stmt.docstring_def_stmt,
   '"""…"""': {
     type: eYo.T3.Expr.longstringliteral,
-    subtype: '"""',
+    subtype: '"""'
   },
   "'''…'''": {
     type: eYo.T3.Expr.longstringliteral,
-    subtype: "'''",
+    subtype: "'''"
   },
   'print(…)': eYo.T3.Stmt.builtin_print_stmt,
   'input(…)': eYo.T3.Expr.builtin_input_expr,
   'range(…)': {
     type: eYo.T3.Expr.builtin_call_expr,
     subtype: 'range',
-    key: eYo.Key.UPPER_BOUND,
+    key: eYo.Key.UPPER_BOUND
   },
   'list(…)': {
     type: eYo.T3.Expr.builtin_call_expr,
-    callee: 'list',
+    callee: 'list'
   },
   'set(…)': {
     type: eYo.T3.Expr.builtin_call_expr,
-    callee: 'set',
+    callee: 'set'
   },
   'len(…)': {
     type: eYo.T3.Expr.builtin_call_expr,
-    callee: 'len',
+    callee: 'len'
   },
   'sum(…)': {
     type: eYo.T3.Expr.builtin_call_expr,
-    callee: 'sum',
+    callee: 'sum'
   },
   'module as alias': eYo.T3.Expr.module_as_s3d,
   '(…)': eYo.T3.Expr.parenth_form,
   '[…]': eYo.T3.Expr.list_display,
   '{…:…}': eYo.T3.Expr.dict_display,
-  '{…}': eYo.T3.Expr.set_display,
+  '{…}': eYo.T3.Expr.set_display
 }
 console.warn('Implement support for `key` in range above')
 console.warn('Problem when there can be both a statement and an expression for the same shortcut')
 for (K in Ks) {
-  eYo.KeyHandler.register(K, Ks[K]);
+  eYo.KeyHandler.register(K, Ks[K])
 }
 
-Ks = ['+=', '-=', '*=', '@=', '/=', '//=', '%=', '**=','>>=', '<<=', '&=', '^=', '|=',]
-for (i = 0; (K = Ks[i++]); ) {
-  eYo.KeyHandler.register('… '+K+' …', {
+Ks = ['+=', '-=', '*=', '@=', '/=', '//=', '%=', '**=', '>>=', '<<=', '&=', '^=', '|=']
+for (i = 0; (K = Ks[i++]);) {
+  eYo.KeyHandler.register('… ' + K + ' …', {
     type: eYo.T3.Stmt.augmented_assignment_stmt,
-    operator: K,
-  });
+    operator: K
+  })
 }

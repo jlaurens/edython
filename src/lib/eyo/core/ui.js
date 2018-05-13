@@ -54,7 +54,7 @@ eYo.Margin = {T: 0, L: 0, B: 0, R: 0, H: 0, V: 0}
 /**
  * Point size of text.
  */
-eYo.Font = function (ascent) {
+eYo.Font = (function (ascent) {
   var my = {}
   my.updateAscent = function (ascent) {
     my.ascent = my.size = ascent
@@ -71,7 +71,7 @@ eYo.Font = function (ascent) {
     return eYo.Font.height + eYo.Padding.t() + eYo.Padding.b()
   }
   return my.updateAscent(ascent)
-}(10)
+}(10))
 
 /**
  * Offset of the text editor.
@@ -103,7 +103,7 @@ eYo.Style.Path = {
     'width': 2.5
   },
   Error: {
-    'colour': '#c33',
+    'colour': '#c33'
   },
   'colour': goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 90 / 100)),
   'inner_colour': goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 97 / 100)),
@@ -122,7 +122,7 @@ eYo.Style.Edit = {
   padding_h: 1,
   padding_v: 0,
   radius: 2,
-  width: 0.5,
+  width: 0.5
 }
 
 eYo.Style.insertCssRuleAt = (function () {
@@ -156,7 +156,7 @@ eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt('.eyo-path-contour, .eyo-path-collapsed {stroke: ' + eYo.Style.Path.colour + ';stroke-width: ' + eYo.Style.Path.width + 'px;fill: none;pointer-events: all;}')
   eYo.Style.insertCssRuleAt('.eyo-inner .eyo-path-contour, .eyo-inner .eyo-path-collapsed {stroke: ' + eYo.Style.Path.inner_colour + ';}')
   eYo.Style.insertCssRuleAt('.eyo-none {stroke:none;fill:none;}')
-  eYo.Style.insertCssRuleAt('.eyo-edit {stroke: ' + eYo.Style.Path.colour + ';stroke-width: '+eYo.Style.Edit.width+'px;fill: none;}')
+  eYo.Style.insertCssRuleAt('.eyo-edit {stroke: ' + eYo.Style.Path.colour + ';stroke-width: ' + eYo.Style.Edit.width + 'px;fill: none;}')
   eYo.Style.insertCssRuleAt('rect.eyo-editing, .eyo-locked  .eyo-edit {stroke: none;}')
   eYo.Style.insertCssRuleAt('.eyo-path-dotted{stroke: ' + eYo.Style.Path.colour + ';stroke-width: ' + (eYo.Style.Path.width * 1.5) + 'px;stroke-linecap:round;stroke-dasharray:0 ' + eYo.Font.space / 2 + ';}')
   eYo.Style.insertCssRuleAt('.eyo-no-path{display:none;}', 5)

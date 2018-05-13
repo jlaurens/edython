@@ -22,8 +22,8 @@ goog.require('eYo')
 goog.asserts.assert(XRegExp, 'load XRegExp before')
 
 eYo.Const = {
-  ABOVE: 'ABOVE',// not for block definition
-  BELOW: 'BELOW',
+  ABOVE: 'ABOVE', // not for block definition
+  BELOW: 'BELOW'
 }
 
 eYo.Const.Field = {
@@ -44,12 +44,12 @@ eYo.Const.Field = {
 }
 
 eYo.Key = {
-  TERM: 'term',// this MUST be in lower case
+  TERM: 'term', // this MUST be in lower case
   TARGET: 'target',
   ASSIGNED: 'assigned',
   IDENTIFIER: 'identifier',
-  EXPRESSION: 'expression',// = ANY? NO!
-  EXPRESSIONS: 'expressions',// = ANY? NO!
+  EXPRESSION: 'expression', // = ANY? NO!
+  EXPRESSIONS: 'expressions', // = ANY? NO!
   ARGUMENT: 'argument',
   POWER: 'power',
   FOR: 'for',
@@ -58,7 +58,7 @@ eYo.Key = {
   KEY: 'key',
   DATUM: 'datum',
   OPERATOR: 'operator',
-  MODIFIER: 'modifier',// this MUST be in lower case
+  MODIFIER: 'modifier', // this MUST be in lower case
   FUTURE: 'future',
   PARAMETERS: 'parameters',
   SLICE: 'slice',
@@ -67,24 +67,23 @@ eYo.Key = {
   DEL: 'del',
   RETURN: 'return',
 
-
   IMPORT_MODULE: 'import_module',
 
-  SUBTYPE: 'subtype',// this MUST be in lower case
-  VALUE: 'value',// this MUST be in lower case
-  CONTENT: 'content',// this MUST be in lower case
-  VARIANT: 'variant',// this MUST be in lower case
-  ALIAS: 'alias',// this MUST be in lower case
-  BUILTIN: 'builtin',// this MUST be in lower case
+  SUBTYPE: 'subtype', // this MUST be in lower case
+  VALUE: 'value', // this MUST be in lower case
+  CONTENT: 'content', // this MUST be in lower case
+  VARIANT: 'variant', // this MUST be in lower case
+  ALIAS: 'alias', // this MUST be in lower case
+  BUILTIN: 'builtin', // this MUST be in lower case
 
-  EDIT: 'edit',// this MUST be in lower case
+  EDIT: 'edit', // this MUST be in lower case
 
-  LIST: 'list',// avoid this one when possibe
+  LIST: 'list', // avoid this one when possibe
 
   ASYNC: 'async',
   AWAIT: 'await',
 
-  SUITE: 'suite',// this MUST be in lower case
+  SUITE: 'suite', // this MUST be in lower case
   COMP_FOR: 'comp_for',
 
   NAME: 'name',
@@ -118,8 +117,8 @@ eYo.Key = {
   SOURCE: 'source',
   DEFINITION: 'definition',
 
-  BACKUP: 'backup',// this MUST be in camelcase
-  ALT: 'alt',// this MUST be in camelcase
+  BACKUP: 'backup', // this MUST be in camelcase
+  ALT: 'alt', // this MUST be in camelcase
 
   WRAP: 'wrap',
 
@@ -149,7 +148,7 @@ eYo.Key = {
   VAR: 'VAR',
   ANN: 'ANN',
   DFT: 'DFT',
-  ID: 'ID',
+  ID: 'ID'
 
   /*
 "LIST", "EXPRESSION", "FOR", "ITER", "IN", "IF", "COMP", "PRIMARY", "ATTRIBUTE", "LOWER_BOUND", "UPPER_BOUND", "STRIDE", "KEY", "VALUE", "ARGUMENT", "POWER", "RHS", "LHS", "ELSE", "DATUM", "IMPORT", "SOURCE", "AS", "FROM", "MODULE", "NAME", "DEFINITION", "TYPE", "PARENT", "DO", "COND", "WRAP", "TARGET", "ANNOTATED", "ASSIGNED", "ASSERT", "RAISE"
@@ -269,7 +268,7 @@ eYo.XRE = {
   event_data: XRegExp(`^eyo:data:(?<key>.*?)$`),
   operator: XRegExp(`^[+\\-/%*@<>&^|=#]$`),
   comment: XRegExp(`^(?<value>[^\\r\\n]*)`),
-  upper: XRegExp(`^[A-Z_]*$`),
+  upper: XRegExp(`^[A-Z_]*$`)
 }
 
 /*
@@ -341,7 +340,7 @@ eYo.Const.Event = {
   DATA: 'eyo:data:',
   property: 'eyo:property',
   locked: 'eyo:locked',
-  asynced: 'eyo:asynced',
+  asynced: 'eyo:asynced'
 }
 
 eYo.XmlKey = {
@@ -349,5 +348,5 @@ eYo.XmlKey = {
   LIST: 'eyo:list',
   FLOW: 'eyo:flow',
   SUITE: 'eyo:suite',
-  NEXT: 'eyo:next',
+  NEXT: 'eyo:next'
 }

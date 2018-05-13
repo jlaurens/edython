@@ -24,9 +24,9 @@ goog.require('eYo.DelegateSvg.Expr')
 eYo.DelegateSvg.Expr.makeSubclass('Literal', {
   data: {
     content: {
-      init: '',
-    },
-  },
+      init: ''
+    }
+  }
 }, eYo.DelegateSvg)
 
 /**
@@ -48,32 +48,32 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
   data: {
     subtype: {
       all: [eYo.T3.Expr.integer, eYo.T3.Expr.floatnumber, eYo.T3.Expr.imagnumber],
-      noUndo: true,
+      noUndo: true
     },
     value: {
       init: '0',
-      validate: /** @suppress {globalThis} */ function(newValue) {
+      validate: /** @suppress {globalThis} */ function (newValue) {
         var subtypes = this.data.subtype.getAll()
         var subtype = eYo.Do.typeOfString(newValue)
-        return (subtypes.indexOf(subtype)>= 0) && {validated: newValue} || null
+        return (subtypes.indexOf(subtype) >= 0) && {validated: newValue} || null
       },
-      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
-        var type = newValue? eYo.Do.typeOfString(newValue): eYo.T3.Expr.integer
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        var type = newValue ? eYo.Do.typeOfString(newValue) : eYo.T3.Expr.integer
         this.data.subtype.set(type)
       },
-      synchronize: true,
-    },
+      synchronize: true
+    }
   },
   fields: {
     value: {
       validate: true,
       endEditing: true,
-      placeholder: eYo.Msg.Placeholder.NUMBER,
-    },
+      placeholder: eYo.Msg.Placeholder.NUMBER
+    }
   },
   output: {
-    check: eYo.T3.Expr.integer,
-  },
+    check: eYo.T3.Expr.integer
+  }
 })
 
 /**
@@ -108,10 +108,10 @@ goog.provide('eYo.DelegateSvg.Expr.shortliteral')
 eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
   data: {
     subtype: {
-      all:[eYo.T3.Expr.shortstringliteral, eYo.T3.Expr.shortbytesliteral],
+      all: [eYo.T3.Expr.shortstringliteral, eYo.T3.Expr.shortbytesliteral],
       getPossible: /** @suppress {globalThis} */ function (prefix, content) {
         var delimiter = this.data.delimiter.get()
-        var value = ''+prefix+delimiter+content+delimiter
+        var value = '' + prefix + delimiter + content + delimiter
         return !!XRegExp.exec(value, eYo.XRE.shortbytesliteralSingle) && eYo.T3.Expr.shortbytesliteral ||
         !!XRegExp.exec(value, eYo.XRE.shortbytesliteralDouble) && eYo.T3.Expr.shortbytesliteral ||
         !!XRegExp.exec(value, eYo.XRE.shortstringliteralSingle) && eYo.T3.Expr.shortstringliteral ||
@@ -120,89 +120,89 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
     },
     delimiter: {
       all: ["'", '"'],
-      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.data.value.consolidate()
       },
-      synchronize: /** @suppress {globalThis} */ function(newValue) {
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.ui.fields.start.setValue(this.toText())
         this.ui.fields.end.setValue(this.toText())
-      },
+      }
     },
     prefix: {
       all: ['', 'r', 'u', 'R', 'U', 'f', 'F',
-    'fr', 'Fr', 'fR', 'FR', 'rf', 'rF', 'Rf', 'RF',
-    'b', 'B', 'br', 'Br', 'bR', 'BR', 'rb', 'rB', 'Rb', 'RB'],
-      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
+        'fr', 'Fr', 'fR', 'FR', 'rf', 'rF', 'Rf', 'RF',
+        'b', 'B', 'br', 'Br', 'bR', 'BR', 'rb', 'rB', 'Rb', 'RB'],
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.data.value.consolidate()
       },
-      validate: /** @suppress {globalThis} */ function(newValue) {
+      validate: /** @suppress {globalThis} */ function (newValue) {
         var content = this.data.content.get()
         return (!goog.isDef(content) || this.data.subtype.model.getPossible.call(this, newValue, content)) && {validated: newValue}
       },
-      synchronize: /** @suppress {globalThis} */ function(newValue) {
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize()
         this.ui.fields.prefix.setVisible(!!newValue && !!newValue.length)
-      },
+      }
     },
     content: {
       init: '',
-      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.data.value.consolidate()
       },
-      validate: /** @suppress {globalThis} */ function(newValue) {
+      validate: /** @suppress {globalThis} */ function (newValue) {
         var prefix = this.data.prefix.get()
         return (!goog.isDef(prefix) || this.data.subtype.model.getPossible.call(this, prefix, newValue)) && {validated: newValue} || null
       },
 
-      synchronize: true,
+      synchronize: true
     },
     value: {
       init: '',
-      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         var data = this.data
-        var F = function(xre, type) {
+        var F = function (xre, type) {
           var m = XRegExp.exec(newValue, xre)
           if (m) {
-            data.prefix.set(m.prefix||'')
-            data.delimiter.set(m.delimiter||"'")
-            data.content.set(m.content||'')
+            data.prefix.set(m.prefix || '')
+            data.delimiter.set(m.delimiter || "'")
+            data.content.set(m.content || '')
             data.subtype.set(type)
             return true
           }
           return false
         }
-        F(eYo.XRE.shortstringliteralSingle, eYo.T3.Expr.shortstringliteral)
-        || F(eYo.XRE.shortstringliteralDouble, eYo.T3.Expr.shortstringliteral)
-        || F(eYo.XRE.shortbytesliteralSingle, eYo.T3.Expr.shortbytesliteral)
-        || F(eYo.XRE.shortbytesliteralDouble, eYo.T3.Expr.shortbytesliteral)
+        F(eYo.XRE.shortstringliteralSingle, eYo.T3.Expr.shortstringliteral) ||
+        F(eYo.XRE.shortstringliteralDouble, eYo.T3.Expr.shortstringliteral) ||
+        F(eYo.XRE.shortbytesliteralSingle, eYo.T3.Expr.shortbytesliteral) ||
+        F(eYo.XRE.shortbytesliteralDouble, eYo.T3.Expr.shortbytesliteral)
       },
-      consolidate: /** @suppress {globalThis} */ function() {
+      consolidate: /** @suppress {globalThis} */ function () {
         var prefix = this.data.prefix.get()
         var delimiter = this.data.delimiter.get()
         var content = this.data.content.get()
         if (goog.isDef(prefix) && goog.isDef(delimiter) && goog.isDef(content)) {
-          this.set(''+prefix+delimiter+content+delimiter)
+          this.set('' + prefix + delimiter + content + delimiter)
         }
-      },
-    },
+      }
+    }
   },
   fields: {
     prefix: {
-      css: 'reserved',
+      css: 'reserved'
     },
     start: {
-      css: 'reserved',
+      css: 'reserved'
     },
     content: { // this is the only really unordered field
-      placeholder: /** @suppress {globalThis} */ function() {
+      placeholder: /** @suppress {globalThis} */ function () {
         var block = this.sourceBlock_
         var eyo = block.eyo
         if (this.placeholderText_) {
           return this.placeholderText_
         }
         var subtype = eyo.data.subtype.get()
-        return subtype === eYo.T3.Expr.shortbytesliteral || subtype === eYo.T3.Expr.shortbytesliteral?
-        eYo.Msg.Placeholder.BYTES: eYo.Msg.Placeholder.STRING
+        return subtype === eYo.T3.Expr.shortbytesliteral || subtype === eYo.T3.Expr.shortbytesliteral
+          ? eYo.Msg.Placeholder.BYTES : eYo.Msg.Placeholder.STRING
       },
       validate: true,
       startEditing: /** @suppress {globalThis} */ function () {
@@ -211,14 +211,14 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       endEditing: /** @suppress {globalThis} */ function () {
         this.eyo.data.set(this.getValue())
         this.eyo.ui.fields.end.setVisible(true)
-      },
+      }
     },
     end: {
-      css: 'reserved',
-    },
+      css: 'reserved'
+    }
   },
   output: {
-    check: eYo.T3.Expr.shortstringliteral,
+    check: eYo.T3.Expr.shortstringliteral
   }
 })
 
@@ -226,7 +226,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
  * Set the type dynamically from the prefix.
  * @param {!Blockly.Block} block the owner of the receiver
  */
-eYo.DelegateSvg.Expr.shortliteral.prototype.consolidateType = function(block) {
+eYo.DelegateSvg.Expr.shortliteral.prototype.consolidateType = function (block) {
   var type = this.data.subtype.get()
   block.outputConnection.setCheck([type])
 }
@@ -257,13 +257,13 @@ eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr)
   var subtype = this.data.subtype
   var can_b = !!subtype.model.getPossible.call(subtype, 'b', content)
   var can_f = !!subtype.model.getPossible.call(subtype, 'f', content)
-  var item = function(msg, prefix) {
+  var item = function (msg, prefix) {
     if (prefix !== current) {
       var title = goog.dom.createDom(goog.dom.TagName.SPAN, null,
         eYo.Do.createSPAN(msg, 'eyo-code'),
-        goog.dom.createTextNode(' '+eYo.Msg.AT_THE_LEFT),
+        goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
       )
-      return new eYo.MenuItem(title, function() {
+      return new eYo.MenuItem(title, function () {
         block.eyo.data.prefix.set(prefix)
       })
     }
@@ -285,9 +285,9 @@ eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr)
   } else if (current === 'b') {
     mgr.addInsertChild(item('r', 'rb'))
     mgr.addRemoveChild(item('b', ''))
-  } else if (['rf', 'fr',].indexOf(current.toLowerCase())<0) {
-      mgr.addRemoveChild(item('r', 'b'))
-      mgr.addRemoveChild(item('b', 'r'))
+  } else if (['rf', 'fr'].indexOf(current.toLowerCase()) < 0) {
+    mgr.addRemoveChild(item('r', 'b'))
+    mgr.addRemoveChild(item('b', 'r'))
   } else {
     mgr.addRemoveChild(item('r', 'f'))
     mgr.addRemoveChild(item('f', 'r'))
@@ -304,7 +304,7 @@ eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr)
  */
 eYo.DelegateSvg.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (block, mgr) {
   eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_.call(this, block, mgr)
-  eYo.DelegateSvg.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  eYo.DelegateSvg.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this, block, mgr)
   return true
 }
 
@@ -321,50 +321,50 @@ eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
       all: [eYo.T3.Expr.longstringliteral, eYo.T3.Expr.longbytesliteral],
       getPossible: /** @suppress {globalThis} */ function (prefix, content) {
         var delimiter = this.data.delimiter.get()
-        var value = ''+prefix+delimiter+content+delimiter
+        var value = '' + prefix + delimiter + content + delimiter
         return !!XRegExp.exec(value, eYo.XRE.longbytesliteralSingle) && eYo.T3.Expr.longbytesliteral ||
         !!XRegExp.exec(value, eYo.XRE.longbytesliteralDouble) && eYo.T3.Expr.longbytesliteral ||
         !!XRegExp.exec(value, eYo.XRE.longstringliteralSingle) && eYo.T3.Expr.longstringliteral ||
         !!XRegExp.exec(value, eYo.XRE.longstringliteralDouble) && eYo.T3.Expr.longstringliteral
-      },
+      }
     },
     delimiter: {
-      all: ["'''", '"""'],
+      all: ["'''", '"""']
     },
     value: {
       init: '',
-      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         var data = this.data
-        var F = function(xre, type) {
+        var F = function (xre, type) {
           var m = XRegExp.exec(newValue, xre)
           if (m) {
-            data.prefix.set(m.prefix||'')
-            data.delimiter.set(m.delimiter||"'''")
-            data.content.set(m.content||'')
+            data.prefix.set(m.prefix || '')
+            data.delimiter.set(m.delimiter || "'''")
+            data.content.set(m.content || '')
             data.subtype.set(type)
             return true
           }
           return false
         }
-        if (F(eYo.XRE.longstringliteralSingle, eYo.T3.Expr.longstringliteral)
-        || F(eYo.XRE.longstringliteralDouble, eYo.T3.Expr.longstringliteral)
-        || F(eYo.XRE.longbytesliteralSingle, eYo.T3.Expr.longbytesliteral)
-        || F(eYo.XRE.longbytesliteralDouble, eYo.T3.Expr.longbytesliteral)) {
+        if (F(eYo.XRE.longstringliteralSingle, eYo.T3.Expr.longstringliteral) ||
+        F(eYo.XRE.longstringliteralDouble, eYo.T3.Expr.longstringliteral) ||
+        F(eYo.XRE.longbytesliteralSingle, eYo.T3.Expr.longbytesliteral) ||
+        F(eYo.XRE.longbytesliteralDouble, eYo.T3.Expr.longbytesliteral)) {
           this.owner_.removeError(this.owner_.block_, eYo.Key.VALUE)
         } else {
-          this.owner_.setError(this.owner_.block_, eYo.Key.VALUE, 'Bad string|bytes literal: '+
-          (newValue.length>11?newValue.substr(0,10)+'…':newValue))
+          this.owner_.setError(this.owner_.block_, eYo.Key.VALUE, 'Bad string|bytes literal: ' +
+          (newValue.length > 11 ? newValue.substr(0, 10) + '…' : newValue))
         }
-      },
+      }
     }
   },
   output: {
-    check: eYo.T3.Expr.longstringliteral,
-  },
+    check: eYo.T3.Expr.longstringliteral
+  }
 })
 
 eYo.DelegateSvg.Literal.T3s = [
   eYo.T3.Expr.shortliteral,
   eYo.T3.Expr.longliteral,
-  eYo.T3.Expr.numberliteral,
-  ]
+  eYo.T3.Expr.numberliteral
+]

@@ -49,7 +49,7 @@ eYo.DelegateSvg.Expr.prototype.renderDrawInput_ = function (io) {
  * @private
  */
 eYo.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
-  return
+
 }
 
 /**
@@ -60,7 +60,7 @@ eYo.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
  * @param {!Blockly.Connection} oldTargetConnection what was previously connected in the block
  * @param {!Blockly.Connection} oldConnection what was previously connected to the new targetConnection
  */
-eYo.DelegateSvg.Expr.prototype.didConnect = function(block, connection, oldTargetConnection, oldConnection) {
+eYo.DelegateSvg.Expr.prototype.didConnect = function (block, connection, oldTargetConnection, oldConnection) {
   eYo.DelegateSvg.Expr.superClass_.didConnect.call(this, block, connection, oldTargetConnection, oldConnection)
   if (connection.type === Blockly.OUTPUT_VALUE) {
     var parent = connection.targetBlock()
@@ -106,8 +106,8 @@ eYo.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
     try {
       console.log('**** replaceBlock', block, other)
       var c8n = other.outputConnection
-      var its_xy = other.getRelativeToSurfaceXY();
-      var my_xy = block.getRelativeToSurfaceXY();
+      var its_xy = other.getRelativeToSurfaceXY()
+      var my_xy = block.getRelativeToSurfaceXY()
       block.outputConnection.disconnect()
       if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(block.outputConnection)) {
         // the other block has an output connection that can connect to the block's one
@@ -121,7 +121,7 @@ eYo.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
           source.select()
         }
       } else {
-        block.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)
+        block.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
       }
     } finally {
       other.dispose(true)
@@ -163,7 +163,7 @@ eYo.DelegateSvg.Expr.prototype.awaitable = function (block) {
     if (parent.type === eYo.T3.Stmt.funcdef_part) {
       return !!parent.eyo.async_
     }
-  } while((parent = parent.getParent()))
+  } while ((parent = parent.getParent()))
   return false
 }
 
@@ -174,21 +174,21 @@ eYo.DelegateSvg.Expr.prototype.awaitable = function (block) {
  * @private
  */
 eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var yorn = eYo.DelegateSvg.Expr.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  var yorn = eYo.DelegateSvg.Expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
   var field = this.ui.fields.await
   if (this.await_ || this.awaitable && this.awaitable(block)) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('await', 'eyo-code-reserved'),
-      goog.dom.createTextNode(' '+eYo.Msg.AT_THE_LEFT),
+      goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
     )
     if (this.await_) {
       mgr.shouldSeparateRemove()
-      mgr.addRemoveChild(new eYo.MenuItem(content, function() {
+      mgr.addRemoveChild(new eYo.MenuItem(content, function () {
         block.eyo.data.await.set(false)
       }))
     } else {
       mgr.shouldSeparateInsert()
-      mgr.addInsertChild(new eYo.MenuItem(content, function() {
+      mgr.addInsertChild(new eYo.MenuItem(content, function () {
         block.eyo.data.await.set(true)
       }))
     }
@@ -205,21 +205,20 @@ eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr)
  * @param {string} prototypeName
  * @param {string} parentInputName, which parent's connection to use
  */
-eYo.DelegateSvg.Expr.prototype.canInsertParent = function(block, prototypeName, subtype, parentInputName) {
+eYo.DelegateSvg.Expr.prototype.canInsertParent = function (block, prototypeName, subtype, parentInputName) {
   var can = false
   Blockly.Events.disable()
   try {
-   var B = block.workspace.newBlock(prototypeName)
+    var B = block.workspace.newBlock(prototypeName)
     B.eyo.data.subtype.set(subtype)
     var input = B.getInput(parentInputName)
-    goog.asserts.assert(input, 'No input named '+parentInputName)
+    goog.asserts.assert(input, 'No input named ' + parentInputName)
     var c8n = input.connection
-    goog.asserts.assert(c8n, 'Unexpected dummy input '+parentInputName)
+    goog.asserts.assert(c8n, 'Unexpected dummy input ' + parentInputName)
     if (block.outputConnection && c8n.checkType_(block.outputConnection)) {
       var targetC8n = block.outputConnection.targetConnection
       can = !targetC8n || targetC8n.checkType_(B.outputConnection)
     }
-
   } finally {
     B.dispose()
     Blockly.Events.ensable()
@@ -239,11 +238,11 @@ eYo.DelegateSvg.Expr.prototype.canInsertParent = function(block, prototypeName, 
  * @param {boolean} fill_holes whether holes should be filled
  * @return the created block
  */
-eYo.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeName, subtype, parentInputName, fill_holes) {
+eYo.DelegateSvg.Expr.prototype.insertParent = function (block, parentPrototypeName, subtype, parentInputName, fill_holes) {
 //  console.log('insertParent', block, parentPrototypeName, subtype, parentInputName)
   eYo.Events.disable()
   var parentBlock
-  eYo.Events.Disabler.wrap(function() {
+  eYo.Events.Disabler.wrap(function () {
     parentBlock = eYo.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName, true)
     parentBlock.beReady()
     parentBlock.eyo.data.subtype.set(subtype)
@@ -252,21 +251,21 @@ eYo.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
   console.log('block created of type', parentPrototypeName)
   if (parentInputName) {
     var parentInput = parentBlock.getInput(parentInputName)
-    goog.asserts.assert(parentInput, 'No input named '+parentInputName)
+    goog.asserts.assert(parentInput, 'No input named ' + parentInputName)
     parentInputC8n = parentInput.connection
-    goog.asserts.assert(parentInputC8n, 'Unexpected dummy input '+parentInputName)
+    goog.asserts.assert(parentInputC8n, 'Unexpected dummy input ' + parentInputName)
   } else if ((parentInput = parentBlock.getInput(eYo.Key.LIST))) {
     var list = parentInput.connection.targetBlock()
-    goog.asserts.assert(list, 'Missing list block inside '+block.type)
+    goog.asserts.assert(list, 'Missing list block inside ' + block.type)
     // the list has many potential inputs,
     // none of them is actually connected because this is very fresh
     // get the middle input.
     parentInput = list.getInput(eYo.Do.Name.middle_name)
     parentInputC8n = parentInput.connection
-    goog.asserts.assert(parentInputC8n, 'Unexpected dummy input '+parentInputName)
+    goog.asserts.assert(parentInputC8n, 'Unexpected dummy input ' + parentInputName)
   } else {
     // find the first connection that can accept block
-    var findC8n = function(B) {
+    var findC8n = function (B) {
       var foundC8n, target
       const e8r = B.eyo.inputEnumerator(B)
       while (e8r.next()) {
@@ -302,7 +301,7 @@ eYo.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
         Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
       }
       var targetC8n = parentInputC8n.targetConnection
-      if (targetC8n/* && targetC8n.isConnected()*/) {
+      if (targetC8n/* && targetC8n.isConnected() */) {
         console.log('input already connected, disconnect and dispose target')
         var B = targetC8n.sourceBlock_
         targetC8n.disconnect()
@@ -318,15 +317,15 @@ eYo.DelegateSvg.Expr.prototype.insertParent = function(block, parentPrototypeNam
           targetC8n.connect(parentBlock.outputConnection)
         } else {
           bumper = targetC8n.sourceBlock_
-          var its_xy = bumper.getRelativeToSurfaceXY();
-          var my_xy = parentBlock.getRelativeToSurfaceXY();
-          parentBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)
+          var its_xy = bumper.getRelativeToSurfaceXY()
+          var my_xy = parentBlock.getRelativeToSurfaceXY()
+          parentBlock.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
         }
         targetC8n = undefined
       } else {
-        var its_xy = block.getRelativeToSurfaceXY();
-        var my_xy = parentBlock.getRelativeToSurfaceXY();
-        parentBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)
+        var its_xy = block.getRelativeToSurfaceXY()
+        var my_xy = parentBlock.getRelativeToSurfaceXY()
+        parentBlock.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
       }
       parentInputC8n.connect(outputC8n)
       if (fill_holes) {
@@ -357,28 +356,28 @@ eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
     lower_bound: {
       order: 1,
       fields: {
-        end: ':',
+        end: ':'
       },
       check: eYo.T3.Expr.Check.expression,
       optional: true,
-      hole_value: 'lower',
+      hole_value: 'lower'
     },
     upper_bound: {
       order: 2,
       check: eYo.T3.Expr.Check.expression,
       optional: true,
-      hole_value: 'upper',
+      hole_value: 'upper'
     },
     stride: {
       order: 3,
       fields: {
-        start: ':',
+        start: ':'
       },
       check: eYo.T3.Expr.Check.expression,
       optional: true,
-      hole_value: 'stride',
-    },
-  },
+      hole_value: 'stride'
+    }
+  }
 })
 
 /**
@@ -388,31 +387,31 @@ eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
  */
 eYo.DelegateSvg.Expr.makeSubclass('conditional_expression_s3d', {
   xml: {
-    tag: 'conditional_expression',
+    tag: 'conditional_expression'
   },
   tiles: {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.or_test,
-      hole_value: 'name',
+      hole_value: 'name'
     },
     if: {
       order: 2,
       fields: {
-        label: 'if',
+        label: 'if'
       },
       check: eYo.T3.Expr.Check.or_test,
-      hole_value: 'condition',
+      hole_value: 'condition'
     },
     else: {
       order: 3,
       fields: {
-        label: 'else',
+        label: 'else'
       },
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'alternate',
-    },
-  },
+      hole_value: 'alternate'
+    }
+  }
 })
 
 /**
@@ -425,31 +424,31 @@ eYo.DelegateSvg.Expr.makeSubclass('starred_expression', {
       STAR: '*',
       STAR_STAR: '**',
       all: ['*', '**'],
-      synchronize: true,
-    },
+      synchronize: true
+    }
   },
   fields: {
     modifier: {
-      css: 'reserved',
-    },
+      css: 'reserved'
+    }
   },
   tiles: {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
       hole_value: 'name',
-      didConnect: /** @suppress {globalThis} */ function(oldTargetConnection, oldConnection) {
+      didConnect: /** @suppress {globalThis} */ function (oldTargetConnection, oldConnection) {
         this.eyo.consolidateSource()
-      },
-    },
-  },
+      }
+    }
+  }
 })
 
 /**
  * Set the type dynamically from the modifier.
  * @param {!Blockly.Block} block the owner of the receiver
  */
-eYo.DelegateSvg.Expr.starred_expression.prototype.consolidateType = function(block) {
+eYo.DelegateSvg.Expr.starred_expression.prototype.consolidateType = function (block) {
   // one of 4 types depending on the modifier and the connected stuff:
   // expression_star, expression_star_star, or_expr_star_star, star_expr
   // eYo.T3.Expr.Check.expression
@@ -461,7 +460,7 @@ eYo.DelegateSvg.Expr.starred_expression.prototype.consolidateType = function(blo
   var no_or_expr = false
   if (targetC8n) {
     var targetCheck = targetC8n.check_
-    no_or_expr = function() {
+    no_or_expr = (function () {
       for (var i = 0; i < targetCheck.length; i++) {
         var type = targetCheck[i]
         if (eYo.T3.Expr.Check.or_expr.indexOf(type) >= 0) {
@@ -469,12 +468,12 @@ eYo.DelegateSvg.Expr.starred_expression.prototype.consolidateType = function(blo
         }
       }
       return true
-    } ()
+    }())
   }
   if (no_or_expr) {
-    var check = withOneStar? eYo.T3.Expr.expression_star: eYo.T3.Expr.expression_star_star
+    var check = withOneStar ? eYo.T3.Expr.expression_star : eYo.T3.Expr.expression_star_star
   } else {
-    var check = withOneStar? [eYo.T3.Expr.star_expr, eYo.T3.Expr.expression_star]: [eYo.T3.Expr.or_expr_star_star, eYo.T3.Expr.expression_star_star]
+    var check = withOneStar ? [eYo.T3.Expr.star_expr, eYo.T3.Expr.expression_star] : [eYo.T3.Expr.or_expr_star_star, eYo.T3.Expr.expression_star_star]
   }
   block.outputConnection.setCheck(check)
 }
@@ -512,12 +511,12 @@ eYo.DelegateSvg.Expr.makeSubclass('not_test_s3d', {
     expression: {
       order: 1,
       fields: {
-        label: 'not',
+        label: 'not'
       },
       check: eYo.T3.Expr.Check.not_test,
-      hole_value: 'name',
-    },
-  },
+      hole_value: 'name'
+    }
+  }
 })
 
 /**
@@ -528,14 +527,14 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin_object', {
   data: {
     value: {
       all: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
-      synchronize: true,
-    },
+      synchronize: true
+    }
   },
   fields: {
     value: {
-      css: 'reserved',
+      css: 'reserved'
     }
-  },
+  }
 })
 
 /**
@@ -569,18 +568,18 @@ eYo.DelegateSvg.Expr.makeSubclass('any', {
   data: {
     code: {
       init: '',
-      synchronize: true,
-    },
+      synchronize: true
+    }
   },
   fields: {
     code: {
       endEditing: true,
-      placeholder: eYo.Msg.Placeholder.EXPRESSION,
-    },
+      placeholder: eYo.Msg.Placeholder.EXPRESSION
+    }
   },
   output: {
-    check: null,
-  },
+    check: null
+  }
 })
 console.warn('value and subtype')
 
@@ -590,5 +589,5 @@ eYo.DelegateSvg.Expr.T3s = [
   eYo.T3.Expr.starred_expression,
   eYo.T3.Expr.not_test_s3d,
   eYo.T3.Expr.builtin_object,
-  eYo.T3.Expr.any,
+  eYo.T3.Expr.any
 ]

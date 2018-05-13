@@ -24,18 +24,18 @@ goog.require('eYo.DelegateSvg.Expr')
 eYo.DelegateSvg.Expr.makeSubclass('Operator', {
   data: {
     operator: { // only one field with that key
-      synchronize: true,
-    },
+      synchronize: true
+    }
   },
   tiles: {
     rhs: {
       order: 2,
       fields: {
-        operator: '',
+        operator: ''
       },
-      hole_value: 'name',
-    },
-  },
+      hole_value: 'name'
+    }
+  }
 }, eYo.DelegateSvg)
 
 /**
@@ -51,7 +51,7 @@ eYo.DelegateSvg.Operator.prototype.makeTitle = /* function (block, op) {
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-eYo.DelegateSvg.Operator.prototype.getMenuTarget = function(block) {
+eYo.DelegateSvg.Operator.prototype.getMenuTarget = function (block) {
   return block
 }
 
@@ -66,7 +66,7 @@ eYo.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
   return eYo.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
-//////////////////////  u_expr_s3d  /////////////////////////
+/// ///////////////////  u_expr_s3d  /////////////////////////
 
 /**
  * Class for a DelegateSvg, unary op ... block.
@@ -76,14 +76,14 @@ eYo.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
 eYo.DelegateSvg.Operator.makeSubclass('u_expr_s3d', {
   data: {
     operator: {
-      all: ['-', '+', '~'],
-    },
+      all: ['-', '+', '~']
+    }
   },
   tiles: {
     rhs: {
-      check: eYo.T3.Expr.Check.u_expr,
-    },
-  },
+      check: eYo.T3.Expr.Check.u_expr
+    }
+  }
 })
 
 /**
@@ -93,7 +93,7 @@ eYo.DelegateSvg.Operator.makeSubclass('u_expr_s3d', {
  * @private
  */
 eYo.DelegateSvg.Expr.u_expr_s3d.prototype.makeTitle = function (block, op) {
-  return op+' …'
+  return op + ' …'
 }
 
 /**
@@ -101,13 +101,13 @@ eYo.DelegateSvg.Expr.u_expr_s3d.prototype.makeTitle = function (block, op) {
  * Multiple ops.
  * For edython.
  */
-eYo.DelegateSvg.Operator.makeSubclass('Binary',{
+eYo.DelegateSvg.Operator.makeSubclass('Binary', {
   tiles: {
     lhs: {
       order: 1,
-      hole_value: 'name',
-    },
-  },
+      hole_value: 'name'
+    }
+  }
 }, eYo.DelegateSvg)
 
 /**
@@ -117,7 +117,7 @@ eYo.DelegateSvg.Operator.makeSubclass('Binary',{
  * @private
  */
 eYo.DelegateSvg.Binary.prototype.makeTitle = function (block, op) {
-  return '… '+ op +' …'
+  return '… ' + op + ' …'
 }
 
 /**
@@ -127,13 +127,13 @@ eYo.DelegateSvg.Binary.prototype.makeTitle = function (block, op) {
  *     type-specific functions for this block.
  * @constructor
  */
-eYo.DelegateSvg.Binary.makeModel = function(operators, check1, check3, operatorIndex) {
+eYo.DelegateSvg.Binary.makeModel = function (operators, check1, check3, operatorIndex) {
   return {
     data: {
       operator: {
         all: operators,
-        init: operatorIndex || 0,
-      },
+        init: operatorIndex || 0
+      }
     },
     tiles: {
       lhs: {
@@ -141,8 +141,8 @@ eYo.DelegateSvg.Binary.makeModel = function(operators, check1, check3, operatorI
       },
       rhs: {
         check: eYo.T3.Expr.Check[check3]
-      },
-    },
+      }
+    }
   }
 }
 
@@ -156,7 +156,7 @@ eYo.DelegateSvg.Binary.makeSubclass(
   eYo.DelegateSvg.Binary.makeModel(
     ['*', '//', '/', '%', '@'],
     'm_expr',
-    'u_expr',
+    'u_expr'
   )
 )
 
@@ -170,8 +170,8 @@ eYo.DelegateSvg.Binary.makeSubclass(
   eYo.DelegateSvg.Binary.makeModel(
     ['+', '-'],
     'a_expr',
-    'm_expr',
-  ),
+    'm_expr'
+  )
 )
 
 /**
@@ -184,8 +184,8 @@ eYo.DelegateSvg.Binary.makeSubclass(
   eYo.DelegateSvg.Binary.makeModel(
     ['<<', '>>'],
     'shift_expr',
-    'a_expr',
-  ),
+    'a_expr'
+  )
 )
 
 /**
@@ -198,8 +198,8 @@ eYo.DelegateSvg.Binary.makeSubclass(
   eYo.DelegateSvg.Binary.makeModel(
     ['&'],
     'and_expr',
-    'shift_expr',
-  ),
+    'shift_expr'
+  )
 )
 
 /**
@@ -212,8 +212,8 @@ eYo.DelegateSvg.Binary.makeSubclass(
   eYo.DelegateSvg.Binary.makeModel(
     ['^'],
     'xor_expr',
-    'and_expr',
-  ),
+    'and_expr'
+  )
 )
 
 /**
@@ -226,8 +226,8 @@ eYo.DelegateSvg.Binary.makeSubclass(
   eYo.DelegateSvg.Binary.makeModel(
     ['|'],
     'or_expr',
-    'or_expr',
-  ),
+    'or_expr'
+  )
 )
 
 /**
@@ -242,8 +242,8 @@ eYo.DelegateSvg.Binary.makeSubclass(
   eYo.DelegateSvg.Binary.makeModel(
     ['<', '>', '==', '>=', '<=', '!='],
     'comparison',
-    'comparison',
-  ),
+    'comparison'
+  )
 )
 console.log('where is the operator displayed ?')
 /**
@@ -257,8 +257,8 @@ eYo.DelegateSvg.Binary.makeSubclass('object_comparison', {
   data: {
     operator: {
       all: ['is', 'is not', 'in', 'not in'],
-      init: 2,
-    },
+      init: 2
+    }
   },
   tiles: {
     lhs: {
@@ -267,8 +267,8 @@ eYo.DelegateSvg.Binary.makeSubclass('object_comparison', {
     rhs: {
       css_class: 'eyo-code-reserved',
       check: eYo.T3.Expr.Check.comparison
-    },
-  },
+    }
+  }
 })
 
 /**
@@ -289,7 +289,7 @@ eYo.DelegateSvg.Expr.object_comparison.prototype.makeTitle = function (block, op
 eYo.DelegateSvg.Binary.makeSubclass('or_test_s3d', {
   data: {
     operator: {
-      all: ['or'],
+      all: ['or']
     }
   },
   tiles: {
@@ -299,12 +299,12 @@ eYo.DelegateSvg.Binary.makeSubclass('or_test_s3d', {
     rhs: {
       fields: {
         operator: {
-          css: 'reserved',
-        },
+          css: 'reserved'
+        }
       },
       check: eYo.T3.Expr.Check.and_test
-    },
-  },
+    }
+  }
 })
 
 /**
@@ -315,7 +315,7 @@ eYo.DelegateSvg.Binary.makeSubclass('or_test_s3d', {
 eYo.DelegateSvg.Binary.makeSubclass('and_test_s3d', {
   data: {
     operator: {
-      all: ['and'],
+      all: ['and']
     }
   },
   tiles: {
@@ -325,15 +325,15 @@ eYo.DelegateSvg.Binary.makeSubclass('and_test_s3d', {
     rhs: {
       fields: {
         operator: {
-          css: 'reserved',
+          css: 'reserved'
         }
       },
       check: eYo.T3.Expr.Check.not_test
-    },
-  },
+    }
+  }
 })
 
-///////// power ////////
+/// ////// power ////////
 /**
  * Class for a DelegateSvg, power_s3d block.
  * power_s3d ::= await_or_primary "**" u_expr
@@ -343,21 +343,21 @@ eYo.DelegateSvg.Binary.makeSubclass('and_test_s3d', {
 eYo.DelegateSvg.Operator.makeSubclass('power_s3d', {
   data: {
     operator: {
-      init: '**',
-    },
+      init: '**'
+    }
   },
   tiles: {
     lhs: {
       order: 1,
       check: eYo.T3.Expr.Check.await_or_primary,
-      hole_value: 'name',
+      hole_value: 'name'
     },
     rhs: {
       order: 2,
       check: eYo.T3.Expr.Check.u_expr,
-      hole_value: 'power',
-    },
-  },
+      hole_value: 'power'
+    }
+  }
 })
 
 eYo.DelegateSvg.Operator.T3s = [
@@ -372,5 +372,5 @@ eYo.DelegateSvg.Operator.T3s = [
   eYo.T3.Expr.object_comparison,
   eYo.T3.Expr.or_test_s3d,
   eYo.T3.Expr.and_test_s3d,
-  eYo.T3.Expr.power_s3d,
+  eYo.T3.Expr.power_s3d
 ]

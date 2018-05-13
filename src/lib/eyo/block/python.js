@@ -50,7 +50,7 @@ goog.require('eYo.Delegate')
  * @constructor
  */
 eYo.Delegate.prototype.toPython = function (block) {
-  goog.asserts.assert(false, 'Missing toPython implementation for '+block.type)
+  goog.asserts.assert(false, 'Missing toPython implementation for ' + block.type)
 }
 
 goog.require('eYo.DelegateSvg')
@@ -75,16 +75,16 @@ eYo.DelegateSvg.prototype.toPythonExpression = function (block) {
  * @return the last element of components
  */
 eYo.DelegateSvg.prototype.toPythonExpressionComponents = function (block, components) {
-  var last = components[components.length-1]
+  var last = components[components.length - 1]
   var c8n, target
-  var FFF = function(x, is_operator) {
+  var FFF = function (x, is_operator) {
     if (x.length) {
       if (is_operator) {
         x = ' ' + x + ' '
       } else {
         if (last && last.length) {
-          var mustSeparate = last[last.length-1].match(/[,;:]/)
-          var maySeparate = mustSeparate || eYo.XRE.id_continue.test(last[last.length-1])
+          var mustSeparate = last[last.length - 1].match(/[,;:]/)
+          var maySeparate = mustSeparate || eYo.XRE.id_continue.test(last[last.length - 1])
         }
         if (mustSeparate || (maySeparate && eYo.XRE.id_continue.test(x[0]))) {
           components.push(' ')
@@ -95,10 +95,10 @@ eYo.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
     }
     return true
   }
-  var FF = function(field, is_operator) {
+  var FF = function (field, is_operator) {
     return field && FFF(field.getText(), is_operator)
   }
-  var doOneModel = function(D) {
+  var doOneModel = function (D) {
     if (!D) {
       return
     }
@@ -110,7 +110,7 @@ eYo.DelegateSvg.prototype.toPythonExpressionComponents = function (block, compon
       if ((target = c8n.targetBlock())) {
         FFF(target.eyo.toPythonExpression(target))
       } else if (!c8n.eyo.optional_) {
-        last = '<MISSING '+D.input.name+'>'
+        last = '<MISSING ' + D.input.name + '>'
         components.push(last)
       }
     }
@@ -147,15 +147,15 @@ eYo.DelegateSvg.prototype.toPythonStatementComponents = function (block, compone
   if (block.disabled && indent.indexOf('#') < 0) {
     indent += '# '
   }
-  components.push(indent+this.toPythonExpression(block))
+  components.push(indent + this.toPythonExpression(block))
   if (this.ui.suite) {
     var input = this.ui.suite.input
     if (input) {
       var c8n = input.connection
       if (c8n) {
         var target = c8n.targetBlock()
-        if (target && !target.eyo.toPythonStatementComponents(target, components, indent+'    ', true) || !target && !c8n.eyo.optional_) {
-          components.push(indent+'    <MISSING '+input.name+'>')
+        if (target && !target.eyo.toPythonStatementComponents(target, components, indent + '    ', true) || !target && !c8n.eyo.optional_) {
+          components.push(indent + '    <MISSING ' + input.name + '>')
         }
       }
     }
@@ -192,7 +192,7 @@ goog.require('eYo.DelegateSvg.List')
  */
 eYo.DelegateSvg.List.prototype.toPythonExpressionComponents = function (block, components) {
   this.consolidate(block)
-  var last = components[components.length-1]
+  var last = components[components.length - 1]
   var e8r = block.eyo.inputEnumerator(block)
   while (e8r.next()) {
     var c8n = e8r.here.connection
@@ -210,8 +210,8 @@ eYo.DelegateSvg.List.prototype.toPythonExpressionComponents = function (block, c
           var x = field.getText()
           if (x.length) {
             if (last && last.length) {
-              var mustSeparate = last[last.length-1].match(/[,;:]/)
-              var maySeparate = mustSeparate || eYo.XRE.id_continue.test(last[last.length-1])
+              var mustSeparate = last[last.length - 1].match(/[,;:]/)
+              var maySeparate = mustSeparate || eYo.XRE.id_continue.test(last[last.length - 1])
             }
             if (mustSeparate || (maySeparate && eYo.XRE.id_continue.test(x[0]))) {
               components.push(' ')

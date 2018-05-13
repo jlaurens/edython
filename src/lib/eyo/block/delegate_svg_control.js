@@ -158,11 +158,11 @@ eYo.DelegateSvg.Control.prototype.renderDrawSharp_ = function (io) {
 eYo.DelegateSvg.Control.makeSubclass('start_stmt', {
   statement: {
     previous: {
-      check: null,
-    },
-  },
+      check: null
+    }
+  }
 })
 
 eYo.DelegateSvg.Control.T3s = [
-  eYo.T3.Stmt.start_stmt,
+  eYo.T3.Stmt.start_stmt
 ]

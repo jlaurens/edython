@@ -31,7 +31,7 @@ goog.require('eYo')
 /** @export */ eYo.Msg.ADD_AFTER = 'Ajouter après'
 /** @export */ eYo.Msg.REMOVE = 'Enlever'
 
-/** @export */ eYo.Msg.FILL_DEEP_HOLES = "Compléter"
+/** @export */ eYo.Msg.FILL_DEEP_HOLES = 'Compléter'
 
 /** @export */ eYo.Msg.AT_THE_LEFT = 'à gauche'
 /** @export */ eYo.Msg.AT_THE_RIGHT = 'à droite'
@@ -52,35 +52,35 @@ goog.require('eYo')
 
 goog.provide('eYo.Msg.Placeholder')
 
-/** @export */ eYo.Msg.Placeholder.STRING = "Du texte ici"
+/** @export */ eYo.Msg.Placeholder.STRING = 'Du texte ici'
 
-/** @export */ eYo.Msg.Placeholder.BYTES = "Des octets ici"
+/** @export */ eYo.Msg.Placeholder.BYTES = 'Des octets ici'
 
-/** @export */ eYo.Msg.Placeholder.COMMENT = "Un commentaire ici"
+/** @export */ eYo.Msg.Placeholder.COMMENT = 'Un commentaire ici'
 
-/** @export */ eYo.Msg.Placeholder.NUMBER = "0"
+/** @export */ eYo.Msg.Placeholder.NUMBER = '0'
 
-/** @export */ eYo.Msg.Placeholder.CODE = "Une instruction ici"
+/** @export */ eYo.Msg.Placeholder.CODE = 'Une instruction ici'
 
-/** @export */ eYo.Msg.Placeholder.IDENTIFIER = "nom"
+/** @export */ eYo.Msg.Placeholder.IDENTIFIER = 'nom'
 
-/** @export */ eYo.Msg.Placeholder.ATTRIBUTE = "attribut"
+/** @export */ eYo.Msg.Placeholder.ATTRIBUTE = 'attribut'
 
-/** @export */ eYo.Msg.Placeholder.EXPRESSION = "expression"
+/** @export */ eYo.Msg.Placeholder.EXPRESSION = 'expression'
 
-/** @export */ eYo.Msg.Placeholder.TERM = "nom"
+/** @export */ eYo.Msg.Placeholder.TERM = 'nom'
 
-/** @export */ eYo.Msg.Placeholder.ALIAS = "alias"
+/** @export */ eYo.Msg.Placeholder.ALIAS = 'alias'
 
-/** @export */ eYo.Msg.Placeholder.MODULE = "module"
+/** @export */ eYo.Msg.Placeholder.MODULE = 'module'
 
-/** @export */ eYo.Msg.Placeholder.BASE = "base"
+/** @export */ eYo.Msg.Placeholder.BASE = 'base'
 
-/** @export */ eYo.Msg.Placeholder.DECORATOR = "decorateur"
+/** @export */ eYo.Msg.Placeholder.DECORATOR = 'decorateur'
 
-/** @export */ eYo.Msg.Placeholder.ADD_COMMENT = "Ajouter un commentaire"
+/** @export */ eYo.Msg.Placeholder.ADD_COMMENT = 'Ajouter un commentaire'
 
-/** @export */ eYo.Msg.Placeholder.REMOVE_COMMENT = "Supprimer le commentaire"
+/** @export */ eYo.Msg.Placeholder.REMOVE_COMMENT = 'Supprimer le commentaire'
 
 /** @export */ eYo.Msg.USE_SINGLE_QUOTE = "'...'"
 

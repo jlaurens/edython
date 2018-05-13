@@ -12,20 +12,17 @@ While trying to require blockly related javascript files, there were so many err
 
 ## Managing blockly and closure libraries
 
-When requiring blockly, the closure-library is also needed but must be resolved. Unfortunately, the npm closure library is called 'google-closure-library' whereas blockly requires 'closure-library'.
-One solution is to use module-alias or alias-module, not tested yet. Another solution is to use webpack resolve configuration.
-Adding 
-
-NB compilation seems to take forever.
+The closure compiler is used to create a single file containing blockly, edython and the require closure-library components.
 
 ## Working with submodule
 
 Actually, submodules are configured for blockly, goog-closure and xregexp.
 We see the configuration for the latter.
 
-`cd .../src/lib
+```
+cd .../src/lib
 git submodule add https://github.com/slevithan/xregexp
-
+```
 
 # edython Block design
 
@@ -106,4 +103,3 @@ For tasks that may be shared between objects pertaining to different class branc
 Mixins could be used but it seems less dynamic and less easy at first glance.
 
 We get both general controllers, that define behaviours shared by all the blocks, and specific ones, than can be subclassed. The main example being the xml controller which is reponsible of the persistent storage.
-

@@ -41,7 +41,7 @@ eYo.Delegate = function (block) {
     if (eYo.Do.hasOwnProperty(dataModel, k)) {
       var d = new eYo.Data(this, k, dataModel[k])
       data[k] = d
-      for (var i = 0, dd;(dd = byOrder[i]); ++i) {
+      for (var i = 0, dd; (dd = byOrder[i]); ++i) {
         if (dd.model.order > d.model.order) {
           break
         }
@@ -51,7 +51,7 @@ eYo.Delegate = function (block) {
   }
   var d = this.headData = byOrder[0]
   if (d) {
-    for (var i = 1, dd;(dd = byOrder[i]); ++i) {
+    for (var i = 1, dd; (dd = byOrder[i]); ++i) {
       d.next = dd
       dd.previous = d
       d = dd
@@ -74,28 +74,27 @@ eYo.Delegate.prototype.getBlock = function () {
  * Create one if it does not exist.
  * Closure used.
  */
-eYo.Delegate.getC9rEdY = function() {
+eYo.Delegate.getC9rEdY = (function () {
   // one (almost hidden) shared constructor
-  var edyC9r = function(key, owner) {
+  var edyC9r = function (key, owner) {
     owner.eyo = this
     this.owner_ = owner
     this.key = key
     this.types = []
   }
-  return function(delegateC9r, key) {
+  return function (delegateC9r, key) {
     if (delegateC9r.eyo) {
       return delegateC9r.eyo
     }
     return new edyC9r(key, delegateC9r)
   }
-} ()
-
+}())
 
 /**
  * Delegate manager.
  * @param {?string} prototypeName Name of the language object containing
  */
-eYo.Delegate.Manager = function () {
+eYo.Delegate.Manager = (function () {
   var me = {}
   var C9rs = Object.create(null)
   var defaultC9r = undefined
@@ -122,7 +121,7 @@ eYo.Delegate.Manager = function () {
    */
   var merger = function (to, from, ignore) {
     for (var k in from) {
-      if(ignore && ignore(k)) {
+      if (ignore && ignore(k)) {
         continue
       }
       var from_d = from[k]
@@ -157,7 +156,7 @@ eYo.Delegate.Manager = function () {
    * @param {!Object} delegateC9r the constructor of a delegate. Must have an `eyo` namespace.
    * @param {?Object} insertModel  data and inputs entries are merged into the model.
    */
-  var modeller = function(delegateC9r, insertModel) {
+  var modeller = function (delegateC9r, insertModel) {
     var eyo = delegateC9r.eyo
     goog.asserts.assert(eyo, 'Forbidden constructor, `eyo`is missing')
     if (eyo.model_) {
@@ -183,7 +182,7 @@ eYo.Delegate.Manager = function () {
     // store that object permanently
     delegateC9r.eyo.model_ = model
     // now change the getModel to return this stored value
-    delegateC9r.eyo.getModel = function() {
+    delegateC9r.eyo.getModel = function () {
       return delegateC9r.eyo.model_
     }
     return model
@@ -201,30 +200,30 @@ eYo.Delegate.Manager = function () {
    * because they are not meant to really exist yet.
    @return the constructor created
    */
-  me.makeSubclass = function(key, model, parent, owner = undefined) {
+  me.makeSubclass = function (key, model, parent, owner = undefined) {
     goog.asserts.assert(parent.eyo, 'Only subclass constructors with an `eyo` namespace.')
     if (key.indexOf('eyo:') >= 0) {
       key = key.substring(4)
     }
-    owner = owner
-    || eYo.T3.Expr[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Expr
-    || eYo.T3.Stmt[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Stmt
-    || parent
+    owner = owner ||
+    eYo.T3.Expr[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Expr ||
+    eYo.T3.Stmt[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Stmt ||
+    parent
     var delegateC9r = owner[key] = function (block) {
       delegateC9r.superClass_.constructor.call(this, block)
     }
     goog.inherits(delegateC9r, parent)
     me.prepareDelegate(delegateC9r, key)
-    eYo.Delegate.Manager.registerDelegate_(eYo.T3.Expr[key]||eYo.T3.Stmt[key], delegateC9r)
+    eYo.Delegate.Manager.registerDelegate_(eYo.T3.Expr[key] || eYo.T3.Stmt[key], delegateC9r)
     if (goog.isFunction(model)) {
       model = model()
     }
     if (model) {
       // manage the link: key
       var link, linkModel = model
-      while((link = model.link)) {
-        var linkC9r = goog.isFunction(link)? link: me.get(link)
-        goog.asserts.assert(linkC9r, 'Not inserted: '+link)
+      while ((link = model.link)) {
+        var linkC9r = goog.isFunction(link) ? link : me.get(link)
+        goog.asserts.assert(linkC9r, 'Not inserted: ' + link)
         linkModel = linkC9r.eyo.getModel()
         if (linkModel) {
           model = linkModel
@@ -255,7 +254,7 @@ eYo.Delegate.Manager = function () {
       }
       delegateC9r.model__ = model // intermediate storage used by `modeller` in due time
     }
-    delegateC9r.makeSubclass = function(key, model, owner) {
+    delegateC9r.makeSubclass = function (key, model, owner) {
       return me.makeSubclass(key, model, delegateC9r, owner)
     }
     return delegateC9r
@@ -267,7 +266,7 @@ eYo.Delegate.Manager = function () {
   me.create = function (block) {
     goog.asserts.assert(!goog.isString(block), 'API DID CHANGE, update!')
     var delegateC9r = C9rs[block.type]
-    goog.asserts.assert(delegateC9r, 'No delegate for '+block.type)
+    goog.asserts.assert(delegateC9r, 'No delegate for ' + block.type)
     return new delegateC9r(block)
   }
   /**
@@ -327,7 +326,7 @@ eYo.Delegate.Manager = function () {
       delegateC9r = eYo.Delegate[key]
       available = eYo.T3.Stmt.Available
     } else {
-      throw "Unknown block eYo.T3.Expr or eYo.T3.Stmt key: "+key
+      throw 'Unknown block eYo.T3.Expr or eYo.T3.Stmt key: ' + key
     }
     me.registerDelegate_(prototypeName, delegateC9r, key)
     available.push(prototypeName)
@@ -336,37 +335,37 @@ eYo.Delegate.Manager = function () {
     for (var k in keyedPrototypeNames) {
       var prototypeName = keyedPrototypeNames[k]
       if (goog.isString(prototypeName)) {
-//        console.log('Registering', k)
+        //        console.log('Registering', k)
         me.registerDelegate_(prototypeName, delegateC9r, k)
         if (fake) {
           prototypeName = prototypeName.replace('eyo:', 'eyo:fake_')
-//          console.log('Registering', k)
+          //          console.log('Registering', k)
           me.registerDelegate_(prototypeName, delegateC9r, k)
         }
       }
     }
   }
-  me.display = function() {
+  me.display = function () {
     var keys = Object.keys(C9rs)
-    for (var k=0; k<keys.length; k++) {
+    for (var k = 0; k < keys.length; k++) {
       var prototypeName = keys[k]
-      console.log(''+k+'->'+prototypeName+'->'+C9rs[prototypeName])
+      console.log('' + k + '->' + prototypeName + '->' + C9rs[prototypeName])
     }
   }
   return me
-}()
+}())
 
 /**
  * Model getter. Convenient shortcut.
  */
-eYo.Do.getModel = function(type) {
+eYo.Do.getModel = function (type) {
   return eYo.Delegate.Manager.getModel(eYo.T3.Stmt.comment_any)
 }
 
 /**
  * Model getter. Ask the constructor.
  */
-eYo.Delegate.prototype.getModel = function() {
+eYo.Delegate.prototype.getModel = function () {
   return this.constructor.eyo.getModel()
 }
 
@@ -398,7 +397,7 @@ eYo.Delegate.prototype.foreachTile = function (helper) {
   var tile = this.ui.headTile
   if (tile && goog.isFunction(helper)) {
     do {
-        helper.call(tile)
+      helper.call(tile)
     } while ((tile = tile.next))
   }
 }
@@ -412,7 +411,7 @@ eYo.Delegate.prototype.foreachData = function (helper) {
   var data = this.headData
   if (data && goog.isFunction(helper)) {
     do {
-        helper.call(data)
+      helper.call(data)
     } while ((data = data.next))
   }
 }
@@ -425,7 +424,7 @@ eYo.Delegate.prototype.foreachData = function (helper) {
  * if the data model contains an intializer, use it,
  * otherwise send an init message to all the data controllers.
  */
-eYo.Delegate.prototype.initData = function() {
+eYo.Delegate.prototype.initData = function () {
   for (var k in this.data) {
     var data = this.data[k]
     data.ui = this.ui
@@ -435,7 +434,7 @@ eYo.Delegate.prototype.initData = function() {
       tile.data = data
       // try the unique editable field
       if (Object.keys(tile.fields).length === 1) {
-        for(var kk in tile.fields) {
+        for (var kk in tile.fields) {
           data.field = tile.fields[kk]
           break
         }
@@ -446,7 +445,7 @@ eYo.Delegate.prototype.initData = function() {
       data.tile = null
       data.field.eyo.data = data
     } else {
-      for(var kk in this.ui.tiles) {
+      for (var kk in this.ui.tiles) {
         tile = this.ui.tiles[kk]
         if ((data.field = tile.fields[k])) {
           data.tile = tile
@@ -475,7 +474,7 @@ eYo.Delegate.prototype.initData = function() {
  * Synchronize the data to the UI.
  * Sends a `synchronize` message to all data controllers.
  */
-eYo.Delegate.prototype.synchronizeData = function(block) {
+eYo.Delegate.prototype.synchronizeData = function (block) {
   this.foreachData(function () {
     this.synchronize(this.get())
   })
@@ -486,7 +485,7 @@ eYo.Delegate.prototype.synchronizeData = function(block) {
  * Start point in the hierarchy.
  * Each subclass created will have its own makeSubclass method.
  */
-eYo.Delegate.makeSubclass = function(key, model, owner) {
+eYo.Delegate.makeSubclass = function (key, model, owner) {
   // First ensure that eYo.Delegate is well formed
   eYo.Delegate.Manager.prepareDelegate(eYo.Delegate)
   return eYo.Delegate.Manager.makeSubclass(key, model, eYo.Delegate, owner)
@@ -513,9 +512,9 @@ eYo.Delegate.prototype.type_ = undefined
 eYo.Delegate.prototype.setupType = function (block, optNewType) {
   optNewType && (block.type = optNewType)
   var m = /^eyo:((?:fake_)?((.*?)(?:_s3d)?))$/.exec(block.type)
-  this.pythonType_ = m? m[1]: block.type
-  this.type_ = m? 'eyo:'+m[2]: block.type
-  this.xmlType_ = m? m[3]: block.type
+  this.pythonType_ = m ? m[1] : block.type
+  this.type_ = m ? 'eyo:' + m[2] : block.type
+  this.xmlType_ = m ? m[3] : block.type
   // test all connections
   var c8n, targetC8n
   if ((c8n = block.previousConnection) && (targetC8n = c8n.targetConnection)) {
@@ -627,16 +626,16 @@ eYo.Delegate.prototype.getVars = function (block) {
  * @param {!Blockly.Block} block
  * @return {!Array.<!Blockly.Block>} Flattened array of blocks.
  */
-eYo.Delegate.prototype.getWrappedDescendants = function(block) {
-  var blocks = [];
+eYo.Delegate.prototype.getWrappedDescendants = function (block) {
+  var blocks = []
   if (!this.wrapped_) {
     blocks.push(block)
   }
   for (var child, x = 0; child = block.childBlocks_[x]; x++) {
     blocks.push.apply(blocks, child.eyo.getWrappedDescendants(child))
   }
-  return blocks;
-};
+  return blocks
+}
 
 /**
  * If the sealed connections are not connected,
@@ -671,7 +670,7 @@ eYo.Delegate.prototype.makeBlockWrapped = function (block) {
  * Subclassers will override this but won't call it.
  * @param {!Block} block
  */
-eYo.Delegate.prototype.canUnwrap = function(block) {
+eYo.Delegate.prototype.canUnwrap = function (block) {
   return false
 }
 
@@ -747,15 +746,15 @@ eYo.Delegate.prototype.getUnwrapped = function (block) {
  * @private
  */
 eYo.Delegate.prototype.completeWrappedInput_ = function (block, input, prototypeName) {
-  if (!!input) {
+  if (input) {
     var target = input.connection.targetBlock()
     if (!target) {
-      goog.asserts.assert(prototypeName, 'Missing wrapping prototype name in block '+block.type)
+      goog.asserts.assert(prototypeName, 'Missing wrapping prototype name in block ' + block.type)
       goog.asserts.assert(eYo.Delegate.wrappedFireWall, 'ERROR: Maximum value reached in completeWrappedInput_ (circular)')
       --eYo.Delegate.wrappedFireWall
       target = eYo.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
-      goog.asserts.assert(target, 'completeWrapped_ failed: '+ prototypeName);
-      goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed '+target.type)
+      goog.asserts.assert(target, 'completeWrapped_ failed: ' + prototypeName)
+      goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed ' + target.type)
       input.connection.connect(target.outputConnection)
     }
   }
@@ -767,7 +766,7 @@ eYo.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
  * @param {!Blockly.Connection} connection
  * @param {!Blockly.Connection} childConnection
  */
-eYo.Delegate.prototype.willConnect = function(block, connection, childConnection) {
+eYo.Delegate.prototype.willConnect = function (block, connection, childConnection) {
   // console.log('will connect')
 }
 
@@ -778,7 +777,7 @@ eYo.Delegate.prototype.willConnect = function(block, connection, childConnection
  * @param {!Blockly.Connection} oldTargetConnection what was previously connected in the block
  * @param {!Blockly.Connection} oldConnection what was previously connected to the new targetConnection
  */
-eYo.Delegate.prototype.didConnect = function(block, connection, oldTargetConnection, oldConnection) {
+eYo.Delegate.prototype.didConnect = function (block, connection, oldTargetConnection, oldConnection) {
   // console.log('did connect')
 }
 
@@ -787,7 +786,7 @@ eYo.Delegate.prototype.didConnect = function(block, connection, oldTargetConnect
  * @param {!Blockly.Block} block
  * @param {!Blockly.Connection} blockConnection
  */
-eYo.Delegate.prototype.willDisconnect = function(block, blockConnection) {
+eYo.Delegate.prototype.willDisconnect = function (block, blockConnection) {
   // console.log('will disconnect')
 }
 
@@ -797,7 +796,7 @@ eYo.Delegate.prototype.willDisconnect = function(block, blockConnection) {
  * @param {!Blockly.Connection} blockConnection
  * @param {!Blockly.Connection} oldTargetConnection that was connected to blockConnection
  */
-eYo.Delegate.prototype.didDisconnect = function(block, blockConnection, oldTargetConnection) {
+eYo.Delegate.prototype.didDisconnect = function (block, blockConnection, oldTargetConnection) {
   // console.log('did disconnect')
 }
 
@@ -830,19 +829,19 @@ eYo.Delegate.prototype.canReplaceBlock = function (block, other) {
  * @throws {goog.asserts.AssertionError} if the input is not present and
  *     opt_quiet is not true.
  */
-eYo.Delegate.prototype.removeInput = function(block, input, opt_quiet) {
+eYo.Delegate.prototype.removeInput = function (block, input, opt_quiet) {
   if (input.block === block) {
     if (input.connection && input.connection.isConnected()) {
-      input.connection.setShadowDom(null);
-      block = input.connection.targetBlock();
-      block.unplug();
+      input.connection.setShadowDom(null)
+      block = input.connection.targetBlock()
+      block.unplug()
     }
-    input.dispose();
-    this.inputList.splice(i, 1);
-    return;
+    input.dispose()
+    this.inputList.splice(i, 1)
+    return
   }
   if (!opt_quiet) {
-    goog.asserts.fail('Inconsistent data.');
+    goog.asserts.fail('Inconsistent data.')
   }
 }
 
@@ -852,7 +851,7 @@ eYo.Delegate.prototype.removeInput = function(block, input, opt_quiet) {
  * @param {!Blockly.Block} block The owner of the delegate.
  * @return an input.
  */
-eYo.Delegate.prototype.getParentInput = function(block) {
+eYo.Delegate.prototype.getParentInput = function (block) {
   var c8n = block.outputConnection
   if (c8n && (c8n = c8n.targetConnection)) {
     var list = c8n.sourceBlock_.inputList
@@ -890,7 +889,7 @@ eYo.Delegate.prototype.getStatementCount = function (block) {
     }
   }
   if (this.suiteInput) {
-     var c8n = this.suiteInput.connection
+    var c8n = this.suiteInput.connection
     if (c8n && c8n.type === Blockly.NEXT_STATEMENT) {
       hasNext = true
       if (c8n.isConnected()) {
@@ -902,7 +901,7 @@ eYo.Delegate.prototype.getStatementCount = function (block) {
       }
     }
   }
-  return n + (hasNext && !hasActive? 1: 0)
+  return n + (hasNext && !hasActive ? 1 : 0)
 }
 
 /**
@@ -928,7 +927,7 @@ eYo.Delegate.prototype.isWhite = function (block) {
  * @return None
  */
 eYo.Delegate.prototype.getNextConnection = function (block) {
-  while(block.eyo.isWhite(block)) {
+  while (block.eyo.isWhite(block)) {
     var c8n
     if (!(c8n = block.previousConnection) || !(block = c8n.targetBlock())) {
       return undefined
@@ -945,7 +944,7 @@ eYo.Delegate.prototype.getNextConnection = function (block) {
  * @return None
  */
 eYo.Delegate.prototype.getPreviousConnection = function (block) {
-  while(block.eyo.isWhite(block)) {
+  while (block.eyo.isWhite(block)) {
     var c8n
     if (!(c8n = block.nextConnection) || !(block = c8n.targetBlock())) {
       return undefined
@@ -975,12 +974,12 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
     if (yorn) {
       block.setDisabled(true)
       // Does it break next connections
-      if ((previous = block.previousConnection)
-      && (next = previous.targetConnection)
-      && next.eyo.getBlackConnection()) {
-        while ((previous = block.nextConnection)
-        && (previous = previous.targetConnection)
-        && (previous = previous.eyo.getBlackConnection())) {
+      if ((previous = block.previousConnection) &&
+      (next = previous.targetConnection) &&
+      next.eyo.getBlackConnection()) {
+        while ((previous = block.nextConnection) &&
+        (previous = previous.targetConnection) &&
+        (previous = previous.eyo.getBlackConnection())) {
           if (next.checkType_(previous)) {
             break
           }
@@ -994,9 +993,9 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
       // if the connection chain below this block is broken,
       // try to activate some blocks
       if ((next = block.nextConnection)) {
-        if ((previous = next.targetConnection)
-        && (previous = previous.eyo.getBlackConnection())
-        && !next.checkType_(previous)) {
+        if ((previous = next.targetConnection) &&
+        (previous = previous.eyo.getBlackConnection()) &&
+        !next.checkType_(previous)) {
           // find  white block in the below chain that can be activated
           // stop before the black connection found just above
           previous = next.targetConnection
@@ -1018,7 +1017,7 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
               // be computed once again
               if (!next.checkType_(previous)) {
                 target.unplug()
-                target.bumpNeighbours_();
+                target.bumpNeighbours_()
               }
               break
             }
@@ -1027,9 +1026,9 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
       }
       // now consolidate the chain above
       if ((previous = block.previousConnection)) {
-        if ((next = previous.targetConnection)
-        && (next = next.eyo.getBlackConnection())
-        && !previous.checkType_(next)) {
+        if ((next = previous.targetConnection) &&
+        (next = next.eyo.getBlackConnection()) &&
+        !previous.checkType_(next)) {
           // find  white block in the above chain that can be activated
           // stop before the black connection found just above
           next = previous.targetConnection
@@ -1052,7 +1051,7 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
               if (!next.checkType_(previous)) {
                 target = previous.getSourceBlock()
                 target.unplug()
-                target.bumpNeighbours_();
+                target.bumpNeighbours_()
               }
               break
             }
@@ -1097,14 +1096,13 @@ eYo.Delegate.prototype.setIncog = function (block, incog) {
     tile = tile.next
   }
   setupIncog(this.inputSuite)
-  for (var i = 0, input;(input = this.block_.inputList[i++]);) {
+  for (var i = 0, input; (input = this.block_.inputList[i++]);) {
     setupIncog(input)
   }
   if (!incog) { // for lists mainly
     this.consolidate(block) // no deep consolidation because connected blocs were consolidated above
   }
 }
-
 
 /**
  * Get the disable state.
@@ -1131,7 +1129,7 @@ eYo.Delegate.prototype.xmlType = function (block) {
  * @return true if the given value is accepted, false otherwise
  */
 eYo.Delegate.prototype.inputEnumerator = function (block, all) {
-  return eYo.Do.Enumerator(block.inputList, all? undefined: function(x) {
+  return eYo.Do.Enumerator(block.inputList, all ? undefined : function (x) {
     return !x.eyo.disabled_
   })
 }
@@ -1146,7 +1144,7 @@ eYo.Delegate.prototype.inputEnumerator = function (block, all) {
  */
 eYo.Delegate.prototype.setError = function (block, key, msg) {
   this.errors[key] = {
-    message: msg,
+    message: msg
   }
 }
 

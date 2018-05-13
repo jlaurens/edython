@@ -25,8 +25,8 @@ goog.require('Blockly.Input')
  * For edython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-eYo.Input.setupEyO = function () {
-  var beReady = function() {
+eYo.Input.setupEyO = (function () {
+  var beReady = function () {
     var c8n = this.owner.connection
     c8n && c8n.eyo.beReady()
   }
@@ -34,7 +34,7 @@ eYo.Input.setupEyO = function () {
     if (!input.eyo) {
       input.eyo = {
         owner: input,
-        beReady: beReady,
+        beReady: beReady
       }
       var c8n = input.connection
       if (c8n) {
@@ -42,7 +42,7 @@ eYo.Input.setupEyO = function () {
       }
     }
   }
-} ()
+}())
 
 Blockly.Input.prototype.eyo = undefined
 
@@ -55,24 +55,24 @@ Blockly.Input.prototype.eyo = undefined
  * @return {!Array.<!Blockly.Block>} List of blocks to render.
  * @suppress {accessControls}
  */
-Blockly.Input.prototype.setVisible = function(visible) {
-  var renderList = [];
+Blockly.Input.prototype.setVisible = function (visible) {
+  var renderList = []
   if (this.visible_ == visible) {
-    return renderList;
+    return renderList
   }
-  this.visible_ = visible;
+  this.visible_ = visible
 
   for (var y = 0, field; field = this.fieldRow[y]; y++) {
-    field.setVisible(visible);
+    field.setVisible(visible)
   }
   if (this.connection) {
     // Has a connection.
     if (visible) {
-      renderList = this.connection.unhideAll();
+      renderList = this.connection.unhideAll()
     } else {
-      this.connection.hideAll();
+      this.connection.hideAll()
     }
-    var child = this.connection.targetBlock();
+    var child = this.connection.targetBlock()
     if (child) {
       if (visible) {
         child.getSvgRoot().removeAttribute('display')
@@ -86,7 +86,7 @@ Blockly.Input.prototype.setVisible = function(visible) {
           child.eyo.svgContourGroup_.setAttribute('display', 'none')
           child.eyo.svgShapeGroup_.setAttribute('display', 'none')
         }
-        child.rendered = false;
+        child.rendered = false
       }
       // JL: Almost original code.
       // var display = visible ? 'block' : 'none';
@@ -96,5 +96,5 @@ Blockly.Input.prototype.setVisible = function(visible) {
       // }
     }
   }
-  return renderList;
-};
+  return renderList
+}

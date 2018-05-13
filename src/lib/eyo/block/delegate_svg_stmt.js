@@ -28,27 +28,27 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
     comment_variant: { // variant are very useful with undo/redo
       NO_COMMENT: 0,
       COMMENT: 1,
-      order:1000, // initialization comes last
+      order: 1000, // initialization comes last
       all: [0, 1],
       init: 0,
       xml: false,
-      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.data.comment.required = newValue === this.COMMENT
         this.data.comment.setIncog(newValue === this.NO_COMMENT)
       },
       consolidate: /** @suppress {globalThis} */ function () {
-        this.set(this.data.comment.isIncog()? this.NO_COMMENT: this.COMMENT)
-      },
+        this.set(this.data.comment.isIncog() ? this.NO_COMMENT : this.COMMENT)
+      }
     },
     comment: {
-      init: /** @suppress {globalThis} */ function() {
+      init: /** @suppress {globalThis} */ function () {
         this.setIncog(true)
         this.init('')
       },
-      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.data.comment_variant.consolidate()
       },
-      validate: /** @suppress {globalThis} */ function(newValue) {
+      validate: /** @suppress {globalThis} */ function (newValue) {
         return {validated: XRegExp.exec(newValue, eYo.XRE.comment).value || ''}
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
@@ -62,22 +62,22 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
           this.whenRequiredFromDom(function () {
             this.setIncog(false)
           }) || this.toText().length && this.setIncog(false)
-        },
-      },
-    },
+        }
+      }
+    }
   },
   fields: {
     comment_mark: {
       value: '#',
-      css: 'reserved',
+      css: 'reserved'
     },
     comment: {
       validate: true,
       endEditing: true,
       placeholder: eYo.Msg.Placeholder.COMMENT,
-      css: 'comment',
-    },
-  },
+      css: 'comment'
+    }
+  }
 })
 eYo.Delegate.Manager.registerAll(eYo.T3.Stmt, eYo.DelegateSvg.Stmt, true)
 
@@ -177,7 +177,7 @@ eYo.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
     }
     this.svgSharpGroup_.setAttribute('transform', 'translate(' + (io.cursorX) +
         ', ' + eYo.Padding.t() + ')')
-    io.cursorX += 2*eYo.Font.space
+    io.cursorX += 2 * eYo.Font.space
   } else {
     goog.dom.removeChildren(this.svgSharpGroup_)
   }
@@ -213,7 +213,7 @@ eYo.DelegateSvg.Stmt.prototype.minBlockWidth = function (block) {
  * @param {string} parentInputName, which parent's connection to use
  * @return the created block
  */
-eYo.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeName, subtype) {
+eYo.DelegateSvg.Stmt.prototype.insertParent = function (block, parentPrototypeName, subtype) {
   var c8n = block.previousConnection
   if (c8n) {
     Blockly.Events.disable()
@@ -234,9 +234,9 @@ eYo.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
             targetC8n.connect(parentBlock.previousConnection)
           }
         } else {
-          var its_xy = block.getRelativeToSurfaceXY();
-          var my_xy = parentBlock.getRelativeToSurfaceXY();
-          parentBlock.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y)
+          var its_xy = block.getRelativeToSurfaceXY()
+          var my_xy = parentBlock.getRelativeToSurfaceXY()
+          parentBlock.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
         }
         parentBlock.eyo.beReady(parentBlock)
         var holes = eYo.HoleFiller.getDeepHoles(parentBlock)
@@ -265,7 +265,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParent = function(block, parentPrototypeNam
  * @param {string} parentInputName, which parent's connection to use
  * @return the created block
  */
-eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototypeName) {
+eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (block, belowPrototypeName) {
   Blockly.Events.setGroup(true)
   try {
     var blockAfter = eYo.DelegateSvg.newBlockComplete(block.workspace, belowPrototypeName, true)
@@ -300,8 +300,8 @@ eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function(block, belowPrototype
 eYo.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (block, mgr) {
   var show = !this.data.comment.isIncog()
   var content =
-  eYo.Do.createSPAN(show? eYo.Msg.Placeholder.REMOVE_COMMENT: eYo.Msg.Placeholder.ADD_COMMENT, null)
-  var menuItem = new eYo.MenuItem(content, function() {
+  eYo.Do.createSPAN(show ? eYo.Msg.Placeholder.REMOVE_COMMENT : eYo.Msg.Placeholder.ADD_COMMENT, null)
+  var menuItem = new eYo.MenuItem(content, function () {
     block.eyo.data.comment.setIncog(show)
   })
   mgr.addChild(menuItem, true)
@@ -314,8 +314,8 @@ eYo.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (block, mgr
  */
 eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.pass_stmt, {
   fields: {
-    label: 'pass',
-  },
+    label: 'pass'
+  }
 })
 
 /**
@@ -324,8 +324,8 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.pass_stmt, {
  */
 eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.break_stmt, {
   fields: {
-    label: 'break',
-  },
+    label: 'break'
+  }
 })
 
 /**
@@ -334,11 +334,11 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.break_stmt, {
  */
 eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.continue_stmt, {
   fields: {
-    label: 'continue',
-  },
+    label: 'continue'
+  }
 })
 
-////////// gobal/nonlocal statement
+/// /////// gobal/nonlocal statement
 /**
  * Class for a DelegateSvg, non_void_identifier_list block.
  * This block may be sealed.
@@ -349,8 +349,8 @@ eYo.DelegateSvg.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
   list: {
     check: eYo.T3.Expr.Check.non_void_identifier_list,
     empty: false,
-    presep: ',',
-  },
+    presep: ','
+  }
 })
 
 /**
@@ -363,20 +363,20 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_nonlocal_stmt, {
       GLOBAL: 0,
       NONLOCAL: 1,
       all: ['global', 'nonlocal'],
-      synchronize: true,
-    },
+      synchronize: true
+    }
   },
   fields: {
     variant: {
-      css: 'reserved',
-    },
+      css: 'reserved'
+    }
   },
   tiles: {
     identifiers: {
       order: 1,
-      wrap: eYo.T3.Expr.non_void_identifier_list,
-    },
-  },
+      wrap: eYo.T3.Expr.non_void_identifier_list
+    }
+  }
 })
 
 /**
@@ -390,7 +390,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_nonlocal_stmt, {
 eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.tagName = function (block) {
   var M = this.data.variant.model
   var current = this.data.variant.get()
-  return current === M.GLOBAL? 'eyo:global': 'eyo:nonlocal'
+  return current === M.GLOBAL ? 'eyo:global' : 'eyo:nonlocal'
 }
 
 /**
@@ -403,13 +403,13 @@ eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = 
   var M = this.data.variant.model
   var current = block.eyo.data.variant.get()
   var variants = block.eyo.data.variant.getAll()
-  var F = function(i) {
+  var F = function (i) {
     var key = variants[i]
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
       eYo.Do.createSPAN(key, 'eyo-code-reserved'),
-      eYo.Do.createSPAN(' …', 'eyo-code-placeholder'),
+      eYo.Do.createSPAN(' …', 'eyo-code-placeholder')
     )
-    var menuItem = new eYo.MenuItem(content, function() {
+    var menuItem = new eYo.MenuItem(content, function () {
       block.eyo.data.variant.set(key)
     })
     mgr.addChild(menuItem, true)
@@ -426,7 +426,7 @@ eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = 
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass('docstring_top_stmt', {
-  link: eYo.T3.Expr.longliteral,
+  link: eYo.T3.Expr.longliteral
 })
 
 /**
@@ -436,7 +436,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('docstring_top_stmt', {
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
-eYo.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = function(block)  {
+eYo.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = function (block) {
   return true
 }
 
@@ -445,7 +445,7 @@ eYo.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = function(block)  {
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass('docstring_def_stmt', {
-  link: eYo.T3.Expr.longliteral,
+  link: eYo.T3.Expr.longliteral
 })
 
 console.warn('if_part and others conform to the new model and xml ?')
@@ -456,7 +456,7 @@ console.warn('if_part and others conform to the new model and xml ?')
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
-eYo.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = function(block)  {
+eYo.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = function (block) {
   return true
 }
 
@@ -469,11 +469,11 @@ eYo.DelegateSvg.Stmt.makeSubclass('del_stmt', {
     del: {
       order: 1,
       fields: {
-        label: 'del',
+        label: 'del'
       },
-      wrap: eYo.T3.Expr.target_list,
-    },
-  },
+      wrap: eYo.T3.Expr.target_list
+    }
+  }
 })
 
 /**
@@ -485,11 +485,11 @@ eYo.DelegateSvg.Stmt.makeSubclass('return_stmt', {
     return: {
       order: 1,
       fields: {
-        label: 'return',
+        label: 'return'
       },
-      wrap: eYo.T3.Expr.expression_list,
-    },
-  },
+      wrap: eYo.T3.Expr.expression_list
+    }
+  }
 })
 
 /**
@@ -500,16 +500,16 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
   tiles: {
     expression: {
       order: 1,
-      check: eYo.T3.Expr.Check.expression,
-    },
-  },
+      check: eYo.T3.Expr.Check.expression
+    }
+  }
 })
 
 /**
  * Class for a DelegateSvg, any_stmt.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
+eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
   data: {
     variant: {
       CODE: 0,
@@ -517,19 +517,19 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
       EXPRESSION: 2,
       EXPRESSION_COMMENT: 3,
       COMMENT: 5,
-      order:10000, // initialization comes last
+      order: 10000, // initialization comes last
       all: [0, 1, 2, 3, 5, 5],
       init: 2,
       xml: false,
-      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.data.code.required = newValue < this.EXPRESSION
         this.data.code.setIncog(newValue > this.CODE_COMMENT)
         this.data.comment.required = (newValue % 2) && newValue !== this.COMMENT
         this.data.comment.setIncog(!(newValue % 2))
-        this.ui.tiles.expression.required = newValue < this.COMMENT
-        && newValue > this.CODE_COMMENT
-        this.ui.tiles.expression.setIncog(newValue < this.EXPRESSION
-        || newValue > this.EXPRESSION_COMMENT)
+        this.ui.tiles.expression.required = newValue < this.COMMENT &&
+        newValue > this.CODE_COMMENT
+        this.ui.tiles.expression.setIncog(newValue < this.EXPRESSION ||
+        newValue > this.EXPRESSION_COMMENT)
       },
       consolidate: /** @suppress {globalThis} */ function () {
         var withCode = !this.data.code.isIncog()
@@ -543,7 +543,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
               console.warn(eYo.Do.format(
                 'Block with both code and expression {0}/{1}',
                 this.key,
-                this.getType(),
+                this.getType()
               ))
             }
             this.set(this.CODE)
@@ -557,7 +557,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
         } else {
           this.set(this.COMMENT)
         }
-      },
+      }
     },
     code: {
       synchronize: true,
@@ -574,8 +574,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
           this.whenRequiredFromDom(function () {
             this.setIncog(false)
           }) || this.toText().length && this.setIncog(false)
-        },
-      },
+        }
+      }
     },
     comment: {
       init: /** @suppress {globalThis} */ function () {
@@ -587,13 +587,13 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
         if (this.isIncog() && variant.get() === variant.COMMENT) {
           variant.set(variant.CODE)
         }
-      },
-    },
+      }
+    }
   },
   fields: {
     code: {
-      endEditing: true,
-    },
+      endEditing: true
+    }
   },
   tiles: {
     expression: {
@@ -609,10 +609,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt',{
           this.whenRequiredFromDom(function () {
             this.setIncog(false)
           }) || this.getTarget() && this.setIncog(false)
-        },
-      },
+        }
+      }
     }
-  },
+  }
 })
 
 /**
@@ -638,19 +638,19 @@ eYo.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (bl
   var comment = this.data.comment.toText()
   var code = this.data.code.toText()
   if (code.length > 32) {
-    var short_code = code.substring(0, 31)+'…'
+    var short_code = code.substring(0, 31) + '…'
   }
   if (comment.length > 32) {
-    var short_comment = comment.substring(0, 31)+'…'
+    var short_comment = comment.substring(0, 31) + '…'
   }
-  var total = code.length+comment.length
+  var total = code.length + comment.length
   if (total > 30) {
-    var short_code_all = code.substring(0, Math.floor(30 * code.length / total)+2)+'…'
-    var short_comment_all = comment.substring(0, Math.floor(30 * comment.length / total)+2)+'…'
+    var short_code_all = code.substring(0, Math.floor(30 * code.length / total) + 2) + '…'
+    var short_comment_all = comment.substring(0, Math.floor(30 * comment.length / total) + 2) + '…'
   }
-  var F = function(content, variant) {
+  var F = function (content, variant) {
     if (variant !== current) {
-      var menuItem = new eYo.MenuItem(content, function() {
+      var menuItem = new eYo.MenuItem(content, function () {
         data.set(variant)
       })
       mgr.addChild(menuItem)
@@ -659,12 +659,12 @@ eYo.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (bl
   var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN('# ', 'eyo-code-reserved'),
     eYo.Do.createSPAN(short_comment || comment || eYo.Msg.Placeholder.COMMENT,
-      'eyo-code-comment'),
+      'eyo-code-comment')
   )
   F(content, data.COMMENT)
   content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN(short_code || code || eYo.Msg.Placeholder.CODE,
-      'eyo-code'),
+      'eyo-code')
   )
   F(content, data.CODE)
   content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -672,18 +672,18 @@ eYo.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (bl
       'eyo-code'),
     eYo.Do.createSPAN(' # ', 'eyo-code-reserved'),
     eYo.Do.createSPAN(short_comment_all || comment || eYo.Msg.Placeholder.COMMENT,
-      'eyo-code-comment'),
+      'eyo-code-comment')
   )
   F(content, data.CODE_COMMENT)
   content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    eYo.Do.createSPAN('…', 'eyo-code'),
+    eYo.Do.createSPAN('…', 'eyo-code')
   )
   F(content, data.EXPRESSION)
   content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN('…', 'eyo-code'),
     eYo.Do.createSPAN(' # ', 'eyo-code-reserved'),
     eYo.Do.createSPAN(short_comment_all || eYo.Msg.Placeholder.COMMENT,
-      'eyo-code-comment'),
+      'eyo-code-comment')
   )
   F(content, data.EXPRESSION_COMMENT)
   return eYo.DelegateSvg.Stmt.any_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || true
@@ -699,5 +699,5 @@ eYo.DelegateSvg.Stmt.T3s = [
   eYo.T3.Stmt.docstring_def_stmt,
   eYo.T3.Stmt.del_stmt,
   eYo.T3.Stmt.return_stmt,
-  eYo.T3.Stmt.any_stmt,
+  eYo.T3.Stmt.any_stmt
 ]

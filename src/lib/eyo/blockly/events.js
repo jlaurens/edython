@@ -11,16 +11,15 @@
  */
 'use strict'
 
-
 /**
  * Events fired as a result of actions in Blockly's editor.
  * @namespace Blockly.Events
  */
-goog.provide('eYo.Events');
+goog.provide('eYo.Events')
 
-goog.require('Blockly.Events');
-goog.require('eYo.Const');
-goog.require('eYo.Do');
+goog.require('Blockly.Events')
+goog.require('eYo.Const')
+goog.require('eYo.Do')
 
 eYo.Do.Events_Change_prototype_run =
 Blockly.Events.Change.prototype.run
@@ -29,49 +28,49 @@ Blockly.Events.Change.prototype.run
  * @param {boolean} forward True if run forward, false if run backward (undo).
  * @suppress{accessControls}
  */
-Blockly.Events.Change.prototype.run = function(forward) {
+Blockly.Events.Change.prototype.run = function (forward) {
   if (!this.element.startsWith('eyo:')) {
     eYo.Do.Events_Change_prototype_run.call(this, forward)
     return
   }
-  var workspace = this.getEventWorkspace_();
-  var block = workspace.getBlockById(this.blockId);
+  var workspace = this.getEventWorkspace_()
+  var block = workspace.getBlockById(this.blockId)
   if (!block) {
-    console.warn("Can't change non-existant block: " + this.blockId);
-    return;
+    console.warn("Can't change non-existant block: " + this.blockId)
+    return
   }
   if (block.mutator) {
     // Close the mutator (if open) since we don't want to update it.
-    block.mutator.setVisible(false);
+    block.mutator.setVisible(false)
   }
-  var value = forward ? this.newValue : this.oldValue;
+  var value = forward ? this.newValue : this.oldValue
   switch (this.element) {
-    case eYo.Const.Event.locked:
-      if (value) {
-        block.eyo.lock(block)
-      } else {
-        block.eyo.unlock(block)
-      }
-      break;
-    default:
-      var m = XRegExp.exec(this.element, eYo.XRE.event_data)
-      var data
-      if (m && (data = block.eyo.data[m.key])) {
-        data.set(value)
-      } else {
-        console.warn('Unknown change type: ' + this.element);
-      }
+  case eYo.Const.Event.locked:
+    if (value) {
+      block.eyo.lock(block)
+    } else {
+      block.eyo.unlock(block)
+    }
+    break
+  default:
+    var m = XRegExp.exec(this.element, eYo.XRE.event_data)
+    var data
+    if (m && (data = block.eyo.data[m.key])) {
+      data.set(value)
+    } else {
+      console.warn('Unknown change type: ' + this.element)
+    }
   }
-};
+}
 
 /**
  * Start or stop a group.
  * @param {boolean|string} state True to start new group, false to end group.
  *   String to set group explicitly.
  */
-eYo.Events.setGroup = function () {
+eYo.Events.setGroup = (function () {
   var level = 0
-  return function(state) {
+  return function (state) {
     if (goog.isString(state)) {
       Blockly.Events.setGroup(state)
       level = 1
@@ -88,14 +87,13 @@ eYo.Events.setGroup = function () {
       }
     }
   }
-} ()
-
+}())
 
 goog.provide('eYo.Events.Disabler')
 /**
  * Event disabler.
  */
-eYo.Events.Disabler.wrap = function(f) {
+eYo.Events.Disabler.wrap = function (f) {
   Blockly.Events.disable()
   try {
     f()
@@ -122,7 +120,7 @@ eYo.Data.prototype.setTrusted_ = function (newValue) {
     this.willChange(oldValue, newValue)
     if (!this.noUndo && Blockly.Events.isEnabled()) {
       Blockly.Events.fire(new Blockly.Events.BlockChange(
-      block, eYo.Const.Event.DATA+this.key, null, oldValue, newValue))
+        block, eYo.Const.Event.DATA + this.key, null, oldValue, newValue))
     }
     this.value_ = newValue
     this.didChange(oldValue, newValue)

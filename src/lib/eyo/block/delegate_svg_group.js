@@ -23,11 +23,11 @@ goog.require('eYo.DelegateSvg.Stmt')
  */
 eYo.DelegateSvg.Stmt.makeSubclass('Group', {
   fields: {
-    suffix: ':',
+    suffix: ':'
   },
   statement: {
-    suite: {},
-  },
+    suite: {}
+  }
 }, eYo.DelegateSvg)
 
 /**
@@ -221,15 +221,15 @@ eYo.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
  */
 eYo.DelegateSvg.Group.makeSubclass('if_part', {
   fields: {
-    label: 'if',
+    label: 'if'
   },
   tiles: {
     if: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'condition',
-    },
-  },
+      hole_value: 'condition'
+    }
+  }
 })
 
 /**
@@ -239,15 +239,15 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
  */
 eYo.DelegateSvg.Group.makeSubclass('elif_part', {
   fields: {
-    label: 'elif',
+    label: 'elif'
   },
   tiles: {
     elif: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'condition',
-    },
-  },
+      hole_value: 'condition'
+    }
+  }
 })
 
 /**
@@ -265,18 +265,18 @@ eYo.DelegateSvg.Group.makeSubclass('elif_part', {
  */
 eYo.DelegateSvg.Group.makeSubclass('else_part', {
   fields: {
-    label: 'else',
+    label: 'else'
   },
   statement: {
-    previous : {
-      didConnect: /** @suppress {globalThis} */ function(oldTargetConnection, oldConnection) {
+    previous: {
+      didConnect: /** @suppress {globalThis} */ function (oldTargetConnection, oldConnection) {
         this.eyo.consolidateSource()
       },
-      didDisconnect: /** @suppress {globalThis} */ function(oldConnection) {
+      didDisconnect: /** @suppress {globalThis} */ function (oldConnection) {
         this.eyo.consolidateSource()
-      },
-    },
-  },
+      }
+    }
+  }
 })
 
 eYo.DelegateSvg.Stmt.last_else_part = eYo.DelegateSvg.Stmt.try_else_part = eYo.DelegateSvg.Stmt.else_part
@@ -304,11 +304,11 @@ eYo.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
   var targetConnection
   if ((targetConnection = block.previousConnection.targetConnection)) {
     var target = targetConnection.getSourceBlock()
-    if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.last_else_part)<0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(target.type) < 0)) {
+    if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(target.type) < 0)) {
       expected = T3.try_else_part
       P = T3.Previous.try_else_part
       N = T3.Next.try_else_part
-    } else if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.try_else_part)<0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(target.type) < 0)) {
+    } else if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.try_else_part) < 0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(target.type) < 0)) {
       expected = T3.last_else_part
       P = T3.Previous.last_else_part
       N = T3.Next.last_else_part
@@ -317,11 +317,11 @@ eYo.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
     // the previous connection did not add any constrain
     // may be the next connection will?
     var target = targetConnection.getSourceBlock()
-    if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.last_else_part)<0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(target.type) < 0)) {
+    if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(target.type) < 0)) {
       expected = T3.try_else_part
       P = T3.Previous.try_else_part
       N = T3.Next.try_else_part
-    } else if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.try_else_part)<0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(target.type) < 0)) {
+    } else if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(target.type) < 0)) {
       expected = T3.last_else_part
       P = T3.Previous.last_else_part
       N = T3.Next.last_else_part
@@ -341,15 +341,15 @@ eYo.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
  */
 eYo.DelegateSvg.Group.makeSubclass('while_part', {
   fields: {
-    label: 'while',
+    label: 'while'
   },
   tiles: {
     while: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'condition',
-    },
-  },
+      hole_value: 'condition'
+    }
+  }
 })
 
 /**
@@ -376,21 +376,21 @@ eYo.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (block, mgr
   if (block.eyo.ui.fields.async) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('async', 'eyo-code-reserved'),
-      goog.dom.createTextNode(' '+eYo.Msg.AT_THE_LEFT),
+      goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
     )
     if (block.eyo.getProperty(block, eYo.Key.ASYNC)) {
-      mgr.addRemoveChild(new eYo.MenuItem(content, function() {
+      mgr.addRemoveChild(new eYo.MenuItem(content, function () {
         block.eyo.setProperty(block, eYo.Key.ASYNC, false)
       }))
       mgr.shouldSeparateRemove()
     } else {
-      mgr.addInsertChild(new eYo.MenuItem(content, function() {
+      mgr.addInsertChild(new eYo.MenuItem(content, function () {
         block.eyo.setProperty(block, eYo.Key.ASYNC, true)
       }))
       mgr.shouldSeparateInsert()
     }
   }
-  return eYo.DelegateSvg.Group.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  return eYo.DelegateSvg.Group.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 /**
@@ -403,20 +403,20 @@ eYo.DelegateSvg.Group.makeSubclass('for_part', {
     for: {
       order: 1,
       fields: {
-        label: 'for',
+        label: 'for'
       },
       wrap: eYo.T3.Expr.target_list,
-      hole_value: 'element',
+      hole_value: 'element'
     },
     in: {
       order: 2,
       fields: {
-        label: 'in',
+        label: 'in'
       },
       wrap: eYo.T3.Expr.expression_list,
-      hole_value: 'set',
-    },
-  },
+      hole_value: 'set'
+    }
+  }
 })
 
 /**
@@ -429,11 +429,11 @@ eYo.DelegateSvg.Group.makeSubclass('with_part', {
     with: {
       order: 1,
       fields: {
-        label: 'with',
+        label: 'with'
       },
-      wrap: eYo.T3.Expr.with_item_list,
-    },
-  },
+      wrap: eYo.T3.Expr.with_item_list
+    }
+  }
 })
 
 /**
@@ -446,17 +446,17 @@ eYo.DelegateSvg.Expr.makeSubclass('with_item_s3d', {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'expression',
+      hole_value: 'expression'
     },
     target: {
       order: 3,
       fields: {
-        label: 'as',
+        label: 'as'
       },
       check: eYo.T3.Expr.Check.target,
-      hole_value: 'target',
-    },
-  },
+      hole_value: 'target'
+    }
+  }
 })
 
 eYo.DelegateSvg.Group.T3s = [
@@ -466,5 +466,5 @@ eYo.DelegateSvg.Group.T3s = [
   eYo.T3.Stmt.while_part,
   eYo.T3.Stmt.with_part,
   eYo.T3.Stmt.for_part,
-  eYo.T3.Expr.with_item_s3d,
+  eYo.T3.Expr.with_item_s3d
 ]

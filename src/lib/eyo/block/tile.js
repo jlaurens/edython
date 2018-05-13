@@ -41,7 +41,7 @@ goog.require('Blockly.Input')
  * @param {!Object} tileModel  the model for the given key i the above mention section.
  * @constructor
  */
-eYo.Tile = function(owner, key, tileModel) {
+eYo.Tile = function (owner, key, tileModel) {
   goog.asserts.assert(owner, 'Missing tile owner')
   goog.asserts.assert(key, 'Missing tile key')
   goog.asserts.assert(tileModel, 'Missing tile model')
@@ -67,7 +67,7 @@ eYo.Tile = function(owner, key, tileModel) {
 /**
  * Init the tile.
  */
-eYo.Tile.prototype.init = function() {
+eYo.Tile.prototype.init = function () {
   var init = this.model.init
   if (goog.isFunction(init)) {
     if (!this.model_init_lock) {
@@ -77,7 +77,6 @@ eYo.Tile.prototype.init = function() {
       } finally {
         delete this.model_init_lock
       }
-      return
     }
   }
 }
@@ -85,22 +84,22 @@ eYo.Tile.prototype.init = function() {
 /**
  * Install this tile on a block.
  */
-eYo.Tile.prototype.beReady = function() {
+eYo.Tile.prototype.beReady = function () {
   this.wait = 0
   if (this.svgGroup_) {
     // Tile has already been initialized once.
-    return;
+    return
   }
   // Build the DOM.
   this.svgGroup_ = Blockly.utils.createSvgElement('g', {
     class: 'eyo-tile'
-  }, null);
+  }, null)
   if (this.previous) {
     goog.dom.insertSiblingAfter(this.svgGroup_, this.previous.svgGroup_)
   } else {
     this.owner.svgInsertHeadTile()
   }
-//  this.getBlock().getSvgRoot().appendChild(this.svgGroup_)
+  //  this.getBlock().getSvgRoot().appendChild(this.svgGroup_)
   this.init()
   // init all the fields
   for (var k in this.fields) {
@@ -116,28 +115,28 @@ console.warn('What would be a tile rendering?')
 /**
  * The DOM SVG group representing this tile.
  */
-eYo.Tile.prototype.getSvgRoot = function() {
+eYo.Tile.prototype.getSvgRoot = function () {
   return this.svgGroup_
-};
+}
 
 /**
  * Transitional: when a block is connected, its svg root is installed
  * in another block's one. Here we move it to a tile svg root, if relevant.
  * @param {!Blockly.Block} block to be initialized.
  */
-eYo.Tile.prototype.takeSvgOwnership = function(block) {
+eYo.Tile.prototype.takeSvgOwnership = function (block) {
   var root = block.getSvgRoot()
   if (root) {
     console.log('MOVE IT TO THE TAIL ?')
   }
-};
+}
 
 /**
  * Dispose of all DOM objects belonging to this tile.
  */
-eYo.Tile.prototype.dispose = function() {
-  goog.dom.removeNode(this.svgGroup_);
-  this.svgGroup_ = null;
+eYo.Tile.prototype.dispose = function () {
+  goog.dom.removeNode(this.svgGroup_)
+  this.svgGroup_ = null
   this.owner = null
   this.key = null
   this.model = null
@@ -149,7 +148,6 @@ eYo.Tile.prototype.dispose = function() {
 goog.require('eYo.FieldLabel')
 goog.require('eYo.FieldInput')
 
-
 /**
  * Create all the fields from the model.
  * For edython.
@@ -157,7 +155,7 @@ goog.require('eYo.FieldInput')
  * @param {!Object} ui
  * @param {!Object} fieldsModel
  */
-eYo.Tile.makeFields = function() {
+eYo.Tile.makeFields = (function () {
   // This is a closure
   // default helper functions for an editable field bound to a data object
   // `this` is an instance of  eYo.FieldInput
@@ -169,7 +167,7 @@ eYo.Tile.makeFields = function() {
   }
   var endEditing = function () {
     var data = this.eyo.data
-    goog.asserts.assert(data, 'No data bound to field '+this.key+'/'+this.sourceBlock_.type)
+    goog.asserts.assert(data, 'No data bound to field ' + this.key + '/' + this.sourceBlock_.type)
     var result = this.callValidator(this.getValue())
     if (result !== null) {
       data.fromText(result)
@@ -178,7 +176,7 @@ eYo.Tile.makeFields = function() {
     }
   }
   // Change some `... = true,` entrie to real functions
-  var setupModel = function(model) {
+  var setupModel = function (model) {
     // no need to setup the model each time we create a new block
     if (model.setup_) {
       return
@@ -220,7 +218,7 @@ eYo.Tile.makeFields = function() {
         return
       }
       field.eyo.model = model
-      if (!(field.eyo.css_class = model.css_class || model.css && 'eyo-code-'+model.css)) {
+      if (!(field.eyo.css_class = model.css_class || model.css && 'eyo-code-' + model.css)) {
         field.eyo.css_class = eYo.Do.cssClassForText(field.getValue())
       }
       field.eyo.css_style = model.css_style
@@ -237,7 +235,7 @@ eYo.Tile.makeFields = function() {
     // Serious things here
     var block = owner.getBlock()
     goog.asserts.assert(block, 'Missing while making fields')
-    for(var key in fieldsModel) {
+    for (var key in fieldsModel) {
       var model = fieldsModel[key]
       var field = makeField(key, model)
       if (field) {
@@ -251,22 +249,22 @@ eYo.Tile.makeFields = function() {
     var unordered = []
     var fromStart = [] // fields ordered from the beginning
     var toEnd = [] // // fields ordered to the end
-    for(var key in ui.fields) {
+    for (var key in ui.fields) {
       var field = ui.fields[key]
       var order = field.eyo.order
       if (order) {
         goog.asserts.assert(!byOrder[order],
-        eYo.Do.format('Fields with the same order  {0} = {1} / {2}',
-        byOrder[order].name, field.name, field.sourceBlock_.type))
+          eYo.Do.format('Fields with the same order  {0} = {1} / {2}',
+            byOrder[order].name, field.name, field.sourceBlock_.type))
         byOrder[order] = field
-        if (order>0) {
+        if (order > 0) {
           for (var i = 0; i < fromStart.length; i++) {
             if (fromStart[i].eyo.order > order) {
               break
             }
           }
           fromStart.splice(i, 0, field)
-        } else if (order<0) {
+        } else if (order < 0) {
           for (var i = 0; i < toEnd.length; i++) {
             if (toEnd[i].eyo.order < order) {
               break
@@ -282,25 +280,25 @@ eYo.Tile.makeFields = function() {
     // Next returns the first field in a chain field.eyo.nextField -> ...
     // The chain is built from the list of arguments
     // arguments are either field names or fields
-    var chain = function() {
+    var chain = function () {
       var field
       for (var i = 0; i < arguments.length; i++) {
         var fieldName = arguments[i]
-        if ((field = goog.isString(fieldName)? ui.fields[fieldName]: fieldName)) {
+        if ((field = goog.isString(fieldName) ? ui.fields[fieldName] : fieldName)) {
           var j = unordered.length
           while (j--) {
-            if(unordered[j] === field) {
-              unordered.splice(j, 1);
+            if (unordered[j] === field) {
+              unordered.splice(j, 1)
             }
           }
           var eyo = field.eyo.edyLast_ || field.eyo
           for (i++; i < arguments.length; i++) {
             fieldName = arguments[i]
-            if ((eyo.nextField = goog.isString(fieldName)? ui.fields[fieldName]: fieldName)) {
+            if ((eyo.nextField = goog.isString(fieldName) ? ui.fields[fieldName] : fieldName)) {
               j = unordered.length
               while (j--) {
-                if(unordered[j] === eyo.nextField) {
-                  unordered.splice(j, 1);
+                if (unordered[j] === eyo.nextField) {
+                  unordered.splice(j, 1)
                 }
               }
               eyo = eyo.nextField.eyo
@@ -320,13 +318,13 @@ eYo.Tile.makeFields = function() {
     // we have exhausted all the fields that are already ordered
     // either explicitely or not
     goog.asserts.assert(unordered.length < 2,
-    eYo.Do.format('Too many unordered fields in {0}/{1}',key, JSON.stringify(model)))
+      eYo.Do.format('Too many unordered fields in {0}/{1}', key, JSON.stringify(model)))
     unordered[0] && (ui.fromStartField = chain(ui.fromStartField, unordered[0]))
     ui.fromStartField && delete ui.fromStartField.eyo.edyLast_
     ui.toEndField && delete ui.toEndField.eyo.edyLast_
     ui.fields.comment && (ui.fields.comment.eyo.comment = true)
   }
-} ()
+}())
 
 /**
  * Set the underlying Blockly input.
@@ -350,7 +348,7 @@ eYo.Tile.prototype.setInput = function (input) {
     if (this.model.suite && Object.keys(this.model.suite).length) {
       goog.mixin(eyo, this.model.suite)
     }
-    if (this.model.optional) {//svg
+    if (this.model.optional) { // svg
       eyo.optional_ = true
     }
     var v
@@ -452,7 +450,7 @@ eYo.Tile.prototype.isRequiredToDom = function () {
  * @param {boolean} newValue
  */
 eYo.Tile.prototype.isRequiredFromDom = function () {
- return this.is_required_from_dom || !this.incog && this.model.xml && this.model.xml.required
+  return this.is_required_from_dom || !this.incog && this.model.xml && this.model.xml.required
 }
 
 /**
@@ -500,7 +498,7 @@ eYo.Tile.prototype.consolidate = function () {
  * Any call to `waitOn` must be balanced by a call to `waitOff`
  */
 eYo.Tile.prototype.waitOn = function () {
-  return ++ this.wait
+  return ++this.wait
 }
 
 /**
@@ -508,7 +506,7 @@ eYo.Tile.prototype.waitOn = function () {
  * Any call to `waitOn` must be balanced by a call to `waitOff`
  */
 eYo.Tile.prototype.waitOff = function () {
-  goog.asserts.assert(this.wait>0, eYo.Do.format('Too  many `waitOn` {0}/{1}', this.key, this.owner.block_.type))
+  goog.asserts.assert(this.wait > 0, eYo.Do.format('Too  many `waitOn` {0}/{1}', this.key, this.owner.block_.type))
   if (--this.wait == 0) {
     this.consolidate()
   }
@@ -528,13 +526,13 @@ eYo.Tile.prototype.synchronize = function () {
   var current = this.skipRendering
   this.skipRendering = true
   try {
-   input.setVisible(!newValue)
+    input.setVisible(!newValue)
   } finally {
     this.skipRendering = current
   }
   if (input.isVisible()) {
     for (var __ = 0, field; (field = input.fieldRow[__]); ++__) {
-      if (field.getText().length>0) {
+      if (field.getText().length > 0) {
         var root = field.getSvgRoot()
         if (root) {
           root.removeAttribute('display')
@@ -570,7 +568,7 @@ goog.forwardDeclare('eYo.DelegateSvg.List')
  * @return a dom element, void lists may return nothing
  * @this a block delegate
  */
-eYo.Tile.prototype.save = function(element, optNoId) {
+eYo.Tile.prototype.save = function (element, optNoId) {
   if (this.isIncog()) {
     return
   }
@@ -587,7 +585,7 @@ eYo.Tile.prototype.save = function(element, optNoId) {
     }
     return
   }
-  var out = function() {
+  var out = (function () {
     var c8n = this.connection
     if (c8n) {
       var target = c8n.targetBlock()
@@ -598,7 +596,7 @@ eYo.Tile.prototype.save = function(element, optNoId) {
           // Actually, every wrapped block is a list
           if (target.eyo instanceof eYo.DelegateSvg.List) {
             var child = eYo.Xml.blockToDom(target, optNoId)
-            if (child.childNodes.length>0) {
+            if (child.childNodes.length > 0) {
               if (!xml || !xml.noInputName) {
                 child.setAttribute(eYo.Xml.INPUT, this.key)
               }
@@ -611,7 +609,7 @@ eYo.Tile.prototype.save = function(element, optNoId) {
           }
         } else {
           var child = eYo.Xml.blockToDom(target, optNoId)
-          if (child.childNodes.length>0 || child.hasAttributes()) {
+          if (child.childNodes.length > 0 || child.hasAttributes()) {
             if (!xml || !xml.noInputName) {
               if (this.inputType === Blockly.INPUT_VALUE) {
                 child.setAttribute(eYo.XmlKey.INPUT, this.key)
@@ -625,7 +623,7 @@ eYo.Tile.prototype.save = function(element, optNoId) {
         }
       }
     }
-  }.call(this)
+  }.call(this))
   if (!out && this.isRequiredToDom()) {
     var child = goog.dom.createDom('eyo:placeholder')
     child.setAttribute(eYo.XmlKey.INPUT, this.key)
@@ -647,7 +645,7 @@ eYo.Tile.prototype.save = function(element, optNoId) {
  * @param {Element} element a dom element in which to save the input
  * @return the added child, if any
  */
-eYo.Tile.prototype.load = function(element) {
+eYo.Tile.prototype.load = function (element) {
   var xml = this.model.xml
   if (xml === false) {
     return
@@ -685,7 +683,7 @@ eYo.Tile.prototype.load = function(element) {
             out = true
           } else if (target) {
             if (target.eyo instanceof eYo.DelegateSvg.List) {
-              for (var i = 0, grandChild;(grandChild = child.childNodes[i++]);) {
+              for (var i = 0, grandChild; (grandChild = child.childNodes[i++]);) {
                 if (goog.isFunction(grandChild.getAttribute)) {
                   var name = grandChild.getAttribute(eYo.XmlKey.INPUT)
                   var input = target.eyo.getInput(target, name)

@@ -25,7 +25,7 @@ goog.provide('eYo.Data')
  * of owner. Great care should be taken when editing this model.
  * @constructor
  */
-eYo.Data = function(owner, key, model) {
+eYo.Data = function (owner, key, model) {
   goog.asserts.assert(owner, 'Missing owner')
   goog.asserts.assert(key, 'Missing key')
   goog.asserts.assert(model, 'Missing model')
@@ -35,14 +35,14 @@ eYo.Data = function(owner, key, model) {
   this.value_ = /** Object|null */ undefined
   this.key = key
   this.model = model
-  this.upperKey = key[0].toUpperCase()+key.slice(1)
-  this.name = 'eyo:'+(this.model.name || this.key).toLowerCase()
+  this.upperKey = key[0].toUpperCase() + key.slice(1)
+  this.name = 'eyo:' + (this.model.name || this.key).toLowerCase()
   this.noUndo = model.noUndo
   this.incog_ = false
   this.wait_ = 1 // start with 1 exactly
   var xml = model.xml
   if (goog.isDefAndNotNull(xml) || xml !== false) {
-    this.attributeName = 'eyo:' +(xml && xml.attribute || key)
+    this.attributeName = 'eyo:' + (xml && xml.attribute || key)
   }
   if (!model.setup_) {
     model.setup_ = true
@@ -74,14 +74,14 @@ eYo.Data = function(owner, key, model) {
  * Get the owner of the data.
  * Actually, it returns a block delegate.
  */
-eYo.Data.prototype.getOwner = function() {
+eYo.Data.prototype.getOwner = function () {
   return this.owner_
 }
 
 /**
  * Get the type of the underlying block.
  */
-eYo.Data.prototype.getType = function() {
+eYo.Data.prototype.getType = function () {
   return this.owner_.block_.type
 }
 
@@ -89,7 +89,7 @@ eYo.Data.prototype.getType = function() {
  * Get the value of the data
  * @param {Object} newValue
  */
-eYo.Data.prototype.get = function() {
+eYo.Data.prototype.get = function () {
   if (goog.isDef(this.value_) || this.lock_get) {
     return this.value_
   }
@@ -112,7 +112,7 @@ eYo.Data.prototype.get = function() {
  * item in the `getAll()` array.
  * @param {Object} newValue
  */
-eYo.Data.prototype.internalSet = function(newValue) {
+eYo.Data.prototype.internalSet = function (newValue) {
   if (goog.isNumber(newValue)) {
     var all = this.getAll()
     if (all && goog.isDefAndNotNull(all = all[newValue])) {
@@ -137,7 +137,7 @@ eYo.Data.prototype.internalSet = function(newValue) {
  * and `this.init(foo)` may be used to initialize the data.
  * @param {Object} newValue
  */
-eYo.Data.prototype.init = function(newValue) {
+eYo.Data.prototype.init = function (newValue) {
   if (goog.isDef(newValue)) {
     this.internalSet(newValue)
     return
@@ -174,7 +174,7 @@ eYo.Data.prototype.all = undefined
 /**
  * Get all the values.
  */
-eYo.Data.prototype.getAll = function() {
+eYo.Data.prototype.getAll = function () {
   var all = this.model.all
   return goog.isArray(all) && all || goog.isFunction(all) && goog.isArray(all = all()) && all
 }
@@ -184,7 +184,7 @@ eYo.Data.prototype.getAll = function() {
  * May be overriden by the model.
  * @param {Object} newValue
  */
-eYo.Data.prototype.validate = function(newValue) {
+eYo.Data.prototype.validate = function (newValue) {
   if (!this.lock_model_validate && goog.isFunction(this.model.validate)) {
     try {
       this.lock_model_validate = true
@@ -202,7 +202,7 @@ eYo.Data.prototype.validate = function(newValue) {
  * Returns the text representation of the data.
  * @param {?Object} newValue
  */
-eYo.Data.prototype.toText = function(newValue = undefined) {
+eYo.Data.prototype.toText = function (newValue = undefined) {
   if (!this.toText_locked && goog.isFunction(this.model.toText)) {
     this.toText_locked = true
     try {
@@ -220,7 +220,7 @@ eYo.Data.prototype.toText = function(newValue = undefined) {
  * @param {Object} txt
  * @param {boolean=} dontValidate
  */
-eYo.Data.prototype.fromText = function(txt, dontValidate) {
+eYo.Data.prototype.fromText = function (txt, dontValidate) {
   if (!this.model_fromText_lock) {
     if (goog.isFunction(this.model.fromText)) {
       this.model_fromText_lock = true
@@ -250,7 +250,7 @@ eYo.Data.prototype.fromText = function(txt, dontValidate) {
  * @param {Object} newValue
  * @return undefined
  */
-eYo.Data.prototype.willChange = function(oldValue, newValue) {
+eYo.Data.prototype.willChange = function (oldValue, newValue) {
   if (this.lock_willChange) {
     return
   }
@@ -281,7 +281,7 @@ eYo.Data.prototype.willChange = function(oldValue, newValue) {
  * @param {Object} newValue
  * @return undefined
  */
-eYo.Data.prototype.didChange = function(oldValue, newValue) {
+eYo.Data.prototype.didChange = function (oldValue, newValue) {
   if (this.didChange_lock) {
     return
   }
@@ -321,12 +321,12 @@ eYo.Data.prototype.noUndo = undefined
  * Raises when not bound to some field or tile, in the non model variant.
  * @param {Object} newValue
  */
-eYo.Data.prototype.synchronize = function(newValue) {
+eYo.Data.prototype.synchronize = function (newValue) {
   if (this.wait_) {
     return
   }
   if (this.model_synchronize_lock || this.model.synchronize === true) {
-    goog.asserts.assert(this.field || this.tile, 'No field nor tile bound. '+this.key+'/'+this.getType())
+    goog.asserts.assert(this.field || this.tile, 'No field nor tile bound. ' + this.key + '/' + this.getType())
     var field = this.field
     if (field) {
       Blockly.Events.disable()
@@ -361,7 +361,7 @@ eYo.Data.prototype.synchronize = function(newValue) {
  * Synchronize the value of the property with the UI only when bounded.
  * @param {Object} newValue
  */
-eYo.Data.prototype.synchronizeIfUI = function(newValue) {
+eYo.Data.prototype.synchronizeIfUI = function (newValue) {
   if (this.field || this.tile || this.model.synchronize) {
     this.synchronize(newValue)
   }
@@ -425,7 +425,7 @@ eYo.Data.prototype.set = function (newValue) {
  * Always synchronize, even when no value changed.
  * @param {Object} newValue
  */
-eYo.Data.prototype.setIncog = function(newValue) {
+eYo.Data.prototype.setIncog = function (newValue) {
   if (!this.incog_ !== !newValue) {
     this.incog_ = newValue
     this.didChange(this.value_, this.value_)
@@ -435,7 +435,7 @@ eYo.Data.prototype.setIncog = function(newValue) {
 /**
  * Whether the data is incognito.
  */
-eYo.Data.prototype.isIncog = function() {
+eYo.Data.prototype.isIncog = function () {
   return this.incog_
 }
 
@@ -445,7 +445,7 @@ eYo.Data.prototype.isIncog = function() {
  * Reentrant management here.
  * Do nothing if the receiver should wait.
  */
-eYo.Data.prototype.consolidate = function() {
+eYo.Data.prototype.consolidate = function () {
   if (this.wait_) {
     return
   }
@@ -501,7 +501,7 @@ eYo.Data.prototype.beReady = function () {
  * Any call to `waitOn` must be balanced by a call to `waitOff`
  */
 eYo.Data.prototype.waitOn = function () {
-  return ++ this.wait_
+  return ++this.wait_
 }
 
 /**
@@ -509,7 +509,7 @@ eYo.Data.prototype.waitOn = function () {
  * Any call to `waitOn` must be balanced by a call to `waitOff`
  */
 eYo.Data.prototype.waitOff = function () {
-  goog.asserts.assert(this.wait_>0, eYo.Do.format('Too  many `waitOn` {0}/{1}',
+  goog.asserts.assert(this.wait_ > 0, eYo.Do.format('Too  many `waitOn` {0}/{1}',
     this.key, this.getType()))
   if (--this.wait_ == 0) {
     this.consolidate()
@@ -523,7 +523,7 @@ eYo.Data.prototype.waitOff = function () {
  * For edython.
  * @param {Element} element the persistent element.
  */
-eYo.Data.prototype.save = function(element) {
+eYo.Data.prototype.save = function (element) {
   if (!this.isIncog()) {
     // in general, data should be saved
     var xml = this.model.xml
@@ -543,7 +543,7 @@ eYo.Data.prototype.save = function(element) {
     var required = this.required || goog.isDefAndNotNull(xml) && xml.required
     var isText = xml && xml.text
     var txt = this.toText()
-    if (txt.length || required && ((txt = isText? '?': ''), true)) {
+    if (txt.length || required && ((txt = isText ? '?' : ''), true)) {
       if (xml && xml.text) {
         var child = goog.dom.createTextNode(txt)
         goog.dom.appendChild(element, child)
@@ -559,7 +559,7 @@ eYo.Data.prototype.save = function(element) {
  * For edython.
  * @param {Element} xml the persistent element.
  */
-eYo.Data.prototype.load = function(element) {
+eYo.Data.prototype.load = function (element) {
   var xml = this.model.xml
   if (xml === false) {
     return
@@ -589,7 +589,7 @@ eYo.Data.prototype.load = function(element) {
     if (required && txt === '?') {
       this.fromText('', true)
     } else {
-      if (isText && txt === '?'|| !isText && txt === '') {
+      if (isText && txt === '?' || !isText && txt === '') {
         this.setRequiredFromDom(true)
       }
       this.fromText(txt, true) // do not validate, there might be an error while saving, please check

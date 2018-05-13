@@ -45,7 +45,7 @@ goog.inherits(eYo.BlockSvg, Blockly.BlockSvg)
  * No rendering of that block is done during that process,
  * linked blocks may render though.
  */
-eYo.BlockSvg.prototype.init = function() {
+eYo.BlockSvg.prototype.init = function () {
   this.eyo.skipRendering = true
   this.eyo.initBlock(this)
   this.eyo.skipRendering = false
@@ -55,18 +55,18 @@ console.warn('++skipRendering, --skipRendering')
  * Create and initialize the SVG representation of the block.
  * May be called more than once.
  */
-eYo.BlockSvg.prototype.initSvg = function() {
+eYo.BlockSvg.prototype.initSvg = function () {
   this.eyo.preInitSvg(this)
-  goog.asserts.assert(this.workspace.rendered, 'Workspace is headless.');
+  goog.asserts.assert(this.workspace.rendered, 'Workspace is headless.')
   for (var i = 0, input; input = this.inputList[i]; i++) {
-    input.init();
+    input.init()
   }
 
   if (!this.getSvgRoot().parentNode) {
-    this.workspace.getCanvas().appendChild(this.getSvgRoot());
+    this.workspace.getCanvas().appendChild(this.getSvgRoot())
   }
   this.eyo.postInitSvg(this)
-};
+}
 
 /**
  * Returns the named field from a block.
@@ -76,7 +76,7 @@ eYo.BlockSvg.prototype.initSvg = function() {
  * @param {string} name The name of the field.
  * @return {Blockly.Field} Named field, or null if field does not exist.
  */
-eYo.BlockSvg.prototype.getField = function(name) {
+eYo.BlockSvg.prototype.getField = function (name) {
   return eYo.BlockSvg.superClass_.getField.call(this, name) || this.eyo.getField(this, name)
 }
 
@@ -114,14 +114,14 @@ eYo.BlockSvg.prototype.getInput = function (name) {
  * Select this block.  Highlight it visually.
  * Wrapped blocks are not selectable.
  */
-eYo.BlockSvg.prototype.select = function() {
+eYo.BlockSvg.prototype.select = function () {
   if (!this.workspace) {
     return
   }
   if (!this.eyo.selectedConnection && this.eyo.wrapped_ && this.getSurroundParent()) {
     // Wrapped blocks should not be selected.
-    this.getSurroundParent().select();
-    return;
+    this.getSurroundParent().select()
+    return
   }
   var more = this.eyo.selectedConnection || this.eyo.selectedConnectionSource_ && this.eyo.selectedConnectionSource_.eyo.selectedConnection
   eYo.BlockSvg.superClass_.select.call(this)
@@ -134,7 +134,7 @@ eYo.BlockSvg.prototype.select = function() {
   }
   if (!this.eyo.canEdit_) {
     var block = this
-    setTimeout(function() {
+    setTimeout(function () {
       block.eyo.canEdit_ = true
     }, 10)
   }
@@ -145,7 +145,7 @@ eYo.BlockSvg.prototype.select = function() {
  * If there is a selected connection, it is removed.
  * Unselect is used from click handling methods.
  */
-eYo.BlockSvg.prototype.unselect = function() {
+eYo.BlockSvg.prototype.unselect = function () {
   eYo.BlockSvg.superClass_.unselect.call(this)
   this.eyo.canEdit_ = false
   var B = this.eyo.selectedConnectionSource_
@@ -204,12 +204,12 @@ eYo.BlockSvg.prototype.removeSelect = function () {
       return
     }
   } else {
-    if ((!this.eyo.svgPathHighlight_ || !this.eyo.svgPathHighlight_.parentNode)
-      && (!this.eyo.svgPathConnection_ || !this.eyo.svgPathConnection_.parentNode)) {
-        if (this.svgGroup_) { // how come that we must test that?
-          Blockly.utils.removeClass(this.svgGroup_, 'eyo-select')
-        }
-        return
+    if ((!this.eyo.svgPathHighlight_ || !this.eyo.svgPathHighlight_.parentNode) &&
+      (!this.eyo.svgPathConnection_ || !this.eyo.svgPathConnection_.parentNode)) {
+      if (this.svgGroup_) { // how come that we must test that?
+        Blockly.utils.removeClass(this.svgGroup_, 'eyo-select')
+      }
+      return
     }
     goog.dom.removeNode(this.eyo.svgPathHighlight_)
   }
@@ -240,7 +240,7 @@ eYo.BlockSvg.prototype.removeSelect = function () {
  */
 eYo.BlockSvg.prototype.setParent = function (newParent) {
   if (newParent == this.parentBlock_) {
-    return;
+    return
   }
   this.eyo.parentWillChange(this, newParent)
   eYo.BlockSvg.superClass_.setParent.call(this, newParent)
@@ -302,7 +302,7 @@ eYo.BlockSvg.connectionUiStep_ = function (ripple, start, workspaceScale) {
   if (percent > 1) {
     goog.dom.removeNode(ripple)
   } else {
-    ripple.style.opacity = 8 * Math.pow(percent, 2) * Math.pow(1-percent,2)
+    ripple.style.opacity = 8 * Math.pow(percent, 2) * Math.pow(1 - percent, 2)
     Blockly.BlockSvg.disconnectUiStop_.pid_ = setTimeout(
       eYo.BlockSvg.connectionUiStep_, 10, ripple, start, workspaceScale)
   }
@@ -421,7 +421,7 @@ eYo.BlockSvg.prototype.showContextMenu_ = function (e) {
  * @param {!Event} e Mouse down event or touch start event.
  * @private
  */
-eYo.BlockSvg.prototype.onMouseDown_ = function(e) {
+eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
   if (this.eyo.wrapped_) {
     // mouse down on a wrapped block means dragging
     // but dragging is not allowd for that blocks
@@ -440,7 +440,7 @@ eYo.BlockSvg.prototype.onMouseDown_ = function(e) {
   eYo.SelectedConnection.set(null)
   this.eyo.selectedConnectionSource_ = null
   // Prepare the mouseUp event for an eventual connection selection
-  this.eyo.lastMouseDownEvent = this === Blockly.selected? e: null
+  this.eyo.lastMouseDownEvent = this === Blockly.selected ? e : null
   eYo.BlockSvg.superClass_.onMouseDown_.call(this, e)
 }
 
@@ -450,7 +450,7 @@ eYo.BlockSvg.prototype.onMouseDown_ = function(e) {
  * Then, the higlighted path of the source blocks is not the outline of the block
  * but the shape of the connection as it shows when blocks are moved close enough.
  */
-eYo.BlockSvg.prototype.onMouseUp_ = function(e) {
+eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
   var ee = this.eyo.lastMouseDownEvent
   if (ee) {
     // this block was selected when the mouse ow event was sent
@@ -480,7 +480,7 @@ eYo.BlockSvg.prototype.onMouseUp_ = function(e) {
  * @param {boolean} animate If true, show a disposal animation and sound.
  * @override
  */
-eYo.BlockSvg.prototype.dispose = function(healStack, animate) {
+eYo.BlockSvg.prototype.dispose = function (healStack, animate) {
   Blockly.Events.setGroup(true)
   try {
     if (this === Blockly.selected) {
@@ -511,7 +511,7 @@ eYo.BlockSvg.prototype.dispose = function(healStack, animate) {
  * @package
  * @override
  */
-eYo.BlockSvg.prototype.bringToFront = function() {
+eYo.BlockSvg.prototype.bringToFront = function () {
   if (this === Blockly.selected) {
     eYo.BlockSvg.superClass_.bringToFront.call(this)
   }

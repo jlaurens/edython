@@ -22,7 +22,7 @@ goog.require('eYo.DelegateSvg.Stmt')
  */
 eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
   xml: {
-    tag: 'yield',
+    tag: 'yield'
   },
   data: {
     variant: {
@@ -30,20 +30,20 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
       YIELD_EXPRESSION: 1,
       YIELD_FROM: 2,
       all: [0, 1, 2],
-      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         var M = this.model
         this.ui.tiles.expression.required = (newValue == M.YIELD_EXPRESSION)
         this.ui.tiles.from.required = (newValue == M.YIELD_FROM)
       },
-      synchronize: /** @suppress {globalThis} */ function(newValue) {
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
         var M = this.model
         this.ui.tiles.expression.setIncog(newValue != M.YIELD_EXPRESSION)
         this.ui.tiles.from.setIncog(newValue != M.YIELD_FROM)
-      },
-    },
+      }
+    }
   },
   fields: {
-    prefix: 'yield',
+    prefix: 'yield'
   },
   tiles: {
     expression: {
@@ -53,13 +53,13 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
         didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
           variant.set(variant.model.YIELD_EXPRESSION)
-        },
-      },
+        }
+      }
     },
     from: {
       order: 2,
       fields: {
-        label: 'from',
+        label: 'from'
       },
       check: eYo.T3.Expr.Check.expression,
       xml: {
@@ -68,8 +68,8 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
           variant.set(variant.model.YIELD_FROM)
         }
       }
-    },
-  },
+    }
+  }
 })
 
 /**
@@ -85,26 +85,26 @@ eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (bloc
   }
   var M = this.data.variant.model
   var current = this.data.variant.get()
-  var F = function(content, k) {
-    var menuItem = new eYo.MenuItem(content, function() {
+  var F = function (content, k) {
+    var menuItem = new eYo.MenuItem(content, function () {
       block.eyo.data.variant.set(k)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code-reserved',
-      goog.dom.createTextNode('yield'),
-    ), M.YIELD
+    goog.dom.createTextNode('yield')
+  ), M.YIELD
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-      eYo.Do.createSPAN('yield ', 'eyo-code-reserved'),
-      goog.dom.createTextNode('…'),
-    ), M.YIELD_EXPRESSION
+    eYo.Do.createSPAN('yield ', 'eyo-code-reserved'),
+    goog.dom.createTextNode('…')
+  ), M.YIELD_EXPRESSION
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-      eYo.Do.createSPAN('yield from ', 'eyo-code-reserved'),
-      goog.dom.createTextNode('…'),
-    ), M.YIELD_FROM
+    eYo.Do.createSPAN('yield from ', 'eyo-code-reserved'),
+    goog.dom.createTextNode('…')
+  ), M.YIELD_FROM
   )
   mgr.shouldSeparate()
 }
@@ -117,9 +117,8 @@ eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (bloc
  */
 eYo.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var yorn = eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_.call(this, block, mgr)
-  return eYo.DelegateSvg.Expr.yield_expression.superClass_.populateContextMenuFirst_.call(this,block, mgr) || yorn
+  return eYo.DelegateSvg.Expr.yield_expression.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
-
 
 /**
  * Class for a DelegateSvg, starred_item_list_or_yield block.
@@ -127,27 +126,27 @@ eYo.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = func
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.List.makeSubclass('parenth_form', function() {
+eYo.DelegateSvg.List.makeSubclass('parenth_form', function () {
   var D = {
     check: eYo.T3.Expr.Check.non_void_starred_item_list,
-    unique: [eYo.T3.Expr.yield_expression, eYo.T3.Expr.comprehension,],
+    unique: [eYo.T3.Expr.yield_expression, eYo.T3.Expr.comprehension],
     consolidator: eYo.Consolidator.List.Singled,
     empty: true,
     presep: ',',
-    hole_value: 'name',
+    hole_value: 'name'
   }
-  var RA = goog.array.concat(D.check,D.unique)
+  var RA = goog.array.concat(D.check, D.unique)
   goog.array.removeDuplicates(RA)
   D.all = RA
   return {
     xml: {
-      tag: 'parenthesis',
+      tag: 'parenthesis'
     },
     list: D,
     fields: {
       prefix: '(',
-      suffix: ')',
-    },
+      suffix: ')'
+    }
   }
 })
 
@@ -156,7 +155,7 @@ eYo.DelegateSvg.List.makeSubclass('parenth_form', function() {
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass('yield_stmt', {
-  link: eYo.T3.Expr.yield_expression,
+  link: eYo.T3.Expr.yield_expression
 })
 
 /**
@@ -167,12 +166,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('yield_stmt', {
  */
 eYo.DelegateSvg.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_.call(this, block, mgr)
-  return eYo.DelegateSvg.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  return eYo.DelegateSvg.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 eYo.DelegateSvg.Yield.T3s = [
   eYo.T3.Expr.yield_expression,
   eYo.T3.Stmt.yield_stmt,
   eYo.T3.Expr.term,
-  eYo.T3.Expr.parenth_form,
+  eYo.T3.Expr.parenth_form
 ]

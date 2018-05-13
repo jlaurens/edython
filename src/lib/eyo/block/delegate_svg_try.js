@@ -22,8 +22,8 @@ goog.require('eYo.DelegateSvg.Group')
  */
 eYo.DelegateSvg.Group.makeSubclass('try_part', {
   fields: {
-    prefix: 'try',
-  },
+    prefix: 'try'
+  }
 })
 
 /**
@@ -38,22 +38,22 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       EXCEPT_EXPRESSION: 1,
       EXCEPT_AS: 2,
       all: [0, 1, 2],
-      didChange: /** @suppress {globalThis} */ function(oldValue, newValue) {
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         var eyo = this.owner_
         var block = eyo.block_
         eyo.consolidateType(block)
       },
-      synchronize: /** @suppress {globalThis} */ function(newValue) {
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
         var M = this.model
         this.ui.tiles.expression.setIncog(newValue === M.EXCEPT)
         this.ui.tiles.expression.required = (newValue === M.EXCEPT_EXPRESSION)
         this.ui.tiles.as.setIncog(newValue !== M.EXCEPT_AS)
         this.ui.tiles.as.required = (newValue === M.EXCEPT_AS)
-      },
-    },
+      }
+    }
   },
   fields: {
-    prefix: 'except',
+    prefix: 'except'
   },
   tiles: {
     expression: {
@@ -66,13 +66,13 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
           if (variant.get() === variant.model.EXCEPT) {
             variant.set(variant.model.EXCEPT_EXPRESSION)
           }
-        },
-      },
+        }
+      }
     },
     as: {
       order: 2,
       fields: {
-        label: 'as',
+        label: 'as'
       },
       check: eYo.T3.Expr.identifier,
       hole_value: 'name',
@@ -80,10 +80,10 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
         didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
           variant.set(variant.model.EXCEPT_AS)
-        },
-      },
-    },
-  },
+        }
+      }
+    }
+  }
 })
 
 /**
@@ -95,12 +95,12 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
  */
 eYo.DelegateSvg.Stmt.except_part.prototype.consolidateType = function (block) {
   var variant = this.data.variant.get()
-  var F = function(k) {
+  var F = function (k) {
     this.setupType(block, eYo.T3.Stmt[k])
     block.nextConnection.setCheck(eYo.T3.Stmt.Next[k])
     block.previousConnection.setCheck(eYo.T3.Stmt.Previous[k])
   }
-  F.call(this, variant > 0? 'except_part': 'void_except_part')
+  F.call(this, variant > 0 ? 'except_part' : 'void_except_part')
   eYo.DelegateSvg.Stmt.except_part.superClass_.consolidateType.call(this, block)
 }
 
@@ -113,31 +113,31 @@ eYo.DelegateSvg.Stmt.except_part.prototype.consolidateType = function (block) {
 eYo.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var M = this.data.variant.model
   var current = block.eyo.data.variant.get()
-  var F = function(content, k) {
-    var menuItem = new eYo.MenuItem(content, function() {
+  var F = function (content, k) {
+    var menuItem = new eYo.MenuItem(content, function () {
       block.eyo.data.variant.set(k)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code-reserved',
-      goog.dom.createTextNode('except:'),
-    ), M.EXCEPT
+    goog.dom.createTextNode('except:')
+  ), M.EXCEPT
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-      eYo.Do.createSPAN('except ', 'eyo-code-reserved'),
-      goog.dom.createTextNode('…:'),
-    ), M.EXCEPT_EXPRESSION
+    eYo.Do.createSPAN('except ', 'eyo-code-reserved'),
+    goog.dom.createTextNode('…:')
+  ), M.EXCEPT_EXPRESSION
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-      eYo.Do.createSPAN('except', 'eyo-code-reserved'),
-      goog.dom.createTextNode(' … '),
-      eYo.Do.createSPAN(' as', 'eyo-code-reserved'),
-      goog.dom.createTextNode(' …:'),
-    ), M.EXCEPT_AS
+    eYo.Do.createSPAN('except', 'eyo-code-reserved'),
+    goog.dom.createTextNode(' … '),
+    eYo.Do.createSPAN(' as', 'eyo-code-reserved'),
+    goog.dom.createTextNode(' …:')
+  ), M.EXCEPT_AS
   )
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.except_part.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  return eYo.DelegateSvg.Stmt.except_part.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 /**
@@ -147,7 +147,7 @@ eYo.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function 
  */
 eYo.DelegateSvg.Group.makeSubclass('finally_part', {
   fields: {
-    prefix: 'finally',
+    prefix: 'finally'
   }
 })
 
@@ -162,17 +162,17 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       RAISE_EXPRESSION: 1,
       RAISE_FROM: 2,
       all: [0, 1, 2],
-      synchronize: /** @suppress {globalThis} */ function(newValue) {
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
         var M = this.model
         this.ui.tiles.expression.setIncog(newValue === M.RAISE)
         this.ui.tiles.expression.required = (newValue === M.RAISE_EXPRESSION)
         this.ui.tiles.from.setIncog(newValue !== M.RAISE_FROM)
         this.ui.tiles.from.required = (newValue === M.RAISE_FROM)
-      },
-    },
+      }
+    }
   },
   fields: {
-    prefix: 'raise',
+    prefix: 'raise'
   },
   tiles: {
     expression: {
@@ -185,13 +185,13 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
           if (variant.get() === variant.model.RAISE) {
             variant.set(variant.model.RAISE_EXPRESSION)
           }
-        },
-      },
+        }
+      }
     },
     from: {
       order: 2,
       fields: {
-        label: 'from',
+        label: 'from'
       },
       check: eYo.T3.Expr.Check.expression,
       hole_value: 'expression',
@@ -199,10 +199,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
         didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
           variant.set(variant.model.RAISE_FROM)
-        },
-      },
-    },
-  },
+        }
+      }
+    }
+  }
 })
 
 /**
@@ -214,31 +214,31 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
 eYo.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var M = this.data.variant.model
   var current = this.data.variant.get()
-  var F = function(content, k) {
-    var menuItem = new eYo.MenuItem(content, function() {
+  var F = function (content, k) {
+    var menuItem = new eYo.MenuItem(content, function () {
       block.eyo.data.variant.set(k)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code-reserved',
-      goog.dom.createTextNode('raise'),
-    ), M.RAISE
+    goog.dom.createTextNode('raise')
+  ), M.RAISE
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-      eYo.Do.createSPAN('raise ', 'eyo-code-reserved'),
-      goog.dom.createTextNode('…'),
-    ), M.RAISE_EXPRESSION
+    eYo.Do.createSPAN('raise ', 'eyo-code-reserved'),
+    goog.dom.createTextNode('…')
+  ), M.RAISE_EXPRESSION
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-      eYo.Do.createSPAN('raise', 'eyo-code-reserved'),
-      goog.dom.createTextNode(' … '),
-      eYo.Do.createSPAN(' from', 'eyo-code-reserved'),
-      goog.dom.createTextNode(' …'),
-    ), M.RAISE_FROM
+    eYo.Do.createSPAN('raise', 'eyo-code-reserved'),
+    goog.dom.createTextNode(' … '),
+    eYo.Do.createSPAN(' from', 'eyo-code-reserved'),
+    goog.dom.createTextNode(' …')
+  ), M.RAISE_FROM
   )
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.raise_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  return eYo.DelegateSvg.Stmt.raise_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 /**
@@ -249,25 +249,25 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
   data: {
     variant: {
       all: [0, 1],
-      synchronize: /** @suppress {globalThis} */ function(newValue) {
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.ui.tiles.expression.setIncog(!newValue)
         this.ui.tiles.expression.required = !!newValue
-      },
-    },
+      }
+    }
   },
   fields: {
-    prefix: 'assert',
+    prefix: 'assert'
   },
   tiles: {
     assert: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'expression',
+      hole_value: 'expression'
     },
     expression: {
       order: 2,
       fields: {
-        label: ',',
+        label: ','
       },
       check: eYo.T3.Expr.Check.expression,
       hole_value: 'expression',
@@ -275,10 +275,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
         didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
           variant.set(1)
-        },
-      },
-    },
-  },
+        }
+      }
+    }
+  }
 })
 
 /**
@@ -289,25 +289,25 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
  */
 eYo.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var current = block.eyo.data.variant.get()
-  var F = function(content, key) {
-    var menuItem = new eYo.MenuItem(content, function() {
+  var F = function (content, key) {
+    var menuItem = new eYo.MenuItem(content, function () {
       block.eyo.data.variant.set(key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-      eYo.Do.createSPAN('assert ', 'eyo-code-reserved'),
-      goog.dom.createTextNode('…'),
-    ), 0
+    eYo.Do.createSPAN('assert ', 'eyo-code-reserved'),
+    goog.dom.createTextNode('…')
+  ), 0
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-      eYo.Do.createSPAN('assert ', 'eyo-code-reserved'),
-      goog.dom.createTextNode('…, …'),
-    ), 1
+    eYo.Do.createSPAN('assert ', 'eyo-code-reserved'),
+    goog.dom.createTextNode('…, …')
+  ), 1
   )
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this,block, mgr)
+  return eYo.DelegateSvg.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 eYo.DelegateSvg.Try.T3s = [
@@ -315,5 +315,5 @@ eYo.DelegateSvg.Try.T3s = [
   eYo.T3.Stmt.except_part,
   eYo.T3.Stmt.finally_part,
   eYo.T3.Stmt.raise_stmt,
-  eYo.T3.Stmt.assert_stmt,
+  eYo.T3.Stmt.assert_stmt
 ]

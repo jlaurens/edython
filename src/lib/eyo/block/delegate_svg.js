@@ -46,7 +46,7 @@ eYo.DelegateSvg.Manager.register = function (key) {
     delegateC9r = eYo.DelegateSvg.Stmt[key]
     available = eYo.T3.Stmt.Available
   } else {
-    throw "Unknown block eYo.T3.Expr or eYo.T3.Stmt key: "+key
+    throw 'Unknown block eYo.T3.Expr or eYo.T3.Stmt key: ' + key
   }
   eYo.DelegateSvg.Manager.registerDelegate_(prototypeName, delegateC9r)
   available.push(prototypeName)
@@ -121,13 +121,13 @@ goog.require('eYo.Tile')
  * below.
  * @param {!Blockly.Block} block to be initialized..
  */
-eYo.DelegateSvg.prototype.initBlock = function(block) {
+eYo.DelegateSvg.prototype.initBlock = function (block) {
   eYo.DelegateSvg.superClass_.initBlock.call(this, block)
   // block.setInputsInline(true)
   block.setTooltip('')
   block.setHelpUrl('')
   var ui = Object.create(null)
-  var makeTiles = function(owner, tilesModel) {
+  var makeTiles = function (owner, tilesModel) {
     var tiles = Object.create(null)
     var ordered = []
     for (var k in tilesModel) {
@@ -144,7 +144,7 @@ eYo.DelegateSvg.prototype.initBlock = function(block) {
             next = tile
             do {
               goog.asserts.assert(!goog.isDef(tiles[next.key]),
-              eYo.Do.format('Duplicate inserted tile key {0}/{1}/{2}', next.key, insert, block.type))
+                eYo.Do.format('Duplicate inserted tile key {0}/{1}/{2}', next.key, insert, block.type))
               tiles[next.key] = next
             } while ((next = next.next))
           } else {
@@ -155,7 +155,7 @@ eYo.DelegateSvg.prototype.initBlock = function(block) {
         }
       } else if (goog.isObject(tileModel) && (tile = new eYo.Tile(owner, k, tileModel))) {
         goog.asserts.assert(!goog.isDef(tiles[k]),
-        eYo.Do.format('Duplicate tile key {0}/{1}', k, block.type))
+          eYo.Do.format('Duplicate tile key {0}/{1}', k, block.type))
         tiles[k] = tile
       } else {
         continue
@@ -164,12 +164,12 @@ eYo.DelegateSvg.prototype.initBlock = function(block) {
       for (var i = 0; i < ordered.length; i++) {
         // we must not find an aleady existing entry.
         goog.asserts.assert(i != tile.order,
-        eYo.Do.format('Same order tile {0}/{1}', i, block.type))
+          eYo.Do.format('Same order tile {0}/{1}', i, block.type))
         if (ordered[i].model.order > tile.model.order) {
           break
         }
       }
-      ordered.splice(i,0,tile)
+      ordered.splice(i, 0, tile)
     }
     if ((tile = ordered[0])) {
       i = 1
@@ -198,7 +198,7 @@ console.warn('implement async and await, see above awaitable and asyncable')
  * Revert operation of initBlock.
  * @param {!Blockly.Block} block to be initialized..
  */
-eYo.DelegateSvg.prototype.deinitBlock = function(block) {
+eYo.DelegateSvg.prototype.deinitBlock = function (block) {
   goog.dom.removeNode(this.svgRoot_)
   this.svgRoot_ = undefined
   // just in case the path were not already removed as child or a removed parent
@@ -222,7 +222,7 @@ eYo.DelegateSvg.prototype.deinitBlock = function(block) {
  * May be called more than once.
  * @param {!Blockly.Block} block to be initialized..
  */
-eYo.DelegateSvg.prototype.preInitSvg = function(block) {
+eYo.DelegateSvg.prototype.preInitSvg = function (block) {
 }
 
 /**
@@ -230,8 +230,8 @@ eYo.DelegateSvg.prototype.preInitSvg = function(block) {
  * May be called more than once.
  * @param {!Blockly.Block} block to be initialized.
  */
-eYo.DelegateSvg.prototype.postInitSvg = function(block) {
-  if(this.svgPathContour_) {
+eYo.DelegateSvg.prototype.postInitSvg = function (block) {
+  if (this.svgPathContour_) {
     return
   }
   goog.dom.removeNode(block.svgPath_)
@@ -245,22 +245,22 @@ eYo.DelegateSvg.prototype.postInitSvg = function(block) {
   //   {'class': 'eyo-root'}, null)
   // goog.dom.insertChildAt(this.svgRoot_, block.svgGroup_, 0)
   this.svgPathInline_ = Blockly.utils.createSvgElement('path', {
-    'class': 'eyo-path-contour',
+    'class': 'eyo-path-contour'
   }, null)
   this.svgPathCollapsed_ = Blockly.utils.createSvgElement('path', {
-    'class': 'eyo-path-collapsed',
+    'class': 'eyo-path-collapsed'
   }, null)
   this.svgPathContour_ = Blockly.utils.createSvgElement('path', {
-    'class': 'eyo-path-contour',
+    'class': 'eyo-path-contour'
   }, null)
   this.svgPathShape_ = Blockly.utils.createSvgElement('path', {
-    'class': 'eyo-path-shape',
+    'class': 'eyo-path-shape'
   }, null)
   this.svgPathHighlight_ = Blockly.utils.createSvgElement('path', {
-    'class': 'eyo-path-selected',
+    'class': 'eyo-path-selected'
   }, null)
   this.svgPathConnection_ = Blockly.utils.createSvgElement('path', {
-    'class': 'eyo-path-selected',
+    'class': 'eyo-path-selected'
   }, null)
   this.svgContourGroup_ = Blockly.utils.createSvgElement('g',
     {'class': 'eyo-contour'}, null)
@@ -274,11 +274,11 @@ eYo.DelegateSvg.prototype.postInitSvg = function(block) {
     'eyo-block')
   if (!block.workspace.options.readOnly && !this.eventsInit_) {
     Blockly.bindEventWithChecks_(
-      block.svgGroup_, 'mousedown', block, block.onMouseDown_);
+      block.svgGroup_, 'mousedown', block, block.onMouseDown_)
     Blockly.bindEventWithChecks_(
       block.svgGroup_, 'mouseup', block, block.onMouseUp_)
   }
-  this.eventsInit_ = true;
+  this.eventsInit_ = true
 }
 
 /**
@@ -299,11 +299,11 @@ eYo.DelegateSvg.prototype.parentWillChange = function (block, newParent) {
         goog.dom.insertChildAt(svgRoot, this.svgContourGroup_, 0)
         this.svgContourGroup_.removeAttribute('transform')
         goog.dom.classlist.remove(/** @type {!Element} */(this.svgContourGroup_),
-        'eyo-inner')
+          'eyo-inner')
         goog.dom.insertSiblingBefore(this.svgShapeGroup_, this.svgContourGroup_)
         this.svgShapeGroup_.removeAttribute('transform')
         goog.dom.classlist.remove(/** @type {!Element} */(this.svgShapeGroup_),
-        'eyo-inner')
+          'eyo-inner')
       }
     }
   }
@@ -318,20 +318,20 @@ eYo.DelegateSvg.prototype.parentDidChange = function (block, newParent) {
   // `Blockly.BlockSvg.prototype.setParent`
   if (newParent) {
     var svgRoot = block.getSvgRoot()
-    var oldXY = block.getRelativeToSurfaceXY();
-    newParent.getSvgRoot().appendChild(svgRoot);
-    var newXY = block.getRelativeToSurfaceXY();
+    var oldXY = block.getRelativeToSurfaceXY()
+    newParent.getSvgRoot().appendChild(svgRoot)
+    var newXY = block.getRelativeToSurfaceXY()
     // Move the connections to match the child's new position.
-    block.moveConnections_(newXY.x - oldXY.x, newXY.y - oldXY.y);
+    block.moveConnections_(newXY.x - oldXY.x, newXY.y - oldXY.y)
     if (this.svgContourGroup_ && newParent.eyo.svgContourGroup_) {
       goog.dom.insertChildAt(newParent.eyo.svgContourGroup_,
         this.svgContourGroup_, 0)
       goog.dom.classlist.add(/** @type {!Element} */(this.svgContourGroup_),
-      'eyo-inner')
+        'eyo-inner')
       goog.dom.appendChild(newParent.eyo.svgShapeGroup_,
         this.svgShapeGroup_)
       goog.dom.classlist.add(/** @type {!Element} */(this.svgShapeGroup_),
-      'eyo-inner')
+        'eyo-inner')
     }
   }
 }
@@ -340,7 +340,7 @@ eYo.DelegateSvg.prototype.parentDidChange = function (block, newParent) {
  * Insert the svg root of the head tile in the svg group of the receiver
  * at the exact location where it belongs.
  */
-eYo.DelegateSvg.prototype.svgInsertHeadTile = function() {
+eYo.DelegateSvg.prototype.svgInsertHeadTile = function () {
   if (this.ui.headTile) {
     goog.dom.appendChild(this.block_.getSvgRoot(), this.ui.headTile.getSvgRoot())
   }
@@ -352,9 +352,9 @@ eYo.DelegateSvg.prototype.svgInsertHeadTile = function() {
  * @param {string} name The name of the field.
  * @return {Blockly.Field} Named field, or null if field does not exist.
  */
-eYo.DelegateSvg.prototype.getField = function(block, name) {
+eYo.DelegateSvg.prototype.getField = function (block, name) {
   var fields = this.ui.fields
-  for(var key in fields) {
+  for (var key in fields) {
     var field = fields[key]
     if (field.name === name) {
       return field
@@ -368,7 +368,7 @@ eYo.DelegateSvg.prototype.getField = function(block, name) {
  * Sends a `synchronize` message to all tiles.
  * May be used at the end of an initialization process.
  */
-eYo.DelegateSvg.prototype.synchronizeTiles = function(block) {
+eYo.DelegateSvg.prototype.synchronizeTiles = function (block) {
   this.foreachTile(function () {
     this.synchronize()
   })
@@ -378,15 +378,15 @@ eYo.DelegateSvg.prototype.synchronizeTiles = function(block) {
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-eYo.DelegateSvg.prototype.getMenuTarget = function(block) {
+eYo.DelegateSvg.prototype.getMenuTarget = function (block) {
   var wrapped
   if (this.ui.wrap && (wrapped = this.ui.wrap.input.connection.targetBlock())) {
     return wrapped.eyo.getMenuTarget(wrapped)
   }
   if (this.wrappedInputs_ && this.wrappedInputs_.length === 1 &&
     (wrapped = this.wrappedInputs_[0][0].connection.targetBlock())) {
-      // if there are more than one wrapped block,
-      // then we choose none of them
+    // if there are more than one wrapped block,
+    // then we choose none of them
     return wrapped.eyo.getMenuTarget(wrapped)
   }
   return block
@@ -486,10 +486,10 @@ eYo.DelegateSvg.prototype.willRender_ = function (block) {
     }
   }
   // change the class of the shape on error
-  var F = !!Object.keys(this.errors).length?
-  goog.dom.classlist.add:
-  goog.dom.classlist.remove
-  var FF = function(elt) {
+  var F = Object.keys(this.errors).length
+    ? goog.dom.classlist.add
+    : goog.dom.classlist.remove
+  var FF = function (elt) {
     if (/** @type {!Element} */(elt)) {
       F(elt, 'eyo-error')
     }
@@ -564,9 +564,9 @@ eYo.DelegateSvg.prototype.highlightPathDef_ = eYo.DelegateSvg.prototype.shapePat
  * @private
  */
 eYo.DelegateSvg.prototype.connectionPathDef_ = function (block) {
-  return this.selectedConnection?
-    this.highlightConnectionPathDef(block, this.selectedConnection):
-    ''
+  return this.selectedConnection
+    ? this.highlightConnectionPathDef(block, this.selectedConnection)
+    : ''
 }
 
 /**
@@ -636,9 +636,9 @@ eYo.DelegateSvg.prototype.alignRightEdges_ = function (block) {
  * @private
  */
 eYo.DelegateSvg.prototype.updatePath_ = function (block, path, def) {
-  if (!!path) {
+  if (path) {
     if (def) {
-      path.setAttribute('d', def.call(this,block))
+      path.setAttribute('d', def.call(this, block))
     } else {
       path.removeAttribute('d')
     }
@@ -675,7 +675,7 @@ eYo.DelegateSvg.prototype.getPaddingLeft = function (block) {
   if (this.wrapped_) {
     return 0
   } else if (block.outputConnection) {
-    return this.locked_ && block.getSurroundParent()? 0: eYo.Font.space
+    return this.locked_ && block.getSurroundParent() ? 0 : eYo.Font.space
   } else {
     return eYo.Padding.l()
   }
@@ -690,7 +690,7 @@ eYo.DelegateSvg.prototype.getPaddingRight = function (block) {
   if (this.wrapped_) {
     return 0
   } else if (block.outputConnection) {
-    return this.locked_ && block.getSurroundParent()? 0: eYo.Font.space
+    return this.locked_ && block.getSurroundParent() ? 0 : eYo.Font.space
   } else {
     return eYo.Padding.r()
   }
@@ -743,8 +743,8 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     io.f = 0
     do {
       this.renderDrawField_(io)
-      ++ io.f
-    } while((io.field = io.field.eyo.nextField))
+      ++io.f
+    } while ((io.field = io.field.eyo.nextField))
   }
   if ((io.tile = this.ui.headTile)) {
     do {
@@ -752,13 +752,13 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     } while ((io.tile = io.tile.next))
   } else {
     for (; (io.input = block.inputList[io.i]); io.i++) {
-      goog.asserts.assert(io.input.eyo, 'Input with no eyo '+io.input.name+' in block '+block.type)
+      goog.asserts.assert(io.input.eyo, 'Input with no eyo ' + io.input.name + ' in block ' + block.type)
       io.inputDisabled = io.input.eyo.disabled_
       if (io.input.isVisible() && !io.inputDisabled) {
         this.renderDrawInput_(io)
       } else {
         for (var j = 0; (io.field = io.input.fieldRow[j]); ++j) {
-          if (io.field.getText().length>0) {
+          if (io.field.getText().length > 0) {
             var root = io.field.getSvgRoot()
             if (root) {
               root.setAttribute('display', 'none')
@@ -790,7 +790,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   if ((io.field = this.ui.toEndField)) {
     do {
       this.renderDrawField_(io)
-    } while((io.field = io.field.eyo.nextField))
+    } while ((io.field = io.field.eyo.nextField))
   }
   // enlarge the width if necessary
   io.cursorX = Math.max(io.cursorX, this.minBlockWidth())
@@ -819,7 +819,7 @@ eYo.DelegateSvg.prototype.renderDrawTile_ = function (io) {
     if ((io.field = io.tile.fromStartField)) {
       do {
         this.renderDrawField_(io)
-      } while((io.field = io.field.eyo.nextField))
+      } while ((io.field = io.field.eyo.nextField))
     }
     if ((io.input = io.tile.input)) {
       this.renderDrawInput_(io)
@@ -827,7 +827,7 @@ eYo.DelegateSvg.prototype.renderDrawTile_ = function (io) {
     if ((io.field = io.tile.toEndField)) {
       do {
         this.renderDrawField_(io)
-      } while((io.field = io.field.eyo.nextField))
+      } while ((io.field = io.field.eyo.nextField))
     }
     io.cursorX += io.offsetX
     io.offsetX = 0
@@ -876,13 +876,13 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
           // add a separation
           io.cursorX += eYo.Font.space
         }
-        io.shouldSeparateField = eYo.XRE.id_continue.test(text[text.length-1])
-        || eYo.XRE.operator.test(text[text.length-1])
-        || text[text.length-1] === ':'
-        || (text[text.length-1] === '.' && !/** Object */(io.field) instanceof eYo.FieldTextInput)
-        io.starSymbol = (io.f === 0 && (['*','@', '+', '-', '~'].indexOf(text[text.length-1])>=0))
+        io.shouldSeparateField = eYo.XRE.id_continue.test(text[text.length - 1]) ||
+        eYo.XRE.operator.test(text[text.length - 1]) ||
+        text[text.length - 1] === ':' ||
+        (text[text.length - 1] === '.' && !((io.field) instanceof eYo.FieldTextInput))
+        io.starSymbol = (io.f === 0 && (['*', '@', '+', '-', '~'].indexOf(text[text.length - 1]) >= 0))
       }
-      var x_shift = eyo && !io.block.eyo.wrapped_? eyo.x_shift || 0: 0
+      var x_shift = eyo && !io.block.eyo.wrapped_ ? eyo.x_shift || 0 : 0
       root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
         ', ' + eYo.Padding.t() + ')')
       var size = io.field.getSize()
@@ -940,13 +940,13 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   }
   var delta = this.renderDrawFields_(io, true)
   var c8n = io.input.connection
-  if (c8n) {// once `&&!c8n.hidden_` was there, bad idea but why was it here?
-    var cursorX = io.cursorX+io.offsetX
+  if (c8n) { // once `&&!c8n.hidden_` was there, bad idea but why was it here?
+    var cursorX = io.cursorX + io.offsetX
     c8n.setOffsetInBlock(cursorX, 0)
     var target = c8n.targetBlock()
-    if (!!target) {
+    if (target) {
       var root = target.getSvgRoot()
-      if (!!root) {
+      if (root) {
         var translate = 'translate(' + cursorX + ', 0)'
         root.setAttribute('transform', translate)
         if (target.eyo.svgContourGroup_) {
@@ -954,10 +954,10 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
           target.eyo.svgShapeGroup_.setAttribute('transform', translate)
         }
         if (!target.eyo.skipRendering) {
-          target.eyo.shouldSeparateField = (target.eyo.wrapped_ ||target.eyo.locked_) && io.shouldSeparateField
+          target.eyo.shouldSeparateField = (target.eyo.wrapped_ || target.eyo.locked_) && io.shouldSeparateField
         }
         target.render()
-        io.shouldSeparateField = (target.eyo.wrapped_ ||target.eyo.locked_) && target.eyo.shouldSeparateField
+        io.shouldSeparateField = (target.eyo.wrapped_ || target.eyo.locked_) && target.eyo.shouldSeparateField
         var bBox = target.getHeightWidth()
         io.cursorX += bBox.width
       }
@@ -965,9 +965,9 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       // locked blocks won't display any placeholder
       // (input with no target)
       var eyo = c8n.eyo
-      var pw = eyo.s7r_ || eyo.optional_?
-      this.carretPathDefWidth_(cursorX):
-      this.placeHolderPathDefWidth_(cursorX)
+      var pw = eyo.s7r_ || eyo.optional_
+      ? this.carretPathDefWidth_(cursorX)
+      : this.placeHolderPathDefWidth_(cursorX)
       io.steps.push(pw.d)
       io.cursorX += pw.width
       if (pw.width) {
@@ -1021,13 +1021,13 @@ eYo.DelegateSvg.prototype.outPathDef_ = function () {
  */
 eYo.DelegateSvg.prototype.carretPathDefWidth_ = function (cursorX) {
   /* eslint-disable indent */
-  var size = {width:eYo.Font.space, height: eYo.Font.lineHeight()}
+  var size = {width: eYo.Font.space, height: eYo.Font.lineHeight()}
   var p = eYo.Padding.h()
   var r = (p ** 2 + size.height ** 2 / 4) / 2 / p
   var dy = eYo.Padding.v() + eYo.Font.descent / 2
   var a = ' a ' + r + ', ' + r + ' 0 0 1 0,'
   var h = size.height + 2 * eYo.Margin.V
-  var d = 'M ' + (cursorX + size.width/2) +
+  var d = 'M ' + (cursorX + size.width / 2) +
   ',' + (eYo.Margin.V + dy) + a + (h - 2 * dy) + a + (-h + 2 * dy) + ' z'
   return {width: size.width, d: d}
 } /* eslint-enable indent */
@@ -1076,12 +1076,12 @@ eYo.DelegateSvg.prototype.highlightConnectionPathDef = function (block, c8n) {
       steps = 'm ' + block.width + ',' + (-r) + a + (2 * r) + ' h ' + (-block.width) + a + (-2 * r) + ' z'
     } else if (c8n === block.nextConnection) {
       if (block.height > eYo.Font.lineHeight()) { // this is not clean design
-        steps = 'm ' + (eYo.Font.tabWidth+eYo.Style.Path.radius()) + ',' + (block.height-r) + a + (2 * r) + ' h ' + (-eYo.Font.tabWidth-eYo.Style.Path.radius()) + a + (-2 * r) + ' z'
+        steps = 'm ' + (eYo.Font.tabWidth + eYo.Style.Path.radius()) + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-eYo.Font.tabWidth - eYo.Style.Path.radius()) + a + (-2 * r) + ' z'
       } else {
-        steps = 'm ' + block.width + ',' + (block.height-r) + a + (2 * r) + ' h ' + (-block.width) + a + (-2 * r) + ' z'
+        steps = 'm ' + block.width + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-block.width) + a + (-2 * r) + ' z'
       }
     } else {
-      steps = 'm ' + (block.width) + ',' + (-r+eYo.Font.lineHeight()) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth-block.width) + a + (-2 * r) + ' z'
+      steps = 'm ' + (block.width) + ',' + (-r + eYo.Font.lineHeight()) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth - block.width) + a + (-2 * r) + ' z'
     }
   }
   return steps
@@ -1227,7 +1227,7 @@ eYo.DelegateSvg.prototype.hasSelect = function (block) {
  */
 eYo.DelegateSvg.prototype.delayedRender = function (block) {
   if (!goog.isDef(this.delayedRender)) {
-    this.delayedRender = setTimeout(function(){
+    this.delayedRender = setTimeout(function () {
       delete block.eyo.delayedRender
       if (block.workspace) {
         block.render()
@@ -1282,17 +1282,17 @@ eYo.DelegateSvg.prototype.beReady = function (block) {
   if (parent && parent.eyo.svgContourGroup_) {
     goog.dom.insertChildAt(parent.eyo.svgContourGroup_, this.svgContourGroup_, 0)
     goog.dom.classlist.add(/** @type {!Element} */(this.svgContourGroup_),
-    'eyo-inner')
+      'eyo-inner')
     goog.dom.appendChild(parent.eyo.svgShapeGroup_, this.svgShapeGroup_)
     goog.dom.classlist.add(/** @type {!Element} */(this.svgShapeGroup_),
-    'eyo-inner')
+      'eyo-inner')
   } else {
     goog.dom.insertChildAt(block.svgGroup_, this.svgContourGroup_, 0)
     goog.dom.classlist.remove(/** @type {!Element} */(this.svgContourGroup_),
-    'eyo-inner')
+      'eyo-inner')
     goog.dom.insertSiblingBefore(this.svgShapeGroup_, this.svgContourGroup_)
     goog.dom.classlist.remove(/** @type {!Element} */(this.svgShapeGroup_),
-    'eyo-inner')
+      'eyo-inner')
   }
   this.skipRendering = 0
 }
@@ -1334,7 +1334,7 @@ eYo.DelegateSvg.prototype.getPythonType = function (block) {
  * @param {string} prototypeName
  * @param {string} surroundInputName, which parent's connection to use
  */
-eYo.DelegateSvg.prototype.canInsertParent = function(block, prototypeName, subtype, surroundInputName) {
+eYo.DelegateSvg.prototype.canInsertParent = function (block, prototypeName, subtype, surroundInputName) {
   var can = false
   return can
 }
@@ -1351,7 +1351,7 @@ eYo.DelegateSvg.prototype.canInsertParent = function(block, prototypeName, subty
  * @param {string} subtype, for subclassers
  * @return the created block
  */
-eYo.DelegateSvg.prototype.insertParent = function(block, surroundPrototypeName, subtype, surroundInputName) {
+eYo.DelegateSvg.prototype.insertParent = function (block, surroundPrototypeName, subtype, surroundInputName) {
   goog.asserts.assert(false, 'Must be subclassed')
 }
 
@@ -1361,23 +1361,23 @@ eYo.DelegateSvg.prototype.insertParent = function(block, surroundPrototypeName, 
  * @param {objet} value value of the block that will fill the hole, a string for an identifier block.
  * @private
  */
-eYo.HoleFiller.getData = function(check, value) {
+eYo.HoleFiller.getData = function (check, value) {
   var data
   if (goog.isFunction(value)) {
     data = {
-      filler: value,
+      filler: value
     }
   } else if (check.indexOf(eYo.T3.Expr.identifier) >= 0) {
     if (value) {
       data = {
         type: eYo.T3.Expr.term,
-        value: value,
+        value: value
       }
     }
-  } else if(check.length === 1 && eYo.T3.All.core_expressions.indexOf(check[0])>=0) {
+  } else if (check.length === 1 && eYo.T3.All.core_expressions.indexOf(check[0]) >= 0) {
     data = {
       type: check[0],
-      value: value,
+      value: value
     }
   }
   return data
@@ -1389,7 +1389,7 @@ eYo.HoleFiller.getData = function(check, value) {
  * @param {Array} holes whengiven the is the array to be filled
  * @return an array of conections, holes if given.
  */
-eYo.HoleFiller.getDeepHoles = function(block, holes = undefined) {
+eYo.HoleFiller.getDeepHoles = function (block, holes = undefined) {
   var H = holes || []
   var getDeepHoles = function (c8n) {
     if (c8n && c8n.type === Blockly.INPUT_VALUE && ((!c8n.eyo.disabled_ && !c8n.eyo.incog_) || c8n.eyo.wrapped_)) {
@@ -1401,7 +1401,7 @@ eYo.HoleFiller.getDeepHoles = function(block, holes = undefined) {
       }
     }
   }
-  if (goog.isDef(block.getSourceBlock)) {// this is a connection...
+  if (goog.isDef(block.getSourceBlock)) { // this is a connection...
     getDeepHoles(block)
   } else {
     var e8r = block.eyo.inputEnumerator(block)
@@ -1419,7 +1419,7 @@ eYo.HoleFiller.getDeepHoles = function(block, holes = undefined) {
  * Should not be called directly
  * @param {!Blockly.Block} block to be initialized..
  */
-eYo.HoleFiller.fillDeepHoles = function(workspace, holes) {
+eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
   var i = 0
   for (; i < holes.length; ++i) {
     var c8n = holes[i]
@@ -1438,7 +1438,7 @@ eYo.HoleFiller.fillDeepHoles = function(workspace, holes) {
             }
           }
           c8n.connect(B.outputConnection)
-        } catch(err) {
+        } catch (err) {
           console.log(err.message)
         }
       }
@@ -1461,7 +1461,7 @@ eYo.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
   var returnState = false
   if (input) {
     var target = input.connection.targetBlock()
-    var oldType = target? target.type: undefined
+    var oldType = target ? target.type : undefined
     if (newType != oldType) {
       Blockly.Events.setGroup(true)
       try {
@@ -1489,7 +1489,7 @@ eYo.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
  * @return {!goog.math.Rect}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
-eYo.DelegateSvg.prototype.getGlobalBoundingRect = function(block) {
+eYo.DelegateSvg.prototype.getGlobalBoundingRect = function (block) {
   var R = this.getBoundingRect(block)
   R.scale(block.workspace.scale)
   R.translate(block.workspace.getOriginOffsetInPixels())
@@ -1506,7 +1506,7 @@ eYo.DelegateSvg.prototype.getGlobalBoundingRect = function(block) {
  * @return {!goog.math.Rect}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
-eYo.DelegateSvg.prototype.getBoundingRect = function(block) {
+eYo.DelegateSvg.prototype.getBoundingRect = function (block) {
   return goog.math.Rect.createFromPositionAndSize(
     block.getRelativeToSurfaceXY(),
     block.getHeightWidth()
@@ -1523,7 +1523,7 @@ eYo.DelegateSvg.prototype.getBoundingRect = function(block) {
  * @return {!goog.math.Box}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
-eYo.DelegateSvg.prototype.getBoundingBox = function(block) {
+eYo.DelegateSvg.prototype.getBoundingBox = function (block) {
   return this.getBoundingRect(block).toBox()
 }
 
@@ -1591,7 +1591,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function (block) {
     target.eyo.selectBlockLeft(target)
     return
   }
-  var doLast = function(B) {
+  var doLast = function (B) {
     var e8r = B.eyo.inputEnumerator(B)
     e8r.end()
     while (e8r.previous()) {
@@ -1606,7 +1606,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function (block) {
     return null
   }
   var parent, input, c8n
-  var selectTarget = function(c8n) {
+  var selectTarget = function (c8n) {
     var target = c8n.targetBlock()
     if (!target) {
       return false
@@ -1627,7 +1627,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function (block) {
     }
     return false
   }
-  var selectConnection = function(B) {
+  var selectConnection = function (B) {
     if (selectTarget(c8n)) {
       return true
     }
@@ -1711,7 +1711,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function (block) {
   do {
     parent = target
   } while ((target = parent.getSurroundParent()))
-  target = parent.eyo.getBestBlock(parent, function(a, b) {
+  target = parent.eyo.getBestBlock(parent, function (a, b) {
     if (a.left <= b.left) {
       return {}
     }
@@ -1723,8 +1723,8 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function (block) {
       return {minor: a.left - b.left + b.top - a.bottom}
     }
     return {
-      major: a.left - b.left + Math.abs(a.bottom + a.top - b.bottom - b.top)/3,
-      minor: b.bottom - b.top,
+      major: a.left - b.left + Math.abs(a.bottom + a.top - b.bottom - b.top) / 3,
+      minor: b.bottom - b.top
     }
   })
   if (target) {
@@ -1745,7 +1745,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
     return target.eyo.selectBlockRight(target)
   }
   var parent, input, c8n
-  var selectTarget = function() {
+  var selectTarget = function () {
     if (target = c8n.targetBlock()) {
       if (target.eyo.wrapped_ || target.eyo.locked_) {
         return target.eyo.selectBlockRight(target)
@@ -1757,7 +1757,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
     }
     return false
   }
-  var selectConnection = function() {
+  var selectConnection = function () {
     if (c8n.hidden_ && !c8n.eyo.wrapped_) {
       return false
     }
@@ -1806,7 +1806,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
       // it was the last value connection
       // find a statement connection
       e8r.start()
-      while(e8r.next()) {
+      while (e8r.next()) {
         if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
           if (selectConnection()) {
             return true
@@ -1887,7 +1887,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
   do {
     parent = target
   } while ((target = parent.getSurroundParent()))
-  target = parent.eyo.getBestBlock(parent, function(a, b) {
+  target = parent.eyo.getBestBlock(parent, function (a, b) {
     if (a.right >= b.right) {
       return {}
     }
@@ -1899,8 +1899,8 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
       return {minor: b.right - a.right + b.top - a.bottom}
     }
     return {
-      major: b.right - a.right + Math.abs(a.bottom + a.top - b.bottom - b.top)/3,
-      minor: b.bottom - b.top,
+      major: b.right - a.right + Math.abs(a.bottom + a.top - b.bottom - b.top) / 3,
+      minor: b.bottom - b.top
     }
   })
   if (target) {
@@ -1949,7 +1949,7 @@ eYo.DelegateSvg.prototype.selectBlockAbove = function (block) {
       return
     }
   } while ((target = parent.getParent()))
-  target = parent.eyo.getBestBlock(parent, function(a, b) {
+  target = parent.eyo.getBestBlock(parent, function (a, b) {
     if (a.top <= b.top) {
       return {}
     }
@@ -1961,8 +1961,8 @@ eYo.DelegateSvg.prototype.selectBlockAbove = function (block) {
       return {minor: b.left - a.right + a.top - b.top}
     }
     return {
-      major: a.top - b.top + Math.abs(a.left + a.right - b.left - b.right)/3,
-      minor: b.right - b.left,
+      major: a.top - b.top + Math.abs(a.left + a.right - b.left - b.right) / 3,
+      minor: b.right - b.left
     }
   })
   if (target) {
@@ -2013,7 +2013,7 @@ eYo.DelegateSvg.prototype.selectBlockBelow = function (block) {
     }
   } while ((target = parent.getSurroundParent()))
 
-  target = parent.eyo.getBestBlock(parent, function(a, b) {
+  target = parent.eyo.getBestBlock(parent, function (a, b) {
     if (a.bottom >= b.bottom) {
       return {}
     }
@@ -2025,8 +2025,8 @@ eYo.DelegateSvg.prototype.selectBlockBelow = function (block) {
       return {minor: b.left - a.right + b.bottom - a.bottom}
     }
     return {
-      major: b.bottom - a.bottom + Math.abs(a.left + a.right - b.left - b.right)/3,
-      minor: b.right - b.left,
+      major: b.bottom - a.bottom + Math.abs(a.left + a.right - b.left - b.right) / 3,
+      minor: b.right - b.left
     }
   })
   if (target) {
@@ -2046,7 +2046,7 @@ eYo.DelegateSvg.prototype.selectBlockBelow = function (block) {
 eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
   var where = new goog.math.Coordinate(e.clientX, e.clientY)
   where = goog.math.Coordinate.difference(where, block.workspace.getOriginOffsetInPixels())
-  where.scale(1/block.workspace.scale)
+  where.scale(1 / block.workspace.scale)
   var rect = this.getBoundingRect(block)
   where = goog.math.Coordinate.difference(where, rect.getTopLeft())
   var e8r = block.eyo.inputEnumerator(block)
@@ -2061,10 +2061,10 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
           }
         } else {
           var R = new goog.math.Rect(
-            c8n.offsetInBlock_.x - eYo.Font.space/2,
-            c8n.offsetInBlock_.y + eYo.Font.space/2,
-            c8n.eyo.optional_ || c8n.eyo.s7r_? 2*eYo.Font.space: 4*eYo.Font.space,
-            eYo.Font.lineHeight() - eYo.Font.space,
+            c8n.offsetInBlock_.x - eYo.Font.space / 2,
+            c8n.offsetInBlock_.y + eYo.Font.space / 2,
+            c8n.eyo.optional_ || c8n.eyo.s7r_ ? 2 * eYo.Font.space : 4 * eYo.Font.space,
+            eYo.Font.lineHeight() - eYo.Font.space
           )
           if (R.contains(where)) {
             return c8n
@@ -2073,9 +2073,9 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
       } else if (c8n.type === Blockly.NEXT_STATEMENT) {
         var R = new goog.math.Rect(
           c8n.offsetInBlock_.x,
-          c8n.offsetInBlock_.y - eYo.Font.space/2,
+          c8n.offsetInBlock_.y - eYo.Font.space / 2,
           eYo.Font.tabWidth,
-          eYo.Font.space,
+          eYo.Font.space
         )
         if (R.contains(where)) {
           return c8n
@@ -2088,26 +2088,26 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
       c8n.offsetInBlock_.x,
       c8n.offsetInBlock_.y,
       rect.width,
-      eYo.Font.space/2,
+      eYo.Font.space / 2
     )
     if (R.contains(where)) {
       return c8n
     }
   }
   if ((c8n = block.nextConnection) && !c8n.hidden) {
-    if (rect.height > eYo.Font.lineHeight()) {// Not the cleanest design
+    if (rect.height > eYo.Font.lineHeight()) { // Not the cleanest design
       var R = new goog.math.Rect(
         c8n.offsetInBlock_.x,
-        c8n.offsetInBlock_.y - eYo.Font.space/2,
-        eYo.Font.tabWidth + eYo.Style.Path.radius(),// R U sure?
-        eYo.Font.space/2,
+        c8n.offsetInBlock_.y - eYo.Font.space / 2,
+        eYo.Font.tabWidth + eYo.Style.Path.radius(), // R U sure?
+        eYo.Font.space / 2
       )
     } else {
       var R = new goog.math.Rect(
         c8n.offsetInBlock_.x,
-        c8n.offsetInBlock_.y - eYo.Font.space/2,
+        c8n.offsetInBlock_.y - eYo.Font.space / 2,
         rect.width,
-        eYo.Font.space/2,
+        eYo.Font.space / 2
       )
     }
     if (R.contains(where)) {
@@ -2122,16 +2122,16 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
  * Then, the higlighted path of the source blocks is not the outline of the block
  * but the shape of the connection as it shows when blocks are moved close enough.
  */
-eYo.SelectedConnection = function() {
+eYo.SelectedConnection = (function () {
   var c8n_
   var me = {
     /**
      * Lazy getter
     */
-    get: /** @suppress {globalThis} */ function() {
+    get: /** @suppress {globalThis} */ function () {
       return c8n_
     },
-    set: /** @suppress {globalThis} */ function(connection) {
+    set: /** @suppress {globalThis} */ function (connection) {
       var B
       if (connection) {
         var block = connection.getSourceBlock()
@@ -2191,7 +2191,7 @@ eYo.SelectedConnection = function() {
     }
   }
   return me
-} ()
+}())
 
 /**
  * Insert a block of the given type.
@@ -2219,7 +2219,7 @@ eYo.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
       c8n_N = undefined
     }
     var c8n, otherC8n, foundC8n
-    var fin = function(prepare) {
+    var fin = function (prepare) {
       Blockly.Events.enable()
       eYo.Events.setGroup(true)
       try {
@@ -2241,33 +2241,33 @@ eYo.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
     if ((otherC8n = eYo.SelectedConnection.get())) {
       var otherSource = otherC8n.getSourceBlock()
       if (otherC8n.type === Blockly.INPUT_VALUE) {
-        if ((c8n = candidate.outputConnection)&& c8n.checkType_(otherC8n)) {
+        if ((c8n = candidate.outputConnection) && c8n.checkType_(otherC8n)) {
           return fin()
         }
       } else if (otherC8n === otherSource.previousConnection) {
-        if ((c8n = candidate.nextConnection)&& c8n.checkType_(otherC8n)) {
+        if ((c8n = candidate.nextConnection) && c8n.checkType_(otherC8n)) {
           var targetC8n = otherC8n.targetConnection
-          if (targetC8n && candidate.previousConnection
-            && targetC8n.checkType_(candidate.previousConnection)) {
-            return fin(function() {
+          if (targetC8n && candidate.previousConnection &&
+            targetC8n.checkType_(candidate.previousConnection)) {
+            return fin(function () {
               targetC8n.connect(candidate.previousConnection)
             })
           } else {
-            return fin(function() {
-              var its_xy = block.getRelativeToSurfaceXY();
-              var my_xy = candidate.getRelativeToSurfaceXY();
+            return fin(function () {
+              var its_xy = block.getRelativeToSurfaceXY()
+              var my_xy = candidate.getRelativeToSurfaceXY()
               var HW = candidate.getHeightWidth()
-              candidate.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y-HW.height)
+              candidate.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y - HW.height)
             })
           }
           // unreachable code
         }
       } else if (otherC8n.type === Blockly.NEXT_STATEMENT) {
-        if ((c8n = candidate.previousConnection)&& c8n.checkType_(otherC8n)) {
+        if ((c8n = candidate.previousConnection) && c8n.checkType_(otherC8n)) {
           var targetC8n = otherC8n.targetConnection
-          if (targetC8n && candidate.nextConnection
-            && targetC8n.checkType_(candidate.nextConnection)) {
-            return fin(function() {
+          if (targetC8n && candidate.nextConnection &&
+            targetC8n.checkType_(candidate.nextConnection)) {
+            return fin(function () {
               targetC8n.connect(candidate.previousConnection)
             })
           } else {
@@ -2279,7 +2279,7 @@ eYo.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
     if ((c8n = candidate.outputConnection)) {
       // try to find a free connection in a block
       // When not undefined, the returned connection can connect to c8n.
-      var findC8n = function(block) {
+      var findC8n = function (block) {
         var e8r = block.eyo.inputEnumerator(block)
         var otherC8n, foundC8n, target
         while (e8r.next()) {
@@ -2314,7 +2314,7 @@ eYo.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
     }
     if ((c8n = candidate.previousConnection)) {
       if ((otherC8n = block.nextConnection) && c8n.checkType_(otherC8n)) {
-        return fin(function() {
+        return fin(function () {
           if ((targetC8n = otherC8n.targetConnection)) {
             // connected to something, beware of orphans
             otherC8n.disconnect()
@@ -2333,15 +2333,15 @@ eYo.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
     if ((c8n = candidate.nextConnection)) {
       if ((otherC8n = block.previousConnection) && c8n.checkType_(otherC8n)) {
         if ((targetC8n = otherC8n.targetConnection) && candidate.previousConnection && candidate.previousConnection.checkType_(targetC8n)) {
-          return fin(function() {
+          return fin(function () {
             candidate.previousConnection.connect(targetC8n)
           })
         } else {
-          return fin(function() {
-            var its_xy = block.getRelativeToSurfaceXY();
-            var my_xy = candidate.getRelativeToSurfaceXY();
+          return fin(function () {
+            var its_xy = block.getRelativeToSurfaceXY()
+            var my_xy = candidate.getRelativeToSurfaceXY()
             var HW = candidate.getHeightWidth()
-            candidate.moveBy(its_xy.x-my_xy.x, its_xy.y-my_xy.y-HW.height)
+            candidate.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y - HW.height)
           })
         }
       }
@@ -2416,11 +2416,10 @@ eYo.DelegateSvg.prototype.lock = function (block) {
   }
   if (Blockly.Events.isEnabled()) {
     Blockly.Events.fire(new Blockly.Events.BlockChange(
-    block, eYo.Const.Event.locked, null, this.locked_, true))
+      block, eYo.Const.Event.locked, null, this.locked_, true))
   }
   this.locked_ = true
-  if (block === eYo.SelectedConnection.set)
-  eYo.SelectedConnection.set(null)
+  if (block === eYo.SelectedConnection.set) { eYo.SelectedConnection.set(null) }
   // list all the input for connections with a target
   var c8n
   if ((c8n = eYo.SelectedConnection.get()) && (block === c8n.getSourceBlock())) {
@@ -2445,13 +2444,13 @@ eYo.DelegateSvg.prototype.lock = function (block) {
   if (block === Blockly.selected) {
     var parent = block
     while ((parent = parent.getSurroundParent())) {
-      if (!parent.eyo.wrapped_ && ! parent.eyo.locked_) {
+      if (!parent.eyo.wrapped_ && !parent.eyo.locked_) {
         parent.select()
         break
       }
     }
   }
-  (block.getSurroundParent()||block).render()
+  (block.getSurroundParent() || block).render()
   return ans
 }
 /**
@@ -2465,7 +2464,7 @@ eYo.DelegateSvg.prototype.unlock = function (block, shallow) {
   var ans = 0
   if (Blockly.Events.isEnabled()) {
     Blockly.Events.fire(new Blockly.Events.BlockChange(
-    block, eYo.Const.Event.locked, null, this.locked_, false))
+      block, eYo.Const.Event.locked, null, this.locked_, false))
   }
   this.locked_ = false
   // list all the input for connections with a target
@@ -2483,7 +2482,7 @@ eYo.DelegateSvg.prototype.unlock = function (block, shallow) {
       ans += target.eyo.unlock(target)
     }
   }
-  (block.getSurroundParent()||block).render()
+  (block.getSurroundParent() || block).render()
   return ans
 }
 /**
@@ -2499,14 +2498,14 @@ eYo.DelegateSvg.prototype.inVisibleArea = function (block) {
   }
   // is the block in the visible area ?
   var metrics = workspace.getMetrics()
-  var scale = workspace.scale || 1;
-  var heightWidth = block.getHeightWidth();
+  var scale = workspace.scale || 1
+  var heightWidth = block.getHeightWidth()
   // the block is in the visible area if we see its center
   var leftBound = metrics.viewLeft / scale - heightWidth.width / 2
   var topBound = metrics.viewTop / scale - heightWidth.height / 2
   var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - heightWidth.width / 2
   var downBound = (metrics.viewTop + metrics.viewHeight) / scale - heightWidth.height / 2
-  var xy = block.getRelativeToSurfaceXY();
+  var xy = block.getRelativeToSurfaceXY()
   return xy.x >= leftBound && xy.x <= rightBound &&
     xy.y >= topBound && xy.y <= downBound
 }

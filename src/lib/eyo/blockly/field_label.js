@@ -70,7 +70,7 @@ eYo.FieldLabel.prototype.init = function () {
 Blockly.Field.prototype.updateWidth = function () {
   var width = Blockly.Field.getCachedWidth(this.textElement_)
   if (this.borderRect_) {
-    this.borderRect_.setAttribute('width', width+2*eYo.Style.Edit.padding_h)
+    this.borderRect_.setAttribute('width', width + 2 * eYo.Style.Edit.padding_h)
   }
   this.size_.width = width
 }
@@ -80,7 +80,7 @@ Blockly.Field.prototype.updateWidth = function () {
  * when the value has changed.
  * @param {string} newValue New value.
  */
-eYo.FieldLabel.prototype.setValue = function(newValue) {
+eYo.FieldLabel.prototype.setValue = function (newValue) {
   var oldValue = this.getText()
   eYo.FieldLabel.superClass_.setValue.call(this, newValue)
   if (this.name) {

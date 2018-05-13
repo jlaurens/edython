@@ -39,15 +39,15 @@ goog.inherits(eYo.Block, Blockly.Block)
  * Dispose the delegate too.
  * @param {number|string} colour HSV hue value, or #RRGGBB string.
  */
-eYo.Block.prototype.dispose = function(healStack) {
+eYo.Block.prototype.dispose = function (healStack) {
   if (this === Blockly.selected) {
     // this block was selected, select the block below or above before deletion
-    //this does not work most probably because it is the wrong place
+    // this does not work most probably because it is the wrong place
     var c8n, target
     if (((c8n = this.nextConnection) && (target = c8n.targetBlock())) ||
     ((c8n = this.previousConnection) && (target = c8n.targetBlock())) ||
     ((c8n = this.outputConnection) && (target = c8n.targetBlock()))) {
-      setTimeout(function() {target.select()}, 100)// broken for outputConnection ?
+      setTimeout(function () { target.select() }, 100)// broken for outputConnection ?
     }
   }
   if (this.eyo) {
@@ -148,9 +148,9 @@ eYo.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
  *     input again.  Should be unique to this block.
  * @return {!Blockly.Input} The input object created.
  */
-eYo.Block.prototype.appendWrapValueInput = function(name, prototypeName, optional, hidden) {
+eYo.Block.prototype.appendWrapValueInput = function (name, prototypeName, optional, hidden) {
   goog.asserts.assert(prototypeName, 'Missing prototypeName, no block to seal')
-  goog.asserts.assert(eYo.T3.All.containsExpression(prototypeName), 'Unnown prototypeName, no block to seal '+prototypeName)
+  goog.asserts.assert(eYo.T3.All.containsExpression(prototypeName), 'Unnown prototypeName, no block to seal ' + prototypeName)
   var input = this.appendValueInput(name)
   input.connection.eyo.wrapped_ = true
   input.connection.eyo.optional_ = optional
@@ -171,10 +171,10 @@ eYo.Block.prototype.appendWrapValueInput = function(name, prototypeName, optiona
  *     of returned types.  Null or undefined if any type could be returned
  *     (e.g. variable get).
  */
-eYo.Block.prototype.setOutput = function(newBoolean, opt_check) {
+eYo.Block.prototype.setOutput = function (newBoolean, opt_check) {
   if (newBoolean) {
     goog.asserts.assert(!!opt_check || !this.type.startsWith('eyo:expr_') || this.type.startsWith('eyo:expr_fake'),
-      'eYo output connection must be types for '+this.type)
+      'eYo output connection must be types for ' + this.type)
   }
   eYo.Block.superClass_.setOutput.call(this, newBoolean, opt_check)
 }

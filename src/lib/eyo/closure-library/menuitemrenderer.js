@@ -48,7 +48,7 @@ goog.require('eYo.Style')
  *
  * @param {?...Object} rest
  */
-eYo.Style.setControlRendererCssClass = function () {
+eYo.Style.setControlRendererCssClass = (function () {
   var helper = function (name, dict) {
     var RA = []
     for (var k in dict) {
@@ -86,7 +86,7 @@ eYo.Style.setControlRendererCssClass = function () {
       }
     }
   }
-}()
+}())
 
 /**
  * Renderer for menu items separators.

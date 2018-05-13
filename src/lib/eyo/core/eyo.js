@@ -38,7 +38,6 @@ eYo.Version.BUILD_DATE = ''
 /** @define {string} */
 eYo.Version.GIT_HEAD = ''
 
-
 /**
  * Setup.
  */

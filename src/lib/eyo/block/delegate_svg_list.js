@@ -22,7 +22,7 @@ goog.require('eYo.DelegateSvg.Expr')
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('List', {
-  list: {},
+  list: {}
 }, eYo.DelegateSvg)
 
 /**
@@ -50,7 +50,7 @@ eYo.DelegateSvg.List.prototype.getInput = function (block, name) {
  * Consolidate the input.
  * Removes empty place holders.
  * This must not be overriden.
- * 
+ *
  * @param {!Block} block
  */
 eYo.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
@@ -77,13 +77,13 @@ eYo.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
  * Consolidate the input.
  * Removes empty place holders.
  * This must not be overriden.
- * 
+ *
  * @param {!Block} block
  */
 eYo.DelegateSvg.List.prototype.createConsolidator = function (block) {
   if (!this.consolidator) {
     var D = eYo.DelegateSvg.Manager.getModel(block.type).list
-    goog.asserts.assert(D, 'inputModel__.list is missing in '+block.type)
+    goog.asserts.assert(D, 'inputModel__.list is missing in ' + block.type)
     var C10r = D.consolidator || eYo.Consolidator.List
     this.consolidator = new C10r(D)
     goog.asserts.assert(this.consolidator, eYo.Do.format('Could not create the consolidator {0}', block.type))
@@ -94,7 +94,7 @@ eYo.DelegateSvg.List.prototype.createConsolidator = function (block) {
  * Consolidate the input.
  * Removes empty place holders.
  * This must not be overriden.
- * 
+ *
  * @param {!Block} block
  */
 eYo.DelegateSvg.List.prototype.consolidate = function (block, deep, force) {
@@ -111,7 +111,7 @@ eYo.DelegateSvg.List.prototype.consolidate = function (block, deep, force) {
  * @param {!Block} block
  * @private
  */
-eYo.DelegateSvg.List.prototype.removeItems = function(block) {
+eYo.DelegateSvg.List.prototype.removeItems = function (block) {
   var list = block.inputList
   var i = 0
   var input
@@ -142,8 +142,8 @@ eYo.DelegateSvg.List.makeSubclass('optional_expression_list', {
     check: eYo.T3.Expr.Check.expression,
     empty: true,
     presep: ',',
-    hole_value: 'name',
-  },
+    hole_value: 'name'
+  }
 })
 
 /**
@@ -157,8 +157,8 @@ eYo.DelegateSvg.List.makeSubclass('non_void_expression_list', {
     check: eYo.T3.Expr.Check.expression,
     empty: false,
     presep: ',',
-    hole_value: 'name',
-  },
+    hole_value: 'name'
+  }
 })
 
 /**
@@ -172,8 +172,8 @@ eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
     check: eYo.T3.Expr.Check.starred_item,
     empty: false,
     presep: ',',
-    hole_value: 'name',
-  },
+    hole_value: 'name'
+  }
 })
 
 /**
@@ -186,8 +186,8 @@ eYo.DelegateSvg.List.makeSubclass('key_datum_list', {
   list: {
     check: eYo.T3.Expr.Check.key_datum,
     empty: true,
-    presep: ',',
-  },
+    presep: ','
+  }
 })
 
 /**
@@ -197,12 +197,12 @@ eYo.DelegateSvg.List.makeSubclass('key_datum_list', {
  * For edython.
  */
 eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
-    list: {
+  list: {
     check: eYo.T3.Expr.Check.non_void_starred_item_list,
     empty: true,
     presep: ',',
-    hole_value: 'name',
-  },
+    hole_value: 'name'
+  }
 })
 
 /**
@@ -212,12 +212,12 @@ eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
  * For edython.
  */
 eYo.DelegateSvg.List.makeSubclass('non_void_starred_item_list', {
-    list: {
+  list: {
     check: eYo.T3.Expr.Check.non_void_starred_item_list,
     empty: false,
     presep: ',',
-    hole_value: 'name',
-  },
+    hole_value: 'name'
+  }
 })
 
 /**
@@ -226,20 +226,20 @@ eYo.DelegateSvg.List.makeSubclass('non_void_starred_item_list', {
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.List.makeSubclass('starred_item_list_comprehensive', function() {
+eYo.DelegateSvg.List.makeSubclass('starred_item_list_comprehensive', function () {
   var D = {
     check: eYo.T3.Expr.Check.non_void_starred_item_list,
     unique: eYo.T3.Expr.comprehension,
     consolidator: eYo.Consolidator.List.Singled,
     empty: true,
     presep: ',',
-    hole_value: 'name',
+    hole_value: 'name'
   }
-  var RA = goog.array.concat(D.check,D.unique)
+  var RA = goog.array.concat(D.check, D.unique)
   goog.array.removeDuplicates(RA)
   D.all = RA
   return {
-    list: D,
+    list: D
   }
 })
 
@@ -249,12 +249,12 @@ eYo.DelegateSvg.List.makeSubclass('starred_item_list_comprehensive', function() 
  */
 eYo.DelegateSvg.Expr.starred_item_list_comprehensive.makeSubclass('list_display', {
   xml: {
-    tag: 'square_bracket',
+    tag: 'square_bracket'
   },
   fields: {
     prefix: '[',
-    suffix: ']',
-  },
+    suffix: ']'
+  }
 })
 
 /**
@@ -263,20 +263,20 @@ eYo.DelegateSvg.Expr.starred_item_list_comprehensive.makeSubclass('list_display'
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.List.makeSubclass('non_void_starred_item_list_comprehensive', function() {
+eYo.DelegateSvg.List.makeSubclass('non_void_starred_item_list_comprehensive', function () {
   var D = {
     check: eYo.T3.Expr.Check.non_void_starred_item_list,
     unique: eYo.T3.Expr.comprehension,
     consolidator: eYo.Consolidator.List.Singled,
     empty: false,
     presep: ',',
-    hole_value: 'name',
+    hole_value: 'name'
   }
-  var RA = goog.array.concat(D.check,D.unique)
+  var RA = goog.array.concat(D.check, D.unique)
   goog.array.removeDuplicates(RA)
   D.all = RA
   return {
-    list: D,
+    list: D
   }
 })
 
@@ -286,12 +286,12 @@ eYo.DelegateSvg.List.makeSubclass('non_void_starred_item_list_comprehensive', fu
  */
 eYo.DelegateSvg.Expr.non_void_starred_item_list_comprehensive.makeSubclass('set_display', {
   xml: {
-    tag: 'curly_bracket',
+    tag: 'curly_bracket'
   },
   fields: {
     prefix: '{',
-    suffix: '}',
-  },
+    suffix: '}'
+  }
 })
 
 /**
@@ -300,19 +300,19 @@ eYo.DelegateSvg.Expr.non_void_starred_item_list_comprehensive.makeSubclass('set_
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.List.makeSubclass('key_datum_list_comprehensive', function() {
+eYo.DelegateSvg.List.makeSubclass('key_datum_list_comprehensive', function () {
   var D = {
     check: eYo.T3.Expr.Check.key_datum_list,
     unique: eYo.T3.Expr.dict_comprehension,
     consolidator: eYo.Consolidator.List.Singled,
     empty: true,
-    presep: ',',
+    presep: ','
   }
-  var RA = goog.array.concat(D.check,D.unique)
+  var RA = goog.array.concat(D.check, D.unique)
   goog.array.removeDuplicates(RA)
   D.all = RA
   return {
-    list: D,
+    list: D
   }
 })
 
@@ -323,8 +323,8 @@ eYo.DelegateSvg.List.makeSubclass('key_datum_list_comprehensive', function() {
 eYo.DelegateSvg.Expr.key_datum_list_comprehensive.makeSubclass('dict_display', {
   fields: {
     prefix: '{',
-    suffix: '}',
-  },
+    suffix: '}'
+  }
 })
 
 /**
@@ -337,8 +337,8 @@ eYo.DelegateSvg.List.makeSubclass('slice_list', {
   list: {
     check: eYo.T3.Expr.Check.slice_item,
     empty: false,
-    presep: ',',
-  },
+    presep: ','
+  }
 })
 
 /**
@@ -352,8 +352,8 @@ eYo.DelegateSvg.List.makeSubclass('with_item_list', {
     check: eYo.T3.Expr.Check.with_item,
     empty: false,
     presep: ',',
-    hole_value: 'nom',
-  },
+    hole_value: 'nom'
+  }
 })
 
 eYo.DelegateSvg.List.T3s = [
@@ -375,5 +375,5 @@ eYo.DelegateSvg.List.T3s = [
   eYo.T3.Expr.dict_display,
   eYo.T3.Expr.slice_list,
   eYo.T3.Expr.dict_display,
-  eYo.T3.Expr.with_item_list,
+  eYo.T3.Expr.with_item_list
 ]

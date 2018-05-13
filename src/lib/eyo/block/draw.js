@@ -18,4 +18,3 @@ goog.require('eYo.DelegateSvg')
 /**
  * Draw controller.
  */
-

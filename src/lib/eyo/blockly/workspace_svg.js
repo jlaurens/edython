@@ -52,13 +52,13 @@ goog.provide('eYo.Gesture')
  * @suppress{accessControls}
  */
 eYo.Gesture.handleWsStart_saved = Blockly.Gesture.prototype.handleWsStart
-Blockly.Gesture.prototype.handleWsStart = function(e, ws) {
+Blockly.Gesture.prototype.handleWsStart = function (e, ws) {
   if (Blockly.WidgetDiv.DIV.childNodes.length) {
     Blockly.WidgetDiv.hide()
   } else {
     eYo.Gesture.handleWsStart_saved.call(this, e, ws)
   }
-};
+}
 
 Blockly.Workspace.prototype.logAllConnections = function (comment) {
   comment = comment || ''
@@ -91,50 +91,50 @@ Blockly.Workspace.prototype.logAllConnections = function (comment) {
  * @private
  * @suppress{accessControls}
  */
-Blockly.WorkspaceSvg.prototype.showContextMenu_ = function(e) {
+Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
   if (this.options.readOnly || this.isFlyout) {
-    return;
+    return
   }
-  var menuOptions = [];
-  var topBlocks = this.getTopBlocks(true);
-  var eventGroup = Blockly.utils.genUid();
-  var ws = this;
+  var menuOptions = []
+  var topBlocks = this.getTopBlocks(true)
+  var eventGroup = Blockly.utils.genUid()
+  var ws = this
 
   // Options to undo/redo previous action.
-  var undoOption = {};
-  undoOption.text = Blockly.Msg.UNDO;
-  undoOption.enabled = this.undoStack_.length > 0;
-  undoOption.callback = this.undo.bind(this, false);
-  menuOptions.push(undoOption);
-  var redoOption = {};
-  redoOption.text = Blockly.Msg.REDO;
-  redoOption.enabled = this.redoStack_.length > 0;
-  redoOption.callback = this.undo.bind(this, true);
-  menuOptions.push(redoOption);
+  var undoOption = {}
+  undoOption.text = Blockly.Msg.UNDO
+  undoOption.enabled = this.undoStack_.length > 0
+  undoOption.callback = this.undo.bind(this, false)
+  menuOptions.push(undoOption)
+  var redoOption = {}
+  redoOption.text = Blockly.Msg.REDO
+  redoOption.enabled = this.redoStack_.length > 0
+  redoOption.callback = this.undo.bind(this, true)
+  menuOptions.push(redoOption)
 
   // Option to clean up blocks.
   if (this.scrollbar) {
-    var cleanOption = {};
-    cleanOption.text = Blockly.Msg.CLEAN_UP;
-    cleanOption.enabled = topBlocks.length > 1;
-    cleanOption.callback = this.cleanUp.bind(this);
-    menuOptions.push(cleanOption);
+    var cleanOption = {}
+    cleanOption.text = Blockly.Msg.CLEAN_UP
+    cleanOption.enabled = topBlocks.length > 1
+    cleanOption.callback = this.cleanUp.bind(this)
+    menuOptions.push(cleanOption)
   }
 
   // Add a little animation to collapsing and expanding.
-  var DELAY = 10;
+  var DELAY = 10
   if (this.options.collapse) {
-    var hasCollapsedBlocks = false;
-    var hasExpandedBlocks = false;
+    var hasCollapsedBlocks = false
+    var hasExpandedBlocks = false
     for (var i = 0; i < topBlocks.length; i++) {
-      var block = topBlocks[i];
+      var block = topBlocks[i]
       while (block) {
         if (block.isCollapsed()) {
-          hasCollapsedBlocks = true;
+          hasCollapsedBlocks = true
         } else {
-          hasExpandedBlocks = true;
+          hasExpandedBlocks = true
         }
-        block = block.getNextBlock();
+        block = block.getNextBlock()
       }
     }
 
@@ -143,89 +143,89 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function(e) {
      * @param {boolean} shouldCollapse Whether a block should collapse.
      * @private
      */
-    var toggleOption = function(shouldCollapse) {
-      var ms = 0;
+    var toggleOption = function (shouldCollapse) {
+      var ms = 0
       for (var i = 0; i < topBlocks.length; i++) {
-        var block = topBlocks[i];
+        var block = topBlocks[i]
         while (block) {
-          setTimeout(block.setCollapsed.bind(block, shouldCollapse), ms);
-          block = block.getNextBlock();
-          ms += DELAY;
+          setTimeout(block.setCollapsed.bind(block, shouldCollapse), ms)
+          block = block.getNextBlock()
+          ms += DELAY
         }
       }
-    };
+    }
 
     // Option to collapse top blocks.
-    var collapseOption = {enabled: hasExpandedBlocks};
-    collapseOption.text = Blockly.Msg.COLLAPSE_ALL;
-    collapseOption.callback = function() {
-      toggleOption(true);
-    };
-    menuOptions.push(collapseOption);
+    var collapseOption = {enabled: hasExpandedBlocks}
+    collapseOption.text = Blockly.Msg.COLLAPSE_ALL
+    collapseOption.callback = function () {
+      toggleOption(true)
+    }
+    menuOptions.push(collapseOption)
 
     // Option to expand top blocks.
-    var expandOption = {enabled: hasCollapsedBlocks};
-    expandOption.text = eYo.Msg.EXPAND_ALL;
-    expandOption.callback = function() {
-      toggleOption(false);
-    };
-    menuOptions.push(expandOption);
+    var expandOption = {enabled: hasCollapsedBlocks}
+    expandOption.text = eYo.Msg.EXPAND_ALL
+    expandOption.callback = function () {
+      toggleOption(false)
+    }
+    menuOptions.push(expandOption)
   }
 
   // Option to delete all blocks.
   // Count the number of blocks that are deletable.
-  var deleteList = [];
-  function addDeletableBlocks(block) {
+  var deleteList = []
+  function addDeletableBlocks (block) {
     if (block.isDeletable()) {
-      deleteList = deleteList.concat(block.eyo.getWrappedDescendants(block));
+      deleteList = deleteList.concat(block.eyo.getWrappedDescendants(block))
     } else {
-      var children = block.getChildren();
+      var children = block.getChildren()
       for (var i = 0; i < children.length; i++) {
-        addDeletableBlocks(children[i]);
+        addDeletableBlocks(children[i])
       }
     }
   }
   for (var i = 0; i < topBlocks.length; i++) {
-    addDeletableBlocks(topBlocks[i]);
+    addDeletableBlocks(topBlocks[i])
   }
 
-  function deleteNext() {
-    Blockly.Events.setGroup(eventGroup);
-    var block = deleteList.shift();
+  function deleteNext () {
+    Blockly.Events.setGroup(eventGroup)
+    var block = deleteList.shift()
     if (block) {
       if (block.workspace) {
-        block.dispose(false, true);
-        setTimeout(deleteNext, DELAY);
+        block.dispose(false, true)
+        setTimeout(deleteNext, DELAY)
       } else {
-        deleteNext();
+        deleteNext()
       }
     }
   }
 
   var deleteOption = {
-    text: deleteList.length == 1 ? eYo.Msg.DELETE_BLOCK :
-        Blockly.Msg.DELETE_X_BLOCKS.replace('%1', String(deleteList.length)),
+    text: deleteList.length == 1 ? eYo.Msg.DELETE_BLOCK
+      : Blockly.Msg.DELETE_X_BLOCKS.replace('%1', String(deleteList.length)),
     enabled: deleteList.length > 0,
-    callback: function() {
+    callback: function () {
       if (ws.currentGesture_) {
-        ws.currentGesture_.cancel();
+        ws.currentGesture_.cancel()
       }
-      if (deleteList.length < 2 ) {
-        deleteNext();
+      if (deleteList.length < 2) {
+        deleteNext()
       } else {
-        Blockly.confirm(eYo.Msg.DELETE_ALL_BLOCKS.
-            replace('%1', deleteList.length),
-            function(ok) {
-              if (ok) {
-                deleteNext();
-              }
-            });
+        Blockly.confirm(eYo.Msg.DELETE_ALL_BLOCKS
+          .replace('%1', deleteList.length),
+        function (ok) {
+          if (ok) {
+            deleteNext()
+          }
+        })
       }
     }
-  };
-  menuOptions.push(deleteOption);
+  }
+  menuOptions.push(deleteOption)
 
-  Blockly.ContextMenu.show(e, menuOptions, this.RTL);
+  Blockly.ContextMenu.show(e, menuOptions, this.RTL)
 }
 
 /**
@@ -236,9 +236,9 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function(e) {
  * @param {!number} y
  * @private
  */
-Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function(workspaceXMLElement, type, x, y) {
+Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function (workspaceXMLElement, type, x, y) {
   var core = type.substring(4)
-  var shortcut = (this instanceof eYo.DelegateSvg.Expr? eYo.T3.Xml.toDom.Expr: eYo.T3.Xml.toDom.Stmt)[core]
+  var shortcut = (this instanceof eYo.DelegateSvg.Expr ? eYo.T3.Xml.toDom.Expr : eYo.T3.Xml.toDom.Stmt)[core]
   var tag = shortcut && 'eyo:' + shortcut || type, text = undefined
   console.log('new workspace element:', type, tag)
   var child = goog.dom.createElement(tag)
@@ -262,7 +262,7 @@ Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function(workspaceX
  * @param {!Object} step, with x and y attributes
  * @private
  */
-Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function(workspaceXMLElement, types, n_col, offset, step) {
+Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function (workspaceXMLElement, types, n_col, offset, step) {
   workspaceXMLElement.setAttribute('xmlns:eyo', 'urn:edython:1.0')
   var n = 0
   var x = offset.x
@@ -270,9 +270,9 @@ Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function(workspace
   var i = 0
   Blockly.Events.setGroup(true)
   try {
-    for (; i<types.length; i++) {
+    for (; i < types.length; i++) {
       this.addElementInWorkspaceBlocks(workspaceXMLElement, types[i], x, y)
-      if (++n<n_col) {
+      if (++n < n_col) {
         x += step.x
         y += step.y
       } else {
@@ -298,18 +298,18 @@ Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function(workspace
  * @override
  * @suppress {accessControls}
  */
-Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
+Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
   if (!this.rendered || xmlBlock.getElementsByTagName('block').length >=
       this.remainingCapacity()) {
-    return;
+    return
   }
   if (this.currentGesture_) {
-    this.currentGesture_.cancel();  // Dragging while pasting?  No.
+    this.currentGesture_.cancel() // Dragging while pasting?  No.
   }
   var c8n, targetC8n
   if ((c8n = eYo.SelectedConnection.get())) {
     try {
-      var block = Blockly.Xml.domToBlock(xmlBlock, this);
+      var block = Blockly.Xml.domToBlock(xmlBlock, this)
       if (c8n.type === Blockly.INPUT_VALUE) {
         targetC8n = block.outputConnection
       } else if (c8n.type === Blockly.NEXT_STATEMENT) {
@@ -317,10 +317,10 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
       } else if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
         targetC8n = block.nextConnection
       }
-    } catch(e) {
+    } catch (e) {
       targetC8n = null
     }
-    if (targetC8n  && c8n.checkType_(targetC8n)) {
+    if (targetC8n && c8n.checkType_(targetC8n)) {
       Blockly.Events.setGroup(true)
       try {
         if (Blockly.Events.isEnabled()) {
@@ -354,7 +354,7 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
           do {
             var e8r = parent.eyo.inputEnumerator(parent)
             while (e8r.next()) {
-              if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && ! c8n.eyo.optional_ && !c8n.targetConnection) {
+              if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && !c8n.eyo.optional_ && !c8n.targetConnection) {
                 eYo.SelectedConnection.set(c8n)
                 parent = null
                 break
@@ -374,66 +374,66 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
   }
   Blockly.Events.disable(true)
   try {
-    var block = Blockly.Xml.domToBlock(xmlBlock, this);
+    var block = Blockly.Xml.domToBlock(xmlBlock, this)
     // Move the duplicate to original position.
-    var blockX = parseInt(xmlBlock.getAttribute('x'), 10);
-    var blockY = parseInt(xmlBlock.getAttribute('y'), 10);
+    var blockX = parseInt(xmlBlock.getAttribute('x'), 10)
+    var blockY = parseInt(xmlBlock.getAttribute('y'), 10)
     if (!isNaN(blockX) && !isNaN(blockY)) {
       if (this.RTL) {
-        blockX = -blockX;
+        blockX = -blockX
       }
       // Offset block until not clobbering another block and not in connection
       // distance with neighbouring blocks.
-      var allBlocks = this.getAllBlocks();
+      var allBlocks = this.getAllBlocks()
       var avoidCollision = function () {
         do {
-          var collide = false;
+          var collide = false
           for (var i = 0, otherBlock; otherBlock = allBlocks[i]; i++) {
-            var otherXY = otherBlock.getRelativeToSurfaceXY();
+            var otherXY = otherBlock.getRelativeToSurfaceXY()
             if (Math.abs(blockX - otherXY.x) <= 10 &&
                 Math.abs(blockY - otherXY.y) <= 10) {
-              collide = true;
-              break;
+              collide = true
+              break
             }
           }
           if (!collide) {
             // Check for blocks in snap range to any of its connections.
-            var connections = block.getConnections_(false);
+            var connections = block.getConnections_(false)
             for (var i = 0, connection; connection = connections[i]; i++) {
               var neighbour = connection.closest(Blockly.SNAP_RADIUS,
-                  new goog.math.Coordinate(blockX, blockY));
+                new goog.math.Coordinate(blockX, blockY))
               if (neighbour.connection) {
-                collide = true;
-                break;
+                collide = true
+                break
               }
             }
           }
           if (collide) {
-            blockX += Blockly.SNAP_RADIUS;
-            blockY += Blockly.SNAP_RADIUS * 2;
+            blockX += Blockly.SNAP_RADIUS
+            blockY += Blockly.SNAP_RADIUS * 2
           }
-        } while (collide);
+        } while (collide)
       }
       avoidCollision()
       // is the block in the visible area ?
       var metrics = this.getMetrics()
-      var scale = this.scale || 1;
-      var heightWidth = block.getHeightWidth();
+      var scale = this.scale || 1
+      var heightWidth = block.getHeightWidth()
       // the block is in the visible area if we see its center
       var leftBound = metrics.viewLeft / scale - heightWidth.width / 2
       var topBound = metrics.viewTop / scale - heightWidth.height / 2
       var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - heightWidth.width / 2
       var downBound = (metrics.viewTop + metrics.viewHeight) / scale - heightWidth.height / 2
-      var inVisibleArea = function() {
+      var inVisibleArea = function () {
         return blockX >= leftBound && blockX <= rightBound &&
         blockY >= topBound && blockY <= downBound
       }
       if (!inVisibleArea()) {
-        blockX = (metrics.viewLeft + metrics.viewWidth / 2) / scale - heightWidth.width / 2;
-        blockY = (metrics.viewTop + metrics.viewHeight / 2)  / scale - heightWidth.height / 2;
+        blockX = (metrics.viewLeft + metrics.viewWidth / 2) / scale - heightWidth.width / 2
+        blockY = (metrics.viewTop + metrics.viewHeight / 2) / scale - heightWidth.height / 2
         avoidCollision()
       }
-      block.moveBy(blockX, blockY);
+      block.moveBy(blockX, blockY)
       if (!inVisibleArea()) {
         this.centerOnBlock(block.id)
       }
@@ -442,10 +442,10 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
     Blockly.Events.enable()
   }
   if (Blockly.Events.isEnabled()) {
-    Blockly.Events.fire(new Blockly.Events.BlockCreate(block));
+    Blockly.Events.fire(new Blockly.Events.BlockCreate(block))
   }
-  block.select();
-};
+  block.select()
+}
 
 /**
  * Handle a mouse-down on SVG drawing surface.
@@ -453,9 +453,9 @@ Blockly.WorkspaceSvg.prototype.paste = function(xmlBlock) {
  * @private
  * @suppress {accessControls}
  */
-Blockly.WorkspaceSvg.prototype.onMouseDown_ = function(e) {
-  var gesture = this.getGesture(e);
+Blockly.WorkspaceSvg.prototype.onMouseDown_ = function (e) {
+  var gesture = this.getGesture(e)
   if (gesture) {
-    gesture.handleWsStart(e, this);
+    gesture.handleWsStart(e, this)
   }
-};
+}

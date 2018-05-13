@@ -25,28 +25,28 @@ eYo.DelegateSvg.Expr.makeSubclass('comprehension', {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'name',
+      hole_value: 'name'
     },
     for: {
       order: 2,
       fields: {
-        label: 'for',
+        label: 'for'
       },
-      wrap: eYo.T3.Expr.target_list,
+      wrap: eYo.T3.Expr.target_list
     },
     in: {
       order: 3,
       fields: {
-        label: 'in',
+        label: 'in'
       },
       check: eYo.T3.Expr.Check.or_test,
-      hole_value: 'name',
+      hole_value: 'name'
     },
     for_if: {
       order: 4,
-      wrap: eYo.T3.Expr.comp_iter_list,
-    },
-  },
+      wrap: eYo.T3.Expr.comp_iter_list
+    }
+  }
 })
 
 /**
@@ -59,19 +59,19 @@ eYo.DelegateSvg.Expr.makeSubclass('comp_for', {
     for: {
       order: 1,
       fields: {
-        label: 'for',
+        label: 'for'
       },
-      wrap: eYo.T3.Expr.target_list,
+      wrap: eYo.T3.Expr.target_list
     },
     in: {
       order: 2,
       fields: {
-        label: 'in',
+        label: 'in'
       },
       check: eYo.T3.Expr.Check.or_test,
-      hole_value: 'name',
-    },
-  },
+      hole_value: 'name'
+    }
+  }
 })
 
 /**
@@ -84,12 +84,12 @@ eYo.DelegateSvg.Expr.makeSubclass('comp_if', {
     if: {
       order: 1,
       fields: {
-        label: 'if',
+        label: 'if'
       },
       check: eYo.T3.Expr.Check.expression_nocond,
-      hole_value: 'yorn',
-    },
-  },
+      hole_value: 'yorn'
+    }
+  }
 })
 
 /**
@@ -102,8 +102,8 @@ eYo.DelegateSvg.List.makeSubclass('comp_iter_list', {
   list: {
     check: eYo.T3.Expr.Check.comp_iter,
     empty: true,
-    presep: ',',
-  },
+    presep: ','
+  }
 })
 
 /**
@@ -116,36 +116,36 @@ eYo.DelegateSvg.Expr.makeSubclass('dict_comprehension', {
     key: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'key',
+      hole_value: 'key'
     },
     datum: {
       order: 2,
       fields: {
-        label: ':',
+        label: ':'
       },
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'value',
+      hole_value: 'value'
     },
     for: {
       order: 3,
       fields: {
-        label: 'for',
+        label: 'for'
       },
-      wrap: eYo.T3.Expr.target_list,
+      wrap: eYo.T3.Expr.target_list
     },
     in: {
       order: 4,
       fields: {
-        label: 'in',
+        label: 'in'
       },
       check: eYo.T3.Expr.Check.or_test,
-      hole_value: 'name',
+      hole_value: 'name'
     },
     for_if: { // that name is so ugly
       order: 5,
-      wrap: eYo.T3.Expr.comp_iter_list,
-    },
-  },
+      wrap: eYo.T3.Expr.comp_iter_list
+    }
+  }
 })
 
 /**
@@ -158,17 +158,17 @@ eYo.DelegateSvg.Expr.makeSubclass('key_datum_s3d', {
     key: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'key',
+      hole_value: 'key'
     },
     datum: {
       order: 2,
       fields: {
-        label: ':',
+        label: ':'
       },
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'value',
-    },
-  },
+      hole_value: 'value'
+    }
+  }
 })
 
 eYo.DelegateSvg.Comprehension.T3s = [
@@ -178,5 +178,5 @@ eYo.DelegateSvg.Comprehension.T3s = [
   eYo.T3.Expr.comp_iter_list,
   eYo.T3.Expr.dict_comprehension,
   eYo.T3.Expr.term,
-  eYo.T3.Expr.key_datum_s3d,
+  eYo.T3.Expr.key_datum_s3d
 ]

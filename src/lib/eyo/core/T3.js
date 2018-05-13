@@ -24,46 +24,45 @@ goog.provide('eYo.T3.Stmt')
 
 goog.require('eYo')
 
-
 eYo.T3.Stmt = {
 // part statements
-  if_part                   /*   ::= "if" expression ":"                                (The if statement) */ : "eyo:if_part",
-  elif_part                 /*   ::= "elif" expression ":"                              (The if statement) */ : "eyo:elif_part",
-  else_part                 /*   ::= "else" ":"                                         (The if statement) */ : "eyo:else_part",
-  last_else_part            /*   ::= else_part                                          (The if statement) */ : "eyo:last_else_part",
-  while_part                /*   ::= "while" expression ":"                             (The while statement) */ : "eyo:while_part",
-  for_part                  /*   ::= "for" target_list "in" expression_list ":"         (The for statement) */ : "eyo:for_part",
-  try_part                  /*   ::=                                                    (The try statement) */ : "eyo:try_part",
-  except_part               /*   ::=                                                    (The try statement) */ : "eyo:except_part",
-  void_except_part          /*   ::= "except" ":"                                       (The try statement) */ : "eyo:void_except_part",
-  finally_part              /*   ::=                                                    (The try statement) */ : "eyo:finally_part",
-  try_else_part             /*   ::= else_part                                          (The try statement) */ : "eyo:try_else_part",
-  with_part                 /*   ::= "with" with_item_list ":"                          (The with statement) */ : "eyo:with_part",
-  funcdef_part              /*   ::= ["async"] "def" funcname "(" [parameter_list] ")" ["->" expression] ":" SUITE (Coroutines) */ : "eyo:funcdef_part",
-  classdef_part             /*   ::= "class" classname ['(' argument_list ')'] ':'      (Class definitions) */ : "eyo:classdef_part",
-// other simple statements
-  expression_stmt           /*   ::= starred_expression                                 (Expression statements) */ : "eyo:expression_stmt",
-  assignment_stmt           /*   ::= target_list_list "=" assigned_list                 (Assignment statements) */ : "eyo:assignment_stmt",
-  augmented_assignment_stmt /*   ::= augtarget augop augassigned_list                   (Assignment statements) */ : "eyo:augmented_assignment_stmt",
-  annotated_assignment_stmt /*   ::= augtarget ":" expression ["=" expression]          (Assignment statements) */ : "eyo:annotated_assignment_stmt",
-  assert_stmt               /*   ::= "assert" expression ["," expression]               (The assert statement) */ : "eyo:assert_stmt",
-  pass_stmt                 /*   ::= "pass"                                             (The pass statement) */ : "eyo:pass_stmt",
-  del_stmt                  /*   ::= "del" target_list                                  (The del statement) */ : "eyo:del_stmt",
-  return_stmt               /*   ::= "return" [expression_list]                         (The return statement) */ : "eyo:return_stmt",
-  yield_stmt                /*   ::= yield_expression                                   (The yield statement) */ : "eyo:yield_stmt",
-  raise_stmt                /*   ::= "raise" [expression ["from" expression]]           (The raise statement) */ : "eyo:raise_stmt",
-  break_stmt                /*   ::= "break"                                            (The break statement) */ : "eyo:break_stmt",
-  continue_stmt             /*   ::= "continue"                                         (The continue statement) */ : "eyo:continue_stmt",
-  import_stmt               /*   ::= "import" non_void_module_as_list | "from" relative_module "import" non_void_import_identifier_as_list | "from" module "import" "*" (The import statement) */ : "eyo:import_stmt",
-  future_statement          /*   ::= "from" "__future__" "import" feature ["as" name] ("," feature ["as" name])* | "from" "__future__" "import" "(" feature ["as" name] ("," feature ["as" name])* [","] ")" (default) */ : "eyo:future_statement",
-  start_stmt                /*   ::= green flag statement                               (The nonlocal statement) */ : "eyo:start_stmt",
-  docstring_top_stmt        /*   ::= longstringliteral+{1}                              (The import statement) */ : "eyo:docstring_top_stmt",
-  global_nonlocal_stmt      /*   ::= ("global"|"nonlocal") non_void_identifier_list     (The nonlocal statement) */ : "eyo:global_nonlocal_stmt",
-  decorator                 /*   ::= "@" dotted_name ["(" [argument_list [","]] ")"] NEWLINE (Function definitions) */ : "eyo:decorator",
-  docstring_def_stmt        /*   ::= longstringliteral +{1}                             (Class definitions) */ : "eyo:docstring_def_stmt",
-  any_stmt                  /*   ::= any statement of nothing                           (Coroutines) */ : "eyo:any_stmt",
-  call_stmt                 /*   ::= call_expr                                          (Coroutines) */ : "eyo:call_stmt",
-  builtin_print_stmt        /*   ::= builtin_print_expr                                 (Coroutines) */ : "eyo:builtin_print_stmt",
+  if_part                   /*   ::= "if" expression ":"                                (The if statement) */"eyo:if_part",
+  elif_part                 /*   ::= "elif" expression ":"                              (The if statement) */"eyo:elif_part",
+  else_part                 /*   ::= "else" ":"                                         (The if statement) */"eyo:else_part",
+  last_else_part            /*   ::= else_part                                          (The if statement) */"eyo:last_else_part",
+  while_part                /*   ::= "while" expression ":"                             (The while statement) */"eyo:while_part",
+  for_part                  /*   ::= "for" target_list "in" expression_list ":"         (The for statement) */"eyo:for_part",
+  try_part                  /*   ::=                                                    (The try statement) */"eyo:try_part",
+  except_part               /*   ::=                                                    (The try statement) */"eyo:except_part",
+  void_except_part          /*   ::= "except" ":"                                       (The try statement) */"eyo:void_except_part",
+  finally_part              /*   ::=                                                    (The try statement) */"eyo:finally_part",
+  try_else_part             /*   ::= else_part                                          (The try statement) */"eyo:try_else_part",
+  with_part                 /*   ::= "with" with_item_list ":"                          (The with statement) */"eyo:with_part",
+  funcdef_part              /*   ::= ["async"] "def" funcname "(" [parameter_list] ")" ["->" expression] ":" SUITE (Coroutines) */"eyo:funcdef_part",
+  classdef_part             /*   ::= "class" classname ['(' argument_list ')'] ':'      (Class definitions) */"eyo:classdef_part",
+  // other simple statements
+  expression_stmt           /*   ::= starred_expression                                 (Expression statements) */"eyo:expression_stmt",
+  assignment_stmt           /*   ::= target_list_list "=" assigned_list                 (Assignment statements) */"eyo:assignment_stmt",
+  augmented_assignment_stmt /*   ::= augtarget augop augassigned_list                   (Assignment statements) */"eyo:augmented_assignment_stmt",
+  annotated_assignment_stmt /*   ::= augtarget ":" expression ["=" expression]          (Assignment statements) */"eyo:annotated_assignment_stmt",
+  assert_stmt               /*   ::= "assert" expression ["," expression]               (The assert statement) */"eyo:assert_stmt",
+  pass_stmt                 /*   ::= "pass"                                             (The pass statement) */"eyo:pass_stmt",
+  del_stmt                  /*   ::= "del" target_list                                  (The del statement) */"eyo:del_stmt",
+  return_stmt               /*   ::= "return" [expression_list]                         (The return statement) */"eyo:return_stmt",
+  yield_stmt                /*   ::= yield_expression                                   (The yield statement) */"eyo:yield_stmt",
+  raise_stmt                /*   ::= "raise" [expression ["from" expression]]           (The raise statement) */"eyo:raise_stmt",
+  break_stmt                /*   ::= "break"                                            (The break statement) */"eyo:break_stmt",
+  continue_stmt             /*   ::= "continue"                                         (The continue statement) */"eyo:continue_stmt",
+  import_stmt               /*   ::= "import" non_void_module_as_list | "from" relative_module "import" non_void_import_identifier_as_list | "from" module "import" "*" (The import statement) */"eyo:import_stmt",
+  future_statement          /*   ::= "from" "__future__" "import" feature ["as" name] ("," feature ["as" name])* | "from" "__future__" "import" "(" feature ["as" name] ("," feature ["as" name])* [","] ")" (default) */"eyo:future_statement",
+  start_stmt                /*   ::= green flag statement                               (The nonlocal statement) */"eyo:start_stmt",
+  docstring_top_stmt        /*   ::= longstringliteral+{1}                              (The import statement) */"eyo:docstring_top_stmt",
+  global_nonlocal_stmt      /*   ::= ("global"|"nonlocal") non_void_identifier_list     (The nonlocal statement) */"eyo:global_nonlocal_stmt",
+  decorator                 /*   ::= "@" dotted_name ["(" [argument_list [","]] ")"] NEWLINE (Function definitions) */"eyo:decorator",
+  docstring_def_stmt        /*   ::= longstringliteral +{1}                             (Class definitions) */"eyo:docstring_def_stmt",
+  any_stmt                  /*   ::= any statement of nothing                           (Coroutines) */"eyo:any_stmt",
+  call_stmt                 /*   ::= call_expr                                          (Coroutines) */"eyo:call_stmt",
+  builtin_print_stmt        /*   ::= builtin_print_expr                                 (Coroutines) */"eyo:builtin_print_stmt"
 // compound statements
 }
 
@@ -73,24 +72,24 @@ eYo.T3.Stmt.Previous = {
     eYo.T3.Stmt.future_statement,
     eYo.T3.Stmt.start_stmt,
     eYo.T3.Stmt.docstring_top_stmt,
-    eYo.T3.Stmt.any_stmt,
+    eYo.T3.Stmt.any_stmt
   ],
   future_statement: [ // count 5
     eYo.T3.Stmt.import_stmt,
     eYo.T3.Stmt.future_statement,
     eYo.T3.Stmt.start_stmt,
     eYo.T3.Stmt.docstring_top_stmt,
-    eYo.T3.Stmt.any_stmt,
+    eYo.T3.Stmt.any_stmt
   ],
   docstring_top_stmt: [ // count 3
     eYo.T3.Stmt.start_stmt,
     eYo.T3.Stmt.docstring_top_stmt,
-    eYo.T3.Stmt.any_stmt,
+    eYo.T3.Stmt.any_stmt
   ],
   elif_part: [ // count 3
     eYo.T3.Stmt.if_part,
     eYo.T3.Stmt.elif_part,
-    eYo.T3.Stmt.any_stmt,
+    eYo.T3.Stmt.any_stmt
   ],
   else_part: [ // count 6
     eYo.T3.Stmt.if_part,
@@ -98,23 +97,23 @@ eYo.T3.Stmt.Previous = {
     eYo.T3.Stmt.while_part,
     eYo.T3.Stmt.except_part,
     eYo.T3.Stmt.void_except_part,
-    eYo.T3.Stmt.any_stmt,
+    eYo.T3.Stmt.any_stmt
   ],
   last_else_part: [ // count 4
     eYo.T3.Stmt.if_part,
     eYo.T3.Stmt.elif_part,
     eYo.T3.Stmt.while_part,
-    eYo.T3.Stmt.any_stmt,
+    eYo.T3.Stmt.any_stmt
   ],
   except_part: [ // count 3
     eYo.T3.Stmt.try_part,
     eYo.T3.Stmt.except_part,
-    eYo.T3.Stmt.any_stmt,
+    eYo.T3.Stmt.any_stmt
   ],
   void_except_part: [ // count 3
     eYo.T3.Stmt.try_part,
     eYo.T3.Stmt.except_part,
-    eYo.T3.Stmt.any_stmt,
+    eYo.T3.Stmt.any_stmt
   ],
   finally_part: [ // count 6
     eYo.T3.Stmt.else_part,
@@ -122,177 +121,175 @@ eYo.T3.Stmt.Previous = {
     eYo.T3.Stmt.except_part,
     eYo.T3.Stmt.void_except_part,
     eYo.T3.Stmt.try_else_part,
-    eYo.T3.Stmt.any_stmt,
+    eYo.T3.Stmt.any_stmt
   ],
   try_else_part: [ // count 3
     eYo.T3.Stmt.except_part,
     eYo.T3.Stmt.void_except_part,
-    eYo.T3.Stmt.any_stmt,
+    eYo.T3.Stmt.any_stmt
   ],
   docstring_def_stmt: [ // count 4
-    eYo.T3.Stmt.funcdef_part+"."+eYo.Key.SUITE,
-    eYo.T3.Stmt.classdef_part+"."+eYo.Key.SUITE,
+    eYo.T3.Stmt.funcdef_part + "." + eYo.Key.SUITE,
+    eYo.T3.Stmt.classdef_part + "." + eYo.Key.SUITE,
     eYo.T3.Stmt.docstring_def_stmt,
-    eYo.T3.Stmt.any_stmt,
-  ],
+    eYo.T3.Stmt.any_stmt
+  ]
 }
-
 
 eYo.T3.Stmt.Next = {
   decorator: [ // count 3
     eYo.T3.Stmt.decorator,
     eYo.T3.Stmt.funcdef_part,
-    eYo.T3.Stmt.classdef_part,
+    eYo.T3.Stmt.classdef_part
   ],
   try_part: [ // count 4
     eYo.T3.Stmt.except_part,
     eYo.T3.Stmt.void_except_part,
     eYo.T3.Stmt.finally_part,
-    eYo.T3.Stmt.any_stmt,
-  ],
+    eYo.T3.Stmt.any_stmt
+  ]
 }
-
 
 eYo.T3.Stmt.Available = []
 
 eYo.T3.Expr = {
 // core expressions
-  non_void_expression_list  /*   ::=                                                    (Expression lists) */ : "eyo:non_void_expression_list",
-  longformattedliteral      /*   ::=                                                    (Atoms) */ : "eyo:longformattedliteral",
-  shortformattedliteral     /*   ::=                                                    (Atoms) */ : "eyo:shortformattedliteral",
-  parenth_form              /*   ::= "(" starred_item_list | yield_expression ")"       (Atoms) */ : "eyo:parenth_form",
-  comprehension             /*   ::= expression comp_for                                (Atoms) */ : "eyo:comprehension",
-  comp_for                  /*   ::= [ASYNC] "for" target_list "in" or_test [comp_iter] (Atoms) */ : "eyo:comp_for",
-  comp_if                   /*   ::= "if" expression_nocond [comp_iter]                 (Atoms) */ : "eyo:comp_if",
-  list_display              /*   ::= "[" starred_item_list_comprehensive "]"            (Atoms) */ : "eyo:list_display",
-  set_display               /*   ::= "{" non_void_starred_item_list_comprehensive "}"   (Atoms) */ : "eyo:set_display",
-  dict_display              /*   ::= "{" [key_datum_list | dict_comprehension] "}"      (Atoms) */ : "eyo:dict_display",
-  dict_comprehension        /*   ::= expression ":" expression comp_for                 (Atoms) */ : "eyo:dict_comprehension",
-  yield_expression          /*   ::= "yield" [expression_list | "from" expression]      (Atoms) */ : "eyo:yield_expression",
-  attributeref              /*   ::= primary "." identifier                             (Primaries) */ : "eyo:attributeref",
-  subscription              /*   ::= primary "[" expression_list "]"                    (Primaries) */ : "eyo:subscription",
-  slicing                   /*   ::= primary "[" slice_list "]"                         (Primaries) */ : "eyo:slicing",
-  proper_slice              /*   ::= [lower_bound] ":" [upper_bound] [ ":" [stride] ]   (Primaries) */ : "eyo:proper_slice",
-  argument_list             /*   ::= argument_any *                                     (Primaries) */ : "eyo:argument_list",
-  keyword_item              /*   ::= identifier "=" expression                          (Primaries) */ : "eyo:keyword_item",
-  power_s3d                 /*   ::= await_or_primary "**" u_expr                       (The power operator) */ : "eyo:power_s3d",
-  u_expr_s3d                /*   ::= "-" u_expr | "+" u_expr | "~" u_expr               (Unary arithmetic and bitwise operations) */ : "eyo:u_expr_s3d",
-  m_expr_s3d                /*   ::= m_expr "*" u_expr | m_expr "@" m_expr | m_expr "//" u_expr| m_expr "/" u_expr | m_expr "%" u_expr (Binary arithmetic operations) */ : "eyo:m_expr_s3d",
-  a_expr_s3d                /*   ::= a_expr "+" m_expr | a_expr "-" m_expr              (Binary arithmetic operations) */ : "eyo:a_expr_s3d",
-  shift_expr_s3d            /*   ::= shift_expr ( "<<" | ">>" ) a_expr                  (Shifting operations) */ : "eyo:shift_expr_s3d",
-  and_expr_s3d              /*   ::= and_expr "&" shift_expr                            (Binary bitwise operations) */ : "eyo:and_expr_s3d",
-  xor_expr_s3d              /*   ::= xor_expr "^" and_expr                              (Binary bitwise operations) */ : "eyo:xor_expr_s3d",
-  or_expr_s3d               /*   ::= or_expr "|" xor_expr                               (Binary bitwise operations) */ : "eyo:or_expr_s3d",
-  or_test_s3d               /*   ::= or_test "or" and_test                              (Boolean operations) */ : "eyo:or_test_s3d",
-  and_test_s3d              /*   ::= and_test "and" not_test                            (Boolean operations) */ : "eyo:and_test_s3d",
-  not_test_s3d              /*   ::= "not" not_test                                     (Boolean operations) */ : "eyo:not_test_s3d",
-  conditional_expression_s3d /*   ::= or_test "if" or_test "else" expression             (Conditional expressions) */ : "eyo:conditional_expression_s3d",
-  lambda_expr               /*   ::= "lambda" [parameter_list]: expression              (Lambdas) */ : "eyo:lambda_expr",
-  lambda_expr_nocond        /*   ::= "lambda" [parameter_list]: expression_nocond       (Lambdas) */ : "eyo:lambda_expr_nocond",
-  starred_expression        /*   ::= one of expression_star, expression_star_star, or_expr_star_star, star_expr (Expression lists) */ : "eyo:starred_expression",
-  builtin_object            /*   ::= 'None' | 'True' | 'False' | 'Ellipsis' | '...' |'NotImplemented' (Atoms) */ : "eyo:builtin_object",
-  any                       /*   ::= any expression                                     (Atoms) */ : "eyo:any",
-  starred_item_list         /*   ::= starred_item ? ( ',' starred_item ) * [',']        (Atoms) */ : "eyo:starred_item_list",
-  star_expr                 /*   ::= "*" or_expr                                        (Expression lists) */ : "eyo:star_expr",
-  optional_expression_list  /*   ::= ( expression ',' )* [ expression ]                 (Expression lists) */ : "eyo:optional_expression_list",
-  shortstringliteral        /*   ::= ''                                                 (Atoms) */ : "eyo:shortstringliteral",
-  shortbytesliteral         /*   ::= b''                                                (Atoms) */ : "eyo:shortbytesliteral",
-  longstringliteral         /*   ::= ''''''                                             (Atoms) */ : "eyo:longstringliteral",
-  longbytesliteral          /*   ::= b''''''                                            (Atoms) */ : "eyo:longbytesliteral",
-  integer                   /*   ::= 123                                                (Atoms) */ : "eyo:integer",
-  floatnumber               /*   ::= 123.                                               (Atoms) */ : "eyo:floatnumber",
-  imagnumber                /*   ::= 123j                                               (Atoms) */ : "eyo:imagnumber",
-  key_datum_s3d             /*   ::= expression ":" expression                          (Atoms) */ : "eyo:key_datum_s3d",
-  or_expr_star_star         /*   ::= "**" or_expr                                       (Atoms) */ : "eyo:or_expr_star_star",
-  call_expr                 /*   ::= primary "(" argument_list_comprehensive ")"        (Atoms) */ : "eyo:call_expr",
-  expression_star           /*   ::= "*" expression                                     (Atoms) */ : "eyo:expression_star",
-  expression_star_star      /*   ::= "**" expression                                    (Atoms) */ : "eyo:expression_star_star",
-  number_comparison         /*   ::= comparison comp_operator comparison                (Comparisons) */ : "eyo:number_comparison",
-  object_comparison         /*   ::= comparison comp_operator comparison                (Comparisons) */ : "eyo:object_comparison",
-  lambda                    /*   ::= "lambda" [parameter_list]: (expression | expression_no_cond) (Comparisons) */ : "eyo:lambda",
-  augop                     /*   ::= "+=" | "-=" | "*=" | "@=" | "/=" | "//=" | "%=" | "**=" | ">>=" | "<<=" | "&=" | "^=" | "|=" (Assignment statements) */ : "eyo:augop",
-  target_list_list          /*   ::= (target_list "=")* target_list                     (Assignment statements) */ : "eyo:target_list_list",
-  parenth_target_list       /*   ::= "(" void_target_list ")"                           (Assignment statements) */ : "eyo:parenth_target_list",
-  bracket_target_list       /*   ::= "[" void_target_list "]"                           (Assignment statements) */ : "eyo:bracket_target_list",
-  void_target_list          /*   ::= [target_list]                                      (Assignment statements) */ : "eyo:void_target_list",
-  target_star               /*   ::= "*" target                                         (Assignment statements) */ : "eyo:target_star",
-  module_as_s3d             /*   ::= module "as" identifier                             (The import statement) */ : "eyo:module_as_s3d",
-  term                      /*   ::= "not just an identifier"                           (The import statement) */ : "eyo:term",
-  parent_module             /*   ::= '.'+ [module]                                      (The import statement) */ : "eyo:parent_module",
-  identifier                /*   ::=                                                    (The import statement) */ : "eyo:identifier",
-  import_identifier_as_s3d  /*   ::= identifier "as" identifier                         (The import statement) */ : "eyo:import_identifier_as_s3d",
-  with_item_s3d             /*   ::= expression "as" target                             (The with statement) */ : "eyo:with_item_s3d",
-  parameter_list            /*   ::=                                                    (Function definitions) */ : "eyo:parameter_list",
-  parameter_list_starargs   /*   ::= "*" [parameter] ("," defparameter)* ["," ["**" parameter [","]]] | "**" parameter [","] (Function definitions) */ : "eyo:parameter_list_starargs",
-  parameter_s3d             /*   ::= identifier ":" expression                          (Function definitions) */ : "eyo:parameter_s3d",
-  defparameter_s3d          /*   ::= parameter "=" expression                           (Function definitions) */ : "eyo:defparameter_s3d",
-  inheritance               /*   ::= "(" [argument_list] ")"                            (Class definitions) */ : "eyo:inheritance",
-  parameter_star            /*   ::= "*" [parameter]                                    (Function definitions) */ : "eyo:parameter_star",
-  parameter_star_star       /*   ::= "**" parameter                                     (Function definitions) */ : "eyo:parameter_star_star",
-  builtin_print_expr        /*   ::= "print(" argument_list ")"                         (Coroutines) */ : "eyo:builtin_print_expr",
-  builtin_input_expr        /*   ::= "input(" [any_argument] ")"                        (Coroutines) */ : "eyo:builtin_input_expr",
-// lists
-  key_datum_list            /*   ::= key_datum ("," key_datum)* [","]                   (Atoms) */ : "eyo:key_datum_list",
-  slice_list                /*   ::= slice_item ("," slice_item)* [","]                 (Primaries) */ : "eyo:slice_list",
-  non_void_starred_item_list /*   ::= starred_item ( ',' starred_item ) * [',']          (Expression lists) */ : "eyo:non_void_starred_item_list",
-  comp_iter_list            /*   ::= (comp_iter) *                                      (Atoms) */ : "eyo:comp_iter_list",
-  target_list               /*   ::= target ("," target)* [","]                         (Assignment statements) */ : "eyo:target_list",
-  non_void_module_as_list   /*   ::= module_as ( "," module_as )*                       (The import statement) */ : "eyo:non_void_module_as_list",
-  non_void_import_identifier_as_list /*   ::= import_identifier_as ( "," import_identifier_as )* (The import statement) */ : "eyo:non_void_import_identifier_as_list",
-  non_void_identifier_list  /*   ::= identifier ("," identifier)*                       (The nonlocal statement) */ : "eyo:non_void_identifier_list",
-  dotted_name               /*   ::= identifier ("." identifier)*                       (Function definitions) */ : "eyo:dotted_name",
-  with_item_list            /*   ::= with_item ("," with_item)*                         (The with statement) */ : "eyo:with_item_list",
-// wrappers, like starred_item ::=  expression | star_expr
-  atom                      /*   ::= identifier | literal | enclosure | builtin_object  (Atoms) */ : "eyo:atom",
-  enclosure                 /*   ::= parenth_form | list_display | dict_display | set_display (Atoms) */ : "eyo:enclosure",
-  literal                   /*   ::= shortliteral | longliteral | numberliteral         (Atoms) */ : "eyo:literal",
-  comp_iter                 /*   ::= comp_for | comp_if                                 (Atoms) */ : "eyo:comp_iter",
-  key_datum                 /*   ::= key_datum_s3d | or_expr_star_star                  (Atoms) */ : "eyo:key_datum",
-  primary                   /*   ::= atom | attributeref | subscription | slicing | call (Primaries) */ : "eyo:primary",
-  slice_item                /*   ::= expression | proper_slice                          (Primaries) */ : "eyo:slice_item",
-  power                     /*   ::= await_or_primary | power_s3d                       (The power operator) */ : "eyo:power",
-  u_expr                    /*   ::= power | u_expr_s3d                                 (Unary arithmetic and bitwise operations) */ : "eyo:u_expr",
-  m_expr                    /*   ::= u_expr | m_expr_s3d                                (Binary arithmetic operations) */ : "eyo:m_expr",
-  a_expr                    /*   ::= m_expr | a_expr_s3d                                (Binary arithmetic operations) */ : "eyo:a_expr",
-  shift_expr                /*   ::= a_expr | shift_expr_s3d                            (Shifting operations) */ : "eyo:shift_expr",
-  and_expr                  /*   ::= shift_expr | and_expr_s3d                          (Binary bitwise operations) */ : "eyo:and_expr",
-  xor_expr                  /*   ::= and_expr | xor_expr_s3d                            (Binary bitwise operations) */ : "eyo:xor_expr",
-  or_expr                   /*   ::= xor_expr | or_expr_s3d                             (Binary bitwise operations) */ : "eyo:or_expr",
-  comparison                /*   ::= or_expr | number_comparison | object_comparison    (Comparisons) */ : "eyo:comparison",
-  or_test                   /*   ::= and_test | or_test_s3d                             (Boolean operations) */ : "eyo:or_test",
-  and_test                  /*   ::= not_test | and_test_s3d                            (Boolean operations) */ : "eyo:and_test",
-  not_test                  /*   ::= comparison | not_test_s3d                          (Boolean operations) */ : "eyo:not_test",
-  conditional_expression    /*   ::= or_test | conditional_expression_s3d               (Conditional expressions) */ : "eyo:conditional_expression",
-  expression                /*   ::= conditional_expression | lambda_expr               (Conditional expressions) */ : "eyo:expression",
-  expression_nocond         /*   ::= or_test | lambda_expr_nocond                       (Conditional expressions) */ : "eyo:expression_nocond",
-  starred_item              /*   ::= expression | star_expr                             (Expression lists) */ : "eyo:starred_item",
-  shortliteral              /*   ::= shortstringliteral | shortbytesliteral | shortformattedliteral (Atoms) */ : "eyo:shortliteral",
-  longliteral               /*   ::= longstringliteral | longbytesliteral | longformattedliteral (Atoms) */ : "eyo:longliteral",
-  bytesliteral              /*   ::= shortbytesliteral | longbytesliteral               (Atoms) */ : "eyo:bytesliteral",
-  stringliteral             /*   ::= shortbytesliteral | longbytesliteral               (Atoms) */ : "eyo:stringliteral",
-  numberliteral             /*   ::= integer | floatnumber | imagnumber                 (Atoms) */ : "eyo:numberliteral",
-  starred_item_list_comprehensive /*   ::= starred_item | comprehension                       (Atoms) */ : "eyo:starred_item_list_comprehensive",
-  non_void_starred_item_list_comprehensive /*   ::= starred_item | comprehension                       (Atoms) */ : "eyo:non_void_starred_item_list_comprehensive",
-  key_datum_list_comprehensive /*   ::= key_datum | dict_comprehension                     (Atoms) */ : "eyo:key_datum_list_comprehensive",
-  argument_any              /*   ::= expression | expression_star | expression_star_star | keyword_item (Atoms) */ : "eyo:argument_any",
-  argument_list_comprehensive /*   ::= argument_list | comprehension                      (Atoms) */ : "eyo:argument_list_comprehensive",
-  algebra_choice            /*   ::= m_expr_s3d | a_expr_s3d                            (Comparisons) */ : "eyo:algebra_choice",
-  bitwise_choice            /*   ::= shift_expr_s3d | and_expr_s3d | xor_expr_s3d | or_expr_s3d (Comparisons) */ : "eyo:bitwise_choice",
-  boolean_choice            /*   ::= and_test_s3d | or_test_s3d                         (Comparisons) */ : "eyo:boolean_choice",
-  unary_choice              /*   ::= u_expr_s3d | not_test_s3d                          (Comparisons) */ : "eyo:unary_choice",
-  target                    /*   ::= target_unstar | target_star                        (Assignment statements) */ : "eyo:target",
-  augtarget                 /*   ::= identifier | attributeref | subscription | slicing (Assignment statements) */ : "eyo:augtarget",
-  module                    /*   ::= dotted_name | identifier                           (The import statement) */ : "eyo:module",
-  relative_module           /*   ::= module | parent_module                             (The import statement) */ : "eyo:relative_module",
-  assigned_list             /*   ::= starred_item | yield_expression                    (Assignment statements) */ : "eyo:assigned_list",
-  augassigned_list          /*   ::= expression | yield_expression                      (Assignment statements) */ : "eyo:augassigned_list",
-  target_unstar             /*   ::= identifier | parenth_target_list | bracket_target_list | attributeref | subscription | slicing (Assignment statements) */ : "eyo:target_unstar",
-  module_as                 /*   ::= module | module_as_s3d                             (The import statement) */ : "eyo:module_as",
-  import_identifier_as      /*   ::= identifier | import_identifier_as_s3d              (The import statement) */ : "eyo:import_identifier_as",
-  with_item                 /*   ::= expression | with_item_s3d                         (The with statement) */ : "eyo:with_item",
-  parameter                 /*   ::= identifier | parameter_s3d                         (Function definitions) */ : "eyo:parameter",
-  defparameter              /*   ::= parameter | defparameter_s3d                       (Function definitions) */ : "eyo:defparameter",
-  parameter_any             /*   ::= parameter | defparameter | parameter_star | parameter_star_star (Function definitions) */ : "eyo:parameter_any",
+  non_void_expression_list  /*   ::=                                                    (Expression lists) */"eyo:non_void_expression_list",
+  longformattedliteral      /*   ::=                                                    (Atoms) */"eyo:longformattedliteral",
+  shortformattedliteral     /*   ::=                                                    (Atoms) */"eyo:shortformattedliteral",
+  parenth_form              /*   ::= "(" starred_item_list | yield_expression ")"       (Atoms) */"eyo:parenth_form",
+  comprehension             /*   ::= expression comp_for                                (Atoms) */"eyo:comprehension",
+  comp_for                  /*   ::= [ASYNC] "for" target_list "in" or_test [comp_iter] (Atoms) */"eyo:comp_for",
+  comp_if                   /*   ::= "if" expression_nocond [comp_iter]                 (Atoms) */"eyo:comp_if",
+  list_display              /*   ::= "[" starred_item_list_comprehensive "]"            (Atoms) */"eyo:list_display",
+  set_display               /*   ::= "{" non_void_starred_item_list_comprehensive "}"   (Atoms) */"eyo:set_display",
+  dict_display              /*   ::= "{" [key_datum_list | dict_comprehension] "}"      (Atoms) */"eyo:dict_display",
+  dict_comprehension        /*   ::= expression ":" expression comp_for                 (Atoms) */"eyo:dict_comprehension",
+  yield_expression          /*   ::= "yield" [expression_list | "from" expression]      (Atoms) */"eyo:yield_expression",
+  attributeref              /*   ::= primary "." identifier                             (Primaries) */"eyo:attributeref",
+  subscription              /*   ::= primary "[" expression_list "]"                    (Primaries) */"eyo:subscription",
+  slicing                   /*   ::= primary "[" slice_list "]"                         (Primaries) */"eyo:slicing",
+  proper_slice              /*   ::= [lower_bound] ":" [upper_bound] [ ":" [stride] ]   (Primaries) */"eyo:proper_slice",
+  argument_list             /*   ::= argument_any *                                     (Primaries) */"eyo:argument_list",
+  keyword_item              /*   ::= identifier "=" expression                          (Primaries) */"eyo:keyword_item",
+  power_s3d                 /*   ::= await_or_primary "**" u_expr                       (The power operator) */"eyo:power_s3d",
+  u_expr_s3d                /*   ::= "-" u_expr | "+" u_expr | "~" u_expr               (Unary arithmetic and bitwise operations) */"eyo:u_expr_s3d",
+  m_expr_s3d                /*   ::= m_expr "*" u_expr | m_expr "@" m_expr | m_expr "//" u_expr| m_expr "/" u_expr | m_expr "%" u_expr (Binary arithmetic operations) */"eyo:m_expr_s3d",
+  a_expr_s3d                /*   ::= a_expr "+" m_expr | a_expr "-" m_expr              (Binary arithmetic operations) */"eyo:a_expr_s3d",
+  shift_expr_s3d            /*   ::= shift_expr ( "<<" | ">>" ) a_expr                  (Shifting operations) */"eyo:shift_expr_s3d",
+  and_expr_s3d              /*   ::= and_expr "&" shift_expr                            (Binary bitwise operations) */"eyo:and_expr_s3d",
+  xor_expr_s3d              /*   ::= xor_expr "^" and_expr                              (Binary bitwise operations) */"eyo:xor_expr_s3d",
+  or_expr_s3d               /*   ::= or_expr "|" xor_expr                               (Binary bitwise operations) */"eyo:or_expr_s3d",
+  or_test_s3d               /*   ::= or_test "or" and_test                              (Boolean operations) */"eyo:or_test_s3d",
+  and_test_s3d              /*   ::= and_test "and" not_test                            (Boolean operations) */"eyo:and_test_s3d",
+  not_test_s3d              /*   ::= "not" not_test                                     (Boolean operations) */"eyo:not_test_s3d",
+  conditional_expression_s3d /*   ::= or_test "if" or_test "else" expression             (Conditional expressions) */"eyo:conditional_expression_s3d",
+  lambda_expr               /*   ::= "lambda" [parameter_list]: expression              (Lambdas) */"eyo:lambda_expr",
+  lambda_expr_nocond        /*   ::= "lambda" [parameter_list]: expression_nocond       (Lambdas) */"eyo:lambda_expr_nocond",
+  starred_expression        /*   ::= one of expression_star, expression_star_star, or_expr_star_star, star_expr (Expression lists) */"eyo:starred_expression",
+  builtin_object            /*   ::= 'None' | 'True' | 'False' | 'Ellipsis' | '...' |'NotImplemented' (Atoms) */"eyo:builtin_object",
+  any                       /*   ::= any expression                                     (Atoms) */"eyo:any",
+  starred_item_list         /*   ::= starred_item ? ( ',' starred_item ) * [',']        (Atoms) */"eyo:starred_item_list",
+  star_expr                 /*   ::= "*" or_expr                                        (Expression lists) */"eyo:star_expr",
+  optional_expression_list  /*   ::= ( expression ',' )* [ expression ]                 (Expression lists) */"eyo:optional_expression_list",
+  shortstringliteral        /*   ::= ''                                                 (Atoms) */"eyo:shortstringliteral",
+  shortbytesliteral         /*   ::= b''                                                (Atoms) */"eyo:shortbytesliteral",
+  longstringliteral         /*   ::= ''''''                                             (Atoms) */"eyo:longstringliteral",
+  longbytesliteral          /*   ::= b''''''                                            (Atoms) */"eyo:longbytesliteral",
+  integer                   /*   ::= 123                                                (Atoms) */"eyo:integer",
+  floatnumber               /*   ::= 123.                                               (Atoms) */"eyo:floatnumber",
+  imagnumber                /*   ::= 123j                                               (Atoms) */"eyo:imagnumber",
+  key_datum_s3d             /*   ::= expression ":" expression                          (Atoms) */"eyo:key_datum_s3d",
+  or_expr_star_star         /*   ::= "**" or_expr                                       (Atoms) */"eyo:or_expr_star_star",
+  call_expr                 /*   ::= primary "(" argument_list_comprehensive ")"        (Atoms) */"eyo:call_expr",
+  expression_star           /*   ::= "*" expression                                     (Atoms) */"eyo:expression_star",
+  expression_star_star      /*   ::= "**" expression                                    (Atoms) */"eyo:expression_star_star",
+  number_comparison         /*   ::= comparison comp_operator comparison                (Comparisons) */"eyo:number_comparison",
+  object_comparison         /*   ::= comparison comp_operator comparison                (Comparisons) */"eyo:object_comparison",
+  lambda                    /*   ::= "lambda" [parameter_list]: (expression | expression_no_cond) (Comparisons) */"eyo:lambda",
+  augop                     /*   ::= "+=" | "-=" | "*=" | "@=" | "/=" | "//=" | "%=" | "**=" | ">>=" | "<<=" | "&=" | "^=" | "|=" (Assignment statements) */"eyo:augop",
+  target_list_list          /*   ::= (target_list "=")* target_list                     (Assignment statements) */"eyo:target_list_list",
+  parenth_target_list       /*   ::= "(" void_target_list ")"                           (Assignment statements) */"eyo:parenth_target_list",
+  bracket_target_list       /*   ::= "[" void_target_list "]"                           (Assignment statements) */"eyo:bracket_target_list",
+  void_target_list          /*   ::= [target_list]                                      (Assignment statements) */"eyo:void_target_list",
+  target_star               /*   ::= "*" target                                         (Assignment statements) */"eyo:target_star",
+  module_as_s3d             /*   ::= module "as" identifier                             (The import statement) */"eyo:module_as_s3d",
+  term                      /*   ::= "not just an identifier"                           (The import statement) */"eyo:term",
+  parent_module             /*   ::= '.'+ [module]                                      (The import statement) */"eyo:parent_module",
+  identifier                /*   ::=                                                    (The import statement) */"eyo:identifier",
+  import_identifier_as_s3d  /*   ::= identifier "as" identifier                         (The import statement) */"eyo:import_identifier_as_s3d",
+  with_item_s3d             /*   ::= expression "as" target                             (The with statement) */"eyo:with_item_s3d",
+  parameter_list            /*   ::=                                                    (Function definitions) */"eyo:parameter_list",
+  parameter_list_starargs   /*   ::= "*" [parameter] ("," defparameter)* ["," ["**" parameter [","]]] | "**" parameter [","] (Function definitions) */"eyo:parameter_list_starargs",
+  parameter_s3d             /*   ::= identifier ":" expression                          (Function definitions) */"eyo:parameter_s3d",
+  defparameter_s3d          /*   ::= parameter "=" expression                           (Function definitions) */"eyo:defparameter_s3d",
+  inheritance               /*   ::= "(" [argument_list] ")"                            (Class definitions) */"eyo:inheritance",
+  parameter_star            /*   ::= "*" [parameter]                                    (Function definitions) */"eyo:parameter_star",
+  parameter_star_star       /*   ::= "**" parameter                                     (Function definitions) */"eyo:parameter_star_star",
+  builtin_print_expr        /*   ::= "print(" argument_list ")"                         (Coroutines) */"eyo:builtin_print_expr",
+  builtin_input_expr        /*   ::= "input(" [any_argument] ")"                        (Coroutines) */"eyo:builtin_input_expr",
+  // lists
+  key_datum_list            /*   ::= key_datum ("," key_datum)* [","]                   (Atoms) */"eyo:key_datum_list",
+  slice_list                /*   ::= slice_item ("," slice_item)* [","]                 (Primaries) */"eyo:slice_list",
+  non_void_starred_item_list /*   ::= starred_item ( ',' starred_item ) * [',']          (Expression lists) */"eyo:non_void_starred_item_list",
+  comp_iter_list            /*   ::= (comp_iter) *                                      (Atoms) */"eyo:comp_iter_list",
+  target_list               /*   ::= target ("," target)* [","]                         (Assignment statements) */"eyo:target_list",
+  non_void_module_as_list   /*   ::= module_as ( "," module_as )*                       (The import statement) */"eyo:non_void_module_as_list",
+  non_void_import_identifier_as_list /*   ::= import_identifier_as ( "," import_identifier_as )* (The import statement) */"eyo:non_void_import_identifier_as_list",
+  non_void_identifier_list  /*   ::= identifier ("," identifier)*                       (The nonlocal statement) */"eyo:non_void_identifier_list",
+  dotted_name               /*   ::= identifier ("." identifier)*                       (Function definitions) */"eyo:dotted_name",
+  with_item_list            /*   ::= with_item ("," with_item)*                         (The with statement) */"eyo:with_item_list",
+  // wrappers, like starred_item ::=  expression | star_expr
+  atom                      /*   ::= identifier | literal | enclosure | builtin_object  (Atoms) */"eyo:atom",
+  enclosure                 /*   ::= parenth_form | list_display | dict_display | set_display (Atoms) */"eyo:enclosure",
+  literal                   /*   ::= shortliteral | longliteral | numberliteral         (Atoms) */"eyo:literal",
+  comp_iter                 /*   ::= comp_for | comp_if                                 (Atoms) */"eyo:comp_iter",
+  key_datum                 /*   ::= key_datum_s3d | or_expr_star_star                  (Atoms) */"eyo:key_datum",
+  primary                   /*   ::= atom | attributeref | subscription | slicing | call (Primaries) */"eyo:primary",
+  slice_item                /*   ::= expression | proper_slice                          (Primaries) */"eyo:slice_item",
+  power                     /*   ::= await_or_primary | power_s3d                       (The power operator) */"eyo:power",
+  u_expr                    /*   ::= power | u_expr_s3d                                 (Unary arithmetic and bitwise operations) */"eyo:u_expr",
+  m_expr                    /*   ::= u_expr | m_expr_s3d                                (Binary arithmetic operations) */"eyo:m_expr",
+  a_expr                    /*   ::= m_expr | a_expr_s3d                                (Binary arithmetic operations) */"eyo:a_expr",
+  shift_expr                /*   ::= a_expr | shift_expr_s3d                            (Shifting operations) */"eyo:shift_expr",
+  and_expr                  /*   ::= shift_expr | and_expr_s3d                          (Binary bitwise operations) */"eyo:and_expr",
+  xor_expr                  /*   ::= and_expr | xor_expr_s3d                            (Binary bitwise operations) */"eyo:xor_expr",
+  or_expr                   /*   ::= xor_expr | or_expr_s3d                             (Binary bitwise operations) */"eyo:or_expr",
+  comparison                /*   ::= or_expr | number_comparison | object_comparison    (Comparisons) */"eyo:comparison",
+  or_test                   /*   ::= and_test | or_test_s3d                             (Boolean operations) */"eyo:or_test",
+  and_test                  /*   ::= not_test | and_test_s3d                            (Boolean operations) */"eyo:and_test",
+  not_test                  /*   ::= comparison | not_test_s3d                          (Boolean operations) */"eyo:not_test",
+  conditional_expression    /*   ::= or_test | conditional_expression_s3d               (Conditional expressions) */"eyo:conditional_expression",
+  expression                /*   ::= conditional_expression | lambda_expr               (Conditional expressions) */"eyo:expression",
+  expression_nocond         /*   ::= or_test | lambda_expr_nocond                       (Conditional expressions) */"eyo:expression_nocond",
+  starred_item              /*   ::= expression | star_expr                             (Expression lists) */"eyo:starred_item",
+  shortliteral              /*   ::= shortstringliteral | shortbytesliteral | shortformattedliteral (Atoms) */"eyo:shortliteral",
+  longliteral               /*   ::= longstringliteral | longbytesliteral | longformattedliteral (Atoms) */"eyo:longliteral",
+  bytesliteral              /*   ::= shortbytesliteral | longbytesliteral               (Atoms) */"eyo:bytesliteral",
+  stringliteral             /*   ::= shortbytesliteral | longbytesliteral               (Atoms) */"eyo:stringliteral",
+  numberliteral             /*   ::= integer | floatnumber | imagnumber                 (Atoms) */"eyo:numberliteral",
+  starred_item_list_comprehensive /*   ::= starred_item | comprehension                       (Atoms) */"eyo:starred_item_list_comprehensive",
+  non_void_starred_item_list_comprehensive /*   ::= starred_item | comprehension                       (Atoms) */"eyo:non_void_starred_item_list_comprehensive",
+  key_datum_list_comprehensive /*   ::= key_datum | dict_comprehension                     (Atoms) */"eyo:key_datum_list_comprehensive",
+  argument_any              /*   ::= expression | expression_star | expression_star_star | keyword_item (Atoms) */"eyo:argument_any",
+  argument_list_comprehensive /*   ::= argument_list | comprehension                      (Atoms) */"eyo:argument_list_comprehensive",
+  algebra_choice            /*   ::= m_expr_s3d | a_expr_s3d                            (Comparisons) */"eyo:algebra_choice",
+  bitwise_choice            /*   ::= shift_expr_s3d | and_expr_s3d | xor_expr_s3d | or_expr_s3d (Comparisons) */"eyo:bitwise_choice",
+  boolean_choice            /*   ::= and_test_s3d | or_test_s3d                         (Comparisons) */"eyo:boolean_choice",
+  unary_choice              /*   ::= u_expr_s3d | not_test_s3d                          (Comparisons) */"eyo:unary_choice",
+  target                    /*   ::= target_unstar | target_star                        (Assignment statements) */"eyo:target",
+  augtarget                 /*   ::= identifier | attributeref | subscription | slicing (Assignment statements) */"eyo:augtarget",
+  module                    /*   ::= dotted_name | identifier                           (The import statement) */"eyo:module",
+  relative_module           /*   ::= module | parent_module                             (The import statement) */"eyo:relative_module",
+  assigned_list             /*   ::= starred_item | yield_expression                    (Assignment statements) */"eyo:assigned_list",
+  augassigned_list          /*   ::= expression | yield_expression                      (Assignment statements) */"eyo:augassigned_list",
+  target_unstar             /*   ::= identifier | parenth_target_list | bracket_target_list | attributeref | subscription | slicing (Assignment statements) */"eyo:target_unstar",
+  module_as                 /*   ::= module | module_as_s3d                             (The import statement) */"eyo:module_as",
+  import_identifier_as      /*   ::= identifier | import_identifier_as_s3d              (The import statement) */"eyo:import_identifier_as",
+  with_item                 /*   ::= expression | with_item_s3d                         (The with statement) */"eyo:with_item",
+  parameter                 /*   ::= identifier | parameter_s3d                         (Function definitions) */"eyo:parameter",
+  defparameter              /*   ::= parameter | defparameter_s3d                       (Function definitions) */"eyo:defparameter",
+  parameter_any             /*   ::= parameter | defparameter | parameter_star | parameter_star_star (Function definitions) */"eyo:parameter_any"
 // wrappers, like module_name ::= identifier because module_name is used in some Check array
 }
 
@@ -327,14 +324,14 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.floatnumber,
     eYo.T3.Expr.imagnumber,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   enclosure: [ // count 4
     eYo.T3.Expr.parenth_form,
     eYo.T3.Expr.list_display,
     eYo.T3.Expr.set_display,
     eYo.T3.Expr.dict_display,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   literal: [ // count 9
     eYo.T3.Expr.longformattedliteral,
@@ -346,12 +343,12 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.integer,
     eYo.T3.Expr.floatnumber,
     eYo.T3.Expr.imagnumber,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   key_datum_list: [ // count 2
     eYo.T3.Expr.key_datum_s3d,
     eYo.T3.Expr.or_expr_star_star,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   primary: [ // count 19
     eYo.T3.Expr.longformattedliteral,
@@ -373,7 +370,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.floatnumber,
     eYo.T3.Expr.imagnumber,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   slice_list: [ // count 35
     eYo.T3.Expr.longformattedliteral,
@@ -411,7 +408,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.number_comparison,
     eYo.T3.Expr.object_comparison,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   power: [ // count 20
     eYo.T3.Expr.longformattedliteral,
@@ -434,7 +431,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.floatnumber,
     eYo.T3.Expr.imagnumber,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   u_expr: [ // count 21
     eYo.T3.Expr.longformattedliteral,
@@ -458,7 +455,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.floatnumber,
     eYo.T3.Expr.imagnumber,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   m_expr: [ // count 22
     eYo.T3.Expr.longformattedliteral,
@@ -483,7 +480,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.floatnumber,
     eYo.T3.Expr.imagnumber,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   a_expr: [ // count 23
     eYo.T3.Expr.longformattedliteral,
@@ -509,7 +506,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.floatnumber,
     eYo.T3.Expr.imagnumber,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   shift_expr: [ // count 24
     eYo.T3.Expr.longformattedliteral,
@@ -536,7 +533,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.floatnumber,
     eYo.T3.Expr.imagnumber,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   and_expr: [ // count 25
     eYo.T3.Expr.longformattedliteral,
@@ -564,7 +561,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.floatnumber,
     eYo.T3.Expr.imagnumber,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   xor_expr: [ // count 26
     eYo.T3.Expr.longformattedliteral,
@@ -593,7 +590,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.floatnumber,
     eYo.T3.Expr.imagnumber,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   or_expr: [ // count 27
     eYo.T3.Expr.longformattedliteral,
@@ -623,7 +620,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.floatnumber,
     eYo.T3.Expr.imagnumber,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   comparison: [ // count 29
     eYo.T3.Expr.longformattedliteral,
@@ -655,7 +652,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.number_comparison,
     eYo.T3.Expr.object_comparison,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   or_test: [ // count 32
     eYo.T3.Expr.longformattedliteral,
@@ -690,7 +687,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.number_comparison,
     eYo.T3.Expr.object_comparison,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   and_test: [ // count 31
     eYo.T3.Expr.longformattedliteral,
@@ -724,7 +721,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.number_comparison,
     eYo.T3.Expr.object_comparison,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   not_test: [ // count 30
     eYo.T3.Expr.longformattedliteral,
@@ -757,7 +754,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.number_comparison,
     eYo.T3.Expr.object_comparison,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   conditional_expression: [ // count 33
     eYo.T3.Expr.longformattedliteral,
@@ -793,7 +790,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.number_comparison,
     eYo.T3.Expr.object_comparison,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   expression: [ // count 34
     eYo.T3.Expr.longformattedliteral,
@@ -830,7 +827,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.number_comparison,
     eYo.T3.Expr.object_comparison,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   expression_nocond: [ // count 33
     eYo.T3.Expr.longformattedliteral,
@@ -866,7 +863,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.number_comparison,
     eYo.T3.Expr.object_comparison,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   non_void_starred_item_list: [ // count 35
     eYo.T3.Expr.longformattedliteral,
@@ -904,40 +901,40 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.number_comparison,
     eYo.T3.Expr.object_comparison,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   shortliteral: [ // count 3
     eYo.T3.Expr.shortformattedliteral,
     eYo.T3.Expr.shortstringliteral,
     eYo.T3.Expr.shortbytesliteral,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   longliteral: [ // count 3
     eYo.T3.Expr.longformattedliteral,
     eYo.T3.Expr.longstringliteral,
     eYo.T3.Expr.longbytesliteral,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   bytesliteral: [ // count 2
     eYo.T3.Expr.shortbytesliteral,
     eYo.T3.Expr.longbytesliteral,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   stringliteral: [ // count 2
     eYo.T3.Expr.shortbytesliteral,
     eYo.T3.Expr.longbytesliteral,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   numberliteral: [ // count 3
     eYo.T3.Expr.integer,
     eYo.T3.Expr.floatnumber,
     eYo.T3.Expr.imagnumber,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   comp_iter_list: [ // count 2
     eYo.T3.Expr.comp_for,
     eYo.T3.Expr.comp_if,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   starred_item_list_comprehensive: [ // count 36
     eYo.T3.Expr.longformattedliteral,
@@ -976,7 +973,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.number_comparison,
     eYo.T3.Expr.object_comparison,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   non_void_starred_item_list_comprehensive: [ // count 36
     eYo.T3.Expr.longformattedliteral,
@@ -1015,13 +1012,13 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.number_comparison,
     eYo.T3.Expr.object_comparison,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   key_datum_list_comprehensive: [ // count 3
     eYo.T3.Expr.dict_comprehension,
     eYo.T3.Expr.key_datum_s3d,
     eYo.T3.Expr.or_expr_star_star,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   argument_any: [ // count 37
     eYo.T3.Expr.longformattedliteral,
@@ -1061,34 +1058,34 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.number_comparison,
     eYo.T3.Expr.object_comparison,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   argument_list_comprehensive: [ // count 2
     eYo.T3.Expr.comprehension,
     eYo.T3.Expr.argument_list,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   algebra_choice: [ // count 2
     eYo.T3.Expr.m_expr_s3d,
     eYo.T3.Expr.a_expr_s3d,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   bitwise_choice: [ // count 4
     eYo.T3.Expr.shift_expr_s3d,
     eYo.T3.Expr.and_expr_s3d,
     eYo.T3.Expr.xor_expr_s3d,
     eYo.T3.Expr.or_expr_s3d,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   boolean_choice: [ // count 2
     eYo.T3.Expr.or_test_s3d,
     eYo.T3.Expr.and_test_s3d,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   unary_choice: [ // count 2
     eYo.T3.Expr.u_expr_s3d,
     eYo.T3.Expr.not_test_s3d,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   target_list: [ // count 7
     eYo.T3.Expr.attributeref,
@@ -1098,25 +1095,25 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.bracket_target_list,
     eYo.T3.Expr.target_star,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   augtarget: [ // count 4
     eYo.T3.Expr.attributeref,
     eYo.T3.Expr.subscription,
     eYo.T3.Expr.slicing,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   module: [ // count 2
     eYo.T3.Expr.identifier,
     eYo.T3.Expr.dotted_name,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   relative_module: [ // count 3
     eYo.T3.Expr.parent_module,
     eYo.T3.Expr.identifier,
     eYo.T3.Expr.dotted_name,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   assigned_list: [ // count 36
     eYo.T3.Expr.longformattedliteral,
@@ -1155,7 +1152,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.number_comparison,
     eYo.T3.Expr.object_comparison,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   augassigned_list: [ // count 35
     eYo.T3.Expr.longformattedliteral,
@@ -1193,7 +1190,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.number_comparison,
     eYo.T3.Expr.object_comparison,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   target_unstar: [ // count 6
     eYo.T3.Expr.attributeref,
@@ -1202,37 +1199,37 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.parenth_target_list,
     eYo.T3.Expr.bracket_target_list,
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   non_void_module_as_list: [ // count 3
     eYo.T3.Expr.module_as_s3d,
     eYo.T3.Expr.identifier,
     eYo.T3.Expr.dotted_name,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   non_void_import_identifier_as_list: [ // count 2
     eYo.T3.Expr.identifier,
     eYo.T3.Expr.import_identifier_as_s3d,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   non_void_identifier_list: [ // count 1
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   dotted_name: [ // count 1
     eYo.T3.Expr.identifier,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   parameter: [ // count 2
     eYo.T3.Expr.identifier,
     eYo.T3.Expr.parameter_s3d,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   defparameter: [ // count 3
     eYo.T3.Expr.identifier,
     eYo.T3.Expr.parameter_s3d,
     eYo.T3.Expr.defparameter_s3d,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   with_item_list: [ // count 35
     eYo.T3.Expr.longformattedliteral,
@@ -1270,7 +1267,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.object_comparison,
     eYo.T3.Expr.identifier,
     eYo.T3.Expr.with_item_s3d,
-    eYo.T3.Expr.any,
+    eYo.T3.Expr.any
   ],
   parameter_any: [ // count 5
     eYo.T3.Expr.identifier,
@@ -1278,8 +1275,8 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.defparameter_s3d,
     eYo.T3.Expr.parameter_star,
     eYo.T3.Expr.parameter_star_star,
-    eYo.T3.Expr.any,
-  ],
+    eYo.T3.Expr.any
+  ]
 }
 
 // same checks
@@ -1306,81 +1303,81 @@ eYo.T3.Expr.Check.classname = eYo.T3.Expr.Check.identifier
 eYo.T3.Expr.Available = []
 
 eYo.T3.Xml = {
-    toDom: {},
+  toDom: {}
 }
 eYo.T3.Xml.toDom.Stmt = { // count 26
-    assignment_stmt: 'assignment',
-    augmented_assignment_stmt: 'augmented_assignment',
-    pass_stmt: 'pass',
-    del_stmt: 'del',
-    return_stmt: 'return',
-    yield_stmt: 'yield',
-    raise_stmt: 'raise',
-    break_stmt: 'break',
-    continue_stmt: 'continue',
-    import_stmt: 'import',
-    if_part: 'if',
-    elif_part: 'elif',
-    else_part: 'else',
-    last_else_part: 'else',
-    while_part: 'while',
-    for_part: 'for',
-    try_part: 'try',
-    except_part: 'except',
-    finally_part: 'finally',
-    try_else_part: 'else',
-    with_part: 'with',
-    funcdef_part: 'function',
-    classdef_part: 'class',
-    any_stmt: 'stmt',
-    call_stmt: 'call',
-    builtin_print_stmt: 'print',
+  assignment_stmt: 'assignment',
+  augmented_assignment_stmt: 'augmented_assignment',
+  pass_stmt: 'pass',
+  del_stmt: 'del',
+  return_stmt: 'return',
+  yield_stmt: 'yield',
+  raise_stmt: 'raise',
+  break_stmt: 'break',
+  continue_stmt: 'continue',
+  import_stmt: 'import',
+  if_part: 'if',
+  elif_part: 'elif',
+  else_part: 'else',
+  last_else_part: 'else',
+  while_part: 'while',
+  for_part: 'for',
+  try_part: 'try',
+  except_part: 'except',
+  finally_part: 'finally',
+  try_else_part: 'else',
+  with_part: 'with',
+  funcdef_part: 'function',
+  classdef_part: 'class',
+  any_stmt: 'stmt',
+  call_stmt: 'call',
+  builtin_print_stmt: 'print'
 }
 
 eYo.T3.Xml.toDom.Expr = { // count 14
-    starred_expression: 'starred',
-    longliteral: 'literal',
-    shortstringliteral: 'literal',
-    shortbytesliteral: 'literal',
-    longstringliteral: 'literal',
-    longbytesliteral: 'literal',
-    integer: 'literal',
-    floatnumber: 'literal',
-    imagnumber: 'literal',
-    call_expr: 'call',
-    number_comparison: 'comparison',
-    object_comparison: 'comparison',
-    builtin_print_expr: 'print',
-    builtin_input_expr: 'input',
+  starred_expression: 'starred',
+  longliteral: 'literal',
+  shortstringliteral: 'literal',
+  shortbytesliteral: 'literal',
+  longstringliteral: 'literal',
+  longbytesliteral: 'literal',
+  integer: 'literal',
+  floatnumber: 'literal',
+  imagnumber: 'literal',
+  call_expr: 'call',
+  number_comparison: 'comparison',
+  object_comparison: 'comparison',
+  builtin_print_expr: 'print',
+  builtin_input_expr: 'input'
 }
 
 eYo.T3.Xml.fromDom = { // count 28
-    try: eYo.T3.Stmt.try_part,
-    except: eYo.T3.Stmt.except_part,
-    with: eYo.T3.Stmt.with_part,
-    function: eYo.T3.Stmt.funcdef_part,
-    raise: eYo.T3.Stmt.raise_stmt,
-    input: eYo.T3.Expr.builtin_input_expr,
-    else: [eYo.T3.Stmt.else_part, eYo.T3.Stmt.last_else_part, eYo.T3.Stmt.try_else_part],
-    while: eYo.T3.Stmt.while_part,
-    class: eYo.T3.Stmt.classdef_part,
-    print: [eYo.T3.Stmt.builtin_print_stmt, eYo.T3.Expr.builtin_print_expr],
-    import: eYo.T3.Stmt.import_stmt,
-    stmt: eYo.T3.Stmt.any_stmt,
-    return: eYo.T3.Stmt.return_stmt,
-    for: eYo.T3.Stmt.for_part,
-    call: [eYo.T3.Stmt.call_stmt, eYo.T3.Expr.call_expr],
-    yield: eYo.T3.Stmt.yield_stmt,
-    literal: [eYo.T3.Expr.longliteral, eYo.T3.Expr.shortstringliteral, eYo.T3.Expr.shortbytesliteral, eYo.T3.Expr.longstringliteral, eYo.T3.Expr.longbytesliteral, eYo.T3.Expr.integer, eYo.T3.Expr.floatnumber, eYo.T3.Expr.imagnumber],
-    augmented_assignment: eYo.T3.Stmt.augmented_assignment_stmt,
-    if: eYo.T3.Stmt.if_part,
-    pass: eYo.T3.Stmt.pass_stmt,
-    continue: eYo.T3.Stmt.continue_stmt,
-    elif: eYo.T3.Stmt.elif_part,
-    comparison: [eYo.T3.Expr.number_comparison, eYo.T3.Expr.object_comparison],
-    del: eYo.T3.Stmt.del_stmt,
-    finally: eYo.T3.Stmt.finally_part,
-    break: eYo.T3.Stmt.break_stmt,
-    starred: eYo.T3.Expr.starred_expression,
-    assignment: eYo.T3.Stmt.assignment_stmt,
+  try: eYo.T3.Stmt.try_part,
+  except: eYo.T3.Stmt.except_part,
+  with: eYo.T3.Stmt.with_part,
+  function: eYo.T3.Stmt.funcdef_part,
+  raise: eYo.T3.Stmt.raise_stmt,
+  input: eYo.T3.Expr.builtin_input_expr,
+  else: [eYo.T3.Stmt.else_part, eYo.T3.Stmt.last_else_part, eYo.T3.Stmt.try_else_part],
+  while: eYo.T3.Stmt.while_part,
+  class: eYo.T3.Stmt.classdef_part,
+  print: [eYo.T3.Stmt.builtin_print_stmt, eYo.T3.Expr.builtin_print_expr],
+  import: eYo.T3.Stmt.import_stmt,
+  stmt: eYo.T3.Stmt.any_stmt,
+  return: eYo.T3.Stmt.return_stmt,
+  for: eYo.T3.Stmt.for_part,
+  call: [eYo.T3.Stmt.call_stmt, eYo.T3.Expr.call_expr],
+  yield: eYo.T3.Stmt.yield_stmt,
+  literal: [eYo.T3.Expr.longliteral, eYo.T3.Expr.shortstringliteral, eYo.T3.Expr.shortbytesliteral, eYo.T3.Expr.longstringliteral, eYo.T3.Expr.longbytesliteral, eYo.T3.Expr.integer, eYo.T3.Expr.floatnumber, eYo.T3.Expr.imagnumber],
+  augmented_assignment: eYo.T3.Stmt.augmented_assignment_stmt,
+  if: eYo.T3.Stmt.if_part,
+  pass: eYo.T3.Stmt.pass_stmt,
+  continue: eYo.T3.Stmt.continue_stmt,
+  elif: eYo.T3.Stmt.elif_part,
+  comparison: [eYo.T3.Expr.number_comparison, eYo.T3.Expr.object_comparison],
+  del: eYo.T3.Stmt.del_stmt,
+  finally: eYo.T3.Stmt.finally_part,
+  break: eYo.T3.Stmt.break_stmt,
+  starred: eYo.T3.Expr.starred_expression,
+  assignment: eYo.T3.Stmt.assignment_stmt
 }

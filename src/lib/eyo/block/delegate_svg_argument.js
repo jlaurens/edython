@@ -25,17 +25,17 @@ eYo.DelegateSvg.Expr.makeSubclass('keyword_item', {
     identifier: {
       order: 1,
       check: eYo.T3.Expr.identifier,
-      hole_value: 'key',
+      hole_value: 'key'
     },
     expression: {
       order: 3,
       fields: {
-        label: '=',
+        label: '='
       },
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'value',
-    },
-  },
+      hole_value: 'value'
+    }
+  }
 })
 
 /**
@@ -49,7 +49,7 @@ eYo.DelegateSvg.Expr.makeSubclass('keyword_item', {
 eYo.Consolidator.List.makeSubclass('Arguments', {
   check: null,
   empty: true,
-  presep: ',',
+  presep: ','
 }, eYo.Consolidator.List, eYo.Consolidator)
 
 /**
@@ -57,7 +57,7 @@ eYo.Consolidator.List.makeSubclass('Arguments', {
  * Subclassers may add their own stuff to io.
  * @param {!Blockly.Block} block, owner or the receiver.
  */
-eYo.Consolidator.Arguments.prototype.getIO = function(block) {
+eYo.Consolidator.Arguments.prototype.getIO = function (block) {
   var io = eYo.Consolidator.Arguments.superClass_.getIO.call(this, block)
   io.first_keyword = io.last_positional = io.unique = -1
   return io
@@ -68,21 +68,21 @@ eYo.Consolidator.Arguments.prototype.getIO = function(block) {
  * there might be unwanted things.
  * @param {object} io
  */
-eYo.Consolidator.Arguments.prototype.doCleanup = function () {
+eYo.Consolidator.Arguments.prototype.doCleanup = (function () {
   // preparation: walk through the list of inputs and
   // find the key inputs
   var Type = {
     UNCONNECTED: 0,
     ARGUMENT: 1,
     KEYWORD: 2,
-    COMPREHENSION: 3,
+    COMPREHENSION: 3
   }
-    /**
+  /**
    * Whether the input corresponds to an identifier...
    * Called when io.input is connected.
    * @param {Object} io, parameters....
    */
-  var getCheckType = function(io) {
+  var getCheckType = function (io) {
     var target = io.c8n.targetConnection
     if (!target) {
       return Type.UNCONNECTED
@@ -100,23 +100,23 @@ eYo.Consolidator.Arguments.prototype.doCleanup = function () {
   var setupFirst = function (io) {
     io.first_keyword = io.last_positional = io.unique = -1
     this.setupIO(io, 0)
-    while (!!io.eyo&& io.unique < 1) {
+    while (!!io.eyo && io.unique < 1) {
       switch ((io.eyo.parameter_type_ = getCheckType(io))) {
-        case Type.ARGUMENT:
+      case Type.ARGUMENT:
         io.last_positional = io.i
         break
-        case Type.KEYWORD:
+      case Type.KEYWORD:
         if (io.first_keyword < 0) {
           io.first_keyword = io.i
         }
         break
-        case Type.COMPREHENSION:
+      case Type.COMPREHENSION:
         io.unique = io.i
       }
       this.nextInput(io)
     }
   }
-  return function(io) {
+  return function (io) {
     eYo.Consolidator.Arguments.superClass_.doCleanup.call(this, io)
     setupFirst.call(this, io)
     if (io.unique >= 0) {
@@ -133,7 +133,7 @@ eYo.Consolidator.Arguments.prototype.doCleanup = function () {
       }
     } else
     // move parameters that are not placed correctly (in eYo sense)
-    if (io.first_keyword>=0) {
+    if (io.first_keyword >= 0) {
       while (io.first_keyword < io.last_positional) {
         this.setupIO(io, io.first_keyword + 2)
         while (io.i <= io.last_positional) {
@@ -161,14 +161,14 @@ eYo.Consolidator.Arguments.prototype.doCleanup = function () {
       }
     }
   }
-} ()
+}())
 
 /**
  * Returns the required types for the current input.
  * This does not suppose that the list of input has been completely consolidated
  * @param {!Object} io parameter.
  */
-eYo.Consolidator.Arguments.prototype.getCheck = function() {
+eYo.Consolidator.Arguments.prototype.getCheck = (function () {
   var cache = {}
   return function (io) {
     var can_positional, can_keyword, can_comprehension
@@ -176,7 +176,7 @@ eYo.Consolidator.Arguments.prototype.getCheck = function() {
       can_positional = can_keyword = can_comprehension = true
     } else {
       can_comprehension = false
-      if (io.first_keyword<0 || io.i <= io.first_keyword) {
+      if (io.first_keyword < 0 || io.i <= io.first_keyword) {
         can_positional = true
       }
       if (io.i >= io.last_positional) {
@@ -211,7 +211,7 @@ eYo.Consolidator.Arguments.prototype.getCheck = function() {
     }
     return cache[K] = out
   }
-} ()
+}())
 
 /**
  * Class for a DelegateSvg, argument_list block.
@@ -225,8 +225,8 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
     consolidator: eYo.Consolidator.List,
     empty: true,
     presep: ',',
-    hole_value: 'name',
-  },
+    hole_value: 'name'
+  }
 })
 
 /**
@@ -240,13 +240,13 @@ eYo.DelegateSvg.List.makeSubclass('argument_list_comprehensive', {
     consolidator: eYo.Consolidator.Arguments,
     empty: true,
     presep: ',',
-    hole_value: 'name',
-  },
+    hole_value: 'name'
+  }
 })
 
 eYo.DelegateSvg.Argument.T3s = [
   eYo.T3.Expr.keyword_item,
   eYo.T3.Expr.starred_expression, // from Expr
   eYo.T3.Expr.argument_list,
-  eYo.T3.Expr.argument_list_comprehensive,
+  eYo.T3.Expr.argument_list_comprehensive
 ]

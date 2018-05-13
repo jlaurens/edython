@@ -18,7 +18,6 @@ goog.require('eYo.Input')
 goog.require('eYo.Do')
 goog.require('eYo.DelegateSvg')
 
-
 /**
  * Consolidator. Fake abstract class, just here for the record and namespace.
  * Any dynamic block must be consolidated.
@@ -31,7 +30,7 @@ goog.require('eYo.DelegateSvg')
  * @param {!Object} d, all the data needed
  * @constructor
  */
-eYo.Consolidator = function(d) {
+eYo.Consolidator = function (d) {
   this.data = {}
   var D = this.constructor.data_
   if (D) {
@@ -63,10 +62,10 @@ eYo.Consolidator.prototype.init = undefined
  * and allow inheritance.
  * @param {!Object} data
  */
-eYo.Consolidator.makeSubclass = function(key, data, C10r, owner) {
+eYo.Consolidator.makeSubclass = function (key, data, C10r, owner) {
   C10r = C10r || eYo.Consolidator
   owner = owner || C10r
-  var subclass = owner[key] = function(d) {
+  var subclass = owner[key] = function (d) {
     subclass.superClass_.constructor.call(this, d)
   }
   goog.inherits(subclass, C10r)
@@ -80,7 +79,7 @@ eYo.Consolidator.makeSubclass = function(key, data, C10r, owner) {
   if (data) {
     goog.mixin(subclass.data_, data)
   }
-  subclass.makeSubclass = function(key, data, C10r, owner) {
+  subclass.makeSubclass = function (key, data, C10r, owner) {
     eYo.Consolidator.makeSubclass(key, data, C10r || subclass, owner)
   }
 }
@@ -102,7 +101,7 @@ eYo.Consolidator.makeSubclass('List')
  * Initialize the list consolidator.
  * @param {!Object} io parameter.
  */
-eYo.Consolidator.List.prototype.init = function() {
+eYo.Consolidator.List.prototype.init = function () {
   goog.asserts.assert(goog.isDef(this.data.check), 'List consolidators must check their objects')
   if (this.data.unique) {
     this.data.unique = eYo.Do.ensureArray(this.data.unique)
@@ -161,11 +160,11 @@ eYo.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
     io.i = i
   }
   var c8n = io.block.makeConnection_(Blockly.INPUT_VALUE)
-  c8n.eyo.willConnect = function(c8n, otherC8n) {
+  c8n.eyo.willConnect = function (c8n, otherC8n) {
     c8n.eyo.will_connect_ = true
     this.connection.sourceBlock_.eyo.will_connect_ = true
   }
-  c8n.eyo.didConnect = function(c8n, otherC8n) {
+  c8n.eyo.didConnect = function (c8n, otherC8n) {
     this.will_connect_ = false
     this.connection.sourceBlock_.eyo.will_connect_ = false
     me.consolidate(this.connection.sourceBlock_, true)
@@ -261,7 +260,7 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
       io.input.fieldRow.shift().dispose()
     }
   } else if (!io.input.fieldRow.length) {
-    var f = function(sep, suffix) {
+    var f = function (sep, suffix) {
       var field = new eYo.FieldLabel(sep)
       io.input.fieldRow.splice(0, 0, field)
       field.setSourceBlock(io.block)
@@ -281,7 +280,7 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
     io.c8n.setHidden(true)
   } else if (io.i === 0 && io.noLeftSeparator && io.list.length > 1) {
     io.c8n.setHidden(true)
-  } else if (io.i === 2 && 3 === io.list.length && io.noDynamicList) {
+  } else if (io.i === 2 && io.list.length === 3 && io.noDynamicList) {
     io.c8n.setHidden(true)
   } else if (!io.block.eyo.isIncog()) {
     io.c8n.setHidden(false)
@@ -296,7 +295,7 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
  * @param {!Object} io parameter.
  * @return yes exactly if there are more input
  */
-eYo.Consolidator.List.prototype.consolidate_connected = function(io) {
+eYo.Consolidator.List.prototype.consolidate_connected = function (io) {
   // ensure that there is one input after,
   // which is not connected
   if (!this.nextInput(io) || this.willBeConnected(io)) {
@@ -312,7 +311,7 @@ eYo.Consolidator.List.prototype.consolidate_connected = function(io) {
  * @param {!Object} io parameter.
  * @return yes exactly if there are more input
  */
-eYo.Consolidator.List.prototype.consolidate_first_connected = function(io) {
+eYo.Consolidator.List.prototype.consolidate_first_connected = function (io) {
   // let subclassers catch this if they want to.
   if (!this.consolidate_single(io)) {
     // nothing more to consolidate
@@ -326,7 +325,7 @@ eYo.Consolidator.List.prototype.consolidate_first_connected = function(io) {
     this.insertPlaceholder(io)
     this.nextInput(io)
   } else {
-    while(j>1) {
+    while (j > 1) {
       this.disposeAtI(io, --j)
     }
   }
@@ -341,15 +340,15 @@ eYo.Consolidator.List.prototype.consolidate_first_connected = function(io) {
  * @param {!Object} io parameter.
  * @return yes exactly if there are more input
  */
-eYo.Consolidator.List.prototype.consolidate_single = function(io) {
+eYo.Consolidator.List.prototype.consolidate_single = function (io) {
   if (io.unique) {
     // remove whatever precedes it, even the very first separator
     var j = io.list.indexOf(io.unique)
-    while(j) {
+    while (j) {
       this.disposeAtI(io, --j)
     }
     // remove whatever follows
-    while(io.list.length > 1) {
+    while (io.list.length > 1) {
       this.disposeAtI(io, 1)
     }
     return false
@@ -362,19 +361,19 @@ eYo.Consolidator.List.prototype.consolidate_single = function(io) {
  * @param {!Object} io parameter.
  * @param {!boolean} gobble whether to gobble intermediate inputs.
  */
-eYo.Consolidator.List.prototype.walk_to_next_connected = function(io, gobble) {
+eYo.Consolidator.List.prototype.walk_to_next_connected = function (io, gobble) {
   // things are different if one of the inputs is connected
-  while (!!io.eyo) {
+  while (io.eyo) {
     if (this.willBeConnected(io)) {
       io.presep = io.eyo.presep || this.data.presep
       io.postsep = io.eyo.postsep || this.data.postsep
       // manage the unique input
-      if (this.data.unique && !io.unique
-        && io.c8n.targetConnection && function(my) {
-          return goog.array.find(io.c8n.targetConnection.check_, function(x) {
+      if (this.data.unique && !io.unique &&
+        io.c8n.targetConnection && (function (my) {
+          return goog.array.find(io.c8n.targetConnection.check_, function (x) {
             return my.data.unique.indexOf(x) >= 0
           })
-        } (this)) {
+        }(this))) {
         io.unique = io.input
       }
       return true
@@ -394,12 +393,12 @@ eYo.Consolidator.List.prototype.walk_to_next_connected = function(io, gobble) {
  * create of if none exists.
  * @param {!Object} io parameter.
  */
-eYo.Consolidator.List.prototype.consolidate_unconnected = function(io) {
+eYo.Consolidator.List.prototype.consolidate_unconnected = function (io) {
   // remove any separator up to the first placeholder
   // This is because the placeholder may have been connected
   // before, undoing will be easier.
   this.setupIO(io, 0)
-  if (!!io.eyo) {
+  if (io.eyo) {
     while (true) {
       if (io.c8n.eyo.s7r_) {
         this.disposeAtI(io)
@@ -413,7 +412,7 @@ eYo.Consolidator.List.prototype.consolidate_unconnected = function(io) {
       if (this.nextInput(io)) {
         do {
           this.disposeAtI(io)
-        } while(this.setupIO(io))
+        } while (this.setupIO(io))
       }
       // Always finalize at last step
       --io.i
@@ -437,7 +436,7 @@ eYo.Consolidator.List.prototype.consolidate_unconnected = function(io) {
  * Default implementation does nothing.
  * @param {!Object} io parameter.
  */
-eYo.Consolidator.List.prototype.doCleanup = function(io) {
+eYo.Consolidator.List.prototype.doCleanup = function (io) {
 }
 
 /**
@@ -449,7 +448,7 @@ eYo.Consolidator.List.prototype.doCleanup = function(io) {
  * set the separator property when not connected.
  * @param {!Object} io parameter.
  */
-eYo.Consolidator.List.prototype.doFinalize = function(io) {
+eYo.Consolidator.List.prototype.doFinalize = function (io) {
   this.setupIO(io, 0)
   if (io.list.length === 1) {
     this.doFinalizePlaceholder(io, undefined, this.data.empty)
@@ -484,20 +483,20 @@ eYo.Consolidator.List.prototype.doFinalize = function(io) {
  * Subclassers may add their own stuff to io.
  * @param {Object} io, parameters....
  */
-eYo.Consolidator.List.prototype.getIO = function(block) {
+eYo.Consolidator.List.prototype.getIO = function (block) {
   var unwrapped = block.eyo.getUnwrapped(block)
   var io = {
     block: block,
-    noLeftSeparator: (block.workspace.eyo.options.noLeftSeparator
-      || block.workspace.eyo.options.noDynamicList)
-      && (!unwrapped
-        || (!unwrapped.eyo.withLeftSeparator_ && !unwrapped.eyo.withDynamicList_)),
-    noDynamicList: (block.workspace.eyo.options.noDynamicList)
-      && (!unwrapped
-        || !unwrapped.eyo.withDynamicList_),
+    noLeftSeparator: (block.workspace.eyo.options.noLeftSeparator ||
+      block.workspace.eyo.options.noDynamicList) &&
+      (!unwrapped ||
+        (!unwrapped.eyo.withLeftSeparator_ && !unwrapped.eyo.withDynamicList_)),
+    noDynamicList: (block.workspace.eyo.options.noDynamicList) &&
+      (!unwrapped ||
+        !unwrapped.eyo.withDynamicList_),
     list: block.inputList,
     presep: this.data.presep,
-    postsep: this.data.postsep,
+    postsep: this.data.postsep
   }
   this.setupIO(io, 0)
   return io
@@ -509,13 +508,13 @@ eYo.Consolidator.List.prototype.getIO = function(block) {
  * @param {!Block} block, to be consolidated....
  * @param {boolean} force, true if no shortcut is allowed.
  */
-eYo.Consolidator.List.prototype.consolidate = function(block, force) {
+eYo.Consolidator.List.prototype.consolidate = function (block, force) {
   var io = this.getIO(block)
   // things are different if one of the inputs is connected
   if (this.walk_to_next_connected(io)) {
     if (this.consolidate_first_connected(io)) {
-      while (this.walk_to_next_connected(io, true)
-        && this.consolidate_connected(io)) {}
+      while (this.walk_to_next_connected(io, true) &&
+        this.consolidate_connected(io)) {}
     }
     this.doCleanup(io)
     if (force || io.edited || io.noLeftSeparator || io.noDynamicList) {
@@ -542,7 +541,7 @@ eYo.Consolidator.List.prototype.getInput = function (block, name) {
   var j = -1
   var io = this.getIO(block)
   do {
-    if (!!io.eyo) {
+    if (io.eyo) {
       io.presep = io.eyo.presep || io.presep
       io.postsep = io.eyo.postsep || io.postsep
       if (!io.c8n.eyo.s7r_) {
@@ -550,7 +549,7 @@ eYo.Consolidator.List.prototype.getInput = function (block, name) {
         if (!o) {
           return io.input
         }
-        if (o>0 && j<0) {
+        if (o > 0 && j < 0) {
           j = io.i
         }
       }
@@ -584,7 +583,7 @@ eYo.Consolidator.List.prototype.getInput = function (block, name) {
  * @param {object} io argument object
  * @return the next keyword item input, undefined when at end.
  */
-eYo.Consolidator.List.prototype.nextInputForType = function(io, type) {
+eYo.Consolidator.List.prototype.nextInputForType = function (io, type) {
   while (this.nextInput(io)) {
     var target = io.c8n.targetConnection
     if (target) {
@@ -603,7 +602,7 @@ eYo.Consolidator.List.prototype.nextInputForType = function(io, type) {
  * @param {object} io argument object
  * @return the next keyword item input, undefined when at end.
  */
-eYo.Consolidator.List.prototype.hasInputForType = function(block, type) {
+eYo.Consolidator.List.prototype.hasInputForType = function (block, type) {
   var io = this.getIO(block)
   return !!this.nextInputForType(io, type)
 }

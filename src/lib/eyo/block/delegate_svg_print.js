@@ -26,29 +26,29 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin_print_expr', {
   fields: {
     label: {
       value: 'print',
-      css: 'builtin',
-    },
+      css: 'builtin'
+    }
   },
   tiles: {
     arguments: {
       order: 1,
       fields: {
         start: '(',
-        end: ')',
+        end: ')'
       },
-      wrap: eYo.T3.Expr.argument_list_comprehensive,
-    },
+      wrap: eYo.T3.Expr.argument_list_comprehensive
+    }
   },
   output: {
-    check: [eYo.T3.Expr.builtin_print_expr, eYo.T3.Expr.call_expr],
-  },
+    check: [eYo.T3.Expr.builtin_print_expr, eYo.T3.Expr.call_expr]
+  }
 })
 
 /**
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-eYo.DelegateSvg.Expr.builtin_print_expr.prototype.getMenuTarget = function(block) {
+eYo.DelegateSvg.Expr.builtin_print_expr.prototype.getMenuTarget = function (block) {
   return block
 }
 
@@ -73,20 +73,20 @@ eYo.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
         has[target.eyo.data.value.get()] = target
       }
     }
-    var insert = function(key) {
+    var insert = function (key) {
       Blockly.Events.setGroup(true)
       try {
         var B = eYo.DelegateSvg.newBlockComplete(block.workspace, eYo.T3.Expr.term, true)
         B.eyo.data.value.set(key)
         B.eyo.data.variant.set(2)
-        var c8n = list.inputList[list.inputList.length-1].connection
-        c8n.connect(B.outputConnection)  
+        var c8n = list.inputList[list.inputList.length - 1].connection
+        c8n.connect(B.outputConnection)
         block.eyo.beReady(block)
       } finally {
         Blockly.Events.setGroup(false)
       }
     }
-    var remove = function(key) {
+    var remove = function (key) {
       Blockly.Events.setGroup(true)
       try {
         var B = has[key]
@@ -96,12 +96,12 @@ eYo.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
         Blockly.Events.setGroup(false)
       }
     }
-    var F = function(candidate) {
+    var F = function (candidate) {
       var menuItem = new eYo.MenuItem(
-        eYo.Do.createSPAN(candidate+' = …', 'eyo-code'),
-        has[candidate]? function() {
+        eYo.Do.createSPAN(candidate + ' = …', 'eyo-code'),
+        has[candidate] ? function () {
           remove(candidate)
-        }: /** @suppress {globalThis} */ function() {
+        } : /** @suppress {globalThis} */ function () {
           insert(candidate)
         }
       )
@@ -125,7 +125,7 @@ eYo.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass('builtin_print_stmt', {
-   link: eYo.T3.Expr.builtin_print_expr,
+  link: eYo.T3.Expr.builtin_print_expr
 })
 
 /**
@@ -149,21 +149,21 @@ eYo.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
         has[target.eyo.data.value.get()] = target
       }
     }
-    var insert = function(key) {
+    var insert = function (key) {
       Blockly.Events.setGroup(true)
       try {
         var B = eYo.DelegateSvg.newBlockComplete(block.workspace, eYo.T3.Expr.term, true)
         B.eyo.data.value.set(key)
         B.eyo.data.variant.set(2)
         // we assume that inputList is not void
-        var c8n = list.inputList[list.inputList.length-1].connection
-        c8n.connect(B.outputConnection)  
+        var c8n = list.inputList[list.inputList.length - 1].connection
+        c8n.connect(B.outputConnection)
         block.eyo.beReady(block)
       } finally {
         Blockly.Events.setGroup(false)
       }
     }
-    var remove = function(key) {
+    var remove = function (key) {
       Blockly.Events.setGroup(true)
       try {
         var B = has[key]
@@ -173,12 +173,12 @@ eYo.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
         Blockly.Events.setGroup(false)
       }
     }
-    var F = function(candidate) {
+    var F = function (candidate) {
       var menuItem = new eYo.MenuItem(
-        eYo.Do.createSPAN(candidate+' = …', 'eyo-code'),
-        has[candidate]? function() {
+        eYo.Do.createSPAN(candidate + ' = …', 'eyo-code'),
+        has[candidate] ? function () {
           remove(candidate)
-        }: /** @suppress {globalThis} */ function() {
+        } : /** @suppress {globalThis} */ function () {
           insert(candidate)
         }
       )
@@ -204,28 +204,28 @@ eYo.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
 eYo.DelegateSvg.Expr.makeSubclass('builtin_input_expr', {
   fields: {
     label: {
-      value: 'input',
-    },
+      value: 'input'
+    }
   },
   tiles: {
     expression: {
       order: 1,
       fields: {
         start: '(',
-        end: ')',
+        end: ')'
       },
       check: eYo.T3.Expr.Check.argument_any,
-      optional: true,
-    },
+      optional: true
+    }
   },
   output: {
-    check: [eYo.T3.Expr.builtin_input_expr, eYo.T3.Expr.call_expr],
-  },
+    check: [eYo.T3.Expr.builtin_input_expr, eYo.T3.Expr.call_expr]
+  }
 })
 
 eYo.DelegateSvg.Print.T3s = [
   eYo.T3.Expr.term,
   eYo.T3.Expr.builtin_print_expr,
   eYo.T3.Stmt.builtin_print_stmt,
-  eYo.T3.Expr.builtin_input_expr,
+  eYo.T3.Expr.builtin_input_expr
 ]

@@ -3,3 +3,6 @@ test/unit/*.js
 test/e2e/*.js
 src/lib/blockly/**
 src/lib/closure-library/**
+src/lib/closure-library/**
+src/lib/xregexp/**
+src/lib/xregexp-all/**

@@ -9,35 +9,35 @@ goog.require('Blockly.BlockSvg.render')
  * @package
  * @suppress {accessControls, duplicate}
  */
-Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
+Blockly.BlockDragger.prototype.endBlockDrag = function (e, currentDragDeltaXY) {
   // Make sure internal state is fresh.
-  this.dragBlock(e, currentDragDeltaXY);
-  this.dragIconData_ = [];
+  this.dragBlock(e, currentDragDeltaXY)
+  this.dragIconData_ = []
 
-  Blockly.BlockSvg.disconnectUiStop_();
+  Blockly.BlockSvg.disconnectUiStop_()
 
-  var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY);
-  var newLoc = goog.math.Coordinate.sum(this.startXY_, delta);
-  this.draggingBlock_.moveOffDragSurface_(newLoc);
+  var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY)
+  var newLoc = goog.math.Coordinate.sum(this.startXY_, delta)
+  this.draggingBlock_.moveOffDragSurface_(newLoc)
 
-  var deleted = this.maybeDeleteBlock_();
+  var deleted = this.maybeDeleteBlock_()
   if (!deleted) {
     // These are expensive and don't need to be done if we're deleting.
     // These are expensive and don't need to be done if we're deleting.
-    this.draggingBlock_.moveConnections_(delta.x, delta.y);
-    this.draggingBlock_.setDragging(false);
-    this.fireMoveEvent_();// JL Fixed this
-    this.draggedConnectionManager_.applyConnections();
-    this.draggingBlock_.render();
-    this.draggingBlock_.scheduleSnapAndBump();
+    this.draggingBlock_.moveConnections_(delta.x, delta.y)
+    this.draggingBlock_.setDragging(false)
+    this.fireMoveEvent_()// JL Fixed this
+    this.draggedConnectionManager_.applyConnections()
+    this.draggingBlock_.render()
+    this.draggingBlock_.scheduleSnapAndBump()
   }
-  this.workspace_.setResizesEnabled(true);
+  this.workspace_.setResizesEnabled(true)
 
-  var toolbox = this.workspace_.getToolbox();
+  var toolbox = this.workspace_.getToolbox()
   if (toolbox) {
-    var style = this.draggingBlock_.isDeletable() ? 'blocklyToolboxDelete' :
-        'blocklyToolboxGrab';
-    toolbox.removeStyle(style);
+    var style = this.draggingBlock_.isDeletable() ? 'blocklyToolboxDelete'
+      : 'blocklyToolboxGrab'
+    toolbox.removeStyle(style)
   }
-  Blockly.Events.setGroup(false);
-};
+  Blockly.Events.setGroup(false)
+}

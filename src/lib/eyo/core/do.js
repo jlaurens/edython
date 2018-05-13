@@ -52,14 +52,14 @@ eYo.Do.inherits = function (childC9r, parentC9r) {
 //   }
 // }
 
-eYo.Do.Name = function () {
+eYo.Do.Name = (function () {
   // characters are in ]MIN, MAX[
   var MIN = 32
   var MAX = 127
   var BASE = MAX - MIN
   var me = {
-    min_name: String.fromCharCode(MIN+1),
-    max_name: String.fromCharCode(MAX-1),
+    min_name: String.fromCharCode(MIN + 1),
+    max_name: String.fromCharCode(MAX - 1)
   }
   /**
    * Get an index name between two strings.
@@ -90,12 +90,12 @@ eYo.Do.Name = function () {
       } else if (isNaN(r)) {
         r = MIN + 1
       }
-      L.push(Math.max(Math.min(l,MAX-1),MIN+1)-MIN)
-      R.push(Math.max(Math.min(r,MAX-1),MIN+1)-MIN)
+      L.push(Math.max(Math.min(l, MAX - 1), MIN + 1) - MIN)
+      R.push(Math.max(Math.min(r, MAX - 1), MIN + 1) - MIN)
     }
     // console.log('L', L)
     // console.log('R', R)
-    if (L[L.length-1] === 1 && R[R.length-1] === 1) {
+    if (L[L.length - 1] === 1 && R[R.length - 1] === 1) {
       // bad string format
       return undefined
     }
@@ -107,7 +107,7 @@ eYo.Do.Name = function () {
     i = L.length // == R.length
     var carry = 0
     var different = false
-    while(i--) {
+    while (i--) {
       l = L[i] + carry
       r = R[i]
       carry = 0
@@ -117,21 +117,21 @@ eYo.Do.Name = function () {
         delta.unshift(l)
       } else if (r > l) {
         different = true
-        delta.unshift(r-l)
+        delta.unshift(r - l)
       } else if (r == l) {
-        delta.unshift(r-l)
-      } else /*if (r < l) */{
+        delta.unshift(r - l)
+      } else /* if (r < l) */{
         different = true
-        delta.unshift(r+(BASE-l))
+        delta.unshift(r + (BASE - l))
         carry = 1
       }
     }
     // console.log('delta', delta)
     return {
-      sign: carry? 1: (different? -1: 0),
+      sign: carry ? 1 : (different ? -1 : 0),
       lhs: L,
       rhs: R,
-      delta: delta,
+      delta: delta
     }
   }
   /**
@@ -149,10 +149,10 @@ eYo.Do.Name = function () {
     while (true) {
       var code = name.charCodeAt(i)
       if (isNaN(code)) {
-        if (seen<0) {
+        if (seen < 0) {
           return name
         }
-        if (seen>0) {
+        if (seen > 0) {
           return name.substring(0, seen)
         }
         return '!'
@@ -166,19 +166,19 @@ eYo.Do.Name = function () {
         while (true) {
           code = name.charCodeAt(i)
           if (isNaN(code)) {
-            if (seen<0) {
+            if (seen < 0) {
               return RA.join('')
             }
-            if (seen>0) {
+            if (seen > 0) {
               return RA.slice(0, seen).join('')
             }
             return '!'
           }
           if (code <= MIN) {
-            RA.push(String.fromCharCode(MIN+1))
+            RA.push(String.fromCharCode(MIN + 1))
           }
           if (code >= MAX) {
-            RA.push(String.fromCharCode(MAX-1))
+            RA.push(String.fromCharCode(MAX - 1))
           }
           if (code === MIN + 1 && seen < 0) {
             seen = i
@@ -266,14 +266,14 @@ eYo.Do.Name = function () {
       var r = (D.delta[i] + carry * BASE) * weight
       var h = Math.floor(r)
       half.push(h)
-      if (h>1) {
+      if (h > 1) {
         carry = 0
         break
       }
       carry = r - h
     }
     if (carry) {
-      half.push(Math.floor(BASE*weight))
+      half.push(Math.floor(BASE * weight))
       carry = 0
     }
     // console.log('half', half)
@@ -288,11 +288,11 @@ eYo.Do.Name = function () {
         l = 0
       }
       r = half[i]
-      var d = l+r+carry
-      if (d>BASE) {
+      var d = l + r + carry
+      if (d > BASE) {
         d -= BASE
         carry = 1
-      } else if (d===BASE) {
+      } else if (d === BASE) {
         // no 0, restart here
         ans = []
         carry = 1
@@ -303,22 +303,22 @@ eYo.Do.Name = function () {
         carry = 0
       }
       if (d || ans.length) {
-        ans.unshift(String.fromCharCode(MIN+d))
+        ans.unshift(String.fromCharCode(MIN + d))
       }
     }
     return ans.join('')
   }
   me.middle_name = me.getBetween(me.min_name, me.max_name, 0.5)
   return me
-} ()
+}())
 
 eYo.Do.ensureArray = function (object) {
-  return goog.isArray(object)? object: (object? [object]: object)
+  return goog.isArray(object) ? object : (object ? [object] : object)
 }
 
-eYo.Do.createSPAN = function(text,css) {
+eYo.Do.createSPAN = function (text, css) {
   return goog.dom.createDom(goog.dom.TagName.SPAN, css || null,
-    goog.dom.createTextNode(text),
+    goog.dom.createTextNode(text)
   )
 }
 
@@ -337,13 +337,13 @@ eYo.Do.typeOfString = function (candidate) {
   if (!goog.isString(candidate)) {
     return
   }
-  if (['False', 'None', 'True'].indexOf(candidate)>=0) {
+  if (['False', 'None', 'True'].indexOf(candidate) >= 0) {
     return eYo.T3.Expr.reserved_identifier
   }
-  if (['class', 'finally', 'is', 'return', 'continue', 'for', 'lambda', 'try', 'def', 'from', 'nonlocal', 'while', 'and', 'del', 'global', 'not', 'with', 'as', 'elif', 'if', 'or', 'yield', 'assert', 'else', 'import', 'pass', 'break', 'except', 'in', 'raise'].indexOf(candidate)>=0) {
+  if (['class', 'finally', 'is', 'return', 'continue', 'for', 'lambda', 'try', 'def', 'from', 'nonlocal', 'while', 'and', 'del', 'global', 'not', 'with', 'as', 'elif', 'if', 'or', 'yield', 'assert', 'else', 'import', 'pass', 'break', 'except', 'in', 'raise'].indexOf(candidate) >= 0) {
     return eYo.T3.Expr.reserved_keyword
   }
-  if (['print', 'input', 'range', 'list', 'len', 'sum'].indexOf(candidate)>=0) {
+  if (['print', 'input', 'range', 'list', 'len', 'sum'].indexOf(candidate) >= 0) {
     return eYo.T3.Expr.builtin_name
   }
   // is it a number ?
@@ -365,7 +365,7 @@ eYo.Do.typeOfString = function (candidate) {
     // skip the void components
     for (var i = 0; i < components.length;) {
       var c = components[i]
-      if(c.length) {
+      if (c.length) {
         first = i
         break
       }
@@ -373,13 +373,13 @@ eYo.Do.typeOfString = function (candidate) {
     }
     for (; i < components.length; i++) {
       var c = components[i]
-      if(!eYo.XRE.identifier.exec(c)) {
+      if (!eYo.XRE.identifier.exec(c)) {
         dotted_name = false
         break
       }
     }
     if (dotted_name) {
-      return goog.isDef(first) && first>0? eYo.T3.Expr.parent_module: eYo.T3.Expr.dotted_name
+      return goog.isDef(first) && first > 0 ? eYo.T3.Expr.parent_module : eYo.T3.Expr.dotted_name
     }
   } else if (eYo.XRE.identifier.exec(candidate)) {
     return eYo.T3.Expr.identifier
@@ -406,13 +406,13 @@ eYo.Do.typeOfString = function (candidate) {
  * @return {string}
  */
 eYo.Do.cssClassForText = function (txt) {
-  switch(eYo.Do.typeOfString(txt)) {
-    case eYo.T3.Expr.reserved_identifier:
-    case eYo.T3.Expr.reserved_keyword:
+  switch (eYo.Do.typeOfString(txt)) {
+  case eYo.T3.Expr.reserved_identifier:
+  case eYo.T3.Expr.reserved_keyword:
     return 'eyo-code-reserved'
-    case eYo.T3.Expr.builtin_name:
+  case eYo.T3.Expr.builtin_name:
     return 'eyo-code-builtin'
-    default:
+  default:
     return 'eyo-code'
   }
 }
@@ -426,27 +426,27 @@ eYo.Do.cssClassForText = function (txt) {
  */
 eYo.Do.Enumerator = function (list, filter) {
   var i = 0, me = {here: undefined}
-  me.start = function() {
+  me.start = function () {
     i = 0
     me.here = undefined
   }
-  me.end = function() {
+  me.end = function () {
     i = list.length
     me.here = undefined
   }
-  me.isAtStart = function() {
+  me.isAtStart = function () {
     return i === 0
   }
-  me.isAtEnd = function() {
+  me.isAtEnd = function () {
     return i < list.length
   }
-  var next_ = function() {
-    return i < list.length? list[i++]: undefined
+  var next_ = function () {
+    return i < list.length ? list[i++] : undefined
   }
-  var previous_ = function() {
-    return i > 0? list[--i]: undefined
+  var previous_ = function () {
+    return i > 0 ? list[--i] : undefined
   }
-  me.next = function() {
+  me.next = function () {
     while ((me.here = next_())) {
       if (!goog.isFunction(filter) || filter(me.here)) {
         break
@@ -454,7 +454,7 @@ eYo.Do.Enumerator = function (list, filter) {
     }
     return me.here
   }
-  me.previous = function() {
+  me.previous = function () {
     while ((me.here = previous_())) {
       if (!filter || filter(me.here)) {
         break
@@ -484,9 +484,9 @@ eYo.Do.hasOwnProperty = function (object, key) {
  * @param {...} args
  * @return {string}
  */
-eYo.Do.format = function(format) {
-  var args = Array.prototype.slice.call(arguments, 1);
-  return format.replace(/{(\d+)}/g, function(match, number) {
-    return goog.isDef(args[number])? args[number]: match
+eYo.Do.format = function (format) {
+  var args = Array.prototype.slice.call(arguments, 1)
+  return format.replace(/{(\d+)}/g, function (match, number) {
+    return goog.isDef(args[number]) ? args[number] : match
   })
 }
