@@ -13,12 +13,13 @@
 
 goog.provide('eYo.BlockSvg')
 
+goog.require('eYo.Do')
 goog.require('eYo.Block')
 goog.require('eYo.DelegateSvg')
 goog.require('Blockly.BlockSvg')
 goog.forwardDeclare('eYo.MenuManager')
 
-eYo.inherits(Blockly.BlockSvg, eYo.Block)
+eYo.Do.inherits(Blockly.BlockSvg, eYo.Block)
 
 /**
  * Class for a block's SVG representation.

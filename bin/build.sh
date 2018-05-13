@@ -7,13 +7,13 @@ COMPILER="bin/compiler-latest/closure-compiler-v20180506.jar"
 #java -jar "$COMPILER" --help
 rm build/base/edython.js
 
-GIT_HEAD="$(git rev-list HEAD | wc -l)"
+GIT_HEAD="$(git rev-list HEAD | wc -l | sed -e 's/^[ \t]*//')"
 TODAY="$(date -u)"
 
 java -jar "$COMPILER"\
   --warning_level DEFAULT \
-  --define="eYo.GIT_HEAD='$GIT_HEAD'"\
-  --define="eYo.BUILD_DATE='$TODAY'"\
+  --define="eYo.Version.GIT_HEAD='$GIT_HEAD'"\
+  --define="eYo.Version.BUILD_DATE='$TODAY'"\
   --externs "src/lib/externs/xregexp.js"\
   --js "src/lib/closure-library/closure/goog/base.js"\
   --js "src/lib/closure-library/closure/goog/a11y/aria/aria.js" \

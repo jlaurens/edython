@@ -16,13 +16,26 @@
  * @name eYo
  * @namespace
  */
-goog.provide('eYo')
+ goog.provide('eYo')
+ goog.provide('eYo.Version')
+
+/** @define {number} */
+eYo.Version.MAJOR = 0
+
+/** @define {number} */
+eYo.Version.MINOR = 1
+
+/** @define {number} */
+eYo.Version.PATCH = 0
+
+/** @define {sting} */
+eYo.Version.PRERELEASE = ''
 
 /** @define {string} */
-eYo.BUILD_DATE = ''
+eYo.Version.BUILD_DATE = ''
 
 /** @define {string} */
-eYo.GIT_HEAD = ''
+eYo.Version.GIT_HEAD = ''
 
 /**
  * Setup.
@@ -41,39 +54,3 @@ eYo.setup = (function () {
   }
   return me
 }())
-
-/* Replace the cssText for rule matching selectorText with value
- ** Changes all matching rules in all style sheets
- ** https://stackoverflow.com/questions/7657363/changing-global-css-styles-from-javascript
- */
-eYo.replaceRuleProperty = function (selectorText, propertyName, value, priority) {
-  var sheets = document.styleSheets
-  for (var i = 0, iLen = sheets.length; i < iLen; i++) {
-    var sheet = sheets[i]
-    if (sheet.cssRules) {
-      var rules = sheet.cssRules
-      for (var j = 0, jLen = rules.length; j < jLen; j++) {
-        var rule = rules[j]
-        if (rule.selectorText === selectorText) {
-          if (value) {
-            rule.style.setProperty(propertyName, value, priority)
-          } else {
-            rule.style.removeProperty(propertyName)
-          }
-        }
-      }
-    }
-  }
-}
-
-goog.asserts.assert(Object.setPrototypeOf, 'No setPrototypeOf, buy a new computer')
-
-/**
- * Contrary to goog.inherits, does not erase the childC9r.prototype.
- * IE<11
- */
-eYo.inherits = function (childC9r, parentC9r) {
-  childC9r.superClass_ = parentC9r.prototype
-  Object.setPrototypeOf(childC9r.prototype, parentC9r.prototype)
-  childC9r.prototype.constructor = childC9r
-}

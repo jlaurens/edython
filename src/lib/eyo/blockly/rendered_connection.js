@@ -19,6 +19,7 @@ goog.require('Blockly.RenderedConnection')
 goog.require('Blockly.Connection')
 
 goog.require('eYo.Const')
+goog.require('eYo.Do')
 goog.require('eYo.T3')
 
 /**
@@ -293,7 +294,7 @@ eYo.Connection = function (source, type) {
   this.eyo = new eYo.ConnectionDelegate(this)
 }
 goog.inherits(eYo.Connection, Blockly.Connection)
-eYo.inherits(Blockly.RenderedConnection, eYo.Connection)
+eYo.Do.inherits(Blockly.RenderedConnection, eYo.Connection)
 
 eYo.Connection.prototype.highlight = Blockly.RenderedConnection.prototype.highlight
 

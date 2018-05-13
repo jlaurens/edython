@@ -13,12 +13,14 @@
 
 goog.provide('eYo.WorkspaceSvg')
 
-goog.require('eYo.Msg')
 goog.require('Blockly.WorkspaceSvg')
+
+goog.require('eYo.Do')
+goog.require('eYo.Msg')
 goog.require('eYo.BlockSvg')
 goog.require('eYo.Workspace')
 
-eYo.inherits(Blockly.WorkspaceSvg, eYo.Workspace)
+eYo.Do.inherits(Blockly.WorkspaceSvg, eYo.Workspace)
 
 /**
  * Obtain a newly created block.
