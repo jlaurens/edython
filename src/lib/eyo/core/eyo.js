@@ -21,6 +21,9 @@ goog.provide('eYo')
 /** @define {string} */
 eYo.BUILD_DATE = ''
 
+/** @define {string} */
+eYo.GIT_HEAD = ''
+
 /**
  * Setup.
  */
