@@ -16,8 +16,9 @@
  * @name eYo
  * @namespace
  */
- goog.provide('eYo')
- goog.provide('eYo.Version')
+goog.provide('eYo')
+goog.provide('eYo.Version')
+goog.provide('eYo.Session')
 
 /** @define {number} */
 eYo.Version.MAJOR = 0
@@ -37,12 +38,14 @@ eYo.Version.BUILD_DATE = ''
 /** @define {string} */
 eYo.Version.GIT_HEAD = ''
 
+
 /**
  * Setup.
  */
 eYo.setup = (function () {
   var i11rs = []
-  var me = function () {
+  var me = function (workspace) {
+    eYo.Session.workspace = workspace
     for (var i11r, i = 0; (i11r = i11rs[i]); ++i) {
       i11r()
     }

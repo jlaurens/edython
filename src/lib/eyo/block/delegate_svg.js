@@ -2383,7 +2383,7 @@ eYo.DelegateSvg.prototype.canLock = function (block) {
  * Whether the given block can unlock.
  * For edython.
  * @param {!Blockly.Block} block The owner of the receiver.
- * @return boolean, true only if there is something to unlock
+ * @return {boolean}, true only if there is something to unlock
  */
 eYo.DelegateSvg.prototype.canUnlock = function (block) {
   if (this.locked_) {
@@ -2407,7 +2407,7 @@ eYo.DelegateSvg.prototype.canUnlock = function (block) {
  * Lock the given block.
  * For edython.
  * @param {!Blockly.Block} block The owner of the receiver.
- * @return the number of block locked
+ * @return {number} the number of blocks locked
  */
 eYo.DelegateSvg.prototype.lock = function (block) {
   var ans = 0
@@ -2459,7 +2459,7 @@ eYo.DelegateSvg.prototype.lock = function (block) {
  * For edython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @param {boolean} deep Whether to unlock statements too.
- * @return the number of block locked
+ * @return {number} the number of blocks unlocked
  */
 eYo.DelegateSvg.prototype.unlock = function (block, shallow) {
   var ans = 0
@@ -2485,4 +2485,28 @@ eYo.DelegateSvg.prototype.unlock = function (block, shallow) {
   }
   (block.getSurroundParent()||block).render()
   return ans
+}
+/**
+ * Whether the block of the receiver is in the visible area.
+ * For edython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return {boolean}
+ */
+eYo.DelegateSvg.prototype.inVisibleArea = function (block) {
+  var workspace = block.workspace
+  if (!workspace) {
+    return false
+  }
+  // is the block in the visible area ?
+  var metrics = workspace.getMetrics()
+  var scale = workspace.scale || 1;
+  var heightWidth = block.getHeightWidth();
+  // the block is in the visible area if we see its center
+  var leftBound = metrics.viewLeft / scale - heightWidth.width / 2
+  var topBound = metrics.viewTop / scale - heightWidth.height / 2
+  var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - heightWidth.width / 2
+  var downBound = (metrics.viewTop + metrics.viewHeight) / scale - heightWidth.height / 2
+  var xy = block.getRelativeToSurfaceXY();
+  return xy.x >= leftBound && xy.x <= rightBound &&
+    xy.y >= topBound && xy.y <= downBound
 }

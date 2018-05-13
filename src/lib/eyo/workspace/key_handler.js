@@ -256,12 +256,14 @@ eYo.KeyHandler = function() {
       // if the shortcut starts with one, right bonus
       bonusA = bonusB = false
       if (As.length > 2) {
-        if (eYo.XRE.id_continue.test(As[As.length-2]) && (!As[As.length-1].length || !eYo.XRE.id_continue.test(As[As.length-1][0]))) {
+        if (eYo.XRE.id_continue.test(As[As.length-2]) && (!As[As.length-1].length
+          || !eYo.XRE.id_continue.test(As[As.length-1][0]))) {
           var bonusA = true
         }
       }
       if (Bs.length > 2) {
-        if (eYo.XRE.id_continue.test(Bs[Bs.length-2]) && (!Bs[Bs.length-1].length || !eYo.XRE.id_continue.test(Bs[Bs.length-1][0]))) {
+        if (eYo.XRE.id_continue.test(Bs[Bs.length-2]) && (!Bs[Bs.length-1].length
+          || !eYo.XRE.id_continue.test(Bs[Bs.length-1][0]))) {
           var bonusB = true
         }
       }
@@ -505,6 +507,9 @@ eYo.KeyHandler = function() {
           event.preventDefault()
           event.stopPropagation()
           f.call(B.eyo, B)
+          if (!B.eyo.inVisibleArea(B)) {
+            B.workspace.centerOnBlock(B.id)
+          }
         }
         switch(k) {
           case 'arrowdown': return F(B.eyo.selectBlockBelow)
@@ -514,12 +519,16 @@ eYo.KeyHandler = function() {
         }
       }
     } else {
+      // B is not always a block!
       var F = function (f) {
         event.preventDefault()
         event.stopPropagation()
-        var block = eYo.DelegateSvg.getBestBlock(B.workspace, f)
+        var block = eYo.DelegateSvg.getBestBlock(eYo.Session.workspace, f)
         if (block) {
           block.select()
+          if (!block.eyo.inVisibleArea(block)) {
+            block.workspace.centerOnBlock(block.id)
+          }
         }
       }
       switch(k) {

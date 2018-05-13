@@ -25,18 +25,24 @@ goog.require('eYo.MenuItem')
 eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.decorator, {
   data: {
     builtin: {
-      all: ['staticmethod', 'classmethod'],
+      all: ['staticmethod', 'classmethod', 'property'],
+      synchronize: true,
+    },
+    property: {
+      all: ['setter', 'deleter'],
       synchronize: true,
     },
     variant: {
       DOTTED_NAME: 0,
       BUILTIN: 1,
-      ARGUMENTS: 2,
-      all: [0, 1, 2],
+      PROPERTY: 2,
+      ARGUMENTS: 3,
+      all: [0, 1, 2, 3],
       synchronize: /** @suppress {globalThis} */ function(newValue) { // would variants synchronize?
         var M = this.model
         this.data.dotted_name.setIncog(newValue === M.BUILTIN) // disable the data not the tile
         this.data.builtin.setIncog(newValue !== M.BUILTIN)
+        this.data.property.setIncog(newValue !== M.PROPERTY)
         this.ui.tiles.arguments.setIncog(newValue !== M.ARGUMENTS)
       },
     },
@@ -83,8 +89,23 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.decorator, {
         },
       },
     },
-    arguments: {
+    property: {
       order: 3,
+      fields: {
+        prefix: '.',
+        label: {
+          css: 'reserved',
+        },
+      },
+      xml: {
+        didLoad: /** @suppress {globalThis} */ function () {
+          var variant = this.owner.data.variant
+          variant.set(variant.model.PROPERTY)
+        },
+      },
+    },
+    arguments: {
+      order: 4,
       fields: {
         start: '(',
         end: ')',
@@ -128,44 +149,44 @@ eYo.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (b
   var builtins = this.data.builtin.getAll()
   var i_b = builtins.indexOf(builtin)
   var M = this.data.variant.model
-  var variant = this.data.variant.get()
-  var menuItem = new eYo.MenuItem(
-      eYo.Do.createSPAN('@'+builtins[0], 'eyo-code-reserved'),
-      function() {
-    block.eyo.data.builtin.set(0)
-    block.eyo.data.variant.set(M.BUILTIN)
-  })
-  menuItem.setEnabled(i_b != 0 || variant != M.BUILTIN)
-  mgr.addChild(menuItem)
-  menuItem = new eYo.MenuItem(
-      eYo.Do.createSPAN('@'+builtins[1], 'eyo-code-reserved'),
-      function() {
-    block.eyo.data.builtin.set(1)
-    block.eyo.data.variant.set(M.BUILTIN)
-  })
-  menuItem.setEnabled(i_b != 1 || variant != M.BUILTIN)
-  mgr.addChild(menuItem)
-  menuItem = new eYo.MenuItem(
-      goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
+  var current = this.data.variant.get
+  var property = this.data.property.get()
+  var properties = this.data.property.getAll()
+  var j_p = properties.indexOf(property)
+  var F = function(content, variant, i, j) {
+    if(current != variant
+      || goog.isDefAndNotNull(i) && i != i_b
+      || goog.isDefAndNotNull(j) && j != j_p) {
+        var menuItem = new eYo.MenuItem(content, function() {
+          if (goog.isDef(i)) {
+            block.eyo.data.builtin.set(i)
+          } else if (goog.isDef(j)) {
+            block.eyo.data.property.set(j)
+          }
+          block.eyo.data.variant.set(variant)
+        })
+        mgr.addChild(menuItem)
+    }
+  }
+  for (var i = 0; i < builtins.length; i++) {
+    F(eYo.Do.createSPAN('@'+builtins[i], 'eyo-code-reserved'), M.BUILTIN, i)
+  }
+  for (var j = 0; j < properties.length; j++) {
+    F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
       eYo.Do.createSPAN('@', 'eyo-code-reserved'),
       eYo.Do.createSPAN(dotted_name || eYo.Msg.Placeholder.DECORATOR, !dotted_name && 'eyo-code-placeholder'),
-    ),
-      function() {
-    block.eyo.data.variant.set(M.DOTTED_NAME)
-  })
-  menuItem.setEnabled(variant !== M.DOTTED_NAME)
-  mgr.addChild(menuItem)
-  menuItem = new eYo.MenuItem(
-      goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-      eYo.Do.createSPAN('@', 'eyo-code-reserved'),
-      eYo.Do.createSPAN(dotted_name || eYo.Msg.Placeholder.DECORATOR, !dotted_name && 'eyo-code-placeholder'),
-      goog.dom.createTextNode('(…)')
-    ),
-      function() {
-    block.eyo.data.variant.set(M.ARGUMENTS)
-  })
-  menuItem.setEnabled(variant !== M.ARGUMENTS)
-  mgr.addChild(menuItem)
+      eYo.Do.createSPAN('.'+properties[j], 'eyo-code-reserved'),
+    ), M.PROPERTY, null, j)
+  }
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
+    eYo.Do.createSPAN('@', 'eyo-code-reserved'),
+    eYo.Do.createSPAN(dotted_name || eYo.Msg.Placeholder.DECORATOR, !dotted_name && 'eyo-code-placeholder'),
+  ), M.DOTTED_NAME)
+  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
+    eYo.Do.createSPAN('@', 'eyo-code-reserved'),
+    eYo.Do.createSPAN(dotted_name || eYo.Msg.Placeholder.DECORATOR, !dotted_name && 'eyo-code-placeholder'),
+    goog.dom.createTextNode('(…)')
+  ), M.ARGUMENTS)
   mgr.shouldSeparate()
   return eYo.DelegateSvg.Stmt.decorator.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
