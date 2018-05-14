@@ -3,7 +3,7 @@
  *
  * Copyright 2018 Jérôme LAURENS.
  *
- * License CeCILL-B
+ * License EUPL-1.2
  */
 /**
  * @fileoverview Consolidators for various list blocks and proper_slice, for edython.

@@ -205,7 +205,7 @@ class Formatter:
  *
  * Copyright 2018 Jérôme LAURENS.
  *
- * License CeCILL-B
+ * License EUPL-1.2
  */
 /**
  * @fileoverview Type constants for edython, used as blocks prototypes.
