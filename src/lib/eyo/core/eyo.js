@@ -17,9 +17,10 @@
  * @namespace
  */
 
-eYo = Object.create(null)
+ goog.provide('eYo')
 
-goog.provide('eYo')
+var eYo = Object.create(null)
+
 goog.provide('eYo.Version')
 goog.provide('eYo.Session')
 

@@ -408,11 +408,9 @@ eYo.DelegateSvg.Literal.prototype.tagName = function (block) {
   return eYo.Xml.LITERAL
 }
 
-eYo.DelegateSvg.Literal.prototype.xml = eYo.Xml.Text
-
 goog.provide('eYo.Xml.Literal')
 /**
- * Try to create a comparison block from the given element.
+ * Try to create a Literal block from the given element.
  * @param {!Blockly.Block} block
  * @param {!Element} element dom element to be completed.
  * @override

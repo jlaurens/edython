@@ -879,7 +879,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
         eYo.XRE.operator.test(text[text.length - 1]) ||
         text[text.length - 1] === ':' ||
         (text[text.length - 1] === '.' && !((io.field) instanceof eYo.FieldTextInput))
-        io.starSymbol = (io.f === 0 && (['*', '@', '+', '-', '~'].indexOf(text[text.length - 1]) >= 0))
+        io.starSymbol = (io.f === 0 && (['*', '@', '+', '-', '~', '.'].indexOf(text[text.length - 1]) >= 0))
       }
       var x_shift = eyo && !io.block.eyo.wrapped_ ? eyo.x_shift || 0 : 0
       root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +

@@ -204,7 +204,7 @@ eYo.XRE = {
     \\k<delimiter>$`, 'x'),
   longstringliteralSingle: XRegExp(
     `^(?<prefix> r|u|R|U|f|F|fr|Fr|fR|FR|rf|rF|Rf|RF)?
-    (?<delimiter> (?<del> '){3})
+    (?<delimiter> '{3})
     (?<content>
       (?:[\\x0A\\x0D\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF]|
         \\\\[\\x0A\\x0D\\x20-\\uFFFF])*
@@ -212,7 +212,7 @@ eYo.XRE = {
     \\k<delimiter>$`, 'x'),
   longstringliteralDouble: XRegExp(
     `^(?<prefix> r|u|R|U|f|F|fr|Fr|fR|FR|rf|rF|Rf|RF)?
-    (?<delimiter> (?<del> "){3})
+    (?<delimiter> "{3})
     (?<content>
       (?:[\\x0A\\x0D\\x20\\x21\\x23-\\x5B\\x5D-\\uFFFF]|
         \\\\[\\x0A\\x0D\\x20-\\uFFFF])*

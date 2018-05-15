@@ -195,7 +195,8 @@ eYo.Data.prototype.validate = function (newValue) {
     return out
   }
   var all = this.getAll()
-  return !all || (all.indexOf(newValue) >= 0 && {validated: newValue}) || null
+  return ((this.model.validate === false || !all || all.indexOf(newValue) >= 0)
+  && {validated: newValue}) || null
 }
 
 /**

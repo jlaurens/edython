@@ -120,29 +120,31 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
     },
     delimiter: {
       all: ["'", '"'],
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
         this.data.value.consolidate()
       },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      synchronize: /** @this{eYo.Data} */ function (newValue) {
         this.ui.fields.start.setValue(this.toText())
         this.ui.fields.end.setValue(this.toText())
-      }
+      },
+      xml: false,
     },
     prefix: {
       all: ['', 'r', 'u', 'R', 'U', 'f', 'F',
         'fr', 'Fr', 'fR', 'FR', 'rf', 'rF', 'Rf', 'RF',
         'b', 'B', 'br', 'Br', 'bR', 'BR', 'rb', 'rB', 'Rb', 'RB'],
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
         this.data.value.consolidate()
       },
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate: /** @this{eYo.Data} */ function (newValue) {
         var content = this.data.content.get()
         return (!goog.isDef(content) || this.data.subtype.model.getPossible.call(this, newValue, content)) && {validated: newValue}
       },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      synchronize: /** @this{eYo.Data} */ function (newValue) {
         this.synchronize()
         this.ui.fields.prefix.setVisible(!!newValue && !!newValue.length)
-      }
+      },
+      xml: false,
     },
     content: {
       init: '',
@@ -153,11 +155,12 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         var prefix = this.data.prefix.get()
         return ((!goog.isDef(prefix) || this.data.subtype.model.getPossible.call(this, prefix, newValue)) && {validated: newValue}) || null
       },
-
-      synchronize: true
+      synchronize: true,
+      xml: false,
     },
     value: {
-      init: '',
+      init: "''",
+      validate: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         var data = this.data
         var F = function (xre, type) {
@@ -171,10 +174,15 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
           }
           return false
         }
-        F(eYo.XRE.shortstringliteralSingle, eYo.T3.Expr.shortstringliteral) ||
+        if (F(eYo.XRE.shortstringliteralSingle, eYo.T3.Expr.shortstringliteral) ||
         F(eYo.XRE.shortstringliteralDouble, eYo.T3.Expr.shortstringliteral) ||
         F(eYo.XRE.shortbytesliteralSingle, eYo.T3.Expr.shortbytesliteral) ||
-        F(eYo.XRE.shortbytesliteralDouble, eYo.T3.Expr.shortbytesliteral)
+        F(eYo.XRE.shortbytesliteralDouble, eYo.T3.Expr.shortbytesliteral)) {
+          this.owner_.removeError(this.owner_.block_, eYo.Key.VALUE)
+        } else if (newValue && newValue.length) {
+          this.owner_.setError(this.owner_.block_, eYo.Key.VALUE, 'Bad string|bytes literal: ' +
+          (newValue.length > 11 ? newValue.substr(0, 10) + '…' : newValue))
+        }
       },
       consolidate: /** @suppress {globalThis} */ function () {
         var prefix = this.data.prefix.get()
@@ -183,8 +191,11 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         if (goog.isDef(prefix) && goog.isDef(delimiter) && goog.isDef(content)) {
           this.set('' + prefix + delimiter + content + delimiter)
         }
-      }
-    }
+      },
+      xml: {
+        text: true,
+      },
+    },
   },
   fields: {
     prefix: {
@@ -331,7 +342,7 @@ eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
       all: ["'''", '"""']
     },
     value: {
-      init: '',
+      init: "''''''",
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         var data = this.data
         var F = function (xre, type) {
@@ -350,7 +361,7 @@ eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
         F(eYo.XRE.longbytesliteralSingle, eYo.T3.Expr.longbytesliteral) ||
         F(eYo.XRE.longbytesliteralDouble, eYo.T3.Expr.longbytesliteral)) {
           this.owner_.removeError(this.owner_.block_, eYo.Key.VALUE)
-        } else {
+        } else if (newValue && newValue.length) {
           this.owner_.setError(this.owner_.block_, eYo.Key.VALUE, 'Bad string|bytes literal: ' +
           (newValue.length > 11 ? newValue.substr(0, 10) + '…' : newValue))
         }
