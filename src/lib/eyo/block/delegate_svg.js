@@ -1257,6 +1257,7 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id, initS
  * @param {!Block} block
  */
 eYo.DelegateSvg.prototype.beReady = function (block) {
+  block = this.block_
   block.initSvg()
   this.foreachData(function () {
     this.beReady()

@@ -29,9 +29,9 @@
         noDynamicList: true
       }
       eYo.KeyHandler.setup(document)
-      var b = eYo.DelegateSvg.newBlockComplete(eYo.workspace, eYo.T3.Expr.term)
+      var b = eYo.DelegateSvg.newBlockComplete(eYo.workspace, eYo.T3.Expr.term, true)
       b.moveBy(50, 150)
-      b.render()
+      b.eyo.beReady()
     }
   }
 </script>
