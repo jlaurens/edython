@@ -13,7 +13,7 @@
 
 goog.provide('eYo.DelegateSvg.Comprehension')
 
-goog.require('eYo.DelegateSvg.Expr')
+goog.require('eYo.DelegateSvg.List')
 
 /**
  * Class for a DelegateSvg, comprehension value block.

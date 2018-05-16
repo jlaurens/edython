@@ -1,5 +1,6 @@
 #/usr/bin/env
 cd "$(dirname "$0")/.."
+echo "Working directory: $(pwd)"
 mkdir -p build/base
 #
 #"src/lib/eyo/block"
@@ -15,154 +16,279 @@ java -jar "$COMPILER"\
   --define="eYo.Version.GIT_HEAD='$GIT_HEAD'"\
   --define="eYo.Version.BUILD_DATE='$TODAY'"\
   --externs "src/lib/externs/xregexp.js"\
-  --js "src/lib/closure-library/closure/goog/base.js"\
-  --js "src/lib/closure-library/closure/goog/a11y/aria/aria.js" \
+  --js "src/lib/closure-library/closure/goog/base.js" \
+  --js "src/lib/closure-library/closure/goog/promise/thenable.js" \
   --js "src/lib/closure-library/closure/goog/a11y/aria/attributes.js" \
-  --js "src/lib/closure-library/closure/goog/a11y/aria/datatables.js" \
   --js "src/lib/closure-library/closure/goog/a11y/aria/roles.js" \
-  --js "src/lib/closure-library/closure/goog/array/array.js" \
-  --js "src/lib/closure-library/closure/goog/asserts/asserts.js" \
   --js "src/lib/closure-library/closure/goog/async/freelist.js" \
-  --js "src/lib/closure-library/closure/goog/async/nexttick.js" \
-  --js "src/lib/closure-library/closure/goog/async/run.js" \
-  --js "src/lib/closure-library/closure/goog/async/workqueue.js" \
-  --js "src/lib/closure-library/closure/goog/color/color.js" \
   --js "src/lib/closure-library/closure/goog/color/names.js" \
-  --js "src/lib/closure-library/closure/goog/date/date.js" \
   --js "src/lib/closure-library/closure/goog/date/datelike.js" \
-  --js "src/lib/closure-library/closure/goog/date/daterange.js" \
-  --js "src/lib/closure-library/closure/goog/debug/debug.js" \
-  --js "src/lib/closure-library/closure/goog/debug/entrypointregistry.js" \
   --js "src/lib/closure-library/closure/goog/debug/error.js" \
-  --js "src/lib/closure-library/closure/goog/debug/errorcontext.js" \
-  --js "src/lib/closure-library/closure/goog/debug/logbuffer.js" \
-  --js "src/lib/closure-library/closure/goog/debug/logger.js" \
   --js "src/lib/closure-library/closure/goog/debug/logrecord.js" \
-  --js "src/lib/closure-library/closure/goog/disposable/disposable.js" \
+  --js "src/lib/closure-library/closure/goog/debug/errorcontext.js" \
   --js "src/lib/closure-library/closure/goog/disposable/idisposable.js" \
-  --js "src/lib/closure-library/closure/goog/dom/animationframe/animationframe.js" \
-  --js "src/lib/closure-library/closure/goog/dom/animationframe/polyfill.js" \
-  --js "src/lib/closure-library/closure/goog/dom/asserts.js" \
-  --js "src/lib/closure-library/closure/goog/dom/browserfeature.js" \
-  --js "src/lib/closure-library/closure/goog/dom/classlist.js" \
-  --js "src/lib/closure-library/closure/goog/dom/dom.js" \
   --js "src/lib/closure-library/closure/goog/dom/htmlelement.js" \
-  --js "src/lib/closure-library/closure/goog/dom/iframe.js" \
-  --js "src/lib/closure-library/closure/goog/dom/nodeiterator.js" \
   --js "src/lib/closure-library/closure/goog/dom/nodetype.js" \
-  --js "src/lib/closure-library/closure/goog/dom/safe.js" \
-  --js "src/lib/closure-library/closure/goog/dom/tagiterator.js" \
-  --js "src/lib/closure-library/closure/goog/dom/tagname.js" \
-  --js "src/lib/closure-library/closure/goog/dom/tags.js" \
-  --js "src/lib/closure-library/closure/goog/dom/vendor.js" \
-  --js "src/lib/closure-library/closure/goog/events/browserevent.js" \
-  --js "src/lib/closure-library/closure/goog/events/browserfeature.js" \
-  --js "src/lib/closure-library/closure/goog/events/event.js" \
-  --js "src/lib/closure-library/closure/goog/events/eventhandler.js" \
+  --js "src/lib/closure-library/closure/goog/dom/animationframe/polyfill.js" \
   --js "src/lib/closure-library/closure/goog/events/eventid.js" \
-  --js "src/lib/closure-library/closure/goog/events/events.js" \
-  --js "src/lib/closure-library/closure/goog/events/eventtarget.js" \
-  --js "src/lib/closure-library/closure/goog/events/eventtype.js" \
-  --js "src/lib/closure-library/closure/goog/events/focushandler.js" \
-  --js "src/lib/closure-library/closure/goog/events/keycodes.js" \
-  --js "src/lib/closure-library/closure/goog/events/keyhandler.js" \
-  --js "src/lib/closure-library/closure/goog/events/listenable.js" \
-  --js "src/lib/closure-library/closure/goog/events/listener.js" \
-  --js "src/lib/closure-library/closure/goog/events/listenermap.js" \
   --js "src/lib/closure-library/closure/goog/fs/url.js" \
   --js "src/lib/closure-library/closure/goog/functions/functions.js" \
-  --js "src/lib/closure-library/closure/goog/fx/dragger.js" \
   --js "src/lib/closure-library/closure/goog/fx/transition.js" \
-  --js "src/lib/closure-library/closure/goog/html/safehtml.js" \
-  --js "src/lib/closure-library/closure/goog/html/safescript.js" \
-  --js "src/lib/closure-library/closure/goog/html/safestyle.js" \
-  --js "src/lib/closure-library/closure/goog/html/safestylesheet.js" \
-  --js "src/lib/closure-library/closure/goog/html/safeurl.js" \
-  --js "src/lib/closure-library/closure/goog/html/trustedresourceurl.js" \
-  --js "src/lib/closure-library/closure/goog/html/uncheckedconversions.js" \
-  --js "src/lib/closure-library/closure/goog/i18n/bidi.js" \
-  --js "src/lib/closure-library/closure/goog/i18n/datetimeformat.js" \
   --js "src/lib/closure-library/closure/goog/i18n/datetimepatterns.js" \
   --js "src/lib/closure-library/closure/goog/i18n/datetimesymbols.js" \
-  --js "src/lib/closure-library/closure/goog/i18n/timezone.js" \
-  --js "src/lib/closure-library/closure/goog/iter/iter.js" \
-  --js "src/lib/closure-library/closure/goog/labs/useragent/browser.js" \
-  --js "src/lib/closure-library/closure/goog/labs/useragent/engine.js" \
-  --js "src/lib/closure-library/closure/goog/labs/useragent/platform.js" \
-  --js "src/lib/closure-library/closure/goog/labs/useragent/util.js" \
-  --js "src/lib/closure-library/closure/goog/log/log.js" \
-  --js "src/lib/closure-library/closure/goog/math/box.js" \
-  --js "src/lib/closure-library/closure/goog/math/coordinate.js" \
+  --js "src/lib/closure-library/closure/goog/i18n/bidi.js" \
   --js "src/lib/closure-library/closure/goog/math/irect.js" \
-  --js "src/lib/closure-library/closure/goog/math/math.js" \
-  --js "src/lib/closure-library/closure/goog/math/rect.js" \
   --js "src/lib/closure-library/closure/goog/math/size.js" \
   --js "src/lib/closure-library/closure/goog/object/object.js" \
   --js "src/lib/closure-library/closure/goog/positioning/abstractposition.js" \
-  --js "src/lib/closure-library/closure/goog/positioning/anchoredposition.js" \
-  --js "src/lib/closure-library/closure/goog/positioning/anchoredviewportposition.js" \
-  --js "src/lib/closure-library/closure/goog/positioning/clientposition.js" \
-  --js "src/lib/closure-library/closure/goog/positioning/menuanchoredposition.js" \
-  --js "src/lib/closure-library/closure/goog/positioning/positioning.js" \
-  --js "src/lib/closure-library/closure/goog/positioning/viewportclientposition.js" \
-  --js "src/lib/closure-library/closure/goog/promise/promise.js" \
   --js "src/lib/closure-library/closure/goog/promise/resolver.js" \
-  --js "src/lib/closure-library/closure/goog/promise/thenable.js" \
   --js "src/lib/closure-library/closure/goog/reflect/reflect.js" \
-  --js "src/lib/closure-library/closure/goog/string/const.js" \
   --js "src/lib/closure-library/closure/goog/string/string.js" \
   --js "src/lib/closure-library/closure/goog/string/stringbuffer.js" \
   --js "src/lib/closure-library/closure/goog/string/typedstring.js" \
-  --js "src/lib/closure-library/closure/goog/structs/map.js" \
-  --js "src/lib/closure-library/closure/goog/structs/structs.js" \
-  --js "src/lib/closure-library/closure/goog/structs/trie.js" \
-  --js "src/lib/closure-library/closure/goog/style/bidi.js" \
-  --js "src/lib/closure-library/closure/goog/style/style.js" \
-  --js "src/lib/closure-library/closure/goog/timer/timer.js" \
-  --js "src/lib/closure-library/closure/goog/ui/colorpalette.js" \
-  --js "src/lib/closure-library/closure/goog/ui/colorpicker.js" \
-  --js "src/lib/closure-library/closure/goog/ui/component.js" \
-  --js "src/lib/closure-library/closure/goog/ui/container.js" \
-  --js "src/lib/closure-library/closure/goog/ui/containerrenderer.js" \
-  --js "src/lib/closure-library/closure/goog/ui/control.js" \
   --js "src/lib/closure-library/closure/goog/ui/controlcontent.js" \
-  --js "src/lib/closure-library/closure/goog/ui/controlrenderer.js" \
-  --js "src/lib/closure-library/closure/goog/ui/datepicker.js" \
   --js "src/lib/closure-library/closure/goog/ui/datepickerrenderer.js" \
-  --js "src/lib/closure-library/closure/goog/ui/defaultdatepickerrenderer.js" \
   --js "src/lib/closure-library/closure/goog/ui/idgenerator.js" \
-  --js "src/lib/closure-library/closure/goog/ui/menu.js" \
-  --js "src/lib/closure-library/closure/goog/ui/menuheader.js" \
-  --js "src/lib/closure-library/closure/goog/ui/menuheaderrenderer.js" \
-  --js "src/lib/closure-library/closure/goog/ui/menuitem.js" \
-  --js "src/lib/closure-library/closure/goog/ui/menuitemrenderer.js" \
-  --js "src/lib/closure-library/closure/goog/ui/menurenderer.js" \
-  --js "src/lib/closure-library/closure/goog/ui/menuseparator.js" \
-  --js "src/lib/closure-library/closure/goog/ui/menuseparatorrenderer.js" \
-  --js "src/lib/closure-library/closure/goog/ui/modalariavisibilityhelper.js" \
-  --js "src/lib/closure-library/closure/goog/ui/palette.js" \
-  --js "src/lib/closure-library/closure/goog/ui/paletterenderer.js" \
-  --js "src/lib/closure-library/closure/goog/ui/popupbase.js" \
-  --js "src/lib/closure-library/closure/goog/ui/popupmenu.js" \
+  --js "src/lib/closure-library/closure/goog/disposable/disposable.js" \
+  --js "src/lib/closure-library/closure/goog/a11y/aria/datatables.js" \
+  --js "src/lib/closure-library/closure/goog/asserts/asserts.js" \
+  --js "src/lib/closure-library/closure/goog/dom/tagname.js" \
+  --js "src/lib/closure-library/closure/goog/dom/animationframe/animationframe.js" \
+  --js "src/lib/closure-library/closure/goog/dom/tags.js" \
+  --js "src/lib/closure-library/closure/goog/events/listenable.js" \
+  --js "src/lib/closure-library/closure/goog/labs/useragent/util.js" \
+  --js "src/lib/closure-library/closure/goog/array/array.js" \
+  --js "src/lib/closure-library/closure/goog/async/workqueue.js" \
+  --js "src/lib/closure-library/closure/goog/date/date.js" \
+  --js "src/lib/closure-library/closure/goog/debug/entrypointregistry.js" \
+  --js "src/lib/closure-library/closure/goog/debug/logbuffer.js" \
+  --js "src/lib/closure-library/closure/goog/dom/asserts.js" \
+  --js "src/lib/closure-library/closure/goog/events/event.js" \
+  --js "src/lib/closure-library/closure/goog/events/listener.js" \
+  --js "src/lib/closure-library/closure/goog/labs/useragent/platform.js" \
+  --js "src/lib/closure-library/closure/goog/string/const.js" \
+  --js "src/lib/closure-library/closure/goog/dom/classlist.js" \
+  --js "src/lib/closure-library/closure/goog/events/listenermap.js" \
+  --js "src/lib/closure-library/closure/goog/html/safescript.js" \
+  --js "src/lib/closure-library/closure/goog/html/trustedresourceurl.js" \
+  --js "src/lib/closure-library/closure/goog/i18n/timezone.js" \
+  --js "src/lib/closure-library/closure/goog/labs/useragent/browser.js" \
+  --js "src/lib/closure-library/closure/goog/labs/useragent/engine.js" \
+  --js "src/lib/closure-library/closure/goog/math/math.js" \
+  --js "src/lib/closure-library/closure/goog/structs/structs.js" \
+  --js "src/lib/closure-library/closure/goog/async/nexttick.js" \
+  --js "src/lib/closure-library/closure/goog/color/color.js" \
+  --js "src/lib/closure-library/closure/goog/html/safeurl.js" \
+  --js "src/lib/closure-library/closure/goog/i18n/datetimeformat.js" \
+  --js "src/lib/closure-library/closure/goog/iter/iter.js" \
+  --js "src/lib/closure-library/closure/goog/math/coordinate.js" \
+  --js "src/lib/closure-library/closure/goog/structs/trie.js" \
   --js "src/lib/closure-library/closure/goog/ui/registry.js" \
-  --js "src/lib/closure-library/closure/goog/ui/selectionmodel.js" \
-  --js "src/lib/closure-library/closure/goog/ui/separator.js" \
-  --js "src/lib/closure-library/closure/goog/ui/submenu.js" \
-  --js "src/lib/closure-library/closure/goog/ui/submenurenderer.js" \
-  --js "src/lib/closure-library/closure/goog/ui/tree/basenode.js" \
-  --js "src/lib/closure-library/closure/goog/ui/tree/treecontrol.js" \
-  --js "src/lib/closure-library/closure/goog/ui/tree/treenode.js" \
-  --js "src/lib/closure-library/closure/goog/ui/tree/typeahead.js" \
+  --js "src/lib/closure-library/closure/goog/useragent/useragent.js" \
+  --js "src/lib/closure-library/closure/goog/async/run.js" \
+  --js "src/lib/closure-library/closure/goog/date/daterange.js" \
+  --js "src/lib/closure-library/closure/goog/debug/debug.js" \
+  --js "src/lib/closure-library/closure/goog/dom/browserfeature.js" \
+  --js "src/lib/closure-library/closure/goog/dom/vendor.js" \
+  --js "src/lib/closure-library/closure/goog/events/browserfeature.js" \
+  --js "src/lib/closure-library/closure/goog/events/keycodes.js" \
+  --js "src/lib/closure-library/closure/goog/html/safestyle.js" \
+  --js "src/lib/closure-library/closure/goog/math/box.js" \
+  --js "src/lib/closure-library/closure/goog/structs/map.js" \
   --js "src/lib/closure-library/closure/goog/useragent/platform.js" \
   --js "src/lib/closure-library/closure/goog/useragent/product.js" \
+  --js "src/lib/closure-library/closure/goog/promise/promise.js" \
+  --js "src/lib/closure-library/closure/goog/debug/logger.js" \
+  --js "src/lib/closure-library/closure/goog/events/eventtype.js" \
+  --js "src/lib/closure-library/closure/goog/html/safestylesheet.js" \
+  --js "src/lib/closure-library/closure/goog/math/rect.js" \
+  --js "src/lib/closure-library/closure/goog/ui/tree/typeahead.js" \
   --js "src/lib/closure-library/closure/goog/useragent/product_isversion.js" \
-  --js "src/lib/closure-library/closure/goog/useragent/useragent.js" \
-  --js "src/lib/blockly/core/**.js"\
-  --js "!src/lib/blockly/core/blocks/**"\
-  --js "src/lib/eyo/**.js"\
-  --js "!src/lib/eyo/**/fake**.js"\
-  --js_output_file "build/base/edython.js"
-
+  --js "src/lib/closure-library/closure/goog/events/browserevent.js" \
+  --js "src/lib/closure-library/closure/goog/html/safehtml.js" \
+  --js "src/lib/closure-library/closure/goog/log/log.js" \
+  --js "src/lib/closure-library/closure/goog/dom/safe.js" \
+  --js "src/lib/closure-library/closure/goog/events/events.js" \
+  --js "src/lib/closure-library/closure/goog/html/uncheckedconversions.js" \
+  --js "src/lib/closure-library/closure/goog/dom/dom.js" \
+  --js "src/lib/closure-library/closure/goog/events/eventhandler.js" \
+  --js "src/lib/closure-library/closure/goog/events/eventtarget.js" \
+  --js "src/lib/closure-library/closure/goog/timer/timer.js" \
+  --js "src/lib/closure-library/closure/goog/a11y/aria/aria.js" \
+  --js "src/lib/closure-library/closure/goog/dom/tagiterator.js" \
+  --js "src/lib/closure-library/closure/goog/dom/iframe.js" \
+  --js "src/lib/closure-library/closure/goog/events/focushandler.js" \
+  --js "src/lib/closure-library/closure/goog/events/keyhandler.js" \
+  --js "src/lib/closure-library/closure/goog/style/style.js" \
+  --js "src/lib/closure-library/closure/goog/ui/defaultdatepickerrenderer.js" \
+  --js "src/lib/closure-library/closure/goog/ui/selectionmodel.js" \
+  --js "src/lib/closure-library/closure/goog/dom/nodeiterator.js" \
+  --js "src/lib/closure-library/closure/goog/style/bidi.js" \
+  --js "src/lib/closure-library/closure/goog/ui/component.js" \
+  --js "src/lib/closure-library/closure/goog/ui/containerrenderer.js" \
+  --js "src/lib/closure-library/closure/goog/ui/modalariavisibilityhelper.js" \
+  --js "src/lib/closure-library/closure/goog/ui/popupbase.js" \
+  --js "src/lib/closure-library/closure/goog/fx/dragger.js" \
+  --js "src/lib/closure-library/closure/goog/positioning/positioning.js" \
+  --js "src/lib/closure-library/closure/goog/ui/controlrenderer.js" \
+  --js "src/lib/closure-library/closure/goog/ui/datepicker.js" \
+  --js "src/lib/closure-library/closure/goog/ui/tree/basenode.js" \
+  --js "src/lib/closure-library/closure/goog/positioning/anchoredposition.js" \
+  --js "src/lib/closure-library/closure/goog/positioning/clientposition.js" \
+  --js "src/lib/closure-library/closure/goog/ui/control.js" \
+  --js "src/lib/closure-library/closure/goog/ui/menuheaderrenderer.js" \
+  --js "src/lib/closure-library/closure/goog/ui/menuitemrenderer.js" \
+  --js "src/lib/closure-library/closure/goog/ui/menuseparatorrenderer.js" \
+  --js "src/lib/closure-library/closure/goog/ui/paletterenderer.js" \
+  --js "src/lib/closure-library/closure/goog/ui/tree/treenode.js" \
+  --js "src/lib/closure-library/closure/goog/positioning/anchoredviewportposition.js" \
+  --js "src/lib/closure-library/closure/goog/positioning/viewportclientposition.js" \
+  --js "src/lib/closure-library/closure/goog/ui/container.js" \
+  --js "src/lib/closure-library/closure/goog/ui/menuheader.js" \
+  --js "src/lib/closure-library/closure/goog/ui/menuitem.js" \
+  --js "src/lib/closure-library/closure/goog/ui/palette.js" \
+  --js "src/lib/closure-library/closure/goog/ui/separator.js" \
+  --js "src/lib/closure-library/closure/goog/ui/tree/treecontrol.js" \
+  --js "src/lib/closure-library/closure/goog/positioning/menuanchoredposition.js" \
+  --js "src/lib/closure-library/closure/goog/ui/colorpalette.js" \
+  --js "src/lib/closure-library/closure/goog/ui/menurenderer.js" \
+  --js "src/lib/closure-library/closure/goog/ui/menuseparator.js" \
+  --js "src/lib/closure-library/closure/goog/ui/colorpicker.js" \
+  --js "src/lib/closure-library/closure/goog/ui/menu.js" \
+  --js "src/lib/closure-library/closure/goog/ui/popupmenu.js" \
+  --js "src/lib/closure-library/closure/goog/ui/submenurenderer.js" \
+  --js "src/lib/closure-library/closure/goog/ui/submenu.js" \
+  --js "src/lib/blockly/core/blocks.js" \
+  --js "src/lib/blockly/core/css.js" \
+  --js "src/lib/blockly/core/msg.js" \
+  --js "src/lib/blockly/core/names.js" \
+  --js "src/lib/blockly/core/options.js" \
+  --js "src/lib/blockly/core/constants.js" \
+  --js "src/lib/blockly/core/ui_menu_utils.js" \
+  --js "src/lib/blockly/core/bubble_dragger.js" \
+  --js "src/lib/blockly/core/events.js" \
+  --js "src/lib/blockly/core/workspace_audio.js" \
+  --js "src/lib/blockly/core/workspace_dragger.js" \
+  --js "src/lib/blockly/core/events_abstract.js" \
+  --js "src/lib/blockly/core/flyout_dragger.js" \
+  --js "src/lib/blockly/core/block_events.js" \
+  --js "src/lib/blockly/core/ui_events.js" \
+  --js "src/lib/blockly/core/variable_events.js" \
+  --js "src/lib/blockly/core/variable_map.js" \
+  --js "src/lib/blockly/core/variable_model.js" \
+  --js "src/lib/blockly/core/touch.js" \
+  --js "src/lib/blockly/core/workspace.js" \
+  --js "src/lib/blockly/core/bubble.js" \
+  --js "src/lib/blockly/core/connection.js" \
+  --js "src/lib/blockly/core/flyout_button.js" \
+  --js "src/lib/blockly/core/icon.js" \
+  --js "src/lib/blockly/core/scrollbar.js" \
+  --js "src/lib/blockly/core/tooltip.js" \
+  --js "src/lib/blockly/core/variables.js" \
+  --js "src/lib/blockly/core/xml.js" \
+  --js "src/lib/blockly/core/zoom_controls.js" \
+  --js "src/lib/blockly/core/utils.js" \
+  --js "src/lib/blockly/core/block_drag_surface.js" \
+  --js "src/lib/blockly/core/comment.js" \
+  --js "src/lib/blockly/core/connection_db.js" \
+  --js "src/lib/blockly/core/grid.js" \
+  --js "src/lib/blockly/core/rendered_connection.js" \
+  --js "src/lib/blockly/core/trashcan.js" \
+  --js "src/lib/blockly/core/variables_dynamic.js" \
+  --js "src/lib/blockly/core/warning.js" \
+  --js "src/lib/blockly/core/widgetdiv.js" \
+  --js "src/lib/blockly/core/workspace_drag_surface_svg.js" \
+  --js "src/lib/blockly/core/dragged_connection_manager.js" \
+  --js "src/lib/blockly/core/block_dragger.js" \
+  --js "src/lib/blockly/core/gesture.js" \
+  --js "src/lib/blockly/core/field.js" \
+  --js "src/lib/blockly/core/touch_gesture.js" \
+  --js "src/lib/blockly/core/field_checkbox.js" \
+  --js "src/lib/blockly/core/field_date.js" \
+  --js "src/lib/blockly/core/field_image.js" \
+  --js "src/lib/blockly/core/field_label.js" \
+  --js "src/lib/blockly/core/field_textinput.js" \
+  --js "src/lib/blockly/core/procedures.js" \
+  --js "src/lib/blockly/core/workspace_svg.js" \
+  --js "src/lib/blockly/core/contextmenu.js" \
+  --js "src/lib/blockly/core/field_angle.js" \
+  --js "src/lib/blockly/core/field_colour.js" \
+  --js "src/lib/blockly/core/field_dropdown.js" \
+  --js "src/lib/blockly/core/field_number.js" \
+  --js "src/lib/blockly/core/input.js" \
+  --js "src/lib/blockly/core/mutator.js" \
+  --js "src/lib/blockly/core/inject.js" \
+  --js "src/lib/blockly/core/extensions.js" \
+  --js "src/lib/blockly/core/field_variable.js" \
+  --js "src/lib/blockly/core/block.js" \
+  --js "src/lib/blockly/core/block_svg.js" \
+  --js "src/lib/blockly/core/flyout_base.js" \
+  --js "src/lib/blockly/core/generator.js" \
+  --js "src/lib/blockly/core/block_render_svg.js" \
+  --js "src/lib/blockly/core/flyout_horizontal.js" \
+  --js "src/lib/blockly/core/flyout_vertical.js" \
+  --js "src/lib/blockly/core/toolbox.js" \
+  --js "src/lib/blockly/core/blockly.js" \
+  --js "src/lib/eyo/core/eyo.js" \
+  --js "src/lib/eyo/block/delegate_svg_final.js" \
+  --js "src/lib/eyo/core/const.js" \
+  --js "src/lib/eyo/core/data.js" \
+  --js "src/lib/eyo/msg/js/base.js" \
+  --js "src/lib/eyo/core/ui.js" \
+  --js "src/lib/eyo/core/T3.js" \
+  --js "src/lib/eyo/core/data-test.js" \
+  --js "src/lib/eyo/core/do.js" \
+  --js "src/lib/eyo/block/helper.js" \
+  --js "src/lib/eyo/core/T3_all.js" \
+  --js "src/lib/eyo/block/delegate.js" \
+  --js "src/lib/eyo/blockly/events.js" \
+  --js "src/lib/eyo/blockly/rendered_connection.js" \
+  --js "src/lib/eyo/closure-library/menuitemrenderer.js" \
+  --js "src/lib/eyo/closure-library/menuitem.js" \
+  --js "src/lib/eyo/closure-library/menurenderer.js" \
+  --js "src/lib/eyo/blockly/field_textinput.js" \
+  --js "src/lib/eyo/closure-library/menu.js" \
+  --js "src/lib/eyo/blockly/input.js" \
+  --js "src/lib/eyo/closure-library/popupmenu.js" \
+  --js "src/lib/eyo/closure-library/submenurenderer.js" \
+  --js "src/lib/eyo/closure-library/submenu.js" \
+  --js "src/lib/eyo/blockly/block.js" \
+  --js "src/lib/eyo/blockly/field_label.js" \
+  --js "src/lib/eyo/blockly/workspace.js" \
+  --js "src/lib/eyo/block/tile.js" \
+  --js "src/lib/eyo/block/delegate_svg.js" \
+  --js "src/lib/eyo/blockly/block_svg.js" \
+  --js "src/lib/eyo/block/consolidator.js" \
+  --js "src/lib/eyo/block/delegate_svg_expr.js" \
+  --js "src/lib/eyo/block/draw.js" \
+  --js "src/lib/eyo/workspace/key_handler.js" \
+  --js "src/lib/eyo/workspace/menu_manager.js" \
+  --js "src/lib/eyo/block/delegate_svg_literal.js" \
+  --js "src/lib/eyo/block/delegate_svg_list.js" \
+  --js "src/lib/eyo/block/delegate_svg_math.js" \
+  --js "src/lib/eyo/block/delegate_svg_operator.js" \
+  --js "src/lib/eyo/block/delegate_svg_term.js" \
+  --js "src/lib/eyo/blockly/workspace_svg.js" \
+  --js "src/lib/eyo/block/delegate_svg_argument.js" \
+  --js "src/lib/eyo/block/delegate_svg_comp.js" \
+  --js "src/lib/eyo/block/delegate_svg_lambda.js" \
+  --js "src/lib/eyo/block/delegate_svg_stmt.js" \
+  --js "src/lib/eyo/block/delegate_svg_assignment.js" \
+  --js "src/lib/eyo/block/delegate_svg_control.js" \
+  --js "src/lib/eyo/block/delegate_svg_group.js" \
+  --js "src/lib/eyo/block/delegate_svg_import.js" \
+  --js "src/lib/eyo/block/delegate_svg_primary.js" \
+  --js "src/lib/eyo/block/delegate_svg_print.js" \
+  --js "src/lib/eyo/block/delegate_svg_yield.js" \
+  --js "src/lib/eyo/block/delegate_svg_proc.js" \
+  --js "src/lib/eyo/block/delegate_svg_try.js" \
+  --js "src/lib/eyo/block/python.js" \
+  --js "src/lib/eyo/block/xml.js" \
+  --js "src/lib/eyo/block/development.js" \
+  --js_output_file "build/base/edython.js"\
+  -O BUNDLE
+echo "File created:"
+ls -al build/base/edython.js
 exit 0
 
 java -jar "$COMPILER"\

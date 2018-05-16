@@ -14,6 +14,7 @@
 goog.provide('eYo.DelegateSvg.Group')
 
 goog.require('eYo.Msg')
+goog.require('eYo.DelegateSvg.Expr')
 goog.require('eYo.DelegateSvg.Stmt')
 
 /**

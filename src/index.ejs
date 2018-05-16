@@ -1,27 +1,232 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-  <meta charset="utf-8">
-  <title>edython</title>
-  <% if (htmlWebpackPlugin.options.nodeModules) { %>
-    <!-- Add `node_modules/` to global paths so `require` works properly in development -->
-    <script>
-      require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')
-    </script>
+  <head>
+    <meta charset="utf-8">
+    <title>edython</title>
+    <script src="/lib/xregexp-all.js"></script>
+    <% if (htmlWebpackPlugin.options.full_debug) { %>
+      <script>
+        console.warn('FULL DEBUG MODE:')
+      </script>
+      <script src="/lib/closure-library/closure/goog/base.js"></script>
+      <script src="/lib/closure-library/closure/goog/promise/thenable.js"></script>
+      <script src="/lib/closure-library/closure/goog/a11y/aria/attributes.js"></script>
+      <script src="/lib/closure-library/closure/goog/a11y/aria/roles.js"></script>
+      <script src="/lib/closure-library/closure/goog/async/freelist.js"></script>
+      <script src="/lib/closure-library/closure/goog/color/names.js"></script>
+      <script src="/lib/closure-library/closure/goog/date/datelike.js"></script>
+      <script src="/lib/closure-library/closure/goog/debug/error.js"></script>
+      <script src="/lib/closure-library/closure/goog/debug/logrecord.js"></script>
+      <script src="/lib/closure-library/closure/goog/debug/errorcontext.js"></script>
+      <script src="/lib/closure-library/closure/goog/disposable/idisposable.js"></script>
+      <script src="/lib/closure-library/closure/goog/dom/htmlelement.js"></script>
+      <script src="/lib/closure-library/closure/goog/dom/nodetype.js"></script>
+      <script src="/lib/closure-library/closure/goog/dom/animationframe/polyfill.js"></script>
+      <script src="/lib/closure-library/closure/goog/events/eventid.js"></script>
+      <script src="/lib/closure-library/closure/goog/fs/url.js"></script>
+      <script src="/lib/closure-library/closure/goog/functions/functions.js"></script>
+      <script src="/lib/closure-library/closure/goog/fx/transition.js"></script>
+      <script src="/lib/closure-library/closure/goog/i18n/datetimepatterns.js"></script>
+      <script src="/lib/closure-library/closure/goog/i18n/datetimesymbols.js"></script>
+      <script src="/lib/closure-library/closure/goog/i18n/bidi.js"></script>
+      <script src="/lib/closure-library/closure/goog/math/irect.js"></script>
+      <script src="/lib/closure-library/closure/goog/math/size.js"></script>
+      <script src="/lib/closure-library/closure/goog/object/object.js"></script>
+      <script src="/lib/closure-library/closure/goog/positioning/abstractposition.js"></script>
+      <script src="/lib/closure-library/closure/goog/promise/resolver.js"></script>
+      <script src="/lib/closure-library/closure/goog/reflect/reflect.js"></script>
+      <script src="/lib/closure-library/closure/goog/string/string.js"></script>
+      <script src="/lib/closure-library/closure/goog/string/stringbuffer.js"></script>
+      <script src="/lib/closure-library/closure/goog/string/typedstring.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/controlcontent.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/datepickerrenderer.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/idgenerator.js"></script>
+      <script src="/lib/closure-library/closure/goog/disposable/disposable.js"></script>
+      <script src="/lib/closure-library/closure/goog/a11y/aria/datatables.js"></script>
+      <script src="/lib/closure-library/closure/goog/asserts/asserts.js"></script>
+      <script src="/lib/closure-library/closure/goog/dom/tagname.js"></script>
+      <script src="/lib/closure-library/closure/goog/dom/animationframe/animationframe.js"></script>
+      <script src="/lib/closure-library/closure/goog/dom/tags.js"></script>
+      <script src="/lib/closure-library/closure/goog/events/listenable.js"></script>
+      <script src="/lib/closure-library/closure/goog/labs/useragent/util.js"></script>
+      <script src="/lib/closure-library/closure/goog/array/array.js"></script>
+      <script src="/lib/closure-library/closure/goog/async/workqueue.js"></script>
+      <script src="/lib/closure-library/closure/goog/date/date.js"></script>
+      <script src="/lib/closure-library/closure/goog/debug/entrypointregistry.js"></script>
+      <script src="/lib/closure-library/closure/goog/debug/logbuffer.js"></script>
+      <script src="/lib/closure-library/closure/goog/dom/asserts.js"></script>
+      <script src="/lib/closure-library/closure/goog/events/event.js"></script>
+      <script src="/lib/closure-library/closure/goog/events/listener.js"></script>
+      <script src="/lib/closure-library/closure/goog/labs/useragent/platform.js"></script>
+      <script src="/lib/closure-library/closure/goog/string/const.js"></script>
+      <script src="/lib/closure-library/closure/goog/dom/classlist.js"></script>
+      <script src="/lib/closure-library/closure/goog/events/listenermap.js"></script>
+      <script src="/lib/closure-library/closure/goog/html/safescript.js"></script>
+      <script src="/lib/closure-library/closure/goog/html/trustedresourceurl.js"></script>
+      <script src="/lib/closure-library/closure/goog/i18n/timezone.js"></script>
+      <script src="/lib/closure-library/closure/goog/labs/useragent/browser.js"></script>
+      <script src="/lib/closure-library/closure/goog/labs/useragent/engine.js"></script>
+      <script src="/lib/closure-library/closure/goog/math/math.js"></script>
+      <script src="/lib/closure-library/closure/goog/structs/structs.js"></script>
+      <script src="/lib/closure-library/closure/goog/async/nexttick.js"></script>
+      <script src="/lib/closure-library/closure/goog/color/color.js"></script>
+      <script src="/lib/closure-library/closure/goog/html/safeurl.js"></script>
+      <script src="/lib/closure-library/closure/goog/i18n/datetimeformat.js"></script>
+      <script src="/lib/closure-library/closure/goog/iter/iter.js"></script>
+      <script src="/lib/closure-library/closure/goog/math/coordinate.js"></script>
+      <script src="/lib/closure-library/closure/goog/structs/trie.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/registry.js"></script>
+      <script src="/lib/closure-library/closure/goog/useragent/useragent.js"></script>
+      <script src="/lib/closure-library/closure/goog/async/run.js"></script>
+      <script src="/lib/closure-library/closure/goog/date/daterange.js"></script>
+      <script src="/lib/closure-library/closure/goog/debug/debug.js"></script>
+      <script src="/lib/closure-library/closure/goog/dom/browserfeature.js"></script>
+      <script src="/lib/closure-library/closure/goog/dom/vendor.js"></script>
+      <script src="/lib/closure-library/closure/goog/events/browserfeature.js"></script>
+      <script src="/lib/closure-library/closure/goog/events/keycodes.js"></script>
+      <script src="/lib/closure-library/closure/goog/html/safestyle.js"></script>
+      <script src="/lib/closure-library/closure/goog/math/box.js"></script>
+      <script src="/lib/closure-library/closure/goog/structs/map.js"></script>
+      <script src="/lib/closure-library/closure/goog/useragent/platform.js"></script>
+      <script src="/lib/closure-library/closure/goog/useragent/product.js"></script>
+      <script src="/lib/closure-library/closure/goog/promise/promise.js"></script>
+      <script src="/lib/closure-library/closure/goog/debug/logger.js"></script>
+      <script src="/lib/closure-library/closure/goog/events/eventtype.js"></script>
+      <script src="/lib/closure-library/closure/goog/html/safestylesheet.js"></script>
+      <script src="/lib/closure-library/closure/goog/math/rect.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/tree/typeahead.js"></script>
+      <script src="/lib/closure-library/closure/goog/useragent/product_isversion.js"></script>
+      <script src="/lib/closure-library/closure/goog/events/browserevent.js"></script>
+      <script src="/lib/closure-library/closure/goog/html/safehtml.js"></script>
+      <script src="/lib/closure-library/closure/goog/log/log.js"></script>
+      <script src="/lib/closure-library/closure/goog/dom/safe.js"></script>
+      <script src="/lib/closure-library/closure/goog/events/events.js"></script>
+      <script src="/lib/closure-library/closure/goog/html/uncheckedconversions.js"></script>
+      <script src="/lib/closure-library/closure/goog/dom/dom.js"></script>
+      <script src="/lib/closure-library/closure/goog/events/eventhandler.js"></script>
+      <script src="/lib/closure-library/closure/goog/events/eventtarget.js"></script>
+      <script src="/lib/closure-library/closure/goog/timer/timer.js"></script>
+      <script src="/lib/closure-library/closure/goog/a11y/aria/aria.js"></script>
+      <script src="/lib/closure-library/closure/goog/dom/tagiterator.js"></script>
+      <script src="/lib/closure-library/closure/goog/dom/iframe.js"></script>
+      <script src="/lib/closure-library/closure/goog/events/focushandler.js"></script>
+      <script src="/lib/closure-library/closure/goog/events/keyhandler.js"></script>
+      <script src="/lib/closure-library/closure/goog/style/style.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/defaultdatepickerrenderer.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/selectionmodel.js"></script>
+      <script src="/lib/closure-library/closure/goog/dom/nodeiterator.js"></script>
+      <script src="/lib/closure-library/closure/goog/style/bidi.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/component.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/containerrenderer.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/modalariavisibilityhelper.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/popupbase.js"></script>
+      <script src="/lib/closure-library/closure/goog/fx/dragger.js"></script>
+      <script src="/lib/closure-library/closure/goog/positioning/positioning.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/controlrenderer.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/datepicker.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/tree/basenode.js"></script>
+      <script src="/lib/closure-library/closure/goog/positioning/anchoredposition.js"></script>
+      <script src="/lib/closure-library/closure/goog/positioning/clientposition.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/control.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/menuheaderrenderer.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/menuitemrenderer.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/menuseparatorrenderer.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/paletterenderer.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/tree/treenode.js"></script>
+      <script src="/lib/closure-library/closure/goog/positioning/anchoredviewportposition.js"></script>
+      <script src="/lib/closure-library/closure/goog/positioning/viewportclientposition.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/container.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/menuheader.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/menuitem.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/palette.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/separator.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/tree/treecontrol.js"></script>
+      <script src="/lib/closure-library/closure/goog/positioning/menuanchoredposition.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/colorpalette.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/menurenderer.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/menuseparator.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/colorpicker.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/menu.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/popupmenu.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/submenurenderer.js"></script>
+      <script src="/lib/closure-library/closure/goog/ui/submenu.js"></script>
+      <script src="/lib/blockly/blockly_uncompressed.js"></script>
+      <script src="/lib/blockly/blocks_compressed.js"></script>
+      <script src="/lib/blockly/msg/js/fr.js"></script>
+      <script src="/lib/eyo/core/eyo.js"></script>
+      <script src="/lib/eyo/core/const.js"></script>
+      <script src="/lib/eyo/msg/js/base.js"></script>
+      <script src="/lib/eyo/core/ui.js"></script>
+      <script src="/lib/eyo/core/T3.js"></script>
+      <script src="/lib/eyo/core/do.js"></script>
+      <script src="/lib/eyo/core/data.js"></script>
+      <script src="/lib/eyo/core/T3_all.js"></script>
+      <script src="/lib/eyo/closure-library/menurenderer.js"></script>
+      <script src="/lib/eyo/closure-library/menu.js"></script>
+      <script src="/lib/eyo/closure-library/popupmenu.js"></script>
+      <script src="/lib/eyo/closure-library/menuitemrenderer.js"></script>
+      <script src="/lib/eyo/closure-library/menuitem.js"></script>
+      <script src="/lib/eyo/closure-library/submenu.js"></script>
+      <script src="/lib/eyo/closure-library/submenurenderer.js"></script>
+      <script src="/lib/eyo/blockly/input.js"></script>
+      <script src="/lib/eyo/block/helper.js"></script>
+      <script src="/lib/eyo/block/delegate.js"></script>
+      <script src="/lib/eyo/blockly/block.js"></script>
+      <script src="/lib/eyo/blockly/rendered_connection.js"></script>
+      <script src="/lib/eyo/blockly/field_label.js"></script>
+      <script src="/lib/eyo/blockly/field_textinput.js"></script>
+      <script src="/lib/eyo/block/tile.js"></script>
+      <script src="/lib/eyo/block/delegate_svg.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_expr.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_literal.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_term.js"></script>
+      <script src="/lib/eyo/block/consolidator.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_list.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_argument.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_operator.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_stmt.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_lambda.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_comp.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_primary.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_print.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_import.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_yield.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_control.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_group.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_proc.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_try.js"></script>
+      <script src="/lib/eyo/blockly/events.js"></script>
+      <script src="/lib/eyo/blockly/block_svg.js"></script>
+      <script src="/lib/eyo/blockly/workspace.js"></script>
+      <script src="/lib/eyo/blockly/workspace_svg.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_assignment.js"></script>
+      <script src="/lib/eyo/block/python.js"></script>
+      <script src="/lib/eyo/block/delegate_svg_final.js"></script>
+      <script src="/lib/eyo/block/xml.js"></script>
+      <script src="/lib/eyo/blockly/bugfix.js"></script>
+      <script src="/lib/eyo/block/development.js"></script>
+      <script src="/lib/eyo/workspace/menu_manager.js"></script>
+      <script src="/lib/eyo/workspace/key_handler.js"></script>
+      <script src="/lib/eyo/debugging.js"></script>
+    <% } else { %>
+      <script>console.warn('SIMPLE MODE ON')</script>
+      <script src="/lib/edython.js"></script>
     <% } %>
-    <script src="lib/blockly/blockly_compressed.js"></script>
-    <script src="lib/eyo/edy_compressed.js"></script>
+    <% if (htmlWebpackPlugin.options.nodeModules) { %>
+      <!-- Add `node_modules/` to global paths so `require` works properly in development -->
+      <script>
+        require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')
+      </script>
+    <% } %>
   </head>
+  <body>
+    <div id="app"></div>
+    <!-- Set `__static` path to static files in production -->
+    <script>
+      if (process.env.NODE_ENV !== 'development') window.__lib = require('path').join(__dirname, '/lib').replace(/\\/g, '\\\\')
+      if (process.env.NODE_ENV !== 'development') window.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+    </script>
 
-<body>
-  <div id="app"></div>
-  <!-- Set `__static` path to static files in production -->
-  <script>
-    window.BlocklyProxy = window.Blockly
-    if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'development') window.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
-  </script>
-  <!-- webpack builds are automatically injected -->
-</body>
-
+    <!-- webpack builds are automatically injected -->
+  </body>
 </html>

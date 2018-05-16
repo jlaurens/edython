@@ -33,7 +33,7 @@ eYo.Version.MINOR = 1
 /** @define {number} */
 eYo.Version.PATCH = 0
 
-/** @define {sting} */
+/** @define {string} */
 eYo.Version.PRERELEASE = ''
 
 /** @define {string} */

@@ -1,7 +1,7 @@
 <template>
   <Split id="page-content" @onDrag="onDrag">
     <SplitArea :size="50">
-      <content-blockly></content-blockly>
+      <content-eyo></content-eyo>
     </SplitArea>
     <SplitArea :size="50">
       <content-panels></content-panels>
@@ -10,18 +10,18 @@
 </template>
 
 <script>
-  import ContentBlockly from './Content/Blockly'
+  import ContentEyO from './Content/EyO'
   import ContentPanels from './Content/Panels'
 
   export default {
     name: 'page-content',
     methods: {
       onDrag (size) {
-        window.eYo.Vue.getBus().$emit('size-did-change', size)
+        window.eYo.bus.$emit('size-did-change', size)
       }
     },
     components: {
-      'content-blockly': ContentBlockly,
+      'content-eyo': ContentEyO,
       'content-panels': ContentPanels
     }
   }

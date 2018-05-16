@@ -102,16 +102,8 @@ let webConfig = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, '../src/lib/blockly/blockly_accessible_compressed.js'),
-      to: path.resolve(__dirname, '../dist/web/lib/blockly/blockly_accessible_compressed.js')
-    }], {debug: 'debug'}),
-    new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, '../src/lib/blockly/blockly_compressed.js'),
-      to: path.resolve(__dirname, '../dist/web/lib/blockly/blockly_compressed.js')
-    }], {debug: 'debug'}),
-    new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, '../src/lib/eyo/edy_compressed.js'),
-      to: path.resolve(__dirname, '../dist/web/lib/eyo/edy_compressed.js')
+      { from: path.resolve(__dirname, '../build/base/edython.js'),
+      to: path.resolve(__dirname, '../dist/web/lib/eyo/edython.js')
     }], {debug: 'debug'})
   ],
   output: {

@@ -13,6 +13,7 @@
 
 goog.provide('eYo.DelegateSvg.Term')
 
+goog.require('eYo.DelegateSvg.Expr')
 goog.require('eYo.Msg')
 goog.require('eYo.MenuItem')
 goog.require('eYo.FieldInput')

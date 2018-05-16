@@ -43,7 +43,10 @@ let rendererConfig = {
       },
       {
         test: /\.css$/,
-        use: 'raw-loader'
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        })
       },
       {
         test: /\.xml$/,
@@ -128,21 +131,17 @@ let rendererConfig = {
       },
       nodeModules: process.env.NODE_ENV !== 'production'
         ? path.resolve(__dirname, '../node_modules')
-        : false
+        : false,
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, '../src/lib/blockly/blockly_accessible_compressed.js'),
-      to: path.resolve(__dirname, '../dist/electron/lib/blockly/blockly_accessible_compressed.js')
-    }], {debug: 'debug'}),
-    new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, '../src/lib/blockly/blockly_compressed.js'),
-      to: path.resolve(__dirname, '../dist/electron/lib/blockly/blockly_compressed.js')
-    }], {debug: 'debug'}),
-    new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, '../src/lib/eyo/edy_compressed.js'),
-      to: path.resolve(__dirname, '../dist/electron/lib/eyo/edy_compressed.js')
+      { from: path.resolve(__dirname, '../src/lib/xregexp-all/xregexp-all.js'),
+      to: path.resolve(__dirname, '../dist/electron/lib/xregexp-all.js')
+      }, { from: path.resolve(__dirname, '../build/base/edython.js'),
+      to: path.resolve(__dirname, '../dist/electron/lib/edython.js')
+      }, { from: path.resolve(__dirname, '../src/lib/blockly/media/'),
+      to: path.resolve(__dirname, '../static/media/')
     }], {debug: 'debug'})
   ],
   output: {
@@ -156,7 +155,7 @@ let rendererConfig = {
       'vue$': 'vue/dist/vue.esm.js',
       'blockly': path.resolve(__dirname, '../src/lib/blockly/'),
       'eyo': path.resolve(__dirname, '../src/lib/eyo/'),
-      'assets': path.resolve(__dirname, '../static/') 
+      'assets': path.resolve(__dirname, '../static/')
     },
     extensions: ['.js', '.vue', '.json', '.css', '.node']
   },

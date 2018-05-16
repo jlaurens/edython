@@ -1,8 +1,9 @@
 'use strict'
 
-process.env.BABEL_ENV = 'web'
+process.env.BABEL_ENV = 'renderer'
 
 const path = require('path')
+const { dependencies } = require('../package.json')
 const webpack = require('webpack')
 
 const BabiliWebpackPlugin = require('babili-webpack-plugin')
@@ -10,11 +11,23 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-let webConfig = {
+/**
+ * List of node_modules to include in webpack bundle
+ *
+ * Required for specific packages like Vue UI libraries
+ * that provide pure *.vue files that need compiling
+ * https://simulatedgreg.gitbooks.io/electron-vue/content/en/webpack-configurations.html#white-listing-externals
+ */
+let whiteListedModules = ['vue']
+
+let rendererConfig = {
   devtool: '#cheap-module-eval-source-map',
   entry: {
-    web: path.join(__dirname, '../src/renderer/main.js')
+    renderer: path.join(__dirname, '../src/renderer/main.js')
   },
+  externals: [
+    ...Object.keys(dependencies || {}).filter(d => !whiteListedModules.includes(d))
+  ],
   module: {
     rules: [
       {
@@ -46,15 +59,18 @@ let webConfig = {
       {
         test: /\.js$/,
         use: 'babel-loader',
-        include: [ path.resolve(__dirname, '../src/renderer') ],
         exclude: /node_modules/
+      },
+      {
+        test: /\.node$/,
+        use: 'node-loader'
       },
       {
         test: /\.vue$/,
         use: {
           loader: 'vue-loader',
           options: {
-            extractCSS: true,
+            extractCSS: process.env.NODE_ENV === 'production',
             loaders: {
               sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
               scss: 'vue-style-loader!css-loader!sass-loader'
@@ -68,8 +84,23 @@ let webConfig = {
           loader: 'url-loader',
           query: {
             limit: 10000,
-            name: 'imgs/[name].[ext]'
+            name: 'imgs/[name]--[folder].[ext]'
           }
+        }
+      },
+      {
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        })
+      },
+      {
+        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          name: 'media/[name]--[folder].[ext]'
         }
       },
       {
@@ -78,11 +109,15 @@ let webConfig = {
           loader: 'url-loader',
           query: {
             limit: 10000,
-            name: 'fonts/[name].[ext]'
+            name: 'fonts/[name]--[folder].[ext]'
           }
         }
       }
     ]
+  },
+  node: {
+    __dirname: process.env.NODE_ENV !== 'production',
+    __filename: process.env.NODE_ENV !== 'production'
   },
   plugins: [
     new ExtractTextPlugin('styles.css'),
@@ -94,29 +129,26 @@ let webConfig = {
         removeAttributeQuotes: true,
         removeComments: true
       },
-      nodeModules: false
-    }),
-    new webpack.DefinePlugin({
-      'process.env.IS_WEB': 'true'
+      nodeModules: process.env.NODE_ENV !== 'production'
+        ? path.resolve(__dirname, '../node_modules')
+        : false,
+      full_debug: process.env.NODE_ENV === 'production'? false: true,// NOT IN PRODUCTION
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, '../src/lib/blockly/blockly_accessible_compressed.js'),
-      to: path.resolve(__dirname, '../dist/web/lib/blockly/blockly_accessible_compressed.js')
-    }], {debug: 'debug'}),
-    new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, '../src/lib/blockly/blockly_compressed.js'),
-      to: path.resolve(__dirname, '../dist/web/lib/blockly/blockly_compressed.js')
-    }], {debug: 'debug'}),
-    new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, '../src/lib/eyo/edy_compressed.js'),
-      to: path.resolve(__dirname, '../dist/web/lib/eyo/edy_compressed.js')
+      { from: path.resolve(__dirname, '../src/lib/xregexp-all/xregexp-all.js'),
+      to: path.resolve(__dirname, '../dist/electron/lib/xregexp-all.js')
+      }, { from: path.resolve(__dirname, '../build/base/edython.js'),
+      to: path.resolve(__dirname, '../dist/electron/lib/edython.js')
+      }, { from: path.resolve(__dirname, '../src/lib/blockly/media/'),
+      to: path.resolve(__dirname, '../static/media/')
     }], {debug: 'debug'})
   ],
   output: {
     filename: '[name].js',
-    path: path.join(__dirname, '../dist/web')
+    libraryTarget: 'commonjs2',
+    path: path.join(__dirname, '../dist/electron')
   },
   resolve: {
     alias: {
@@ -124,25 +156,36 @@ let webConfig = {
       'vue$': 'vue/dist/vue.esm.js',
       'blockly': path.resolve(__dirname, '../src/lib/blockly/'),
       'eyo': path.resolve(__dirname, '../src/lib/eyo/'),
-      'assets': path.resolve(__dirname, '../static/') 
+      'assets': path.resolve(__dirname, '../static/')
     },
-    extensions: ['.js', '.vue', '.json', '.css']
+    extensions: ['.js', '.vue', '.json', '.css', '.node']
   },
-  target: 'web'
+  target: 'electron-renderer'
 }
 
 /**
- * Adjust webConfig for production settings
+ * Adjust rendererConfig for development settings
+ */
+if (process.env.NODE_ENV !== 'production') {
+  rendererConfig.plugins.push(
+    new webpack.DefinePlugin({
+      '__static': `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`
+    })
+  )
+}
+
+/**
+ * Adjust rendererConfig for production settings
  */
 if (process.env.NODE_ENV === 'production') {
-  webConfig.devtool = ''
+  rendererConfig.devtool = ''
 
-  webConfig.plugins.push(
+  rendererConfig.plugins.push(
     new BabiliWebpackPlugin(),
     new CopyWebpackPlugin([
       {
         from: path.join(__dirname, '../static'),
-        to: path.join(__dirname, '../dist/web/static'),
+        to: path.join(__dirname, '../dist/electron/static'),
         ignore: ['.*']
       }
     ]),
@@ -155,4 +198,4 @@ if (process.env.NODE_ENV === 'production') {
   )
 }
 
-module.exports = webConfig
+module.exports = rendererConfig

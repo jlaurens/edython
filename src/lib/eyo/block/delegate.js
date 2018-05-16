@@ -265,7 +265,7 @@ eYo.Delegate.Manager = (function () {
     goog.asserts.assert(!goog.isString(block), 'API DID CHANGE, update!')
     var DelegateC9r = C9rs[block.type]
     goog.asserts.assert(DelegateC9r, 'No delegate for ' + block.type)
-    return new DelegateC9r(block)
+    return DelegateC9r && new DelegateC9r(block)
   }
   /**
    * Get the Delegate constructor for the given prototype name.

@@ -10,7 +10,9 @@ const WebpackDevServer = require('webpack-dev-server')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 
 const mainConfig = require('./webpack.main.config')
-const rendererConfig = require('./webpack.renderer.config')
+const rendererConfig = process.env.EYO_BUILD_MODE === 'debug'? require('./webpack.debug.config'): require('./webpack.renderer.config')
+
+console.warn('EYO_BUILD_MODE: ', process.env.EYO_BUILD_MODE)
 
 let electronProcess = null
 let manualRestart = false
@@ -43,9 +45,9 @@ function startRenderer () {
     rendererConfig.entry.renderer = [path.join(__dirname, 'dev-client')].concat(rendererConfig.entry.renderer)
 
     const compiler = webpack(rendererConfig)
-    hotMiddleware = webpackHotMiddleware(compiler, { 
-      log: false, 
-      heartbeat: 2500 
+    hotMiddleware = webpackHotMiddleware(compiler, {
+      log: false,
+      heartbeat: 2500
     })
 
     compiler.plugin('compilation', compilation => {

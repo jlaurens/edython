@@ -12,7 +12,6 @@
 'use strict'
 
 goog.provide('eYo.Consolidator')
-goog.provide('eYo.Consolidator.List')
 
 goog.require('eYo')
 goog.require('eYo.Const')
@@ -86,6 +85,7 @@ eYo.Consolidator.makeSubclass = function (key, data, C10r, owner) {
   }
 }
 
+goog.provide('eYo.Consolidator.List')
 /**
  * List consolidator.
  * Remove empty place holders, add separators,

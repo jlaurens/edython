@@ -1125,7 +1125,7 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
         sep = F_before.call(this, targetC8n, type) || sep
       }
       this.shouldSeparateInsertBefore(sep)
-      for (_ = 0, type; (type = Ts[_++]);) {
+      for (_ = 0; (type = Ts[_++]);) {
         sep = F_before.call(this, targetC8n, type) || sep
       }
       this.shouldSeparateInsertBefore(sep)
