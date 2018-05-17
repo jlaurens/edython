@@ -1235,6 +1235,20 @@ eYo.DelegateSvg.prototype.delayedRender = function (block) {
 }
 
 /**
+ * Create a new block, with full contents.
+ * This is the expected way to create a block 
+ * to be displayed immediately.
+ * @param {!WorkspaceSvg} workspace
+ * @param {!String} prototypeName
+ * @private
+ */
+eYo.DelegateSvg.newBlockReady = function (workspace, prototypeName, id) {
+  var B = this.newBlockComplete(workspace, prototypeName, id)
+  B.eyo.beReady()
+  return B
+}
+
+/**
  * Create a new block, with svg background and wrapped blocks.
  * This is the expected way to create the block.
  * The is a caveat due to proper timing in initializing the svg.

@@ -13,8 +13,12 @@
 
 goog.provide('eYo.ui')
 goog.provide('eYo.Style')
+goog.provide('eYo.Font')
 
 goog.require('eYo')
+goog.require('goog.cssom');
+
+goog.forwardDeclare('eYo.font-face')
 
 /**
  * The richness of block colours, regardless of the hue.
@@ -95,7 +99,7 @@ eYo.setup.register(function () {
       eYo.EditorOffset = WEBKIT
     }
   }
-})
+}, 'Editor offset')
 
 eYo.Style.Path = {
   Selected: {
@@ -126,24 +130,48 @@ eYo.Style.Edit = {
 }
 
 eYo.Style.insertCssRuleAt = (function () {
-  var style = document.createElement('style')
-  document.head.appendChild(style)
-  var sheet = style.sheet
+  var style, sheet
+  var getSheet = function() {
+    if (!sheet) {
+      // style = document.createElement('style')
+      // //document.head.appendChild(style)// only once
+      // document.head.insertBefore(style, document.head.firstChild)
+      // sheet = style.sheet
+
+      style = document.createElement('style')
+      document.head.insertBefore(style, document.head.firstChild)
+      sheet = style.sheet
+    }
+    return sheet
+  }
   return function (rule, at) {
+    var sheet = getSheet()
+    if (rule === null) {
+      var rules = goog.cssom.getCssRulesFromStyleSheet(sheet)
+      var lines = []
+      for (var i = 0, rule;(rule = rules[i++]);) {
+        lines.push(goog.cssom.getCssTextFromCssRule(rule))
+      }
+      var textNode = document.createTextNode(lines.join('\n'))
+      style.appendChild(textNode)
+      return
+    }
     if (rule.length) {
-      sheet.insertRule(rule, at === undefined ? sheet.cssRules.length : at)
+      var index = goog.cssom.addCssRule(sheet, rule)
+      if (rule.startsWith('@')) {
+        console.warn('FONT FACE')
+      }
     }
   }
 }())
-/**
- * Setup the font style, amongst others.
- */
+
+eYo.setup.register(-1, function () {
+  eYo.Style.insertCssRuleAt('body {background: orange;}')
+  eYo.Style.insertCssRuleAt(null)
+})
+
 eYo.setup.register(function () {
-  eYo.Style.insertCssRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono.woff')format('woff');font-weight: normal;font-style: normal;}")
-  eYo.Style.insertCssRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono-Bold.woff')format('woff');font-weight: bold;font-style: normal;}")
-  eYo.Style.insertCssRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono-Oblique.woff')format('woff');font-weight: normal;font-style: oblique;}")
-  eYo.Style.insertCssRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono-BoldOblique.woff')format('woff');font-weight: bold;font-style: oblique;}")
-  eYo.Style.insertCssRuleAt('.eyo-block .blocklyText, .eyo-var, .eyo-label, .eyo-code, .eyo-code-reserved, .eyo-code-builtin, .eyo-code-comment, .eyo-code-placeholder, .eyo-sharp-group{\n' + eYo.Font.style + ';\n}\n')
+  eYo.Style.insertCssRuleAt('.eyo-block .blocklyText, .eyo-var, .eyo-label, .eyo-code, .eyo-code-reserved, .eyo-code-builtin, .eyo-code-comment, .eyo-code-placeholder, .eyo-sharp-group{ ' + eYo.Font.style + ';}')
   eYo.Style.insertCssRuleAt('.eyo-error.eyo-path-selected, .eyo-error.eyo-path-shape, .eyo-error.eyo-path-contour {stroke: ' + eYo.Style.Path.Error.colour + ';}')
   eYo.Style.insertCssRuleAt('.eyo-path-selected{stroke: ' + eYo.Style.Path.Selected.colour + ';stroke-width: ' + eYo.Style.Path.Selected.width + 'px;fill: none;}')
   eYo.Style.insertCssRuleAt('.eyo-select .eyo-path-contour{stroke: ' + eYo.Style.Path.Selected.colour + ';}')
@@ -158,7 +186,7 @@ eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt('.eyo-none {stroke:none;fill:none;}')
   eYo.Style.insertCssRuleAt('.eyo-edit {stroke: none;stroke-width: ' + eYo.Style.Edit.width + 'px;fill: none;}')
   eYo.Style.insertCssRuleAt('.eyo-select>g>g>.eyo-edit, .eyo-select>g>.eyo-edit {stroke: ' + eYo.Style.Path.colour + ';}')
-  eYo.Style.insertCssRuleAt('rect.eyo-editing, .eyo-locked  .eyo-edit {stroke: none;}')
+  eYo.Style.insertCssRuleAt('rect.eyo-editing, .eyo-locked .eyo-edit {stroke: none;}')
   eYo.Style.insertCssRuleAt('.eyo-path-dotted{stroke: ' + eYo.Style.Path.colour + ';stroke-width: ' + (eYo.Style.Path.width * 1.5) + 'px;stroke-linecap:round;stroke-dasharray:0 ' + eYo.Font.space / 2 + ';}')
   eYo.Style.insertCssRuleAt('.eyo-no-path{display:none;}', 5)
   eYo.Style.insertCssRuleAt('.eyo-code-emph {font-weight: bold;}')
@@ -172,7 +200,7 @@ eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt('text.eyo-code-error {fill: red;}')
   eYo.Style.insertCssRuleAt('text.eyo-code-comment {fill: rgba(42, 132, 45, 0.8);}')
   eYo.Style.insertCssRuleAt('.eyo-code-disabled {color: #ccc;}')
-})
+}, 'Style')
 
 eYo.Style.MenuIcon = {
   width: eYo.Font.space,

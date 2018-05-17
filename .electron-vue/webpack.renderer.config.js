@@ -141,8 +141,12 @@ let rendererConfig = {
       }, { from: path.resolve(__dirname, '../build/base/edython.js'),
       to: path.resolve(__dirname, '../dist/electron/lib/edython.js')
       }, { from: path.resolve(__dirname, '../src/lib/blockly/media/'),
-      to: path.resolve(__dirname, '../static/media/')
-    }], {debug: 'debug'})
+      to: path.resolve(__dirname, '../dist/electron/static/media/')
+    }, { from: path.resolve(__dirname, '../src/lib/eyo/css/eyo.css'),
+    to: path.resolve(__dirname, '../dist/electron/lib/edython.css')
+  }, { from: path.resolve(__dirname, '../static/font/*.woff'),
+    to: path.resolve(__dirname, '../dist/electron/')
+  }], {debug: 'debug'})
   ],
   output: {
     filename: '[name].js',
