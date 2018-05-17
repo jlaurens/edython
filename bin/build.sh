@@ -258,6 +258,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/consolidator.js" \
 --js "src/lib/eyo/block/delegate_svg_expr.js" \
 --js "src/lib/eyo/block/draw.js" \
+--js "src/lib/eyo/workspace/flyout.js" \
 --js "src/lib/eyo/workspace/key_handler.js" \
 --js "src/lib/eyo/workspace/menu_manager.js" \
 --js "src/lib/eyo/block/delegate_svg_literal.js" \

@@ -4,11 +4,12 @@
 /dist/web/*
 /build/*
 !build/icons
+/bin/helpers/pyc/*
 coverage
 npm-debug.log
 npm-debug.log.*
 thumbs.db
-/static/font/**
+/font/**
 /node_modules
 /sandbox/**
 /**/python_workbench

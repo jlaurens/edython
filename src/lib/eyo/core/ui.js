@@ -104,7 +104,7 @@ eYo.setup.register(function () {
 eYo.Style.Path = {
   Selected: {
     'colour': '#fc3',
-    'width': 2.5
+    'width': 2.675, // px
   },
   Error: {
     'colour': '#c33'
@@ -147,20 +147,10 @@ eYo.Style.insertCssRuleAt = (function () {
   return function (rule, at) {
     var sheet = getSheet()
     if (rule === null) {
-      var rules = goog.cssom.getCssRulesFromStyleSheet(sheet)
-      var lines = []
-      for (var i = 0, rule;(rule = rules[i++]);) {
-        lines.push(goog.cssom.getCssTextFromCssRule(rule))
-      }
-      var textNode = document.createTextNode(lines.join('\n'))
-      style.appendChild(textNode)
       return
     }
     if (rule.length) {
-      var index = goog.cssom.addCssRule(sheet, rule)
-      if (rule.startsWith('@')) {
-        console.warn('FONT FACE')
-      }
+      goog.cssom.addCssRule(sheet, rule)
     }
   }
 }())
@@ -173,6 +163,8 @@ eYo.setup.register(-1, function () {
 eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt('.eyo-block .blocklyText, .eyo-var, .eyo-label, .eyo-code, .eyo-code-reserved, .eyo-code-builtin, .eyo-code-comment, .eyo-code-placeholder, .eyo-sharp-group{ ' + eYo.Font.style + ';}')
   eYo.Style.insertCssRuleAt('.eyo-error.eyo-path-selected, .eyo-error.eyo-path-shape, .eyo-error.eyo-path-contour {stroke: ' + eYo.Style.Path.Error.colour + ';}')
+  var w = eYo.Style.Path.Selected.width
+  console.warn('PATH WIDTH:', w, ';stroke-width: ' + w + 'px;fill: none;}')
   eYo.Style.insertCssRuleAt('.eyo-path-selected{stroke: ' + eYo.Style.Path.Selected.colour + ';stroke-width: ' + eYo.Style.Path.Selected.width + 'px;fill: none;}')
   eYo.Style.insertCssRuleAt('.eyo-select .eyo-path-contour{stroke: ' + eYo.Style.Path.Selected.colour + ';}')
   eYo.Style.insertCssRuleAt('.eyo-select .eyo-path-contour.eyo-error{stroke: ' + eYo.Style.Path.Error.colour + ';}')
