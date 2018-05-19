@@ -16,6 +16,7 @@ goog.provide('eYo.HoleFiller')
 
 goog.require('eYo.Delegate')
 goog.forwardDeclare('eYo.BlockSvg')
+goog.require('goog.dom');
 
 /**
  * Class for a DelegateSvg.
@@ -273,9 +274,13 @@ eYo.DelegateSvg.prototype.postInitSvg = function (block) {
     'eyo-block')
   if (!block.workspace.options.readOnly && !this.eventsInit_) {
     Blockly.bindEventWithChecks_(
-      block.svgGroup_, 'mousedown', block, block.onMouseDown_)
+      block.getSvgRoot(), 'mousedown', block, block.onMouseDown_);
     Blockly.bindEventWithChecks_(
-      block.svgGroup_, 'mouseup', block, block.onMouseUp_)
+      block.getSvgRoot(), 'mouseup', block, block.onMouseUp_);
+    Blockly.bindEventWithChecks_(
+      this.svgPathContour_, 'mousedown', block, block.onMouseDown_)
+    Blockly.bindEventWithChecks_(
+      this.svgPathContour_, 'mouseup', block, block.onMouseUp_)
   }
   this.eventsInit_ = true
 }
@@ -309,6 +314,14 @@ eYo.DelegateSvg.prototype.parentWillChange = function (block, newParent) {
 }
 
 /**
+ * Whether the contour of the receiver is above or below
+ * the parent's one.
+ * Suitable for statements.
+ * Subclassed for expressions
+ */
+eYo.DelegateSvg.prototype.contourAboveParent = true
+
+/**
  * Called when the parent did just change.
  * @param {!Blockly.Block} block to be initialized.
  */
@@ -323,12 +336,17 @@ eYo.DelegateSvg.prototype.parentDidChange = function (block, newParent) {
     // Move the connections to match the child's new position.
     block.moveConnections_(newXY.x - oldXY.x, newXY.y - oldXY.y)
     if (this.svgContourGroup_ && newParent.eyo.svgContourGroup_) {
-      goog.dom.insertChildAt(newParent.eyo.svgContourGroup_,
-        this.svgContourGroup_, 0)
-      goog.dom.classlist.add(/** @type {!Element} */(this.svgContourGroup_),
-        'eyo-inner')
+      if (this.contourAboveParent) {
+        goog.dom.appendChild(newParent.eyo.svgContourGroup_,
+          this.svgContourGroup_)
+      } else {
+        goog.dom.insertChildAt(newParent.eyo.svgContourGroup_,
+          this.svgContourGroup_, 0)
+      }
       goog.dom.appendChild(newParent.eyo.svgShapeGroup_,
         this.svgShapeGroup_)
+      goog.dom.classlist.add(/** @type {!Element} */(this.svgContourGroup_),
+        'eyo-inner')
       goog.dom.classlist.add(/** @type {!Element} */(this.svgShapeGroup_),
         'eyo-inner')
     }
@@ -416,7 +434,7 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
   this.willRender_(block)
   this.renderDraw_(block)
   this.layoutConnections_(block)
-  block.renderMoveConnections_()
+  this.renderMove_(block)
 
   if (optBubble !== false) {
     // Render all blocks above this one (propagate a reflow).
@@ -507,6 +525,15 @@ eYo.DelegateSvg.prototype.willRender_ = function (block) {
  * @private
  */
 eYo.DelegateSvg.prototype.didRender_ = function (block) {
+}
+
+/**
+ * Layout previous, next and output block connections.
+ * @param {!Block} block
+ * @private
+ */
+eYo.DelegateSvg.prototype.renderMove_ = function (block) {
+  block.renderMoveConnections_()
 }
 
 /**
@@ -1261,7 +1288,7 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id, initS
   var B = workspace.newBlock(prototypeName, goog.isString(id) && id)
   B.eyo.completeWrapped_(B)
   if ((goog.isBoolean(id) && id) || initSvg) {
-    B.initSvg()
+    B.eyo.beReady()
   }
   return B
 }
@@ -1271,6 +1298,7 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id, initS
  * @param {!Block} block
  */
 eYo.DelegateSvg.prototype.beReady = function (block) {
+  this.skipRendering = 1
   block = this.block_
   block.initSvg()
   this.foreachData(function () {
@@ -1279,9 +1307,11 @@ eYo.DelegateSvg.prototype.beReady = function (block) {
   // install all the fields and tiles in the DOM
   for (var k in this.ui.fields) {
     var field = this.ui.fields[k]
-    field.setSourceBlock(block)
-    field.init()
-    field.eyo.ui = this.ui
+    if (!field.sourceBlock_) {
+      field.setSourceBlock(block)
+      field.eyo.ui = this.ui
+      field.init()
+    }
   }
   this.foreachTile(function () {
     this.beReady()
@@ -1476,7 +1506,7 @@ eYo.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
     var target = input.connection.targetBlock()
     var oldType = target ? target.type : undefined
     if (newType !== oldType) {
-      Blockly.Events.setGroup(true)
+      eYo.Events.setGroup(true)
       try {
         if (target) {
           target.unplug()
@@ -1485,7 +1515,7 @@ eYo.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
         this.completeWrappedInput_(block, input, newType)
         returnState = true
       } finally {
-        Blockly.Events.setGroup(false)
+        eYo.Events.setGroup(false)
       }
     }
   }
@@ -2056,7 +2086,7 @@ eYo.DelegateSvg.prototype.selectBlockBelow = function (block) {
  * For edython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @param {Object} e in general a mouse down event
- * @return None
+ * @return {Object|undefined|null}
  */
 eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
   var where = new goog.math.Coordinate(e.clientX, e.clientY)
@@ -2077,9 +2107,9 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
         } else {
           var R = new goog.math.Rect(
             c8n.offsetInBlock_.x - eYo.Font.space / 2,
-            c8n.offsetInBlock_.y + eYo.Font.space / 2,
+            c8n.offsetInBlock_.y + eYo.Padding.t(),
             c8n.eyo.optional_ || c8n.eyo.s7r_ ? 2 * eYo.Font.space : 4 * eYo.Font.space,
-            eYo.Font.lineHeight() - eYo.Font.space
+            eYo.Font.height
           )
           if (R.contains(where)) {
             return c8n
@@ -2088,9 +2118,9 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
       } else if (c8n.type === Blockly.NEXT_STATEMENT) {
         R = new goog.math.Rect(
           c8n.offsetInBlock_.x,
-          c8n.offsetInBlock_.y - eYo.Font.space / 2,
+          c8n.offsetInBlock_.y - eYo.Style.Path.width,
           eYo.Font.tabWidth,
-          eYo.Font.space
+          1.5 * eYo.Padding.t() + 2 * eYo.Style.Path.width
         )
         if (R.contains(where)) {
           return c8n
@@ -2101,9 +2131,9 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
   if ((c8n = block.previousConnection) && !c8n.hidden) {
     R = new goog.math.Rect(
       c8n.offsetInBlock_.x,
-      c8n.offsetInBlock_.y,
+      c8n.offsetInBlock_.y - 2 * eYo.Style.Path.width,
       rect.width,
-      eYo.Font.space / 2
+      1.5 * eYo.Padding.t() + 2 * eYo.Style.Path.width
     )
     if (R.contains(where)) {
       return c8n
@@ -2113,16 +2143,16 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
     if (rect.height > eYo.Font.lineHeight()) { // Not the cleanest design
       R = new goog.math.Rect(
         c8n.offsetInBlock_.x,
-        c8n.offsetInBlock_.y - eYo.Font.space / 2,
+        c8n.offsetInBlock_.y - 1.5 * eYo.Padding.b() - eYo.Style.Path.width,
         eYo.Font.tabWidth + eYo.Style.Path.radius(), // R U sure?
-        eYo.Font.space / 2
+        1.5 * eYo.Padding.b() + 2 * eYo.Style.Path.width
       )
     } else {
       R = new goog.math.Rect(
         c8n.offsetInBlock_.x,
-        c8n.offsetInBlock_.y - eYo.Font.space / 2,
+        c8n.offsetInBlock_.y - 1.5 * eYo.Padding.b() - eYo.Style.Path.width,
         rect.width,
-        eYo.Font.space / 2
+        1.5 * eYo.Padding.b() + 2 * eYo.Style.Path.width
       )
     }
     if (R.contains(where)) {
@@ -2509,9 +2539,29 @@ eYo.DelegateSvg.prototype.unlock = function (block, shallow) {
  * @return {boolean}
  */
 eYo.DelegateSvg.prototype.inVisibleArea = function (block) {
+  var area = this.getDistanceFromVisible(block)
+  return area && !area.x && !area.y
+}
+
+/**
+ * Get the position of receiver's block relative to
+ * the visible area.
+ * Return value: if `x < 0`, left of the visible area,
+ * if `x > 0`, right of the visibe area, 0 otherwise.
+ * undefined when the block is not in a workspace.
+ * The same holds for `y`.
+ * The values are the signed distances between the center
+ * of the block and the visible area.
+ * If the answer is `{x: -15, y: 0}`, we just have to scroll the workspace
+ * 15 units to the right and the block is visible.
+ * For edython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return {{x: number, y: number}|undefined}
+ */
+eYo.DelegateSvg.prototype.getDistanceFromVisible = function (block, newLoc) {
   var workspace = block.workspace
   if (!workspace) {
-    return false
+    return undefined
   }
   // is the block in the visible area ?
   var metrics = workspace.getMetrics()
@@ -2522,7 +2572,31 @@ eYo.DelegateSvg.prototype.inVisibleArea = function (block) {
   var topBound = metrics.viewTop / scale - heightWidth.height / 2
   var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - heightWidth.width / 2
   var downBound = (metrics.viewTop + metrics.viewHeight) / scale - heightWidth.height / 2
-  var xy = block.getRelativeToSurfaceXY()
-  return xy.x >= leftBound && xy.x <= rightBound &&
-    xy.y >= topBound && xy.y <= downBound
+  var xy = newLoc || block.getRelativeToSurfaceXY()
+  return {
+    x: xy.x < leftBound? xy.x - leftBound: (xy.x > rightBound? xy.x - rightBound: 0),
+    y: xy.y < topBound? xy.y - topBound: (xy.y > downBound? xy.y - downBound: 0),
+  }
 }
+
+/**
+ * Whether the block of the receiver is in the visible area.
+ * For edython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return {boolean}
+ */
+eYo.DelegateSvg.prototype.translate = function (block, dx, dy) {
+  // Workspace coordinates.
+  block = block || this.block_
+  var svgRoot = block.getSvgRoot();
+  if (!svgRoot) {
+    throw 'block is not rendered.';
+  }
+  var xy = Blockly.utils.getRelativeXY(svgRoot);
+  var transform = 'translate(' + (xy.x + dx) + ',' + (xy.y + dy) + ')';
+  block.getSvgRoot().setAttribute('transform', transform);
+  this.svgShapeGroup_.setAttribute('transform', transform);
+  this.svgContourGroup_.setAttribute('transform', transform);
+  block.moveConnections_(dx, dy);
+}
+

@@ -29,7 +29,7 @@
         noDynamicList: true
       }
       eYo.KeyHandler.setup(document)
-      var b = eYo.DelegateSvg.newBlockReady(eYo.workspace, eYo.T3.Expr.term)
+      var b = eYo.DelegateSvg.newBlockReady(eYo.workspace, eYo.T3.Stmt.start_stmt)
       b.moveBy(50, 150)
     }
   }

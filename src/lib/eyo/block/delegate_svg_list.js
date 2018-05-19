@@ -115,7 +115,7 @@ eYo.DelegateSvg.List.prototype.removeItems = function (block) {
   var list = block.inputList
   var i = 0
   var input
-  Blockly.Events.setGroup(true)
+  eYo.Events.setGroup(true)
   try {
     while ((input = list[i++])) {
       var c8n = input.connection
@@ -127,7 +127,7 @@ eYo.DelegateSvg.List.prototype.removeItems = function (block) {
     }
     this.consolidate(block)
   } finally {
-    Blockly.Events.setGroup(false)
+    eYo.Events.setGroup(false)
   }
 }
 
@@ -184,7 +184,7 @@ eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
  */
 eYo.DelegateSvg.List.makeSubclass('key_datum_list', {
   list: {
-    check: eYo.T3.Expr.Check.key_datum,
+    check: eYo.T3.Expr.Check.key_datum_all,
     empty: true,
     presep: ','
   }
@@ -361,7 +361,7 @@ eYo.DelegateSvg.List.T3s = [
   eYo.T3.Expr.starred_expression,
   eYo.T3.Expr.comprehension,
   eYo.T3.Expr.dict_comprehension,
-  eYo.T3.Expr.key_datum,
+  eYo.T3.Expr.key_datum_s3d,
   eYo.T3.Expr.optional_expression_list,
   eYo.T3.Expr.non_void_expression_list,
   eYo.T3.Expr.starred_item_list,

@@ -16,6 +16,7 @@ goog.provide('eYo.FieldInput')
 goog.provide('eYo.FieldHelper')
 
 goog.require('eYo.Msg')
+goog.require('goog.dom');
 goog.require('Blockly.FieldTextInput')
 
 /**
@@ -155,7 +156,7 @@ eYo.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
   }
   this.eyo.isEditing = true
   this.editRect_ && goog.dom.classlist.add(this.editRect_, 'eyo-editing')
-  Blockly.Events.setGroup(true)
+  eYo.Events.setGroup(true)
   this.eyo.grouper_ = Blockly.Events.getGroup()
   this.onStartEditing_ && this.onStartEditing_()
   this.eyo.onStartEditing_ && this.eyo.onStartEditing_.call(this)
@@ -258,7 +259,7 @@ eYo.FieldTextInput.prototype.widgetDispose_ = function () {
     var block = field.sourceBlock_
     block.eyo.endEditingField && block.eyo.endEditingField(block, field)
     if (field.eyo.grouper_) {
-      Blockly.Events.setGroup(false)
+      eYo.Events.setGroup(false)
       delete field.eyo.grouper_
     }
     field.render_()

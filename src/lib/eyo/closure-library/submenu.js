@@ -16,6 +16,7 @@
 
 goog.provide('eYo.SubMenu')
 
+goog.require('goog.dom');
 goog.require('goog.ui.SubMenu')
 goog.require('eYo.MenuRenderer')
 

@@ -136,7 +136,7 @@ eYo.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks = eYo.DelegateS
 eYo.DelegateSvg.Stmt.import_stmt.workspaceBlocks = [
   eYo.T3.Expr.non_void_module_as_list,
   eYo.T3.Expr.import_module,
-  eYo.T3.Expr.module_as_s3d,
+  eYo.T3.Expr.dotted_name_as,
   eYo.T3.Expr.term
 ]
 
@@ -218,7 +218,7 @@ eYo.DelegateSvg.Expr.yield_expression.workspaceBlocks = [
 
 eYo.DelegateSvg.Stmt.import_stmt.workspaceBlocks = [
   eYo.T3.Expr.term,
-  eYo.T3.Expr.module_as_s3d,
+  eYo.T3.Expr.dotted_name_as,
   eYo.T3.Expr.non_void_module_as_list,
   eYo.T3.Expr.import_module,
   eYo.T3.Expr.non_void_import_identifier_as_list,
@@ -390,11 +390,11 @@ eYo.DelegateSvg.Stmt.raise_stmt.workspaceBlocks = eYo.Do.arraysMerged([
 
 eYo.DelegateSvg.Expr.power_s3d.workspaceBlocks = eYo.Do.arraysMerged([
   eYo.T3.Expr.power_s3d
-], eYo.T3.Expr.Check.await_or_primary, eYo.T3.Expr.Check.u_expr)
+], eYo.T3.Expr.Check.await_or_primary, eYo.T3.Expr.Check.u_expr_all)
 
-eYo.DelegateSvg.Expr.conditional_expression_s3d.workspaceBlocks = [
-  eYo.T3.Expr.conditional_expression_s3d
-].concat(eYo.T3.Expr.Check.or_test).concat(eYo.T3.Expr.Check.expression)
+eYo.DelegateSvg.Expr.conditional_expression.workspaceBlocks = [
+  eYo.T3.Expr.conditional_expression
+].concat(eYo.T3.Expr.Check.or_test_all).concat(eYo.T3.Expr.Check.expression)
 
 eYo.DelegateSvg.Expr.starred_item_list.workspaceBlocks = [
   eYo.T3.Expr.starred_item_list

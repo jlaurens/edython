@@ -264,7 +264,7 @@ eYo.XRE = {
     (?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl}|\\p{Mn}|\\p{Mc}|\\p{Nd}|\\p{Pc})*
   )$`, 'x'),
   id_wrapped: XRegExp(`^(?<id>.*?)\\.wrapped:(?<name>[a-zA-Z_][a-zA-Z_0-9]*)$`, 'x'),
-  s3d: XRegExp(`^(?<core>.*?)_s3d$`),
+  s3d: XRegExp(`^(?:eyo:)?(?<core>.*?)_s3d$`),
   event_data: XRegExp(`^eyo:data:(?<key>.*?)$`),
   operator: XRegExp(`^[+\\-/%*@<>&^|=#]$`),
   comment: XRegExp(`^(?<value>[^\\r\\n]*)`),

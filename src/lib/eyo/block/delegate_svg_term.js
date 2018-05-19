@@ -18,6 +18,7 @@ goog.require('eYo.Msg')
 goog.require('eYo.MenuItem')
 goog.require('eYo.FieldInput')
 goog.require('eYo.Style')
+goog.require('goog.dom');
 
 /**
  * Class for a DelegateSvg, term block.
@@ -161,13 +162,18 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
         if (source.eyo instanceof eYo.DelegateSvg.List) {
           // do nothing ?
         } else {
-          for (var i = 0, input; (input = source.inputList[i++]);) {
-            if (input.connection === targetC8n) {
-              if (input.eyo.model) {
-                this.sourceBlock_.eyo.data.phantom.set(input.eyo.model.hole_value)
+          var sourceData = this.sourceBlock_.eyo.data.phantom || this.sourceBlock_.eyo.data.value
+          if (sourceData) {
+            source.eyo.foreachTile(function() {
+              var input = this.input
+              if (input && input.connection === targetC8n) {
+                var data = input.connection.eyo.hole_data
+                if (data && data.value) {
+                  sourceData.set(data.value)
+                  return true// break here
+                }
               }
-              return
-            }
+            })
           }
         }
       },
@@ -303,13 +309,13 @@ eYo.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
   * dotted_name ::= identifier ("." identifier)*
   * parent_module ::= '.'+ [module]
   * identifier ::=
-  * parameter_s3d ::= identifier ":" expression
-  * defparameter_s3d ::= parameter "=" expression
-  * keyword_item ::= identifier "=" expression
-  * module_as_s3d ::= module "as" identifier
-  * import_identifier_as_s3d ::= identifier "as" identifier
-  * (with parameter ::= identifier | parameter_s3d)
-  * (with module ::= dotted_name)
+  * identifier_annotated ::= identifier ":" expression
+  * key_datum ::= expression ":" expression
+  * parameter_defined ::= parameter "=" expression
+  * (with parameter ::= identifier | identifier_annotated)
+  * keyword_item_s3d ::= identifier "=" expression
+  * dotted_name_as ::= module "as" identifier
+  * identifier_as ::= identifier "as" identifier
   */
   var variantData = this.data.variant
   var model = variantData.model
@@ -327,9 +333,12 @@ eYo.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
     case model.STAR_STAR_NAME:
       // expression_star_star ::= "**" expression
       // parameter_star_star ::= "**" parameter
+      // or_expr_star_star ::=  "**" or_expr
       check = nameType === eYo.T3.Expr.identifier ? [eYo.T3.Expr.expression_star_star,
-        eYo.T3.Expr.parameter_star_star]
-        : [eYo.T3.Expr.expression_star_star]
+        eYo.T3.Expr.parameter_star_star,
+        eYo.T3.Expr.or_expr_star_star]
+        : [eYo.T3.Expr.expression_star_star,
+          eYo.T3.Expr.or_expr_star_star]
       break
     case model.STAR_NAME:
       // expression_star ::= "*" expression
@@ -346,26 +355,26 @@ eYo.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
           eYo.T3.Expr.star_expr]
       break
     case model.NAME_ANNOTATION:
-      // parameter_s3d ::= identifier ":" expression
-      check = [eYo.T3.Expr.parameter_s3d]
+      // identifier_annotated ::= identifier ":" expression
+      check = [eYo.T3.Expr.identifier_annotated, eYo.T3.Expr.key_datum_s3d]
       break
     case model.STAR_NAME_ANNOTATION:
       check = [eYo.T3.Expr.parameter_star]
       break
     case model.NAME_ANNOTATION_DEFINITION:
-      // defparameter_s3d ::= parameter "=" expression
-      check = [eYo.T3.Expr.defparameter_s3d]
+      // parameter_defined ::= parameter "=" expression
+      check = [eYo.T3.Expr.parameter_defined]
       break
     case model.NAME_DEFINITION:
-      // defparameter_s3d ::= parameter "=" expression
+      // parameter_defined ::= parameter "=" expression
       // keyword_item ::= identifier "=" expression
-      check = [eYo.T3.Expr.defparameter_s3d,
+      check = [eYo.T3.Expr.parameter_defined,
         eYo.T3.Expr.keyword_item]
       break
     case model.NAME_ALIAS:
-      // module_as_s3d ::= module "as" identifier
-      // import_identifier_as_s3d ::= identifier "as" identifier
-      check = nameType === eYo.T3.Expr.identifier ? [eYo.T3.Expr.module_as_s3d, eYo.T3.Expr.import_identifier_as_s3d] : [eYo.T3.Expr.module_as_s3d]
+      // dotted_name_as ::= module "as" identifier
+      // identifier_as ::= identifier "as" identifier
+      check = nameType === eYo.T3.Expr.identifier ? [eYo.T3.Expr.dotted_name_as, eYo.T3.Expr.identifier_as] : [eYo.T3.Expr.dotted_name_as]
       break
     case model.STAR:
       check = [eYo.T3.Expr.parameter_star]
@@ -432,11 +441,11 @@ eYo.DelegateSvg.Expr.term.prototype.populateContextMenuFirst_ = function (block,
     if (variant !== current) {
       var title = block.eyo.makeTitle(block, variant)
       var menuItem = new eYo.MenuItem(title, function () {
-        Blockly.Events.setGroup(true)
+        eYo.Events.setGroup(true)
         try {
           block.eyo.data.variant.set(variant)
         } finally {
-          Blockly.Events.setGroup(false)
+          eYo.Events.setGroup(false)
         }
       })
       mgr.addChild(menuItem, true)

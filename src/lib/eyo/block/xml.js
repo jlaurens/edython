@@ -33,6 +33,7 @@ goog.require('eYo.Const')
 goog.require('eYo.T3')
 
 goog.require('Blockly.Xml')
+goog.require('goog.dom');
 
 eYo.Xml = {
   INPUT: 'eyo:input', // attribute name
@@ -131,7 +132,7 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) 
     }
     return block
   }
-  Blockly.Events.setGroup(true)
+  eYo.Events.setGroup(true)
   var variablesFirst = true
   try {
     for (var i = 0; i < childCount; i++) {
@@ -170,7 +171,7 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) 
       }
     }
   } finally {
-    Blockly.Events.setGroup(false)
+    eYo.Events.setGroup(false)
     Blockly.Field.stopCache()
   }
   // Re-enable workspace resizing.
@@ -587,6 +588,10 @@ eYo.Xml.registerAllTags = function () {
       // register the reverse
       var c9r = eYo.Delegate.Manager.get(type)
       if (c9r) {
+        if (!tag.startsWith('eyo:')) {
+          console.warn('DOUBLE eYo')
+        }
+        console.warn('Register:', c9r.eyo.key, tag, eYo.T3.Xml.toDom[mode][key], key)
         c9r.eyo.tagName = tag || eYo.T3.Xml.toDom[mode][key] || key
       }
     }
@@ -1581,7 +1586,7 @@ eYo.Xml.compareBlocks = function (lhs, rhs) {
 
 // eYo.DelegateSvg.Expr.any.prototype.xml = eYo.Xml.Text
 
-// eYo.DelegateSvg.Expr.proper_slice.prototype.xml = eYo.DelegateSvg.Expr.conditional_expression_s3d.prototype.xml = eYo.Xml.InputList
+// eYo.DelegateSvg.Expr.proper_slice.prototype.xml = eYo.DelegateSvg.Expr.conditional_expression.prototype.xml = eYo.Xml.InputList
 
 // goog.provide('eYo.Xml.SingleInput')
 

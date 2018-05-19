@@ -81,7 +81,7 @@ eYo.DelegateSvg.Operator.makeSubclass('u_expr_s3d', {
   },
   tiles: {
     rhs: {
-      check: eYo.T3.Expr.Check.u_expr
+      check: eYo.T3.Expr.Check.u_expr_all
     }
   }
 })
@@ -155,8 +155,8 @@ eYo.DelegateSvg.Binary.makeSubclass(
   'm_expr_s3d',
   eYo.DelegateSvg.Binary.makeModel(
     ['*', '//', '/', '%', '@'],
-    'm_expr',
-    'u_expr'
+    'm_expr_all',
+    'u_expr_all'
   )
 )
 
@@ -169,8 +169,8 @@ eYo.DelegateSvg.Binary.makeSubclass(
   'a_expr_s3d',
   eYo.DelegateSvg.Binary.makeModel(
     ['+', '-'],
-    'a_expr',
-    'm_expr'
+    'a_expr_all',
+    'm_expr_all'
   )
 )
 
@@ -183,8 +183,8 @@ eYo.DelegateSvg.Binary.makeSubclass(
   'shift_expr_s3d',
   eYo.DelegateSvg.Binary.makeModel(
     ['<<', '>>'],
-    'shift_expr',
-    'a_expr'
+    'shift_expr_all',
+    'a_expr_all'
   )
 )
 
@@ -197,8 +197,8 @@ eYo.DelegateSvg.Binary.makeSubclass(
   'and_expr_s3d',
   eYo.DelegateSvg.Binary.makeModel(
     ['&'],
-    'and_expr',
-    'shift_expr'
+    'and_expr_all',
+    'shift_expr_all'
   )
 )
 
@@ -211,8 +211,8 @@ eYo.DelegateSvg.Binary.makeSubclass(
   'xor_expr_s3d',
   eYo.DelegateSvg.Binary.makeModel(
     ['^'],
-    'xor_expr',
-    'and_expr'
+    'xor_expr_all',
+    'and_expr_all'
   )
 )
 
@@ -225,8 +225,8 @@ eYo.DelegateSvg.Binary.makeSubclass(
   'or_expr_s3d',
   eYo.DelegateSvg.Binary.makeModel(
     ['|'],
-    'or_expr',
-    'or_expr'
+    'or_expr_all',
+    'xor_expr_all'
   )
 )
 
@@ -294,7 +294,7 @@ eYo.DelegateSvg.Binary.makeSubclass('or_test_s3d', {
   },
   tiles: {
     lhs: {
-      check: eYo.T3.Expr.Check.or_test
+      check: eYo.T3.Expr.Check.or_test_all
     },
     rhs: {
       fields: {
@@ -302,7 +302,7 @@ eYo.DelegateSvg.Binary.makeSubclass('or_test_s3d', {
           css: 'reserved'
         }
       },
-      check: eYo.T3.Expr.Check.and_test
+      check: eYo.T3.Expr.Check.and_test_all
     }
   }
 })
@@ -320,7 +320,7 @@ eYo.DelegateSvg.Binary.makeSubclass('and_test_s3d', {
   },
   tiles: {
     lhs: {
-      check: eYo.T3.Expr.Check.and_test
+      check: eYo.T3.Expr.Check.and_test_all
     },
     rhs: {
       fields: {
@@ -328,7 +328,7 @@ eYo.DelegateSvg.Binary.makeSubclass('and_test_s3d', {
           css: 'reserved'
         }
       },
-      check: eYo.T3.Expr.Check.not_test
+      check: eYo.T3.Expr.Check.not_test_all
     }
   }
 })
@@ -354,7 +354,7 @@ eYo.DelegateSvg.Operator.makeSubclass('power_s3d', {
     },
     rhs: {
       order: 2,
-      check: eYo.T3.Expr.Check.u_expr,
+      check: eYo.T3.Expr.Check.u_expr_all,
       hole_value: 'power'
     }
   }

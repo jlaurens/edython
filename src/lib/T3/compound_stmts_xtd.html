@@ -74,6 +74,8 @@ with_item ::=  expression ["as" target]
 with_stmt ::= IGNORE
 with_part/with ::= "with" with_item_list ":"
 with_item_list ::= with_item ("," with_item)*
+with_item ::=  expression | expression_as
+expression_as ::= expression "as" target
 </pre>
 If a parameter has a default value, all following parameters up until the “*” must also have a default value — this is a syntactic restriction that is not expressed by the grammar.
 
@@ -144,6 +146,10 @@ parameter_list ::=
 parameter_star ::= "*" [parameter]
 parameter_star_star ::= "**" parameter
 parameter_any ::= parameter | defparameter | parameter_star | parameter_star_star
+parameter               ::=  identifier | identifier_annotated
+identifier_annotated    ::=  identifier ":" expression
+defparameter            ::=  parameter | parameter_defined
+parameter_defined       ::=  parameter "=" expression
 </pre>
 
 classdef    ::=  [decorators] "class" classname [inheritance] ":" suite

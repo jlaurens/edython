@@ -16,6 +16,7 @@ goog.provide('eYo.DelegateSvg.Import')
 goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.List')
 goog.require('eYo.DelegateSvg.Stmt')
+goog.require('goog.dom');
 
 /// //////////////     module_as      ///////////////////
 /*

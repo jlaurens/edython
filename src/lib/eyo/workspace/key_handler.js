@@ -18,6 +18,7 @@ goog.require('eYo.DelegateSvg')
 goog.require('eYo.PopupMenu')
 goog.require('eYo.MenuItem')
 goog.require('eYo.Separator')
+goog.require('goog.dom');
 
 eYo.KeyHandlerMenu = function (opt_domHelper, opt_renderer) {
   eYo.KeyHandlerMenu.superClass_.constructor.call(this, opt_domHelper, opt_renderer)
@@ -571,7 +572,7 @@ var Ks = {
   'while': eYo.T3.Stmt.while_part,
   'with': eYo.T3.Stmt.with_part,
   'lambda': eYo.T3.Expr.lambda_expr,
-  '… if … else …': eYo.T3.Expr.conditional_expression_s3d,
+  '… if … else …': eYo.T3.Expr.conditional_expression,
   'identifier': eYo.T3.Expr.identifier,
   'name': eYo.T3.Expr.identifier,
   'not': function (key) {
@@ -769,7 +770,7 @@ Ks = {
     type: eYo.T3.Expr.builtin_call_expr,
     callee: 'sum'
   },
-  'module as alias': eYo.T3.Expr.module_as_s3d,
+  'module as alias': eYo.T3.Expr.dotted_name_as,
   '(…)': eYo.T3.Expr.parenth_form,
   '[…]': eYo.T3.Expr.list_display,
   '{…:…}': eYo.T3.Expr.dict_display,

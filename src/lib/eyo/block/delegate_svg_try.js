@@ -14,6 +14,7 @@
 goog.provide('eYo.DelegateSvg.Try')
 
 goog.require('eYo.DelegateSvg.Group')
+goog.require('goog.dom');
 
 /**
  * Class for a DelegateSvg, try_part block.

@@ -17,7 +17,7 @@
  * @namespace
  */
 
- goog.provide('eYo')
+goog.provide('eYo')
 
 var eYo = Object.create(null)
 

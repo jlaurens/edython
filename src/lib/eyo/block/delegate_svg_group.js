@@ -16,6 +16,7 @@ goog.provide('eYo.DelegateSvg.Group')
 goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Expr')
 goog.require('eYo.DelegateSvg.Stmt')
+goog.require('goog.dom');
 
 /**
  * Class for a DelegateSvg, statement block.
@@ -438,11 +439,11 @@ eYo.DelegateSvg.Group.makeSubclass('with_part', {
 })
 
 /**
- * Class for a DelegateSvg, with_item_s3d block.
+ * Class for a DelegateSvg, expression_as block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('with_item_s3d', {
+eYo.DelegateSvg.Expr.makeSubclass('expression_as', {
   tiles: {
     expression: {
       order: 1,
@@ -467,5 +468,5 @@ eYo.DelegateSvg.Group.T3s = [
   eYo.T3.Stmt.while_part,
   eYo.T3.Stmt.with_part,
   eYo.T3.Stmt.for_part,
-  eYo.T3.Expr.with_item_s3d
+  eYo.T3.Expr.expression_as
 ]

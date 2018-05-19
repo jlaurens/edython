@@ -68,6 +68,7 @@ class Type:
                     return
             else:
                 candidate = definition
+            print('DEFINITION CHANGE OF', self.name, ':', self.definition, '->', candidate)
         else:
             candidate = definition
         self.definition = candidate

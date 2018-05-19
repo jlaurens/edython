@@ -28,7 +28,10 @@ any ::= any expression
 </pre>
 
 
-starred_list ::= starred_item ( ',' starred_item ) * [',']
+expression_list    ::=  expression ( "," expression )* [","]
+starred_list       ::=  starred_item ( "," starred_item )* [","]
+starred_expression ::=  expression | ( starred_item "," )* [starred_item]
+starred_item       ::=  expression | "*" or_expr
 <pre>
 # starred_expression ::= expression | ( starred_item ',' )* [ starred_item ]
 #starred_expression -> starred_item_list
@@ -38,7 +41,7 @@ starred_item_list ::= starred_item ? ( ',' starred_item ) * [',']
 starred_list ::= non_void_starred_item_list
 non_void_starred_item_list ::= starred_item ( ',' starred_item ) * [',']
 starred_item ::=  expression | star_expr
-star_expr ::=  "*" or_expr
+star_expr ::=  "*" or_expr_all
 # expression_list -> non_void_expression_list
 expression_list ::= non_void_expression_list
 optional_expression_list ::= ( expression ',' )* [ expression ]
@@ -64,7 +67,7 @@ parenth_form ::=  "(" [starred_expression] ")"
 expression_list    ::=  expression ( "," expression )* [","]
 starred_list       ::=  starred_item ( "," starred_item )* [","]
 starred_expression ::=  expression | ( starred_item "," )* [starred_item]
-starred_item       ::=  expression | "*" or_expr
+starred_item       ::=  expression | "*" or_expr_all!!
 yield_atom       ::=  "(" yield_expression ")"
 <pre>
 parenth_form ::=  "(" starred_item_list | yield_expression ")"
@@ -86,10 +89,12 @@ set_display ::=  "{" non_void_starred_item_list_comprehensive "}"
 non_void_starred_item_list_comprehensive ::= starred_item | comprehension
 </pre>
 <pre>
-key_datum_list_comprehensive ::= key_datum | dict_comprehension
-key_datum ::= key_datum_s3d | or_expr_star_star
+key_datum_list ::= key_datum_all ("," key_datum_all)* [","]
+key_datum_list_comprehensive ::= key_datum_all | dict_comprehension
+key_datum ::= REMOVE
+key_datum_all ::= or_expr_star_star | key_datum_s3d
 key_datum_s3d ::=  expression ":" expression
-or_expr_star_star ::=  "**" or_expr
+or_expr_star_star ::=  "**" or_expr_all
 </pre>
 The argument list is managed by the consolidator
 'call' is not acceptable for a name because it is a reserved javascript word
@@ -123,26 +128,61 @@ starred_expression/starred ::= one of expression_star, expression_star_star, or_
 
 
 <pre>
-power ::= await_or_primary [ "**" u_expr ]
+power ::= REMOVE
+power_s3d ::= await_or_primary "**" u_expr_all
+power_all ::= await_or_primary | power_s3d
 await_or_primary ::= primary
-await_expr ::= REMOVE
+await_expr       ::= REMOVE
+u_expr ::= REMOVE
+u_expr_all       ::=  power_all | u_expr_s3d
+u_expr_s3d       ::= "-" u_expr_all | "+" u_expr_all | "~" u_expr_all
+m_expr ::= REMOVE
+m_expr_all        ::=  u_expr_all | m_expr_s3d
+m_expr_s3d       ::= m_expr_all "*" u_expr_all | m_expr_all "@" m_expr_all |
+            m_expr_all "//" u_expr_all | m_expr_all "/" u_expr_all |
+            m_expr_all "%" u_expr_all
+a_expr ::= REMOVE
+a_expr_all       ::=  m_expr_all | a_expr_s3d
+a_expr_s3d       ::=  a_expr_all "+" m_expr_all | a_expr_all "-" m_expr_all
+shift_expr ::= REMOVE
+shift_expr_all   ::=  a_expr_all | shift_expr_s3d
+shift_expr_s3d   ::=  shift_expr_all ( "<<" | ">>" ) a_expr_all
+and_expr ::= REMOVE
+and_expr_all     ::=  shift_expr_all | and_expr_s3d
+and_expr_s3d     ::=  and_expr_all "&" shift_expr_all
+xor_expr ::= REMOVE
+xor_expr_all     ::=  and_expr_all   | xor_expr_s3d
+xor_expr_s3d     ::=  xor_expr_all "^" and_expr_all
+or_expr ::= REMOVE
+or_expr_all      ::=  xor_expr_all   | or_expr_s3d
+or_expr_s3d      ::=  or_expr_all "|" xor_expr_all
 </pre>
 The await_expr is just a primary with an await attribute
 <pre>
-comparison ::=  or_expr | number_comparison | object_comparison
+comparison ::=  or_expr_all | number_comparison | object_comparison
 number_comparison/comparison ::= comparison comp_operator comparison
 object_comparison/comparison ::= comparison comp_operator comparison
 comp_operator ::= REMOVE
 </pre>
 <pre>
+not_test ::= REMOVE
+not_test_all     ::=  comparison     | not_test_s3d
+not_test_s3d     ::=  "not" not_test_all
+and_test ::= REMOVE
+and_test_all     ::=  not_test_all   | and_test_s3d
+and_test_s3d     ::=  and_test_all "and" not_test_all
+or_test ::= REMOVE
+or_test_all      ::=  and_test_all   | or_test_s3d
+or_test_s3d      ::=  or_test_all "or" and_test_all
+</pre>
+<pre>
+expression             ::=  or_test_all | conditional_expression | lambda_expr
+expression_nocond      ::=  or_test_all | lambda_expr_nocond
+conditional_expression ::=  or_test_all "if" or_test_all "else" expression
+</pre>
+<pre>
 lambda ::= "lambda" [parameter_list]: (expression | expression_no_cond)
 </pre>
-These are auxiliary types used to check connections.
-<pre>
-algebra_choice ::= m_expr_s3d | a_expr_s3d
-bitwise_choice ::= shift_expr_s3d | and_expr_s3d | xor_expr_s3d | or_expr_s3d
-boolean_choice ::= and_test_s3d | or_test_s3d
-unary_choice ::= u_expr_s3d | not_test_s3d
-</pre>
+
 </body>
 </html>

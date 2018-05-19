@@ -14,6 +14,7 @@
 goog.provide('eYo.Do')
 
 goog.require('eYo.Const')
+goog.require('goog.dom');
 
 goog.asserts.assert(Object.setPrototypeOf, 'No setPrototypeOf, buy a new computer')
 

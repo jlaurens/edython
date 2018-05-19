@@ -22,6 +22,7 @@
 goog.provide('eYo.MenuItem')
 goog.provide('eYo.Separator')
 
+goog.require('goog.dom');
 goog.require('goog.ui.MenuItem')
 goog.require('goog.ui.Separator')
 goog.require('eYo.MenuItemRenderer')

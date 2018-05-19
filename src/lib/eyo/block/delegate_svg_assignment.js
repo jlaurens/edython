@@ -17,6 +17,7 @@ goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Term')
 goog.require('eYo.DelegateSvg.List')
 goog.require('eYo.DelegateSvg.Stmt')
+goog.require('goog.dom');
 
 // ["eyo:attributeref", "eyo:subscription", "eyo:slicing", "eyo:parenth_target_list", "eyo:bracket_target_list", "eyo:target_star", "eyo:identifier", "eyo:any"]
 

@@ -809,3 +809,17 @@ eYo.ConnectionDelegate.prototype.consolidateSource = function () {
   var block = this.connection.getSourceBlock()
   block.eyo.consolidate(block)
 }
+
+/**
+ * Move the blocks on either side of this connection right next to each other.
+ * Delegates the translate process to the block
+ * @private
+ */
+Blockly.RenderedConnection.prototype.tighten_ = function() {
+  var dx = this.targetConnection.x_ - this.x_;
+  var dy = this.targetConnection.y_ - this.y_;
+  if (dx != 0 || dy != 0) {
+    var block = this.targetBlock();
+    block.eyo.translate(block, -dx, -dy);
+  }
+};

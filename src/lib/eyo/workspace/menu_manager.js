@@ -18,6 +18,7 @@ goog.require('eYo.T3')
 goog.require('eYo.DelegateSvg')
 goog.require('eYo.MenuItem')
 goog.require('eYo.Separator')
+goog.require('goog.dom');
 
 /**
  * The block that handles the context menu is not always the one
@@ -373,11 +374,11 @@ eYo.MenuManager.prototype.populateLast = function (block) {
   var holes = eYo.HoleFiller.getDeepHoles(c8n || block)
   menuItem = new eYo.MenuItem(
     eYo.Msg.FILL_DEEP_HOLES, function () {
-      Blockly.Events.setGroup(true)
+      eYo.Events.setGroup(true)
       try {
         eYo.HoleFiller.fillDeepHoles(block.workspace, holes)
       } finally {
-        Blockly.Events.setGroup(false)
+        eYo.Events.setGroup(false)
       }
     })
   menuItem.setEnabled(holes.length > 0)
@@ -386,11 +387,11 @@ eYo.MenuManager.prototype.populateLast = function (block) {
     if (block.eyo.canUnlock(block)) {
       menuItem = new eYo.MenuItem(eYo.Msg.UNLOCK_BLOCK,
         function (event) {
-          Blockly.Events.setGroup(true)
+          eYo.Events.setGroup(true)
           try {
             block.eyo.unlock(block)
           } finally {
-            Blockly.Events.setGroup(false)
+            eYo.Events.setGroup(false)
           }
         }
       )
@@ -399,11 +400,11 @@ eYo.MenuManager.prototype.populateLast = function (block) {
     if (block.eyo.canLock(block)) {
       menuItem = new eYo.MenuItem(eYo.Msg.LOCK_BLOCK,
         function (event) {
-          Blockly.Events.setGroup(true)
+          eYo.Events.setGroup(true)
           try {
             block.eyo.lock(block)
           } finally {
-            Blockly.Events.setGroup(false)
+            eYo.Events.setGroup(false)
           }
         }
       )
@@ -623,7 +624,7 @@ eYo.MenuManager.prototype.handleActionLast = function (block, event) {
       unwrapped = parent
     }
     // unwrapped is the topmost block or the first unwrapped parent
-    Blockly.Events.setGroup(true)
+    eYo.Events.setGroup(true)
     var returnState = false
     try {
       if (target === Blockly.selected && target !== unwrapped) {
@@ -640,7 +641,7 @@ eYo.MenuManager.prototype.handleActionLast = function (block, event) {
       unwrapped.dispose(true, true)
       returnState = true
     } finally {
-      Blockly.Events.setGroup(false)
+      eYo.Events.setGroup(false)
     }
     return returnState
   case eYo.ID.HELP:
@@ -730,7 +731,7 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
       eYo.Do.createSPAN('…', 'eyo-code-placeholder'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
     )
-  case eYo.T3.Expr.defparameter_s3d:
+  case eYo.T3.Expr.parameter_defined:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('= ', 'eyo-code'),
       eYo.Do.createSPAN('…', 'eyo-code-placeholder'),
@@ -818,8 +819,8 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
       eYo.Do.createSPAN(' …', 'eyo-code-placeholder'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
     )
-  case eYo.T3.Expr.module_as_s3d:
-  case eYo.T3.Expr.import_identifier_as_s3d:
+  case eYo.T3.Expr.dotted_name_as:
+  case eYo.T3.Expr.identifier_as:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('as', 'eyo-code-reserved'),
       eYo.Do.createSPAN(' alias', 'eyo-code-placeholder')
@@ -1179,10 +1180,10 @@ eYo.MenuManager.prototype.populate_movable_parent = function (block) {
   ], true)
   F.call(this, [
     eYo.T3.Expr.parent_module,
-    eYo.T3.Expr.module_as_s3d,
-    eYo.T3.Expr.import_identifier_as_s3d,
+    eYo.T3.Expr.dotted_name_as,
+    eYo.T3.Expr.identifier_as,
     [eYo.T3.Expr.key_datum_s3d, eYo.Key.NAME],
-    [eYo.T3.Expr.defparameter_s3d, eYo.Key.NAME],
+    [eYo.T3.Expr.term, eYo.Key.NAME],
     [eYo.T3.Expr.proper_slice, eYo.Key.UPPER_BOUND],
     [eYo.T3.Expr.proper_slice, eYo.Key.STRIDE],
     [eYo.T3.Expr.proper_slice, eYo.Key.LOWER_BOUND]

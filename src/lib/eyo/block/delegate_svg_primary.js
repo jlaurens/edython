@@ -16,6 +16,7 @@ goog.provide('eYo.DelegateSvg.Primary')
 goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Expr')
 goog.require('eYo.DelegateSvg.Stmt')
+goog.require('goog.dom');
 
 /**
  * Class for a DelegateSvg, attributeref.

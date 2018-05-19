@@ -14,6 +14,7 @@
 
 goog.require('eYo')
 goog.provide('eYo.Data')
+goog.require('goog.dom');
 
 /**
  * Base property constructor.

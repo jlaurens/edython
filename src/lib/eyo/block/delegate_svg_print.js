@@ -73,7 +73,7 @@ eYo.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
       }
     }
     var insert = function (key) {
-      Blockly.Events.setGroup(true)
+      eYo.Events.setGroup(true)
       try {
         var B = eYo.DelegateSvg.newBlockComplete(block.workspace, eYo.T3.Expr.term, true)
         B.eyo.data.value.set(key)
@@ -82,17 +82,17 @@ eYo.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
         c8n.connect(B.outputConnection)
         block.eyo.beReady(block)
       } finally {
-        Blockly.Events.setGroup(false)
+        eYo.Events.setGroup(false)
       }
     }
     var remove = function (key) {
-      Blockly.Events.setGroup(true)
+      eYo.Events.setGroup(true)
       try {
         var B = has[key]
         B.unplug()
         B.dispose()
       } finally {
-        Blockly.Events.setGroup(false)
+        eYo.Events.setGroup(false)
       }
     }
     var F = function (candidate) {
@@ -148,7 +148,7 @@ eYo.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
       }
     }
     var insert = function (key) {
-      Blockly.Events.setGroup(true)
+      eYo.Events.setGroup(true)
       try {
         var B = eYo.DelegateSvg.newBlockComplete(block.workspace, eYo.T3.Expr.term, true)
         B.eyo.data.value.set(key)
@@ -158,17 +158,17 @@ eYo.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
         c8n.connect(B.outputConnection)
         block.eyo.beReady(block)
       } finally {
-        Blockly.Events.setGroup(false)
+        eYo.Events.setGroup(false)
       }
     }
     var remove = function (key) {
-      Blockly.Events.setGroup(true)
+      eYo.Events.setGroup(true)
       try {
         var B = has[key]
         B.unplug()
         B.dispose()
       } finally {
-        Blockly.Events.setGroup(false)
+        eYo.Events.setGroup(false)
       }
     }
     var F = function (candidate) {

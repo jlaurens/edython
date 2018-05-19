@@ -16,6 +16,7 @@ goog.provide('eYo.DelegateSvg.Expr.numberliteral')
 
 goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Expr')
+goog.require('goog.dom');
 
 /**
  * Class for a DelegateSvg, number: integer, floatnumber or imagnumber.

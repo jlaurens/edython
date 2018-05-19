@@ -15,6 +15,7 @@ goog.provide('eYo.FieldLabel')
 
 goog.require('Blockly.FieldLabel')
 goog.require('eYo.Block')
+goog.require('goog.dom');
 
 /**
  * Class for a non-editable field.

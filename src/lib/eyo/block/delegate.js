@@ -386,30 +386,35 @@ eYo.Delegate.prototype.consolidateType = function (block) {
 }
 
 /**
- * execute the given function for head tile of the receiver and its next sibling.
+ * execute the given function for the head tile of the receiver and its next sibling.
+ * If the return value of the given function is true,
+ * then it was the last iteration and the loop nreaks.
  * For edython.
  * @param {boolean} newValue
  */
 eYo.Delegate.prototype.foreachTile = function (helper) {
   var tile = this.ui.headTile
   if (tile && goog.isFunction(helper)) {
+    var last
     do {
-      helper.call(tile)
-    } while ((tile = tile.next))
+      last = helper.call(tile)
+    } while (!last && (tile = tile.next))
   }
 }
 
 /**
  * execute the given function for the head data of the receiver and its next sibling.
+ * Ends the loop as soon as the 
  * For edython.
  * @param {boolean} newValue
  */
 eYo.Delegate.prototype.foreachData = function (helper) {
   var data = this.headData
   if (data && goog.isFunction(helper)) {
+    var last
     do {
-      helper.call(data)
-    } while ((data = data.next))
+      last = helper.call(data)
+    } while (!last && (data = data.next))
   }
 }
 
@@ -965,7 +970,7 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
     // nothing to do the block is already in the good state
     return
   }
-  Blockly.Events.setGroup(true)
+  eYo.Events.setGroup(true)
   var previous, next
   try {
     if (yorn) {
@@ -1059,7 +1064,7 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
       }
     }
   } finally {
-    Blockly.Events.setGroup(false)
+    eYo.Events.setGroup(false)
   }
 }
 

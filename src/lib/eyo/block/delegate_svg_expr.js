@@ -16,6 +16,7 @@ goog.provide('eYo.DelegateSvg.Expr')
 goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg')
 goog.require('eYo.T3.All')
+goog.require('goog.dom');
 
 /**
  * Class for a DelegateSvg, value block.
@@ -26,6 +27,25 @@ eYo.DelegateSvg.makeSubclass('Expr')
 
 // Default delegate for all expression blocks
 eYo.Delegate.Manager.registerAll(eYo.T3.Expr, eYo.DelegateSvg.Expr, true)
+
+/**
+ * Initialize a block.
+ * @param {!Blockly.Block} block to be initialized..
+ * @extends {Blockly.Block}
+ * @constructor
+ */
+eYo.DelegateSvg.Expr.prototype.postInitSvg = function (block) {
+  eYo.DelegateSvg.Expr.superClass_.postInitSvg.call(this, block)
+  goog.asserts.assert(this.svgPathContour_, 'Missing svgPathContour_')
+  goog.dom.classlist.add(this.svgShapeGroup_, 'eyo-expr')
+  goog.dom.classlist.add(this.svgContourGroup_, 'eyo-expr')
+}
+
+/**
+ * The contour of the receiver is below the parent's one.
+ */
+eYo.DelegateSvg.prototype.contourAboveParent = false
+
 
 eYo.DelegateSvg.Expr.prototype.shapePathDef_ =
   eYo.DelegateSvg.Expr.prototype.contourPathDef_ =
@@ -102,7 +122,7 @@ eYo.DelegateSvg.Expr.prototype.canReplaceBlock = function (block, other) {
  */
 eYo.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
   if (other) {
-    Blockly.Events.setGroup(true)
+    eYo.Events.setGroup(true)
     try {
       console.log('**** replaceBlock', block, other)
       var c8n = other.outputConnection
@@ -125,7 +145,7 @@ eYo.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
       }
     } finally {
       other.dispose(true)
-      Blockly.Events.setGroup(false)
+      eYo.Events.setGroup(false)
     }
   }
 }
@@ -294,7 +314,7 @@ eYo.DelegateSvg.Expr.prototype.insertParent = function (block, parentPrototypeNa
   // Next connections should be connected
   var outputC8n = block.outputConnection
   if (parentInputC8n && parentInputC8n.checkType_(outputC8n)) {
-    Blockly.Events.setGroup(true)
+    eYo.Events.setGroup(true)
     try {
       if (Blockly.Events.isEnabled()) {
         Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
@@ -336,7 +356,7 @@ eYo.DelegateSvg.Expr.prototype.insertParent = function (block, parentPrototypeNa
         bumper.bumpNeighbours_()
       }
     } finally {
-      Blockly.Events.setGroup(false)
+      eYo.Events.setGroup(false)
     }
   } else {
     parentBlock.dispose(true)
@@ -380,14 +400,11 @@ eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
 })
 
 /**
- * Class for a DelegateSvg, conditional_expression_s3d block.
+ * Class for a DelegateSvg, conditional_expression block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('conditional_expression_s3d', {
-  xml: {
-    tag: 'conditional_expression'
-  },
+eYo.DelegateSvg.Expr.makeSubclass('conditional_expression', {
   tiles: {
     expression: {
       order: 1,
@@ -462,7 +479,7 @@ eYo.DelegateSvg.Expr.starred_expression.prototype.consolidateType = function (bl
     no_or_expr = (function () {
       for (var i = 0; i < targetCheck.length; i++) {
         var type = targetCheck[i]
-        if (eYo.T3.Expr.Check.or_expr.indexOf(type) >= 0) {
+        if (eYo.T3.Expr.Check.or_expr_all.indexOf(type) >= 0) {
           return false
         }
       }
@@ -584,7 +601,7 @@ console.warn('value and subtype')
 
 eYo.DelegateSvg.Expr.T3s = [
   eYo.T3.Expr.proper_slice,
-  eYo.T3.Expr.conditional_expression_s3d,
+  eYo.T3.Expr.conditional_expression,
   eYo.T3.Expr.starred_expression,
   eYo.T3.Expr.not_test_s3d,
   eYo.T3.Expr.builtin_object,

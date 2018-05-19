@@ -13,6 +13,7 @@ TODAY="$(date -u)"
 
 java -jar "$COMPILER"\
   --warning_level DEFAULT \
+  --define="goog.global.CLOSURE_NO_DEPS=true"\
   --define="eYo.Version.GIT_HEAD='$GIT_HEAD'"\
   --define="eYo.Version.BUILD_DATE='$TODAY'"\
   --externs "src/lib/externs/xregexp.js"\
@@ -285,6 +286,15 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/development.js" \
   --js_output_file "build/base/edython.js"\
   -O BUNDLE
+# Next setting is used to prevent the closure library
+# to load the deps.js file. This makes sense while
+# we manage the real list of closure files used
+# without requiring help from goog tools.
+# See the tool1 and tool2 helper scripts in the bin folder.
+# This may change in the future if the build process is clean.
+# At least it "works" on both web and electron versions.
+# JL 05/17/2018. Better solution wanted.
+perl -pi -e 's/goog.global.CLOSURE_NO_DEPS;/goog.global.CLOSURE_NO_DEPS = true;/g' build/base/edython.js
 echo "File created:"
 ls -al build/base/edython.js
 exit 0

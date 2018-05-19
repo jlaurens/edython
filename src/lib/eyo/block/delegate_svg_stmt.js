@@ -16,6 +16,7 @@ goog.provide('eYo.DelegateSvg.Stmt')
 goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.List')
 goog.require('eYo.DelegateSvg.Operator')
+goog.require('goog.dom');
 
 /**
  * Class for a DelegateSvg, statement block.
@@ -95,6 +96,8 @@ eYo.DelegateSvg.Stmt.prototype.postInitSvg = function (block) {
   this.svgSharpGroup_ = Blockly.utils.createSvgElement('g',
     {'class': 'eyo-sharp-group'}, null)
   goog.dom.insertSiblingAfter(this.svgSharpGroup_, this.svgPathContour_)
+  goog.dom.classlist.add(this.svgShapeGroup_, 'eyo-stmt')
+  goog.dom.classlist.add(this.svgContourGroup_, 'eyo-stmt')
 }
 
 /**
@@ -220,7 +223,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParent = function (block, parentPrototypeNa
     Blockly.Events.enable()
     var parentC8n = parentBlock.nextConnection
     if (parentC8n) {
-      Blockly.Events.setGroup(true)
+      eYo.Events.setGroup(true)
       try {
         if (Blockly.Events.isEnabled()) {
           Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
@@ -246,7 +249,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParent = function (block, parentPrototypeNa
           parentBlock.select()
         }
       } finally {
-        Blockly.Events.setGroup(false)
+        eYo.Events.setGroup(false)
       }
     }
   }
@@ -265,7 +268,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParent = function (block, parentPrototypeNa
  * @return the created block
  */
 eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (block, belowPrototypeName) {
-  Blockly.Events.setGroup(true)
+  eYo.Events.setGroup(true)
   try {
     var blockAfter = eYo.DelegateSvg.newBlockComplete(block.workspace, belowPrototypeName, true)
     var c8n = block.nextConnection
@@ -285,7 +288,7 @@ eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (block, belowPrototyp
       blockAfter.select()
     }
   } finally {
-    Blockly.Events.setGroup(false)
+    eYo.Events.setGroup(false)
   }
   return blockAfter
 }

@@ -39,6 +39,7 @@ class Types:
     def __init__(self, *paths):
         for path in paths:
             self.read(path)
+        print('Input files are read.')
         self.make_ignore()
         self.make_lists()
         self.make_s3d()
@@ -171,6 +172,7 @@ class Types:
                 return # no type has changed status, stop here
 
     def make_s3d(self):
+        print('====> MAKE_SOLID')
         """
         Automatically creates "solid" types for declarations like
         foo ::= bla | an operation
@@ -206,6 +208,7 @@ class Types:
                             else:
                                 name_s3d = t.name + '_s3d'
                             def_new = '{} | {}'.format(def_alias, name_s3d)
+                            print(t.definition)
                             t.original_definition = t.definition
                             t.setup_definition(def_new)
                             t.is_wrapper = True
@@ -214,6 +217,7 @@ class Types:
                             print('**** new solid type from', t.name, '::=', t.definition, '::=',
                                   t.original_definition)
                             print('****', name_s3d, '::=', def_s3d)
+                            exit(2)
                             continue
             if not t.is_wrapper and not t.is_list:
                 cs = Formatter.get_alternate_components(definition)
@@ -261,6 +265,7 @@ class Types:
         self.all.update(more)
 
     def make_before_after(self):
+        print('====> MAKE BEFORE AFTER')
         for k, v in self.is_above.items():
             try:
                 print('k:', k)
@@ -288,6 +293,7 @@ class Types:
     def make_lists(self):
         if self.lists_made:
             return
+        print('====> MAKE LISTS')
         self.lists_made = True
         for t in self.get_expressions():
             definition = t.get_normalized_definition()
@@ -301,6 +307,7 @@ class Types:
                     t.list_require.append(m.group('sep'))
 
     def make_link(self):
+        print('====> MAKE LINK')
         for t in self:
             a = self.links.get(t.name)
             if a is not None:
@@ -310,6 +317,7 @@ class Types:
                 print('**** AS:', t.old_name, '->', t.name)
 
     def make_shallow(self):
+        print('====> MAKE SHALLOW')
         more_t = {}
         for t in self.get_expressions():
             t.is_wrapper = True
@@ -354,6 +362,7 @@ class Types:
                     tt.is_shallow_required = True
 
     def make_deep_(self, shallow_key, deep_key, filter):
+        print('====> MAKE DEEP')
         for t in self:
             t.temp_ = set(tt for tt in getattr(t, shallow_key) if filter(tt))
         once_more = True
@@ -378,6 +387,7 @@ class Types:
             del t.temp_
 
     def make_cycle(self):
+        print('====> MAKE CYCLE')
         for t in self.get_expressions():
             t.temp_ = set()
         for t in self.get_expressions():
@@ -399,6 +409,7 @@ class Types:
             del t.temp_
 
     def make_deep(self):
+        print('====> MAKE DEEP')
         self.make_deep_('require', 'deep_require', lambda x: True)
         self.make_deep_('provide', 'deep_provide', lambda x: True)
         self.make_cycle()
@@ -438,6 +449,7 @@ class Types:
                 except: pass
 
     def make_alias(self):
+        print('====> MAKE ALIAS')
         for t in self:
             if not t.is_stmt and len(t.require) == 1 and not t.is_shallow_required:
                 candidate = self.get_type(t.definition)
@@ -453,6 +465,7 @@ class Types:
                     break
 
     def make_ignore(self):
+        print('====> IGNORE or REMOVE')
         for t in self:
             t.ignored = t.definition == 'IGNORE' or t.definition == 'REMOVE'
             if t.ignored:
@@ -460,6 +473,7 @@ class Types:
 
 
     def make_same_check(self):
+        print('====> MAKE SAME CHECK')
         for t in self.get_expressions():
             if t.is_list:
                 checks = t.get_checks()
@@ -476,6 +490,7 @@ class Types:
          Of course Any such list contains at least the type of the owner.
         :return: None
         '''
+        print('====> MAKE SIMILAR PREOVIDERS')
         for t in self.get_expressions():
             t.temp_ = set()
         for t in self.get_expressions():

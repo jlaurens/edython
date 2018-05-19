@@ -17,6 +17,7 @@ goog.provide('eYo.DelegateSvg.Parameter')
 goog.require('eYo.DelegateSvg.List')
 goog.require('eYo.DelegateSvg.Term')
 goog.require('eYo.ConnectionDelegate')
+goog.require('goog.dom');
 
 /**
  * List consolidator for parameter list.
@@ -110,7 +111,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (function () {
       return Type.star
     } else if (goog.array.contains(check, eYo.T3.Expr.parameter_star_star)) {
       return Type.star_star
-    } else if (goog.array.contains(check, eYo.T3.Expr.defparameter_s3d)) {
+    } else if (goog.array.contains(check, eYo.T3.Expr.parameter_defined)) {
       return Type.default
     } else {
       return Type.parameter
@@ -272,7 +273,7 @@ eYo.Consolidator.Parameter.prototype.getCheck = (function () {
       out = eYo.T3.Expr.Check.parameter.slice()
     }
     if (can_default) {
-      out.push(eYo.T3.Expr.defparameter_s3d)
+      out.push(eYo.T3.Expr.parameter_defined)
     }
     if (can_star) {
       out.push(eYo.T3.Expr.parameter_star)
@@ -323,7 +324,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
             eYo.Do.createSPAN(' )', 'eyo-code-disabled')
           )
           mgr.addInsertChild(new eYo.MenuItem(content, function () {
-            Blockly.Events.setGroup(true)
+            eYo.Events.setGroup(true)
             try {
               var B = eYo.DelegateSvg.newBlockComplete(block.workspace, eYo.T3.Expr.term, true)
               B.eyo.skipRendering = true
@@ -334,7 +335,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
               B.eyo.beReady(block)
               B.render()
             } finally {
-              Blockly.Events.setGroup(false)
+              eYo.Events.setGroup(false)
             }
           }))
         }

@@ -12,8 +12,11 @@
 'use strict'
 
 goog.provide('eYo.DelegateSvg.Control')
+
+goog.require('goog.ui.Dialog')
 goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Stmt')
+goog.require('goog.dom');
 
 /**
  * Class for a DelegateSvg, control block.

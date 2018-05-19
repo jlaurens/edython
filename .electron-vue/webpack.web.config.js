@@ -102,17 +102,17 @@ let webConfig = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, '../src/lib/blockly/blockly_accessible_compressed.js'),
-      to: path.resolve(__dirname, '../dist/web/lib/blockly/blockly_accessible_compressed.js')
+      { from: path.resolve(__dirname, '../src/lib/xregexp-all/xregexp-all.js'),
+      to: path.resolve(__dirname, '../dist/web/lib/xregexp-all.js')
     }], {debug: 'debug'}),
     new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, '../src/lib/blockly/blockly_compressed.js'),
-      to: path.resolve(__dirname, '../dist/web/lib/blockly/blockly_compressed.js')
-    }], {debug: 'debug'}),
-    new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, '../src/lib/eyo/edy_compressed.js'),
-      to: path.resolve(__dirname, '../dist/web/lib/eyo/edy_compressed.js')
-    }], {debug: 'debug'})
+      { from: path.resolve(__dirname, '../build/base/edython.js'),
+      to: path.resolve(__dirname, '../dist/web/lib/edython.js')
+    }, { from: path.resolve(__dirname, '../src/lib/eyo/css/eyo.css'),
+    to: path.resolve(__dirname, '../dist/web/lib/edython.css')
+    }, { from: path.resolve(__dirname, '../font/*.woff'),
+    to: path.resolve(__dirname, '../dist/web/static/')
+  }], {debug: 'debug'})
   ],
   output: {
     filename: '[name].js',

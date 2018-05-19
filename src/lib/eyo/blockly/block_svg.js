@@ -16,6 +16,7 @@ goog.provide('eYo.BlockSvg')
 goog.require('eYo.Do')
 goog.require('eYo.Block')
 goog.require('eYo.DelegateSvg')
+goog.require('goog.dom');
 goog.require('Blockly.BlockSvg')
 goog.forwardDeclare('eYo.MenuManager')
 
@@ -183,6 +184,7 @@ eYo.BlockSvg.prototype.addSelect = function () {
     return
   }
   goog.dom.classlist.add(this.svgGroup_, 'eyo-select')
+  goog.dom.classlist.add(this.eyo.svgContourGroup_, 'eyo-select')
   // ensure that the svgGroup is the last in the list
   this.bringToFront()
   var e8r = this.eyo.inputEnumerator(this)
@@ -214,7 +216,8 @@ eYo.BlockSvg.prototype.removeSelect = function () {
     goog.dom.removeNode(this.eyo.svgPathHighlight_)
   }
   if (this.svgGroup_) {
-    Blockly.utils.removeClass(this.svgGroup_, 'eyo-select')
+    goog.dom.classlist.remove(this.svgGroup_, 'eyo-select')
+    goog.dom.classlist.remove(this.eyo.svgContourGroup_, 'eyo-select')
   }
   if (this.eyo.svgPathConnection_ && this.eyo.svgPathConnection_.parentNode) {
     goog.dom.removeNode(this.eyo.svgPathConnection_)
@@ -453,19 +456,17 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
 eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
   var ee = this.eyo.lastMouseDownEvent
   if (ee) {
-    // this block was selected when the mouse ow event was sent
+    // this block was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
+      // not a drag move
       if (this === Blockly.selected) {
         // if the block was already selected,
         // try to select an input connection
         var c8n = this.eyo.getConnectionForEvent(this, e)
-        if (c8n) {
-          eYo.SelectedConnection.set(c8n)
-        } else {
-          eYo.SelectedConnection.set(this.eyo.lastSelectedConnection)
-        }
+        eYo.SelectedConnection.set(c8n)
       }
     } else {
+      // a drag move
       eYo.SelectedConnection.set(null)
     }
   }
@@ -481,7 +482,7 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
  * @override
  */
 eYo.BlockSvg.prototype.dispose = function (healStack, animate) {
-  Blockly.Events.setGroup(true)
+  eYo.Events.setGroup(true)
   try {
     if (this === Blockly.selected) {
       // this block was selected, select the block below or above before deletion
@@ -496,7 +497,7 @@ eYo.BlockSvg.prototype.dispose = function (healStack, animate) {
     }
     eYo.BlockSvg.superClass_.dispose.call(this, healStack, animate)
   } finally {
-    Blockly.Events.setGroup(false)
+    eYo.Events.setGroup(false)
   }
 }
 
@@ -516,3 +517,26 @@ eYo.BlockSvg.prototype.bringToFront = function () {
     eYo.BlockSvg.superClass_.bringToFront.call(this)
   }
 }
+
+/**
+ * Move this block during a drag, taking into account whether we are using a
+ * drag surface to translate blocks.
+ * This block must be a top-level block.
+ * @param {!goog.math.Coordinate} newLoc The location to translate to, in
+ *     workspace coordinates.
+ * @package
+ */
+eYo.BlockSvg.prototype.moveDuringDrag = function(newLoc) {
+  var d = this.eyo.getDistanceFromVisible(this, newLoc)
+  if (d) {
+    newLoc.x -= d.x
+    newLoc.y -= d.y
+  }
+  if (this.useDragSurface_) {
+    this.workspace.blockDragSurface_.translateSurface(newLoc.x, newLoc.y);
+  } else {
+    this.svgGroup_.translate_ = 'translate(' + newLoc.x + ',' + newLoc.y + ')';
+    this.svgGroup_.setAttribute('transform',
+        this.svgGroup_.translate_ + this.svgGroup_.skew_);
+  }
+};

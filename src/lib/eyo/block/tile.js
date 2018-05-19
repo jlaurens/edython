@@ -14,8 +14,8 @@
 goog.provide('eYo.Tile')
 
 goog.require('eYo.Do')
-
 goog.require('Blockly.Input')
+goog.require('goog.dom');
 
 /**
  * Convenient method to wrap the Blockly input object for the outside.
@@ -104,10 +104,12 @@ eYo.Tile.prototype.beReady = function () {
   // init all the fields
   for (var k in this.fields) {
     var field = this.fields[k]
-    field.setSourceBlock(this.block)
-    field.eyo.tile = this
-    field.eyo.ui = this.ui
-    field.init()// installs in the owner's group, not the block group
+    if (!field.sourceBlock_) {
+      field.setSourceBlock(this.block)
+      field.eyo.tile = this
+      field.eyo.ui = this.ui
+      field.init()// installs in the owner's group, not the block group
+    }
   }
   this.input && this.input.eyo.beReady()
 }

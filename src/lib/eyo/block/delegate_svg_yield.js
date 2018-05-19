@@ -15,6 +15,7 @@ goog.provide('eYo.DelegateSvg.Yield')
 
 goog.require('eYo.DelegateSvg.List')
 goog.require('eYo.DelegateSvg.Stmt')
+goog.require('goog.dom');
 
 /**
  * Class for a DelegateSvg, yield_expression.
