@@ -32,7 +32,7 @@
       var b = eYo.DelegateSvg.newBlockReady(eYo.workspace, eYo.T3.Stmt.start_stmt)
       b.moveBy(50, 150)
       function temp () {
-        var flyout = new eYo.Flyout({parentWorkspace: eYo.workspace})
+        var flyout = new eYo.Flyout(eYo.workspace)
         goog.dom.insertSiblingAfter(
           flyout.createDom('svg'), eYo.workspace.getParentSvg())
         // workspace.flyout_ = flyout does not work, flyout too big

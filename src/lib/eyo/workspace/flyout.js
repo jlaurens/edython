@@ -32,10 +32,11 @@ goog.require('goog.math.Coordinate');
  * @extends {Blockly.Flyout}
  * @constructor
  */
-eYo.Flyout = function(workspaceOptions) {
-  eYo.Flyout.superClass_.constructor.call(this, workspaceOptions)
+eYo.Flyout = function(workspace) {
+  eYo.Flyout.superClass_.constructor.call(this, {parentWorkspace: workspace})
   this.closed = false
   this.toolboxPosition_ = Blockly.TOOLBOX_AT_LEFT
+  workspace.flyout_ = this
 }
 goog.inherits(eYo.Flyout, Blockly.VerticalFlyout)
 
