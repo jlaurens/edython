@@ -35,6 +35,7 @@ goog.require('goog.math.Coordinate');
 eYo.Flyout = function(workspaceOptions) {
   eYo.Flyout.superClass_.constructor.call(this, workspaceOptions)
   this.closed = false
+  this.toolboxPosition_ = Blockly.TOOLBOX_AT_LEFT
 }
 goog.inherits(eYo.Flyout, Blockly.VerticalFlyout)
 
@@ -162,7 +163,7 @@ eYo.Flyout.prototype.dispose = function() {
     this.onButtonUpWrapper_ = undefined
   }
   if (this.buttonGroup_) {
-    goog.dom.remove(this.buttonGroup_)
+    goog.dom.removeNode(this.buttonGroup_)
     this.buttonGroup_ = undefined
   }
 };

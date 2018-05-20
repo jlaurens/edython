@@ -166,18 +166,16 @@ eYo.setup.register(function () {
 
 eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt('.eyo-block .blocklyText, .eyo-var, .eyo-label, .eyo-code, .eyo-code-reserved, .eyo-code-builtin, .eyo-code-comment, .eyo-code-placeholder, .eyo-sharp-group{ ' + eYo.Font.style + ';}')
-  eYo.Style.insertCssRuleAt('.eyo-error.eyo-path-selected, .eyo-error.eyo-path-shape, .eyo-error.eyo-path-contour {stroke: ' + eYo.Style.Path.Error.colour + ';}')
+  eYo.Style.insertCssRuleAt('.eyo-error.eyo-path-selected, .eyo-error.eyo-path-shape, .eyo-error.eyo-path-contour, .eyo-error.eyo-path-inner {stroke: ' + eYo.Style.Path.Error.colour + ';}')
   var w = eYo.Style.Path.Selected.width
   console.warn('PATH WIDTH:', w, ';stroke-width: ' + w + 'px;fill: none;}')
   eYo.Style.insertCssRuleAt('.eyo-path-selected{stroke: ' + eYo.Style.Path.Selected.colour + ';stroke-width: ' + eYo.Style.Path.Selected.width + 'px;fill: none;}')
-  eYo.Style.insertCssRuleAt('.eyo-select .eyo-path-contour{stroke: ' + eYo.Style.Path.Selected.colour + ';}')
-  eYo.Style.insertCssRuleAt('.eyo-select .eyo-path-contour.eyo-error{stroke: ' + eYo.Style.Path.Error.colour + ';}')
-  eYo.Style.insertCssRuleAt('.blocklyHighlightedConnectionPath{stroke: ' + eYo.Style.Path.Selected.colour + ';stroke-width: ' + eYo.Style.Path.Selected.width + 'px;fill: none;}')
-  eYo.Style.insertCssRuleAt('.blocklyHighlightedConnectionPathH{fill: ' + eYo.Style.Path.Selected.colour + ';stroke: none;}')
+  eYo.Style.insertCssRuleAt('.eyo-select .eyo-path-contour, .eyo-select .eyo-path-inner, .eyo-select .eyo-inner.eyo-expr .eyo-path-contour, .eyo-select .eyo-inner.eyo-expr .eyo-path-inner{stroke: ' + eYo.Style.Path.Selected.colour + ';}')
+  eYo.Style.insertCssRuleAt('.eyo-select .eyo-path-contour.eyo-error, .eyo-select .eyo-path-inner.eyo-error{stroke: ' + eYo.Style.Path.Error.colour + ';}')
   eYo.Style.insertCssRuleAt('.eyo-checkbox-icon-rect{stroke: ' + eYo.Style.Path.colour + ';stroke-width: ' + eYo.Style.Path.width + 'px;fill: white;}')
-  eYo.Style.insertCssRuleAt('.eyo-locked>.eyo-path-contour, .eyo-locked>.eyo-path-shape{display: none}')
+  eYo.Style.insertCssRuleAt('.eyo-locked>.eyo-path-contour, .eyo-locked>.eyo-path-inner, .eyo-locked>.eyo-path-shape{display: none}')
   eYo.Style.insertCssRuleAt('.eyo-path-shape{stroke: none;fill: white;fill-opacity:0.85}')
-  eYo.Style.insertCssRuleAt('.eyo-path-contour, .eyo-path-collapsed {stroke: ' + eYo.Style.Path.colour + ';stroke-width: ' + eYo.Style.Path.width + 'px;fill: none;pointer-events: all;}')
+  eYo.Style.insertCssRuleAt('.eyo-path-contour, .eyo-path-inner, .eyo-path-collapsed {stroke: ' + eYo.Style.Path.colour + ';stroke-width: ' + eYo.Style.Path.width + 'px;fill: none;pointer-events: all;}')
   eYo.Style.insertCssRuleAt('.eyo-inner.eyo-expr .eyo-path-contour, .eyo-inner.eyo-expr .eyo-path-collapsed {stroke: ' + eYo.Style.Path.inner_colour + ';}')
   eYo.Style.insertCssRuleAt('.eyo-none {stroke:none;fill:none;}')
   eYo.Style.insertCssRuleAt('.eyo-edit {stroke: none;stroke-width: ' + eYo.Style.Edit.width + 'px;fill: none;}')
@@ -196,6 +194,8 @@ eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt('text.eyo-code-error {fill: red;}')
   eYo.Style.insertCssRuleAt('text.eyo-code-comment {fill: rgba(42, 132, 45, 0.8);}')
   eYo.Style.insertCssRuleAt('.eyo-code-disabled {color: #ccc;}')
+  eYo.Style.insertCssRuleAt('.blocklyHighlightedConnectionPath{stroke: ' + eYo.Style.Path.Selected.colour + ';stroke-width: ' + eYo.Style.Path.Selected.width + 'px;fill: none;}')
+  eYo.Style.insertCssRuleAt('.blocklyHighlightedConnectionPathH{fill: ' + eYo.Style.Path.Selected.colour + ';stroke: none;}')
 }, 'Style')
 
 eYo.Style.MenuIcon = {

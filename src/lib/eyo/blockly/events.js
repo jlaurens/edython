@@ -133,3 +133,30 @@ eYo.Data.prototype.setTrusted_ = function (newValue) {
     eYo.Events.setGroup(false)
   }
 }
+
+eYo.Events.filter = Blockly.Events.filter 
+/**
+ * Filter the queued events and merge duplicates.
+ * @param {!Array.<!Blockly.Events.Abstract>} queueIn Array of events.
+ * @param {boolean} forward True if forward (redo), false if backward (undo).
+ * @return {!Array.<!Blockly.Events.Abstract>} Array of filtered events.
+ */
+Blockly.Events.filter = function(queueIn, forward) {
+  if (!forward) {
+    // is it a create/move/delete sequence we are about to undo?
+    if (queueIn.length === 3) {
+      var first = queueIn[0]
+      var last = queueIn[queueIn.length-1]
+      if (!first.isNull() && !last.isNull()
+          && first.type === Blockly.Events.DELETE
+          && last.type === Blockly.Events.CREATE
+          && first.workspaceId === last.workspaceId
+          && first.group === last.group
+          && first.blockId === last.blockId) {
+        queueIn.length = 0
+        return queueIn
+      }
+    }
+  }
+  return eYo.Events.filter(queueIn, forward)
+}

@@ -39,6 +39,7 @@ eYo.DelegateSvg.Expr.prototype.postInitSvg = function (block) {
   goog.asserts.assert(this.svgPathContour_, 'Missing svgPathContour_')
   goog.dom.classlist.add(this.svgShapeGroup_, 'eyo-expr')
   goog.dom.classlist.add(this.svgContourGroup_, 'eyo-expr')
+  goog.dom.classlist.add(block.svgGroup_, 'eyo-top')
 }
 
 /**
@@ -87,6 +88,22 @@ eYo.DelegateSvg.Expr.prototype.didConnect = function (block, connection, oldTarg
     if (block === Blockly.selected && this.locked_) {
       parent.select()
     }
+    goog.dom.classlist.remove(block.svgGroup_, 'eyo-top')
+  }
+}
+
+/**
+ * Did connect this block's connection to another connection.
+ * When conecting locked blocks, select the receiver.
+ * @param {!Blockly.Block} block
+ * @param {!Blockly.Connection} connection what has been connected in the block
+ * @param {!Blockly.Connection} oldTargetConnection what was previously connected in the block
+ * @param {!Blockly.Connection} oldConnection what was previously connected to the new targetConnection
+ */
+eYo.DelegateSvg.Expr.prototype.didDisconnect = function (block, connection, oldTargetConnection) {
+  eYo.DelegateSvg.Expr.superClass_.didDisconnect.call(this, block, connection, oldTargetConnection)
+  if (connection.type === Blockly.OUTPUT_VALUE) {
+    goog.dom.classlist.add(block.svgGroup_, 'eyo-top')
   }
 }
 

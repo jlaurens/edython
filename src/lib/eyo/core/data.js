@@ -235,12 +235,12 @@ eYo.Data.prototype.fromText = function (txt, dontValidate) {
     }
   }
   if (dontValidate) {
+    this.set(txt)
+  } else {
     if ((this.value_ === txt) || !(txt = this.validate(txt)) || !goog.isDef((txt = txt.validated))) {
       this.error = true
     }
     this.internalSet(txt)
-  } else {
-    this.set(txt)
   }
 }
 

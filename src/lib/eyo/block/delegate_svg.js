@@ -79,7 +79,7 @@ eYo.DelegateSvg.prototype.svgPathCollapsed_ = undefined
  * @type {SVGPathElement}
  * @private
  */
-eYo.DelegateSvg.prototype.svgPathInline_ = undefined
+eYo.DelegateSvg.prototype.svgPathInner_ = undefined
 
 /**
  * This is the shape used to draw an highlighted block contour.
@@ -208,8 +208,8 @@ eYo.DelegateSvg.prototype.deinitBlock = function (block) {
   this.svgPathContour_ = undefined
   goog.dom.removeNode(this.svgPathCollapsed_)
   this.svgPathCollapsed_ = undefined
-  goog.dom.removeNode(this.svgPathInline_)
-  this.svgPathInline_ = undefined
+  goog.dom.removeNode(this.svgPathInner_)
+  this.svgPathInner_ = undefined
   goog.dom.removeNode(this.svgPathHighlight_)
   this.svgPathHighlight_ = undefined
   goog.dom.removeNode(this.svgPathConnection_)
@@ -244,8 +244,8 @@ eYo.DelegateSvg.prototype.postInitSvg = function (block) {
   // block.svgGroup_ = Blockly.utils.createSvgElement('g',
   //   {'class': 'eyo-root'}, null)
   // goog.dom.insertChildAt(this.svgRoot_, block.svgGroup_, 0)
-  this.svgPathInline_ = Blockly.utils.createSvgElement('path', {
-    'class': 'eyo-path-contour'
+  this.svgPathInner_ = Blockly.utils.createSvgElement('path', {
+    'class': 'eyo-path-inner'
   }, null)
   this.svgPathCollapsed_ = Blockly.utils.createSvgElement('path', {
     'class': 'eyo-path-collapsed'
@@ -264,7 +264,7 @@ eYo.DelegateSvg.prototype.postInitSvg = function (block) {
   }, null)
   this.svgContourGroup_ = Blockly.utils.createSvgElement('g',
     {'class': 'eyo-contour'}, null)
-  goog.dom.appendChild(this.svgContourGroup_, this.svgPathInline_)
+  goog.dom.appendChild(this.svgContourGroup_, this.svgPathInner_)
   goog.dom.appendChild(this.svgContourGroup_, this.svgPathCollapsed_)
   goog.dom.appendChild(this.svgContourGroup_, this.svgPathContour_)
   this.svgShapeGroup_ = Blockly.utils.createSvgElement('g',
@@ -611,12 +611,12 @@ eYo.DelegateSvg.prototype.collapsedPathDef_ = function () {
  * @private
  */
 eYo.DelegateSvg.prototype.renderDraw_ = function (block) {
-  if (this.svgPathInline_) {
+  if (this.svgPathInner_) {
     // if the above path does not exist
     // the block is not yet ready for rendering
     block.height = eYo.Font.lineHeight()
     var d = this.renderDrawModel_(block)
-    this.svgPathInline_.setAttribute('d', d)
+    this.svgPathInner_.setAttribute('d', d)
     var root = block.getRootBlock()
     if (root.eyo) {
       root.eyo.alignRightEdges_(root)

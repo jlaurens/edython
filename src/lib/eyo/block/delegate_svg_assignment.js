@@ -431,7 +431,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.data.numberOperator.set(newValue)
         this.data.bitwiseOperator.set(newValue)
-      }
+      },
+      validate: false,
     },
     numberOperator: {
       all: ['+=', '-=', '*=', '/=', '//=', '%=', '**=', '@='],
