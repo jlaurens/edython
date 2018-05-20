@@ -284,9 +284,9 @@ Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
  * it also depends on the enclosing block.
  * 4) Wrapped blocks other than lists will not add an xml child level.
  * As a consequence, this method just returns nothing for such blocks.
- * 5) solid blocks are named after their type which eyo:foo_s3d.
+ * 5) solid blocks are named after their type which eyo:foo.
  * These block types correspond to an alternate in the python grammar.
- * The persistence storage may remember these blocks as eyo:foo instead of eyo:foo_s3d.
+ * The persistence storage may remember these blocks as eyo:foo instead of eyo:foo.
  * @param {!Blockly.Block} block The root block to encode.
  * @param {boolean} optNoId True if the encoder should skip the block id.
  * @return {!Element} Tree of XML elements, possibly null.
@@ -656,7 +656,7 @@ eYo.Xml.domToBlock = (function () {
       block = eYo.DelegateSvg.newBlockComplete(workspace, prototypeName, id)
     } else {
       prototypeName = name
-      var solid = prototypeName + '_s3d'
+      var solid = prototypeName + ''
       var controller = eYo.DelegateSvg.Manager.get(solid)
       if (controller) {
         if (controller.eyo && goog.isFunction(controller.eyo.domToBlock)) {
@@ -1613,14 +1613,14 @@ eYo.Xml.compareBlocks = function (lhs, rhs) {
 //   return xml.childNodes.length && eYo.Xml.Input.fromDom(block.inputList[0], xml.childNodes[0])
 // }
 
-// eYo.DelegateSvg.Expr.not_test_s3d.prototype.xml = eYo.Xml.SingleInput
+// eYo.DelegateSvg.Expr.not_test.prototype.xml = eYo.Xml.SingleInput
 
 // // eYo.DelegateSvg.Expr.T3s = [
 // //   eYo.DelegateSvg.Expr.proper_slice,
-// //   eYo.DelegateSvg.Expr.conditional_expression_s3d,
+// //   eYo.DelegateSvg.Expr.conditional_expression,
 // //   eYo.DelegateSvg.Expr.or_expr_star,
 // //   eYo.DelegateSvg.Expr.or_expr_star_star,
-// //   eYo.DelegateSvg.Expr.not_test_s3d,
+// //   eYo.DelegateSvg.Expr.not_test,
 // //   eYo.DelegateSvg.Expr.shortstringliteral,
 // //   eYo.DelegateSvg.Expr.shortbytesliteral,
 // //   eYo.DelegateSvg.Expr.longstringliteral,
@@ -1798,7 +1798,7 @@ eYo.Xml.compareBlocks = function (lhs, rhs) {
 // }
 
 // eYo.DelegateSvg.Operator.prototype.xml = eYo.Xml.Operator
-// eYo.DelegateSvg.Expr.power_s3d.prototype.xml = eYo.Xml.Operator
+// eYo.DelegateSvg.Expr.power.prototype.xml = eYo.Xml.Operator
 
 // goog.require('eYo.DelegateSvg.AugAssign')
 
@@ -2078,7 +2078,7 @@ eYo.Xml.compareBlocks = function (lhs, rhs) {
 // eYo.DelegateSvg.Expr.comp_for.prototype.xml =
 // eYo.DelegateSvg.Expr.comp_if.prototype.xml =
 // eYo.DelegateSvg.Expr.comp_iter_list.prototype.xml =
-// eYo.DelegateSvg.Expr.key_datum_s3d.prototype.xml =
+// eYo.DelegateSvg.Expr.key_datum.prototype.xml =
 // eYo.Xml.InputList
 
 // /**
@@ -2088,7 +2088,7 @@ eYo.Xml.compareBlocks = function (lhs, rhs) {
 //  * @param {boolean} optNoId true if no id is required.
 //  * For subclassers eventually
 //  */
-// eYo.DelegateSvg.Expr.key_datum_s3d.prototype.xml =
+// eYo.DelegateSvg.Expr.key_datum.prototype.xml =
 // eYo.Xml.InputList
 
 // eYo.DelegateSvg.Expr.comprehension.prototype.xml =

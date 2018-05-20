@@ -513,7 +513,7 @@ eYo.Delegate.prototype.type_ = undefined
  */
 eYo.Delegate.prototype.setupType = function (block, optNewType) {
   optNewType && (block.type = optNewType)
-  var m = /^eyo:((?:fake_)?((.*?)(?:_s3d)?))$/.exec(block.type)
+  var m = /^eyo:((?:fake_)?((.*?)(?:)?))$/.exec(block.type)
   this.pythonType_ = m ? m[1] : block.type
   this.type_ = m ? 'eyo:' + m[2] : block.type
   this.xmlType_ = m ? m[3] : block.type
@@ -751,13 +751,18 @@ eYo.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
   if (input) {
     var target = input.connection.targetBlock()
     if (!target) {
-      goog.asserts.assert(prototypeName, 'Missing wrapping prototype name in block ' + block.type)
-      goog.asserts.assert(eYo.Delegate.wrappedFireWall, 'ERROR: Maximum value reached in completeWrappedInput_ (circular)')
-      --eYo.Delegate.wrappedFireWall
-      target = eYo.DelegateSvg.newBlockComplete(block.workspace, prototypeName)
-      goog.asserts.assert(target, 'completeWrapped_ failed: ' + prototypeName)
-      goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed ' + target.type)
-      input.connection.connect(target.outputConnection)
+      try {
+        Blockly.Events.disable()
+        goog.asserts.assert(prototypeName, 'Missing wrapping prototype name in block ' + block.type)
+        goog.asserts.assert(eYo.Delegate.wrappedFireWall, 'ERROR: Maximum value reached in completeWrappedInput_ (circular)')
+        --eYo.Delegate.wrappedFireWall
+        target = eYo.DelegateSvg.newBlockComplete(block.workspace, prototypeName, block.id+'.wrapped:'+input.connection.eyo.name_)
+        goog.asserts.assert(target, 'completeWrapped_ failed: ' + prototypeName)
+        goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed ' + target.type)
+        input.connection.connect(target.outputConnection)
+      } finally {
+        Blockly.Events.enable()
+      }
     }
   }
 }

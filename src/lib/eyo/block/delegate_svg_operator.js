@@ -66,14 +66,14 @@ eYo.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
   return eYo.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
-/// ///////////////////  u_expr_s3d  /////////////////////////
+/// ///////////////////  u_expr  /////////////////////////
 
 /**
  * Class for a DelegateSvg, unary op ... block.
- * u_expr_s3d.
+ * u_expr.
  * For edython.
  */
-eYo.DelegateSvg.Operator.makeSubclass('u_expr_s3d', {
+eYo.DelegateSvg.Operator.makeSubclass('u_expr', {
   data: {
     operator: {
       all: ['-', '+', '~']
@@ -92,7 +92,7 @@ eYo.DelegateSvg.Operator.makeSubclass('u_expr_s3d', {
  * @param {string} op op is the operator
  * @private
  */
-eYo.DelegateSvg.Expr.u_expr_s3d.prototype.makeTitle = function (block, op) {
+eYo.DelegateSvg.Expr.u_expr.prototype.makeTitle = function (block, op) {
   return op + ' …'
 }
 
@@ -147,12 +147,12 @@ eYo.DelegateSvg.Binary.makeModel = function (operators, check1, check3, operator
 }
 
 /**
- * Class for a DelegateSvg, m_expr_s3d block.
+ * Class for a DelegateSvg, m_expr block.
  * Multiple ops.
  * For edython.
  */
 eYo.DelegateSvg.Binary.makeSubclass(
-  'm_expr_s3d',
+  'm_expr',
   eYo.DelegateSvg.Binary.makeModel(
     ['*', '//', '/', '%', '@'],
     'm_expr_all',
@@ -161,12 +161,12 @@ eYo.DelegateSvg.Binary.makeSubclass(
 )
 
 /**
- * Class for a DelegateSvg, a_expr_s3d block.
+ * Class for a DelegateSvg, a_expr block.
  * Multiple ops.
  * For edython.
  */
 eYo.DelegateSvg.Binary.makeSubclass(
-  'a_expr_s3d',
+  'a_expr',
   eYo.DelegateSvg.Binary.makeModel(
     ['+', '-'],
     'a_expr_all',
@@ -175,12 +175,12 @@ eYo.DelegateSvg.Binary.makeSubclass(
 )
 
 /**
- * Class for a DelegateSvg, shift_expr_s3d block.
+ * Class for a DelegateSvg, shift_expr block.
  * Multiple ops.
  * For edython.
  */
 eYo.DelegateSvg.Binary.makeSubclass(
-  'shift_expr_s3d',
+  'shift_expr',
   eYo.DelegateSvg.Binary.makeModel(
     ['<<', '>>'],
     'shift_expr_all',
@@ -189,12 +189,12 @@ eYo.DelegateSvg.Binary.makeSubclass(
 )
 
 /**
- * Class for a DelegateSvg, and_expr_s3d block.
+ * Class for a DelegateSvg, and_expr block.
  * Multiple ops.
  * For edython.
  */
 eYo.DelegateSvg.Binary.makeSubclass(
-  'and_expr_s3d',
+  'and_expr',
   eYo.DelegateSvg.Binary.makeModel(
     ['&'],
     'and_expr_all',
@@ -203,12 +203,12 @@ eYo.DelegateSvg.Binary.makeSubclass(
 )
 
 /**
- * Class for a DelegateSvg, xor_expr_s3d block.
+ * Class for a DelegateSvg, xor_expr block.
  * Multiple ops.
  * For edython.
  */
 eYo.DelegateSvg.Binary.makeSubclass(
-  'xor_expr_s3d',
+  'xor_expr',
   eYo.DelegateSvg.Binary.makeModel(
     ['^'],
     'xor_expr_all',
@@ -217,12 +217,12 @@ eYo.DelegateSvg.Binary.makeSubclass(
 )
 
 /**
- * Class for a DelegateSvg, or_expr_s3d block.
+ * Class for a DelegateSvg, or_expr block.
  * Multiple ops.
  * For edython.
  */
 eYo.DelegateSvg.Binary.makeSubclass(
-  'or_expr_s3d',
+  'or_expr',
   eYo.DelegateSvg.Binary.makeModel(
     ['|'],
     'or_expr_all',
@@ -282,11 +282,11 @@ eYo.DelegateSvg.Expr.object_comparison.prototype.makeTitle = function (block, op
 }
 
 /**
- * Class for a DelegateSvg, or_test_s3d block.
+ * Class for a DelegateSvg, or_test block.
  * Multiple ops.
  * For edython.
  */
-eYo.DelegateSvg.Binary.makeSubclass('or_test_s3d', {
+eYo.DelegateSvg.Binary.makeSubclass('or_test', {
   data: {
     operator: {
       all: ['or']
@@ -308,11 +308,11 @@ eYo.DelegateSvg.Binary.makeSubclass('or_test_s3d', {
 })
 
 /**
- * Class for a DelegateSvg, and_test_s3d block.
+ * Class for a DelegateSvg, and_test block.
  * Multiple ops.
  * For edython.
  */
-eYo.DelegateSvg.Binary.makeSubclass('and_test_s3d', {
+eYo.DelegateSvg.Binary.makeSubclass('and_test', {
   data: {
     operator: {
       all: ['and']
@@ -335,12 +335,12 @@ eYo.DelegateSvg.Binary.makeSubclass('and_test_s3d', {
 
 /// ////// power ////////
 /**
- * Class for a DelegateSvg, power_s3d block.
- * power_s3d ::= await_or_primary "**" u_expr
+ * Class for a DelegateSvg, power block.
+ * power ::= await_or_primary "**" u_expr
  * This one is not a binary.
  * For edython.
  */
-eYo.DelegateSvg.Operator.makeSubclass('power_s3d', {
+eYo.DelegateSvg.Operator.makeSubclass('power', {
   data: {
     operator: {
       init: '**'
@@ -361,16 +361,16 @@ eYo.DelegateSvg.Operator.makeSubclass('power_s3d', {
 })
 
 eYo.DelegateSvg.Operator.T3s = [
-  eYo.T3.Expr.u_expr_s3d,
-  eYo.T3.Expr.m_expr_s3d,
-  eYo.T3.Expr.a_expr_s3d,
-  eYo.T3.Expr.shift_expr_s3d,
-  eYo.T3.Expr.and_expr_s3d,
-  eYo.T3.Expr.xor_expr_s3d,
-  eYo.T3.Expr.or_expr_s3d,
+  eYo.T3.Expr.u_expr,
+  eYo.T3.Expr.m_expr,
+  eYo.T3.Expr.a_expr,
+  eYo.T3.Expr.shift_expr,
+  eYo.T3.Expr.and_expr,
+  eYo.T3.Expr.xor_expr,
+  eYo.T3.Expr.or_expr,
   eYo.T3.Expr.number_comparison,
   eYo.T3.Expr.object_comparison,
-  eYo.T3.Expr.or_test_s3d,
-  eYo.T3.Expr.and_test_s3d,
-  eYo.T3.Expr.power_s3d
+  eYo.T3.Expr.or_test,
+  eYo.T3.Expr.and_test,
+  eYo.T3.Expr.power
 ]

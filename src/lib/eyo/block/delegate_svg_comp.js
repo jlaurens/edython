@@ -153,10 +153,7 @@ eYo.DelegateSvg.Expr.makeSubclass('dict_comprehension', {
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('key_datum_s3d', {
-  xml: {
-    tag: 'key_datum',
-  },
+eYo.DelegateSvg.Expr.makeSubclass('key_datum', {
   tiles: {
     key: {
       order: 1,
@@ -181,5 +178,5 @@ eYo.DelegateSvg.Comprehension.T3s = [
   eYo.T3.Expr.comp_iter_list,
   eYo.T3.Expr.dict_comprehension,
   eYo.T3.Expr.term,
-  eYo.T3.Expr.key_datum_s3d,
+  eYo.T3.Expr.key_datum,
 ]

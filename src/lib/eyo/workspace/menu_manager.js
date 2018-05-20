@@ -725,7 +725,7 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
         goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
       )
     }
-  case eYo.T3.Expr.key_datum_s3d:
+  case eYo.T3.Expr.key_datum:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN(': ', 'eyo-code'),
       eYo.Do.createSPAN('…', 'eyo-code-placeholder'),
@@ -825,7 +825,7 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
       eYo.Do.createSPAN('as', 'eyo-code-reserved'),
       eYo.Do.createSPAN(' alias', 'eyo-code-placeholder')
     )
-  case eYo.T3.Expr.u_expr_s3d:
+  case eYo.T3.Expr.u_expr:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('-', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
@@ -1155,7 +1155,7 @@ eYo.MenuManager.prototype.populate_movable_parent = function (block) {
     }
   }
   F.call(this, [
-    eYo.T3.Expr.u_expr_s3d,
+    eYo.T3.Expr.u_expr,
     [eYo.T3.Expr.call_expr, eYo.Key.PRIMARY],
     eYo.T3.Expr.slicing,
     [eYo.T3.Expr.attributeref, eYo.Key.ATTRIBUTE],
@@ -1182,7 +1182,7 @@ eYo.MenuManager.prototype.populate_movable_parent = function (block) {
     eYo.T3.Expr.parent_module,
     eYo.T3.Expr.dotted_name_as,
     eYo.T3.Expr.identifier_as,
-    [eYo.T3.Expr.key_datum_s3d, eYo.Key.NAME],
+    [eYo.T3.Expr.key_datum, eYo.Key.NAME],
     [eYo.T3.Expr.term, eYo.Key.NAME],
     [eYo.T3.Expr.proper_slice, eYo.Key.UPPER_BOUND],
     [eYo.T3.Expr.proper_slice, eYo.Key.STRIDE],

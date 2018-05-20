@@ -91,9 +91,8 @@ non_void_starred_item_list_comprehensive ::= starred_item | comprehension
 <pre>
 key_datum_list ::= key_datum_all ("," key_datum_all)* [","]
 key_datum_list_comprehensive ::= key_datum_all | dict_comprehension
-key_datum ::= REMOVE
-key_datum_all ::= or_expr_star_star | key_datum_s3d
-key_datum_s3d ::=  expression ":" expression
+key_datum_all ::= or_expr_star_star | key_datum
+key_datum ::=  expression ":" expression
 or_expr_star_star ::=  "**" or_expr_all
 </pre>
 The argument list is managed by the consolidator
@@ -128,34 +127,26 @@ starred_expression/starred ::= one of expression_star, expression_star_star, or_
 
 
 <pre>
-power ::= REMOVE
-power_s3d ::= await_or_primary "**" u_expr_all
-power_all ::= await_or_primary | power_s3d
+power ::= await_or_primary "**" u_expr_all
+power_all ::= await_or_primary | power
 await_or_primary ::= primary
 await_expr       ::= REMOVE
-u_expr ::= REMOVE
-u_expr_all       ::=  power_all | u_expr_s3d
-u_expr_s3d       ::= "-" u_expr_all | "+" u_expr_all | "~" u_expr_all
-m_expr ::= REMOVE
-m_expr_all        ::=  u_expr_all | m_expr_s3d
-m_expr_s3d       ::= m_expr_all "*" u_expr_all | m_expr_all "@" m_expr_all |
+u_expr_all       ::=  power_all | u_expr
+u_expr       ::= "-" u_expr_all | "+" u_expr_all | "~" u_expr_all
+m_expr_all        ::=  u_expr_all | m_expr
+m_expr       ::= m_expr_all "*" u_expr_all | m_expr_all "@" m_expr_all |
             m_expr_all "//" u_expr_all | m_expr_all "/" u_expr_all |
             m_expr_all "%" u_expr_all
-a_expr ::= REMOVE
-a_expr_all       ::=  m_expr_all | a_expr_s3d
-a_expr_s3d       ::=  a_expr_all "+" m_expr_all | a_expr_all "-" m_expr_all
-shift_expr ::= REMOVE
-shift_expr_all   ::=  a_expr_all | shift_expr_s3d
-shift_expr_s3d   ::=  shift_expr_all ( "<<" | ">>" ) a_expr_all
-and_expr ::= REMOVE
-and_expr_all     ::=  shift_expr_all | and_expr_s3d
-and_expr_s3d     ::=  and_expr_all "&" shift_expr_all
-xor_expr ::= REMOVE
-xor_expr_all     ::=  and_expr_all   | xor_expr_s3d
-xor_expr_s3d     ::=  xor_expr_all "^" and_expr_all
-or_expr ::= REMOVE
-or_expr_all      ::=  xor_expr_all   | or_expr_s3d
-or_expr_s3d      ::=  or_expr_all "|" xor_expr_all
+a_expr_all       ::=  m_expr_all | a_expr
+a_expr       ::=  a_expr_all "+" m_expr_all | a_expr_all "-" m_expr_all
+shift_expr_all   ::=  a_expr_all | shift_expr
+shift_expr   ::=  shift_expr_all ( "<<" | ">>" ) a_expr_all
+and_expr_all     ::=  shift_expr_all | and_expr
+and_expr     ::=  and_expr_all "&" shift_expr_all
+xor_expr_all     ::=  and_expr_all   | xor_expr
+xor_expr     ::=  xor_expr_all "^" and_expr_all
+or_expr_all      ::=  xor_expr_all   | or_expr
+or_expr      ::=  or_expr_all "|" xor_expr_all
 </pre>
 The await_expr is just a primary with an await attribute
 <pre>
@@ -165,15 +156,12 @@ object_comparison/comparison ::= comparison comp_operator comparison
 comp_operator ::= REMOVE
 </pre>
 <pre>
-not_test ::= REMOVE
-not_test_all     ::=  comparison     | not_test_s3d
-not_test_s3d     ::=  "not" not_test_all
-and_test ::= REMOVE
-and_test_all     ::=  not_test_all   | and_test_s3d
-and_test_s3d     ::=  and_test_all "and" not_test_all
-or_test ::= REMOVE
-or_test_all      ::=  and_test_all   | or_test_s3d
-or_test_s3d      ::=  or_test_all "or" and_test_all
+not_test_all     ::=  comparison     | not_test
+not_test     ::=  "not" not_test_all
+and_test_all     ::=  not_test_all   | and_test
+and_test     ::=  and_test_all "and" not_test_all
+or_test_all      ::=  and_test_all   | or_test
+or_test      ::=  or_test_all "or" and_test_all
 </pre>
 <pre>
 expression             ::=  or_test_all | conditional_expression | lambda_expr

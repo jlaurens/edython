@@ -84,17 +84,17 @@ eYo.DelegateSvg.Expr.workspaceBlocks = [
   eYo.T3.Expr.shortbytesliteral,
   eYo.T3.Expr.longstringliteral,
   eYo.T3.Expr.longbytesliteral,
-  eYo.T3.Expr.u_expr_s3d,
-  eYo.T3.Expr.not_test_s3d,
-  eYo.T3.Expr.power_s3d,
-  eYo.T3.Expr.m_expr_s3d,
-  eYo.T3.Expr.a_expr_s3d,
-  eYo.T3.Expr.shift_expr_s3d,
-  eYo.T3.Expr.and_expr_s3d,
-  eYo.T3.Expr.xor_expr_s3d,
-  eYo.T3.Expr.or_expr_s3d,
-  eYo.T3.Expr.or_test_s3d,
-  eYo.T3.Expr.and_test_s3d,
+  eYo.T3.Expr.u_expr,
+  eYo.T3.Expr.not_test,
+  eYo.T3.Expr.power,
+  eYo.T3.Expr.m_expr,
+  eYo.T3.Expr.a_expr,
+  eYo.T3.Expr.shift_expr,
+  eYo.T3.Expr.and_expr,
+  eYo.T3.Expr.xor_expr,
+  eYo.T3.Expr.or_expr,
+  eYo.T3.Expr.or_test,
+  eYo.T3.Expr.and_test,
   eYo.T3.Expr.comprehension,
   eYo.T3.Expr.comp_for,
   eYo.T3.Expr.comp_if,
@@ -148,7 +148,7 @@ eYo.DelegateSvg.Expr.comprehension.workspaceBlocks = [
   eYo.T3.Expr.target_list,
   eYo.T3.Expr.comp_iter_list,
   eYo.T3.Expr.comprehension,
-  eYo.T3.Expr.key_datum_s3d,
+  eYo.T3.Expr.key_datum,
   eYo.T3.Expr.dict_comprehension
 ]
 
@@ -161,24 +161,24 @@ eYo.DelegateSvg.Expr.dict_comprehension.workspaceBlocks = [
   eYo.T3.Expr.comp_iter_list
 ]
 
-eYo.DelegateSvg.Expr.a_expr_s3d.workspaceBlocks =
-eYo.DelegateSvg.Expr.m_expr_s3d.workspaceBlocks =
-eYo.DelegateSvg.Expr.u_expr_s3d.workspaceBlocks = [
+eYo.DelegateSvg.Expr.a_expr.workspaceBlocks =
+eYo.DelegateSvg.Expr.m_expr.workspaceBlocks =
+eYo.DelegateSvg.Expr.u_expr.workspaceBlocks = [
   eYo.T3.Expr.term,
-  eYo.T3.Expr.a_expr_s3d,
-  eYo.T3.Expr.m_expr_s3d,
-  eYo.T3.Expr.u_expr_s3d
+  eYo.T3.Expr.a_expr,
+  eYo.T3.Expr.m_expr,
+  eYo.T3.Expr.u_expr
 ]
 
-eYo.DelegateSvg.Expr.shift_expr_s3d.workspaceBlocks =
-eYo.DelegateSvg.Expr.and_expr_s3d.workspaceBlocks =
-eYo.DelegateSvg.Expr.xor_expr_s3d.workspaceBlocks =
-eYo.DelegateSvg.Expr.or_expr_s3d.workspaceBlocks = [
+eYo.DelegateSvg.Expr.shift_expr.workspaceBlocks =
+eYo.DelegateSvg.Expr.and_expr.workspaceBlocks =
+eYo.DelegateSvg.Expr.xor_expr.workspaceBlocks =
+eYo.DelegateSvg.Expr.or_expr.workspaceBlocks = [
   eYo.T3.Expr.term,
-  eYo.T3.Expr.shift_expr_s3d,
-  eYo.T3.Expr.and_expr_s3d,
-  eYo.T3.Expr.xor_expr_s3d,
-  eYo.T3.Expr.or_expr_s3d
+  eYo.T3.Expr.shift_expr,
+  eYo.T3.Expr.and_expr,
+  eYo.T3.Expr.xor_expr,
+  eYo.T3.Expr.or_expr
 ]
 
 eYo.DelegateSvg.Expr.number_comparison.workspaceBlocks =
@@ -188,11 +188,11 @@ eYo.DelegateSvg.Expr.object_comparison.workspaceBlocks = [
   eYo.T3.Expr.object_comparison
 ]
 
-eYo.DelegateSvg.Expr.and_test_s3d.workspaceBlocks =
-eYo.DelegateSvg.Expr.or_test_s3d.workspaceBlocks = [
+eYo.DelegateSvg.Expr.and_test.workspaceBlocks =
+eYo.DelegateSvg.Expr.or_test.workspaceBlocks = [
   eYo.T3.Expr.term,
-  eYo.T3.Expr.and_test_s3d,
-  eYo.T3.Expr.or_test_s3d
+  eYo.T3.Expr.and_test,
+  eYo.T3.Expr.or_test
 ]
 
 eYo.DelegateSvg.Expr.optional_expression_list.workspaceBlocks = [
@@ -202,7 +202,7 @@ eYo.DelegateSvg.Expr.optional_expression_list.workspaceBlocks = [
 ]
 
 eYo.DelegateSvg.Expr.key_datum_list_comprehensive.workspaceBlocks = [
-  eYo.T3.Expr.key_datum_s3d,
+  eYo.T3.Expr.key_datum,
   eYo.T3.Expr.dict_comprehension,
   eYo.T3.Expr.key_datum_list_comprehensive
 ]
@@ -388,8 +388,8 @@ eYo.DelegateSvg.Stmt.raise_stmt.workspaceBlocks = eYo.Do.arraysMerged([
 
 // in progress
 
-eYo.DelegateSvg.Expr.power_s3d.workspaceBlocks = eYo.Do.arraysMerged([
-  eYo.T3.Expr.power_s3d
+eYo.DelegateSvg.Expr.power.workspaceBlocks = eYo.Do.arraysMerged([
+  eYo.T3.Expr.power
 ], eYo.T3.Expr.Check.await_or_primary, eYo.T3.Expr.Check.u_expr_all)
 
 eYo.DelegateSvg.Expr.conditional_expression.workspaceBlocks = [
@@ -410,7 +410,7 @@ eYo.Do.arraysMerged(
     eYo.T3.Expr.parenth_form,
     eYo.T3.Expr.non_void_starred_item_list_comprehensive,
     eYo.T3.Expr.set_display,
-    eYo.T3.Expr.key_datum_s3d,
+    eYo.T3.Expr.key_datum,
     eYo.T3.Expr.key_datum_list_comprehensive,
     eYo.T3.Expr.dict_display
   ],

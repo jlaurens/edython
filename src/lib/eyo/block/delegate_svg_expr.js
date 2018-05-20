@@ -518,11 +518,11 @@ eYo.DelegateSvg.Expr.starred_expression.prototype.populateContextMenuFirst_ = fu
 }
 
 /**
- * Class for a DelegateSvg, not_test_s3d.
+ * Class for a DelegateSvg, not_test.
  * This is not an Operator subclass because 'not' is a reserved word.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('not_test_s3d', {
+eYo.DelegateSvg.Expr.makeSubclass('not_test', {
   tiles: {
     expression: {
       order: 1,
@@ -603,7 +603,7 @@ eYo.DelegateSvg.Expr.T3s = [
   eYo.T3.Expr.proper_slice,
   eYo.T3.Expr.conditional_expression,
   eYo.T3.Expr.starred_expression,
-  eYo.T3.Expr.not_test_s3d,
+  eYo.T3.Expr.not_test,
   eYo.T3.Expr.builtin_object,
   eYo.T3.Expr.any
 ]

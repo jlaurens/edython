@@ -313,7 +313,7 @@ eYo.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
   * key_datum ::= expression ":" expression
   * parameter_defined ::= parameter "=" expression
   * (with parameter ::= identifier | identifier_annotated)
-  * keyword_item_s3d ::= identifier "=" expression
+  * keyword_item ::= identifier "=" expression
   * dotted_name_as ::= module "as" identifier
   * identifier_as ::= identifier "as" identifier
   */
@@ -356,7 +356,7 @@ eYo.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
       break
     case model.NAME_ANNOTATION:
       // identifier_annotated ::= identifier ":" expression
-      check = [eYo.T3.Expr.identifier_annotated, eYo.T3.Expr.key_datum_s3d]
+      check = [eYo.T3.Expr.identifier_annotated, eYo.T3.Expr.key_datum]
       break
     case model.STAR_NAME_ANNOTATION:
       check = [eYo.T3.Expr.parameter_star]

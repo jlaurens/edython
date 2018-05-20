@@ -579,14 +579,14 @@ var Ks = {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
-      if (parent && (parent.type === eYo.T3.Expr.not_test_s3d)) {
+      if (parent && (parent.type === eYo.T3.Expr.not_test)) {
         B.eyo.replaceBlock(B, parent)
         return
       }
       if (eYo.SelectedConnection.get()) {
-        B.eyo.insertBlockOfType(B, eYo.T3.Expr.not_test_s3d)
+        B.eyo.insertBlockOfType(B, eYo.T3.Expr.not_test)
       } else {
-        B.eyo.insertParent(B, eYo.T3.Expr.not_test_s3d)
+        B.eyo.insertParent(B, eYo.T3.Expr.not_test)
       }
     }
   },
@@ -594,14 +594,14 @@ var Ks = {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
-      if (parent && (parent.type === eYo.T3.Expr.u_expr_s3d) && parent.eyo.data.subtype.get() === '-') {
+      if (parent && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.data.subtype.get() === '-') {
         B.eyo.replaceBlock(B, parent)
         return
       }
       if (eYo.SelectedConnection.get()) {
-        B.eyo.insertBlockOfType(B, eYo.T3.Expr.u_expr_s3d, '-')
+        B.eyo.insertBlockOfType(B, eYo.T3.Expr.u_expr, '-')
       } else {
-        B.eyo.insertParent(B, eYo.T3.Expr.u_expr_s3d, '-')
+        B.eyo.insertParent(B, eYo.T3.Expr.u_expr, '-')
       }
     }
   },
@@ -609,14 +609,14 @@ var Ks = {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
-      if (parent && (parent.type === eYo.T3.Expr.u_expr_s3d) && parent.eyo.data.subtype.get() === '~') {
+      if (parent && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.data.subtype.get() === '~') {
         B.eyo.replaceBlock(B, parent)
         return
       }
       if (eYo.SelectedConnection.get()) {
-        B.eyo.insertBlockOfType(B, eYo.T3.Expr.u_expr_s3d, '~')
+        B.eyo.insertBlockOfType(B, eYo.T3.Expr.u_expr, '~')
       } else {
-        B.eyo.insertParent(B, eYo.T3.Expr.u_expr_s3d, '~')
+        B.eyo.insertParent(B, eYo.T3.Expr.u_expr, '~')
       }
     }
   }
@@ -627,55 +627,55 @@ for (K in Ks) {
 }
 Ks = {
   '+': {
-    type: eYo.T3.Expr.a_expr_s3d,
+    type: eYo.T3.Expr.a_expr,
     subtype: '+',
     input: eYo.Key.LHS
   },
   '-': {
-    type: eYo.T3.Expr.a_expr_s3d,
+    type: eYo.T3.Expr.a_expr,
     subtype: '-',
     input: eYo.Key.LHS
   },
   '*': {
-    type: eYo.T3.Expr.m_expr_s3d,
+    type: eYo.T3.Expr.m_expr,
     subtype: '*',
     input: eYo.Key.LHS
   },
   '//': {
-    type: eYo.T3.Expr.m_expr_s3d,
+    type: eYo.T3.Expr.m_expr,
     subtype: '//',
     input: eYo.Key.LHS
   },
   '/': {
-    type: eYo.T3.Expr.m_expr_s3d,
+    type: eYo.T3.Expr.m_expr,
     subtype: '/',
     input: eYo.Key.LHS
   },
   '%': {
-    type: eYo.T3.Expr.m_expr_s3d,
+    type: eYo.T3.Expr.m_expr,
     subtype: '%',
     input: eYo.Key.LHS
   },
   '@': {
-    type: eYo.T3.Expr.m_expr_s3d,
+    type: eYo.T3.Expr.m_expr,
     subtype: '@',
     input: eYo.Key.LHS
   },
   '<<': {
-    type: eYo.T3.Expr.shift_expr_s3d,
+    type: eYo.T3.Expr.shift_expr,
     subtype: '<<',
     input: eYo.Key.LHS
   },
   '>>': {
-    type: eYo.T3.Expr.shift_expr_s3d,
+    type: eYo.T3.Expr.shift_expr,
     subtype: '>>',
     input: eYo.Key.LHS
   },
-  '&': eYo.T3.Expr.and_expr_s3d,
-  '^': eYo.T3.Expr.xor_expr_s3d,
-  '|': eYo.T3.Expr.or_expr_s3d,
-  'or': eYo.T3.Expr.or_test_s3d,
-  'and': eYo.T3.Expr.and_test_s3d
+  '&': eYo.T3.Expr.and_expr,
+  '^': eYo.T3.Expr.xor_expr,
+  '|': eYo.T3.Expr.or_expr,
+  'or': eYo.T3.Expr.or_test,
+  'and': eYo.T3.Expr.and_test
 }
 for (K in Ks) {
   eYo.KeyHandler.register('… ' + K + ' …', Ks[K])

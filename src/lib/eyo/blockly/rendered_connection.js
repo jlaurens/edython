@@ -541,7 +541,6 @@ eYo.Connection.prototype.connect_ = function (childC8n) {
       }
     }
     child.eyo.makeBlockWrapped_(child)
-    child.id = parent.id + '.wrapped:' + parentC8n.eyo.name_
   } else {
     // if this connection was selected, the newly connected block should be selected too
     if (parentC8n === eYo.SelectedConnection.get()) {

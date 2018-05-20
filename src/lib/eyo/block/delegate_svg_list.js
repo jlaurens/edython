@@ -361,7 +361,7 @@ eYo.DelegateSvg.List.T3s = [
   eYo.T3.Expr.starred_expression,
   eYo.T3.Expr.comprehension,
   eYo.T3.Expr.dict_comprehension,
-  eYo.T3.Expr.key_datum_s3d,
+  eYo.T3.Expr.key_datum,
   eYo.T3.Expr.optional_expression_list,
   eYo.T3.Expr.non_void_expression_list,
   eYo.T3.Expr.starred_item_list,
