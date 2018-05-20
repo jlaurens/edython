@@ -273,3 +273,8 @@ body {
   padding: 0 1px;
   width: 100%
 }
+
+.blocklyMainBackground {
+  stroke-width: 5;
+  stroke: none;
+}

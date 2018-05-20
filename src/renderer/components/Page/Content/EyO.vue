@@ -42,6 +42,7 @@
       var self = this
       this.$nextTick(function () {
         eYo.bus.$on('size-did-change', self.resize)
+        self.resize()
       })
     }
   }

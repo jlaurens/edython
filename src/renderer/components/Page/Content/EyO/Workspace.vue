@@ -31,6 +31,26 @@
       eYo.KeyHandler.setup(document)
       var b = eYo.DelegateSvg.newBlockReady(eYo.workspace, eYo.T3.Stmt.start_stmt)
       b.moveBy(50, 150)
+      function temp () {
+        var flyout = new eYo.Flyout({parentWorkspace: eYo.workspace})
+        goog.dom.insertSiblingAfter(
+          flyout.createDom('svg'), eYo.workspace.getParentSvg())
+        // workspace.flyout_ = flyout does not work, flyout too big
+        flyout.init(eYo.workspace)
+        flyout.autoClose = false
+        Blockly.Events.disable()
+        try {
+          flyout.show(eYo.DelegateSvg.T3s)//, seYo.T3.Expr.key_datum, eYo.T3.Stmt.if_part
+        } catch (err) {
+          console.log(err)
+        } finally {
+          Blockly.Events.enable()
+        }
+        // eYo.workspace.flyout_ = flyout
+        eYo.flyout = flyout
+      }
+      temp()
+      eYo.workspace.render()
     }
   }
 </script>

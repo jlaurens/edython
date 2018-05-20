@@ -39,7 +39,7 @@ eYo.DelegateSvg.Expr.makeSubclass('comprehension', {
       fields: {
         label: 'in'
       },
-      check: eYo.T3.Expr.Check.or_test,
+      check: eYo.T3.Expr.Check.or_test_all,
       hole_value: 'name'
     },
     for_if: {
@@ -68,7 +68,7 @@ eYo.DelegateSvg.Expr.makeSubclass('comp_for', {
       fields: {
         label: 'in'
       },
-      check: eYo.T3.Expr.Check.or_test,
+      check: eYo.T3.Expr.Check.or_test_all,
       hole_value: 'name'
     }
   }
@@ -138,7 +138,7 @@ eYo.DelegateSvg.Expr.makeSubclass('dict_comprehension', {
       fields: {
         label: 'in'
       },
-      check: eYo.T3.Expr.Check.or_test,
+      check: eYo.T3.Expr.Check.or_test_all,
       hole_value: 'name'
     },
     for_if: { // that name is so ugly

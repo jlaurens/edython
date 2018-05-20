@@ -408,7 +408,7 @@ eYo.DelegateSvg.Expr.makeSubclass('conditional_expression', {
   tiles: {
     expression: {
       order: 1,
-      check: eYo.T3.Expr.Check.or_test,
+      check: eYo.T3.Expr.Check.or_test_all,
       hole_value: 'name'
     },
     if: {
@@ -416,7 +416,7 @@ eYo.DelegateSvg.Expr.makeSubclass('conditional_expression', {
       fields: {
         label: 'if'
       },
-      check: eYo.T3.Expr.Check.or_test,
+      check: eYo.T3.Expr.Check.or_test_all,
       hole_value: 'condition'
     },
     else: {

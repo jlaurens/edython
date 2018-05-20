@@ -10,7 +10,9 @@ rm build/base/edython.js
 
 GIT_HEAD="$(git rev-list HEAD | wc -l | sed -e 's/^[ \t]*//')"
 TODAY="$(date -u)"
-
+# In the next command, the '--js ...' lines
+# with no indentation are built automatically
+# by helper/tool3.py
 java -jar "$COMPILER"\
   --warning_level DEFAULT \
   --define="goog.global.CLOSURE_NO_DEPS=true"\
@@ -30,6 +32,7 @@ java -jar "$COMPILER"\
 --js "src/lib/closure-library/closure/goog/disposable/idisposable.js" \
 --js "src/lib/closure-library/closure/goog/dom/htmlelement.js" \
 --js "src/lib/closure-library/closure/goog/dom/nodetype.js" \
+--js "src/lib/closure-library/closure/goog/dom/animationframe/polyfill.js" \
 --js "src/lib/closure-library/closure/goog/events/eventid.js" \
 --js "src/lib/closure-library/closure/goog/fs/url.js" \
 --js "src/lib/closure-library/closure/goog/functions/functions.js" \
@@ -53,6 +56,7 @@ java -jar "$COMPILER"\
 --js "src/lib/closure-library/closure/goog/a11y/aria/datatables.js" \
 --js "src/lib/closure-library/closure/goog/asserts/asserts.js" \
 --js "src/lib/closure-library/closure/goog/dom/tagname.js" \
+--js "src/lib/closure-library/closure/goog/dom/animationframe/animationframe.js" \
 --js "src/lib/closure-library/closure/goog/dom/tags.js" \
 --js "src/lib/closure-library/closure/goog/events/listenable.js" \
 --js "src/lib/closure-library/closure/goog/labs/useragent/util.js" \
@@ -116,6 +120,7 @@ java -jar "$COMPILER"\
 --js "src/lib/closure-library/closure/goog/a11y/aria/aria.js" \
 --js "src/lib/closure-library/closure/goog/cssom/cssom.js" \
 --js "src/lib/closure-library/closure/goog/dom/tagiterator.js" \
+--js "src/lib/closure-library/closure/goog/dom/iframe.js" \
 --js "src/lib/closure-library/closure/goog/events/focushandler.js" \
 --js "src/lib/closure-library/closure/goog/events/keyhandler.js" \
 --js "src/lib/closure-library/closure/goog/style/style.js" \
@@ -125,14 +130,18 @@ java -jar "$COMPILER"\
 --js "src/lib/closure-library/closure/goog/style/bidi.js" \
 --js "src/lib/closure-library/closure/goog/ui/component.js" \
 --js "src/lib/closure-library/closure/goog/ui/containerrenderer.js" \
+--js "src/lib/closure-library/closure/goog/ui/modalariavisibilityhelper.js" \
 --js "src/lib/closure-library/closure/goog/ui/popupbase.js" \
+--js "src/lib/closure-library/closure/goog/fx/dragger.js" \
 --js "src/lib/closure-library/closure/goog/positioning/positioning.js" \
 --js "src/lib/closure-library/closure/goog/ui/controlrenderer.js" \
 --js "src/lib/closure-library/closure/goog/ui/datepicker.js" \
+--js "src/lib/closure-library/closure/goog/ui/modalpopup.js" \
 --js "src/lib/closure-library/closure/goog/ui/tree/basenode.js" \
 --js "src/lib/closure-library/closure/goog/positioning/anchoredposition.js" \
 --js "src/lib/closure-library/closure/goog/positioning/clientposition.js" \
 --js "src/lib/closure-library/closure/goog/ui/control.js" \
+--js "src/lib/closure-library/closure/goog/ui/dialog.js" \
 --js "src/lib/closure-library/closure/goog/ui/menuheaderrenderer.js" \
 --js "src/lib/closure-library/closure/goog/ui/menuitemrenderer.js" \
 --js "src/lib/closure-library/closure/goog/ui/menuseparatorrenderer.js" \
@@ -229,14 +238,14 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/eyo.js" \
 --js "src/lib/eyo/block/delegate_svg_final.js" \
 --js "src/lib/eyo/core/const.js" \
---js "src/lib/eyo/core/data.js" \
 --js "src/lib/eyo/msg/js/base.js" \
 --js "src/lib/eyo/core/T3.js" \
 --js "src/lib/eyo/core/font.js" \
---js "src/lib/eyo/core/data-test.js" \
---js "src/lib/eyo/core/do.js" \
 --js "src/lib/eyo/block/helper.js" \
 --js "src/lib/eyo/core/T3_all.js" \
+--js "src/lib/eyo/core/data.js" \
+--js "src/lib/eyo/core/do.js" \
+--js "src/lib/eyo/core/data-test.js" \
 --js "src/lib/eyo/block/delegate.js" \
 --js "src/lib/eyo/blockly/events.js" \
 --js "src/lib/eyo/core/ui.js" \

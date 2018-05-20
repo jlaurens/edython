@@ -193,6 +193,6 @@ if __name__ != "main":
         out_lines.append(
             '      <script src="../../src/' + pathlib.Path(r).relative_to('src').as_posix() + '"></script>\n')
 
-    p_out = pathBuild / 'deps-wev-dev.txt'
+    p_out = pathBuild / 'deps-web-dev.txt'
     print(p_out)
     p_out.write_text(''.join(out_lines))

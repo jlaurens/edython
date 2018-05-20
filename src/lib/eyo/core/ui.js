@@ -161,6 +161,10 @@ eYo.setup.register(-1, function () {
 })
 
 eYo.setup.register(function () {
+  eYo.Style.insertCssRuleAt('.blocklyMainBackground { stroke-width: 5;stroke: none; }')
+}, 'OVERRIDE')
+
+eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt('.eyo-block .blocklyText, .eyo-var, .eyo-label, .eyo-code, .eyo-code-reserved, .eyo-code-builtin, .eyo-code-comment, .eyo-code-placeholder, .eyo-sharp-group{ ' + eYo.Font.style + ';}')
   eYo.Style.insertCssRuleAt('.eyo-error.eyo-path-selected, .eyo-error.eyo-path-shape, .eyo-error.eyo-path-contour {stroke: ' + eYo.Style.Path.Error.colour + ';}')
   var w = eYo.Style.Path.Selected.width

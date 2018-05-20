@@ -33,9 +33,71 @@ goog.require('goog.math.Coordinate');
  * @constructor
  */
 eYo.Flyout = function(workspaceOptions) {
-  eYo.Flyout.superClass_.constructor.call(this, workspaceOptions);
-};
-goog.inherits(eYo.Flyout, Blockly.VerticalFlyout);
+  eYo.Flyout.superClass_.constructor.call(this, workspaceOptions)
+  this.closed = false
+}
+goog.inherits(eYo.Flyout, Blockly.VerticalFlyout)
+
+eYo.Flyout.prototype.BUTTON_RADIUS = 12
+eYo.Flyout.prototype.BUTTON_MARGIN = 2
+eYo.Flyout.prototype.CORNER_RADIUS = 0
+
+/**
+ * Creates the flyout's DOM.  Only needs to be called once.  The flyout can
+ * either exist as its own svg element or be a g element nested inside a
+ * separate svg element.
+ * @param {string} tagName The type of tag to put the flyout in. This
+ *     should be <svg> or <g>.
+ * @return {!Element} The flyout's SVG group.
+ */
+eYo.Flyout.prototype.positionControlAt_ = function(width, height, x, y) {
+  var radius = this.BUTTON_RADIUS
+  var margin = this.BUTTON_MARGIN
+  var big_radius = radius + margin
+  var h = radius * 0.866
+  if (!this.buttonGroup_) {
+    this.buttonGroup_ = Blockly.utils.createSvgElement('svg', {
+      'class': 'eyo-flyout-button',
+    }, null);
+    this.onButtonDownWrapper_ = Blockly.bindEventWithChecks_(this.buttonGroup_, 'mousedown',
+    this, this.onButtonDown_);
+    this.onButtonEnterWrapper_ = Blockly.bindEventWithChecks_(this.buttonGroup_, 'mouseenter',
+    this, this.onButtonEnter_);
+    this.onButtonLeaveWrapper_ = Blockly.bindEventWithChecks_(this.buttonGroup_, 'mouseleave',
+    this, this.onButtonLeave_);
+    this.onButtonUpWrapper_ = Blockly.bindEventWithChecks_(this.buttonGroup_, 'mouseup',
+    this, this.onButtonUp_);
+    this.buttonGroup_.setAttribute('width', this.BUTTON_RADIUS+big_radius);
+    this.buttonGroup_.setAttribute('height', 2*big_radius);  
+    var path = Blockly.utils.createSvgElement('path', {
+      class: 'eyo-button-background'
+    }, this.buttonGroup_)
+    path.setAttribute('d', [
+      'M 0,0',
+      'l',this.CORNER_RADIUS, '0',
+      'a', big_radius, big_radius, '0,0,1,0,', 2*big_radius,
+      'l', -this.CORNER_RADIUS, '0', ' z',
+    ].join(' '))
+    this.buttonPath_ = Blockly.utils.createSvgElement('path', {
+      class: 'eyo-button-image'
+    }, this.buttonGroup_)
+    goog.dom.insertSiblingBefore(this.buttonGroup_, this.svgGroup_)
+  }
+  if (this.closed) {
+    this.buttonPath_.setAttribute('d', [
+      'M', h + this.CORNER_RADIUS, big_radius,
+      'l', -h, - radius/2,
+      'l 0', radius, 'z'
+    ].join(' '))
+  } else {
+    this.buttonPath_.setAttribute('d', [
+      'M', this.CORNER_RADIUS, big_radius,
+      'l', h, - radius/2,
+      'l 0', radius, 'z'
+    ].join(' '))
+  }
+  this.buttonGroup_.setAttribute('transform', 'translate(' + (x + this.width_ - this.CORNER_RADIUS) + ', ' + y + ')')
+}
 
 /**
  * Creates the flyout's DOM.  Only needs to be called once.  The flyout can
@@ -64,38 +126,17 @@ eYo.Flyout.prototype.createDom = function(tagName) {
   goog.dom.classlist.remove(g, 'blocklyWorkspace')
   goog.dom.classlist.add(g, 'eyo-workspace')
   this.svgGroup_.appendChild(g);
-  this.buttonGroup_ = Blockly.utils.createSvgElement('g', {
-    'class': 'eyo-flyout-button',
-  }, this.svgGroup_);
-  var side = 16 // the side
-  var radius = side / 1.732
-  var circle = Blockly.utils.createSvgElement('circle', {
-    'r': radius+3,
-    cx: radius+3,
-    cy: radius+3,
-  }, this.buttonGroup_)
-  this.buttonGroup_.setAttribute('transform', 'translate(8,8)')
-  var path = Blockly.utils.createSvgElement('path', {}, this.buttonGroup_)
-  var d = 'm'+(3)+','+(radius+3)+' l'+(side*0.866)+','+(side/2)+' l0,-'+side+' z'
-  path.setAttribute('d', d)
-  this.onButtonDownWrapper_ = Blockly.bindEventWithChecks_(this.buttonGroup_, 'mousedown',
-  this, this.onButtonDown_);
-  this.onButtonEnterWrapper_ = Blockly.bindEventWithChecks_(this.buttonGroup_, 'mouseenter',
-  this, this.onButtonEnter_);
-  this.onButtonLeaveWrapper_ = Blockly.bindEventWithChecks_(this.buttonGroup_, 'mouseleave',
-  this, this.onButtonLeave_);
-  this.onButtonUpWrapper_ = Blockly.bindEventWithChecks_(this.buttonGroup_, 'mouseup',
-  this, this.onButtonUp_);
   return this.svgGroup_;
 };
 eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt('.eyo-flyout { position: absolute; z-index: 20; }')
   eYo.Style.insertCssRuleAt('.eyo-flyout-background { fill: #ddd; fill-opacity: .8; }')
   eYo.Style.insertCssRuleAt('.eyo-flyout-scrollbar { z-index: 30; }')
-  eYo.Style.insertCssRuleAt('.eyo-flyout-button { pointer-events: all; z-index: 30;}')
-  eYo.Style.insertCssRuleAt('.eyo-flyout-button path { fill:rgb(221,221,221); }')
-  eYo.Style.insertCssRuleAt('.eyo-flyout-button.eyo-flash path { fill:rgb(167,167,167); }')
-  eYo.Style.insertCssRuleAt('.eyo-flyout-button circle { fill:white; }')
+  eYo.Style.insertCssRuleAt('.eyo-flyout-button { pointer-events: all; z-index: 40; display: block; position: absolute;}')
+  eYo.Style.insertCssRuleAt('.eyo-flyout-button .eyo-button-background { fill:rgb(221,221,221);  fill-opacity: 0.8;}')
+  eYo.Style.insertCssRuleAt('.eyo-flyout-button .eyo-button-image { fill: white; }',
+  eYo.Style.insertCssRuleAt('.eyo-flyout-button.eyo-flash .eyo-button-image { fill:rgb(167,167,167);  fill-opacity: 0.8;}')
+)
 })
 
 /**
@@ -120,7 +161,10 @@ eYo.Flyout.prototype.dispose = function() {
     Blockly.unbindEvent_(this.onButtonUpWrapper_);
     this.onButtonUpWrapper_ = undefined
   }
-  this.buttonGroup_ = undefined
+  if (this.buttonGroup_) {
+    goog.dom.remove(this.buttonGroup_)
+    this.buttonGroup_ = undefined
+  }
 };
 
 /**
@@ -141,7 +185,6 @@ eYo.Flyout.prototype.onButtonDown_ = function(e) {
  * @private
  */
 eYo.Flyout.prototype.onButtonEnter_ = function(e) {
-  console.log('ENTERED')
   goog.dom.classlist.add(this.buttonGroup_, 'eyo-flash')
 };
 
@@ -168,7 +211,7 @@ eYo.Flyout.prototype.onButtonUp_ = function(e) {
   }
   e.stopPropagation()
   e.preventDefault()
-  this.slide(true)
+  this.slide(!this.closed)
 };
 
 /**
@@ -284,7 +327,6 @@ eYo.Flyout.prototype.show = function(xmlList) {
 
   // Correctly position the flyout's scrollbar when it opens.
   this.position();
-
   this.reflowWrapper_ = this.reflow.bind(this);
   this.workspace_.addChangeListener(this.reflowWrapper_);
 }
@@ -318,11 +360,12 @@ eYo.Flyout.prototype.addBlockListeners_ = function(root, block, rect) {
 /**
  * Show.
  */
-eYo.Flyout.prototype.slide = function(out) {
-  if (!out === !this.slideOut_locked) {
+eYo.Flyout.prototype.slide = function(closed) {
+  if (!closed === !this.closed || this.slide_locked) {
     return
   }
-  this.slideOut_locked = out
+  this.slide_locked = true
+  this.setVisible(true);
   var targetWorkspaceMetrics = this.targetWorkspace_.getMetrics();
   if (!targetWorkspaceMetrics) {
     // Hidden components will return null.
@@ -332,68 +375,46 @@ eYo.Flyout.prototype.slide = function(out) {
   var x = targetWorkspaceMetrics.absoluteLeft;
   var dx = 0;
   var max_dx = this.width_
-  var step = max_dx / 50
+  var step = max_dx / 25
   var y = targetWorkspaceMetrics.absoluteTop;
-  var direction = out? -1: +1
-  if (!out) {
+  var direction = closed? -1: +1
+  if (!closed) {
     x -= max_dx
   }
   var self = this
   function frame() {
-      if (dx >= max_dx) {
-          clearInterval(id);
-          self.hide()
+    if (dx >= max_dx) {
+        clearInterval(id);
+        if ((self.closed = closed)) {
+          self.setVisible(false)
+        }
+        self.positionControlAt_(self.width_, self.height_, x+direction*dx, y)
+        delete self.slide_locked
       } else {
-        dx += step
-        if (dx > max_dx) {
-          dx = max_dx
-        }
-        self.positionAt_(self.width_, self.height_, x+direction*dx, y)
-        // the scrollbar won't resize because the metrics of the workspace did not change
-        var hostMetrics = self.workspace_.getMetrics()
-        if (hostMetrics) {
-          self.scrollbar_.resizeVertical_(hostMetrics)
-        }
+      dx += step
+      if (dx > max_dx) {
+        dx = max_dx
       }
+      self.positionAt_(self.width_, self.height_, x+direction*dx, y)
+      // the scrollbar won't resize because the metrics of the workspace did not change
+      var hostMetrics = self.workspace_.getMetrics()
+      if (hostMetrics) {
+        self.scrollbar_.resizeVertical_(hostMetrics)
+      }
+    }
   }
 };
 
 /**
- * Lay out the blocks in the flyout.
- * @param {!Array.<!Object>} contents The blocks and buttons to lay out.
- * @param {!Array.<number>} gaps The visible gaps between blocks.
+ * Update the view based on coordinates calculated in position().
+ * @param {number} width The computed width of the flyout's SVG group
+ * @param {number} height The computed height of the flyout's SVG group.
+ * @param {number} x The computed x origin of the flyout's SVG group.
+ * @param {number} y The computed y origin of the flyout's SVG group.
  * @private
  */
-eYo.Flyout.prototype.layout_ = function(contents, gaps) {
-  this.workspace_.scale = this.targetWorkspace_.scale;
-  var margin = this.MARGIN;
-  var cursorX = this.RTL ? margin : margin + Blockly.BlockSvg.TAB_WIDTH;
-  var cursorY = margin + 32;
+eYo.Flyout.prototype.positionAt_ = function(width, height, x, y) {
+  eYo.Flyout.superClass_.positionAt_.call(this, width, height, x, y)
+  this.positionControlAt_(width, height, x, y)
+}
 
-  for (var i = 0, item; item = contents[i]; i++) {
-    if (item.type == 'block') {
-      var block = item.block;
-      var allBlocks = block.getDescendants();
-      for (var j = 0, child; child = allBlocks[j]; j++) {
-        // Mark blocks as being inside a flyout.  This is used to detect and
-        // prevent the closure of the flyout if the user right-clicks on such a
-        // block.
-        child.isInFlyout = true;
-      }
-      block.render();
-      var root = block.getSvgRoot();
-      var blockHW = block.getHeightWidth();
-      block.moveBy(cursorX, cursorY);
-
-      var rect = this.createRect_(block,
-          this.RTL ? cursorX - blockHW.width : cursorX, cursorY, blockHW, i);
-
-      this.addBlockListeners_(root, block, rect);
-
-      cursorY += blockHW.height + gaps[i];
-    } else if (item.type == 'button') {
-      this.initFlyoutButton_(item.button, cursorX, cursorY);
-      cursorY += item.button.height + gaps[i];
-    }
-  }
-};

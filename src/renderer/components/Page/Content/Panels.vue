@@ -13,7 +13,6 @@
 <style>
   #content-panels {
     padding: 8px;
-    border-radius: 8px;
     background-color: white;
     height: 100%;
   }
