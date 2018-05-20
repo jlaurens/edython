@@ -391,6 +391,7 @@ eYo.Flyout.prototype.slide = function(closed) {
         }
         self.positionControlAt_(self.width_, self.height_, x+direction*dx, y)
         delete self.slide_locked
+        self.targetWorkspace_.recordDeleteAreas()
       } else {
       dx += step
       if (dx > max_dx) {
