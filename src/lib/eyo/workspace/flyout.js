@@ -18,7 +18,6 @@ goog.require('eYo.Style');
 goog.require('Blockly.VerticalFlyout');
 goog.require('eYo.DelegateSvg');
 goog.require('eYo.DelegateSvg');
-goog.require('goog.dom');
 
 goog.provide('eYo.FlyoutSlideButton');
 
@@ -197,16 +196,16 @@ eYo.Flyout.prototype.onButtonLeave_ = function(e) {
  */
 eYo.Flyout.prototype.onButtonUp_ = function(e) {
   window.removeEventListener('mouseup', this.notOnButtonUp_)
-  this.onButtonLeave_(e)
-  var gesture = this.targetWorkspace_.getGesture(e);
-  if (gesture) {
-    gesture.cancel();// comes from flyout button
-  }
-  e.stopPropagation()
-  e.preventDefault()
   if (this.isDown) {
     this.isDown = false
     this.slide(!this.closed)  
+    this.onButtonLeave_(e)
+    var gesture = this.targetWorkspace_.getGesture(e);
+    if (gesture) {
+      gesture.cancel();// comes from flyout button
+    }
+    e.stopPropagation()
+    e.preventDefault()
   }
 };
 
@@ -480,7 +479,7 @@ eYo.Flyout.prototype.getMetrics_ = function() {
     viewWidth: viewWidth,
     contentHeight: optionBox.height * this.workspace_.scale + 2 * this.MARGIN,
     contentWidth: optionBox.width * this.workspace_.scale + 2 * this.MARGIN,
-    viewTop: -this.workspace_.scrollY + optionBox.y,
+    viewTop: -this.workspace_.scrollY + optionBox.y + this.TOP_MARGIN,
     viewLeft: -this.workspace_.scrollX,
     contentTop: optionBox.y + this.TOP_MARGIN,
     contentLeft: optionBox.x,
