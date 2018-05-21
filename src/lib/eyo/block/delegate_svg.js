@@ -966,6 +966,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   }
   var c8n = io.input.connection
   if (c8n) { // once `&&!c8n.hidden_` was there, bad idea but why was it here?
+    this.renderDrawFields_(io, true)
     var cursorX = io.cursorX + io.offsetX
     c8n.setOffsetInBlock(cursorX, 0)
     var target = c8n.targetBlock()
