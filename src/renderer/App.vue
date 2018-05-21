@@ -14,7 +14,7 @@
   body {
     margin: 0;
     padding: 0;
-    background: #f4f4f4;
+    background:rgba(221, 221, 221, 0.8);
     height: 100vh;
   }
 

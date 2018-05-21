@@ -33,6 +33,6 @@
     padding:8px;
   }
   .gutter {
-    background-color: #f4f4f4
+    background-color:rgba(221, 221, 221, 0.8);
   }
 </style>
