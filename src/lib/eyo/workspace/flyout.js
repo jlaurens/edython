@@ -181,7 +181,7 @@ eYo.Flyout.prototype.onButtonEnter_ = function(e) {
 };
 
 /**
- * Slide out.
+ * Unhilight.
  * @param {!Event} e Mouse up event.
  * @private
  */
@@ -384,36 +384,36 @@ eYo.Flyout.prototype.slide = function(closed) {
   }
   var id = setInterval(frame, 5);
   var x = targetWorkspaceMetrics.absoluteLeft;
-  var dx = 0;
-  var max_dx = this.width_
-  var step = max_dx / 25
-  var y = targetWorkspaceMetrics.absoluteTop;
-  var direction = closed? -1: +1
-  if (!closed) {
-    x -= max_dx
+  var n_steps = 25
+  var n = 0
+  var positions = []
+  var x_min = closed? x: x - this.width_
+  var x_max = closed? x - this.width_: x
+  positions[0] = x_min
+  for (n = 1; n < n_steps - 1; n++) {
+    positions[n] = x_min + Math.sin(n*Math.PI/n_steps/2)**2 * (x_max - x_min)
   }
+  positions[n] = x_max
+  var y = targetWorkspaceMetrics.absoluteTop;
   var self = this
+  n = 0
   function frame() {
-    if (dx >= max_dx) {
+    if (n >= n_steps) {
         clearInterval(id);
         if ((self.closed = closed)) {
           self.setVisible(false)
         }
         self.setBackgroundPath_(self.width_, self.height_)
-        self.positionAt_(self.width_, self.height_, x+direction*dx, y)
         delete self.slide_locked
         self.targetWorkspace_.recordDeleteAreas()
       } else {
-      dx += step
-      if (dx > max_dx) {
-        dx = max_dx
-      }
-      self.positionAt_(self.width_, self.height_, x+direction*dx, y)
+      self.positionAt_(self.width_, self.height_, positions[n], y)
       // the scrollbar won't resize because the metrics of the workspace did not change
       var hostMetrics = self.workspace_.getMetrics()
       if (hostMetrics) {
         self.scrollbar_.resizeVertical_(hostMetrics)
       }
+      ++n
     }
   }
 };
