@@ -15,15 +15,27 @@ goog.provide('eYo.Flyout');
 
 goog.require('eYo.Flyout');
 goog.require('eYo.Style');
+goog.require('eYo.Font');
 goog.require('Blockly.VerticalFlyout');
 goog.require('eYo.DelegateSvg');
-goog.require('eYo.DelegateSvg');
-
-goog.provide('eYo.FlyoutSlideButton');
+goog.require('eYo.MenuRenderer');
+goog.require('eYo.MenuButtonRenderer');
 
 goog.require('goog.dom');
 goog.require('goog.math.Coordinate');
+goog.require('goog.ui.Select');
 
+
+/**
+ * Class for a flyout delegate.
+ * As usual, we do not want to add keys to blockly objects.
+ * @param {!Blockly.Flyout} flyout
+ * @constructor
+ */
+eYo.FlyoutDelegate = function(flyout) {
+  this.flyout_ = flyout
+  this.closed = false
+}
 
 /**
  * Class for a flyout.
@@ -33,18 +45,18 @@ goog.require('goog.math.Coordinate');
  */
 eYo.Flyout = function(workspace) {
   eYo.Flyout.superClass_.constructor.call(this, {parentWorkspace: workspace})
-  this.closed = false
   this.toolboxPosition_ = Blockly.TOOLBOX_AT_LEFT
   workspace.flyout_ = this
+  this.eyo = new eYo.FlyoutDelegate(this)
 }
 goog.inherits(eYo.Flyout, Blockly.VerticalFlyout)
 
-eYo.Flyout.prototype.BUTTON_RADIUS = 12
-eYo.Flyout.prototype.BUTTON_MARGIN = 2
+eYo.FlyoutDelegate.prototype.BUTTON_RADIUS = eYo.Font.size
+eYo.FlyoutDelegate.prototype.BUTTON_MARGIN = eYo.Font.size / 5
 eYo.Flyout.prototype.CORNER_RADIUS = 0
 
-eYo.Flyout.prototype.TOP_MARGIN = 2*(eYo.Flyout.prototype.BUTTON_RADIUS+eYo.Flyout.prototype.BUTTON_MARGIN)
-eYo.Flyout.prototype.BOTTOM_MARGIN = 16
+eYo.FlyoutDelegate.prototype.TOP_MARGIN = 2*(eYo.FlyoutDelegate.prototype.BUTTON_RADIUS+eYo.FlyoutDelegate.prototype.BUTTON_MARGIN)
+eYo.FlyoutDelegate.prototype.BOTTOM_MARGIN = 16
 
 
 /**
@@ -78,7 +90,17 @@ eYo.Flyout.prototype.createDom = function(tagName) {
   goog.dom.classlist.remove(g, 'blocklyWorkspace')
   goog.dom.classlist.add(g, 'eyo-workspace')
   this.svgGroup_.appendChild(g);
-  // very simple toolbar : one drop down menu and one flat button
+  this.eyo.createDom()
+  return this.svgGroup_;
+};
+
+/**
+ * Completes the flyout's DOM.
+ */
+eYo.FlyoutDelegate.prototype.createDom = function() {
+  if (this.toolbarGroup_) {
+    return
+  }
   this.toolbarGroup_ = Blockly.utils.createSvgElement('svg', {
     'class': 'eyo-flyout-toolbar',
   }, null);
@@ -102,8 +124,7 @@ eYo.Flyout.prototype.createDom = function(tagName) {
   this.buttonImage_ = Blockly.utils.createSvgElement('path', {
     class: 'eyo-flyout-toolbar-button-image'
   }, this.buttonGroup_)
-  return this.svgGroup_;
-};
+}
 
 eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt(
@@ -132,8 +153,7 @@ eYo.setup.register(function () {
  * Dispose of this flyout.
  * Unlink from all DOM elements to prevent memory leaks.
  */
-eYo.Flyout.prototype.dispose = function() {
-  eYo.Flyout.superClass_.dispose.call(this)
+eYo.FlyoutDelegate.prototype.dispose = function() {
   if (this.onButtonDownWrapper_) {
     Blockly.unbindEvent_(this.onButtonDownWrapper_);
     this.onButtonDownWrapper_ = undefined
@@ -150,9 +170,18 @@ eYo.Flyout.prototype.dispose = function() {
     Blockly.unbindEvent_(this.onButtonUpWrapper_);
     this.onButtonUpWrapper_ = undefined
   }
-  if (this.buttonGroup_) {
-    goog.dom.removeNode(this.buttonGroup_)
-    this.buttonGroup_ = undefined
+  if (this.toolbarGroup_) {
+    goog.dom.removeNode(this.toolbarGroup_)
+    this.toolbarGroup_ = undefined
+  }
+  if (this.divSelect_) {
+    goog.dom.removeNode(this.divSelect_)
+    this.divSelect_ = undefined
+  }
+  if (this.select_) {
+    this.select_.unlisten(this.listenableKey)
+    this.select_.dispose()
+    this.select_ = undefined
   }
 };
 
@@ -161,7 +190,7 @@ eYo.Flyout.prototype.dispose = function() {
  * @param {!Event} e Mouse up event.
  * @private
  */
-eYo.Flyout.prototype.onButtonDown_ = function(e) {
+eYo.FlyoutDelegate.prototype.onButtonDown_ = function(e) {
   this.isDown = true
   window.addEventListener('mouseup', this.notOnButtonUp_)
   this.onButtonEnter_(e)
@@ -174,7 +203,7 @@ eYo.Flyout.prototype.onButtonDown_ = function(e) {
  * @param {!Event} e Mouse up event.
  * @private
  */
-eYo.Flyout.prototype.onButtonEnter_ = function(e) {
+eYo.FlyoutDelegate.prototype.onButtonEnter_ = function(e) {
   if (this.isDown) {
     goog.dom.classlist.add(this.buttonGroup_, 'eyo-flash')
   }
@@ -185,7 +214,7 @@ eYo.Flyout.prototype.onButtonEnter_ = function(e) {
  * @param {!Event} e Mouse up event.
  * @private
  */
-eYo.Flyout.prototype.onButtonLeave_ = function(e) {
+eYo.FlyoutDelegate.prototype.onButtonLeave_ = function(e) {
   goog.dom.classlist.remove(this.buttonGroup_, 'eyo-flash')
 };
 
@@ -194,13 +223,13 @@ eYo.Flyout.prototype.onButtonLeave_ = function(e) {
  * @param {!Event} e Mouse up event.
  * @private
  */
-eYo.Flyout.prototype.onButtonUp_ = function(e) {
+eYo.FlyoutDelegate.prototype.onButtonUp_ = function(e) {
   window.removeEventListener('mouseup', this.notOnButtonUp_)
   if (this.isDown) {
     this.isDown = false
     this.slide(!this.closed)  
     this.onButtonLeave_(e)
-    var gesture = this.targetWorkspace_.getGesture(e);
+    var gesture = this.flyout_.targetWorkspace_.getGesture(e);
     if (gesture) {
       gesture.cancel();// comes from flyout button
     }
@@ -214,7 +243,7 @@ eYo.Flyout.prototype.onButtonUp_ = function(e) {
  * @param {!Event} e Mouse up event.
  * @private
  */
-eYo.Flyout.prototype.notOnButtonUp_ = function(e) {
+eYo.FlyoutDelegate.prototype.notOnButtonUp_ = function(e) {
   window.removeEventListener('mouseup', this.notOnButtonUp_)
   this.onButtonLeave_(e)
   var gesture = this.targetWorkspace_.getGesture(e);
@@ -302,6 +331,7 @@ eYo.Flyout.prototype.show = function(xmlList) {
         gaps.push(isNaN(gap) ? default_gap : gap);
       }
     } else {
+      // this is the part specific to edython
       try {
         var block = eYo.DelegateSvg.newBlockReady(this.workspace_, xml)
         contents.push({type: 'block', block: block})
@@ -369,15 +399,17 @@ eYo.Flyout.prototype.addBlockListeners_ = function(root, block, rect) {
 };
 
 /**
- * Show.
+ * Slide the flyout in or out.
  */
-eYo.Flyout.prototype.slide = function(closed) {
+eYo.FlyoutDelegate.prototype.slide = function(closed) {
   if (!closed === !this.closed || this.slide_locked) {
     return
   }
   this.slide_locked = true
-  this.setVisible(true);
-  var targetWorkspaceMetrics = this.targetWorkspace_.getMetrics();
+  this.select_.setOpen(false)
+  var flyout = this.flyout_
+  flyout.setVisible(true);
+  var targetWorkspaceMetrics = flyout.targetWorkspace_.getMetrics();
   if (!targetWorkspaceMetrics) {
     // Hidden components will return null.
     return;
@@ -387,8 +419,8 @@ eYo.Flyout.prototype.slide = function(closed) {
   var n_steps = 25
   var n = 0
   var positions = []
-  var x_min = closed? x: x - this.width_
-  var x_max = closed? x - this.width_: x
+  var x_min = closed? x: x - flyout.width_
+  var x_max = closed? x - flyout.width_: x
   positions[0] = x_min
   for (n = 1; n < n_steps - 1; n++) {
     positions[n] = x_min + Math.sin(n*Math.PI/n_steps/2)**2 * (x_max - x_min)
@@ -401,17 +433,17 @@ eYo.Flyout.prototype.slide = function(closed) {
     if (n >= n_steps) {
         clearInterval(id);
         if ((self.closed = closed)) {
-          self.setVisible(false)
+          flyout.setVisible(false)
         }
-        self.setBackgroundPath_(self.width_, self.height_)
+        flyout.setBackgroundPath_(flyout.width_, flyout.height_)
         delete self.slide_locked
-        self.targetWorkspace_.recordDeleteAreas()
+        flyout.targetWorkspace_.recordDeleteAreas()
       } else {
-      self.positionAt_(self.width_, self.height_, positions[n], y)
+        flyout.positionAt_(flyout.width_, flyout.height_, positions[n], y)
       // the scrollbar won't resize because the metrics of the workspace did not change
-      var hostMetrics = self.workspace_.getMetrics()
+      var hostMetrics = flyout.workspace_.getMetrics()
       if (hostMetrics) {
-        self.scrollbar_.resizeVertical_(hostMetrics)
+        flyout.scrollbar_.resizeVertical_(hostMetrics)
       }
       ++n
     }
@@ -428,7 +460,9 @@ eYo.Flyout.prototype.slide = function(closed) {
  */
 eYo.Flyout.prototype.positionAt_ = function(width, height, x, y) {
   eYo.Flyout.superClass_.positionAt_.call(this, width, height, x, y)
-  this.toolbarGroup_.setAttribute('transform', 'translate(' + x + ', ' + y + ')')
+  this.eyo.toolbarGroup_.setAttribute('transform', 'translate(' + x + ', ' + y + ')')
+  this.eyo.divSelect_.style.left = (x + 12.345) + 'px'
+  this.eyo.divSelect_.style.top = (y + 4.567) + 'px'
 }
 
 
@@ -462,10 +496,10 @@ eYo.Flyout.prototype.getMetrics_ = function() {
   }
 
   // Padding for the end of the scrollbar.
-  var absoluteTop = this.SCROLLBAR_PADDING + this.TOP_MARGIN;
+  var absoluteTop = this.SCROLLBAR_PADDING + this.eyo.TOP_MARGIN;
   var absoluteLeft = 0;
 
-  var viewHeight = this.height_ - 2 * this.SCROLLBAR_PADDING - this.TOP_MARGIN - this.BOTTOM_MARGIN;
+  var viewHeight = this.height_ - 2 * this.SCROLLBAR_PADDING - this.eyo.TOP_MARGIN - this.eyo.BOTTOM_MARGIN;
   if (viewHeight < 0) {
     viewHeight = 0
   }
@@ -479,9 +513,9 @@ eYo.Flyout.prototype.getMetrics_ = function() {
     viewWidth: viewWidth,
     contentHeight: optionBox.height * this.workspace_.scale + 2 * this.MARGIN,
     contentWidth: optionBox.width * this.workspace_.scale + 2 * this.MARGIN,
-    viewTop: -this.workspace_.scrollY + optionBox.y + this.TOP_MARGIN,
+    viewTop: -this.workspace_.scrollY + optionBox.y + this.eyo.TOP_MARGIN,
     viewLeft: -this.workspace_.scrollX,
-    contentTop: optionBox.y + this.TOP_MARGIN,
+    contentTop: optionBox.y + this.eyo.TOP_MARGIN,
     contentLeft: optionBox.x,
     absoluteTop: absoluteTop,
     absoluteLeft: absoluteLeft
@@ -499,13 +533,8 @@ eYo.Flyout.prototype.getMetrics_ = function() {
  */
 eYo.Flyout.prototype.setBackgroundPath_ = function(width, height) {
 
-  var radius = this.BUTTON_RADIUS
-  var margin = this.BUTTON_MARGIN
-  var top_margin = this.TOP_MARGIN
-  var bottom_margin = this.BOTTOM_MARGIN
-  var big_radius = radius + margin
-  var h = radius * 0.866
-
+  var top_margin = this.eyo.TOP_MARGIN
+  
   var atRight = this.toolboxPosition_ == Blockly.TOOLBOX_AT_RIGHT;
   var totalWidth = width + this.CORNER_RADIUS;
 
@@ -530,7 +559,28 @@ eYo.Flyout.prototype.setBackgroundPath_ = function(width, height) {
   path.push('z');
   this.svgBackground_.setAttribute('d', path.join(' '));
 
-  goog.dom.insertSiblingAfter(this.toolbarGroup_, this.svgGroup_)
+  this.eyo.setBackgroundPath_(width, height)
+
+  };
+
+/**
+ * Create and set the path for the visible boundaries of the flyout.
+ * @param {number} width The width of the flyout, not including the
+ *     rounded corners.
+ * @param {number} height The height of the flyout, not including
+ *     rounded corners.
+ * @private
+ */
+eYo.FlyoutDelegate.prototype.setBackgroundPath_ = function(width, height) {
+
+  var radius = this.BUTTON_RADIUS
+  var margin = this.BUTTON_MARGIN
+  var top_margin = this.TOP_MARGIN
+  var bottom_margin = this.BOTTOM_MARGIN
+  var big_radius = radius + margin
+  var h = radius * 0.866
+
+  goog.dom.insertSiblingAfter(this.toolbarGroup_, this.flyout_.svgGroup_)
 
   this.toolbarGroup_.setAttribute('width', width+big_radius+margin);
   this.toolbarGroup_.setAttribute('height', 2*big_radius);  
@@ -550,15 +600,43 @@ eYo.Flyout.prototype.setBackgroundPath_ = function(width, height) {
   ].join(' '))
   if (this.closed) {
     this.buttonImage_.setAttribute('d', [
-      'M', width + margin + h + this.CORNER_RADIUS, big_radius,
+      'M', width + margin + h + this.flyout_.CORNER_RADIUS, big_radius,
       'l', -h, - radius/2,
       'l 0', radius, 'z'
     ].join(' '))
   } else {
     this.buttonImage_.setAttribute('d', [
-      'M', width + this.CORNER_RADIUS, big_radius,
+      'M', width + this.flyout_.CORNER_RADIUS, big_radius,
       'l', h, - radius/2,
       'l 0', radius, 'z'
     ].join(' '))
   }
+  if (!this.divSelect_) {
+    this.divSelect_ = goog.dom.createDom(goog.dom.TagName.DIV, {
+      id: 'eyo-flyout-select'
+    })
+    goog.dom.insertSiblingAfter(this.divSelect_, this.toolbarGroup_)
+    var select = new goog.ui.Select(null, new eYo.Menu(),  eYo.MenuButtonRenderer.getInstance())
+    select.addItem(new eYo.MenuItem('Blade Runner', 'BR'))
+    select.addItem(new eYo.MenuItem('Godfather Part II', 'GPII'))
+    select.addItem(new eYo.MenuItem('Citizen Kane', 'CK'))
+    select.addItem(new eYo.MenuItem('A very long title that exceeds the available room', 'VLT'))
+    select.setSelectedIndex(0)
+    select.render(goog.dom.getElement('eyo-flyout-select'))
+    this.listenableKey = select.listen(
+      goog.ui.Component.EventType.ACTION,
+      function(e) {
+        console.log(select.getValue())
+      },
+      false,
+      this
+    )
+    this.select_ = select
+  }
 };
+
+
+eYo.setup.register(function () {
+  eYo.Style.insertCssRuleAt(
+    '#eyo-flyout-select { display: block; position: absolute; fill: transparent; width: 200px; height: 20px;}')
+})

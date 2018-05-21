@@ -68,6 +68,7 @@ eYo.Font = (function (ascent) {
     my.totalAscent = ascent * 2048 / 1556
     my.height = my.totalAscent + my.descent
     my.style = 'font-family:DejaVuSansMono,monospace;font-size:' + ascent + 'pt;'
+    my.menuStyle = 'font-family:DejaVuSans,sans-serif;font-size:' + ascent + 'pt;'
     my.tabWidth = 4 * my.space
     return my
   }
@@ -75,7 +76,7 @@ eYo.Font = (function (ascent) {
     return eYo.Font.height + eYo.Padding.t() + eYo.Padding.b()
   }
   return my.updateAscent(ascent)
-}(10))
+}(13))
 
 /**
  * Offset of the text editor.
@@ -144,13 +145,22 @@ eYo.Style.insertCssRuleAt = (function () {
     }
     return sheet
   }
-  return function (rule, at) {
+  return function () {
     var sheet = getSheet()
-    if (rule === null) {
+    if (arguments.length === 0) {
       return
     }
+    var rule = []
+    var i = 0
+    while (goog.isString(arguments[i])) {
+      rule.push(arguments[i])
+      ++i
+    }
+    if (goog.isNumber(arguments[i])) {
+      var at = arguments[i]
+    }
     if (rule.length) {
-      goog.cssom.addCssRule(sheet, rule)
+      goog.cssom.addCssRule(sheet, rule.join(''), at)
     }
   }
 }())
