@@ -443,8 +443,7 @@ eYo.Xml.Literal.domToBlock = function (element, workspace) {
       }
       if (block) {
         var eyo = block.eyo
-        eyo.data.value.set(text) ||
-        eyo.data.content.setTrusted(text)
+        eyo.data.value.set(text)
         return block
       }
     }
