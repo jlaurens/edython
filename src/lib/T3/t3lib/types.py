@@ -14,10 +14,9 @@ class Types:
                            r'|Execution |Don\'t |(?:expr|[\d, +*(\-)=])+$|inst[.= ]|[xi] |if |yield |\S+Error:'
                            r'|i,|print\(|raise |The |During |import |from |[a-zA-Z\d ]*=|while |else:|try:|except:'
                            r')')
-    re_s3d_candidate = re.compile(r'\s*([a-z_][a-z_\d]*)\s*\|\s*(.*)\s*$')
-    re_star_identifier = re.compile(r'^\s*"(\*+)"\s*([a-z_][a-z_\d]*)\s*$')
     re_definition = re.compile(r"^\s*(?P<name>[a-zA-Z_][a-zA-Z_\d]*)"
                                r"(?:\s*\(\s*(?P<is_stmt>stmt)\s*\)\s*)?"
+                               r"(?:\s*\(\s*\[\s*(?P<weight>\d+)\s*\]\s*\)\s*)?"
                                r"(?:\s*/\s*(?P<to_dom>[a-zA-Z_](?:[a-zA-Z_\d\|]*[a-zA-Z_\d])?)?)"
                                r"?\s*(?P<op>::=|!!=|\|\|=)?"
                                r"\s*(?P<definition>(?:[^\\]|\\.)*?)"
@@ -42,7 +41,6 @@ class Types:
         print('Input files are read.')
         self.make_ignore()
         self.make_lists()
-        self.make_s3d()
         self.make_before_after()
         self.make_shallow()
         self.make_alias()
@@ -108,8 +106,8 @@ class Types:
                 continue
             m = self.re_definition.match(l)
             if m:
-                name, is_stmt, to_dom, op, definition = m.group('name'), m.group('is_stmt'), \
-                                                        m.group('to_dom'), m.group('op'), m.group('definition')
+                name, is_stmt, weight, to_dom, op, definition = m.group('name'), m.group('is_stmt'), \
+                                            m.group('weight'), m.group('to_dom'), m.group('op'), m.group('definition')
                 if to_dom or op:
                     try:
                         t = self.get_type(name, create=True)
@@ -117,6 +115,8 @@ class Types:
                             t.setup_definition(definition, op == r'||=')
                         if is_stmt:
                             t.is_stmt = True
+                        if weight:
+                            t.weight = int(weight)
                         if to_dom:
                             t.to_dom = self.re_pipe.split(to_dom)
                         if op == '!!=':
@@ -170,99 +170,6 @@ class Types:
                     break # this type has changed status
             else:
                 return # no type has changed status, stop here
-
-    def make_s3d(self):
-        print('====> MAKE_SOLID')
-        """
-        Automatically creates "solid" types for declarations like
-        foo ::= bla | an operation
-        It is functionally equivalent to the declaration
-        foo ::= bla | foo_s3d
-        foo_s3d ::= an operation
-        More to come...
-        """
-        self.make_lists()
-        more = {}
-        for t in self.get_expressions():
-            definition = t.definition
-            cs = self.re_pipe.split(definition)[1:]
-            if len(cs) > 0:
-                cs = [x for x in cs if Formatter.get_identifier(x)]
-                if len(cs) == 0:
-                    m = Types.re_s3d_candidate.match(t.definition)
-                    if m:
-                        def_alias = m.group(1)
-                        def_s3d = m.group(2)
-                        def_guessed = '{} | {}'.format(def_alias, def_s3d)
-                        if def_guessed == t.definition:
-                            mm = Types.re_star_identifier.match(def_s3d)
-                            if mm:
-                                if len(mm.group(1)) == 1:
-                                    name_s3d = 'starred_' + mm.group(2)
-                                elif len(mm.group(1)) == 2:
-                                    name_s3d = 'double_star_' + mm.group(2)
-                                elif len(mm.group(1)) == 3:
-                                    name_s3d = 'triple_star_' + mm.group(2)
-                                else:
-                                    name_s3d = 'multi_star_' + mm.group(2)
-                            else:
-                                name_s3d = t.name + '_s3d'
-                            def_new = '{} | {}'.format(def_alias, name_s3d)
-                            print(t.definition)
-                            t.original_definition = t.definition
-                            t.setup_definition(def_new)
-                            t.is_wrapper = True
-                            tt = Type(t.n, name_s3d, def_s3d, category = t.category)
-                            more[tt.name] = tt
-                            print('**** new solid type from', t.name, '::=', t.definition, '::=',
-                                  t.original_definition)
-                            print('****', name_s3d, '::=', def_s3d)
-                            exit(2)
-                            continue
-            if not t.is_wrapper and not t.is_list:
-                cs = Formatter.get_alternate_components(definition)
-                if len(cs)>1:
-                    solids = []
-                    defs = []
-                    i = 0
-                    for def_s3d in cs:
-                        if Formatter.get_identifier(def_s3d):
-                            defs.append(def_s3d)
-                        else:
-                            name_s3d = t.name + '_s3d_' + str(i)
-                            i += 1
-                            defs.append(name_s3d)
-                            tt = Type(t.n, name_s3d, def_s3d, category = t.category)
-                            solids.append(tt)
-                    if len(solids) and len(solids) < len(defs):
-                        t.original_definition = t.definition
-                        t.setup_definition(' | '.join(defs))
-                        t.is_wrapper = True
-                        if len(solids) == 1:
-                            name_s3d = t.name + '_s3d'
-                            t.setup_definition(t.definition.replace(solids[0].name, name_s3d))
-                            solids[0].setup_name(name_s3d)
-                        print('**** new solid type from', t.name, '::=', t.definition, '::=', t.original_definition)
-                        for tt in solids:
-                            more[tt.name] = tt
-                            tt.etercnoc = t
-                            print('****', tt.name, '::=', tt.definition)
-                        continue
-            identifier, option = Formatter.get_identifier_option(t.definition)
-            if identifier:
-                name_s3d = t.name + '_s3d'
-                def_s3d = re.sub(r' +', ' ', identifier + ' ' + option)
-                def_new = identifier + ' | ' + name_s3d
-                t.original_definition = t.definition
-                t.setup_definition(def_new)
-                t.is_wrapper = True
-                tt = Type(t.n, name_s3d, def_s3d, category = t.category)
-                more[tt.name] = tt
-                tt.etercnoc = t
-                print('**** new solid type from', t.name, '::=', t.definition, '::=', t.original_definition)
-                print('****', name_s3d, '::=', def_s3d)
-                continue
-        self.all.update(more)
 
     def make_before_after(self):
         print('====> MAKE BEFORE AFTER')

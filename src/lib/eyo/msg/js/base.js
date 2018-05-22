@@ -112,3 +112,11 @@ goog.provide('eYo.Msg.Placeholder')
 /** @export */ eYo.Msg.MISSING_RHS = 'Missing RHS'
 /** @export */ eYo.Msg.LOCK_BLOCK = 'Verrouiller'
 /** @export */ eYo.Msg.UNLOCK_BLOCK = 'Modifier'
+
+/** @export */ eYo.Msg.BASIC = 'Basique'
+/** @export */ eYo.Msg.INTERMEDIATE = 'Intermédiaire'
+/** @export */ eYo.Msg.ADVANCED = 'Avancé'
+/** @export */ eYo.Msg.EXPERT = 'Expert'
+/** @export */ eYo.Msg.BRANCHING = 'Branchement'
+/** @export */ eYo.Msg.LOOPING = 'Boucle'
+/** @export */ eYo.Msg.FUNCTION = 'Fonction et object'

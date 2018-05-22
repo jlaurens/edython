@@ -151,7 +151,7 @@ eYo.FieldTextInput.prototype.cssClass = 'eyo-code'
  */
 eYo.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
   var block = this.sourceBlock_
-  if (block.eyo.locked_ || !block.eyo.canEdit_) {
+  if (block.eyo.locked_ || !block.eyo.canEdit_ || block.isInFlyout) {
     return
   }
   this.eyo.isEditing = true

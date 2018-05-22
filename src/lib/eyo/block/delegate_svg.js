@@ -1267,7 +1267,7 @@ eYo.DelegateSvg.prototype.delayedRender = function (block) {
  * This is the expected way to create a block 
  * to be displayed immediately.
  * @param {!WorkspaceSvg} workspace
- * @param {!String} prototypeName
+ * @param {!String} prototypeName or xml representation.
  * @private
  */
 eYo.DelegateSvg.newBlockReady = function (workspace, prototypeName, id) {
@@ -1285,12 +1285,9 @@ eYo.DelegateSvg.newBlockReady = function (workspace, prototypeName, id) {
  * @param {!String} prototypeName
  * @private
  */
-eYo.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id, initSvg) {
-  var B = workspace.newBlock(prototypeName, goog.isString(id) && id)
+eYo.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id) {
+  var B = workspace.newBlock(prototypeName, id)
   B.eyo.completeWrapped_(B)
-  if ((goog.isBoolean(id) && id) || initSvg) {
-    B.eyo.beReady()
-  }
   return B
 }
 
@@ -1474,8 +1471,7 @@ eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
           if (data.filler) {
             var B = data.filler(workspace)
           } else {
-            B = eYo.DelegateSvg.newBlockComplete(workspace, data.type, true)
-            B.eyo.beReady(B)
+            B = eYo.DelegateSvg.newBlockReady(workspace, data.type)
             if (data.value) {
               (B.eyo.data.phantom && B.eyo.data.phantom.set(data.value)) ||
               (B.eyo.data.value && B.eyo.data.value.set(data.value))
@@ -2255,7 +2251,7 @@ eYo.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
   // create a block out of the undo mechanism
   Blockly.Events.disable()
   try {
-    var candidate = eYo.DelegateSvg.newBlockComplete(block.workspace, prototypeName, true)
+    var candidate = eYo.DelegateSvg.newBlockReady(block.workspace, prototypeName)
     if (!candidate) {
       return
     }

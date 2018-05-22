@@ -1,7 +1,6 @@
 import re
 from .formatter import Formatter
 
-
 class Type:
     """A Type represents a python 3 expression or statement"""
 
@@ -35,6 +34,7 @@ class Type:
         self.is_wrapper = False
         self.ignored = False
         self.one_shot = True
+        self.weight = -1
         self.is_list = None
         self.is_shallow = False
         self.is_shallow_required = False

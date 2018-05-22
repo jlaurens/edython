@@ -42,6 +42,7 @@ Blockly.WorkspaceSvg.prototype.newBlock = function (prototypeName, optId) {
 }
 
 goog.provide('eYo.Gesture')
+
 /**
  * Handle a mousedown/touchstart event on a workspace.
  * This is overriden because

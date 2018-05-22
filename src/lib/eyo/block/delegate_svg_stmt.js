@@ -219,7 +219,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParent = function (block, parentPrototypeNa
   var c8n = block.previousConnection
   if (c8n) {
     Blockly.Events.disable()
-    var parentBlock = eYo.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName, true)
+    var parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, parentPrototypeName)
     Blockly.Events.enable()
     var parentC8n = parentBlock.nextConnection
     if (parentC8n) {
@@ -270,7 +270,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParent = function (block, parentPrototypeNa
 eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (block, belowPrototypeName) {
   eYo.Events.setGroup(true)
   try {
-    var blockAfter = eYo.DelegateSvg.newBlockComplete(block.workspace, belowPrototypeName, true)
+    var blockAfter = eYo.DelegateSvg.newBlockReady(block.workspace, belowPrototypeName)
     var c8n = block.nextConnection
     var targetC8n = c8n.targetConnection
     if (targetC8n) {

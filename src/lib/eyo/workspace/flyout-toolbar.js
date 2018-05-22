@@ -35,6 +35,22 @@ eYo.FlyoutToolbar.prototype.HEIGHT = eYo.Font.lineHeight() + 2 * eYo.FlyoutToolb
  * @param {Object} dom helper.
  * @return {!Element} The flyout toolbar's div.
  */
+eYo.FlyoutToolbar.prototype.doSelect = function(e) {
+  var workspace = this.flyout_.targetWorkspace_
+  if (workspace) {
+    var category = this.selectControl_.getValue()
+    var list = workspace.eyo.getFlyoutsForCategory(category)
+    if (list.length) {
+      this.flyout_.show(list)
+    }
+  }
+}
+
+/**
+ * Creates the flyout toolbar's DOM.
+ * @param {Object} dom helper.
+ * @return {!Element} The flyout toolbar's div.
+ */
 eYo.FlyoutToolbar.prototype.createDom = function(dom) {
   if (this.div_) {
     return
@@ -64,17 +80,19 @@ eYo.FlyoutToolbar.prototype.createDom = function(dom) {
     goog.getCssName(cssClass, 'select')
   )
   var select = new goog.ui.Select(null, new eYo.Menu(),  eYo.MenuButtonRenderer.getInstance())
-  select.addItem(new eYo.MenuItem('Blade Runner', 'BR'))
-  select.addItem(new eYo.MenuItem('Godfather Part II', 'GPII'))
-  select.addItem(new eYo.MenuItem('Citizen Kane', 'CK'))
-  select.addItem(new eYo.MenuItem('A very long title that exceeds the available room', 'VLT'))
+  select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
+  select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
+  select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
+  select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
+  select.addItem(new eYo.Separator())
+  select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
+  select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
+  select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
   select.setSelectedIndex(0)
   select.render(this.select_)
   this.listenableKey = select.listen(
     goog.ui.Component.EventType.ACTION,
-    function(e) {
-      console.log(select.getValue())
-    },
+    this.doSelect,
     false,
     this
   )

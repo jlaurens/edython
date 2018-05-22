@@ -27,6 +27,10 @@ builtin_object ::= 'None' | 'True' | 'False' | 'Ellipsis' | '...' |'NotImplement
 any ::= any expression
 </pre>
 
+<pre>
+atom      ::=  identifier | literal | enclosure
+</pre>
+
 
 expression_list    ::=  expression ( "," expression )* [","]
 starred_list       ::=  starred_item ( "," starred_item )* [","]

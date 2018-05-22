@@ -308,7 +308,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
   var F = function (modifier, flags, msg) {
     var BB
     eYo.Events.Disabler.wrap(function () {
-      BB = eYo.DelegateSvg.newBlockComplete(block.workspace, eYo.T3.Expr.term, true)
+      BB = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.term)
       BB.eyo.skipRendering = true
       BB.eyo.data.modifier.set(modifier)
       BB.eyo.data.variant.set(flags)
@@ -326,7 +326,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
           mgr.addInsertChild(new eYo.MenuItem(content, function () {
             eYo.Events.setGroup(true)
             try {
-              var B = eYo.DelegateSvg.newBlockComplete(block.workspace, eYo.T3.Expr.term, true)
+              var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.term)
               B.eyo.skipRendering = true
               B.eyo.data.modifier.set(modifier)
               B.eyo.data.variant.set(flags)

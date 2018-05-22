@@ -346,7 +346,7 @@ eYo.Consolidator.List.prototype.consolidate_single = function (io) {
   if (io.unique) {
     // remove whatever precedes it, even the very first separator
     var j = io.list.indexOf(io.unique)
-    while (j) {
+    while (j > 0) {
       this.disposeAtI(io, --j)
     }
     // remove whatever follows

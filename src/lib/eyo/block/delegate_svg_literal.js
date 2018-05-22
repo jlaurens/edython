@@ -23,6 +23,9 @@ goog.require('goog.dom');
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('Literal', {
+  xml: {
+    tag: 'literal',
+  },
   data: {
     content: {
       init: ''
@@ -62,7 +65,10 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
         var type = newValue ? eYo.Do.typeOfString(newValue) : eYo.T3.Expr.integer
         this.data.subtype.set(type)
       },
-      synchronize: true
+      synchronize: true,
+      xml: {
+        text: true,
+      },
     }
   },
   fields: {

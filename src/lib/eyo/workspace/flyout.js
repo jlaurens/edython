@@ -64,6 +64,7 @@ eYo.Flyout = function(workspace) {
   this.toolboxPosition_ = Blockly.TOOLBOX_AT_LEFT
   workspace.flyout_ = this
   this.eyo = new eYo.FlyoutDelegate(this)
+  this.workspace_.eyo.options = workspace.eyo.options
 }
 goog.inherits(eYo.Flyout, Blockly.VerticalFlyout)
 
@@ -439,6 +440,7 @@ eYo.Flyout.prototype.setBackgroundPath_ = function(width, height) {
     this.eyo.toolbar_ = new eYo.FlyoutToolbar(this)
     var div = this.eyo.toolbar_.createDom()
     goog.dom.insertSiblingAfter(div, this.svgGroup_)
+    this.eyo.toolbar_.doSelect(null)
   }
   this.eyo.toolbar_.resize(width, height)
 };

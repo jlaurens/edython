@@ -227,3 +227,9 @@ goog.ui.SubMenuRenderer.prototype.addArrow_ = function (subMenu, element) {
 //         arrow, subMenu.isAlignedToEnd() ? rightArrow : leftArrow)
 //   }
 // }
+
+eYo.setup.register(function () {
+  eYo.Style.insertCssRuleAt('.eyo-submenu-content {',
+      eYo.Font.menuStyle,
+  '}')
+})

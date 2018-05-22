@@ -279,8 +279,7 @@ eYo.DelegateSvg.Expr.prototype.insertParent = function (block, parentPrototypeNa
   eYo.Events.disable()
   var parentBlock
   eYo.Events.Disabler.wrap(function () {
-    parentBlock = eYo.DelegateSvg.newBlockComplete(block.workspace, parentPrototypeName, true)
-    parentBlock.beReady()
+    parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, parentPrototypeName)
     parentBlock.eyo.data.subtype.set(subtype)
   })
 
