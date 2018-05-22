@@ -55,12 +55,12 @@ def updateWeb(path_in, path_out, path_deps):
     return 1
 
 out = updateBuild(pathRoot / 'bin' / 'build.sh',
-                pathBuild / 'build.sh',
+                  pathRoot / 'bin' / 'build.sh',
                 pathBuild / 'deps-buid.txt'
                   )
 
 out = updateWeb(pathRoot / 'src' / 'index.ejs',
-                     pathBuild / 'index.ejs',
+                pathRoot / 'src' / 'index.ejs',
                      pathBuild / 'deps-vue.txt')
 out = updateWeb(pathRoot / 'sandbox' / 'html' / 'toolbox.html',
                 pathRoot / 'sandbox' / 'html' / 'toolbox.html',

@@ -18,6 +18,7 @@ goog.require('eYo.Style');
 goog.require('eYo.Font');
 goog.require('Blockly.VerticalFlyout');
 goog.require('eYo.DelegateSvg');
+goog.require('eYo.FlyoutToolbar');
 goog.require('eYo.MenuRenderer');
 goog.require('eYo.MenuButtonRenderer');
 
