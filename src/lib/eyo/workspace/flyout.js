@@ -38,6 +38,21 @@ eYo.FlyoutDelegate = function(flyout) {
 }
 
 /**
+ * Default CSS class of the flyout panel.
+ * @type {string}
+ */
+eYo.FlyoutDelegate.CSS_CLASS = goog.getCssName('eyo-flyout');
+
+/**
+ * Returns the CSS class to be applied to the root element.
+ * @return {string} Renderer-specific CSS class.
+ * @override
+ */
+eYo.FlyoutDelegate.prototype.getCssClass = function() {
+  return eYo.FlyoutDelegate.CSS_CLASS;
+};
+
+/**
  * Class for a flyout.
  * @param {!Object} workspaceOptions Dictionary of options for the workspace.
  * @extends {Blockly.Flyout}
@@ -51,12 +66,12 @@ eYo.Flyout = function(workspace) {
 }
 goog.inherits(eYo.Flyout, Blockly.VerticalFlyout)
 
-eYo.FlyoutDelegate.prototype.BUTTON_RADIUS = eYo.Font.size
-eYo.FlyoutDelegate.prototype.BUTTON_MARGIN = eYo.Font.size / 5
+eYo.FlyoutDelegate.prototype.BUTTON_RADIUS = eYo.Font.lineHeight()/2
+eYo.FlyoutDelegate.prototype.BUTTON_MARGIN = eYo.Padding.t()
 eYo.Flyout.prototype.CORNER_RADIUS = 0
 
 eYo.FlyoutDelegate.prototype.TOP_MARGIN = 2*(eYo.FlyoutDelegate.prototype.BUTTON_RADIUS+eYo.FlyoutDelegate.prototype.BUTTON_MARGIN)
-eYo.FlyoutDelegate.prototype.BOTTOM_MARGIN = 16
+eYo.FlyoutDelegate.prototype.BOTTOM_MARGIN = 16 // scroll bar width
 
 
 /**
@@ -90,41 +105,8 @@ eYo.Flyout.prototype.createDom = function(tagName) {
   goog.dom.classlist.remove(g, 'blocklyWorkspace')
   goog.dom.classlist.add(g, 'eyo-workspace')
   this.svgGroup_.appendChild(g);
-  this.eyo.createDom()
   return this.svgGroup_;
 };
-
-/**
- * Completes the flyout's DOM.
- */
-eYo.FlyoutDelegate.prototype.createDom = function() {
-  if (this.toolbarGroup_) {
-    return
-  }
-  this.toolbarGroup_ = Blockly.utils.createSvgElement('svg', {
-    'class': 'eyo-flyout-toolbar',
-  }, null);
-  this.toolbarPath_ = Blockly.utils.createSvgElement('path', {
-    class: 'eyo-flyout-toolbar-background'
-  }, this.toolbarGroup_)
-  this.buttonGroup_ = Blockly.utils.createSvgElement('g', {
-    'class': 'eyo-flyout-toolbar-button',
-  }, this.toolbarGroup_);
-  this.onButtonDownWrapper_ = Blockly.bindEventWithChecks_(this.buttonGroup_, 'mousedown',
-  this, this.onButtonDown_);
-  this.onButtonEnterWrapper_ = Blockly.bindEventWithChecks_(this.buttonGroup_, 'mouseenter',
-  this, this.onButtonEnter_);
-  this.onButtonLeaveWrapper_ = Blockly.bindEventWithChecks_(this.buttonGroup_, 'mouseleave',
-  this, this.onButtonLeave_);
-  this.onButtonUpWrapper_ = Blockly.bindEventWithChecks_(this.buttonGroup_, 'mouseup',
-  this, this.onButtonUp_);
-  this.buttonBackground_ = Blockly.utils.createSvgElement('path', {
-    class: 'eyo-flyout-toolbar-button-background'
-  }, this.buttonGroup_)
-  this.buttonImage_ = Blockly.utils.createSvgElement('path', {
-    class: 'eyo-flyout-toolbar-button-image'
-  }, this.buttonGroup_)
-}
 
 eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt(
@@ -133,20 +115,6 @@ eYo.setup.register(function () {
     '.eyo-flyout-background { fill: #ddd; fill-opacity: .8; }')
   eYo.Style.insertCssRuleAt(
     '.eyo-flyout-scrollbar { z-index: 30; }')
-  eYo.Style.insertCssRuleAt(
-    '.eyo-flyout-toolbar { display: block; position: absolute; z-index: 30; }')
-  eYo.Style.insertCssRuleAt(
-    '.eyo-flyout-toolbar-button { pointer-events: all; z-index: 40; display: block; position: absolute;}')
-  eYo.Style.insertCssRuleAt(
-    '.eyo-flyout-toolbar-background { fill: #ddd; fill-opacity: 0.8; }')
-  eYo.Style.insertCssRuleAt(
-    '.eyo-flyout-toolbar-button-background { fill: transparent; }')
-  eYo.Style.insertCssRuleAt(
-    '.eyo-flyout-toolbar-button-image { fill: white; }')
-  eYo.Style.insertCssRuleAt(
-    '.eyo-flyout-toolbar-button-image:hover { fill:black;  fill-opacity: 0.075;}')
-  eYo.Style.insertCssRuleAt(
-    '.eyo-flash .eyo-flyout-toolbar-button-image, .eyo-flash .eyo-flyout-toolbar-button-image:hover { fill:black;  fill-opacity: 0.2;}')
 })
 
 /**
@@ -154,104 +122,10 @@ eYo.setup.register(function () {
  * Unlink from all DOM elements to prevent memory leaks.
  */
 eYo.FlyoutDelegate.prototype.dispose = function() {
-  if (this.onButtonDownWrapper_) {
-    Blockly.unbindEvent_(this.onButtonDownWrapper_);
-    this.onButtonDownWrapper_ = undefined
+  if (this.toolbarDiv_) {
+    goog.dom.removeNode(this.toolbarDiv_)
+    this.toolbarDiv_ = undefined
   }
-  if (this.onButtonEnterWrapper_) {
-    Blockly.unbindEvent_(this.onButtonEnterWrapper_);
-    this.onButtonEnterWrapper_ = undefined
-  }
-  if (this.onButtonLeaveWrapper_) {
-    Blockly.unbindEvent_(this.onButtonLeaveWrapper_);
-    this.onButtonLeaveWrapper_ = undefined
-  }
-  if (this.onButtonUpWrapper_) {
-    Blockly.unbindEvent_(this.onButtonUpWrapper_);
-    this.onButtonUpWrapper_ = undefined
-  }
-  if (this.toolbarGroup_) {
-    goog.dom.removeNode(this.toolbarGroup_)
-    this.toolbarGroup_ = undefined
-  }
-  if (this.divSelect_) {
-    goog.dom.removeNode(this.divSelect_)
-    this.divSelect_ = undefined
-  }
-  if (this.select_) {
-    this.select_.unlisten(this.listenableKey)
-    this.select_.dispose()
-    this.select_ = undefined
-  }
-};
-
-/**
- * Slide out.
- * @param {!Event} e Mouse up event.
- * @private
- */
-eYo.FlyoutDelegate.prototype.onButtonDown_ = function(e) {
-  this.isDown = true
-  window.addEventListener('mouseup', this.notOnButtonUp_)
-  this.onButtonEnter_(e)
-  e.stopPropagation()
-  e.preventDefault()
-};
-
-/**
- * That is catched when the flyout has the focus.
- * @param {!Event} e Mouse up event.
- * @private
- */
-eYo.FlyoutDelegate.prototype.onButtonEnter_ = function(e) {
-  if (this.isDown) {
-    goog.dom.classlist.add(this.buttonGroup_, 'eyo-flash')
-  }
-};
-
-/**
- * Unhilight.
- * @param {!Event} e Mouse up event.
- * @private
- */
-eYo.FlyoutDelegate.prototype.onButtonLeave_ = function(e) {
-  goog.dom.classlist.remove(this.buttonGroup_, 'eyo-flash')
-};
-
-/**
- * Slide out.
- * @param {!Event} e Mouse up event.
- * @private
- */
-eYo.FlyoutDelegate.prototype.onButtonUp_ = function(e) {
-  window.removeEventListener('mouseup', this.notOnButtonUp_)
-  if (this.isDown) {
-    this.isDown = false
-    this.slide(!this.closed)  
-    this.onButtonLeave_(e)
-    var gesture = this.flyout_.targetWorkspace_.getGesture(e);
-    if (gesture) {
-      gesture.cancel();// comes from flyout button
-    }
-    e.stopPropagation()
-    e.preventDefault()
-  }
-};
-
-/**
- * Mouse up catcher.
- * @param {!Event} e Mouse up event.
- * @private
- */
-eYo.FlyoutDelegate.prototype.notOnButtonUp_ = function(e) {
-  window.removeEventListener('mouseup', this.notOnButtonUp_)
-  this.onButtonLeave_(e)
-  var gesture = this.targetWorkspace_.getGesture(e);
-  if (gesture) {
-    gesture.cancel();// comes from flyout button
-  }
-  e.stopPropagation()
-  e.preventDefault()  
 };
 
 /**
@@ -402,11 +276,13 @@ eYo.Flyout.prototype.addBlockListeners_ = function(root, block, rect) {
  * Slide the flyout in or out.
  */
 eYo.FlyoutDelegate.prototype.slide = function(closed) {
+  if (!goog.isDef(closed)) {
+    closed = !this.closed
+  }
   if (!closed === !this.closed || this.slide_locked) {
     return
   }
   this.slide_locked = true
-  this.select_.setOpen(false)
   var flyout = this.flyout_
   flyout.setVisible(true);
   var targetWorkspaceMetrics = flyout.targetWorkspace_.getMetrics();
@@ -460,9 +336,8 @@ eYo.FlyoutDelegate.prototype.slide = function(closed) {
  */
 eYo.Flyout.prototype.positionAt_ = function(width, height, x, y) {
   eYo.Flyout.superClass_.positionAt_.call(this, width, height, x, y)
-  this.eyo.toolbarGroup_.setAttribute('transform', 'translate(' + x + ', ' + y + ')')
-  this.eyo.divSelect_.style.left = (x + 12.345) + 'px'
-  this.eyo.divSelect_.style.top = (y + 4.567) + 'px'
+  this.eyo.toolbar_.div_.style.left = x + 'px'
+  this.eyo.toolbar_.div_.style.top = y + 'px'
 }
 
 
@@ -559,84 +434,10 @@ eYo.Flyout.prototype.setBackgroundPath_ = function(width, height) {
   path.push('z');
   this.svgBackground_.setAttribute('d', path.join(' '));
 
-  this.eyo.setBackgroundPath_(width, height)
-
-  };
-
-/**
- * Create and set the path for the visible boundaries of the flyout.
- * @param {number} width The width of the flyout, not including the
- *     rounded corners.
- * @param {number} height The height of the flyout, not including
- *     rounded corners.
- * @private
- */
-eYo.FlyoutDelegate.prototype.setBackgroundPath_ = function(width, height) {
-
-  var radius = this.BUTTON_RADIUS
-  var margin = this.BUTTON_MARGIN
-  var top_margin = this.TOP_MARGIN
-  var bottom_margin = this.BOTTOM_MARGIN
-  var big_radius = radius + margin
-  var h = radius * 0.866
-
-  goog.dom.insertSiblingAfter(this.toolbarGroup_, this.flyout_.svgGroup_)
-
-  this.toolbarGroup_.setAttribute('width', width+big_radius+margin);
-  this.toolbarGroup_.setAttribute('height', 2*big_radius);  
-  this.toolbarPath_.setAttribute('d', [
-    'M 0,0',
-    'l', width + margin, '0',
-    'a', big_radius, big_radius, '0,0,1,0,', 2*big_radius,
-    'l', -(width + margin), '0', ' z',
-  ].join(' '))
-
-  this.buttonBackground_.setAttribute('d', [
-    'M ' + width + ',0',
-    'l', margin, '0',
-    'a', big_radius, big_radius, '0,0,1,0,', 2*big_radius,
-    'l', -margin, '0',
-    ' z',
-  ].join(' '))
-  if (this.closed) {
-    this.buttonImage_.setAttribute('d', [
-      'M', width + margin + h + this.flyout_.CORNER_RADIUS, big_radius,
-      'l', -h, - radius/2,
-      'l 0', radius, 'z'
-    ].join(' '))
-  } else {
-    this.buttonImage_.setAttribute('d', [
-      'M', width + this.flyout_.CORNER_RADIUS, big_radius,
-      'l', h, - radius/2,
-      'l 0', radius, 'z'
-    ].join(' '))
+  if (!this.eyo.toolbar_) {
+    this.eyo.toolbar_ = new eYo.FlyoutToolbar(this)
+    var div = this.eyo.toolbar_.createDom()
+    goog.dom.insertSiblingAfter(div, this.svgGroup_)
   }
-  if (!this.divSelect_) {
-    this.divSelect_ = goog.dom.createDom(goog.dom.TagName.DIV, {
-      id: 'eyo-flyout-select'
-    })
-    goog.dom.insertSiblingAfter(this.divSelect_, this.toolbarGroup_)
-    var select = new goog.ui.Select(null, new eYo.Menu(),  eYo.MenuButtonRenderer.getInstance())
-    select.addItem(new eYo.MenuItem('Blade Runner', 'BR'))
-    select.addItem(new eYo.MenuItem('Godfather Part II', 'GPII'))
-    select.addItem(new eYo.MenuItem('Citizen Kane', 'CK'))
-    select.addItem(new eYo.MenuItem('A very long title that exceeds the available room', 'VLT'))
-    select.setSelectedIndex(0)
-    select.render(goog.dom.getElement('eyo-flyout-select'))
-    this.listenableKey = select.listen(
-      goog.ui.Component.EventType.ACTION,
-      function(e) {
-        console.log(select.getValue())
-      },
-      false,
-      this
-    )
-    this.select_ = select
-  }
+  this.eyo.toolbar_.resize(width, height)
 };
-
-
-eYo.setup.register(function () {
-  eYo.Style.insertCssRuleAt(
-    '#eyo-flyout-select { display: block; position: absolute; fill: transparent; width: 200px; height: 20px;}')
-})

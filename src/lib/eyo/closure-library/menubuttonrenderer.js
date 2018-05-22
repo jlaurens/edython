@@ -131,10 +131,12 @@ eYo.MenuButtonRenderer.prototype.createButton = function(content, dom) {
 
 eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt('.eyo-menu-button {',
-      'position: absolute;',
       'background: white;',
-      'left: 10px; right: 10px; width: 200px;',
-      'height: ', ''+eYo.Font.lineHeight() , 'px;',
+      'box-sizing: border-box;',
+      '-moz-box-sizing: border-box;',
+      '-webkit-box-sizing: border-box;',
+      'width: 100%;',
+      'height: 100%;',
       'z-index: 40;',
       'border:1px solid #AAA;',
       '-moz-border-radius: 5px;',
@@ -145,9 +147,21 @@ eYo.setup.register(function () {
       'outline: none;',
     '}')
     eYo.Style.insertCssRuleAt('.eyo-menu-button-outer-box {',
-    'margin-left: 10px; margin-right: 30px; }')
+    'padding-left: 10px;',
+    'width: 100%;',
+    'height: 100%;',
+    'box-sizing: border-box;',
+    '-moz-box-sizing: border-box;',
+    '-webkit-box-sizing: border-box;',
+  '}')
   eYo.Style.insertCssRuleAt(
     '.eyo-menu-button-inner-box {',
+    'width: 100%;',
+    'height: 100%;',
+    'box-sizing: border-box;',
+    '-moz-box-sizing: border-box;',
+    '-webkit-box-sizing: border-box;',
+    'padding-right: 30px;',
     '}')
   eYo.Style.insertCssRuleAt('.eyo-menu-button-caption {',
     eYo.Font.menuStyle,
@@ -158,7 +172,7 @@ eYo.setup.register(function () {
   '}')
   eYo.Style.insertCssRuleAt('.eyo-menu-button-dropdown {',
     'position: absolute;',
-    'right: 0px;',
+    'right: 10px;',
     'top: ', ''+(eYo.Font.lineHeight()/2), 'px;',
     'width: 20px;',
   '}')
