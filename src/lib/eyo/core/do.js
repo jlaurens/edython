@@ -431,6 +431,9 @@ eYo.Do.cssClassForText = function (txt) {
  * @return {Object} an enumerator
  */
 eYo.Do.Enumerator = function (list, filter) {
+  if (!list) {
+    return
+  }
   var i = 0
   var me = {here: undefined}
   me.start = function () {

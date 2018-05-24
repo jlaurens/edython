@@ -20,7 +20,7 @@ thumbs.db
 /**/__pycache__
 /**/UnicodeData.txt
 /**/xregexp-all/xregexp-all.js
-/src/lib/brython/*
+/src/lib/brython*/**
 /bin/compiler-latest/**
 !/**/README.md
 !/**/Readme.md

@@ -80,6 +80,8 @@ eYo.FlyoutToolbar.prototype.createDom = function(dom) {
     goog.getCssName(cssClass, 'select')
   )
   var select = new goog.ui.Select(null, new eYo.Menu(),  eYo.MenuButtonRenderer.getInstance())
+  // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
+  // select.addItem(new eYo.Separator())
   select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
   select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
   select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
@@ -296,3 +298,43 @@ eYo.FlyoutToolbar.prototype.resize = function(width, height) {
     ].join(' '))
   }
 };
+
+eYo.setup.register(function () {
+  eYo.Style.insertCssRuleAt('.eyo-flyout-toolbar .eyo-menu-button {',
+      'background: #952276;',
+      'box-shadow: 0px 3px 8px #888;',
+      'border:0;',
+    '}')
+    eYo.Style.insertCssRuleAt('.eyo-flyout-toolbar .eyo-menu-button:hover {',
+    'box-shadow: 0px 2px 6px #444;',
+  '}')
+  eYo.Style.insertCssRuleAt('.eyo-menu-button-outer-box {',
+    'padding-left: 10px;',
+    'width: 100%;',
+    'height: 100%;',
+    'box-sizing: border-box;',
+    '-moz-box-sizing: border-box;',
+    '-webkit-box-sizing: border-box;',
+  '}')
+  eYo.Style.insertCssRuleAt(
+    '.eyo-menu-button-inner-box {',
+    'width: 100%;',
+    'height: 100%;',
+    'box-sizing: border-box;',
+    '-moz-box-sizing: border-box;',
+    '-webkit-box-sizing: border-box;',
+    'padding-right: 30px;',
+    '}')
+  eYo.Style.insertCssRuleAt('.eyo-flyout-toolbar .eyo-menu-button-caption {',
+    'color: white',
+  '}')
+  eYo.Style.insertCssRuleAt('.eyo-menu-button-dropdown svg {',
+    'position: absolute;',
+    'top: 0px;',
+    'width: 12px;',
+    'height: 6px;',
+  '}')
+  eYo.Style.insertCssRuleAt('.eyo-menu-button-dropdown-image {',
+    'fill: white;',
+  '}')
+})

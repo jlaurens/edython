@@ -265,7 +265,11 @@ eYo.DelegateSvg.Binary.makeSubclass('object_comparison', {
       check: eYo.T3.Expr.Check.comparison
     },
     rhs: {
-      css_class: 'eyo-code-reserved',
+      fields: {
+        operator: {
+          css: 'reserved'
+        },
+      },
       check: eYo.T3.Expr.Check.comparison
     }
   }
@@ -300,7 +304,7 @@ eYo.DelegateSvg.Binary.makeSubclass('or_test', {
       fields: {
         operator: {
           css: 'reserved'
-        }
+        },
       },
       check: eYo.T3.Expr.Check.and_test_all
     }

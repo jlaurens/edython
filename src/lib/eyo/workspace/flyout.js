@@ -75,6 +75,10 @@ eYo.Flyout.prototype.CORNER_RADIUS = 0
 eYo.FlyoutDelegate.prototype.TOP_MARGIN = 2*(eYo.FlyoutDelegate.prototype.BUTTON_RADIUS+eYo.FlyoutDelegate.prototype.BUTTON_MARGIN)
 eYo.FlyoutDelegate.prototype.BOTTOM_MARGIN = 16 // scroll bar width
 
+eYo.FlyoutDelegate.prototype.MARGIN = eYo.Padding.t()
+eYo.FlyoutDelegate.prototype.HEIGHT = eYo.Font.lineHeight() + 2 * eYo.FlyoutDelegate.prototype.MARGIN
+
+
 
 /**
  * Creates the flyout's DOM.  Only needs to be called once.  The flyout can

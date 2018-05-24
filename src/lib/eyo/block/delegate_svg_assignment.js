@@ -270,7 +270,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         this.data.name.setIncog(newValue === this.TARGET_VALUE)
         this.ui.tiles.annotation.setIncog(newValue !== this.NAME_ANNOTATION_VALUE)
         this.ui.tiles.target.setIncog(newValue !== this.TARGET_VALUE)
-      }
+      },
     },
     name: {
       init: '',
@@ -279,8 +279,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         var t = eYo.Do.typeOfString(newValue)
         return this.model.subtypes.indexOf(t) >= 0 ? {validated: newValue} : null
       },
-      synchronize: true
-    }
+      synchronize: true,
+    },
   },
   tiles: {
     name: {
@@ -290,8 +290,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
           placeholder: eYo.Msg.Placeholder.IDENTIFIER,
           validate: true,
           endEditing: true
-        }
-      }
+        },
+      },
     },
     annotation: {
       order: 2,
@@ -299,7 +299,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         label: {
           value: ':',
           css: 'reserved'
-        }
+        },
       },
       check: eYo.T3.Expr.Check.expression,
       hole_value: 'expression'
@@ -314,7 +314,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         operator: {
           value: '=',
           css: 'reserved'
-        }
+        },
       },
       wrap: eYo.T3.Expr.assigned_list
     }

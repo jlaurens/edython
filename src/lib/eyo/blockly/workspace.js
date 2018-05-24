@@ -196,13 +196,46 @@ eYo.Workspace.prototype.undo = function(redo) {
  */
 eYo.WorkspaceDelegate.prototype.getFlyoutsForCategory = function (category) {
   switch(category) {
+    case 'test':
+    return [
+      {
+        type: eYo.T3.Stmt.assignment_stmt,
+        input: {
+          assigned: {
+            input: {
+              O: {
+                type: eYo.T3.Expr.builtin_input_expr,
+                data: {
+                  name: 'input',
+                },
+              },
+            },
+          },
+        },
+      },
+    ]
     case 'basic':
     return [
       eYo.T3.Stmt.start_stmt,
       eYo.T3.Expr.shortliteral,
       eYo.T3.Expr.numberliteral,
       eYo.T3.Stmt.builtin_print_stmt,
-      '<xml xmlns:eyo="urn:edython:1.0"><eyo:assignment_stmt><eyo:list eyo:input="assigned"><eyo:builtin_input_expr eyo:input="O"></eyo:builtin_input_expr></eyo:list></eyo:assignment_stmt></xml>', // eYo.T3.Expr.builtin_input_expr,
+      {
+        type: eYo.T3.Stmt.assignment_stmt,
+        input: {
+          assigned: {
+            input: {
+              O: {
+                type: eYo.T3.Expr.builtin_input_expr,
+                data: {
+                  name: 'input',
+                },
+              },
+            },
+          },
+        },
+      },
+      // '<xml xmlns:eyo="urn:edython:1.0"><eyo:assignment_stmt><eyo:list eyo:input="assigned"><eyo:builtin_input_expr eyo:input="O"></eyo:builtin_input_expr></eyo:list></eyo:assignment_stmt></xml>', // eYo.T3.Expr.builtin_input_expr,
       eYo.T3.Stmt.assignment_stmt,
       eYo.T3.Expr.term,
       eYo.T3.Expr.u_expr,
@@ -280,6 +313,7 @@ eYo.WorkspaceDelegate.prototype.getFlyoutsForCategory = function (category) {
       eYo.T3.Expr.or_test,
       eYo.T3.Expr.and_test,
       eYo.T3.Stmt.while_part,
+      { type:eYo.T3.Expr.call_expr, data: {name: 'range'}},
       eYo.T3.Stmt.for_part,
       eYo.T3.Stmt.else_part,
       eYo.T3.Stmt.break_stmt,

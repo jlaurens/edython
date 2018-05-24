@@ -107,10 +107,13 @@ eYo.MenuButtonRenderer.prototype.createButton = function(content, dom) {
     goog.dom.TagName.DIV,
     goog.getCssName(cssClass, 'dropdown'))
   var svg = Blockly.utils.createSvgElement('svg', null, dropdown)
+  var h = eYo.Font.lineHeight() / 9 * 4
+  svg.style.width = h
+  svg.style.height = h * 0866
   var path = Blockly.utils.createSvgElement('path', {
     'class': goog.getCssName(cssClass, 'dropdown-image')
   } , svg)
-  path.setAttribute('d', 'M 0,0 l 12,0 l -6,6 z')
+  path.setAttribute('d', 'M 0,0 l '+h+',0 l -'+ (h/2) +','+(h*0.866)+' z')
   return dom.createDom(
     goog.dom.TagName.DIV,
     goog.getCssName(cssClass, 'outer-box'),
@@ -179,10 +182,9 @@ eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt('.eyo-menu-button-dropdown svg {',
     'position: absolute;',
     'top: 0px;',
-    'width: 12px;',
-    'height: 6px;',
   '}')
   eYo.Style.insertCssRuleAt('.eyo-menu-button-dropdown-image {',
     'fill: #AAA;',
+    'fill-opacity:0.666',
   '}')
 })

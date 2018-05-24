@@ -76,14 +76,14 @@ eYo.Events.setGroup = (function () {
       level = 1
     } else if (state) {
       if (!level++) {
-        eYo.Events.setGroup(true)
+        Blockly.Events.setGroup(true)
       }
     } else {
-      if (level > 0) {
+      if (level > 1) {
         --level
-      }
-      if (!level) {
-        eYo.Events.setGroup(false)
+      } else if (level) {
+        --level
+        Blockly.Events.setGroup(false)
       }
     }
   }

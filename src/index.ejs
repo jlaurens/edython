@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <title>edython</title>
     <script src="/lib/xregexp-all.js"></script>
+    <script src="/lib/brython.js"></script>
+    <script src="/lib/brython_stdlib.js"></script>
     <% if (htmlWebpackPlugin.options.full_debug) { %>
       <script>
         console.warn('FULL DEBUG MODE:')
@@ -310,7 +312,7 @@
     <% } %>
     <link rel="stylesheet" type="text/css" href="/lib/edython.css">
   </head>
-  <body>
+  <body onload="console.log('ON LOAD')">
     <div id="app"></div>
     <!-- Set `__static` path to static files in production -->
     <script>

@@ -180,7 +180,7 @@ eYo.setup.register(function () {
   var w = eYo.Style.Path.Selected.width
   console.warn('PATH WIDTH:', w, ';stroke-width: ' + w + 'px;fill: none;}')
   eYo.Style.insertCssRuleAt('.eyo-path-selected{stroke: ' + eYo.Style.Path.Selected.colour + ';stroke-width: ' + eYo.Style.Path.Selected.width + 'px;fill: none;}')
-  eYo.Style.insertCssRuleAt('.eyo-select .eyo-path-contour, .eyo-select .eyo-path-inner, .eyo-select .eyo-inner.eyo-expr .eyo-path-contour, .eyo-select .eyo-inner.eyo-expr .eyo-path-inner{stroke: ' + eYo.Style.Path.Selected.colour + ';}')
+  eYo.Style.insertCssRuleAt('.eyo-select .eyo-path-contour, .eyo-select .eyo-path-inner, .eyo-select.eyo-inner.eyo-expr .eyo-path-contour,  .eyo-select .eyo-inner.eyo-expr .eyo-path-contour, .eyo-select .eyo-inner.eyo-expr .eyo-path-inner {stroke: ' + eYo.Style.Path.Selected.colour + ';}')
   eYo.Style.insertCssRuleAt('.eyo-select .eyo-path-contour.eyo-error, .eyo-select .eyo-path-inner.eyo-error{stroke: ' + eYo.Style.Path.Error.colour + ';}')
   eYo.Style.insertCssRuleAt('.eyo-checkbox-icon-rect{stroke: ' + eYo.Style.Path.colour + ';stroke-width: ' + eYo.Style.Path.width + 'px;fill: white;}')
   eYo.Style.insertCssRuleAt('.eyo-locked>.eyo-path-contour, .eyo-locked>.eyo-path-inner, .eyo-locked>.eyo-path-shape{display: none}')

@@ -43,10 +43,7 @@ let rendererConfig = {
       },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader'
-        })
+        use: [ 'style-loader', 'css-loader' ]
       },
       {
         test: /\.xml$/,
@@ -87,13 +84,6 @@ let rendererConfig = {
             name: 'imgs/[name]--[folder].[ext]'
           }
         }
-      },
-      {
-        test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader'
-        })
       },
       {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
@@ -138,6 +128,10 @@ let rendererConfig = {
     new CopyWebpackPlugin([
       { from: path.resolve(__dirname, '../src/lib/xregexp-all/xregexp-all.js'),
       to: path.resolve(__dirname, '../dist/electron/lib/xregexp-all.js')
+      }, { from: path.resolve(__dirname, '../src/lib/brython/brython.js'),
+      to: path.resolve(__dirname, '../dist/electron/lib/brython.js')
+      }, { from: path.resolve(__dirname, '../src/lib/brython/brython_stdlib.js'),
+      to: path.resolve(__dirname, '../dist/electron/lib/brython_stdlib.js')
       }, { from: path.resolve(__dirname, '../build/base/edython.js'),
       to: path.resolve(__dirname, '../dist/electron/lib/edython.js')
       }, { from: path.resolve(__dirname, '../src/lib/blockly/media/'),

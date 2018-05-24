@@ -15,6 +15,7 @@ module.exports = {
     Blockly: true,
     eYo: true,
     XRegExp: true,
+    brython: true,
   },
   plugins: [
     'html'

@@ -1267,7 +1267,7 @@ eYo.DelegateSvg.prototype.delayedRender = function (block) {
  * This is the expected way to create a block 
  * to be displayed immediately.
  * @param {!WorkspaceSvg} workspace
- * @param {!String} prototypeName or xml representation.
+ * @param {!String|Object} prototypeName or xml representation.
  * @private
  */
 eYo.DelegateSvg.newBlockReady = function (workspace, prototypeName, id) {
@@ -1282,12 +1282,56 @@ eYo.DelegateSvg.newBlockReady = function (workspace, prototypeName, id) {
  * The is a caveat due to proper timing in initializing the svg.
  * Whether blocks are headless or not is not clearly designed in Blockly.
  * @param {!WorkspaceSvg} workspace
- * @param {!String} prototypeName
+ * @param {!String|Object} model
  * @private
  */
-eYo.DelegateSvg.newBlockComplete = function (workspace, prototypeName, id) {
-  var B = workspace.newBlock(prototypeName, id)
-  B.eyo.completeWrapped_(B)
+eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
+  var setupData = function(block, model) {
+    var Vs = model.data
+    for (var k in Vs) {
+      if (Vs.hasOwnProperty(k)) {
+        var D = block.eyo.data[k]
+        D && D.set(Vs[k])
+      }
+    }
+  }
+  var processModel = function(block, model, id) {
+    if (!block && model.type) {
+      if ((block = workspace.newBlock(model.type, id))) {
+        block.eyo.completeWrapped_(block)
+      } else {
+        return
+      }
+    }
+    if (block) {
+      setupData(block, model)
+      var Vs = model.input
+      for (var k in Vs) {
+        if (Vs.hasOwnProperty(k)) {
+          var input = block.eyo.getInput(block, k)
+          if (input && input.connection) {
+            var target = input.connection.targetBlock()
+            var V = Vs[k]
+            var B = processModel(target, V)
+            if (!target && B && B.outputConnection) {
+              try {
+                B.outputConnection.connect(input.connection)
+              } finally {
+                // do nothing
+              }
+            }
+          }
+        }
+      }
+      block.eyo.consolidate(block)
+    }
+    return block
+  }
+  var B = processModel(null, model, id)
+  if (!B) {
+    B = workspace.newBlock(model, id)
+    B.eyo.completeWrapped_(B)
+  }
   return B
 }
 
@@ -1314,6 +1358,9 @@ eYo.DelegateSvg.prototype.beReady = function (block) {
   this.foreachTile(function () {
     this.beReady()
   })
+  for (var i = 0, input; (input = block.inputList[i++]);) {
+    input.eyo.beReady()
+  }
   this.inputSuite && this.inputSuite.eyo.beReady()
   this.nextConnection && this.nextConnection.eyo.beReady()
   this.consolidate(block)
@@ -1462,6 +1509,7 @@ eYo.HoleFiller.getDeepHoles = function (block, holes = undefined) {
  */
 eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
   var i = 0
+  eYo.Events.setGroup(true)
   for (; i < holes.length; ++i) {
     var c8n = holes[i]
     if (c8n && c8n.type === Blockly.INPUT_VALUE && !c8n.isConnected()) {
@@ -1484,6 +1532,7 @@ eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
       }
     }
   }
+  eYo.Events.setGroup(false)
 }
 
 /**

@@ -238,11 +238,11 @@ Blockly.Xml.domToBlock = function (xmlBlock, workspace) {
  * This is the expected way to create a block 
  * to be displayed immediately.
  * @param {!WorkspaceSvg} workspace
- * @param {!String} prototypeName or xml representation.
+ * @param {!String|Object} prototypeName or xml representation.
  * @private
  */
 eYo.DelegateSvg.newBlockReady = function (workspace, prototypeName, id) {
-  if (prototypeName.startsWith('<')) {
+  if (prototypeName.startsWith && prototypeName.startsWith('<')) {
     return Blockly.Xml.domToBlock(prototypeName, workspace)
   }
   var B = this.newBlockComplete(workspace, prototypeName, id)
@@ -597,10 +597,10 @@ eYo.Xml.registerAllTags = function () {
       // register the reverse
       var c9r = eYo.Delegate.Manager.get(type)
       if (c9r) {
-        if (!tag.startsWith('eyo:')) {
-          console.warn('DOUBLE eYo')
-        }
-        console.warn('Register:', c9r.eyo.key, tag, eYo.T3.Xml.toDom[mode][key], key)
+        // if (!tag.startsWith('eyo:')) {
+        //   console.warn('DOUBLE eYo')
+        // }
+        // console.warn('Register:', c9r.eyo.key, tag, eYo.T3.Xml.toDom[mode][key], key)
         c9r.eyo.tagName = tag || eYo.T3.Xml.toDom[mode][key] || key
       }
     }

@@ -30,10 +30,7 @@ let webConfig = {
       },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader'
-        })
+        use: [ 'style-loader', 'css-loader' ]
       },
       {
         test: /\.xml$/,
@@ -104,7 +101,12 @@ let webConfig = {
     new CopyWebpackPlugin([
       { from: path.resolve(__dirname, '../src/lib/xregexp-all/xregexp-all.js'),
       to: path.resolve(__dirname, '../dist/web/lib/xregexp-all.js')
-    }], {debug: 'debug'}),
+      }, { from: path.resolve(__dirname, '../src/lib/brython/brython.js'),
+      to: path.resolve(__dirname, '../dist/web/lib/brython.js')
+      }, { from: path.resolve(__dirname, '../src/lib/brython/brython_stdlib.js'),
+      to: path.resolve(__dirname, '../dist/web/lib/brython_stdlib.js')
+      }
+    ], {debug: 'debug'}),
     new CopyWebpackPlugin([
       { from: path.resolve(__dirname, '../build/base/edython.js'),
       to: path.resolve(__dirname, '../dist/web/lib/edython.js')
