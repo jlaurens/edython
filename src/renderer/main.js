@@ -27,6 +27,8 @@ Vue.prototype.eYo = eYo
 Vue.prototype.Blockly = Blockly
 Vue.prototype.goog = goog
 
+console.log('XRegExp', XRegExp)
+
 /* eslint-disable no-new */
 new Vue({
   components: { App },
@@ -34,3 +36,6 @@ new Vue({
   store,
   template: '<App/>'
 }).$mount('#app')
+
+console.log('Launching brython')
+brython()

@@ -138,10 +138,17 @@ let rendererConfig = {
       to: path.resolve(__dirname, '../dist/electron/static/media/'),
       ignore: ['.*']
     }, { from: path.resolve(__dirname, '../src/lib/eyo/css/eyo.css'),
-    to: path.resolve(__dirname, '../dist/electron/lib/edython.css')
+      to: path.resolve(__dirname, '../dist/electron/lib/edython.css')
     }, { from: path.resolve(__dirname, '../font/*.woff'),
       to: path.resolve(__dirname, '../dist/electron/static/')
-    }], {debug: 'debug'})
+    // }, { from: path.resolve(__dirname, '../src/lib/site-packages/**'),
+    //   to: path.resolve(__dirname, '../dist/electron/lib/Lib[1]'),
+    //   test: /..\/src\/lib(\/.+\.py)$/,
+    }, { from: path.resolve(__dirname, '../src/lib/site-packages/console.py'),
+      to: path.resolve(__dirname, '../dist/electron/console.py'),
+    }, { from: path.resolve(__dirname, '../src/lib/site-packages/console.py'),
+    to: path.resolve(__dirname, '../dist/electron/lib/console.py'),
+}], {debug: 'debug'})
   ],
   output: {
     filename: '[name].js',

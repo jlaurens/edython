@@ -110,12 +110,16 @@ let webConfig = {
     new CopyWebpackPlugin([
       { from: path.resolve(__dirname, '../build/base/edython.js'),
       to: path.resolve(__dirname, '../dist/web/lib/edython.js')
-    }, { from: path.resolve(__dirname, '../src/lib/eyo/css/eyo.css'),
-    to: path.resolve(__dirname, '../dist/web/lib/edython.css')
-    }, { from: path.resolve(__dirname, '../font/*.woff'),
-    to: path.resolve(__dirname, '../dist/web/static/')
-  }], {debug: 'debug'})
-  ],
+      }, { from: path.resolve(__dirname, '../src/lib/eyo/css/eyo.css'),
+      to: path.resolve(__dirname, '../dist/web/lib/edython.css')
+      }, { from: path.resolve(__dirname, '../font/*.woff'),
+      to: path.resolve(__dirname, '../dist/web/static/')
+      }, { from: path.resolve(__dirname, '../src/lib/site-packages/**'),
+      to: path.resolve(__dirname, '../dist/web/lib/Lib[1]'),
+      test: /..\/src\/lib(\/.+\.py)$/,
+    }], {debug: 'debug'})
+  ],//    to: '[1]-[2].[hash].[ext]',
+  //test: /([^/]+)\/(.+)\.png$/
   output: {
     filename: '[name].js',
     path: path.join(__dirname, '../dist/web')

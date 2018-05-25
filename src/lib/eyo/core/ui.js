@@ -67,8 +67,10 @@ eYo.Font = (function (ascent) {
     my.space = ascent * 1233 / 1556
     my.totalAscent = ascent * 2048 / 1556
     my.height = my.totalAscent + my.descent
-    my.style = 'font-family:DejaVuSansMono,monospace;font-size:' + ascent + 'pt;'
-    my.menuStyle = 'font-family:DejaVuSans,sans-serif;font-size:' + ascent + 'pt;'
+    my.familyMono = 'DejaVuSansMono,monospace'
+    my.familySans = 'DejaVuSans,sans-serif'
+    my.style = 'font-family:'+my.familyMono+';font-size:' + ascent + 'pt;'
+    my.menuStyle = 'font-family:'+my.familySans+';font-size:' + ascent + 'pt;'
     my.tabWidth = 4 * my.space
     return my
   }

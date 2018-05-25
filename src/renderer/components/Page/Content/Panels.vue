@@ -1,37 +1,54 @@
 <template>
-  <div id="content-panels">
+  <div id="eyo-panels">
     <div id="eyo-panels-toolbar" v-bind:style="{ height: this.eYo.FlyoutDelegate.prototype.HEIGHT.toString().replace(',', '.') + 'px' }">
-      <div id="eyo-panels-toolbar-select" v-bind:style="{ paddingTop: this.eYo.FlyoutDelegate.prototype.MARGIN.toString().replace(',', '.') + 'px', paddingBottom: this.eYo.FlyoutDelegate.prototype.MARGIN.toString().replace(',', '.') + 'px', paddingLeft: this.Blockly.BlockSvg.TAB_WIDTH.toString().replace(',', '.') + 'px', paddingRight: this.Blockly.BlockSvg.TAB_WIDTH.toString().replace(',', '.') + 'px'}">
-        <b-dropdown id="eyo-panels-toolbar-dropdown" text="Dropdown Button">
-          <b-dropdown-item>First Action</b-dropdown-item>
-          <b-dropdown-item>Second Action</b-dropdown-item>
-          <b-dropdown-item>Third Action</b-dropdown-item>
-          <b-dropdown-divider></b-dropdown-divider>
-          <b-dropdown-item>Something else here...</b-dropdown-item>
-          <b-dropdown-item disabled>Disabled action</b-dropdown-item>
+      <div id="eyo-panels-toolbar-select" v-bind:style="{ paddingTop: this.eYo.FlyoutDelegate.prototype.MARGIN.toString().replace(',', '.') + 'px', paddingBottom: this.eYo.FlyoutDelegate.prototype.MARGIN.toString().replace(',', '.') + 'px', paddingLeft: this.Blockly.BlockSvg.TAB_WIDTH.toString().replace(',', '.') + 'px', paddingRight: this.Blockly.BlockSvg.TAB_WIDTH.toString().replace(',', '.') + 'px', fontFamily: this.eYo.Font.family,
+      fontSize: this.eYo.Font.totalHeight + 'px'
+  }">
+        <b-dropdown id="eyo-panels-toolbar-dropdown">
+          <template slot="button-content">
+            {{titles[selected]}}
+          </template>
+          <b-dropdown-item-button v-on:click="selected = 'console'" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight}">{{titles.console}}</b-dropdown-item-button>
+          <b-dropdown-item-button v-on:click="selected = 'turtle'" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight}">{{titles.turtle}}</b-dropdown-item-button>
         </b-dropdown>
       </div>
+    </div>
+    <div id="eyo-panels-content">
+      <panel-console v-bind:style="{display: selected === 'console'?'block':'none'}"></panel-console>
+      <panel-turtle v-bind:style="{display:selected === 'turtle'?'block':'none'}"></panel-turtle>
     </div>
   </div>
 </template>
 
 <script>
+  import PanelConsole from './Panel/Console'
+  import PanelTurtle from './Panel/Turtle'
+
   export default {
     name: 'content-panels',
-    mounted: function () {
-      console.log('MOUNTED PANELS', this.Blockly.BlockSvg.TAB_WIDTH)
+    data: function () {
+      return {
+        selected: 'console',
+        titles: {
+          console: 'Console',
+          turtle: 'Tortue'
+        }
+      }
+    },
+    components: {
+      'panel-console': PanelConsole,
+      'panel-turtle': PanelTurtle
     }
   }
 </script>
 
 <style>
-  #content-panels {
+  #eyo-panels {
     background-color: white;
     height: 100%;
   }
   #eyo-panels-toolbar {
-    background-color: #DDD;
-    opacity: 0.8;
+    background-color:rgba(221,221,221,0.8);
     width: 100%;
   }
   #eyo-panels-toolbar-select {
@@ -47,10 +64,41 @@
   }
   #eyo-panels-toolbar-dropdown .btn {
     width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-align: left;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    vertical-align: baseline;
   }
   #eyo-panels-toolbar-dropdown .btn::after {
     position: absolute;
     right: 5px;
     bottom: 5px;
+    opacity: 0.666;
+  }
+  .dropdown-menu {
+    padding: 0;
+    margin: 0;
+    vertical-align: baseline;
+  }
+  .dropdown-divider {
+    margin: 0px;
+  }
+  .dropdown-item {
+    font-family: DejavuSans;
+    font-size: 1rem;
+    margin: 0;
+    vertical-align: baseline;
+    padding: 2px 20px 2px 8px;
+    white-space: nowrap;
+  }
+  .dropdown-item:hover {
+    background-color: #d6e9f8;
+  }
+  #eyo-panels-content {
+    height: 100%;
+    box-sizing: border-box;
   }
 </style>

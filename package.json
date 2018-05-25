@@ -60,13 +60,14 @@
   "dependencies": {
     "axios": "^0.16.1",
     "bootstrap-vue": "^2.0.0-rc.11",
-    "brython": "^3.5.1",
+    "jquery": "^3.3.1",
     "vue": "^2.5.16",
     "vue-drawer-layout": "^0.3.2",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
     "vue-split-panel": "^1.0.4",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "xregexp": "^4.1.1"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
