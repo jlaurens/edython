@@ -319,11 +319,6 @@
       if (process && (process.env.NODE_ENV !== 'development')) window.__lib = require('path').join(__dirname, '/lib').replace(/\\/g, '\\\\')
       if (process && (process.env.NODE_ENV !== 'development')) window.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
     </script>
-    <script type="text/python">
-for i in range(10):
-  print(i, '->', i**2)
-#import engine
-    </script>
     <!-- webpack builds are automatically injected -->
   </body>
 </html>

@@ -148,7 +148,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawNextStatementInput_ = function (io) {
   io.MinMaxCursorX = 2 * eYo.Font.tabWidth
   io.canStatement = false
   var c8n = io.input.connection
-      // this must be the last one
+  // this must be the last one
   if (c8n) {
     c8n.setOffsetInBlock(eYo.Font.tabWidth, eYo.Font.lineHeight())
     if (c8n.isConnected()) {
@@ -222,6 +222,9 @@ eYo.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
  * For edython.
  */
 eYo.DelegateSvg.Group.makeSubclass('if_part', {
+  xml: {
+    tag: 'if',
+  },
   fields: {
     label: 'if'
   },
@@ -240,6 +243,9 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
  * For edython.
  */
 eYo.DelegateSvg.Group.makeSubclass('elif_part', {
+  xml: {
+    tag: 'elif',
+  },
   fields: {
     label: 'elif'
   },
@@ -266,6 +272,9 @@ eYo.DelegateSvg.Group.makeSubclass('elif_part', {
  * For edython.
  */
 eYo.DelegateSvg.Group.makeSubclass('else_part', {
+  xml: {
+    tag: 'else',
+  },
   fields: {
     label: 'else'
   },
@@ -292,9 +301,7 @@ eYo.DelegateSvg.Manager.register('last_else_part')
  * and conversely. If the block can be of both types, then it is of type else_part.
  * First the previous connection tries to constrain the type,
  * then the next connection.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- * @param {?string} prototypeName Name of the language object containing
+ * @param {!Blockly.Block} block Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
@@ -342,6 +349,9 @@ eYo.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
  * For edython.
  */
 eYo.DelegateSvg.Group.makeSubclass('while_part', {
+  xml: {
+    tag: 'while',
+  },
   fields: {
     label: 'while'
   },
@@ -401,6 +411,9 @@ eYo.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (block, mgr
  * For edython.
  */
 eYo.DelegateSvg.Group.makeSubclass('for_part', {
+  xml: {
+    tag: 'for',
+  },
   tiles: {
     for: {
       order: 1,
@@ -427,6 +440,9 @@ eYo.DelegateSvg.Group.makeSubclass('for_part', {
  * For edython.
  */
 eYo.DelegateSvg.Group.makeSubclass('with_part', {
+  xml: {
+    tag: 'with',
+  },
   tiles: {
     with: {
       order: 1,

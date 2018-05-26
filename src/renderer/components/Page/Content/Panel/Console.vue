@@ -1,22 +1,18 @@
 <template>
   <div id="eyo-panel-console">
-    <script type="text/python">
-      print('%%% importing console module')
-      try:
-        import console
-      except:
-        print('BIG FAILURE, YOU WON\'T HAVE A CONSOLE')
-      print('%%% importing console module: done')
-    </script>
-    <textarea id="eyo-console-area" rows=20 v-bind:style="{fontFamily: this.eYo.Font.familyMono, fontSize: (this.eYo.Font.totalAscent) + 'px'}"></textarea>
+    <panel-console-script></panel-console-script><textarea id="eyo-console-area" rows=20 v-bind:style="{fontFamily: this.eYo.Font.familyMono, fontSize: this.eYo.Font.totalAscent + 'px'}"></textarea>
   </div>
 </template>
 
 <script>
+  import PanelConsoleScript from './ConsoleScript'
   export default {
     name: 'panel-console',
     mounted: function () {
       console.log('CONSOLE MOUNTED')
+    },
+    components: {
+      'panel-console-script': PanelConsoleScript
     }
   }
 </script>

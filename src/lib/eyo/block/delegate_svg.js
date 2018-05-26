@@ -262,6 +262,9 @@ eYo.DelegateSvg.prototype.postInitSvg = function (block) {
   this.svgPathConnection_ = Blockly.utils.createSvgElement('path', {
     'class': 'eyo-path-selected'
   }, null)
+  if (this.outputConnection && this.outputConnection.targetBlock()) {
+    console.log('CREATING path while ALREADY connected')
+  }
   this.svgContourGroup_ = Blockly.utils.createSvgElement('g',
     {'class': 'eyo-contour'}, null)
   goog.dom.appendChild(this.svgContourGroup_, this.svgPathInner_)
@@ -287,12 +290,18 @@ eYo.DelegateSvg.prototype.postInitSvg = function (block) {
 
 /**
  * Called when the parent will just change.
- * @param {!Blockly.Block} block to be initialized.
+ * This code is responsible to place the various path
+ * in the proper domain of the dom tree.
+ * @param {!Blockly.Block} block to be modified.
+ * @param {!Blockly.Block} newParent to be connected.
  */
 eYo.DelegateSvg.prototype.parentWillChange = function (block, newParent) {
-  // This is the original code found in
-  // `Blockly.BlockSvg.prototype.setParent`
   if (block.parentBlock_) {
+    // this block was connected, so its path were located in the parents
+    // groups.
+    // First step, remove the relationship between the receiver
+    // and the old parent, then link the receiver with the new parent.
+    // this second step is permformed in the `parentDidChange` method.
     var svgRoot = block.getSvgRoot()
     if (svgRoot) {
       // Move this block up the DOM.  Keep track of x/y translations.
@@ -323,7 +332,10 @@ eYo.DelegateSvg.prototype.contourAboveParent = true
 
 /**
  * Called when the parent did just change.
+ * Side effect, if the chid block has been `Svg` inited
+ * then the parent block will be.
  * @param {!Blockly.Block} block to be initialized.
+ * @param {!Blockly.Block} newParent to be connected.
  */
 eYo.DelegateSvg.prototype.parentDidChange = function (block, newParent) {
   // This is the original code found in
@@ -1323,6 +1335,19 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
           }
         }
       }
+      if (block.nextConnection) {
+        var nextModel = model.next
+        if (nextModel) {
+          B = processModel(null, nextModel)
+          if (B && B.previousConnection) {
+            try {
+              B.previousConnection.connect(block.nextConnection)
+            } finally {
+              // do nothing
+            }
+          }
+        }
+      }
       block.eyo.consolidate(block)
     }
     return block
@@ -1362,7 +1387,7 @@ eYo.DelegateSvg.prototype.beReady = function (block) {
     input.eyo.beReady()
   }
   this.inputSuite && this.inputSuite.eyo.beReady()
-  this.nextConnection && this.nextConnection.eyo.beReady()
+  block.nextConnection && block.nextConnection.eyo.beReady()
   this.consolidate(block)
   this.synchronizeData(block)
   this.synchronizeTiles(block)
@@ -1383,6 +1408,7 @@ eYo.DelegateSvg.prototype.beReady = function (block) {
       'eyo-inner')
   }
   this.skipRendering = 0
+  block.render() // this may not be appropriate
 }
 
 /**

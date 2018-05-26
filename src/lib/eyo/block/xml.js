@@ -370,6 +370,8 @@ eYo.Delegate.prototype.tagName = function (block) {
   return (tag && 'eyo:' + tag) || block.type
 }
 
+goog.require('eYo.DelegateSvg.Group')
+
 goog.require('eYo.DelegateSvg.List')
 
 /**
