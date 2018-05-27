@@ -282,13 +282,14 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/draw.js" \
 --js "src/lib/eyo/workspace/flyout.js" \
 --js "src/lib/eyo/workspace/key_handler.js" \
---js "src/lib/eyo/workspace/menu_manager.js" \
+--js "src/lib/eyo/block/python_exporter.js" \
 --js "src/lib/eyo/block/delegate_svg_literal.js" \
 --js "src/lib/eyo/block/delegate_svg_list.js" \
 --js "src/lib/eyo/block/delegate_svg_math.js" \
 --js "src/lib/eyo/block/delegate_svg_operator.js" \
 --js "src/lib/eyo/block/delegate_svg_term.js" \
 --js "src/lib/eyo/blockly/workspace_svg.js" \
+--js "src/lib/eyo/workspace/menu_manager.js" \
 --js "src/lib/eyo/block/delegate_svg_argument.js" \
 --js "src/lib/eyo/block/delegate_svg_comp.js" \
 --js "src/lib/eyo/block/delegate_svg_lambda.js" \
@@ -302,7 +303,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate_svg_yield.js" \
 --js "src/lib/eyo/block/delegate_svg_proc.js" \
 --js "src/lib/eyo/block/delegate_svg_try.js" \
---js "src/lib/eyo/block/python.js" \
 --js "src/lib/eyo/block/xml.js" \
 --js "src/lib/eyo/block/development.js" \
   --js_output_file "build/base/edython.js"\

@@ -23,6 +23,9 @@ console.warn('Move this block to the builtin blocks, with contextual consolidato
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('builtin_print_expr', {
+  xml: {
+    tag: 'print',
+  },
   fields: {
     label: {
       value: 'print',
@@ -124,7 +127,8 @@ eYo.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass('builtin_print_stmt', {
-  link: eYo.T3.Expr.builtin_print_expr
+  inherits: eYo.T3.Expr.builtin_print_expr,
+  output: null,
 })
 
 /**

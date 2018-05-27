@@ -148,6 +148,7 @@ eYo.Delegate.Manager = (function () {
       to.check = eYo.Do.ensureArray(to_d)
     }
   }
+  me.merger = merger
   /**
    * Private modeller to provide the constructor with a complete getModel.
    * @param {!Object} delegateC9r the constructor of a delegate. Must have an `eyo` namespace.
@@ -227,6 +228,19 @@ eYo.Delegate.Manager = (function () {
           model = linkModel
         }
       }
+      // manage the inherits key, uncomplete management,
+      var inherits = model.inherits
+      if (inherits) {
+        var inheritsC9r = goog.isFunction(inherits) ? inherits : me.get(inherits)
+        var inheritsModel = inheritsC9r.eyo.getModel()
+        if (inheritsModel) {
+          var m = {}
+          merger(m, inheritsModel)
+          merger(m, model)
+          model = m
+        }
+      }
+      var inherits
       var t = eYo.T3.Expr[key]
       if (t) {
         if (!model.output) {
@@ -390,7 +404,8 @@ eYo.Delegate.prototype.consolidateType = function (block) {
  * If the return value of the given function is true,
  * then it was the last iteration and the loop nreaks.
  * For edython.
- * @param {boolean} newValue
+ * @param {!function} helper
+ * @return {boolean} whether there was a tile to act upon or a valid helper
  */
 eYo.Delegate.prototype.foreachTile = function (helper) {
   var tile = this.ui.headTile
@@ -399,14 +414,17 @@ eYo.Delegate.prototype.foreachTile = function (helper) {
     do {
       last = helper.call(tile)
     } while (!last && (tile = tile.next))
+    return true
   }
+  return false
 }
 
 /**
  * execute the given function for the head data of the receiver and its next sibling.
  * Ends the loop as soon as the 
  * For edython.
- * @param {boolean} newValue
+ * @param {!function} helper
+ * @return {boolean} whether there was a data to act upon or a valid helper
  */
 eYo.Delegate.prototype.foreachData = function (helper) {
   var data = this.headData
@@ -546,7 +564,8 @@ eYo.Delegate.prototype.setupType = function (block, optNewType) {
  */
 eYo.Delegate.prototype.initBlock = function (block) {
   this.setupType(block)
-  var D = this.getModel().output
+  var model = this.getModel()
+  var D = model.output
   if (D && Object.keys(D).length) {
     block.setOutput(true, D.check)
     var eyo = block.outputConnection.eyo
@@ -554,7 +573,7 @@ eYo.Delegate.prototype.initBlock = function (block) {
     if (D.suite && Object.keys(D.suite).length) {
       goog.mixin(eyo, D.suite)
     }
-  } else if ((D = this.getModel().statement) && Object.keys(D).length) {
+  } else if ((D = model.statement) && Object.keys(D).length) {
     if (D.suite) {
       this.inputSuite = block.appendStatementInput('suite').setCheck(D.check) // Check ?
       this.inputSuite.connection.eyo.model = D

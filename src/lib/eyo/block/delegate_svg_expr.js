@@ -545,7 +545,7 @@ eYo.DelegateSvg.Expr.makeSubclass('not_test', {
       fields: {
         label: 'not'
       },
-      check: eYo.T3.Expr.Check.not_test,
+      check: eYo.T3.Expr.Check.not_test_all,
       hole_value: 'name'
     }
   }

@@ -260,14 +260,14 @@ eYo.WorkspaceDelegate.prototype.getFlyoutsForCategory = function (category) {
     ]
     case 'advanced':
     return [
+      eYo.T3.Expr.any,
+      eYo.T3.Stmt.expression_stmt,
+      eYo.T3.Stmt.any_stmt,
       eYo.T3.Expr.shift_expr,
       eYo.T3.Expr.and_expr,
       eYo.T3.Expr.xor_expr,
       eYo.T3.Expr.or_expr,
       eYo.T3.Expr.starred_expression,
-      eYo.T3.Expr.any,
-      eYo.T3.Stmt.expression_stmt,
-      eYo.T3.Stmt.any_stmt,
       eYo.T3.Stmt.del_stmt,
       eYo.T3.Stmt.global_nonlocal_stmt,
       eYo.T3.Expr.lambda,

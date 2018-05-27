@@ -36,8 +36,8 @@ class DB:
     by_provide = {}
 
     def __init__(self, *args):
-        for p in args:
-            with p.open() as f:
+        for path in args:
+            with path.open() as f:
                 for line in f.readlines():
                     m = re_addDep.match(line)
                     if m:
@@ -53,7 +53,7 @@ class DB:
                         assert self.by_file.get(file) is None, 'Same file appears twice at least '+file
                         self.by_file[file] = dep
                         for p in provided:
-                            assert self.by_provide.get(p) is None, 'Same provide appears twice at least ' + p
+                            assert self.by_provide.get(p) is None, 'Same provide appears twice at least ' + p + ', ' + path.as_posix()
                             self.by_provide[p] = dep
 
     def getDep(self, provide):

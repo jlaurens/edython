@@ -293,7 +293,7 @@ eYo.Tile.makeFields = (function () {
               unordered.splice(j, 1)
             }
           }
-          var eyo = field.eyo.edyLast_ || field.eyo
+          var eyo = field.eyo.eyoLast_ || field.eyo
           for (i++; i < arguments.length; i++) {
             fieldName = arguments[i]
             if ((eyo.nextField = goog.isString(fieldName) ? ui.fields[fieldName] : fieldName)) {
@@ -304,10 +304,10 @@ eYo.Tile.makeFields = (function () {
                 }
               }
               eyo = eyo.nextField.eyo
-              delete eyo.edyLast_
+              delete eyo.eyoLast_
             }
           }
-          field.eyo.edyLast_ = eyo
+          field.eyo.eyoLast_ = eyo
           break
         }
       }
@@ -322,8 +322,8 @@ eYo.Tile.makeFields = (function () {
     goog.asserts.assert(unordered.length < 2,
       eYo.Do.format('Too many unordered fields in {0}/{1}', key, JSON.stringify(model)))
     unordered[0] && (ui.fromStartField = chain(ui.fromStartField, unordered[0]))
-    ui.fromStartField && delete ui.fromStartField.eyo.edyLast_
-    ui.toEndField && delete ui.toEndField.eyo.edyLast_
+    ui.fromStartField && delete ui.fromStartField.eyo.eyoLast_
+    ui.toEndField && delete ui.toEndField.eyo.eyoLast_
     ui.fields.comment && (ui.fields.comment.eyo.comment = true)
   }
 }())
