@@ -188,6 +188,7 @@ eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt('.eyo-locked>.eyo-path-contour, .eyo-locked>.eyo-path-inner, .eyo-locked>.eyo-path-shape{display: none}')
   eYo.Style.insertCssRuleAt('.eyo-path-shape{stroke: none;fill: white;fill-opacity:0.85}')
   eYo.Style.insertCssRuleAt('.eyo-inner .eyo-path-shape{stroke: none;fill-opacity:0}')
+  eYo.Style.insertCssRuleAt('.eyo-stmt.eyo-inner .eyo-path-shape{stroke: none;fill-opacity:0.85}')
   eYo.Style.insertCssRuleAt('.eyo-path-contour, .eyo-path-inner, .eyo-path-collapsed {stroke: ' + eYo.Style.Path.colour + ';stroke-width: ' + eYo.Style.Path.width + 'px;fill: none;pointer-events: all;}')
   eYo.Style.insertCssRuleAt('.eyo-inner.eyo-expr .eyo-path-contour, .eyo-inner.eyo-expr .eyo-path-collapsed {stroke: ' + eYo.Style.Path.inner_colour + ';}')
   eYo.Style.insertCssRuleAt('.eyo-none {stroke:none;fill:none;}')

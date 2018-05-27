@@ -109,11 +109,11 @@ eYo.PythonExporter.prototype.export = function (block, is_deep) {
   if ((input = block.eyo.inputSuite)) {
     try {
       this.indent_()
-      this.newline_()
       var target = input.connection.targetBlock()
       if (target) {
         this.export(target, true)
       } else {
+        this.newline_()
         this.line.push('MISSING STATEMENT')
       }
     } finally {

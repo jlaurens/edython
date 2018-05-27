@@ -577,7 +577,7 @@ eYo.Xml.registerAllTags = function () {
         if (m) {
           tag = m.core
         } else {
-          continue
+          tag = type.substring(4)
         }
       } else if (!tag.length) {
         continue
@@ -603,7 +603,7 @@ eYo.Xml.registerAllTags = function () {
         //   console.warn('DOUBLE eYo')
         // }
         // console.warn('Register:', c9r.eyo.key, tag, eYo.T3.Xml.toDom[mode][key], key)
-        c9r.eyo.tagName = tag || eYo.T3.Xml.toDom[mode][key] || key
+        c9r.eyo.tagName = eYo.T3.Xml.toDom[mode][key] || key
       }
     }
   }
