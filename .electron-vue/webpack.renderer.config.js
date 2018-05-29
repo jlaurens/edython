@@ -3,8 +3,8 @@
 process.env.BABEL_ENV = 'renderer'
 
 const path = require('path')
-const { dependencies } = require('../package.json')
 const webpack = require('webpack')
+const { dependencies } = require('../package.json')
 
 const BabiliWebpackPlugin = require('babili-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
@@ -19,6 +19,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/webpack-configurations.html#white-listing-externals
  */
 let whiteListedModules = ['vue']
+
+let brython_debug = true
 
 let rendererConfig = {
   devtool: '#cheap-module-eval-source-map',
@@ -52,15 +54,6 @@ let rendererConfig = {
       {
         test: /\.html$/,
         use: 'vue-html-loader'
-      },
-      {
-        test: /\.js$/,
-        use: 'babel-loader',
-        exclude: /node_modules/
-      },
-      {
-        test: /\.node$/,
-        use: 'node-loader'
       },
       {
         test: /\.vue$/,
@@ -102,12 +95,17 @@ let rendererConfig = {
             name: 'fonts/[name]--[folder].[ext]'
           }
         }
+      },
+      {
+        test: /\.js$/,
+        use: 'babel-loader',
+        exclude: /node_modules/
+      },
+      {
+        test: /\.node$/,
+        use: 'node-loader'
       }
     ]
-  },
-  node: {
-    __dirname: process.env.NODE_ENV !== 'production',
-    __filename: process.env.NODE_ENV !== 'production'
   },
   plugins: [
     new ExtractTextPlugin('styles.css'),
@@ -115,40 +113,17 @@ let rendererConfig = {
       filename: 'index.html',
       template: path.resolve(__dirname, '../src/index.ejs'),
       minify: {
-        collapseWhitespace: true,
+        collapseWhitespace: false,// otherwise python code would not survive?
         removeAttributeQuotes: true,
         removeComments: true
       },
       nodeModules: process.env.NODE_ENV !== 'production'
         ? path.resolve(__dirname, '../node_modules')
         : false,
+      brython_debug: brython_debug,
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
-    new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, '../src/lib/xregexp-all/xregexp-all.js'),
-      to: path.resolve(__dirname, '../dist/electron/lib/xregexp-all.js')
-      }, { from: path.resolve(__dirname, '../src/lib/brython/brython.js'),
-      to: path.resolve(__dirname, '../dist/electron/lib/brython.js')
-      }, { from: path.resolve(__dirname, '../src/lib/brython/brython_stdlib.js'),
-      to: path.resolve(__dirname, '../dist/electron/lib/brython_stdlib.js')
-      }, { from: path.resolve(__dirname, '../build/base/edython.js'),
-      to: path.resolve(__dirname, '../dist/electron/lib/edython.js')
-      }, { from: path.resolve(__dirname, '../src/lib/blockly/media/'),
-      to: path.resolve(__dirname, '../dist/electron/static/media/'),
-      ignore: ['.*']
-    }, { from: path.resolve(__dirname, '../src/lib/eyo/css/eyo.css'),
-      to: path.resolve(__dirname, '../dist/electron/lib/edython.css')
-    }, { from: path.resolve(__dirname, '../font/*.woff'),
-      to: path.resolve(__dirname, '../dist/electron/static/')
-    // }, { from: path.resolve(__dirname, '../src/lib/site-packages/**'),
-    //   to: path.resolve(__dirname, '../dist/electron/lib/Lib[1]'),
-    //   test: /..\/src\/lib(\/.+\.py)$/,
-    }, { from: path.resolve(__dirname, '../src/lib/site-packages/console.py'),
-      to: path.resolve(__dirname, '../dist/electron/console.py'),
-    }, { from: path.resolve(__dirname, '../src/lib/site-packages/console.py'),
-    to: path.resolve(__dirname, '../dist/electron/lib/console.py'),
-}], {debug: 'debug'})
+    new webpack.NoEmitOnErrorsPlugin()
   ],
   output: {
     filename: '[name].js',
@@ -165,8 +140,96 @@ let rendererConfig = {
     },
     extensions: ['.js', '.vue', '.json', '.css', '.node']
   },
+  node: {
+    __dirname: process.env.NODE_ENV !== 'production',
+    __filename: process.env.NODE_ENV !== 'production'
+  },
   target: 'electron-renderer'
 }
+
+
+let morePlugins = function (plugins, where) {
+  /**
+   * xregexp
+   */
+  plugins.push(
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../src/lib/xregexp-all/xregexp-all.js'),
+        to: path.resolve(__dirname, '../dist/'+where+'/lib/xregexp-all.js')
+      }
+    ], {debug: 'debug'})
+  )
+  /**
+   * this one is for embedding brython sources
+   */
+  plugins.push(
+    new CopyWebpackPlugin(
+      [
+        {
+          from: path.resolve(__dirname, '../src/lib/brython/www/src/**'),
+          to: path.resolve(__dirname, '../dist/'+where+'/[1]'),
+          test: /^.*\/src\/lib\/brython\/www\/(src\/.+)$/,
+        },
+        {
+          from: path.resolve(__dirname, '../src/lib/site-packages/**'),
+          to: path.resolve(__dirname, '../dist/'+where+'/src/Lib[1]'),
+          test: /..\/src\/lib(\/.+\.py)$/,
+        },
+        {
+          from: path.resolve(__dirname, '../src/lib/site-packages/console.py'),
+          to: path.resolve(__dirname, '../dist/'+where+'/console.py'),
+        }
+      ], {debug: 'debug'}
+    )
+    // new CopyWebpackPlugin([
+    //   { from: path.resolve(__dirname, '../src/lib/brython/brython.js'),
+    //   to: path.resolve(__dirname, '../dist/web/lib/brython.js')
+    //   }, { from: path.resolve(__dirname, '../src/lib/brython/brython_stdlib.js'),
+    //   to: path.resolve(__dirname, '../dist/web/lib/brython_stdlib.js')
+    //   }
+    // ], {debug: 'debug'}),
+  )
+  /**
+   * this one is for embedding edython (and embedded blockly/closure) sources
+   */
+  plugins.push(
+    new CopyWebpackPlugin(
+      [
+        { from: path.resolve(__dirname, '../build/base/edython.js'),
+          to: path.resolve(__dirname, '../dist/'+where+'/lib/edython.js')
+        },
+        { from: path.resolve(__dirname, '../src/lib/eyo/css/eyo.css'),
+          to: path.resolve(__dirname, '../dist/'+where+'/lib/edython.css')
+        }
+      ],
+      {
+        debug: 'debug'
+      }
+    )
+  )
+  /**
+   * resources
+   */
+  plugins.push(
+    new CopyWebpackPlugin(
+      [
+        {
+          from: path.resolve(__dirname, '../src/lib/blockly/media/**'),
+          to: path.resolve(__dirname, '../dist/'+where+'/static[1]'),
+          test: /..\/src\/lib\/blockly(\/media\/.+)$/,
+        },
+        {
+          from: path.resolve(__dirname, '../font/*.woff'),
+          to: path.resolve(__dirname, '../dist/'+where+'/static/')
+        }
+      ],
+      {
+        debug: 'debug'
+      }
+    )
+  )
+} (rendererConfig.plugins, 'electron')
 
 /**
  * Adjust rendererConfig for development settings

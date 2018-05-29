@@ -4,8 +4,41 @@
     <meta charset="utf-8">
     <title>edython</title>
     <script src="/lib/xregexp-all.js"></script>
+    <% if (htmlWebpackPlugin.options.brython_debug) { %>
+    <script src="/src/brython.js"></script>
+    <script src="/src/brython_stdlib.js"></script>
+    <script src="/src/brython_builtins.js"></script>
+    <script src="/src/version_info.js"></script>
+    <script src="/src/py2js.js"></script>
+    <script src="/src/py_object.js"></script>
+    <script src="/src/py_type.js"></script>
+    <script src="/src/py_utils.js"></script>
+    <script src="/src/py_sort.js"></script>
+    <script src="/src/py_builtin_functions.js"></script>
+    <script src="/src/py_exceptions.js"></script>
+    <script src="/src/py_range_slice.js"></script>
+    <script src="/src/py_bytes.js"></script>
+    <script src="/src/py_set.js"></script>
+    <script src="/src/js_objects.js"></script>
+    <script src="/src/stdlib_paths.js"></script>
+    <script src="/src/py_import.js"></script>
+    <script src="/src/unicode.min.js"></script>
+    <script src="/src/py_string.js"></script>
+    <script src="/src/py_int.js"></script>
+    <script src="/src/py_long_int.js"></script>
+    <script src="/src/py_float.js"></script>
+    <script src="/src/py_complex.js"></script>
+    <script src="/src/py_dict.js"></script>
+    <script src="/src/py_list.js"></script>
+    <script src="/src/py_generator.js"></script>
+    <script src="/src/py_dom.js"></script>
+    <script src="/src/builtin_modules.js"></script>
+    <script src="/src/py_import_hooks.js"></script>
+    <script src="/src/async.js"></script>
+    <% } else { %>
     <script src="/lib/brython.js"></script>
     <script src="/lib/brython_stdlib.js"></script>
+    <% } %>
     <% if (htmlWebpackPlugin.options.full_debug) { %>
       <script>
         console.warn('FULL DEBUG MODE:')
@@ -316,10 +349,14 @@
   <body onload="console.log('ON LOAD')">
     <div id="app"></div>
     <!-- Set `__static` path to static files in production -->
-    <script>
-      if (process && (process.env.NODE_ENV !== 'development')) window.__lib = require('path').join(__dirname, '/lib').replace(/\\/g, '\\\\')
-      if (process && (process.env.NODE_ENV !== 'development')) window.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+    <% if (htmlWebpackPlugin.options.nodeModules) { %>
+      <script>
+      if (process.env.NODE_ENV !== 'development') {
+        window.__lib = require('path').join(__dirname, '/lib').replace(/\\/g, '\\\\')
+        window.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+      }
     </script>
+    <% } %>
     <!-- webpack builds are automatically injected -->
   </body>
 </html>

@@ -10,6 +10,7 @@
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
+    "build:web_debug": "cross-env EYO_BUILD_MODE=debug BUILD_TARGET=web node .electron-vue/build.js",
     "build:full_debug": "cross-env BUILD_TARGET=full_debug node .electron-vue/build.js",
     "dev": "node .electron-vue/dev-runner.js",
     "debug": "cross-env EYO_BUILD_MODE=debug node .electron-vue/dev-runner.js",

@@ -10,6 +10,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
+let brython_debug = true
+
 let webConfig = {
   devtool: '#cheap-module-eval-source-map',
   entry: {
@@ -39,12 +41,6 @@ let webConfig = {
       {
         test: /\.html$/,
         use: 'vue-html-loader'
-      },
-      {
-        test: /\.js$/,
-        use: 'babel-loader',
-        include: [ path.resolve(__dirname, '../src/renderer') ],
-        exclude: /node_modules/
       },
       {
         test: /\.vue$/,
@@ -78,48 +74,38 @@ let webConfig = {
             name: 'fonts/[name].[ext]'
           }
         }
+      },
+      {
+        test: /\.js$/,
+        use: 'babel-loader',
+        include: [ path.resolve(__dirname, '../src/renderer') ],
+        exclude: /node_modules/
       }
     ]
   },
   plugins: [
     new ExtractTextPlugin('styles.css'),
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: path.resolve(__dirname, '../src/index.ejs'),
-      minify: {
-        collapseWhitespace: true,
-        removeAttributeQuotes: true,
-        removeComments: true
-      },
-      nodeModules: false
-    }),
-    new webpack.DefinePlugin({
-      'process.env.IS_WEB': 'true'
-    }),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
-    new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, '../src/lib/xregexp-all/xregexp-all.js'),
-      to: path.resolve(__dirname, '../dist/web/lib/xregexp-all.js')
-      }, { from: path.resolve(__dirname, '../src/lib/brython/brython.js'),
-      to: path.resolve(__dirname, '../dist/web/lib/brython.js')
-      }, { from: path.resolve(__dirname, '../src/lib/brython/brython_stdlib.js'),
-      to: path.resolve(__dirname, '../dist/web/lib/brython_stdlib.js')
+    new HtmlWebpackPlugin(
+      {
+        filename: 'index.html',
+        template: path.resolve(__dirname, '../src/index.ejs'),
+        minify: {
+          collapseWhitespace: false,// otherwise python code would not survive?
+          removeAttributeQuotes: true,
+          removeComments: true
+        },
+        nodeModules: false,
+        brython_debug: brython_debug
       }
-    ], {debug: 'debug'}),
-    new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, '../build/base/edython.js'),
-      to: path.resolve(__dirname, '../dist/web/lib/edython.js')
-      }, { from: path.resolve(__dirname, '../src/lib/eyo/css/eyo.css'),
-      to: path.resolve(__dirname, '../dist/web/lib/edython.css')
-      }, { from: path.resolve(__dirname, '../font/*.woff'),
-      to: path.resolve(__dirname, '../dist/web/static/')
-      }, { from: path.resolve(__dirname, '../src/lib/site-packages/**'),
-      to: path.resolve(__dirname, '../dist/web/lib/Lib[1]'),
-      test: /..\/src\/lib(\/.+\.py)$/,
-    }], {debug: 'debug'})
-  ],//    to: '[1]-[2].[hash].[ext]',
-  //test: /([^/]+)\/(.+)\.png$/
+    ),
+    new webpack.DefinePlugin(
+      {
+        'process.env.IS_WEB': 'true'
+      }
+    ),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoEmitOnErrorsPlugin()
+  ],
   output: {
     filename: '[name].js',
     path: path.join(__dirname, '../dist/web')
@@ -137,6 +123,85 @@ let webConfig = {
   target: 'web'
 }
 
+let morePlugins = function (plugins, where) {
+  /**
+   * xregexp
+   */
+  plugins.push(
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../src/lib/xregexp-all/xregexp-all.js'),
+        to: path.resolve(__dirname, '../dist/'+where+'/lib/xregexp-all.js')
+      }
+    ], {debug: 'debug'})
+  )
+  /**
+   * this one is for embedding brython sources
+   */
+  plugins.push(
+    new CopyWebpackPlugin(
+      [
+        {
+          from: path.resolve(__dirname, '../src/lib/brython/www/src/**'),
+          to: path.resolve(__dirname, '../dist/'+where+'/[1]'),
+          test: /^.*\/src\/lib\/brython\/www\/(src\/.+)$/,
+        },
+        {
+          from: path.resolve(__dirname, '../src/lib/site-packages/**'),
+          to: path.resolve(__dirname, '../dist/'+where+'/lib/Lib[1]'),
+          test: /..\/src\/lib(\/.+\.py)$/,
+        }
+      ], {debug: 'debug'}
+    )
+    // new CopyWebpackPlugin([
+    //   { from: path.resolve(__dirname, '../src/lib/brython/brython.js'),
+    //   to: path.resolve(__dirname, '../dist/'+where+'/lib/brython.js')
+    //   }, { from: path.resolve(__dirname, '../src/lib/brython/brython_stdlib.js'),
+    //   to: path.resolve(__dirname, '../dist/'+where+'/lib/brython_stdlib.js')
+    //   }
+    // ], {debug: 'debug'}),
+  )
+  /**
+   * this one is for embedding edython (and embedded blockly/closure) sources
+   */
+  plugins.push(
+    new CopyWebpackPlugin(
+      [
+        { from: path.resolve(__dirname, '../build/base/edython.js'),
+          to: path.resolve(__dirname, '../dist/'+where+'/lib/edython.js')
+        },
+        { from: path.resolve(__dirname, '../src/lib/eyo/css/eyo.css'),
+          to: path.resolve(__dirname, '../dist/'+where+'/lib/edython.css')
+        }
+      ],
+      {
+        debug: 'debug'
+      }
+    )
+  )
+  /**
+   * resources
+   */
+  plugins.push(
+    new CopyWebpackPlugin(
+      [
+        {
+          from: path.resolve(__dirname, '../src/lib/blockly/media/**'),
+          to: path.resolve(__dirname, '../dist/'+where+'/static[1]'),
+          test: /..\/src\/lib\/blockly(\/media\/.+)$/,
+        },
+        {
+          from: path.resolve(__dirname, '../font/*.woff'),
+          to: path.resolve(__dirname, '../dist/'+where+'/static/')
+        }
+      ],
+      {
+        debug: 'debug'
+      }
+    )
+  )
+} (webConfig.plugins, 'web')
+
 /**
  * Adjust webConfig for production settings
  */
@@ -145,19 +210,23 @@ if (process.env.NODE_ENV === 'production') {
 
   webConfig.plugins.push(
     new BabiliWebpackPlugin(),
-    new CopyWebpackPlugin([
-      {
-        from: path.join(__dirname, '../static'),
-        to: path.join(__dirname, '../dist/web/static'),
-        ignore: ['.*']
-      }
-    ]),
+    new CopyWebpackPlugin(
+      [
+        {
+          from: path.join(__dirname, '../static'),
+          to: path.join(__dirname, '../dist/web/static'),
+          ignore: ['.*']
+        }
+      ]
+    ),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"'
     }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
-    })
+    new webpack.LoaderOptionsPlugin(
+      {
+        minimize: true
+      }
+    )
   )
 }
 
