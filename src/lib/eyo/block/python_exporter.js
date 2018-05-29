@@ -168,7 +168,7 @@ eYo.PythonExporter.prototype.exportInput_ = function (input) {
     var target = c8n.targetBlock()
     if (target) {
       this.exportExpression_(target)
-    } else if (!c8n.eyo.optional_ && !c8n.eyo.s7r_) {
+    } else if (!c8n.eyo.optional_ && !c8n.eyo.disabled_ && !c8n.eyo.s7r_) {
       this.line.push('<MISSING EXPRESSION>')
       // NEWLINE
     } else {

@@ -61,7 +61,10 @@ eYo.Consolidator.prototype.init = undefined
  * This is the preferred method to create consolidator classes.
  * The main purpose is to manage the shared data model
  * and allow inheritance.
+ * @param {!string} key
  * @param {!Object} data
+ * @param {!Object} C10r  ancestor
+ * @param {!Object} owner
  */
 eYo.Consolidator.makeSubclass = function (key, data, C10r, owner) {
   C10r = C10r || eYo.Consolidator
@@ -206,7 +209,7 @@ eYo.Consolidator.List.prototype.disposeAtI = function (io, i) {
  */
 eYo.Consolidator.List.prototype.getCheck = function (io) {
   if (this.data.all) {
-    if (io.unique || io.list.length === 1) {
+    if (io.unique >= 0 || io.list.length === 1) {
       // a single block or no block at all
       return this.data.all
     } else if (io.list.length === 3 && io.i === 1) {
@@ -257,6 +260,7 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
     io.input.name = name
   }
   io.c8n.eyo.s7r_ = true
+  io.c8n.eyo.disabled_ = false
   if (extreme || (!io.eyo.presep.length && io.eyo.postsep.length)) {
     while (io.input.fieldRow.length) {
       io.input.fieldRow.shift().dispose()
@@ -343,9 +347,9 @@ eYo.Consolidator.List.prototype.consolidate_first_connected = function (io) {
  * @return yes exactly if there are more input
  */
 eYo.Consolidator.List.prototype.consolidate_single = function (io) {
-  if (io.unique) {
+  if (io.unique >= 0) {
     // remove whatever precedes it, even the very first separator
-    var j = io.list.indexOf(io.unique)
+    var j = io.i
     while (j > 0) {
       this.disposeAtI(io, --j)
     }
@@ -370,13 +374,13 @@ eYo.Consolidator.List.prototype.walk_to_next_connected = function (io, gobble) {
       io.presep = io.eyo.presep || this.data.presep
       io.postsep = io.eyo.postsep || this.data.postsep
       // manage the unique input
-      if (this.data.unique && !io.unique &&
+      if (this.data.unique && io.unique < 0 &&
         io.c8n.targetConnection && (function (my) {
           return goog.array.find(io.c8n.targetConnection.check_, function (x) {
             return my.data.unique.indexOf(x) >= 0
           })
         }(this))) {
-        io.unique = io.input
+        io.unique = io.i
       }
       return true
     }

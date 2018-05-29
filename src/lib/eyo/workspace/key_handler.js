@@ -749,11 +749,7 @@ Ks = {
   },
   'print(…)': eYo.T3.Stmt.builtin_print_stmt,
   'input(…)': eYo.T3.Expr.builtin_input_expr,
-  'range(…)': {
-    type: eYo.T3.Expr.builtin_call_expr,
-    subtype: 'range',
-    key: eYo.Key.UPPER_BOUND
-  },
+  'range(…)': eYo.T3.Expr.builtin_range_expr,
   'list(…)': {
     type: eYo.T3.Expr.builtin_call_expr,
     callee: 'list'

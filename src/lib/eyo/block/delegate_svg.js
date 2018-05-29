@@ -1003,14 +1003,16 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       // locked blocks won't display any placeholder
       // (input with no target)
       var eyo = c8n.eyo
-      var pw = eyo.s7r_ || eyo.optional_
-      ? this.carretPathDefWidth_(cursorX)
-      : this.placeHolderPathDefWidth_(cursorX)
-      io.steps.push(pw.d)
-      io.cursorX += pw.width
-      if (pw.width) {
-        // a space was added as a visual separator anyway
-        io.shouldSeparateField = false
+      if (!eyo.disabled_) {
+        var pw = eyo.s7r_ || eyo.optional_
+        ? this.carretPathDefWidth_(cursorX)
+        : this.placeHolderPathDefWidth_(cursorX)
+        io.steps.push(pw.d)
+        io.cursorX += pw.width
+        if (pw.width) {
+          // a space was added as a visual separator anyway
+          io.shouldSeparateField = false
+        }
       }
     }
     this.renderDrawFields_(io, false)
@@ -1100,7 +1102,7 @@ eYo.DelegateSvg.prototype.highlightConnectionPathDef = function (block, c8n) {
   if (c8n.type === Blockly.INPUT_VALUE) {
     if (c8n.isConnected()) {
       steps = this.valuePathDef_(c8n.targetBlock())
-    } else if (c8n.eyo.s7r_ || c8n.eyo.optional_) {
+    } else if (!c8n.eyo.disabled_ && (c8n.eyo.s7r_ || c8n.eyo.optional_)) {
       steps = this.carretPathDefWidth_(c8n.offsetInBlock_.x).d
     } else {
       steps = this.placeHolderPathDefWidth_(c8n.offsetInBlock_.x).d
@@ -1133,7 +1135,7 @@ eYo.DelegateSvg.prototype.highlightConnection = function (block, c8n) {
   if (c8n.type === Blockly.INPUT_VALUE) {
     if (c8n.isConnected()) {
       steps = this.valuePathDef_(c8n.targetBlock())
-    } else if (c8n.eyo.s7r_ || c8n.eyo.optional_) {
+    } else if (!c8n.eyo.disabled_ && (c8n.eyo.s7r_ || c8n.eyo.optional_)) {
       steps = this.carretPathDefWidth_(0).d
     } else {
       steps = this.placeHolderPathDefWidth_(0).d
@@ -2169,7 +2171,7 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
   var e8r = block.eyo.inputEnumerator(block)
   while (e8r.next()) {
     var c8n = e8r.here.connection
-    if (c8n && (!c8n.hidden_ || c8n.eyo.wrapped_)) {
+    if (c8n && !c8n.eyo.disabled_ && (!c8n.hidden_ || c8n.eyo.wrapped_)) {
       if (c8n.type === Blockly.INPUT_VALUE) {
         var target = c8n.targetBlock()
         if (target) {
@@ -2406,7 +2408,7 @@ eYo.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
             } else if (!c8n.checkType_(foundC8n)) {
               continue
             }
-            if (!foundC8n.eyo.s7r_ && (!c8n_N || foundC8n.eyo.name_ === c8n_N)) {
+            if (!foundC8n.eyo.disabled_ && !foundC8n.eyo.s7r_ && (!c8n_N || foundC8n.eyo.name_ === c8n_N)) {
               // we have found a connection
               // which s not a separator and
               // with the expected name
@@ -2416,7 +2418,7 @@ eYo.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
             // then remember this connection and continue the loop
             // We remember the last separator connection
             // of the first which is not a separator
-            if (!otherC8n || otherC8n.eyo.s7r_) {
+            if (!otherC8n || (!otherC8n.eyo.disabled_ && otherC8n.eyo.s7r_)) {
               otherC8n = foundC8n
             }
           }
@@ -2483,7 +2485,7 @@ eYo.DelegateSvg.prototype.canLock = function (block) {
   var e8r = block.eyo.inputEnumerator(block)
   var c8n, target
   while (e8r.next()) {
-    if ((c8n = e8r.here.connection)) {
+    if ((c8n = e8r.here.connection) && !c8n.eyo.disabled_) {
       if ((target = c8n.targetBlock())) {
         if (!target.eyo.canLock(target)) {
           return false

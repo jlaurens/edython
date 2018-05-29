@@ -294,6 +294,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate_svg_comp.js" \
 --js "src/lib/eyo/block/delegate_svg_lambda.js" \
 --js "src/lib/eyo/block/delegate_svg_stmt.js" \
+--js "src/lib/eyo/block/delegate_svg_range.js" \
 --js "src/lib/eyo/block/delegate_svg_assignment.js" \
 --js "src/lib/eyo/block/delegate_svg_control.js" \
 --js "src/lib/eyo/block/delegate_svg_group.js" \

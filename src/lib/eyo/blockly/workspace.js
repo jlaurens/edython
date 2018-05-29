@@ -313,7 +313,7 @@ eYo.WorkspaceDelegate.prototype.getFlyoutsForCategory = function (category) {
       eYo.T3.Expr.or_test,
       eYo.T3.Expr.and_test,
       eYo.T3.Stmt.while_part,
-      { type:eYo.T3.Expr.call_expr, data: {name: 'range'}},
+      eYo.T3.Expr.builtin_range_expr,
       eYo.T3.Stmt.for_part,
       eYo.T3.Stmt.else_part,
       eYo.T3.Stmt.break_stmt,

@@ -46,6 +46,14 @@ eYo.ConnectionDelegate.prototype.plugged_ = undefined
 eYo.ConnectionDelegate.prototype.s7r_ = false
 
 /**
+ * Whether the connection is disabled.
+ * Separators are disabled for range arguments.
+ * Used in lists.
+ * @constructor
+ */
+eYo.ConnectionDelegate.prototype.disabled_ = false
+
+/**
  * Whether the connection is a wrapper.
  * @constructor
  */
