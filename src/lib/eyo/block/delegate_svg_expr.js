@@ -274,21 +274,19 @@ eYo.DelegateSvg.Expr.prototype.canInsertParent = function (block, prototypeName,
  * @param {boolean} fill_holes whether holes should be filled
  * @return the created block
  */
-eYo.DelegateSvg.Expr.prototype.insertParent = function (block, parentPrototypeName, subtype, parentInputName, fill_holes) {
-//  console.log('insertParent', block, parentPrototypeName, subtype, parentInputName)
+eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, fill_holes) {
+  var parentInputName = model.input
   eYo.Events.disable()
   var parentBlock
   eYo.Events.Disabler.wrap(function () {
-    parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, parentPrototypeName)
-    parentBlock.eyo.data.subtype.set(subtype)
+    parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, model)
   })
 
-  console.log('block created of type', parentPrototypeName)
-  if (parentInputName) {
-    var parentInput = parentBlock.getInput(parentInputName)
-    goog.asserts.assert(parentInput, 'No input named ' + parentInputName)
+  if (model.input) {
+    var parentInput = parentBlock.getInput(model.input)
+    goog.asserts.assert(parentInput, 'No input named ' + model.input)
     var parentInputC8n = parentInput.connection
-    goog.asserts.assert(parentInputC8n, 'Unexpected dummy input ' + parentInputName)
+    goog.asserts.assert(parentInputC8n, 'Unexpected dummy input ' + model.input)
   } else if ((parentInput = parentBlock.getInput(eYo.Key.LIST))) {
     var list = parentInput.connection.targetBlock()
     goog.asserts.assert(list, 'Missing list block inside ' + block.type)

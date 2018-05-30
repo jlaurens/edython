@@ -36,14 +36,12 @@ eYo.ConnectionDelegate = function (connection) {
 /**
  * Whether the connection is a separator.
  * Used in lists.
- * @constructor
  */
 eYo.ConnectionDelegate.prototype.plugged_ = undefined
 
 /**
  * Whether the connection is a separator.
  * Used in lists.
- * @constructor
  */
 eYo.ConnectionDelegate.prototype.s7r_ = false
 
@@ -51,36 +49,33 @@ eYo.ConnectionDelegate.prototype.s7r_ = false
  * Whether the connection is disabled.
  * Separators are disabled for range arguments.
  * Used in lists.
- * @constructor
  */
 eYo.ConnectionDelegate.prototype.disabled_ = false
 
 /**
  * Whether the connection is a wrapper.
- * @constructor
  */
 eYo.ConnectionDelegate.prototype.wrapped_ = false// must change to wrapper
 
 /**
- * Whether the connection is otionally connected.
- * @constructor
+ * Whether the connection is optionally connected.
  */
 eYo.ConnectionDelegate.prototype.optional_ = false// must change to wrapper
 
 /**
  * name of the connection.
  * See identifier
- * @constructor
  */
 eYo.ConnectionDelegate.prototype.name_ = undefined// must change to wrapper
 
 /**
  * `beReady` the target block.
+ * @param {?boolean} render
  */
-eYo.ConnectionDelegate.prototype.beReady = function () {
+eYo.ConnectionDelegate.prototype.beReady = function (render) {
   var target = this.connection.targetBlock()
   if (target) {
-    target.eyo.beReady(target)
+    target.eyo.beReady(target, render)
     target.eyo.parentDidChange(target, this.connection.getSourceBlock())
     target.render() // isn't it too early?
   }

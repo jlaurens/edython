@@ -936,7 +936,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
         var key = d.key
         var content = mgr.get_menuitem_content(parent_type, key)
         var MI = new eYo.MenuItem(content, function () {
-          block.eyo.insertParent(block, parent_type, parent_subtype, key)
+          block.eyo.insertParentWithModel(block, parent_type, parent_subtype, key)
         })
         mgr.addInsertChild(MI)
         return true
@@ -947,7 +947,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
             key = d.key || K
             content = mgr.get_menuitem_content(parent_type, key)
             MI = new eYo.MenuItem(content, function () {
-              block.eyo.insertParent(block, parent_type, parent_subtype, key)
+              block.eyo.insertParentWithModel(block, parent_type, parent_subtype, key)
             })
             mgr.addInsertChild(MI)
             return true
@@ -970,7 +970,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
         }
         content = mgr.get_menuitem_content(parent_type)
         MI = new eYo.MenuItem(content, function () {
-          block.eyo.insertParent(block, parent_type, parent_subtype)
+          block.eyo.insertParentWithModel(block, parent_type, parent_subtype)
         })
         mgr.addInsertChild(MI)
         return true
@@ -1105,7 +1105,7 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     B.dispose(true)
     if (yorn) {
       var content = this.get_menuitem_content(type)
-      var MI = new eYo.MenuItem(content, F(block.eyo.insertParent, type))
+      var MI = new eYo.MenuItem(content, F(block.eyo.insertParentWithModel, type))
       this.addInsertBeforeChild(MI)
       return true
     }

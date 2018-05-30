@@ -26,9 +26,9 @@ goog.require('Blockly.Input')
  * @param {!Blockly.Input} workspace The block's workspace.
  */
 eYo.Input.setupEyO = (function () {
-  var beReady = function () {
+  var beReady = function (render) {
     var c8n = this.owner.connection
-    c8n && c8n.eyo.beReady()
+    c8n && c8n.eyo.beReady(render)
   }
   return function (input) {
     if (!input.eyo) {

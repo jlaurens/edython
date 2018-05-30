@@ -83,8 +83,9 @@ eYo.Tile.prototype.init = function () {
 
 /**
  * Install this tile on a block.
+ * @param {?boolean} render
  */
-eYo.Tile.prototype.beReady = function () {
+eYo.Tile.prototype.beReady = function (render) {
   this.wait = 0
   if (this.svgGroup_) {
     // Tile has already been initialized once.
@@ -111,7 +112,7 @@ eYo.Tile.prototype.beReady = function () {
       field.init()// installs in the owner's group, not the block group
     }
   }
-  this.input && this.input.eyo.beReady()
+  this.input && this.input.eyo.beReady(render)
 }
 console.warn('What would be a tile rendering?')
 /**

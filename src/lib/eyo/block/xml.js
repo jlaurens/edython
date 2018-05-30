@@ -223,13 +223,6 @@ Blockly.Xml.domToBlock = function (xmlBlock, workspace) {
   var topBlock = eYo.Xml.savedDomToBlock(xmlBlock, workspace)
   // the block has been partially rendered but it was when
   // the connections were hidden
-  if (topBlock) {
-    setTimeout(function () {
-      if (topBlock.workspace && !topBlock.workspace.isDragging()) { // Check that the block hasn't been deleted and ...
-        topBlock.render()
-      }
-    }, 1)
-  }
   return topBlock
 }
 
@@ -239,14 +232,17 @@ Blockly.Xml.domToBlock = function (xmlBlock, workspace) {
  * to be displayed immediately.
  * @param {!WorkspaceSvg} workspace
  * @param {!String|Object} prototypeName or xml representation.
+ * @param {?string} id
+ * @param {?boolean} render
  * @private
  */
-eYo.DelegateSvg.newBlockReady = function (workspace, prototypeName, id) {
-  if (prototypeName.startsWith && prototypeName.startsWith('<')) {
-    return Blockly.Xml.domToBlock(prototypeName, workspace)
+eYo.DelegateSvg.newBlockReady = function (workspace, model, id, render) {
+  if (model.startsWith && model.startsWith('<')) {
+    var B = Blockly.Xml.domToBlock(model, workspace)
+  } else {
+    B = this.newBlockComplete(workspace, model, id)
   }
-  var B = this.newBlockComplete(workspace, prototypeName, id)
-  B.eyo.beReady()
+  B.eyo.beReady(B, render)
   return B
 }
 

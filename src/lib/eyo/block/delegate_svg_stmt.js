@@ -215,7 +215,7 @@ eYo.DelegateSvg.Stmt.prototype.minBlockWidth = function (block) {
  * @param {string} parentInputName, which parent's connection to use
  * @return the created block
  */
-eYo.DelegateSvg.Stmt.prototype.insertParent = function (block, parentPrototypeName, subtype) {
+eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (block, parentPrototypeName, subtype) {
   var c8n = block.previousConnection
   if (c8n) {
     Blockly.Events.disable()
@@ -279,7 +279,6 @@ eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (block, belowPrototyp
         targetC8n.connect(blockAfter.nextConnection)
       }
     }
-    blockAfter.eyo.beReady(blockAfter)
     var holes = eYo.HoleFiller.getDeepHoles(blockAfter)
     eYo.HoleFiller.fillDeepHoles(blockAfter.workspace, holes)
     blockAfter.render()

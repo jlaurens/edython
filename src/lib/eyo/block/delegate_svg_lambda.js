@@ -332,8 +332,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
               B.eyo.data.variant.set(flags)
               B.eyo.skipRendering = false
               c8n.connect(B.outputConnection)
-              B.eyo.beReady(block)
-              B.render()
+              B.eyo.beReady(block, true)
             } finally {
               eYo.Events.setGroup(false)
             }

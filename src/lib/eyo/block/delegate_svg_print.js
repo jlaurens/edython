@@ -84,8 +84,7 @@ eYo.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
         B.render()
         var c8n = list.inputList[list.inputList.length - 1].connection
         c8n.connect(B.outputConnection)
-        block.eyo.beReady(block)
-        block.render()
+        block.eyo.beReady(block, true)
       } finally {
         eYo.Events.setGroup(false)
       }
@@ -163,8 +162,7 @@ eYo.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
         // we assume that inputList is not void
         var c8n = list.inputList[list.inputList.length - 1].connection
         c8n.connect(B.outputConnection)
-        block.eyo.beReady(block)
-        block.render()
+        block.eyo.beReady(block, true)
       } finally {
         eYo.Events.setGroup(false)
       }

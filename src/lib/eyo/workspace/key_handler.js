@@ -51,7 +51,7 @@ console.warn('Problem inserting a print block')
 eYo.KeyHandler = (function () {
   var me = {MAX_CHILD_COUNT: 20}
   var keys_ = []
-  var shortcuts_ = [] // an array of {key: ..., action: ...} objects
+  var shortcuts_ = [] // an array of {key: ..., model: ...} objects
   var current_ = []
   var target_
   var menu_ = new eYo.KeyHandlerMenu(/* undefined, ContextMenuRenderer */)
@@ -68,28 +68,27 @@ eYo.KeyHandler = (function () {
       undefined /* opt_capture */, me
     )
   }
-  me.register = function (key, action) {
+  me.register = function (key, model) {
     // manage duplicates
     if (key.length) {
-      goog.asserts.assert(action, 'No action to register for ' + key)
+      goog.asserts.assert(model, 'No model to register for ' + key)
       for (var i = 0, s; (s = shortcuts_[i]); i++) {
         if (s.key === key) {
           shortcuts_[i] = {
             key: key,
-            action: action
+            model: model
           }
           return
         }
       }
       shortcuts_.push({
         key: key,
-        action: action
+        model: model
       })
     }
   }
-  console.warn('Change the value and subtype')
   /**
-   * Separate key in 2 parts: what is before the frst occurrence of sep and what is after.
+   * Separate key in 2 parts: what is before the first occurrence of sep and what is after.
    * If sep is not in the list, returns undefined.
    * split('foo', 'f') -> ['', 'oo']
    * split('foo', 'o') -> ['f', 'o']
@@ -129,40 +128,50 @@ eYo.KeyHandler = (function () {
     }
     return false
   }
-  me.handleFirstMenuItemAction = function (shortcut) {
+  me.handleFirstMenuItemAction = function (model) {
     // if key is a number, then create a number block
-    // if the shortcut fits an identifier, then create an identifier
-    // if the shortcut fits a number, then create a number
-    // if the shortcut fits a string literal, then create a string literal
-    // otherwise, take the first shortcut and pass it to handleAction
+    // if the model fits an identifier, then create an identifier
+    // if the model fits a number, then create a number
+    // if the model fits a string literal, then create a string literal
+    // otherwise, take the first model and pass it to handleModel
     // if the selected block supports subtypes, then set it
     var B = Blockly.selected
     var c8n = eYo.SelectedConnection.get()
-    if (B && !c8n && B.eyo.data.subtype.set(shortcut)) {
-      return
+    if (B && !c8n) {
+      var D = model.data
+      var done = false
+      if (D) {
+        for (var k in D) {
+          if (D.hasOwnProperty(k)) {
+            var data = B.eyo.data[k]
+            if (data) {
+              data.set(D[k])
+              done = true
+            }
+          }
+        }
+        if (done) {
+          return
+        }
+      }
     }
-    var type = eYo.Do.typeOfString(shortcut)
-    if (me.handleType(type, shortcut)) {
-      return
-    }
-    if (B && B.eyo.data.subtype.set(shortcut)) {
+    if (me.handleModel(model)) {
       return
     }
     if (current_.length) {
-      shortcut = current_[0]
-      me.handleAction(shortcut)
+      model = current_[0]
+      me.handleModel(model)
     }
   }
 
-  me.handleType = function (type, subtype) {
-    console.log('me.handleType', type, subtype)
+  me.handleModel = function (model) {
     if (eYo.DelegateSvg.Manager.get(type)) {
       var B = Blockly.selected
       if (B) {
-        var c8n = eYo.SelectedConnection.get()
-        if (c8n) {
-          var newB
-          if ((newB = B.eyo.insertBlockOfType(B, type, subtype)) || (newB = B.eyo.insertParent(B, type, subtype))) {
+        var newB = B.eyo.insertBlockWithModel(B, model) || B.eyo.insertParentWithModel(B, model)
+        if (newB) {
+          var c8n = eYo.SelectedConnection.get()
+          if (c8n) {
             // There was a selected connection,
             // we try to select another one, with possibly the same type
             // First we take a look at B : is there an unconnected input connection
@@ -189,8 +198,7 @@ eYo.KeyHandler = (function () {
             newB.select()
             return true
           }
-        }
-        if ((newB = B.eyo.insertBlockOfType(B, type, subtype)) || (newB = B.eyo.insertParent(B, type, subtype))) {
+          // no selected connection
           var parent = B
           do {
             var e8r = parent.eyo.inputEnumerator(parent)
@@ -209,19 +217,6 @@ eYo.KeyHandler = (function () {
       console.log('NO selected')
     }
     return false
-  }
-
-  me.handleAction = function (shortcut) {
-    console.log('me.handleAction', shortcut)
-    if (goog.isFunction(shortcut.action)) {
-      shortcut.action(shortcut.key)
-    } else if (shortcut.action) {
-      me.handleType(shortcut.action.type || shortcut.action, shortcut.action.subtype)
-    } else {
-      return false
-    }
-    menu_.removeChildren(true)
-    return true
   }
   /**
    * The me.split must have been called
@@ -384,15 +379,17 @@ eYo.KeyHandler = (function () {
       }
     }
   }
-  me.populateMenu = function (sep) {
+  me.populateMenu = function (key) {
     current_.length = 0
     menu_.removeChildren(true)
-    if (sep.length !== 1) {
+    if (key.length !== 1) {
       return
     }
-    keys_.push(sep)
-    var content = eYo.Do.createSPAN(sep, 'eyo-code-emph')
-    var MI = new eYo.MenuItem(content, {key: sep, action: me.handleFirstMenuItemAction})
+    keys_.push(key)
+    var content = eYo.Do.createSPAN(key, 'eyo-code-emph')
+    var MI = new eYo.MenuItem(content, function () {
+      me.handleFirstMenuItemAction(key)
+    })
     menu_.addChild(MI, true)
 
     // initialize the shortcuts to hold informations
@@ -401,8 +398,8 @@ eYo.KeyHandler = (function () {
     var i = 0
     var shortcut, split
     while ((shortcut = shortcuts_[i++])) {
-      if ((split = me.split(shortcut.key, sep))) {
-        shortcut.components = [split[0], sep, split[1]]
+      if ((split = me.split(shortcut.key, key))) {
+        shortcut.components = [split[0], key, split[1]]
         me.insertShortcutInArray_(shortcut, current_)
       } else {
         shortcut.components = undefined
@@ -473,20 +470,21 @@ eYo.KeyHandler = (function () {
         }
         if (!me.alreadyListening_) {
           me.alreadyListening_ = true
+          me.alreadyListened = false
           goog.events.listenOnce(menu_, 'action', function (event) {
             me.alreadyListening_ = false
             var target = event.target
             if (target) {
-              var shortcut = target.getModel()
-              if (shortcut) {
+              var model = target.getModel()
+              if (model) {
                 setTimeout(function () { // try/finally?
                   if (me.alreadyListened_) {
                     console.log('************* I have already listened!')
                     return
                   }
                   me.alreadyListened = true;
-                  (shortcut.key && me.handleAction(shortcut)) ||
-                  me.handleFirstMenuItemAction(shortcut)
+                  (model.key && me.handleModel(model)) ||
+                  me.handleFirstMenuItemAction(model)
                 }, 100)// TODO be sure that this 100 is suffisant
               }
             }
@@ -584,9 +582,9 @@ var Ks = {
         return
       }
       if (eYo.SelectedConnection.get()) {
-        B.eyo.insertBlockOfType(B, eYo.T3.Expr.not_test)
+        B.eyo.insertBlockWithModel(B, eYo.T3.Expr.not_test)
       } else {
-        B.eyo.insertParent(B, eYo.T3.Expr.not_test)
+        B.eyo.insertParentWithModel(B, eYo.T3.Expr.not_test)
       }
     }
   },
@@ -599,9 +597,9 @@ var Ks = {
         return
       }
       if (eYo.SelectedConnection.get()) {
-        B.eyo.insertBlockOfType(B, eYo.T3.Expr.u_expr, '-')
+        B.eyo.insertBlockWithModel(B, eYo.T3.Expr.u_expr, '-')
       } else {
-        B.eyo.insertParent(B, eYo.T3.Expr.u_expr, '-')
+        B.eyo.insertParentWithModel(B, eYo.T3.Expr.u_expr, '-')
       }
     }
   },
@@ -614,9 +612,9 @@ var Ks = {
         return
       }
       if (eYo.SelectedConnection.get()) {
-        B.eyo.insertBlockOfType(B, eYo.T3.Expr.u_expr, '~')
+        B.eyo.insertBlockWithModel(B, eYo.T3.Expr.u_expr, '~')
       } else {
-        B.eyo.insertParent(B, eYo.T3.Expr.u_expr, '~')
+        B.eyo.insertParentWithModel(B, eYo.T3.Expr.u_expr, '~')
       }
     }
   }

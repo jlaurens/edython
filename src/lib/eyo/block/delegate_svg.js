@@ -545,7 +545,12 @@ eYo.DelegateSvg.prototype.didRender_ = function (block) {
  * @private
  */
 eYo.DelegateSvg.prototype.renderMove_ = function (block) {
-  block.renderMoveConnections_()
+  if (!block.workspace.isDragging() ||
+  (block.outputConnection && block.outputConnection.isConnected()) ||
+  (block.previousConnection && block.previousConnection.isConnected()) ||
+  (block.nextConnection && block.nextConnection.isConnected())) {
+    block.renderMoveConnections_()
+  }
 }
 
 /**
@@ -1281,12 +1286,14 @@ eYo.DelegateSvg.prototype.delayedRender = function (block) {
  * This is the expected way to create a block 
  * to be displayed immediately.
  * @param {!WorkspaceSvg} workspace
- * @param {!String|Object} prototypeName or xml representation.
+ * @param {!String|Object} model  prototypeName or xml representation.
+ * @param {?String} id
+ * @param {?boolean} render
  * @private
  */
-eYo.DelegateSvg.newBlockReady = function (workspace, prototypeName, id) {
-  var B = this.newBlockComplete(workspace, prototypeName, id)
-  B.eyo.beReady()
+eYo.DelegateSvg.newBlockReady = function (workspace, model, id, render) {
+  var B = this.newBlockComplete(workspace, model, id)
+  B.eyo.beReady(B, render)
   return B
 }
 
@@ -1305,7 +1312,11 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
     for (var k in Vs) {
       if (Vs.hasOwnProperty(k)) {
         var D = block.eyo.data[k]
-        D && D.set(Vs[k])
+        if (D) {
+          D.set(Vs[k])
+        } else {
+          console.warn('Unused data:', k, Vs[k])
+        }
       }
     }
   }
@@ -1365,9 +1376,10 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
 /**
  * When setup is finish.
  * @param {!Block} block
+ * @param {boolean} render
  */
-eYo.DelegateSvg.prototype.beReady = function (block) {
-  this.skipRendering = 1
+eYo.DelegateSvg.prototype.beReady = function (block, render) {
+  this.skipRendering = !render
   block = this.block_
   block.initSvg()
   this.foreachData(function () {
@@ -1383,13 +1395,13 @@ eYo.DelegateSvg.prototype.beReady = function (block) {
     }
   }
   this.foreachTile(function () {
-    this.beReady()
+    this.beReady(render)
   })
   for (var i = 0, input; (input = block.inputList[i++]);) {
-    input.eyo.beReady()
+    input.eyo.beReady(render)
   }
-  this.inputSuite && this.inputSuite.eyo.beReady()
-  block.nextConnection && block.nextConnection.eyo.beReady()
+  this.inputSuite && this.inputSuite.eyo.beReady(render)
+  block.nextConnection && block.nextConnection.eyo.beReady(render)
   this.consolidate(block)
   this.synchronizeData(block)
   this.synchronizeTiles(block)
@@ -1410,6 +1422,9 @@ eYo.DelegateSvg.prototype.beReady = function (block) {
       'eyo-inner')
   }
   this.skipRendering = 0
+  if (render) {
+    block.render()
+  }
   // do not render automatically; it may be too early
 }
 
@@ -1467,7 +1482,7 @@ eYo.DelegateSvg.prototype.canInsertParent = function (block, prototypeName, subt
  * @param {string} subtype, for subclassers
  * @return the created block
  */
-eYo.DelegateSvg.prototype.insertParent = function (block, surroundPrototypeName, subtype, surroundInputName) {
+eYo.DelegateSvg.prototype.insertParentWithModel = function (block, surroundPrototypeName, subtype, surroundInputName) {
   goog.asserts.assert(false, 'Must be subclassed')
 }
 
@@ -2317,27 +2332,23 @@ eYo.SelectedConnection = (function () {
  * Insert a block of the given type.
  * For edython.
  * @param {!Blockly.Block} block The owner of the receiver.
- * @param {Object} action the prototype of the block to insert, or an object containning this prototype.
- * @param {string} subtype the subtype of the block to insert.
- * @return the block that was inserted
+ * @param {Object|string} model
+ * @return {?Blockly.Block} the block that was inserted
  */
-eYo.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) {
-  if (!action) {
+eYo.DelegateSvg.prototype.insertBlockWithModel = function (block, model) {
+  if (!model) {
     return null
   }
   // get the type:
-  var prototypeName = action.type || action
+  var prototypeName = model.type || model
   // create a block out of the undo mechanism
   Blockly.Events.disable()
   try {
-    var candidate = eYo.DelegateSvg.newBlockReady(block.workspace, prototypeName)
+    var candidate = eYo.DelegateSvg.newBlockReady(block.workspace, model)
     if (!candidate) {
       return
     }
-    var c8n_N = action.subtype || subtype
-    if (candidate.eyo.data.subtype.set(c8n_N)) {
-      c8n_N = undefined
-    }
+    var c8n_N = model.input
     var c8n, otherC8n
     var fin = function (prepare) {
       Blockly.Events.enable()
@@ -2346,10 +2357,9 @@ eYo.DelegateSvg.prototype.insertBlockOfType = function (block, action, subtype) 
         if (Blockly.Events.isEnabled()) {
           Blockly.Events.fire(new Blockly.Events.BlockCreate(candidate))
         }
-        candidate.render()
         prepare && prepare()
+        candidate.eyo.beReady(candidate, true)
         otherC8n.connect(c8n)
-        candidate.eyo.beReady(candidate)
         candidate.select()
         candidate.bumpNeighbours_()
       } finally {
@@ -2674,5 +2684,16 @@ eYo.DelegateSvg.prototype.translate = function (block, dx, dy) {
   this.svgShapeGroup_.setAttribute('transform', transform);
   this.svgContourGroup_.setAttribute('transform', transform);
   block.moveConnections_(dx, dy);
+}
+
+/**
+ * The default implementation does nothing.
+ * @param {!Blockly.Block} block
+ * @param {boolean} hidden True if connections are hidden.
+ */
+eYo.Delegate.prototype.setConnectionsHidden = function (block, hidden) {
+  if (!hidden) {
+    block.render()
+  }
 }
 
