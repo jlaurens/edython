@@ -24,9 +24,9 @@
       }
       eYo.workspace = Blockly.inject('eyo-workspace', options)
       eYo.setup(eYo.workspace)
-      eYo.workspace.eyo.Xoptions = {
+      eYo.workspace.eyo.options = {
         noLeftSeparator: true,
-        noDynamicList: true
+        noDynamicList: false
       }
       eYo.KeyHandler.setup(document)
       var b = eYo.DelegateSvg.newBlockReady(eYo.workspace, eYo.T3.Stmt.start_stmt)

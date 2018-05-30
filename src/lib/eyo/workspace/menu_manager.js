@@ -529,6 +529,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
       console.log('Python code for', block.type)
       var p = new eYo.PythonExporter()
       console.log(p.export(block, true))
+      block.eyo.runScript(block)
     })
   menuItem.setEnabled(true)
   this.addChild(menuItem, true)

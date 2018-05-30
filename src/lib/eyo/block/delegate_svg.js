@@ -2163,7 +2163,8 @@ eYo.DelegateSvg.prototype.selectBlockBelow = function (block) {
  * @return {Object|undefined|null}
  */
 eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
-  var where = new goog.math.Coordinate(e.clientX, e.clientY)
+  var where = Blockly.utils.mouseToSvg(e, block.workspace.getParentSvg(),
+  block.workspace.getInverseScreenCTM());
   where = goog.math.Coordinate.difference(where, block.workspace.getOriginOffsetInPixels())
   where.scale(1 / block.workspace.scale)
   var rect = this.getBoundingRect(block)

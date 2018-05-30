@@ -102,7 +102,7 @@ except:
             self.el.bind('click', lambda e: self._cursorToEnd(e))
             v = sys.implementation.version
             self.flush()
-            self.write("Edython uses Brython %s.%s.%s on %s %s\n" % ( v[0], v[1], v[2], window.navigator.appName, window.navigator.appVersion))
+            #self.write("Edython uses Brython %s.%s.%s on %s %s\n" % ( v[0], v[1], v[2], window.navigator.appName, window.navigator.appVersion))
             #self.write('Type "copyright", "credits" or "license" for more information.')
             self._prompt()
             self.el.focus()
@@ -274,6 +274,13 @@ except:
 <script>
 export default {
   name: 'panel-console-script'
+}
+eYo.DelegateSvg.prototype.runScript = function (block) {
+  console.log('I have catched the train.')
+  var p = new window.eYo.PythonExporter()
+  var code = p.export(block, true)
+  console.log(code)
+  window.eYo.console.__class__.runScript(window.eYo.console, code)
 }
 </script>
 

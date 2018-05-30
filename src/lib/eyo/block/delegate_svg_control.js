@@ -108,8 +108,18 @@ eYo.DelegateSvg.Control.prototype.postInitSvg = function (block) {
           dialogModal.setVisible(true)
         }
         console.log('Start executing ' + block.id)
+        this.runScript && this.runScript(this.block_)
       })
   goog.dom.insertSiblingAfter(this.svgPathPlay_, this.svgPathContour_)
+}
+
+/**
+ * Run the script exported from the block.
+ * @param {!Blockly.Block} block The block.
+ * @private
+ */
+eYo.DelegateSvg.prototype.runScript = function (block) {
+  console.log('Someone should everride this method to really run some script')
 }
 
 /**

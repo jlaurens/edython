@@ -15,6 +15,8 @@
 goog.provide('eYo.RenderedConnection')
 goog.provide('eYo.ConnectionDelegate')
 
+goog.forwardDeclare('eYo.SelectedConnection')
+
 goog.require('Blockly.RenderedConnection')
 goog.require('Blockly.Connection')
 
