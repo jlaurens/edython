@@ -30,6 +30,7 @@
       }
       eYo.KeyHandler.setup(document)
       var b = eYo.DelegateSvg.newBlockReady(eYo.workspace, eYo.T3.Stmt.start_stmt)
+      b.render()
       b.moveBy(50, 150)
       function temp () {
         var flyout = new eYo.Flyout(eYo.workspace)

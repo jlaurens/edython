@@ -1410,7 +1410,7 @@ eYo.DelegateSvg.prototype.beReady = function (block) {
       'eyo-inner')
   }
   this.skipRendering = 0
-  block.render() // this may not be appropriate
+  // do not render automatically; it may be too early
 }
 
 /**
@@ -1552,6 +1552,7 @@ eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
               (B.eyo.data.phantom && B.eyo.data.phantom.set(data.value)) ||
               (B.eyo.data.value && B.eyo.data.value.set(data.value))
             }
+            B.render()
           }
           c8n.connect(B.outputConnection)
         } catch (err) {

@@ -225,7 +225,7 @@ Blockly.Xml.domToBlock = function (xmlBlock, workspace) {
   // the connections were hidden
   if (topBlock) {
     setTimeout(function () {
-      if (topBlock.workspace) { // Check that the block hasn't been deleted.
+      if (topBlock.workspace && !topBlock.workspace.isDragging()) { // Check that the block hasn't been deleted and ...
         topBlock.render()
       }
     }, 1)

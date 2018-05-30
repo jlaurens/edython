@@ -530,6 +530,9 @@ eYo.Delegate.prototype.type_ = undefined
  * @constructor
  */
 eYo.Delegate.prototype.setupType = function (block, optNewType) {
+  if (goog.isDef(optNewType) && block.type === optNewType) {
+    return
+  }
   optNewType && (block.type = optNewType)
   var m = /^eyo:((?:fake_)?((.*?)(?:)?))$/.exec(block.type)
   this.pythonType_ = m ? m[1] : block.type

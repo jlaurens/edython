@@ -82,6 +82,7 @@ eYo.ConnectionDelegate.prototype.beReady = function () {
   if (target) {
     target.eyo.beReady(target)
     target.eyo.parentDidChange(target, this.connection.getSourceBlock())
+    target.render() // isn't it too early?
   }
 }
 

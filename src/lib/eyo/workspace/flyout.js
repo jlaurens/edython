@@ -215,6 +215,7 @@ eYo.Flyout.prototype.show = function(xmlList) {
       try {
         var block = eYo.DelegateSvg.newBlockReady(this.workspace_, xml)
         contents.push({type: 'block', block: block})
+        block.render()
         gaps.push(default_gap)
       } finally {
 
@@ -296,9 +297,9 @@ eYo.FlyoutDelegate.prototype.slide = function(closed) {
     // Hidden components will return null.
     return;
   }
-  var id = setInterval(frame, 5);
+  var id = setInterval(frame, 20);
   var x = targetWorkspaceMetrics.absoluteLeft;
-  var n_steps = 25
+  var n_steps = 50
   var n = 0
   var positions = []
   var x_min = closed? x: x - flyout.width_

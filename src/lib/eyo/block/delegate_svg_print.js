@@ -81,9 +81,11 @@ eYo.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
         var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.term)
         B.eyo.data.value.set(key)
         B.eyo.data.variant.set(2)
+        B.render()
         var c8n = list.inputList[list.inputList.length - 1].connection
         c8n.connect(B.outputConnection)
         block.eyo.beReady(block)
+        block.render()
       } finally {
         eYo.Events.setGroup(false)
       }
@@ -157,10 +159,12 @@ eYo.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
         var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.term)
         B.eyo.data.value.set(key)
         B.eyo.data.variant.set(2)
+        B.render()
         // we assume that inputList is not void
         var c8n = list.inputList[list.inputList.length - 1].connection
         c8n.connect(B.outputConnection)
         block.eyo.beReady(block)
+        block.render()
       } finally {
         eYo.Events.setGroup(false)
       }
