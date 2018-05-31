@@ -369,7 +369,7 @@ console.warn('Use a modifier field for * and ** (instead of await and async too)
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('lambda', {
-  tiles: {
+  inlets: {
     parameters: {
       order: 1,
       fields: {

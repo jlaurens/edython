@@ -165,58 +165,54 @@ eYo.KeyHandler = (function () {
   }
 
   me.handleModel = function (model) {
-    if (eYo.DelegateSvg.Manager.get(type)) {
-      var B = Blockly.selected
-      if (B) {
-        var newB = B.eyo.insertBlockWithModel(B, model) || B.eyo.insertParentWithModel(B, model)
-        if (newB) {
-          var c8n = eYo.SelectedConnection.get()
-          if (c8n) {
-            // There was a selected connection,
-            // we try to select another one, with possibly the same type
-            // First we take a look at B : is there an unconnected input connection
-            var doFirst = function (block, type) {
-              var e8r = block.eyo.inputEnumerator(block)
-              while (e8r.next()) {
-                if ((c8n = e8r.here.connection) && c8n.type === type) {
-                  if (!c8n.hidden_ && !c8n.targetConnection) {
-                    eYo.SelectedConnection.set(c8n)
-                    return true
-                  } else if (c8n.targetConnection) {
-                    return doFirst(c8n.targetBlock(), type)
-                  }
+    var B = Blockly.selected
+    if (B) {
+      var newB = B.eyo.insertBlockWithModel(B, model) || B.eyo.insertParentWithModel(B, model)
+      if (newB) {
+        var c8n = eYo.SelectedConnection.get()
+        if (c8n) {
+          // There was a selected connection,
+          // we try to select another one, with possibly the same type
+          // First we take a look at B : is there an unconnected input connection
+          var doFirst = function (block, type) {
+            var e8r = block.eyo.inputEnumerator(block)
+            while (e8r.next()) {
+              if ((c8n = e8r.here.connection) && c8n.type === type) {
+                if (!c8n.hidden_ && !c8n.targetConnection) {
+                  eYo.SelectedConnection.set(c8n)
+                  return true
+                } else if (c8n.targetConnection) {
+                  return doFirst(c8n.targetBlock(), type)
                 }
               }
             }
-            if (doFirst(newB, Blockly.INPUT_VALUE)) {
-              return true
-            } else if ((c8n === B.nextConnection) && (c8n = newB.nextConnection) && !c8n.hidden_) {
-              eYo.SelectedConnection.set(c8n)
-              return true
-            }
-            eYo.SelectedConnection.set(null)
-            newB.select()
+          }
+          if (doFirst(newB, Blockly.INPUT_VALUE)) {
+            return true
+          } else if ((c8n === B.nextConnection) && (c8n = newB.nextConnection) && !c8n.hidden_) {
+            eYo.SelectedConnection.set(c8n)
             return true
           }
-          // no selected connection
-          var parent = B
-          do {
-            var e8r = parent.eyo.inputEnumerator(parent)
-            while (e8r.next()) {
-              if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && !c8n.eyo.optional_ && !c8n.targetConnection) {
-                eYo.SelectedConnection.set(c8n)
-                return true
-              }
-            }
-          } while ((parent = parent.getSurroundParent(parent)))
           eYo.SelectedConnection.set(null)
           newB.select()
           return true
         }
+        // no selected connection
+        var parent = B
+        do {
+          var e8r = parent.eyo.inputEnumerator(parent)
+          while (e8r.next()) {
+            if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && !c8n.eyo.optional_ && !c8n.targetConnection) {
+              eYo.SelectedConnection.set(c8n)
+              return true
+            }
+          }
+        } while ((parent = parent.getSurroundParent(parent)))
+        eYo.SelectedConnection.set(null)
+        newB.select()
+        return true
       }
-      console.log('NO selected')
     }
-    return false
   }
   /**
    * The me.split must have been called
@@ -387,9 +383,7 @@ eYo.KeyHandler = (function () {
     }
     keys_.push(key)
     var content = eYo.Do.createSPAN(key, 'eyo-code-emph')
-    var MI = new eYo.MenuItem(content, function () {
-      me.handleFirstMenuItemAction(key)
-    })
+    var MI = new eYo.MenuItem(content, key)
     menu_.addChild(MI, true)
 
     // initialize the shortcuts to hold informations

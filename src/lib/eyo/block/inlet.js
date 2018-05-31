@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('eYo.Tile')
+goog.provide('eYo.Inlet')
 
 goog.require('eYo.Do')
 goog.require('Blockly.Input')
@@ -19,11 +19,11 @@ goog.require('goog.dom');
 
 /**
  * Convenient method to wrap the Blockly input object for the outside.
- * The model is one of the entries of the `tiles` section
+ * The model is one of the entries of the `inlets` section
  * of the object used to create a delegate's subclass.
  * Here are some specifications for that model part.
  *
- * Any tile is constructed the same way
+ * Any inlet is constructed the same way
  * 1) operator field
  * 2) label field
  * 3) start field
@@ -37,37 +37,37 @@ goog.require('goog.dom');
   // - insert input
   // It may contain label fields
  * @param {!Object} owner  The owner is a block delegate.
- * @param {!string} key  One of the keys in `tiles` section of the model.
- * @param {!Object} tileModel  the model for the given key i the above mention section.
+ * @param {!string} key  One of the keys in `inlets` section of the model.
+ * @param {!Object} inletModel  the model for the given key i the above mention section.
  * @constructor
  */
-eYo.Tile = function (owner, key, tileModel) {
-  goog.asserts.assert(owner, 'Missing tile owner')
-  goog.asserts.assert(key, 'Missing tile key')
-  goog.asserts.assert(tileModel, 'Missing tile model')
-  goog.asserts.assert(tileModel.order, 'Missing tile model order')
+eYo.Inlet = function (owner, key, inletModel) {
+  goog.asserts.assert(owner, 'Missing inlet owner')
+  goog.asserts.assert(key, 'Missing inlet key')
+  goog.asserts.assert(inletModel, 'Missing inlet model')
+  goog.asserts.assert(inletModel.order, 'Missing inlet model order')
   this.owner = owner
   this.key = key
-  this.model = tileModel
+  this.model = inletModel
   this.input = undefined
   this.wait = 1
   var block = this.block = owner.block_
   goog.asserts.assert(block,
     eYo.Do.format('block must exist {0}/{1}', key))
-  eYo.Tile.makeFields(this, this, tileModel.fields)
-  if (tileModel.wrap) {
-    this.setInput(block.appendWrapValueInput(key, tileModel.wrap, tileModel.optional, tileModel.hidden))
-    this.input.connection.eyo.model = tileModel
-  } else if (tileModel.check) {
+  eYo.Inlet.makeFields(this, this, inletModel.fields)
+  if (inletModel.wrap) {
+    this.setInput(block.appendWrapValueInput(key, inletModel.wrap, inletModel.optional, inletModel.hidden))
+    this.input.connection.eyo.model = inletModel
+  } else if (inletModel.check) {
     this.setInput(block.appendValueInput(key))
-    this.input.connection.eyo.model = tileModel
+    this.input.connection.eyo.model = inletModel
   }
 }
 
 /**
- * Init the tile.
+ * Init the inlet.
  */
-eYo.Tile.prototype.init = function () {
+eYo.Inlet.prototype.init = function () {
   var init = this.model.init
   if (goog.isFunction(init)) {
     if (!this.model_init_lock) {
@@ -82,23 +82,23 @@ eYo.Tile.prototype.init = function () {
 }
 
 /**
- * Install this tile on a block.
+ * Install this inlet on a block.
  * @param {?boolean} render
  */
-eYo.Tile.prototype.beReady = function (render) {
+eYo.Inlet.prototype.beReady = function (render) {
   this.wait = 0
   if (this.svgGroup_) {
-    // Tile has already been initialized once.
+    // Inlet has already been initialized once.
     return
   }
   // Build the DOM.
   this.svgGroup_ = Blockly.utils.createSvgElement('g', {
-    class: 'eyo-tile'
+    class: 'eyo-inlet'
   }, null)
   if (this.previous) {
     goog.dom.insertSiblingAfter(this.svgGroup_, this.previous.svgGroup_)
   } else {
-    this.owner.svgInsertHeadTile()
+    this.owner.svgInsertHeadInlet()
   }
   //  this.getBlock().getSvgRoot().appendChild(this.svgGroup_)
   this.init()
@@ -107,27 +107,27 @@ eYo.Tile.prototype.beReady = function (render) {
     var field = this.fields[k]
     if (!field.sourceBlock_) {
       field.setSourceBlock(this.block)
-      field.eyo.tile = this
+      field.eyo.inlet = this
       field.eyo.ui = this.ui
       field.init()// installs in the owner's group, not the block group
     }
   }
   this.input && this.input.eyo.beReady(render)
 }
-console.warn('What would be a tile rendering?')
+console.warn('What would be an inlet rendering?')
 /**
- * The DOM SVG group representing this tile.
+ * The DOM SVG group representing this inlet.
  */
-eYo.Tile.prototype.getSvgRoot = function () {
+eYo.Inlet.prototype.getSvgRoot = function () {
   return this.svgGroup_
 }
 
 /**
  * Transitional: when a block is connected, its svg root is installed
- * in another block's one. Here we move it to a tile svg root, if relevant.
+ * in another block's one. Here we move it to an inlet svg root, if relevant.
  * @param {!Blockly.Block} block to be initialized.
  */
-eYo.Tile.prototype.takeSvgOwnership = function (block) {
+eYo.Inlet.prototype.takeSvgOwnership = function (block) {
   var root = block.getSvgRoot()
   if (root) {
     console.log('MOVE IT TO THE TAIL ?')
@@ -135,9 +135,9 @@ eYo.Tile.prototype.takeSvgOwnership = function (block) {
 }
 
 /**
- * Dispose of all DOM objects belonging to this tile.
+ * Dispose of all DOM objects belonging to this inlet.
  */
-eYo.Tile.prototype.dispose = function () {
+eYo.Inlet.prototype.dispose = function () {
   goog.dom.removeNode(this.svgGroup_)
   this.svgGroup_ = null
   this.owner = null
@@ -158,7 +158,7 @@ goog.require('eYo.FieldInput')
  * @param {!Object} ui
  * @param {!Object} fieldsModel
  */
-eYo.Tile.makeFields = (function () {
+eYo.Inlet.makeFields = (function () {
   // This is a closure
   // default helper functions for an editable field bound to a data object
   // `this` is an instance of  eYo.FieldInput
@@ -335,15 +335,15 @@ eYo.Tile.makeFields = (function () {
  * For edython.
  * @param {!Blockly.Input} input
  */
-eYo.Tile.prototype.setInput = function (input) {
+eYo.Inlet.prototype.setInput = function (input) {
   this.input = input
   this.inputType = this.input.type
   this.connection = input.connection
-  input.eyo.tile = this
+  input.eyo.inlet = this
   var c8n = this.connection
   if (c8n) {
     var eyo = c8n.eyo
-    eyo.tile = this
+    eyo.inlet = this
     eyo.name_ = this.key
     if (this.model.plugged) {
       eyo.plugged_ = this.model.plugged
@@ -369,7 +369,7 @@ eYo.Tile.prototype.setInput = function (input) {
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Tile.prototype.getBlock = function () {
+eYo.Inlet.prototype.getBlock = function () {
   return this.block
 }
 
@@ -378,7 +378,7 @@ eYo.Tile.prototype.getBlock = function () {
  * For edython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-eYo.Tile.prototype.getConnection = function () {
+eYo.Inlet.prototype.getConnection = function () {
   return this.input && this.input.connection
 }
 
@@ -387,7 +387,7 @@ eYo.Tile.prototype.getConnection = function () {
  * For edython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-eYo.Tile.prototype.getWorkspace = function () {
+eYo.Inlet.prototype.getWorkspace = function () {
   return this.connection && this.connection.sourceBlock_.workspace
 }
 
@@ -396,7 +396,7 @@ eYo.Tile.prototype.getWorkspace = function () {
  * For edython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-eYo.Tile.prototype.getTarget = function () {
+eYo.Inlet.prototype.getTarget = function () {
   return this.connection && this.connection.targetBlock()
 }
 
@@ -405,7 +405,7 @@ eYo.Tile.prototype.getTarget = function () {
  * For edython.
  * @param {!bollean} newValue
  */
-eYo.Tile.prototype.setIncog = function (newValue) {
+eYo.Inlet.prototype.setIncog = function (newValue) {
   this.incog = newValue
   if (this.wait) {
     return
@@ -419,7 +419,7 @@ eYo.Tile.prototype.setIncog = function (newValue) {
  * Get the disable state.
  * For edython.
  */
-eYo.Tile.prototype.isIncog = function () {
+eYo.Inlet.prototype.isIncog = function () {
   return this.incog
 }
 
@@ -428,7 +428,7 @@ eYo.Tile.prototype.isIncog = function () {
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Tile.prototype.isRequiredToDom = function () {
+eYo.Inlet.prototype.isRequiredToDom = function () {
   if (this.incog) {
     return false
   }
@@ -452,7 +452,7 @@ eYo.Tile.prototype.isRequiredToDom = function () {
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Tile.prototype.isRequiredFromDom = function () {
+eYo.Inlet.prototype.isRequiredFromDom = function () {
   return this.is_required_from_dom || (!this.incog && this.model.xml && this.model.xml.required)
 }
 
@@ -461,7 +461,7 @@ eYo.Tile.prototype.isRequiredFromDom = function () {
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Tile.prototype.setRequiredFromDom = function (newValue) {
+eYo.Inlet.prototype.setRequiredFromDom = function (newValue) {
   this.is_required_from_dom = newValue
 }
 
@@ -470,7 +470,7 @@ eYo.Tile.prototype.setRequiredFromDom = function (newValue) {
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Tile.prototype.whenRequiredFromDom = function (helper) {
+eYo.Inlet.prototype.whenRequiredFromDom = function (helper) {
   if (this.isRequiredFromDom()) {
     this.setRequiredFromDom(false)
     if (goog.isFunction(helper)) {
@@ -485,7 +485,7 @@ eYo.Tile.prototype.whenRequiredFromDom = function (helper) {
  * For edython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-eYo.Tile.prototype.consolidate = function () {
+eYo.Inlet.prototype.consolidate = function () {
   if (this.wait) {
     return
   }
@@ -500,7 +500,7 @@ eYo.Tile.prototype.consolidate = function () {
  * Set the wait status of the field.
  * Any call to `waitOn` must be balanced by a call to `waitOff`
  */
-eYo.Tile.prototype.waitOn = function () {
+eYo.Inlet.prototype.waitOn = function () {
   return ++this.wait
 }
 
@@ -508,7 +508,7 @@ eYo.Tile.prototype.waitOn = function () {
  * Set the wait status of the field.
  * Any call to `waitOn` must be balanced by a call to `waitOff`
  */
-eYo.Tile.prototype.waitOff = function () {
+eYo.Inlet.prototype.waitOff = function () {
   goog.asserts.assert(this.wait > 0, eYo.Do.format('Too  many `waitOn` {0}/{1}', this.key, this.owner.block_.type))
   if (--this.wait === 0) {
     this.consolidate()
@@ -520,7 +520,7 @@ eYo.Tile.prototype.waitOff = function () {
  * For edython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-eYo.Tile.prototype.synchronize = function () {
+eYo.Inlet.prototype.synchronize = function () {
   var input = this.input
   if (!input) {
     return
@@ -563,7 +563,7 @@ eYo.Tile.prototype.synchronize = function () {
 goog.forwardDeclare('eYo.DelegateSvg.List')
 
 /**
- * Convert the tile's connected target into the given xml element.
+ * Convert the inlet's connected target into the given xml element.
  * List all the available data and converts them to xml.
  * For edython.
  * @param {Element} xml the persistent element.
@@ -571,7 +571,7 @@ goog.forwardDeclare('eYo.DelegateSvg.List')
  * @return a dom element, void lists may return nothing
  * @this a block delegate
  */
-eYo.Tile.prototype.save = function (element, optNoId) {
+eYo.Inlet.prototype.save = function (element, optNoId) {
   if (this.isIncog()) {
     return
   }
@@ -648,7 +648,7 @@ eYo.Tile.prototype.save = function (element, optNoId) {
  * @param {Element} element a dom element in which to save the input
  * @return the added child, if any
  */
-eYo.Tile.prototype.load = function (element) {
+eYo.Inlet.prototype.load = function (element) {
   var xml = this.model.xml
   if (xml === false) {
     return

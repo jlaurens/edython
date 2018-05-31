@@ -239,8 +239,8 @@ Blockly.Xml.domToBlock = function (xmlBlock, workspace) {
 eYo.DelegateSvg.newBlockReady = function (workspace, model, id, render) {
   if (model.startsWith && model.startsWith('<')) {
     var B = Blockly.Xml.domToBlock(model, workspace)
-  } else {
-    B = this.newBlockComplete(workspace, model, id)
+  } else if (!(B = this.newBlockComplete(workspace, model, id))) {
+    return
   }
   B.eyo.beReady(B, render)
   return B
@@ -527,13 +527,13 @@ eYo.Xml.toDom = function (block, element, optNoId) {
     return controller.toDom.call(eyo, block, element, optNoId)
   } else {
     eYo.Xml.Data.toDom(block, element, optNoId)
-    // save tiles
-    block.eyo.foreachTile(function () {
+    // save inlets
+    block.eyo.foreachInlet(function () {
       this.save(element, optNoId)
     })
     var blockToDom = function (c8n, name, key) {
       if (c8n && !c8n.eyo.wrapped_) {
-        // wrapped blocks belong to tiles, they are managed from there
+        // wrapped blocks belong to inlets, they are managed from there
         var target = c8n.targetBlock()
         if (target) {
           var child = Blockly.Xml.blockToDom(target, optNoId)
@@ -544,9 +544,9 @@ eYo.Xml.toDom = function (block, element, optNoId) {
         }
       }
     }
-    // the list blocks have no tiles yet
+    // the list blocks have no inlets yet
     for (var i = 0, input; (input = block.inputList[i++]);) {
-      if (!input.eyo.tile) {
+      if (!input.eyo.inlet) {
         blockToDom(input.connection, eYo.Xml.INPUT, input.name)
       }
     }
@@ -740,8 +740,8 @@ eYo.Xml.fromDom = function (block, element) {
       data[k].waitOn()
     }
     eYo.Xml.Data.fromDom(block, element)
-    // read tile
-    eyo.foreachTile(function () {
+    // read inlet
+    eyo.foreachInlet(function () {
       this.load(element)
     })
     var statement = function (c8n, key) {
@@ -808,11 +808,11 @@ eYo.Xml.Comparison.domToBlock = function (element, workspace) {
     var C8r, model
     var type = eYo.T3.Expr.number_comparison
     if ((C8r = eYo.DelegateSvg.Manager.get(type)) &&
-    (model = C8r.eyo.getModel().tiles) &&
+    (model = C8r.eyo.getModel().inlets) &&
     model.operators &&
     model.operators.indexOf(op) >= 0) {
       block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)
-    } else if ((type = eYo.T3.Expr.object_comparison) && (C8r = eYo.DelegateSvg.Manager.get(type)) && (model = C8r.eyo.getModel().tiles) && model.operators && model.operators.indexOf(op) >= 0) {
+    } else if ((type = eYo.T3.Expr.object_comparison) && (C8r = eYo.DelegateSvg.Manager.get(type)) && (model = C8r.eyo.getModel().inlets) && model.operators && model.operators.indexOf(op) >= 0) {
       block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)
     } else {
       return block

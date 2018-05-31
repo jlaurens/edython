@@ -46,17 +46,17 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         var M = this.model
-        this.ui.tiles.expression.setIncog(newValue === M.EXCEPT)
-        this.ui.tiles.expression.required = (newValue === M.EXCEPT_EXPRESSION)
-        this.ui.tiles.as.setIncog(newValue !== M.EXCEPT_AS)
-        this.ui.tiles.as.required = (newValue === M.EXCEPT_AS)
+        this.ui.inlets.expression.setIncog(newValue === M.EXCEPT)
+        this.ui.inlets.expression.required = (newValue === M.EXCEPT_EXPRESSION)
+        this.ui.inlets.as.setIncog(newValue !== M.EXCEPT_AS)
+        this.ui.inlets.as.required = (newValue === M.EXCEPT_AS)
       }
     }
   },
   fields: {
     prefix: 'except'
   },
-  tiles: {
+  inlets: {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
@@ -165,17 +165,17 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       all: [0, 1, 2],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         var M = this.model
-        this.ui.tiles.expression.setIncog(newValue === M.RAISE)
-        this.ui.tiles.expression.required = (newValue === M.RAISE_EXPRESSION)
-        this.ui.tiles.from.setIncog(newValue !== M.RAISE_FROM)
-        this.ui.tiles.from.required = (newValue === M.RAISE_FROM)
+        this.ui.inlets.expression.setIncog(newValue === M.RAISE)
+        this.ui.inlets.expression.required = (newValue === M.RAISE_EXPRESSION)
+        this.ui.inlets.from.setIncog(newValue !== M.RAISE_FROM)
+        this.ui.inlets.from.required = (newValue === M.RAISE_FROM)
       }
     }
   },
   fields: {
     prefix: 'raise'
   },
-  tiles: {
+  inlets: {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
@@ -251,15 +251,15 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
     variant: {
       all: [0, 1],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.ui.tiles.expression.setIncog(!newValue)
-        this.ui.tiles.expression.required = !!newValue
+        this.ui.inlets.expression.setIncog(!newValue)
+        this.ui.inlets.expression.required = !!newValue
       }
     }
   },
   fields: {
     prefix: 'assert'
   },
-  tiles: {
+  inlets: {
     assert: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,

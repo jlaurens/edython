@@ -215,41 +215,42 @@ eYo.DelegateSvg.Stmt.prototype.minBlockWidth = function (block) {
  * @param {string} parentInputName, which parent's connection to use
  * @return the created block
  */
-eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (block, parentPrototypeName, subtype) {
+eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (block, model, subtype) {
   var c8n = block.previousConnection
   if (c8n) {
     Blockly.Events.disable()
-    var parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, parentPrototypeName)
+    var parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, model)
     Blockly.Events.enable()
-    var parentC8n = parentBlock.nextConnection
-    if (parentC8n) {
-      eYo.Events.setGroup(true)
-      try {
-        if (Blockly.Events.isEnabled()) {
-          Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
-        }
-        parentBlock.eyo.data.subtype.set(subtype)
-        var targetC8n = c8n.targetConnection
-        if (targetC8n) {
-          targetC8n.disconnect()
-          if (parentBlock.previousConnection) {
-            targetC8n.connect(parentBlock.previousConnection)
+    if (parentBlock) {
+      var parentC8n = parentBlock.nextConnection
+      if (parentC8n) {
+        eYo.Events.setGroup(true)
+        try {
+          if (Blockly.Events.isEnabled()) {
+            Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
           }
-        } else {
-          var its_xy = block.getRelativeToSurfaceXY()
-          var my_xy = parentBlock.getRelativeToSurfaceXY()
-          parentBlock.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+          var targetC8n = c8n.targetConnection
+          if (targetC8n) {
+            targetC8n.disconnect()
+            if (parentBlock.previousConnection) {
+              targetC8n.connect(parentBlock.previousConnection)
+            }
+          } else {
+            var its_xy = block.getRelativeToSurfaceXY()
+            var my_xy = parentBlock.getRelativeToSurfaceXY()
+            parentBlock.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+          }
+          parentBlock.eyo.beReady(parentBlock)
+          var holes = eYo.HoleFiller.getDeepHoles(parentBlock)
+          eYo.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
+          parentBlock.render()
+          c8n.connect(parentC8n)
+          if (Blockly.selected === block) {
+            parentBlock.select()
+          }
+        } finally {
+          eYo.Events.setGroup(false)
         }
-        parentBlock.eyo.beReady(parentBlock)
-        var holes = eYo.HoleFiller.getDeepHoles(parentBlock)
-        eYo.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
-        parentBlock.render()
-        c8n.connect(parentC8n)
-        if (Blockly.selected === block) {
-          parentBlock.select()
-        }
-      } finally {
-        eYo.Events.setGroup(false)
       }
     }
   }
@@ -372,7 +373,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_nonlocal_stmt, {
       css: 'reserved'
     }
   },
-  tiles: {
+  inlets: {
     identifiers: {
       order: 1,
       wrap: eYo.T3.Expr.non_void_identifier_list
@@ -449,7 +450,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('docstring_def_stmt', {
   link: eYo.T3.Expr.longliteral
 })
 
-console.warn('if_part and others conform to the new model and xml ?')
 /**
  * docstring blocks are white.
  * For edython.
@@ -466,7 +466,7 @@ eYo.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = function (block) {
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass('del_stmt', {
-  tiles: {
+  inlets: {
     del: {
       order: 1,
       fields: {
@@ -482,7 +482,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('del_stmt', {
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass('return_stmt', {
-  tiles: {
+  inlets: {
     return: {
       order: 1,
       fields: {
@@ -498,7 +498,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('return_stmt', {
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
-  tiles: {
+  inlets: {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.expression
@@ -527,14 +527,14 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
         this.data.code.setIncog(newValue > this.CODE_COMMENT)
         this.data.comment.required = (newValue % 2) && newValue !== this.COMMENT
         this.data.comment.setIncog(!(newValue % 2))
-        this.ui.tiles.expression.required = newValue < this.COMMENT &&
+        this.ui.inlets.expression.required = newValue < this.COMMENT &&
         newValue > this.CODE_COMMENT
-        this.ui.tiles.expression.setIncog(newValue < this.EXPRESSION ||
+        this.ui.inlets.expression.setIncog(newValue < this.EXPRESSION ||
         newValue > this.EXPRESSION_COMMENT)
       },
       consolidate: /** @suppress {globalThis} */ function () {
         var withCode = !this.data.code.isIncog()
-        var withExpression = !this.ui.tiles.expression.isIncog()
+        var withExpression = !this.ui.inlets.expression.isIncog()
         var withComment = !this.data.comment.isIncog()
         if (withCode) {
           if (withComment) {
@@ -596,7 +596,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
       endEditing: true
     }
   },
-  tiles: {
+  inlets: {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,

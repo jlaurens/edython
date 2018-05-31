@@ -316,11 +316,11 @@ eYo.Data.prototype.noUndo = undefined
  * Synchronize the value of the property with the UI.
  * May be overriden by the model.
  * Do nothing if the receiver should wait.
- * When not overriden by the model, updates the field and tile state.
+ * When not overriden by the model, updates the field and inlet state.
  * We can call `this.synchronize()` from the model.
  * `synchronize: true`, and
  * synchronize: function() { this.synchronize()} are equivalent.
- * Raises when not bound to some field or tile, in the non model variant.
+ * Raises when not bound to some field or inlet, in the non model variant.
  * @param {Object} newValue
  */
 eYo.Data.prototype.synchronize = function (newValue) {
@@ -328,7 +328,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
     return
   }
   if (this.model_synchronize_lock || this.model.synchronize === true) {
-    goog.asserts.assert(this.field || this.tile, 'No field nor tile bound. ' + this.key + '/' + this.getType())
+    goog.asserts.assert(this.field || this.inlet, 'No field nor inlet bound. ' + this.key + '/' + this.getType())
     var field = this.field
     if (field) {
       Blockly.Events.disable()
@@ -347,7 +347,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
         }
       }
     }
-    this.tile && this.tile.setIncog(this.isIncog())
+    this.inlet && this.inlet.setIncog(this.isIncog())
   } else if (goog.isFunction(this.model.synchronize)) {
     this.model_synchronize_lock = true
     try {
@@ -364,7 +364,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
  * @param {Object} newValue
  */
 eYo.Data.prototype.synchronizeIfUI = function (newValue) {
-  if (this.field || this.tile || this.model.synchronize) {
+  if (this.field || this.inlet || this.model.synchronize) {
     this.synchronize(newValue)
   }
 }

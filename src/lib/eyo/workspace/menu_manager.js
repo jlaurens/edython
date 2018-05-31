@@ -905,7 +905,7 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
  * @param {!string} parent_type the type of the parent to be.
  * @private
  */
-eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, parent_type, parent_subtype) {
+eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model) {
   var c8n = block.outputConnection
   if (!c8n) {
     // this is a statement block
@@ -913,7 +913,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
   }
   /** @suppress {accessControls} */
   var outCheck = c8n.check_
-  var D = eYo.Delegate.Manager.getModel(parent_type).tiles
+  var D = eYo.Delegate.Manager.getModel(parent_type).inlets
   if (D) {
     var mgr = this
     var F = function (K) {
@@ -990,7 +990,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, paren
  * @param {!string} type the type of the parent to be.
  * @private
  */
-eYo.MenuManager.prototype.populate_insert_parent = function (block, type, subtype, top) {
+eYo.MenuManager.prototype.populate_insert_parent = function (block, model, top) {
   // can we insert a block typed type between the block and
   // the target of its output connection
   var outputC8n = block.outputConnection
@@ -998,16 +998,16 @@ eYo.MenuManager.prototype.populate_insert_parent = function (block, type, subtyp
     var inputC8n = outputC8n.targetConnection
     if (!inputC8n) {
       if (top) {
-        this.populate_insert_as_top_parent(block, type, subtype)
+        this.populate_insert_as_top_parent(block, model)
       }
       return
     }
     var check = inputC8n.check_
-    if (check && check.indexOf(type) < 0) {
+    if (check && check.indexOf(model.type) < 0) {
       // the target connection won't accept block
       return
     }
-    this.populate_insert_as_top_parent(block, type, subtype)
+    this.populate_insert_as_top_parent(block, model)
   }
 }
 
@@ -1015,28 +1015,29 @@ eYo.MenuManager.prototype.populate_insert_parent = function (block, type, subtyp
  * Populate the context menu for the given block.
  * Only for expressions.
  * @param {!Blockly.Block} block The block.
- * @param {!string} type the type of the parent to be.
- * @param {!string} subtype the subtype is for example the input name through which parent and children are connected.
+ * @param {!string|Object} model the subtype is for example the input name through which parent and children are connected.
  * @private
  * @return true if an item were added to the remove menu
  */
-eYo.MenuManager.prototype.populate_replace_parent = function (block, type, subtype) {
+eYo.MenuManager.prototype.populate_replace_parent = function (block, model) {
   var parent = block.getParent()
-  if (parent && parent.type === type) {
+  if (parent && parent.type === model.type) {
     var eyo = block.eyo
     var input = eyo.getParentInput(block)
-    if (subtype && input.name !== subtype) {
+    if (model.input && input.name !== model.input) {
       return false
     }
     if (!eyo.wrapped_ || eyo.canUnwrap(block)) {
       if (eyo.canReplaceBlock(block, parent)) {
-        var content = this.get_menuitem_content(type, input ? input.name : undefined)
-        var MI = new eYo.MenuItem(content, function () {
-          eyo.replaceBlock(block, parent)
-        })
-        this.addRemoveChild(MI)
-        console.log(block.type, ' replace ', parent.type)
-        return true
+        var content = this.get_menuitem_content(model.type, input && input.name)
+        if (content) {
+          var MI = new eYo.MenuItem(content, function () {
+            eyo.replaceBlock(block, parent)
+          })
+          this.addRemoveChild(MI)
+          console.log(block.type, ' replace ', parent.type)
+          return true
+        }
       }
     }
   }
@@ -1149,13 +1150,15 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
 eYo.MenuManager.prototype.populate_movable_parent = function (block) {
   var F = function (movable, yorn = false) {
     for (var _ = 0, type; (type = movable[_++]);) {
-      var subtype
+      var model = {}
       if (goog.isArray(type)) {
-        subtype = type[1]
-        type = type[0]
+        model.type = type[0]
+        model.input = type[1]
+      } else {
+        model.type = type
       }
-      this.populate_insert_parent(block, type, subtype, yorn)
-      this.populate_replace_parent(block, type, subtype)
+      this.populate_insert_parent(block, model, yorn)
+      this.populate_replace_parent(block, model)
     }
   }
   F.call(this, [
@@ -1192,41 +1195,6 @@ eYo.MenuManager.prototype.populate_movable_parent = function (block) {
     [eYo.T3.Expr.proper_slice, eYo.Key.STRIDE],
     [eYo.T3.Expr.proper_slice, eYo.Key.LOWER_BOUND]
   ])
-}
-
-/**
- * Populate the context menu for the given block.
- * Only for expressions.
- * @param {!Blockly.Block} block The block.
- * @private
- */
-eYo.MenuManager.prototype.populate_wrap_alternate = function (block, key) {
-  var eyo = block.eyo
-  if (eyo.menuData && eyo.data.menu.length > 1) {
-    var input = block.getInput(key)
-    if (input && input.connection) {
-      var target = input.connection.targetBlock()
-      goog.asserts.assert(target, 'No wrapper in ' + block.type)
-      var F = function (data) {
-        var content = goog.isFunction(data.content) ? data.content(block) : data.content
-        goog.asserts.assert(content, 'content is missing ' + block.type + ' ' + key)
-        var menuItem = new eYo.MenuItem(content, function () {
-          block.eyo.useWrapType(block, key, data.type) // useWrapType
-          block.render() // maybe useless ?
-        })
-        menuItem.setEnabled(data.type !== target.type)
-        this.addChild(menuItem, true)
-        if (data.css_class) {
-          goog.dom.classlist.add(/** Element */menuItem.getElement().firstChild, data.css_class)
-        }
-      }
-      for (var _ = 0, d; (d = eyo.menuData[_++]);) {
-        F.call(this, d)
-      }
-      return true
-    }
-  }
-  return false
 }
 
 /// //////////// SUBTYPES

@@ -175,7 +175,7 @@ eYo.Delegate.Manager = (function () {
     }
     if (insertModel) {
       insertModel.data && merger(model.data, insertModel.data)
-      insertModel.tiles && merger(model.tiles, insertModel.tiles)
+      insertModel.inlets && merger(model.inlets, insertModel.inlets)
     }
     // store that object permanently
     delegateC9r.eyo.model_ = model
@@ -212,7 +212,7 @@ eYo.Delegate.Manager = (function () {
     }
     goog.inherits(delegateC9r, parent)
     me.prepareDelegate(delegateC9r, key)
-    eYo.Delegate.Manager.registerDelegate_(eYo.T3.Expr[key] || eYo.T3.Stmt[key], delegateC9r)
+    eYo.Delegate.Manager.registerDelegate_(eYo.T3.Expr[key] || eYo.T3.Stmt[key] || key, delegateC9r)
     if (goog.isFunction(model)) {
       model = model()
     }
@@ -318,6 +318,7 @@ eYo.Delegate.Manager = (function () {
    */
   me.registerDelegate_ = function (prototypeName, delegateC9r, key) {
     // console.log(prototypeName+' -> '+delegateC9r)
+    goog.asserts.assert(prototypeName, 'Missing prototypeName')
     C9rs[prototypeName] = delegateC9r
     // cache all the input, output and statement data at the prototype level
     me.prepareDelegate(delegateC9r, key)
@@ -400,20 +401,20 @@ eYo.Delegate.prototype.consolidateType = function (block) {
 }
 
 /**
- * execute the given function for the head tile of the receiver and its next sibling.
+ * execute the given function for the head inlet of the receiver and its next sibling.
  * If the return value of the given function is true,
  * then it was the last iteration and the loop nreaks.
  * For edython.
  * @param {!function} helper
- * @return {boolean} whether there was a tile to act upon or a valid helper
+ * @return {boolean} whether there was an inlet to act upon or a valid helper
  */
-eYo.Delegate.prototype.foreachTile = function (helper) {
-  var tile = this.ui.headTile
-  if (tile && goog.isFunction(helper)) {
+eYo.Delegate.prototype.foreachInlet = function (helper) {
+  var inlet = this.ui.headInlet
+  if (inlet && goog.isFunction(helper)) {
     var last
     do {
-      last = helper.call(tile)
-    } while (!last && (tile = tile.next))
+      last = helper.call(inlet)
+    } while (!last && (inlet = inlet.next))
     return true
   }
   return false
@@ -448,27 +449,27 @@ eYo.Delegate.prototype.initData = function () {
   for (var k in this.data) {
     var data = this.data[k]
     data.ui = this.ui
-    var tile = this.ui.tiles[k]
-    if (tile) {
-      data.tile = tile
-      tile.data = data
+    var inlet = this.ui.inlets[k]
+    if (inlet) {
+      data.inlet = inlet
+      inlet.data = data
       // try the unique editable field
-      if (Object.keys(tile.fields).length === 1) {
-        for (var kk in tile.fields) {
-          data.field = tile.fields[kk]
+      if (Object.keys(inlet.fields).length === 1) {
+        for (var kk in inlet.fields) {
+          data.field = inlet.fields[kk]
           break
         }
       } else {
-        data.field = tile.fields.edit
+        data.field = inlet.fields.edit
       }
     } else if ((data.field = this.ui.fields[k])) {
-      data.tile = null
+      data.inlet = null
       data.field.eyo.data = data
     } else {
-      for (kk in this.ui.tiles) {
-        tile = this.ui.tiles[kk]
-        if ((data.field = tile.fields[k])) {
-          data.tile = tile
+      for (kk in this.ui.inlets) {
+        inlet = this.ui.inlets[kk]
+        if ((data.field = inlet.fields[k])) {
+          data.inlet = inlet
           break
         }
       }
@@ -562,6 +563,7 @@ eYo.Delegate.prototype.setupType = function (block, optNewType) {
 
 /**
  * Initialize a block.
+ * Called from block's init method.
  * @param {!Blockly.Block} block to be initialized..
  * For subclassers eventually
  */
@@ -1121,10 +1123,10 @@ eYo.Delegate.prototype.setIncog = function (block, incog) {
     var c8n = input && input.connection
     c8n && c8n.eyo.setIncog(incog)
   }
-  var tile = this.ui.headTile
-  while (tile) {
-    setupIncog(tile.input)
-    tile = tile.next
+  var inlet = this.ui.headInlet
+  while (inlet) {
+    setupIncog(inlet.input)
+    inlet = inlet.next
   }
   setupIncog(this.inputSuite)
   for (var i = 0, input; (input = this.block_.inputList[i++]);) {

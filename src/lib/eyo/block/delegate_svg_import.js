@@ -84,10 +84,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         //   case 2: disabled_2 = disabled_4 = false; break
         // }
         var model = this.model
-        this.ui.tiles.import_module.setIncog(newValue !== model.IMPORT)
+        this.ui.inlets.import_module.setIncog(newValue !== model.IMPORT)
         this.data.from.setIncog(newValue === model.IMPORT)
-        this.ui.tiles.import.setIncog(newValue !== model.FROM_MODULE_IMPORT)
-        this.ui.tiles.import_star.setIncog(newValue !== model.FROM_MODULE_IMPORT_STAR)
+        this.ui.inlets.import.setIncog(newValue !== model.FROM_MODULE_IMPORT)
+        this.ui.inlets.import_star.setIncog(newValue !== model.FROM_MODULE_IMPORT_STAR)
       }
     },
     from: {
@@ -101,7 +101,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       synchronize: true
     }
   },
-  tiles: {
+  inlets: {
     import_module: {
       order: 1,
       fields: {
@@ -192,7 +192,7 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass('future_statement', {
-  tiles: {
+  inlets: {
     list: {
       order: 1,
       fields: {

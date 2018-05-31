@@ -26,7 +26,7 @@ goog.require('goog.dom');
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('target_star', {
-  tiles: {
+  inlets: {
     expression: {
       order: 1,
       fields: {
@@ -268,8 +268,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       all: [0, 1, 2],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.data.name.setIncog(newValue === this.TARGET_VALUE)
-        this.ui.tiles.annotation.setIncog(newValue !== this.NAME_ANNOTATION_VALUE)
-        this.ui.tiles.target.setIncog(newValue !== this.TARGET_VALUE)
+        this.ui.inlets.annotation.setIncog(newValue !== this.NAME_ANNOTATION_VALUE)
+        this.ui.inlets.target.setIncog(newValue !== this.TARGET_VALUE)
       },
     },
     name: {
@@ -282,7 +282,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       synchronize: true,
     },
   },
-  tiles: {
+  inlets: {
     name: {
       order: 1,
       fields: {
@@ -412,8 +412,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       TARGET_EXPRESSIONS: 1,
       all: [0, 1],
       synchronize: /** @suppress {globalThis} */ function (newVariant) {
-        this.ui.tiles.name.setIncog(newVariant)
-        this.ui.tiles.target.setIncog(!newVariant)
+        this.ui.inlets.name.setIncog(newVariant)
+        this.ui.inlets.target.setIncog(!newVariant)
       }
     },
     name: {
@@ -457,7 +457,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       }
     }
   },
-  tiles: {
+  inlets: {
     name: {
       order: 1,
       fields: {

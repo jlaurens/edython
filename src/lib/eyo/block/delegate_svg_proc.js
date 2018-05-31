@@ -41,10 +41,10 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.decorator, {
       all: [0, 1, 2, 3],
       synchronize: /** @suppress {globalThis} */ function (newValue) { // would variants synchronize?
         var M = this.model
-        this.data.dotted_name.setIncog(newValue === M.BUILTIN) // disable the data not the tile
+        this.data.dotted_name.setIncog(newValue === M.BUILTIN) // disable the data not the inlet
         this.data.builtin.setIncog(newValue !== M.BUILTIN)
         this.data.property.setIncog(newValue !== M.PROPERTY)
-        this.ui.tiles.arguments.setIncog(newValue !== M.ARGUMENTS)
+        this.ui.inlets.arguments.setIncog(newValue !== M.ARGUMENTS)
       }
     },
     dotted_name: {
@@ -64,7 +64,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.decorator, {
       css: 'reserved'
     }
   },
-  tiles: {
+  inlets: {
     dotted_name: {
       order: 1,
       fields: {
@@ -201,7 +201,7 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
     variant: {
       all: [null, eYo.Key.TYPE],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.ui.tiles.type.setIncog(!newValue)
+        this.ui.inlets.type.setIncog(!newValue)
       }
     },
     name: {
@@ -221,7 +221,7 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
       placeholder: eYo.Msg.Placeholder.IDENTIFIER
     }
   },
-  tiles: {
+  inlets: {
     parameters: {
       order: 1,
       fields: {
@@ -283,7 +283,7 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
     variant: {
       all: [null, eYo.Key.ARGUMENTS],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.ui.tiles.arguments.setIncog(!newValue)
+        this.ui.inlets.arguments.setIncog(!newValue)
       }
     },
     name: {
@@ -300,7 +300,7 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
       value: 'class'
     }
   },
-  tiles: {
+  inlets: {
     name: {
       order: 1,
       fields: {

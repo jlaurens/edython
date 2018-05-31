@@ -35,7 +35,7 @@ eYo.DelegateSvg.Expr.makeSubclass('attributeref', {
       synchronize: true
     }
   },
-  tiles: {
+  inlets: {
     primary: {
       order: 1,
       check: eYo.T3.Expr.Check.primary,
@@ -68,8 +68,8 @@ eYo.DelegateSvg.Expr.makeSubclass('slicing', {
     variant: { // data named 'variant' have `xml = false`, by default
       all: [0, 1],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.ui.tiles.name.setIncog(!!newValue)
-        this.ui.tiles.primary.setIncog(!newValue)
+        this.ui.inlets.name.setIncog(!!newValue)
+        this.ui.inlets.primary.setIncog(!newValue)
       }
     },
     name: {
@@ -82,7 +82,7 @@ eYo.DelegateSvg.Expr.makeSubclass('slicing', {
       synchronize: true
     }
   },
-  tiles: {
+  inlets: {
     name: {
       order: 1,
       fields: {
@@ -167,8 +167,8 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
         var withExpression = newValue === M.EXPRESSION
         this.data.name.setIncog(withExpression)
         this.data.name.required = newValue === M.NAME
-        this.ui.tiles.expression.setIncog(!withExpression)
-        this.ui.tiles.expression.required = withExpression
+        this.ui.inlets.expression.setIncog(!withExpression)
+        this.ui.inlets.expression.required = withExpression
       }
     },
     backup: {
@@ -218,7 +218,7 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
       placeholder: eYo.Msg.Placeholder.IDENTIFIER
     }
   },
-  tiles: {
+  inlets: {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.primary,

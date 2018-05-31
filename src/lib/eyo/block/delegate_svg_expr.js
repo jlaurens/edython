@@ -385,7 +385,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
-  tiles: {
+  inlets: {
     lower_bound: {
       order: 1,
       fields: {
@@ -419,7 +419,7 @@ eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('conditional_expression', {
-  tiles: {
+  inlets: {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.or_test_all,
@@ -462,7 +462,7 @@ eYo.DelegateSvg.Expr.makeSubclass('starred_expression', {
       css: 'reserved'
     }
   },
-  tiles: {
+  inlets: {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
@@ -485,7 +485,7 @@ eYo.DelegateSvg.Expr.starred_expression.prototype.consolidateType = function (bl
   // eYo.T3.Expr.Check.or_expr
   var data = this.data.modifier
   var withOneStar = data.get() === data.model.STAR
-  var c8n = this.ui.tiles.expression.connection
+  var c8n = this.ui.inlets.expression.connection
   var targetC8n = c8n.targetConnection
   var no_or_expr = false
   if (targetC8n) {
@@ -537,7 +537,7 @@ eYo.DelegateSvg.Expr.starred_expression.prototype.populateContextMenuFirst_ = fu
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('not_test', {
-  tiles: {
+  inlets: {
     expression: {
       order: 1,
       fields: {

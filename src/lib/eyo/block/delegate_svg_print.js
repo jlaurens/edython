@@ -32,7 +32,7 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin_print_expr', {
       css: 'builtin'
     }
   },
-  tiles: {
+  inlets: {
     arguments: {
       order: 1,
       fields: {
@@ -211,7 +211,7 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin_input_expr', {
       value: 'input'
     }
   },
-  tiles: {
+  inlets: {
     expression: {
       order: 1,
       fields: {
