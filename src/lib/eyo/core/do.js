@@ -329,9 +329,9 @@ eYo.Do.createSPAN = function (text, css) {
 
 goog.require('eYo.T3')
 
-eYo.T3.Expr.reserved_identifier = 'reserved identifier'
-eYo.T3.Expr.reserved_keyword = 'reserved keyword'
-eYo.T3.Expr.builtin_name = 'builtin name'
+eYo.T3.Expr.reserved_identifier = '.reserved identifier'
+eYo.T3.Expr.reserved_keyword = '.reserved keyword'
+eYo.T3.Expr.builtin_name = '.builtin name'
 
 /**
  * What is the type of this string? an identifier, a number, a reserved word ?

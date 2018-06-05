@@ -6,11 +6,18 @@
 
 <script>
   export default {
-    name: 'edython'
+    name: 'edython',
+    mounted: function () {
+      // put this preload for main-window to give it prompt()
+      const ipcRenderer = require('electron').ipcRenderer
+      window.prompt = function (text, defaultText) {
+        return ipcRenderer.sendSync('prompt', {text: text, defaultText: defaultText})
+      }
+    }
   }
 </script>
 
-<style>
+<style lang="scss">
   body {
     margin: 0;
     padding: 0;

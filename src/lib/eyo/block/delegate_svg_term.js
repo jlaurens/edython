@@ -37,6 +37,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
         synchronize: true
       },
       name: {
+        main: true,
         init: '',
         validate: /** @suppress {globalThis} */ function (newValue) {
           var nameType = eYo.Do.typeOfString(newValue)
@@ -96,7 +97,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
       phantom: {
         init: '',
         didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-          var field = this.ui.inlets.name.fields.edit
+          var field = this.owner_.inlets.name.fields.edit
           field.placeholderText_ = newValue
           field.render_()
         },
@@ -200,8 +201,8 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
     var model = this.model
     this.data.name.required = newValue === model.STAR_NAME
     this.data.alias.required = newValue === model.NAME_ALIAS
-    this.ui.inlets.annotation.required = newValue === model.NAME_ANNOTATION || newValue === model.STAR_NAME_ANNOTATION || newValue === model.NAME_ANNOTATION_DEFINITION
-    this.ui.inlets.definition.required = newValue === model.NAME_DEFINITION || newValue === model.NAME_ANNOTATION_DEFINITION
+    this.owner_.inlets.annotation.required = newValue === model.NAME_ANNOTATION || newValue === model.STAR_NAME_ANNOTATION || newValue === model.NAME_ANNOTATION_DEFINITION
+    this.owner_.inlets.definition.required = newValue === model.NAME_DEFINITION || newValue === model.NAME_ANNOTATION_DEFINITION
     var newModifier = newValue === model.STAR || newValue === model.STAR_NAME || newValue === model.STAR_NAME_ANNOTATION ? '*' : (newValue === model.STAR_STAR_NAME ? '**' : '')
     this.data.modifier.set(newModifier)
     this.data.name.setIncog(newValue === model.STAR)
@@ -209,18 +210,18 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
   }
   DD.synchronize = function (newValue) {
     var model = this.model
-    this.ui.inlets.annotation.setIncog(newValue !== model.NAME_ANNOTATION &&
+    this.owner_.inlets.annotation.setIncog(newValue !== model.NAME_ANNOTATION &&
     newValue !== model.STAR_NAME_ANNOTATION &&
     newValue !== model.NAME_ANNOTATION_DEFINITION)
-    this.ui.inlets.definition.setIncog(newValue !== model.NAME_DEFINITION &&
+    this.owner_.inlets.definition.setIncog(newValue !== model.NAME_DEFINITION &&
     newValue !== model.NAME_ANNOTATION_DEFINITION)
   }
   DD.consolidate = function () {
     var newVariant = this.get()
     var model = this.model
     var modifier = this.data.modifier.get()
-    var withAnnotation = this.ui.inlets.annotation.isRequiredFromDom()
-    var withDefinition = this.ui.inlets.definition.isRequiredFromDom()
+    var withAnnotation = this.owner_.inlets.annotation.isRequiredFromDom()
+    var withDefinition = this.owner_.inlets.definition.isRequiredFromDom()
 
     if (this.data.alias.isActive() || this.data.alias.isRequiredFromDom()) {
       newVariant = model.NAME_ALIAS
@@ -269,6 +270,11 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
   return D
 })
 
+eYo.DelegateSvg.Expr.identifier = eYo.DelegateSvg.Expr.dotted_name = eYo.DelegateSvg.Expr.parent_module = eYo.DelegateSvg.Expr.term
+eYo.DelegateSvg.Manager.register('identifier')
+eYo.DelegateSvg.Manager.register('dotted_name')
+eYo.DelegateSvg.Manager.register('parent_module')
+
 /**
  * Some block should not be wrapped.
  * Default implementation returns false
@@ -285,7 +291,7 @@ eYo.DelegateSvg.Expr.term.prototype.noBlockWrapped = function (block) {
  * @private
  */
 eYo.DelegateSvg.Expr.term.prototype.showEditor = function (block) {
-  this.ui.inlets.name.fields.edit.showEditor_()
+  this.inlets.name.fields.edit.showEditor_()
 }
 
 /**

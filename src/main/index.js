@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 
 /**
  * Set `__static` path to static files in production
@@ -30,6 +30,38 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+  if (!process.env.IS_WEB) {
+    // Dans le processus principal .
+    const {ipcMain} = require('electron')
+    var promptResponse
+    ipcMain.on('prompt', function (eventRet, arg) {
+      promptResponse = null
+      var promptWindow = new BrowserWindow({
+        width: 320,
+        height: 180,
+        show: false,
+        resizable: false,
+        movable: false,
+        alwaysOnTop: true,
+        frame: false
+      })
+      const promptHtml = [
+        '<label for="val">', arg.text, '</label>',
+        '<input id="val" value="', arg.defaultText || '', '" autofocus />',
+        '<button onclick="require(\'electron\').ipcRenderer.send(\'prompt-response\', document.getElementById(\'val\').value);window.close()">Continuer</button>',
+        '<style>body {font-family: sans-serif;} button {float:right; margin-left: 10px;} label,input {margin-bottom: 10px; width: 100%; display:block;}</style>'].join('')
+      promptWindow.loadURL('data:text/html,' + promptHtml)
+      promptWindow.show()
+      promptWindow.on('closed', function () {
+        eventRet.returnValue = promptResponse
+        promptWindow = null
+      })
+    })
+    ipcMain.on('prompt-response', function (event, arg) {
+      if (arg === '') { arg = null }
+      promptResponse = arg
+    })
+  }
 }
 
 app.on('ready', createWindow)

@@ -268,8 +268,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       all: [0, 1, 2],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.data.name.setIncog(newValue === this.TARGET_VALUE)
-        this.ui.inlets.annotation.setIncog(newValue !== this.NAME_ANNOTATION_VALUE)
-        this.ui.inlets.target.setIncog(newValue !== this.TARGET_VALUE)
+        this.owner_.inlets.annotation.setIncog(newValue !== this.NAME_ANNOTATION_VALUE)
+        this.owner_.inlets.target.setIncog(newValue !== this.TARGET_VALUE)
       },
     },
     name: {
@@ -412,8 +412,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       TARGET_EXPRESSIONS: 1,
       all: [0, 1],
       synchronize: /** @suppress {globalThis} */ function (newVariant) {
-        this.ui.inlets.name.setIncog(newVariant)
-        this.ui.inlets.target.setIncog(!newVariant)
+        this.owner_.inlets.name.setIncog(newVariant)
+        this.owner_.inlets.target.setIncog(!newVariant)
       }
     },
     name: {

@@ -40,6 +40,10 @@ eYo.Delegate = function (block) {
   for (var k in dataModel) {
     if (eYo.Do.hasOwnProperty(dataModel, k)) {
       var d = new eYo.Data(this, k, dataModel[k])
+      if (d.model.main) {
+        goog.asserts.assert(!data.main, 'No 2 main data '+k+'/'+block.type)
+        data.main = d
+      }
       data[k] = d
       for (var i = 0, dd; (dd = byOrder[i]); ++i) {
         if (dd.model.order > d.model.order) {
@@ -111,7 +115,7 @@ eYo.Delegate.Manager = (function () {
   }
   /**
    * Helper to initialize a block's model.
-   * to and from are tree.
+   * to and from are trees.
    * Add to destination all the leafs from source.
    * @param {!Object} to  destination.
    * @param {!Object} from  source.
@@ -156,7 +160,7 @@ eYo.Delegate.Manager = (function () {
    */
   var modeller = function (delegateC9r, insertModel) {
     var eyo = delegateC9r.eyo
-    goog.asserts.assert(eyo, 'Forbidden constructor, `eyo`is missing')
+    goog.asserts.assert(eyo, 'Forbidden constructor, `eyo` is missing')
     if (eyo.model_) {
       return eyo.model_
     }
@@ -286,6 +290,7 @@ eYo.Delegate.Manager = (function () {
    * @param {?string} prototypeName Name of the language object containing
    */
   me.get = function (prototypeName) {
+    goog.asserts.assert(!prototypeName || !C9rs[prototypeName] || C9rs[prototypeName].eyo, 'FAILURE' + prototypeName)
     return C9rs[prototypeName]
   }
   /**
@@ -409,7 +414,7 @@ eYo.Delegate.prototype.consolidateType = function (block) {
  * @return {boolean} whether there was an inlet to act upon or a valid helper
  */
 eYo.Delegate.prototype.foreachInlet = function (helper) {
-  var inlet = this.ui.headInlet
+  var inlet = this.headInlet
   if (inlet && goog.isFunction(helper)) {
     var last
     do {
@@ -448,8 +453,7 @@ eYo.Delegate.prototype.foreachData = function (helper) {
 eYo.Delegate.prototype.initData = function () {
   for (var k in this.data) {
     var data = this.data[k]
-    data.ui = this.ui
-    var inlet = this.ui.inlets[k]
+    var inlet = this.inlets[k]
     if (inlet) {
       data.inlet = inlet
       inlet.data = data
@@ -462,12 +466,12 @@ eYo.Delegate.prototype.initData = function () {
       } else {
         data.field = inlet.fields.edit
       }
-    } else if ((data.field = this.ui.fields[k])) {
+    } else if ((data.field = this.fields[k])) {
       data.inlet = null
       data.field.eyo.data = data
     } else {
-      for (kk in this.ui.inlets) {
-        inlet = this.ui.inlets[kk]
+      for (kk in this.inlets) {
+        inlet = this.inlets[kk]
         if ((data.field = inlet.fields[k])) {
           data.inlet = inlet
           break
@@ -489,6 +493,36 @@ eYo.Delegate.prototype.initData = function () {
   this.foreachData(function () {
     this.init()
   })
+}
+
+/**
+ * Initialize the data values from the model.
+ * @param {!Blockly.Block} block to be initialized..
+ * @param {!Object} model
+ * @return {boolean} whether the model was really used.
+ */
+eYo.Delegate.prototype.initDataWithModel = function (block, model, noCheck) {
+  var done = false
+  var Vs = model.data
+  for (var k in Vs) {
+    if (eYo.Do.hasOwnProperty(Vs, k)) {
+      var D = this.data[k]
+      if (D) {
+        D.set(Vs[k])
+        done = true
+      } else if (!noCheck) {
+        console.warn('Unused data:', k, Vs[k])
+      }
+    }
+  }
+  if (!done) {
+    var d = this.data.main
+    if (d && d.validate(model)) { // more guards needed
+      d.set(model)
+      done = true
+    }
+  }
+  return done
 }
 
 /**
@@ -1123,7 +1157,7 @@ eYo.Delegate.prototype.setIncog = function (block, incog) {
     var c8n = input && input.connection
     c8n && c8n.eyo.setIncog(incog)
   }
-  var inlet = this.ui.headInlet
+  var inlet = this.headInlet
   while (inlet) {
     setupIncog(inlet.input)
     inlet = inlet.next

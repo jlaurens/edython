@@ -150,7 +150,6 @@ Blockly.Workspace.prototype.getBlockById = function (id) {
   }
 }
 
-
 /**
  * Undo or redo the previous action.
  * @param {boolean} redo False if undo, true if redo.
@@ -206,7 +205,7 @@ eYo.WorkspaceDelegate.prototype.getFlyoutsForCategory = function (category) {
               O: {
                 type: eYo.T3.Expr.builtin_input_expr,
                 inlets: {
-                  expression: "'input something'",
+                  expression: "'…'",
                 },
               },
             },
@@ -228,9 +227,9 @@ eYo.WorkspaceDelegate.prototype.getFlyoutsForCategory = function (category) {
               O: {
                 type: eYo.T3.Expr.builtin_input_expr,
                 inlets: {
-                  expression: "'input something'",
+                  expression: "'...'",
                 },
-              },
+              }, 
             },
           },
         },

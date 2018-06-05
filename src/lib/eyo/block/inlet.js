@@ -54,7 +54,7 @@ eYo.Inlet = function (owner, key, inletModel) {
   var block = this.block = owner.block_
   goog.asserts.assert(block,
     eYo.Do.format('block must exist {0}/{1}', key))
-  eYo.Inlet.makeFields(this, this, inletModel.fields)
+  eYo.Inlet.makeFields(this, inletModel.fields)
   if (inletModel.wrap) {
     this.setInput(block.appendWrapValueInput(key, inletModel.wrap, inletModel.optional, inletModel.hidden))
     this.input.connection.eyo.model = inletModel
@@ -108,7 +108,6 @@ eYo.Inlet.prototype.beReady = function (render) {
     if (!field.sourceBlock_) {
       field.setSourceBlock(this.block)
       field.eyo.inlet = this
-      field.eyo.ui = this.ui
       field.init()// installs in the owner's group, not the block group
     }
   }
@@ -145,7 +144,6 @@ eYo.Inlet.prototype.dispose = function () {
   this.model = null
   this.input = null
   this.block = null
-  this.ui = null
 }
 
 goog.require('eYo.FieldLabel')
@@ -155,7 +153,6 @@ goog.require('eYo.FieldInput')
  * Create all the fields from the model.
  * For edython.
  * @param {!Object} owner
- * @param {!Object} ui
  * @param {!Object} fieldsModel
  */
 eYo.Inlet.makeFields = (function () {
@@ -178,7 +175,7 @@ eYo.Inlet.makeFields = (function () {
       this.setValue(data.toText())
     }
   }
-  // Change some `... = true,` entrie to real functions
+  // Change some `... = true,` entries to real functions
   var setupModel = function (model) {
     // no need to setup the model each time we create a new block
     if (model.setup_) {
@@ -232,8 +229,8 @@ eYo.Inlet.makeFields = (function () {
     field.name = field.eyo.key = fieldName // main fields have identical name and key
     return field
   }
-  return function (owner, ui, fieldsModel) {
-    ui.fields = ui.fields || Object.create(null)
+  return function (owner, fieldsModel) {
+    owner.fields = owner.fields || Object.create(null)
     // field maker
     // Serious things here
     var block = owner.getBlock()
@@ -242,7 +239,7 @@ eYo.Inlet.makeFields = (function () {
       var model = fieldsModel[key]
       var field = makeField(key, model)
       if (field) {
-        ui.fields[key] = field
+        owner.fields[key] = field
       }
     }
     // now order
@@ -252,8 +249,8 @@ eYo.Inlet.makeFields = (function () {
     var unordered = []
     var fromStart = [] // fields ordered from the beginning
     var toEnd = [] // // fields ordered to the end
-    for (key in ui.fields) {
-      field = ui.fields[key]
+    for (key in owner.fields) {
+      field = owner.fields[key]
       var order = field.eyo.order
       if (order) {
         goog.asserts.assert(!byOrder[order],
@@ -287,7 +284,7 @@ eYo.Inlet.makeFields = (function () {
       var field
       for (var i = 0; i < arguments.length; i++) {
         var fieldName = arguments[i]
-        if ((field = goog.isString(fieldName) ? ui.fields[fieldName] : fieldName)) {
+        if ((field = goog.isString(fieldName) ? owner.fields[fieldName] : fieldName)) {
           var j = unordered.length
           while (j--) {
             if (unordered[j] === field) {
@@ -297,7 +294,7 @@ eYo.Inlet.makeFields = (function () {
           var eyo = field.eyo.eyoLast_ || field.eyo
           for (i++; i < arguments.length; i++) {
             fieldName = arguments[i]
-            if ((eyo.nextField = goog.isString(fieldName) ? ui.fields[fieldName] : fieldName)) {
+            if ((eyo.nextField = goog.isString(fieldName) ? owner.fields[fieldName] : fieldName)) {
               j = unordered.length
               while (j--) {
                 if (unordered[j] === eyo.nextField) {
@@ -314,18 +311,18 @@ eYo.Inlet.makeFields = (function () {
       }
       return field
     }
-    ui.fromStartField = chain.apply(fromStart)
-    ui.fromStartField = chain(eYo.Key.MODIFIER, eYo.Key.PREFIX, eYo.Key.START, eYo.Key.LABEL, ui.fromStartField)
-    ui.toEndField = chain.apply(toEnd)
-    ui.toEndField = chain(ui.toEndField, eYo.Key.END, eYo.Key.SUFFIX, eYo.Key.COMMENT_MARK, eYo.Key.COMMENT)
+    owner.fromStartField = chain.apply(fromStart)
+    owner.fromStartField = chain(eYo.Key.MODIFIER, eYo.Key.PREFIX, eYo.Key.START, eYo.Key.LABEL, owner.fromStartField)
+    owner.toEndField = chain.apply(toEnd)
+    owner.toEndField = chain(owner.toEndField, eYo.Key.END, eYo.Key.SUFFIX, eYo.Key.COMMENT_MARK, eYo.Key.COMMENT)
     // we have exhausted all the fields that are already ordered
     // either explicitely or not
     goog.asserts.assert(unordered.length < 2,
       eYo.Do.format('Too many unordered fields in {0}/{1}', key, JSON.stringify(model)))
-    unordered[0] && (ui.fromStartField = chain(ui.fromStartField, unordered[0]))
-    ui.fromStartField && delete ui.fromStartField.eyo.eyoLast_
-    ui.toEndField && delete ui.toEndField.eyo.eyoLast_
-    ui.fields.comment && (ui.fields.comment.eyo.comment = true)
+    unordered[0] && (owner.fromStartField = chain(owner.fromStartField, unordered[0]))
+    owner.fromStartField && delete owner.fromStartField.eyo.eyoLast_
+    owner.toEndField && delete owner.toEndField.eyo.eyoLast_
+    owner.fields.comment && (owner.fields.comment.eyo.comment = true)
   }
 }())
 

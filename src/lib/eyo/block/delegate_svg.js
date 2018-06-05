@@ -13,6 +13,7 @@
 
 goog.provide('eYo.DelegateSvg')
 goog.provide('eYo.HoleFiller')
+goog.provide('eYo.SelectedConnection')
 
 goog.require('eYo.T3')
 goog.require('eYo.Delegate')
@@ -108,8 +109,6 @@ eYo.DelegateSvg.prototype.svgPathConnection_ = undefined
  * - optional, true/false whether the connection is optional, only when no wrap.
  */
 
-console.warn('Beware of quotes in string literals')
-
 goog.require('eYo.Inlet')
 
 /**
@@ -127,9 +126,9 @@ eYo.DelegateSvg.prototype.initBlock = function (block) {
   // block.setInputsInline(true)
   block.setTooltip('')
   block.setHelpUrl('')
-  var ui = Object.create(null)
+  var inlets = Object.create(null)
+  var headInlet
   var makeInlets = function (owner, inletsModel) {
-    var inlets = Object.create(null)
     var ordered = []
     for (var k in inletsModel) {
       var inletModel = inletsModel[k]
@@ -140,8 +139,7 @@ eYo.DelegateSvg.prototype.initBlock = function (block) {
         var model = eYo.DelegateSvg.Manager.getModel(insert)
         if (model) {
           makeInlets(owner, model.inlets)
-          if ((inlet = ui.headInlet)) {
-            delete ui.inlets
+          if ((inlet = headInlet)) {
             next = inlet
             do {
               goog.asserts.assert(!goog.isDef(inlets[next.key]),
@@ -180,14 +178,14 @@ eYo.DelegateSvg.prototype.initBlock = function (block) {
         inlet = next
       }
     }
-    ui.headInlet = ordered[0]
-    ui.inlets = inlets
+    headInlet = ordered[0]
   }
   var model = this.getModel()
   makeInlets(this, model.inlets)
-  eYo.Inlet.makeFields(this, ui, model.fields)
+  eYo.Inlet.makeFields(this, model.fields)
   // now initialize all the fields
-  this.ui = ui
+  this.headInlet = headInlet
+  this.inlets = inlets
   // wait until the end to set the subtype because it causes rendering
   // bind the data and the ui when relevant.
   // We establish a bi directional bound between data, inputs and fields
@@ -371,8 +369,8 @@ eYo.DelegateSvg.prototype.parentDidChange = function (block, newParent) {
  * at the exact location where it belongs.
  */
 eYo.DelegateSvg.prototype.svgInsertHeadInlet = function () {
-  if (this.ui.headInlet) {
-    goog.dom.appendChild(this.block_.getSvgRoot(), this.ui.headInlet.getSvgRoot())
+  if (this.headInlet) {
+    goog.dom.appendChild(this.block_.getSvgRoot(), this.headInlet.getSvgRoot())
   }
 }
 
@@ -383,7 +381,7 @@ eYo.DelegateSvg.prototype.svgInsertHeadInlet = function () {
  * @return {Blockly.Field} Named field, or null if field does not exist.
  */
 eYo.DelegateSvg.prototype.getField = function (block, name) {
-  var fields = this.ui.fields
+  var fields = this.fields
   for (var key in fields) {
     var field = fields[key]
     if (field.name === name) {
@@ -410,7 +408,7 @@ eYo.DelegateSvg.prototype.synchronizeInlets = function (block) {
  */
 eYo.DelegateSvg.prototype.getMenuTarget = function (block) {
   var wrapped
-  if (this.ui.wrap && (wrapped = this.ui.wrap.input.connection.targetBlock())) {
+  if (this.wrap && (wrapped = this.wrap.input.connection.targetBlock())) {
     return wrapped.eyo.getMenuTarget(wrapped)
   }
   if (this.wrappedInputs_ && this.wrappedInputs_.length === 1 &&
@@ -784,14 +782,14 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   }
   io.shouldSeparateField = this.shouldSeparateField
 
-  if ((io.field = this.ui.fromStartField)) {
+  if ((io.field = this.fromStartField)) {
     io.f = 0
     do {
       this.renderDrawField_(io)
       ++io.f
     } while ((io.field = io.field.eyo.nextField))
   }
-  if ((io.inlet = this.ui.headInlet)) {
+  if ((io.inlet = this.headInlet)) {
     do {
       this.renderDrawInlet_(io)
     } while ((io.inlet = io.inlet.next))
@@ -831,7 +829,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   if ((io.input = this.inputSuite)) {
     this.renderDrawInput_(io)
   }
-  if ((io.field = this.ui.toEndField)) {
+  if ((io.field = this.toEndField)) {
     do {
       this.renderDrawField_(io)
     } while ((io.field = io.field.eyo.nextField))
@@ -1308,19 +1306,6 @@ eYo.DelegateSvg.newBlockReady = function (workspace, model, id, render) {
  * @private
  */
 eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
-  var setupData = function(block, model) {
-    var Vs = model.data
-    for (var k in Vs) {
-      if (Vs.hasOwnProperty(k)) {
-        var D = block.eyo.data[k]
-        if (D) {
-          D.set(Vs[k])
-        } else {
-          console.warn('Unused data:', k, Vs[k])
-        }
-      }
-    }
-  }
   var processModel = function(block, model, id) {
     if (!block) {
       if (eYo.DelegateSvg.Manager.get(model.type)) {
@@ -1339,10 +1324,10 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
       block.eyo.completeWrapped_(block)
     }
     if (block) {
-      setupData(block, model)
+      block.eyo.initDataWithModel(block, model)
       var Vs = model.inlets
       for (var k in Vs) {
-        if (Vs.hasOwnProperty(k)) {
+        if (eYo.Do.hasOwnProperty(Vs, k)) {
           var input = block.eyo.getInput(block, k)
           if (input && input.connection) {
             var target = input.connection.targetBlock()
@@ -1392,11 +1377,10 @@ eYo.DelegateSvg.prototype.beReady = function (block, render) {
     this.beReady()
   })
   // install all the fields and inlets in the DOM
-  for (var k in this.ui.fields) {
-    var field = this.ui.fields[k]
+  for (var k in this.fields) {
+    var field = this.fields[k]
     if (!field.sourceBlock_) {
       field.setSourceBlock(block)
-      field.eyo.ui = this.ui
       field.init()
     }
   }

@@ -147,7 +147,6 @@ let rendererConfig = {
   target: 'electron-renderer'
 }
 
-
 let morePlugins = function (plugins, where) {
   /**
    * xregexp

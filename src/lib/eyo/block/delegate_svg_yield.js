@@ -33,13 +33,13 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
       all: [0, 1, 2],
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         var M = this.model
-        this.ui.inlets.expression.required = (newValue === M.YIELD_EXPRESSION)
-        this.ui.inlets.from.required = (newValue === M.YIELD_FROM)
+        this.owner_.inlets.expression.required = (newValue === M.YIELD_EXPRESSION)
+        this.owner_.inlets.from.required = (newValue === M.YIELD_FROM)
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         var M = this.model
-        this.ui.inlets.expression.setIncog(newValue !== M.YIELD_EXPRESSION)
-        this.ui.inlets.from.setIncog(newValue !== M.YIELD_FROM)
+        this.owner_.inlets.expression.setIncog(newValue !== M.YIELD_EXPRESSION)
+        this.owner_.inlets.from.setIncog(newValue !== M.YIELD_FROM)
       }
     }
   },

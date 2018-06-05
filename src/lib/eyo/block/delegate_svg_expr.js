@@ -175,7 +175,7 @@ eYo.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
  */
 eYo.DelegateSvg.Expr.prototype.willRender_ = function (block) {
   eYo.DelegateSvg.Expr.superClass_.willRender_.call(this, block)
-  var field = this.ui.fields.await
+  var field = this.fields.await
   if (field) {
     field.setVisible(this.await_)
   }
@@ -189,7 +189,7 @@ eYo.DelegateSvg.Expr.prototype.willRender_ = function (block) {
  * @return yes or no
  */
 eYo.DelegateSvg.Expr.prototype.awaitable = function (block) {
-  if (!this.ui.fields.await) {
+  if (!this.fields.await) {
     return false
   }
   var parent = block.getParent()
@@ -485,7 +485,7 @@ eYo.DelegateSvg.Expr.starred_expression.prototype.consolidateType = function (bl
   // eYo.T3.Expr.Check.or_expr
   var data = this.data.modifier
   var withOneStar = data.get() === data.model.STAR
-  var c8n = this.ui.inlets.expression.connection
+  var c8n = this.inlets.expression.connection
   var targetC8n = c8n.targetConnection
   var no_or_expr = false
   if (targetC8n) {

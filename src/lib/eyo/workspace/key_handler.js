@@ -140,19 +140,8 @@ eYo.KeyHandler = (function () {
     if (B && !c8n) {
       var D = model.data
       var done = false
-      if (D) {
-        for (var k in D) {
-          if (D.hasOwnProperty(k)) {
-            var data = B.eyo.data[k]
-            if (data) {
-              data.set(D[k])
-              done = true
-            }
-          }
-        }
-        if (done) {
-          return
-        }
+      if (D && B.eyo.initDataWithModel(B, D)) {
+        return
       }
     }
     if (me.handleModel(model)) {
@@ -217,6 +206,7 @@ eYo.KeyHandler = (function () {
   /**
    * The me.split must have been called
    * @param {Object} shortcut
+   * @param {Object} current_
    * @private
    */
   me.insertShortcutInArray_ = function (shortcut, current_) {
@@ -469,16 +459,16 @@ eYo.KeyHandler = (function () {
             me.alreadyListening_ = false
             var target = event.target
             if (target) {
-              var model = target.getModel()
-              if (model) {
+              var targetModel = target.getModel()
+              if (targetModel) {
                 setTimeout(function () { // try/finally?
                   if (me.alreadyListened_) {
                     console.log('************* I have already listened!')
                     return
                   }
                   me.alreadyListened = true;
-                  (model.key && me.handleModel(model)) ||
-                  me.handleFirstMenuItemAction(model)
+                  (targetModel.key && me.handleModel(targetModel)) ||
+                  me.handleFirstMenuItemAction(targetModel)
                 }, 100)// TODO be sure that this 100 is suffisant
               }
             }

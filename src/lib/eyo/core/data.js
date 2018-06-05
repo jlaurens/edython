@@ -31,8 +31,7 @@ eYo.Data = function (owner, key, model) {
   goog.asserts.assert(key, 'Missing key')
   goog.asserts.assert(model, 'Missing model')
   this.owner_ = owner // circular reference
-  this.ui = owner.ui
-  this.data = owner.data
+  this.data = owner.data // the owner's other data objects
   this.value_ = /** Object|null */ undefined
   this.key = key
   this.model = model
@@ -328,7 +327,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
     return
   }
   if (this.model_synchronize_lock || this.model.synchronize === true) {
-    goog.asserts.assert(this.field || this.inlet, 'No field nor inlet bound. ' + this.key + '/' + this.getType())
+    goog.asserts.assert(this.field || this.inlet || this.model.synchronize, 'No field nor inlet bound. ' + this.key + '/' + this.getType())
     var field = this.field
     if (field) {
       Blockly.Events.disable()
@@ -479,7 +478,7 @@ eYo.Data.prototype.isActive = function () {
  * @private
  */
 eYo.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
-  var field = this.ui.fields[fieldKey || this.key]
+  var field = this.fields[fieldKey || this.key]
   if (field) {
     Blockly.Events.disable()
     try {

@@ -64,12 +64,12 @@ eYo.PythonExporter.prototype.newline_ = function () {
  */
 eYo.PythonExporter.prototype.exportExpression_ = function (block) {
   var field, input, inlet
-  if ((field = block.eyo.ui.fromStartField)) {
+  if ((field = block.eyo.fromStartField)) {
     do {
       this.exportField_(field)
     } while ((field = field.eyo.nextField))
   }
-  if ((inlet = block.eyo.ui.headInlet)) {
+  if ((inlet = block.eyo.headInlet)) {
     do {
       this.exportInlet_(inlet)
     } while ((inlet = inlet.next))
@@ -83,7 +83,7 @@ eYo.PythonExporter.prototype.exportExpression_ = function (block) {
       }
     }
   }
-  if ((field = block.eyo.ui.toEndField)) {
+  if ((field = block.eyo.toEndField)) {
     do {
       this.exportField_(field)
     } while ((field = field.eyo.nextField))

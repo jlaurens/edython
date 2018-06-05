@@ -68,8 +68,8 @@ eYo.DelegateSvg.Expr.makeSubclass('slicing', {
     variant: { // data named 'variant' have `xml = false`, by default
       all: [0, 1],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.ui.inlets.name.setIncog(!!newValue)
-        this.ui.inlets.primary.setIncog(!newValue)
+        this.owner_.inlets.name.setIncog(!!newValue)
+        this.owner_.inlets.primary.setIncog(!newValue)
       }
     },
     name: {
@@ -167,8 +167,8 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
         var withExpression = newValue === M.EXPRESSION
         this.data.name.setIncog(withExpression)
         this.data.name.required = newValue === M.NAME
-        this.ui.inlets.expression.setIncog(!withExpression)
-        this.ui.inlets.expression.required = withExpression
+        this.owner_.inlets.expression.setIncog(!withExpression)
+        this.owner_.inlets.expression.required = withExpression
       }
     },
     backup: {

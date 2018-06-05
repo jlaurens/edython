@@ -44,7 +44,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.decorator, {
         this.data.dotted_name.setIncog(newValue === M.BUILTIN) // disable the data not the inlet
         this.data.builtin.setIncog(newValue !== M.BUILTIN)
         this.data.property.setIncog(newValue !== M.PROPERTY)
-        this.ui.inlets.arguments.setIncog(newValue !== M.ARGUMENTS)
+        this.owner_.inlets.arguments.setIncog(newValue !== M.ARGUMENTS)
       }
     },
     dotted_name: {
@@ -201,7 +201,7 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
     variant: {
       all: [null, eYo.Key.TYPE],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.ui.inlets.type.setIncog(!newValue)
+        this.owner_.inlets.type.setIncog(!newValue)
       }
     },
     name: {
@@ -283,7 +283,7 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
     variant: {
       all: [null, eYo.Key.ARGUMENTS],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.ui.inlets.arguments.setIncog(!newValue)
+        this.owner_.inlets.arguments.setIncog(!newValue)
       }
     },
     name: {

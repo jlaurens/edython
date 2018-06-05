@@ -22,5 +22,6 @@ thumbs.db
 /**/xregexp-all/xregexp-all.js
 /src/lib/brython*/**
 /bin/compiler-latest/**
+/vue-js-modal/**
 !/**/README.md
 !/**/Readme.md

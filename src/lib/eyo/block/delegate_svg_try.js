@@ -46,10 +46,10 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         var M = this.model
-        this.ui.inlets.expression.setIncog(newValue === M.EXCEPT)
-        this.ui.inlets.expression.required = (newValue === M.EXCEPT_EXPRESSION)
-        this.ui.inlets.as.setIncog(newValue !== M.EXCEPT_AS)
-        this.ui.inlets.as.required = (newValue === M.EXCEPT_AS)
+        this.owner_.inlets.expression.setIncog(newValue === M.EXCEPT)
+        this.owner_.inlets.expression.required = (newValue === M.EXCEPT_EXPRESSION)
+        this.owner_.inlets.as.setIncog(newValue !== M.EXCEPT_AS)
+        this.owner_.inlets.as.required = (newValue === M.EXCEPT_AS)
       }
     }
   },
@@ -165,10 +165,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       all: [0, 1, 2],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         var M = this.model
-        this.ui.inlets.expression.setIncog(newValue === M.RAISE)
-        this.ui.inlets.expression.required = (newValue === M.RAISE_EXPRESSION)
-        this.ui.inlets.from.setIncog(newValue !== M.RAISE_FROM)
-        this.ui.inlets.from.required = (newValue === M.RAISE_FROM)
+        this.owner_.inlets.expression.setIncog(newValue === M.RAISE)
+        this.owner_.inlets.expression.required = (newValue === M.RAISE_EXPRESSION)
+        this.owner_.inlets.from.setIncog(newValue !== M.RAISE_FROM)
+        this.owner_.inlets.from.required = (newValue === M.RAISE_FROM)
       }
     }
   },
@@ -251,8 +251,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
     variant: {
       all: [0, 1],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.ui.inlets.expression.setIncog(!newValue)
-        this.ui.inlets.expression.required = !!newValue
+        this.owner_.inlets.expression.setIncog(!newValue)
+        this.owner_.inlets.expression.required = !!newValue
       }
     }
   },

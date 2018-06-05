@@ -372,7 +372,7 @@ eYo.DelegateSvg.Group.makeSubclass('while_part', {
  */
 eYo.DelegateSvg.Group.prototype.willRender_ = function (block) {
   eYo.DelegateSvg.Group.superClass_.willRender_.call(this, block)
-  var field = this.ui.fields.async
+  var field = this.fields.async
   if (field) {
     field.setVisible(this.async_)
   }
@@ -385,7 +385,7 @@ eYo.DelegateSvg.Group.prototype.willRender_ = function (block) {
  * @private
  */
 eYo.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  if (block.eyo.ui.fields.async) {
+  if (block.eyo.fields.async) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('async', 'eyo-code-reserved'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)

@@ -297,7 +297,7 @@ eYo.FlyoutDelegate.prototype.slide = function(closed) {
     // Hidden components will return null.
     return;
   }
-  var id = setInterval(frame, 20);
+  var id = setInterval(frame, 10);
   var x = targetWorkspaceMetrics.absoluteLeft;
   var n_steps = 50
   var n = 0

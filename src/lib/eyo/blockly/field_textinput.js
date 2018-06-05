@@ -24,9 +24,16 @@ goog.require('Blockly.FieldTextInput')
  * @param {eYo.TextInputField} owner  The owner of the field.
  * @constructor
  */
-eYo.FieldHelper = function (owner) {
-  this.owner_ = owner
-  owner.eyo = this
+eYo.FieldHelper = function (field) {
+  this.field_ = field
+  field.eyo = this
+}
+
+/**
+ * Late delegate.
+ */
+eYo.FieldHelper.prototype.getDlgt = function () {
+  return this.field_.sourceBlock_.eyo
 }
 
 /**
@@ -423,7 +430,7 @@ eYo.FieldHelper.onEndEditing = function () {
 eYo.FieldHelper.prototype.getData_ = function (key) {
   var data = this.data
   if (!data) {
-    var block = this.owner_.sourceBlock_
+    var block = this.field_.sourceBlock_
     data = block && block.eyo.data[key || this.key]
     goog.asserts.assert(data,
       eYo.Do.format('No data bound to field {0}/{1}', key || this.key, block && block.type))
@@ -438,7 +445,7 @@ eYo.FieldHelper.prototype.getData_ = function (key) {
  * @param {Object} txt
  */
 eYo.FieldHelper.prototype.validate = function (txt) {
-  var v = this.getData_().validate(goog.isDef(txt) ? txt : this.owner_.getValue())
+  var v = this.getData_().validate(goog.isDef(txt) ? txt : this.field_.getValue())
   return v === null ? v : (goog.isDef(v) && goog.isDef(v.validated) ? v.validated : txt)
 }
 

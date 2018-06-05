@@ -55,6 +55,7 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
       noUndo: true
     },
     value: {
+      main: true,
       init: '0',
       validate: /** @suppress {globalThis} */ function (newValue) {
         var subtypes = this.data.subtype.getAll()
@@ -82,6 +83,11 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
     check: eYo.T3.Expr.integer
   }
 })
+
+eYo.DelegateSvg.Expr.integer = eYo.DelegateSvg.Expr.floatnumber = eYo.DelegateSvg.Expr.imagnumber = eYo.DelegateSvg.Expr.numberliteral
+eYo.DelegateSvg.Manager.register('integer')
+eYo.DelegateSvg.Manager.register('floatnumber')
+eYo.DelegateSvg.Manager.register('imagnumber')
 
 /**
  * Show the editor for the given block.
@@ -131,8 +137,8 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         this.data.value.consolidate()
       },
       synchronize: /** @this{eYo.Data} */ function (newValue) {
-        this.ui.fields.start.setValue(this.toText())
-        this.ui.fields.end.setValue(this.toText())
+        this.owner_.fields.start.setValue(this.toText())
+        this.owner_.fields.end.setValue(this.toText())
       },
       xml: false,
     },
@@ -149,7 +155,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       },
       synchronize: /** @this{eYo.Data} */ function (newValue) {
         this.synchronize()
-        this.ui.fields.prefix.setVisible(!!newValue && !!newValue.length)
+        this.owner_.fields.prefix.setVisible(!!newValue && !!newValue.length)
       },
       xml: false,
     },
@@ -166,9 +172,12 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       xml: false,
     },
     value: {
+      main: true,
       init: "''",
-      validate: false,
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      validate: /** @this{eYo.Data} */ function (newValue) {
+        return goog.isString(newValue)? {validated: newValue}: null
+      },
+      didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
         var data = this.data
         var F = function (xre, type) {
           var m = XRegExp.exec(newValue, xre)
@@ -224,11 +233,11 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       },
       validate: true,
       startEditing: /** @suppress {globalThis} */ function () {
-        this.eyo.ui.fields.end.setVisible(false)
+        this.eyo.getDlgt().fields.end.setVisible(false)
       },
       endEditing: /** @suppress {globalThis} */ function () {
         this.eyo.data.set(this.getValue())
-        this.eyo.ui.fields.end.setVisible(true)
+        this.eyo.getDlgt().fields.end.setVisible(true)
       }
     },
     end: {
@@ -239,6 +248,10 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
     check: eYo.T3.Expr.shortstringliteral
   }
 })
+
+eYo.DelegateSvg.Expr.shortstringliteral = eYo.DelegateSvg.Expr.shortbytesliteral = eYo.DelegateSvg.Expr.shortliteral
+eYo.DelegateSvg.Manager.register('shortstringliteral')
+eYo.DelegateSvg.Manager.register('shortbytesliteral')
 
 /**
  * Set the type dynamically from the prefix.
@@ -379,6 +392,10 @@ eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
     check: eYo.T3.Expr.longstringliteral
   }
 })
+
+eYo.DelegateSvg.Expr.longstringliteral = eYo.DelegateSvg.Expr.longbytesliteral = eYo.DelegateSvg.Expr.longliteral
+eYo.DelegateSvg.Manager.register('longstringliteral')
+eYo.DelegateSvg.Manager.register('longbytesliteral')
 
 eYo.DelegateSvg.Literal.T3s = [
   eYo.T3.Expr.shortliteral,

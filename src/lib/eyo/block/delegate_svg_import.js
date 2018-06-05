@@ -84,10 +84,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         //   case 2: disabled_2 = disabled_4 = false; break
         // }
         var model = this.model
-        this.ui.inlets.import_module.setIncog(newValue !== model.IMPORT)
+        this.owner_.inlets.import_module.setIncog(newValue !== model.IMPORT)
         this.data.from.setIncog(newValue === model.IMPORT)
-        this.ui.inlets.import.setIncog(newValue !== model.FROM_MODULE_IMPORT)
-        this.ui.inlets.import_star.setIncog(newValue !== model.FROM_MODULE_IMPORT_STAR)
+        this.owner_.inlets.import.setIncog(newValue !== model.FROM_MODULE_IMPORT)
+        this.owner_.inlets.import_star.setIncog(newValue !== model.FROM_MODULE_IMPORT_STAR)
       }
     },
     from: {

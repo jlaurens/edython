@@ -8,3 +8,4 @@ src/lib/brython/src/
 src/lib/closure-library/
 src/lib/xregexp/
 src/lib/xregexp-all/
+vue-js-modal/
