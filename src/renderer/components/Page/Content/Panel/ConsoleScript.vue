@@ -258,12 +258,13 @@ except:
             except Exception as exc:
                 traceback.print_exc(file=sys.stderr)
                 self.state = 0
-            self.time = time.perf_counter() - t0
-            #self.write('Terminé en ' + (Math.round(self.time * 100000)/100) + ' ms\n')
-            self._prompt()
-            self._cursorToEnd()
-            if self.callback is not None:
-                self.callback(self)
+            finally:
+                self.time = time.perf_counter() - t0
+                self.write('Terminé en ' + str(round(self.time * 100000)/100) + ' ms\n')
+                self._prompt()
+                self._cursorToEnd()
+                if self.callback is not None:
+                    self.callback(self)
         print('INLINE really done')
     from browser import document
     window.eYo.console = Console(document['eyo-console-area'])
