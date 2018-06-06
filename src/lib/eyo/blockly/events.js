@@ -113,9 +113,8 @@ eYo.Data.prototype.setTrusted_ = function (newValue) {
   eYo.Events.setGroup(true)
   var eyo = this.owner_
   var block = eyo.block_
-  var old = eyo.skipRendering
   try {
-    eyo.skipRendering = true
+    ++eyo.skipRendering
     var oldValue = this.value_
     this.willChange(oldValue, newValue)
     if (!this.noUndo && Blockly.Events.isEnabled()) {
@@ -126,12 +125,11 @@ eYo.Data.prototype.setTrusted_ = function (newValue) {
     this.didChange(oldValue, newValue)
     eyo.consolidate(block)
     this.synchronize(newValue)
-    eyo.skipRendering = old
-    !old && block.render() // render now or possibly later ?
   } finally {
-    eyo.skipRendering = old
+    --eyo.skipRendering
     eYo.Events.setGroup(false)
   }
+  block.render() // render now or possibly later ?
 }
 
 eYo.Events.filter = Blockly.Events.filter 

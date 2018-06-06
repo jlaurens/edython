@@ -588,6 +588,11 @@ eYo.Connection.prototype.connect_ = function (childC8n) {
   }
   childC8n.eyo.didConnect(oldChildC8n, oldParentC8n)
   parentC8n.eyo.didConnect(oldParentC8n, oldChildC8n)
+  var c8n = eYo.SelectedConnection.get()
+  parentC8n.eyo.didConnect(oldParentC8n, oldChildC8n)
+  if (c8n === childC8n || c8n === parentC8n) {
+    eYo.SelectedConnection.set(null)
+  }
   parent.eyo.didConnect(parent, parentC8n, oldChildC8n, oldParentC8n)
   child.eyo.didConnect(child, childC8n, oldParentC8n, oldChildC8n)
   child.eyo.setIncog(child, parentC8n.eyo.isIncog())

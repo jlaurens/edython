@@ -523,12 +523,11 @@ eYo.Slot.prototype.synchronize = function () {
     return
   }
   var newValue = this.incog
-  var current = this.skipRendering
-  this.skipRendering = true
+  ++this.skipRendering
   try {
     input.setVisible(!newValue)
   } finally {
-    this.skipRendering = current
+    --this.skipRendering
   }
   if (input.isVisible()) {
     for (var __ = 0, field; (field = input.fieldRow[__]); ++__) {

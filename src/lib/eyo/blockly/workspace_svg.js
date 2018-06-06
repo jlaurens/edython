@@ -352,21 +352,21 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
           targetC8n = block.nextConnection
         }
         block.select()
-        if (c8n.type === Blockly.INPUT_VALUE) {
-          var parent = block
-          do {
-            var e8r = parent.eyo.inputEnumerator(parent)
-            while (e8r.next()) {
-              if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && !c8n.eyo.optional_ && !c8n.targetConnection) {
-                eYo.SelectedConnection.set(c8n)
-                parent = null
-                break
-              }
-            }
-          } while (parent && (parent = parent.getSurroundParent()))
-        } else if ((c8n = block.nextConnection)) {
-          eYo.SelectedConnection.set(c8n)
-        }
+        // if (c8n.type === Blockly.INPUT_VALUE) {
+        //   var parent = block
+        //   do {
+        //     var e8r = parent.eyo.inputEnumerator(parent)
+        //     while (e8r.next()) {
+        //       if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && !c8n.eyo.optional_ && !c8n.targetConnection) {
+        //         eYo.SelectedConnection.set(c8n)
+        //         parent = null
+        //         break
+        //       }
+        //     }
+        //   } while (parent && (parent = parent.getSurroundParent()))
+        // } else if ((c8n = block.nextConnection)) {
+        //   eYo.SelectedConnection.set(c8n)
+        // }
       } finally {
         eYo.Events.setGroup(false)
       }

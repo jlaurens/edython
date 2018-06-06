@@ -259,7 +259,7 @@ eYo.DelegateSvg.prototype.postInitSvg = function (block) {
     'class': 'eyo-path-selected'
   }, null)
   this.svgPathConnection_ = Blockly.utils.createSvgElement('path', {
-    'class': 'eyo-path-selected'
+    'class': 'eyo-path-selected DEBUG'
   }, null)
   if (this.outputConnection && this.outputConnection.targetBlock()) {
     console.log('CREATING path while ALREADY connected')
@@ -438,7 +438,7 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
   //   return
   // }
   block = block || this.block_
-  this.skipRendering = true
+  this.skipRendering = 1
   Blockly.Field.startCache()
   this.minWidth = block.width = 0
   block.rendered = true
@@ -458,7 +458,7 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
     }
   }
   this.didRender_(block)
-  this.skipRendering = false
+  this.skipRendering = 0
   Blockly.Field.stopCache()
   // block.workspace.logAllConnections('didRender')
 }
@@ -1335,8 +1335,12 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
             var B = processModel(target, V)
             if (!target && B && B.outputConnection) {
               try {
+                ++B.eyo.skipRendering
+                ++block.eyo.skipRendering
                 B.outputConnection.connect(input.connection)
               } finally {
+                --B.eyo.skipRendering
+                --block.eyo.skipRendering
                 // do nothing
               }
             }
@@ -1370,7 +1374,7 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
  * @param {boolean} render
  */
 eYo.DelegateSvg.prototype.beReady = function (block, render) {
-  this.skipRendering = !render
+  this.skipRendering = render? 0: 1
   block = this.block_
   block.initSvg()
   this.foreachData(function () {
@@ -2662,11 +2666,10 @@ eYo.DelegateSvg.prototype.getDistanceFromVisible = function (block, newLoc) {
 eYo.DelegateSvg.prototype.translate = function (block, dx, dy) {
   // Workspace coordinates.
   block = block || this.block_
-  var svgRoot = block.getSvgRoot();
-  if (!svgRoot) {
+  if (!this.svgShapeGroup_) {
     throw 'block is not rendered.';
   }
-  var xy = Blockly.utils.getRelativeXY(svgRoot);
+  var xy = Blockly.utils.getRelativeXY(block.getSvgRoot());
   var transform = 'translate(' + (xy.x + dx) + ',' + (xy.y + dy) + ')';
   block.getSvgRoot().setAttribute('transform', transform);
   this.svgShapeGroup_.setAttribute('transform', transform);
