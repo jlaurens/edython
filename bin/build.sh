@@ -274,7 +274,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/workspace/flyout-toolbar.js" \
 --js "src/lib/eyo/blockly/field_label.js" \
 --js "src/lib/eyo/blockly/workspace.js" \
---js "src/lib/eyo/block/inlet.js" \
+--js "src/lib/eyo/block/slot.js" \
 --js "src/lib/eyo/block/delegate_svg.js" \
 --js "src/lib/eyo/blockly/block_svg.js" \
 --js "src/lib/eyo/block/consolidator.js" \

@@ -565,7 +565,13 @@ eYo.Xml.registerAllTags = function () {
   var register = function (mode) {
     var where = eYo.T3[mode]
     for (var key in where) {
+      if (!eYo.Do.hasOwnProperty(where, key)) {
+        continue
+      }
       var type = where[key]
+      if (!type.startsWith || type.startsWith('.')) {
+        continue
+      }
       var model = eYo.Delegate.Manager.getModel(type)
       var tag = model && model.xml && model.xml.tag
       if (!goog.isString(tag)) {
@@ -599,7 +605,7 @@ eYo.Xml.registerAllTags = function () {
         //   console.warn('DOUBLE eYo')
         // }
         // console.warn('Register:', c9r.eyo.key, tag, eYo.T3.Xml.toDom[mode][key], key)
-        c9r.eyo.tagName = eYo.T3.Xml.toDom[mode][key] || key
+        c9r.eyo.tagName = eYo.T3.Xml.toDom[mode][key] || tag || key
       }
     }
   }

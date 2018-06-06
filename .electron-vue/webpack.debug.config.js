@@ -373,7 +373,7 @@ if (process.env.EYO_BUILD_MODE === 'debug') {
     'block/draw.js',
     'block/helper.js',
     'block/python.js',
-    'block/inlet.js',
+    'block/slot.js',
     'block/xml.js',
     'blockly/block.js',
     'blockly/block_svg.js',
