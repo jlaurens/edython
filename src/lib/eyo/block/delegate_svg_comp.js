@@ -21,7 +21,7 @@ goog.require('eYo.DelegateSvg.List')
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('comprehension', {
-  inlets: {
+  slots: {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
@@ -55,7 +55,7 @@ eYo.DelegateSvg.Expr.makeSubclass('comprehension', {
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('comp_for', {
-  inlets: {
+  slots: {
     for: {
       order: 1,
       fields: {
@@ -80,7 +80,7 @@ eYo.DelegateSvg.Expr.makeSubclass('comp_for', {
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('comp_if', {
-  inlets: {
+  slots: {
     if: {
       order: 1,
       fields: {
@@ -112,7 +112,7 @@ eYo.DelegateSvg.List.makeSubclass('comp_iter_list', {
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('dict_comprehension', {
-  inlets: {
+  slots: {
     key: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
@@ -154,7 +154,7 @@ eYo.DelegateSvg.Expr.makeSubclass('dict_comprehension', {
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('key_datum', {
-  inlets: {
+  slots: {
     key: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,

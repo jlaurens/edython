@@ -109,14 +109,14 @@ eYo.DelegateSvg.prototype.svgPathConnection_ = undefined
  * - optional, true/false whether the connection is optional, only when no wrap.
  */
 
-goog.require('eYo.Inlet')
+goog.require('eYo.Slot')
 
 /**
  * Create and initialize the various paths.
  * Called once at block creation time.
  * Should not be called directly
  * The block implementation is created according to a dictionary
- * input model available through `getModel().inlets`.
+ * input model available through `getModel().slots`.
  * The structure of that dictionary is detailled in the treatment flow
  * below.
  * @param {!Blockly.Block} block to be initialized..
@@ -126,25 +126,25 @@ eYo.DelegateSvg.prototype.initBlock = function (block) {
   // block.setInputsInline(true)
   block.setTooltip('')
   block.setHelpUrl('')
-  var inlets = Object.create(null)
-  var headInlet
-  var makeInlets = function (owner, inletsModel) {
+  var slots = Object.create(null)
+  var headSlot
+  var makeSlots = function (owner, slotsModel) {
     var ordered = []
-    for (var k in inletsModel) {
-      var inletModel = inletsModel[k]
-      var order = inletModel.order
-      var insert = inletModel.insert
-      var inlet, next
+    for (var k in slotsModel) {
+      var slotModel = slotsModel[k]
+      var order = slotModel.order
+      var insert = slotModel.insert
+      var slot, next
       if (insert) {
         var model = eYo.DelegateSvg.Manager.getModel(insert)
         if (model) {
-          makeInlets(owner, model.inlets)
-          if ((inlet = headInlet)) {
-            next = inlet
+          makeSlots(owner, model.slots)
+          if ((slot = headSlot)) {
+            next = slot
             do {
-              goog.asserts.assert(!goog.isDef(inlets[next.key]),
-                eYo.Do.format('Duplicate inserted inlet key {0}/{1}/{2}', next.key, insert, block.type))
-              inlets[next.key] = next
+              goog.asserts.assert(!goog.isDef(slots[next.key]),
+                eYo.Do.format('Duplicate inserted slot key {0}/{1}/{2}', next.key, insert, block.type))
+              slots[next.key] = next
             } while ((next = next.next))
           } else {
             continue
@@ -152,40 +152,40 @@ eYo.DelegateSvg.prototype.initBlock = function (block) {
         } else {
           continue
         }
-      } else if (goog.isObject(inletModel) && (inlet = new eYo.Inlet(owner, k, inletModel))) {
-        goog.asserts.assert(!goog.isDef(inlets[k]),
-          eYo.Do.format('Duplicate inlet key {0}/{1}', k, block.type))
-        inlets[k] = inlet
+      } else if (goog.isObject(slotModel) && (slot = new eYo.Slot(owner, k, slotModel))) {
+        goog.asserts.assert(!goog.isDef(slots[k]),
+          eYo.Do.format('Duplicate slot key {0}/{1}', k, block.type))
+        slots[k] = slot
       } else {
         continue
       }
-      inlet.order = order
+      slot.order = order
       for (var i = 0; i < ordered.length; i++) {
         // we must not find an aleady existing entry.
-        goog.asserts.assert(i !== inlet.order,
-          eYo.Do.format('Same order inlet {0}/{1}', i, block.type))
-        if (ordered[i].model.order > inlet.model.order) {
+        goog.asserts.assert(i !== slot.order,
+          eYo.Do.format('Same order slot {0}/{1}', i, block.type))
+        if (ordered[i].model.order > slot.model.order) {
           break
         }
       }
-      ordered.splice(i, 0, inlet)
+      ordered.splice(i, 0, slot)
     }
-    if ((inlet = ordered[0])) {
+    if ((slot = ordered[0])) {
       i = 1
       while ((next = ordered[i++])) {
-        inlet.next = next
-        next.previous = inlet
-        inlet = next
+        slot.next = next
+        next.previous = slot
+        slot = next
       }
     }
-    headInlet = ordered[0]
+    headSlot = ordered[0]
   }
   var model = this.getModel()
-  makeInlets(this, model.inlets)
-  eYo.Inlet.makeFields(this, model.fields)
+  makeSlots(this, model.slots)
+  eYo.Slot.makeFields(this, model.fields)
   // now initialize all the fields
-  this.headInlet = headInlet
-  this.inlets = inlets
+  this.headSlot = headSlot
+  this.slots = slots
   // wait until the end to set the subtype because it causes rendering
   // bind the data and the ui when relevant.
   // We establish a bi directional bound between data, inputs and fields
@@ -365,12 +365,12 @@ eYo.DelegateSvg.prototype.parentDidChange = function (block, newParent) {
 }
 
 /**
- * Insert the svg root of the head inlet in the svg group of the receiver
+ * Insert the svg root of the head slot in the svg group of the receiver
  * at the exact location where it belongs.
  */
-eYo.DelegateSvg.prototype.svgInsertHeadInlet = function () {
-  if (this.headInlet) {
-    goog.dom.appendChild(this.block_.getSvgRoot(), this.headInlet.getSvgRoot())
+eYo.DelegateSvg.prototype.svgInsertHeadSlot = function () {
+  if (this.headSlot) {
+    goog.dom.appendChild(this.block_.getSvgRoot(), this.headSlot.getSvgRoot())
   }
 }
 
@@ -392,12 +392,12 @@ eYo.DelegateSvg.prototype.getField = function (block, name) {
 }
 
 /**
- * Synchronize the inlets with the UI.
- * Sends a `synchronize` message to all inlets.
+ * Synchronize the slots with the UI.
+ * Sends a `synchronize` message to all slots.
  * May be used at the end of an initialization process.
  */
-eYo.DelegateSvg.prototype.synchronizeInlets = function (block) {
-  this.foreachInlet(function () {
+eYo.DelegateSvg.prototype.synchronizeSlots = function (block) {
+  this.foreachSlot(function () {
     this.synchronize()
   })
 }
@@ -477,7 +477,7 @@ eYo.DelegateSvg.prototype.consolidate = function (block, deep, force) {
   this.foreachData(function () {
     this.consolidate()
   })
-  this.foreachInlet(function () {
+  this.foreachSlot(function () {
     this.consolidate()
   })
   if (deep) {
@@ -749,7 +749,7 @@ eYo.DelegateSvg.prototype.minBlockWidth = function (block) {
 }
 
 /**
- * Render the inputs, the fields and the inlets of the block.
+ * Render the inputs, the fields and the slots of the block.
  * @param {!Blockly.Block} block
  * @private
  */
@@ -789,10 +789,10 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
       ++io.f
     } while ((io.field = io.field.eyo.nextField))
   }
-  if ((io.inlet = this.headInlet)) {
+  if ((io.slot = this.headSlot)) {
     do {
-      this.renderDrawInlet_(io)
-    } while ((io.inlet = io.inlet.next))
+      this.renderDrawSlot_(io)
+    } while ((io.slot = io.slot.next))
   } else {
     for (; (io.input = block.inputList[io.i]); io.i++) {
       goog.asserts.assert(io.input.eyo, 'Input with no eyo ' + io.input.name + ' in block ' + block.type)
@@ -843,14 +843,14 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
 }
 
 /**
- * Render the the inlet in `io.inlet`.
+ * Render the the slot in `io.slot`.
  * @param io
  * @private
  */
-eYo.DelegateSvg.prototype.renderDrawInlet_ = function (io) {
-  var root = io.inlet.getSvgRoot()
-  goog.asserts.assert(root, 'Inlet with no root')
-  if (io.inlet.isIncog()) {
+eYo.DelegateSvg.prototype.renderDrawSlot_ = function (io) {
+  var root = io.slot.getSvgRoot()
+  goog.asserts.assert(root, 'Slot with no root')
+  if (io.slot.isIncog()) {
     root.setAttribute('display', 'none')
   } else {
     root.removeAttribute('display')
@@ -858,15 +858,15 @@ eYo.DelegateSvg.prototype.renderDrawInlet_ = function (io) {
     'translate(' + io.cursorX + ', 0)')
     io.offsetX = io.cursorX
     io.cursorX = 0
-    if ((io.field = io.inlet.fromStartField)) {
+    if ((io.field = io.slot.fromStartField)) {
       do {
         this.renderDrawField_(io)
       } while ((io.field = io.field.eyo.nextField))
     }
-    if ((io.input = io.inlet.input)) {
+    if ((io.input = io.slot.input)) {
       this.renderDrawInput_(io)
     }
-    if ((io.field = io.inlet.toEndField)) {
+    if ((io.field = io.slot.toEndField)) {
       do {
         this.renderDrawField_(io)
       } while ((io.field = io.field.eyo.nextField))
@@ -1325,7 +1325,7 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
     }
     if (block) {
       block.eyo.initDataWithModel(block, model)
-      var Vs = model.inlets
+      var Vs = model.slots
       for (var k in Vs) {
         if (eYo.Do.hasOwnProperty(Vs, k)) {
           var input = block.eyo.getInput(block, k)
@@ -1376,7 +1376,7 @@ eYo.DelegateSvg.prototype.beReady = function (block, render) {
   this.foreachData(function () {
     this.beReady()
   })
-  // install all the fields and inlets in the DOM
+  // install all the fields and slots in the DOM
   for (var k in this.fields) {
     var field = this.fields[k]
     if (!field.sourceBlock_) {
@@ -1384,7 +1384,7 @@ eYo.DelegateSvg.prototype.beReady = function (block, render) {
       field.init()
     }
   }
-  this.foreachInlet(function () {
+  this.foreachSlot(function () {
     this.beReady(render)
   })
   for (var i = 0, input; (input = block.inputList[i++]);) {
@@ -1394,7 +1394,7 @@ eYo.DelegateSvg.prototype.beReady = function (block, render) {
   block.nextConnection && block.nextConnection.eyo.beReady(render)
   this.consolidate(block)
   this.synchronizeData(block)
-  this.synchronizeInlets(block)
+  this.synchronizeSlots(block)
   var parent = block.outputConnection && block.outputConnection.targetBlock()
   if (parent && parent.eyo.svgContourGroup_) {
     goog.dom.insertChildAt(parent.eyo.svgContourGroup_, this.svgContourGroup_, 0)
@@ -1467,12 +1467,10 @@ eYo.DelegateSvg.prototype.canInsertParent = function (block, prototypeName, subt
  * The connection cannot always establish.
  * The holes are filled.
  * @param {!Block} block
- * @param {string} prototypeName
- * @param {string} surroundInputName, which parent's connection to use
- * @param {string} subtype, for subclassers
- * @return the created block
+ * @param {Object} model, for subclassers
+ * @return {?Blockly.Block} the created block
  */
-eYo.DelegateSvg.prototype.insertParentWithModel = function (block, surroundPrototypeName, subtype, surroundInputName) {
+eYo.DelegateSvg.prototype.insertParentWithModel = function (block, processModel) {
   goog.asserts.assert(false, 'Must be subclassed')
 }
 

@@ -898,9 +898,10 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
 }
 
 /**
- * Populate the context menu for the given block.
+ * Populate the context menu for the given block and model.
  * Only for expressions.
- * type is the type of the to be inserted parent block
+ * `model.type` is the type of the to be inserted parent block.
+ * `model.input` is the slot where the actual block should be connected.
  * @param {!Blockly.Block} block The block.
  * @param {!string} parent_type the type of the parent to be.
  * @private
@@ -913,12 +914,12 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model
   }
   /** @suppress {accessControls} */
   var outCheck = c8n.check_
-  var D = eYo.Delegate.Manager.getModel(parent_type).inlets
+  var D = eYo.Delegate.Manager.getModel(model.type).slots
   if (D) {
     var mgr = this
     var F = function (K) {
       var d = D[K]
-      if ((d && d.key && ((!parent_subtype && !d.wrap) || d.key === parent_subtype))) {
+      if ((d && d.key && ((!model.input && !d.wrap) || d.key === model.input))) {
         if (outCheck && d.check) {
           var found = false
           var _ = 0
@@ -934,9 +935,9 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model
           }
         }
         var key = d.key
-        var content = mgr.get_menuitem_content(parent_type, key)
+        var content = mgr.get_menuitem_content(model.type, key)
         var MI = new eYo.MenuItem(content, function () {
-          block.eyo.insertParentWithModel(block, parent_type, parent_subtype, key)
+          block.eyo.insertParentWithModel(block, model, key)
         })
         mgr.addInsertChild(MI)
         return true
@@ -947,7 +948,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model
             key = d.key || K
             content = mgr.get_menuitem_content(parent_type, key)
             MI = new eYo.MenuItem(content, function () {
-              block.eyo.insertParentWithModel(block, parent_type, parent_subtype, key)
+              block.eyo.insertParentWithModel(block, model, key)
             })
             mgr.addInsertChild(MI)
             return true
@@ -968,9 +969,9 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model
             return false
           }
         }
-        content = mgr.get_menuitem_content(parent_type)
+        content = mgr.get_menuitem_content(model.type)
         MI = new eYo.MenuItem(content, function () {
-          block.eyo.insertParentWithModel(block, parent_type, parent_subtype)
+          block.eyo.insertParentWithModel(block, model)
         })
         mgr.addInsertChild(MI)
         return true

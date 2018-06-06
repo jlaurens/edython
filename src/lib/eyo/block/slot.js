@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('eYo.Inlet')
+goog.provide('eYo.Slot')
 
 goog.require('eYo.Do')
 goog.require('Blockly.Input')
@@ -19,11 +19,11 @@ goog.require('goog.dom');
 
 /**
  * Convenient method to wrap the Blockly input object for the outside.
- * The model is one of the entries of the `inlets` section
+ * The model is one of the entries of the `slots` section
  * of the object used to create a delegate's subclass.
  * Here are some specifications for that model part.
  *
- * Any inlet is constructed the same way
+ * Any slot is constructed the same way
  * 1) operator field
  * 2) label field
  * 3) start field
@@ -37,37 +37,37 @@ goog.require('goog.dom');
   // - insert input
   // It may contain label fields
  * @param {!Object} owner  The owner is a block delegate.
- * @param {!string} key  One of the keys in `inlets` section of the model.
- * @param {!Object} inletModel  the model for the given key i the above mention section.
+ * @param {!string} key  One of the keys in `slots` section of the model.
+ * @param {!Object} slotModel  the model for the given key i the above mention section.
  * @constructor
  */
-eYo.Inlet = function (owner, key, inletModel) {
-  goog.asserts.assert(owner, 'Missing inlet owner')
-  goog.asserts.assert(key, 'Missing inlet key')
-  goog.asserts.assert(inletModel, 'Missing inlet model')
-  goog.asserts.assert(inletModel.order, 'Missing inlet model order')
+eYo.Slot = function (owner, key, slotModel) {
+  goog.asserts.assert(owner, 'Missing slot owner')
+  goog.asserts.assert(key, 'Missing slot key')
+  goog.asserts.assert(slotModel, 'Missing slot model')
+  goog.asserts.assert(slotModel.order, 'Missing slot model order')
   this.owner = owner
   this.key = key
-  this.model = inletModel
+  this.model = slotModel
   this.input = undefined
   this.wait = 1
   var block = this.block = owner.block_
   goog.asserts.assert(block,
     eYo.Do.format('block must exist {0}/{1}', key))
-  eYo.Inlet.makeFields(this, inletModel.fields)
-  if (inletModel.wrap) {
-    this.setInput(block.appendWrapValueInput(key, inletModel.wrap, inletModel.optional, inletModel.hidden))
-    this.input.connection.eyo.model = inletModel
-  } else if (inletModel.check) {
+  eYo.Slot.makeFields(this, slotModel.fields)
+  if (slotModel.wrap) {
+    this.setInput(block.appendWrapValueInput(key, slotModel.wrap, slotModel.optional, slotModel.hidden))
+    this.input.connection.eyo.model = slotModel
+  } else if (slotModel.check) {
     this.setInput(block.appendValueInput(key))
-    this.input.connection.eyo.model = inletModel
+    this.input.connection.eyo.model = slotModel
   }
 }
 
 /**
- * Init the inlet.
+ * Init the slot.
  */
-eYo.Inlet.prototype.init = function () {
+eYo.Slot.prototype.init = function () {
   var init = this.model.init
   if (goog.isFunction(init)) {
     if (!this.model_init_lock) {
@@ -82,23 +82,23 @@ eYo.Inlet.prototype.init = function () {
 }
 
 /**
- * Install this inlet on a block.
+ * Install this slot on a block.
  * @param {?boolean} render
  */
-eYo.Inlet.prototype.beReady = function (render) {
+eYo.Slot.prototype.beReady = function (render) {
   this.wait = 0
   if (this.svgGroup_) {
-    // Inlet has already been initialized once.
+    // Slot has already been initialized once.
     return
   }
   // Build the DOM.
   this.svgGroup_ = Blockly.utils.createSvgElement('g', {
-    class: 'eyo-inlet'
+    class: 'eyo-slot'
   }, null)
   if (this.previous) {
     goog.dom.insertSiblingAfter(this.svgGroup_, this.previous.svgGroup_)
   } else {
-    this.owner.svgInsertHeadInlet()
+    this.owner.svgInsertHeadSlot()
   }
   //  this.getBlock().getSvgRoot().appendChild(this.svgGroup_)
   this.init()
@@ -107,26 +107,26 @@ eYo.Inlet.prototype.beReady = function (render) {
     var field = this.fields[k]
     if (!field.sourceBlock_) {
       field.setSourceBlock(this.block)
-      field.eyo.inlet = this
+      field.eyo.slot = this
       field.init()// installs in the owner's group, not the block group
     }
   }
   this.input && this.input.eyo.beReady(render)
 }
-console.warn('What would be an inlet rendering?')
+console.warn('What would be an slot rendering?')
 /**
- * The DOM SVG group representing this inlet.
+ * The DOM SVG group representing this slot.
  */
-eYo.Inlet.prototype.getSvgRoot = function () {
+eYo.Slot.prototype.getSvgRoot = function () {
   return this.svgGroup_
 }
 
 /**
  * Transitional: when a block is connected, its svg root is installed
- * in another block's one. Here we move it to an inlet svg root, if relevant.
+ * in another block's one. Here we move it to an slot svg root, if relevant.
  * @param {!Blockly.Block} block to be initialized.
  */
-eYo.Inlet.prototype.takeSvgOwnership = function (block) {
+eYo.Slot.prototype.takeSvgOwnership = function (block) {
   var root = block.getSvgRoot()
   if (root) {
     console.log('MOVE IT TO THE TAIL ?')
@@ -134,9 +134,9 @@ eYo.Inlet.prototype.takeSvgOwnership = function (block) {
 }
 
 /**
- * Dispose of all DOM objects belonging to this inlet.
+ * Dispose of all DOM objects belonging to this slot.
  */
-eYo.Inlet.prototype.dispose = function () {
+eYo.Slot.prototype.dispose = function () {
   goog.dom.removeNode(this.svgGroup_)
   this.svgGroup_ = null
   this.owner = null
@@ -155,7 +155,7 @@ goog.require('eYo.FieldInput')
  * @param {!Object} owner
  * @param {!Object} fieldsModel
  */
-eYo.Inlet.makeFields = (function () {
+eYo.Slot.makeFields = (function () {
   // This is a closure
   // default helper functions for an editable field bound to a data object
   // `this` is an instance of  eYo.FieldInput
@@ -332,15 +332,15 @@ eYo.Inlet.makeFields = (function () {
  * For edython.
  * @param {!Blockly.Input} input
  */
-eYo.Inlet.prototype.setInput = function (input) {
+eYo.Slot.prototype.setInput = function (input) {
   this.input = input
   this.inputType = this.input.type
   this.connection = input.connection
-  input.eyo.inlet = this
+  input.eyo.slot = this
   var c8n = this.connection
   if (c8n) {
     var eyo = c8n.eyo
-    eyo.inlet = this
+    eyo.slot = this
     eyo.name_ = this.key
     if (this.model.plugged) {
       eyo.plugged_ = this.model.plugged
@@ -366,7 +366,7 @@ eYo.Inlet.prototype.setInput = function (input) {
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Inlet.prototype.getBlock = function () {
+eYo.Slot.prototype.getBlock = function () {
   return this.block
 }
 
@@ -375,7 +375,7 @@ eYo.Inlet.prototype.getBlock = function () {
  * For edython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-eYo.Inlet.prototype.getConnection = function () {
+eYo.Slot.prototype.getConnection = function () {
   return this.input && this.input.connection
 }
 
@@ -384,7 +384,7 @@ eYo.Inlet.prototype.getConnection = function () {
  * For edython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-eYo.Inlet.prototype.getWorkspace = function () {
+eYo.Slot.prototype.getWorkspace = function () {
   return this.connection && this.connection.sourceBlock_.workspace
 }
 
@@ -393,7 +393,7 @@ eYo.Inlet.prototype.getWorkspace = function () {
  * For edython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-eYo.Inlet.prototype.getTarget = function () {
+eYo.Slot.prototype.getTarget = function () {
   return this.connection && this.connection.targetBlock()
 }
 
@@ -402,7 +402,7 @@ eYo.Inlet.prototype.getTarget = function () {
  * For edython.
  * @param {!bollean} newValue
  */
-eYo.Inlet.prototype.setIncog = function (newValue) {
+eYo.Slot.prototype.setIncog = function (newValue) {
   this.incog = newValue
   if (this.wait) {
     return
@@ -416,7 +416,7 @@ eYo.Inlet.prototype.setIncog = function (newValue) {
  * Get the disable state.
  * For edython.
  */
-eYo.Inlet.prototype.isIncog = function () {
+eYo.Slot.prototype.isIncog = function () {
   return this.incog
 }
 
@@ -425,7 +425,7 @@ eYo.Inlet.prototype.isIncog = function () {
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Inlet.prototype.isRequiredToDom = function () {
+eYo.Slot.prototype.isRequiredToDom = function () {
   if (this.incog) {
     return false
   }
@@ -449,7 +449,7 @@ eYo.Inlet.prototype.isRequiredToDom = function () {
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Inlet.prototype.isRequiredFromDom = function () {
+eYo.Slot.prototype.isRequiredFromDom = function () {
   return this.is_required_from_dom || (!this.incog && this.model.xml && this.model.xml.required)
 }
 
@@ -458,7 +458,7 @@ eYo.Inlet.prototype.isRequiredFromDom = function () {
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Inlet.prototype.setRequiredFromDom = function (newValue) {
+eYo.Slot.prototype.setRequiredFromDom = function (newValue) {
   this.is_required_from_dom = newValue
 }
 
@@ -467,7 +467,7 @@ eYo.Inlet.prototype.setRequiredFromDom = function (newValue) {
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Inlet.prototype.whenRequiredFromDom = function (helper) {
+eYo.Slot.prototype.whenRequiredFromDom = function (helper) {
   if (this.isRequiredFromDom()) {
     this.setRequiredFromDom(false)
     if (goog.isFunction(helper)) {
@@ -482,7 +482,7 @@ eYo.Inlet.prototype.whenRequiredFromDom = function (helper) {
  * For edython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-eYo.Inlet.prototype.consolidate = function () {
+eYo.Slot.prototype.consolidate = function () {
   if (this.wait) {
     return
   }
@@ -497,7 +497,7 @@ eYo.Inlet.prototype.consolidate = function () {
  * Set the wait status of the field.
  * Any call to `waitOn` must be balanced by a call to `waitOff`
  */
-eYo.Inlet.prototype.waitOn = function () {
+eYo.Slot.prototype.waitOn = function () {
   return ++this.wait
 }
 
@@ -505,7 +505,7 @@ eYo.Inlet.prototype.waitOn = function () {
  * Set the wait status of the field.
  * Any call to `waitOn` must be balanced by a call to `waitOff`
  */
-eYo.Inlet.prototype.waitOff = function () {
+eYo.Slot.prototype.waitOff = function () {
   goog.asserts.assert(this.wait > 0, eYo.Do.format('Too  many `waitOn` {0}/{1}', this.key, this.owner.block_.type))
   if (--this.wait === 0) {
     this.consolidate()
@@ -517,7 +517,7 @@ eYo.Inlet.prototype.waitOff = function () {
  * For edython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-eYo.Inlet.prototype.synchronize = function () {
+eYo.Slot.prototype.synchronize = function () {
   var input = this.input
   if (!input) {
     return
@@ -560,7 +560,7 @@ eYo.Inlet.prototype.synchronize = function () {
 goog.forwardDeclare('eYo.DelegateSvg.List')
 
 /**
- * Convert the inlet's connected target into the given xml element.
+ * Convert the slot's connected target into the given xml element.
  * List all the available data and converts them to xml.
  * For edython.
  * @param {Element} xml the persistent element.
@@ -568,7 +568,7 @@ goog.forwardDeclare('eYo.DelegateSvg.List')
  * @return a dom element, void lists may return nothing
  * @this a block delegate
  */
-eYo.Inlet.prototype.save = function (element, optNoId) {
+eYo.Slot.prototype.save = function (element, optNoId) {
   if (this.isIncog()) {
     return
   }
@@ -645,7 +645,7 @@ eYo.Inlet.prototype.save = function (element, optNoId) {
  * @param {Element} element a dom element in which to save the input
  * @return the added child, if any
  */
-eYo.Inlet.prototype.load = function (element) {
+eYo.Slot.prototype.load = function (element) {
   var xml = this.model.xml
   if (xml === false) {
     return

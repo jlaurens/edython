@@ -110,7 +110,7 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin_range_expr', {
       css: 'builtin'
     }
   },
-  inlets: {
+  slots: {
     arguments: {
       order: 1,
       fields: {

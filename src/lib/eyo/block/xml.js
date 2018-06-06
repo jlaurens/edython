@@ -527,13 +527,13 @@ eYo.Xml.toDom = function (block, element, optNoId) {
     return controller.toDom.call(eyo, block, element, optNoId)
   } else {
     eYo.Xml.Data.toDom(block, element, optNoId)
-    // save inlets
-    block.eyo.foreachInlet(function () {
+    // save slots
+    block.eyo.foreachSlot(function () {
       this.save(element, optNoId)
     })
     var blockToDom = function (c8n, name, key) {
       if (c8n && !c8n.eyo.wrapped_) {
-        // wrapped blocks belong to inlets, they are managed from there
+        // wrapped blocks belong to slots, they are managed from there
         var target = c8n.targetBlock()
         if (target) {
           var child = Blockly.Xml.blockToDom(target, optNoId)
@@ -544,9 +544,9 @@ eYo.Xml.toDom = function (block, element, optNoId) {
         }
       }
     }
-    // the list blocks have no inlets yet
+    // the list blocks have no slots yet
     for (var i = 0, input; (input = block.inputList[i++]);) {
-      if (!input.eyo.inlet) {
+      if (!input.eyo.slot) {
         blockToDom(input.connection, eYo.Xml.INPUT, input.name)
       }
     }
@@ -740,8 +740,8 @@ eYo.Xml.fromDom = function (block, element) {
       data[k].waitOn()
     }
     eYo.Xml.Data.fromDom(block, element)
-    // read inlet
-    eyo.foreachInlet(function () {
+    // read slot
+    eyo.foreachSlot(function () {
       this.load(element)
     })
     var statement = function (c8n, key) {
@@ -808,11 +808,11 @@ eYo.Xml.Comparison.domToBlock = function (element, workspace) {
     var C8r, model
     var type = eYo.T3.Expr.number_comparison
     if ((C8r = eYo.DelegateSvg.Manager.get(type)) &&
-    (model = C8r.eyo.getModel().inlets) &&
+    (model = C8r.eyo.getModel().slots) &&
     model.operators &&
     model.operators.indexOf(op) >= 0) {
       block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)
-    } else if ((type = eYo.T3.Expr.object_comparison) && (C8r = eYo.DelegateSvg.Manager.get(type)) && (model = C8r.eyo.getModel().inlets) && model.operators && model.operators.indexOf(op) >= 0) {
+    } else if ((type = eYo.T3.Expr.object_comparison) && (C8r = eYo.DelegateSvg.Manager.get(type)) && (model = C8r.eyo.getModel().slots) && model.operators && model.operators.indexOf(op) >= 0) {
       block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)
     } else {
       return block

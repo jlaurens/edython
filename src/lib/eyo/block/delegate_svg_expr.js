@@ -269,8 +269,7 @@ eYo.DelegateSvg.Expr.prototype.canInsertParent = function (block, prototypeName,
  * The connection cannot always establish.
  * The holes are filled when fill_holes is true.
  * @param {!Block} block
- * @param {string} prototypeName
- * @param {string} parentInputName, which parent's connection to use
+ * @param {Object} model
  * @param {boolean} fill_holes whether holes should be filled
  * @return the created block
  */
@@ -385,7 +384,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
-  inlets: {
+  slots: {
     lower_bound: {
       order: 1,
       fields: {
@@ -419,7 +418,7 @@ eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('conditional_expression', {
-  inlets: {
+  slots: {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.or_test_all,
@@ -462,7 +461,7 @@ eYo.DelegateSvg.Expr.makeSubclass('starred_expression', {
       css: 'reserved'
     }
   },
-  inlets: {
+  slots: {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
@@ -485,7 +484,7 @@ eYo.DelegateSvg.Expr.starred_expression.prototype.consolidateType = function (bl
   // eYo.T3.Expr.Check.or_expr
   var data = this.data.modifier
   var withOneStar = data.get() === data.model.STAR
-  var c8n = this.inlets.expression.connection
+  var c8n = this.slots.expression.connection
   var targetC8n = c8n.targetConnection
   var no_or_expr = false
   if (targetC8n) {
@@ -537,7 +536,7 @@ eYo.DelegateSvg.Expr.starred_expression.prototype.populateContextMenuFirst_ = fu
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('not_test', {
-  inlets: {
+  slots: {
     expression: {
       order: 1,
       fields: {

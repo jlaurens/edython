@@ -14,7 +14,7 @@
 goog.provide('eYo.PythonExporter')
 
 goog.require('eYo')
-goog.require('eYo.Inlet')
+goog.require('eYo.Slot')
 goog.require('eYo.DelegateSvg')
 goog.require('eYo.FieldTextInput')
 
@@ -63,16 +63,16 @@ eYo.PythonExporter.prototype.newline_ = function () {
  * @return some python code
  */
 eYo.PythonExporter.prototype.exportExpression_ = function (block) {
-  var field, input, inlet
+  var field, input, slot
   if ((field = block.eyo.fromStartField)) {
     do {
       this.exportField_(field)
     } while ((field = field.eyo.nextField))
   }
-  if ((inlet = block.eyo.headInlet)) {
+  if ((slot = block.eyo.headSlot)) {
     do {
-      this.exportInlet_(inlet)
-    } while ((inlet = inlet.next))
+      this.exportSlot_(slot)
+    } while ((slot = slot.next))
   } else {
     // list blocks
     block.eyo.consolidate(block)
@@ -102,7 +102,7 @@ eYo.PythonExporter.prototype.export = function (block, is_deep) {
   this.newline_()
 
   this.expression = []
-  var field, input, inlet
+  var field, input, slot
   
   this.exportExpression_(block)
 
@@ -158,7 +158,7 @@ eYo.PythonExporter.prototype.exportField_ = function (field) {
 }
 
 /**
- * Export the given inlet in.
+ * Export the given slot in.
  * @param {Blockly.Input} input
  * @private
  */
@@ -180,22 +180,22 @@ eYo.PythonExporter.prototype.exportInput_ = function (input) {
 }
 
 /**
- * Export the given inlet in.
- * @param {eYo.Inlet} inlet
+ * Export the given slot in.
+ * @param {eYo.Slot} slot
  * @private
  */
-eYo.PythonExporter.prototype.exportInlet_ = function (inlet) {
-  if (inlet.isIncog()) {
+eYo.PythonExporter.prototype.exportSlot_ = function (slot) {
+  if (slot.isIncog()) {
     return
   }
   var field, input
-  if ((field = inlet.fromStartField)) {
+  if ((field = slot.fromStartField)) {
     do {
       this.exportField_(field)
     } while ((field = field.eyo.nextField))
   }
-  this.exportInput_(inlet.input)
-  if ((field = inlet.toEndField)) {
+  this.exportInput_(slot.input)
+  if ((field = slot.toEndField)) {
     do {
       this.exportField_(field)
     } while ((field = field.eyo.nextField))

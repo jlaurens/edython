@@ -1,9 +1,9 @@
 <template>
   <Split id="page-content" @onDrag="onDrag">
-    <SplitArea :size="50">
+    <SplitArea :size="75">
       <content-eyo></content-eyo>
     </SplitArea>
-    <SplitArea :size="50">
+    <SplitArea :size="25">
       <content-panels></content-panels>
     </SplitArea>
   </Split>

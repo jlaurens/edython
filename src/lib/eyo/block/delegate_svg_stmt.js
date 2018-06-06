@@ -373,7 +373,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_nonlocal_stmt, {
       css: 'reserved'
     }
   },
-  inlets: {
+  slots: {
     identifiers: {
       order: 1,
       wrap: eYo.T3.Expr.non_void_identifier_list
@@ -466,7 +466,7 @@ eYo.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = function (block) {
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass('del_stmt', {
-  inlets: {
+  slots: {
     del: {
       order: 1,
       fields: {
@@ -482,7 +482,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('del_stmt', {
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass('return_stmt', {
-  inlets: {
+  slots: {
     return: {
       order: 1,
       fields: {
@@ -498,7 +498,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('return_stmt', {
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
-  inlets: {
+  slots: {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.expression
@@ -527,14 +527,14 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
         this.data.code.setIncog(newValue > this.CODE_COMMENT)
         this.data.comment.required = (newValue % 2) && newValue !== this.COMMENT
         this.data.comment.setIncog(!(newValue % 2))
-        this.owner_.inlets.expression.required = newValue < this.COMMENT &&
+        this.owner_.slots.expression.required = newValue < this.COMMENT &&
         newValue > this.CODE_COMMENT
-        this.owner_.inlets.expression.setIncog(newValue < this.EXPRESSION ||
+        this.owner_.slots.expression.setIncog(newValue < this.EXPRESSION ||
         newValue > this.EXPRESSION_COMMENT)
       },
       consolidate: /** @suppress {globalThis} */ function () {
         var withCode = !this.data.code.isIncog()
-        var withExpression = !this.owner_.inlets.expression.isIncog()
+        var withExpression = !this.owner_.slots.expression.isIncog()
         var withComment = !this.data.comment.isIncog()
         if (withCode) {
           if (withComment) {
@@ -596,7 +596,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
       endEditing: true
     }
   },
-  inlets: {
+  slots: {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,

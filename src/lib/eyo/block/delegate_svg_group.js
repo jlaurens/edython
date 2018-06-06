@@ -228,7 +228,7 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
   fields: {
     label: 'if'
   },
-  inlets: {
+  slots: {
     if: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
@@ -249,7 +249,7 @@ eYo.DelegateSvg.Group.makeSubclass('elif_part', {
   fields: {
     label: 'elif'
   },
-  inlets: {
+  slots: {
     elif: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
@@ -355,7 +355,7 @@ eYo.DelegateSvg.Group.makeSubclass('while_part', {
   fields: {
     label: 'while'
   },
-  inlets: {
+  slots: {
     while: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
@@ -414,7 +414,7 @@ eYo.DelegateSvg.Group.makeSubclass('for_part', {
   xml: {
     tag: 'for',
   },
-  inlets: {
+  slots: {
     for: {
       order: 1,
       fields: {
@@ -443,7 +443,7 @@ eYo.DelegateSvg.Group.makeSubclass('with_part', {
   xml: {
     tag: 'with',
   },
-  inlets: {
+  slots: {
     with: {
       order: 1,
       fields: {
@@ -460,7 +460,7 @@ eYo.DelegateSvg.Group.makeSubclass('with_part', {
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('expression_as', {
-  inlets: {
+  slots: {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,

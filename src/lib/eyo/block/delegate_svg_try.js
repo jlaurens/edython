@@ -46,17 +46,17 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         var M = this.model
-        this.owner_.inlets.expression.setIncog(newValue === M.EXCEPT)
-        this.owner_.inlets.expression.required = (newValue === M.EXCEPT_EXPRESSION)
-        this.owner_.inlets.as.setIncog(newValue !== M.EXCEPT_AS)
-        this.owner_.inlets.as.required = (newValue === M.EXCEPT_AS)
+        this.owner_.slots.expression.setIncog(newValue === M.EXCEPT)
+        this.owner_.slots.expression.required = (newValue === M.EXCEPT_EXPRESSION)
+        this.owner_.slots.as.setIncog(newValue !== M.EXCEPT_AS)
+        this.owner_.slots.as.required = (newValue === M.EXCEPT_AS)
       }
     }
   },
   fields: {
     prefix: 'except'
   },
-  inlets: {
+  slots: {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
@@ -165,17 +165,17 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       all: [0, 1, 2],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         var M = this.model
-        this.owner_.inlets.expression.setIncog(newValue === M.RAISE)
-        this.owner_.inlets.expression.required = (newValue === M.RAISE_EXPRESSION)
-        this.owner_.inlets.from.setIncog(newValue !== M.RAISE_FROM)
-        this.owner_.inlets.from.required = (newValue === M.RAISE_FROM)
+        this.owner_.slots.expression.setIncog(newValue === M.RAISE)
+        this.owner_.slots.expression.required = (newValue === M.RAISE_EXPRESSION)
+        this.owner_.slots.from.setIncog(newValue !== M.RAISE_FROM)
+        this.owner_.slots.from.required = (newValue === M.RAISE_FROM)
       }
     }
   },
   fields: {
     prefix: 'raise'
   },
-  inlets: {
+  slots: {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
@@ -251,15 +251,15 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
     variant: {
       all: [0, 1],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.owner_.inlets.expression.setIncog(!newValue)
-        this.owner_.inlets.expression.required = !!newValue
+        this.owner_.slots.expression.setIncog(!newValue)
+        this.owner_.slots.expression.required = !!newValue
       }
     }
   },
   fields: {
     prefix: 'assert'
   },
-  inlets: {
+  slots: {
     assert: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,

@@ -21,7 +21,7 @@ goog.require('eYo.DelegateSvg.List')
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('keyword_item', {
-  inlets: {
+  slots: {
     identifier: {
       order: 1,
       check: eYo.T3.Expr.identifier,

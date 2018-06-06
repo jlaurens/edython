@@ -179,7 +179,7 @@ eYo.Delegate.Manager = (function () {
     }
     if (insertModel) {
       insertModel.data && merger(model.data, insertModel.data)
-      insertModel.inlets && merger(model.inlets, insertModel.inlets)
+      insertModel.slots && merger(model.slots, insertModel.slots)
     }
     // store that object permanently
     delegateC9r.eyo.model_ = model
@@ -406,20 +406,20 @@ eYo.Delegate.prototype.consolidateType = function (block) {
 }
 
 /**
- * execute the given function for the head inlet of the receiver and its next sibling.
+ * execute the given function for the head slot of the receiver and its next sibling.
  * If the return value of the given function is true,
  * then it was the last iteration and the loop nreaks.
  * For edython.
  * @param {!function} helper
- * @return {boolean} whether there was an inlet to act upon or a valid helper
+ * @return {boolean} whether there was an slot to act upon or a valid helper
  */
-eYo.Delegate.prototype.foreachInlet = function (helper) {
-  var inlet = this.headInlet
-  if (inlet && goog.isFunction(helper)) {
+eYo.Delegate.prototype.foreachSlot = function (helper) {
+  var slot = this.headSlot
+  if (slot && goog.isFunction(helper)) {
     var last
     do {
-      last = helper.call(inlet)
-    } while (!last && (inlet = inlet.next))
+      last = helper.call(slot)
+    } while (!last && (slot = slot.next))
     return true
   }
   return false
@@ -453,27 +453,27 @@ eYo.Delegate.prototype.foreachData = function (helper) {
 eYo.Delegate.prototype.initData = function () {
   for (var k in this.data) {
     var data = this.data[k]
-    var inlet = this.inlets[k]
-    if (inlet) {
-      data.inlet = inlet
-      inlet.data = data
+    var slot = this.slots[k]
+    if (slot) {
+      data.slot = slot
+      slot.data = data
       // try the unique editable field
-      if (Object.keys(inlet.fields).length === 1) {
-        for (var kk in inlet.fields) {
-          data.field = inlet.fields[kk]
+      if (Object.keys(slot.fields).length === 1) {
+        for (var kk in slot.fields) {
+          data.field = slot.fields[kk]
           break
         }
       } else {
-        data.field = inlet.fields.edit
+        data.field = slot.fields.edit
       }
     } else if ((data.field = this.fields[k])) {
-      data.inlet = null
+      data.slot = null
       data.field.eyo.data = data
     } else {
-      for (kk in this.inlets) {
-        inlet = this.inlets[kk]
-        if ((data.field = inlet.fields[k])) {
-          data.inlet = inlet
+      for (kk in this.slots) {
+        slot = this.slots[kk]
+        if ((data.field = slot.fields[k])) {
+          data.slot = slot
           break
         }
       }
@@ -1157,10 +1157,10 @@ eYo.Delegate.prototype.setIncog = function (block, incog) {
     var c8n = input && input.connection
     c8n && c8n.eyo.setIncog(incog)
   }
-  var inlet = this.headInlet
-  while (inlet) {
-    setupIncog(inlet.input)
-    inlet = inlet.next
+  var slot = this.headSlot
+  while (slot) {
+    setupIncog(slot.input)
+    slot = slot.next
   }
   setupIncog(this.inputSuite)
   for (var i = 0, input; (input = this.block_.inputList[i++]);) {

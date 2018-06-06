@@ -199,12 +199,12 @@ eYo.WorkspaceDelegate.prototype.getFlyoutsForCategory = function (category) {
     return [
       {
         type: eYo.T3.Stmt.assignment_stmt,
-        inlets: {
+        slots: {
           assigned: {
-            inlets: {
+            slots: {
               O: {
                 type: eYo.T3.Expr.builtin_input_expr,
-                inlets: {
+                slots: {
                   expression: "'…'",
                 },
               },
@@ -221,12 +221,12 @@ eYo.WorkspaceDelegate.prototype.getFlyoutsForCategory = function (category) {
       eYo.T3.Stmt.builtin_print_stmt,
       {
         type: eYo.T3.Stmt.assignment_stmt,
-        inlets: {
+        slots: {
           assigned: {
-            inlets: {
+            slots: {
               O: {
                 type: eYo.T3.Expr.builtin_input_expr,
-                inlets: {
+                slots: {
                   expression: "'...'",
                 },
               }, 

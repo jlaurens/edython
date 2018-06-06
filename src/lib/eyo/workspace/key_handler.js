@@ -576,14 +576,24 @@ var Ks = {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
-      if (parent && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.data.subtype.get() === '-') {
+      if (parent && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.data.main.get() === '-') {
         B.eyo.replaceBlock(B, parent)
         return
       }
       if (eYo.SelectedConnection.get()) {
-        B.eyo.insertBlockWithModel(B, eYo.T3.Expr.u_expr, '-')
+        B.eyo.insertBlockWithModel(B, {
+          type: eYo.T3.Expr.u_expr,
+          data: {
+            main: '~'
+          }
+        })
       } else {
-        B.eyo.insertParentWithModel(B, eYo.T3.Expr.u_expr, '-')
+        B.eyo.insertParentWithModel(B, {
+          type: eYo.T3.Expr.u_expr,
+          data: {
+            main: '~'
+          }
+        })
       }
     }
   },
@@ -591,14 +601,24 @@ var Ks = {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
-      if (parent && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.data.subtype.get() === '~') {
+      if (parent && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.data.main.get() === '~') {
         B.eyo.replaceBlock(B, parent)
         return
       }
       if (eYo.SelectedConnection.get()) {
-        B.eyo.insertBlockWithModel(B, eYo.T3.Expr.u_expr, '~')
+        B.eyo.insertBlockWithModel(B, {
+          type: eYo.T3.Expr.u_expr,
+          data: {
+            main: '~'
+          }
+        })
       } else {
-        B.eyo.insertParentWithModel(B, eYo.T3.Expr.u_expr, '~')
+        B.eyo.insertParentWithModel(B, {
+          type: eYo.T3.Expr.u_expr,
+          data: {
+            main: '~'
+          }
+        })
       }
     }
   }

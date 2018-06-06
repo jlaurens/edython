@@ -27,7 +27,7 @@ eYo.DelegateSvg.Expr.makeSubclass('Operator', {
       synchronize: true
     }
   },
-  inlets: {
+  slots: {
     rhs: {
       order: 2,
       fields: {
@@ -79,7 +79,7 @@ eYo.DelegateSvg.Operator.makeSubclass('u_expr', {
       all: ['-', '+', '~']
     }
   },
-  inlets: {
+  slots: {
     rhs: {
       check: eYo.T3.Expr.Check.u_expr_all
     }
@@ -102,7 +102,7 @@ eYo.DelegateSvg.Expr.u_expr.prototype.makeTitle = function (block, op) {
  * For edython.
  */
 eYo.DelegateSvg.Operator.makeSubclass('Binary', {
-  inlets: {
+  slots: {
     lhs: {
       order: 1,
       hole_value: 'name'
@@ -135,7 +135,7 @@ eYo.DelegateSvg.Binary.makeModel = function (operators, check1, check3, operator
         init: operatorIndex || 0
       }
     },
-    inlets: {
+    slots: {
       lhs: {
         check: eYo.T3.Expr.Check[check1]
       },
@@ -260,7 +260,7 @@ eYo.DelegateSvg.Binary.makeSubclass('object_comparison', {
       init: 2
     }
   },
-  inlets: {
+  slots: {
     lhs: {
       check: eYo.T3.Expr.Check.comparison
     },
@@ -296,7 +296,7 @@ eYo.DelegateSvg.Binary.makeSubclass('or_test', {
       all: ['or']
     }
   },
-  inlets: {
+  slots: {
     lhs: {
       check: eYo.T3.Expr.Check.or_test_all
     },
@@ -322,7 +322,7 @@ eYo.DelegateSvg.Binary.makeSubclass('and_test', {
       all: ['and']
     }
   },
-  inlets: {
+  slots: {
     lhs: {
       check: eYo.T3.Expr.Check.and_test_all
     },
@@ -350,7 +350,7 @@ eYo.DelegateSvg.Operator.makeSubclass('power', {
       init: '**'
     }
   },
-  inlets: {
+  slots: {
     lhs: {
       order: 1,
       check: eYo.T3.Expr.Check.await_or_primary,

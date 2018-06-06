@@ -35,7 +35,7 @@ eYo.DelegateSvg.Expr.makeSubclass('attributeref', {
       synchronize: true
     }
   },
-  inlets: {
+  slots: {
     primary: {
       order: 1,
       check: eYo.T3.Expr.Check.primary,
@@ -68,8 +68,8 @@ eYo.DelegateSvg.Expr.makeSubclass('slicing', {
     variant: { // data named 'variant' have `xml = false`, by default
       all: [0, 1],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.owner_.inlets.name.setIncog(!!newValue)
-        this.owner_.inlets.primary.setIncog(!newValue)
+        this.owner_.slots.name.setIncog(!!newValue)
+        this.owner_.slots.primary.setIncog(!newValue)
       }
     },
     name: {
@@ -82,7 +82,7 @@ eYo.DelegateSvg.Expr.makeSubclass('slicing', {
       synchronize: true
     }
   },
-  inlets: {
+  slots: {
     name: {
       order: 1,
       fields: {
@@ -167,8 +167,8 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
         var withExpression = newValue === M.EXPRESSION
         this.data.name.setIncog(withExpression)
         this.data.name.required = newValue === M.NAME
-        this.owner_.inlets.expression.setIncog(!withExpression)
-        this.owner_.inlets.expression.required = withExpression
+        this.owner_.slots.expression.setIncog(!withExpression)
+        this.owner_.slots.expression.required = withExpression
       }
     },
     backup: {
@@ -218,7 +218,7 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
       placeholder: eYo.Msg.Placeholder.IDENTIFIER
     }
   },
-  inlets: {
+  slots: {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.primary,

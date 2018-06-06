@@ -73,8 +73,8 @@ eYo.FieldTextInput.prototype.init = function () {
   }
   // Build the DOM.
   this.fieldGroup_ = Blockly.utils.createSvgElement('g', {}, null)
-  if (this.eyo.inlet) {
-    this.eyo.inlet.getSvgRoot().appendChild(this.fieldGroup_)
+  if (this.eyo.slot) {
+    this.eyo.slot.getSvgRoot().appendChild(this.fieldGroup_)
   } else {
     this.sourceBlock_.getSvgRoot().appendChild(this.fieldGroup_)
   }
