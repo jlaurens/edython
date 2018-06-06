@@ -329,7 +329,7 @@ eYo.KeyHandler = (function () {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
       eYo.Do.createSPAN(k, 'eyo-code-emph'))
     MI.setContent(content)
-    MI.getModel().key = k
+    MI.setModel(k)
     if (current_.length) {
       if (menu_.getChildCount() < 2) {
         menu_.addChild(new eYo.Separator(), true)
