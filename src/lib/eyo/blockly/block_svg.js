@@ -156,6 +156,10 @@ eYo.BlockSvg.prototype.unselect = function () {
     this.eyo.selectedConnectionSource_ = null
   }
   this.removeSelect()
+  if (this.eyo.wrapped_) {
+    var parent = this.getSurroundParent()
+    parent && parent.unselect()
+  }
 }
 
 /**
@@ -209,15 +213,18 @@ eYo.BlockSvg.prototype.removeSelect = function () {
     if ((!this.eyo.svgPathHighlight_ || !this.eyo.svgPathHighlight_.parentNode) &&
       (!this.eyo.svgPathConnection_ || !this.eyo.svgPathConnection_.parentNode)) {
       if (this.svgGroup_) { // how come that we must test that?
-        Blockly.utils.removeClass(this.svgGroup_, 'eyo-select')
+        goog.dom.classlist.remove(this.svgGroup_, 'eyo-select')
+        goog.dom.classlist.remove(this.eyo.svgContourGroup_, 'eyo-select')
       }
       return
     }
-    goog.dom.removeNode(this.eyo.svgPathHighlight_)
   }
   if (this.svgGroup_) {
     goog.dom.classlist.remove(this.svgGroup_, 'eyo-select')
     goog.dom.classlist.remove(this.eyo.svgContourGroup_, 'eyo-select')
+  }
+  if (this.eyo.svgPathHighlight_ && this.eyo.svgPathHighlight_.parentNode) {
+    goog.dom.removeNode(this.eyo.svgPathHighlight_)
   }
   if (this.eyo.svgPathConnection_ && this.eyo.svgPathConnection_.parentNode) {
     goog.dom.removeNode(this.eyo.svgPathConnection_)
