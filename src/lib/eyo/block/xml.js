@@ -741,10 +741,9 @@ eYo.Xml.fromDom = function (block, element) {
     goog.isFunction(controller.fromDom))) {
     return controller.fromDom.call(eyo, block, element)
   } else {
-    var data = eyo.data
-    for (var k in data) {
-      data[k].waitOn()
-    }
+    eyo.foreachData(function () {
+      this.waitOn()
+    })
     eYo.Xml.Data.fromDom(block, element)
     // read slot
     eyo.foreachSlot(function () {
@@ -788,6 +787,7 @@ eYo.Xml.fromDom = function (block, element) {
           }
         }
       }
+      eyo.consolidate(block)
     }
     // read flow and suite
     var out = statement(block.nextConnection, eYo.XmlKey.NEXT)

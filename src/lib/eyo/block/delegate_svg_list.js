@@ -42,8 +42,12 @@ eYo.DelegateSvg.List.prototype.willRender_ = function (block) {
  * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
  */
 eYo.DelegateSvg.List.prototype.getInput = function (block, name) {
-  this.createConsolidator(block)
-  return this.consolidator.getInput(block, name)
+  var input = eYo.DelegateSvg.List.superClass_.getInput.call(this, block, name)
+  if (!input) {
+    this.createConsolidator(block)
+    input = this.consolidator.getInput(block, name)
+  }
+  return input
 }
 
 /**

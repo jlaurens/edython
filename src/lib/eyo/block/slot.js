@@ -668,7 +668,7 @@ eYo.Slot.prototype.load = function (element) {
       this.setRequiredFromDom(true) // this is not sure, it depends on how the target read the dom
       out = eYo.Xml.fromDom(target, element)
     } else {
-    // find an xml child with the proper input attribute
+    // find an xml child with the proper slot attribute
       for (var i = 0, child; (child = element.childNodes[i++]);) {
         if (goog.isFunction(child.getAttribute)) {
           if (this.inputType === Blockly.INPUT_VALUE) {
@@ -687,7 +687,7 @@ eYo.Slot.prototype.load = function (element) {
               for (i = 0; (grandChild = child.childNodes[i++]);) {
                 if (goog.isFunction(grandChild.getAttribute)) {
                   var name = grandChild.getAttribute(eYo.XmlKey.SLOT)
-                  var input = target.eyo.getInput(target, name)
+                  var input = target.getInput(name)
                   if (input) {
                     if (!input.connection) {
                       console.warn('Missing connection')
