@@ -29,14 +29,14 @@ function createWindow () {
   mainWindow.loadURL(winURL)
 
   mainWindow.once('ready-to-show', () => {
-    mainWindow.openDevTools({detach: true})
     mainWindow.show()
   })
+
+  mainWindow.openDevTools({detach: true})
 
   mainWindow.on('closed', () => {
     mainWindow = null
   })
-
 
   if (!process.env.IS_WEB) {
     // Dans le processus principal .
@@ -44,36 +44,59 @@ function createWindow () {
     var promptResponse
     ipcMain.on('prompt', function (eventRet, arg) {
       promptResponse = null
-      console.log('OK')
-    //   var promptWindow = new BrowserWindow({
-    //     parent: mainWindow,
-    //     modal: true,
-    //     width: 820,
-    //     height: 460,
-    //     show: false,
-    //     resizable: true,
-    //   })
-    //   console.log(promptWindow.width, promptWindow.height)
-    //   promptWindow.setSize(1220, 360)
-    //   console.log(promptWindow.width, promptWindow.height)
-    //   const promptHtml = [
-    //     '<label id="label" for="value">', arg.text, '</label>',
-    //     '<input id="value" value="', arg.defaultText || '', '" autofocus />',
-    //     '<button onclick="require(\'electron\').ipcRenderer.send(\'prompt-response\', document.getElementById(\'val\').value);window.close()">Continuer</button>',
-    //     '<style>body {font-family: sans-serif;} button {float:right; margin-left: 10px;} label,input {margin-bottom: 10px; width: 100%; display:block;}</style>'].join('')
-    //     promptWindow.loadURL('data:text/html,' + promptHtml)
-    //     promptWindow.webContents.executeJavaScript('console.log("COUCOU")', true)
-    // .then((result) => {
-    //   console.log(result) // Will be the JSON object from the fetch call
-    // })
-    //     promptWindow.once('ready-to-show', () => {
-
-    //       promptWindow.show()
-    //     })
-    //     promptWindow.on('closed', function () {
-    //     eventRet.returnValue = promptResponse
-    //     promptWindow = null
-    //   })
+      var promptWindow = new BrowserWindow({
+        parent: mainWindow,
+        modal: true,
+        width: 600,
+        height: 150,
+        show: false,
+        webPreferences: {
+          devTools: false
+        }
+      })
+      const promptHtml = [
+        '<label id="label" for="value"></label>',
+        '<input type="text" id="value" autofocus onkeydown="if (event.keyCode == 13) document.getElementById(\'button\').click()"/>',
+        '<button id="button" onclick="require(\'electron\').ipcRenderer.send(\'prompt-response\', document.getElementById(\'value\').value);window.close()">Continuer</button>',
+        '<style>body {font-family: sans-serif;} button {float:right; margin-left: 10px;} label,input {font-size: 16px;margin-bottom: 10px; width: 100%; display:block;padding:6px 6px;}',
+        'button {',
+        '  -moz-border-radius:6px;',
+        '  -webkit-border-radius:6px;',
+        '  border-radius:6px;',
+        '  border:1px solid #dcdcdc;',
+        '  display:inline-block;',
+        '  cursor:pointer;',
+        '  color:#666666;',
+        '  font-family:sans-serif;',
+        '  font-size:16px;',
+        '  padding:6px 24px;',
+        '  text-decoration:none;',
+        '  text-shadow:0px 1px 0px #ffffff;',
+        '}',
+        'button:hover {',
+        '  color:#336666;',
+        '}',
+        'button:active {',
+        '  position:relative;',
+        '  top:1px;',
+        '}',
+        '</style>'].join('')
+      // const promptURL = process.env.NODE_ENV === 'development'
+      //   ? `http://localhost:9080/prompt.html`
+      //   : `file://${__dirname}/prompt.html`
+      const promptURL = `data:text/html,${promptHtml}`
+      promptWindow.loadURL(promptURL)
+      promptWindow.once('ready-to-show', () => {
+        var text = arg.text.replace('\'', '&apos;').replace('"', '&quot;')
+        promptWindow.webContents.executeJavaScript('document.getElementById(\'label\').innerHTML = \'' + text + '\'')
+        text = (arg.defaultText || '').replace('\'', '&apos;').replace('"', '&quot;')
+        promptWindow.webContents.executeJavaScript('document.getElementById(\'value\').setAttribute(\'value\', \'' + text + '\')')
+        promptWindow.show()
+      })
+      promptWindow.on('closed', function () {
+        eventRet.returnValue = promptResponse
+        promptWindow = null
+      })
     })
     ipcMain.on('prompt-response', function (event, arg) {
       if (arg === '') { arg = null }
