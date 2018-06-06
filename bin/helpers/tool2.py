@@ -183,7 +183,7 @@ if __name__ != "main":
     for r in final:
         print(r)
         out_lines.append(
-            '      <script src="/'+pathlib.Path(r).relative_to('src').as_posix()+'"></script>\n')
+            '      <script src="'+pathlib.Path(r).relative_to('src').as_posix()+'"></script>\n')
 
     p_out = pathBuild / 'deps-vue.txt'
     print(p_out)

@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow } from 'electron'
 
 /**
  * Set `__static` path to static files in production
@@ -20,42 +20,60 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 563,
+    height: 763,
     useContentSize: true,
-    width: 1000
+    width: 1100,
+    show: false
   })
 
   mainWindow.loadURL(winURL)
 
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.openDevTools({detach: true})
+    mainWindow.show()
+  })
+
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+
   if (!process.env.IS_WEB) {
     // Dans le processus principal .
     const {ipcMain} = require('electron')
     var promptResponse
     ipcMain.on('prompt', function (eventRet, arg) {
       promptResponse = null
-      var promptWindow = new BrowserWindow({
-        width: 320,
-        height: 180,
-        show: false,
-        resizable: false,
-        movable: false,
-        alwaysOnTop: true,
-        frame: false
-      })
-      const promptHtml = [
-        '<label for="val">', arg.text, '</label>',
-        '<input id="val" value="', arg.defaultText || '', '" autofocus />',
-        '<button onclick="require(\'electron\').ipcRenderer.send(\'prompt-response\', document.getElementById(\'val\').value);window.close()">Continuer</button>',
-        '<style>body {font-family: sans-serif;} button {float:right; margin-left: 10px;} label,input {margin-bottom: 10px; width: 100%; display:block;}</style>'].join('')
-      promptWindow.loadURL('data:text/html,' + promptHtml)
-      promptWindow.show()
-      promptWindow.on('closed', function () {
-        eventRet.returnValue = promptResponse
-        promptWindow = null
-      })
+      console.log('OK')
+    //   var promptWindow = new BrowserWindow({
+    //     parent: mainWindow,
+    //     modal: true,
+    //     width: 820,
+    //     height: 460,
+    //     show: false,
+    //     resizable: true,
+    //   })
+    //   console.log(promptWindow.width, promptWindow.height)
+    //   promptWindow.setSize(1220, 360)
+    //   console.log(promptWindow.width, promptWindow.height)
+    //   const promptHtml = [
+    //     '<label id="label" for="value">', arg.text, '</label>',
+    //     '<input id="value" value="', arg.defaultText || '', '" autofocus />',
+    //     '<button onclick="require(\'electron\').ipcRenderer.send(\'prompt-response\', document.getElementById(\'val\').value);window.close()">Continuer</button>',
+    //     '<style>body {font-family: sans-serif;} button {float:right; margin-left: 10px;} label,input {margin-bottom: 10px; width: 100%; display:block;}</style>'].join('')
+    //     promptWindow.loadURL('data:text/html,' + promptHtml)
+    //     promptWindow.webContents.executeJavaScript('console.log("COUCOU")', true)
+    // .then((result) => {
+    //   console.log(result) // Will be the JSON object from the fetch call
+    // })
+    //     promptWindow.once('ready-to-show', () => {
+
+    //       promptWindow.show()
+    //     })
+    //     promptWindow.on('closed', function () {
+    //     eventRet.returnValue = promptResponse
+    //     promptWindow = null
+    //   })
     })
     ipcMain.on('prompt-response', function (event, arg) {
       if (arg === '') { arg = null }

@@ -28,7 +28,7 @@
       font-family: monospace;
       font-size:14px;
       overflow:auto;
-      height:100%;
+      height:calc(100% - 32px);
       width:100%;
   }
   #eyo-console-area:focus {
