@@ -344,7 +344,7 @@ eYo.Const.Event = {
 }
 
 eYo.XmlKey = {
-  INPUT: 'eyo:input', // attribute name
+  SLOT: 'eyo:slot', // attribute name
   LIST: 'eyo:list',
   FLOW: 'eyo:flow',
   SUITE: 'eyo:suite',

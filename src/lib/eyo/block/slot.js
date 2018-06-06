@@ -598,7 +598,7 @@ eYo.Slot.prototype.save = function (element, optNoId) {
             var child = eYo.Xml.blockToDom(target, optNoId)
             if (child.childNodes.length > 0) {
               if (!xml || !xml.noInputName) {
-                child.setAttribute(eYo.Xml.INPUT, this.key)
+                child.setAttribute(eYo.Xml.SLOT, this.key)
               }
               goog.dom.appendChild(element, child)
               return child
@@ -612,7 +612,7 @@ eYo.Slot.prototype.save = function (element, optNoId) {
           if (child.childNodes.length > 0 || child.hasAttributes()) {
             if (!xml || !xml.noInputName) {
               if (this.inputType === Blockly.INPUT_VALUE) {
-                child.setAttribute(eYo.XmlKey.INPUT, this.key)
+                child.setAttribute(eYo.XmlKey.SLOT, this.key)
               } else if (this.inputType === Blockly.NEXT_STATEMENT) {
                 child.setAttribute(eYo.XmlKey.FLOW, this.key)
               }
@@ -626,7 +626,7 @@ eYo.Slot.prototype.save = function (element, optNoId) {
   }.call(this))
   if (!out && this.isRequiredToDom()) {
     var child = goog.dom.createDom('eyo:placeholder')
-    child.setAttribute(eYo.XmlKey.INPUT, this.key)
+    child.setAttribute(eYo.XmlKey.SLOT, this.key)
     goog.dom.appendChild(element, child)
   }
 }
@@ -672,7 +672,7 @@ eYo.Slot.prototype.load = function (element) {
       for (var i = 0, child; (child = element.childNodes[i++]);) {
         if (goog.isFunction(child.getAttribute)) {
           if (this.inputType === Blockly.INPUT_VALUE) {
-            var attribute = child.getAttribute(eYo.Xml.INPUT)
+            var attribute = child.getAttribute(eYo.Xml.SLOT)
           } else if (this.inputType === Blockly.NEXT_STATEMENT) {
             attribute = child.getAttribute(eYo.Xml.FLOW)
           }
@@ -686,7 +686,7 @@ eYo.Slot.prototype.load = function (element) {
               var grandChild
               for (i = 0; (grandChild = child.childNodes[i++]);) {
                 if (goog.isFunction(grandChild.getAttribute)) {
-                  var name = grandChild.getAttribute(eYo.XmlKey.INPUT)
+                  var name = grandChild.getAttribute(eYo.XmlKey.SLOT)
                   var input = target.eyo.getInput(target, name)
                   if (input) {
                     if (!input.connection) {

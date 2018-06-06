@@ -36,7 +36,7 @@ goog.require('Blockly.Xml')
 goog.require('goog.dom');
 
 eYo.Xml = {
-  INPUT: 'eyo:input', // attribute name
+  SLOT: 'eyo:slot', // attribute name
   FLOW: 'eyo:flow', // attribute name
   NEXT: 'eyo:next', // attribute name
   DOTTED_NAME: 'eyo:dotted_name', // attribute name
@@ -339,8 +339,8 @@ eYo.Xml.blockToDom = (function () {
     if (block.eyo.locked_) {
       element.setAttribute(eYo.Xml.STATE, eYo.Xml.LOCKED)
     }
-    if (block.eyo instanceof eYo.DelegateSvg.Expr && goog.isNull(element.getAttribute(eYo.Xml.INPUT))) {
-      element.setAttribute(eYo.Xml.INPUT, '')
+    if (block.eyo instanceof eYo.DelegateSvg.Expr && goog.isNull(element.getAttribute(eYo.Xml.SLOT))) {
+      element.setAttribute(eYo.Xml.SLOT, '')
     }
     return element
   }
@@ -547,7 +547,7 @@ eYo.Xml.toDom = function (block, element, optNoId) {
     // the list blocks have no slots yet
     for (var i = 0, input; (input = block.inputList[i++]);) {
       if (!input.eyo.slot) {
-        blockToDom(input.connection, eYo.Xml.INPUT, input.name)
+        blockToDom(input.connection, eYo.Xml.SLOT, input.name)
       }
     }
     // the suite and the flow
@@ -654,7 +654,7 @@ eYo.Xml.domToBlock = (function () {
         if (prototypeName.length === 1) {
           prototypeName = prototypeName[0]
         } else if (!(prototypeName = (function () {
-          var where = goog.isDefAndNotNull(xmlBlock.getAttribute(eYo.Xml.INPUT)) ? eYo.T3.Expr : eYo.T3.Stmt
+          var where = goog.isDefAndNotNull(xmlBlock.getAttribute(eYo.Xml.SLOT)) ? eYo.T3.Expr : eYo.T3.Stmt
           for (var i = 0; i < prototypeName.length; i++) {
             var candidate = prototypeName[i]
             var C8r = eYo.DelegateSvg.Manager.get(candidate)
@@ -770,7 +770,7 @@ eYo.Xml.fromDom = function (block, element) {
     if (eyo instanceof eYo.DelegateSvg.List) {
       for (var i = 0, child; (child = element.childNodes[i++]);) {
         if (goog.isFunction(child.getAttribute)) {
-          var name = child.getAttribute(eYo.XmlKey.INPUT)
+          var name = child.getAttribute(eYo.XmlKey.SLOT)
           var input = eyo.getInput(block, name)
           if (input) {
             if (!input.connection) {
@@ -856,7 +856,7 @@ goog.provide('eYo.Xml.Call')
 console.warn('convert print statement to print expression and conversely, top blocks only')
 eYo.Xml.Call.domToBlock = function (element, workspace) {
   if (element.nodeName.toLowerCase() === eYo.Xml.CALL) {
-    var input = element.getAttribute(eYo.Xml.INPUT)
+    var input = element.getAttribute(eYo.Xml.SLOT)
     if (goog.isDefAndNotNull(input)) {
       var type = eYo.T3.Expr.call_expr
     } else {
