@@ -427,6 +427,9 @@ eYo.DelegateSvg.prototype.getMenuTarget = function (block) {
  */
 eYo.DelegateSvg.prototype.skipRendering = function () {
   ++this.skipRendering_
+  if (eYo.Const.trackSkipRendering) {
+    console.log('skipRendering', this.block_.type, this.block_.id)
+  }
 }
 
 /**
@@ -436,6 +439,9 @@ eYo.DelegateSvg.prototype.skipRendering = function () {
 eYo.DelegateSvg.prototype.unskipRendering = function () {
   --this.skipRendering_
   goog.asserts.assert(this.skipRendering_ >= 0, 'BALANCE FAILURE: skipRendering')
+  if (eYo.Const.trackSkipRendering) {
+    console.log('unskipRendering', this.block_.type, this.block_.id)
+  }
 }
 
 /**
@@ -1361,9 +1367,8 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
                 block.eyo.skipRendering()
                 B.outputConnection.connect(input.connection)
               } finally {
-                B.eyo.unskipRendering()
                 block.eyo.unskipRendering()
-                // do nothing
+                B.eyo.unskipRendering()
               }
             }
           }
@@ -2691,7 +2696,7 @@ eYo.DelegateSvg.prototype.getDistanceFromVisible = function (block, newLoc) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return {boolean}
  */
-eYo.DelegateSvg.prototype.translate = function (block, dx, dy) {
+eYo.DelegateSvg.prototype.setOffset = function (block, dx, dy) {
   // Workspace coordinates.
   block = block || this.block_
   if (!this.svgShapeGroup_) {

@@ -244,6 +244,7 @@ eYo.WorkspaceDelegate.prototype.getFlyoutsForCategory = function (category) {
     ]
     case 'intermediate':
     return [
+      eYo.T3.Stmt.any_stmt,
       eYo.T3.Expr.parenth_form,
       eYo.T3.Expr.list_display,
       eYo.T3.Expr.set_display,
@@ -261,7 +262,6 @@ eYo.WorkspaceDelegate.prototype.getFlyoutsForCategory = function (category) {
     return [
       eYo.T3.Expr.any,
       eYo.T3.Stmt.expression_stmt,
-      eYo.T3.Stmt.any_stmt,
       eYo.T3.Expr.shift_expr,
       eYo.T3.Expr.and_expr,
       eYo.T3.Expr.xor_expr,

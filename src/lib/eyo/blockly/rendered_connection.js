@@ -845,6 +845,6 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
   var dy = this.targetConnection.y_ - this.y_;
   if (dx != 0 || dy != 0) {
     var block = this.targetBlock();
-    block.eyo.translate(block, -dx, -dy);
+    block.eyo.setOffset(block, -dx, -dy);
   }
 };
