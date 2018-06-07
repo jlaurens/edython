@@ -436,7 +436,7 @@ eYo.Connection.prototype.checkType_ = function (otherConnection) {
     if (c8nA.eyo.name_) {
       // c8nA is the connection of an input
       if (sourceA.eyo.locked_) {
-        return false
+        return c8nA.targetConnection === c8nB
       }
       // connections are inline
       if (c8nA.type === Blockly.NEXT_STATEMENT) {
@@ -469,7 +469,7 @@ eYo.Connection.prototype.checkType_ = function (otherConnection) {
     if (c8nB.eyo.name_) {
       // c8nB is the connection of an input
       if (sourceB.eyo.locked_) {
-        return false
+        return c8nA === c8nB.targetConnection
       }
       // connections are inline
       if (c8nB.type === Blockly.NEXT_STATEMENT) {
