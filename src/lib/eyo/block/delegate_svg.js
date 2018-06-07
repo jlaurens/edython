@@ -572,12 +572,20 @@ eYo.DelegateSvg.prototype.didRender_ = function (block) {
  * @private
  */
 eYo.DelegateSvg.prototype.renderMove_ = function (block) {
-  if (!block.workspace.isDragging() ||
-  (block.outputConnection && block.outputConnection.isConnected()) ||
-  (block.previousConnection && block.previousConnection.isConnected()) ||
-  (block.nextConnection && block.nextConnection.isConnected())) {
-    block.renderMoveConnections_()
-  }
+  block.renderMoveConnections_()
+  var blockTL = block.getRelativeToSurfaceXY()
+  this.foreachSlot(function () {
+    var input = this.input
+    if(input) {
+      var c8n = input.connection
+      if (c8n) {
+        c8n.moveToOffset(blockTL)
+        if (c8n.isConnected()) {
+          c8n.tighten_();
+        }
+      }
+    }
+  })
 }
 
 /**
@@ -1017,15 +1025,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
     if (target) {
       var root = target.getSvgRoot()
       if (root) {
-        var translate = 'translate(' + cursorX + ', 0)'
-        root.setAttribute('transform', translate)
-        if (target.eyo.svgContourGroup_) {
-          target.eyo.svgContourGroup_.setAttribute('transform', translate)
-          target.eyo.svgShapeGroup_.setAttribute('transform', translate)
-        }
-        if (!target.eyo.skipRendering_) {
-          target.eyo.shouldSeparateField = (target.eyo.wrapped_ || target.eyo.locked_) && io.shouldSeparateField
-        }
+        c8n.tighten_()
         target.render()
         io.shouldSeparateField = (target.eyo.wrapped_ || target.eyo.locked_) && target.eyo.shouldSeparateField
         var bBox = target.getHeightWidth()

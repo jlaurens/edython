@@ -155,8 +155,8 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuiteInput_ = function (io) {
       var target = c8n.targetBlock()
       var root = target.getSvgRoot()
       if (root) {
-        target.render()
         c8n.tighten_()
+        target.render()
       }
     }
     io.block.height = eYo.Font.lineHeight() * io.block.eyo.getStatementCount(io.block)
