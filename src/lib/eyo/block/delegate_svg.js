@@ -483,6 +483,9 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
       }
     }
     this.didRender_(block)
+    if (eYo.traceOutputConnection && block.outputConnection) {
+      console.log('block.outputConnection', block.outputConnection.x_, block.outputConnection.y_)
+    }
   } finally {
     this.unskipRendering()
     goog.asserts.assert(!this.skipRendering_, 'FAILURE')
@@ -536,25 +539,28 @@ eYo.DelegateSvg.prototype.wrapped_ = undefined
  */
 eYo.DelegateSvg.prototype.willRender_ = function (block) {
   if (block.svgGroup_) {
-    if (this.locked_ && block.outputConnection && block.getSurroundParent()) {
-      goog.dom.classlist.add(/** @type {!Element} */(block.svgGroup_), 'eyo-locked')
-    } else {
-      goog.dom.classlist.remove(/** @type {!Element} */(block.svgGroup_), 'eyo-locked')
+    var F = this.locked_ && block.outputConnection && block.getSurroundParent()
+      ? goog.dom.classlist.add
+      : goog.dom.classlist.remove
+    var FF = function (elt, classname) {
+      if (/** @type {!Element} */(elt)) {
+        F(elt, classname)
+      }
     }
+    FF(block.svgGroup_, 'eyo-locked')
+    FF(this.svgPathShape_, 'eyo-locked')
+    FF(this.svgPathContour_, 'eyo-locked')
+    FF(this.svgPathCollapsed_, 'eyo-locked')
+    FF(this.svgPathHighlight_, 'eyo-locked')
+      // change the class of the shape on error
+    F = Object.keys(this.errors).length
+      ? goog.dom.classlist.add
+      : goog.dom.classlist.remove
+    FF(this.svgPathShape_, 'eyo-error')
+    FF(this.svgPathContour_, 'eyo-error')
+    FF(this.svgPathCollapsed_, 'eyo-error')
+    FF(this.svgPathHighlight_, 'eyo-error')
   }
-  // change the class of the shape on error
-  var F = Object.keys(this.errors).length
-    ? goog.dom.classlist.add
-    : goog.dom.classlist.remove
-  var FF = function (elt) {
-    if (/** @type {!Element} */(elt)) {
-      F(elt, 'eyo-error')
-    }
-  }
-  FF(this.svgPathShape_)
-  FF(this.svgPathContour_)
-  FF(this.svgPathCollapsed_)
-  FF(this.svgPathHighlight_)
 }
 
 /**
@@ -802,7 +808,8 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     i: 0, // input index
     i_max: block.inputList.length,
     f: 0, // field index
-    /** ?Object */ field: undefined
+    /** ?Object */ field: undefined,
+    canStarSymbol: true
   }
   io.cursorX = this.getPaddingLeft(block)
   io.offsetX = 0
@@ -954,11 +961,12 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
           // add a separation
           io.cursorX += eYo.Font.space
         }
-        io.shouldSeparateField = eYo.XRE.id_continue.test(text[text.length - 1]) ||
+        io.starSymbol = (io.canStarSymbol && (['*', '@', '+', '-', '~', '.'].indexOf(text[text.length - 1]) >= 0))
+        io.canStarSymbol = false
+        io.shouldSeparateField = !io.starSymbol && (eYo.XRE.id_continue.test(text[text.length - 1]) ||
         eYo.XRE.operator.test(text[text.length - 1]) ||
         text[text.length - 1] === ':' ||
-        (text[text.length - 1] === '.' && !((io.field) instanceof eYo.FieldTextInput))
-        io.starSymbol = (io.f === 0 && (['*', '@', '+', '-', '~', '.'].indexOf(text[text.length - 1]) >= 0))
+        (text[text.length - 1] === '.' && !((io.field) instanceof eYo.FieldTextInput)))
       }
       var x_shift = eyo && !io.block.eyo.wrapped_ ? eyo.x_shift || 0 : 0
       root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
@@ -1026,6 +1034,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       var root = target.getSvgRoot()
       if (root) {
         c8n.tighten_()
+        target.eyo.shouldSeparateField = io.shouldSeparateField
         target.render()
         io.shouldSeparateField = (target.eyo.wrapped_ || target.eyo.locked_) && target.eyo.shouldSeparateField
         var bBox = target.getHeightWidth()
@@ -1342,11 +1351,9 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
         block = workspace.newBlock(model, id)
       } else {
         var type = eYo.Do.typeOfString(model)
-        if (type) {
-          if (!(block = workspace.newBlock(type, id))) {
-            console.warn('No block for model:', model)
-            return
-          }
+        if (!type || !(block = workspace.newBlock(type, id))) {
+          console.warn('No block for model:', model)
+          return
         }
       }
       block.eyo.completeWrapped_(block)
@@ -2575,7 +2582,9 @@ eYo.DelegateSvg.prototype.lock = function (block) {
       block, eYo.Const.Event.locked, null, this.locked_, true))
   }
   this.locked_ = true
-  if (block === eYo.SelectedConnection.set) { eYo.SelectedConnection.set(null) }
+  if (block === eYo.SelectedConnection.set) {
+    eYo.SelectedConnection.set(null)
+  }
   // list all the input for connections with a target
   var c8n
   if ((c8n = eYo.SelectedConnection.get()) && (block === c8n.getSourceBlock())) {
@@ -2593,6 +2602,16 @@ eYo.DelegateSvg.prototype.lock = function (block) {
       }
     }
   }
+  this.foreachSlot(function () {
+    if (this.input && (c8n = this.input.connection)) {
+      if ((target = c8n.targetBlock())) {
+        ans += target.eyo.lock(target)
+      }
+      if (c8n.type === Blockly.INPUT_VALUE) {
+        c8n.setHidden(true)
+      }      
+    }
+  })
   if ((c8n = block.nextConnection)) {
     if ((target = c8n.targetBlock())) {
       ans += target.eyo.lock(target)

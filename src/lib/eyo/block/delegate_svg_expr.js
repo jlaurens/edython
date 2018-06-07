@@ -275,7 +275,6 @@ eYo.DelegateSvg.Expr.prototype.canInsertParent = function (block, prototypeName,
  */
 eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, fill_holes) {
   var parentInputName = model.input
-  eYo.Events.disable()
   var parentBlock
   eYo.Events.Disabler.wrap(function () {
     parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, model)

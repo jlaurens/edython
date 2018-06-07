@@ -431,6 +431,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.data.numberOperator.set(newValue)
         this.data.bitwiseOperator.set(newValue)
+        console.log('operator.didChange', oldValue, newValue)
+        console.log('this.data.operator.bitwise', this.data.operator.bitwise, this.get())
+        console.log('this.data.numberOperator', this.data.numberOperator.get())
+        console.log('this.data.bitwiseOperator', this.data.bitwiseOperator.get())
       },
       validate: false,
     },
@@ -439,22 +443,26 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       noUndo: true,
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.data.operator.set(newValue)
-        if (this.data.operator.get() === this.get()) {
-          this.data.operator.bitwise = false
+        console.log('numberOperator.didChange', oldValue, newValue)
+        if (oldValue && (newValue !== oldValue)) {
+          this.data.operator.set(newValue)
+          this.data.operator.bitwise = (this.data.operator.get() !== this.get())
         }
-      }
+      },
+      validate: true
     },
     bitwiseOperator: {
       all: ['<<=', '>>=', '&=', '^=', '|='],
       noUndo: true,
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.data.operator.set(newValue)
-        if (this.data.operator.get() === this.get()) {
-          this.data.operator.bitwise = true
+        console.log('bitwiseOperator.didChange', oldValue, newValue)
+        if (oldValue && (newValue !== oldValue)) {
+          this.data.operator.set(newValue)
+          this.data.operator.bitwise = (this.data.operator.get() === this.get())
         }
-      }
+      },
+      validate: true
     }
   },
   slots: {

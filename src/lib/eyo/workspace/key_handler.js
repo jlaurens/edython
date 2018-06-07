@@ -71,7 +71,7 @@ eYo.KeyHandler = (function () {
   me.register = function (key, model) {
     // manage duplicates
     if (key.length) {
-      goog.asserts.assert(model, 'No model to register for ' + key)
+      goog.asserts.assert(goog.isString(model) || goog.isFunction(model) || goog.isString(model.type), 'No model to register for ' + key)
       for (var i = 0, s; (s = shortcuts_[i]); i++) {
         if (s.key === key) {
           shortcuts_[i] = {
@@ -466,9 +466,19 @@ eYo.KeyHandler = (function () {
                     console.log('************* I have already listened!')
                     return
                   }
-                  me.alreadyListened = true;
-                  (targetModel.key && me.handleModel(targetModel)) ||
-                  me.handleFirstMenuItemAction(targetModel)
+                  me.alreadyListened = true
+                  var key = targetModel.key
+                  var model = targetModel.model || targetModel
+                  if (key) {
+                    if (goog.isFunction(model)) {
+                      model(key)
+                      return
+                    }
+                    if (me.handleModel(model)) {
+                      return
+                    }
+                  }
+                  me.handleFirstMenuItemAction(model)
                 }, 100)// TODO be sure that this 100 is suffisant
               }
             }
@@ -630,47 +640,47 @@ for (K in Ks) {
 Ks = {
   '+': {
     type: eYo.T3.Expr.a_expr,
-    subtype: '+',
+    operator: '+',
     input: eYo.Key.LHS
   },
   '-': {
     type: eYo.T3.Expr.a_expr,
-    subtype: '-',
+    operator: '-',
     input: eYo.Key.LHS
   },
   '*': {
     type: eYo.T3.Expr.m_expr,
-    subtype: '*',
+    operator: '*',
     input: eYo.Key.LHS
   },
   '//': {
     type: eYo.T3.Expr.m_expr,
-    subtype: '//',
+    operator: '//',
     input: eYo.Key.LHS
   },
   '/': {
     type: eYo.T3.Expr.m_expr,
-    subtype: '/',
+    operator: '/',
     input: eYo.Key.LHS
   },
   '%': {
     type: eYo.T3.Expr.m_expr,
-    subtype: '%',
+    operator: '%',
     input: eYo.Key.LHS
   },
   '@': {
     type: eYo.T3.Expr.m_expr,
-    subtype: '@',
+    operator: '@',
     input: eYo.Key.LHS
   },
   '<<': {
     type: eYo.T3.Expr.shift_expr,
-    subtype: '<<',
+    operator: '<<',
     input: eYo.Key.LHS
   },
   '>>': {
     type: eYo.T3.Expr.shift_expr,
-    subtype: '>>',
+    operator: '>>',
     input: eYo.Key.LHS
   },
   '&': eYo.T3.Expr.and_expr,
@@ -717,56 +727,78 @@ Ks = {
   'yield …': eYo.T3.Stmt.yield_stmt,
   'raise': {
     type: eYo.T3.Stmt.raise_stmt,
-    subtype: 0
+    data: {
+      variant: 0
+    }
   },
   'raise …': {
     type: eYo.T3.Stmt.raise_stmt,
-    subtype: 1
+    data: {
+      variant: 1
+    }
   },
   'raise … from …': {
     type: eYo.T3.Stmt.raise_stmt,
-    subtype: 2
+    data: {
+      variant: 2
+    }
   },
   // 'from future import …': eYo.T3.Stmt.future_statement,
   'import …': eYo.T3.Stmt.import_stmt,
   '# comment': eYo.T3.Stmt.any_stmt,
   'global …': {
     type: eYo.T3.Stmt.global_nonlocal_stmt,
-    subtype: 'global'
+    data: {
+      variant: 'global'
+    }
   },
   'nonlocal …': {
     type: eYo.T3.Stmt.global_nonlocal_stmt,
-    subtype: 'nonlocal'
+    data: {
+      variant: 'nonlocal'
+    }
   },
   '@decorator': eYo.T3.Stmt.decorator,
   '"""…"""(def)': eYo.T3.Stmt.docstring_def_stmt,
   "'''…'''(def)": eYo.T3.Stmt.docstring_def_stmt,
   '"""…"""': {
     type: eYo.T3.Expr.longstringliteral,
-    subtype: '"""'
+    data: {
+      delimiter: '"""'
+    }
   },
   "'''…'''": {
     type: eYo.T3.Expr.longstringliteral,
-    subtype: "'''"
+    data: {
+      delimiter: "'''"
+    }
   },
   'print(…)': eYo.T3.Stmt.builtin_print_stmt,
   'input(…)': eYo.T3.Expr.builtin_input_expr,
   'range(…)': eYo.T3.Expr.builtin_range_expr,
   'list(…)': {
-    type: eYo.T3.Expr.builtin_call_expr,
-    callee: 'list'
+    type: eYo.T3.Expr.call_expr,
+    data: {
+      name: 'list'
+    }
   },
   'set(…)': {
-    type: eYo.T3.Expr.builtin_call_expr,
-    callee: 'set'
+    type: eYo.T3.Expr.call_expr,
+    data: {
+      name: 'set'
+    }
   },
   'len(…)': {
-    type: eYo.T3.Expr.builtin_call_expr,
-    callee: 'len'
+    type: eYo.T3.Expr.call_expr,
+    data: {
+      name: 'len'
+    }
   },
   'sum(…)': {
-    type: eYo.T3.Expr.builtin_call_expr,
-    callee: 'sum'
+    type: eYo.T3.Expr.call_expr,
+    data: {
+      name: 'sum'
+    }
   },
   'module as alias': eYo.T3.Expr.dotted_name_as,
   '(…)': eYo.T3.Expr.parenth_form,
