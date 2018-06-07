@@ -206,7 +206,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
 
   var deleteOption = {
     text: deleteList.length === 1 ? eYo.Msg.DELETE_BLOCK
-      : Blockly.Msg.DELETE_X_BLOCKS.replace('%1', String(deleteList.length)),
+      : Blockly.Msg.DELETE_X_BLOCKS.replace('{0}', String(deleteList.length)),
     enabled: deleteList.length > 0,
     callback: function () {
       if (ws.currentGesture_) {

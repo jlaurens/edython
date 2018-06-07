@@ -140,7 +140,7 @@ eYo.DelegateSvg.Group.prototype.shapePathDef_ =
  * @param io parameter.
  * @private
  */
-eYo.DelegateSvg.Group.prototype.renderDrawNextStatementInput_ = function (io) {
+eYo.DelegateSvg.Group.prototype.renderDrawSuiteInput_ = function (io) {
   /* eslint-disable indent */
   if (!io.canStatement || io.input.type !== Blockly.NEXT_STATEMENT) {
     return false
@@ -171,7 +171,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawNextStatementInput_ = function (io) {
 eYo.DelegateSvg.Group.prototype.renderDrawInput_ = function (io) {
   this.renderDrawDummyInput_(io) ||
     this.renderDrawValueInput_(io) ||
-      this.renderDrawNextStatementInput_(io)
+      this.renderDrawSuiteInput_(io)
 }
 
 /**

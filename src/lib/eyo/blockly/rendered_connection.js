@@ -388,10 +388,6 @@ eYo.Connection.prototype.isConnectionAllowed = function (candidate) {
   }
   var yorn = eYo.Connection.superClass_.isConnectionAllowed.call(this,
     candidate)
-  if (yorn) {
-    eYo.Connection.superClass_.isConnectionAllowed.call(this,
-      candidate)
-  }
   return yorn
 }
 
@@ -737,6 +733,22 @@ Blockly.RenderedConnection.prototype.closest = function (maxLimit, dxy, dy) {
   // END ADDENDUM ny JL
   return this.dbOpposite_.searchForClosest(this, maxLimit, dxy)
 }
+
+/**
+ * Returns the distance between this connection and another connection in
+ * workspace units.
+ * The computation takes into account the width of statement blocks.
+ * @param {!Blockly.Connection} otherConnection The other connection to measure
+ *     the distance to.
+ * @return {number} The distance between connections, in workspace units.
+ */
+Blockly.RenderedConnection.prototype.distanceFrom = function(otherConnection) {
+  var c8nA = this
+  var c8nB = otherConnection
+  var xDiff = c8nA.x_ - c8nB.x_
+  var yDiff = c8nA.y_ - c8nB.y_
+  return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+};
 
 eYo.RenderedConnection.savedDispose = Blockly.Connection.prototype.dispose
 /**

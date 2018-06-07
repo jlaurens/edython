@@ -309,7 +309,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
     var BB
     eYo.Events.Disabler.wrap(function () {
       BB = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.term)
-      BB.eyo.skipRendering = 1
+      BB.eyo.skipRendering()
       BB.eyo.data.modifier.set(modifier)
       BB.eyo.data.variant.set(flags)
     })
@@ -327,11 +327,14 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
             eYo.Events.setGroup(true)
             try {
               var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.term)
-              B.eyo.skipRendering = 1
-              B.eyo.data.modifier.set(modifier)
-              B.eyo.data.variant.set(flags)
-              B.eyo.skipRendering = 0
-              c8n.connect(B.outputConnection)
+              B.eyo.skipRendering()
+              try {
+                B.eyo.data.modifier.set(modifier)
+                B.eyo.data.variant.set(flags)
+                c8n.connect(B.outputConnection)  
+              } finally {
+                B.eyo.unskipRendering()
+              }
               B.eyo.beReady(block, true)
             } finally {
               eYo.Events.setGroup(false)

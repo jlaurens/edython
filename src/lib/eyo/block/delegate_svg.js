@@ -227,6 +227,7 @@ eYo.DelegateSvg.prototype.preInitSvg = function (block) {
 /**
  * Create and initialize the SVG representation of the block.
  * May be called more than once.
+ * No rendering.
  * @param {!Blockly.Block} block to be initialized.
  */
 eYo.DelegateSvg.prototype.postInitSvg = function (block) {
@@ -296,11 +297,11 @@ eYo.DelegateSvg.prototype.postInitSvg = function (block) {
  */
 eYo.DelegateSvg.prototype.parentWillChange = function (block, newParent) {
   if (block.parentBlock_) {
-    // this block was connected, so its path were located in the parents
+    // this block was connected, so its paths were located in the parents
     // groups.
     // First step, remove the relationship between the receiver
     // and the old parent, then link the receiver with the new parent.
-    // this second step is permformed in the `parentDidChange` method.
+    // this second step is performed in the `parentDidChange` method.
     var svgRoot = block.getSvgRoot()
     if (svgRoot) {
       // Move this block up the DOM.  Keep track of x/y translations.
@@ -421,6 +422,23 @@ eYo.DelegateSvg.prototype.getMenuTarget = function (block) {
 }
 
 /**
+ * Disable rendering.
+ * Must balance a `unskipRendering`.
+ */
+eYo.DelegateSvg.prototype.skipRendering = function () {
+  ++this.skipRendering_
+}
+
+/**
+ * Enable rendering.
+ * Must balance a `skipRendering`.
+ */
+eYo.DelegateSvg.prototype.unskipRendering = function () {
+  --this.skipRendering_
+  goog.asserts.assert(this.skipRendering_ >= 0, 'BALANCE FAILURE: skipRendering')
+}
+
+/**
  * Render the block.
  * Lays out and reflows a block based on its contents and settings.
  * @param {!Block} block
@@ -428,7 +446,7 @@ eYo.DelegateSvg.prototype.getMenuTarget = function (block) {
  *   If true, also render block's parent, grandparent, etc.  Defaults to true.
  */
 eYo.DelegateSvg.prototype.render = function (block, optBubble) {
-  if (this.skipRendering) {
+  if (this.skipRendering_) {
     return
   }
   // if (this.wrapped_ && !block.getParent()) {
@@ -438,28 +456,32 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
   //   return
   // }
   block = block || this.block_
-  this.skipRendering = 1
-  Blockly.Field.startCache()
-  this.minWidth = block.width = 0
-  block.rendered = true
-  this.willRender_(block)
-  this.renderDraw_(block)
-  this.layoutConnections_(block)
-  this.renderMove_(block)
+  this.skipRendering()
+  try {
+    Blockly.Field.startCache()
+    this.minWidth = block.width = 0
+    block.rendered = true
+    this.willRender_(block)
+    this.renderDraw_(block)
+    this.layoutConnections_(block)
+    this.renderMove_(block)
 
-  if (optBubble !== false) {
-    // Render all blocks above this one (propagate a reflow).
-    var parentBlock = block.getParent()
-    if (parentBlock) {
-      parentBlock.render(true)
-    } else {
-      // Top-most block.  Fire an event to allow scrollbars to resize.
-      block.workspace.resizeContents()
+    if (optBubble !== false) {
+      // Render all blocks above this one (propagate a reflow).
+      var parentBlock = block.getParent()
+      if (parentBlock) {
+        parentBlock.render(true)
+      } else {
+        // Top-most block.  Fire an event to allow scrollbars to resize.
+        block.workspace.resizeContents()
+      }
     }
+    this.didRender_(block)
+  } finally {
+    this.unskipRendering()
+    goog.asserts.assert(!this.skipRendering_, 'FAILURE')
+    Blockly.Field.stopCache()  
   }
-  this.didRender_(block)
-  this.skipRendering = 0
-  Blockly.Field.stopCache()
   // block.workspace.logAllConnections('didRender')
 }
 
@@ -995,7 +1017,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
           target.eyo.svgContourGroup_.setAttribute('transform', translate)
           target.eyo.svgShapeGroup_.setAttribute('transform', translate)
         }
-        if (!target.eyo.skipRendering) {
+        if (!target.eyo.skipRendering_) {
           target.eyo.shouldSeparateField = (target.eyo.wrapped_ || target.eyo.locked_) && io.shouldSeparateField
         }
         target.render()
@@ -1335,12 +1357,12 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
             var B = processModel(target, V)
             if (!target && B && B.outputConnection) {
               try {
-                ++B.eyo.skipRendering
-                ++block.eyo.skipRendering
+                B.eyo.skipRendering()
+                block.eyo.skipRendering()
                 B.outputConnection.connect(input.connection)
               } finally {
-                --B.eyo.skipRendering
-                --block.eyo.skipRendering
+                B.eyo.unskipRendering()
+                block.eyo.unskipRendering()
                 // do nothing
               }
             }
@@ -1374,50 +1396,56 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
  * @param {boolean} render
  */
 eYo.DelegateSvg.prototype.beReady = function (block, render) {
-  this.skipRendering = render? 0: 1
-  block = this.block_
-  block.initSvg()
-  this.foreachData(function () {
-    this.beReady()
-  })
-  // install all the fields and slots in the DOM
-  for (var k in this.fields) {
-    var field = this.fields[k]
-    if (!field.sourceBlock_) {
-      field.setSourceBlock(block)
-      field.init()
+  if (!render) {
+    this.skipRendering()
+  }
+  try {
+    block = this.block_
+    block.initSvg()
+    this.foreachData(function () {
+      this.beReady()
+    })
+    // install all the fields and slots in the DOM
+    for (var k in this.fields) {
+      var field = this.fields[k]
+      if (!field.sourceBlock_) {
+        field.setSourceBlock(block)
+        field.init()
+      }
     }
-  }
-  this.foreachSlot(function () {
-    this.beReady(render)
-  })
-  for (var i = 0, input; (input = block.inputList[i++]);) {
-    input.eyo.beReady(render)
-  }
-  this.inputSuite && this.inputSuite.eyo.beReady(render)
-  block.nextConnection && block.nextConnection.eyo.beReady(render)
-  this.consolidate(block)
-  this.synchronizeData(block)
-  this.synchronizeSlots(block)
-  var parent = block.outputConnection && block.outputConnection.targetBlock()
-  if (parent && parent.eyo.svgContourGroup_) {
-    goog.dom.insertChildAt(parent.eyo.svgContourGroup_, this.svgContourGroup_, 0)
-    goog.dom.classlist.add(/** @type {!Element} */(this.svgContourGroup_),
-      'eyo-inner')
-    goog.dom.appendChild(parent.eyo.svgShapeGroup_, this.svgShapeGroup_)
-    goog.dom.classlist.add(/** @type {!Element} */(this.svgShapeGroup_),
-      'eyo-inner')
-  } else {
-    goog.dom.insertChildAt(block.svgGroup_, this.svgContourGroup_, 0)
-    goog.dom.classlist.remove(/** @type {!Element} */(this.svgContourGroup_),
-      'eyo-inner')
-    goog.dom.insertSiblingBefore(this.svgShapeGroup_, this.svgContourGroup_)
-    goog.dom.classlist.remove(/** @type {!Element} */(this.svgShapeGroup_),
-      'eyo-inner')
-  }
-  this.skipRendering = 0
-  if (render) {
-    block.render()
+    this.foreachSlot(function () {
+      this.beReady(render)
+    })
+    for (var i = 0, input; (input = block.inputList[i++]);) {
+      input.eyo.beReady(render)
+    }
+    this.inputSuite && this.inputSuite.eyo.beReady(render)
+    block.nextConnection && block.nextConnection.eyo.beReady(render)
+    this.consolidate(block)
+    this.synchronizeData(block)
+    this.synchronizeSlots(block)
+    var parent = block.outputConnection && block.outputConnection.targetBlock()
+    if (parent && parent.eyo.svgContourGroup_) {
+      goog.dom.insertChildAt(parent.eyo.svgContourGroup_, this.svgContourGroup_, 0)
+      goog.dom.classlist.add(/** @type {!Element} */(this.svgContourGroup_),
+        'eyo-inner')
+      goog.dom.appendChild(parent.eyo.svgShapeGroup_, this.svgShapeGroup_)
+      goog.dom.classlist.add(/** @type {!Element} */(this.svgShapeGroup_),
+        'eyo-inner')
+    } else {
+      goog.dom.insertChildAt(block.svgGroup_, this.svgContourGroup_, 0)
+      goog.dom.classlist.remove(/** @type {!Element} */(this.svgContourGroup_),
+        'eyo-inner')
+      goog.dom.insertSiblingBefore(this.svgShapeGroup_, this.svgContourGroup_)
+      goog.dom.classlist.remove(/** @type {!Element} */(this.svgShapeGroup_),
+        'eyo-inner')
+    }
+  } finally {
+    if (render) {
+      block.render()
+    } else {
+      this.unskipRendering()
+    }
   }
   // do not render automatically; it may be too early
 }

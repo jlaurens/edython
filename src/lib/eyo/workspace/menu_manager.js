@@ -487,7 +487,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
     }
     menuItem = new eYo.MenuItem(
       descendantCount === 1 ? eYo.Msg.DELETE_BLOCK
-        : eYo.Msg.DELETE_X_BLOCKS.replace('%1', String(descendantCount)),
+        : eYo.Msg.DELETE_X_BLOCKS.replace('{0}', String(descendantCount)),
       {action: eYo.ID.DELETE_BLOCK,
         target: block})
     menuItem.setEnabled(true)

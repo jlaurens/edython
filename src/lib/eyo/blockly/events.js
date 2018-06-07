@@ -114,7 +114,7 @@ eYo.Data.prototype.setTrusted_ = function (newValue) {
   var eyo = this.owner_
   var block = eyo.block_
   try {
-    ++eyo.skipRendering
+    eyo.skipRendering()
     var oldValue = this.value_
     this.willChange(oldValue, newValue)
     if (!this.noUndo && Blockly.Events.isEnabled()) {
@@ -126,7 +126,7 @@ eYo.Data.prototype.setTrusted_ = function (newValue) {
     eyo.consolidate(block)
     this.synchronize(newValue)
   } finally {
-    --eyo.skipRendering
+    eyo.unskipRendering()
     eYo.Events.setGroup(false)
   }
   block.render() // render now or possibly later ?
