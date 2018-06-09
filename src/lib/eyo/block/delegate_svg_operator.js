@@ -76,6 +76,7 @@ eYo.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, 
 eYo.DelegateSvg.Operator.makeSubclass('u_expr', {
   data: {
     operator: {
+      main: true,
       all: ['-', '+', '~']
     }
   },

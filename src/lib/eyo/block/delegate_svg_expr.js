@@ -279,7 +279,9 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
   eYo.Events.Disabler.wrap(function () {
     parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, model)
   })
-
+  if (!parentBlock) {
+    return parentBlock
+  }
   if (model.input) {
     var parentInput = parentBlock.getInput(model.input)
     goog.asserts.assert(parentInput, 'No input named ' + model.input)

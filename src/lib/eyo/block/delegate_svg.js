@@ -916,6 +916,7 @@ eYo.DelegateSvg.prototype.renderDrawSlot_ = function (io) {
     }
     io.cursorX += io.offsetX
     io.offsetX = 0
+    io.canStarSymbol = false
   }
 }
 
