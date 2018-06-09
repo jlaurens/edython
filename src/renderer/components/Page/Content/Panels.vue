@@ -1,6 +1,6 @@
 <template>
   <div id="eyo-panels" v-bind:style="{ paddingTop: this.eYo.FlyoutDelegate.prototype.HEIGHT.toString().replace(',', '.') + 'px' }">
-    <div id="eyo-panels-toolbar" v-bind:style="{ height: this.eYo.FlyoutDelegate.prototype.HEIGHT.toString().replace(',', '.') + 'px', top: '-'+this.eYo.FlyoutDelegate.prototype.HEIGHT.toString().replace(',', '.') + 'px'}">
+    <div id="eyo-panels-toolbar" v-bind:style="{ fontFamily: eYo.Font.familySans, height: this.eYo.FlyoutDelegate.prototype.HEIGHT.toString().replace(',', '.') + 'px', top: '-'+this.eYo.FlyoutDelegate.prototype.HEIGHT.toString().replace(',', '.') + 'px'}">
       <div id="eyo-panels-toolbar-select" v-bind:style="{ paddingTop: this.eYo.FlyoutDelegate.prototype.MARGIN.toString().replace(',', '.') + 'px', paddingBottom: this.eYo.FlyoutDelegate.prototype.MARGIN.toString().replace(',', '.') + 'px', paddingLeft: this.Blockly.BlockSvg.TAB_WIDTH.toString().replace(',', '.') + 'px', paddingRight: this.Blockly.BlockSvg.TAB_WIDTH.toString().replace(',', '.') + 'px', fontFamily: this.eYo.Font.family,
       fontSize: this.eYo.Font.totalHeight + 'px'
   }">
@@ -88,9 +88,11 @@
   .dropdown-divider {
     margin: 0px;
   }
+  .btn {
+    font-size: 1.1rem;
+  }
   .dropdown-item {
-    font-family: DejavuSans;
-    font-size: 1rem;
+    font-size: 1.1rem;
     margin: 0;
     vertical-align: baseline;
     padding: 2px 20px 2px 8px;
