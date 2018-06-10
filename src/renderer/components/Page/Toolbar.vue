@@ -22,7 +22,8 @@
 </script>
 <style>
 #toolbar {
+  padding: 0.25rem;
   text-align:center;
-  height: 32px;
+  height: 2.5rem;
 }
 </style>

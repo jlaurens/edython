@@ -1,10 +1,10 @@
 <template>
-  <div id="eyo-panels" v-bind:style="{ paddingTop: this.eYo.FlyoutDelegate.prototype.HEIGHT.toString().replace(',', '.') + 'px' }">
-    <div id="eyo-panels-toolbar" v-bind:style="{ fontFamily: eYo.Font.familySans, height: this.eYo.FlyoutDelegate.prototype.HEIGHT.toString().replace(',', '.') + 'px', top: '-'+this.eYo.FlyoutDelegate.prototype.HEIGHT.toString().replace(',', '.') + 'px'}">
-      <div id="eyo-panels-toolbar-select" v-bind:style="{ paddingTop: this.eYo.FlyoutDelegate.prototype.MARGIN.toString().replace(',', '.') + 'px', paddingBottom: this.eYo.FlyoutDelegate.prototype.MARGIN.toString().replace(',', '.') + 'px', paddingLeft: this.Blockly.BlockSvg.TAB_WIDTH.toString().replace(',', '.') + 'px', paddingRight: this.Blockly.BlockSvg.TAB_WIDTH.toString().replace(',', '.') + 'px', fontFamily: this.eYo.Font.family,
+  <div id="eyo-panels">
+    <div id="eyo-panels-toolbar" v-bind:style="{ fontFamily: eYo.Font.familySans, height: this.eYo.FlyoutDelegate.prototype.HEIGHT.toString().replace(',', '.') + 'px'}">
+      <div id="eyo-panels-toolbar-select" v-bind:style="{ paddingTop: this.eYo.FlyoutDelegate.prototype.MARGIN.toString().replace(',', '.') + 'px', paddingBottom: this.eYo.FlyoutDelegate.prototype.MARGIN.toString().replace(',', '.') + 'px', fontFamily: this.eYo.Font.family,
       fontSize: this.eYo.Font.totalHeight + 'px'
   }">
-        <b-dropdown id="eyo-panels-toolbar-dropdown">
+        <b-dropdown id="eyo-panels-toolbar-dropdown" class="eyo-dropdown">
           <template slot="button-content">
             {{titles[selected]}}
           </template>
@@ -13,9 +13,9 @@
         </b-dropdown>
       </div>
     </div>
-    <div id="eyo-panels-content" v-bind:style="{ top: '-'+this.eYo.FlyoutDelegate.prototype.HEIGHT.toString().replace(',', '.') + 'px'}">
-      <panel-console v-bind:style="{display: selected === 'console'?'block':'none'}"></panel-console>
-      <panel-turtle v-bind:style="{display:selected === 'turtle'?'block':'none'}"></panel-turtle>
+    <div id="eyo-panels-content">
+      <panel-console v-bind:style="{ display: selected === 'console'? 'block': 'none'}"></panel-console>
+      <panel-turtle v-bind:style="{ display: selected === 'turtle'? 'block': 'none'}"></panel-turtle>
     </div>
   </div>
 </template>
@@ -44,13 +44,10 @@
 
 <style>
   #eyo-panels {
-    background-color: white;
     width: 100%;
     height: 100%;
   }
   #eyo-panels-toolbar {
-    position: relative;
-    background-color:rgba(221,221,221,0.8);
     width: 100%;
   }
   #eyo-panels-toolbar-select {
@@ -66,6 +63,8 @@
   }
   #eyo-panels-toolbar-dropdown .btn {
     width: 100%;
+  }
+  .eyo-dropdown .btn {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -74,7 +73,7 @@
     padding-bottom: 0px;
     vertical-align: baseline;
   }
-  #eyo-panels-toolbar-dropdown .btn::after {
+  .eyo-dropdown .btn::after {
     position: absolute;
     right: 5px;
     bottom: 5px;
@@ -102,9 +101,7 @@
     background-color: #d6e9f8;
   }
   #eyo-panels-content {
-    position: relative;
-    box-sizing: border-box;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 35px);
   }
 </style>

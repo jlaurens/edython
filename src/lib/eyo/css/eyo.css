@@ -23,9 +23,6 @@ body {
 
 .eyo-menu {
   background: #fff;
-  border-color: #ccc #666 #666 #ccc;
-  border-style: solid;
-  border-width: 1px;
   cursor: default;
   font: normal 13px Arial, sans-serif;
   margin: 0;
@@ -33,6 +30,8 @@ body {
   padding: 0;
   position: absolute;
   z-index: 20000; /* Arbitrary, but some apps depend on it... */
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.25rem;
 }
 
 .eyo-print-block-menu, .eyo-options-menu, .eyo-options-code-menu {

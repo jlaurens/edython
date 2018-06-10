@@ -142,7 +142,8 @@ eYo.Style.setControlRendererCssClass(
   'content',
   {'padding': '4px 6px'},
   'hover', // hover or highlight?
-  {'background-color': '#d6e9f8'}
+  {'background-color': '#d6e9f8',
+  'color': '#16181b'}
 )
 
 /**

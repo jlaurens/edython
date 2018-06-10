@@ -90,12 +90,6 @@ eYo.FlyoutDelegate.prototype.HEIGHT = eYo.Font.lineHeight() + 2 * eYo.FlyoutDele
  */
 eYo.Flyout.prototype.createDom = function(tagName) {
   /*
-  <svg>
-    <g class="eyo-flyout-background">
-      <path class="blocklyFlyoutBackground"/>
-    </g>
-    <g class="eyo-workspace">...</g>
-  </svg>
   <svg class="eyo-flyout">
     <g class="eyo-flyout-background">
       <path class="blocklyFlyoutBackground"/>

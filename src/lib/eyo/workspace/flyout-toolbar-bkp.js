@@ -51,25 +51,12 @@ eYo.FlyoutToolbar.prototype.doSelect = function(e) {
  * @param {Object} dom helper.
  * @return {!Element} The flyout toolbar's div.
  */
-eYo.FlyoutToolbar.prototype.createDom = function (dom) {
+eYo.FlyoutToolbar.prototype.createDom = function(dom) {
   if (this.div_) {
     return
   }
   /*
   <div class="eyo-flyout-toolbar">
-    <div class="dropdown">
-      <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Tutorials
-      <span class="caret"></span></button>
-      <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">HTML</a></li>
-        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">CSS</a></li>
-        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">JavaScript</a></li>
-        <li role="presentation" class="divider"></li>
-        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">About Us</a></li>
-      </ul>
-    </div>
-  </div>
-
     <div id="eyo-flyout-select">
       ....
     </div>
@@ -87,49 +74,47 @@ eYo.FlyoutToolbar.prototype.createDom = function (dom) {
   var svg = Blockly.utils.createSvgElement('svg', {
     'class': goog.getCssName(cssClass, 'control-image')
   }, this.control_)
-  this.controlPath_ = Blockly.utils.createSvgElement('path', null, svg)
-  // this.select_ = goog.dom.createDom(
-  //   goog.dom.TagName.DIV,
-  //   goog.getCssName(cssClass, 'select')
-  // )
-  // var select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
-  // // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
-  // // select.addItem(new eYo.Separator())
-  // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
-  // select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
-  // select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
-  // select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
-  // select.addItem(new eYo.Separator())
-  // select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
-  // select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
-  // select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
-  // select.setSelectedIndex(0)
-  // select.render(this.select_)
-  // this.listenableKey = select.listen(
-  //   goog.ui.Component.EventType.ACTION,
-  //   this.doSelect,
-  //   false,
-  //   this
-  // )
+  this.controlPath_ = Blockly.utils.createSvgElement('path', null , svg)
   this.select_ = goog.dom.createDom(
     goog.dom.TagName.DIV,
-    goog.getCssName(cssClass, 'select'),
-    eYo.flyoutDropDown
+    goog.getCssName(cssClass, 'select')
   )
-  /*
-  */
+  var select = new goog.ui.Select(null, new eYo.Menu(),  eYo.MenuButtonRenderer.getInstance())
+  // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
+  // select.addItem(new eYo.Separator())
+  select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
+  select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
+  select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
+  select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
+  select.addItem(new eYo.Separator())
+  select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
+  select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
+  select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
+  select.setSelectedIndex(0)
+  select.render(this.select_)
+  this.listenableKey = select.listen(
+    goog.ui.Component.EventType.ACTION,
+    this.doSelect,
+    false,
+    this
+  )
+  this.selectControl_ = select
   this.div_ = goog.dom.createDom(
     goog.dom.TagName.DIV,
     goog.getCssName(cssClass, 'toolbar'),
     this.select_,
-    this.control_
+    this.control_,
   )
-  this.onButtonDownWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mousedown', this, this.onButtonDown_)
-  this.onButtonEnterWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mouseenter', this, this.onButtonEnter_)
-  this.onButtonLeaveWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mouseleave', this, this.onButtonLeave_)
-  this.onButtonUpWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mouseup', this, this.onButtonUp_)
-  return this.div_
-}
+  this.onButtonDownWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mousedown',
+  this, this.onButtonDown_);
+  this.onButtonEnterWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mouseenter',
+  this, this.onButtonEnter_);
+  this.onButtonLeaveWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mouseleave',
+  this, this.onButtonLeave_);
+  this.onButtonUpWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mouseup',
+  this, this.onButtonUp_);
+  return this.div_;
+};
 
 eYo.setup.register(function () {
   var height = eYo.FlyoutToolbar.prototype.HEIGHT
@@ -144,7 +129,7 @@ eYo.setup.register(function () {
     // '-webkit-box-sizing: border-box;',
   '}')
   eYo.Style.insertCssRuleAt('.eyo-flyout-select {',
-    'background: rgba(221,221,221,0.8);',
+    'background: #ddd; opacity: 0.8;',
     'height: 100%;',
     'width: 100%;',
     'box-sizing: border-box;',
@@ -155,10 +140,9 @@ eYo.setup.register(function () {
     'padding-top:' + eYo.Padding.t() +'px;',
     'padding-bottom:' + eYo.Padding.b() +'px;',
   '}')
-  var radius = (height / 2) + 'px;'
-  console.warn('DEBUG', radius, controlWidth)
+  var radius = height / 2 + 'px;'
   eYo.Style.insertCssRuleAt('.eyo-flyout-control {',
-    'background: #ddd; opacity: 0.79;',
+    'background: #ddd; opacity: 0.8;',
     'border-top-right-radius:', radius,
     'border-bottom-right-radius:', radius,
     '-webkit-border-top-right-radius:', radius,
@@ -255,10 +239,7 @@ eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
   window.removeEventListener('mouseup', this.notOnButtonUp_)
   if (this.isDown) {
     this.isDown = false
-    var el = document.querySelector('#eyo-flyout-dropdown .dropdown.show')
-    if (e) {
-      goog.dom.classlist.remove('show')
-    }
+    this.selectControl_.setOpen(false)
     this.flyout_.eyo.slide()  
     this.onButtonLeave_(e)
     var gesture = this.flyout_.targetWorkspace_.getGesture(e);

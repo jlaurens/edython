@@ -120,7 +120,10 @@ let webConfig = {
     },
     extensions: ['.js', '.vue', '.json', '.css']
   },
-  target: 'web'
+  target: 'web',
+  node: {
+    fs: 'empty'
+  }
 }
 
 let morePlugins = function (plugins, where) {

@@ -19,6 +19,11 @@
 </script>
 <style>
   #page {
-    height: calc(100% - 32px);
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    height: 100%;
+    width: 100%;
+    padding:0.25rem;
   }
 </style>

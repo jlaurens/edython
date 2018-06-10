@@ -29,8 +29,11 @@
 
 <style>
   #page-content {
-    height: 100%;
-    padding:8px;
+    position: absolute;
+    top: 2.75rem;
+    height: calc(100% - 3rem);
+    width: calc(100% - 0.5rem);
+    padding: 0.25rem;
   }
   .gutter {
     background-color:transparent;

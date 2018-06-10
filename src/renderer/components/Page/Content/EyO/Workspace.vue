@@ -1,67 +1,69 @@
 <template>
-  <div id="eyo-workspace">
+  <div id='eyo-workspace'>
+    <eyo-workspace-toolbar></eyo-workspace-toolbar>
+    <eyo-workspace-content></eyo-workspace-content>
   </div>
 </template>
 
 <script>
+  import EyOWorkspaceToolbar from './Workspace/Toolbar'
+  import EyOWorkspaceContent from './Workspace/Content'
+
   export default {
     name: 'eyo-workspace',
-    mounted: function () {
-      var options = {
-        collapse: true,
-        comments: false,
-        disable: true,
-        maxBlocks: Infinity,
-        trashcan: false,
-        horizontalLayout: false,
-        toolboxPosition: 'start',
-        css: true,
-        media: 'static/media/',
-        rtl: false,
-        scrollbars: true,
-        sounds: true,
-        oneBasedIndex: true
-      }
-      eYo.workspace = Blockly.inject('eyo-workspace', options)
-      eYo.setup(eYo.workspace)
-      eYo.workspace.eyo.options = {
-        noLeftSeparator: true,
-        noDynamicList: false
-      }
-      eYo.KeyHandler.setup(document)
-      var b = eYo.DelegateSvg.newBlockReady(eYo.workspace, eYo.T3.Stmt.start_stmt)
-      b.render()
-      b.moveBy(50, 150)
-      function temp () {
-        var flyout = new eYo.Flyout(eYo.workspace)
-        goog.dom.insertSiblingAfter(
-          flyout.createDom('svg'), eYo.workspace.getParentSvg())
-        // workspace.flyout_ = flyout does not work, flyout too big
-        flyout.init(eYo.workspace)
-        flyout.autoClose = false
-        Blockly.Events.disable()
-        try {
-          flyout.show(eYo.DelegateSvg.T3s)//, seYo.T3.Expr.key_datum, eYo.T3.Stmt.if_part
-        } catch (err) {
-          console.log(err)
-        } finally {
-          Blockly.Events.enable()
+    components: {
+      'eyo-workspace-content': EyOWorkspaceContent,
+      'eyo-workspace-toolbar': EyOWorkspaceToolbar
+    },
+    methods: {
+      resize: function (e) {
+        // Compute the absolute coordinates and dimensions of eyoArea.
+        var eyoArea = document.getElementById('eyo-content')
+        var element = eyoArea
+        var x = 0
+        var y = 0
+        do {
+          x += element.offsetLeft
+          y += element.offsetTop
+          element = element.offsetParent
+        } while (element)
+        // Position eyoDiv over eyoArea.
+        var eyoDiv = window.document.getElementById('eyo-workspace')
+        eyoDiv.style.left = x + 'px'
+        eyoDiv.style.top = y + 'px'
+        eyoDiv.style.width = eyoArea.offsetWidth + 'px'
+        eyoDiv.style.height = eyoArea.offsetHeight + 'px'
+        if (window.Blockly) {
+          window.Blockly.svgResize(window.eYo.workspace)
         }
-        // eYo.workspace.flyout_ = flyout
-        eYo.flyout = flyout
       }
-      temp()
-      eYo.workspace.render()
+    },
+    mounted: function () {
+      window.addEventListener('resize', this.resize, false)
+      var self = this
+      this.$nextTick(function () {
+        eYo.App.bus.$on('size-did-change', self.resize)
+        self.resize()
+      })
     }
   }
 </script>
 
 <style>
+
   #eyo-workspace {
-    margin: 0;
-    padding: 0;
-    border-radius: 8px;
-    background-color: white;
-    height: 100%;
+  }
+
+  .eyoMainBackground {
+    /* stroke-width: 1; */
+    stroke: none;
+  }
+
+  .eyoSvg {
+    background-color: transparent;
+  }
+
+  .eyoToolboxDiv {
+    border-radius: 8px 0 0 8px;
   }
 </style>
