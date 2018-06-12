@@ -96,22 +96,37 @@ except:
         def __init__(self, el, callback = None):
             self.el = el
             assert self.el is not None, 'No element for id '+id
+            self.callback = callback
             sys.stdout.write = sys.stderr.write = lambda data: self.write(data)
             self.el.bind('keypress', lambda e: self._myKeyPress(e))
             self.el.bind('keydown', lambda e: self._myKeyDown(e))
             self.el.bind('click', lambda e: self._cursorToEnd(e))
-            v = sys.implementation.version
-            self.flush()
-            #self.write("Edython uses Brython %s.%s.%s on %s %s\n" % ( v[0], v[1], v[2], window.navigator.appName, window.navigator.appVersion))
-            #self.write('Type "copyright", "credits" or "license" for more information.')
-            self._prompt()
-            self.el.focus()
-            self._cursorToEnd()
-            self.callback = callback
+            self.restart()
     
         def write(self, data):
             self.el.value += str(data)
     
+        def erase(self):
+            self.flush()
+            self._prompt()
+            self.el.focus()
+            self._cursorToEnd()
+    
+        def restart(self):
+            self.ns = {
+                'credits':credits,
+                'copyright':copyright,
+                'license':license,
+                '__name__':'__main__'
+            }
+            self.flush()
+            #v = sys.implementation.version
+            #self.write("Edython uses Brython %s.%s.%s on %s %s\n" % ( v[0], v[1], v[2], window.navigator.appName, window.navigator.appVersion))
+            self.write('Type "copyright", "credits" or "license" for more information.\n')
+            self._prompt()
+            self.el.focus()
+            self._cursorToEnd()
+
         def _prompt(self):
             self.write('>>> ')
     
@@ -274,7 +289,16 @@ except:
 
 <script>
 export default {
-  name: 'panel-console-script'
+  name: 'panel-console-script',
+  mounted: function () {
+    console.log('CONSOLE SCRIPT MOUNTED')
+    eYo.App.bus.$on('erase-console', function () {
+      window.eYo.console.__class__.erase(window.eYo.console)
+    })
+    eYo.App.bus.$on('restart-console', function () {
+      window.eYo.console.__class__.restart(window.eYo.console)
+    })
+  }
 }
 eYo.DelegateSvg.prototype.runScript = function (block) {
   console.log('I have catched the train.')

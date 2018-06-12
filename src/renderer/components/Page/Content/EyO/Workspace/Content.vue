@@ -67,23 +67,23 @@
         sounds: true,
         oneBasedIndex: true
       }
-      eYo.flyoutDropDown = document.getElementById('eyo-flyout-dropdown')
-      goog.dom.removeNode(eYo.flyoutDropDown)
-      this.workspace = eYo.workspace = Blockly.inject('eyo-workspace-content', options)
-      eYo.setup(eYo.workspace)
-      eYo.workspace.eyo.options = {
+      eYo.App.flyoutDropDown = document.getElementById('eyo-flyout-dropdown')
+      goog.dom.removeNode(eYo.App.flyoutDropDown)
+      this.workspace = eYo.App.workspace = Blockly.inject('eyo-workspace-content', options)
+      eYo.setup(eYo.App.workspace)
+      eYo.App.workspace.eyo.options = {
         noLeftSeparator: true,
         noDynamicList: false
       }
       eYo.KeyHandler.setup(document)
-      var b = eYo.DelegateSvg.newBlockReady(eYo.workspace, eYo.T3.Stmt.start_stmt)
+      var b = eYo.DelegateSvg.newBlockReady(eYo.App.workspace, eYo.T3.Stmt.start_stmt)
       b.render()
       b.moveBy(50, 150)
-      var flyout = new eYo.Flyout(eYo.workspace)
+      var flyout = new eYo.Flyout(eYo.App.workspace)
       goog.dom.insertSiblingAfter(
-        flyout.createDom('svg'), eYo.workspace.getParentSvg())
+        flyout.createDom('svg'), eYo.App.workspace.getParentSvg())
       // workspace.flyout_ = flyout does not work, flyout too big
-      flyout.init(eYo.workspace)
+      flyout.init(eYo.App.workspace)
       flyout.autoClose = false
       Blockly.Events.disable()
       try {
@@ -93,10 +93,14 @@
       } finally {
         Blockly.Events.enable()
       }
-      // eYo.workspace.flyout_ = flyout
-      this.flyout = eYo.flyout = flyout
+      // eYo.App.workspace.flyout_ = flyout
+      this.flyout = eYo.App.flyout = flyout
       this.doSelect(this.selected)
       this.workspace.render()
+      var self = this
+      eYo.App.bus.$on('new-document', function () {
+        self.workspace.clear()
+      })
     }
   }
 </script>

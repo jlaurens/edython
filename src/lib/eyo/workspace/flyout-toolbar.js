@@ -37,7 +37,7 @@ eYo.FlyoutToolbar.prototype.HEIGHT = eYo.Font.lineHeight() + 2 * eYo.FlyoutToolb
  */
 eYo.FlyoutToolbar.prototype.doSelect = function(e) {
   var workspace = this.flyout_.targetWorkspace_
-  if (workspace) {
+  if (workspace && this.selectControl_) {
     var category = this.selectControl_.getValue()
     var list = workspace.eyo.getFlyoutsForCategory(category)
     if (list.length) {

@@ -17,7 +17,7 @@
     name: 'page-content',
     methods: {
       onDrag (size) {
-        window.eYo.App.bus.$emit('size-did-change', size)
+        eYo.App.bus.$emit('size-did-change', size)
       }
     },
     components: {
@@ -30,8 +30,8 @@
 <style>
   #page-content {
     position: absolute;
-    top: 2.75rem;
-    height: calc(100% - 3rem);
+    top: 3.25rem;
+    height: calc(100% - 3.5rem);
     width: calc(100% - 0.5rem);
     padding: 0.25rem;
   }

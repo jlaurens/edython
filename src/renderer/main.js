@@ -5,7 +5,6 @@ import App from './App'
 import router from './router'
 import store from './store'
 
-// using ES6 modules
 import VueSplit from 'vue-split-panel'
 import DrawerLayout from 'vue-drawer-layout'
 

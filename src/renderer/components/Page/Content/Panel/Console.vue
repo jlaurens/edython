@@ -9,11 +9,8 @@
   import PanelConsoleScript from './ConsoleScript'
   export default {
     name: 'panel-console',
-    mounted: function () {
-      console.log('CONSOLE MOUNTED')
-    },
     components: {
-      'panel-console-script': PanelConsoleScript
+      PanelConsoleScript
     }
   }
 </script>

@@ -12,8 +12,8 @@
   export default {
     name: 'page',
     components: {
-      'page-toolbar': PageToolbar,
-      'page-content': PageContent
+      PageToolbar,
+      PageContent
     }
   }
 </script>
