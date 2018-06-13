@@ -89,6 +89,7 @@ eYo.EditorOffset = {x: 0, y: 0}
  * Setupt the offset of the text editor.
  */
 eYo.setup.register(function () {
+  var ELECTRON = {x: 1, y: 2}
   var CHROME = {x: 1, y: -0.5}
   var GECKO = {x: 0, y: -1}
   var WEBKIT = {x: 1, y: -1}
@@ -96,7 +97,9 @@ eYo.setup.register(function () {
     eYo.EditorOffset = GECKO
   } else if (goog.userAgent.WEBKIT) {
     var userAgent = goog.userAgent.getNavigator().userAgent
-    if (userAgent && userAgent.search('Chrome') >= 0) {
+    if (userAgent && userAgent.search('Electron') >= 0) {
+      eYo.EditorOffset = ELECTRON
+    } else if (userAgent && userAgent.search('Chrome') >= 0) {
       eYo.EditorOffset = CHROME
     } else {
       eYo.EditorOffset = WEBKIT
