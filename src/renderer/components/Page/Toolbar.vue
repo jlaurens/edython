@@ -5,7 +5,7 @@
         <b-btn v-on:click="doNew()">
           <icon-base width="32" height="32" icon-name="new"><icon-new /></icon-base>
         </b-btn>
-        <b-btn>
+        <b-btn v-on:click="doSave()">
           <icon-base width="32" height="32" icon-name="save"><icon-save /></icon-base>
         </b-btn>
         <b-btn>
@@ -77,7 +77,7 @@
         window.Blockly.selected && window.Blockly.copy_(window.Blockly.selected)
       },
       doPaste: function () {
-        eYo.App.workspace.paste(window.Blockly.clipboardXml_)
+        window.Blockly.clipboardXml_ && eYo.App.workspace.paste(window.Blockly.clipboardXml_)
       },
       doCopyPythonCode: function () {
         var block = window.Blockly.selected
@@ -90,7 +90,15 @@
       doNew: function () {
         eYo.App.bus.$emit('new-document')
         eYo.App.workspace.clearUndo()
-        eYo.App.documentName = window.prompt('Nom du document ?', 'Sans Titre')
+        eYo.App.documentName = window.prompt('Nom du document ?')
+      },
+      doSave: function () {
+        var dom = eYo.Xml.workspaceToDom(eYo.App.workspace, true)
+        var oSerializer = new XMLSerializer()
+        var str = oSerializer.serializeToString(dom)
+        var deflate = this.pako.deflate(str)
+        str = this.pako.inflate(deflate, {to: 'string'})
+        console.log(str.length, deflate.length, str)
       }
     }
   }
