@@ -17,13 +17,9 @@ Vue.use(BootstrapVue)
 Vue.use(VueSplit)
 Vue.use(DrawerLayout)
 
-if (!process.env.IS_WEB) {
-  Vue.use(require('vue-electron'))
-}
+if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
-
-Vue.prototype.pako = require('pako')
 
 eYo.App.bus = new Vue()
 Vue.prototype.eYo = eYo

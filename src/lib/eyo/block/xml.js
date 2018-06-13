@@ -79,27 +79,6 @@ Blockly.Xml.domToText = function (dom) {
 }
 
 /**
- * Encode a block tree as XML.
- * @param {!Blockly.Workspace} workspace The workspace containing blocks.
- * @param {boolean=} opt_noId True if the encoder should skip the block IDs.
- * @return {!Element} XML document.
- */
-eYo.Xml.workspaceToDom = function(workspace, opt_noId) {
-  var root = goog.dom.createDom('xml', null,
-    goog.dom.createDom('eyo:workspace', null,
-      goog.dom.createDom('eyo:content')
-    )
-  );
-  root.setAttribute('xmlns:eyo', 'urn:edython:1.0')
-  var xml = root.firstChild.firstChild
-  var blocks = workspace.getTopBlocks(true);
-  for (var i = 0, block; block = blocks[i]; i++) {
-    xml.appendChild(Blockly.Xml.blockToDomWithXY(block, opt_noId));
-  }
-  return root;
-};
-
-/**
  * Decode an XML DOM and create blocks on the workspace.
  * overriden to support other kind of blocks
  * This is a copy with a tiny formal modification.
@@ -107,7 +86,7 @@ eYo.Xml.workspaceToDom = function(workspace, opt_noId) {
  * @param {!Blockly.Workspace} workspace The workspace.
  * @return {Array.<string>} An array containing new block IDs.
  */
-eYo.Xml.domToWorkspace = function (xml, workspace) {
+Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) {
   if (xml instanceof Blockly.Workspace) {
     var swap = xml
     xml = workspace
@@ -186,24 +165,9 @@ eYo.Xml.domToWorkspace = function (xml, workspace) {
             'another location.')
         }
         variablesFirst = false
-      } else if (name === 'eyo:workspace') {
+      } else {
         // for edython
-        var blockNodes = xmlChild.childNodes
-        var blockCount = blockNodes.length
-        var j = 0
-        while (j < blockCount) {
-          var xmlBlock = blockNodes[j++]
-          if (xmlBlock.tagName === 'eyo:content') {
-            blockNodes = xmlBlock.childNodes
-            blockCount = blockNodes.length
-            j = 0
-            while (j < blockCount) {
-              var xmlBlock = blockNodes[j++]
-              newBlock(xmlBlock)
-            }
-            break
-          }
-        }
+        newBlock(xmlChild)
       }
     }
   } finally {

@@ -114,7 +114,7 @@ eYo.FlyoutToolbar.prototype.createDom = function (dom) {
   this.select_ = goog.dom.createDom(
     goog.dom.TagName.DIV,
     goog.getCssName(cssClass, 'select'),
-    eYo.App.flyoutDropDown
+    eYo.flyoutDropDown
   )
   /*
   */
