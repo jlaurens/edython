@@ -15,10 +15,10 @@
       <b-button id ="eyo-panels-toolbar-restart" class="eyo-round-btn" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight + 'px'}" v-on:click="restart()" :disabled="selected !== 'console'" ><icon-base icon-name="restart"><icon-restart /></icon-base></b-button>
       <b-button id ="eyo-panels-toolbar-erase" class="eyo-round-btn" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight + 'px'}" v-on:click="erase()" :disabled="selected !== 'console'" ><icon-base icon-name="erase"><icon-erase /></icon-base></b-button>
     </div>
-    <b-tooltip target="eyo-panels-toolbar-restart" delay="500">
+    <b-tooltip target="eyo-panels-toolbar-restart" delay="500" boundary="viewport" position="topleft">
       Redémarrer l'interpréteur python
     </b-tooltip>
-    <b-tooltip target="eyo-panels-toolbar-erase" delay="500">
+    <b-tooltip target="eyo-panels-toolbar-erase" delay="500" boundary="viewport">
       Effacer l'affichage
     </b-tooltip>
     <div id="eyo-panels-content">

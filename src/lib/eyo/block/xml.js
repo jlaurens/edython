@@ -107,7 +107,7 @@ eYo.Xml.workspaceToDom = function(workspace, opt_noId) {
  * @param {!Blockly.Workspace} workspace The workspace.
  * @return {Array.<string>} An array containing new block IDs.
  */
-eYo.Xml.domToWorkspace = function (xml, workspace) {
+Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) {
   if (xml instanceof Blockly.Workspace) {
     var swap = xml
     xml = workspace
@@ -204,6 +204,9 @@ eYo.Xml.domToWorkspace = function (xml, workspace) {
             break
           }
         }
+      } else {
+        // for edython
+        newBlock(xmlChild)
       }
     }
   } finally {
