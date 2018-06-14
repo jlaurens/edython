@@ -1,42 +1,72 @@
 <template>
   <div id="toolbar">
     <b-button-toolbar key-nav  aria-label="Main toolbar">
-        <b-button-group class="mx-1">
-          <b-btn v-on:click="doSite('https://github.com/jlaurens/edython/')">
-            <img src="static/icon.svg" height="32" alt="Edython"/>
-          </b-btn>
-          <b-btn v-on:click="doSite('https://github.com/jlaurens/edython/issues')">
-            <icon-base width="32" height="32" icon-name="new"><icon-bug /></icon-base>
-          </b-btn>
-        </b-button-group>
-        <b-button-group class="mx-1">
-        <b-btn v-on:click="doNew()">
+      <b-button-group class="mx-1">
+        <b-btn id="toolbar-site" v-on:click=" doSite('https://github.com/jlaurens/edython/')">
+          <img src="static/icon.svg" height="32" alt="Edython"/>
+        </b-btn>
+        <b-btn id="toolbar-debug" v-on:click="doSite('https://github.com/jlaurens/edython/issues')">
+          <icon-base width="32" height="32" icon-name="new"><icon-bug /></icon-base>
+        </b-btn>
+      </b-button-group>
+      <b-button-group class="mx-1">
+        <b-btn id="toolbar-new" v-on:click="doNew()">
           <icon-base width="32" height="32" icon-name="new"><icon-new /></icon-base>
         </b-btn>
-        <b-btn v-on:click="doSave()">
+        <b-btn id="toolbar-save" v-on:click="doSave()">
           <icon-base width="32" height="32" icon-name="save"><icon-save /></icon-base>
         </b-btn>
-        <b-btn v-on:click="doOpen()">
+        <b-btn id="toolbar-open" v-on:click="doOpen()">
           <icon-base width="32" height="32" icon-name="load"><icon-load /></icon-base>
         </b-btn>
       </b-button-group>
       <b-button-group class="mx-1">
-        <b-btn v-on:click="doCopy()">
+        <b-btn id="toolbar-copy" v-on:click="doCopy()">
           <icon-base width="32" height="32" icon-name="copy"><icon-copy-paste variant="copy" /></icon-base>
         </b-btn>
-        <b-btn v-on:click="doPaste()">
+        <b-btn id="toolbar-paste" v-on:click="doPaste()">
           <icon-base width="32" height="32" icon-name="paste"><icon-copy-paste variant="paste"/></icon-base>
         </b-btn>
-        <b-btn v-on:click="doCopyPythonCode()">
+        <b-btn id="toolbar-python" v-on:click="doCopyPythonCode()">
           <icon-base width="32" height="32" icon-name="copy Python"><icon-copy-python /></icon-base>
         </b-btn>
-        <b-btn v-on:click="doUndo()" :disabled="!canUndo">
+        <b-btn id="toolbar-undo" v-on:click="doUndo()" :disabled="!canUndo">
           <icon-base width="32" height="32" icon-name="undo"><icon-undo-redo variant="undo"/></icon-base>
         </b-btn>
         <b-btn id="toolbar-redo" v-on:click="doRedo()" :disabled="!canRedo">
           <icon-base width="32" height="32"  icon-name="redo"><icon-undo-redo variant="redo"/></icon-base>
         </b-btn>
       </b-button-group>
+      <b-tooltip target="toolbar-site" placement="bottom" delay="500">
+        Aller au site <strong>Edython</strong>
+      </b-tooltip>
+      <b-tooltip target="toolbar-debug" placement="bottom" delay="500">
+        Notifier un bug
+      </b-tooltip>
+      <b-tooltip target="toolbar-new" placement="bottom" delay="500">
+        Nouveau
+      </b-tooltip>
+      <b-tooltip target="toolbar-open" placement="bottom" delay="500">
+        Ouvrir
+      </b-tooltip>
+      <b-tooltip target="toolbar-save" placement="bottom" delay="500">
+        Sauvegarder
+      </b-tooltip>
+      <b-tooltip target="toolbar-copy" placement="bottom" delay="500">
+        Copier les blocs
+      </b-tooltip>
+      <b-tooltip target="toolbar-paste" placement="bottom" delay="500">
+        Coller les blocs
+      </b-tooltip>
+      <b-tooltip target="toolbar-python" placement="bottom" delay="500">
+        Copier le code python
+      </b-tooltip>
+      <b-tooltip target="toolbar-undo" placement="bottom" delay="500">
+        Annuler l'action de blocs
+      </b-tooltip>
+      <b-tooltip target="toolbar-redo" placement="bottom" delay="500">
+        Refaire l'action de blocs
+      </b-tooltip>
     </b-button-toolbar>
   </div>
 </template>
