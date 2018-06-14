@@ -132,7 +132,7 @@
     width: 100%;
     height: calc(100% - 2.5rem);
   }
-  .eyo-round-btn {
+  .eyo-round-btn.btn {
     padding: 0px;
     top: 0.25rem;
     right: 0;
