@@ -483,9 +483,6 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
       }
     }
     this.didRender_(block)
-    if (eYo.traceOutputConnection && block.outputConnection) {
-      console.log('block.outputConnection', block.outputConnection.x_, block.outputConnection.y_)
-    }
   } finally {
     this.unskipRendering()
     goog.asserts.assert(!this.skipRendering_, 'FAILURE')
@@ -578,7 +575,10 @@ eYo.DelegateSvg.prototype.didRender_ = function (block) {
  * @private
  */
 eYo.DelegateSvg.prototype.renderMove_ = function (block) {
-  block.renderMoveConnections_()
+  if (!this.dragging_) {
+    // block dragger relies on this feature!!!
+    block.renderMoveConnections_()
+  }
   var blockTL = block.getRelativeToSurfaceXY()
   this.foreachSlot(function () {
     var input = this.input

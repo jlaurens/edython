@@ -730,7 +730,7 @@ Blockly.RenderedConnection.prototype.closest = function (maxLimit, dxy, dy) {
   if (this.hidden_) {
     return {}
   }
-  // END ADDENDUM ny JL
+  // END ADDENDUM by JL
   return this.dbOpposite_.searchForClosest(this, maxLimit, dxy)
 }
 
@@ -745,13 +745,6 @@ Blockly.RenderedConnection.prototype.closest = function (maxLimit, dxy, dy) {
 Blockly.RenderedConnection.prototype.distanceFrom = function(otherConnection) {
   var c8nA = this
   var c8nB = otherConnection
-  if (eYo.traceDistanceFrom) {
-    if (c8nA.type === Blockly.OUTPUT_VALUE) {
-      console.log('distanceFrom', c8nA.x_, c8nA.y_, c8nB.x_, c8nB.y_)
-    } else if (c8nB.type === Blockly.OUTPUT_VALUE) {
-      console.log('distanceFrom', c8nB.x_, c8nB.y_, c8nA.x_, c8nA.y_)
-    }
-  }
   var xDiff = c8nA.x_ - c8nB.x_
   var yDiff = c8nA.y_ - c8nB.y_
   if (c8nA.type === Blockly.INPUT_VALUE) {

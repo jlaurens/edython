@@ -109,7 +109,7 @@ eYo.MenuButtonRenderer.prototype.createButton = function(content, dom) {
   var svg = Blockly.utils.createSvgElement('svg', null, dropdown)
   var h = eYo.Font.lineHeight() / 9 * 4
   svg.style.width = h
-  svg.style.height = h * 0866
+  svg.style.height = h * 0.866
   var path = Blockly.utils.createSvgElement('path', {
     'class': goog.getCssName(cssClass, 'dropdown-image')
   } , svg)

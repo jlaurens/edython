@@ -551,3 +551,14 @@ eYo.BlockSvg.prototype.moveDuringDrag = function(newLoc) {
         this.svgGroup_.translate_ + this.svgGroup_.skew_);
   }
 };
+/**
+ * Recursively adds or removes the dragging class to this node and its children.
+ * Store `adding` in a property of the delegate.
+ * @param {boolean} adding True if adding, false if removing.
+ * @package
+ */
+eYo.BlockSvg.prototype.setDragging = function(adding) {
+  this.eyo.dragging_ = adding
+  eYo.BlockSvg.superClass_.setDragging.call(this, adding)
+};
+
