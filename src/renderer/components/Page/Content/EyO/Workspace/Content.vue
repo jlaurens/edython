@@ -13,7 +13,10 @@
       <b-dropdown-item-button v-on:click="selected = 'looping'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.looping}}</b-dropdown-item-button>
       <b-dropdown-item-button v-on:click="selected = 'function'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.function}}</b-dropdown-item-button>
     </b-dropdown>
-  </div>
+    <b-tooltip target="#svg-control-image" delay="500" position="right">
+      Afficher / Masquer le tiroir des blocs
+    </b-tooltip>
+    </div>
 </template>
 
 <script>
