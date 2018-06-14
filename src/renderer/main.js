@@ -18,6 +18,7 @@ Vue.use(VueSplit)
 Vue.use(DrawerLayout)
 
 if (!process.env.IS_WEB) {
+  Vue.prototype.electron = require('electron')
   Vue.use(require('vue-electron'))
 }
 Vue.http = Vue.prototype.$http = axios

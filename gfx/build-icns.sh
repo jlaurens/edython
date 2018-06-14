@@ -10,7 +10,7 @@ sips -z 32 32     MyIcon.iconset/icon_32x32@2x.png --out MyIcon.iconset/icon_32x
 sips -z 32 32     MyIcon.iconset/icon_32x32.png --out MyIcon.iconset/icon_16x16@2x.png
 sips -z 16 16     MyIcon.iconset/icon_32x32.png --out MyIcon.iconset/icon_16x16.png
 iconutil -c icns MyIcon.iconset
-mv MyIcon.icns edython.icns
+mv -f MyIcon.icns icon.icns
 mkdir -p ../build/icons
 cp -f edython.icns ../build/icons/icon.icns
 cp -f MyIcon.iconset/icon_256x256.png ../build/icons/256x256.png

@@ -1,7 +1,12 @@
 <template>
   <div id="toolbar">
     <b-button-toolbar key-nav  aria-label="Main toolbar">
-      <b-button-group class="mx-1">
+        <b-button-group class="mx-1">
+          <b-btn v-on:click="doSite()">
+            <img src="static/icon.svg" height="32" alt="Edython"/>
+          </b-btn>
+        </b-button-group>
+        <b-button-group class="mx-1">
         <b-btn v-on:click="doNew()">
           <icon-base width="32" height="32" icon-name="new"><icon-new /></icon-base>
         </b-btn>
@@ -60,6 +65,15 @@
       IconCopyPython
     },
     methods: {
+      doSite: function () {
+        var url = 'https://github.com/jlaurens/edython/'
+        if (this.electron && this.electron.shell) {
+          this.electron.shell.openExternal(url)
+        } else {
+          var win = window.open(url, '_blank')
+          win.focus()
+        }
+      },
       canUndo: function () {
         console.log(eYo.App.workspace.undoStack_.length)
         return eYo.App.workspace && (eYo.App.workspace.undoStack_.length > 0)

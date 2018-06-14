@@ -196,6 +196,10 @@ let morePlugins = function (plugins, where) {
         {
           from: path.resolve(__dirname, '../font/*.woff'),
           to: path.resolve(__dirname, '../dist/'+where+'/static/')
+        },
+        {
+          from: path.resolve(__dirname, '../gfx/icon.svg'),
+          to: path.resolve(__dirname, '../dist/'+where+'/static/icon.svg')
         }
       ],
       {
