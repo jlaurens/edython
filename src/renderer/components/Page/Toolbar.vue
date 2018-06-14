@@ -2,8 +2,11 @@
   <div id="toolbar">
     <b-button-toolbar key-nav  aria-label="Main toolbar">
         <b-button-group class="mx-1">
-          <b-btn v-on:click="doSite()">
+          <b-btn v-on:click="doSite('https://github.com/jlaurens/edython/')">
             <img src="static/icon.svg" height="32" alt="Edython"/>
+          </b-btn>
+          <b-btn v-on:click="doSite('https://github.com/jlaurens/edython/issues')">
+            <icon-base width="32" height="32" icon-name="new"><icon-bug /></icon-base>
           </b-btn>
         </b-button-group>
         <b-button-group class="mx-1">
@@ -13,7 +16,7 @@
         <b-btn v-on:click="doSave()">
           <icon-base width="32" height="32" icon-name="save"><icon-save /></icon-base>
         </b-btn>
-        <b-btn>
+        <b-btn v-on:click="doOpen()">
           <icon-base width="32" height="32" icon-name="load"><icon-load /></icon-base>
         </b-btn>
       </b-button-group>
@@ -40,6 +43,7 @@
 
 <script>
   import IconBase from '../IconBase.vue'
+  import IconBug from '../Icon/IconBug.vue'
   import IconNew from '../Icon/IconNew.vue'
   import IconSave from '../Icon/IconSave.vue'
   import IconLoad from '../Icon/IconLoad.vue'
@@ -57,6 +61,7 @@
     },
     components: {
       IconBase,
+      IconBug,
       IconNew,
       IconLoad,
       IconSave,
@@ -65,8 +70,7 @@
       IconCopyPython
     },
     methods: {
-      doSite: function () {
-        var url = 'https://github.com/jlaurens/edython/'
+      doSite: function (url) {
         if (this.electron && this.electron.shell) {
           this.electron.shell.openExternal(url)
         } else {
@@ -104,15 +108,93 @@
       doNew: function () {
         eYo.App.bus.$emit('new-document')
         eYo.App.workspace.clearUndo()
-        eYo.App.documentName = window.prompt('Nom du document ?')
+      },
+      doOpen: function () {
+        this.doNew()
+        // const {dialog} = require('electron').remote
+        const remote = require('electron').remote
+        const app = remote.app
+        let documentsFolder = app.getPath('documents')
+        let path = require('path')
+        var defaultPath = path.join(documentsFolder, 'Edython')
+        var fs = require('fs')
+        if (!fs.existsSync(defaultPath)) {
+          fs.mkdirSync(defaultPath)
+        }
+        remote.dialog.showOpenDialog({
+          defaultPath: defaultPath,
+          filters: [{
+            name: 'Edython', extensions: ['eyo']
+          }],
+          properties: [
+            'openFile'
+          ]
+        }, (fileNames) => {
+          var fileName = fileNames[0]
+          if (fileName === undefined) {
+            console.log('Opération annulée')
+            return
+          }
+          fs.readFile(fileName, (err, content) => {
+            if (err) {
+              alert('An error ocurred reading the file ' + err.message)
+              return
+            }
+            // let dom = eYo.Xml.workspaceToDom(eYo.App.workspace, true)
+            // let oSerializer = new XMLSerializer()
+            // let content = oSerializer.serializeToString(dom)
+            // let deflate = this.pako.gzip(content) // use gzip to ungzip from the CLI
+            let inflate = this.pako.ungzip(content, {to: 'string'}) // use gzip to ungzip from the CLI
+            var parser = new DOMParser()
+            try {
+              var dom = parser.parseFromString(inflate, 'application/xml')
+              eYo.Xml.domToWorkspace(dom.documentElement, eYo.App.workspace)
+            } catch (err) {
+              console.log('ERROR:', err)
+            }
+          })
+        })
       },
       doSave: function () {
-        var dom = eYo.Xml.workspaceToDom(eYo.App.workspace, true)
-        var oSerializer = new XMLSerializer()
-        var str = oSerializer.serializeToString(dom)
-        var deflate = this.pako.deflate(str)
-        str = this.pako.inflate(deflate, {to: 'string'})
-        console.log(str.length, deflate.length, str)
+        let dom = eYo.Xml.workspaceToDom(eYo.App.workspace, true)
+        let oSerializer = new XMLSerializer()
+        let content = oSerializer.serializeToString(dom)
+        let deflate = this.pako.gzip(content) // use gzip to ungzip from the CLI
+
+        const {dialog} = require('electron').remote
+
+        const remote = require('electron').remote
+        const app = remote.app
+        let documentsFolder = app.getPath('documents')
+        let path = require('path')
+        var defaultPath = path.join(documentsFolder, 'Edython')
+        var fs = require('fs')
+        if (!fs.existsSync(defaultPath)) {
+          fs.mkdirSync(defaultPath)
+        }
+        defaultPath = path.join(defaultPath, 'Sans titre.eyo')
+        dialog.showSaveDialog({
+          defaultPath: defaultPath,
+          filters: [{
+            name: 'Edython', extensions: ['eyo']
+          }]
+        }, (fileName) => {
+          if (fileName === undefined) {
+            console.log('Opération annulée')
+            return
+          }
+          var dirname = path.dirname(fileName)
+          if (!fs.existsSync(dirname)) {
+            fs.mkdirSync(dirname)
+          }
+          // var fs = require('fs') // Load the File System to execute our common tasks (CRUD)
+          fs.writeFile(fileName, deflate, (err) => {
+            if (err) {
+              alert('An error ocurred creating the file ' + err.message)
+            }
+            // alert("The file has been succesfully saved")
+          })
+        })
       }
     }
   }

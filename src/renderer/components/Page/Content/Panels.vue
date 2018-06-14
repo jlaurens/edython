@@ -75,7 +75,7 @@
     position: relative;
     width: 100%;
     padding: 0.25rem;
-    margin-top: 0.25rem;
+    margin-top: 0;
     margin-bottom: 0.25rem;
   }
   #eyo-panels-toolbar-select {

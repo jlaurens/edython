@@ -25,9 +25,8 @@ function createWindow () {
     width: 1100,
     show: false
   })
-
   mainWindow.loadURL(winURL)
-
+  
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
   })
@@ -39,6 +38,8 @@ function createWindow () {
   })
 
   if (!process.env.IS_WEB) {
+    global.pathToDocumentsFolder = app.getPath('documents')
+    console.log('global.pathToDocumentsFolder', global.pathToDocumentsFolder)
     // Dans le processus principal .
     const {ipcMain} = require('electron')
     var promptResponse
@@ -121,49 +122,7 @@ if (!process.env.IS_WEB) {
       accelerator: 'CmdOrCtrl+O',
       role: 'open'
     }, {
-      type: 'separator'
-    }, {
-      label: 'Enregistrer',
-      accelerator: 'CmdOrCtrl+S',
-      role: 'save'
-    }, {
-      label: 'Enregistrer sous...',
-      accelerator: 'ALt+CmdOrCtrl+S',
-      role: 'saveas'
-    }]
-  }, {
-    label: 'Éditer',
-    submenu: [{
-      label: 'Undo',
-      accelerator: 'CmdOrCtrl+Z',
-      role: 'undo'
-    }, {
-      label: 'Redo',
-      accelerator: 'Shift+CmdOrCtrl+Z',
-      role: 'redo'
-    }, {
-      type: 'separator'
-    }, {
-      label: 'Cut',
-      accelerator: 'CmdOrCtrl+X',
-      role: 'cut'
-    }, {
-      label: 'Copy',
-      accelerator: 'CmdOrCtrl+C',
-      role: 'copy'
-    }, {
-      label: 'Paste',
-      accelerator: 'CmdOrCtrl+V',
-      role: 'paste'
-    }, {
-      label: 'Select All',
-      accelerator: 'CmdOrCtrl+A',
-      role: 'selectall'
-    }]
-  }, {
-    label: 'Vue',
-    submenu: [{
-      label: 'Recommencer',
+      label: 'Recharger',
       accelerator: 'CmdOrCtrl+R',
       click: function (item, focusedWindow) {
         if (focusedWindow) {
@@ -179,6 +138,76 @@ if (!process.env.IS_WEB) {
           focusedWindow.reload()
         }
       }
+    }, {
+      type: 'separator'
+    }, {
+      label: 'Enregistrer',
+      accelerator: 'CmdOrCtrl+S',
+      role: 'save'
+    }, {
+      label: 'Enregistrer sous...',
+      accelerator: 'ALt+CmdOrCtrl+S',
+      role: 'saveas'
+    }]
+  }, {
+    label: 'Éditer',
+    submenu: [{
+      label: 'Annuler',
+      accelerator: 'CmdOrCtrl+Z',
+      role: 'undo'
+    }, {
+      label: 'Refaire',
+      accelerator: 'Shift+CmdOrCtrl+Z',
+      role: 'redo'
+    }, {
+      type: 'separator'
+    }, {
+      label: 'Couper',
+      accelerator: 'CmdOrCtrl+X',
+      role: 'cut'
+    }, {
+      label: 'Copier',
+      accelerator: 'CmdOrCtrl+C',
+      role: 'copy'
+    }, {
+      label: 'Coller',
+      accelerator: 'CmdOrCtrl+V',
+      role: 'paste'
+    }, {
+      label: 'Tout sélectionner',
+      accelerator: 'CmdOrCtrl+A',
+      role: 'selectall'
+    }]
+  /* // }, {
+    // label: 'Vue',
+    // submenu: [
+      // }, {
+      //   type: 'separator'
+      // }, {
+      //   label: 'App Menu Demo',
+      //   click: function (item, focusedWindow) {
+      //     if (focusedWindow) {
+      //       const options = {
+      //         type: 'info',
+      //         title: 'Application Menu Demo',
+      //         buttons: ['Ok'],
+      //         message: 'This demo is for the Menu section, showing how to create a clickable menu item in the application menu.'
+      //       }
+      //       electron.dialog.showMessageBox(focusedWindow, options, function () {})
+      //     }
+      //   }
+    // }] */
+  }, {
+    label: 'Fenêtre',
+    role: 'window',
+    submenu: [{
+      label: 'Réduire',
+      accelerator: 'CmdOrCtrl+M',
+      role: 'minimize'
+    }, {
+      label: 'Fermer',
+      accelerator: 'CmdOrCtrl+W',
+      role: 'close'
     }, {
       label: 'Plein écran',
       accelerator: (function () {
@@ -207,33 +236,6 @@ if (!process.env.IS_WEB) {
           focusedWindow.toggleDevTools()
         }
       }
-      /* // }, {
-      //   type: 'separator'
-      // }, {
-      //   label: 'App Menu Demo',
-      //   click: function (item, focusedWindow) {
-      //     if (focusedWindow) {
-      //       const options = {
-      //         type: 'info',
-      //         title: 'Application Menu Demo',
-      //         buttons: ['Ok'],
-      //         message: 'This demo is for the Menu section, showing how to create a clickable menu item in the application menu.'
-      //       }
-      //       electron.dialog.showMessageBox(focusedWindow, options, function () {})
-      //     }
-      //   } */
-    }]
-  }, {
-    label: 'Fenêtre',
-    role: 'window',
-    submenu: [{
-      label: 'Réduire',
-      accelerator: 'CmdOrCtrl+M',
-      role: 'minimize'
-    }, {
-      label: 'Fermer',
-      accelerator: 'CmdOrCtrl+W',
-      role: 'close'
     }, {
       type: 'separator'
     }, {
