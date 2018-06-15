@@ -1,5 +1,8 @@
+goog.provide('Blockly.BlockDraggerFix')
+
 goog.require('Blockly.BlockDragger')
 goog.require('Blockly.BlockSvg.render')
+goog.require('Blockly.BlockDraggerFix')
 
 /**
  * Finish a block drag and put the block back on the workspace.

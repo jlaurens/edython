@@ -452,7 +452,7 @@ eYo.DelegateSvg.prototype.unskipRendering = function () {
  *   If true, also render block's parent, grandparent, etc.  Defaults to true.
  */
 eYo.DelegateSvg.prototype.render = function (block, optBubble) {
-  if (this.skipRendering_) {
+  if (this.skipRendering_ || this.isDragging_) {
     return
   }
   // if (this.wrapped_ && !block.getParent()) {
@@ -461,7 +461,7 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
   //   block.dispose()
   //   return
   // }
-  block = block || this.block_
+  block || (block = this.block_)
   this.skipRendering()
   try {
     Blockly.Field.startCache()
@@ -483,6 +483,9 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
       }
     }
     this.didRender_(block)
+    if (eYo.traceOutputConnection && block.outputConnection) {
+      console.log('block.outputConnection', block.outputConnection.x_, block.outputConnection.y_)
+    }
   } finally {
     this.unskipRendering()
     goog.asserts.assert(!this.skipRendering_, 'FAILURE')
@@ -575,10 +578,7 @@ eYo.DelegateSvg.prototype.didRender_ = function (block) {
  * @private
  */
 eYo.DelegateSvg.prototype.renderMove_ = function (block) {
-  if (!this.dragging_) {
-    // block dragger relies on this feature!!!
-    block.renderMoveConnections_()
-  }
+  block.renderMoveConnections_()
   var blockTL = block.getRelativeToSurfaceXY()
   this.foreachSlot(function () {
     var input = this.input

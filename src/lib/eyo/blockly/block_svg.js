@@ -558,7 +558,7 @@ eYo.BlockSvg.prototype.moveDuringDrag = function(newLoc) {
  * @package
  */
 eYo.BlockSvg.prototype.setDragging = function(adding) {
-  this.eyo.dragging_ = adding
+  this.eyo.isDragging_ = adding
   eYo.BlockSvg.superClass_.setDragging.call(this, adding)
 };
 

@@ -443,3 +443,18 @@ eYo.Flyout.prototype.setBackgroundPath_ = function(width, height) {
   }
   this.eyo.toolbar_.resize(width, height)
 };
+
+/**
+ * Copy a block from the flyout to the workspace and position it correctly.
+ * Edython adds a full rendering process.
+ * No rendering is made while blocks are dragging.
+ * @param {!Blockly.Block} oldBlock The flyout block to copy.
+ * @return {!Blockly.Block} The new block in the main workspace.
+ * @private
+ */
+eYo.Flyout.prototype.placeNewBlock_ = function(oldBlock) {
+  var block = eYo.Flyout.superClass_.placeNewBlock_.call(this, oldBlock)
+  block.setConnectionsHidden(false)
+  block.render()
+  return block;
+};
