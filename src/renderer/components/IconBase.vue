@@ -43,8 +43,8 @@ export default {
 
 <style scoped>
 svg {
-  display: inline-block;
-  vertical-align: middle;
-  margin-top:-0.125rem;
+  display: block;
+  margin: auto;
+  height:100%;
 }
 </style>

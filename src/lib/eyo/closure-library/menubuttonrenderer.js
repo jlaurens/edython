@@ -171,7 +171,6 @@ eYo.setup.register(function () {
     'white-space: nowrap;',
     'overflow: hidden;',
     'text-overflow: ellipsis;',
-    'padding-top:', ''+eYo.Padding.t(), 'px;',
   '}')
   eYo.Style.insertCssRuleAt('.eyo-menu-button-dropdown {',
     'position: absolute;',

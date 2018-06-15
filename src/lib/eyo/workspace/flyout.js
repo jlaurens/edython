@@ -68,15 +68,17 @@ eYo.Flyout = function(workspace) {
 }
 goog.inherits(eYo.Flyout, Blockly.VerticalFlyout)
 
-eYo.FlyoutDelegate.prototype.BUTTON_RADIUS = eYo.Font.lineHeight()/2
-eYo.FlyoutDelegate.prototype.BUTTON_MARGIN = eYo.Padding.t()
+var one_rem = parseInt(getComputedStyle(document.documentElement).fontSize)
+
+eYo.FlyoutDelegate.prototype.BUTTON_RADIUS = one_rem
+eYo.FlyoutDelegate.prototype.BUTTON_MARGIN = one_rem / 8
 eYo.Flyout.prototype.CORNER_RADIUS = 0
 
 eYo.FlyoutDelegate.prototype.TOP_MARGIN = 2*(eYo.FlyoutDelegate.prototype.BUTTON_RADIUS+eYo.FlyoutDelegate.prototype.BUTTON_MARGIN)
 eYo.FlyoutDelegate.prototype.BOTTOM_MARGIN = 16 // scroll bar width
 
-eYo.FlyoutDelegate.prototype.MARGIN = eYo.Padding.t()
-eYo.FlyoutDelegate.prototype.HEIGHT = eYo.Font.lineHeight() + 2 * eYo.FlyoutDelegate.prototype.MARGIN
+eYo.FlyoutDelegate.prototype.MARGIN = one_rem / 4
+eYo.FlyoutDelegate.prototype.HEIGHT = 2 * one_rem + 2 * eYo.FlyoutDelegate.prototype.MARGIN
 
 
 
@@ -295,28 +297,35 @@ eYo.FlyoutDelegate.prototype.slide = function(closed) {
   var x = targetWorkspaceMetrics.absoluteLeft;
   var n_steps = 50
   var n = 0
+  var steps = []
   var positions = []
   var x_min = closed? x: x - flyout.width_
   var x_max = closed? x - flyout.width_: x
+  steps[0] = 0
   positions[0] = x_min
-  for (n = 1; n < n_steps - 1; n++) {
-    positions[n] = x_min + Math.sin(n*Math.PI/n_steps/2)**2 * (x_max - x_min)
+  for (n = 1; n < n_steps; n++) {
+    step = Math.sin(n*Math.PI/n_steps/2)**2
+    steps[n] = closed? step: 1-step
+    positions[n] = x_min + step * (x_max - x_min)
   }
+  steps[n] = 1
   positions[n] = x_max
   var y = targetWorkspaceMetrics.absoluteTop;
   var self = this
   n = 0
   function frame() {
     if (n >= n_steps) {
-        clearInterval(id);
-        if ((self.closed = closed)) {
-          flyout.setVisible(false)
-        }
-        flyout.setBackgroundPath_(flyout.width_, flyout.height_)
-        delete self.slide_locked
-        flyout.targetWorkspace_.recordDeleteAreas()
-      } else {
-        flyout.positionAt_(flyout.width_, flyout.height_, positions[n], y)
+      clearInterval(id);
+      if ((self.closed = closed)) {
+        flyout.setVisible(false)
+      }
+      flyout.setBackgroundPath_(flyout.width_, flyout.height_)
+      delete self.slide_locked
+      flyout.targetWorkspace_.recordDeleteAreas()
+      self.oneStep(1)
+    } else {
+      flyout.positionAt_(flyout.width_, flyout.height_, positions[n], y)
+      self.oneStep(steps[n])
       // the scrollbar won't resize because the metrics of the workspace did not change
       var hostMetrics = flyout.workspace_.getMetrics()
       if (hostMetrics) {
@@ -325,6 +334,13 @@ eYo.FlyoutDelegate.prototype.slide = function(closed) {
       ++n
     }
   }
+};
+
+/**
+ * Subclassers will add there stuff here.
+ * @param {number} step betwwen 0 and 1.
+ */
+eYo.FlyoutDelegate.prototype.oneStep = function(step) {
 };
 
 /**

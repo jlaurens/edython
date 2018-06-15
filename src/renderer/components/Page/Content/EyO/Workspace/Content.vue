@@ -1,6 +1,7 @@
 <template>
   <div id="eyo-workspace-content">
-    <b-dropdown id="eyo-flyout-dropdown" class="eyo-dropdown">
+      <icon-base id="svg-control-image-v" icon-name="triangle"><icon-triangle /></icon-base>
+      <b-dropdown id="eyo-flyout-dropdown" class="eyo-dropdown">
       <template slot="button-content">
         {{titles[selected]}}
       </template>
@@ -13,15 +14,21 @@
       <b-dropdown-item-button v-on:click="selected = 'looping'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.looping}}</b-dropdown-item-button>
       <b-dropdown-item-button v-on:click="selected = 'function'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.function}}</b-dropdown-item-button>
     </b-dropdown>
-    <b-tooltip target="#svg-control-image" delay="500" position="right" boundary="viewport">
-      Afficher / Masquer le tiroir des blocs
-    </b-tooltip>
-    </div>
+  </div>
 </template>
 
 <script>
+  import IconBase from '../../../../IconBase.vue'
+  import IconTriangle from '../../../../Icon/IconTriangle.vue'
+  import IconBug from '../../../../Icon/IconBug.vue'
+
   export default {
     name: 'eyo-workspace-content',
+    components: {
+      IconBase,
+      IconTriangle,
+      IconBug
+    },
     data: function () {
       return {
         selected: 'basic',
@@ -104,6 +111,13 @@
       eYo.App.bus.$on('new-document', function () {
         self.workspace.clear()
       })
+      var oldSvg = document.getElementById('svg-control-image')
+      var newSvg = document.getElementById('svg-control-image-v')
+      oldSvg.parentNode.appendChild(newSvg)
+      console.warn('MOVED')
+      newSvg.parentNode.removeChild(oldSvg)
+      console.warn('REMOVED')
+      // oldSvg && newSvg && oldSvg.parentNode.replaceChild(oldSvg, newSvg)
     }
   }
 </script>
@@ -117,6 +131,9 @@
   }
   .eyo-flyout-select {
     opacity: 1;
+  }
+  .eyo-flyout-control {
+    vertical-align: middle;
   }
   #eyo-flyout-dropdown {
     opacity: 1;

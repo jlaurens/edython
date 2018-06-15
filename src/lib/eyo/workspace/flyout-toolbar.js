@@ -70,7 +70,7 @@ eYo.FlyoutToolbar.prototype.createDom = function (dom) {
     </div>
   </div>
 
-    <div id="eyo-flyout-select">
+    <div class="eyo-flyout-select">
       ....
     </div>
     <div class="eyo-flyout-control">
@@ -88,35 +88,40 @@ eYo.FlyoutToolbar.prototype.createDom = function (dom) {
     id: 'svg-control-image',
     class: goog.getCssName(cssClass, 'control-image')
   }, this.control_)
-  this.controlPath_ = Blockly.utils.createSvgElement('path', null, svg)
-  // this.select_ = goog.dom.createDom(
-  //   goog.dom.TagName.DIV,
-  //   goog.getCssName(cssClass, 'select')
-  // )
-  // var select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
-  // // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
-  // // select.addItem(new eYo.Separator())
-  // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
-  // select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
-  // select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
-  // select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
-  // select.addItem(new eYo.Separator())
-  // select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
-  // select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
-  // select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
-  // select.setSelectedIndex(0)
-  // select.render(this.select_)
-  // this.listenableKey = select.listen(
-  //   goog.ui.Component.EventType.ACTION,
-  //   this.doSelect,
-  //   false,
-  //   this
-  // )
-  this.select_ = goog.dom.createDom(
-    goog.dom.TagName.DIV,
-    goog.getCssName(cssClass, 'select'),
-    eYo.App.flyoutDropDown
-  )
+  this.controlPath_ = Blockly.utils.createSvgElement('path', {
+    id: "p-flyout-control"
+  }, svg)
+  if (eYo.App.flyoutDropDown) {
+    this.select_ = goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName(cssClass, 'select'),
+      eYo.App.flyoutDropDown
+    )  
+  } else {
+    this.select_ = goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName(cssClass, 'select')
+    )
+    var select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
+    // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
+    // select.addItem(new eYo.Separator())
+    select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
+    select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
+    select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
+    select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
+    select.addItem(new eYo.Separator())
+    select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
+    select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
+    select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
+    select.setSelectedIndex(0)
+    select.render(this.select_)
+    this.listenableKey = select.listen(
+      goog.ui.Component.EventType.ACTION,
+      this.doSelect,
+      false,
+      this
+    )  
+  }
   /*
   */
   this.div_ = goog.dom.createDom(
@@ -139,23 +144,19 @@ eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt(
     '.eyo-flyout-toolbar {',
     'position: absolute; z-index: 30; pointer-events: all;',
-    'height:' + height + 'px;',
-    // 'box-sizing: border-box;',
-    // '-moz-box-sizing: border-box;',
-    // '-webkit-box-sizing: border-box;',
+    'height: 2.25rem;',
+    'padding: 0.25rem;',
+    'margin: 0;',
+    'background: rgba(221,221,221,0.8);',
   '}')
   eYo.Style.insertCssRuleAt('.eyo-flyout-select {',
-    'background: rgba(221,221,221,0.8);',
     'height: 100%;',
     'width: 100%;',
-    'box-sizing: border-box;',
-    '-moz-box-sizing: border-box;',
-    '-webkit-box-sizing: border-box;',
-    'padding-left:' + Blockly.BlockSvg.TAB_WIDTH + 'px;',
-    'padding-right:' + Blockly.BlockSvg.TAB_WIDTH + 'px;',
-    'padding-top:' + eYo.Padding.t() +'px;',
-    'padding-bottom:' + eYo.Padding.b() +'px;',
+    'padding-left: 0.25rem;',
+    'padding-right:0.25rem;',
+    'margin: 0',
   '}')
+
   var radius = (height / 2) + 'px;'
   console.warn('DEBUG', radius, controlWidth)
   eYo.Style.insertCssRuleAt('.eyo-flyout-control {',
@@ -293,7 +294,7 @@ eYo.FlyoutToolbar.prototype.notOnButtonUp_ = function(e) {
  * @private
  */
 eYo.FlyoutToolbar.prototype.resize = function(width, height) {
-
+  // do nothing if there is no control path
   var height = this.HEIGHT
   var margin = this.MARGIN
   var big_radius = height / 2
@@ -301,7 +302,7 @@ eYo.FlyoutToolbar.prototype.resize = function(width, height) {
   var h = radius * 0.866
 
   this.div_.style.width = width + 'px'
-  this.div_.style.height = height + 'px'
+  // this.div_.style.height = height + 'px'
 
   var path = this.controlPath_
   if (this.flyout_.eyo.closed) {
@@ -346,7 +347,8 @@ eYo.setup.register(function () {
     'padding-right: 30px;',
     '}')
   eYo.Style.insertCssRuleAt('.eyo-flyout-toolbar .eyo-menu-button-caption {',
-    'color: white',
+    'color: white;',
+    'vertical-align: middle;',
   '}')
   eYo.Style.insertCssRuleAt('.eyo-menu-button-dropdown svg {',
     'position: absolute;',

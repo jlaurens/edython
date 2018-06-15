@@ -6,16 +6,32 @@ import router from './router'
 import store from './store'
 
 import VueSplit from 'vue-split-panel'
-import DrawerLayout from 'vue-drawer-layout'
 
 import BootstrapVue from 'bootstrap-vue'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+import VueTippy from 'vue-tippy'
+
 Vue.use(BootstrapVue)
 Vue.use(VueSplit)
-Vue.use(DrawerLayout)
+Vue.use(VueTippy, {
+  theme: 'light bordered',
+  flipDuration: 0,
+  inertia: true,
+  arrow: true,
+  animation: 'perspective',
+  duration: [600, 300],
+  delay: [600, 0],
+  popperOptions: {
+    modifiers: {
+      preventOverflow: {
+        enabled: true
+      }
+    }
+  }
+})
 
 if (!process.env.IS_WEB) {
   Vue.prototype.electron = require('electron')

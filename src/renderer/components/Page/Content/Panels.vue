@@ -12,15 +12,11 @@
           <b-dropdown-item-button v-on:click="selected = 'turtle'" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight}">{{titles.turtle}}</b-dropdown-item-button>
         </b-dropdown>
       </div>
-      <b-button id ="eyo-panels-toolbar-restart" class="eyo-round-btn" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight + 'px'}" v-on:click="restart()" :disabled="selected !== 'console'" ><icon-base icon-name="restart"><icon-restart /></icon-base></b-button>
-      <b-button id ="eyo-panels-toolbar-erase" class="eyo-round-btn" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight + 'px'}" v-on:click="erase()" :disabled="selected !== 'console'" ><icon-base icon-name="erase"><icon-erase /></icon-base></b-button>
+      <b-button id ="eyo-panels-toolbar-restart" class="eyo-round-btn" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight + 'px'}" v-on:click="restart()" :disabled="selected !== 'console'" title="Redémarrer l'interpréteur python" 
+      v-tippy ><icon-base icon-name="restart"><icon-restart /></icon-base></b-button>
+      <b-button id ="eyo-panels-toolbar-erase" class="eyo-round-btn" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight + 'px'}" v-on:click="erase()" :disabled="selected !== 'console'" title="Effacer l'affichage" 
+      v-tippy ><icon-base icon-name="erase"><icon-erase /></icon-base></b-button>
     </div>
-    <b-tooltip target="eyo-panels-toolbar-restart" delay="500" boundary="viewport" position="topleft">
-      Redémarrer l'interpréteur python
-    </b-tooltip>
-    <b-tooltip target="eyo-panels-toolbar-erase" delay="500" boundary="viewport">
-      Effacer l'affichage
-    </b-tooltip>
     <div id="eyo-panels-content">
       <panel-console v-bind:style="{ display: selected === 'console'? 'block': 'none'}"></panel-console>
       <panel-turtle v-bind:style="{ display: selected === 'turtle'? 'block': 'none'}"></panel-turtle>
