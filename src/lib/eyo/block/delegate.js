@@ -224,13 +224,19 @@ eYo.Delegate.Manager = (function () {
       // manage the link: key
       var link
       var linkModel = model
-      while ((link = model.link)) {
-        var linkC9r = goog.isFunction(link) ? link : me.get(link)
-        goog.asserts.assert(linkC9r, 'Not inserted: ' + link)
-        linkModel = linkC9r.eyo.getModel()
-        if (linkModel) {
-          model = linkModel
-        }
+      if ((link = model.link)) {
+        do {
+          var linkC9r = goog.isFunction(link) ? link : me.get(link)
+          goog.asserts.assert(linkC9r, 'Not inserted: ' + link)
+          var linkModel = linkC9r.eyo.getModel()
+          if (linkModel) {
+            model = linkModel
+          } else {
+            break
+          }
+        } while ((link = model.link))
+        model = {}
+        linkModel && me.merger(model, linkModel)
       }
       // manage the inherits key, uncomplete management,
       var inherits = model.inherits
@@ -253,6 +259,7 @@ eYo.Delegate.Manager = (function () {
         if (!model.output.check) {
           model.output.check = t
         }
+        model.statement && (model.statement = undefined)
       } else if ((t = eYo.T3.Stmt[key])) {
         var statement = model.statement || (model.statement = Object.create(null))
         if (!statement.previous) {
@@ -267,6 +274,7 @@ eYo.Delegate.Manager = (function () {
         if (!statement.next.check && !goog.isNull(statement.next.check)) {
           statement.next.check = eYo.T3.Stmt.Next[key]
         }
+        model.output && (model.output = undefined)
       }
       delegateC9r.model__ = model // intermediate storage used by `modeller` in due time
     }
