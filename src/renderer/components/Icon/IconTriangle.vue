@@ -15,7 +15,7 @@
         return ['M', 0, ',', this.height / 2, 'l', radius * 1.5, ',', radius * 0.866, 'l', 0, ',', -radius * 1.732, 'z'].join('')
       },
       transform: function () {
-        return ['rotate(', 180 * this.step, ',', 2 * this.width / 5, ',', this.height / 2, ')'].join('')
+        return ['rotate(', -540 * this.step, ',', 2 * this.width / 5, ',', this.height / 2, ')'].join('')
       }
     },
     props: {

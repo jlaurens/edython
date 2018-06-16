@@ -293,7 +293,7 @@ eYo.FlyoutDelegate.prototype.slide = function(closed) {
     // Hidden components will return null.
     return;
   }
-  var id = setInterval(frame, 10);
+  var id = setInterval(frame, 20);
   var x = targetWorkspaceMetrics.absoluteLeft;
   var n_steps = 50
   var n = 0
@@ -301,14 +301,14 @@ eYo.FlyoutDelegate.prototype.slide = function(closed) {
   var positions = []
   var x_min = closed? x: x - flyout.width_
   var x_max = closed? x - flyout.width_: x
-  steps[0] = 0
+  steps[0] = closed? 0: 1
   positions[0] = x_min
   for (n = 1; n < n_steps; n++) {
     var step = Math.sin(n*Math.PI/n_steps/2)**2
     steps[n] = closed? step: 1-step
     positions[n] = x_min + step * (x_max - x_min)
   }
-  steps[n] = 1
+  steps[n] = closed? 1: 0
   positions[n] = x_max
   var y = targetWorkspaceMetrics.absoluteTop;
   var self = this
@@ -322,7 +322,7 @@ eYo.FlyoutDelegate.prototype.slide = function(closed) {
       flyout.setBackgroundPath_(flyout.width_, flyout.height_)
       delete self.slide_locked
       flyout.targetWorkspace_.recordDeleteAreas()
-      self.oneStep(1)
+      self.oneStep(steps[n_steps])
     } else {
       flyout.positionAt_(flyout.width_, flyout.height_, positions[n], y)
       self.oneStep(steps[n])
