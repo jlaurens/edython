@@ -19,12 +19,10 @@
 
 goog.provide('eYo')
 
-goog.provide('eYo.App') // namespace for the app
 goog.provide('eYo.Version')
 goog.provide('eYo.Session')
 
 var eYo = Object.create(null)
-eYo.App = Object.create(null)
 eYo.Version = Object.create(null)
 eYo.Session = Object.create(null)
 

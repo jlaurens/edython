@@ -185,7 +185,7 @@ eYo.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
     if (c8n.isConnected()) {
       steps = this.valuePathDef_(c8n.targetBlock())
     } else {
-      steps = this.placeHolderPathDefWidth_(0).d
+      steps = this.placeHolderPathDefWidth_(0, c8n).d
     }
   } else if (c8n.type === Blockly.OUTPUT_VALUE) {
     steps = 'm 0,0 ' + Blockly.BlockSvg.TAB_PATH_DOWN + ' v 5'

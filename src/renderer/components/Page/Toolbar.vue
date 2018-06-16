@@ -21,8 +21,11 @@
         </b-btn>
       </b-button-group>
       <b-button-group class="mx-1">
-        <b-btn id="toolbar-copy" v-on:click="doCopy()" title="Copier les blocs" v-tippy>
-          <icon-base width="32" height="32" icon-name="copy"><icon-copy-paste variant="copy" /></icon-base>
+        <b-btn id="toolbar-copy" v-on:click="doSingleCopy()" title="Copier le bloc sélectionné" v-tippy>
+          <icon-base width="32" height="32" icon-name="copy single"><icon-copy-paste variant="copy" single="true" /></icon-base>
+        </b-btn>
+        <b-btn id="toolbar-copy" v-on:click="doCopy()" title="Copier le bloc sélectionné et les suivants" v-tippy>
+          <icon-base width="32" height="32" icon-name="copy"><icon-copy-paste variant="copy" single="false" /></icon-base>
         </b-btn>
         <b-btn id="toolbar-paste" v-on:click="doPaste()" title="Coller les blocs" v-tippy>
           <icon-base width="32" height="32" icon-name="paste"><icon-copy-paste variant="paste"/></icon-base>
@@ -70,7 +73,7 @@
       IconCopyPython
     },
     methods: {
-      doSite: function (url) {
+      doSite (url) {
         if (this.electron && this.electron.shell) {
           this.electron.shell.openExternal(url)
         } else {
@@ -78,23 +81,26 @@
           win.focus()
         }
       },
-      canUndo: function () {
+      canUndo () {
         console.log(eYo.App.workspace.undoStack_.length)
         return eYo.App.workspace && (eYo.App.workspace.undoStack_.length > 0)
       },
-      canRedo: function () {
+      canRedo () {
         return eYo.App.workspace && (eYo.App.workspace.redoStack_.length > 0)
       },
-      doUndo: function () {
+      doUndo () {
         eYo.App.workspace.undo()
       },
-      doRedo: function () {
+      doRedo () {
         eYo.App.workspace.undo(true)
       },
-      doCopy: function () {
-        window.Blockly.selected && window.Blockly.copy_(window.Blockly.selected)
+      doSingleCopy () {
+        eYo.App.doCopy(true)
       },
-      doPaste: function () {
+      doCopy () {
+        eYo.App.doCopy()
+      },
+      doPaste () {
         window.Blockly.clipboardXml_ && eYo.App.workspace.paste(window.Blockly.clipboardXml_)
       },
       doCopyPythonCode: function () {
@@ -144,7 +150,7 @@
             // let oSerializer = new XMLSerializer()
             // let content = oSerializer.serializeToString(dom)
             // let deflate = this.pako.gzip(content) // use gzip to ungzip from the CLI
-            let inflate = this.pako.ungzip(content, {to: 'string'}) // use gzip to ungzip from the CLI
+            let inflate = content // this.pako.ungzip(content, {to: 'string'}) // use gzip to ungzip from the CLI
             var parser = new DOMParser()
             try {
               var dom = parser.parseFromString(inflate, 'application/xml')
@@ -159,7 +165,7 @@
         let dom = eYo.Xml.workspaceToDom(eYo.App.workspace, true)
         let oSerializer = new XMLSerializer()
         let content = oSerializer.serializeToString(dom)
-        let deflate = this.pako.gzip(content) // use gzip to ungzip from the CLI
+        let deflate = content // this.pako.gzip(content) // use gzip to ungzip from the CLI
 
         const {dialog} = require('electron').remote
 

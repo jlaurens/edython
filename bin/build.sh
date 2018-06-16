@@ -273,7 +273,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/blockly/block.js" \
 --js "src/lib/eyo/workspace/flyout-toolbar.js" \
 --js "src/lib/eyo/blockly/field_label.js" \
---js "src/lib/eyo/blockly/workspace.js" \
 --js "src/lib/eyo/blockly/bugfix.js" \
 --js "src/lib/eyo/block/slot.js" \
 --js "src/lib/eyo/block/delegate_svg.js" \
@@ -289,7 +288,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate_svg_math.js" \
 --js "src/lib/eyo/block/delegate_svg_operator.js" \
 --js "src/lib/eyo/block/delegate_svg_term.js" \
---js "src/lib/eyo/blockly/workspace_svg.js" \
 --js "src/lib/eyo/workspace/menu_manager.js" \
 --js "src/lib/eyo/block/delegate_svg_argument.js" \
 --js "src/lib/eyo/block/delegate_svg_comp.js" \
@@ -306,7 +304,10 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate_svg_proc.js" \
 --js "src/lib/eyo/block/delegate_svg_try.js" \
 --js "src/lib/eyo/block/xml.js" \
+--js "src/lib/eyo/workspace/app.js" \
 --js "src/lib/eyo/block/development.js" \
+--js "src/lib/eyo/blockly/workspace.js" \
+--js "src/lib/eyo/blockly/workspace_svg.js" \
   --js_output_file "build/base/edython.js"\
   -O BUNDLE
 # Next setting is used to prevent the closure library

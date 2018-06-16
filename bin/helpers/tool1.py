@@ -5,7 +5,7 @@ import re
 import json
 import pprint
 
-re_provide = re.compile(r"^\s*goog\.(?:(?P<provide>provide)|(?P<require>require)|forwardDeclare)\('(?P<what>[^']+)'\)[;\s]*$")
+re_provide = re.compile(r"^\s*goog\.(?:(?P<provide>provide)|(?P<require>require)|forwardDeclare)\('(?P<what>[^']+)'\)[;\s]*(?://.*)?$")
 #re_provide = re.compile(r"^\s*goog.(?P<provide>provide)\('(?P<what>[^']+)'\)[;\s]*$")
 
 pathRoot = pathlib.Path(__file__).resolve().parent.parent.parent

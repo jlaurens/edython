@@ -348,7 +348,7 @@ Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
  * @return {!Element} Tree of XML elements, possibly null.
  */
 eYo.Xml.blockToDom = (function () {
-  var blockToDom = function (block, optNoId) {
+  var blockToDom = function (block, optNoId, optNoNext) {
     var eyo = block.eyo
     if (eyo.wrapped_ && !(eyo instanceof eYo.DelegateSvg.List)) {
       // a wrapped block does not create a new element on its own
@@ -366,13 +366,11 @@ eYo.Xml.blockToDom = (function () {
       goog.isFunction(controller.blockToDom)) ||
       ((controller = eyo.constructor) &&
       goog.isFunction(controller.blockToDom))) {
-      var element = controller.blockToDom.call(eyo, block, optNoId)
+      var element = controller.blockToDom.call(eyo, block, optNoId, optNoNext)
     } else {
       element = goog.dom.createDom(block.eyo.tagName(block))
-      if (!optNoId) {
-        element.setAttribute('id', block.id)
-      }
-      eYo.Xml.toDom(block, element, optNoId)
+      !optNoId && element.setAttribute('id', block.id)
+      eYo.Xml.toDom(block, element, optNoId, optNoNext)
     }
     // this is for the editor, not python
     if (block.eyo.locked_) {
@@ -383,10 +381,10 @@ eYo.Xml.blockToDom = (function () {
     }
     return element
   }
-  return function (block, optNoId) {
+  return function (block, optNoId, optNoNext) {
     eYo.Xml.registerAllTags && eYo.Xml.registerAllTags()
     eYo.Xml.blockToDom = blockToDom
-    return blockToDom(block, optNoId)
+    return blockToDom(block, optNoId, optNoNext)
   }
 }())
 
@@ -429,7 +427,7 @@ goog.provide('eYo.Xml.Text')
  * @param {Element} xml the persistent element.
  * @return a dom element
  */
-eYo.Xml.Text.toDom = function (block, element, optNoId) {
+eYo.Xml.Text.toDom = function (block, element) {
   var text = block.eyo.data.value.get()
   if (text && text.length) {
     var child = goog.dom.createTextNode(text)
@@ -506,11 +504,10 @@ goog.provide('eYo.Xml.Data')
  * For edython.
  * @param {!Blockly.Block} block The block to be converted.
  * @param {Element} xml the persistent element.
- * @param {boolean} optNoId
  * @return a dom element, void lists may return nothing
  * @this a block delegate
  */
-eYo.Xml.Data.toDom = function (block, element, optNoId) {
+eYo.Xml.Data.toDom = function (block, element) {
   block.eyo.foreachData(function () {
     this.save(element)
   })
@@ -554,16 +551,17 @@ eYo.Xml.Data.fromDom = function (block, element) {
  * @param {!Blockly.Block} block The root block to encode.
  * @param {element} dom element to encode in
  * @param {boolean} optNoId True if the encoder should skip the block id.
+ * @param {boolean} optNoNext True if the encoder should skip the next block.
  * @return {!Element} Tree of XML elements, possibly null.
  */
-eYo.Xml.toDom = function (block, element, optNoId) {
+eYo.Xml.toDom = function (block, element, optNoId, optNoNext) {
   var eyo = block.eyo
   var controller = eyo
   if ((controller && goog.isFunction(controller.toDom)) ||
     ((controller = eyo.xml) && goog.isFunction(controller.toDom)) ||
     ((controller = eyo.constructor.xml) && goog.isFunction(controller.toDom)) ||
     ((controller = eyo.constructor) && goog.isFunction(controller.toDom))) {
-    return controller.toDom.call(eyo, block, element, optNoId)
+    return controller.toDom.call(eyo, block, element, optNoId, optNoNext)
   } else {
     eYo.Xml.Data.toDom(block, element, optNoId)
     // save slots
@@ -591,7 +589,7 @@ eYo.Xml.toDom = function (block, element, optNoId) {
     }
     // the suite and the flow
     blockToDom(eyo.inputSuite && eyo.inputSuite.connection, eYo.Xml.FLOW, eYo.XmlKey.SUITE)
-    blockToDom(block.nextConnection, eYo.Xml.FLOW, eYo.XmlKey.NEXT)
+    !optNoNext && blockToDom(block.nextConnection, eYo.Xml.FLOW, eYo.XmlKey.NEXT)
   }
 }
 

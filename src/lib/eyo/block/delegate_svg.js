@@ -1236,7 +1236,7 @@ eYo.DelegateSvg.prototype.highlightConnectionPathDef = function (block, c8n) {
     } else if (!c8n.eyo.disabled_ && (c8n.eyo.s7r_ || c8n.eyo.optional_)) {
       steps = this.carretPathDefWidth_(c8n.offsetInBlock_.x).d
     } else {
-      steps = this.placeHolderPathDefWidth_(c8n.offsetInBlock_.x, c8n.eyo.isHeadOfStatement).d
+      steps = this.placeHolderPathDefWidth_(c8n.offsetInBlock_.x, c8n).d
     }
   } else if (c8n.type === Blockly.OUTPUT_VALUE) {
     steps = this.valuePathDef_(block)

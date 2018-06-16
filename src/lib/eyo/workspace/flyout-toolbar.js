@@ -91,7 +91,7 @@ eYo.FlyoutToolbar.prototype.createDom = function (dom) {
   this.controlPath_ = Blockly.utils.createSvgElement('path', {
     id: "p-flyout-control"
   }, svg)
-  if (eYo.App.flyoutDropDown) {
+  if (eYo.App && eYo.App.flyoutDropDown) {
     this.select_ = goog.dom.createDom(
       goog.dom.TagName.DIV,
       goog.getCssName(cssClass, 'select'),

@@ -16,6 +16,7 @@ goog.provide('eYo.Workspace')
 goog.require('Blockly.Workspace')
 goog.require('eYo.Helper')
 goog.require('eYo.Block')
+goog.require('eYo.App')
 
 /**
  * Class for a workspace.  This is a data structure that contains blocks.
