@@ -143,7 +143,11 @@ if (!process.env.IS_WEB) {
     }, {
       label: 'Enregistrer',
       accelerator: 'CmdOrCtrl+S',
-      role: 'save'
+      role: 'save',
+      click: function (menuItem, browserWindow, event) {
+        console.log('browserWindow:', browserWindow)
+        //lorsque l'élément du menu est cliqué.
+      }
     }, {
       label: 'Enregistrer sous...',
       accelerator: 'ALt+CmdOrCtrl+S',

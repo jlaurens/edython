@@ -111,34 +111,6 @@ eYo.DelegateSvg.Stmt.prototype.disposeInternal = function () {
   eYo.DelegateSvg.superClass_.disposeInternal.call(this)
 }
 
-/**
- * Statement block path.
- * @param {!Blockly.Block} block
- * @private
- */
-eYo.DelegateSvg.Stmt.prototype.statementPathDef_ = function (block) {
-  /* eslint-disable indent */
-  var w = block.width
-  var h = block.height
-  var steps = ['m ' + w + ',0 v ' + h]
-  var r = eYo.Style.Path.radius()
-  var a = ' a ' + r + ', ' + r + ' 0 0 1 '
-  var c8n = block.nextConnection
-  if (c8n && c8n.isConnected()) {
-    steps.push('h ' + (-w))
-  } else {
-    steps.push('h ' + (-w + r) + a + (-r) + ',' + (-r))
-    h -= r
-  }
-  c8n = block.previousConnection
-  if (c8n && c8n.isConnected() && c8n.targetBlock().getNextBlock() === block) {
-    steps.push('v ' + (-h) + ' z')
-  } else {
-    steps.push('v ' + (-h + r) + a + r + ',' + (-r) + ' z')
-  }
-  return steps.join(' ')
-} /* eslint-enable indent */
-
 eYo.DelegateSvg.Stmt.prototype.shapePathDef_ =
   eYo.DelegateSvg.Stmt.prototype.contourPathDef_ =
     eYo.DelegateSvg.Stmt.prototype.highlightPathDef_ =
@@ -505,6 +477,41 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
     }
   }
 })
+
+/**
+ * Render the inputs, the fields and the slots of the block.
+ * @param {!Blockly.Block} block
+ * @private
+ */
+eYo.DelegateSvg.Stmt.expression_stmt.prototype.renderDrawModel_ = function (block) {
+  var io = {
+    block: block,
+    steps: [],
+    canDummy: true,
+    canValue: true,
+    canStatement: true,
+    canList: true,
+    canForif: true,
+    i: 0, // input index
+    i_max: block.inputList.length,
+    f: 0, // field index
+    /** ?Object */ field: undefined,
+    /** boolean */ canStarSymbol: true
+  }
+  io.cursorX = this.getPaddingLeft(block)
+  io.offsetX = 0
+  this.renderDrawSharp_(io)
+  io.shouldSeparateField = this.shouldSeparateField = false
+  io.canHeadOfStatement = true
+  io.slot = this.headSlot
+  this.renderDrawSlot_(io)
+  // enlarge the width if necessary
+  io.cursorX = Math.max(io.cursorX, this.minBlockWidth())
+  io.cursorX += this.getPaddingRight(block)
+  this.minWidth = block.width = Math.max(block.width, io.cursorX)
+  this.shouldSeparateField = io.shouldSeparateField
+  return io.steps.join(' ')
+}
 
 /**
  * Class for a DelegateSvg, any_stmt.

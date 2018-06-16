@@ -23,7 +23,7 @@ Vue.use(VueTippy, {
   arrow: true,
   animation: 'perspective',
   duration: [600, 300],
-  delay: [600, 0],
+  delay: [750, 0],
   popperOptions: {
     modifiers: {
       preventOverflow: {

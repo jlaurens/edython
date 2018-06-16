@@ -304,7 +304,7 @@ eYo.FlyoutDelegate.prototype.slide = function(closed) {
   steps[0] = 0
   positions[0] = x_min
   for (n = 1; n < n_steps; n++) {
-    step = Math.sin(n*Math.PI/n_steps/2)**2
+    var step = Math.sin(n*Math.PI/n_steps/2)**2
     steps[n] = closed? step: 1-step
     positions[n] = x_min + step * (x_max - x_min)
   }

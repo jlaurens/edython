@@ -760,7 +760,7 @@ eYo.DelegateSvg.prototype.getPaddingLeft = function (block) {
   if (this.wrapped_) {
     return 0
   } else if (block.outputConnection) {
-    return this.locked_ && block.getSurroundParent() ? 0 : eYo.Font.space
+    return (this.locked_ || this.isHeadOfStatement) && block.getSurroundParent() ? 0 : eYo.Font.space
   } else {
     return eYo.Padding.l()
   }
@@ -809,7 +809,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     i_max: block.inputList.length,
     f: 0, // field index
     /** ?Object */ field: undefined,
-    canStarSymbol: true
+    /** boolean */ canStarSymbol: true
   }
   io.cursorX = this.getPaddingLeft(block)
   io.offsetX = 0
@@ -824,6 +824,8 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     this.shouldSeparateField = false
   }
   io.shouldSeparateField = this.shouldSeparateField
+  
+  io.canHeadOfStatement = !block.outputConnection
 
   if ((io.field = this.fromStartField)) {
     io.f = 0
@@ -958,10 +960,11 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
       if (text.length) {
         // if the text is void, it can not change whether
         // the last character was a letter or not
-        if (io.shouldSeparateField && !io.starSymbol && (eYo.XRE.operator.test(text[0]) || text[0] === '.' || eYo.XRE.id_continue.test(text[0]) || eyo.isEditing)) {
+        if (io.shouldSeparateField && !io.starSymbol && (eYo.XRE.operator.test(text[0]) || text[0] === '.' || eYo.XRE.id_continue.test(text[0]) || eyo.isEditing) && (!this.isHeadOfStatement)) {
           // add a separation
           io.cursorX += eYo.Font.space
         }
+        io.canBeHeadOfStatement = false
         io.starSymbol = (io.canStarSymbol && (['*', '@', '+', '-', '~', '.'].indexOf(text[text.length - 1]) >= 0))
         io.canStarSymbol = false
         io.shouldSeparateField = !io.starSymbol && (eYo.XRE.id_continue.test(text[text.length - 1]) ||
@@ -1031,11 +1034,13 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
     var cursorX = io.cursorX + io.offsetX
     c8n.setOffsetInBlock(cursorX, 0)
     var target = c8n.targetBlock()
+    c8n.eyo.isHeadOfStatement = io.canHeadOfStatement
     if (target) {
       var root = target.getSvgRoot()
       if (root) {
         c8n.tighten_()
         target.eyo.shouldSeparateField = io.shouldSeparateField
+        target.eyo.isHeadOfStatement = io.canHeadOfStatement
         target.render()
         io.shouldSeparateField = (target.eyo.wrapped_ || target.eyo.locked_) && target.eyo.shouldSeparateField
         var bBox = target.getHeightWidth()
@@ -1048,7 +1053,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       if (!eyo.disabled_) {
         var pw = eyo.s7r_ || eyo.optional_
         ? this.carretPathDefWidth_(cursorX)
-        : this.placeHolderPathDefWidth_(cursorX)
+        : this.placeHolderPathDefWidth_(cursorX, c8n)
         io.steps.push(pw.d)
         io.cursorX += pw.width
         if (pw.width) {
@@ -1058,8 +1063,89 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       }
     }
     this.renderDrawFields_(io, false)
+    io.canBeHeadOfStatement = false
   }
   return true
+}
+
+/**
+ * Statement block path.
+ * @param {!Blockly.Block} block
+ * @private
+ */
+eYo.DelegateSvg.prototype.statementPathDef_ = function (block) {
+  var w = block.width
+  var h = block.height
+  // start with the right edge
+  var steps = ['m ', w, ',0 v ', h]
+  // code duplicate: same as some code below
+  var r_stmt = eYo.Style.Path.radius()
+  var a_stmt = [' a ', r_stmt, ', ', r_stmt, ' 0 0 1 ']
+  var c8n = block.nextConnection
+  if (c8n && c8n.isConnected()) {
+    steps.push(' H 0 ')
+  } else {
+    steps.push(' H ', r_stmt)
+    steps = steps.concat(a_stmt)
+    steps.push(-r_stmt, ',', -r_stmt)
+    h -= r_stmt
+  }
+  c8n = block.previousConnection
+  if (c8n && c8n.isConnected() && c8n.targetBlock().getNextBlock() === block) {
+    steps.push(' v ', -h, ' z')
+  } else {
+    steps.push(' v ', -h + r_stmt)
+    steps = steps.concat(a_stmt)
+    steps.push(r_stmt, ',', -r_stmt, ' z')
+  }
+  return steps.join('')
+}
+
+/**
+ * Block path.
+ * @param {!Blockly.Block} block
+ * @private
+ */
+eYo.DelegateSvg.prototype.valuePathDef_ = function (block) {
+  var w = block.width
+  var h = block.height
+  var p = eYo.Padding.h()
+  var r_expr = (p ** 2 + h ** 2 / 4) / 2 / p // radius of left and right arcs
+  var dx = (eYo.Font.space - p) / 2 // offset of the left and right arcs
+  var a_expr = [' a ', r_expr, ', ', r_expr, ' 0 0 1 0,']
+  var h_total = h + 2 * eYo.Margin.V
+  // start with the right edge
+  var steps = ['m ', w - eYo.Font.space + dx, ',-', eYo.Margin.V]
+  steps = steps.concat(a_expr)
+  steps.push(h_total)
+  var parent
+  if (this.isHeadOfStatement && (parent = block.getSurroundParent())) {
+    // code duplicate: quite the same as some code above
+    var rr = eYo.Style.Path.radius()
+    var aa = [' a ', rr, ', ', rr, ' 0 0 1 ']
+    var c8n = parent.nextConnection
+    if (c8n && c8n.isConnected()) {
+      steps.push(' H ', -this.getPaddingLeft(parent))
+    } else {
+      steps.push(' H ', rr - this.getPaddingLeft(parent))
+      steps = steps.concat(aa)
+      steps.push(-rr, ',', -rr)
+      h -= rr
+    }
+    c8n = parent.previousConnection
+    if (c8n && c8n.isConnected() && c8n.targetBlock().getNextBlock() === parent) {
+      steps.push(' v ', -h, ' z')
+    } else {
+      steps.push(' v ', -h + rr)
+      steps = steps.concat(aa)
+      steps.push(rr, ',', -rr, ' z')
+    }
+  } else {
+    steps.push(' H ', dx + p)
+    steps = steps.concat(a_expr)
+    steps.push(-h_total, ' z')
+  }
+  return steps.join('')
 }
 
 /**
@@ -1067,25 +1153,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
  * @param {goog.size} size
  * @private
  */
-eYo.DelegateSvg.prototype.valuePathDef_ = function (size) {
-  /* eslint-disable indent */
-  // Top edge.
-  var p = eYo.Padding.h()
-  var r = (p ** 2 + size.height ** 2 / 4) / 2 / p
-  var dx = (eYo.Font.space - p) / 2
-  var a = ' a ' + r + ', ' + r + ' 0 0 1 0,'
-  var h = size.height + 2 * eYo.Margin.V
-  return 'm ' + (size.width - eYo.Font.space + dx) + ',-' + eYo.Margin.V + a +
-  h + 'H ' + (dx + p) + a + (-h) + ' z'
-} /* eslint-enable indent */
-
-/**
- * Block path.
- * @param {goog.size} size
- * @private
- */
 eYo.DelegateSvg.prototype.outPathDef_ = function () {
-  /* eslint-disable indent */
   // Top edge.
   var p = eYo.Padding.h()
   var r = (p ** 2 + eYo.Font.lineHeight() ** 2 / 4) / 2 / p
@@ -1093,7 +1161,7 @@ eYo.DelegateSvg.prototype.outPathDef_ = function () {
   var a = ' a ' + r + ', ' + r + ' 0 0 1 0,'
   var h = eYo.Font.lineHeight() + 2 * eYo.Margin.V
   return 'm ' + (dx + p) + ',' + (h - eYo.Margin.V) + a + (-h)
-} /* eslint-enable indent */
+}
 
 /**
  * Block path.
@@ -1120,18 +1188,39 @@ eYo.DelegateSvg.prototype.carretPathDefWidth_ = function (cursorX) {
  * @param {Number} x position.
  * @private
  */
-eYo.DelegateSvg.prototype.placeHolderPathDefWidth_ = function (cursorX) {
+eYo.DelegateSvg.prototype.placeHolderPathDefWidth_ = function (cursorX, connection) {
   /* eslint-disable indent */
   var size = {width: 3 * eYo.Font.space, height: eYo.Font.lineHeight()}
+  var w = size.width
+  var h = size.height
   var p = eYo.Padding.h()
-  var r = (p ** 2 + size.height ** 2 / 4) / 2 / p
+  var r_ph = (p ** 2 + h ** 2 / 4) / 2 / p
+  var a = [' a ', r_ph , ',', r_ph, ' 0 0 1 0,']
+  var h_total = h + 2 * eYo.Margin.V
   var dy = eYo.Padding.v() + eYo.Font.descent / 2
-  var a = ' a ' + r + ', ' + r + ' 0 0 1 0,'
-  var h = size.height + 2 * eYo.Margin.V
-  var d = 'M ' + (cursorX + size.width - p) +
-  ',' + (eYo.Margin.V + dy) + a + (h - 2 * dy) +
-  'h -' + (size.width - 2 * p) + a + (-h + 2 * dy) + ' z'
-  return {width: size.width, d: d}
+  var steps
+  if (connection && connection.eyo.isHeadOfStatement) {
+    steps = ['M ', cursorX + w - p, ',', eYo.Margin.V + dy]
+    steps = steps.concat(a)
+    var r_stmt = eYo.Style.Path.radius()
+    var cy = r_stmt - dy
+    var cx = Math.sqrt(r_stmt ** 2 + cy ** 2) - r_stmt
+    steps.push(h_total - 2 * dy, 'h ', -(w - p + eYo.Padding.l()) + cx)
+    var a_stmt_ph = [' a ', r_stmt , ',', r_stmt, ' 0 0 1 ']
+    steps = steps.concat(a_stmt_ph)
+    steps.push(-cx, ',', -cy)
+    steps.push('v', -h_total + 2 * dy + 2 * cy)
+    steps = steps.concat(a_stmt_ph)
+    steps.push(cx, ',', -cy, ' z')
+    return {width: w, d: steps.join('')}
+  } else {
+    steps = ['M ', cursorX + w - p, ',', eYo.Margin.V + dy]
+    steps = steps.concat(a)
+    steps.push(h_total - 2 * dy, 'h ', -(w - 2 * p))
+    steps = steps.concat(a)
+    steps.push(-h_total + 2 * dy, ' z')
+    return {width: w, d: steps.join('')}
+  }
 } /* eslint-enable indent */
 
 /**
@@ -1147,7 +1236,7 @@ eYo.DelegateSvg.prototype.highlightConnectionPathDef = function (block, c8n) {
     } else if (!c8n.eyo.disabled_ && (c8n.eyo.s7r_ || c8n.eyo.optional_)) {
       steps = this.carretPathDefWidth_(c8n.offsetInBlock_.x).d
     } else {
-      steps = this.placeHolderPathDefWidth_(c8n.offsetInBlock_.x).d
+      steps = this.placeHolderPathDefWidth_(c8n.offsetInBlock_.x, c8n.eyo.isHeadOfStatement).d
     }
   } else if (c8n.type === Blockly.OUTPUT_VALUE) {
     steps = this.valuePathDef_(block)
@@ -1180,7 +1269,7 @@ eYo.DelegateSvg.prototype.highlightConnection = function (block, c8n) {
     } else if (!c8n.eyo.disabled_ && (c8n.eyo.s7r_ || c8n.eyo.optional_)) {
       steps = this.carretPathDefWidth_(0).d
     } else {
-      steps = this.placeHolderPathDefWidth_(0).d
+      steps = this.placeHolderPathDefWidth_(0, c8n).d
     }
   } else if (c8n.type === Blockly.OUTPUT_VALUE) {
     steps = this.valuePathDef_(block)
