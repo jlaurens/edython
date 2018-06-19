@@ -178,7 +178,7 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
       xml: false
     },
     name: {
-      all: ['list', 'set', 'len', 'sum'],
+      all: ['int', 'float', 'list', 'set', 'len', 'sum'],
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type === eYo.T3.Expr.builtin_name || type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name

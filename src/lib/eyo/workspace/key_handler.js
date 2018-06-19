@@ -798,6 +798,18 @@ Ks = {
   'print(…)': eYo.T3.Stmt.builtin_print_stmt,
   'input(…)': eYo.T3.Expr.builtin_input_expr,
   'range(…)': eYo.T3.Expr.builtin_range_expr,
+  'int(…)': {
+    type: eYo.T3.Expr.call_expr,
+    data: {
+      name: 'int'
+    }
+  },
+  'float(…)': {
+    type: eYo.T3.Expr.call_expr,
+    data: {
+      name: 'float'
+    }
+  },
   'list(…)': {
     type: eYo.T3.Expr.call_expr,
     data: {

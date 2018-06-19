@@ -192,6 +192,9 @@ eYo.BlockSvg.prototype.addSelect = function () {
     return
   }
   goog.dom.classlist.add(this.svgGroup_, 'eyo-select')
+  if (!this.eyo.svgContourGroup_) {
+    console.warn('this.type', this.type)
+  }
   goog.dom.classlist.add(this.eyo.svgContourGroup_, 'eyo-select')
   // ensure that the svgGroup is the last in the list
   this.bringToFront()
@@ -218,13 +221,17 @@ eYo.BlockSvg.prototype.removeSelect = function () {
       (!this.eyo.svgPathConnection_ || !this.eyo.svgPathConnection_.parentNode)) {
       if (this.svgGroup_) { // how come that we must test that?
         goog.dom.classlist.remove(this.svgGroup_, 'eyo-select')
+      }
+      if (this.eyo.svgContourGroup_) { // how come that we must test that?
         goog.dom.classlist.remove(this.eyo.svgContourGroup_, 'eyo-select')
       }
-      return
+          return
     }
   }
   if (this.svgGroup_) {
     goog.dom.classlist.remove(this.svgGroup_, 'eyo-select')
+  }
+  if (this.eyo.svgContourGroup_) {
     goog.dom.classlist.remove(this.eyo.svgContourGroup_, 'eyo-select')
   }
   if (this.eyo.svgPathHighlight_ && this.eyo.svgPathHighlight_.parentNode) {
@@ -460,7 +467,6 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
   // remove any selected connection, if any
   // but remember it for a contextual menu
   this.eyo.lastSelectedConnection = eYo.SelectedConnection.get()
-  console.log('Down: this.eyo.lastSelectedConnection', this.eyo.lastSelectedConnection)
   eYo.SelectedConnection.set(null)
   this.eyo.selectedConnectionSource_ = null
   // Prepare the mouseUp event for an eventual connection selection
@@ -490,7 +496,6 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
         // if the block was already selected,
         // try to select an input connection
         var c8n = this.eyo.getConnectionForEvent(this, e)
-        console.log('Up: this.eyo.lastSelectedConnection', this.eyo.lastSelectedConnection)
         if (c8n !== this.eyo.lastSelectedConnection) {
           eYo.SelectedConnection.set(c8n)
         }

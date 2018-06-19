@@ -348,7 +348,7 @@ eYo.Do.typeOfString = function (candidate) {
   if (['class', 'finally', 'is', 'return', 'continue', 'for', 'lambda', 'try', 'def', 'from', 'nonlocal', 'while', 'and', 'del', 'global', 'not', 'with', 'as', 'elif', 'if', 'or', 'yield', 'assert', 'else', 'import', 'pass', 'break', 'except', 'in', 'raise'].indexOf(candidate) >= 0) {
     return eYo.T3.Expr.reserved_keyword
   }
-  if (['print', 'input', 'list', 'len', 'sum', 'keys', 'objects'].indexOf(candidate) >= 0) {
+  if (['int', 'float', 'print', 'input', 'list', 'len', 'set', 'sum'].indexOf(candidate) >= 0) {
     return eYo.T3.Expr.builtin_name
   }
   // is it a number ?

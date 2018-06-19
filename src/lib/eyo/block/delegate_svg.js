@@ -267,6 +267,7 @@ eYo.DelegateSvg.prototype.postInitSvg = function (block) {
   }
   this.svgContourGroup_ = Blockly.utils.createSvgElement('g',
     {'class': 'eyo-contour'}, null)
+  console.warn('this.svgContourGroup_', this.block_.type, this.block_.id, this.svgContourGroup_)
   goog.dom.appendChild(this.svgContourGroup_, this.svgPathInner_)
   goog.dom.appendChild(this.svgContourGroup_, this.svgPathCollapsed_)
   goog.dom.appendChild(this.svgContourGroup_, this.svgPathContour_)

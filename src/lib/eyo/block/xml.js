@@ -38,7 +38,8 @@ goog.require('goog.dom');
 eYo.Xml = {
   SLOT: 'eyo:slot', // attribute name
   FLOW: 'eyo:flow', // attribute name
-  NEXT: 'eyo:next', // attribute name
+  NEXT: 'next', // attribute content
+  SUITE: 'suite', // attribute content
   DOTTED_NAME: 'eyo:dotted_name', // attribute name
   NAME: 'eyo:name', // attribute name
   MODIFIER: 'eyo:modifier', // attribute name
@@ -565,7 +566,7 @@ eYo.Xml.toDom = function (block, element, optNoId, optNoNext) {
   } else {
     eYo.Xml.Data.toDom(block, element, optNoId)
     // save slots
-    block.eyo.foreachSlot(function () {
+    eyo.foreachSlot(function () {
       this.save(element, optNoId)
     })
     var blockToDom = function (c8n, name, key) {
@@ -583,13 +584,13 @@ eYo.Xml.toDom = function (block, element, optNoId, optNoNext) {
     }
     // the list blocks have no slots yet
     for (var i = 0, input; (input = block.inputList[i++]);) {
-      if (!input.eyo.slot) {
+      if (!input.eyo.slot && input !== eyo.inputSuite) {
         blockToDom(input.connection, eYo.Xml.SLOT, input.name)
       }
     }
     // the suite and the flow
-    blockToDom(eyo.inputSuite && eyo.inputSuite.connection, eYo.Xml.FLOW, eYo.XmlKey.SUITE)
-    !optNoNext && blockToDom(block.nextConnection, eYo.Xml.FLOW, eYo.XmlKey.NEXT)
+    blockToDom(eyo.inputSuite && eyo.inputSuite.connection, eYo.Xml.FLOW, eYo.Xml.SUITE)
+    !optNoNext && blockToDom(block.nextConnection, eYo.Xml.FLOW, eYo.Xml.NEXT)
   }
 }
 

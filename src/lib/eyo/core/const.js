@@ -78,7 +78,7 @@ eYo.Key = {
 
   EDIT: 'edit', // this MUST be in lower case
 
-  LIST: 'list', // avoid this one when possibe
+  LIST: 'list', // avoid this one when possible
 
   ASYNC: 'async',
   AWAIT: 'await',
@@ -347,6 +347,6 @@ eYo.XmlKey = {
   SLOT: 'eyo:slot', // attribute name
   LIST: 'eyo:list',
   FLOW: 'eyo:flow',
-  SUITE: 'eyo:suite',
-  NEXT: 'eyo:next'
+  SUITE: 'suite',
+  NEXT: 'next'
 }
