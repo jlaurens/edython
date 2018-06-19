@@ -143,6 +143,17 @@ eYo.KeyHandler = (function () {
       if (D && B.eyo.initDataWithModel(B, D)) {
         return
       }
+      // Maybe the main data can handle the model
+      var data = B.eyo.data
+      var main = data.main
+      if (!main) {
+        var values = Object.values(data)
+        main = (values.length === 1) && values[0]
+      }
+      if (main && main.validate(model)) {
+        main.set(model)
+        return
+      }
     }
     if (me.handleModel(model)) {
       return
@@ -678,6 +689,10 @@ Ks = {
   '@': {
     type: eYo.T3.Expr.m_expr,
     operator: '@',
+    input: eYo.Key.LHS
+  },
+  '**': {
+    type: eYo.T3.Expr.power,
     input: eYo.Key.LHS
   },
   '<<': {

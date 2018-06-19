@@ -537,9 +537,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
   menuItem = new eYo.MenuItem(
     'workspace',
     function (b, e) {
-      var xmlDom = Blockly.Xml.workspaceToDom(block.workspace)
-      var xmlText = Blockly.Xml.domToText(xmlDom)
-      console.log(xmlText)
+      console.log(block.workspace.eyo.toString())
     })
   menuItem.setEnabled(true)
   this.addChild(menuItem, true)

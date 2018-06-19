@@ -1,7 +1,7 @@
 <template>
   <div id="eyo-workspace-content">
       <icon-base id="svg-control-image-v" icon-name="triangle"><icon-triangle /></icon-base>
-      <b-dropdown id="eyo-flyout-dropdown" class="eyo-dropdown">
+      <b-dropdown id="eyo-flyout-dropdown" class="eyo-dropdown"  v-on:show="doShow()">
       <template slot="button-content">
         {{titles[selected]}}
       </template>
@@ -59,6 +59,10 @@
             this.flyout.show(list)
           }
         }
+      },
+      doShow () {
+        var el = document.getElementById('eyo-workspace-content').getElementsByClassName('eyo-flyout')[0]
+        eYo.Tooltip.hideAll(el)
       }
     },
     mounted: function () {

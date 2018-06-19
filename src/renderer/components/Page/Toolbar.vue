@@ -8,6 +8,15 @@
         <b-btn id="toolbar-debug" v-on:click="doSite('https://github.com/jlaurens/edython/issues')" title="Demander une correction, une amélioration" v-tippy>
           <icon-base width="32" height="32" icon-name="new"><icon-bug /></icon-base>
         </b-btn>
+        <b-dropdown id="eyo-toolbar-dropdown-demo" class="eyo-dropdown" title="Démo" v-on:show="doSelectDemoShow()" v-on:hidden="doSelectDemoHidden()">
+          <template slot="button-content">
+            <icon-base width="32" height="32" icon-name="new"><icon-demo /></icon-base>
+          </template>
+          <b-dropdown-item-button v-for="(demo, index) in demos" v-on:click="doSelectDemo(index)" :style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight + 'px'}">{{demo.title}}</b-dropdown-item-button>
+          <b-dropdown-divider></b-dropdown-divider>
+          <b-dropdown-item-button v-on:click="selected = 'console'" :style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight + 'px'}">{{titles.console}}</b-dropdown-item-button>
+          <b-dropdown-item-button v-on:click="selected = 'turtle'" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight}">{{titles.turtle}}</b-dropdown-item-button>
+        </b-dropdown>
       </b-button-group>
       <b-button-group class="mx-1">
         <b-btn id="toolbar-new" v-on:click="doNew()" title="Nouveau" v-tippy>
@@ -62,13 +71,28 @@
   import IconCopyPython from '../Icon/IconCopyPython.vue'
   import IconFrontBack from '../Icon/IconFrontBack.vue'
   import IconFocus from '../Icon/IconFocus.vue'
+  import IconDemo from '../Icon/IconDemo.vue'
   
   export default {
     name: 'page-toolbar',
     data: function () {
       return {
         activeElement: null,
-        workspace: null
+        workspace: null,
+        selected: 'console',
+        titles: {
+          console: 'Console',
+          turtle: 'Tortue'
+        },
+        demos: [
+          {
+            title: 'Bonjour le monde!',
+            xml: '<xml xmlns="http://www.w3.org/1999/xhtml" xmlns:eyo="urn:edython:1.0"><eyo:workspace><eyo:content><eyo:start_stmt x="300" y="120"><eyo:print eyo:flow="eyo:next"><eyo:list eyo:slot="arguments"><eyo:literal eyo:slot="O">\'Bonjour le monde!\'</eyo:literal></eyo:list></eyo:print></eyo:start_stmt></eyo:content></eyo:workspace></xml>'
+          }, {
+            title: 'Bonjour...',
+            xml: '<xml xmlns="http://www.w3.org/1999/xhtml" xmlns:eyo="urn:edython:1.0"><eyo:workspace><eyo:content><eyo:start_stmt x="300" y="200"><eyo:assignment eyo:name="prénom" eyo:flow="eyo:next"><eyo:list eyo:slot="assigned"><eyo:input eyo:slot="O"><eyo:literal eyo:slot="expression">\'Quel est votre prénom ?\'</eyo:literal></eyo:input></eyo:list><eyo:print  eyo:flow="eyo:next"><eyo:list eyo:slot="arguments"><eyo:literal eyo:slot="O">\'Bonjour\'</eyo:literal><eyo:identifier eyo:name="prénom" eyo:slot="f"></eyo:identifier></eyo:list></eyo:print></eyo:assignment></eyo:start_stmt></eyo:content></eyo:workspace></xml>'
+          }
+        ]
       }
     },
     components: {
@@ -80,9 +104,30 @@
       IconCopyPaste,
       IconCopyPython,
       IconFrontBack,
-      IconFocus
+      IconFocus,
+      IconDemo
+    },
+    mounted: function () {
+      // add the tippy by hand if it does already exists
+      var el = document.getElementById('eyo-toolbar-dropdown-demo')
+      el._tippy || window.tippy(el, eYo.Tooltip.options)
+      goog.asserts.assert(el._tippy)
     },
     methods: {
+      doSelectDemo (index) {
+        var demo = this.demos[index]
+        demo.xml && eYo.App.workspace.eyo.fromString(demo.xml)
+      },
+      doSelectDemoShow () {
+        var el = document.getElementById('eyo-toolbar-dropdown-demo')
+        !el._tippy.state.visible || el._tippy.hide()
+        el._tippy.state.enabled = false
+        eYo.Tooltip.hideAll(eYo.App.workspace.flyout_.svgGroup_)
+      },
+      doSelectDemoHidden () {
+        var el = document.getElementById('eyo-toolbar-dropdown-demo')
+        el._tippy.state.enabled = true
+      },
       doSite (url) {
         if (this.electron && this.electron.shell) {
           this.electron.shell.openExternal(url)
@@ -161,10 +206,8 @@
             // let content = oSerializer.serializeToString(dom)
             // let deflate = this.pako.gzip(content) // use gzip to ungzip from the CLI
             let inflate = content // this.pako.ungzip(content, {to: 'string'}) // use gzip to ungzip from the CLI
-            var parser = new DOMParser()
             try {
-              var dom = parser.parseFromString(inflate, 'application/xml')
-              eYo.Xml.domToWorkspace(dom.documentElement, eYo.App.workspace)
+              eYo.App.workspace.eyo.fromString(inflate)
             } catch (err) {
               console.log('ERROR:', err)
             }
@@ -172,9 +215,7 @@
         })
       },
       doSave: function () {
-        let dom = eYo.Xml.workspaceToDom(eYo.App.workspace, true)
-        let oSerializer = new XMLSerializer()
-        let content = oSerializer.serializeToString(dom)
+        let content = eYo.App.workspace.eyo.toString(true)
         let deflate = content // this.pako.gzip(content) // use gzip to ungzip from the CLI
 
         const {dialog} = require('electron').remote

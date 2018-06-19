@@ -432,6 +432,11 @@ eYo.BlockSvg.prototype.showContextMenu_ = function (e) {
  * Considering the selection of a connection, we manage the onMouseDown_ calls
  * independantly. Whatever node is answering to a mousDown event,
  * a connection will be activated if relevant.
+ * There is a problem due to the shape of the blocks.
+ * Depending on the block, the coutour path ou the whole svg group
+ * is better suited to listed to mouse events.
+ * Actually, both are registered which implies that
+ * handlers must filter out reentrancy.
  * @param {!Event} e Mouse down event or touch start event.
  * @private
  */
@@ -447,15 +452,22 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
       return
     }
   }
+  if (this.eyo.lastMouseDownEvent_ === e) {
+    return
+  }
+  this.eyo.lastMouseDownEvent_ = e
   // Next is not good design
   // remove any selected connection, if any
   // but remember it for a contextual menu
   this.eyo.lastSelectedConnection = eYo.SelectedConnection.get()
+  console.log('Down: this.eyo.lastSelectedConnection', this.eyo.lastSelectedConnection)
   eYo.SelectedConnection.set(null)
   this.eyo.selectedConnectionSource_ = null
   // Prepare the mouseUp event for an eventual connection selection
   this.eyo.lastMouseDownEvent = this === Blockly.selected ? e : null
   eYo.BlockSvg.superClass_.onMouseDown_.call(this, e)
+  // e.preventDefault()
+  // e.stopPropagation()
 }
 
 /**
@@ -465,6 +477,10 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
  * but the shape of the connection as it shows when blocks are moved close enough.
  */
 eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
+  if (this.eyo.lastMouseUpEvent_ === e) {
+    return
+  }
+  this.eyo.lastMouseUpEvent_ = e
   var ee = this.eyo.lastMouseDownEvent
   if (ee) {
     // this block was selected when the mouse down event was sent
@@ -474,7 +490,10 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
         // if the block was already selected,
         // try to select an input connection
         var c8n = this.eyo.getConnectionForEvent(this, e)
-        eYo.SelectedConnection.set(c8n)
+        console.log('Up: this.eyo.lastSelectedConnection', this.eyo.lastSelectedConnection)
+        if (c8n !== this.eyo.lastSelectedConnection) {
+          eYo.SelectedConnection.set(c8n)
+        }
       }
     } else {
       // a drag move

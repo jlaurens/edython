@@ -16,26 +16,9 @@ import 'tippy.js/dist/tippy.js'
 
 import VueTippy from 'vue-tippy'
 
-console.warn('tippy', window.tippy)
-
 Vue.use(BootstrapVue)
 Vue.use(VueSplit)
-Vue.use(VueTippy, {
-  theme: 'light bordered',
-  flipDuration: 0,
-  inertia: true,
-  arrow: true,
-  animation: 'perspective',
-  duration: [600, 300],
-  delay: [750, 0],
-  popperOptions: {
-    modifiers: {
-      preventOverflow: {
-        enabled: true
-      }
-    }
-  }
-})
+Vue.use(VueTippy, eYo.Tooltip.options)
 
 if (!process.env.IS_WEB) {
   Vue.prototype.electron = require('electron')

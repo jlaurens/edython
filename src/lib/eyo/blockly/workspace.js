@@ -17,11 +17,12 @@ goog.require('Blockly.Workspace')
 goog.require('eYo.Helper')
 goog.require('eYo.Block')
 goog.require('eYo.App')
+goog.require('eYo.Xml')
 
 /**
- * Class for a workspace.  This is a data structure that contains blocks.
- * There is no UI, and can be created headlessly.
- * @param {Blockly.Options} optOptions Dictionary of options.
+ * Class for a workspace delegate.
+ * Extends the workspace with minimum interference.
+ * @param {Blockly.Workspace} workspace
  * @constructor
  */
 eYo.WorkspaceDelegate = function (workspace) {
@@ -29,6 +30,27 @@ eYo.WorkspaceDelegate = function (workspace) {
   this.workspace_ = workspace
 }
 goog.inherits(eYo.WorkspaceDelegate, eYo.Helper)
+
+// Dependency ordering?
+/**
+ * Add the nodes from string to the workspace.
+ * @param {!String} str
+ */
+eYo.WorkspaceDelegate.prototype.fromString = function (str) {
+  var parser = new DOMParser()
+  var dom = parser.parseFromString(str, 'application/xml')
+  eYo.Xml.domToWorkspace(dom.documentElement, this.workspace_)
+}
+
+/**
+ * Convert the workspace to string.
+ * @param {?Boolean} opt_noId
+ */
+eYo.WorkspaceDelegate.prototype.toString = function (opt_noId) {
+  let dom = eYo.Xml.workspaceToDom(eYo.App.workspace, opt_noId)
+  let oSerializer = new XMLSerializer()
+  return oSerializer.serializeToString(dom)
+}
 
 /**
  * Class for a workspace.  This is a data structure that contains blocks.

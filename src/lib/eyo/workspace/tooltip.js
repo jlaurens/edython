@@ -31,6 +31,26 @@ eYo.Tooltip.add = function (el, title, options) {
 }
 
 /**
+ * Shared options for tippy.
+ */
+eYo.Tooltip.options = {
+  theme: 'light bordered',
+  flipDuration: 0,
+  inertia: true,
+  arrow: true,
+  animation: 'perspective',
+  duration: [600, 300],
+  delay: [750, 0],
+  popperOptions: {
+    modifiers: {
+      preventOverflow: {
+        enabled: true
+      }
+    }
+  }
+}
+
+/**
  * Add a tooltip programatically to an element
  * Do nothing function, meant to be overriden.
  * @param {!Element} el Dom reference element target of the tooltip.
@@ -62,27 +82,14 @@ eYo.Tooltip.hideAll = function (el) {
 eYo.DelegateSvg.prototype.addTooltip = function (block) {
   var model = this.constructor.eyo.getModel()
   var title = eYo.Tooltip.getTitle(model.tooltip || this.tooltipKey || block.type.substring(4))
+  var options = eYo.Tooltip.options
+  goog.mixin(options, {
+    onShow(instance) {
+      eYo.Tooltip.hideAll(block.svgGroup_.parentNode)
+    }
+  })
   if (title) {
-    eYo.Tooltip.add(block.svgGroup_, title, {
-      position: 'right',
-      theme: 'light bordered',
-      flipDuration: 0,
-      inertia: true,
-      arrow: true,
-      animation: 'perspective',
-      duration: [600, 300],
-      delay: [750, 0],
-      popperOptions: {
-        modifiers: {
-          preventOverflow: {
-            enabled: true
-          }
-        }
-      },
-      onShow(instance) {
-        eYo.Tooltip.hideAll(block.svgGroup_.parentNode)
-      }
-    })
+    eYo.Tooltip.add(block.svgGroup_, title, options)
   }
 }
 
@@ -100,7 +107,7 @@ eYo.Tooltip.Title = {
   any_stmt: 'Instruction, commentaire, les deux',
   parenth_form: 'Objet entre parenthèses',
   list_display: 'Liste',
-  set_display: 'Ensemble',
+  set_display: 'Ensemble, pour un ensemble vide utiliser la fonction `set()`',
   dict_display: 'Dictionaire',
   augmented_assignment_stmt: 'Assignation relative, +=, -=, *=, ...',
   import_stmt: 'Instruction pour importer un module',
@@ -119,7 +126,8 @@ eYo.Tooltip.Title = {
   del_stmt: 'Supprimer une variable, un element',
   parenth_target_list: 'Liste d\'objets assignables entre parenthèses',
   bracket_target_list: 'Liste d\'objets assignables entre crochets',
-  builtin_print_expr: 'Expression print (afficher), gestion des séparateurs de champ et des fins de ligne',
+  builtin_print_expr: 'Expression print (afficher), pour afficher du texte ou des variables sur la console, gestion des séparateurs de champ et des fins de ligne',
+  builtin_print_stmt: 'Expression print (afficher),\npour afficher du texte ou des variables sur la console,\ngestion des séparateurs de champ et des fins de ligne',
   comprehension: 'Compréhension',
   comp_for: 'Compréhension: clause for',
   comp_if: 'Compréhension: clause if',
@@ -128,7 +136,7 @@ eYo.Tooltip.Title = {
   with_part: 'Clause with (avec)',
   try_part: 'Clause try (essai), exécute les instructions tant qu\'aucune exception est levée (par raise ou assert)',
   except_part: 'Clause except, suit une clause try ou une autre clause except, instructions à exécuter quand une exception est levée',
-  finally_part: 'Clause finally, suit une clause try ou une clause except,instructions toujours exécutées, ceci après le traitement de la clause try et des clauses except',
+  finally_part: 'Clause finally, suit une clause try ou une clause except, instructions toujours exécutées, ceci après le traitement de la clause try et des clauses except',
   assert_stmt: 'Lève une exception si une assertion n\'est pas avérée',
   raise_stmt: 'Lève une exception, pour signaler une situation exceptionnelle',
   yield_expression: 'Expression yield, pour les itérateurs',
@@ -149,8 +157,8 @@ eYo.Tooltip.Title = {
   else_part: 'Clause sinon, après une ou plusieurs clauses qui contiennent un test (if, elif, while, for), est exécutée si aucune clause de test ne l\'est',
   break_stmt: 'Dans une boucle, passe directement à l\'instruction qui suit la boucle',
   continue_stmt: 'Dans une boucle, passe directement à l\'itération suivante',
-  call_expr: 'Expression pour exécuter une fonction ou une méthode avec ses arguments éventuels',
-  call_stmt: 'Instruction pour exécuter une fonction ou une méthode avec ses arguments éventuels',
+  call_expr: 'Expression pour exécuter une fonction ou une méthode avec ses arguments éventuels (list, set, len, sum...)',
+  call_stmt: 'Instruction pour exécuter une fonction ou une méthode avec ses arguments éventuels (list, set, len, sum...)',
   funcdef_part: 'Définition d\'une fonction ou d\'une méthode',
   return_stmt: 'Dans une fonction, termine le traitement des instructions et renvoie éventuellement une valeur à l\'appelant',
   pass_stmt: 'Instruction vide, en attendant les bonnes instructions',
