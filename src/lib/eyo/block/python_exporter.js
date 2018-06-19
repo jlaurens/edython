@@ -24,12 +24,18 @@ goog.require('eYo.FieldTextInput')
  * @param {?string} One indentation, defaults to 4 spaces.
  * @constructor
  */
-eYo.PythonExporter = function (oneIndent = '    ') {
+eYo.PythonExporter = function (oneIndent) {
   this.lines = []
   this.indents = []
   this.indent = ''
-  this.oneIndent = oneIndent
+  this.oneIndent = this.constructor.indent
 }
+
+/**
+ * Default indentation.
+ * For edython.
+ */
+eYo.PythonExporter.indent = '    '
 
 /**
  * Indent, must be balanced by a dedent.
@@ -40,7 +46,7 @@ eYo.PythonExporter.prototype.indent_ = function () {
 }
 
 /**
- * dedent.
+ * dedent, must be balanced by an indent.
  */
 eYo.PythonExporter.prototype.dedent_ = function () {
   this.indent = this.indents.pop()
@@ -137,7 +143,7 @@ eYo.PythonExporter.prototype.export = function (block, is_deep) {
  */
 eYo.PythonExporter.prototype.exportField_ = function (field) {
   if (field.isVisible()) {
-    var text = field.getDisplayText_()
+    var text = (field.getPythonText_ && field.getPythonText_()) || field.getDisplayText_()
     var eyo = field.eyo
     if (text.length) {
       // if the text is void, it can not change whether

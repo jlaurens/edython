@@ -26,7 +26,6 @@ function createWindow () {
     show: false
   })
   mainWindow.loadURL(winURL)
-  
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
   })
@@ -146,7 +145,7 @@ if (!process.env.IS_WEB) {
       role: 'save',
       click: function (menuItem, browserWindow, event) {
         console.log('browserWindow:', browserWindow)
-        //lorsque l'élément du menu est cliqué.
+        // lorsque l'élément du menu est cliqué.
       }
     }, {
       label: 'Enregistrer sous...',

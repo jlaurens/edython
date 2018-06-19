@@ -14,10 +14,10 @@
           <icon-base width="32" height="32" icon-name="new"><icon-new /></icon-base>
         </b-btn>
         <b-btn id="toolbar-save" v-on:click="doSave()" title="Sauvegarder" v-tippy>
-          <icon-base width="32" height="32" icon-name="save"><icon-save /></icon-base>
+          <icon-base width="32" height="32" icon-name="save"><icon-save-load variant="save" /></icon-base>
         </b-btn>
         <b-btn id="toolbar-open" v-on:click="doOpen()" title="Ouvrir" v-tippy>
-          <icon-base width="32" height="32" icon-name="load"><icon-load /></icon-base>
+          <icon-base width="32" height="32" icon-name="load"><icon-save-load variant="load" /></icon-base>
         </b-btn>
       </b-button-group>
       <b-button-group class="mx-1">
@@ -40,6 +40,14 @@
           <icon-base width="32" height="32"  icon-name="redo"><icon-undo-redo variant="redo"/></icon-base>
         </b-btn>
       </b-button-group>
+      <b-button-group class="mx-1">
+        <b-btn id="toolbar-back" v-on:click="doBack()" title="Sélection à l'arrière plan" v-tippy>
+          <icon-base width="32" height="32" icon-name="back"><icon-front-back variant="back" /></icon-base>
+        </b-btn>
+        <b-btn id="toolbar-focus" v-on:click="doFocus()" title="Montrer la sélection" v-tippy>
+          <icon-base width="32" height="32" icon-name="focus"><icon-focus/></icon-base>
+        </b-btn>
+      </b-button-group>
     </b-button-toolbar>
   </div>
 </template>
@@ -48,11 +56,12 @@
   import IconBase from '../IconBase.vue'
   import IconBug from '../Icon/IconBug.vue'
   import IconNew from '../Icon/IconNew.vue'
-  import IconSave from '../Icon/IconSave.vue'
-  import IconLoad from '../Icon/IconLoad.vue'
+  import IconSaveLoad from '../Icon/IconSaveLoad.vue'
   import IconUndoRedo from '../Icon/IconUndoRedo.vue'
   import IconCopyPaste from '../Icon/IconCopyPaste.vue'
   import IconCopyPython from '../Icon/IconCopyPython.vue'
+  import IconFrontBack from '../Icon/IconFrontBack.vue'
+  import IconFocus from '../Icon/IconFocus.vue'
   
   export default {
     name: 'page-toolbar',
@@ -66,11 +75,12 @@
       IconBase,
       IconBug,
       IconNew,
-      IconLoad,
-      IconSave,
+      IconSaveLoad,
       IconUndoRedo,
       IconCopyPaste,
-      IconCopyPython
+      IconCopyPython,
+      IconFrontBack,
+      IconFocus
     },
     methods: {
       doSite (url) {
@@ -201,6 +211,15 @@
             // alert("The file has been succesfully saved")
           })
         })
+      },
+      doFront () {
+        eYo.App.doFront()
+      },
+      doBack () {
+        eYo.App.doBack()
+      },
+      doFocus () {
+        eYo.App.doFocus()
       }
     }
   }

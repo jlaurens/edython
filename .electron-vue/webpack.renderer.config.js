@@ -208,6 +208,24 @@ let morePlugins = function (plugins, where) {
     )
   )
   /**
+   * this one is for embedding tippy, for direct access
+   */
+  plugins.push(
+    new CopyWebpackPlugin(
+      [
+        { from: path.resolve(__dirname, '../node_modules/tippy.js/dist/tippy.min.js'),
+          to: path.resolve(__dirname, '../dist/'+where+'/lib/tippy.min.js')
+        },
+        { from: path.resolve(__dirname, '../node_modules/tippy.js/dist/tippy.css'),
+          to: path.resolve(__dirname, '../dist/'+where+'/lib/tippy.css')
+        }
+      ],
+      {
+        debug: 'debug'
+      }
+    )
+  )
+  /**
    * resources
    */
   plugins.push(

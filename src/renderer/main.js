@@ -12,7 +12,11 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+import 'tippy.js/dist/tippy.js'
+
 import VueTippy from 'vue-tippy'
+
+console.warn('tippy', window.tippy)
 
 Vue.use(BootstrapVue)
 Vue.use(VueSplit)

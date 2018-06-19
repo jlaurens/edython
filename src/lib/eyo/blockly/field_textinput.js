@@ -461,3 +461,20 @@ eYo.FieldHelper.prototype.validateIfData = function (txt) {
   }
   return txt
 }
+
+/**
+ * Class for an editable code field for variables.
+ * @param {string} text The initial content of the field.
+ * @param {Function=} optValidator An optional function that is called
+ *     to validate any constraints on what the user entered.  Takes the new
+ *     text as an argument and returns either the accepted text, a replacement
+ *     text, or null to abort the change.
+ * @param {string=} key
+ * @extends {eYo.FieldTextInput}
+ * @constructor
+ */
+eYo.FieldVariable = function (text, optValidator, key) {
+  eYo.FieldVariable.superClass_.constructor.call(this, text, optValidator, key)
+}
+goog.inherits(eYo.FieldVariable, eYo.FieldInput)
+

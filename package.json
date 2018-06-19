@@ -64,6 +64,7 @@
     "fs": "0.0.1-security",
     "jquery": "^3.3.1",
     "pako": "^1.0.6",
+    "tippy": "0.0.0",
     "vue": "^2.5.16",
     "vue-drawer-layout": "^0.3.2",
     "vue-electron": "^1.0.6",

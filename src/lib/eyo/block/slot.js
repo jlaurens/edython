@@ -155,7 +155,7 @@ goog.require('eYo.FieldInput')
  * @param {!Object} owner
  * @param {!Object} fieldsModel
  */
-eYo.Slot.makeFields = (function () {
+eYo.Slot.makeFields = function () {
   // This is a closure
   // default helper functions for an editable field bound to a data object
   // `this` is an instance of  eYo.FieldInput
@@ -208,7 +208,10 @@ eYo.Slot.makeFields = (function () {
       field.eyo.css_class = eYo.Do.cssClassForText(model)
     } else if (goog.isObject(model)) {
       setupModel(model)
-      if (model.edit || model.validate || model.endEditing || model.startEditing) {
+      if (model.variable) {
+        // this is an ediable field
+        field = new eYo.FieldVariable(model.variable || '', model.validate, fieldName)
+      } else if (model.edit || model.validate || model.endEditing || model.startEditing) {
         // this is an ediable field
         field = new eYo.FieldInput(model.edit || '', model.validate, fieldName)
       } else if (goog.isDefAndNotNull(model.value) || goog.isDefAndNotNull(model.css)) {
@@ -324,7 +327,7 @@ eYo.Slot.makeFields = (function () {
     owner.toEndField && delete owner.toEndField.eyo.eyoLast_
     owner.fields.comment && (owner.fields.comment.eyo.comment = true)
   }
-}())
+} ()
 
 /**
  * Set the underlying Blockly input.

@@ -19,6 +19,7 @@ goog.require('eYo.Font');
 goog.require('Blockly.VerticalFlyout');
 goog.require('eYo.DelegateSvg');
 goog.require('eYo.FlyoutToolbar');
+goog.require('eYo.Tooltip');
 goog.require('eYo.MenuRenderer');
 goog.require('eYo.MenuButtonRenderer');
 
@@ -103,6 +104,28 @@ eYo.Flyout.prototype.createDom = function(tagName) {
       {'class': 'eyo-flyout', 'style': 'display: none'}, null);
   this.svgBackground_ = Blockly.utils.createSvgElement('path',
       {'class': 'eyo-flyout-background'}, this.svgGroup_);
+  // Bad design: code reuse: options
+  var self = this
+  eYo.Tooltip.add(this.svgBackground_, eYo.Tooltip.getTitle('flyout'), {
+    position: 'right',
+    theme: 'light bordered',
+    flipDuration: 0,
+    inertia: true,
+    arrow: true,
+    animation: 'perspective',
+    duration: [600, 300],
+    delay: [750, 0],
+    popperOptions: {
+      modifiers: {
+        preventOverflow: {
+          enabled: true
+        }
+      }
+    },
+    onShow (instance) {
+      eYo.Tooltip.hideAll(self.svgBackground_)
+    }
+  })
   var g = this.workspace_.createDom()
   goog.dom.classlist.remove(g, 'blocklyWorkspace')
   goog.dom.classlist.add(g, 'eyo-workspace')
@@ -138,6 +161,7 @@ eYo.FlyoutDelegate.prototype.dispose = function() {
  */
 eYo.Flyout.prototype.show = function(xmlList) {
   this.workspace_.setResizesEnabled(false);
+  eYo.Tooltip.hideAll(this.svgGroup_)
   this.hide();
   this.clearOldBlocks_();
 
@@ -212,6 +236,7 @@ eYo.Flyout.prototype.show = function(xmlList) {
         var block = eYo.DelegateSvg.newBlockReady(this.workspace_, xml)
         contents.push({type: 'block', block: block})
         block.render()
+        block.eyo.addTooltip(block)
         gaps.push(default_gap)
       } finally {
 
@@ -293,6 +318,7 @@ eYo.FlyoutDelegate.prototype.slide = function(closed) {
     // Hidden components will return null.
     return;
   }
+  eYo.Tooltip.hideAll(flyout.svgGroup_)
   var id = setInterval(frame, 20);
   var x = targetWorkspaceMetrics.absoluteLeft;
   var n_steps = 50

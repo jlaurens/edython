@@ -114,9 +114,9 @@
       var oldSvg = document.getElementById('svg-control-image')
       var newSvg = document.getElementById('svg-control-image-v')
       oldSvg.parentNode.appendChild(newSvg)
-      console.warn('MOVED')
       newSvg.parentNode.removeChild(oldSvg)
-      console.warn('REMOVED')
+      // JL: critical section of code,
+      // next instruction does not work despite what stackoverflow states
       // oldSvg && newSvg && oldSvg.parentNode.replaceChild(oldSvg, newSvg)
     }
   }
