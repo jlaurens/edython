@@ -71,7 +71,8 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.decorator, {
         edit: {
           validate: true,
           endEditing: true,
-          placeholder: eYo.Msg.Placeholder.DECORATOR
+          placeholder: eYo.Msg.Placeholder.DECORATOR,
+          variable: true
           // left_space: true,
         }
       }
@@ -307,7 +308,8 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
         edit: {
           validate: true,
           endEditing: true,
-          placeholder: eYo.Msg.Placeholder.IDENTIFIER
+          placeholder: eYo.Msg.Placeholder.IDENTIFIER,
+          variable: true
         }
       }
     },

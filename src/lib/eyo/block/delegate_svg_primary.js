@@ -49,7 +49,8 @@ eYo.DelegateSvg.Expr.makeSubclass('attributeref', {
         edit: {
           validate: true,
           endEditing: true,
-          placeholder: eYo.Msg.Placeholder.ATTRIBUTE
+          placeholder: eYo.Msg.Placeholder.ATTRIBUTE,
+          variable: true
         }
       }
     }
@@ -89,7 +90,8 @@ eYo.DelegateSvg.Expr.makeSubclass('slicing', {
         edit: {
           validate: true,
           endEditing: true,
-          placeholder: eYo.Msg.Placeholder.IDENTIFIER
+          placeholder: eYo.Msg.Placeholder.IDENTIFIER,
+          variable: true
         }
       }
     },

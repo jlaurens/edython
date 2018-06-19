@@ -116,7 +116,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         edit: {
           validate: true,
           endEditing: true,
-          placeholder: eYo.Msg.Placeholder.MODULE
+          placeholder: eYo.Msg.Placeholder.MODULE,
+          variable: true
         }
       }
     },

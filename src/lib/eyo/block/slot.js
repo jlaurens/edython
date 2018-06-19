@@ -208,12 +208,9 @@ eYo.Slot.makeFields = function () {
       field.eyo.css_class = eYo.Do.cssClassForText(model)
     } else if (goog.isObject(model)) {
       setupModel(model)
-      if (model.variable) {
+      if (model.edit || model.validate || model.endEditing || model.startEditing) {
         // this is an ediable field
-        field = new eYo.FieldVariable(model.variable || '', model.validate, fieldName)
-      } else if (model.edit || model.validate || model.endEditing || model.startEditing) {
-        // this is an ediable field
-        field = new eYo.FieldInput(model.edit || '', model.validate, fieldName)
+        field = new (model.variable? eYo.FieldVariable: eYo.FieldInput)(model.edit || '', model.validate, fieldName)
       } else if (goog.isDefAndNotNull(model.value) || goog.isDefAndNotNull(model.css)) {
         // this is just a label field
         field = new eYo.FieldLabel(model.value || '')

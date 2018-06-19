@@ -289,7 +289,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         edit: {
           placeholder: eYo.Msg.Placeholder.IDENTIFIER,
           validate: true,
-          endEditing: true
+          endEditing: true,
+          variable: true
         },
       },
     },
@@ -466,7 +467,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
         edit: {
           placeholder: eYo.Msg.Placeholder.IDENTIFIER,
           validate: true,
-          endEditing: true
+          endEditing: true,
+          variable: true
         }
       }
     },

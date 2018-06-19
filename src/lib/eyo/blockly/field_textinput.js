@@ -478,3 +478,15 @@ eYo.FieldVariable = function (text, optValidator, key) {
 }
 goog.inherits(eYo.FieldVariable, eYo.FieldInput)
 
+/**
+ * Get the text from this field as displayed on screen.  May differ from getText
+ * due to ellipsis, and other formatting.
+ * @return {string} Currently displayed text.
+ * @private
+ * @suppress{accessControls}
+ */
+eYo.FieldVariable.prototype.getPythonText_ = function () {
+  var candidate = eYo.FieldInput.superClass_.getDisplayText_.call(this)
+  return !XRegExp.match(candidate, /\s/) && candidate || 'MISSING NAME'
+}
+
