@@ -97,6 +97,8 @@ eYo.Events.Disabler.wrap = function (f) {
   Blockly.Events.disable()
   try {
     f()
+  } catch (err) {
+    console.error(err)
   } finally {
     Blockly.Events.enable()
   }
@@ -125,6 +127,8 @@ eYo.Data.prototype.setTrusted_ = function (newValue) {
     this.didChange(oldValue, newValue)
     eyo.consolidate(block)
     this.synchronize(newValue)
+  } catch (err) {
+    console.error(err)
   } finally {
     eyo.unskipRendering()
     eYo.Events.setGroup(false)

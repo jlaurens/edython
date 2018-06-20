@@ -122,6 +122,8 @@ eYo.PythonExporter.prototype.export = function (block, is_deep) {
         this.newline_()
         this.line.push('MISSING STATEMENT')
       }
+    } catch (err) {
+      console.error(err)
     } finally {
       this.dedent_()
     }

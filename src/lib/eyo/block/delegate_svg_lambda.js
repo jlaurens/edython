@@ -326,16 +326,18 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
           mgr.addInsertChild(new eYo.MenuItem(content, function () {
             eYo.Events.setGroup(true)
             try {
-              var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.term)
-              B.eyo.skipRendering()
+              var B = eYo.DelegateSvg.newBlockComplete(block.workspace, eYo.T3.Expr.term)
               try {
                 B.eyo.data.modifier.set(modifier)
                 B.eyo.data.variant.set(flags)
                 c8n.connect(B.outputConnection)  
+              } catch (err) {
+                console.error(err)
               } finally {
-                B.eyo.unskipRendering()
+                B.eyo.beReady(block, true)
               }
-              B.eyo.beReady(block, true)
+            } catch (err) {
+              console.error(err)
             } finally {
               eYo.Events.setGroup(false)
             }

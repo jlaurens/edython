@@ -15,6 +15,7 @@ builtin_range_expr/range ::= "range(" range_argument_list ")"
 range_argument_list ::= 3 elements
 builtin_range_stmt/range ::= builtin_range_expr
 builtin_input_expr/input ::= "input(" [any_argument] ")"
+argument_list_2 ::= 2 arguments at most
 </pre>
 
 Adding weight to types
@@ -23,7 +24,7 @@ Types with a 0 weight are considered the most basic.
 The heavier a type is, the more complex it is.
 All types have a default weight of 1000.
 <pre>
-non_void_expression_lis(1000)
+non_void_expression_list(1000)
 longformattedliteral(1000)
 shortformattedliteral(1000)
 parenth_form(1000)

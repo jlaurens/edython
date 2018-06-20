@@ -78,13 +78,14 @@ eYo.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
     var insert = function (key) {
       eYo.Events.setGroup(true)
       try {
-        var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.term)
+        var B = eYo.DelegateSvg.newBlockComplete(block.workspace, eYo.T3.Expr.term)
         B.eyo.data.name.set(key)
         B.eyo.data.variant.set(2)
-        B.render()
         var c8n = list.inputList[list.inputList.length - 1].connection
         c8n.connect(B.outputConnection)
         block.eyo.beReady(block, true)
+      } catch (err) {
+        console.error(err)
       } finally {
         eYo.Events.setGroup(false)
       }
@@ -95,6 +96,8 @@ eYo.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
         var B = has[key]
         B.unplug()
         B.dispose()
+      } catch (err) {
+        console.error(err)
       } finally {
         eYo.Events.setGroup(false)
       }
@@ -155,14 +158,15 @@ eYo.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
     var insert = function (key) {
       eYo.Events.setGroup(true)
       try {
-        var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.term)
+        var B = eYo.DelegateSvg.newBlockComplete(block.workspace, eYo.T3.Expr.term)
         B.eyo.data.name.set(key)
         B.eyo.data.variant.set(2)
-        B.render()
         // we assume that inputList is not void
         var c8n = list.inputList[list.inputList.length - 1].connection
         c8n.connect(B.outputConnection)
         block.eyo.beReady(block, true)
+      } catch (err) {
+        console.error(err)
       } finally {
         eYo.Events.setGroup(false)
       }
@@ -173,6 +177,8 @@ eYo.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
         var B = has[key]
         B.unplug()
         B.dispose()
+      } catch (err) {
+        console.error(err)
       } finally {
         eYo.Events.setGroup(false)
       }

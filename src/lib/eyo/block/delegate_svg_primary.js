@@ -173,6 +173,37 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
         this.owner_.slots.expression.required = withExpression
       }
     },
+    ary: {
+      N: Infinity,
+      NONE: '0',
+      ONE: '1',
+      TWO: '2',
+      all: [Infinity, '0', '1', '2'], // default value is Infinity
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        // only for builtin functions
+        if (this.data.variant.get() === this.data.variant.model.BUILTIN) {
+          switch (this.data.name.get()) {
+            case 'int':
+            case 'float':
+            case 'len':
+            return newValue === this.model.ONE ? {validated: newValue}: null
+            case 'list':
+            case 'set':
+            case 'sum':
+            return newValue === this.model.N ? {validated: newValue}: null
+          }
+        }
+      {validated: newValue}  return 
+      },
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        var idx = this.model.all.indexOf(newValue)
+        this.owner_.slots.nary.setIncog(idx !== 0)
+        this.owner_.slots.arguments_0.setIncog(idx !== 1)
+        this.owner_.slots.unary.setIncog(idx !== 2)
+        this.owner_.slots.binary.setIncog(idx !== 3)
+      },
+      xml: false
+    },
     backup: {
       noUndo: true,
       xml: false
@@ -192,7 +223,19 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
           variant = this.data.variant.get() || 0
           this.data.variant.set(builtin ? M.BUILTIN : M.NAME)
         }
-        if (!builtin) {
+        if (builtin) {
+          switch (newValue) {
+            case 'int':
+            case 'float':
+            case 'len':
+            this.data.ary.set(this.data.ary.model.ONE)
+            break
+            case 'list':
+            case 'set':
+            case 'sum':
+            this.data.ary.set(this.data.ary.model.N)
+          }
+        } else {
           this.data.backup.set(newValue)
         }
       },
@@ -233,13 +276,38 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
         }
       }
     },
-    arguments: {
-      order: 1,
+    nary: {
+      order: 2,
       fields: {
         start: '(',
         end: ')'
       },
       wrap: eYo.T3.Expr.argument_list
+    },
+    arguments_0: {
+      order: 3,
+      fields: {
+        start: '(',
+        end: ')'
+      },
+      xml: false
+    },
+    unary: {
+      order: 4,
+      fields: {
+        start: '(',
+        end: ')'
+      },
+      check: eYo.T3.Expr.Check.argument_any,
+      optional: true
+    },
+    binary: {
+      order: 5,
+      fields: {
+        start: '(',
+        end: ')'
+      },
+      wrap: eYo.T3.Expr.argument_list_2
     }
   }
 })

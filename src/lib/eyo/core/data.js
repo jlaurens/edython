@@ -42,7 +42,7 @@ eYo.Data = function (owner, key, model) {
   this.wait_ = 1 // start with 1 exactly
   var xml = model.xml
   if (goog.isDefAndNotNull(xml) || xml !== false) {
-    this.attributeName = 'eyo:' + ((xml && xml.attribute) || key)
+    this.attributeName = (xml && xml.attribute) || key
   }
   if (!model.setup_) {
     model.setup_ = true
@@ -97,6 +97,8 @@ eYo.Data.prototype.get = function () {
     try {
       this.lock_get = true
       this.init()
+    } catch (err) {
+      console.error(err)
     } finally {
       delete this.lock_get
     }
@@ -148,6 +150,8 @@ eYo.Data.prototype.init = function (newValue) {
       this.model_init_lock = true
       try {
         init.call(this)
+      } catch (err) {
+        console.error(err)
       } finally {
         delete this.model_init_lock
       }
@@ -189,6 +193,8 @@ eYo.Data.prototype.validate = function (newValue) {
     try {
       this.lock_model_validate = true
       var out = this.model.validate.call(this, newValue)
+    } catch (err) {
+      console.error(err)
     } finally {
       delete this.lock_model_validate
     }
@@ -208,6 +214,8 @@ eYo.Data.prototype.toText = function (newValue = undefined) {
     this.toText_locked = true
     try {
       return this.model.toText.call(this, newValue)
+    } catch (err) {
+      console.error(err)
     } finally {
       delete this.toText_locked
     }
@@ -227,6 +235,8 @@ eYo.Data.prototype.fromText = function (txt, dontValidate) {
       this.model_fromText_lock = true
       try {
         this.model.fromText.call(this, txt, dontValidate)
+      } catch (err) {
+        console.error(err)
       } finally {
         delete this.model_fromText_lock
       }
@@ -264,11 +274,15 @@ eYo.Data.prototype.willChange = function (oldValue, newValue) {
       this.model_willChange_lock = true
       try {
         this.model.willChange.call(this, oldValue, newValue)
+      } catch (err) {
+        console.error(err)
       } finally {
         delete this.model_willChange_lock
       }
       return
     }
+  } catch (err) {
+    console.error(err)
   } finally {
     delete this.lock_willChange
   }
@@ -295,11 +309,15 @@ eYo.Data.prototype.didChange = function (oldValue, newValue) {
       this.model_didChange_lock = true
       try {
         this.model.didChange.call(this, oldValue, newValue)
+      } catch (err) {
+        console.error(err)
       } finally {
         delete this.model_didChange_lock
       }
       return
     }
+  } catch (err) {
+    console.error(err)
   } finally {
     delete this.didChange_lock
   }
@@ -333,6 +351,8 @@ eYo.Data.prototype.synchronize = function (newValue) {
       Blockly.Events.disable()
       try {
         field.setValue(this.toText())
+      } catch (err) {
+        console.error(err)
       } finally {
         Blockly.Events.enable()
       }
@@ -351,6 +371,8 @@ eYo.Data.prototype.synchronize = function (newValue) {
     this.model_synchronize_lock = true
     try {
       this.model.synchronize.call(this, newValue)
+    } catch (err) {
+      console.error(err)
     } finally {
       delete this.model_synchronize_lock
     }
@@ -456,6 +478,8 @@ eYo.Data.prototype.consolidate = function () {
     this.model_consolidate_lock = true
     try {
       this.model.consolidate.call(this)
+    } catch (err) {
+      console.error(err)
     } finally {
       delete this.model_consolidate_lock
     }
@@ -483,6 +507,8 @@ eYo.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
     Blockly.Events.disable()
     try {
       field.setValue(newValue)
+    } catch (err) {
+      console.error(err)
     } finally {
       Blockly.Events.enable()
     }
@@ -535,6 +561,8 @@ eYo.Data.prototype.save = function (element) {
       this.xml_save_lock = true
       try {
         xml.save.call(this, element)
+      } catch (err) {
+        console.error(err)
       } finally {
         delete this.xml_save_lock
       }
@@ -568,6 +596,8 @@ eYo.Data.prototype.load = function (element) {
     this.xml_load_lock = true
     try {
       xml.load.call(this, element)
+    } catch (err) {
+      console.error(err)
     } finally {
       delete this.xml_load_lock
     }

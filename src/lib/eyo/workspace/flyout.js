@@ -238,6 +238,8 @@ eYo.Flyout.prototype.show = function(xmlList) {
         block.render()
         block.eyo.addTooltip(block)
         gaps.push(default_gap)
+      } catch (err) {
+        console.error(err)
       } finally {
 
       }

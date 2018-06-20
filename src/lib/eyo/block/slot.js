@@ -16,6 +16,7 @@ goog.provide('eYo.Slot')
 goog.require('eYo.Do')
 goog.require('Blockly.Input')
 goog.require('goog.dom');
+goog.forwardDeclare('eYo.Xml')
 
 /**
  * Convenient method to wrap the Blockly input object for the outside.
@@ -579,6 +580,8 @@ eYo.Slot.prototype.save = function (element, optNoId) {
     this.xml_save_lock = true
     try {
       xml.save.call(this, element, optNoId)
+    } catch (err) {
+      console.error(err)
     } finally {
       delete this.xml_save_lock
     }
@@ -624,7 +627,8 @@ eYo.Slot.prototype.save = function (element, optNoId) {
     }
   }.call(this))
   if (!out && this.isRequiredToDom()) {
-    var child = goog.dom.createDom('eyo:placeholder')
+    var child = goog.dom.createDom(eYo.XmlKey.EXPR)
+    child.setAttribute('eyo', 'placeholder')
     child.setAttribute(eYo.XmlKey.SLOT, this.key)
     goog.dom.appendChild(element, child)
   }
@@ -653,6 +657,8 @@ eYo.Slot.prototype.load = function (element) {
     this.xml_load_lock = true
     try {
       xml.load.call(this, element)
+    } catch (err) {
+      console.error(err)
     } finally {
       delete this.xml_load_lock
     }
@@ -677,7 +683,7 @@ eYo.Slot.prototype.load = function (element) {
           }
         }
         if (attribute === this.key) {
-          if (child.tagName && child.tagName.toLowerCase() === 'eyo:placeholder') {
+          if (child.getAttribute('eyo') === 'placeholder') {
             this.setRequiredFromDom(true)
             out = true
           } else if (target) {
@@ -708,7 +714,7 @@ eYo.Slot.prototype.load = function (element) {
             } else {
               out = eYo.Xml.fromDom(target, child)
             }
-          } else if ((target = Blockly.Xml.domToBlock(child, this.getWorkspace()))) {
+          } else if ((target = eYo.Xml.domToBlock(child, this.getWorkspace()))) {
             // we could create a block from that child element
             // then connect it
             if (target.outputConnection && c8n.checkType_(target.outputConnection)) {

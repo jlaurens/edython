@@ -219,7 +219,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (block, model, s
   var c8n = block.previousConnection
   if (c8n) {
     Blockly.Events.disable()
-    var parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, model)
+    var parentBlock = eYo.DelegateSvg.newBlockComplete(block.workspace, model)
     Blockly.Events.enable()
     if (parentBlock) {
       var parentC8n = parentBlock.nextConnection
@@ -240,14 +240,15 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (block, model, s
             var my_xy = parentBlock.getRelativeToSurfaceXY()
             parentBlock.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
           }
-          parentBlock.eyo.beReady(parentBlock)
           var holes = eYo.HoleFiller.getDeepHoles(parentBlock)
           eYo.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
-          parentBlock.render()
+          parentBlock.eyo.beReady(parentBlock, true)
           c8n.connect(parentC8n)
           if (Blockly.selected === block) {
             parentBlock.select()
           }
+        } catch (err) {
+          console.error(err)
         } finally {
           eYo.Events.setGroup(false)
         }
@@ -287,6 +288,8 @@ eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (block, belowPrototyp
     if (Blockly.selected === block) {
       blockAfter.select()
     }
+  } catch (err) {
+    console.error(err)
   } finally {
     eYo.Events.setGroup(false)
   }

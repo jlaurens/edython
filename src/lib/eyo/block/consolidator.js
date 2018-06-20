@@ -111,6 +111,7 @@ eYo.Consolidator.List.prototype.init = function () {
   if (this.data.unique) {
     this.data.unique = eYo.Do.ensureArray(this.data.unique)
   }
+  this.data.ary || (this.data.ary = Infinity)
 }
 
 /**
@@ -446,6 +447,41 @@ eYo.Consolidator.List.prototype.doCleanup = function (io) {
 }
 
 /**
+ * When there is a limitation of the number of arguments,
+ * remove the excedent.
+ * @param {!Object} io parameter.
+ */
+eYo.Consolidator.List.prototype.doAry = function (io) {
+  var ary = this.data.ary
+  if (ary < Infinity) {
+    this.setupIO(io, 0)
+    while (this.nextInput(io)) {
+      if (io.c8n.isConnected()) {
+        if (--ary) {
+          continue
+        }
+        // skip the connection
+        if (this.nextInput(io)) {
+          while (this.nextInput(io)) {
+            this.disposeAtI(io)
+          }
+        }
+      }
+    }
+    if (!ary) {
+      // all the arguments are filled
+      // disable all the separators
+      this.setupIO(io, 0)
+      while (this.nextInput(io)) {
+        if (!io.c8n.isConnected()) {
+          io.c8n.eyo.disabled_ = true
+        }
+      }
+    }
+  }
+}
+
+/**
  * Finalize placeholders and separators.
  * In general, there are at least 2 inputs:
  * a separator and a placeholder.
@@ -515,20 +551,31 @@ eYo.Consolidator.List.prototype.getIO = function (block) {
  * @param {boolean} force, true if no shortcut is allowed.
  */
 eYo.Consolidator.List.prototype.consolidate = function (block, force) {
-  var io = this.getIO(block)
-  // things are different if one of the inputs is connected
-  if (this.walk_to_next_connected(io)) {
-    if (this.consolidate_first_connected(io)) {
-      while (this.walk_to_next_connected(io, true) &&
-        this.consolidate_connected(io)) {}
+  if (this.consolidate_locked) {
+    return
+  }
+  this.consolidate_locked = true
+  try {
+    var io = this.getIO(block)
+    // things are different if one of the inputs is connected
+    if (this.walk_to_next_connected(io)) {
+      if (this.consolidate_first_connected(io)) {
+        while (this.walk_to_next_connected(io, true) &&
+          this.consolidate_connected(io)) {}
+      }
+      this.doCleanup(io)
+      if (force || io.edited || io.noLeftSeparator || io.noDynamicList) {
+        this.doFinalize(io)
+        this.doAry(io)
+      }
+    } else {
+      // no connected input
+      this.consolidate_unconnected(io)
     }
-    this.doCleanup(io)
-    if (force || io.edited || io.noLeftSeparator || io.noDynamicList) {
-      this.doFinalize(io)
-    }
-  } else {
-    // no connected input
-    this.consolidate_unconnected(io)
+  } catch (err) {
+    console.log(err)
+  } finally {
+    delete this.consolidate_locked
   }
 }
 
@@ -544,43 +591,63 @@ eYo.Consolidator.List.prototype.getInput = function (block, name) {
     return null
   }
   this.consolidate(block)
-  var j = -1
-  var io = this.getIO(block)
-  do {
-    if (io.eyo) {
-      io.presep = io.eyo.presep || io.presep
-      io.postsep = io.eyo.postsep || io.postsep
-      if (!io.c8n.eyo.s7r_) {
-        var o = eYo.Do.Name.getOrder(io.input.name, name)
-        if (!o) {
-          return io.input
+  this.consolidate_locked = true
+  try {
+    var j = -1
+    var io = this.getIO(block)
+    do {
+      if (io.eyo) {
+        io.presep = io.eyo.presep || io.presep
+        io.postsep = io.eyo.postsep || io.postsep
+        if (!io.c8n.eyo.s7r_) {
+          var o = eYo.Do.Name.getOrder(io.input.name, name)
+          if (!o) {
+            return io.input
+          }
+          if (o > 0 && j < 0) {
+            j = io.i
+          }
         }
-        if (o > 0 && j < 0) {
-          j = io.i
+      }
+    } while (this.nextInput(io))
+    var ary = this.data.ary
+    if (this.ary_ < Infinity) {
+      this.setupIO(io, 0)
+      while (this.nextInput(io)) {
+        if (io.c8n.isConnected()) {
+          if (--ary) {
+            continue
+          }
+          return null
         }
       }
     }
-  } while (this.nextInput(io))
-  // no input found, create one
-  if (io.list.length === 1) {
-    // there is only one placeholder with no separators
-    // either we insert at 0 or one
-    // anyway we must have separators before and after
-    // In all other cases, the separators are already there
-    this.insertPlaceholder(io, 0)
-    this.insertPlaceholder(io, 2)
-    if (!j) {
-      j = 1
+    // no input found, create one
+    if (io.list.length === 1) {
+      // there is only one placeholder with no separators
+      // either we insert at 0 or one
+      // anyway we must have separators before and after
+      // In all other cases, the separators are already there
+      this.insertPlaceholder(io, 0)
+      this.insertPlaceholder(io, 2)
+      if (!j) {
+        j = 1
+      }
     }
+    if (j < 0) {
+      j = io.list.length
+    }
+    this.insertPlaceholder(io, j)
+    var input = this.insertPlaceholder(io)
+    input.name = name
+    this.doFinalize(io)
+    // this.doAry(io)
+    return input
+  } catch (err) {
+    console.error(err)
+  } finally {
+    delete this.consolidate_locked
   }
-  if (j < 0) {
-    j = io.list.length
-  }
-  this.insertPlaceholder(io, j)
-  var input = this.insertPlaceholder(io)
-  input.name = name
-  this.doFinalize(io)
-  return input
 }
 
 /**

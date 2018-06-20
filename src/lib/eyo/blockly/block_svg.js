@@ -51,6 +51,8 @@ eYo.BlockSvg.prototype.init = function () {
   this.eyo.skipRendering()
   try {
     this.eyo.initBlock(this)
+  } catch (err) {
+    console.error(err)
   } finally {
     this.eyo.unskipRendering()
   }
@@ -192,10 +194,10 @@ eYo.BlockSvg.prototype.addSelect = function () {
     return
   }
   goog.dom.classlist.add(this.svgGroup_, 'eyo-select')
-  if (!this.eyo.svgContourGroup_) {
-    console.warn('this.type', this.type)
+  if (this.eyo.svgContourGroup_) {
+    // maybe that block has not been rendered yet
+    goog.dom.classlist.add(this.eyo.svgContourGroup_, 'eyo-select')
   }
-  goog.dom.classlist.add(this.eyo.svgContourGroup_, 'eyo-select')
   // ensure that the svgGroup is the last in the list
   this.bringToFront()
   var e8r = this.eyo.inputEnumerator(this)
@@ -531,6 +533,8 @@ eYo.BlockSvg.prototype.dispose = function (healStack, animate) {
       }
     }
     eYo.BlockSvg.superClass_.dispose.call(this, healStack, animate)
+  } catch (err) {
+    console.error(err)
   } finally {
     eYo.Events.setGroup(false)
   }

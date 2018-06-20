@@ -378,6 +378,8 @@ eYo.MenuManager.prototype.populateLast = function (block) {
       eYo.Events.setGroup(true)
       try {
         eYo.HoleFiller.fillDeepHoles(block.workspace, holes)
+      } catch (err) {
+        console.error(err)
       } finally {
         eYo.Events.setGroup(false)
       }
@@ -391,6 +393,8 @@ eYo.MenuManager.prototype.populateLast = function (block) {
           eYo.Events.setGroup(true)
           try {
             block.eyo.unlock(block)
+          } catch (err) {
+            console.error(err)
           } finally {
             eYo.Events.setGroup(false)
           }
@@ -404,6 +408,8 @@ eYo.MenuManager.prototype.populateLast = function (block) {
           eYo.Events.setGroup(true)
           try {
             block.eyo.lock(block)
+          } catch (err) {
+            console.error(err)
           } finally {
             eYo.Events.setGroup(false)
           }
@@ -642,6 +648,8 @@ eYo.MenuManager.prototype.handleActionLast = function (block, event) {
       }
       unwrapped.dispose(true, true)
       returnState = true
+    } catch (err) {
+      console.error(err)
     } finally {
       eYo.Events.setGroup(false)
     }
@@ -1135,6 +1143,8 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
       }
       this.shouldSeparateInsertBefore(sep)
     }
+  } catch (err) {
+    console.error(err)
   } finally {
     Blockly.Events.enable()
   }

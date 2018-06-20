@@ -20,8 +20,6 @@ console.warn('Move this block to the builtin blocks, with contextual consolidato
 
 goog.provide('eYo.DelegateSvg.Argument.range')
 
-goog.require('eYo.DelegateSvg.Argument')
-
 /**
  * List consolidator for argument list.
  * Rules are a bit stronger than python requires originally
@@ -86,7 +84,7 @@ eYo.Consolidator.Range.prototype.doFinalize = function (io) {
 }
 
 /**
- * Class for a DelegateSvg, argument_list block.
+ * Class for a DelegateSvg, range_argument_list block.
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.

@@ -826,6 +826,8 @@ eYo.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
         goog.asserts.assert(target, 'completeWrapped_ failed: ' + prototypeName)
         goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed ' + target.type)
         input.connection.connect(target.outputConnection)
+      } catch (err) {
+        console.error(err)
       } finally {
         Blockly.Events.enable()
       }
@@ -1134,6 +1136,8 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
         }
       }
     }
+  } catch (err) {
+    console.error(err)
   } finally {
     eYo.Events.setGroup(false)
   }

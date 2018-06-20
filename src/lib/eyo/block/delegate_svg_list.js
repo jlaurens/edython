@@ -72,6 +72,8 @@ eYo.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
   this.consolidate_lock = true
   try {
     this.consolidator.consolidate(block, force)
+  } catch (err) {
+    console.error(err)
   } finally {
     delete this.consolidate_lock
   }
@@ -130,6 +132,8 @@ eYo.DelegateSvg.List.prototype.removeItems = function (block) {
       }
     }
     this.consolidate(block)
+  } catch (err) {
+    console.error(err)
   } finally {
     eYo.Events.setGroup(false)
   }

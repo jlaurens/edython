@@ -267,7 +267,6 @@ eYo.DelegateSvg.prototype.postInitSvg = function (block) {
   }
   this.svgContourGroup_ = Blockly.utils.createSvgElement('g',
     {'class': 'eyo-contour'}, null)
-  console.warn('this.svgContourGroup_', this.block_.type, this.block_.id, this.svgContourGroup_)
   goog.dom.appendChild(this.svgContourGroup_, this.svgPathInner_)
   goog.dom.appendChild(this.svgContourGroup_, this.svgPathCollapsed_)
   goog.dom.appendChild(this.svgContourGroup_, this.svgPathContour_)
@@ -453,7 +452,7 @@ eYo.DelegateSvg.prototype.unskipRendering = function () {
  *   If true, also render block's parent, grandparent, etc.  Defaults to true.
  */
 eYo.DelegateSvg.prototype.render = function (block, optBubble) {
-  if (this.skipRendering_ || this.isDragging_) {
+  if (this.skipRendering_ || this.isDragging_ || !this.isReady_) {
     return
   }
   // if (this.wrapped_ && !block.getParent()) {
@@ -487,6 +486,8 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
     if (eYo.traceOutputConnection && block.outputConnection) {
       console.log('block.outputConnection', block.outputConnection.x_, block.outputConnection.y_)
     }
+  } catch (err) {
+    console.error(err)
   } finally {
     this.unskipRendering()
     goog.asserts.assert(!this.skipRendering_, 'FAILURE')
@@ -1429,6 +1430,7 @@ eYo.DelegateSvg.newBlockReady = function (workspace, model, id, render) {
  * This is the expected way to create the block.
  * There is a caveat due to proper timing in initializing the svg.
  * Whether blocks are headless or not is not clearly designed in Blockly.
+ * This is headless and should not render until a beReady message is sent.
  * @param {!WorkspaceSvg} workspace
  * @param {!String|Object} model
  * @private
@@ -1464,6 +1466,8 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
                 B.eyo.skipRendering()
                 block.eyo.skipRendering()
                 B.outputConnection.connect(input.connection)
+              } catch (err) {
+                console.error(err)
               } finally {
                 block.eyo.unskipRendering()
                 B.eyo.unskipRendering()
@@ -1479,6 +1483,8 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
           if (B && B.previousConnection) {
             try {
               B.previousConnection.connect(block.nextConnection)
+            } catch (err) {
+              console.error(err)
             } finally {
               // do nothing
             }
@@ -1499,8 +1505,8 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
  * @param {boolean} render
  */
 eYo.DelegateSvg.prototype.beReady = function (block, render) {
-  if (!render) {
-    this.skipRendering()
+  if (this.isReady_) {
+    return
   }
   try {
     block = this.block_
@@ -1543,11 +1549,12 @@ eYo.DelegateSvg.prototype.beReady = function (block, render) {
       goog.dom.classlist.remove(/** @type {!Element} */(this.svgShapeGroup_),
         'eyo-inner')
     }
+  } catch (err) {
+    console.error(err)
   } finally {
+    this.isReady_ = true
     if (render) {
       block.render()
-    } else {
-      this.unskipRendering()
     }
   }
   // do not render automatically; it may be too early
@@ -1727,6 +1734,8 @@ eYo.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
         }
         this.completeWrappedInput_(block, input, newType)
         returnState = true
+      } catch (err) {
+        console.error(err)
       } finally {
         eYo.Events.setGroup(false)
       }
@@ -2467,7 +2476,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (block, model) {
   // create a block out of the undo mechanism
   Blockly.Events.disable()
   try {
-    var candidate = eYo.DelegateSvg.newBlockReady(block.workspace, model)
+    var candidate = eYo.DelegateSvg.newBlockComplete(block.workspace, model)
     if (!candidate) {
       return
     }
@@ -2485,6 +2494,8 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (block, model) {
         otherC8n.connect(c8n)
         candidate.select()
         candidate.bumpNeighbours_()
+      } catch (err) {
+        console.error(err)
       } finally {
         eYo.Events.setGroup(false)
         Blockly.Events.disable()
@@ -2601,6 +2612,8 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (block, model) {
     if (candidate) {
       candidate.dispose(true)
     }
+  } catch (err) {
+    console.error(err)
   } finally {
     Blockly.Events.enable()
   }

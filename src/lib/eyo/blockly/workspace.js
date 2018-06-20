@@ -203,6 +203,8 @@ eYo.Workspace.prototype.undo = function(redo) {
         for (var i = 0, event; event = events[i]; i++) {
           event.run(redo)
         }
+      } catch (err) {
+        console.error(err)
       } finally {
         Blockly.Events.recordUndo = true
       }

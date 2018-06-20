@@ -160,6 +160,8 @@ eYo.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
       } else {
         block.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
       }
+    } catch (err) {
+      console.error(err)
     } finally {
       other.dispose(true)
       eYo.Events.setGroup(false)
@@ -255,6 +257,8 @@ eYo.DelegateSvg.Expr.prototype.canInsertParent = function (block, prototypeName,
       var targetC8n = block.outputConnection.targetConnection
       can = !targetC8n || targetC8n.checkType_(B.outputConnection)
     }
+  } catch (err) {
+    console.error(err)
   } finally {
     B.dispose()
     Blockly.Events.ensable()
@@ -369,6 +373,8 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
       if (bumper) {
         bumper.bumpNeighbours_()
       }
+    } catch (err) {
+      console.error(err)
     } finally {
       eYo.Events.setGroup(false)
     }

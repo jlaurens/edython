@@ -60,7 +60,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
         synchronize: true,
         validate: /** @suppress {globalThis} */ function (newValue) {
           var nameType = eYo.Do.typeOfString(newValue)
-          return (nameType === (eYo.T3.Expr.identifier) && {validated: newValue}) || null
+          return ((nameType === eYo.T3.Expr.identifier) && {validated: newValue}) || null
         }
       }, // new
       nameType: {
@@ -452,6 +452,8 @@ eYo.DelegateSvg.Expr.term.prototype.populateContextMenuFirst_ = function (block,
         eYo.Events.setGroup(true)
         try {
           block.eyo.data.variant.set(variant)
+        } catch (err) {
+          console.error(err)
         } finally {
           eYo.Events.setGroup(false)
         }

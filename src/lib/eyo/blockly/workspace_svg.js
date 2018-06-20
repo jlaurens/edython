@@ -104,12 +104,12 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
 
   // Options to undo/redo previous action.
   var undoOption = {}
-  undoOption.text = Blockly.Msg.UNDO
+  undoOption.text = eYo.Msg.UNDO
   undoOption.enabled = this.undoStack_.length > 0
   undoOption.callback = this.undo.bind(this, false)
   menuOptions.push(undoOption)
   var redoOption = {}
-  redoOption.text = Blockly.Msg.REDO
+  redoOption.text = eYo.Msg.REDO
   redoOption.enabled = this.redoStack_.length > 0
   redoOption.callback = this.undo.bind(this, true)
   menuOptions.push(redoOption)
@@ -117,7 +117,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
   // Option to clean up blocks.
   if (this.scrollbar) {
     var cleanOption = {}
-    cleanOption.text = Blockly.Msg.CLEAN_UP
+    cleanOption.text = eYo.Msg.CLEAN_UP
     cleanOption.enabled = topBlocks.length > 1
     cleanOption.callback = this.cleanUp.bind(this)
     menuOptions.push(cleanOption)
@@ -159,7 +159,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
 
     // Option to collapse top blocks.
     var collapseOption = {enabled: hasExpandedBlocks}
-    collapseOption.text = Blockly.Msg.COLLAPSE_ALL
+    collapseOption.text = eYo.Msg.COLLAPSE_ALL
     collapseOption.callback = function () {
       toggleOption(true)
     }
@@ -206,7 +206,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
 
   var deleteOption = {
     text: deleteList.length === 1 ? eYo.Msg.DELETE_BLOCK
-      : Blockly.Msg.DELETE_X_BLOCKS.replace('{0}', String(deleteList.length)),
+      : eYo.Msg.DELETE_X_BLOCKS.replace('{0}', String(deleteList.length)),
     enabled: deleteList.length > 0,
     callback: function () {
       if (ws.currentGesture_) {
@@ -267,6 +267,7 @@ Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function (workspace
  */
 Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function (workspaceXMLElement, types, n_col, offset, step) {
   workspaceXMLElement.setAttribute('xmlns:eyo', 'urn:edython:1.0')
+  workspaceXMLElement.setAttribute('xmlns', 'urn:edython:1.0')
   var n = 0
   var x = offset.x
   var y = offset.y
@@ -288,6 +289,8 @@ Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function (workspac
       x = offset.x
       y += step.y
     }
+  } catch (err) {
+    console.error(err)
   } finally {
     eYo.Events.setGroup(false)
   }
@@ -367,6 +370,8 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
         // } else if ((c8n = block.nextConnection)) {
         //   eYo.SelectedConnection.set(c8n)
         // }
+      } catch (err) {
+        console.error(err)
       } finally {
         eYo.Events.setGroup(false)
       }
@@ -442,6 +447,8 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
         this.centerOnBlock(block.id)
       }
     }
+  } catch (err) {
+    console.error(err)
   } finally {
     Blockly.Events.enable()
   }

@@ -97,6 +97,7 @@ goog.provide('eYo.Msg.Placeholder')
 /** @export */ eYo.Msg.EXPAND_BLOCK = 'Déplier'
 /** @export */ eYo.Msg.EXPAND_ALL = 'Tout déplier'
 /** @export */ eYo.Msg.COLLAPSE_BLOCK = 'Replier'
+/** @export */ eYo.Msg.COLLAPSE_ALL = 'Tout replier'
 /** @export */ eYo.Msg.ENABLE_BLOCK = 'Activer'
 /** @export */ eYo.Msg.DISABLE_BLOCK = 'Désactiver'
 /** @export */ eYo.Msg.DELETE_BLOCK = 'Supprimer'
