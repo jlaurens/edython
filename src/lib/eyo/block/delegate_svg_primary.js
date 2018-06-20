@@ -272,7 +272,7 @@ eYo.DelegateSvg.Expr.base_call_expr.prototype.populateContextMenuFirst_ = functi
 }
 
 /**
- * Class for a DelegateSvg, call block.
+ * Class for a DelegateSvg, module call block.
  * As call is already a reserved message in javascript,
  * we use call_expr instead.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
