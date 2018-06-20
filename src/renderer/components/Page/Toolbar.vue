@@ -134,7 +134,7 @@
               '<edython xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">',
               '<workspace>',
               '<content>',
-              '<s eyo="start_stmt" x="300" y="280">',
+              '<s eyo="start_stmt" x="300" y="280" comment="Calculer 1+2+3+...">',
               '<s eyo="stmt" comment="1) Demander un nombre à l\'utilisateur" flow="next">',
               '<s eyo="assignment" name="réponse" flow="next">',
               '<x eyo="list" slot="assigned">',

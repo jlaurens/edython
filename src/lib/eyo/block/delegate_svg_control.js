@@ -111,6 +111,7 @@ eYo.DelegateSvg.Control.prototype.postInitSvg = function (block) {
         this.runScript && this.runScript(this.block_)
       })
   goog.dom.insertSiblingAfter(this.svgPathPlay_, this.svgPathContour_)
+  goog.dom.classlist.add(block.svgGroup_, 'eyo-start')
 }
 
 /**
@@ -128,7 +129,30 @@ eYo.DelegateSvg.prototype.runScript = function (block) {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Control.prototype.populateContextMenuComment = function (block, mgr) {
+eYo.DelegateSvg.Control.prototype.XpopulateContextMenuComment = function (block, mgr) {
+  // if (block.comment) {
+  //   menuItem = new eYo.MenuItem(
+  //     eYo.Msg.REMOVE_COMMENT,
+  //     {action: eYo.ID.REMOVE_COMMENT,
+  //       target: block})
+  // } else {
+  //   menuItem = new eYo.MenuItem(
+  //     eYo.Msg.ADD_COMMENT,
+  //     {action: eYo.ID.ADD_COMMENT,
+  //       target: block})
+  // }
+  // var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+  //   oldValue ? eYo.Do.createSPAN(oldValue, 'eyo-code') : eYo.Do.createSPAN(eYo.Msg.Placeholder.IDENTIFIER, 'eyo-code-placeholder'),
+  //   eYo.Do.createSPAN('(…)', 'eyo-code')
+  // )
+  // var menuItem = new eYo.MenuItem(content, function () {
+  //   block.eyo.doAndRender(block, function () {
+  //     this.data.name.setTrusted(oldValue || '')
+  //     this.data.variant.set(M.NAME)
+  //   })
+  // })
+  // mgr.addChild(menuItem, true)
+  // mgr.shouldSeparate()
 }
 
 /**
@@ -147,20 +171,13 @@ eYo.DelegateSvg.Control.prototype.disposeInternal = function () {
 }
 
 /**
- * Render one input of value block.
- * @param io
- * @private
- */
-eYo.DelegateSvg.Control.prototype.renderDrawInput_ = function (io) {
-}
-
-/**
- * Render the leading # character for commented statement blocks.
- * Statement subclasses must override it.
+ * Not very clean, used as hook before rendering the comment fields.
  * @param io
  * @private
  */
 eYo.DelegateSvg.Control.prototype.renderDrawSharp_ = function (io) {
+  io.cursorX += eYo.Font.space * 4
+  this.fields.comment_mark.setVisible(false)
 }
 
 /**

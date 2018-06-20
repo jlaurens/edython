@@ -381,7 +381,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
       delete this.model_synchronize_lock
     }
   }
-  this.owner_ && this.owner_.render && this.owner_.render()
+  this.owner_ && this.owner_.render && this.owner_.render(this.owner_.block_)
 }
 
 /**
