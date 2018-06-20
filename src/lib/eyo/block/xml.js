@@ -35,6 +35,8 @@ goog.require('eYo.T3')
 goog.require('Blockly.Xml')
 goog.require('goog.dom');
 
+goog.require('eYo.DelegateSvg.Random');
+
 eYo.Xml = {
   EXPR: 'x', // tag name
   STMT: 's', // tag name
@@ -383,6 +385,7 @@ Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
  * The persistence storage may remember these blocks as eyo:foo instead of eyo:foo.
  * @param {!Blockly.Block} block The root block to encode.
  * @param {boolean} optNoId True if the encoder should skip the block id.
+ * @param {boolean} optNoNext True if the encoder should skip the next block.
  * @return {!Element} Tree of XML elements, possibly null.
  */
 eYo.Xml.blockToDom = (function () {
@@ -929,7 +932,7 @@ goog.provide('eYo.Xml.Call')
 console.warn('convert print statement to print expression and conversely, top blocks only')
 eYo.Xml.Call.domToBlock = function (element, workspace) {
   if (element.getAttribute('eyo') === eYo.Xml.CALL) {
-    var type = element.tagName.toLowerCase() === eYo.Xml.EXPR? eYo.T3.Expr.call_expr: eYo.T3.Stmt.call_stmt
+    var type = element.tagName.toLowerCase() === eYo.Xml.EXPR? eYo.T3.Expr.call: eYo.T3.Stmt.call_stmt
     var id = element.getAttribute('id')
     var block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)
     if (block) {

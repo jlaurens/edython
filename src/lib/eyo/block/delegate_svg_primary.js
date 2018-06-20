@@ -146,9 +146,170 @@ eYo.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (blo
     eYo.Do.createSPAN('[…]', 'eyo-code')
   )
   F(content, 1)
-  mgr.shouldSeparateInsert()
+  mgr.shouldSeparate()
   return eYo.DelegateSvg.Expr.slicing.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
+
+/**
+ * Class for a DelegateSvg, base call block.
+ * As call is already a reserved message in javascript,
+ * we use call_expr instead.
+ * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * For edython.
+ */
+eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
+  data: {
+    ary: {
+      N_ARY: 'N',
+      NO_ARY: '0',
+      UNARY: '1',
+      BINARY: '2',
+      TERNARY: '3',
+      all: ['0', '1', '2', '3', 'N'], // default value is Infinity
+      init: 'N',
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        var M = this.model
+        this.owner_.slots.no_ary.setIncog(newValue !== M.NO_ARY)
+        this.owner_.slots.unary.setIncog(newValue !== M.UNARY)
+        this.owner_.slots.binary.setIncog(newValue !== M.BINARY)
+        this.owner_.slots.ternary.setIncog(newValue !== M.TERNARY)
+        this.owner_.slots.n_ary.setIncog(newValue !== M.N_ARY)
+      }
+    },
+    name: {
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        var type = eYo.Do.typeOfString(newValue)
+        return type === eYo.T3.Expr.builtin_name || type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name
+          ? {validated: newValue} : null
+        // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
+      },
+      consolidate: /** @suppress {globalThis} */ function () {
+        this.didChange(undefined, this.get())
+      }
+    }
+  },
+  fields: {
+    name: {
+      validate: true,
+      endEditing: true,
+      placeholder: eYo.Msg.Placeholder.IDENTIFIER
+    }
+  },
+  slots: {
+    n_ary: {
+      order: 2,
+      fields: {
+        start: '(',
+        end: ')'
+      },
+      wrap: eYo.T3.Expr.argument_list
+    },
+    no_ary: {
+      order: 3,
+      fields: {
+        start: '(',
+        end: ')'
+      }
+    },
+    unary: {
+      order: 4,
+      fields: {
+        start: '(',
+        end: ')'
+      },
+      check: eYo.T3.Expr.Check.argument_any,
+      optional: true
+    },
+    binary: {
+      order: 5,
+      fields: {
+        start: '(',
+        end: ')'
+      },
+      wrap: eYo.T3.Expr.argument_list_2
+    },
+    ternary: {
+      order: 6,
+      fields: {
+        start: '(',
+        end: ')'
+      },
+      wrap: eYo.T3.Expr.argument_list_3
+    }
+  }
+})
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ * @suppress {globalThis}
+*/
+eYo.DelegateSvg.Expr.base_call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var M = this.data.ary.model
+  var current_ary = this.data.ary.get()
+  var name = this.data.name.get() || 'foo'
+  var F = function (ary, args) {
+    // closure to catch j
+    if (ary !== current_ary) {
+      var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
+        name + '(' + args + ')'
+      )
+      var menuItem = new eYo.MenuItem(content, function () {
+        block.eyo.data.ary.setTrusted(ary)
+      })
+      mgr.addChild(menuItem, true)
+    }
+  }
+  F(M.NO_ARY, '')
+  F(M.UNARY, '…')
+  F(M.BINARY, '…, …')
+  F(M.TERNARY, '…, …, …')
+  F(M.N_ARY, '…, …, …, ...')
+  mgr.shouldSeparate()
+  return eYo.DelegateSvg.Expr.base_call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+}
+
+/**
+ * Class for a DelegateSvg, call block.
+ * As call is already a reserved message in javascript,
+ * we use call_expr instead.
+ * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * For edython.
+ */
+eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('module_call_expr', {
+  data: {
+    module: {
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        var type = eYo.Do.typeOfString(newValue)
+        return type === eYo.T3.Expr.builtin_name || type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name
+          ? {validated: newValue} : null
+        // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
+      },
+      consolidate: /** @suppress {globalThis} */ function () {
+        this.didChange(undefined, this.get())
+      }
+    }
+  },
+  fields: {
+    module: {
+      order: 2,
+      validate: true,
+      endEditing: true,
+      placeholder: eYo.Msg.Placeholder.IDENTIFIER
+    }
+  }
+})
+
+/**
+ * Class for a DelegateSvg, call statement block.
+ * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * For edython.
+ */
+eYo.DelegateSvg.Stmt.makeSubclass('module_call_stmt', {
+  link: eYo.T3.Expr.module_call_expr
+})
 
 /**
  * Class for a DelegateSvg, call block.
@@ -190,6 +351,7 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
             case 'list':
             case 'set':
             case 'sum':
+            default:
             return newValue === this.model.N ? {validated: newValue}: null
           }
         }
@@ -197,8 +359,8 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         var idx = this.model.all.indexOf(newValue)
-        this.owner_.slots.nary.setIncog(idx !== 0)
-        this.owner_.slots.arguments_0.setIncog(idx !== 1)
+        this.owner_.slots.n_ary.setIncog(idx !== 0)
+        this.owner_.slots.no_ary.setIncog(idx !== 1)
         this.owner_.slots.unary.setIncog(idx !== 2)
         this.owner_.slots.binary.setIncog(idx !== 3)
       },
@@ -276,7 +438,7 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
         }
       }
     },
-    nary: {
+    n_ary: {
       order: 2,
       fields: {
         start: '(',
@@ -284,7 +446,7 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
       },
       wrap: eYo.T3.Expr.argument_list
     },
-    arguments_0: {
+    no_ary: {
       order: 3,
       fields: {
         start: '(',
@@ -431,5 +593,8 @@ eYo.DelegateSvg.Primary.T3s = [
   eYo.T3.Expr.slicing,
   eYo.T3.Expr.subscription,
   eYo.T3.Expr.call_expr,
-  eYo.T3.Stmt.call_stmt
+  eYo.T3.Stmt.call_stmt,
+  eYo.T3.Expr.base_call_expr,
+  eYo.T3.Stmt.module_call_expr,
+  eYo.T3.Stmt.module_call_stmt
 ]

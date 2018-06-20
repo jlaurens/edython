@@ -119,7 +119,7 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin_range_expr', {
     }
   },
   output: {
-    check: [eYo.T3.Expr.builtin_range_expr, eYo.T3.Expr.call_expr]
+    check: [eYo.T3.Expr.builtin_range_expr, eYo.T3.Expr.call]
   }
 })
 

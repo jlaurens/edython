@@ -254,9 +254,9 @@ eYo.Slot.makeFields = function () {
       field = owner.fields[key]
       var order = field.eyo.order
       if (order) {
-        goog.asserts.assert(!byOrder[order],
-          eYo.Do.format('Fields with the same order  {0} = {1} / {2}',
-            byOrder[order].name, field.name, field.sourceBlock_.type))
+        goog.asserts.assert(!goog.isDefAndNotNull(byOrder[order]),
+        'Fields with the same order  %s = %s / %s',
+        byOrder[order] && byOrder[order].name || 'NOTHING', field.name, owner.getBlock().type)
         byOrder[order] = field
         if (order > 0) {
           for (var i = 0; i < fromStart.length; i++) {

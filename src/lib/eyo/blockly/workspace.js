@@ -358,7 +358,7 @@ eYo.WorkspaceDelegate.prototype.getFlyoutsForCategory = function (category) {
     ]
     case 'function':
     return [
-      eYo.T3.Expr.call_expr,
+      eYo.T3.Expr.call,
       eYo.T3.Stmt.call_stmt,
       eYo.T3.Stmt.funcdef_part,
       eYo.T3.Stmt.return_stmt,

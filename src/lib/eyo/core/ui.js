@@ -206,7 +206,7 @@ eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt('.eyo-menuitem-disabled .eyo-code-reserved {color: rgba(60, 0, 145, 0.3);fill: rgba(0, 84, 147, 0.3);}')
   eYo.Style.insertCssRuleAt('.eyo-menuitem-disabled .eyo-code-builtin {font-weight:bold;color: rgba(60, 0, 145, 0.3);fill: rgba(60, 0, 145, 0.3);}')
   eYo.Style.insertCssRuleAt('.eyo-code-placeholder, .eyo-code-comment {font-style: oblique;}')
-  eYo.Style.insertCssRuleAt('.eyo-start .eyo-code-comment {font-style: normal;font-weight: bold;}')
+  eYo.Style.insertCssRuleAt('.eyo-start>g>.eyo-code-comment {font-style: normal;font-weight: bold;}')
   eYo.Style.insertCssRuleAt('.eyo-code-placeholder {fill: rgba(0, 0, 0, 0.4);}')
   eYo.Style.insertCssRuleAt('input.eyo-code-error {color: red;}')
   eYo.Style.insertCssRuleAt('text.eyo-code-error {fill: red;}')

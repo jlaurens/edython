@@ -143,7 +143,7 @@ eYo.DelegateSvg.prototype.initBlock = function (block) {
             next = slot
             do {
               goog.asserts.assert(!goog.isDef(slots[next.key]),
-                eYo.Do.format('Duplicate inserted slot key {0}/{1}/{2}', next.key, insert, block.type))
+                'Duplicate inserted slot key %s/%s/%s', next.key, insert, block.type)
               slots[next.key] = next
             } while ((next = next.next))
           } else {

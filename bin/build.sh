@@ -303,10 +303,12 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate_svg_print.js" \
 --js "src/lib/eyo/block/delegate_svg_yield.js" \
 --js "src/lib/eyo/block/delegate_svg_proc.js" \
+--js "src/lib/eyo/block/delegate_svg_random.js" \
 --js "src/lib/eyo/block/delegate_svg_try.js" \
+--js "src/lib/eyo/block/development.js" \
 --js "src/lib/eyo/block/xml.js" \
 --js "src/lib/eyo/workspace/app.js" \
---js "src/lib/eyo/block/development.js" \
+--js "src/lib/eyo/workspace/demo.js" \
 --js "src/lib/eyo/blockly/workspace.js" \
 --js "src/lib/eyo/blockly/workspace_svg.js" \
   --js_output_file "build/base/edython.js"\
