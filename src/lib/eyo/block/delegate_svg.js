@@ -815,7 +815,8 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     i_max: block.inputList.length,
     f: 0, // field index
     /** ?Object */ field: undefined,
-    /** boolean */ canStarSymbol: true
+    /** boolean */ canStarSymbol: true,
+    wasSeparatorField: false
   }
   io.cursorX = this.getPaddingLeft(block)
   io.offsetX = 0
@@ -963,10 +964,11 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
       root.removeAttribute('display')
       var text = io.field.getDisplayText_()
       var eyo = io.field.eyo
+      io.isSeparatorField = io.field.name === 'separator'
       if (text.length) {
         // if the text is void, it can not change whether
         // the last character was a letter or not
-        if (io.shouldSeparateField && !io.starSymbol && (eYo.XRE.operator.test(text[0]) || text[0] === '.' || eYo.XRE.id_continue.test(text[0]) || eyo.isEditing) && (!this.isHeadOfStatement)) {
+        if (!io.isSeparatorField && !io.wasSeparatorField && io.shouldSeparateField && !io.starSymbol && (eYo.XRE.operator.test(text[0]) || text[0] === '.' || eYo.XRE.id_continue.test(text[0]) || eyo.isEditing) && (!this.isHeadOfStatement)) {
           // add a separation
           io.cursorX += eYo.Font.space
         }
@@ -978,6 +980,8 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
         text[text.length - 1] === ':' ||
         (text[text.length - 1] === '.' && !((io.field) instanceof eYo.FieldTextInput)))
       }
+      io.wasSeparatorField = io.isSeparatorField
+      io.isSeparatorField = false
       var x_shift = eyo && !io.block.eyo.wrapped_ ? eyo.x_shift || 0 : 0
       root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
         ', ' + eYo.Padding.t() + ')')

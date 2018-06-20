@@ -292,6 +292,10 @@ eYo.Slot.makeFields = function () {
               unordered.splice(j, 1)
             }
           }
+          if (field.eyo.nextField) {
+            // this field already belongs to a chain
+            continue
+          }
           var eyo = field.eyo.eyoLast_ || field.eyo
           for (i++; i < arguments.length; i++) {
             fieldName = arguments[i]
@@ -312,9 +316,9 @@ eYo.Slot.makeFields = function () {
       }
       return field
     }
-    owner.fromStartField = chain.apply(fromStart)
-    owner.fromStartField = chain(eYo.Key.MODIFIER, eYo.Key.PREFIX, eYo.Key.START, eYo.Key.LABEL, owner.fromStartField)
-    owner.toEndField = chain.apply(toEnd)
+    owner.fromStartField = chain.apply(this, fromStart)
+    owner.fromStartField = chain(eYo.Key.MODIFIER, eYo.Key.PREFIX, eYo.Key.START, eYo.Key.LABEL, eYo.Key.SEPARATOR, owner.fromStartField)
+    owner.toEndField = chain.apply(this, toEnd)
     owner.toEndField = chain(owner.toEndField, eYo.Key.END, eYo.Key.SUFFIX, eYo.Key.COMMENT_MARK, eYo.Key.COMMENT)
     // we have exhausted all the fields that are already ordered
     // either explicitely or not

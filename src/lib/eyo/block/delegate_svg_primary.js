@@ -45,7 +45,7 @@ eYo.DelegateSvg.Expr.makeSubclass('attributeref', {
     attribute: {
       order: 2,
       fields: {
-        label: '.',
+        separator: '.',
         edit: {
           validate: true,
           endEditing: true,
@@ -190,6 +190,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
   },
   fields: {
     name: {
+      order: 3,
       validate: true,
       endEditing: true,
       placeholder: eYo.Msg.Placeholder.IDENTIFIER
@@ -240,6 +241,14 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
 })
 
 /**
+ * Template for contextual menu content.
+ * @param {!Blockly.Block} block The block.
+ */
+eYo.DelegateSvg.Expr.base_call_expr.prototype.contentTemplate = function (block) {
+  return this.data.name.get() || 'foo'
+}
+
+/**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
@@ -249,7 +258,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
 eYo.DelegateSvg.Expr.base_call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var M = this.data.ary.model
   var current_ary = this.data.ary.get()
-  var name = this.data.name.get() || 'foo'
+  var name = this.contentTemplate(block)
   var F = function (ary, args) {
     // closure to catch j
     if (ary !== current_ary) {
@@ -294,10 +303,14 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('module_call_expr', {
   },
   fields: {
     module: {
-      order: 2,
+      order: 1,
       validate: true,
       endEditing: true,
-      placeholder: eYo.Msg.Placeholder.IDENTIFIER
+      placeholder: eYo.Msg.Placeholder.MODULE
+    },
+    separator: {
+      order: 2,
+      value: '.'
     }
   }
 })
@@ -310,6 +323,14 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('module_call_expr', {
 eYo.DelegateSvg.Stmt.makeSubclass('module_call_stmt', {
   link: eYo.T3.Expr.module_call_expr
 })
+
+/**
+ * Template for contextual menu content.
+ * @param {!Blockly.Block} block The block.
+ */
+eYo.DelegateSvg.Expr.module_call_expr.prototype.contentTemplate = eYo.DelegateSvg.Stmt.module_call_stmt.prototype.contentTemplate = function (block) {
+  return (this.data.module.get() || 'foo') + '.' + (this.data.module.get() || 'bar')
+}
 
 /**
  * Class for a DelegateSvg, call block.
