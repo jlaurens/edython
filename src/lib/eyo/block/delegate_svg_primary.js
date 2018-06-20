@@ -373,7 +373,7 @@ eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
     mgr.addChild(menuItem, true)
   }
   if (variant === M.EXPRESSION || variant === M.NAME) {
-    mgr.shouldSeparateInsert()
+    mgr.separate()
     F = function (i, args) {
       // closure to catch j
       if (i !== i_ary) {
@@ -391,7 +391,7 @@ eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
     F(3, '…, …')
     F(0, '…, …, …, ...')
   }
-  mgr.shouldSeparateInsert()
+  mgr.shouldSeparate()
 }
 
 /**
