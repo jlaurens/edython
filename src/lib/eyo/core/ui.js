@@ -90,7 +90,7 @@ eYo.EditorOffset = {x: 0, y: 0}
  */
 eYo.setup.register(function () {
   var ELECTRON = {x: 1, y: 2}
-  var CHROME = {x: 1, y: -0.5}
+  var CHROME = {x: 1, y: 1}
   var GECKO = {x: 0, y: -1}
   var WEBKIT = {x: 1, y: -1}
   if (goog.userAgent.GECKO) {

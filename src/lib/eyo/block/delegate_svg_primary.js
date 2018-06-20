@@ -193,7 +193,7 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
             return newValue === this.model.N ? {validated: newValue}: null
           }
         }
-      {validated: newValue}  return 
+        return {validated: newValue}
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         var idx = this.model.all.indexOf(newValue)
@@ -323,8 +323,9 @@ eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
   var M = this.data.variant.model
   var variant = this.data.variant.get()
   var names = this.data.name.getAll()
-  var current = this.data.name.get()
-  var i = names.indexOf(current)
+  var i_name = names.indexOf(this.data.name.get())
+  var aries = this.data.ary.getAll()
+  var i_ary = aries.indexOf(this.data.ary.get())
   if (variant !== 0) {
     var oldValue = block.eyo.data.backup.get()
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -332,26 +333,31 @@ eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
       eYo.Do.createSPAN('(…)', 'eyo-code')
     )
     var menuItem = new eYo.MenuItem(content, function () {
-      block.eyo.data.name.setTrusted(oldValue || '')
-      block.eyo.data.variant.set(M.NAME)
+      block.eyo.doAndRender(block, function () {
+        this.data.name.setTrusted(oldValue || '')
+        this.data.variant.set(M.NAME)
+      })
     })
     mgr.addChild(menuItem, true)
   }
-  var F = function (j) {
+  var F = function (i) {
     // closure to catch j
-    content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      eYo.Do.createSPAN(names[j], 'eyo-code-reserved'),
-      eYo.Do.createSPAN('(…)', 'eyo-code')
-    )
-    var menuItem = new eYo.MenuItem(content, function () {
-      block.eyo.data.name.setTrusted(names[j])
-      block.eyo.data.variant.set(M.BUILTIN)
-    })
-    mgr.addChild(menuItem, true)
-    menuItem.setEnabled(j !== i)
+    if (i !== i_name) {
+      content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+        eYo.Do.createSPAN(names[i], 'eyo-code-reserved'),
+        eYo.Do.createSPAN('(…)', 'eyo-code')
+      )
+      var menuItem = new eYo.MenuItem(content, function () {
+        block.eyo.doAndRender(block, function () {
+          this.data.name.setTrusted(names[i])
+          this.data.variant.set(M.BUILTIN)
+        })
+      })
+      mgr.addChild(menuItem, true)
+    }
   }
-  for (var j = 0; j < names.length; j++) {
-    F(j)
+  for (var i = 0; i < names.length; i++) {
+    F(i)
   }
   if (variant !== M.EXPRESSION) {
     content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -359,10 +365,31 @@ eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
       eYo.Do.createSPAN('(…)', 'eyo-code')
     )
     menuItem = new eYo.MenuItem(content, function () {
-      block.eyo.data.name.setTrusted(oldValue || '')
-      block.eyo.data.variant.set(M.EXPRESSION)
+      block.eyo.doAndRender(block, function () {
+        this.data.name.setTrusted(oldValue || '')
+        this.data.variant.set(M.EXPRESSION)
+      })
     })
     mgr.addChild(menuItem, true)
+  }
+  if (variant === M.EXPRESSION || variant === M.NAME) {
+    mgr.shouldSeparateInsert()
+    F = function (i, args) {
+      // closure to catch j
+      if (i !== i_ary) {
+        content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
+          'foo(' + args + ')'
+        )
+        var menuItem = new eYo.MenuItem(content, function () {
+          block.eyo.data.ary.setTrusted(aries[i])
+        })
+        mgr.addChild(menuItem, true)
+      }
+    }
+    F(1, '')
+    F(2, '…')
+    F(3, '…, …')
+    F(0, '…, …, …, ...')
   }
   mgr.shouldSeparateInsert()
 }

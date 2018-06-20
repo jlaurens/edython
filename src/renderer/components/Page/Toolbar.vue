@@ -185,7 +185,7 @@
               '</x>',
               '</x>',
               '</s>',
-              '<s eyo="stmt" comment="4) Afficher le résultat" flow="next">',
+              '<s eyo="stmt" comment="5) Afficher le résultat" flow="next">',
               '<s eyo="print" flow="next">',
               '<x eyo="list" slot="arguments">',
               '<x eyo="literal" slot="O">\'La somme des\'',

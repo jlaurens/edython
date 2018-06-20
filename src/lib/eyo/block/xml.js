@@ -204,7 +204,7 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) 
         var j = 0
         while (j < blockCount) {
           var xmlBlock = blockNodes[j++]
-          if (xmlBlock.tagName === eYo.Xml.CONTENT) {
+          if (xmlBlock.tagName.toLowerCase() === eYo.Xml.CONTENT) {
             blockNodes = xmlBlock.childNodes
             blockCount = blockNodes.length
             j = 0
@@ -336,13 +336,10 @@ Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
     var attr = xmlBlock.getAttribute('eyo')
     if (attr) {
       block = eYo.Xml.domToBlock(xmlBlock, workspace)
+    } else if (xmlBlock.tagName.toLowerCase().indexOf('eyo:') < 0) {
+      block = eYo.Xml.savedDomToBlockHeadless_(xmlBlock, workspace)
     } else {
-      var prototypeName = xmlBlock.nodeName.toLowerCase()
-      if (prototypeName.indexOf('eyo:') < 0) {
-        block = eYo.Xml.savedDomToBlockHeadless_(xmlBlock, workspace)
-      } else {
-        block = eYo.Xml.domToBlock(xmlBlock, workspace)
-      }
+      block = eYo.Xml.domToBlock(xmlBlock, workspace)
     }
   }
   return block
@@ -502,8 +499,7 @@ goog.provide('eYo.Xml.Literal')
  * @override
  */
 eYo.Xml.Literal.domToBlock = function (element, workspace) {
-  var prototypeName = element.getAttribute('eyo')
-  if (prototypeName !== eYo.Xml.LITERAL) {
+  if (element.getAttribute('eyo') !== eYo.Xml.LITERAL) {
     return
   }
   var id = element.getAttribute('id')
@@ -715,7 +711,7 @@ eYo.Xml.domToBlock = (function () {
     if (!goog.isFunction(xmlBlock.getAttribute)) {
       return block
     }
-    // var isStmt = xmlBlock.tagName === eYo.XML.STMT
+    // var isStmt = xmlBlock.tagName.toLowerCase() === eYo.XML.STMT
     var id = xmlBlock.getAttribute('id')
     var name = xmlBlock.getAttribute('eyo')
     var prototypeName
@@ -732,7 +728,7 @@ eYo.Xml.domToBlock = (function () {
         if (prototypeName.length === 1) {
           prototypeName = prototypeName[0]
         } else if (!(prototypeName = (function () {
-          var where = xmlBlock.tagName === eYo.Xml.EXPR ? eYo.T3.Expr : eYo.T3.Stmt
+          var where = xmlBlock.tagName.toLowerCase() === eYo.Xml.EXPR ? eYo.T3.Expr : eYo.T3.Stmt
           for (var i = 0; i < prototypeName.length; i++) {
             var candidate = prototypeName[i]
             var C8r = eYo.DelegateSvg.Manager.get(candidate)
@@ -740,7 +736,7 @@ eYo.Xml.domToBlock = (function () {
               return candidate
             }
           }
-        }()))) {
+        } () ) )) {
           return block
         }
       }
@@ -933,7 +929,7 @@ goog.provide('eYo.Xml.Call')
 console.warn('convert print statement to print expression and conversely, top blocks only')
 eYo.Xml.Call.domToBlock = function (element, workspace) {
   if (element.getAttribute('eyo') === eYo.Xml.CALL) {
-    var type = element.tagName === eYo.Xml.EXPR? eYo.T3.Expr.call_expr: eYo.T3.Stmt.call_stmt
+    var type = element.tagName.toLowerCase() === eYo.Xml.EXPR? eYo.T3.Expr.call_expr: eYo.T3.Stmt.call_stmt
     var id = element.getAttribute('id')
     var block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)
     if (block) {

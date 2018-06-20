@@ -56,7 +56,7 @@ Blockly.Events.Change.prototype.run = function (forward) {
     var m = XRegExp.exec(this.element, eYo.XRE.event_data)
     var data
     if (m && (data = block.eyo.data[m.key])) {
-      data.set(value)
+      data.setTrusted(value) // do not validate, it may change value
     } else {
       console.warn('Unknown change type: ' + this.element)
     }
@@ -111,7 +111,8 @@ goog.require('eYo.Data')
 * without validation but with undo and synchronization
 * @param {Object} newValue
 */
-eYo.Data.prototype.setTrusted_ = function (newValue) {
+eYo.Data.prototype.setTrusted__ = function (newValue) {
+  this.error = false
   eYo.Events.setGroup(true)
   var eyo = this.owner_
   var block = eyo.block_
@@ -126,7 +127,7 @@ eYo.Data.prototype.setTrusted_ = function (newValue) {
     this.value_ = newValue
     this.didChange(oldValue, newValue)
     eyo.consolidate(block)
-    this.synchronize(newValue)
+    this.synchronizeIfUI(newValue)
   } catch (err) {
     console.error(err)
   } finally {

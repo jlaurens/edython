@@ -115,10 +115,14 @@ eYo.Data.prototype.get = function () {
  * @param {Object} newValue
  */
 eYo.Data.prototype.internalSet = function (newValue) {
+  if (goog.isString(newValue)) {
+    var x = this.model[newValue]
+    !x || (newValue = x)
+  }
   if (goog.isNumber(newValue)) {
-    var all = this.getAll()
-    if (all && goog.isDefAndNotNull(all = all[newValue])) {
-      newValue = all
+    x = this.getAll()
+    if (x && goog.isDefAndNotNull((x = x[newValue]))) {
+      newValue = x
     }
   }
   var oldValue = this.value_
@@ -412,9 +416,29 @@ eYo.Data.prototype.setTrusted = function (newValue) {
 
 /**
  * set the value of the property without any validation.
+ * This is overriden by the events module.
  * @param {Object} newValue
  */
 eYo.Data.prototype.setTrusted_ = function (newValue) {
+  if (this.trusted_lock) {
+    return
+  }
+  try {
+    this.trusted_lock = true
+    this.setTrusted__(newValue)
+  } catch (err) {
+    console.log(error)
+  } finally {
+    delete this.trusted_lock
+  }
+}
+
+/**
+ * set the value of the property without any validation.
+ * This is overriden by the events module.
+ * @param {Object} newValue
+ */
+eYo.Data.prototype.setTrusted__ = function (newValue) {
   this.error = false
   this.internalSet(newValue)
   this.synchronizeIfUI(newValue)

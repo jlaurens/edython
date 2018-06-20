@@ -590,3 +590,24 @@ eYo.BlockSvg.prototype.setDragging = function(adding) {
   eYo.BlockSvg.superClass_.setDragging.call(this, adding)
 };
 
+/**
+ * Bump unconnected blocks out of alignment.  Two blocks which aren't actually
+ * connected should not coincidentally line up on screen.
+ * @private
+ */
+eYo.BlockSvg.prototype.bumpNeighbours_ = function() {
+  if (!this.workspace) {
+    return;  // Deleted block.
+  }
+  if (this.workspace.isDragging()) {
+    return;  // Don't bump blocks during a drag.
+  }
+  var rootBlock = this.getRootBlock();
+  if (rootBlock.isInFlyout) {
+    return;  // Don't move blocks around in a flyout.
+  }
+  eYo.BlockSvg.superClass_.bumpNeighbours_.call(this)
+  if (Blockly.selectedBlock) {
+    Blockly.selectedBlock.eyo.scrollToVisible(Blockly.selectedBlock)
+  }
+}

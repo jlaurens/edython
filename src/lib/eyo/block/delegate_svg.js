@@ -428,7 +428,7 @@ eYo.DelegateSvg.prototype.getMenuTarget = function (block) {
 eYo.DelegateSvg.prototype.skipRendering = function () {
   ++this.skipRendering_
   if (eYo.Const.trackSkipRendering) {
-    console.log('skipRendering', this.block_.type, this.block_.id)
+    console.log('..skipRendering', this.skipRendering_, this.block_.type, this.block_.id)
   }
 }
 
@@ -440,7 +440,7 @@ eYo.DelegateSvg.prototype.unskipRendering = function () {
   --this.skipRendering_
   goog.asserts.assert(this.skipRendering_ >= 0, 'BALANCE FAILURE: skipRendering')
   if (eYo.Const.trackSkipRendering) {
-    console.log('unskipRendering', this.block_.type, this.block_.id)
+    console.log('unskipRendering', this.skipRendering_, this.block_.type, this.block_.id)
   }
 }
 
@@ -452,7 +452,7 @@ eYo.DelegateSvg.prototype.unskipRendering = function () {
  *   If true, also render block's parent, grandparent, etc.  Defaults to true.
  */
 eYo.DelegateSvg.prototype.render = function (block, optBubble) {
-  if (this.skipRendering_ || this.isDragging_ || !this.isReady_) {
+  if (this.skipRendering_ || this.isDragging_ || !this.isReady_ || !block.workspace) {
     return
   }
   // if (this.wrapped_ && !block.getParent()) {
@@ -507,6 +507,10 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
  * @param {!Block} block
  */
 eYo.DelegateSvg.prototype.consolidate = function (block, deep, force) {
+  if (!Blockly.Events.recordUndo) {
+    // do not consolidate while un(re)doing
+    return
+  }
   this.foreachData(function () {
     this.consolidate()
   })
@@ -2834,13 +2838,31 @@ eYo.DelegateSvg.prototype.setOffset = function (block, dx, dy) {
 }
 
 /**
- * The default implementation does nothing.
+ * Renders the block when connections are no longer hidden.
  * @param {!Blockly.Block} block
- * @param {boolean} hidden True if connections are hidden.
+ * @param {boolean} hidden True to hide connections.
  */
-eYo.Delegate.prototype.setConnectionsHidden = function (block, hidden) {
+eYo.DelegateSvg.prototype.setConnectionsHidden = function (block, hidden) {
   if (!hidden) {
     block.render()
   }
 }
 
+/**
+ * Execute the handler with block rendering deferred to the end, if any.
+ * handler
+ * @param {!Blockly.Block} block
+ * @param {!Function} handler `this` is the receiver.
+ * @param {!Function} err_handler `this` is the receiver, one argument: the error catched.
+ */
+eYo.DelegateSvg.prototype.doAndRender = function (block, handler, err_handler) {
+  this.skipRendering()
+  try {
+    handler.call(this)
+  } catch (err) {
+    err_handler && err_handler.call(this, err) || console.error(err)
+  } finally {
+    this.unskipRendering()
+    this.render(block)
+  }
+}

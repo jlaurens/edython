@@ -200,6 +200,16 @@ eYo.Workspace.prototype.undo = function(redo) {
       }
       Blockly.Events.recordUndo = false
       try {
+        var Bs = []
+        if (this.rendered) {
+          for (var i = 0, event; event = events[i]; i++) {
+            var B = this.getBlockById(event.blockId)
+            if (B) {
+              B.eyo.skipRendering()
+              Bs.push(B)
+            }
+          }  
+        }
         for (var i = 0, event; event = events[i]; i++) {
           event.run(redo)
         }
@@ -207,6 +217,10 @@ eYo.Workspace.prototype.undo = function(redo) {
         console.error(err)
       } finally {
         Blockly.Events.recordUndo = true
+        for (var i = 0; B = Bs[i]; i++) {
+          B.eyo.unskipRendering()
+          B.eyo.render(B)
+        }  
       }
       return  
     }
