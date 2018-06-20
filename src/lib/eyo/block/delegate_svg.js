@@ -827,7 +827,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   }
   io.shouldSeparateField = this.shouldSeparateField
   
-  io.canHeadOfStatement = !block.outputConnection
+  io.canBeHeadOfStatement = !block.outputConnection
 
   if ((io.field = this.fromStartField)) {
     io.f = 0
@@ -1036,13 +1036,13 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
     var cursorX = io.cursorX + io.offsetX
     c8n.setOffsetInBlock(cursorX, 0)
     var target = c8n.targetBlock()
-    c8n.eyo.isHeadOfStatement = io.canHeadOfStatement
+    c8n.eyo.isHeadOfStatement = io.canBeHeadOfStatement
     if (target) {
       var root = target.getSvgRoot()
       if (root) {
         c8n.tighten_()
         target.eyo.shouldSeparateField = io.shouldSeparateField
-        target.eyo.isHeadOfStatement = io.canHeadOfStatement
+        target.eyo.isHeadOfStatement = io.canBeHeadOfStatement
         target.render()
         io.shouldSeparateField = (target.eyo.wrapped_ || target.eyo.locked_) && target.eyo.shouldSeparateField
         var bBox = target.getHeightWidth()
