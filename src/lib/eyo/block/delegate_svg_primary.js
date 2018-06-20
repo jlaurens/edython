@@ -241,21 +241,13 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
 })
 
 /**
- * Template for contextual menu content.
- * @param {!Blockly.Block} block The block.
- */
-eYo.DelegateSvg.Expr.base_call_expr.prototype.contentTemplate = function (block) {
-  return this.data.name.get() || 'foo'
-}
-
-/**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  * @suppress {globalThis}
 */
-eYo.DelegateSvg.Expr.base_call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Expr.base_call_expr.populateMenu = function (block, mgr) {
   var M = this.data.ary.model
   var current_ary = this.data.ary.get()
   var name = this.contentTemplate(block)
@@ -277,7 +269,45 @@ eYo.DelegateSvg.Expr.base_call_expr.prototype.populateContextMenuFirst_ = functi
   F(M.TERNARY, '…, …, …')
   F(M.N_ARY, '…, …, …, ...')
   mgr.shouldSeparate()
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+eYo.DelegateSvg.Expr.base_call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  eYo.DelegateSvg.Expr.base_call_expr.populateMenu.call(this, block, mgr)
   return eYo.DelegateSvg.Expr.base_call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+}
+
+/**
+ * Class for a DelegateSvg, base call statement block.
+ * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * For edython.
+ */
+eYo.DelegateSvg.Stmt.makeSubclass('base_call_stmt', {
+  link: eYo.T3.Expr.base_call_expr
+})
+
+/**
+ * Template for contextual menu content.
+ * @param {!Blockly.Block} block The block.
+ */
+eYo.DelegateSvg.Expr.base_call_expr.prototype.contentTemplate = eYo.DelegateSvg.Stmt.base_call_stmt.prototype.contentTemplate = function (block) {
+  return this.data.name.get() || 'foo'
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+eYo.DelegateSvg.Stmt.base_call_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  eYo.DelegateSvg.Expr.base_call_expr.populateMenu.call(this, block, mgr)
+  return eYo.DelegateSvg.Stmt.call_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 /**
@@ -320,7 +350,7 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('module_call_expr', {
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('module_call_stmt', {
+eYo.DelegateSvg.Stmt.base_call_stmt.makeSubclass('module_call_stmt', {
   link: eYo.T3.Expr.module_call_expr
 })
 
@@ -339,7 +369,7 @@ eYo.DelegateSvg.Expr.module_call_expr.prototype.contentTemplate = eYo.DelegateSv
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
+eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
   data: {
     variant: {
       NAME: 0,
@@ -356,11 +386,6 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
       }
     },
     ary: {
-      N: Infinity,
-      NONE: '0',
-      ONE: '1',
-      TWO: '2',
-      all: [Infinity, '0', '1', '2'], // default value is Infinity
       validate: /** @suppress {globalThis} */ function (newValue) {
         // only for builtin functions
         if (this.data.variant.get() === this.data.variant.model.BUILTIN) {
@@ -368,24 +393,16 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
             case 'int':
             case 'float':
             case 'len':
-            return newValue === this.model.ONE ? {validated: newValue}: null
+            return newValue === this.model.UNARY ? {validated: newValue}: null
             case 'list':
             case 'set':
             case 'sum':
             default:
-            return newValue === this.model.N ? {validated: newValue}: null
+            return newValue === this.model.N_ARY ? {validated: newValue}: null
           }
         }
         return {validated: newValue}
-      },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        var idx = this.model.all.indexOf(newValue)
-        this.owner_.slots.n_ary.setIncog(idx !== 0)
-        this.owner_.slots.no_ary.setIncog(idx !== 1)
-        this.owner_.slots.unary.setIncog(idx !== 2)
-        this.owner_.slots.binary.setIncog(idx !== 3)
-      },
-      xml: false
+      }
     },
     backup: {
       noUndo: true,
@@ -411,12 +428,12 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
             case 'int':
             case 'float':
             case 'len':
-            this.data.ary.set(this.data.ary.model.ONE)
+            this.data.ary.set(this.data.ary.model.UNARY)
             break
             case 'list':
             case 'set':
             case 'sum':
-            this.data.ary.set(this.data.ary.model.N)
+            this.data.ary.set(this.data.ary.model.N_ARY)
           }
         } else {
           this.data.backup.set(newValue)
@@ -458,39 +475,6 @@ eYo.DelegateSvg.Expr.makeSubclass('call_expr', {
           variant.set(variant.model.EXPRESSION)
         }
       }
-    },
-    n_ary: {
-      order: 2,
-      fields: {
-        start: '(',
-        end: ')'
-      },
-      wrap: eYo.T3.Expr.argument_list
-    },
-    no_ary: {
-      order: 3,
-      fields: {
-        start: '(',
-        end: ')'
-      },
-      xml: false
-    },
-    unary: {
-      order: 4,
-      fields: {
-        start: '(',
-        end: ')'
-      },
-      check: eYo.T3.Expr.Check.argument_any,
-      optional: true
-    },
-    binary: {
-      order: 5,
-      fields: {
-        start: '(',
-        end: ')'
-      },
-      wrap: eYo.T3.Expr.argument_list_2
     }
   }
 })
@@ -557,22 +541,7 @@ eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
   }
   if (variant === M.EXPRESSION || variant === M.NAME) {
     mgr.separate()
-    F = function (i, args) {
-      // closure to catch j
-      if (i !== i_ary) {
-        content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-          'foo(' + args + ')'
-        )
-        var menuItem = new eYo.MenuItem(content, function () {
-          block.eyo.data.ary.setTrusted(aries[i])
-        })
-        mgr.addChild(menuItem, true)
-      }
-    }
-    F(1, '')
-    F(2, '…')
-    F(3, '…, …')
-    F(0, '…, …, …, ...')
+    eYo.DelegateSvg.Expr.base_call_expr.populateMenu.call(this, block, mgr)
   }
   mgr.shouldSeparate()
 }
@@ -585,7 +554,7 @@ eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
  */
 eYo.DelegateSvg.Expr.call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
   eYo.DelegateSvg.Expr.call_expr.populateMenu.call(this, block, mgr)
-  return eYo.DelegateSvg.Expr.call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return eYo.DelegateSvg.Expr.base_call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 /**
@@ -613,9 +582,10 @@ eYo.DelegateSvg.Primary.T3s = [
   eYo.T3.Expr.attributeref,
   eYo.T3.Expr.slicing,
   eYo.T3.Expr.subscription,
-  eYo.T3.Expr.call_expr,
-  eYo.T3.Stmt.call_stmt,
   eYo.T3.Expr.base_call_expr,
-  eYo.T3.Stmt.module_call_expr,
-  eYo.T3.Stmt.module_call_stmt
+  eYo.T3.Stmt.base_call_stmt,
+  eYo.T3.Expr.module_call_expr,
+  eYo.T3.Stmt.module_call_stmt,
+  eYo.T3.Expr.call_expr,
+  eYo.T3.Stmt.call_stmt
 ]
