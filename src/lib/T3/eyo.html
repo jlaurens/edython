@@ -11,12 +11,11 @@ any_stmt/stmt ::= any statement of nothing # with any comment or nothing, but at
 call_stmt/call ::= call_expr
 base_call_stmt ::= base_call_expr
 module_call_stmt ::= module_call_expr
-builtin_print_expr/print ::= "print(" argument_list ")"
-builtin_print_stmt/print ::= builtin_print_expr
-builtin_range_expr/range ::= "range(" range_argument_list ")"
+builtin__print_expr/print ::= "print(" argument_list ")"
+builtin__print_stmt/print ::= builtin__print_expr
+builtin__range/range ::= "range(" range_argument_list ")"
 range_argument_list ::= 3 elements
-builtin_range_stmt/range ::= builtin_range_expr
-builtin_input_expr/input ::= "input(" [any_argument] ")"
+builtin__input_expr/input ::= "input(" [any_argument] ")"
 argument_list_2 ::= 2 arguments at most
 argument_list_3 ::= 3 arguments at most
 </pre>
@@ -61,7 +60,7 @@ conditional_expression(1000)
 lambda_expr(1000)
 lambda_expr_nocond(1000)
 starred_expression(1000)
-builtin_object(1000)
+builtin__object(1000)
 any(1000)
 starred_item_list(1000)
 star_expr(1000)
@@ -98,8 +97,8 @@ parameter_star(1000)
 parameter_star_star(1000)
 identifier_annotated(1000)
 parameter_defined(1000)
-builtin_print_expr(1000)
-builtin_input_expr(1000)
+builtin__print_expr(1000)
+builtin__input_expr(1000)
 key_datum_list(1000)
 slice_list(1000)
 non_void_starred_item_list(1000)
@@ -162,7 +161,7 @@ stride(1000)
 expression_list(1000)
 await_or_primary(1000)
 or_expr_star(1000)
-builtin_name(1000)
+builtin__name(1000)
 </pre>
 
 Basic:
@@ -171,8 +170,8 @@ Basic:
 eYo.T3.Stmt.start_stmt
 eYo.T3.Expr.shortliteral
 eYo.T3.Expr.numberliteral
-eYo.T3.Stmt.builtin_print_stmt
-eYo.T3.Expr.builtin_input_expr
+eYo.T3.Stmt.builtin__print_stmt
+eYo.T3.Expr.builtin__input_expr
 eYo.T3.Stmt.assignment_stmt
 eYo.T3.Expr.term
 eYo.T3.Expr.u_expr
@@ -187,7 +186,7 @@ eYo.T3.Expr.parenth_form
 eYo.T3.Expr.list_display
 eYo.T3.Expr.set_display
 eYo.T3.Expr.dict_display
-eYo.T3.Expr.builtin_object
+eYo.T3.Expr.builtin__object
 eYo.T3.Stmt.augmented_assignment_stmt
 eYo.T3.Stmt.import_stmt
 eYo.T3.Stmt.docstring_top_stmt
@@ -213,7 +212,7 @@ eYo.T3.Expr.lambda
 Expert:
 =======
 
-eYo.T3.Expr.builtin_print_expr
+eYo.T3.Expr.builtin__print_expr
 eYo.T3.Expr.comprehension
 eYo.T3.Expr.comp_for
 eYo.T3.Expr.comp_if
@@ -231,7 +230,7 @@ eYo.T3.Stmt.yield_stmt
 Branching:
 ==========
 
-eYo.T3.Expr.builtin_object
+eYo.T3.Expr.builtin__object
 eYo.T3.Expr.not_test
 eYo.T3.Expr.number_comparison
 eYo.T3.Expr.object_comparison
@@ -245,7 +244,7 @@ eYo.T3.Expr.conditional_expression
 Looping:
 ========
 
-eYo.T3.Expr.builtin_object
+eYo.T3.Expr.builtin__object
 eYo.T3.Expr.not_test
 eYo.T3.Expr.number_comparison
 eYo.T3.Expr.object_comparison

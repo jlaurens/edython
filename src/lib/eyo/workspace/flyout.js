@@ -12,8 +12,10 @@
 'use strict';
 
 goog.provide('eYo.Flyout');
+goog.provide('eYo.FlyoutDelegate');
 
 goog.require('eYo.Flyout');
+goog.require('eYo.FlyoutCategory');
 goog.require('eYo.Style');
 goog.require('eYo.Font');
 goog.require('Blockly.VerticalFlyout');
@@ -502,3 +504,11 @@ eYo.Flyout.prototype.placeNewBlock_ = function(oldBlock) {
   block.render()
   return block;
 };
+
+/**
+ * List of node models by category.
+ * @param {!String} category The name of the category to retrieve.
+ */
+eYo.FlyoutDelegate.prototype.getList = function (category) {
+  return eYo.FlyoutCategory[category] || []
+}

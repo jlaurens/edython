@@ -237,7 +237,8 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
  */
 eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_2', {
   list: {
-    ary: 2
+    ary: 2,
+    empty: false
   }
 })
 
@@ -249,7 +250,8 @@ eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_2', {
  */
 eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_3', {
   list: {
-    ary: 3
+    ary: 3,
+    empty: false,
   }
 })
 

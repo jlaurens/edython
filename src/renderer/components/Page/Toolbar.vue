@@ -212,6 +212,47 @@
               '</workspace>',
               '</edython>'
             ].join('')
+          }, {
+            title: '50 dés',
+            xml: [
+              '<edython xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">',
+              '<workspace>',
+              '<content>',
+              '<s eyo="start_stmt"  x="300" y="280" comment="50 lancers d\'un dé à 6 faces">',
+              '<s eyo="random+import" flow="next">',
+              '<s eyo="for" flow="next">',
+              '<x eyo="list" slot="for">',
+              '<x eyo="identifier" name="lancer" slot="O">',
+              '</x>',
+              '</x>',
+              '<x eyo="list" slot="in">',
+              '<x eyo="range" slot="O">',
+              '<x eyo="list" slot="arguments">',
+              '<x eyo="literal" slot="O">50</x>',
+              '</x>',
+              '</x>',
+              '</x>',
+              '<s eyo="print" flow="suite">',
+              '<x eyo="list" slot="arguments">',
+              '<x eyo="literal" slot="O">\'lancer n°\'</x>',
+              '<x eyo="identifier" name="lancer" slot="f">',
+              '</x>',
+              '<x eyo="literal" slot="r">\':\'</x>',
+              '<x eyo="random__call_expr" name="randint" ary="2" slot="x">',
+              '<x eyo="list" slot="binary">',
+              '<x eyo="literal" slot="fstart">1</x>',
+              '<x eyo="literal" slot="rend">6</x>',
+              '</x>',
+              '</x>',
+              '</x>',
+              '</s>',
+              '</s>',
+              '</s>',
+              '</s>',
+              '</content>',
+              '</workspace>',
+              '</edython>'
+            ].join('')
           }
         ]
       }

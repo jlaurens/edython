@@ -717,7 +717,7 @@ for (K in Ks) {
 Ks = ['True', 'False', 'None', '...']
 for (var i = 0; (K = Ks[i++]);) {
   eYo.KeyHandler.register(K, {
-    type: eYo.T3.Expr.builtin_object,
+    type: eYo.T3.Expr.builtin__object,
     subtype: K
   })
 }
@@ -795,9 +795,9 @@ Ks = {
       delimiter: "'''"
     }
   },
-  'print(…)': eYo.T3.Stmt.builtin_print_stmt,
-  'input(…)': eYo.T3.Expr.builtin_input_expr,
-  'range(…)': eYo.T3.Expr.builtin_range_expr,
+  'print(…)': eYo.T3.Stmt.builtin__print_stmt,
+  'input(…)': eYo.T3.Expr.builtin__input_expr,
+  'range(…)': eYo.T3.Expr.builtin__range,
   'int(…)': {
     type: eYo.T3.Expr.call_expr,
     data: {

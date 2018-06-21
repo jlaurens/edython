@@ -611,3 +611,24 @@ eYo.BlockSvg.prototype.bumpNeighbours_ = function() {
     Blockly.selectedBlock.eyo.scrollToVisible(Blockly.selectedBlock)
   }
 }
+
+/**
+ * Move this block to the front of the visible workspace.
+ * <g> tags do not respect z-index so SVG renders them in the
+ * order that they are in the DOM.  By placing this block first within the
+ * block group's <g>, it will render on top of any other blocks.
+ * Problem with chromium.
+ * @package
+ */
+eYo.BlockSvg.prototype.bringToFront = function() {
+  var block = this;
+  try {
+    do {
+      var root = block.getSvgRoot();
+      goog.dom.appendChild(root.parentNode, root)
+      block = block.getParent();
+    } while (block);
+    } catch (err) {
+    console.error(err)
+  }
+};

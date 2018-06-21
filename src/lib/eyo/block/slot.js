@@ -292,8 +292,9 @@ eYo.Slot.makeFields = function () {
               unordered.splice(j, 1)
             }
           }
-          if (field.eyo.nextField) {
+          if (field.eyo.nextField && !field.eyo.eyoLast_) {
             // this field already belongs to a chain
+            // but it is not the first one
             continue
           }
           var eyo = field.eyo.eyoLast_ || field.eyo

@@ -278,12 +278,12 @@ eYo.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks = eYo.DelegateS
   eYo.T3.Expr.comprehension
 ], null/* eYo.T3.Expr.Check.expression */)
 
-eYo.DelegateSvg.Expr.builtin_input_expr.workspaceBlocks =
-eYo.DelegateSvg.Stmt.builtin_print_stmt.workspaceBlocks = eYo.Do.arraysMerged([
-  eYo.T3.Expr.builtin_input_expr,
-  eYo.T3.Expr.builtin_input_stmt,
-  eYo.T3.Expr.builtin_print_expr,
-  eYo.T3.Stmt.builtin_print_stmt
+eYo.DelegateSvg.Expr.builtin__input_expr.workspaceBlocks =
+eYo.DelegateSvg.Stmt.builtin__print_stmt.workspaceBlocks = eYo.Do.arraysMerged([
+  eYo.T3.Expr.builtin__input_expr,
+  eYo.T3.Expr.builtin__input_stmt,
+  eYo.T3.Expr.builtin__print_expr,
+  eYo.T3.Stmt.builtin__print_stmt
 ],
 eYo.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks
 )

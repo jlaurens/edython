@@ -13,6 +13,8 @@
       <b-dropdown-item-button v-on:click="selected = 'branching'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.branching}}</b-dropdown-item-button>
       <b-dropdown-item-button v-on:click="selected = 'looping'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.looping}}</b-dropdown-item-button>
       <b-dropdown-item-button v-on:click="selected = 'function'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.function}}</b-dropdown-item-button>
+      <b-dropdown-divider></b-dropdown-divider>
+      <b-dropdown-item-button v-on:click="selected = 'random__module'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.random__module}}</b-dropdown-item-button>
     </b-dropdown>
   </div>
 </template>
@@ -39,7 +41,8 @@
           expert: eYo.Msg.EXPERT,
           branching: eYo.Msg.BRANCHING,
           looping: eYo.Msg.LOOPING,
-          function: eYo.Msg.FUNCTION
+          function: eYo.Msg.FUNCTION,
+          random__module: 'random'
         },
         workspace: null,
         flyout: null
@@ -54,7 +57,7 @@
     methods: {
       doSelect: function (category) {
         if (this.workspace && this.flyout) {
-          var list = this.workspace.eyo.getFlyoutsForCategory(category)
+          var list = this.flyout.eyo.getList(category)
           if (list.length) {
             this.flyout.show(list)
           }

@@ -34,7 +34,7 @@ eYo.Data = function (owner, key, model) {
   this.data = owner.data // the owner's other data objects
   this.value_ = /** Object|null */ undefined
   this.key = key
-  this.model = model
+  this.model = goog.isObject(model) ? model: (model = {init: model})
   this.upperKey = key[0].toUpperCase() + key.slice(1)
   this.name = 'eyo:' + (this.model.name || this.key).toLowerCase()
   this.noUndo = model.noUndo

@@ -176,8 +176,7 @@ eYo.DelegateSvg.Control.prototype.disposeInternal = function () {
  * @private
  */
 eYo.DelegateSvg.Control.prototype.renderDrawSharp_ = function (io) {
-  io.cursorX += eYo.Font.space * 4
-  this.fields.comment_mark.setVisible(false)
+  io.cursorX += eYo.Font.space * 2
 }
 
 /**

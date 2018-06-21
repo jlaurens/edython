@@ -60,6 +60,7 @@ eYo.PythonExporter.prototype.newline_ = function () {
   this.line = [this.indent]
   this.isFirst = true
   this.shouldSeparateField = false
+  this.wasSeparatorField = false
 }
 
 /**
@@ -94,7 +95,6 @@ eYo.PythonExporter.prototype.exportExpression_ = function (block) {
       this.exportField_(field)
     } while ((field = field.eyo.nextField))
   }
-
 }
 
 /**
@@ -148,9 +148,10 @@ eYo.PythonExporter.prototype.exportField_ = function (field) {
     var text = (field.getPythonText_ && field.getPythonText_()) || field.getDisplayText_()
     var eyo = field.eyo
     if (text.length) {
+      this.isSeparatorField = field.name === 'separator'
       // if the text is void, it can not change whether
       // the last character was a letter or not
-      if (this.shouldSeparateField && !this.starSymbol && (eYo.XRE.operator.test(text[0]) || text[0] === '.' || eYo.XRE.id_continue.test(text[0]) || eyo.isEditing)) {
+      if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol && (eYo.XRE.operator.test(text[0]) || text[0] === '.' || eYo.XRE.id_continue.test(text[0]) || eyo.isEditing)) {
         // add a separation
         this.line.push(' ')
       }
@@ -161,6 +162,8 @@ eYo.PythonExporter.prototype.exportField_ = function (field) {
       (text[text.length - 1] === '.' && !(field instanceof eYo.FieldTextInput))
       this.starSymbol = (this.isFirst && (['*', '@', '+', '-', '~', '.'].indexOf(text[text.length - 1]) >= 0))
       this.isFirst = false
+      this.wasSeparatorField = this.isSeparatorField
+      this.isSeparatorField = false
     }
   }
 }

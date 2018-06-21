@@ -559,7 +559,7 @@ eYo.DelegateSvg.Expr.makeSubclass('not_test', {
  * Class for a DelegateSvg, builtin object.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('builtin_object', {
+eYo.DelegateSvg.Expr.makeSubclass('builtin__object', {
   data: {
     value: {
       all: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
@@ -579,10 +579,10 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin_object', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Expr.builtin__object.prototype.populateContextMenuFirst_ = function (block, mgr) {
   mgr.populateProperties(block, 'value')
   mgr.shouldSeparateInsert()
-  eYo.DelegateSvg.Expr.builtin_object.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  eYo.DelegateSvg.Expr.builtin__object.superClass_.populateContextMenuFirst_.call(this, block, mgr)
   return true
 }
 
@@ -592,7 +592,7 @@ eYo.DelegateSvg.Expr.builtin_object.prototype.populateContextMenuFirst_ = functi
  * @param {string} op op is the operator
  * @private
  */
-eYo.DelegateSvg.Expr.builtin_object.prototype.makeTitle = function (block, op) {
+eYo.DelegateSvg.Expr.builtin__object.prototype.makeTitle = function (block, op) {
   return eYo.Do.createSPAN(op, 'eyo-code-reserved')
 }
 
@@ -624,6 +624,6 @@ eYo.DelegateSvg.Expr.T3s = [
   eYo.T3.Expr.conditional_expression,
   eYo.T3.Expr.starred_expression,
   eYo.T3.Expr.not_test,
-  eYo.T3.Expr.builtin_object,
+  eYo.T3.Expr.builtin__object,
   eYo.T3.Expr.any
 ]

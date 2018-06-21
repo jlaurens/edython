@@ -22,7 +22,7 @@ console.warn('Move this block to the builtin blocks, with contextual consolidato
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('builtin_print_expr', {
+eYo.DelegateSvg.Expr.makeSubclass('builtin__print_expr', {
   xml: {
     tag: 'print',
   },
@@ -43,7 +43,7 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin_print_expr', {
     }
   },
   output: {
-    check: [eYo.T3.Expr.builtin_print_expr, eYo.T3.Expr.call_expr]
+    check: [eYo.T3.Expr.builtin__print_expr, eYo.T3.Expr.call_expr]
   }
 })
 
@@ -51,7 +51,7 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin_print_expr', {
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-eYo.DelegateSvg.Expr.builtin_print_expr.prototype.getMenuTarget = function (block) {
+eYo.DelegateSvg.Expr.builtin__print_expr.prototype.getMenuTarget = function (block) {
   return block
 }
 
@@ -61,7 +61,7 @@ eYo.DelegateSvg.Expr.builtin_print_expr.prototype.getMenuTarget = function (bloc
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-eYo.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Expr.builtin__print_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var list = block.getInput(eYo.Key.ARGUMENTS).connection.targetBlock()
   var c10r = list.eyo.consolidator
   var yorn = false
@@ -122,7 +122,7 @@ eYo.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
     F('file')
     yorn = true
   }
-  return eYo.DelegateSvg.Expr.builtin_print_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
+  return eYo.DelegateSvg.Expr.builtin__print_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
 /**
@@ -130,8 +130,8 @@ eYo.DelegateSvg.Expr.builtin_print_expr.prototype.populateContextMenuFirst_ = fu
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('builtin_print_stmt', {
-  inherits: eYo.T3.Expr.builtin_print_expr,
+eYo.DelegateSvg.Stmt.makeSubclass('builtin__print_stmt', {
+  inherits: eYo.T3.Expr.builtin__print_expr,
   output: null,
 })
 
@@ -141,7 +141,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('builtin_print_stmt', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-eYo.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Stmt.builtin__print_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var list = block.getInput(eYo.Key.ARGUMENTS).connection.targetBlock()
   var c10r = list.eyo.consolidator
   var yorn = false
@@ -203,7 +203,7 @@ eYo.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
     F('file')
     yorn = true
   }
-  return eYo.DelegateSvg.Stmt.builtin_print_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
+  return eYo.DelegateSvg.Stmt.builtin__print_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
 /**
@@ -211,7 +211,7 @@ eYo.DelegateSvg.Stmt.builtin_print_stmt.prototype.populateContextMenuFirst_ = fu
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('builtin_input_expr', {
+eYo.DelegateSvg.Expr.makeSubclass('builtin__input_expr', {
   fields: {
     label: {
       value: 'input'
@@ -229,13 +229,13 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin_input_expr', {
     }
   },
   output: {
-    check: [eYo.T3.Expr.builtin_input_expr, eYo.T3.Expr.call_expr]
+    check: [eYo.T3.Expr.builtin__input_expr, eYo.T3.Expr.call_expr]
   }
 })
 
 eYo.DelegateSvg.Print.T3s = [
   eYo.T3.Expr.term,
-  eYo.T3.Expr.builtin_print_expr,
-  eYo.T3.Stmt.builtin_print_stmt,
-  eYo.T3.Expr.builtin_input_expr
+  eYo.T3.Expr.builtin__print_expr,
+  eYo.T3.Stmt.builtin__print_stmt,
+  eYo.T3.Expr.builtin__input_expr
 ]

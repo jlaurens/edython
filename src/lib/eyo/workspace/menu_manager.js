@@ -893,7 +893,7 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
       eYo.Do.createSPAN('print', 'eyo-code-reserved'),
       goog.dom.createTextNode('(…)')
     )
-  case eYo.T3.Stmt.builtin_input_stmt:
+  case eYo.T3.Stmt.builtin__input_stmt:
     return goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
       eYo.Do.createSPAN('input', 'eyo-code-reserved'),
       goog.dom.createTextNode('(…)')
@@ -1079,7 +1079,7 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     eYo.T3.Stmt.comment_any, // defined
     eYo.T3.Stmt.assignment_stmt,
     eYo.T3.Stmt.print_stmt, // JL defined?
-    eYo.T3.Stmt.builtin_input_stmt// JL defined?
+    eYo.T3.Stmt.builtin__input_stmt// JL defined?
   ]
   var F = function (action, type) {
     return (function () {

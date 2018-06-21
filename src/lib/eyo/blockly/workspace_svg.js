@@ -239,17 +239,10 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
  * @private
  */
 Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function (workspaceXMLElement, type, x, y) {
-  var core = type.substring(4)
-  var shortcut = (this instanceof eYo.DelegateSvg.Expr ? eYo.T3.Xml.toDom.Expr : eYo.T3.Xml.toDom.Stmt)[core]
-  var tag = (shortcut && 'eyo:' + shortcut) || type
-  var text
-  console.log('new workspace element:', type, tag)
-  var child = goog.dom.createElement(tag)
+  var block = eYo.DelegateSvg.newBlockComplete(this, type)
+  var child = eYo.Xml.blockToDom(block, true)
   child.setAttribute('x', x)
   child.setAttribute('y', y)
-  if (text) {
-    goog.dom.appendChild(child, goog.dom.createTextNode(text))
-  }
   goog.dom.appendChild(workspaceXMLElement, child)
 }
 
@@ -266,8 +259,8 @@ Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function (workspace
  * @private
  */
 Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function (workspaceXMLElement, types, n_col, offset, step) {
-  workspaceXMLElement.setAttribute('xmlns:eyo', 'urn:edython:1.0')
   workspaceXMLElement.setAttribute('xmlns', 'urn:edython:1.0')
+  workspaceXMLElement.setAttribute('xmlns:eyo', 'urn:edython:1.0')
   var n = 0
   var x = offset.x
   var y = offset.y

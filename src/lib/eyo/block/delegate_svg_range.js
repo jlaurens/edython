@@ -101,7 +101,7 @@ eYo.DelegateSvg.Expr.argument_list.makeSubclass('range_argument_list', {
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('builtin_range_expr', {
+eYo.DelegateSvg.Expr.makeSubclass('builtin__range', {
   fields: {
     label: {
       value: 'range',
@@ -119,23 +119,11 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin_range_expr', {
     }
   },
   output: {
-    check: [eYo.T3.Expr.builtin_range_expr, eYo.T3.Expr.call]
+    check: [eYo.T3.Expr.builtin__range, eYo.T3.Expr.call_expr]
   }
 })
 
-/**
- * Class for a DelegateSvg, range_stmt block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Stmt.makeSubclass('builtin_range_stmt', {
-  inherits: eYo.T3.Expr.builtin_range_expr,
-  output: null,
-})
-
-
 eYo.DelegateSvg.Range.T3s = [
   eYo.T3.Expr.term,
-  eYo.T3.Expr.builtin_range_expr,
-  eYo.T3.Stmt.builtin_range_stmt
+  eYo.T3.Expr.builtin__range
 ]

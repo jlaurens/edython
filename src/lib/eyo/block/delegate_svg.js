@@ -964,8 +964,8 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
       root.removeAttribute('display')
       var text = io.field.getDisplayText_()
       var eyo = io.field.eyo
-      io.isSeparatorField = io.field.name === 'separator'
       if (text.length) {
+        io.isSeparatorField = io.field.name === 'separator'
         // if the text is void, it can not change whether
         // the last character was a letter or not
         if (!io.isSeparatorField && !io.wasSeparatorField && io.shouldSeparateField && !io.starSymbol && (eYo.XRE.operator.test(text[0]) || text[0] === '.' || eYo.XRE.id_continue.test(text[0]) || eyo.isEditing) && (!this.isHeadOfStatement)) {
@@ -979,9 +979,9 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
         eYo.XRE.operator.test(text[text.length - 1]) ||
         text[text.length - 1] === ':' ||
         (text[text.length - 1] === '.' && !((io.field) instanceof eYo.FieldTextInput)))
+        io.wasSeparatorField = io.isSeparatorField
+        io.isSeparatorField = false
       }
-      io.wasSeparatorField = io.isSeparatorField
-      io.isSeparatorField = false
       var x_shift = eyo && !io.block.eyo.wrapped_ ? eyo.x_shift || 0 : 0
       root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
         ', ' + eYo.Padding.t() + ')')
@@ -1452,7 +1452,12 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
         block = workspace.newBlock(model, id)
       } else {
         var type = eYo.Do.typeOfString(model)
-        if (!type || !(block = workspace.newBlock(type, id))) {
+        if (type && (block = workspace.newBlock(type, id))) {
+          block.eyo.initDataWithModel(block, {data: model})
+        } else if (goog.isNumber(model)) {
+          block = workspace.newBlock(eYo.T3.Expr.numberliteral, id)
+          block.eyo.initDataWithModel(block, {data: model.toString()})
+        } else {
           console.warn('No block for model:', model)
           return
         }

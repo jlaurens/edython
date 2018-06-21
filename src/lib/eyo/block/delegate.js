@@ -511,23 +511,23 @@ eYo.Delegate.prototype.initData = function () {
  */
 eYo.Delegate.prototype.initDataWithModel = function (block, model, noCheck) {
   var done = false
-  var Vs = model.data
-  for (var k in Vs) {
-    if (eYo.Do.hasOwnProperty(Vs, k)) {
-      var D = this.data[k]
-      if (D) {
-        D.set(Vs[k])
-        done = true
-      } else if (!noCheck) {
-        console.warn('Unused data:', k, Vs[k])
-      }
-    }
-  }
-  if (!done) {
-    var d = this.data.main
-    if (d && d.validate(model)) { // more guards needed
-      d.set(model)
+  var data_in = model.data
+  if (goog.isString(data_in)) {
+    var d = this.data.main || this.headData
+    if (d && d.validate(data_in)) {
+      d.set(data_in)
       done = true
+    }
+  } else { // data_in can be a string
+    for (var k in data_in) {
+      if (eYo.Do.hasOwnProperty(data_in, k)) {
+        var D = this.data[k]
+        if (D) {
+          D.set(data_in[k])
+        } else if (!noCheck) {
+          console.warn('Unused data:', k, data_in[k])
+        }
+      }
     }
   }
   return done

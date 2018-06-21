@@ -64,7 +64,7 @@ eYo.Xml = {
   LAMBDA: 'lambda',
   CALL: 'call',
   BUILTIN: 'builtin',
-  BUILTIN_CALL: 'builtin_call',
+  BUILTIN_CALL: 'builtin__call',
   GLOBAL: 'global',
   NONLOCAL: 'nonlocal',
 
@@ -220,7 +220,7 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) 
           }
           break
         }
-      } else {
+      } else if (goog.isFunction(xmlChild.getAttribute)) {
         // for edython
         b = newBlock(xmlChild)
         newBlockIds.push(b.id)
@@ -310,16 +310,16 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
  * @param {!WorkspaceSvg} workspace
  * @param {!String|Object} prototypeName or xml representation.
  * @param {?string} id
- * @param {?boolean} render
  * @private
  */
-eYo.DelegateSvg.newBlockReady = function (workspace, model, id, render) {
-  if (model.startsWith && model.startsWith('<')) {
-    var B = Blockly.Xml.domToBlock(model, workspace)
-  } else if (!(B = this.newBlockComplete(workspace, model, id))) {
-    return
+eYo.DelegateSvg.newBlockComplete_saved = eYo.DelegateSvg.newBlockComplete
+eYo.DelegateSvg.newBlockComplete = function (workspace, model, id, render) {
+  if (goog.isString(model) && model.startsWith('<')) {
+    var B = eYo.Xml.stringToBlock(model, workspace)
   }
-  B.eyo.beReady(B, render)
+  if (!B) {
+    B = this.newBlockComplete_saved(workspace, model, id)
+  }
   return B
 }
 
@@ -691,6 +691,25 @@ eYo.Xml.registerAllTags = function () {
 }
 
 /**
+ * Decode a string and create a block (and possibly sub blocks)
+ * on the workspace.
+ * If the string is not valid xml, then nothing is returned.
+ *
+ * @param {!String} string a serialized dom element.
+ * @param {!Blockly.Workspace} workspace The workspace.
+ * @return {?Blockly.Block} The root block created, if any.
+ */
+eYo.Xml.stringToBlock = function (string, workspace) {
+  var block
+  try {
+    var dom = eYo.Do.stringToDom(string)
+    block = dom && eYo.Xml.domToBlock(dom.documentElement, workspace)
+  } finally {
+  }
+  return block
+}
+
+/**
  * Decode an XML block tag and create a block (and possibly sub blocks)
  * on the workspace.
  * Try to decode a literal or other special node.
@@ -926,13 +945,13 @@ eYo.Xml.Group.domToBlock = function (element, workspace) {
 
 goog.provide('eYo.Xml.Call')
 
-// call blocks have eyo:call and tag eyo:builtin_call names
+// call blocks have eyo:call and tag eyo:builtin__call names
 // if there is an eyo:input attribute, even a ''
 // then it is an expression block otherwise it is a statement block.
 console.warn('convert print statement to print expression and conversely, top blocks only')
 eYo.Xml.Call.domToBlock = function (element, workspace) {
   if (element.getAttribute('eyo') === eYo.Xml.CALL) {
-    var type = element.tagName.toLowerCase() === eYo.Xml.EXPR? eYo.T3.Expr.call: eYo.T3.Stmt.call_stmt
+    var type = element.tagName.toLowerCase() === eYo.Xml.EXPR? eYo.T3.Expr.call_expr: eYo.T3.Stmt.call_stmt
     var id = element.getAttribute('id')
     var block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)
     if (block) {

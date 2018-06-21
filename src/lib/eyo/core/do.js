@@ -331,7 +331,7 @@ goog.require('eYo.T3')
 
 eYo.T3.Expr.reserved_identifier = '.reserved identifier'
 eYo.T3.Expr.reserved_keyword = '.reserved keyword'
-eYo.T3.Expr.builtin_name = '.builtin name'
+eYo.T3.Expr.builtin__name = '.builtin name'
 
 /**
  * What is the type of this string? an identifier, a number, a reserved word ?
@@ -349,7 +349,7 @@ eYo.Do.typeOfString = function (candidate) {
     return eYo.T3.Expr.reserved_keyword
   }
   if (['int', 'float', 'print', 'input', 'list', 'len', 'set', 'sum'].indexOf(candidate) >= 0) {
-    return eYo.T3.Expr.builtin_name
+    return eYo.T3.Expr.builtin__name
   }
   // is it a number ?
   if (eYo.XRE.integer.exec(candidate)) {
@@ -416,7 +416,7 @@ eYo.Do.cssClassForText = function (txt) {
   case eYo.T3.Expr.reserved_identifier:
   case eYo.T3.Expr.reserved_keyword:
     return 'eyo-code-reserved'
-  case eYo.T3.Expr.builtin_name:
+  case eYo.T3.Expr.builtin__name:
     return 'eyo-code-builtin'
   default:
     return 'eyo-code'
@@ -501,3 +501,25 @@ eYo.Do.format = function (format) {
   })
 }
 
+/**
+ * Convenient converter.
+ * Throws an error for bad input.
+ * See https://stackoverflow.com/questions/11563554/how-do-i-detect-xml-parsing-errors-when-using-javascripts-domparser-in-a-cross
+ * For edython.
+ * @param {!string} string
+ * @return {'Element'}
+ */
+eYo.Do.stringToDom = function (string) {
+  var parser = new DOMParser();
+  var parsererrorNS = parser.parseFromString('>', 'application/xml').getElementsByTagName("parsererror")[0].namespaceURI
+  var stringToDom = function (string) {
+    var parser = new DOMParser();
+    var dom = parser.parseFromString(string, 'application/xml');
+    if(dom.getElementsByTagNameNS(parsererrorNS, 'parsererror').length > 0) {
+      throw new Error('Error parsing XML');
+    }
+    return dom;
+  }
+  eYo.Do.stringToDom = stringToDom
+  return stringToDom(string)
+}
