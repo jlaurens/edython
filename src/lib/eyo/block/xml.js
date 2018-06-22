@@ -908,12 +908,18 @@ eYo.Xml.Comparison.domToBlock = function (element, workspace) {
     var op = element.getAttribute(eYo.Xml.OPERATOR)
     var C8r, model
     var type = eYo.T3.Expr.number_comparison
-    if ((C8r = eYo.DelegateSvg.Manager.get(type)) &&
-    (model = C8r.eyo.getModel().slots) &&
-    model.operators &&
-    model.operators.indexOf(op) >= 0) {
+    if ((C8r = eYo.DelegateSvg.Manager.get(type))
+      && (model = C8r.eyo.getModel().data)
+      && (model = model.operator)
+      && model.all
+      && model.all.indexOf(op) >= 0) {
       block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)
-    } else if ((type = eYo.T3.Expr.object_comparison) && (C8r = eYo.DelegateSvg.Manager.get(type)) && (model = C8r.eyo.getModel().slots) && model.operators && model.operators.indexOf(op) >= 0) {
+    } else if ((type = eYo.T3.Expr.object_comparison)
+      && (C8r = eYo.DelegateSvg.Manager.get(type))
+      && (model = C8r.eyo.getModel().data)
+      && (model = model.operator)
+      && model.all
+      && model.all.indexOf(op) >= 0) {
       block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)
     } else {
       return block
