@@ -1,8 +1,12 @@
-var exports = {
+const path = require('path')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+
+var X = module.exports = {
   options_: {
     web: {
       no_tippy: false,
-      brython_debug: true,
+      brython_debug: false,
+      no_brython_sources: false,
       no_edython: false,
       no_xregexp: false,
       no_brython: false,
@@ -10,6 +14,7 @@ var exports = {
     renderer: {
       no_tippy: false,
       brython_debug: false,
+      no_brython_sources: false,
       no_edython: false,
       no_xregexp: false,
       no_brython: false,
@@ -17,6 +22,7 @@ var exports = {
     test: {
       no_tippy: false,
       brython_debug: false,
+      brython_sources: false,
       no_edython: false,
       no_xregexp: false,
       no_brython: false,
@@ -24,7 +30,10 @@ var exports = {
   }
 }
 
-exports.xregex_all = function (plugins, where) {
+X.xregexp_all = function (plugins, where) {
+  if (X.options.no_xregexp) {
+    return
+  }
   /**
    * xregexp
    */
@@ -38,7 +47,10 @@ exports.xregex_all = function (plugins, where) {
   )
 }
 
-exports.brython_sources = function (plugins, where) {
+X.brython_sources = function (plugins, where) {
+  if (X.options.no_brython_sources) {
+    return
+  }
   /**
    * this one is for embedding brython sources
    */
@@ -64,7 +76,10 @@ exports.brython_sources = function (plugins, where) {
   )
 }
 
-exports.edython = function (plugins, where) {
+X.edython = function (plugins, where) {
+  if (X.options.no_edython) {
+    return
+  }
   /**
    * this one is for embedding edython (and embedded blockly/closure) sources
    */
@@ -85,7 +100,10 @@ exports.edython = function (plugins, where) {
   )
 }
 
-exports.tippy = function (plugins, where) {
+X.tippy = function (plugins, where) {
+  if (X.options.no_tippy) {
+    return
+  }
   /**
    * this one is for embedding tippy, for direct access
    */
@@ -106,7 +124,10 @@ exports.tippy = function (plugins, where) {
   )
 }
 
-exports.resources = function (plugins, where) {
+X.resources = function (plugins, where) {
+  if (X.options.no_resources) {
+    return
+  }
   plugins.push(
     new CopyWebpackPlugin(
       [
@@ -131,8 +152,7 @@ exports.resources = function (plugins, where) {
   )
 }
 
-exports.init = function (key) {
-  exports.options = exports.options_[key]
+X.init = function (key) {
+  X.options = X.options_[key]
 }
 
-module.exports = exports

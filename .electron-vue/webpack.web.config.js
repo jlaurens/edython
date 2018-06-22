@@ -99,6 +99,7 @@ let webConfig = {
         no_edython: eYoConfig.options.no_edython,
         no_xregexp: eYoConfig.options.no_xregexp,
         no_brython: eYoConfig.options.no_brython,
+        no_brython_sources: eYoConfig.options.no_brython_sources,
         brython_debug: eYoConfig.options.brython_debug,
       }
     ),
@@ -138,7 +139,7 @@ let morePlugins = function (plugins, where) {
   eYoConfig.tippy(plugins, where)
   eYoConfig.resources(plugins, where)
 
-} // (webConfig.plugins, 'web')
+} (webConfig.plugins, 'web')
 
 /**
  * Adjust webConfig for production settings

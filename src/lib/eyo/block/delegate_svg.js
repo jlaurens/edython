@@ -479,7 +479,6 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
       return
     }
   }
-  console.log('RENDER:', block.type, optBubble, )
   // if (this.wrapped_ && !block.getParent()) {
   //   console.log('wrapped block with no parent')
   //   setTimeout(function(){block.dispose()}, 10)

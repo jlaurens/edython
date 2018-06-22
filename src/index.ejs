@@ -10,9 +10,11 @@
     <link rel="stylesheet" href="lib/tippy.css">
     <script src="lib/tippy.min.js"></script>
     <% } %>
-    <% if (!htmlWebpackPlugin.options.no_brython && htmlWebpackPlugin.options.brython_debug) { %>
+    <% if (!htmlWebpackPlugin.options.no_brython) { %>
     <script src="src/brython.js"></script>
     <script src="src/brython_stdlib.js"></script>
+    <% } %>
+    <% if (!htmlWebpackPlugin.options.no_brython && htmlWebpackPlugin.options.brython_debug) { %>
     <script src="src/brython_builtins.js"></script>
     <script src="src/version_info.js"></script>
     <script src="src/py2js.js"></script>
