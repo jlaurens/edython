@@ -9,10 +9,11 @@ const { spawn } = require('child_process')
 const webpack = require('webpack')
 const Multispinner = require('multispinner')
 
-
 const mainConfig = require('./webpack.main.config')
 const rendererConfig = require('./webpack.renderer.config')
 const webConfig = require('./webpack.web.config')
+
+const eYoConfig = require('./eyo.config.js')
 
 const doneLog = chalk.bgGreen.white(' DONE ') + ' '
 const errorLog = chalk.bgRed.white(' ERROR ') + ' '

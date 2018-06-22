@@ -3,10 +3,14 @@
   <head>
     <meta charset="utf-8">
     <title>edython</title>
-    <script src="lib/xregexp-all.js"></script>
+    <% if (!htmlWebpackPlugin.options.no_xregexp) { %>
+      <script src="lib/xregexp-all.js"></script>
+    <% } %>
+    <% if (!htmlWebpackPlugin.options.no_tippy) { %>
     <link rel="stylesheet" href="lib/tippy.css">
     <script src="lib/tippy.min.js"></script>
-    <% if (htmlWebpackPlugin.options.brython_debug) { %>
+    <% } %>
+    <% if (!htmlWebpackPlugin.options.no_brython && htmlWebpackPlugin.options.brython_debug) { %>
     <script src="src/brython.js"></script>
     <script src="src/brython_stdlib.js"></script>
     <script src="src/brython_builtins.js"></script>
@@ -37,7 +41,7 @@
     <script src="src/builtin_modules.js"></script>
     <script src="src/py_import_hooks.js"></script>
     <script src="src/async.js"></script>
-    <% } else { %>
+    <% } else if (!htmlWebpackPlugin.options.no_brython) { %>
     <script src="lib/brython.js"></script>
     <script src="lib/brython_stdlib.js"></script>
     <% } %>
@@ -342,9 +346,69 @@
       <script src="lib/eyo/blockly/workspace_svg.js"></script>
       <!--  DYNAMIC DEPS END  -->
       <!--  DO NOT EDIT PREVIOUS LINE  -->
-      <% } else { %>
+      <% } else if (!htmlWebpackPlugin.options.no_edython) { %>
       <script>console.warn('SIMPLE MODE ON')</script>
       <script src="lib/edython.js"></script>
+      <link rel="stylesheet" type="text/css" href="lib/edython.css">
+      <script>
+        /*eslint-disable */
+        // https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
+        eYo.App.copyTextToClipboard = function (text) {
+          var textArea = document.createElement("textarea");
+        
+          //
+          // *** This styling is an extra step which is likely not required. ***
+          //
+          // Why is it here? To ensure:
+          // 1. the element is able to have focus and selection.
+          // 2. if element was to flash render it has minimal visual impact.
+          // 3. less flakyness with selection and copying which **might** occur if
+          //    the textarea element is not visible.
+          //
+          // The likelihood is the element won't even render, not even a flash,
+          // so some of these are just precautions. However in IE the element
+          // is visible whilst the popup box asking the user for permission for
+          // the web page to copy to the clipboard.
+          //
+        
+          // Place in top-left corner of screen regardless of scroll position.
+          textArea.style.position = 'fixed';
+          textArea.style.top = 0;
+          textArea.style.left = 0;
+        
+          // Ensure it has a small width and height. Setting to 1px / 1em
+          // doesn't work as this gives a negative w/h on some browsers.
+          textArea.style.width = '2em';
+          textArea.style.height = '2em';
+        
+          // We don't need padding, reducing the size if it does flash render.
+          textArea.style.padding = 0;
+        
+          // Clean up any borders.
+          textArea.style.border = 'none';
+          textArea.style.outline = 'none';
+          textArea.style.boxShadow = 'none';
+        
+          // Avoid flash of white box if rendered for any reason.
+          textArea.style.background = 'transparent';
+          textArea.value = text;
+        
+          document.body.appendChild(textArea);
+          textArea.focus();
+          textArea.select();
+        
+          try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+          } catch (err) {
+            console.log('Oops, unable to copy');
+          }
+        
+          document.body.removeChild(textArea);
+        }
+        /*eslint-enable */
+      </script>
     <% } %>
     <% if (htmlWebpackPlugin.options.nodeModules) { %>
       <!-- Add `node_modules/` to global paths so `require` works properly in development -->
@@ -352,66 +416,6 @@
         require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')
       </script>
     <% } %>
-    <link rel="stylesheet" type="text/css" href="lib/edython.css">
-    <script>
-      /*eslint-disable */
-      // https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
-      eYo.App.copyTextToClipboard = function (text) {
-        var textArea = document.createElement("textarea");
-      
-        //
-        // *** This styling is an extra step which is likely not required. ***
-        //
-        // Why is it here? To ensure:
-        // 1. the element is able to have focus and selection.
-        // 2. if element was to flash render it has minimal visual impact.
-        // 3. less flakyness with selection and copying which **might** occur if
-        //    the textarea element is not visible.
-        //
-        // The likelihood is the element won't even render, not even a flash,
-        // so some of these are just precautions. However in IE the element
-        // is visible whilst the popup box asking the user for permission for
-        // the web page to copy to the clipboard.
-        //
-      
-        // Place in top-left corner of screen regardless of scroll position.
-        textArea.style.position = 'fixed';
-        textArea.style.top = 0;
-        textArea.style.left = 0;
-      
-        // Ensure it has a small width and height. Setting to 1px / 1em
-        // doesn't work as this gives a negative w/h on some browsers.
-        textArea.style.width = '2em';
-        textArea.style.height = '2em';
-      
-        // We don't need padding, reducing the size if it does flash render.
-        textArea.style.padding = 0;
-      
-        // Clean up any borders.
-        textArea.style.border = 'none';
-        textArea.style.outline = 'none';
-        textArea.style.boxShadow = 'none';
-      
-        // Avoid flash of white box if rendered for any reason.
-        textArea.style.background = 'transparent';
-        textArea.value = text;
-      
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-      
-        try {
-          var successful = document.execCommand('copy');
-          var msg = successful ? 'successful' : 'unsuccessful';
-          console.log('Copying text command was ' + msg);
-        } catch (err) {
-          console.log('Oops, unable to copy');
-        }
-      
-        document.body.removeChild(textArea);
-      }
-      /*eslint-enable */
-    </script>
   </head>
   <body>
     <div id="app"></div>

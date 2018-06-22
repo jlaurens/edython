@@ -11,6 +11,9 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
+const eYoConfig = require('./eyo.config.js')
+eYoConfig.init(process.env.BABEL_ENV)
+
 /**
  * List of node_modules to include in webpack bundle
  *
@@ -20,7 +23,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
  */
 let whiteListedModules = ['vue']
 
-let brython_debug = true
+let brython_debug = false
 
 let rendererConfig = {
   devtool: '#cheap-module-eval-source-map',
@@ -109,19 +112,25 @@ let rendererConfig = {
   },
   plugins: [
     new ExtractTextPlugin('styles.css'),
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: path.resolve(__dirname, '../src/index.ejs'),
-      minify: {
-        collapseWhitespace: false,// otherwise python code would not survive?
-        removeAttributeQuotes: true,
-        removeComments: true
-      },
-      nodeModules: process.env.NODE_ENV !== 'production'
-        ? path.resolve(__dirname, '../node_modules')
-        : false,
-      brython_debug: brython_debug,
-    }),
+    new HtmlWebpackPlugin(
+      {
+        filename: 'index.html',
+        template: path.resolve(__dirname, '../src/index.ejs'),
+        minify: {
+          collapseWhitespace: false,// otherwise python code would not survive?
+          removeAttributeQuotes: true,
+          removeComments: true
+        },
+        nodeModules: process.env.NODE_ENV !== 'production'
+          ? path.resolve(__dirname, '../node_modules')
+          : false,
+        no_tippy: eYoConfig.options.no_tippy,
+        no_edython: eYoConfig.options.no_edython,
+        no_xregexp: eYoConfig.options.no_xregexp,
+        no_brython: eYoConfig.options.no_brython,
+        brython_debug: eYoConfig.options.brython_debug,
+      }
+    ),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
   ],
@@ -148,109 +157,14 @@ let rendererConfig = {
 }
 
 let morePlugins = function (plugins, where) {
-  /**
-   * xregexp
-   */
-  plugins.push(
-    new CopyWebpackPlugin([
-      {
-        from: path.resolve(__dirname, '../src/lib/xregexp-all/xregexp-all.js'),
-        to: path.resolve(__dirname, '../dist/'+where+'/lib/xregexp-all.js')
-      }
-    ], {debug: 'debug'})
-  )
-  /**
-   * this one is for embedding brython sources
-   */
-  plugins.push(
-    new CopyWebpackPlugin(
-      [
-        {
-          from: path.resolve(__dirname, '../src/lib/brython/www/src/**'),
-          to: path.resolve(__dirname, '../dist/'+where+'/[1]'),
-          test: /^.*\/src\/lib\/brython\/www\/(src\/.+)$/,
-        },
-        {
-          from: path.resolve(__dirname, '../src/lib/site-packages/**'),
-          to: path.resolve(__dirname, '../dist/'+where+'/src/Lib[1]'),
-          test: /..\/src\/lib(\/.+\.py)$/,
-        },
-        {
-          from: path.resolve(__dirname, '../src/lib/site-packages/console.py'),
-          to: path.resolve(__dirname, '../dist/'+where+'/console.py'),
-        }
-      ], {debug: 'debug'}
-    )
-    // new CopyWebpackPlugin([
-    //   { from: path.resolve(__dirname, '../src/lib/brython/brython.js'),
-    //   to: path.resolve(__dirname, '../dist/web/lib/brython.js')
-    //   }, { from: path.resolve(__dirname, '../src/lib/brython/brython_stdlib.js'),
-    //   to: path.resolve(__dirname, '../dist/web/lib/brython_stdlib.js')
-    //   }
-    // ], {debug: 'debug'}),
-  )
-  /**
-   * this one is for embedding edython (and embedded blockly/closure) sources
-   */
-  plugins.push(
-    new CopyWebpackPlugin(
-      [
-        { from: path.resolve(__dirname, '../build/base/edython.js'),
-          to: path.resolve(__dirname, '../dist/'+where+'/lib/edython.js')
-        },
-        { from: path.resolve(__dirname, '../src/lib/eyo/css/eyo.css'),
-          to: path.resolve(__dirname, '../dist/'+where+'/lib/edython.css')
-        }
-      ],
-      {
-        debug: 'debug'
-      }
-    )
-  )
-  /**
-   * this one is for embedding tippy, for direct access
-   */
-  plugins.push(
-    new CopyWebpackPlugin(
-      [
-        { from: path.resolve(__dirname, '../node_modules/tippy.js/dist/tippy.min.js'),
-          to: path.resolve(__dirname, '../dist/'+where+'/lib/tippy.min.js')
-        },
-        { from: path.resolve(__dirname, '../node_modules/tippy.js/dist/tippy.css'),
-          to: path.resolve(__dirname, '../dist/'+where+'/lib/tippy.css')
-        }
-      ],
-      {
-        debug: 'debug'
-      }
-    )
-  )
-  /**
-   * resources
-   */
-  plugins.push(
-    new CopyWebpackPlugin(
-      [
-        {
-          from: path.resolve(__dirname, '../src/lib/blockly/media/**'),
-          to: path.resolve(__dirname, '../dist/'+where+'/static[1]'),
-          test: /..\/src\/lib\/blockly(\/media\/.+)$/,
-        },
-        {
-          from: path.resolve(__dirname, '../font/*.woff'),
-          to: path.resolve(__dirname, '../dist/'+where+'/static/')
-        },
-        {
-          from: path.resolve(__dirname, '../gfx/icon.svg'),
-          to: path.resolve(__dirname, '../dist/'+where+'/static/icon.svg')
-        }
-      ],
-      {
-        debug: 'debug'
-      }
-    )
-  )
-} (rendererConfig.plugins, 'electron')
+
+  eYoConfig.xregexp_all(plugins, where)
+  eYoConfig.brython_sources(plugins, where)
+  eYoConfig.edython(plugins, where)
+  eYoConfig.tippy(plugins, where)
+  eYoConfig.resources(plugins, where)
+
+} // (rendererConfig.plugins, 'electron')
 
 /**
  * Adjust rendererConfig for development settings
