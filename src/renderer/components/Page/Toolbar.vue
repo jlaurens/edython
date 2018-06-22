@@ -261,9 +261,9 @@
               '<x eyo="list" slot="assigned">',
               '<x eyo="square_bracket" slot="O">',
               '<x eyo="literal" slot="O">1</x>',
-              '<x eyo="literal" slot="f">'+'</x>',
+              '<x eyo="literal" slot="f">\'+\'</x>',
               '<x eyo="literal" slot="r">1</x>',
-              '<x eyo="literal" slot="x">'='</x>',
+              '<x eyo="literal" slot="x">\'=\'</x>',
               '<x eyo="literal" slot="{">2</x>',
               '</x>',
               '</x>',
@@ -363,7 +363,7 @@
               '</x>',
               '<x eyo="list" slot="binary">',
               '<x eyo="literal" slot="O">2</x>',
-              '<x eyo="literal" slot="f">'='</x>',
+              '<x eyo="literal" slot="f">\'=\'</x>',
               '</x>',
               '</x>',
               '<s eyo="print" flow="next">',
@@ -402,7 +402,7 @@
               '</x>',
               '<x eyo="list" slot="binary">',
               '<x eyo="literal" slot="O">2</x>',
-              '<x eyo="literal" slot="f">'='</x>',
+              '<x eyo="literal" slot="f">\'=\'</x>',
               '</x>',
               '</x>',
               '<s eyo="print" flow="next">',
@@ -454,7 +454,7 @@
               '</s>',
               '</s>',
               '</s>'
-              ].join('')
+            ].join('')
           }
         ]
       }
