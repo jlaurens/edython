@@ -11,6 +11,7 @@
       <b-dropdown-item-button v-on:click="selected = 'expert'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.expert}}</b-dropdown-item-button>
       <b-dropdown-divider></b-dropdown-divider>
       <b-dropdown-item-button v-on:click="selected = 'branching'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.branching}}</b-dropdown-item-button>
+      <b-dropdown-item-button v-on:click="selected = 'list'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.list}}</b-dropdown-item-button>
       <b-dropdown-item-button v-on:click="selected = 'looping'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.looping}}</b-dropdown-item-button>
       <b-dropdown-item-button v-on:click="selected = 'function'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.function}}</b-dropdown-item-button>
       <b-dropdown-divider></b-dropdown-divider>
@@ -40,6 +41,7 @@
           advanced: eYo.Msg.ADVANCED,
           expert: eYo.Msg.EXPERT,
           branching: eYo.Msg.BRANCHING,
+          list: eYo.Msg.LIST,
           looping: eYo.Msg.LOOPING,
           function: eYo.Msg.FUNCTION,
           random__module: 'random'

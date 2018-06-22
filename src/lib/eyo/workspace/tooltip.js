@@ -85,7 +85,7 @@ eYo.DelegateSvg.prototype.addTooltip = function (block) {
   var options = eYo.Tooltip.options
   goog.mixin(options, {
     onShow(instance) {
-      eYo.Tooltip.hideAll(block.svgGroup_.parentNode)
+      block.svgGroup_.parentNode && eYo.Tooltip.hideAll(block.svgGroup_.parentNode)
     }
   })
   if (title) {

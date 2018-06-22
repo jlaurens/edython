@@ -4,5 +4,19 @@
   // Pour plus d'informations, visitez : https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome",
+      "url": "http://localhost:8080",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Launch toolbox.html",
+      "type": "chrome",
+      "request": "launch",
+      "file": "${workspaceFolder}/sandbox/html/toolbox.html",
+      "runtimeExecutable": "/Applications/Chromium.app/Contents/MacOS/Chromium"
+    }
   ]
 }

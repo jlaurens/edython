@@ -582,10 +582,11 @@ eYo.Consolidator.List.prototype.consolidate = function (block, force) {
 /**
  * Fetches the named input object
  * @param {!Block} block
- * @param {string} name The name of the input.
+ * @param {String} name The name of the input.
+ * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
  * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
  */
-eYo.Consolidator.List.prototype.getInput = function (block, name) {
+eYo.Consolidator.List.prototype.getInput = function (block, name, dontCreate) {
   // name = eYo.Do.Name.getNormalized(name) not here
   if (!name || !name.length) {
     return null
@@ -621,6 +622,9 @@ eYo.Consolidator.List.prototype.getInput = function (block, name) {
           return null
         }
       }
+    }
+    if (!!dontCreate) {
+      return null
     }
     // no input found, create one
     if (io.list.length === 1) {

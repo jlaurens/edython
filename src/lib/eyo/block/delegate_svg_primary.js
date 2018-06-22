@@ -67,10 +67,13 @@ eYo.DelegateSvg.Expr.makeSubclass('attributeref', {
 eYo.DelegateSvg.Expr.makeSubclass('slicing', {
   data: {
     variant: { // data named 'variant' have `xml = false`, by default
+      NAME: 0,
+      PRIMARY: 1,
       all: [0, 1],
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.owner_.slots.name.setIncog(!!newValue)
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.data.name.setIncog(!!newValue) // not the slot !
         this.owner_.slots.primary.setIncog(!newValue)
+        this.owner_.slots.primary.required = !!newValue
       }
     },
     name: {
@@ -99,7 +102,15 @@ eYo.DelegateSvg.Expr.makeSubclass('slicing', {
       order: 2,
       check: eYo.T3.Expr.Check.primary,
       plugged: eYo.T3.Expr.primary,
-      hole_value: 'primary'
+      hole_value: 'primary',
+      xml: {
+        didLoad: /** @suppress {globalThis} */ function () {
+          if (this.isRequiredFromDom()) {
+            var variant = this.owner.data.variant
+            variant.set(variant.model.PRIMARY)
+          }
+        }
+      }
     },
     slice: {
       order: 3,
@@ -117,6 +128,18 @@ eYo.DelegateSvg.Expr.makeSubclass('slicing', {
 
 eYo.DelegateSvg.Expr.subscription = eYo.DelegateSvg.Expr.slicing
 eYo.DelegateSvg.Manager.register('subscription')
+
+/**
+ * Consolidate the block.
+ * @param {!Blockly.Block} block The block.
+ */
+eYo.DelegateSvg.Expr.slicing.prototype.consolidate = function (block) {
+  if (this.slots.primary.isRequiredFromDom()) {
+    this.slots.primary.setRequiredFromDom(false)
+    this.data.variant.set(this.data.variant.model.PRIMARY)
+  }
+  eYo.DelegateSvg.Expr.slicing.superClass_.consolidate.call(this, block)
+}
 
 /**
  * Populate the context menu for the given block.
@@ -211,7 +234,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
   },
   slots: {
     n_ary: {
-      order: 2,
+      order: 100,
       fields: {
         start: '(',
         end: ')'
@@ -219,14 +242,14 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       wrap: eYo.T3.Expr.argument_list
     },
     no_ary: {
-      order: 3,
+      order: 101,
       fields: {
         start: '(',
         end: ')'
       }
     },
     unary: {
-      order: 4,
+      order: 102,
       fields: {
         start: '(',
         end: ')'
@@ -235,7 +258,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       optional: false
     },
     binary: {
-      order: 5,
+      order: 103,
       fields: {
         start: '(',
         end: ')'
@@ -243,7 +266,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       wrap: eYo.T3.Expr.argument_list_2
     },
     ternary: {
-      order: 6,
+      order: 104,
       fields: {
         start: '(',
         end: ')'
@@ -393,14 +416,31 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
       NAME: 0,
       BUILTIN: 1,
       EXPRESSION: 2,
-      all: [0, 1, 2],
+      ATTRIBUTE: 3,
+      all: [0, 1, 2, 3],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         var M = this.model
-        var withExpression = newValue === M.EXPRESSION
-        this.data.name.setIncog(withExpression)
-        this.data.name.required = newValue === M.NAME
-        this.owner_.slots.expression.setIncog(!withExpression)
-        this.owner_.slots.expression.required = withExpression
+        if (newValue === M.ATTRIBUTE) {
+          this.data.name.setIncog(false)
+          this.data.name.required = true
+          this.owner_.slots.dot.setIncog(false)
+          this.owner_.slots.expression.setIncog(false)
+          this.owner_.slots.expression.required = true
+        } else if (newValue === M.EXPRESSION) {
+          this.data.name.setIncog(true)
+          this.data.name.required = false
+          this.owner_.slots.dot.setIncog(true)
+          this.owner_.slots.expression.setIncog(false)
+          this.owner_.slots.expression.required = true
+        } else /* if (newValue === M.NAME || newValue === M.BUILTIN) */ {
+          this.data.name.setIncog(false)
+          this.data.name.required = true
+          this.owner_.slots.dot.setIncog(true)
+          this.owner_.slots.expression.setIncog(true)
+          this.owner_.slots.expression.required = false
+        }
+        // force sync, usefull when switching to and from ATTRIBUTE variant
+        this.data.name.synchronize()
       }
     },
     ary: {
@@ -433,18 +473,17 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
       init: 'int',
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
-        return type === eYo.T3.Expr.builtin__name || type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name
+        return type === eYo.T3.Expr.builtin__name || type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name || newValue === ''
           ? {validated: newValue} : null
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         var M = this.data.variant.model
         var variant = this.data.variant.get()
-        var builtin = this.getAll().indexOf(newValue) >= 0
-        if (variant !== M.EXPRESSION) {
-          variant = this.data.variant.get() || 0
-          this.data.variant.set(builtin ? M.BUILTIN : M.NAME)
-        }
-        if (builtin) {
+        var isBuiltin = this.getAll().indexOf(newValue) >= 0
+        if (isBuiltin) {
+          if (variant === M.NAME) {
+            this.data.variant.set(M.BUILTIN)
+          }
           switch (newValue) {
             case 'int':
             case 'float':
@@ -462,6 +501,9 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
             this.data.ary.set(this.data.ary.model.N_ARY)
           }
         } else {
+          if (variant === M.BUILTIN) {
+            this.data.variant.set(M.NAME)
+          }
           this.data.backup.set(newValue)
         }
       },
@@ -484,9 +526,12 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
   },
   fields: {
     name: {
-      validate: true,
-      endEditing: true,
-      placeholder: eYo.Msg.Placeholder.IDENTIFIER
+      validate: null,
+      endEditing: null,
+      placeholder: null
+      // validate: true,
+      // endEditing: true,
+      // placeholder: eYo.Msg.Placeholder.IDENTIFIER
     }
   },
   slots: {
@@ -497,9 +542,28 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
       hole_value: 'primary',
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          var variant = this.owner.data.variant
-          variant.set(variant.model.EXPRESSION)
+          if (this.isRequiredFromDom()) {
+            var variant = this.owner.data.variant
+            var name = this.owner.data.name
+            variant.set(name.isRequiredFromDom() || name.get().length ? variant.model.ATTRIBUTE : variant.model.EXPRESSION)
+          }
         }
+      }
+    },
+    dot: {
+      order: 2,
+      fields: {
+        separator: '.'
+      }
+    },
+    name: {
+      order: 3,
+      fields: {
+        edit: {
+          validate: true,
+          endEditing: true,
+          placeholder: eYo.Msg.Placeholder.IDENTIFIER
+        }  
       }
     }
   }
@@ -517,10 +581,8 @@ eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
   var variant = this.data.variant.get()
   var names = this.data.name.getAll()
   var i_name = names.indexOf(this.data.name.get())
-  var aries = this.data.ary.getAll()
-  var i_ary = aries.indexOf(this.data.ary.get())
-  if (variant !== 0) {
-    var oldValue = block.eyo.data.backup.get()
+  var oldValue = block.eyo.data.backup.get()
+  if (variant !== M.NAME) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       oldValue ? eYo.Do.createSPAN(oldValue, 'eyo-code') : eYo.Do.createSPAN(eYo.Msg.Placeholder.IDENTIFIER, 'eyo-code-placeholder'),
       eYo.Do.createSPAN('(…)', 'eyo-code')
@@ -529,7 +591,7 @@ eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
       block.eyo.doAndRender(block, function () {
         this.data.name.setTrusted(oldValue || '')
         this.data.variant.set(M.NAME)
-      })
+      }, true)
     })
     mgr.addChild(menuItem, true)
   }
@@ -544,7 +606,7 @@ eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
         block.eyo.doAndRender(block, function () {
           this.data.name.setTrusted(names[i])
           this.data.variant.set(M.BUILTIN)
-        })
+        }, true)
       })
       mgr.addChild(menuItem, true)
     }
@@ -561,13 +623,31 @@ eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
       block.eyo.doAndRender(block, function () {
         this.data.name.setTrusted(oldValue || '')
         this.data.variant.set(M.EXPRESSION)
-      })
+      }, true)
     })
     mgr.addChild(menuItem, true)
   }
-  if (variant === M.EXPRESSION || variant === M.NAME) {
+  if (variant !== M.BUILTIN) {
     mgr.separate()
     eYo.DelegateSvg.Expr.base_call_expr.populateMenu.call(this, block, mgr)
+  }
+  if (variant !== M.ATTRIBUTE) {
+    mgr.separate()
+    content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      eYo.Do.createSPAN(eYo.Msg.Placeholder.EXPRESSION, 'eyo-code-placeholder'),
+      eYo.Do.createSPAN('.', 'eyo-code-placeholder'),
+      eYo.Do.createSPAN(eYo.Msg.Placeholder.IDENTIFIER, 'eyo-code-placeholder'),
+      eYo.Do.createSPAN('(…)', 'eyo-code')
+    )
+    menuItem = new eYo.MenuItem(content, function () {
+      block.eyo.doAndRender(block, function () {
+        if (variant === M.BUILTIN) {
+          this.data.name.setTrusted(oldValue || '')
+        }
+        this.data.variant.set(M.ATTRIBUTE)
+      }, true)
+    })
+    mgr.addChild(menuItem, true)
   }
   mgr.shouldSeparate()
 }

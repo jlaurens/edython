@@ -524,6 +524,7 @@ eYo.Delegate.prototype.initDataWithModel = function (block, model, noCheck) {
         var D = this.data[k]
         if (D) {
           D.set(data_in[k])
+          done = true
         } else if (!noCheck) {
           console.warn('Unused data:', k, data_in[k])
         }

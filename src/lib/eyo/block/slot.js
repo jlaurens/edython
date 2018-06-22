@@ -444,6 +444,9 @@ eYo.Slot.prototype.isRequiredToDom = function () {
   if (this.required) {
     return true
   }
+  if (this.data && this.data.required) {
+    return true
+  }
   if (this.model.xml && this.model.xml.required) {
     return true
   }
@@ -732,6 +735,9 @@ eYo.Slot.prototype.load = function (element) {
           }
         }
       }
+    }
+    if (out && xml && xml.didLoad) {
+      xml.didLoad.call(this)
     }
     return out
   }

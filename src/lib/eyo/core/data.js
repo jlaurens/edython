@@ -651,6 +651,9 @@ eYo.Data.prototype.load = function (element) {
   } else if (required) {
     this.fromText('', true)
   }
+  if (xml && xml.didLoad) {
+    xml.didLoad.call(this)
+  }
 }
 
 /**

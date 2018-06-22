@@ -389,6 +389,18 @@ eYo.DelegateSvg.prototype.getField = function (block, name) {
       return field
     }
   }
+  var slot
+  if ((slot = this.headSlot)) {
+    do {
+      var fields = slot.fields
+      for (var key in fields) {
+        var field = fields[key]
+        if (field.name === name) {
+          return field
+        }
+      }
+    } while ((slot = slot.next))
+  }
   return null
 }
 
@@ -815,8 +827,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     i_max: block.inputList.length,
     f: 0, // field index
     /** ?Object */ field: undefined,
-    /** boolean */ canStarSymbol: true,
-    wasSeparatorField: false
+    /** boolean */ canStarSymbol: true
   }
   io.cursorX = this.getPaddingLeft(block)
   io.offsetX = 0
@@ -831,8 +842,8 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
     this.shouldSeparateField = false
   }
   io.shouldSeparateField = this.shouldSeparateField
-  
-  io.canBeHeadOfStatement = !block.outputConnection
+  io.wasSeparatorField = this.wasSeparatorField
+  io.isHeadOfStatement = !block.outputConnection || this.isHeadOfStatement
 
   if ((io.field = this.fromStartField)) {
     io.f = 0
@@ -972,7 +983,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
           // add a separation
           io.cursorX += eYo.Font.space
         }
-        io.canBeHeadOfStatement = false
+        io.isHeadOfStatement = false
         io.starSymbol = (io.canStarSymbol && (['*', '@', '+', '-', '~', '.'].indexOf(text[text.length - 1]) >= 0))
         io.canStarSymbol = false
         io.shouldSeparateField = !io.starSymbol && (eYo.XRE.id_continue.test(text[text.length - 1]) ||
@@ -1044,17 +1055,26 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
     var cursorX = io.cursorX + io.offsetX
     c8n.setOffsetInBlock(cursorX, 0)
     var target = c8n.targetBlock()
-    c8n.eyo.isHeadOfStatement = io.canBeHeadOfStatement
+    c8n.eyo.isHeadOfStatement = io.isHeadOfStatement
     if (target) {
       var root = target.getSvgRoot()
       if (root) {
         c8n.tighten_()
-        target.eyo.shouldSeparateField = io.shouldSeparateField
-        target.eyo.isHeadOfStatement = io.canBeHeadOfStatement
-        target.render()
-        io.shouldSeparateField = (target.eyo.wrapped_ || target.eyo.locked_) && target.eyo.shouldSeparateField
-        var bBox = target.getHeightWidth()
-        io.cursorX += bBox.width
+        try {
+          target.eyo.shouldSeparateField = io.shouldSeparateField
+          target.eyo.wasSeparatorField = io.wasSeparatorField
+          target.eyo.isHeadOfStatement = io.isHeadOfStatement
+          target.render()  
+         } catch(err) {
+           console.error(err)
+         } finally {
+          // target.eyo.isHeadOfStatement = keep it unchanged
+          target.eyo.shouldSeparateField = undefined
+          target.eyo.wasSeparatorField = undefined
+          io.shouldSeparateField = (target.eyo.wrapped_ || target.eyo.locked_) && target.eyo.shouldSeparateField
+          var bBox = target.getHeightWidth()
+          io.cursorX += bBox.width
+        }
       }
     } else if (!this.locked_ && !c8n.hidden_) {
       // locked blocks won't display any placeholder
@@ -1073,7 +1093,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       }
     }
     this.renderDrawFields_(io, false)
-    io.canBeHeadOfStatement = false
+    io.isHeadOfStatement = false
   }
   return true
 }
@@ -1301,10 +1321,12 @@ eYo.DelegateSvg.prototype.highlightConnection = function (block, c8n) {
 
 /**
  * Fetches the named input object.
- * @param {string} name The name of the input.
+ * @param {!Blockly.Block} name The name of the input.
+ * @param {!String} name The name of the input.
+ * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly. Ignored.
  * @return {Blockly.Input} The input object, or null if input does not exist. Input that are disabled are skipped.
  */
-eYo.DelegateSvg.prototype.getInput = function (block, name) {
+eYo.DelegateSvg.prototype.getInput = function (block, name, dontCreate) {
   var e8r = this.inputEnumerator(block)
   while (e8r.next()) {
     if (e8r.here.name === name) {
@@ -2864,14 +2886,16 @@ eYo.DelegateSvg.prototype.setConnectionsHidden = function (block, hidden) {
  * @param {!Function} handler `this` is the receiver.
  * @param {!Function} err_handler `this` is the receiver, one argument: the error catched.
  */
-eYo.DelegateSvg.prototype.doAndRender = function (block, handler, err_handler) {
+eYo.DelegateSvg.prototype.doAndRender = function (block, handler, group, err_handler) {
   this.skipRendering()
+  group && eYo.Events.setGroup(true)
   try {
     handler.call(this)
   } catch (err) {
     err_handler && err_handler.call(this, err) || console.error(err)
   } finally {
     this.unskipRendering()
+    group && eYo.Events.setGroup(false)
     this.render(block)
   }
 }

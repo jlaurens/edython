@@ -413,7 +413,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       TARGET_EXPRESSIONS: 1,
       all: [0, 1],
       synchronize: /** @suppress {globalThis} */ function (newVariant) {
-        this.owner_.slots.name.setIncog(newVariant)
+        this.data.name.setIncog(newVariant)
         this.owner_.slots.target.setIncog(!newVariant)
       }
     },

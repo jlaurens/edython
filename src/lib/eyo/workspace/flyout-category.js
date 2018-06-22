@@ -144,5 +144,117 @@ eYo.FlyoutCategory = {
     eYo.T3.Stmt.decorator,
     eYo.T3.Stmt.global_nonlocal_stmt,
     eYo.T3.Stmt.docstring_def_stmt,
+  ],
+  'list': [
+    {
+      type: eYo.T3.Stmt.assignment_stmt,
+      slots: {
+        assigned: {
+          slots: {
+            O: {
+              type: eYo.T3.Expr.list_display,
+              slots: {
+                expression: "'...'",
+              },
+            }, 
+          },
+        },
+      },
+    },
+    {
+      type: eYo.T3.Expr.list_display,
+      slots: {
+        expression: "'...'",
+      }
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: 'len'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: 'list',
+      slots: {
+        n_ary: {
+          slots: {
+            O: "'...'"
+          }
+        }
+      }
+    },
+    {
+      type: eYo.T3.Expr.slicing,
+      slots: {
+        slice: {
+          slots: {
+            O: 0
+          }
+        }
+      }
+    },
+    {
+      type: eYo.T3.Expr.slicing,
+      data: {
+        variant: 1 // move this to the const namespace
+      },
+      slots: {
+        slice: {
+          slots: {
+            O: 0
+          }
+        }
+      }
+    },
+    eYo.T3.Expr.proper_slice,
+    {
+      type: eYo.T3.Stmt.expression_stmt,
+      slot: {
+        expression: {
+          type: eYo.T3.Expr.call_expr,
+          data: {
+            name: 'append',
+            variant: 3,
+            ary: 1
+          }
+        }
+      }
+    },
+    {
+      type: eYo.T3.Stmt.expression_stmt,
+      slot: {
+        expression: {
+          type: eYo.T3.Expr.call_expr,
+          data: {
+            name: 'insert',
+            variant: 3,
+            ary: 2
+          }
+        }
+      }
+    },
+    {
+      type: eYo.T3.Stmt.expression_stmt,
+      slot: {
+        expression: {
+          type: eYo.T3.Expr.call_expr,
+          data: {
+            name: 'remove',
+            variant: 3,
+            ary: 1
+          }
+        }
+      }
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'index',
+        variant: 3,
+        ary: 1
+      }
+    },
+    eYo.T3.Expr.a_expr,
+    eYo.T3.Expr.m_expr
   ]
 }
+console.warn('key handler: "foo.bar", "foo[]", "foo(…)"')

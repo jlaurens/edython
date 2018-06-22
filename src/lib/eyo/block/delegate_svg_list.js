@@ -38,14 +38,15 @@ eYo.DelegateSvg.List.prototype.willRender_ = function (block) {
 /**
  * Fetches the named input object, getInput.
  * @param {!Block} block
- * @param {string} name The name of the input.
+ * @param {String} name The name of the input.
+ * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
  * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
  */
-eYo.DelegateSvg.List.prototype.getInput = function (block, name) {
+eYo.DelegateSvg.List.prototype.getInput = function (block, name, dontCreate) {
   var input = eYo.DelegateSvg.List.superClass_.getInput.call(this, block, name)
   if (!input) {
     this.createConsolidator(block)
-    input = this.consolidator.getInput(block, name)
+    input = this.consolidator.getInput(block, name, dontCreate)
   }
   return input
 }
