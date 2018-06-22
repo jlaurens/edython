@@ -174,7 +174,7 @@ eYo.PythonExporter.prototype.exportField_ = function (field) {
  * @private
  */
 eYo.PythonExporter.prototype.exportInput_ = function (input) {
-  if (input && input.isVisible() && !input.eyo.disabled_ && input.connection) {
+  if (input && input.isVisible() && input.connection) {
     var c8n = input.connection
     var target = c8n.targetBlock()
     if (target) {

@@ -18,7 +18,9 @@ goog.provide('eYo.SelectedConnection')
 goog.require('eYo.T3')
 goog.require('eYo.Delegate')
 goog.forwardDeclare('eYo.BlockSvg')
-goog.require('goog.dom');
+goog.forwardDeclare('eYo.DelegateSvg.Expr')
+goog.forwardDeclare('eYo.DelegateSvg.Stmt')
+goog.require('goog.dom')
 
 /**
  * Class for a DelegateSvg.
@@ -467,6 +469,17 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
   if (this.skipRendering_ || this.isDragging_ || !this.isReady_ || !block.workspace) {
     return
   }
+  if (!this.innerRendering && block.outputConnection) {
+    var parent
+    if ((parent = block.getSurroundParent())) {
+      do {
+        block = parent
+      } while (block.outputConnection && (parent = block.getSurroundParent()))
+      block.eyo.render(block,optBubble)
+      return
+    }
+  }
+  console.log('RENDER:', block.type, optBubble, )
   // if (this.wrapped_ && !block.getParent()) {
   //   console.log('wrapped block with no parent')
   //   setTimeout(function(){block.dispose()}, 10)
@@ -498,8 +511,6 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
     if (eYo.traceOutputConnection && block.outputConnection) {
       console.log('block.outputConnection', block.outputConnection.x_, block.outputConnection.y_)
     }
-  } catch (err) {
-    console.error(err)
   } finally {
     this.unskipRendering()
     goog.asserts.assert(!this.skipRendering_, 'FAILURE')
@@ -691,7 +702,13 @@ eYo.DelegateSvg.prototype.renderDraw_ = function (block) {
     // if the above path does not exist
     // the block is not yet ready for rendering
     block.height = eYo.Font.lineHeight()
-    var d = this.renderDrawModel_(block)
+    var d, unlocker
+    try {
+      unlocker = this.chainTiles(block)
+      d = this.renderDrawModel_(block)
+    } finally {
+      unlocker && unlocker.eyo.unlockChainTiles(unlocker)
+    }
     this.svgPathInner_.setAttribute('d', d)
     var root = block.getRootBlock()
     if (root.eyo) {
@@ -778,6 +795,11 @@ eYo.DelegateSvg.prototype.getPaddingLeft = function (block) {
   if (this.wrapped_) {
     return 0
   } else if (block.outputConnection) {
+    if (this.tileHead.isConnected && block.getSurroundParent()) {
+      // this is an expresion block starting with a connection
+      // do not shift, whether there is a connection or not
+      return 0
+    }
     return (this.locked_ || this.isHeadOfStatement) && block.getSurroundParent() ? 0 : eYo.Font.space
   } else {
     return eYo.Padding.l()
@@ -807,6 +829,169 @@ eYo.DelegateSvg.prototype.getPaddingRight = function (block) {
 eYo.DelegateSvg.prototype.minBlockWidth = function (block) {
   return 0
 }
+
+/**
+ * A tile is a field to be displayed.
+ * Tiles are stacked horizontally to draw the block content.
+ * There is no (as of june 2018) support for line break inside blocks.
+ * Each tile has a delegate who implements `tileNext` and `tilePrevious`.
+ * The purpose is to chain the tiles before rendering.
+ * @param {!Blockly.Block} block
+ * @private
+ */
+eYo.DelegateSvg.prototype.unlockChainTiles = function (block) {
+  this.chainTiles_locked = false
+  var slot
+  var unlock = function (input) {
+    if (!input) {
+      return
+    }
+    var c8n, target
+    if ((c8n = input.connection)) {
+      if ((target = c8n.targetBlock()) && target.outputConnection) {
+        target.eyo.unlockChainTiles(target)
+      }
+    } 
+  }
+  if ((slot = this.headSlot)) {
+    do {
+      unlock(slot.input)
+    } while ((slot = slot.next))
+  } else {
+    for (var i = 0, input; (input = block.inputList[i]); i++) {
+      unlock(input)
+    }
+  }
+}
+
+/**
+ * A tile is either a field or a connection to be displayed.
+ * Tiles are stacked horizontally to draw the block content.
+ * There is no (as of june 2018) support for line break inside blocks.
+ * Each tile has a delegate who implements `tileNext` and `tilePrevious`.
+ * The purpose is to chain the tiles before rendering.
+ * @param {!Blockly.Block} block
+ * @private
+ */
+eYo.DelegateSvg.prototype.chainTiles = function () {
+  // this is a closure
+  var chainFields = function (headField) {
+    var head, tile
+    if ((head = headField)) {
+      headField.eyo.tileHead = null
+      headField.eyo.tileTail = null
+      while (!head.isVisible()) {
+        if(!(head = head.tileNext)) {
+          return
+        }
+      }
+      var next
+      tile = head
+      tile.eyo.tilePrevious = null
+      while ((next = tile.eyo.nextField)) {
+        if (next.isVisible()) {
+          next.eyo.tilePrevious = tile
+          tile.eyo.tileNext = next
+          tile = next
+        }
+      }
+      tile.eyo.tileNext = null
+      headField.eyo.tileHead = head
+      headField.eyo.tileTail = tile
+    }
+  }
+  /**
+   * Merges the chains of left and right
+   * There is no tileHead without a tileTail
+   * @param {*} left An eyo like object which receives the merge.
+   * @param {*} right An object with an eyo
+   */
+  var chainMerge = function (left, right) {
+    if (left && right && right.eyo.tileHead) {
+      if (left.tileHead) {
+        left.tileTail.eyo.tileNext = right.eyo.tileHead
+        right.eyo.tileHead.eyo.tilePrevious = left.tileTail
+      } else {
+        left.tileHead = right.eyo.tileHead
+      }
+      left.tileTail = right.eyo.tileTail
+    }
+  }
+  var chainMergeVA = function () {
+    var left = arguments[0]
+    if (left) {
+      var i = 1
+      while (i < arguments.length) {
+        chainMerge(left, arguments[i++])
+      }
+    }
+  }
+  var chainInput = function (input) {
+    // what about visible blocks ?
+    if (!input || !input.isVisible()) {
+      return
+    }
+    input.eyo.tileHead = undefined
+    input.eyo.tileTail = undefined
+    var j = 0
+    var field, nextField
+    if ((field = input.fieldRow[j])) {
+      while ((nextField = input.fieldRow[++j])) {
+        field.eyo.nextField = nextField
+        field = nextField
+      }
+      field.eyo.nextField = null
+    }
+    chainFields(input.fieldRow[0])
+    chainMerge(input.eyo, input.fieldRow[0])
+    var c8n, target
+    if ((c8n = input.connection)) {
+      if ((target = c8n.targetBlock()) && target.outputConnection) {
+        target.eyo.chainTiles(target)
+        chainMerge(input.eyo, target)
+      } else if (!c8n.hidden_) {
+        c8n.eyo.tilePrevious = null
+        c8n.eyo.tileNext = null
+        c8n.eyo.tileHead = c8n
+        c8n.eyo.tileTail = c8n
+        chainMerge(input.eyo, c8n)
+      }
+    } 
+  }
+  return function (block) {
+    if (this.chainTiles_locked) {
+      return
+    }
+    this.chainTiles_locked = true
+    // clean state
+    this.tileHead = undefined
+    this.tileTail = undefined
+    // chain
+    chainFields(this.fromStartField)
+    chainMerge(this, this.fromStartField)
+    var slot
+    if ((slot = this.headSlot)) {
+      do {
+        if (slot.isIncog()) {
+          continue
+        }
+        chainFields(slot.fromStartField)
+        chainInput(slot.input)
+        chainFields(slot.toEndField)
+        chainMergeVA(this, slot.fromStartField, slot.input, slot.toEndField)
+      } while ((slot = slot.next))
+    } else {
+      for (var i = 0, input; (input = block.inputList[i]); i++) {
+        chainInput(input)
+        chainMerge(this, input)
+      }
+    }
+    chainFields(this.toEndField)
+    chainMerge(this, this.toEndField)
+    this.tileHead && (this.tileHead.eyo.chainBlock = block)
+    return block
+  }
+} ()
 
 /**
  * Render the inputs, the fields and the slots of the block.
@@ -843,7 +1028,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   }
   io.shouldSeparateField = this.shouldSeparateField
   io.wasSeparatorField = this.wasSeparatorField
-  io.isHeadOfStatement = !block.outputConnection || this.isHeadOfStatement
+  io.isHeadOfStatement = !this.disabled && (!block.outputConnection || this.isHeadOfStatement)
 
   if ((io.field = this.fromStartField)) {
     io.f = 0
@@ -859,8 +1044,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   } else {
     for (; (io.input = block.inputList[io.i]); io.i++) {
       goog.asserts.assert(io.input.eyo, 'Input with no eyo ' + io.input.name + ' in block ' + block.type)
-      io.inputDisabled = io.input.eyo.disabled_
-      if (io.input.isVisible() && !io.inputDisabled) {
+      if (io.input.isVisible()) {
         this.renderDrawInput_(io)
       } else {
         for (var j = 0; (io.field = io.input.fieldRow[j]); ++j) {
@@ -979,10 +1163,14 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
         io.isSeparatorField = io.field.name === 'separator'
         // if the text is void, it can not change whether
         // the last character was a letter or not
-        if (!io.isSeparatorField && !io.wasSeparatorField && io.shouldSeparateField && !io.starSymbol && (eYo.XRE.operator.test(text[0]) || text[0] === '.' || eYo.XRE.id_continue.test(text[0]) || eyo.isEditing) && (!this.isHeadOfStatement)) {
+        if (!io.isSeparatorField && !io.wasSeparatorField && io.shouldSeparateField && !io.starSymbol && (eYo.XRE.operator.test(text[0]) || text[0] === '.' || eYo.XRE.id_continue.test(text[0]) || eyo.isEditing) && eyo.tilePrevious) {
           // add a separation
           io.cursorX += eYo.Font.space
         }
+        // if (!io.isSeparatorField && !io.wasSeparatorField && io.shouldSeparateField && !io.starSymbol && (eYo.XRE.operator.test(text[0]) || text[0] === '.' || eYo.XRE.id_continue.test(text[0]) || eyo.isEditing) && (!this.isHeadOfStatement)) {
+        //   // add a separation
+        //   io.cursorX += eYo.Font.space
+        // }
         io.isHeadOfStatement = false
         io.starSymbol = (io.canStarSymbol && (['*', '@', '+', '-', '~', '.'].indexOf(text[text.length - 1]) >= 0))
         io.canStarSymbol = false
@@ -1061,13 +1249,15 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       if (root) {
         c8n.tighten_()
         try {
+          target.eyo.innerRendering = !!target.outputConnection
           target.eyo.shouldSeparateField = io.shouldSeparateField
           target.eyo.wasSeparatorField = io.wasSeparatorField
           target.eyo.isHeadOfStatement = io.isHeadOfStatement
-          target.render()  
+          target.render()
          } catch(err) {
            console.error(err)
          } finally {
+          target.eyo.innerRendering = false
           // target.eyo.isHeadOfStatement = keep it unchanged
           target.eyo.shouldSeparateField = undefined
           target.eyo.wasSeparatorField = undefined
@@ -1149,7 +1339,7 @@ eYo.DelegateSvg.prototype.valuePathDef_ = function (block) {
   steps = steps.concat(a_expr)
   steps.push(h_total)
   var parent
-  if (this.isHeadOfStatement && (parent = block.getSurroundParent())) {
+  if (this.tileHead && !this.tileHead.eyo.tilePrevious && (parent = block.getSurroundParent())) {
     // code duplicate: quite the same as some code above
     var rr = eYo.Style.Path.radius()
     var aa = [' a ', rr, ', ', rr, ' 0 0 1 ']
@@ -1157,7 +1347,7 @@ eYo.DelegateSvg.prototype.valuePathDef_ = function (block) {
     if (c8n && c8n.isConnected()) {
       steps.push(' H ', -this.getPaddingLeft(parent))
     } else {
-      steps.push(' H ', rr - this.getPaddingLeft(parent))
+      steps.push(' H ',rr - this.getPaddingLeft(parent))
       steps = steps.concat(aa)
       steps.push(-rr, ',', -rr)
       h -= rr
@@ -1229,26 +1419,38 @@ eYo.DelegateSvg.prototype.placeHolderPathDefWidth_ = function (cursorX, connecti
   var h_total = h + 2 * eYo.Margin.V
   var dy = eYo.Padding.v() + eYo.Font.descent / 2
   var steps
-  if (connection && connection.eyo.isHeadOfStatement) {
-    steps = ['M ', cursorX + w - p, ',', eYo.Margin.V + dy]
-    steps = steps.concat(a)
-    var r_stmt = eYo.Style.Path.radius()
-    var cy = r_stmt - dy
-    var cx = Math.sqrt(r_stmt ** 2 + cy ** 2) - r_stmt
-    steps.push(h_total - 2 * dy, 'h ', -(w - p + eYo.Padding.l()) + cx)
-    var a_stmt_ph = [' a ', r_stmt , ',', r_stmt, ' 0 0 1 ']
-    steps = steps.concat(a_stmt_ph)
-    steps.push(-cx, ',', -cy)
-    steps.push('v', -h_total + 2 * dy + 2 * cy)
-    steps = steps.concat(a_stmt_ph)
-    steps.push(cx, ',', -cy, ' z')
-    return {width: w, d: steps.join('')}
-  } else {
+  if (!connection || connection.eyo.tilePrevious || connection.eyo.chainBlock.outputConnection) {
     steps = ['M ', cursorX + w - p, ',', eYo.Margin.V + dy]
     steps = steps.concat(a)
     steps.push(h_total - 2 * dy, 'h ', -(w - 2 * p))
     steps = steps.concat(a)
     steps.push(-h_total + 2 * dy, ' z')
+    return {width: w, d: steps.join('')}
+  } else if (true) {
+    steps = ['M ', cursorX + w - p, ',', eYo.Margin.V + dy]
+    steps = steps.concat(a)
+    steps.push(h_total - 2 * dy, 'h ', -(w - 2 * p))
+    steps = steps.concat(a)
+    steps.push(-h_total + 2 * dy, ' z')
+    return {width: w, d: steps.join('')}
+  } else {
+    steps = ['M ', cursorX + w - p, ',', eYo.Margin.V + dy]
+    steps = steps.concat(a)
+    var r_stmt = eYo.Style.Path.radius()
+    var cy = r_stmt - eYo.Margin.V - dy
+    if (true || cy) {
+      var cx = Math.sqrt(r_stmt ** 2 + cy ** 2) - r_stmt
+      steps.push(h_total - 2 * dy, 'h ', -(w - p + eYo.Padding.l()) + cx)
+      var a_stmt_ph = [' a ', r_stmt , ',', r_stmt, ' 0 0 1 ']
+      steps = steps.concat(a_stmt_ph)
+      steps.push(-cx, ',', -cy)
+      steps.push('v ', -h_total + 2 * dy + 2 * cy)
+      steps = steps.concat(a_stmt_ph)
+      steps.push(cx, ',', -cy)
+    } else {
+      steps.push('v', -h_total + 2 * dy)
+    }
+    steps.push(' z')
     return {width: w, d: steps.join('')}
   }
 } /* eslint-enable indent */

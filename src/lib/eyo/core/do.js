@@ -523,3 +523,16 @@ eYo.Do.stringToDom = function (string) {
   eYo.Do.stringToDom = stringToDom
   return stringToDom(string)
 }
+
+eYo.Do.logTiles = function (src) {
+  var eyo = (src && src.eyo) || src
+  var tile
+  if (eyo && (tile = eyo.tileHead)) {
+    console.log(tile)
+    while (tile != eyo.tileTail && (tile = tile.tileNext)) {
+      console.log(tile)
+    }
+    console.log(eyo.tileTail)
+  }
+}
+

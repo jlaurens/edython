@@ -427,7 +427,7 @@ eYo.Data.prototype.setTrusted_ = function (newValue) {
     this.trusted_lock = true
     this.setTrusted__(newValue)
   } catch (err) {
-    console.log(error)
+    console.error(err)
   } finally {
     delete this.trusted_lock
   }

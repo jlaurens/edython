@@ -1210,7 +1210,7 @@ eYo.Delegate.prototype.xmlType = function (block) {
  */
 eYo.Delegate.prototype.inputEnumerator = function (block, all) {
   return eYo.Do.Enumerator(block.inputList, all ? undefined : function (x) {
-    return !x.eyo.disabled_ && (!x.connection || !x.connection.eyo.slot || !x.connection.eyo.slot.isIncog())
+    return !x.connection || !x.connection.eyo.slot || !x.connection.eyo.slot.isIncog()
   })
 }
 
