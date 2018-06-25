@@ -454,6 +454,7 @@ eYo.DelegateSvg.Expr.term.prototype.populateContextMenuFirst_ = function (block,
           block.eyo.data.variant.set(variant)
         } catch (err) {
           console.error(err)
+          throw err
         } finally {
           eYo.Events.setGroup(false)
         }

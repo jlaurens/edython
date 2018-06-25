@@ -145,7 +145,7 @@ eYo.DelegateSvg.Control.prototype.XpopulateContextMenuComment = function (block,
   //   oldValue ? eYo.Do.createSPAN(oldValue, 'eyo-code') : eYo.Do.createSPAN(eYo.Msg.Placeholder.IDENTIFIER, 'eyo-code-placeholder'),
   //   eYo.Do.createSPAN('(…)', 'eyo-code')
   // )
-  // var menuItem = new eYo.MenuItem(content, function () {
+  // var menuItem = new eYo.MenuItem(content, function () { CHANGE
   //   block.eyo.doAndRender(block, function () {
   //     this.data.name.setTrusted(oldValue || '')
   //     this.data.variant.set(M.NAME)

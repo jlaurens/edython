@@ -829,6 +829,7 @@ eYo.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
         input.connection.connect(target.outputConnection)
       } catch (err) {
         console.error(err)
+        throw err
       } finally {
         Blockly.Events.enable()
       }
@@ -950,26 +951,12 @@ eYo.Delegate.prototype.getStatementCount = function (block) {
   var n = 1
   var hasActive = false
   var hasNext = false
-  var e8r = block.eyo.inputEnumerator(block)
-  while (e8r.next()) {
-    var c8n = e8r.here.connection
+  if (this.inputSuite) {
+    var c8n = this.inputSuite.connection
     if (c8n && c8n.type === Blockly.NEXT_STATEMENT) {
       hasNext = true
       if (c8n.isConnected()) {
         var target = c8n.targetBlock()
-        do {
-          hasActive = hasActive || (!target.disabled && !target.eyo.isWhite(target))
-          n += target.eyo.getStatementCount(target)
-        } while ((target = target.getNextBlock()))
-      }
-    }
-  }
-  if (this.suiteInput) {
-    c8n = this.suiteInput.connection
-    if (c8n && c8n.type === Blockly.NEXT_STATEMENT) {
-      hasNext = true
-      if (c8n.isConnected()) {
-        target = c8n.targetBlock()
         do {
           hasActive = hasActive || (!target.disabled && !target.eyo.isWhite(target))
           n += target.eyo.getStatementCount(target)
@@ -1139,6 +1126,7 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
     }
   } catch (err) {
     console.error(err)
+    throw err
   } finally {
     eYo.Events.setGroup(false)
   }

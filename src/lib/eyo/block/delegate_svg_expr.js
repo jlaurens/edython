@@ -162,6 +162,7 @@ eYo.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
       }
     } catch (err) {
       console.error(err)
+      throw err
     } finally {
       other.dispose(true)
       eYo.Events.setGroup(false)
@@ -259,6 +260,7 @@ eYo.DelegateSvg.Expr.prototype.canInsertParent = function (block, prototypeName,
     }
   } catch (err) {
     console.error(err)
+    throw err
   } finally {
     B.dispose()
     Blockly.Events.ensable()
@@ -375,6 +377,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
       }
     } catch (err) {
       console.error(err)
+      throw err
     } finally {
       eYo.Events.setGroup(false)
     }

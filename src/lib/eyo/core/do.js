@@ -536,3 +536,30 @@ eYo.Do.logTiles = function (src) {
   }
 }
 
+eYo.Do.forEachChild = function (element, handler, thisObject) {
+  var children = Array.prototype.slice.call(element.childNodes)
+  children.forEach(handler, thisObject)
+}
+
+eYo.Do.forEachElementChild = function (element, handler, thisObject) {
+  var children = Array.prototype.slice.call(element.childNodes)
+  children.forEach(function (child) {
+    if (child.nodeType === Node.ELEMENT_NODE) {
+      handler.call(this, child)
+    }
+  })
+}
+
+eYo.Do.someChild = function (element, handler, thisObject) {
+  var children = Array.prototype.slice.call(element.childNodes)
+  return children.some(handler, thisObject)
+}
+
+eYo.Do.someElementChild = function (element, handler, thisObject) {
+  var children = Array.prototype.slice.call(element.childNodes)
+  return children.some(function (child) {
+    if (child.nodeType === Node.ELEMENT_NODE) {
+      return handler.call(thisObject, child)
+    }
+  })
+}

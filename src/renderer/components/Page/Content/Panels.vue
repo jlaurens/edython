@@ -1,25 +1,27 @@
 <template>
-  <div id="eyo-panels">
-    <div id="eyo-panels-toolbar" :style="{ fontFamily: eYo.Font.familySans,
+  <div id="eyo-panels-area">
+    <div id="eyo-panels" ref="divPanels" :style="{width: panelsStyleWidth}">
+      <div id="eyo-panels-toolbar" :style="{ fontFamily: eYo.Font.familySans,
     fontSize: this.eYo.Font.totalHeight + 'px'
   }">
-      <div id="eyo-panels-toolbar-select">
-        <b-dropdown id="eyo-panels-toolbar-dropdown" class="eyo-dropdown">
-          <template slot="button-content">
-            {{titles[selected]}}
-          </template>
-          <b-dropdown-item-button v-on:click="selected = 'console'" :style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight + 'px'}">{{titles.console}}</b-dropdown-item-button>
-          <b-dropdown-item-button v-on:click="selected = 'turtle'" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight}">{{titles.turtle}}</b-dropdown-item-button>
-        </b-dropdown>
+        <div id="eyo-panels-toolbar-select">
+          <b-dropdown id="eyo-panels-toolbar-dropdown" class="eyo-dropdown">
+            <template slot="button-content">
+              {{titles[selected]}}
+            </template>
+            <b-dropdown-item-button v-on:click="selected = 'console'" :style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight + 'px'}">{{titles.console}}</b-dropdown-item-button>
+            <b-dropdown-item-button v-on:click="selected = 'turtle'" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight}">{{titles.turtle}}</b-dropdown-item-button>
+          </b-dropdown>
+        </div>
+        <b-button id ="eyo-panels-toolbar-restart" class="eyo-round-btn" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight + 'px'}" v-on:click="restart()" :disabled="selected !== 'console'" title="Redémarrer l'interpréteur python" 
+        v-tippy ><icon-base icon-name="restart"><icon-restart /></icon-base></b-button>
+        <b-button id ="eyo-panels-toolbar-erase" class="eyo-round-btn" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight + 'px'}" v-on:click="erase()" :disabled="selected !== 'console'" title="Effacer l'affichage" 
+        v-tippy ><icon-base icon-name="erase"><icon-erase /></icon-base></b-button>
       </div>
-      <b-button id ="eyo-panels-toolbar-restart" class="eyo-round-btn" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight + 'px'}" v-on:click="restart()" :disabled="selected !== 'console'" title="Redémarrer l'interpréteur python" 
-      v-tippy ><icon-base icon-name="restart"><icon-restart /></icon-base></b-button>
-      <b-button id ="eyo-panels-toolbar-erase" class="eyo-round-btn" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight + 'px'}" v-on:click="erase()" :disabled="selected !== 'console'" title="Effacer l'affichage" 
-      v-tippy ><icon-base icon-name="erase"><icon-erase /></icon-base></b-button>
-    </div>
-    <div id="eyo-panels-content">
-      <panel-console v-bind:style="{ display: selected === 'console'? 'block': 'none'}"></panel-console>
-      <panel-turtle v-bind:style="{ display: selected === 'turtle'? 'block': 'none'}"></panel-turtle>
+      <div id="eyo-panels-content">
+        <panel-console v-bind:style="{ display: selected === 'console'? 'block': 'none'}"></panel-console>
+        <panel-turtle v-bind:style="{ display: selected === 'turtle'? 'block': 'none'}"></panel-turtle>
+      </div>
     </div>
   </div>
 </template>
@@ -40,7 +42,21 @@
         titles: {
           console: 'Console',
           turtle: 'Tortue'
+        },
+        visible: undefined
+      }
+    },
+    computed: {
+      panelsStyleWidth: function () {
+        if (this.visible === undefined) {
+          this.visible = this.$store.state.UI.panelsVisible
+        } else {
+          if (this.visible !== this.$store.state.UI.panelsVisible) {
+            this.visible = this.$store.state.UI.panelsVisible
+            console.log('change to', this.visible, this.$refs.divPanels.offsetWidth, window.innerWidth)
+          }
         }
+        return '100%'
       }
     },
     components: {
@@ -50,7 +66,7 @@
       IconRestart,
       IconErase
     },
-    mounted: function () {
+    created: function () {
       var self = this
       eYo.App.bus.$on('new-document', function () {
         self.restart('console')
@@ -58,10 +74,10 @@
       })
     },
     methods: {
-      erase: function (arg) {
+      erase (arg) {
         eYo.App.bus.$emit('erase-' + (arg || this.selected))
       },
-      restart: function (arg) {
+      restart (arg) {
         eYo.App.bus.$emit('restart-' + (arg || this.selected))
       }
     }
@@ -69,8 +85,11 @@
 </script>
 
 <style>
-  #eyo-panels {
+  #eyo-panels-area {
     width: 100%;
+    height: 100%;
+  }
+  #eyo-panels {
     height: 100%;
   }
   #eyo-panels-toolbar {

@@ -83,10 +83,12 @@ eYo.DelegateSvg.Expr.builtin__print_expr.prototype.populateContextMenuFirst_ = f
         B.eyo.data.variant.set(2)
         var c8n = list.inputList[list.inputList.length - 1].connection
         c8n.connect(B.outputConnection)
-        block.eyo.beReady(block, true)
       } catch (err) {
         console.error(err)
+        throw err
       } finally {
+        block.eyo.beReady(block)
+        block.eyo.render(block)
         eYo.Events.setGroup(false)
       }
     }
@@ -98,6 +100,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.prototype.populateContextMenuFirst_ = f
         B.dispose()
       } catch (err) {
         console.error(err)
+        throw err
       } finally {
         eYo.Events.setGroup(false)
       }
@@ -164,10 +167,12 @@ eYo.DelegateSvg.Stmt.builtin__print_stmt.prototype.populateContextMenuFirst_ = f
         // we assume that inputList is not void
         var c8n = list.inputList[list.inputList.length - 1].connection
         c8n.connect(B.outputConnection)
-        block.eyo.beReady(block, true)
+        block.eyo.beReady(block)
       } catch (err) {
         console.error(err)
+        throw err
       } finally {
+        block.eyo.render(block)
         eYo.Events.setGroup(false)
       }
     }
@@ -179,6 +184,7 @@ eYo.DelegateSvg.Stmt.builtin__print_stmt.prototype.populateContextMenuFirst_ = f
         B.dispose()
       } catch (err) {
         console.error(err)
+        throw err
       } finally {
         eYo.Events.setGroup(false)
       }

@@ -70,12 +70,11 @@ eYo.ConnectionDelegate.prototype.name_ = undefined// must change to wrapper
 
 /**
  * `beReady` the target block.
- * @param {?boolean} render
  */
-eYo.ConnectionDelegate.prototype.beReady = function (render) {
+eYo.ConnectionDelegate.prototype.beReady = function () {
   var target = this.connection.targetBlock()
   if (target) {
-    target.eyo.beReady(target, render)
+    target.eyo.beReady(target)
     target.eyo.parentDidChange(target, this.connection.getSourceBlock())
   }
 }
@@ -511,87 +510,138 @@ eYo.Connection.prototype.checkType_ = function (otherConnection) {
 
 /**
  * Connect two connections together.  This is the connection on the superior
+ * block.  Rerender blocks as needed.
+ * @param {!Blockly.Connection} childConnection Connection on inferior block.
+ * @private
+ */
+Blockly.RenderedConnection.prototype.connect_ = function(childConnection) {
+  Blockly.RenderedConnection.superClass_.connect_.call(this, childConnection);
+
+  var parentConnection = this;
+  var parentBlock = parentConnection.getSourceBlock();
+  var childBlock = childConnection.getSourceBlock();
+
+  if (parentBlock.rendered) {
+    parentBlock.updateDisabled();
+  }
+  if (childBlock.rendered) {
+    childBlock.updateDisabled();
+  }
+  if (parentBlock.rendered && childBlock.rendered) {
+    if (parentConnection.type == Blockly.NEXT_STATEMENT ||
+        parentConnection.type == Blockly.PREVIOUS_STATEMENT) {
+      // Child block may need to square off its corners if it is in a stack.
+      // Rendering a child will render its parent.
+      childBlock.render();
+    } else {
+      // Child block does not change shape.  Rendering the parent node will
+      // move its connected children into position.
+      parentBlock.render();
+    }
+  }
+};
+
+/**
+ * Connect two connections together.  This is the connection on the superior
  * block.
  * Add hooks to allow customization.
  * @param {!Blockly.Connection} childC8n Connection on inferior block.
  * @private
  * @suppress {accessControls}
  */
-eYo.Connection.prototype.connect_ = function (childC8n) {
+eYo.Connection.saved_connect_ = Blockly.RenderedConnection.prototype.connect_
+Blockly.RenderedConnection.prototype.connect_ = function (childC8n) {
   // `this` is actually the parentC8n
   var parentC8n = this
   var parent = parentC8n.sourceBlock_
   var child = childC8n.sourceBlock_
-  var oldChildC8n = parentC8n.targetConnection
-  var oldParentC8n = childC8n.targetConnection
-  parentC8n.eyo.willConnect(childC8n)
-  childC8n.eyo.willConnect(parentC8n)
-  parent.eyo.willConnect(parent, parentC8n, childC8n)
-  child.eyo.willConnect(child, childC8n, parentC8n)
-  eYo.Connection.superClass_.connect_.call(parentC8n, childC8n)
-  if (parentC8n.eyo.plugged_) {
-    child.eyo.plugged_ = parentC8n.eyo.plugged_
-    console.log('plugged_ is', child.eyo.plugged_)
-  }
-  if (parentC8n.eyo.wrapped_) {
-    if (child.eyo.hasSelect(child)) { // Blockly.selected === child
-      child.unselect()
-      var P = child
-      while ((P = P.getSurroundParent())) {
-        if (!P.eyo.wrapped_) {
-          P.select()
-          break
-        }
-      }
+  parent.eyo.skipRendering()
+  child.eyo.skipRendering()
+  try {
+    var oldChildC8n = parentC8n.targetConnection
+    var oldParentC8n = childC8n.targetConnection
+    parentC8n.eyo.willConnect(childC8n)
+    childC8n.eyo.willConnect(parentC8n)
+    parent.eyo.willConnect(parent, parentC8n, childC8n)
+    child.eyo.willConnect(child, childC8n, parentC8n)
+    eYo.Connection.saved_connect_.call(parentC8n, childC8n)
+    if (parentC8n.eyo.plugged_) {
+      child.eyo.plugged_ = parentC8n.eyo.plugged_
     }
-    child.eyo.makeBlockWrapped_(child)
-  } else {
-    // if this connection was selected, the newly connected block should be selected too
-    if (parentC8n === eYo.SelectedConnection.get()) {
-      P = parent
-      do {
-        if (P === Blockly.selected) {
-          child.select()
-          break
-        }
-      } while ((P = P.getSurroundParent()))
-    }
-  }
-  if (oldChildC8n && childC8n !== oldChildC8n) {
-    var oldChild = oldChildC8n.sourceBlock_
-    if (oldChild) {
-      if (oldChild.eyo.wrapped_) {
-        if (Blockly.Events.recordUndo) {
-          oldChild.dispose(true)
-        }
-      } else if (!oldChildC8n.targetBlock()) {
-        // another chance to reconnect the orphan
-        // just in case the check_ has changed in between
-        // which might be the case for the else_part blocks
-        P = child
-        var c8n
-        while ((c8n = P.nextConnection)) {
-          if (!c8n.targetConnection) {
-            if (c8n.checkType_(oldChildC8n)) {
-              c8n.connect(oldChildC8n)
-            }
+    if (parentC8n.eyo.wrapped_) {
+      if (child.eyo.hasSelect(child)) { // Blockly.selected === child
+        child.unselect()
+        var P = child
+        while ((P = P.getSurroundParent())) {
+          if (!P.eyo.wrapped_) {
+            P.select()
             break
           }
         }
       }
+      child.eyo.makeBlockWrapped_(child)
+    } else {
+      // if this connection was selected, the newly connected block should be selected too
+      if (parentC8n === eYo.SelectedConnection.get()) {
+        P = parent
+        do {
+          if (P === Blockly.selected) {
+            child.select()
+            break
+          }
+        } while ((P = P.getSurroundParent()))
+      }
+    }
+    if (oldChildC8n && childC8n !== oldChildC8n) {
+      var oldChild = oldChildC8n.sourceBlock_
+      if (oldChild) {
+        if (oldChild.eyo.wrapped_) {
+          if (Blockly.Events.recordUndo) {
+            oldChild.dispose(true)
+          }
+        } else if (!oldChildC8n.targetBlock()) {
+          // another chance to reconnect the orphan
+          // just in case the check_ has changed in between
+          // which might be the case for the else_part blocks
+          P = child
+          var c8n
+          while ((c8n = P.nextConnection)) {
+            if (!c8n.targetConnection) {
+              if (c8n.checkType_(oldChildC8n)) {
+                c8n.connect(oldChildC8n)
+              }
+              break
+            }
+          }
+        }
+      }
+    }
+    childC8n.eyo.didConnect(oldChildC8n, oldParentC8n)
+    parentC8n.eyo.didConnect(oldParentC8n, oldChildC8n)
+    var c8n = eYo.SelectedConnection.get()
+    parentC8n.eyo.didConnect(oldParentC8n, oldChildC8n)
+    if (c8n === childC8n || c8n === parentC8n) {
+      eYo.SelectedConnection.set(null)
+    }
+    parent.eyo.didConnect(parent, parentC8n, oldChildC8n, oldParentC8n)
+    child.eyo.didConnect(child, childC8n, oldParentC8n, oldChildC8n)
+    child.eyo.setIncog(child, parentC8n.eyo.isIncog())
+  } catch (err) {
+    console.error(err)
+    throw err
+  } finally {
+    parent.eyo.unskipRendering()
+    child.eyo.unskipRendering()
+    try {
+      eYo.Connection.connectedParentC8n = parentC8n
+      child.render() // bubble
+    } catch (err) {
+      console.error(err)
+      throw err
+    } finally {
+      eYo.Connection.connectedParentC8n = undefined
     }
   }
-  childC8n.eyo.didConnect(oldChildC8n, oldParentC8n)
-  parentC8n.eyo.didConnect(oldParentC8n, oldChildC8n)
-  var c8n = eYo.SelectedConnection.get()
-  parentC8n.eyo.didConnect(oldParentC8n, oldChildC8n)
-  if (c8n === childC8n || c8n === parentC8n) {
-    eYo.SelectedConnection.set(null)
-  }
-  parent.eyo.didConnect(parent, parentC8n, oldChildC8n, oldParentC8n)
-  child.eyo.didConnect(child, childC8n, oldParentC8n, oldChildC8n)
-  child.eyo.setIncog(child, parentC8n.eyo.isIncog())
-  parent.render()
 }
 
 /**
@@ -602,7 +652,8 @@ eYo.Connection.prototype.connect_ = function (childC8n) {
  * @private
  * @suppress {accessControls}
  */
-eYo.Connection.prototype.disconnectInternal_ = function (parentBlock,
+eYo.Connection.saved_disconnectInternal_ = Blockly.RenderedConnection.prototype.disconnectInternal_
+Blockly.RenderedConnection.prototype.disconnectInternal_ = function (parentBlock,
   childBlock) {
   var block = this.getSourceBlock()
   if (block === parentBlock) {
@@ -612,30 +663,53 @@ eYo.Connection.prototype.disconnectInternal_ = function (parentBlock,
     parentC8n = this.targetConnection
     childC8n = this
   }
-  parentC8n.eyo.willDisconnect()
-  childC8n.eyo.willDisconnect()
-  parentBlock.eyo.willDisconnect(parentBlock, parentC8n)
-  childBlock.eyo.willDisconnect(childBlock, childC8n)
-  if (parentC8n.eyo.wrapped_) {
-    // currently unwrapping a block,
-    // this occurs while removing the parent
-    // if the parent was selected, select the child
-    childBlock.eyo.makeBlockUnwrapped_(childBlock)
-    if (parentBlock.eyo.hasSelect(parentBlock)) {
-      parentBlock.unselect()
-      childBlock.select()
+  try {
+    parentBlock.eyo.skipRendering()
+    childBlock.eyo.skipRendering()
+    parentC8n.eyo.willDisconnect()
+    childC8n.eyo.willDisconnect()
+    parentBlock.eyo.willDisconnect(parentBlock, parentC8n)
+    childBlock.eyo.willDisconnect(childBlock, childC8n)
+    if (parentC8n.eyo.wrapped_) {
+      // currently unwrapping a block,
+      // this occurs while removing the parent
+      // if the parent was selected, select the child
+      childBlock.eyo.makeBlockUnwrapped_(childBlock)
+      if (parentBlock.eyo.hasSelect(parentBlock)) {
+        parentBlock.unselect()
+        childBlock.select()
+      }
+    }
+    eYo.Connection.saved_disconnectInternal_.call(this, parentBlock, childBlock)
+    if (childBlock.eyo.plugged_) {
+      childBlock.eyo.plugged_ = undefined
+    }
+    parentBlock.eyo.didDisconnect(parentBlock, parentC8n, childC8n)
+    childBlock.eyo.didDisconnect(childBlock, childC8n, parentC8n)
+    parentC8n.eyo.didDisconnect(childC8n)
+    childC8n.eyo.didDisconnect(parentC8n)
+  } catch (err) {
+    console.error(err)
+    throw err
+  } finally {
+    parentBlock.eyo.unskipRendering()
+    childBlock.eyo.unskipRendering()
+    eYo.Connection.disconnectedParentC8n = parentC8n
+    eYo.Connection.disconnectedChildC8n = childC8n
+    try {
+      parentBlock.rendered && parentBlock.render()
+      if (childBlock.rendered) {
+        childBlock.updateDisabled();
+        childBlock.render()
+      }
+    } catch (err) {
+      console.error(err)
+      throw err
+    } finally {
+      eYo.Connection.disconnectedParentC8n = undefined
+      eYo.Connection.disconnectedChildC8n = undefined
     }
   }
-  eYo.Connection.superClass_.disconnectInternal_.call(this, parentBlock, childBlock)
-  if (childBlock.eyo.plugged_) {
-    console.log('plugged_ was', childBlock.eyo.plugged_)
-    childBlock.eyo.plugged_ = undefined
-  }
-  parentBlock.eyo.didDisconnect(parentBlock, parentC8n, childC8n)
-  childBlock.eyo.didDisconnect(childBlock, childC8n, parentC8n)
-  parentC8n.eyo.didDisconnect(childC8n)
-  childC8n.eyo.didDisconnect(parentC8n)
-  parentBlock.render()
 }
 
 Blockly.Connection.uniqueConnection_original = Blockly.Connection.uniqueConnection_
@@ -833,7 +907,8 @@ Blockly.Connection.lastConnectionInRow_ = function (startBlock, orphanBlock) {
 }
 
 /**
- * Walks down a row a blocks, at each stage */
+ * Walks down a row a blocks, at each stage
+ */
 eYo.ConnectionDelegate.prototype.consolidateSource = function () {
   var block = this.connection.getSourceBlock()
   block.eyo.consolidate(block)
@@ -852,3 +927,4 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
     block.eyo.setOffset(block, -dx, -dy);
   }
 };
+

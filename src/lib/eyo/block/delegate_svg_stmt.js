@@ -242,13 +242,15 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (block, model, s
           }
           var holes = eYo.HoleFiller.getDeepHoles(parentBlock)
           eYo.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
-          parentBlock.eyo.beReady(parentBlock, true)
+          parentBlock.eyo.beReady(parentBlock)
+          parentBlock.render()
           c8n.connect(parentC8n)
           if (Blockly.selected === block) {
             parentBlock.select()
           }
         } catch (err) {
           console.error(err)
+          throw err
         } finally {
           eYo.Events.setGroup(false)
         }
@@ -290,6 +292,7 @@ eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (block, belowPrototyp
     }
   } catch (err) {
     console.error(err)
+    throw err
   } finally {
     eYo.Events.setGroup(false)
   }
@@ -306,9 +309,9 @@ eYo.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (block, mgr
   var show = !this.data.comment.isIncog()
   var content =
   eYo.Do.createSPAN(show ? eYo.Msg.Placeholder.REMOVE_COMMENT : eYo.Msg.Placeholder.ADD_COMMENT, null)
-  var menuItem = new eYo.MenuItem(content, function () {
-    block.eyo.data.comment.setIncog(show)
-  })
+  var menuItem = new eYo.MenuItem(content, block.eyo.doAndRender(block, function () {
+    this.data.comment.setIncog(show)
+  }))
   mgr.addChild(menuItem, true)
   return true
 }
@@ -565,6 +568,11 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
     },
     code: {
       synchronize: true,
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        // remove any newline character from newValue
+        var clean = newValue.replace(/[\n\r]+/g, '')
+        return {validated: clean}
+      },
       didChange: /** @suppress {globalThis} */ function (oldVAlue, newValue) {
         var variant = this.data.variant
         if (this.isIncog() && variant.get() === variant.CODE) {

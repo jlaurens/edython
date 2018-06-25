@@ -73,6 +73,7 @@ java -jar "$COMPILER"\
 --js "src/lib/closure-library/closure/goog/events/listener.js" \
 --js "src/lib/closure-library/closure/goog/labs/useragent/platform.js" \
 --js "src/lib/closure-library/closure/goog/string/const.js" \
+--js "src/lib/closure-library/closure/goog/crypt/crypt.js" \
 --js "src/lib/closure-library/closure/goog/dom/classlist.js" \
 --js "src/lib/closure-library/closure/goog/events/listenermap.js" \
 --js "src/lib/closure-library/closure/goog/html/safescript.js" \

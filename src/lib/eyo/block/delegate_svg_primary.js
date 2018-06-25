@@ -587,12 +587,10 @@ eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
       oldValue ? eYo.Do.createSPAN(oldValue, 'eyo-code') : eYo.Do.createSPAN(eYo.Msg.Placeholder.IDENTIFIER, 'eyo-code-placeholder'),
       eYo.Do.createSPAN('(…)', 'eyo-code')
     )
-    var menuItem = new eYo.MenuItem(content, function () {
-      block.eyo.doAndRender(block, function () {
-        this.data.name.setTrusted(oldValue || '')
-        this.data.variant.set(M.NAME)
-      }, true)
-    })
+    var menuItem = new eYo.MenuItem(content, this.doAndRender(block, function () {
+      this.data.name.setTrusted(oldValue || '')
+      this.data.variant.set(M.NAME)
+    }, true))
     mgr.addChild(menuItem, true)
   }
   var F = function (i) {
@@ -602,12 +600,10 @@ eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
         eYo.Do.createSPAN(names[i], 'eyo-code-reserved'),
         eYo.Do.createSPAN('(…)', 'eyo-code')
       )
-      var menuItem = new eYo.MenuItem(content, function () {
-        block.eyo.doAndRender(block, function () {
-          this.data.name.setTrusted(names[i])
-          this.data.variant.set(M.BUILTIN)
-        }, true)
-      })
+      var menuItem = new eYo.MenuItem(content, block.eyo.doAndRender(block, function () {
+        this.data.name.setTrusted(names[i])
+        this.data.variant.set(M.BUILTIN)
+      }, true))
       mgr.addChild(menuItem, true)
     }
   }
@@ -619,12 +615,10 @@ eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
       eYo.Do.createSPAN(eYo.Msg.Placeholder.EXPRESSION, 'eyo-code-placeholder'),
       eYo.Do.createSPAN('(…)', 'eyo-code')
     )
-    menuItem = new eYo.MenuItem(content, function () {
-      block.eyo.doAndRender(block, function () {
-        this.data.name.setTrusted(oldValue || '')
-        this.data.variant.set(M.EXPRESSION)
-      }, true)
-    })
+    menuItem = new eYo.MenuItem(content, block.eyo.doAndRender(block, function () {
+      this.data.name.setTrusted(oldValue || '')
+      this.data.variant.set(M.EXPRESSION)
+    }, true))
     mgr.addChild(menuItem, true)
   }
   if (variant !== M.BUILTIN) {
@@ -639,14 +633,12 @@ eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
       eYo.Do.createSPAN(eYo.Msg.Placeholder.IDENTIFIER, 'eyo-code-placeholder'),
       eYo.Do.createSPAN('(…)', 'eyo-code')
     )
-    menuItem = new eYo.MenuItem(content, function () {
-      block.eyo.doAndRender(block, function () {
-        if (variant === M.BUILTIN) {
-          this.data.name.setTrusted(oldValue || '')
-        }
-        this.data.variant.set(M.ATTRIBUTE)
-      }, true)
-    })
+    menuItem = new eYo.MenuItem(content, block.eyo.doAndRender(block, function () {
+      if (variant === M.BUILTIN) {
+        this.data.name.setTrusted(oldValue || '')
+      }
+      this.data.variant.set(M.ATTRIBUTE)
+    }, true))
     mgr.addChild(menuItem, true)
   }
   mgr.shouldSeparate()

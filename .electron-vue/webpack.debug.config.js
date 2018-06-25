@@ -152,7 +152,7 @@ let rendererConfig = {
       'vue$': 'vue/dist/vue.esm.js',
       'blockly': path.resolve(__dirname, '../src/lib/blockly/'),
       'eyo': path.resolve(__dirname, '../src/lib/eyo/'),
-      'assets': path.resolve(__dirname, '../static/')
+      'assets': path.resolve(__dirname, '../src/renderer/assets/')
     },
     extensions: ['.js', '.vue', '.json', '.css', '.node']
   },

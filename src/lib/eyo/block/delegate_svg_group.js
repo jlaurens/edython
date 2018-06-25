@@ -151,18 +151,61 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuiteInput_ = function (io) {
   // this must be the last one
   if (c8n) {
     c8n.setOffsetInBlock(eYo.Font.tabWidth, eYo.Font.lineHeight())
-    if (c8n.isConnected()) {
-      var target = c8n.targetBlock()
+    var target = c8n.targetBlock()
+    if (target) {
       var root = target.getSvgRoot()
       if (root) {
         c8n.tighten_()
-        target.render()
+        try {
+          target.eyo.downRendering = true
+          target.render()
+        } finally {
+          target.eyo.downRendering = false
+        }
       }
     }
     io.block.height = eYo.Font.lineHeight() * io.block.eyo.getStatementCount(io.block)
   }
   return true
 } /* eslint-enable indent */
+
+/**
+ * Render the suite block, if relevant.
+ * @param {!Block} block
+ * @return {boolean=} true if an rendering message was sent, false othrwise.
+ */
+eYo.DelegateSvg.Group.prototype.renderDrawSuite_ = function (block) {
+  if (!this.inputSuite) {
+    return
+  }
+  if (eYo.DelegateSvg.debugStartTrackingRender) {
+    console.log(eYo.DelegateSvg.debugPrefix, 'SUITE')
+  }
+  var c8n = this.inputSuite.connection
+  if (c8n) {
+    c8n.setOffsetInBlock(eYo.Font.tabWidth, eYo.Font.lineHeight())
+    var target = c8n.targetBlock()
+    if (target) {
+      var root = target.getSvgRoot()
+      if (root) {
+        c8n.tighten_()
+        if (!target.rendered || !target.eyo.upRendering) {
+          try {
+            target.eyo.downRendering = true
+            target.render()
+          } catch (err) {
+            console.error(err)
+            throw err
+          } finally {
+            target.eyo.downRendering = false
+          }
+        }
+      }
+    }
+    block.height = eYo.Font.lineHeight() * this.getStatementCount(block)
+    return true
+  }
+}
 
 /**
  * Render one input of value block.

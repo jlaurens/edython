@@ -18,6 +18,7 @@ goog.require('eYo.Helper')
 goog.require('eYo.Block')
 goog.require('eYo.App')
 goog.require('eYo.Xml')
+goog.require('goog.crypt')
 
 /**
  * Class for a workspace delegate.
@@ -40,7 +41,7 @@ goog.inherits(eYo.WorkspaceDelegate, eYo.Helper)
 eYo.WorkspaceDelegate.prototype.fromString = function (str) {
   var parser = new DOMParser()
   var dom = parser.parseFromString(str, 'application/xml')
-  return eYo.Xml.domToWorkspace(dom.documentElement, this.workspace_)
+  return dom && eYo.Xml.domToWorkspace(dom.documentElement, this.workspace_)
 }
 
 /**
@@ -54,6 +55,25 @@ eYo.WorkspaceDelegate.prototype.toString = function (opt_noId) {
 }
 
 /**
+ * Convert the workspace to UTF8 byte array.
+ * @param {?Boolean} opt_noId
+ */
+eYo.WorkspaceDelegate.prototype.toUTF8ByteArray = function (opt_noId) {
+  var s = '<?xml version="1.0" encoding="utf-8"?>\n' + this.toString(optNoId)
+  return goog.crypt.toUTF8ByteArray(s)
+}
+
+/**
+ * Add the nodes from string to the workspace.
+ * @param {!Array} bytes
+ * @return {Array.<string>} An array containing new block IDs.
+*/
+eYo.WorkspaceDelegate.prototype.fromUTF8ByteArray = function (bytes) {
+  var str = goog.crypt.utf8ByteArrayToString(bytes)
+  return str && this.fromString(str)
+}
+
+/**
  * Class for a workspace.  This is a data structure that contains blocks.
  * There is no UI, and can be created headlessly.
  * @param {Blockly.Options} optOptions Dictionary of options.
@@ -64,6 +84,28 @@ eYo.Workspace = function (optOptions) {
   this.eyo = new eYo.WorkspaceDelegate(this)
 }
 goog.inherits(eYo.Workspace, Blockly.Workspace)
+
+/**
+ * Dispose of this workspace.
+ * Unlink from all DOM elements to prevent memory leaks.
+ * @suppress{accessControls}
+ */
+Blockly.Workspace.prototype.dispose = function () {
+  this.listeners_.length = 0
+  this.clear()
+  this.eyo.dispose()
+  this.eyo = null
+  // Remove from workspace database.
+  delete Blockly.Workspace.WorkspaceDB_[this.id]
+}
+
+/**
+ * Clear the undo/redo stacks.
+ */
+eYo.Workspace.prototype.clearUndo = function() {
+  eYo.Workspace.superClass_.clearUndo.call(this)
+  eYo.App.didClearUndo && eYo.App.didClearUndo()
+}
 
 /**
  * Dispose of this workspace.
@@ -215,14 +257,160 @@ eYo.Workspace.prototype.undo = function(redo) {
         }
       } catch (err) {
         console.error(err)
+        throw err
       } finally {
         Blockly.Events.recordUndo = true
         for (var i = 0; B = Bs[i]; i++) {
           B.eyo.unskipRendering()
           B.eyo.render(B)
-        }  
+        }
+        this.eyo.didProcessUndo && this.eyo.didProcessUndo(redo)
       }
       return  
     }
   }
 }
+
+/**
+ * Fire a change event.
+ * Some code is added to manage the 'edited' document status.
+ * @param {!Blockly.Events.Abstract} event Event to fire.
+ */
+eYo.Workspace.prototype.fireChangeListener = function(event) {
+  var before = this.undoStack_.length
+  eYo.Workspace.superClass_.fireChangeListener.call(this, event)
+  var after = this.undoStack_.length
+  if (before === this.undoStack_.length) {
+    eYo.App.didUnshiftUndo && eYo.App.didUnshiftUndo()
+  } else {
+    eYo.App.didUnshiftUndo && eYo.App.didPushUndo()
+  }
+}
+
+/**
+ * Handle a key-down on SVG drawing surface.
+ * The delete block code is modified
+ * @param {!Event} e Key down event.
+ * @private
+ */
+Blockly.onKeyDown_ = function(e) {
+  if (Blockly.mainWorkspace.options.readOnly || Blockly.utils.isTargetInput(e)) {
+    // No key actions on readonly workspaces.
+    // When focused on an HTML text input widget, don't trap any keys.
+    return;
+  }
+  // var deleteBlock = false;
+  if (e.keyCode == 27) {
+    // Pressing esc closes the context menu.
+    Blockly.hideChaff();
+  } else if (e.keyCode == 8 || e.keyCode == 46) {
+    // Delete or backspace.
+    // Stop the browser from going back to the previous page.
+    // Do this first to prevent an error in the delete code from resulting in
+    // data loss.
+    e.preventDefault();
+    // Don't delete while dragging.  Jeez.
+    if (Blockly.mainWorkspace.isDragging()) {
+      return;
+    }
+    if (Blockly.selected && Blockly.selected.isDeletable()) {
+      eYo.deleteBlock(Blockly.selected, e.altKey || e.ctrlKey || e.metaKey);
+    }
+  } else if (e.altKey || e.ctrlKey || e.metaKey) {
+    // Don't use meta keys during drags.
+    if (Blockly.mainWorkspace.isDragging()) {
+      return;
+    }
+    if (Blockly.selected &&
+        Blockly.selected.isDeletable() && Blockly.selected.isMovable()) {
+      // Eyo:
+      var deep = (e.altKey ? 1 : 0 + e.ctrlKey ? 1 : 0 + e.metaKey ? 1 : 0) > 1
+      // Don't allow copying immovable or undeletable blocks. The next step
+      // would be to paste, which would create additional undeletable/immovable
+      // blocks on the workspace.
+      if (e.keyCode == 67) {
+        // 'c' for copy.
+        Blockly.hideChaff();
+        eYo.copyBlock(Blockly.selected, deep);
+      } else if (e.keyCode == 88 && !Blockly.selected.workspace.isFlyout) {
+        // 'x' for cut, but not in a flyout.
+        // Don't even copy the selected item in the flyout.
+        eYo.copyBlock(Blockly.selected, deep);
+        eYo.deleteBlock(Blockly.selected, deep);
+      }
+    }
+    if (e.keyCode == 86) {
+      // 'v' for paste.
+      if (Blockly.clipboardXml_) {
+        Blockly.Events.setGroup(true);
+        // Pasting always pastes to the main workspace, even if the copy started
+        // in a flyout workspace.
+        var workspace = Blockly.clipboardSource_;
+        if (workspace.isFlyout) {
+          workspace = workspace.targetWorkspace;
+        }
+        workspace.paste(Blockly.clipboardXml_);
+        Blockly.Events.setGroup(false);
+      }
+    } else if (e.keyCode == 90) {
+      // 'z' for undo 'Z' is for redo.
+      Blockly.hideChaff();
+      Blockly.mainWorkspace.undo(e.shiftKey);
+    }
+  }
+  // Common code for delete and cut.
+  // Don't delete in the flyout.
+  // if (deleteBlock && !Blockly.selected.workspace.isFlyout) {
+  //   Blockly.Events.setGroup(true);
+  //   Blockly.hideChaff();
+  //   Blockly.selected.eyo.dispose(/* heal */ true, true);
+  //   Blockly.Events.setGroup(false);
+  // }
+};
+
+/**
+ * Copy this block and the next ones if requested.
+ * For edython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {!boolean} shallow
+ */
+eYo.copyBlock = function (block, shallow) {
+};
+
+/**
+ * Delete this block and the next ones if requested.
+ * For edython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {!boolean} shallow
+ */
+eYo.deleteBlock = function (block, deep) {
+  if (block && block.isDeletable() && !block.workspace.isFlyout) {
+    Blockly.Events.setGroup(true);
+    Blockly.hideChaff();
+    if (deep) {
+      do {
+        var next = block.nextConnection && block.nextConnection.targetBlock()
+        block.dispose(false, true)
+      } while ((block = next))
+    } else {
+      block.dispose(true, true)
+    }
+    Blockly.Events.setGroup(false);
+  }
+}
+
+/**
+ * Copy a block onto the local clipboard.
+ * @param {!Blockly.Block} block Block to be copied.
+ * @private
+ */
+eYo.copyBlock = function(block, deep) {
+  var xmlBlock = eYo.Xml.blockToDom(block, false, !deep);
+  // Copy only the selected block and internal blocks.
+  // Encode start position in XML.
+  var xy = block.getRelativeToSurfaceXY();
+  xmlBlock.setAttribute('x', block.RTL ? -xy.x : xy.x);
+  xmlBlock.setAttribute('y', xy.y);
+  Blockly.clipboardXml_ = xmlBlock;
+  Blockly.clipboardSource_ = block.workspace;
+};

@@ -242,6 +242,7 @@ eYo.Flyout.prototype.show = function(xmlList) {
         gaps.push(default_gap)
       } catch (err) {
         console.error(err)
+        throw err
       } finally {
 
       }
@@ -501,7 +502,6 @@ eYo.Flyout.prototype.setBackgroundPath_ = function(width, height) {
 eYo.Flyout.prototype.placeNewBlock_ = function(oldBlock) {
   var block = eYo.Flyout.superClass_.placeNewBlock_.call(this, oldBlock)
   block.setConnectionsHidden(false)
-  block.render()
   return block;
 };
 

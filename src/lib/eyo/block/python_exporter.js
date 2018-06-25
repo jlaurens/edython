@@ -29,6 +29,7 @@ eYo.PythonExporter = function (oneIndent) {
   this.indents = []
   this.indent = ''
   this.oneIndent = this.constructor.indent
+  this.depth = 0
 }
 
 /**
@@ -106,32 +107,37 @@ eYo.PythonExporter.prototype.exportExpression_ = function (block) {
  */
 eYo.PythonExporter.prototype.export = function (block, is_deep) {
   this.newline_()
-
-  this.expression = []
-  var field, input, slot
+  try {
+    ++this.depth
+    this.expression = []
+    var field, input, slot
+    
+    this.exportExpression_(block)
   
-  this.exportExpression_(block)
-
-  if ((input = block.eyo.inputSuite)) {
-    try {
-      this.indent_()
-      var target = input.connection.targetBlock()
-      if (target) {
-        this.export(target, true)
-      } else {
-        this.newline_()
-        this.line.push('MISSING STATEMENT')
+    if ((input = block.eyo.inputSuite)) {
+      try {
+        this.indent_()
+        var target = input.connection.targetBlock()
+        if (target) {
+          this.export(target, true)
+        } else {
+          this.newline_()
+          this.line.push('MISSING STATEMENT')
+        }
+      } catch (err) {
+        console.error(err)
+        throw err
+      } finally {
+        this.dedent_()
       }
-    } catch (err) {
-      console.error(err)
-    } finally {
-      this.dedent_()
     }
+    if (is_deep && block.nextConnection && (target = block.nextConnection.targetBlock())) {
+      this.export(target, true)
+    }  
+  } finally {
+    --this.depth
   }
-  if (is_deep && block.nextConnection && (target = block.nextConnection.targetBlock())) {
-    this.export(target, true)
-  }
-  if (!this.indents.length) {
+  if (!this.depth) {
     this.newline_()
     return this.lines.join('\n')
   }

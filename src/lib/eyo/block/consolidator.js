@@ -573,7 +573,8 @@ eYo.Consolidator.List.prototype.consolidate = function (block, force) {
       this.consolidate_unconnected(io)
     }
   } catch (err) {
-    console.log(err)
+    console.error(err)
+    throw err
   } finally {
     delete this.consolidate_locked
   }
@@ -649,6 +650,7 @@ eYo.Consolidator.List.prototype.getInput = function (block, name, dontCreate) {
     return input
   } catch (err) {
     console.error(err)
+    throw err
   } finally {
     delete this.consolidate_locked
   }

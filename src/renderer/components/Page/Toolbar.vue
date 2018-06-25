@@ -1,6 +1,6 @@
 <template>
   <div id="toolbar">
-    <b-button-toolbar key-nav  aria-label="Main toolbar">
+    <b-button-toolbar key-nav  aria-label="Main toolbar" justify>
       <b-button-group class="mx-1">
         <b-btn id="toolbar-site" v-on:click=" doSite('https://github.com/jlaurens/edython/')" title="Aller au site Edython" v-tippy>
           <img src="static/icon.svg" height="32" alt="Edython"/>
@@ -23,13 +23,21 @@
           <icon-base width="32" height="32" icon-name="new"><icon-new /></icon-base>
         </b-btn>
         <b-btn id="toolbar-save" v-on:click="doSave()" title="Sauvegarder" v-tippy>
-          <icon-base width="32" height="32" icon-name="save"><icon-save-load variant="save" /></icon-base>
+          <icon-base width="32" height="32" icon-name="save"><icon-save-load variant="save" step="0.5"/></icon-base>
         </b-btn>
         <b-btn id="toolbar-open" v-on:click="doOpen()" title="Ouvrir" v-tippy>
           <icon-base width="32" height="32" icon-name="load"><icon-save-load variant="load" /></icon-base>
         </b-btn>
       </b-button-group>
       <b-button-group class="mx-1">
+          <b-btn id="toolbar-undo" v-on:click="doUndo()" :disabled="!canUndo" title="Annuler l'action de blocs" v-tippy>
+            <icon-base width="32" height="32" icon-name="undo"><icon-undo-redo variant="undo"/></icon-base>
+          </b-btn>
+          <b-btn id="toolbar-redo" v-on:click="doRedo()" :disabled="!canRedo" title="Refaire l'action de blocs" v-tippy>
+            <icon-base width="32" height="32"  icon-name="redo"><icon-undo-redo variant="redo"/></icon-base>
+          </b-btn>
+        </b-button-group>
+        <b-button-group class="mx-1">
         <b-btn id="toolbar-copy" v-on:click="doSingleCopy()" title="Copier le bloc sélectionné" v-tippy>
           <icon-base width="32" height="32" icon-name="copy single"><icon-copy-paste variant="copy" single="true" /></icon-base>
         </b-btn>
@@ -42,12 +50,6 @@
         <b-btn id="toolbar-python" v-on:click="doCopyPythonCode()" title="Copier le code python" v-tippy>
           <icon-base width="32" height="32" icon-name="copy Python"><icon-copy-python /></icon-base>
         </b-btn>
-        <b-btn id="toolbar-undo" v-on:click="doUndo()" :disabled="!canUndo" title="Annuler l'action de blocs" v-tippy>
-          <icon-base width="32" height="32" icon-name="undo"><icon-undo-redo variant="undo"/></icon-base>
-        </b-btn>
-        <b-btn id="toolbar-redo" v-on:click="doRedo()" :disabled="!canRedo" title="Refaire l'action de blocs" v-tippy>
-          <icon-base width="32" height="32"  icon-name="redo"><icon-undo-redo variant="redo"/></icon-base>
-        </b-btn>
       </b-button-group>
       <b-button-group class="mx-1">
         <b-btn id="toolbar-back" v-on:click="doBack()" title="Sélection à l'arrière plan" v-tippy>
@@ -57,6 +59,11 @@
           <icon-base width="32" height="32" icon-name="focus"><icon-focus/></icon-base>
         </b-btn>
       </b-button-group>
+      <!--b-button-group class="mx-1">
+        <b-btn id="toolbar-toggle-panels" v-on:click="doTogglePanelsVisible()" :title="toolbarTogglePanelsTitle" v-tippy>
+          <icon-base width="32" height="32" icon-name="back"><icon-toggle-panels :variant="showTogglePanel" /></icon-base>
+        </b-btn>
+      </b-button-group-->
     </b-button-toolbar>
   </div>
 </template>
@@ -72,6 +79,14 @@
   import IconFrontBack from '../Icon/IconFrontBack.vue'
   import IconFocus from '../Icon/IconFocus.vue'
   import IconDemo from '../Icon/IconDemo.vue'
+  import IconTogglePanels from '../Icon/IconTogglePanels.vue'
+  
+  import demoBasicHello from '@static/demo/basic/hello.xml'
+  import demoBasicHelloYou from '@static/demo/basic/hello-you.xml'
+  import demoBasicSumOfIntegers from '@static/demo/basic/sum-of-integers.xml'
+  import demoBasicFiftyDices from '@static/demo/basic/fifty-dices.xml'
+  import demoBasicList from '@static/demo/basic/list.xml'
+  import demoBasicDebug from '@static/demo/basic/debug.xml'
   
   export default {
     name: 'page-toolbar',
@@ -87,374 +102,22 @@
         demos: [
           {
             title: 'Bonjour le monde!',
-            xml: [
-              '<edython xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">',
-              '<workspace>',
-              '<content>',
-              '<s eyo="start_stmt" x="300" y="120">',
-              '<s eyo="print" flow="next">',
-              '<x eyo="list" slot="arguments">',
-              '<x eyo="literal" slot="O">\'Bonjour le monde!\'</x>',
-              '</x>',
-              '</s>',
-              '</s>',
-              '</content>',
-              '</workspace>',
-              '</edython>'
-            ].join('')
+            xml: demoBasicHello
           }, {
-            title: 'Bonjour...',
-            xml: [
-              '<edython xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">',
-              '<workspace>',
-              '<content>',
-              '<s eyo="start_stmt" x="300" y="200">',
-              '<s eyo="assignment" name="prénom" flow="next">',
-              '<x eyo="list" slot="assigned">',
-              '<x eyo="input" slot="O">',
-              '<x eyo="literal" slot="expression">\'Quel est votre prénom ?\'</x>',
-              '</x>',
-              '</x>',
-              '<s eyo="print" flow="next">',
-              '<x eyo="list" slot="arguments">',
-              '<x eyo="literal" slot="O">\'Bonjour\'</x>',
-              '<x eyo="identifier" name="prénom" slot="f">',
-              '</x>',
-              '</x>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</content>',
-              '</workspace>',
-              '</edython>'
-            ].join('')
+            title: 'Bonjour ...',
+            xml: demoBasicHelloYou
           }, {
             title: 'Somme des entiers',
-            xml: [
-              '<edython xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">',
-              '<workspace>',
-              '<content>',
-              '<s eyo="start_stmt" x="300" y="280" comment="Calculer 1+2+3+...">',
-              '<s eyo="stmt" comment="1) Demander un nombre à l\'utilisateur" flow="next">',
-              '<s eyo="assignment" name="réponse" flow="next">',
-              '<x eyo="list" slot="assigned">',
-              '<x eyo="input" slot="O">',
-              '<x eyo="literal" slot="expression">\'Donner un nombre entier positif\'',
-              '</x>',
-              '</x>',
-              '</x>',
-              '<s eyo="stmt" comment="2) Convertir la réponse en nombre entier" flow="next">',
-              '<s eyo="assignment" name="n" flow="next">',
-              '<x eyo="list" slot="assigned">',
-              '<x eyo="call" name="int" slot="O">',
-              '<x eyo="identifier" name="réponse" slot="unary">',
-              '</x>',
-              '</x>',
-              '</x>',
-              '<s eyo="stmt" comment="3) Initialiser la somme à 0" flow="next">',
-              '<s eyo="assignment" name="somme" flow="next">',
-              '<x eyo="list" slot="assigned">',
-              '<x eyo="literal" slot="O">0',
-              '</x>',
-              '</x>',
-              '<s eyo="stmt" comment="4) Calculer la somme" flow="next">',
-              '<s eyo="for" flow="next">',
-              '<x eyo="list" slot="for">',
-              '<x eyo="identifier" name="i" slot="O">',
-              '</x>',
-              '</x>',
-              '<x eyo="list" slot="in">',
-              '<x eyo="range" slot="O">',
-              '<x eyo="list" slot="arguments">',
-              '<x eyo="a_expr" operator="+" slot="O">',
-              '<x eyo="identifier" name="n" slot="lhs">',
-              '</x>',
-              '<x eyo="literal" slot="rhs">1',
-              '</x>',
-              '</x>',
-              '</x>',
-              '</x>',
-              '</x>',
-              '<s eyo="assignment" name="somme" flow="suite">',
-              '<x eyo="list" slot="assigned">',
-              '<x eyo="a_expr" operator="+" slot="O">',
-              '<x eyo="identifier" name="somme" slot="lhs">',
-              '</x>',
-              '<x eyo="identifier" name="i" slot="rhs">',
-              '</x>',
-              '</x>',
-              '</x>',
-              '</s>',
-              '<s eyo="stmt" comment="5) Afficher le résultat" flow="next">',
-              '<s eyo="print" flow="next">',
-              '<x eyo="list" slot="arguments">',
-              '<x eyo="literal" slot="O">\'La somme des\'',
-              '</x>',
-              '<x eyo="identifier" name="n" slot="f">',
-              '</x>',
-              '<x eyo="literal" slot="o">\'premiers entiers est\'',
-              '</x>',
-              '<x eyo="identifier" name="somme" slot="x">',
-              '</x>',
-              '</x>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</content>',
-              '</workspace>',
-              '</edython>'
-            ].join('')
+            xml: demoBasicSumOfIntegers
           }, {
             title: '50 dés',
-            xml: [
-              '<edython xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">',
-              '<workspace>',
-              '<content>',
-              '<s eyo="start_stmt"  x="300" y="280" comment="50 lancers d\'un dé à 6 faces">',
-              '<s eyo="random+import" flow="next">',
-              '<s eyo="for" flow="next">',
-              '<x eyo="list" slot="for">',
-              '<x eyo="identifier" name="lancer" slot="O">',
-              '</x>',
-              '</x>',
-              '<x eyo="list" slot="in">',
-              '<x eyo="range" slot="O">',
-              '<x eyo="list" slot="arguments">',
-              '<x eyo="literal" slot="O">50</x>',
-              '</x>',
-              '</x>',
-              '</x>',
-              '<s eyo="print" flow="suite">',
-              '<x eyo="list" slot="arguments">',
-              '<x eyo="literal" slot="O">\'lancer n°\'</x>',
-              '<x eyo="identifier" name="lancer" slot="f">',
-              '</x>',
-              '<x eyo="literal" slot="r">\':\'</x>',
-              '<x eyo="random__call_expr" name="randint" ary="2" slot="x">',
-              '<x eyo="list" slot="binary">',
-              '<x eyo="literal" slot="fstart">1</x>',
-              '<x eyo="literal" slot="rend">6</x>',
-              '</x>',
-              '</x>',
-              '</x>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</content>',
-              '</workspace>',
-              '</edython>'
-            ].join('')
+            xml: demoBasicFiftyDices
           }, {
             title: 'Liste',
-            xml: ['<s eyo="start_stmt" comment="Avec des listes" xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">',
-              '<s eyo="stmt" comment="Une liste est une collection ordonnée d’objets" flow="next">',
-              '<s eyo="assignment" name="liste" flow="next">',
-              '<x eyo="list" slot="assigned">',
-              '<x eyo="square_bracket" slot="O">',
-              '<x eyo="literal" slot="O">1</x>',
-              '<x eyo="literal" slot="f">\'+\'</x>',
-              '<x eyo="literal" slot="r">1</x>',
-              '<x eyo="literal" slot="x">\'=\'</x>',
-              '<x eyo="literal" slot="{">2</x>',
-              '</x>',
-              '</x>',
-              '<s eyo="print" flow="next">',
-              '<x eyo="list" slot="arguments">',
-              '<x eyo="literal" slot="f">\'La liste est\'</x>',
-              '<x eyo="identifier" name="liste" slot="r">',
-              '</x>',
-              '</x>',
-              '<s eyo="stmt" comment="Le premier élément a pour rang 0" flow="next">',
-              '<s eyo="print" flow="next">',
-              '<x eyo="list" slot="arguments">',
-              '<x eyo="literal" slot="f">\'Le premier élément est\'</x>',
-              '<x eyo="slicing" slot="r">',
-              '<x eyo="identifier" name="liste" slot="primary">',
-              '</x>',
-              '<x eyo="list" slot="slice">',
-              '<x eyo="literal" slot="O">0</x>',
-              '</x>',
-              '</x>',
-              '</x>',
-              '<s eyo="print" flow="next">',
-              '<x eyo="list" slot="arguments">',
-              '<x eyo="literal" slot="f">\'La longueur de la liste est\'</x>',
-              '<x eyo="call" name="len" ary="1" slot="r">',
-              '<x eyo="identifier" name="liste" slot="unary">',
-              '</x>',
-              '</x>',
-              '</x>',
-              '<s eyo="stmt" comment="Le dernier élément a pour rang la longueur - 1" flow="next">',
-              '<s eyo="print" flow="next">',
-              '<x eyo="list" slot="arguments">',
-              '<x eyo="literal" slot="f">\'Le dernier élément est\'</x>',
-              '<x eyo="slicing" slot="r">',
-              '<x eyo="identifier" name="liste" slot="primary">',
-              '</x>',
-              '<x eyo="list" slot="slice">',
-              '<x eyo="a_expr" operator="-" slot="O">',
-              '<x eyo="call" name="len" ary="1" slot="lhs">',
-              '<x eyo="identifier" name="liste" slot="unary">',
-              '</x>',
-              '</x>',
-              '<x eyo="literal" slot="rhs">1</x>',
-              '</x>',
-              '</x>',
-              '</x>',
-              '</x>',
-              '<s eyo="print" flow="next">',
-              '<x eyo="list" slot="arguments">',
-              '<x eyo="literal" slot="f">\'Ce dernier est aussi\'</x>',
-              '<x eyo="slicing" slot="r">',
-              '<x eyo="identifier" name="liste" slot="primary">',
-              '</x>',
-              '<x eyo="list" slot="slice">',
-              '<x eyo="literal" slot="O">-1</x>',
-              '</x>',
-              '</x>',
-              '</x>',
-              '<s eyo="stmt" comment="Utiliser la méthode &quot;index&quot; pour trouver le rang" flow="next">',
-              '<s eyo="stmt" comment="Pour extraire une liste, utiliser &quot;:&quot;" flow="next">',
-              '<s eyo="assignment" name="liste1" flow="next">',
-              '<x eyo="list" slot="assigned">',
-              '<x eyo="slicing" slot="O">',
-              '<x eyo="identifier" name="liste" slot="primary">',
-              '</x>',
-              '<x eyo="list" slot="slice">',
-              '<x eyo="proper_slice" slot="O">',
-              '<x eyo="literal" slot="lower_bound">0</x>',
-              '<x eyo="literal" slot="upper_bound">2</x>',
-              '</x>',
-              '</x>',
-              '</x>',
-              '</x>',
-              '<s eyo="print" flow="next">',
-              '<x eyo="list" slot="arguments">',
-              '<x eyo="literal" slot="f">\'Les éléments extraits:\'</x>',
-              '<x eyo="identifier" name="liste1" slot="r">',
-              '</x>',
-              '</x>',
-              '<s eyo="stmt" comment="On peut ajouter des éléments à la fin" flow="next">',
-              '<s eyo="expression_stmt" flow="next">',
-              '<x eyo="call" name="append" ary="1" slot="expression">',
-              '<x eyo="identifier" name="liste1" slot="expression">',
-              '</x>',
-              '<x eyo="literal" slot="unary">2</x>',
-              '</x>',
-              '<s eyo="print" flow="next">',
-              '<x eyo="list" slot="arguments">',
-              '<x eyo="literal" slot="f">\'Résultat:\'</x>',
-              '<x eyo="identifier" name="liste1" slot="r">',
-              '</x>',
-              '</x>',
-              '<s eyo="stmt" comment="On peut ajouter des éléments où on veut" flow="next">',
-              '<s eyo="expression_stmt" flow="next">',
-              '<x eyo="call" name="insert" ary="2" slot="expression">',
-              '<x eyo="identifier" name="liste1" slot="expression">',
-              '</x>',
-              '<x eyo="list" slot="binary">',
-              '<x eyo="literal" slot="O">2</x>',
-              '<x eyo="literal" slot="f">\'=\'</x>',
-              '</x>',
-              '</x>',
-              '<s eyo="print" flow="next">',
-              '<x eyo="list" slot="arguments">',
-              '<x eyo="literal" slot="f">\'Résultat:\'</x>',
-              '<x eyo="identifier" name="liste1" slot="r">',
-              '</x>',
-              '</x>',
-              '<s eyo="expression_stmt" flow="next">',
-              '<x eyo="call" name="insert" ary="2" slot="expression">',
-              '<x eyo="identifier" name="liste1" slot="expression">',
-              '</x>',
-              '<x eyo="list" slot="binary">',
-              '<x eyo="literal" slot="O">2</x>',
-              '<x eyo="literal" slot="f">1</x>',
-              '</x>',
-              '</x>',
-              '<s eyo="print" flow="next">',
-              '<x eyo="list" slot="arguments">',
-              '<x eyo="literal" slot="f">\'Résultat:\'</x>',
-              '<x eyo="identifier" name="liste1" slot="r">',
-              '</x>',
-              '</x>',
-              '<s eyo="stmt" comment="Les deux liste sont égales" flow="next">',
-              '<s eyo="if" flow="next">',
-              '<x eyo="builtin__object" value="True" slot="if">',
-              '</x>',
-              '<s eyo="print" flow="suite">',
-              '<x eyo="list" slot="arguments">',
-              '<x eyo="literal" slot="f">\'Les listes ont le même contenu\'</x>',
-              '</x>',
-              '</s>',
-              '<s eyo="expression_stmt" flow="next">',
-              '<x eyo="call" name="insert" ary="2" slot="expression">',
-              '<x eyo="identifier" name="liste1" slot="expression">',
-              '</x>',
-              '<x eyo="list" slot="binary">',
-              '<x eyo="literal" slot="O">2</x>',
-              '<x eyo="literal" slot="f">\'=\'</x>',
-              '</x>',
-              '</x>',
-              '<s eyo="print" flow="next">',
-              '<x eyo="list" slot="arguments">',
-              '<x eyo="literal" slot="f">\'Résultat:\'</x>',
-              '<x eyo="identifier" name="liste1" slot="r">',
-              '</x>',
-              '</x>',
-              '<s eyo="expression_stmt" flow="next">',
-              '<x eyo="call" name="insert" ary="2" slot="expression">',
-              '<x eyo="identifier" name="liste1" slot="expression">',
-              '</x>',
-              '<x eyo="list" slot="binary">',
-              '<x eyo="literal" slot="O">2</x>',
-              '<x eyo="literal" slot="f">1</x>',
-              '</x>',
-              '</x>',
-              '<s eyo="print" flow="next">',
-              '<x eyo="list" slot="arguments">',
-              '<x eyo="literal" slot="f">\'Résultat:\'</x>',
-              '<x eyo="identifier" name="liste1" slot="r">',
-              '</x>',
-              '</x>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>',
-              '</s>'
-            ].join('')
+            xml: demoBasicList
+          }, {
+            title: 'Debug',
+            xml: demoBasicDebug
           }
         ]
       }
@@ -469,7 +132,18 @@
       IconCopyPython,
       IconFrontBack,
       IconFocus,
-      IconDemo
+      IconDemo,
+      IconTogglePanels
+    },
+    computed: {
+      showTogglePanel: function () {
+        return this.$store.state.UI.panelsVisible ? 'hide' : 'show'
+      },
+      toolbarTogglePanelsTitle: function () {
+        return this.$store.state.UI.panelsVisible
+          ? 'Cacher les consoles'
+          : 'Afficher les consoles'
+      }
     },
     mounted: function () {
       // add the tippy by hand if it does already exists
@@ -480,7 +154,12 @@
     methods: {
       doSelectDemo (index) {
         var demo = this.demos[index]
-        demo.xml && eYo.App.workspace.eyo.fromString(demo.xml)
+        // console.log(index, demo.xml)
+        var parser = new DOMParser()
+        var dom = parser.parseFromString(demo.xml, 'application/xml')
+        // console.log(dom)
+        dom && eYo.Xml.domToWorkspace(dom, eYo.App.workspace)
+        demo && eYo.App.workspace.eyo.fromString(demo.xml)
       },
       doSelectDemoShow () {
         var el = document.getElementById('eyo-toolbar-dropdown-demo')
@@ -501,7 +180,7 @@
         }
       },
       canUndo () {
-        console.log(eYo.App.workspace.undoStack_.length)
+        // console.log(eYo.App.workspace.undoStack_.length)
         return eYo.App.workspace && (eYo.App.workspace.undoStack_.length > 0)
       },
       canRedo () {
@@ -573,49 +252,61 @@
             try {
               eYo.App.workspace.eyo.fromString(inflate)
             } catch (err) {
-              console.log('ERROR:', err)
+              console.error('ERROR:', err)
             }
           })
         })
       },
       doSave: function () {
-        let content = eYo.App.workspace.eyo.toString(true)
+        let content = '<?xml version="1.0" encoding="utf-8"?>' + eYo.App.workspace.eyo.toString(true)
         let deflate = content // this.pako.gzip(content) // use gzip to ungzip from the CLI
-
-        const {dialog} = require('electron').remote
-
-        const remote = require('electron').remote
-        const app = remote.app
-        let documentsFolder = app.getPath('documents')
-        let path = require('path')
-        var defaultPath = path.join(documentsFolder, 'Edython')
         var fs = require('fs')
-        if (!fs.existsSync(defaultPath)) {
-          fs.mkdirSync(defaultPath)
-        }
-        defaultPath = path.join(defaultPath, 'Sans titre.eyo')
-        dialog.showSaveDialog({
-          defaultPath: defaultPath,
-          filters: [{
-            name: 'Edython', extensions: ['eyo']
-          }]
-        }, (fileName) => {
-          if (fileName === undefined) {
-            console.log('Opération annulée')
-            return
-          }
-          var dirname = path.dirname(fileName)
-          if (!fs.existsSync(dirname)) {
-            fs.mkdirSync(dirname)
-          }
-          // var fs = require('fs') // Load the File System to execute our common tasks (CRUD)
-          fs.writeFile(fileName, deflate, (err) => {
+        var self = this
+        if (this.documentPath) {
+          fs.writeFile(this.documentPath, deflate, function (err) {
             if (err) {
               alert('An error ocurred creating the file ' + err.message)
+            } else {
+              self.$store.commit('STAGE_UNDO')
             }
             // alert("The file has been succesfully saved")
           })
-        })
+        } else {
+          const {dialog} = require('electron').remote
+          const remote = require('electron').remote
+          const app = remote.app
+          let documentsFolder = app.getPath('documents')
+          let path = require('path')
+          var defaultPath = path.join(documentsFolder, 'Edython')
+          if (!fs.existsSync(defaultPath)) {
+            fs.mkdirSync(defaultPath)
+          }
+          defaultPath = path.join(defaultPath, 'Sans titre.eyo')
+          dialog.showSaveDialog({
+            defaultPath: defaultPath,
+            filters: [{
+              name: 'Edython', extensions: ['eyo']
+            }]
+          }, function (filePath) {
+            if (filePath === undefined) {
+              console.log('Opération annulée')
+              return
+            }
+            var dirname = path.dirname(filePath)
+            if (!fs.existsSync(dirname)) {
+              fs.mkdirSync(dirname)
+            }
+            // var fs = require('fs') // Load the File System to execute our common tasks (CRUD)
+            fs.writeFile(filePath, deflate, (err) => {
+              if (err) {
+                alert('An error ocurred creating the file ' + err.message)
+              } else {
+                self.documentPath = filePath
+              }
+              // alert("The file has been succesfully saved")
+            })
+          })
+        }
       },
       doFront () {
         eYo.App.doFront()
@@ -625,6 +316,9 @@
       },
       doFocus () {
         eYo.App.doFocus()
+      },
+      doTogglePanelsVisible () {
+        this.$store.commit('SET_PANELS_VISIBLE', !this.$store.state.UI.panelsVisible)
       }
     }
   }

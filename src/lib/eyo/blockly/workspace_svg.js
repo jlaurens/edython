@@ -284,6 +284,7 @@ Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function (workspac
     }
   } catch (err) {
     console.error(err)
+    throw err
   } finally {
     eYo.Events.setGroup(false)
   }
@@ -365,6 +366,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
         // }
       } catch (err) {
         console.error(err)
+        throw err
       } finally {
         eYo.Events.setGroup(false)
       }
@@ -442,6 +444,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
     }
   } catch (err) {
     console.error(err)
+    throw err
   } finally {
     Blockly.Events.enable()
   }

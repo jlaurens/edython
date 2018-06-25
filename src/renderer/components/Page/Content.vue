@@ -23,6 +23,11 @@
     components: {
       'content-eyo': ContentEyO,
       'content-panels': ContentPanels
+    },
+    mounted: function () {
+      eYo.App.bus.$on('setConsoleVisible', function (visible) {
+        console.log('setConsoleVisible', visible)
+      })
     }
   }
 </script>

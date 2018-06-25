@@ -31,6 +31,9 @@ Blockly.BlockDragger.prototype.endBlockDrag = function (e, currentDragDeltaXY) {
     this.draggingBlock_.setDragging(false)
     this.fireMoveEvent_()// JL Fixed this
     this.draggedConnectionManager_.applyConnections()
+    // Moving a block around will not cause rendering
+    // because rendering does not depend on the position
+    // except when connected / disconnectd but this is already managed
     this.draggingBlock_.render()
     this.draggingBlock_.scheduleSnapAndBump()
   }

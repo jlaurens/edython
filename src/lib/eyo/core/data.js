@@ -99,6 +99,7 @@ eYo.Data.prototype.get = function () {
       this.init()
     } catch (err) {
       console.error(err)
+      throw err
     } finally {
       delete this.lock_get
     }
@@ -156,6 +157,7 @@ eYo.Data.prototype.init = function (newValue) {
         init.call(this)
       } catch (err) {
         console.error(err)
+        throw err
       } finally {
         delete this.model_init_lock
       }
@@ -199,6 +201,7 @@ eYo.Data.prototype.validate = function (newValue) {
       var out = this.model.validate.call(this, newValue)
     } catch (err) {
       console.error(err)
+      throw err
     } finally {
       delete this.lock_model_validate
     }
@@ -220,6 +223,7 @@ eYo.Data.prototype.toText = function (newValue = undefined) {
       return this.model.toText.call(this, newValue)
     } catch (err) {
       console.error(err)
+      throw err
     } finally {
       delete this.toText_locked
     }
@@ -241,6 +245,7 @@ eYo.Data.prototype.fromText = function (txt, dontValidate) {
         this.model.fromText.call(this, txt, dontValidate)
       } catch (err) {
         console.error(err)
+        throw err
       } finally {
         delete this.model_fromText_lock
       }
@@ -280,6 +285,7 @@ eYo.Data.prototype.willChange = function (oldValue, newValue) {
         this.model.willChange.call(this, oldValue, newValue)
       } catch (err) {
         console.error(err)
+        throw err
       } finally {
         delete this.model_willChange_lock
       }
@@ -287,6 +293,7 @@ eYo.Data.prototype.willChange = function (oldValue, newValue) {
     }
   } catch (err) {
     console.error(err)
+    throw err
   } finally {
     delete this.lock_willChange
   }
@@ -315,6 +322,7 @@ eYo.Data.prototype.didChange = function (oldValue, newValue) {
         this.model.didChange.call(this, oldValue, newValue)
       } catch (err) {
         console.error(err)
+        throw err
       } finally {
         delete this.model_didChange_lock
       }
@@ -322,6 +330,7 @@ eYo.Data.prototype.didChange = function (oldValue, newValue) {
     }
   } catch (err) {
     console.error(err)
+    throw err
   } finally {
     delete this.didChange_lock
   }
@@ -357,6 +366,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
         field.setValue(this.toText())
       } catch (err) {
         console.error(err)
+        throw err
       } finally {
         Blockly.Events.enable()
       }
@@ -377,11 +387,12 @@ eYo.Data.prototype.synchronize = function (newValue) {
       this.model.synchronize.call(this, newValue)
     } catch (err) {
       console.error(err)
+      throw err
     } finally {
       delete this.model_synchronize_lock
     }
   }
-  this.owner_ && this.owner_.render && this.owner_.render(this.owner_.block_)
+  this.owner_ && this.owner_.shouldRender && this.owner_.shouldRender()
 }
 
 /**
@@ -428,6 +439,7 @@ eYo.Data.prototype.setTrusted_ = function (newValue) {
     this.setTrusted__(newValue)
   } catch (err) {
     console.error(err)
+    throw err
   } finally {
     delete this.trusted_lock
   }
@@ -504,6 +516,7 @@ eYo.Data.prototype.consolidate = function () {
       this.model.consolidate.call(this)
     } catch (err) {
       console.error(err)
+      throw err
     } finally {
       delete this.model_consolidate_lock
     }
@@ -533,6 +546,7 @@ eYo.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
       field.setValue(newValue)
     } catch (err) {
       console.error(err)
+      throw err
     } finally {
       Blockly.Events.enable()
     }
@@ -587,6 +601,7 @@ eYo.Data.prototype.save = function (element) {
         xml.save.call(this, element)
       } catch (err) {
         console.error(err)
+        throw err
       } finally {
         delete this.xml_save_lock
       }
@@ -622,6 +637,7 @@ eYo.Data.prototype.load = function (element) {
       xml.load.call(this, element)
     } catch (err) {
       console.error(err)
+      throw err
     } finally {
       delete this.xml_load_lock
     }
@@ -630,12 +646,14 @@ eYo.Data.prototype.load = function (element) {
   var required = this.required
   var isText = xml && xml.text
   this.setRequiredFromDom(false)
+  var txt
   if (isText) {
-    for (var i = 0, child; (child = element.childNodes[i]); i++) {
-      if (child.nodeType === 3) {
-        var txt = child.nodeValue
+    eYo.Do.forEachChild(element, function (child) {
+      if (child.nodeType === Node.TEXT_NODE) {
+        txt = child.nodeValue
+        return true
       }
-    }
+    })
   } else {
     txt = element.getAttribute(this.attributeName)
   }

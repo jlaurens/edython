@@ -23,7 +23,9 @@
     "test": "npm run unit && npm run e2e",
     "unit": "karma start test/unit/karma.conf.js",
     "postinstall": "npm run lint:fix",
-    "eyo": "sh ./bin/build.sh"
+    "eyo:T3": "python \"./src/lib/T3/python types.py\" && sh ./src/lib/T3/installT3.command",
+    "eyo:prepare": "python ./bin/helpers/tool1.py && python ./bin/helpers/tool2.py && python ./bin/helpers/tool3.py",
+    "eyo:build": "sh ./bin/build.sh"
   },
   "build": {
     "productName": "Edython",
@@ -64,6 +66,7 @@
     "bootstrap-vue": "^2.0.0-rc.11",
     "fs": "0.0.1-security",
     "jquery": "^3.3.1",
+    "lodash": "^4.17.10",
     "pako": "^1.0.6",
     "tippy": "0.0.0",
     "vue": "^2.5.16",
@@ -110,6 +113,7 @@
     "multispinner": "^0.2.1",
     "node-loader": "^0.6.0",
     "node-sass": "^4.9.0",
+    "raw-loader": "^0.5.1",
     "sass-loader": "^7.0.2",
     "style-loader": "^0.18.2",
     "url-loader": "^1.0.1",

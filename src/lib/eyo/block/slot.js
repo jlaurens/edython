@@ -84,9 +84,8 @@ eYo.Slot.prototype.init = function () {
 
 /**
  * Install this slot on a block.
- * @param {?boolean} render
  */
-eYo.Slot.prototype.beReady = function (render) {
+eYo.Slot.prototype.beReady = function () {
   this.wait = 0
   if (this.svgGroup_) {
     // Slot has already been initialized once.
@@ -112,7 +111,7 @@ eYo.Slot.prototype.beReady = function (render) {
       field.init()// installs in the owner's group, not the block group
     }
   }
-  this.input && this.input.eyo.beReady(render)
+  this.input && this.input.eyo.beReady()
 }
 console.warn('What would be an slot rendering?')
 /**
@@ -590,6 +589,7 @@ eYo.Slot.prototype.save = function (element, optNoId) {
       xml.save.call(this, element, optNoId)
     } catch (err) {
       console.error(err)
+      throw err
     } finally {
       delete this.xml_save_lock
     }
@@ -606,7 +606,7 @@ eYo.Slot.prototype.save = function (element, optNoId) {
           // Actually, every wrapped block is a list
           if (target.eyo instanceof eYo.DelegateSvg.List) {
             var child = eYo.Xml.blockToDom(target, optNoId)
-            if (child.childNodes.length > 0) {
+            if (child.firstElementChild) {
               if (!xml || !xml.noInputName) {
                 child.setAttribute(eYo.Xml.SLOT, this.key)
               }
@@ -619,7 +619,7 @@ eYo.Slot.prototype.save = function (element, optNoId) {
           }
         } else {
           child = eYo.Xml.blockToDom(target, optNoId)
-          if (child.childNodes.length > 0 || child.hasAttributes()) {
+          if (child.firstElementChild || child.hasAttributes()) {
             if (!xml || !xml.noInputName) {
               if (this.inputType === Blockly.INPUT_VALUE) {
                 child.setAttribute(eYo.XmlKey.SLOT, this.key)
@@ -667,6 +667,7 @@ eYo.Slot.prototype.load = function (element) {
       xml.load.call(this, element)
     } catch (err) {
       console.error(err)
+      throw err
     } finally {
       delete this.xml_load_lock
     }
@@ -681,57 +682,64 @@ eYo.Slot.prototype.load = function (element) {
       this.setRequiredFromDom(true) // this is not sure, it depends on how the target read the dom
       out = eYo.Xml.fromDom(target, element)
     } else {
-    // find an xml child with the proper slot attribute
-      for (var i = 0, child; (child = element.childNodes[i++]);) {
-        if (goog.isFunction(child.getAttribute)) {
+    // find the xml child with the proper slot attribute
+      var children = Array.prototype.slice.call(element.childNodes)
+      var i = 0
+      while (i < children.length) {
+        var child = children[i++]
+        if (child.nodeType === Node.ELEMENT_NODE) {
           if (this.inputType === Blockly.INPUT_VALUE) {
             var attribute = child.getAttribute(eYo.Xml.SLOT)
           } else if (this.inputType === Blockly.NEXT_STATEMENT) {
             attribute = child.getAttribute(eYo.Xml.FLOW)
           }
-        }
-        if (attribute === this.key) {
-          if (child.getAttribute('eyo') === 'placeholder') {
-            this.setRequiredFromDom(true)
-            out = true
-          } else if (target) {
-            if (target.eyo instanceof eYo.DelegateSvg.List) {
-              var grandChild
-              for (i = 0; (grandChild = child.childNodes[i++]);) {
-                if (goog.isFunction(grandChild.getAttribute)) {
-                  var name = grandChild.getAttribute(eYo.XmlKey.SLOT)
-                  var input = target.getInput(name)
-                  if (input) {
-                    if (!input.connection) {
-                      console.warn('Missing connection')
-                    }
-                    var inputTarget = input.connection.targetBlock()
-                    if (inputTarget) {
-                      eYo.Xml.fromDom(inputTarget, grandChild)
-                    } else if ((inputTarget = eYo.Xml.domToBlock(grandChild, this.owner.block_.workspace))) {
-                      var targetC8n = inputTarget.outputConnection
-                      if (targetC8n && targetC8n.checkType_(input.connection)) {
-                        targetC8n.connect(input.connection)
-                        this.setRequiredFromDom(true)
+          if (attribute === this.key) {
+            if (child.getAttribute('eyo') === 'placeholder') {
+              this.setRequiredFromDom(true)
+              out = true
+            } else if (target) {
+              if (target.eyo instanceof eYo.DelegateSvg.List) {
+                var grandChildren = Array.prototype.slice.call(child.childNodes)
+                var ii = 0
+                while (ii < grandChildren.length) {
+                  var grandChild = grandChildren[ii++]
+                  if (grandChild.nodeType === Node.ELEMENT_NODE) {
+                    var name = grandChild.getAttribute(eYo.XmlKey.SLOT)
+                    var input = target.getInput(name)
+                    if (input) {
+                      if (input.connection) {
+                        var grandTarget = input.connection.targetBlock()
+                        if ((grandTarget)) {
+                          eYo.Xml.fromDom(grandTarget, grandChild)
+                        } else if ((grandTarget = eYo.Xml.domToBlock(grandChild, this.owner.block_.workspace))) {
+                          var targetC8n = grandTarget.outputConnection
+                          if (targetC8n && targetC8n.checkType_(input.connection)) {
+                            targetC8n.connect(input.connection)
+                            this.setRequiredFromDom(true)
+                          }
+                        }
+                      } else {
+                        console.error('Missing connection')
                       }
                     }
                   }
                 }
+                out = true
+              } else {
+                out = eYo.Xml.fromDom(target, child)
               }
-              out = true
-            } else {
-              out = eYo.Xml.fromDom(target, child)
+            } else if ((target = eYo.Xml.domToBlock(child, this.getWorkspace()))) {
+              // we could create a block from that child element
+              // then connect it
+              if (target.outputConnection && c8n.checkType_(target.outputConnection)) {
+                c8n.connect(target.outputConnection)
+                this.setRequiredFromDom(true)
+              } else if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
+                c8n.connect(target.previousConnection)
+              }
+              out = target
             }
-          } else if ((target = eYo.Xml.domToBlock(child, this.getWorkspace()))) {
-            // we could create a block from that child element
-            // then connect it
-            if (target.outputConnection && c8n.checkType_(target.outputConnection)) {
-              c8n.connect(target.outputConnection)
-              this.setRequiredFromDom(true)
-            } else if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
-              c8n.connect(target.previousConnection)
-            }
-            out = target
+            break // the element was found
           }
         }
       }

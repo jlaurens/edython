@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edython xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">
+<workspace>
+<content>
+<s eyo="start_stmt" x="300" y="200">
+<s eyo="assignment" name="prénom" flow="next">
+<x eyo="list" slot="assigned">
+<x eyo="input" slot="O">
+<x eyo="literal" slot="expression">'Quel est votre prénom ?'</x>
+</x>
+</x>
+<s eyo="print" flow="next">
+<x eyo="list" slot="arguments">
+<x eyo="literal" slot="O">'Bonjour'</x>
+<x eyo="identifier" name="prénom" slot="f">
+</x>
+</x>
+</s>
+</s>
+</s>
+</content>
+</workspace>
+</edython>

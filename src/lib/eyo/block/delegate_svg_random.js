@@ -27,7 +27,7 @@ goog.require('eYo.FlyoutCategory')
  */
 eYo.DelegateSvg.Stmt.makeSubclass('random__import_stmt', {
   xml: {
-    tag: 'random+import',
+    tag: 'random__import',
   },
   fields: {
     label: {
