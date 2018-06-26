@@ -1884,6 +1884,9 @@ eYo.DelegateSvg.newBlockReady = function (workspace, model, id) {
  * This is the expected way to create the block.
  * There is a caveat due to proper timing in initializing the svg.
  * Whether blocks are headless or not is not clearly designed in Blockly.
+ * If the model fits an identifier, then create an identifier
+ * If the model fits a number, then create a number
+ * If the model fits a string literal, then create a string literal...
  * This is headless and should not render until a beReady message is sent.
  * @param {!WorkspaceSvg} workspace
  * @param {!String|Object} model
@@ -1891,6 +1894,7 @@ eYo.DelegateSvg.newBlockReady = function (workspace, model, id) {
  */
 eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
   var processModel = function(block, model, id) {
+    var dataModel = model
     if (!block) {
       if (eYo.DelegateSvg.Manager.get(model.type)) {
         block = workspace.newBlock(model.type, id)
@@ -1898,11 +1902,14 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
         block = workspace.newBlock(model, id)
       } else {
         var type = eYo.Do.typeOfString(model)
-        if (type && (block = workspace.newBlock(type, id))) {
-          block.eyo.initDataWithModel(block, {data: model})
-        } else if (goog.isNumber(model)) {
-          block = workspace.newBlock(eYo.T3.Expr.numberliteral, id)
-          block.eyo.initDataWithModel(block, {data: model.toString()})
+        if (type.expr && (block = workspace.newBlock(type.expr, id))) {
+          type.modelExpr && block.eyo.initDataWithModel(block, type.modelExpr)
+          dataModel = {data: model}
+        } else if (type.stmt && (block = workspace.newBlock(type.stmt, id))) {
+          type.modelStmt && block.eyo.initDataWithModel(block, type.modelStmt)
+          dataModel = {data: model}
+        } else if (goog.isNumber(model)  && (block = workspace.newBlock(eYo.T3.Expr.numberliteral, id))) {
+          dataModel = {data: model.toString()}
         } else {
           console.warn('No block for model:', model)
           return
@@ -1911,8 +1918,8 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
       block.eyo.completeWrapped_(block)
     }
     if (block) {
-      block.eyo.initDataWithModel(block, model)
-      var Vs = model.slots
+      block.eyo.initDataWithModel(block, dataModel)
+      var Vs = dataModel.slots
       for (var k in Vs) {
         if (eYo.Do.hasOwnProperty(Vs, k)) {
           var input = block.eyo.getInput(block, k)
@@ -1937,7 +1944,7 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
         }
       }
       if (block.nextConnection) {
-        var nextModel = model.next
+        var nextModel = dataModel.next
         if (nextModel) {
           B = processModel(null, nextModel)
           if (B && B.previousConnection) {
@@ -3311,8 +3318,8 @@ eYo.DelegateSvg.prototype.setConnectionsHidden = function (block, hidden) {
       console.log('HIDE', block.id, block.type)
     }
   } else {
-    eYo.DelegateSvg.debugStartTrackingRender = true
-    console.log('SHOW CONNECTIONS', block.id, block.type)
+    // eYo.DelegateSvg.debugStartTrackingRender = true
+    // console.log('SHOW CONNECTIONS', block.id, block.type)
     block.rendered || block.render()
   }
 }

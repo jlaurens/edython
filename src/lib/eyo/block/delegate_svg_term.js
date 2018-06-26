@@ -40,7 +40,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
         main: true,
         init: '',
         validate: /** @suppress {globalThis} */ function (newValue) {
-          var nameType = eYo.Do.typeOfString(newValue)
+          var nameType = eYo.Do.typeOfString(newValue).expr
           if (nameType) {
             var expected = this.data.variant.model.byNameType[nameType]
             if (expected && (expected.indexOf(this.data.variant.get()) >= 0)) {
@@ -50,7 +50,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
           return null
         },
         didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-          var nameType = newValue ? eYo.Do.typeOfString(newValue) : eYo.T3.Expr.identifier
+          var nameType = newValue ? eYo.Do.typeOfString(newValue).expr : eYo.T3.Expr.identifier
           this.data.nameType.set(nameType)
         },
         synchronize: true
@@ -59,7 +59,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
         init: '',
         synchronize: true,
         validate: /** @suppress {globalThis} */ function (newValue) {
-          var nameType = eYo.Do.typeOfString(newValue)
+          var nameType = eYo.Do.typeOfString(newValue).expr
           return ((nameType === eYo.T3.Expr.identifier) && {validated: newValue}) || null
         }
       }, // new

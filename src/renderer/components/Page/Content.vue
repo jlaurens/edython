@@ -17,7 +17,7 @@
     name: 'page-content',
     methods: {
       onDrag (size) {
-        eYo.App.bus.$emit('size-did-change', size)
+        this.$$.bus.$emit('size-did-change', size)
       }
     },
     components: {
@@ -25,7 +25,7 @@
       'content-panels': ContentPanels
     },
     mounted: function () {
-      eYo.App.bus.$on('setConsoleVisible', function (visible) {
+      this.$$.bus.$on('setConsoleVisible', function (visible) {
         console.log('setConsoleVisible', visible)
       })
     }

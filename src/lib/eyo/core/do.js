@@ -332,37 +332,208 @@ goog.require('eYo.T3')
 eYo.T3.Expr.reserved_identifier = '.reserved identifier'
 eYo.T3.Expr.reserved_keyword = '.reserved keyword'
 eYo.T3.Expr.builtin__name = '.builtin name'
+eYo.T3.Expr.custom_literal = '.custom literal'
+eYo.T3.Expr.custom_identifier = '.custom identifier'
+eYo.T3.Expr.custom_dotted_name = '.custom dotted name'
+eYo.T3.Expr.custom_parent_module = '.custom parent module'
+
+eYo.T3.Stmt.control = '.control statement'
 
 /**
  * What is the type of this string? an identifier, a number, a reserved word ?
  * For edython.
- * @return the type of this candidate
+ * @return {!Object} the type of this candidate, possible keys are `name`, `expr`, `stmt`, `modelExpr`, `modelStmt`.
  */
 eYo.Do.typeOfString = function (candidate) {
   if (!goog.isString(candidate)) {
-    return
+    return {}
   }
-  if (['False', 'None', 'True'].indexOf(candidate) >= 0) {
-    return eYo.T3.Expr.reserved_identifier
+  if (['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'].indexOf(candidate) >= 0) {
+    return {
+      raw: eYo.T3.Expr.reserved_identifier,
+      model: candidate,
+      expr: eYo.T3.Expr.builtin__object
+    }
   }
-  if (['class', 'finally', 'is', 'return', 'continue', 'for', 'lambda', 'try', 'def', 'from', 'nonlocal', 'while', 'and', 'del', 'global', 'not', 'with', 'as', 'elif', 'if', 'or', 'yield', 'assert', 'else', 'import', 'pass', 'break', 'except', 'in', 'raise'].indexOf(candidate) >= 0) {
-    return eYo.T3.Expr.reserved_keyword
+  var out
+  if ((out = {
+    class: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.class_part
+    },
+    finally: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.finally_part
+    },
+    is: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      model: 'is',
+      expr: eYo.T3.Expr.object_comparison
+    },
+    return: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.return_stmt
+    },
+    continue: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.continue_stmt
+    },
+    for: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      expr: eYo.T3.Expr.comp_for,
+      stmt: eYo.T3.Stmt.for_part
+    },
+    lambda: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      expr: eYo.T3.Expr.lambda
+    },
+    try: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.try_part
+    },
+    def: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.def_part
+    },
+    from: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      expr: eYo.T3.Expr.yield_expression,
+      modelStmt: 'from',// mmm ?
+      stmt: eYo.T3.Stmt.import_stmt,
+      modelStmt: 'from'// mmm ?
+    },
+    nonlocal: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.global_nonlocal_stmt,
+      model: 'nonlocal'
+    },
+    while: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.while_part
+    },
+    and: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      expr: eYo.T3.Expr.and_expr
+    },
+    del: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.del_stmt
+    },
+    global: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.global_nonlocal_stmt,
+      model: 'global'
+    },
+    not: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      expr: eYo.T3.Expr.not_test
+    },
+    with: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.with_part
+    },
+    as: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      expr: eYo.T3.Expr.term,
+      modelExpr: {
+        alias: '?'
+      },
+      stmt: eYo.T3.Stmt.except_part
+    },
+    elif: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.elif_part
+    },
+    if: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.if_part
+    },
+    or: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      expr: eYo.T3.Expr.or_expr
+    },
+    yield: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      expr: eYo.T3.Expr.yield_expr,
+      stmt: eYo.T3.Stmt.yield_stmt
+    },
+    assert: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.assert_stmt
+    },
+    else: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.else_part
+    },
+    import: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.import_stmt
+    },
+    pass: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.pass_stmt
+    },
+    break: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.break_stmt
+    },
+    except: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.except_part
+    },
+    in: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      expr: eYo.T3.Expr.object_comparison,
+      modeExpr: 'in'
+    },
+    raise: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.raise_stmt
+    },
+    print: {
+      raw: eYo.T3.Expr.builtin__name,
+      expr: eYo.T3.Expr.call_expr,
+      modeExpr: 'print',
+      stmt: eYo.T3.Expr.call_stmt,
+      modeStmt: 'print'
+    }
+  } [candidate])) {
+    return out
   }
-  if (['int', 'float', 'print', 'input', 'list', 'len', 'set', 'sum'].indexOf(candidate) >= 0) {
-    return eYo.T3.Expr.builtin__name
+  if (['int', 'float', 'input', 'list', 'len', 'set', 'sum'].indexOf(candidate) >= 0) {
+    return {
+      raw: eYo.T3.Expr.builtin__name,
+      expr: eYo.T3.Expr.call_expr,
+      modelExpr: candidate
+    }
   }
   // is it a number ?
   if (eYo.XRE.integer.exec(candidate)) {
-    return eYo.T3.Expr.integer
+    return {
+      raw: eYo.T3.custom_literal,
+      expr: eYo.T3.Expr.integer,
+      modelExpr: candidate
+    }
   }
   if (eYo.XRE.floatnumber.exec(candidate)) {
-    return eYo.T3.Expr.floatnumber
+    return {
+      raw: eYo.T3.custom_literal,
+      expr: eYo.T3.Expr.floatnumber,
+      modelExpr: candidate
+    }
   }
   if (eYo.XRE.imagnumber.exec(candidate)) {
-    return eYo.T3.Expr.imagnumber
+    return {
+      raw: eYo.T3.custom_literal,
+      expr: eYo.T3.Expr.imagnumber,
+      modelExpr: candidate
+    }
   }
   if (candidate === 'start') {
-    return eYo.T3.Stmt.start_stmt
+    return {
+      raw: eYo.T3.Stmt.control,
+      stmt: eYo.T3.Stmt.start_stmt
+    }
   }
   var components = candidate.split('.')
   if (components.length > 1) {
@@ -385,34 +556,55 @@ eYo.Do.typeOfString = function (candidate) {
       }
     }
     if (dotted_name) {
-      return goog.isDef(first) && first > 0 ? eYo.T3.Expr.parent_module : eYo.T3.Expr.dotted_name
+      return goog.isDef(first) && first > 0 ? {
+        raw: eYo.T3.Expr.custom_parent_module,
+        expr: eYo.T3.Expr.parent_module
+      } : {
+         raw: eYo.T3.Expr.custom_dotted_name,
+         expr: eYo.T3.Expr.dotted_name
+      }
     }
   } else if (eYo.XRE.identifier.exec(candidate)) {
-    return eYo.T3.Expr.identifier
+    return {
+      raw: eYo.T3.Expr.custom_identifier,
+      expr: eYo.T3.Expr.identifier
+    }
   }
   if (eYo.XRE.shortstringliteralSingle.exec(candidate) || eYo.XRE.shortstringliteralDouble.exec(candidate)) {
-    return eYo.T3.Expr.shortstringliteral
+    return {
+      raw: 'short string literal',
+      expr: eYo.T3.Expr.shortstringliteral
+    }
   }
   if (eYo.XRE.shortbytesliteralSingle.exec(candidate) || eYo.XRE.shortbytesliteralDouble.exec(candidate)) {
-    return eYo.T3.Expr.shortbytesliteral
+    return {
+      raw: 'short bytes literal',
+      expr: eYo.T3.Expr.shortbytesliteral
+    }
   }
   if (eYo.XRE.longstringliteralSingle.exec(candidate) || eYo.XRE.longstringliteralDouble.exec(candidate)) {
-    return eYo.T3.Expr.longstringliteral
+    return {
+      raw: 'long string literal',
+      expr: eYo.T3.Expr.longstringliteral
+    }
   }
   if (eYo.XRE.longbytesliteralSingle.exec(candidate) || eYo.XRE.longbytesliteralDouble.exec(candidate)) {
-    return eYo.T3.Expr.longbytesliteral
+    return {
+      raw: 'long bytes literal',
+      expr: eYo.T3.Expr.longbytesliteral
+    }
   }
-  return undefined
+  return {}
 }
 
 /**
  * The css class for the given text
  * For edython.
- * @param {!string} txt The text to be tested.
+ * @param {!string} txt The text toyield_expr
  * @return {string}
  */
 eYo.Do.cssClassForText = function (txt) {
-  switch (eYo.Do.typeOfString(txt)) {
+  switch (eYo.Do.typeOfString(txt).raw) {
   case eYo.T3.Expr.reserved_identifier:
   case eYo.T3.Expr.reserved_keyword:
     return 'eyo-code-reserved'

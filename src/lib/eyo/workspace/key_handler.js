@@ -129,18 +129,14 @@ eYo.KeyHandler = (function () {
     return false
   }
   me.handleFirstMenuItemAction = function (model) {
-    // if key is a number, then create a number block
-    // if the model fits an identifier, then create an identifier
-    // if the model fits a number, then create a number
-    // if the model fits a string literal, then create a string literal
-    // otherwise, take the first model and pass it to handleModel
-    // if the selected block supports subtypes, then set it
+    // first check to see if the selected block can handle the model
     var B = Blockly.selected
     var c8n = eYo.SelectedConnection.get()
     if (B && !c8n) {
       var D = model.data
       var done = false
       if (D && B.eyo.initDataWithModel(B, D)) {
+        // yes it does
         return
       }
       // Maybe the main data can handle the model
@@ -151,11 +147,13 @@ eYo.KeyHandler = (function () {
         main = (values.length === 1) && values[0]
       }
       if (main && main.validate(model)) {
+        // yes it does
         main.set(model)
         return
       }
     }
     if (me.handleModel(model)) {
+      // reentrant?
       return
     }
     if (current_.length) {
@@ -165,6 +163,8 @@ eYo.KeyHandler = (function () {
   }
 
   me.handleModel = function (model) {
+    // if key is a number, then create a number block
+    // otherwise, take the first model and pass it to handleModel
     var B = Blockly.selected
     if (B) {
       var newB = B.eyo.insertBlockWithModel(B, model) || B.eyo.insertParentWithModel(B, model)

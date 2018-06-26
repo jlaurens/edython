@@ -22,11 +22,11 @@
         <b-btn id="toolbar-new" v-on:click="doNew()" title="Nouveau" v-tippy>
           <icon-base width="32" height="32" icon-name="new"><icon-new /></icon-base>
         </b-btn>
-        <b-btn id="toolbar-save" v-on:click="doSave()" title="Sauvegarder" v-tippy>
-          <icon-base width="32" height="32" icon-name="save"><icon-save-load variant="save" step="0.5"/></icon-base>
-        </b-btn>
         <b-btn id="toolbar-open" v-on:click="doOpen()" title="Ouvrir" v-tippy>
-          <icon-base width="32" height="32" icon-name="load"><icon-save-load variant="load" /></icon-base>
+            <icon-base width="32" height="32" icon-name="load"><icon-save-load variant="load" /></icon-base>
+        </b-btn>
+        <b-btn id="toolbar-save" v-on:click="doSave()" title="Sauvegarder" v-tippy>
+          <icon-base width="32" height="32" icon-name="save"><icon-save-load variant="save" :step="saveStep"/></icon-base>
         </b-btn>
       </b-button-group>
       <b-button-group class="mx-1">
@@ -39,10 +39,10 @@
         </b-button-group>
         <b-button-group class="mx-1">
         <b-btn id="toolbar-copy" v-on:click="doSingleCopy()" title="Copier le bloc sélectionné" v-tippy>
-          <icon-base width="32" height="32" icon-name="copy single"><icon-copy-paste variant="copy" single="true" /></icon-base>
+          <icon-base width="32" height="32" icon-name="copy single"><icon-copy-paste variant="copy" :single="true" :step="singleCopyStep"/></icon-base>
         </b-btn>
         <b-btn id="toolbar-copy" v-on:click="doCopy()" title="Copier le bloc sélectionné et les suivants" v-tippy>
-          <icon-base width="32" height="32" icon-name="copy"><icon-copy-paste variant="copy" single="false" /></icon-base>
+          <icon-base width="32" height="32" icon-name="copy"><icon-copy-paste variant="copy" :single="false" :step="copyStep"/></icon-base>
         </b-btn>
         <b-btn id="toolbar-paste" v-on:click="doPaste()" title="Coller les blocs" v-tippy>
           <icon-base width="32" height="32" icon-name="paste"><icon-copy-paste variant="paste"/></icon-base>
@@ -99,6 +99,9 @@
           console: 'Console',
           turtle: 'Tortue'
         },
+        saveStep: 1,
+        copyStep: 1,
+        singleCopyStep: 1,
         demos: [
           {
             title: 'Bonjour le monde!',
@@ -193,25 +196,32 @@
         eYo.App.workspace.undo(true)
       },
       doSingleCopy () {
-        eYo.App.doCopy(true)
+        if (eYo.App.doCopy(true)) {
+          this.singleCopyStep = 0
+          this.TweenLite.to(this, 0.5, {singleCopyStep: 1})
+        }
       },
       doCopy () {
-        eYo.App.doCopy()
+        if (eYo.App.doCopy()) {
+          this.copyStep = 0
+          this.TweenLite.to(this, 0.5, {copyStep: 1})
+        }
       },
       doPaste () {
-        window.Blockly.clipboardXml_ && eYo.App.workspace.paste(window.Blockly.clipboardXml_)
+        Blockly.clipboardXml_ && eYo.App.workspace.paste(Blockly.clipboardXml_)
       },
       doCopyPythonCode: function () {
-        var block = window.Blockly.selected
+        var block = Blockly.selected
         if (block) {
-          var p = new window.eYo.PythonExporter()
+          var p = new eYo.PythonExporter()
           var code = p.export(block, true)
-          window.eYo.App.copyTextToClipboard(code)
+          eYo.App.copyTextToClipboard(code)
         }
       },
       doNew: function () {
-        eYo.App.bus.$emit('new-document')
+        this.$$.bus.$emit('new-document')
         eYo.App.workspace.clearUndo()
+        self.documentPath = undefined
       },
       doOpen: function () {
         this.doNew()
@@ -250,7 +260,8 @@
             // let deflate = this.pako.gzip(content) // use gzip to ungzip from the CLI
             let inflate = content // this.pako.ungzip(content, {to: 'string'}) // use gzip to ungzip from the CLI
             try {
-              eYo.App.workspace.eyo.fromString(inflate)
+              console.log('1', inflate)
+              eYo.App.workspace.eyo.fromUTF8ByteArray(inflate)
             } catch (err) {
               console.error('ERROR:', err)
             }
@@ -268,8 +279,9 @@
               alert('An error ocurred creating the file ' + err.message)
             } else {
               self.$store.commit('STAGE_UNDO')
+              self.saveStep = 0
+              self.TweenLite.to(self, 0.5, {saveStep: 1})
             }
-            // alert("The file has been succesfully saved")
           })
         } else {
           const {dialog} = require('electron').remote
@@ -302,6 +314,9 @@
                 alert('An error ocurred creating the file ' + err.message)
               } else {
                 self.documentPath = filePath
+                self.$store.commit('STAGE_UNDO')
+                self.saveStep = 0
+                self.TweenLite.to(self, 0.5, {saveStep: 1})
               }
               // alert("The file has been succesfully saved")
             })

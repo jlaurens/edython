@@ -59,11 +59,11 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
       init: '0',
       validate: /** @suppress {globalThis} */ function (newValue) {
         var subtypes = this.data.subtype.getAll()
-        var subtype = eYo.Do.typeOfString(newValue)
+        var subtype = eYo.Do.typeOfString(newValue).expr
         return ((subtypes.indexOf(subtype) >= 0) && {validated: newValue}) || null
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        var type = newValue ? eYo.Do.typeOfString(newValue) : eYo.T3.Expr.integer
+        var type = newValue ? eYo.Do.typeOfString(newValue).expr : eYo.T3.Expr.integer
         this.data.subtype.set(type)
       },
       synchronize: true,

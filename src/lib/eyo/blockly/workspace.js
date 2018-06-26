@@ -41,7 +41,7 @@ goog.inherits(eYo.WorkspaceDelegate, eYo.Helper)
 eYo.WorkspaceDelegate.prototype.fromString = function (str) {
   var parser = new DOMParser()
   var dom = parser.parseFromString(str, 'application/xml')
-  return dom && eYo.Xml.domToWorkspace(dom.documentElement, this.workspace_)
+  return dom && eYo.Xml.domToWorkspace(dom, this.workspace_)
 }
 
 /**
@@ -105,6 +105,16 @@ Blockly.Workspace.prototype.dispose = function () {
 eYo.Workspace.prototype.clearUndo = function() {
   eYo.Workspace.superClass_.clearUndo.call(this)
   eYo.App.didClearUndo && eYo.App.didClearUndo()
+}
+
+/**
+ * Clear of this workspace.
+ * Unlink from all DOM elements to prevent memory leaks.
+ * @suppress{accessControls}
+ */
+eYo.Workspace.prototype.clear = function () {
+  eYo.Workspace.superClass_.clear.call(this)
+  this.eyo.error = undefined
 }
 
 /**

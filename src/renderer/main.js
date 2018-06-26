@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import axios from 'axios'
-import lodash from 'lodash'
+import lodash from 'lodash' // eslint-disable-line no-unused-vars
+import pako from 'pako' // eslint-disable-line no-unused-vars
 
 import App from './App'
 import router from './router'
@@ -13,9 +14,11 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-import 'tippy.js/dist/tippy.js'
+import tippy from 'tippy.js/dist/tippy.js' // eslint-disable-line no-unused-vars
 
 import VueTippy from 'vue-tippy'
+
+import {TweenLite} from 'gsap/TweenMax' // eslint-disable-line no-unused-vars
 
 Vue.use(BootstrapVue)
 Vue.use(VueSplit)
@@ -29,15 +32,13 @@ if (!process.env.IS_WEB) {
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 
-Vue.prototype.pako = require('pako')
-
-eYo.App.bus = new Vue()
-Vue.prototype.eYo = eYo
+Vue.prototype.$$ = {
+  goog,
+  bus: new Vue()
+}
 Vue.prototype.Blockly = Blockly
-Vue.prototype.goog = goog
-Vue.prototype.$$_ = lodash
-
-console.log('XRegExp', XRegExp)
+Vue.prototype.eYo = eYo
+Vue.prototype.TweenLite = TweenLite
 
 /* eslint-disable no-new */
 new Vue({

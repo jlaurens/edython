@@ -151,7 +151,7 @@ eYo.PythonExporter.prototype.export = function (block, is_deep) {
  */
 eYo.PythonExporter.prototype.exportField_ = function (field) {
   if (field.isVisible()) {
-    var text = (field.getPythonText_ && field.getPythonText_()) || field.getDisplayText_()
+    var text = (field.getPythonText_ && field.getPythonText_()) || field.getText()
     var eyo = field.eyo
     if (text.length) {
       this.isSeparatorField = field.name === 'separator'

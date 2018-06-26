@@ -117,7 +117,7 @@
       this.doSelect(this.selected)
       this.workspace.render()
       var self = this
-      eYo.App.bus.$on('new-document', function () {
+      this.$$.bus.$on('new-document', function () {
         self.workspace.clear()
       })
       var oldSvg = document.getElementById('svg-control-image')

@@ -106,8 +106,7 @@ eYo.DelegateSvg.Expr.workspaceBlocks = [
   eYo.T3.Expr.set_display,
   eYo.T3.Expr.dict_display,
   eYo.T3.Expr.dict_comprehension,
-  eYo.T3.Expr.yield_expression,
-  eYo.T3.Expr.yield_from_expression
+  eYo.T3.Expr.yield_expression
 ]
 
 /**
@@ -213,8 +212,7 @@ eYo.DelegateSvg.Expr.yield_expression.workspaceBlocks = [
   eYo.T3.Expr.term,
   eYo.T3.Expr.yield_expression,
   eYo.T3.Stmt.yield_stmt,
-  eYo.T3.Expr.yield_expression_list,
-  eYo.T3.Expr.yield_from_expression
+  eYo.T3.Expr.yield_expression_list
 ]
 
 eYo.DelegateSvg.Stmt.import_stmt.workspaceBlocks = [
@@ -224,9 +222,7 @@ eYo.DelegateSvg.Stmt.import_stmt.workspaceBlocks = [
   eYo.T3.Expr.import_module,
   eYo.T3.Expr.non_void_import_identifier_as_list,
   eYo.T3.Expr.parent_module,
-  eYo.T3.Expr.from_relative_module_import,
   eYo.T3.Stmt.import_stmt,
-  eYo.T3.Expr.from_module_import,
   eYo.T3.Expr.import_module,
   eYo.T3.Stmt.future_statement
 ]
@@ -352,7 +348,6 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.workspaceBlocks = eYo.Do.arraysMe
   eYo.T3.Stmt.augmented_assignment_stmt,
   eYo.T3.Expr.term,
   eYo.T3.Expr.yield_expression_list,
-  eYo.T3.Expr.yield_from_expression,
   eYo.T3.Expr.augassign_list
 ],
 eYo.T3.Expr.Check.augassign_list)
@@ -373,7 +368,6 @@ eYo.DelegateSvg.Expr.longliteral.workspaceBlocks = eYo.Do.arraysMerged([
 eYo.DelegateSvg.Stmt.try_part.workspaceBlocks =
 eYo.DelegateSvg.Stmt.raise_stmt.workspaceBlocks = eYo.Do.arraysMerged([
   eYo.T3.Expr.term,
-  eYo.T3.Expr.expression_from,
   eYo.T3.Stmt.raise_stmt,
   eYo.T3.Expr.longstringliteral,
   eYo.T3.Expr.term,

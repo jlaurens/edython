@@ -292,10 +292,10 @@ export default {
   name: 'panel-console-script',
   mounted: function () {
     console.log('CONSOLE SCRIPT MOUNTED')
-    eYo.App.bus.$on('erase-console', function () {
+    this.$$.bus.$on('erase-console', function () {
       window.eYo.console.__class__.erase(window.eYo.console)
     })
-    eYo.App.bus.$on('restart-console', function () {
+    this.$$.bus.$on('restart-console', function () {
       window.eYo.console.__class__.restart(window.eYo.console)
     })
   }

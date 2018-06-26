@@ -68,17 +68,17 @@
     },
     created: function () {
       var self = this
-      eYo.App.bus.$on('new-document', function () {
+      this.$$.bus.$on('new-document', function () {
         self.restart('console')
         self.restart('turtle')
       })
     },
     methods: {
       erase (arg) {
-        eYo.App.bus.$emit('erase-' + (arg || this.selected))
+        this.$$.bus.$emit('erase-' + (arg || this.selected))
       },
       restart (arg) {
-        eYo.App.bus.$emit('restart-' + (arg || this.selected))
+        this.$$.bus.$emit('restart-' + (arg || this.selected))
       }
     }
   }

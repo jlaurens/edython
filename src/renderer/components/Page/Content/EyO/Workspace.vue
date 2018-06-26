@@ -33,8 +33,8 @@
         eyoDiv.style.top = y + 'px'
         eyoDiv.style.width = eyoArea.offsetWidth + 'px'
         eyoDiv.style.height = eyoArea.offsetHeight + 'px'
-        if (window.Blockly) {
-          window.Blockly.svgResize(window.eYo.App.workspace)
+        if (Blockly) {
+          Blockly.svgResize(eYo.App.workspace)
         }
       }
     },
@@ -42,7 +42,7 @@
       window.addEventListener('resize', this.resize, false)
       var self = this
       this.$nextTick(function () {
-        eYo.App.bus.$on('size-did-change', self.resize)
+        this.$$.bus.$on('size-did-change', self.resize)
         self.resize()
       })
     }

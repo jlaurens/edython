@@ -29,8 +29,10 @@ eYo.DelegateSvg.Expr.makeSubclass('attributeref', {
       init: '',
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
-        return type === eYo.T3.Expr.builtin__name || type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name
-          ? {validated: newValue} : null
+        return type.raw === eYo.T3.Expr.builtin__name
+        || type.expr === eYo.T3.Expr.identifier
+        || type.expr === eYo.T3.Expr.dotted_name
+        ? {validated: newValue} : null
       },
       synchronize: true
     }
@@ -79,9 +81,10 @@ eYo.DelegateSvg.Expr.makeSubclass('slicing', {
     name: {
       init: '',
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var type = eYo.Do.typeOfString(newValue)
-        return type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name
-          ? {validated: newValue} : null
+        var type = eYo.Do.typeOfString(newValue).expr
+        return type === eYo.T3.Expr.identifier
+        || type === eYo.T3.Expr.dotted_name
+        ? {validated: newValue} : null
       },
       synchronize: true
     }
@@ -204,8 +207,10 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       order: 1,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
-        return type === eYo.T3.Expr.builtin__name || type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name
-          ? {validated: newValue} : null
+        return type.raw === eYo.T3.Expr.builtin__name
+        || type.expr === eYo.T3.Expr.identifier
+        || type.expr === eYo.T3.Expr.dotted_name
+        ? {validated: newValue} : null
         // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
       },
       consolidate: /** @suppress {globalThis} */ function () {
@@ -362,8 +367,10 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('module_call_expr', {
       order: 2,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
-        return type === eYo.T3.Expr.builtin__name || type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name
-          ? {validated: newValue} : null
+        return type.raw === eYo.T3.Expr.builtin__name
+        || type.expr === eYo.T3.Expr.identifier
+        || type.expr === eYo.T3.Expr.dotted_name
+        ? {validated: newValue} : null
         // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
       },
       consolidate: /** @suppress {globalThis} */ function () {
@@ -473,8 +480,11 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
       init: 'int',
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
-        return type === eYo.T3.Expr.builtin__name || type === eYo.T3.Expr.identifier || type === eYo.T3.Expr.dotted_name || newValue === ''
-          ? {validated: newValue} : null
+        return type.raw === eYo.T3.Expr.builtin__name
+        || type.expr === eYo.T3.Expr.identifier
+        || type.expr === eYo.T3.Expr.dotted_name
+        || newValue === ''
+        ? {validated: newValue} : null
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         var M = this.data.variant.model

@@ -158,8 +158,9 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) 
         }
       } else {
         // create children in a conservative idea
+        // does not work if the error is on top
         eYo.Do.forEachChild(xml, function (child) {
-          var b = child
+          var b = eYo.Xml.domToBlock(child, workspace)
           if (b) {
             newBlockIds.push(b.id)
             b.eyo.beReady(b)
@@ -525,7 +526,7 @@ eYo.Xml.Literal.domToBlock = function (element, workspace) {
   eYo.Do.someChild(element, function (child) {
     if (child.nodeType === Node.TEXT_NODE) {
       var text = child.nodeValue
-      var type = eYo.Do.typeOfString(text)
+      var type = eYo.Do.typeOfString(text).expr
       switch (type) {
       case eYo.T3.Expr.integer:
       case eYo.T3.Expr.floatnumber:

@@ -29,6 +29,7 @@ eYo.App = Object.create(null)
  * Copy a block onto the local clipboard.
  * @param {!Blockly.Block} block Block to be copied.
  * @private
+ * @return {Boolean} true if copied, false otherwise
  */
 eYo.App.doCopy = function(optNoNext) {
   var block = Blockly.selected
@@ -40,6 +41,7 @@ eYo.App.doCopy = function(optNoNext) {
     xmlBlock.setAttribute('y', xy.y);
     Blockly.clipboardXml_ = xmlBlock;
     Blockly.clipboardSource_ = block.workspace;
+    return true
   }
 };
 

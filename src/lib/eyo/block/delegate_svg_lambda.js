@@ -390,35 +390,28 @@ eYo.DelegateSvg.Expr.makeSubclass('lambda', {
       fields: {
         label: ':'
       },
-      check: eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond),
-      didConnect: /** @suppress {globalThis} */ function (oldTargetConnection, oldConnectionn) {
-        // `this` is a connection
-        this.eyo.updateLambdaCheck()
-      },
-      didDisconnect: /** @suppress {globalThis} */ function (oldConnection) {
-        // `this` is a connection
-        this.eyo.updateLambdaCheck()
-      }
+      check: eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond)
     }
   },
   output: {
-    check: [eYo.T3.Expr.lambda_expr, eYo.T3.Expr.lambda_expr_nocond],
-    didConnect: /** @suppress {globalThis} */ function (oldTargetConnection, oldConnection) {
-      this.eyo.consolidateSource()
-    },
-    didDisconnect: /** @suppress {globalThis} */ function (oldConnection) {
-      this.eyo.consolidateSource()
-    }
+    check: [eYo.T3.Expr.lambda_expr, eYo.T3.Expr.lambda_expr_nocond]
   }
 })
 
+/**
+ * The output check may change depending on the content.
+ * For edython.
+ * @param {!Blockly.Block} block
+ */
 eYo.ConnectionDelegate.prototype.consolidateType = function (block) {
+  eYo.ConnectionDelegate.superClass_.consolidateType.call(this, block)
   var c8nOut = block.outputConnection
   var input = block.getInput(eYo.Key.EXPRESSION)
   var c8nIn = input.connection
   var nocond_only_out = false
   var targetC8n = c8nOut.targetConnection
   if (targetC8n) {
+    // does the target accept general expression in lambda
     nocond_only_out = targetC8n.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0
   }
   var cond_in = true // cond are accepted by default

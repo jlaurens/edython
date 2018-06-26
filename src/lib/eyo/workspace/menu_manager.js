@@ -795,22 +795,6 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
         goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
       )
     }
-  case eYo.T3.Expr.expression_from:
-    switch (subtype) {
-    case eYo.Key.FROM:
-      return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        eYo.Do.createSPAN('expression ', 'eyo-code-placeholder'),
-        eYo.Do.createSPAN('from', 'eyo-code-reserved'),
-        goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
-      )
-    case eYo.Key.EXPRESSION:
-    default:
-      return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        eYo.Do.createSPAN('from', 'eyo-code-reserved'),
-        eYo.Do.createSPAN(' expression', 'eyo-code-placeholder'),
-        goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
-      )
-    }
   case eYo.T3.Expr.slicing:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('[', 'eyo-code'),
@@ -1185,9 +1169,7 @@ eYo.MenuManager.prototype.populate_movable_parent = function (block) {
   ], true)
   F.call(this, [
     [eYo.T3.Expr.expression_as_name, eYo.Key.AS],
-    [eYo.T3.Expr.expression_as_name, eYo.Key.EXPRESSION],
-    [eYo.T3.Expr.expression_from, eYo.Key.FROM], // JL
-    [eYo.T3.Expr.expression_from, eYo.Key.EXPRESSION]
+    [eYo.T3.Expr.expression_as_name, eYo.Key.EXPRESSION]
   ])
   this.shouldSeparateInsert()
   this.shouldSeparateRemove()
