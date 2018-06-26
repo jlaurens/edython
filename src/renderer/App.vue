@@ -15,7 +15,7 @@
       }
       var self = this
       eYo.App.didClearUndo = function () {
-        console.log('didClearUndo')
+        // console.log('didClearUndo')
         self.$store.commit('UI_SET_UNDO_COUNT', 0)
         self.$store.commit('UI_SET_REDO_COUNT', 0)
         if (self.$store.state.UI.undoStage > 0) {
@@ -24,7 +24,7 @@
         }
       }
       eYo.App.didProcessUndo = function () {
-        console.log('didProcessUndo')
+        // console.log('didProcessUndo')
         self.$store.commit('UI_SET_UNDO_COUNT', eYo.App.workspace.undoStack_.length)
         self.$store.commit('UI_SET_REDO_COUNT', eYo.App.workspace.redoStack_.length)
       }
@@ -32,7 +32,7 @@
         self.$store.commit('UI_SET_UNDO_STAGE', self.$store.state.UI.undoStage - 1) // negative values make sense
       }
       eYo.App.didPushUndo = function () {
-        console.log('didPushUndo')
+        // console.log('didPushUndo')
         var count = eYo.App.workspace.undoStack_.length
         self.$store.commit('UI_SET_UNDO_COUNT', count)
         if (self.$store.state.UI.undoStage >= count) {
