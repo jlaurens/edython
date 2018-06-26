@@ -9,13 +9,13 @@
   export default {
     computed: {
       transform: function () {
-        return this.variant === 'redo' ? 'matrix(-1,0,0,1,32,0)' : ''
+        return this.redo ? 'matrix(-1,0,0,1,32,0)' : ''
       }
     },
     props: {
-      variant: {
-        type: [String],
-        default: 'undo'
+      redo: {
+        type: Boolean,
+        default: false
       }
     }
   }

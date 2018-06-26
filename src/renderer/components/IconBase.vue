@@ -5,6 +5,7 @@
     :viewBox="viewBox"
     :aria-labelledby="iconName" 
     role="presentation"
+    class="eyo-icon"
   >
     <title :id="iconName" lang="en">{{iconName}} icon</title>
     <g class="icon" :stroke="iconColor">
@@ -26,11 +27,11 @@ export default {
       default: 'box'
     },
     width: {
-      type: [Number, String],
+      type: Number,
       default: 20
     },
     height: {
-      type: [Number, String],
+      type: Number,
       default: 20
     },
     iconColor: {
@@ -41,10 +42,16 @@ export default {
 }
 </script>
 
-<style scoped>
-svg {
-  display: block;
-  margin: auto;
-  height:100%;
-}
+<style>
+  svg.eyo-icon {
+    display: block;
+    margin: auto;
+    height:100%;
+  }
+  .dropdown-item svg.eyo-icon {
+    display: inline-block;
+    height:100%;
+    margin-right:0.5rem;
+    margin-left:0;
+  }
 </style>

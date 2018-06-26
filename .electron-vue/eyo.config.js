@@ -44,7 +44,20 @@ var ConfigEyo = function (target, dist, env) {
   this.env = env
   this.rootPath = path.resolve(__dirname, '..')
   this.distPath = path.join(this.rootPath, 'dist', dist)
+  this.staticPath = path.join(this.rootPath, 'static')
   this.srcPath = path.join(this.rootPath, 'src')
+  this.rendererPath = path.join(this.srcPath, 'renderer')
+  this.componentsPath = path.join(this.rendererPath, 'components')
+  this.utilPath = path.join(this.componentsPath, 'Util')
+  this.iconPath = path.join(this.componentsPath, 'Icon')
+  console.log('this.rootPath:', this.rootPath)
+  console.log('this.distPath :', this.distPath)
+  console.log('this.staticPath :', this.staticPath)
+  console.log('this.srcPath :', this.srcPath)
+  console.log('this.rendererPath :', this.rendererPath)
+  console.log('this.componentsPath :', this.componentsPath)
+  console.log('this.utilPath :', this.utilPath)
+  console.log('this.iconPath :', this.iconPath)
 }
 
 ConfigEyo.prototype.getConfig = function () {
@@ -81,6 +94,17 @@ ConfigEyo.prototype.getConfig = function () {
       {
         test: /\.(xml|txt|md)$/,
         use: 'raw-loader'
+      },
+      // {
+      //   test: /\.(xml)$/,
+      //   use: path.resolve(this.srcPath, 'loaders', 'eyo-loader.js')
+      // },
+      {
+        test: /\.eyox$/,
+        use: [
+          'raw-loader',
+          // path.resolve(this.srcPath, 'loaders', 'eyo-loader.js')
+        ]
       },
       {
         test: /\.vue$/,
@@ -200,16 +224,20 @@ ConfigEyo.prototype.getConfig = function () {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
   ]
+  console.warn('UTIL:', path.join(this.srcPath, 'renderer', 'components', 'Util'))
   config.resolve = {
     alias: {
-      '@': path.join(this.srcPath, 'renderer'),
       'vue$': path.join('vue', 'dist', 'vue.esm.js'),
-      'blockly': path.join(this.srcPath, 'lib', 'blockly/'),
-      'eyo': path.join(this.srcPath, 'lib', 'eyo'),
-      '@static': path.resolve(this.srcPath, '../static/'),
+      '@blockly': path.join(this.srcPath, 'lib', 'blockly/'),
+      '@eyo': path.join(this.srcPath, 'lib', 'eyo'),
+      '@root': this.rootPath,
+      '@src': this.srcPath,
+      '@static': this.staticPath,
+      '@': this.rendererPath,
+      '@@': this.componentsPath,
       // '@@@@': path.resolve(this.rootPath, 'static/')
     },
-    extensions: ['.js', '.vue', '.json', '.css', '.node', '.txt', '.xml']
+    extensions: ['.js', '.vue', '.json', '.css', '.node', '.txt', '.xml', '.eyo']
   }
   config.node = this.env === 'web' ? { // web
     fs: 'empty'

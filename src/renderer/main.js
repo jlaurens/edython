@@ -38,6 +38,8 @@ Vue.prototype.$$ = {
 }
 Vue.prototype.Blockly = Blockly
 Vue.prototype.eYo = eYo
+Vue.prototype.pako = pako
+
 Vue.prototype.TweenLite = TweenLite
 
 /* eslint-disable no-new */

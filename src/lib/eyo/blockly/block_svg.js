@@ -507,6 +507,7 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
       eYo.SelectedConnection.set(null)
     }
   }
+  eYo.App.didTouchBlock && eYo.App.didTouchBlock(Blockly.selected)
 }
 
 /**

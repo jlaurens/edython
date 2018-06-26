@@ -274,7 +274,7 @@ eYo.Workspace.prototype.undo = function(redo) {
           B.eyo.unskipRendering()
           B.eyo.render(B)
         }
-        this.eyo.didProcessUndo && this.eyo.didProcessUndo(redo)
+        eYo.App.didProcessUndo && eYo.App.didProcessUndo(redo)
       }
       return  
     }
@@ -293,7 +293,7 @@ eYo.Workspace.prototype.fireChangeListener = function(event) {
   if (before === this.undoStack_.length) {
     eYo.App.didUnshiftUndo && eYo.App.didUnshiftUndo()
   } else {
-    eYo.App.didUnshiftUndo && eYo.App.didPushUndo()
+    eYo.App.didPushUndo && eYo.App.didPushUndo()
   }
 }
 
