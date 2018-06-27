@@ -158,10 +158,10 @@ eYo.FlyoutDelegate.prototype.dispose = function() {
 /**
  * Show and populate the flyout.
  * More tagnames accepted.
- * @param {!Array|string} xmlList List of blocks to show.
+ * @param {!Array|string} model List of blocks to show.
  *     Variables and procedures have a custom set of blocks.
  */
-eYo.Flyout.prototype.show = function(xmlList) {
+eYo.Flyout.prototype.show = function(model) {
   this.workspace_.setResizesEnabled(false);
   eYo.Tooltip.hideAll(this.svgGroup_)
   this.hide();
@@ -170,13 +170,13 @@ eYo.Flyout.prototype.show = function(xmlList) {
   // Handle dynamic categories, represented by a name instead of a list of XML.
   // Look up the correct category generation function and call that to get a
   // valid XML list.
-  if (typeof xmlList == 'string') {
+  if (typeof model == 'string') {
     var fnToApply = this.workspace_.targetWorkspace.getToolboxCategoryCallback(
-        xmlList);
+        model);
     goog.asserts.assert(goog.isFunction(fnToApply),
         'Couldn\'t find a callback function when opening a toolbox category.');
-    xmlList = fnToApply(this.workspace_.targetWorkspace);
-    goog.asserts.assert(goog.isArray(xmlList),
+    model = fnToApply(this.workspace_.targetWorkspace);
+    goog.asserts.assert(goog.isArray(model),
         'The result of a toolbox category callback must be an array.');
   }
 
@@ -187,7 +187,7 @@ eYo.Flyout.prototype.show = function(xmlList) {
   var default_gap = eYo.Font.lineHeight()/2;
  
   this.permanentlyDisabled_.length = 0;
-  for (var i = 0, xml; xml = xmlList[i]; i++) {
+  for (var i = 0, xml; xml = model[i]; i++) {
     if (xml.tagName) {
       var tagName = xml.tagName.toUpperCase();
       if (tagName == 'BLOCK') {
@@ -238,7 +238,7 @@ eYo.Flyout.prototype.show = function(xmlList) {
         var block = eYo.DelegateSvg.newBlockReady(this.workspace_, xml)
         contents.push({type: 'block', block: block})
         block.render()
-        block.eyo.addTooltip(block)
+        block.eyo.addTooltip(block, xml.title || (xml.data && xml.data.main) || xml.data)
         gaps.push(default_gap)
       } catch (err) {
         console.error(err)

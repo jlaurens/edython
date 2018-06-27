@@ -21,6 +21,7 @@ thumbs.db
 /**/UnicodeData.txt
 /**/xregexp-all/xregexp-all.js
 /src/lib/brython*/**
+/src/lib/stacktrace*/**
 /vue-js-modal/**
 !/**/README.md
 !/**/Readme.md

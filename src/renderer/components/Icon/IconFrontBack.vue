@@ -13,13 +13,13 @@
   export default {
     computed: {
       transform: function () {
-        return this.variant === 'front' ? 'rotate(135, 16, 16)' : 'rotate(-45, 16, 16)'
+        return this.front ? 'rotate(135, 16, 16)' : 'rotate(-45, 16, 16)'
       }
     },
     props: {
-      variant: {
-        type: [String],
-        default: 'front'
+      front: {
+        type: Boolean,
+        default: true
       }
     }
   }

@@ -69,6 +69,7 @@
     "jquery": "^3.3.1",
     "lodash": "^4.17.10",
     "pako": "^1.0.6",
+    "stack-trace": "0.0.10",
     "tippy": "0.0.0",
     "vue": "^2.5.16",
     "vue-drawer-layout": "^0.3.2",

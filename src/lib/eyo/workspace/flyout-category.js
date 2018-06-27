@@ -21,19 +21,17 @@ goog.require('eYo.T3');
 eYo.FlyoutCategory = {
   'test': [
     {
-      type: eYo.T3.Stmt.assignment_stmt,
+      type: eYo.T3.Stmt.expression_stmt,
       slots: {
-        assigned: {
-          slots: {
-            O: {
-              type: eYo.T3.Expr.builtin__input_expr,
-              slots: {
-                expression: "'…'",
-              },
-            },
-          },
-        },
-      },
+        expression: {
+          type: eYo.T3.Expr.call_expr,
+          data: {
+            name: 'remove',
+            variant: 3,
+            ary: 1
+          }
+        }
+      }
     },
   ],
   'basic': [
@@ -172,17 +170,6 @@ eYo.FlyoutCategory = {
       data: 'len'
     },
     {
-      type: eYo.T3.Expr.call_expr,
-      data: 'list',
-      slots: {
-        n_ary: {
-          slots: {
-            O: "'...'"
-          }
-        }
-      }
-    },
-    {
       type: eYo.T3.Expr.slicing,
       slots: {
         slice: {
@@ -205,23 +192,9 @@ eYo.FlyoutCategory = {
         }
       }
     },
-    eYo.T3.Expr.proper_slice,
     {
       type: eYo.T3.Stmt.expression_stmt,
-      slot: {
-        expression: {
-          type: eYo.T3.Expr.call_expr,
-          data: {
-            name: 'append',
-            variant: 3,
-            ary: 1
-          }
-        }
-      }
-    },
-    {
-      type: eYo.T3.Stmt.expression_stmt,
-      slot: {
+      slots: {
         expression: {
           type: eYo.T3.Expr.call_expr,
           data: {
@@ -230,11 +203,26 @@ eYo.FlyoutCategory = {
             ary: 2
           }
         }
-      }
+      },
+      title: 'list_insert'
     },
     {
       type: eYo.T3.Stmt.expression_stmt,
-      slot: {
+      slots: {
+        expression: {
+          type: eYo.T3.Expr.call_expr,
+          data: {
+            name: 'append',
+            variant: 3,
+            ary: 1
+          }
+        }
+      },
+      title: 'list_append'
+    },
+    {
+      type: eYo.T3.Stmt.expression_stmt,
+      slots: {
         expression: {
           type: eYo.T3.Expr.call_expr,
           data: {
@@ -243,7 +231,8 @@ eYo.FlyoutCategory = {
             ary: 1
           }
         }
-      }
+      },
+      title: 'list_remove'
     },
     {
       type: eYo.T3.Expr.call_expr,
@@ -251,10 +240,79 @@ eYo.FlyoutCategory = {
         name: 'index',
         variant: 3,
         ary: 1
+      },
+      title: 'list_index'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'count',
+        variant: 3,
+        ary: 1
+      },
+      title: 'list_count'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'pop',
+        variant: 3,
+        ary: 1
+      },
+      slots: {
+        n_ary: {
+          slots: {
+            O: {
+              type: eYo.T3.Expr.list_display
+            }
+          }
+        }
+      },
+      title: 'list_pop'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'reverse',
+        variant: 3,
+        ary: 0
+      },
+      title: 'list_reverse'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: 'min'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: 'max'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: 'sum'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: 'list',
+      slots: {
+        n_ary: {
+          slots: {
+            O: "'...'"
+          }
+        }
       }
     },
+    eYo.T3.Expr.proper_slice,
     eYo.T3.Expr.a_expr,
-    eYo.T3.Expr.m_expr
+    {
+      type: eYo.T3.Stmt.augmented_assignment_stmt,
+      data: '+='
+    },
+    eYo.T3.Expr.m_expr,
+    {
+      type: eYo.T3.Stmt.augmented_assignment_stmt,
+      data: '*='
+    },
   ]
 }
 console.warn('key handler: "foo.bar", "foo[]", "foo(…)"')

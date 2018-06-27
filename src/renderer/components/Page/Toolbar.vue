@@ -23,14 +23,7 @@
           <icon-base :width="32" :height="32" icon-name="copy Python"><icon-copy-python /></icon-base>
         </b-btn>
       </b-button-group>
-      <b-button-group class="mx-1">
-        <b-btn id="toolbar-back" v-on:click="doBack()" title="Sélection à l'arrière plan" v-tippy>
-          <icon-base :width="32" :height="32" icon-name="back"><icon-front-back variant="back" /></icon-base>
-        </b-btn>
-        <b-btn id="toolbar-focus" v-on:click="doFocus()" title="Montrer la sélection" v-tippy>
-          <icon-base :width="32" :height="32" icon-name="focus"><icon-focus/></icon-base>
-        </b-btn>
-      </b-button-group>
+      <b-btn-group-layout />
       <!--b-button-group class="mx-1">
         <b-btn id="toolbar-toggle-panels" v-on:click="doTogglePanelsVisible()" :title="toolbarTogglePanelsTitle" v-tippy>
           <icon-base :width="32" :height="32" icon-name="toggle"><icon-toggle-panels :variant="showTogglePanel" /></icon-base>
@@ -47,12 +40,11 @@
   import ToolbarDemo from './Toolbar/Demo.vue'
   import CopyPaste from './Toolbar/CopyPaste.vue'
   import Storage from './Toolbar/Storage.vue'
+  import Layout from './Toolbar/Layout.vue'
   
   import IconBase from '@@/IconBase.vue'
   import IconBug from '@@/Icon/IconBug.vue'
   import IconCopyPython from '@@/Icon/IconCopyPython.vue'
-  import IconFrontBack from '@@/Icon/IconFrontBack.vue'
-  import IconFocus from '@@/Icon/IconFocus.vue'
   import IconTogglePanels from '@@/Icon/IconTogglePanels.vue'
 
   export default {
@@ -70,14 +62,13 @@
       IconBase,
       IconBug,
       IconCopyPython,
-      IconFrontBack,
-      IconFocus,
       IconTogglePanels,
       'b-dropdown-menu': ToolbarMenu,
       'b-btn-undo-redo': ToolbarUndoRedo,
       'b-dropdown-demo': ToolbarDemo,
       'b-button-copy-paste': CopyPaste,
-      'b-btn-group-storage': Storage
+      'b-btn-group-storage': Storage,
+      'b-btn-group-layout': Layout
     },
     computed: {
       showTogglePanel () {
@@ -107,15 +98,6 @@
           var code = p.export(block, true)
           eYo.App.copyTextToClipboard(code)
         }
-      },
-      doFront () {
-        eYo.App.doFront()
-      },
-      doBack () {
-        eYo.App.doBack()
-      },
-      doFocus () {
-        eYo.App.doFocus()
       },
       doTogglePanelsVisible () {
         this.$store.commit('UI_SET_PANELS_VISIBLE', !this.$store.state.UI.panelsVisible)

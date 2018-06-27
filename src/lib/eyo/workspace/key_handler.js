@@ -828,6 +828,18 @@ Ks = {
       name: 'len'
     }
   },
+  'min(…)': {
+    type: eYo.T3.Expr.call_expr,
+    data: {
+      name: 'min'
+    }
+  },
+  'max(…)': {
+    type: eYo.T3.Expr.call_expr,
+    data: {
+      name: 'max'
+    }
+  },
   'sum(…)': {
     type: eYo.T3.Expr.call_expr,
     data: {

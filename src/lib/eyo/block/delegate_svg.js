@@ -893,16 +893,19 @@ eYo.DelegateSvg.prototype.renderDraw_ = function (block) {
     try {
       unlocker = this.chainTiles(block)
       d = this.renderDrawModel_(block)
+      this.svgPathInner_.setAttribute('d', d)
+    } catch (err) {
+      console.error (err)
+      throw err
     } finally {
       unlocker && unlocker.eyo.unlockChainTiles(unlocker)
+      var root = block.getRootBlock()
+      if (root.eyo) {
+        root.eyo.alignRightEdges_(root)
+      }
+      this.renderDrawSuite_(block)
+      this.updateAllPaths_(block)
     }
-    this.svgPathInner_.setAttribute('d', d)
-    var root = block.getRootBlock()
-    if (root.eyo) {
-      root.eyo.alignRightEdges_(root)
-    }
-    this.renderDrawSuite_(block)
-    this.updateAllPaths_(block)
   }
 }
 
@@ -946,7 +949,17 @@ eYo.DelegateSvg.prototype.alignRightEdges_ = function (block) {
 eYo.DelegateSvg.prototype.updatePath_ = function (block, path, def) {
   if (path) {
     if (def) {
-      path.setAttribute('d', def.call(this, block))
+      try {
+        var d = def.call(this, block)
+        if (d.indexOf('NaN') >= 0) {
+          d = def.call(this, block)
+          console.log('d', d)
+        }
+        path.setAttribute('d', d)
+      } catch (err) {
+        console.error('d', d, '\ndef', def)
+        throw err
+      }
     } else {
       path.removeAttribute('d')
     }
@@ -1531,11 +1544,12 @@ eYo.DelegateSvg.prototype.valuePathDef_ = function (block) {
   var steps = ['m ', w - eYo.Font.space + dx, ',-', eYo.Margin.V]
   steps = steps.concat(a_expr)
   steps.push(h_total)
+  var rr = eYo.Style.Path.radius()
+  var aa = [' a ', rr, ', ', rr, ' 0 0 1 ']
   var parent
+  // the left edge is different when tileHead is true
   if (this.tileHead && !this.tileHead.eyo.tilePrevious && (parent = block.getParent()) && !block.outputConnection) {
-    // code duplicate: quite the same as some code above
-    var rr = eYo.Style.Path.radius()
-    var aa = [' a ', rr, ', ', rr, ' 0 0 1 ']
+    // almost code duplicate: quite the same as some code above
     var c8n = parent.nextConnection
     if (c8n && c8n.isConnected()) {
       steps.push(' H ', -this.getPaddingLeft(parent))
@@ -1569,6 +1583,7 @@ eYo.DelegateSvg.prototype.valuePathDef_ = function (block) {
         }
       } else {
         steps.push(' H ', -eYo.Padding.l() + rr)
+        steps = steps.concat(aa)
         steps.push(-rr, ',', -rr)
         if (parent.previousConnection && parent.previousConnection.isConnected()) {
           steps.push(' v ', -h_total + rr, ' z')
@@ -3293,7 +3308,7 @@ eYo.DelegateSvg.prototype.setOffset = function (block, dx, dy) {
   // Workspace coordinates.
   block = block || this.block_
   if (!this.svgShapeGroup_) {
-    throw 'block is not rendered.';
+    throw 'block is not inited '+block.type
   }
   var xy = Blockly.utils.getRelativeXY(block.getSvgRoot());
   var transform = 'translate(' + (xy.x + dx) + ',' + (xy.y + dy) + ')';

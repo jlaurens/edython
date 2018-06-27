@@ -72,11 +72,11 @@
             // let dom = eYo.Xml.workspaceToDom(eYo.App.workspace, true)
             // let oSerializer = new XMLSerializer()
             // let content = oSerializer.serializeToString(dom)
-            // let deflate = this.pako.gzip(content) // use gzip to ungzip from the CLI
+            // let deflate = this.$pako.gzip(content) // use gzip to ungzip from the CLI
             var inflate
             try {
               // is it compressed ?
-              inflate = this.pako.ungzip(content) // use gzip to ungzip from the CLI
+              inflate = this.$pako.ungzip(content) // use gzip to ungzip from the CLI
             } catch (err) {
               // I guess not
               inflate = content
@@ -92,7 +92,7 @@
       },
       doSave: function () {
         let content = '<?xml version="1.0" encoding="utf-8"?>' + eYo.App.workspace.eyo.toString(true)
-        let deflate = this.$store.state.Pref.ecoSave ? this.pako.gzip(content) : content // use gzip to ungzip from the CLI
+        let deflate = this.$store.state.Pref.ecoSave ? this.$pako.gzip(content) : content // use gzip to ungzip from the CLI
         var fs = require('fs')
         var self = this
         if (this.documentPath) {

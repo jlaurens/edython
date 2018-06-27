@@ -433,7 +433,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
         this.data.numberOperator.set(newValue)
         this.data.bitwiseOperator.set(newValue)
       },
-      validate: false
+      validate: false,
+      main: true
     },
     numberOperator: {
       all: ['+=', '-=', '*=', '/=', '//=', '%=', '**=', '@='],

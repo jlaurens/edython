@@ -458,6 +458,8 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
             case 'int':
             case 'float':
             case 'len':
+            case 'min':
+            case 'max':
             case 'input':
             return newValue === this.model.UNARY ? {validated: newValue}: null
             case 'list':
@@ -476,7 +478,7 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
       xml: false
     },
     name: {
-      all: ['input', 'int', 'float', 'list', 'set', 'len', 'sum'],
+      all: ['input', 'int', 'float', 'list', 'set', 'len', 'min', 'max', 'sum'],
       init: 'int',
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
@@ -498,6 +500,8 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
             case 'int':
             case 'float':
             case 'len':
+            case 'min':
+            case 'max':
             this.data.isOptionalUnary.set(false)
             this.data.ary.set(this.data.ary.model.UNARY)
             break

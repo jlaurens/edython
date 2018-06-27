@@ -5,17 +5,17 @@
       <template slot="button-content">
         {{titles[selected]}}
       </template>
-      <b-dropdown-item-button v-on:click="selected = 'basic'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.basic}}</b-dropdown-item-button>
-      <b-dropdown-item-button v-on:click="selected = 'intermediate'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.intermediate}}</b-dropdown-item-button>
-      <b-dropdown-item-button v-on:click="selected = 'advanced'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.advanced}}</b-dropdown-item-button>
-      <b-dropdown-item-button v-on:click="selected = 'expert'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.expert}}</b-dropdown-item-button>
+      <b-dropdown-item-button v-on:click="selected = 'basic'" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{titles.basic}}</b-dropdown-item-button>
+      <b-dropdown-item-button v-on:click="selected = 'intermediate'" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{titles.intermediate}}</b-dropdown-item-button>
+      <b-dropdown-item-button v-on:click="selected = 'advanced'" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{titles.advanced}}</b-dropdown-item-button>
+      <b-dropdown-item-button v-on:click="selected = 'expert'" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{titles.expert}}</b-dropdown-item-button>
       <b-dropdown-divider></b-dropdown-divider>
-      <b-dropdown-item-button v-on:click="selected = 'branching'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.branching}}</b-dropdown-item-button>
-      <b-dropdown-item-button v-on:click="selected = 'list'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.list}}</b-dropdown-item-button>
-      <b-dropdown-item-button v-on:click="selected = 'looping'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.looping}}</b-dropdown-item-button>
-      <b-dropdown-item-button v-on:click="selected = 'function'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.function}}</b-dropdown-item-button>
+      <b-dropdown-item-button v-on:click="selected = 'branching'" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{titles.branching}}</b-dropdown-item-button>
+      <b-dropdown-item-button v-on:click="selected = 'list'" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{titles.list}}</b-dropdown-item-button>
+      <b-dropdown-item-button v-on:click="selected = 'looping'" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{titles.looping}}</b-dropdown-item-button>
+      <b-dropdown-item-button v-on:click="selected = 'function'" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{titles.function}}</b-dropdown-item-button>
       <b-dropdown-divider></b-dropdown-divider>
-      <b-dropdown-item-button v-on:click="selected = 'random__module'" v-bind:style="{fontFamily: eYo.Font.familySans}">{{titles.random__module}}</b-dropdown-item-button>
+      <b-dropdown-item-button v-on:click="selected = 'random__module'" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{titles.random__module}}</b-dropdown-item-button>
     </b-dropdown>
   </div>
 </template>

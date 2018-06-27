@@ -3,7 +3,7 @@
 Download xregexp-all.js from
 https://unpkg.com/xregexp@4.1.1/xregexp-all.js
 
-This file is ignored by github
+This above file is ignored by github
 
 ## Content of this directory as of june 2018
 

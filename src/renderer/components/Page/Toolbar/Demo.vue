@@ -3,7 +3,7 @@
     <template slot="button-content">
       <icon-base :width="32" :height="32" icon-name="demo"><icon-demo /></icon-base>
     </template>
-    <b-dropdown-item-button v-for="(demo, index) in demos" :key="demo.title" v-on:click="doSelect(index)" :style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight + 'px'}">{{demo.title}}</b-dropdown-item-button>
+    <b-dropdown-item-button v-for="(demo, index) in demos" :key="demo.title" v-on:click="doSelect(index)" :style="{fontFamily: $eYo.Font.familySans, fontSize: $eYo.Font.totalHeight + 'px'}">{{demo.title}}</b-dropdown-item-button>
   </b-dropdown>
 </template>
 
@@ -16,6 +16,7 @@
   import demoBasicSumOfIntegers from '@static/demo/basic/sum-of-integers.xml'
   import demoBasicFiftyDices from '@static/demo/basic/fifty-dices.xml'
   import demoBasicList from '@static/demo/basic/list.xml'
+  import demoBasicListEdit from '@static/demo/basic/list-edit.xml'
   /** eslint-disable no-webpack-loader-syntax */
   import demoBasicDebug from '@static/demo/basic/debug.eyox'
   
@@ -39,6 +40,9 @@
           }, {
             title: 'Liste',
             xml: demoBasicList
+          }, {
+            title: 'Liste (Édition)',
+            xml: demoBasicListEdit
           }, {
             title: 'Debug',
             xml: demoBasicDebug

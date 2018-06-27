@@ -500,7 +500,7 @@ eYo.Do.typeOfString = function (candidate) {
   } [candidate])) {
     return out
   }
-  if (['int', 'float', 'input', 'list', 'len', 'set', 'sum'].indexOf(candidate) >= 0) {
+  if (['int', 'float', 'input', 'list', 'len', 'min', 'max', 'set', 'sum'].indexOf(candidate) >= 0) {
     return {
       raw: eYo.T3.Expr.builtin__name,
       expr: eYo.T3.Expr.call_expr,

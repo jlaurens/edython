@@ -15,6 +15,7 @@ goog.provide('eYo.DelegateSvg.Print')
 
 goog.require('eYo.DelegateSvg.Stmt')
 goog.require('eYo.DelegateSvg.List')
+goog.require('eYo.DelegateSvg.Term')
 
 console.warn('Move this block to the builtin blocks, with contextual consolidator and argument list')
 /**
@@ -80,15 +81,15 @@ eYo.DelegateSvg.Expr.builtin__print_expr.prototype.populateContextMenuFirst_ = f
       try {
         var B = eYo.DelegateSvg.newBlockComplete(block.workspace, eYo.T3.Expr.term)
         B.eyo.data.name.set(key)
-        B.eyo.data.variant.set(2)
+        B.eyo.data.variant.set(eYo.DelegateSvg.Expr.term.eyo.getModel().data.variant.NAME)
         var c8n = list.inputList[list.inputList.length - 1].connection
         c8n.connect(B.outputConnection)
+        block.eyo.beReady(block)
+        block.eyo.render(block)
       } catch (err) {
         console.error(err)
         throw err
       } finally {
-        block.eyo.beReady(block)
-        block.eyo.render(block)
         eYo.Events.setGroup(false)
       }
     }
@@ -163,16 +164,16 @@ eYo.DelegateSvg.Stmt.builtin__print_stmt.prototype.populateContextMenuFirst_ = f
       try {
         var B = eYo.DelegateSvg.newBlockComplete(block.workspace, eYo.T3.Expr.term)
         B.eyo.data.name.set(key)
-        B.eyo.data.variant.set(2)
+        B.eyo.data.variant.set(eYo.DelegateSvg.Expr.term.eyo.getModel().data.variant.NAME_DEFINITION)
         // we assume that inputList is not void
         var c8n = list.inputList[list.inputList.length - 1].connection
         c8n.connect(B.outputConnection)
-        block.eyo.beReady(block)
+        B.eyo.beReady(block)
+        block.eyo.render(block)
       } catch (err) {
         console.error(err)
         throw err
       } finally {
-        block.eyo.render(block)
         eYo.Events.setGroup(false)
       }
     }

@@ -79,15 +79,15 @@ eYo.Tooltip.hideAll = function (el) {
  * Add tooltip to a block
  * @param {!Blockly.Block} block Block target of the tooltip.
  */
-eYo.DelegateSvg.prototype.addTooltip = function (block) {
-  var model = this.constructor.eyo.getModel()
-  var title = eYo.Tooltip.getTitle(model.tooltip || this.tooltipKey || block.type.substring(4))
+eYo.DelegateSvg.prototype.addTooltip = function (block, key) {
   var options = eYo.Tooltip.options
   goog.mixin(options, {
     onShow(instance) {
-      block.svgGroup_.parentNode && eYo.Tooltip.hideAll(block.svgGroup_.parentNode)
+      block.svgGroup_ && block.svgGroup_.parentNode && eYo.Tooltip.hideAll(block.svgGroup_.parentNode)
     }
   })
+  var model = this.constructor.eyo.getModel()
+  var title = eYo.Tooltip.getTitle(key || model.tooltip || this.tooltipKey || block.type.substring(4))
   if (title) {
     eYo.Tooltip.add(block.svgGroup_, title, options)
   }
@@ -167,4 +167,18 @@ eYo.Tooltip.Title = {
   decorator: 'Décorateur : filtre pour modifier automagiquement la définition d\'une fonction ou d\'une classe',
   global_nonlocal_stmt: 'Variable : global ou nonlocal',
   docstring_def_stmt: 'docstring',
+  list_insert: 'Insère un élément dans la liste',
+  list_append: 'Insère un élément en fin de liste',
+  list_remove: 'Supprimer un élement de la list',
+  list_index: 'Obtenir le rang d\'un élément de la liste',
+  list_count: 'Obtenir le nombre d\'occurrences d\'un objet',
+  list_pop: 'Supprimer l\'élément de rang donné',
+  list_reverse: 'Renverser la liste',
+  min: 'Trouver le minimum d\'une liste, un ensemble, un tuple',
+  max: 'Trouver le maximum d\'une liste, un ensemble, un tuple',
+  sum: 'Trouver la somme des éléments d\'une liste, un ensemble, un tuple',
+  list: 'Convertir en liste',
+  proper_slice: 'Arguments d\'extraction d\'éléments d\'une liste',
+  '+=': 'Ajouter des éléments en place',
+  '*=': 'Reproduire en place',
 }

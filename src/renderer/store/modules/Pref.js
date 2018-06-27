@@ -1,5 +1,5 @@
 const state = {
-  ecoSave: false,
+  ecoSave: true,
   noLeftSeparator: true,
   noDynamicList: false,
   smartUnary: true

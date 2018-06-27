@@ -1,21 +1,21 @@
 <template>
   <div id="eyo-panels-area">
     <div id="eyo-panels" ref="divPanels" :style="{width: panelsStyleWidth}">
-      <div id="eyo-panels-toolbar" :style="{ fontFamily: eYo.Font.familySans,
-    fontSize: this.eYo.Font.totalHeight + 'px'
+      <div id="eyo-panels-toolbar" :style="{ fontFamily: $eYo.Font.familySans,
+    fontSize: this.$eYo.Font.totalHeight + 'px'
   }">
         <div id="eyo-panels-toolbar-select">
           <b-dropdown id="eyo-panels-toolbar-dropdown" class="eyo-dropdown">
             <template slot="button-content">
               {{titles[selected]}}
             </template>
-            <b-dropdown-item-button v-on:click="selected = 'console'" :style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight + 'px'}">{{titles.console}}</b-dropdown-item-button>
-            <b-dropdown-item-button v-on:click="selected = 'turtle'" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight}">{{titles.turtle}}</b-dropdown-item-button>
+            <b-dropdown-item-button v-on:click="selected = 'console'" :style="{fontFamily: $eYo.Font.familySans, fontSize: $eYo.Font.totalHeight + 'px'}">{{titles.console}}</b-dropdown-item-button>
+            <b-dropdown-item-button v-on:click="selected = 'turtle'" v-bind:style="{fontFamily: $eYo.Font.familySans, fontSize: $eYo.Font.totalHeight}">{{titles.turtle}}</b-dropdown-item-button>
           </b-dropdown>
         </div>
-        <b-button id ="eyo-panels-toolbar-restart" class="eyo-round-btn" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight + 'px'}" v-on:click="restart()" :disabled="selected !== 'console'" title="Redémarrer l'interpréteur python" 
+        <b-button id ="eyo-panels-toolbar-restart" class="eyo-round-btn" v-bind:style="{fontFamily: $eYo.Font.familySans, fontSize: $eYo.Font.totalHeight + 'px'}" v-on:click="restart()" :disabled="selected !== 'console'" title="Redémarrer l'interpréteur python" 
         v-tippy ><icon-base icon-name="restart"><icon-restart /></icon-base></b-button>
-        <b-button id ="eyo-panels-toolbar-erase" class="eyo-round-btn" v-bind:style="{fontFamily: eYo.Font.familySans, fontSize: eYo.Font.totalHeight + 'px'}" v-on:click="erase()" :disabled="selected !== 'console'" title="Effacer l'affichage" 
+        <b-button id ="eyo-panels-toolbar-erase" class="eyo-round-btn" v-bind:style="{fontFamily: $eYo.Font.familySans, fontSize: $eYo.Font.totalHeight + 'px'}" v-on:click="erase()" :disabled="selected !== 'console'" title="Effacer l'affichage" 
         v-tippy ><icon-base icon-name="erase"><icon-erase /></icon-base></b-button>
       </div>
       <div id="eyo-panels-content">
