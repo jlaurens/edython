@@ -11,7 +11,7 @@
  */
 'use strict';
 
-goog.provide('eYo.Tooltip');
+goog.provide('eYo.Tooltip')
 
 goog.require('eYo.DelegateSvg')
 
@@ -116,7 +116,7 @@ eYo.Tooltip.Title = {
   attributeref: 'Attribut d\'un objet',
   proper_slice: 'Extrait (slicing), pour extraire les éléments d\'une liste',
   slicing: 'Élements extraits d\'une liste',
-  any: 'Instruction à saisir',
+  any: 'Expression générale à saisir',
   expression_stmt: 'Instruction à partir d\'un bloc expression',
   shift_expr: 'Opération sur les nombres binaires',
   and_expr: 'Opération sur les nombres binaires',
@@ -181,4 +181,19 @@ eYo.Tooltip.Title = {
   proper_slice: 'Arguments d\'extraction d\'éléments d\'une liste',
   '+=': 'Ajouter des éléments en place',
   '*=': 'Reproduire en place',
+  text_assignment: 'Assigner un texte à une variable',
+  text_len: 'Longueur d\'un texte',
+  text_find: 'Rechercher dans un texte',
+  text_startswith: 'Est-ce que le texte commence par un texte donné ?', // beware of the no-break space before the question mark
+  text_endswith: 'Est-ce que le texte finit par un texte donné ?',
+  text_replace: 'Remplacer dans le texte',
+  text_count: 'Dénombrer des occurrences dans le texte',
+  text_upper: 'Transformer le texte en majuscules',
+  text_lower: 'Transformer le texte en minuscules',
+  text_join: 'Joindre une liste de textes avec un séparateur',
+  text_split: 'Couper le texte selon le séparateur donné en argument',
+  text_split_sep: 'Séparateur pour couper le texte',
+  text_split_maxsplit: 'Nombre maximum de parties dans le découpage',
+  text_splitlines: 'Découper le texte en lignes, avec ou sans séparateur de fin de ligne',
+  text_index: 'Trouver une texte inclus, avec levée d\'exception',
 }

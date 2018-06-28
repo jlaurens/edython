@@ -159,6 +159,9 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuiteInput_ = function (io) {
         try {
           target.eyo.downRendering = true
           target.render()
+        } catch (err) {
+          console.error(err)
+          throw err
         } finally {
           target.eyo.downRendering = false
         }

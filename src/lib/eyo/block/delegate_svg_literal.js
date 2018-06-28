@@ -50,21 +50,22 @@ eYo.DelegateSvg.Literal.prototype.xmlType = function (block) {
  */
 eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
   data: {
-    subtype: {
+    type: {
       all: [eYo.T3.Expr.integer, eYo.T3.Expr.floatnumber, eYo.T3.Expr.imagnumber],
-      noUndo: true
+      noUndo: true,
+      xml: false
     },
     value: {
       main: true,
       init: '0',
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var subtypes = this.data.subtype.getAll()
-        var subtype = eYo.Do.typeOfString(newValue).expr
-        return ((subtypes.indexOf(subtype) >= 0) && {validated: newValue}) || null
+        var types = this.data.type.getAll()
+        var type = eYo.Do.typeOfString(newValue).expr
+        return ((types.indexOf(type) >= 0) && {validated: newValue}) || null
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         var type = newValue ? eYo.Do.typeOfString(newValue).expr : eYo.T3.Expr.integer
-        this.data.subtype.set(type)
+        this.data.type.set(type)
       },
       synchronize: true,
       xml: {
@@ -106,8 +107,8 @@ eYo.DelegateSvg.Expr.numberliteral.prototype.showEditor = function (block) {
  * @constructor
  */
 eYo.DelegateSvg.Expr.numberliteral.prototype.consolidateType = function (block) {
-  var subtype = this.data.subtype.get()
-  block.outputConnection.setCheck(subtype)
+  var type = this.data.type.get()
+  block.outputConnection.setCheck(type)
   eYo.DelegateSvg.Expr.term.superClass_.consolidateType.call(this, block)
 }
 

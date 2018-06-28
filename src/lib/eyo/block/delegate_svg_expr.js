@@ -280,7 +280,7 @@ eYo.DelegateSvg.Expr.prototype.canInsertParent = function (block, prototypeName,
  * @return the created block
  */
 eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, fill_holes) {
-  var parentInputName = model.input
+  var parentSlotName = model.slot || model.input
   var parentBlock
   eYo.Events.Disabler.wrap(function () {
     parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, model)
@@ -289,10 +289,11 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
     return parentBlock
   }
   if (model.slot) {
-    var parentInput = parentBlock.getInput(model.slot)
+    var slot = parentBlock.eyo.slots[model.slot]
+    var parentInput = slot && slot.input
     goog.asserts.assert(parentInput, 'No input named ' + model.slot)
     var parentInputC8n = parentInput.connection
-    goog.asserts.assert(parentInputC8n, 'Unexpected dummy input ' + model.slot)
+    goog.asserts.assert(parentInputC8n, 'Unexpected dummy input ' + model.slot+ ' in ' + parentBlock.type)
   } else if ((parentInput = parentBlock.eyo.getInput(parentBlock, eYo.Key.LIST, true))) {
     var list = parentInput.connection.targetBlock()
     goog.asserts.assert(list, 'Missing list block inside ' + block.type)
@@ -301,11 +302,17 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
     // get the middle input.
     parentInput = list.getInput(eYo.Do.Name.middle_name)
     parentInputC8n = parentInput.connection
-    goog.asserts.assert(parentInputC8n, 'Unexpected dummy input ' + parentInputName)
+    goog.asserts.assert(parentInputC8n, 'Unexpected dummy input ' + parentSlotName)
   } else {
     // find the first connection that can accept block
     var findC8n = function (B) {
       var foundC8n, target
+      // start by the slots
+      if (model.slot && B.eyo.someSlot(function() {
+        return foundC8n = (this.key === model.slot) && this.input.connection
+      })) {
+        return foundC8n
+      }
       const e8r = B.eyo.inputEnumerator(B)
       while (e8r.next()) {
         var c8n = e8r.here.connection
@@ -317,7 +324,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
             candidate = findC8n(target)
           }
           if (candidate) {
-            if (candidate.eyo.name === parentInputName) {
+            if (candidate.eyo.name === parentSlotName) {
               foundC8n = candidate
               break
             }

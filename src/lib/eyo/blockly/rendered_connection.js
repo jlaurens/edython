@@ -688,6 +688,7 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function (parentBlock
     childBlock.eyo.didDisconnect(childBlock, childC8n, parentC8n)
     parentC8n.eyo.didDisconnect(childC8n)
     childC8n.eyo.didDisconnect(parentC8n)
+    parentBlock.eyo.consolidate(parentBlock, true) // update all connections, possibly deleting parentC8n !
   } catch (err) {
     console.error(err)
     throw err

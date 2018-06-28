@@ -242,7 +242,7 @@ eYo.Flyout.prototype.show = function(model) {
         gaps.push(default_gap)
       } catch (err) {
         console.error(err)
-        throw err
+        // throw err: catch the error here definitely
       } finally {
 
       }

@@ -75,6 +75,9 @@ eYo.Slot.prototype.init = function () {
       this.model_init_lock = true
       try {
         init.call(this)
+      } catch (err) {
+        console.error(err)
+        throw err
       } finally {
         delete this.model_init_lock
       }
@@ -534,6 +537,9 @@ eYo.Slot.prototype.synchronize = function () {
   input.setVisible(!newValue)
   // this.owner.skipRendering()
   // try {
+  // } catch (err) {
+  //   console.error(err)
+  //   throw err
   // } finally {
   //   this.owner.unskipRendering()
   // }

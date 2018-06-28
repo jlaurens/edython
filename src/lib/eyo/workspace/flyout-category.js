@@ -9,11 +9,12 @@
  * @fileoverview Flyout overriden.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
-'use strict';
+'use strict'
 
-goog.provide('eYo.FlyoutCategory');
+goog.provide('eYo.FlyoutCategory')
 
-goog.require('eYo.T3');
+goog.require('eYo.T3')
+goog.require('eYo.Const')
 
 /**
  * Flyout list of node models by catedgory.
@@ -27,7 +28,7 @@ eYo.FlyoutCategory = {
           type: eYo.T3.Expr.call_expr,
           data: {
             name: 'remove',
-            variant: 3,
+            variant: eYo.Key.ATTRIBUTE,
             ary: 1
           }
         }
@@ -58,8 +59,26 @@ eYo.FlyoutCategory = {
     eYo.T3.Stmt.assignment_stmt,
     eYo.T3.Expr.term,
     eYo.T3.Expr.u_expr,
-    eYo.T3.Expr.m_expr,
-    eYo.T3.Expr.a_expr,
+    {
+      type: eYo.T3.Expr.a_expr,
+      data: '+'
+    },
+    {
+      type: eYo.T3.Expr.a_expr,
+      data: '-'
+    },
+    {
+      type: eYo.T3.Expr.m_expr,
+      data: '*'
+    },
+    {
+      type: eYo.T3.Expr.m_expr,
+      data: '/'
+    },
+    {
+      type: eYo.T3.Expr.m_expr,
+      data: '//'
+    },
     eYo.T3.Expr.power,
   ],
   'intermediate': [
@@ -71,6 +90,18 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.builtin__object,
     eYo.T3.Stmt.augmented_assignment_stmt,
     eYo.T3.Stmt.import_stmt,
+    {
+      type: eYo.T3.Stmt.import_stmt,
+      data: {
+        variant: eYo.Key.FROM_MODULE_IMPORT
+      }
+    },
+    {
+      type: eYo.T3.Expr.term,
+      data: {
+        variant: eYo.Key.NAME_ALIAS
+      }
+    },
     eYo.T3.Stmt.docstring_top_stmt,
     eYo.T3.Expr.longliteral,
     eYo.T3.Expr.attributeref,
@@ -132,8 +163,15 @@ eYo.FlyoutCategory = {
     eYo.T3.Stmt.continue_stmt,
   ],
   'function': [
-    eYo.T3.Expr.call_expr,
-    eYo.T3.Stmt.call_stmt,
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: ''
+    },
+    {
+      type: eYo.T3.Stmt.call_stmt,
+      data: ''
+    },
+    eYo.T3.Expr.starred_expression,
     eYo.T3.Stmt.funcdef_part,
     eYo.T3.Stmt.return_stmt,
     eYo.T3.Stmt.pass_stmt,
@@ -171,6 +209,9 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Expr.slicing,
+      data: {
+        variant: eYo.Key.NAME
+      },
       slots: {
         slice: {
           slots: {
@@ -182,7 +223,7 @@ eYo.FlyoutCategory = {
     {
       type: eYo.T3.Expr.slicing,
       data: {
-        variant: 1 // move this to the const namespace
+        variant: eYo.Key.PRIMARY
       },
       slots: {
         slice: {
@@ -199,7 +240,7 @@ eYo.FlyoutCategory = {
           type: eYo.T3.Expr.call_expr,
           data: {
             name: 'insert',
-            variant: 3,
+            variant: eYo.Key.ATTRIBUTE,
             ary: 2
           }
         }
@@ -213,7 +254,7 @@ eYo.FlyoutCategory = {
           type: eYo.T3.Expr.call_expr,
           data: {
             name: 'append',
-            variant: 3,
+            variant: eYo.Key.ATTRIBUTE,
             ary: 1
           }
         }
@@ -227,7 +268,7 @@ eYo.FlyoutCategory = {
           type: eYo.T3.Expr.call_expr,
           data: {
             name: 'remove',
-            variant: 3,
+            variant: eYo.Key.ATTRIBUTE,
             ary: 1
           }
         }
@@ -238,7 +279,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'index',
-        variant: 3,
+        variant: eYo.Key.ATTRIBUTE,
         ary: 1
       },
       title: 'list_index'
@@ -247,7 +288,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'count',
-        variant: 3,
+        variant: eYo.Key.ATTRIBUTE,
         ary: 1
       },
       title: 'list_count'
@@ -256,7 +297,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'pop',
-        variant: 3,
+        variant: eYo.Key.ATTRIBUTE,
         ary: 1
       },
       slots: {
@@ -274,7 +315,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'reverse',
-        variant: 3,
+        variant: eYo.Key.ATTRIBUTE,
         ary: 0
       },
       title: 'list_reverse'
@@ -312,6 +353,260 @@ eYo.FlyoutCategory = {
     {
       type: eYo.T3.Stmt.augmented_assignment_stmt,
       data: '*='
+    },
+  ],
+  'text': [
+    {
+      type: eYo.T3.Stmt.assignment_stmt,
+      slots: {
+        assigned: {
+          slots: {
+            O: "'...'", 
+          },
+        },
+      },
+      title: 'text_assignment'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: 'print',
+      slots: {
+        n_ary: {
+          slots: {
+            O: "'...'"
+          }
+        }
+      }
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: 'len',
+      title: 'text_len'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'startswith',
+        variant: eYo.Key.ATTRIBUTE,
+        ary: 3
+      },
+      title: 'text_startswith'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'endswith',
+        variant: eYo.Key.ATTRIBUTE,
+        ary: 3
+      },
+      title: 'text_endswith'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'find',
+        variant: eYo.Key.ATTRIBUTE,
+        ary: 3
+      },
+      title: 'text_find'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'replace',
+        variant: eYo.Key.ATTRIBUTE,
+        ary: 3
+      },
+      title: 'text_replace'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'count',
+        variant: eYo.Key.ATTRIBUTE,
+        ary: 3
+      },
+      title: 'text_count'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'upper',
+        variant: eYo.Key.ATTRIBUTE,
+        ary: 0
+      },
+      title: 'text_upper'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'lower',
+        variant: eYo.Key.ATTRIBUTE,
+        ary: 0
+      },
+      title: 'text_lower'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'join',
+        variant: eYo.Key.ATTRIBUTE
+      },
+      title: 'text_join'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'split',
+        variant: eYo.Key.ATTRIBUTE,
+        ary: 2
+      },
+      title: 'text_split'
+    },
+    {
+      type: eYo.T3.Expr.term,
+      data: {
+        name: 'sep',
+        variant: eYo.Key.NAME_DEFINITION
+      },
+      slots: {
+        definition: 'None'
+      },
+      title: 'text_split_sep'
+    },
+    {
+      type: eYo.T3.Expr.term,
+      data: {
+        name: 'maxsplit',
+        variant: eYo.Key.NAME_DEFINITION
+      },
+      slots: {
+        definition: -1
+      },
+      title: 'text_split_maxsplit'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'splitlines',
+        variant: eYo.Key.ATTRIBUTE,
+        ary: 1,
+        isOptionalUnary: true
+      },
+      title: 'text_splitlines'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'index',
+        variant: eYo.Key.ATTRIBUTE,
+        ary: 3
+      },
+      title: 'text_index'
+    }
+  ],
+  math: [
+    1,
+    eYo.T3.Expr.u_expr,
+    {
+      type: eYo.T3.Expr.a_expr,
+      data: '+'
+    },
+    {
+      type: eYo.T3.Expr.a_expr,
+      data: '-'
+    },
+    {
+      type: eYo.T3.Expr.m_expr,
+      data: '*'
+    },
+    {
+      type: eYo.T3.Expr.m_expr,
+      data: '/'
+    },
+    {
+      type: eYo.T3.Expr.m_expr,
+      data: '//'
+    },
+    {
+      type: eYo.T3.Expr.m_expr,
+      data: '%'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'divmod',
+        ary: 2
+      }
+    },
+    eYo.T3.Expr.power,
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'pow',
+        ary: 2
+      }
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: 'min'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: 'max'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: 'sum'
+    },
+      {
+      type: eYo.T3.Expr.call_expr,
+      data: 'abs',
+    },
+    {
+      type: eYo.T3.Expr.m_expr,
+      data: '@'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: 'int',
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: 'float',
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: 'trunc'
+    },
+    '1j',
+    {
+      type: eYo.T3.Expr.a_expr,
+      data: '+',
+      slots: {
+        rhs: {
+          type: eYo.T3.Expr.m_expr,
+          data: '*',
+          slots: {
+            rhs: '1j'
+          }
+        }
+      }
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'complex',
+        ary: 2
+      }
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'conjugate',
+        ary: 0,
+        variant: eYo.Key.ATTRIBUTE
+      }
     },
   ]
 }

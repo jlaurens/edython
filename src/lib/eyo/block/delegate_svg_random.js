@@ -6,7 +6,7 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Random module blocks for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -18,6 +18,7 @@ goog.require('eYo.DelegateSvg.List')
 goog.require('eYo.DelegateSvg.Range')
 goog.require('eYo.DelegateSvg.Primary')
 
+goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')
 
 /**
@@ -48,7 +49,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('random__import_stmt', {
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.module_call_expr.makeSubclass('random__call_expr', {
+eYo.DelegateSvg.Expr.module__call_expr.makeSubclass('random__call_expr', {
   data: {
     name: {
       init: /** @suppress {globalThis} */ function () {
@@ -309,6 +310,15 @@ eYo.DelegateSvg.Expr.builtin__range.makeSubclass('random__randrange', {
   }
 })
 
+var F = function (name, title) {
+  var key = 'random__'+name
+  title && (eYo.Tooltip.Title[key] = title)
+  return {
+    type: eYo.T3.Expr.random__call_expr,
+    data: name,
+    title: key
+  }
+}
 eYo.FlyoutCategory.random__module = [
   eYo.T3.Stmt.random__import_stmt,
   {
@@ -321,21 +331,23 @@ eYo.FlyoutCategory.random__module = [
           rend: 6
         }
       }
-    }
+    },
+    title: 'random__randint'
   },
-  {
-    type: eYo.T3.Expr.random__call_expr,
-    data: 'choice'
-  },
+  F('choice', 'Choisir aléatoirement un élément dans une liste'),
   eYo.T3.Stmt.random__shuffle_stmt,
-  {
-    type: eYo.T3.Expr.random__call_expr,
-    data: 'random'
-  },
-  {
-    type: eYo.T3.Expr.random__call_expr,
-    data: 'getrandbits'
-  },
+  F('random', 'Générer (pseudo) aléatoirement un nombre entre 0 et 1'),
+  F('uniform', 'Loi uniforme'),
+  F('triangular', 'Loi triangle'),
+  F('betavariate', 'Loi béta'),
+  F('expovariate', 'Loi exponentielle'),
+  F('gammavariate', 'Loi gamma'),
+  F('gauss', 'Loi normale'),
+  F('normalvariate', 'Loi normale (variante)'),
+  F('lognormvariate', 'Loi log normale'),
+  F('vonmisesvariate', 'Distribution de Von Mises'),
+  F('paretovariate', 'Loi de Pareto'),
+  F('weibullvariate', 'Distribution de Weibull'),
   {
     type: eYo.T3.Expr.random__randrange,
     slots: {
@@ -344,20 +356,28 @@ eYo.FlyoutCategory.random__module = [
           O: 10
         }
       }
-    }
+    },
+    title: 'random__randrange'
   },
+  F('sample', 'Obtenir un échantillon de taille donnée dans une population donnée sans répétition'),
+  F('getrandbits', 'Générer aléatoirement une suite de bits de longueur donnée'),
   eYo.T3.Stmt.random__seed_stmt,
   // '<x eyo="identifier" name="a"><x eyo="builtin__object" value="None" slot="definition"></x></x>',
-  {
-    type: eYo.T3.Expr.random__call_expr,
-    data: 'getstate'
-  },
+  F('getstate', 'Obtenir l\'état du générateur aléatoire, utile pour reproduire les tirages'),
   eYo.T3.Stmt.random__setstate_stmt
 ]
 
+goog.mixin(eYo.Tooltip.Title, {
+  random__import_stmt: 'Importer le module random',
+  random__randint: 'Générer aléatoirement un entier entre deux bornes',
+  random__shuffle_stmt: 'Mélanger les éléments d\'une liste',
+  random__randrange: 'Générer aléatoirement un entier dans une étendue (range)',
+  random__seed_stmt: 'Initialiser le générateur aléatoire',
+  random__setstate: 'Mettre l\'état du générateur aléatoire à la valeur donnée'
+})
 eYo.DelegateSvg.Random.T3s = [
   eYo.T3.Stmt.random__import_stmt,
-  eYo.T3.Stmt.random__call_expr,
+  eYo.T3.Expr.random__call_expr,
   eYo.T3.Stmt.random__call_stmt,
   eYo.T3.Expr.random__randrange,
   eYo.T3.Stmt.random__seed_stmt,

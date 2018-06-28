@@ -167,7 +167,9 @@ eYo.KeyHandler = (function () {
     // otherwise, take the first model and pass it to handleModel
     var B = Blockly.selected
     if (B) {
-      var newB = B.eyo.insertBlockWithModel(B, model) || B.eyo.insertParentWithModel(B, model)
+      var newB = model.parent
+      ? B.eyo.insertParentWithModel(B, model) || B.eyo.insertBlockWithModel(B, model)
+      : B.eyo.insertBlockWithModel(B, model) || B.eyo.insertParentWithModel(B, model)
       if (newB) {
         var c8n = eYo.SelectedConnection.get()
         if (c8n) {
@@ -202,7 +204,7 @@ eYo.KeyHandler = (function () {
         do {
           var e8r = parent.eyo.inputEnumerator(parent)
           while (e8r.next()) {
-            if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && !c8n.eyo.optional_ && !c8n.targetConnection) {
+            if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && !c8n.eyo.optional_ && !c8n.targetConnection && !c8n.hidden_) {
               eYo.SelectedConnection.set(c8n)
               return true
             }
@@ -659,51 +661,51 @@ Ks = {
   '+': {
     type: eYo.T3.Expr.a_expr,
     operator: '+',
-    input: eYo.Key.LHS
+    slot: eYo.Key.LHS
   },
   '-': {
     type: eYo.T3.Expr.a_expr,
     operator: '-',
-    input: eYo.Key.LHS
+    slot: eYo.Key.LHS
   },
   '*': {
     type: eYo.T3.Expr.m_expr,
     operator: '*',
-    input: eYo.Key.LHS
+    slot: eYo.Key.LHS
   },
   '//': {
     type: eYo.T3.Expr.m_expr,
     operator: '//',
-    input: eYo.Key.LHS
+    slot: eYo.Key.LHS
   },
   '/': {
     type: eYo.T3.Expr.m_expr,
     operator: '/',
-    input: eYo.Key.LHS
+    slot: eYo.Key.LHS
   },
   '%': {
     type: eYo.T3.Expr.m_expr,
     operator: '%',
-    input: eYo.Key.LHS
+    slot: eYo.Key.LHS
   },
   '@': {
     type: eYo.T3.Expr.m_expr,
     operator: '@',
-    input: eYo.Key.LHS
+    slot: eYo.Key.LHS
   },
   '**': {
     type: eYo.T3.Expr.power,
-    input: eYo.Key.LHS
+    slot: eYo.Key.LHS
   },
   '<<': {
     type: eYo.T3.Expr.shift_expr,
     operator: '<<',
-    input: eYo.Key.LHS
+    slot: eYo.Key.LHS
   },
   '>>': {
     type: eYo.T3.Expr.shift_expr,
     operator: '>>',
-    input: eYo.Key.LHS
+    slot: eYo.Key.LHS
   },
   '&': eYo.T3.Expr.and_expr,
   '^': eYo.T3.Expr.xor_expr,
@@ -806,9 +808,11 @@ Ks = {
   },
   'float(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: {
-      name: 'float'
-    }
+    data: 'float'
+  },
+  'complex(…)': {
+    type: eYo.T3.Expr.call_expr,
+    data: 'complex'
   },
   'list(…)': {
     type: eYo.T3.Expr.call_expr,
@@ -818,39 +822,64 @@ Ks = {
   },
   'set(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: {
-      name: 'set'
-    }
+    data: 'set'
   },
   'len(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: {
-      name: 'len'
-    }
+    data: 'len'
   },
   'min(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: {
-      name: 'min'
-    }
+    data: 'min'
   },
   'max(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: {
-      name: 'max'
-    }
+    data: 'max'
   },
   'sum(…)': {
     type: eYo.T3.Expr.call_expr,
+    data: 'sum'
+  },
+  'pow(…)': {
+    type: eYo.T3.Expr.call_expr,
+    data: 'pow'
+  },
+  'trunc(…)': {
+    type: eYo.T3.Expr.call_expr,
+    data: 'trunc'
+  },
+  'abs(…)': {
+    type: eYo.T3.Expr.call_expr,
+    data: 'abs'
+  },
+  '….conjugate()': {
+    type: eYo.T3.Expr.call_expr,
     data: {
-      name: 'sum'
+      name: 'conjugate',
+      variant: eYo.Key.ATTRIBUTE
     }
   },
+  'f(…)': {
+    type: eYo.T3.Expr.call_expr,
+    data: ''
+  },
   'module as alias': eYo.T3.Expr.dotted_name_as,
-  '(…)': eYo.T3.Expr.parenth_form,
-  '[…]': eYo.T3.Expr.list_display,
-  '{…:…}': eYo.T3.Expr.dict_display,
-  '{…}': eYo.T3.Expr.set_display
+  '(…)': {
+    type: eYo.T3.Expr.parenth_form,
+    parent: true
+  },
+  '[…]': {
+    type: eYo.T3.Expr.list_display,
+    parent: true
+  },
+  '{…:…}': {
+    type: eYo.T3.Expr.dict_display,
+    parent: true
+  },
+  '{…}': {
+    type: eYo.T3.Expr.set_display,
+    parent: true
+  }
 }
 console.warn('Implement support for `key` in range above')
 console.warn('Problem when there can be both a statement and an expression for the same shortcut')

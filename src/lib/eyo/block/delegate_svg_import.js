@@ -71,31 +71,25 @@ eYo.DelegateSvg.List.makeSubclass('non_void_import_identifier_as_list', {
 eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
   data: {
     variant: {
-      IMPORT: 0,
-      FROM_MODULE_IMPORT: 1,
-      FROM_MODULE_IMPORT_STAR: 2,
-      all: [0, 1, 2],
-      init: 0,
+      IMPORT: eYo.Key.IMPORT,
+      FROM_MODULE_IMPORT: eYo.Key.FROM_MODULE_IMPORT,
+      FROM_MODULE_IMPORT_STAR: eYo.Key.FROM_MODULE_IMPORT_STAR,
+      all: [eYo.Key.IMPORT, eYo.Key.FROM_MODULE_IMPORT, eYo.Key.FROM_MODULE_IMPORT_STAR],
+      init: eYo.Key.IMPORT,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        // var disabled_1 = true, disabled_2 = true, disabled_3 = true, disabled_4 = true
-        // switch(newValue) {
-        //   case 0: disabled_1 = false; break
-        //   case 1: disabled_2 = disabled_3 = false; break
-        //   case 2: disabled_2 = disabled_4 = false; break
-        // }
-        var model = this.model
-        this.owner_.slots.import_module.setIncog(newValue !== model.IMPORT)
-        this.data.from.setIncog(newValue === model.IMPORT)
-        this.owner_.slots.import.setIncog(newValue !== model.FROM_MODULE_IMPORT)
-        this.owner_.slots.import_star.setIncog(newValue !== model.FROM_MODULE_IMPORT_STAR)
+        var M = this.model
+        this.owner_.slots.import_module.setIncog(newValue !== M.IMPORT)
+        this.data.from.setIncog(newValue === M.IMPORT)
+        this.owner_.slots.import.setIncog(newValue !== M.FROM_MODULE_IMPORT)
+        this.owner_.slots.import_star.setIncog(newValue !== M.FROM_MODULE_IMPORT_STAR)
       }
     },
     from: {
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
         var variant = this.data.variant.get()
-        var model = this.data.variant.model
-        return type.expr === eYo.T3.Expr.identifier || type.expr === eYo.T3.Expr.dotted_name || ((variant === model.FROM_MODULE_IMPORT) && (type.expr === eYo.T3.Expr.parent_module))
+        var M = this.data.variant.model
+        return type.expr === eYo.T3.Expr.identifier || type.expr === eYo.T3.Expr.dotted_name || ((variant === M.FROM_MODULE_IMPORT) && (type.expr === eYo.T3.Expr.parent_module))
           ? {validated: newValue} : null
       },
       synchronize: true
@@ -117,7 +111,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
           validate: true,
           endEditing: true,
           placeholder: eYo.Msg.Placeholder.MODULE,
-          variable: true
+          variable: true // change this to/with a `module` data
         }
       }
     },

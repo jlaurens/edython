@@ -23,7 +23,7 @@
       },
       title () {
         return this.copy
-          ? this.deep ? 'Copier le bloc sélectionné' : 'Copier le bloc sélectionné et les suivants'
+          ? this.deep ? 'Copier le bloc sélectionné et les suivants' : 'Copier le bloc sélectionné'
           : 'Coller le bloc du presse-papier'
       },
       name () {

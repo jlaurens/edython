@@ -69,9 +69,9 @@ eYo.DelegateSvg.Expr.makeSubclass('attributeref', {
 eYo.DelegateSvg.Expr.makeSubclass('slicing', {
   data: {
     variant: { // data named 'variant' have `xml = false`, by default
-      NAME: 0,
-      PRIMARY: 1,
-      all: [0, 1],
+      NAME: eYo.Key.NAME,
+      PRIMARY: eYo.Key.PRIMARY,
+      all: [eYo.Key.NAME, eYo.Key.PRIMARY],
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.data.name.setIncog(!!newValue) // not the slot !
         this.owner_.slots.primary.setIncog(!newValue)
@@ -361,7 +361,7 @@ eYo.DelegateSvg.Stmt.base_call_stmt.prototype.populateContextMenuFirst_ = functi
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('module_call_expr', {
+eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('module__call_expr', {
   data: {
     module: {
       order: 2,
@@ -397,15 +397,15 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('module_call_expr', {
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.base_call_stmt.makeSubclass('module_call_stmt', {
-  link: eYo.T3.Expr.module_call_expr
+eYo.DelegateSvg.Stmt.base_call_stmt.makeSubclass('module__call_stmt', {
+  link: eYo.T3.Expr.module__call_expr
 })
 
 /**
  * Template for contextual menu content.
  * @param {!Blockly.Block} block The block.
  */
-eYo.DelegateSvg.Expr.module_call_expr.prototype.contentTemplate = eYo.DelegateSvg.Stmt.module_call_stmt.prototype.contentTemplate = function (block) {
+eYo.DelegateSvg.Expr.module__call_expr.prototype.contentTemplate = eYo.DelegateSvg.Stmt.module__call_stmt.prototype.contentTemplate = function (block) {
   return (this.data.module.get() || 'foo') + '.' + (this.data.module.get() || 'bar')
 }
 
@@ -420,11 +420,11 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
   data: {
     variant: {
       order: 100,
-      NAME: 0,
-      BUILTIN: 1,
-      EXPRESSION: 2,
-      ATTRIBUTE: 3,
-      all: [0, 1, 2, 3],
+      NAME: eYo.Key.NAME,
+      BUILTIN: eYo.Key.BUILTIN,
+      EXPRESSION: eYo.Key.EXPRESSION,
+      ATTRIBUTE: eYo.Key.ATTRIBUTE,
+      all: [eYo.Key.NAME, eYo.Key.BUILTIN, eYo.Key.EXPRESSION, eYo.Key.ATTRIBUTE],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         var M = this.model
         if (newValue === M.ATTRIBUTE) {
@@ -457,13 +457,16 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
           switch (this.data.name.get()) {
             case 'int':
             case 'float':
+            case 'complex':
             case 'len':
-            case 'min':
-            case 'max':
             case 'input':
             return newValue === this.model.UNARY ? {validated: newValue}: null
+            case 'trunc':
+            return this.model.BINARY ? {validated: newValue}: null
             case 'list':
             case 'set':
+            case 'min':
+            case 'max':
             case 'sum':
             default:
             return newValue === this.model.N_ARY ? {validated: newValue}: null
@@ -478,8 +481,9 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
       xml: false
     },
     name: {
-      all: ['input', 'int', 'float', 'list', 'set', 'len', 'min', 'max', 'sum'],
+      all: ['input', 'int', 'float', 'list', 'set', 'len', 'min', 'max', 'sum', 'trunc', 'pow', 'abs', 'complex', 'conjugate'],
       init: 'int',
+      main: true,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type.raw === eYo.T3.Expr.builtin__name
@@ -497,13 +501,20 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
             this.data.variant.set(M.BUILTIN)
           }
           switch (newValue) {
+            case 'conjugate':
+            this.data.ary.set(this.data.ary.model.NO_ARY)
+            break
             case 'int':
             case 'float':
+            case 'complex':
             case 'len':
-            case 'min':
-            case 'max':
+            case 'abs':
             this.data.isOptionalUnary.set(false)
             this.data.ary.set(this.data.ary.model.UNARY)
+            break
+            case 'pow':
+            case 'trunc':
+            this.data.ary.set(this.data.ary.model.BINARY)
             break
             case 'input':
             this.data.isOptionalUnary.set(true)
@@ -511,6 +522,8 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
             break
             case 'list':
             case 'set':
+            case 'min':
+            case 'max':
             case 'sum':
             this.data.ary.set(this.data.ary.model.N_ARY)
           }
@@ -696,8 +709,8 @@ eYo.DelegateSvg.Primary.T3s = [
   eYo.T3.Expr.subscription,
   eYo.T3.Expr.base_call_expr,
   eYo.T3.Stmt.base_call_stmt,
-  eYo.T3.Expr.module_call_expr,
-  eYo.T3.Stmt.module_call_stmt,
+  eYo.T3.Expr.module__call_expr,
+  eYo.T3.Stmt.module__call_stmt,
   eYo.T3.Expr.call_expr,
   eYo.T3.Stmt.call_stmt
 ]

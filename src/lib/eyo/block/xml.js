@@ -36,6 +36,7 @@ goog.require('Blockly.Xml')
 goog.require('goog.dom');
 
 goog.require('eYo.DelegateSvg.Random');
+goog.require('eYo.DelegateSvg.Math');
 
 eYo.Xml = {
   EXPR: 'x', // tag name
@@ -312,6 +313,9 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
       // TODO(@picklesrus): #387. Remove when domToBlock avoids resizing.
       workspace.resizeContents();
     }
+  } catch (err) {
+    console.error(err)
+    throw err
   } finally {
     Blockly.Events.enable();
   }
@@ -720,7 +724,9 @@ eYo.Xml.stringToBlock = function (string, workspace) {
   try {
     var dom = eYo.Do.stringToDom(string)
     block = dom && eYo.Xml.domToBlock(dom.documentElement, workspace)
-  } finally {
+  } catch (err) {
+    console.error(err)
+    throw err
   }
   return block
 }

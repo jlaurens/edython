@@ -282,10 +282,6 @@ eYo.DelegateSvg.prototype.postInitSvg = function (block) {
       block.getSvgRoot(), 'mousedown', block, block.onMouseDown_);
     Blockly.bindEventWithChecks_(
       block.getSvgRoot(), 'mouseup', block, block.onMouseUp_);
-    Blockly.bindEventWithChecks_(
-      this.svgPathContour_, 'mousedown', block, block.onMouseDown_)
-    Blockly.bindEventWithChecks_(
-      this.svgPathContour_, 'mouseup', block, block.onMouseUp_)
   }
   this.eventsInit_ = true
 }
@@ -625,7 +621,9 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
     // an orphan block or a statement block
     var parent
     if ((parent = block.getParent())) {
-      while (parent.outputConnection && (parent = parent.getParent())) {
+      var next
+      while (parent.outputConnection && (next = parent.getParent())) {
+        parent = next
       }
       if (parent && !parent.eyo.downRendering) {
         if (!parent.eyo.upRendering && block.outputConnection === eYo.Connection.connectedParentC8n || eYo.Connection.connectedParentC8n && eYo.Connection.connectedParentC8n.sourceBlock_ === block) {
@@ -695,6 +693,9 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
     if (eYo.traceOutputConnection && block.outputConnection) {
       console.log('block.outputConnection', block.outputConnection.x_, block.outputConnection.y_)
     }
+  } catch (err) {
+    console.error(err)
+    throw err
   } finally {
     if (eYo.DelegateSvg.debugStartTrackingRender &&  eYo.DelegateSvg.debugPrefix.length) {
       eYo.DelegateSvg.debugPrefix = eYo.DelegateSvg.debugPrefix.substring(1)
@@ -1890,7 +1891,7 @@ eYo.DelegateSvg.prototype.delayedRender = function (block) {
  */
 eYo.DelegateSvg.newBlockReady = function (workspace, model, id) {
   var B = this.newBlockComplete(workspace, model, id)
-  B.eyo.beReady(B)
+  B && B.eyo.beReady(B)
   return B
 }
 
@@ -2806,19 +2807,28 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
       if (c8n.type === Blockly.INPUT_VALUE) {
         var target = c8n.targetBlock()
         if (target) {
-          if ((c8n = target.eyo.getConnectionForEvent(target, e))) {
-            return c8n
+          var targetC8n = target.eyo.getConnectionForEvent(target, e)
+          if (targetC8n) {
+            return targetC8n
           }
-        } else {
           var R = new goog.math.Rect(
-            c8n.offsetInBlock_.x - eYo.Font.space / 2,
-            c8n.offsetInBlock_.y + eYo.Padding.t(),
-            c8n.eyo.optional_ || c8n.eyo.s7r_ ? 2 * eYo.Font.space : 4 * eYo.Font.space,
-            eYo.Font.height
+            c8n.offsetInBlock_.x,
+            c8n.offsetInBlock_.y,
+            target.width,
+            target.height
           )
           if (R.contains(where)) {
             return c8n
           }
+        }
+        R = new goog.math.Rect(
+          c8n.offsetInBlock_.x - eYo.Font.space / 4,
+          c8n.offsetInBlock_.y + eYo.Padding.t(),
+          c8n.eyo.optional_ || c8n.eyo.s7r_ ? 1.5 * eYo.Font.space : 3.5 * eYo.Font.space,
+          eYo.Font.height
+        )
+        if (R.contains(where)) {
+          return c8n
         }
       } else if (c8n.type === Blockly.NEXT_STATEMENT) {
         R = new goog.math.Rect(
@@ -2884,6 +2894,9 @@ eYo.SelectedConnection = (function () {
     set: /** @suppress {globalThis} */ function (connection) {
       var B
       if (connection) {
+        if (connection.hidden_) {
+          console.error('Do not select a hidden connection')
+        }
         var block = connection.getSourceBlock()
         if (block) {
           if (block.eyo.locked_) {

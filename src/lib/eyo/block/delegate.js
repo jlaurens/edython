@@ -421,7 +421,7 @@ eYo.Delegate.prototype.consolidateType = function (block) {
  * @param {!function} helper
  * @return {boolean} whether there was an slot to act upon or a valid helper
  */
-eYo.Delegate.prototype.foreachSlot = function (helper) {
+eYo.Delegate.prototype.someSlot = function (helper) {
   var slot = this.headSlot
   if (slot && goog.isFunction(helper)) {
     var last
@@ -431,6 +431,21 @@ eYo.Delegate.prototype.foreachSlot = function (helper) {
     return true
   }
   return false
+}
+
+/**
+ * execute the given function for the head slot of the receiver and its next sibling.
+ * For edython.
+ * @param {!function} helper
+ * @return {boolean} whether there was an slot to act upon or a valid helper
+ */
+eYo.Delegate.prototype.foreachSlot = function (helper) {
+  var slot = this.headSlot
+  if (slot && goog.isFunction(helper)) {
+    do {
+      helper.call(slot)
+    } while ((slot = slot.next))
+  }
 }
 
 /**

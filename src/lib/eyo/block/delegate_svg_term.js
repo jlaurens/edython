@@ -71,6 +71,26 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
         xml: false
       },
       variant: {
+        NAME: eYo.Key.NAME,
+        NAME_DEFINITION: eYo.Key.NAME_DEFINITION,
+        NAME_ALIAS: eYo.Key.NAME_ALIAS,
+        STAR: eYo.Key.STAR,
+        STAR_NAME: eYo.Key.STAR_NAME,
+        STAR_STAR_NAME: eYo.Key.STAR_STAR_NAME,
+        NAME_ANNOTATION: eYo.Key.NAME_ANNOTATION,
+        STAR_NAME_ANNOTATION: eYo.Key.STAR_NAME_ANNOTATION,
+        NAME_ANNOTATION_DEFINITION: eYo.Key.NAME_ANNOTATION_DEFINITION,
+        all: [
+          eYo.Key.NAME,
+          eYo.Key.NAME_DEFINITION,
+          eYo.Key.NAME_ALIAS,
+          eYo.Key.STAR,
+          eYo.Key.STAR_NAME,
+          eYo.Key.STAR_STAR_NAME,
+          eYo.Key.NAME_ANNOTATION,
+          eYo.Key.STAR_NAME_ANNOTATION,
+          eYo.Key.NAME_ANNOTATION_DEFINITION
+        ],
         validate: /** @suppress {globalThis} */ function (newValue) {
           // this may be called very early
           var values = this.getAll()
@@ -92,6 +112,75 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
             return {validated: values[0]}
           }
           return {validated: newValue}
+        },
+        didChange: function (oldValue, newValue) {
+          var M = this.model
+          this.data.name.required = newValue === M.STAR_NAME
+          this.data.alias.required = newValue === M.NAME_ALIAS
+          this.owner_.slots.annotation.required = newValue === M.NAME_ANNOTATION || newValue === M.STAR_NAME_ANNOTATION || newValue === M.NAME_ANNOTATION_DEFINITION
+          this.owner_.slots.definition.required = newValue === M.NAME_DEFINITION || newValue === M.NAME_ANNOTATION_DEFINITION
+          var newModifier = newValue === M.STAR || newValue === M.STAR_NAME || newValue === M.STAR_NAME_ANNOTATION ? '*' : (newValue === M.STAR_STAR_NAME ? '**' : '')
+          this.data.modifier.set(newModifier)
+          this.data.name.setIncog(newValue === M.STAR)
+          this.data.alias.setIncog(newValue !== M.NAME_ALIAS)
+        },
+        synchronize: function (newValue) {
+          var M = this.model
+          this.owner_.slots.annotation.setIncog(newValue !== M.NAME_ANNOTATION &&
+          newValue !== M.STAR_NAME_ANNOTATION &&
+          newValue !== M.NAME_ANNOTATION_DEFINITION)
+          this.owner_.slots.definition.setIncog(newValue !== M.NAME_DEFINITION &&
+          newValue !== M.NAME_ANNOTATION_DEFINITION)
+        },
+        consolidate: function () {
+          var newVariant = this.get()
+          var M = this.model
+          var modifier = this.data.modifier.get()
+          var withAnnotation = this.owner_.slots.annotation.isRequiredFromDom()
+          var withDefinition = this.owner_.slots.definition.isRequiredFromDom()
+          if (this.data.alias.isActive() || this.data.alias.isRequiredFromDom()) {
+            newVariant = M.NAME_ALIAS
+          } else if (modifier === '**') {
+            newVariant = M.STAR_STAR_NAME
+          } else if (modifier === '*') {
+            if (withAnnotation) {
+              newVariant = M.STAR_NAME_ANNOTATION
+            } else if (!this.data.name.isActive() && !this.data.name.isRequiredFromDom()) {
+              newVariant = M.STAR
+            } else if (newVariant !== M.STAR_NAME && newVariant !== M.STAR_NAME_ANNOTATION) {
+              newVariant = M.STAR_NAME
+            }
+          } else if (withDefinition) {
+            // newVariant must be one of the variants with `DEFINITION`
+            if (withAnnotation) {
+              // newVariant must also be one of the variants with `ANNOTATION`
+              newVariant = M.NAME_ANNOTATION_DEFINITION
+            } else if (newVariant !== M.NAME_DEFINITION && newVariant !== M.NAME_ANNOTATION_DEFINITION) {
+              newVariant = M.NAME_DEFINITION
+            }
+          } else if (withAnnotation) {
+            // newVariant must be one of the variants with `ANNOTATION`
+            if (newVariant !== M.NAME_ANNOTATION && newVariant !== M.STAR_NAME_ANNOTATION && newVariant !== M.NAME_ANNOTATION_DEFINITION) {
+              newVariant = M.NAME_ANNOTATION
+            }
+          } else {
+            // no STAR allowed
+            if (newVariant === M.STAR || newVariant === M.STAR_NAME || newVariant === M.STAR_NAME_ANNOTATION || newVariant === M.STAR_START_NAME) {
+              newVariant = M.NAME
+            }
+          }
+          var expected = M.byNameType[this.data.nameType.get()]
+          if (expected && expected.indexOf(newVariant) < 0) { // maybe newVariant is undefined
+            if (withDefinition) {
+              newVariant = withAnnotation ? M.NAME_ANNOTATION_DEFINITION : M.NAME_DEFINITION
+            }
+            if (expected.indexOf(newVariant) < 0) {
+              newVariant = withAnnotation ? M.NAME_ANNOTATION : M.NAME
+            }
+          }
+          this.data.name.clearRequiredFromDom()
+          this.data.alias.clearRequiredFromDom()
+          this.data.variant.set(newVariant, true)
         }
       },
       phantom: {
@@ -167,7 +256,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
         } else {
           var sourceData = this.sourceBlock_.eyo.data.phantom || this.sourceBlock_.eyo.data.value
           if (sourceData) {
-            source.eyo.foreachSlot(function() {
+            source.eyo.someSlot(function() {
               var input = this.input
               if (input && input.connection === targetC8n) {
                 var data = input.connection.eyo.hole_data
@@ -187,88 +276,11 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
       }
     }
   }
-  var keys = ['NAME', 'NAME_DEFINITION', 'NAME_ALIAS',
-    'STAR', 'STAR_NAME', 'STAR_STAR_NAME', 'NAME_ANNOTATION', 'STAR_NAME_ANNOTATION', 'NAME_ANNOTATION_DEFINITION']
   var DD = D.data.variant
-  DD.all = []
-  for (var i = 0; i < keys.length; i++) {
-    DD[keys[i]] = i
-    DD.all.push(i)
-  }
   var DDD = DD.byNameType = Object.create(null)
   DDD[eYo.T3.Expr.identifier] = DD.all
   DDD[eYo.T3.Expr.dotted_name] = [DD.NAME, DD.NAME_ALIAS, DD.STAR_NAME, DD.STAR]
   DDD[eYo.T3.Expr.parent_module] = [DD.NAME]
-  DD.didChange = function (oldValue, newValue) {
-    var model = this.model
-    this.data.name.required = newValue === model.STAR_NAME
-    this.data.alias.required = newValue === model.NAME_ALIAS
-    this.owner_.slots.annotation.required = newValue === model.NAME_ANNOTATION || newValue === model.STAR_NAME_ANNOTATION || newValue === model.NAME_ANNOTATION_DEFINITION
-    this.owner_.slots.definition.required = newValue === model.NAME_DEFINITION || newValue === model.NAME_ANNOTATION_DEFINITION
-    var newModifier = newValue === model.STAR || newValue === model.STAR_NAME || newValue === model.STAR_NAME_ANNOTATION ? '*' : (newValue === model.STAR_STAR_NAME ? '**' : '')
-    this.data.modifier.set(newModifier)
-    this.data.name.setIncog(newValue === model.STAR)
-    this.data.alias.setIncog(newValue !== model.NAME_ALIAS)
-  }
-  DD.synchronize = function (newValue) {
-    var model = this.model
-    this.owner_.slots.annotation.setIncog(newValue !== model.NAME_ANNOTATION &&
-    newValue !== model.STAR_NAME_ANNOTATION &&
-    newValue !== model.NAME_ANNOTATION_DEFINITION)
-    this.owner_.slots.definition.setIncog(newValue !== model.NAME_DEFINITION &&
-    newValue !== model.NAME_ANNOTATION_DEFINITION)
-  }
-  DD.consolidate = function () {
-    var newVariant = this.get()
-    var model = this.model
-    var modifier = this.data.modifier.get()
-    var withAnnotation = this.owner_.slots.annotation.isRequiredFromDom()
-    var withDefinition = this.owner_.slots.definition.isRequiredFromDom()
-
-    if (this.data.alias.isActive() || this.data.alias.isRequiredFromDom()) {
-      newVariant = model.NAME_ALIAS
-    } else if (modifier === '**') {
-      newVariant = model.STAR_STAR_NAME
-    } else if (modifier === '*') {
-      if (withAnnotation) {
-        newVariant = model.STAR_NAME_ANNOTATION
-      } else if (!this.data.name.isActive() && !this.data.name.isRequiredFromDom()) {
-        newVariant = model.STAR
-      } else if (newVariant !== model.STAR_NAME && newVariant !== model.STAR_NAME_ANNOTATION) {
-        newVariant = model.STAR_NAME
-      }
-    } else if (withDefinition) {
-      // newVariant must be one of the variants with `DEFINITION`
-      if (withAnnotation) {
-        // newVariant must also be one of the variants with `ANNOTATION`
-        newVariant = model.NAME_ANNOTATION_DEFINITION
-      } else if (newVariant !== model.NAME_DEFINITION && newVariant !== model.NAME_ANNOTATION_DEFINITION) {
-        newVariant = model.NAME_DEFINITION
-      }
-    } else if (withAnnotation) {
-      // newVariant must be one of the variants with `ANNOTATION`
-      if (newVariant !== model.NAME_ANNOTATION && newVariant !== model.STAR_NAME_ANNOTATION && newVariant !== model.NAME_ANNOTATION_DEFINITION) {
-        newVariant = model.NAME_ANNOTATION
-      }
-    } else {
-      // no STAR allowed
-      if (newVariant === model.STAR || newVariant === model.STAR_NAME || newVariant === model.STAR_NAME_ANNOTATION || newVariant === model.STAR_START_NAME) {
-        newVariant = model.NAME
-      }
-    }
-    var expected = model.byNameType[this.data.nameType.get()]
-    if (expected && expected.indexOf(newVariant) < 0) { // maybe newVariant is undefined
-      if (withDefinition) {
-        newVariant = withAnnotation ? model.NAME_ANNOTATION_DEFINITION : model.NAME_DEFINITION
-      }
-      if (expected.indexOf(newVariant) < 0) {
-        newVariant = withAnnotation ? model.NAME_ANNOTATION : model.NAME
-      }
-    }
-    this.data.name.clearRequiredFromDom()
-    this.data.alias.clearRequiredFromDom()
-    this.data.variant.set(newVariant, true)
-  }
   return D
 })
 

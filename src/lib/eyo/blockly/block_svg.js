@@ -208,6 +208,8 @@ eYo.BlockSvg.prototype.addSelect = function () {
       }
     }
   }
+  eYo.App.didAddSelect && eYo.App.didAddSelect(this)
+  console.log('DID ADD SELECT TO', this.type)
 }
 
 /**
@@ -224,10 +226,10 @@ eYo.BlockSvg.prototype.removeSelect = function () {
       if (this.svgGroup_) { // how come that we must test that?
         goog.dom.classlist.remove(this.svgGroup_, 'eyo-select')
       }
-      if (this.eyo.svgContourGroup_) { // how come that we must test that?
+      if (this.eyo.svgContourGroup_) { // how come that we must test that? because some beReady message was not sent to the correct target
         goog.dom.classlist.remove(this.eyo.svgContourGroup_, 'eyo-select')
       }
-          return
+      return
     }
   }
   if (this.svgGroup_) {
@@ -254,6 +256,8 @@ eYo.BlockSvg.prototype.removeSelect = function () {
       }
     }
   }
+  eYo.App.didRemoveSelect && eYo.App.didRemoveSelect(this)
+  console.log('DID REMOVE SELECT FROM', this.type)
 }
 
 /**
@@ -450,32 +454,37 @@ eYo.BlockSvg.prototype.showContextMenu_ = function (e) {
  * @private
  */
 eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
+  console.log('MOUSE DOWN 1', this.type)
   if (this.eyo.wrapped_) {
     // mouse down on a wrapped block means dragging
     // but dragging is not allowd for that blocks
     return
   }
+  console.log('MOUSE DOWN 2', this.type)
   if (this.eyo.locked_) {
     var parent = this.getSurroundParent()
     if (parent) {
       return
     }
   }
+  console.log('MOUSE DOWN 3', this.type)
   if (this.eyo.lastMouseDownEvent_ === e) {
     return
   }
-  this.eyo.lastMouseDownEvent_ = e
+  // unfortunately, the mouse events do not find there way to the proper block
+  var c8n = this.eyo.getConnectionForEvent(this, e)
+  var target = c8n ? c8n.targetBlock() || c8n.sourceBlock_ : this
+  console.log('MOUSE DOWN 4', target.type)
+  target.eyo.lastMouseDownEvent_ = e
   // Next is not good design
   // remove any selected connection, if any
   // but remember it for a contextual menu
-  this.eyo.lastSelectedConnection = eYo.SelectedConnection.get()
+  target.eyo.lastSelectedConnection = eYo.SelectedConnection.get()
   eYo.SelectedConnection.set(null)
-  this.eyo.selectedConnectionSource_ = null
+  target.eyo.selectedConnectionSource_ = null
   // Prepare the mouseUp event for an eventual connection selection
-  this.eyo.lastMouseDownEvent = this === Blockly.selected ? e : null
-  eYo.BlockSvg.superClass_.onMouseDown_.call(this, e)
-  // e.preventDefault()
-  // e.stopPropagation()
+  target.eyo.lastMouseDownEvent = target === Blockly.selected ? e : null
+  eYo.BlockSvg.superClass_.onMouseDown_.call(target, e)
 }
 
 /**
@@ -485,27 +494,37 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
  * but the shape of the connection as it shows when blocks are moved close enough.
  */
 eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
-  if (this.eyo.lastMouseUpEvent_ === e) {
+  console.log('ON MOUSE UP 1', this.type)
+  var c8n = this.eyo.getConnectionForEvent(this, e)
+  var target = c8n ? c8n.targetBlock() || c8n.sourceBlock_ : this
+  console.log('ON MOUSE UP 2', target.type)
+  if (target.eyo.lastMouseUpEvent_ === e) {
     return
   }
-  this.eyo.lastMouseUpEvent_ = e
-  var ee = this.eyo.lastMouseDownEvent
+  target.eyo.lastMouseUpEvent_ = e
+  var ee = target.eyo.lastMouseDownEvent
   if (ee) {
-    // this block was selected when the mouse down event was sent
+    // a block was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
-      if (this === Blockly.selected) {
+      console.log('ON MOUSE UP NOT DRAG MOVE', Blockly.selected && Blockly.selected.type)
+      if (target === Blockly.selected) {
         // if the block was already selected,
         // try to select an input connection
-        var c8n = this.eyo.getConnectionForEvent(this, e)
-        if (c8n !== this.eyo.lastSelectedConnection) {
+        if (c8n && c8n === eYo.SelectedConnection.get()) {
+          eYo.SelectedConnection.set(null)
+        } else if (c8n && !c8n.targetConnection && c8n !== target.eyo.lastSelectedConnection) {
           eYo.SelectedConnection.set(c8n)
+        } else {
+          eYo.SelectedConnection.set(null)
         }
       }
     } else {
       // a drag move
       eYo.SelectedConnection.set(null)
     }
+  } else {
+    console.log('ON MOUSE UP NO LAST MOUSEDOWN', Blockly.selected && Blockly.selected.type)
   }
   eYo.App.didTouchBlock && eYo.App.didTouchBlock(Blockly.selected)
 }

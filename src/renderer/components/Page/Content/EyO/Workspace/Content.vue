@@ -3,19 +3,14 @@
       <icon-base id="svg-control-image-v" icon-name="triangle"><icon-triangle /></icon-base>
       <b-dropdown id="eyo-flyout-dropdown" class="eyo-dropdown"  v-on:show="doShow()">
       <template slot="button-content">
-        {{titles[selected]}}
+        {{selected.content}}
       </template>
-      <b-dropdown-item-button v-on:click="selected = 'basic'" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{titles.basic}}</b-dropdown-item-button>
-      <b-dropdown-item-button v-on:click="selected = 'intermediate'" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{titles.intermediate}}</b-dropdown-item-button>
-      <b-dropdown-item-button v-on:click="selected = 'advanced'" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{titles.advanced}}</b-dropdown-item-button>
-      <b-dropdown-item-button v-on:click="selected = 'expert'" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{titles.expert}}</b-dropdown-item-button>
+      <b-dropdown-item-button v-for="item in levels" v-on:click="selected = item" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
       <b-dropdown-divider></b-dropdown-divider>
-      <b-dropdown-item-button v-on:click="selected = 'branching'" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{titles.branching}}</b-dropdown-item-button>
-      <b-dropdown-item-button v-on:click="selected = 'list'" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{titles.list}}</b-dropdown-item-button>
-      <b-dropdown-item-button v-on:click="selected = 'looping'" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{titles.looping}}</b-dropdown-item-button>
-      <b-dropdown-item-button v-on:click="selected = 'function'" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{titles.function}}</b-dropdown-item-button>
+      <b-dropdown-item-button v-for="item in categories" v-on:click="selected = item" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
       <b-dropdown-divider></b-dropdown-divider>
-      <b-dropdown-item-button v-on:click="selected = 'random__module'" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{titles.random__module}}</b-dropdown-item-button>
+      <b-dropdown-header v-bind:style="{fontFamily: $eYo.Font.familySans}">{{modulesContent}}</b-dropdown-header>
+      <b-dropdown-item-button v-for="item in modules" v-on:click="selected = item" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
     </b-dropdown>
   </div>
 </template>
@@ -33,34 +28,71 @@
       IconBug
     },
     data: function () {
-      return {
-        selected: 'basic',
-        titles: {
-          basic: eYo.Msg.BASIC,
-          intermediate: eYo.Msg.INTERMEDIATE,
-          advanced: eYo.Msg.ADVANCED,
-          expert: eYo.Msg.EXPERT,
-          branching: eYo.Msg.BRANCHING,
-          list: eYo.Msg.LIST,
-          looping: eYo.Msg.LOOPING,
-          function: eYo.Msg.FUNCTION,
-          random__module: 'random'
-        },
+      var model = {
+        items: {},
         workspace: null,
         flyout: null
       }
+      var F = function (name) {
+        model.items[name] = {
+          name: name,
+          content: eYo.Msg[name.toUpperCase()]
+        }
+      }
+      F('basic')
+      F('intermediate')
+      F('expert')
+      F('advanced')
+      F('math')
+      F('text')
+      F('list')
+      F('branching')
+      F('looping')
+      F('function')
+      var moduleF = function (name) {
+        model.items[name + '__module'] = {
+          name: name,
+          content: name
+        }
+      }
+      moduleF('math')
+      moduleF('random')
+      moduleF('turtle')
+      model.selected = model.items.basic
+      model.levels = [
+        model.items.basic,
+        model.items.intermediate,
+        model.items.advanced,
+        model.items.expert
+      ]
+      model.categories = [
+        model.items.math,
+        model.items.text,
+        model.items.list,
+        model.items.branching,
+        model.items.looping,
+        model.items.function
+      ]
+      model.modules = [
+        model.items.math__module,
+        model.items.random__module,
+        model.items.turtle__module
+      ]
+      model.modulesContent = 'modules'
+      return model
     },
     watch: {
-      // whenever question changes, this function will run
+      // whenever `selected` changes, this function will run
       selected: function (newValue, oldValue) {
         this.doSelect(newValue)
       }
     },
     methods: {
-      doSelect: function (category) {
+      doSelect: function (item) {
+        var category = item.name
         if (this.workspace && this.flyout) {
           var list = this.flyout.eyo.getList(category)
-          if (list.length) {
+          if (list && list.length) {
             this.flyout.show(list)
           }
         }

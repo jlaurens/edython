@@ -287,7 +287,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/workspace/tooltip.js" \
 --js "src/lib/eyo/block/delegate_svg_literal.js" \
 --js "src/lib/eyo/block/delegate_svg_list.js" \
---js "src/lib/eyo/block/delegate_svg_math.js" \
 --js "src/lib/eyo/block/delegate_svg_operator.js" \
 --js "src/lib/eyo/block/delegate_svg_term.js" \
 --js "src/lib/eyo/workspace/flyout.js" \
@@ -304,6 +303,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate_svg_primary.js" \
 --js "src/lib/eyo/block/delegate_svg_print.js" \
 --js "src/lib/eyo/block/delegate_svg_yield.js" \
+--js "src/lib/eyo/block/delegate_svg_math.js" \
 --js "src/lib/eyo/block/delegate_svg_proc.js" \
 --js "src/lib/eyo/block/delegate_svg_random.js" \
 --js "src/lib/eyo/block/delegate_svg_try.js" \

@@ -529,11 +529,11 @@ eYo.Consolidator.List.prototype.getIO = function (block) {
   var unwrapped = block.eyo.getUnwrapped(block)
   var io = {
     block: block,
-    noLeftSeparator: (block.workspace.eyo.options.noLeftSeparator ||
+    noLeftSeparator: block.workspace && (block.workspace.eyo.options.noLeftSeparator ||
       block.workspace.eyo.options.noDynamicList) &&
       (!unwrapped ||
         (!unwrapped.eyo.withLeftSeparator_ && !unwrapped.eyo.withDynamicList_)),
-    noDynamicList: (block.workspace.eyo.options.noDynamicList) &&
+    noDynamicList: block.workspace && (block.workspace.eyo.options.noDynamicList) &&
       (!unwrapped ||
         !unwrapped.eyo.withDynamicList_),
     list: block.inputList,

@@ -114,7 +114,7 @@ keyword_item         ::=  identifier "=" expression
 call -> call_expr
 call_expr/call ::=  primary "(" argument_list_comprehensive ")"
 base_call_expr ::= "name" "(" argument_list_comprehensive ")"
-module_call_expr ::= module."name" "(" argument_list_comprehensive ")"
+module__call_expr ::= module."name" "(" argument_list_comprehensive ")"
 expression_star ::= "*" expression
 expression_star_star ::= "**" expression
 argument_any ::= expression | expression_star | expression_star_star | keyword_item

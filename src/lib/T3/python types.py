@@ -24,9 +24,11 @@ if __name__ != "main":
     print(path7)
     path8 = pathlib.Path(__file__).parent / 'random.html'
     print(path8)
+    path9 = pathlib.Path(__file__).parent / 'math.html'
+    print(path9)
 
 # do not change the order of the path arguments
-    types = T3.Types(path1, path2, path3, path4, path5, path6, path7, path8)
+    types = T3.Types(path1, path2, path3, path4, path5, path6, path7, path8, path9)
     t = types.get_type("call")
     print(t.name, t.alias.name if t.alias else None)
     print(types.get_T3_data(debug = True))

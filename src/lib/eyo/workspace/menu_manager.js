@@ -379,8 +379,8 @@ eYo.MenuManager.prototype.populateLast = function (block) {
       try {
         eYo.HoleFiller.fillDeepHoles(block.workspace, holes)
       } catch (err) {
-        
-    throw err
+        console.error(err)
+        throw err
       } finally {
         eYo.Events.setGroup(false)
       }
@@ -396,6 +396,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
             block.eyo.unlock(block)
           } catch (err) {
             console.error(err)
+            throw err
           } finally {
             eYo.Events.setGroup(false)
           }

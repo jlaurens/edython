@@ -134,6 +134,9 @@ eYo.PythonExporter.prototype.export = function (block, is_deep) {
     if (is_deep && block.nextConnection && (target = block.nextConnection.targetBlock())) {
       this.export(target, true)
     }  
+  } catch (err) {
+    console.error(err)
+    throw err
   } finally {
     --this.depth
   }

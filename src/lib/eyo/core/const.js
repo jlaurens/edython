@@ -67,18 +67,8 @@ eYo.Key = {
   DEL: 'del',
   RETURN: 'return',
 
-  IMPORT_MODULE: 'import_module',
-
-  SUBTYPE: 'subtype', // this MUST be in lower case
   VALUE: 'value', // this MUST be in lower case
-  CONTENT: 'content', // this MUST be in lower case
-  VARIANT: 'variant', // this MUST be in lower case
-  ALIAS: 'alias', // this MUST be in lower case
-  BUILTIN: 'builtin', // this MUST be in lower case
-
-  EDIT: 'edit', // this MUST be in lower case
-
-  LIST: 'list', // avoid this one when possible
+  LIST: 'list',
 
   ASYNC: 'async',
   AWAIT: 'await',
@@ -86,9 +76,6 @@ eYo.Key = {
   SUITE: 'suite', // this MUST be in lower case
   COMP_FOR: 'comp_for',
 
-  NAME: 'name',
-  DOTTED_NAME: 'dotted_name',
-  ANNOTATION: 'annotation',
   IF: 'if',
   ELIF: 'elif',
   ELSE: 'else',
@@ -110,8 +97,6 @@ eYo.Key = {
   RAISE: 'raise',
   FROM: 'from',
   MODULE: 'module',
-  IMPORT: 'import',
-  IMPORT_STAR: 'import_star',
   PARENT: 'parent',
   AS: 'as',
   SOURCE: 'source',
@@ -149,8 +134,25 @@ eYo.Key = {
   VAR: 'VAR',
   ANN: 'ANN',
   DFT: 'DFT',
-  ID: 'ID'
+  ID: 'ID',
+  // model variants keys
+  NAME: 'NAME',
+  DOTTED_NAME: 'dotted_name',
+  NAME_DEFINITION: 'name_definition',
+  NAME_ALIAS: 'name_alias',
+  STAR: 'star',
+  STAR_NAME: 'star_name',
+  STAR_STAR_NAME: 'star_star_name',
+  NAME_ANNOTATION: 'name_annotation',
+  STAR_NAME_ANNOTATION: 'star_name_annotation',
+  NAME_ANNOTATION_DEFINITION: 'name_annotation_definition',
+  
+  BUILTIN: 'builtin',
+  EXPRESSION: 'expression',
 
+  IMPORT: 'import',
+  FROM_MODULE_IMPORT: 'from_module_import',
+  FROM_MODULE_IMPORT_STAR: 'from_module_import_star',
   /*
 "LIST", "EXPRESSION", "FOR", "ITER", "IN", "IF", "COMP", "PRIMARY", "ATTRIBUTE", "LOWER_BOUND", "UPPER_BOUND", "STRIDE", "KEY", "VALUE", "ARGUMENT", "POWER", "RHS", "LHS", "ELSE", "DATUM", "IMPORT", "SOURCE", "AS", "FROM", "MODULE", "NAME", "DEFINITION", "TYPE", "PARENT", "DO", "COND", "WRAP", "TARGET", "ANNOTATED", "ASSIGNED", "ASSERT", "RAISE"
 */
