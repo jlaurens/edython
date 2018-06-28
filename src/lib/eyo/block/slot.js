@@ -14,7 +14,7 @@
 goog.provide('eYo.Slot')
 
 goog.require('eYo.Do')
-goog.require('Blockly.Input')
+goog.require('eYo.ConnectionDelegate')
 goog.require('goog.dom');
 goog.forwardDeclare('eYo.Xml')
 
@@ -761,5 +761,76 @@ eYo.Slot.prototype.load = function (element) {
       xml.didLoad.call(this)
     }
     return out
+  }
+}
+
+/**
+ * execute the given function for the receiver and its next siblings.
+ * If the return value of the given function is true,
+ * then it was the last iteration and the loop breaks.
+ * For edython.
+ * @param {!function} helper
+ * @return {boolean} whether there was an slot to act upon or no helper given
+ */
+eYo.Slot.prototype.some = function (helper) {
+  var slot = this
+  if (goog.isFunction(helper)) {
+    var last
+    do {
+      last = helper.call(slot)
+    } while (!last && (slot = slot.next))
+    return slot
+  }
+  return true
+}
+
+/**
+ * execute the given function for the receiver and its next siblings.
+ * If the return value of the given function is true,
+ * then it was the last iteration and the loop breaks.
+ * For edython.
+ * @param {!function} helper
+ * @return {boolean} whether there was an slot to act upon or no helper given
+ */
+eYo.Slot.prototype.each = function (helper) {
+  var slot = this
+  if (goog.isFunction(helper)) {
+    do {
+      helper.call(slot)
+    } while ((slot = slot.next))
+  }
+}
+
+/**
+ * The right connection is at the right...
+ * @private
+ */
+eYo.ConnectionDelegate.prototype.rightConnection = function() {
+  var slot = this.slot
+  if (slot) {
+    if ((slot = slot.next) && (slot = slot.some (function () {
+      return !this.isIncog() && this.input && this.input.connection && !this.input.connection.hidden_
+    }))) {
+      return slot.input.connection
+    }
+    var block = this.connection.sourceBlock_
+  } else if ((block = this.connection.sourceBlock_)) {
+    var e8r = block.eyo.inputEnumerator(block)
+    if (e8r) {
+      while (e8r.next()) {
+        if (e8r.here.connection && this.connection === e8r.here.connection) {
+          // found it
+          while (e8r.next()) {
+            var c8n
+            if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+              return c8n
+            }
+          }
+        }
+      }
+    }
+  }
+  if (block && (c8n = block.outputConnection) && (c8n = c8n.targetConnection)) {
+    return c8n.eyo.rightConnection()
   }
 }

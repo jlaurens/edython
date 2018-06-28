@@ -2386,13 +2386,13 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function (block) {
     }
     return false
   }
-  var selectConnection = function (B) {
+  var selectConnection = function (c8n) {
     if (selectTarget(c8n)) {
       return true
     }
     // do not select a connection
     // if there is no unwrapped surround parent
-    var parent = B
+    var parent = c8n.sourceBlock_
     while (parent.eyo.wrapped_ || parent.eyo.locked_) {
       if (!(parent = parent.getSurroundParent())) {
         return false
@@ -2412,7 +2412,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function (block) {
           e8r.previous()
           while (e8r.previous()) {
             if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.eyo.wrapped_) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
-              if (selectConnection(block)) {
+              if (selectConnection(c8n)) {
                 return true
               }
             }
@@ -2427,7 +2427,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function (block) {
           e8r.previous()
           while (e8r.previous()) {
             if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.eyo.wrapped_) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
-              if (selectConnection(block)) {
+              if (selectConnection(c8n)) {
                 return true
               }
             }
@@ -2504,7 +2504,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
     return target.eyo.selectBlockRight(target)
   }
   var parent, c8n
-  var selectTarget = function () {
+  var selectTarget = function (c8n) {
     if ((target = c8n.targetBlock())) {
       if (target.eyo.wrapped_ || target.eyo.locked_) {
         return target.eyo.selectBlockRight(target)
@@ -2516,11 +2516,11 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
     }
     return false
   }
-  var selectConnection = function () {
+  var selectConnection = function (c8n) {
     if (c8n.hidden_ && !c8n.eyo.wrapped_) {
       return false
     }
-    if (!selectTarget()) {
+    if (!selectTarget(c8n)) {
       parent = block
       while (parent.eyo.wrapped_ || parent.eyo.locked_) {
         if (!(parent = parent.getSurroundParent())) {
@@ -2531,49 +2531,42 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
     }
     return true
   }
+  var selectSlot = function (slot) {
+    if (!slot.isIncog()) {
+      var c8n = slot.input && slot.input.connection
+      return (c8n.type !== Blockly.NEXT_STATEMENT) && selectConnection(c8n)
+    }
+  }
   if ((c8n = this.selectedConnection)) {
     if (c8n.type === Blockly.NEXT_STATEMENT) {
       if (c8n === block.nextConnection) {
         // select the target block (if any) when the nextConnection is in horizontal mode
         if (c8n.eyo.isAtRight) {
-          if (selectTarget()) {
+          if (selectTarget(c8n)) {
             return true
           }
         }
-      } else if (selectTarget()) {
+      } else if (selectTarget(c8n)) {
         return true
       }
-    } else if (selectTarget()) {
+    } else if (selectTarget(c8n)) {
       // the connection was selected, now it is its target
       return true
     } else {
       // select the connection following `this.selectedConnection`
-      // which not a NEXT_STATEMENT one, if any
-      if (block.eyo.someSlot(function () {
-        if ((c8n = this.input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT) && selectConnection()) {
-          return true
+      // which is not a NEXT_STATEMENT one, if any
+      var rightC8n
+      while ((rightC8n = c8n.eyo.rightConnection())) {
+        if (selectConnection(rightC8n)) {
+          return
         }
-      }))
+        c8n = rightC8n
+      }
       var e8r = block.eyo.inputEnumerator(block)
       if (e8r) {
         while (e8r.next()) {
-          if (e8r.here.connection && c8n === e8r.here.connection) {
-            // found it
-            while (e8r.next()) {
-              if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
-                if (selectConnection()) {
-                  return true
-                }
-              }
-            }
-          }
-        }
-        // it was the last value connection
-        // find a statement connection
-        e8r.start()
-        while (e8r.next()) {
           if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
-            if (selectConnection()) {
+            if (selectConnection(c8n)) {
               return true
             }
           }
@@ -2583,14 +2576,14 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
   } else {
     // select the first non statement connection
     if (block.eyo.someSlot(function () {
-      if ((c8n = this.input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT) && selectConnection()) {
-        return true
-      }
-    }))
+      return selectSlot(this)
+    })) {
+      return true
+    }
     if ((e8r = block.eyo.inputEnumerator(block))) {
       while (e8r.next()) {
         if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
-          if (selectConnection()) {
+          if (selectConnection(c8n)) {
             return true
           }
         }
@@ -2600,7 +2593,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
       e8r.start()
       while (e8r.next()) {
         if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
-          if (selectConnection()) {
+          if (selectConnection(c8n)) {
             return true
           }
         }
@@ -2611,53 +2604,23 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
     // try to select the next connection of a surrounding block
     // only when a value input is connected to the block
     target = block
-    while ((parent = target.getSurroundParent())) {
-      if (parent.eyo.someSlot(function () {
-        if ((c8n = this.input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT) && selectConnection()) {
+    while (target && (c8n = target.outputConnection) && (c8n = c8n.targetConnection)) {
+      rightC8n = c8n
+      while ((rightC8n = rightC8n.eyo.rightConnection())) {
+        if (selectConnection(rightC8n)) {
           return true
         }
-      }))
-      if ((e8r = parent.eyo.inputEnumerator(parent))) {
-        while (e8r.next()) {
-          if ((c8n = e8r.here.connection) && (target === c8n.targetBlock())) {
-            if (c8n.type === Blockly.NEXT_STATEMENT) {
-              // nothing is more right...
-              break
-            } else {
-              // try a value input after
-              while (e8r.next()) {
-                if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
-                  if (selectConnection()) {
-                    return true
-                  }
-                }
-              }
-              // try the next statement input if any
-              e8r.start()
-              while (e8r.next()) {
-                if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
-                  if (selectConnection()) {
-                    return true
-                  }
-                }
-              }
-            }
-          }
-        }
       }
-      target = parent
+      block = target
+      target = c8n.sourceBlock_
     }
-    target = block
-    while ((parent = target.getSurroundParent())) {
-      e8r = parent.eyo.inputEnumerator(parent)
-      while (e8r.next()) {
-        if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT) && (target = c8n.targetBlock()) && (target !== block)) {
-          eYo.SelectedConnection.set(null)
-          target.select()
-          return true
-        }
+    e8r = block.eyo.inputEnumerator(block)
+    while (e8r.next()) {
+      if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT) && (target = c8n.targetBlock()) && (target !== block)) {
+        eYo.SelectedConnection.set(null)
+        target.select()
+        return true
       }
-      target = parent
     }
   }
   // now try to select a top block
@@ -2684,6 +2647,11 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
   if (target) {
     eYo.SelectedConnection.set(null)
     target.select()
+    return true
+  }
+  if (parent) {
+    eYo.SelectedConnection.set(null)
+    parent.select()
     return true
   }
 }

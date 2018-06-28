@@ -419,7 +419,7 @@ eYo.Delegate.prototype.consolidateType = function (block) {
  * then it was the last iteration and the loop nreaks.
  * For edython.
  * @param {!function} helper
- * @return {boolean} whether there was an slot to act upon or a valid helper
+ * @return {Object} The first slot for which helper returns true
  */
 eYo.Delegate.prototype.someSlot = function (helper) {
   var slot = this.headSlot
@@ -428,9 +428,8 @@ eYo.Delegate.prototype.someSlot = function (helper) {
     do {
       last = helper.call(slot)
     } while (!last && (slot = slot.next))
-    return true
   }
-  return false
+  return slot
 }
 
 /**

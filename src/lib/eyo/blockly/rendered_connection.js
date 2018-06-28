@@ -928,4 +928,3 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
     block.eyo.setOffset(block, -dx, -dy);
   }
 };
-
