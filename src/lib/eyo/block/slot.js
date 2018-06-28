@@ -88,6 +88,13 @@ eYo.Slot.prototype.init = function () {
 /**
  * Install this slot on a block.
  */
+eYo.Slot.prototype.targetBlock = function () {
+  return this.input && this.input.connection && this.input.connection.targetBlock()
+}
+
+/**
+ * Install this slot on a block.
+ */
 eYo.Slot.prototype.beReady = function () {
   this.wait = 0
   if (this.svgGroup_) {

@@ -1079,6 +1079,13 @@ eYo.DelegateSvg.prototype.unlockChainTiles = function (block) {
  */
 eYo.DelegateSvg.prototype.chainTiles = function () {
   // this is a closure
+  /**
+   * Chain the fields.
+   * There is no tileHead without a tileTail
+   * @param {*} left An eyo like object which receives the merge.
+   * @param {*} right An object with an eyo
+   * @return {*} The field tail of the last chain element, if any
+   */
   var chainFields = function (headField) {
     var head, tile
     if ((head = headField)) {
@@ -1101,7 +1108,7 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
       }
       tile.eyo.tileNext = null
       headField.eyo.tileHead = head
-      headField.eyo.tileTail = tile
+      return headField.eyo.tileTail = tile
     }
   }
   /**
@@ -1109,6 +1116,7 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
    * There is no tileHead without a tileTail
    * @param {*} left An eyo like object which receives the merge.
    * @param {*} right An object with an eyo
+   * @return {*} the last element
    */
   var chainMerge = function (left, right) {
     if (left && right && right.eyo.tileHead) {
@@ -1118,7 +1126,7 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
       } else {
         left.tileHead = right.eyo.tileHead
       }
-      left.tileTail = right.eyo.tileTail
+      return left.tileTail = right.eyo.tileTail
     }
   }
   var chainMergeVA = function () {
@@ -1128,6 +1136,7 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
       while (i < arguments.length) {
         chainMerge(left, arguments[i++])
       }
+      return true
     }
   }
   var chainInput = function (input) {
@@ -2540,21 +2549,54 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
     } else {
       // select the connection following `this.selectedConnection`
       // which not a NEXT_STATEMENT one, if any
+      if (block.eyo.someSlot(function () {
+        if ((c8n = this.input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT) && selectConnection()) {
+          return true
+        }
+      }))
       var e8r = block.eyo.inputEnumerator(block)
-      while (e8r.next()) {
-        if (e8r.here.connection && c8n === e8r.here.connection) {
-          // found it
-          while (e8r.next()) {
-            if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
-              if (selectConnection()) {
-                return true
+      if (e8r) {
+        while (e8r.next()) {
+          if (e8r.here.connection && c8n === e8r.here.connection) {
+            // found it
+            while (e8r.next()) {
+              if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+                if (selectConnection()) {
+                  return true
+                }
               }
             }
           }
         }
+        // it was the last value connection
+        // find a statement connection
+        e8r.start()
+        while (e8r.next()) {
+          if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
+            if (selectConnection()) {
+              return true
+            }
+          }
+        }
       }
-      // it was the last value connection
-      // find a statement connection
+    }
+  } else {
+    // select the first non statement connection
+    if (block.eyo.someSlot(function () {
+      if ((c8n = this.input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT) && selectConnection()) {
+        return true
+      }
+    }))
+    if ((e8r = block.eyo.inputEnumerator(block))) {
+      while (e8r.next()) {
+        if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+          if (selectConnection()) {
+            return true
+          }
+        }
+      }
+      // all the input connections are either dummy or statement connections
+      // select the first statement connection (there is an only one for the moment)
       e8r.start()
       while (e8r.next()) {
         if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
@@ -2564,53 +2606,39 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
         }
       }
     }
-  } else {
-    // select the first non statement connection
-    e8r = block.eyo.inputEnumerator(block)
-    while (e8r.next()) {
-      if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
-        if (selectConnection()) {
-          return true
-        }
-      }
-    }
-    // all the input connections are either dummy or statement connections
-    // select the first statement connection (there is an only one for the moment)
-    e8r.start()
-    while (e8r.next()) {
-      if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
-        if (selectConnection()) {
-          return true
-        }
-      }
-    }
   }
   if (!(c8n = this.selectedConnection) || (c8n.type !== Blockly.NEXT_STATEMENT)) {
     // try to select the next connection of a surrounding block
     // only when a value input is connected to the block
     target = block
     while ((parent = target.getSurroundParent())) {
-      e8r = parent.eyo.inputEnumerator(parent)
-      while (e8r.next()) {
-        if ((c8n = e8r.here.connection) && (target === c8n.targetBlock())) {
-          if (c8n.type === Blockly.NEXT_STATEMENT) {
-            // nothing is more right...
-            break
-          } else {
-            // try a value input after
-            while (e8r.next()) {
-              if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
-                if (selectConnection()) {
-                  return true
+      if (parent.eyo.someSlot(function () {
+        if ((c8n = this.input.connection) && (c8n.type !== Blockly.NEXT_STATEMENT) && selectConnection()) {
+          return true
+        }
+      }))
+      if ((e8r = parent.eyo.inputEnumerator(parent))) {
+        while (e8r.next()) {
+          if ((c8n = e8r.here.connection) && (target === c8n.targetBlock())) {
+            if (c8n.type === Blockly.NEXT_STATEMENT) {
+              // nothing is more right...
+              break
+            } else {
+              // try a value input after
+              while (e8r.next()) {
+                if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+                  if (selectConnection()) {
+                    return true
+                  }
                 }
               }
-            }
-            // try the next statement input if any
-            e8r.start()
-            while (e8r.next()) {
-              if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
-                if (selectConnection()) {
-                  return true
+              // try the next statement input if any
+              e8r.start()
+              while (e8r.next()) {
+                if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
+                  if (selectConnection()) {
+                    return true
+                  }
                 }
               }
             }
