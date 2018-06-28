@@ -454,27 +454,23 @@ eYo.BlockSvg.prototype.showContextMenu_ = function (e) {
  * @private
  */
 eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
-  console.log('MOUSE DOWN 1', this.type)
   if (this.eyo.wrapped_) {
     // mouse down on a wrapped block means dragging
     // but dragging is not allowd for that blocks
     return
   }
-  console.log('MOUSE DOWN 2', this.type)
   if (this.eyo.locked_) {
     var parent = this.getSurroundParent()
     if (parent) {
       return
     }
   }
-  console.log('MOUSE DOWN 3', this.type)
   if (this.eyo.lastMouseDownEvent_ === e) {
     return
   }
   // unfortunately, the mouse events do not find there way to the proper block
   var c8n = this.eyo.getConnectionForEvent(this, e)
   var target = c8n ? c8n.targetBlock() || c8n.sourceBlock_ : this
-  console.log('MOUSE DOWN 4', target.type)
   target.eyo.lastMouseDownEvent_ = e
   // Next is not good design
   // remove any selected connection, if any
@@ -494,10 +490,8 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
  * but the shape of the connection as it shows when blocks are moved close enough.
  */
 eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
-  console.log('ON MOUSE UP 1', this.type)
   var c8n = this.eyo.getConnectionForEvent(this, e)
   var target = c8n ? c8n.targetBlock() || c8n.sourceBlock_ : this
-  console.log('ON MOUSE UP 2', target.type)
   if (target.eyo.lastMouseUpEvent_ === e) {
     return
   }
@@ -507,7 +501,6 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
     // a block was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
-      console.log('ON MOUSE UP NOT DRAG MOVE', Blockly.selected && Blockly.selected.type)
       if (target === Blockly.selected) {
         // if the block was already selected,
         // try to select an input connection
@@ -523,8 +516,6 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
       // a drag move
       eYo.SelectedConnection.set(null)
     }
-  } else {
-    console.log('ON MOUSE UP NO LAST MOUSEDOWN', Blockly.selected && Blockly.selected.type)
   }
   eYo.App.didTouchBlock && eYo.App.didTouchBlock(Blockly.selected)
 }
