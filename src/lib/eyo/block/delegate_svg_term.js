@@ -114,76 +114,77 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
           return {validated: newValue}
         },
         didChange: function (oldValue, newValue) {
-          var M = this.model
-          this.data.name.required = newValue === M.STAR_NAME
-          this.data.alias.required = newValue === M.NAME_ALIAS
-          this.owner_.slots.annotation.required = newValue === M.NAME_ANNOTATION || newValue === M.STAR_NAME_ANNOTATION || newValue === M.NAME_ANNOTATION_DEFINITION
-          this.owner_.slots.definition.required = newValue === M.NAME_DEFINITION || newValue === M.NAME_ANNOTATION_DEFINITION
-          var newModifier = newValue === M.STAR || newValue === M.STAR_NAME || newValue === M.STAR_NAME_ANNOTATION ? '*' : (newValue === M.STAR_STAR_NAME ? '**' : '')
+          this.data.name.required = newValue === this.STAR_NAME
+          this.data.alias.required = newValue === this.NAME_ALIAS
+          var newModifier = newValue === this.STAR || newValue === this.STAR_NAME || newValue === this.STAR_NAME_ANNOTATION ? '*' : (newValue === this.STAR_STAR_NAME ? '**' : '')
           this.data.modifier.set(newModifier)
-          this.data.name.setIncog(newValue === M.STAR)
-          this.data.alias.setIncog(newValue !== M.NAME_ALIAS)
+          this.data.name.setIncog(newValue === this.STAR)
+          this.data.alias.setIncog(newValue !== this.NAME_ALIAS)
         },
         synchronize: function (newValue) {
-          var M = this.model
-          this.owner_.slots.annotation.setIncog(newValue !== M.NAME_ANNOTATION &&
-          newValue !== M.STAR_NAME_ANNOTATION &&
-          newValue !== M.NAME_ANNOTATION_DEFINITION)
-          this.owner_.slots.definition.setIncog(newValue !== M.NAME_DEFINITION &&
-          newValue !== M.NAME_ANNOTATION_DEFINITION)
+          var slot = this.owner_.slots.annotation
+          slot.required = newValue === this.NAME_ANNOTATION || 
+          newValue === this.STAR_NAME_ANNOTATION ||
+          newValue === this.NAME_ANNOTATION_DEFINITION
+          slot.setIncog(!slot.required)
+          slot = this.owner_.slots.definition
+          slot.required = newValue === this.NAME_DEFINITION ||
+          newValue === this.NAME_ANNOTATION_DEFINITION
+          slot.setIncog(!slot.required)
         },
         consolidate: function () {
           var newVariant = this.get()
-          var M = this.model
           var modifier = this.data.modifier.get()
           var withAnnotation = this.owner_.slots.annotation.isRequiredFromDom()
           var withDefinition = this.owner_.slots.definition.isRequiredFromDom()
           if (this.data.alias.isActive() || this.data.alias.isRequiredFromDom()) {
-            newVariant = M.NAME_ALIAS
+            newVariant = this.NAME_ALIAS
           } else if (modifier === '**') {
-            newVariant = M.STAR_STAR_NAME
+            newVariant = this.STAR_STAR_NAME
           } else if (modifier === '*') {
             if (withAnnotation) {
-              newVariant = M.STAR_NAME_ANNOTATION
+              newVariant = this.STAR_NAME_ANNOTATION
             } else if (!this.data.name.isActive() && !this.data.name.isRequiredFromDom()) {
-              newVariant = M.STAR
-            } else if (newVariant !== M.STAR_NAME && newVariant !== M.STAR_NAME_ANNOTATION) {
-              newVariant = M.STAR_NAME
+              newVariant = this.STAR
+            } else if (newVariant !== this.STAR_NAME && newVariant !== this.STAR_NAME_ANNOTATION) {
+              newVariant = this.STAR_NAME
             }
           } else if (withDefinition) {
             // newVariant must be one of the variants with `DEFINITION`
             if (withAnnotation) {
               // newVariant must also be one of the variants with `ANNOTATION`
-              newVariant = M.NAME_ANNOTATION_DEFINITION
-            } else if (newVariant !== M.NAME_DEFINITION && newVariant !== M.NAME_ANNOTATION_DEFINITION) {
-              newVariant = M.NAME_DEFINITION
+              newVariant = this.NAME_ANNOTATION_DEFINITION
+            } else if (newVariant !== this.NAME_DEFINITION && newVariant !== this.NAME_ANNOTATION_DEFINITION) {
+              newVariant = this.NAME_DEFINITION
             }
           } else if (withAnnotation) {
             // newVariant must be one of the variants with `ANNOTATION`
-            if (newVariant !== M.NAME_ANNOTATION && newVariant !== M.STAR_NAME_ANNOTATION && newVariant !== M.NAME_ANNOTATION_DEFINITION) {
-              newVariant = M.NAME_ANNOTATION
+            if (newVariant !== this.NAME_ANNOTATION && newVariant !== this.STAR_NAME_ANNOTATION && newVariant !== this.NAME_ANNOTATION_DEFINITION) {
+              newVariant = this.NAME_ANNOTATION
             }
           } else {
             // no STAR allowed
-            if (newVariant === M.STAR || newVariant === M.STAR_NAME || newVariant === M.STAR_NAME_ANNOTATION || newVariant === M.STAR_START_NAME) {
-              newVariant = M.NAME
+            if (newVariant === this.STAR || newVariant === this.STAR_NAME || newVariant === this.STAR_NAME_ANNOTATION || newVariant === this.STAR_START_NAME) {
+              newVariant = this.NAME
             }
           }
-          var expected = M.byNameType[this.data.nameType.get()]
+          var expected = this.model.byNameType[this.data.nameType.get()]
           if (expected && expected.indexOf(newVariant) < 0) { // maybe newVariant is undefined
             if (withDefinition) {
-              newVariant = withAnnotation ? M.NAME_ANNOTATION_DEFINITION : M.NAME_DEFINITION
+              newVariant = withAnnotation ? this.NAME_ANNOTATION_DEFINITION : this.NAME_DEFINITION
             }
             if (expected.indexOf(newVariant) < 0) {
-              newVariant = withAnnotation ? M.NAME_ANNOTATION : M.NAME
+              newVariant = withAnnotation ? this.NAME_ANNOTATION : this.NAME
             }
           }
           this.data.name.clearRequiredFromDom()
           this.data.alias.clearRequiredFromDom()
+          this.owner_.slots.annotation.setRequiredFromDom(false)
+          this.owner_.slots.definition.setRequiredFromDom(false)
           this.data.variant.set(newVariant, true)
         }
       },
-      phantom: {
+      phantom: { // phantom is used to manage the placeholder
         init: '',
         didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
           var field = this.owner_.slots.name.fields.edit
@@ -220,7 +221,19 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
           }
         },
         check: eYo.T3.Expr.Check.expression,
-        hole_value: 'expression'
+        hole_value: 'expression',
+        xml: {
+          didLoad: /** @suppress {globalThis} */ function () {
+            if (this.isRequiredFromDom()) {
+              var variant = this.owner.data.variant
+              var current = variant.get()
+              if (current !== variant.NAME_ANNOTAION
+                && current !== variant.NAME_ANNOTATION_DEFINITION) {
+                variant.set(variant.NAME_ANNOTATION)
+              }
+            }
+          }
+        }
       },
       definition: {
         order: 3,
@@ -231,7 +244,19 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
           }
         },
         check: eYo.T3.Expr.Check.expression,
-        hole_value: 'expression'
+        hole_value: 'expression',
+        xml: {
+          didLoad: /** @suppress {globalThis} */ function () {
+            if (this.isRequiredFromDom()) {
+              var variant = this.owner.data.variant
+              var current = variant.get()
+              if (current !== variant.NAME_DEFINITION
+                && current !== variant.NAME_ANNOTATION_DEFINITION) {
+                variant.set(variant.NAME_DEFINITION)
+              }
+            }
+          }
+        }
       },
       alias: {
         order: 4,
@@ -411,37 +436,37 @@ eYo.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
  * @private
  */
 eYo.DelegateSvg.Expr.term.prototype.makeTitle = function (block, variant) {
-  var model = this.data.variant.model
+  var data = this.data.variant
   if (!goog.isDef(variant)) {
-    variant = this.data.variant.get()
+    variant = data.get()
   }
   var args = [goog.dom.TagName.SPAN, null]
   switch (variant) {
-  case model.STAR_NAME:
-  case model.STAR_NAME_ANNOTATION:
-  case model.STAR:
+  case data.STAR_NAME:
+  case data.STAR_NAME_ANNOTATION:
+  case data.STAR:
     args.push(eYo.Do.createSPAN('*', 'eyo-code-reserved'))
     break
-  case model.STAR_STAR_NAME:
+  case data.STAR_STAR_NAME:
     args.push(eYo.Do.createSPAN('**', 'eyo-code-reserved'))
     break
   }
-  if (variant !== model.STAR) {
+  if (variant !== data.STAR) {
     var value = this.data.name.get()
     args.push(eYo.Do.createSPAN(value || this.data.phantom.get() || eYo.Msg.Placeholder.IDENTIFIER, value ? 'eyo-code' : 'eyo-code-placeholder'))
     switch (variant) {
-    case model.NAME_ANNOTATION:
-    case model.STAR_NAME_ANNOTATION:
-    case model.NAME_ANNOTATION_DEFINITION:
+    case data.NAME_ANNOTATION:
+    case data.STAR_NAME_ANNOTATION:
+    case data.NAME_ANNOTATION_DEFINITION:
       args.push(eYo.Do.createSPAN(':', 'eyo-code-reserved'), eYo.Do.createSPAN(' …', 'eyo-code-placeholder'))
       break
     }
     switch (variant) {
-    case model.NAME_ANNOTATION_DEFINITION:
-    case model.NAME_DEFINITION:
+    case data.NAME_ANNOTATION_DEFINITION:
+    case data.NAME_DEFINITION:
       args.push(eYo.Do.createSPAN(' = ', 'eyo-code-reserved'), eYo.Do.createSPAN('…', 'eyo-code-placeholder'))
       break
-    case model.NAME_ALIAS:
+    case data.NAME_ALIAS:
       args.push(eYo.Do.createSPAN(' as ', 'eyo-code-reserved'), eYo.Do.createSPAN('…', 'eyo-code-placeholder'))
       break
     }
@@ -456,14 +481,15 @@ eYo.DelegateSvg.Expr.term.prototype.makeTitle = function (block, variant) {
  * @private
  */
 eYo.DelegateSvg.Expr.term.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var current = this.data.variant.get()
+  var data = this.data.variant
+  var current = data.get()
   var F = function (variant) {
     if (variant !== current) {
       var title = block.eyo.makeTitle(block, variant)
       var menuItem = new eYo.MenuItem(title, function () {
         eYo.Events.setGroup(true)
         try {
-          block.eyo.data.variant.set(variant)
+          data.set(variant)
         } catch (err) {
           console.error(err)
           throw err
@@ -474,7 +500,7 @@ eYo.DelegateSvg.Expr.term.prototype.populateContextMenuFirst_ = function (block,
       mgr.addChild(menuItem, true)
     }
   }
-  var variants = this.data.variant.getAll()
+  var variants = data.getAll()
   for (var i = 0; i < variants.length; i++) {
     F(variants[i])
   }
