@@ -368,8 +368,6 @@ eYo.DelegateSvg.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
 eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_nonlocal_stmt, {
   data: {
     variant: {
-      GLOBAL: 0,
-      NONLOCAL: 1,
       all: ['global', 'nonlocal'],
       synchronize: true
     }
@@ -519,24 +517,32 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
 eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
   data: {
     variant: {
-      CODE: 0,
-      CODE_COMMENT: 1,
-      EXPRESSION: 2,
-      EXPRESSION_COMMENT: 3,
-      COMMENT: 5,
+      CODE: eYo.Key.CODE,
+      CODE_COMMENT: eYo.Key.CODE_COMMENT,
+      EXPRESSION: eYo.Key.EXPRESSION,
+      EXPRESSION_COMMENT: eYo.Key.EXPRESSION_COMMENT,
+      COMMENT: eYo.Key.COMMENT,
       order: 10000, // initialization comes last
-      all: [0, 1, 2, 3, 5, 5],
+      all: [
+        eYo.Key.CODE,
+        eYo.Key.CODE_COMMENT,
+        eYo.Key.EXPRESSION,
+        eYo.Key.EXPRESSION_COMMENT,
+        eYo.Key.COMMENT,
+      ],
       init: 2,
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.data.code.required = newValue < this.EXPRESSION
-        this.data.code.setIncog(newValue > this.CODE_COMMENT)
-        this.data.comment.required = (newValue % 2) && newValue !== this.COMMENT
-        this.data.comment.setIncog(!(newValue % 2))
-        this.owner_.slots.expression.required = newValue < this.COMMENT &&
-        newValue > this.CODE_COMMENT
-        this.owner_.slots.expression.setIncog(newValue < this.EXPRESSION ||
-        newValue > this.EXPRESSION_COMMENT)
+        var data = this.data.code
+        data.required = newValue === this.CODE || newValue === this.CODE_COMMENT
+        data.setIncog()
+        data = this.data.comment
+        data.required = newValue === this.CODE_COMMENT || newValue === this.EXPRESSION_COMMENT
+        data.setIncog()
+        var slot = this.owner_.slots.expression
+        slot.required = newValue === this.EXPRESSION ||
+        newValue === this.EXPRESSION_COMMENT
+        tslot.setIncog()
       },
       consolidate: /** @suppress {globalThis} */ function () {
         var withCode = !this.data.code.isIncog()
@@ -581,7 +587,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
       },
       xml: {
         text: true,
-        load: /** @suppress {globalThis} */ function (element) {
+        didLoad: /** @suppress {globalThis} */ function (element) {
           this.load(element)
           this.whenRequiredFromDom(function () {
             this.setIncog(false)

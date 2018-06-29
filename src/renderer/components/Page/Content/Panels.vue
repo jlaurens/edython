@@ -13,10 +13,14 @@
             <b-dropdown-item-button v-on:click="selected = 'turtle'" v-bind:style="{fontFamily: $eYo.Font.familySans, fontSize: $eYo.Font.totalHeight}">{{titles.turtle}}</b-dropdown-item-button>
           </b-dropdown>
         </div>
-        <b-button id ="eyo-panels-toolbar-restart" class="eyo-round-btn" v-bind:style="{fontFamily: $eYo.Font.familySans, fontSize: $eYo.Font.totalHeight + 'px'}" v-on:click="restart()" :disabled="selected !== 'console'" title="Redémarrer l'interpréteur python" 
+        <b-button id ="eyo-panels-toolbar-restart-python" class="eyo-round-btn" v-on:click="restart()" v-if="selected === 'console'" title="Redémarrer l'interpréteur python" 
         v-tippy ><icon-base icon-name="restart"><icon-restart /></icon-base></b-button>
-        <b-button id ="eyo-panels-toolbar-erase" class="eyo-round-btn" v-bind:style="{fontFamily: $eYo.Font.familySans, fontSize: $eYo.Font.totalHeight + 'px'}" v-on:click="erase()" :disabled="selected !== 'console'" title="Effacer l'affichage" 
-        v-tippy ><icon-base icon-name="erase"><icon-erase /></icon-base></b-button>
+        <b-button id ="eyo-panels-toolbar-restart-turtle" class="eyo-round-btn" v-on:click="restart()" v-if="selected !== 'console'" title="Redémarrer la tortue" 
+        v-tippy ><icon-base icon-name="replay"><icon-restart /></icon-base></b-button>
+        <b-button id ="eyo-panels-toolbar-erase-python" class="eyo-round-btn" v-on:click="erase()" title="Effacer la console" 
+        v-if="selected === 'console'" v-tippy ><icon-base icon-name="erase console"><icon-erase /></icon-base></b-button>
+        <b-button id ="eyo-panels-toolbar-replay-turtle" class="eyo-round-btn" v-on:click="erase()" title="Rejouer l'animation'" 
+        v-if="selected !== 'console'" v-tippy ><icon-base icon-name="replay turtle"><icon-replay /></icon-base></b-button>
       </div>
       <div id="eyo-panels-content">
         <panel-console :visible="selected === 'console'"></panel-console>
@@ -29,6 +33,7 @@
 <script>
   import IconBase from '../../IconBase.vue'
   import IconRestart from '../../Icon/IconRestart.vue'
+  import IconReplay from '../../Icon/IconReplay.vue'
   import IconErase from '../../Icon/IconErase.vue'
 
   import PanelConsole from './Panel/Console'
@@ -64,6 +69,7 @@
       PanelTurtle,
       IconBase,
       IconRestart,
+      IconReplay,
       IconErase
     },
     created: function () {
@@ -150,6 +156,7 @@
     background-color: #d6e9f8;
   }
   #eyo-panels-content {
+    position: relative;
     width: 100%;
     height: calc(100% - 2.5rem);
   }
@@ -164,10 +171,11 @@
     color: white;
     position: absolute;
   }
-  #eyo-panels-toolbar-restart {
+  #eyo-panels-toolbar-restart-python, #eyo-panels-toolbar-restart-turtle {
     right: 0.25rem;
   }
-  #eyo-panels-toolbar-erase {
+  #eyo-panels-toolbar-replay-turtle,
+  #eyo-panels-toolbar-erase-python {
     right: 2.25rem;
   }
 </style>

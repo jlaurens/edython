@@ -262,14 +262,22 @@ eYo.DelegateSvg.List.makeSubclass('target_list_list', {
 eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
   data: {
     variant: {
-      NAME_VALUE: 0,
-      NAME_ANNOTATION_VALUE: 1,
-      TARGET_VALUE: 2,
-      all: [0, 1, 2],
+      NAME_VALUE: eYo.Key.NAME_VALUE,
+      NAME_ANNOTATION_VALUE: eYo.Key.NAME_ANNOTATION_VALUE,
+      TARGET_VALUE: eYo.Key.NAME_ANNOTATION_VALUE,
+      all: [
+        eYo.Key.NAME_VALUE,
+        eYo.Key.NAME_ANNOTATION_VALUE,
+        eYo.Key.TARGET_VALUE
+      ],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.data.name.setIncog(newValue === this.TARGET_VALUE)
-        this.owner_.slots.annotation.setIncog(newValue !== this.NAME_ANNOTATION_VALUE)
-        this.owner_.slots.target.setIncog(newValue !== this.TARGET_VALUE)
+        var slot = this.owner_.slots.annotation
+        slot.required = newValue === this.NAME_ANNOTATION_VALUE
+        slot.setIncog(!slot.required)
+        var slot = this.owner_.slots.target
+        slot.required = newValue === this.TARGET_VALUE
+        slot.setIncog(!slot.required)
       },
     },
     name: {
@@ -330,8 +338,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
  */
 eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var name = this.data.name.get()
-  var M = this.data.variant.model
-  var current = this.data.variant.get()
+  var M = this.data.variant
+  var current = M.get()
   var F = function (content, variant) {
     var menuItem = new eYo.MenuItem(content, function () {
       block.eyo.data.variant.set(variant)
@@ -409,12 +417,17 @@ goog.provide('eYo.DelegateSvg.AugAssign')
 eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
   data: {
     variant: {
-      NAME_EXPRESSIONS: 0,
-      TARGET_EXPRESSIONS: 1,
-      all: [0, 1],
+      NAME_EXPRESSIONS: eYo.Key.NAME_EXPRESSIONS,
+      TARGET_EXPRESSIONS: eYo.Key.TARGET_EXPRESSIONS,
+      all: [
+        eYo.Key.NAME_EXPRESSIONS,
+        eYo.Key.TARGET_EXPRESSIONS
+      ],
       synchronize: /** @suppress {globalThis} */ function (newVariant) {
-        this.data.name.setIncog(newVariant)
-        this.owner_.slots.target.setIncog(!newVariant)
+        this.data.name.setIncog(newVariant !== this.NAME)
+        var slot = this.owner_.slots.target
+        slot.required = newVariant === this.TARGET_EXPRESSIONS
+        slot.setIncog(!slot.required)
       }
     },
     name: {

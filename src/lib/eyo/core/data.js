@@ -481,11 +481,14 @@ eYo.Data.prototype.set = function (newValue) {
  * Disabled data correspond to diabled input.
  * Changing this value will cause an UI synchronization.
  * Always synchronize, even when no value changed.
- * @param {Object} newValue
+ * @param {Object} newValue  When not defined, replaced by `!this.required`
  */
 eYo.Data.prototype.setIncog = function (newValue) {
+  if (!goog.isDef(newValue)) {
+    newValue = !this.required
+  }
   if (!this.incog_ !== !newValue) {
-    this.incog_ = newValue
+    this.incog_ = !!newValue
     this.didChange(this.value_, this.value_)
     this.synchronizeIfUI(this.value_)
   }

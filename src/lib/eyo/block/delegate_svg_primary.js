@@ -71,11 +71,15 @@ eYo.DelegateSvg.Expr.makeSubclass('slicing', {
     variant: { // data named 'variant' have `xml = false`, by default
       NAME: eYo.Key.NAME,
       PRIMARY: eYo.Key.PRIMARY,
-      all: [eYo.Key.NAME, eYo.Key.PRIMARY],
+      all: [
+        eYo.Key.NAME,
+        eYo.Key.PRIMARY
+      ],
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.data.name.setIncog(!!newValue) // not the slot !
-        this.owner_.slots.primary.setIncog(!newValue)
-        this.owner_.slots.primary.required = !!newValue
+        this.data.name.setIncog(newValue !== this.NAME) // not the slot !
+        var slot = this.owner_.slots.primary
+        slot.required = newValue === this.PRIMARY
+        slot.setIncog(!slot.required)
       }
     },
     name: {
@@ -151,7 +155,8 @@ eYo.DelegateSvg.Expr.slicing.prototype.consolidate = function (block) {
  * @private
  */
 eYo.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var current = this.data.variant.get() ? 1 : 0
+  var variant = this.data.variant
+  var current = variant.get()
   var F = function (content, j) {
     var menuItem = new eYo.MenuItem(content, function () {
       block.eyo.data.variant.set(j)
@@ -165,13 +170,13 @@ eYo.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (blo
     eYo.Do.createSPAN(name || eYo.Msg.Placeholder.IDENTIFIER, name ? 'eyo-code' : 'eyo-code-placeholder'),
     eYo.Do.createSPAN('[…]', 'eyo-code')
   )
-  F(content, 0)
+  F(content, variant.NAME)
   content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN(eYo.Msg.Placeholder.EXPRESSION, 'eyo-code-placeholder'),
     eYo.Do.createSPAN('[…]', 'eyo-code')
   )
-  F(content, 1)
+  F(content, variant.PRIMARY)
   mgr.shouldSeparate()
   return eYo.DelegateSvg.Expr.slicing.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
@@ -188,19 +193,24 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
     ary: {
       order: 10,
       N_ARY: 'N',
-      NO_ARY: '0',
+      Z_ARY: '0',
       UNARY: '1',
       BINARY: '2',
       TERNARY: '3',
-      all: ['0', '1', '2', '3', 'N'], // default value is Infinity
+      QUADARY: '4',
+      PENTARY: '5',
+      all: ['0', '1', '2', '3', '4', '5', 'N'], // default value is Infinity
       init: 'N',
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         var M = this.model
-        this.owner_.slots.no_ary.setIncog(newValue !== M.NO_ARY)
-        this.owner_.slots.unary.setIncog(newValue !== M.UNARY)
-        this.owner_.slots.binary.setIncog(newValue !== M.BINARY)
-        this.owner_.slots.ternary.setIncog(newValue !== M.TERNARY)
-        this.owner_.slots.n_ary.setIncog(newValue !== M.N_ARY)
+        var slots = this.owner_.slots
+        slots.no_ary.setIncog(newValue !== M.Z_ARY)
+        slots.unary.setIncog(newValue !== M.UNARY)
+        slots.binary.setIncog(newValue !== M.BINARY)
+        slots.ternary.setIncog(newValue !== M.TERNARY)
+        slots.quadary.setIncog(newValue !== M.QUADARY)
+        slots.pentary.setIncog(newValue !== M.PENTARY)
+        slots.n_ary.setIncog(newValue !== M.N_ARY)
       }
     },
     name: {
@@ -277,6 +287,22 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
         end: ')'
       },
       wrap: eYo.T3.Expr.argument_list_3
+    },
+    quadary: {
+      order: 105,
+      fields: {
+        start: '(',
+        end: ')'
+      },
+      wrap: eYo.T3.Expr.argument_list_4
+    },
+    pentary: {
+      order: 106,
+      fields: {
+        start: '(',
+        end: ')'
+      },
+      wrap: eYo.T3.Expr.argument_list_5
     }
   },
   output: {
@@ -307,7 +333,7 @@ eYo.DelegateSvg.Expr.base_call_expr.populateMenu = function (block, mgr) {
       mgr.addChild(menuItem, true)
     }
   }
-  F(M.NO_ARY, '')
+  F(M.Z_ARY, '')
   F(M.UNARY, '…')
   F(M.BINARY, '…, …')
   F(M.TERNARY, '…, …, …')
@@ -424,27 +450,35 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
       BUILTIN: eYo.Key.BUILTIN,
       EXPRESSION: eYo.Key.EXPRESSION,
       ATTRIBUTE: eYo.Key.ATTRIBUTE,
-      all: [eYo.Key.NAME, eYo.Key.BUILTIN, eYo.Key.EXPRESSION, eYo.Key.ATTRIBUTE],
+      all: [
+        eYo.Key.NAME,
+        eYo.Key.BUILTIN,
+        eYo.Key.EXPRESSION,
+        eYo.Key.ATTRIBUTE
+      ],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        var M = this.model
-        if (newValue === M.ATTRIBUTE) {
-          this.data.name.setIncog(false)
-          this.data.name.required = true
+        var data = this.data.name
+        if (newValue === this.ATTRIBUTE) {
+          data.required = true
+          data.setIncog()
           this.owner_.slots.dot.setIncog(false)
-          this.owner_.slots.expression.setIncog(false)
-          this.owner_.slots.expression.required = true
-        } else if (newValue === M.EXPRESSION) {
-          this.data.name.setIncog(true)
-          this.data.name.required = false
-          this.owner_.slots.dot.setIncog(true)
-          this.owner_.slots.expression.setIncog(false)
-          this.owner_.slots.expression.required = true
+          var slot = this.owner_.slots.expression
+          slot.required = false
+          slot.setIncog()
+        } else if (newValue === this.EXPRESSION) {
+          data.required = false
+          data.setIncog()
+          this.owner_.slots.dot.setIncog(false)
+          var slot = this.owner_.slots.expression
+          slot.required = true
+          slot.setIncog()
         } else /* if (newValue === M.NAME || newValue === M.BUILTIN) */ {
-          this.data.name.setIncog(false)
-          this.data.name.required = true
+          data.required = false
+          data.setIncog()
           this.owner_.slots.dot.setIncog(true)
-          this.owner_.slots.expression.setIncog(true)
-          this.owner_.slots.expression.required = false
+          slot = this.owner_.slots.expression
+          slot.required = false
+          slot.setIncog()
         }
         // force sync, usefull when switching to and from ATTRIBUTE variant
         this.data.name.synchronize()
@@ -460,16 +494,16 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
             case 'complex':
             case 'len':
             case 'input':
-            return newValue === this.model.UNARY ? {validated: newValue}: null
+            return newValue === this.UNARY ? {validated: newValue}: null
             case 'trunc':
-            return this.model.BINARY ? {validated: newValue}: null
+            return this.BINARY ? {validated: newValue}: null
             case 'list':
             case 'set':
             case 'min':
             case 'max':
             case 'sum':
             default:
-            return newValue === this.model.N_ARY ? {validated: newValue}: null
+            return newValue === this.N_ARY ? {validated: newValue}: null
           }
         }
         return {validated: newValue}
@@ -502,7 +536,7 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
           }
           switch (newValue) {
             case 'conjugate':
-            this.data.ary.set(this.data.ary.model.NO_ARY)
+            this.data.ary.set(this.data.ary.model.Z_ARY)
             break
             case 'int':
             case 'float':

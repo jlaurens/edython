@@ -38,7 +38,6 @@
         this.$store.commit('UI_STAGE_UNDO')
       },
       doOpen: function () {
-        this.doNew()
         // const {dialog} = require('electron').remote
         const remote = require('electron').remote
         const app = remote.app
@@ -82,6 +81,7 @@
               inflate = content
             }
             try {
+              self.doNew()
               eYo.App.workspace.eyo.fromUTF8ByteArray(inflate)
               self.documentPath = fileName
             } catch (err) {

@@ -37,19 +37,24 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
     variant: {
       EXCEPT: eYo.Key.EXCEPT,
       EXCEPT_EXPRESSION: eYo.Key.EXCEPT_EXPRESSION,
-      EXCEPT_AS: eYo.Key.EXCEPT_AS,
-      all: [eYo.Key.EXCEPT, eYo.Key.EXCEPT_EXPRESSION, eYo.Key.EXCEPT_AS],
+      EXCEPT_AS: eYo.Key.EXCEPT_AS,// deprecated because of the NAME_ALIAS
+      all: [
+        eYo.Key.EXCEPT,
+        eYo.Key.EXCEPT_EXPRESSION,
+        eYo.Key.EXCEPT_AS
+      ],
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         var eyo = this.owner_
         var block = eyo.block_
         eyo.consolidateType(block)
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        var M = this.model
-        this.owner_.slots.expression.setIncog(newValue === M.EXCEPT)
-        this.owner_.slots.expression.required = (newValue === M.EXCEPT_EXPRESSION)
-        this.owner_.slots.as.setIncog(newValue !== M.EXCEPT_AS)
-        this.owner_.slots.as.required = (newValue === M.EXCEPT_AS)
+        var slot = this.owner_.slots.expression
+        slot.required = (newValue !== this.EXCEPT)
+        slot.setIncog()
+        slot = this.owner_.slots.as
+        slot.required = (newValue === this.EXCEPT_AS)
+        slots.setIncog()
       }
     }
   },
@@ -162,13 +167,18 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       RAISE: eYo.Key.RAISE,
       RAISE_EXPRESSION: eYo.Key.RAISE_EXPRESSION,
       RAISE_FROM: eYo.Key.RAISE_FROM,
-      all: [eYo.Key.RAISE, eYo.Key.RAISE_EXPRESSION, eYo.Key.RAISE_FROM],
+      all: [
+        eYo.Key.RAISE,
+        eYo.Key.RAISE_EXPRESSION,
+        eYo.Key.RAISE_FROM
+      ],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        var M = this.model
-        this.owner_.slots.expression.setIncog(newValue === M.RAISE)
-        this.owner_.slots.expression.required = (newValue === M.RAISE_EXPRESSION)
-        this.owner_.slots.from.setIncog(newValue !== M.RAISE_FROM)
-        this.owner_.slots.from.required = (newValue === M.RAISE_FROM)
+        var slot = this.owner_.slots.expression
+        slot.required = (newValue === M.RAISE_EXPRESSION)
+        slot.setIncog()
+        slot = this.owner_.slots.from
+        slot.required = (newValue === M.RAISE_FROM)
+        slot.setIncog()
       }
     }
   },
@@ -183,8 +193,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
-          if (variant.get() === variant.model.RAISE) {
-            variant.set(variant.model.RAISE_EXPRESSION)
+          if (variant.get() === variant.RAISE) {
+            variant.set(variant.RAISE_EXPRESSION)
           }
         }
       }
@@ -251,10 +261,14 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
     variant: {
       UNARY: eYo.Key.UNARY,
       BINARY: eYo.Key.BINARY,
-      all: [eYo.Key.UNARY, eYo.Key.BINARY],
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.owner_.slots.expression.setIncog(!newValue)
-        this.owner_.slots.expression.required = !!newValue
+      all: [
+        eYo.Key.UNARY,
+        eYo.Key.BINARY
+      ],
+      synchronize: /** @suppress {globalThis} */ function (newValue){
+        var slot = this.owner_.slots.expression
+        slot.required = newValue === eYo.Key.BINARY
+        slot.setIncog()
       }
     }
   },

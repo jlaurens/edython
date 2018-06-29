@@ -1,12 +1,19 @@
 <template>
-  <div id="eyo-panel-turtle" :style="{display: visible? 'block': 'none'}"></div>
+  <div id="eyo-panel-turtle" :style="{visibility: visible? 'visible': 'hidden'}">
+    <div id="eyo-turtle-canvas-wrapper" :style="{visibility: visible? 'visible': 'hidden'}"></div>
+  </div>
 </template>
 
 <script>
   export default {
     name: 'panel-turtle',
     mounted: function () {
-      console.log('TURTLE MOUNTED')
+      this.$$.bus.$on('erase-turtle', function () {
+        console.log('erase-turtle')
+      })
+      this.$$.bus.$on('restart-turtle', function () {
+        console.log('restart-turtle')
+      })
     },
     props: {
       visible: {
@@ -19,8 +26,15 @@
 
 <style>
   #eyo-panel-turtle {
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
     background-color: aliceblue;
+  }
+  #eyo-turtle-canvas-wrapper {
+    width: 200px;
+    height: 200px;
   }
 </style>

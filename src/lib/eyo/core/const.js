@@ -168,6 +168,28 @@ eYo.Key = {
   UNARY: 'unary',
   BINARY: 'binary',
   
+  NAME_VALUE: 'name_value',
+  NAME_ANNOTATION_VALUE: 'name_annotation_value',
+  TARGET_VALUE: 'target_value',
+
+  NAME_EXPRESSIONS: 'name_expressions',
+  TARGET_EXPRESSIONS: 'target_expressions',
+
+  DOTTED_NAME: 'dotted_name',
+  BUILTIN: 'builtin',
+  PROPERTY: 'property',
+  ARGUMENTS: 'arguments',
+
+  CODE: 'code',
+  CODE_COMMENT: 'code_comment',
+  EXPRESSION: 'expression',
+  EXPRESSION_COMMENT: 'expression_comment',
+  COMMENT: 'comment',
+
+  YIELD: 'yield',
+  YIELD_EXPRESSION: 'yield_expression',
+  YIELD_FROM: 'yield_from',
+
   /*
 "LIST", "EXPRESSION", "FOR", "ITER", "IN", "IF", "COMP", "PRIMARY", "ATTRIBUTE", "LOWER_BOUND", "UPPER_BOUND", "STRIDE", "KEY", "VALUE", "ARGUMENT", "POWER", "RHS", "LHS", "ELSE", "DATUM", "IMPORT", "SOURCE", "AS", "FROM", "MODULE", "NAME", "DEFINITION", "TYPE", "PARENT", "DO", "COND", "WRAP", "TARGET", "ANNOTATED", "ASSIGNED", "ASSERT", "RAISE"
 */

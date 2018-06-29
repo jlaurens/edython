@@ -415,15 +415,18 @@ eYo.Slot.prototype.getTarget = function () {
 /**
  * Set the disable state.
  * For edython.
- * @param {!bollean} newValue
+ * @param {!boolean} newValue  When not defined, replaced by `!this.required`
  */
 eYo.Slot.prototype.setIncog = function (newValue) {
-  this.incog = newValue
+  if (!goog.isDef(newValue)) {
+    newValue = !this.required
+  }
+  this.incog = !!newValue
   if (this.wait) {
     return
   }
   var c8n = this.input && this.input.connection
-  c8n && c8n.eyo.setIncog(newValue)
+  c8n && c8n.eyo.setIncog(!!newValue)
   this.synchronize()
 }
 

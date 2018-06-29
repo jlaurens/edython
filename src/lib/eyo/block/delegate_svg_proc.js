@@ -23,7 +23,7 @@ goog.require('goog.dom');
  * Class for a DelegateSvg, decorator.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.decorator, {
+eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
   data: {
     builtin: {
       all: ['staticmethod', 'classmethod', 'property'],
@@ -34,17 +34,22 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.decorator, {
       synchronize: true
     },
     variant: {
-      DOTTED_NAME: 0,
-      BUILTIN: 1,
-      PROPERTY: 2,
-      ARGUMENTS: 3,
-      all: [0, 1, 2, 3],
+      DOTTED_NAME: eYo.Key.DOTTED_NAME,
+      BUILTIN: eYo.Key.BUILTIN,
+      PROPERTY: eYo.Key.PROPERTY,
+      ARGUMENTS: eYo.Key.ARGUMENTS,
+      all: [
+        eYo.Key.DOTTED_NAME,
+        eYo.Key.BUILTIN,
+        eYo.Key.PROPERTY,
+        eYo.Key.ARGUMENTS
+      ],
       synchronize: /** @suppress {globalThis} */ function (newValue) { // would variants synchronize?
-        var M = this.model
-        this.data.dotted_name.setIncog(newValue === M.BUILTIN) // disable the data not the slot
-        this.data.builtin.setIncog(newValue !== M.BUILTIN)
-        this.data.property.setIncog(newValue !== M.PROPERTY)
-        this.owner_.slots.arguments.setIncog(newValue !== M.ARGUMENTS)
+        this.data.dotted_name.setIncog(newValue === this.BUILTIN) // disable the data not the slot
+        this.data.builtin.setIncog(newValue !== this.BUILTIN)
+        this.data.property.setIncog(newValue !== this.PROPERTY)
+        var slot = this.owner_.slots.arguments
+        slots.setIncog(newValue !== this.ARGUMENTS)
       }
     },
     dotted_name: {
@@ -87,7 +92,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.decorator, {
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
-          variant.set(variant.model.BUILTIN)
+          variant.set(variant.BUILTIN)
         }
       }
     },
@@ -102,7 +107,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.decorator, {
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
-          variant.set(variant.model.PROPERTY)
+          variant.set(variant.PROPERTY)
         }
       }
     },
@@ -116,7 +121,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.decorator, {
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
-          variant.set(variant.model.ARGUMENTS)
+          variant.set(variant.ARGUMENTS)
         }
       }
     }
@@ -200,9 +205,12 @@ eYo.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (b
 eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
   data: {
     variant: {
+      TYPE: eYo.Key.Type,
       all: [null, eYo.Key.TYPE],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.owner_.slots.type.setIncog(!newValue)
+        var slot = this.owner_.slots.type
+        slot.required = newValue === this.TYPE
+        slot.setIncog()
       }
     },
     name: {
@@ -282,9 +290,12 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
 eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
   data: {
     variant: {
+      ARGUMENTS: eYo.Key.ARGUMENTS,
       all: [null, eYo.Key.ARGUMENTS],
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.owner_.slots.arguments.setIncog(!newValue)
+      synchronize: /** @suppress {globalThis} */ function (newValue){
+        var slot = this.owner_.slots.arguments
+        slot.required = newValue === this.ARGUMENTS
+        slot.setIncog()
       }
     },
     name: {
@@ -319,7 +330,13 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
         start: '(',
         end: ')'
       },
-      wrap: eYo.T3.Expr.argument_list
+      wrap: eYo.T3.Expr.argument_list,
+      xml: {
+        didLoad: function () {
+          var variant = this.data.variant
+          variant.set(variant.ARGUMENTS)
+        }
+      }
     }
   }
 })

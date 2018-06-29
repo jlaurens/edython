@@ -298,6 +298,10 @@ export default {
     this.$$.bus.$on('restart-console', function () {
       window.eYo.console.__class__.restart(window.eYo.console)
     })
+    this.$$.bus.$on('restart-turtle', function () {
+      var code = 'turtle.restart()\n'
+      window.eYo.console.__class__.runScript(window.eYo.console, code)
+    })
   }
 }
 eYo.DelegateSvg.prototype.runScript = function (block) {

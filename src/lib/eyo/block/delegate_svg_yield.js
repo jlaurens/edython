@@ -27,19 +27,21 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
   },
   data: {
     variant: {
-      YIELD: 0,
-      YIELD_EXPRESSION: 1,
-      YIELD_FROM: 2,
-      all: [0, 1, 2],
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        var M = this.model
-        this.owner_.slots.expression.required = (newValue === M.YIELD_EXPRESSION)
-        this.owner_.slots.from.required = (newValue === M.YIELD_FROM)
-      },
+      YIELD: eYo.Key.YIELD,
+      YIELD_EXPRESSION: eYo.Key.YIELD_EXPRESSION,
+      YIELD_FROM: eYo.Key.YIELD_FROM,
+      all: [
+        eYo.Key.YIELD,
+        eYo.Key.YIELD_EXPRESSION,
+        eYo.Key.YIELD_FROM,
+      ],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        var M = this.model
-        this.owner_.slots.expression.setIncog(newValue !== M.YIELD_EXPRESSION)
-        this.owner_.slots.from.setIncog(newValue !== M.YIELD_FROM)
+        var slot = this.owner_.slots.expression
+        slot.required = (newValue === this.YIELD_EXPRESSION)
+        slot.setIncog()
+        slot = this.owner_.slots.from
+        slot.required = (newValue === this.YIELD_FROM)
+        slot.setIncog()
       }
     }
   },
@@ -84,8 +86,8 @@ eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (bloc
   if (block.eyo.locked_) {
     return
   }
-  var M = this.data.variant.model
-  var current = this.data.variant.get()
+  var D = this.data.variant
+  var current = D.get()
   var F = function (content, k) {
     var menuItem = new eYo.MenuItem(content, function () {
       block.eyo.data.variant.set(k)
@@ -95,17 +97,17 @@ eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (bloc
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code-reserved',
     goog.dom.createTextNode('yield')
-  ), M.YIELD
+  ), D.YIELD
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     eYo.Do.createSPAN('yield ', 'eyo-code-reserved'),
     goog.dom.createTextNode('…')
-  ), M.YIELD_EXPRESSION
+  ), D.YIELD_EXPRESSION
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     eYo.Do.createSPAN('yield from ', 'eyo-code-reserved'),
     goog.dom.createTextNode('…')
-  ), M.YIELD_FROM
+  ), D.YIELD_FROM
   )
   mgr.shouldSeparate()
 }

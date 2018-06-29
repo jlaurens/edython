@@ -65,22 +65,22 @@ eYo.DelegateSvg.Expr.module__call_expr.makeSubclass('random__call_expr', {
         switch (newValue) {
           case 'choice':
           case 'getrandbits':
-          d.set(d.model.UNARY)
+          d.set(d.UNARY)
           break
           case 'randint':
           case 'sample':
-          d.set(d.model.BINARY)
+          d.set(d.BINARY)
           break
           case 'choices':
-          d.set(d.model.N_ARY)
+          d.set(d.N_ARY)
           break
           case 'random':
           case 'getstate':
-          d.set(d.model.NO_ARY)
+          d.set(d.Z_ARY)
           break
           case 'expovariate':
           case 'paretovariate':
-          d.set(d.model.UNARY)
+          d.set(d.UNARY)
           break
           case 'uniform':
           case 'betavariate':
@@ -90,13 +90,13 @@ eYo.DelegateSvg.Expr.module__call_expr.makeSubclass('random__call_expr', {
           case 'normalvariate':
           case 'vonmisesvariate':
           case 'weibullvariate':
-          d.set(d.model.BINARY)
+          d.set(d.BINARY)
           break
           case 'triangular':
-          d.set(d.model.TERNARY)
+          d.set(d.TERNARY)
           break
           default:
-          d.set(d.model.N_ARY)
+          d.set(d.N_ARY)
           break
         }
       },
