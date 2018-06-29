@@ -282,7 +282,14 @@ eYo.DelegateSvg.prototype.postInitSvg = function (block) {
       block.getSvgRoot(), 'mousedown', block, block.onMouseDown_);
     Blockly.bindEventWithChecks_(
       block.getSvgRoot(), 'mouseup', block, block.onMouseUp_);
-  }
+    // I could not achieve to use only one binding
+    // With 2 bindings all the mouse events are catched,
+    // but some, not all?, are catched twice.
+    Blockly.bindEventWithChecks_(
+      this.svgPathContour_, 'mousedown', block, block.onMouseDown_);
+    Blockly.bindEventWithChecks_(
+      this.svgPathContour_, 'mouseup', block, block.onMouseUp_);
+    }
   this.eventsInit_ = true
 }
 
@@ -2958,12 +2965,27 @@ eYo.SelectedConnection = (function () {
  * @param {Object|string} model
  * @return {?Blockly.Block} the block that was inserted
  */
-eYo.DelegateSvg.prototype.insertBlockWithModel = function (block, model) {
+eYo.DelegateSvg.prototype.insertBlockWithModel = function (block, model, connection) {
   if (!model) {
     return null
   }
   // get the type:
-  var prototypeName = model.type || model
+  var type = eYo.Do.typeOfString(model)
+  if (type) {
+    if (connection) {
+      if (connection.type === Blockly.NEXT_STATEMENT || connection.type === Blockly.PREVIOUS_STATEMENT) {
+        type.stmt && (model = {
+          type: type.stmt,
+          data: model
+        })
+      } else {
+        type.expr && (model = {
+          type: type.expr,
+          data: model
+        })
+      }
+    }
+  }
   // create a block out of the undo mechanism
   Blockly.Events.disable()
   try {

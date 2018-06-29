@@ -35,10 +35,10 @@ eYo.DelegateSvg.Group.makeSubclass('try_part', {
 eYo.DelegateSvg.Group.makeSubclass('except_part', {
   data: {
     variant: {
-      EXCEPT: 0,
-      EXCEPT_EXPRESSION: 1,
-      EXCEPT_AS: 2,
-      all: [0, 1, 2],
+      EXCEPT: eYo.Key.EXCEPT,
+      EXCEPT_EXPRESSION: eYo.Key.EXCEPT_EXPRESSION,
+      EXCEPT_AS: eYo.Key.EXCEPT_AS,
+      all: [eYo.Key.EXCEPT, eYo.Key.EXCEPT_EXPRESSION, eYo.Key.EXCEPT_AS],
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         var eyo = this.owner_
         var block = eyo.block_
@@ -159,10 +159,10 @@ eYo.DelegateSvg.Group.makeSubclass('finally_part', {
 eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
   data: {
     variant: {
-      RAISE: 0,
-      RAISE_EXPRESSION: 1,
-      RAISE_FROM: 2,
-      all: [0, 1, 2],
+      RAISE: eYo.Key.RAISE,
+      RAISE_EXPRESSION: eYo.Key.RAISE_EXPRESSION,
+      RAISE_FROM: eYo.Key.RAISE_FROM,
+      all: [eYo.Key.RAISE, eYo.Key.RAISE_EXPRESSION, eYo.Key.RAISE_FROM],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         var M = this.model
         this.owner_.slots.expression.setIncog(newValue === M.RAISE)
@@ -249,7 +249,9 @@ eYo.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (
 eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
   data: {
     variant: {
-      all: [0, 1],
+      UNARY: eYo.Key.UNARY,
+      BINARY: eYo.Key.BINARY,
+      all: [eYo.Key.UNARY, eYo.Key.BINARY],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.owner_.slots.expression.setIncog(!newValue)
         this.owner_.slots.expression.required = !!newValue
@@ -275,7 +277,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.owner.data.variant
-          variant.set(1)
+          variant.set(eYo.Key.BINARY)
         }
       }
     }
@@ -300,12 +302,12 @@ eYo.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function 
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     eYo.Do.createSPAN('assert ', 'eyo-code-reserved'),
     goog.dom.createTextNode('…')
-  ), 0
+  ), eYo.Key.UNARY
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     eYo.Do.createSPAN('assert ', 'eyo-code-reserved'),
     goog.dom.createTextNode('…, …')
-  ), 1
+  ), eYo.Key.BINARY
   )
   mgr.shouldSeparate()
   return eYo.DelegateSvg.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)

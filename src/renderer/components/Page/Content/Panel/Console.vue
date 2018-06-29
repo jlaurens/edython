@@ -1,5 +1,5 @@
 <template>
-  <div id="eyo-panel-console">
+  <div id="eyo-panel-console" :style="{display: visible? 'block': 'none'}">
     <panel-console-script></panel-console-script>
     <textarea id="eyo-console-area" rows=20 v-bind:style="{fontFamily: this.$eYo.Font.familyMono, fontSize: this.$eYo.Font.totalAscent + 'px'}"></textarea>
   </div>
@@ -11,6 +11,12 @@
     name: 'panel-console',
     components: {
       PanelConsoleScript
+    },
+    props: {
+      visible: {
+        type: Boolean,
+        default: true
+      }
     }
   }
 </script>

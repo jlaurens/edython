@@ -167,11 +167,11 @@ eYo.KeyHandler = (function () {
     // otherwise, take the first model and pass it to handleModel
     var B = Blockly.selected
     if (B) {
+      var c8n = eYo.SelectedConnection.get()
       var newB = model.parent
-      ? B.eyo.insertParentWithModel(B, model) || B.eyo.insertBlockWithModel(B, model)
-      : B.eyo.insertBlockWithModel(B, model) || B.eyo.insertParentWithModel(B, model)
+      ? B.eyo.insertParentWithModel(B, model) || B.eyo.insertBlockWithModel(B, model, c8n)
+      : B.eyo.insertBlockWithModel(B, model, c8n) || B.eyo.insertParentWithModel(B, model)
       if (newB) {
-        var c8n = eYo.SelectedConnection.get()
         if (c8n) {
           // There was a selected connection,
           // we try to select another one, with possibly the same type
@@ -558,15 +558,21 @@ var Ks = {
   'class': eYo.T3.Stmt.classdef_part,
   'except': {
     type: eYo.T3.Stmt.except_part,
-    subtype: 0
+    data: {
+      variant: eYo.Key.EXCEPT
+    }
   },
   'except …': {
     type: eYo.T3.Stmt.except_part,
-    subtype: 1
+    data: {
+      variant: eYo.Key.EXCEPT_EXPRESSION
+    }
   },
   'except … as …': {
     type: eYo.T3.Stmt.except_part,
-    subtype: 2
+    data: {
+      variant: eYo.Key.EXCEPT_AS
+    }
   },
   'finally': eYo.T3.Stmt.finally_part,
   'for': eYo.T3.Stmt.for_part,
@@ -660,37 +666,37 @@ for (K in Ks) {
 Ks = {
   '+': {
     type: eYo.T3.Expr.a_expr,
-    operator: '+',
+    data: '+',
     slot: eYo.Key.LHS
   },
   '-': {
     type: eYo.T3.Expr.a_expr,
-    operator: '-',
+    data: '-',
     slot: eYo.Key.LHS
   },
   '*': {
     type: eYo.T3.Expr.m_expr,
-    operator: '*',
+    data: '*',
     slot: eYo.Key.LHS
   },
   '//': {
     type: eYo.T3.Expr.m_expr,
-    operator: '//',
+    data: '//',
     slot: eYo.Key.LHS
   },
   '/': {
     type: eYo.T3.Expr.m_expr,
-    operator: '/',
+    data: '/',
     slot: eYo.Key.LHS
   },
   '%': {
     type: eYo.T3.Expr.m_expr,
-    operator: '%',
+    data: '%',
     slot: eYo.Key.LHS
   },
   '@': {
     type: eYo.T3.Expr.m_expr,
-    operator: '@',
+    data: '@',
     slot: eYo.Key.LHS
   },
   '**': {
@@ -699,12 +705,12 @@ Ks = {
   },
   '<<': {
     type: eYo.T3.Expr.shift_expr,
-    operator: '<<',
+    data: '<<',
     slot: eYo.Key.LHS
   },
   '>>': {
     type: eYo.T3.Expr.shift_expr,
-    operator: '>>',
+    data: '>>',
     slot: eYo.Key.LHS
   },
   '&': eYo.T3.Expr.and_expr,
@@ -727,14 +733,14 @@ Ks = ['is', 'is not', 'in', 'not in']
 for (i = 0; (K = Ks[i++]);) {
   eYo.KeyHandler.register('… ' + K + ' …', {
     type: eYo.T3.Expr.object_comparison,
-    subtype: K
+    data: K
   })
 }
 Ks = ['<', '>', '==', '>=', '<=', '!=']
 for (i = 0; (K = Ks[i++]);) {
   eYo.KeyHandler.register('… ' + K + ' …', {
     type: eYo.T3.Expr.number_comparison,
-    subtype: K
+    data: K
   })
 }
 
@@ -752,19 +758,19 @@ Ks = {
   'raise': {
     type: eYo.T3.Stmt.raise_stmt,
     data: {
-      variant: 0
+      variant: eYo.Key.RAISE
     }
   },
   'raise …': {
     type: eYo.T3.Stmt.raise_stmt,
     data: {
-      variant: 1
+      variant: eYo.Key.RAISE_EXPRESSION
     }
   },
   'raise … from …': {
     type: eYo.T3.Stmt.raise_stmt,
     data: {
-      variant: 2
+      variant: eYo.Key.RAISE_FROM
     }
   },
   // 'from future import …': eYo.T3.Stmt.future_statement,
@@ -773,13 +779,13 @@ Ks = {
   'global …': {
     type: eYo.T3.Stmt.global_nonlocal_stmt,
     data: {
-      variant: 'global'
+      variant: eYo.Key.GLOBAL
     }
   },
   'nonlocal …': {
     type: eYo.T3.Stmt.global_nonlocal_stmt,
     data: {
-      variant: 'nonlocal'
+      variant: eYo.Key.NONLOCAL
     }
   },
   '@decorator': eYo.T3.Stmt.decorator,
@@ -878,6 +884,10 @@ Ks = {
   },
   '{…}': {
     type: eYo.T3.Expr.set_display,
+    parent: true
+  },
+  'foo[…]': {
+    type: eYo.T3.Expr.slicing,
     parent: true
   }
 }

@@ -74,23 +74,37 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       IMPORT: eYo.Key.IMPORT,
       FROM_MODULE_IMPORT: eYo.Key.FROM_MODULE_IMPORT,
       FROM_MODULE_IMPORT_STAR: eYo.Key.FROM_MODULE_IMPORT_STAR,
-      all: [eYo.Key.IMPORT, eYo.Key.FROM_MODULE_IMPORT, eYo.Key.FROM_MODULE_IMPORT_STAR],
+      all: [
+        eYo.Key.IMPORT,
+        eYo.Key.FROM_MODULE_IMPORT,
+        eYo.Key.FROM_MODULE_IMPORT_STAR
+      ],
       init: eYo.Key.IMPORT,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         var M = this.model
-        this.owner_.slots.import_module.setIncog(newValue !== M.IMPORT)
+        var slot = this.owner_.slots.import_module
+        slot.required = newValue === M.IMPORT
+        slot.setIncog(!slot.required)
         this.data.from.setIncog(newValue === M.IMPORT)
-        this.owner_.slots.import.setIncog(newValue !== M.FROM_MODULE_IMPORT)
-        this.owner_.slots.import_star.setIncog(newValue !== M.FROM_MODULE_IMPORT_STAR)
+        slot = this.owner_.slots.import
+        slot.required = newValue === M.FROM_MODULE_IMPORT
+        slot.setIncog(!slot.required)
+        slot = this.owner_.slots.import_star
+        slot.required = newValue === M.FROM_MODULE_IMPORT_STAR
+        slot.setIncog(!slot.required)
       }
     },
     from: {
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
-        var variant = this.data.variant.get()
-        var M = this.data.variant.model
-        return type.expr === eYo.T3.Expr.identifier || type.expr === eYo.T3.Expr.dotted_name || ((variant === M.FROM_MODULE_IMPORT) && (type.expr === eYo.T3.Expr.parent_module))
-          ? {validated: newValue} : null
+        var data = this.data.variant
+        var variant = data.get()
+        var M = data.model
+        return type.expr === eYo.T3.Expr.identifier
+        || type.expr === eYo.T3.Expr.dotted_name
+        || ((variant === M.FROM_MODULE_IMPORT)
+          && (type.expr === eYo.T3.Expr.parent_module))
+            ? {validated: newValue} : null
       },
       synchronize: true
     }
@@ -113,6 +127,16 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
           placeholder: eYo.Msg.Placeholder.MODULE,
           variable: true // change this to/with a `module` data
         }
+      },
+      xml: {
+        didLoad: /** @suppress {globalThis} */ function () {
+          if (this.isRequiredFromDom()) {
+            var variant = this.owner.data.variant
+            if (variant.get() === variant.model.IMPORT) {
+              variant.set(variant.model.FROM_MODULE_IMPORT_STAR)
+            }
+          }
+        }
       }
     },
     import: {
@@ -120,7 +144,15 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       fields: {
         label: 'import'
       },
-      wrap: eYo.T3.Expr.non_void_import_identifier_as_list
+      wrap: eYo.T3.Expr.non_void_import_identifier_as_list,
+      xml: {
+        didLoad: /** @suppress {globalThis} */ function () {
+          if (this.isRequiredFromDom()) {
+            var variant = this.owner.data.variant
+            variant.set(variant.FROM_MODULE_IMPORT)
+          }
+        }
+      }
     },
     import_star: {
       order: 4,
@@ -150,11 +182,13 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function (block) {
 eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var current = block.eyo.data.variant.get()
   var F = function (content, variant) {
-    var menuItem = new eYo.MenuItem(content, function () {
-      block.eyo.data.variant.set(variant)
-    })
-    mgr.addChild(menuItem, true)
-    menuItem.setEnabled(variant !== current)
+    if (variant !== current) {
+      var menuItem = new eYo.MenuItem(content, function () {
+        block.eyo.data.variant.set(variant)
+      })
+      mgr.addChild(menuItem, true)
+      menuItem.setEnabled(variant !== current)  
+    }
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     eYo.Do.createSPAN('import ', 'eyo-code-reserved'),
@@ -162,7 +196,7 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
     goog.dom.createTextNode(' ['),
     eYo.Do.createSPAN('as', 'eyo-code-reserved'),
     goog.dom.createTextNode(' ...]')
-  ), 0)
+  ), eYo.Key.IMPORT)
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     eYo.Do.createSPAN('from ', 'eyo-code-reserved'),
     eYo.Do.createSPAN('module ', 'eyo-code-placeholder'),
@@ -170,12 +204,12 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
     goog.dom.createTextNode('… ['),
     eYo.Do.createSPAN('as', 'eyo-code-reserved'),
     goog.dom.createTextNode(' …]')
-  ), 1)
+  ), eYo.Key.FROM_MODULE_IMPORT)
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     eYo.Do.createSPAN('from ', 'eyo-code-reserved'),
     eYo.Do.createSPAN('module ', 'eyo-code-placeholder'),
     eYo.Do.createSPAN('import *', 'eyo-code-reserved')
-  ), 2)
+  ), eYo.Key.FROM_MODULE_IMPORT_STAR)
   mgr.shouldSeparate()
   return eYo.DelegateSvg.Stmt.import_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }

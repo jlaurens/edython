@@ -19,8 +19,8 @@
         v-tippy ><icon-base icon-name="erase"><icon-erase /></icon-base></b-button>
       </div>
       <div id="eyo-panels-content">
-        <panel-console v-bind:style="{ display: selected === 'console'? 'block': 'none'}"></panel-console>
-        <panel-turtle v-bind:style="{ display: selected === 'turtle'? 'block': 'none'}"></panel-turtle>
+        <panel-console :visible="selected === 'console'"></panel-console>
+        <panel-turtle :visible="selected === 'turtle'"></panel-turtle>
       </div>
     </div>
   </div>

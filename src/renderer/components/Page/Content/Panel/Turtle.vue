@@ -1,7 +1,5 @@
 <template>
-  <div id="eyo-panel-turtle">
-    Je suis la tortue, mais comme je ne suis pas partie, je ne suis pas près d'arriver.
-  </div>
+  <div id="eyo-panel-turtle" :style="{display: visible? 'block': 'none'}"></div>
 </template>
 
 <script>
@@ -9,9 +7,20 @@
     name: 'panel-turtle',
     mounted: function () {
       console.log('TURTLE MOUNTED')
+    },
+    props: {
+      visible: {
+        type: Boolean,
+        default: false
+      }
     }
   }
 </script>
 
 <style>
+  #eyo-panel-turtle {
+    width: 100%;
+    height: 100%;
+    background-color: aliceblue;
+  }
 </style>

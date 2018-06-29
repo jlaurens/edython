@@ -209,7 +209,6 @@ eYo.BlockSvg.prototype.addSelect = function () {
     }
   }
   eYo.App.didAddSelect && eYo.App.didAddSelect(this)
-  console.log('DID ADD SELECT TO', this.type)
 }
 
 /**
@@ -257,7 +256,6 @@ eYo.BlockSvg.prototype.removeSelect = function () {
     }
   }
   eYo.App.didRemoveSelect && eYo.App.didRemoveSelect(this)
-  console.log('DID REMOVE SELECT FROM', this.type)
 }
 
 /**
@@ -456,21 +454,26 @@ eYo.BlockSvg.prototype.showContextMenu_ = function (e) {
 eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
   if (this.eyo.wrapped_) {
     // mouse down on a wrapped block means dragging
-    // but dragging is not allowd for that blocks
+    // but dragging is not allowed for that blocks
     return
   }
   if (this.eyo.locked_) {
-    var parent = this.getSurroundParent()
+    var parent = this.getParent()
     if (parent) {
       return
     }
   }
-  if (this.eyo.lastMouseDownEvent_ === e) {
-    return
-  }
   // unfortunately, the mouse events do not find there way to the proper block
   var c8n = this.eyo.getConnectionForEvent(this, e)
   var target = c8n ? c8n.targetBlock() || c8n.sourceBlock_ : this
+  while (target && (target.eyo.wrapped_ || target.eyo.locked_)) {
+    target = target.getParent()
+  }
+  if (!target || target.eyo.lastMouseDownEvent_ === e) {
+    return
+  }
+  // console.log('MOUSE DOWN', target)
+  // Next trick because of the the dual event binding
   target.eyo.lastMouseDownEvent_ = e
   // Next is not good design
   // remove any selected connection, if any
@@ -492,15 +495,20 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
 eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
   var c8n = this.eyo.getConnectionForEvent(this, e)
   var target = c8n ? c8n.targetBlock() || c8n.sourceBlock_ : this
-  if (target.eyo.lastMouseUpEvent_ === e) {
+  while (target && (target.eyo.wrapped_ || target.eyo.locked_)) {
+    target = target.getParent()
+  }
+  if (!target || target.eyo.lastMouseUpEvent_ === e) {
     return
   }
+  // console.log('MOUSE UP', target)
   target.eyo.lastMouseUpEvent_ = e
   var ee = target.eyo.lastMouseDownEvent
   if (ee) {
     // a block was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
+      // console.log('MOUSE UP NOT A DRAG MOVE', target.type, Blockly.selected.type)
       if (target === Blockly.selected) {
         // if the block was already selected,
         // try to select an input connection

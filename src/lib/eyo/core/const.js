@@ -153,6 +153,21 @@ eYo.Key = {
   IMPORT: 'import',
   FROM_MODULE_IMPORT: 'from_module_import',
   FROM_MODULE_IMPORT_STAR: 'from_module_import_star',
+
+  EXCEPT: 'except',
+  EXCEPT_EXPRESSION: 'except_expression',
+  EXCEPT_AS: 'except_as',
+
+  RAISE: 'raise',
+  RAISE_EXPRESSION: 'raise_expression',
+  RAISE_FROM: 'raise_from',
+
+  GLOBAL: 'global',
+  NONLOCAL: 'nonlocal',
+
+  UNARY: 'unary',
+  BINARY: 'binary',
+  
   /*
 "LIST", "EXPRESSION", "FOR", "ITER", "IN", "IF", "COMP", "PRIMARY", "ATTRIBUTE", "LOWER_BOUND", "UPPER_BOUND", "STRIDE", "KEY", "VALUE", "ARGUMENT", "POWER", "RHS", "LHS", "ELSE", "DATUM", "IMPORT", "SOURCE", "AS", "FROM", "MODULE", "NAME", "DEFINITION", "TYPE", "PARENT", "DO", "COND", "WRAP", "TARGET", "ANNOTATED", "ASSIGNED", "ASSERT", "RAISE"
 */

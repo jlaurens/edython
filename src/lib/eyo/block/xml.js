@@ -765,7 +765,8 @@ eYo.Xml.domToBlock = (function () {
     (block = eYo.Xml.Comparison.domToBlock(xmlBlock, workspace)) ||
     (block = eYo.Xml.Group.domToBlock(xmlBlock, workspace)) ||
     (block = eYo.Xml.Call.domToBlock(xmlBlock, workspace))) {
-    } else
+      return block
+    }
     // is there a simple correspondance with a known type
     if ((prototypeName = eYo.T3.Xml.fromDom[name])) {
       if (goog.isArray(prototypeName)) {
@@ -809,25 +810,7 @@ eYo.Xml.domToBlock = (function () {
       }
       // Now create the block, either solid or not
     }
-    if (block) {
-      var eyo = block.eyo
-      // headless please
-      eyo.skipRendering()
-      try {
-        //    console.log('Block created from dom:', xmlBlock, block.type, block.id)
-        // then fill it based on the xml data
-        eYo.Xml.fromDom(block, xmlBlock)
-        var state = xmlBlock.getAttribute(eYo.Xml.STATE)
-        if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
-          eyo.lock(block)
-        }
-        // this block have been created from untrusted data
-        // We might need to fix some stuff before returning
-        // In particular, it will be the perfect place to setup variants
-      } finally {
-        eyo.unskipRendering()
-      }
-    }
+    block && eYo.Xml.fromDom(block, xmlBlock)
     return block
   }
   return function (xmlBlock, workspace) {
@@ -855,69 +838,88 @@ goog.exportSymbol('eYo.Xml.domToBlock', eYo.Xml.domToBlock)
  */
 eYo.Xml.fromDom = function (block, element) {
   var eyo = block.eyo
-  var controller = eyo
-  if ((controller &&
-    goog.isFunction(controller.fromDom)) ||
-    ((controller = eyo.xml) &&
-    goog.isFunction(controller.fromDom)) ||
-    ((controller = eYo.DelegateSvg.Manager.get(block.type)) &&
-    (controller = controller.xml) &&
-    goog.isFunction(controller.fromDom)) ||
-    ((controller = eYo.DelegateSvg.Manager.get(block.type)) &&
-    goog.isFunction(controller.fromDom))) {
-    return controller.fromDom.call(eyo, block, element)
-  } else {
-    eyo.foreachData(function () {
-      this.waitOn()
-    })
-    eYo.Xml.Data.fromDom(block, element)
-    // read slot
-    eyo.foreachSlot(function () {
-      this.load(element)
-    })
-    if (eyo instanceof eYo.DelegateSvg.List) {
-      eYo.Do.forEachElementChild(element, function (child) {
-        var name = child.getAttribute(eYo.XmlKey.SLOT)
-        var input = eyo.getInput(block, name)
-        if (input) {
-          if (input.connection) {
-            var target = input.connection.targetBlock()
-            if (target) {
-              eYo.Xml.fromDom(target, child)
-            } else if ((target = eYo.Xml.domToBlock(child, block.workspace))) {
-              var targetC8n = target.outputConnection
-              if (targetC8n && targetC8n.checkType_(input.connection)) {
-                targetC8n.connect(input.connection)
-              }
-            }
-          } else {
-            console.error('Missing connection')
-          }
-        }
+  // headless please
+  eyo.skipRendering()
+  try {
+    //    console.log('Block created from dom:', xmlBlock, block.type, block.id)
+    // then fill it based on the xml data
+
+    var controller = eyo
+    if ((controller &&
+      goog.isFunction(controller.fromDom)) ||
+      ((controller = eyo.xml) &&
+      goog.isFunction(controller.fromDom)) ||
+      ((controller = eYo.DelegateSvg.Manager.get(block.type)) &&
+      (controller = controller.xml) &&
+      goog.isFunction(controller.fromDom)) ||
+      ((controller = eYo.DelegateSvg.Manager.get(block.type)) &&
+      goog.isFunction(controller.fromDom))) {
+      return controller.fromDom.call(eyo, block, element)
+    } else {
+      eyo.foreachData(function () {
+        this.waitOn()
       })
-      eyo.consolidate(block)
-    }
-    // read flow and suite
-    var statement = function (c8n, key) {
-      if (c8n) {
-        return eYo.Do.someElementChild(element, function (child) {
-          if ((child.getAttribute(eYo.Xml.FLOW) === key)) {
-            var target = eYo.Xml.domToBlock(child, block.workspace)
-            if (target) { // still headless!
-              // we could create a block from that child element
-              // then connect it to
-              if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
-                c8n.connect(target.previousConnection)
+      eYo.Xml.Data.fromDom(block, element)
+      // read slot
+      eyo.foreachSlot(function () {
+        this.load(element)
+      })
+      if (eyo instanceof eYo.DelegateSvg.List) {
+        eYo.Do.forEachElementChild(element, function (child) {
+          var name = child.getAttribute(eYo.XmlKey.SLOT)
+          var input = eyo.getInput(block, name)
+          if (input) {
+            if (input.connection) {
+              var target = input.connection.targetBlock()
+              if (target) {
+                eYo.Xml.fromDom(target, child)
+              } else if ((target = eYo.Xml.domToBlock(child, block.workspace))) {
+                var targetC8n = target.outputConnection
+                if (targetC8n && targetC8n.checkType_(input.connection)) {
+                  targetC8n.connect(input.connection)
+                }
               }
-              return true
+            } else {
+              console.error('Missing connection')
             }
           }
         })
+        eyo.consolidate(block)
       }
+      // read flow and suite
+      var statement = function (c8n, key) {
+        if (c8n) {
+          return eYo.Do.someElementChild(element, function (child) {
+            if ((child.getAttribute(eYo.Xml.FLOW) === key)) {
+              var target = eYo.Xml.domToBlock(child, block.workspace)
+              if (target) { // still headless!
+                // we could create a block from that child element
+                // then connect it to
+                if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
+                  c8n.connect(target.previousConnection)
+                }
+                return true
+              }
+            }
+          })
+        }
+      }
+      var out = statement(block.nextConnection, eYo.XmlKey.NEXT)
+      out = statement(eyo.inputSuite && eyo.inputSuite.connection, eYo.XmlKey.SUITE) || out
+      return out
     }
-    var out = statement(block.nextConnection, eYo.XmlKey.NEXT)
-    out = statement(eyo.inputSuite && eyo.inputSuite.connection, eYo.XmlKey.SUITE) || out
-    return out
+    var state = xmlBlock.getAttribute(eYo.Xml.STATE)
+    if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
+      eyo.lock(block)
+    }
+    // this block have been created from untrusted data
+    // We might need to fix some stuff before returning
+    // In particular, it will be the perfect place to setup variants
+  } catch (err) {
+    console.error(err)
+    throw err
+  } finally {
+    eyo.unskipRendering()
   }
 }
 

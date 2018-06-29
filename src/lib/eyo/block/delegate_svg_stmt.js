@@ -254,10 +254,10 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (block, model, s
         } finally {
           eYo.Events.setGroup(false)
         }
+        return parentBlock
       }
     }
   }
-  return parentBlock
 }
 
 /**
