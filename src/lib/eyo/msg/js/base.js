@@ -70,6 +70,12 @@ goog.provide('eYo.Msg.Placeholder')
 
 /** @export */ eYo.Msg.Placeholder.TERM = 'nom'
 
+/** @export */ eYo.Msg.Placeholder.ARGUMENT = 'argument'
+
+/** @export */ eYo.Msg.Placeholder.KEY = 'clé'
+
+/** @export */ eYo.Msg.Placeholder.VALUE = 'valeur'
+
 /** @export */ eYo.Msg.Placeholder.ALIAS = 'alias'
 
 /** @export */ eYo.Msg.Placeholder.MODULE = 'module'

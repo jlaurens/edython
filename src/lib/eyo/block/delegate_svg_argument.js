@@ -256,6 +256,32 @@ eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_3', {
 })
 
 /**
+ * Class for a DelegateSvg, argument_list_2 block.
+ * This block may be sealed.
+ * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * For edython.
+ */
+eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_4', {
+  list: {
+    ary: 4,
+    empty: false,
+  }
+})
+
+/**
+ * Class for a DelegateSvg, argument_list_2 block.
+ * This block may be sealed.
+ * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * For edython.
+ */
+eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_5', {
+  list: {
+    ary: 5,
+    empty: false,
+  }
+})
+
+/**
  * Class for a DelegateSvg, argument_list_comprehensive block.
  * This block may be sealed.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.

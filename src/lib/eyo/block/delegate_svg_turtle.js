@@ -41,6 +41,69 @@ eYo.DelegateSvg.Stmt.makeSubclass('turtle__import_stmt', {
   }
 })
 
+// /**
+//  * Class for a DelegateSvg, import turtle block.
+//  * A unique block for each module to ease forthcoming management.
+//  * For edython.
+//  */
+// eYo.DelegateSvg.Stmt.makeSubclass('turtle__config_stmt', {
+//   xml: {
+//     tag: 'turtle__config',
+//   },
+//   data: {
+//     key: {
+//       all: [
+//         'turtle_canvas_wrapper',
+//         'canvwidth',
+//         'canvheight'
+//       ],
+//       synchronize: true
+//     },
+//     value: {
+//       synchronize: true
+//     }
+//   },
+//   fields: {
+//     module: {
+//       order: 1,
+//       value: 'turtle',
+//     },
+//     separator: {
+//       order: 3,
+//       value: '.',
+//     },
+//     start: {
+//       order: 4,
+//       value: 'setConfig',
+//     }
+//   },
+//   slots: {
+//     key: {
+//       order: 1,
+//       fields: {
+//         prefix: {
+//           value: '('
+//         },
+//         edit: {
+//           placeholder: eYo.Msg.Placeholder.ARGUMENT,
+//           validate: true,
+//           endEditing: true,
+//           variable: true
+//         },    
+//       }
+//     },
+//     value: {
+//       order: 3,
+//       fields: {
+//         prefix: '=',
+//         suffix: ')'
+//       },
+//       check: eYo.T3.Expr.Check.expression,
+//       hole_value: eYo.Msg.Placeholder.VALUE
+//     }
+//   }
+// })
+
 /**
  * Class for a DelegateSvg, call block.
  * As call is already a reserved message in javascript,
@@ -422,6 +485,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('turtle__import_stmt', {
           'tilt',
           'title',
         ]
+        var zunaries = [
+        ]
         var binaries = [
         ]
         var ternaries = [
@@ -614,16 +679,40 @@ eYo.FlyoutCategory.turtle__module = [
         slots: {
           'O': {
             type: eYo.T3.Expr.term,
+            data: 'turtle_canvas_wrapper',
             slots: {
               definition: {
                 type: eYo.T3.Expr.slicing,
-                data: 'document',
-                
+                slots: {
+                  'O': 'eyo-turtle-canvas-wrapper'
+                }
               }
             }
           },
-          'f': ,
-          'z': ,
+          'f': {
+            type: eYo.T3.Expr.term,
+            data: 'turtle_canvas_wrapper',
+            slots: {
+              definition: {
+                type: eYo.T3.Expr.slicing,
+                slots: {
+                  'O': 'eyo-turtle-canvas-wrapper'
+                }
+              }
+            }
+          },
+          'z': {
+            type: eYo.T3.Expr.term,
+            data: 'turtle_canvas_wrapper',
+            slots: {
+              definition: {
+                type: eYo.T3.Expr.slicing,
+                slots: {
+                  'O': 'eyo-turtle-canvas-wrapper'
+                }
+              }
+            }
+          }
         }
       }
     }
