@@ -295,6 +295,7 @@ eYo.Slot.makeFields = function () {
       for (var i = 0; i < arguments.length; i++) {
         var fieldName = arguments[i]
         if ((field = goog.isString(fieldName) ? owner.fields[fieldName] : fieldName)) {
+          
           var j = unordered.length
           while (j--) {
             if (unordered[j] === field) {

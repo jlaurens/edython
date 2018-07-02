@@ -81,16 +81,15 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       ],
       init: eYo.Key.IMPORT,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        var M = this.model
         var slot = this.owner_.slots.import_module
-        slot.required = newValue === M.IMPORT
+        slot.required = newValue === this.IMPORT
         slot.setIncog(!slot.required)
-        this.data.from.setIncog(newValue === M.IMPORT)
+        this.data.from.setIncog(newValue === this.IMPORT)
         slot = this.owner_.slots.import
-        slot.required = newValue === M.FROM_MODULE_IMPORT
+        slot.required = newValue === this.FROM_MODULE_IMPORT
         slot.setIncog(!slot.required)
         slot = this.owner_.slots.import_star
-        slot.required = newValue === M.FROM_MODULE_IMPORT_STAR
+        slot.required = newValue === this.FROM_MODULE_IMPORT_STAR
         slot.setIncog(!slot.required)
       }
     },
@@ -102,7 +101,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         var M = data.model
         return type.expr === eYo.T3.Expr.identifier
         || type.expr === eYo.T3.Expr.dotted_name
-        || ((variant === M.FROM_MODULE_IMPORT)
+        || ((variant === data.FROM_MODULE_IMPORT)
           && (type.expr === eYo.T3.Expr.parent_module))
             ? {validated: newValue} : null
       },

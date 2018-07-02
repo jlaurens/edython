@@ -386,6 +386,10 @@ ConfigEyo.prototype.enableResources = function (config) {
         {
           from: path.join(this.rootPath, 'gfx/icon.svg'),
           to: path.join(this.distPath, 'static/icon.svg')
+        },
+        {
+          from: path.join(this.rootPath, 'gfx/icon_light.svg'),
+          to: path.join(this.distPath, 'static/icon_light.svg')
         }
       ],
       {

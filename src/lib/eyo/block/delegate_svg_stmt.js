@@ -542,7 +542,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
         var slot = this.owner_.slots.expression
         slot.required = newValue === this.EXPRESSION ||
         newValue === this.EXPRESSION_COMMENT
-        tslot.setIncog()
+        slot.setIncog()
       },
       consolidate: /** @suppress {globalThis} */ function () {
         var withCode = !this.data.code.isIncog()

@@ -338,13 +338,13 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
  */
 eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var name = this.data.name.get()
-  var M = this.data.variant
-  var current = M.get()
-  var F = function (content, variant) {
+  var variant = this.data.variant
+  var current = variant.get()
+  var F = function (content, newVariant) {
     var menuItem = new eYo.MenuItem(content, function () {
-      block.eyo.data.variant.set(variant)
+      block.eyo.data.variant.set(newVariant)
     })
-    menuItem.setEnabled(variant !== current)
+    menuItem.setEnabled(newVariant !== current)
     mgr.addChild(menuItem, true)
   }
   var content =
@@ -352,17 +352,17 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
     eYo.Do.createSPAN(name || eYo.Msg.Placeholder.IDENTIFIER, name ? 'eyo-code' : 'eyo-code-placeholder'),
     eYo.Do.createSPAN(' = …', 'eyo-code')
   )
-  F(content, M.NAME_VALUE)
+  F(content, variant.NAME_VALUE)
   content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN(name || eYo.Msg.Placeholder.IDENTIFIER, name ? 'eyo-code' : 'eyo-code-placeholder'),
     eYo.Do.createSPAN(': … = …', 'eyo-code')
   )
-  F(content, M.NAME_ANNOTATION_VALUE)
+  F(content, variant.NAME_ANNOTATION_VALUE)
   content = eYo.Do.createSPAN('…,… = …,…', 'eyo-code')
   F(content, 2)
   mgr.shouldSeparate()
-  if (current !== M.TARGET_VALUE) {
+  if (current !== variant.TARGET_VALUE) {
     var menuItem = new eYo.MenuItem(eYo.Msg.RENAME, function () {
       block.eyo.data.name.field.showEditor()
     })

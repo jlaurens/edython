@@ -124,38 +124,6 @@ eYo.DelegateSvg.prototype.runScript = function (block) {
 }
 
 /**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-eYo.DelegateSvg.Control.prototype.XpopulateContextMenuComment = function (block, mgr) {
-  // if (block.comment) {
-  //   menuItem = new eYo.MenuItem(
-  //     eYo.Msg.REMOVE_COMMENT,
-  //     {action: eYo.ID.REMOVE_COMMENT,
-  //       target: block})
-  // } else {
-  //   menuItem = new eYo.MenuItem(
-  //     eYo.Msg.ADD_COMMENT,
-  //     {action: eYo.ID.ADD_COMMENT,
-  //       target: block})
-  // }
-  // var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-  //   oldValue ? eYo.Do.createSPAN(oldValue, 'eyo-code') : eYo.Do.createSPAN(eYo.Msg.Placeholder.IDENTIFIER, 'eyo-code-placeholder'),
-  //   eYo.Do.createSPAN('(…)', 'eyo-code')
-  // )
-  // var menuItem = new eYo.MenuItem(content, function () { CHANGE
-  //   block.eyo.doAndRender(block, function () {
-  //     this.data.name.setTrusted(oldValue || '')
-  //     this.data.variant.set(M.NAME)
-  //   })
-  // })
-  // mgr.addChild(menuItem, true)
-  // mgr.shouldSeparate()
-}
-
-/**
  * Deletes or nulls out any references to COM objects, DOM nodes, or other
  * disposable objects...
  * @protected

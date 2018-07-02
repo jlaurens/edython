@@ -49,7 +49,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
         this.data.builtin.setIncog(newValue !== this.BUILTIN)
         this.data.property.setIncog(newValue !== this.PROPERTY)
         var slot = this.owner_.slots.arguments
-        slots.setIncog(newValue !== this.ARGUMENTS)
+        slot.setIncog(newValue !== this.ARGUMENTS)
       }
     },
     dotted_name: {

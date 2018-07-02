@@ -54,7 +54,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
         slot.setIncog()
         slot = this.owner_.slots.as
         slot.required = (newValue === this.EXCEPT_AS)
-        slots.setIncog()
+        slot.setIncog()
       }
     }
   },

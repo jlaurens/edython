@@ -1080,7 +1080,8 @@ eYo.DelegateSvg.prototype.unlockChainTiles = function (block) {
  * Tiles are stacked horizontally to draw the block content.
  * There is no (as of june 2018) support for line break inside blocks.
  * Each tile has a delegate who implements `tileNext` and `tilePrevious`.
- * The purpose is to chain the tiles before rendering.
+ * The purpose is to chain the tiles before rendering in order to
+ * add or remove space between blocks.
  * @param {!Blockly.Block} block
  * @private
  */
@@ -1091,10 +1092,11 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
    * There is no tileHead without a tileTail
    * @param {*} left An eyo like object which receives the merge.
    * @param {*} right An object with an eyo
-   * @return {*} The field tail of the last chain element, if any
+   * @return {*} The tail field of the last chain element, if any
    */
   var chainFields = function (headField) {
     var head, tile
+    // the head is the first visible field
     if ((head = headField)) {
       headField.eyo.tileHead = null
       headField.eyo.tileTail = null
@@ -1103,20 +1105,21 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
           return
         }
       }
-      var next
       tile = head
       tile.eyo.tilePrevious = null
-      while ((next = tile.eyo.nextField)) {
+      var next = tile
+      while ((next = next.eyo.nextField)) {
         if (next.isVisible()) {
           next.eyo.tilePrevious = tile
           tile.eyo.tileNext = next
+          tile = next
         }
-        tile = next
       }
       tile.eyo.tileNext = null
-      headField.eyo.tileHead = head
-      return headField.eyo.tileTail = tile
     }
+    headField.eyo.tileHead = head
+    headField.eyo.tileTail = tile
+    return headField.eyo.tileTail
   }
   /**
    * Merges the chains of left and right
@@ -1147,12 +1150,12 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
     }
   }
   var chainInput = function (input) {
+    input.eyo.tileHead = undefined
+    input.eyo.tileTail = undefined
     // what about visible blocks ?
     if (!input || !input.isVisible()) {
       return
     }
-    input.eyo.tileHead = undefined
-    input.eyo.tileTail = undefined
     var j = 0
     var field, nextField
     if ((field = input.fieldRow[j])) {
@@ -1166,12 +1169,15 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
     chainMerge(input.eyo, input.fieldRow[0])
     var c8n, target
     if ((c8n = input.connection)) {
+      c8n.eyo.tilePrevious = null
+      c8n.eyo.tileNext = null
       if ((target = c8n.targetBlock()) && target.outputConnection) {
         target.eyo.chainTiles(target)
         chainMerge(input.eyo, target)
-      } else if (!c8n.hidden_) {
-        c8n.eyo.tilePrevious = null
-        c8n.eyo.tileNext = null
+      } else if (c8n.hidden_) {
+        c8n.eyo.tileHead = undefined
+        c8n.eyo.tileTail = undefined
+      } else {
         c8n.eyo.tileHead = c8n
         c8n.eyo.tileTail = c8n
         chainMerge(input.eyo, c8n)
