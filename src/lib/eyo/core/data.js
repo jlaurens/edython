@@ -634,43 +634,45 @@ eYo.Data.prototype.load = function (element) {
   if (xml === false) {
     return
   }
-  if (!this.xml_load_lock && xml && goog.isFunction(xml.load)) {
-    this.xml_load_lock = true
-    try {
-      xml.load.call(this, element)
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      delete this.xml_load_lock
-    }
-    return
-  }
-  var required = this.required
-  var isText = xml && xml.text
-  this.setRequiredFromDom(false)
-  var txt
-  if (isText) {
-    eYo.Do.forEachChild(element, function (child) {
-      if (child.nodeType === Node.TEXT_NODE) {
-        txt = child.nodeValue
-        return true
+  if (element) {
+    if (!this.xml_load_lock && xml && goog.isFunction(xml.load)) {
+      this.xml_load_lock = true
+      try {
+        xml.load.call(this, element)
+      } catch (err) {
+        console.error(err)
+        throw err
+      } finally {
+        delete this.xml_load_lock
       }
-    })
-  } else {
-    txt = element.getAttribute(this.attributeName)
-  }
-  if (goog.isDefAndNotNull(txt)) {
-    if (required && txt === '?') {
-      this.fromText('', true)
+      return
+    }
+    var required = this.required
+    var isText = xml && xml.text
+    this.setRequiredFromDom(false)
+    var txt
+    if (isText) {
+      eYo.Do.forEachChild(element, function (child) {
+        if (child.nodeType === Node.TEXT_NODE) {
+          txt = child.nodeValue
+          return true
+        }
+      })
     } else {
-      if ((isText && txt === '?') || (!isText && txt === '')) {
-        this.setRequiredFromDom(true)
-      }
-      this.fromText(txt, true) // do not validate, there might be an error while saving, please check
+      txt = element.getAttribute(this.attributeName)
     }
-  } else if (required) {
-    this.fromText('', true)
+    if (goog.isDefAndNotNull(txt)) {
+      if (required && txt === '?') {
+        this.fromText('', true)
+      } else {
+        if ((isText && txt === '?') || (!isText && txt === '')) {
+          this.setRequiredFromDom(true)
+        }
+        this.fromText(txt, true) // do not validate, there might be an error while saving, please check
+      }
+    } else if (required) {
+      this.fromText('', true)
+    }
   }
   if (xml && xml.didLoad) {
     xml.didLoad.call(this)

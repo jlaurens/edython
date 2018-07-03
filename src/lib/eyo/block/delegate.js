@@ -1142,6 +1142,7 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
     console.error(err)
     throw err
   } finally {
+    this.render(block)
     eYo.Events.setGroup(false)
   }
 }

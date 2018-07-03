@@ -332,7 +332,7 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
       },
       wrap: eYo.T3.Expr.argument_list,
       xml: {
-        didLoad: function () {
+        didLoad: /** @suppress {globalThis} */ function () {
           var variant = this.data.variant
           variant.set(variant.ARGUMENTS)
         }

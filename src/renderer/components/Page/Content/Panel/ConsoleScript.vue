@@ -11,7 +11,7 @@ except:
     import time
     import traceback
     
-    from browser import window, console
+    from browser import window, document
     
     _credits = """    Thanks to CWI, CNRI, BeOpen.com, Zope Corporation and a cast of thousands
         for supporting Python development.  See www.python.org for more information."""
@@ -75,6 +75,21 @@ except:
     @represented(_license)
     def license(): pass
     
+    class Edython:
+
+        def setupTurtle(self):
+            if 'turtle' in sys.modules:
+                try:
+                    el = document['eyo-turtle-canvas-wrapper']
+                    import turtle
+                    turtle.set_defaults(turtle_canvas_wrapper=el)
+                    turtle.set_defaults(canvwidth=el.clientWidth)
+                    turtle.set_defaults(canvheight=el.clientHeight)
+                except KeyError:
+                    print('Build error: Missing #eyo-turtle-canvas-wrapper')
+            else:
+                print('import turtle module first', )
+
     class Status():
         MAIN =  1
         BLOCK = 2
@@ -89,7 +104,8 @@ except:
             'credits':credits,
             'copyright':copyright,
             'license':license,
-            '__name__':'__main__'
+            '__name__':'__main__',
+            'edython': Edython()
         }
     # execution namespace
         
@@ -117,7 +133,8 @@ except:
                 'credits':credits,
                 'copyright':copyright,
                 'license':license,
-                '__name__':'__main__'
+                '__name__':'__main__',
+                'edython': Edython()
             }
             self.flush()
             #v = sys.implementation.version
@@ -281,9 +298,10 @@ except:
                 if self.callback is not None:
                     self.callback(self)
         print('INLINE really done')
-    from browser import document
+    
     window.eYo.console = Console(document['eyo-console-area'])
     console_js.log('%%% importing console module: done')
+
 </script>
 </template>
 
@@ -299,7 +317,7 @@ export default {
       window.eYo.console.__class__.restart(window.eYo.console)
     })
     this.$$.bus.$on('restart-turtle', function () {
-      var code = 'turtle.restart()\n'
+      var code = 'if \'turtle\' in globals(): turtle.restart()\n'
       window.eYo.console.__class__.runScript(window.eYo.console, code)
     })
   }

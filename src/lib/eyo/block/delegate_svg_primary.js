@@ -735,6 +735,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('call_stmt', {
 })
 
 /**
+ * Template for contextual menu content.
+ * @param {!Blockly.Block} block The block.
+ */
+eYo.DelegateSvg.Stmt.call_stmt.prototype.contentTemplate = eYo.DelegateSvg.Stmt.base_call_stmt.prototype.contentTemplate
+
+/**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.

@@ -537,7 +537,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
         data.required = newValue === this.CODE || newValue === this.CODE_COMMENT
         data.setIncog()
         data = this.data.comment
-        data.required = newValue === this.CODE_COMMENT || newValue === this.EXPRESSION_COMMENT
+        data.required = newValue === this.COMMENT || newValue === this.CODE_COMMENT || newValue === this.EXPRESSION_COMMENT
         data.setIncog()
         var slot = this.owner_.slots.expression
         slot.required = newValue === this.EXPRESSION ||
@@ -587,8 +587,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
       },
       xml: {
         text: true,
-        didLoad: /** @suppress {globalThis} */ function (element) {
-          this.load(element)
+        didLoad: /** @suppress {globalThis} */ function () {
           this.whenRequiredFromDom(function () {
             this.setIncog(false)
           }) || (this.toText().length && this.setIncog(false))
