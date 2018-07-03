@@ -28,7 +28,9 @@ goog.require('goog.dom');
 eYo.FieldLabel = function (text, optClass) {
   eYo.FieldLabel.superClass_.constructor.call(this, text, optClass)
   this.size_ = new goog.math.Size(0, eYo.Font.height)
-  this.eyo = {}
+  this.eyo = {
+    field_: this
+  }
 }
 goog.inherits(eYo.FieldLabel, Blockly.FieldLabel)
 

@@ -204,7 +204,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         var M = this.model
         var slots = this.owner_.slots
-        slots.no_ary.setIncog(newValue !== M.Z_ARY)
+        slots.z_ary.setIncog(newValue !== M.Z_ARY)
         slots.unary.setIncog(newValue !== M.UNARY)
         slots.binary.setIncog(newValue !== M.BINARY)
         slots.ternary.setIncog(newValue !== M.TERNARY)
@@ -225,6 +225,17 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       },
       consolidate: /** @suppress {globalThis} */ function () {
         this.didChange(undefined, this.get())
+      },
+      xml: {
+        didLoad: /** @suppress {globalThis} */ function () {
+          if (this.isRequiredFromDom()) {
+            var variant = this.owner.data.variant
+            var current = variant.get()
+            if (current !== variant.NAME && current !== variant.BUILTIN) {
+              variant.set(variant.NAME)
+            }
+          }
+        }
       }
     },
     isOptionalUnary: {
@@ -239,15 +250,17 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       }
     }
   },
-  fields: {
-    name: {
-      order: 3,
-      validate: true,
-      endEditing: true,
-      placeholder: eYo.Msg.Placeholder.IDENTIFIER
-    }
-  },
   slots: {
+    name: {
+      order: 50,
+      fields: {
+        edit: {
+          validate: true,
+          endEditing: true,
+          placeholder: eYo.Msg.Placeholder.IDENTIFIER
+        }
+      }
+    },
     n_ary: {
       order: 100,
       fields: {
@@ -256,7 +269,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       },
       wrap: eYo.T3.Expr.argument_list
     },
-    no_ary: {
+    z_ary: {
       order: 101,
       fields: {
         start: '(',
@@ -449,38 +462,40 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
       NAME: eYo.Key.NAME,
       BUILTIN: eYo.Key.BUILTIN,
       EXPRESSION: eYo.Key.EXPRESSION,
-      ATTRIBUTE: eYo.Key.ATTRIBUTE,
+      EXPRESSION_ATTRIBUTE: eYo.Key.EXPRESSION_ATTRIBUTE, // the name is the attribute
       all: [
         eYo.Key.NAME,
         eYo.Key.BUILTIN,
         eYo.Key.EXPRESSION,
-        eYo.Key.ATTRIBUTE
+        eYo.Key.EXPRESSION_ATTRIBUTE
       ],
+      init: eYo.Key.NAME,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         var data = this.data.name
-        if (newValue === this.ATTRIBUTE) {
+        var slot
+        if (newValue === this.EXPRESSION_ATTRIBUTE) {
           data.required = true
           data.setIncog()
           this.owner_.slots.dot.setIncog(false)
-          var slot = this.owner_.slots.expression
-          slot.required = false
+          slot = this.owner_.slots.expression
+          slot.required = true
           slot.setIncog()
         } else if (newValue === this.EXPRESSION) {
           data.required = false
           data.setIncog()
-          this.owner_.slots.dot.setIncog(false)
-          var slot = this.owner_.slots.expression
+          this.owner_.slots.dot.setIncog(true)
+          slot = this.owner_.slots.expression
           slot.required = true
           slot.setIncog()
-        } else /* if (newValue === M.NAME || newValue === M.BUILTIN) */ {
-          data.required = false
+        } else /* if (newValue === this.NAME || newValue === this.BUILTIN) */ {
+          data.required = true
           data.setIncog()
           this.owner_.slots.dot.setIncog(true)
           slot = this.owner_.slots.expression
           slot.required = false
           slot.setIncog()
         }
-        // force sync, usefull when switching to and from ATTRIBUTE variant
+        // force sync, usefull when switching to and from EXPRESSION_ATTRIBUTE variant
         this.data.name.synchronize()
       }
     },
@@ -527,7 +542,7 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
         ? {validated: newValue} : null
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        var M = this.data.variant.model
+        var M = this.data.variant
         var variant = this.data.variant.get()
         var isBuiltin = this.getAll().indexOf(newValue) >= 0
         if (isBuiltin) {
@@ -536,7 +551,7 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
           }
           switch (newValue) {
             case 'conjugate':
-            this.data.ary.set(this.data.ary.model.Z_ARY)
+            this.data.ary.set(this.data.ary.Z_ARY)
             break
             case 'int':
             case 'float':
@@ -544,22 +559,22 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
             case 'len':
             case 'abs':
             this.data.isOptionalUnary.set(false)
-            this.data.ary.set(this.data.ary.model.UNARY)
+            this.data.ary.set(this.data.ary.UNARY)
             break
             case 'pow':
             case 'trunc':
-            this.data.ary.set(this.data.ary.model.BINARY)
+            this.data.ary.set(this.data.ary.BINARY)
             break
             case 'input':
             this.data.isOptionalUnary.set(true)
-            this.data.ary.set(this.data.ary.model.UNARY)
+            this.data.ary.set(this.data.ary.UNARY)
             break
             case 'list':
             case 'set':
             case 'min':
             case 'max':
             case 'sum':
-            this.data.ary.set(this.data.ary.model.N_ARY)
+            this.data.ary.set(this.data.ary.N_ARY)
           }
         } else {
           if (variant === M.BUILTIN) {
@@ -574,7 +589,7 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
         var element = field && field.textElement_
         if (element) {
           var variant = this.data.variant
-          var i = variant.get() === variant.model.BUILTIN ? 0 : 1
+          var i = variant.get() === variant.BUILTIN ? 0 : 1
           var ra = ['eyo-code', 'eyo-code-reserved']
           goog.dom.classlist.remove(element, ra[i])
           goog.dom.classlist.add(element, ra[1 - i])
@@ -582,22 +597,23 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
       },
       consolidate: /** @suppress {globalThis} */ function () {
         this.didChange(undefined, this.get())
+      },
+      xml: {
+        didLoad: /** @suppress {globalThis} */ function () {
+          if (this.isRequiredFromDom()) {
+            var variant = this.owner.data.variant
+            var current = variant.get()
+            if (current == variant.EXPRESSION) {
+              variant.set(variant.EXPRESSION_ATTRIBUTE)
+            }
+          }
+        }
       }
-    }
-  },
-  fields: {
-    name: {
-      validate: null,
-      endEditing: null,
-      placeholder: null
-      // validate: true,
-      // endEditing: true,
-      // placeholder: eYo.Msg.Placeholder.IDENTIFIER
     }
   },
   slots: {
     expression: {
-      order: 1,
+      order: 11,
       check: eYo.T3.Expr.Check.primary,
       plugged: eYo.T3.Expr.primary,
       hole_value: 'primary',
@@ -605,26 +621,19 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
         didLoad: /** @suppress {globalThis} */ function () {
           if (this.isRequiredFromDom()) {
             var variant = this.owner.data.variant
-            var name = this.owner.data.name
-            variant.set(name.isRequiredFromDom() || name.get().length ? variant.model.ATTRIBUTE : variant.model.EXPRESSION)
+            var current = variant.get()
+            if (current !== variant.EXPRESSION && current !== variant.EXPRESSION_ATTRIBUTE) {
+              var name = this.owner.data.variant.get()
+              variant.set(name.length ? variant.EXPRESSION_ATTRIBUTE : variant.EXPRESSION)
+            }
           }
         }
       }
     },
     dot: {
-      order: 2,
+      order: 20,
       fields: {
         separator: '.'
-      }
-    },
-    name: {
-      order: 3,
-      fields: {
-        edit: {
-          validate: true,
-          endEditing: true,
-          placeholder: eYo.Msg.Placeholder.IDENTIFIER
-        }  
       }
     }
   }
@@ -686,7 +695,7 @@ eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
     mgr.separate()
     eYo.DelegateSvg.Expr.base_call_expr.populateMenu.call(this, block, mgr)
   }
-  if (variant !== M.ATTRIBUTE) {
+  if (variant !== M.EXPRESSION_ATTRIBUTE) {
     mgr.separate()
     content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN(eYo.Msg.Placeholder.EXPRESSION, 'eyo-code-placeholder'),
@@ -698,7 +707,7 @@ eYo.DelegateSvg.Expr.call_expr.populateMenu = function (block, mgr) {
       if (variant === M.BUILTIN) {
         this.data.name.setTrusted(oldValue || '')
       }
-      this.data.variant.set(M.ATTRIBUTE)
+      this.data.variant.set(M.EXPRESSION_ATTRIBUTE)
     }, true))
     mgr.addChild(menuItem, true)
   }

@@ -237,6 +237,7 @@ eYo.Slot.makeFields = function () {
       return
     }
     field.name = field.eyo.key = fieldName // main fields have identical name and key
+    field.eyo.nextField = undefined // debug step
     return field
   }
   return function (owner, fieldsModel) {
@@ -254,7 +255,7 @@ eYo.Slot.makeFields = function () {
     }
     // now order
     // fields must not have the same order
-    // some default fields have predefined order
+    // some default fields have predefined relative order
     var byOrder = Object.create(null)
     var unordered = []
     var fromStart = [] // fields ordered from the beginning
@@ -268,14 +269,19 @@ eYo.Slot.makeFields = function () {
         byOrder[order] && byOrder[order].name || 'NOTHING', field.name, owner.getBlock().type)
         byOrder[order] = field
         if (order > 0) {
+          // insert this field from the start
           for (var i = 0; i < fromStart.length; i++) {
+            // find the first index which corresponding order is > order
             if (fromStart[i].eyo.order > order) {
               break
             }
           }
+          // insert the field at that position (possibly at the end)
           fromStart.splice(i, 0, field)
-        } else if (order < 0) {
+        } else /* if (order < 0) */ {
+          // insert this field to the end
           for (i = 0; i < toEnd.length; i++) {
+            // find the first index which corresponding order is < order
             if (toEnd[i].eyo.order < order) {
               break
             }
@@ -283,6 +289,7 @@ eYo.Slot.makeFields = function () {
           toEnd.splice(i, 0, field)
         }
       } else {
+        // this is an unordered field
         unordered.push(field)
       }
     }
@@ -290,42 +297,81 @@ eYo.Slot.makeFields = function () {
     // Next returns the first field in a chain field.eyo.nextField -> ...
     // The chain is built from the list of arguments
     // arguments are either field names or fields
-    var chain = function () {
-      var field
+    // When field names are given, we just insert the corresponding
+    // field into the chain
+    // When fields are given, we insert the chain starting at that point
+    // The result is a chain of fields.
+    // field.eyo.nextField points to the next field of the chain
+    // field.eyo.nextField.eyo.previousField is a fixed point.
+    // A field is the head of a chain in one of two cases
+    // 1) field.eyo.eyoLast_ is the eyo of a field (possibly the first of the chain)
+    // 2) It has no previous nor next field, meaning that
+    // ...eyo.nextField and ...eyo.previousField are false.
+    // fields with a ...eyo.previousField cannot have a ...eyo.eyoLast_ bacuse they are not the head of the chain.
+    var chain = function (/* variable argument list */) {
+      // We first loop to find the first field that can be the
+      // start of a chain. Every field before is ignored.
+      var startField, nextField
       for (var i = 0; i < arguments.length; i++) {
         var fieldName = arguments[i]
-        if ((field = goog.isString(fieldName) ? owner.fields[fieldName] : fieldName)) {
-          
-          var j = unordered.length
-          while (j--) {
-            if (unordered[j] === field) {
-              unordered.splice(j, 1)
-            }
-          }
-          if (field.eyo.nextField && !field.eyo.eyoLast_) {
+        if ((startField = goog.isString(fieldName) ? owner.fields[fieldName] : fieldName)) {
+          // remove this field from the list of unordered fields
+          if (startField.eyo.previousField) {
             // this field already belongs to a chain
             // but it is not the first one
+            // It does not fit in
             continue
           }
-          var eyo = field.eyo.eyoLast_ || field.eyo
-          for (i++; i < arguments.length; i++) {
+          // This field is acceptable as the first chain element
+          var eyo = startField.eyo.eyoLast_ || startField.eyo
+          // Now scan the next argument fields, if any
+          while (++i < arguments.length) {
             fieldName = arguments[i]
-            if ((eyo.nextField = goog.isString(fieldName) ? owner.fields[fieldName] : fieldName)) {
-              j = unordered.length
-              while (j--) {
-                if (unordered[j] === eyo.nextField) {
-                  unordered.splice(j, 1)
-                }
+            if ((nextField = goog.isString(fieldName) ? owner.fields[fieldName] : fieldName)) {
+              if (nextField.eyo.previousField) {
+                // this was not a starting point
+                continue
               }
-              eyo = eyo.nextField.eyo
-              delete eyo.eyoLast_
+              eyo.nextField = nextField
+              nextField.eyo.previousField = eyo.field_
+              eyo = nextField.eyo
+              var eyoLast = eyo.eyoLast_
+              if (eyoLast) {
+                delete eyo.eyoLast_
+                eyo = eyoLast               
+              //   if (eyo.nextField) {
+              //     console.log('UNEXPECTED 1:', eyo)
+              //   }
+              // } else {
+              //   if (eyo.nextField) {
+              //     console.log('UNEXPECTED 2:', eyo)
+              //   }
+              }
             }
           }
-          field.eyo.eyoLast_ = eyo
+          if (eyo) {
+            startField.eyo.eyoLast_ = eyo
+            // console.log('TEST CHAIN:', eyo, eyo.nextField)
+            // var k = 100
+            // var fields = [startField]
+            // var field = startField
+            // while (k-- && (field = field.eyo.nextField)) {
+            //   if (fields.indexOf(field) >= 0) {
+            //     console.error('LOOP')
+            //     for (i = 0; i < arguments.length; i++) {
+            //       console.log(arguments[i])
+            //     }
+            //   }
+            //   fields.push(field)
+            // }
+          } else {
+            // this chain consists in a unique element
+            startField.eyo.eyoLast_ = startField.eyo
+          }
           break
         }
       }
-      return field
+      return startField
     }
     owner.fromStartField = chain.apply(this, fromStart)
     owner.fromStartField = chain(eYo.Key.MODIFIER, eYo.Key.PREFIX, eYo.Key.START, eYo.Key.LABEL, eYo.Key.SEPARATOR, owner.fromStartField)
@@ -333,6 +379,13 @@ eYo.Slot.makeFields = function () {
     owner.toEndField = chain(owner.toEndField, eYo.Key.END, eYo.Key.SUFFIX, eYo.Key.COMMENT_MARK, eYo.Key.COMMENT)
     // we have exhausted all the fields that are already ordered
     // either explicitely or not
+    // Remove from unordered what has been ordered so far
+    var j = unordered.length
+    while (j--) {
+      if (unordered[j].eyo.previousField || unordered[j].eyo.eyoLast_) {
+        unordered.splice(j, 1)
+      }
+    }
     goog.asserts.assert(unordered.length < 2,
       eYo.Do.format('Too many unordered fields in {0}/{1}', key, JSON.stringify(model)))
     unordered[0] && (owner.fromStartField = chain(owner.fromStartField, unordered[0]))

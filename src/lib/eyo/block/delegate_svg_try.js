@@ -174,10 +174,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       ],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         var slot = this.owner_.slots.expression
-        slot.required = (newValue === M.RAISE_EXPRESSION)
+        slot.required = (newValue === this.RAISE_EXPRESSION)
         slot.setIncog()
         slot = this.owner_.slots.from
-        slot.required = (newValue === M.RAISE_FROM)
+        slot.required = (newValue === this.RAISE_FROM)
         slot.setIncog()
       }
     }

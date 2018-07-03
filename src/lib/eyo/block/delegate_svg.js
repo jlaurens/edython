@@ -1116,10 +1116,10 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
         }
       }
       tile.eyo.tileNext = null
+      headField.eyo.tileHead = head
+      headField.eyo.tileTail = tile
+      return headField.eyo.tileTail
     }
-    headField.eyo.tileHead = head
-    headField.eyo.tileTail = tile
-    return headField.eyo.tileTail
   }
   /**
    * Merges the chains of left and right
@@ -1150,18 +1150,36 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
     }
   }
   var chainInput = function (input) {
+    // what about visible blocks ?
+    if (!input) {
+      return
+    }
     input.eyo.tileHead = undefined
     input.eyo.tileTail = undefined
     // what about visible blocks ?
-    if (!input || !input.isVisible()) {
+    if (!input.isVisible()) {
       return
     }
+    // As there is a double entry for fields, we do not assume
+    // that fields do not belong to a chain
     var j = 0
     var field, nextField
-    if ((field = input.fieldRow[j])) {
-      while ((nextField = input.fieldRow[++j])) {
-        field.eyo.nextField = nextField
+    while ((field = input.fieldRow[j++])) {
+      while ((nextField = field.eyo.nextField)) {
         field = nextField
+      }
+      while ((nextField = input.fieldRow[++j])) {
+        if (nextField.eyo.previousField) {
+          // this field already belongs to a chain
+          // so we ignore it
+          continue
+        } else {
+          field.eyo.nextField = nextField
+          nextField.eyo.previousField = field
+          do {
+            field = nextField
+          } while ((nextField = field.eyo.nextField))
+        }
       }
       field.eyo.nextField = null
     }

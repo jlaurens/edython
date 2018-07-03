@@ -17,7 +17,7 @@ goog.require('eYo.T3')
 goog.require('eYo.Const')
 
 /**
- * Flyout list of node models by catedgory.
+ * Flyout list of node models by category.
  */
 eYo.FlyoutCategory = {
   'test': [
@@ -28,7 +28,7 @@ eYo.FlyoutCategory = {
           type: eYo.T3.Expr.call_expr,
           data: {
             name: 'remove',
-            variant: eYo.Key.ATTRIBUTE,
+            variant: eYo.Key.EXPRESSION_ATTRIBUTE,
             ary: 1
           }
         }
@@ -240,7 +240,7 @@ eYo.FlyoutCategory = {
           type: eYo.T3.Expr.call_expr,
           data: {
             name: 'insert',
-            variant: eYo.Key.ATTRIBUTE,
+            variant: eYo.Key.EXPRESSION_ATTRIBUTE,
             ary: 2
           }
         }
@@ -254,7 +254,7 @@ eYo.FlyoutCategory = {
           type: eYo.T3.Expr.call_expr,
           data: {
             name: 'append',
-            variant: eYo.Key.ATTRIBUTE,
+            variant: eYo.Key.EXPRESSION_ATTRIBUTE,
             ary: 1
           }
         }
@@ -268,7 +268,7 @@ eYo.FlyoutCategory = {
           type: eYo.T3.Expr.call_expr,
           data: {
             name: 'remove',
-            variant: eYo.Key.ATTRIBUTE,
+            variant: eYo.Key.EXPRESSION_ATTRIBUTE,
             ary: 1
           }
         }
@@ -279,7 +279,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'index',
-        variant: eYo.Key.ATTRIBUTE,
+        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
         ary: 1
       },
       title: 'list_index'
@@ -288,7 +288,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'count',
-        variant: eYo.Key.ATTRIBUTE,
+        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
         ary: 1
       },
       title: 'list_count'
@@ -297,7 +297,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'pop',
-        variant: eYo.Key.ATTRIBUTE,
+        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
         ary: 1
       },
       slots: {
@@ -315,7 +315,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'reverse',
-        variant: eYo.Key.ATTRIBUTE,
+        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
         ary: 0
       },
       title: 'list_reverse'
@@ -387,7 +387,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'startswith',
-        variant: eYo.Key.ATTRIBUTE,
+        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
         ary: 3
       },
       title: 'text_startswith'
@@ -396,7 +396,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'endswith',
-        variant: eYo.Key.ATTRIBUTE,
+        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
         ary: 3
       },
       title: 'text_endswith'
@@ -405,7 +405,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'find',
-        variant: eYo.Key.ATTRIBUTE,
+        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
         ary: 3
       },
       title: 'text_find'
@@ -414,7 +414,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'replace',
-        variant: eYo.Key.ATTRIBUTE,
+        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
         ary: 3
       },
       title: 'text_replace'
@@ -423,7 +423,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'count',
-        variant: eYo.Key.ATTRIBUTE,
+        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
         ary: 3
       },
       title: 'text_count'
@@ -432,7 +432,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'upper',
-        variant: eYo.Key.ATTRIBUTE,
+        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
         ary: 0
       },
       title: 'text_upper'
@@ -441,7 +441,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'lower',
-        variant: eYo.Key.ATTRIBUTE,
+        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
         ary: 0
       },
       title: 'text_lower'
@@ -450,7 +450,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'join',
-        variant: eYo.Key.ATTRIBUTE
+        variant: eYo.Key.EXPRESSION_ATTRIBUTE
       },
       title: 'text_join'
     },
@@ -458,7 +458,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'split',
-        variant: eYo.Key.ATTRIBUTE,
+        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
         ary: 2
       },
       title: 'text_split'
@@ -489,7 +489,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'splitlines',
-        variant: eYo.Key.ATTRIBUTE,
+        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
         ary: 1,
         isOptionalUnary: true
       },
@@ -499,7 +499,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'index',
-        variant: eYo.Key.ATTRIBUTE,
+        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
         ary: 3
       },
       title: 'text_index'
@@ -605,7 +605,7 @@ eYo.FlyoutCategory = {
       data: {
         name: 'conjugate',
         ary: 0,
-        variant: eYo.Key.ATTRIBUTE
+        variant: eYo.Key.EXPRESSION_ATTRIBUTE
       }
     },
   ]

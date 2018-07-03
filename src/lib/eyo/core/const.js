@@ -85,6 +85,7 @@ eYo.Key = {
   ITEM: 'item', /* used by delimited blocks */
   PRIMARY: 'primary',
   ATTRIBUTE: 'attribute',
+  EXPRESSION_ATTRIBUTE: 'expression_attribute',
   TYPE: 'type',
   LOWER_BOUND: 'lower_bound',
   UPPER_BOUND: 'upper_bound',

@@ -862,7 +862,7 @@ Ks = {
     type: eYo.T3.Expr.call_expr,
     data: {
       name: 'conjugate',
-      variant: eYo.Key.ATTRIBUTE
+      variant: eYo.Key.EXPRESSION_ATTRIBUTE
     }
   },
   'f(…)': {
