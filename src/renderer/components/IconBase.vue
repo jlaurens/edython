@@ -9,7 +9,7 @@
   >
     <title :id="iconName" lang="en">{{iconName}} icon</title>
     <g class="icon" :stroke="iconColor">
-      <slot />
+      <slot :iconColor="iconColor" />
     </g>
   </svg>
 </template>
@@ -53,5 +53,17 @@ export default {
     height:100%;
     margin-right:0.5rem;
     margin-left:0;
+  }
+  .icon path {
+    opacity:1;
+    fill:none;
+    fill-opacity:1;
+    stroke-width:2.25;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    stroke-miterlimit:4;
+    stroke-dasharray:none;
+    stroke-dashoffset:0;
+    stroke-opacity:1
   }
 </style>

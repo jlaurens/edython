@@ -2,7 +2,8 @@ const state = {
   ecoSave: true,
   noLeftSeparator: true,
   noDynamicList: false,
-  smartUnary: true
+  smartUnary: true,
+  disabledTips: false
 }
 
 const mutations = {
@@ -20,6 +21,9 @@ const mutations = {
   PREF_SET_SMART_UNARY (state, yorn) {
     state.smartUnary = !!yorn
     eYo.App.options.smartUnary = !!yorn
+  },
+  PREF_SET_DISABLED_TIPS (state, yorn) {
+    state.disabledTips = !!yorn
   }
 }
 
