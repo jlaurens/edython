@@ -48,7 +48,6 @@ eYo.Key = {
   TARGET: 'target',
   ASSIGNED: 'assigned',
   IDENTIFIER: 'identifier',
-  EXPRESSION: 'expression', // = ANY? NO!
   EXPRESSIONS: 'expressions', // = ANY? NO!
   ARGUMENT: 'argument',
   POWER: 'power',
@@ -150,7 +149,7 @@ eYo.Key = {
   
   BUILTIN: 'builtin',
   EXPRESSION: 'expression',
-
+  
   IMPORT: 'import',
   FROM_MODULE_IMPORT: 'from_module_import',
   FROM_MODULE_IMPORT_STAR: 'from_module_import_star',
@@ -183,7 +182,6 @@ eYo.Key = {
 
   CODE: 'code',
   CODE_COMMENT: 'code_comment',
-  EXPRESSION: 'expression',
   EXPRESSION_COMMENT: 'expression_comment',
   COMMENT: 'comment',
 

@@ -249,11 +249,13 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/eyo.js" \
 --js "src/lib/eyo/block/delegate_svg_final.js" \
 --js "src/lib/eyo/core/const.js" \
+--js "src/lib/eyo/core/model.js" \
 --js "src/lib/eyo/msg/js/base.js" \
 --js "src/lib/eyo/core/T3.js" \
 --js "src/lib/eyo/core/font.js" \
 --js "src/lib/eyo/workspace/flyout-category.js" \
 --js "src/lib/eyo/block/helper.js" \
+--js "src/lib/eyo/core/turtle_model.js" \
 --js "src/lib/eyo/core/T3_all.js" \
 --js "src/lib/eyo/core/data.js" \
 --js "src/lib/eyo/core/do.js" \

@@ -12,6 +12,7 @@
 'use strict'
 
 goog.provide('eYo.Msg')
+goog.provide('eYo.MsgPack')
 
 goog.require('eYo')
 
@@ -129,3 +130,14 @@ goog.provide('eYo.Msg.Placeholder')
 /** @export */ eYo.Msg.TEXT = 'Texte'
 /** @export */ eYo.Msg.LOOPING = 'Boucle'
 /** @export */ eYo.Msg.FUNCTION = 'Fonction et object'
+
+/**
+ * Internationalization entry.
+ * For edython.
+ * @param {!String} key  key is the string to be localized
+ * @param {?String} pack pack is the pack where le localization should be found
+ * @return {!String}
+ */
+eYo.Msg.i18n = function(key, pack) {
+  return pack && eYo.MsgPack[pack] && eYo.MsgPack[pack][key] || eYo.Msg[key] || key
+}

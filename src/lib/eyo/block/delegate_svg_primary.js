@@ -226,6 +226,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       consolidate: /** @suppress {globalThis} */ function () {
         this.didChange(undefined, this.get())
       },
+      synchronize: true,
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
           if (this.isRequiredFromDom()) {
@@ -414,7 +415,8 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('module__call_expr', {
       },
       consolidate: /** @suppress {globalThis} */ function () {
         this.didChange(undefined, this.get())
-      }
+      },
+      synchronize: true
     }
   },
   fields: {
@@ -428,6 +430,9 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('module__call_expr', {
       order: 2,
       value: '.'
     }
+  },
+  output: {
+    check: [eYo.T3.Expr.call_expr, eYo.T3.Expr.module__call_expr]
   }
 })
 

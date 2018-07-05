@@ -156,7 +156,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
     import_star: {
       order: 4,
       fields: {
-        label: 'import *'
+        label: {
+          value: 'import *',
+          css: 'builtin'
+        }
       }
     }
   }

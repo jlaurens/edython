@@ -241,7 +241,7 @@ eYo.Flyout.prototype.show = function(model) {
         block.eyo.addTooltip(block, xml.title || (xml.data && xml.data.main) || xml.data)
         gaps.push(default_gap)
       } catch (err) {
-        console.error(err)
+        console.error(xml, err)
         // throw err: catch the error here definitely
       } finally {
 
@@ -387,7 +387,6 @@ eYo.Flyout.prototype.positionAt_ = function(width, height, x, y) {
   this.eyo.toolbar_.div_.style.left = x + 'px'
   this.eyo.toolbar_.div_.style.top = y + 'px'
 }
-
 
 /**
  * Return an object with all the metrics required to size scrollbars for the

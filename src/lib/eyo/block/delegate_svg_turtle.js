@@ -13,6 +13,8 @@
 
 goog.provide('eYo.DelegateSvg.Turtle')
 
+goog.require('eYo.Model.turtle__module')
+
 goog.require('eYo.DelegateSvg.Stmt')
 
 goog.require('eYo.DelegateSvg.List')
@@ -26,18 +28,39 @@ goog.require('eYo.FlyoutCategory')
  * A unique block for each module to ease forthcoming management.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('turtle__import_stmt', {
+eYo.DelegateSvg.Stmt.import_stmt.makeSubclass('turtle__import_stmt', {
   xml: {
     tag: 'turtle__import',
   },
-  fields: {
-    label: {
-      value: 'import',
-      css: 'builtin'
+  data: {
+    variant: {
+      init: eYo.Key.FROM_MODULE_IMPORT_STAR,
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        var slot = this.owner_.slots.import_module
+        slot.required = newValue === this.IMPORT
+        slot.setIncog(!slot.required)
+        this.data.from.setIncog(newValue === this.IMPORT)
+        slot = this.owner_.slots.import_star
+        slot.required = newValue === this.FROM_MODULE_IMPORT_STAR
+        slot.setIncog(!slot.required)
+      }
     },
-    turtle: {
-      value: 'turtle'
+    from: {
+      validate: false,
+      synchronize: true,
+      init: 'turtle'
     }
+  },
+  slots: {
+    import_module: {
+      order: 1,
+      fields: {
+        label: 'import',
+        suffix: 'turtle'
+      },
+      wrap: null
+    },
+    import: null
   }
 })
 
@@ -107,424 +130,86 @@ eYo.DelegateSvg.Stmt.makeSubclass('turtle__config_stmt', {
 /**
  * Class for a DelegateSvg, call block.
  * As call is already a reserved message in javascript,
- * we use call_expr instead.
+ * we use turtle__call_expr instead.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-
- eYo.DelegateSvg.Expr.module__call_expr.makeSubclass('turtle__call_expr', {
+eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('turtle__call_expr', {
   data: {
     variant: {
-      all: ['nameMotion', 'nameState', 'namePen', 'nameEvent', 'nameSpecial', 'nameScreen', 'nameAnimation', 'nameInput', 'nameSettings', 'nameScreenOnly', 'namePublic'],
-      noUndo: true,
-      xml: false,  
-    },
-    nameMotion: {
-      all: ['forward', 'fd', 'back', 'backward', 'bk', 'right', 'rt', 'left', 'lt', 'goto', 'setpos', 'setposition', 'setx', 'sety', 'setheading', 'seth', 'home', 'circle', 'dot', 'stamp', 'clearstamp', 'clearstamps', 'undo', 'speed', 'position', 'pos', 'towards', 'xcor', 'ycor', 'heading', 'distance', 'degrees', 'radians'],
-      noUndo: true,
-      xml: false,
-      didChange: /** @suppress {globalThis} */ function () {
-        this.data.variant.set('nameMotion')
+      order: 100,
+      NAME: eYo.Key.NAME, // no 'turtle.'
+      IDENTIFIER: eYo.Key.IDENTIFIER, // 
+      EXPRESSION: eYo.Key.EXPRESSION,
+      all: [
+        eYo.Key.NAME,
+        eYo.Key.IDENTIFIER,
+        eYo.Key.EXPRESSION
+      ],
+      init: eYo.Key.NAME,
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        var slot = this.owner_.slots.expression
+        slot.required = newValue === this.EXPRESSION
+        slot.setIncog()
+        var data = this.data.identifier
+        data.required = newValue === this.IDENTIFIER
+        data.setIncog()
+        this.owner_.slots.dot.setIncog(newValue === this.NAME)
+        // force sync, usefull when switching to and from EXPRESSION variant
+        this.data.identifier.synchronize()
+        this.data.name.synchronize()
       }
     },
-    namePen: {
-      all: ['pendown', 'pd', 'down', 'penup', 'pu', 'up', 'pensize', 'width', 'pensize', 'pen', 'isdown', 'pencolor', 'fillcolor', 'color', 'filling', 'begin_fill', 'end_fill', 'reset', 'clear', 'write'],
-      noUndo: true,
-      xml: false,
-      didChange: /** @suppress {globalThis} */ function () {
-        this.data.variant.set('namePen')
-      }
+    ary: {
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        var current = this.data.name.get()
+        var item = eYo.Model.turtle__module.getItem(current)
+        if (item) {
+          var ary = this.getAll()[item.ary]
+          return newValue === ary ? {validated: newValue}: null
+        } else {
+          return newValue === this.N_ARY ? {validated: newValue}: null
+        }
+      },
     },
-    nameState: {
-      all: ['hideturtle', 'ht', 'showturtle', 'st', 'shape', 'resizemode', 'shapesize', 'turtlesize', 'shearfactor', 'tilt', 'settiltangle', 'shapetransform', 'get_shapepoly'],
-      noUndo: true,
-      xml: false,
-      didChange: /** @suppress {globalThis} */ function () {
-        this.data.variant.set('nameState')
-      }
-    },
-    nameEvent: {
-      all: ['onclick', 'onrelease', 'ondrag', 'listen', 'onkey', 'onkeyrelease', 'onkeypress', 'onclick', 'ontimer', 'mainloop', 'done'],
-      noUndo: true,
-      xml: false,
-      didChange: /** @suppress {globalThis} */ function () {
-        this.data.variant.set('nameEvent')
-      }
-    },
-    nameSpecial: {
-      all: ['begin_poly', 'end_poly', 'get_poly', 'clone', 'getturtle', 'getpen', 'getscreen', 'setundobuffer', 'undobufferentries'],
-      noUndo: true,
-      xml: false,
-      didChange: /** @suppress {globalThis} */ function () {
-        this.data.variant.set('nameSpecial')
-      }
-    },
-    nameScreen: {
-      all: ['bgcolor', 'bgpic', 'clear', 'clearscreen', 'reset', 'resetscreen', 'screensize', 'setworldcoordinates'],
-      noUndo: true,
-      xml: false,
-      didChange: /** @suppress {globalThis} */ function () {
-        this.data.variant.set('nameScreen')
-      }
-    },
-    nameAnimation: {
-      all: ['delay', 'tracer', 'update'],
-      noUndo: true,
-      xml: false,
-      didChange: /** @suppress {globalThis} */ function () {
-        this.data.variant.set('nameAnimation')
-      }
-    },
-    nameInput: {
-      all: ['textinput', 'numinput'],
-      noUndo: true,
-      xml: false,
-      didChange: /** @suppress {globalThis} */ function () {
-        this.data.variant.set('nameInput')
-      }
-    },
-    nameSettings: {
-      all: ['mode', 'colormode', 'getcanvas', 'getshapes', 'register_shape', 'addshape', 'turtles', 'window_height', 'window_width'],
-      noUndo: true,
-      xml: false,
-      didChange: /** @suppress {globalThis} */ function () {
-        this.data.variant.set('nameSettings')
-      }
-    },
-    nameScreenOnly: {
-      all: ['bye', 'exitonclick', 'setup', 'title'],
-      noUndo: true,
-      xml: false,
-      didChange: /** @suppress {globalThis} */ function () {
-        this.data.variant.set('nameScreenOnly')
-      }
-    },
-    namePublic: {
-      all: ['RawTurtle', 'RawPen', 'Turtle', 'TurtleScreen', 'Screen', 'Shape', 'addcomponent', 'Vec2D'],
-      noUndo: true,
-      xml: false,
-      didChange: /** @suppress {globalThis} */ function () {
-        this.data.variant.set('namePublic')
+    identifier: {
+      init: '',
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        var type = eYo.Do.typeOfString(newValue).expr
+        if (type === eYo.T3.Expr.identifier) {
+          return {validated: newValue}
+        }
+        return null
+      },
+      synchronize: true,
+      xml: {
+        didLoad: /** @suppress {globalThis} */ function () {
+          if (this.isRequiredFromDom()) {
+            var variant = this.owner.data.variant
+            var current = variant.get()
+            if (current !== variant.IDENTIFIER) {
+              variant.set(variant.IDENTIFIER)
+            }
+          }
+        }
       }
     },
     name: {
-      init: /** @suppress {globalThis} */ function () {
-        this.set('sqrt')
-        this.isFinite = true
+      init: eYo.Model.turtle__module.getItem(0).names[0],
+      main: true,
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        var item = eYo.Model.turtle__module.getItem(newValue)
+        return item ? {validated: newValue} : null
       },
-      synchronize: true,
-      validate: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        var variants = this.data.variant.getAll()
-        for (var i = 0; i < variants.count; i++) {
-          this.data[variants[i]].set(newValue)
-        }
-        var d = this.data.ary
-        var zaries = [
-          'begin_fill',
-          'begin_poly',
-          'clear',
-          'clone',
-          'end_fill',
-          'end_poly',
-          'filling',
-          'get_poly',
-          'get_shapepoly',
-          'getscreen',
-          'getturtle',
-          'reset',
-          'stamp',
-          'undo',
-          'undobufferentries',
-          'color',
-          'hideturtle',
-          'isdown',
-          'isvisible',
-          'pendown',
-          'penup',
-          'showturtle',
-          'heading',
-          'home',
-          'pos',
-          'radians',
-          'xcor',
-          'ycor',
-          'begin_fill',
-          'begin_poly',
-          'clear',
-          'clone',
-          'end_fill',
-          'end_poly',
-          'filling',
-          'get_poly',
-          'get_shapepoly',
-          'getscreen',
-          'getturtle',
-          'reset',
-          'stamp',
-          'undo',
-          'undobufferentries',
-          'color',
-          'hideturtle',
-          'isdown',
-          'isvisible',
-          'pendown',
-          'penup',
-          'showturtle',
-          'heading',
-          'home',
-          'pos',
-          'radians',
-          'xcor',
-          'ycor',
-          'begin_fill',
-          'begin_poly',
-          'clear',
-          'clone',
-          'end_fill',
-          'end_poly',
-          'filling',
-          'get_poly',
-          'get_shapepoly',
-          'getscreen',
-          'getturtle',
-          'reset',
-          'stamp',
-          'undo',
-          'undobufferentries',
-          'color',
-          'hideturtle',
-          'isdown',
-          'isvisible',
-          'pendown',
-          'penup',
-          'showturtle',
-          'heading',
-          'home',
-          'pos',
-          'radians',
-          'xcor',
-          'ycor',
-          'adjustScrolls',
-          'focus_force',
-          'destroy',
-          'focus_displayof',
-          'focus_get',
-          'focus_lastfor',
-          'focus_set',
-          'grab_current',
-          'grab_release',
-          'grab_set',
-          'grab_set_global',
-          'grab_status',
-          'grid_size',
-          'image_names',
-          'image_types',
-          'keys',
-          'option_clear',
-          'pack_slaves',
-          'place_slaves',
-          'quit',
-          'tk_bisque',
-          'tk_focusFollowsMouse',
-          'tk_focusNext',
-          'tk_focusPrev',
-          'update',
-          'update_idletasks',
-          'winfo_cells',
-          'winfo_children',
-          'winfo_class',
-          'winfo_colormapfull',
-          'winfo_depth',
-          'winfo_exists',
-          'winfo_geometry',
-          'winfo_height',
-          'winfo_id',
-          'winfo_ismapped',
-          'winfo_manager',
-          'winfo_name',
-          'winfo_parent',
-          'winfo_pointerx',
-          'winfo_pointerxy',
-          'winfo_pointery',
-          'winfo_reqheight',
-          'winfo_reqwidth',
-          'winfo_rootx',
-          'winfo_rooty',
-          'winfo_screen',
-          'winfo_screencells',
-          'winfo_screendepth',
-          'winfo_screenheight',
-          'winfo_screenmmheight',
-          'winfo_screenmmwidth',
-          'winfo_screenvisual',
-          'winfo_screenwidth',
-          'winfo_server',
-          'winfo_toplevel',
-          'winfo_viewable',
-          'winfo_visual',
-          'winfo_visualid',
-          'winfo_vrootheight',
-          'winfo_vrootwidth',
-          'winfo_vrootx',
-          'winfo_vrooty',
-          'winfo_width',
-          'winfo_x',
-          'winfo_y',
-          'pack_forget',
-          'pack_info',
-          'place_forget',
-          'place_info',
-          'grid_forget',
-          'grid_info',
-          'grid_remove',
-          'begin_fill',
-          'begin_poly',
-          'clear',
-          'clone',
-          'end_fill',
-          'end_poly',
-          'filling',
-          'get_poly',
-          'get_shapepoly',
-          'getscreen',
-          'getturtle',
-          'reset',
-          'stamp',
-          'undo',
-          'undobufferentries',
-          'color',
-          'hideturtle',
-          'isdown',
-          'isvisible',
-          'pendown',
-          'penup',
-          'showturtle',
-          'heading',
-          'home',
-          'pos',
-          'radians',
-          'xcor',
-          'ycor',
-          'clear',
-          'getcanvas',
-          'getshapes',
-          'reset',
-          'turtles',
-          'update',
-          'window_height',
-          'window_width',
-          'mainloop',
-          'Screen',
-          'begin_fill',
-          'begin_poly',
-          'bye',
-          'clear',
-          'clearscreen',
-          'clone',
-          'color',
-          'down',
-          'end_fill',
-          'end_poly',
-          'exitonclick',
-          'filling',
-          'get_poly',
-          'get_shapepoly',
-          'getcanvas',
-          'getpen',
-          'getscreen',
-          'getshapes',
-          'getturtle',
-          'heading',
-          'hideturtle',
-          'home',
-          'ht',
-          'isdown',
-          'isvisible',
-          'mainloop',
-          'pd',
-          'pendown',
-          'penup',
-          'pos',
-          'position',
-          'pu',
-          'radians',
-          'reset',
-          'resetscreen',
-          'showturtle',
-          'st',
-          'stamp',
-          'turtles',
-          'undo',
-          'undobufferentries',
-          'up',
-          'update',
-          'window_height',
-          'window_width',
-          'xcor',
-          'ycor'
-        ]
-        var unaries = [
-          'selection_get',
-          'back',
-          'backward',
-          'bk',
-          'clearstamp',
-          'fd',
-          'forward',
-          'left',
-          'lt',
-          'right',
-          'rt',
-          'seth',
-          'setheading',
-          'settiltangle',
-          'setundobuffer',
-          'setx',
-          'sety',
-          'tilt',
-          'title',
-        ]
-        var zunaries = [
-        ]
-        var binaries = [
-        ]
-        var ternaries = [
-        ]
-        var quadaries = [
-          'bgcolor',
-          'color',
-          'fillcolor',
-          'pencolor'
-        ]
-        var pentaries = [
-        ]
-        var n_aries = [
-          'with_traceback',
-          'count',
-          'index'
-        ]
-        this.data.isOptionalUnary.set(false)
-        if (n_aries.indexOf(newValue) >= 0) {
-          d.set(d.N_ARY)
-        } else if (pentaries.indexOf(newValue) >= 0) {
-          d.set(d.PENTARY)
-        } else if (quadaries.indexOf(newValue) >= 0) {
-          d.set(d.QUADARY)
-        } else if (ternaries.indexOf(newValue) >= 0) {
-          d.set(d.TERNARY)
-        } else if (binaries.indexOf(newValue) >= 0) {
-          d.set(d.BINARY)
-        } else if (unaries.indexOf(newValue) >= 0) {
-          d.set(d.UNARY)
-        } else if (zunaries.indexOf(newValue) >= 0) {
-          d.set(d.UNARY)
-          this.data.isOptionalUnary.set(true)
-        } else if (zaries.indexOf(newValue) >= 0) {
-          d.set(d.Z_ARY)
-          this.data.isOptionalUnary.set(true)
+        var item = eYo.Model.turtle__module.getItem(newValue)
+        if (item) {
+          var ary = item.ary
+          this.data.ary.setTrusted(goog.isDef(ary) ? ary: this.data.ary.N_ARY)
+          this.data.isOptionalUnary.setTrusted(!item.mandatory)
         } else {
-          d.set(d.N_ARY)
+          this.data.ary.setTrusted(this.data.ary.N_ARY)
+          this.data.isOptionalUnary.setTrusted(true)
         }
       },
       consolidate: /** @suppress {globalThis} */ function () {
@@ -532,15 +217,45 @@ eYo.DelegateSvg.Stmt.makeSubclass('turtle__config_stmt', {
       }
     }
   },
-  fields: {
-    module: {
-      value: 'turtle',
-      validate: false,
-      endEditing: false
+  slots: {
+    identifier: {
+      order: 1,
+      fields: {
+        edit: {
+          placeholder: eYo.Msg.Placeholder.IDENTIFIER,
+          validate: true,
+          endEditing: true,
+          variable: true
+        }
+      }
+    },
+    expression: {
+      order: 10,
+      check: eYo.T3.Expr.Check.primary,
+      plugged: eYo.T3.Expr.primary,
+      hole_value: 'primary',
+      xml: {
+        didLoad: /** @suppress {globalThis} */ function () {
+          if (this.isRequiredFromDom()) {
+            var variant = this.owner.data.variant
+            var current = variant.get()
+            if (current !== variant.EXPRESSION && current !== variant.EXPRESSION_ATTRIBUTE) {
+              var name = this.owner.data.variant.get()
+              variant.set(name.length ? variant.EXPRESSION_ATTRIBUTE : variant.EXPRESSION)
+            }
+          }
+        }
+      }
+    },
+    dot: {
+      order: 20,
+      fields: {
+        separator: '.'
+      }
     }
   },
   output: {
-    check: [eYo.T3.Expr.turtle__call_expr, eYo.T3.Expr.call_expr]
+    check: [eYo.T3.Expr.call_expr, eYo.T3.Expr.turtle__call_expr]
   }
 })
 
@@ -549,52 +264,69 @@ eYo.DelegateSvg.Stmt.makeSubclass('turtle__config_stmt', {
  * @param {!Blockly.Block} block The block.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
- */
+ * @suppress {globalThis}
+*/
 eYo.DelegateSvg.Expr.turtle__call_expr.populateMenu = function (block, mgr) {
-  var eyo = block.eyo
-  var current_variant = eyo.data.variant.get()
-  var current_name = eyo.data.name.get()
-  var data = eyo.data[current_variant]
-  var names = data.getAll()
+  var M = this.data.variant.model
+  var variant = this.data.variant
+  var current_variant = variant.get()
+  var name = this.data.name
+  var current_name = name.get()
+  var names = name.getAll()
+  var i_name = names.indexOf(name.get())
+  if (variant === M.EXPRESSION) {
+    var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      current_name ? eYo.Do.createSPAN(current_name, 'eyo-code') : eYo.Do.createSPAN(eYo.Msg.Placeholder.IDENTIFIER, 'eyo-code-placeholder'),
+      eYo.Do.createSPAN('(…)', 'eyo-code')
+    )
+    var menuItem = new eYo.MenuItem(content, this.doAndRender(block, function () {
+      variant.set(M.NAME)
+    }, true))
+    mgr.addChild(menuItem, true)
+  }
   var F = function (i) {
-    var name = names[i]
-    if (name !== current_name) {
-      var content =
-      goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-        'turtle.' + name + '(...)'
+    // closure to catch j
+    if (i !== i_name) {
+      content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+        eYo.Do.createSPAN(names[i], 'eyo-code-reserved'),
+        eYo.Do.createSPAN('(…)', 'eyo-code')
       )
-      var menuItem = new eYo.MenuItem(content, function () {
-        eyo.data.name.set(name)
-      })
+      var menuItem = new eYo.MenuItem(content, this.doAndRender(block, function () {
+        this.data.name.setTrusted(names[i])
+        this.data.variant.set(M.NAME)
+      }, true))
       mgr.addChild(menuItem, true)
     }
   }
   for (var i = 0; i < names.length; i++) {
-    F(i)
+    F.call(this, i)
   }
-  mgr.shouldSeparate()
-  var variants = eyo.data.variant.getAll()
-  for (var i = 0; i < variants.length; i++) {
-    var variant = variants[i]
-    if (variant !== current_variant) {
-      var content = {
-        nameMotion: 'Mouvement',
-        nameState: 'État',
-        namePen: 'Crayon',
-        nameEvent: 'Évènement',
-        nameSpecial: 'Spécial',
-        nameScreen: 'Écran',
-        nameAnimation: 'Animation',
-        nameInput: 'Saisis',
-        nameSettings: 'Réglages',
-        nameScreenOnly: 'Écran',
-        namePublic: 'Public',
-      } [variant]
-      var menuItem = new eYo.MenuItem(content, function () {
-        eyo.data.variant.set(variant)
-      })
-      mgr.addChild(menuItem, true)
-    }
+  if (current_variant !== M.EXPRESSION) {
+    content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      eYo.Do.createSPAN(eYo.Msg.Placeholder.EXPRESSION, 'eyo-code-placeholder'),
+      eYo.Do.createSPAN('(…)', 'eyo-code')
+    )
+    menuItem = new eYo.MenuItem(content, this.doAndRender(block, function () {
+      variant.set(M.EXPRESSION)
+    }, true))
+    mgr.addChild(menuItem, true)
+  }
+  if (current_variant !== M.BUILTIN) {
+    mgr.separate()
+    eYo.DelegateSvg.Expr.base_call_expr.populateMenu.call(this, block, mgr)
+  }
+  if (current_variant !== M.EXPRESSION) {
+    mgr.separate()
+    content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      eYo.Do.createSPAN(eYo.Msg.Placeholder.EXPRESSION, 'eyo-code-placeholder'),
+      eYo.Do.createSPAN('.', 'eyo-code-placeholder'),
+      eYo.Do.createSPAN(eYo.Msg.Placeholder.IDENTIFIER, 'eyo-code-placeholder'),
+      eYo.Do.createSPAN('(…)', 'eyo-code')
+    )
+    menuItem = new eYo.MenuItem(content, block.eyo.doAndRender(block, function () {
+      variant.set(M.EXPRESSION)
+    }, true))
+    mgr.addChild(menuItem, true)
   }
   mgr.shouldSeparate()
 }
@@ -620,15 +352,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('turtle__call_stmt', {
 })
 
 /**
- * Populate the context menu for the given block.
+ * Template for contextual menu content.
  * @param {!Blockly.Block} block The block.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
  */
-eYo.DelegateSvg.Stmt.turtle__call_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  eYo.DelegateSvg.Expr.turtle__call_expr.populateMenu.call(this, block, mgr)
-  return eYo.DelegateSvg.Stmt.turtle__call_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
-}
+eYo.DelegateSvg.Stmt.call_stmt.prototype.contentTemplate = eYo.DelegateSvg.Stmt.base_call_stmt.prototype.contentTemplate
 
 /**
  * Populate the context menu for the given block.
@@ -636,30 +363,69 @@ eYo.DelegateSvg.Stmt.turtle__call_stmt.prototype.populateContextMenuFirst_ = fun
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Expr.turtle__call_expr.populateMenu = function (block, mgr) {
-  var eyo = block.eyo
-  var current_name = eyo.data.name.get()
-  var names = eyo.data.name.getAll()
-  var F = function (i) {
-    var name = names[i]
-    if (name !== current_name) {
-      var content =
-      goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-        'turtle.' + name
-      )
-      var menuItem = new eYo.MenuItem(content, function () {
-        eyo.data.name.set(name)
-      })
-      mgr.addChild(menuItem, true)
-    }
-  }
-  for (var i = 0; i < names.length; i++) {
-    F(i)
-  }
-  mgr.shouldSeparate()
+eYo.DelegateSvg.Stmt.call_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  eYo.DelegateSvg.Expr.turtle__call_expr.populateMenu.call(this, block, mgr)
+  return eYo.DelegateSvg.Stmt.call_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
-var F = function (name, title) {
+/**
+ * Class for a DelegateSvg, turtle setup statement block.
+ * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * For edython.
+ */
+eYo.DelegateSvg.Stmt.makeSubclass('turtle__setup_stmt', {
+  fields: {
+    label: 'edython.setupTurtle()'
+  }
+})
+
+var F_stmt = function (name, title) {
+  var key = 'turtle__'+name
+  title && (eYo.Tooltip.Title[key] = title)
+  return {
+    type: eYo.T3.Stmt.turtle__call_stmt,
+    data: {
+      name: name,
+      variant: eYo.Key.NAME
+    },
+    title: key
+  }
+}
+eYo.FlyoutCategory.basic_turtle__module = [
+  eYo.T3.Stmt.turtle__import_stmt,
+  eYo.T3.Stmt.turtle__setup_stmt,
+  F_stmt('forward', 'Avancer de la distance donnée'),
+  F_stmt('backward', 'Reculer de la distance donnée'),
+  F_stmt('right', 'Tourner à droite d\'un angle de mesure donnée (en degrés par défaut)'),
+  F_stmt('left', 'Tourner à gauche d\'un angle de mesure donnée (en degrés par défaut)'),
+  F_stmt('pendown', 'Abaisser le crayon'),
+  F_stmt('isdown', 'Le crayon est baissé ?'),// beware: NO BREAK SPACE before '?'
+  F_stmt('penup', 'Lever le crayon'),
+  F_stmt('pensize', 'Changer ou obtenir l\'épaisseur du trait.'),
+  F_stmt('pencolor', 'Changer ou obtenir la couleur du trait.'),
+  F_stmt('fillcolor', 'Changer ou obtenir la couleur de remplissage.'),
+  F_stmt('begin_fill', 'Commencer une opération de remplissage.'),
+  F_stmt('end_fill', 'Terminer une opération de remplissage.'),
+  F_stmt('filling', 'En opération de remplissage ?'),// beware: NO BREAK SPACE before '?'
+  
+  F_stmt('circle', 'Trace un cercle, un arc de cercle, un polygone régulier ou seulement une partie.'),
+  F_stmt('dot', 'Dessine un point de taille et de couleur donnée.'),
+  F_stmt('shape', 'Choisir la forme parmi "arrow", "turtle, "circle", "square", "triangle" et "classic".'),
+  F_stmt('stamp', 'Tamponne l\'image de la tortue.'),
+  F_stmt('xcor', 'Obtenir l\'abscisse de la tortue.'),
+  F_stmt('ycor', 'Obtenir l\'ordonnée de la tortue.'),
+  F_stmt('position', 'Obtenir les coordonnées (x, y) de la tortue.'),
+  F_stmt('distance', 'Obtenir la distance au point de coordonnées (x, y).'),
+  F_stmt('setx', 'Déplace la tortue à l\'endroit spécifié sans changer d\'ordonnée ni d\'orientation. Trace un segment horizontal si le stylo est baissé.'),
+  F_stmt('sety', 'Déplace la tortue à l\'endroit spécifié sans changer d\'abscisse ni d\'orientation. Trace un segment vertical si le stylo est baissé.'),
+  F_stmt('setposition', 'Déplace la tortue à l\'endroit spécifié sans changer d\'orientation. Trace un segment si le stylo est baissé.'),
+  F_stmt('home', 'Déplace la tortue à l\'origine. Trace un segment si le stylo est baissé.'),
+  F_stmt('degrees', 'Angles mesurés en degrés'),
+  F_stmt('radians', 'Angles mesurés en radians'),
+  F_stmt('setheading', 'Oriente la tortue dans la direction donnée par l\'angle selon le repère choisi (mode standard et trigonométrique ou mode logo et géographique).')
+]
+
+var F_expr = function (name, title) {
   var key = 'turtle__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -668,65 +434,76 @@ var F = function (name, title) {
     title: key
   }
 }
+var F_stmt = function (name, title) {
+  var key = 'turtle__'+name
+  title && (eYo.Tooltip.Title[key] = title)
+  return {
+    type: eYo.T3.Stmt.turtle__call_stmt,
+    data: name,
+    title: key
+  }
+}
 eYo.FlyoutCategory.turtle__module = [
   eYo.T3.Stmt.turtle__import_stmt,
+  eYo.T3.Stmt.turtle__setup_stmt,
   {
-    type: eYo.T3.Expr.turtle__call_expr,
-    data: 'setConfig',
-    title: 'turtle__eyo_config',
+    type: eYo.T3.Stmt.assignment_stmt,
     slots: {
-      n_ary: {
+      assigned: {
         slots: {
-          'O': {
-            type: eYo.T3.Expr.term,
-            data: 'turtle_canvas_wrapper',
-            slots: {
-              definition: {
-                type: eYo.T3.Expr.slicing,
-                slots: {
-                  'O': 'eyo-turtle-canvas-wrapper'
-                }
-              }
+          O: {
+            type: eYo.T3.Expr.module__call_expr,
+            data: {
+              module: 'turtle',
+              name: 'Turtle'
             }
           },
-          'f': {
-            type: eYo.T3.Expr.term,
-            data: 'turtle_canvas_wrapper',
-            slots: {
-              definition: {
-                type: eYo.T3.Expr.slicing,
-                slots: {
-                  'O': 'eyo-turtle-canvas-wrapper'
-                }
-              }
-            }
+        },
+      },
+    },
+  },
+  F_stmt('forward', 'Avancer de la distance donnée'),
+  F_stmt('back', 'Reculer de la distance donnée'),
+  F_stmt('right', 'Tourner à droite d\'un angle de mesure donnée (en degrés par défaut)'),
+  F_stmt('left', 'Tourner à gauche d\'un angle de mesure donnée (en degrés par défaut)'),
+  F_stmt('degrees', 'Angles mesurés en degrés'),
+  F_stmt('radians', 'Angles mesurés en radians'),
+  F_stmt('setposition', 'Déplace la tortue à l\'endroit spécifié sans changer d\'orientation. Trace un segment si le stylo est baissé.'),
+  F_stmt('setx', 'Déplace la tortue à l\'endroit spécifié sans changer d\'ordonnée ni d\'orientation. Trace un segment horizontal si le stylo est baissé.'),
+  F_stmt('sety', 'Déplace la tortue à l\'endroit spécifié sans changer d\'abscisse ni d\'orientation. Trace un segment vertical si le stylo est baissé.'),
+  F_stmt('setheading', 'Oriente la tortue dans la direction donnée par l\'angle selon le repère choisi (mode standard et trigonométrique ou mode logo et géographique).'),
+  F_stmt('home', 'Déplace la tortue à l\'origine. Trace un segment si le stylo est baissé.'),
+  F_stmt('circle', 'Trace un cercle, un arc de cercle, un polygone régulier ou seulement une partie.'),
+  F_stmt('dot', 'Dessine un point de taille et de couleur donnée.'),
+  F_stmt('stamp', 'Tamponne l\'image de la tortue.'),
+  {
+    type: eYo.T3.Stmt.assignment_stmt,
+    slots: {
+      assigned: {
+        slots: {
+          O: {
+            type: eYo.T3.Expr.turtle__call_expr,
+            data: 'stamp',
           },
-          'z': {
-            type: eYo.T3.Expr.term,
-            data: 'turtle_canvas_wrapper',
-            slots: {
-              definition: {
-                type: eYo.T3.Expr.slicing,
-                slots: {
-                  'O': 'eyo-turtle-canvas-wrapper'
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
+        },
+      },
+    },
+  },
+  F_stmt('stamp', 'Tamponne l\'image de la tortue.'),
+  
 ]
-
+/* <s eyo="assignment" xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">
+<x eyo="list" slot="assigned"><x eyo="turtle__call_expr" name="stamp" ary="0" slot="O"></x>
+</x>
+</s> */
 goog.mixin(eYo.Tooltip.Title, {
   turtle__import_stmt: 'Importer le module turtle',
+  turtle__setup_stmt: 'Réglages du module turtle propres à edython',
 })
 
 eYo.DelegateSvg.Turtle.T3s = [
   eYo.T3.Stmt.turtle__import_stmt,
+  eYo.T3.Stmt.turtle__setup_stmt,
   eYo.T3.Expr.turtle__call_expr,
-  eYo.T3.Stmt.turtle__call_stmt,
-  eYo.T3.Expr.turtle__const
+  eYo.T3.Stmt.turtle__call_stmt
 ]

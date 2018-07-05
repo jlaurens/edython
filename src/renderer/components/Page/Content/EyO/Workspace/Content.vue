@@ -51,7 +51,7 @@
       F('function')
       var moduleF = function (name) {
         model.items[name + '__module'] = {
-          name: name,
+          name: name + '__module',
           content: name
         }
       }
@@ -90,6 +90,7 @@
     methods: {
       doSelect: function (item) {
         var category = item.name
+        console.log(category)
         if (this.workspace && this.flyout) {
           var list = this.flyout.eyo.getList(category)
           if (list && list.length) {

@@ -134,6 +134,9 @@ eYo.DelegateSvg.prototype.initBlock = function (block) {
     var ordered = []
     for (var k in slotsModel) {
       var slotModel = slotsModel[k]
+      if (!slotModel) {
+        continue
+      }
       var order = slotModel.order
       var insert = slotModel.insert
       var slot, next

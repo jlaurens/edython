@@ -33,7 +33,6 @@ def buildDeps(library, library_name):
             for l in f.readlines():
                 m = re_provide.match(l)
                 if m:
-                    print(m.group('provide'))
                     if m.group('provide'):
                         provide += provide_sep + "'" + m.group('what') + "'"
                         provide_sep = ', '
@@ -41,7 +40,6 @@ def buildDeps(library, library_name):
                     elif m.group('require'):
                         require += require_sep + "'" + m.group('what') + "'"
                         require_sep = ', '
-                        print(require)
                     else:
                         out_lines2.append(m.group('what'))
             if len(provide) + len(require)>2:
@@ -54,8 +52,9 @@ def buildDeps(library, library_name):
     p_out = pathBuild / (library_name+'_required.txt')
     print(p_out)
     p_out.write_text('\n'.join(out_lines2))
-
+print('Building eyo deps')
 buildDeps('eyo', 'eyo')
+print('Building blockly/core deps')
 buildDeps('blockly/core', 'blockly')
 
 exit(0)
