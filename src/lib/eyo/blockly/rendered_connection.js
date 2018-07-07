@@ -606,12 +606,12 @@ Blockly.RenderedConnection.prototype.connect_ = function (childC8n) {
           P = child
           var c8n
           while ((c8n = P.nextConnection)) {
-            if (!c8n.targetConnection) {
-              if (c8n.checkType_(oldChildC8n)) {
-                c8n.connect(oldChildC8n)
-              }
-              break
+            if ((P = c8n.targetBlock())) {
+              continue
+            } else if (c8n.checkType_(oldChildC8n)) {
+              c8n.connect(oldChildC8n)
             }
+            break
           }
         }
       }

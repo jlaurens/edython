@@ -3,7 +3,7 @@
 from browser import console as console_js
 print('%%% importing console module ???')
 try:
-    import console
+    import consoleJL
     console_js('SUCCESS')
 except:
     console_js.log('BIG FAILURE, INLINE CODE')
@@ -77,18 +77,29 @@ except:
     
     class Edython:
 
-        def setupTurtle(self):
+        def turtleSetup(self):
             if 'turtle' in sys.modules:
                 try:
+                    panel = document['eyo-panel-turtle']
                     el = document['eyo-turtle-canvas-wrapper']
                     import turtle
                     turtle.set_defaults(turtle_canvas_wrapper=el)
-                    turtle.set_defaults(canvwidth=el.clientWidth)
-                    turtle.set_defaults(canvheight=el.clientHeight)
+                    turtle.set_defaults(canvwidth=200)
+                    turtle.set_defaults(canvheight=200)
                 except KeyError:
                     print('Build error: Missing #eyo-turtle-canvas-wrapper')
             else:
                 print('import turtle module first', )
+
+        def turtleRestart(self):
+            if 'turtle' in sys.modules:
+                import turtle
+                turtle.restart()
+
+        def turtleReplayScene(self):
+            if 'turtle' in sys.modules:
+                import turtle
+                turtle.replay_scene()
 
     class Status():
         MAIN =  1
@@ -309,17 +320,29 @@ except:
 export default {
   name: 'panel-console-script',
   mounted: function () {
-    console.log('CONSOLE SCRIPT MOUNTED')
-    this.$$.bus.$on('erase-console', function () {
-      window.eYo.console.__class__.erase(window.eYo.console)
-    })
-    this.$$.bus.$on('restart-console', function () {
+    this.$$.bus.$on('erase-console', this.eraseConsole)
+    this.$$.bus.$on('restart-console', this.restartConsole)
+    this.$$.bus.$on('restart-turtle', this.restartTurtle)
+    this.$$.bus.$on('erase-turtle', this.replayTurtle)
+    this.$$.bus.$on('new-document', this.restartAll)
+  },
+  methods: {
+    restartConsole () {
       window.eYo.console.__class__.restart(window.eYo.console)
-    })
-    this.$$.bus.$on('restart-turtle', function () {
-      var code = 'if \'turtle\' in globals(): turtle.restart()\n'
-      window.eYo.console.__class__.runScript(window.eYo.console, code)
-    })
+    },
+    restartTurtle () {
+      window.eYo.console.__class__.runScript(window.eYo.console, 'edython.turtleRestart()')
+    },
+    eraseConsole () {
+      window.eYo.console.__class__.erase(window.eYo.console)
+    },
+    replayTurtle () {
+      window.eYo.console.__class__.runScript(window.eYo.console, 'edython.turtleReplayScene()')
+    },
+    restartAll () {
+      this.restartTurtle()
+      this.restartConsole() // this must be last
+    }
   }
 }
 eYo.DelegateSvg.prototype.runScript = function (block) {

@@ -15,11 +15,11 @@
         </div>
         <b-button id ="eyo-panels-toolbar-restart-python" class="eyo-round-btn" v-on:click="restart()" v-if="selected === 'console'" title="Redémarrer l'interpréteur python" 
         v-tippy ><icon-base icon-name="restart"><icon-restart /></icon-base></b-button>
-        <b-button id ="eyo-panels-toolbar-restart-turtle" class="eyo-round-btn" v-on:click="restart()" v-if="selected !== 'console'" title="Redémarrer la tortue" 
+        <b-button id ="eyo-panels-toolbar-restart-turtle" class="eyo-round-btn" v-on:click="restart()" v-if="selected !== 'console'" title="Effacer les dessins de tortue" 
         v-tippy ><icon-base icon-name="replay"><icon-restart /></icon-base></b-button>
         <b-button id ="eyo-panels-toolbar-erase-python" class="eyo-round-btn" v-on:click="erase()" title="Effacer la console" 
         v-if="selected === 'console'" v-tippy ><icon-base icon-name="erase console"><icon-erase /></icon-base></b-button>
-        <b-button id ="eyo-panels-toolbar-replay-turtle" class="eyo-round-btn" v-on:click="erase()" title="Rejouer l'animation'" 
+        <b-button id ="eyo-panels-toolbar-erase-turtle" class="eyo-round-btn" v-on:click="erase()" title="Rejouer l'animation" 
         v-if="selected !== 'console'" v-tippy ><icon-base icon-name="replay turtle"><icon-replay /></icon-base></b-button>
       </div>
       <div id="eyo-panels-content">
@@ -71,13 +71,6 @@
       IconRestart,
       IconReplay,
       IconErase
-    },
-    created: function () {
-      var self = this
-      this.$$.bus.$on('new-document', function () {
-        self.restart('console')
-        self.restart('turtle')
-      })
     },
     methods: {
       erase (arg) {
@@ -174,7 +167,7 @@
   #eyo-panels-toolbar-restart-python, #eyo-panels-toolbar-restart-turtle {
     right: 0.25rem;
   }
-  #eyo-panels-toolbar-replay-turtle,
+  #eyo-panels-toolbar-erase-turtle,
   #eyo-panels-toolbar-erase-python {
     right: 2.25rem;
   }

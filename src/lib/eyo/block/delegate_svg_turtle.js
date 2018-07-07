@@ -375,7 +375,7 @@ eYo.DelegateSvg.Stmt.call_stmt.prototype.populateContextMenuFirst_ = function (b
  */
 eYo.DelegateSvg.Stmt.makeSubclass('turtle__setup_stmt', {
   fields: {
-    label: 'edython.setupTurtle()'
+    label: 'edython.turtleSetup()'
   }
 })
 
@@ -394,6 +394,7 @@ var F_stmt = function (name, title) {
 eYo.FlyoutCategory.basic_turtle__module = [
   eYo.T3.Stmt.turtle__import_stmt,
   eYo.T3.Stmt.turtle__setup_stmt,
+  F_stmt('done', 'Avancer de la distance donnée'),
   F_stmt('forward', 'Avancer de la distance donnée'),
   F_stmt('backward', 'Reculer de la distance donnée'),
   F_stmt('right', 'Tourner à droite d\'un angle de mesure donnée (en degrés par défaut)'),

@@ -7,14 +7,6 @@
 <script>
   export default {
     name: 'panel-turtle',
-    mounted: function () {
-      this.$$.bus.$on('erase-turtle', function () {
-        console.log('erase-turtle')
-      })
-      this.$$.bus.$on('restart-turtle', function () {
-        console.log('restart-turtle')
-      })
-    },
     props: {
       visible: {
         type: Boolean,

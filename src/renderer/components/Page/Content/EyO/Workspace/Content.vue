@@ -49,14 +49,15 @@
       F('branching')
       F('looping')
       F('function')
-      var moduleF = function (name) {
+      var moduleF = function (name, content) {
         model.items[name + '__module'] = {
           name: name + '__module',
-          content: name
+          content: content || name
         }
       }
       moduleF('math')
       moduleF('random')
+      moduleF('basic_turtle', 'turtle (basic)')
       moduleF('turtle')
       model.selected = model.items.basic
       model.levels = [
@@ -76,6 +77,7 @@
       model.modules = [
         model.items.math__module,
         model.items.random__module,
+        model.items.basic_turtle__module,
         model.items.turtle__module
       ]
       model.modulesContent = 'modules'

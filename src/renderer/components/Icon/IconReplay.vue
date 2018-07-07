@@ -21,6 +21,9 @@
       lineDef: function () {
         var R = this.radius
         return ['M 10,10 m 0,', -R, ' m 2,3.25 -5,-3 4,-3'].join('')
+      },
+      transform: function () {
+        return ''
       }
     }
   }
