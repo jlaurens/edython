@@ -5,12 +5,12 @@
       <template slot="button-content">
         {{selected.content}}
       </template>
-      <b-dropdown-item-button v-for="item in levels" v-on:click="selected = item" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
+      <b-dropdown-item-button v-for="item in levels" v-on:click="selected = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
       <b-dropdown-divider></b-dropdown-divider>
-      <b-dropdown-item-button v-for="item in categories" v-on:click="selected = item" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
+      <b-dropdown-item-button v-for="item in categories" v-on:click="selected = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
       <b-dropdown-divider></b-dropdown-divider>
-      <b-dropdown-header v-bind:style="{fontFamily: $eYo.Font.familySans}">{{modulesContent}}</b-dropdown-header>
-      <b-dropdown-item-button v-for="item in modules" v-on:click="selected = item" v-bind:style="{fontFamily: $eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
+      <b-dropdown-header v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{modulesContent}}</b-dropdown-header>
+      <b-dropdown-item-button v-for="item in modules" v-on:click="selected = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
     </b-dropdown>
   </div>
 </template>

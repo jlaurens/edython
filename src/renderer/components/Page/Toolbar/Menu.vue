@@ -3,8 +3,8 @@
     <template slot="button-content">
       <icon-base :width="32" :height="32" icon-name="menu"><icon-menu /></icon-base>
     </template>
-    <b-dropdown-item-button v-on:click="doToggleEcoSave()" v-bind:style="{fontFamily: $eYo.Font.familySans, fontSize: $eYo.Font.totalHeight}" :title="titleEcoSave" v-tippy><check-mark :checked="ecoSave" />Sauvegarde éco</b-dropdown-item-button>
-    <b-dropdown-item-button v-on:click="doToggleDisabledTips()" v-bind:style="{fontFamily: $eYo.Font.familySans, fontSize: $eYo.Font.totalHeight}" :title="titleDisabledTips" v-tippy><check-mark :checked="false" />{{contentDisabledTips}}</b-dropdown-item-button>
+    <b-dropdown-item-button v-on:click="doToggleEcoSave()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleEcoSave" v-tippy><check-mark :checked="ecoSave" />Sauvegarde éco</b-dropdown-item-button>
+    <b-dropdown-item-button v-on:click="doToggleDisabledTips()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleDisabledTips" v-tippy><check-mark :checked="false" />{{contentDisabledTips}}</b-dropdown-item-button>
   </b-dropdown>
 </template>
 

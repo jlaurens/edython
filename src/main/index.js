@@ -38,7 +38,6 @@ function createWindow () {
 
   if (!process.env.IS_WEB) {
     global.pathToDocumentsFolder = app.getPath('documents')
-    console.log('global.pathToDocumentsFolder', global.pathToDocumentsFolder)
     // Dans le processus principal .
     const {ipcMain} = require('electron')
     var promptResponse
@@ -113,13 +112,21 @@ if (!process.env.IS_WEB) {
     submenu: [{
       label: 'Nouveau',
       accelerator: 'CmdOrCtrl+N',
-      role: 'new'
+      click: function (item, focusedWindow, event) {
+        if (focusedWindow) {
+          focusedWindow.webContents.send('new')
+        }
+      }
     }, {
       type: 'separator'
     }, {
       label: 'Ouvrir...',
       accelerator: 'CmdOrCtrl+O',
-      role: 'open'
+      click: function (item, focusedWindow, event) {
+        if (focusedWindow) {
+          focusedWindow.webContents.send('open')
+        }
+      }
     }, {
       label: 'Recharger',
       accelerator: 'CmdOrCtrl+R',
@@ -142,15 +149,19 @@ if (!process.env.IS_WEB) {
     }, {
       label: 'Enregistrer',
       accelerator: 'CmdOrCtrl+S',
-      role: 'save',
-      click: function (menuItem, browserWindow, event) {
-        console.log('browserWindow:', browserWindow)
-        // lorsque l'élément du menu est cliqué.
+      click: function (item, focusedWindow, event) {
+        if (focusedWindow) {
+          focusedWindow.webContents.send('save')
+        }
       }
     }, {
       label: 'Enregistrer sous...',
       accelerator: 'ALt+CmdOrCtrl+S',
-      role: 'saveas'
+      click: function (item, focusedWindow, event) {
+        if (focusedWindow) {
+          focusedWindow.webContents.send('saveas')
+        }
+      }
     }]
   }, {
     label: 'Éditer',

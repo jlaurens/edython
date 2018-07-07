@@ -30,10 +30,17 @@
       IconNew,
       IconSaveLoad
     },
+    mounted: function () {
+      var ipcRenderer = require('electron').ipcRenderer
+      ipcRenderer.on('new', this.doNew)
+      ipcRenderer.on('open', this.doOpen)
+      ipcRenderer.on('save', this.doSave)
+      ipcRenderer.on('saveas', this.doSaveAs)
+    },
     methods: {
       doNew: function () {
         this.$$.bus.$emit('new-document')
-        eYo.App.workspace.clearUndo()
+        this.$$.eYo.App.workspace.clearUndo()
         this.documentPath = undefined
         this.$store.commit('UI_STAGE_UNDO')
         this.$store.commit('PREF_SET_ECO_SAVE', this.$store.state.Config.ecoSave)
@@ -72,11 +79,11 @@
             // let dom = eYo.Xml.workspaceToDom(eYo.App.workspace, true)
             // let oSerializer = new XMLSerializer()
             // let content = oSerializer.serializeToString(dom)
-            // let deflate = this.$pako.gzip(content) // use gzip to ungzip from the CLI
+            // let deflate = this.$$.pako.gzip(content) // use gzip to ungzip from the CLI
             var inflate
             try {
               // is it compressed ?
-              inflate = this.$pako.ungzip(content) // one can also ungzip from the CLI
+              inflate = this.$$.pako.ungzip(content) // one can also ungzip from the CLI
               this.$store.commit('PREF_SET_ECO_SAVE', true)
             } catch (err) {
               // I guess not
@@ -95,7 +102,7 @@
       },
       doSave: function () {
         let content = '<?xml version="1.0" encoding="utf-8"?>' + eYo.App.workspace.eyo.toString(true)
-        let deflate = this.$store.state.Pref.ecoSave ? this.$pako.gzip(content) : content // use gzip to ungzip from the CLI
+        let deflate = this.$store.state.Pref.ecoSave ? this.$$.pako.gzip(content) : content // use gzip to ungzip from the CLI
         var fs = require('fs')
         var self = this
         if (this.documentPath) {
@@ -147,6 +154,49 @@
             })
           })
         }
+      },
+      doSaveAs: function () {
+        let content = '<?xml version="1.0" encoding="utf-8"?>' + eYo.App.workspace.eyo.toString(true)
+        let deflate = this.$store.state.Pref.ecoSave ? this.$$.pako.gzip(content) : content // use gzip to ungzip from the CLI
+        var fs = require('fs')
+        var self = this
+        const {dialog} = require('electron').remote
+        const remote = require('electron').remote
+        const app = remote.app
+        let documentsFolder = app.getPath('documents')
+        let path = require('path')
+        var defaultPath = path.join(documentsFolder, 'Edython')
+        if (!fs.existsSync(defaultPath)) {
+          fs.mkdirSync(defaultPath)
+        }
+        defaultPath = path.join(defaultPath, 'Sans titre.eyo')
+        dialog.showSaveDialog({
+          defaultPath: defaultPath,
+          filters: [{
+            name: 'Edython', extensions: ['eyo']
+          }]
+        }, function (filePath) {
+          if (filePath === undefined) {
+            console.log('Opération annulée')
+            return
+          }
+          var dirname = path.dirname(filePath)
+          if (!fs.existsSync(dirname)) {
+            fs.mkdirSync(dirname)
+          }
+          // var fs = require('fs') // Load the File System to execute our common tasks (CRUD)
+          fs.writeFile(filePath, deflate, (err) => {
+            if (err) {
+              alert('An error ocurred creating the file ' + err.message)
+            } else {
+              self.documentPath = filePath
+              self.$store.commit('UI_STAGE_UNDO')
+              self.step = 0
+              self.TweenLite.to(self, 0.5, {step: 1})
+            }
+            // alert("The file has been succesfully saved")
+          })
+        })
       }
     }
   }

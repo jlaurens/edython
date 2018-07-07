@@ -3,7 +3,7 @@
     <template slot="button-content">
       <icon-base :width="32" :height="32" icon-name="demo"><icon-demo /></icon-base>
     </template>
-    <b-dropdown-item-button v-for="(demo, index) in demos" :key="demo.title" v-on:click="doSelect(index)" :style="{fontFamily: $eYo.Font.familySans, fontSize: $eYo.Font.totalHeight + 'px'}">{{demo.title}}</b-dropdown-item-button>
+    <b-dropdown-item-button v-for="(demo, index) in demos" :key="demo.title" v-on:click="doSelect(index)" :style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}">{{demo.title}}</b-dropdown-item-button>
   </b-dropdown>
 </template>
 
@@ -63,12 +63,13 @@
     methods: {
       doSelect (index) {
         var demo = this.demos[index]
-        // console.log(index, demo.xml)
-        var parser = new DOMParser()
-        var dom = parser.parseFromString(demo.xml, 'application/xml')
-        // console.log(dom)
-        dom && eYo.Xml.domToWorkspace(dom, eYo.App.workspace)
-        demo && eYo.App.workspace.eyo.fromString(demo.xml)
+        if (demo) {
+          // console.log(index, demo.xml)
+          var parser = new DOMParser()
+          var dom = parser.parseFromString(demo.xml, 'application/xml')
+          // console.log(dom)
+          eYo.App.workspace.eyo.fromDom(dom)
+        }
       },
       doShow () {
         var el = document.getElementById('eyo-toolbar-dropdown-demo')

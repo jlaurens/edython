@@ -34,7 +34,6 @@ const getters = {
 }
 
 export default {
-  namespace: false,
   state,
   mutations,
   actions,

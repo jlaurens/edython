@@ -80,8 +80,6 @@
           : 'Afficher les consoles'
       }
     },
-    mounted: function () {
-    },
     methods: {
       doSite (url) {
         if (this.electron && this.electron.shell) {

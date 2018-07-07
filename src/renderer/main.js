@@ -24,13 +24,15 @@ import {TweenLite} from 'gsap/TweenMax' // eslint-disable-line no-unused-vars
 
 eYo.App.Stacktrace = Stacktrace
 
+eYo.App.bus = new Vue()
+
 Vue.prototype.$$ = {
   goog,
-  bus: new Vue()
+  eYo: eYo,
+  Blockly: Blockly,
+  pako: pako,
+  bus: eYo.App.bus
 }
-Vue.prototype.$Blockly = Blockly
-Vue.prototype.$eYo = eYo
-Vue.prototype.$pako = pako
 
 Vue.prototype.TweenLite = TweenLite
 
