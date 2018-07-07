@@ -36,6 +36,7 @@
         eYo.App.workspace.clearUndo()
         this.documentPath = undefined
         this.$store.commit('UI_STAGE_UNDO')
+        this.$store.commit('PREF_SET_ECO_SAVE', this.$store.state.Config.ecoSave)
       },
       doOpen: function () {
         // const {dialog} = require('electron').remote
@@ -75,10 +76,12 @@
             var inflate
             try {
               // is it compressed ?
-              inflate = this.$pako.ungzip(content) // use gzip to ungzip from the CLI
+              inflate = this.$pako.ungzip(content) // one can also ungzip from the CLI
+              this.$store.commit('PREF_SET_ECO_SAVE', true)
             } catch (err) {
               // I guess not
               inflate = content
+              this.$store.commit('PREF_SET_ECO_SAVE', false)
             }
             try {
               self.doNew()
