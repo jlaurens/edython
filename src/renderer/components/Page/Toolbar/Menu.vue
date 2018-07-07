@@ -57,8 +57,11 @@
           }
         } else {
           for (; i < tippies.length; ++i) {
-            tippies[i].hide()
-            tippies[i].disable()
+            var t = tippies[i]
+            if (t.state.visible) {
+              t.hide()
+            }
+            t.disable()
           }
         }
         this.$store.commit('PREF_SET_DISABLED_TIPS', !this.$store.state.Pref.disabledTips)

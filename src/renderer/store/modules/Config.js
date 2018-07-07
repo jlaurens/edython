@@ -1,3 +1,27 @@
+/**
+ * edython
+ *
+ * Copyright 2018 Jérôme LAURENS.
+ *
+ * License EUPL-1.2
+ */
+/**
+ * @fileoverview Configuration. Settings mechanism is as follow:
+ * 1) we have 4 domains:
+ * a) document domain, named Pref
+ * b) user domain
+ * c) network domain
+ * d) application domain, named Config
+ * One given setting can be set in any of these domains,
+ * and must be set in the application domain.
+ * Actually domains b) and c) are not implemented.
+ * 2) Rule to obtain the value of one given setting:
+ * in general ask each of the domains in the order above
+ * and return the first value that is explicitely set.
+ * 3) Persistent storage: Those different settings are stored in different locations depending on the domain. The values are stored only when explicitely set.
+ * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
+ */
+
 const state = {
   ecoSave: true,
   noLeftSeparator: true,

@@ -38,10 +38,27 @@ goog.inherits(eYo.WorkspaceDelegate, eYo.Helper)
  * @param {!String} str
  * @return {Array.<string>} An array containing new block IDs.
 */
+eYo.WorkspaceDelegate.prototype.fromDom = function (dom) {
+  return dom && eYo.Xml.domToWorkspace(dom, this.workspace_)
+}
+
+/**
+ * Add the nodes from string to the workspace.
+ * @param {!String} str
+ * @return {Array.<string>} An array containing new block IDs.
+*/
 eYo.WorkspaceDelegate.prototype.fromString = function (str) {
   var parser = new DOMParser()
   var dom = parser.parseFromString(str, 'application/xml')
-  return dom && eYo.Xml.domToWorkspace(dom, this.workspace_)
+  return this.fromDom(dom)
+}
+
+/**
+ * Convert the workspace to string.
+ * @param {?Boolean} opt_noId
+ */
+eYo.WorkspaceDelegate.prototype.toDom = function (opt_noId) {
+  return eYo.Xml.workspaceToDom(this.workspace_, opt_noId)
 }
 
 /**
@@ -49,9 +66,8 @@ eYo.WorkspaceDelegate.prototype.fromString = function (str) {
  * @param {?Boolean} opt_noId
  */
 eYo.WorkspaceDelegate.prototype.toString = function (opt_noId) {
-  let dom = eYo.Xml.workspaceToDom(this.workspace_, opt_noId)
   let oSerializer = new XMLSerializer()
-  return oSerializer.serializeToString(dom)
+  return oSerializer.serializeToString(this.toDom())
 }
 
 /**

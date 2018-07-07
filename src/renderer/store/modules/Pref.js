@@ -1,9 +1,9 @@
 const state = {
-  ecoSave: true,
-  noLeftSeparator: true,
-  noDynamicList: false,
-  smartUnary: true,
-  disabledTips: false
+  ecoSave: undefined,
+  noLeftSeparator: undefined,
+  noDynamicList: undefined,
+  smartUnary: undefined,
+  disabledTips: undefined
 }
 
 const mutations = {
@@ -34,6 +34,7 @@ const getters = {
 }
 
 export default {
+  namespace: false,
   state,
   mutations,
   actions,
