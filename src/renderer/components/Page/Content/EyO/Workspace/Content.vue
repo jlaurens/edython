@@ -95,15 +95,24 @@
       flyoutClosed: function (newValue, oldValue) {
         this.flyout && this.flyout.eyo.doSlide(newValue)
       },
+      flyoutCategory: function (newValue, oldValue) {
+        var item = this.items[newValue]
+        if (this.workspace && this.flyout && item) { // this.workspace is necessary
+          var list = this.flyout.eyo.getList(newValue)
+          if (list && list.length) {
+            this.flyout.show(list)
+            this.selected = item
+          }
+        }
+      },
       // whenever `selected` changes, this function will run
       selected: function (newValue, oldValue) {
-        this.doSelect(newValue)
+        this.$store.commit('UI_SET_FLYOUT_CATEGORY', newValue.name)
       }
     },
     methods: {
       doSelect: function (item) {
         var category = item.name
-        console.log(category)
         if (this.workspace && this.flyout) {
           var list = this.flyout.eyo.getList(category)
           if (list && list.length) {
@@ -134,19 +143,22 @@
         sounds: true,
         oneBasedIndex: true
       }
-      this.$$.eYo.App.flyoutDropDown = document.getElementById('eyo-flyout-dropdown')
-      goog.dom.removeNode(this.$$.eYo.App.flyoutDropDown)
       var workspace = this.workspace = this.$$.eYo.App.workspace = Blockly.inject('eyo-workspace-content', staticOptions)
       eYo.setup(workspace)
       workspace.eyo.options = {
         noLeftSeparator: true,
         noDynamicList: false
       }
-      // Flyout
+      // Remove the old flyout selector
+      this.$$.eYo.App.flyoutDropDown = document.getElementById('eyo-flyout-dropdown')
+      goog.dom.removeNode(this.$$.eYo.App.flyoutDropDown)
+      // First remove the old flyout selector
       var flyout = new eYo.Flyout(eYo.App.workspace)
       goog.dom.insertSiblingAfter(
-        flyout.createDom('svg'), eYo.App.workspace.getParentSvg())
-      // workspace.flyout_ = flyout does not work, flyout too big
+        flyout.createDom('svg'),
+        eYo.App.workspace.getParentSvg()
+      )
+      // Then create the flyout
       flyout.init(eYo.App.workspace)
       flyout.autoClose = false
       Blockly.Events.disable()
@@ -166,8 +178,6 @@
         }
         store.commit('UI_SET_FLYOUT_CLOSED', closed) // beware of reentrancy
       }
-      this.selected = this.items.basic
-      this.workspace.render()
       var oldSvg = document.getElementById('svg-control-image')
       var newSvg = document.getElementById('svg-control-image-v')
       oldSvg.parentNode.appendChild(newSvg)
@@ -180,6 +190,8 @@
       this.$$.bus.$on('new-document', function () {
         self.workspace.clear()
       })
+      this.selected = this.items.basic
+      this.workspace.render()
     }
   }
 </script>

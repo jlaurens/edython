@@ -39,7 +39,6 @@ const mutations = {
   },
   UI_SET_FLYOUT_CATEGORY (state, category) {
     if (goog.isString(category)) {
-      console.log('UI_SET_FLYOUT_CATEGORY:', category)
       state.flyoutCategory = category
     }
   },
