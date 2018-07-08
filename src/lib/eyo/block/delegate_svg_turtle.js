@@ -33,22 +33,12 @@ eYo.DelegateSvg.Stmt.import_stmt.makeSubclass('turtle__import_stmt', {
     tag: 'turtle__import',
   },
   data: {
-    variant: {
-      init: eYo.Key.FROM_MODULE_IMPORT_STAR,
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        var slot = this.owner_.slots.import_module
-        slot.required = newValue === this.IMPORT
-        slot.setIncog(!slot.required)
-        this.data.from.setIncog(newValue === this.IMPORT)
-        slot = this.owner_.slots.import_star
-        slot.required = newValue === this.FROM_MODULE_IMPORT_STAR
-        slot.setIncog(!slot.required)
-      }
-    },
     from: {
-      validate: false,
-      synchronize: true,
-      init: 'turtle'
+      init: 'turtle',
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        return newValue === 'turtle' ? {validated: newValue} : null
+      },
+      synchronize: true
     }
   },
   slots: {
@@ -58,9 +48,26 @@ eYo.DelegateSvg.Stmt.import_stmt.makeSubclass('turtle__import_stmt', {
         label: 'import',
         suffix: 'turtle'
       },
-      wrap: null
+      wrap: null,
+      check: null
     },
-    import: null
+    from: {
+      order: 2,
+      fields: {
+        label: 'from',
+        edit: 'turtle'
+      },
+      xml: {
+        didLoad: /** @suppress {globalThis} */ function () {
+          if (this.isRequiredFromDom()) {
+            var variant = this.owner.data.variant
+            if (variant.get() === variant.model.IMPORT) {
+              variant.set(variant.model.FROM_MODULE_IMPORT_STAR)
+            }
+          }
+        }
+      }
+    }
   }
 })
 
