@@ -84,8 +84,8 @@ except:
                     el = document['eyo-turtle-canvas-wrapper']
                     import turtle
                     turtle.set_defaults(turtle_canvas_wrapper=el)
-                    turtle.set_defaults(canvwidth=200)
-                    turtle.set_defaults(canvheight=200)
+                    turtle.set_defaults(canvwidth=panel.clientWidth)
+                    turtle.set_defaults(canvheight=panel.clientHeight)
                 except KeyError:
                     print('Build error: Missing #eyo-turtle-canvas-wrapper')
             else:
