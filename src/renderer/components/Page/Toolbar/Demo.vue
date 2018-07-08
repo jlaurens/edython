@@ -13,6 +13,7 @@
   
   import demoBasicHello from '@static/demo/basic/hello.xml'
   import demoBasicHelloYou from '@static/demo/basic/hello-you.xml'
+  import demoBasicTurtle from '@static/demo/basic/turtle.xml'
   import demoBasicSumOfIntegers from '@static/demo/basic/sum-of-integers.xml'
   import demoBasicFiftyDices from '@static/demo/basic/fifty-dices.xml'
   import demoBasicList from '@static/demo/basic/list.xml'
@@ -31,6 +32,9 @@
           }, {
             title: 'Bonjour ...',
             xml: demoBasicHelloYou
+          }, {
+            title: 'Tortue',
+            xml: demoBasicTurtle
           }, {
             title: 'Somme des entiers',
             xml: demoBasicSumOfIntegers
@@ -64,11 +68,50 @@
       doSelect (index) {
         var demo = this.demos[index]
         if (demo) {
-          // console.log(index, demo.xml)
+          var str = demo.xml
           var parser = new DOMParser()
-          var dom = parser.parseFromString(demo.xml, 'application/xml')
-          // console.log(dom)
-          eYo.App.workspace.eyo.fromDom(dom)
+          var dom = parser.parseFromString(str, 'application/xml')
+          var self = this
+          // problem of code reuse
+          var children = dom.childNodes
+          var i = 0
+          while (i < children.length) {
+            var child = children[i++]
+            var name = child.nodeName.toLowerCase()
+            if (name === eYo.Xml.EDYTHON) {
+              // find the 'prefs' child
+              children = child.childNodes
+              i = 0
+              while (i < children.length) {
+                child = children[i++]
+                if (child.tagName && child.tagName.toLowerCase() === 'prefs') {
+                  // find the 'text' child
+                  if ((str = child.textContent)) {
+                    var prefs = JSON.parse(str)
+                    if (prefs) {
+                      try {
+                        if (prefs.selectedPanel) {
+                          self.$store.commit('UI_SET_SELECTED_PANEL', prefs.selectedPanel)
+                        }
+                        if (goog.isString(prefs.flyoutCategory)) {
+                          self.$store.commit('UI_SET_FLYOUT_CATEGORY', prefs.flyoutCategory)
+                        }
+                        if (goog.isDef(prefs.flyoutClosed)) {
+                          self.$store.commit('UI_SET_FLYOUT_CLOSED', prefs.flyoutClosed)
+                        }
+                      } catch (err) {
+                        // catch any error, it does not really matter if something failed
+                        console.error(err)
+                      }
+                    }
+                  }
+                  break
+                }
+              }
+              break
+            }
+          }
+          this.$$.eYo.App.workspace.eyo.fromDom(dom)
         }
       },
       doShow () {
