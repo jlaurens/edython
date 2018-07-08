@@ -16,12 +16,10 @@
         <b-btn-undo-redo :redo="true" />
       </b-button-group>
       <b-button-group class="mx-1">
-        <b-button-copy-paste :copy="true" :deep="false" />
-        <b-button-copy-paste :copy="true" :deep="true" />
-        <b-button-copy-paste :copy="false" />
-        <b-btn id="toolbar-python" v-on:click="doCopyPythonCode()" title="Copier le code python" v-tippy>
-          <icon-base :width="32" :height="32" icon-name="copy Python"><icon-copy-python /></icon-base>
-        </b-btn>
+        <b-btn-copy-paste :copy="true" :deep="false" />
+        <b-btn-copy-paste :copy="true" :deep="true" />
+        <b-btn-copy-paste :copy="false" />
+        <b-btn-copy-python />
       </b-button-group>
       <b-btn-group-layout />
       <!--b-button-group class="mx-1">
@@ -39,12 +37,12 @@
   import ToolbarUndoRedo from './Toolbar/UndoRedo.vue'
   import ToolbarDemo from './Toolbar/Demo.vue'
   import CopyPaste from './Toolbar/CopyPaste.vue'
+  import CopyPython from './Toolbar/CopyPython.vue'
   import Storage from './Toolbar/Storage.vue'
   import Layout from './Toolbar/Layout.vue'
   
   import IconBase from '@@/IconBase.vue'
   import IconBug from '@@/Icon/IconBug.vue'
-  import IconCopyPython from '@@/Icon/IconCopyPython.vue'
   import IconTogglePanels from '@@/Icon/IconTogglePanels.vue'
 
   export default {
@@ -61,12 +59,12 @@
     components: {
       IconBase,
       IconBug,
-      IconCopyPython,
       IconTogglePanels,
       'b-dropdown-menu': ToolbarMenu,
       'b-btn-undo-redo': ToolbarUndoRedo,
       'b-dropdown-demo': ToolbarDemo,
-      'b-button-copy-paste': CopyPaste,
+      'b-btn-copy-paste': CopyPaste,
+      'b-btn-copy-python': CopyPython,
       'b-btn-group-storage': Storage,
       'b-btn-group-layout': Layout
     },
@@ -87,14 +85,6 @@
         } else {
           var win = window.open(url, '_blank')
           win.focus()
-        }
-      },
-      doCopyPythonCode: function () {
-        var block = Blockly.selected
-        if (block) {
-          var p = new eYo.PythonExporter()
-          var code = p.export(block, true)
-          eYo.App.copyTextToClipboard(code)
         }
       },
       doTogglePanelsVisible () {

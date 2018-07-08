@@ -1,5 +1,5 @@
 <template>
-  <g>
+  <g :transform="transform">
     <path
       id="path4215"
       d="m 13.19566,4.4541991 c 0.71926,0 1.30666,0.5726002 1.30666,1.2768004 C 14.50232,6.4325998 13.91494,7 13.19566,7 12.4738,7 11.889,6.4325998 11.889,5.7309995 c 0,-0.7042002 0.5848,-1.2768004 1.30666,-1.2768004 z"
@@ -21,10 +21,19 @@
 <script>
   // Bug: 'white' is hard coded but should be currentColor?
   export default {
+    computed: {
+      transform () {
+        return 'rotate(' + (this.step * 180) + ',16,16)'
+      }
+    },
     props: {
       iconColor: {
         type: String,
         default: 'currentColor'
+      },
+      step: {
+        type: Number,
+        default: 1
       }
     }
   }
