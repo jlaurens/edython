@@ -83,6 +83,8 @@ eYo.FlyoutDelegate.prototype.BOTTOM_MARGIN = 16 // scroll bar width
 eYo.FlyoutDelegate.prototype.MARGIN = one_rem / 4
 eYo.FlyoutDelegate.prototype.HEIGHT = 2 * one_rem + 2 * eYo.FlyoutDelegate.prototype.MARGIN
 
+
+
 /**
  * Creates the flyout's DOM.  Only needs to be called once.  The flyout can
  * either exist as its own svg element or be a g element nested inside a
@@ -242,7 +244,7 @@ eYo.Flyout.prototype.show = function(model) {
         console.error(xml, err)
         // throw err: catch the error here definitely
       } finally {
-        // pass
+
       }
     }
   }
@@ -304,15 +306,13 @@ eYo.Flyout.prototype.addBlockListeners_ = function(root, block, rect) {
 };
 
 /**
- * Does the job of sliding the flyout in or out.
- * @param {?Boolean} close  close corresponds to the final state.
- * When not given, toggle the closed state.
+ * Slide the flyout in or out.
  */
-eYo.FlyoutDelegate.prototype.doSlide = function(close) {
-  if (!goog.isDef(close)) {
-    close = !this.closed
+eYo.FlyoutDelegate.prototype.slide = function(closed) {
+  if (!goog.isDef(closed)) {
+    closed = !this.closed
   }
-  if (!close === !this.closed || this.slide_locked) {
+  if (!closed === !this.closed || this.slide_locked) {
     return
   }
   this.slide_locked = true
@@ -330,16 +330,16 @@ eYo.FlyoutDelegate.prototype.doSlide = function(close) {
   var n = 0
   var steps = []
   var positions = []
-  var x_min = close? x: x - flyout.width_
-  var x_max = close? x - flyout.width_: x
-  steps[0] = close? 0: 1
+  var x_min = closed? x: x - flyout.width_
+  var x_max = closed? x - flyout.width_: x
+  steps[0] = closed? 0: 1
   positions[0] = x_min
   for (n = 1; n < n_steps; n++) {
     var step = Math.sin(n*Math.PI/n_steps/2)**2
-    steps[n] = close? step: 1-step
+    steps[n] = closed? step: 1-step
     positions[n] = x_min + step * (x_max - x_min)
   }
-  steps[n] = close? 1: 0
+  steps[n] = closed? 1: 0
   positions[n] = x_max
   var y = targetWorkspaceMetrics.absoluteTop;
   var self = this
@@ -347,14 +347,13 @@ eYo.FlyoutDelegate.prototype.doSlide = function(close) {
   function frame() {
     if (n >= n_steps) {
       clearInterval(id);
-      if ((self.closed = close)) {
+      if ((self.closed = closed)) {
         flyout.setVisible(false)
       }
       flyout.setBackgroundPath_(flyout.width_, flyout.height_)
       delete self.slide_locked
       flyout.targetWorkspace_.recordDeleteAreas()
       self.oneStep(steps[n_steps])
-      self.didSlide(close)
     } else {
       flyout.positionAt_(flyout.width_, flyout.height_, positions[n], y)
       self.oneStep(steps[n])
@@ -369,28 +368,10 @@ eYo.FlyoutDelegate.prototype.doSlide = function(close) {
 };
 
 /**
- * Slide the flyout in or out.
- * This 2 levels design allows overwriting.
- * Actually, the ui button calls the slide method.
- * @param {?Boolean} close  close corresponds to the final state.
- * When not given, toggle the closed state.
- */
-eYo.FlyoutDelegate.prototype.slide = function(close) {
-  this.doSlide(closed)
-};
-
-/**
  * Subclassers will add there stuff here.
  * @param {number} step betwwen 0 and 1.
  */
 eYo.FlyoutDelegate.prototype.oneStep = function(step) {
-};
-
-/**
- * Subclassers will add there stuff here.
- * @param {Boolean} closed
- */
-eYo.FlyoutDelegate.prototype.didSlide = function(closed) {
 };
 
 /**
