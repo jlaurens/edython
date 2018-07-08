@@ -2,7 +2,7 @@
 <edython xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">
 <workspace>
 <content>
-<s eyo="start_stmt" x="300" y="120" comment="Cliquer sur le bouton &quot;marche&quot; à gauche">
+<s eyo="start_stmt" x="300" y="120">
 <s eyo="print" flow="next">
 <x eyo="list" slot="arguments">
 <x eyo="literal" slot="O">'Bonjour le monde!'</x>

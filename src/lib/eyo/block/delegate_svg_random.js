@@ -134,6 +134,7 @@ eYo.DelegateSvg.Expr.module__call_expr.makeSubclass('random__call_expr', {
   fields: {
     module: {
       value: 'random',
+      validate: false,
       endEditing: false
     }
   },

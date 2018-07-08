@@ -4,10 +4,7 @@ const state = {
   undoStage: 0,
   selected: undefined, // the selected block
   panelsVisible: true,
-  panelsWidth: '100%',
-  selectedPanel: 'console',
-  flyoutVisible: true,
-  flyoutCategory: 'basic'
+  panelsWidth: '100%'
 }
 
 const mutations = {
@@ -33,17 +30,6 @@ const mutations = {
   },
   UI_SET_PANELS_WIDTH (state, newWidth) {
     state.panelsWidth = newWidth
-  },
-  UI_SET_SELECTED_PANEL (state, key) {
-    state.selectedPanel = key
-  },
-  UI_SET_FLYOUT_VISIBLE (state, yorn) {
-    state.flyoutVisible = !!yorn
-  },
-  UI_SET_FLYOUT_CATEGORY (state, category) {
-    if (goog.isString(category)) {
-      state.flyoutCategory = category
-    }
   }
 }
 

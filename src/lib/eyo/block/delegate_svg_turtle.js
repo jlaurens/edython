@@ -109,6 +109,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('turtle__config_stmt', {
         },
         edit: {
           placeholder: eYo.Msg.Placeholder.ARGUMENT,
+          validate: true,
           endEditing: true,
           variable: true
         },    
@@ -222,6 +223,7 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('turtle__call_expr', {
       fields: {
         edit: {
           placeholder: eYo.Msg.Placeholder.IDENTIFIER,
+          validate: true,
           endEditing: true,
           variable: true
         }

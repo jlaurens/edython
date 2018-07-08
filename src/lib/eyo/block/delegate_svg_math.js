@@ -327,6 +327,7 @@ Return the square root of x.
   fields: {
     module: {
       value: 'math',
+      validate: false,
       endEditing: false
     }
   },
@@ -440,6 +441,7 @@ eYo.DelegateSvg.Expr.makeSubclass('math__const', {
     module: {
       order: 1,
       value: 'math',
+      validate: false,
       endEditing: false
     },
     dot: {

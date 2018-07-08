@@ -38,22 +38,6 @@
       ipcRenderer.on('saveas', this.doSaveAs)
     },
     methods: {
-      getDeflate: function () {
-        var dom = this.$$.eYo.App.workspace.eyo.toDom(true)
-        var prefs = {}
-        var value = this.$store.state.UI.selectedPanel
-        if (value) {
-          prefs.selectedPanel = value
-        }
-        var str = JSON.stringify(prefs)
-        dom.insertBefore(goog.dom.createDom('prefs', null,
-          goog.dom.createTextNode(str)
-        ), dom.firstChild)
-        let oSerializer = new XMLSerializer()
-        var content = '<?xml version="1.0" encoding="utf-8"?>' + oSerializer.serializeToString(dom)
-        let deflate = this.$store.state.Pref.ecoSave ? this.$$.pako.gzip(content) : content // use gzip to ungzip from the CLI
-        return deflate
-      },
       doNew: function () {
         this.$$.bus.$emit('new-document')
         this.$$.eYo.App.workspace.clearUndo()
@@ -97,51 +81,18 @@
             // let content = oSerializer.serializeToString(dom)
             // let deflate = this.$$.pako.gzip(content) // use gzip to ungzip from the CLI
             var inflate
-            var ecoSave
             try {
               // is it compressed ?
               inflate = this.$$.pako.ungzip(content) // one can also ungzip from the CLI
-              ecoSave = true
+              this.$store.commit('PREF_SET_ECO_SAVE', true)
             } catch (err) {
               // I guess not
               inflate = content
-              ecoSave = false
+              this.$store.commit('PREF_SET_ECO_SAVE', false)
             }
             try {
               self.doNew()
-              self.$store.commit('PREF_SET_ECO_SAVE', ecoSave)
-              var str = goog.crypt.utf8ByteArrayToString(inflate)
-              var parser = new DOMParser()
-              var dom = parser.parseFromString(str, 'application/xml')
-              // find the 'edython' child
-              var children = dom.childNodes
-              var i = 0
-              while (i < children.length) {
-                var child = children[i++]
-                var name = child.nodeName.toLowerCase()
-                if (name === eYo.Xml.EDYTHON) {
-                  // find the 'prefs' child
-                  children = child.childNodes
-                  i = 0
-                  while (i < children.length) {
-                    child = children[i++]
-                    if (child.tagName && child.tagName.toLowerCase() === 'prefs') {
-                      // find the 'text' child
-                      if ((str = child.textContent)) {
-                        var prefs = JSON.parse(str)
-                        if (prefs) {
-                          if (prefs.selectedPanel) {
-                            self.$store.commit('UI_SET_SELECTED_PANEL', prefs.selectedPanel)
-                          }
-                        }
-                      }
-                      break
-                    }
-                  }
-                  break
-                }
-              }
-              eYo.App.workspace.eyo.fromDom(dom)
+              eYo.App.workspace.eyo.fromUTF8ByteArray(inflate)
               self.documentPath = fileName
             } catch (err) {
               console.error('ERROR:', err)
@@ -150,7 +101,8 @@
         })
       },
       doSave: function () {
-        let deflate = this.getDeflate()
+        let content = '<?xml version="1.0" encoding="utf-8"?>' + eYo.App.workspace.eyo.toString(true)
+        let deflate = this.$store.state.Pref.ecoSave ? this.$$.pako.gzip(content) : content // use gzip to ungzip from the CLI
         var fs = require('fs')
         var self = this
         if (this.documentPath) {
@@ -204,7 +156,8 @@
         }
       },
       doSaveAs: function () {
-        let deflate = this.getDeflate()
+        let content = '<?xml version="1.0" encoding="utf-8"?>' + eYo.App.workspace.eyo.toString(true)
+        let deflate = this.$store.state.Pref.ecoSave ? this.$$.pako.gzip(content) : content // use gzip to ungzip from the CLI
         var fs = require('fs')
         var self = this
         const {dialog} = require('electron').remote
