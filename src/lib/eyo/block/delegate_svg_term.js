@@ -206,7 +206,6 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
         fields: {
           edit: {
             placeholder: eYo.Msg.Placeholder.TERM,
-            validate: true,
             endEditing: true,
             variable: true
           }
@@ -264,7 +263,6 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
           label: 'as',
           edit: {
             placeholder: eYo.Msg.Placeholder.ALIAS,
-            validate: true,
             endEditing: true,
             variable: true
           }
