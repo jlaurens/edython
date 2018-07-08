@@ -3,7 +3,7 @@
       <icon-base id="svg-control-image-v" icon-name="triangle"><icon-triangle /></icon-base>
       <b-dropdown id="eyo-flyout-dropdown" class="eyo-dropdown"  v-on:show="doShow()">
       <template slot="button-content">
-        {{selected ? selected.content : '...'}}
+        {{selected.content}}
       </template>
       <b-dropdown-item-button v-for="item in levels" v-on:click="selected = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
       <b-dropdown-divider></b-dropdown-divider>
@@ -59,7 +59,7 @@
       moduleF('random')
       moduleF('basic_turtle', 'turtle (basic)')
       moduleF('turtle')
-      model.selected = undefined
+      model.selected = model.items.basic
       model.levels = [
         model.items.basic,
         model.items.intermediate,
@@ -83,32 +83,24 @@
       model.modulesContent = 'modules'
       return model
     },
-    computed: {
-      flyoutClosed: function () {
-        return this.$store.state.UI.flyoutClosed
-      },
-      flyoutCategory: function () {
-        return this.$store.state.UI.flyoutCategory
-      }
-    },
     watch: {
-      flyoutClosed: function (newValue, oldValue) {
-        this.flyout && this.flyout.eyo.doSlide(newValue)
-      },
-      flyoutCategory: function (newValue, oldValue) {
-        console.log(newValue)
-        if (this.workspace && this.flyout) { // this.workspace is necessary
-          var list = this.flyout.eyo.getList(newValue)
-          if (list && list.length) {
-            this.flyout.show(list)
-          }
-        }
-      },
+      // whenever `selected` changes, this function will run
       selected: function (newValue, oldValue) {
-        this.$store.commit('UI_SET_FLYOUT_CATEGORY', newValue.name)
+        this.doSelect(newValue)
       }
     },
     methods: {
+      doSelect: function (item) {
+        var category = item.name
+        console.log(category)
+        if (this.workspace && this.flyout) {
+          var list = this.flyout.eyo.getList(category)
+          if (list && list.length) {
+            this.flyout.show(list)
+            this.$store.commit('UI_SET_FLYOUT_CATEGORY', category)
+          }
+        }
+      },
       doShow () {
         var el = document.getElementById('eyo-workspace-content').getElementsByClassName('eyo-flyout')[0]
         eYo.Tooltip.hideAll(el)
@@ -118,8 +110,7 @@
       }
     },
     mounted: function () {
-      // the workspace
-      var staticOptions = {
+      var options = {
         collapse: true,
         comments: false,
         disable: true,
@@ -134,48 +125,41 @@
         sounds: true,
         oneBasedIndex: true
       }
-      var workspace = this.workspace = eYo.App.workspace = Blockly.inject('eyo-workspace-content', staticOptions)
-      eYo.setup(workspace)
-      workspace.eyo.options = {
+      eYo.App.flyoutDropDown = document.getElementById('eyo-flyout-dropdown')
+      goog.dom.removeNode(eYo.App.flyoutDropDown)
+      this.workspace = eYo.App.workspace = Blockly.inject('eyo-workspace-content', options)
+      eYo.setup(eYo.App.workspace)
+      eYo.App.workspace.eyo.options = {
         noLeftSeparator: true,
         noDynamicList: false
       }
-      workspace.render()
-      // // Flyout
-      // console.log('STEP 3')
-      // var flyout = new eYo.Flyout(workspace)
-      // goog.dom.insertSiblingAfter(
-      //   flyout.createDom('svg'), workspace.getParentSvg())
-      // // workspace.flyout_ = flyout does not work, flyout too big
-      // flyout.init(workspace)
-      // flyout.autoClose = false
-      // var store = this.$store
-      // flyout.eyo.slide = function (closed) {
-      //   if (!goog.isDef(closed)) {
-      //     closed = !store.state.UI.flyoutClosed
-      //   }
-      //   store.commit('UI_SET_FLYOUT_CLOSED', closed) // beware of reentrancy
-      // }
-      // this.flyout = this.$$.eYo.App.flyout = flyout
-      // this.selected = this.items.basic
-      // console.log('STEP 4')
-      // // Managing the svg
-      // eYo.App.flyoutDropDown = document.getElementById('eyo-flyout-dropdown')
-      // goog.dom.removeNode(this.$$.eYo.App.flyoutDropDown)
-      // var oldSvg = document.getElementById('svg-control-image')
-      // var newSvg = document.getElementById('svg-control-image-v')
-      // if (oldSvg && newSvg) {
-      //   oldSvg.parentNode.appendChild(newSvg)
-      //   newSvg.parentNode.removeChild(oldSvg)
-      // } else {
-      //   console.log('NO SVG INSTALLED')
-      // }
-      // // JL: critical section of code,
-      // // next instruction does not work despite what stackoverflow states
-      // // oldSvg && newSvg && oldSvg.parentNode.replaceChild(oldSvg, newSvg)
       eYo.KeyHandler.setup(document)
+      var flyout = new eYo.Flyout(eYo.App.workspace)
+      goog.dom.insertSiblingAfter(
+        flyout.createDom('svg'), eYo.App.workspace.getParentSvg())
+      // workspace.flyout_ = flyout does not work, flyout too big
+      flyout.init(eYo.App.workspace)
+      flyout.autoClose = false
+      Blockly.Events.disable()
+      try {
+        flyout.show(eYo.DelegateSvg.T3s)//, seYo.T3.Expr.key_datum, eYo.T3.Stmt.if_part
+      } catch (err) {
+        console.log(err)
+      } finally {
+        Blockly.Events.enable()
+      }
+      // eYo.App.workspace.flyout_ = flyout
+      this.flyout = this.$$.eYo.App.flyout = flyout
+      this.doSelect(this.selected)
+      this.workspace.render()
       this.$$.bus.$on('new-document', this.doCleanWorkspace)
-      console.log('MOUNTED DONE')
+      var oldSvg = document.getElementById('svg-control-image')
+      var newSvg = document.getElementById('svg-control-image-v')
+      oldSvg.parentNode.appendChild(newSvg)
+      newSvg.parentNode.removeChild(oldSvg)
+      // JL: critical section of code,
+      // next instruction does not work despite what stackoverflow states
+      // oldSvg && newSvg && oldSvg.parentNode.replaceChild(oldSvg, newSvg)
     }
   }
 </script>
