@@ -3,7 +3,7 @@
       <icon-base id="svg-control-image-v" icon-name="triangle"><icon-triangle /></icon-base>
       <b-dropdown id="eyo-flyout-dropdown" class="eyo-dropdown"  v-on:show="doShow()">
       <template slot="button-content">
-        {{selected.content}}
+        {{selected ? selected.content : '...'}}
       </template>
       <b-dropdown-item-button v-for="item in levels" v-on:click="selected = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
       <b-dropdown-divider></b-dropdown-divider>
@@ -16,9 +16,9 @@
 </template>
 
 <script>
-  import IconBase from '../../../../IconBase.vue'
-  import IconTriangle from '../../../../Icon/IconTriangle.vue'
-  import IconBug from '../../../../Icon/IconBug.vue'
+  import IconBase from '@@/IconBase.vue'
+  import IconTriangle from '@@/Icon/IconTriangle.vue'
+  import IconBug from '@@/Icon/IconBug.vue'
 
   export default {
     name: 'eyo-workspace-content',
@@ -59,7 +59,7 @@
       moduleF('random')
       moduleF('basic_turtle', 'turtle (basic)')
       moduleF('turtle')
-      model.selected = model.items.basic
+      model.selected = undefined
       model.levels = [
         model.items.basic,
         model.items.intermediate,
@@ -130,9 +130,6 @@
         noDynamicList: false
       }
       eYo.KeyHandler.setup(document)
-      var b = eYo.DelegateSvg.newBlockReady(eYo.App.workspace, eYo.T3.Stmt.start_stmt)
-      b.render()
-      b.moveBy(50, 150)
       var flyout = new eYo.Flyout(eYo.App.workspace)
       goog.dom.insertSiblingAfter(
         flyout.createDom('svg'), eYo.App.workspace.getParentSvg())
@@ -149,7 +146,7 @@
       }
       // eYo.App.workspace.flyout_ = flyout
       this.flyout = eYo.App.flyout = flyout
-      this.doSelect(this.selected)
+      this.selected = this.items.basic
       this.workspace.render()
       var self = this
       this.$$.bus.$on('new-document', function () {
