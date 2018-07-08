@@ -83,7 +83,18 @@
       model.modulesContent = 'modules'
       return model
     },
+    computed: {
+      flyoutClosed: function () {
+        return this.$store.state.UI.flyoutClosed
+      },
+      flyoutCategory: function () {
+        return this.$store.state.UI.flyoutCategory
+      }
+    },
     watch: {
+      flyoutClosed: function (newValue, oldValue) {
+        this.flyout && this.flyout.eyo.doSlide(newValue)
+      },
       // whenever `selected` changes, this function will run
       selected: function (newValue, oldValue) {
         this.doSelect(newValue)
@@ -107,7 +118,8 @@
       }
     },
     mounted: function () {
-      var options = {
+      // the workspace
+      var staticOptions = {
         collapse: true,
         comments: false,
         disable: true,
@@ -122,15 +134,15 @@
         sounds: true,
         oneBasedIndex: true
       }
-      eYo.App.flyoutDropDown = document.getElementById('eyo-flyout-dropdown')
-      goog.dom.removeNode(eYo.App.flyoutDropDown)
-      this.workspace = eYo.App.workspace = Blockly.inject('eyo-workspace-content', options)
-      eYo.setup(eYo.App.workspace)
-      eYo.App.workspace.eyo.options = {
+      this.$$.eYo.App.flyoutDropDown = document.getElementById('eyo-flyout-dropdown')
+      goog.dom.removeNode(this.$$.eYo.App.flyoutDropDown)
+      var workspace = this.workspace = this.$$.eYo.App.workspace = Blockly.inject('eyo-workspace-content', staticOptions)
+      eYo.setup(workspace)
+      workspace.eyo.options = {
         noLeftSeparator: true,
         noDynamicList: false
       }
-      eYo.KeyHandler.setup(document)
+      // Flyout
       var flyout = new eYo.Flyout(eYo.App.workspace)
       goog.dom.insertSiblingAfter(
         flyout.createDom('svg'), eYo.App.workspace.getParentSvg())
@@ -147,12 +159,15 @@
       }
       // eYo.App.workspace.flyout_ = flyout
       this.flyout = eYo.App.flyout = flyout
+      var store = this.$store
+      flyout.eyo.slide = function (closed) {
+        if (!goog.isDef(closed)) {
+          closed = !store.state.UI.flyoutClosed
+        }
+        store.commit('UI_SET_FLYOUT_CLOSED', closed) // beware of reentrancy
+      }
       this.selected = this.items.basic
       this.workspace.render()
-      var self = this
-      this.$$.bus.$on('new-document', function () {
-        self.workspace.clear()
-      })
       var oldSvg = document.getElementById('svg-control-image')
       var newSvg = document.getElementById('svg-control-image-v')
       oldSvg.parentNode.appendChild(newSvg)
@@ -160,6 +175,11 @@
       // JL: critical section of code,
       // next instruction does not work despite what stackoverflow states
       // oldSvg && newSvg && oldSvg.parentNode.replaceChild(oldSvg, newSvg)
+      eYo.KeyHandler.setup(document)
+      var self = this
+      this.$$.bus.$on('new-document', function () {
+        self.workspace.clear()
+      })
     }
   }
 </script>
