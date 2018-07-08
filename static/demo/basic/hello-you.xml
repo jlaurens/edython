@@ -2,7 +2,7 @@
 <edython xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">
 <workspace>
 <content>
-<s eyo="start_stmt" x="300" y="200">
+<s eyo="start_stmt" x="300" y="200" comment="Cliquer sur le bouton &quot;marche&quot; à gauche">
 <s eyo="assignment" name="prénom" flow="next">
 <x eyo="list" slot="assigned">
 <x eyo="input" slot="O">
