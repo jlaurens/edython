@@ -397,7 +397,12 @@ var F_stmt = function (name, title) {
   }
 }
 eYo.FlyoutCategory.basic_turtle__module = [
-  eYo.T3.Stmt.turtle__import_stmt,
+  {
+    type: eYo.T3.Stmt.turtle__import_stmt,
+    data: {
+      variant: eYo.Key.FROM_MODULE_IMPORT_STAR
+    }
+  },
   eYo.T3.Stmt.turtle__setup_stmt,
   F_stmt('done', 'Avancer de la distance donnée'),
   F_stmt('forward', 'Avancer de la distance donnée'),
@@ -450,7 +455,12 @@ var F_stmt = function (name, title) {
   }
 }
 eYo.FlyoutCategory.turtle__module = [
-  eYo.T3.Stmt.turtle__import_stmt,
+  {
+    type: eYo.T3.Stmt.turtle__import_stmt,
+    data: {
+      variant: eYo.Key.IMPORT
+    }
+  },
   eYo.T3.Stmt.turtle__setup_stmt,
   {
     type: eYo.T3.Stmt.assignment_stmt,

@@ -130,8 +130,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         didLoad: /** @suppress {globalThis} */ function () {
           if (this.isRequiredFromDom()) {
             var variant = this.owner.data.variant
-            if (variant.get() === variant.model.IMPORT) {
-              variant.set(variant.model.FROM_MODULE_IMPORT_STAR)
+            if (variant.get() === variant.IMPORT) {
+              variant.set(variant.FROM_MODULE_IMPORT_STAR)
             }
           }
         }
@@ -147,6 +147,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         didLoad: /** @suppress {globalThis} */ function () {
           if (this.isRequiredFromDom()) {
             var variant = this.owner.data.variant
+            var current = variant.get()
+            if (current !== variant.FROM_MODULE_IMPORT && current !== variant.FROM_MODULE_IMPORT_STAR)
             variant.set(variant.FROM_MODULE_IMPORT)
           }
         }
@@ -158,6 +160,21 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         label: {
           value: 'import *',
           css: 'reserved'
+        }
+      },
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+          var variant = this.owner.data.variant
+          if (variant.get() === variant.FROM_MODULE_IMPORT_STAR) {
+            element.setAttribute('star', 'true')
+          }
+        },
+        load: /** @suppress {globalThis} */ function (element) {
+          var attr = element.getAttribute('star')
+          if (attr === 'true') {
+            var variant = this.owner.data.variant
+            variant.set(variant.FROM_MODULE_IMPORT_STAR)
+          }
         }
       }
     }
