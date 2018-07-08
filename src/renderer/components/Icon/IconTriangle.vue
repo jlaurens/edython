@@ -20,17 +20,17 @@
     },
     props: {
       width: {
-        type: [Number, String],
+        type: Number,
         default: 20
       },
       height: {
-        type: [Number, String],
+        type: Number,
         default: 20
       }
     },
     mounted: function () {
       var self = this
-      eYo.FlyoutDelegate.prototype.oneStep = function (step) {
+      this.$$.eYo.FlyoutDelegate.prototype.oneStep = function (step) {
         // next loop to disable tooltips while scrolling
         for (const popper of document.querySelectorAll('.tippy-popper')) {
           const instance = popper._tippy
