@@ -97,12 +97,13 @@
           var list = this.flyout.eyo.getList(category)
           if (list && list.length) {
             this.flyout.show(list)
+            this.$store.commit('UI_SET_FLYOUT_CATEGORY', category)
           }
         }
       },
       doShow () {
         var el = document.getElementById('eyo-workspace-content').getElementsByClassName('eyo-flyout')[0]
-        eYo.Tooltip.hideAll(el)
+        this.$$.eYo.Tooltip.hideAll(el)
       }
     },
     mounted: function () {
