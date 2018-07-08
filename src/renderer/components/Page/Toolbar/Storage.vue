@@ -45,11 +45,6 @@
         if (value) {
           prefs.selectedPanel = value
         }
-        prefs.flyoutClosed = this.$store.state.UI.flyoutClosed
-        value = this.$store.state.UI.flyoutCategory
-        if (value) {
-          prefs.flyoutCategory = value
-        }
         var str = JSON.stringify(prefs)
         dom.insertBefore(goog.dom.createDom('prefs', null,
           goog.dom.createTextNode(str)
@@ -135,19 +130,8 @@
                       if ((str = child.textContent)) {
                         var prefs = JSON.parse(str)
                         if (prefs) {
-                          try {
-                            if (prefs.selectedPanel) {
-                              self.$store.commit('UI_SET_SELECTED_PANEL', prefs.selectedPanel)
-                            }
-                            if (goog.isString(prefs.flyoutCategory)) {
-                              self.$store.commit('UI_SET_FLYOUT_CATEGORY', prefs.flyoutCategory)
-                            }
-                            if (goog.isDef(prefs.flyoutClosed)) {
-                              self.$store.commit('UI_SET_FLYOUT_CLOSED', prefs.flyoutClosed)
-                            }
-                          } catch (err) {
-                            // catch any error, it does not really matter if something failed
-                            console.error(err)
+                          if (prefs.selectedPanel) {
+                            self.$store.commit('UI_SET_SELECTED_PANEL', prefs.selectedPanel)
                           }
                         }
                       }
@@ -159,7 +143,6 @@
               }
               eYo.App.workspace.eyo.fromDom(dom)
               self.documentPath = fileName
-              eYo.App.workspace.clearUndo()
             } catch (err) {
               console.error('ERROR:', err)
             }
