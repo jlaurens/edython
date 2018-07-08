@@ -1,7 +1,7 @@
 <template>
   <b-dropdown id="eyo-toolbar-dropdown-demo" class="eyo-dropdown" title="Démo" v-on:show="doShow()" v-on:hidden="doHidden()">
     <template slot="button-content">
-      <icon-base :width="32" :height="32" icon-name="demo"><icon-demo /></icon-base>
+      <icon-base :width="32" :height="32" icon-name="demo"><icon-demo :on="on" /></icon-base>
     </template>
     <b-dropdown-item-button v-for="(demo, index) in demos" :key="demo.title" v-on:click="doSelect(index)" :style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}">{{demo.title}}</b-dropdown-item-button>
   </b-dropdown>
@@ -25,6 +25,7 @@
     name: 'page-toolbar-demo',
     data: function () {
       return {
+        on: 0.5,
         demos: [
           {
             title: 'Bonjour le monde!',
@@ -63,8 +64,28 @@
       var el = document.getElementById('eyo-toolbar-dropdown-demo')
       el._tippy || window.tippy(el, eYo.Tooltip.options)
       goog.asserts.assert(el._tippy)
+      var self = this
+      this.flashInterval = setInterval(function () {
+        self.flash()
+      }, 2000)
     },
     methods: {
+      flash () {
+        this.on = 0
+        this.TweenLite.to(this, 0.5, {on: 1})
+        if (this.flashInterval) {
+          var topBlocks = this.$$.eYo.App.workspace.topBlocks_
+          if (!topBlocks.length) {
+            return
+          }
+          if (topBlocks.length === 1) {
+            if (topBlocks[0].childBlocks_.length === 0) {
+              return
+            }
+          }
+          clearInterval(this.flashInterval)
+        }
+      },
       doSelect (index) {
         var demo = this.demos[index]
         if (demo) {
