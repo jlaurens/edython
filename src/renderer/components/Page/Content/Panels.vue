@@ -1,16 +1,14 @@
 <template>
   <div id="eyo-panels-area">
     <div id="eyo-panels" ref="divPanels" :style="{width: panelsStyleWidth}">
-      <div id="eyo-panels-toolbar" :style="{ fontFamily: $$.eYo.Font.familySans,
-    fontSize: this.$$.eYo.Font.totalHeight + 'px'
-  }">
+      <div id="eyo-panels-toolbar" :style="{ fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px' }">
         <div id="eyo-panels-toolbar-select">
           <b-dropdown id="eyo-panels-toolbar-dropdown" class="eyo-dropdown">
             <template slot="button-content">
               {{titles[selected]}}
             </template>
-            <b-dropdown-item-button v-on:click="selected = 'console'" :style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}">{{titles.console}}</b-dropdown-item-button>
-            <b-dropdown-item-button v-on:click="selected = 'turtle'" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}">{{titles.turtle}}</b-dropdown-item-button>
+            <b-dropdown-item-button v-on:click="selectPanel('console')" :style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}">{{titles.console}}</b-dropdown-item-button>
+            <b-dropdown-item-button v-on:click="selectPanel('turtle')" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}">{{titles.turtle}}</b-dropdown-item-button>
           </b-dropdown>
         </div>
         <b-button id ="eyo-panels-toolbar-restart-python" class="eyo-round-btn" v-on:click="restart()" v-if="selected === 'console'" title="Redémarrer l'interpréteur python" 
@@ -31,10 +29,10 @@
 </template>
 
 <script>
-  import IconBase from '../../IconBase.vue'
-  import IconRestart from '../../Icon/IconRestart.vue'
-  import IconReplay from '../../Icon/IconReplay.vue'
-  import IconErase from '../../Icon/IconErase.vue'
+  import IconBase from '@@/IconBase.vue'
+  import IconRestart from '@@/Icon/IconRestart.vue'
+  import IconReplay from '@@/Icon/IconReplay.vue'
+  import IconErase from '@@/Icon/IconErase.vue'
 
   import PanelConsole from './Panel/Console'
   import PanelTurtle from './Panel/Turtle'
@@ -43,7 +41,6 @@
     name: 'content-panels',
     data: function () {
       return {
-        selected: 'console',
         titles: {
           console: 'Console',
           turtle: 'Tortue'
@@ -52,13 +49,16 @@
       }
     },
     computed: {
+      selected: function () {
+        return this.$store.state.UI.selectedPanel
+      },
       panelsStyleWidth: function () {
         if (this.visible === undefined) {
           this.visible = this.$store.state.UI.panelsVisible
         } else {
           if (this.visible !== this.$store.state.UI.panelsVisible) {
             this.visible = this.$store.state.UI.panelsVisible
-            console.log('change to', this.visible, this.$refs.divPanels.offsetWidth, window.innerWidth)
+            // console.log('change to', this.visible, this.$refs.divPanels.offsetWidth, window.innerWidth)
           }
         }
         return '100%'
@@ -78,6 +78,9 @@
       },
       restart (arg) {
         this.$$.bus.$emit('restart-' + (arg || this.selected))
+      },
+      selectPanel (arg) {
+        this.$store.commit('UI_SET_SELECTED_PANEL', arg)
       }
     }
   }

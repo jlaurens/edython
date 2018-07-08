@@ -26,6 +26,7 @@
     },
     computed: {
       ecoSave () {
+        console.log('ecoSave:', this.$store.state.Pref.ecoSave)
         return this.$store.state.Pref.ecoSave
       },
       titleEcoSave () {

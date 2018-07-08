@@ -75,7 +75,6 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
   },
   fields: {
     value: {
-      validate: true,
       endEditing: true,
       placeholder: eYo.Msg.Placeholder.NUMBER
     }
@@ -232,7 +231,6 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         return subtype === eYo.T3.Expr.shortbytesliteral || subtype === eYo.T3.Expr.shortbytesliteral
           ? eYo.Msg.Placeholder.BYTES : eYo.Msg.Placeholder.STRING
       },
-      validate: true,
       startEditing: /** @suppress {globalThis} */ function () {
         this.eyo.getDlgt().fields.end.setVisible(false)
       },

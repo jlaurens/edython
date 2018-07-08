@@ -16,9 +16,9 @@
 </template>
 
 <script>
-  import IconBase from '../../../../IconBase.vue'
-  import IconTriangle from '../../../../Icon/IconTriangle.vue'
-  import IconBug from '../../../../Icon/IconBug.vue'
+  import IconBase from '@@/IconBase.vue'
+  import IconTriangle from '@@/Icon/IconTriangle.vue'
+  import IconBug from '@@/Icon/IconBug.vue'
 
   export default {
     name: 'eyo-workspace-content',
@@ -97,12 +97,16 @@
           var list = this.flyout.eyo.getList(category)
           if (list && list.length) {
             this.flyout.show(list)
+            this.$store.commit('UI_SET_FLYOUT_CATEGORY', category)
           }
         }
       },
       doShow () {
         var el = document.getElementById('eyo-workspace-content').getElementsByClassName('eyo-flyout')[0]
         eYo.Tooltip.hideAll(el)
+      },
+      doCleanWorkspace () {
+        this.workspace.clear()
       }
     },
     mounted: function () {
@@ -130,9 +134,6 @@
         noDynamicList: false
       }
       eYo.KeyHandler.setup(document)
-      var b = eYo.DelegateSvg.newBlockReady(eYo.App.workspace, eYo.T3.Stmt.start_stmt)
-      b.render()
-      b.moveBy(50, 150)
       var flyout = new eYo.Flyout(eYo.App.workspace)
       goog.dom.insertSiblingAfter(
         flyout.createDom('svg'), eYo.App.workspace.getParentSvg())
@@ -148,13 +149,10 @@
         Blockly.Events.enable()
       }
       // eYo.App.workspace.flyout_ = flyout
-      this.flyout = eYo.App.flyout = flyout
+      this.flyout = this.$$.eYo.App.flyout = flyout
       this.doSelect(this.selected)
       this.workspace.render()
-      var self = this
-      this.$$.bus.$on('new-document', function () {
-        self.workspace.clear()
-      })
+      this.$$.bus.$on('new-document', this.doCleanWorkspace)
       var oldSvg = document.getElementById('svg-control-image')
       var newSvg = document.getElementById('svg-control-image-v')
       oldSvg.parentNode.appendChild(newSvg)
