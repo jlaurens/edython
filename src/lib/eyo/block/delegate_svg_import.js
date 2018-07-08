@@ -157,7 +157,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       fields: {
         label: {
           value: 'import *',
-          css: 'builtin'
+          css: 'reserved'
         }
       }
     }
@@ -191,16 +191,19 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
       menuItem.setEnabled(variant !== current)  
     }
   }
+  var from = block.eyo.data.from.get()
+  var module = from ? from : 'module'
+  var style = from ? 'eyo-code' : 'eyo-code-placeholder'
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     eYo.Do.createSPAN('import ', 'eyo-code-reserved'),
-    eYo.Do.createSPAN('module', 'eyo-code-placeholder'),
+    eYo.Do.createSPAN(module, style),
     goog.dom.createTextNode(' ['),
     eYo.Do.createSPAN('as', 'eyo-code-reserved'),
     goog.dom.createTextNode(' ...]')
   ), eYo.Key.IMPORT)
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     eYo.Do.createSPAN('from ', 'eyo-code-reserved'),
-    eYo.Do.createSPAN('module ', 'eyo-code-placeholder'),
+    eYo.Do.createSPAN(module + ' ', style),
     eYo.Do.createSPAN('import ', 'eyo-code-reserved'),
     goog.dom.createTextNode('… ['),
     eYo.Do.createSPAN('as', 'eyo-code-reserved'),
@@ -208,7 +211,7 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
   ), eYo.Key.FROM_MODULE_IMPORT)
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     eYo.Do.createSPAN('from ', 'eyo-code-reserved'),
-    eYo.Do.createSPAN('module ', 'eyo-code-placeholder'),
+    eYo.Do.createSPAN(module + ' ', style),
     eYo.Do.createSPAN('import *', 'eyo-code-reserved')
   ), eYo.Key.FROM_MODULE_IMPORT_STAR)
   mgr.shouldSeparate()
