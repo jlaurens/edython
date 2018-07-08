@@ -49,6 +49,7 @@ eYo.DelegateSvg.Expr.makeSubclass('attributeref', {
       fields: {
         separator: '.',
         edit: {
+          validate: true,
           endEditing: true,
           placeholder: eYo.Msg.Placeholder.ATTRIBUTE,
           variable: true
@@ -97,6 +98,7 @@ eYo.DelegateSvg.Expr.makeSubclass('slicing', {
       order: 1,
       fields: {
         edit: {
+          validate: true,
           endEditing: true,
           placeholder: eYo.Msg.Placeholder.IDENTIFIER,
           variable: true
@@ -254,6 +256,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       order: 50,
       fields: {
         edit: {
+          validate: true,
           endEditing: true,
           placeholder: eYo.Msg.Placeholder.IDENTIFIER
         }
@@ -419,6 +422,7 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('module__call_expr', {
   fields: {
     module: {
       order: 1,
+      validate: true,
       endEditing: true,
       placeholder: eYo.Msg.Placeholder.MODULE
     },

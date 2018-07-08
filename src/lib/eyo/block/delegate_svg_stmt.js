@@ -72,6 +72,7 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       css: 'reserved'
     },
     comment: {
+      validate: true,
       endEditing: true,
       placeholder: eYo.Msg.Placeholder.COMMENT,
       css: 'comment'
