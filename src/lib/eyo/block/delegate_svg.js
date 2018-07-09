@@ -1115,7 +1115,7 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
         if (next.isVisible()) {
           next.eyo.tilePrevious = tile
           tile.eyo.tileNext = next
-          next = tile
+          tile = next
         }
       }
       tile.eyo.tileNext = null
