@@ -181,6 +181,7 @@ eYo.Slot.makeFields = function () {
     var result = this.callValidator(this.getValue())
     if (result !== null) {
       data.fromText(result)
+      data.synchronize(result) // would is be included in the previous method ?
     } else {
       this.setValue(data.toText())
     }
@@ -330,6 +331,10 @@ eYo.Slot.makeFields = function () {
             if ((nextField = goog.isString(fieldName) ? owner.fields[fieldName] : fieldName)) {
               if (nextField.eyo.previousField) {
                 // this was not a starting point
+                continue
+              }
+              if (nextField === startField) {
+                // avoid infinite loop
                 continue
               }
               eyo.nextField = nextField
