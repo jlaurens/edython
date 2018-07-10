@@ -198,6 +198,9 @@ eYo.DelegateSvg.Stmt.random__call_stmt.prototype.populateContextMenuFirst_ = fun
  */
 eYo.DelegateSvg.Expr.module__call_expr.makeSubclass('random__randrange', {
   data: {
+    module: {
+      init: 'random',
+    },
     name: {
       init: 'randrange',
       synchronize: true,
@@ -208,8 +211,8 @@ eYo.DelegateSvg.Expr.module__call_expr.makeSubclass('random__randrange', {
     module: {
       order: 10,
       fields: {
-        prefix: 'random',
-        separator: '.'
+        label: '',
+        edit: null
       }
     }
   },
@@ -241,6 +244,18 @@ var F = function (name, title) {
     title: key
   }
 }
+var F_s = function (name, title) {
+  var key = 'random__'+name
+  title && (eYo.Tooltip.Title[key] = title)
+  return {
+    type: eYo.T3.Stmt.random__call_stmt,
+    data: {
+      name: name,
+      fromFlag: true
+    },
+    title: key
+  }
+}
 eYo.FlyoutCategory.basic_random__module = [
   {
     type: eYo.T3.Stmt.random__import_stmt,
@@ -264,14 +279,36 @@ eYo.FlyoutCategory.basic_random__module = [
     },
     title: 'random__randint'
   },
-  F('choice', 'Choisir aléatoirement un élément dans une liste'),
-  {
-    type: eYo.T3.Stmt.random__call_stmt,
-    data: {
-      name: 'shuffle',
-      fromFlag: true
+  function () {
+    var key = 'random__choice'
+    eYo.Tooltip.Title[key] = 'Choisir aléatoirement un élément dans une liste'
+    return {
+      type: eYo.T3.Expr.random__call_expr,
+      data: {
+        name: 'choice',
+        fromFlag: true
+      },
+      slots: {
+        unary: {
+          type: eYo.T3.Expr.list_display,
+          slots: {
+            O: {
+              type: eYo.T3.Expr.shortliteral,
+              data: "'P'"
+            },
+            f: {
+              type: eYo.T3.Expr.shortliteral,
+              data: "'F'"
+            }
+          }
+        }
+      },
+      title: key
     }
-  },
+  } (),
+  // F('choice', 'Choisir aléatoirement un élément dans une liste'),
+  F_s('shuffle', 'Mélanger aléatoirement les éléments dans une liste'),
+  F('sample', 'Obtenir un échantillon de taille donnée dans une population donnée sans répétition'),
   F('random', 'Générer (pseudo) aléatoirement un nombre entre 0 et 1'),
   F('uniform', 'Loi uniforme'),
   F('gauss', 'Loi normale'),
@@ -289,11 +326,11 @@ eYo.FlyoutCategory.basic_random__module = [
     },
     title: 'random__randrange'
   },
-  F('sample', 'Obtenir un échantillon de taille donnée dans une population donnée sans répétition'),
+  F_s('seed', 'Mélanger aléatoirement les éléments dans une liste'),
   {
     type: eYo.T3.Stmt.random__call_stmt,
     data: {
-      name: 'seed',
+      name: '',
       fromFlag: true
     }
   },
@@ -317,6 +354,17 @@ F = function (name, title) {
     title: key
   }
 }
+F_s = function (name, title) {
+  var key = 'random__'+name
+  title && (eYo.Tooltip.Title[key] = title)
+  return {
+    type: eYo.T3.Stmt.random__call_stmt,
+    data: {
+      name: name
+    },
+    title: key
+  }
+}
 eYo.FlyoutCategory.random__module = [
   eYo.T3.Stmt.random__import_stmt,
   {
@@ -333,7 +381,8 @@ eYo.FlyoutCategory.random__module = [
     title: 'random__randint'
   },
   F('choice', 'Choisir aléatoirement un élément dans une liste'),
-  eYo.T3.Stmt.random__shuffle_stmt,
+  F_s('shuffle', 'Mélanger aléatoirement les éléments dans une liste'),
+  F('sample', 'Obtenir un échantillon de taille donnée dans une population donnée sans répétition'),
   F('random', 'Générer (pseudo) aléatoirement un nombre entre 0 et 1'),
   F('uniform', 'Loi uniforme'),
   F('triangular', 'Loi triangle'),
@@ -359,10 +408,9 @@ eYo.FlyoutCategory.random__module = [
   },
   F('sample', 'Obtenir un échantillon de taille donnée dans une population donnée sans répétition'),
   F('getrandbits', 'Générer aléatoirement une suite de bits de longueur donnée'),
-  eYo.T3.Stmt.random__seed_stmt,
-  // '<x eyo="identifier" name="a"><x eyo="builtin__object" value="None" slot="definition"></x></x>',
+  F_s('seed', 'Réinitialiser le générateur de nombres (pseudo-)aléatoires'),
   F('getstate', 'Obtenir l\'état du générateur aléatoire, utile pour reproduire les tirages'),
-  eYo.T3.Stmt.random__setstate_stmt
+  F_s('setstate', 'Ramener le générateur de nombres (pseudo-)aléatoires dans un état antérieur')
 ]
 
 goog.mixin(eYo.Tooltip.Title, {
