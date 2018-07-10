@@ -1093,8 +1093,7 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
   /**
    * Chain the fields.
    * There is no tileHead without a tileTail
-   * @param {*} left An eyo like object which receives the merge.
-   * @param {*} right An object with an eyo
+   * @param {*} headField A field within a field chain
    * @return {*} The tail field of the last chain element, if any
    */
   var chainFields = function (headField) {
@@ -1104,13 +1103,20 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
       headField.eyo.tileHead = null
       headField.eyo.tileTail = null
       while (!head.isVisible()) {
-        if(!(head = head.tileNext)) {
+        if(!(head = head.eyo.nextField)) {
           return
         }
       }
       tile = head
       tile.eyo.tilePrevious = null
       var next = tile
+      // first unchain all
+      while ((next = next.eyo.nextField)) {
+        next.eyo.tilePrevious = tile.eyo.tileNext = null
+        tile = next
+      }
+      // then chain all
+      next = tile = head
       while ((next = next.eyo.nextField)) {
         if (next.isVisible()) {
           next.eyo.tilePrevious = tile
