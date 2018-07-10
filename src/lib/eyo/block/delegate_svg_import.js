@@ -81,6 +81,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       ],
       init: eYo.Key.IMPORT,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
         var slot = this.owner_.slots.import_module
         slot.required = newValue === this.IMPORT
         slot.setIncog(!slot.required)

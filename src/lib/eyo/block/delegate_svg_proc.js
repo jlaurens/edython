@@ -45,6 +45,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
         eYo.Key.ARGUMENTS
       ],
       synchronize: /** @suppress {globalThis} */ function (newValue) { // would variants synchronize?
+        this.synchronize(newValue)
         this.data.dotted_name.setIncog(newValue === this.BUILTIN) // disable the data not the slot
         this.data.builtin.setIncog(newValue !== this.BUILTIN)
         this.data.property.setIncog(newValue !== this.PROPERTY)
@@ -208,6 +209,7 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
       TYPE: eYo.Key.Type,
       all: [null, eYo.Key.TYPE],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
         var slot = this.owner_.slots.type
         slot.required = newValue === this.TYPE
         slot.setIncog()
@@ -293,6 +295,7 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
       ARGUMENTS: eYo.Key.ARGUMENTS,
       all: [null, eYo.Key.ARGUMENTS],
       synchronize: /** @suppress {globalThis} */ function (newValue){
+        this.synchronize(newValue)
         var slot = this.owner_.slots.arguments
         slot.required = newValue === this.ARGUMENTS
         slot.setIncog()

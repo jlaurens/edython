@@ -49,6 +49,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
         eyo.consolidateType(block)
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
         var slot = this.owner_.slots.expression
         slot.required = (newValue !== this.EXCEPT)
         slot.setIncog()
@@ -173,6 +174,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
         eYo.Key.RAISE_FROM
       ],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
         var slot = this.owner_.slots.expression
         slot.required = (newValue === this.RAISE_EXPRESSION)
         slot.setIncog()
@@ -266,6 +268,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
         eYo.Key.BINARY
       ],
       synchronize: /** @suppress {globalThis} */ function (newValue){
+        this.synchronize(newValue)
         var slot = this.owner_.slots.expression
         slot.required = newValue === eYo.Key.BINARY
         slot.setIncog()

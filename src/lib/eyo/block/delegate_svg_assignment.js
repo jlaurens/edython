@@ -271,6 +271,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         eYo.Key.TARGET_VALUE
       ],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
         this.data.name.setIncog(newValue === this.TARGET_VALUE)
         var slot = this.owner_.slots.annotation
         slot.required = newValue === this.NAME_ANNOTATION_VALUE
@@ -423,6 +424,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
         eYo.Key.TARGET_EXPRESSIONS
       ],
       synchronize: /** @suppress {globalThis} */ function (newVariant) {
+        this.synchronize(newValue)
         this.data.name.setIncog(newVariant !== this.NAME)
         var slot = this.owner_.slots.target
         slot.required = newVariant === this.TARGET_EXPRESSIONS

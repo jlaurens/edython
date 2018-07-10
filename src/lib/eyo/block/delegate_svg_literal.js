@@ -137,6 +137,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         this.data.value.consolidate()
       },
       synchronize: /** @this{eYo.Data} */ function (newValue) {
+        this.synchronize(newValue)
         this.owner_.fields.start.setValue(this.toText())
         this.owner_.fields.end.setValue(this.toText())
       },
