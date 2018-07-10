@@ -765,6 +765,7 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
             case 'complex':
             case 'len':
             case 'input':
+            case 'abs':
             return newValue === this.UNARY ? {validated: newValue}: null
             case 'trunc':
             return this.BINARY ? {validated: newValue}: null
@@ -805,9 +806,10 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
           if (variant === M.NAME) {
             this.data.variant.set(M.BUILTIN)
           }
+          var ary_d = this.data.ary
           switch (newValue) {
             case 'conjugate':
-            this.data.ary.set(this.data.ary.Z_ARY)
+            this.data.ary.set(ary_d.Z_ARY)
             break
             case 'int':
             case 'float':
@@ -815,22 +817,22 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
             case 'len':
             case 'abs':
             this.data.isOptionalUnary.set(false)
-            this.data.ary.set(this.data.ary.UNARY)
+            ary_d.set(ary_d.UNARY)
             break
             case 'pow':
             case 'trunc':
-            this.data.ary.set(this.data.ary.BINARY)
+            ary_d.set(ary_d.BINARY)
             break
             case 'input':
             this.data.isOptionalUnary.set(true)
-            this.data.ary.set(this.data.ary.UNARY)
+            ary_d.set(ary_d.UNARY)
             break
             case 'list':
             case 'set':
             case 'min':
             case 'max':
             case 'sum':
-            this.data.ary.set(this.data.ary.N_ARY)
+            ary_d.set(ary_d.N_ARY)
           }
         } else {
           if (variant === M.BUILTIN) {
