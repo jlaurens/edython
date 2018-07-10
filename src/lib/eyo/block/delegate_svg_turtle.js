@@ -198,7 +198,7 @@ eYo.DelegateSvg.Expr.module__call_expr.makeSubclass('turtle__call_expr', {
         var item = eYo.Model.turtle__module.getItem(newValue)
         if (item) {
           var ary = item.ary
-          this.data.ary.setTrusted(goog.isDef(ary) ? ary: this.data.ary.N_ARY)
+          this.data.ary.setTrusted(goog.isDef(ary) ? ary.toString(): '0')
           this.data.isOptionalUnary.setTrusted(!item.mandatory)
         } else {
           this.data.ary.setTrusted(this.data.ary.N_ARY)
@@ -333,6 +333,18 @@ eYo.DelegateSvg.Stmt.makeSubclass('turtle__setup_stmt', {
   }
 })
 
+var F_expr = function (name, title) {
+  var key = 'turtle__'+name
+  title && (eYo.Tooltip.Title[key] = title)
+  return {
+    type: eYo.T3.Expr.turtle__call_expr,
+    data: {
+      name: name,
+      fromFlag: true
+    },
+    title: key
+  }
+}
 var F_stmt = function (name, title) {
   var key = 'turtle__'+name
   title && (eYo.Tooltip.Title[key] = title)
@@ -358,12 +370,16 @@ eYo.FlyoutCategory.basic_turtle__module = [
   F_stmt('backward', 'Reculer de la distance donnée'),
   F_stmt('right', 'Tourner à droite d\'un angle de mesure donnée (en degrés par défaut)'),
   F_stmt('left', 'Tourner à gauche d\'un angle de mesure donnée (en degrés par défaut)'),
+  F_stmt('speed', 'Régler la vitesse du tracé'),
   F_stmt('pendown', 'Abaisser le crayon'),
-  F_stmt('isdown', 'Le crayon est baissé ?'),// beware: NO BREAK SPACE before '?'
+  F_expr('isdown', 'Le crayon est baissé ?'),// beware: NO BREAK SPACE before '?'
   F_stmt('penup', 'Lever le crayon'),
-  F_stmt('pensize', 'Changer ou obtenir l\'épaisseur du trait.'),
-  F_stmt('pencolor', 'Changer ou obtenir la couleur du trait.'),
-  F_stmt('fillcolor', 'Changer ou obtenir la couleur de remplissage.'),
+  F_stmt('pensize', 'Changer l\'épaisseur du trait.'),
+  F_stmt('pencolor', 'Changer la couleur du trait.'),
+  F_stmt('fillcolor', 'Changer la couleur de remplissage.'),
+  F_expr('pensize', 'Obtenir l\'épaisseur du trait.'),
+  F_expr('pencolor', 'Obtenir la couleur du trait.'),
+  F_expr('fillcolor', 'Obtenir la couleur de remplissage.'),
   F_stmt('begin_fill', 'Commencer une opération de remplissage.'),
   F_stmt('end_fill', 'Terminer une opération de remplissage.'),
   F_stmt('filling', 'En opération de remplissage ?'),// beware: NO BREAK SPACE before '?'
@@ -372,10 +388,10 @@ eYo.FlyoutCategory.basic_turtle__module = [
   F_stmt('dot', 'Dessine un point de taille et de couleur donnée.'),
   F_stmt('shape', 'Choisir la forme parmi "arrow", "turtle, "circle", "square", "triangle" et "classic".'),
   F_stmt('stamp', 'Tamponne l\'image de la tortue.'),
-  F_stmt('xcor', 'Obtenir l\'abscisse de la tortue.'),
-  F_stmt('ycor', 'Obtenir l\'ordonnée de la tortue.'),
-  F_stmt('position', 'Obtenir les coordonnées (x, y) de la tortue.'),
-  F_stmt('distance', 'Obtenir la distance au point de coordonnées (x, y).'),
+  F_expr('xcor', 'Obtenir l\'abscisse de la tortue.'),
+  F_expr('ycor', 'Obtenir l\'ordonnée de la tortue.'),
+  F_expr('position', 'Obtenir les coordonnées (x, y) de la tortue.'),
+  F_expr('distance', 'Obtenir la distance au point de coordonnées (x, y).'),
   F_stmt('setx', 'Déplace la tortue à l\'endroit spécifié sans changer d\'ordonnée ni d\'orientation. Trace un segment horizontal si le stylo est baissé.'),
   F_stmt('sety', 'Déplace la tortue à l\'endroit spécifié sans changer d\'abscisse ni d\'orientation. Trace un segment vertical si le stylo est baissé.'),
   F_stmt('setposition', 'Déplace la tortue à l\'endroit spécifié sans changer d\'orientation. Trace un segment si le stylo est baissé.'),
@@ -431,12 +447,20 @@ eYo.FlyoutCategory.turtle__module = [
   F_stmt('back', 'Reculer de la distance donnée'),
   F_stmt('right', 'Tourner à droite d\'un angle de mesure donnée (en degrés par défaut)'),
   F_stmt('left', 'Tourner à gauche d\'un angle de mesure donnée (en degrés par défaut)'),
+  F_stmt('speed', 'Régler la vitesse du tracé'),
   F_stmt('degrees', 'Angles mesurés en degrés'),
   F_stmt('radians', 'Angles mesurés en radians'),
-  F_stmt('setposition', 'Déplace la tortue à l\'endroit spécifié sans changer d\'orientation. Trace un segment si le stylo est baissé.'),
+  F_expr('xcor', 'Obtenir l\'abscisse de la tortue.'),
+  F_expr('ycor', 'Obtenir l\'ordonnée de la tortue.'),
+  F_expr('position', 'Obtenir les coordonnées (x, y) de la tortue.'),
+  F_expr('distance', 'Obtenir la distance au point de coordonnées (x, y).'),
   F_stmt('setx', 'Déplace la tortue à l\'endroit spécifié sans changer d\'ordonnée ni d\'orientation. Trace un segment horizontal si le stylo est baissé.'),
   F_stmt('sety', 'Déplace la tortue à l\'endroit spécifié sans changer d\'abscisse ni d\'orientation. Trace un segment vertical si le stylo est baissé.'),
+  F_stmt('setposition', 'Déplace la tortue à l\'endroit spécifié sans changer d\'orientation. Trace un segment si le stylo est baissé.'),
   F_stmt('setheading', 'Oriente la tortue dans la direction donnée par l\'angle selon le repère choisi (mode standard et trigonométrique ou mode logo et géographique).'),
+  F_expr('pensize', 'Obtenir l\'épaisseur du trait.'),
+  F_expr('pencolor', 'Obtenir la couleur du trait.'),
+  F_expr('fillcolor', 'Obtenir la couleur de remplissage.'),
   F_stmt('home', 'Déplace la tortue à l\'origine. Trace un segment si le stylo est baissé.'),
   F_stmt('circle', 'Trace un cercle, un arc de cercle, un polygone régulier ou seulement une partie.'),
   F_stmt('dot', 'Dessine un point de taille et de couleur donnée.'),
