@@ -39,18 +39,22 @@ eYo.Delegate = function (block) {
   var byOrder = []
   for (var k in dataModel) {
     if (eYo.Do.hasOwnProperty(dataModel, k)) {
-      var d = new eYo.Data(this, k, dataModel[k])
-      if (d.model.main) {
-        goog.asserts.assert(!data.main, 'No 2 main data '+k+'/'+block.type)
-        data.main = d
-      }
-      data[k] = d
-      for (var i = 0, dd; (dd = byOrder[i]); ++i) {
-        if (dd.model.order > d.model.order) {
-          break
+      var model = dataModel[k]
+      if (model) {
+        // null models are used to neutralize the inherited data
+        var d = new eYo.Data(this, k, model)
+        if (d.model.main) {
+          goog.asserts.assert(!data.main, 'No 2 main data '+k+'/'+block.type)
+          data.main = d
         }
+        data[k] = d
+        for (var i = 0, dd; (dd = byOrder[i]); ++i) {
+          if (dd.model.order > d.model.order) {
+            break
+          }
+        }
+        byOrder.splice(i, 0, d)
       }
-      byOrder.splice(i, 0, d)
     }
   }
   if ((d = this.headData = byOrder[0])) {
