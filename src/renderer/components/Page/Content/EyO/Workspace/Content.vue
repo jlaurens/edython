@@ -55,6 +55,7 @@
           content: content || name
         }
       }
+      moduleF('basic_math', 'math (basic)')
       moduleF('math')
       moduleF('random')
       moduleF('basic_turtle', 'turtle (basic)')
@@ -75,6 +76,7 @@
         model.items.function
       ]
       model.modules = [
+        model.items.basic_math__module,
         model.items.math__module,
         model.items.random__module,
         model.items.basic_turtle__module,
