@@ -13,6 +13,8 @@
 
 goog.provide('eYo.DelegateSvg.Random')
 
+goog.require('eYo.Model.random__module')
+
 goog.require('eYo.DelegateSvg.Stmt')
 goog.require('eYo.DelegateSvg.List')
 goog.require('eYo.DelegateSvg.Range')
@@ -26,17 +28,32 @@ goog.require('eYo.FlyoutCategory')
  * A unique block for each module to ease forthcoming management.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('random__import_stmt', {
-  xml: {
-    tag: 'random__import',
+eYo.DelegateSvg.Stmt.import_stmt.makeSubclass('random__import_stmt', {
+  data: {
+    from: {
+      init: 'random',
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        return newValue === 'random' ? {validated: newValue} : null
+      },
+      synchronize: true
+    }
   },
-  fields: {
-    label: {
-      value: 'import',
-      css: 'builtin'
+  slots: {
+    import_module: {
+      order: 1,
+      fields: {
+        label: 'import',
+        suffix: 'random'
+      },
+      wrap: null,
+      check: null
     },
-    random: {
-      value: 'random'
+    from: {
+      order: 2,
+      fields: {
+        label: 'from',
+        edit: 'random'
+      }
     }
   }
 })
@@ -51,90 +68,65 @@ eYo.DelegateSvg.Stmt.makeSubclass('random__import_stmt', {
  */
 eYo.DelegateSvg.Expr.module__call_expr.makeSubclass('random__call_expr', {
   data: {
-    name: {
-      init: /** @suppress {globalThis} */ function () {
-        this.set('randint')
-        this.isFinite = true
+    ary: {
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        var current = this.data.name.get()
+        var item = eYo.Model.random__module.getItem(current)
+        if (item) {
+          // this is known, we do not have any choice
+          var ary = this.getAll()[item.ary]
+          return newValue === ary ? {validated: newValue}: null
+        } else {
+          // this is not known, we are confident in the user
+          return {validated: newValue}
+        }
       },
-      synchronize: true,
-      validate: false,
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+          var current = this.data.name.get()
+          var item = eYo.Model.random__module.getItem(current)
+          if (!item) {
+            // this not a known function name
+            this.save(element)
+          }
+        }
+      }
+    },
+    name: {
+      init: 'randint',
+      main: true,
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        var item = eYo.Model.random__module.getItem(newValue)
+        return item ? {validated: newValue} : null
+      },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.data.nameFinite.set(newValue)
-        this.data.nameInfinite.set(newValue)
-        var d = this.data.ary
-        switch (newValue) {
-          case 'choice':
-          case 'getrandbits':
-          d.set(d.UNARY)
-          break
-          case 'randint':
-          case 'sample':
-          d.set(d.BINARY)
-          break
-          case 'choices':
-          d.set(d.N_ARY)
-          break
-          case 'random':
-          case 'getstate':
-          d.set(d.Z_ARY)
-          break
-          case 'expovariate':
-          case 'paretovariate':
-          d.set(d.UNARY)
-          break
-          case 'uniform':
-          case 'betavariate':
-          case 'gammavariate':
-          case 'gauss':
-          case 'lognormvariate':
-          case 'normalvariate':
-          case 'vonmisesvariate':
-          case 'weibullvariate':
-          d.set(d.BINARY)
-          break
-          case 'triangular':
-          d.set(d.TERNARY)
-          break
-          default:
-          d.set(d.N_ARY)
-          break
+        var item = eYo.Model.random__module.getItem(newValue)
+        if (item) {
+          var type = eYo.Model.random__module.data.types[item.type]
+          if (type === 'data') {
+            this.data.callerFlag.set(true)
+          } else {
+            this.data.callerFlag.set(false)
+            var ary = item.ary
+            this.data.ary.setTrusted(goog.isDef(ary) ? ary: this.data.ary.N_ARY)
+            this.data.isOptionalUnary.setTrusted(!item.mandatory)
+          }
+        } else {
+          this.data.ary.setTrusted(this.data.ary.N_ARY)
+          this.data.isOptionalUnary.setTrusted(true)
         }
       },
       consolidate: /** @suppress {globalThis} */ function () {
         this.didChange(undefined, this.get())
       }
     },
-    nameFinite : {
-      all: ['randint', 'choice', 'choices', 'sample', 'getrandbits'],
-      init: 'randint',
-      noUndo: true,
-      xml: false,
-      validate: true,
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        if (oldValue && (newValue !== oldValue)) {
-          this.data.name.set(newValue)
-          this.data.name.isFinite = true
-        }
-      }
-    },
-    nameInfinite : {
-      all: ['random', 'uniform', 'triangular', 'betavariate', 'expovariate', 'gammavariate', 'gauss', 'lognormvariate', 'normalvariate', 'vonmisesvariate', 'paretovariate', 'weibullvariate'],
-      init: 'random',
-      noUndo: true,
-      xml: false,
-      validate: true,
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        if (oldValue && (newValue !== oldValue)) {
-          this.data.name.set(newValue)
-          this.data.name.isFinite = false
-        }
-      }
-    }
+    module: null
   },
-  fields: {
+  slots: {
     module: {
-      value: 'random',
-      endEditing: false
+      fields: {
+        edit: 'random'
+      }
     }
   },
   output: {
@@ -148,45 +140,15 @@ eYo.DelegateSvg.Expr.module__call_expr.makeSubclass('random__call_expr', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Expr.random__call_expr.populateMenu = function (block, mgr) {
-  var eyo = block.eyo
-  var current_name = eyo.data.name.get()
-  var isFinite = !!eyo.data.name.isFinite
-  var data = isFinite ? eyo.data.nameFinite : eyo.data.nameInfinite
-  var otherData = isFinite ? eyo.data.nameInfinite : eyo.data.nameFinite
-  var names = data.getAll()
-  var F = function (i) {
-    var name = names[i]
-    if (name !== current_name) {
-      var content =
-      goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-        'random.' + name + '(...)'
-      )
-      var menuItem = new eYo.MenuItem(content, function () {
-        console.log('Change', isFinite ? 'finite' : 'infinite', 'name to', name)
-        eyo.data.name.set(name)
-      })
-      mgr.addChild(menuItem, true)
-    }
+eYo.DelegateSvg.Expr.random__call_expr.prototype.contentForCategory = function (block, category) {
+  var contents = {
+    "bookkeeping-functions" : 'getstate, getrandbits',
+    "functions-for-integers" : 'randrange, randint',
+    "functions-for-sequences" : 'choice, choices, sample',
+    "real-valued-distributions" : 'random, uniform, ...',
+    "alternative-generator" : ''
   }
-  for (var i = 0; i < names.length; i++) {
-    F(i)
-  }
-  mgr.shouldSeparate()
-  var content =
-  eYo.Do.createSPAN(isFinite ? 'random, uniform, gauss...' : 'randint, choice, sample...', 'eyo-code')
-  var menuItem = new eYo.MenuItem(content, function () {
-    eyo.data.name.set(otherData.get())
-  })
-  mgr.addChild(menuItem, true)
-  var content =
-  eYo.Do.createSPAN('getstate()', 'eyo-code')
-  var menuItem = new eYo.MenuItem(content, function () {
-    eyo.data.name.set('getstate')
-    eyo.data.name.isFinite = isFinite
-  })
-  mgr.addChild(menuItem, true)
-  mgr.shouldSeparate()
+  return contents[category] || category
 }
 
 /**
@@ -196,7 +158,8 @@ eYo.DelegateSvg.Expr.random__call_expr.populateMenu = function (block, mgr) {
  * @private
  */
 eYo.DelegateSvg.Expr.random__call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  eYo.DelegateSvg.Expr.random__call_expr.populateMenu.call(this, block, mgr)
+  eYo.DelegateSvg.Expr.module__call_expr.populateMenuModel.call(this, block, mgr, eYo.Model.random__module)
+  eYo.DelegateSvg.Expr.module__call_expr.populateMenu.call(this, block, mgr, '(…)')
   return eYo.DelegateSvg.Expr.base_call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
@@ -210,6 +173,14 @@ eYo.DelegateSvg.Stmt.makeSubclass('random__call_stmt', {
 })
 
 /**
+ * Get the module.
+ * @param {!Blockly.Block} block The block.
+ */
+eYo.DelegateSvg.Expr.random__call_expr.prototype.getModule = eYo.DelegateSvg.Stmt.random__call_stmt.prototype.getModule = function (block) {
+  return 'random'
+}
+
+/**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
@@ -220,88 +191,26 @@ eYo.DelegateSvg.Stmt.random__call_stmt.prototype.populateContextMenuFirst_ = fun
   return eYo.DelegateSvg.Stmt.random__call_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
-//random__seed_stmt ::= "random.seed" (a=None, version=2)
-
-/**
- * Class for a DelegateSvg, seed block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Stmt.makeSubclass('random__seed_stmt', {
-  fields: {
-    label: {
-      value: 'random.seed'
-    }
-  },
-  slots: {
-    arguments: {
-      order: 1,
-      fields: {
-        start: '(',
-        end: ')'
-      },
-      wrap: eYo.T3.Expr.argument_list_2
-    }
-  }
-})
-
-/**
- * Class for a DelegateSvg, setstate block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Stmt.makeSubclass('random__setstate_stmt', {
-  fields: {
-    label: {
-      value: 'random.setstate'
-    }
-  },
-  slots: {
-    state: {
-      order: 1,
-      fields: {
-        start: '(',
-        end: ')'
-      },
-      check: eYo.T3.Expr.Check.argument_any,
-      optional: false
-    }
-  }
-})
-
-/**
- * Class for a DelegateSvg, shuffle block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Stmt.makeSubclass('random__shuffle_stmt', {
-  fields: {
-    label: {
-      value: 'random.shuffle'
-    }
-  },
-  slots: {
-    state: {
-      order: 1,
-      fields: {
-        start: '(',
-        end: ')'
-      },
-      wrap: eYo.T3.Expr.argument_list_2
-    }
-  }
-})
-
 /**
  * Class for a DelegateSvg, random range block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.builtin__range.makeSubclass('random__randrange', {
-  fields: {
-    label: {
-      value: 'random.randrange',
-      css: '' // super has 'builtin'
+eYo.DelegateSvg.Expr.module__call_expr.makeSubclass('random__randrange', {
+  data: {
+    name: {
+      init: 'randrange',
+      synchronize: true,
+      xml: false
+    }
+  },
+  slots: {
+    module: {
+      order: 10,
+      fields: {
+        prefix: 'random',
+        separator: '.'
+      }
     }
   },
   output: {
@@ -309,7 +218,97 @@ eYo.DelegateSvg.Expr.builtin__range.makeSubclass('random__randrange', {
   }
 })
 
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+eYo.DelegateSvg.Expr.random__randrange.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  eYo.DelegateSvg.Expr.module__call_expr.populateMenu.call(this, block, mgr)
+  return eYo.DelegateSvg.Expr.random__randrange.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+}
+
 var F = function (name, title) {
+  var key = 'random__'+name
+  title && (eYo.Tooltip.Title[key] = title)
+  return {
+    type: eYo.T3.Expr.random__call_expr,
+    data: {
+      name: name,
+      fromFlag: true
+    },
+    title: key
+  }
+}
+eYo.FlyoutCategory.basic_random__module = [
+  {
+    type: eYo.T3.Stmt.random__import_stmt,
+    data: {
+      variant: eYo.Key.FROM_MODULE_IMPORT_STAR
+    }
+  },
+  {
+    type: eYo.T3.Expr.random__call_expr,
+    data: {
+      name: 'randint',
+      fromFlag: true
+    },
+    slots: {
+      binary: { // implement 'main' instead of 'binary'
+        slots: {
+          fstart: 1,
+          rend: 6
+        }
+      }
+    },
+    title: 'random__randint'
+  },
+  F('choice', 'Choisir aléatoirement un élément dans une liste'),
+  {
+    type: eYo.T3.Stmt.random__call_stmt,
+    data: {
+      name: 'shuffle',
+      fromFlag: true
+    }
+  },
+  F('random', 'Générer (pseudo) aléatoirement un nombre entre 0 et 1'),
+  F('uniform', 'Loi uniforme'),
+  F('gauss', 'Loi normale'),
+  {
+    type: eYo.T3.Expr.random__randrange,
+    data: {
+      fromFlag: true
+    },
+    slots: {
+      arguments: {
+        slots: {
+          O: 10
+        }
+      }
+    },
+    title: 'random__randrange'
+  },
+  F('sample', 'Obtenir un échantillon de taille donnée dans une population donnée sans répétition'),
+  {
+    type: eYo.T3.Stmt.random__call_stmt,
+    data: {
+      name: 'seed',
+      fromFlag: true
+    }
+  },
+  // '<x eyo="identifier" name="a"><x eyo="builtin__object" value="None" slot="definition"></x></x>',
+  F('getstate', 'Obtenir l\'état du générateur aléatoire, utile pour reproduire les tirages'),
+  {
+    type: eYo.T3.Stmt.random__call_stmt,
+    data: {
+      name: 'setstate',
+      fromFlag: true
+    }
+  }
+]
+
+F = function (name, title) {
   var key = 'random__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
