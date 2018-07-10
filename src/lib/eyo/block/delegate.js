@@ -125,11 +125,17 @@ eYo.Delegate.Manager = (function () {
    * @param {!Object} from  source.
    */
   var merger = function (to, from, ignore) {
+    var from_d
+    if ((from.check)) {
+      from.check = eYo.Do.ensureArray(from.check)
+    } else if ((from_d = from.wrap)) {
+      from.check = eYo.Do.ensureArray(from_d)
+    }
     for (var k in from) {
       if (ignore && ignore(k)) {
         continue
       }
-      var from_d = from[k]
+      from_d = from[k]
       // next contains my test for a dictionary, hence my meaning of dictionary
       // in that context
       if (goog.isNull(from_d) || goog.isBoolean(from_d) || goog.isNumber(from_d) || goog.isString(from_d) || goog.isFunction(from_d) || goog.isArray(from_d)) {
