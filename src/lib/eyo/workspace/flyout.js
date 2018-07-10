@@ -376,7 +376,7 @@ eYo.FlyoutDelegate.prototype.doSlide = function(close) {
  * When not given, toggle the closed state.
  */
 eYo.FlyoutDelegate.prototype.slide = function(close) {
-  this.doSlide(closed)
+  this.doSlide(close)
 };
 
 /**
