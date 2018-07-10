@@ -39,6 +39,7 @@ eYo.DelegateSvg.Stmt.import_stmt.makeSubclass('turtle__import_stmt', {
   },
   slots: {
     import_module: {
+      order: 1,
       fields: {
         label: 'import',
         suffix: 'turtle'
@@ -47,6 +48,7 @@ eYo.DelegateSvg.Stmt.import_stmt.makeSubclass('turtle__import_stmt', {
       check: null
     },
     from: {
+      order: 2,
       fields: {
         label: 'from',
         edit: 'turtle'
