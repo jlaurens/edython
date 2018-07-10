@@ -260,7 +260,16 @@ def import_model():
             dd = dl.find("{http://www.w3.org/1999/xhtml}dd")
             if dd:
                 txt = "".join(dd.itertext())
-                returner = (tpe == 'function') and (Filter.do_module(txt) or getattr(Filter, 'do_' + module)(txt))
+                if not returner and tpe == 'function':
+                    if Filter.do_module(txt):
+                        returner = True
+                    else:
+                        try:
+                            f = getattr(Filter, 'do_' + module)
+                            if f is not None:
+                                returner = f(txt)
+                        except:
+                            pass
                 descriptions = []
                 td = dd.find(".//{http://www.w3.org/1999/xhtml}td")
                 if td:
@@ -289,7 +298,13 @@ def import_model():
                 if name is None:
                     continue
                 names.append(name)
-                returner = returner or (tpe == 'function') and (returner or getattr(Filter, 'do_name_' + module) (name))
+                if not returner and tpe == 'function':
+                    try:
+                        f = getattr(Filter, 'do_name_' + module)
+                        if not f is None:
+                            returner = f(name)
+                    except:
+                        pass
                 element = dt.find("{http://www.w3.org/1999/xhtml}span[@class='sig-paren']")
                 if element is None:
                     # this is a constant or a caller
