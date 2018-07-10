@@ -254,11 +254,15 @@ eYo.Data.prototype.fromText = function (txt, dontValidate) {
   }
   if (dontValidate) {
     this.set(txt)
-  } else {
-    if ((this.value_ === txt) || !(txt = this.validate(txt)) || !goog.isDef((txt = txt.validated))) {
+  } else if (this.value_ !== txt) {
+    var v7d = this.validate(txt)
+    if (!v7d || !goog.isDef((v7d = v7d.validated))) {
       this.error = true
+      v7d = txt
+    } else {
+      this.error = false
     }
-    this.internalSet(txt)
+    this.internalSet(v7d)
   }
 }
 
@@ -315,6 +319,7 @@ eYo.Data.prototype.didChange = function (oldValue, newValue) {
   try {
     if (goog.isFunction(this.model.didChange)) {
       if (this.model_didChange_lock) {
+        // no built in behaviour yet
         return
       }
       this.model_didChange_lock = true
