@@ -102,7 +102,7 @@ eYo.FlyoutCategory = {
         variant: eYo.Key.NAME_ALIAS
       }
     },
-    eYo.T3.Stmt.docstring_top_stmt,
+    eYo.T3.Stmt.docstring_stmt,
     eYo.T3.Expr.longliteral,
     eYo.T3.Expr.attributeref,
     eYo.T3.Expr.proper_slice,
@@ -178,8 +178,7 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.lambda,
     eYo.T3.Stmt.classdef_part,
     eYo.T3.Stmt.decorator,
-    eYo.T3.Stmt.global_nonlocal_stmt,
-    eYo.T3.Stmt.docstring_def_stmt,
+    eYo.T3.Stmt.global_nonlocal_stmt
   ],
   'list': [
     {
@@ -559,7 +558,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: 'sum'
     },
-      {
+    {
       type: eYo.T3.Expr.call_expr,
       data: 'abs',
     },
