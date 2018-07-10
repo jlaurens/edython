@@ -33,11 +33,13 @@ eYo.DelegateSvg.Stmt.import_stmt.makeSubclass('math__import_stmt', {
       init: 'math',
       validate: /** @suppress {globalThis} */ function (newValue) {
         return newValue === 'math' ? {validated: newValue} : null
-      }
+      },
+      synchronize: true
     }
   },
   slots: {
     import_module: {
+      order: 1,
       fields: {
         label: 'import',
         suffix: 'math'
@@ -46,6 +48,7 @@ eYo.DelegateSvg.Stmt.import_stmt.makeSubclass('math__import_stmt', {
       check: null
     },
     from: {
+      order: 2,
       fields: {
         label: 'from',
         edit: 'math'
@@ -322,7 +325,7 @@ var F = function (name, title) {
     type: eYo.T3.Expr.math__call_expr,
     data: {
       name: name,
-      moduleFlag: false
+      fromFlag: true
     },
     title: key
   }
