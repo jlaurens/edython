@@ -7,7 +7,7 @@
 </head>
 <body>
 <pre>
-math__import_stmt ::= "import math"
+math__import_stmt/math__import ::= "import math"
 </pre>
 9.2. math — Mathematical functions
 This module is always available. It provides access to the mathematical functions defined by the C standard.
@@ -18,8 +18,8 @@ The following functions are provided by this module. Except when explicitly note
 
 9.2.1. Number-theoretic and representation functions
 <pre>
-math__call_expr ::= math."name" (...)
-math__call_stmt ::= math__call_expr
+math__call_expr/math__call ::= math."name" (...)
+math__call_stmt/math__call ::= math__call_expr
 math__const ::= math."name"
 </pre>
     
