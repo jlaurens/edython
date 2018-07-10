@@ -236,7 +236,7 @@ eYo.DelegateSvg.Stmt.math__call_stmt.prototype.populateContextMenuFirst_ = funct
 eYo.DelegateSvg.Expr.math__call_expr.makeSubclass('math__const', {
   data: {
     callerFlag: {
-      init: false, // true when `foo` is expected instead of `foo(…)`
+      init: true, // true when `foo` is expected instead of `foo(…)`
       xml: false,
       synchronize: false
     },
@@ -337,7 +337,7 @@ var F_k = function (name, title) {
     type: eYo.T3.Expr.math__const,
     data: {
       name: name,
-      variant: eYo.Key.NAME
+      fromFlag: true
     },
     title: key
   }
@@ -362,6 +362,7 @@ eYo.FlyoutCategory.basic_math__module = [
   F_k('e', 'e (approximation de la constante d\'Euler)'),
   F('exp', 'Fonction exponentielle'),
   F('log', 'Fonction logarithme népérien, donner un deuxième argument pour changer de base'),
+  F('log10', 'Fonction logarithme de base 10'),
   F('gcd', 'Plus grand diviseur commun (pgcd)'),
   F('floor', 'Partie entière par défaut'),
   F('ceil', 'Partie entière par excès'),
