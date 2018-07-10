@@ -13,7 +13,7 @@
 
 goog.provide('eYo.DelegateSvg.Range')
 
-goog.require('eYo.DelegateSvg.Stmt')
+goog.require('eYo.DelegateSvg.Primary')
 goog.require('eYo.DelegateSvg.Argument')
 
 console.warn('Move this block to the builtin blocks, with contextual consolidator and argument list')
@@ -101,16 +101,40 @@ eYo.DelegateSvg.Expr.argument_list.makeSubclass('range_argument_list', {
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('builtin__range', {
-  fields: {
-    label: {
-      value: 'range',
-      css: 'builtin'
+eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('builtin__range', {
+  data: {
+    ary: {
+      init: '3',
+      synchronize: true
+    },
+    name: {
+      init: 'range',
+      synchronize: true,
+      validate: false,
+      undo: false,
+      xml: false
     }
   },
   slots: {
+    name: {
+      order: 50,
+      fields: {
+        edit: {
+          validate: true,
+          endEditing: true,
+          placeholder: eYo.Msg.Placeholder.IDENTIFIER
+        }
+      }
+    },
+    n_ary: null,
+    z_ary: null,
+    unary: null,
+    binary: null,
+    ternary: null,
+    quadary: null,
+    pentary: null,
     arguments: {
-      order: 1,
+      order: 1000,
       fields: {
         start: '(',
         end: ')'
