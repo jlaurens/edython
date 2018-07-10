@@ -14,6 +14,7 @@
   import demoBasicHello from '@static/demo/basic/hello.xml'
   import demoBasicHelloYou from '@static/demo/basic/hello-you.xml'
   import demoBasicTurtle from '@static/demo/basic/turtle.xml'
+  import demoBasicTurtleStar from '@static/demo/basic/turtle-star.xml'
   import demoBasicSumOfIntegers from '@static/demo/basic/sum-of-integers.xml'
   import demoBasicFiftyDices from '@static/demo/basic/fifty-dices.xml'
   import demoBasicList from '@static/demo/basic/list.xml'
@@ -36,6 +37,9 @@
           }, {
             title: 'Tortue',
             xml: demoBasicTurtle
+          }, {
+            title: 'Tortue star',
+            xml: demoBasicTurtleStar
           }, {
             title: 'Somme des entiers',
             xml: demoBasicSumOfIntegers
