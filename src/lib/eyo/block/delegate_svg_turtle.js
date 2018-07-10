@@ -29,21 +29,16 @@ goog.require('eYo.FlyoutCategory')
  * For edython.
  */
 eYo.DelegateSvg.Stmt.import_stmt.makeSubclass('turtle__import_stmt', {
-  xml: {
-    tag: 'turtle__import',
-  },
   data: {
     from: {
       init: 'turtle',
       validate: /** @suppress {globalThis} */ function (newValue) {
         return newValue === 'turtle' ? {validated: newValue} : null
-      },
-      synchronize: true
+      }
     }
   },
   slots: {
     import_module: {
-      order: 1,
       fields: {
         label: 'import',
         suffix: 'turtle'
@@ -52,20 +47,9 @@ eYo.DelegateSvg.Stmt.import_stmt.makeSubclass('turtle__import_stmt', {
       check: null
     },
     from: {
-      order: 2,
       fields: {
         label: 'from',
         edit: 'turtle'
-      },
-      xml: {
-        didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromDom()) {
-            var variant = this.owner.data.variant
-            if (variant.get() === variant.model.IMPORT) {
-              variant.set(variant.model.FROM_MODULE_IMPORT_STAR)
-            }
-          }
-        }
       }
     }
   }
@@ -154,6 +138,7 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('turtle__call_expr', {
       ],
       init: eYo.Key.NAME,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
         var slot = this.owner_.slots.expression
         slot.required = newValue === this.EXPRESSION
         slot.setIncog()
@@ -360,7 +345,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('turtle__call_stmt', {
  * Template for contextual menu content.
  * @param {!Blockly.Block} block The block.
  */
-eYo.DelegateSvg.Stmt.call_stmt.prototype.contentTemplate = eYo.DelegateSvg.Stmt.base_call_stmt.prototype.contentTemplate
+eYo.DelegateSvg.Stmt.turtle__call_stmt.prototype.contentTemplate = eYo.DelegateSvg.Stmt.module__call_stmt.prototype.contentTemplate
 
 /**
  * Populate the context menu for the given block.
@@ -368,9 +353,9 @@ eYo.DelegateSvg.Stmt.call_stmt.prototype.contentTemplate = eYo.DelegateSvg.Stmt.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.call_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Stmt.turtle__call_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   eYo.DelegateSvg.Expr.turtle__call_expr.populateMenu.call(this, block, mgr)
-  return eYo.DelegateSvg.Stmt.call_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return eYo.DelegateSvg.Stmt.turtle__call_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 /**

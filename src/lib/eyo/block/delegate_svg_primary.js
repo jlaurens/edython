@@ -190,6 +190,33 @@ eYo.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (blo
  */
 eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
   data: {
+    callerFlag: {
+      init: false, // true when `foo` is expected instead of `foo(…)`
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+          if (this.get()) {
+            element.setAttribute('caller', 'true')
+          }
+        },
+        load: /** @suppress {globalThis} */ function (element) {
+          var attr = element.getAttribute('caller')
+          this.set(attr && attr === 'true')
+        }
+      },
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
+        var ary = this.data.ary
+        var ary_get = ary.get()
+        var slots = this.owner_.slots
+        slots.z_ary.setIncog(newValue || ary_get !== ary.Z_ARY)
+        slots.unary.setIncog(newValue || ary_get !== ary.UNARY)
+        slots.binary.setIncog(newValue || ary_get !== ary.BINARY)
+        slots.ternary.setIncog(newValue || ary_get !== ary.TERNARY)
+        slots.quadary.setIncog(newValue || ary_get !== ary.QUADARY)
+        slots.pentary.setIncog(newValue || ary_get !== ary.PENTARY)
+        slots.n_ary.setIncog(newValue || ary_get !== ary.N_ARY)
+      }
+    },
     ary: {
       order: 10,
       N_ARY: 'N',
@@ -202,15 +229,16 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       all: ['0', '1', '2', '3', '4', '5', 'N'], // default value is Infinity
       init: 'N',
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        var M = this.model
+        this.synchronize(newValue)
+        var caller = this.data.callerFlag.get()
         var slots = this.owner_.slots
-        slots.z_ary.setIncog(newValue !== M.Z_ARY)
-        slots.unary.setIncog(newValue !== M.UNARY)
-        slots.binary.setIncog(newValue !== M.BINARY)
-        slots.ternary.setIncog(newValue !== M.TERNARY)
-        slots.quadary.setIncog(newValue !== M.QUADARY)
-        slots.pentary.setIncog(newValue !== M.PENTARY)
-        slots.n_ary.setIncog(newValue !== M.N_ARY)
+        slots.z_ary.setIncog(caller || newValue !== this.Z_ARY)
+        slots.unary.setIncog(caller || newValue !== this.UNARY)
+        slots.binary.setIncog(caller || newValue !== this.BINARY)
+        slots.ternary.setIncog(caller || newValue !== this.TERNARY)
+        slots.quadary.setIncog(caller || newValue !== this.QUADARY)
+        slots.pentary.setIncog(caller || newValue !== this.PENTARY)
+        slots.n_ary.setIncog(caller || newValue !== this.N_ARY)
       }
     },
     name: {
@@ -246,7 +274,8 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       validate: /** @suppress {globalThis} */ function (newValue) {
         return goog.isBoolean(newValue) ? {validated: newValue} : null
       },
-      synchronize: /** @suppress {globalThis} */ function () {
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
         this.owner_.slots.unary.input.connection.eyo.optional_ = this.get()
       }
     }
@@ -332,27 +361,53 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
  * @suppress {globalThis}
 */
 eYo.DelegateSvg.Expr.base_call_expr.populateMenu = function (block, mgr) {
-  var M = this.data.ary.model
-  var current_ary = this.data.ary.get()
-  var name = this.contentTemplate(block)
+  var caller = this.data.callerFlag
+  var current = caller.get()
+  var content = this.contentTemplate(block)
+  var content = current
+  ? goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
+    content,
+    '(…)'
+  )
+  : content
+  var menuItem = new eYo.MenuItem(content, function () {
+    caller.setTrusted(!current)
+  })
+  mgr.addChild(menuItem, true)
+  var data = this.data.ary
+  var current_ary = data.get()
+  var self = this
   var F = function (ary, args) {
-    // closure to catch j
     if (ary !== current_ary) {
       var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-        name + '(' + args + ')'
+        self.contentTemplate(block),
+        '(',
+        args,
+        ')'
       )
-      var menuItem = new eYo.MenuItem(content, function () {
-        block.eyo.data.ary.setTrusted(ary)
-      })
+      var menuItem = new eYo.MenuItem(content, self.doAndRender(block, function () {
+        data.setTrusted(ary)
+        caller.setTrusted(false)
+      }, true))
       mgr.addChild(menuItem, true)
     }
   }
-  F(M.Z_ARY, '')
-  F(M.UNARY, '…')
-  F(M.BINARY, '…, …')
-  F(M.TERNARY, '…, …, …')
-  F(M.N_ARY, '…, …, …, ...')
+  F(data.Z_ARY, '')
+  F(data.UNARY, '…')
+  F(data.BINARY, '…, …')
+  F(data.TERNARY, '…, …, …')
+  F(data.N_ARY, '…, …, …, ...')
   mgr.shouldSeparate()
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ * @suppress {globalThis}
+*/
+eYo.DelegateSvg.Expr.base_call_expr.populateMenuCaller = function (block, mgr) {
 }
 
 /**
@@ -363,6 +418,8 @@ eYo.DelegateSvg.Expr.base_call_expr.populateMenu = function (block, mgr) {
  */
 eYo.DelegateSvg.Expr.base_call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
   eYo.DelegateSvg.Expr.base_call_expr.populateMenu.call(this, block, mgr)
+  eYo.DelegateSvg.Expr.base_call_expr.populateMenuCaller.call(this, block, mgr)
+  mgr.shouldSeparate()
   return eYo.DelegateSvg.Expr.base_call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
@@ -391,26 +448,51 @@ eYo.DelegateSvg.Expr.base_call_expr.prototype.contentTemplate = eYo.DelegateSvg.
  */
 eYo.DelegateSvg.Stmt.base_call_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   eYo.DelegateSvg.Expr.base_call_expr.populateMenu.call(this, block, mgr)
+  eYo.DelegateSvg.Expr.base_call_expr.populateMenuCaller.call(this, block, mgr)
+  mgr.shouldSeparate()
   return eYo.DelegateSvg.Stmt.call_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
 
 /**
  * Class for a DelegateSvg, module call block.
- * As call is already a reserved message in javascript,
- * we use call_expr instead.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * This is for a call with a module prefix.
+ * The same block will run for explicit and implicit calls
+ * eg `math.sqrt` and `sqrt`. In order to switch between both options,
+ * we add an `fromFlag` data similar to the `variant` data but with only 2 values.
  * For edython.
  */
 eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('module__call_expr', {
   data: {
+    fromFlag: {
+      init: false, // there is no `from … import …`, use fully qualified `foo.bar`
+      undo: false,
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+          if (this.get()) {
+            element.setAttribute('from', 'true')
+          }
+        },
+        load: /** @suppress {globalThis} */ function (element) {
+          var attr = element.getAttribute('from')
+          this.set(attr && attr === 'true')
+        }
+      },
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
+        var incog = this.get()
+        this.owner_.slots.module.setIncog(incog)
+        this.owner_.slots.dot.setIncog(incog)
+      }
+    },
     module: {
       order: 2,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
-        return type.raw === eYo.T3.Expr.builtin__name
+        return newValue && (
+        type.raw === eYo.T3.Expr.builtin__name
         || type.expr === eYo.T3.Expr.identifier
         || type.expr === eYo.T3.Expr.dotted_name
-        ? {validated: newValue} : null
+        ) ? {validated: newValue} : null
         // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
       },
       consolidate: /** @suppress {globalThis} */ function () {
@@ -419,22 +501,63 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('module__call_expr', {
       synchronize: true
     }
   },
-  fields: {
+  slots: {
     module: {
-      order: 1,
-      validate: true,
-      endEditing: true,
-      placeholder: eYo.Msg.Placeholder.MODULE
+      order: 10,
+      fields: {
+        edit: {
+          endEditing: true,
+          placeholder: eYo.Msg.Placeholder.MODULE
+        }
+      }
     },
-    separator: {
-      order: 2,
-      value: '.'
+    dot: {
+      order: 20,
+      fields: {
+        separator: '.'
+      }
     }
   },
   output: {
     check: [eYo.T3.Expr.call_expr, eYo.T3.Expr.module__call_expr]
   }
 })
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ * @suppress {globalThis}
+*/
+eYo.DelegateSvg.Expr.module__call_expr.populateMenu = function (block, mgr, args) {
+  var data = this.data.fromFlag
+  var flag = data.get()
+  var name = this.data.name.get() || eYo.Msg.Placeholder.IDENTIFIER
+  var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
+    block.eyo.contentTemplate(block, true),
+    args
+  )
+  var menuItem = new eYo.MenuItem(content, function () {
+    data.setTrusted(!flag)
+  })
+  mgr.addChild(menuItem, true)
+  eYo.DelegateSvg.Expr.base_call_expr.populateMenuCaller.call(this, block, mgr)
+  mgr.shouldSeparate()
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+eYo.DelegateSvg.Expr.module__call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  eYo.DelegateSvg.Expr.base_call_expr.populateMenu.call(this, block, mgr)
+  mgr.shouldSeparate()
+  eYo.DelegateSvg.Expr.module__call_expr.populateMenu.call(this, block, mgr, '(…)')
+  return eYo.DelegateSvg.Expr.base_call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+}
 
 /**
  * Class for a DelegateSvg, call statement block.
@@ -446,11 +569,71 @@ eYo.DelegateSvg.Stmt.base_call_stmt.makeSubclass('module__call_stmt', {
 })
 
 /**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+eYo.DelegateSvg.Stmt.module__call_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  eYo.DelegateSvg.Expr.base_call_expr.populateMenu.call(this, block, mgr)
+  mgr.shouldSeparate()
+  eYo.DelegateSvg.Expr.module__call_expr.populateMenu.call(this, block, mgr, '(…)')
+  mgr.shouldSeparate()
+  return eYo.DelegateSvg.Stmt.base_call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+}
+
+/**
+ * Get the module.
+ * @param {!Blockly.Block} block The block.
+ */
+eYo.DelegateSvg.Expr.module__call_expr.prototype.getModule = eYo.DelegateSvg.Stmt.module__call_stmt.prototype.getModule = function (block) {
+  return this.data.module.get()
+}
+
+/**
  * Template for contextual menu content.
  * @param {!Blockly.Block} block The block.
  */
-eYo.DelegateSvg.Expr.module__call_expr.prototype.contentTemplate = eYo.DelegateSvg.Stmt.module__call_stmt.prototype.contentTemplate = function (block) {
-  return (this.data.module.get() || 'foo') + '.' + (this.data.module.get() || 'bar')
+eYo.DelegateSvg.Expr.module__call_expr.prototype.contentTemplate = eYo.DelegateSvg.Stmt.module__call_stmt.prototype.contentTemplate = function (block, invert) {
+  var flag = this.data.fromFlag.get()
+  if (invert) {
+    flag = !flag
+  }
+  var module = this.getModule(block)
+  var name = this.data.name.get()
+  if (name) {
+    if (!flag) {
+      if (module) {
+        return module + '.' + name
+      }
+    } else {
+      return name
+    }
+  } else {
+    name = goog.dom.createDom(
+      goog.dom.TagName.SPAN,
+      'eyo-code-placeholder',
+      eYo.Msg.Placeholder.IDENTIFIER,
+    )
+  }
+  if (!flag) {
+    if (!module) {
+      module = goog.dom.createDom(
+        goog.dom.TagName.SPAN,
+        'eyo-code-placeholder',
+        eYo.Msg.Placeholder.MODULE,
+      )
+    }
+    return goog.dom.createDom(
+      goog.dom.TagName.SPAN,
+      'eyo-code',
+      module,
+      '.',
+      name
+    )
+  } else {
+    return name
+  }
 }
 
 /**
@@ -476,6 +659,7 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
       ],
       init: eYo.Key.NAME,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
         var data = this.data.name
         var slot
         if (newValue === this.EXPRESSION_ATTRIBUTE) {
@@ -588,7 +772,7 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
           this.data.backup.set(newValue)
         }
       },
-      synchronize: /** @suppress {globalThis} */ function () {
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize()
         var field = this.field
         var element = field && field.textElement_
