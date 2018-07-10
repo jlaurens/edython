@@ -428,10 +428,10 @@ eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = 
 }
 
 /**
- * Class for a DelegateSvg, docstring_top_stmt.
+ * Class for a DelegateSvg, docstring_stmt.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('docstring_top_stmt', {
+eYo.DelegateSvg.Stmt.makeSubclass('docstring_stmt', {
   link: eYo.T3.Expr.longliteral
 })
 
@@ -442,26 +442,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('docstring_top_stmt', {
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
-eYo.DelegateSvg.Stmt.docstring_top_stmt.prototype.isWhite = function (block) {
-  return true
-}
-
-/**
- * Class for a DelegateSvg, docstring_def_stmt.
- * For edython.
- */
-eYo.DelegateSvg.Stmt.makeSubclass('docstring_def_stmt', {
-  link: eYo.T3.Expr.longliteral
-})
-
-/**
- * docstring blocks are white.
- * For edython.
- * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
- * @param {!array} components the array of python code strings, will be joined to make the code.
- * @return None
- */
-eYo.DelegateSvg.Stmt.docstring_def_stmt.prototype.isWhite = function (block) {
+eYo.DelegateSvg.Stmt.docstring_stmt.prototype.isWhite = function (block) {
   return true
 }
 
@@ -712,8 +693,7 @@ eYo.DelegateSvg.Stmt.T3s = [
   eYo.T3.Stmt.continue_stmt,
   eYo.T3.Stmt.global_nonlocal_stmt,
   eYo.T3.Stmt.expression_stmt,
-  eYo.T3.Stmt.docstring_top_stmt,
-  eYo.T3.Stmt.docstring_def_stmt,
+  eYo.T3.Stmt.docstring__stmt,
   eYo.T3.Stmt.del_stmt,
   eYo.T3.Stmt.return_stmt,
   eYo.T3.Stmt.any_stmt

@@ -341,7 +341,7 @@ eYo.DelegateSvg.Expr.shortliteral.prototype.populateContextMenuFirst_ = function
 goog.provide('eYo.DelegateSvg.Expr.longliteral')
 
 /**
- * Class for a DelegateSvg, docstring (expression).
+ * Class for a DelegateSvg, longliteral (expression).
  * The subtype is the kind of delimiters used.
  * For edython.
  */

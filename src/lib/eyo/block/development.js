@@ -354,8 +354,7 @@ eYo.T3.Expr.Check.augassign_list)
 
 eYo.DelegateSvg.Expr.longliteral.workspaceBlocks = eYo.Do.arraysMerged([
   eYo.T3.Expr.longstringliteral,
-  eYo.T3.Stmt.docstring_top_stmt,
-  eYo.T3.Stmt.docstring_def_stmt,
+  eYo.T3.Stmt.docstring_stmt,
   eYo.T3.Stmt.funcdef_part,
   eYo.T3.Stmt.classdef_part,
   eYo.T3.Stmt.import_stmt,
