@@ -57,6 +57,7 @@
       }
       moduleF('basic_math', 'math (basic)')
       moduleF('math')
+      moduleF('basic_random', 'random (basic)')
       moduleF('random')
       moduleF('basic_turtle', 'turtle (basic)')
       moduleF('turtle')
@@ -78,6 +79,7 @@
       model.modules = [
         model.items.basic_math__module,
         model.items.math__module,
+        model.items.basic_random__module,
         model.items.random__module,
         model.items.basic_turtle__module,
         model.items.turtle__module
