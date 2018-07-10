@@ -115,7 +115,7 @@ goog.require('eYo.Data')
 eYo.Data.prototype.setTrusted__ = function (newValue) {
   this.error = false
   eYo.Events.setGroup(true)
-  var eyo = this.owner_
+  var eyo = this.owner
   var block = eyo.block_
   try {
     eyo.skipRendering()

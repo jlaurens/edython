@@ -85,7 +85,7 @@ eYo.Delegate.getC9rEyO = (function () {
   // one (almost hidden) shared constructor
   var EyOC9r = function (key, owner) {
     owner.eyo = this
-    this.owner_ = owner
+    this.owner = owner
     this.key = key
     this.types = []
   }

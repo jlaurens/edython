@@ -53,7 +53,7 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.owner_.fields.comment_mark.setVisible(!this.isIncog())
+        this.owner.fields.comment_mark.setVisible(!this.isIncog())
       },
       placeholderText: eYo.Msg.Placeholder.COMMENT,
       xml: {
@@ -539,14 +539,14 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
         data = this.data.comment
         data.required = newValue === this.COMMENT || newValue === this.CODE_COMMENT || newValue === this.EXPRESSION_COMMENT
         data.setIncog()
-        var slot = this.owner_.slots.expression
+        var slot = this.owner.slots.expression
         slot.required = newValue === this.EXPRESSION ||
         newValue === this.EXPRESSION_COMMENT
         slot.setIncog()
       },
       consolidate: /** @suppress {globalThis} */ function () {
         var withCode = !this.data.code.isIncog()
-        var withExpression = !this.owner_.slots.expression.isIncog()
+        var withExpression = !this.owner.slots.expression.isIncog()
         var withComment = !this.data.comment.isIncog()
         if (withCode) {
           if (withComment) {

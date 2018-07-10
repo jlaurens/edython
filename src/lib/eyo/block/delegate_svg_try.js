@@ -44,16 +44,16 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
         eYo.Key.EXCEPT_AS
       ],
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        var eyo = this.owner_
+        var eyo = this.owner
         var block = eyo.block_
         eyo.consolidateType(block)
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var slot = this.owner_.slots.expression
+        var slot = this.owner.slots.expression
         slot.required = (newValue !== this.EXCEPT)
         slot.setIncog()
-        slot = this.owner_.slots.as
+        slot = this.owner.slots.as
         slot.required = (newValue === this.EXCEPT_AS)
         slot.setIncog()
       }
@@ -175,10 +175,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       ],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var slot = this.owner_.slots.expression
+        var slot = this.owner.slots.expression
         slot.required = (newValue === this.RAISE_EXPRESSION)
         slot.setIncog()
-        slot = this.owner_.slots.from
+        slot = this.owner.slots.from
         slot.required = (newValue === this.RAISE_FROM)
         slot.setIncog()
       }
@@ -269,7 +269,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
       ],
       synchronize: /** @suppress {globalThis} */ function (newValue){
         this.synchronize(newValue)
-        var slot = this.owner_.slots.expression
+        var slot = this.owner.slots.expression
         slot.required = newValue === eYo.Key.BINARY
         slot.setIncog()
       }

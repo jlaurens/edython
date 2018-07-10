@@ -273,10 +273,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         this.data.name.setIncog(newValue === this.TARGET_VALUE)
-        var slot = this.owner_.slots.annotation
+        var slot = this.owner.slots.annotation
         slot.required = newValue === this.NAME_ANNOTATION_VALUE
         slot.setIncog(!slot.required)
-        var slot = this.owner_.slots.target
+        var slot = this.owner.slots.target
         slot.required = newValue === this.TARGET_VALUE
         slot.setIncog(!slot.required)
       },
@@ -426,7 +426,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       synchronize: /** @suppress {globalThis} */ function (newVariant) {
         this.synchronize(newVariant)
         this.data.name.setIncog(newVariant !== this.NAME)
-        var slot = this.owner_.slots.target
+        var slot = this.owner.slots.target
         slot.required = newVariant === this.TARGET_EXPRESSIONS
         slot.setIncog(!slot.required)
       }

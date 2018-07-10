@@ -138,8 +138,8 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       },
       synchronize: /** @this{eYo.Data} */ function (newValue) {
         this.synchronize(newValue)
-        this.owner_.fields.start.setValue(this.toText())
-        this.owner_.fields.end.setValue(this.toText())
+        this.owner.fields.start.setValue(this.toText())
+        this.owner.fields.end.setValue(this.toText())
       },
       xml: false,
     },
@@ -156,7 +156,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       },
       synchronize: /** @this{eYo.Data} */ function (newValue) {
         this.synchronize()
-        this.owner_.fields.prefix.setVisible(!!newValue && !!newValue.length)
+        this.owner.fields.prefix.setVisible(!!newValue && !!newValue.length)
       },
       xml: false,
     },
@@ -195,9 +195,9 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         F(eYo.XRE.shortstringliteralDouble, eYo.T3.Expr.shortstringliteral) ||
         F(eYo.XRE.shortbytesliteralSingle, eYo.T3.Expr.shortbytesliteral) ||
         F(eYo.XRE.shortbytesliteralDouble, eYo.T3.Expr.shortbytesliteral)) {
-          this.owner_.removeError(this.owner_.block_, eYo.Key.VALUE)
+          this.owner.removeError(this.owner.block_, eYo.Key.VALUE)
         } else if (newValue && newValue.length) {
-          this.owner_.setError(this.owner_.block_, eYo.Key.VALUE, 'Bad string|bytes literal: ' +
+          this.owner.setError(this.owner.block_, eYo.Key.VALUE, 'Bad string|bytes literal: ' +
           (newValue.length > 11 ? newValue.substr(0, 10) + '…' : newValue))
         }
       },
@@ -380,9 +380,9 @@ eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
         F(eYo.XRE.longstringliteralDouble, eYo.T3.Expr.longstringliteral) ||
         F(eYo.XRE.longbytesliteralSingle, eYo.T3.Expr.longbytesliteral) ||
         F(eYo.XRE.longbytesliteralDouble, eYo.T3.Expr.longbytesliteral)) {
-          this.owner_.removeError(this.owner_.block_, eYo.Key.VALUE)
+          this.owner.removeError(this.owner.block_, eYo.Key.VALUE)
         } else if (newValue && newValue.length) {
-          this.owner_.setError(this.owner_.block_, eYo.Key.VALUE, 'Bad string|bytes literal: ' +
+          this.owner.setError(this.owner.block_, eYo.Key.VALUE, 'Bad string|bytes literal: ' +
           (newValue.length > 11 ? newValue.substr(0, 10) + '…' : newValue))
         }
       }

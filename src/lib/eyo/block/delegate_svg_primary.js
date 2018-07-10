@@ -77,7 +77,7 @@ eYo.DelegateSvg.Expr.makeSubclass('slicing', {
       ],
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.data.name.setIncog(newValue !== this.NAME) // not the slot !
-        var slot = this.owner_.slots.primary
+        var slot = this.owner.slots.primary
         slot.required = newValue === this.PRIMARY
         slot.setIncog(!slot.required)
       }
@@ -208,7 +208,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
         this.synchronize(newValue)
         var ary_d = this.data.ary
         var ary_get = ary_d.get()
-        var slots = this.owner_.slots
+        var slots = this.owner.slots
         var f = function (slot, ary) {
           slot && slot.setIncog(newValue || ary_get !== ary)
         }
@@ -236,7 +236,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
         this.synchronize(newValue)
         var callerFlag_d = this.data.callerFlag
         var caller = callerFlag_d && callerFlag_d.get()
-        var slots = this.owner_.slots
+        var slots = this.owner.slots
         var f = function (slot, ary) {
           slot && slot.setIncog(caller || newValue !== ary)
         }
@@ -284,7 +284,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var slot = this.owner_.slots.unary
+        var slot = this.owner.slots.unary
         slot && (slot.input.connection.eyo.optional_ = this.get())
       }
     }
@@ -489,8 +489,8 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('module__call_expr', {
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var incog = this.get()
-        this.owner_.slots.module.setIncog(incog)
-        this.owner_.slots.dot.setIncog(incog)
+        this.owner.slots.module.setIncog(incog)
+        this.owner.slots.dot.setIncog(incog)
       }
     },
     module: {
@@ -732,22 +732,22 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
         if (newValue === this.EXPRESSION_ATTRIBUTE) {
           data.required = true
           data.setIncog()
-          this.owner_.slots.dot.setIncog(false)
-          slot = this.owner_.slots.expression
+          this.owner.slots.dot.setIncog(false)
+          slot = this.owner.slots.expression
           slot.required = true
           slot.setIncog()
         } else if (newValue === this.EXPRESSION) {
           data.required = false
           data.setIncog()
-          this.owner_.slots.dot.setIncog(true)
-          slot = this.owner_.slots.expression
+          this.owner.slots.dot.setIncog(true)
+          slot = this.owner.slots.expression
           slot.required = true
           slot.setIncog()
         } else /* if (newValue === this.NAME || newValue === this.BUILTIN) */ {
           data.required = true
           data.setIncog()
-          this.owner_.slots.dot.setIncog(true)
-          slot = this.owner_.slots.expression
+          this.owner.slots.dot.setIncog(true)
+          slot = this.owner.slots.expression
           slot.required = false
           slot.setIncog()
         }

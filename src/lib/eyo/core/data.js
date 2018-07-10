@@ -30,7 +30,7 @@ eYo.Data = function (owner, key, model) {
   goog.asserts.assert(owner, 'Missing owner')
   goog.asserts.assert(key, 'Missing key')
   goog.asserts.assert(model, 'Missing model')
-  this.owner_ = owner // circular reference
+  this.owner = owner // circular reference
   this.data = owner.data // the owner's other data objects
   this.value_ = /** Object|null */ undefined
   this.key = key
@@ -75,14 +75,14 @@ eYo.Data = function (owner, key, model) {
  * Actually, it returns a block delegate.
  */
 eYo.Data.prototype.getOwner = function () {
-  return this.owner_
+  return this.owner
 }
 
 /**
  * Get the type of the underlying block.
  */
 eYo.Data.prototype.getType = function () {
-  return this.owner_.block_.type
+  return this.owner.block_.type
 }
 
 /**
@@ -397,7 +397,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
       delete this.model_synchronize_lock
     }
   }
-  this.owner_ && this.owner_.shouldRender && this.owner_.shouldRender()
+  this.owner && this.owner.shouldRender && this.owner.shouldRender()
 }
 
 /**

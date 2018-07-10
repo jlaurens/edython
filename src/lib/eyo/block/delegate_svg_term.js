@@ -122,12 +122,12 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
           this.data.alias.setIncog(newValue !== this.NAME_ALIAS)
         },
         synchronize: function (newValue) {
-          var slot = this.owner_.slots.annotation
+          var slot = this.owner.slots.annotation
           slot.required = newValue === this.NAME_ANNOTATION || 
           newValue === this.STAR_NAME_ANNOTATION ||
           newValue === this.NAME_ANNOTATION_DEFINITION
           slot.setIncog(!slot.required)
-          slot = this.owner_.slots.definition
+          slot = this.owner.slots.definition
           slot.required = newValue === this.NAME_DEFINITION ||
           newValue === this.NAME_ANNOTATION_DEFINITION
           slot.setIncog(!slot.required)
@@ -135,8 +135,8 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
         consolidate: function () {
           var newVariant = this.get()
           var modifier = this.data.modifier.get()
-          var withAnnotation = this.owner_.slots.annotation.isRequiredFromDom()
-          var withDefinition = this.owner_.slots.definition.isRequiredFromDom()
+          var withAnnotation = this.owner.slots.annotation.isRequiredFromDom()
+          var withDefinition = this.owner.slots.definition.isRequiredFromDom()
           if (this.data.alias.isActive() || this.data.alias.isRequiredFromDom()) {
             newVariant = this.NAME_ALIAS
           } else if (modifier === '**') {
@@ -179,15 +179,15 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
           }
           this.data.name.clearRequiredFromDom()
           this.data.alias.clearRequiredFromDom()
-          this.owner_.slots.annotation.setRequiredFromDom(false)
-          this.owner_.slots.definition.setRequiredFromDom(false)
+          this.owner.slots.annotation.setRequiredFromDom(false)
+          this.owner.slots.definition.setRequiredFromDom(false)
           this.data.variant.set(newVariant, true)
         }
       },
       phantom: { // phantom is used to manage the placeholder
         init: '',
         didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-          var field = this.owner_.slots.name.fields.edit
+          var field = this.owner.slots.name.fields.edit
           field.placeholderText_ = newValue
           field.render_()
         },
