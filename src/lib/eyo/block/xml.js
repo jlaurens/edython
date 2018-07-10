@@ -526,7 +526,8 @@ eYo.Xml.Literal.domToBlock = function (element, workspace) {
   if (element.getAttribute('eyo') !== eYo.Xml.LITERAL) {
     return
   }
-  var id = element.getAttribute('id')
+  // is it a statement or an expression ?
+  var stmt_expected = element.tagName.toLowerCase() === 's'
   var id = element.getAttribute('id')
   var block
   eYo.Do.someChild(element, function (child) {
@@ -544,6 +545,8 @@ eYo.Xml.Literal.domToBlock = function (element, workspace) {
         block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.shortliteral, id)
         break
       case eYo.T3.Expr.longstringliteral:
+        block = eYo.DelegateSvg.newBlockComplete(workspace, stmt_expected ? eYo.T3.Stmt.docstring_stmt : eYo.T3.Expr.longstringliteral, id)
+        break
       case eYo.T3.Expr.longbytesliteral:
         block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.longliteral, id)
         break
