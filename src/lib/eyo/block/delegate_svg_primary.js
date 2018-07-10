@@ -191,6 +191,7 @@ eYo.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (blo
 eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
   data: {
     callerFlag: {
+      order: 100,
       init: false, // true when `foo` is expected instead of `foo(…)`
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
@@ -205,20 +206,23 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var ary = this.data.ary
-        var ary_get = ary.get()
+        var ary_d = this.data.ary
+        var ary_get = ary_d.get()
         var slots = this.owner_.slots
-        slots.z_ary.setIncog(newValue || ary_get !== ary.Z_ARY)
-        slots.unary.setIncog(newValue || ary_get !== ary.UNARY)
-        slots.binary.setIncog(newValue || ary_get !== ary.BINARY)
-        slots.ternary.setIncog(newValue || ary_get !== ary.TERNARY)
-        slots.quadary.setIncog(newValue || ary_get !== ary.QUADARY)
-        slots.pentary.setIncog(newValue || ary_get !== ary.PENTARY)
-        slots.n_ary.setIncog(newValue || ary_get !== ary.N_ARY)
+        var f = function (slot, ary) {
+          slot && slot.setIncog(newValue || ary_get !== ary)
+        }
+        f(slots.z_ary, this.Z_ARY)
+        f(slots.unary, this.UNARY)
+        f(slots.binary, this.BINARY)
+        f(slots.ternary, this.TERNARY)
+        f(slots.quadary, this.QUADARY)
+        f(slots.pentary, this.PENTARY)
+        f(slots.n_ary, this.N_ARY)
       }
     },
     ary: {
-      order: 10,
+      order: 200,
       N_ARY: 'N',
       Z_ARY: '0',
       UNARY: '1',
@@ -230,19 +234,23 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       init: 'N',
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var caller = this.data.callerFlag.get()
+        var callerFlag_d = this.data.callerFlag
+        var caller = callerFlag_d && callerFlag_d.get()
         var slots = this.owner_.slots
-        slots.z_ary.setIncog(caller || newValue !== this.Z_ARY)
-        slots.unary.setIncog(caller || newValue !== this.UNARY)
-        slots.binary.setIncog(caller || newValue !== this.BINARY)
-        slots.ternary.setIncog(caller || newValue !== this.TERNARY)
-        slots.quadary.setIncog(caller || newValue !== this.QUADARY)
-        slots.pentary.setIncog(caller || newValue !== this.PENTARY)
-        slots.n_ary.setIncog(caller || newValue !== this.N_ARY)
+        var f = function (slot, ary) {
+          slot && slot.setIncog(caller || newValue !== ary)
+        }
+        f(slots.z_ary, this.Z_ARY)
+        f(slots.unary, this.UNARY)
+        f(slots.binary, this.BINARY)
+        f(slots.ternary, this.TERNARY)
+        f(slots.quadary, this.QUADARY)
+        f(slots.pentary, this.PENTARY)
+        f(slots.n_ary, this.N_ARY)
       }
     },
     name: {
-      order: 1,
+      order: 50,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type.raw === eYo.T3.Expr.builtin__name
@@ -276,7 +284,8 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.owner_.slots.unary.input.connection.eyo.optional_ = this.get()
+        var slot = this.owner_.slots.unary
+        slot && (slot.input.connection.eyo.optional_ = this.get())
       }
     }
   },
@@ -543,6 +552,64 @@ eYo.DelegateSvg.Expr.module__call_expr.populateMenu = function (block, mgr, args
   })
   mgr.addChild(menuItem, true)
   eYo.DelegateSvg.Expr.base_call_expr.populateMenuCaller.call(this, block, mgr)
+  mgr.shouldSeparate()
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+eYo.DelegateSvg.Expr.module__call_expr.populateMenuModel = function (block, mgr, model) {
+  var eyo = block.eyo
+  // populate the menu with the functions in the same category
+  var name_d = eyo.data.name
+  var name_get = name_d.get()
+  var item_get = model.getItem(name_get)
+  var items = model.getItemsInCategory(item_get.category)
+  var module = eyo.data.fromFlag.get() ? '' : model.data.prefix
+  var F = function (i) {
+    var item = model.getItem(items[i])
+    var type = model.data.types[item.type]
+    var args = type === 'data' ? '' : '(...)'
+    if (item !== item_get && item.stmt === item_get.stmt && item.type === item_get.type) {
+      var content =
+      goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
+        module,
+        item.names[0],
+        args
+      )
+      var menuItem = new eYo.MenuItem(content, function () {
+        name_d.set(item.names[0])
+      })
+      mgr.addChild(menuItem, true)
+    }
+  }
+  for (var i = 0; i < items.length; i++) {
+    F(i)
+  }
+  mgr.shouldSeparate()
+  F = function (i) {
+    var category = categories[i]
+    if (i !== item_get.category) {
+      var menuItem = new eYo.MenuItem(eyo.contentForCategory(block, category), function () {
+        var items = model.getItemsInCategory(i)
+        for (var j = 0 ; j < items.length ; j++) {
+          var item = model.getItem(items[j])
+          if (item.stmt === item_get.stmt) {
+            name_d.set(item.names[0])
+            return
+          }
+        }
+      })
+      mgr.addChild(menuItem, true)
+    }
+  }
+  var categories = model.data.categories
+  for (var i = 0; i < categories.length - 1; i++) {
+    F(i)
+  }
   mgr.shouldSeparate()
 }
 
