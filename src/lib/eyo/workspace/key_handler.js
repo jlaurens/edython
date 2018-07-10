@@ -789,8 +789,18 @@ Ks = {
     }
   },
   '@decorator': eYo.T3.Stmt.decorator,
-  '"""…"""(def)': eYo.T3.Stmt.docstring_def_stmt,
-  "'''…'''(def)": eYo.T3.Stmt.docstring_def_stmt,
+  '"""…"""(stmt)': {
+    type: eYo.T3.Stmt.docstring_stmt,
+    data: {
+      delimiter: '"""'
+    }
+  },
+  "'''…'''(stmt)": {
+    type: eYo.T3.Stmt.docstring_stmt,
+    data: {
+      delimiter: "'''"
+    }
+  },
   '"""…"""': {
     type: eYo.T3.Expr.longstringliteral,
     data: {
