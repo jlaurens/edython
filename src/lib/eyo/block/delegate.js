@@ -1162,21 +1162,22 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
  * A disabled block cannot enable its connections.
  * @param {!Block} block
  * @param {!Boolean} disabled
+ * @return {boolean} whether changes have been made
  * @private
  */
 eYo.Delegate.prototype.setIncog = function (block, incog) {
   if (!this.incog_ === !incog) {
-    return
+    return false
   }
   if (incog) {
     if (this.incog_) {
       // The block is already incognito,
       // normally no change to the block tree
-      return
+      return false
     }
   } else if (block.disabled) {
     // enable the block before enabling its connections
-    return
+    return false
   }
   this.incog_ = incog
   var setupIncog = function (input) {
@@ -1195,6 +1196,7 @@ eYo.Delegate.prototype.setIncog = function (block, incog) {
   if (!incog) { // for lists mainly
     this.consolidate(block) // no deep consolidation because connected blocs were consolidated above
   }
+  return true
 }
 
 /**

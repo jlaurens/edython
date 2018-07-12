@@ -475,18 +475,29 @@ eYo.Slot.prototype.getTarget = function () {
  * Set the disable state.
  * For edython.
  * @param {!boolean} newValue  When not defined, replaced by `!this.required`
+ * @return {boolean} whether changes have been made
  */
 eYo.Slot.prototype.setIncog = function (newValue) {
+  console.error(this.key, newValue)
+  if (this.key === 'z_ary') {
+    console.error('Z_ARY')
+  }
   if (!goog.isDef(newValue)) {
     newValue = !this.required
+  } else {
+    newValue = !!newValue
   }
-  this.incog = !!newValue
+  var change = this.incog !== newValue
+  this.incog = newValue
   if (this.wait) {
     return
   }
   var c8n = this.input && this.input.connection
-  c8n && c8n.eyo.setIncog(!!newValue)
-  this.synchronize()
+  if (c8n && c8n.eyo.isIncog() !== newValue) {
+    change = true 
+    c8n.eyo.setIncog(newValue)
+  }
+  change && this.synchronize()
 }
 
 /**

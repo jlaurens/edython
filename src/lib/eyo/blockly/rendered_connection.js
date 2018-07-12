@@ -90,23 +90,30 @@ eYo.ConnectionDelegate.prototype.isIncog = function () {
  * Set the incognito state.
  * Hide/show the connection from/to the databass and disable/enable the target's connections.
  * @param {boolean} incog
+ * @return {boolean} whether changes have been made
  */
 eYo.ConnectionDelegate.prototype.setIncog = function (incog) {
   if (this.incog_ && incog) {
     // things were unlikely to change since
     // the last time the connections have been disabled
-    return
+    return false
   }
+  incog == !!incog
+  var change = this.incog_ !== incog
   var c8n = this.connection
   if (incog || !this.wrapped_) {
-    // We cannot enable wrapped connections
+    // We cannot disable wrapped connections
     this.incog_ = incog
-    c8n.setHidden(incog)
+    if (c8n.hidden_ !== incog) {
+      c8n.setHidden(incog)
+      change = true
+    }
   }
   var target = c8n.targetBlock()
-  if (target) {
-    target.eyo.setIncog(target, incog)
+  if (target && target.eyo.setIncog(target, incog)) {
+    change = true
   }
+  return change
 }
 
 /**

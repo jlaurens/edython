@@ -2574,7 +2574,9 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
   var selectSlot = function (slot) {
     if (!slot.isIncog()) {
       var c8n = slot.input && slot.input.connection
-      return (c8n.type !== Blockly.NEXT_STATEMENT) && selectConnection(c8n)
+      if (c8n) {
+        return (c8n.type !== Blockly.NEXT_STATEMENT) && selectConnection(c8n)
+      }
     }
   }
   if ((c8n = this.selectedConnection)) {
