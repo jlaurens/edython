@@ -478,10 +478,6 @@ eYo.Slot.prototype.getTarget = function () {
  * @return {boolean} whether changes have been made
  */
 eYo.Slot.prototype.setIncog = function (newValue) {
-  console.error(this.key, newValue)
-  if (this.key === 'z_ary') {
-    console.error('Z_ARY')
-  }
   if (!goog.isDef(newValue)) {
     newValue = !this.required
   } else {
