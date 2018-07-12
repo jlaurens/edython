@@ -244,7 +244,7 @@ eYo.Model.{{module}}__module.getItemsInCategory = function (category, type) {
 
 def import_model():
     if not path_in.exists():
-        urllib.request.urlretrieve ("https://docs.python.org/3.6/library/{{module}}.html", path_in) # this line needs certification
+        urllib.request.urlretrieve ("https://docs.python.org/3.6/library/" + module + ".html", path_in) # this line needs certification
     with path_in.open('r') as f:
         content = f.read()
         content = content.replace('&copy;', '©')
