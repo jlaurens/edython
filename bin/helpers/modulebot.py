@@ -70,9 +70,19 @@ def export_model():
         def do_print_item_attribute_n(key):
             do_print_sep("{}: {}".format(key, item[key]))
 
-
         def do_print_argument_attribute(key, s7r=','):
-            do_print_sep("{}: '{}'".format(key, argument[key]), s7r=s7r)
+            attr = argument[key]
+            if attr is None:
+                return
+            if isinstance(attr, int) or isinstance(attr, float):
+                template = "{}: {}"
+            else:
+                template = "{}: '{}'"
+                if isinstance(attr, str):
+                    attr = attr.replace("'", r"\'")
+            if key.endswith('_index'):
+                key = key.replace('_index', '')
+            do_print_sep(template.format(key, attr), s7r=s7r)
 
         do_print_sep("{", s7r=separator)
         nonlocal depth
@@ -90,7 +100,8 @@ def export_model():
         if arguments is not None:
             if len(arguments):
                 do_print_item_attribute_n('ary')
-                do_print_item_attribute_n('mandatory')
+                if item['mandatory'] != item['ary']:
+                    do_print_item_attribute_n('mandatory')
                 do_print_sep("arguments: [")
                 end = ''
                 depth += 1
@@ -260,16 +271,19 @@ def import_model():
             dd = dl.find("{http://www.w3.org/1999/xhtml}dd")
             if dd:
                 txt = "".join(dd.itertext())
-                if not returner and tpe == 'function':
-                    if Filter.do_module(txt):
+                if not returner:
+                    if tpe == 'function':
+                        if Filter.do_module(txt):
+                            returner = True
+                        else:
+                            try:
+                                f = getattr(Filter, 'do_' + module)
+                                if f is not None:
+                                    returner = f(txt)
+                            except:
+                                pass
+                    elif tpe == 'data':
                         returner = True
-                    else:
-                        try:
-                            f = getattr(Filter, 'do_' + module)
-                            if f is not None:
-                                returner = f(txt)
-                        except:
-                            pass
                 descriptions = []
                 td = dd.find(".//{http://www.w3.org/1999/xhtml}td")
                 if td:
@@ -316,11 +330,21 @@ def import_model():
                     for ems in dt.findall("{http://www.w3.org/1999/xhtml}em"):
                         for em in re.split(r'\s*,\s*', ems.text):
                             ary += 1
-                            m = re.match('([^=\s]+)\s*=\s*([^=\s]+)', em)
+                            m = re.match('(?P<name>[^=\s]+)\s*=\s*(?P<default>[^=\s]+)', em)
                             argument = {}
                             if m:
-                                argument['name'] = m.group(1).strip()
-                                argument['default'] = m.group(2).strip()
+                                argument['name'] = m.group('name').strip()
+                                default = m.group('default').strip()
+                                try:
+                                    n = int(default)
+                                    default = n
+                                except:
+                                    try:
+                                        x = float(default)
+                                        default = x
+                                    except:
+                                        pass
+                                argument['default'] = default
                             else:
                                 mandatory += 1
                                 argument['name'] = em.strip()

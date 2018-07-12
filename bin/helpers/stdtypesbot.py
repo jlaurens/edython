@@ -140,7 +140,11 @@ class Item:
                     n = int(default)
                     default = n
                 except:
-                    pass
+                    try:
+                        x = float(default)
+                        default = x
+                    except:
+                        pass
                 argument.default = default
         # now the optional arguments
         if args2 is None:
@@ -263,7 +267,7 @@ class Model:
             attr = getattr(the_item, name, None)
             if attr is None:
                 return
-            if isinstance(attr, int):
+            if isinstance(attr, int) or isinstance(attr, float):
                 template = "{}: {}"
             else:
                 template = "{}: '{}'"
@@ -286,7 +290,8 @@ class Model:
         arguments = item.arguments
         if arguments is not None and len(arguments) > 0:
             do_print_attribute(item, 'ary')
-            do_print_attribute(item, 'mandatory')
+            if item.ary != item.mandatory:
+                do_print_attribute(item, 'mandatory')
             self.down_print("arguments: [", s7r=',')
             end = ''
             for argument in arguments:
@@ -344,7 +349,7 @@ goog.require('eYo.Model')
                 self.print_item(separator, item)
                 separator = ','
             self.up_print('],')
-            self.down_print('items_by_name: {')
+            self.down_print('by_name: {')
             separator = ''
             for (name, index) in self.items_by_name.items():
                 self.print("'{}': {}".format(name, index), s7r=separator, nl=True)
