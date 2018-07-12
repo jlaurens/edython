@@ -109,7 +109,7 @@ eYo.DelegateSvg.Expr.module__call_expr.makeSubclass('random__call_expr', {
             this.data.callerFlag.set(false)
             var ary = item.ary
             this.data.ary.setTrusted(goog.isDef(ary) ? ary: this.data.ary.N_ARY)
-            this.data.isOptionalUnary.setTrusted(!item.mandatory)
+            this.data.isOptionalUnary.setTrusted(goog.isDef(item.mandatory) && !item.mandatory || !item.ary)
           }
         } else {
           this.data.ary.setTrusted(this.data.ary.N_ARY)

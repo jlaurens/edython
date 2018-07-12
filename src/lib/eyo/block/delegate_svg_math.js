@@ -108,7 +108,7 @@ eYo.DelegateSvg.Stmt.import_stmt.makeSubclass('math__import_stmt', {
             this.data.callerFlag.set(false)
             var ary = item.ary
             this.data.ary.setTrusted(goog.isDef(ary) ? ary: this.data.ary.N_ARY)
-            this.data.isOptionalUnary.setTrusted(!item.mandatory)
+            this.data.isOptionalUnary.setTrusted(goog.isDef(item.mandatory) && !item.mandatory || !item.ary)
           }
         } else {
           this.data.ary.setTrusted(this.data.ary.N_ARY)
@@ -382,7 +382,7 @@ eYo.FlyoutCategory.basic_math__module = [
   // F('isclose', 'Teste si deux valeurs sont proches'),
   // F('isfinite', 'Teste si l\'argument est un nombre fini'),
   // F('isinf', 'Teste si l\'argument est infini (au sens informatique)'),
-  // F('isnan', 'Teste si l\'argument n\'est as un nombre (Not A Number)'),
+  // F('isnan', 'Teste si l\'argument n\'est pas un nombre (Not A Number)'),
   // F('cosh', 'Fonction cosinus hyperbolique (ch)'),
   // F('sinh', 'Fonction sinus hyperbolique (sh)'),
   // F('tanh', 'Fonction tangente hyperbolique (th)'),
@@ -426,7 +426,8 @@ eYo.FlyoutCategory.math__module = [
   },
   F('sqrt', 'Racine carrée (square root)'),
   F('pow', 'Fonction puissance (power), préférer l\'opérateur ** pour les entiers'),
-  F_k('pi', 'π (approximation)'),
+  F_k('pi', 'π (≅)'),
+  F_k('tau', 'τ (≅ 2π)'),
   F('cos', 'Fonction cosinus'),
   F('sin', 'Fonction sinus'),
   F('tan', 'Fonction tangente'),
@@ -434,7 +435,7 @@ eYo.FlyoutCategory.math__module = [
   F('atan2', 'Fonction angle polaire (argument)'),
   F('degrees', 'Pour convertir en degrés'),
   F('radians', 'Pour convertif en radians'),
-  F_k('e', 'e (approximation)'),
+  F_k('e', 'e (≅)'),
   F('exp', 'Fonction exponentielle'),
   F('log', 'Fonction logarithme népérien, donner un deuxième argument pour changer de base'),
   F('phi', 'Fonction de répartition de la loi normale centrée réduite'),
@@ -453,7 +454,9 @@ eYo.FlyoutCategory.math__module = [
   F('isclose', 'Teste si deux valeurs sont proches'),
   F('isfinite', 'Teste si l\'argument est un nombre fini'),
   F('isinf', 'Teste si l\'argument est infini (au sens informatique)'),
+  F_k('inf', '∞'),
   F('isnan', 'Teste si l\'argument n\'est as un nombre (Not A Number)'),
+  F_k('nan', 'nan (not a number)'),
   F('acos', 'Fonction arc cosinus'),
   F('asin', 'Fonction arc sinus'),
   F('atan', 'Fonction arc tangente'),
@@ -465,15 +468,12 @@ eYo.FlyoutCategory.math__module = [
   F('atanh', 'Fonction arc tangente hyperbolique (argth)'),
   F('expm1', 'Fonction exp(x) - 1, avec une meilleure précision près de 0'),
   F('log1p', 'log(1 + x), avec une meilleure précision près de 0'),
-  F('log10', 'Fonction logarithme de base 10 avec une meilleure précision que (log(x, 10)'),
-  F('log2', 'Fonction logarithme de base 2 avec une meilleure précision que (log(x, 2)'),
+  F('log10', 'Fonction logarithme de base 10 avec une meilleure précision que log(x, 10)'),
+  F('log2', 'Fonction logarithme de base 2 avec une meilleure précision que log(x, 2)'),
   F('erf', 'Fonction erreur de Gauss'),
   F('erfc', 'Complément à 1 de la fonction erf'),
   F('gamma', 'Fonction Gamma d\'Euler'),
-  F('lgamma', 'Logarithme népérien de la fonction Gamma'),
-  F_k('tau', 'τ (vaut 2π)'),
-  F_k('inf', '∞'),
-  F_k('nan', 'nan (not a number)')
+  F('lgamma', 'Logarithme népérien de la fonction Gamma')
 ]
 
 goog.mixin(eYo.Tooltip.Title, {

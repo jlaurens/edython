@@ -34,7 +34,8 @@ eYo.DelegateSvg.Stmt.import_stmt.makeSubclass('turtle__import_stmt', {
       init: 'turtle',
       validate: /** @suppress {globalThis} */ function (newValue) {
         return newValue === 'turtle' ? {validated: newValue} : null
-      }
+      },
+      synchronize: true
     }
   },
   slots: {
@@ -199,7 +200,7 @@ eYo.DelegateSvg.Expr.module__call_expr.makeSubclass('turtle__call_expr', {
         if (item) {
           var ary = item.ary
           this.data.ary.setTrusted(goog.isDef(ary) ? ary.toString(): '0')
-          this.data.isOptionalUnary.setTrusted(!item.mandatory)
+          this.data.isOptionalUnary.setTrusted(goog.isDef(item.mandatory) && !item.mandatory || !item.ary)
         } else {
           this.data.ary.setTrusted(this.data.ary.N_ARY)
           this.data.isOptionalUnary.setTrusted(true)
