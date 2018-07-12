@@ -255,8 +255,10 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/font.js" \
 --js "src/lib/eyo/workspace/flyout-category.js" \
 --js "src/lib/eyo/block/helper.js" \
+--js "src/lib/eyo/core/functions_model.js" \
 --js "src/lib/eyo/core/math_model.js" \
 --js "src/lib/eyo/core/random_model.js" \
+--js "src/lib/eyo/core/stdtypes_model.js" \
 --js "src/lib/eyo/core/turtle_model.js" \
 --js "src/lib/eyo/core/T3_all.js" \
 --js "src/lib/eyo/core/data.js" \

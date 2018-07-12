@@ -24,7 +24,8 @@
     "unit": "karma start test/unit/karma.conf.js",
     "postinstall": "npm run lint:fix",
     "eyo:T3": "python \"./src/lib/T3/python types.py\" && sh ./src/lib/T3/installT3.command",
-    "eyo:prepare": "python ./bin/helpers/modulebot.py turtle && python ./bin/helpers/modulebot.py math && python ./bin/helpers/modulebot.py random && python ./bin/helpers/tool1.py && python ./bin/helpers/tool2.py && python ./bin/helpers/tool3.py",
+    "eyo:model": "python ./bin/helpers/functionsbot.py && python ./bin/helpers/stdtypesbot.py && python ./bin/helpers/modulebot.py turtle && python ./bin/helpers/modulebot.py math && python ./bin/helpers/modulebot.py random",
+    "eyo:prepare": "python ./bin/helpers/tool1.py && python ./bin/helpers/tool2.py && python ./bin/helpers/tool3.py",
     "eyo:build": "sh ./bin/build.sh"
   },
   "build": {
