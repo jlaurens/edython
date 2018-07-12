@@ -44,7 +44,7 @@ eYo.Model.random__module.data = {
         },
         {
           name: 'version',
-          default: '2'
+          default: 2
         }
       ]
     },
@@ -59,7 +59,6 @@ eYo.Model.random__module.data = {
       type: 0,
       stmt: true,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'state'
@@ -71,7 +70,6 @@ eYo.Model.random__module.data = {
       category: 0,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'k'
@@ -83,7 +81,6 @@ eYo.Model.random__module.data = {
       category: 1,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'stop'
@@ -95,7 +92,6 @@ eYo.Model.random__module.data = {
       category: 1,
       type: 0,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'a'
@@ -110,7 +106,6 @@ eYo.Model.random__module.data = {
       category: 2,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'seq'
@@ -140,7 +135,7 @@ eYo.Model.random__module.data = {
         },
         {
           name: 'k',
-          default: '1'
+          default: 1
         }
       ]
     },
@@ -150,7 +145,6 @@ eYo.Model.random__module.data = {
       type: 0,
       stmt: true,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'x'
@@ -165,7 +159,6 @@ eYo.Model.random__module.data = {
       category: 2,
       type: 0,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'population'
@@ -185,7 +178,6 @@ eYo.Model.random__module.data = {
       category: 3,
       type: 0,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'a'
@@ -200,7 +192,6 @@ eYo.Model.random__module.data = {
       category: 3,
       type: 0,
       ary: 3,
-      mandatory: 3,
       arguments: [
         {
           name: 'low'
@@ -218,7 +209,6 @@ eYo.Model.random__module.data = {
       category: 3,
       type: 0,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'alpha'
@@ -233,7 +223,6 @@ eYo.Model.random__module.data = {
       category: 3,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'lambd'
@@ -245,7 +234,6 @@ eYo.Model.random__module.data = {
       category: 3,
       type: 0,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'alpha'
@@ -260,7 +248,6 @@ eYo.Model.random__module.data = {
       category: 3,
       type: 0,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'mu'
@@ -275,7 +262,6 @@ eYo.Model.random__module.data = {
       category: 3,
       type: 0,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'mu'
@@ -290,7 +276,6 @@ eYo.Model.random__module.data = {
       category: 3,
       type: 0,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'mu'
@@ -305,7 +290,6 @@ eYo.Model.random__module.data = {
       category: 3,
       type: 0,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'mu'
@@ -320,7 +304,6 @@ eYo.Model.random__module.data = {
       category: 3,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'alpha'
@@ -332,7 +315,6 @@ eYo.Model.random__module.data = {
       category: 3,
       type: 0,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'alpha'
@@ -348,7 +330,6 @@ eYo.Model.random__module.data = {
       type: 1,
       stmt: true,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'class'
@@ -360,36 +341,36 @@ eYo.Model.random__module.data = {
     }
   ],
   by_name: {
-    'randint': 5,
-    'randrange': 4,
-    'uniform': 11,
-    'vonmisesvariate': 19,
-    'seed': 0,
-    'SystemRandom': 22,
     'shuffle': 8,
-    'triangular': 12,
-    'random': 10,
-    'betavariate': 13,
-    'gammavariate': 15,
-    'expovariate': 14,
-    'getrandbits': 3,
-    'choice': 6,
-    'lognormvariate': 17,
-    'gauss': 16,
-    'paretovariate': 20,
-    'getstate': 1,
-    'setstate': 2,
-    'choices': 7,
-    'weibullvariate': 21,
+    'seed': 0,
+    'vonmisesvariate': 19,
     'normalvariate': 18,
-    'sample': 9
+    'weibullvariate': 21,
+    'betavariate': 13,
+    'random': 10,
+    'setstate': 2,
+    'gauss': 16,
+    'lognormvariate': 17,
+    'randrange': 4,
+    'SystemRandom': 22,
+    'paretovariate': 20,
+    'uniform': 11,
+    'randint': 5,
+    'sample': 9,
+    'getstate': 1,
+    'choice': 6,
+    'gammavariate': 15,
+    'getrandbits': 3,
+    'choices': 7,
+    'expovariate': 14,
+    'triangular': 12
   },
   by_category: {
-    1: [4, 5],
+    2: [6, 7, 8, 9],
     4: [22],
-    0: [0, 1, 2, 3],
     3: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
-    2: [6, 7, 8, 9]
+    0: [0, 1, 2, 3],
+    1: [4, 5]
   },
   by_type: {
     1: [22],
@@ -435,6 +416,6 @@ eYo.Model.random__module.getItemsInCategory = function (category, type) {
   }
 }
 
-// This file was generated by `./bin/helpers/{module}bot.py` on 2018-07-12 07:46:20.328834
+// This file was generated by `./bin/helpers/{module}bot.py` on 2018-07-12 13:28:28.398727
 
 

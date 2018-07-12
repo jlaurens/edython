@@ -368,7 +368,7 @@ eYo.DelegateSvg.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
 eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_nonlocal_stmt, {
   data: {
     variant: {
-      all: ['global', 'nonlocal'],
+      all: [eYo.Key.GLOBAL, eYo.Key.NONLOCAL],
       synchronize: true
     }
   },

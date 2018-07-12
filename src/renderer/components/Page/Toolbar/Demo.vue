@@ -15,6 +15,8 @@
   import demoBasicHelloYou from '@static/demo/basic/hello-you.xml'
   import demoBasicTurtle from '@static/demo/basic/turtle.xml'
   import demoBasicTurtleStar from '@static/demo/basic/turtle-star.xml'
+  import demoBasicTurtleSpiralStar from '@static/demo/basic/turtle-spiral-star.xml'
+  import demoBasicTurtleHilbert from '@static/demo/basic/turtle-hilbert.xml'
   import demoBasicSumOfIntegers from '@static/demo/basic/sum-of-integers.xml'
   import demoBasicFiftyDices from '@static/demo/basic/fifty-dices.xml'
   import demoBasicList from '@static/demo/basic/list.xml'
@@ -40,6 +42,12 @@
           }, {
             title: 'Tortue star',
             xml: demoBasicTurtleStar
+          }, {
+            title: 'Tortue spiral star',
+            xml: demoBasicTurtleSpiralStar
+          }, {
+            title: 'Tortue Hilbert',
+            xml: demoBasicTurtleHilbert
           }, {
             title: 'Somme des entiers',
             xml: demoBasicSumOfIntegers
@@ -96,6 +104,7 @@
           var str = demo.xml
           var parser = new DOMParser()
           var dom = parser.parseFromString(str, 'application/xml')
+          this.$$.eYo.App.workspace.eyo.fromDom(dom)
           var self = this
           // problem of code reuse
           var children = dom.childNodes
@@ -121,11 +130,13 @@
                         if (goog.isString(prefs.flyoutCategory)) {
                           self.$store.commit('UI_SET_FLYOUT_CATEGORY', prefs.flyoutCategory)
                         }
+                        // close at last because it is an animation
                         if (goog.isDef(prefs.flyoutClosed)) {
-                          self.$store.commit('UI_SET_FLYOUT_CLOSED', prefs.flyoutClosed)
+                          setTimeout(function () {
+                            self.$store.commit('UI_SET_FLYOUT_CLOSED', prefs.flyoutClosed)
+                          }, 0)
                         }
                       } catch (err) {
-                        // catch any error, it does not really matter if something failed
                         console.error(err)
                       }
                     }
@@ -136,7 +147,6 @@
               break
             }
           }
-          this.$$.eYo.App.workspace.eyo.fromDom(dom)
         }
       },
       doShow () {

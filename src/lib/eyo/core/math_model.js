@@ -37,7 +37,6 @@ eYo.Model.math__module.data = {
       category: 0,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -49,7 +48,6 @@ eYo.Model.math__module.data = {
       category: 0,
       type: 0,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'x'
@@ -64,7 +62,6 @@ eYo.Model.math__module.data = {
       category: 0,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -76,7 +73,6 @@ eYo.Model.math__module.data = {
       category: 0,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -88,7 +84,6 @@ eYo.Model.math__module.data = {
       category: 0,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -100,7 +95,6 @@ eYo.Model.math__module.data = {
       category: 0,
       type: 0,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'x'
@@ -115,7 +109,6 @@ eYo.Model.math__module.data = {
       category: 0,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -127,7 +120,6 @@ eYo.Model.math__module.data = {
       category: 0,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'iterable'
@@ -139,7 +131,6 @@ eYo.Model.math__module.data = {
       category: 0,
       type: 0,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'a'
@@ -167,11 +158,11 @@ eYo.Model.math__module.data = {
         },
         {
           name: 'rel_tol',
-          default: '1e-09'
+          default: 1e-09
         },
         {
           name: 'abs_tol',
-          default: '0.0'
+          default: 0.0
         }
       ]
     },
@@ -180,7 +171,6 @@ eYo.Model.math__module.data = {
       category: 0,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -192,7 +182,6 @@ eYo.Model.math__module.data = {
       category: 0,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -204,7 +193,6 @@ eYo.Model.math__module.data = {
       category: 0,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -216,7 +204,6 @@ eYo.Model.math__module.data = {
       category: 0,
       type: 0,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'x'
@@ -231,7 +218,6 @@ eYo.Model.math__module.data = {
       category: 0,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -243,7 +229,6 @@ eYo.Model.math__module.data = {
       category: 0,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -255,7 +240,6 @@ eYo.Model.math__module.data = {
       category: 1,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -267,7 +251,6 @@ eYo.Model.math__module.data = {
       category: 1,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -280,7 +263,6 @@ eYo.Model.math__module.data = {
       type: 0,
       stmt: true,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'x'
@@ -295,7 +277,6 @@ eYo.Model.math__module.data = {
       category: 1,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -307,7 +288,6 @@ eYo.Model.math__module.data = {
       category: 1,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -319,7 +299,6 @@ eYo.Model.math__module.data = {
       category: 1,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -331,7 +310,6 @@ eYo.Model.math__module.data = {
       category: 1,
       type: 0,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'x'
@@ -346,7 +324,6 @@ eYo.Model.math__module.data = {
       category: 1,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -358,7 +335,6 @@ eYo.Model.math__module.data = {
       category: 2,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -370,7 +346,6 @@ eYo.Model.math__module.data = {
       category: 2,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -382,7 +357,6 @@ eYo.Model.math__module.data = {
       category: 2,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -394,7 +368,6 @@ eYo.Model.math__module.data = {
       category: 2,
       type: 0,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'y'
@@ -409,7 +382,6 @@ eYo.Model.math__module.data = {
       category: 2,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -421,7 +393,6 @@ eYo.Model.math__module.data = {
       category: 2,
       type: 0,
       ary: 2,
-      mandatory: 2,
       arguments: [
         {
           name: 'x'
@@ -436,7 +407,6 @@ eYo.Model.math__module.data = {
       category: 2,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -448,7 +418,6 @@ eYo.Model.math__module.data = {
       category: 2,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -461,7 +430,6 @@ eYo.Model.math__module.data = {
       type: 0,
       stmt: true,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -474,7 +442,6 @@ eYo.Model.math__module.data = {
       type: 0,
       stmt: true,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -486,7 +453,6 @@ eYo.Model.math__module.data = {
       category: 4,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -498,7 +464,6 @@ eYo.Model.math__module.data = {
       category: 4,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -510,7 +475,6 @@ eYo.Model.math__module.data = {
       category: 4,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -522,7 +486,6 @@ eYo.Model.math__module.data = {
       category: 4,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -534,7 +497,6 @@ eYo.Model.math__module.data = {
       category: 4,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -546,7 +508,6 @@ eYo.Model.math__module.data = {
       category: 4,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -558,7 +519,6 @@ eYo.Model.math__module.data = {
       category: 5,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -570,7 +530,6 @@ eYo.Model.math__module.data = {
       category: 5,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -582,7 +541,6 @@ eYo.Model.math__module.data = {
       category: 5,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -594,7 +552,6 @@ eYo.Model.math__module.data = {
       category: 5,
       type: 0,
       ary: 1,
-      mandatory: 1,
       arguments: [
         {
           name: 'x'
@@ -604,93 +561,88 @@ eYo.Model.math__module.data = {
     {
       names: ['pi'],
       category: 6,
-      type: 1,
-      stmt: true
+      type: 1
     },
     {
       names: ['e'],
       category: 6,
-      type: 1,
-      stmt: true
+      type: 1
     },
     {
       names: ['tau'],
       category: 6,
-      type: 1,
-      stmt: true
+      type: 1
     },
     {
       names: ['inf'],
       category: 6,
-      type: 1,
-      stmt: true
+      type: 1
     },
     {
       names: ['nan'],
       category: 6,
-      type: 1,
-      stmt: true
+      type: 1
     }
   ],
   by_name: {
-    'ceil': 0,
-    'copysign': 1,
-    'fabs': 2,
-    'factorial': 3,
-    'floor': 4,
-    'fmod': 5,
-    'frexp': 6,
-    'fsum': 7,
-    'gcd': 8,
-    'isclose': 9,
-    'isfinite': 10,
-    'isinf': 11,
-    'isnan': 12,
-    'ldexp': 13,
-    'modf': 14,
-    'trunc': 15,
-    'exp': 16,
-    'expm1': 17,
-    'log': 18,
-    'log1p': 19,
-    'log2': 20,
-    'log10': 21,
-    'pow': 22,
-    'sqrt': 23,
-    'acos': 24,
-    'asin': 25,
     'atan': 26,
-    'atan2': 27,
-    'cos': 28,
-    'hypot': 29,
-    'sin': 30,
-    'tan': 31,
-    'degrees': 32,
-    'radians': 33,
-    'acosh': 34,
-    'asinh': 35,
-    'atanh': 36,
-    'cosh': 37,
-    'sinh': 38,
-    'tanh': 39,
-    'erf': 40,
-    'erfc': 41,
-    'gamma': 42,
-    'lgamma': 43,
-    'pi': 44,
-    'e': 45,
+    'isfinite': 10,
+    'log1p': 19,
     'tau': 46,
+    'atanh': 36,
+    'hypot': 29,
+    'asin': 25,
+    'acosh': 34,
     'inf': 47,
-    'nan': 48
+    'acos': 24,
+    'asinh': 35,
+    'erf': 40,
+    'pi': 44,
+    'erfc': 41,
+    'isclose': 9,
+    'cosh': 37,
+    'radians': 33,
+    'log2': 20,
+    'sin': 30,
+    'atan2': 27,
+    'fsum': 7,
+    'ldexp': 13,
+    'sqrt': 23,
+    'fabs': 2,
+    'tanh': 39,
+    'log10': 21,
+    'modf': 14,
+    'nan': 48,
+    'trunc': 15,
+    'ceil': 0,
+    'log': 18,
+    'tan': 31,
+    'gamma': 42,
+    'copysign': 1,
+    'sinh': 38,
+    'expm1': 17,
+    'degrees': 32,
+    'floor': 4,
+    'factorial': 3,
+    'fmod': 5,
+    'lgamma': 43,
+    'frexp': 6,
+    'exp': 16,
+    'gcd': 8,
+    'isnan': 12,
+    'cos': 28,
+    'e': 45,
+    'isinf': 11,
+    'pow': 22
   },
   by_category: {
-    0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-    1: [16, 17, 18, 19, 20, 21, 22, 23],
+    6: [44, 45, 46, 47, 48],
     2: [24, 25, 26, 27, 28, 29, 30, 31],
+    5: [40, 41, 42, 43],
+    1: [16, 17, 18, 19, 20, 21, 22, 23],
     3: [32, 33],
     4: [34, 35, 36, 37, 38, 39],
-    5: [40, 41, 42, 43],
-    6: [44, 45, 46, 47, 48]
+    0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
   },
   by_type: {
     0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
@@ -736,6 +688,6 @@ eYo.Model.math__module.getItemsInCategory = function (category, type) {
   }
 }
 
-// This file was generated by `./bin/helpers/{module}bot.py` on 2018-07-12 07:59:24.372514
+// This file was generated by `./bin/helpers/{module}bot.py` on 2018-07-12 13:28:27.588227
 
 

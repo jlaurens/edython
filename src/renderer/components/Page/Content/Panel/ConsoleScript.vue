@@ -83,9 +83,11 @@ except:
                     panel = document['eyo-panel-turtle']
                     el = document['eyo-turtle-canvas-wrapper']
                     import turtle
+                    # turtle.restart() this won't work
                     turtle.set_defaults(turtle_canvas_wrapper=el)
                     turtle.set_defaults(canvwidth=panel.clientWidth)
                     turtle.set_defaults(canvheight=panel.clientHeight)
+                    # turtle.restart() this won't work either
                 except KeyError:
                     print('Build error: Missing #eyo-turtle-canvas-wrapper')
             else:

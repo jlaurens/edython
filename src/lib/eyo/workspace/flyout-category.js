@@ -177,8 +177,33 @@ eYo.FlyoutCategory = {
     eYo.T3.Stmt.pass_stmt,
     eYo.T3.Expr.lambda,
     eYo.T3.Stmt.classdef_part,
+    eYo.T3.Stmt.global_nonlocal_stmt,
+    {
+      type: eYo.T3.Stmt.global_nonlocal_stmt,
+      data: 'non_local'
+    },
     eYo.T3.Stmt.decorator,
-    eYo.T3.Stmt.global_nonlocal_stmt
+    {
+      type: eYo.T3.Stmt.decorator,
+      data: {
+        variant: eYo.Key.BUILTIN,
+        builtin: eYo.Key.STATICMETHOD
+      }
+    },
+    {
+      type: eYo.T3.Stmt.decorator,
+      data: {
+        variant: eYo.Key.BUILTIN,
+        builtin: eYo.Key.CLASSMETHOD
+      }
+    },
+    {
+      type: eYo.T3.Stmt.decorator,
+      data: {
+        variant: eYo.Key.BUILTIN,
+        builtin: eYo.Key.PROPERTY
+      }
+    }
   ],
   'list': [
     {

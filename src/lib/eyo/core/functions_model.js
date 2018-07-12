@@ -29,7 +29,7 @@ eYo.Model.functions.data = {
       name: 'abs',
       category: 0,
       type: 0,
-      mandatory: 1,
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -40,7 +40,7 @@ eYo.Model.functions.data = {
       name: 'all',
       category: 0,
       type: 0,
-      mandatory: 1,
+      ary: 1,
       arguments: [
         {
           name: 'iterable'
@@ -51,7 +51,7 @@ eYo.Model.functions.data = {
       name: 'any',
       category: 0,
       type: 0,
-      mandatory: 1,
+      ary: 1,
       arguments: [
         {
           name: 'iterable'
@@ -62,7 +62,7 @@ eYo.Model.functions.data = {
       name: 'ascii',
       category: 0,
       type: 0,
-      mandatory: 1,
+      ary: 1,
       arguments: [
         {
           name: 'object'
@@ -73,7 +73,7 @@ eYo.Model.functions.data = {
       name: 'bin',
       category: 0,
       type: 0,
-      mandatory: 1,
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -84,6 +84,7 @@ eYo.Model.functions.data = {
       name: 'bool',
       category: 0,
       type: 1,
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -96,7 +97,7 @@ eYo.Model.functions.data = {
       name: 'callable',
       category: 0,
       type: 0,
-      mandatory: 1,
+      ary: 1,
       arguments: [
         {
           name: 'object'
@@ -107,7 +108,7 @@ eYo.Model.functions.data = {
       name: 'chr',
       category: 0,
       type: 0,
-      mandatory: 1,
+      ary: 1,
       arguments: [
         {
           name: 'i'
@@ -124,6 +125,7 @@ eYo.Model.functions.data = {
       name: 'compile',
       category: 0,
       type: 0,
+      ary: 6,
       mandatory: 3,
       arguments: [
         {
@@ -153,6 +155,7 @@ eYo.Model.functions.data = {
       name: 'complex',
       category: 0,
       type: 1,
+      ary: 2,
       mandatory: 0,
       arguments: [
         {
@@ -170,7 +173,7 @@ eYo.Model.functions.data = {
       category: 0,
       type: 0,
       stmt: true,
-      mandatory: 2,
+      ary: 2,
       arguments: [
         {
           name: 'object'
@@ -184,6 +187,7 @@ eYo.Model.functions.data = {
       name: 'dir',
       category: 0,
       type: 0,
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -196,7 +200,7 @@ eYo.Model.functions.data = {
       name: 'divmod',
       category: 0,
       type: 0,
-      mandatory: 2,
+      ary: 2,
       arguments: [
         {
           name: 'a'
@@ -210,6 +214,7 @@ eYo.Model.functions.data = {
       name: 'enumerate',
       category: 0,
       type: 0,
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -225,6 +230,7 @@ eYo.Model.functions.data = {
       name: 'eval',
       category: 0,
       type: 0,
+      ary: 3,
       mandatory: 1,
       arguments: [
         {
@@ -244,6 +250,7 @@ eYo.Model.functions.data = {
       name: 'exec',
       category: 0,
       type: 0,
+      ary: 3,
       mandatory: 1,
       arguments: [
         {
@@ -263,7 +270,7 @@ eYo.Model.functions.data = {
       name: 'filter',
       category: 0,
       type: 0,
-      mandatory: 2,
+      ary: 2,
       arguments: [
         {
           name: 'function'
@@ -277,6 +284,7 @@ eYo.Model.functions.data = {
       name: 'float',
       category: 0,
       type: 1,
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -289,6 +297,7 @@ eYo.Model.functions.data = {
       name: 'format',
       category: 0,
       type: 0,
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -304,6 +313,7 @@ eYo.Model.functions.data = {
       name: 'getattr',
       category: 0,
       type: 0,
+      ary: 3,
       mandatory: 2,
       arguments: [
         {
@@ -327,7 +337,7 @@ eYo.Model.functions.data = {
       name: 'hasattr',
       category: 0,
       type: 0,
-      mandatory: 2,
+      ary: 2,
       arguments: [
         {
           name: 'object'
@@ -341,7 +351,7 @@ eYo.Model.functions.data = {
       name: 'hash',
       category: 0,
       type: 0,
-      mandatory: 1,
+      ary: 1,
       arguments: [
         {
           name: 'object'
@@ -353,6 +363,7 @@ eYo.Model.functions.data = {
       category: 0,
       type: 0,
       stmt: true,
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -365,7 +376,7 @@ eYo.Model.functions.data = {
       name: 'hex',
       category: 0,
       type: 0,
-      mandatory: 1,
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -376,7 +387,7 @@ eYo.Model.functions.data = {
       name: 'id',
       category: 0,
       type: 0,
-      mandatory: 1,
+      ary: 1,
       arguments: [
         {
           name: 'object'
@@ -387,6 +398,7 @@ eYo.Model.functions.data = {
       name: 'input',
       category: 0,
       type: 0,
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -399,6 +411,7 @@ eYo.Model.functions.data = {
       name: 'int',
       category: 0,
       type: 1,
+      ary: 2,
       mandatory: 0,
       arguments: [
         {
@@ -415,7 +428,7 @@ eYo.Model.functions.data = {
       name: 'isinstance',
       category: 0,
       type: 0,
-      mandatory: 2,
+      ary: 2,
       arguments: [
         {
           name: 'object'
@@ -429,7 +442,7 @@ eYo.Model.functions.data = {
       name: 'issubclass',
       category: 0,
       type: 0,
-      mandatory: 2,
+      ary: 2,
       arguments: [
         {
           name: 'class'
@@ -443,6 +456,7 @@ eYo.Model.functions.data = {
       name: 'iter',
       category: 0,
       type: 0,
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -458,7 +472,7 @@ eYo.Model.functions.data = {
       name: 'len',
       category: 0,
       type: 0,
-      mandatory: 1,
+      ary: 1,
       arguments: [
         {
           name: 's'
@@ -474,7 +488,7 @@ eYo.Model.functions.data = {
       name: 'map',
       category: 0,
       type: 0,
-      mandatory: 3,
+      ary: 3,
       arguments: [
         {
           name: 'function'
@@ -491,6 +505,7 @@ eYo.Model.functions.data = {
       name: 'max',
       category: 0,
       type: 0,
+      ary: 4,
       mandatory: 2,
       arguments: [
         {
@@ -513,6 +528,7 @@ eYo.Model.functions.data = {
       name: 'min',
       category: 0,
       type: 0,
+      ary: 4,
       mandatory: 2,
       arguments: [
         {
@@ -535,6 +551,7 @@ eYo.Model.functions.data = {
       name: 'next',
       category: 0,
       type: 0,
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -555,7 +572,7 @@ eYo.Model.functions.data = {
       name: 'oct',
       category: 0,
       type: 0,
-      mandatory: 1,
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -566,6 +583,7 @@ eYo.Model.functions.data = {
       name: 'open',
       category: 0,
       type: 0,
+      ary: 8,
       mandatory: 1,
       arguments: [
         {
@@ -605,7 +623,7 @@ eYo.Model.functions.data = {
       name: 'ord',
       category: 0,
       type: 0,
-      mandatory: 1,
+      ary: 1,
       arguments: [
         {
           name: 'c'
@@ -616,6 +634,7 @@ eYo.Model.functions.data = {
       name: 'pow',
       category: 0,
       type: 0,
+      ary: 3,
       mandatory: 2,
       arguments: [
         {
@@ -635,6 +654,7 @@ eYo.Model.functions.data = {
       category: 0,
       type: 0,
       stmt: true,
+      ary: 5,
       mandatory: 1,
       arguments: [
         {
@@ -662,6 +682,7 @@ eYo.Model.functions.data = {
       name: 'property',
       category: 0,
       type: 1,
+      ary: 4,
       mandatory: 0,
       arguments: [
         {
@@ -686,7 +707,7 @@ eYo.Model.functions.data = {
       name: 'repr',
       category: 0,
       type: 0,
-      mandatory: 1,
+      ary: 1,
       arguments: [
         {
           name: 'object'
@@ -697,7 +718,7 @@ eYo.Model.functions.data = {
       name: 'reversed',
       category: 0,
       type: 0,
-      mandatory: 1,
+      ary: 1,
       arguments: [
         {
           name: 'seq'
@@ -708,6 +729,7 @@ eYo.Model.functions.data = {
       name: 'round',
       category: 0,
       type: 0,
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -724,7 +746,7 @@ eYo.Model.functions.data = {
       category: 0,
       type: 0,
       stmt: true,
-      mandatory: 3,
+      ary: 3,
       arguments: [
         {
           name: 'object'
@@ -741,6 +763,7 @@ eYo.Model.functions.data = {
       name: 'slice',
       category: 0,
       type: 1,
+      ary: 3,
       mandatory: 2,
       arguments: [
         {
@@ -759,6 +782,7 @@ eYo.Model.functions.data = {
       name: 'sorted',
       category: 0,
       type: 0,
+      ary: 4,
       mandatory: 2,
       arguments: [
         {
@@ -787,6 +811,7 @@ eYo.Model.functions.data = {
       name: 'sum',
       category: 0,
       type: 0,
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -802,6 +827,7 @@ eYo.Model.functions.data = {
       name: 'super',
       category: 0,
       type: 0,
+      ary: 2,
       mandatory: 0,
       arguments: [
         {
@@ -818,7 +844,7 @@ eYo.Model.functions.data = {
       name: 'type',
       category: 0,
       type: 1,
-      mandatory: 3,
+      ary: 3,
       arguments: [
         {
           name: 'object'
@@ -835,6 +861,7 @@ eYo.Model.functions.data = {
       name: 'vars',
       category: 0,
       type: 0,
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -847,7 +874,7 @@ eYo.Model.functions.data = {
       name: 'zip',
       category: 0,
       type: 0,
-      mandatory: 1,
+      ary: 1,
       arguments: [
         {
           name: '*iterables'
@@ -859,6 +886,7 @@ eYo.Model.functions.data = {
       category: 0,
       type: 0,
       stmt: true,
+      ary: 5,
       mandatory: 1,
       arguments: [
         {
@@ -883,72 +911,72 @@ eYo.Model.functions.data = {
       ]
     }
   ],
-  items_by_name: {
-    'divmod': 13,
-    'callable': 6,
-    'any': 2,
-    'property': 44,
-    'reversed': 46,
-    'compile': 9,
-    'dir': 12,
-    'object': 38,
-    'enumerate': 14,
-    'hash': 23,
-    'delattr': 11,
-    'eval': 15,
-    'classmethod': 8,
-    'setattr': 48,
-    'vars': 55,
-    'input': 27,
-    'zip': 56,
-    'format': 19,
-    'max': 35,
-    'len': 32,
-    'chr': 7,
+  by_name: {
     'iter': 31,
-    'getattr': 20,
+    'callable': 6,
+    'filter': 17,
+    'input': 27,
+    'id': 26,
+    'help': 24,
+    'zip': 56,
     'ascii': 3,
+    'bin': 4,
+    'hash': 23,
     '__import__': 57,
-    'open': 40,
-    'globals': 21,
-    'type': 54,
+    'max': 35,
     'repr': 45,
     'hex': 25,
-    'abs': 0,
-    'bool': 5,
-    'help': 24,
-    'next': 37,
-    'complex': 10,
-    'isinstance': 29,
-    'min': 36,
-    'print': 43,
-    'hasattr': 22,
-    'exec': 16,
-    'sorted': 50,
-    'filter': 17,
+    'reversed': 46,
+    'all': 1,
     'int': 28,
+    'eval': 15,
+    'bool': 5,
+    'sum': 52,
     'super': 53,
-    'float': 18,
-    'id': 26,
+    'classmethod': 8,
+    'setattr': 48,
+    'object': 38,
     'pow': 42,
     'issubclass': 30,
-    'bin': 4,
-    'round': 47,
-    'locals': 33,
-    'staticmethod': 51,
-    'map': 34,
-    'sum': 52,
-    'all': 1,
-    'slice': 49,
+    'complex': 10,
+    'sorted': 50,
     'oct': 39,
-    'ord': 41
+    'float': 18,
+    'compile': 9,
+    'staticmethod': 51,
+    'isinstance': 29,
+    'chr': 7,
+    'slice': 49,
+    'enumerate': 14,
+    'vars': 55,
+    'locals': 33,
+    'property': 44,
+    'len': 32,
+    'hasattr': 22,
+    'divmod': 13,
+    'abs': 0,
+    'exec': 16,
+    'round': 47,
+    'print': 43,
+    'type': 54,
+    'ord': 41,
+    'min': 36,
+    'open': 40,
+    'any': 2,
+    'getattr': 20,
+    'next': 37,
+    'delattr': 11,
+    'format': 19,
+    'map': 34,
+    'dir': 12,
+    'globals': 21
   },
   by_category: {
     0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57]
   },
   by_type: {
-    1: [5, 10, 18, 28, 38, 44, 49, 54],
-    0: [0, 1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 29, 30, 31, 32, 33, 34, 35, 36, 37, 39, 40, 41, 42, 43, 45, 46, 47, 48, 50, 51, 52, 53, 55, 56, 57]
+    0: [0, 1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 29, 30, 31, 32, 33, 34, 35, 36, 37, 39, 40, 41, 42, 43, 45, 46, 47, 48, 50, 51, 52, 53, 55, 56, 57],
+    1: [5, 10, 18, 28, 38, 44, 49, 54]
   }
 }
 
@@ -990,6 +1018,6 @@ eYo.Model.functions.getItemsInCategory = function (category, type) {
   }
 }
 
-// This file was generated by `./bin/helpers/functionsbot.py` on 2018-07-12 07:46:19.074235
+// This file was generated by `./bin/helpers/functionsbot.py` on 2018-07-12 13:28:24.304042
 
 

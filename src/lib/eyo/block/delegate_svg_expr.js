@@ -138,7 +138,7 @@ eYo.DelegateSvg.Expr.prototype.canReplaceBlock = function (block, other) {
  * @param {!Block} block
  */
 eYo.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
-  if (other) {
+  if (this.workspace && other && other.workspace) {
     eYo.Events.setGroup(true)
     try {
       console.log('**** replaceBlock', block, other)

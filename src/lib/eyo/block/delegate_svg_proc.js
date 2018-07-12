@@ -26,11 +26,18 @@ goog.require('goog.dom');
 eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
   data: {
     builtin: {
-      all: ['staticmethod', 'classmethod', 'property'],
+      all: [
+        eYo.Key.STATICMETHOD,
+        eYo.Key.CLASSMETHOD,
+        eYo.Key.PROPERTY
+      ],
       synchronize: true
     },
     property: {
-      all: ['setter', 'deleter'],
+      all: [
+        eYo.Key.SETTER,
+        eYo.Key.DELETER
+      ],
       synchronize: true
     },
     variant: {

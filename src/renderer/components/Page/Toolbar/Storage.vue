@@ -21,8 +21,17 @@
     name: 'page-toolbar-new-load-save',
     data: function () {
       return {
-        step: 1,
-        documentPath: undefined
+        step: 1
+      }
+    },
+    computed: {
+      documentPath: {
+        get: function () {
+          return this.$store.state.Document.path
+        },
+        set: function (new_path) {
+          this.$store.commit('DOC_SET_PATH', new_path)
+        }
       }
     },
     components: {
@@ -56,7 +65,7 @@
         ), dom.firstChild)
         let oSerializer = new XMLSerializer()
         var content = '<?xml version="1.0" encoding="utf-8"?>' + oSerializer.serializeToString(dom)
-        let deflate = this.$store.state.Pref.ecoSave ? this.$$.pako.gzip(content) : content // use gzip to ungzip from the CLI
+        let deflate = this.$store.state.Document.ecoSave ? this.$$.pako.gzip(content) : content // use gzip to ungzip from the CLI
         return deflate
       },
       doNew: function () {
@@ -64,7 +73,7 @@
         this.$$.eYo.App.workspace.clearUndo()
         this.documentPath = undefined
         this.$store.commit('UI_STAGE_UNDO')
-        this.$store.commit('PREF_SET_ECO_SAVE', this.$store.state.Config.ecoSave)
+        this.$store.commit('DOC_SET_ECO_SAVE', this.$store.state.Config.ecoSave)
       },
       doOpen: function () {
         // const {dialog} = require('electron').remote
@@ -114,10 +123,13 @@
             }
             try {
               self.doNew()
-              self.$store.commit('PREF_SET_ECO_SAVE', ecoSave)
+              self.$store.commit('DOC_SET_ECO_SAVE', ecoSave)
               var str = goog.crypt.utf8ByteArrayToString(inflate)
               var parser = new DOMParser()
               var dom = parser.parseFromString(str, 'application/xml')
+              eYo.App.workspace.eyo.fromDom(dom)
+              self.documentPath = fileName
+              eYo.App.workspace.clearUndo()
               // find the 'edython' child
               var children = dom.childNodes
               var i = 0
@@ -142,11 +154,13 @@
                             if (goog.isString(prefs.flyoutCategory)) {
                               self.$store.commit('UI_SET_FLYOUT_CATEGORY', prefs.flyoutCategory)
                             }
+                            // close at last because it is an animation
                             if (goog.isDef(prefs.flyoutClosed)) {
-                              self.$store.commit('UI_SET_FLYOUT_CLOSED', prefs.flyoutClosed)
+                              setTimeout(function () {
+                                self.$store.commit('UI_SET_FLYOUT_CLOSED', prefs.flyoutClosed)
+                              }, 0)
                             }
                           } catch (err) {
-                            // catch any error, it does not really matter if something failed
                             console.error(err)
                           }
                         }
@@ -157,9 +171,6 @@
                   break
                 }
               }
-              eYo.App.workspace.eyo.fromDom(dom)
-              self.documentPath = fileName
-              eYo.App.workspace.clearUndo()
             } catch (err) {
               console.error('ERROR:', err)
             }

@@ -165,6 +165,13 @@ eYo.Key = {
   GLOBAL: 'global',
   NONLOCAL: 'nonlocal',
 
+  STATICMETHOD: 'staticmethod',
+  CLASSMETHOD: 'classmethod',
+  PROPERTY: 'property',
+
+  SETTER: 'setter',
+  DELETER: 'deleter',
+  
   UNARY: 'unary',
   BINARY: 'binary',
   
@@ -177,7 +184,6 @@ eYo.Key = {
 
   DOTTED_NAME: 'dotted_name',
   BUILTIN: 'builtin',
-  PROPERTY: 'property',
   ARGUMENTS: 'arguments',
 
   CODE: 'code',

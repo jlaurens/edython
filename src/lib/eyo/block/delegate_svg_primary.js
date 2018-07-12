@@ -13,6 +13,9 @@
 
 goog.provide('eYo.DelegateSvg.Primary')
 
+goog.require('eYo.Model.stdtypes')
+goog.require('eYo.Model.functions')
+
 goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Expr')
 goog.require('eYo.DelegateSvg.Stmt')
@@ -396,7 +399,7 @@ eYo.DelegateSvg.Expr.base_call_expr.populateMenu = function (block, mgr) {
       )
       var menuItem = new eYo.MenuItem(content, self.doAndRender(block, function () {
         data.setTrusted(ary)
-        caller.setTrusted(false)
+        caller.setTrusted(true)
       }, true))
       mgr.addChild(menuItem, true)
     }
@@ -759,23 +762,15 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
       validate: /** @suppress {globalThis} */ function (newValue) {
         // only for builtin functions
         if (this.data.variant.get() === this.data.variant.model.BUILTIN) {
-          switch (this.data.name.get()) {
-            case 'int':
-            case 'float':
-            case 'complex':
-            case 'len':
-            case 'input':
-            case 'abs':
-            return newValue === this.UNARY ? {validated: newValue}: null
-            case 'trunc':
-            return this.BINARY ? {validated: newValue}: null
-            case 'list':
-            case 'set':
-            case 'min':
-            case 'max':
-            case 'sum':
-            default:
-            return newValue === this.N_ARY ? {validated: newValue}: null
+          var current = this.data.name.get()
+          var item = eYo.Model.functions.getItem(current) || eYo.Model.stdtypes.getItem(current)
+          if (item) {
+            // this is known, we do not have any choice
+            var ary = this.getAll()[item.ary]
+            if (!goog.isDef(ary)) {
+              ary = this.N_ARY
+            }
+            return {validated: ary}
           }
         }
         return {validated: newValue}

@@ -6,9 +6,11 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview Configuration. Settings mechanism is as follow:
+ * @fileoverview Configuration.
+ * Work in progress.
+ * Settings mechanism is as follow:
  * 1) we have 4 domains:
- * a) document domain, named Pref
+ * a) document domain, named Document
  * b) user domain
  * c) network domain
  * d) application domain, named Config

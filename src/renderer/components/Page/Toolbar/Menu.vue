@@ -26,19 +26,19 @@
     },
     computed: {
       ecoSave () {
-        return this.$store.state.Pref.ecoSave
+        return this.$store.state.Document.ecoSave
       },
       titleEcoSave () {
         return 'Sauvegarde au format compressé avec gzip si coché'
       },
       disabledTips () {
-        return this.$store.state.Pref.disabledTips
+        return this.$store.state.Document.disabledTips
       },
       titleDisabledTips () {
-        return this.$store.state.Pref.disabledTips ? 'Activer les bulles d\'aide qui apparaissent quand le pointeur reste sur un objet' : 'Désactiver les bulles d\'aide qui apparaissent quand le pointeur reste sur un objet'
+        return this.$store.state.Document.disabledTips ? 'Activer les bulles d\'aide qui apparaissent quand le pointeur reste sur un objet' : 'Désactiver les bulles d\'aide qui apparaissent quand le pointeur reste sur un objet'
       },
       contentDisabledTips () {
-        return this.$store.state.Pref.disabledTips ? 'Activer les bulles d\'aide' : 'Désactiver les bulles d\'aide'
+        return this.$store.state.Document.disabledTips ? 'Activer les bulles d\'aide' : 'Désactiver les bulles d\'aide'
       },
       titleMenu () {
         return 'Options et actions'
@@ -46,12 +46,12 @@
     },
     methods: {
       doToggleEcoSave () {
-        this.$store.commit('PREF_SET_ECO_SAVE', !this.$store.state.Pref.ecoSave)
+        this.$store.commit('DOC_SET_ECO_SAVE', !this.$store.state.Document.ecoSave)
       },
       doToggleDisabledTips () {
         var tippies = Array.from(document.querySelectorAll('[data-tippy]'), el => el._tippy)
         var i = 0
-        if (this.$store.state.Pref.disabledTips) {
+        if (this.$store.state.Document.disabledTips) {
           for (; i < tippies.length; ++i) {
             tippies[i].enable()
           }
@@ -64,7 +64,7 @@
             t.disable()
           }
         }
-        this.$store.commit('PREF_SET_DISABLED_TIPS', !this.$store.state.Pref.disabledTips)
+        this.$store.commit('DOC_SET_DISABLED_TIPS', !this.$store.state.Document.disabledTips)
       }
     }
   }

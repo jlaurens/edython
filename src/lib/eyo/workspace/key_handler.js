@@ -582,7 +582,7 @@ var Ks = {
   'try': eYo.T3.Stmt.try_part,
   'while': eYo.T3.Stmt.while_part,
   'with': eYo.T3.Stmt.with_part,
-  'lambda': eYo.T3.Expr.lambda_expr,
+  'lambda': eYo.T3.Expr.lambda,
   '… if … else …': eYo.T3.Expr.conditional_expression,
   'identifier': eYo.T3.Expr.identifier,
   'name': eYo.T3.Expr.identifier,

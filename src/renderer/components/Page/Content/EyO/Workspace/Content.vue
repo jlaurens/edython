@@ -61,6 +61,7 @@
       moduleF('random')
       moduleF('basic_turtle', 'turtle (basic)')
       moduleF('turtle')
+      moduleF('cmath')
       model.selected = undefined
       model.levels = [
         model.items.basic,
@@ -82,7 +83,8 @@
         model.items.basic_random__module,
         model.items.random__module,
         model.items.basic_turtle__module,
-        model.items.turtle__module
+        model.items.turtle__module,
+        model.items.cmath__module
       ]
       model.modulesContent = 'modules'
       return model

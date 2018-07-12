@@ -38,7 +38,8 @@ goog.require('goog.dom');
 // Next are used to let the compiler know that we need them
 goog.require('eYo.DelegateSvg.Random');
 goog.require('eYo.DelegateSvg.Math');
-// goog.require('eYo.DelegateSvg.Turtle');
+goog.require('eYo.DelegateSvg.CMath');
+goog.require('eYo.DelegateSvg.Turtle');
 
 eYo.Xml = {
   EXPR: 'x', // tag name
