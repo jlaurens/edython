@@ -8,6 +8,7 @@
 </template>
 
 <script>
+  import Vue from 'vue'
   import IconBase from '@@/IconBase.vue'
   import IconDemo from '@@/Icon/IconDemo.vue'
   
@@ -132,9 +133,9 @@
                         }
                         // close at last because it is an animation
                         if (goog.isDef(prefs.flyoutClosed)) {
-                          setTimeout(function () {
+                          Vue.nextTick(function () {
                             self.$store.commit('UI_SET_FLYOUT_CLOSED', prefs.flyoutClosed)
-                          }, 0)
+                          })
                         }
                       } catch (err) {
                         console.error(err)
