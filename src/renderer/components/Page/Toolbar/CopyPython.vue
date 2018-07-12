@@ -45,7 +45,7 @@
           var code = p.export(block, true)
           this.$$.eYo.App.copyTextToClipboard(code)
           this.step = 0
-          this.TweenLite.to(this, 0.5, {step: 1})
+          this.$$.TweenLite.to(this, 0.5, {step: 1})
         }
       }
     }

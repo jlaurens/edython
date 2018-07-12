@@ -57,7 +57,7 @@
         if (this.copy) {
           if (eYo.App.doCopy(!this.deep)) {
             this.step = 0
-            this.TweenLite.to(this, 0.5, {step: 1})
+            this.$$.TweenLite.to(this, 0.5, {step: 1})
           }
         } else {
           Blockly.clipboardXml_ && eYo.App.workspace.paste(Blockly.clipboardXml_)

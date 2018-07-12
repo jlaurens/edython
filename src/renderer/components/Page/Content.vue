@@ -23,11 +23,6 @@
     components: {
       'content-eyo': ContentEyO,
       'content-panels': ContentPanels
-    },
-    mounted: function () {
-      this.$$.bus.$on('setConsoleVisible', function (visible) {
-        console.log('setConsoleVisible', visible)
-      })
     }
   }
 </script>

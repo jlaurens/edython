@@ -8,7 +8,6 @@
 </template>
 
 <script>
-  import Vue from 'vue'
   import IconBase from '@@/IconBase.vue'
   import IconDemo from '@@/Icon/IconDemo.vue'
   
@@ -85,7 +84,7 @@
     methods: {
       flash () {
         this.on = 0
-        this.TweenLite.to(this, 0.5, {on: 1})
+        this.$$.TweenLite.to(this, 0.5, {on: 1})
         if (this.flashInterval) {
           var topBlocks = this.$$.eYo.App.workspace.topBlocks_
           if (!topBlocks.length) {
@@ -106,48 +105,8 @@
           var parser = new DOMParser()
           var dom = parser.parseFromString(str, 'application/xml')
           this.$$.eYo.App.workspace.eyo.fromDom(dom)
-          var self = this
           // problem of code reuse
-          var children = dom.childNodes
-          var i = 0
-          while (i < children.length) {
-            var child = children[i++]
-            var name = child.nodeName.toLowerCase()
-            if (name === eYo.Xml.EDYTHON) {
-              // find the 'prefs' child
-              children = child.childNodes
-              i = 0
-              while (i < children.length) {
-                child = children[i++]
-                if (child.tagName && child.tagName.toLowerCase() === 'prefs') {
-                  // find the 'text' child
-                  if ((str = child.textContent)) {
-                    var prefs = JSON.parse(str)
-                    if (prefs) {
-                      try {
-                        if (prefs.selectedPanel) {
-                          self.$store.commit('UI_SET_SELECTED_PANEL', prefs.selectedPanel)
-                        }
-                        if (goog.isString(prefs.flyoutCategory)) {
-                          self.$store.commit('UI_SET_FLYOUT_CATEGORY', prefs.flyoutCategory)
-                        }
-                        // close at last because it is an animation
-                        if (goog.isDef(prefs.flyoutClosed)) {
-                          Vue.nextTick(function () {
-                            self.$store.commit('UI_SET_FLYOUT_CLOSED', prefs.flyoutClosed)
-                          })
-                        }
-                      } catch (err) {
-                        console.error(err)
-                      }
-                    }
-                  }
-                  break
-                }
-              }
-              break
-            }
-          }
+          this.$$.eYo.App.doDomToPref(dom)
         }
       },
       doShow () {
