@@ -487,6 +487,7 @@ eYo.Data.prototype.set = function (newValue) {
  * Changing this value will cause an UI synchronization.
  * Always synchronize, even when no value changed.
  * @param {Object} newValue  When not defined, replaced by `!this.required`
+ * @return {boolean} whether changes have been made
  */
 eYo.Data.prototype.setIncog = function (newValue) {
   if (!goog.isDef(newValue)) {
@@ -496,7 +497,9 @@ eYo.Data.prototype.setIncog = function (newValue) {
     this.incog_ = !!newValue
     this.didChange(this.value_, this.value_)
     this.synchronizeIfUI(this.value_)
+    return true
   }
+  return false
 }
 /**
  * Whether the data is incognito.
