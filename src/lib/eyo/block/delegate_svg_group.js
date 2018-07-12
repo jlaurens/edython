@@ -225,6 +225,9 @@ eYo.DelegateSvg.Group.prototype.renderDrawInput_ = function (io) {
  * @param {!Blockly.Connection} c8n The connection to highlight.
  */
 eYo.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
+  if (!block.workspace) {
+    return
+  }
   var steps
   block = c8n.sourceBlock_
   if (c8n.type === Blockly.INPUT_VALUE) {
