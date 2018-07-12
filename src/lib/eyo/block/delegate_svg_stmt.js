@@ -473,7 +473,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('return_stmt', {
       fields: {
         label: 'return'
       },
-      wrap: eYo.T3.Expr.expression_list
+      wrap: eYo.T3.Expr.optional_expression_list
     }
   }
 })
