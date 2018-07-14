@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <edython xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">
-<prefs>{"selectedPanel":"console","flyoutClosed":true,"flyoutCategory":"basic"}</prefs>
+<prefs>{
+"selectedPanel":"console",
+"flyoutClosed":true,
+"flyoutCategory":"basic"
+}</prefs>
 <workspace>
 <content>
 <s eyo="start_stmt" x="300" y="120" comment="Cliquer sur le bouton &quot;marche&quot; à gauche">

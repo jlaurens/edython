@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <edython xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">
 <workspace>
+<prefs>{
+"selectedPanel":"console",
+"flyoutClosed":false,
+"flyoutCategory":"basic-random"
+}</prefs>
 <content>
 <s eyo="start_stmt"  x="300" y="280" comment="50 lancers d'un dé à 6 faces">
 <s eyo="random__import" flow="next">
