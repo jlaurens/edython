@@ -1,7 +1,6 @@
 'use strict'
 
 process.env.BABEL_ENV = 'web'
-process.env.IS_WEB = true
 
 const path = require('path')
 const webpack = require('webpack')
