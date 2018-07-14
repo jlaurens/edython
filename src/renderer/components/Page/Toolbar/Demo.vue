@@ -21,6 +21,8 @@
   import demoBasicFiftyDices from '@static/demo/basic/fifty-dices.xml'
   import demoBasicList from '@static/demo/basic/list.xml'
   import demoBasicListEdit from '@static/demo/basic/list-edit.xml'
+  /** eslint-disable no-webpack-loader-syntax */
+  import demoBasicDebug from '@static/demo/basic/debug.eyox'
   
   export default {
     name: 'page-toolbar-demo',
@@ -58,6 +60,9 @@
           }, {
             title: 'Liste (Édition)',
             xml: demoBasicListEdit
+          }, {
+            title: 'Debug',
+            xml: demoBasicDebug
           }
         ]
       }
