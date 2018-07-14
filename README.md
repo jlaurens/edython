@@ -2,6 +2,8 @@
 
 > Python made easy with Blockly and Brython
 
+Visit the [Edython site](http://edython.eu)
+
 #### Build Setup
 
 ``` bash

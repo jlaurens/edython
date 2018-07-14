@@ -2,7 +2,7 @@
   <div id="toolbar">
     <b-button-toolbar key-nav  aria-label="Main toolbar" justify>
       <b-button-group class="mx-1">
-        <b-btn id="toolbar-site" v-on:click=" doSite('https://github.com/jlaurens/edython/')" title="Aller au site Edython" v-tippy>
+        <b-btn id="toolbar-site" v-on:click=" doSite('http://edython.eu')" title="Aller au site Edython" v-tippy>
           <img src="static/icon_light.svg" height="32" alt="Edython"/>
         </b-btn>
         <b-btn id="toolbar-debug" v-on:click="doSite('https://github.com/jlaurens/edython/issues')" title="Demander une correction, une amélioration" v-tippy>
