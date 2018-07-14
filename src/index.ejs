@@ -45,6 +45,9 @@
     <script src="src/builtin_modules.js"></script>
     <script src="src/py_import_hooks.js"></script>
     <script src="src/async.js"></script>
+    <% } else if (!htmlWebpackPlugin.options.no_brython) { %>
+    <script src="lib/brython.js"></script>
+    <script src="lib/brython_stdlib.js"></script>
     <% } %>
     <% if (htmlWebpackPlugin.options.full_debug) { %>
       <script>

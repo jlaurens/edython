@@ -9,7 +9,7 @@
     name: 'edython',
     created () {
       // put this preload for main-window to give it prompt()
-      if (!process.env.IS_WEB) {
+      if (!process.env.isWeb) {
         var ipcRenderer = this.$$.electron.ipcRenderer
         // we *are* in electron
         ipcRenderer.on('new', this.$$.eYo.App.Document.doNew)
@@ -21,9 +21,6 @@
           return ipcRenderer.sendSync('prompt', {text: text, defaultText: defaultText})
         }
       }
-    },
-    mounted () {
-      this.$nextTick(this.$$.eYo.App.Document.doNew)
     }
   }
 </script>

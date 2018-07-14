@@ -32,9 +32,10 @@
           : 'Coller'
       },
       canDoIt () {
-        return this.copy
-          ? !!this.$store.state.UI.selectedBlockId
-          : !!this.$store.state.UI.blockClipboard
+        return true
+        // return this.copy
+        //   ? !!this.$store.state.selected
+        //   : !!Blockly.clipboardXml_
       }
     },
     props: {

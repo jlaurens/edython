@@ -93,7 +93,7 @@ eYo.App.doDomToPref = function (dom) {
   }
 }
 
-eYo.App.Document = process.env.IS_WEB ? {
+eYo.App.Document = process.env.isWeb ? {
   doNew: function () {
   },
   doOpen: function () {
@@ -279,23 +279,8 @@ eYo.App.didPushUndo = function () {
     store.commit('UI_SET_UNDO_STAGE', -1)
   }
 }
-// eYo.App.didTouchBlock = function (block) {
-//   console.log('didTouchBlock', block)
-//   // store.commit('UI_SET_SELECTED_BLOCK', block) once broke everything when uncommented
-// }
-eYo.App.didAddSelect = function (block) {
-  setTimeout(function () {
-    store.commit('UI_SET_SELECTED_BLOCK', Blockly.selected)
-  }, 1)
-}
-eYo.App.didRemoveSelect = function (block) {
-  setTimeout(function () {
-    store.commit('UI_SET_SELECTED_BLOCK', Blockly.selected)
-  }, 1)
-}
-
-eYo.App.didCopyBlock = function (block, xml) {
-  store.commit('UI_DID_COPY_BLOCK', {block: block, xml: xml})
+eYo.App.didTouchBlock = function (block) {
+  // store.commit('UI_SET_SELECTED', block) once broke everything when uncommented
 }
 
 /* eslint-disable no-new */

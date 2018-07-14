@@ -1,5 +1,5 @@
 <template>
-  <b-btn id="toolbar-btn-copy-python" v-on:click="doIt()" :title="title" v-tippy :disabled="!canDoIt">
+  <b-btn id="toolbar-btn-copy-python" v-on:click="doIt()" :title="title" v-tippy>
     <icon-base :width="32" :height="32" :icon-name="name"><icon-copy-python :step="step"/></icon-base>
   </b-btn>
 </template>
@@ -21,9 +21,6 @@
       },
       title () {
         return 'Copier le code python dans le presse-papier'
-      },
-      canDoIt () {
-        return !!this.$store.state.UI.selectedBlockId
       }
     },
     props: {

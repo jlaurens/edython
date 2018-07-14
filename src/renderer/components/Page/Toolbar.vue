@@ -12,17 +12,14 @@
       </b-button-group>
       <b-btn-group-storage />
       <b-button-group class="mx-1">
-        <b-btn-run-python />
-        <b-btn-copy-python />
+        <b-btn-undo-redo :redo="false" />
+        <b-btn-undo-redo :redo="true" />
       </b-button-group>
       <b-button-group class="mx-1">
         <b-btn-copy-paste :copy="true" :deep="false" />
         <b-btn-copy-paste :copy="true" :deep="true" />
         <b-btn-copy-paste :copy="false" />
-      </b-button-group>
-      <b-button-group class="mx-1">
-        <b-btn-undo-redo :redo="false" />
-        <b-btn-undo-redo :redo="true" />
+        <b-btn-copy-python />
       </b-button-group>
       <b-btn-group-layout />
       <!--b-button-group class="mx-1">
@@ -40,7 +37,6 @@
   import ToolbarUndoRedo from './Toolbar/UndoRedo.vue'
   import ToolbarDemo from './Toolbar/Demo.vue'
   import CopyPaste from './Toolbar/CopyPaste.vue'
-  import RunPython from './Toolbar/RunPython.vue'
   import CopyPython from './Toolbar/CopyPython.vue'
   import Storage from './Toolbar/Storage.vue'
   import Layout from './Toolbar/Layout.vue'
@@ -68,7 +64,6 @@
       'b-btn-undo-redo': ToolbarUndoRedo,
       'b-dropdown-demo': ToolbarDemo,
       'b-btn-copy-paste': CopyPaste,
-      'b-btn-run-python': RunPython,
       'b-btn-copy-python': CopyPython,
       'b-btn-group-storage': Storage,
       'b-btn-group-layout': Layout

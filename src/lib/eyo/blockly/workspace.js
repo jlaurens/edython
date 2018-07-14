@@ -395,6 +395,15 @@ Blockly.onKeyDown_ = function(e) {
 };
 
 /**
+ * Copy this block and the next ones if requested.
+ * For edython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {!boolean} shallow
+ */
+eYo.copyBlock = function (block, shallow) {
+};
+
+/**
  * Delete this block and the next ones if requested.
  * For edython.
  * @param {!Blockly.Block} block The owner of the receiver.
@@ -430,5 +439,4 @@ eYo.copyBlock = function(block, deep) {
   xmlBlock.setAttribute('y', xy.y);
   Blockly.clipboardXml_ = xmlBlock;
   Blockly.clipboardSource_ = block.workspace;
-  eYo.App.didCopyBlock && eYo.App.didCopyBlock(block, xmlBlock)
 };
