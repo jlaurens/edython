@@ -13,6 +13,8 @@ import VueSplit from 'vue-split-panel'
 
 import BootstrapVue from 'bootstrap-vue'
 
+import blank from '@static/template/blank.xml'
+
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
@@ -161,7 +163,7 @@ eYo.App.Document = process.env.isWeb ? {
         eYo.App.Document.doClear()
         store.commit('DOC_SET_ECO_SAVE', ecoSave)
         var str = goog.crypt.utf8ByteArrayToString(inflate)
-        eYo.App.readString(str)
+        eYo.App.Document.readString(str)
         store.commit('DOC_SET_PATH', fileName)
       } catch (err) {
         console.error('ERROR:', err)
@@ -247,6 +249,7 @@ eYo.App.Document = process.env.isWeb ? {
   },
   doNew: function () {
     eYo.App.Document.doClear()
+    eYo.App.Document.readString(blank)
   }
 }
 
@@ -277,7 +280,7 @@ eYo.App.didPushUndo = function () {
   }
 }
 eYo.App.didTouchBlock = function (block) {
-  // store.commit('UI_SET_SELECTED', block) breaks everything when uncommented
+  // store.commit('UI_SET_SELECTED', block) once broke everything when uncommented
 }
 
 /* eslint-disable no-new */

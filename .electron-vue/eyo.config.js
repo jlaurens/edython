@@ -312,8 +312,8 @@ ConfigEyo.prototype.enableBrython = function (config) {
           test: /..\/src\/lib(\/.+\.py)$/,
         },
         {
-          from: path.join(this.srcPath, 'lib/site-packages/console.py'),
-          to: path.join(this.distPath, 'console.py')
+          from: path.join(this.srcPath, 'lib/site-packages/consoleJL.py'),
+          to: path.join(this.distPath, 'consoleJL.py')
         }
       ], {debug: 'debug'}
     )
