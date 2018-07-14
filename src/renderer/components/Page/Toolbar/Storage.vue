@@ -3,11 +3,17 @@
     <b-btn id="toolbar-new" v-on:click="doNew()" title="Nouveau" v-tippy>
       <icon-base :width="32" :height="32" icon-name="new"><icon-new /></icon-base>
     </b-btn>
-    <b-btn id="toolbar-open" v-on:click="doOpen()" title="Ouvrir" v-tippy>
+    <b-btn id="toolbar-open" v-on:click="doOpen()" title="Ouvrir" v-tippy v-if="!isWeb">
         <icon-base :width="32" :height="32" icon-name="load"><icon-save-load variant="load" /></icon-base>
     </b-btn>
-    <b-btn id="toolbar-save" v-on:click="doSave()" title="Sauvegarder" v-tippy>
+    <b-btn id="toolbar-save" v-on:click="doSave()" title="Sauvegarder" v-tippy v-if="!isWeb">
       <icon-base :width="32" :height="32" icon-name="save"><icon-save-load variant="save" :step="step"/></icon-base>
+    </b-btn>
+    <b-btn id="toolbar-download" v-on:click="doDownload()" title="Télécharger" v-tippy v-if="isWeb">
+      <icon-base :width="32" :height="32" icon-name="download"><icon-save-load variant="save" :step="step"/></icon-base>
+    </b-btn>
+    <b-btn id="toolbar-upload" v-on:click="doUpload()" title="Téléverser" v-tippy v-if="isWeb">
+      <icon-base :width="32" :height="32" icon-name="upload"><icon-save-load variant="load" :step="step"/></icon-base>
     </b-btn>
   </b-button-group>
 </template>
@@ -29,6 +35,11 @@
       IconNew,
       IconSaveLoad
     },
+    computed: {
+      isWeb () {
+        return this.$$.process.env.BABEL_ENV !== 'web'
+      }
+    },
     created: function () {
       var self = this
       this.$$.bus.$on('saveDidSucceed', function () {
@@ -48,6 +59,12 @@
       },
       doSaveAs: function () {
         this.$$.eYo.App.Document.doSaveAs()
+      },
+      doUpload: function () {
+        this.$$.eYo.App.Document.doUpload()
+      },
+      doDownload: function () {
+        this.$$.eYo.App.Document.doDownload()
       }
     }
   }
