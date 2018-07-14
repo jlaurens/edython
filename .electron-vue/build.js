@@ -31,7 +31,9 @@ function clean () {
 }
 
 function build () {
-  greeting()
+  console.log('>')
+  console.log('> Start building')
+  console.log('> ==============')
 
   del.sync(['dist/electron/*', '!.gitkeep'])
 
@@ -50,6 +52,9 @@ function build () {
     process.exit()
   })
 
+  console.log('>')
+  console.log('> Main config')
+  console.log('> -----------')
   pack(mainConfig).then(result => {
     results += result + '\n\n'
     m.success('main')
@@ -60,6 +65,9 @@ function build () {
     process.exit(1)
   })
 
+  console.log('> ')
+  console.log('> Renderer config')
+  console.log('> ---------------')
   pack(rendererConfig).then(result => {
     results += result + '\n\n'
     m.success('renderer')
@@ -110,22 +118,4 @@ function web () {
 
     process.exit()
   })
-}
-
-function greeting () {
-  const cols = process.stdout.columns
-  let text = ''
-
-  if (cols > 85) text = 'lets-build'
-  else if (cols > 60) text = 'lets-|build'
-  else text = false
-
-  if (text && !isCI) {
-    say(text, {
-      colors: ['yellow'],
-      font: 'simple3d',
-      space: false
-    })
-  } else console.log(chalk.yellow.bold('\n  lets-build'))
-  console.log()
 }
