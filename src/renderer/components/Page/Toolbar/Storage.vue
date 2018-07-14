@@ -24,16 +24,6 @@
         step: 1
       }
     },
-    computed: {
-      documentPath: {
-        get: function () {
-          return this.$store.state.Document.path
-        },
-        set: function (new_path) {
-          this.$store.commit('DOC_SET_PATH', new_path)
-        }
-      }
-    },
     components: {
       IconBase,
       IconNew,
@@ -48,7 +38,7 @@
     },
     methods: {
       doNew: function () {
-        this.$$.eYo.App.Document.doClear()
+        this.$$.eYo.App.Document.doNew()
       },
       doOpen: function () {
         this.$$.eYo.App.Document.doOpen()

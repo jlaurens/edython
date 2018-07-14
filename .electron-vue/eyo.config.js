@@ -15,6 +15,7 @@ var ConfigEyo = function (target, dist, env) {
       no_xregexp: false,
       no_brython: false,
       no_resources: false,
+      no_polyfills: false,
     },
     renderer: {
       no_tippy: false,
@@ -24,6 +25,7 @@ var ConfigEyo = function (target, dist, env) {
       no_xregexp: false,
       no_brython: false,
       no_resources: false,
+      no_polyfills: false,
     },
     test: {
       no_tippy: false,
@@ -33,6 +35,7 @@ var ConfigEyo = function (target, dist, env) {
       no_xregexp: false,
       no_brython: false,
       no_resources: false,
+      no_polyfills: false,
     }   
   } [env]
   if (!this.options) {
@@ -258,6 +261,7 @@ ConfigEyo.prototype.getConfig = function () {
   this.enableEdython(config)
   this.enableTippy(config)
   this.enableResources(config)
+  this.enablePolyFills(config)
   return config
 }
 

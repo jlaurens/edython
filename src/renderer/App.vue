@@ -9,15 +9,17 @@
     name: 'edython',
     created () {
       // put this preload for main-window to give it prompt()
-      var self = this
-      var ipcRenderer = require('electron').ipcRenderer
-      ipcRenderer.on('new', self.$$.eYo.App.Document.doNew)
-      ipcRenderer.on('open', self.$$.eYo.App.Document.doOpen)
-      ipcRenderer.on('save', self.$$.eYo.App.Document.doSave)
-      ipcRenderer.on('saveas', self.$$.eYo.App.Document.doSaveAs)
-      // const ipcRenderer = require('electron').ipcRenderer
-      window.prompt = function (text, defaultText) {
-        return ipcRenderer.sendSync('prompt', {text: text, defaultText: defaultText})
+      if (!process.env.isWeb) {
+        var ipcRenderer = this.$$.electron.ipcRenderer
+        // we *are* in electron
+        ipcRenderer.on('new', this.$$.eYo.App.Document.doNew)
+        ipcRenderer.on('open', this.$$.eYo.App.Document.doOpen)
+        ipcRenderer.on('save', this.$$.eYo.App.Document.doSave)
+        ipcRenderer.on('saveas', this.$$.eYo.App.Document.doSaveAs)
+        // const ipcRenderer = require('electron').ipcRenderer
+        window.prompt = function (text, defaultText) {
+          return ipcRenderer.sendSync('prompt', {text: text, defaultText: defaultText})
+        }
       }
     }
   }

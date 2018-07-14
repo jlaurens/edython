@@ -80,8 +80,9 @@
     },
     methods: {
       doSite (url) {
-        if (this.electron && this.electron.shell) {
-          this.electron.shell.openExternal(url)
+        if (this.$$.electron && this.$$.electron.shell) {
+          // we *are i electron
+          this.$$.electron.shell.openExternal(url)
         } else {
           var win = window.open(url, '_blank')
           win.focus()

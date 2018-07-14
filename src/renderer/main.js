@@ -24,16 +24,17 @@ import {TweenLite} from 'gsap/TweenMax' // eslint-disable-line no-unused-vars
 
 eYo.App.Stacktrace = Stacktrace
 
-eYo.App.bus = new Vue()
-
-Vue.prototype.$$ = {
+var controller = {
   goog,
   eYo: eYo,
   Blockly: Blockly,
   pako: pako,
-  bus: eYo.App.bus,
-  TweenLite: TweenLite
+  bus: new Vue(),
+  TweenLite: TweenLite,
+  process: process
 }
+
+Vue.prototype.$$ = controller
 
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
@@ -43,20 +44,9 @@ Vue.use(VueSplit)
 Vue.use(VueTippy, eYo.Tooltip.options)
 
 if (!process.env.IS_WEB) {
-  Vue.prototype.electron = require('electron')
+  Vue.prototype.$$.electron = require('electron')
   Vue.use(require('vue-electron'))
 }
-
-/* eslint-disable no-new */
-let root = new Vue({
-  components: { App },
-  router,
-  store,
-  template: '<App/>'
-}).$mount('#app')
-
-console.log('Launching brython')
-brython()
 
 eYo.App.doDomToPref = function (dom) {
   var children = dom.childNodes
@@ -78,15 +68,15 @@ eYo.App.doDomToPref = function (dom) {
             if (prefs) {
               try {
                 if (prefs.selectedPanel) {
-                  root.$store.commit('UI_SET_SELECTED_PANEL', prefs.selectedPanel)
+                  store.commit('UI_SET_SELECTED_PANEL', prefs.selectedPanel)
                 }
                 if (goog.isString(prefs.flyoutCategory)) {
-                  root.$store.commit('UI_SET_FLYOUT_CATEGORY', prefs.flyoutCategory)
+                  store.commit('UI_SET_FLYOUT_CATEGORY', prefs.flyoutCategory)
                 }
                 // close at last because it is an animation
                 if (goog.isDef(prefs.flyoutClosed)) {
                   Vue.nextTick(function () {
-                    root.$store.commit('UI_SET_FLYOUT_CLOSED', prefs.flyoutClosed)
+                    store.commit('UI_SET_FLYOUT_CLOSED', prefs.flyoutClosed)
                   })
                 }
               } catch (err) {
@@ -101,16 +91,25 @@ eYo.App.doDomToPref = function (dom) {
   }
 }
 
-eYo.App.Document = {
+eYo.App.Document = process.env.isWeb ? {
+  doNew: function () {
+  },
+  doOpen: function () {
+  },
+  doSave: function () {
+  },
+  doSaveAs: function () {
+  }
+} : {
   getDeflate: function () {
     var dom = eYo.App.workspace.eyo.toDom(true)
     var prefs = {}
-    var value = root.$store.state.UI.selectedPanel
+    var value = store.state.UI.selectedPanel
     if (value) {
       prefs.selectedPanel = value
     }
-    prefs.flyoutClosed = root.$store.state.UI.flyoutClosed
-    value = root.$store.state.UI.flyoutCategory
+    prefs.flyoutClosed = store.state.UI.flyoutClosed
+    value = store.state.UI.flyoutCategory
     if (value) {
       prefs.flyoutCategory = value
     }
@@ -120,16 +119,22 @@ eYo.App.Document = {
     ), dom.firstChild)
     let oSerializer = new XMLSerializer()
     var content = '<?xml version="1.0" encoding="utf-8"?>' + oSerializer.serializeToString(dom)
-    let deflate = root.$store.state.Document.ecoSave ? root.$$.pako.gzip(content) : content // use gzip to ungzip from the CLI
+    let deflate = store.state.Document.ecoSave ? pako.gzip(content) : content // use gzip to ungzip from the CLI
     return deflate
   },
   doClear: function () {
-    root.$$.bus.$emit('new-document')
-    root.$$.eYo.App.workspace.clearUndo()
-    root.documentPath = undefined
-    root.$store.commit('UI_STAGE_UNDO')
-    root.$store.commit('DOC_SET_ECO_SAVE', root.$store.state.Config.ecoSave)
-    root.$store.commit('DOC_SET_PATH', undefined)
+    controller.bus.$emit('new-document')
+    eYo.App.workspace.clearUndo()
+    store.commit('UI_STAGE_UNDO')
+    store.commit('DOC_SET_ECO_SAVE', store.state.Config.ecoSave)
+    store.commit('DOC_SET_PATH', undefined)
+  },
+  readString: function (str) {
+    var parser = new DOMParser()
+    var dom = parser.parseFromString(str, 'application/xml')
+    eYo.App.workspace.eyo.fromDom(dom)
+    eYo.App.workspace.clearUndo()
+    eYo.App.doDomToPref(dom)
   },
   readFile: function (fileName) {
     require('fs').readFile(fileName, (err, content) => {
@@ -140,12 +145,12 @@ eYo.App.Document = {
       // let dom = eYo.Xml.workspaceToDom(eYo.App.workspace, true)
       // let oSerializer = new XMLSerializer()
       // let content = oSerializer.serializeToString(dom)
-      // let deflate = root.$$.pako.gzip(content) // use gzip to ungzip from the CLI
+      // let deflate = pako.gzip(content) // use gzip to ungzip from the CLI
       var inflate
       var ecoSave
       try {
         // is it compressed ?
-        inflate = root.$$.pako.ungzip(content) // one can also ungzip from the CLI
+        inflate = pako.ungzip(content) // one can also ungzip from the CLI
         ecoSave = true
       } catch (err) {
         // I guess not
@@ -153,15 +158,11 @@ eYo.App.Document = {
         ecoSave = false
       }
       try {
-        root.$$.eYo.App.Document.doClear()
-        root.$store.commit('DOC_SET_ECO_SAVE', ecoSave)
+        eYo.App.Document.doClear()
+        store.commit('DOC_SET_ECO_SAVE', ecoSave)
         var str = goog.crypt.utf8ByteArrayToString(inflate)
-        var parser = new DOMParser()
-        var dom = parser.parseFromString(str, 'application/xml')
-        root.$$.eYo.App.workspace.eyo.fromDom(dom)
-        root.$store.commit('DOC_SET_PATH', fileName)
-        root.$$.eYo.App.workspace.clearUndo()
-        root.$$.eYo.App.doDomToPref(dom)
+        eYo.App.readString(str)
+        store.commit('DOC_SET_PATH', fileName)
       } catch (err) {
         console.error('ERROR:', err)
       }
@@ -180,7 +181,7 @@ eYo.App.Document = {
     return defaultPath
   },
   doOpen: function () {
-    var defaultPath = root.$$.eYo.App.Document.getDocumentPath()
+    var defaultPath = eYo.App.Document.getDocumentPath()
     require('electron').remote.dialog.showOpenDialog({
       defaultPath: defaultPath,
       filters: [{
@@ -195,12 +196,12 @@ eYo.App.Document = {
         console.log('Opération annulée')
         return
       }
-      root.$$.eYo.App.Document.readFile(fileName)
+      eYo.App.Document.readFile(fileName)
     })
   },
   doWriteContent: function (deflate) {
     var path = require('path')
-    var defaultPath = path.join(root.$$.eYo.App.Document.getDocumentPath(), 'Sans titre.eyo')
+    var defaultPath = path.join(eYo.App.Document.getDocumentPath(), 'Sans titre.eyo')
     const {dialog} = require('electron').remote
     dialog.showSaveDialog({
       defaultPath: defaultPath,
@@ -217,8 +218,8 @@ eYo.App.Document = {
       if (!fs.existsSync(dirname)) {
         fs.mkdirSync(dirname)
       }
-      root.$store.commit('DOC_SET_PATH', filePath)
-      root.$$.eYo.App.Document.writeContentToFile(filePath, deflate)
+      store.commit('DOC_SET_PATH', filePath)
+      eYo.App.Document.writeContentToFile(filePath, deflate)
     })
   },
   writeContentToFile: function (path, deflate) {
@@ -226,52 +227,66 @@ eYo.App.Document = {
       if (err) {
         alert('An error ocurred creating the file ' + err.message)
       } else {
-        root.$store.commit('UI_STAGE_UNDO')
-        root.$$.bus.$emit('saveDidSucceed')
+        store.commit('UI_STAGE_UNDO')
+        controller.bus.$emit('saveDidSucceed')
       }
     })
   },
   doSave: function () {
-    let deflate = root.$$.eYo.App.Document.getDeflate()
-    var documentPath = root.$store.state.Document.path
+    let deflate = eYo.App.Document.getDeflate()
+    var documentPath = store.state.Document.path
     if (documentPath) {
-      root.$$.eYo.App.Document.writeContentToFile(documentPath, deflate)
+      eYo.App.Document.writeContentToFile(documentPath, deflate)
     } else {
-      root.$$.eYo.App.Document.doWriteContent(deflate)
+      eYo.App.Document.doWriteContent(deflate)
     }
   },
   doSaveAs: function () {
-    let deflate = root.$$.eYo.App.Document.getDeflate()
-    root.$$.eYo.App.Document.doWriteContent(deflate)
+    let deflate = eYo.App.Document.getDeflate()
+    eYo.App.Document.doWriteContent(deflate)
+  },
+  doNew: function () {
+    eYo.App.Document.doClear()
   }
 }
 
-root.$$.eYo.App.didClearUndo = function () {
+eYo.App.didClearUndo = function () {
   // console.log('didClearUndo')
-  root.$store.commit('UI_SET_UNDO_COUNT', 0)
-  root.$store.commit('UI_SET_REDO_COUNT', 0)
-  if (root.$store.state.UI.undoStage > 0) {
+  store.commit('UI_SET_UNDO_COUNT', 0)
+  store.commit('UI_SET_REDO_COUNT', 0)
+  if (store.state.UI.undoStage > 0) {
     // the last saved state won't ever be reached
-    root.$store.commit('UI_SET_UNDO_STAGE', -1)
+    store.commit('UI_SET_UNDO_STAGE', -1)
   }
 }
-root.$$.eYo.App.didProcessUndo = function () {
+eYo.App.didProcessUndo = function () {
   // console.log('didProcessUndo')
-  root.$store.commit('UI_SET_UNDO_COUNT', root.$$.eYo.App.workspace.undoStack_.length)
-  root.$store.commit('UI_SET_REDO_COUNT', root.$$.eYo.App.workspace.redoStack_.length)
+  store.commit('UI_SET_UNDO_COUNT', eYo.App.workspace.undoStack_.length)
+  store.commit('UI_SET_REDO_COUNT', eYo.App.workspace.redoStack_.length)
 }
-root.$$.eYo.App.didUnshiftUndo = function () {
-  root.$store.commit('UI_SET_UNDO_STAGE', root.$$.root.$store.state.UI.undoStage - 1) // negative values make sense
+eYo.App.didUnshiftUndo = function () {
+  store.commit('UI_SET_UNDO_STAGE', store.state.UI.undoStage - 1) // negative values make sense
 }
-root.$$.eYo.App.didPushUndo = function () {
+eYo.App.didPushUndo = function () {
   // console.log('didPushUndo')
-  var count = root.$$.eYo.App.workspace.undoStack_.length
-  root.$store.commit('UI_SET_UNDO_COUNT', count)
-  if (root.$store.state.UI.undoStage >= count) {
+  var count = eYo.App.workspace.undoStack_.length
+  store.commit('UI_SET_UNDO_COUNT', count)
+  if (store.state.UI.undoStage >= count) {
     // the last saved state won't ever be reached
-    root.$store.commit('UI_SET_UNDO_STAGE', -1)
+    store.commit('UI_SET_UNDO_STAGE', -1)
   }
 }
-root.$$.eYo.App.didTouchBlock = function (block) {
-  // root.$store.commit('UI_SET_SELECTED', block) breaks everything when uncommented
+eYo.App.didTouchBlock = function (block) {
+  // store.commit('UI_SET_SELECTED', block) breaks everything when uncommented
 }
+
+/* eslint-disable no-new */
+new Vue({
+  components: { App },
+  router,
+  store,
+  template: '<App/>'
+}).$mount('#app')
+
+console.log('Launching brython')
+brython()
