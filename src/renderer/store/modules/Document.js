@@ -10,7 +10,6 @@ const state = {
 const mutations = {
   DOC_SET_PATH (state, new_path) {
     state.path = new_path
-    console.log(window)
   },
   DOC_SET_ECO_SAVE (state, yorn) {
     state.ecoSave = !!yorn

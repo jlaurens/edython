@@ -2,7 +2,8 @@ const state = {
   undoCount: 0,
   redoCount: 0,
   undoStage: 0,
-  selected: undefined, // the selected block
+  selectedBlockId: undefined, // the selected block
+  blockClipboard: undefined,
   panelsVisible: true,
   panelsWidth: '100%',
   selectedPanel: 'console',
@@ -23,10 +24,14 @@ const mutations = {
   UI_STAGE_UNDO (state) {
     state.undoCount = eYo.App.workspace.undoStack_.length
   },
-  UI_SET_SELECTED (state, block) {
-    if (!block.isInFlyout) {
-      state.selected = block
+  UI_SET_SELECTED_BLOCK (state, block) {
+    if ((block && block.isInFlyout) || block === state.selectedBlockId) {
+      return
     }
+    state.selectedBlockId = block ? block.id : null
+  },
+  UI_DID_COPY_BLOCK (state, ctxt) {
+    state.blockClipboard = ctxt.xml
   },
   UI_SET_PANELS_VISIBLE (state, yorn) {
     state.panelsVisible = yorn
