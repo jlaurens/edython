@@ -1,4 +1,4 @@
-#/usr/bin/env
+#/usr/bin/env bash
 cd "$(dirname "$0")/.."
 echo "Working directory: $(pwd)"
 mkdir -p build/base
