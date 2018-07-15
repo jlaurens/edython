@@ -774,6 +774,16 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
           }
         }
         return {validated: newValue}
+      },
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+          var current = this.data.name.get()
+          var item = eYo.Model.functions.getItem(current) || eYo.Model.stdtypes.getItem(current)
+          if (!item) {
+            // this is not a known function name
+            this.save(element)
+          }
+        }
       }
     },
     backup: {

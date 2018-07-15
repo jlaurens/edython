@@ -105,7 +105,8 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('builtin__range', {
   data: {
     ary: {
       init: '3',
-      synchronize: true
+      synchronize: true,
+      xml: false
     },
     name: {
       init: 'range',

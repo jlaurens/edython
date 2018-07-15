@@ -85,7 +85,7 @@ eYo.DelegateSvg.Stmt.import_stmt.makeSubclass('math__import_stmt', {
           var current = this.data.name.get()
           var item = eYo.Model.math__module.getItem(current)
           if (!item) {
-            // this not a known function name
+            // this is not a known function name
             this.save(element)
           }
         }

@@ -4,7 +4,7 @@ echo "Working directory: $(pwd)"
 mkdir -p build/base
 #
 #"src/lib/eyo/block"
-COMPILER="bin/compiler-latest/closure-compiler-v20180506.jar"
+COMPILER="$(find bin/compiler-latest -name closure-compiler-v*.jar)"
 #java -jar "$COMPILER" --help
 rm build/base/edython.js
 

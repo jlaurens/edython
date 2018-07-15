@@ -24,6 +24,8 @@ import VueTippy from 'vue-tippy'
 
 import {TweenLite} from 'gsap/TweenMax' // eslint-disable-line no-unused-vars
 
+var FileSaver = require('file-saver')
+
 eYo.App.Stacktrace = Stacktrace
 
 var controller = {
@@ -45,7 +47,7 @@ Vue.use(BootstrapVue)
 Vue.use(VueSplit)
 Vue.use(VueTippy, eYo.Tooltip.options)
 
-if (process.env.REMOVE_ME_BABEL_ENV !== 'web') {
+if (process.env.BABEL_ENV !== 'web') {
   Vue.prototype.$$.electron = require('electron')
   Vue.use(require('vue-electron'))
 }
@@ -93,81 +95,33 @@ eYo.App.doDomToPref = function (dom) {
   }
 }
 
-eYo.App.Document = process.env.IS_WEB ? {
-  doNew: function () {
+eYo.App.Document = process.env.BABEL_ENV === 'web' ? {
+  doSave: function (ev) {
+    eYo.App.Document.doSaveAs(ev)
   },
-  doOpen: function () {
+  doSaveAs: function (ev) {
+    var documentPath = store.state.Document.path
+    var basename = documentPath && documentPath.lastIndexOf
+      ? documentPath.substr(documentPath.lastIndexOf('/') + 1)
+      : 'Sans titre'
+    if (!basename.endsWith('.eyo')) {
+      basename = basename + '.eyo'
+    }
+    let deflate = eYo.App.Document.getDeflate()
+    var file = new File([deflate], basename, {type: 'application/octet-stream'})
+    FileSaver.saveAs(file)
   },
-  doSave: function () {
-  },
-  doSaveAs: function () {
+  doOpen: function (ev) {
+    controller.bus.$emit('webUploadStart', ev)
   }
 } : {
-  getDeflate: function () {
-    var dom = eYo.App.workspace.eyo.toDom(true)
-    var prefs = {}
-    var value = store.state.UI.selectedPanel
-    if (value) {
-      prefs.selectedPanel = value
-    }
-    prefs.flyoutClosed = store.state.UI.flyoutClosed
-    value = store.state.UI.flyoutCategory
-    if (value) {
-      prefs.flyoutCategory = value
-    }
-    var str = JSON.stringify(prefs)
-    dom.insertBefore(goog.dom.createDom('prefs', null,
-      goog.dom.createTextNode(str)
-    ), dom.firstChild)
-    let oSerializer = new XMLSerializer()
-    var content = '<?xml version="1.0" encoding="utf-8"?>' + oSerializer.serializeToString(dom)
-    let deflate = store.state.Document.ecoSave ? pako.gzip(content) : content // use gzip to ungzip from the CLI
-    return deflate
-  },
-  doClear: function () {
-    controller.bus.$emit('new-document')
-    eYo.App.workspace.clearUndo()
-    store.commit('UI_STAGE_UNDO')
-    store.commit('DOC_SET_ECO_SAVE', store.state.Config.ecoSave)
-    store.commit('DOC_SET_PATH', undefined)
-  },
-  readString: function (str) {
-    var parser = new DOMParser()
-    var dom = parser.parseFromString(str, 'application/xml')
-    eYo.App.workspace.eyo.fromDom(dom)
-    eYo.App.workspace.clearUndo()
-    eYo.App.doDomToPref(dom)
-  },
   readFile: function (fileName) {
     require('fs').readFile(fileName, (err, content) => {
       if (err) {
         alert('An error ocurred reading the file ' + err.message)
         return
       }
-      // let dom = eYo.Xml.workspaceToDom(eYo.App.workspace, true)
-      // let oSerializer = new XMLSerializer()
-      // let content = oSerializer.serializeToString(dom)
-      // let deflate = pako.gzip(content) // use gzip to ungzip from the CLI
-      var inflate
-      var ecoSave
-      try {
-        // is it compressed ?
-        inflate = pako.ungzip(content) // one can also ungzip from the CLI
-        ecoSave = true
-      } catch (err) {
-        // I guess not
-        inflate = content
-        ecoSave = false
-      }
-      try {
-        eYo.App.Document.doClear()
-        store.commit('DOC_SET_ECO_SAVE', ecoSave)
-        var str = goog.crypt.utf8ByteArrayToString(inflate)
-        eYo.App.Document.readString(str)
-        store.commit('DOC_SET_PATH', fileName)
-      } catch (err) {
-        console.error('ERROR:', err)
-      }
+      eYo.App.Document.readDeflate(content, fileName)
     })
   },
   getDocumentPath: function () {
@@ -182,7 +136,7 @@ eYo.App.Document = process.env.IS_WEB ? {
     }
     return defaultPath
   },
-  doOpen: function () {
+  doOpen: function (ev) {
     var defaultPath = eYo.App.Document.getDocumentPath()
     require('electron').remote.dialog.showOpenDialog({
       defaultPath: defaultPath,
@@ -234,7 +188,7 @@ eYo.App.Document = process.env.IS_WEB ? {
       }
     })
   },
-  doSave: function () {
+  doSave: function (ev) {
     let deflate = eYo.App.Document.getDeflate()
     var documentPath = store.state.Document.path
     if (documentPath) {
@@ -243,13 +197,75 @@ eYo.App.Document = process.env.IS_WEB ? {
       eYo.App.Document.doWriteContent(deflate)
     }
   },
-  doSaveAs: function () {
+  doSaveAs: function (ev) {
     let deflate = eYo.App.Document.getDeflate()
     eYo.App.Document.doWriteContent(deflate)
-  },
-  doNew: function () {
+  }
+}
+
+eYo.App.Document.doNew = function (ev) {
+  eYo.App.Document.doClear()
+  eYo.App.Document.readString(blank)
+}
+
+eYo.App.Document.getDeflate = function () {
+  var dom = eYo.App.workspace.eyo.toDom(true)
+  var prefs = {}
+  var value = store.state.UI.selectedPanel
+  if (value) {
+    prefs.selectedPanel = value
+  }
+  prefs.flyoutClosed = store.state.UI.flyoutClosed
+  value = store.state.UI.flyoutCategory
+  if (value) {
+    prefs.flyoutCategory = value
+  }
+  var str = JSON.stringify(prefs)
+  dom.insertBefore(goog.dom.createDom('prefs', null,
+    goog.dom.createTextNode(str)
+  ), dom.firstChild)
+  let oSerializer = new XMLSerializer()
+  var content = '<?xml version="1.0" encoding="utf-8"?>' + oSerializer.serializeToString(dom)
+  let deflate = store.state.Document.ecoSave ? pako.gzip(content) : content // use gzip to ungzip from the CLI
+  return deflate
+}
+
+eYo.App.Document.doClear = function () {
+  controller.bus.$emit('new-document')
+  eYo.App.workspace.clearUndo()
+  store.commit('UI_STAGE_UNDO')
+  store.commit('DOC_SET_ECO_SAVE', store.state.Config.ecoSave)
+  store.commit('DOC_SET_PATH', undefined)
+}
+
+eYo.App.Document.readString = function (str) {
+  var parser = new DOMParser()
+  var dom = parser.parseFromString(str, 'application/xml')
+  eYo.App.workspace.eyo.fromDom(dom)
+  eYo.App.workspace.clearUndo()
+  eYo.App.doDomToPref(dom)
+}
+
+eYo.App.Document.readDeflate = function (deflate, fileName) {
+  var inflate
+  var ecoSave
+  try {
+    // is it compressed ?
+    inflate = pako.ungzip(deflate) // one can also ungzip from the CLI
+    ecoSave = true
+  } catch (err) {
+    // I guess not
+    inflate = deflate
+    ecoSave = false
+  }
+  try {
     eYo.App.Document.doClear()
-    eYo.App.Document.readString(blank)
+    store.commit('DOC_SET_ECO_SAVE', ecoSave)
+    var str = goog.crypt.utf8ByteArrayToString(inflate)
+    eYo.App.Document.readString(str)
+    store.commit('DOC_SET_PATH', fileName)
+  } catch (err) {
+    console.error('ERROR:', err)
   }
 }
 
@@ -296,6 +312,26 @@ eYo.App.didRemoveSelect = function (block) {
 
 eYo.App.didCopyBlock = function (block, xml) {
   store.commit('UI_DID_COPY_BLOCK', {block: block, xml: xml})
+}
+
+controller.bus.$on('webUploadDidStart', function (file) {
+  eYo.App.Document.fileName_ = file
+  console.log(file)
+})
+
+controller.bus.$on('webUploadEnd', function (result) {
+  var content = new Uint8Array(result)
+  eYo.App.Document.readDeflate(content, eYo.App.Document.fileName_)
+  eYo.App.Document.fileName_ = undefined
+})
+
+var ipcRenderer = require('electron').ipcRenderer
+if (ipcRenderer) {
+  // we *are* in electron
+  ipcRenderer.on('new', eYo.App.Document.doNew)
+  ipcRenderer.on('open', eYo.App.Document.doOpen)
+  ipcRenderer.on('save', eYo.App.Document.doSave)
+  ipcRenderer.on('saveas', eYo.App.Document.doSaveAs)
 }
 
 /* eslint-disable no-new */

@@ -55,6 +55,38 @@ eYo.FlyoutCategory = {
         },
       },
     },
+    {
+      type: eYo.T3.Stmt.assignment_stmt,
+      slots: {
+        assigned: {
+          slots: {
+            O: {
+              type: eYo.T3.Expr.call_expr,
+              data: 'int',
+              slots: {
+                unary: eYo.T3.Expr.builtin__input_expr
+              },
+            },
+          },
+        },
+      },
+    },
+    {
+      type: eYo.T3.Stmt.assignment_stmt,
+      slots: {
+        assigned: {
+          slots: {
+            O: {
+              type: eYo.T3.Expr.call_expr,
+              data: 'float',
+              slots: {
+                unary: eYo.T3.Expr.builtin__input_expr
+              },
+            },
+          },
+        },
+      },
+    },
     // '<edython xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0"><s eyo="assignment_stmt"><x eyo="list" slot="assigned"><x eyo="builtin__input_expr" slot="O"></x></x></s></edython>', // eYo.T3.Expr.builtin__input_expr,
     eYo.T3.Stmt.assignment_stmt,
     eYo.T3.Expr.term,

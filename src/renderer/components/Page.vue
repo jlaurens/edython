@@ -1,18 +1,21 @@
 <template>
   <div id="page">
     <page-toolbar></page-toolbar>
+    <page-web-load></page-web-load>
     <page-content></page-content>
   </div>
 </template>
 
 <script>
   import PageToolbar from './Page/Toolbar'
+  import PageWebLoad from './Page/WebLoad'
   import PageContent from './Page/Content'
   
   export default {
     name: 'page',
     components: {
       PageToolbar,
+      PageWebLoad,
       PageContent
     }
   }
