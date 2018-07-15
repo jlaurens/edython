@@ -37,7 +37,7 @@ class DB:
 
     def __init__(self, *args):
         for path in args:
-            with path.open() as f:
+            with path.open('r', encoding='utf-8') as f:
                 for line in f.readlines():
                     m = re_addDep.match(line)
                     if m:
@@ -64,7 +64,7 @@ class DB:
 
 def getRQR(p):
     RQR = []
-    with p.open() as f:
+    with p.open('r', encoding='utf-8') as f:
         RQR = [line.rstrip() for line in f.readlines()]
     return RQR
 

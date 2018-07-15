@@ -24,7 +24,7 @@ def buildDeps(library, library_name):
     out_lines2 = []
 
     for file in files:
-        with file.open() as f:
+        with file.open('r', encoding='utf-8') as f:
             relative = file.relative_to(pathRoot)
             provide = '['
             require = '['

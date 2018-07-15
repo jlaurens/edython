@@ -13,7 +13,7 @@ pathBuild.mkdir(parents=True, exist_ok=True)
 # read the build.sh, change it and save the modified file to the build
 def updateBuild(path_in, path_out, path_deps):
     re_good = re.compile(r"^--js ")
-    with path_in.open() as f:
+    with path_in.open('r', encoding='utf-8') as f:
         head = []
         tail = []
         fill = head
@@ -22,7 +22,7 @@ def updateBuild(path_in, path_out, path_deps):
                 fill = tail
             else:
                 fill.append(l)
-        with path_deps.open() as f:
+        with path_deps.open('r', encoding='utf-8') as f:
             head.append(f.read())
             head.extend(tail)
             path_out.write_text(''.join(head))
@@ -34,7 +34,7 @@ def updateBuild(path_in, path_out, path_deps):
 def updateWeb(path_in, path_out, path_deps):
     re_start = re.compile(r"^\s*<\!--\s+DYNAMIC DEPS START\s+-->\s*$")
     re_end = re.compile(r"^\s*<\!--\s+DYNAMIC DEPS END\s+-->\s*$")
-    with path_in.open() as f:
+    with path_in.open('r', encoding='utf-8') as f:
         head = []
         tail = []
         fill = head
@@ -47,7 +47,7 @@ def updateWeb(path_in, path_out, path_deps):
                 fill.append(l)
             elif fill is not None:
                 fill.append(l)
-        with path_deps.open() as f:
+        with path_deps.open('r', encoding='utf-8') as f:
             head.append(f.read())
             head.extend(tail)
             path_out.write_text(''.join(head))

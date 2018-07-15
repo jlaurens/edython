@@ -122,7 +122,7 @@ def export_model():
         do_print("}")
 
     with io.StringIO() as f:
-    # with path_out.open('w') as f:
+    # with path_out.open('w', encoding='utf-8') as f:
 
         do_head_print("""/**
  * edython
@@ -250,13 +250,13 @@ eYo.Model.{{module}}__module.getItemsInCategory = function (category, type) {
         contents = f.getvalue()
         f.close()
         contents = contents.replace("{{module}}", module)
-        with path_out.open('w') as f:
+        with path_out.open('w', encoding='utf-8') as f:
             print(contents, file = f)
 
 def import_model():
     if not path_in.exists():
         urllib.request.urlretrieve ("https://docs.python.org/3.6/library/" + module + ".html", path_in) # this line needs certification
-    with path_in.open('r') as f:
+    with path_in.open('r', encoding='utf-8') as f:
         content = f.read()
         content = content.replace('&copy;', '©')
         root = ET.fromstring(content)

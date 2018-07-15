@@ -73,7 +73,7 @@ class Types:
 
     def read(self, path):
         print('Parsing:', path)
-        with path.open() as f:
+        with path.open('r', encoding='utf-8') as f:
             data = f.read()
             parser = Parser()
             parser.feed(data)

@@ -212,7 +212,7 @@ class Model:
                 "https://docs.python.org/3.6/library/{}.html".format(self.key),
                 self.path_in
             ) # this line needs certification
-        with self.path_in.open('r') as f:
+        with self.path_in.open('r', encoding='utf-8') as f:
             content = f.read()
             f.close()
             f = None
@@ -309,7 +309,7 @@ class Model:
     def do_export(self):
 
         with io.StringIO() as self.f:
-        # with path_out.open('w') as f:
+        # with path_out.open('w', encoding='utf-8') as f:
 
             self.raw_print("""/**
  * edython
@@ -423,7 +423,7 @@ eYo.Model.{{key}}.getItemsInCategory = function (category, type) {
             contents = self.f.getvalue()
             self.f.close()
             self.f = None
-            with self.path_out.open('w') as f:
+            with self.path_out.open('w', encoding='utf-8') as f:
                 print(contents.replace('{{key}}', self.key), file=f)
 
 model = Model(pathlib.Path(__file__).parent.parent.parent, 'stdtypes')
