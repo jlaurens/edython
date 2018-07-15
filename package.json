@@ -1,7 +1,7 @@
 {
   "name": "edython",
   "version": "0.1.0",
-  "author": "jlaurens <jerome.laurens@u-bourgogne.fr>",
+  "author": "jlaurens <jlaurens@edython.eu>",
   "description": "Python made easy with Blockly and Brython",
   "license": "EUPL-1.2",
   "main": "./dist/electron/main.js",
