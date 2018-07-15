@@ -22,6 +22,7 @@
       }
     },
     components: {
+      IconBase,
       IconClap,
       IconGear
     },
