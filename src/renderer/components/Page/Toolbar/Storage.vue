@@ -9,13 +9,13 @@
     <b-btn id="toolbar-save" v-on:click="doSave()" title="Sauvegarder" v-tippy v-if="!isWeb">
       <icon-base :width="32" :height="32" icon-name="save"><icon-save-load variant="save" :step="step"/></icon-base>
     </b-btn>
-    <b-btn id="toolbar-download" v-on:click="doDownload()" title="Télécharger" v-tippy v-if="isWeb">
-      <icon-base :width="32" :height="32" icon-name="download"><icon-save-load variant="save" :step="step"/></icon-base>
-    </b-btn>
     <b-btn id="toolbar-upload" v-on:click="doUpload()" title="Téléverser" v-tippy v-if="isWeb">
       <icon-base :width="32" :height="32" icon-name="upload"><icon-save-load variant="load" :step="step"/></icon-base>
     </b-btn>
-  </b-button-group>
+    <b-btn id="toolbar-download" v-on:click="doDownload()" title="Télécharger" v-tippy v-if="isWeb">
+      <icon-base :width="32" :height="32" icon-name="download"><icon-save-load variant="save" :step="step"/></icon-base>
+    </b-btn>
+    </b-button-group>
 </template>
 
 <script>
