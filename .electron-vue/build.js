@@ -119,3 +119,5 @@ function web () {
     process.exit()
   })
 }
+
+console.log('build.js... DONE')

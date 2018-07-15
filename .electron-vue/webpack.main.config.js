@@ -10,11 +10,6 @@ const BabiliWebpackPlugin = require('babili-webpack-plugin')
 
 // remove electron dependencies when web only ?
 
-if (process.env.IS_WEB) {
-  delete dependencies['vue-electron']
-  console.log()
-}
-
 let mainConfig = {
   entry: {
     main: path.join(__dirname, '../src/main/index.js')
