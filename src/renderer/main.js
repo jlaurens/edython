@@ -45,7 +45,7 @@ Vue.use(BootstrapVue)
 Vue.use(VueSplit)
 Vue.use(VueTippy, eYo.Tooltip.options)
 
-if (!process.env.IS_WEB) {
+if (process.env.REMOVE_ME_BABEL_ENV !== 'web') {
   Vue.prototype.$$.electron = require('electron')
   Vue.use(require('vue-electron'))
 }
