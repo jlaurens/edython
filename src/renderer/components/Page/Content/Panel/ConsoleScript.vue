@@ -348,7 +348,6 @@ export default {
   }
 }
 eYo.DelegateSvg.prototype.runScript = function (block) {
-  console.log('I have catched the train.')
   var p = new window.eYo.PythonExporter()
   var code = p.export(block, true)
   console.log(code)
