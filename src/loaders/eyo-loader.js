@@ -15,7 +15,7 @@
 
 // THIS DOES NOT WORK
 
-module.exports = function(content, map, meta) {
+module.exports = function (content, map, meta) {
   // assert(content instanceof Buffer)
   // console.error("eyo-loader: ", content)
   // var inflate
@@ -240,4 +240,4 @@ module.exports = function(content, map, meta) {
   // return; // always return undefined when calling callback()
   return content
 }
-module.exports.raw= true
+module.exports.raw = true
