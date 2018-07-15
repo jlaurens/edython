@@ -25,7 +25,7 @@ def updateBuild(path_in, path_out, path_deps):
         with path_deps.open('r', encoding='utf-8') as f:
             head.append(f.read())
             head.extend(tail)
-            path_out.write_text(''.join(head))
+            path_out.write_text(''.join(head), encoding='utf-8')
             st = os.stat(path_out.as_posix())
             os.chmod(path_out.as_posix(), st.st_mode | stat.S_IEXEC)
             return 0
@@ -50,7 +50,7 @@ def updateWeb(path_in, path_out, path_deps):
         with path_deps.open('r', encoding='utf-8') as f:
             head.append(f.read())
             head.extend(tail)
-            path_out.write_text(''.join(head))
+            path_out.write_text(''.join(head), encoding='utf-8')
             return 0
     return 1
 
@@ -62,8 +62,11 @@ out = updateBuild(pathRoot / 'bin' / 'build.sh',
 out = updateWeb(pathRoot / 'src' / 'index.ejs',
                 pathRoot / 'src' / 'index.ejs',
                      pathBuild / 'deps-vue.txt')
-out = updateWeb(pathRoot / 'sandbox' / 'html' / 'toolbox.html',
-                pathRoot / 'sandbox' / 'html' / 'toolbox.html',
-                 pathBuild / 'deps-web-dev.txt')
-
+try:
+    out = updateWeb(pathRoot / 'sandbox' / 'html' / 'toolbox.html',
+                    pathRoot / 'sandbox' / 'html' / 'toolbox.html',
+                    pathBuild / 'deps-web-dev.txt')
+except:
+    # this is just a convenient method to update developer's test file
+    pass
 exit(out)
