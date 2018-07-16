@@ -30,7 +30,7 @@ function createWindow () {
     mainWindow.show()
   })
 
-  mainWindow.openDevTools({detach: true})
+  // mainWindow.openDevTools({detach: true})
 
   mainWindow.on('closed', () => {
     mainWindow = null
