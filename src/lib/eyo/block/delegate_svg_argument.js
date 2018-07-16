@@ -220,6 +220,25 @@ eYo.Consolidator.Arguments.prototype.getCheck = (function () {
  * For edython.
  */
 eYo.DelegateSvg.List.makeSubclass('argument_list', {
+  data: {
+    ary: {
+      order: 200,
+      N_ARY: Infinity,
+      Z_ARY: 0,
+      UNARY: 1,
+      BINARY: 2,
+      TERNARY: 3,
+      QUADARY: 4,
+      PENTARY: 5,
+      all: [0, 1, 2, 3, 4, 5, Infinity], // default value is Infinity
+      init: Infinity,
+      xml: false,
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        console.log('list ary did change', oldValue, newValue)
+        this.consolidate()
+      }
+    }
+  },
   list: {
     check: eYo.T3.Expr.Check.argument_any,
     consolidator: eYo.Consolidator.List,

@@ -417,6 +417,9 @@ eYo.Data.prototype.synchronizeIfUI = function (newValue) {
  * @param {Object} newValue
  */
 eYo.Data.prototype.setTrusted = function (newValue) {
+  if (this.key == 'callerFlag') {
+    console.log('DATA callerFlag:',newValue)
+  }
   if (goog.isString(newValue)) {
     var x = this.model[newValue]
     !x || (newValue = x)

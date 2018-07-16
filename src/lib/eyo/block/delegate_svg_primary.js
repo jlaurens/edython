@@ -195,7 +195,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
   data: {
     callerFlag: {
       order: 100,
-      init: false, // true when `foo` is expected instead of `foo(…)`
+      init: false, // true iff `foo` is expected instead of `foo(…)`
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
           if (this.get()) {
@@ -215,13 +215,13 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
         var f = function (slot, ary) {
           slot && slot.setIncog(newValue || ary_get !== ary)
         }
-        f(slots.z_ary, this.Z_ARY)
-        f(slots.unary, this.UNARY)
-        f(slots.binary, this.BINARY)
-        f(slots.ternary, this.TERNARY)
-        f(slots.quadary, this.QUADARY)
-        f(slots.pentary, this.PENTARY)
-        f(slots.n_ary, this.N_ARY)
+        f(slots.z_ary, ary_d.Z_ARY)
+        f(slots.unary, ary_d.UNARY)
+        f(slots.binary, ary_d.BINARY)
+        f(slots.ternary, ary_d.TERNARY)
+        f(slots.quadary, ary_d.QUADARY)
+        f(slots.pentary, ary_d.PENTARY)
+        f(slots.n_ary, ary_d.N_ARY)
       }
     },
     ary: {
@@ -366,6 +366,38 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
 })
 
 /**
+ * Fetches the named input object, getInput.
+ * This is not a very strong design but it should work, I guess.
+ * @param {!Block} block
+ * @param {String} name The name of the input.
+ * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
+ * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
+ */
+eYo.DelegateSvg.Expr.base_call_expr.prototype.getInput = function (block, name) {
+  var input = eYo.DelegateSvg.base_call_expr.superClass_.getInput.call(this, block, name)
+  if (!input) {
+    // we suppose that ary is set
+    var f = function (slot) {
+      if (!slot.isIncog()) {
+        var input = slot.getInput()
+        if (input && input.connection) {
+          var target = input.connection.targetBlock()
+          if (target && (input = target.getInput(name))) {
+            return true
+          }
+        }
+      }
+    }
+    f(slots.binary, this.BINARY)
+    || f(slots.ternary, this.TERNARY)
+    || f(slots.quadary, this.QUADARY)
+    || f(slots.pentary, this.PENTARY)
+    || f(slots.n_ary, this.N_ARY)
+  }
+  return input
+}
+
+/**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
@@ -373,21 +405,21 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
  * @suppress {globalThis}
 */
 eYo.DelegateSvg.Expr.base_call_expr.populateMenu = function (block, mgr) {
-  var caller = this.data.callerFlag
-  var current = caller.get()
+  var callerFlag_d = this.data.callerFlag
+  var caller = callerFlag_d.get()
   var content = this.contentTemplate(block)
-  var content = current
+  var content = caller
   ? goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     content,
     '(…)'
   )
   : content
   var menuItem = new eYo.MenuItem(content, function () {
-    caller.setTrusted(!current)
+    callerFlag_d.setTrusted(!caller)
   })
   mgr.addChild(menuItem, true)
-  var data = this.data.ary
-  var current_ary = data.get()
+  var ary_d = this.data.ary
+  var current_ary = ary_d.get()
   var self = this
   var F = function (ary, args) {
     if (ary !== current_ary) {
@@ -398,17 +430,17 @@ eYo.DelegateSvg.Expr.base_call_expr.populateMenu = function (block, mgr) {
         ')'
       )
       var menuItem = new eYo.MenuItem(content, self.doAndRender(block, function () {
-        data.setTrusted(ary)
-        caller.setTrusted(true)
+        ary_d.setTrusted(ary)
+        callerFlag_d.setTrusted(false)
       }, true))
       mgr.addChild(menuItem, true)
     }
   }
-  F(data.Z_ARY, '')
-  F(data.UNARY, '…')
-  F(data.BINARY, '…, …')
-  F(data.TERNARY, '…, …, …')
-  F(data.N_ARY, '…, …, …, ...')
+  F(ary_d.Z_ARY, '')
+  F(ary_d.UNARY, '…')
+  F(ary_d.BINARY, '…, …')
+  F(ary_d.TERNARY, '…, …, …')
+  F(ary_d.N_ARY, '…, …, …, ...')
   mgr.shouldSeparate()
 }
 

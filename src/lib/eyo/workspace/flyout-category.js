@@ -55,6 +55,9 @@ eYo.FlyoutCategory = {
         },
       },
     },
+    /*
+    <s eyo="assignment" xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0"><x eyo="list" slot="assigned"><x eyo="call" name="int" slot="O"><x eyo="list" slot="binary"><x eyo="input" slot="O"></x></x></x></x></s>
+    */
     {
       type: eYo.T3.Stmt.assignment_stmt,
       slots: {
@@ -64,7 +67,7 @@ eYo.FlyoutCategory = {
               type: eYo.T3.Expr.call_expr,
               data: 'int',
               slots: {
-                unary: eYo.T3.Expr.builtin__input_expr
+                O: eYo.T3.Expr.builtin__input_expr
               },
             },
           },

@@ -92,7 +92,7 @@ goog.provide('eYo.Consolidator.List')
 /**
  * List consolidator.
  * Remove empty place holders, add separators,
- * order non empty place holders.
+ * order non empty placeholders.
  * Main entries: consolidate and getInput.
  * The idea is to create the input elements
  * only when needed.
