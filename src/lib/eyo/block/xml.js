@@ -468,18 +468,6 @@ eYo.Delegate.prototype.tagName = function (block) {
   return (tag && 'eyo:' + tag) || block.type
 }
 
-goog.require('eYo.DelegateSvg.Expr.primary')
-
-/**
- * The xml tag name of this block, as it should appear in the saved data.
- * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return true if the given value is accepted, false otherwise
- */
-eYo.DelegateSvg.Expr.primary.prototype.tagName = function (block) {
-  return block.type
-}
-
 goog.require('eYo.DelegateSvg.Group')
 
 goog.require('eYo.DelegateSvg.List')
@@ -959,23 +947,41 @@ eYo.Xml.fromDom = function (block, element) {
 goog.require('eYo.DelegateSvg.Primary')
 
 /**
- * Set the operator from the element's tagName.
+ * Set the variant and option from the `eyo` attribute.
  * @param {!Blockly.Block} block
  * @param {!Element} element dom element to be completed.
  * @override
  */
 eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element) {
+  eYo.Xml.fromDom(block, element)
   var type = element.getAttribute('eyo')
   var option_d = this.data.option
-  if (name === eYo.T3.Expr.call_expr.substring(4)) {
+  if (type === eYo.T3.Expr.call_expr.substring(4)) {
     option_d.set(option_d.CALL_EXPR)
-  } else if (name === eYo.T3.Expr.slicing.substring(4)) {
+  } else if (type === eYo.T3.Expr.slicing.substring(4)) {
     option_d.set(option_d.SLICING)
   } else {
     option_d.set(option_d.NONE)
+    var variant_d = this.data.variant
+    if (type === eYo.T3.Expr.attributeref.substring(4)) {
+      variant_d.set(variant_d.PARENT_NAME)
+    } else if (this.slots.primary.isRequiredFromDom()) {
+      variant_d.set(variant_d.PRIMARY_NAME)
+    } else {
+      variant_d.set(variant_d.NAME)
+    }
   }
-  eYo.Xml.fromDom(block, element)
   return block
+}
+
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * For edython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return true if the given value is accepted, false otherwise
+ */
+eYo.DelegateSvg.Expr.primary.prototype.tagName = function (block) {
+  return block.type
 }
 
 goog.provide('eYo.Xml.Comparison')
