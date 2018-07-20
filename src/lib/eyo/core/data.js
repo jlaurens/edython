@@ -59,7 +59,7 @@ eYo.Data = function (owner, key, model) {
       if (!goog.isFunction(xml.fromDom)) {
         delete xml.fromDom
       }
-    } else if (key === 'variant' || key === 'subtype') {
+    } else if (key === 'variant' || key === 'option' || key === 'subtype') {
       model.xml = false
     }
   }
@@ -129,6 +129,7 @@ eYo.Data.prototype.internalSet = function (newValue) {
   var oldValue = this.value_
   this.willChange(oldValue, newValue)
   this.value_ = newValue
+  this.isChanging(oldValue, newValue)
   this.didChange(oldValue, newValue)
 }
 
@@ -342,6 +343,47 @@ eYo.Data.prototype.didChange = function (oldValue, newValue) {
 }
 
 /**
+ * Before the didChange message is sent.
+ * The signature is `isChanging( oldValue, newValue ) → void`
+ * May be overriden by the model.
+ * No undo message is yet sent but the data has recorded the new value.
+ * Other object may change to conform to this new state,
+ * before undo events are posted.
+ * @param {Object} oldValue
+ * @param {Object} newValue
+ * @return undefined
+ */
+eYo.Data.prototype.isChanging = function (oldValue, newValue) {
+  if (this.isChanging_lock) {
+    return
+  }
+  this.isChanging_lock = true
+  try {
+    if (goog.isFunction(this.model.isChanging)) {
+      if (this.model_isChanging_lock) {
+        // no built in behaviour yet
+        return
+      }
+      this.model_isChanging_lock = true
+      try {
+        this.model.isChanging.call(this, oldValue, newValue)
+      } catch (err) {
+        console.error(err)
+        throw err
+      } finally {
+        delete this.model_isChanging_lock
+      }
+      return
+    }
+  } catch (err) {
+    console.error(err)
+    throw err
+  } finally {
+    delete this.isChanging_lock
+  }
+}
+
+/**
  * Wether a value change fires an undo event.
  * May be overriden by the model.
  */
@@ -471,6 +513,9 @@ eYo.Data.prototype.setTrusted__ = function (newValue) {
  * @param {Object} newValue
  */
 eYo.Data.prototype.set = function (newValue) {
+  if (this.key === 'variant') {
+    console.log(newValue)
+  }
   if (goog.isNumber(newValue)) {
     var all = this.getAll()
     if (all && goog.isDefAndNotNull(all = all[newValue])) {

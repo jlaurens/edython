@@ -309,7 +309,7 @@ eYo.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (block, mgr
   var show = !this.data.comment.isIncog()
   var content =
   eYo.Do.createSPAN(show ? eYo.Msg.Placeholder.REMOVE_COMMENT : eYo.Msg.Placeholder.ADD_COMMENT, null)
-  var menuItem = new eYo.MenuItem(content, block.eyo.doAndRender(block, function () {
+  var menuItem = mgr.newMenuItem(content, block.eyo.doAndRender(block, function () {
     this.data.comment.setIncog(show)
   }))
   mgr.addChild(menuItem, true)
@@ -415,7 +415,7 @@ eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = 
       eYo.Do.createSPAN(key, 'eyo-code-reserved'),
       eYo.Do.createSPAN(' …', 'eyo-code-placeholder')
     )
-    var menuItem = new eYo.MenuItem(content, function () {
+    var menuItem = mgr.newMenuItem(content, function () {
       block.eyo.data.variant.set(key)
     })
     mgr.addChild(menuItem, true)
@@ -648,7 +648,7 @@ eYo.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (bl
   }
   var F = function (content, variant) {
     if (variant !== current) {
-      var menuItem = new eYo.MenuItem(content, function () {
+      var menuItem = mgr.newMenuItem(content, function () {
         data.set(variant)
       })
       mgr.addChild(menuItem)

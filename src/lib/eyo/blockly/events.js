@@ -109,7 +109,8 @@ goog.require('eYo.Data')
 
 /**
 * set the value of the property,
-* without validation but with undo and synchronization
+* without validation but with undo and synchronization.
+* `willChange` message is sent just before undo registration.
 * @param {Object} newValue
 */
 eYo.Data.prototype.setTrusted__ = function (newValue) {
@@ -121,11 +122,12 @@ eYo.Data.prototype.setTrusted__ = function (newValue) {
     eyo.skipRendering()
     var oldValue = this.value_
     this.willChange(oldValue, newValue)
+    this.value_ = newValue
+    this.isChanging(oldValue, newValue)
     if (!this.noUndo && Blockly.Events.isEnabled()) {
       Blockly.Events.fire(new Blockly.Events.BlockChange(
         block, eYo.Const.Event.DATA + this.key, null, oldValue, newValue))
     }
-    this.value_ = newValue
     this.didChange(oldValue, newValue)
     eyo.consolidate(block)
     this.synchronizeIfUI(newValue)

@@ -194,7 +194,12 @@ eYo.Consolidator.List.prototype.disposeAtI = function (io, i) {
   if (!goog.isNumber(i)) {
     i = io.i
   }
-  io.list[i].dispose()
+  var input = io.list[i]
+  var c8n = input.connection
+  if (c8n && c8n.isConnected()) {
+    c8n.disconnect()
+  }
+  input.dispose()
   io.list.splice(i, 1)
   io.edited = true
   return this.setupIO(io)
@@ -405,35 +410,43 @@ eYo.Consolidator.List.prototype.consolidate_unconnected = function (io) {
   // This is because the placeholder may have been connected
   // before, undoing will be easier.
   this.setupIO(io, 0)
-  if (io.eyo) {
-    while (true) {
-      if (io.c8n.eyo.s7r_) {
-        this.disposeAtI(io)
-        if (this.setupIO(io, 0)) {
-          continue
+  var ary = this.data.ary
+  if (ary > 0) {
+    if (io.eyo) {
+      while (true) {
+        if (io.c8n.eyo.s7r_) {
+          this.disposeAtI(io)
+          if (this.setupIO(io, 0)) {
+            continue
+          }
+          return
         }
+        // we found it
+        // remove anything behind
+        if (this.nextInput(io)) {
+          do {
+            this.disposeAtI(io)
+          } while (this.setupIO(io))
+        }
+        // Always finalize at last step
+        --io.i
+        this.setupIO(io)
+        this.doFinalizePlaceholder(io,
+          eYo.Do.Name.middle_name, this.data.empty)
         return
       }
-      // we found it
-      // remove anything behind
-      if (this.nextInput(io)) {
-        do {
-          this.disposeAtI(io)
-        } while (this.setupIO(io))
-      }
-      // Always finalize at last step
-      --io.i
-      this.setupIO(io)
-      this.doFinalizePlaceholder(io,
-        eYo.Do.Name.middle_name, this.data.empty)
-      return
+      // unreachable code
     }
-    // unreachable code
+    // create an input
+    this.insertPlaceholder(io)
+    this.doFinalizePlaceholder(io,
+      eYo.Do.Name.middle_name, this.data.empty)
+  } else {
+    // remove everything
+    while (this.setupIO(io, 0)) {
+      this.disposeAtI(io)
+    }
   }
-  // create an input
-  this.insertPlaceholder(io)
-  this.doFinalizePlaceholder(io,
-    eYo.Do.Name.middle_name, this.data.empty)
 }
 
 /**
@@ -457,25 +470,29 @@ eYo.Consolidator.List.prototype.doAry = function (io) {
     this.setupIO(io, 0)
     while (this.nextInput(io)) {
       if (io.c8n.isConnected()) {
-        if (--ary) {
+        if (ary > 0) {
+          // this connected entry is required
+          --ary
           continue
         }
+        // this connected entry is *en trop*
+        // remove everything
         // skip the connection
-        if (this.nextInput(io)) {
-          while (this.nextInput(io)) {
-            this.disposeAtI(io)
-          }
-        }
+        do {
+          this.disposeAtI(io)
+        } while (this.nextInput(io));
+        break
       }
     }
     if (!ary) {
       // all the arguments are filled
       // disable all the separators
-      this.setupIO(io, 0)
-      while (this.nextInput(io)) {
-        if (!io.c8n.isConnected()) {
-          io.c8n.eyo.disabled_ = true
-        }
+      if (this.setupIO(io, 0)) {
+        do {
+          if (!io.c8n.isConnected()) {
+            io.c8n.eyo.disabled_ = true
+          }
+        } while (this.nextInput(io));
       }
     }
   }
@@ -613,7 +630,7 @@ eYo.Consolidator.List.prototype.getInput = function (block, name, dontCreate) {
       }
     } while (this.nextInput(io))
     var ary = this.data.ary
-    if (this.ary_ < Infinity) {
+    if (ary < Infinity) {
       this.setupIO(io, 0)
       while (this.nextInput(io)) {
         if (io.c8n.isConnected()) {

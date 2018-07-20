@@ -109,10 +109,12 @@ eYo.DelegateSvg.Stmt.import_stmt.makeSubclass('cmath__import_stmt', {
             var ary = item.ary
             this.data.ary.setTrusted(goog.isDef(ary) ? ary: this.data.ary.N_ARY)
             this.data.isOptionalUnary.setTrusted(goog.isDef(item.mandatory) && !item.mandatory || !item.ary)
+            this.data.mandatory.setTrusted(item.mandatory)
           }
         } else {
           this.data.ary.setTrusted(this.data.ary.N_ARY)
           this.data.isOptionalUnary.setTrusted(true)
+          this.data.mandatory.setTrusted(0)
         }
       },
       consolidate: /** @suppress {globalThis} */ function () {
@@ -158,7 +160,7 @@ eYo.DelegateSvg.Expr.cmath__call_expr.populateMenu = function (block, mgr) {
         item.names[0],
         args
       )
-      var menuItem = new eYo.MenuItem(content, function () {
+      var menuItem = mgr.newMenuItem(content, function () {
         eyo.data.name.set(item.names[0])
       })
       mgr.addChild(menuItem, true)
@@ -179,7 +181,7 @@ eYo.DelegateSvg.Expr.cmath__call_expr.populateMenu = function (block, mgr) {
   F = function (i) {
     var category = categories[i]
     if (i !== item_get.category) {
-      var menuItem = new eYo.MenuItem(contents[category] || category, function () {
+      var menuItem = mgr.newMenuItem(contents[category] || category, function () {
         var items = eYo.Model.cmath__module.getItemsInCategory(i)
         var item = eYo.Model.cmath__module.getItem(items[0])
         eyo.data.name.set(item.names[0])
@@ -241,6 +243,7 @@ eYo.DelegateSvg.Expr.cmath__call_expr.makeSubclass('cmath__const', {
     },
     ary: null,
     isOptionalUnary: null,
+    mandatory: null,
     name: {
       all: ['pi', 'e', 'tau', 'inf', 'nan', 'infj', 'nanj'],
       init: 'pi',
@@ -282,7 +285,7 @@ eYo.DelegateSvg.Expr.cmath__const.populateMenu = function (block, mgr) {
       module,
         name
       )
-      var menuItem = new eYo.MenuItem(content, function () {
+      var menuItem = mgr.newMenuItem(content, function () {
         eyo.data.name.set(name)
       })
       mgr.addChild(menuItem, true)
@@ -322,8 +325,12 @@ var F = function (name, title) {
   var key = 'cmath__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
-    type: eYo.T3.Expr.cmath__call_expr,
-    data: name,
+    type: eYo.T3.Expr.call_expr,
+    data: {
+      name: name,
+      parent: 'cmath',
+      variant: eYo.Key.NAME
+    },
     title: key
   }
 }
@@ -331,12 +338,112 @@ var F_k = function (name, title) {
   var key = 'cmath__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
-    type: eYo.T3.Expr.cmath__const,
-    data: name,
+    type: eYo.T3.Expr.call_expr,
+    data: {
+      name: name,
+      parent: 'cmath',
+      variant: eYo.Key.NAME
+    },
     title: key
   }
 }
+
+eYo.FlyoutCategory.basic_cmath__module = [
+  {
+    type: eYo.T3.Expr.call_expr,
+    data: 'complex'
+  },
+  {
+    type: eYo.T3.Expr.attributeref,
+    data: 'real'
+  },
+  {
+    type: eYo.T3.Expr.attributeref,
+    data: 'imag'
+  },
+  {
+    type: eYo.T3.Expr.call_expr,
+    data: {
+      name: 'conjugate',
+      ary: 2,
+      mandatory: 0
+    }
+  },
+  {
+    type: eYo.T3.Stmt.cmath__import_stmt,
+    data: {
+      variant: eYo.Key.FROM_MODULE_IMPORT_STAR
+    }
+  },
+
+  F('phase', ''),
+  F('polar', ''),
+  F('rect', ''),
+
+  F('sqrt', 'Racine carrée (square root)'),
+  F('exp', 'Fonction exponentielle'),
+  F('log', 'Fonction logarithme népérien, donner un deuxième argument pour changer de base'),
+  F('log10', 'Fonction logarithme de base 10 avec une meilleure précision que log(x, 10)'),
+  F('cos', 'Fonction cosinus'),
+  F('sin', 'Fonction sinus'),
+  F('tan', 'Fonction tangente'),
+ 
+  F('isclose', 'Teste si deux valeurs sont proches'),
+
+  F_k('pi', '≅ π'),
+  F_k('e', 'Constante d\'Euler (≅)'),
+  F_k('tau', 'τ (≅ 2π)'),
+]
+
+var F = function (name, title) {
+  var key = 'cmath__'+name
+  title && (eYo.Tooltip.Title[key] = title)
+  return {
+    type: eYo.T3.Expr.call_expr,
+    data: {
+      name: name,
+      parent: 'cmath',
+      variant: eYo.Key.PARENT_NAME
+    },
+    title: key
+  }
+}
+var F_k = function (name, title) {
+  var key = 'cmath__'+name
+  title && (eYo.Tooltip.Title[key] = title)
+  return {
+    type: eYo.T3.Expr.call_expr,
+    data: {
+      name: name,
+      parent: 'cmath',
+      variant: eYo.Key.PARENT_NAME
+    },
+    title: key
+  }
+}
+
 eYo.FlyoutCategory.cmath__module = [
+  {
+    type: eYo.T3.Expr.call_expr,
+    data: 'complex'
+  },
+  {
+    type: eYo.T3.Expr.attributeref,
+    data: 'real'
+  },
+  {
+    type: eYo.T3.Expr.attributeref,
+    data: 'imag'
+  },
+  {
+    type: eYo.T3.Expr.call_expr,
+    data: {
+      name: 'conjugate',
+      ary: 2,
+      mandatory: 0,
+      variant: eYo.Key.PRIMARY_NAME
+    }
+  },
   {
     type: eYo.T3.Stmt.cmath__import_stmt,
     data: {

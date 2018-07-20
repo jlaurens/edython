@@ -223,26 +223,34 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
   data: {
     ary: {
       order: 200,
-      N_ARY: Infinity,
-      Z_ARY: 0,
-      UNARY: 1,
-      BINARY: 2,
-      TERNARY: 3,
-      QUADARY: 4,
-      PENTARY: 5,
-      all: [0, 1, 2, 3, 4, 5, Infinity], // default value is Infinity
       init: Infinity,
       xml: false,
+      undo: false,
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        return {validated: goog.isNumber(newValue) ? newValue : Infinity}
+      },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        console.log('list ary did change', oldValue, newValue)
-        this.consolidate()
+        this.owner.createConsolidator(this.owner.block_)
+        this.owner.consolidator.data.ary = newValue
+        this.owner.consolidate(this.owner.block_)
+      }
+    },
+    mandatory: {
+      order: 300,
+      init: 0,
+      xml: false,
+      undo: false,
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        console.log('Argument mandatory did change', oldValue, newValue)
+        this.owner.createConsolidator(this.owner.block_)
+        this.owner.consolidator.data.empty = !newValue
+        this.owner.consolidate(this.owner.block_)
       }
     }
   },
   list: {
     check: eYo.T3.Expr.Check.argument_any,
     consolidator: eYo.Consolidator.List,
-    empty: true,
     presep: ',',
     hole_value: 'name'
   }

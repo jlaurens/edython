@@ -42,7 +42,6 @@ eYo.DelegateSvg.Manager.register = function (key) {
   var prototypeName = eYo.T3.Expr[key]
   var delegateC9r, available
   if (prototypeName) {
-    (key === 'numberliteral') && console.log('Registering expression', key)
     delegateC9r = eYo.DelegateSvg.Expr[key]
     available = eYo.T3.Expr.Available
   } else if ((prototypeName = eYo.T3.Stmt[key])) {
@@ -718,13 +717,8 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
 }
 
 /**
- * Prepare the inputs.
- * The default implementation does nothing.
- * Subclassers may enable/disable an input
- * depending on the context.
- * This message is sent when the block is retrieved from some
- * untrusted xml data.
- * List managers will use consolidators to help list management.
+ * Sends a `consolidate` message to each component of the block.
+ * However, there might be some caveats related to undo management.
  * @param {!Block} block
  */
 eYo.DelegateSvg.prototype.consolidate = function (block, deep, force) {

@@ -16,6 +16,7 @@
         <b-btn-copy-python />
       </b-button-group>
       <b-button-group class="mx-1">
+        <b-btn-copy-paste :copy="false" :duplicate="true" />
         <b-btn-copy-paste :copy="true" :deep="false" />
         <b-btn-copy-paste :copy="true" :deep="true" />
         <b-btn-copy-paste :copy="false" />

@@ -420,7 +420,7 @@ eYo.Delegate.Manager.registerAll(eYo.T3.Stmt, eYo.Delegate)
  * @constructor
  */
 eYo.Delegate.prototype.consolidateType = function (block) {
-  this.setupType(block)
+  this.setupType()
 }
 
 /**
@@ -597,7 +597,8 @@ eYo.Delegate.prototype.type_ = undefined
  * @param {string} optNewType
  * @constructor
  */
-eYo.Delegate.prototype.setupType = function (block, optNewType) {
+eYo.Delegate.prototype.setupType = function (optNewType) {
+  var block = this.block_
   if (goog.isDef(optNewType) && block.type === optNewType) {
     return
   }
@@ -629,33 +630,55 @@ eYo.Delegate.prototype.setupType = function (block, optNewType) {
 }
 
 /**
+ * Set the connection check array.
+ * The connections are supposed to be configured once.
+ * This method may disconnect blocks as side effect,
+ * thus interacting with the undo manager.
+ * @param {!Blockly.Block} block to be initialized.
+ * @constructor
+ */
+eYo.Delegate.prototype.setupConnections = function () {
+  var block = this.block_
+  var model = this.getModel()
+  var D
+  var checker = function (c8n, check) {
+    goog.isFunction(check) && c8n.setCheck(check.call(this))
+  }
+  block.outputConnection && checker(block.outputConnection, model.output.check)
+  block.previousConnection && checker(block.previousConnection, model.statement.previous.check)
+  block.nextConnection && checker(block.nextConnection, model.statement.next.check)
+  this.inputSuite && this.inputSuite.connection && checker(this.inputSuite.connection, model.statement.suite.check)
+}
+
+/**
  * Initialize a block.
  * Called from block's init method.
  * @param {!Blockly.Block} block to be initialized..
  * For subclassers eventually
  */
 eYo.Delegate.prototype.initBlock = function (block) {
-  this.setupType(block)
+  this.setupType()
+  // configure the connections
   var model = this.getModel()
-  var D = model.output
-  if (D && Object.keys(D).length) {
-    block.setOutput(true, D.check)
+  var D
+  var checker = function (check) {
+    return goog.isFunction(check) ? check.call(this) : check
+  }
+  if ((D = model.output) && Object.keys(D).length) {
+    block.setOutput(true, checker.call(this, D.check))
     var eyo = block.outputConnection.eyo
     eyo.model = D
-    if (D.suite && Object.keys(D.suite).length) {
-      goog.mixin(eyo, D.suite)
-    }
   } else if ((D = model.statement) && Object.keys(D).length) {
     if (D.suite) {
-      this.inputSuite = block.appendStatementInput('suite').setCheck(D.check) // Check ?
+      this.inputSuite = block.appendStatementInput('suite').setCheck(checker.call(this, D.check)) // Check ?
       this.inputSuite.connection.eyo.model = D
     }
     if (D.next && D.next.check !== null) {
-      block.setNextStatement(true, D.next.check)
+      block.setNextStatement(true, checker.call(this, D.next.check))
       block.nextConnection.eyo.model = D.next
     }
     if (D.previous && D.previous.check !== null) {
-      block.setPreviousStatement(true, D.previous.check)
+      block.setPreviousStatement(true, checker.call(this, D.previous.check))
       block.previousConnection.eyo.model = D.previous
     }
   }

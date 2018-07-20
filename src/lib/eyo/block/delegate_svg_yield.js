@@ -90,7 +90,7 @@ eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (bloc
   var D = this.data.variant
   var current = D.get()
   var F = function (content, k) {
-    var menuItem = new eYo.MenuItem(content, function () {
+    var menuItem = mgr.newMenuItem(content, function () {
       block.eyo.data.variant.set(k)
     })
     mgr.addChild(menuItem, true)

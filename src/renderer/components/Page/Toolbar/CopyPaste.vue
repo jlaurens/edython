@@ -45,6 +45,10 @@
       copy: {
         type: Boolean,
         default: false
+      },
+      duplicate: {
+        type: Boolean,
+        default: false
       }
     },
     components: {
@@ -58,6 +62,8 @@
             this.step = 0
             this.$$.TweenLite.to(this, 0.5, {step: 1})
           }
+        } else if (this.duplicate) {
+          Blockly.duplicate_(Blockly.selected_)
         } else {
           Blockly.clipboardXml_ && eYo.App.workspace.paste(Blockly.clipboardXml_)
         }

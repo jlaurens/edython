@@ -293,7 +293,7 @@ eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr)
         eYo.Do.createSPAN(msg, 'eyo-code'),
         goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
       )
-      return new eYo.MenuItem(title, function () {
+      return mgr.newMenuItem(title, function () {
         block.eyo.data.prefix.set(prefix)
       })
     }

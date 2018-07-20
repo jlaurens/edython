@@ -172,7 +172,7 @@ eYo.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (b
     if (current !== variant ||
       (goog.isDefAndNotNull(i) && i !== i_b) ||
       (goog.isDefAndNotNull(j) && j !== j_p)) {
-      var menuItem = new eYo.MenuItem(content, function () {
+      var menuItem = mgr.newMenuItem(content, function () {
         if (goog.isDef(i)) {
           block.eyo.data.builtin.set(i)
         } else if (goog.isDef(j)) {
@@ -268,7 +268,7 @@ eYo.DelegateSvg.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function
   var variants = this.data.variant.getAll()
   var variant = block.eyo.data.variant.get()
   var F = function (content, key) {
-    var menuItem = new eYo.MenuItem(content, function () {
+    var menuItem = mgr.newMenuItem(content, function () {
       block.eyo.data.variant.set(key)
     })
     mgr.addChild(menuItem, true)
@@ -361,7 +361,7 @@ eYo.DelegateSvg.Stmt.classdef_part.prototype.populateContextMenuFirst_ = functio
   var variants = this.data.variant.getAll()
   var variant = block.eyo.data.variant.get()
   var F = function (content, key) {
-    var menuItem = new eYo.MenuItem(content, function () {
+    var menuItem = mgr.newMenuItem(content, function () {
       block.eyo.data.variant.set(key)
     })
     mgr.addChild(menuItem, true)

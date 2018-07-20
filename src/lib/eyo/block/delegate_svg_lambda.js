@@ -323,7 +323,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
             eYo.Do.createSPAN(msg),
             eYo.Do.createSPAN(' )', 'eyo-code-disabled')
           )
-          mgr.addInsertChild(new eYo.MenuItem(content, function () {
+          mgr.addInsertChild(mgr.newMenuItem(content, function () {
             eYo.Events.setGroup(true)
             try {
               var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.term)

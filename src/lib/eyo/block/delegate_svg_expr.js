@@ -222,12 +222,12 @@ eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr)
     )
     if (this.await_) {
       mgr.shouldSeparateRemove()
-      mgr.addRemoveChild(new eYo.MenuItem(content, function () {
+      mgr.addRemoveChild(mgr.newMenuItem(content, function () {
         block.eyo.data.await.set(false)
       }))
     } else {
       mgr.shouldSeparateInsert()
-      mgr.addInsertChild(new eYo.MenuItem(content, function () {
+      mgr.addInsertChild(mgr.newMenuItem(content, function () {
         block.eyo.data.await.set(true)
       }))
     }

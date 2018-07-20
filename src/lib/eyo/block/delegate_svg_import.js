@@ -202,7 +202,7 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
   var current = block.eyo.data.variant.get()
   var F = function (content, variant) {
     if (variant !== current) {
-      var menuItem = new eYo.MenuItem(content, function () {
+      var menuItem = mgr.newMenuItem(content, function () {
         block.eyo.data.variant.set(variant)
       })
       mgr.addChild(menuItem, true)

@@ -387,7 +387,7 @@ eYo.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
     }
   }
   if (block.type !== expected) {
-    this.setupType(block, expected)
+    this.setupType(expected)
     block.previousConnection.setCheck(P)
     block.nextConnection.setCheck(N)
   }
@@ -441,12 +441,12 @@ eYo.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (block, mgr
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
     )
     if (block.eyo.getProperty(block, eYo.Key.ASYNC)) {
-      mgr.addRemoveChild(new eYo.MenuItem(content, function () {
+      mgr.addRemoveChild(mgr.newMenuItem(content, function () {
         block.eyo.setProperty(block, eYo.Key.ASYNC, false)
       }))
       mgr.shouldSeparateRemove()
     } else {
-      mgr.addInsertChild(new eYo.MenuItem(content, function () {
+      mgr.addInsertChild(mgr.newMenuItem(content, function () {
         block.eyo.setProperty(block, eYo.Key.ASYNC, true)
       }))
       mgr.shouldSeparateInsert()

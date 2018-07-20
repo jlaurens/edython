@@ -107,7 +107,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.prototype.populateContextMenuFirst_ = f
       }
     }
     var F = function (candidate) {
-      var menuItem = new eYo.MenuItem(
+      var menuItem = mgr.newMenuItem(
         eYo.Do.createSPAN(candidate + ' = …', 'eyo-code'),
         has[candidate] ? function () {
           remove(candidate)
@@ -191,7 +191,7 @@ eYo.DelegateSvg.Stmt.builtin__print_stmt.prototype.populateContextMenuFirst_ = f
       }
     }
     var F = function (candidate) {
-      var menuItem = new eYo.MenuItem(
+      var menuItem = mgr.newMenuItem(
         eYo.Do.createSPAN(candidate + ' = …', 'eyo-code'),
         has[candidate] ? function () {
           remove(candidate)

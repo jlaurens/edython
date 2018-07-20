@@ -103,7 +103,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
 eYo.DelegateSvg.Stmt.except_part.prototype.consolidateType = function (block) {
   var variant = this.data.variant.get()
   var F = function (k) {
-    this.setupType(block, eYo.T3.Stmt[k])
+    this.setupType(eYo.T3.Stmt[k])
     block.nextConnection.setCheck(eYo.T3.Stmt.Next[k])
     block.previousConnection.setCheck(eYo.T3.Stmt.Previous[k])
   }
@@ -121,7 +121,7 @@ eYo.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function 
   var M = this.data.variant.model
   var current = block.eyo.data.variant.get()
   var F = function (content, k) {
-    var menuItem = new eYo.MenuItem(content, function () {
+    var menuItem = mgr.newMenuItem(content, function () {
       block.eyo.data.variant.set(k)
     })
     mgr.addChild(menuItem, true)
@@ -228,7 +228,7 @@ eYo.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (
   var M = this.data.variant.model
   var current = this.data.variant.get()
   var F = function (content, k) {
-    var menuItem = new eYo.MenuItem(content, function () {
+    var menuItem = mgr.newMenuItem(content, function () {
       block.eyo.data.variant.set(k)
     })
     mgr.addChild(menuItem, true)
@@ -310,7 +310,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
 eYo.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var current = block.eyo.data.variant.get()
   var F = function (content, key) {
-    var menuItem = new eYo.MenuItem(content, function () {
+    var menuItem = mgr.newMenuItem(content, function () {
       block.eyo.data.variant.set(key)
     })
     mgr.addChild(menuItem, true)

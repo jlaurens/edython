@@ -341,7 +341,7 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
   var variant = this.data.variant
   var current = variant.get()
   var F = function (content, newVariant) {
-    var menuItem = new eYo.MenuItem(content, function () {
+    var menuItem = mgr.newMenuItem(content, function () {
       block.eyo.data.variant.set(newVariant)
     })
     menuItem.setEnabled(newVariant !== current)
@@ -363,7 +363,7 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
   F(content, 2)
   mgr.shouldSeparate()
   if (current !== variant.TARGET_VALUE) {
-    var menuItem = new eYo.MenuItem(eYo.Msg.RENAME, function () {
+    var menuItem = mgr.newMenuItem(eYo.Msg.RENAME, function () {
       block.eyo.data.name.field.showEditor()
     })
     mgr.addChild(menuItem, true)
@@ -528,7 +528,7 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
         eYo.Do.createSPAN(' ' + op + ' ', 'eyo-code'),
         eYo.Do.createSPAN('…', 'eyo-code')
       )
-      var menuItem = new eYo.MenuItem(content, function () {
+      var menuItem = mgr.newMenuItem(content, function () {
         console.log('Change', withBitwise ? 'bitwise' : 'number', 'operator to', op)
         withBitwise ? block.eyo.data.bitwiseOperator.set(op) : block.eyo.data.numberOperator.set(op)
       })
@@ -541,7 +541,7 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
   mgr.shouldSeparate()
   F = function (value, content) {
     if (value !== current) {
-      var menuItem = new eYo.MenuItem(content, function () {
+      var menuItem = mgr.newMenuItem(content, function () {
         variant.set(value)
       })
       mgr.addChild(menuItem, true)
@@ -562,7 +562,7 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
   content =
   eYo.Do.createSPAN(withBitwise ? '+=, -=, /= …' : '<<=, >>=, &= …', 'eyo-code')
   var menuItem = (function (eyo) {
-    return new eYo.MenuItem(content, function () {
+    return mgr.newMenuItem(content, function () {
       eyo.data.operator.set(withBitwise
         ? eyo.data.numberOperator.get() : eyo.data.bitwiseOperator.get())
     })

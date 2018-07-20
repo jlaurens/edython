@@ -486,7 +486,7 @@ eYo.DelegateSvg.Expr.term.prototype.populateContextMenuFirst_ = function (block,
   var F = function (variant) {
     if (variant !== current) {
       var title = block.eyo.makeTitle(block, variant)
-      var menuItem = new eYo.MenuItem(title, function () {
+      var menuItem = mgr.newMenuItem(title, function () {
         eYo.Events.setGroup(true)
         try {
           data.set(variant)
@@ -505,7 +505,7 @@ eYo.DelegateSvg.Expr.term.prototype.populateContextMenuFirst_ = function (block,
     F(variants[i])
   }
   mgr.shouldSeparate()
-  var menuItem = new eYo.MenuItem(eYo.Msg.RENAME, function () {
+  var menuItem = mgr.newMenuItem(eYo.Msg.RENAME, function () {
     block.eyo.showEditor()
   })
   mgr.addChild(menuItem, true)

@@ -109,10 +109,12 @@ eYo.DelegateSvg.Stmt.import_stmt.makeSubclass('math__import_stmt', {
             var ary = item.ary
             this.data.ary.setTrusted(goog.isDef(ary) ? ary: this.data.ary.N_ARY)
             this.data.isOptionalUnary.setTrusted(goog.isDef(item.mandatory) && !item.mandatory || !item.ary)
+            this.data.mandatory.setTrusted(item.mandatory)
           }
         } else {
           this.data.ary.setTrusted(this.data.ary.N_ARY)
           this.data.isOptionalUnary.setTrusted(true)
+          this.data.mandatory.setTrusted(0)
         }
       },
       consolidate: /** @suppress {globalThis} */ function () {
@@ -158,7 +160,7 @@ eYo.DelegateSvg.Expr.math__call_expr.populateMenu = function (block, mgr) {
         item.names[0],
         args
       )
-      var menuItem = new eYo.MenuItem(content, function () {
+      var menuItem = mgr.newMenuItem(content, function () {
         eyo.data.name.set(item.names[0])
       })
       mgr.addChild(menuItem, true)
@@ -180,7 +182,7 @@ eYo.DelegateSvg.Expr.math__call_expr.populateMenu = function (block, mgr) {
   F = function (i) {
     var category = categories[i]
     if (i !== item_get.category) {
-      var menuItem = new eYo.MenuItem(contents[category] || category, function () {
+      var menuItem = mgr.newMenuItem(contents[category] || category, function () {
         var items = eYo.Model.math__module.getItemsInCategory(i)
         var item = eYo.Model.math__module.getItem(items[0])
         eyo.data.name.set(item.names[0])
@@ -242,6 +244,7 @@ eYo.DelegateSvg.Expr.math__call_expr.makeSubclass('math__const', {
     },
     ary: null,
     isOptionalUnary: null,
+    mandatory: null,
     name: {
       all: ['pi', 'e', 'tau', 'inf', 'nan'],
       init: 'pi',
@@ -283,7 +286,7 @@ eYo.DelegateSvg.Expr.math__const.populateMenu = function (block, mgr) {
       module,
         name
       )
-      var menuItem = new eYo.MenuItem(content, function () {
+      var menuItem = mgr.newMenuItem(content, function () {
         eyo.data.name.set(name)
       })
       mgr.addChild(menuItem, true)

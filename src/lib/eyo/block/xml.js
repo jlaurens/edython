@@ -468,6 +468,18 @@ eYo.Delegate.prototype.tagName = function (block) {
   return (tag && 'eyo:' + tag) || block.type
 }
 
+goog.require('eYo.DelegateSvg.Expr.primary')
+
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * For edython.
+ * @param {!Blockly.Block} block The owner of the receiver.
+ * @return true if the given value is accepted, false otherwise
+ */
+eYo.DelegateSvg.Expr.primary.prototype.tagName = function (block) {
+  return block.type
+}
+
 goog.require('eYo.DelegateSvg.Group')
 
 goog.require('eYo.DelegateSvg.List')
@@ -674,40 +686,50 @@ eYo.Xml.registerAllTags = function () {
       if (!type.startsWith || type.startsWith('.')) {
         continue
       }
-      var model = eYo.Delegate.Manager.getModel(type)
-      var tag = model && model.xml && model.xml.tag
-      if (!goog.isString(tag)) {
-        var m = XRegExp.exec(type, eYo.XRE.s3d)
-        if (m) {
-          tag = m.core
+      var c9r = eYo.Delegate.Manager.get(type)
+      var one_tag = function (tag) {
+        console.log('REGISTERING:', tag, type, c9r.eyo.key)
+        var already = eYo.T3.Xml.fromDom[tag]
+        if (goog.isArray(already)) {
+          if (already.indexOf(type) < 0) {
+            already.push(type)
+          }
+        } else if (goog.isString(already)) {
+          if (type !== already) {
+            eYo.T3.Xml.fromDom[tag] = already = [already, type]
+          }
         } else {
-          tag = type.substring(4)
+          eYo.T3.Xml.fromDom[tag] = type
         }
-      } else if (!tag.length) {
-        continue
+        // register the reverse
+        if (c9r) {
+          // if (!tag.startsWith('eyo:')) {
+          //   console.warn('DOUBLE eYo')
+          // }
+          // console.warn('Register:', c9r.eyo.key, tag, eYo.T3.Xml.toDom[mode][key], key)
+          c9r.eyo.tagName = eYo.T3.Xml.toDom[mode][key] || tag || key // ERROR ? Dynamic tag name ?
+        }
       }
-      // register as fromDom
-      // console.log('register ', tag)
-      var already = eYo.T3.Xml.fromDom[tag]
-      if (goog.isArray(already)) {
-        if (already.indexOf(type) < 0) {
-          already.push(type)
-        }
-      } else if (goog.isString(already)) {
-        if (type !== already) {
-          eYo.T3.Xml.fromDom[tag] = already = [already, type]
+      var model = eYo.Delegate.Manager.getModel(type)
+      var tags = model && model.xml && model.xml.tags
+      if (tags) {
+        for (var i = 0; i < tags.length; i++) {
+          var tag = tags[i]
+          one_tag(tags[i])
         }
       } else {
-        eYo.T3.Xml.fromDom[tag] = type
-      }
-      // register the reverse
-      var c9r = eYo.Delegate.Manager.get(type)
-      if (c9r) {
-        // if (!tag.startsWith('eyo:')) {
-        //   console.warn('DOUBLE eYo')
-        // }
-        // console.warn('Register:', c9r.eyo.key, tag, eYo.T3.Xml.toDom[mode][key], key)
-        c9r.eyo.tagName = eYo.T3.Xml.toDom[mode][key] || tag || key
+        var tag = model && model.xml && model.xml.tag
+        if (!goog.isString(tag)) {
+          var m = XRegExp.exec(type, eYo.XRE.s3d)
+          if (m) {
+            tag = m.core
+          } else {
+            tag = type.substring(4)
+          }
+        } else if (!tag.length) {
+          continue
+        }
+        one_tag(tag)
       }
     }
   }
@@ -851,16 +873,21 @@ eYo.Xml.fromDom = function (block, element) {
     // then fill it based on the xml data
 
     var controller = eyo
-    if ((controller &&
-      goog.isFunction(controller.fromDom)) ||
-      ((controller = eyo.xml) &&
-      goog.isFunction(controller.fromDom)) ||
-      ((controller = eYo.DelegateSvg.Manager.get(block.type)) &&
-      (controller = controller.xml) &&
-      goog.isFunction(controller.fromDom)) ||
-      ((controller = eYo.DelegateSvg.Manager.get(block.type)) &&
-      goog.isFunction(controller.fromDom))) {
-      return controller.fromDom.call(eyo, block, element)
+    if (!eyo.controller_fromDom_locked && (controller &&
+        goog.isFunction(controller.fromDom)) ||
+        ((controller = eyo.xml) &&
+        goog.isFunction(controller.fromDom)) ||
+        ((controller = eYo.DelegateSvg.Manager.get(block.type)) &&
+        (controller = controller.xml) &&
+        goog.isFunction(controller.fromDom)) ||
+        ((controller = eYo.DelegateSvg.Manager.get(block.type)) &&
+        goog.isFunction(controller.fromDom))) {
+      try {
+        eyo.controller_fromDom_locked = true
+        return controller.fromDom.call(eyo, block, element)
+      } finally {
+        delete eyo.controller_fromDom_locked
+      }
     } else {
       eyo.foreachData(function () {
         this.waitOn()
@@ -927,6 +954,28 @@ eYo.Xml.fromDom = function (block, element) {
   } finally {
     eyo.unskipRendering()
   }
+}
+
+goog.require('eYo.DelegateSvg.Primary')
+
+/**
+ * Set the operator from the element's tagName.
+ * @param {!Blockly.Block} block
+ * @param {!Element} element dom element to be completed.
+ * @override
+ */
+eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element) {
+  var type = element.getAttribute('eyo')
+  var option_d = this.data.option
+  if (name === eYo.T3.Expr.call_expr.substring(4)) {
+    option_d.set(option_d.CALL_EXPR)
+  } else if (name === eYo.T3.Expr.slicing.substring(4)) {
+    option_d.set(option_d.SLICING)
+  } else {
+    option_d.set(option_d.NONE)
+  }
+  eYo.Xml.fromDom(block, element)
+  return block
 }
 
 goog.provide('eYo.Xml.Comparison')

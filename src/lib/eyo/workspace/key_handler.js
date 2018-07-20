@@ -726,7 +726,7 @@ Ks = ['True', 'False', 'None', '...']
 for (var i = 0; (K = Ks[i++]);) {
   eYo.KeyHandler.register(K, {
     type: eYo.T3.Expr.builtin__object,
-    subtype: K
+    data: K
   })
 }
 Ks = ['is', 'is not', 'in', 'not in']
@@ -912,5 +912,14 @@ for (i = 0; (K = Ks[i++]);) {
   eYo.KeyHandler.register('… ' + K + ' …', {
     type: eYo.T3.Stmt.augmented_assignment_stmt,
     operator: K
+  })
+}
+
+// cmath
+Ks = ['real', 'imag']
+for (i = 0; (K = Ks[i++]);) {
+  eYo.KeyHandler.register('… ' + K + ' …', {
+    type: eYo.T3.Expr.object_comparison,
+    data: K
   })
 }
