@@ -690,7 +690,7 @@ eYo.Slot.prototype.save = function (element, optNoId) {
             var child = eYo.Xml.blockToDom(target, optNoId)
             if (child.firstElementChild) {
               if (!xml || !xml.noInputName) {
-                child.setAttribute(eYo.Xml.SLOT, this.key)
+                child.setAttribute(eYo.Xml.SLOT, this.getTag())
               }
               goog.dom.appendChild(element, child)
               return child
@@ -722,6 +722,18 @@ eYo.Slot.prototype.save = function (element, optNoId) {
     child.setAttribute(eYo.XmlKey.SLOT, this.key)
     goog.dom.appendChild(element, child)
   }
+}
+
+/**
+ * Get the xml tag for xml persistent storage.
+ * For edython.
+ * @param {Element} element a dom element in which to save the input
+ * @return the added child, if any
+ */
+eYo.Slot.prototype.getTag = function () {
+  var xml = this.model.xml
+  var tag = xml && xml.tag
+  return goog.isFunction(tag) ? tag() : tag || this.key
 }
 
 /**
@@ -767,6 +779,7 @@ eYo.Slot.prototype.load = function (element) {
     // find the xml child with the proper slot attribute
       var children = Array.prototype.slice.call(element.childNodes)
       var i = 0
+      var tag = this.getTag()
       while (i < children.length) {
         var child = children[i++]
         if (child.nodeType === Node.ELEMENT_NODE) {
@@ -775,7 +788,7 @@ eYo.Slot.prototype.load = function (element) {
           } else if (this.inputType === Blockly.NEXT_STATEMENT) {
             attribute = child.getAttribute(eYo.Xml.FLOW)
           }
-          if (attribute === this.key) {
+          if (attribute === tag) {
             if (child.getAttribute('eyo') === 'placeholder') {
               this.setRequiredFromDom(true)
               out = true
