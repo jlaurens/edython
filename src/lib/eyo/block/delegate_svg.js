@@ -92,7 +92,7 @@ eYo.DelegateSvg.prototype.svgPathInner_ = undefined
 eYo.DelegateSvg.prototype.svgPathHighlight_ = undefined
 
 /**
- * This is the shape used to draw an highlighted connection contour.
+ * This is the shape used to draw an highlighted connection contour. NOT ANY LONGER.
  * @type {SVGPathElement}
  * @private
  */
@@ -1010,7 +1010,7 @@ eYo.DelegateSvg.prototype.getPaddingLeft = function (block) {
     var parent = block.getParent()
     return (this.locked_ || this.isHeadOfStatement) && parent ? 0 : eYo.Font.space
   } else {
-    return eYo.Padding.l()
+    return eYo.Font.space // eYo.Padding.l()
   }
 }
 
@@ -1539,39 +1539,6 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
 }
 
 /**
- * Statement block path.
- * @param {!Blockly.Block} block
- * @private
- */
-eYo.DelegateSvg.prototype.statementPathDef_ = function (block) {
-  var w = block.width
-  var h = block.height
-  // start with the right edge
-  var steps = ['m ', w, ',0 v ', h]
-  // code duplicate: same as some code below
-  var r_stmt = eYo.Style.Path.radius()
-  var a_stmt = [' a ', r_stmt, ', ', r_stmt, ' 0 0 1 ']
-  var c8n = block.nextConnection
-  if (c8n && c8n.isConnected()) {
-    steps.push(' H 0 ')
-  } else {
-    steps.push(' H ', r_stmt)
-    steps = steps.concat(a_stmt)
-    steps.push(-r_stmt, ',', -r_stmt)
-    h -= r_stmt
-  }
-  c8n = block.previousConnection
-  if (c8n && c8n.isConnected() && c8n.targetBlock().getNextBlock() === block) {
-    steps.push(' v ', -h, ' z')
-  } else {
-    steps.push(' v ', -h + r_stmt)
-    steps = steps.concat(a_stmt)
-    steps.push(r_stmt, ',', -r_stmt, ' z')
-  }
-  return steps.join('')
-}
-
-/**
  * Block path.
  * @param {!Blockly.Block} block
  * @private
@@ -1788,9 +1755,10 @@ eYo.DelegateSvg.prototype.highlightConnection = function (block, c8n) {
   } else if (c8n.type === Blockly.OUTPUT_VALUE) {
     steps = this.valuePathDef_(block)
   } else {
+    var w = block.width
     var r = eYo.Style.Path.Selected.width / 2
     var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
-    steps = 'm ' + block.width + ',' + (-r) + a + (2 * r) + ' h ' + (-block.width) + a + (-2 * r) + ' z'
+    steps = 'm ' + w + ',' + (-r) + a + (2 * r) + ' h ' + (-w + eYo.Font.space - eYo.Padding.l()) + a + (-2 * r) + ' z'
   }
   var xy = block.getRelativeToSurfaceXY()
   var x = c8n.x_ - xy.x

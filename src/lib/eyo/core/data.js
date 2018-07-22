@@ -513,9 +513,9 @@ eYo.Data.prototype.setTrusted__ = function (newValue) {
  * @param {Object} newValue
  */
 eYo.Data.prototype.set = function (newValue) {
-  if (this.key === 'variant') {
-    console.log(newValue)
-  }
+  // if (this.key === 'variant') {
+  //   console.log(newValue)
+  // }
   if (goog.isNumber(newValue)) {
     var all = this.getAll()
     if (all && goog.isDefAndNotNull(all = all[newValue])) {

@@ -97,7 +97,7 @@ var F_s = function (name, title) {
   var key = 'random__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
-    type: eYo.T3.Stmt.random__call_stmt,
+    type: eYo.T3.Stmt.call_stmt,
     data: {
       name: name,
       parent: 'random',
@@ -115,10 +115,11 @@ eYo.FlyoutCategory.basic_random__module = [
     }
   },
   {
-    type: eYo.T3.Expr.random__call_expr,
+    type: eYo.T3.Expr.call_expr,
     data: {
       name: 'randint',
-      fromFlag: true
+      parent: 'random',
+      variant: eYo.Key.NAME
     },
     slots: {
       binary: { // implement 'main' instead of 'binary'
@@ -134,10 +135,11 @@ eYo.FlyoutCategory.basic_random__module = [
     var key = 'random__choice'
     eYo.Tooltip.Title[key] = 'Choisir aléatoirement un élément dans une liste'
     return {
-      type: eYo.T3.Expr.random__call_expr,
+      type: eYo.T3.Expr.call_expr,
       data: {
         name: 'choice',
-        fromFlag: true
+        parent: 'random',
+        variant: eYo.Key.NAME
       },
       slots: {
         unary: {
@@ -166,7 +168,8 @@ eYo.FlyoutCategory.basic_random__module = [
   {
     type: eYo.T3.Expr.random__randrange,
     data: {
-      fromFlag: true
+      parent: 'random',
+      variant: eYo.Key.NAME
     },
     slots: {
       arguments: {
@@ -178,18 +181,10 @@ eYo.FlyoutCategory.basic_random__module = [
     title: 'random__randrange'
   },
   F_s('seed', 'Mélanger aléatoirement les éléments dans une liste'),
-  {
-    type: eYo.T3.Stmt.call_stmt,
-    data: {
-      name: '',
-      parent: 'random',
-      variant: eYo.Key.NAME
-    }
-  },
   // '<x eyo="identifier" name="a"><x eyo="builtin__object" value="None" slot="definition"></x></x>',
   F('getstate', 'Obtenir l\'état du générateur aléatoire, utile pour reproduire les tirages'),
   {
-    type: eYo.T3.Stmt.random__call_stmt,
+    type: eYo.T3.Stmt.call_stmt,
     data: {
       name: 'setstate',
       parent: 'random',
@@ -231,19 +226,18 @@ eYo.FlyoutCategory.random__module = [
       variant: eYo.Key.IMPORT
     },
     slots: {
-      import: {
+      import_module: {
         slots: {
           O: {
             type: eYo.T3.Expr.term,
-            data: 'turtle'
+            data: 'random'
           }
         }
       }
     }
   },
-  eYo.T3.Stmt.import_stmt,
   {
-    type: eYo.T3.Expr.random__call_expr,
+    type: eYo.T3.Expr.call_expr,
     data: {
       name: 'randint',
       parent: 'random',
@@ -301,11 +295,5 @@ goog.mixin(eYo.Tooltip.Title, {
   random__setstate: 'Mettre l\'état du générateur aléatoire à la valeur donnée'
 })
 eYo.DelegateSvg.Random.T3s = [
-  eYo.T3.Stmt.random__import_stmt,
-  eYo.T3.Expr.random__call_expr,
-  eYo.T3.Stmt.random__call_stmt,
   eYo.T3.Expr.random__randrange,
-  eYo.T3.Stmt.random__seed_stmt,
-  eYo.T3.Stmt.random__setstate_stmt,
-  eYo.T3.Stmt.random__shuffle_stmt
 ]

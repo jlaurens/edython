@@ -183,9 +183,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         didLoad: /** @suppress {globalThis} */ function () {
           if (this.isRequiredFromDom()) {
             var variant_d = this.owner.data.variant
-            var current = variant_d.get()
-            if (current !== variant_d.NAME && current !== variant_d.BUILTIN && current !== variant_d.PARENT_NAME) {
-              variant_d.set(variant_d.NAME)
+            var variant = variant_d.get()
+            if (variant !== variant_d.PARENT_NAME && variant !== variant_d.PARENT_EXPR) {
+              if (variant === variant_d.NAME) {
+                variant_d.set(variant_d.PARENT_NAME)
+              } else /* if (variant === variant_d.EXPR) */ {
+                variant_d.set(variant_d.PARENT_EXPR)
+              }
             }
           }
         }

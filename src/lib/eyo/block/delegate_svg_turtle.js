@@ -20,6 +20,7 @@ goog.require('eYo.DelegateSvg.Stmt')
 goog.require('eYo.DelegateSvg.List')
 goog.require('eYo.DelegateSvg.Primary')
 
+goog.require('eYo.Msg')
 goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')
 
@@ -189,7 +190,11 @@ var F_expr = function (name, title) {
   title && (eYo.Tooltip.Title[key] = title)
   return {
     type: eYo.T3.Expr.call_expr,
-    data: name,
+    data: {
+      name: name,
+      parent: '',
+      variant: eYo.Key.PARENT_NAME
+    },
     title: key
   }
 }
@@ -198,7 +203,11 @@ var F_stmt = function (name, title) {
   title && (eYo.Tooltip.Title[key] = title)
   return {
     type: eYo.T3.Stmt.call_stmt,
-    data: name,
+    data: {
+      name: name,
+      parent: '',
+      variant: eYo.Key.PARENT_NAME
+    },
     title: key
   }
 }
@@ -209,7 +218,7 @@ eYo.FlyoutCategory.turtle__module = [
       variant: eYo.Key.IMPORT
     },
     slots: {
-      import: {
+      import_module: {
         slots: {
           O: {
             type: eYo.T3.Expr.term,
@@ -229,7 +238,8 @@ eYo.FlyoutCategory.turtle__module = [
             type: eYo.T3.Expr.call_expr,
             data: {
               parent: 'turtle',
-              name: 'Turtle'
+              name: 'Turtle',
+              variant: eYo.Key.PARENT_NAME
             }
           },
         },
@@ -264,8 +274,12 @@ eYo.FlyoutCategory.turtle__module = [
       assigned: {
         slots: {
           O: {
-            type: eYo.T3.Expr.turtle__call_expr,
-            data: 'stamp',
+            type: eYo.T3.Expr.call_expr,
+            data: {
+              name: 'stamp',
+              parent: '',
+              variant: eYo.Key.PARENT_NAME
+            }
           },
         },
       },
