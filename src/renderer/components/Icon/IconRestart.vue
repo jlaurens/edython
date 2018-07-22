@@ -24,18 +24,3 @@
     }
   }
 </script>
-    
-<style>
-  .icon path {
-    opacity:1;
-    fill:none;
-    fill-opacity:1;
-    stroke-width:2.25;
-    stroke-linecap:round;
-    stroke-linejoin:round;
-    stroke-miterlimit:4;
-    stroke-dasharray:none;
-    stroke-dashoffset:0;
-    stroke-opacity:1
-  }
-</style>

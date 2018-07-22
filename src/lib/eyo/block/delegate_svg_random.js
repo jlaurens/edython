@@ -23,192 +23,51 @@ goog.require('eYo.DelegateSvg.Primary')
 goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')
 
-/**
- * Class for a DelegateSvg, import random block.
- * A unique block for each module to ease forthcoming management.
- * For edython.
- */
-eYo.DelegateSvg.Stmt.import_stmt.makeSubclass('random__import_stmt', {
-  data: {
-    from: {
-      init: 'random',
-      validate: /** @suppress {globalThis} */ function (newValue) {
-        return newValue === 'random' ? {validated: newValue} : null
-      },
-      synchronize: true
-    }
-  },
-  slots: {
-    import_module: {
-      order: 1,
-      fields: {
-        label: 'import',
-        suffix: 'random'
-      },
-      wrap: null,
-      check: null
-    },
-    from: {
-      order: 2,
-      fields: {
-        label: 'from',
-        edit: 'random'
-      }
-    }
-  }
-})
-
-
-/**
- * Class for a DelegateSvg, call block.
- * As call is already a reserved message in javascript,
- * we use call_expr instead.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Expr.module__call_expr.makeSubclass('random__call_expr', {
-  data: {
-    ary: {
-      validate: /** @suppress {globalThis} */ function (newValue) {
-        var current = this.data.name.get()
-        var item = eYo.Model.random__module.getItem(current)
-        if (item) {
-          // this is known, we do not have any choice
-          var ary = this.getAll()[item.ary]
-          return newValue === ary ? {validated: newValue}: null
-        } else {
-          // this is not known, we are confident in the user
-          return {validated: newValue}
-        }
-      },
-      xml: {
-        save: /** @suppress {globalThis} */ function (element) {
-          var current = this.data.name.get()
-          var item = eYo.Model.random__module.getItem(current)
-          if (!item) {
-            // this not a known function name
-            this.save(element)
-          }
-        }
-      }
-    },
-    name: {
-      init: 'randint',
-      main: true,
-      validate: /** @suppress {globalThis} */ function (newValue) {
-        var item = eYo.Model.random__module.getItem(newValue)
-        return item ? {validated: newValue} : null
-      },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        var item = eYo.Model.random__module.getItem(newValue)
-        if (item) {
-          var type = eYo.Model.random__module.data.types[item.type]
-          if (type === 'data') {
-            this.data.callerFlag.set(true)
-          } else {
-            this.data.callerFlag.set(false)
-            var ary = item.ary
-            this.data.ary.setTrusted(goog.isDef(ary) ? ary: this.data.ary.N_ARY)
-            this.data.isOptionalUnary.setTrusted(goog.isDef(item.mandatory) && !item.mandatory || !item.ary)
-          }
-        } else {
-          this.data.ary.setTrusted(this.data.ary.N_ARY)
-          this.data.isOptionalUnary.setTrusted(true)
-        }
-      },
-      consolidate: /** @suppress {globalThis} */ function () {
-        this.didChange(undefined, this.get())
-      }
-    },
-    module: null
-  },
-  slots: {
-    module: {
-      fields: {
-        edit: 'random'
-      }
-    }
-  },
-  output: {
-    check: [eYo.T3.Expr.random__call_expr, eYo.T3.Expr.call_expr]
-  }
-})
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-eYo.DelegateSvg.Expr.random__call_expr.prototype.contentForCategory = function (block, category) {
-  var contents = {
-    "bookkeeping-functions" : 'getstate, getrandbits',
-    "functions-for-integers" : 'randrange, randint',
-    "functions-for-sequences" : 'choice, choices, sample',
-    "real-valued-distributions" : 'random, uniform, ...',
-    "alternative-generator" : ''
-  }
-  return contents[category] || category
-}
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-eYo.DelegateSvg.Expr.random__call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  eYo.DelegateSvg.Expr.module__call_expr.populateMenuModel.call(this, block, mgr, eYo.Model.random__module)
-  eYo.DelegateSvg.Expr.module__call_expr.populateMenu.call(this, block, mgr, '(…)')
-  return eYo.DelegateSvg.Expr.base_call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
-}
-
-/**
- * Class for a DelegateSvg, call statement block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Stmt.makeSubclass('random__call_stmt', {
-  link: eYo.T3.Expr.random__call_expr
-})
-
-/**
- * Get the module.
- * @param {!Blockly.Block} block The block.
- */
-eYo.DelegateSvg.Expr.random__call_expr.prototype.getModule = eYo.DelegateSvg.Stmt.random__call_stmt.prototype.getModule = function (block) {
-  return 'random'
-}
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-eYo.DelegateSvg.Stmt.random__call_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  eYo.DelegateSvg.Expr.random__call_expr.populateMenu.call(this, block, mgr)
-  return eYo.DelegateSvg.Stmt.random__call_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
-}
+// /**
+//  * Populate the context menu for the given block.
+//  * @param {!Blockly.Block} block The block.
+//  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+//  * @private
+//  */
+// eYo.DelegateSvg.Expr.random__call_expr.prototype.contentForCategory = function (block, category) {
+//   var contents = {
+//     "bookkeeping-functions" : 'getstate, getrandbits',
+//     "functions-for-integers" : 'randrange, randint',
+//     "functions-for-sequences" : 'choice, choices, sample',
+//     "real-valued-distributions" : 'random, uniform, ...',
+//     "alternative-generator" : ''
+//   }
+//   return contents[category] || category
+// }
 
 /**
  * Class for a DelegateSvg, random range block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.module__call_expr.makeSubclass('random__randrange', {
+eYo.DelegateSvg.Expr.call_expr.makeSubclass('random__randrange', {
   data: {
-    module: {
+    parent: {
       init: 'random',
     },
     name: {
       init: 'randrange',
       synchronize: true,
       xml: false
+    },
+    variant: {
+      init: eYo.Key.PARENT_NAME,
+    },
+    option: {
+      init: eYo.Key.CALL_EXPR,
+      all: [
+        eYo.Key.NONE,
+        eYo.Key.CALL_EXPR
+      ]
     }
   },
   slots: {
-    module: {
+    parent: {
       order: 10,
       fields: {
         label: '',
@@ -221,25 +80,15 @@ eYo.DelegateSvg.Expr.module__call_expr.makeSubclass('random__randrange', {
   }
 })
 
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-eYo.DelegateSvg.Expr.random__randrange.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  eYo.DelegateSvg.Expr.module__call_expr.populateMenu.call(this, block, mgr)
-  return eYo.DelegateSvg.Expr.random__randrange.superClass_.populateContextMenuFirst_.call(this, block, mgr)
-}
-
 var F = function (name, title) {
   var key = 'random__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
-    type: eYo.T3.Expr.random__call_expr,
+    type: eYo.T3.Expr.call_expr,
     data: {
       name: name,
-      fromFlag: true
+      parent: 'random',
+      variant: eYo.Key.NAME
     },
     title: key
   }
@@ -251,15 +100,17 @@ var F_s = function (name, title) {
     type: eYo.T3.Stmt.random__call_stmt,
     data: {
       name: name,
-      fromFlag: true
+      parent: 'random',
+      variant: eYo.Key.NAME
     },
     title: key
   }
 }
 eYo.FlyoutCategory.basic_random__module = [
   {
-    type: eYo.T3.Stmt.random__import_stmt,
+    type: eYo.T3.Stmt.import_stmt,
     data: {
+      from: 'random',
       variant: eYo.Key.FROM_MODULE_IMPORT_STAR
     }
   },
@@ -328,10 +179,11 @@ eYo.FlyoutCategory.basic_random__module = [
   },
   F_s('seed', 'Mélanger aléatoirement les éléments dans une liste'),
   {
-    type: eYo.T3.Stmt.random__call_stmt,
+    type: eYo.T3.Stmt.call_stmt,
     data: {
       name: '',
-      fromFlag: true
+      parent: 'random',
+      variant: eYo.Key.NAME
     }
   },
   // '<x eyo="identifier" name="a"><x eyo="builtin__object" value="None" slot="definition"></x></x>',
@@ -340,7 +192,8 @@ eYo.FlyoutCategory.basic_random__module = [
     type: eYo.T3.Stmt.random__call_stmt,
     data: {
       name: 'setstate',
-      fromFlag: true
+      parent: 'random',
+      variant: eYo.Key.NAME
     }
   }
 ]
@@ -349,8 +202,12 @@ F = function (name, title) {
   var key = 'random__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
-    type: eYo.T3.Expr.random__call_expr,
-    data: name,
+    type: eYo.T3.Expr.call_expr,
+    data: {
+      name: name,
+      parent: 'random',
+      variant: eYo.Key.PARENT_NAME
+    },
     title: key
   }
 }
@@ -358,18 +215,40 @@ F_s = function (name, title) {
   var key = 'random__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
-    type: eYo.T3.Stmt.random__call_stmt,
+    type: eYo.T3.Stmt.call_stmt,
     data: {
-      name: name
+      name: name,
+      parent: 'random',
+      variant: eYo.Key.PARENT_NAME
     },
     title: key
   }
 }
 eYo.FlyoutCategory.random__module = [
-  eYo.T3.Stmt.random__import_stmt,
+  {
+    type: eYo.T3.Stmt.import_stmt,
+    data: {
+      variant: eYo.Key.IMPORT
+    },
+    slots: {
+      import: {
+        slots: {
+          O: {
+            type: eYo.T3.Expr.term,
+            data: 'turtle'
+          }
+        }
+      }
+    }
+  },
+  eYo.T3.Stmt.import_stmt,
   {
     type: eYo.T3.Expr.random__call_expr,
-    data: 'randint',
+    data: {
+      name: 'randint',
+      parent: 'random',
+      variant: eYo.Key.PARENT_NAME
+    },
     slots: {
       binary: { // implement 'main' instead of 'binary'
         slots: {

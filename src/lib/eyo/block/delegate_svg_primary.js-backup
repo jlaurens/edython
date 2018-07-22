@@ -73,15 +73,15 @@ eYo.DelegateSvg.Expr.makeSubclass('slicing', {
   data: {
     variant: { // data named 'variant' have `xml = false`, by default
       NAME: eYo.Key.NAME,
-      PRIMARY: eYo.Key.PRIMARY,
+      BLOCK: eYo.Key.BLOCK,
       all: [
         eYo.Key.NAME,
-        eYo.Key.PRIMARY
+        eYo.Key.BLOCK
       ],
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.data.name.setIncog(newValue !== this.NAME) // not the slot !
         var slot = this.owner.slots.primary
-        slot.required = newValue === this.PRIMARY
+        slot.required = newValue === this.BLOCK
         slot.setIncog(!slot.required)
       }
     },
@@ -117,7 +117,7 @@ eYo.DelegateSvg.Expr.makeSubclass('slicing', {
         didLoad: /** @suppress {globalThis} */ function () {
           if (this.isRequiredFromDom()) {
             var variant = this.owner.data.variant
-            variant.set(variant.model.PRIMARY)
+            variant.set(variant.model.BLOCK)
           }
         }
       }
@@ -146,7 +146,7 @@ eYo.DelegateSvg.Manager.register('subscription')
 eYo.DelegateSvg.Expr.slicing.prototype.consolidate = function (block) {
   if (this.slots.primary.isRequiredFromDom()) {
     this.slots.primary.setRequiredFromDom(false)
-    this.data.variant.set(this.data.variant.model.PRIMARY)
+    this.data.variant.set(this.data.variant.model.BLOCK)
   }
   eYo.DelegateSvg.Expr.slicing.superClass_.consolidate.call(this, block)
 }
@@ -179,7 +179,7 @@ eYo.DelegateSvg.Expr.slicing.prototype.populateContextMenuFirst_ = function (blo
     eYo.Do.createSPAN(eYo.Msg.Placeholder.EXPRESSION, 'eyo-code-placeholder'),
     eYo.Do.createSPAN('[…]', 'eyo-code')
   )
-  F(content, variant.PRIMARY)
+  F(content, variant.BLOCK)
   mgr.shouldSeparate()
   return eYo.DelegateSvg.Expr.slicing.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 }
@@ -219,12 +219,12 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
         var validated
         if (goog.isString(newValue)) {
           if (newValue.length) {
-            validated = Math.max(0, Math(floor(Number(newValue))))
+            validated = Math.max(0, Math.floor(Number(newValue)))
           } else {
             validated = Infinity
           }
         } else {
-          validated = Math.max(0, Math(floor(newValue)))
+          validated = Math.max(0, Math.floor(newValue))
         }
         return {validated: validated}
       },

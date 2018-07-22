@@ -77,6 +77,9 @@ eYo.App.doDomToPref = function (dom) {
                 if (goog.isString(prefs.flyoutCategory)) {
                   store.commit('UI_SET_FLYOUT_CATEGORY', prefs.flyoutCategory)
                 }
+                if (goog.isString(prefs.flyoutModule)) {
+                  store.commit('UI_SET_FLYOUT_MODULE', prefs.flyoutModule)
+                }
                 // close at last because it is an animation
                 if (goog.isDef(prefs.flyoutClosed)) {
                   Vue.nextTick(function () {
@@ -219,6 +222,10 @@ eYo.App.Document.getDeflate = function () {
   value = store.state.UI.flyoutCategory
   if (value) {
     prefs.flyoutCategory = value
+  }
+  value = store.state.UI.flyoutModule
+  if (value) {
+    prefs.flyoutModule = value
   }
   var str = JSON.stringify(prefs)
   dom.insertBefore(goog.dom.createDom('prefs', null,

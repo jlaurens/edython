@@ -73,15 +73,14 @@ goog.inherits(eYo.Flyout, Blockly.VerticalFlyout)
 
 var one_rem = parseInt(getComputedStyle(document.documentElement).fontSize)
 
-eYo.FlyoutDelegate.prototype.BUTTON_RADIUS = one_rem
-eYo.FlyoutDelegate.prototype.BUTTON_MARGIN = one_rem / 8
 eYo.Flyout.prototype.CORNER_RADIUS = 0
 
-eYo.FlyoutDelegate.prototype.TOP_MARGIN = 2*(eYo.FlyoutDelegate.prototype.BUTTON_RADIUS+eYo.FlyoutDelegate.prototype.BUTTON_MARGIN)
+eYo.FlyoutDelegate.prototype.TOP_MARGIN = 4 * eYo.FlyoutToolbar.prototype.BUTTON_RADIUS+ 2 * eYo.FlyoutToolbar.prototype.BUTTON_MARGIN
 eYo.FlyoutDelegate.prototype.BOTTOM_MARGIN = 16 // scroll bar width
 
+eYo.FlyoutDelegate.prototype.TOP_MARGIN = 4.5 * one_rem
+
 eYo.FlyoutDelegate.prototype.MARGIN = one_rem / 4
-eYo.FlyoutDelegate.prototype.HEIGHT = 2 * one_rem + 2 * eYo.FlyoutDelegate.prototype.MARGIN
 
 /**
  * Creates the flyout's DOM.  Only needs to be called once.  The flyout can
@@ -182,7 +181,7 @@ eYo.Flyout.prototype.show = function(model) {
   // Create the blocks to be shown in this flyout.
   var contents = [];
   var gaps = [];
-  var default_gap = eYo.Font.lineHeight()/2;
+  var default_gap = eYo.Font.lineHeight()/4;
  
   this.permanentlyDisabled_.length = 0;
   for (var i = 0, xml; xml = model[i]; i++) {
@@ -504,7 +503,7 @@ eYo.Flyout.prototype.setBackgroundPath_ = function(width, height) {
     this.eyo.toolbar_ = new eYo.FlyoutToolbar(this)
     var div = this.eyo.toolbar_.createDom()
     goog.dom.insertSiblingAfter(div, this.svgGroup_)
-    this.eyo.toolbar_.doSelect(null)
+    this.eyo.toolbar_.doSelectGeneral(null)
   }
   this.eyo.toolbar_.resize(width, height)
 };

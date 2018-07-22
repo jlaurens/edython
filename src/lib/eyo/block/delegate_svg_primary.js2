@@ -40,15 +40,15 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       order: 100,
       NAME: eYo.Key.NAME,
       BUILTIN: eYo.Key.BUILTIN,
-      PRIMARY: eYo.Key.PRIMARY,
+      BLOCK: eYo.Key.BLOCK,
       PARENT_NAME: eYo.Key.PARENT_NAME,
-      PRIMARY_NAME: eYo.Key.PRIMARY_NAME,
+      BLOCK_NAME: eYo.Key.BLOCK_NAME,
       all: [
         eYo.Key.NAME,
         eYo.Key.BUILTIN,
-        eYo.Key.PRIMARY,
+        eYo.Key.BLOCK,
         eYo.Key.PARENT_NAME,
-        eYo.Key.PRIMARY_NAME
+        eYo.Key.BLOCK_NAME
       ],
       init: eYo.Key.NAME,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
@@ -68,14 +68,14 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
         if (newValue === this.PARENT_NAME) {
           f(true, true)
-        } else if (newValue === this.PRIMARY_NAME) {
+        } else if (newValue === this.BLOCK_NAME) {
           f(false, true)
-        } else if (newValue === this.PRIMARY) {
+        } else if (newValue === this.BLOCK) {
           f(false, false)
         } else /* if (newValue === this.NAME || newValue === this.BUILTIN) */ {
           f(true, false)
         }
-        // force sync, usefull when switching to and from PRIMARY_NAME variant
+        // force sync, usefull when switching to and from BLOCK_NAME variant
         attribute_d.synchronize()
       },
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
@@ -211,11 +211,11 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           if (this.isRequiredFromDom()) {
             var variant_d = this.owner.data.variant
             var variant = variant_d.get()
-            if (variant !== variant_d.PARENT_NAME && variant !== variant_d.PRIMARY_NAME) {
+            if (variant !== variant_d.PARENT_NAME && variant !== variant_d.BLOCK_NAME) {
               if (variant !== variant_d.NAME) {
                 variant_d.set(variant_d.PARENT_NAME)
               } else {
-                variant_d.set(variant_d.PRIMARY_NAME)
+                variant_d.set(variant_d.BLOCK_NAME)
               }              
             }
           }
@@ -244,11 +244,11 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           if (this.isRequiredFromDom()) {
             var variant_d = this.owner.data.variant
             var variant = variant_d.get()
-            if (variant !== variant_d.PRIMARY && variant !== variant_d.PRIMARY_NAME) {
+            if (variant !== variant_d.BLOCK && variant !== variant_d.BLOCK_NAME) {
               if (variant === variant_d.PARENT_NAME) {
-                variant_d.set(variant_d.PRIMARY_NAME)
+                variant_d.set(variant_d.BLOCK_NAME)
               } else {
-                variant_d.set(variant_d.PRIMARY)
+                variant_d.set(variant_d.BLOCK)
               }
             }
           }
@@ -297,7 +297,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         var variant = variant_d.get()
         if (variant === variant_d.NAME || variant === variant_d.BUILTIN) {
           return [eYo.T3.Expr.term]
-        } else if (variant === variant_d.PARENT_NAME || variant === variant_d.PRIMARY_NAME) {
+        } else if (variant === variant_d.PARENT_NAME || variant === variant_d.BLOCK_NAME) {
           return [eYo.T3.Expr.attributeref]
         } else {
           var slot = this.owner.slots.primary
@@ -347,7 +347,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function (block) {
     var variant = variant_d.get()
     if (variant === variant_d.NAME || variant === variant_d.BUILTIN) {
       return eYo.T3.Expr.term
-    } else if (variant === variant_d.PARENT_NAME || variant === variant_d.PRIMARY_NAME) {
+    } else if (variant === variant_d.PARENT_NAME || variant === variant_d.BLOCK_NAME) {
       return eYo.T3.Expr.attributeref
     } else {
       var slot = this.slots.primary
@@ -444,15 +444,15 @@ eYo.DelegateSvg.Expr.primary.prototype.getInput = function (block, name) {
 //   data: {
 //     variant: { // data named 'variant' have `xml = false`, by default
 //       NAME: eYo.Key.NAME,
-//       PRIMARY: eYo.Key.PRIMARY,
+//       BLOCK: eYo.Key.BLOCK,
 //       all: [
 //         eYo.Key.NAME,
-//         eYo.Key.PRIMARY
+//         eYo.Key.BLOCK
 //       ],
 //       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
 //         this.data.name.setIncog(newValue !== this.NAME) // not the slot !
 //         var slot = this.owner.slots.primary
-//         slot.required = newValue === this.PRIMARY
+//         slot.required = newValue === this.BLOCK
 //         slot.setIncog(!slot.required)
 //       }
 //     },
@@ -488,7 +488,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getInput = function (block, name) {
 //         didLoad: /** @suppress {globalThis} */ function () {
 //           if (this.isRequiredFromDom()) {
 //             var variant = this.owner.data.variant
-//             variant.set(variant.model.PRIMARY)
+//             variant.set(variant.model.BLOCK)
 //           }
 //         }
 //       }
@@ -517,7 +517,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getInput = function (block, name) {
 // eYo.DelegateSvg.Expr.slicing.prototype.consolidate = function (block) {
 //   if (this.slots.primary.isRequiredFromDom()) {
 //     this.slots.primary.setRequiredFromDom(false)
-//     this.data.variant.set(this.data.variant.model.PRIMARY)
+//     this.data.variant.set(this.data.variant.model.BLOCK)
 //   }
 //   eYo.DelegateSvg.Expr.slicing.superClass_.consolidate.call(this, block)
 // }
@@ -550,7 +550,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getInput = function (block, name) {
 //     eYo.Do.createSPAN(eYo.Msg.Placeholder.EXPRESSION, 'eyo-code-placeholder'),
 //     eYo.Do.createSPAN('[…]', 'eyo-code')
 //   )
-//   F(content, variant.PRIMARY)
+//   F(content, variant.BLOCK)
 //   mgr.shouldSeparate()
 //   return eYo.DelegateSvg.Expr.slicing.superClass_.populateContextMenuFirst_.call(this, block, mgr)
 // }

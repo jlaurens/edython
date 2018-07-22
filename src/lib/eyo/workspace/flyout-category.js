@@ -282,7 +282,7 @@ eYo.FlyoutCategory = {
     {
       type: eYo.T3.Expr.slicing,
       data: {
-        variant: eYo.Key.PRIMARY
+        variant: eYo.Key.BLOCK
       },
       slots: {
         slice: {

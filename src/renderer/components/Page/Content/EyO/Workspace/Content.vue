@@ -1,17 +1,20 @@
 <template>
   <div id="eyo-workspace-content">
-      <icon-base id="svg-control-image-v" icon-name="triangle"><icon-triangle /></icon-base>
-      <b-dropdown id="eyo-flyout-dropdown" class="eyo-dropdown"  v-on:show="doShow()">
+    <icon-base id="svg-control-image-v" icon-name="triangle"><icon-triangle /></icon-base>
+    <b-dropdown id="eyo-flyout-dropdown-general" class="eyo-dropdown"  v-on:show="doShow()">
       <template slot="button-content">
-        {{selected ? selected.content : '...'}}
+        {{selectedCategory && selectedCategory.in_category ? selectedCategory.content : 'blocs'}}
       </template>
-      <b-dropdown-item-button v-for="item in levels" v-on:click="selected = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
+      <b-dropdown-item-button v-for="item in levels" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
       <b-dropdown-divider></b-dropdown-divider>
-      <b-dropdown-item-button v-for="item in categories" v-on:click="selected = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
-      <b-dropdown-divider></b-dropdown-divider>
-      <b-dropdown-header v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{modulesContent}}</b-dropdown-header>
-      <b-dropdown-item-button v-for="item in modules"  :key="item.name" v-on:click="selected = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
+      <b-dropdown-item-button v-for="item in categories" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
     </b-dropdown>
+    <b-dropdown id="eyo-flyout-dropdown-module" class="eyo-dropdown"  v-on:show="doShow()">
+    <template slot="button-content">
+        {{selectedCategory && selectedCategory.in_module ? selectedCategory.content : 'modules'}}
+    </template>
+    <b-dropdown-item-button v-for="item in modules" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
+  </b-dropdown>
   </div>
 </template>
 
@@ -36,7 +39,8 @@
       var F = function (name) {
         model.items[name] = {
           name: name,
-          content: eYo.Msg[name.toUpperCase()]
+          content: eYo.Msg[name.toUpperCase()],
+          in_category: true
         }
       }
       F('basic')
@@ -52,7 +56,8 @@
       var moduleF = function (name, content) {
         model.items[name + '__module'] = {
           name: name + '__module',
-          content: content || name
+          content: content || name,
+          in_module: true
         }
       }
       moduleF('basic_math', 'math (basic)')
@@ -62,7 +67,7 @@
       moduleF('basic_turtle', 'turtle (basic)')
       moduleF('turtle')
       moduleF('cmath')
-      model.selected = undefined
+      model.selectedCategory = undefined
       model.levels = [
         model.items.basic,
         model.items.intermediate,
@@ -86,7 +91,6 @@
         model.items.turtle__module,
         model.items.cmath__module
       ]
-      model.modulesContent = 'modules'
       return model
     },
     computed: {
@@ -107,26 +111,18 @@
           var list = this.flyout.eyo.getList(newValue)
           if (list && list.length) {
             this.flyout.show(list)
-            this.selected = item
+            this.selectedCategory = item
           }
         }
       },
-      // whenever `selected` changes, this function will run
-      selected: function (newValue, oldValue) {
-        this.$store.commit('UI_SET_FLYOUT_CATEGORY', newValue.name)
+      // whenever `selectedCategory` changes, this function will run
+      selectedCategory: function (newValue, oldValue) {
+        if (newValue) {
+          this.$store.commit('UI_SET_FLYOUT_CATEGORY', newValue.name)
+        }
       }
     },
     methods: {
-      doSelect: function (item) {
-        var category = item.name
-        if (this.workspace && this.flyout) {
-          var list = this.flyout.eyo.getList(category)
-          if (list && list.length) {
-            this.flyout.show(list)
-            this.$store.commit('UI_SET_FLYOUT_CATEGORY', category)
-          }
-        }
-      },
       doShow () {
         var el = document.getElementById('eyo-workspace-content').getElementsByClassName('eyo-flyout')[0]
         this.$$.eYo.Tooltip.hideAll(el)
@@ -155,9 +151,11 @@
         noLeftSeparator: true,
         noDynamicList: false
       }
-      // Remove the old flyout selector
-      this.$$.eYo.App.flyoutDropDown = document.getElementById('eyo-flyout-dropdown')
-      goog.dom.removeNode(this.$$.eYo.App.flyoutDropDown)
+      // Get what will replace the old flyout selector
+      this.$$.eYo.App.flyoutDropDownGeneral = document.getElementById('eyo-flyout-dropdown-general')
+      this.$$.eYo.App.flyoutDropDownModule = document.getElementById('eyo-flyout-dropdown-module')
+      goog.dom.removeNode(this.$$.eYo.App.flyoutDropDownGeneral)
+      goog.dom.removeNode(this.$$.eYo.App.flyoutDropDownModule)
       // First remove the old flyout selector
       var flyout = new eYo.Flyout(eYo.App.workspace)
       goog.dom.insertSiblingAfter(
@@ -196,7 +194,7 @@
       this.$$.bus.$on('new-document', function () {
         self.workspace.clear()
       })
-      this.selected = this.items.basic
+      this.selectedCategory = this.items.basic
       this.workspace.render()
     }
   }
@@ -215,12 +213,12 @@
   .eyo-flyout-control {
     vertical-align: middle;
   }
-  #eyo-flyout-dropdown {
+  #eyo-flyout-dropdown-general, #eyo-flyout-dropdown-module {
     opacity: 1;
     width: 100%;
     height: 100%;
   }
-  #eyo-flyout-dropdown .btn {
+  #eyo-flyout-dropdown-general .btn, #eyo-flyout-dropdown-module .btn {
     width: 100%;
   }
 </style>

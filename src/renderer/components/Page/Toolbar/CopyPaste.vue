@@ -1,6 +1,6 @@
 <template>
   <b-btn :id="id" v-on:click="doIt()" :disabled="!canDoIt" :title="title" v-tippy>
-    <icon-base :width="32" :height="32" :icon-name="name"><icon-copy-paste :copy="copy" :deep="deep" :step="step"/></icon-base>
+    <icon-base :width="32" :height="32" :icon-name="name"><icon-copy-paste :copy="copy" :duplicate="duplicate" :deep="deep" :step="step"/></icon-base>
   </b-btn>
 </template>
 
@@ -17,22 +17,41 @@
     },
     computed: {
       id () {
-        return this.copy
-          ? 'toolbar-btn-' + this.deep ? 'deep-copy' : '-copy'
-          : 'toolbar-btn-paste'
+        return 'toolbar-btn-' + (this.copy
+          ? this.deep
+            ? 'deep-copy'
+            : 'copy'
+          : this.duplicate
+            ? this.deep
+              ? 'deep-duplicate'
+              : 'duplicate'
+            : 'paste'
+        )
       },
       title () {
         return this.copy
-          ? this.deep ? 'Copier le bloc sélectionné et les suivants' : 'Copier le bloc sélectionné'
-          : 'Coller le bloc du presse-papier'
+          ? this.deep
+            ? 'Copier le bloc sélectionné et les suivants'
+            : 'Copier le bloc sélectionné'
+          : this.duplicate
+            ? this.deep
+              ? 'Dupliquer le bloc sélectionné et les suivants'
+              : 'Dupliquer le bloc sélectionné'
+            : 'Coller le block du presse-papier'
       },
       name () {
         return this.copy
-          ? this.deep ? 'Copier' : 'Copier avec les suivants'
-          : 'Coller'
+          ? this.deep
+            ? 'Copier avec les suivants'
+            : 'Copier'
+          : this.duplicate
+            ? this.deep
+              ? 'Dupliquer avec les suivants'
+              : 'Dupliquer'
+            : 'Coller'
       },
       canDoIt () {
-        return this.copy
+        return this.copy || this.duplicate
           ? !!this.$store.state.UI.selectedBlockId
           : !!this.$store.state.UI.blockClipboard
       }
@@ -63,7 +82,7 @@
             this.$$.TweenLite.to(this, 0.5, {step: 1})
           }
         } else if (this.duplicate) {
-          Blockly.duplicate_(Blockly.selected_)
+          Blockly.duplicate_(Blockly.selected)
         } else {
           Blockly.clipboardXml_ && eYo.App.workspace.paste(Blockly.clipboardXml_)
         }

@@ -676,7 +676,6 @@ eYo.Xml.registerAllTags = function () {
       }
       var c9r = eYo.Delegate.Manager.get(type)
       var one_tag = function (tag) {
-        console.log('REGISTERING:', tag, type, c9r.eyo.key)
         var already = eYo.T3.Xml.fromDom[tag]
         if (goog.isArray(already)) {
           if (already.indexOf(type) < 0) {
@@ -966,7 +965,7 @@ eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element) {
     if (type === eYo.T3.Expr.attributeref.substring(4)) {
       variant_d.set(variant_d.PARENT_NAME)
     } else if (this.slots.primary.isRequiredFromDom()) {
-      variant_d.set(variant_d.PRIMARY_NAME)
+      variant_d.set(variant_d.BLOCK_NAME)
     } else {
       variant_d.set(variant_d.NAME)
     }

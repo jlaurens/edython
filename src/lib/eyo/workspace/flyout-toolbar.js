@@ -27,15 +27,12 @@ eYo.FlyoutToolbar = function(flyout) {
   this.flyout_ = flyout
 }
 
-eYo.FlyoutToolbar.prototype.MARGIN = eYo.Padding.t()
-eYo.FlyoutToolbar.prototype.HEIGHT = eYo.Font.lineHeight() + 2 * eYo.FlyoutToolbar.prototype.MARGIN
-
 /**
  * Creates the flyout toolbar's DOM.
  * @param {Object} dom helper.
  * @return {!Element} The flyout toolbar's div.
  */
-eYo.FlyoutToolbar.prototype.doSelect = function(e) {
+eYo.FlyoutToolbar.prototype.doSelectGeneral = function(e) {
   var workspace = this.flyout_.targetWorkspace_
   if (workspace && this.selectControl_) {
     var category = this.selectControl_.getValue()
@@ -57,26 +54,18 @@ eYo.FlyoutToolbar.prototype.createDom = function (dom) {
   }
   /*
   <div class="eyo-flyout-toolbar">
-    <div class="dropdown">
-      <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Tutorials
-      <span class="caret"></span></button>
-      <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">HTML</a></li>
-        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">CSS</a></li>
-        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">JavaScript</a></li>
-        <li role="presentation" class="divider"></li>
-        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">About Us</a></li>
-      </ul>
+    <div class="eyo-flyout-toolbar-general">
+      <div class="eyo-flyout-select-general">
+        ...
+      </div>
+      <div class="eyo-flyout-control">
+        ...
+      </div>
     </div>
-  </div>
-
-    <div class="eyo-flyout-select">
-      ....
-    </div>
-    <div class="eyo-flyout-control">
-      <svg class="eyo-flyout-control-image">
-        <path d="...">
-      </svg>
+    <div class="eyo-flyout-toolbar-module">
+      <div class="eyo-flyout-select-module">
+        ...
+      </div>
     </div>
   </div>
   */
@@ -92,42 +81,85 @@ eYo.FlyoutToolbar.prototype.createDom = function (dom) {
     id: "p-flyout-control"
   }, svg)
   if (eYo.App && eYo.App.flyoutDropDown) {
-    this.select_ = goog.dom.createDom(
+    this.select_general_ = goog.dom.createDom(
       goog.dom.TagName.DIV,
       goog.getCssName(cssClass, 'select'),
       eYo.App.flyoutDropDown
     )  
-  } else {
-    this.select_ = goog.dom.createDom(
+  } else if (eYo.App && eYo.App.flyoutDropDownGeneral && eYo.App.flyoutDropDownModule) {
+    this.select_general_ = goog.dom.createDom(
       goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'select')
+      goog.getCssName(cssClass, 'select-general'),
+      eYo.App.flyoutDropDownGeneral
+    )  
+    this.select_module_ = goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName(cssClass, 'select-module'),
+      eYo.App.flyoutDropDownModule
+    )  
+  } else {
+    this.select_general_ = goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName(cssClass, 'select-general')
     )
     var select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
-    // select.addItem(mgr.newMenuItem(eYo.Msg.BASIC, 'test'))
+    // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
     // select.addItem(new eYo.Separator())
-    select.addItem(mgr.newMenuItem(eYo.Msg.BASIC, 'basic'))
-    select.addItem(mgr.newMenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
-    select.addItem(mgr.newMenuItem(eYo.Msg.ADVANCED, 'advanced'))
-    select.addItem(mgr.newMenuItem(eYo.Msg.EXPERT, 'expert'))
+    select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
+    select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
+    select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
+    select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
     select.addItem(new eYo.Separator())
-    select.addItem(mgr.newMenuItem(eYo.Msg.BRANCHING, 'branching'))
-    select.addItem(mgr.newMenuItem(eYo.Msg.LOOPING, 'looping'))
-    select.addItem(mgr.newMenuItem(eYo.Msg.FUNCTION, 'function'))
+    select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
+    select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
+    select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
     select.setSelectedIndex(0)
-    select.render(this.select_)
+    select.render(this.select_general_)
     this.listenableKey = select.listen(
       goog.ui.Component.EventType.ACTION,
-      this.doSelect,
+      this.doSelectGeneral,
       false,
       this
     )  
+    this.select_module_ = goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName(cssClass, 'select-module')
+    )
+    var select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
+    // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
+    // select.addItem(new eYo.Separator())
+    select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
+    select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
+    select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
+    select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
+    select.addItem(new eYo.Separator())
+    select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
+    select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
+    select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
+    select.setSelectedIndex(0)
+    select.render(this.select_module_)
+    this.listenableKey = select.listen(
+      goog.ui.Component.EventType.ACTION,
+      this.doSelectGeneral,
+      false,
+      this
+    )
   }
-  /*
-  */
+  var div_general = goog.dom.createDom(
+    goog.dom.TagName.DIV,
+    goog.getCssName(cssClass, 'toolbar-general'),
+    this.select_general_
+  )
+  var div_module = goog.dom.createDom(
+    goog.dom.TagName.DIV,
+    goog.getCssName(cssClass, 'toolbar-module'),
+    this.select_module_
+  )
   this.div_ = goog.dom.createDom(
     goog.dom.TagName.DIV,
     goog.getCssName(cssClass, 'toolbar'),
-    this.select_,
+    div_general,
+    div_module,
     this.control_
   )
   this.onButtonDownWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mousedown', this, this.onButtonDown_)
@@ -137,19 +169,48 @@ eYo.FlyoutToolbar.prototype.createDom = function (dom) {
   return this.div_
 }
 
+// toolbar height
+var one_rem = parseInt(getComputedStyle(document.documentElement).fontSize)
+
+eYo.FlyoutToolbar.prototype.MARGIN = eYo.Padding.t()
+eYo.FlyoutToolbar.prototype.HEIGHT = 2 * (eYo.Font.lineHeight() + 2 * eYo.FlyoutToolbar.prototype.MARGIN)
+
+eYo.FlyoutToolbar.prototype.BUTTON_RADIUS = eYo.FlyoutToolbar.prototype.HEIGHT / 4
+// left margin
+eYo.FlyoutToolbar.prototype.BUTTON_MARGIN = eYo.FlyoutToolbar.prototype.BUTTON_RADIUS / 8
+
 eYo.setup.register(function () {
   var height = eYo.FlyoutToolbar.prototype.HEIGHT
   var margin = eYo.FlyoutToolbar.prototype.MARGIN
-  var controlWidth = (margin + height/2)
+  var radius = eYo.FlyoutToolbar.prototype.BUTTON_RADIUS
+  var controlWidth = margin + radius
   eYo.Style.insertCssRuleAt(
     '.eyo-flyout-toolbar {',
     'position: absolute; z-index: 30; pointer-events: all;',
-    'height: 2.25rem;',
-    'padding: 0.25rem;',
+    'height: 4.5rem;',
+    'padding: 0.125rem;',
+    'padding-right: 0;',
     'margin: 0;',
     'background: rgba(221,221,221,0.8);',
   '}')
-  eYo.Style.insertCssRuleAt('.eyo-flyout-select {',
+  eYo.Style.insertCssRuleAt(
+    '.eyo-flyout-toolbar-general {',
+    'position: absolute; pointer-events: all;',
+    'height: 2rem;',
+    'padding: 0.125rem;',
+    'width: 100%;',
+    'margin: 0;',
+  '}')
+  eYo.Style.insertCssRuleAt(
+    '.eyo-flyout-toolbar-module {',
+    'position: absolute; pointer-events: all;',
+    'height: 2rem;',
+    'padding: 0.125rem;',
+    'margin: 0;',
+    'margin-top: 2.25rem;',
+    'width: 100%;',
+  '}')
+  eYo.Style.insertCssRuleAt('.eyo-flyout-select-general, .eyo-flyout-select-module {',
     'height: 100%;',
     'width: 100%;',
     'padding-left: 0.25rem;',
@@ -157,7 +218,7 @@ eYo.setup.register(function () {
     'margin: 0',
   '}')
 
-  var radius = (height / 2) + 'px;'
+  var radius = '1.125rem;'
   console.warn('DEBUG', radius, controlWidth)
   eYo.Style.insertCssRuleAt('.eyo-flyout-control {',
     'background: #ddd; opacity: 0.79;',
@@ -169,21 +230,21 @@ eYo.setup.register(function () {
     '-moz-border-radius-bottomright:', radius,
     'border-top-right-radius:', radius,
     'border-bottom-right-radius:', radius,
-    'height: 100%;',
-    'width: ' + controlWidth + 'px;',
+    'height: 50%;',
+    'width: 1.25rem;',
     'position: absolute;',
     'top: 0px;',   
-    'right: -' + controlWidth + 'px;',   
+    'right: -1.25rem;',   
   '}')
   eYo.Style.insertCssRuleAt('.eyo-flyout-control-image {',
-    'width: ' + (eYo.FlyoutToolbar.prototype.MARGIN + eYo.FlyoutToolbar.prototype.HEIGHT/2) + 'px;',
-    'height: ' + height + 'px;',
+    'width: 1.125rem;',
+    'height: 2.25rem;',
   '}')
   eYo.Style.insertCssRuleAt('.eyo-flyout-control-image path {',
     'fill: white;',
   '}')
   eYo.Style.insertCssRuleAt(
-    '.eyo-flyout-control-image path:hover { fill:black;  fill-opacity: 0.075;}')
+    '.eyo-flyout-control-image path:hover {fill:black;  fill-opacity: 0.075;}')
   eYo.Style.insertCssRuleAt(
   '.eyo-flash .eyo-flyout-control-image path, .eyo-flash .eyo-flyout-control-image path:hover { fill:black;  fill-opacity: 0.2;}')
 })
@@ -297,9 +358,9 @@ eYo.FlyoutToolbar.prototype.resize = function(width, height) {
   // do nothing if there is no control path
   var height = this.HEIGHT
   var margin = this.MARGIN
-  var big_radius = height / 2
-  var radius = big_radius - margin
-  var h = radius * 0.866
+  var big_radius = 1.25 * one_rem
+  var radius = 1.125 * one_rem
+  var h = radius * 0.75
 
   this.div_.style.width = width + 'px'
   // this.div_.style.height = height + 'px'
@@ -307,13 +368,13 @@ eYo.FlyoutToolbar.prototype.resize = function(width, height) {
   var path = this.controlPath_
   if (this.flyout_.eyo.closed) {
     path.setAttribute('d', [
-      'M', margin + h + this.flyout_.CORNER_RADIUS, big_radius,
+      'M', margin + h + this.flyout_.CORNER_RADIUS, radius,
       'l', -h, - radius/2,
       'l 0', radius, 'z'
     ].join(' '))
   } else {
     path.setAttribute('d', [
-      'M', this.flyout_.CORNER_RADIUS, big_radius,
+      'M', this.flyout_.CORNER_RADIUS, radius,
       'l', h, - radius/2,
       'l 0', radius, 'z'
     ].join(' '))

@@ -82,7 +82,7 @@ eYo.Key = {
   WITH: 'with',
   COMPREHENSION: 'comprehension',
   ITEM: 'item', /* used by delimited blocks */
-  PRIMARY: 'primary',
+  BLOCK: 'primary',
   ATTRIBUTE: 'attribute',
   PARENT_NAME: 'parent_name',
   EXPRESSION_ATTRIBUTE: 'expression_attribute',
@@ -106,9 +106,13 @@ eYo.Key = {
   NONE: 'none',
   CALL_EXPR: 'call_expr',
   SLICING: 'slicing',
-  PRIMARY: 'primary',
-  PRIMARY_NAME: 'primary_name',
+  BLOCK: 'block',
 
+  EXPR: 'expr',
+  BLOCK_NAME: 'block_name',
+  PARENT_EXPR: 'block_expr',
+  BLOCK_EXPR: 'block_expr',
+  
   BACKUP: 'backup', // this MUST be in camelcase
   ALT: 'alt', // this MUST be in camelcase
 
@@ -203,7 +207,7 @@ eYo.Key = {
   YIELD_FROM: 'yield_from',
 
   /*
-"LIST", "EXPRESSION", "FOR", "ITER", "IN", "IF", "COMP", "PRIMARY", "ATTRIBUTE", "LOWER_BOUND", "UPPER_BOUND", "STRIDE", "KEY", "VALUE", "ARGUMENT", "POWER", "RHS", "LHS", "ELSE", "DATUM", "IMPORT", "SOURCE", "AS", "FROM", "MODULE", "NAME", "DEFINITION", "TYPE", "PARENT", "DO", "COND", "WRAP", "TARGET", "ANNOTATED", "ASSIGNED", "ASSERT", "RAISE"
+"LIST", "EXPRESSION", "FOR", "ITER", "IN", "IF", "COMP", "BLOCK", "ATTRIBUTE", "LOWER_BOUND", "UPPER_BOUND", "STRIDE", "KEY", "VALUE", "ARGUMENT", "POWER", "RHS", "LHS", "ELSE", "DATUM", "IMPORT", "SOURCE", "AS", "FROM", "MODULE", "NAME", "DEFINITION", "TYPE", "PARENT", "DO", "COND", "WRAP", "TARGET", "ANNOTATED", "ASSIGNED", "ASSERT", "RAISE"
 */
 }
 

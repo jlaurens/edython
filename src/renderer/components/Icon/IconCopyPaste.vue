@@ -4,8 +4,8 @@
         <path :class="to" d="M 1,1 1,21 21,21 21,1 z"/>
         <path v-if="deep" :class="to" d="M 4,11 18,11"/>
       </g>
-      <path class="from" :d="fromPath"/>
-      <path v-if="deep" class="from" :d="fromMultiPath"/>
+      <path :class="from" :d="fromPath"/>
+      <path v-if="deep" :class="from" :d="fromMultiPath"/>
   </g>
 </template>
 
@@ -25,14 +25,14 @@
         return ['M ', 31 - this.step * 7, ',21 31,21'].join('')
       },
       copyTransform () {
-        var t = 1 - this.step
+        var t = this.copy ? 1 - this.step : 0
         return ['translate(', 10 * t, ',', 10 * t, ')'].join('')
       }
     },
     props: {
       copy: {
         type: Boolean,
-        default: true
+        default: true // false to paste
       },
       duplicate: {
         type: Boolean,

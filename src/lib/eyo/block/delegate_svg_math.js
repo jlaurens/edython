@@ -23,210 +23,66 @@ goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')
 
 /**
- * Class for a DelegateSvg, import math block.
- * A unique block for each module to ease forthcoming management.
- * For edython.
- */
-eYo.DelegateSvg.Stmt.import_stmt.makeSubclass('math__import_stmt', {
-  data: {
-    from: {
-      init: 'math',
-      validate: /** @suppress {globalThis} */ function (newValue) {
-        return newValue === 'math' ? {validated: newValue} : null
-      },
-      synchronize: true
-    }
-  },
-  slots: {
-    import_module: {
-      order: 1,
-      fields: {
-        label: 'import',
-        suffix: 'math'
-      },
-      wrap: null,
-      check: null
-    },
-    from: {
-      order: 2,
-      fields: {
-        label: 'from',
-        edit: 'math'
-      }
-    }
-  }
-})
-
-/**
- * Class for a DelegateSvg, call block.
- * As call is already a reserved message in javascript,
- * we use call_expr instead.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-
- eYo.DelegateSvg.Expr.module__call_expr.makeSubclass('math__call_expr', {
-  data: {
-    ary: {
-      validate: /** @suppress {globalThis} */ function (newValue) {
-        var current = this.data.name.get()
-        var item = eYo.Model.math__module.getItem(current)
-        if (item) {
-          // this is known, we do not have any choice
-          var ary = this.getAll()[item.ary]
-          return newValue === ary ? {validated: newValue}: null
-        } else {
-          // this is not known, we are confident in the user
-          return {validated: newValue}
-        }
-      },
-      xml: {
-        save: /** @suppress {globalThis} */ function (element) {
-          var current = this.data.name.get()
-          var item = eYo.Model.math__module.getItem(current)
-          if (!item) {
-            // this is not a known function name
-            this.save(element)
-          }
-        }
-      }
-    },
-    name: {
-      init: 'sqrt',
-      main: true,
-      validate: /** @suppress {globalThis} */ function (newValue) {
-        var item = eYo.Model.math__module.getItem(newValue)
-        return item ? {validated: newValue} : null
-      },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        var item = eYo.Model.math__module.getItem(newValue)
-        if (item) {
-          var type = eYo.Model.math__module.data.types[item.type]
-          if (type === 'data') {
-            this.data.callerFlag.set(true)
-          } else {
-            this.data.callerFlag.set(false)
-            var ary = item.ary
-            this.data.ary.setTrusted(goog.isDef(ary) ? ary: this.data.ary.N_ARY)
-            this.data.isOptionalUnary.setTrusted(goog.isDef(item.mandatory) && !item.mandatory || !item.ary)
-            this.data.mandatory.setTrusted(item.mandatory)
-          }
-        } else {
-          this.data.ary.setTrusted(this.data.ary.N_ARY)
-          this.data.isOptionalUnary.setTrusted(true)
-          this.data.mandatory.setTrusted(0)
-        }
-      },
-      consolidate: /** @suppress {globalThis} */ function () {
-        this.didChange(undefined, this.get())
-      }
-    },
-    module: null
-  },
-  slots: {
-    module: {
-      fields: {
-        edit: 'math'
-      }
-    }
-  },
-  output: {
-    check: [eYo.T3.Expr.math__call_expr, eYo.T3.Expr.call_expr]
-  }
-})
-
-/**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Expr.math__call_expr.populateMenu = function (block, mgr) {
-  var eyo = block.eyo
-  // populate the menu with the functions in the same category
-  var name_get = eyo.data.name.get()
-  var model = eYo.Model.math__module
-  var item_get = model.getItem(name_get)
-  var items = model.getItemsInCategory(item_get.category)
-  var module = eyo.data.fromFlag.get() ? '' : 'math.'
-  var F = function (i) {
-    var item = model.getItem(items[i])
-    var type = model.data.types[item.type]
-    var args = type === 'data' ? '' : '(...)'
-    if (item !== item_get) {
-      var content =
-      goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-        module,
-        item.names[0],
-        args
-      )
-      var menuItem = mgr.newMenuItem(content, function () {
-        eyo.data.name.set(item.names[0])
-      })
-      mgr.addChild(menuItem, true)
-    }
-  }
-  for (var i = 0; i < items.length; i++) {
-    F(i)
-  }
-  mgr.shouldSeparate()
-  var contents = {
-    'number-theoretic-and-representation-functions' : 'floor, ceil, gcd,...',
-    'power-and-logarithmic-functions' : 'sqrt, exp, log,...',
-    'trigonometric-functions' : 'sin, cos, atan2,...',
-    'angular-conversion' : 'degrees, radians',
-    'hyperbolic-functions' : 'sinh, cosh,...',
-    'special-functions' : 'erf, gamma, lgamma',
-    'constants' : 'pi, e, tau, inf, nan'
-  }
-  F = function (i) {
-    var category = categories[i]
-    if (i !== item_get.category) {
-      var menuItem = mgr.newMenuItem(contents[category] || category, function () {
-        var items = eYo.Model.math__module.getItemsInCategory(i)
-        var item = eYo.Model.math__module.getItem(items[0])
-        eyo.data.name.set(item.names[0])
-      })
-      mgr.addChild(menuItem, true)
-    }
-  }
-  var categories = model.data.categories
-  for (var i = 0; i < categories.length - 1; i++) {
-    F(i)
-  }
-  mgr.shouldSeparate()
-}
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-eYo.DelegateSvg.Expr.math__call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  eYo.DelegateSvg.Expr.math__call_expr.populateMenu.call(this, block, mgr)
-  return eYo.DelegateSvg.Expr.base_call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
-}
-
-/**
- * Class for a DelegateSvg, call statement block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Stmt.makeSubclass('math__call_stmt', {
-  link: eYo.T3.Expr.math__call_expr
-})
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-eYo.DelegateSvg.Stmt.math__call_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  eYo.DelegateSvg.Expr.math__call_expr.populateMenu.call(this, block, mgr)
-  return eYo.DelegateSvg.Stmt.math__call_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
-}
+// eYo.DelegateSvg.Expr.math__call_expr.populateMenu = function (block, mgr) {
+//   var eyo = block.eyo
+//   // populate the menu with the functions in the same category
+//   var name_get = eyo.data.name.get()
+//   var model = eYo.Model.math__module
+//   var item_get = model.getItem(name_get)
+//   var items = model.getItemsInCategory(item_get.category)
+//   var module = eyo.data.fromFlag.get() ? '' : 'math.'
+//   var F = function (i) {
+//     var item = model.getItem(items[i])
+//     var type = model.data.types[item.type]
+//     var args = type === 'data' ? '' : '(...)'
+//     if (item !== item_get) {
+//       var content =
+//       goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
+//         module,
+//         item.names[0],
+//         args
+//       )
+//       var menuItem = mgr.newMenuItem(content, function () {
+//         eyo.data.name.set(item.names[0])
+//       })
+//       mgr.addChild(menuItem, true)
+//     }
+//   }
+//   for (var i = 0; i < items.length; i++) {
+//     F(i)
+//   }
+//   mgr.shouldSeparate()
+//   var contents = {
+//     'number-theoretic-and-representation-functions' : 'floor, ceil, gcd,...',
+//     'power-and-logarithmic-functions' : 'sqrt, exp, log,...',
+//     'trigonometric-functions' : 'sin, cos, atan2,...',
+//     'angular-conversion' : 'degrees, radians',
+//     'hyperbolic-functions' : 'sinh, cosh,...',
+//     'special-functions' : 'erf, gamma, lgamma',
+//     'constants' : 'pi, e, tau, inf, nan'
+//   }
+//   F = function (i) {
+//     var category = categories[i]
+//     if (i !== item_get.category) {
+//       var menuItem = mgr.newMenuItem(contents[category] || category, function () {
+//         var items = eYo.Model.math__module.getItemsInCategory(i)
+//         var item = eYo.Model.math__module.getItem(items[0])
+//         eyo.data.name.set(item.names[0])
+//       })
+//       mgr.addChild(menuItem, true)
+//     }
+//   }
+//   var categories = model.data.categories
+//   for (var i = 0; i < categories.length - 1; i++) {
+//     F(i)
+//   }
+//   mgr.shouldSeparate()
+// }
 
 /**
  * Class for a DelegateSvg, math constant block.
@@ -235,100 +91,48 @@ eYo.DelegateSvg.Stmt.math__call_stmt.prototype.populateContextMenuFirst_ = funct
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.math__call_expr.makeSubclass('math__const', {
-  data: {
-    callerFlag: {
-      init: true, // true when `foo` is expected instead of `foo(…)`
-      xml: false,
-      synchronize: false
-    },
-    ary: null,
-    isOptionalUnary: null,
-    mandatory: null,
-    name: {
-      all: ['pi', 'e', 'tau', 'inf', 'nan'],
-      init: 'pi',
-      synchronize: true,
-      validate: true,
-      didChange: false, // do not heritate
-    }
-  },
-  slots: {
-    n_ary: null,
-    z_ary: null,
-    unary: null,
-    binary: null,
-    ternary: null,
-    quadary: null,
-    pentary: null,
-  },
-  output: {
-    check: [eYo.T3.Expr.math__const, eYo.T3.Expr.builtin__object]
-  }
-})
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-eYo.DelegateSvg.Expr.math__const.populateMenu = function (block, mgr) {
-  var eyo = block.eyo
-  var current_name = eyo.data.name.get()
-  var names = eyo.data.name.getAll()
-  var fromFlag = this.data.fromFlag.get()
-  var module = fromFlag ? '' : 'math.'
-  var F = function (i) {
-    var name = names[i]
-    if (name !== current_name) {
-      var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-      module,
-        name
-      )
-      var menuItem = mgr.newMenuItem(content, function () {
-        eyo.data.name.set(name)
-      })
-      mgr.addChild(menuItem, true)
-    }
-  }
-  for (var i = 0; i < names.length; i++) {
-    F(i)
-  }
-  mgr.shouldSeparate()
-
-}
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-eYo.DelegateSvg.Expr.math__const.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  eYo.DelegateSvg.Expr.math__const.populateMenu.call(this, block, mgr)
-  mgr.shouldSeparate()
-  eYo.DelegateSvg.Expr.module__call_expr.populateMenu.call(this, block, mgr)
-  mgr.shouldSeparate()
-  return eYo.DelegateSvg.Expr.base_call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
-}
-
-/**
- * Get the module.
- * @param {!Blockly.Block} block The block.
- */
-eYo.DelegateSvg.Expr.math__call_expr.prototype.getModule = function (block) {
-  return 'math'
-}
+// eYo.DelegateSvg.Expr.math__call_expr.makeSubclass('math__const', {
+//   data: {
+//     callerFlag: {
+//       init: true, // true when `foo` is expected instead of `foo(…)`
+//       xml: false,
+//       synchronize: false
+//     },
+//     ary: null,
+//     isOptionalUnary: null,
+//     mandatory: null,
+//     name: {
+//       all: ['pi', 'e', 'tau', 'inf', 'nan'],
+//       init: 'pi',
+//       synchronize: true,
+//       validate: true,
+//       didChange: false, // do not heritate
+//     }
+//   },
+//   slots: {
+//     n_ary: null,
+//     z_ary: null,
+//     unary: null,
+//     binary: null,
+//     ternary: null,
+//     quadary: null,
+//     pentary: null,
+//   },
+//   output: {
+//     check: [eYo.T3.Expr.math__const, eYo.T3.Expr.builtin__object]
+//   }
+// })
 
 var F = function (name, title) {
   var key = 'math__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
-    type: eYo.T3.Expr.math__call_expr,
+    type: eYo.T3.Expr.call_expr,
     data: {
       name: name,
-      fromFlag: true
+      parent: 'math',
+      variant: eYo.Key.NAME,
+      option: eYo.Key.CALL_EXPR
     },
     title: key
   }
@@ -337,19 +141,21 @@ var F_k = function (name, title) {
   var key = 'math__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
-    type: eYo.T3.Expr.math__const,
+    type: eYo.T3.Expr.attributeref,
     data: {
       name: name,
-      fromFlag: true
+      parent: 'math',
+      variant: eYo.Key.NAME
     },
     title: key
   }
 }
 eYo.FlyoutCategory.basic_math__module = [
   {
-    type: eYo.T3.Stmt.math__import_stmt,
+    type: eYo.T3.Stmt.import_stmt,
     data: {
-      variant: eYo.Key.FROM_MODULE_IMPORT_STAR
+      variant: eYo.Key.FROM_MODULE_IMPORT_STAR,
+      from: 'math'
     }
   },
   F('sqrt', 'Racine carrée (square root)'),
@@ -406,8 +212,12 @@ var F = function (name, title) {
   var key = 'math__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
-    type: eYo.T3.Expr.math__call_expr,
-    data: name,
+    type: eYo.T3.Expr.call_expr,
+    data: {
+      name: name,
+      parent: 'math',
+      variant: eYo.Key.PARENT_NAME,
+    },
     title: key
   }
 }
@@ -415,16 +225,30 @@ var F_k = function (name, title) {
   var key = 'math__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
-    type: eYo.T3.Expr.math__const,
-    data: name,
+    type: eYo.T3.Expr.attributeref,
+    data: {
+      name: name,
+      parent: 'math',
+      variant: eYo.Key.PARENT_NAME,
+    },
     title: key
   }
 }
 eYo.FlyoutCategory.math__module = [
   {
-    type: eYo.T3.Stmt.math__import_stmt,
+    type: eYo.T3.Stmt.import_stmt,
     data: {
       variant: eYo.Key.IMPORT
+    },
+    slots: {
+      import_module: {
+        slots: {
+          O: {
+            type: eYo.T3.Expr.term,
+            data: 'math',
+          },
+        },
+      }
     }
   },
   F('sqrt', 'Racine carrée (square root)'),
