@@ -536,7 +536,7 @@ eYo.Slot.prototype.isRequiredToDom = function () {
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Slot.prototype.isRequiredFromDom = function () {
+eYo.Slot.prototype.isRequiredFromModel = function () {
   return this.is_required_from_dom || (!this.incog && this.model.xml && this.model.xml.required)
 }
 
@@ -555,7 +555,7 @@ eYo.Slot.prototype.setRequiredFromDom = function (newValue) {
  * @param {boolean} newValue
  */
 eYo.Slot.prototype.whenRequiredFromDom = function (helper) {
-  if (this.isRequiredFromDom()) {
+  if (this.isRequiredFromModel()) {
     this.setRequiredFromDom(false)
     if (goog.isFunction(helper)) {
       helper.call(this)

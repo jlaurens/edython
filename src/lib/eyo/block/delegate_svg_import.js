@@ -129,7 +129,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       },
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromDom()) {
+          if (this.isRequiredFromModel()) {
             var variant = this.owner.data.variant
             if (variant.get() === variant.IMPORT) {
               variant.set(variant.FROM_MODULE_IMPORT_STAR)
@@ -146,7 +146,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       wrap: eYo.T3.Expr.non_void_import_identifier_as_list,
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromDom()) {
+          if (this.isRequiredFromModel()) {
             var variant = this.owner.data.variant
             var current = variant.get()
             if (current !== variant.FROM_MODULE_IMPORT && current !== variant.FROM_MODULE_IMPORT_STAR)

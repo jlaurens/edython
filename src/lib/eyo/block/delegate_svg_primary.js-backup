@@ -115,7 +115,7 @@ eYo.DelegateSvg.Expr.makeSubclass('slicing', {
       hole_value: 'primary',
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromDom()) {
+          if (this.isRequiredFromModel()) {
             var variant = this.owner.data.variant
             variant.set(variant.model.BLOCK)
           }
@@ -144,7 +144,7 @@ eYo.DelegateSvg.Manager.register('subscription')
  * @param {!Blockly.Block} block The block.
  */
 eYo.DelegateSvg.Expr.slicing.prototype.consolidate = function (block) {
-  if (this.slots.primary.isRequiredFromDom()) {
+  if (this.slots.primary.isRequiredFromModel()) {
     this.slots.primary.setRequiredFromDom(false)
     this.data.variant.set(this.data.variant.model.BLOCK)
   }
@@ -270,7 +270,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       synchronize: true,
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromDom()) {
+          if (this.isRequiredFromModel()) {
             var variant = this.owner.data.variant
             var current = variant.get()
             if (current !== variant.NAME && current !== variant.BUILTIN) {
@@ -858,7 +858,7 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
       },
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromDom()) {
+          if (this.isRequiredFromModel()) {
             var variant = this.owner.data.variant
             var current = variant.get()
             if (current == variant.EXPRESSION) {
@@ -877,7 +877,7 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('call_expr', {
       hole_value: 'primary',
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromDom()) {
+          if (this.isRequiredFromModel()) {
             var variant = this.owner.data.variant
             var current = variant.get()
             if (current !== variant.EXPRESSION && current !== variant.EXPRESSION_ATTRIBUTE) {

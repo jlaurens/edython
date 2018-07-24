@@ -182,7 +182,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       synchronize: true,
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromDom()) {
+          if (this.isRequiredFromModel()) {
             var variant_d = this.owner.data.variant
             var current = variant_d.get()
             if (current !== variant_d.NAME && current !== variant_d.BUILTIN && current !== variant_d.PARENT_NAME) {
@@ -208,7 +208,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       xml: {
         load: /** @suppress {globalThis} */ function (element) {
           this.load(element)
-          if (this.isRequiredFromDom()) {
+          if (this.isRequiredFromModel()) {
             var variant_d = this.owner.data.variant
             var variant = variant_d.get()
             if (variant !== variant_d.PARENT_NAME && variant !== variant_d.BLOCK_NAME) {
@@ -241,7 +241,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       hole_value: 'primary',
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromDom()) {
+          if (this.isRequiredFromModel()) {
             var variant_d = this.owner.data.variant
             var variant = variant_d.get()
             if (variant !== variant_d.BLOCK && variant !== variant_d.BLOCK_NAME) {
@@ -486,7 +486,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getInput = function (block, name) {
 //       hole_value: 'primary',
 //       xml: {
 //         didLoad: /** @suppress {globalThis} */ function () {
-//           if (this.isRequiredFromDom()) {
+//           if (this.isRequiredFromModel()) {
 //             var variant = this.owner.data.variant
 //             variant.set(variant.model.BLOCK)
 //           }
@@ -515,7 +515,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getInput = function (block, name) {
  * @param {!Blockly.Block} block The block.
  */
 // eYo.DelegateSvg.Expr.slicing.prototype.consolidate = function (block) {
-//   if (this.slots.primary.isRequiredFromDom()) {
+//   if (this.slots.primary.isRequiredFromModel()) {
 //     this.slots.primary.setRequiredFromDom(false)
 //     this.data.variant.set(this.data.variant.model.BLOCK)
 //   }
@@ -641,7 +641,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       synchronize: true,
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromDom()) {
+          if (this.isRequiredFromModel()) {
             var variant = this.owner.data.variant
             var current = variant.get()
             if (current !== variant.NAME && current !== variant.BUILTIN) {
@@ -1229,7 +1229,7 @@ eYo.DelegateSvg.Expr.module__call_expr.prototype.contentTemplate = eYo.DelegateS
 //       },
 //       xml: {
 //         didLoad: /** @suppress {globalThis} */ function () {
-//           if (this.isRequiredFromDom()) {
+//           if (this.isRequiredFromModel()) {
 //             var variant = this.owner.data.variant
 //             var current = variant.get()
 //             if (current == variant.EXPRESSION) {
@@ -1248,7 +1248,7 @@ eYo.DelegateSvg.Expr.module__call_expr.prototype.contentTemplate = eYo.DelegateS
 //       hole_value: 'primary',
 //       xml: {
 //         didLoad: /** @suppress {globalThis} */ function () {
-//           if (this.isRequiredFromDom()) {
+//           if (this.isRequiredFromModel()) {
 //             var variant = this.owner.data.variant
 //             var current = variant.get()
 //             if (current !== variant.EXPRESSION && current !== variant.EXPRESSION_ATTRIBUTE) {

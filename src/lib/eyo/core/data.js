@@ -748,7 +748,7 @@ eYo.Data.prototype.setRequiredFromDom = function (newValue) {
  * Get the required status.
  * For edython.
  */
-eYo.Data.prototype.isRequiredFromDom = function () {
+eYo.Data.prototype.isRequiredFromModel = function () {
   return this.required_from_dom
 }
 
@@ -757,7 +757,7 @@ eYo.Data.prototype.isRequiredFromDom = function () {
  * For edython.
  */
 eYo.Data.prototype.clearRequiredFromDom = function () {
-  if (this.isRequiredFromDom()) {
+  if (this.isRequiredFromModel()) {
     this.setRequiredFromDom(false)
     this.fromText('', true)// useful if the text was a '?'
     return true
@@ -770,7 +770,7 @@ eYo.Data.prototype.clearRequiredFromDom = function () {
  * @param {function()} helper
  */
 eYo.Data.prototype.whenRequiredFromDom = function (helper) {
-  if (this.isRequiredFromDom()) {
+  if (this.isRequiredFromModel()) {
     this.setRequiredFromDom(false)
     this.fromText('', true)// useful if the text was a '?'
     if (goog.isFunction(helper)) {

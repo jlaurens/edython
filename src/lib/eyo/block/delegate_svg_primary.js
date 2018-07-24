@@ -141,9 +141,12 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
-          var ary = this.get()
-          if (ary < Infinity) {
-            element.setAttribute('ary', ary)
+          var variant = this.data.variant.get()
+          if (variant !== eYo.Key.BUITLIN) {
+            var ary = this.get()
+            if (ary < Infinity) {
+              element.setAttribute('ary', ary)
+            }
           }
         }
       }
@@ -151,7 +154,17 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     mandatory: {
       order: 21,
       noUndo: true,
-      xml: false,
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+          var variant = this.data.variant.get()
+          if (variant !== eYo.Key.BUITLIN) {
+            var mandatory = this.get()
+            if (mandatory > 0) {
+              element.setAttribute('mandatory', mandatory)
+            }
+          }
+        }
+      },
       validate: /** @suppress {globalThis} */ function (newValue) {
         return goog.isNumber(newValue) && newValue > 0 ? {validated: Math.floor(newValue)} : null
       },
@@ -165,12 +178,68 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
       }
     },
-    parent: {
+    module: {
       order: 50,
+      init: eYo.Key.BUILTIN, // will be saved only when not built in
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
-        return type.raw === eYo.T3.Expr.builtin__name
-        || type.expr === eYo.T3.Expr.identifier
+        return type.expr === eYo.T3.Expr.identifier
+        || type.expr === eYo.T3.Expr.dotted_name
+        ? {validated: newValue} : null
+        // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
+      },
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        // change the parent too, if not already set
+        this.didChange(oldValue, newValue)
+        if (this.isRequiredFromModel() && this.get() !== eYo.Key.BUILTIN) {
+          var variant_d = this.owner.data.variant
+          var variant = variant_d.get()
+          if (variant !== variant_d.PARENT_NAME && variant !== variant_d.PARENT_EXPR) {
+            if (variant === variant_d.NAME) {
+              variant_d.set(variant_d.PARENT_NAME)
+            } else /* if (variant === variant_d.EXPR) */ {
+              variant_d.set(variant_d.PARENT_EXPR)
+            }
+          }
+        }
+        var parent_d = this.owner.data.parent
+        if (!parent_d.get()) {
+          parent_d.set(newValue)
+        }
+      },
+      consolidate: /** @suppress {globalThis} */ function () {
+        this.didChange(undefined, this.get())
+      },
+      synchronize: false,
+      xml: {
+        // the module will be saved only when not builtin
+        save: /** @suppress {globalThis} */ function (el) {
+          if (this.get() !== eYo.Key.BUILTIN) {
+            this.save(el)
+          }
+        },
+        didLoad: /** @suppress {globalThis} */ function () {
+          if (this.isRequiredFromModel() && this.get() !== eYo.Key.BUILTIN) {
+            var variant_d = this.owner.data.variant
+            var variant = variant_d.get()
+            if (variant !== variant_d.PARENT_NAME && variant !== variant_d.PARENT_EXPR) {
+              if (variant === variant_d.NAME) {
+                variant_d.set(variant_d.PARENT_NAME)
+              } else /* if (variant === variant_d.EXPR) */ {
+                variant_d.set(variant_d.PARENT_EXPR)
+              }
+            }
+          }
+          this.owner.data.parent.set(this.get())
+          // If there is a parent, it will override this value
+        }
+      }
+    },
+    parent: {
+      order: 51,
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        var type = eYo.Do.typeOfString(newValue)
+        return type.expr === eYo.T3.Expr.identifier
         || type.expr === eYo.T3.Expr.dotted_name
         ? {validated: newValue} : null
         // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
@@ -180,8 +249,14 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       synchronize: true,
       xml: {
+        // the parent will be saved only when not equal to the module
+        save: /** @suppress {globalThis} */ function (el) {
+          if (this.get() !== this.owner.data.module.get()) {
+            this.save(el)
+          }
+        },
         didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromDom()) {
+          if (this.isRequiredFromModel()) {
             var variant_d = this.owner.data.variant
             var variant = variant_d.get()
             if (variant !== variant_d.PARENT_NAME && variant !== variant_d.PARENT_EXPR) {
@@ -196,7 +271,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       }
     },
     name: {
-      order: 55,
+      order: 55, // the name must be last
+      main: true,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type.raw === eYo.T3.Expr.builtin__name
@@ -211,7 +287,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       xml: {
         load: /** @suppress {globalThis} */ function (element) {
           this.load(element)
-          if (this.isRequiredFromDom()) {
+          if (this.isRequiredFromModel()) {
             var variant_d = this.owner.data.variant
             var variant = variant_d.get()
             if (variant !== variant_d.PARENT_NAME && variant !== variant_d.BLOCK_NAME) {
@@ -245,7 +321,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       xml: {
         tag: 'parent',
         didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromDom()) {
+          if (this.isRequiredFromModel()) {
             var variant_d = this.owner.data.variant
             var variant = variant_d.get()
             if (variant !== variant_d.BLOCK && variant !== variant_d.BLOCK_NAME) {
@@ -510,7 +586,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       synchronize: true,
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromDom()) {
+          if (this.isRequiredFromModel()) {
             var variant = this.owner.data.variant
             var current = variant.get()
             if (current !== variant.NAME && current !== variant.BUILTIN) {

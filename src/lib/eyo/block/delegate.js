@@ -543,14 +543,20 @@ eYo.Delegate.prototype.initDataWithModel = function (block, model, noCheck) {
       done = true
     }
   } else { // data_in can be a string
-    for (var k in data_in) {
+    this.foreachData(function () {
+      var k = this.key
       if (eYo.Do.hasOwnProperty(data_in, k)) {
-        var D = this.data[k]
-        if (D) {
-          D.set(data_in[k])
-          done = true
-        } else if (!noCheck) {
-          console.warn('Unused data:', k, data_in[k])
+        this.set(data_in[k])
+        done = true
+      }
+    })
+    if (!noCheck) {
+      for (var k in data_in) {
+        if (eYo.Do.hasOwnProperty(data_in, k)) {
+          var D = this.data[k]
+          if (!D) {
+            console.warn('Unused data:', block.type, k, data_in[k])
+          }
         }
       }
     }

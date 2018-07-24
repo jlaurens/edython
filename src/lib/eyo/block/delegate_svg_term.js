@@ -135,16 +135,16 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
         consolidate: function () {
           var newVariant = this.get()
           var modifier = this.data.modifier.get()
-          var withAnnotation = this.owner.slots.annotation.isRequiredFromDom()
-          var withDefinition = this.owner.slots.definition.isRequiredFromDom()
-          if (this.data.alias.isActive() || this.data.alias.isRequiredFromDom()) {
+          var withAnnotation = this.owner.slots.annotation.isRequiredFromModel()
+          var withDefinition = this.owner.slots.definition.isRequiredFromModel()
+          if (this.data.alias.isActive() || this.data.alias.isRequiredFromModel()) {
             newVariant = this.NAME_ALIAS
           } else if (modifier === '**') {
             newVariant = this.STAR_STAR_NAME
           } else if (modifier === '*') {
             if (withAnnotation) {
               newVariant = this.STAR_NAME_ANNOTATION
-            } else if (!this.data.name.isActive() && !this.data.name.isRequiredFromDom()) {
+            } else if (!this.data.name.isActive() && !this.data.name.isRequiredFromModel()) {
               newVariant = this.STAR
             } else if (newVariant !== this.STAR_NAME && newVariant !== this.STAR_NAME_ANNOTATION) {
               newVariant = this.STAR_NAME
@@ -224,7 +224,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
         hole_value: 'expression',
         xml: {
           didLoad: /** @suppress {globalThis} */ function () {
-            if (this.isRequiredFromDom()) {
+            if (this.isRequiredFromModel()) {
               var variant = this.owner.data.variant
               var current = variant.get()
               if (current !== variant.NAME_ANNOTAION
@@ -247,7 +247,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
         hole_value: 'expression',
         xml: {
           didLoad: /** @suppress {globalThis} */ function () {
-            if (this.isRequiredFromDom()) {
+            if (this.isRequiredFromModel()) {
               var variant = this.owner.data.variant
               var current = variant.get()
               if (current !== variant.NAME_DEFINITION

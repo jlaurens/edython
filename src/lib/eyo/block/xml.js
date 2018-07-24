@@ -964,7 +964,7 @@ eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element) {
     var variant_d = this.data.variant
     if (type === eYo.T3.Expr.attributeref.substring(4)) {
       variant_d.set(variant_d.PARENT_NAME)
-    } else if (this.slots.primary.isRequiredFromDom()) {
+    } else if (this.slots.primary.isRequiredFromModel()) {
       variant_d.set(variant_d.BLOCK_NAME)
     } else {
       variant_d.set(variant_d.NAME)
