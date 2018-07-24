@@ -542,7 +542,7 @@ eYo.Delegate.prototype.initDataWithModel = function (block, model, noCheck) {
       d.set(data_in)
       done = true
     }
-  } else { // data_in can be a string
+  } else if (data_in) { // data_in can be a string
     this.foreachData(function () {
       var k = this.key
       if (eYo.Do.hasOwnProperty(data_in, k)) {
@@ -560,6 +560,8 @@ eYo.Delegate.prototype.initDataWithModel = function (block, model, noCheck) {
         }
       }
     }
+  } else {
+    done = true
   }
   return done
 }
