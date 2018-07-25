@@ -14,9 +14,21 @@
 goog.provide('eYo.Do')
 
 goog.require('eYo.Const')
-goog.require('goog.dom');
+goog.require('eYo.Model')
+
+goog.require('goog.dom')
 
 goog.asserts.assert(Object.setPrototypeOf, 'No setPrototypeOf, buy a new computer')
+
+// Object.keys polyfill
+// http://tokenposts.blogspot.com/2012/04/javascript-objectkeys-browser.html
+if (!Object.keys) Object.keys = function(o) {
+  if (o !== Object(o))
+    throw new TypeError('Object.keys called on a non-object');
+  var k=[],p;
+  for (p in o) if (Object.prototype.hasOwnProperty.call(o,p)) k.push(p);
+  return k;
+}
 
 /**
  * Contrary to goog.inherits, does not erase the childC9r.prototype.
@@ -344,9 +356,29 @@ eYo.T3.Stmt.control = '.control statement'
  * For edython.
  * @return {!Object} the type of this candidate, possible keys are `name`, `expr`, `stmt`, `modelExpr`, `modelStmt`.
  */
-eYo.Do.typeOfString = function (candidate) {
+eYo.Do.typeOfString = function (candidate, module) {
   if (!goog.isString(candidate)) {
     return {}
+  }
+  if (module === eYo.Key.BUILTIN) {
+
+  } else if (module) {
+    var model
+    var M = eYo.Model[module]
+    if (M) {
+      var item = M.getItem && M.getItem (candidate)
+      if (item) {
+        return {
+          
+        }
+      }
+    }
+    for (M in Object.keys(eYo.Model)) {
+    }
+    var keys = Object.keys(models)
+    if (keys.length) {
+  
+    }  
   }
   if (['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'].indexOf(candidate) >= 0) {
     return {
@@ -484,7 +516,7 @@ eYo.Do.typeOfString = function (candidate) {
     in: {
       raw: eYo.T3.Expr.reserved_keyword,
       expr: eYo.T3.Expr.object_comparison,
-      modeExpr: 'in'
+      modelExpr: 'in'
     },
     raise: {
       raw: eYo.T3.Expr.reserved_keyword,
@@ -493,9 +525,9 @@ eYo.Do.typeOfString = function (candidate) {
     print: {
       raw: eYo.T3.Expr.builtin__name,
       expr: eYo.T3.Expr.call_expr,
-      modeExpr: 'print',
+      modelExpr: 'print',
       stmt: eYo.T3.Expr.call_stmt,
-      modeStmt: 'print'
+      modelStmt: 'print'
     }
   } [candidate])) {
     return out
@@ -676,7 +708,7 @@ eYo.Do.Enumerator = function (list, filter) {
  * @return {boolean}
  */
 eYo.Do.hasOwnProperty = function (object, key) {
-  return Object.prototype.hasOwnProperty.call(object, key)
+  return object && key && Object.prototype.hasOwnProperty.call(object, key)
 }
 
 /**

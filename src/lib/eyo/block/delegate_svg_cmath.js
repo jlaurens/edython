@@ -23,41 +23,6 @@ goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')
 
 /**
- * Class for a DelegateSvg, import cmath block.
- * A unique block for each module to ease forthcoming management.
- * For edython.
- */
-eYo.DelegateSvg.Stmt.import_stmt.makeSubclass('cmath__import_stmt', {
-  data: {
-    from: {
-      init: 'cmath',
-      validate: /** @suppress {globalThis} */ function (newValue) {
-        return newValue === 'cmath' ? {validated: newValue} : null
-      },
-      synchronize: true
-    }
-  },
-  slots: {
-    import_module: {
-      order: 1,
-      fields: {
-        label: 'import',
-        suffix: 'cmath'
-      },
-      wrap: null,
-      check: null
-    },
-    from: {
-      order: 2,
-      fields: {
-        label: 'from',
-        edit: 'cmath'
-      }
-    }
-  }
-})
-
-/**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
@@ -164,7 +129,7 @@ var F = function (name, title) {
     type: eYo.T3.Expr.call_expr,
     data: {
       name: name,
-      parent: 'cmath',
+      module: 'cmath',
       variant: eYo.Key.NAME
     },
     title: key
@@ -177,7 +142,7 @@ var F_k = function (name, title) {
     type: eYo.T3.Expr.call_expr,
     data: {
       name: name,
-      parent: 'cmath',
+      module: 'cmath',
       variant: eYo.Key.NAME
     },
     title: key
@@ -189,8 +154,7 @@ eYo.FlyoutCategory.basic_cmath__module = [
     type: eYo.T3.Expr.call_expr,
     data: {
       name: 'complex',
-      variant: eYo.Key.NAME,
-      parent: 'cmath'
+      variant: eYo.Key.NAME
     }
   },
   {
@@ -213,7 +177,8 @@ eYo.FlyoutCategory.basic_cmath__module = [
       name: 'conjugate',
       ary: 2,
       mandatory: 0,
-      variant: eYo.Key.PROPERTY_NAME
+      variant: eYo.Key.PARENT_NAME,
+      parent: ''
     }
   },
   {
@@ -250,7 +215,7 @@ var F = function (name, title) {
     type: eYo.T3.Expr.call_expr,
     data: {
       name: name,
-      parent: 'cmath',
+      module: 'cmath',
       variant: eYo.Key.PARENT_NAME
     },
     title: key
@@ -260,10 +225,10 @@ var F_k = function (name, title) {
   var key = 'cmath__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
-    type: eYo.T3.Expr.call_expr,
+    type: eYo.T3.Expr.attributeref,
     data: {
       name: name,
-      parent: 'cmath',
+      module: 'cmath',
       variant: eYo.Key.PARENT_NAME
     },
     title: key
@@ -293,15 +258,19 @@ eYo.FlyoutCategory.cmath__module = [
     }
   },
   {
-    type: eYo.T3.Stmt.cmath__import_stmt,
+    type: eYo.T3.Stmt.import_stmt,
     data: {
       variant: eYo.Key.IMPORT
     },
     slots: {
-      O: {
-        type: eYo.T3.Expr.term,
-        data: 'math',
-      },
+      import_module: {
+        slots: {
+          O: {
+            type: eYo.T3.Expr.term,
+            data: 'cmath',
+          },
+        },
+      }
     },
   },
 
@@ -346,8 +315,5 @@ goog.mixin(eYo.Tooltip.Title, {
 })
 
 eYo.DelegateSvg.CMath.T3s = [
-  eYo.T3.Stmt.cmath__import_stmt,
-  eYo.T3.Expr.cmath__call_expr,
-  eYo.T3.Stmt.cmath__call_stmt,
   eYo.T3.Expr.cmath__const
 ]

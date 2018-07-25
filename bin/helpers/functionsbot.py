@@ -5,6 +5,7 @@ import pathlib
 import re
 import datetime
 import io
+import math
 
 
 class Filter:
@@ -45,6 +46,7 @@ class Item:
     description = None
     filter = None
     mandatory_ = None
+    star = False
 
     def __init__(self, owner, dl, filter=Filter):
         """Parses the dl dom element into an item
@@ -152,6 +154,8 @@ class Item:
                     argument.default = default
                 elif argument.default != default:
                     print('! discordant voice in default', name, argument.default, default)
+            if name.startswith('*'):
+                self.star = True
             position += 1
         # now the optional arguments
         if args2 is None:
@@ -195,6 +199,8 @@ class Item:
     def ary(self):
         if self.arguments is None:
             return None
+        if self.star:
+            return math.inf
         return self.filter.ary(self.name, len(self.arguments))
 
     @property
@@ -293,7 +299,9 @@ class Model:
             if key is None:
                 key = name
             if key.endswith('_index'):
-                key = key.replace('_index', '')
+                key = key.replace('_index', '')                
+            if attr == math.inf:
+                attr = 'Infinity'
             self.print(template.format(key, attr), s7r=s7r, nl=True)
 
         self.down_print("{", s7r=separator)

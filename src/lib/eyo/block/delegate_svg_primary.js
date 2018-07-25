@@ -183,10 +183,17 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       init: eYo.Key.BUILTIN, // will be saved only when not built in
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
-        return type.expr === eYo.T3.Expr.identifier
+        return !newValue || type.expr === eYo.T3.Expr.identifier
         || type.expr === eYo.T3.Expr.dotted_name
         ? {validated: newValue} : null
         // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
+      },
+      willChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        var parent_d = this.owner.data.parent
+        if (parent_d.get() === this.get()) {
+          // parent was set by default
+          parent_d.set('')
+        }
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         // change the parent too, if not already set
@@ -239,7 +246,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       order: 51,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
-        return type.expr === eYo.T3.Expr.identifier
+        return !newValue || type.expr === eYo.T3.Expr.identifier
         || type.expr === eYo.T3.Expr.dotted_name
         ? {validated: newValue} : null
         // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
@@ -271,7 +278,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       }
     },
     name: {
-      order: 55, // the name must be last
+      order: 1000, // the name must be last
       main: true,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)

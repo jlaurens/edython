@@ -6,6 +6,7 @@ import re
 import datetime
 import argparse
 import io
+import math
 
 parser = argparse.ArgumentParser(description='Extract module model from online document.')
 parser.add_argument('module', metavar='module', type=str, nargs='+',
@@ -43,6 +44,7 @@ by_name = {}
 items = []
 categories = {}
 types = {}
+star = False
 
 def export_model():
 
@@ -68,7 +70,10 @@ def export_model():
             do_print_sep("{}: '{}'".format(key, item[key]))
 
         def do_print_item_attribute_n(key):
-            do_print_sep("{}: {}".format(key, item[key]))
+            if item[key] == math.inf:
+                do_print_sep("{}: '{}'".format(key, 'Infinity'))
+            else:
+                do_print_sep("{}: {}".format(key, item[key]))
 
         def do_print_argument_attribute(key, s7r=','):
             attr = argument[key]
@@ -82,6 +87,8 @@ def export_model():
                     attr = attr.replace("'", r"\'")
             if key.endswith('_index'):
                 key = key.replace('_index', '')
+            if attr == math.inf:
+                attr = 'Infinity'
             do_print_sep(template.format(key, attr), s7r=s7r)
 
         do_print_sep("{", s7r=separator)
@@ -157,8 +164,8 @@ goog.require('eYo.Model')
         do_print('types: [')
         depth += 1
         separator = ''
-        for tpe in list(x[0] for x in sorted(list((k,v) for k,v in types.items()), key= lambda x: x[1])):
-            do_print_sep("'{}'".format(tpe), s7r=separator)
+        for tipe in list(x[0] for x in sorted(list((k,v) for k,v in types.items()), key= lambda x: x[1])):
+            do_print_sep("'{}'".format(tipe), s7r=separator)
             separator = ','
         depth -= 1
         do_print('],')
@@ -263,8 +270,8 @@ def import_model():
         parent_map = {c: p for p in root.iter() for c in p}
         # start with all the functions
         for dl in root.iter("{http://www.w3.org/1999/xhtml}dl"):
-            tpe = dl.get('class')
-            if not tpe:
+            tipe = dl.get('class')
+            if not tipe:
                 continue
             returner = False
             descriptions_by_name = {}
@@ -272,7 +279,7 @@ def import_model():
             if dd:
                 txt = "".join(dd.itertext())
                 if not returner:
-                    if tpe == 'function':
+                    if tipe == 'function':
                         if Filter.do_module(txt):
                             returner = True
                         else:
@@ -282,7 +289,7 @@ def import_model():
                                     returner = f(txt)
                             except:
                                 pass
-                    elif tpe == 'data':
+                    elif tipe == 'data':
                         returner = True
                 descriptions = []
                 td = dd.find(".//{http://www.w3.org/1999/xhtml}td")
@@ -312,7 +319,7 @@ def import_model():
                 if name is None:
                     continue
                 names.append(name)
-                if not returner and tpe == 'function':
+                if not returner and tipe == 'function':
                     try:
                         f = getattr(Filter, 'do_name_' + module)
                         if not f is None:
@@ -353,18 +360,20 @@ def import_model():
                                 argument['description'] = descriptions_by_name[key].\
                                     replace('\n', ' ').replace("'", "\\'").strip()
                             arguments.append(argument)
+                            if key.startswith('*'):
+                                star = True
 
             if len(names):
                 if not category in categories:
                     categories[category] = len(categories)
-                if not tpe in types:
-                    types[tpe] = len(types)
+                if not tipe in types:
+                    types[tipe] = len(types)
                 names = sorted(names, key=lambda x: (x.find('_') < 0, -len(x)))
                 item = {
                     'index': len(items),
                     'names': names,
                     'category': categories[category],
-                    'type': types[tpe],
+                    'type': types[tipe],
                     'arguments': arguments,
                     'ary': ary,
                     'mandatory': mandatory

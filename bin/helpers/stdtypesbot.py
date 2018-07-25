@@ -5,6 +5,7 @@ import pathlib
 import re
 import datetime
 import io
+import math
 
 
 class Filter:
@@ -54,6 +55,7 @@ class Item:
     description = None
     filter = None
     mandatory_ = None
+    star = False
 
     def __init__(self, owner, dl, filter=Filter):
         """Parses the dl dom element into an item
@@ -169,6 +171,8 @@ class Item:
                 except:
                     pass
                 argument.default = default
+            if name.startswith('*'):
+                self.star = True
         if self.arguments is None:
             self.arguments = arguments
         elif len(self.arguments) < len(arguments):
@@ -178,6 +182,8 @@ class Item:
     def ary(self):
         if self.arguments is None:
             return None
+        if self.star:
+            return math.inf
         return self.filter.ary(self.name, len(self.arguments))
 
     @property
@@ -277,6 +283,8 @@ class Model:
                 key = name
             if key.endswith('_index'):
                 key = key.replace('_index', '')
+            if attr is math.inf:
+                attr = 'Infinity'
             self.print(template.format(key, attr), s7r=s7r, nl=True)
 
         self.down_print("{", s7r=separator)
