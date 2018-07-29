@@ -404,6 +404,17 @@ eYo.Flyout.prototype.positionAt_ = function(width, height, x, y) {
   eYo.Flyout.superClass_.positionAt_.call(this, width, height, x, y)
   this.eyo.toolbar_.div_.style.left = x + 'px'
   this.eyo.toolbar_.div_.style.top = y + 'px'
+};
+
+/**
+ * Compute width of flyout.  Position mat under each block.
+ * For RTL: Lay out the blocks and buttons to be right-aligned.
+ * @private
+ */
+eYo.Flyout.prototype.reflowInternal_ = function() {
+  eYo.Flyout.superClass_.reflowInternal_.call(this)
+  this.width_ = Math.max(this.width_, 280) // problem with localisation here
+  console.log('flyout width is:', this.width_)
 }
 
 /**
@@ -473,6 +484,8 @@ eYo.Flyout.prototype.getMetrics_ = function() {
  */
 eYo.Flyout.prototype.setBackgroundPath_ = function(width, height) {
 
+  console.log('setBackgroundPath_', width, height)
+  
   var top_margin = this.eyo.TOP_MARGIN
   
   var atRight = this.toolboxPosition_ == Blockly.TOOLBOX_AT_RIGHT;

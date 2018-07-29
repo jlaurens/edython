@@ -155,7 +155,14 @@ eYo.FlyoutToolbar.prototype.createDom = function (dom) {
     goog.getCssName(cssClass, 'toolbar-module'),
     this.select_module_
   )
-  this.div_ = goog.dom.createDom(
+  this.div_ = eYo.App.flyoutToolbarSwitcher
+  ? goog.dom.createDom(
+    goog.dom.TagName.DIV,
+    goog.getCssName(cssClass, 'toolbar'),
+    eYo.App.flyoutToolbarSwitcher,
+    this.control_
+  )
+  : goog.dom.createDom(
     goog.dom.TagName.DIV,
     goog.getCssName(cssClass, 'toolbar'),
     div_general,
@@ -188,8 +195,7 @@ eYo.setup.register(function () {
     '.eyo-flyout-toolbar {',
     'position: absolute; z-index: 30; pointer-events: all;',
     'height: 4.5rem;',
-    'padding: 0.125rem;',
-    'padding-right: 0;',
+    'padding: 0.25rem;',
     'margin: 0;',
     'background: rgba(221,221,221,0.8);',
   '}')

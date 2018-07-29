@@ -1,20 +1,24 @@
 <template>
   <div id="eyo-workspace-content">
     <icon-base id="svg-control-image-v" icon-name="triangle"><icon-triangle /></icon-base>
-    <b-dropdown id="eyo-flyout-dropdown-general" class="eyo-dropdown"  v-on:show="doShow()">
-      <template slot="button-content">
-        {{selectedCategory && selectedCategory.in_category ? selectedCategory.content : 'blocs'}}
-      </template>
-      <b-dropdown-item-button v-for="item in levels" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
-      <b-dropdown-divider></b-dropdown-divider>
-      <b-dropdown-item-button v-for="item in categories" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
-    </b-dropdown>
-    <b-dropdown id="eyo-flyout-dropdown-module" class="eyo-dropdown"  v-on:show="doShow()">
-    <template slot="button-content">
-        {{selectedCategory && selectedCategory.in_module ? selectedCategory.content : 'modules'}}
-    </template>
-    <b-dropdown-item-button v-for="item in modules" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
-  </b-dropdown>
+    <div id="eyo-flyout-toolbar-switcher">
+      <b-button-group id="eyo-flyout-switcher">
+        <b-dropdown id="eyo-flyout-dropdown-general" class="eyo-dropdown"  v-on:show="doShow()">
+          <template slot="button-content">&nbsp;&nbsp;Bloc&nbsp;&nbsp;&nbsp;</template>
+          <b-dropdown-item-button v-for="item in levels" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
+          <b-dropdown-divider></b-dropdown-divider>
+          <b-dropdown-item-button v-for="item in categories" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
+        </b-dropdown>
+        <b-dropdown id="eyo-flyout-dropdown-module" class="eyo-dropdown"  v-on:show="doShow()">
+          <template slot="button-content">Module&nbsp;</template>
+          <b-dropdown-item-button v-for="item in modules" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
+        </b-dropdown>
+        <b-button v-on:show="doShow()">Info</b-button>
+      </b-button-group>
+      <div id="eyo-flyout-toolbar-label">
+        {{label}}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -34,7 +38,8 @@
       var model = {
         items: {},
         workspace: null,
-        flyout: null
+        flyout: null,
+        label: '...'
       }
       var F = function (name) {
         model.items[name] = {
@@ -152,10 +157,8 @@
         noDynamicList: false
       }
       // Get what will replace the old flyout selector
-      this.$$.eYo.App.flyoutDropDownGeneral = document.getElementById('eyo-flyout-dropdown-general')
-      this.$$.eYo.App.flyoutDropDownModule = document.getElementById('eyo-flyout-dropdown-module')
-      goog.dom.removeNode(this.$$.eYo.App.flyoutDropDownGeneral)
-      goog.dom.removeNode(this.$$.eYo.App.flyoutDropDownModule)
+      this.$$.eYo.App.flyoutToolbarSwitcher = document.getElementById('eyo-flyout-toolbar-switcher')
+      goog.dom.removeNode(this.$$.eYo.App.flyoutToolbarSwitcher)
       // First remove the old flyout selector
       var flyout = new eYo.Flyout(eYo.App.workspace)
       goog.dom.insertSiblingAfter(
@@ -213,12 +216,20 @@
   .eyo-flyout-control {
     vertical-align: middle;
   }
-  #eyo-flyout-dropdown-general, #eyo-flyout-dropdown-module {
-    opacity: 1;
+  #eyo-flyout-toolbar-switcher {
+    position: relative;
     width: 100%;
-    height: 100%;
   }
-  #eyo-flyout-dropdown-general .btn, #eyo-flyout-dropdown-module .btn {
+  #eyo-flyout-switcher {
     width: 100%;
+  }
+  #eyo-flyout-switcher .btn {
+    width: 100%;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  #eyo-flyout-toolbar-label {
+    width: 100;
+    padding: 0.25rem;
   }
 </style>
