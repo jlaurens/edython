@@ -8,7 +8,8 @@ const state = {
   panelsWidth: '100%',
   selectedPanel: 'console',
   flyoutClosed: false,
-  flyoutCategory: undefined
+  flyoutCategory: undefined,
+  toolbarInfoVisible: false
 }
 
 const mutations = {
@@ -49,6 +50,9 @@ const mutations = {
   },
   UI_SET_FLYOUT_CLOSED (state, yorn) {
     state.flyoutClosed = !!yorn
+  },
+  UI_SET_TOOLBAR_INFO_VISIBLE (state, yorn) {
+    state.toolbarInfoVisible = !!yorn
   }
 }
 

@@ -4,7 +4,7 @@
     <div id="eyo-flyout-toolbar-switcher">
       <b-button-group id="eyo-flyout-switcher">
         <b-dropdown id="eyo-flyout-dropdown-general" class="eyo-dropdown"  v-on:show="doShow()">
-          <template slot="button-content">&nbsp;&nbsp;Bloc&nbsp;&nbsp;&nbsp;</template>
+          <template slot="button-content">Blocs</template>
           <b-dropdown-item-button v-for="item in levels" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
           <b-dropdown-divider></b-dropdown-divider>
           <b-dropdown-item-button v-for="item in categories" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
@@ -13,7 +13,6 @@
           <template slot="button-content">Module&nbsp;</template>
           <b-dropdown-item-button v-for="item in modules" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
         </b-dropdown>
-        <b-button v-on:show="doShow()">Info</b-button>
       </b-button-group>
       <div id="eyo-flyout-toolbar-label">
         {{label}}
@@ -45,7 +44,8 @@
         model.items[name] = {
           name: name,
           content: eYo.Msg[name.toUpperCase()],
-          in_category: true
+          in_category: true,
+          label: 'Blocs ' + eYo.Msg[name.toUpperCase()]
         }
       }
       F('basic')
@@ -62,7 +62,8 @@
         model.items[name + '__module'] = {
           name: name + '__module',
           content: content || name,
-          in_module: true
+          in_module: true,
+          label: 'Module ' + (content || name)
         }
       }
       moduleF('basic_math', 'math (basic)')
@@ -124,6 +125,7 @@
       selectedCategory: function (newValue, oldValue) {
         if (newValue) {
           this.$store.commit('UI_SET_FLYOUT_CATEGORY', newValue.name)
+          this.label = newValue.label
         }
       }
     },
@@ -231,5 +233,15 @@
   #eyo-flyout-toolbar-label {
     width: 100;
     padding: 0.25rem;
+    background: #e3e3e3;
+    font-style: italic;
+    color: #666666;
+    text-align: center;
+  }
+  #eyo-flyout-switcher .eyo-dropdown.btn-group.b-dropdown.dropdown {
+    width: 50%;
+  }
+  #eyo-flyout-toolbar-switcher .eyo-round-btn {
+    top: 0;
   }
 </style>

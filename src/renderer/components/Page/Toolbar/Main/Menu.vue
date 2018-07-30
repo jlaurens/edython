@@ -3,6 +3,7 @@
     <template slot="button-content">
       <icon-base :width="32" :height="32" icon-name="menu"><icon-menu /></icon-base>
     </template>
+    <b-dropdown-item-button v-on:click="doToggleToolbarInfoVisible()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleToolbarInfoVisible" v-tippy>{{contentToolbarInfoVisible}}</b-dropdown-item-button>
     <b-dropdown-item-button v-on:click="doToggleEcoSave()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleEcoSave" v-tippy><check-mark :checked="ecoSave" />Sauvegarde éco</b-dropdown-item-button>
     <b-dropdown-item-button v-on:click="doToggleDisabledTips()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleDisabledTips" v-tippy><check-mark :checked="false" />{{contentDisabledTips}}</b-dropdown-item-button>
   </b-dropdown>
@@ -40,11 +41,20 @@
       contentDisabledTips () {
         return this.$store.state.Document.disabledTips ? 'Activer les bulles d\'aide' : 'Désactiver les bulles d\'aide'
       },
+      titleToolbarInfoVisible () {
+        return this.$store.state.Document.toolbarInfoVisible ? 'Cacher la barre d\'informations' : 'Afficher la barre d\'informations et de réglage du bloc sélectionné'
+      },
+      contentToolbarInfoVisible () {
+        return this.$store.state.UI.toolbarInfoVisible ? 'Cacher la barre d\'informations' : 'Afficher la barre d\'informations'
+      },
       titleMenu () {
         return 'Options et actions'
       }
     },
     methods: {
+      doToggleToolbarInfoVisible () {
+        this.$store.commit('UI_SET_TOOLBAR_INFO_VISIBLE', !this.$store.state.UI.toolbarInfoVisible)
+      },
       doToggleEcoSave () {
         this.$store.commit('DOC_SET_ECO_SAVE', !this.$store.state.Document.ecoSave)
       },
