@@ -55,10 +55,9 @@ eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function (block) {
   steps.push(a + r + ',' + r)
   a = ' a ' + r + ', ' + r + ' 0 0 1 '
   if (this.hasNextStatement_(block)) {
-    steps.push('h ' + (-t - r))
+    steps.push('h ' + (-t + eYo.Font.space - eYo.Padding.l() - r))
   } else {
-    steps.push('h ' + (-t) + a + (-r) + ',' + (-r))
-    h -= r
+    steps.push('h ' + (-t + eYo.Font.space - eYo.Padding.l()) + a + (-r) + ',' + (-r))
   }
   if (this.hasPreviousStatement_(block)) {
     steps.push('V 0 z')
@@ -98,9 +97,9 @@ eYo.DelegateSvg.Group.prototype.groupContourPathDef_ = function (block) {
   steps.push(a + r + ',' + r)
   a = ' a ' + r + ', ' + r + ' 0 0 1 '
   if (next) {
-    steps.push('h ' + (-t - r))
+    steps.push('h ' + (-t + eYo.Font.space - eYo.Padding.l() - r))
   } else {
-    steps.push('h ' + (-t) + a + (-r) + ',' + (-r))
+    steps.push('h ' + (-t + eYo.Font.space - eYo.Padding.l()) + a + (-r) + ',' + (-r))
     h -= r
   }
   if (previous) {
