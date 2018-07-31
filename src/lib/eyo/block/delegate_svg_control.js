@@ -36,7 +36,7 @@ eYo.DelegateSvg.Control.prototype.playPathDef_ = function (block, cursorX) {
   var ratio = 1.5
   var blh = lh * ratio
   var y = lh * Math.sqrt(1 - (ratio / 2) ** 2)
-  var d = cursorX + eYo.Font.space + blh / 2
+  var d = cursorX + eYo.Font.space + blh / 2 + eYo.Font.space - eYo.Padding.l()
   var steps = ['m ' + (d + 2 * y / Math.sqrt(3)) + ',' + y]
   steps.push('l ' + (-Math.sqrt(3) * y) + ',' + y)
   steps.push('l 0,' + (-2 * y) + ' z')
@@ -50,11 +50,11 @@ eYo.DelegateSvg.Control.prototype.playPathDef_ = function (block, cursorX) {
  */
 eYo.DelegateSvg.Control.prototype.controlPathDef_ = function (block) {
   /* eslint-disable indent */
-  var w = block.width
+  var w = block.width - eYo.Font.space + eYo.Padding.l()
   var h = block.height
   var r = eYo.Style.Path.radius()
   var d = eYo.Font.space
-  var steps = ['m ' + d + ',0']
+  var steps = ['m ' + (d + eYo.Font.space - eYo.Padding.l()) + ',0']
   var lh = eYo.Font.lineHeight() / 2
   var blh = lh * 1.5
   steps.push('a ' + lh + ', ' + lh + ' 0 0 1 ' + blh + ',0')

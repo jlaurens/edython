@@ -896,6 +896,7 @@ eYo.DelegateSvg.prototype.renderDraw_ = function (block) {
     block.height = eYo.Font.lineHeight()
     var d, unlocker
     try {
+      // chain the tiles to properly manage spaces between tiles
       unlocker = this.chainTiles(block)
       d = this.renderDrawModel_(block)
       this.svgPathInner_.setAttribute('d', d)
@@ -1725,10 +1726,10 @@ eYo.DelegateSvg.prototype.highlightConnectionPathDef = function (block, c8n) {
     var r = eYo.Style.Path.Selected.width / 2
     var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
     if (c8n === block.previousConnection) {
-      steps = 'm ' + block.width + ',' + (-r) + a + (2 * r) + ' h ' + (-block.width) + a + (-2 * r) + ' z'
+      steps = 'm ' + block.width + ',' + (-r) + a + (2 * r) + ' h ' + (-block.width + eYo.Font.space - eYo.Padding.l()) + a + (-2 * r) + ' z'
     } else if (c8n === block.nextConnection) {
       if (block.height > eYo.Font.lineHeight()) { // this is not clean design
-        steps = 'm ' + (eYo.Font.tabWidth + eYo.Style.Path.radius()) + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-eYo.Font.tabWidth - eYo.Style.Path.radius()) + a + (-2 * r) + ' z'
+        steps = 'm ' + (eYo.Font.tabWidth + eYo.Style.Path.radius()) + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-eYo.Font.tabWidth - eYo.Style.Path.radius() + eYo.Font.space - eYo.Padding.l()) + a + (-2 * r) + ' z'
       } else {
         steps = 'm ' + block.width + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-block.width) + a + (-2 * r) + ' z'
       }
