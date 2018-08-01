@@ -123,6 +123,10 @@ ConfigEyo.prototype.getConfig = function () {
         }
       },
       {
+        resourceQuery: /blockType=i18n/,
+        loader: '@kazupon/vue-i18n-loader'
+      },
+      {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         use: {
           loader: 'url-loader',
