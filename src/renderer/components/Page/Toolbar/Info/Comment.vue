@@ -60,7 +60,13 @@
           return undefined
         },
         set (newValue) {
-          console.log('set comment', newValue)
+          var block = this.selectedBlock
+          if (block) {
+            var comment_d = block.eyo.data.comment
+            if (comment_d) {
+              comment_d.set(newValue)
+            }
+          }
         }
       }
     }
