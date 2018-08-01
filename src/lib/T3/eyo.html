@@ -14,6 +14,7 @@ module__call_expr ::= "module".foo (args)
 module__call_stmt ::= module__call_expr
 builtin__print_expr/print ::= "print(" argument_list ")"
 builtin__print_stmt/print ::= builtin__print_expr
+print_argument_list_comprehensive ::= subclass of argument_list_comprehensive
 builtin__range/range ::= "range(" range_argument_list ")"
 range_argument_list ::= 3 elements
 builtin__input_expr/input ::= "input(" [any_argument] ")"

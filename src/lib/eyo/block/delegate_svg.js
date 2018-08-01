@@ -1731,7 +1731,7 @@ eYo.DelegateSvg.prototype.highlightConnectionPathDef = function (block, c8n) {
       if (block.height > eYo.Font.lineHeight()) { // this is not clean design
         steps = 'm ' + (eYo.Font.tabWidth + eYo.Style.Path.radius()) + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-eYo.Font.tabWidth - eYo.Style.Path.radius() + eYo.Font.space - eYo.Padding.l()) + a + (-2 * r) + ' z'
       } else {
-        steps = 'm ' + block.width + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-block.width) + a + (-2 * r) + ' z'
+        steps = 'm ' + block.width + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-block.width + eYo.Font.space - eYo.Padding.l()) + a + (-2 * r) + ' z'
       }
     } else {
       steps = 'm ' + (block.width) + ',' + (-r + eYo.Font.lineHeight()) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth - block.width) + a + (-2 * r) + ' z'

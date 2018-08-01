@@ -51,15 +51,6 @@
 <style>
   #page-content {
     position: absolute;
-    top: 3.25rem;
-    height: calc(100% - 3.5rem);
-    width: calc(100% - 0.5rem);
-    padding: 0.25rem;
-  }
-  #page-content1 {
-    position: absolute;
-    top: 6rem;
-    height: calc(100% - 6rem);
     width: calc(100% - 0.5rem);
     padding: 0.25rem;
   }

@@ -219,7 +219,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (block, model, s
   var c8n = block.previousConnection
   if (c8n) {
     Blockly.Events.disable()
-    var parentBlock = eYo.DelegateSvg.newBlockComplete(block.workspace, model)
+    var parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, model)
     Blockly.Events.enable()
     if (parentBlock) {
       var parentC8n = parentBlock.nextConnection
@@ -242,7 +242,6 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (block, model, s
           }
           var holes = eYo.HoleFiller.getDeepHoles(parentBlock)
           eYo.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
-          parentBlock.eyo.beReady(parentBlock)
           parentBlock.render()
           c8n.connect(parentC8n)
           if (Blockly.selected === block) {

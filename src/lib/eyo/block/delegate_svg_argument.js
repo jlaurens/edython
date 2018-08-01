@@ -20,23 +20,23 @@ goog.require('eYo.DelegateSvg.List')
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('keyword_item', {
-  slots: {
-    identifier: {
-      order: 1,
-      check: eYo.T3.Expr.identifier,
-      hole_value: 'key'
-    },
-    expression: {
-      order: 3,
-      fields: {
-        label: '='
-      },
-      check: eYo.T3.Expr.Check.expression,
-      hole_value: 'value'
-    }
-  }
-})
+// eYo.DelegateSvg.Expr.makeSubclass('keyword_item', {
+//   slots: {
+//     identifier: {
+//       order: 1,
+//       check: eYo.T3.Expr.identifier,
+//       hole_value: 'key'
+//     },
+//     expression: {
+//       order: 3,
+//       fields: {
+//         label: '='
+//       },
+//       check: eYo.T3.Expr.Check.expression,
+//       hole_value: 'value'
+//     }
+//   }
+// })
 
 /**
  * List consolidator for argument list.
@@ -324,7 +324,7 @@ eYo.DelegateSvg.List.makeSubclass('argument_list_comprehensive', {
 })
 
 eYo.DelegateSvg.Argument.T3s = [
-  eYo.T3.Expr.keyword_item,
+  // eYo.T3.Expr.keyword_item,
   eYo.T3.Expr.starred_expression, // from Expr
   eYo.T3.Expr.argument_list,
   eYo.T3.Expr.argument_list_comprehensive
