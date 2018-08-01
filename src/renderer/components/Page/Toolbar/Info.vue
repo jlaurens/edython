@@ -9,6 +9,9 @@
     <div v-else-if="this.isSelected(this.$$.eYo.T3.Expr.builtin__print_expr) || this.isSelected(this.$$.eYo.T3.Stmt.builtin__print_stmt)">
       <info-print></info-print>
     </div>
+    <div v-else-if="this.isSelected(this.$$.eYo.T3.Stmt.assignment_stmt)">
+      <info-assignment></info-assignment>
+    </div>
     <div v-else-if="selectedBlockType">
       <info-default></info-default>
     </div>
@@ -22,6 +25,7 @@
   import InfoPrimary from './Info/Primary.vue'
   import InfoShortliteral from './Info/Shortliteral.vue'
   import InfoPrint from './Info/Print.vue'
+  import InfoAssignment from './Info/Assignment.vue'
   import InfoDefault from './Info/Default.vue'
   import InfoNone from './Info/None.vue'
 
@@ -36,6 +40,7 @@
       InfoPrimary,
       InfoShortliteral,
       InfoPrint,
+      InfoAssignment,
       InfoDefault,
       InfoNone
     },
