@@ -24,6 +24,8 @@ import VueTippy from 'vue-tippy'
 
 import {TweenLite} from 'gsap/TweenMax' // eslint-disable-line no-unused-vars
 
+import VueI18n from 'vue-i18n'
+
 var FileSaver = require('file-saver')
 
 eYo.App.Stacktrace = Stacktrace
@@ -46,6 +48,7 @@ Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 Vue.use(VueSplit)
 Vue.use(VueTippy, eYo.Tooltip.options)
+Vue.use(VueI18n)
 
 if (process.env.BABEL_ENV !== 'web') {
   Vue.prototype.$$.electron = require('electron')
