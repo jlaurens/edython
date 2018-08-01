@@ -2,14 +2,16 @@ const state = {
   undoCount: 0,
   redoCount: 0,
   undoStage: 0,
-  selectedBlockId: undefined, // the selected block
+  selectedBlockId: undefined, // the selected block id
+  selectedBlockType: undefined, // the selected block type
   blockClipboard: undefined,
   panelsVisible: true,
   panelsWidth: '100%',
   selectedPanel: 'console',
   flyoutClosed: false,
   flyoutCategory: undefined,
-  toolbarInfoVisible: false
+  toolbarInfoVisible: false,
+  toolbarInfoDebug: false
 }
 
 const mutations = {
@@ -30,6 +32,7 @@ const mutations = {
       return
     }
     state.selectedBlockId = block ? block.id : null
+    state.selectedBlockType = block ? block.type : null
   },
   UI_DID_COPY_BLOCK (state, ctxt) {
     state.blockClipboard = ctxt.xml
@@ -53,6 +56,9 @@ const mutations = {
   },
   UI_SET_TOOLBAR_INFO_VISIBLE (state, yorn) {
     state.toolbarInfoVisible = !!yorn
+  },
+  UI_SET_TOOLBAR_INFO_DEBUG (state, yorn) {
+    state.toolbarInfoDebug = !!yorn
   }
 }
 

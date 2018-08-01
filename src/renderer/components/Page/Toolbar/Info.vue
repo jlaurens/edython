@@ -1,19 +1,30 @@
 <template>
   <div id="toolbar-info" :style="style">
-    <b-button-toolbar key-nav  aria-label="Info toolbar" justify>
-      <b-button-group class="mx-1">
-        <span>id:&nbsp;<span class="code">{{selectedId}}</span></span>
-      </b-button-group>
-      <b-button-group class="mx-1">
-        <b-btn id="A" v-on:click=" doSite('http://edython.eu')" title="Aller au site Edython" v-tippy>
-          <img src="static/icon_light.svg" height="32" alt="Edython"/>
-        </b-btn>
-      </b-button-group>
-    </b-button-toolbar>
+    <div v-if="this.isSelected(this.$$.eYo.T3.Expr.primary)">
+      <info-primary></info-primary>
+    </div>
+    <div v-if="this.isSelected(this.$$.eYo.T3.Expr.shortliteral) || this.isSelected(this.$$.eYo.T3.Expr.longliteral)">
+      <info-shortliteral></info-shortliteral>
+    </div>
+    <div v-else-if="this.isSelected(this.$$.eYo.T3.Expr.builtin__print_expr) || this.isSelected(this.$$.eYo.T3.Stmt.builtin__print_stmt)">
+      <info-print></info-print>
+    </div>
+    <div v-else-if="selectedBlockType">
+      <info-default></info-default>
+    </div>
+    <div v-else>
+      <info-none></info-none>
+    </div>
   </div>
 </template>
 
 <script>
+  import InfoPrimary from './Info/Primary.vue'
+  import InfoShortliteral from './Info/Shortliteral.vue'
+  import InfoPrint from './Info/Print.vue'
+  import InfoDefault from './Info/Default.vue'
+  import InfoNone from './Info/None.vue'
+
   export default {
     name: 'toolbar-info',
     data: function () {
@@ -22,16 +33,22 @@
       }
     },
     components: {
+      InfoPrimary,
+      InfoShortliteral,
+      InfoPrint,
+      InfoDefault,
+      InfoNone
     },
     computed: {
+      selectedBlockType () {
+        var type = this.$store.state.UI.selectedBlockType
+        return type ? type.substring(4) : null
+      },
       toolbarInfoVisible () {
         return this.$store.state.UI.toolbarInfoVisible
       },
       style () {
         return ['width: ', 100 * this.step, '%;'].join('')
-      },
-      selectedId () {
-        return this.$store.state.UI.selectedBlockId || '…'
       }
     },
     watch: {
@@ -41,14 +58,8 @@
       }
     },
     methods: {
-      doSite (url) {
-        if (this.$$.electron && this.$$.electron.shell) {
-          // we *are i electron
-          this.$$.electron.shell.openExternal(url)
-        } else {
-          var win = window.open(url, '_blank')
-          win.focus()
-        }
+      isSelected (type) {
+        return type === this.$store.state.UI.selectedBlockType
       }
     }
   }
