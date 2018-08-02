@@ -198,6 +198,7 @@ eYo.setup.register(function () {
     'padding: 0.25rem;',
     'margin: 0;',
     'background: rgba(221,221,221,0.8);',
+    'z-index: 100;',
   '}')
   eYo.Style.insertCssRuleAt(
     '.eyo-flyout-toolbar-general {',
