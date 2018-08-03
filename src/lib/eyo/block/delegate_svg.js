@@ -1003,9 +1003,10 @@ eYo.DelegateSvg.prototype.getPaddingLeft = function (block) {
     return 0
   } else if (block.outputConnection) {
     if (this.tileHead) {
+      
       var child = this.tileHead.sourceBlock_
-      if (child && (child !== block) && (this.tileHead === child.tileHead)) {
-        return 0
+      if (child && (child === block) && (this.tileHead === child.eyo.tileHead)) {
+        return this.isHeadOfStatement ? 0 : eYo.Font.space
       }
     }
     var parent = block.getParent()
@@ -1049,7 +1050,7 @@ eYo.DelegateSvg.prototype.minBlockWidth = function (block) {
  * @private
  */
 eYo.DelegateSvg.prototype.unlockChainTiles = function (block) {
-  this.chainTiles_locked = false
+  this.chainTiles_locked = false // unlock now
   var slot
   var unlock = function (input) {
     if (!input) {
@@ -1080,6 +1081,23 @@ eYo.DelegateSvg.prototype.unlockChainTiles = function (block) {
  * Each tile has a delegate who implements `tileNext` and `tilePrevious`.
  * The purpose is to chain the tiles before rendering in order to
  * add or remove space between blocks.
+ * Each block has a tile chain.
+ * Statement blocks and standalone value blocks have standalone chains.
+ * Value blocks' chain is a subchain of the parent's one
+ * when there is a parent.
+ * The chain depends on the inner connected blocks.
+ * If an inner connection is closed, the chain changes.
+ * If an inner connection is established, the chain changes too.
+ * If the block tile chain changes, the parent's chain changes too.
+ * When does the chain should be in stable state?
+ * Answer: just before rendering the statement block or
+ * the standalone value block.
+ * When an operation may change some tile chain,
+ * rendering should start from the proper root node which is
+ * the first enclosing statement block if any or the root if none.
+ * There is a collision with up rendering and down rendering concept.
+ * When the chain has changed, there must be some down rendering,
+ * at least for the blocks which chain has changed.
  * @param {!Blockly.Block} block
  * @private
  */
@@ -1087,7 +1105,7 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
   // this is a closure
   /**
    * Chain the fields.
-   * There is no tileHead without a tileTail
+   * In stable state, there is no tileHead without a tileTail
    * @param {*} headField A field within a field chain
    * @return {*} The tail field of the last chain element, if any
    */
@@ -1276,6 +1294,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   }
   io.shouldSeparateField = this.shouldSeparateField
   io.wasSeparatorField = this.wasSeparatorField
+  // isHeadOfStatement can be set by the parent block,
   io.isHeadOfStatement = !this.disabled && (!block.outputConnection || this.isHeadOfStatement)
 
   if ((io.field = this.fromStartField)) {
@@ -1556,30 +1575,12 @@ eYo.DelegateSvg.prototype.valuePathDef_ = function (block) {
   var steps = ['m ', w - eYo.Font.space + dx, ',-', eYo.Margin.V]
   steps = steps.concat(a_expr)
   steps.push(h_total)
+  // next are for statement shape
   var rr = eYo.Style.Path.radius()
   var aa = [' a ', rr, ', ', rr, ' 0 0 1 ']
   var parent
-  // the left edge is different when tileHead is true
-  if (this.tileHead && !this.tileHead.eyo.tilePrevious && (parent = block.getParent()) && !block.outputConnection) {
-    // almost code duplicate: quite the same as some code above
-    var c8n = parent.nextConnection
-    if (c8n && c8n.isConnected()) {
-      steps.push(' H ', -this.getPaddingLeft(parent))
-    } else {
-      steps.push(' H ',rr - this.getPaddingLeft(parent))
-      steps = steps.concat(aa)
-      steps.push(-rr, ',', -rr)
-      h -= rr
-    }
-    c8n = parent.previousConnection
-    if (c8n && c8n.isConnected() && c8n.targetBlock().getNextBlock() === parent) {
-      steps.push(' v ', -h, ' z')
-    } else {
-      steps.push(' v ', -h + rr)
-      steps = steps.concat(aa)
-      steps.push(rr, ',', -rr, ' z')
-    }
-  } else if (this.tileHead && !this.tileHead.eyo.tilePrevious && (parent = block.getParent())) {
+  // the left edge is different when the block is the head of a statement
+  if (this.tileHead && !this.tileHead.eyo.tilePrevious && (parent = block.getParent())) {
     while (parent && parent.outputConnection) {
       parent = parent.getParent()
     }
