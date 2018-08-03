@@ -157,7 +157,7 @@ eYo.KeyHandler = (function () {
       return
     }
     if (current_.length) {
-      model = current_[0]
+      model = current_[0].model
       me.handleModel(model)
     }
   }
