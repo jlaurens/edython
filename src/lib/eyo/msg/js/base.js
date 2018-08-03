@@ -135,7 +135,7 @@ goog.provide('eYo.Msg.Placeholder')
  * Internationalization entry.
  * For edython.
  * @param {!String} key  key is the string to be localized
- * @param {?String} pack pack is the pack where le localization should be found
+ * @param {?String} pack pack is the pack where the localization should be found
  * @return {!String}
  */
 eYo.Msg.i18n = function(key, pack) {
