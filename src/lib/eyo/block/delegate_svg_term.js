@@ -436,37 +436,37 @@ eYo.DelegateSvg.Expr.term.prototype.consolidateType = function (block) {
  * @private
  */
 eYo.DelegateSvg.Expr.term.prototype.makeTitle = function (block, variant) {
-  var data = this.data.variant
+  var variant_d = this.data.variant
   if (!goog.isDef(variant)) {
-    variant = data.get()
+    variant = variant_d.get()
   }
   var args = [goog.dom.TagName.SPAN, null]
   switch (variant) {
-  case data.STAR_NAME:
-  case data.STAR_NAME_ANNOTATION:
-  case data.STAR:
+  case variant_d.STAR_NAME:
+  case variant_d.STAR_NAME_ANNOTATION:
+  case variant_d.STAR:
     args.push(eYo.Do.createSPAN('*', 'eyo-code-reserved'))
     break
-  case data.STAR_STAR_NAME:
+  case variant_d.STAR_STAR_NAME:
     args.push(eYo.Do.createSPAN('**', 'eyo-code-reserved'))
     break
   }
-  if (variant !== data.STAR) {
+  if (variant !== variant_d.STAR) {
     var value = this.data.name.get()
     args.push(eYo.Do.createSPAN(value || this.data.phantom.get() || eYo.Msg.Placeholder.IDENTIFIER, value ? 'eyo-code' : 'eyo-code-placeholder'))
     switch (variant) {
-    case data.NAME_ANNOTATION:
-    case data.STAR_NAME_ANNOTATION:
-    case data.NAME_ANNOTATION_DEFINITION:
+    case variant_d.NAME_ANNOTATION:
+    case variant_d.STAR_NAME_ANNOTATION:
+    case variant_d.NAME_ANNOTATION_DEFINITION:
       args.push(eYo.Do.createSPAN(':', 'eyo-code-reserved'), eYo.Do.createSPAN(' …', 'eyo-code-placeholder'))
       break
     }
     switch (variant) {
-    case data.NAME_ANNOTATION_DEFINITION:
-    case data.NAME_DEFINITION:
+    case variant_d.NAME_ANNOTATION_DEFINITION:
+    case variant_d.NAME_DEFINITION:
       args.push(eYo.Do.createSPAN(' = ', 'eyo-code-reserved'), eYo.Do.createSPAN('…', 'eyo-code-placeholder'))
       break
-    case data.NAME_ALIAS:
+    case variant_d.NAME_ALIAS:
       args.push(eYo.Do.createSPAN(' as ', 'eyo-code-reserved'), eYo.Do.createSPAN('…', 'eyo-code-placeholder'))
       break
     }
