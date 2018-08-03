@@ -160,7 +160,7 @@ goog.require('eYo.FieldLabel')
 goog.require('eYo.FieldInput')
 
 /**
- * Create all the fields from the model.
+ * Create all the fields from the given model.
  * For edython.
  * @param {!Object} owner
  * @param {!Object} fieldsModel
@@ -246,7 +246,7 @@ eYo.Slot.makeFields = function () {
     // field maker
     // Serious things here
     var block = owner.getBlock()
-    goog.asserts.assert(block, 'Missing while making fields')
+    goog.asserts.assert(block, 'Missing block while making fields')
     for (var key in fieldsModel) {
       var model = fieldsModel[key]
       var field = makeField(key, model)
