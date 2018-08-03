@@ -149,6 +149,7 @@ let rendererConfig = {
   resolve: {
     alias: {
       '@': path.join(__dirname, '../src/renderer'),
+      '@lang': path.join(__dirname, '../src/renderer/lang'),
       'vue$': 'vue/dist/vue.esm.js',
       'blockly': path.resolve(__dirname, '../src/lib/blockly/'),
       'eyo': path.resolve(__dirname, '../src/lib/eyo/'),

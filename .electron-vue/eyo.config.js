@@ -50,6 +50,7 @@ var ConfigEyo = function (target, dist, env) {
   this.staticPath = path.join(this.rootPath, 'static')
   this.srcPath = path.join(this.rootPath, 'src')
   this.rendererPath = path.join(this.srcPath, 'renderer')
+  this.langPath = path.join(this.rendererPath, 'lang')
   this.componentsPath = path.join(this.rendererPath, 'components')
   this.utilPath = path.join(this.componentsPath, 'Util')
   this.iconPath = path.join(this.componentsPath, 'Icon')
@@ -58,6 +59,7 @@ var ConfigEyo = function (target, dist, env) {
   console.log('this.staticPath :', this.staticPath)
   console.log('this.srcPath :', this.srcPath)
   console.log('this.rendererPath :', this.rendererPath)
+  console.log('this.langPath :', this.langPath)
   console.log('this.componentsPath :', this.componentsPath)
   console.log('this.utilPath :', this.utilPath)
   console.log('this.iconPath :', this.iconPath)
@@ -240,6 +242,7 @@ ConfigEyo.prototype.getConfig = function () {
       '@root': this.rootPath,
       '@src': this.srcPath,
       '@static': this.staticPath,
+      '@lang': this.langPath,
       '@': this.rendererPath,
       '@@': this.componentsPath,
       // '@@@@': path.resolve(this.rootPath, 'static/')
