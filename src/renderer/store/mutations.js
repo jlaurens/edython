@@ -1,6 +1,6 @@
 import {app} from '../main'
 
-export const mutations = {
+export default {
   setLocale (state, payload) {
     app.$i18n.locale = payload
   }

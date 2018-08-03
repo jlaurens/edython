@@ -264,7 +264,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     variant: {
       NAME_VALUE: eYo.Key.NAME_VALUE,
       NAME_ANNOTATION_VALUE: eYo.Key.NAME_ANNOTATION_VALUE,
-      TARGET_VALUE: eYo.Key.NAME_ANNOTATION_VALUE,
+      TARGET_VALUE: eYo.Key.TARGET_VALUE,
       all: [
         eYo.Key.NAME_VALUE,
         eYo.Key.NAME_ANNOTATION_VALUE,
@@ -315,7 +315,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     },
     target: {
       order: 3,
-      wrap: eYo.T3.Expr.target_list_list
+      wrap: eYo.T3.Expr.target_list
     },
     assigned: {
       order: 4,
@@ -338,13 +338,13 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
  */
 eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
   var name = this.data.name.get()
-  var variant = this.data.variant
-  var current = variant.get()
+  var variant_d = this.data.variant
+  var variant = variant_d.get()
   var F = function (content, newVariant) {
     var menuItem = mgr.newMenuItem(content, function () {
-      block.eyo.data.variant.set(newVariant)
+      variant_d.set(newVariant)
     })
-    menuItem.setEnabled(newVariant !== current)
+    menuItem.setEnabled(newVariant !== variant)
     mgr.addChild(menuItem, true)
   }
   var content =
@@ -352,17 +352,17 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
     eYo.Do.createSPAN(name || eYo.Msg.Placeholder.IDENTIFIER, name ? 'eyo-code' : 'eyo-code-placeholder'),
     eYo.Do.createSPAN(' = …', 'eyo-code')
   )
-  F(content, variant.NAME_VALUE)
+  F(content, variant_d.NAME_VALUE)
   content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
     eYo.Do.createSPAN(name || eYo.Msg.Placeholder.IDENTIFIER, name ? 'eyo-code' : 'eyo-code-placeholder'),
     eYo.Do.createSPAN(': … = …', 'eyo-code')
   )
-  F(content, variant.NAME_ANNOTATION_VALUE)
+  F(content, variant_d.NAME_ANNOTATION_VALUE)
   content = eYo.Do.createSPAN('…,… = …,…', 'eyo-code')
   F(content, 2)
   mgr.shouldSeparate()
-  if (current !== variant.TARGET_VALUE) {
+  if (variant !== variant_d.TARGET_VALUE) {
     var menuItem = mgr.newMenuItem(eYo.Msg.RENAME, function () {
       block.eyo.data.name.field.showEditor()
     })
