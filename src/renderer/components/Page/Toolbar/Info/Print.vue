@@ -9,9 +9,9 @@
         <input type="checkbox" id="info-print-file" v-model="file" :disabled="!can_file">
         <label for="info-print-file" class="eyo-code" :disabled="!can_file">file=…</label>
       </div>
-      <comment></comment>
+      <comment :selected-block="selectedBlock"></comment>
     </b-button-toolbar>
-    <common></common>
+    <common :selected-block="selectedBlock"></common>
   </b-button-toolbar>
 </template>
 
@@ -29,12 +29,13 @@
       Comment,
       Common
     },
+    props: {
+      selectedBlock: {
+        type: Object,
+        default: undefined
+      }
+    },
     computed: {
-      selectedBlock () {
-        var id = this.$store.state.UI.selectedBlockId
-        var block = id && this.$$.eYo.App.workspace.blockDB_[id]
-        return block
-      },
       list () {
         var block = this.selectedBlock
         if (block) {

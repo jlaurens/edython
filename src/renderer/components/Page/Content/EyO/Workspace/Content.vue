@@ -5,13 +5,13 @@
       <b-button-group id="eyo-flyout-switcher">
         <b-dropdown id="eyo-flyout-dropdown-general" class="eyo-dropdown"  v-on:show="doShow()">
           <template slot="button-content">Blocs</template>
-          <b-dropdown-item-button v-for="item in levels" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
+          <b-dropdown-item-button v-for="item in levels" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
           <b-dropdown-divider></b-dropdown-divider>
-          <b-dropdown-item-button v-for="item in categories" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
+          <b-dropdown-item-button v-for="item in categories" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
         </b-dropdown>
         <b-dropdown id="eyo-flyout-dropdown-module" class="eyo-dropdown"  v-on:show="doShow()">
           <template slot="button-content">Module&nbsp;</template>
-          <b-dropdown-item-button v-for="item in modules" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}">{{item.content}}</b-dropdown-item-button>
+          <b-dropdown-item-button v-for="item in modules" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
         </b-dropdown>
       </b-button-group>
       <div id="eyo-flyout-toolbar-label">

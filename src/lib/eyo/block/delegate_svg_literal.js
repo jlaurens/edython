@@ -129,6 +129,15 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         (!!XRegExp.exec(value, eYo.XRE.shortbytesliteralDouble) && eYo.T3.Expr.shortbytesliteral) ||
         (!!XRegExp.exec(value, eYo.XRE.shortstringliteralSingle) && eYo.T3.Expr.shortstringliteral) ||
         (!!XRegExp.exec(value, eYo.XRE.shortstringliteralDouble) && eYo.T3.Expr.shortstringliteral)
+      },
+      synchronize: /** @this{eYo.Data} */ function (newValue) {
+        // synchronize the placeholder text
+        var content_d = this.data.content
+        if (!content_d.get().length) {
+          var content_f = this.owner.fields.content
+          content_f.placeholderText(true)
+          content_f.render_()
+        }
       }
     },
     delimiter: {
@@ -186,6 +195,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
             data.prefix.set(m.prefix || '')
             data.delimiter.set(m.delimiter || "'")
             data.content.set(m.content || '')
+            console.log('new subtype:', type)
             data.subtype.set(type)
             return true
           }
@@ -229,7 +239,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
           return this.placeholderText_
         }
         var subtype = eyo.data.subtype.get()
-        return subtype === eYo.T3.Expr.shortbytesliteral || subtype === eYo.T3.Expr.shortbytesliteral
+        return subtype === eYo.T3.Expr.shortbytesliteral || subtype === eYo.T3.Expr.longbytesliteral
           ? eYo.Msg.Placeholder.BYTES : eYo.Msg.Placeholder.STRING
       },
       startEditing: /** @suppress {globalThis} */ function () {

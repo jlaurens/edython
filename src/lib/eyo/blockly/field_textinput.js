@@ -355,11 +355,14 @@ eYo.FieldInput.prototype.getDisplayText_ = function () {
 /**
  * The placeholder text.
  * Get the model driven value if any.
+ * @param {boolean} clear
  * @return {string} Currently displayed text.
  * @private
  */
-eYo.FieldInput.prototype.placeholderText = function () {
-  if (this.placeholderText_) {
+eYo.FieldInput.prototype.placeholderText = function (clear) {
+  if (clear) {
+    this.placeholderText_ = undefined
+  } else if (this.placeholderText_) {
     return this.placeholderText_
   }
   return (function () {

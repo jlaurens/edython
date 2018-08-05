@@ -10,6 +10,8 @@
 </template>
 
 <script>
+  import {mapState, mapMutations} from 'vuex'
+
   import IconBase from '@@/IconBase.vue'
   import IconMenu from '@@/Icon/IconMenu.vue'
   import CheckMark from '@@/Util/CheckMark.vue'
@@ -26,35 +28,23 @@
       CheckMark
     },
     computed: {
-      ecoSave () {
-        return this.$store.state.Document.ecoSave
-      },
       titleEcoSave () {
         return 'Sauvegarde au format compressé avec gzip si coché'
       },
       contentEcoSave () {
         return 'Sauvegarde éco'
       },
-      disabledTips () {
-        return this.$store.state.Document.disabledTips
-      },
       titleDisabledTips () {
-        return this.$store.state.Document.disabledTips ? 'Activer les bulles d\'aide qui apparaissent quand le pointeur reste sur un objet' : 'Désactiver les bulles d\'aide qui apparaissent quand le pointeur reste sur un objet'
+        return this.disabledTips ? 'Activer les bulles d\'aide qui apparaissent quand le pointeur reste sur un objet' : 'Désactiver les bulles d\'aide qui apparaissent quand le pointeur reste sur un objet'
       },
       contentDisabledTips () {
-        return this.$store.state.Document.disabledTips ? 'Activer les bulles d\'aide' : 'Désactiver les bulles d\'aide'
-      },
-      toolbarInfoVisible () {
-        return this.$store.state.UI.toolbarInfoVisible
+        return this.disabledTips ? 'Activer les bulles d\'aide' : 'Désactiver les bulles d\'aide'
       },
       titleToolbarInfoVisible () {
         return this.toolbarInfoVisible ? 'Cacher la barre d\'informations' : 'Afficher la barre d\'informations et de réglage du bloc sélectionné'
       },
       contentToolbarInfoVisible () {
         return this.toolbarInfoVisible ? 'Cacher la barre d\'informations' : 'Afficher la barre d\'informations'
-      },
-      toolbarInfoDebug () {
-        return this.$store.state.UI.toolbarInfoDebug
       },
       titleToolbarInfoDebug () {
         return this.toolbarInfoDebug ? 'Cacher les informations de débogage' : 'Afficher les informations de débogage'
@@ -64,11 +54,20 @@
       },
       titleMenu () {
         return 'Options et actions'
-      }
+      },
+      ...mapState({
+        ecoSave: state => state.Document.ecoSave,
+        disabledTips: state => state.Document.disabledTips,
+        toolbarInfoVisible: state => state.UI.toolbarInfoVisible,
+        toolbarInfoDebug: state => state.UI.toolbarInfoDebug
+      })
     },
     methods: {
+      ...mapMutations({
+        setToolbarInfoVisible: 'UI_SET_TOOLBAR_INFO_VISIBLE' // map `this.add()` to `this.$store.commit('increment')`
+      }),
       doToggleToolbarInfoVisible () {
-        this.$store.commit('UI_SET_TOOLBAR_INFO_VISIBLE', !this.$store.state.UI.toolbarInfoVisible)
+        this.setToolbarInfoVisible(!this.toolbarInfoVisible)
       },
       doToggleToolbarInfoDebug () {
         this.$store.commit('UI_SET_TOOLBAR_INFO_DEBUG', !this.$store.state.UI.toolbarInfoDebug)

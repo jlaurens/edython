@@ -441,6 +441,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       synchronize: true
     },
     operator: {
+      all: ['+=', '-=', '*=', '/=', '//=', '%=', '**=', '@=', '<<=', '>>=', '&=', '^=', '|='],
       init: '+=',
       synchronize: true,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {

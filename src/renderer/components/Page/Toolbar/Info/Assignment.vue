@@ -1,8 +1,6 @@
 <template>
-  <b-button-toolbar id="info-default" key-nav  aria-label="Info toolbar default" justify>
+  <b-button-toolbar id="info-assignment" key-nav  aria-label="Info toolbar assignment" justify>
     <b-button-toolbar>
-      <value :selected-block="selectedBlock"></value>
-      <operator :selected-block="selectedBlock"></operator>
       <variant :selected-block="selectedBlock"></variant>
       <comment :selected-block="selectedBlock"></comment>
     </b-button-toolbar>
@@ -11,17 +9,17 @@
 </template>
 
 <script>
-  import Operator from './Operator.vue'
-  import Value from './Value.vue'
   import Variant from './Variant.vue'
   import Comment from './Comment.vue'
   import Common from './Common.vue'
 
   export default {
-    name: 'info-default',
+    name: 'info-assignment',
+    data: function () {
+      return {
+      }
+    },
     components: {
-      Operator,
-      Value,
       Variant,
       Comment,
       Common
@@ -35,8 +33,7 @@
   }
 </script>
 <style>
-  #info-default {
+  #info-assignment {
     padding: 0 0.25rem;
   }
 </style>
-  

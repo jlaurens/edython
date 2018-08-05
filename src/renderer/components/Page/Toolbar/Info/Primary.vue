@@ -5,7 +5,7 @@
         <img src="static/icon_light.svg" height="32" alt="Edython"/>
       </b-btn>
     </b-button-group>
-    <common></common>
+    <common :selected-block="selectedBlock"></common>
   </b-button-toolbar>
 </template>
 
@@ -20,6 +20,12 @@
     },
     components: {
       Common
+    },
+    props: {
+      selectedBlock: {
+        type: Object,
+        default: undefined
+      }
     }
   }
 </script>

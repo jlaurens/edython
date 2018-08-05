@@ -610,20 +610,20 @@ eYo.Do.typeOfString = function (candidate, module) {
   }
   if (eYo.XRE.shortbytesliteralSingle.exec(candidate) || eYo.XRE.shortbytesliteralDouble.exec(candidate)) {
     return {
-      raw: 'short bytes literal',
-      expr: eYo.T3.Expr.shortbytesliteral
+      raw: eYo.T3.Expr.shortbytesliteral,
+      expr: eYo.T3.Expr.shortliteral
     }
   }
   if (eYo.XRE.longstringliteralSingle.exec(candidate) || eYo.XRE.longstringliteralDouble.exec(candidate)) {
     return {
-      raw: 'long string literal',
-      expr: eYo.T3.Expr.longstringliteral
+      raw: eYo.T3.Expr.longstringliteral,
+      expr: eYo.T3.Expr.longliteral
     }
   }
   if (eYo.XRE.longbytesliteralSingle.exec(candidate) || eYo.XRE.longbytesliteralDouble.exec(candidate)) {
     return {
-      raw: 'long bytes literal',
-      expr: eYo.T3.Expr.longbytesliteral
+      raw: eYo.T3.Expr.longbytesliteral,
+      expr: eYo.T3.Expr.longliteral
     }
   }
   return {}

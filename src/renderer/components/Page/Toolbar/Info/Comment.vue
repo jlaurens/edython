@@ -1,5 +1,5 @@
 <template>
-  <b-button-toolbar>
+  <b-button-toolbar v-if="canComment">
     <div id='info-stmt-comment' class="btn btn-outline-secondary">
       <input type="checkbox" id="info-stmt-comment-check" v-model="hasComment">
       <label for="info-stmt-comment-check" class="eyo-code-reserved">#</label>
@@ -18,54 +18,51 @@
       return {
       }
     },
+    props: {
+      selectedBlock: {
+        type: Object,
+        default: undefined
+      }
+    },
     computed: {
       placeholder () {
         return eYo.Msg.Placeholder.COMMENT
       },
-      selectedBlock () {
-        var id = this.$store.state.UI.selectedBlockId
-        var block = id && this.$$.eYo.App.workspace.blockDB_[id]
-        return block
+      comment_variant_d () {
+        var block = this.selectedBlock
+        return block && block.eyo.data.comment_variant
+      },
+      comment_d () {
+        var block = this.selectedBlock
+        return block && block.eyo.data.comment
+      },
+      canComment () {
+        return this.comment_d
       },
       hasComment: {
         get () {
-          var block = this.selectedBlock
-          if (block) {
-            var comment_variant_d = block.eyo.data.comment_variant
-            if (comment_variant_d) {
-              return comment_variant_d.get() === comment_variant_d.COMMENT
-            }
+          var comment_variant_d = this.comment_variant_d
+          if (comment_variant_d) {
+            return comment_variant_d.get() === comment_variant_d.COMMENT
           }
           return false
         },
         set (newValue) {
-          var block = this.selectedBlock
-          if (block) {
-            var comment_variant_d = block.eyo.data.comment_variant
-            if (comment_variant_d) {
-              comment_variant_d.set(newValue ? comment_variant_d.COMMENT : comment_variant_d.NO_COMMENT)
-            }
+          var comment_variant_d = this.comment_variant_d
+          if (comment_variant_d) {
+            comment_variant_d.set(newValue ? comment_variant_d.COMMENT : comment_variant_d.NO_COMMENT)
           }
         }
       },
       comment: {
         get () {
-          var block = this.selectedBlock
-          if (block) {
-            var comment_d = block.eyo.data.comment
-            if (comment_d) {
-              return comment_d.get()
-            }
-          }
-          return undefined
+          var comment_d = this.comment_d
+          return comment_d && comment_d.get()
         },
         set (newValue) {
-          var block = this.selectedBlock
-          if (block) {
-            var comment_d = block.eyo.data.comment
-            if (comment_d) {
-              comment_d.set(newValue)
-            }
+          var comment_d = this.comment_d
+          if (comment_d) {
+            comment_d.set(newValue)
           }
         }
       }

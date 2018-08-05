@@ -194,7 +194,7 @@ eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt(
     '.eyo-flyout-toolbar {',
     'position: absolute; z-index: 30; pointer-events: all;',
-    'height: 4.5rem;',
+    'height: 4rem;',
     'padding: 0.25rem;',
     'margin: 0;',
     'background: rgba(221,221,221,0.8);',
@@ -211,7 +211,7 @@ eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt(
     '.eyo-flyout-toolbar-module {',
     'position: absolute; pointer-events: all;',
-    'height: 2rem;',
+    'height: 1.75rem;',
     'padding: 0.125rem;',
     'margin: 0;',
     'margin-top: 2.25rem;',
@@ -226,7 +226,6 @@ eYo.setup.register(function () {
   '}')
 
   var radius = '1.125rem;'
-  console.warn('DEBUG', radius, controlWidth)
   eYo.Style.insertCssRuleAt('.eyo-flyout-control {',
     'background: #ddd; opacity: 0.79;',
     'border-top-right-radius:', radius,

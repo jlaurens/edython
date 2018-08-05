@@ -39,6 +39,9 @@
         return ['top: ', 3.25 + this.step, 'rem;height: calc(100% - ', 3.5 + this.step, 'rem)'].join('')
       }
     },
+    mounted () {
+      this.step = this.$store.state.UI.toolbarInfoVisible ? 2 : 0
+    },
     watch: {
       toolbarInfoVisible (newValue, oldValue) {
         this.step = newValue ? 0 : 2

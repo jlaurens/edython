@@ -147,7 +147,7 @@ eYo.Key = {
   DFT: 'DFT',
   ID: 'ID',
   // model variants keys
-  NAME: 'NAME',
+  NAME: 'name',
   DOTTED_NAME: 'dotted_name',
   NAME_DEFINITION: 'name_definition',
   NAME_ALIAS: 'name_alias',
@@ -310,7 +310,43 @@ eYo.XRE = {
         \\k<del>{1,2}(?=\\k<delimiter>$))*?
     )
     \\k<delimiter>$`, 'x'),
-  bytes: XRegExp(`^(?:[\\x20-\\x5B\\x5D-\\xFF]|
+  shortbytesliteralSingleNoPrefix: XRegExp(
+    `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)?
+    (?<delimiter> ')
+    (?<content>
+      (?:[\\x00-\\x26\\x28-\\x5B\\x5D-\\x7F]|
+        \\\\[\\x00-\\xFF])*?
+    )
+    \\k<delimiter>$`, 'x'),
+  shortbytesliteralDoubleNoPrefix: XRegExp(
+    `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)?
+    (?<delimiter> ")
+    (?<content>
+      (?:[\\x00-\\x21\\x23-\\x5B\\x5D-\\x7F]|
+        \\\\[\\x00-\\xFF])*?
+    )
+    \\k<delimiter>$`, 'x'),
+  longbytesliteralSingleNoPrefix: XRegExp(
+    `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)?
+    (?<delimiter> (?<del> '){3})
+    (?<content>
+      (?:[\\x00-\\x26\\x28-\\x5B\\x5D-\\x7F]|
+        \\\\[\\x00-\\xFF]|
+        \\k<del>{1,2}(?!\\k<del>)|
+        \\k<del>{1,2}(?=\\k<delimiter>$))*?
+    )
+    \\k<delimiter>$`, 'x'),
+  longbytesliteralDoubleNoPrefix: XRegExp(
+    `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)?
+    (?<delimiter> (?<del> "){3})
+    (?<content>
+      (?:[\\x00-\\x21\\x23-\\x5B\\x5D-\\x7F]|
+        \\\\[\\x00-\\xFF]|
+        \\k<del>{1,2}(?!\\k<del>)|
+        \\k<del>{1,2}(?=\\k<delimiter>$))*?
+    )
+    \\k<delimiter>$`, 'x'),
+    bytes: XRegExp(`^(?:[\\x20-\\x5B\\x5D-\\xFF]|
         \\\\[\\x0A\\x0D\\x20-\\xFF])*$`, 'x'),
   letter: XRegExp(`(?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo})`),
   id_start: XRegExp(`(?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl})`),

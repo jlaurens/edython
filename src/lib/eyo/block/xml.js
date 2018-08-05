@@ -541,12 +541,14 @@ eYo.Xml.Literal.domToBlock = function (element, workspace) {
       case eYo.T3.Expr.imagnumber:
         block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.numberliteral, id)
         break
+      case eYo.T3.Expr.shortliteral:
       case eYo.T3.Expr.shortstringliteral:
       case eYo.T3.Expr.shortbytesliteral:
         block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.shortliteral, id)
         break
+      case eYo.T3.Expr.longliteral:
       case eYo.T3.Expr.longstringliteral:
-        block = eYo.DelegateSvg.newBlockComplete(workspace, stmt_expected ? eYo.T3.Stmt.docstring_stmt : eYo.T3.Expr.longstringliteral, id)
+        block = eYo.DelegateSvg.newBlockComplete(workspace, stmt_expected ? eYo.T3.Stmt.docstring_stmt : eYo.T3.Expr.longliteral, id)
         break
       case eYo.T3.Expr.longbytesliteral:
         block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.longliteral, id)

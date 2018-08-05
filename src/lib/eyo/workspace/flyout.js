@@ -75,10 +75,10 @@ var one_rem = parseInt(getComputedStyle(document.documentElement).fontSize)
 
 eYo.Flyout.prototype.CORNER_RADIUS = 0
 
-eYo.FlyoutDelegate.prototype.TOP_MARGIN = 4 * eYo.FlyoutToolbar.prototype.BUTTON_RADIUS+ 2 * eYo.FlyoutToolbar.prototype.BUTTON_MARGIN
+// eYo.FlyoutDelegate.prototype.TOP_MARGIN = 4 * eYo.FlyoutToolbar.prototype.BUTTON_RADIUS + 2 * eYo.FlyoutToolbar.prototype.BUTTON_MARGIN
 eYo.FlyoutDelegate.prototype.BOTTOM_MARGIN = 16 // scroll bar width
 
-eYo.FlyoutDelegate.prototype.TOP_MARGIN = 4.5 * one_rem
+eYo.FlyoutDelegate.prototype.TOP_MARGIN = 4 * one_rem
 
 eYo.FlyoutDelegate.prototype.MARGIN = one_rem / 4
 
@@ -245,7 +245,7 @@ eYo.Flyout.prototype.show = function(model) {
       }
     }
   }
-
+  
   this.layout_(contents, gaps);
 
   // IE 11 is an incompetent browser that fails to fire mouseout events.

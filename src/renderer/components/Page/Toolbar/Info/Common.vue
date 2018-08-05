@@ -8,6 +8,10 @@
   export default {
     name: 'info-common',
     props: {
+      selectedBlock: {
+        type: Object,
+        default: undefined
+      },
       locked: {
         type: Boolean,
         default: false
@@ -18,8 +22,8 @@
         return this.$store.state.UI.toolbarInfoDebug
       },
       info () {
-        var type = this.$store.state.UI.selectedBlockType
-        var id = this.$store.state.UI.selectedBlockId
+        var type = this.selectedBlock.type
+        var id = this.selectedBlock.id
         return type ? [type.substring(4), id].join('/') : '…'
       }
     }

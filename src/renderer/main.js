@@ -25,6 +25,7 @@ import VueTippy from 'vue-tippy'
 import {TweenLite} from 'gsap/TweenMax' // eslint-disable-line no-unused-vars
 
 import VueI18n from 'vue-i18n'
+import msg_fr_FR from './lang/fr_FR'
 
 var FileSaver = require('file-saver')
 
@@ -344,13 +345,92 @@ if (ipcRenderer) {
   ipcRenderer.on('saveas', eYo.App.Document.doSaveAs)
 }
 
+// i18n
+
+const messages = {
+  en_US: {
+    message: {
+      hello: 'hello world'
+    }
+  },
+  fr_FR: {
+    message: msg_fr_FR
+  }
+}
+
+const dateTimeFormats = {
+  'en_US': {
+    short: {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    },
+    long: {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      weekday: 'short',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    }
+  },
+  'fr_FR': {
+    short: {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    },
+    long: {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'short',
+      hour: 'numeric',
+      minute: 'numeric'
+    }
+  }
+}
+
+const numberFormats = {
+  'en_US': {
+    currency: {
+      style: 'currency', currency: 'USD'
+    },
+    percent: {
+      style: 'percent'
+    }
+  },
+  'fr_FR': {
+    currency: {
+      style: 'currency', currency: 'EUR'
+    },
+    percent: {
+      style: 'percent'
+    }
+  }
+}
+
+const i18n = new VueI18n({
+  locale: 'fr_FR', // set locale
+  messages, // set locale messages,
+  dateTimeFormats,
+  numberFormats
+})
+
 /* eslint-disable no-new */
-new Vue({
+export const app = new Vue({
   components: { App },
   router,
   store,
-  template: '<App/>'
-}).$mount('#app')
+  template: '<App/>',
+  i18n
+})
+
+window['vue'] = app
+window.store = store
+
+app.$mount('#app')
 
 console.log('Launching brython')
 brython()

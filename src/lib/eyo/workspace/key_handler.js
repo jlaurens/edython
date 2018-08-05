@@ -802,13 +802,13 @@ Ks = {
     }
   },
   '"""…"""': {
-    type: eYo.T3.Expr.longstringliteral,
+    type: eYo.T3.Expr.longliteral,
     data: {
       delimiter: '"""'
     }
   },
   "'''…'''": {
-    type: eYo.T3.Expr.longstringliteral,
+    type: eYo.T3.Expr.longliteral,
     data: {
       delimiter: "'''"
     }
