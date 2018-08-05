@@ -1,15 +1,14 @@
 <template>
   <b-button-toolbar id="info-primary" key-nav  aria-label="Info toolbar primary" justify>
     <b-button-group class="mx-1">
-      <b-btn id="A" v-on:click=" doSite('http://edython.eu')" title="Aller au site Edython" v-tippy>
-        <img src="static/icon_light.svg" height="32" alt="Edython"/>
-      </b-btn>
+      <comment :selected-block="selectedBlock"></comment>
     </b-button-group>
     <common :selected-block="selectedBlock"></common>
   </b-button-toolbar>
 </template>
 
 <script>
+  import Comment from './Comment.vue'
   import Common from './Common.vue'
 
   export default {
@@ -19,6 +18,7 @@
       }
     },
     components: {
+      Comment,
       Common
     },
     props: {

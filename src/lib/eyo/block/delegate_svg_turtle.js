@@ -193,7 +193,7 @@ var F_expr = function (name, title) {
     data: {
       name: name,
       parent: '',
-      variant: eYo.Key.PARENT_NAME
+      variant: eYo.Key.PARENT_DOT_NAME
     },
     title: key
   }
@@ -206,7 +206,7 @@ var F_stmt = function (name, title) {
     data: {
       name: name,
       parent: '',
-      variant: eYo.Key.PARENT_NAME
+      variant: eYo.Key.PARENT_DOT_NAME
     },
     title: key
   }
@@ -239,7 +239,7 @@ eYo.FlyoutCategory.turtle__module = [
             data: {
               parent: 'turtle',
               name: 'Turtle',
-              variant: eYo.Key.PARENT_NAME
+              variant: eYo.Key.PARENT_DOT_NAME
             }
           },
         },
@@ -278,7 +278,7 @@ eYo.FlyoutCategory.turtle__module = [
             data: {
               name: 'stamp',
               parent: '',
-              variant: eYo.Key.PARENT_NAME
+              variant: eYo.Key.PARENT_DOT_NAME
             }
           },
         },

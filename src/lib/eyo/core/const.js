@@ -84,7 +84,7 @@ eYo.Key = {
   ITEM: 'item', /* used by delimited blocks */
   BLOCK: 'primary',
   ATTRIBUTE: 'attribute',
-  PARENT_NAME: 'parent_name',
+  PARENT_DOT_NAME: 'parent_name',
   EXPRESSION_ATTRIBUTE: 'expression_attribute',
   TYPE: 'type',
   LOWER_BOUND: 'lower_bound',
@@ -108,10 +108,9 @@ eYo.Key = {
   SLICING: 'slicing',
   BLOCK: 'block',
 
-  EXPR: 'expr',
-  BLOCK_NAME: 'block_name',
-  PARENT_EXPR: 'block_expr',
-  BLOCK_EXPR: 'block_expr',
+  BLOCK_DOT_NAME: 'block_name',
+  PARENT_DOT_BLOCK: 'block_expr',
+  BLOCK_DOT_BLOCK: 'block_expr',
   
   BACKUP: 'backup', // this MUST be in camelcase
   ALT: 'alt', // this MUST be in camelcase
@@ -436,7 +435,7 @@ eYo.Const.Event = {
 }
 
 eYo.XmlKey = {
-  EXPR: 'x', // tag name
+  // EXPR: 'x', // tag name
   SLOT: 'slot', // attribute name
   LIST: 'list', // attribute name
   FLOW: 'flow', // attribute name

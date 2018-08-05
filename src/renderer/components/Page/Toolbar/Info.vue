@@ -1,6 +1,10 @@
 <template>
   <div id="toolbar-info" :style="style">
-    <div v-if="this.isSelected(this.$$.eYo.T3.Expr.primary)">
+    <div v-if="this.isSelected([this.$$.eYo.T3.Expr.primary, this.$$.eYo.T3.Expr.term,
+    this.$$.eYo.T3.Expr.attributeref,
+    this.$$.eYo.T3.Expr.subscription,
+    this.$$.eYo.T3.Expr.slicing,
+    this.$$.eYo.T3.Expr.call_expr])">
       <info-primary :selected-block="selectedBlock"></info-primary>
     </div>
     <div v-if="this.isSelected([this.$$.eYo.T3.Expr.shortliteral, this.$$.eYo.T3.Expr.longliteral, this.$$.eYo.T3.Expr.shortbytesliteral, this.$$.eYo.T3.Expr.longbytesliteral, this.$$.eYo.T3.Expr.shortstringliteral, this.$$.eYo.T3.Expr.longstringliteral, this.$$.eYo.T3.Stmt.docstring_stmt])">

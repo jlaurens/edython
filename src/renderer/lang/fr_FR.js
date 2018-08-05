@@ -36,5 +36,10 @@ export default {
   import: reserved('import') + ' ' + placeholder('module'),
   from_module_import: reserved('from') + ' ' + placeholder('module') + ' ' + reserved('import') + '…',
   from_module_import_star: reserved('from') + ' ' + placeholder('module') + ' ' + reserved('import *'),
+  block: '…',
+  parent_dot_name: placeholder('parent') + '.' + nom,
+  parent_dot_block: placeholder('parent') + '.…',
+  block_dot_name: '….' + nom,
+  block_dot_block: '….…',
   bytes: 'octets'
 }
