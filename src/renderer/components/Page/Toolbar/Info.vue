@@ -1,19 +1,22 @@
 <template>
   <div id="toolbar-info" :style="style">
-    <div v-if="this.isSelected([this.$$.eYo.T3.Expr.primary, this.$$.eYo.T3.Expr.term,
-    this.$$.eYo.T3.Expr.attributeref,
-    this.$$.eYo.T3.Expr.subscription,
-    this.$$.eYo.T3.Expr.slicing,
-    this.$$.eYo.T3.Expr.call_expr])">
+    <div v-if="isSelected([
+    $$.eYo.T3.Expr.primary,
+    $$.eYo.T3.Expr.identifier,
+    $$.eYo.T3.Expr.term,
+    $$.eYo.T3.Expr.attributeref,
+    $$.eYo.T3.Expr.subscription,
+    $$.eYo.T3.Expr.slicing,
+    $$.eYo.T3.Expr.call_expr])">
       <info-primary :selected-block="selectedBlock"></info-primary>
     </div>
-    <div v-if="this.isSelected([this.$$.eYo.T3.Expr.shortliteral, this.$$.eYo.T3.Expr.longliteral, this.$$.eYo.T3.Expr.shortbytesliteral, this.$$.eYo.T3.Expr.longbytesliteral, this.$$.eYo.T3.Expr.shortstringliteral, this.$$.eYo.T3.Expr.longstringliteral, this.$$.eYo.T3.Stmt.docstring_stmt])">
+    <div v-else-if="isSelected([$$.eYo.T3.Expr.shortliteral, $$.eYo.T3.Expr.longliteral, $$.eYo.T3.Expr.shortbytesliteral, $$.eYo.T3.Expr.longbytesliteral, $$.eYo.T3.Expr.shortstringliteral, $$.eYo.T3.Expr.longstringliteral, $$.eYo.T3.Stmt.docstring_stmt])">
       <info-literal :selected-block="selectedBlock"></info-literal>
     </div>
-    <div v-else-if="this.isSelected([this.$$.eYo.T3.Expr.builtin__print_expr, this.$$.eYo.T3.Stmt.builtin__print_stmt])">
+    <div v-else-if="isSelected([$$.eYo.T3.Expr.builtin__print_expr, $$.eYo.T3.Stmt.builtin__print_stmt])">
       <info-print :selected-block="selectedBlock"></info-print>
     </div>
-    <div v-else-if="this.isSelected(this.$$.eYo.T3.Stmt.augmented_assignment_stmt)">
+    <div v-else-if="isSelected($$.eYo.T3.Stmt.augmented_assignment_stmt)">
         <info-augmented-assignment :selected-block="selectedBlock"></info-augmented-assignment>
     </div>
     <div v-else-if="selectedBlock">
@@ -81,6 +84,7 @@
         if (goog.isArray(type)) {
           for (var i = 0, t; (t = type[i++]) ;) {
             if (t === this.$store.state.UI.selectedBlockType) {
+              console.log('t:', t)
               return true
             }
           }

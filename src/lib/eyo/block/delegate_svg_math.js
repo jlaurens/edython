@@ -217,7 +217,7 @@ var F = function (name, title) {
     data: {
       name: name,
       parent: 'math',
-      variant: eYo.Key.PARENT_DOT_NAME,
+      variant: eYo.Key.PARENT_NAME,
     },
     title: key
   }
@@ -230,7 +230,7 @@ var F_k = function (name, title) {
     data: {
       name: name,
       parent: 'math',
-      variant: eYo.Key.PARENT_DOT_NAME,
+      variant: eYo.Key.PARENT_NAME,
       option: eYo.Key.NONE
     },
     title: key

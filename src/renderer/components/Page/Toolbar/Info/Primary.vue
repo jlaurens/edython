@@ -1,14 +1,23 @@
 <template>
   <b-button-toolbar id="info-primary" key-nav  aria-label="Info toolbar primary" justify>
     <b-button-group class="mx-1">
-      <comment :selected-block="selectedBlock"></comment>
+      <modifier :selected-block="selectedBlock"></modifier>
+      <value :selected-block="selectedBlock" :dataKey="'dotted'"></value>
+      <value :selected-block="selectedBlock" :dataKey="'annotation'"></value>
+      <value :selected-block="selectedBlock" :dataKey="'definition'"></value>
+    </b-button-group>
+    <b-button-group class="mx-1">
+      q
+      <variant :selected-block="selectedBlock"></variant>
     </b-button-group>
     <common :selected-block="selectedBlock"></common>
   </b-button-toolbar>
 </template>
 
 <script>
-  import Comment from './Comment.vue'
+  import Modifier from './Modifier.vue'
+  import Value from './Value.vue'
+  import Variant from './Variant.vue'
   import Common from './Common.vue'
 
   export default {
@@ -18,6 +27,9 @@
       }
     },
     components: {
+      Modifier,
+      Value,
+      Variant,
       Comment,
       Common
     },

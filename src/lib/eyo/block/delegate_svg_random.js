@@ -56,7 +56,7 @@ eYo.DelegateSvg.Expr.call_expr.makeSubclass('random__randrange', {
       xml: false
     },
     variant: {
-      init: eYo.Key.PARENT_DOT_NAME,
+      init: eYo.Key.PARENT_NAME,
     },
     option: {
       init: eYo.Key.CALL_EXPR,
@@ -201,7 +201,7 @@ F = function (name, title) {
     data: {
       name: name,
       parent: 'random',
-      variant: eYo.Key.PARENT_DOT_NAME
+      variant: eYo.Key.PARENT_NAME
     },
     title: key
   }
@@ -214,7 +214,7 @@ F_s = function (name, title) {
     data: {
       name: name,
       parent: 'random',
-      variant: eYo.Key.PARENT_DOT_NAME
+      variant: eYo.Key.PARENT_NAME
     },
     title: key
   }
@@ -241,7 +241,7 @@ eYo.FlyoutCategory.random__module = [
     data: {
       name: 'randint',
       parent: 'random',
-      variant: eYo.Key.PARENT_DOT_NAME
+      variant: eYo.Key.PARENT_NAME
     },
     slots: {
       binary: { // implement 'main' instead of 'binary'

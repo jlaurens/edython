@@ -1,8 +1,7 @@
 <template>
-  <b-dropdown id="info-variant" class="eyo-dropdown" v-if="variant_d">
-    <button-content class="info-variant eyo-code eyo-content" slot="button-content" v-html='formatter(variant)'></button-content>
-    <b-dropdown-item-button v-for="item in variants" v-on:click="variant = item" class="eyo-code" :key="item">
-        <button-content class="info-variant eyo-code" slot="button-content" v-html='formatter(item)'></button-content>
+  <b-dropdown id="info-variant" class="eyo-dropdown" v-if="data">
+    <template slot="button-content"><span class="info-variant eyo-code eyo-content" v-html="formatter(variant)"></span></template>
+    <b-dropdown-item-button v-for="item in variants" v-on:click="variant = item" :key="item" class="info-variant eyo-code" v-html="formatter(item)"></b-dropdown-item-button>
     </b-dropdown-item-button>
   </b-dropdown>
 </template>
@@ -10,10 +9,6 @@
 <script>
   export default {
     name: 'info-variant',
-    data: function () {
-      return {
-      }
-    },
     props: {
       selectedBlock: {
         type: Object,
@@ -22,34 +17,32 @@
       formatter: {
         type: Function,
         default: function (item) {
-          console.log('item:', item, this.$t('message.' + item))
-          return this.$t('message.' + item)
+          return item.length ? this.$t('message.' + ({'*': 'star', '**': 'two_stars'}[item] || item)) : '&nbsp;'
         }
+      },
+      dataKey: {
+        type: String,
+        default: 'variant'
       }
     },
     computed: {
-      variant_d () {
+      data () {
         var block = this.selectedBlock
-        return block && block.eyo.data.variant
+        return block && block.eyo.data[this.dataKey]
       },
       variant: {
         get () {
-          var variant_d = this.variant_d
-          return variant_d
-            ? variant_d.get()
-            : 'Variant'
+          return this.data
+            ? this.data.get()
+            : this.dataKey.charAt(0).toUpperCase() + this.dataKey.slice(1)
         },
         set (newValue) {
-          var variant_d = this.variant_d
-          if (variant_d) {
-            variant_d.set(newValue)
-          }
+          this.data && this.data.set(newValue)
         }
       },
       variants () {
-        var variant_d = this.variant_d
-        return variant_d
-          ? variant_d.model.all
+        return this.data
+          ? this.data.model.all
           : []
       }
     }
@@ -64,4 +57,3 @@
     fill: white;
   }
 </style>
-  

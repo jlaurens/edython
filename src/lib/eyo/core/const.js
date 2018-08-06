@@ -82,10 +82,9 @@ eYo.Key = {
   WITH: 'with',
   COMPREHENSION: 'comprehension',
   ITEM: 'item', /* used by delimited blocks */
-  BLOCK: 'primary',
+  ROOT: 'root',
   ATTRIBUTE: 'attribute',
-  PARENT_DOT_NAME: 'parent_name',
-  EXPRESSION_ATTRIBUTE: 'expression_attribute',
+  PARENT_NAME: 'parent_name',
   TYPE: 'type',
   LOWER_BOUND: 'lower_bound',
   UPPER_BOUND: 'upper_bound',
@@ -101,16 +100,16 @@ eYo.Key = {
   AS: 'as',
   SOURCE: 'source',
   DEFINITION: 'definition',
-
+  EQUALS_DEFINITION: 'equals_definition',
+  COLON_ANNOTATION: 'colon_annotation',
+  
   // Primary delegate
   NONE: 'none',
   CALL_EXPR: 'call_expr',
   SLICING: 'slicing',
-  BLOCK: 'block',
 
-  BLOCK_DOT_NAME: 'block_name',
-  PARENT_DOT_BLOCK: 'block_expr',
-  BLOCK_DOT_BLOCK: 'block_expr',
+  ROOT: 'root',
+  EXPR: 'expr',
   
   BACKUP: 'backup', // this MUST be in camelcase
   ALT: 'alt', // this MUST be in camelcase

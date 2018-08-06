@@ -177,7 +177,7 @@ eYo.FlyoutCategory.basic_cmath__module = [
       name: 'conjugate',
       ary: 2,
       mandatory: 0,
-      variant: eYo.Key.PARENT_DOT_NAME,
+      variant: eYo.Key.PARENT_NAME,
       parent: ''
     }
   },
@@ -216,7 +216,7 @@ var F = function (name, title) {
     data: {
       name: name,
       module: 'cmath',
-      variant: eYo.Key.PARENT_DOT_NAME
+      variant: eYo.Key.PARENT_NAME
     },
     title: key
   }
@@ -229,7 +229,7 @@ var F_k = function (name, title) {
     data: {
       name: name,
       module: 'cmath',
-      variant: eYo.Key.PARENT_DOT_NAME
+      variant: eYo.Key.PARENT_NAME
     },
     title: key
   }
@@ -254,7 +254,7 @@ eYo.FlyoutCategory.cmath__module = [
       name: 'conjugate',
       ary: 2,
       mandatory: 0,
-      variant: eYo.Key.BLOCK_DOT_NAME
+      variant: eYo.Key.BLOCK_NAME
     }
   },
   {

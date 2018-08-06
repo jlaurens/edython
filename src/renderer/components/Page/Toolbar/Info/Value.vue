@@ -1,54 +1,63 @@
 <template>
-  <b-dropdown id="info-value" class="eyo-dropdown" v-if="values && values.length">
-    <template slot="button-content" ><span class="info-value">{{value}}</span></template>
-    <b-dropdown-item-button v-for="item in values" v-on:click="value = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item">{{item}}</b-dropdown-item-button>
+  <b-dropdown :id="id" class="eyo-dropdown" v-if="values && values.length">
+    <template slot="button-content"><span class="info-value eyo-code eyo-content" v-html="formatter(value)"></span></template>
+    <b-dropdown-item-button v-for="item in values" v-on:click="value = item" :key="item" class="info-value eyo-code" v-html="formatter(item)"></b-dropdown-item-button>
+    </b-dropdown-item-button>
   </b-dropdown>
 </template>
 
 <script>
   export default {
     name: 'info-value',
-    data: function () {
-      return {
-      }
-    },
     props: {
       selectedBlock: {
         type: Object,
         default: undefined
+      },
+      formatter: {
+        type: Function,
+        default: function (item) {
+          console.log('item', this.dataKey, item)
+          return item && item.length ? this.$t('message.' + ({'*': 'star', '**': 'two_stars'}[item] || item)) : '&nbsp;'
+        }
+      },
+      dataKey: {
+        type: String,
+        default: 'value'
       }
     },
     computed: {
-      unary () {
-        return this.selectedBlock.type === this.$$.eYo.T3.Expr.u_expr
+      id () {
+        return 'info-' + this.dataKey
       },
-      value_d () {
+      data () {
         var block = this.selectedBlock
-        return block && block.eyo.data.value
+        return block && block.eyo.data[this.dataKey]
       },
       value: {
         get () {
-          var value_d = this.value_d
-          return value_d
-            ? value_d.get()
-            : 'Value'
+          return this.data
+            ? this.data.get()
+            : this.dataKey.charAt(0).toUpperCase() + this.dataKey.slice(1)
         },
         set (newValue) {
-          var value_d = this.value_d
-          if (value_d) {
-            value_d.set(newValue)
-          }
+          this.data && this.data.set(newValue)
         }
       },
       values () {
-        var value_d = this.value_d
-        return value_d && value_d.model.all
+        console.log('values', this.dataKey, this.data && this.data.model.all)
+        return this.data && this.data.model.all
       }
     }
   }
 </script>
-<style scoped>
+<style>
   .info-value {
     padding-right:1rem;
   }
+  .eyo-content > .eyo-code-reserved {
+    color: white;
+    fill: white;
+  }
 </style>
+  

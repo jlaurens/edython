@@ -284,6 +284,7 @@ eYo.Delegate.Manager = (function () {
         if (!statement.next.check && !goog.isNull(statement.next.check)) {
           statement.next.check = eYo.T3.Stmt.Next[key]
         }
+        // this is a statement, remove the irrelevant output info
         model.output && (model.output = undefined)
       }
       delegateC9r.model__ = model // intermediate storage used by `modeller` in due time

@@ -733,7 +733,7 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
     )
   case eYo.T3.Expr.attributeref:
     switch (subtype) {
-    case eYo.Key.BLOCK:
+    case eYo.Key.ROOT:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
         eYo.Do.createSPAN('.', 'eyo-code'),
         eYo.Do.createSPAN('attribute', 'eyo-code-placeholder'),
@@ -1169,10 +1169,10 @@ eYo.MenuManager.prototype.populate_movable_parent = function (block) {
   }
   F.call(this, [
     eYo.T3.Expr.u_expr,
-    [eYo.T3.Expr.call_expr, eYo.Key.BLOCK],
+    [eYo.T3.Expr.call_expr, eYo.Key.ROOT],
     eYo.T3.Expr.slicing,
     [eYo.T3.Expr.attributeref, eYo.Key.ATTRIBUTE],
-    [eYo.T3.Expr.attributeref, eYo.Key.BLOCK],
+    [eYo.T3.Expr.attributeref, eYo.Key.ROOT],
     [eYo.T3.Expr.decorator_call_expr, eYo.Key.NAME],
     eYo.T3.Expr.imagnumber
   ], true)
