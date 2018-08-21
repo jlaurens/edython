@@ -14,6 +14,8 @@
 goog.provide('eYo.ui')
 goog.provide('eYo.Style')
 goog.provide('eYo.Font')
+goog.provide('eYo.Padding')
+goog.provide('eYo.Margin')
 
 goog.require('eYo')
 goog.require('goog.cssom');
@@ -47,7 +49,6 @@ eYo.Style.weight = function (x) {
   return x / (1 + x)// 0↦0, 1↦1/2, 2↦2/3, 3↦3/4, ∞↦1
 }
 
-eYo.Padding = {}
 eYo.Padding.l = eYo.Padding.r = eYo.Padding.h =
   function () { return 8 * eYo.Style.weight(eYo.Font.size / 10) }
 eYo.Padding.t = eYo.Padding.b = eYo.Padding.v =

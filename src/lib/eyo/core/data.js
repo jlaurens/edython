@@ -87,22 +87,20 @@ eYo.Data.prototype.getType = function () {
 
 /**
  * Get the value of the data
- * @param {Object} newValue
+ * @param {String} type
  */
-eYo.Data.prototype.get = function () {
+eYo.Data.prototype.get = function (type) {
   if (goog.isDef(this.value_) || this.lock_get) {
     return this.value_
   }
-  if (this.init) {
-    try {
-      this.lock_get = true
-      this.init()
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      delete this.lock_get
-    }
+  try {
+    this.lock_get = true
+    this.init()
+  } catch (err) {
+    console.error(err)
+    throw err
+  } finally {
+    delete this.lock_get
   }
   return this.value_
 }
@@ -171,6 +169,28 @@ eYo.Data.prototype.init = function (newValue) {
   var all = this.getAll()
   if (all && all.length) {
     this.internalSet(all[0])
+  }
+}
+
+/**
+ * Init the value of the property depending on the type.
+ * This is usefull for variants and options.
+ * @param {Object} newValue
+ */
+eYo.Data.prototype.initWithType = function (type) {
+  if (!this.model_fromType_lock) {
+    var fromType = this.model.fromType
+    if (goog.isFunction(fromType)) {
+      try {
+        this.model_fromType_lock = true
+        fromType.call(this, type)
+      } catch (err) {
+        console.error(err)
+        throw err
+      } finally {
+        delete this.model_fromType_lock
+      }
+    }
   }
 }
 

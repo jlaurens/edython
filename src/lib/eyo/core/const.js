@@ -100,10 +100,9 @@ eYo.Key = {
   AS: 'as',
   SOURCE: 'source',
   DEFINITION: 'definition',
-  EQUALS_DEFINITION: 'equals_definition',
-  COLON_ANNOTATION: 'colon_annotation',
   
   // Primary delegate
+  VOID: '',
   NONE: 'none',
   CALL_EXPR: 'call_expr',
   SLICING: 'slicing',
@@ -155,6 +154,10 @@ eYo.Key = {
   NAME_ANNOTATION: 'name_annotation',
   STAR_NAME_ANNOTATION: 'star_name_annotation',
   NAME_ANNOTATION_DEFINITION: 'name_annotation_definition',
+  ALIASED: 'as_alias',
+  ANNOTATED: 'annotated',
+  DEFINED: 'defined',
+  ANNOTATED_DEFINED: 'annotated_defined',
   
   BUILTIN: 'builtin',
   EXPRESSION: 'expression',

@@ -34,7 +34,7 @@
         eyoDiv.style.width = eyoArea.offsetWidth + 'px'
         eyoDiv.style.height = eyoArea.offsetHeight + 'px'
         if (Blockly) {
-          Blockly.svgResize(eYo.App.workspace)
+          Blockly.svgResize(this.$$.eYo.App.workspace)
         }
       }
     },

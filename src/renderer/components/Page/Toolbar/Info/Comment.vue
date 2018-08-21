@@ -26,7 +26,7 @@
     },
     computed: {
       placeholder () {
-        return eYo.Msg.Placeholder.COMMENT
+        return this.$$.eYo.Msg.Placeholder.COMMENT
       },
       comment_variant_d () {
         var block = this.selectedBlock

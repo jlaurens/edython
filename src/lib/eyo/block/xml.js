@@ -961,16 +961,24 @@ eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element) {
     option_d.set(option_d.CALL_EXPR)
   } else if (type === eYo.T3.Expr.slicing.substring(4)) {
     option_d.set(option_d.SLICING)
+  } else if (type === eYo.T3.Expr.identifier_as.substring(4)) {
+    option_d.set(option_d.ALIASED)
+  } else if (type === eYo.T3.Expr.dotted_name_as.substring(4)) {
+    option_d.set(option_d.ALIASED)
   } else {
-    option_d.set(option_d.NONE)
-    var variant_d = this.data.variant
+    option_d.set(option_d.VOID)
+    var dotted_d = this.data.dotted
     if (type === eYo.T3.Expr.attributeref.substring(4)) {
-      variant_d.set(variant_d.PARENT_NAME)
-    } else if (this.slots.primary.isRequiredFromModel()) {
-      variant_d.set(variant_d.BLOCK_NAME)
+      dotted_d.set(dotted_d.PARENT)
+    } else if (this.slots.root.isRequiredFromModel()) {
+      dotted_d.set(dotted_d.ROOT)
     } else {
-      variant_d.set(variant_d.NAME)
+      dotted_d.set(dotted_d.NONE)
     }
+  }
+  if (this.slots.expression.isRequiredFromModel()) {
+    var variant_d = this.data.variant
+    variant_d.set(variant_d.EXPRESSION)
   }
   return block
 }
@@ -982,6 +990,16 @@ eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element) {
  * @return true if the given value is accepted, false otherwise
  */
 eYo.DelegateSvg.Expr.primary.prototype.tagName = function (block) {
+  if ([
+    eYo.T3.Expr.expression_star,
+    eYo.T3.Expr.parameter_star,
+    eYo.T3.Expr.target_star,
+    eYo.T3.Expr.star_expr,
+    eYo.T3.Expr.expression_star_star,
+    eYo.T3.Expr.parameter_star_star
+  ].indexOf(block.type) >= 0) {
+    return eYo.T3.Expr.primary
+  }
   return block.type
 }
 

@@ -460,7 +460,7 @@ eYo.Delegate.prototype.foreachSlot = function (helper) {
 
 /**
  * execute the given function for the head data of the receiver and its next sibling.
- * Ends the loop as soon as the 
+ * Ends the loop as soon as the helper returns true.
  * For edython.
  * @param {!function} helper
  * @return {boolean} whether there was a data to act upon or a valid helper
@@ -529,6 +529,20 @@ eYo.Delegate.prototype.initData = function () {
 }
 
 /**
+ * Initialize the data values from the type.
+ * One block implementation may correspond to different types,
+ * For example, there is one implementation for all the primaries.
+ * @param {!Blockly.Block} block to be initialized..
+ * @param {!String} type
+ * @return {boolean} whether the model was really used.
+ */
+eYo.Delegate.prototype.initDataWithType = function (block, type) {
+  this.foreachData(function () {
+    this.initWithType(type)
+  })
+}
+
+/**
  * Initialize the data values from the model.
  * @param {!Blockly.Block} block to be initialized..
  * @param {!Object} model
@@ -543,7 +557,7 @@ eYo.Delegate.prototype.initDataWithModel = function (block, model, noCheck) {
       d.set(data_in)
       done = true
     }
-  } else if (data_in) { // data_in can be a string
+  } else if (goog.isDef(data_in)) { // data_in can be a string
     this.foreachData(function () {
       var k = this.key
       if (eYo.Do.hasOwnProperty(data_in, k)) {
@@ -649,9 +663,9 @@ eYo.Delegate.prototype.setupType = function (optNewType) {
 eYo.Delegate.prototype.setupConnections = function () {
   var block = this.block_
   var model = this.getModel()
-  var D
+  var self = this
   var checker = function (c8n, check) {
-    goog.isFunction(check) && c8n.setCheck(check.call(this))
+    c8n.setCheck(goog.isFunction(check) ? check.call(self, block) : check)
   }
   block.outputConnection && checker(block.outputConnection, model.output.check)
   block.previousConnection && checker(block.previousConnection, model.statement.previous.check)
@@ -671,7 +685,7 @@ eYo.Delegate.prototype.initBlock = function (block) {
   var model = this.getModel()
   var D
   var checker = function (check) {
-    return goog.isFunction(check) ? check.call(this) : check
+    return goog.isFunction(check) ? check.call(this, block) : check
   }
   if ((D = model.output) && Object.keys(D).length) {
     block.setOutput(true, checker.call(this, D.check))

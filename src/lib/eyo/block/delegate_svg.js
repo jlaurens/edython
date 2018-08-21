@@ -1668,7 +1668,8 @@ eYo.DelegateSvg.prototype.placeHolderPathDefWidth_ = function (cursorX, connecti
   var r_ph = (p ** 2 + h ** 2 / 4) / 2 / p
   var a = [' a ', r_ph , ',', r_ph, ' 0 0 1 0,']
   var h_total = h + 2 * eYo.Margin.V
-  var dy = eYo.Padding.v() + eYo.Font.descent / 2
+  var correction = eYo.Font.descent / 2
+  var dy = eYo.Padding.v() + eYo.Font.descent / 2 - correction
   var steps
   if (!connection || (connection.eyo.chainBlock && connection.eyo.chainBlock.outputConnection)) {
     steps = ['M ', cursorX + w - p, ',', eYo.Margin.V + dy]
@@ -1927,17 +1928,22 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
     if (!block) {
       if (eYo.DelegateSvg.Manager.get(model.type)) {
         block = workspace.newBlock(model.type, id)
+        block.eyo.initDataWithType(block, model.type)
       } else if (eYo.DelegateSvg.Manager.get(model)) {
         block = workspace.newBlock(model, id)
+        block.eyo.initDataWithType(block, model)
       } else {
         var type = eYo.Do.typeOfString(model)
         if (type.expr && (block = workspace.newBlock(type.expr, id))) {
+          type.expr && block.eyo.initDataWithType(block, type.expr)
           type.modelExpr && block.eyo.initDataWithModel(block, type.modelExpr)
           dataModel = {data: model}
         } else if (type.stmt && (block = workspace.newBlock(type.stmt, id))) {
+          type.stmt && block.eyo.initDataWithType(block, type.stmt)
           type.modelStmt && block.eyo.initDataWithModel(block, type.modelStmt)
           dataModel = {data: model}
         } else if (goog.isNumber(model)  && (block = workspace.newBlock(eYo.T3.Expr.numberliteral, id))) {
+          block.eyo.initDataWithType(block, eYo.T3.Expr.numberliteral)
           dataModel = {data: model.toString()}
         } else {
           console.warn('No block for model:', model)

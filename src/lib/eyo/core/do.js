@@ -330,7 +330,7 @@ eYo.Do.Name = (function () {
 }())
 
 eYo.Do.ensureArray = function (object) {
-  return goog.isArray(object) ? object : (object ? [object] : object)
+  return goog.isArray(object) || goog.isFunction(object) ? object : (object ? [object] : object)
 }
 
 eYo.Do.createSPAN = function (text, css) {
@@ -354,6 +354,8 @@ eYo.T3.Stmt.control = '.control statement'
 /**
  * What is the type of this string? an identifier, a number, a reserved word ?
  * For edython.
+ * @param {!String} candidate
+ * @param {?String} module
  * @return {!Object} the type of this candidate, possible keys are `name`, `expr`, `stmt`, `modelExpr`, `modelStmt`.
  */
 eYo.Do.typeOfString = function (candidate, module) {
@@ -369,21 +371,17 @@ eYo.Do.typeOfString = function (candidate, module) {
       var item = M.getItem && M.getItem (candidate)
       if (item) {
         return {
-          
+          raw: eYo.T3.Expr.identifier,
+          modelExpr: candidate,
+          expr: eYo.T3.Expr.call_expr
         }
       }
     }
-    for (M in Object.keys(eYo.Model)) {
-    }
-    var keys = Object.keys(models)
-    if (keys.length) {
-  
-    }  
   }
   if (['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'].indexOf(candidate) >= 0) {
     return {
       raw: eYo.T3.Expr.reserved_identifier,
-      model: candidate,
+      modelExpr: candidate,
       expr: eYo.T3.Expr.builtin__object
     }
   }
@@ -399,7 +397,7 @@ eYo.Do.typeOfString = function (candidate, module) {
     },
     is: {
       raw: eYo.T3.Expr.reserved_keyword,
-      model: 'is',
+      modelExpr: 'is',
       expr: eYo.T3.Expr.object_comparison
     },
     return: {
@@ -430,7 +428,7 @@ eYo.Do.typeOfString = function (candidate, module) {
     from: {
       raw: eYo.T3.Expr.reserved_keyword,
       expr: eYo.T3.Expr.yield_expression,
-      modelStmt: 'from',// mmm ?
+      modelExpr: 'from',// mmm ?
       stmt: eYo.T3.Stmt.import_stmt,
       modelStmt: 'from'// mmm ?
     },
@@ -590,39 +588,46 @@ eYo.Do.typeOfString = function (candidate, module) {
     if (dotted_name) {
       return goog.isDef(first) && first > 0 ? {
         raw: eYo.T3.Expr.custom_parent_module,
+        modelExpr: candidate,
         expr: eYo.T3.Expr.parent_module
       } : {
          raw: eYo.T3.Expr.custom_dotted_name,
+         modelExpr: candidate,
          expr: eYo.T3.Expr.dotted_name
       }
     }
   } else if (eYo.XRE.identifier.exec(candidate)) {
     return {
       raw: eYo.T3.Expr.custom_identifier,
+      modelExpr: candidate,
       expr: eYo.T3.Expr.identifier
     }
   }
   if (eYo.XRE.shortstringliteralSingle.exec(candidate) || eYo.XRE.shortstringliteralDouble.exec(candidate)) {
     return {
       raw: 'short string literal',
+      modelExpr: candidate,
       expr: eYo.T3.Expr.shortstringliteral
     }
   }
   if (eYo.XRE.shortbytesliteralSingle.exec(candidate) || eYo.XRE.shortbytesliteralDouble.exec(candidate)) {
     return {
       raw: eYo.T3.Expr.shortbytesliteral,
+      modelExpr: candidate,
       expr: eYo.T3.Expr.shortliteral
     }
   }
   if (eYo.XRE.longstringliteralSingle.exec(candidate) || eYo.XRE.longstringliteralDouble.exec(candidate)) {
     return {
       raw: eYo.T3.Expr.longstringliteral,
+      modelExpr: candidate,
       expr: eYo.T3.Expr.longliteral
     }
   }
   if (eYo.XRE.longbytesliteralSingle.exec(candidate) || eYo.XRE.longbytesliteralDouble.exec(candidate)) {
     return {
       raw: eYo.T3.Expr.longbytesliteral,
+      modelExpr: candidate,
       expr: eYo.T3.Expr.longliteral
     }
   }

@@ -108,7 +108,7 @@
             return true
           }
           var value = this.selectedBlock.eyo.data.value.get()
-          var can = !!XRegExp.exec(value, eYo.XRE.longbytesliteralSingleNoPrefix) || !!XRegExp.exec(value, eYo.XRE.longbytesliteralDoubleNoPrefix) || !!XRegExp.exec(value, eYo.XRE.shortbytesliteralSingleNoPrefix) || !!XRegExp.exec(value, eYo.XRE.shortbytesliteralDoubleNoPrefix)
+          var can = !!XRegExp.exec(value, this.$$.eYo.XRE.longbytesliteralSingleNoPrefix) || !!XRegExp.exec(value, this.$$.eYo.XRE.longbytesliteralDoubleNoPrefix) || !!XRegExp.exec(value, this.$$.eYo.XRE.shortbytesliteralSingleNoPrefix) || !!XRegExp.exec(value, this.$$.eYo.XRE.shortbytesliteralDoubleNoPrefix)
           return can
         }
       },
@@ -116,19 +116,19 @@
         return 'r'
       },
       title_r () {
-        return 'préfixe r pour raw'
+        return this.$t('message.prefix_r_for_raw')
       },
       content_f () {
         return 'f'
       },
       title_f () {
-        return 'préfixe f pour format'
+        return this.$t('message.prefix_f_for_format')
       },
       content_b () {
         return 'b'
       },
       title_b () {
-        return 'préfixe b pour bytes (ie octets)'
+        return this.$t('message.prefix_b_for_byte')
       }
     },
     whatch: {

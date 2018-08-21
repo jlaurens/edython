@@ -40,12 +40,13 @@
         flyout: null,
         label: '...'
       }
+      var Msg = this.$$.eYo.Msg
       var F = function (name) {
         model.items[name] = {
           name: name,
-          content: eYo.Msg[name.toUpperCase()],
+          content: Msg[name.toUpperCase()],
           in_category: true,
-          label: 'Blocs ' + eYo.Msg[name.toUpperCase()]
+          label: 'Blocs ' + Msg[name.toUpperCase()]
         }
       }
       F('basic')
@@ -135,7 +136,7 @@
         this.$$.eYo.Tooltip.hideAll(el)
       }
     },
-    mounted: function () {
+    mounted () {
       // the workspace
       var staticOptions = {
         collapse: true,
@@ -153,7 +154,7 @@
         oneBasedIndex: true
       }
       var workspace = this.workspace = this.$$.eYo.App.workspace = Blockly.inject('eyo-workspace-content', staticOptions)
-      eYo.setup(workspace)
+      this.$$.eYo.setup(workspace)
       workspace.eyo.options = {
         noLeftSeparator: true,
         noDynamicList: false
@@ -162,24 +163,24 @@
       this.$$.eYo.App.flyoutToolbarSwitcher = document.getElementById('eyo-flyout-toolbar-switcher')
       goog.dom.removeNode(this.$$.eYo.App.flyoutToolbarSwitcher)
       // First remove the old flyout selector
-      var flyout = new eYo.Flyout(eYo.App.workspace)
+      var flyout = new this.$$.eYo.Flyout(eYo.App.workspace)
       goog.dom.insertSiblingAfter(
         flyout.createDom('svg'),
-        eYo.App.workspace.getParentSvg()
+        this.$$.eYo.App.workspace.getParentSvg()
       )
       // Then create the flyout
-      flyout.init(eYo.App.workspace)
+      flyout.init(this.$$.eYo.App.workspace)
       flyout.autoClose = false
       Blockly.Events.disable()
       try {
-        flyout.show(eYo.DelegateSvg.T3s)//, seYo.T3.Expr.key_datum, eYo.T3.Stmt.if_part
+        flyout.show(this.$$.eYo.DelegateSvg.T3s)//, eYo.T3.Expr.key_datum, eYo.T3.Stmt.if_part
       } catch (err) {
         console.log(err)
       } finally {
         Blockly.Events.enable()
       }
       // eYo.App.workspace.flyout_ = flyout
-      this.flyout = eYo.App.flyout = flyout
+      this.flyout = this.$$.eYo.App.flyout = flyout
       var store = this.$store
       flyout.eyo.slide = function (closed) {
         if (!goog.isDef(closed)) {
@@ -194,7 +195,7 @@
       // JL: critical section of code,
       // next instruction does not work despite what stackoverflow states
       // oldSvg && newSvg && oldSvg.parentNode.replaceChild(oldSvg, newSvg)
-      eYo.KeyHandler.setup(document)
+      this.$$.eYo.KeyHandler.setup(document)
       var self = this
       this.$$.bus.$on('new-document', function () {
         self.workspace.clear()

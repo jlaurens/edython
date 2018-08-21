@@ -6,6 +6,14 @@
     $$.eYo.T3.Expr.term,
     $$.eYo.T3.Expr.attributeref,
     $$.eYo.T3.Expr.subscription,
+    $$.eYo.T3.Expr.identifier_as,
+    $$.eYo.T3.Expr.dotted_name_as,
+    $$.eYo.T3.Expr.expression_as,
+    $$.eYo.T3.Expr.star_expr,
+    $$.eYo.T3.Expr.parameter_star,
+    $$.eYo.T3.Expr.parameter_defined,
+    $$.eYo.T3.Expr.parameter_annotated,
+    $$.eYo.T3.Expr.parameter_star_star,
     $$.eYo.T3.Expr.slicing,
     $$.eYo.T3.Expr.call_expr])">
       <info-primary :selected-block="selectedBlock"></info-primary>
@@ -84,7 +92,6 @@
         if (goog.isArray(type)) {
           for (var i = 0, t; (t = type[i++]) ;) {
             if (t === this.$store.state.UI.selectedBlockType) {
-              console.log('t:', t)
               return true
             }
           }
@@ -106,5 +113,15 @@
   padding: 0rem 0.5rem;
   height: 1.75rem;
   vertical-align:middle;
+}
+.btn-outline-secondary {
+  background-color: rgba(255,255,255,90);
+}
+.dropdown-toggle-split {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+}
+.btn-secondary:hover .eyo-code-reserved {
+  color: #fff;
 }
 </style>

@@ -2,7 +2,6 @@
   <b-dropdown :id="id" class="eyo-dropdown" v-if="values && values.length">
     <template slot="button-content"><span class="info-value eyo-code eyo-content" v-html="formatter(value)"></span></template>
     <b-dropdown-item-button v-for="item in values" v-on:click="value = item" :key="item" class="info-value eyo-code" v-html="formatter(item)"></b-dropdown-item-button>
-    </b-dropdown-item-button>
   </b-dropdown>
 </template>
 
@@ -17,7 +16,6 @@
       formatter: {
         type: Function,
         default: function (item) {
-          console.log('item', this.dataKey, item)
           return item && item.length ? this.$t('message.' + ({'*': 'star', '**': 'two_stars'}[item] || item)) : '&nbsp;'
         }
       },
@@ -45,7 +43,6 @@
         }
       },
       values () {
-        console.log('values', this.dataKey, this.data && this.data.model.all)
         return this.data && this.data.model.all
       }
     }
@@ -53,11 +50,7 @@
 </script>
 <style>
   .info-value {
-    padding-right:1rem;
-  }
-  .eyo-content > .eyo-code-reserved {
-    color: white;
-    fill: white;
+    padding-right:0.75rem;
   }
 </style>
   
