@@ -59,7 +59,7 @@ eYo.DelegateSvg.Expr.prototype.shapePathDef_ =
  * @private
  */
 eYo.DelegateSvg.Expr.prototype.renderDrawInput_ = function (io) {
-  this.renderDrawDummyInput_(io) ||
+  return this.renderDrawDummyInput_(io) ||
     this.renderDrawValueInput_(io)
 }
 
