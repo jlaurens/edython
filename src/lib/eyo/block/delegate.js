@@ -42,6 +42,21 @@ eYo.Delegate = function (block) {
       var model = dataModel[k]
       if (model) {
         // null models are used to neutralize the inherited data
+        if (!model.setup_) {
+          model.setup_ = true
+          if (goog.isFunction(model.willChange)
+            && !goog.isFunction(model.willUnchange)) {
+            model.willUnchange = model.willChange
+          }
+          if (goog.isFunction(model.didChange)
+            && !goog.isFunction(model.didUnchange)) {
+            model.didUnchange = model.didChange
+          }
+          if (goog.isFunction(model.isChanging)
+            && !goog.isFunction(model.isUnchanging)) {
+            model.isUnchanging = model.isChanging
+          }
+        }
         var d = new eYo.Data(this, k, model)
         if (d.model.main) {
           goog.asserts.assert(!data.main, 'No 2 main data '+k+'/'+block.type)
@@ -557,7 +572,7 @@ eYo.Delegate.prototype.initDataWithModel = function (block, model, noCheck) {
       d.set(data_in)
       done = true
     }
-  } else if (goog.isDef(data_in)) { // data_in can be a string
+  } else if (goog.isDef(data_in)) {
     this.foreachData(function () {
       var k = this.key
       if (eYo.Do.hasOwnProperty(data_in, k)) {
@@ -938,7 +953,7 @@ eYo.Delegate.prototype.willDisconnect = function (block, blockConnection) {
 }
 
 /**
- * Did connect this block's connection to another connection.
+ * Did disconnect this block's connection from another connection.
  * @param {!Blockly.Block} block
  * @param {!Blockly.Connection} blockConnection
  * @param {!Blockly.Connection} oldTargetConnection that was connected to blockConnection
