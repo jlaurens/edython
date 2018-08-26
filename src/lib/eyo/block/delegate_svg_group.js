@@ -174,7 +174,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuiteInput_ = function (io) {
 /**
  * Render the suite block, if relevant.
  * @param {!Block} block
- * @return {boolean=} true if an rendering message was sent, false othrwise.
+ * @return {boolean=} true if a rendering message was sent, false othrwise.
  */
 eYo.DelegateSvg.Group.prototype.renderDrawSuite_ = function (block) {
   if (!this.inputSuite) {
