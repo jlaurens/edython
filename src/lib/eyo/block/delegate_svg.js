@@ -1677,7 +1677,7 @@ eYo.DelegateSvg.prototype.carretPathDefWidth_ = function (cursorX) {
 eYo.DelegateSvg.prototype.placeHolderPathDefWidth_ = function (cursorX, connection) {
   /* eslint-disable indent */
   var size = {
-    width: goog.isDef(connection.eyo.editWidth)
+    width: connection && goog.isDef(connection.eyo.editWidth)
       ? connection.eyo.editWidth + eYo.Font.space
       : 3 * eYo.Font.space,
     height: eYo.Font.lineHeight()
@@ -3092,6 +3092,8 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (block, model, connect
                 continue
               }
             } else if (!c8n.checkType_(foundC8n)) {
+              continue
+            } else if (foundC8n.eyo.editWidth) {
               continue
             }
             if (!foundC8n.eyo.disabled_ && !foundC8n.eyo.s7r_ && (!c8n_N || foundC8n.eyo.name_ === c8n_N)) {

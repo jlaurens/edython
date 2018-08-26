@@ -877,7 +877,7 @@ Blockly.Connection.singleConnection_ = function (block, orphanBlock) {
   for (var i = 0; i < block.inputList.length; i++) {
     var thisConnection = block.inputList[i].connection
     if (thisConnection && thisConnection.type === Blockly.INPUT_VALUE &&
-        orphanBlock.outputConnection.checkType_(thisConnection)) {
+        orphanBlock.outputConnection.checkType_(thisConnection) && !thisConnection.eyo.editWidth) {
       if (connection) {
         return null // More than one connection.
       }

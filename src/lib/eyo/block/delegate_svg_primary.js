@@ -405,13 +405,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           this.set(this.NONE)
         }
       },
-      xml: {
-        save: function (el) {
-          if (this.get() !== this.NONE) {
-            this.save(el)
-          }
-        }
-      }
+      xml: false
     },
     ary: {
       order: 2001,
