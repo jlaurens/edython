@@ -1369,7 +1369,10 @@ eYo.DelegateSvg.prototype.renderDrawSlot_ = function (io) {
     'translate(' + io.cursorX + ', 0)')
     io.offsetX = io.cursorX
     io.cursorX = 0
-    io.editField = io.slot.editField
+    if ((io.editField = io.slot.editField)) {
+      var c8n = io.slot.input && io.slot.input.connection
+      io.editField.setVisible(!c8n || !c8n.targetBlock())       
+    }
     if ((io.field = io.slot.fromStartField)) {
       do {
         this.renderDrawField_(io)
@@ -1506,14 +1509,9 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   }
   var c8n = io.input.connection
   if (c8n) { // once `&&!c8n.hidden_` was there, bad idea but why was it here?
-    var name_d = io.block.eyo.data.name
-    if (name_d && name_d.get() === 'A') {
-      console.error('A')
-    }
-    var target = c8n.targetBlock()
-    io.editField && io.editField.setVisible(!target)
     this.renderDrawFields_(io, true)
     var cursorX = io.cursorX + io.offsetX
+    var target = c8n.targetBlock()
     if (io.editField && !target) {
       c8n.eyo.doNotSelect = true
       c8n.eyo.editWidth = io.editField.getSize().width
@@ -1552,6 +1550,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
           io.cursorX += bBox.width
         }
       }
+    } else if (io.editField) {
     } else if (!this.locked_ && !c8n.hidden_) {
       // locked blocks won't display any placeholder
       // (input with no target)
