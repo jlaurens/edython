@@ -464,10 +464,10 @@ eYo.DelegateSvg.prototype.unskipRendering = function () {
 }
 
 /**
- * Render the next block, if relevant.
+ * Render the given connection, if relevant.
  * @param {!Block} block
  * @param {!Blockly.Connection} block
- * @return {boolean=} true if a rendering message was sent, false othrwise.
+ * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
 eYo.DelegateSvg.prototype.renderDrawC8n_ = function (block, c8n) {
   if (!c8n) {
@@ -514,7 +514,7 @@ eYo.DelegateSvg.prototype.renderDrawNext_ = function (block) {
 /**
  * Render the suite block, if relevant.
  * @param {!Block} block
- * @return {boolean=} true if n rendering message was sent, false othrwise.
+ * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
 eYo.DelegateSvg.prototype.renderDrawSuite_ = function (block) {
   return
@@ -923,22 +923,22 @@ eYo.DelegateSvg.prototype.renderDraw_ = function (block) {
  */
 eYo.DelegateSvg.prototype.alignRightEdges_ = function (block) {
   var right = 0
-  var ntor = eYo.StatementBlockEnumerator(block)
+  var e8r = eYo.StatementBlockEnumerator(block)
   var b
   var t = eYo.Font.tabWidth
-  while ((b = ntor.next())) {
+  while ((b = e8r.next())) {
     if (b.eyo) {
       if (b.eyo.minWidth) {
-        right = Math.max(right, b.eyo.minWidth + t * ntor.depth())
+        right = Math.max(right, b.eyo.minWidth + t * e8r.depth())
       } else {
         return
       }
     }
   }
-  ntor = eYo.StatementBlockEnumerator(block)
-  while ((b = ntor.next())) {
+  e8r = eYo.StatementBlockEnumerator(block)
+  while ((b = e8r.next())) {
     if (b.eyo) {
-      var width = right - t * ntor.depth()
+      var width = right - t * e8r.depth()
       if (b.width !== width) {
         b.width = width
         b.eyo.updateAllPaths_(b)
@@ -1369,13 +1369,16 @@ eYo.DelegateSvg.prototype.renderDrawSlot_ = function (io) {
     'translate(' + io.cursorX + ', 0)')
     io.offsetX = io.cursorX
     io.cursorX = 0
+    io.editField = io.slot.editField
     if ((io.field = io.slot.fromStartField)) {
       do {
         this.renderDrawField_(io)
       } while ((io.field = io.field.eyo.nextField))
     }
     if ((io.input = io.slot.input)) {
+      io.editField = io.slot.editField
       this.renderDrawInput_(io)
+      io.editField = undefined
     }
     if ((io.field = io.slot.toEndField)) {
       do {
@@ -1503,10 +1506,23 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   }
   var c8n = io.input.connection
   if (c8n) { // once `&&!c8n.hidden_` was there, bad idea but why was it here?
+    var name_d = io.block.eyo.data.name
+    if (name_d && name_d.get() === 'A') {
+      console.error('A')
+    }
+    var target = c8n.targetBlock()
+    io.editField && io.editField.setVisible(!target)
     this.renderDrawFields_(io, true)
     var cursorX = io.cursorX + io.offsetX
-    c8n.setOffsetInBlock(cursorX, 0)
-    var target = c8n.targetBlock()
+    if (io.editField && !target) {
+      c8n.eyo.doNotSelect = true
+      c8n.eyo.editWidth = io.editField.getSize().width
+      c8n.setOffsetInBlock(cursorX - c8n.eyo.editWidth - eYo.Font.space / 2, 0)
+    } else {
+      delete c8n.eyo.doNotSelect
+      delete c8n.eyo.editWidth
+      c8n.setOffsetInBlock(cursorX, 0)
+    }
     c8n.eyo.isHeadOfStatement = io.isHeadOfStatement
     if (target) {
       var root = target.getSvgRoot()
@@ -1661,7 +1677,12 @@ eYo.DelegateSvg.prototype.carretPathDefWidth_ = function (cursorX) {
  */
 eYo.DelegateSvg.prototype.placeHolderPathDefWidth_ = function (cursorX, connection) {
   /* eslint-disable indent */
-  var size = {width: 3 * eYo.Font.space, height: eYo.Font.lineHeight()}
+  var size = {
+    width: goog.isDef(connection.eyo.editWidth)
+      ? connection.eyo.editWidth + eYo.Font.space
+      : 3 * eYo.Font.space,
+    height: eYo.Font.lineHeight()
+  }
   var w = size.width
   var h = size.height
   var p = eYo.Padding.h()
