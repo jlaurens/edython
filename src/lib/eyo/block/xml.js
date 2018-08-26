@@ -948,7 +948,7 @@ eYo.Xml.fromDom = function (block, element) {
 goog.require('eYo.DelegateSvg.Primary')
 
 /**
- * Set the variant and option from the `eyo` attribute.
+ * Set the option from the `eyo` attribute.
  * @param {!Blockly.Block} block
  * @param {!Element} element dom element to be completed.
  * @override
@@ -975,10 +975,6 @@ eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element) {
     } else {
       dotted_d.set(dotted_d.NONE)
     }
-  }
-  if (this.slots.expression.isRequiredFromModel()) {
-    var variant_d = this.data.variant
-    variant_d.set(variant_d.EXPRESSION)
   }
   return block
 }
