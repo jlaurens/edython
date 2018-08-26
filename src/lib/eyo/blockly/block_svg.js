@@ -465,7 +465,7 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
   }
   // unfortunately, the mouse events do not find there way to the proper block
   var c8n = this.eyo.getConnectionForEvent(this, e)
-  var target = c8n ? c8n.targetBlock() || c8n.sourceBlock_ : this
+  var target = c8n && !c8n.eyo.doNotSelect ? c8n.targetBlock() || c8n.sourceBlock_ : this
   while (target && (target.eyo.wrapped_ || target.eyo.locked_)) {
     target = target.getParent()
   }
@@ -514,7 +514,7 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
         // try to select an input connection
         if (c8n && c8n === eYo.SelectedConnection.get()) {
           eYo.SelectedConnection.set(null)
-        } else if (c8n && !c8n.targetConnection && c8n !== target.eyo.lastSelectedConnection) {
+        } else if (c8n && !c8n.targetConnection && c8n !== target.eyo.lastSelectedConnection && !c8n.eyo.doNotSelect) {
           eYo.SelectedConnection.set(c8n)
         } else {
           eYo.SelectedConnection.set(null)
