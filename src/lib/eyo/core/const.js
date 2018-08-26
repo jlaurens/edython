@@ -126,6 +126,9 @@ eYo.Key = {
 
   LABEL: 'label', // lowercase
   SEPARATOR: 'separator', // lowercase
+  EDIT: 'edit', // lowercase
+  DATA: 'data', // lowercase
+  
   CODE: 'code', // lowercase
   COMMENT: 'comment', // lowercase
   COMMENT_MARK: 'comment_mark', // lowercase
