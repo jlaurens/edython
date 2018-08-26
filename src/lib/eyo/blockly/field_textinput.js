@@ -381,7 +381,13 @@ eYo.FieldInput.prototype.placeholderText = function (clear) {
  */
 eYo.FieldInput.prototype.setValue = function (newValue) {
   this.eyo.placeholder = !newValue || !newValue.length
-  eYo.FieldInput.superClass_.setValue.call(this, newValue)
+  // no undo recording
+  Blockly.Events.disable()
+  try {
+    eYo.FieldInput.superClass_.setValue.call(this, newValue)
+  } finally {
+    Blockly.Events.enable()
+  }
 }
 
 /**
@@ -420,7 +426,8 @@ eYo.FieldHelper.onStartEditing = function () {
  * @this {Object} is a field owning an helper
  */
 eYo.FieldHelper.onEndEditing = function () {
-  this.eyo.data.fromText(this.getValue())
+  var newValue = this.getValue()
+  this.eyo.data.fromText(newValue)
 }
 
 /**
