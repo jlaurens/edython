@@ -113,17 +113,19 @@ eYo.Slot.prototype.beReady = function () {
   //  this.getBlock().getSvgRoot().appendChild(this.svgGroup_)
   this.init()
   // init all the fields
-  for (var k in this.fields) {
-    var field = this.fields[k]
+  var f = function(field) {
     if (!field.sourceBlock_) {
       field.setSourceBlock(this.block)
       field.eyo.slot = this
       field.init()// installs in the owner's group, not the block group
     }
   }
+  for (var k in this.fields) {
+    f.call(this, this.fields[k])
+  }
+  this.editField && f.call(this, this.editField)
   this.input && this.input.eyo.beReady()
 }
-console.warn('What would be an slot rendering?')
 /**
  * The DOM SVG group representing this slot.
  */
@@ -181,7 +183,7 @@ eYo.Slot.makeFields = function () {
     var result = this.callValidator(this.getValue())
     if (result !== null) {
       data.fromText(result)
-      data.synchronize(result) // would is be included in the previous method ?
+      data.synchronize(result) // would this be included in the previous method ?
     } else {
       this.setValue(data.toText())
     }
@@ -251,6 +253,9 @@ eYo.Slot.makeFields = function () {
       var model = fieldsModel[key]
       var field = makeField(key, model)
       if (field) {
+        if (key === eYo.Key.EDIT) {
+          owner.editField = field
+        }
         owner.fields[key] = field
       }
     }
