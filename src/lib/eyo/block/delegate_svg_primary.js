@@ -310,6 +310,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         var slot = this.owner.slots.annotation
         slot.required = newValue === this.ANNOTATED
         slot.setIncog(!slot.required)
+      },
+      xml: {
+        save: function (el) {
+          if (this.get() !== this.NONE) {
+            this.save(el)
+          }
+        }
       }
     },
     definition: {
@@ -336,6 +343,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         var slot = this.owner.slots.definition
         slot.required = newValue === this.DEFINED
         slot.setIncog(!slot.required)
+      },
+      xml: {
+        save: function (el) {
+          if (this.get() !== this.NONE) {
+            this.save(el)
+          }
+        }
       }
     },
     option: {
@@ -389,6 +403,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           this.set(this.ALIASED)
         } else {
           this.set(this.NONE)
+        }
+      },
+      xml: {
+        save: function (el) {
+          if (this.get() !== this.NONE) {
+            this.save(el)
+          }
         }
       }
     },
