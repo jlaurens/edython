@@ -90,6 +90,10 @@ eYo.Consolidator.Range.prototype.doFinalize = function (io) {
  * For edython.
  */
 eYo.DelegateSvg.Expr.argument_list.makeSubclass('range_argument_list', {
+  data: {
+    ary: null,
+    mandatory: null
+  },
   list: {
     consolidator: eYo.Consolidator.Range,
     hole_value: 'name'
@@ -129,7 +133,10 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('builtin__range', {
           endEditing: true,
           placeholder: eYo.Msg.Placeholder.IDENTIFIER
         }
-      }
+      },
+      arguments: {
+        wrap: eYo.T3.Expr.range_argument_list
+      }  
     },
     parent: null,
     n_ary: null,
