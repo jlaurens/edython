@@ -295,7 +295,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     name: {
       order: 1,
       fields: {
-        edit: {
+        bind: {
           placeholder: eYo.Msg.Placeholder.IDENTIFIER,
           endEditing: true,
           variable: true
@@ -480,7 +480,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
     name: {
       order: 1,
       fields: {
-        edit: {
+        bind: {
           placeholder: eYo.Msg.Placeholder.IDENTIFIER,
           endEditing: true,
           variable: true

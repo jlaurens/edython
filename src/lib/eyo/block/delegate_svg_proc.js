@@ -81,7 +81,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
     dotted_name: {
       order: 1,
       fields: {
-        edit: {
+        bind: {
           validate: true,
           endEditing: true,
           placeholder: eYo.Msg.Placeholder.DECORATOR,
@@ -326,7 +326,7 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
     name: {
       order: 1,
       fields: {
-        edit: {
+        bind: {
           validate: true,
           endEditing: true,
           placeholder: eYo.Msg.Placeholder.IDENTIFIER,

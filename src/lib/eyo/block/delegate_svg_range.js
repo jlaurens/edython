@@ -101,14 +101,18 @@ eYo.DelegateSvg.Expr.argument_list.makeSubclass('range_argument_list', {
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('builtin__range', {
+eYo.DelegateSvg.Expr.primary.makeSubclass('builtin__range', {
   data: {
-    ary: {
-      init: '3',
+    ary: null,
+    mandatory: null,
+    name: {
+      init: 'range',
       synchronize: true,
+      validate: false,
+      undo: false,
       xml: false
     },
-    name: {
+    option: {
       init: 'range',
       synchronize: true,
       validate: false,
@@ -120,7 +124,7 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('builtin__range', {
     name: {
       order: 50,
       fields: {
-        edit: {
+        bind: {
           validate: true,
           endEditing: true,
           placeholder: eYo.Msg.Placeholder.IDENTIFIER

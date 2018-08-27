@@ -71,7 +71,7 @@ eYo.DelegateSvg.Expr.call_expr.makeSubclass('random__randrange', {
       order: 10,
       fields: {
         label: '',
-        edit: null
+        bind: null
       }
     }
   },

@@ -1369,9 +1369,9 @@ eYo.DelegateSvg.prototype.renderDrawSlot_ = function (io) {
     'translate(' + io.cursorX + ', 0)')
     io.offsetX = io.cursorX
     io.cursorX = 0
-    if ((io.editField = io.slot.editField)) {
+    if ((io.bindField = io.slot.bindField)) {
       var c8n = io.slot.input && io.slot.input.connection
-      io.editField.setVisible(!c8n || !c8n.targetBlock())       
+      io.bindField.setVisible(!c8n || !c8n.targetBlock())       
     }
     if ((io.field = io.slot.fromStartField)) {
       do {
@@ -1379,9 +1379,9 @@ eYo.DelegateSvg.prototype.renderDrawSlot_ = function (io) {
       } while ((io.field = io.field.eyo.nextField))
     }
     if ((io.input = io.slot.input)) {
-      io.editField = io.slot.editField
+      io.bindField = io.slot.bindField
       this.renderDrawInput_(io)
-      io.editField = undefined
+      io.bindField = undefined
     }
     if ((io.field = io.slot.toEndField)) {
       do {
@@ -1512,9 +1512,9 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
     this.renderDrawFields_(io, true)
     var cursorX = io.cursorX + io.offsetX
     var target = c8n.targetBlock()
-    if (io.editField && !target) {
+    if (io.bindField && !target) {
       c8n.eyo.doNotSelect = true
-      c8n.eyo.editWidth = io.editField.getSize().width
+      c8n.eyo.editWidth = io.bindField.getSize().width
       c8n.setOffsetInBlock(cursorX - c8n.eyo.editWidth - eYo.Font.space / 2, 0)
     } else {
       delete c8n.eyo.doNotSelect
@@ -1550,7 +1550,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
           io.cursorX += bBox.width
         }
       }
-    } else if (io.editField) {
+    } else if (io.bindField) {
     } else if (!this.locked_ && !c8n.hidden_) {
       // locked blocks won't display any placeholder
       // (input with no target)

@@ -123,7 +123,7 @@ eYo.Slot.prototype.beReady = function () {
   for (var k in this.fields) {
     f.call(this, this.fields[k])
   }
-  this.editField && f.call(this, this.editField)
+  this.bindField && f.call(this, this.bindField)
   this.input && this.input.eyo.beReady()
 }
 /**
@@ -221,9 +221,9 @@ eYo.Slot.makeFields = function () {
       field.eyo.css_class = eYo.Do.cssClassForText(model)
     } else if (goog.isObject(model)) {
       setupModel(model)
-      if (model.edit || model.validator || model.endEditing || model.startEditing) {
+      if (model.bind || model.validator || model.endEditing || model.startEditing) {
         // this is an editable field
-        field = new (model.variable? eYo.FieldVariable: eYo.FieldInput)(model.edit || '', model.validator, fieldName)
+        field = new (model.variable? eYo.FieldVariable: eYo.FieldInput)(model.bind || '', model.validator, fieldName)
       } else if (goog.isDefAndNotNull(model.value) || goog.isDefAndNotNull(model.css)) {
         // this is just a label field
         field = new eYo.FieldLabel(model.value || '')
@@ -253,8 +253,8 @@ eYo.Slot.makeFields = function () {
       var model = fieldsModel[key]
       var field = makeField(key, model)
       if (field) {
-        if (key === eYo.Key.EDIT) {
-          owner.editField = field
+        if (key === eYo.Key.BIND) {
+          owner.bindField = field
         }
         owner.fields[key] = field
       }

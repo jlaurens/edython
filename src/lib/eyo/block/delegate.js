@@ -512,7 +512,7 @@ eYo.Delegate.prototype.initData = function () {
           break
         }
       } else {
-        data.field = slot.fields.edit
+        data.field = slot.fields.bind
       }
     } else if ((data.field = this.fields[k])) {
       data.slot = null

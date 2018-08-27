@@ -172,7 +172,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
       phantom: { // phantom is used to manage the placeholder
         init: '',
         didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-          var field = this.owner.slots.name.fields.edit
+          var field = this.owner.slots.name.fields.bind
           field.placeholderText_ = newValue
           field.render_()
         },
@@ -209,7 +209,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
       name: {
         order: 101,
         fields: {
-          edit: {
+          bind: {
             placeholder: eYo.Msg.Placeholder.TERM,
             validate: true,
             endEditing: true,
@@ -267,7 +267,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
         order: 104,
         fields: {
           label: 'as',
-          edit: {
+          bind: {
             placeholder: eYo.Msg.Placeholder.ALIAS,
             validate: true,
             endEditing: true,
@@ -335,7 +335,7 @@ eYo.DelegateSvg.Expr.term.prototype.noBlockWrapped = function (block) {
  * @private
  */
 eYo.DelegateSvg.Expr.term.prototype.showEditor = function (block) {
-  this.slots.name.fields.edit.showEditor_()
+  this.slots.name.fields.bind.showEditor_()
 }
 
 /**

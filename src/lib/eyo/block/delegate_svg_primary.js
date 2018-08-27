@@ -522,7 +522,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     parent: {
       order: 50,
       fields: {
-        edit: {
+        bind: {
           validate: true,
           endEditing: true,
           placeholder: eYo.Msg.Placeholder.IDENTIFIER
@@ -532,7 +532,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     module: {
       order: 51,
       fields: {
-        edit: {
+        bind: {
           validate: true,
           endEditing: true,
           placeholder: eYo.Msg.Placeholder.IDENTIFIER
@@ -563,7 +563,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       plugged: eYo.T3.Expr.primary,
       hole_value: 'expression',
       fields: {
-        edit: {
+        bind: {
           placeholder: eYo.Msg.Placeholder.TERM,
           validate: true,
           endEditing: true,
@@ -640,7 +640,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       order: 3000,
       fields: {
         label: 'as',
-        edit: {
+        bind: {
           placeholder: eYo.Msg.Placeholder.ALIAS,
           validate: true,
           endEditing: true,
@@ -1041,7 +1041,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
     parent: {
       order: 50,
       fields: {
-        edit: {
+        bind: {
           validate: true,
           endEditing: true,
           placeholder: eYo.Msg.Placeholder.IDENTIFIER

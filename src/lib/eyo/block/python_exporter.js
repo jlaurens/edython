@@ -183,13 +183,13 @@ eYo.PythonExporter.prototype.exportField_ = function (field) {
  * @param {Blockly.Field} input
  * @private
  */
-eYo.PythonExporter.prototype.exportInput_ = function (input, editField) {
+eYo.PythonExporter.prototype.exportInput_ = function (input, bindField) {
   if (input && input.isVisible() && input.connection) {
     var c8n = input.connection
     var target = c8n.targetBlock()
     if (target) {
       this.exportExpression_(target)
-    } else if (!c8n.eyo.optional_ && !c8n.eyo.disabled_ && !c8n.eyo.s7r_ && !editField) {
+    } else if (!c8n.eyo.optional_ && !c8n.eyo.disabled_ && !c8n.eyo.s7r_ && !bindField) {
       this.line.push('<MISSING EXPRESSION>')
       // NEWLINE
     } else {
@@ -209,10 +209,10 @@ eYo.PythonExporter.prototype.exportSlot_ = function (slot) {
   if (slot.isIncog()) {
     return
   }
-  var editField
-  if ((editField = slot.editField)) {
+  var bindField
+  if ((bindField = slot.bindField)) {
     var c8n = slot.input && slot.input.connection
-    editField.setVisible(!c8n || !c8n.targetBlock())
+    bindField.setVisible(!c8n || !c8n.targetBlock())
   }
   var field
   if ((field = slot.fromStartField)) {
@@ -220,7 +220,7 @@ eYo.PythonExporter.prototype.exportSlot_ = function (slot) {
       this.exportField_(field)
     } while ((field = field.eyo.nextField))
   }
-  this.exportInput_(slot.input, editField)
+  this.exportInput_(slot.input, bindField)
   if ((field = slot.toEndField)) {
     do {
       this.exportField_(field)

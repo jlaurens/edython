@@ -121,7 +121,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       order: 2,
       fields: {
         label: 'from',
-        edit: {
+        bind: {
           endEditing: true,
           placeholder: eYo.Msg.Placeholder.MODULE,
           variable: true // change this to/with a `module` data
