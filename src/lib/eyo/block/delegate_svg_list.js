@@ -144,7 +144,7 @@ eYo.DelegateSvg.List.prototype.removeItems = function (block) {
 
 /**
  * Class for a DelegateSvg, optional expression_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -159,7 +159,7 @@ eYo.DelegateSvg.List.makeSubclass('optional_expression_list', {
 
 /**
  * Class for a DelegateSvg, expression_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -174,7 +174,7 @@ eYo.DelegateSvg.List.makeSubclass('non_void_expression_list', {
 
 /**
  * Class for a DelegateSvg, starred_item_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -189,7 +189,7 @@ eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
 
 /**
  * Class for a DelegateSvg, key_datum_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -203,7 +203,7 @@ eYo.DelegateSvg.List.makeSubclass('key_datum_list', {
 
 /**
  * Class for a DelegateSvg, starred_item_list_comprehensive block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -218,7 +218,7 @@ eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
 
 /**
  * Class for a DelegateSvg, starred_item_list_comprehensive block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -233,7 +233,7 @@ eYo.DelegateSvg.List.makeSubclass('non_void_starred_item_list', {
 
 /**
  * Class for a DelegateSvg, starred_item_list_comprehensive block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -270,7 +270,7 @@ eYo.DelegateSvg.Expr.starred_item_list_comprehensive.makeSubclass('list_display'
 
 /**
  * Class for a DelegateSvg, non_void_starred_item_list_comprehensive block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -307,7 +307,7 @@ eYo.DelegateSvg.Expr.non_void_starred_item_list_comprehensive.makeSubclass('set_
 
 /**
  * Class for a DelegateSvg, key_datum_list_comprehensive block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -340,7 +340,7 @@ eYo.DelegateSvg.Expr.key_datum_list_comprehensive.makeSubclass('dict_display', {
 
 /**
  * Class for a DelegateSvg, slice_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -354,7 +354,7 @@ eYo.DelegateSvg.List.makeSubclass('slice_list', {
 
 /**
  * Class for a DelegateSvg, with_item_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */

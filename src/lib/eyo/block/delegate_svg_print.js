@@ -98,7 +98,7 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__print_expr', {
 
 /**
  * Class for a DelegateSvg, print_argument_list_comprehensive block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */

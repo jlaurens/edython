@@ -180,7 +180,7 @@ eYo.Consolidator.List.Target.prototype.getCheck = function (io) {
 
 /**
  * Class for a DelegateSvg, target_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -193,7 +193,7 @@ eYo.DelegateSvg.List.makeSubclass('target_list', {
 
 /**
  * Class for a DelegateSvg, void_target_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -207,7 +207,7 @@ eYo.DelegateSvg.List.makeSubclass('void_target_list', {
 
 /**
  * Class for a DelegateSvg, parenth_target_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -224,7 +224,7 @@ eYo.DelegateSvg.Expr.void_target_list.makeSubclass('parenth_target_list', {
 
 /**
  * Class for a DelegateSvg, bracket_target_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -243,7 +243,7 @@ goog.provide('eYo.DelegateSvg.Stmt.assignment_stmt')
 
 /**
  * Class for a DelegateSvg, target_list_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */

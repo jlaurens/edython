@@ -94,7 +94,7 @@ eYo.DelegateSvg.Expr.makeSubclass('comp_if', {
 
 /**
  * Class for a DelegateSvg, comp_iter_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */

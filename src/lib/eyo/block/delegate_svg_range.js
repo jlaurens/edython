@@ -85,7 +85,7 @@ eYo.Consolidator.Range.prototype.doFinalize = function (io) {
 
 /**
  * Class for a DelegateSvg, range_argument_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -101,7 +101,7 @@ eYo.DelegateSvg.Expr.argument_list.makeSubclass('range_argument_list', {
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.primary.makeSubclass('builtin__range', {
+eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('builtin__range', {
   data: {
     ary: null,
     mandatory: null,
@@ -131,6 +131,7 @@ eYo.DelegateSvg.Expr.primary.makeSubclass('builtin__range', {
         }
       }
     },
+    parent: null,
     n_ary: null,
     z_ary: null,
     unary: null,

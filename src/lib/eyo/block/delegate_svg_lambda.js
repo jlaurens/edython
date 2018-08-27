@@ -287,7 +287,7 @@ eYo.Consolidator.Parameter.prototype.getCheck = (function () {
 
 /**
  * Class for a DelegateSvg, parameter_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */

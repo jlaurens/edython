@@ -126,7 +126,7 @@ eYo.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = func
 
 /**
  * Class for a DelegateSvg, starred_item_list_or_yield block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */

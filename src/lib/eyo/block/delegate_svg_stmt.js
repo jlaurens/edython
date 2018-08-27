@@ -348,7 +348,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.continue_stmt, {
 /// /////// gobal/nonlocal statement
 /**
  * Class for a DelegateSvg, non_void_identifier_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
