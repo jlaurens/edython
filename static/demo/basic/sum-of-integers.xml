@@ -2,7 +2,7 @@
 <edython xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">
 <prefs>{
 "selectedPanel":"console",
-"flyoutClosed":true,
+"flyoutClosed":true
 }</prefs><workspace>
 <content>
 <s eyo="start_stmt" x="300" y="280" comment="Calculer 1+2+3+...">
