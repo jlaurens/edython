@@ -133,6 +133,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       order: 100,
       all: ['', '*', '**', '.', '..'],
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         this.setIncog(!newValue || !newValue.length)
       },
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
@@ -189,9 +190,11 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         module_d.setIncog(newValue !== this.MODULE)
         var slots = this.owner.slots
         var root_s = slots.root
-        root_s.required = newValue === this.ROOT
-        root_s.setIncog()
-        slots.dot.setIncog(newValue === this.NONE)
+        if (root_s) {
+          root_s.required = newValue === this.ROOT
+          root_s.setIncog()
+        }
+        slots.dot && slots.dot.setIncog(newValue === this.NONE)
         this.data.name.synchronize()
       },
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
@@ -297,6 +300,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       default: eYo.Key.NONE,
       validate: true,
       didChange: function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         // override previous data if necessary
         if (newValue) {
           // no module nor parent nor dotted nor option
@@ -308,8 +312,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       synchronize: function (newValue) {
         var slot = this.owner.slots.annotation
-        slot.required = newValue === this.ANNOTATED
-        slot.setIncog(!slot.required)
+        if (slot) {
+          slot.required = newValue === this.ANNOTATED
+          slot.setIncog(!slot.required)
+        }
       },
       xml: {
         save: function (el) {
@@ -330,6 +336,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       default: eYo.Key.NONE,
       validate: true,
       didChange: function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         // override previous data if necessary
         if (newValue) {
           // no module nor parent nor dotted nor option
@@ -341,8 +348,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       synchronize: function (newValue) {
         var slot = this.owner.slots.definition
-        slot.required = newValue === this.DEFINED
-        slot.setIncog(!slot.required)
+        if (slot) {
+          slot.required = newValue === this.DEFINED
+          slot.setIncog(!slot.required)
+        }
       },
       xml: {
         save: function (el) {
@@ -373,19 +382,12 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           this.owner.slots.slicing.setIncog(slicing_incog)
           this.owner.slots.alias.setIncog(alias_incog)
         }
-        var g = function () {
-          this.data.annotation.set(eYo.Key.VOID)
-          this.data.definition.set(eYo.Key.VOID)
-        }
         if(option === this.CALL_EXPR) {
           f.call(this, false, true, true)
-          g.call(this)
         } else if(option === this.SLICING) {
           f.call(this, true, false, true)
-          g.call(this)
         } else if(option === this.ALIASED) {
           f.call(this, true, true, false)
-          g.call(this)
         } else {
           f.call(this, true, true, true)
         }
@@ -393,6 +395,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.owner.setupType(this.owner.getType())
         this.owner.setupConnections()
+      },
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
+        if ([this.CALL_EXPR, this.SLICING, this.ALIASED].indexOf(newValue) >= 0) {
+          this.data.annotation.set(eYo.Key.NONE)
+          this.data.definition.set(eYo.Key.NONE)
+        }
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Expr.call_expr) {
@@ -486,6 +495,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         var type = eYo.Do.typeOfString(newValue)
         var nameType_d = this.data.nameType
         nameType_d.set(type.expr)
@@ -849,6 +859,23 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function (block) {
 }
 
 /**
+ * Sends a `consolidate` message to each component of the block.
+ * However, there might be some caveats related to undo management.
+ * @param {!Block} block
+ */
+eYo.DelegateSvg.Expr.primary.prototype.consolidate = function (block, deep, force) {
+  console.log('CONSOLIDATE')
+  eYo.DelegateSvg.Expr.primary.superClass_.consolidate.call(this, block, deep, force)
+  if (this.slots) {
+    var arguments_s = this.slots.arguments
+    var args = arguments_s.input.connection.targetBlock()
+    if (args) {
+      args.eyo.createConsolidator(args, true)
+    }
+  }
+}
+
+/**
  * Fetches the named input object, getInput.
  * This is not a very strong design but it should work, I guess.
  * @param {!Block} block
@@ -999,6 +1026,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
         slot && (slot.input.connection.eyo.optional_ = this.get())
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         var input = this.owner.slots.arguments.input
         if (input && input.connection) {
           var target = input.connection.targetBlock()
@@ -1027,6 +1055,7 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
         slot && (slot.input.connection.eyo.optional_ = this.get())
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         var input = this.owner.slots.arguments.input
         if (input && input.connection) {
           var target = input.connection.targetBlock()

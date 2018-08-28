@@ -64,6 +64,7 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
         return ((types.indexOf(type) >= 0) && {validated: newValue}) || null
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         var type = newValue ? eYo.Do.typeOfString(newValue).expr : eYo.T3.Expr.integer
         this.data.type.set(type)
       },
@@ -143,6 +144,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
     delimiter: {
       all: ["'", '"'],
       didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         this.data.value.consolidate()
       },
       synchronize: /** @this{eYo.Data} */ function (newValue) {
@@ -157,6 +159,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         'fr', 'Fr', 'fR', 'FR', 'rf', 'rF', 'Rf', 'RF',
         'b', 'B', 'br', 'Br', 'bR', 'BR', 'rb', 'rB', 'Rb', 'RB'],
       didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         this.data.value.consolidate()
       },
       validate: /** @this{eYo.Data} */ function (newValue) {
@@ -172,6 +175,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
     content: {
       init: '',
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         this.data.value.consolidate()
       },
       validate: /** @suppress {globalThis} */ function (newValue) {
@@ -188,6 +192,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         return goog.isString(newValue)? {validated: newValue}: null
       },
       didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         var data = this.data
         var F = function (xre, type) {
           var m = XRegExp.exec(newValue, xre)
@@ -374,6 +379,7 @@ eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
     value: {
       init: "''''''",
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         var data = this.data
         var F = function (xre, type) {
           var m = XRegExp.exec(newValue, xre)

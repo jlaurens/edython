@@ -115,6 +115,36 @@ eYo.Consolidator.List.prototype.init = function () {
 }
 
 /**
+ * Get the ary.
+ * Asks the list
+ * @param {!Object} io parameter.
+ */
+eYo.Consolidator.List.prototype.getAry = function (io) {
+  if (io.list) {
+    var ary_d = io.list.eyo.data.ary
+    if (ary_d) {
+      return ary_d.get()
+    }
+  }
+  return this.data.ary || (this.data.ary = Infinity)
+}
+
+/**
+ * Get the mandatory.
+ * Asks the list
+ * @param {!Object} io parameter.
+ */
+eYo.Consolidator.List.prototype.getMandatory = function (io) {
+  if (io.block) {
+    var mandatory_d = io.block.eyo.data.mandatory
+    if (mandatory_d) {
+      return mandatory_d.get()
+    }
+  }
+  return this.data.mandatory || (this.data.mandatory = Infinity)
+}
+
+/**
  * Setup the io parameter dictionary.
  * Called when the input list has changed and or the index has changed.
  * @param {!Object} io parameter.
@@ -246,7 +276,7 @@ eYo.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = und
   io.input.setCheck(check)
   io.c8n.eyo.optional_ = optional
   io.c8n.eyo.plugged_ = this.plugged
-  if (!io.connected && !this.data.empty && !io.c8n.isConnected()) {
+  if (!io.connected && !this.getMandatory(io) && !io.c8n.isConnected()) {
     var value = eYo.DelegateSvg.Manager.getModel(io.block.type).list.hole_value
     io.c8n.eyo.hole_data = eYo.HoleFiller.getData(check, value)
   }
@@ -432,7 +462,7 @@ eYo.Consolidator.List.prototype.consolidate_unconnected = function (io) {
         --io.i
         this.setupIO(io)
         this.doFinalizePlaceholder(io,
-          eYo.Do.Name.middle_name, this.data.empty)
+          eYo.Do.Name.middle_name, !this.getMandatory(io))
         return
       }
       // unreachable code
@@ -440,7 +470,7 @@ eYo.Consolidator.List.prototype.consolidate_unconnected = function (io) {
     // create an input
     this.insertPlaceholder(io)
     this.doFinalizePlaceholder(io,
-      eYo.Do.Name.middle_name, this.data.empty)
+      eYo.Do.Name.middle_name, !this.getMandatory(io))
   } else {
     // remove everything
     while (this.setupIO(io, 0)) {
@@ -510,7 +540,7 @@ eYo.Consolidator.List.prototype.doAry = function (io) {
 eYo.Consolidator.List.prototype.doFinalize = function (io) {
   this.setupIO(io, 0)
   if (io.list.length === 1) {
-    this.doFinalizePlaceholder(io, undefined, this.data.empty)
+    this.doFinalizePlaceholder(io, undefined, !this.getMandatory(io))
     return
   }
   var previous = eYo.Do.Name.min_name

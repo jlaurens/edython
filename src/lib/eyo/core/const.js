@@ -104,6 +104,7 @@ eYo.Key = {
   // Primary delegate
   VOID: '',
   NONE: 'none',
+  CALL: 'call',
   CALL_EXPR: 'call_expr',
   SLICING: 'slicing',
 

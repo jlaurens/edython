@@ -88,13 +88,26 @@ eYo.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
  *
  * @param {!Block} block
  */
-eYo.DelegateSvg.List.prototype.createConsolidator = function (block) {
-  if (!this.consolidator) {
-    var D = eYo.DelegateSvg.Manager.getModel(block.type).list
-    goog.asserts.assert(D, 'inputModel__.list is missing in ' + block.type)
-    var C10r = D.consolidator || eYo.Consolidator.List
-    this.consolidator = new C10r(D)
-    goog.asserts.assert(this.consolidator, eYo.Do.format('Could not create the consolidator {0}', block.type))
+eYo.DelegateSvg.List.prototype.createConsolidator = function (block, force) {
+  if (this.in_createConsolidator) {
+    return
+  }
+  try {
+    this.in_createConsolidator = true
+    if (!this.consolidator || force) {
+      var D = eYo.DelegateSvg.Manager.getModel(block.type).list
+      goog.asserts.assert(D, 'inputModel__.list is missing in ' + block.type)
+      var C10r = this.consolidatorConstructor || D.consolidator || eYo.Consolidator.List
+      if (!this.consolidator || this.consolidator.contructor !== C10r) {
+        this.consolidator = new C10r(D)
+        goog.asserts.assert(this.consolidator, eYo.Do.format('Could not create the consolidator {0}', block.type))
+      }
+      if (force) {
+        this.consolidate(block)
+      }
+    }
+  } finally {
+    delete this.in_createConsolidator
   }
 }
 

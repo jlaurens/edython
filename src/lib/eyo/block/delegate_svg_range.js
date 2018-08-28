@@ -105,7 +105,7 @@ eYo.DelegateSvg.Expr.argument_list.makeSubclass('range_argument_list', {
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('builtin__range', {
+eYo.DelegateSvg.Expr.primary.makeSubclass('builtin__range', {
   data: {
     ary: null,
     mandatory: null,
@@ -117,7 +117,7 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('builtin__range', {
       xml: false
     },
     option: {
-      init: 'range',
+      init: eYo.Key.CALL_EXPR,
       synchronize: true,
       validate: false,
       undo: false,
@@ -128,32 +128,27 @@ eYo.DelegateSvg.Expr.base_call_expr.makeSubclass('builtin__range', {
     name: {
       order: 50,
       fields: {
-        bind: {
-          validate: true,
-          endEditing: true,
-          placeholder: eYo.Msg.Placeholder.IDENTIFIER
-        }
-      },
-      arguments: {
-        wrap: eYo.T3.Expr.range_argument_list
+        bind: ''
       }  
     },
-    parent: null,
-    n_ary: null,
-    z_ary: null,
-    unary: null,
-    binary: null,
-    ternary: null,
-    quadary: null,
-    pentary: null,
     arguments: {
-      order: 1000,
-      fields: {
-        start: '(',
-        end: ')'
-      },
       wrap: eYo.T3.Expr.range_argument_list
-    }
+    },
+    slicing: null,
+    alias: null,
+    parent: null,
+    module: null,
+    root: null,
+    dot: null,
+    annotation: null,
+    definition: null,
+    // n_ary: null,
+    // z_ary: null,
+    // unary: null,
+    // binary: null,
+    // ternary: null,
+    // quadary: null,
+    // pentary: null
   },
   output: {
     check: [eYo.T3.Expr.builtin__range, eYo.T3.Expr.call_expr]

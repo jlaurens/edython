@@ -445,6 +445,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       init: '+=',
       synchronize: true,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         this.data.numberOperator.set(newValue)
         this.data.bitwiseOperator.set(newValue)
       },
@@ -457,6 +458,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         if (oldValue && (newValue !== oldValue)) {
+          this.didChange(oldValue, newValue)
           this.data.operator.set(newValue)
           this.data.operator.bitwise = (this.data.operator.get() !== this.get())
         }
@@ -468,6 +470,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       noUndo: true,
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         if (oldValue && (newValue !== oldValue)) {
           this.data.operator.set(newValue)
           this.data.operator.bitwise = (this.data.operator.get() === this.get())

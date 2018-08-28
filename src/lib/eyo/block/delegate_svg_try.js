@@ -44,6 +44,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
         eYo.Key.EXCEPT_AS
       ],
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         var eyo = this.owner
         var block = eyo.block_
         eyo.consolidateType(block)

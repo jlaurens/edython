@@ -33,6 +33,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
         all: ['', '*', '**'],
         noUndo: true,
         didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+          this.didChange(oldValue, newValue)
           this.setIncog(!newValue || !newValue.length)
         },
         synchronize: true
@@ -99,6 +100,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
           return {validated: newValue}
         },
         didChange: function (oldValue, newValue) {
+          this.didChange(oldValue, newValue)
           this.data.name.required = newValue === this.STAR_NAME
           this.data.alias.required = newValue === this.NAME_ALIAS
           var newModifier = newValue === this.STAR || newValue === this.STAR_NAME || newValue === this.STAR_NAME_ANNOTATION ? '*' : (newValue === this.STAR_STAR_NAME ? '**' : '')
@@ -172,6 +174,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
       phantom: { // phantom is used to manage the placeholder
         init: '',
         didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+          this.didChange(oldValue, newValue)
           var field = this.owner.slots.name.fields.bind
           field.placeholderText_ = newValue
           field.render_()
@@ -193,6 +196,7 @@ eYo.DelegateSvg.Expr.makeSubclass(eYo.T3.Expr.term, function () {
           return null
         },
         didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+          this.didChange(oldValue, newValue)
           var nameType = newValue ? eYo.Do.typeOfString(newValue).expr : eYo.T3.Expr.identifier
           this.data.nameType.set(nameType)
         },

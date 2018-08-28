@@ -230,6 +230,7 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
         return {validated: goog.isNumber(newValue) ? newValue : Infinity}
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         this.owner.createConsolidator(this.owner.block_)
         this.owner.consolidator.data.ary = newValue
         this.owner.consolidate(this.owner.block_)
@@ -242,6 +243,7 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
       undo: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         console.log('Argument mandatory did change', oldValue, newValue)
+        this.didChange(oldValue, newValue)
         this.owner.createConsolidator(this.owner.block_)
         this.owner.consolidator.data.empty = !newValue
         this.owner.consolidate(this.owner.block_)

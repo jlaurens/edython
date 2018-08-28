@@ -33,6 +33,7 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       init: 0,
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         this.data.comment.required = newValue === this.COMMENT
         this.data.comment.setIncog(newValue === this.NO_COMMENT)
       },
@@ -46,6 +47,7 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
         this.init('')
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         this.data.comment_variant.consolidate()
       },
       validate: /** @suppress {globalThis} */ function (newValue) {
@@ -513,6 +515,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
       init: 2,
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         var data = this.data.code
         data.required = newValue === this.CODE || newValue === this.CODE_COMMENT
         data.setIncog()
@@ -560,6 +563,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
         return {validated: clean}
       },
       didChange: /** @suppress {globalThis} */ function (oldVAlue, newValue) {
+        this.didChange(oldValue, newValue)
         var variant = this.data.variant
         if (this.isIncog() && variant.get() === variant.CODE) {
           variant.set(variant.COMMENT)
@@ -580,6 +584,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
         this.setIncog(true)
       },
       didChange: /** @suppress {globalThis} */ function (oldVAlue, newValue) {
+        this.didChange(oldValue, newValue)
         var variant = this.data.variant
         if (this.isIncog() && variant.get() === variant.COMMENT) {
           variant.set(variant.CODE)
