@@ -70,7 +70,7 @@ eYo.Slot = function (owner, key, slotModel) {
  * Init the slot.
  */
 eYo.Slot.prototype.init = function () {
-  var f = eYo.Decorate.reentrant_method('init_model', this.model.init)
+  var f = eYo.Decorate.reentrant_method.call(this, 'init_model', this.model.init)
   f && f.call(this)
 }
 
@@ -660,9 +660,9 @@ eYo.Slot.prototype.save = function (element, optNoId) {
     return
   }
   if (goog.isDef(xml)) {
-    var f = eYo.Decorate.reentrant_method('xml_save', xml.save)
+    var f = eYo.Decorate.reentrant_method.call(this, 'xml_save', xml.save)
     if (f) {
-      f.call(this, element, optNoId)
+      f.apply(this, arguments)
       return
     }
   }
@@ -746,9 +746,9 @@ eYo.Slot.prototype.load = function (element) {
   }
 
   if (goog.isDef(xml)) {
-    var f = eYo.Decorate.reentrant_method('xml_load', xml.load)
+    var f = eYo.Decorate.reentrant_method.call(this, 'xml_load', xml.load)
     if (f) {
-      f.call(this, element)
+      f.apply(this, arguments)
       return
     }
   }

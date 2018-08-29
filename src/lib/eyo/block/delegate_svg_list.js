@@ -86,7 +86,7 @@ eYo.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
  *
  * @param {!Block} block
  */
-eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_method('in_createConsolidator', function (block, force) {
+eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_method('createConsolidator', function (block, force) {
   if (!this.consolidator || force) {
     var D = eYo.DelegateSvg.Manager.getModel(block.type).list
     goog.asserts.assert(D, 'inputModel__.list is missing in ' + block.type)

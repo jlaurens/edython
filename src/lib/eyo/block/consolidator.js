@@ -630,7 +630,7 @@ eYo.Consolidator.List.prototype.getInput = function (block, name, dontCreate) {
     return null
   }
   this.consolidate(block)
-  var f = eYo.Decorate.reentrant_method('consolidate', function () {
+  var f = eYo.Decorate.reentrant_method.call(this, 'consolidate', function () {
     var j = -1
     var io = this.getIO(block)
     do {

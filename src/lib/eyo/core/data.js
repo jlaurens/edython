@@ -25,6 +25,8 @@
 
 goog.require('eYo')
 goog.provide('eYo.Data')
+
+goog.require('eYo.Decorate');
 goog.require('goog.dom');
 
 /**
@@ -101,17 +103,11 @@ eYo.Data.prototype.getType = function () {
  * @param {String} type
  */
 eYo.Data.prototype.get = function (type) {
-  if (goog.isDef(this.value_) || this.lock_get) {
-    return this.value_
-  }
-  try {
-    this.lock_get = true
-    this.init()
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    delete this.lock_get
+  if (!goog.isDef(this.value_)) {
+    eYo.Decorate.reentrant_method.call(this, 
+      'get',
+      this.init
+    ).apply(this, arguments)
   }
   return this.value_
 }
@@ -169,19 +165,10 @@ eYo.Data.prototype.init = function (newValue) {
     return
   }
   var init = this.model.init
-  if (goog.isFunction(init)) {
-    if (!this.model_init_lock) {
-      this.model_init_lock = true
-      try {
-        init.call(this)
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        delete this.model_init_lock
-      }
-      return
-    }
+  var f = eYo.Decorate.reentrant_method.call(this, 'model_init', this.model.init)
+  if (f) {
+    f.apply(this, arguments)
+    return
   } else if (goog.isDef(init)) {
     this.internalSet(init)
     return
@@ -198,20 +185,8 @@ eYo.Data.prototype.init = function (newValue) {
  * @param {Object} newValue
  */
 eYo.Data.prototype.initWithType = function (type) {
-  if (!this.model_fromType_lock) {
-    var fromType = this.model.fromType
-    if (goog.isFunction(fromType)) {
-      try {
-        this.model_fromType_lock = true
-        fromType.call(this, type)
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        delete this.model_fromType_lock
-      }
-    }
-  }
+  var f = eYo.Decorate.reentrant_method.call(this, 'model_fromType', this.model.fromType)
+  f && f.apply(this, arguments)
 }
 
 /**
@@ -236,17 +211,9 @@ eYo.Data.prototype.getAll = function () {
  * @param {Object} newValue
  */
 eYo.Data.prototype.validate = function (newValue) {
-  if (!this.lock_model_validate && goog.isFunction(this.model.validate)) {
-    try {
-      this.lock_model_validate = true
-      var out = this.model.validate.call(this, newValue)
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      delete this.lock_model_validate
-    }
-    return out
+  var f = eYo.Decorate.reentrant_method.call(this, 'model_validate', this.model.validate)
+  if (f) {
+    return f.apply(this, arguments).return
   }
   var all = this.getAll()
   return ((this.model.validate === false || !all || all.indexOf(newValue) >= 0)
@@ -258,16 +225,9 @@ eYo.Data.prototype.validate = function (newValue) {
  * @param {?Object} newValue
  */
 eYo.Data.prototype.toText = function (newValue = undefined) {
-  if (!this.toText_locked && goog.isFunction(this.model.toText)) {
-    this.toText_locked = true
-    try {
-      return this.model.toText.call(this, newValue)
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      delete this.toText_locked
-    }
+  var f = eYo.Decorate.reentrant_method.call(this, 'toText', this.model.toText)
+  if (f) {
+    return f.apply(this, arguments).return
   }
   return this.get() || ''
 }
@@ -308,16 +268,9 @@ eYo.Data.prototype.toText = function (newValue = undefined) {
  */
 eYo.Data.prototype.fromText = function (txt, dontValidate) {
   if (!this.model_fromText_lock) {
-    if (goog.isFunction(this.model.fromText)) {
-      this.model_fromText_lock = true
-      try {
-        this.model.fromText.call(this, txt, dontValidate)
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        delete this.model_fromText_lock
-      }
+    var f = eYo.Decorate.reentrant_method.call(this, 'model_fromText', this.model.fromText)
+    if (f) {
+      f.apply(this, arguments)
       return
     }
   }
@@ -365,17 +318,11 @@ eYo.Data.decorateChange = function (key, do_it) {
         try {
           this[model_lock] = true
           model_do_it.call(this, before, after)
-        } catch (err) {
-          console.error(err)
-          throw err
         } finally {
           delete this[model_lock]
         }
         return
       }
-    } catch (err) {
-      console.error(err)
-      throw err
     } finally {
       delete this[lock]
     }  
@@ -511,9 +458,6 @@ eYo.Data.prototype.synchronize = function (newValue) {
       Blockly.Events.disable()
       try {
         field.setValue(this.toText())
-      } catch (err) {
-        console.error(err)
-        throw err
       } finally {
         Blockly.Events.enable()
       }
@@ -528,16 +472,9 @@ eYo.Data.prototype.synchronize = function (newValue) {
       }
     }
     this.slot && this.slot.setIncog(this.isIncog())
-  } else if (goog.isFunction(this.model.synchronize)) {
-    this.model_synchronize_lock = true
-    try {
-      this.model.synchronize.call(this, newValue)
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      delete this.model_synchronize_lock
-    }
+  } else {
+    var f = eYo.Decorate.reentrant_method.call(this, 'model_synchronize', this.model.synchronize)
+    f && f.apply(this, arguments)
   }
   this.owner && this.owner.shouldRender && this.owner.shouldRender()
 }
@@ -551,6 +488,26 @@ eYo.Data.prototype.synchronizeIfUI = function (newValue) {
     this.synchronize(newValue)
   }
 }
+
+/**
+ * set the value of the property without any validation.
+ * This is overriden by the events module.
+ * @param {Object} newValue
+ * @param {Boolean} noRender
+ */
+ eYo.Data.prototype.setTrusted__ = function (newValue, noRender) {
+  this.error = false
+  this.internalSet(newValue)
+  noRender || this.synchronizeIfUI(newValue)
+}
+
+/**
+ * set the value of the property without any validation.
+ * This is overriden by the events module.
+ * @param {Object} newValue
+ * @param {Boolean} noRender
+ */
+eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method('trusted', eYo.Data.prototype.setTrusted__)
 
 /**
  * set the value of the property without any validation.
@@ -571,39 +528,6 @@ eYo.Data.prototype.setTrusted = function (newValue, noRender) {
     }
   }
   this.setTrusted_(newValue, noRender)
-}
-
-/**
- * set the value of the property without any validation.
- * This is overriden by the events module.
- * @param {Object} newValue
- * @param {Boolean} noRender
- */
- eYo.Data.prototype.setTrusted_ = function (newValue, noRender) {
-   if (this.trusted_lock) {
-    return
-  }
-  try {
-    this.trusted_lock = true
-    this.setTrusted__(newValue, noRender)
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    delete this.trusted_lock
-  }
-}
-
-/**
- * set the value of the property without any validation.
- * This is overriden by the events module.
- * @param {Object} newValue
- * @param {Boolean} noRender
- */
- eYo.Data.prototype.setTrusted__ = function (newValue, noRender) {
-  this.error = false
-  this.internalSet(newValue)
-  noRender || this.synchronizeIfUI(newValue)
 }
 
 /**
@@ -664,20 +588,8 @@ eYo.Data.prototype.consolidate = function () {
   if (this.wait_) {
     return
   }
-  if (goog.isFunction(this.model.consolidate)) {
-    if (this.model_consolidate_lock) {
-      return
-    }
-    this.model_consolidate_lock = true
-    try {
-      this.model.consolidate.call(this)
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      delete this.model_consolidate_lock
-    }
-  }
+  var f = eYo.Decorate.reentrant_method.call(this, 'model_consolidate', this.model.consolidate)
+  f && f.apply(this, arguments)
 }
 
 /**
@@ -701,9 +613,6 @@ eYo.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
     Blockly.Events.disable()
     try {
       field.setValue(newValue)
-    } catch (err) {
-      console.error(err)
-      throw err
     } finally {
       Blockly.Events.enable()
     }
@@ -752,17 +661,12 @@ eYo.Data.prototype.save = function (element) {
       // only few data need not be saved
       return
     }
-    if (!this.xml_save_lock && goog.isDef(xml) && goog.isFunction(xml.save)) {
-      this.xml_save_lock = true
-      try {
-        xml.save.call(this, element)
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        delete this.xml_save_lock
+    if (xml) {
+      var f = eYo.Decorate.reentrant_method.call(this, 'xml_save', xml.save)
+      if (f) {
+        f.apply(this, arguments)
+        return
       }
-      return
     }
     var required = this.required || (goog.isDefAndNotNull(xml) && xml.required)
     var isText = xml && xml.text
@@ -791,17 +695,12 @@ eYo.Data.prototype.load = function (element) {
     return
   }
   if (element) {
-    if (!this.xml_load_lock && xml && goog.isFunction(xml.load)) {
-      this.xml_load_lock = true
-      try {
-        xml.load.call(this, element)
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        delete this.xml_load_lock
+    if (xml) {
+      var f = eYo.Decorate.reentrant_method.call(this, 'xml_load', xml.load)
+      if (f) {
+        f.apply(this, arguments)
+        return
       }
-      return
     }
     var required = this.required
     var isText = xml && xml.text

@@ -17,17 +17,17 @@ goog.provide('eYo.Decorate')
  * Decorate the function to be reentrant
  * @param {!string} key
  * @param {!function} f
- * @return a name in the proper format
+ * @return An object which `return` property is the value returned by f when called.
  */
 eYo.Decorate.reentrant_method = function(key, f) {
-  return goog.isFunction(f) && function() {
-    var k = key + '_locked'
+  var k = key + '_lock'
+  return (!this || !this[k]) && goog.isFunction(f) && function() {
     if (this[k]) {
-      return
+      return {}
     }
     this[k] = true
     try {
-      return f.apply(this, arguments)
+      return {return: f.apply(this, arguments)}
     } finally {
       delete this[k]
     }
