@@ -16,6 +16,7 @@ goog.provide('eYo.Consolidator')
 goog.require('eYo')
 goog.require('eYo.Const')
 goog.require('eYo.Input')
+goog.require('eYo.Decorate')
 goog.require('eYo.Do')
 goog.require('eYo.DelegateSvg')
 
@@ -597,35 +598,24 @@ eYo.Consolidator.List.prototype.getIO = function (block) {
  * @param {!Block} block, to be consolidated....
  * @param {boolean} force, true if no shortcut is allowed.
  */
-eYo.Consolidator.List.prototype.consolidate = function (block, force) {
-  if (this.consolidate_locked) {
-    return
-  }
-  this.consolidate_locked = true
-  try {
-    var io = this.getIO(block)
-    // things are different if one of the inputs is connected
-    if (this.walk_to_next_connected(io)) {
-      if (this.consolidate_first_connected(io)) {
-        while (this.walk_to_next_connected(io, true) &&
-          this.consolidate_connected(io)) {}
-      }
-      this.doCleanup(io)
-      if (force || io.edited || io.noLeftSeparator || io.noDynamicList) {
-        this.doFinalize(io)
-        this.doAry(io)
-      }
-    } else {
-      // no connected input
-      this.consolidate_unconnected(io)
+eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('consolidate', function (block, force) {
+  var io = this.getIO(block)
+  // things are different if one of the inputs is connected
+  if (this.walk_to_next_connected(io)) {
+    if (this.consolidate_first_connected(io)) {
+      while (this.walk_to_next_connected(io, true) &&
+        this.consolidate_connected(io)) {}
     }
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    delete this.consolidate_locked
+    this.doCleanup(io)
+    if (force || io.edited || io.noLeftSeparator || io.noDynamicList) {
+      this.doFinalize(io)
+      this.doAry(io)
+    }
+  } else {
+    // no connected input
+    this.consolidate_unconnected(io)
   }
-}
+})
 
 /**
  * Fetches the named input object
@@ -640,8 +630,7 @@ eYo.Consolidator.List.prototype.getInput = function (block, name, dontCreate) {
     return null
   }
   this.consolidate(block)
-  this.consolidate_locked = true
-  try {
+  var f = eYo.Decorate.reentrant_method('consolidate', function () {
     var j = -1
     var io = this.getIO(block)
     do {
@@ -695,12 +684,7 @@ eYo.Consolidator.List.prototype.getInput = function (block, name, dontCreate) {
     this.doFinalize(io)
     // this.doAry(io)
     return input
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    delete this.consolidate_locked
-  }
+  }).call(this)
 }
 
 /**

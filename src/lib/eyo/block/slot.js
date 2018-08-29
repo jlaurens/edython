@@ -14,6 +14,7 @@
 goog.provide('eYo.Slot')
 
 goog.require('eYo.Do')
+goog.require('eYo.Decorate')
 goog.require('eYo.ConnectionDelegate')
 goog.require('goog.dom');
 goog.forwardDeclare('eYo.Xml')
@@ -69,20 +70,8 @@ eYo.Slot = function (owner, key, slotModel) {
  * Init the slot.
  */
 eYo.Slot.prototype.init = function () {
-  var init = this.model.init
-  if (goog.isFunction(init)) {
-    if (!this.model_init_lock) {
-      this.model_init_lock = true
-      try {
-        init.call(this)
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        delete this.model_init_lock
-      }
-    }
-  }
+  var f = eYo.Decorate.reentrant_method('init_model', this.model.init)
+  f && f.call(this)
 }
 
 /**
@@ -670,17 +659,12 @@ eYo.Slot.prototype.save = function (element, optNoId) {
   if (xml === false) {
     return
   }
-  if (!this.xml_save_lock && goog.isDef(xml) && goog.isFunction(xml.save)) {
-    this.xml_save_lock = true
-    try {
-      xml.save.call(this, element, optNoId)
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      delete this.xml_save_lock
+  if (goog.isDef(xml)) {
+    var f = eYo.Decorate.reentrant_method('xml_save', xml.save)
+    if (f) {
+      f.call(this, element, optNoId)
+      return
     }
-    return
   }
   var out = (function () {
     var c8n = this.connection
@@ -760,17 +744,13 @@ eYo.Slot.prototype.load = function (element) {
   if (xml === false) {
     return
   }
-  if (!this.xml_load_lock && xml && goog.isFunction(xml.load)) {
-    this.xml_load_lock = true
-    try {
-      xml.load.call(this, element)
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      delete this.xml_load_lock
+
+  if (goog.isDef(xml)) {
+    var f = eYo.Decorate.reentrant_method('xml_load', xml.load)
+    if (f) {
+      f.call(this, element)
+      return
     }
-    return
   }
   this.setRequiredFromDom(false)
   var c8n = this.connection

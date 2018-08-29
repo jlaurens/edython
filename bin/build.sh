@@ -247,6 +247,7 @@ java -jar "$COMPILER"\
 --js "src/lib/blockly/core/toolbox.js" \
 --js "src/lib/blockly/core/blockly.js" \
 --js "src/lib/eyo/core/eyo.js" \
+--js "src/lib/eyo/core/decorate.js" \
 --js "src/lib/eyo/block/delegate_svg_final.js" \
 --js "src/lib/eyo/core/const.js" \
 --js "src/lib/eyo/core/model.js" \

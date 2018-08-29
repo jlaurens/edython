@@ -13,6 +13,7 @@
 
 goog.provide('eYo.DelegateSvg.List')
 
+goog.require('eYo.Decorate')
 goog.require('eYo.Consolidator.List')
 goog.require('eYo.DelegateSvg.Expr')
 
@@ -73,9 +74,6 @@ eYo.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
   this.consolidate_lock = true
   try {
     this.consolidator.consolidate(block, force)
-  } catch (err) {
-    console.error(err)
-    throw err
   } finally {
     delete this.consolidate_lock
   }
@@ -88,28 +86,20 @@ eYo.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
  *
  * @param {!Block} block
  */
-eYo.DelegateSvg.List.prototype.createConsolidator = function (block, force) {
-  if (this.in_createConsolidator) {
-    return
-  }
-  try {
-    this.in_createConsolidator = true
-    if (!this.consolidator || force) {
-      var D = eYo.DelegateSvg.Manager.getModel(block.type).list
-      goog.asserts.assert(D, 'inputModel__.list is missing in ' + block.type)
-      var C10r = this.consolidatorConstructor || D.consolidator || eYo.Consolidator.List
-      if (!this.consolidator || this.consolidator.contructor !== C10r) {
-        this.consolidator = new C10r(D)
-        goog.asserts.assert(this.consolidator, eYo.Do.format('Could not create the consolidator {0}', block.type))
-      }
-      if (force) {
-        this.consolidate(block)
-      }
+eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_method('in_createConsolidator', function (block, force) {
+  if (!this.consolidator || force) {
+    var D = eYo.DelegateSvg.Manager.getModel(block.type).list
+    goog.asserts.assert(D, 'inputModel__.list is missing in ' + block.type)
+    var C10r = this.consolidatorConstructor || D.consolidator || eYo.Consolidator.List
+    if (!this.consolidator || this.consolidator.constructor !== C10r) {
+      this.consolidator = new C10r(D)
+      goog.asserts.assert(this.consolidator, eYo.Do.format('Could not create the consolidator {0}', block.type))
     }
-  } finally {
-    delete this.in_createConsolidator
+    if (force) {
+      this.consolidate(block)
+    }
   }
-}
+})
 
 /**
  * Consolidate the input.
