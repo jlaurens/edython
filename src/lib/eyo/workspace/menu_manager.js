@@ -265,7 +265,7 @@ eYo.MenuManager.prototype.showMenu = function (block, e) {
       if (block === Blockly.selected) {
         // if the block was already selected,
         // try to select an input connection
-        eYo.SelectedConnection.set(block.eyo.lastSelectedConnection)
+        eYo.SelectedConnection = block.eyo.lastSelectedConnection
       }
     }
   }
@@ -379,7 +379,7 @@ eYo.Delegate.prototype.populateContextMenuLast_ = function (block, mgr) {
  * Populate the context menu.
  */
 eYo.MenuManager.prototype.populateLast = function (block) {
-  var c8n = eYo.SelectedConnection.get()
+  var c8n = eYo.SelectedConnection
   var holes = eYo.HoleFiller.getDeepHoles(c8n || block)
   var menuItem = this.newMenuItem(
     eYo.Msg.FILL_DEEP_HOLES, function () {
@@ -654,7 +654,7 @@ eYo.MenuManager.prototype.handleActionLast = function (block, event) {
         } else if ((c8n = unwrapped.outputConnection) && (c8n = c8n.targetConnection)) {
           target = c8n.sourceBlock_
           target.select()
-          eYo.SelectedConnection.set(c8n)
+          eYo.SelectedConnection = c8n
         }
       }
       unwrapped.dispose(true, true)

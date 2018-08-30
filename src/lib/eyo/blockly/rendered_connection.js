@@ -589,7 +589,7 @@ Blockly.RenderedConnection.prototype.connect_ = function (childC8n) {
       child.eyo.makeBlockWrapped_(child)
     } else {
       // if this connection was selected, the newly connected block should be selected too
-      if (parentC8n === eYo.SelectedConnection.get()) {
+      if (parentC8n === eYo.SelectedConnection) {
         P = parent
         do {
           if (P === Blockly.selected) {
@@ -625,10 +625,10 @@ Blockly.RenderedConnection.prototype.connect_ = function (childC8n) {
     }
     childC8n.eyo.didConnect(oldChildC8n, oldParentC8n)
     parentC8n.eyo.didConnect(oldParentC8n, oldChildC8n)
-    var c8n = eYo.SelectedConnection.get()
+    var c8n = eYo.SelectedConnection
     parentC8n.eyo.didConnect(oldParentC8n, oldChildC8n)
     if (c8n === childC8n || c8n === parentC8n) {
-      eYo.SelectedConnection.set(null)
+      eYo.SelectedConnection = null
     }
     parent.eyo.didConnect(parent, parentC8n, oldChildC8n, oldParentC8n)
     child.eyo.didConnect(child, childC8n, oldParentC8n, oldChildC8n)
@@ -842,8 +842,8 @@ eYo.RenderedConnection.savedDispose = Blockly.Connection.prototype.dispose
  * @suppress{accessControls}
  */
 Blockly.Connection.prototype.dispose = function () {
-  if (this === eYo.SelectedConnection.get()) {
-    eYo.SelectedConnection.set(null)
+  if (this === eYo.SelectedConnection) {
+    eYo.SelectedConnection = null
   }
   eYo.RenderedConnection.savedDispose.call(this)
 }

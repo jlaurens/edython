@@ -2401,16 +2401,16 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function (block) {
       return false
     }
     if (!target.eyo.wrapped_ && !target.eyo.locked_) {
-      eYo.SelectedConnection.set(null)
+      eYo.SelectedConnection = null
       target.select()
       return true
     }
     if ((c8n = doLast(target))) {
       if ((target = c8n.targetBlock())) {
-        eYo.SelectedConnection.set(null)
+        eYo.SelectedConnection = null
         target.select()
       } else {
-        eYo.SelectedConnection.set(c8n)
+        eYo.SelectedConnection = c8n
       }
       return true
     }
@@ -2428,7 +2428,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function (block) {
         return false
       }
     }
-    eYo.SelectedConnection.set(c8n)
+    eYo.SelectedConnection = c8n
     return true
   }
   if ((c8n = this.selectedConnection)) {
@@ -2466,7 +2466,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function (block) {
         }
       }
     } else if (!block.eyo.wrapped_ && !block.eyo.locked_) {
-      eYo.SelectedConnection.set(null)
+      eYo.SelectedConnection = null
       block.select()
       return true
     }
@@ -2490,7 +2490,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function (block) {
     }
     do {
       if (!parent.eyo.wrapped_ && !parent.eyo.locked_) {
-        eYo.SelectedConnection.set(null)
+        eYo.SelectedConnection = null
         parent.select()
         return true
       }
@@ -2539,7 +2539,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
       if (target.eyo.wrapped_ || target.eyo.locked_) {
         return target.eyo.selectBlockRight(target)
       } else {
-        eYo.SelectedConnection.set(null)
+        eYo.SelectedConnection = null
         target.select()
         return true
       }
@@ -2557,7 +2557,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
           return false
         }
       }
-      eYo.SelectedConnection.set(c8n)
+      eYo.SelectedConnection = c8n
     }
     return true
   }
@@ -2649,7 +2649,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
     e8r = block.eyo.inputEnumerator(block)
     while (e8r.next()) {
       if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT) && (target = c8n.targetBlock()) && (target !== block)) {
-        eYo.SelectedConnection.set(null)
+        eYo.SelectedConnection = null
         target.select()
         return true
       }
@@ -2677,12 +2677,12 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
     }
   })
   if (target) {
-    eYo.SelectedConnection.set(null)
+    eYo.SelectedConnection = null
     target.select()
     return true
   }
   if (parent) {
-    eYo.SelectedConnection.set(null)
+    eYo.SelectedConnection = null
     parent.select()
     return true
   }
@@ -2704,18 +2704,18 @@ eYo.DelegateSvg.prototype.selectBlockAbove = function (block) {
   if ((c8n = this.selectedConnection)) {
     if (c8n === block.previousConnection) {
       if ((target = c8n.targetBlock())) {
-        eYo.SelectedConnection.set(null)
+        eYo.SelectedConnection = null
         target.select()
         return
       }
     } else {
-      eYo.SelectedConnection.set(null)
+      eYo.SelectedConnection = null
       block.select()
       return
     }
   } else if ((c8n = block.previousConnection)) {
     block.select()
-    eYo.SelectedConnection.set(block.previousConnection)
+    eYo.SelectedConnection = block.previousConnection
     return
   }
   var parent
@@ -2763,23 +2763,23 @@ eYo.DelegateSvg.prototype.selectBlockBelow = function (block) {
   var parent, c8n
   if ((c8n = this.selectedConnection)) {
     if (c8n === block.previousConnection) {
-      eYo.SelectedConnection.set(null)
+      eYo.SelectedConnection = null
       block.select()
       return
     } else if (c8n === block.nextConnection) {
       if ((target = c8n.targetBlock())) {
-        eYo.SelectedConnection.set(null)
+        eYo.SelectedConnection = null
         target.select()
         return
       }
     } else if (block.nextConnection) {
       block.select()
-      eYo.SelectedConnection.set(block.nextConnection)
+      eYo.SelectedConnection = block.nextConnection
       return
     }
   } else if (block.nextConnection) {
     block.select()
-    eYo.SelectedConnection.set(block.nextConnection)
+    eYo.SelectedConnection = block.nextConnection
     return
   }
   target = block
@@ -2910,7 +2910,80 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
  * Then, the higlighted path of the source blocks is not the outline of the block
  * but the shape of the connection as it shows when blocks are moved close enough.
  */
-eYo.SelectedConnection = (function () {
+// eYo.SelectedConnection = (function () {
+//   var c8n_
+//   var me = {
+//     /**
+//      * Lazy getter
+//     */
+//     get: /** @suppress {globalThis} */ function () {
+//       return c8n_
+//     },
+//     set: /** @suppress {globalThis} */ function (connection) {
+//       var B
+//       if (connection) {
+//         if (connection.hidden_) {
+//           console.error('Do not select a hidden connection')
+//         }
+//         var block = connection.getSourceBlock()
+//         if (block) {
+//           if (block.eyo.locked_) {
+//             return
+//           }
+//           if (connection === block.previousConnection && connection.targetConnection) {
+//             connection = connection.targetConnection
+//             var unwrapped = block = connection.getSourceBlock()
+//             do {
+//               if (!unwrapped.eyo.wrapped_) {
+//                 unwrapped.select()
+//                 unwrapped.bringToFront()
+//                 break
+//               }
+//             } while ((unwrapped = unwrapped.getSurroundParent()))
+//           }
+//         }
+//       }
+//       if (connection !== c8n_) {
+//         if (c8n_) {
+//           var oldBlock = c8n_.getSourceBlock()
+//           if (oldBlock) {
+//             oldBlock.eyo.selectedConnection = null
+//             oldBlock.eyo.selectedConnectionSource_ = null
+//             oldBlock.removeSelect()
+//             if (oldBlock === Blockly.selected) {
+//               oldBlock.eyo.updateAllPaths_(oldBlock)
+//               oldBlock.addSelect()
+//             } else if ((B = Blockly.selected)) {
+//               B.eyo.selectedConnectionSource_ = null
+//               B.removeSelect()
+//               B.addSelect()
+//             }
+//           }
+//           c8n_ = null
+//         }
+//         if (connection) {
+//           if ((block = connection.getSourceBlock())) {
+//             unwrapped = block
+//             while (unwrapped.eyo.wrapped_) {
+//               if (!(unwrapped = unwrapped.getSurroundParent())) {
+//                 return
+//               }
+//             }
+//             block.eyo.selectedConnection = c8n_ = connection
+//             unwrapped.eyo.selectedConnectionSource_ = block
+//             unwrapped.select()
+//             block.removeSelect()
+//             block.eyo.updateAllPaths_(block)
+//             block.addSelect()
+//           }
+//         }
+//       }
+//     }
+//   }
+//   return me
+// }())
+
+var f = function () {
   var c8n_
   var me = {
     /**
@@ -2981,7 +3054,8 @@ eYo.SelectedConnection = (function () {
     }
   }
   return me
-}())
+}
+Object.defineProperty(eYo, 'SelectedConnection', f())
 
 /**
  * Insert a block of the given type.
@@ -3042,7 +3116,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (block, model, connect
       }
       return candidate
     }
-    if ((otherC8n = eYo.SelectedConnection.get())) {
+    if ((otherC8n = eYo.SelectedConnection)) {
       var otherSource = otherC8n.getSourceBlock()
       if (otherC8n.type === Blockly.INPUT_VALUE) {
         if ((c8n = candidate.outputConnection) && c8n.checkType_(otherC8n)) {
@@ -3230,12 +3304,12 @@ eYo.DelegateSvg.prototype.lock = function (block) {
   }
   this.locked_ = true
   if (block === eYo.SelectedConnection.set) {
-    eYo.SelectedConnection.set(null)
+    eYo.SelectedConnection = null
   }
   // list all the input for connections with a target
   var c8n
-  if ((c8n = eYo.SelectedConnection.get()) && (block === c8n.getSourceBlock())) {
-    eYo.SelectedConnection.set(null)
+  if ((c8n = eYo.SelectedConnection) && (block === c8n.getSourceBlock())) {
+    eYo.SelectedConnection = null
   }
   var e8r = block.eyo.inputEnumerator(block)
   var target

@@ -307,7 +307,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
     this.currentGesture_.cancel() // Dragging while pasting?  No.
   }
   var c8n, targetC8n
-  if ((c8n = eYo.SelectedConnection.get())) {
+  if ((c8n = eYo.SelectedConnection)) {
     try {
       var block = Blockly.Xml.domToBlock(xmlBlock, this)
       if (c8n.type === Blockly.INPUT_VALUE) {
@@ -355,14 +355,14 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
         //     var e8r = parent.eyo.inputEnumerator(parent)
         //     while (e8r.next()) {
         //       if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && !c8n.eyo.optional_ && !c8n.targetConnection) {
-        //         eYo.SelectedConnection.set(c8n)
+        //         eYo.SelectedConnection = c8n
         //         parent = null
         //         break
         //       }
         //     }
         //   } while (parent && (parent = parent.getSurroundParent()))
         // } else if ((c8n = block.nextConnection)) {
-        //   eYo.SelectedConnection.set(c8n)
+        //   eYo.SelectedConnection = c8n
         // }
       } catch (err) {
         console.error(err)
