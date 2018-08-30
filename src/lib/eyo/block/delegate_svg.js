@@ -2910,89 +2910,13 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
  * Then, the higlighted path of the source blocks is not the outline of the block
  * but the shape of the connection as it shows when blocks are moved close enough.
  */
-// eYo.SelectedConnection = (function () {
-//   var c8n_
-//   var me = {
-//     /**
-//      * Lazy getter
-//     */
-//     get: /** @suppress {globalThis} */ function () {
-//       return c8n_
-//     },
-//     set: /** @suppress {globalThis} */ function (connection) {
-//       var B
-//       if (connection) {
-//         if (connection.hidden_) {
-//           console.error('Do not select a hidden connection')
-//         }
-//         var block = connection.getSourceBlock()
-//         if (block) {
-//           if (block.eyo.locked_) {
-//             return
-//           }
-//           if (connection === block.previousConnection && connection.targetConnection) {
-//             connection = connection.targetConnection
-//             var unwrapped = block = connection.getSourceBlock()
-//             do {
-//               if (!unwrapped.eyo.wrapped_) {
-//                 unwrapped.select()
-//                 unwrapped.bringToFront()
-//                 break
-//               }
-//             } while ((unwrapped = unwrapped.getSurroundParent()))
-//           }
-//         }
-//       }
-//       if (connection !== c8n_) {
-//         if (c8n_) {
-//           var oldBlock = c8n_.getSourceBlock()
-//           if (oldBlock) {
-//             oldBlock.eyo.selectedConnection = null
-//             oldBlock.eyo.selectedConnectionSource_ = null
-//             oldBlock.removeSelect()
-//             if (oldBlock === Blockly.selected) {
-//               oldBlock.eyo.updateAllPaths_(oldBlock)
-//               oldBlock.addSelect()
-//             } else if ((B = Blockly.selected)) {
-//               B.eyo.selectedConnectionSource_ = null
-//               B.removeSelect()
-//               B.addSelect()
-//             }
-//           }
-//           c8n_ = null
-//         }
-//         if (connection) {
-//           if ((block = connection.getSourceBlock())) {
-//             unwrapped = block
-//             while (unwrapped.eyo.wrapped_) {
-//               if (!(unwrapped = unwrapped.getSurroundParent())) {
-//                 return
-//               }
-//             }
-//             block.eyo.selectedConnection = c8n_ = connection
-//             unwrapped.eyo.selectedConnectionSource_ = block
-//             unwrapped.select()
-//             block.removeSelect()
-//             block.eyo.updateAllPaths_(block)
-//             block.addSelect()
-//           }
-//         }
-//       }
-//     }
-//   }
-//   return me
-// }())
-
-var f = function () {
+Object.defineProperty(eYo, 'SelectedConnection', function () {
   var c8n_
-  var me = {
-    /**
-     * Lazy getter
-    */
-    get: /** @suppress {globalThis} */ function () {
+  return {
+    get: function () {
       return c8n_
     },
-    set: /** @suppress {globalThis} */ function (connection) {
+    set: function (connection) {
       var B
       if (connection) {
         if (connection.hidden_) {
@@ -3053,9 +2977,7 @@ var f = function () {
       }
     }
   }
-  return me
-}
-Object.defineProperty(eYo, 'SelectedConnection', f())
+}())
 
 /**
  * Insert a block of the given type.

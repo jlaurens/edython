@@ -180,7 +180,7 @@ eYo.KeyHandler = (function () {
             var e8r = block.eyo.inputEnumerator(block)
             while (e8r.next()) {
               if ((c8n = e8r.here.connection) && c8n.type === type) {
-                if (!c8n.hidden_ && !c8n.targetConnection) {
+                if (!c8n.hidden_ && !c8n.targetConnection && !c8n.eyo.doNotSelect) {
                   eYo.SelectedConnection = c8n
                   return true
                 } else if (c8n.targetConnection) {
