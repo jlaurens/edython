@@ -13,11 +13,7 @@
     name: 'info-primary-option',
     data () {
       return {
-        dataKey: 'variant',
-        NONE: 'NONE',
-        CALL_EXPR: 'CALL_EXPR',
-        SLICING: 'SLICING',
-        ALIASED: 'ALIASED'
+        dataKey: 'option'
       }
     },
     props: {
@@ -35,10 +31,6 @@
     computed: {
       id () {
         return 'eyo-info-' + this.dataKey
-      },
-      data () {
-        var block = this.selectedBlock
-        return block && block.eyo.data[this.dataKey]
       },
       annotation_d () {
         var block = this.selectedBlock
@@ -67,25 +59,25 @@
       selected: {
         get () {
           var option = this.option_d.get()
-          if (option === this.$$.eYo.Key.NONE) {
+          if (option === eYo.Key.NONE) {
             var annotation = this.annotation_d.get()
             var definition = this.definition_d.get()
-            if (annotation !== this.$$.eYo.Key.VOID) {
-              if (definition !== this.$$.eYo.Key.VOID) {
+            if (annotation !== eYo.Key.NONE) {
+              if (definition !== eYo.Key.NONE) {
                 return this.items.ANNOTATED_DEFINED
               } else {
                 return this.items.ANNOTATED
               }
-            } else if (definition !== this.$$.eYo.Key.VOID) {
+            } else if (definition !== eYo.Key.NONE) {
               return this.items.DEFINED
             } else {
               return this.items.NONE
             }
-          } else if (option === this.$$.eYo.Key.CALL_EXPR) {
+          } else if (option === eYo.Key.CALL_EXPR) {
             return this.items.CALL_EXPR
-          } else if (option === this.$$.eYo.Key.SLICING) {
+          } else if (option === eYo.Key.SLICING) {
             return this.items.SLICING
-          } else if (option === this.$$.eYo.Key.ALIASED) {
+          } else if (option === eYo.Key.ALIASED) {
             return this.items.ALIASED
           } else {
             console.warn('Logically unreachable code')
@@ -101,14 +93,9 @@
             content: '&nbsp;',
             key: 'NONE',
             action () {
+              this.annotation_d.set(eYo.Key.NONE)
+              this.definition_d.set(eYo.Key.NONE)
               this.option_d.set(eYo.Key.NONE)
-              this.annotation_d.set(eYo.Key.VOID)
-              this.definition_d.set(eYo.Key.VOID)
-              if (this.modifier_d.get() === '') {
-                if (this.dotted_d.get() === this.dotted_d.NONE) {
-                  this.variant_d.set(this.variant_d.NAME)
-                }
-              }
             }
           },
           CALL_EXPR: {
@@ -126,12 +113,12 @@
             }
           },
           ALIASED: {
-            content: '<div class="eyo-code eyo-reserved">as</div>',
+            content: '<div class="eyo-code eyo-code-reserved">as</div>',
             key: 'ALIASED',
             action () {
-              this.option_d.set(eYo.Key.ALIASED)
               this.consolidateModifier('*')
               this.consolidateModifier('.')
+              this.option_d.set(eYo.Key.ALIASED)
             }
           },
           ANNOTATED: {
@@ -139,18 +126,20 @@
             key: 'ANNOTATED',
             action () {
               this.annotation_d.set(eYo.Key.ANNOTATED)
-              this.definition_d.set(eYo.Key.VOID)
+              this.definition_d.set(eYo.Key.NONE)
               this.consolidateModifier('.')
+              this.option_d.set(eYo.Key.NONE)
             }
           },
           DEFINED: {
             content: '<div class="eyo-info-primary-option2">=</div>' + this.placeholder('eyo-info-primary-option1'),
             key: 'DEFINED',
             action () {
-              this.annotation_d.set(eYo.Key.VOID)
+              this.annotation_d.set(eYo.Key.NONE)
               this.definition_d.set(eYo.Key.DEFINED)
               this.consolidateModifier('.')
               this.consolidateModifier('*')
+              this.option_d.set(eYo.Key.NONE)
             }
           },
           ANNOTATED_DEFINED: {
@@ -161,6 +150,7 @@
               this.definition_d.set(eYo.Key.DEFINED)
               this.consolidateModifier('.')
               this.consolidateModifier('*')
+              this.option_d.set(eYo.Key.NONE)
             }
           }
         }
@@ -191,7 +181,6 @@
       consolidateModifier (c) {
         var modifier_d = this.modifier_d
         var modifier = modifier_d.get()
-        console.log('modifier:', modifier)
         if (modifier.length && modifier[0] === c) {
           modifier_d.set('')
         }

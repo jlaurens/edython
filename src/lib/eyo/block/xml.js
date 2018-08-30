@@ -168,7 +168,7 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) 
           if (b) {
             newBlockIds.push(b.id)
             b.eyo.beReady(b)
-            b.eyo.render(b)
+            b.eyo.render()
           }
         })
       }
@@ -231,7 +231,7 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) 
                   if ((b = newBlock(child))) {
                     newBlockIds.push(b.id)
                     b.eyo.beReady(b)
-                    b.eyo.render(b)
+                    b.eyo.render()
                   }
                 }
                 break
@@ -245,7 +245,7 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) 
         if (b = newBlock(child)) {
           newBlockIds.push(b.id)
           b.eyo.beReady(b)
-          b.eyo.render(b)
+          b.eyo.render()
         }
       }
     }
@@ -302,7 +302,7 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
       // Hide connections to speed up assembly.
       // topBlock.setConnectionsHidden(true);
       topBlock.eyo.beReady(topBlock)
-      topBlock.eyo.render(topBlock)
+      topBlock.eyo.render()
       // Populating the connection database may be deferred until after the
       // blocks have rendered.
       // console.log('setTimeout', topBlock.type, topBlock.id)

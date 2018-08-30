@@ -44,6 +44,7 @@
         set (newValue) {
           this.selected_ = newValue
           newValue.action.call(this, newValue)
+          this.selectedBlock.eyo.render()
         }
       },
       items_ () {

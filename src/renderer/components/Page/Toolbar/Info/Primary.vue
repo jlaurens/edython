@@ -9,9 +9,6 @@
       <b-button-group class="mx-1">
         <variant :selected-block="selectedBlock" :placeholder="placeholder"></variant>
       </b-button-group>
-      <b-button-group class="mx-1">
-        <option-x :selected-block="selectedBlock" :placeholder="placeholder"></option-x>
-      </b-button-group>
     </b-button-toolbar>
     <common :selected-block="selectedBlock"></common>
   </b-button-toolbar>
@@ -49,17 +46,12 @@
       }
     },
     computed: {
-      canOption () {
-        var block = this.selectedBlock
-        var data = block && block.eyo.data
-        console.log('canOption', data.annotation, data.definition)
-        return data && (data.annotation.get() === this.$$.eYo.Key.VOID) && (data.definition.get() === this.$$.eYo.Key.VOID)
-      },
       placeholder () {
         var d = eYo.DelegateSvg.prototype.placeHolderPathDefWidth_(0).d
+        var one_rem = parseInt(getComputedStyle(document.documentElement).fontSize)
         return function (className) {
-          return '<div class="eyo-info-placeholder' + (className ? ' ' : '') + className + '"><svg xmlns="http://www.w3.org/2000/svg" height="1.5rem" width="2rem"><path class="eyo-path-contour" d="' + d + ' z"></path></svg></div>'
-        } // JL: view port ?
+          return '<div class="eyo-info-placeholder' + (className ? ' ' : '') + className + '"><svg xmlns="http://www.w3.org/2000/svg" height="' + (1.75 * one_rem) + '" width="' + (2 * one_rem) + '"><path class="eyo-path-contour" d="' + d + ' z"></path></svg></div>'
+        }
       },
       variant_d () {
         var block = this.selectedBlock
@@ -91,9 +83,6 @@
   }
 </script>
 <style>
-  .eyo-info-variant {
-    padding-right: 1rem;
-  }
   .eyo-dd-content {
     padding: 0;
   }
@@ -113,6 +102,6 @@
   .eyo-info-primary-option2 {
     display: inline-block;
     position: relative;
-    top: -0.2rem;
+    top: -0.45rem;
   }
 </style>

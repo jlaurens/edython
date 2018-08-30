@@ -1,104 +1,208 @@
 <template>
-  <b-button-group class="mx-1">
-    <b-dropdown :id="id" class="eyo-dropdown" v-if="variants && variants.length" variant="outline-secondary">
-      <template slot="button-content"><div class="eyo-info-primary-variant eyo-code eyo-content" v-html="selected.selected || selected.content"></div></template>
-      <b-dropdown-item-button v-for="variant in variants" v-on:click="selected = variant" :key="variant.key" class="eyo-info-primary-variant eyo-code" v-html="variant.content"></b-dropdown-item-button>
-    </b-dropdown>
-    <b-form-input v-model="name" type="text" size="10" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="selected.key === $$.eYo.Key.NAME"></b-form-input>
-  </b-button-group>
-</template>
-
-<script>
-  export default {
-    name: 'info-primary-variant',
-    data () {
-      return {
-        dataKey: 'variant'
-      }
-    },
-    props: {
-      selectedBlock: {
-        type: Object,
-        default: undefined
-      },
-      placeholder: {
-        type: Function,
-        default: function (item) {
-          return item
-        }
-      }
-    },
-    computed: {
-      id () {
-        return 'eyo-info-' + this.dataKey
-      },
+    <b-button-group class="mx-1">
+      <b-dropdown :id="id" class="eyo-dropdown" v-if="variants && variants.length" variant="outline-secondary">
+        <template slot="button-content"><div class="eyo-info-primary-option eyo-code eyo-content" v-html="selected.content"></div></template>
+        <b-dropdown-item-button v-for="option in variants" v-on:click="selected = option" :key="option.key" class="eyo-info-primary-option eyo-code" v-html="option.content"></b-dropdown-item-button>
+      </b-dropdown>
+      <b-form-input v-model="alias" type="text" size="10" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="selected.key === 'ALIASED'"></b-form-input>
+    </b-button-group>
+  </template>
+  
+  <script>
+    export default {
+      name: 'info-primary-option',
       data () {
-        var block = this.selectedBlock
-        return block && block.eyo.data[this.dataKey]
-      },
-      name: {
-        get () {
-          var block = this.selectedBlock
-          return block && block.eyo.data.name.get()
-        },
-        set (newValue) {
-          var block = this.selectedBlock
-          block && block.eyo.data.name.set(newValue)
+        return {
+          dataKey: 'option'
         }
       },
-      selected: {
-        get () {
-          var key = this.data
-            ? this.data.get()
-            : this.dataKey.charAt(0).toUpperCase() + this.dataKey.slice(1)
-          return this.items[key]
+      props: {
+        selectedBlock: {
+          type: Object,
+          default: undefined
         },
-        set (newValue) {
-          // do not change if the type is identifier
-          if (newValue.key === eYo.Key.EXPRESSION) {
-            var block = this.selectedBlock
-            if (block.type === eYo.T3.Expr.identifier) {
-              return
+        placeholder: {
+          type: Function,
+          default: function (item) {
+            return item
+          }
+        }
+      },
+      computed: {
+        id () {
+          return 'eyo-info-' + this.dataKey
+        },
+        annotation_d () {
+          var block = this.selectedBlock
+          return block && block.eyo.data.annotation
+        },
+        definition_d () {
+          var block = this.selectedBlock
+          return block && block.eyo.data.definition
+        },
+        option_d () {
+          var block = this.selectedBlock
+          return block && block.eyo.data.option
+        },
+        modifier_d () {
+          var block = this.selectedBlock
+          return block && block.eyo.data.modifier
+        },
+        dotted_d () {
+          var block = this.selectedBlock
+          return block && block.eyo.data.dotted
+        },
+        variant_d () {
+          var block = this.selectedBlock
+          return block && block.eyo.data.variant
+        },
+        selected: {
+          get () {
+            var option = this.option_d.get()
+            if (option === eYo.Key.NONE) {
+              var annotation = this.annotation_d.get()
+              var definition = this.definition_d.get()
+              if (annotation !== eYo.Key.NONE) {
+                if (definition !== eYo.Key.NONE) {
+                  return this.items.ANNOTATED_DEFINED
+                } else {
+                  return this.items.ANNOTATED
+                }
+              } else if (definition !== eYo.Key.NONE) {
+                return this.items.DEFINED
+              } else {
+                return this.items.NONE
+              }
+            } else if (option === eYo.Key.CALL_EXPR) {
+              return this.items.CALL_EXPR
+            } else if (option === eYo.Key.SLICING) {
+              return this.items.SLICING
+            } else if (option === eYo.Key.ALIASED) {
+              return this.items.ALIASED
+            } else {
+              console.warn('Logically unreachable code')
+            }
+          },
+          set (newValue) {
+            newValue.action.call(this)
+            this.selectedBlock.eyo.render()
+          }
+        },
+        items () {
+          return {
+            NONE: {
+              content: '&nbsp;',
+              key: 'NONE',
+              action () {
+                this.annotation_d.set(eYo.Key.NONE)
+                this.definition_d.set(eYo.Key.NONE)
+                this.option_d.set(eYo.Key.NONE)
+              }
+            },
+            CALL_EXPR: {
+              content: '<div class="eyo-info-primary-option2">(</div>' + this.placeholder('eyo-info-primary-option1') + '<div class="eyo-info-primary-option2">)</div>',
+              key: 'CALL_EXPR',
+              action () {
+                this.option_d.set(eYo.Key.CALL_EXPR)
+              }
+            },
+            SLICING: {
+              content: '<div class="eyo-info-primary-option2">[</div>' + this.placeholder('eyo-info-primary-option1') + '<div class="eyo-info-primary-option2">]</div>',
+              key: 'SLICING',
+              action () {
+                this.option_d.set(eYo.Key.SLICING)
+              }
+            },
+            ALIASED: {
+              content: '<div class="eyo-code eyo-code-reserved">as</div>',
+              key: 'ALIASED',
+              action () {
+                this.consolidateModifier('*')
+                this.consolidateModifier('.')
+                this.option_d.set(eYo.Key.ALIASED)
+              }
+            },
+            ANNOTATED: {
+              content: '<div class="eyo-info-primary-option2">:</div>' + this.placeholder('eyo-info-primary-option1'),
+              key: 'ANNOTATED',
+              action () {
+                this.annotation_d.set(eYo.Key.ANNOTATED)
+                this.definition_d.set(eYo.Key.NONE)
+                this.consolidateModifier('.')
+                this.option_d.set(eYo.Key.NONE)
+              }
+            },
+            DEFINED: {
+              content: '<div class="eyo-info-primary-option2">=</div>' + this.placeholder('eyo-info-primary-option1'),
+              key: 'DEFINED',
+              action () {
+                this.annotation_d.set(eYo.Key.NONE)
+                this.definition_d.set(eYo.Key.DEFINED)
+                this.consolidateModifier('.')
+                this.consolidateModifier('*')
+                this.option_d.set(eYo.Key.NONE)
+              }
+            },
+            ANNOTATED_DEFINED: {
+              content: '<div class="eyo-info-primary-option2">:</div>' + this.placeholder('eyo-info-primary-option1') + '<div class="eyo-info-primary-option2">=</div>' + this.placeholder('eyo-info-primary-option1'),
+              key: 'ANNOTATED_DEFINED',
+              action () {
+                this.annotation_d.set(eYo.Key.ANNOTATED)
+                this.definition_d.set(eYo.Key.DEFINED)
+                this.consolidateModifier('.')
+                this.consolidateModifier('*')
+                this.option_d.set(eYo.Key.NONE)
+              }
             }
           }
-          this.data && this.data.set(newValue.key)
-        }
-      },
-      items () {
-        return {
-          [eYo.Key.NAME]: {
-            content: this.name || this.$t('message.name'),
-            selected: '&nbsp;',
-            key: eYo.Key.NAME
+        },
+        variants () {
+          return [
+            this.items.NONE,
+            this.items.CALL_EXPR,
+            this.items.SLICING,
+            this.items.ALIASED,
+            this.items.ANNOTATED,
+            this.items.DEFINED,
+            this.items.ANNOTATED_DEFINED
+          ]
+        },
+        alias: {
+          get () {
+            var block = this.selectedBlock
+            return block && block.eyo.data.alias.get()
           },
-          [eYo.Key.EXPRESSION]: {
-            content: '<div class="eyo-info-primary-variant0">' + this.placeholder('eyo-info-primary-variant1') + '</div>',
-            key: eYo.Key.EXPRESSION
+          set (newValue) {
+            var block = this.selectedBlock
+            block && block.eyo.data.alias.set(newValue)
           }
         }
       },
-      variants () {
-        return [
-          this.items[eYo.Key.NAME],
-          this.items[eYo.Key.EXPRESSION]
-        ]
+      methods: {
+        consolidateModifier (c) {
+          var modifier_d = this.modifier_d
+          var modifier = modifier_d.get()
+          if (modifier.length && modifier[0] === c) {
+            modifier_d.set('')
+          }
+        }
       }
     }
-  }
-</script>
-<style>
-  .btn .eyo-info-primary-variant {
-    padding-right: 0.75rem;
-  }
-  .dropdown-item.eyo-info-primary-variant {
-    padding-right: 0.5rem;
-  }
-  .eyo-form-input-text {
-    text-align: left;
-    width:10rem;
-  }
-  .btn-outline-secondary.eyo-form-input-text:hover {
-    background: white;
-    color: black;
-  }
-</style>
+  </script>
+  <style>
+    .btn .eyo-info-primary-option {
+      padding-right: 0.75rem;
+    }
+    .dropdown-item.eyo-info-primary-option {
+      padding-right: 0.5rem;
+    }
+    .eyo-form-input-text {
+      text-align: left;
+      width:8rem;
+    }
+    .btn-outline-secondary.eyo-form-input-text:hover {
+      background: white;
+      color: black;
+    }
+  </style>
+    

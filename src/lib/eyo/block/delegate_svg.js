@@ -583,8 +583,8 @@ eYo.DelegateSvg.prototype.renderDrawParent_ = function (block, optBubble) {
  * @param {boolean=} optBubble If false, just render this block.
  *   If true, also render block's parent, grandparent, etc.  Defaults to true.
  */
-eYo.DelegateSvg.prototype.render = function (block, optBubble) {
-    block || (block = this.block_)
+eYo.DelegateSvg.prototype.render = function (optBubble) {
+  var block = this.block_
   if (this.isDragging_ || !this.isReady_ || !block.workspace) {
     return
   }
@@ -638,7 +638,7 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
         if (!parent.eyo.upRendering && block.outputConnection === eYo.Connection.connectedParentC8n || eYo.Connection.connectedParentC8n && eYo.Connection.connectedParentC8n.sourceBlock_ === block) {
           try {
             parent.eyo.upRendering = true
-            parent.eyo.render(parent,optBubble)
+            parent.eyo.render(optBubble)
           } catch (err) {
             console.error(err)
             throw err
@@ -646,7 +646,7 @@ eYo.DelegateSvg.prototype.render = function (block, optBubble) {
             parent.eyo.upRendering = false
           }
         } else {
-          parent.eyo.render(parent,optBubble)
+          parent.eyo.render(optBubble)
         }
       }
       return
@@ -3031,7 +3031,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (block, model, connect
         console.error(err)
         throw err
       } finally {
-        candidate.eyo.render(candidate)
+        candidate.eyo.render()
         candidate.bumpNeighbours_()
         eYo.Events.setGroup(false)
         Blockly.Events.disable()

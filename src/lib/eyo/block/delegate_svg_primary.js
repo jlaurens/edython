@@ -375,33 +375,33 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       ],
       init: eYo.Key.NONE,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.synchronize(newValue)
-        var option = this.get()
         var f = function (arguments_incog, slicing_incog, alias_incog) {
           this.owner.slots.arguments.setIncog(arguments_incog)
           this.owner.slots.slicing.setIncog(slicing_incog)
           this.owner.slots.alias.setIncog(alias_incog)
         }
-        if(option === this.CALL_EXPR) {
+        if(newValue === this.CALL_EXPR) {
           f.call(this, false, true, true)
-        } else if(option === this.SLICING) {
+        } else if(newValue === this.SLICING) {
           f.call(this, true, false, true)
-        } else if(option === this.ALIASED) {
+        } else if(newValue === this.ALIASED) {
           f.call(this, true, true, false)
         } else {
           f.call(this, true, true, true)
         }
+        this.synchronize(newValue)
+        this.owner.render() // bad smell
       },
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.owner.setupType(this.owner.getType())
         this.owner.setupConnections()
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.didChange(oldValue, newValue)
         if ([this.CALL_EXPR, this.SLICING, this.ALIASED].indexOf(newValue) >= 0) {
           this.data.annotation.set(eYo.Key.NONE)
           this.data.definition.set(eYo.Key.NONE)
         }
+        this.didChange(oldValue, newValue)
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Expr.call_expr) {
@@ -854,7 +854,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function (block) {
     // unreachable
   }
   var type = f.call(this, block)
-  console.log('type:', type)
+  // console.log('type:', type)
   return type
 }
 

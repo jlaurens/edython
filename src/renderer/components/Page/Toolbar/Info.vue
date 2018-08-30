@@ -12,10 +12,11 @@
     $$.eYo.T3.Expr.star_expr,
     $$.eYo.T3.Expr.parameter_star,
     $$.eYo.T3.Expr.parameter_defined,
-    $$.eYo.T3.Expr.parameter_annotated,
+    $$.eYo.T3.Expr.identifier_annotated,
     $$.eYo.T3.Expr.parameter_star_star,
     $$.eYo.T3.Expr.slicing,
-    $$.eYo.T3.Expr.call_expr])">
+    $$.eYo.T3.Expr.call_expr,
+    'eyo:call'])">
       <info-primary :selected-block="selectedBlock"></info-primary>
     </div>
     <div v-else-if="isSelected([$$.eYo.T3.Expr.shortliteral, $$.eYo.T3.Expr.longliteral, $$.eYo.T3.Expr.shortbytesliteral, $$.eYo.T3.Expr.longbytesliteral, $$.eYo.T3.Expr.shortstringliteral, $$.eYo.T3.Expr.longstringliteral, $$.eYo.T3.Stmt.docstring_stmt])">
@@ -106,7 +107,7 @@
 #toolbar-info {
   padding: 0.25rem;
   text-align:center;
-  height: 2.25rem;
+  height: 2.5rem;
   font-size: 0.9rem;
 }
 #toolbar-info .btn {

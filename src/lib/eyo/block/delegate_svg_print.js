@@ -144,7 +144,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.prototype.populateContextMenuFirst_ = f
         B.eyo.data.variant.set(eYo.DelegateSvg.Expr.term.eyo.getModel().data.variant.NAME)
         var c8n = list.inputList[list.inputList.length - 1].connection
         c8n.connect(B.outputConnection)
-        block.eyo.render(block)
+        block.eyo.render()
       } catch (err) {
         console.error(err)
         throw err
@@ -227,7 +227,7 @@ eYo.DelegateSvg.Stmt.builtin__print_stmt.prototype.populateContextMenuFirst_ = f
         // we assume that inputList is not void
         var c8n = list.inputList[list.inputList.length - 1].connection
         c8n.connect(B.outputConnection)
-        block.eyo.render(block)
+        block.eyo.render()
       } catch (err) {
         console.error(err)
         throw err

@@ -97,7 +97,7 @@ eYo.BlockSvg.CORNER_RADIUS = 3
  */
 eYo.BlockSvg.prototype.render = function (optBubble) {
   if (this.workspace) {
-    this.eyo.render(this, optBubble)
+    this.eyo.render(optBubble)
   }
 }
 

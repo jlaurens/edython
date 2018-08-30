@@ -35,6 +35,7 @@
           var modifier_d = this.modifier_d
           modifier_d && modifier_d.set(newItem.key)
           newItem.action && newItem.action.call(this, newItem)
+          this.selectedBlock.eyo.render()
         }
       },
       items () {
