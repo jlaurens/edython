@@ -239,14 +239,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
       }
     },
-        didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromModel()) {
-            var dotted_d = this.data.dotted
-            dotted_d.set(dotted_d.PARENT)
-          }
-        }
-      }
-    },
     alias: {
       order: 400,
       init: '',
@@ -254,6 +246,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       validate: /** @suppress {globalThis} */ function (newValue) {
         var nameType = this.data.nameType.get()
         return ((nameType === eYo.T3.Expr.identifier) && {validated: newValue}) || null
+      },
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+          var d = this.data.variant
+          this.required = d.get() === d.ALIASED
+          this.save(element)
+        }
       }
     }, // new
     annotation: {

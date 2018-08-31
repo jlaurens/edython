@@ -968,7 +968,13 @@ eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element) {
   } else if (type === eYo.T3.Expr.dotted_name_as.substring(4)) {
     d.set(d.ALIASED)
   } else {
-    d.set(d.NONE)
+    if (this.data.alias.isRequiredFromModel()) {
+      d.set(d.ALIASED)
+      this.data.annotation.set(d.NONE)
+      this.data.definition.set(d.NONE)
+    } else {
+      d.set(d.NONE)
+    }
     d = this.data.dotted
     if (type === eYo.T3.Expr.attributeref.substring(4)) {
       d.set(d.PARENT)
@@ -1000,6 +1006,9 @@ eYo.DelegateSvg.Expr.primary.prototype.tagName = function (block) {
   }
   if (block.type === eYo.T3.Expr.call_expr) {
     return 'eyo:' + eYo.Key.CALL
+  }
+  if (block.type === eYo.T3.Expr.identifier_as) {
+    return eYo.T3.Expr.identifier
   }
   return block.type
 }

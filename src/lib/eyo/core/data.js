@@ -672,7 +672,7 @@ eYo.Data.prototype.save = function (element) {
     var isText = xml && xml.text
     var txt = this.toText()
     if (txt.length || (required && ((txt = isText ? '?' : ''), true))) {
-      if (xml && xml.text) {
+      if (isText) {
         var child = goog.dom.createTextNode(txt)
         goog.dom.appendChild(element, child)
       } else {
