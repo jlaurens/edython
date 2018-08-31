@@ -550,7 +550,7 @@ eYo.FlyoutCategory = {
         name: 'splitlines',
         variant: eYo.Key.BLOCK_NAME,
         ary: 1,
-        isOptionalUnary: true
+        mandatory: 0
       },
       title: 'text_splitlines'
     },

@@ -956,26 +956,26 @@ goog.require('eYo.DelegateSvg.Primary')
 eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element) {
   eYo.Xml.fromDom(block, element)
   var type = element.getAttribute('eyo')
-  var option_d = this.data.option
+  var d = this.data.variant
   if (type === eYo.Key.CALL) {
-    option_d.set(option_d.CALL_EXPR)
+    d.set(d.CALL_EXPR)
   } else if (type === eYo.T3.Expr.call_expr.substring(4)) {
-    option_d.set(option_d.CALL_EXPR)
+    d.set(d.CALL_EXPR)
   } else if (type === eYo.T3.Expr.slicing.substring(4)) {
-    option_d.set(option_d.SLICING)
+    d.set(d.SLICING)
   } else if (type === eYo.T3.Expr.identifier_as.substring(4)) {
-    option_d.set(option_d.ALIASED)
+    d.set(d.ALIASED)
   } else if (type === eYo.T3.Expr.dotted_name_as.substring(4)) {
-    option_d.set(option_d.ALIASED)
+    d.set(d.ALIASED)
   } else {
-    option_d.set(option_d.VOID)
-    var dotted_d = this.data.dotted
+    d.set(d.NONE)
+    d = this.data.dotted
     if (type === eYo.T3.Expr.attributeref.substring(4)) {
-      dotted_d.set(dotted_d.PARENT)
+      d.set(d.PARENT)
     } else if (this.slots.root && this.slots.root.isRequiredFromModel()) {
-      dotted_d.set(dotted_d.ROOT)
+      d.set(d.ROOT)
     } else {
-      dotted_d.set(dotted_d.NONE)
+      d.set(d.NONE)
     }
   }
   return block

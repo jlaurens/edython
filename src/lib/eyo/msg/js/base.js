@@ -65,6 +65,12 @@ goog.provide('eYo.Msg.Placeholder')
 
 /** @export */ eYo.Msg.Placeholder.IDENTIFIER = 'nom'
 
+/** @export */ eYo.Msg.Placeholder.ROOT = 'root'
+
+/** @export */ eYo.Msg.Placeholder.PARENT = 'parent'
+
+/** @export */ eYo.Msg.Placeholder.PRIMARY = 'primary'
+
 /** @export */ eYo.Msg.Placeholder.ATTRIBUTE = 'attribut'
 
 /** @export */ eYo.Msg.Placeholder.EXPRESSION = 'expression'

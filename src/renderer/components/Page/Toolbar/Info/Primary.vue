@@ -96,10 +96,10 @@
   .dropdown-item:hover .eyo-info-placeholder .eyo-path-contour {
     stroke: rgb(100,100,100);
   }
-  .eyo-info-primary-option1 {
+  .eyo-info-primary-variant1 {
     display: inline-block;
   }
-  .eyo-info-primary-option2 {
+  .eyo-info-primary-variant2 {
     display: inline-block;
     position: relative;
     top: -0.45rem;
