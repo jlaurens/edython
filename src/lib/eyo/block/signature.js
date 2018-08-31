@@ -16,9 +16,14 @@ goog.provide('eYo.Signature')
 goog.provide('eYo.Signature.builtin')
 
 eYo.Signature.builtin.int
-= eYo.Signature.builtin.input
 = eYo.Signature.builtin.float
 = {
   ary: 1,
   mandatory: 1
+}
+
+eYo.Signature.builtin.input
+= {
+  ary: 1,
+  mandatory: 0
 }

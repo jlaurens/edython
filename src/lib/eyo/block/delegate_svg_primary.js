@@ -573,7 +573,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         start: '(',
         end: ')'
       },
-      wrap: eYo.T3.Expr.argument_list
+      wrap: eYo.T3.Expr.argument_list_comprehensive
     },
     slicing: {
       order: 2000,
@@ -614,7 +614,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       } else {
         var dotted_d = this.data.dotted
         var dotted = dotted_d.get()
-        if (dotted !== dotted_d.VOID) {
+        if (dotted !== dotted_d.NONE) {
           check = [eYo.T3.Expr.attributeref]
         } else {
           nameType = this.data.nameType.get()
@@ -644,12 +644,12 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
             } else {
               var annotated = this.data.annotation.get()
               var defined = this.data.definition.get()
-              if (defined !== eYo.Key.VOID) {
-                check = annotated !== eYo.Key.VOID
+              if (defined !== eYo.Key.NONE) {
+                check = annotated !== eYo.Key.NONE
                 ? [eYo.T3.Expr.parameter_defined]
                 : [eYo.T3.Expr.parameter_defined,
                   eYo.T3.Expr.keyword_item]
-              } else if (annotated !== eYo.Key.VOID) {
+              } else if (annotated !== eYo.Key.NONE) {
                 check = [eYo.T3.Expr.identifier_annotated, eYo.T3.Expr.key_datum]
               } else {
                 check = [eYo.T3.Expr.identifier]

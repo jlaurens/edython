@@ -271,36 +271,8 @@ eYo.DelegateSvg.Stmt.builtin__print_stmt.prototype.populateContextMenuFirst_ = f
   return eYo.DelegateSvg.Stmt.builtin__print_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }
 
-/**
- * Class for a DelegateSvg, input block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Expr.makeSubclass('builtin__input_expr', {
-  fields: {
-    label: {
-      value: 'input'
-    }
-  },
-  slots: {
-    expression: {
-      order: 1,
-      fields: {
-        start: '(',
-        end: ')'
-      },
-      check: eYo.T3.Expr.Check.argument_any,
-      optional: true
-    }
-  },
-  output: {
-    check: [eYo.T3.Expr.builtin__input_expr, eYo.T3.Expr.call_expr]
-  }
-})
-
 eYo.DelegateSvg.Print.T3s = [
   eYo.T3.Expr.term,
   eYo.T3.Expr.builtin__print_expr,
-  eYo.T3.Stmt.builtin__print_stmt,
-  eYo.T3.Expr.builtin__input_expr
+  eYo.T3.Stmt.builtin__print_stmt
 ]

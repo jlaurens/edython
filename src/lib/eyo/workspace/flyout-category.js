@@ -46,9 +46,14 @@ eYo.FlyoutCategory = {
         assigned: {
           slots: {
             O: {
-              type: eYo.T3.Expr.builtin__input_expr,
+              type: eYo.T3.Expr.call_expr,
+              data: 'input',
               slots: {
-                expression: "'...'",
+                arguments: {
+                  slots: {
+                    O: "'...'"
+                  }
+                }
               },
             }, 
           },
@@ -57,6 +62,7 @@ eYo.FlyoutCategory = {
     },
     /*
     <s eyo="assignment" xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0"><x eyo="list" slot="assigned"><x eyo="call" name="int" slot="O"><x eyo="list" slot="binary"><x eyo="input" slot="O"></x></x></x></x></s>
+    <s eyo="assignment" variant="name_value" xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0"><x eyo="list" slot="assigned"><x eyo="call" name="int" slot="O"><x eyo="list" slot="arguments"><x eyo="call" name="input" slot="O"><x eyo="list" slot="arguments"><x eyo="literal" subtype="eyo:shortstringliteral" slot="O">''</x></x></x></x></x></x></s>
     */
     {
       type: eYo.T3.Stmt.assignment_stmt,
@@ -67,7 +73,14 @@ eYo.FlyoutCategory = {
               type: eYo.T3.Expr.call_expr,
               data: 'int',
               slots: {
-                O: eYo.T3.Expr.builtin__input_expr
+                arguments: {
+                  slots: {
+                    O: {
+                      type: eYo.T3.Expr.call_expr,
+                      data: 'input'
+                    }
+                  }
+                }
               },
             },
           },
@@ -83,7 +96,14 @@ eYo.FlyoutCategory = {
               type: eYo.T3.Expr.call_expr,
               data: 'float',
               slots: {
-                unary: eYo.T3.Expr.builtin__input_expr
+                arguments: {
+                  slots: {
+                    O: {
+                      type: eYo.T3.Expr.call_expr,
+                      data: 'input'
+                    }
+                  }
+                }
               },
             },
           },
@@ -191,8 +211,11 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.or_test,
     eYo.T3.Expr.and_test,
     eYo.T3.Stmt.while_part,
-    eYo.T3.Expr.builtin__range,
     eYo.T3.Stmt.for_part,
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: 'range'
+    },
     eYo.T3.Stmt.else_part,
     eYo.T3.Stmt.break_stmt,
     eYo.T3.Stmt.continue_stmt,

@@ -726,6 +726,7 @@ eYo.DelegateSvg.prototype.consolidate = function (block, deep, force) {
     // do not consolidate while un(re)doing
     return
   }
+  this.setupConnections(block)
   this.foreachData(function () {
     this.consolidate()
   })

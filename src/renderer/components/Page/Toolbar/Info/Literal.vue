@@ -140,9 +140,11 @@
     methods: {
       doDoubleQuote () {
         this.data.delimiter.set('"')
+        this.selectedBlock.render()
       },
       doSingleQuote () {
         this.data.delimiter.set('\'')
+        this.selectedBlock.render()
       },
       do_r () {
         this.data.prefix.set({
@@ -155,6 +157,7 @@
           'rb': 'b',
           'br': 'b'
         }[this.prefix])
+        this.selectedBlock.render()
       },
       do_b () {
         this.data.prefix.set({
@@ -164,6 +167,7 @@
           'rb': 'r',
           'br': 'r'
         }[this.prefix])
+        this.selectedBlock.render()
       },
       do_f () {
         this.data.prefix.set({
@@ -173,6 +177,7 @@
           'rf': 'r',
           'fr': 'r'
         }[this.prefix])
+        this.selectedBlock.render()
       }
     }
   }

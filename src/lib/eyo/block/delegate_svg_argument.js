@@ -295,66 +295,13 @@ eYo.DelegateSvg.Expr.argument_list.prototype.createConsolidator = eYo.Decorate.r
   }
 })
 
-
-/**
- * Class for a DelegateSvg, argument_list_2 block.
- * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_2', {
-  list: {
-    ary: 2,
-    empty: false
-  }
-})
-
-/**
- * Class for a DelegateSvg, argument_list_2 block.
- * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_3', {
-  list: {
-    ary: 3,
-    empty: false,
-  }
-})
-
-/**
- * Class for a DelegateSvg, argument_list_2 block.
- * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_4', {
-  list: {
-    ary: 4,
-    empty: false,
-  }
-})
-
-/**
- * Class for a DelegateSvg, argument_list_2 block.
- * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_5', {
-  list: {
-    ary: 5,
-    empty: false,
-  }
-})
-
 /**
  * Class for a DelegateSvg, argument_list_comprehensive block.
  * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.List.makeSubclass('argument_list_comprehensive', {
+eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_comprehensive', {
   list: {
     consolidator: eYo.Consolidator.Arguments,
     empty: true,

@@ -814,13 +814,17 @@ Ks = {
     }
   },
   'print(…)': eYo.T3.Stmt.builtin__print_stmt,
-  'input(…)': eYo.T3.Expr.builtin__input_expr,
-  'range(…)': eYo.T3.Expr.builtin__range,
+  'input(…)': {
+    type: eYo.T3.Expr.call_expr,
+    data: 'input'
+  },
+  'range(…)': {
+    type: eYo.T3.Expr.call_expr,
+    data: 'range'
+  },
   'int(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: {
-      name: 'int'
-    }
+    data: 'int'
   },
   'float(…)': {
     type: eYo.T3.Expr.call_expr,

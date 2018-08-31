@@ -645,26 +645,6 @@ eYo.Delegate.prototype.setupType = function (optNewType) {
   this.pythonType_ = m ? m[1] : block.type
   this.type_ = m ? 'eyo:' + m[2] : block.type
   this.xmlType_ = m ? m[3] : block.type
-  // test all connections
-  var c8n, targetC8n
-  if ((c8n = block.previousConnection) && (targetC8n = c8n.targetConnection)) {
-    if (!c8n.checkType_(targetC8n)) {
-      block.unplug()
-      block.bumpNeighbours_()
-    }
-  }
-  if ((c8n = block.outputConnection) && (targetC8n = c8n.targetConnection)) {
-    if (!c8n.checkType_(targetC8n)) {
-      block.unplug()
-      block.bumpNeighbours_()
-    }
-  }
-  if ((c8n = block.nextConnection) && (targetC8n = c8n.targetConnection)) {
-    if (!c8n.checkType_(targetC8n)) {
-      c8n.disconnect()
-      targetC8n.getSourceBlock().bumpNeighbours_()
-    }
-  }
 }
 
 /**
@@ -695,7 +675,6 @@ eYo.Delegate.prototype.setupConnections = function () {
  * For subclassers eventually
  */
 eYo.Delegate.prototype.initBlock = function (block) {
-  this.setupType()
   // configure the connections
   var model = this.getModel()
   var D
@@ -703,7 +682,7 @@ eYo.Delegate.prototype.initBlock = function (block) {
     return goog.isFunction(check) ? check.call(this, block) : check
   }
   if ((D = model.output) && Object.keys(D).length) {
-    block.setOutput(true, checker.call(this, D.check))
+    block.setOutput(true) // check is setup in the setup type
     var eyo = block.outputConnection.eyo
     eyo.model = D
   } else if ((D = model.statement) && Object.keys(D).length) {
@@ -720,6 +699,8 @@ eYo.Delegate.prototype.initBlock = function (block) {
       block.previousConnection.eyo.model = D.previous
     }
   }
+  this.setupType()
+  this.setupConnections()
 }
 
 /**

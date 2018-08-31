@@ -52,6 +52,7 @@
           if (comment_variant_d) {
             comment_variant_d.set(newValue ? comment_variant_d.COMMENT : comment_variant_d.NO_COMMENT)
           }
+          this.selectedBlock.render()
         }
       },
       comment: {

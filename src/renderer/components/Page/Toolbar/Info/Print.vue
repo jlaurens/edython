@@ -125,10 +125,13 @@
             return
           }
           var block = this.selectedBlock
-          B = eYo.DelegateSvg.newBlockComplete(block.workspace, eYo.T3.Expr.term)
-          B.eyo.data.name.set(key)
-          var variant_d = B.eyo.data.variant
-          variant_d.set(variant_d.NAME_DEFINITION)
+          B = eYo.DelegateSvg.newBlockComplete(block.workspace, {
+            type: eYo.T3.Expr.term,
+            data: {
+              name: key,
+              definition: eYo.Key.DEFINED
+            }
+          })
           var list = this.list
           var c8n = list.inputList[list.inputList.length - 1].connection
           c8n.connect(B.outputConnection)

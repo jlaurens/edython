@@ -20,7 +20,6 @@
   import Dotted from './Primary/Dotted.vue'
   import Value from './Value.vue'
   import Variant from './Primary/Variant.vue'
-  import OptionX from './Primary/Option.vue'
   import Common from './Common.vue'
 
   export default {
@@ -35,7 +34,6 @@
       Dotted,
       Value,
       Variant,
-      OptionX,
       Comment,
       Common
     },
