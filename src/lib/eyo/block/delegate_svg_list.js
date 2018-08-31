@@ -80,11 +80,10 @@ eYo.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
 }
 
 /**
- * Consolidate the input.
- * Removes empty place holders.
- * This must not be overriden.
+ * Create a consolidator..
  *
  * @param {!Block} block
+ * @param {boolean} force
  */
 eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_method('createConsolidator', function (block, force) {
   if (!this.consolidator || force) {

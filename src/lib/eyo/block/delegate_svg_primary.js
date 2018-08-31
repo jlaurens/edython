@@ -13,6 +13,7 @@
 
 goog.provide('eYo.DelegateSvg.Primary')
 
+goog.require('eYo.Signature')
 goog.require('eYo.Model.stdtypes')
 goog.require('eYo.Model.functions')
 
@@ -232,9 +233,16 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           }
         },
         didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromModel() && this.get() !== eYo.Key.BUILTIN) {
-            var dotted_d = this.data.dotted
-            dotted_d.set(dotted_d.MODULE)
+          if (this.isRequiredFromModel()) {
+            var d = this.data.dotted
+            if (!this.get()) {
+              this.set(eYo.Key.BUILTIN)
+              if (d.get() === d.MODULE) {
+                d.set(d.NONE)
+              }
+            } else if (this.get() !== eYo.Key.BUILTIN) {
+              d.set(d.MODULE)
+            }
           }
         }
       }
@@ -439,8 +447,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         var type = eYo.Do.typeOfString(newValue)
-        var nameType_d = this.data.nameType
-        nameType_d.set(type.expr)
+        this.data.nameType.set(type.expr)
       },
       consolidate: /** @suppress {globalThis} */ function () {
         this.didChange(undefined, this.get())
@@ -601,7 +608,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       } else if (variant === variant_d.ALIASED) {
         var nameType_d = this.data.nameType
         var nameType = nameType_d.get()
-        check = nameType === eYo.T3.Expr.identifier ? [eYo.T3.Expr.dotted_name_as, eYo.T3.Expr.identifier_as] : [eYo.T3.Expr.dotted_name_as]
+        check = nameType === eYo.T3.Expr.identifier
+          ? [eYo.T3.Expr.expression_as, eYo.T3.Expr.dotted_name_as, eYo.T3.Expr.identifier_as]
+          : [eYo.T3.Expr.expression_as, eYo.T3.Expr.dotted_name_as]
       } else {
         var dotted_d = this.data.dotted
         var dotted = dotted_d.get()
@@ -794,7 +803,6 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function (block) {
  * @param {!Block} block
  */
 eYo.DelegateSvg.Expr.primary.prototype.consolidate = function (block, deep, force) {
-  console.log('CONSOLIDATE')
   eYo.DelegateSvg.Expr.primary.superClass_.consolidate.call(this, block, deep, force)
   if (this.slots) {
     var arguments_s = this.slots.arguments

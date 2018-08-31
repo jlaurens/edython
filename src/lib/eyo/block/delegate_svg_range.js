@@ -13,6 +13,8 @@
 
 goog.provide('eYo.DelegateSvg.Range')
 
+goog.require('eYo.Signature.builtin')
+
 goog.require('eYo.DelegateSvg.Primary')
 goog.require('eYo.DelegateSvg.Argument')
 
@@ -83,79 +85,8 @@ eYo.Consolidator.Range.prototype.doFinalize = function (io) {
   }
 }
 
-/**
- * Class for a DelegateSvg, range_argument_list block.
- * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Expr.argument_list.makeSubclass('range_argument_list', {
-  data: {
-    ary: null,
-    mandatory: null
-  },
-  list: {
-    consolidator: eYo.Consolidator.Range,
-    hole_value: 'name'
-  }
-}, null, eYo.DelegateSvg)
-
-/**
- * Class for a DelegateSvg, range block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Expr.primary.makeSubclass('builtin__range', {
-  data: {
-    ary: null,
-    mandatory: null,
-    name: {
-      init: 'range',
-      synchronize: true,
-      validate: false,
-      undo: false,
-      xml: false
-    },
-    option: {
-      init: eYo.Key.CALL_EXPR,
-      synchronize: true,
-      validate: false,
-      undo: false,
-      xml: false
-    }
-  },
-  slots: {
-    name: {
-      order: 50,
-      fields: {
-        bind: ''
-      }  
-    },
-    arguments: {
-      wrap: eYo.T3.Expr.range_argument_list
-    },
-    slicing: null,
-    alias: null,
-    parent: null,
-    module: null,
-    root: null,
-    dot: null,
-    annotation: null,
-    definition: null,
-    // n_ary: null,
-    // z_ary: null,
-    // unary: null,
-    // binary: null,
-    // ternary: null,
-    // quadary: null,
-    // pentary: null
-  },
-  output: {
-    check: [eYo.T3.Expr.builtin__range, eYo.T3.Expr.call_expr]
-  }
-})
-
-eYo.DelegateSvg.Range.T3s = [
-  eYo.T3.Expr.term,
-  eYo.T3.Expr.builtin__range
-]
+eYo.Signature.builtin.range = {
+  consolidator: eYo.Consolidator.Range,
+  ary: 3,
+  mandatory: 1
+}

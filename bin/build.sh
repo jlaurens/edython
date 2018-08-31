@@ -249,6 +249,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/eyo.js" \
 --js "src/lib/eyo/core/decorate.js" \
 --js "src/lib/eyo/block/delegate_svg_final.js" \
+--js "src/lib/eyo/block/signature.js" \
 --js "src/lib/eyo/core/const.js" \
 --js "src/lib/eyo/core/model.js" \
 --js "src/lib/eyo/msg/js/base.js" \

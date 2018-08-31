@@ -14,6 +14,7 @@
 goog.provide('eYo.DelegateSvg.Argument')
 
 goog.require('eYo.DelegateSvg.List')
+goog.require('eYo.Signature')
 
 /**
  * Class for a DelegateSvg, keyword_item block.
@@ -242,7 +243,6 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
       xml: false,
       undo: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        console.log('Argument mandatory did change', oldValue, newValue)
         this.didChange(oldValue, newValue)
         this.owner.createConsolidator(this.owner.block_)
         this.owner.consolidator.data.empty = !newValue
@@ -257,6 +257,44 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
     hole_value: 'name'
   }
 })
+
+/**
+ * Create a consolidator..
+ *
+ * @param {!Block} block
+ * @param {boolean} force
+ */
+eYo.DelegateSvg.Expr.argument_list.prototype.createConsolidator = eYo.Decorate.reentrant_method('createConsolidator', function (block, force) {
+  if (!this.consolidator || force) {
+    var D = eYo.DelegateSvg.Manager.getModel(block.type).list
+    goog.asserts.assert(D, 'inputModel__.list is missing in ' + block.type)
+    if (block.parentBlock_) {
+      var parent = block.parentBlock_.eyo
+      var n = parent.data.name.get()
+      var m = parent.data.module.get()
+      var Ss = eYo.Signature[m]
+      var s = Ss && Ss[n]
+      var C10r = (s && s.consolidator) || D.consolidator || eYo.Consolidator.List
+      if (!this.consolidator || this.consolidator.constructor !== C10r) {
+        this.consolidator = new C10r(D)
+        goog.asserts.assert(this.consolidator, eYo.Do.format('Could not create the consolidator {0}', block.type))
+      }
+      if (s) {
+        s.ary && this.data.ary.set(s.ary)
+        s.mandatory && this.data.mandatory.set(s.mandatory)
+      } else {
+        this.data.ary.set(D.ary || Infinity)
+        this.data.mandatory.set(D.mandatory || 0)
+      }
+    } else {
+      this.consolidator = new eYo.Consolidator.List(D)
+    }
+    if (force) {
+      this.consolidate(block)
+    }
+  }
+})
+
 
 /**
  * Class for a DelegateSvg, argument_list_2 block.
