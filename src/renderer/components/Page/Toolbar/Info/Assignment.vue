@@ -1,7 +1,7 @@
 <template>
   <b-button-toolbar id="info-assignment" key-nav  aria-label="Info toolbar assignment" justify>
     <b-button-toolbar>
-      <variant :selected-block="selectedBlock"></variant>
+      <variant :selected-block="selectedBlock" :placeholder="placeholder"></variant>
       <comment :selected-block="selectedBlock"></comment>
     </b-button-toolbar>
     <common :selected-block="selectedBlock"></common>
@@ -9,7 +9,7 @@
 </template>
 
 <script>
-  import Variant from './Variant.vue'
+  import Variant from './Assignment/Variant.vue'
   import Comment from './Comment.vue'
   import Common from './Common.vue'
 
@@ -28,6 +28,12 @@
       selectedBlock: {
         type: Object,
         default: undefined
+      },
+      placeholder: {
+        type: Function,
+        default: function (item) {
+          return item
+        }
       }
     }
   }

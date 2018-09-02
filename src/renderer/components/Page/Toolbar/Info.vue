@@ -17,7 +17,7 @@
     $$.eYo.T3.Expr.slicing,
     $$.eYo.T3.Expr.call_expr,
     'eyo:call'])">
-      <info-primary :selected-block="selectedBlock"></info-primary>
+      <info-primary :selected-block="selectedBlock" :placeholder="placeholder"></info-primary>
     </div>
     <div v-else-if="isSelected([$$.eYo.T3.Expr.shortliteral, $$.eYo.T3.Expr.longliteral, $$.eYo.T3.Expr.shortbytesliteral, $$.eYo.T3.Expr.longbytesliteral, $$.eYo.T3.Expr.shortstringliteral, $$.eYo.T3.Expr.longstringliteral, $$.eYo.T3.Stmt.docstring_stmt])">
       <info-literal :selected-block="selectedBlock"></info-literal>
@@ -25,8 +25,11 @@
     <div v-else-if="isSelected([$$.eYo.T3.Expr.builtin__print_expr, $$.eYo.T3.Stmt.builtin__print_stmt])">
       <info-print :selected-block="selectedBlock"></info-print>
     </div>
+    <div v-else-if="isSelected($$.eYo.T3.Stmt.assignment_stmt)">
+      <info-assignment :selected-block="selectedBlock" :placeholder="placeholder"></info-assignment>
+    </div>
     <div v-else-if="isSelected($$.eYo.T3.Stmt.augmented_assignment_stmt)">
-        <info-augmented-assignment :selected-block="selectedBlock"></info-augmented-assignment>
+      <info-augmented-assignment :selected-block="selectedBlock" :placeholder="placeholder"></info-augmented-assignment>
     </div>
     <div v-else-if="selectedBlock">
       <info-default :selected-block="selectedBlock"></info-default>
@@ -66,6 +69,13 @@
       this.step = this.$store.state.UI.toolbarInfoVisible ? 1 : 0
     },
     computed: {
+      placeholder () {
+        var d = eYo.DelegateSvg.prototype.placeHolderPathDefWidth_(0).d
+        var one_rem = parseInt(getComputedStyle(document.documentElement).fontSize)
+        return function (className) {
+          return '<div class="eyo-info-placeholder' + (className ? ' ' : '') + className + '"><svg xmlns="http://www.w3.org/2000/svg" height="' + (1.75 * one_rem) + '" width="' + (2 * one_rem) + '"><path class="eyo-path-contour" d="' + d + ' z"></path></svg></div>'
+        }
+      },
       selectedBlock () {
         var id = this.$store.state.UI.selectedBlockId
         var block = id && this.$$.eYo.App.workspace.blockDB_[id]
@@ -125,4 +135,22 @@
 .btn-secondary:hover .eyo-code-reserved {
   color: #fff;
 }
+.eyo-info-placeholder {
+  display: inline-block;
+  height: 1.75rem;
+}
+.btn .eyo-info-placeholder .eyo-path-contour {
+  stroke-width: 2px;
+}
+.dropdown-item:hover .eyo-info-placeholder .eyo-path-contour {
+  stroke: rgb(100,100,100);
+}
+.eyo-info-primary-variant1 {
+    display: inline-block;
+  }
+  .eyo-info-primary-variant2 {
+    display: inline-block;
+    position: relative;
+    top: -0.45rem;
+  }
 </style>

@@ -41,16 +41,15 @@
       selectedBlock: {
         type: Object,
         default: undefined
+      },
+      placeholder: {
+        type: Function,
+        default: function (item) {
+          return item
+        }
       }
     },
     computed: {
-      placeholder () {
-        var d = eYo.DelegateSvg.prototype.placeHolderPathDefWidth_(0).d
-        var one_rem = parseInt(getComputedStyle(document.documentElement).fontSize)
-        return function (className) {
-          return '<div class="eyo-info-placeholder' + (className ? ' ' : '') + className + '"><svg xmlns="http://www.w3.org/2000/svg" height="' + (1.75 * one_rem) + '" width="' + (2 * one_rem) + '"><path class="eyo-path-contour" d="' + d + ' z"></path></svg></div>'
-        }
-      },
       variant_d () {
         var block = this.selectedBlock
         return block && block.eyo && block.eyo.data.variant
@@ -84,22 +83,12 @@
   .eyo-dd-content {
     padding: 0;
   }
-  .eyo-info-placeholder {
-    display: inline-block;
-    height: 1.75rem;
+  .eyo-form-input-text {
+    text-align: left;
+    width: 8rem;
   }
-  .btn .eyo-info-placeholder .eyo-path-contour {
-    stroke-width: 2px;
-  }
-  .dropdown-item:hover .eyo-info-placeholder .eyo-path-contour {
-    stroke: rgb(100,100,100);
-  }
-  .eyo-info-primary-variant1 {
-    display: inline-block;
-  }
-  .eyo-info-primary-variant2 {
-    display: inline-block;
-    position: relative;
-    top: -0.45rem;
+  .btn-outline-secondary.eyo-form-input-text:hover {
+    background: white;
+    color: black;
   }
 </style>

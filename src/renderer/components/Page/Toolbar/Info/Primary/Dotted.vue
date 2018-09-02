@@ -68,7 +68,7 @@
           },
           [eYo.Key.ROOT]: {
             key: eYo.Key.ROOT,
-            content: this.placeholder('eyo-info-primary-option1') + '<div class="eyo-info-primary-option2">.</div>',
+            content: this.placeholder('eyo-info-primary-dotted1') + '<div class="eyo-info-primary-dotted2">.</div>',
             action (item) {
               var block = this.selectedBlock
               block && block.eyo.data.dotted.set(item.key)
@@ -120,6 +120,9 @@
   }
   .dropdown-item.eyo-info-primary-dotted {
     padding-right: 0.5rem;
+  }
+  .eyo-info-primary-dotted2 {
+    display: inline-block
   }
 </style>
   

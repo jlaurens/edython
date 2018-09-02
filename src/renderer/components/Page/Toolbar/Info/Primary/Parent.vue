@@ -36,14 +36,6 @@
   .dropdown-item.eyo-info-primary-option {
     padding-right: 0.5rem;
   }
-  .eyo-form-input-text {
-    text-align: left;
-    width:8rem;
-  }
-  .btn-outline-secondary.eyo-form-input-text:hover {
-    background: white;
-    color: black;
-  }
   .eyo-info-primary-option0 {
     display: inline-block;
     position: relative;

@@ -17,7 +17,8 @@
       formatter: {
         type: Function,
         default: function (item) {
-          return item.length ? this.$t('message.' + ({'*': 'star', '**': 'two_stars'}[item] || item)) : '&nbsp;'
+          console.log('default ', item)
+          return item.length ? this.$t('message.' + ({'*': 'star', '**': 'two_stars', '.': 'dot', '..': 'two_dots'}[item] || item)) : '&nbsp;'
         }
       },
       dataKey: {
@@ -38,6 +39,7 @@
         },
         set (newValue) {
           this.data && this.data.set(newValue)
+          this.selectedBlock.render()
         }
       },
       variants () {
