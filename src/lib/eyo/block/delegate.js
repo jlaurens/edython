@@ -142,9 +142,9 @@ eYo.Delegate.Manager = (function () {
   var merger = function (to, from, ignore) {
     var from_d
     if ((from.check)) {
-      from.check = eYo.Do.ensureArray(from.check)
+      from.check = eYo.Do.ensureArrayFunction(from.check)
     } else if ((from_d = from.wrap)) {
-      from.check = eYo.Do.ensureArray(from_d)
+      from.check = eYo.Do.ensureArrayFunction(from_d)
     }
     for (var k in from) {
       if (ignore && ignore(k)) {
@@ -172,9 +172,9 @@ eYo.Delegate.Manager = (function () {
       }
     }
     if ((to.check)) {
-      to.check = eYo.Do.ensureArray(to.check)
+      to.check = eYo.Do.ensureArrayFunction(to.check)
     } else if ((to_d = to.wrap)) {
-      to.check = eYo.Do.ensureArray(to_d)
+      to.check = eYo.Do.ensureArrayFunction(to_d)
     }
   }
   me.merger = merger
@@ -281,23 +281,25 @@ eYo.Delegate.Manager = (function () {
         if (!model.output) {
           model.output = Object.create(null)
         }
-        if (!model.output.check) {
-          model.output.check = t
-        }
+        model.output.check = eYo.Do.ensureArrayFunction(model.output.check || t)
         model.statement && (model.statement = undefined)
       } else if ((t = eYo.T3.Stmt[key])) {
         var statement = model.statement || (model.statement = Object.create(null))
         if (!statement.previous) {
           statement.previous = Object.create(null)
         }
-        if (!statement.previous.check && !goog.isNull(statement.previous.check)) {
-          statement.previous.check = eYo.T3.Stmt.Previous[key]
+        if (statement.previous.check) {
+          statement.previous.check = eYo.Do.ensureArrayFunction(statement.previous.check)
+        } else if (!goog.isNull(statement.previous.check)) {
+          statement.previous.check = eYo.Do.ensureArrayFunction(eYo.T3.Stmt.Previous[key])
         }
         if (!statement.next) {
           statement.next = Object.create(null)
         }
-        if (!statement.next.check && !goog.isNull(statement.next.check)) {
-          statement.next.check = eYo.T3.Stmt.Next[key]
+        if (statement.next.check) {
+          statement.next.check = eYo.Do.ensureArrayFunction(statement.next.check)
+        } else if (!goog.isNull(statement.next.check)) {
+          statement.next.check = eYo.Do.ensureArrayFunction(eYo.T3.Stmt.Next[key])
         }
         // this is a statement, remove the irrelevant output info
         model.output && (model.output = undefined)
@@ -431,12 +433,13 @@ eYo.Delegate.Manager.registerAll(eYo.T3.Stmt, eYo.Delegate)
  * The type of the block may change, thus implying some connection changes.
  * The connection checks may change too.
  * For edython.
+ * @param {!Blockly.Block} block
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
  */
-eYo.Delegate.prototype.consolidateType = function (block) {
-  this.setupType()
+eYo.Delegate.prototype.consolidateType = function (block, type) {
+  this.setupType(type)
 }
 
 /**
@@ -631,8 +634,9 @@ eYo.Delegate.prototype.type_ = undefined
 
 /**
  * Set the [python ]type of the delegate according to the type of the block.
+ * No need to override this.
  * @param {!Blockly.Block} block to be initialized..
- * @param {string} optNewType
+ * @param {?string} optNewType, 
  * @constructor
  */
 eYo.Delegate.prototype.setupType = function (optNewType) {
@@ -652,20 +656,50 @@ eYo.Delegate.prototype.setupType = function (optNewType) {
  * The connections are supposed to be configured once.
  * This method may disconnect blocks as side effect,
  * thus interacting with the undo manager.
+ * After initialization, this should be called whenever
+ * the block type has changed.
  * @param {!Blockly.Block} block to be initialized.
  * @constructor
  */
-eYo.Delegate.prototype.setupConnections = function () {
-  var block = this.block_
-  var model = this.getModel()
-  var self = this
-  var checker = function (c8n, check) {
-    c8n.setCheck(goog.isFunction(check) ? check.call(self, block) : check)
+eYo.Delegate.prototype.consolidateConnections = function () {
+  var b = this.block_
+  var f = function (c8n) {
+    c8n && c8n.eyo.model.check(b.type)
   }
-  block.outputConnection && checker(block.outputConnection, model.output.check)
-  block.previousConnection && checker(block.previousConnection, model.statement.previous.check)
-  block.nextConnection && checker(block.nextConnection, model.statement.next.check)
-  this.inputSuite && this.inputSuite.connection && checker(this.inputSuite.connection, model.statement.suite.check)
+  f(b.outputConnection)
+  f(b.previousConnection)
+  f(b.nextConnection)
+  f(this.inputSuite && this.inputSuite.connection)
+}
+
+/**
+ * Initialize the block connections.
+ * Called from receiver's initBlock method.
+ * @param {!Blockly.Block} block to be initialized..
+ * For subclassers eventually
+ */
+eYo.Delegate.prototype.initConnections = function (block) {
+  // configure the connections
+  var model = this.getModel()
+  var D
+  if ((D = model.output) && Object.keys(D).length) {
+    block.setOutput(true) // check is setup in the consolidateConnections
+    var eyo = block.outputConnection.eyo
+    eyo.model = D
+  } else if ((D = model.statement) && Object.keys(D).length) {
+    if (D.previous && D.previous.check !== null) {
+      block.setPreviousStatement(true)
+      block.previousConnection.eyo.model = D.previous
+    }
+    if (D.next && D.next.check !== null) {
+      block.setNextStatement(true)
+      block.nextConnection.eyo.model = D.next
+    }
+    if (D.suite) {
+      this.inputSuite = block.appendStatementInput('suite')
+      this.inputSuite.connection.eyo.model = D
+    }
+  }
 }
 
 /**
@@ -676,31 +710,9 @@ eYo.Delegate.prototype.setupConnections = function () {
  */
 eYo.Delegate.prototype.initBlock = function (block) {
   // configure the connections
-  var model = this.getModel()
-  var D
-  var checker = function (check) {
-    return goog.isFunction(check) ? check.call(this, block) : check
-  }
-  if ((D = model.output) && Object.keys(D).length) {
-    block.setOutput(true) // check is setup in the setup type
-    var eyo = block.outputConnection.eyo
-    eyo.model = D
-  } else if ((D = model.statement) && Object.keys(D).length) {
-    if (D.suite) {
-      this.inputSuite = block.appendStatementInput('suite').setCheck(checker.call(this, D.check)) // Check ?
-      this.inputSuite.connection.eyo.model = D
-    }
-    if (D.next && D.next.check !== null) {
-      block.setNextStatement(true, checker.call(this, D.next.check))
-      block.nextConnection.eyo.model = D.next
-    }
-    if (D.previous && D.previous.check !== null) {
-      block.setPreviousStatement(true, checker.call(this, D.previous.check))
-      block.previousConnection.eyo.model = D.previous
-    }
-  }
-  this.setupType()
-  this.setupConnections()
+  this.initConnections(block)
+  this.consolidateType()
+  this.consolidateConnections()
 }
 
 /**
