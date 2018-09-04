@@ -141,7 +141,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.prototype.populateContextMenuFirst_ = f
       try {
         var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.term)
         B.eyo.data.name.set(key)
-        B.eyo.data.variant.set(eYo.DelegateSvg.Expr.term.eyo.getModel().data.variant.NAME)
+        B.eyo.data.variant.set(eYo.DelegateSvg.Expr.primary.eyo.getModel().data.variant.NAME)
         var c8n = list.inputList[list.inputList.length - 1].connection
         c8n.connect(B.outputConnection)
         block.eyo.render()
@@ -223,7 +223,7 @@ eYo.DelegateSvg.Stmt.builtin__print_stmt.prototype.populateContextMenuFirst_ = f
       try {
         var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.term)
         B.eyo.data.name.set(key)
-        B.eyo.data.variant.set(eYo.DelegateSvg.Expr.term.eyo.getModel().data.variant.NAME_DEFINITION)
+        B.eyo.data.variant.set(eYo.DelegateSvg.Expr.primary.eyo.getModel().data.variant.NAME_DEFINITION)
         // we assume that inputList is not void
         var c8n = list.inputList[list.inputList.length - 1].connection
         c8n.connect(B.outputConnection)
