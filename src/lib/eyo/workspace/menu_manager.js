@@ -905,10 +905,11 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
  * `model.type` is the type of the to be inserted parent block.
  * `model.input` is the slot where the actual block should be connected.
  * @param {!Blockly.Block} block The block.
- * @param {!string} parent_type the type of the parent to be.
+ * @param {!Object} model the type of the parent to be and target input.
  * @private
  */
 eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model) {
+  // THIS IS BROKEN SINCE THE SLOT KEYS ARE NO LONGER INTEGERS
   var c8n = block.outputConnection
   if (!c8n) {
     // this is a statement block
@@ -917,51 +918,61 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model
   /** @suppress {accessControls} */
   var outCheck = c8n.check_
   var D = eYo.Delegate.Manager.getModel(model.type).slots
+  // if the block which type is model.type has no slot
+  // no chance to insert anything, pass away
   if (D) {
-    var mgr = this
+  var self = this
     var F = function (K) {
       var d = D[K]
+      // d is a slotModel for a block with type model.type
       if ((d && d.key && ((!model.input && !d.wrap) || d.key === model.input))) {
-        if (outCheck && d.check) {
-          var found = false
-          var _ = 0
-          var c
-          while ((c = d.check[_++])) {
-            if (outCheck.indexOf(c) >= 0) {
-              found = true
-              break
+        if (outCheck) {
+          var check = d.check && d.check(model.type)
+          if (check) {
+            var found = false
+            var _ = 0
+            var c
+            while ((c = check[_++])) {
+              if (outCheck.indexOf(c) >= 0) {
+                found = true
+                break
+              }
             }
-          }
-          if (!found) {
-            return false
+            if (!found) {
+              return false
+            }
           }
         }
         var key = d.key
-        var content = mgr.get_menuitem_content(model.type, key)
-        var MI = mgr.newMenuItem(content, function () {
+        var content = self.get_menuitem_content(model.type, key)
+        var MI = self.newMenuItem(content, function () {
           block.eyo.insertParentWithModel(block, model, key)
         })
-        mgr.addInsertChild(MI)
+        self.addInsertChild(MI)
         return true
       } else if (d && d.wrap && !parent_subtype) {
         var list = eYo.Delegate.Manager.getModel(d.wrap).list
         if (!list) {
           if (!outCheck || goog.array.contains(outCheck, d.wrap)) {
             key = d.key || K
-            content = mgr.get_menuitem_content(parent_type, key)
-            MI = mgr.newMenuItem(content, function () {
+            content = self.get_menuitem_content(parent_type, key)
+            MI = self.newMenuItem(content, function () {
               block.eyo.insertParentWithModel(block, model, key)
             })
-            mgr.addInsertChild(MI)
+            self.addInsertChild(MI)
             return true
           }
           return false
         }
+        // the wrapped block is a list
         var listCheck = list.all || list.check || (list.consolidator && list.consolidator.data && list.consolidator.data.check)
-        if (outCheck && listCheck) {
+        check = goog.isFunction(listCheck)
+          ? listCheck.call(model.type)
+          : listCheck
+        if (outCheck && check) {
           found = false
           _ = 0
-          while ((c = listCheck[_++])) {
+          while ((c = check[_++])) {
             if (outCheck.indexOf(c) >= 0) {
               found = true
               break
@@ -971,11 +982,11 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model
             return false
           }
         }
-        content = mgr.get_menuitem_content(model.type)
-        MI = mgr.newMenuItem(content, function () {
+        content = self.get_menuitem_content(model.type)
+        MI = self.newMenuItem(content, function () {
           block.eyo.insertParentWithModel(block, model)
         })
-        mgr.addInsertChild(MI)
+        self.addInsertChild(MI)
         return true
       }
       return false
