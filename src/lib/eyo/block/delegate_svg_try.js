@@ -97,19 +97,30 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
 /**
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
+ * @param {!Blockly.Block} block
+ * @param {?String} type
  */
-eYo.DelegateSvg.Stmt.except_part.prototype.consolidateType = function (block) {
+eYo.DelegateSvg.Stmt.except_part.prototype.consolidateType = function (block, type) {
   var variant = this.data.variant.get()
-  var F = function (k) {
-    this.setupType(eYo.T3.Stmt[k])
-    block.nextConnection.setCheck(eYo.T3.Stmt.Next[k])
-    block.previousConnection.setCheck(eYo.T3.Stmt.Previous[k])
+  eYo.DelegateSvg.Stmt.except_part.superClass_.consolidateType.call(this, block, type || (variant > 0 ? eYo.T3.Stmt.except_part : eYo.T3.Stmt.void_except_part))
+}
+
+
+/**
+ * The type and connection depend on the properties modifier, value and variant.
+ * For edython.
+ * @param {!Blockly.Block} block
+ */
+eYo.DelegateSvg.Stmt.except_part.prototype.consolidateConnections = function (block) {
+  eYo.DelegateSvg.Stmt.except_part.superClass_.consolidateConnections.call(this, block)
+  var f = function (k) {
+    if (block.type === eYo.T3.Stmt[k]) {
+      block.nextConnection.setCheck(eYo.T3.Stmt.Next[k])
+      block.previousConnection.setCheck(eYo.T3.Stmt.Previous[k])
+      return true
+    }
   }
-  F.call(this, variant > 0 ? 'except_part' : 'void_except_part')
-  eYo.DelegateSvg.Stmt.except_part.superClass_.consolidateType.call(this, block)
+  f('except_part') || f('void_except_part')
 }
 
 /**
