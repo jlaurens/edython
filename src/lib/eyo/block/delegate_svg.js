@@ -717,6 +717,9 @@ eYo.DelegateSvg.prototype.render = function (optBubble) {
 }
 
 /**
+ * This methods is a state mutator.
+ * At return type, the block is in a consistent state.
+ * All the connections and components are consolidated.
  * Sends a `consolidate` message to each component of the block.
  * However, there might be some caveats related to undo management.
  * @param {!Block} block
@@ -726,14 +729,16 @@ eYo.DelegateSvg.prototype.consolidate = function (block, deep, force) {
     // do not consolidate while un(re)doing
     return
   }
-  this.setupConnections(block)
+  this.consolidateType(block)
   this.foreachData(function () {
     this.consolidate()
   })
   this.foreachSlot(function () {
+    // some child blocks may be disconnected as side effect
     this.consolidate()
   })
   if (deep) {
+    // Consolidate the child blocks that are still connected
     var e8r = block.eyo.inputEnumerator(block)
     var x
     while (e8r.next()) {
@@ -742,7 +747,7 @@ eYo.DelegateSvg.prototype.consolidate = function (block, deep, force) {
       }
     }
   }
-  this.consolidateType(block)
+  this.consolidateConnections(block)
 }
 
 /**
