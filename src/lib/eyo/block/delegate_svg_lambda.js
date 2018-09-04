@@ -15,7 +15,7 @@ goog.provide('eYo.DelegateSvg.Lambda')
 goog.provide('eYo.DelegateSvg.Parameter')
 
 goog.require('eYo.DelegateSvg.List')
-goog.require('eYo.DelegateSvg.Term')
+goog.require('eYo.DelegateSvg.Primary')
 goog.require('eYo.ConnectionDelegate')
 goog.require('goog.dom');
 

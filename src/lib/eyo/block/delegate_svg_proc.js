@@ -14,7 +14,7 @@
 goog.provide('eYo.DelegateSvg.Proc')
 
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.Term')
+goog.require('eYo.DelegateSvg.Primary')
 goog.require('eYo.DelegateSvg.Group')
 goog.require('eYo.MenuItem')
 goog.require('goog.dom');

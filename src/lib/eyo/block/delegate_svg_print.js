@@ -15,7 +15,7 @@ goog.provide('eYo.DelegateSvg.Print')
 
 goog.require('eYo.DelegateSvg.Stmt')
 goog.require('eYo.DelegateSvg.List')
-goog.require('eYo.DelegateSvg.Term')
+goog.require('eYo.DelegateSvg.Primary')
 
 console.warn('Move this block to the builtin blocks, with contextual consolidator and argument list')
 

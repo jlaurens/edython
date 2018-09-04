@@ -18,7 +18,7 @@ goog.require('eYo.Model.stdtypes')
 goog.require('eYo.Model.functions')
 
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.Term')
+goog.require('eYo.DelegateSvg.Primary')
 goog.require('eYo.DelegateSvg.Stmt')
 goog.require('goog.dom');
 

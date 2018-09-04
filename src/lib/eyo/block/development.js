@@ -18,7 +18,7 @@ goog.provide('eYo.Development')
 goog.require('eYo.DelegateSvg')
 goog.require('eYo.DelegateSvg.Import')
 goog.require('eYo.DelegateSvg.Expr')
-goog.require('eYo.DelegateSvg.Term')
+goog.require('eYo.DelegateSvg.Primary')
 goog.require('eYo.DelegateSvg.Literal')
 goog.require('eYo.DelegateSvg.Operator')
 goog.require('eYo.DelegateSvg.Argument')
@@ -48,7 +48,6 @@ eYo.Do.arraysMerged = function (/* list of arrays */) {
 
 eYo.DelegateSvg.T3s = eYo.Do.arraysMerged(
   eYo.DelegateSvg.Expr.T3s,
-  eYo.DelegateSvg.Term.T3s,
   eYo.DelegateSvg.Literal.T3s,
   eYo.DelegateSvg.Operator.T3s,
   eYo.DelegateSvg.Argument.T3s,
