@@ -354,42 +354,54 @@ eYo.DelegateSvg.Manager.register('last_else_part')
  *     type-specific functions for this block.
  * @constructor
  */
-eYo.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
+eYo.DelegateSvg.Stmt.else_part.prototype.consolidateConnections = function (block) {
+  eYo.DelegateSvg.Stmt.else_part.superClass_.consolidateConnections.call(this, block)
   var T3 = eYo.T3.Stmt
-  var expected = T3.else_part
-  var P = T3.Previous.else_part
-  var N = T3.Next.else_part
-  var targetConnection
-  if ((targetConnection = block.previousConnection.targetConnection)) {
-    var target = targetConnection.getSourceBlock()
-    if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(target.type) < 0)) {
-      expected = T3.try_else_part
-      P = T3.Previous.try_else_part
-      N = T3.Next.try_else_part
-    } else if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.try_else_part) < 0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(target.type) < 0)) {
-      expected = T3.last_else_part
-      P = T3.Previous.last_else_part
-      N = T3.Next.last_else_part
-    }
-  } else if ((targetConnection = block.nextConnection.targetConnection)) {
-    // the previous connection did not add any constrain
-    // may be the next connection will?
-    target = targetConnection.getSourceBlock()
-    if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(target.type) < 0)) {
-      expected = T3.try_else_part
-      P = T3.Previous.try_else_part
-      N = T3.Next.try_else_part
-    } else if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(target.type) < 0)) {
-      expected = T3.last_else_part
-      P = T3.Previous.last_else_part
-      N = T3.Next.last_else_part
+  var f = function (key) {
+    if (block.type === T3[key]) {
+      block.previousConnection.setCheck(T3.Previous[key])
+      block.nextConnection.setCheck(T3.Next[key])
+      return true
     }
   }
-  if (block.type !== expected) {
-    this.setupType(expected)
-    block.previousConnection.setCheck(P)
-    block.nextConnection.setCheck(N)
+  f ('else_part') || f ('try_else_part') || f ('last_else_part')
+}
+
+/**
+ * This block may have one of 3 types: else_part, last_else_part, try_else_part.
+ * else_part covers both last_else_part and try_else_part.
+ * If the block cannot be of type last_else_part, then its type is try_else_part
+ * and conversely. If the block can be of both types, then it is of type else_part.
+ * First the previous connection tries to constrain the type,
+ * then the next connection.
+ * @param {!Blockly.Block} block Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+eYo.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block, type) {
+  if (!type) {
+    var T3 = eYo.T3.Stmt
+    type = T3.else_part
+    var targetConnection
+    if ((targetConnection = block.previousConnection.targetConnection)) {
+      var target = targetConnection.getSourceBlock()
+      if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(target.type) < 0)) {
+        type = T3.try_else_part
+      } else if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.try_else_part) < 0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(target.type) < 0)) {
+        type = T3.last_else_part
+      }
+    } else if ((targetConnection = block.nextConnection.targetConnection)) {
+      // the previous connection did not add any constrain
+      // may be the next connection will?
+      target = targetConnection.getSourceBlock()
+      if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(target.type) < 0)) {
+        type = T3.try_else_part
+      } else if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(target.type) < 0)) {
+        type = T3.last_else_part
+      }
+    }  
   }
+  eYo.DelegateSvg.Stmt.else_part.superClass_.consolidateType.call(this, block, type)
 }
 
 /**
