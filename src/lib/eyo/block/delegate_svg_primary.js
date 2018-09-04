@@ -138,8 +138,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.setIncog(!newValue || !newValue.length)
       },
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.owner.setupType(this.owner.getType())
-        this.owner.setupConnections()
+        this.owner.consolidateType() // why not consolidate()?
+        this.owner.consolidateConnections()
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === 'eYo.T3.Expr.parameter_star') {
@@ -193,8 +193,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.data.name.synchronize()
       },
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.owner.setupType(this.owner.getType())
-        this.owner.setupConnections()
+        this.owner.consolidateType()
+        this.owner.consolidateConnections()
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Expr.attributeref) {
@@ -365,8 +365,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.owner.render() // bad smell
       },
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.owner.setupType(this.owner.getType())
-        this.owner.setupConnections()
+        this.owner.consolidateType()
+        this.owner.consolidateConnections()
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         if ([this.CALL_EXPR, this.SLICING, this.ALIASED].indexOf(newValue) >= 0) {
@@ -573,7 +573,11 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         start: '(',
         end: ')'
       },
-      wrap: eYo.T3.Expr.argument_list_comprehensive
+      wrap: eYo.T3.Expr.argument_list_comprehensive,
+      consolidate: /** @suppress {globalThis} */ function () {
+        this.eyo.createConsolidator(this, true)
+        this.consolidate.apply(this, arguments)
+      }
     },
     slicing: {
       order: 2000,
@@ -693,12 +697,10 @@ eYo.DelegateSvg.Manager.register('subscription')
 eYo.DelegateSvg.Manager.register('slicing')
 eYo.DelegateSvg.Manager.register('attributeref')
 eYo.DelegateSvg.Manager.register('call_expr')
-eYo.DelegateSvg.Expr.term =
 eYo.DelegateSvg.Expr.identifier =
 eYo.DelegateSvg.Expr.parent_module =
 eYo.DelegateSvg.Expr.dotted_name =
 eYo.DelegateSvg.Expr.primary
-eYo.DelegateSvg.Manager.register('term')
 eYo.DelegateSvg.Manager.register('identifier')
 eYo.DelegateSvg.Manager.register('parent_module')
 eYo.DelegateSvg.Manager.register('dotted_name')
@@ -802,15 +804,8 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function (block) {
  * However, there might be some caveats related to undo management.
  * @param {!Block} block
  */
-eYo.DelegateSvg.Expr.primary.prototype.consolidate = function (block, deep, force) {
-  eYo.DelegateSvg.Expr.primary.superClass_.consolidate.call(this, block, deep, force)
-  if (this.slots) {
-    var arguments_s = this.slots.arguments
-    var args = arguments_s.input.connection.targetBlock()
-    if (args) {
-      args.eyo.createConsolidator(args, true)
-    }
-  }
+eYo.DelegateSvg.Expr.primary.prototype.consolidateType = function (block, type) {
+  eYo.DelegateSvg.Expr.primary.superClass_.consolidateType.call(this, block, type || this.getType())
 }
 
 /**
