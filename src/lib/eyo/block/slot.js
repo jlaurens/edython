@@ -60,7 +60,7 @@ eYo.Slot = function (owner, key, slotModel) {
   if (slotModel.wrap) {
     this.setInput(block.appendWrapValueInput(key, slotModel.wrap, slotModel.optional, slotModel.hidden))
     this.input.connection.eyo.model = slotModel
-  } else if (slotModel.check) {
+  } else if (goog.isDefAndNotNull(slotModel.check)) {
     this.setInput(block.appendValueInput(key))
     this.input.connection.eyo.model = slotModel
   }
@@ -421,10 +421,11 @@ eYo.Slot.prototype.setInput = function (input) {
     }
     var v
     if ((v = this.model.check)) {
-      c8n.setCheck(v)
-      eyo.hole_data = eYo.HoleFiller.getData(v, this.model.hole_value)
-    } else if ((v = this.model.check = this.model.wrap)) {
-      c8n.setCheck(v)
+      var check = v(c8n.sourceBlock_.type)
+      c8n.setCheck(check)
+      if (!this.model.wrap) {
+        eyo.hole_data = eYo.HoleFiller.getData(check, this.model.hole_value)        
+      }
     }
   }
 }
@@ -566,6 +567,13 @@ eYo.Slot.prototype.whenRequiredFromDom = function (helper) {
 eYo.Slot.prototype.consolidate = function () {
   if (this.wait) {
     return
+  }
+  if (goog.isDef(this.model.consolidate)) {
+    var f = eYo.Decorate.reentrant_method.call(this, 'consolidate', this.model.consolidate)
+    if (f) {
+      f.apply(this, arguments)
+      return
+    }
   }
   var c8n = this.input && this.input.connection
   if (c8n) {
