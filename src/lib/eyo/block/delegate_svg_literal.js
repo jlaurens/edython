@@ -109,7 +109,7 @@ eYo.DelegateSvg.Expr.numberliteral.prototype.showEditor = function (block) {
 eYo.DelegateSvg.Expr.numberliteral.prototype.consolidateType = function (block) {
   var type = this.data.type.get()
   block.outputConnection.setCheck(type)
-  eYo.DelegateSvg.Expr.term.superClass_.consolidateType.call(this, block)
+  eYo.DelegateSvg.Expr.numberliteral.superClass_.consolidateType.call(this, block)
 }
 
 goog.provide('eYo.DelegateSvg.Expr.shortliteral')
