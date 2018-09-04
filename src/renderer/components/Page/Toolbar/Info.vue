@@ -28,9 +28,15 @@
     <div v-else-if="isSelected($$.eYo.T3.Expr.u_expr)">
       <info-unary :selected-block="selectedBlock" :placeholder="placeholder"></info-unary>
     </div>
+    <div v-else-if="isSelected([$$.eYo.T3.Expr.a_expr, $$.eYo.T3.Expr.m_expr])">
+      <info-binary :selected-block="selectedBlock" :placeholder="placeholder"></info-binary>
+    </div>
+    <div v-else-if="isSelected([$$.eYo.T3.Expr.shift_expr, $$.eYo.T3.Expr.and_expr, $$.eYo.T3.Expr.xor_expr, $$.eYo.T3.Expr.or_expr])">
+      <info-binary :selected-block="selectedBlock" :placeholder="placeholder"></info-binary>
+    </div>
     <div v-else-if="isSelected($$.eYo.T3.Stmt.assignment_stmt)">
-        <info-assignment :selected-block="selectedBlock" :placeholder="placeholder"></info-assignment>
-      </div>
+      <info-assignment :selected-block="selectedBlock" :placeholder="placeholder"></info-assignment>
+    </div>
     <div v-else-if="isSelected($$.eYo.T3.Stmt.augmented_assignment_stmt)">
       <info-augmented-assignment :selected-block="selectedBlock" :placeholder="placeholder"></info-augmented-assignment>
     </div>
@@ -48,6 +54,7 @@
   import InfoLiteral from './Info/Literal.vue'
   import InfoPrint from './Info/Print.vue'
   import InfoUnary from './Info/Unary.vue'
+  import InfoBinary from './Info/Binary.vue'
   import InfoAssignment from './Info/Assignment.vue'
   import InfoAugmentedAssignment from './Info/AugmentedAssignment.vue'
   import InfoDefault from './Info/Default.vue'
@@ -65,6 +72,7 @@
       InfoLiteral,
       InfoPrint,
       InfoUnary,
+      InfoBinary,
       InfoAssignment,
       InfoAugmentedAssignment,
       InfoDefault,
