@@ -312,7 +312,7 @@ eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_comprehensive', {
 
 eYo.DelegateSvg.Argument.T3s = [
   // eYo.T3.Expr.keyword_item,
-  eYo.T3.Expr.starred_expression, // from Expr
+  eYo.T3.Expr.starred_item_list, // from Expr
   eYo.T3.Expr.argument_list,
   eYo.T3.Expr.argument_list_comprehensive
 ]

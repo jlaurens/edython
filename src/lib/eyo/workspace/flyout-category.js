@@ -170,7 +170,7 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.and_expr,
     eYo.T3.Expr.xor_expr,
     eYo.T3.Expr.or_expr,
-    eYo.T3.Expr.starred_expression,
+    eYo.T3.Expr.star_or_expr,
     eYo.T3.Stmt.del_stmt,
     eYo.T3.Expr.parenth_target_list,
     eYo.T3.Expr.bracket_target_list,
@@ -229,7 +229,8 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Stmt.call_stmt,
       data: ''
     },
-    eYo.T3.Expr.starred_expression,
+    eYo.T3.Expr.parameter_star,
+    eYo.T3.Expr.parameter_star_star,
     eYo.T3.Stmt.funcdef_part,
     eYo.T3.Stmt.return_stmt,
     eYo.T3.Stmt.pass_stmt,

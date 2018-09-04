@@ -371,7 +371,6 @@ eYo.DelegateSvg.List.makeSubclass('with_item_list', {
 
 eYo.DelegateSvg.List.T3s = [
   eYo.T3.Expr.term,
-  eYo.T3.Expr.starred_expression,
   eYo.T3.Expr.comprehension,
   eYo.T3.Expr.dict_comprehension,
   eYo.T3.Expr.key_datum,
