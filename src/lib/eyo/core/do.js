@@ -329,8 +329,34 @@ eYo.Do.Name = (function () {
   return me
 }())
 
-eYo.Do.ensureArray = function (object) {
+eYo.Do.ensureArray = eYo.Do.ensureFunctionOrArray = function (object) {
   return goog.isArray(object) || goog.isFunction(object) ? object : (object ? [object] : object)
+}
+
+eYo.Do.ensureFunction = function (object) {
+  return goog.isFunction(object)
+    ? object
+    : function () {
+        return object
+      }
+}
+
+eYo.Do.ensureArrayFunction = function (object) {
+  return goog.isFunction(object)
+    ? object
+    : goog.isArray(object)
+      ? function () {
+        return object
+      }
+      : function () {
+        return [object]
+      }
+}
+
+eYo.Do.Exec = function (f) {
+  return goog.isFunction(f)
+  ? f(Array.prototype.slice.call(arguments, 1))
+  : f
 }
 
 eYo.Do.createSPAN = function (text, css) {
