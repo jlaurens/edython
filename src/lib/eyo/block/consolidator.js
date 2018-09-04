@@ -34,7 +34,7 @@ goog.require('eYo.DelegateSvg')
  */
 eYo.Consolidator = function (d) {
   this.data = {}
-  var D = this.constructor.data_
+  var D = this.constructor.eyo && this.constructor.eyo.data_
   if (D) {
     goog.mixin(this.data, D)
   }
@@ -42,8 +42,11 @@ eYo.Consolidator = function (d) {
     goog.mixin(this.data, d)
   }
   goog.asserts.assert(goog.isDef(this.data.check), 'List consolidators must check their objects')
+  this.data.check = eYo.Do.ensureArrayFunction(this.data.check)
   this.init && this.init()
 }
+
+eYo.Consolidator.eyo = {}
 
 /**
  * Main and unique entry point.
@@ -74,15 +77,18 @@ eYo.Consolidator.makeSubclass = function (key, data, C10r, owner) {
     subclass.superClass_.constructor.call(this, d)
   }
   goog.inherits(subclass, C10r)
-  subclass.data_ = {} // start with a fresh object for the constructor data model
-  if (C10r.data_) {
-    goog.mixin(subclass.data_, C10r.data_)
+  subclass.eyo = {
+    key: key,
+    data_: {} // start with a fresh object for the constructor data model
+  }
+  if (C10r.eyo.data_) {
+    goog.mixin(subclass.eyo.data_, C10r.eyo.data_)
   }
   if (goog.isFunction(data)) {
     data = data.call(this)
   }
   if (data) {
-    goog.mixin(subclass.data_, data)
+    goog.mixin(subclass.eyo.data_, data)
   }
   subclass.makeSubclass = function (key, data, C10r, owner) {
     eYo.Consolidator.makeSubclass(key, data, C10r || subclass, owner)
@@ -255,10 +261,10 @@ eYo.Consolidator.List.prototype.getCheck = function (io) {
       return this.data.all
     } else {
       // blocks of type check are already there
-      return this.data.check
+      return this.data.check(io.block.type)
     }
   }
-  return this.data.check
+  return this.data.check(io.block.type)
 }
 
 /**
