@@ -53,9 +53,8 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
  * Unstable state.
  * For edython.
  */
-eYo.DelegateSvg.Expr.binary.consolidateType = function (block) {
-  block.type = this.getTypeForOperator(this.data.operator.get())
-  eYo.DelegateSvg.Expr.binary.superClass_.consolidateType.call(this, block)
+eYo.DelegateSvg.Expr.binary.consolidateType = function (type) {
+  eYo.DelegateSvg.Expr.binary.superClass_.consolidateType.call(this, type || this.getTypeForOperator(this.data.operator.get()))
 }
 
 /**
@@ -200,10 +199,8 @@ eYo.DelegateSvg.Expr.unary.getOperatorModel = function () {
  * Unstable state.
  * For edython.
  */
-eYo.DelegateSvg.Expr.unary.consolidateType = function (block) {
-  eYo.DelegateSvg.Expr.unary.superClass_.consolidateType.call(this, block)
-  var m = this.getOperatorModel()
-  block.type = m.type
+eYo.DelegateSvg.Expr.unary.consolidateType = function (type) {
+  eYo.DelegateSvg.Expr.unary.superClass_.consolidateType.call(this, type || this.getOperatorModel().type)
 }
 
 /**
@@ -213,8 +210,9 @@ eYo.DelegateSvg.Expr.unary.consolidateType = function (block) {
  * @param {!Blockly.Block} block The block.
  */
 eYo.DelegateSvg.Expr.unary.consolidateConnections = function (block) {
-  eYo.DelegateSvg.Expr.unary.superClass_.consolidateConnections.call(this, block)
+  eYo.DelegateSvg.Expr.unary.superClass_.consolidateConnections.call(this)
   var m = this.getOperatorModel()
+  var block = this.block_
   block.outputConnection && block.outputConnection.setCheck(m.rhs)
 }
 

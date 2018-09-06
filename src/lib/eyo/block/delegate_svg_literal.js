@@ -106,10 +106,8 @@ eYo.DelegateSvg.Expr.numberliteral.prototype.showEditor = function (block) {
  *     type-specific functions for this block.
  * @constructor
  */
-eYo.DelegateSvg.Expr.numberliteral.prototype.consolidateType = function (block) {
-  var type = this.data.type.get()
-  block.outputConnection.setCheck(type)
-  eYo.DelegateSvg.Expr.numberliteral.superClass_.consolidateType.call(this, block)
+eYo.DelegateSvg.Expr.numberliteral.prototype.consolidateType = function (type) {
+  eYo.DelegateSvg.Expr.numberliteral.superClass_.consolidateType.call(this, type || this.data.type.get())
 }
 
 goog.provide('eYo.DelegateSvg.Expr.shortliteral')
@@ -272,9 +270,10 @@ eYo.DelegateSvg.Manager.register('shortbytesliteral')
  * Set the type dynamically from the prefix.
  * @param {!Blockly.Block} block the owner of the receiver
  */
-eYo.DelegateSvg.Expr.shortliteral.prototype.consolidateType = function (block) {
+eYo.DelegateSvg.Expr.shortliteral.prototype.consolidateConnections = function () {
+  eYo.DelegateSvg.Expr.shortliteral.superClass_.consolidateConnections.call(this)
   var type = this.data.subtype.get()
-  block.outputConnection.setCheck([type])
+  this.block_.outputConnection.setCheck([type])
 }
 
 /**

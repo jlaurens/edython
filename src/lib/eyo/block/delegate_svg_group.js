@@ -354,8 +354,9 @@ eYo.DelegateSvg.Manager.register('last_else_part')
  *     type-specific functions for this block.
  * @constructor
  */
-eYo.DelegateSvg.Stmt.else_part.prototype.consolidateConnections = function (block) {
-  eYo.DelegateSvg.Stmt.else_part.superClass_.consolidateConnections.call(this, block)
+eYo.DelegateSvg.Stmt.else_part.prototype.consolidateConnections = function () {
+  eYo.DelegateSvg.Stmt.else_part.superClass_.consolidateConnections.call(this)
+  var block = this.block_
   var T3 = eYo.T3.Stmt
   var f = function (key) {
     if (block.type === T3[key]) {
@@ -378,7 +379,8 @@ eYo.DelegateSvg.Stmt.else_part.prototype.consolidateConnections = function (bloc
  *     type-specific functions for this block.
  * @constructor
  */
-eYo.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block, type) {
+eYo.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (type) {
+  var block = this.block_
   if (!type) {
     var T3 = eYo.T3.Stmt
     type = T3.else_part
@@ -401,7 +403,7 @@ eYo.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block, type
       }
     }  
   }
-  eYo.DelegateSvg.Stmt.else_part.superClass_.consolidateType.call(this, block, type)
+  eYo.DelegateSvg.Stmt.else_part.superClass_.consolidateType.call(this, type)
 }
 
 /**

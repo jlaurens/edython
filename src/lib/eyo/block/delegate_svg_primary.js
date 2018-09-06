@@ -31,7 +31,8 @@ goog.require('goog.dom');
  * the implementation when small modifications of the interface
  * are expected. This block implementation covers all the following types:
  * expression_star ::= "*" expression
- * parameter_star ::= "*" [parameter]
+ * star ::= "*"
+ * parameter_star ::= "*" parameter
  * target_star ::= "*" target
  * star_expr ::= "*" or_expr
  * expression_star_star ::= "**" expression
@@ -42,7 +43,7 @@ goog.require('goog.dom');
  * identifier ::=
  * identifier_annotated ::= identifier ":" expression
  * key_datum ::= expression ":" expression
- * parameter_defined ::= parameter "=" expression
+ * identifier_defined ::= parameter "=" expression
  * (with parameter ::= identifier | identifier_annotated)
  * keyword_item ::= identifier "=" expression
  * dotted_name_as ::= module "as" identifier
@@ -55,7 +56,8 @@ goog.require('goog.dom');
  * 1) the modifier which is one of '', '*', '**', '.', '..', etc
  * When not void, appears in 
  * expression_star ::= "*" expression
- * parameter_star ::= "*" [parameter]
+ * star ::= "*"
+ * parameter_star ::= "*" parameter
  * target_star ::= "*" target
  * star_expr ::= "*" or_expr
  * expression_star_star ::= "**" expression
@@ -75,7 +77,7 @@ goog.require('goog.dom');
  * key_datum ::= expression ":" expression
  * This may be used in annotated assignments.
  * 5) the definition
- * parameter_defined ::= parameter "=" expression
+ * identifier_defined ::= parameter "=" expression
  * (with parameter ::= identifier | identifier_annotated)
  * keyword_item ::= identifier "=" expression
  * 6) the map
@@ -96,7 +98,8 @@ goog.require('goog.dom');
  * the persistent storage may not store information.
  * All the possibilities in next table
  | *|  |xi|  |  |  | expression_star ::= "*" expression
- | *|  |xi|  |  |  | parameter_star ::= "*" [parameter]
+ | *|  |xi|  |  |  | star ::= "*"
+ | *|  |xi|  |  |  | parameter_star ::= "*" parameter
  | *|  |xi|  |  |  | target_star ::= "*" target
  | *|  |xp|  |  |  | star_expr ::= "*" or_expr
  |**|  |xp|  |  |  | expression_star_star ::= "**" expression
@@ -107,7 +110,7 @@ goog.require('goog.dom');
  |  |  |id|  |  |  | identifier ::=
  |  |  |  |:x|  |  | identifier_annotated ::= identifier ":" expression
  |  |  |  |:x|  |  | key_datum ::= expression ":" expression
- |  |  |  |  |=x|  | parameter_defined
+ |  |  |  |  |=x|  | identifier_defined
  |  |  |  |  |=x|  | keyword_item ::= identifier "=" expression
  |  |  |  |  |  |as| dotted_name_as ::= module "as" identifier
  |  |  |  |  |  |as| identifier_as ::= identifier "as" identifier
@@ -142,7 +145,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.owner.consolidateConnections()
       },
       fromType: /** @suppress {globalThis} */ function (type) {
-        if (type === 'eYo.T3.Expr.parameter_star') {
+        if (type === 'eYo.T3.Expr.star') {
+          this.set('*')
+        } else if (type === 'eYo.T3.Expr.parameter_star') {
           this.set('*')
         } else if (type === 'eYo.T3.Expr.star_expr') {
           this.set('*')
@@ -509,7 +514,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       hole_value: 'expression',
       fields: {
         bind: {
-          placeholder: eYo.Msg.Placeholder.TERM,
+          placeholder: /** @suppress {globalThis} */ function () {
+            return this.sourceBlock_.eyo.data.modifier.get() === '*'
+            ? '' : eYo.Msg.Placeholder.TERM
+          },
           validate: true,
           endEditing: true,
           variable: true
@@ -601,7 +609,60 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     }
   },
   output: {
-    check: /** @suppress {globalThis} */ function (block) {
+    check: /** @suppress {globalThis} */ function (type) {
+      return check = {
+        [eYo.T3.Expr.call_expr]: [eYo.T3.Expr.call_expr],
+        [eYo.T3.Expr.subscription]: [
+          eYo.T3.Expr.subscription,
+          eYo.T3.Expr.slicing
+        ],
+        [eYo.T3.Expr.slicing]: [eYo.T3.Expr.slicing],
+        [eYo.T3.Expr.identifier_as]: [
+          eYo.T3.Expr.expression_as,
+          eYo.T3.Expr.dotted_name_as,
+          eYo.T3.Expr.identifier_as
+        ],
+        [eYo.T3.Expr.dotted_name_as]: [
+          eYo.T3.Expr.dotted_name_as,
+          eYo.T3.Expr.expression_as
+        ],
+        [eYo.T3.Expr.expression_as]: [
+          eYo.T3.Expr.expression_as
+        ],
+        [eYo.T3.Expr.attributeref] : [
+          eYo.T3.Expr.attributeref,
+          eYo.T3.Expr.dotted_name
+        ],
+        [eYo.T3.Expr.dotted_name] : [
+          eYo.T3.Expr.dotted_name
+        ],
+        [eYo.T3.Expr.parameter_star_star]: [
+          eYo.T3.Expr.parameter_star_star,
+          eYo.T3.Expr.or_expr_star_star,
+          eYo.T3.Expr.expression_star_star
+        ],
+        [eYo.T3.Expr.or_expr_star_star]: [
+          eYo.T3.Expr.or_expr_star_star,
+          eYo.T3.Expr.expression_star_star
+        ],
+        [eYo.T3.Expr.expression_star_star]: [
+          eYo.T3.Expr.expression_star_star
+        ],
+        [eYo.T3.Expr.star] : [
+          eYo.T3.Expr.star, // "*"
+          eYo.T3.Expr.parameter_star, // "*" parameter
+          eYo.T3.Expr.target_star, // "*" target
+          eYo.T3.Expr.star_expr, // "*" or_expr_all  
+          eYo.T3.Expr.expression_star // "*" expression 
+        ],
+        [eYo.T3.Expr.parameter_star] : [
+          eYo.T3.Expr.parameter_star, // "*" parameter
+          eYo.T3.Expr.target_star, // "*" target
+          eYo.T3.Expr.star_expr, // "*" or_expr_all  
+          eYo.T3.Expr.expression_star // "*" expression 
+        ]
+      } [type]
+
       var variant_d = this.data.variant
       var variant = variant_d.get()
       var check
@@ -637,21 +698,47 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
                 : [eYo.T3.Expr.expression_star_star,
                   eYo.T3.Expr.or_expr_star_star]
             } else if (modifier === '*') {
-              check = nameType === eYo.T3.Expr.identifier
-              ? [eYo.T3.Expr.expression_star,
-                eYo.T3.Expr.parameter_star,
-                eYo.T3.Expr.target_star,
-                eYo.T3.Expr.star_expr]
-              : [eYo.T3.Expr.expression_star,
-                eYo.T3.Expr.target_star,
-                eYo.T3.Expr.star_expr]
+              var target = this.slots.name.input.connection.targetBlock()
+              if (target) {
+                check = target.eyo.getType() === eYo.T3.Expr.identifier
+                ? [eYo.T3.Expr.expression_star,
+                  eYo.T3.Expr.parameter_star,
+                  eYo.T3.Expr.target_star,
+                  eYo.T3.Expr.star_expr]
+                : [eYo.T3.Expr.expression_star,
+                  eYo.T3.Expr.target_star,
+                  eYo.T3.Expr.star_expr]
+              } else if (nameType === eYo.T3.Expr.identifier) {
+                check = this.data.name.get().length
+                ? [eYo.T3.Expr.expression_star,
+                  eYo.T3.Expr.parameter_star,
+                  eYo.T3.Expr.target_star,
+                  eYo.T3.Expr.star_expr]
+                : [eYo.T3.Expr.expression_star,
+                  eYo.T3.Expr.star,
+                  eYo.T3.Expr.target_star,
+                  eYo.T3.Expr.star_expr]
+              } else if (nameType) {
+                check = [
+                  eYo.T3.Expr.expression_star,
+                  eYo.T3.Expr.target_star,
+                  eYo.T3.Expr.star_expr
+                ]
+              } else {
+                check = [
+                  eYo.T3.Expr.star,
+                  eYo.T3.Expr.expression_star,
+                  eYo.T3.Expr.target_star,
+                  eYo.T3.Expr.star_expr
+                ]
+              }
             } else {
               var annotated = this.data.annotation.get()
               var defined = this.data.definition.get()
               if (defined !== eYo.Key.NONE) {
                 check = annotated !== eYo.Key.NONE
-                ? [eYo.T3.Expr.parameter_defined]
-                : [eYo.T3.Expr.parameter_defined,
+                ? [eYo.T3.Expr.identifier_defined]
+                : [eYo.T3.Expr.identifier_defined,
                   eYo.T3.Expr.keyword_item]
               } else if (annotated !== eYo.Key.NONE) {
                 check = [eYo.T3.Expr.identifier_annotated, eYo.T3.Expr.key_datum]
@@ -663,10 +750,11 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
       /*
       * The possible types for the blocks are all primary expression types, namely
-      // * expression_star ::= "*" expression
-      // * parameter_star ::= "*" [parameter]
-      // * target_star ::= "*" target
-      // * star_expr ::= "*" or_expr
+      * expression_star ::= "*" expression
+      * star ::= "*"
+      * parameter_star ::= "*" parameter
+      * target_star ::= "*" target
+      * star_expr ::= "*" or_expr
       * expression_star_star ::= "**" expression
       * parameter_star_star ::= "**" parameter
       * attributeref ::= primary "." identifier
@@ -675,7 +763,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       * identifier ::=
       * identifier_annotated ::= identifier ":" expression
       * key_datum ::= expression ":" expression
-      * parameter_defined ::= parameter "=" expression
+      * identifier_defined ::= parameter "=" expression
       * (with parameter ::= identifier | identifier_annotated)
       * keyword_item ::= identifier "=" expression
       * dotted_name_as ::= module "as" identifier
@@ -719,6 +807,8 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function (block) {
       return eYo.T3.Expr.call_expr
     } else if (variant === variant_d.SLICING) {
       // which one : slicing or subscription ?
+      // The former is more general than the latter
+      // both are used in the same context
       return eYo.T3.Expr.slicing
     } else {
       var variant_d = this.data.variant
@@ -744,13 +834,15 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function (block) {
       } else {
         var definition_d = this.data.definition
         var definition = definition_d.get()
+        var annotation_d = this.data.annotation
+        var annotation = annotation_d.get
         if (definition === definition_d.DEFINED) {
-          return eYo.T3.Expr.parameter_defined
+          return annotation === annotation_d.ANNOTATED
+          ? eYo.T3.Expr.identifier_annotated_defined
+          : eYo.T3.Expr.identifier_defined
         }
         var modifier_d = this.data.modifier
         var modifier = modifier_d.get()
-        var annotation_d = this.data.annotation
-        var annotation = annotation_d.get
         if (annotation === annotation_d.ANNOTATED) {
           if (modifier === '*') {
             return eYo.T3.Expr.parameter_star
@@ -762,13 +854,20 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function (block) {
         }
         // No variant at all
         if (modifier === '*') {
+          /* Things are a bit complicated, possible types
+           * expression_star ::= "*" expression
+           * star ::= "*"
+           * parameter_star ::= "*" parameter
+           * target_star ::= "*" target
+           * star_expr ::= "*" or_expr
+           */
           if (target) {
             var type = target.eyo.getType()
             if (type === eYo.T3.Expr.identifier) {
               return eYo.T3.Expr.parameter_star
             }
             if (eYo.T3.Expr.Check.or_expr_all.indexOf(type) >= 0) {
-              return eYo.T3.Expr.or_expr_star
+              return eYo.T3.Expr.star_expr // === eYo.T3.Expr.or_expr_star
             }
             return eYo.T3.Expr.expression_star
           }
@@ -804,8 +903,8 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function (block) {
  * However, there might be some caveats related to undo management.
  * @param {!Block} block
  */
-eYo.DelegateSvg.Expr.primary.prototype.consolidateType = function (block, type) {
-  eYo.DelegateSvg.Expr.primary.superClass_.consolidateType.call(this, block, type || this.getType())
+eYo.DelegateSvg.Expr.primary.prototype.consolidateType = function (type) {
+  eYo.DelegateSvg.Expr.primary.superClass_.consolidateType.call(this, type || this.getType())
 }
 
 /**

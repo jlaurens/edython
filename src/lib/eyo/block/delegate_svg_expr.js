@@ -70,7 +70,18 @@ eYo.DelegateSvg.Expr.prototype.renderDrawInput_ = function (io) {
  * @private
  */
 eYo.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
+}
 
+/**
+ * Consolidate the connections of the block.
+ * State partial mutator (mutates the state to a possibly unconsistent state).
+ * For edython.
+ * @param {!Blockly.Block} block The block.
+ */
+eYo.DelegateSvg.Expr.consolidateConnections = function () {
+  eYo.DelegateSvg.Expr.superClass_.consolidateConnections.call(this)
+  var block = this.block_
+  block.outputConnection && block.outputConnection.setCheck(block.type)
 }
 
 /**
@@ -459,93 +470,6 @@ eYo.DelegateSvg.Expr.makeSubclass('conditional_expression', {
     }
   }
 })
-
-/**
- * Class for a DelegateSvg, '*...' block.
- * For edython.
- */
-eYo.DelegateSvg.Expr.makeSubclass('starred_expression', {
-  data: {
-    modifier: {
-      STAR: '*',
-      STAR_STAR: '**',
-      all: ['*', '**'],
-      synchronize: true
-    }
-  },
-  fields: {
-    modifier: {
-      css: 'reserved'
-    }
-  },
-  slots: {
-    expression: {
-      order: 1,
-      check: eYo.T3.Expr.Check.expression,
-      hole_value: 'name',
-      didConnect: /** @suppress {globalThis} */ function (oldTargetConnection, oldConnection) {
-        this.eyo.consolidateSource()
-      }
-    }
-  }
-})
-
-/**
- * Set the type dynamically from the modifier.
- * @param {!Blockly.Block} block the owner of the receiver
- */
-eYo.DelegateSvg.Expr.starred_expression.prototype.consolidateType = function (block) {
-  // one of 4 types depending on the modifier and the connected stuff:
-  // expression_star, expression_star_star, or_expr_star_star, star_expr
-  // eYo.T3.Expr.Check.expression
-  // eYo.T3.Expr.Check.or_expr
-  var data = this.data.modifier
-  var withOneStar = data.get() === data.model.STAR
-  var c8n = this.slots.expression.connection
-  var targetC8n = c8n.targetConnection
-  var no_or_expr = false
-  if (targetC8n) {
-    var targetCheck = targetC8n.check_
-    no_or_expr = (function () {
-      for (var i = 0; i < targetCheck.length; i++) {
-        var type = targetCheck[i]
-        if (eYo.T3.Expr.Check.or_expr_all.indexOf(type) >= 0) {
-          return false
-        }
-      }
-      return true
-    }())
-  }
-  if (no_or_expr) {
-    var check = withOneStar ? eYo.T3.Expr.expression_star : eYo.T3.Expr.expression_star_star
-  } else {
-    check = withOneStar ? [eYo.T3.Expr.star_expr, eYo.T3.Expr.expression_star] : [eYo.T3.Expr.or_expr_star_star, eYo.T3.Expr.expression_star_star]
-  }
-  block.outputConnection.setCheck(check)
-}
-
-/**
- * Get the content for the menu item.
- * @param {!Blockly.Block} block The block.
- * @param {string} op op is the operator
- * @private
- */
-eYo.DelegateSvg.Expr.starred_expression.prototype.makeTitle = function (block, op) {
-  return eYo.Do.createSPAN(op, 'eyo-code-reserved')
-}
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-eYo.DelegateSvg.Expr.starred_expression.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  mgr.populateProperties(block, 'modifier')
-  mgr.shouldSeparateInsert()
-  eYo.DelegateSvg.Expr.starred_expression.superClass_.populateContextMenuFirst_.call(this, block, mgr)
-  return true
-}
 
 /**
  * Class for a DelegateSvg, not_test.

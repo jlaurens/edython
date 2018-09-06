@@ -105,13 +105,13 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (function () {
       return Type.unconnected
     }
     var check = target.check_
-    if (goog.array.contains(check, eYo.T3.Expr.parameter_star)) {
+    if (goog.array.contains(check, eYo.T3.Expr.star)) {
       return Type.star
     } else if (goog.array.contains(check, eYo.T3.Expr.parameter_star)) {
       return Type.star
     } else if (goog.array.contains(check, eYo.T3.Expr.parameter_star_star)) {
       return Type.star_star
-    } else if (goog.array.contains(check, eYo.T3.Expr.parameter_defined)) {
+    } else if (goog.array.contains(check, eYo.T3.Expr.identifier_defined)) {
       return Type.default
     } else {
       return Type.parameter
@@ -273,9 +273,10 @@ eYo.Consolidator.Parameter.prototype.getCheck = (function () {
       out = eYo.T3.Expr.Check.parameter.slice()
     }
     if (can_default) {
-      out.push(eYo.T3.Expr.parameter_defined)
+      out.push(eYo.T3.Expr.identifier_defined)
     }
     if (can_star) {
+      out.push(eYo.T3.Expr.star)
       out.push(eYo.T3.Expr.parameter_star)
     }
     if (can_star_star) {
@@ -401,10 +402,11 @@ eYo.DelegateSvg.Expr.makeSubclass('lambda', {
 /**
  * The output check may change depending on the content.
  * For edython.
- * @param {!Blockly.Block} block
+ * @param {!String} type
  */
-eYo.ConnectionDelegate.prototype.consolidateType = function (block) {
-  eYo.ConnectionDelegate.superClass_.consolidateType.call(this, block)
+eYo.ConnectionDelegate.prototype.consolidateType = function (type) {
+  var block = this.connection.sourceBlock_
+  eYo.ConnectionDelegate.superClass_.consolidateType.call(this, type)
   var c8nOut = block.outputConnection
   var input = block.getInput(eYo.Key.EXPRESSION)
   var c8nIn = input.connection

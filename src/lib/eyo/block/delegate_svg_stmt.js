@@ -539,7 +539,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
               console.warn(eYo.Do.format(
                 'Block with both code and expression {0}/{1}',
                 this.key,
-                this.getType()
+                this.getBlockType()
               ))
             }
             this.set(this.CODE)

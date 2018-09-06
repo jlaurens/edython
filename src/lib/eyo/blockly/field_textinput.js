@@ -369,7 +369,7 @@ eYo.FieldInput.prototype.placeholderText = function (clear) {
     var model = this.eyo && this.eyo.model
     if (model) {
       var placeholder = model.placeholder
-      return (goog.isString(placeholder) && placeholder) || (goog.isFunction(placeholder) && placeholder.call(this))
+      return goog.isString(placeholder) || (goog.isFunction(placeholder) && placeholder.call(this))
     }
   }.call(this)) || eYo.Msg.Placeholder.CODE
 }

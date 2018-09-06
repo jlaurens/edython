@@ -427,19 +427,28 @@ eYo.Delegate.Manager.registerAll(eYo.T3.Expr, eYo.Delegate)
 eYo.Delegate.Manager.registerAll(eYo.T3.Stmt, eYo.Delegate)
 
 /**
+ * getType.
+ * The default implementation just returns the type.
+ * Subclassers will use it to return the correct type
+ * depending on their actual inner state.
+ * @return {String} The type of the receiver's block.
+ */
+eYo.DelegateSvg.prototype.getType = function () {
+  return this.block_.type
+}
+
+/**
  * Some blocks may change when their properties change,
  * for example. This message is sent whenever one of the properties
  * declared below changes.
  * The type of the block may change, thus implying some connection changes.
  * The connection checks may change too.
  * For edython.
- * @param {!Blockly.Block} block
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
- * @constructor
  */
-eYo.Delegate.prototype.consolidateType = function (block, type) {
-  this.setupType(type)
+eYo.Delegate.prototype.consolidateType = function (type) {
+  this.setupType(type || this.getType())
 }
 
 /**
@@ -664,7 +673,7 @@ eYo.Delegate.prototype.setupType = function (optNewType) {
 eYo.Delegate.prototype.consolidateConnections = function () {
   var b = this.block_
   var f = function (c8n) {
-    c8n && c8n.eyo.model.check(b.type)
+    c8n && c8n.eyo.updateCheck(b.type)
   }
   f(b.outputConnection)
   f(b.previousConnection)

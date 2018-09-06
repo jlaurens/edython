@@ -94,7 +94,7 @@ eYo.Data.prototype.getOwner = function () {
 /**
  * Get the type of the underlying block.
  */
-eYo.Data.prototype.getType = function () {
+eYo.Data.prototype.getBlockType = function () {
   return this.owner.block_.type
 }
 
@@ -452,7 +452,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
     return
   }
   if (this.model_synchronize_lock || this.model.synchronize === true) {
-    goog.asserts.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.getType())
+    goog.asserts.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.getBlockType())
     var field = this.field
     if (field) {
       Blockly.Events.disable()
@@ -640,7 +640,7 @@ eYo.Data.prototype.waitOn = function () {
  */
 eYo.Data.prototype.waitOff = function () {
   goog.asserts.assert(this.wait_ > 0, eYo.Do.format('Too  many `waitOn` {0}/{1}',
-    this.key, this.getType()))
+    this.key, this.getBlockType()))
   if (--this.wait_ === 0) {
     this.consolidate()
   }

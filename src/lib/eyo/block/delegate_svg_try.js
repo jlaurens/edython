@@ -45,9 +45,8 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       ],
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var eyo = this.owner
-        var block = eyo.block_
-        eyo.consolidateType(block)
+        this.owner.consolidateType()
+        this.owner.consolidateConnections()
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
@@ -100,9 +99,9 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
  * @param {!Blockly.Block} block
  * @param {?String} type
  */
-eYo.DelegateSvg.Stmt.except_part.prototype.consolidateType = function (block, type) {
+eYo.DelegateSvg.Stmt.except_part.prototype.consolidateType = function (type) {
   var variant = this.data.variant.get()
-  eYo.DelegateSvg.Stmt.except_part.superClass_.consolidateType.call(this, block, type || (variant > 0 ? eYo.T3.Stmt.except_part : eYo.T3.Stmt.void_except_part))
+  eYo.DelegateSvg.Stmt.except_part.superClass_.consolidateType.call(this, type || (variant > 0 ? eYo.T3.Stmt.except_part : eYo.T3.Stmt.void_except_part))
 }
 
 
@@ -111,8 +110,9 @@ eYo.DelegateSvg.Stmt.except_part.prototype.consolidateType = function (block, ty
  * For edython.
  * @param {!Blockly.Block} block
  */
-eYo.DelegateSvg.Stmt.except_part.prototype.consolidateConnections = function (block) {
-  eYo.DelegateSvg.Stmt.except_part.superClass_.consolidateConnections.call(this, block)
+eYo.DelegateSvg.Stmt.except_part.prototype.consolidateConnections = function () {
+  eYo.DelegateSvg.Stmt.except_part.superClass_.consolidateConnections.call(this)
+  var block = this.block_
   var f = function (k) {
     if (block.type === eYo.T3.Stmt[k]) {
       block.nextConnection.setCheck(eYo.T3.Stmt.Next[k])

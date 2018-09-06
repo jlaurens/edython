@@ -142,14 +142,16 @@ parameter_list ::=
 | '**' tfpdef
 
 <pre>
-parameter_list ::=
-parameter_star ::= "*" [parameter]
+parameter_list ::= 
+star ::= "*"
+parameter_star ::= "*" parameter
 parameter_star_star ::= "**" parameter
-parameter_any ::= parameter | defparameter | parameter_star | parameter_star_star
+parameter_any ::= parameter | defparameter | star | parameter_star | parameter_star_star
+identifier_annotated     ::=  identifier ":" expression
+identifier_defined       ::=  identifier "=" expression
+identifier_annotated_defined ::=  identifier_annotated "=" expression
 parameter               ::=  identifier | identifier_annotated
-identifier_annotated    ::=  identifier ":" expression
-defparameter            ::=  parameter | parameter_defined
-parameter_defined       ::=  parameter "=" expression
+defparameter            ::=  parameter | identifier_defined | identifier_annotated_defined
 </pre>
 
 classdef    ::=  [decorators] "class" classname [inheritance] ":" suite

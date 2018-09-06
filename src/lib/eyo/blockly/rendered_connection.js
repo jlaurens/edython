@@ -140,7 +140,7 @@ eYo.ConnectionDelegate.prototype.didConnect = function (oldTargetConnection, tar
 }
 
 /**
- * Will connect.
+ * Will disconnect.
  * Default implementation does nothing.
  * This can be overriden at block creation time.
  */
@@ -157,6 +157,17 @@ eYo.ConnectionDelegate.prototype.willDisconnect = function () {
  */
 eYo.ConnectionDelegate.prototype.didDisconnect = function (oldTargetConnection) {
   this.model && goog.isFunction(this.model.didDisconnect) && this.model.didDisconnect.call(this.connection, oldTargetConnection)
+}
+
+/**
+ * Set the receiver's connection's check_ array according to the given type.
+ * The defaults implements asks the model then sets the check_ property.
+ * @param {!String} type
+ */
+eYo.ConnectionDelegate.prototype.updateCheck = function (type) {
+  if (this.model.check) {
+    this.connection.setCheck(this.model.check.call(this, type))
+  } 
 }
 
 /**

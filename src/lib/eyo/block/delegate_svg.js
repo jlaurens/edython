@@ -716,6 +716,7 @@ eYo.DelegateSvg.prototype.render = function (optBubble) {
   // block.workspace.logAllConnections('didRender')
 }
 
+
 /**
  * This methods is a state mutator.
  * At return type, the block is in a consistent state.
@@ -729,7 +730,7 @@ eYo.DelegateSvg.prototype.consolidate = function (block, deep, force) {
     // do not consolidate while un(re)doing
     return
   }
-  this.consolidateType(block)
+  this.consolidateType()
   this.foreachData(function () {
     this.consolidate()
   })
@@ -747,7 +748,7 @@ eYo.DelegateSvg.prototype.consolidate = function (block, deep, force) {
       }
     }
   }
-  this.consolidateConnections(block)
+  this.consolidateConnections()
 }
 
 /**
