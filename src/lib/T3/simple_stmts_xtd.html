@@ -60,13 +60,14 @@ import_stmt/import ::=  "import" non_void_module_as_list
 non_void_module_as_list ::= module_as ( "," module_as )*
 module_as ::= module | dotted_name_as
 dotted_name_as ::= dotted_name "as" identifier
-term  ::=  "not just an identifier"
 # relative_module ::=  "."* module | "."+
 relative_module ::=  module | parent_module
 parent_module ::= '.'+ [module]
 module ::= dotted_name | identifier
 non_void_import_identifier_as_list ::= import_identifier_as ( "," import_identifier_as )*
-identifier ::=
+name ::= blah blah blah
+void_name ::= ""
+identifier ::= name | void_name
 import_identifier_as ::= identifier | identifier_as
 identifier_as ::= identifier "as" identifier
 #the usage name of an imported identifier
