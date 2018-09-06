@@ -801,7 +801,7 @@ eYo.DelegateSvg.Manager.register('dotted_name')
  */
 eYo.DelegateSvg.Expr.primary.prototype.getType = function () {
   var block = this.block_
-  var f = function (block) {
+  var f = function () {
     var variant_d = this.data.variant
     var variant = variant_d.get()
     if (variant === variant_d.CALL_EXPR) {
