@@ -894,11 +894,11 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function () {
     }
     // unreachable
   }
-  if (this.savedDataStateCount === this.dataStateCount) {
+  if (this.savedStateCount === this.stateCount) {
     return block.type
   }
   block.type = f.call(this)
-  this.savedDataStateCount = this.dataStateCount
+  this.savedStateCount = this.stateCount
   // console.log('type:', block.type)
   return block.type
 }

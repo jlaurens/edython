@@ -128,14 +128,18 @@ eYo.ConnectionDelegate.prototype.willConnect = function (targetConnection) {
 
 /**
  * Did connect.
- * Default implementation does nothing.
- * This can be overriden at block creation time.
+ * Increment the block step.
  * @param {Blockly.Connection} oldTargetConnection
  *     what was previously connected to connection
  * @param {Blockly.Connection} targetOldConnection
  *     what was previously connected to the actual connection.targetConnection
  */
 eYo.ConnectionDelegate.prototype.didConnect = function (oldTargetConnection, targetOldConnection) {
+  this.sourceBlock_.eyo.incrementChangeCount()
+  this.targetConnection.sourceBlock_.eyo.incrementChangeCount()
+  // No need to increment step for the old connections because
+  // if any, they were already disconnected and
+  // the step has already been incremented then.
   this.model && goog.isFunction(this.model.didConnect) && this.model.didConnect.call(this.connection, oldTargetConnection, targetOldConnection)
 }
 
@@ -156,6 +160,8 @@ eYo.ConnectionDelegate.prototype.willDisconnect = function () {
  * @param {Blockly.Connection} oldTargetConnection  what was previously connected to connection
  */
 eYo.ConnectionDelegate.prototype.didDisconnect = function (oldTargetConnection) {
+  this.sourceBlock_.eyo.incrementChangeCount()
+  oldTargetConnection.sourceBlock_.eyo.incrementChangeCount()
   this.model && goog.isFunction(this.model.didDisconnect) && this.model.didDisconnect.call(this.connection, oldTargetConnection)
 }
 

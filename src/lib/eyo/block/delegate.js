@@ -34,6 +34,7 @@ eYo.Delegate = function (block) {
   this.errors = Object.create(null) // just a hash
   this.block_ = block
   block.eyo = this
+  this.changeCount = 0
   var data = this.data = Object.create(null) // just a hash
   var dataModel = this.getModel().data
   var byOrder = []
@@ -89,6 +90,24 @@ goog.inherits(eYo.Delegate, eYo.Helper)
  */
 eYo.Delegate.prototype.getBlock = function () {
   return this.block_
+}
+
+/**
+ * Increment the change count.
+ * The changeCount is used to compute some properties that depend
+ * on the core state. Some changes induce a change in the changeCount
+ * which in turn may induce a change in properties.
+ * Beware of the stability problem.
+ * The changeCount is incremented whenever a data changes,
+ * a child block changes or a connection changes.
+ * This is used by the primary delegate's getType
+ * to cache the return value
+ * For edython.
+ */
+eYo.Delegate.prototype.incrementChangeCount = function () {
+  ++ this.changeCount
+  var parent = this.block_.parentBlock_
+  parent && parent.eyo.incrementChangeCount()
 }
 
 /**
