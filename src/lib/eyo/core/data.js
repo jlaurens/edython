@@ -44,6 +44,7 @@ eYo.Data = function (owner, key, model) {
   goog.asserts.assert(key, 'Missing key')
   goog.asserts.assert(model, 'Missing model')
   this.owner = owner // circular reference
+  owner.dataStateCount = 0
   this.data = owner.data // the owner's other data objects
   this.value_ = /** Object|null */ undefined
   this.key = key
@@ -123,6 +124,7 @@ eYo.Data.prototype.rawSet = function (newValue, notUndoable) {
   this.value_ = newValue
   this.duringChange(oldValue, newValue)
   this.afterChange(oldValue, newValue)
+  ++this.owner.dataStateCount
 }
 
 /**

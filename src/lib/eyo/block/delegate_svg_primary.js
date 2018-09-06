@@ -799,7 +799,8 @@ eYo.DelegateSvg.Manager.register('dotted_name')
  * @param {!Block} block
  * @return {String} The input object, or null if input does not exist or undefined for the default block implementation.
  */
-eYo.DelegateSvg.Expr.primary.prototype.getType = function (block) {
+eYo.DelegateSvg.Expr.primary.prototype.getType = function () {
+  var block = this.block_
   var f = function (block) {
     var variant_d = this.data.variant
     var variant = variant_d.get()
@@ -893,9 +894,13 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function (block) {
     }
     // unreachable
   }
-  var type = f.call(this, block)
-  // console.log('type:', type)
-  return type
+  if (this.savedDataStateCount === this.dataStateCount) {
+    return block.type
+  }
+  block.type = f.call(this)
+  this.savedDataStateCount = this.dataStateCount
+  // console.log('type:', block.type)
+  return block.type
 }
 
 /**
