@@ -601,7 +601,7 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
     c8n.eyo.wrapped_ && c8n.setHidden(true) // Don't ever connect any block to this
     if (deep) {
       var target = c8n.targetBlock()
-      target && target.eyo.consolidate.apply(this, arguments)
+      target && target.eyo.consolidate.apply(target.eyo, arguments)
     }
   }
 }

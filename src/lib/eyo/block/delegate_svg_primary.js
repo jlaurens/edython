@@ -138,7 +138,7 @@ goog.require('goog.dom');
  * Drawing the blocks would be deferred to another delegate.
  * This is a design that must be chosen in some future development.
  * For the moment, to make the difference between the different flavours
- * primary blocks, we have the variant and the subType.
+ * primary blocks, we have the variant and the subtype.
  * Variants allow to chose between call, slicing, alias, other.
  * Call and slicing expressions are straightforward.
  * Alias expressions are used in 4 different contexts
@@ -285,8 +285,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       init: '',
       synchronize: true,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var subType = this.data.subType.get()
-        return ((subType === eYo.T3.Expr.unset || subType === eYo.T3.Expr.custom_identifier) && {validated: newValue}) || null
+        var subtype = this.data.subtype.get()
+        return ((subtype === eYo.T3.Expr.unset || subtype === eYo.T3.Expr.custom_identifier) && {validated: newValue}) || null
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
@@ -476,7 +476,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         var type = eYo.Do.typeOfString(newValue)
-        this.data.subType.set(type.raw)
+        this.data.subtype.set(type.raw)
       },
       consolidate: /** @suppress {globalThis} */ function () {
         this.didChange(undefined, this.get())
@@ -491,7 +491,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
       }
     },
-    subType: {
+    subtype: {
       order: 10001,
       all: [
         eYo.T3.Expr.unset,
@@ -698,9 +698,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       } else if (variant === variant_d.SLICING) {
         check = [eYo.T3.Expr.subscription, eYo.T3.Expr.slicing]
       } else if (variant === variant_d.ALIASED) {
-        var nameType_d = this.data.subType
-        var subType = nameType_d.get()
-        check = subType === eYo.T3.Expr.unset || subType === eYo.T3.Expr.custom_identifier
+        var nameType_d = this.data.subtype
+        var subtype = nameType_d.get()
+        check = subtype === eYo.T3.Expr.unset || subtype === eYo.T3.Expr.custom_identifier
           ? [eYo.T3.Expr.expression_as, eYo.T3.Expr.dotted_name_as, eYo.T3.Expr.identifier_as]
           : [eYo.T3.Expr.expression_as, eYo.T3.Expr.dotted_name_as]
       } else {
@@ -709,8 +709,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         if (dotted !== dotted_d.NONE) {
           check = [eYo.T3.Expr.attributeref]
         } else {
-          subType = this.data.subType.get()
-          if (subType === eYo.T3.Expr.custom_parent_module) {
+          subtype = this.data.subtype.get()
+          if (subtype === eYo.T3.Expr.custom_parent_module) {
             check = eYo.T3.Expr.parent_module
           } else {
             var modifier = this.data.modifier.get()
@@ -718,8 +718,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
               // expression_star_star ::= "**" expression
               // parameter_star_star ::= "**" parameter
               // or_expr_star_star ::=  "**" or_expr
-              check = subType === eYo.T3.Expr.unset
-                || subType === eYo.T3.Expr.custom_identifier
+              check = subtype === eYo.T3.Expr.unset
+                || subtype === eYo.T3.Expr.custom_identifier
                 ? [eYo.T3.Expr.expression_star_star,
                   eYo.T3.Expr.parameter_star_star,
                   eYo.T3.Expr.or_expr_star_star]
@@ -737,17 +737,17 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
                 : [eYo.T3.Expr.expression_star,
                   eYo.T3.Expr.target_star,
                   eYo.T3.Expr.star_expr]
-              } else if (subType === eYo.T3.Expr.custom_identifier) {
+              } else if (subtype === eYo.T3.Expr.custom_identifier) {
                 check = [eYo.T3.Expr.expression_star,
                   eYo.T3.Expr.parameter_star,
                   eYo.T3.Expr.target_star,
                   eYo.T3.Expr.star_expr]
-              } else if (subType === eYo.T3.Expr.unset) {
+              } else if (subtype === eYo.T3.Expr.unset) {
                 check = [eYo.T3.Expr.expression_star,
                   eYo.T3.Expr.star,
                   eYo.T3.Expr.target_star,
                   eYo.T3.Expr.star_expr]
-              } else if (subType) {
+              } else if (subtype) {
                 check = [
                   eYo.T3.Expr.expression_star,
                   eYo.T3.Expr.target_star,
@@ -825,7 +825,7 @@ eYo.DelegateSvg.Manager.register('dotted_name')
 /**
  * getType.
  * The type depends on the variant and the modifiers.
- * As side effect, the subType is set.
+ * As side effect, the subtype is set.
  */
 eYo.DelegateSvg.Expr.primary.prototype.getType = function () {
   var block = this.block_
@@ -841,22 +841,20 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function () {
         // both are used in the same context
         return eYo.T3.Expr.slicing
       } else {
-        var targetType = this.slots && this.slots.name.targetBlockType()
-        var variant_d = this.data.variant
-        var variant = variant_d.get()
+        var name_s_type = this.slots && this.slots.name.targetBlockType()
         var name_d = this.data.name
         var name = name_d.get()
         var ts = eYo.Do.typeOfString(name)
-        var type = ts.expr
-        var subType = ts.raw
-        this.data.subType.set(subType)
+        var type = ts.expr || eYo.T3.Expr.identifier
+        var subtype = ts.raw || eYo.T3.Expr.unset
+        this.data.subtype.set(subtype)
         if (variant === variant_d.ALIASED) {
           // 1) dotted_name_as            : /*   ::= dotted_name "as" identifier                        (The import statement) */ "eyo:dotted_name_as",
           // condition: `name` field is like a dotted name or name slot is free or name slot is connected to a dotted name like block
-          if (targetType) {
-            if (targetType === eYo.T3.Expr.identifier) {
+          if (name_s_type) {
+            if (name_s_type === eYo.T3.Expr.identifier) {
               return eYo.T3.Expr.identifier_as
-            } else if (targetType === eYo.T3.Expr.dotted_name) {
+            } else if (name_s_type === eYo.T3.Expr.dotted_name) {
               return eYo.T3.Expr.dotted_name_as
             } else {
               return eYo.T3.Expr.expression_as
@@ -869,12 +867,11 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function () {
           }
         } else {
           // No variant at all
-          var subType = this.data.subType.get()
-          var targetSubtype = this.slots && this.slots.name.targetBlockSubtype()
+          var name_s_subtype = this.slots && this.slots.name.targetBlockSubtype()
           var definition_d = this.data.definition
           var definition = definition_d.get()
           var annotation_d = this.data.annotation
-          var annotation = annotation_d.get
+          var annotation = annotation_d.get()
           if (definition === definition_d.DEFINED) {
             return annotation === annotation_d.ANNOTATED
             ? eYo.T3.Expr.identifier_annotated_defined
@@ -884,13 +881,13 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function () {
           var modifier = modifier_d.get()
           if (annotation === annotation_d.ANNOTATED) {
             if (modifier === '*') {
-              return subType === eYo.T3.Expr.unset || targetSubType === eYo.T3.Expr.unset
+              return subtype === eYo.T3.Expr.unset || name_s_subtype === eYo.T3.Expr.unset
               ? eYo.T3.Expr.star
               : eYo.T3.Expr.parameter_star
             } else if (modifier === '**') {
               return eYo.T3.Expr.parameter_star_star
             } else {
-              return targetType && targetType !== eYo.T3.Expr.identifier
+              return name_s_type && name_s_type !== eYo.T3.Expr.identifier
               ? eYo.T3.Expr.key_datum
               : eYo.T3.Expr.identifier_annotated
             }
@@ -906,13 +903,13 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function () {
              * "*" type is both a target_star and a star_expr.
              * We may not simply rely on the block type to update the connections check array.
              */
-            if (targetType) {
-              if (targetType === eYo.T3.Expr.identifier) {
-                return targetSubtype === eYo.T3.Expr.unset
+            if (name_s_type) {
+              if (name_s_type === eYo.T3.Expr.identifier) {
+                return name_s_subtype === eYo.T3.Expr.unset
                 ? eYo.T3.Expr.star
                 : eYo.T3.Expr.parameter_star
               }
-              if (eYo.T3.Expr.Check.or_expr_all.indexOf(targetType) >= 0) {
+              if (eYo.T3.Expr.Check.or_expr_all.indexOf(name_s_type) >= 0) {
                 return eYo.T3.Expr.star_expr // === eYo.T3.Expr.or_expr_star
               }
               return eYo.T3.Expr.expression_star
@@ -921,21 +918,26 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function () {
             ? eYo.T3.Expr.star
             : eYo.T3.Expr.parameter_star
           } else if (modifier === '**') {
-            return targetType && targetType !== eYo.T3.Expr.identifier
+            return name_s_type && name_s_type !== eYo.T3.Expr.identifier
             ? eYo.T3.Expr.parameter_star_star
             : eYo.T3.Expr.expression_star_star
           }
           var dotted_d = this.data.dotted
           var dotted = dotted_d.get()
           if (dotted !== dotted_d.NONE) {
-            return eYo.T3.Expr.attributeref
+            return eYo.T3.Expr.attributeref 
           }
-          return this.data.subType.get()
+          return type
         }
       }
       // unreachable
     }
-    this.setupType(f.call(this))
+    var type = f.call(this)
+    if (type === eYo.T3.Expr.unset) {
+      console.error('This is an error!')
+      type = f.call(this)
+    }
+    this.setupType(type)
     this.savedChangeCount_type = this.changeCount
   }
   // console.log('type:', block.type)
@@ -943,12 +945,12 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function () {
 }
 
 /**
- * The subType depends on the variant and the modifiers.
+ * The subtype depends on the variant and the modifiers.
  * Set by getType as side effect.
  */
 eYo.DelegateSvg.Expr.primary.prototype.getSubtype = function () {
   this.getType()
-  return this.data.subType.get()
+  return this.data.subtype.get()
 }
 
 /**

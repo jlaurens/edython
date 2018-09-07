@@ -275,8 +275,8 @@ eYo.DelegateSvg.Expr.argument_list.prototype.createConsolidator = eYo.Decorate.r
     if (block.parentBlock_) {
       var parent = block.parentBlock_.eyo
       var n = parent.data.name.get()
-      var m = parent.data.module.get()
-      var Ss = eYo.Signature[m]
+      var h = parent.data.holder.get()
+      var Ss = eYo.Signature[h]
       var s = Ss && Ss[n]
       var C10r = (s && s.consolidator) || D.consolidator || eYo.Consolidator.List
       if (!this.consolidator || this.consolidator.constructor !== C10r) {

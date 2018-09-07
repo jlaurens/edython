@@ -671,6 +671,9 @@ eYo.Delegate.prototype.setupType = function (optNewType) {
   if (!optNewType && !block.type) {
     console.error('Error!')
   }
+  if (optNewType === eYo.T3.Expr.unset) {
+    console.error('C\'est une erreur!')
+  }
   var block = this.block_
   if (goog.isDef(optNewType) && block.type === optNewType) {
     return
