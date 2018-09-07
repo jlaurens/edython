@@ -671,7 +671,7 @@ eYo.Do.typeOfString = function (candidate, module) {
 /**
  * The css class for the given text
  * For edython.
- * @param {!string} txt The text toyield_expr
+ * @param {!string} txt The text to yield_expr
  * @return {string}
  */
 eYo.Do.cssClassForText = function (txt) {
