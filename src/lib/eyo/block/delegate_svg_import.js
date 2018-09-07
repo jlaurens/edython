@@ -258,7 +258,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('future_statement', {
 })
 
 eYo.DelegateSvg.Import.T3s = [
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.non_void_module_as_list,
   eYo.T3.Expr.non_void_import_identifier_as_list,
   eYo.T3.Stmt.import_stmt,

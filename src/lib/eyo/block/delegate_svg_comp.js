@@ -177,6 +177,6 @@ eYo.DelegateSvg.Comprehension.T3s = [
   eYo.T3.Expr.comp_if,
   eYo.T3.Expr.comp_iter_list,
   eYo.T3.Expr.dict_comprehension,
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.key_datum,
 ]
