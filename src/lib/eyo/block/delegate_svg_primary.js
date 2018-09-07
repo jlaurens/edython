@@ -223,10 +223,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         var holder_d = this.data.holder
         holder_d.setIncog(newValue !== this.MODULE)
         var slots = this.owner.slots
-        var parent_s = slots.parent
-        if (parent_s) {
-          parent_s.required = newValue === this.PARENT
-          parent_s.setIncog()
+        var holder_s = slots.holder
+        if (holder_s) {
+          holder_s.required = newValue === this.PARENT
+          holder_s.setIncog()
         }
         slots.dot && slots.dot.setIncog(newValue === this.NONE)
         this.data.name.synchronize()
@@ -518,10 +518,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           endEditing: true,
           placeholder: eYo.Msg.Placeholder.MODULE
         }
-      }
-    },
-    parent: {
-      order: 51,
+      },
       check: eYo.T3.Expr.Check.primary,
       hole_value: eYo.Msg.Placeholder.PRIMARY
     },
