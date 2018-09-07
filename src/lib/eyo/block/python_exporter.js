@@ -83,7 +83,7 @@ eYo.PythonExporter.prototype.exportExpression_ = function (block) {
     } while ((slot = slot.next))
   } else {
     // list blocks
-    block.eyo.consolidate(block)
+    block.eyo.consolidate()
     var e8r = block.eyo.inputEnumerator(block)
     while (e8r.next()) {
       if (e8r.here !== block.eyo.inputSuite) {

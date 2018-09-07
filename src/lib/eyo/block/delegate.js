@@ -242,7 +242,7 @@ eYo.Delegate.Manager = (function () {
    * and in general
    * key in me.get(key).eyo.types
    * but this is not a requirement!
-   * In particular, some blocks share a bseic do nothing delegate
+   * In particular, some blocks share a basic do nothing delegate
    * because they are not meant to really exist yet.
    @return the constructor created
    */
@@ -716,27 +716,6 @@ eYo.Delegate.prototype.consolidateSubtype = function (subtype) {
 }
 
 /**
- * Set the connection check array.
- * The connections are supposed to be configured once.
- * This method may disconnect blocks as side effect,
- * thus interacting with the undo manager.
- * After initialization, this should be called whenever
- * the block type has changed.
- * @param {!Blockly.Block} block to be initialized.
- * @constructor
- */
-eYo.Delegate.prototype.consolidateConnections = function () {
-  var b = this.block_
-  var f = function (c8n) {
-    c8n && c8n.eyo.updateCheck(b.type)
-  }
-  f(b.outputConnection)
-  f(b.previousConnection)
-  f(b.nextConnection)
-  f(this.inputSuite && this.inputSuite.connection)
-}
-
-/**
  * Initialize the block connections.
  * Called from receiver's initBlock method.
  * @param {!Blockly.Block} block to be initialized..
@@ -764,6 +743,29 @@ eYo.Delegate.prototype.initConnections = function (block) {
       this.inputSuite.connection.eyo.model = D
     }
   }
+}
+
+/**
+ * Set the connection check array.
+ * The connections are supposed to be configured once.
+ * This method may disconnect blocks as side effect,
+ * thus interacting with the undo manager.
+ * After initialization, this should be called whenever
+ * the block type has changed.
+ * @param {!Blockly.Block} block to be initialized.
+ * @constructor
+ */
+eYo.Delegate.prototype.consolidateConnections = function () {
+  var b = this.block_
+  var t = this.getType()
+  var st = this.getSubtype()
+  var f = function (c8n) {
+    c8n && c8n.eyo.updateCheck(t, st)
+  }
+  f(b.outputConnection)
+  f(b.previousConnection)
+  f(b.nextConnection)
+  f(this.inputSuite && this.inputSuite.connection)
 }
 
 /**
@@ -1313,7 +1315,7 @@ eYo.Delegate.prototype.setIncog = function (block, incog) {
     setupIncog(input)
   }
   if (!incog) { // for lists mainly
-    this.consolidate(block) // no deep consolidation because connected blocs were consolidated above
+    this.consolidate() // no deep consolidation because connected blocs were consolidated above
   }
   return true
 }

@@ -329,15 +329,35 @@ eYo.DelegateSvg.Group.makeSubclass('else_part', {
   },
   statement: {
     previous: {
+      // this is always a connection delegate
       didConnect: /** @suppress {globalThis} */ function (oldTargetConnection, oldConnection) {
-        this.eyo.consolidateSource()
+        this.consolidateSource()
       },
       didDisconnect: /** @suppress {globalThis} */ function (oldConnection) {
-        this.eyo.consolidateSource()
+        this.consolidateSource()
+      },
+      check: /** @suppress {globalThis} */ function (type) {
+        return [
+          type === eYo.T3.Stmt.else_part
+          ? eYo.T3.Stmt.Previous.else_part
+          : type === eYo.T3.Stmt.try_else_part
+            ? eYo.T3.Stmt.Previous.try_else_part
+            : eYo.T3.Stmt.Previous.last_else_part
+        ]
+      }
+    },
+    next: {
+      check: /** @suppress {globalThis} */ function (type) {
+        return [
+          type === eYo.T3.Stmt.else_part
+          ? eYo.T3.Stmt.Next.else_part
+          : type === eYo.T3.Stmt.try_else_part
+            ? eYo.T3.Stmt.Next.try_else_part
+            : eYo.T3.Stmt.Next.last_else_part
+        ]
       }
     }
-  }
-})
+  }})
 
 eYo.DelegateSvg.Stmt.last_else_part = eYo.DelegateSvg.Stmt.try_else_part = eYo.DelegateSvg.Stmt.else_part
 eYo.DelegateSvg.Manager.register('try_else_part')
@@ -354,36 +374,11 @@ eYo.DelegateSvg.Manager.register('last_else_part')
  *     type-specific functions for this block.
  * @constructor
  */
-eYo.DelegateSvg.Stmt.else_part.prototype.consolidateConnections = function () {
-  eYo.DelegateSvg.Stmt.else_part.superClass_.consolidateConnections.call(this)
+eYo.DelegateSvg.Stmt.else_part.prototype.getType = function () {
   var block = this.block_
-  var T3 = eYo.T3.Stmt
-  var f = function (key) {
-    if (block.type === T3[key]) {
-      block.previousConnection.setCheck(T3.Previous[key])
-      block.nextConnection.setCheck(T3.Next[key])
-      return true
-    }
-  }
-  f ('else_part') || f ('try_else_part') || f ('last_else_part')
-}
-
-/**
- * This block may have one of 3 types: else_part, last_else_part, try_else_part.
- * else_part covers both last_else_part and try_else_part.
- * If the block cannot be of type last_else_part, then its type is try_else_part
- * and conversely. If the block can be of both types, then it is of type else_part.
- * First the previous connection tries to constrain the type,
- * then the next connection.
- * @param {!Blockly.Block} block Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
- */
-eYo.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (type) {
-  var block = this.block_
-  if (!type) {
+  if (this.savedChangeCount_type !== this.changeCount) {
     var T3 = eYo.T3.Stmt
-    type = T3.else_part
+    var type = T3.else_part
     var targetConnection
     if ((targetConnection = block.previousConnection.targetConnection)) {
       var target = targetConnection.getSourceBlock()
@@ -402,8 +397,10 @@ eYo.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (type) {
         type = T3.last_else_part
       }
     }  
+    this.setupType(type)
+    this.savedChangeCount_type = this.changeCount
   }
-  eYo.DelegateSvg.Stmt.else_part.superClass_.consolidateType.call(this, type)
+  return block.type
 }
 
 /**

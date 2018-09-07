@@ -927,11 +927,11 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function () {
     }
     // unreachable
   }
-  if (this.savedChangeCount === this.changeCount) {
+  if (this.savedChangeCount_type === this.changeCount) {
     return block.type
   }
   this.setupType(f.call(this))
-  this.savedChangeCount = this.changeCount
+  this.savedChangeCount_type = this.changeCount
   // console.log('type:', block.type)
   return block.type
 }

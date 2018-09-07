@@ -85,37 +85,40 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
         }
       }
     }
+  },
+  statement: {
+    previous: {
+      check: /** @suppress {globalThis} */ function (type) {
+        return type === eYo.T3.Stmt.except_part
+        ? eYo.T3.Stmt.Previous.except_part
+        : eYo.T3.Stmt.Previous.void_except_part
+      }
+    },
+    next: {
+      check: /** @suppress {globalThis} */ function (type) {
+        return type === eYo.T3.Stmt.except_part
+        ? eYo.T3.Stmt.Next.except_part
+        : eYo.T3.Stmt.Next.void_except_part
+      }
+    }
   }
 })
 
 /**
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
- * @param {!Blockly.Block} block
- * @param {?String} type
  */
-eYo.DelegateSvg.Stmt.except_part.prototype.consolidateType = function (type) {
-  var variant = this.data.variant.get()
-  eYo.DelegateSvg.Stmt.except_part.superClass_.consolidateType.call(this, type || (variant > 0 ? eYo.T3.Stmt.except_part : eYo.T3.Stmt.void_except_part))
-}
-
-
-/**
- * The type and connection depend on the properties modifier, value and variant.
- * For edython.
- * @param {!Blockly.Block} block
- */
-eYo.DelegateSvg.Stmt.except_part.prototype.consolidateConnections = function () {
-  eYo.DelegateSvg.Stmt.except_part.superClass_.consolidateConnections.call(this)
-  var block = this.block_
-  var f = function (k) {
-    if (block.type === eYo.T3.Stmt[k]) {
-      block.nextConnection.setCheck(eYo.T3.Stmt.Next[k])
-      block.previousConnection.setCheck(eYo.T3.Stmt.Previous[k])
-      return true
-    }
+eYo.DelegateSvg.Stmt.except_part.prototype.getType = function () {
+  var block = this.block
+  if (this.savedChangeCount_type !== this.changeCount) {
+    this.setupType(
+      this.data.variant.get() > 0
+      ? eYo.T3.Stmt.except_part
+      : eYo.T3.Stmt.void_except_part
+    )
+    this.savedChangeCount_type = this.changeCount
   }
-  f('except_part') || f('void_except_part')
+  return block.type
 }
 
 /**

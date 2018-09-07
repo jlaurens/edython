@@ -744,7 +744,7 @@ eYo.DelegateSvg.prototype.consolidate = function (deep, force) {
     var x
     while (e8r.next()) {
       if ((x = e8r.here.connection) && (x = x.targetBlock())) {
-        x.eyo.consolidate(x, deep, force)
+        x.eyo.consolidate(deep, force)
       }
     }
   }
@@ -2021,7 +2021,7 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
           }
         }
       }
-      block.eyo.consolidate(block)
+      block.eyo.consolidate()
     }
     return block
   }
@@ -2060,7 +2060,7 @@ eYo.DelegateSvg.prototype.beReady = function (block) {
     }
     this.inputSuite && this.inputSuite.eyo.beReady()
     block.nextConnection && block.nextConnection.eyo.beReady()
-    this.consolidate(block)
+    this.consolidate()
     this.synchronizeData(block)
     this.synchronizeSlots(block)
     var parent = block.outputConnection && block.outputConnection.targetBlock()

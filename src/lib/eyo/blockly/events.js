@@ -153,7 +153,7 @@ eYo.Data.prototype.setTrusted__ = function (newValue, noRender) {
     this.beforeChange(oldValue, newValue)
     this.value_ = newValue
     this.duringChange(oldValue, newValue)
-    eyo.consolidate(block)
+    eyo.consolidate()
     if (!this.noUndo && Blockly.Events.isEnabled()) {
       Blockly.Events.fire(new Blockly.Events.BlockChange(
         block, eYo.Const.Event.DATA + this.key, null, oldValue, newValue))

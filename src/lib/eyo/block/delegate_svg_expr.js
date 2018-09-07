@@ -73,18 +73,6 @@ eYo.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
 }
 
 /**
- * Consolidate the connections of the block.
- * State partial mutator (mutates the state to a possibly unconsistent state).
- * For edython.
- * @param {!Blockly.Block} block The block.
- */
-eYo.DelegateSvg.Expr.consolidateConnections = function () {
-  eYo.DelegateSvg.Expr.superClass_.consolidateConnections.call(this)
-  var block = this.block_
-  block.outputConnection && block.outputConnection.setCheck(block.type)
-}
-
-/**
  * Did connect this block's connection to another connection.
  * When conecting locked blocks, select the receiver.
  * @param {!Blockly.Block} block

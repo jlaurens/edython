@@ -26,10 +26,11 @@ goog.require('eYo.T3')
 
 /**
  * Class for a connection delegate.
- * @param {Blockly.Connection} connection the connection owning the delegate
+ * @param {!Blockly.Connection} connection the connection owning the delegate
  * @constructor
  */
 eYo.ConnectionDelegate = function (connection) {
+  goog.asserts.assert(connection, 'A connection delegate MUST belong to a connection')
   this.connection = connection
 }
 
@@ -80,6 +81,13 @@ eYo.ConnectionDelegate.prototype.beReady = function () {
 }
 
 /**
+ * Convenient method to get the source block of the receiver's connection.
+ */
+eYo.ConnectionDelegate.prototype.sourceBlock() = function () {
+  return this.conection.sourceBlock_
+}
+
+/**
  * Get the incognito state.
  */
 eYo.ConnectionDelegate.prototype.isIncog = function () {
@@ -123,7 +131,7 @@ eYo.ConnectionDelegate.prototype.setIncog = function (incog) {
  * @param {Blockly.Connection} targetConnection
  */
 eYo.ConnectionDelegate.prototype.willConnect = function (targetConnection) {
-  this.model && goog.isFunction(this.model.willConnect) && this.model.willConnect.call(this.connection, targetConnection)
+  this.model && goog.isFunction(this.model.willConnect) && this.model.willConnect.call(this, targetConnection)
 }
 
 /**
@@ -140,7 +148,7 @@ eYo.ConnectionDelegate.prototype.didConnect = function (oldTargetConnection, tar
   // No need to increment step for the old connections because
   // if any, they were already disconnected and
   // the step has already been incremented then.
-  this.model && goog.isFunction(this.model.didConnect) && this.model.didConnect.call(this.connection, oldTargetConnection, targetOldConnection)
+  this.model && goog.isFunction(this.model.didConnect) && this.model.didConnect.call(this, oldTargetConnection, targetOldConnection)
 }
 
 /**
@@ -149,7 +157,7 @@ eYo.ConnectionDelegate.prototype.didConnect = function (oldTargetConnection, tar
  * This can be overriden at block creation time.
  */
 eYo.ConnectionDelegate.prototype.willDisconnect = function () {
-  this.model && goog.isFunction(this.model.willDisconnect) && this.model.willDisconnect.call(this.connection)
+  this.model && goog.isFunction(this.model.willDisconnect) && this.model.willDisconnect.call(this)
 }
 
 /**
@@ -162,18 +170,19 @@ eYo.ConnectionDelegate.prototype.willDisconnect = function () {
 eYo.ConnectionDelegate.prototype.didDisconnect = function (oldTargetConnection) {
   this.connection.sourceBlock_.eyo.incrementChangeCount()
   oldTargetConnection.sourceBlock_.eyo.incrementChangeCount()
-  this.model && goog.isFunction(this.model.didDisconnect) && this.model.didDisconnect.call(this.connection, oldTargetConnection)
+  this.model && goog.isFunction(this.model.didDisconnect) && this.model.didDisconnect.call(this, oldTargetConnection)
 }
 
 /**
  * Set the receiver's connection's check_ array according to the given type.
  * The defaults implements asks the model then sets the check_ property.
  * @param {!String} type
+ * @param {?String} subtype
  */
-eYo.ConnectionDelegate.prototype.updateCheck = function (type) {
+eYo.ConnectionDelegate.prototype.updateCheck = function () {
   if (this.model.check) {
-    this.connection.setCheck(this.model.check.call(this, type))
-  } 
+    this.connection.setCheck(this.model.check.apply(this, arguments))
+  }
 }
 
 /**
@@ -712,7 +721,7 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function (parentBlock
     childBlock.eyo.didDisconnect(childBlock, childC8n, parentC8n)
     parentC8n.eyo.didDisconnect(childC8n)
     childC8n.eyo.didDisconnect(parentC8n)
-    parentBlock.eyo.consolidate(parentBlock, true) // update all connections, possibly deleting parentC8n !
+    parentBlock.eyo.consolidate(true) // update all connections, possibly deleting parentC8n !
   } catch (err) {
     console.error(err)
     throw err
@@ -875,7 +884,7 @@ Blockly.RenderedConnection.prototype.onCheckChanged_ = function () {
   eYo.RenderedConnection.onCheckChanged_.call(this)
   var block = this.targetBlock()
   if (block) {
-    block.eyo.consolidate(block, false, true)
+    block.eyo.consolidate(false, true)
   }
 }
 
@@ -936,7 +945,7 @@ Blockly.Connection.lastConnectionInRow_ = function (startBlock, orphanBlock) {
  */
 eYo.ConnectionDelegate.prototype.consolidateSource = function () {
   var block = this.connection.getSourceBlock()
-  block.eyo.consolidate(block)
+  block.eyo.consolidate()
 }
 
 /**

@@ -167,7 +167,7 @@ eYo.DelegateSvg.Expr.makeSubclass('unary', {
   slots: {
     rhs: {
       check: /** @suppress {globalThis} */ function () {
-        return this.owner.getOperatorModel().rhs
+        return [this.sourceBlock().eyo.getOperatorModel().rhs]
       }
     }
   }
@@ -199,21 +199,12 @@ eYo.DelegateSvg.Expr.unary.getOperatorModel = function () {
  * Unstable state.
  * For edython.
  */
-eYo.DelegateSvg.Expr.unary.consolidateType = function (type) {
-  eYo.DelegateSvg.Expr.unary.superClass_.consolidateType.call(this, type || this.getOperatorModel().type)
-}
-
-/**
- * Consolidate the connections of the block.
- * State partial mutator (mutates the state to a possibly unconsistent state).
- * For edython.
- * @param {!Blockly.Block} block The block.
- */
-eYo.DelegateSvg.Expr.unary.consolidateConnections = function (block) {
-  eYo.DelegateSvg.Expr.unary.superClass_.consolidateConnections.call(this)
-  var m = this.getOperatorModel()
-  var block = this.block_
-  block.outputConnection && block.outputConnection.setCheck(m.rhs)
+eYo.DelegateSvg.Expr.unary.getType = function () {
+  if (this.savedChangeCount_type !== this.changeCount) {
+    this.setupType(this.getOperatorModel().type)
+    this.savedChangeCount_type = this.changeCount
+  }
+  return block.type
 }
 
 /**

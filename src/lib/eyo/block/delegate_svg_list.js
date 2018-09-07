@@ -33,7 +33,7 @@ eYo.DelegateSvg.Expr.makeSubclass('List', {
  */
 eYo.DelegateSvg.List.prototype.willRender_ = function (block) {
   eYo.DelegateSvg.List.superClass_.willRender_.call(this, block)
-  this.consolidate(block)
+  this.consolidate()
 }
 
 /**
@@ -96,7 +96,7 @@ eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_metho
       goog.asserts.assert(this.consolidator, eYo.Do.format('Could not create the consolidator {0}', block.type))
     }
     if (force) {
-      this.consolidate(block)
+      this.consolidate()
     }
   }
 })
@@ -136,7 +136,7 @@ eYo.DelegateSvg.List.prototype.removeItems = function (block) {
         target.dispose()
       }
     }
-    this.consolidate(block)
+    this.consolidate()
   } catch (err) {
     console.error(err)
     throw err

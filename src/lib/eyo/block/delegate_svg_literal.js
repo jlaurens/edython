@@ -258,23 +258,15 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
     }
   },
   output: {
-    check: eYo.T3.Expr.shortstringliteral
+    check: /** @suppress globalThis */ function () {
+      return [this.sourceBlock().eyo.data.subtype.get()]
+    }
   }
 })
 
 eYo.DelegateSvg.Expr.shortstringliteral = eYo.DelegateSvg.Expr.shortbytesliteral = eYo.DelegateSvg.Expr.shortliteral
 eYo.DelegateSvg.Manager.register('shortstringliteral')
 eYo.DelegateSvg.Manager.register('shortbytesliteral')
-
-/**
- * Set the type dynamically from the prefix.
- * @param {!Blockly.Block} block the owner of the receiver
- */
-eYo.DelegateSvg.Expr.shortliteral.prototype.consolidateConnections = function () {
-  eYo.DelegateSvg.Expr.shortliteral.superClass_.consolidateConnections.call(this)
-  var type = this.data.subtype.get()
-  this.block_.outputConnection.setCheck([type])
-}
 
 /**
  * Get the content for the menu item.

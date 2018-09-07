@@ -234,7 +234,7 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
         this.didChange(oldValue, newValue)
         this.owner.createConsolidator()
         this.owner.consolidator.data.ary = newValue
-        this.owner.consolidate(this.owner.block_)
+        this.owner.consolidate()
       }
     },
     mandatory: {
@@ -294,7 +294,7 @@ eYo.DelegateSvg.Expr.argument_list.prototype.createConsolidator = eYo.Decorate.r
       this.consolidator = new eYo.Consolidator.List(D)
     }
     if (force) {
-      this.consolidate(block)
+      this.consolidate()
     }
   }
 })

@@ -906,7 +906,7 @@ eYo.Xml.fromDom = function (block, element) {
             }
           }
         })
-        eyo.consolidate(block)
+        eyo.consolidate()
       }
       // read flow and suite
       var statement = function (c8n, key) {
