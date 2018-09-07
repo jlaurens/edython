@@ -905,7 +905,7 @@ eYo.ConnectionDelegate.prototype.rightConnection = function() {
     }
     var block = this.connection.sourceBlock_
   } else if ((block = this.connection.sourceBlock_)) {
-    var e8r = block.eyo.inputEnumerator(block)
+    var e8r = block.eyo.inputEnumerator()
     if (e8r) {
       while (e8r.next()) {
         if (e8r.here.connection && this.connection === e8r.here.connection) {

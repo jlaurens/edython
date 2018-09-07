@@ -303,7 +303,7 @@ eYo.Data.decorateChange = function (key, do_it) {
     var lock = key + '_lock'
     if (this[lock]) {
       if (goog.isFunction(do_it)) {
-        do_it.call(this, before, after)
+        do_it.apply(this, arguments)
       }
       return
     }
@@ -318,7 +318,7 @@ eYo.Data.decorateChange = function (key, do_it) {
       if (goog.isFunction(model_do_it)) {
         try {
           this[model_lock] = true
-          model_do_it.call(this, before, after)
+          model_do_it.apply(this, arguments)
         } finally {
           delete this[model_lock]
         }

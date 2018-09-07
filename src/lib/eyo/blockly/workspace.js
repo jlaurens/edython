@@ -229,7 +229,7 @@ Blockly.Workspace.prototype.getBlockById = function (id) {
   }
   var m = XRegExp.exec(id, eYo.XRE.id_wrapped)
   if (m && (block = eYo.Workspace.savedGetBlockById.call(this, m.id))) {
-    var e8r = block.eyo.inputEnumerator(block)
+    var e8r = block.eyo.inputEnumerator()
     while (e8r.next()) {
       var c8n = e8r.here.connection
       if (c8n) {

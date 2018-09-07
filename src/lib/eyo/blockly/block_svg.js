@@ -200,7 +200,7 @@ eYo.BlockSvg.prototype.addSelect = function () {
   }
   // ensure that the svgGroup is the last in the list
   this.bringToFront()
-  var e8r = this.eyo.inputEnumerator(this)
+  var e8r = this.eyo.inputEnumerator()
   while (e8r.next()) {
     for (var j = 0, field; (field = e8r.here.fieldRow[j++]);) {
       if (goog.isFunction(field.addSelect)) {
@@ -247,7 +247,7 @@ eYo.BlockSvg.prototype.removeSelect = function () {
   if (!this.eyo.selectedConnection || ((B = Blockly.selected) && B.selectedConnectionSource_ !== this)) {
     goog.dom.removeNode(this.eyo.svgPathConnection_)
   }
-  var e8r = this.eyo.inputEnumerator(this)
+  var e8r = this.eyo.inputEnumerator()
   while (e8r.next()) {
     for (var j = 0, field; (field = e8r.here.fieldRow[j++]);) {
       if (goog.isFunction(field.removeSelect)) {

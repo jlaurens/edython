@@ -177,7 +177,7 @@ eYo.KeyHandler = (function () {
           // we try to select another one, with possibly the same type
           // First we take a look at B : is there an unconnected input connection
           var doFirst = function (block, type) {
-            var e8r = block.eyo.inputEnumerator(block)
+            var e8r = block.eyo.inputEnumerator()
             while (e8r.next()) {
               if ((c8n = e8r.here.connection) && c8n.type === type) {
                 if (!c8n.hidden_ && !c8n.targetConnection && !c8n.eyo.doNotSelect) {
@@ -202,7 +202,7 @@ eYo.KeyHandler = (function () {
         // no selected connection
         var parent = B
         do {
-          var e8r = parent.eyo.inputEnumerator(parent)
+          var e8r = parent.eyo.inputEnumerator()
           while (e8r.next()) {
             if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && !c8n.eyo.optional_ && !c8n.targetConnection && !c8n.hidden_) {
               eYo.SelectedConnection = c8n

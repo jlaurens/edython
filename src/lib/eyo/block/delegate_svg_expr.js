@@ -312,7 +312,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
       })) {
         return foundC8n
       }
-      const e8r = B.eyo.inputEnumerator(B)
+      const e8r = B.eyo.inputEnumerator()
       while (e8r.next()) {
         var c8n = e8r.here.connection
         if (c8n) {

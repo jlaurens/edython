@@ -162,7 +162,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
   xml: {
     types: [
       eYo.T3.Expr.identifier,
-      eYo.T3.Expr.identifier,
       eYo.T3.Expr.parent_module,
       eYo.T3.Expr.dotted_name,
       eYo.T3.Expr.attributeref,
@@ -210,8 +209,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       init: eYo.Key.NONE,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var module_d = this.data.module
-        module_d.required = newValue === this.MODULE
+        var holder_d = this.data.holder
+        holder_d.required = newValue === this.MODULE
         if (newValue !== this.NONE) {
           // this is a dotted expression
           var annotation_d = this.data.annotation
@@ -221,8 +220,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        var module_d = this.data.module
-        module_d.setIncog(newValue !== this.MODULE)
+        var holder_d = this.data.holder
+        holder_d.setIncog(newValue !== this.MODULE)
         var slots = this.owner.slots
         var parent_s = slots.parent
         if (parent_s) {
@@ -239,7 +238,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       xml: false
     },
-    module: {
+    holder: {
       order: 201,
       init: eYo.Key.BUILTIN, // will be saved only when not built in
       validate: /** @suppress {globalThis} */ function (newValue) {
@@ -253,17 +252,14 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        if (this.isRequiredFromModel() && this.get() !== eYo.Key.BUILTIN) {
+        if (this.isRequiredFromModel() && newValue !== eYo.Key.BUILTIN) {
           var dotted_d = this.owner.data.dotted
           dotted_d.set(dotted_d.MODULE)
         }
       },
-      consolidate: /** @suppress {globalThis} */ function () {
-        this.didChange(undefined, this.get())
-      },
       synchronize: true,
       xml: {
-        // the module will be saved only when not builtin
+        // the holder will be saved only when not builtin
         save: /** @suppress {globalThis} */ function (el) {
           if (this.get() !== eYo.Key.BUILTIN) {
             this.save(el)
@@ -314,9 +310,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.didChange(oldValue, newValue)
         // override previous data if necessary
         if (newValue !== eYo.Key.NONE) {
-          // no module nor dotted nor variant
+          // no holder nor dotted nor variant
           this.data.dotted.set(eYo.Key.NONE)
-          this.data.module.set(null)
+          this.data.holder.set(null)
           this.data.variant.set(eYo.Key.NONE)
         }
       },
@@ -349,10 +345,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.didChange(oldValue, newValue)
         // override previous data if necessary
         if (newValue !== eYo.Key.NONE) {
-          // no module nor dotted nor variant
+          // no holder nor dotted nor variant
           this.data.dotted.set(eYo.Key.NONE)
           this.data.variant.set(eYo.Key.NONE)
-          this.data.module.set(null)
+          this.data.holder.set(null)
         }
       },
       synchronize: function (newValue) {
@@ -514,7 +510,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     }
   },
   slots: {
-    module: {
+    holder: {
       order: 50,
       fields: {
         bind: {
@@ -640,7 +636,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     }
   },
   output: {
-    check: /** @suppress {globalThis} */ function (type) {
+    check: /** @suppress {globalThis} */ function (type, subtype) {
       return check = {
         [eYo.T3.Expr.call_expr]: [eYo.T3.Expr.call_expr],
         [eYo.T3.Expr.subscription]: [
@@ -731,7 +727,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
                   eYo.T3.Expr.or_expr_star_star]
             } else if (modifier === '*') {
               console.error("this.slots.name.getTarget[Name]Type()")
-              var target = this.slots.name.input.connection.targetBlock()
+              var target = this.slots.name.targetBlock()
               if (target) {
                 check = target.eyo.getType() === eYo.T3.Expr.identifier
                 ? [eYo.T3.Expr.expression_star,
@@ -829,111 +825,130 @@ eYo.DelegateSvg.Manager.register('dotted_name')
 /**
  * getType.
  * The type depends on the variant and the modifiers.
- * @param {!Block} block
- * @return {String} The input object, or null if input does not exist or undefined for the default block implementation.
+ * As side effect, the subType is set.
  */
 eYo.DelegateSvg.Expr.primary.prototype.getType = function () {
   var block = this.block_
-  var f = function () {
-    var variant_d = this.data.variant
-    var variant = variant_d.get()
-    if (variant === variant_d.CALL_EXPR) {
-      return eYo.T3.Expr.call_expr
-    } else if (variant === variant_d.SLICING) {
-      // which one : slicing or subscription ?
-      // The former is more general than the latter
-      // both are used in the same context
-      return eYo.T3.Expr.slicing
-    } else {
+  if (this.savedChangeCount_type !== this.changeCount) {
+    var f = function () {
       var variant_d = this.data.variant
       var variant = variant_d.get()
-      var subType = this.data.subType.get()
-      var target = this.slots && this.slots.name.input.connection.targetBlock()
-      if (variant === variant_d.ALIASED) {
-        // 1) dotted_name_as            : /*   ::= dotted_name "as" identifier                        (The import statement) */ "eyo:dotted_name_as",
-        // condition: `name` field is like a dotted name or name slot is free or name slot is connected to a dotted name like block
-        if (target) {
-          if (target.eyo.getType() === eYo.T3.Expr.identifier) {
-            return eYo.T3.Expr.identifier_as
-          } else if (target.eyo.getType() === eYo.T3.Expr.dotted_name) {
-            return eYo.T3.Expr.dotted_name_as
-          } else {
-            return eYo.T3.Expr.expression_as
-          }
-        } else if (subType === eYo.T3.Expr.identifier) {
-          return eYo.T3.Expr.identifier_as
-        } else /* if (type === eYo.T3.Expr.dotted_name) */ {
-          return eYo.T3.Expr.dotted_name_as
-        }
+      if (variant === variant_d.CALL_EXPR) {
+        return eYo.T3.Expr.call_expr
+      } else if (variant === variant_d.SLICING) {
+        // which one : slicing or subscription ?
+        // The former is more general than the latter
+        // both are used in the same context
+        return eYo.T3.Expr.slicing
       } else {
-        var definition_d = this.data.definition
-        var definition = definition_d.get()
-        var annotation_d = this.data.annotation
-        var annotation = annotation_d.get
-        if (definition === definition_d.DEFINED) {
-          return annotation === annotation_d.ANNOTATED
-          ? eYo.T3.Expr.identifier_annotated_defined
-          : eYo.T3.Expr.identifier_defined
-        }
-        var modifier_d = this.data.modifier
-        var modifier = modifier_d.get()
-        if (annotation === annotation_d.ANNOTATED) {
-          if (modifier === '*') {
-            return eYo.T3.Expr.parameter_star
-          } else if (modifier === '**') {
-            return eYo.T3.Expr.parameter_star_star
-          } else {
-            return eYo.T3.Expr.identifier_annotated
-          }
-        }
-        // No variant at all
-        if (modifier === '*') {
-          /* Things are a bit complicated, possible types
-           * expression_star ::= "*" expression
-           * star ::= "*"
-           * parameter_star ::= "*" parameter
-           * target_star ::= "*" target
-           * star_expr ::= "*" or_expr
-           */
-          if (target) {
-            var subType = target.eyo.getType()
-            if (subType === eYo.T3.Expr.identifier) {
-              return eYo.T3.Expr.parameter_star
+        var targetType = this.slots && this.slots.name.targetBlockType()
+        var variant_d = this.data.variant
+        var variant = variant_d.get()
+        var name_d = this.data.name
+        var name = name_d.get()
+        var ts = eYo.Do.typeOfString(name)
+        var type = ts.expr
+        var subType = ts.raw
+        this.data.subType.set(subType)
+        if (variant === variant_d.ALIASED) {
+          // 1) dotted_name_as            : /*   ::= dotted_name "as" identifier                        (The import statement) */ "eyo:dotted_name_as",
+          // condition: `name` field is like a dotted name or name slot is free or name slot is connected to a dotted name like block
+          if (targetType) {
+            if (targetType === eYo.T3.Expr.identifier) {
+              return eYo.T3.Expr.identifier_as
+            } else if (targetType === eYo.T3.Expr.dotted_name) {
+              return eYo.T3.Expr.dotted_name_as
+            } else {
+              return eYo.T3.Expr.expression_as
             }
-            if (eYo.T3.Expr.Check.or_expr_all.indexOf(subType) >= 0) {
-              return eYo.T3.Expr.star_expr // === eYo.T3.Expr.or_expr_star
-            }
-            return eYo.T3.Expr.expression_star
+            // unreachable
+          } else if (type === eYo.T3.Expr.identifier) {
+            return eYo.T3.Expr.identifier_as
+          } else /* if (type === eYo.T3.Expr.dotted_name) */ {
+            return eYo.T3.Expr.dotted_name_as
           }
-          return eYo.T3.Expr.parameter_star
-        } else if (modifier === '**') {
-          if (target) {
-            var subType = target.eyo.getType()
-            if (subType === eYo.T3.Expr.identifier) {
+        } else {
+          // No variant at all
+          var subType = this.data.subType.get()
+          var targetSubtype = this.slots && this.slots.name.targetBlockSubtype()
+          var definition_d = this.data.definition
+          var definition = definition_d.get()
+          var annotation_d = this.data.annotation
+          var annotation = annotation_d.get
+          if (definition === definition_d.DEFINED) {
+            return annotation === annotation_d.ANNOTATED
+            ? eYo.T3.Expr.identifier_annotated_defined
+            : eYo.T3.Expr.identifier_defined
+          }
+          var modifier_d = this.data.modifier
+          var modifier = modifier_d.get()
+          if (annotation === annotation_d.ANNOTATED) {
+            if (modifier === '*') {
+              return subType === eYo.T3.Expr.unset || targetSubType === eYo.T3.Expr.unset
+              ? eYo.T3.Expr.star
+              : eYo.T3.Expr.parameter_star
+            } else if (modifier === '**') {
               return eYo.T3.Expr.parameter_star_star
+            } else {
+              return targetType && targetType !== eYo.T3.Expr.identifier
+              ? eYo.T3.Expr.key_datum
+              : eYo.T3.Expr.identifier_annotated
             }
-            return eYo.T3.Expr.expression_star_star
-          } else {
-            return eYo.T3.Expr.parameter_star_star
           }
+          if (modifier === '*') {
+            /* Things are a bit complicated, possible types
+             * expression_star ::= "*" expression
+             * star ::= "*"
+             * parameter_star ::= "*" parameter
+             * target_star ::= "*" target
+             * star_expr ::= "*" or_expr
+             * For type in [identifier, attributeref, subscription, slicing]
+             * "*" type is both a target_star and a star_expr.
+             * We may not simply rely on the block type to update the connections check array.
+             */
+            if (targetType) {
+              if (targetType === eYo.T3.Expr.identifier) {
+                return targetSubtype === eYo.T3.Expr.unset
+                ? eYo.T3.Expr.star
+                : eYo.T3.Expr.parameter_star
+              }
+              if (eYo.T3.Expr.Check.or_expr_all.indexOf(targetType) >= 0) {
+                return eYo.T3.Expr.star_expr // === eYo.T3.Expr.or_expr_star
+              }
+              return eYo.T3.Expr.expression_star
+            }
+            return subtype === eYo.T3.Expr.unset
+            ? eYo.T3.Expr.star
+            : eYo.T3.Expr.parameter_star
+          } else if (modifier === '**') {
+            return targetType && targetType !== eYo.T3.Expr.identifier
+            ? eYo.T3.Expr.parameter_star_star
+            : eYo.T3.Expr.expression_star_star
+          }
+          var dotted_d = this.data.dotted
+          var dotted = dotted_d.get()
+          if (dotted !== dotted_d.NONE) {
+            return eYo.T3.Expr.attributeref
+          }
+          return this.data.subType.get()
         }
-        var dotted_d = this.data.dotted
-        var dotted = dotted_d.get()
-        if (dotted !== dotted_d.NONE) {
-          return eYo.T3.Expr.attributeref
-        }
-        return this.data.subType.get()
       }
+      // unreachable
     }
-    // unreachable
+    this.setupType(f.call(this))
+    this.savedChangeCount_type = this.changeCount
   }
-  if (this.savedChangeCount_type === this.changeCount) {
-    return block.type
-  }
-  this.setupType(f.call(this))
-  this.savedChangeCount_type = this.changeCount
   // console.log('type:', block.type)
   return block.type
+}
+
+/**
+ * The subType depends on the variant and the modifiers.
+ * Set by getType as side effect.
+ */
+eYo.DelegateSvg.Expr.primary.prototype.getSubtype = function () {
+  this.getType()
+  return this.data.subType.get()
 }
 
 /**

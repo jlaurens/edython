@@ -352,7 +352,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
         // if (c8n.type === Blockly.INPUT_VALUE) {
         //   var parent = block
         //   do {
-        //     var e8r = parent.eyo.inputEnumerator(parent)
+        //     var e8r = parent.eyo.inputEnumerator()
         //     while (e8r.next()) {
         //       if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && !c8n.eyo.optional_ && !c8n.targetConnection) {
         //         eYo.SelectedConnection = c8n

@@ -1344,8 +1344,8 @@ eYo.Delegate.prototype.xmlType = function (block) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise
  */
-eYo.Delegate.prototype.inputEnumerator = function (block, all) {
-  return eYo.Do.Enumerator(block.inputList, all ? undefined : function (x) {
+eYo.Delegate.prototype.inputEnumerator = function (all) {
+  return eYo.Do.Enumerator(this.block_.inputList, all ? undefined : function (x) {
     return !x.connection || !x.connection.eyo.slot || !x.connection.eyo.slot.isIncog()
   })
 }

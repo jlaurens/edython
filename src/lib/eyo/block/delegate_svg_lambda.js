@@ -305,7 +305,7 @@ eYo.DelegateSvg.List.makeSubclass('parameter_list', {
  * @private
  */
 eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var e8r = block.eyo.inputEnumerator(block)
+  var e8r = block.eyo.inputEnumerator()
   var F = function (modifier, flags, msg) {
     var BB
     eYo.Events.Disabler.wrap(function () {

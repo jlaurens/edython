@@ -83,8 +83,8 @@ eYo.ConnectionDelegate.prototype.beReady = function () {
 /**
  * Convenient method to get the source block of the receiver's connection.
  */
-eYo.ConnectionDelegate.prototype.sourceBlock() = function () {
-  return this.conection.sourceBlock_
+eYo.ConnectionDelegate.prototype.sourceBlock = function () {
+  return this.connection.sourceBlock_
 }
 
 /**
@@ -762,7 +762,7 @@ Blockly.Connection.uniqueConnection_original = Blockly.Connection.uniqueConnecti
  * @suppress {accessControls}
  */
 Blockly.Connection.uniqueConnection_ = function (block, orphanBlock) {
-  var e8r = block.eyo.inputEnumerator(block)
+  var e8r = block.eyo.inputEnumerator()
   while (e8r.next()) {
     var c8n = e8r.here.connection
     if (c8n && c8n.type === Blockly.INPUT_VALUE &&
