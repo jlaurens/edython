@@ -401,11 +401,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.synchronize(newValue)
         this.owner.render() // bad smell
       },
-      isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.owner.consolidateType()
-        this.owner.consolidateSubtype()
-        this.owner.consolidateConnections()
-      },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         if ([this.CALL_EXPR, this.SLICING, this.ALIASED].indexOf(newValue) >= 0) {
           this.data.annotation.set(eYo.Key.NONE)
