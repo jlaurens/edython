@@ -374,6 +374,7 @@ eYo.T3.Expr.custom_literal = '.custom literal'
 eYo.T3.Expr.custom_identifier = '.custom identifier'
 eYo.T3.Expr.custom_dotted_name = '.custom dotted name'
 eYo.T3.Expr.custom_parent_module = '.custom parent module'
+eYo.T3.Expr.unset = '.unset'
 
 eYo.T3.Stmt.control = '.control statement'
 
@@ -387,6 +388,13 @@ eYo.T3.Stmt.control = '.control statement'
 eYo.Do.typeOfString = function (candidate, module) {
   if (!goog.isString(candidate)) {
     return {}
+  }
+  if (!candidate.length) {
+    return {
+      raw: eYo.T3.Expr.identifier,
+      modelExpr: candidate,
+      expr: eYo.T3.Expr.unset
+    }
   }
   if (module === eYo.Key.BUILTIN) {
 
@@ -490,7 +498,7 @@ eYo.Do.typeOfString = function (candidate, module) {
     },
     as: {
       raw: eYo.T3.Expr.reserved_keyword,
-      expr: eYo.T3.Expr.term,
+      expr: eYo.T3.Expr.identifier,
       modelExpr: {
         alias: '?'
       },

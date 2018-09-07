@@ -1205,7 +1205,7 @@ eYo.MenuManager.prototype.populate_movable_parent = function (block) {
     eYo.T3.Expr.dotted_name_as,
     eYo.T3.Expr.identifier_as,
     [eYo.T3.Expr.key_datum, eYo.Key.NAME],
-    [eYo.T3.Expr.term, eYo.Key.NAME],
+    [eYo.T3.Expr.identifier, eYo.Key.NAME],
     [eYo.T3.Expr.proper_slice, eYo.Key.UPPER_BOUND],
     [eYo.T3.Expr.proper_slice, eYo.Key.STRIDE],
     [eYo.T3.Expr.proper_slice, eYo.Key.LOWER_BOUND]

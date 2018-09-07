@@ -127,7 +127,7 @@ eYo.DelegateSvg.Expr.delimitedWorkspaceBlocks = [
 eYo.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks = eYo.DelegateSvg.Expr.argument_list.workspaceBlocks = eYo.Do.arraysMerged([
   eYo.T3.Expr.argument_list,
   eYo.T3.Expr.keyword_item,
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.argument_list_comprehensive,
   eYo.T3.Expr.comprehension
 ], null/* eYo.T3.Expr.Check.expression */)
@@ -136,12 +136,12 @@ eYo.DelegateSvg.Stmt.import_stmt.workspaceBlocks = [
   eYo.T3.Expr.non_void_module_as_list,
   eYo.T3.Expr.import_module,
   eYo.T3.Expr.dotted_name_as,
-  eYo.T3.Expr.term
+  eYo.T3.Expr.identifier
 ]
 
 eYo.DelegateSvg.Expr.dict_comprehension.workspaceBlocks =
 eYo.DelegateSvg.Expr.comprehension.workspaceBlocks = [
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.comp_for,
   eYo.T3.Expr.comp_if,
   eYo.T3.Expr.target_list,
@@ -153,7 +153,7 @@ eYo.DelegateSvg.Expr.comprehension.workspaceBlocks = [
 
 eYo.DelegateSvg.Expr.dict_comprehension.workspaceBlocks = [
   eYo.T3.Expr.comprehension,
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.comp_for,
   eYo.T3.Expr.comp_if,
   eYo.T3.Expr.target_list,
@@ -163,7 +163,7 @@ eYo.DelegateSvg.Expr.dict_comprehension.workspaceBlocks = [
 eYo.DelegateSvg.Expr.a_expr.workspaceBlocks =
 eYo.DelegateSvg.Expr.m_expr.workspaceBlocks =
 eYo.DelegateSvg.Expr.u_expr.workspaceBlocks = [
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.a_expr,
   eYo.T3.Expr.m_expr,
   eYo.T3.Expr.u_expr
@@ -173,7 +173,7 @@ eYo.DelegateSvg.Expr.shift_expr.workspaceBlocks =
 eYo.DelegateSvg.Expr.and_expr.workspaceBlocks =
 eYo.DelegateSvg.Expr.xor_expr.workspaceBlocks =
 eYo.DelegateSvg.Expr.or_expr.workspaceBlocks = [
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.shift_expr,
   eYo.T3.Expr.and_expr,
   eYo.T3.Expr.xor_expr,
@@ -182,21 +182,21 @@ eYo.DelegateSvg.Expr.or_expr.workspaceBlocks = [
 
 eYo.DelegateSvg.Expr.number_comparison.workspaceBlocks =
 eYo.DelegateSvg.Expr.object_comparison.workspaceBlocks = [
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.number_comparison,
   eYo.T3.Expr.object_comparison
 ]
 
 eYo.DelegateSvg.Expr.and_test.workspaceBlocks =
 eYo.DelegateSvg.Expr.or_test.workspaceBlocks = [
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.and_test,
   eYo.T3.Expr.or_test
 ]
 
 eYo.DelegateSvg.Expr.optional_expression_list.workspaceBlocks = [
-  eYo.T3.Expr.term,
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.optional_expression_list
 ]
 
@@ -208,14 +208,14 @@ eYo.DelegateSvg.Expr.key_datum_list_comprehensive.workspaceBlocks = [
 
 eYo.DelegateSvg.Stmt.yield_stmt.workspaceBlocks =
 eYo.DelegateSvg.Expr.yield_expression.workspaceBlocks = [
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.yield_expression,
   eYo.T3.Stmt.yield_stmt,
   eYo.T3.Expr.yield_expression_list
 ]
 
 eYo.DelegateSvg.Stmt.import_stmt.workspaceBlocks = [
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.dotted_name_as,
   eYo.T3.Expr.non_void_module_as_list,
   eYo.T3.Expr.import_module,
@@ -236,7 +236,7 @@ eYo.DelegateSvg.Stmt.with_part.workspaceBlocks = eYo.Do.arraysMerged([
   eYo.T3.Stmt.while_part,
   eYo.T3.Stmt.for_part,
   eYo.T3.Stmt.with_part,
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.target_list,
   eYo.T3.Expr.expression_list,
   eYo.T3.Expr.with_item_list
@@ -246,7 +246,7 @@ eYo.T3.Expr.Check.expression)
 eYo.DelegateSvg.Expr.lambda.workspaceBlocks = eYo.Do.arraysMerged([
   eYo.T3.Expr.parameter_list,
   eYo.T3.Expr.lambda,
-  eYo.T3.Expr.term
+  eYo.T3.Expr.identifier
 ],
 eYo.T3.Expr.Check.expression,
 eYo.T3.Expr.Check.expression_nocond
@@ -254,7 +254,7 @@ eYo.T3.Expr.Check.expression_nocond
 
 eYo.DelegateSvg.Expr.parameter_list.workspaceBlocks = eYo.Do.arraysMerged([
   eYo.T3.Expr.parameter_list,
-  eYo.T3.Expr.term
+  eYo.T3.Expr.identifier
 ]
 )
 
@@ -268,7 +268,7 @@ eYo.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks = eYo.DelegateS
   eYo.T3.Expr.argument_list,
   eYo.T3.Expr.starred_expression,
   eYo.T3.Expr.keyword_item,
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.argument_list_comprehensive,
   eYo.T3.Expr.comprehension
 ], null/* eYo.T3.Expr.Check.expression */)
@@ -285,7 +285,7 @@ eYo.DelegateSvg.Stmt.global_nonlocal_stmt.workspaceBlocks =
 [
   eYo.T3.Stmt.global_nonlocal_stmt,
   eYo.T3.Expr.non_void_identifier_list,
-  eYo.T3.Expr.term
+  eYo.T3.Expr.identifier
 ]
 
 eYo.DelegateSvg.Expr.shortliteral.workspaceBlocks =
@@ -298,14 +298,14 @@ eYo.DelegateSvg.Expr.numberliteral.workspaceBlocks = [
 
 eYo.DelegateSvg.Expr.starred_item_list_comprehensive.workspaceBlocks = [
   eYo.T3.Expr.starred_item_list_comprehensive,
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.comprehension
 ]
 
 eYo.DelegateSvg.Expr.list_display.workspaceBlocks = eYo.Do.arraysMerged([
   eYo.T3.Expr.starred_item_list_comprehensive,
   eYo.T3.Expr.list_display,
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.star_expr,
   eYo.T3.Expr.comprehension
 ], eYo.T3.Expr.Check.starred_item)
@@ -313,7 +313,7 @@ eYo.DelegateSvg.Expr.list_display.workspaceBlocks = eYo.Do.arraysMerged([
 eYo.DelegateSvg.Stmt.decorator.workspaceBlocks =
 eYo.DelegateSvg.Stmt.funcdef_part.workspaceBlocks = eYo.Do.arraysMerged([
   eYo.T3.Stmt.decorator,
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.dotted_name,
   eYo.T3.Stmt.funcdef_part,
   eYo.T3.Stmt.classdef_part
@@ -332,7 +332,7 @@ eYo.DelegateSvg.Expr.target_list.workspaceBlocks = eYo.Do.arraysMerged([
   eYo.T3.Stmt.assignment_stmt,
   eYo.T3.Expr.target_list,
   eYo.T3.Expr.void_target_list,
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.yield_expression
 ],
 eYo.T3.Expr.Check.assigned_list,
@@ -343,7 +343,7 @@ eYo.T3.Expr.Check.assigned_expression)
 
 eYo.DelegateSvg.Stmt.augmented_assignment_stmt.workspaceBlocks = eYo.Do.arraysMerged([
   eYo.T3.Stmt.augmented_assignment_stmt,
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.yield_expression_list,
   eYo.T3.Expr.augassign_list
 ],
@@ -363,10 +363,10 @@ eYo.DelegateSvg.Expr.longliteral.workspaceBlocks = eYo.Do.arraysMerged([
 
 eYo.DelegateSvg.Stmt.try_part.workspaceBlocks =
 eYo.DelegateSvg.Stmt.raise_stmt.workspaceBlocks = eYo.Do.arraysMerged([
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Stmt.raise_stmt,
   eYo.T3.Expr.longstringliteral,
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Stmt.try_part,
   eYo.T3.Stmt.except_part,
   eYo.T3.Expr.expression_as_name,
@@ -396,7 +396,7 @@ eYo.DelegateSvg.Expr.set_display.workspaceBlocks =
 eYo.DelegateSvg.Expr.parenth_form.workspaceBlocks =
 eYo.Do.arraysMerged(
   [
-    eYo.T3.Expr.term,
+    eYo.T3.Expr.identifier,
     eYo.T3.Expr.starred_item_list,
     eYo.T3.Expr.parenth_form,
     eYo.T3.Expr.non_void_starred_item_list_comprehensive,

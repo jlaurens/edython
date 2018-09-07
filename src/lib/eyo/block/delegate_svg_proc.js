@@ -381,7 +381,7 @@ eYo.DelegateSvg.Stmt.classdef_part.prototype.populateContextMenuFirst_ = functio
 }
 
 eYo.DelegateSvg.Proc.T3s = [
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Stmt.decorator,
   eYo.T3.Stmt.funcdef_part,
   eYo.T3.Stmt.classdef_part

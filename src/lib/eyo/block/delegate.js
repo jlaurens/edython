@@ -332,13 +332,16 @@ eYo.Delegate.Manager = (function () {
   }
   /**
    * Delegate instance creator.
+   * @param {!Blockly.Block} block
    * @param {?string} prototypeName Name of the language object containing
    */
-  me.create = function (block) {
+  me.create = function (block, prototypeName) {
     goog.asserts.assert(!goog.isString(block), 'API DID CHANGE, update!')
-    var DelegateC9r = C9rs[block.type]
-    goog.asserts.assert(DelegateC9r, 'No delegate for ' + block.type)
-    return DelegateC9r && new DelegateC9r(block)
+    var DelegateC9r = C9rs[prototypeName || block.type]
+    goog.asserts.assert(DelegateC9r, 'No delegate for ' + prototypeName || block.type)
+    var d = DelegateC9r && new DelegateC9r(block)
+    d && d.setupType(prototypeName)
+    return d
   }
   /**
    * Get the Delegate constructor for the given prototype name.
@@ -452,7 +455,7 @@ eYo.Delegate.Manager.registerAll(eYo.T3.Stmt, eYo.Delegate)
  * depending on their actual inner state.
  * @return {String} The type of the receiver's block.
  */
-eYo.DelegateSvg.prototype.getType = function () {
+eYo.Delegate.prototype.getType = function () {
   return this.block_.type
 }
 
@@ -668,6 +671,9 @@ eYo.Delegate.prototype.type_ = undefined
  * @constructor
  */
 eYo.Delegate.prototype.setupType = function (optNewType) {
+  if (!optNewType && !block.type) {
+    console.error('Error!')
+  }
   var block = this.block_
   if (goog.isDef(optNewType) && block.type === optNewType) {
     return
@@ -677,6 +683,9 @@ eYo.Delegate.prototype.setupType = function (optNewType) {
   this.pythonType_ = m ? m[1] : block.type
   this.type_ = m ? 'eyo:' + m[2] : block.type
   this.xmlType_ = m ? m[3] : block.type
+  if (!this.pythonType_) {
+    console.error('Error! this.pythonType_')
+  } 
 }
 
 /**

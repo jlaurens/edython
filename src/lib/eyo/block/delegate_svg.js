@@ -2159,7 +2159,7 @@ eYo.HoleFiller.getData = function (check, value) {
   } else if (check.indexOf(eYo.T3.Expr.identifier) >= 0) {
     if (value) {
       data = {
-        type: eYo.T3.Expr.term,
+        type: eYo.T3.Expr.identifier,
         value: value
       }
     }

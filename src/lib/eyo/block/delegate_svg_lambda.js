@@ -309,7 +309,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
   var F = function (modifier, flags, msg) {
     var BB
     eYo.Events.Disabler.wrap(function () {
-      BB = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.term)
+      BB = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)
       BB.eyo.skipRendering()
       BB.eyo.data.modifier.set(modifier)
       BB.eyo.data.variant.set(flags)
@@ -327,7 +327,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
           mgr.addInsertChild(mgr.newMenuItem(content, function () {
             eYo.Events.setGroup(true)
             try {
-              var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.term)
+              var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)
               try {
                 B.eyo.data.modifier.set(modifier)
                 B.eyo.data.variant.set(flags)
@@ -444,7 +444,7 @@ eYo.ConnectionDelegate.prototype.consolidateType = function (type) {
 }
 
 eYo.DelegateSvg.Lambda.T3s = [
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.parameter_list,
   eYo.T3.Expr.lambda
 ]

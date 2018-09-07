@@ -229,7 +229,7 @@ eYo.FlyoutCategory.random__module = [
       import_module: {
         slots: {
           O: {
-            type: eYo.T3.Expr.term,
+            type: eYo.T3.Expr.identifier,
             data: 'random'
           }
         }

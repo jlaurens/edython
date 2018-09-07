@@ -577,7 +577,7 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
 }
 
 eYo.DelegateSvg.Assignment.T3s = [
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.yield_expression,
   eYo.T3.Expr.target_list,
   eYo.T3.Expr.target_list_list,

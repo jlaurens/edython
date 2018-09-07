@@ -112,7 +112,7 @@ eYo.FlyoutCategory = {
     },
     // '<edython xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0"><s eyo="assignment_stmt"><x eyo="list" slot="assigned"><x eyo="builtin__input_expr" slot="O"></x></x></s></edython>', // eYo.T3.Expr.builtin__input_expr,
     eYo.T3.Stmt.assignment_stmt,
-    eYo.T3.Expr.term,
+    eYo.T3.Expr.identifier,
     eYo.T3.Expr.u_expr,
     {
       type: eYo.T3.Expr.a_expr,
@@ -152,7 +152,7 @@ eYo.FlyoutCategory = {
       }
     },
     {
-      type: eYo.T3.Expr.term,
+      type: eYo.T3.Expr.identifier,
       data: {
         variant: eYo.Key.NAME_ALIAS
       }
@@ -547,7 +547,7 @@ eYo.FlyoutCategory = {
       title: 'text_split'
     },
     {
-      type: eYo.T3.Expr.term,
+      type: eYo.T3.Expr.identifier,
       data: {
         name: 'sep',
         variant: eYo.Key.NAME_DEFINITION
@@ -558,7 +558,7 @@ eYo.FlyoutCategory = {
       title: 'text_split_sep'
     },
     {
-      type: eYo.T3.Expr.term,
+      type: eYo.T3.Expr.identifier,
       data: {
         name: 'maxsplit',
         variant: eYo.Key.NAME_DEFINITION

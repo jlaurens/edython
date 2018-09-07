@@ -117,12 +117,26 @@ goog.require('goog.dom');
  |  |  |  |  |  |()| call_expr
  |  |  |  |  |  |[]| subscription
  |  |  |  |  |  |[]| slicing
+ *
+ * A note on the mutability of the primary block, at least when
+ * the identifier is concerned.
+ * During the editing process, an identifier may not be set.
+ * Some identifiers do need to be set to a non void string whereas
+ * others do not. For example, `foo.bar`, `.bar` and `.` are
+ * valid constructs but `foo.` is not. Both are obtained with a
+ * `identifier.identifier` block construct.
+ * The question is to recognize whether each identifier is void or not.
+ * Let `unset` denote an unset identifier.
+ * `unset.unset` is of type parent_module, attributeref and dotted_name.
+ * 
+ * foo.bar
+
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('primary', {
   xml: {
     types: [
-      eYo.T3.Expr.term,
+      eYo.T3.Expr.identifier,
       eYo.T3.Expr.identifier,
       eYo.T3.Expr.parent_module,
       eYo.T3.Expr.dotted_name,
@@ -583,7 +597,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       wrap: eYo.T3.Expr.argument_list_comprehensive,
       consolidate: /** @suppress {globalThis} */ function () {
-        this.eyo.createConsolidator(this, true)
+        this.input.connection.targetBlock().eyo.createConsolidator(this, true)
         this.consolidate.apply(this, arguments)
       }
     },
@@ -894,11 +908,11 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function () {
     }
     // unreachable
   }
-  if (this.savedStateCount === this.stateCount) {
+  if (this.savedChangeCount === this.changeCount) {
     return block.type
   }
-  block.type = f.call(this)
-  this.savedStateCount = this.stateCount
+  this.setupType(f.call(this))
+  this.savedChangeCount = this.changeCount
   // console.log('type:', block.type)
   return block.type
 }
@@ -1222,7 +1236,7 @@ eYo.DelegateSvg.Stmt.base_call_stmt.makeSubclass('call_stmt', {
 
 eYo.DelegateSvg.Expr.primary.T3s = [
   eYo.T3.Expr.primary,
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.attributeref,
   eYo.T3.Expr.slicing,
   eYo.T3.Expr.subscription,

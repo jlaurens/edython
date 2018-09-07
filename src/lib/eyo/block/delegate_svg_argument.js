@@ -232,7 +232,7 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.owner.createConsolidator(this.owner.block_)
+        this.owner.createConsolidator()
         this.owner.consolidator.data.ary = newValue
         this.owner.consolidate(this.owner.block_)
       }
@@ -244,7 +244,7 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
       undo: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.owner.createConsolidator(this.owner.block_)
+        this.owner.createConsolidator()
         this.owner.consolidator.data.empty = !newValue
         this.owner.consolidate(this.owner.block_)
       }
@@ -264,8 +264,12 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
  * @param {!Block} block
  * @param {boolean} force
  */
-eYo.DelegateSvg.Expr.argument_list.prototype.createConsolidator = eYo.Decorate.reentrant_method('createConsolidator', function (block, force) {
+eYo.DelegateSvg.Expr.argument_list.prototype.createConsolidator = eYo.Decorate.reentrant_method('createConsolidator', function (force) {
   if (!this.consolidator || force) {
+    var block = this.block_
+    if (!block.type) {
+      console.error('unexpected void type')
+    }
     var D = eYo.DelegateSvg.Manager.getModel(block.type).list
     goog.asserts.assert(D, 'inputModel__.list is missing in ' + block.type)
     if (block.parentBlock_) {

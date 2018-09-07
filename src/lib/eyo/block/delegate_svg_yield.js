@@ -176,6 +176,6 @@ eYo.DelegateSvg.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (
 eYo.DelegateSvg.Yield.T3s = [
   eYo.T3.Expr.yield_expression,
   eYo.T3.Stmt.yield_stmt,
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.parenth_form
 ]

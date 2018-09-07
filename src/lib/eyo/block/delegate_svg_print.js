@@ -139,7 +139,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.prototype.populateContextMenuFirst_ = f
     var insert = function (key) {
       eYo.Events.setGroup(true)
       try {
-        var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.term)
+        var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)
         B.eyo.data.name.set(key)
         B.eyo.data.variant.set(eYo.DelegateSvg.Expr.primary.eyo.getModel().data.variant.NAME)
         var c8n = list.inputList[list.inputList.length - 1].connection
@@ -221,7 +221,7 @@ eYo.DelegateSvg.Stmt.builtin__print_stmt.prototype.populateContextMenuFirst_ = f
     var insert = function (key) {
       eYo.Events.setGroup(true)
       try {
-        var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.term)
+        var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)
         B.eyo.data.name.set(key)
         B.eyo.data.variant.set(eYo.DelegateSvg.Expr.primary.eyo.getModel().data.variant.NAME_DEFINITION)
         // we assume that inputList is not void
@@ -272,7 +272,7 @@ eYo.DelegateSvg.Stmt.builtin__print_stmt.prototype.populateContextMenuFirst_ = f
 }
 
 eYo.DelegateSvg.Print.T3s = [
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.builtin__print_expr,
   eYo.T3.Stmt.builtin__print_stmt
 ]

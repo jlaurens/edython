@@ -29,8 +29,7 @@ goog.forwardDeclare('eYo.T3.All')
  * @constructor
  */
 eYo.Block = function (workspace, prototypeName, optId) {
-  this.type = prototypeName
-  this.eyo = eYo.Delegate.Manager.create(this)
+  this.eyo = eYo.Delegate.Manager.create(this, prototypeName)
   eYo.Block.superClass_.constructor.call(this, workspace, prototypeName, optId)
 }
 goog.inherits(eYo.Block, Blockly.Block)

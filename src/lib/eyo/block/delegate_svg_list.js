@@ -46,7 +46,7 @@ eYo.DelegateSvg.List.prototype.willRender_ = function (block) {
 eYo.DelegateSvg.List.prototype.getInput = function (block, name, dontCreate) {
   var input = eYo.DelegateSvg.List.superClass_.getInput.call(this, block, name)
   if (!input) {
-    this.createConsolidator(block)
+    this.createConsolidator()
     input = this.consolidator.getInput(block, name, dontCreate)
   }
   return input
@@ -85,8 +85,9 @@ eYo.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
  * @param {!Block} block
  * @param {boolean} force
  */
-eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_method('createConsolidator', function (block, force) {
+eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_method('createConsolidator', function (force) {
   if (!this.consolidator || force) {
+    var block = this.block_
     var D = eYo.DelegateSvg.Manager.getModel(block.type).list
     goog.asserts.assert(D, 'inputModel__.list is missing in ' + block.type)
     var C10r = this.consolidatorConstructor || D.consolidator || eYo.Consolidator.List
@@ -108,7 +109,7 @@ eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_metho
  * @param {!Block} block
  */
 eYo.DelegateSvg.List.prototype.consolidate = function (block, deep, force) {
-  this.createConsolidator(block)
+  this.createConsolidator()
   this.consolidate = eYo.DelegateSvg.List.prototype.consolidate_
   this.consolidate(block, force)// this is not recursive
 }
@@ -370,7 +371,7 @@ eYo.DelegateSvg.List.makeSubclass('with_item_list', {
 })
 
 eYo.DelegateSvg.List.T3s = [
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.comprehension,
   eYo.T3.Expr.dict_comprehension,
   eYo.T3.Expr.key_datum,
