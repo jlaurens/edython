@@ -401,12 +401,12 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.synchronize(newValue)
         this.owner.render() // bad smell
       },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
         if ([this.CALL_EXPR, this.SLICING, this.ALIASED].indexOf(newValue) >= 0) {
           this.data.annotation.set(eYo.Key.NONE)
           this.data.definition.set(eYo.Key.NONE)
         }
-        this.didChange(oldValue, newValue)
+        this.isChanging(oldValue, newValue)
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Expr.call_expr) {

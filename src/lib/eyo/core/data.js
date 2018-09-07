@@ -417,7 +417,7 @@ eYo.Data.prototype.beforeChange = function(oldValue, newValue) {
  * @return undefined
  */
 eYo.Data.prototype.duringChange = function(oldValue, newValue) {
-  (!Blockly.Events.recordUndo ? this.isChanging : this.isUnchanging).call(this, oldValue, newValue)
+  (!Blockly.Events.recordUndo ? this.isChanging : this.isUnchanging).apply(this, arguments)
 }
 
 /**
@@ -428,7 +428,7 @@ eYo.Data.prototype.duringChange = function(oldValue, newValue) {
  * @return undefined
  */
 eYo.Data.prototype.afterChange = function(oldValue, newValue) {
-  (!Blockly.Events.recordUndo ? this.didChange : this.didUnchange).call(this, oldValue, newValue)
+  (!Blockly.Events.recordUndo ? this.didChange : this.didUnchange).apply(this, arguments)
 }
 
 /**

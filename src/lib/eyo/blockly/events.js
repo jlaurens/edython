@@ -159,7 +159,7 @@ eYo.Data.prototype.setTrusted__ = function (newValue, noRender) {
         block, eYo.Const.Event.DATA + this.key, null, oldValue, newValue))
     }
     this.afterChange(oldValue, newValue)
-    this.synchronizeIfUI(newValue)
+    noRender || this.synchronizeIfUI(newValue)
   } catch (err) {
     console.error(err)
     throw err
