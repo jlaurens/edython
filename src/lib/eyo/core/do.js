@@ -391,9 +391,9 @@ eYo.Do.typeOfString = function (candidate, module) {
   }
   if (!candidate.length) {
     return {
-      raw: eYo.T3.Expr.identifier,
+      raw: eYo.T3.Expr.unset,
       modelExpr: candidate,
-      expr: eYo.T3.Expr.unset
+      expr: eYo.T3.Expr.identifier
     }
   }
   if (module === eYo.Key.BUILTIN) {
