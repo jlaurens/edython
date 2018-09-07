@@ -180,7 +180,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.setIncog(!newValue || !newValue.length)
       },
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.owner.consolidateType() // why not consolidate()?
+        this.owner.consolidateType() // why not consolidate()? do slots need to be consolidated ?
+        this.owner.consolidateSubtype()
         this.owner.consolidateConnections()
       },
       fromType: /** @suppress {globalThis} */ function (type) {
@@ -238,6 +239,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.owner.consolidateType()
+        this.owner.consolidateSubtype()
         this.owner.consolidateConnections()
       },
       fromType: /** @suppress {globalThis} */ function (type) {
@@ -411,6 +413,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.owner.consolidateType()
+        this.owner.consolidateSubtype()
         this.owner.consolidateConnections()
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {

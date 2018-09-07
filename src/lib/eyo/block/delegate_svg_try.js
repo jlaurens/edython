@@ -46,6 +46,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         this.owner.consolidateType()
+        this.owner.consolidateSubtype()
         this.owner.consolidateConnections()
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {

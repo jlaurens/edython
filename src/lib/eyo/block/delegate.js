@@ -453,6 +453,7 @@ eYo.Delegate.Manager.registerAll(eYo.T3.Stmt, eYo.Delegate)
  * The default implementation just returns the type.
  * Subclassers will use it to return the correct type
  * depending on their actual inner state.
+ * This should be used instead of direct block querying.
  * @return {String} The type of the receiver's block.
  */
 eYo.Delegate.prototype.getType = function () {
@@ -460,17 +461,14 @@ eYo.Delegate.prototype.getType = function () {
 }
 
 /**
- * Some blocks may change when their properties change,
- * for example. This message is sent whenever one of the properties
- * declared below changes.
- * The type of the block may change, thus implying some connection changes.
- * The connection checks may change too.
- * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
+ * getType.
+ * The default implementation just returns `undefined`.
+ * Subclassers will use it to return the correct type
+ * depending on their actual inner state.
+ * This should be used instead of direct block querying.
+ * @return {String} The type of the receiver's block.
  */
-eYo.Delegate.prototype.consolidateType = function (type) {
-  this.setupType(type || this.getType())
+eYo.Delegate.prototype.getSubtype = function () {
 }
 
 /**
@@ -666,7 +664,6 @@ eYo.Delegate.prototype.type_ = undefined
 /**
  * Set the [python ]type of the delegate according to the type of the block.
  * No need to override this.
- * @param {!Blockly.Block} block to be initialized..
  * @param {?string} optNewType, 
  * @constructor
  */
@@ -686,6 +683,36 @@ eYo.Delegate.prototype.setupType = function (optNewType) {
   if (!this.pythonType_) {
     console.error('Error! this.pythonType_')
   } 
+}
+
+/**
+ * Some blocks may change when their properties change.
+ * For edython.
+ * @param {?string} type Name of the new type.
+ */
+eYo.Delegate.prototype.consolidateType = function (type) {
+  this.setupType(type || this.getType())
+}
+
+/**
+ * Set the subtype of the delegate.
+ * Default implementation does nothing
+ * and should be overriden by subclassers.
+ * @param {?string} optNewSubtype, 
+ * @constructor
+ */
+eYo.Delegate.prototype.setupSubtype = function (optNewSubtype) {
+  return
+}
+
+/**
+ * Some blocks may change when their properties change.
+ * For edython.
+ * @param {?string} subtype Name of the new subtype
+ *     type-specific functions for this block.
+ */
+eYo.Delegate.prototype.consolidateSubtype = function (subtype) {
+  this.setupSubtype(subtype || this.getSubtype())
 }
 
 /**
@@ -749,6 +776,17 @@ eYo.Delegate.prototype.initBlock = function (block) {
   // configure the connections
   this.initConnections(block)
   this.consolidateType()
+  this.consolidateSubtype()
+  this.consolidateConnections()
+}
+
+/**
+ * This method updates the type, subtype and connection checks based on the state of the block.
+ * @param {!Block} block
+ */
+eYo.Delegate.prototype.shallowConsolidate = function (block) {
+  this.consolidateType()
+  this.consolidateSubtype()
   this.consolidateConnections()
 }
 

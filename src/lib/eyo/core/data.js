@@ -499,7 +499,8 @@ eYo.Data.prototype.synchronizeIfUI = function (newValue) {
  eYo.Data.prototype.setTrusted__ = function (newValue, noRender) {
   this.error = false
   this.internalSet(newValue)
-  noRender || this.synchronizeIfUI(newValue)
+  noRender || (this.owner.consolidate()
+  && this.synchronizeIfUI(newValue))
 }
 
 /**

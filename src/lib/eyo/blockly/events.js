@@ -110,7 +110,35 @@ goog.require('eYo.Data')
 /**
  * set the value of the property,
  * without validation but with undo and synchronization.
- * `willChange` message is sent just before undo registration.
+ * `duringChange` message is sent just before consolidating and undo registration.
+ * Note on interference with the undo stack.
+ * Let's suppose that we have triggered a UI event
+ * that modifies some data of a block.
+ * As a consequence, this block automatically changes type and
+ * may be disconnected.
+ * Take a look at what happens regarding the default undo/redo stack
+ * management when connected blocks are involved.
+ *  1) normal flow
+ *    a - the user asks for a data change
+ *    b - the type and subtype change
+ *    c - the connection check change triggering a disconnect block event
+ *    d - the data change undo event is trigerred
+ *    undo/redo stacks : [..., reconnect block, data undo change]/[]
+ *  2) when undoing
+ *    a - the user asks for an undo
+ *    b - the data undo change is performed first
+ *    c - the type and subtype change
+ *    d - the connection check change but no undo event is recorded
+ *        because no block has been connected nor disconnected meanwhile
+ *    e - the data rechange is pushed to the redo stack
+ *    f - blocks are reconnected and the redo event is pushed to the redo stack
+ *    undo/redo stacks : [...]/[disconnect block, data rechange]
+ *  3 ) when redoing
+ *    a - blocks are disconnected and the reconnect event is pushed to the undo stack
+ *    b - the data is rechanged, with type, subtype and connection checks.
+ *        No block is disconnected, no other move event is recorded.
+ *    undo/redo stacks : [..., reconnect block, data undo change]/[]
+ * This is the reason why we consolidate the type before the undo change.
  * @param {Object} newValue
  * @param {Boolean} noRender
  */
@@ -125,12 +153,12 @@ eYo.Data.prototype.setTrusted__ = function (newValue, noRender) {
     this.beforeChange(oldValue, newValue)
     this.value_ = newValue
     this.duringChange(oldValue, newValue)
+    eyo.consolidate(block)
     if (!this.noUndo && Blockly.Events.isEnabled()) {
       Blockly.Events.fire(new Blockly.Events.BlockChange(
         block, eYo.Const.Event.DATA + this.key, null, oldValue, newValue))
     }
     this.afterChange(oldValue, newValue)
-    eyo.consolidate(block)
     this.synchronizeIfUI(newValue)
   } catch (err) {
     console.error(err)
