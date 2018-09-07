@@ -226,7 +226,10 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
       init: '',
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
-        return type.expr === eYo.T3.Expr.identifier ? {validated: newValue} : null
+        return type.expr === eYo.T3.Expr.identifier 
+        || type.expr === eYo.T3.Expr.identifier
+        ? {validated: newValue}
+        : null
       },
       synchronize: true
     }
@@ -312,7 +315,10 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
       init: '',
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
-        return type.expr === eYo.T3.Expr.identifier ? {validated: newValue} : null
+        return type.expr === eYo.T3.Expr.unset
+        || type.expr === eYo.T3.Expr.identifier
+        ? {validated: newValue}
+        : null
       },
       synchronize: true
     }

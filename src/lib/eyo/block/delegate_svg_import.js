@@ -100,7 +100,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         var data = this.data.variant
         var variant = data.get()
         var M = data.model
-        return type.expr === eYo.T3.Expr.identifier
+        return type.expr === eYo.T3.Expr.unset
+        || type.expr === eYo.T3.Expr.identifier
         || type.expr === eYo.T3.Expr.dotted_name
         || ((variant === data.FROM_MODULE_IMPORT)
           && (type.expr === eYo.T3.Expr.parent_module))

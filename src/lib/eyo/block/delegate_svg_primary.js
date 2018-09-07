@@ -227,9 +227,11 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       init: eYo.Key.BUILTIN, // will be saved only when not built in
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
-        return !newValue || type.expr === eYo.T3.Expr.identifier
-       || type.expr === eYo.T3.Expr.dotted_name
-       || type.expr === eYo.T3.Expr.parent_module
+        return !newValue
+        || type.expr === eYo.T3.Expr.unset
+        || type.expr === eYo.T3.Expr.identifier
+        || type.expr === eYo.T3.Expr.dotted_name
+        || type.expr === eYo.T3.Expr.parent_module
         ? {validated: newValue} : null
         // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
       },
@@ -457,9 +459,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type.raw === eYo.T3.Expr.builtin__name
-       || type.expr === eYo.T3.Expr.identifier
-       || type.expr === eYo.T3.Expr.parent_module
-       || type.expr === eYo.T3.Expr.dotted_name
+        || type.expr === eYo.T3.Expr.unset
+        || type.expr === eYo.T3.Expr.identifier
+        || type.expr === eYo.T3.Expr.parent_module
+        || type.expr === eYo.T3.Expr.dotted_name
         ? {validated: newValue} : null
         // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
       },
@@ -1054,8 +1057,9 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type.raw === eYo.T3.Expr.builtin__name
-       || type.expr === eYo.T3.Expr.identifier
-       || type.expr === eYo.T3.Expr.dotted_name
+        || type.expr === eYo.T3.Expr.unset
+        || type.expr === eYo.T3.Expr.identifier
+        || type.expr === eYo.T3.Expr.dotted_name
         ? {validated: newValue} : null
         // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
       },
