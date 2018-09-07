@@ -179,11 +179,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.didChange(oldValue, newValue)
         this.setIncog(!newValue || !newValue.length)
       },
-      isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.owner.consolidateType() // why not consolidate()? do slots need to be consolidated ?
-        this.owner.consolidateSubtype()
-        this.owner.consolidateConnections()
-      },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === 'eYo.T3.Expr.star') {
           this.set('*')
@@ -236,11 +231,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
         slots.dot && slots.dot.setIncog(newValue === this.NONE)
         this.data.name.synchronize()
-      },
-      isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.owner.consolidateType()
-        this.owner.consolidateSubtype()
-        this.owner.consolidateConnections()
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Expr.attributeref) {

@@ -781,16 +781,6 @@ eYo.Delegate.prototype.initBlock = function (block) {
 }
 
 /**
- * This method updates the type, subtype and connection checks based on the state of the block.
- * @param {!Block} block
- */
-eYo.Delegate.prototype.shallowConsolidate = function (block) {
-  this.consolidateType()
-  this.consolidateSubtype()
-  this.consolidateConnections()
-}
-
-/**
 * Deinitialize a block. Nothing to do yet.
 * @param {!Blockly.Block} block to be deinitialized..
 * @constructor

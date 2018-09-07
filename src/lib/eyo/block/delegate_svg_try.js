@@ -43,12 +43,6 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
         eYo.Key.EXCEPT_EXPRESSION,
         eYo.Key.EXCEPT_AS
       ],
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.didChange(oldValue, newValue)
-        this.owner.consolidateType()
-        this.owner.consolidateSubtype()
-        this.owner.consolidateConnections()
-      },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var slot = this.owner.slots.expression
