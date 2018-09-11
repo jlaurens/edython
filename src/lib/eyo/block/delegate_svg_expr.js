@@ -14,6 +14,7 @@
 goog.provide('eYo.DelegateSvg.Expr')
 
 goog.require('eYo.Msg')
+goog.require('eYo.Decorate')
 goog.require('eYo.DelegateSvg')
 goog.require('eYo.T3.All')
 goog.require('goog.dom');
@@ -23,10 +24,116 @@ goog.require('goog.dom');
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.makeSubclass('Expr')
+eYo.DelegateSvg.makeSubclass('Expr', {
+  data: {
+    modifier: {
+      order: 99,
+      all: ['', '*', '**'],
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
+        this.setIncog(!newValue || !newValue.length)
+      },
+      fromType: /** @suppress {globalThis} */ function (type) {
+        if (type === 'eYo.T3.Expr.star') {
+          this.set('*')
+        } else if (type === 'eYo.T3.Expr.target_star') {
+          this.set('*')
+        } else if (type === 'eYo.T3.Expr.parameter_star') {
+          this.set('*')
+        } else if (type === 'eYo.T3.Expr.star_expr') {
+          this.set('*')
+        } else if (type === 'eYo.T3.Expr.parameter_star_star') {
+          this.set('**')
+        } else if (type === 'eYo.T3.Expr.expression_star_star') {
+          this.set('**')
+        } else if (type === 'eYo.T3.Expr.or_expr_star_star') {
+          this.set('**')
+        }
+        // this.set()
+      },
+      synchronize: true
+    }
+  },
+  fields: {
+    modifier: {
+      value: '',
+      css: 'reserved'
+    }
+  }
+})
 
 // Default delegate for all expression blocks
 eYo.Delegate.Manager.registerAll(eYo.T3.Expr, eYo.DelegateSvg.Expr, true)
+
+/**
+ * getType.
+ * The default implementation just returns the raw type.
+ * Subclassers will override getModifier and getBaseType.
+ * This should be used instead of direct block querying.
+ * @return {String} The type of the receiver's block.
+ */
+eYo.DelegateSvg.Expr.prototype.getType = eYo.Decorate.onChangeCount(
+  'getType',
+  function () {
+    var t = this.getBaseType()
+    var modifier = this.data.modifier.get()
+    if (!modifier) {
+      return t
+    }
+    var types = []
+    if (modifier === '**') {
+      if (eYo.T3.Expr.Check.parameter.indexOf(t)) {
+        types.push(eYo.T3.Expr.parameter_star_star)
+      }
+      if (eYo.T3.Expr.Check.or_expr_all.indexOf(t)) {
+        types.push(eYo.T3.Expr.or_expr_star_star)
+      }
+      types.push(eYo.T3.Expr.expression_star_star)
+    } else if (modifier === '*') {
+      if (t === eYo.T3.Expr.identifier && this.getBaseType() === eYo.T3.Expr.unset) {
+        types.push(eYo.T3.Expr.star)
+      }
+      if (eYo.T3.Expr.Check.target.indexOf(t)) {
+        types.push(eYo.T3.Expr.target_start)
+      }
+      if (eYo.T3.Expr.Check.parameter.indexOf(t)) {
+        types.push(eYo.T3.Expr.parameter_star)
+      }
+      if (eYo.T3.Expr.Check.or_expr_all.indexOf(t)) {
+        types.push(eYo.T3.Expr.star_expr)
+      }
+      types.push(eYo.T3.Expr.expression_star)
+    } else {
+      return t
+    }
+    this.types = types
+    return types[0]
+  }
+)
+
+/**
+ * Whether the receiver's block is of the given type.
+ * Blocks may have different types (eg identifier and dotted_name).
+ * This is recorded in the output connection.
+ * @param {!String} type
+ * @return {Boolean}
+ */
+eYo.DelegateSvg.Expr.prototype.checkOutputType = function (type) {
+  var c8n = this.block_.outputConnection
+  if (c8n.check_) {
+    if (goog.isArray(type)) {
+      for (var i = 0; (i < type.length); ++_) {
+        if (c8n.check_.indexOf(type[i]) >= 0) {
+          return true
+        }
+      }
+    } else {
+      return c8n.check_.indexOf(type) >= 0
+    }  
+  } else {
+    return true
+  }
+}
 
 /**
  * Initialize a block.

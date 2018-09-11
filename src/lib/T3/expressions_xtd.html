@@ -111,8 +111,16 @@ keywords_arguments   ::=  (keyword_item | "**" expression)
                           ("," keyword_item | "," "**" expression)*
 keyword_item         ::=  identifier "=" expression
 
-
+named_... are primaries which left atom is an identifier (or unset)
 <pre>
+primary ::= atom | dotted_name | builtin__object | attributeref | subscription | slicing | call_expr | named_primary
+
+named_primary ::= identifier | dotted_name | builtin__object | named_attributeref | named_subscription | named_slicing | named_call_expr
+named_attributeref ::= named_primary "." identifier
+named_slicing ::= named_primary "[" slice_list "]"
+named_subscription -> named_slicing
+named_call_expr ::= named_primary "(" argument_list_comprehensive ")"
+
 call -> call_expr
 call_expr/call ::=  primary "(" argument_list_comprehensive ")"
 base_call_expr ::= "name" "(" argument_list_comprehensive ")"

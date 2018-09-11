@@ -65,6 +65,8 @@ goog.provide('eYo.Msg.Placeholder')
 
 /** @export */ eYo.Msg.Placeholder.IDENTIFIER = 'nom'
 
+/** @export */ eYo.Msg.Placeholder.UNSET = ' ' // no break space
+
 /** @export */ eYo.Msg.Placeholder.ROOT = 'root'
 
 /** @export */ eYo.Msg.Placeholder.PARENT = 'parent'

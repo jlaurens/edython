@@ -975,14 +975,6 @@ eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element) {
     } else {
       d.set(d.NONE)
     }
-    d = this.data.dotted
-    if (type === eYo.T3.Expr.attributeref.substring(4)) {
-      d.set(d.PARENT)
-    } else if (this.slots.root && this.slots.root.isRequiredFromModel()) {
-      d.set(d.ROOT)
-    } else {
-      d.set(d.NONE)
-    }
   }
   return block
 }
@@ -995,19 +987,32 @@ eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element) {
  */
 eYo.DelegateSvg.Expr.primary.prototype.tagName = function (block) {
   if ([
-    eYo.T3.Expr.expression_star,
-    eYo.T3.Expr.parameter_star,
-    eYo.T3.Expr.target_star,
-    eYo.T3.Expr.star_expr,
-    eYo.T3.Expr.expression_star_star,
-    eYo.T3.Expr.parameter_star_star
+    eYo.T3.Expr.parent_module,
+    eYo.T3.Expr.identifier_defined,
+    eYo.T3.Expr.dotted_name,
+    eYo.T3.Expr.dotted_name_as,
+    eYo.T3.Expr.attributeref
   ].indexOf(block.type) >= 0) {
     return eYo.T3.Expr.primary
   }
   if (block.type === eYo.T3.Expr.call_expr) {
     return 'eyo:' + eYo.Key.CALL
   }
-  if (block.type === eYo.T3.Expr.identifier_as) {
+  if (block.type === eYo.T3.Expr.named_call_expr) {
+    return 'eyo:' + eYo.Key.CALL
+  }
+  if (block.type === eYo.T3.Expr.named_slicing) {
+    return eYo.T3.Expr.slicing
+  }
+  if (block.type === eYo.T3.Expr.named_subscription) {
+    return eYo.T3.Expr.subscription
+  }
+  if ([
+    eYo.T3.Expr.identifier_as,
+    eYo.T3.Expr.identifier_annotated,
+    eYo.T3.Expr.identifier_annotated_defined,
+    eYo.T3.Expr.identifier_defined
+  ].indexOf(block.type) >= 0) {
     return eYo.T3.Expr.identifier
   }
   return block.type
@@ -1055,9 +1060,9 @@ goog.require('eYo.DelegateSvg.Group')
 goog.provide('eYo.Xml.Group')
 
 /**
- * Set the operator from the element's tagName.
- * @param {!Blockly.Block} block
+ * Reads the given element into a block.
  * @param {!Element} element dom element to be completed.
+ * @param {!Blockly.Workspace} workspace
  * @override
  */
 eYo.Xml.Group.domToBlock = function (element, workspace) {

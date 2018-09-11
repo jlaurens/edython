@@ -171,7 +171,7 @@ eYo.Slot.makeFields = function () {
     goog.asserts.assert(data, 'No data bound to field ' + this.key + '/' + this.sourceBlock_.type)
     var result = this.callValidator(this.getValue())
     if (result !== null) {
-      data.fromText(result)
+      data.fromField(result)
       data.synchronize(result) // would this be included in the previous method ?
     } else {
       this.setValue(data.toText())
@@ -421,7 +421,7 @@ eYo.Slot.prototype.setInput = function (input) {
     }
     var v
     if ((v = this.model.check)) {
-      var check = v(c8n.sourceBlock_.type)
+      var check = v.call(eyo, c8n.sourceBlock_.type)
       c8n.setCheck(check)
       if (!this.model.wrap) {
         eyo.hole_data = eYo.HoleFiller.getData(check, this.model.hole_value)        
@@ -518,7 +518,7 @@ eYo.Slot.prototype.isRequiredToDom = function () {
     return true
   }
   if (this.data && this.data.required) {
-    return true
+    return false
   }
   if (this.model.xml && this.model.xml.required) {
     return true
@@ -557,26 +557,6 @@ eYo.Slot.prototype.whenRequiredFromDom = function (helper) {
     }
     return true
   }
-}
-
-/**
- * Convenient method to get the type of the target block, if any.
- * For edython.
- * @param {!Blockly.Input} workspace The block's workspace.
- */
-eYo.Slot.prototype.targetBlockType = function () {
-  var target = this.targetBlock()
-  return target && target.eyo.getType()
-}
-
-/**
- * Convenient method to get the type of the target block, if any.
- * For edython.
- * @param {!Blockly.Input} workspace The block's workspace.
- */
-eYo.Slot.prototype.targetBlockSubtype = function () {
-  var target = this.targetBlock()
-  return target && target.eyo.getSubtype()
 }
 
 /**
@@ -770,7 +750,6 @@ eYo.Slot.prototype.load = function (element) {
   if (xml === false) {
     return
   }
-
   if (goog.isDef(xml)) {
     var f = eYo.Decorate.reentrant_method.call(this, 'xml_load', xml.load)
     if (f) {
@@ -835,7 +814,8 @@ eYo.Slot.prototype.load = function (element) {
           } else if ((target = eYo.Xml.domToBlock(child, this.getWorkspace()))) {
             // we could create a block from that child element
             // then connect it
-            if (target.outputConnection && c8n.checkType_(target.outputConnection)) {
+            var c8n = this.input && this.input.connection
+            if (c8n && target.outputConnection && c8n.checkType_(target.outputConnection)) {
               c8n.connect(target.outputConnection)
               this.setRequiredFromDom(true)
             } else if (target.previousConnection && c8n.checkType_(target.previousConnection)) {

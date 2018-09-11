@@ -725,7 +725,7 @@ eYo.DelegateSvg.prototype.render = function (optBubble) {
  * @param {!Block} block
  */
 eYo.DelegateSvg.prototype.consolidate = function (deep, force) {
-  if (!Blockly.Events.recordUndo) {
+  if (!Blockly.Events.recordUndo || !this.block_.workspace) {
     // do not consolidate while un(re)doing
     return
   }
@@ -749,6 +749,7 @@ eYo.DelegateSvg.prototype.consolidate = function (deep, force) {
     }
   }
   this.consolidateConnections()
+  return true
 }
 
 /**
@@ -1963,11 +1964,11 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
         var type = eYo.Do.typeOfString(model)
         if (type.expr && (block = workspace.newBlock(type.expr, id))) {
           type.expr && block.eyo.initDataWithType(block, type.expr)
-          type.modelExpr && block.eyo.initDataWithModel(block, type.modelExpr)
+          model && block.eyo.initDataWithModel(block, model)
           dataModel = {data: model}
         } else if (type.stmt && (block = workspace.newBlock(type.stmt, id))) {
           type.stmt && block.eyo.initDataWithType(block, type.stmt)
-          type.modelStmt && block.eyo.initDataWithModel(block, type.modelStmt)
+          model && block.eyo.initDataWithModel(block, model)
           dataModel = {data: model}
         } else if (goog.isNumber(model)  && (block = workspace.newBlock(eYo.T3.Expr.numberliteral, id))) {
           block.eyo.initDataWithType(block, eYo.T3.Expr.numberliteral)

@@ -30,57 +30,43 @@ goog.require('goog.dom');
  * The question is to avoid big modifications concerning
  * the implementation when small modifications of the interface
  * are expected. This block implementation covers all the following types:
- * expression_star ::= "*" expression
- * star ::= "*"
- * parameter_star ::= "*" parameter
- * target_star ::= "*" target
- * star_expr ::= "*" or_expr
- * expression_star_star ::= "**" expression
- * parameter_star_star ::= "**" parameter
+ *
+ * identifier ::=
  * attributeref ::= primary "." identifier
  * dotted_name ::= identifier ("." identifier)*
  * parent_module ::= '.'+ [module]
- * identifier ::=
  * identifier_annotated ::= identifier ":" expression
  * key_datum ::= expression ":" expression
  * identifier_defined ::= parameter "=" expression
- * (with parameter ::= identifier | identifier_annotated)
+ * identifier_anotated_defined ::= parameter "=" expression
  * keyword_item ::= identifier "=" expression
- * dotted_name_as ::= module "as" identifier
  * identifier_as ::= identifier "as" identifier
+ * dotted_name_as ::= module "as" identifier
+ * expression_as ::= expression "as" identifier
  * call_expr ::= primary "(" argument_list_comprehensive ")"
  * subscription ::= primary "[" expression_list "]"
  * slicing ::= primary "[" slice_list "]"
+ * 
  * We can notice that some 
  * The block inner content is divided into different parts
- * 1) the modifier which is one of '', '*', '**', '.', '..', etc
- * When not void, appears in 
- * expression_star ::= "*" expression
- * star ::= "*"
- * parameter_star ::= "*" parameter
- * target_star ::= "*" target
- * star_expr ::= "*" or_expr
- * expression_star_star ::= "**" expression
- * parameter_star_star ::= "**" parameter
- * parent_module ::= '.'+ [module]
- * 2) the module or parent
+ * 1) the module or parent, as holder
  * For `foo.bar` construct
- * 3) the name
+ * 2) the name
  * Either a field or an expression.
  * If this is an expression, there must be some other non void part,
  * otherwise we would have an expression block which only purpose is
  * just to contain an expression block, no more no less. This would
  * not be efficient.
- * 4) the annotation
+ * 3) the annotation
  * This is used for parameter annotation, appears in both
  * identifier_annotated ::= identifier ":" expression
  * key_datum ::= expression ":" expression
  * This may be used in annotated assignments.
- * 5) the definition
+ * 4) the definition
  * identifier_defined ::= parameter "=" expression
  * (with parameter ::= identifier | identifier_annotated)
  * keyword_item ::= identifier "=" expression
- * 6) the map
+ * 5) the map
  * One of 3 variants:
  * a) alias
  * dotted_name_as ::= module "as" identifier
@@ -97,26 +83,37 @@ goog.require('goog.dom');
  * the type is one of these, no more. For these,
  * the persistent storage may not store information.
  * All the possibilities in next table
- | *|  |xi|  |  |  | expression_star ::= "*" expression
- | *|  |xi|  |  |  | star ::= "*"
- | *|  |xi|  |  |  | parameter_star ::= "*" parameter
- | *|  |xi|  |  |  | target_star ::= "*" target
- | *|  |xp|  |  |  | star_expr ::= "*" or_expr
- |**|  |xp|  |  |  | expression_star_star ::= "**" expression
- |**|  |id|  |  |  | parameter_star_star ::= "**" parameter
- |  |ff|id|  |  |  | attributeref ::= primary "." identifier
- |  |  |dd|  |  |  | dotted_name ::= identifier ("." identifier)*
- | .|  |dd|  |  |  | parent_module ::= '.'+ [module]
- |  |  |id|  |  |  | identifier ::=
- |  |  |  |:x|  |  | identifier_annotated ::= identifier ":" expression
- |  |  |  |:x|  |  | key_datum ::= expression ":" expression
- |  |  |  |  |=x|  | identifier_defined
- |  |  |  |  |=x|  | keyword_item ::= identifier "=" expression
- |  |  |  |  |  |as| dotted_name_as ::= module "as" identifier
- |  |  |  |  |  |as| identifier_as ::= identifier "as" identifier
- |  |  |  |  |  |()| call_expr
- |  |  |  |  |  |[]| subscription
- |  |  |  |  |  |[]| slicing
+ * identifier ::= identifier
+ * attributeref ::= primary "." identifier
+ * dotted_name ::= identifier ("." identifier)*
+ * parent_module ::= '.'+ [module]
+ * identifier_annotated ::= identifier ":" expression
+ * key_datum ::= expression ":" expression
+ * identifier_defined ::= parameter "=" expression
+ * identifier_anotated_defined ::= parameter "=" expression
+ * keyword_item ::= identifier "=" expression
+ * identifier_as ::= identifier "as" identifier
+ * dotted_name_as ::= module "as" identifier
+ * expression_as ::= expression "as" identifier
+ * call_expr ::= primary "(" argument_list_comprehensive ")"
+ * subscription ::= primary "[" expression_list "]"
+ * slicing ::= primary "[" slice_list "]"
+ |  |id|  |  |  | identifier ::=
+ |p.|id|  |  |  | attributeref ::= primary "." identifier
+ |d.|dd|  |  |  | dotted_name ::= identifier ("." identifier)*
+ |  |pm|  |  |  | parent_module ::= '.'+ [module]
+ |  |id|:x|  |  | identifier_annotated ::= identifier ":" expression
+ |  | x|:x|  |  | key_datum ::= expression ":" expression
+ |  |id|  |=x|  | identifier_defined ::= identifier "=" expression
+ |  |id|:x|=x|  | identifier_annotated_defined ::= ...
+ |  |id|  |=x|  | keyword_item ::= identifier "=" expression
+ |  |id|  |  |as| identifier_as ::= identifier "as" identifier
+ |d.|dd|  |  |as| dotted_name_as ::= module "as" identifier
+ |  | x|  |  |as| expression_as ::= expression "as" identifier
+ |  | p|  |  |()| call_expr
+ |p.|id|  |  |()| call_expr
+ |  |  |  |  |[]| subscription
+ |  |  |  |  |[]| slicing
  *
  * A note on the mutability of the primary block, at least when
  * the identifier is concerned.
@@ -162,85 +159,74 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
   xml: {
     types: [
       eYo.T3.Expr.identifier,
-      eYo.T3.Expr.parent_module,
-      eYo.T3.Expr.dotted_name,
+      eYo.T3.Expr.identifier_annotated,
+      eYo.T3.Expr.key_datum,
+      eYo.T3.Expr.identifier_defined,
+      eYo.T3.Expr.keyword_item,
+      eYo.T3.Expr.identifier_annotated_defined,
       eYo.T3.Expr.attributeref,
+      eYo.T3.Expr.dotted_name,
+      eYo.T3.Expr.parent_module,
+      eYo.T3.Expr.identifier_as,
+      eYo.T3.Expr.dotted_name_as,
+      eYo.T3.Expr.expression_as,
       eYo.T3.Expr.subscription,
-      eYo.T3.Expr.slicing,
-      eYo.T3.Expr.call_expr,      
+      eYo.T3.Expr.call_expr,
+      eYo.T3.Expr.slicing    
     ]
   },
   data: {
-    modifier: {
-      order: 100,
-      all: ['', '*', '**', '.', '..'],
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.didChange(oldValue, newValue)
-        this.setIncog(!newValue || !newValue.length)
-      },
-      fromType: /** @suppress {globalThis} */ function (type) {
-        if (type === 'eYo.T3.Expr.star') {
-          this.set('*')
-        } else if (type === 'eYo.T3.Expr.parameter_star') {
-          this.set('*')
-        } else if (type === 'eYo.T3.Expr.star_expr') {
-          this.set('*')
-        } else if (type === 'eYo.T3.Expr.parameter_star_star') {
-          this.set('**')
-        } else if (type === 'eYo.T3.Expr.expression_star_star') {
-          this.set('**')
-        } else if (type === 'eYo.T3.Expr.or_expr_star_star') {
-          this.set('**')
-        }
-        // this.set()
-      },
-      synchronize: true
-    },
     dotted: {
       order: 200,
-      NONE: eYo.Key.NONE,
-      PARENT: eYo.Key.PARENT,
-      MODULE: eYo.Key.MODULE,
-      all: [
-        eYo.Key.NONE,
-        eYo.Key.PARENT,
-        eYo.Key.MODULE,
-      ],
-      init: eYo.Key.NONE,
+      init: 0,
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        return goog.isNumber(newValue)
+        ? {
+          validated: newValue
+        }
+        : {}
+      },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
+        this.required = newValue > 0
+        this.setIncog()
         var holder_d = this.data.holder
-        holder_d.required = newValue === this.MODULE
-        if (newValue !== this.NONE) {
+        holder_d.required = newValue === 1
+        holder_d.setIncog()
+        if (newValue !== 0) {
           // this is a dotted expression
           var annotation_d = this.data.annotation
-          annotation_d.set(annotation_d.VOID)
+          annotation_d.set(annotation_d.NONE)
           var definition_d = this.data.definition
-          definition_d.set(definition_d.VOID)
+          definition_d.set(definition_d.NONE)
         }
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        var holder_d = this.data.holder
-        holder_d.setIncog(newValue !== this.MODULE)
-        var slots = this.owner.slots
-        var holder_s = slots.holder
-        if (holder_s) {
-          holder_s.required = newValue === this.PARENT
-          holder_s.setIncog()
-        }
-        slots.dot && slots.dot.setIncog(newValue === this.NONE)
         this.data.name.synchronize()
+        this.synchronize(newValue)
+        this.owner.render()
       },
-      fromType: /** @suppress {globalThis} */ function (type) {
-        if (type === eYo.T3.Expr.attributeref) {
-          this.set(this.PARENT)
+      fromField: /** @suppress {globalThis} */ function (value) {
+        this.fromField(value.length)
+      },
+      toField: /** @suppress {globalThis} */ function (value) {
+        var txt = ''
+        for (var i = 0; (i < this.get()); i++) {
+          txt += '.'
         }
+        return txt
       },
-      xml: false
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+          if (this.get()) {
+            this.save(element)
+          }
+        }
+      }
     },
     holder: {
       order: 201,
-      init: eYo.Key.BUILTIN, // will be saved only when not built in
+      init: '', // will be saved only when not built in
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return !newValue
@@ -252,29 +238,16 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        if (this.isRequiredFromModel() && newValue !== eYo.Key.BUILTIN) {
-          var dotted_d = this.owner.data.dotted
-          dotted_d.set(dotted_d.MODULE)
-        }
+        this.holderType_ = eYo.Do.typeOfString(newValue)
+        this.data.subtype.set(this.holderType_.raw)
       },
       synchronize: true,
       xml: {
-        // the holder will be saved only when not builtin
-        save: /** @suppress {globalThis} */ function (el) {
-          if (this.get() !== eYo.Key.BUILTIN) {
-            this.save(el)
-          }
-        },
-        didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromModel()) {
-            var d = this.data.dotted
-            if (!this.get()) {
-              this.set(eYo.Key.BUILTIN)
-              if (d.get() === d.MODULE) {
-                d.set(d.NONE)
-              }
-            } else if (this.get() !== eYo.Key.BUILTIN) {
-              d.set(d.MODULE)
+        save: /** @suppress {globalThis} */ function (element) {
+          var target = this.owner.slots.holder.input.connection.targetBlock()
+          if (!target) {
+            if (this.get()) {
+              this.save(element)
             }
           }
         }
@@ -285,8 +258,12 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       init: '',
       synchronize: true,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var subtype = this.data.subtype.get()
-        return ((subtype === eYo.T3.Expr.unset || subtype === eYo.T3.Expr.custom_identifier) && {validated: newValue}) || null
+        var type = eYo.Do.typeOfString(newValue)
+        return type === eYo.T3.Expr.unset
+        || type === eYo.T3.Expr.identifier
+        || type === eYo.T3.Expr.builtin
+        ? {validated: newValue}
+        : null
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
@@ -311,8 +288,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         // override previous data if necessary
         if (newValue !== eYo.Key.NONE) {
           // no holder nor dotted nor variant
-          this.data.dotted.set(eYo.Key.NONE)
-          this.data.holder.set(null)
+          this.data.dotted.set(0)
           this.data.variant.set(eYo.Key.NONE)
         }
       },
@@ -346,9 +322,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         // override previous data if necessary
         if (newValue !== eYo.Key.NONE) {
           // no holder nor dotted nor variant
-          this.data.dotted.set(eYo.Key.NONE)
+          this.data.dotted.set(0)
           this.data.variant.set(eYo.Key.NONE)
-          this.data.holder.set(null)
         }
       },
       synchronize: function (newValue) {
@@ -409,7 +384,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           this.set(this.CALL_EXPR)
         } else if (type === eYo.T3.Expr.slicing) {
           this.set(this.SLICING)
-        } else if (type === eYo.T3.Expr.dotted_name_as || type === eYo.T3.Expr.identifier_as) {
+        } else if (type === eYo.T3.Expr.dotted_name_as || type === eYo.T3.Expr.identifier_as || type === eYo.T3.Expr.expression_as) {
           this.set(this.ALIASED)
         } else {
           this.set(this.NONE)
@@ -443,6 +418,15 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
             target.eyo.data.ary.set(newValue)
           }
         }
+      },
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+          var variant_d = this.owner.data.variant
+          var variant = variant_d.get()
+          if (variant === variant_d.CALL_EXPR && this.get() !== Infinity) {
+            this.save(element)
+          }
+        }
       }
     },
     mandatory: {
@@ -457,6 +441,15 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           var target = input.connection.targetBlock()
           if (target) {
             target.eyo.data.mandatory.set(newValue)
+          }
+        }
+      },
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+          var variant_d = this.owner.data.variant
+          var variant = variant_d.get()
+          if (variant === variant_d.CALL_EXPR && this.get()) {
+            this.save(element)
           }
         }
       }
@@ -475,8 +468,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var type = eYo.Do.typeOfString(newValue)
-        this.data.subtype.set(type.raw)
+        this.nameType_ = eYo.Do.typeOfString(newValue)
+        this.data.subtype.set(this.nameType_.raw)
       },
       consolidate: /** @suppress {globalThis} */ function () {
         this.didChange(undefined, this.get())
@@ -503,12 +496,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       xml: false
     }
   },
-  fields: {
-    modifier: {
-      value: '',
-      css: 'reserved'
-    }
-  },
   slots: {
     holder: {
       order: 50,
@@ -516,13 +503,18 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         bind: {
           validate: true,
           endEditing: true,
-          placeholder: eYo.Msg.Placeholder.MODULE
+          placeholder: eYo.Msg.Placeholder.UNSET
         }
       },
       check: eYo.T3.Expr.Check.primary,
-      hole_value: eYo.Msg.Placeholder.PRIMARY
+      hole_value: eYo.Msg.Placeholder.PRIMARY,
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+          this.save(element)
+        }
+      }
     },
-    dot: {
+    dotted: {
       order: 75,
       fields: {
         separator: {
@@ -533,14 +525,40 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     },
     name: {
       order: 100,
-      check: eYo.T3.Expr.Check.primary,
+      check: /** @suppress {globalThis} */ function () {
+        // a general expression or a more specific block
+        var eyo = this.connection.sourceBlock_.eyo
+        var variant_d = eyo.data.variant
+        var variant = variant_d.get()
+        if (variant === variant_d.ALIASED) {
+          return eYo.T3.Expr.Check.expression
+        }
+        if (variant === variant_d.CALL_EXPR
+          || variant === variant_d.SLICING) {
+          return eYo.T3.Expr.Check.primary
+        }
+        var profile = eyo.getProfile()
+        return profile.annotated
+        ? eYo.T3.Expr.Check.expression
+        : [
+          eYo.T3.Expr.unset,
+          eYo.T3.Expr.identifier,
+          eYo.T3.Expr.dotted_name,
+          eYo.T3.Expr.dotted_name,
+          eYo.T3.Expr.named_attributeref,
+          eYo.T3.Expr.attributeref,
+          eYo.T3.Expr.named_call_expr,
+          eYo.T3.Expr.call_expr,
+          eYo.T3.Expr.named_slicing,
+          eYo.T3.Expr.slicing
+        ]
+      },
       plugged: eYo.T3.Expr.primary,
       hole_value: 'expression',
       fields: {
         bind: {
           placeholder: /** @suppress {globalThis} */ function () {
-            return this.sourceBlock_.eyo.data.modifier.get() === '*'
-            ? '' : eYo.Msg.Placeholder.TERM
+            return eYo.Msg.Placeholder.TERM
           },
           validate: true,
           endEditing: true,
@@ -607,8 +625,11 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       wrap: eYo.T3.Expr.argument_list_comprehensive,
       consolidate: /** @suppress {globalThis} */ function () {
-        this.input.connection.targetBlock().eyo.createConsolidator(this, true)
-        this.consolidate.apply(this, arguments)
+        var target = this.input.connection.targetBlock()
+        if (target) {
+          target.eyo.createConsolidator(this, true)
+          this.consolidate.apply(this, arguments)
+        }
       }
     },
     slicing: {
@@ -634,311 +655,352 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
   },
   output: {
     check: /** @suppress {globalThis} */ function (type, subtype) {
-      return check = {
-        [eYo.T3.Expr.call_expr]: [eYo.T3.Expr.call_expr],
-        [eYo.T3.Expr.subscription]: [
-          eYo.T3.Expr.subscription,
-          eYo.T3.Expr.slicing
-        ],
-        [eYo.T3.Expr.slicing]: [eYo.T3.Expr.slicing],
-        [eYo.T3.Expr.identifier_as]: [
-          eYo.T3.Expr.expression_as,
-          eYo.T3.Expr.dotted_name_as,
-          eYo.T3.Expr.identifier_as
-        ],
-        [eYo.T3.Expr.dotted_name_as]: [
-          eYo.T3.Expr.dotted_name_as,
-          eYo.T3.Expr.expression_as
-        ],
-        [eYo.T3.Expr.expression_as]: [
-          eYo.T3.Expr.expression_as
-        ],
-        [eYo.T3.Expr.attributeref] : [
-          eYo.T3.Expr.attributeref,
-          eYo.T3.Expr.dotted_name
-        ],
-        [eYo.T3.Expr.dotted_name] : [
-          eYo.T3.Expr.dotted_name
-        ],
-        [eYo.T3.Expr.parameter_star_star]: [
-          eYo.T3.Expr.parameter_star_star,
-          eYo.T3.Expr.or_expr_star_star,
-          eYo.T3.Expr.expression_star_star
-        ],
-        [eYo.T3.Expr.or_expr_star_star]: [
-          eYo.T3.Expr.or_expr_star_star,
-          eYo.T3.Expr.expression_star_star
-        ],
-        [eYo.T3.Expr.expression_star_star]: [
-          eYo.T3.Expr.expression_star_star
-        ],
-        [eYo.T3.Expr.star] : [
-          eYo.T3.Expr.star, // "*"
-          eYo.T3.Expr.parameter_star, // "*" parameter
-          eYo.T3.Expr.target_star, // "*" target
-          eYo.T3.Expr.star_expr, // "*" or_expr_all  
-          eYo.T3.Expr.expression_star // "*" expression 
-        ],
-        [eYo.T3.Expr.parameter_star] : [
-          eYo.T3.Expr.parameter_star, // "*" parameter
-          eYo.T3.Expr.target_star, // "*" target
-          eYo.T3.Expr.star_expr, // "*" or_expr_all  
-          eYo.T3.Expr.expression_star // "*" expression 
-        ]
-      } [type]
-
-      var variant_d = this.data.variant
-      var variant = variant_d.get()
-      var check
-      if (variant === variant_d.CALL_EXPR) {
-        check = [eYo.T3.Expr.call_expr]
-      } else if (variant === variant_d.SLICING) {
-        check = [eYo.T3.Expr.subscription, eYo.T3.Expr.slicing]
-      } else if (variant === variant_d.ALIASED) {
-        var nameType_d = this.data.subtype
-        var subtype = nameType_d.get()
-        check = subtype === eYo.T3.Expr.unset || subtype === eYo.T3.Expr.custom_identifier
-          ? [eYo.T3.Expr.expression_as, eYo.T3.Expr.dotted_name_as, eYo.T3.Expr.identifier_as]
-          : [eYo.T3.Expr.expression_as, eYo.T3.Expr.dotted_name_as]
-      } else {
-        var dotted_d = this.data.dotted
-        var dotted = dotted_d.get()
-        if (dotted !== dotted_d.NONE) {
-          check = [eYo.T3.Expr.attributeref]
-        } else {
-          subtype = this.data.subtype.get()
-          if (subtype === eYo.T3.Expr.custom_parent_module) {
-            check = eYo.T3.Expr.parent_module
-          } else {
-            var modifier = this.data.modifier.get()
-            if (modifier === '**') {
-              // expression_star_star ::= "**" expression
-              // parameter_star_star ::= "**" parameter
-              // or_expr_star_star ::=  "**" or_expr
-              check = subtype === eYo.T3.Expr.unset
-                || subtype === eYo.T3.Expr.custom_identifier
-                ? [eYo.T3.Expr.expression_star_star,
-                  eYo.T3.Expr.parameter_star_star,
-                  eYo.T3.Expr.or_expr_star_star]
-                : [eYo.T3.Expr.expression_star_star,
-                  eYo.T3.Expr.or_expr_star_star]
-            } else if (modifier === '*') {
-              console.error("this.slots.name.getTarget[Name]Type()")
-              var target = this.slots.name.targetBlock()
-              if (target) {
-                check = target.eyo.getType() === eYo.T3.Expr.identifier
-                ? [eYo.T3.Expr.expression_star,
-                  eYo.T3.Expr.parameter_star,
-                  eYo.T3.Expr.target_star,
-                  eYo.T3.Expr.star_expr]
-                : [eYo.T3.Expr.expression_star,
-                  eYo.T3.Expr.target_star,
-                  eYo.T3.Expr.star_expr]
-              } else if (subtype === eYo.T3.Expr.custom_identifier) {
-                check = [eYo.T3.Expr.expression_star,
-                  eYo.T3.Expr.parameter_star,
-                  eYo.T3.Expr.target_star,
-                  eYo.T3.Expr.star_expr]
-              } else if (subtype === eYo.T3.Expr.unset) {
-                check = [eYo.T3.Expr.expression_star,
-                  eYo.T3.Expr.star,
-                  eYo.T3.Expr.target_star,
-                  eYo.T3.Expr.star_expr]
-              } else if (subtype) {
-                check = [
-                  eYo.T3.Expr.expression_star,
-                  eYo.T3.Expr.target_star,
-                  eYo.T3.Expr.star_expr
-                ]
-              } else {
-                check = [
-                  eYo.T3.Expr.star,
-                  eYo.T3.Expr.expression_star,
-                  eYo.T3.Expr.target_star,
-                  eYo.T3.Expr.star_expr
-                ]
-              }
-            } else {
-              var annotated = this.data.annotation.get()
-              var defined = this.data.definition.get()
-              if (defined !== eYo.Key.NONE) {
-                check = annotated !== eYo.Key.NONE
-                ? [eYo.T3.Expr.identifier_defined]
-                : [eYo.T3.Expr.identifier_defined,
-                  eYo.T3.Expr.keyword_item]
-              } else if (annotated !== eYo.Key.NONE) {
-                check = [eYo.T3.Expr.identifier_annotated, eYo.T3.Expr.key_datum]
-              } else {
-                check = [eYo.T3.Expr.identifier]
-              }
-            }
-          }
-        }
-      /*
-      * The possible types for the blocks are all primary expression types, namely
-      * expression_star ::= "*" expression
-      * star ::= "*"
-      * parameter_star ::= "*" parameter
-      * target_star ::= "*" target
-      * star_expr ::= "*" or_expr
-      * expression_star_star ::= "**" expression
-      * parameter_star_star ::= "**" parameter
-      * attributeref ::= primary "." identifier
-      * dotted_name ::= identifier ("." identifier)*
-      * parent_module ::= '.'+ [module]
-      * identifier ::=
-      * identifier_annotated ::= identifier ":" expression
-      * key_datum ::= expression ":" expression
-      * identifier_defined ::= parameter "=" expression
-      * (with parameter ::= identifier | identifier_annotated)
-      * keyword_item ::= identifier "=" expression
-      * dotted_name_as ::= module "as" identifier
-      * identifier_as ::= identifier "as" identifier
-      * plus call_expr, attributeref and slicing.
-      */
-      }
-      return check
+      // there is no validation here
+      // simple cases first, variant based
+      var eyo = this.connection.sourceBlock_.eyo
+      var profile = eyo.getProfile()
+      return eyo.getOutCheck(profile)
     }
   }
 })
 
-eYo.DelegateSvg.Expr.call_expr =
-eYo.DelegateSvg.Expr.attributeref =
-eYo.DelegateSvg.Expr.slicing =
-eYo.DelegateSvg.Expr.subscription =
-eYo.DelegateSvg.Expr.primary
-eYo.DelegateSvg.Manager.register('subscription')
-eYo.DelegateSvg.Manager.register('slicing')
-eYo.DelegateSvg.Manager.register('attributeref')
-eYo.DelegateSvg.Manager.register('call_expr')
-eYo.DelegateSvg.Expr.identifier =
-eYo.DelegateSvg.Expr.parent_module =
-eYo.DelegateSvg.Expr.dotted_name =
-eYo.DelegateSvg.Expr.primary
-eYo.DelegateSvg.Manager.register('identifier')
-eYo.DelegateSvg.Manager.register('parent_module')
-eYo.DelegateSvg.Manager.register('dotted_name')
+for (var _ = 0, k;(k = [
+  'call_expr',
+  'subscription',
+  'slicing',
+  'identifier',
+  'attributeref',
+  'dotted_name',
+  'parent_module',
+  'identifier_defined',
+  'key_datum',
+  'identifier_annotated',
+  'keyword_item',
+  'identifier_annotated_defined',
+  'identifier_as',
+  'dotted_name_as',
+  'expression_as'
+][_++]);) {
+  eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.primary
+  eYo.DelegateSvg.Manager.register(k)
+}
+
+/**
+ * getProfile.
+ * What are the types of holder and name?
+ * @return {!Object}.
+ */
+eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
+  'getProfile',
+  function () {
+    // this may be called very very early
+    var profile = {}
+    var type
+    var target = this.slots && this.slots.name.targetBlock()
+    if (target) {
+      if (this.checkOutputType(eYo.T3.Expr.identifier)) {
+        type = eYo.T3.Expr.identifier
+      } else if (this.checkOutputType(eYo.T3.Expr.dotted_name)) {
+        type = eYo.T3.Expr.dotted_name
+      } else if (this.checkOutputType(eYo.T3.Expr.parent_module)) {
+        type = eYo.T3.Expr.parent_module
+      } else if (this.checkOutputType(eYo.T3.Expr.Check.named_attributeref)) {
+        type = eYo.T3.Expr.named_attributeref
+      } else if (this.checkOutputType(eYo.T3.Expr.Check.named_primary)) {
+        type = eYo.T3.Expr.named_primary
+      } else if (this.checkOutputType(eYo.T3.Expr.Check.primary)) {
+        type = eYo.T3.Expr.primary
+      } else if (this.checkOutputType(eYo.T3.Expr.Check.expression)) {
+        type = eYo.T3.Expr.expression
+      } else {
+        type = eYo.T3.Expr.error // this block should not be connected
+      }
+      profile.name = {
+        type: type,
+        slot: type,
+        target: target
+      }
+    } else {
+      if (this.checkOutputType(eYo.T3.Expr.identifier)) {
+        type = eYo.T3.Expr.identifier
+      } else if (this.checkOutputType(eYo.T3.Expr.dotted_name)) {
+        type = eYo.T3.Expr.dotted_name
+      } else if (this.checkOutputType(eYo.T3.Expr.parent_module)) {
+        type = eYo.T3.Expr.parent_module
+      } else {
+        type = eYo.T3.Expr.unset
+      }     
+      profile.name = {
+        type: type,
+        field: type
+      }
+    }
+    if (this.data && this.data.dotted.get()) {
+      target = this.slots && this.slots.holder.targetBlock()
+      if (target) {
+        if (this.checkOutputType(eYo.T3.Expr.identifier)) {
+          type = eYo.T3.Expr.identifier
+        } else if (this.checkOutputType(eYo.T3.Expr.dotted_name)) {
+          type = eYo.T3.Expr.dotted_name
+        } else if (this.checkOutputType(eYo.T3.Expr.parent_module)) {
+          type = eYo.T3.Expr.parent_module
+        } else if (this.checkOutputType(eYo.T3.Expr.Check.named_primary)) {
+          type = eYo.T3.Expr.named_primary
+        } else if (this.checkOutputType(eYo.T3.Expr.Check.primary)) {
+          type = eYo.T3.Expr.primary
+        } else {
+          type = eYo.T3.Expr.error // this block should not be connected
+        }
+        profile.holder = {
+          type: type,
+          slot: type,
+          target: target
+        }
+      } else {
+        if (this.checkOutputType(eYo.T3.Expr.identifier)) {
+          type = eYo.T3.Expr.identifier
+        } else if (this.checkOutputType(eYo.T3.Expr.dotted_name)) {
+          type = eYo.T3.Expr.dotted_name
+        } else if (this.checkOutputType(eYo.T3.Expr.parent_module)) {
+          type = eYo.T3.Expr.parent_module
+        } else {
+          type = eYo.T3.Expr.unset
+        }     
+        profile.holder = {
+          type: type,
+          field: type
+        }
+      }
+    }
+    if (this.data) {
+      profile.variant = this.data.variant.get()
+      profile.dotted = this.data.dotted.get()
+      profile.defined = !this.data.definition.isNone()
+      profile.annotated = !this.data.annotation.isNone()
+    }
+    return profile
+  }
+)
 
 /**
  * getType.
  * The type depends on the variant and the modifiers.
  * As side effect, the subtype is set.
  */
-eYo.DelegateSvg.Expr.primary.prototype.getType = function () {
-  var block = this.block_
-  if (this.savedChangeCount_type !== this.changeCount) {
-    var f = function () {
-      var variant_d = this.data.variant
-      var variant = variant_d.get()
-      if (variant === variant_d.CALL_EXPR) {
-        return eYo.T3.Expr.call_expr
-      } else if (variant === variant_d.SLICING) {
-        // which one : slicing or subscription ?
-        // The former is more general than the latter
-        // both are used in the same context
-        return eYo.T3.Expr.slicing
-      } else {
-        var name_s_type = this.slots && this.slots.name.targetBlockType()
-        var name_d = this.data.name
-        var name = name_d.get()
-        var ts = eYo.Do.typeOfString(name)
-        var type = ts.expr || eYo.T3.Expr.identifier
-        var subtype = ts.raw || eYo.T3.Expr.unset
-        this.data.subtype.set(subtype)
-        if (variant === variant_d.ALIASED) {
-          // 1) dotted_name_as            : /*   ::= dotted_name "as" identifier                        (The import statement) */ "eyo:dotted_name_as",
-          // condition: `name` field is like a dotted name or name slot is free or name slot is connected to a dotted name like block
-          if (name_s_type) {
-            if (name_s_type === eYo.T3.Expr.identifier) {
-              return eYo.T3.Expr.identifier_as
-            } else if (name_s_type === eYo.T3.Expr.dotted_name) {
-              return eYo.T3.Expr.dotted_name_as
-            } else {
-              return eYo.T3.Expr.expression_as
-            }
-            // unreachable
-          } else if (type === eYo.T3.Expr.identifier) {
-            return eYo.T3.Expr.identifier_as
-          } else /* if (type === eYo.T3.Expr.dotted_name) */ {
-            return eYo.T3.Expr.dotted_name_as
-          }
-        } else {
-          // No variant at all
-          var name_s_subtype = this.slots && this.slots.name.targetBlockSubtype()
-          var definition_d = this.data.definition
-          var definition = definition_d.get()
-          var annotation_d = this.data.annotation
-          var annotation = annotation_d.get()
-          if (definition === definition_d.DEFINED) {
-            return annotation === annotation_d.ANNOTATED
-            ? eYo.T3.Expr.identifier_annotated_defined
-            : eYo.T3.Expr.identifier_defined
-          }
-          var modifier_d = this.data.modifier
-          var modifier = modifier_d.get()
-          if (annotation === annotation_d.ANNOTATED) {
-            if (modifier === '*') {
-              return subtype === eYo.T3.Expr.unset || name_s_subtype === eYo.T3.Expr.unset
-              ? eYo.T3.Expr.star
-              : eYo.T3.Expr.parameter_star
-            } else if (modifier === '**') {
-              return eYo.T3.Expr.parameter_star_star
-            } else {
-              return name_s_type && name_s_type !== eYo.T3.Expr.identifier
-              ? eYo.T3.Expr.key_datum
-              : eYo.T3.Expr.identifier_annotated
-            }
-          }
-          if (modifier === '*') {
-            /* Things are a bit complicated, possible types
-             * expression_star ::= "*" expression
-             * star ::= "*"
-             * parameter_star ::= "*" parameter
-             * target_star ::= "*" target
-             * star_expr ::= "*" or_expr
-             * For type in [identifier, attributeref, subscription, slicing]
-             * "*" type is both a target_star and a star_expr.
-             * We may not simply rely on the block type to update the connections check array.
-             */
-            if (name_s_type) {
-              if (name_s_type === eYo.T3.Expr.identifier) {
-                return name_s_subtype === eYo.T3.Expr.unset
-                ? eYo.T3.Expr.star
-                : eYo.T3.Expr.parameter_star
-              }
-              if (eYo.T3.Expr.Check.or_expr_all.indexOf(name_s_type) >= 0) {
-                return eYo.T3.Expr.star_expr // === eYo.T3.Expr.or_expr_star
-              }
-              return eYo.T3.Expr.expression_star
-            }
-            return subtype === eYo.T3.Expr.unset
-            ? eYo.T3.Expr.star
-            : eYo.T3.Expr.parameter_star
-          } else if (modifier === '**') {
-            return name_s_type && name_s_type !== eYo.T3.Expr.identifier
-            ? eYo.T3.Expr.parameter_star_star
-            : eYo.T3.Expr.expression_star_star
-          }
-          var dotted_d = this.data.dotted
-          var dotted = dotted_d.get()
-          if (dotted !== dotted_d.NONE) {
-            return eYo.T3.Expr.attributeref 
-          }
-          return type
-        }
+eYo.DelegateSvg.Expr.primary.prototype.getBaseType = function () {
+  var profile= this.getProfile()
+  var check = this.getOutCheck(profile)
+  return check[0]
+}
+eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function (profile) {
+  // there is no validation here
+  // simple cases first, variant based
+  var named = function () {
+    if (eYo.T3.Expr.Check.named_primary.indexOf(profile.name.type)) {
+      if (!profile.holder || !profile.holder.type
+      || eYo.T3.Expr.Check.named_primary.indexOf(profile.holder.type)) {
+        return true
       }
-      // unreachable
     }
-    var type = f.call(this)
-    if (type === eYo.T3.Expr.unset) {
-      console.error('This is an error!')
-      type = f.call(this)
-    }
-    this.setupType(type)
-    this.savedChangeCount_type = this.changeCount
   }
-  // console.log('type:', block.type)
-  return block.type
+  if (profile.variant === eYo.Key.CALL_EXPR) {
+    return named()
+    ? [
+      eYo.T3.Expr.named_call_expr,
+      eYo.T3.Expr.call_expr
+    ] 
+    : [
+      eYo.T3.Expr.call_expr
+    ]
+  } else if (profile.variant === eYo.Key.SLICING) {
+    return named()
+    ? [
+      eYo.T3.Expr.named_slicing,
+      eYo.T3.Expr.slicing
+    ] 
+    : [
+      eYo.T3.Expr.slicing
+    ]
+  } else if (profile.variant === eYo.Key.ALIASED) {
+    if (profile.name.type === eYo.T3.Expr.identifier
+    || profile.name.type === eYo.T3.Expr.unset) {
+      if (profile.holder.type === eYo.T3.Expr.unset
+        || profile.holder.type === eYo.T3.Expr.identifier
+        || profile.holder.type === eYo.T3.Expr.dotted_name) {
+        return [
+          eYo.T3.Expr.dotted_name_as,
+          eYo.T3.Expr.expression_as
+        ]
+      }
+      return profile.holder.type
+      ? [
+        eYo.T3.Expr.expression_as
+      ]
+      : [
+        eYo.T3.Expr.identifier_as,
+        eYo.T3.Expr.dotted_name_as,
+        eYo.T3.Expr.expression_as
+      ]
+    }
+    if (profile.name.type === eYo.T3.Expr.dotted_name) {
+      if (!profile.holder || !profile.holder.type
+        || profile.holder.type === eYo.T3.Expr.unset
+        || profile.holder.type === eYo.T3.Expr.identifier
+        || profile.holder.type === eYo.T3.Expr.dotted_name) {
+        return [
+          eYo.T3.Expr.dotted_name_as,
+          eYo.T3.Expr.expression_as
+        ]
+      }
+    }
+    return [
+      eYo.T3.Expr.expression_as
+    ]
+  }
+  if (profile.annotated) {
+    if(profile.defined) {
+      return [
+        eYo.T3.Expr.identifier_annotated_defined
+      ]
+    }
+    return profile.name.type === eYo.T3.Expr.identifier
+    ? [
+      eYo.T3.Expr.identifier_annotated,
+      eYo.T3.Expr.key_datum
+    ]
+    : [
+      eYo.T3.Expr.key_datum
+    ]
+  } else if(profile.defined) {
+    return [
+      eYo.T3.Expr.identifier_defined,
+      eYo.T3.Expr.keyword_item
+    ]
+  }
+  // if this is just a wrapper, forwards the check array
+  if (!profile.dotted) {
+    return profile.name.target
+    ? profile.name.target.outputConnection.check_
+    : profile.name.type === eYo.T3.Expr.unset
+      ? [
+        eYo.T3.Expr.identifier
+      ]
+      : [
+        profile.name.type
+      ]
+  }
+  // parent_module first
+  if (profile.name.type === eYo.T3.Expr.parent_module) {
+    return [
+      eYo.T3.Expr.parent_module
+    ]
+  }
+  if (profile.holder.type === eYo.T3.Expr.parent_module) {
+    return [
+      eYo.T3.Expr.parent_module
+    ]
+  }
+  if (profile.dotted > 0 && (!profile.holder || !profile.holder.type
+    || profile.holder.type === eYo.T3.Expr.unset)) {
+    return [
+      eYo.T3.Expr.parent_module
+    ]
+  }
+  // [named_]attributeref
+  if (profile.name.type === eYo.T3.Expr.unset
+  || profile.name.type === eYo.T3.Expr.identifier) {
+    if (profile.holder.type === eYo.T3.Expr.unset
+    || profile.holder.type === eYo.T3.Expr.identifier
+    || profile.holder.type === eYo.T3.Expr.dotted_name) {
+      return [
+        eYo.T3.Expr.dotted_name,
+        eYo.T3.Expr.named_attributeref,
+        eYo.T3.Expr.attributeref
+      ]
+    }
+    if (profile.holder.type) {
+      if (eYo.T3.Expr.Check.named_primary.indexOf(profile.holder.type) >= 0) {
+        return [
+          eYo.T3.Expr.named_attributeref,
+          eYo.T3.Expr.attributeref
+        ]
+      }
+      return [
+        eYo.T3.Expr.attributeref
+      ]  
+    }
+    return [
+      eYo.T3.Expr.identifier,
+      eYo.T3.Expr.dotted_name
+    ]  
+  }
+  if (profile.name.type === eYo.T3.Expr.dotted_name) {
+    if (profile.holder.type === eYo.T3.Expr.unset
+    || profile.holder.type === eYo.T3.Expr.identifier
+    || profile.holder.type === eYo.T3.Expr.dotted_name) {
+      return [
+        eYo.T3.Expr.dotted_name,
+        eYo.T3.Expr.named_attributeref,
+        eYo.T3.Expr.attributeref
+      ]
+    }
+    if (profile.holder.type) {
+      if (eYo.T3.Expr.Check.named_primary.indexOf(profile.holder.type) >= 0) {
+        return [
+          eYo.T3.Expr.named_attributeref,
+          eYo.T3.Expr.attributeref
+        ]
+      }
+      return [
+        eYo.T3.Expr.attributeref
+      ]  
+    }
+    return [
+      eYo.T3.Expr.dotted_name
+    ]  
+  }
+  if (profile.name.type === eYo.T3.Expr.named_attributeRef) {
+    if (!profile.dotted
+      || eYo.T3.Expr.Check.named_primary.indexOf(profile.holder.type)) {
+      return [
+        eYo.T3.Expr.named_attributeref,
+        eYo.T3.Expr.attributeref
+      ]
+    }
+  }
+  if (profile.name.type === eYo.T3.Expr.attributeRef) {
+    return !profile.dotted || eYo.T3.Expr.Check.named_primary.indexOf(profile.holder.type)
+    ? [
+      eYo.T3.Expr.named_attributeref,
+      eYo.T3.Expr.attributeref
+    ]
+    : [
+      eYo.T3.Expr.attributeref
+    ]
+  }
+  if (profile.name.type === eYo.T3.Expr.call_expr) {
+    return !profile.dotted || eYo.T3.Expr.Check.named_primary.indexOf(profile.holder.type)
+    ? [
+      eYo.T3.Expr.named_call_expr,
+      eYo.T3.Expr.call_expr
+    ]
+    : [
+      eYo.T3.Expr.call_expr
+    ]
+  }
+  if (profile.name.type === eYo.T3.Expr.slicing) {
+    return !profile.dotted || eYo.T3.Expr.Check.named_primary.indexOf(profile.holder.type)
+    ? [
+      eYo.T3.Expr.named_slicing,
+      eYo.T3.Expr.slicing
+    ]
+    : [
+      eYo.T3.Expr.slicing
+    ]
+  }
+  return [
+    eYo.T3.Expr.attributeref
+  ]
 }
 
 /**
@@ -948,15 +1010,6 @@ eYo.DelegateSvg.Expr.primary.prototype.getType = function () {
 eYo.DelegateSvg.Expr.primary.prototype.getSubtype = function () {
   this.getType()
   return this.data.subtype.get()
-}
-
-/**
- * Sends a `consolidate` message to each component of the block.
- * However, there might be some caveats related to undo management.
- * @param {!Block} block
- */
-eYo.DelegateSvg.Expr.primary.prototype.consolidateType = function (type) {
-  eYo.DelegateSvg.Expr.primary.superClass_.consolidateType.call(this, type || this.getType())
 }
 
 /**

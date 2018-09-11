@@ -58,7 +58,7 @@ import_stmt/import ::=  "import" non_void_module_as_list
                      | "from" relative_module "import" non_void_import_identifier_as_list
                      | "from" module "import" "*"
 non_void_module_as_list ::= module_as ( "," module_as )*
-module_as ::= module | dotted_name_as
+module_as ::= module | identifier_as | dotted_name_as
 dotted_name_as ::= dotted_name "as" identifier
 # relative_module ::=  "."* module | "."+
 relative_module ::=  module | parent_module

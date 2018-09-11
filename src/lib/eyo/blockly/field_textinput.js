@@ -427,7 +427,7 @@ eYo.FieldHelper.onStartEditing = function () {
  */
 eYo.FieldHelper.onEndEditing = function () {
   var newValue = this.getValue()
-  this.eyo.data.fromText(newValue)
+  this.eyo.data.fromField(newValue)
 }
 
 /**

@@ -97,6 +97,7 @@ eYo.Key = {
   FROM: 'from',
   MODULE: 'module',
   PARENT: 'parent',
+  HOLDER: 'holder',
   AS: 'as',
   SOURCE: 'source',
   DEFINITION: 'definition',

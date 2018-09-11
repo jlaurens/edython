@@ -375,6 +375,7 @@ eYo.T3.Expr.custom_identifier = '.custom identifier'
 eYo.T3.Expr.custom_dotted_name = '.custom dotted name'
 eYo.T3.Expr.custom_parent_module = '.custom parent module'
 eYo.T3.Expr.unset = '.unset'
+eYo.T3.Expr.error = '.error'
 
 eYo.T3.Stmt.control = '.control statement'
 
@@ -383,7 +384,7 @@ eYo.T3.Stmt.control = '.control statement'
  * For edython.
  * @param {!String} candidate
  * @param {?String} module
- * @return {!Object} the type of this candidate, possible keys are `name`, `expr`, `stmt`, `modelExpr`, `modelStmt`.
+ * @return {!Object} the type of this candidate, possible keys are `name`, `expr`, `stmt`.
  */
 eYo.Do.typeOfString = function (candidate, module) {
   if (!goog.isString(candidate)) {
@@ -392,7 +393,6 @@ eYo.Do.typeOfString = function (candidate, module) {
   if (!candidate.length) {
     return {
       raw: eYo.T3.Expr.unset,
-      modelExpr: candidate,
       expr: eYo.T3.Expr.identifier
     }
   }
@@ -406,7 +406,6 @@ eYo.Do.typeOfString = function (candidate, module) {
       if (item) {
         return {
           raw: eYo.T3.Expr.identifier,
-          modelExpr: candidate,
           expr: eYo.T3.Expr.call_expr
         }
       }
@@ -415,7 +414,6 @@ eYo.Do.typeOfString = function (candidate, module) {
   if (['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'].indexOf(candidate) >= 0) {
     return {
       raw: eYo.T3.Expr.reserved_identifier,
-      modelExpr: candidate,
       expr: eYo.T3.Expr.builtin__object
     }
   }
@@ -431,7 +429,6 @@ eYo.Do.typeOfString = function (candidate, module) {
     },
     is: {
       raw: eYo.T3.Expr.reserved_keyword,
-      modelExpr: 'is',
       expr: eYo.T3.Expr.object_comparison
     },
     return: {
@@ -462,9 +459,7 @@ eYo.Do.typeOfString = function (candidate, module) {
     from: {
       raw: eYo.T3.Expr.reserved_keyword,
       expr: eYo.T3.Expr.yield_expression,
-      modelExpr: 'from',// mmm ?
-      stmt: eYo.T3.Stmt.import_stmt,
-      modelStmt: 'from'// mmm ?
+      stmt: eYo.T3.Stmt.import_stmt
     },
     nonlocal: {
       raw: eYo.T3.Expr.reserved_keyword,
@@ -499,9 +494,6 @@ eYo.Do.typeOfString = function (candidate, module) {
     as: {
       raw: eYo.T3.Expr.reserved_keyword,
       expr: eYo.T3.Expr.identifier,
-      modelExpr: {
-        alias: '?'
-      },
       stmt: eYo.T3.Stmt.except_part
     },
     elif: {
@@ -547,8 +539,7 @@ eYo.Do.typeOfString = function (candidate, module) {
     },
     in: {
       raw: eYo.T3.Expr.reserved_keyword,
-      expr: eYo.T3.Expr.object_comparison,
-      modelExpr: 'in'
+      expr: eYo.T3.Expr.object_comparison
     },
     raise: {
       raw: eYo.T3.Expr.reserved_keyword,
@@ -557,9 +548,7 @@ eYo.Do.typeOfString = function (candidate, module) {
     print: {
       raw: eYo.T3.Expr.builtin__name,
       expr: eYo.T3.Expr.call_expr,
-      modelExpr: 'print',
-      stmt: eYo.T3.Expr.call_stmt,
-      modelStmt: 'print'
+      stmt: eYo.T3.Expr.call_stmt
     }
   } [candidate])) {
     return out
@@ -567,30 +556,26 @@ eYo.Do.typeOfString = function (candidate, module) {
   if (['int', 'float', 'complex', 'input', 'list', 'set', 'len', 'min', 'max', 'sum', 'abs', 'trunc', 'pow', 'conjugate'].indexOf(candidate) >= 0) {
     return {
       raw: eYo.T3.Expr.builtin__name,
-      expr: eYo.T3.Expr.call_expr,
-      modelExpr: candidate
+      expr: eYo.T3.Expr.call_expr
     }
   }
   // is it a number ?
   if (eYo.XRE.integer.exec(candidate)) {
     return {
       raw: eYo.T3.custom_literal,
-      expr: eYo.T3.Expr.integer,
-      modelExpr: candidate
+      expr: eYo.T3.Expr.integer
     }
   }
   if (eYo.XRE.floatnumber.exec(candidate)) {
     return {
       raw: eYo.T3.custom_literal,
-      expr: eYo.T3.Expr.floatnumber,
-      modelExpr: candidate
+      expr: eYo.T3.Expr.floatnumber
     }
   }
   if (eYo.XRE.imagnumber.exec(candidate)) {
     return {
       raw: eYo.T3.custom_literal,
-      expr: eYo.T3.Expr.imagnumber,
-      modelExpr: candidate
+      expr: eYo.T3.Expr.imagnumber
     }
   }
   if (candidate === 'start') {
@@ -620,48 +605,49 @@ eYo.Do.typeOfString = function (candidate, module) {
       }
     }
     if (dotted_name) {
-      return goog.isDef(first) && first > 0 ? {
+      var otherDots = components.length - 1 - first
+      if (otherDots) {
+        base = eYo.T3.Expr.dotted_name
+      } else if (components[components.length - 1].length) {
+        base = eYo.T3.Expr.identifier
+      } else {
+        base = eYo.T3.Expr.unset
+      }
+      return {
         raw: eYo.T3.Expr.custom_parent_module,
-        modelExpr: candidate,
-        expr: eYo.T3.Expr.parent_module
-      } : {
-         raw: eYo.T3.Expr.custom_dotted_name,
-         modelExpr: candidate,
-         expr: eYo.T3.Expr.dotted_name
+        expr: eYo.T3.Expr.parent_module,
+        prefixDots: first,
+        otherDots: otherDots,
+        base: base
       }
     }
   } else if (eYo.XRE.identifier.exec(candidate)) {
     return {
       raw: eYo.T3.Expr.custom_identifier,
-      modelExpr: candidate,
       expr: eYo.T3.Expr.identifier
     }
   }
   if (eYo.XRE.shortstringliteralSingle.exec(candidate) || eYo.XRE.shortstringliteralDouble.exec(candidate)) {
     return {
       raw: 'short string literal',
-      modelExpr: candidate,
       expr: eYo.T3.Expr.shortstringliteral
     }
   }
   if (eYo.XRE.shortbytesliteralSingle.exec(candidate) || eYo.XRE.shortbytesliteralDouble.exec(candidate)) {
     return {
       raw: eYo.T3.Expr.shortbytesliteral,
-      modelExpr: candidate,
       expr: eYo.T3.Expr.shortliteral
     }
   }
   if (eYo.XRE.longstringliteralSingle.exec(candidate) || eYo.XRE.longstringliteralDouble.exec(candidate)) {
     return {
       raw: eYo.T3.Expr.longstringliteral,
-      modelExpr: candidate,
       expr: eYo.T3.Expr.longliteral
     }
   }
   if (eYo.XRE.longbytesliteralSingle.exec(candidate) || eYo.XRE.longbytesliteralDouble.exec(candidate)) {
     return {
       raw: eYo.T3.Expr.longbytesliteral,
-      modelExpr: candidate,
       expr: eYo.T3.Expr.longliteral
     }
   }

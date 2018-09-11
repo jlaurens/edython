@@ -66,11 +66,11 @@ eYo.Data = function (owner, key, model) {
       if (!goog.isFunction(xml.fromText)) {
         delete xml.fromText
       }
-      if (!goog.isFunction(xml.toDom)) {
-        delete xml.toDom
+      if (!goog.isFunction(xml.toField)) {
+        delete xml.toField
       }
-      if (!goog.isFunction(xml.fromDom)) {
-        delete xml.fromDom
+      if (!goog.isFunction(xml.fromField)) {
+        delete xml.fromField
       }
     } else if (key === 'variant' || key === 'option' || key === 'subtype') {
       model.xml = false
@@ -207,6 +207,14 @@ eYo.Data.prototype.getAll = function () {
 }
 
 /**
+ * Whether the data value is eYo.Key.NONE.
+ * @return {Boolean}
+ */
+eYo.Data.prototype.isNone = function () {
+  return this.get() === eYo.Key.NONE
+}
+
+/**
  * Validates the value of the property
  * May be overriden by the model.
  * @param {Object} newValue
@@ -225,12 +233,32 @@ eYo.Data.prototype.validate = function (newValue) {
  * Returns the text representation of the data.
  * @param {?Object} newValue
  */
-eYo.Data.prototype.toText = function (newValue = undefined) {
+eYo.Data.prototype.toText = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'toText', this.model.toText)
+  var result = this.get()
   if (f) {
-    return f.apply(this, arguments).return
+    return f.call(this, result).return
   }
-  return this.get() || ''
+  if (goog.isNumber(result)) {
+    result = result.toString()
+  }
+  return result || ''
+}
+
+/**
+ * Returns the text representation of the data.
+ * @param {?Object} newValue
+ */
+eYo.Data.prototype.toField = function () {
+  var f = eYo.Decorate.reentrant_method.call(this, 'toField', this.model.toField || this.model.toText)
+  var result = this.get()
+  if (f) {
+    return f.call(this, result).return
+  }
+  if (goog.isNumber(result)) {
+    result = result.toString()
+  }
+  return result || ''
 }
 
 /*
@@ -275,6 +303,45 @@ eYo.Data.prototype.fromText = function (txt, dontValidate) {
       return
     }
   }
+  if (txt.length && !this.model.isText) {
+    var n = Number(txt)
+    if (!isNaN(n)) {
+      txt = n
+    }
+  }
+  if (dontValidate) {
+    this.set(txt)
+  } else if (this.value_ !== txt) {
+    var v7d = this.validate(txt)
+    if (!v7d || !goog.isDef((v7d = v7d.validated))) {
+      this.error = true
+      v7d = txt
+    } else {
+      this.error = false
+    }
+    this.setTrusted__(v7d)
+  }
+}
+
+
+/**
+ * Set the value from the given text representation
+ * as text field content.
+ * In general, the given text either was entered by a user in a text field ot read from a persistent text formatted storage.
+ * Calls the javascript model, reentrant.
+ * Does nothing when the actual value and
+ * the actual argument are the same.
+ * @param {Object} txt
+ * @param {boolean=} dontValidate
+ */
+eYo.Data.prototype.fromField = function (txt, dontValidate) {
+  if (!this.model_fromField_lock) {
+    var f = eYo.Decorate.reentrant_method.call(this, 'model_fromField', this.model.fromField || this.model.fromText)
+    if (f) {
+      f.apply(this, arguments)
+      return
+    }
+  }
   if (dontValidate) {
     this.set(txt)
   } else if (this.value_ !== txt) {
@@ -290,7 +357,7 @@ eYo.Data.prototype.fromText = function (txt, dontValidate) {
 }
 
 /**
- * Decorator of change hooks.
+ * Decorate of change hooks.
  * Returns a function with signature is `foo(before, after) → void`
  * `foo` is overriden by the model.
  * The model `foo` can call the builtin `foo` with `this.foo(...)`.
@@ -458,7 +525,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
     if (field) {
       Blockly.Events.disable()
       try {
-        field.setValue(this.toText())
+        field.setValue(this.toField())
       } finally {
         Blockly.Events.enable()
       }

@@ -14,6 +14,7 @@
 goog.provide('eYo.Delegate')
 
 goog.require('eYo.Helper')
+goog.require('eYo.Decorate')
 goog.require('Blockly.Blocks')
 
 goog.require('eYo.T3')
@@ -223,7 +224,9 @@ eYo.Delegate.Manager = (function () {
     }
     if (insertModel) {
       insertModel.data && merger(model.data, insertModel.data)
+      insertModel.heads && merger(model.heads, insertModel.heads)
       insertModel.slots && merger(model.slots, insertModel.slots)
+      insertModel.tails && merger(model.tails, insertModel.tails)
     }
     // store that object permanently
     delegateC9r.eyo.model_ = model
@@ -449,10 +452,30 @@ eYo.Delegate.Manager.registerAll(eYo.T3.Expr, eYo.Delegate)
 eYo.Delegate.Manager.registerAll(eYo.T3.Stmt, eYo.Delegate)
 
 /**
+ * Decorate of change hooks.
+ * Returns a function with signature is `foo(before, after) → void`
+ * `foo` is overriden by the model.
+ * The model `foo` can call the builtin `foo` with `this.foo(...)`.
+ * @param {!String} key, 
+ * @param {!Function} do_it
+ * @return {!Function}
+ */
+eYo.Decorate.onChangeCount = function (key, do_it) {
+  goog.asserts.assert(goog.isFunction(do_it), 'do_it MUST be a function')
+  var saved = key + '_changeCount_saved'
+  var cached = key + '_cached'
+  return function() {
+    if (this[saved] === this.changeCount) {
+      return this[cached]
+    }
+    this[saved] = this.changeCount
+    return this[cached] = do_it.apply(this, arguments)
+  }
+}
+
+/**
  * getType.
- * The default implementation just returns the type.
- * Subclassers will use it to return the correct type
- * depending on their actual inner state.
+ * The default implementation just returns the block type.
  * This should be used instead of direct block querying.
  * @return {String} The type of the receiver's block.
  */
@@ -461,7 +484,7 @@ eYo.Delegate.prototype.getType = function () {
 }
 
 /**
- * getType.
+ * getSubtype.
  * The default implementation just returns `undefined`.
  * Subclassers will use it to return the correct type
  * depending on their actual inner state.
@@ -469,6 +492,22 @@ eYo.Delegate.prototype.getType = function () {
  * @return {String} The type of the receiver's block.
  */
 eYo.Delegate.prototype.getSubtype = function () {
+}
+
+/**
+ * getBaseType.
+ * The default implementation just returns the receiver's
+ * `baseType_` property or its block type.
+ * Subclassers will use it to return the correct type
+ * depending on their actual inner state.
+ * The raw type of the block is the type without any modifier.
+ * The raw type is the same as the block type except for blocks
+ * with modifiers.
+ * This should be used instead of direct block querying.
+ * @return {?String} The type of the receiver's block.
+ */
+eYo.Delegate.prototype.getBaseType = function () {
+  return this.baseType_ || this.block_.type
 }
 
 /**
@@ -668,13 +707,13 @@ eYo.Delegate.prototype.type_ = undefined
  * @constructor
  */
 eYo.Delegate.prototype.setupType = function (optNewType) {
+  var block = this.block_
   if (!optNewType && !block.type) {
     console.error('Error!')
   }
   if (optNewType === eYo.T3.Expr.unset) {
     console.error('C\'est une erreur!')
   }
-  var block = this.block_
   if (goog.isDef(optNewType) && block.type === optNewType) {
     return
   }
