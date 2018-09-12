@@ -1,22 +1,6 @@
 <template>
   <div id="toolbar-info" :style="style">
-    <div v-if="isSelected([
-    $$.eYo.T3.Expr.primary,
-    $$.eYo.T3.Expr.identifier,
-    $$.eYo.T3.Expr.term,
-    $$.eYo.T3.Expr.attributeref,
-    $$.eYo.T3.Expr.subscription,
-    $$.eYo.T3.Expr.identifier_as,
-    $$.eYo.T3.Expr.dotted_name_as,
-    $$.eYo.T3.Expr.expression_as,
-    $$.eYo.T3.Expr.star_expr,
-    $$.eYo.T3.Expr.parameter_star,
-    $$.eYo.T3.Expr.parameter_defined,
-    $$.eYo.T3.Expr.identifier_annotated,
-    $$.eYo.T3.Expr.parameter_star_star,
-    $$.eYo.T3.Expr.slicing,
-    $$.eYo.T3.Expr.call_expr,
-    'eyo:call'])">
+    <div v-if="isSelected($$.eYo.DelegateSvg.Expr.primary.eyo.getModel().xml.types)">
       <info-primary :selected-block="selectedBlock" :placeholder="placeholder"></info-primary>
     </div>
     <div v-else-if="isSelected([$$.eYo.T3.Expr.shortliteral, $$.eYo.T3.Expr.longliteral, $$.eYo.T3.Expr.shortbytesliteral, $$.eYo.T3.Expr.longbytesliteral, $$.eYo.T3.Expr.shortstringliteral, $$.eYo.T3.Expr.longstringliteral, $$.eYo.T3.Stmt.docstring_stmt])">

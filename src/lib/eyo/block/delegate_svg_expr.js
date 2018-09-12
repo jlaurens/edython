@@ -122,7 +122,7 @@ eYo.DelegateSvg.Expr.prototype.checkOutputType = function (type) {
   var c8n = this.block_.outputConnection
   if (c8n.check_) {
     if (goog.isArray(type)) {
-      for (var i = 0; (i < type.length); ++_) {
+      for (var i = 0; (i < type.length); ++i) {
         if (c8n.check_.indexOf(type[i]) >= 0) {
           return true
         }

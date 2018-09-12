@@ -30,16 +30,24 @@
     computed: {
       selected: {
         get () {
-          if (!this.selected_) {
-            var block = this.selectedBlock
-            var dotted = block && block.eyo.data.dotted.get()
-            if (dotted === eYo.Key.MODULE) {
-              this.selected_ = this.modules_[block && block.eyo.data.module.get()]
-            } else {
-              this.selected_ = this.items_[dotted]
+          // guess from the selected block
+          var block = this.selectedBlock
+          if (block) {
+            var eyo = block.eyo
+            var dotted = eyo.data.dotted.get()
+            var candidate = this.items_[dotted]
+            if (dotted === 1) {
+              if (!eyo.slots.holder.targetBlock()) {
+                var holder = eyo.data.holder.get()
+                var module = this.modules_[holder]
+                if (module) {
+                  candidate = module
+                }
+              }
             }
+            this.selected_ = candidate
           }
-          return this.selected_ || this.items[dotted]
+          return this.selected_ || this.items[0]
         },
         set (newValue) {
           this.selected_ = newValue
@@ -49,26 +57,27 @@
       },
       items_ () {
         return {
-          [eYo.Key.NONE]: {
-            key: eYo.Key.NONE,
+          0: {
+            key: 0,
             content: '&nbsp;',
             action (item) {
               var block = this.selectedBlock
               block && block.eyo.data.dotted.set(item.key)
             }
           },
-          [eYo.Key.PARENT]: {
-            key: eYo.Key.PARENT,
-            content: '<span class="eyo-placeholder">' + this.$t('message.' + eYo.Key.PARENT) + '.</span>',
-            title: '.',
+          1: {
+            key: 1,
+            content: '….',
+            title: '….',
             action (item) {
               var block = this.selectedBlock
               block && block.eyo.data.dotted.set(item.key)
             }
           },
-          [eYo.Key.ROOT]: {
-            key: eYo.Key.ROOT,
-            content: this.placeholder('eyo-info-primary-dotted1') + '<div class="eyo-info-primary-dotted2">.</div>',
+          2: {
+            key: 2,
+            content: '..',
+            title: '..',
             action (item) {
               var block = this.selectedBlock
               block && block.eyo.data.dotted.set(item.key)
@@ -78,9 +87,9 @@
       },
       items () {
         return [
-          this.items_[eYo.Key.NONE],
-          this.items_[eYo.Key.PARENT],
-          this.items_[eYo.Key.ROOT]
+          this.items_[0],
+          this.items_[1],
+          this.items_[2]
         ]
       },
       modules__ () {
@@ -96,8 +105,13 @@
             content: module + '.',
             action (item) {
               var block = this.selectedBlock
-              block && block.eyo.data.dotted.set(eYo.Key.MODULE)
-              block && block.eyo.data.module.set(item.key)
+              if (block) {
+                var eyo = block.eyo
+                eyo.data.dotted.set(1)
+                eyo.data.holder.set(item.key)
+                var target = eyo.slots.holder.targetBlock()
+                target && target.unplug()
+              }
             }
           }
         }

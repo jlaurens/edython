@@ -165,14 +165,18 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       eYo.T3.Expr.keyword_item,
       eYo.T3.Expr.identifier_annotated_defined,
       eYo.T3.Expr.attributeref,
+      eYo.T3.Expr.named_attributeref,
       eYo.T3.Expr.dotted_name,
       eYo.T3.Expr.parent_module,
       eYo.T3.Expr.identifier_as,
       eYo.T3.Expr.dotted_name_as,
       eYo.T3.Expr.expression_as,
       eYo.T3.Expr.subscription,
+      eYo.T3.Expr.named_subscription,
+      eYo.T3.Expr.slicing,
+      eYo.T3.Expr.named_slicing,
       eYo.T3.Expr.call_expr,
-      eYo.T3.Expr.slicing    
+      eYo.T3.Expr.named_call_expr
     ]
   },
   data: {
@@ -694,96 +698,87 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
   'getProfile',
   function () {
     // this may be called very very early
-    var profile = {}
-    var type
-    var target = this.slots && this.slots.name.targetBlock()
-    if (target) {
-      if (this.checkOutputType(eYo.T3.Expr.identifier)) {
-        type = eYo.T3.Expr.identifier
-      } else if (this.checkOutputType(eYo.T3.Expr.dotted_name)) {
-        type = eYo.T3.Expr.dotted_name
-      } else if (this.checkOutputType(eYo.T3.Expr.parent_module)) {
-        type = eYo.T3.Expr.parent_module
-      } else if (this.checkOutputType(eYo.T3.Expr.Check.named_attributeref)) {
-        type = eYo.T3.Expr.named_attributeref
-      } else if (this.checkOutputType(eYo.T3.Expr.Check.named_primary)) {
-        type = eYo.T3.Expr.named_primary
-      } else if (this.checkOutputType(eYo.T3.Expr.Check.primary)) {
-        type = eYo.T3.Expr.primary
-      } else if (this.checkOutputType(eYo.T3.Expr.Check.expression)) {
-        type = eYo.T3.Expr.expression
-      } else {
-        type = eYo.T3.Expr.error // this block should not be connected
+    if (this.data) {
+      var profile = {
+        dotted: this.data.dotted.get(),
+        variant: this.data.variant.get(),
+        defined: !this.data.definition.isNone(),
+        annotated: !this.data.annotation.isNone()
       }
-      profile.name = {
-        type: type,
-        slot: type,
-        target: target
-      }
-    } else {
-      if (this.checkOutputType(eYo.T3.Expr.identifier)) {
-        type = eYo.T3.Expr.identifier
-      } else if (this.checkOutputType(eYo.T3.Expr.dotted_name)) {
-        type = eYo.T3.Expr.dotted_name
-      } else if (this.checkOutputType(eYo.T3.Expr.parent_module)) {
-        type = eYo.T3.Expr.parent_module
-      } else {
-        type = eYo.T3.Expr.unset
-      }     
-      profile.name = {
-        type: type,
-        field: type
-      }
-    }
-    if (this.data && this.data.dotted.get()) {
-      target = this.slots && this.slots.holder.targetBlock()
+      var type
+      var target = this.slots && this.slots.name.targetBlock()
       if (target) {
-        if (this.checkOutputType(eYo.T3.Expr.identifier)) {
+        var eyo = target.eyo
+        if (eyo.checkOutputType(eYo.T3.Expr.identifier)) {
           type = eYo.T3.Expr.identifier
-        } else if (this.checkOutputType(eYo.T3.Expr.dotted_name)) {
+        } else if (eyo.checkOutputType(eYo.T3.Expr.dotted_name)) {
           type = eYo.T3.Expr.dotted_name
-        } else if (this.checkOutputType(eYo.T3.Expr.parent_module)) {
+        } else if (eyo.checkOutputType(eYo.T3.Expr.parent_module)) {
           type = eYo.T3.Expr.parent_module
-        } else if (this.checkOutputType(eYo.T3.Expr.Check.named_primary)) {
+        } else if (eyo.checkOutputType(eYo.T3.Expr.Check.named_attributeref)) {
+          type = eYo.T3.Expr.named_attributeref
+        } else if (eyo.checkOutputType(eYo.T3.Expr.Check.named_primary)) {
           type = eYo.T3.Expr.named_primary
-        } else if (this.checkOutputType(eYo.T3.Expr.Check.primary)) {
+        } else if (eyo.checkOutputType(eYo.T3.Expr.Check.primary)) {
           type = eYo.T3.Expr.primary
+        } else if (eyo.checkOutputType(eYo.T3.Expr.Check.expression)) {
+          type = eYo.T3.Expr.expression
         } else {
           type = eYo.T3.Expr.error // this block should not be connected
         }
-        profile.holder = {
+        profile.name = {
           type: type,
           slot: type,
           target: target
         }
       } else {
-        if (this.checkOutputType(eYo.T3.Expr.identifier)) {
-          type = eYo.T3.Expr.identifier
-        } else if (this.checkOutputType(eYo.T3.Expr.dotted_name)) {
-          type = eYo.T3.Expr.dotted_name
-        } else if (this.checkOutputType(eYo.T3.Expr.parent_module)) {
-          type = eYo.T3.Expr.parent_module
-        } else {
-          type = eYo.T3.Expr.unset
-        }     
-        profile.holder = {
+        type = eYo.Do.typeOfString(this.data.name.get()).expr
+        profile.name = {
           type: type,
           field: type
         }
       }
+      if (profile.dotted) {
+        target = this.slots && this.slots.holder.targetBlock()
+        if (target) {
+          eyo = target.eyo
+          if (eyo.checkOutputType(eYo.T3.Expr.identifier)) {
+            type = eYo.T3.Expr.identifier
+          } else if (eyo.checkOutputType(eYo.T3.Expr.dotted_name)) {
+            type = eYo.T3.Expr.dotted_name
+          } else if (eyo.checkOutputType(eYo.T3.Expr.parent_module)) {
+            type = eYo.T3.Expr.parent_module
+          } else if (eyo.checkOutputType(eYo.T3.Expr.Check.named_primary)) {
+            type = eYo.T3.Expr.named_primary
+          } else if (eyo.checkOutputType(eYo.T3.Expr.Check.primary)) {
+            type = eYo.T3.Expr.primary
+          } else {
+            type = eYo.T3.Expr.error // this block should not be connected
+          }
+          profile.holder = {
+            type: type,
+            slot: type,
+            target: target
+          }
+        } else {
+          type = eYo.Do.typeOfString(this.data.holder.get()).expr
+          profile.holder = {
+            type: type,
+            field: type
+          }
+        }
+      }
+      return profile
     }
-    if (this.data) {
-      profile.variant = this.data.variant.get()
-      profile.dotted = this.data.dotted.get()
-      profile.defined = !this.data.definition.isNone()
-      profile.annotated = !this.data.annotation.isNone()
+    return {
+      name: {},
+      target: {}
     }
-    return profile
   }
 )
 
 /**
- * getType.
+ * getBaseType.
  * The type depends on the variant and the modifiers.
  * As side effect, the subtype is set.
  */
@@ -792,6 +787,12 @@ eYo.DelegateSvg.Expr.primary.prototype.getBaseType = function () {
   var check = this.getOutCheck(profile)
   return check[0]
 }
+
+/**
+ * getOutCheck.
+ * The check_ array of the output connection.
+ * @param {!Object} getProfile
+ */
 eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function (profile) {
   // there is no validation here
   // simple cases first, variant based
