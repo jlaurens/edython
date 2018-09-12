@@ -465,15 +465,16 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
   }
   // unfortunately, the mouse events do not find there way to the proper block
   var c8n = this.eyo.getConnectionForEvent(this, e)
-  var target = c8n && !c8n.eyo.doNotSelect ? c8n.targetBlock() || c8n.sourceBlock_ : this
+  var target = c8n ? c8n.targetBlock() || c8n.sourceBlock_ : this
   while (target && (target.eyo.wrapped_ || target.eyo.locked_)) {
     target = target.getParent()
   }
+  // console.log('MOUSE DOWN', target)
+  // Next trick because of the the dual event binding
+  // reentrant management
   if (!target || target.eyo.lastMouseDownEvent_ === e) {
     return
   }
-  // console.log('MOUSE DOWN', target)
-  // Next trick because of the the dual event binding
   target.eyo.lastMouseDownEvent_ = e
   // Next is not good design
   // remove any selected connection, if any
@@ -498,24 +499,29 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
   while (target && (target.eyo.wrapped_ || target.eyo.locked_)) {
     target = target.getParent()
   }
+  // console.log('MOUSE UP', target)
+  // reentrancy filter
   if (!target || target.eyo.lastMouseUpEvent_ === e) {
     return
   }
-  // console.log('MOUSE UP', target)
   target.eyo.lastMouseUpEvent_ = e
   var ee = target.eyo.lastMouseDownEvent
   if (ee) {
     // a block was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
-      // console.log('MOUSE UP NOT A DRAG MOVE', target.type, Blockly.selected.type)
+      console.log('MOUSE UP NOT A DRAG MOVE', target.type, Blockly.selected.type)
       if (target === Blockly.selected) {
         // if the block was already selected,
         // try to select an input connection
+        var field = c8n && c8n.eyo.bindField
+        field && (field.eyo.doNotEdit = false)
         if (c8n && c8n === eYo.SelectedConnection) {
           eYo.SelectedConnection = null
-        } else if (c8n && !c8n.targetConnection && c8n !== target.eyo.lastSelectedConnection && !c8n.eyo.doNotSelect) {
+        } else if (c8n && !c8n.targetConnection && c8n !== target.eyo.lastSelectedConnection) {
+          field && (field.eyo.doNotEdit = true)
           eYo.SelectedConnection = c8n
+          console.log('eYo.SelectedConnection', c8n)    
         } else {
           eYo.SelectedConnection = null
         }

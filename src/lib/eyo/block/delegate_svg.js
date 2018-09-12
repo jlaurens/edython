@@ -1521,11 +1521,11 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
     var cursorX = io.cursorX + io.offsetX
     var target = c8n.targetBlock()
     if (io.bindField && !target) {
-      c8n.eyo.doNotSelect = true
+      c8n.eyo.bindField = io.bindField
       c8n.eyo.editWidth = io.bindField.getSize().width
       c8n.setOffsetInBlock(cursorX - c8n.eyo.editWidth - eYo.Font.space / 2, 0)
     } else {
-      delete c8n.eyo.doNotSelect
+      delete c8n.eyo.bindField
       delete c8n.eyo.editWidth
       c8n.setOffsetInBlock(cursorX, 0)
     }
