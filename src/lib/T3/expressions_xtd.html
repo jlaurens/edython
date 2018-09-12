@@ -158,6 +158,7 @@ xor_expr_all     ::=  and_expr_all   | xor_expr
 xor_expr     ::=  xor_expr_all "^" and_expr_all
 or_expr_all      ::=  xor_expr_all   | or_expr
 or_expr      ::=  or_expr_all "|" xor_expr_all
+binary ::= or_expr | xor_expr | and_expr | shift_expr | a_expr | m_expr
 </pre>
 The await_expr is just a primary with an await attribute
 <pre>

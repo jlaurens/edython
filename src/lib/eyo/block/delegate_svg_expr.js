@@ -34,19 +34,19 @@ eYo.DelegateSvg.makeSubclass('Expr', {
         this.setIncog(!newValue || !newValue.length)
       },
       fromType: /** @suppress {globalThis} */ function (type) {
-        if (type === 'eYo.T3.Expr.star') {
+        if (type === eYo.T3.Expr.star) {
           this.set('*')
-        } else if (type === 'eYo.T3.Expr.target_star') {
+        } else if (type === eYo.T3.Expr.target_star) {
           this.set('*')
-        } else if (type === 'eYo.T3.Expr.parameter_star') {
+        } else if (type === eYo.T3.Expr.parameter_star) {
           this.set('*')
-        } else if (type === 'eYo.T3.Expr.star_expr') {
+        } else if (type === eYo.T3.Expr.star_expr) {
           this.set('*')
-        } else if (type === 'eYo.T3.Expr.parameter_star_star') {
+        } else if (type === eYo.T3.Expr.parameter_star_star) {
           this.set('**')
-        } else if (type === 'eYo.T3.Expr.expression_star_star') {
+        } else if (type === eYo.T3.Expr.expression_star_star) {
           this.set('**')
-        } else if (type === 'eYo.T3.Expr.or_expr_star_star') {
+        } else if (type === eYo.T3.Expr.or_expr_star_star) {
           this.set('**')
         }
         // this.set()
