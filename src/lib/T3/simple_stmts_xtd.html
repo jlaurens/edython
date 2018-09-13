@@ -34,6 +34,7 @@ augop                     ::=  "+=" | "-=" | "*=" | "@=" | "/=" | "//=" | "%=" |
 <pre>
 target ::= target_unstar | target_star
 target_unstar ::=  identifier
+                     | identifier_annotated
                      | parenth_target_list
                      | bracket_target_list
                      | attributeref
