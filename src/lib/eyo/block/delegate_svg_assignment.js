@@ -126,6 +126,9 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (function () {
     if (goog.array.contains(check, eYo.T3.Expr.target_star)) {
       return Type.STARRED
     } else {
+      if (!io.annotatedInput && goog.array.contains(check, eYo.T3.Expr.identifier_annotated)) {
+        io.annotatedInput = io.input
+      }
       return Type.OTHER
     }
   }
@@ -175,6 +178,26 @@ eYo.Consolidator.List.Target.prototype.getCheck = function (io) {
     return eYo.T3.Expr.Check.target
   } else {
     return eYo.T3.Expr.Check.target_unstar
+  }
+}
+
+
+/**
+ * Once the whole list has been managed,
+ * there might be unwanted things.
+ * @param {object} io
+ */
+eYo.Consolidator.List.Target.prototype.doFinalize = function (io) {
+  eYo.Consolidator.List.Target.superClass_.doFinalize.call(this, io)
+  if (io.annotatedInput) {
+    // disable all input and separators except the first which is annotated
+    if (this.setupIO(io, 0)) {
+      do {
+        if (io.annotatedInput !== io.input) {
+          io.c8n.eyo.setIncog(true)
+        }
+      } while (this.nextInput(io))
+    }
   }
 }
 
@@ -439,8 +462,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       init: '',
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
-        return type.expr === eYo.T3.Expr.identifier
-          || type.expr === eYo.T3.Expr.dotted_name
+        return type.expr === eYo.T3.Expr.unset
+        || type.expr === eYo.T3.Expr.identifier
+        || type.expr === eYo.T3.Expr.dotted_name
           ? {validated: newValue}
           : null
       },
