@@ -1010,14 +1010,13 @@ eYo.DelegateSvg.prototype.getPaddingLeft = function (block) {
   if (this.wrapped_) {
     return 0
   } else if (block.outputConnection) {
-    if (this.tileHead) {
-      
+    var parent = block.getParent()
+    if (parent && this.tileHead) {
       var child = this.tileHead.sourceBlock_
       if (child && (child === block) && (this.tileHead === child.eyo.tileHead)) {
         return this.isHeadOfStatement ? 0 : eYo.Font.space
       }
     }
-    var parent = block.getParent()
     return (this.locked_ || this.isHeadOfStatement) && parent ? 0 : eYo.Font.space
   } else {
     return eYo.Font.space // eYo.Padding.l()
@@ -1303,7 +1302,10 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
   io.shouldSeparateField = this.shouldSeparateField
   io.wasSeparatorField = this.wasSeparatorField
   // isHeadOfStatement can be set by the parent block,
-  io.isHeadOfStatement = !this.disabled && (!block.outputConnection || this.isHeadOfStatement)
+  io.isHeadOfStatement = !this.disabled && (
+    !block.outputConnection // if this is a statement
+    || this.isHeadOfStatement // or if the parent already set it
+  )
 
   if ((io.field = this.fromStartField)) {
     io.f = 0
@@ -1437,6 +1439,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
       root.removeAttribute('display')
       var text = io.field.getDisplayText_()
       var eyo = io.field.eyo
+      var here = io.cursorX
       if (text.length) {
         io.isSeparatorField = io.field.name === 'separator'
         // if the text is void, it can not change whether
@@ -1466,6 +1469,9 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
       io.cursorX += size.width
       if (eyo.isEditing) {
         io.cursorX += eYo.Font.space
+      }
+      if (io.cursorX > here) {
+        io.isHeadOfStatement = false
       }
     }
   } else {
@@ -1517,6 +1523,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   }
   var c8n = io.input.connection
   if (c8n) { // once `&&!c8n.hidden_` was there, bad idea but why was it here?
+    var here = io.cursorX
     this.renderDrawFields_(io, true)
     var cursorX = io.cursorX + io.offsetX
     var target = c8n.targetBlock()
@@ -1530,7 +1537,11 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       c8n.setOffsetInBlock(cursorX, 0)
     }
     c8n.eyo.isHeadOfStatement = io.isHeadOfStatement
+    // this.tileHead && !this.tileHead.eyo.tilePrevious && (parent = block.getParent())
     if (target) {
+      if (target.eyo.tileHead) {
+        cursorX -= eYo.Font.space
+      }
       var root = target.getSvgRoot()
       if (root) {
         c8n.tighten_()
@@ -1538,6 +1549,9 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
           target.eyo.downRendering = true
           target.eyo.shouldSeparateField = io.shouldSeparateField
           target.eyo.wasSeparatorField = io.wasSeparatorField
+          if (io.cursorX > here) {
+            io.isHeadOfStatement = false
+          }
           target.eyo.isHeadOfStatement = io.isHeadOfStatement
           if (io.block.outputConnection !== eYo.Connection.disconnectedChildC8n && !target.eyo.upRendering) {
             if (eYo.DelegateSvg.debugStartTrackingRender) {
@@ -1576,7 +1590,9 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       }
     }
     this.renderDrawFields_(io, false)
-    io.isHeadOfStatement = false
+    if (io.cursorX > here) {
+      io.isHeadOfStatement = false
+    }
   }
   return true
 }

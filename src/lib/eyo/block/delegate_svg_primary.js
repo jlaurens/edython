@@ -199,10 +199,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         holder_d.setIncog()
         if (newValue !== 0) {
           // this is a dotted expression
-          var annotation_d = this.data.annotation
-          annotation_d.set(annotation_d.NONE)
-          var definition_d = this.data.definition
-          definition_d.set(definition_d.NONE)
+          this.data.annotation.set(eYo.Key.NONE)
+          this.data.definition.set(eYo.Key.NONE)
         }
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
@@ -296,18 +294,19 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       didChange: function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         // override previous data if necessary
-        if (newValue !== eYo.Key.NONE) {
+        if (newValue !== this.NONE) {
           // no holder nor dotted nor variant
           this.data.dotted.set(0)
-          this.data.variant.set(eYo.Key.NONE)
+          this.data.variant.set(this.NONE)
         }
       },
       synchronize: function (newValue) {
         var slot = this.owner.slots.annotation
         if (slot) {
-          slot.required = newValue === this.ANNOTATED
-          slot.setIncog(!slot.required)
+          slot.required = newValue !== this.NONE
+          slot.setIncog()
         }
+        this.owner.render()
       },
       xml: {
         save: function (el) {
@@ -337,18 +336,19 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       didChange: function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         // override previous data if necessary
-        if (newValue !== eYo.Key.NONE) {
+        if (newValue !== this.NONE) {
           // no holder nor dotted nor variant
           this.data.dotted.set(0)
-          this.data.variant.set(eYo.Key.NONE)
+          this.data.variant.set(this.NONE)
         }
       },
       synchronize: function (newValue) {
         var slot = this.owner.slots.definition
         if (slot) {
-          slot.required = newValue === this.DEFINED
-          slot.setIncog(!slot.required)
+          slot.required = newValue !== this.NONE
+          slot.setIncog()
         }
+        this.owner.render()
       },
       xml: {
         save: function (el) {

@@ -508,12 +508,15 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
  * All the connections and components are consolidated.
  * Sends a `consolidate` message to each component of the block.
  * However, there might be some caveats related to undo management.
- * @param {!Block} block
+ * @param {!Boolean} deep
+ * @param {!Boolean} force
+ * @return {Boolean} true when consolidated, false otherwise
  */
 eYo.DelegateSvg.Expr.prototype.consolidate = function (deep, force) {
   if (eYo.DelegateSvg.Expr.superClass_.consolidate.call(this, deep, force)) {
     var parent = this.block_.getParent()
     parent && parent.eyo.consolidate()
+    return true
   }
 }
 

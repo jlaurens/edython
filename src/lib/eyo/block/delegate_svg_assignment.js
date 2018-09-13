@@ -189,15 +189,10 @@ eYo.Consolidator.List.Target.prototype.getCheck = function (io) {
  */
 eYo.Consolidator.List.Target.prototype.doFinalize = function (io) {
   eYo.Consolidator.List.Target.superClass_.doFinalize.call(this, io)
-  if (io.annotatedInput) {
-    // disable all input and separators except the first which is annotated
-    if (this.setupIO(io, 0)) {
-      do {
-        if (io.annotatedInput !== io.input) {
-          io.c8n.eyo.setIncog(true)
-        }
-      } while (this.nextInput(io))
-    }
+  if (this.setupIO(io, 0)) {
+    do {
+      io.c8n.eyo.setIncog(io.annotatedInput && io.annotatedInput !== io.input)
+    } while (this.nextInput(io))
   }
 }
 
