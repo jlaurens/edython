@@ -43,7 +43,10 @@ eYo.Consolidator.PrintArguments.prototype.doFinalize = function (io) {
   if (!this.hasInputForType(io.block, eYo.T3.Expr.comprehension)) {
     this.setupIO(io, 0)
     var input
-    while ((input = this.nextInputForType(io, eYo.T3.Expr.keyword_item))) {
+    while ((input = this.nextInputForType(io, [
+      eYo.T3.Expr.identifier_defined,
+      eYo.T3.Expr.keyword_item
+    ]))) {
       var target = input.connection.targetBlock()
       if (target) {
         if (io.i-- && this.setupIO(io)) {
