@@ -122,7 +122,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.prototype.getMenuTarget = function (blo
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-eYo.DelegateSvg.Expr.builtin__print_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (block, mgr) {
   var list = block.getInput(eYo.Key.ARGUMENTS).connection.targetBlock()
   var c10r = list.eyo.consolidator
   var yorn = false
@@ -130,20 +130,26 @@ eYo.DelegateSvg.Expr.builtin__print_expr.prototype.populateContextMenuFirst_ = f
     var has = {}
     var io = c10r.getIO(list)
     var input
-    while ((input = c10r.nextInputForType(io, eYo.T3.Expr.keyword_item))) {
+    while ((input = c10r.nextInputForType(io, [
+      eYo.T3.Expr.identifier_defined,
+      eYo.T3.Expr.keyword_item
+    ]))) {
       var target = input.connection.targetBlock()
-      if (target && target.eyo.data.value) {
-        has[target.eyo.data.value.get()] = target
+      if (target && target.eyo.data.name) {
+        has[target.eyo.data.name.get()] = target
       }
     }
     var insert = function (key) {
       eYo.Events.setGroup(true)
       try {
-        var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)
-        B.eyo.data.name.set(key)
-        B.eyo.data.variant.set(eYo.DelegateSvg.Expr.primary.eyo.getModel().data.variant.NAME)
+        var B = eYo.DelegateSvg.newBlockComplete(block.workspace, {
+          type: eYo.T3.Expr.keyword_item,
+          data: key
+        })
+        // we assume that inputList is not void
         var c8n = list.inputList[list.inputList.length - 1].connection
         c8n.connect(B.outputConnection)
+        B.eyo.beReady(B)
         block.eyo.render()
       } catch (err) {
         console.error(err)
@@ -185,7 +191,19 @@ eYo.DelegateSvg.Expr.builtin__print_expr.prototype.populateContextMenuFirst_ = f
     F('file')
     yorn = true
   }
-  return eYo.DelegateSvg.Expr.builtin__print_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
+  return yorn
+}
+
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @override
+ */
+eYo.DelegateSvg.Expr.builtin__print_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
+  var yorn = eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_(block, mgr)
+  return eYo.DelegateSvg.Expr.builtin__print_expr.superClass_.populateContextMenuFirst_.apply(this, arguments) || yorn
 }
 
 /**
@@ -205,70 +223,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('builtin__print_stmt', {
  * @override
  */
 eYo.DelegateSvg.Stmt.builtin__print_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var list = block.getInput(eYo.Key.ARGUMENTS).connection.targetBlock()
-  var c10r = list.eyo.consolidator
-  var yorn = false
-  if (!c10r.hasInputForType(list, eYo.T3.Expr.comprehension)) {
-    var has = {}
-    var io = c10r.getIO(list)
-    var input
-    while ((input = c10r.nextInputForType(io, eYo.T3.Expr.keyword_item))) {
-      var target = input.connection.targetBlock()
-      if (target && target.eyo.data.value) {
-        has[target.eyo.data.value.get()] = target
-      }
-    }
-    var insert = function (key) {
-      eYo.Events.setGroup(true)
-      try {
-        var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)
-        B.eyo.data.name.set(key)
-        B.eyo.data.variant.set(eYo.DelegateSvg.Expr.primary.eyo.getModel().data.variant.NAME_DEFINITION)
-        // we assume that inputList is not void
-        var c8n = list.inputList[list.inputList.length - 1].connection
-        c8n.connect(B.outputConnection)
-        block.eyo.render()
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        eYo.Events.setGroup(false)
-      }
-    }
-    var remove = function (key) {
-      eYo.Events.setGroup(true)
-      try {
-        var B = has[key]
-        B.unplug()
-        B.dispose()
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        eYo.Events.setGroup(false)
-      }
-    }
-    var F = function (candidate) {
-      var menuItem = mgr.newMenuItem(
-        eYo.Do.createSPAN(candidate + ' = …', 'eyo-code'),
-        has[candidate] ? function () {
-          remove(candidate)
-        } : /** @suppress {globalThis} */ function () {
-          insert(candidate)
-        }
-      )
-      if (has[candidate]) {
-        mgr.addRemoveChild(menuItem)
-      } else {
-        mgr.addInsertChild(menuItem)
-      }
-    }
-    F('sep')
-    F('end')
-    F('file')
-    yorn = true
-  }
-  return eYo.DelegateSvg.Stmt.builtin__print_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
+  var yorn = eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_(block, mgr)
+  return eYo.DelegateSvg.Stmt.builtin__print_stmt.superClass_.populateContextMenuFirst_.apply(this, arguments) || yorn
 }
 
 eYo.DelegateSvg.Print.T3s = [

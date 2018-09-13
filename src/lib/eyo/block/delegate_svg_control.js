@@ -155,7 +155,7 @@ eYo.DelegateSvg.Control.prototype.renderDrawSharp_ = function (io) {
 eYo.DelegateSvg.Control.makeSubclass('start_stmt', {
   statement: {
     previous: {
-      check: null
+      check: [] // nothing will fit
     }
   }
 })

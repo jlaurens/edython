@@ -109,7 +109,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
  * For edython.
  */
 eYo.DelegateSvg.Stmt.except_part.prototype.getType = function () {
-  var block = this.block
+  var block = this.block_
   if (this.savedChangeCount_type !== this.changeCount) {
     this.setupType(
       this.data.variant.get() > 0

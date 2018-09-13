@@ -1,14 +1,25 @@
 <template>
   <b-dropdown id="info-binary-operator" class="eyo-dropdown" v-if="data" variant="outline-secondary">
     <template slot="button-content"><span class="info-binary-operator eyo-code eyo-content" v-html="formatter(operator)"></span></template>
-    <b-dropdown-item-button v-for="item in operators" v-on:click="operator = item" :key="item" class="info-binary-operator eyo-code" v-html="formatter(item)"></b-dropdown-item-button>
+    <b-dropdown-item-button v-for="item in operatorsA" v-on:click="operator = item" :key="item" class="info-binary-operator eyo-code" v-html="formatter(item)">
     </b-dropdown-item-button>
+    <b-dropdown-divider></b-dropdown-divider>
+    <b-dropdown-item-button v-for="item in operatorsB" v-on:click="operator = item" :key="item" class="info-binary-operator eyo-code" v-html="formatter(item)">
+    </b-dropdown-item-button>            
   </b-dropdown>
 </template>
 
 <script>
   export default {
     name: 'info-binary-operator',
+    data: function () {
+      return {
+        operators: {
+          num: ['+', '-', '*', '/', '//', '%', '@'],
+          bin: ['<<', '>>', '&', '^', '|']
+        }
+      }
+    },
     props: {
       selectedBlock: {
         type: Object,
@@ -47,8 +58,15 @@
           this.selectedBlock.render()
         }
       },
-      operators () {
-        return this.data.getAll()
+      operatorsA () {
+        return this.operators.bin.indexOf(this.operator) >= 0
+          ? this.operators.bin
+          : this.operators.num
+      },
+      operatorsB () {
+        return this.operators.bin.indexOf(this.operator) >= 0
+          ? this.operators.num
+          : this.operators.bin
       },
       my_placeholder () {
         return this.placeholder('eyo-info-primary-variant1')

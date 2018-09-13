@@ -3,7 +3,7 @@
     <b-button-toolbar>
       <b-button-group class="mx-1">
         <modifier :selected-block="selectedBlock"></modifier>
-        <parent :selected-block="selectedBlock"></parent>
+        <holder :selected-block="selectedBlock"></holder>
         <dotted :selected-block="selectedBlock" :placeholder="placeholder"></dotted>
       </b-button-group>
       <b-button-group class="mx-1">
@@ -16,7 +16,7 @@
 
 <script>
   import Modifier from './Primary/Modifier.vue'
-  import Parent from './Primary/Parent.vue'
+  import Holder from './Primary/Holder.vue'
   import Dotted from './Primary/Dotted.vue'
   import Value from './Value.vue'
   import Variant from './Primary/Variant.vue'
@@ -30,7 +30,7 @@
     },
     components: {
       Modifier,
-      Parent,
+      Holder,
       Dotted,
       Value,
       Variant,

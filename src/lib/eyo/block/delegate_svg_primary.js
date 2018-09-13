@@ -286,6 +286,12 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         eYo.Key.ANNOTATED
       ],
       default: eYo.Key.NONE,
+      fromType: /** @suppress {globalThis} */ function (type) {
+        if (type === eYo.T3.Expr.identifier_annotated
+        || type === eYo.T3.Expr.identifier_annotated_defined) {
+          this.set(eYo.Key.ANNOTATED)
+        }
+      },
       validate: true,
       didChange: function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
@@ -320,6 +326,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         eYo.Key.DEFINED
       ],
       default: eYo.Key.NONE,
+      fromType: /** @suppress {globalThis} */ function (type) {
+        if (type === eYo.T3.Expr.keyword_item
+          || type === eYo.T3.Expr.identifier_defined
+          || type === eYo.T3.Expr.identifier_annotated_defined) {
+          this.set(eYo.Key.DEFINED)
+        }
+      },
       validate: true,
       didChange: function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
@@ -806,22 +819,22 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function (profile) {
   }
   if (profile.variant === eYo.Key.CALL_EXPR) {
     return named()
-    ? [
-      eYo.T3.Expr.named_call_expr,
-      eYo.T3.Expr.call_expr
-    ] 
-    : [
-      eYo.T3.Expr.call_expr
-    ]
+      ? [
+        eYo.T3.Expr.named_call_expr,
+        eYo.T3.Expr.call_expr
+      ] 
+      : [
+        eYo.T3.Expr.call_expr
+      ]
   } else if (profile.variant === eYo.Key.SLICING) {
     return named()
-    ? [
-      eYo.T3.Expr.named_slicing,
-      eYo.T3.Expr.slicing
-    ] 
-    : [
-      eYo.T3.Expr.slicing
-    ]
+      ? [
+        eYo.T3.Expr.named_slicing,
+        eYo.T3.Expr.slicing
+      ] 
+      : [
+        eYo.T3.Expr.slicing
+      ]
   } else if (profile.variant === eYo.Key.ALIASED) {
     if (profile.name.type === eYo.T3.Expr.identifier
     || profile.name.type === eYo.T3.Expr.unset) {
@@ -834,14 +847,14 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function (profile) {
         ]
       }
       return profile.holder.type
-      ? [
-        eYo.T3.Expr.expression_as
-      ]
-      : [
-        eYo.T3.Expr.identifier_as,
-        eYo.T3.Expr.dotted_name_as,
-        eYo.T3.Expr.expression_as
-      ]
+        ? [
+          eYo.T3.Expr.expression_as
+        ]
+        : [
+          eYo.T3.Expr.identifier_as,
+          eYo.T3.Expr.dotted_name_as,
+          eYo.T3.Expr.expression_as
+        ]
     }
     if (profile.name.type === eYo.T3.Expr.dotted_name) {
       if (!profile.holder || !profile.holder.type
@@ -865,13 +878,13 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function (profile) {
       ]
     }
     return profile.name.type === eYo.T3.Expr.identifier
-    ? [
-      eYo.T3.Expr.identifier_annotated,
-      eYo.T3.Expr.key_datum
-    ]
-    : [
-      eYo.T3.Expr.key_datum
-    ]
+      ? [
+        eYo.T3.Expr.identifier_annotated,
+        eYo.T3.Expr.key_datum
+      ]
+      : [
+        eYo.T3.Expr.key_datum
+      ]
   } else if(profile.defined) {
     return [
       eYo.T3.Expr.identifier_defined,
@@ -881,14 +894,14 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function (profile) {
   // if this is just a wrapper, forwards the check array
   if (!profile.dotted) {
     return profile.name.target
-    ? profile.name.target.outputConnection.check_
-    : profile.name.type === eYo.T3.Expr.unset
-      ? [
-        eYo.T3.Expr.identifier
-      ]
-      : [
-        profile.name.type
-      ]
+      ? profile.name.target.outputConnection.check_
+      : profile.name.type === eYo.T3.Expr.unset
+        ? [
+          eYo.T3.Expr.identifier
+        ]
+        : [
+          profile.name.type
+        ]
   }
   // parent_module first
   if (profile.name.type === eYo.T3.Expr.parent_module) {
@@ -971,33 +984,33 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function (profile) {
   }
   if (profile.name.type === eYo.T3.Expr.attributeRef) {
     return !profile.dotted || eYo.T3.Expr.Check.named_primary.indexOf(profile.holder.type)
-    ? [
-      eYo.T3.Expr.named_attributeref,
-      eYo.T3.Expr.attributeref
-    ]
-    : [
-      eYo.T3.Expr.attributeref
-    ]
+      ? [
+        eYo.T3.Expr.named_attributeref,
+        eYo.T3.Expr.attributeref
+      ]
+      : [
+        eYo.T3.Expr.attributeref
+      ]
   }
   if (profile.name.type === eYo.T3.Expr.call_expr) {
     return !profile.dotted || eYo.T3.Expr.Check.named_primary.indexOf(profile.holder.type)
-    ? [
-      eYo.T3.Expr.named_call_expr,
-      eYo.T3.Expr.call_expr
-    ]
-    : [
-      eYo.T3.Expr.call_expr
-    ]
+      ? [
+        eYo.T3.Expr.named_call_expr,
+        eYo.T3.Expr.call_expr
+      ]
+      : [
+        eYo.T3.Expr.call_expr
+      ]
   }
   if (profile.name.type === eYo.T3.Expr.slicing) {
     return !profile.dotted || eYo.T3.Expr.Check.named_primary.indexOf(profile.holder.type)
-    ? [
-      eYo.T3.Expr.named_slicing,
-      eYo.T3.Expr.slicing
-    ]
-    : [
-      eYo.T3.Expr.slicing
-    ]
+      ? [
+        eYo.T3.Expr.named_slicing,
+        eYo.T3.Expr.slicing
+      ]
+      : [
+        eYo.T3.Expr.slicing
+      ]
   }
   return [
     eYo.T3.Expr.attributeref
@@ -1199,108 +1212,6 @@ eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
     check: [eYo.T3.Expr.call_expr]
   }
 })
-
-/**
- * Fetches the named input object, getInput.
- * This is not a very strong design but it should work, I guess.
- * @param {!Block} block
- * @param {String} name The name of the input.
- * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
- * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
- */
-eYo.DelegateSvg.Expr.base_call_expr.prototype.getInput = function (block, name) {
-  var input = eYo.DelegateSvg.base_call_expr.superClass_.getInput.call(this, block, name)
-  if (!input) {
-    // we suppose that ary is set
-    var f = function (slot) {
-      if (!slot.isIncog()) {
-        var input = slot.getInput()
-        if (input && input.connection) {
-          var target = input.connection.targetBlock()
-          if (target && (input = target.getInput(name))) {
-            return true
-          }
-        }
-      }
-    }
-    f(slots.binary, this.BINARY)
-   || f(slots.ternary, this.TERNARY)
-   || f(slots.quadary, this.QUADARY)
-   || f(slots.pentary, this.PENTARY)
-   || f(slots.n_ary, this.N_ARY)
-  }
-  return input
-}
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- * @suppress {globalThis}
-*/
-eYo.DelegateSvg.Expr.base_call_expr.populateMenu = function (block, mgr) {
-  var callerFlag_d = this.data.callerFlag
-  var caller = callerFlag_d.get()
-  var content = this.contentTemplate(block)
-  var content = caller
-  ? goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    content,
-    '(…)'
-  )
-  : content
-  var menuItem = mgr.newMenuItem(content, function () {
-    callerFlag_d.setTrusted(!caller)
-  })
-  mgr.addChild(menuItem, true)
-  var ary_d = this.data.ary
-  var current_ary = ary_d.get()
-  var self = this
-  var F = function (ary, args) {
-    if (ary !== current_ary) {
-      var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-        self.contentTemplate(block),
-        '(',
-        args,
-        ')'
-      )
-      var menuItem = mgr.newMenuItem(content, self.doAndRender(block, function () {
-        ary_d.setTrusted(ary)
-        callerFlag_d.setTrusted(false)
-      }, true))
-      mgr.addChild(menuItem, true)
-    }
-  }
-  F(ary_d.Z_ARY, '')
-  F(ary_d.UNARY, '…')
-  F(ary_d.BINARY, '…, …')
-  F(ary_d.TERNARY, '…, …, …')
-  F(ary_d.N_ARY, '…, …, …, ...')
-  mgr.shouldSeparate()
-}
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- * @suppress {globalThis}
-*/
-eYo.DelegateSvg.Expr.base_call_expr.populateMenuCaller = function (block, mgr) {
-}
-
-/**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-eYo.DelegateSvg.Expr.base_call_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  eYo.DelegateSvg.Expr.base_call_expr.populateMenu.call(this, block, mgr)
-  eYo.DelegateSvg.Expr.base_call_expr.populateMenuCaller.call(this, block, mgr)
-  mgr.shouldSeparate()
-  return eYo.DelegateSvg.Expr.base_call_expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
-}
 
 /**
  * Class for a DelegateSvg, call statement block.

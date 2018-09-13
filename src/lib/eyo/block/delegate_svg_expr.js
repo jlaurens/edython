@@ -643,7 +643,7 @@ eYo.DelegateSvg.Expr.makeSubclass('any', {
     }
   },
   output: {
-    check: null
+    check: null // means that every output type will fit, once we have a python parser...
   }
 })
 console.warn('value and subtype')

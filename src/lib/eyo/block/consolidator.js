@@ -697,16 +697,25 @@ eYo.Consolidator.List.prototype.getInput = function (block, name, dontCreate) {
  * Get the next input compatible with the given type.
  * Enumerator object. Used by the print block.
  * @param {object} io argument object
+ * @param {Object} type, string or array of strings
  * @return the next keyword item input, undefined when at end.
  */
 eYo.Consolidator.List.prototype.nextInputForType = function (io, type) {
+  var filter = goog.isArray(type)
+    ? function (check) {
+      for (var i = 0; i < type.length; i++) {
+        if (goog.array.contains(check, type[i])) {
+          return true
+        }
+      }
+    }
+    : function (check) {
+      return goog.array.contains(check, type)
+    }
   while (this.nextInput(io)) {
     var target = io.c8n.targetConnection
-    if (target) {
-      var check = target.check_
-      if (goog.array.contains(check, type)) {
-        return io.input
-      }
+    if (target && filter(target.check_)) {
+      return io.input
     }
   }
   return undefined
@@ -715,7 +724,8 @@ eYo.Consolidator.List.prototype.nextInputForType = function (io, type) {
 /**
  * Whether the block has an input for the given type.
  * Used by the print block.
- * @param {object} io argument object
+ * @param {!Blockly.Block} block
+ * @param {Object} type, string or array of strings
  * @return the next keyword item input, undefined when at end.
  */
 eYo.Consolidator.List.prototype.hasInputForType = function (block, type) {

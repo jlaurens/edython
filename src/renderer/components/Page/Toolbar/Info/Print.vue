@@ -51,7 +51,10 @@
           if (!c10r.hasInputForType(list, eYo.T3.Expr.comprehension)) {
             var io = c10r.getIO(list)
             var input
-            while ((input = c10r.nextInputForType(io, eYo.T3.Expr.keyword_item))) {
+            while ((input = c10r.nextInputForType(io, [
+              eYo.T3.Expr.identifier_defined,
+              eYo.T3.Expr.keyword_item
+            ]))) {
               var target = input.connection.targetBlock()
               if (target) {
                 if (target.eyo.data.name) {
@@ -126,11 +129,8 @@
           }
           var block = this.selectedBlock
           B = eYo.DelegateSvg.newBlockComplete(block.workspace, {
-            type: eYo.T3.Expr.term,
-            data: {
-              name: key,
-              definition: eYo.Key.DEFINED
-            }
+            type: eYo.T3.Expr.keyword_item,
+            data: key
           })
           var list = this.list
           var c8n = list.inputList[list.inputList.length - 1].connection
