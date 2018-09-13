@@ -396,6 +396,12 @@ eYo.T3.Stmt.control = '.control statement'
  * @return {!Object} the type of this candidate, possible keys are `name`, `expr`, `stmt`.
  */
 eYo.Do.typeOfString = function (candidate, module) {
+  if (!candidate) {
+    return {
+      raw: eYo.T3.Expr.unset,
+      expr: eYo.T3.Expr.identifier
+    }
+  }
   if (!goog.isString(candidate)) {
     return {}
   }
