@@ -501,6 +501,22 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
   return parentBlock
 }
 
+
+/**
+ * This methods is a state mutator.
+ * At return type, the block is in a consistent state.
+ * All the connections and components are consolidated.
+ * Sends a `consolidate` message to each component of the block.
+ * However, there might be some caveats related to undo management.
+ * @param {!Block} block
+ */
+eYo.DelegateSvg.Expr.prototype.consolidate = function (deep, force) {
+  if (eYo.DelegateSvg.Expr.superClass_.consolidate.call(this, deep, force)) {
+    var parent = this.block_.getParent()
+    parent && parent.eyo.consolidate()
+  }
+}
+
 /**
  * Class for a DelegateSvg, proper_slice block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
