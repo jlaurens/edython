@@ -40,6 +40,9 @@ target_unstar ::=  identifier
                      | attributeref
                      | subscription
                      | slicing
+                     | named_attributeref
+                     | named_subscription
+                     | named_slicing
 parenth_target_list ::= &quot;(&quot; void_target_list &quot;)&quot;
 bracket_target_list ::= &quot;[&quot; void_target_list &quot;]&quot;
 void_target_list ::= [target_list]

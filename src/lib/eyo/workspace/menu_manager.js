@@ -443,7 +443,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
   if (block.isEditable() && !block.collapsed_ &&
     block.workspace.options.comments) {
     // Option to add/remove a comment.
-    if (block.comment) {
+    if (block.comment) { // .comment is never set
       menuItem = this.newMenuItem(
         eYo.Msg.REMOVE_COMMENT,
         {action: eYo.ID.REMOVE_COMMENT,

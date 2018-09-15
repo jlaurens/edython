@@ -251,6 +251,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate_svg_final.js" \
 --js "src/lib/eyo/block/signature.js" \
 --js "src/lib/eyo/core/const.js" \
+--js "src/lib/eyo/core/Field.js" \
 --js "src/lib/eyo/core/model.js" \
 --js "src/lib/eyo/msg/js/base.js" \
 --js "src/lib/eyo/core/T3.js" \
@@ -266,6 +267,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/T3_all.js" \
 --js "src/lib/eyo/core/data.js" \
 --js "src/lib/eyo/core/do.js" \
+--js "src/lib/eyo/block/content.js" \
 --js "src/lib/eyo/core/data-test.js" \
 --js "src/lib/eyo/block/delegate.js" \
 --js "src/lib/eyo/blockly/events.js" \

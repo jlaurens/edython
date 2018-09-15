@@ -12,8 +12,10 @@
 'use strict'
 
 goog.provide('eYo.FieldLabel')
+goog.provide('eYo.Field.Label')
 
 goog.require('Blockly.FieldLabel')
+goog.require('eYo.Field')
 goog.require('eYo.Block')
 goog.require('goog.dom');
 
@@ -25,11 +27,16 @@ goog.require('goog.dom');
  * @extends {Blockly.FieldLabel}
  * @constructor
  */
-eYo.FieldLabel = function (text, optClass) {
+eYo.FieldLabel = function (owner, text, optClass) {
   eYo.FieldLabel.superClass_.constructor.call(this, text, optClass)
   this.size_ = new goog.math.Size(0, eYo.Font.height)
-  this.eyo = {
-    field_: this
+  if (owner) {
+    this.eyo = owner
+    owner.field_ = this
+  } else {
+    this.eyo = {
+      field_: this
+    }
   }
 }
 goog.inherits(eYo.FieldLabel, Blockly.FieldLabel)

@@ -170,6 +170,14 @@ eYo.Data.prototype.setTrusted__ = function (newValue, noRender) {
   noRender || block.render() // render now or possibly later ?
 }
 
+/**
+ * set the value of the property without any validation.
+ * This is overriden by the events module.
+ * @param {Object} newValue
+ * @param {Boolean} noRender
+ */
+eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method('trusted', eYo.Data.prototype.setTrusted__)
+
 eYo.Events.filter = Blockly.Events.filter 
 /**
  * Filter the queued events and merge duplicates.

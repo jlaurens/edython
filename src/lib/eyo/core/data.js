@@ -52,7 +52,7 @@ eYo.Data = function (owner, key, model) {
   this.name = 'eyo:' + (this.model.name || this.key).toLowerCase()
   this.noUndo = model.noUndo
   this.incog_ = false
-  this.wait_ = 1 // start with 1 exactly, see `synchronize`
+  this.wait = 1 // start with 1 exactly, see `synchronize`
   var xml = model.xml
   if (goog.isDefAndNotNull(xml) || xml !== false) {
     this.attributeName = (xml && xml.attribute) || key
@@ -118,12 +118,16 @@ eYo.Data.prototype.get = function (type) {
  * @param {Boolean} notUndoable
  */
 eYo.Data.prototype.rawSet = function (newValue, notUndoable) {
-  var oldValue = this.value_
-  this.beforeChange(oldValue, newValue)
-  this.value_ = newValue
-  this.duringChange(oldValue, newValue)
-  this.afterChange(oldValue, newValue)
-  this.owner.incrementChangeCount()
+  try {
+    this.owner.changeBegin()
+    var oldValue = this.value_
+    this.beforeChange(oldValue, newValue)
+    this.value_ = newValue
+    this.duringChange(oldValue, newValue)
+    this.afterChange(oldValue, newValue)
+  } finally {
+    this.owner.changeEnd()
+  }
 }
 
 /**
@@ -516,7 +520,7 @@ eYo.Data.prototype.noUndo = undefined
  * @param {Object} newValue
  */
 eYo.Data.prototype.synchronize = function (newValue) {
-  if (this.wait_) {
+  if (this.wait) {
     return
   }
   if (this.model_synchronize_lock || this.model.synchronize === true) {
@@ -654,7 +658,7 @@ eYo.Data.prototype.isIncog = function () {
  * Do nothing if the receiver should wait.
  */
 eYo.Data.prototype.consolidate = function () {
-  if (this.wait_) {
+  if (this.wait || this.owner.changeLevel) {
     return
   }
   var f = eYo.Decorate.reentrant_method.call(this, 'model_consolidate', this.model.consolidate)
@@ -692,7 +696,7 @@ eYo.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
  * The receiver is now ready to eventually synchronize and consolidate.
  */
 eYo.Data.prototype.beReady = function () {
-  this.wait_ = 0
+  this.wait = 0
 }
 
 /**
@@ -700,7 +704,7 @@ eYo.Data.prototype.beReady = function () {
  * Any call to `waitOn` must be balanced by a call to `waitOff`
  */
 eYo.Data.prototype.waitOn = function () {
-  return ++this.wait_
+  return ++this.wait
 }
 
 /**
@@ -708,9 +712,9 @@ eYo.Data.prototype.waitOn = function () {
  * Any call to `waitOn` must be balanced by a call to `waitOff`
  */
 eYo.Data.prototype.waitOff = function () {
-  goog.asserts.assert(this.wait_ > 0, eYo.Do.format('Too  many `waitOn` {0}/{1}',
+  goog.asserts.assert(this.wait > 0, eYo.Do.format('Too  many `waitOn` {0}/{1}',
     this.key, this.getBlockType()))
-  if (--this.wait_ === 0) {
+  if (--this.wait === 0) {
     this.consolidate()
   }
 }

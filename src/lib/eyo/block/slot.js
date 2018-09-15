@@ -39,30 +39,33 @@ goog.forwardDeclare('eYo.Xml')
   // - insert input
   // It may contain label fields
  * @param {!Object} owner  The owner is a block delegate.
- * @param {!string} key  One of the keys in `slots` section of the model.
- * @param {!Object} slotModel  the model for the given key i the above mention section.
+ * @param {!string} key  One of the keys in `slots` section of the block model.
+ * @param {!Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.Slot = function (owner, key, slotModel) {
+eYo.Slot = function (owner, key, model) {
   goog.asserts.assert(owner, 'Missing slot owner')
   goog.asserts.assert(key, 'Missing slot key')
-  goog.asserts.assert(slotModel, 'Missing slot model')
-  goog.asserts.assert(slotModel.order, 'Missing slot model order')
+  goog.asserts.assert(model, 'Missing slot model')
+  goog.asserts.assert(model.order, 'Missing slot model order')
   this.owner = owner
   this.key = key
-  this.model = slotModel
+  this.model = model
   this.input = undefined
   this.wait = 1
   var block = this.block = owner.block_
   goog.asserts.assert(block,
     eYo.Do.format('block must exist {0}/{1}', key))
-  eYo.Slot.makeFields(this, slotModel.fields)
-  if (slotModel.wrap) {
-    this.setInput(block.appendWrapValueInput(key, slotModel.wrap, slotModel.optional, slotModel.hidden))
-    this.input.connection.eyo.model = slotModel
-  } else if (goog.isDefAndNotNull(slotModel.check)) {
+  eYo.Slot.makeFields(this, model.fields)
+  eYo.Content.feed(this, model.contents || model.fields)
+  if (model.wrap) {
+    this.setInput(block.appendWrapValueInput(key, model.wrap, model.optional, model.hidden))
+    this.input.connection.eyo.model = model
+    this.input.connection.eyo.source = this
+  } else if (goog.isDefAndNotNull(model.check)) {
     this.setInput(block.appendValueInput(key))
-    this.input.connection.eyo.model = slotModel
+    this.input.connection.eyo.model = model
+    this.input.connection.eyo.source = this
   }
 }
 
@@ -206,16 +209,16 @@ eYo.Slot.makeFields = function () {
       if (model.startsWith('css')) {
         return
       }
-      field = new eYo.FieldLabel(model)
+      field = new eYo.FieldLabel(null, model)
       field.eyo.css_class = eYo.Do.cssClassForText(model)
     } else if (goog.isObject(model)) {
       setupModel(model)
       if (model.edit || model.validator || model.endEditing || model.startEditing) {
         // this is an editable field
-        field = new (model.variable? eYo.FieldVariable: eYo.FieldInput)(model.edit || '', model.validator, fieldName)
+        field = new (model.variable? eYo.FieldVariable: eYo.FieldInput)(null, model.edit || '', model.validator, fieldName)
       } else if (goog.isDefAndNotNull(model.value) || goog.isDefAndNotNull(model.css)) {
         // this is just a label field
-        field = new eYo.FieldLabel(model.value || '')
+        field = new eYo.FieldLabel(null, model.value || '')
       } else { // other entries are ignored
         return
       }
@@ -390,7 +393,7 @@ eYo.Slot.makeFields = function () {
     unordered[0] && (owner.fromStartField = chain(owner.fromStartField, unordered[0]))
     owner.fromStartField && delete owner.fromStartField.eyo.eyoLast_
     owner.toEndField && delete owner.toEndField.eyo.eyoLast_
-    owner.fields.comment && (owner.fields.comment.eyo.comment = true)
+    owner.fields.comment && (owner.fields.comment.eyo.isComment = true)
   }
 } ()
 
@@ -418,14 +421,6 @@ eYo.Slot.prototype.setInput = function (input) {
     }
     if (this.model.optional) { // svg
       eyo.optional_ = true
-    }
-    var v
-    if ((v = this.model.check)) {
-      var check = v.call(eyo, c8n.sourceBlock_.type)
-      c8n.setCheck(check)
-      if (!this.model.wrap) {
-        eyo.hole_data = eYo.HoleFiller.getData(check, this.model.hole_value)        
-      }
     }
   }
 }
@@ -565,20 +560,26 @@ eYo.Slot.prototype.whenRequiredFromDom = function (helper) {
  * @param {!Blockly.Input} workspace The block's workspace.
  */
 eYo.Slot.prototype.consolidate = function (deep, force) {
-  if (this.wait) {
+  if (this.wait || this.owner.changeLevel) {
     return
   }
-  if (goog.isDef(this.model.consolidate)) {
-    var f = eYo.Decorate.reentrant_method.call(this, 'consolidate', this.model.consolidate)
-    if (f) {
-      f.apply(this, arguments)
-      return
-    }
+  var f = eYo.Decorate.reentrant_method.call(this, 'consolidate', this.model.consolidate)
+  if (f) {
+    f.apply(this, arguments)
+    return
   }
   var c8n = this.connection
   if (c8n) {
     c8n.eyo.setIncog(this.isIncog())
     c8n.eyo.wrapped_ && c8n.setHidden(true) // Don't ever connect any block to this
+    var v
+    if ((v = this.model.check)) {
+      var check = v.call(c8n.eyo, c8n.sourceBlock_.type)
+      c8n.setCheck(check)
+      if (!this.model.wrap) {
+        c8n.eyo.hole_data = eYo.HoleFiller.getData(check, this.model.hole_value)        
+      }
+    }
     if (deep) {
       var target = c8n.targetBlock()
       target && target.eyo.consolidate.apply(target.eyo, arguments)

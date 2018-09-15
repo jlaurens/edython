@@ -60,20 +60,20 @@ eYo.DelegateSvg.List.prototype.getInput = function (block, name, dontCreate) {
  * @param {!Block} block
  */
 eYo.DelegateSvg.List.prototype.consolidate_ = function (deep, force) {
-  if (this.consolidate_lock || this.will_connect_) {
+  if (this.consolidate_lock || this.will_connect_ || this.duringInit) {
     // reentrant flag or wait for the new connection
     // to be established before consolidating
     // reentrant is essential because the consolidation
     // may cause rerendering ad vitam eternam.
     return
   }
-  eYo.DelegateSvg.List.superClass_.consolidate.call(this, deep, force)
-  if (this.connectionsIncog) {
-    return
-  }
   this.consolidate_lock = true
   try {
-    this.consolidator.consolidate(this.block_, deep, force)
+    eYo.DelegateSvg.List.superClass_.consolidate.call(this, deep, force)
+    if (this.connectionsIncog) {
+      return
+    }
+    return this.consolidator.consolidate(this.block_, deep, force)
   } finally {
     delete this.consolidate_lock
   }
@@ -111,7 +111,7 @@ eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_metho
 eYo.DelegateSvg.List.prototype.consolidate = function () {
   this.createConsolidator()
   this.consolidate = eYo.DelegateSvg.List.prototype.consolidate_
-  this.consolidate.apply(this, arguments)// this is not recursive
+  return this.consolidate.apply(this, arguments)// this is not recursive
 }
 
 // eYo.DelegateSvg.List.prototype.consolidator = undefined

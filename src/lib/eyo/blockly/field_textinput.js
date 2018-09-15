@@ -13,9 +13,17 @@
 
 goog.provide('eYo.FieldTextInput')
 goog.provide('eYo.FieldInput')
+goog.provide('eYo.FieldVariable')
 goog.provide('eYo.FieldHelper')
 
+goog.provide('eYo.Field.TextInput')
+goog.provide('eYo.Field.Variable')
+goog.provide('eYo.Field.Input')
+goog.provide('eYo.Field.Helper')
+
 goog.require('eYo.Msg')
+goog.require('eYo.Content')
+goog.require('eYo.Field')
 goog.require('goog.dom');
 goog.require('Blockly.FieldTextInput')
 
@@ -47,8 +55,13 @@ eYo.FieldHelper.prototype.getDlgt = function () {
  * @constructor
  * @suppress{accessControls}
  */
-eYo.FieldTextInput = function (text, optValidator) {
-  this.eyo = new eYo.FieldHelper(this)
+eYo.FieldTextInput = function (owner, text, optValidator) {
+  if (owner) {
+    this.eyo = owner
+    owner.field_ = this
+  } else {
+    this.eyo = new eYo.FieldHelper(this)
+  }
   eYo.FieldTextInput.superClass_.constructor.call(this, text,
     optValidator)
 }
@@ -222,7 +235,7 @@ eYo.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
 
   goog.dom.classlist.add(div, this.cssClass)
   goog.dom.classlist.add(htmlInput, this.cssClass)
-  if (this.eyo.comment) {
+  if (this.eyo.isComment) {
     goog.dom.classlist.remove(htmlInput, 'eyo-code')
     goog.dom.classlist.add(htmlInput, 'eyo-code-comment')
   }
@@ -329,12 +342,12 @@ eYo.FieldTextInput.prototype.resizeEditor_ = function () {
  * @extends {eYo.FieldTextInput}
  * @constructor
  */
-eYo.FieldInput = function (text, optValidator, key) {
+eYo.FieldInput = function (owner, text, optValidator, key) {
   goog.asserts.assert(key, 'missing key for an editable field')
-  eYo.FieldInput.superClass_.constructor.call(this, text,
+  eYo.FieldInput.superClass_.constructor.call(this, owner, text,
     optValidator)
   this.spellcheck_ = false
-  this.eyo.key = key
+  key && (this.eyo.key = key)
 }
 goog.inherits(eYo.FieldInput, eYo.FieldTextInput)
 
@@ -407,7 +420,7 @@ eYo.FieldInput.prototype.render_ = function () {
   } else {
     goog.dom.classlist.remove(this.textElement_, 'eyo-code-placeholder')
   }
-  if (this.eyo.comment) {
+  if (this.eyo.isComment) {
     goog.dom.classlist.add(this.textElement_, 'eyo-code-comment')
   } else {
     goog.dom.classlist.remove(this.textElement_, 'eyo-code-comment')
@@ -483,8 +496,8 @@ eYo.FieldHelper.prototype.validateIfData = function (txt) {
  * @extends {eYo.FieldTextInput}
  * @constructor
  */
-eYo.FieldVariable = function (text, optValidator, key) {
-  eYo.FieldVariable.superClass_.constructor.call(this, text, optValidator, key)
+eYo.FieldVariable = function (owner, text, optValidator, key) {
+  eYo.FieldVariable.superClass_.constructor.call(this, owner, text, optValidator, key)
 }
 goog.inherits(eYo.FieldVariable, eYo.FieldInput)
 
@@ -496,7 +509,53 @@ goog.inherits(eYo.FieldVariable, eYo.FieldInput)
  * @suppress{accessControls}
  */
 eYo.FieldVariable.prototype.getPythonText_ = function () {
-  var candidate = eYo.FieldInput.superClass_.getDisplayText_.call(this)
+  var candidate = eYo.FieldInput.superClass_.getDisplayText_.call(this) // beware: jump over the direct ancestor
   return !XRegExp.match(candidate, /\s/) && candidate || 'MISSING NAME'
 }
 
+/**
+ * Setup the model.
+ * Overrides the original method appending edition related stuff.
+ */
+eYo.Content.prototype.setupModel = function () {
+  var setupModel = eYo.Content.prototype.setupModel
+  // This is a closure
+  // default helper functions for an editable field bound to a data object
+  // `this` is an instance of  eYo.FieldInput
+  var validate = function (txt) {
+    // `this` is a field's owner
+    return this.validate(txt)
+  }
+  var startEditing = function () {
+  }
+  var endEditing = function () {
+    var data = this.eyo.data
+    goog.asserts.assert(data, 'No data bound to content ' + this.key + '/' + this.owner.getBlock().type)
+    var result = this.callValidator(this.getValue())
+    if (result !== null) {
+      data.fromField(result)
+      data.synchronize(result) // would this be included in the previous method ?
+    } else {
+      this.setValue(data.toText())
+    }
+  }
+  return function () {
+    // no need to setup the model each time we create a new field master
+    setupModel.call(this)
+    if (model.validate === true) {
+      model.validate = validate
+    } else if (model.validate && !goog.isFunction(model.validate)) {
+      delete model.validate
+    }
+    if (model.startEditing === true) {
+      model.startEditing = startEditing
+    } else if (model.startEditing && !goog.isFunction(model.startEditing)) {
+      delete model.startEditing
+    }
+    if (model.endEditing === true) {
+      model.endEditing = endEditing
+    } else if (model.endEditing && !goog.isFunction(model.endEditing)) {
+      delete model.endEditing
+    }
+  }
+}

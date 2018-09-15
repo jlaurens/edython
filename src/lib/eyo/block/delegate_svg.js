@@ -32,6 +32,24 @@ eYo.Delegate.makeSubclass('Svg')
 // Mimic Blockly naming convention
 eYo.DelegateSvg = eYo.Delegate.Svg
 
+/**
+ * Begin a mutation
+ * For edython.
+ */
+eYo.DelegateSvg.prototype.changeBegin = function () {
+  this.skipRendering()
+  eYo.DelegateSvg.superClass_.changeBegin.call(this)
+}
+
+/**
+ * Ends a mutation
+ * For edython.
+ */
+eYo.DelegateSvg.prototype.changeEnd = function () {
+  eYo.DelegateSvg.superClass_.changeEnd.call(this)
+  this.unskipRendering()
+}
+
 eYo.DelegateSvg.Manager = eYo.Delegate.Manager
 
 /**
@@ -125,76 +143,18 @@ goog.require('eYo.Slot')
 eYo.DelegateSvg.prototype.initBlock = function (block) {
   eYo.DelegateSvg.superClass_.initBlock.call(this, block)
   // block.setInputsInline(true)
-  block.setTooltip('')
-  block.setHelpUrl('')
-  var slots = Object.create(null)
-  var headSlot
-  var makeSlots = function (owner, slotsModel) {
-    var ordered = []
-    for (var k in slotsModel) {
-      var slotModel = slotsModel[k]
-      if (!slotModel) {
-        continue
-      }
-      var order = slotModel.order
-      var insert = slotModel.insert
-      var slot, next
-      if (insert) {
-        var model = eYo.DelegateSvg.Manager.getModel(insert)
-        if (model) {
-          makeSlots(owner, model.slots)
-          if ((slot = headSlot)) {
-            next = slot
-            do {
-              goog.asserts.assert(!goog.isDef(slots[next.key]),
-                'Duplicate inserted slot key %s/%s/%s', next.key, insert, block.type)
-              slots[next.key] = next
-            } while ((next = next.next))
-          } else {
-            continue
-          }
-        } else {
-          continue
-        }
-      } else if (goog.isObject(slotModel) && (slot = new eYo.Slot(owner, k, slotModel))) {
-        goog.asserts.assert(!goog.isDef(slots[k]),
-          eYo.Do.format('Duplicate slot key {0}/{1}', k, block.type))
-        slots[k] = slot
-      } else {
-        continue
-      }
-      slot.order = order
-      for (var i = 0; i < ordered.length; i++) {
-        // we must not find an aleady existing entry.
-        goog.asserts.assert(i !== slot.order,
-          eYo.Do.format('Same order slot {0}/{1}', i, block.type))
-        if (ordered[i].model.order > slot.model.order) {
-          break
-        }
-      }
-      ordered.splice(i, 0, slot)
-    }
-    if ((slot = ordered[0])) {
-      i = 1
-      while ((next = ordered[i++])) {
-        slot.next = next
-        next.previous = slot
-        slot = next
-      }
-    }
-    headSlot = ordered[0]
+  this.initBlock_lock = true
+  try {
+    block.setTooltip('')
+    block.setHelpUrl('')
+    // wait until the end to set the subtype because it causes rendering
+    // bind the data and the ui when relevant.
+    // We establish a bi directional bound between data, inputs and fields
+    // now it is time to intialize the data
+    this.initData(block)
+  } finally {
+    delete this.initBlock_lock
   }
-  var model = this.getModel()
-  makeSlots(this, model.slots)
-  eYo.Slot.makeFields(this, model.fields)
-  // now initialize all the fields
-  this.headSlot = headSlot
-  this.slots = slots
-  // wait until the end to set the subtype because it causes rendering
-  // bind the data and the ui when relevant.
-  // We establish a bi directional bound between data, inputs and fields
-  // now it is time to intialize the data
-  this.initData(block)
 }
 console.warn('implement async and await, see above awaitable and asyncable')
 /**
@@ -725,7 +685,7 @@ eYo.DelegateSvg.prototype.render = function (optBubble) {
  * @param {!Block} block
  */
 eYo.DelegateSvg.prototype.consolidate = function (deep, force) {
-  if (!Blockly.Events.recordUndo || !this.block_.workspace) {
+  if (!Blockly.Events.recordUndo || !this.block_.workspace || this.duringInit || this.changeLevel || this.initBlock_lock) {
     // do not consolidate while un(re)doing
     return
   }

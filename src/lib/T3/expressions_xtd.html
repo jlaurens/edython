@@ -118,7 +118,7 @@ primary ::= atom | dotted_name | builtin__object | attributeref | subscription |
 named_primary ::= identifier | dotted_name | builtin__object | named_attributeref | named_subscription | named_slicing | named_call_expr
 named_attributeref ::= named_primary "." identifier
 named_slicing ::= named_primary "[" slice_list "]"
-named_subscription -> named_slicing
+named_subscription ::= named_primary "[" expression_list "]"
 named_call_expr ::= named_primary "(" argument_list_comprehensive ")"
 
 call -> call_expr

@@ -36,7 +36,42 @@ eYo.Delegate = function (block) {
   this.block_ = block
   block.eyo = this
   this.changeCount = 0
-  var data = this.data = Object.create(null) // just a hash
+  this.changeLevel = 0
+}
+goog.inherits(eYo.Delegate, eYo.Helper)
+
+/**
+ * Get the block.
+ * For edython.
+ * @param {boolean} newValue
+ */
+eYo.Delegate.prototype.getBlock = function () {
+  return this.block_
+}
+
+/**
+ * Begin a mutation
+ * For edython.
+ */
+eYo.Delegate.prototype.changeBegin = function () {
+  ++this.changeLevel
+}
+
+/**
+ * Ends a mutation
+ * For edython.
+ */
+eYo.Delegate.prototype.changeEnd = function () {
+  --this.changeLevel
+  this.incrementChangeCount()
+}
+
+/**
+ * Make the data
+ * For edython.
+ */
+eYo.Delegate.prototype.makeData = function () {
+  var data = Object.create(null) // just a hash
   var dataModel = this.getModel().data
   var byOrder = []
   for (var k in dataModel) {
@@ -61,10 +96,11 @@ eYo.Delegate = function (block) {
         }
         var d = new eYo.Data(this, k, model)
         if (d.model.main) {
-          goog.asserts.assert(!data.main, 'No 2 main data '+k+'/'+block.type)
+          goog.asserts.assert(!data.main, 'No 2 main data '+k+'/'+this.block_.type)
           data.main = d
         }
         data[k] = d
+        d.data = data // convenient shortcut
         for (var i = 0, dd; (dd = byOrder[i]); ++i) {
           if (dd.model.order > d.model.order) {
             break
@@ -81,16 +117,123 @@ eYo.Delegate = function (block) {
       d = dd
     }
   }
+  this.data = data
 }
-goog.inherits(eYo.Delegate, eYo.Helper)
 
 /**
- * Get the block.
+ * Make the Fields
  * For edython.
- * @param {boolean} newValue
  */
-eYo.Delegate.prototype.getBlock = function () {
-  return this.block_
+eYo.Delegate.prototype.makeFields = function () {
+  eYo.Slot.makeFields(this, this.getModel().fields)
+}
+
+/**
+ * Make the contents
+ * For edython.
+ */
+eYo.Delegate.prototype.makeContents = function () {
+  eYo.Content.feed(this, this.getModel().contents || this.getModel().fields)
+}
+
+/**
+ * Make the slots
+ * For edython.
+ */
+eYo.Delegate.prototype.makeSlots = function () {
+  this.slots = Object.create(null)
+  this.headSlot = this.feedSlots(this.getModel().slots)
+}
+
+/**
+ * Create the block connections.
+ * Called from receiver's initBlock method.
+ * For subclassers eventually
+ */
+eYo.Delegate.prototype.makeConnections = function () {
+  // configure the connections
+  var block = this.block_
+  var model = this.getModel()
+  var D
+  if ((D = model.output) && Object.keys(D).length) {
+    block.setOutput(true) // check is setup in the consolidateConnections
+    var eyo = block.outputConnection.eyo
+    eyo.model = D
+  } else if ((D = model.statement) && Object.keys(D).length) {
+    if (D.previous && D.previous.check !== null) {
+      block.setPreviousStatement(true)
+      block.previousConnection.eyo.model = D.previous
+    }
+    if (D.next && D.next.check !== null) {
+      block.setNextStatement(true)
+      block.nextConnection.eyo.model = D.next
+    }
+    if (D.suite) {
+      this.inputSuite = block.appendStatementInput('suite')
+      this.inputSuite.connection.eyo.model = D
+    }
+  }
+}
+
+/**
+ * Feed the owner with slots built from the model.
+ * For edython.
+ * @param {!Blockly.Input} input
+ */
+eYo.Delegate.prototype.feedSlots = function (slotsModel) {
+  var slots = this.slots
+  var ordered = []
+  for (var k in slotsModel) {
+    var model = slotsModel[k]
+    if (!model) {
+      continue
+    }
+    var order = model.order
+    var insert = model.insert
+    var slot, next
+    if (insert) {
+      var model = eYo.Delegate.Manager.getModel(insert)
+      if (model) {
+        if ((slot = this.feedSlots(model.slots))) {
+          next = slot
+          do {
+            goog.asserts.assert(!goog.isDef(slots[next.key]),
+              'Duplicate inserted slot key %s/%s/%s', next.key, insert, block.type)
+            slots[next.key] = next
+          } while ((next = next.next))
+        } else {
+          continue
+        }
+      } else {
+        continue
+      }
+    } else if (goog.isObject(model) && (slot = new eYo.Slot(this, k, model))) {
+      goog.asserts.assert(!goog.isDef(slots[k]),
+        eYo.Do.format('Duplicate slot key {0}/{1}', k, this.block_.type))
+      slots[k] = slot
+    } else {
+      continue
+    }
+    slot.order = order
+    for (var i = 0; i < ordered.length; i++) {
+      // we must not find an aleady existing entry.
+      goog.asserts.assert(i !== slot.order,
+        eYo.Do.format('Same order slot {0}/{1}', i, this.block_.type))
+      if (ordered[i].model.order > slot.model.order) {
+        break
+      }
+    }
+    ordered.splice(i, 0, slot)
+  }
+  if ((slot = ordered[0])) {
+    i = 1
+    while ((next = ordered[i++])) {
+      slot.next = next
+      next.previous = slot
+      slot = next
+    }
+  }
+  return ordered[0]
 }
 
 /**
@@ -758,36 +901,6 @@ eYo.Delegate.prototype.consolidateSubtype = function (subtype) {
 }
 
 /**
- * Initialize the block connections.
- * Called from receiver's initBlock method.
- * @param {!Blockly.Block} block to be initialized..
- * For subclassers eventually
- */
-eYo.Delegate.prototype.initConnections = function (block) {
-  // configure the connections
-  var model = this.getModel()
-  var D
-  if ((D = model.output) && Object.keys(D).length) {
-    block.setOutput(true) // check is setup in the consolidateConnections
-    var eyo = block.outputConnection.eyo
-    eyo.model = D
-  } else if ((D = model.statement) && Object.keys(D).length) {
-    if (D.previous && D.previous.check !== null) {
-      block.setPreviousStatement(true)
-      block.previousConnection.eyo.model = D.previous
-    }
-    if (D.next && D.next.check !== null) {
-      block.setNextStatement(true)
-      block.nextConnection.eyo.model = D.next
-    }
-    if (D.suite) {
-      this.inputSuite = block.appendStatementInput('suite')
-      this.inputSuite.connection.eyo.model = D
-    }
-  }
-}
-
-/**
  * Set the connection check array.
  * The connections are supposed to be configured once.
  * This method may disconnect blocks as side effect,
@@ -818,10 +931,11 @@ eYo.Delegate.prototype.consolidateConnections = function () {
  */
 eYo.Delegate.prototype.initBlock = function (block) {
   // configure the connections
-  this.initConnections(block)
-  this.consolidateType()
-  this.consolidateSubtype()
-  this.consolidateConnections()
+  this.makeData()
+  this.makeContents()
+  this.makeFields()
+  this.makeSlots()
+  this.makeConnections()
 }
 
 /**

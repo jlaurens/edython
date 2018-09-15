@@ -144,7 +144,6 @@ eYo.ConnectionDelegate.prototype.willConnect = function (targetConnection) {
  */
 eYo.ConnectionDelegate.prototype.didConnect = function (oldTargetConnection, targetOldConnection) {
   var eyo =  this.connection.sourceBlock_.eyo
-  eyo.incrementChangeCount()
   // No need to increment step for the old connections because
   // if any, they were already disconnected and
   // the step has already been incremented then.
@@ -173,8 +172,6 @@ eYo.ConnectionDelegate.prototype.willDisconnect = function () {
  */
 eYo.ConnectionDelegate.prototype.didDisconnect = function (oldTargetConnection) {
   var eyo = this.connection.sourceBlock_.eyo
-  eyo.incrementChangeCount()
-  oldTargetConnection.sourceBlock_.eyo.incrementChangeCount()
   if (this.model && goog.isFunction(this.model.didDisconnect)) {
     this.model.didDisconnect.call(this, oldTargetConnection)
   } else {
@@ -597,8 +594,8 @@ Blockly.RenderedConnection.prototype.connect_ = function (childC8n) {
   var parentC8n = this
   var parent = parentC8n.sourceBlock_
   var child = childC8n.sourceBlock_
-  parent.eyo.skipRendering()
-  child.eyo.skipRendering()
+  parent.eyo.changeBegin()
+  child.eyo.changeBegin()
   try {
     var oldChildC8n = parentC8n.targetConnection
     var oldParentC8n = childC8n.targetConnection
@@ -671,8 +668,8 @@ Blockly.RenderedConnection.prototype.connect_ = function (childC8n) {
     console.error(err)
     throw err
   } finally {
-    parent.eyo.unskipRendering()
-    child.eyo.unskipRendering()
+    parent.eyo.changeEnd()
+    child.eyo.changeEnd()
     try {
       eYo.Connection.connectedParentC8n = parentC8n
       child.render() // bubble
@@ -693,66 +690,69 @@ Blockly.RenderedConnection.prototype.connect_ = function (childC8n) {
  * @private
  * @suppress {accessControls}
  */
-eYo.Connection.saved_disconnectInternal_ = Blockly.RenderedConnection.prototype.disconnectInternal_
-Blockly.RenderedConnection.prototype.disconnectInternal_ = function (parentBlock,
-  childBlock) {
-  var block = this.getSourceBlock()
-  if (block === parentBlock) {
-    var parentC8n = this
-    var childC8n = this.targetConnection
-  } else {
-    parentC8n = this.targetConnection
-    childC8n = this
-  }
-  try {
-    parentBlock.eyo.skipRendering()
-    childBlock.eyo.skipRendering()
-    parentC8n.eyo.willDisconnect()
-    childC8n.eyo.willDisconnect()
-    parentBlock.eyo.willDisconnect(parentBlock, parentC8n)
-    childBlock.eyo.willDisconnect(childBlock, childC8n)
-    if (parentC8n.eyo.wrapped_) {
-      // currently unwrapping a block,
-      // this occurs while removing the parent
-      // if the parent was selected, select the child
-      childBlock.eyo.makeBlockUnwrapped_(childBlock)
-      if (parentBlock.eyo.hasSelect(parentBlock)) {
-        parentBlock.unselect()
-        childBlock.select()
-      }
+Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
+  // Closure
+  var disconnectInternal_ = Blockly.RenderedConnection.prototype.disconnectInternal_
+  return function (parentBlock,
+    childBlock) {
+    var block = this.getSourceBlock()
+    if (block === parentBlock) {
+      var parentC8n = this
+      var childC8n = this.targetConnection
+    } else {
+      parentC8n = this.targetConnection
+      childC8n = this
     }
-    eYo.Connection.saved_disconnectInternal_.call(this, parentBlock, childBlock)
-    if (childBlock.eyo.plugged_) {
-      childBlock.eyo.plugged_ = undefined
-    }
-    parentBlock.eyo.didDisconnect(parentBlock, parentC8n, childC8n)
-    childBlock.eyo.didDisconnect(childBlock, childC8n, parentC8n)
-    parentC8n.eyo.didDisconnect(childC8n)
-    childC8n.eyo.didDisconnect(parentC8n)
-    parentBlock.eyo.consolidate(true) // update all connections, possibly deleting parentC8n !
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    parentBlock.eyo.unskipRendering()
-    childBlock.eyo.unskipRendering()
-    eYo.Connection.disconnectedParentC8n = parentC8n
-    eYo.Connection.disconnectedChildC8n = childC8n
     try {
-      parentBlock.rendered && parentBlock.render()
-      if (childBlock.rendered) {
-        childBlock.updateDisabled();
-        childBlock.render()
+      parentBlock.eyo.changeBegin()
+      childBlock.eyo.changeBegin()
+      parentC8n.eyo.willDisconnect()
+      childC8n.eyo.willDisconnect()
+      parentBlock.eyo.willDisconnect(parentBlock, parentC8n)
+      childBlock.eyo.willDisconnect(childBlock, childC8n)
+      if (parentC8n.eyo.wrapped_) {
+        // currently unwrapping a block,
+        // this occurs while removing the parent
+        // if the parent was selected, select the child
+        childBlock.eyo.makeBlockUnwrapped_(childBlock)
+        if (parentBlock.eyo.hasSelect(parentBlock)) {
+          parentBlock.unselect()
+          childBlock.select()
+        }
       }
+      disconnectInternal_.call(this, parentBlock, childBlock)
+      if (childBlock.eyo.plugged_) {
+        childBlock.eyo.plugged_ = undefined
+      }
+      parentBlock.eyo.didDisconnect(parentBlock, parentC8n, childC8n)
+      childBlock.eyo.didDisconnect(childBlock, childC8n, parentC8n)
+      parentC8n.eyo.didDisconnect(childC8n)
+      childC8n.eyo.didDisconnect(parentC8n)
+      parentBlock.eyo.consolidate(true) // update all connections, possibly deleting parentC8n !
     } catch (err) {
       console.error(err)
       throw err
     } finally {
-      eYo.Connection.disconnectedParentC8n = undefined
-      eYo.Connection.disconnectedChildC8n = undefined
+      parentBlock.eyo.changeEnd()
+      childBlock.eyo.changeEnd()
+      eYo.Connection.disconnectedParentC8n = parentC8n
+      eYo.Connection.disconnectedChildC8n = childC8n
+      try {
+        parentBlock.rendered && parentBlock.render()
+        if (childBlock.rendered) {
+          childBlock.updateDisabled();
+          childBlock.render()
+        }
+      } catch (err) {
+        console.error(err)
+        throw err
+      } finally {
+        eYo.Connection.disconnectedParentC8n = undefined
+        eYo.Connection.disconnectedChildC8n = undefined
+      }
     }
   }
-}
+} ()
 
 Blockly.Connection.uniqueConnection_original = Blockly.Connection.uniqueConnection_
 

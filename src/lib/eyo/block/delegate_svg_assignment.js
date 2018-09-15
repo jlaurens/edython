@@ -318,11 +318,15 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       order: 1,
       fields: {
         bind: {
-          placeholder: eYo.Msg.Placeholder.IDENTIFIER,
+          placeholder: /** @suppress {globalThis} */ function () {
+            return eYo.Msg.Placeholder.IDENTIFIER
+          },
+          validate: true,
           endEditing: true,
           variable: true
-        },
+        }
       },
+      check: eYo.T3.Expr.Check.target
     },
     annotation: {
       order: 2,

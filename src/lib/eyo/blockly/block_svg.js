@@ -48,6 +48,7 @@ goog.inherits(eYo.BlockSvg, Blockly.BlockSvg)
  */
 eYo.BlockSvg.prototype.init = function () {
   this.eyo.skipRendering()
+  this.eyo.duringInit = true
   try {
     this.eyo.initBlock(this)
   } catch (err) {
@@ -55,6 +56,7 @@ eYo.BlockSvg.prototype.init = function () {
     throw err
   } finally {
     this.eyo.unskipRendering()
+    delete this.eyo.duringInit
   }
 }
 
@@ -510,7 +512,6 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
     // a block was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
-      console.log('MOUSE UP NOT A DRAG MOVE', target.type, Blockly.selected.type)
       if (target === Blockly.selected) {
         // if the block was already selected,
         // try to select an input connection
@@ -520,8 +521,7 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
           eYo.SelectedConnection = null
         } else if (c8n && !c8n.targetConnection && c8n !== target.eyo.lastSelectedConnection) {
           field && (field.eyo.doNotEdit = true)
-          eYo.SelectedConnection = c8n
-          console.log('eYo.SelectedConnection', c8n)    
+          eYo.SelectedConnection = c8n    
         } else {
           eYo.SelectedConnection = null
         }

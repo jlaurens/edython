@@ -198,7 +198,6 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
             data.prefix.set(m.prefix || '')
             data.delimiter.set(m.delimiter || "'")
             data.content.set(m.content || '')
-            console.log('new subtype:', type)
             data.subtype.set(type)
             return true
           }

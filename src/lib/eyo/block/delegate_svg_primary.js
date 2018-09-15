@@ -676,6 +676,14 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       // simple cases first, variant based
       var eyo = this.connection.sourceBlock_.eyo
       var profile = eyo.getProfile()
+      if (!profile) {
+        console.warn('NO PROFILE, is it normal?')
+        eyo.incrementChangeCount()
+        profile = eyo.getProfile()
+        if (!profile) {
+          console.error('NO PROFILE')
+        }
+      }
       return eyo.getOutCheck(profile)
     }
   }
@@ -785,7 +793,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
     }
     return {
       name: {},
-      target: {}
+      holder: {}
     }
   }
 )
@@ -796,7 +804,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
  * As side effect, the subtype is set.
  */
 eYo.DelegateSvg.Expr.primary.prototype.getBaseType = function () {
-  var profile= this.getProfile()
+  var profile = this.getProfile()
   var check = this.getOutCheck(profile)
   return check[0]
 }

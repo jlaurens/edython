@@ -310,7 +310,7 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
     }
   } else if (!io.input.fieldRow.length) {
     var f = function (sep, suffix) {
-      var field = new eYo.FieldLabel(sep)
+      var field = new eYo.FieldLabel(null, sep)
       io.input.fieldRow.splice(0, 0, field)
       field.setSourceBlock(io.block)
       if (io.block.rendered) {
@@ -605,6 +605,9 @@ eYo.Consolidator.List.prototype.getIO = function (block) {
  * @param {boolean} force, true if no shortcut is allowed.
  */
 eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('consolidate', function (block, force) {
+  if (block.eyo.changeLevel) {
+    return
+  }
   var io = this.getIO(block)
   // things are different if one of the inputs is connected
   if (this.walk_to_next_connected(io)) {

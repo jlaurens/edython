@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('eYo.ui')
+goog.provide('eYo.UI')
 goog.provide('eYo.Style')
 goog.provide('eYo.Font')
 goog.provide('eYo.Padding')
