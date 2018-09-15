@@ -58,15 +58,20 @@ eYo.Slot = function (owner, key, model) {
     eYo.Do.format('block must exist {0}/{1}', key))
   eYo.Slot.makeFields(this, model.fields)
   eYo.Content.feed(this, model.contents || model.fields)
+  var f = function () {
+    var eyo = this.input.connection.eyo
+    eyo.model = model
+    eyo.source = this
+    eyo.bindField = this.bindField
+  }
   if (model.wrap) {
     this.setInput(block.appendWrapValueInput(key, model.wrap, model.optional, model.hidden))
-    this.input.connection.eyo.model = model
-    this.input.connection.eyo.source = this
+    f.call(this)
   } else if (goog.isDefAndNotNull(model.check)) {
     this.setInput(block.appendValueInput(key))
-    this.input.connection.eyo.model = model
-    this.input.connection.eyo.source = this
+    f.call(this)
   }
+
 }
 
 /**

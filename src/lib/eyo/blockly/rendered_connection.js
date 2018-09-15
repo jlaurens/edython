@@ -657,6 +657,7 @@ Blockly.RenderedConnection.prototype.connect_ = function (childC8n) {
     }
     childC8n.eyo.didConnect(oldChildC8n, oldParentC8n)
     parentC8n.eyo.didConnect(oldParentC8n, oldChildC8n)
+    parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(false)
     var c8n = eYo.SelectedConnection
     if (c8n === childC8n || c8n === parentC8n) {
       eYo.SelectedConnection = null
@@ -727,6 +728,7 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
       parentBlock.eyo.didDisconnect(parentBlock, parentC8n, childC8n)
       childBlock.eyo.didDisconnect(childBlock, childC8n, parentC8n)
       parentC8n.eyo.didDisconnect(childC8n)
+      parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(true)
       childC8n.eyo.didDisconnect(parentC8n)
       parentBlock.eyo.consolidate(true) // update all connections, possibly deleting parentC8n !
     } catch (err) {

@@ -48,6 +48,9 @@ eYo.DelegateSvg.prototype.changeBegin = function () {
 eYo.DelegateSvg.prototype.changeEnd = function () {
   eYo.DelegateSvg.superClass_.changeEnd.call(this)
   this.unskipRendering()
+  // force to compute a new chain tile
+  this.tileHead = undefined
+  this.tileTail = undefined
 }
 
 eYo.DelegateSvg.Manager = eYo.Delegate.Manager
@@ -557,6 +560,7 @@ eYo.DelegateSvg.prototype.render = function (optBubble) {
       this.renderMove_(block)
       this.updateAllPaths_(block)
       this.alignRightEdges_(block)
+      this.renderCount = this.changeCount
       return
     } else if (eYo.Connection.disconnectedParentC8n && block.nextConnection === eYo.Connection.disconnectedParentC8n) {
       // this block is the bottom one
@@ -565,22 +569,26 @@ eYo.DelegateSvg.prototype.render = function (optBubble) {
       this.renderMove_(block)
       this.updateAllPaths_(block)
       this.renderDrawParent_(block, optBubble)
+      this.renderCount = this.changeCount
       return
     } else if (eYo.Connection.connectedParentC8n) {
       if (block.outputConnection && eYo.Connection.connectedParentC8n == block.outputConnection.targetConnection) {
-        // this block has just been connected
+        // this is not a statement connection
         // no shortcut
       } else if (block.previousConnection && eYo.Connection.connectedParentC8n == block.previousConnection.targetConnection) {
         this.layoutConnections_(block)
         this.renderMove_(block)
         this.updateAllPaths_(block)
-        this.renderDrawParent_(block, optBubble)  
+        this.renderDrawParent_(block, optBubble)
+        this.renderCount = this.changeCount
+        return
       } else if (block.nextConnection && eYo.Connection.connectedParentC8n == block.nextConnection) {
         this.layoutConnections_(block)
         this.renderMove_(block)
         this.updateAllPaths_(block)
         var root = block.getRootBlock()
         root.eyo.alignRightEdges_(root)
+        this.renderCount = this.changeCount
         return
       }
     }
@@ -612,6 +620,14 @@ eYo.DelegateSvg.prototype.render = function (optBubble) {
       return
     }
   }
+  if (this.renderCount === this.changeCount) {
+    // minimal rendering
+    this.layoutConnections_(block)
+    this.renderMove_(block)
+    this.updateAllPaths_(block)
+    return
+  }
+  this.renderCount = this.changeCount
   if (this.skipRendering_) {
     // do not render the model
     if (!this.downRendering) {
@@ -626,7 +642,7 @@ eYo.DelegateSvg.prototype.render = function (optBubble) {
       this.renderDrawSuite_(block)
       this.updateAllPaths_(block)
       this.renderDrawNext_(block)
-        return // very important  
+      return // very important  
     } 
   }
   // if (this.wrapped_ && !block.getParent()) {
@@ -1077,25 +1093,25 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
    * @return {*} The tail field of the last chain element, if any
    */
   var chainFields = function (headField) {
-    var head, tile
-    // the head is the first visible field
+    var head, tile, next
     if ((head = headField)) {
       headField.eyo.tileHead = null
       headField.eyo.tileTail = null
+      // `tileHead` and `tileTail` are both null
+      // or not null at the same time
+      // first unchain all
+      tile = head
+      do {
+        tile.eyo.tilePrevious = tile.eyo.tileNext = null
+      } while ((tile = tile.eyo.nextField))
+      // the head is the first visible field
       while (!head.isVisible()) {
-        if(!(head = head.eyo.nextField)) {
+        if (!(head = head.eyo.nextField)) {
           return
         }
       }
-      tile = head
-      tile.eyo.tilePrevious = null
-      var next = tile
-      // first unchain all
-      while ((next = next.eyo.nextField)) {
-        next.eyo.tilePrevious = tile.eyo.tileNext = null
-        tile = next
-      }
-      // then chain all
+      // !!head and head.isVisible()
+      // then chain all starting from tile
       next = tile = head
       while ((next = next.eyo.nextField)) {
         if (next.isVisible()) {
@@ -1104,7 +1120,6 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
           tile = next
         }
       }
-      tile.eyo.tileNext = null
       headField.eyo.tileHead = head
       headField.eyo.tileTail = tile
       return headField.eyo.tileTail
@@ -1115,27 +1130,25 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
    * There is no tileHead without a tileTail
    * @param {*} left An eyo like object which receives the merge.
    * @param {*} right An object with an eyo
-   * @return {*} the last element
+   * @return {*} the last element of the chain
    */
-  var chainMerge = function (left, right) {
-    if (left && right && right.eyo.tileHead) {
-      if (left.tileHead) {
-        left.tileTail.eyo.tileNext = right.eyo.tileHead
-        right.eyo.tileHead.eyo.tilePrevious = left.tileTail
-      } else {
-        left.tileHead = right.eyo.tileHead
-      }
-      return left.tileTail = right.eyo.tileTail
-    }
-  }
-  var chainMergeVA = function () {
+  var chainMerge = function () {
     var left = arguments[0]
     if (left) {
       var i = 1
       while (i < arguments.length) {
-        chainMerge(left, arguments[i++])
+        var right = arguments[i++]
+        if (right && right.eyo.tileHead) {
+          if (left.tileHead) {
+            left.tileTail.eyo.tileNext = right.eyo.tileHead
+            right.eyo.tileHead.eyo.tilePrevious = left.tileTail
+          } else {
+            left.tileHead = right.eyo.tileHead
+          }
+          left.tileTail = right.eyo.tileTail
+        }    
       }
-      return true
+      return left.tileTail
     }
   }
   var chainInput = function (input) {
@@ -1149,7 +1162,9 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
     if (!input.isVisible()) {
       return
     }
-    // As there is a double entry for fields, we do not assume
+    // As there is a double entry for fields,
+    // one through headField and one through fieldRow,
+    // we do not assume
     // that fields do not belong to a chain
     var j = 0
     var field, nextField
@@ -1162,7 +1177,7 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
           // this field already belongs to a chain
           // so we ignore it
           continue
-        } else {
+        } else if (nextField.isVisible()) {
           field.eyo.nextField = nextField
           nextField.eyo.previousField = field
           do {
@@ -1172,7 +1187,6 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
       }
       field.eyo.nextField = null
     }
-    chainFields(input.fieldRow[0])
     chainMerge(input.eyo, input.fieldRow[0])
     var c8n, target
     if ((c8n = input.connection)) {
@@ -1181,7 +1195,7 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
       if ((target = c8n.targetBlock()) && target.outputConnection) {
         target.eyo.chainTiles(target)
         chainMerge(input.eyo, target)
-      } else if (c8n.hidden_) {
+      } else if (c8n.hidden_ || c8n.eyo.bindField || c8n.eyo.bindContent) {
         c8n.eyo.tileHead = undefined
         c8n.eyo.tileTail = undefined
       } else {
@@ -1192,26 +1206,28 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
     } 
   }
   return function (block) {
-    if (this.chainTiles_locked) {
+    // if there is already a tileHead,
+    // the tile chain has already been computed
+    // and no change was made in the block (and children)
+    if (this.chainTiles_locked || this.tileHead) {
       return
     }
     this.chainTiles_locked = true
-    // clean state
-    this.tileHead = undefined
-    this.tileTail = undefined
+    this.tileHead = this.tileTail = null
     // chain
     chainFields(this.fromStartField)
     chainMerge(this, this.fromStartField)
     var slot
     if ((slot = this.headSlot)) {
       do {
+        slot.tileHead = slot.tileTail = null
         if (slot.isIncog()) {
           continue
         }
         chainFields(slot.fromStartField)
         chainInput(slot.input)
         chainFields(slot.toEndField)
-        chainMergeVA(this, slot.fromStartField, slot.input, slot.toEndField)
+        chainMerge(this, slot.fromStartField, slot.input, slot.toEndField)
       } while ((slot = slot.next))
     } else {
       for (var i = 0, input; (input = block.inputList[i]); i++) {
@@ -1339,10 +1355,6 @@ eYo.DelegateSvg.prototype.renderDrawSlot_ = function (io) {
     'translate(' + io.cursorX + ', 0)')
     io.offsetX = io.cursorX
     io.cursorX = 0
-    if ((io.bindField = io.slot.bindField)) {
-      var c8n = io.slot.input && io.slot.input.connection
-      io.bindField.setVisible(!c8n || !c8n.targetBlock())       
-    }
     if ((io.field = io.slot.fromStartField)) {
       do {
         this.renderDrawField_(io)
@@ -1492,7 +1504,6 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       c8n.eyo.editWidth = io.bindField.getSize().width
       c8n.setOffsetInBlock(cursorX - c8n.eyo.editWidth - eYo.Font.space / 2, 0)
     } else {
-      delete c8n.eyo.bindField
       delete c8n.eyo.editWidth
       c8n.setOffsetInBlock(cursorX, 0)
     }

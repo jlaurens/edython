@@ -328,6 +328,8 @@ eYo.FieldTextInput.prototype.resizeEditor_ = function () {
     var xy = this.getAbsoluteXY_()
     div.style.left = (xy.x - eYo.EditorOffset.x + eYo.Style.Edit.padding_h) + 'px'
     div.style.top = (xy.y - eYo.EditorOffset.y) + 'px'
+    this.sourceBlock_.eyo.changeBegin()
+    this.sourceBlock_.eyo.changeEnd()
   }
 }
 
