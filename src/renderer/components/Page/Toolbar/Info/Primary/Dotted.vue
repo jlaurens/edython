@@ -51,11 +51,7 @@
         },
         set (newValue) {
           this.selected_ = newValue
-          this.selectedBlock.eyo.changeWrap(
-            newValue.action,
-            this,
-            newValue
-          )
+          newValue.action.call(this, newValue)
         }
       },
       items_ () {
@@ -64,8 +60,7 @@
             key: 0,
             content: '&nbsp;',
             action (item) {
-              var block = this.selectedBlock
-              block && block.eyo.data.dotted.set(item.key)
+              this.selectedBlock.eyo.data.dotted.change(item.key)
             }
           },
           1: {
@@ -73,8 +68,7 @@
             content: '….',
             title: '….',
             action (item) {
-              var block = this.selectedBlock
-              block && block.eyo.data.dotted.set(item.key)
+              this.selectedBlock.eyo.data.dotted.change(item.key)
             }
           },
           2: {
@@ -82,8 +76,7 @@
             content: '..',
             title: '..',
             action (item) {
-              var block = this.selectedBlock
-              block && block.eyo.data.dotted.set(item.key)
+              this.selectedBlock.eyo.data.dotted.change(item.key)
             }
           }
         }

@@ -350,13 +350,15 @@ eYo.Data.prototype.fromField = function (txt, dontValidate) {
     this.set(txt)
   } else if (this.value_ !== txt) {
     var v7d = this.validate(txt)
+    var error = false
     if (!v7d || !goog.isDef((v7d = v7d.validated))) {
-      this.error = true
+      error = true
       v7d = txt
     } else {
       this.error = false
     }
     this.setTrusted__(v7d)
+    this.error = error // *after* setTrusted__
   }
 }
 

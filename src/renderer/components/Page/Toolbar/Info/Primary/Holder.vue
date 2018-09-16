@@ -1,5 +1,5 @@
 <template>
-  <b-form-input id="eyo-info-parent" v-model="parent" type="text" size="10" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="can"></b-form-input>
+  <b-form-input id="eyo-info-holder" v-model="holder" type="text" size="10" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="can"></b-form-input>
 </template>
 
 <script>
@@ -16,14 +16,14 @@
         var block = this.selectedBlock
         return block && (block.eyo.data.dotted.get() === eYo.Key.PARENT)
       },
-      parent: {
+      holder: {
         get () {
           var block = this.selectedBlock
-          return block && block.eyo.data.parent.get()
+          return block && block.eyo.data.holder.get()
         },
         set (newValue) {
           var block = this.selectedBlock
-          block && block.eyo.data.parent.set(newValue)
+          block && block.eyo.data.holder.set(newValue)
         }
       }
     }

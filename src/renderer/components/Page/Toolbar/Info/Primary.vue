@@ -2,10 +2,10 @@
   <b-button-toolbar id="info-primary" key-nav  aria-label="Info toolbar primary" justify>
     <b-button-toolbar>
       <b-button-group class="mx-1">
-        <modifier :selected-block="selectedBlock"></modifier>
         <holder :selected-block="selectedBlock"></holder>
         <dotted :selected-block="selectedBlock" :placeholder="placeholder"></dotted>
       </b-button-group>
+      <name :selected-block="selectedBlock"></name>
       <b-button-group class="mx-1">
         <variant :selected-block="selectedBlock" :placeholder="placeholder"></variant>
       </b-button-group>
@@ -15,10 +15,9 @@
 </template>
 
 <script>
-  import Modifier from './Primary/Modifier.vue'
   import Holder from './Primary/Holder.vue'
   import Dotted from './Primary/Dotted.vue'
-  import Value from './Value.vue'
+  import Name from './Primary/Name.vue'
   import Variant from './Primary/Variant.vue'
   import Common from './Common.vue'
 
@@ -29,12 +28,10 @@
       }
     },
     components: {
-      Modifier,
       Holder,
       Dotted,
-      Value,
+      Name,
       Variant,
-      Comment,
       Common
     },
     props: {

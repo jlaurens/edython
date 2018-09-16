@@ -266,6 +266,7 @@ eYo.FieldTextInput.prototype.widgetDispose_ = function () {
     field.eyo.isEditing = false
     field.editRect_ && goog.dom.classlist.remove(field.editRect_, 'eyo-editing')
     field.callValidator()
+    var block = field.sourceBlock_
     block.eyo.changeBegin()
     field.onEndEditing_ && field.onEndEditing_()
     field.eyo.onEndEditing_ && field.eyo.onEndEditing_.call(field)
@@ -277,7 +278,6 @@ eYo.FieldTextInput.prototype.widgetDispose_ = function () {
         field.eyo.constructor.onEndEditing.call(field)
       }
     }
-    var block = field.sourceBlock_
     block.eyo.endEditingField && block.eyo.endEditingField(block, field)
     block.eyo.changeEnd()
     if (field.eyo.grouper_) {

@@ -68,22 +68,6 @@ eYo.Delegate.prototype.changeEnd = function () {
 }
 
 /**
- * Begin a mutation
- * For edython.
- */
-eYo.Delegate.prototype.changeWrap = function () {
-  var args = Array.prototype.slice.call(arguments)
-  try {
-    this.changeBegin()
-    args[0].apply(args[1], args.slice(2))
-  } finally {
-    this.consolidate() // just before the change end because of undo management
-    this.changeEnd()
-    this.render()
-  }
-}
-
-/**
  * Make the data
  * For edython.
  */
@@ -91,6 +75,24 @@ eYo.Delegate.prototype.makeData = function () {
   var data = Object.create(null) // just a hash
   var dataModel = this.getModel().data
   var byOrder = []
+  var defineProperty = function (k) {
+    // make a closure to catch the value of k
+    return function () {
+      Object.defineProperty(
+        this,
+        k + '_p',
+        {
+          get: function () {
+            return data[k].get()
+          },
+          set: function (newValue) {
+            data[k].change(newValue)
+          }
+        }
+      )
+    }
+  }
+
   for (var k in dataModel) {
     if (eYo.Do.hasOwnProperty(dataModel, k)) {
       var model = dataModel[k]
@@ -117,6 +119,7 @@ eYo.Delegate.prototype.makeData = function () {
           data.main = d
         }
         data[k] = d
+        defineProperty(k).call(this)
         d.data = data // convenient shortcut
         for (var i = 0, dd; (dd = byOrder[i]); ++i) {
           if (dd.model.order > d.model.order) {

@@ -16,6 +16,8 @@ goog.provide('eYo.HoleFiller')
 goog.provide('eYo.SelectedConnection')
 
 goog.require('eYo.T3')
+goog.require('eYo.Data')
+goog.require('eYo.Slot')
 goog.require('eYo.Delegate')
 goog.forwardDeclare('eYo.BlockSvg')
 goog.forwardDeclare('eYo.DelegateSvg.Expr')
@@ -48,6 +50,7 @@ eYo.DelegateSvg.prototype.changeBegin = function () {
 eYo.DelegateSvg.prototype.changeEnd = function () {
   eYo.DelegateSvg.superClass_.changeEnd.call(this)
   this.unskipRendering()
+  this.render()
 }
 
 /**
@@ -139,8 +142,6 @@ eYo.DelegateSvg.prototype.svgPathConnection_ = undefined
  * - check, [an array of] strings, types to check the connections. When absent, replaced by `wrap` if any.
  * - optional, true/false whether the connection is optional, only when no wrap.
  */
-
-goog.require('eYo.Slot')
 
 /**
  * Create and initialize the various paths.
@@ -474,6 +475,20 @@ eYo.DelegateSvg.prototype.changeWrap = function () {
 }
 
 /**
+ * Set the value wrapping in a `changeBegin`/`changeEnd`
+ * group call of the owner.
+ * @param {Object} newValue
+ * @param {Boolean} notUndoable
+ */
+eYo.Data.prototype.change = function (newValue) {
+  this.owner.changeWrap(
+    this.set,
+    this,
+    newValue
+  )
+}
+
+/**
  * Render the given connection, if relevant.
  * @param {!Block} block
  * @param {!Blockly.Connection} block
@@ -595,7 +610,7 @@ eYo.DelegateSvg.prototype.renderDrawParent_ = function (block, optBubble) {
  */
 eYo.DelegateSvg.prototype.render = function (optBubble) {
   var block = this.block_
-  if (this.isDragging_ || !this.isReady_ || !block.workspace) {
+  if (this.isDragging_ || !this.isReady_ || this.changeLevel || !block.workspace) {
     return
   }
   // rendering is very special when this is just a matter of
