@@ -118,15 +118,15 @@ eYo.Data.prototype.get = function (type) {
  * @param {Boolean} notUndoable
  */
 eYo.Data.prototype.rawSet = function (newValue, notUndoable) {
+  var oldValue = this.value_
+  this.beforeChange(oldValue, newValue)
+  this.owner.changeBegin()
   try {
-    this.owner.changeBegin()
-    var oldValue = this.value_
-    this.beforeChange(oldValue, newValue)
     this.value_ = newValue
     this.duringChange(oldValue, newValue)
-    this.afterChange(oldValue, newValue)
   } finally {
     this.owner.changeEnd()
+    this.afterChange(oldValue, newValue)
   }
 }
 

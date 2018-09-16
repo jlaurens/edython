@@ -70,13 +70,14 @@ eYo.Delegate.prototype.changeEnd = function () {
  * Begin a mutation
  * For edython.
  */
-eYo.Delegate.prototype.changeWrap = function (do_it, self, ...rest) {
+eYo.Delegate.prototype.changeWrap = function () {
+  var args = Array.prototype.slice.call(arguments)
   try {
     this.changeBegin()
-    do_it.apply(self, rest)
+    args[0].apply(args[1], args.slice(2))
   } finally {
+    this.consolidate() // just before the change end because of undo management
     this.changeEnd()
-    this.consolidate()
     this.render()
   }
 }
@@ -1159,6 +1160,7 @@ eYo.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
  */
 eYo.Delegate.prototype.willConnect = function (block, connection, childConnection) {
   // console.log('will connect')
+  this.changeBegin()
 }
 
 /**
@@ -1169,7 +1171,8 @@ eYo.Delegate.prototype.willConnect = function (block, connection, childConnectio
  * @param {!Blockly.Connection} oldConnection what was previously connected to the new targetConnection
  */
 eYo.Delegate.prototype.didConnect = function (block, connection, oldTargetConnection, oldConnection) {
-  // console.log('did connect')
+  console.error('Intermediate')
+  this.changeEnd()
 }
 
 /**
@@ -1179,6 +1182,7 @@ eYo.Delegate.prototype.didConnect = function (block, connection, oldTargetConnec
  */
 eYo.Delegate.prototype.willDisconnect = function (block, blockConnection) {
   // console.log('will disconnect')
+  this.changeBegin()
 }
 
 /**
@@ -1189,6 +1193,7 @@ eYo.Delegate.prototype.willDisconnect = function (block, blockConnection) {
  */
 eYo.Delegate.prototype.didDisconnect = function (block, blockConnection, oldTargetConnection) {
   // console.log('did disconnect')
+  this.changeEnd()
 }
 
 /**

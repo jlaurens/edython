@@ -436,6 +436,46 @@ eYo.DelegateSvg.prototype.unskipRendering = function () {
 }
 
 /**
+ * Decorate of action eclosed in a skip rendering block.
+ * Returns a function with signature is `foo(before, after) → void`
+ * `foo` is overriden by the model.
+ * The model `foo` can call the builtin `foo` with `this.foo(...)`.
+ * @param {!String} key, 
+ * @param {!Function} do_it
+ * @return {!Function}
+ */
+eYo.DelegateSvg.prototype.skipRenderingWrap = function () {
+  var args = Array.prototype.slice.call(arguments)
+  return function() {
+    this.skipRendering()
+    try {
+      return args[0].apply(args[1], args.slice(2))
+    } catch (err) {
+      console.error(err)
+      throw err
+    } finally {
+      this.unskipRendering()
+    }
+  }
+}
+
+/**
+ * Begin a mutation
+ * For edython.
+ */
+eYo.Delegate.prototype.changeWrap = function () {
+  var args = Array.prototype.slice.call(arguments)
+  try {
+    this.changeBegin()
+    args[0].apply(args[1], args.slice(2))
+  } finally {
+    this.consolidate() // just before the change end because of undo management
+    this.changeEnd()
+    this.render()
+  }
+}
+
+/**
  * Render the given connection, if relevant.
  * @param {!Block} block
  * @param {!Blockly.Connection} block
@@ -660,44 +700,44 @@ eYo.DelegateSvg.prototype.render = function (optBubble) {
   //   block.dispose()
   //   return
   // }
-  this.skipRendering()
-  if (eYo.DelegateSvg.debugStartTrackingRender) {
-    var n = eYo.DelegateSvg.debugCount[block.id]
-    eYo.DelegateSvg.debugCount[block.id] = (n||0)+1
-    if (!eYo.DelegateSvg.debugPrefix.length) {
-      console.log('>>>>>>>>>>')
-    }
-    eYo.DelegateSvg.debugPrefix = eYo.DelegateSvg.debugPrefix + '.'
-    console.log(eYo.DelegateSvg.debugPrefix, block.type, n, block.id)
-    if (n > 1) {
-      n = n + 0
-    }
-  }
-  try {
-    Blockly.Field.startCache()
-    this.minWidth = block.width = 0
-    this.willRender_(block)
-    this.renderDraw_(block)
-    this.renderDrawNext_(block)
-    this.layoutConnections_(block)
-    this.renderMove_(block)
-    this.renderDrawParent_(block, optBubble)
-    block.rendered = true
-    this.didRender_(block)
-    if (eYo.traceOutputConnection && block.outputConnection) {
-      console.log('block.outputConnection', block.outputConnection.x_, block.outputConnection.y_)
-    }
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    if (eYo.DelegateSvg.debugStartTrackingRender &&  eYo.DelegateSvg.debugPrefix.length) {
-      eYo.DelegateSvg.debugPrefix = eYo.DelegateSvg.debugPrefix.substring(1)
-    }
-    this.unskipRendering()
-    // goog.asserts.assert(!this.skipRendering_, 'FAILURE')
-    Blockly.Field.stopCache()  
-  }
+  this.skipRenderingWrap(
+    function () {
+      if (eYo.DelegateSvg.debugStartTrackingRender) {
+        var n = eYo.DelegateSvg.debugCount[block.id]
+        eYo.DelegateSvg.debugCount[block.id] = (n||0)+1
+        if (!eYo.DelegateSvg.debugPrefix.length) {
+          console.log('>>>>>>>>>>')
+        }
+        eYo.DelegateSvg.debugPrefix = eYo.DelegateSvg.debugPrefix + '.'
+        console.log(eYo.DelegateSvg.debugPrefix, block.type, n, block.id)
+        if (n > 1) {
+          n = n + 0
+        }
+      }
+      try {
+        Blockly.Field.startCache()
+        this.minWidth = block.width = 0
+        this.willRender_(block)
+        this.renderDraw_(block)
+        this.renderDrawNext_(block)
+        this.layoutConnections_(block)
+        this.renderMove_(block)
+        this.renderDrawParent_(block, optBubble)
+        block.rendered = true
+        this.didRender_(block)
+        if (eYo.traceOutputConnection && block.outputConnection) {
+          console.log('block.outputConnection', block.outputConnection.x_, block.outputConnection.y_)
+        }
+      } finally {
+        Blockly.Field.stopCache()  
+        if (eYo.DelegateSvg.debugStartTrackingRender &&  eYo.DelegateSvg.debugPrefix.length) {
+          eYo.DelegateSvg.debugPrefix = eYo.DelegateSvg.debugPrefix.substring(1)
+        }
+        // goog.asserts.assert(!this.skipRendering_, 'FAILURE')
+      }
+    },
+    this
+  )
   // block.workspace.logAllConnections('didRender')
 }
 

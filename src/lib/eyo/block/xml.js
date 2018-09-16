@@ -856,11 +856,9 @@ goog.exportSymbol('eYo.Xml.domToBlock', eYo.Xml.domToBlock)
 eYo.Xml.fromDom = function (block, element) {
   var eyo = block.eyo
   // headless please
-  eyo.skipRendering()
-  try {
-    //    console.log('Block created from dom:', xmlBlock, block.type, block.id)
-    // then fill it based on the xml data
-
+  var do_it = function () {
+  //    console.log('Block created from dom:', xmlBlock, block.type, block.id)
+  // then fill it based on the xml data
     var controller = eyo
     if (!eyo.controller_fromDom_locked && (controller &&
         goog.isFunction(controller.fromDom)) ||
@@ -937,12 +935,8 @@ eYo.Xml.fromDom = function (block, element) {
     // this block have been created from untrusted data
     // We might need to fix some stuff before returning
     // In particular, it will be the perfect place to setup variants
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    eyo.unskipRendering()
   }
+  eyo.skipRenderingWrap(do_it)
 }
 
 goog.require('eYo.DelegateSvg.Primary')

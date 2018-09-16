@@ -144,17 +144,17 @@ goog.require('eYo.Data')
  */
 eYo.Data.prototype.setTrusted__ = function (newValue, noRender) {
   this.error = false
-  eYo.Events.setGroup(true)
   var eyo = this.owner
   var block = eyo.block_
+  eYo.Events.setGroup(true)
+  eyo.skipRendering()
+  var oldValue = this.value_
+  this.beforeChange(oldValue, newValue)
   try {
-    eyo.skipRendering()
-    var oldValue = this.value_
-    this.beforeChange(oldValue, newValue)
-    block.eyo.changeBegin()
+    eyo.changeBegin()
     this.value_ = newValue
-    block.eyo.changeEnd()
     this.duringChange(oldValue, newValue)
+    eyo.changeEnd()
     eyo.consolidate()
     if (!this.noUndo && Blockly.Events.isEnabled()) {
       Blockly.Events.fire(new Blockly.Events.BlockChange(

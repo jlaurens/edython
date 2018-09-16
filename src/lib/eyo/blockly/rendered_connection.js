@@ -594,8 +594,6 @@ Blockly.RenderedConnection.prototype.connect_ = function (childC8n) {
   var parentC8n = this
   var parent = parentC8n.sourceBlock_
   var child = childC8n.sourceBlock_
-  parent.eyo.changeBegin()
-  child.eyo.changeBegin()
   try {
     var oldChildC8n = parentC8n.targetConnection
     var oldParentC8n = childC8n.targetConnection
@@ -655,22 +653,24 @@ Blockly.RenderedConnection.prototype.connect_ = function (childC8n) {
         }
       }
     }
-    childC8n.eyo.didConnect(oldChildC8n, oldParentC8n)
-    parentC8n.eyo.didConnect(oldParentC8n, oldChildC8n)
-    parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(false)
-    var c8n = eYo.SelectedConnection
-    if (c8n === childC8n || c8n === parentC8n) {
-      eYo.SelectedConnection = null
+    try {
+      childC8n.eyo.didConnect(oldChildC8n, oldParentC8n)
+      parentC8n.eyo.didConnect(oldParentC8n, oldChildC8n)
+      parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(false)
+      var c8n = eYo.SelectedConnection
+      if (c8n === childC8n || c8n === parentC8n) {
+        eYo.SelectedConnection = null
+      }
+      child.eyo.setIncog(child, parentC8n.eyo.isIncog())
+    } finally {
+      // next must absolutely run because of possible undo management
+      parent.eyo.didConnect(parent, parentC8n, oldChildC8n, oldParentC8n)
+      child.eyo.didConnect(child, childC8n, oldParentC8n, oldChildC8n)
     }
-    parent.eyo.didConnect(parent, parentC8n, oldChildC8n, oldParentC8n)
-    child.eyo.didConnect(child, childC8n, oldParentC8n, oldChildC8n)
-    child.eyo.setIncog(child, parentC8n.eyo.isIncog())
   } catch (err) {
     console.error(err)
     throw err
   } finally {
-    parent.eyo.changeEnd()
-    child.eyo.changeEnd()
     try {
       eYo.Connection.connectedParentC8n = parentC8n
       child.render() // bubble
@@ -705,8 +705,6 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
       childC8n = this
     }
     try {
-      parentBlock.eyo.changeBegin()
-      childBlock.eyo.changeBegin()
       parentC8n.eyo.willDisconnect()
       childC8n.eyo.willDisconnect()
       parentBlock.eyo.willDisconnect(parentBlock, parentC8n)
@@ -735,8 +733,6 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
       console.error(err)
       throw err
     } finally {
-      parentBlock.eyo.changeEnd()
-      childBlock.eyo.changeEnd()
       eYo.Connection.disconnectedParentC8n = parentC8n
       eYo.Connection.disconnectedChildC8n = childC8n
       try {

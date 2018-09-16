@@ -623,14 +623,6 @@ eYo.Slot.prototype.synchronize = function () {
   }
   var newValue = this.incog
   input.setVisible(!newValue)
-  // this.owner.skipRendering()
-  // try {
-  // } catch (err) {
-  //   console.error(err)
-  //   throw err
-  // } finally {
-  //   this.owner.unskipRendering()
-  // }
   if (input.isVisible()) {
     for (var __ = 0, field; (field = input.fieldRow[__]); ++__) {
       if (field.getText().length > 0) {
