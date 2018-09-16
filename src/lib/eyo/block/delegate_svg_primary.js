@@ -206,7 +206,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.data.name.synchronize()
         this.synchronize(newValue)
-        this.owner.render()
       },
       fromField: /** @suppress {globalThis} */ function (value) {
         this.fromField(value.length)
@@ -306,7 +305,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           slot.required = newValue !== this.NONE
           slot.setIncog()
         }
-        this.owner.render()
       },
       xml: {
         save: function (el) {
@@ -348,7 +346,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           slot.required = newValue !== this.NONE
           slot.setIncog()
         }
-        this.owner.render()
       },
       xml: {
         save: function (el) {
@@ -387,7 +384,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           f.call(this, true, true, true)
         }
         this.synchronize(newValue)
-        this.owner.render() // bad smell
       },
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
         if ([this.CALL_EXPR, this.SLICING, this.ALIASED].indexOf(newValue) >= 0) {
@@ -788,6 +784,9 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
             field: type
           }
         }
+      } else {
+        profile.holder = {
+        }
       }
       return profile
     }
@@ -819,7 +818,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function (profile) {
   // simple cases first, variant based
   var named = function () {
     if (eYo.T3.Expr.Check.named_primary.indexOf(profile.name.type)) {
-      if (!profile.holder || !profile.holder.type
+      if (!profile.holder.type
       || eYo.T3.Expr.Check.named_primary.indexOf(profile.holder.type)) {
         return true
       }
@@ -846,15 +845,15 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function (profile) {
   } else if (profile.variant === eYo.Key.ALIASED) {
     if (profile.name.type === eYo.T3.Expr.identifier
     || profile.name.type === eYo.T3.Expr.unset) {
-      if (profile.holder.type === eYo.T3.Expr.unset
+      if (profile.holder && (profile.holder.type === eYo.T3.Expr.unset
         || profile.holder.type === eYo.T3.Expr.identifier
-        || profile.holder.type === eYo.T3.Expr.dotted_name) {
+        || profile.holder.type === eYo.T3.Expr.dotted_name)) {
         return [
           eYo.T3.Expr.dotted_name_as,
           eYo.T3.Expr.expression_as
         ]
       }
-      return profile.holder.type
+      return profile.holder && profile.holder.type
         ? [
           eYo.T3.Expr.expression_as
         ]
@@ -865,7 +864,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function (profile) {
         ]
     }
     if (profile.name.type === eYo.T3.Expr.dotted_name) {
-      if (!profile.holder || !profile.holder.type
+      if (!profile.holder.type
         || profile.holder.type === eYo.T3.Expr.unset
         || profile.holder.type === eYo.T3.Expr.identifier
         || profile.holder.type === eYo.T3.Expr.dotted_name) {
@@ -922,7 +921,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function (profile) {
       eYo.T3.Expr.parent_module
     ]
   }
-  if (profile.dotted > 0 && (!profile.holder || !profile.holder.type
+  if (profile.dotted > 0 && (!profile.holder.type
     || profile.holder.type === eYo.T3.Expr.unset)) {
     return [
       eYo.T3.Expr.parent_module

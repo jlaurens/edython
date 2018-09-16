@@ -283,6 +283,8 @@ eYo.FieldTextInput.prototype.widgetDispose_ = function () {
       delete field.eyo.grouper_
     }
     field.render_()
+    block.eyo.changeBegin()
+    block.eyo.changeEnd()
     block.render()
     eYo.FieldTextInput.superClass_.widgetDispose_.call(field)
     Blockly.WidgetDiv.DIV.style.fontFamily = ''

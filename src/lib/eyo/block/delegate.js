@@ -67,6 +67,21 @@ eYo.Delegate.prototype.changeEnd = function () {
 }
 
 /**
+ * Begin a mutation
+ * For edython.
+ */
+eYo.Delegate.prototype.changeWrap = function (do_it, self, ...rest) {
+  try {
+    this.changeBegin()
+    do_it.apply(self, rest)
+  } finally {
+    this.changeEnd()
+    this.consolidate()
+    this.render()
+  }
+}
+
+/**
  * Make the data
  * For edython.
  */
@@ -250,8 +265,6 @@ eYo.Delegate.prototype.feedSlots = function (slotsModel) {
  */
 eYo.Delegate.prototype.incrementChangeCount = function () {
   ++ this.changeCount
-  var parent = this.block_.parentBlock_
-  parent && parent.eyo.incrementChangeCount()
 }
 
 /**

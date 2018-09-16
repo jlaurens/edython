@@ -65,6 +65,18 @@ eYo.DelegateSvg.makeSubclass('Expr', {
 // Default delegate for all expression blocks
 eYo.Delegate.Manager.registerAll(eYo.T3.Expr, eYo.DelegateSvg.Expr, true)
 
+
+/**
+ * Increment the change count.
+ * For expressions, the change count is also forwarded to the parent.
+ * For edython.
+ */
+eYo.DelegateSvg.Expr.prototype.incrementChangeCount = function () {
+  eYo.DelegateSvg.Expr.superClass_.incrementChangeCount.call(this)
+  var parent = this.block_.parentBlock_
+  parent && parent.eyo.incrementChangeCount()
+}
+
 /**
  * getType.
  * The default implementation just returns the raw type.

@@ -48,9 +48,18 @@ eYo.DelegateSvg.prototype.changeBegin = function () {
 eYo.DelegateSvg.prototype.changeEnd = function () {
   eYo.DelegateSvg.superClass_.changeEnd.call(this)
   this.unskipRendering()
+}
+
+/**
+ * Increment the change count.
+ * Force to recompute the chain tile.
+ * For edython.
+ */
+eYo.DelegateSvg.prototype.incrementChangeCount = function () {
   // force to compute a new chain tile
   this.tileHead = undefined
   this.tileTail = undefined
+  eYo.DelegateSvg.superClass_.incrementChangeCount.call(this)
 }
 
 eYo.DelegateSvg.Manager = eYo.Delegate.Manager
@@ -700,33 +709,36 @@ eYo.DelegateSvg.prototype.render = function (optBubble) {
  * However, there might be some caveats related to undo management.
  * @param {!Block} block
  */
-eYo.DelegateSvg.prototype.consolidate = function (deep, force) {
-  if (!Blockly.Events.recordUndo || !this.block_.workspace || this.duringInit || this.changeLevel || this.initBlock_lock) {
-    // do not consolidate while un(re)doing
-    return
-  }
-  this.consolidateType()
-  this.consolidateSubtype()
-  this.foreachData(function () {
-    this.consolidate()
-  })
-  this.foreachSlot(function () {
-    // some child blocks may be disconnected as side effect
-    this.consolidate(deep, force)
-  })
-  if (deep) {
-    // Consolidate the child blocks that are still connected
-    var e8r = this.block_.eyo.inputEnumerator()
-    var x
-    while (e8r.next()) {
-      if ((x = e8r.here.connection) && (x = x.targetBlock())) {
-        x.eyo.consolidate(deep, force)
+eYo.DelegateSvg.prototype.consolidate = eYo.Decorate.onChangeCount(
+  'consolidate_onChangeCount',
+  function (deep, force) {
+    if (!Blockly.Events.recordUndo || !this.block_.workspace || this.duringInit || this.changeLevel || this.initBlock_lock) {
+      // do not consolidate while un(re)doing
+      return
+    }
+    this.consolidateType()
+    this.consolidateSubtype()
+    this.foreachData(function () {
+      this.consolidate()
+    })
+    this.foreachSlot(function () {
+      // some child blocks may be disconnected as side effect
+      this.consolidate(deep, force)
+    })
+    if (deep) {
+      // Consolidate the child blocks that are still connected
+      var e8r = this.block_.eyo.inputEnumerator()
+      var x
+      while (e8r.next()) {
+        if ((x = e8r.here.connection) && (x = x.targetBlock())) {
+          x.eyo.consolidate(deep, force)
+        }
       }
     }
+    this.consolidateConnections()
+    return true
   }
-  this.consolidateConnections()
-  return true
-}
+)
 
 /**
  * Whether the block is sealed to its parent.

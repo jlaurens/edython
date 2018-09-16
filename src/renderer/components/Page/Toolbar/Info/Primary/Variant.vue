@@ -1,7 +1,7 @@
 <template>
     <b-button-group class="mx-1">
       <b-dropdown :id="id" class="eyo-dropdown" v-if="variants && variants.length" variant="outline-secondary">
-        <template slot="button-content"><div class="eyo-info-primary-variant eyo-code eyo-content" v-html="selected.content"></div></template>
+        <template slot="button-content"><div class="eyo-info-primary-variant eyo-code eyo-content" v-html="selected_.content"></div></template>
         <b-dropdown-item-button v-for="variant in variants" v-on:click="selected = variant" :key="variant.key" class="eyo-info-primary-variant eyo-code" v-html="variant.content"></b-dropdown-item-button>
       </b-dropdown>
       <b-form-input v-model="alias" type="text" size="10" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="selected.key === 'ALIASED'"></b-form-input>
@@ -13,7 +13,8 @@
       name: 'info-primary-variant',
       data () {
         return {
-          dataKey: 'variant'
+          dataKey: 'variant',
+          selected__: undefined
         }
       },
       props: {
@@ -33,24 +34,30 @@
           return 'eyo-info-' + this.dataKey
         },
         annotation_d () {
-          var block = this.selectedBlock
-          return block && block.eyo.data.annotation
+          return this.selectedBlock.eyo.data.annotation
         },
         definition_d () {
-          var block = this.selectedBlock
-          return block && block.eyo.data.definition
+          return this.selectedBlock.eyo.data.definition
         },
         variant_d () {
-          var block = this.selectedBlock
-          return block && block.eyo.data.variant
+          return this.selectedBlock.eyo.data.variant
         },
         modifier_d () {
-          var block = this.selectedBlock
-          return block && block.eyo.data.modifier
+          return this.selectedBlock.eyo.data.modifier
         },
         dotted_d () {
-          var block = this.selectedBlock
-          return block && block.eyo.data.dotted
+          return this.selectedBlock.eyo.data.dotted
+        },
+        selected_: {
+          get () {
+            if (!this.selected__) {
+              this.selected__ = this.selected
+            }
+            return this.selected__
+          },
+          set (newValue) {
+            this.selected__ = newValue
+          }
         },
         selected: {
           get () {
@@ -80,8 +87,11 @@
             }
           },
           set (newValue) {
-            newValue.action.call(this)
-            this.selectedBlock.eyo.render()
+            this.selected_ = newValue
+            this.selectedBlock.eyo.changeWrap(
+              newValue.action,
+              this
+            )
           }
         },
         items () {
@@ -93,6 +103,7 @@
                 this.annotation_d.set(eYo.Key.NONE)
                 this.definition_d.set(eYo.Key.NONE)
                 this.variant_d.set(eYo.Key.NONE)
+                this.selectedBlock.render()
               }
             },
             CALL_EXPR: {
@@ -100,6 +111,7 @@
               key: 'CALL_EXPR',
               action () {
                 this.variant_d.set(eYo.Key.CALL_EXPR)
+                this.selectedBlock.render()
               }
             },
             SLICING: {
@@ -107,6 +119,7 @@
               key: 'SLICING',
               action () {
                 this.variant_d.set(eYo.Key.SLICING)
+                this.selectedBlock.render()
               }
             },
             ALIASED: {
@@ -116,6 +129,7 @@
                 this.consolidateModifier('*')
                 this.consolidateModifier('.')
                 this.variant_d.set(eYo.Key.ALIASED)
+                this.selectedBlock.render()
               }
             },
             ANNOTATED: {
@@ -126,6 +140,7 @@
                 this.definition_d.set(eYo.Key.NONE)
                 this.consolidateModifier('.')
                 this.variant_d.set(eYo.Key.NONE)
+                this.selectedBlock.render()
               }
             },
             DEFINED: {
@@ -137,6 +152,7 @@
                 this.consolidateModifier('.')
                 this.consolidateModifier('*')
                 this.variant_d.set(eYo.Key.NONE)
+                this.selectedBlock.render()
               }
             },
             ANNOTATED_DEFINED: {
@@ -170,7 +186,11 @@
           },
           set (newValue) {
             var block = this.selectedBlock
-            block && block.eyo.data.alias.set(newValue)
+            block.eyo.changeWrap(
+              function () {
+                block.eyo.data.alias.set(newValue)
+              }
+            )
           }
         }
       },
