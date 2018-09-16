@@ -117,7 +117,9 @@ goog.require('eYo.Data')
  * As a consequence, this block automatically changes type and
  * may be disconnected.
  * Take a look at what happens regarding the default undo/redo stack
- * management when connected blocks are involved.
+ * management when connected blocks are involved
+ * as data change.
+ * NB the changeEnd method may disconnect
  *  1) normal flow
  *    a - the user asks for a data change
  *    b - the type and subtype change
@@ -138,39 +140,41 @@ goog.require('eYo.Data')
  *    b - the data is rechanged, with type, subtype and connection checks.
  *        No block is disconnected, no other move event is recorded.
  *    undo/redo stacks : [..., reconnect block, data undo change]/[]
- * This is the reason why we consolidate the type before the undo change.
+ * This is the reason why we consolidate the type before the undo change is recorded.
  * @param {Object} newValue
  * @param {Boolean} noRender
  */
-eYo.Data.prototype.setTrusted__ = function (newValue, noRender) {
-  this.error = false
-  var eyo = this.owner
-  var block = eyo.block_
-  eYo.Events.setGroup(true)
-  eyo.skipRendering()
-  var oldValue = this.value_
-  this.beforeChange(oldValue, newValue)
-  try {
-    eyo.changeBegin()
-    this.value_ = newValue
-    this.duringChange(oldValue, newValue)
-    eyo.changeEnd()
-    eyo.consolidate()
-    if (!this.noUndo && Blockly.Events.isEnabled()) {
-      Blockly.Events.fire(new Blockly.Events.BlockChange(
-        block, eYo.Const.Event.DATA + this.key, null, oldValue, newValue))
+eYo.Data.prototype.setTrusted__ = eYo.Decorate.reentrant_method(
+  'setTrusted__',
+  function (newValue, noRender) {
+    this.error = false
+    var eyo = this.owner
+    var block = eyo.block_
+    eYo.Events.setGroup(true)
+    eyo.skipRendering()
+    var oldValue = this.value_
+    this.beforeChange(oldValue, newValue)
+    try {
+      eyo.changeBegin()
+      this.value_ = newValue
+      this.duringChange(oldValue, newValue)
+      eyo.changeEnd()
+      if (!this.noUndo && Blockly.Events.isEnabled()) {
+        Blockly.Events.fire(new Blockly.Events.BlockChange(
+          block, eYo.Const.Event.DATA + this.key, null, oldValue, newValue))
+      }
+      this.afterChange(oldValue, newValue)
+      noRender || this.synchronizeIfUI(newValue)
+    } catch (err) {
+      console.error(err)
+      throw err
+    } finally {
+      eyo.unskipRendering()
+      eYo.Events.setGroup(false)
     }
-    this.afterChange(oldValue, newValue)
-    noRender || this.synchronizeIfUI(newValue)
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    eyo.unskipRendering()
-    eYo.Events.setGroup(false)
+    noRender || block.render() // render now or possibly later ?
   }
-  noRender || block.render() // render now or possibly later ?
-}
+)
 
 /**
  * set the value of the property without any validation.

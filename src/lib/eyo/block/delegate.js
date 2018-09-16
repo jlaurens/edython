@@ -64,6 +64,7 @@ eYo.Delegate.prototype.changeBegin = function () {
 eYo.Delegate.prototype.changeEnd = function () {
   --this.changeLevel
   this.incrementChangeCount()
+  this.consolidate()
 }
 
 /**

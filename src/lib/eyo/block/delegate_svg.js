@@ -446,16 +446,14 @@ eYo.DelegateSvg.prototype.unskipRendering = function () {
  */
 eYo.DelegateSvg.prototype.skipRenderingWrap = function () {
   var args = Array.prototype.slice.call(arguments)
-  return function() {
-    this.skipRendering()
-    try {
-      return args[0].apply(args[1], args.slice(2))
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      this.unskipRendering()
-    }
+  this.skipRendering()
+  try {
+    return args[0].apply(args[1], args.slice(2))
+  } catch (err) {
+    console.error(err)
+    throw err
+  } finally {
+    this.unskipRendering()
   }
 }
 
@@ -463,7 +461,7 @@ eYo.DelegateSvg.prototype.skipRenderingWrap = function () {
  * Begin a mutation
  * For edython.
  */
-eYo.Delegate.prototype.changeWrap = function () {
+eYo.DelegateSvg.prototype.changeWrap = function () {
   var args = Array.prototype.slice.call(arguments)
   try {
     this.changeBegin()
@@ -728,6 +726,8 @@ eYo.DelegateSvg.prototype.render = function (optBubble) {
         if (eYo.traceOutputConnection && block.outputConnection) {
           console.log('block.outputConnection', block.outputConnection.x_, block.outputConnection.y_)
         }
+      } catch(err) {
+        console.error(err)
       } finally {
         Blockly.Field.stopCache()  
         if (eYo.DelegateSvg.debugStartTrackingRender &&  eYo.DelegateSvg.debugPrefix.length) {
