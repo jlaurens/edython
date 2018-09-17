@@ -1,10 +1,7 @@
 <template>
   <b-button-toolbar id="info-primary" key-nav  aria-label="Info toolbar primary" justify>
     <b-button-toolbar>
-      <b-button-group class="mx-1">
-        <holder :selected-block="selectedBlock"></holder>
-        <dotted :selected-block="selectedBlock" :placeholder="placeholder"></dotted>
-      </b-button-group>
+      <dotted :selected-block="selectedBlock" :placeholder="placeholder"></dotted>
       <name :selected-block="selectedBlock"></name>
       <b-button-group class="mx-1">
         <variant :selected-block="selectedBlock" :placeholder="placeholder"></variant>
@@ -15,7 +12,6 @@
 </template>
 
 <script>
-  import Holder from './Primary/Holder.vue'
   import Dotted from './Primary/Dotted.vue'
   import Name from './Primary/Name.vue'
   import Variant from './Primary/Variant.vue'
@@ -28,7 +24,6 @@
       }
     },
     components: {
-      Holder,
       Dotted,
       Name,
       Variant,

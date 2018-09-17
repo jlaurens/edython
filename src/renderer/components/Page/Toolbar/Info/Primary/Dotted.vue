@@ -1,17 +1,22 @@
 <template>
-  <b-dropdown id="info-primary-dotted" class="eyo-dropdown" variant="outline-secondary">
-    <template slot="button-content"><div class="eyo-info-primary-dotted eyo-code eyo-content" v-html="selected.title || selected.content"></div></template>
-    <b-dropdown-item-button v-for="item in items" v-on:click="selected = item" :key="item.key" class="eyo-info-primary-dotted eyo-code" v-html="item.content"></b-dropdown-item-button>
+  <b-button-group class="mx-1">
+    <b-form-input id="eyo-info-primary-holder" v-model="blockHolder" type="text" size="10" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="canHolder"></b-form-input>
+    <b-dropdown id="info-primary-dotted" class="eyo-dropdown" variant="outline-secondary">
+    <template slot="button-content"><div class="eyo-info-primary-dotted eyo-code eyo-content" v-html="selectedItem.title"></div></template>
+    <b-dropdown-item-button v-for="item in dottedItems" v-on:click="selectedItem = item" :key="item.key" class="eyo-info-primary-dotted eyo-code" v-html="item.content"></b-dropdown-item-button>
     <b-dropdown-divider></b-dropdown-divider>
-    <b-dropdown-item-button v-for="item in modules" v-on:click="selected = item" :key="item.key" class="eyo-info-primary-dotted eyo-code" v-html="item.content"></b-dropdown-item-button>
-  </b-dropdown>
+    <b-dropdown-item-button v-for="item in moduleItems" v-on:click="selectedItem = item" :key="item.key" class="eyo-info-primary-dotted eyo-code" v-html="item.content"></b-dropdown-item-button>
+    </b-dropdown>
+  </b-button-group>
 </template>
 
 <script>
   export default {
     data () {
       return {
-        selected_: undefined
+        selectedItem_: undefined,
+        blockHolder_: undefined,
+        blockDotted_: undefined
       }
     },
     name: 'info-primary-dotted',
@@ -19,108 +24,106 @@
       selectedBlock: {
         type: Object,
         default: undefined
-      },
-      placeholder: {
-        type: Function,
-        default: function (item) {
-          return item
-        }
       }
     },
     computed: {
-      selected: {
+      canHolder () {
+        return this.blockDotted === 1
+      },
+      blockHolder: {
         get () {
-          // guess from the selected block
-          var block = this.selectedBlock
-          if (block) {
-            var eyo = block.eyo
-            var dotted = eyo.data.dotted.get()
-            var candidate = this.items_[dotted]
-            if (dotted === 1) {
-              if (!eyo.slots.holder.targetBlock()) {
-                var holder = eyo.data.holder.get()
-                var module = this.modules_[holder]
-                if (module) {
-                  candidate = module
-                }
-              }
-            }
-            this.selected_ = candidate
-          }
-          return this.selected_ || this.items[0]
+          return this.blockHolder_
         },
         set (newValue) {
-          this.selected_ = newValue
-          newValue.action.call(this, newValue)
+          this.blockHolder_ = newValue
+          this.selectedBlock.eyo.holder_p = newValue
         }
       },
-      items_ () {
+      blockDotted: {
+        get () {
+          return this.blockDotted_
+        },
+        set (newValue) {
+          this.blockDotted_ = newValue
+          this.selectedBlock.eyo.dotted_p = newValue
+        }
+      },
+      selectedItem: {
+        get () {
+          return this.selectedItem_
+        },
+        set (newValue) {
+          this.selectedItem_ = newValue
+          if (newValue.action) {
+            newValue.action.call(this, newValue)
+          } else {
+            this.blockDotted = newValue.key
+          }
+        }
+      },
+      dottedItems () {
         return {
           0: {
             key: 0,
             content: '&nbsp;',
-            action (item) {
-              this.selectedBlock.eyo.data.dotted.change(item.key)
-            }
+            title: '&nbsp;'
           },
           1: {
             key: 1,
             content: '….',
-            title: '….',
-            action (item) {
-              this.selectedBlock.eyo.data.dotted.change(item.key)
-            }
+            title: '.'
           },
           2: {
             key: 2,
             content: '..',
-            title: '..',
-            action (item) {
-              this.selectedBlock.eyo.data.dotted.change(item.key)
-            }
+            title: '..'
           }
         }
       },
-      items () {
-        return [
-          this.items_[0],
-          this.items_[1],
-          this.items_[2]
-        ]
-      },
-      modules__ () {
-        return ['turtle', 'random', 'math', 'cmath']
-      },
-      modules_ () {
-        var modules = {}
+      moduleItems () {
+        var d = {}
         var i = 0
         var module
-        while ((module = this.modules__[i++])) {
-          modules[module] = {
+        while ((module = this.moduleKeys[i++])) {
+          d[module] = {
             key: module,
             content: module + '.',
+            title: '.',
             action (item) {
-              var block = this.selectedBlock
-              if (block) {
-                var eyo = block.eyo
-                eyo.data.dotted.set(1)
-                eyo.data.holder.set(item.key)
-                var target = eyo.slots.holder.targetBlock()
-                target && target.unplug()
-              }
+              // this.selectedBlock.eyo.changeBegin()
+              this.blockDotted = 1
+              this.blockHolder = item.key
+              // var target = this.selectedBlock.eyo.slots.holder.targetBlock()
+              // target && target.unplug()
+              // this.selectedBlock.eyo.changeEnd()
+              // this.selectedBlock.eyo.render()
             }
           }
         }
-        return modules
+        return d
       },
-      modules () {
-        return [
-          this.modules_['turtle'],
-          this.modules_['random'],
-          this.modules_['math'],
-          this.modules_['cmath']
-        ]
+      dotKeys () {
+        return [0, 1, 2]
+      },
+      moduleKeys () {
+        return ['turtle', 'random', 'math', 'cmath']
       }
+    },
+    created () {
+      this.blockDotted_ = this.selectedBlock.eyo.dotted_p
+      this.blockHolder_ = this.selectedBlock.eyo.holder_p
+      var dotted = this.blockDotted
+      var candidate = this.dottedItems[dotted]
+      if (dotted === 1) {
+        var eyo = this.selectedBlock.eyo
+        if (!eyo.slots.holder.targetBlock()) {
+          var module = this.moduleItems[this.blockHolder]
+          if (module) {
+            candidate = module
+          }
+        }
+      }
+      this.selectedItem_ = candidate || this.dottedItems[0]
     }
   }
 </script>

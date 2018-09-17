@@ -231,7 +231,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return !newValue
+        || type.expr === eYo.T3.Expr.unset
         || type.expr === eYo.T3.Expr.identifier
+        || type.expr === eYo.T3.Expr.builtin__name
         || type.expr === eYo.T3.Expr.dotted_name
         || type.expr === eYo.T3.Expr.parent_module
         ? {validated: newValue} : null

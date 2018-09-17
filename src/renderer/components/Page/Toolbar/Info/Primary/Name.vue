@@ -25,14 +25,14 @@
       },
       name: {
         get () {
-          return this.name_ || (this.name_ = this.selectedBlock.eyo.data.name.get())
+          return this.name_ || (this.name_ = this.selectedBlock.eyo.name_p)
         },
         set (newValue) {
           this.name_ = newValue
           var eyo = this.selectedBlock.eyo
           eyo.changeWrap(
             function () {
-              eyo.data.alias.set(newValue)
+              eyo.name_p = newValue
             }
           )
         }
