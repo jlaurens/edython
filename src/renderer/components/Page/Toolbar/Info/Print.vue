@@ -9,9 +9,9 @@
         <input type="checkbox" id="info-print-file" v-model="file" :disabled="!can_file">
         <label for="info-print-file" class="eyo-code" :disabled="!can_file">file=…</label>
       </div>
-      <comment :selected-block="selectedBlock"></comment>
+      <comment :eyo="eyo"></comment>
     </b-button-toolbar>
-    <common :selected-block="selectedBlock"></common>
+    <common :eyo="eyo"></common>
   </b-button-toolbar>
 </template>
 
@@ -30,21 +30,18 @@
       Common
     },
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
       }
     },
     computed: {
       list () {
-        var block = this.selectedBlock
-        if (block) {
-          return block.getInput(eYo.Key.ARGUMENTS).connection.targetBlock()
-        }
+        return this.eyo.block_.getInput(eYo.Key.ARGUMENTS).connection.targetBlock()
       },
       has () {
         var has = {}
-        var block = this.selectedBlock
+        var block = this.eyo.block_
         if (block) {
           var list = this.list
           var c10r = list.eyo.consolidator
@@ -69,7 +66,7 @@
         return has
       },
       data () {
-        return this.selectedBlock.eyo.data
+        return this.eyo.data
       },
       sep: {
         get () {
@@ -127,7 +124,7 @@
             B.dispose()
             return
           }
-          var block = this.selectedBlock
+          var block = this.eyo.block_
           B = eYo.DelegateSvg.newBlockComplete(block.workspace, {
             type: eYo.T3.Expr.keyword_item,
             data: key

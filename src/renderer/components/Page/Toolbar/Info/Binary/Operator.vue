@@ -21,7 +21,7 @@
       }
     },
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
       },
@@ -44,8 +44,7 @@
     },
     computed: {
       data () {
-        var block = this.selectedBlock
-        return block && block.eyo.data[this.dataKey]
+        return this.eyo && this.eyo.data[this.dataKey]
       },
       operator: {
         get () {
@@ -55,7 +54,7 @@
         },
         set (newValue) {
           this.data && this.data.set(newValue)
-          this.selectedBlock.render()
+          this.eyo.render()
         }
       },
       operatorsA () {

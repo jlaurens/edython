@@ -1,31 +1,31 @@
 <template>
   <div id="toolbar-info" :style="style">
     <div v-if="isSelected($$.eYo.DelegateSvg.Expr.primary.eyo.getModel().xml.types)">
-      <info-primary :selected-block="selectedBlock" :placeholder="placeholder"></info-primary>
+      <info-primary :eyo="eyo" :placeholder="placeholder"></info-primary>
     </div>
     <div v-else-if="isSelected([$$.eYo.T3.Expr.shortliteral, $$.eYo.T3.Expr.longliteral, $$.eYo.T3.Expr.shortbytesliteral, $$.eYo.T3.Expr.longbytesliteral, $$.eYo.T3.Expr.shortstringliteral, $$.eYo.T3.Expr.longstringliteral, $$.eYo.T3.Stmt.docstring_stmt])">
-      <info-literal :selected-block="selectedBlock"></info-literal>
+      <info-literal :eyo="eyo"></info-literal>
     </div>
     <div v-else-if="isSelected([$$.eYo.T3.Expr.builtin__print_expr, $$.eYo.T3.Stmt.builtin__print_stmt])">
-      <info-print :selected-block="selectedBlock"></info-print>
+      <info-print :eyo="eyo"></info-print>
     </div>
     <div v-else-if="isSelected($$.eYo.T3.Expr.u_expr)">
-      <info-unary :selected-block="selectedBlock" :placeholder="placeholder"></info-unary>
+      <info-unary :eyo="eyo" :placeholder="placeholder"></info-unary>
     </div>
     <div v-else-if="isSelected([$$.eYo.T3.Expr.a_expr, $$.eYo.T3.Expr.m_expr])">
-      <info-binary :selected-block="selectedBlock" :placeholder="placeholder"></info-binary>
+      <info-binary :eyo="eyo" :placeholder="placeholder"></info-binary>
     </div>
     <div v-else-if="isSelected([$$.eYo.T3.Expr.shift_expr, $$.eYo.T3.Expr.and_expr, $$.eYo.T3.Expr.xor_expr, $$.eYo.T3.Expr.or_expr])">
-      <info-binary :selected-block="selectedBlock" :placeholder="placeholder"></info-binary>
+      <info-binary :eyo="eyo" :placeholder="placeholder"></info-binary>
     </div>
     <div v-else-if="isSelected($$.eYo.T3.Stmt.assignment_stmt)">
-      <info-assignment :selected-block="selectedBlock" :placeholder="placeholder"></info-assignment>
+      <info-assignment :eyo="eyo" :placeholder="placeholder"></info-assignment>
     </div>
     <div v-else-if="isSelected($$.eYo.T3.Stmt.augmented_assignment_stmt)">
-      <info-augmented-assignment :selected-block="selectedBlock" :placeholder="placeholder"></info-augmented-assignment>
+      <info-augmented-assignment :eyo="eyo" :placeholder="placeholder"></info-augmented-assignment>
     </div>
-    <div v-else-if="selectedBlock">
-      <info-default :selected-block="selectedBlock"></info-default>
+    <div v-else-if="eyo">
+      <info-default :eyo="eyo"></info-default>
     </div>
     <div v-else>
       <info-none></info-none>
@@ -77,6 +77,9 @@
         var id = this.$store.state.UI.selectedBlockId
         var block = id && this.$$.eYo.App.workspace.blockDB_[id]
         return block
+      },
+      eyo () {
+        return this.selectedBlock && this.selectedBlock.eyo
       },
       selectedBlockType () {
         var type = this.$store.state.UI.selectedBlockType

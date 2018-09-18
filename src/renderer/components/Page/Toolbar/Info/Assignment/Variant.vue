@@ -10,7 +10,7 @@
   export default {
     name: 'info-assignment-variant',
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
       },
@@ -34,8 +34,7 @@
     },
     computed: {
       data () {
-        var block = this.selectedBlock
-        return block && block.eyo.data[this.dataKey]
+        return this.eyo.data[this.dataKey]
       },
       variant: {
         get () {
@@ -45,7 +44,7 @@
         },
         set (newValue) {
           this.data && this.data.set(newValue.key)
-          this.selectedBlock.render()
+          this.eyo.render()
         }
       },
       variants () {

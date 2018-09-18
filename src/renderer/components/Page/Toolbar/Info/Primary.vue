@@ -1,13 +1,13 @@
 <template>
   <b-button-toolbar id="info-primary" key-nav  aria-label="Info toolbar primary" justify>
     <b-button-toolbar>
-      <dotted :selected-block="selectedBlock" :placeholder="placeholder"></dotted>
-      <name :selected-block="selectedBlock"></name>
+      <dotted :eyo="eyo" :placeholder="placeholder" :holder="holder" :dotted="dotted" v-on:synchronize="synchronize"></dotted>
+      <name :eyo="eyo"></name>
       <b-button-group class="mx-1">
-        <variant :selected-block="selectedBlock" :placeholder="placeholder"></variant>
+        <variant :eyo="eyo" :placeholder="placeholder" :variant="variant" :annotation="annotation" :definition="definition" v-on:synchronize="synchronize"></variant>
       </b-button-group>
     </b-button-toolbar>
-    <common :selected-block="selectedBlock"></common>
+    <common :eyo="eyo"></common>
   </b-button-toolbar>
 </template>
 
@@ -21,6 +21,13 @@
     name: 'info-primary',
     data: function () {
       return {
+        modifier: undefined,
+        holder: undefined,
+        dotted: undefined,
+        name: undefined,
+        variant: undefined,
+        annotation: undefined,
+        definition: undefined
       }
     },
     components: {
@@ -30,7 +37,7 @@
       Common
     },
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
       },
@@ -42,30 +49,29 @@
       }
     },
     computed: {
-      variant_d () {
-        var block = this.selectedBlock
-        return block && block.eyo && block.eyo.data.variant
-      },
-      variant: {
-        get () {
-          var variant_d = this.variant_d
-          return variant_d && this.items[variant_d.get()]
-        },
-        set (item) {
-          var variant_d = this.variant_d
-          variant_d && variant_d.set(item.key)
+    },
+    created () {
+      this.synchronize()
+    },
+    methods: {
+      synchronize () {
+        var eyo = this.eyo
+        eyo.render()
+        this.modifier = eyo.modifier_p
+        this.holder = eyo.holder_p
+        this.dotted = eyo.dotted_p
+        this.name = eyo.name_p
+        this.variant = eyo.variant_p
+        this.annotation = eyo.annotation_p
+        this.definition = eyo.definition_p
+        if (eyo.slots.dotted.isIncog()) {
+          this.dotted = 0
         }
-      },
-      items () {
-        return {
-          [eYo.Key.NAME]: {
-            content: '<span class="eyo-code-placeholder">nom</span>',
-            key: eYo.Key.NAME
-          },
-          [eYo.Key.EXPRESSION]: {
-            content: this.placeholder(),
-            key: eYo.Key.EXPRESSION
-          }
+        if (eyo.slots.annotation.isIncog()) {
+          this.annotation = eYo.Key.NONE
+        }
+        if (eyo.slots.definition.isIncog()) {
+          this.definition = eYo.Key.NONE
         }
       }
     }

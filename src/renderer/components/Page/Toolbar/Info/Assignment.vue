@@ -1,10 +1,10 @@
 <template>
   <b-button-toolbar id="info-assignment" key-nav  aria-label="Info toolbar assignment" justify>
     <b-button-toolbar>
-      <variant :selected-block="selectedBlock" :placeholder="placeholder"></variant>
-      <comment :selected-block="selectedBlock"></comment>
+      <variant :eyo="eyo" :placeholder="placeholder"></variant>
+      <comment :eyo="eyo"></comment>
     </b-button-toolbar>
-    <common :selected-block="selectedBlock"></common>
+    <common :eyo="eyo"></common>
   </b-button-toolbar>
 </template>
 
@@ -25,7 +25,7 @@
       Common
     },
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
       },

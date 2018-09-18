@@ -1,9 +1,9 @@
 <template>
   <b-button-toolbar id="info-unary" key-nav  aria-label="Info toolbar unary" justify>
     <b-button-toolbar>
-      <operator :selected-block="selectedBlock" :placeholder="placeholder"></operator>
+      <operator :eyo="eyo" :placeholder="placeholder"></operator>
     </b-button-toolbar>
-    <common :selected-block="selectedBlock"></common>
+    <common :eyo="eyo"></common>
   </b-button-toolbar>
 </template>
 
@@ -22,7 +22,7 @@
       Common
     },
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
       },

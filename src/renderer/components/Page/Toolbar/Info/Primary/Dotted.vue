@@ -14,46 +14,64 @@
   export default {
     data () {
       return {
-        selectedItem_: undefined,
-        blockHolder_: undefined,
-        blockDotted_: undefined
+        selectedItem_: undefined
       }
     },
     name: 'info-primary-dotted',
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
+      },
+      dotted: {
+        type: Number,
+        default: 0
+      },
+      holder: {
+        type: String,
+        default: ''
       }
     },
     computed: {
       canHolder () {
-        return this.blockDotted === 1
+        return this.dotted === 1
       },
       blockHolder: {
         get () {
-          return this.blockHolder_
+          return this.holder
         },
         set (newValue) {
-          this.blockHolder_ = newValue
-          this.selectedBlock.eyo.holder_p = newValue
+          this.eyo.holder_p = newValue
+          this.$emit('synchronize')
+          this.eyo.render()
         }
       },
       blockDotted: {
         get () {
-          return this.blockDotted_
+          return this.dotted
         },
         set (newValue) {
-          this.blockDotted_ = newValue
-          this.selectedBlock.eyo.dotted_p = newValue
+          this.eyo.dotted_p = newValue
+          this.$emit('synchronize')
+          this.eyo.render()
         }
       },
       selectedItem: {
         get () {
-          return this.selectedItem_
+          var dotted = this.dotted
+          var candidate = this.dottedItems[dotted]
+          if (dotted === 1) {
+            var eyo = this.eyo
+            if (!eyo.slots.holder.targetBlock()) {
+              var module = this.moduleItems[this.blockHolder]
+              if (module) {
+                candidate = module
+              }
+            }
+          }
+          return candidate || this.dottedItems[0]
         },
         set (newValue) {
-          this.selectedItem_ = newValue
           if (newValue.action) {
             newValue.action.call(this, newValue)
           } else {
@@ -90,13 +108,13 @@
             content: module + '.',
             title: '.',
             action (item) {
-              // this.selectedBlock.eyo.changeBegin()
+              // this.eyo.changeBegin()
               this.blockDotted = 1
               this.blockHolder = item.key
-              // var target = this.selectedBlock.eyo.slots.holder.targetBlock()
+              // var target = this.eyo.slots.holder.targetBlock()
               // target && target.unplug()
-              // this.selectedBlock.eyo.changeEnd()
-              // this.selectedBlock.eyo.render()
+              // this.eyo.changeEnd()
+              // this.eyo.render()
             }
           }
         }
@@ -110,12 +128,10 @@
       }
     },
     created () {
-      this.blockDotted_ = this.selectedBlock.eyo.dotted_p
-      this.blockHolder_ = this.selectedBlock.eyo.holder_p
-      var dotted = this.blockDotted
+      var dotted = this.dotted
       var candidate = this.dottedItems[dotted]
       if (dotted === 1) {
-        var eyo = this.selectedBlock.eyo
+        var eyo = this.eyo
         if (!eyo.slots.holder.targetBlock()) {
           var module = this.moduleItems[this.blockHolder]
           if (module) {

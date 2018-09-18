@@ -12,7 +12,7 @@
       }
     },
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
       }
@@ -37,11 +37,11 @@
       },
       blockAlias: {
         get () {
-          return this.selectedBlock.eyo.data.alias.value_
+          return this.eyo.data.alias.value_
         },
         set (newValue) {
-          this.selectedBlock.eyo.data.alias.change(newValue)
-          this.selectedBlock.render()
+          this.eyo.data.alias.change(newValue)
+          this.render()
         }
       }
     }

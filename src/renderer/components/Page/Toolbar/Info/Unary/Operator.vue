@@ -9,8 +9,13 @@
 <script>
   export default {
     name: 'info-unary-operator',
+    data () {
+      return {
+        operator_: '?'
+      }
+    },
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
       },
@@ -33,18 +38,15 @@
     },
     computed: {
       data () {
-        var block = this.selectedBlock
-        return block && block.eyo.data[this.dataKey]
+        return this.eyo.data[this.dataKey]
       },
       operator: {
         get () {
-          return this.data
-            ? this.data.get()
-            : '?'
+          return this.operator_
         },
         set (newValue) {
-          this.data && this.data.set(newValue)
-          this.selectedBlock.render()
+          this.operator_ = newValue
+          this.data && this.data.change(newValue)
         }
       },
       operators () {
@@ -53,6 +55,11 @@
       my_placeholder () {
         return this.placeholder('eyo-info-primary-variant1')
       }
+    },
+    created () {
+      this.operator_ = this.data
+        ? this.data.get()
+        : '?'
     }
   }
 </script>

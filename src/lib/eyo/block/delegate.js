@@ -1175,7 +1175,7 @@ eYo.Delegate.prototype.willConnect = function (block, connection, childConnectio
  * @param {!Blockly.Connection} oldConnection what was previously connected to the new targetConnection
  */
 eYo.Delegate.prototype.didConnect = function (block, connection, oldTargetConnection, oldConnection) {
-  console.error('Intermediate')
+  // console.error('Intermediate')
   this.changeEnd()
 }
 

@@ -9,7 +9,7 @@
   export default {
     name: 'info-value',
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
       },
@@ -29,8 +29,7 @@
         return 'info-' + this.dataKey
       },
       data () {
-        var block = this.selectedBlock
-        return block && block.eyo.data[this.dataKey]
+        return this.eyo.data[this.dataKey]
       },
       value: {
         get () {

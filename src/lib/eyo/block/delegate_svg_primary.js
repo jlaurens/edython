@@ -297,8 +297,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         // override previous data if necessary
         if (newValue !== this.NONE) {
           // no holder nor dotted nor variant
-          this.data.dotted.set(0)
-          this.data.variant.set(this.NONE)
+          this.owner.dotted_p = 0
+          this.owner.variant_p = eYo.Key.NONE
         }
       },
       synchronize: function (newValue) {
@@ -338,8 +338,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         // override previous data if necessary
         if (newValue !== this.NONE) {
           // no holder nor dotted nor variant
-          this.data.dotted.set(0)
-          this.data.variant.set(this.NONE)
+          this.owner.dotted_p = 0
+          this.owner.variant_p = this.NONE
         }
       },
       synchronize: function (newValue) {

@@ -8,7 +8,7 @@
   export default {
     name: 'info-common',
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
       },
@@ -22,8 +22,8 @@
         return this.$store.state.UI.toolbarInfoDebug
       },
       info () {
-        var type = this.selectedBlock.type
-        var id = this.selectedBlock.id
+        var type = this.eyo.type
+        var id = this.eyo.block_.id
         return type ? [type.substring(4), id].join('/') : '…'
       }
     }

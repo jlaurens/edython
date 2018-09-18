@@ -13,7 +13,7 @@
       }
     },
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
       },
@@ -30,11 +30,10 @@
     },
     computed: {
       unary () {
-        return this.selectedBlock && (this.selectedBlock.type === this.$$.eYo.T3.Expr.u_expr)
+        return this.eyo.block_.type === this.$$.eYo.T3.Expr.u_expr
       },
       operator_d () {
-        var block = this.selectedBlock
-        return block && block.eyo.data[this.dataKey]
+        return this.eyo.data[this.dataKey]
       },
       operator: {
         get () {

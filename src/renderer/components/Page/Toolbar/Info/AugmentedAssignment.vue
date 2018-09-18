@@ -2,12 +2,12 @@
   <b-button-toolbar id="info-augmented-assignment" key-nav  aria-label="Info toolbar augmented-assignment" justify>
     <b-button-toolbar>
       <b-button-group>
-        <operator :selected-block="selectedBlock"></operator>
-        <variant :formatter="function (item) { return this.$t('message.'+item, {operator: this.selectedBlock.eyo.data.operator.get()})}" :selected-block="selectedBlock"></variant>
+        <operator :eyo="eyo"></operator>
+        <variant :formatter="function (item) { return this.$t('message.'+item, {operator: this.eyo.operator_p})}" :eyo="eyo"></variant>
       </b-button-group>
-      <comment :selected-block="selectedBlock"></comment>
+      <comment :eyo="eyo"></comment>
     </b-button-toolbar>
-    <common :selected-block="selectedBlock"></common>
+    <common :eyo="eyo"></common>
   </b-button-toolbar>
 </template>
 
@@ -30,7 +30,7 @@
       Common
     },
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
       }

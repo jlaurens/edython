@@ -19,7 +19,7 @@
       }
     },
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
       }
@@ -29,12 +29,10 @@
         return this.$$.eYo.Msg.Placeholder.COMMENT
       },
       comment_variant_d () {
-        var block = this.selectedBlock
-        return block && block.eyo.data.comment_variant
+        return this.eyo && this.eyo.data.comment_variant
       },
       comment_d () {
-        var block = this.selectedBlock
-        return block && block.eyo.data.comment
+        return this.eyo && this.eyo.data.comment
       },
       canComment () {
         return this.comment_d
@@ -52,7 +50,7 @@
           if (comment_variant_d) {
             comment_variant_d.set(newValue ? comment_variant_d.COMMENT : comment_variant_d.NO_COMMENT)
           }
-          this.selectedBlock.render()
+          this.eyo.render()
         }
       },
       comment: {

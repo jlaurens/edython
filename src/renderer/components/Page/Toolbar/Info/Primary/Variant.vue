@@ -1,10 +1,10 @@
 <template>
   <b-button-group class="mx-1">
     <b-dropdown :id="id" class="eyo-dropdown" v-if="variants && variants.length" variant="outline-secondary">
-      <template slot="button-content"><div class="eyo-info-primary-variant eyo-code eyo-content" v-html="selected_.content"></div></template>
+      <template slot="button-content"><div class="eyo-info-primary-variant eyo-code eyo-content" v-html="selected.content"></div></template>
       <b-dropdown-item-button v-for="variant in variants" v-on:click="selected = variant" :key="variant.key" class="eyo-info-primary-variant eyo-code" v-html="variant.content"></b-dropdown-item-button>
     </b-dropdown>
-    <b-form-input v-model="alias" type="text" size="10" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="selected_.key === 'ALIASED'"></b-form-input>
+    <b-form-input v-model="alias" type="text" size="10" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="selected.key === 'ALIASED'"></b-form-input>
   </b-button-group>
 </template>
 
@@ -16,7 +16,6 @@
     data () {
       return {
         dataKey: 'variant',
-        selected__: undefined,
         alias_: undefined
       }
     },
@@ -24,7 +23,7 @@
       Alias
     },
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
       },
@@ -33,51 +32,44 @@
         default: function (item) {
           return item
         }
+      },
+      variant: {
+        type: String,
+        default: eYo.Key.NONE
+      },
+      annotation: {
+        type: String,
+        default: eYo.Key.NONE
+      },
+      definition: {
+        type: String,
+        default: eYo.Key.NONE
       }
     },
     computed: {
       id () {
         return 'eyo-info-' + this.dataKey
       },
+      modifier_d () {
+        return this.eyo.data.modifier
+      },
       annotation_d () {
-        return this.selectedBlock.eyo.data.annotation
+        return this.eyo.data.annotation
       },
       definition_d () {
-        return this.selectedBlock.eyo.data.definition
-      },
-      variant_d () {
-        return this.selectedBlock.eyo.data.variant
-      },
-      modifier_d () {
-        return this.selectedBlock.eyo.data.modifier
-      },
-      dotted_d () {
-        return this.selectedBlock.eyo.data.dotted
-      },
-      selected_: {
-        get () {
-          if (!this.selected__) {
-            this.selected__ = this.selected
-          }
-          return this.selected__
-        },
-        set (newValue) {
-          this.selected__ = newValue
-        }
+        return this.eyo.data.definition
       },
       selected: {
         get () {
-          var variant = this.variant_d.get()
+          var variant = this.variant
           if (variant === eYo.Key.NONE) {
-            var annotation = this.annotation_d.get()
-            var definition = this.definition_d.get()
-            if (annotation !== eYo.Key.NONE) {
-              if (definition !== eYo.Key.NONE) {
+            if (this.annotation !== eYo.Key.NONE) {
+              if (this.definition !== eYo.Key.NONE) {
                 return this.items.ANNOTATED_DEFINED
               } else {
                 return this.items.ANNOTATED
               }
-            } else if (definition !== eYo.Key.NONE) {
+            } else if (this.definition !== eYo.Key.NONE) {
               return this.items.DEFINED
             } else {
               return this.items.NONE
@@ -93,8 +85,7 @@
           }
         },
         set (newValue) {
-          this.selected_ = newValue
-          this.selectedBlock.eyo.changeWrap(
+          this.eyo.changeWrap(
             newValue.action,
             this
           )
@@ -106,64 +97,61 @@
             content: '&nbsp;',
             key: 'NONE',
             action () {
-              this.annotation_d.set(eYo.Key.NONE)
-              this.definition_d.set(eYo.Key.NONE)
-              this.variant_d.set(eYo.Key.NONE)
+              this.eyo.annotation_p = eYo.Key.NONE
+              this.eyo.definition_p = eYo.Key.NONE
+              this.eyo.variant_p = eYo.Key.NONE
+              this.$emit('synchronize')
             }
           },
           CALL_EXPR: {
             content: '<div class="eyo-info-primary-variant2">(</div>' + this.placeholder('eyo-info-primary-variant1') + '<div class="eyo-info-primary-variant2">)</div>',
             key: 'CALL_EXPR',
             action () {
-              this.variant_d.set(eYo.Key.CALL_EXPR)
+              this.eyo.variant_p = eYo.Key.CALL_EXPR
+              this.$emit('synchronize')
             }
           },
           SLICING: {
             content: '<div class="eyo-info-primary-variant2">[</div>' + this.placeholder('eyo-info-primary-variant1') + '<div class="eyo-info-primary-variant2">]</div>',
             key: 'SLICING',
             action () {
-              this.variant_d.set(eYo.Key.SLICING)
+              this.eyo.variant_p = eYo.Key.SLICING
+              this.$emit('synchronize')
             }
           },
           ALIASED: {
             content: '<div class="eyo-code eyo-code-reserved">as</div>',
             key: 'ALIASED',
             action () {
-              this.consolidateModifier('*')
-              this.consolidateModifier('.')
-              this.variant_d.set(eYo.Key.ALIASED)
+              this.eyo.variant_p = eYo.Key.ALIASED
+              this.$emit('synchronize')
             }
           },
           ANNOTATED: {
             content: '<div class="eyo-info-primary-variant2">:</div>' + this.placeholder('eyo-info-primary-variant1'),
             key: 'ANNOTATED',
             action () {
-              this.annotation_d.set(eYo.Key.ANNOTATED)
-              this.definition_d.set(eYo.Key.NONE)
-              this.consolidateModifier('.')
-              this.variant_d.set(eYo.Key.NONE)
+              this.eyo.annotation_p = eYo.Key.ANNOTATED
+              this.eyo.definition_p = eYo.Key.NONE
+              this.$emit('synchronize')
             }
           },
           DEFINED: {
             content: '<div class="eyo-info-primary-variant2">=</div>' + this.placeholder('eyo-info-primary-variant1'),
             key: 'DEFINED',
             action () {
-              this.annotation_d.set(eYo.Key.NONE)
-              this.definition_d.set(eYo.Key.DEFINED)
-              this.consolidateModifier('.')
-              this.consolidateModifier('*')
-              this.variant_d.set(eYo.Key.NONE)
+              this.eyo.annotation_p = eYo.Key.NONE
+              this.eyo.definition_p = eYo.Key.DEFINED
+              this.$emit('synchronize')
             }
           },
           ANNOTATED_DEFINED: {
             content: '<div class="eyo-info-primary-variant2">:</div>' + this.placeholder('eyo-info-primary-variant1') + '<div class="eyo-info-primary-variant2">=</div>' + this.placeholder('eyo-info-primary-variant1'),
             key: 'ANNOTATED_DEFINED',
             action () {
-              this.annotation_d.set(eYo.Key.ANNOTATED)
-              this.definition_d.set(eYo.Key.DEFINED)
-              this.consolidateModifier('.')
-              this.consolidateModifier('*')
-              this.variant_d.set(eYo.Key.NONE)
+              this.eyo.annotation_p = eYo.Key.ANNOTATED
+              this.eyo.definition_p = eYo.Key.DEFINED
+              this.$emit('synchronize')
             }
           }
         }
@@ -181,7 +169,7 @@
       },
       alias: {
         get () {
-          return this.alias_ || (this.alias_ = this.selectedBlock.eyo.data.alias.get())
+          return this.alias_ || (this.alias_ = this.blockAlias)
         },
         set (newValue) {
           this.blockAlias = this.alias_ = newValue
@@ -189,19 +177,10 @@
       },
       blockAlias: {
         get () {
-          return this.selectedBlock.eyo.data.alias.get()
+          return this.eyo.alias_p
         },
         set (newValue) {
-          this.selectedBlock.eyo.data.alias.change(newValue)
-        }
-      }
-    },
-    methods: {
-      consolidateModifier (c) {
-        var modifier_d = this.modifier_d
-        var modifier = modifier_d.get()
-        if (modifier.length && modifier[0] === c) {
-          modifier_d.set('')
+          this.eyo.alias_p = newValue
         }
       }
     }

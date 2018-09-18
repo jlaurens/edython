@@ -9,19 +9,17 @@
   export default {
     name: 'info-modifier',
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
       }
     },
     computed: {
       modifier_d () {
-        var block = this.selectedBlock
-        return block && block.eyo.data.modifier
+        return this.eyo.data.modifier
       },
       option_d () {
-        var block = this.selectedBlock
-        return block && block.eyo.data.option
+        return this.eyo.data.option
       },
       selected: {
         get () {
@@ -35,7 +33,7 @@
           var modifier_d = this.modifier_d
           modifier_d && modifier_d.set(newItem.key)
           newItem.action && newItem.action.call(this, newItem)
-          this.selectedBlock.eyo.render()
+          this.eyo.render()
         }
       },
       items () {

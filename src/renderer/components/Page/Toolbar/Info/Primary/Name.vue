@@ -14,7 +14,7 @@
       }
     },
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
       }
@@ -25,11 +25,11 @@
       },
       name: {
         get () {
-          return this.name_ || (this.name_ = this.selectedBlock.eyo.name_p)
+          return this.name_ || (this.name_ = this.eyo.name_p)
         },
         set (newValue) {
           this.name_ = newValue
-          var eyo = this.selectedBlock.eyo
+          var eyo = this.eyo
           eyo.changeWrap(
             function () {
               eyo.name_p = newValue

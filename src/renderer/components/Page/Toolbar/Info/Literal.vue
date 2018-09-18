@@ -17,9 +17,9 @@
           {{contentSingleQuote}}
         </b-btn>
       </b-button-group>
-      <comment :selected-block="selectedBlock"></comment>
+      <comment :eyo="eyo"></comment>
     </b-button-toolbar>
-    <common :selected-block="selectedBlock"></common>
+    <common :eyo="eyo"></common>
   </b-button-toolbar>
 </template>
 
@@ -38,14 +38,14 @@
       Common
     },
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
       }
     },
     computed: {
       data () {
-        return this.selectedBlock.eyo.data
+        return this.eyo.data
       },
       doubleQuote () {
         return this.data.delimiter.get() === '"'
@@ -103,11 +103,11 @@
           return true
         }
         if (['', 'r'].indexOf(this.prefix) >= 0) {
-          var content = this.selectedBlock.eyo.data.content.get()
+          var content = this.eyo.data.content.get()
           if (!content.length) {
             return true
           }
-          var value = this.selectedBlock.eyo.data.value.get()
+          var value = this.eyo.data.value.get()
           var can = !!XRegExp.exec(value, this.$$.eYo.XRE.longbytesliteralSingleNoPrefix) || !!XRegExp.exec(value, this.$$.eYo.XRE.longbytesliteralDoubleNoPrefix) || !!XRegExp.exec(value, this.$$.eYo.XRE.shortbytesliteralSingleNoPrefix) || !!XRegExp.exec(value, this.$$.eYo.XRE.shortbytesliteralDoubleNoPrefix)
           return can
         }
@@ -140,11 +140,11 @@
     methods: {
       doDoubleQuote () {
         this.data.delimiter.set('"')
-        this.selectedBlock.render()
+        this.render()
       },
       doSingleQuote () {
         this.data.delimiter.set('\'')
-        this.selectedBlock.render()
+        this.render()
       },
       do_r () {
         this.data.prefix.set({
@@ -157,7 +157,7 @@
           'rb': 'b',
           'br': 'b'
         }[this.prefix])
-        this.selectedBlock.render()
+        this.eyo.render()
       },
       do_b () {
         this.data.prefix.set({
@@ -167,7 +167,7 @@
           'rb': 'r',
           'br': 'r'
         }[this.prefix])
-        this.selectedBlock.render()
+        this.eyo.render()
       },
       do_f () {
         this.data.prefix.set({
@@ -177,7 +177,7 @@
           'rf': 'r',
           'fr': 'r'
         }[this.prefix])
-        this.selectedBlock.render()
+        this.eyo.render()
       }
     }
   }

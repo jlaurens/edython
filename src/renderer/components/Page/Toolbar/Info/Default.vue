@@ -2,12 +2,12 @@
   <b-button-toolbar id="info-default" key-nav  aria-label="Info toolbar default" justify>
     <b-button-toolbar>
       d<span>{{selectedBlock.type}}</span>
-      <value :selected-block="selectedBlock"></value>
-      <operator :selected-block="selectedBlock"></operator>
-      <variant :selected-block="selectedBlock"></variant>
-      <comment :selected-block="selectedBlock"></comment>
+      <value :eyo="eyo"></value>
+      <operator :eyo="eyo"></operator>
+      <variant :eyo="eyo"></variant>
+      <comment :eyo="eyo"></comment>
     </b-button-toolbar>
-    <common :selected-block="selectedBlock"></common>
+    <common :eyo="eyo"></common>
   </b-button-toolbar>
 </template>
 
@@ -28,7 +28,7 @@
       Common
     },
     props: {
-      selectedBlock: {
+      eyo: {
         type: Object,
         default: undefined
       }
