@@ -279,13 +279,12 @@ eYo.FieldTextInput.prototype.widgetDispose_ = function () {
       }
     }
     block.eyo.endEditingField && block.eyo.endEditingField(block, field)
-    block.eyo.changeEnd()
     if (field.eyo.grouper_) {
       eYo.Events.setGroup(false)
       delete field.eyo.grouper_
     }
     field.render_()
-    block.render()
+    block.eyo.changeEnd()
     eYo.FieldTextInput.superClass_.widgetDispose_.call(field)
     Blockly.WidgetDiv.DIV.style.fontFamily = ''
   }

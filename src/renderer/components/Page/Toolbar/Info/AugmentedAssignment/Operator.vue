@@ -1,10 +1,10 @@
 <template>
   <b-dropdown id="info-binary-operator" class="eyo-dropdown" variant="outline-secondary">
-    <template slot="button-content"><span class="info-binary-operator eyo-code eyo-content" v-html="formatter(operator)"></span></template>
-    <b-dropdown-item-button v-for="item in operatorsA" v-on:click="operator = item" :key="item" class="info-binary-operator eyo-code" v-html="formatter(item)">
+    <template slot="button-content"><span class="info-binary-operator eyo-code eyo-content" v-html="operator"></span></template>
+    <b-dropdown-item-button v-for="item in operatorsA" v-on:click="operator = item" :key="item" class="info-binary-operator eyo-code" v-html="item">
     </b-dropdown-item-button>
     <b-dropdown-divider></b-dropdown-divider>
-    <b-dropdown-item-button v-for="item in operatorsB" v-on:click="operator = item" :key="item" class="info-binary-operator eyo-code" v-html="formatter(item)">
+    <b-dropdown-item-button v-for="item in operatorsB" v-on:click="operator = item" :key="item" class="info-binary-operator eyo-code" v-html="item">
     </b-dropdown-item-button>            
   </b-dropdown>
 </template>
@@ -15,10 +15,7 @@
     data: function () {
       return {
         operator_: '?',
-        operators: {
-          num: ['+', '-', '*', '/', '//', '%', '**', '@'],
-          bin: ['<<', '>>', '&', '^', '|']
-        }
+        operators: {}
       }
     },
     props: {
@@ -30,12 +27,6 @@
         type: Function,
         default: function (item) {
           return item
-        }
-      },
-      formatter: {
-        type: Function,
-        default: function (item) {
-          return item.length ? this.my_placeholder + '<div class="eyo-info-primary-variant2">' + item + '</div>' + this.my_placeholder : '&nbsp;'
         }
       }
     },
@@ -65,12 +56,14 @@
     },
     created () {
       this.operator_ = this.eyo.operator_p
+      this.operators.num = this.eyo.data.numberOperator.getAll()
+      this.operators.bin = this.eyo.data.bitwiseOperator.getAll()
     }
   }
 </script>
 <style>
   .info-binary-operator {
-    padding-right: 0.75rem;
+    padding-right: 1rem;
   }
 </style>
   

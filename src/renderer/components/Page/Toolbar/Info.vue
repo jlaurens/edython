@@ -12,14 +12,19 @@
     <div v-else-if="isSelected($$.eYo.T3.Expr.u_expr)">
       <info-unary :eyo="eyo" :placeholder="placeholder"></info-unary>
     </div>
-    <div v-else-if="isSelected([$$.eYo.T3.Expr.a_expr, $$.eYo.T3.Expr.m_expr])">
-      <info-binary :eyo="eyo" :placeholder="placeholder"></info-binary>
-    </div>
-    <div v-else-if="isSelected([$$.eYo.T3.Expr.shift_expr, $$.eYo.T3.Expr.and_expr, $$.eYo.T3.Expr.xor_expr, $$.eYo.T3.Expr.or_expr])">
+    <div v-else-if="isSelected([
+      $$.eYo.T3.Expr.binary,
+      $$.eYo.T3.Expr.a_expr,
+      $$.eYo.T3.Expr.m_expr, $$.eYo.T3.Expr.shift_expr, $$.eYo.T3.Expr.and_expr, $$.eYo.T3.Expr.xor_expr,
+      $$.eYo.T3.Expr.or_expr
+    ])">
       <info-binary :eyo="eyo" :placeholder="placeholder"></info-binary>
     </div>
     <div v-else-if="isSelected($$.eYo.T3.Stmt.assignment_stmt)">
       <info-assignment :eyo="eyo" :placeholder="placeholder"></info-assignment>
+    </div>
+    <div v-else-if="isSelected($$.eYo.T3.Expr.builtin__object)">
+      <builtin :eyo="eyo"></builtin>
     </div>
     <div v-else-if="isSelected($$.eYo.T3.Stmt.augmented_assignment_stmt)">
       <info-augmented-assignment :eyo="eyo" :placeholder="placeholder"></info-augmented-assignment>
@@ -41,6 +46,8 @@
   import InfoBinary from './Info/Binary.vue'
   import InfoAssignment from './Info/Assignment.vue'
   import InfoAugmentedAssignment from './Info/AugmentedAssignment.vue'
+  import InfoValue from './Info/Value.vue'
+  import Builtin from './Info/Builtin.vue'
   import InfoDefault from './Info/Default.vue'
   import InfoNone from './Info/None.vue'
 
@@ -59,6 +66,8 @@
       InfoBinary,
       InfoAssignment,
       InfoAugmentedAssignment,
+      InfoValue,
+      Builtin,
       InfoDefault,
       InfoNone
     },

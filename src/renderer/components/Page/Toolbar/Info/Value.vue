@@ -1,5 +1,5 @@
 <template>
-  <b-dropdown :id="id" class="eyo-dropdown" v-if="values && values.length">
+  <b-dropdown :id="id" class="eyo-dropdown" v-if="values && values.length" variant="outline-secondary">
     <template slot="button-content"><span class="info-value eyo-code eyo-content" v-html="formatter(value)"></span></template>
     <b-dropdown-item-button v-for="item in values" v-on:click="value = item" :key="item" class="info-value eyo-code" v-html="formatter(item)"></b-dropdown-item-button>
   </b-dropdown>

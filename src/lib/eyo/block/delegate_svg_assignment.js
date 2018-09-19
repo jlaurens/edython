@@ -181,7 +181,6 @@ eYo.Consolidator.List.Target.prototype.getCheck = function (io) {
   }
 }
 
-
 /**
  * Once the whole list has been managed,
  * there might be unwanted things.
@@ -442,21 +441,6 @@ goog.provide('eYo.DelegateSvg.AugAssign')
  */
 eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
   data: {
-    variant: {
-      NAME_EXPRESSIONS: eYo.Key.NAME_EXPRESSIONS,
-      TARGET_EXPRESSIONS: eYo.Key.TARGET_EXPRESSIONS,
-      all: [
-        eYo.Key.NAME_EXPRESSIONS,
-        eYo.Key.TARGET_EXPRESSIONS
-      ],
-      synchronize: /** @suppress {globalThis} */ function (newVariant) {
-        this.synchronize(newVariant)
-        this.data.name.setIncog(newVariant !== this.NAME_EXPRESSIONS)
-        var slot = this.owner.slots.target
-        slot.required = newVariant === this.TARGET_EXPRESSIONS
-        slot.setIncog(!slot.required)
-      }
-    },
     name: {
       init: '',
       validate: /** @suppress {globalThis} */ function (newValue) {
@@ -513,18 +497,18 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       order: 1,
       fields: {
         bind: {
-          placeholder: eYo.Msg.Placeholder.IDENTIFIER,
+          placeholder: /** @suppress {globalThis} */ function () {
+            return eYo.Msg.Placeholder.IDENTIFIER
+          },
+          validate: true,
           endEditing: true,
           variable: true
         }
-      }
-    },
-    target: {
-      order: 2,
+      },
       check: eYo.T3.Expr.Check.augtarget
     },
     expressions: {
-      order: 3,
+      order: 2,
       fields: {
         operator: {// only one `operator` field
           value: ''

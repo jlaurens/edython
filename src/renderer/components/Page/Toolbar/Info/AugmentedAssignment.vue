@@ -2,8 +2,7 @@
   <b-button-toolbar id="info-augmented-assignment" key-nav  aria-label="Info toolbar augmented-assignment" justify>
     <b-button-toolbar>
       <b-button-group>
-        <operator :eyo="eyo"></operator>
-        <variant :formatter="function (item) { return this.$t('message.'+item, {operator: this.eyo.operator_p})}" :eyo="eyo"></variant>
+        <operator :eyo="eyo" :placeholder="placeholder"></operator>
       </b-button-group>
       <comment :eyo="eyo"></comment>
     </b-button-toolbar>
@@ -12,8 +11,7 @@
 </template>
 
 <script>
-  import Operator from './Operator.vue'
-  import Variant from './Variant.vue'
+  import Operator from './AugmentedAssignment/Operator.vue'
   import Comment from './Comment.vue'
   import Common from './Common.vue'
 
@@ -25,7 +23,6 @@
     },
     components: {
       Operator,
-      Variant,
       Comment,
       Common
     },
@@ -33,6 +30,12 @@
       eyo: {
         type: Object,
         default: undefined
+      },
+      placeholder: {
+        type: Function,
+        default: function (item) {
+          return item
+        }
       }
     }
   }

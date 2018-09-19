@@ -1,7 +1,7 @@
 <template>
   <b-button-toolbar id="info-default" key-nav  aria-label="Info toolbar default" justify>
     <b-button-toolbar>
-      d<span>{{selectedBlock.type}}</span>
+      d<span>{{eyo.block_.type}}</span>
       <value :eyo="eyo"></value>
       <operator :eyo="eyo"></operator>
       <variant :eyo="eyo"></variant>
