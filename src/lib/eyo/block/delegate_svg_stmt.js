@@ -26,11 +26,11 @@ goog.require('goog.dom');
 eYo.DelegateSvg.makeSubclass('Stmt', {
   data: {
     comment_variant: { // variant are very useful with undo/redo
-      NO_COMMENT: 0,
-      COMMENT: 1,
+      NO_COMMENT: eYo.Key.NO_COMMENT,
+      COMMENT: eYo.Key.COMMENT,
       order: 1000, // initialization comes last
-      all: [0, 1],
-      init: 0,
+      all: [eYo.Key.NO_COMMENT, eYo.Key.COMMENT],
+      init: eYo.Key.NO_COMMENT,
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)

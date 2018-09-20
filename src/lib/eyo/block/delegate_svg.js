@@ -165,6 +165,9 @@ eYo.DelegateSvg.prototype.initBlock = function (block) {
     // We establish a bi directional bound between data, inputs and fields
     // now it is time to intialize the data
     this.initData(block)
+  } catch (err) {
+    console.error(err)
+    throw err
   } finally {
     delete this.initBlock_lock
   }
@@ -467,6 +470,9 @@ eYo.DelegateSvg.prototype.changeWrap = function () {
   try {
     this.changeBegin()
     args[0].apply(args[1], args.slice(2))
+  } catch (err) {
+    console.error(err)
+    throw err
   } finally {
     this.consolidate() // just before the change end because of undo management
     this.changeEnd()
@@ -741,8 +747,9 @@ eYo.DelegateSvg.prototype.render = function (optBubble) {
         if (eYo.traceOutputConnection && block.outputConnection) {
           console.log('block.outputConnection', block.outputConnection.x_, block.outputConnection.y_)
         }
-      } catch(err) {
+      } catch (err) {
         console.error(err)
+        throw err
       } finally {
         Blockly.Field.stopCache()  
         if (eYo.DelegateSvg.debugStartTrackingRender &&  eYo.DelegateSvg.debugPrefix.length) {
@@ -766,35 +773,38 @@ eYo.DelegateSvg.prototype.render = function (optBubble) {
  */
 eYo.DelegateSvg.prototype.consolidate = eYo.Decorate.onChangeCount(
   'consolidate_onChangeCount',
-  function (deep, force) {
-    if (!Blockly.Events.recordUndo || !this.block_.workspace || this.duringInit || this.changeLevel > 1 || this.initBlock_lock) {
-      // do not consolidate while un(re)doing
-      return
-    }
-    this.consolidateType()
-    this.consolidateSubtype()
-    this.foreachData(function () {
-      this.consolidate()
-    })
-    this.foreachSlot(function () {
-      // some child blocks may be disconnected as side effect
-      this.consolidate(deep, force)
-    })
-    if (deep) {
-      // Consolidate the child blocks that are still connected
-      var e8r = this.block_.eyo.inputEnumerator()
-      var x
-      while (e8r.next()) {
-        if ((x = e8r.here.connection) && (x = x.targetBlock())) {
-          x.eyo.consolidate(deep, force)
+  eYo.Decorate.reentrant_method(
+    'consolidate',
+    function (deep, force) {
+      if (!Blockly.Events.recordUndo || !this.block_.workspace || this.duringInit || this.changeLevel > 1 || this.initBlock_lock) {
+        // do not consolidate while un(re)doing
+        return
+      }
+      this.consolidateType()
+      this.consolidateSubtype()
+      this.foreachData(function () {
+        this.consolidate()
+      })
+      this.foreachSlot(function () {
+        // some child blocks may be disconnected as side effect
+        this.consolidate(deep, force)
+      })
+      if (deep) {
+        // Consolidate the child blocks that are still connected
+        var e8r = this.block_.eyo.inputEnumerator()
+        var x
+        while (e8r.next()) {
+          if ((x = e8r.here.connection) && (x = x.targetBlock())) {
+            x.eyo.consolidate(deep, force)
+          }
         }
       }
+      this.consolidateConnections()
+      return {
+        return: true
+      }
     }
-    this.consolidateConnections()
-    return {
-      return: true
-    }
-  }
+  )
 )
 
 /**

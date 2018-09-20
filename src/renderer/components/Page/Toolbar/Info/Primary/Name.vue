@@ -25,18 +25,15 @@
       },
       name: {
         get () {
-          return this.name_ || (this.name_ = this.eyo.name_p)
+          return this.name_
         },
         set (newValue) {
-          this.name_ = newValue
-          var eyo = this.eyo
-          eyo.changeWrap(
-            function () {
-              eyo.name_p = newValue
-            }
-          )
+          this.name_ = this.eyo.name_p = newValue
         }
       }
+    },
+    created () {
+      this.name_ = this.eyo.name_p
     }
   }
 </script>

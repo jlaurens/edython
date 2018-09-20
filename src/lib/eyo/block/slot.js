@@ -563,6 +563,10 @@ eYo.Slot.prototype.whenRequiredFromDom = function (helper) {
  * @param {!Blockly.Input} workspace The block's workspace.
  */
 eYo.Slot.prototype.consolidate = function (deep, force) {
+  this.debug = (this.debug || 0) + 1
+  if (this.debug === 100) {
+    console.log('consolidate slot', this.key)
+  }
   var f = eYo.Decorate.reentrant_method.call(this, 'consolidate', this.model.consolidate)
   if (f) {
     f.apply(this, arguments)

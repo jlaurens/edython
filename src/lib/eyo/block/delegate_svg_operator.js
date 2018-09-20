@@ -28,8 +28,28 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
       init: '+',
       synchronize: true,
       fromType: /** @suppress {globalThis} */ function (type) {
-        if (type === eYo.T3.Expr.power) {
+        if (type === eYo.T3.Expr.m_expr) {
+          this.set('*')
+        } else if (type === eYo.T3.Expr.a_expr) {
+          this.set('+')
+        } else if (type === eYo.T3.Expr.or_test) {
+          this.set('or')
+        } else if (type === eYo.T3.Expr.and_test) {
+          this.set('and')
+        } else if (type === eYo.T3.Expr.power) {
           this.set('**')
+        } else if (type === eYo.T3.Expr.shift_expr) {
+          this.set('<<')
+        } else if (type === eYo.T3.Expr.and_expr) {
+          this.set('&')
+        } else if (type === eYo.T3.Expr.xor_expr) {
+          this.set('^')
+        } else if (type === eYo.T3.Expr.or_expr) {
+          this.set('|')
+        } else if (type === eYo.T3.Expr.number_comparison) {
+          this.set('<')
+        } else if (type === eYo.T3.Expr.object_comparison) {
+          this.set('in')
         }
       }
     }

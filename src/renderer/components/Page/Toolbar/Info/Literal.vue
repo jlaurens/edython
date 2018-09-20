@@ -9,12 +9,14 @@
         <input type="checkbox" id="info-literal-f" v-model="f" :disabled="!can_f">
         <label for="info-literal-f" class="eyo-code" :disabled="!can_f">f</label>
       </div>
+      <span class="eyo-code-reserved" d>{{delimiter}}</span>
       <b-button-group class="mx-1">
-        <b-btn :disabled="doubleQuote" v-on:click="doDoubleQuote()" :title="titleDoubleQuote" v-tippy>
-          {{contentDoubleQuote}}
-        </b-btn>
-        <b-btn :disabled="singleQuote" v-on:click="doSingleQuote()" :title="titleSingleQuote" v-tippy>
-          {{contentSingleQuote}}
+        <b-form-input v-model="content" type="text" size="30" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-form-input>
+      </b-button-group>
+      <span class="eyo-code-reserved" d>{{delimiter}}</span>
+      <b-button-group class="mx-1">
+        <b-btn v-on:click="doOtherQuote()" :title="titleOtherQuote" v-tippy class="btn-outline-secondary eyo-code-reserved">
+          {{otherQuote}}
         </b-btn>
       </b-button-group>
       <comment :eyo="eyo"></comment>
@@ -31,6 +33,10 @@
     name: 'info-literal',
     data: function () {
       return {
+        prefix_: undefined,
+        delimiter_: undefined,
+        long_: undefined,
+        content_: undefined
       }
     },
     components: {
@@ -44,29 +50,38 @@
       }
     },
     computed: {
-      data () {
-        return this.eyo.data
-      },
-      doubleQuote () {
-        return this.eyo.delimiter_p === '"'
-      },
-      contentDoubleQuote () {
-        return '"…"'
-      },
-      titleDoubleQuote () {
-        return 'Utiliser des guillemets droits doubles'
+      delimiter: {
+        get () {
+          return this.delimiter_
+        },
+        set (newValue) {
+          this.delimiter_ = this.eyo.delimiter_p = newValue
+        }
       },
       singleQuote () {
-        return this.eyo.delimiter_p === '\''
+        return this.long_ ? '\'\'\'' : '\''
       },
-      contentSingleQuote () {
-        return '\'…\''
+      doubleQuote () {
+        return this.long_ ? '"""' : '"'
       },
-      titleSingleQuote () {
-        return 'Utiliser des guillemets droits simples'
+      isSingleQuote () {
+        return this.delimiter_ === this.singleQuote
       },
-      prefix () {
-        return this.eyo.prefix_p.toLowerCase()
+      otherQuote () {
+        return this.isSingleQuote ? this.doubleQuote : this.singleQuote
+      },
+      titleOtherQuote () {
+        return this.isSingleQuote
+          ? this.$t('message.use_double_quotes_in_long_literal')
+          : this.$t('message.use_single_quotes_in_long_literal')
+      },
+      prefix: {
+        get () {
+          return this.prefix_
+        },
+        set (newValue) {
+          this.prefix_ = this.eyo.prefix_p = newValue
+        }
       },
       r: {
         get () {
@@ -129,6 +144,14 @@
       },
       title_b () {
         return this.$t('message.prefix_b_for_byte')
+      },
+      content: {
+        get () {
+          return this.content_
+        },
+        set (newValue) {
+          this.content_ = this.eyo.content_p = newValue
+        }
       }
     },
     whatch: {
@@ -138,14 +161,13 @@
       }
     },
     methods: {
-      doDoubleQuote () {
-        this.eyo.delimiter_p = '"'
-      },
-      doSingleQuote () {
-        this.eyo.delimiter_p = '\''
+      doOtherQuote () {
+        this.delimiter = this.long_
+          ? this.isSingleQuote ? '"""' : '\'\'\''
+          : this.isSingleQuote ? '"' : '\''
       },
       do_r () {
-        this.eyo.prefix_p = {
+        this.prefix = {
           '': 'r',
           'r': '',
           'b': 'rb',
@@ -157,7 +179,7 @@
         }[this.prefix]
       },
       do_b () {
-        this.eyo.prefix_p = {
+        this.prefix = {
           '': 'b',
           'b': '',
           'r': 'rb',
@@ -166,7 +188,8 @@
         }[this.prefix]
       },
       do_f () {
-        this.eyo.prefix_p = {
+        console.log('this.prefix', this.prefix)
+        this.prefix = {
           '': 'f',
           'f': '',
           'r': 'rf',
@@ -174,6 +197,12 @@
           'fr': 'r'
         }[this.prefix]
       }
+    },
+    created () {
+      this.prefix_ = this.eyo.prefix_p.toLowerCase()
+      this.delimiter_ = this.eyo.delimiter_p
+      this.long_ = this.delimiter_.length === 3
+      this.content_ = this.eyo.content_p
     }
   }
 </script>

@@ -5,7 +5,6 @@
       <label for="info-stmt-comment-check" class="eyo-code-reserved">#</label>
       <b-form-input v-model="comment"
       type="text"
-      :slotholder="slotholder"
       class="eyo-code" :disabled="!hasComment"></b-form-input>
     </div>
   </b-button-toolbar>
@@ -16,58 +15,42 @@
     name: 'info-stmt-comment',
     data: function () {
       return {
+        comment_: undefined,
+        hasComment_: undefined
       }
     },
     props: {
       eyo: {
         type: Object,
         default: undefined
-      },
-      slotholder: {
-        type: Function,
-        default: function (item) {
-          return item
-        }
       }
     },
     computed: {
-      comment_variant_d () {
-        return this.eyo && this.eyo.data.comment_variant
-      },
-      comment_d () {
-        return this.eyo && this.eyo.data.comment
-      },
       canComment () {
-        return this.comment_d
+        return this.eyo && this.eyo.data.comment && true
       },
       hasComment: {
         get () {
-          var comment_variant_d = this.comment_variant_d
-          if (comment_variant_d) {
-            return comment_variant_d.get() === comment_variant_d.COMMENT
-          }
-          return false
+          return this.hasComment_
         },
         set (newValue) {
-          var comment_variant_d = this.comment_variant_d
-          if (comment_variant_d) {
-            comment_variant_d.set(newValue ? comment_variant_d.COMMENT : comment_variant_d.NO_COMMENT)
-          }
-          this.eyo.render()
+          console.log(newValue)
+          this.hasComment_ = newValue
+          this.eyo.comment_variant_p = newValue ? eYo.Key.COMMENT : eYo.Key.NO_COMMENT
         }
       },
       comment: {
         get () {
-          var comment_d = this.comment_d
-          return comment_d && comment_d.get()
+          return this.comment_
         },
         set (newValue) {
-          var comment_d = this.comment_d
-          if (comment_d) {
-            comment_d.set(newValue)
-          }
+          this.comment_ = this.eyo.comment_p = newValue
         }
       }
+    },
+    created () {
+      this.comment_ = this.eyo.comment_p
+      this.hasComment_ = this.eyo.comment_variant_p === eYo.Key.COMMENT
     }
   }
 </script>

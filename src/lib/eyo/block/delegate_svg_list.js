@@ -74,6 +74,9 @@ eYo.DelegateSvg.List.prototype.consolidate_ = function (deep, force) {
       return
     }
     return this.consolidator.consolidate(this.block_, deep, force)
+  } catch (err) {
+    console.error(err)
+    throw err
   } finally {
     delete this.consolidate_lock
   }

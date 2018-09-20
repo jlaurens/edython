@@ -872,6 +872,9 @@ eYo.Xml.fromDom = function (block, element) {
       try {
         eyo.controller_fromDom_locked = true
         return controller.fromDom.call(eyo, block, element)
+      } catch (err) {
+        console.error(err)
+        throw err
       } finally {
         delete eyo.controller_fromDom_locked
       }

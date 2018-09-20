@@ -28,6 +28,9 @@ eYo.Decorate.reentrant_method = function(key, f) {
     this[k] = true
     try {
       return {return: f.apply(this, arguments)}
+    } catch (err) {
+      console.error(err)
+      throw err
     } finally {
       delete this[k]
     }

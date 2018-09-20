@@ -662,6 +662,9 @@ Blockly.RenderedConnection.prototype.connect_ = function (childC8n) {
         eYo.SelectedConnection = null
       }
       child.eyo.setIncog(child, parentC8n.eyo.isIncog())
+    } catch (err) {
+      console.error(err)
+      throw err
     } finally {
       // next must absolutely run because of possible undo management
       parent.eyo.didConnect(parent, parentC8n, oldChildC8n, oldParentC8n)

@@ -57,5 +57,7 @@ export default {
   prefix_r_for_raw: 'préfixe r pour raw',
   prefix_f_for_format: 'préfixe f pour format',
   prefix_b_for_byte: 'préfixe b pour bytes (ie octets)',
-  bytes: 'octets'
+  bytes: 'octets',
+  use_single_quotes_in_long_literal: 'Utiliser des guillemets droits simples',
+  use_double_quotes_in_long_literal: 'Utiliser des guillemets droits doubles'
 }

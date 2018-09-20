@@ -133,6 +133,7 @@ eYo.Key = {
   
   CODE: 'code', // lowercase
   COMMENT: 'comment', // lowercase
+  NO_COMMENT: 'no_comment', // lowercase
   COMMENT_MARK: 'comment_mark', // lowercase
   COMMENT_SHOW: 'comment_show', // lowercase
   NUMBER: 'number', // lowercase
@@ -202,8 +203,7 @@ eYo.Key = {
   CODE: 'code',
   CODE_COMMENT: 'code_comment',
   EXPRESSION_COMMENT: 'expression_comment',
-  COMMENT: 'comment',
-
+  
   YIELD: 'yield',
   YIELD_EXPRESSION: 'yield_expression',
   YIELD_FROM: 'yield_from',

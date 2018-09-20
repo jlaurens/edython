@@ -401,6 +401,9 @@ eYo.FieldInput.prototype.setValue = function (newValue) {
   Blockly.Events.disable()
   try {
     eYo.FieldInput.superClass_.setValue.call(this, newValue)
+  } catch (err) {
+    console.error(err)
+    throw err
   } finally {
     Blockly.Events.enable()
   }

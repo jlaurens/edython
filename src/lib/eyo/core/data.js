@@ -124,6 +124,9 @@ eYo.Data.prototype.rawSet = function (newValue, notUndoable) {
   try {
     this.value_ = newValue
     this.duringChange(oldValue, newValue)
+  } catch (err) {
+    console.error(err)
+    throw err
   } finally {
     this.owner.changeEnd()
     this.afterChange(oldValue, newValue)
@@ -392,11 +395,17 @@ eYo.Data.decorateChange = function (key, do_it) {
         try {
           this[model_lock] = true
           model_do_it.apply(this, arguments)
+        } catch (err) {
+          console.error(err)
+          throw err
         } finally {
           delete this[model_lock]
         }
         return
       }
+    } catch (err) {
+      console.error(err)
+      throw err
     } finally {
       delete this[lock]
     }  
@@ -532,6 +541,9 @@ eYo.Data.prototype.synchronize = function (newValue) {
       Blockly.Events.disable()
       try {
         field.setValue(this.toField())
+      } catch (err) {
+        console.error(err)
+        throw err
       } finally {
         Blockly.Events.enable()
       }
@@ -685,6 +697,9 @@ eYo.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
     Blockly.Events.disable()
     try {
       field.setValue(newValue)
+    } catch (err) {
+      console.error(err)
+      throw err
     } finally {
       Blockly.Events.enable()
     }
