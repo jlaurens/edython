@@ -660,9 +660,6 @@ eYo.Data.prototype.isIncog = function () {
  * Do nothing if the receiver should wait.
  */
 eYo.Data.prototype.consolidate = function () {
-  if (this.wait || this.owner.changeLevel) {
-    return
-  }
   var f = eYo.Decorate.reentrant_method.call(this, 'model_consolidate', this.model.consolidate)
   f && f.apply(this, arguments)
 }

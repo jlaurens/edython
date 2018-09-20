@@ -1,7 +1,7 @@
 <template>
   <div id="toolbar-info" :style="style">
     <div v-if="isSelected($$.eYo.DelegateSvg.Expr.primary.eyo.getModel().xml.types)">
-      <info-primary :eyo="eyo" :placeholder="placeholder"></info-primary>
+      <info-primary :eyo="eyo" :slotholder="slotholder"></info-primary>
     </div>
     <div v-else-if="isSelected([$$.eYo.T3.Expr.shortliteral, $$.eYo.T3.Expr.longliteral, $$.eYo.T3.Expr.shortbytesliteral, $$.eYo.T3.Expr.longbytesliteral, $$.eYo.T3.Expr.shortstringliteral, $$.eYo.T3.Expr.longstringliteral, $$.eYo.T3.Stmt.docstring_stmt])">
       <info-literal :eyo="eyo"></info-literal>
@@ -10,7 +10,7 @@
       <info-print :eyo="eyo"></info-print>
     </div>
     <div v-else-if="isSelected($$.eYo.T3.Expr.u_expr)">
-      <info-unary :eyo="eyo" :placeholder="placeholder"></info-unary>
+      <info-unary :eyo="eyo" :slotholder="slotholder"></info-unary>
     </div>
     <div v-else-if="isSelected([
       $$.eYo.T3.Expr.binary,
@@ -18,19 +18,19 @@
       $$.eYo.T3.Expr.m_expr, $$.eYo.T3.Expr.shift_expr, $$.eYo.T3.Expr.and_expr, $$.eYo.T3.Expr.xor_expr,
       $$.eYo.T3.Expr.or_expr
     ])">
-      <info-binary :eyo="eyo" :placeholder="placeholder"></info-binary>
+      <info-binary :eyo="eyo" :slotholder="slotholder"></info-binary>
     </div>
     <div v-else-if="isSelected($$.eYo.T3.Stmt.assignment_stmt)">
-      <info-assignment :eyo="eyo" :placeholder="placeholder"></info-assignment>
+      <info-assignment :eyo="eyo" :slotholder="slotholder"></info-assignment>
     </div>
     <div v-else-if="isSelected($$.eYo.T3.Expr.builtin__object)">
       <builtin :eyo="eyo"></builtin>
     </div>
     <div v-else-if="isSelected($$.eYo.T3.Stmt.augmented_assignment_stmt)">
-      <info-augmented-assignment :eyo="eyo" :placeholder="placeholder"></info-augmented-assignment>
+      <info-augmented-assignment :eyo="eyo" :slotholder="slotholder"></info-augmented-assignment>
     </div>
     <div v-else-if="eyo">
-      <info-default :eyo="eyo"></info-default>
+      <info-default :eyo="eyo" :slotholder="slotholder"></info-default>
     </div>
     <div v-else>
       <info-none></info-none>
@@ -75,11 +75,11 @@
       this.step = this.$store.state.UI.toolbarInfoVisible ? 1 : 0
     },
     computed: {
-      placeholder () {
+      slotholder () {
         var d = eYo.DelegateSvg.prototype.placeHolderPathDefWidth_(0).d
         var one_rem = parseInt(getComputedStyle(document.documentElement).fontSize)
         return function (className) {
-          return '<div class="eyo-info-placeholder' + (className ? ' ' : '') + className + '"><svg xmlns="http://www.w3.org/2000/svg" height="' + (1.75 * one_rem) + '" width="' + (2 * one_rem) + '"><path class="eyo-path-contour" d="' + d + ' z"></path></svg></div>'
+          return '<div class="eyo-info-slotholder' + (className ? ' ' : '') + className + '"><svg xmlns="http://www.w3.org/2000/svg" height="' + (1.75 * one_rem) + '" width="' + (2 * one_rem) + '"><path class="eyo-path-contour" d="' + d + ' z"></path></svg></div>'
         }
       },
       selectedBlock () {
@@ -144,14 +144,14 @@
 .btn-secondary:hover .eyo-code-reserved {
   color: #fff;
 }
-.eyo-info-placeholder {
+.eyo-info-slotholder {
   display: inline-block;
   height: 1.75rem;
 }
-.btn .eyo-info-placeholder .eyo-path-contour {
+.btn .eyo-info-slotholder .eyo-path-contour {
   stroke-width: 2px;
 }
-.dropdown-item:hover .eyo-info-placeholder .eyo-path-contour {
+.dropdown-item:hover .eyo-info-slotholder .eyo-path-contour {
   stroke: rgb(100,100,100);
 }
 .eyo-info-primary-variant1 {

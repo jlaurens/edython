@@ -127,6 +127,11 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
           variable: true // change this to/with a `module` data
         }
       },
+      check: [
+        eYo.T3.Expr.unset,
+        eYo.T3.Expr.identifier,
+        eYo.T3.Expr.dotted_name
+      ],
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
           if (this.isRequiredFromModel()) {

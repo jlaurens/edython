@@ -5,7 +5,7 @@
       <label for="info-stmt-comment-check" class="eyo-code-reserved">#</label>
       <b-form-input v-model="comment"
       type="text"
-      :placeholder="placeholder"
+      :slotholder="slotholder"
       class="eyo-code" :disabled="!hasComment"></b-form-input>
     </div>
   </b-button-toolbar>
@@ -22,12 +22,15 @@
       eyo: {
         type: Object,
         default: undefined
+      },
+      slotholder: {
+        type: Function,
+        default: function (item) {
+          return item
+        }
       }
     },
     computed: {
-      placeholder () {
-        return this.$$.eYo.Msg.Placeholder.COMMENT
-      },
       comment_variant_d () {
         return this.eyo && this.eyo.data.comment_variant
       },

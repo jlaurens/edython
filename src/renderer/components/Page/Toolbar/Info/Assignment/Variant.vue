@@ -9,12 +9,17 @@
 <script>
   export default {
     name: 'info-assignment-variant',
+    data () {
+      return {
+        variant_: undefined
+      }
+    },
     props: {
       eyo: {
         type: Object,
         default: undefined
       },
-      placeholder: {
+      slotholder: {
         type: Function,
         default: function (item) {
           return item
@@ -49,39 +54,33 @@
       },
       variants () {
         return [
-          this.items[eYo.Key.NAME_VALUE],
-          this.items[eYo.Key.NAME_ANNOTATION_VALUE],
-          this.items[eYo.Key.TARGET_VALUE]
+          this.items[eYo.Key.NAME],
+          this.items[eYo.Key.TARGET]
         ]
       },
-      my_placeholder () {
-        return this.placeholder('eyo-info-primary-variant1')
+      my_slot () {
+        return this.slotholder('eyo-info-primary-variant1')
       },
       items () {
         return {
-          [eYo.Key.NAME_VALUE]: {
-            key: eYo.Key.NAME_VALUE,
-            title: '<div class="eyo-info-primary-variant2">nom =</div>' + this.my_placeholder
+          [eYo.Key.NAME]: {
+            key: eYo.Key.NAME,
+            title: '<div class="eyo-info-primary-variant2">nom =</div>' + this.my_slot
           },
-          [eYo.Key.NAME_ANNOTATION_VALUE]: {
-            key: eYo.Key.NAME_ANNOTATION_VALUE,
-            title: '<div class="eyo-info-primary-variant2">nom: </div>' + this.my_placeholder + '<div class="eyo-info-primary-variant2">=</div>' + this.my_placeholder
-          },
-          [eYo.Key.TARGET_VALUE]: {
-            key: eYo.Key.TARGET_VALUE,
-            title: this.my_placeholder + '<div class="eyo-info-primary-variant2">,… =</div>' + this.my_placeholder + '<div class="eyo-info-primary-variant2">,…</div>'
+          [eYo.Key.TARGET]: {
+            key: eYo.Key.TARGET,
+            title: this.my_slot + '<div class="eyo-info-primary-variant2">,… =</div>' + this.my_slot + '<div class="eyo-info-primary-variant2">,…</div>'
           }
         }
       }
+    },
+    created () {
+      this.variant_ = this.eyo.variant_p
     }
   }
 </script>
 <style>
   .info-variant {
     padding-right:1rem;
-  }
-  .eyo-content > .eyo-code-reserved {
-    color: white;
-    fill: white;
   }
 </style>

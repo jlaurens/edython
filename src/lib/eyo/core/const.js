@@ -192,10 +192,6 @@ eYo.Key = {
   UNARY: 'unary',
   BINARY: 'binary',
   
-  NAME_VALUE: 'name_value',
-  NAME_ANNOTATION_VALUE: 'name_annotation_value',
-  TARGET_VALUE: 'target_value',
-
   NAME_EXPRESSIONS: 'name_expressions',
   TARGET_EXPRESSIONS: 'target_expressions',
 

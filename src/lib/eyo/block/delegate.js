@@ -614,9 +614,14 @@ eYo.Delegate.Manager.registerAll(eYo.T3.Stmt, eYo.Delegate)
 
 /**
  * Decorate of change hooks.
- * Returns a function with signature is `foo(before, after) → void`
+ * Returns a function with signature is `foo(whatever) → whatever`
  * `foo` is overriden by the model.
  * The model `foo` can call the builtin `foo` with `this.foo(...)`.
+ * `do_it` receives all the parameters that the decorated function will receive.
+ * If `do_it` return value is not an object, the changeCount is not recorded
+ * If `do_it` return value is an object with a `return` property,
+ * the `changeCount` is recorded such that `do_it` won't be executed
+ * until the next `changeCount` increment.
  * @param {!String} key, 
  * @param {!Function} do_it
  * @return {!Function}
@@ -629,8 +634,12 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
     if (this[saved] === this.changeCount) {
       return this[cached]
     }
-    this[saved] = this.changeCount
-    return this[cached] = do_it.apply(this, arguments)
+    var did_it = do_it.apply(this, arguments)
+    if (did_it) {
+      this[saved] = this.changeCount
+      this[cached] = did_it.return  
+    }
+    return this[cached]
   }
 }
 

@@ -1,11 +1,11 @@
 <template>
   <b-button-toolbar id="info-default" key-nav  aria-label="Info toolbar default" justify>
     <b-button-toolbar>
-      d<span>{{eyo.block_.type}}</span>
       <value :eyo="eyo"></value>
       <operator :eyo="eyo"></operator>
-      <variant :eyo="eyo"></variant>
+      <variant :eyo="eyo" :slotholder="slotholder"></variant>
       <comment :eyo="eyo"></comment>
+      d<span>{{eyo.block_.type}}</span>
     </b-button-toolbar>
     <common :eyo="eyo"></common>
   </b-button-toolbar>
@@ -31,6 +31,12 @@
       eyo: {
         type: Object,
         default: undefined
+      },
+      slotholder: {
+        type: Function,
+        default: function (item) {
+          return item
+        }
       }
     }
   }

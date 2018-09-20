@@ -790,11 +790,15 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
         profile.holder = {
         }
       }
-      return profile
+      return {
+        return: profile
+      }
     }
     return {
-      name: {},
-      holder: {}
+      return: {
+        name: {},
+        holder: {}
+      }
     }
   }
 )

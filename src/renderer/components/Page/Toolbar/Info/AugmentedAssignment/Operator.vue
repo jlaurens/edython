@@ -23,7 +23,7 @@
         type: Object,
         default: undefined
       },
-      placeholder: {
+      slotholder: {
         type: Function,
         default: function (item) {
           return item
@@ -50,8 +50,8 @@
           ? this.operators.num
           : this.operators.bin
       },
-      my_placeholder () {
-        return this.placeholder('eyo-info-primary-variant1')
+      my_slot () {
+        return this.slotholder('eyo-info-primary-variant1')
       }
     },
     created () {

@@ -1,10 +1,10 @@
 <template>
   <b-button-toolbar id="info-primary" key-nav  aria-label="Info toolbar primary" justify>
     <b-button-toolbar>
-      <dotted :eyo="eyo" :placeholder="placeholder" :holder="holder" :dotted="dotted" v-on:synchronize="synchronize"></dotted>
+      <dotted :eyo="eyo" :slotholder="slotholder" :holder="holder" :dotted="dotted" v-on:synchronize="synchronize"></dotted>
       <name :eyo="eyo"></name>
       <b-button-group class="mx-1">
-        <variant :eyo="eyo" :placeholder="placeholder" :variant="variant" :annotation="annotation" :definition="definition" v-on:synchronize="synchronize"></variant>
+        <variant :eyo="eyo" :slotholder="slotholder" :variant="variant" :annotation="annotation" :definition="definition" v-on:synchronize="synchronize"></variant>
       </b-button-group>
     </b-button-toolbar>
     <common :eyo="eyo"></common>
@@ -41,7 +41,7 @@
         type: Object,
         default: undefined
       },
-      placeholder: {
+      slotholder: {
         type: Function,
         default: function (item) {
           return item

@@ -2,7 +2,7 @@
   <b-button-toolbar id="info-augmented-assignment" key-nav  aria-label="Info toolbar augmented-assignment" justify>
     <b-button-toolbar>
       <b-button-group>
-        <operator :eyo="eyo" :placeholder="placeholder"></operator>
+        <operator :eyo="eyo" :slotholder="slotholder"></operator>
       </b-button-group>
       <comment :eyo="eyo"></comment>
     </b-button-toolbar>
@@ -31,7 +31,7 @@
         type: Object,
         default: undefined
       },
-      placeholder: {
+      slotholder: {
         type: Function,
         default: function (item) {
           return item

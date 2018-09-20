@@ -137,7 +137,8 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
           content_f.placeholderText(true)
           content_f.render_()
         }
-      }
+      },
+      xml: false
     },
     delimiter: {
       all: ["'", '"'],

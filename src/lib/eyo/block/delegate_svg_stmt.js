@@ -562,7 +562,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
         var clean = newValue.replace(/[\n\r]+/g, '')
         return {validated: clean}
       },
-      didChange: /** @suppress {globalThis} */ function (oldVAlue, newValue) {
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         var variant = this.data.variant
         if (this.isIncog() && variant.get() === variant.CODE) {
@@ -583,7 +583,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
         this.init('')
         this.setIncog(true)
       },
-      didChange: /** @suppress {globalThis} */ function (oldVAlue, newValue) {
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         var variant = this.data.variant
         if (this.isIncog() && variant.get() === variant.COMMENT) {

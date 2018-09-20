@@ -27,7 +27,7 @@
         type: Object,
         default: undefined
       },
-      placeholder: {
+      slotholder: {
         type: Function,
         default: function (item) {
           return item
@@ -104,7 +104,7 @@
             }
           },
           CALL_EXPR: {
-            content: '<div class="eyo-info-primary-variant2">(</div>' + this.placeholder('eyo-info-primary-variant1') + '<div class="eyo-info-primary-variant2">)</div>',
+            content: '<div class="eyo-info-primary-variant2">(</div>' + this.slotholder('eyo-info-primary-variant1') + '<div class="eyo-info-primary-variant2">)</div>',
             key: 'CALL_EXPR',
             action () {
               this.eyo.variant_p = eYo.Key.CALL_EXPR
@@ -112,7 +112,7 @@
             }
           },
           SLICING: {
-            content: '<div class="eyo-info-primary-variant2">[</div>' + this.placeholder('eyo-info-primary-variant1') + '<div class="eyo-info-primary-variant2">]</div>',
+            content: '<div class="eyo-info-primary-variant2">[</div>' + this.slotholder('eyo-info-primary-variant1') + '<div class="eyo-info-primary-variant2">]</div>',
             key: 'SLICING',
             action () {
               this.eyo.variant_p = eYo.Key.SLICING
@@ -128,7 +128,7 @@
             }
           },
           ANNOTATED: {
-            content: '<div class="eyo-info-primary-variant2">:</div>' + this.placeholder('eyo-info-primary-variant1'),
+            content: '<div class="eyo-info-primary-variant2">:</div>' + this.slotholder('eyo-info-primary-variant1'),
             key: 'ANNOTATED',
             action () {
               this.eyo.annotation_p = eYo.Key.ANNOTATED
@@ -137,7 +137,7 @@
             }
           },
           DEFINED: {
-            content: '<div class="eyo-info-primary-variant2">=</div>' + this.placeholder('eyo-info-primary-variant1'),
+            content: '<div class="eyo-info-primary-variant2">=</div>' + this.slotholder('eyo-info-primary-variant1'),
             key: 'DEFINED',
             action () {
               this.eyo.annotation_p = eYo.Key.NONE
@@ -146,7 +146,7 @@
             }
           },
           ANNOTATED_DEFINED: {
-            content: '<div class="eyo-info-primary-variant2">:</div>' + this.placeholder('eyo-info-primary-variant1') + '<div class="eyo-info-primary-variant2">=</div>' + this.placeholder('eyo-info-primary-variant1'),
+            content: '<div class="eyo-info-primary-variant2">:</div>' + this.slotholder('eyo-info-primary-variant1') + '<div class="eyo-info-primary-variant2">=</div>' + this.slotholder('eyo-info-primary-variant1'),
             key: 'ANNOTATED_DEFINED',
             action () {
               this.eyo.annotation_p = eYo.Key.ANNOTATED

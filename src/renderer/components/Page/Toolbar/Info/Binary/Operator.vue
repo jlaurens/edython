@@ -26,7 +26,7 @@
         type: Object,
         default: undefined
       },
-      placeholder: {
+      slotholder: {
         type: Function,
         default: function (item) {
           return item
@@ -35,7 +35,7 @@
       formatter: {
         type: Function,
         default: function (item) {
-          return item.length ? this.my_placeholder + '<div class="eyo-info-primary-variant2">' + item + '</div>' + this.my_placeholder : '&nbsp;'
+          return item.length ? this.my_slot + '<div class="eyo-info-primary-variant2">' + item + '</div>' + this.my_slot : '&nbsp;'
         }
       }
     },
@@ -59,8 +59,8 @@
           ? this.operators.num
           : this.operators.bin
       },
-      my_placeholder () {
-        return this.placeholder('eyo-info-primary-variant1')
+      my_slot () {
+        return this.slotholder('eyo-info-primary-variant1')
       }
     },
     created () {

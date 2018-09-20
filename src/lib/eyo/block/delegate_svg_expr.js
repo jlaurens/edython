@@ -90,7 +90,9 @@ eYo.DelegateSvg.Expr.prototype.getType = eYo.Decorate.onChangeCount(
     var t = this.getBaseType()
     var modifier = this.data.modifier.get()
     if (!modifier) {
-      return t
+      return {
+        return: t
+      }
     }
     var types = []
     if (modifier === '**') {
@@ -116,10 +118,14 @@ eYo.DelegateSvg.Expr.prototype.getType = eYo.Decorate.onChangeCount(
       }
       types.push(eYo.T3.Expr.expression_star)
     } else {
-      return t
+      return {
+        return: t
+      }
     }
     this.types = types
-    return types[0]
+    return {
+      return: types[0]
+    }
   }
 )
 

@@ -1,7 +1,7 @@
 <template>
   <b-button-toolbar id="info-binary" key-nav  aria-label="Info toolbar binary" justify>
     <b-button-toolbar>
-      <operator :eyo="eyo" :placeholder="placeholder"></operator>
+      <operator :eyo="eyo" :slotholder="slotholder"></operator>
     </b-button-toolbar>
     <common :eyo="eyo"></common>
   </b-button-toolbar>
@@ -26,7 +26,7 @@
         type: Object,
         default: undefined
       },
-      placeholder: {
+      slotholder: {
         type: Function,
         default: function (item) {
           return item

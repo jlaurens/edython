@@ -52,7 +52,6 @@ eYo.Slot = function (owner, key, model) {
   this.key = key
   this.model = model
   this.input = undefined
-  this.wait = 1
   var block = this.block = owner.block_
   goog.asserts.assert(block,
     eYo.Do.format('block must exist {0}/{1}', key))
@@ -93,7 +92,6 @@ eYo.Slot.prototype.targetBlock = function () {
  * Install this slot on a block.
  */
 eYo.Slot.prototype.beReady = function () {
-  this.wait = 0
   if (this.svgGroup_) {
     // Slot has already been initialized once.
     return
@@ -565,9 +563,6 @@ eYo.Slot.prototype.whenRequiredFromDom = function (helper) {
  * @param {!Blockly.Input} workspace The block's workspace.
  */
 eYo.Slot.prototype.consolidate = function (deep, force) {
-  if (this.wait || this.owner.changeLevel) {
-    return
-  }
   var f = eYo.Decorate.reentrant_method.call(this, 'consolidate', this.model.consolidate)
   if (f) {
     f.apply(this, arguments)
@@ -589,25 +584,6 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
       var target = c8n.targetBlock()
       target && target.eyo.consolidate.apply(target.eyo, arguments)
     }
-  }
-}
-
-/**
- * Set the wait status of the field.
- * Any call to `waitOn` must be balanced by a call to `waitOff`
- */
-eYo.Slot.prototype.waitOn = function () {
-  return ++this.wait
-}
-
-/**
- * Set the wait status of the field.
- * Any call to `waitOn` must be balanced by a call to `waitOff`
- */
-eYo.Slot.prototype.waitOff = function () {
-  goog.asserts.assert(this.wait > 0, eYo.Do.format('Too  many `waitOn` {0}/{1}', this.key, this.owner.block_.type))
-  if (--this.wait === 0) {
-    this.consolidate()
   }
 }
 

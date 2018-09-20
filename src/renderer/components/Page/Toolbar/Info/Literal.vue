@@ -48,7 +48,7 @@
         return this.eyo.data
       },
       doubleQuote () {
-        return this.data.delimiter.get() === '"'
+        return this.eyo.delimiter_p === '"'
       },
       contentDoubleQuote () {
         return '"…"'
@@ -57,7 +57,7 @@
         return 'Utiliser des guillemets droits doubles'
       },
       singleQuote () {
-        return this.data.delimiter.get() === '\''
+        return this.eyo.delimiter_p === '\''
       },
       contentSingleQuote () {
         return '\'…\''
@@ -66,7 +66,7 @@
         return 'Utiliser des guillemets droits simples'
       },
       prefix () {
-        return this.data.prefix.get().toLowerCase()
+        return this.eyo.prefix_p.toLowerCase()
       },
       r: {
         get () {
@@ -103,11 +103,11 @@
           return true
         }
         if (['', 'r'].indexOf(this.prefix) >= 0) {
-          var content = this.eyo.data.content.get()
+          var content = this.eyo.content_p
           if (!content.length) {
             return true
           }
-          var value = this.eyo.data.value.get()
+          var value = this.eyo.value_p
           var can = !!XRegExp.exec(value, this.$$.eYo.XRE.longbytesliteralSingleNoPrefix) || !!XRegExp.exec(value, this.$$.eYo.XRE.longbytesliteralDoubleNoPrefix) || !!XRegExp.exec(value, this.$$.eYo.XRE.shortbytesliteralSingleNoPrefix) || !!XRegExp.exec(value, this.$$.eYo.XRE.shortbytesliteralDoubleNoPrefix)
           return can
         }
@@ -139,15 +139,13 @@
     },
     methods: {
       doDoubleQuote () {
-        this.data.delimiter.set('"')
-        this.render()
+        this.eyo.delimiter_p = '"'
       },
       doSingleQuote () {
-        this.data.delimiter.set('\'')
-        this.render()
+        this.eyo.delimiter_p = '\''
       },
       do_r () {
-        this.data.prefix.set({
+        this.eyo.prefix_p = {
           '': 'r',
           'r': '',
           'b': 'rb',
@@ -156,28 +154,25 @@
           'fr': 'f',
           'rb': 'b',
           'br': 'b'
-        }[this.prefix])
-        this.eyo.render()
+        }[this.prefix]
       },
       do_b () {
-        this.data.prefix.set({
+        this.eyo.prefix_p = {
           '': 'b',
           'b': '',
           'r': 'rb',
           'rb': 'r',
           'br': 'r'
-        }[this.prefix])
-        this.eyo.render()
+        }[this.prefix]
       },
       do_f () {
-        this.data.prefix.set({
+        this.eyo.prefix_p = {
           '': 'f',
           'f': '',
           'r': 'rf',
           'rf': 'r',
           'fr': 'r'
-        }[this.prefix])
-        this.eyo.render()
+        }[this.prefix]
       }
     }
   }

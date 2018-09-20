@@ -106,7 +106,7 @@ goog.provide('eYo.Msg.Placeholder')
 /** @export */ eYo.Msg.REDO = 'Refaire'
 /** @export */ eYo.Msg.CLEAN_UP = 'Ranger'
 /** @export */ eYo.Msg.DUPLICATE_BLOCK = 'Dupliquer'
-/** @export */ eYo.Msg.DUPLICATE_X_BLOCKS = 'Dupliquer {0}} blocs'
+/** @export */ eYo.Msg.DUPLICATE_X_BLOCKS = 'Dupliquer {0} blocs'
 /** @export */ eYo.Msg.ADD_COMMENT = 'Ajouter un commentaire'
 /** @export */ eYo.Msg.REMOVE_COMMENT = 'Supprimer le commentaire'
 /** @export */ eYo.Msg.EXPAND_BLOCK = 'Déplier'

@@ -767,7 +767,7 @@ eYo.DelegateSvg.prototype.render = function (optBubble) {
 eYo.DelegateSvg.prototype.consolidate = eYo.Decorate.onChangeCount(
   'consolidate_onChangeCount',
   function (deep, force) {
-    if (!Blockly.Events.recordUndo || !this.block_.workspace || this.duringInit || this.changeLevel || this.initBlock_lock) {
+    if (!Blockly.Events.recordUndo || !this.block_.workspace || this.duringInit || this.changeLevel > 1 || this.initBlock_lock) {
       // do not consolidate while un(re)doing
       return
     }
@@ -791,7 +791,9 @@ eYo.DelegateSvg.prototype.consolidate = eYo.Decorate.onChangeCount(
       }
     }
     this.consolidateConnections()
-    return true
+    return {
+      return: true
+    }
   }
 )
 

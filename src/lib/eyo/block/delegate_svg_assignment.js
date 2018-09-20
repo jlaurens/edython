@@ -279,29 +279,26 @@ eYo.DelegateSvg.List.makeSubclass('target_list_list', {
 eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
   data: {
     variant: {
-      NAME_VALUE: eYo.Key.NAME_VALUE,
-      NAME_ANNOTATION_VALUE: eYo.Key.NAME_ANNOTATION_VALUE,
-      TARGET_VALUE: eYo.Key.TARGET_VALUE,
+      NAME: eYo.Key.NAME,
+      TARGET: eYo.Key.TARGET,
       all: [
-        eYo.Key.NAME_VALUE,
-        eYo.Key.NAME_ANNOTATION_VALUE,
-        eYo.Key.TARGET_VALUE
+        eYo.Key.NAME,
+        eYo.Key.TARGET
       ],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.data.name.setIncog(newValue === this.TARGET_VALUE)
-        var slot = this.owner.slots.annotation
-        slot.required = newValue === this.NAME_ANNOTATION_VALUE
-        slot.setIncog(!slot.required)
+        this.data.name.setIncog(newValue === this.TARGET)
         var slot = this.owner.slots.target
-        slot.required = newValue === this.TARGET_VALUE
+        slot.required = newValue === this.TARGET
         slot.setIncog(!slot.required)
       },
     },
     name: {
       init: '',
       subtypes: [
-        eYo.T3.Expr.identifier, eYo.T3.Expr.dotted_name
+        eYo.T3.Expr.unset,
+        eYo.T3.Expr.identifier,
+        eYo.T3.Expr.dotted_name
       ],
       validate: /** @suppress {globalThis} */ function (newValue) {
         var t = eYo.Do.typeOfString(newValue)
@@ -327,19 +324,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       },
       check: eYo.T3.Expr.Check.target
     },
-    annotation: {
-      order: 2,
-      fields: {
-        label: {
-          value: ':',
-          css: 'reserved'
-        },
-      },
-      check: eYo.T3.Expr.Check.expression,
-      hole_value: 'expression'
-    },
     target: {
-      order: 3,
+      order: 2,
       wrap: eYo.T3.Expr.target_list
     },
     assigned: {
@@ -377,17 +363,11 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
     eYo.Do.createSPAN(name || eYo.Msg.Placeholder.IDENTIFIER, name ? 'eyo-code' : 'eyo-code-placeholder'),
     eYo.Do.createSPAN(' = …', 'eyo-code')
   )
-  F(content, variant_d.NAME_VALUE)
-  content =
-  goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    eYo.Do.createSPAN(name || eYo.Msg.Placeholder.IDENTIFIER, name ? 'eyo-code' : 'eyo-code-placeholder'),
-    eYo.Do.createSPAN(': … = …', 'eyo-code')
-  )
-  F(content, variant_d.NAME_ANNOTATION_VALUE)
+  F(content, variant_d.NAME)
   content = eYo.Do.createSPAN('…,… = …,…', 'eyo-code')
   F(content, 2)
   mgr.shouldSeparate()
-  if (variant !== variant_d.TARGET_VALUE) {
+  if (variant !== variant_d.TARGET) {
     var menuItem = mgr.newMenuItem(eYo.Msg.RENAME, function () {
       block.eyo.data.name.field.showEditor()
     })
