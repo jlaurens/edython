@@ -123,12 +123,16 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (function () {
       return Type.UNCONNECTED
     }
     var check = target.check_
-    if (goog.array.contains(check, eYo.T3.Expr.target_star)) {
-      return Type.STARRED
-    } else {
-      if (!io.annotatedInput && goog.array.contains(check, eYo.T3.Expr.identifier_annotated)) {
-        io.annotatedInput = io.input
+    if (check) {
+      if (goog.array.contains(check, eYo.T3.Expr.target_star)) {
+        return Type.STARRED
+      } else {
+        if (!io.annotatedInput && goog.array.contains(check, eYo.T3.Expr.identifier_annotated)) {
+          io.annotatedInput = io.input
+        }
+        return Type.OTHER
       }
+    } else {
       return Type.OTHER
     }
   }

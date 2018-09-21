@@ -1724,9 +1724,8 @@ eYo.DelegateSvg.prototype.outPathDef_ = function () {
 }
 
 /**
- * Block path.
- * @param {Number} height
- * @param {Number} x position.
+ * Block path for an optional connection.
+ * @param {Number} cursorX position.
  * @private
  */
 eYo.DelegateSvg.prototype.carretPathDefWidth_ = function (cursorX) {
@@ -1734,18 +1733,23 @@ eYo.DelegateSvg.prototype.carretPathDefWidth_ = function (cursorX) {
   var size = {width: eYo.Font.space, height: eYo.Font.lineHeight()}
   var p = eYo.Padding.h()
   var r = (p ** 2 + size.height ** 2 / 4) / 2 / p
-  var dy = eYo.Padding.v() + eYo.Font.descent / 2
   var a = ' a ' + r + ', ' + r + ' 0 0 1 0,'
   var h = size.height + 2 * eYo.Margin.V
-  var d = 'M ' + (cursorX + size.width / 2) +
-  ',' + (eYo.Margin.V + dy) + a + (h - 2 * dy) + a + (-h + 2 * dy) + ' z'
+  var dx = 2
+  var correction = eYo.Font.descent / 2
+  var dy = eYo.Padding.v() + eYo.Font.descent / 2 - correction
+  var d = 'M ' + (cursorX + size.width / 2 - dx/2) + ',' + (eYo.Margin.V + dy) +
+  'h ' + (dx / 2) + ' ' +
+  a + (h - 2 * dy) +
+  'h ' + (-dx / 2) + ' ' +
+  a + (-h + 2 * dy) + ' z'
   return {width: size.width, d: d}
 } /* eslint-enable indent */
 
 /**
  * Block path.
- * @param {Number} height
- * @param {Number} x position.
+ * @param {Number} cursorX position.
+ * @param {Blockly.Connection} connection position.
  * @private
  */
 eYo.DelegateSvg.prototype.placeHolderPathDefWidth_ = function (cursorX, connection) {

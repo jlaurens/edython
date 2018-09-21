@@ -89,12 +89,18 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (function () {
       return Type.UNCONNECTED
     }
     var check = target.check_
-    if (goog.array.contains(check, eYo.T3.Expr.comprehension)) {
-      io.unique = io.i
-      return Type.COMPREHENSION
-    } else if (goog.array.contains(check, eYo.T3.Expr.expression_star_star) || goog.array.contains(check, eYo.T3.Expr.keyword_item)) {
-      return Type.KEYWORD
+    if (check) {
+      if (goog.array.contains(check, eYo.T3.Expr.comprehension)) {
+        io.unique = io.i
+        return Type.COMPREHENSION
+      } else if (goog.array.contains(check, eYo.T3.Expr.expression_star_star) || goog.array.contains(check, eYo.T3.Expr.keyword_item)) {
+        return Type.KEYWORD
+      } else {
+        return Type.ARGUMENT
+      }
     } else {
+      // this is for 'any' expression
+      // bad answer because we should check for the type of the block
       return Type.ARGUMENT
     }
   }

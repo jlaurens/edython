@@ -75,22 +75,24 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
   }
 })
 
-for (var _ = 0, k;(k = eYo.T3.Expr.Check.binary[_++]);) {
-  k = k.substring(4)
-  eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.binary
-  eYo.DelegateSvg.Manager.register(k)
+for (var _ = 0, t;(t = eYo.T3.Expr.Check.binary[_++]);) {
+  if (t !== eYo.T3.Expr.any) {
+    t = t.substring(4)
+    eYo.DelegateSvg.Expr[t] = eYo.DelegateSvg.Expr.binary
+    eYo.DelegateSvg.Manager.register(t)
+  }
 }
 
-for (var _ = 0, k;(k = [
+for (var _ = 0, t;(t = [
   eYo.T3.Expr.power,
   eYo.T3.Expr.and_test,
   eYo.T3.Expr.or_test,
   eYo.T3.Expr.number_comparison,
   eYo.T3.Expr.object_comparison
 ][_++]);) {
-  k = k.substring(4)
-  eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.binary
-  eYo.DelegateSvg.Manager.register(k)
+  t = t.substring(4)
+  eYo.DelegateSvg.Expr[t] = eYo.DelegateSvg.Expr.binary
+  eYo.DelegateSvg.Manager.register(t)
 }
 
 /**

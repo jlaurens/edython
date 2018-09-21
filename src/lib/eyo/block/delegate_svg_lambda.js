@@ -61,7 +61,7 @@ eYo.Consolidator.List.makeSubclass('Parameter', {
 eYo.Consolidator.Parameter.prototype.consolidate_connected = function (io) {
   if (io.i + 1 === io.list.length) {
     var check = io.c8n.targetConnection.check_
-    if (goog.array.contains(check, eYo.T3.Expr.parameter_star_star)) {
+    if (!check || goog.array.contains(check, eYo.T3.Expr.parameter_star_star)) {
       // do not add a separator after
       return false
     }
@@ -105,14 +105,18 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (function () {
       return Type.unconnected
     }
     var check = target.check_
-    if (goog.array.contains(check, eYo.T3.Expr.star)) {
-      return Type.star
-    } else if (goog.array.contains(check, eYo.T3.Expr.parameter_star)) {
-      return Type.star
-    } else if (goog.array.contains(check, eYo.T3.Expr.parameter_star_star)) {
-      return Type.star_star
-    } else if (goog.array.contains(check, eYo.T3.Expr.identifier_defined)) {
-      return Type.default
+    if (check) {
+      if (goog.array.contains(check, eYo.T3.Expr.star)) {
+        return Type.star
+      } else if (goog.array.contains(check, eYo.T3.Expr.parameter_star)) {
+        return Type.star
+      } else if (goog.array.contains(check, eYo.T3.Expr.parameter_star_star)) {
+        return Type.star_star
+      } else if (goog.array.contains(check, eYo.T3.Expr.identifier_defined)) {
+        return Type.default
+      } else {
+        return Type.parameter
+      }
     } else {
       return Type.parameter
     }
@@ -414,7 +418,7 @@ eYo.ConnectionDelegate.prototype.consolidateType = function (type) {
   var targetC8n = c8nOut.targetConnection
   if (targetC8n) {
     // does the target accept general expression in lambda
-    nocond_only_out = targetC8n.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0
+    nocond_only_out = targetC8n.check_ && targetC8n.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0
   }
   var cond_in = true // cond are accepted by default
   var nocond_in = true // nocond not accepted by default
@@ -422,14 +426,14 @@ eYo.ConnectionDelegate.prototype.consolidateType = function (type) {
   if (targetC8n) {
     cond_in = false
     for (var i = 0, t; (t = eYo.T3.Expr.Check.expression[++i]);) {
-      if (targetC8n.check_.indexOf(t) >= 0) {
+      if (!targetC8n.check_ || targetC8n.check_.indexOf(t) >= 0) {
         cond_in = true
         break
       }
     }
     nocond_in = false
     for (i = 0; (t = eYo.T3.Expr.Check.expression_nocond[++i]);) {
-      if (targetC8n.check_.indexOf(t) >= 0) {
+      if (!targetC8n.check_ || targetC8n.check_.indexOf(t) >= 0) {
         nocond_in = true
         break
       }
