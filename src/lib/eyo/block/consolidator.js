@@ -148,7 +148,9 @@ eYo.Consolidator.List.prototype.getMandatory = function (io) {
       return mandatory_d.get()
     }
   }
-  return this.data.mandatory || (this.data.mandatory = Infinity)
+  return goog.isDef(this.data.mandatory)
+    ? this.data.mandatory
+    : this.data.mandatory = Infinity
 }
 
 /**

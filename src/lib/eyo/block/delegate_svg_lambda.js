@@ -42,13 +42,13 @@ goog.require('goog.dom');
 
 // eYo.Consolidator.Parameter.data = {
 //   check: eYo.T3.Expr.Check.primary,
-//   empty: true,
+//   mandatory: 0,
 //   presep: ',',
 // }
 
 eYo.Consolidator.List.makeSubclass('Parameter', {
   check: eYo.T3.Expr.Check.primary,
-  empty: true,
+  mandatory: 0,
   presep: ','
 }, eYo.Consolidator.List, eYo.Consolidator)
 /**

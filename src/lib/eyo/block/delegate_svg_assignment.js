@@ -84,7 +84,7 @@ goog.inherits(eYo.Consolidator.List.Target.Void, eYo.Consolidator.List.Target)
 eYo.Consolidator.List.Target.Void.data = {
   hole_value: 'name',
   check: null,
-  empty: true,
+  mandatory: 0,
   presep: ','
 }
 
@@ -221,7 +221,7 @@ eYo.DelegateSvg.List.makeSubclass('target_list', {
 eYo.DelegateSvg.List.makeSubclass('void_target_list', {
   list: {
     consolidator: eYo.Consolidator.List.Target,
-    empty: true,
+    mandatory: 0,
     hole_value: 'name'
   }
 })

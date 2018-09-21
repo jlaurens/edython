@@ -101,7 +101,7 @@ eYo.DelegateSvg.Expr.makeSubclass('comp_if', {
 eYo.DelegateSvg.List.makeSubclass('comp_iter_list', {
   list: {
     check: eYo.T3.Expr.Check.comp_iter,
-    empty: true,
+    mandatory: 0,
     presep: ','
   }
 })

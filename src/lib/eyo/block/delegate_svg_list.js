@@ -157,7 +157,7 @@ eYo.DelegateSvg.List.prototype.removeItems = function (block) {
 eYo.DelegateSvg.List.makeSubclass('optional_expression_list', {
   list: {
     check: eYo.T3.Expr.Check.expression,
-    empty: true,
+    mandatory: 0,
     presep: ',',
     hole_value: 'name'
   }
@@ -202,7 +202,7 @@ eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
 eYo.DelegateSvg.List.makeSubclass('key_datum_list', {
   list: {
     check: eYo.T3.Expr.Check.key_datum_all,
-    empty: true,
+    mandatory: 0,
     presep: ','
   }
 })
@@ -216,7 +216,7 @@ eYo.DelegateSvg.List.makeSubclass('key_datum_list', {
 eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
   list: {
     check: eYo.T3.Expr.Check.non_void_starred_item_list,
-    empty: true,
+    mandatory: 0,
     presep: ',',
     hole_value: 'name'
   }
@@ -248,7 +248,7 @@ eYo.DelegateSvg.List.makeSubclass('starred_item_list_comprehensive', function ()
     check: eYo.T3.Expr.Check.non_void_starred_item_list,
     unique: eYo.T3.Expr.comprehension,
     consolidator: eYo.Consolidator.List.Singled,
-    empty: true,
+    mandatory: 0,
     presep: ',',
     hole_value: 'name'
   }
@@ -322,7 +322,7 @@ eYo.DelegateSvg.List.makeSubclass('key_datum_list_comprehensive', function () {
     check: eYo.T3.Expr.Check.key_datum_list,
     unique: eYo.T3.Expr.dict_comprehension,
     consolidator: eYo.Consolidator.List.Singled,
-    empty: true,
+    mandatory: 0,
     presep: ','
   }
   var RA = goog.array.concat(D.check, D.unique)

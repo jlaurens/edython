@@ -49,7 +49,7 @@ goog.require('eYo.Signature')
  */
 eYo.Consolidator.List.makeSubclass('Arguments', {
   check: null,
-  empty: true,
+  mandatory: 0,
   presep: ','
 }, eYo.Consolidator.List, eYo.Consolidator)
 
@@ -314,7 +314,7 @@ eYo.DelegateSvg.Expr.argument_list.prototype.createConsolidator = eYo.Decorate.r
 eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_comprehensive', {
   list: {
     consolidator: eYo.Consolidator.Arguments,
-    empty: true,
+    mandatory: 0,
     presep: ',',
     hole_value: 'name'
   }
