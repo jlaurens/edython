@@ -314,7 +314,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
     var BB
     eYo.Events.Disabler.wrap(function () {
       BB = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)
-      BB.eyo.skipRendering()
+      BB.eyo.changeBegin()
       BB.eyo.data.modifier.set(modifier)
       BB.eyo.data.variant.set(flags)
     })

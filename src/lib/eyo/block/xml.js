@@ -939,7 +939,7 @@ eYo.Xml.fromDom = function (block, element) {
     // We might need to fix some stuff before returning
     // In particular, it will be the perfect place to setup variants
   }
-  eyo.skipRenderingWrap(do_it)
+  eyo.changeWrap(do_it)
 }
 
 goog.require('eYo.DelegateSvg.Primary')

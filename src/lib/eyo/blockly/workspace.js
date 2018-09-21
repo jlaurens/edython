@@ -273,7 +273,7 @@ eYo.Workspace.prototype.undo = function(redo) {
           for (var i = 0, event; event = events[i]; i++) {
             var B = this.getBlockById(event.blockId)
             if (B) {
-              B.eyo.skipRendering()
+              B.eyo.changeBegin()
               Bs.push(B)
             }
           }  
@@ -287,8 +287,7 @@ eYo.Workspace.prototype.undo = function(redo) {
       } finally {
         Blockly.Events.recordUndo = true
         for (var i = 0; B = Bs[i]; i++) {
-          B.eyo.unskipRendering()
-          B.eyo.render()
+          B.eyo.changeEnd()
         }
         eYo.App.didProcessUndo && eYo.App.didProcessUndo(redo)
       }

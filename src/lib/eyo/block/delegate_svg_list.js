@@ -60,7 +60,7 @@ eYo.DelegateSvg.List.prototype.getInput = function (block, name, dontCreate) {
  * @param {!Block} block
  */
 eYo.DelegateSvg.List.prototype.consolidate_ = function (deep, force) {
-  if (this.consolidate_lock || this.will_connect_ || this.duringInit) {
+  if (this.consolidate_lock || this.will_connect_ || this.changeLevel) {
     // reentrant flag or wait for the new connection
     // to be established before consolidating
     // reentrant is essential because the consolidation

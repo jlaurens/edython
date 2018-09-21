@@ -199,7 +199,7 @@ eYo.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
 
 /**
  * Did connect this block's connection to another connection.
- * When conecting locked blocks, select the receiver.
+ * When connecting locked blocks, select the receiver.
  * @param {!Blockly.Block} block
  * @param {!Blockly.Connection} connection what has been connected in the block
  * @param {!Blockly.Connection} oldTargetConnection what was previously connected in the block

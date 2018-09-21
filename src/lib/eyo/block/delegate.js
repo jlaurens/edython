@@ -50,7 +50,26 @@ eYo.Delegate.prototype.getBlock = function () {
 }
 
 /**
- * Begin a mutation
+ * Increment the change count.
+ * The changeCount is used to compute some properties that depend
+ * on the core state. Some changes induce a change in the changeCount
+ * which in turn may induce a change in properties.
+ * Beware of the stability problem.
+ * The changeCount is incremented whenever a data changes,
+ * a child block changes or a connection changes.
+ * This is used by the primary delegate's getType
+ * to cache the return value.
+ * For edython.
+ */
+eYo.Delegate.prototype.incrementChangeCount = function () {
+  ++ this.changeCount
+}
+
+/**
+ * Begin a mutation.
+ * The change level is used to keep track of the cascading mutations.
+ * When mutations imply other mutations, there is no need to perform some actions until the original mutation is done.
+ * For example, rendering should not be done until all the mutations are made.
  * For edython.
  */
 eYo.Delegate.prototype.changeBegin = function () {
@@ -60,13 +79,33 @@ eYo.Delegate.prototype.changeBegin = function () {
 /**
  * Ends a mutation
  * For edython.
+ * @return {Number} the change level
  */
 eYo.Delegate.prototype.changeEnd = function () {
   --this.changeLevel
-  this.incrementChangeCount()
-  this.consolidate()
+  if (this.changeLevel === 0) {
+    this.incrementChangeCount()
+    this.consolidate()
+  }
+  return this.changeLevel
 }
 
+/**
+ * Begin a mutation
+ * For edython.
+ */
+eYo.Delegate.prototype.changeWrap = function () {
+  var args = Array.prototype.slice.call(arguments)
+  try {
+    this.changeBegin()
+    args[0] && args[0].apply(args[1], args.slice(2))
+  } catch (err) {
+    console.error(err)
+    throw err
+  } finally {
+    this.changeEnd()
+  }
+}
 
 /**
  * Decorate of change hooks.
@@ -122,7 +161,7 @@ eYo.Delegate.prototype.consolidate = eYo.Decorate.onChangeCount(
   eYo.Decorate.reentrant_method(
     'consolidate',
     function (deep, force) {
-      if (!Blockly.Events.recordUndo || !this.block_.workspace || this.duringInit || this.changeLevel > 1 || this.initBlock_lock) {
+      if (!Blockly.Events.recordUndo || !this.block_.workspace || this.changeLevel > 1 || this.initBlock_lock) {
         // do not consolidate while un(re)doing
         return
       }
@@ -340,22 +379,6 @@ eYo.Delegate.prototype.feedSlots = function (slotsModel) {
     }
   }
   return ordered[0]
-}
-
-/**
- * Increment the change count.
- * The changeCount is used to compute some properties that depend
- * on the core state. Some changes induce a change in the changeCount
- * which in turn may induce a change in properties.
- * Beware of the stability problem.
- * The changeCount is incremented whenever a data changes,
- * a child block changes or a connection changes.
- * This is used by the primary delegate's getType
- * to cache the return value
- * For edython.
- */
-eYo.Delegate.prototype.incrementChangeCount = function () {
-  ++ this.changeCount
 }
 
 /**
@@ -1011,13 +1034,18 @@ eYo.Delegate.prototype.consolidateConnections = function () {
  * @param {!Blockly.Block} block to be initialized..
  * For subclassers eventually
  */
-eYo.Delegate.prototype.initBlock = function (block) {
+eYo.Delegate.prototype.initBlock = function () {
   // configure the connections
-  this.makeData()
-  this.makeContents()
-  this.makeFields()
-  this.makeSlots()
-  this.makeConnections()
+  this.changeWrap(
+    function () {
+      this.makeData()
+      this.makeContents()
+      this.makeFields()
+      this.makeSlots()
+      this.makeConnections()    
+    },
+    this
+  )
 }
 
 /**
@@ -1227,8 +1255,6 @@ eYo.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
  * @param {!Blockly.Connection} childConnection
  */
 eYo.Delegate.prototype.willConnect = function (block, connection, childConnection) {
-  // console.log('will connect')
-  this.changeBegin()
 }
 
 /**
@@ -1239,8 +1265,6 @@ eYo.Delegate.prototype.willConnect = function (block, connection, childConnectio
  * @param {!Blockly.Connection} oldConnection what was previously connected to the new targetConnection
  */
 eYo.Delegate.prototype.didConnect = function (block, connection, oldTargetConnection, oldConnection) {
-  // console.error('Intermediate')
-  this.changeEnd()
 }
 
 /**

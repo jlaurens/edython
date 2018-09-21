@@ -47,17 +47,7 @@ goog.inherits(eYo.BlockSvg, Blockly.BlockSvg)
  * linked blocks may render though.
  */
 eYo.BlockSvg.prototype.init = function () {
-  this.eyo.skipRendering()
-  this.eyo.duringInit = true
-  try {
-    this.eyo.initBlock(this)
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    this.eyo.unskipRendering()
-    delete this.eyo.duringInit
-  }
+  eyo.initBlock()
 }
 
 /**

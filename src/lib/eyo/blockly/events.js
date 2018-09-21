@@ -151,13 +151,16 @@ eYo.Data.prototype.setTrusted__ = eYo.Decorate.reentrant_method(
     var eyo = this.owner
     var block = eyo.block_
     eYo.Events.setGroup(true)
-    eyo.skipRendering()
     var oldValue = this.value_
     this.beforeChange(oldValue, newValue)
     try {
       eyo.changeBegin()
       this.value_ = newValue
       this.duringChange(oldValue, newValue)
+    } catch (err) {
+      console.error(err)
+      throw err
+    } finally {
       eyo.changeEnd()
       if (!this.noUndo && Blockly.Events.isEnabled()) {
         Blockly.Events.fire(new Blockly.Events.BlockChange(
@@ -165,11 +168,6 @@ eYo.Data.prototype.setTrusted__ = eYo.Decorate.reentrant_method(
       }
       this.afterChange(oldValue, newValue)
       noRender || this.synchronizeIfUI(newValue)
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      eyo.unskipRendering()
       eYo.Events.setGroup(false)
     }
     noRender || block.render() // render now or possibly later ?

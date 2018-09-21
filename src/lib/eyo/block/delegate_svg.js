@@ -35,22 +35,16 @@ eYo.Delegate.makeSubclass('Svg')
 eYo.DelegateSvg = eYo.Delegate.Svg
 
 /**
- * Begin a mutation
- * For edython.
- */
-eYo.DelegateSvg.prototype.changeBegin = function () {
-  this.skipRendering()
-  eYo.DelegateSvg.superClass_.changeBegin.call(this)
-}
-
-/**
  * Ends a mutation
  * For edython.
+ * @return {Number} change level
  */
 eYo.DelegateSvg.prototype.changeEnd = function () {
-  eYo.DelegateSvg.superClass_.changeEnd.call(this)
-  this.unskipRendering()
-  this.render()
+  var yorn = eYo.DelegateSvg.superClass_.changeEnd.call(this)
+  if (!yorn) {
+    this.render()
+  }
+  return yorn
 }
 
 /**
@@ -153,25 +147,25 @@ eYo.DelegateSvg.prototype.svgPathConnection_ = undefined
  * below.
  * @param {!Blockly.Block} block to be initialized..
  */
-eYo.DelegateSvg.prototype.initBlock = function (block) {
-  eYo.DelegateSvg.superClass_.initBlock.call(this, block)
-  // block.setInputsInline(true)
-  this.initBlock_lock = true
-  try {
-    block.setTooltip('')
-    block.setHelpUrl('')
-    // wait until the end to set the subtype because it causes rendering
-    // bind the data and the ui when relevant.
-    // We establish a bi directional bound between data, inputs and fields
-    // now it is time to intialize the data
-    this.initData(block)
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    delete this.initBlock_lock
+eYo.DelegateSvg.prototype.initBlock = eYo.Decorate.reentrant_method(
+  'initBlockSvg',
+  function () {
+    this.changeWrap(
+      function () {
+        eYo.DelegateSvg.superClass_.initBlock.call(this)
+        var block = this.block_
+        block.setTooltip('')
+        block.setHelpUrl('')
+        // wait until the end to set the subtype because it causes rendering
+        // bind the data and the ui when relevant.
+        // We establish a bi directional bound between data, inputs and fields
+        // now it is time to intialize the data
+        this.initData(block)
+      },
+      this
+    )
   }
-}
+)
 console.warn('implement async and await, see above awaitable and asyncable')
 /**
  * Revert operation of initBlock.
@@ -417,68 +411,6 @@ eYo.DelegateSvg.prototype.getMenuTarget = function (block) {
 }
 
 /**
- * Disable rendering.
- * Must balance a `unskipRendering`.
- */
-eYo.DelegateSvg.prototype.skipRendering = function () {
-  this.skipRendering_ && ++this.skipRendering_ || (this.skipRendering_ = 1)
-  if (eYo.Const.trackSkipRendering || eYo.Const.trackSkipRenderingByType) {
-    console.log('..skipRendering', this.skipRendering_, this.block_.type, this.block_.id)
-  }
-}
-
-/**
- * Enable rendering.
- * Must balance a `skipRendering`.
- */
-eYo.DelegateSvg.prototype.unskipRendering = function () {
-  --this.skipRendering_
-  goog.asserts.assert(this.skipRendering_ >= 0, 'BALANCE FAILURE: unskipRendering')
-  if (eYo.Const.trackSkipRendering || this.block_.type === eYo.Const.trackSkipRenderingByType) {
-    console.log('unskipRendering', this.skipRendering_, this.block_.type, this.block_.id)
-  }
-}
-
-/**
- * Decorate of action eclosed in a skip rendering block.
- * Returns a function with signature is `foo(before, after) → void`
- * `foo` is overriden by the model.
- * The model `foo` can call the builtin `foo` with `this.foo(...)`.
- * @param {!String} key, 
- * @param {!Function} do_it
- * @return {!Function}
- */
-eYo.DelegateSvg.prototype.skipRenderingWrap = function () {
-  var args = Array.prototype.slice.call(arguments)
-  this.skipRendering()
-  try {
-    return args[0].apply(args[1], args.slice(2))
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    this.unskipRendering()
-  }
-}
-
-/**
- * Begin a mutation
- * For edython.
- */
-eYo.DelegateSvg.prototype.changeWrap = function () {
-  var args = Array.prototype.slice.call(arguments)
-  try {
-    this.changeBegin()
-    args[0] && args[0].apply(args[1], args.slice(2))
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    this.changeEnd()
-  }
-}
-
-/**
  * Set the value wrapping in a `changeBegin`/`changeEnd`
  * group call of the owner.
  * @param {Object} newValue
@@ -506,12 +438,12 @@ eYo.DelegateSvg.prototype.renderDrawC8n_ = function (block, c8n) {
   if (!target) {
     return
   }
-  var doit = !target.rendered ||
+  var do_it = !target.rendered ||
   (!this.upRendering &&
     !eYo.Connection.disconnectedParentC8n &&
     !eYo.Connection.disconnectedChildC8n&&
     !eYo.Connection.connectedParentC8n)
-  if (doit) {
+  if (do_it) {
     try {
       target.eyo.downRendering = true
       target.render(false)
@@ -717,7 +649,7 @@ eYo.DelegateSvg.prototype.render = function (optBubble) {
   //   block.dispose()
   //   return
   // }
-  this.skipRenderingWrap(
+  this.changeWrap(
     function () {
       if (eYo.DelegateSvg.debugStartTrackingRender) {
         var n = eYo.DelegateSvg.debugCount[block.id]
