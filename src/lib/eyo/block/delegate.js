@@ -546,9 +546,6 @@ eYo.Delegate.Manager = (function () {
   me.registerDelegate_ = function (prototypeName, delegateC9r, key) {
     // console.log(prototypeName+' -> '+delegateC9r)
     goog.asserts.assert(prototypeName, 'Missing prototypeName')
-    if (prototypeName === "eyo:any") {
-      console.log('ANY')
-    }
     C9rs[prototypeName] = delegateC9r
     // cache all the input, output and statement data at the prototype level
     me.prepareDelegate(delegateC9r, key)

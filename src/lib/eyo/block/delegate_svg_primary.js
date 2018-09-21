@@ -407,70 +407,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       xml: false
     },
-    ary: {
-      order: 2001,
-      init: Infinity,
-      validate: /** @suppress {globalThis} */ function (newValue) {
-        var validated
-        if (goog.isString(newValue)) {
-          if (newValue.length) {
-            validated = Math.max(0, Math.floor(Number(newValue)))
-          } else {
-            validated = Infinity
-          }
-        } else {
-          validated = Math.max(0, Math.floor(newValue))
-        }
-        return {validated: validated}
-      },
-      willChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        // First change the ary of the arguments list, then change the ary of the delegate.
-        // That way undo events are recorded in the correct order.
-        var input = this.owner.slots.arguments.input
-        if (input && input.connection) {
-          var target = input.connection.targetBlock()
-          if (target) {
-            target.eyo.data.ary.set(newValue)
-          }
-        }
-      },
-      xml: {
-        save: /** @suppress {globalThis} */ function (element) {
-          var variant_d = this.owner.data.variant
-          var variant = variant_d.get()
-          if (variant === variant_d.CALL_EXPR && this.get() !== Infinity) {
-            this.save(element)
-          }
-        }
-      }
-    },
-    mandatory: {
-      order: 2002,
-      noUndo: true,
-      validate: /** @suppress {globalThis} */ function (newValue) {
-        return goog.isNumber(newValue) && newValue > 0 ? {validated: Math.floor(newValue)} : null
-      },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        var input = this.owner.slots.arguments.input
-        if (input && input.connection) {
-          var target = input.connection.targetBlock()
-          if (target) {
-            target.eyo.data.mandatory.set(newValue)
-          }
-        }
-      },
-      xml: {
-        save: /** @suppress {globalThis} */ function (element) {
-          var variant_d = this.owner.data.variant
-          var variant = variant_d.get()
-          if (variant === variant_d.CALL_EXPR && this.get()) {
-            this.save(element)
-          }
-        }
-      }
-    },
     name: {
-      order: 10000, // the name must be last
+      order: 10000, // the name must be quite last
       main: true,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
@@ -509,6 +447,75 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       ],
       noUndo: true,
       xml: false
+    },
+    ary: {
+      order: 20001,
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        var validated
+        if (goog.isString(newValue)) {
+          if (newValue.length) {
+            validated = Math.max(0, Math.floor(Number(newValue)))
+          } else {
+            validated = Infinity
+          }
+        } else {
+          validated = Math.max(0, Math.floor(newValue))
+        }
+        return {validated: validated}
+      },
+      willChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        // First change the ary of the arguments list, then change the ary of the delegate.
+        // That way undo events are recorded in the correct order.
+        var input = this.owner.slots.arguments.input
+        if (input && input.connection) {
+          var target = input.connection.targetBlock()
+          if (target) {
+            target.eyo.ary_p = newValue
+          }
+        }
+      },
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+          var variant_d = this.owner.data.variant
+          var variant = variant_d.get()
+          if (variant === variant_d.CALL_EXPR && this.get() !== Infinity) {
+            this.save(element)
+          }
+        }
+      },
+      consolidate: /** @suppress {globalThis} */ function () {
+        var item = eYo.Model.functions.getItem(this.owner.name_p)
+        this.change(item && goog.isDef(item.ary) ? item.ary : Infinity)
+      }
+    },
+    mandatory: {
+      order: 20002,
+      noUndo: true,
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        return goog.isNumber(newValue) && newValue > 0 ? {validated: Math.floor(newValue)} : null
+      },
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        var input = this.owner.slots.arguments.input
+        if (input && input.connection) {
+          var target = input.connection.targetBlock()
+          if (target) {
+            target.eyo.mandatory_p = newValue
+          }
+        }
+      },
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+          var variant_d = this.owner.data.variant
+          var variant = variant_d.get()
+          if (variant === variant_d.CALL_EXPR && this.get()) {
+            this.save(element)
+          }
+        }
+      },
+      consolidate: /** @suppress {globalThis} */ function () {
+        var item = eYo.Model.functions.getItem(this.owner.name_p)
+        this.change(item && goog.isDef(item.mandatory) ? item.mandatory : Infinity)
+      }
     }
   },
   slots: {
