@@ -66,7 +66,7 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         var type = newValue ? eYo.Do.typeOfString(newValue).expr : eYo.T3.Expr.integer
-        this.data.type.set(type)
+        this.owner.type_p = type
       },
       synchronize: true,
       xml: {

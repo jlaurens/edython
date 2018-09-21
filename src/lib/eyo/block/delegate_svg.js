@@ -469,14 +469,12 @@ eYo.DelegateSvg.prototype.changeWrap = function () {
   var args = Array.prototype.slice.call(arguments)
   try {
     this.changeBegin()
-    args[0].apply(args[1], args.slice(2))
+    args[0] && args[0].apply(args[1], args.slice(2))
   } catch (err) {
     console.error(err)
     throw err
   } finally {
-    this.consolidate() // just before the change end because of undo management
     this.changeEnd()
-    this.render()
   }
 }
 
@@ -762,50 +760,6 @@ eYo.DelegateSvg.prototype.render = function (optBubble) {
   )
   // block.workspace.logAllConnections('didRender')
 }
-
-/**
- * This methods is a state mutator.
- * At return type, the block is in a consistent state.
- * All the connections and components are consolidated.
- * Sends a `consolidate` message to each component of the block.
- * However, there might be some caveats related to undo management.
- * @param {!Block} block
- */
-eYo.DelegateSvg.prototype.consolidate = eYo.Decorate.onChangeCount(
-  'consolidate_onChangeCount',
-  eYo.Decorate.reentrant_method(
-    'consolidate',
-    function (deep, force) {
-      if (!Blockly.Events.recordUndo || !this.block_.workspace || this.duringInit || this.changeLevel > 1 || this.initBlock_lock) {
-        // do not consolidate while un(re)doing
-        return
-      }
-      this.consolidateType()
-      this.consolidateSubtype()
-      this.foreachData(function () {
-        this.consolidate()
-      })
-      this.foreachSlot(function () {
-        // some child blocks may be disconnected as side effect
-        this.consolidate(deep, force)
-      })
-      if (deep) {
-        // Consolidate the child blocks that are still connected
-        var e8r = this.block_.eyo.inputEnumerator()
-        var x
-        while (e8r.next()) {
-          if ((x = e8r.here.connection) && (x = x.targetBlock())) {
-            x.eyo.consolidate(deep, force)
-          }
-        }
-      }
-      this.consolidateConnections()
-      return {
-        return: true
-      }
-    }
-  )
-)
 
 /**
  * Whether the block is sealed to its parent.
@@ -2131,7 +2085,7 @@ eYo.DelegateSvg.prototype.beReady = function (block) {
     }
     this.inputSuite && this.inputSuite.eyo.beReady()
     block.nextConnection && block.nextConnection.eyo.beReady()
-    this.consolidate()
+    this.changeWrap()
     this.synchronizeData(block)
     this.synchronizeSlots(block)
     var parent = block.outputConnection && block.outputConnection.targetBlock()

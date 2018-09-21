@@ -67,6 +67,92 @@ eYo.Delegate.prototype.changeEnd = function () {
   this.consolidate()
 }
 
+
+/**
+ * Decorate of change hooks.
+ * Returns a function with signature is `foo(whatever) → whatever`
+ * `foo` is overriden by the model.
+ * The model `foo` can call the builtin `foo` with `this.foo(...)`.
+ * `do_it` receives all the parameters that the decorated function will receive.
+ * If `do_it` return value is not an object, the changeCount is not recorded
+ * If `do_it` return value is an object with a `return` property,
+ * the `changeCount` is recorded such that `do_it` won't be executed
+ * until the next `changeCount` increment.
+ * @param {!String} key, 
+ * @param {!Function} do_it
+ * @return {!Function}
+ */
+eYo.Decorate.onChangeCount = function (key, do_it) {
+  goog.asserts.assert(goog.isFunction(do_it), 'do_it MUST be a function')
+  var saved = key + '_changeCount_saved'
+  var cached = key + '_cached'
+  return function() {
+    if (this[saved] === this.changeCount) {
+      return this[cached]
+    }
+    var did_it = do_it.apply(this, arguments)
+    if (did_it) {
+      this[saved] = this.changeCount
+      this[cached] = did_it.return  
+    }
+    return this[cached]
+  }
+}
+
+/**
+ * This methods is a state mutator.
+ * At return type, the block is in a consistent state.
+ * All the connections and components are consolidated
+ * and are in a consistent state.
+ * Sends a `consolidate` message to each component of the block.
+ * However, there might be some caveats related to undo management,
+ * this must be investigated.
+ * This method is reentrant and `changeCount` aware.
+ * This message is sent by:
+ * - an expression to its parent when consolidated
+ * - a list just before rendering
+ * - when removing items from a list
+ * - when a list creates a consolidator
+ * - when an argument list changes its `ary` or `mandatory`
+ * - in the changeEnd method
+ * @param {!Block} block
+ */
+eYo.Delegate.prototype.consolidate = eYo.Decorate.onChangeCount(
+  'consolidate',
+  eYo.Decorate.reentrant_method(
+    'consolidate',
+    function (deep, force) {
+      if (!Blockly.Events.recordUndo || !this.block_.workspace || this.duringInit || this.changeLevel > 1 || this.initBlock_lock) {
+        // do not consolidate while un(re)doing
+        return
+      }
+      this.consolidateType()
+      this.consolidateSubtype()
+      this.foreachData(function () {
+        this.consolidate()
+      })
+      this.foreachSlot(function () {
+        // some child blocks may be disconnected as side effect
+        this.consolidate(deep, force)
+      })
+      if (deep) {
+        // Consolidate the child blocks that are still connected
+        var e8r = this.block_.eyo.inputEnumerator()
+        var x
+        while (e8r.next()) {
+          if ((x = e8r.here.connection) && (x = x.targetBlock())) {
+            x.eyo.consolidate(deep, force)
+          }
+        }
+      }
+      this.consolidateConnections()
+      return {
+        return: true
+      }
+    }
+  )
+)
+
 /**
  * Make the data
  * For edython.
@@ -611,37 +697,6 @@ eYo.Delegate.prototype.getModel = function () {
 // register this delegate for all the T3 types
 eYo.Delegate.Manager.registerAll(eYo.T3.Expr, eYo.Delegate)
 eYo.Delegate.Manager.registerAll(eYo.T3.Stmt, eYo.Delegate)
-
-/**
- * Decorate of change hooks.
- * Returns a function with signature is `foo(whatever) → whatever`
- * `foo` is overriden by the model.
- * The model `foo` can call the builtin `foo` with `this.foo(...)`.
- * `do_it` receives all the parameters that the decorated function will receive.
- * If `do_it` return value is not an object, the changeCount is not recorded
- * If `do_it` return value is an object with a `return` property,
- * the `changeCount` is recorded such that `do_it` won't be executed
- * until the next `changeCount` increment.
- * @param {!String} key, 
- * @param {!Function} do_it
- * @return {!Function}
- */
-eYo.Decorate.onChangeCount = function (key, do_it) {
-  goog.asserts.assert(goog.isFunction(do_it), 'do_it MUST be a function')
-  var saved = key + '_changeCount_saved'
-  var cached = key + '_cached'
-  return function() {
-    if (this[saved] === this.changeCount) {
-      return this[cached]
-    }
-    var did_it = do_it.apply(this, arguments)
-    if (did_it) {
-      this[saved] = this.changeCount
-      this[cached] = did_it.return  
-    }
-    return this[cached]
-  }
-}
 
 /**
  * getType.

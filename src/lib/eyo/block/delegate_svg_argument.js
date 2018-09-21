@@ -251,8 +251,9 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         this.owner.createConsolidator()
+        this.owner.consolidator.data.mandatory = newValue
         this.owner.consolidator.data.empty = !newValue
-        this.owner.consolidate(this.owner.block_)
+        this.owner.consolidate()
       }
     }
   },
