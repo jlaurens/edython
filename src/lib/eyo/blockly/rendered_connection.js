@@ -695,11 +695,9 @@ Blockly.RenderedConnection.prototype.connect_ = function (childC8n) {
             childC8n.eyo.didConnect(oldChildC8n, oldParentC8n)
             eYo.Connection.connectedParentC8n = undefined
           }
-        },
-        eyo
+        }
       )
-    },
-    eyo
+    }
   )
 }
 

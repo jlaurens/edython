@@ -558,9 +558,10 @@ eYo.Slot.prototype.whenRequiredFromDom = function (helper) {
 }
 
 /**
- * Consolidate the incog state.
+ * Consolidate the state.
  * For edython.
- * @param {!Blockly.Input} workspace The block's workspace.
+ * @param {Boolean} deep The block's workspace.
+ * @param {Boolean} force The block's workspace.
  */
 eYo.Slot.prototype.consolidate = function (deep, force) {
   this.debug = (this.debug || 0) + 1

@@ -161,8 +161,7 @@ eYo.DelegateSvg.prototype.initBlock = eYo.Decorate.reentrant_method(
         // We establish a bi directional bound between data, inputs and fields
         // now it is time to intialize the data
         this.initData(block)
-      },
-      this
+      }
     )
   }
 )
@@ -544,154 +543,155 @@ eYo.DelegateSvg.prototype.renderDrawParent_ = function (block, optBubble) {
  * @param {boolean=} optBubble If false, just render this block.
  *   If true, also render block's parent, grandparent, etc.  Defaults to true.
  */
-eYo.DelegateSvg.prototype.render = function (optBubble) {
-  var block = this.block_
-  if (this.isDragging_ || !this.isReady_ || this.changeLevel || !block.workspace) {
-    return
-  }
-  // rendering is very special when this is just a matter of
-  // statement connection
-  if (block.rendered) {
-    if (eYo.Connection.disconnectedChildC8n && block.previousConnection === eYo.Connection.disconnectedChildC8n) {
-      // this block is the top one
-      this.layoutConnections_(block)
-      this.renderMove_(block)
-      this.updateAllPaths_(block)
-      this.alignRightEdges_(block)
-      this.renderCount = this.changeCount
+eYo.DelegateSvg.prototype.render = eYo.Decorate.reentrant_method(
+  'render', function (optBubble) {
+    var block = this.block_
+    if (this.isDragging_ || !this.isReady_ || this.changeLevel || !block.workspace) {
       return
-    } else if (eYo.Connection.disconnectedParentC8n && block.nextConnection === eYo.Connection.disconnectedParentC8n) {
-      // this block is the bottom one
-      // but it may belong to a suite
-      this.layoutConnections_(block)
-      this.renderMove_(block)
-      this.updateAllPaths_(block)
-      this.renderDrawParent_(block, optBubble)
-      this.renderCount = this.changeCount
-      return
-    } else if (eYo.Connection.connectedParentC8n) {
-      if (block.outputConnection && eYo.Connection.connectedParentC8n == block.outputConnection.targetConnection) {
-        // this is not a statement connection
-        // no shortcut
-      } else if (block.previousConnection && eYo.Connection.connectedParentC8n == block.previousConnection.targetConnection) {
+    }
+    // rendering is very special when this is just a matter of
+    // statement connection
+    if (block.rendered) {
+      if (eYo.Connection.disconnectedChildC8n && block.previousConnection === eYo.Connection.disconnectedChildC8n) {
+        // this block is the top one
+        this.layoutConnections_(block)
+        this.renderMove_(block)
+        this.updateAllPaths_(block)
+        this.alignRightEdges_(block)
+        this.renderCount = this.changeCount
+        return
+      } else if (eYo.Connection.disconnectedParentC8n && block.nextConnection === eYo.Connection.disconnectedParentC8n) {
+        // this block is the bottom one
+        // but it may belong to a suite
         this.layoutConnections_(block)
         this.renderMove_(block)
         this.updateAllPaths_(block)
         this.renderDrawParent_(block, optBubble)
         this.renderCount = this.changeCount
         return
-      } else if (block.nextConnection && eYo.Connection.connectedParentC8n == block.nextConnection) {
-        this.layoutConnections_(block)
-        this.renderMove_(block)
-        this.updateAllPaths_(block)
-        var root = block.getRootBlock()
-        root.eyo.alignRightEdges_(root)
-        this.renderCount = this.changeCount
-        return
+      } else if (eYo.Connection.connectedParentC8n) {
+        if (block.outputConnection && eYo.Connection.connectedParentC8n == block.outputConnection.targetConnection) {
+          // this is not a statement connection
+          // no shortcut
+        } else if (block.previousConnection && eYo.Connection.connectedParentC8n == block.previousConnection.targetConnection) {
+          this.layoutConnections_(block)
+          this.renderMove_(block)
+          this.updateAllPaths_(block)
+          this.renderDrawParent_(block, optBubble)
+          this.renderCount = this.changeCount
+          return
+        } else if (block.nextConnection && eYo.Connection.connectedParentC8n == block.nextConnection) {
+          this.layoutConnections_(block)
+          this.renderMove_(block)
+          this.updateAllPaths_(block)
+          var root = block.getRootBlock()
+          root.eyo.alignRightEdges_(root)
+          this.renderCount = this.changeCount
+          return
+        }
       }
     }
-  }
-  if (!this.downRendering && block.outputConnection && !this.skipRendering_) {
-    // always render from a line start id est
-    // an orphan block or a statement block
-    var parent
-    if ((parent = block.getParent())) {
-      var next
-      while (parent.outputConnection && (next = parent.getParent())) {
-        parent = next
-      }
-      if (parent && !parent.eyo.downRendering) {
-        if (!parent.eyo.upRendering && block.outputConnection === eYo.Connection.connectedParentC8n || eYo.Connection.connectedParentC8n && eYo.Connection.connectedParentC8n.sourceBlock_ === block) {
-          try {
-            parent.eyo.upRendering = true
+    if (!this.downRendering && block.outputConnection && !this.skipRendering_) {
+      // always render from a line start id est
+      // an orphan block or a statement block
+      var parent
+      if ((parent = block.getParent())) {
+        var next
+        while (parent.outputConnection && (next = parent.getParent())) {
+          parent = next
+        }
+        if (parent && !parent.eyo.downRendering) {
+          if (!parent.eyo.upRendering && block.outputConnection === eYo.Connection.connectedParentC8n || eYo.Connection.connectedParentC8n && eYo.Connection.connectedParentC8n.sourceBlock_ === block) {
+            try {
+              parent.eyo.upRendering = true
+              parent.eyo.render(optBubble)
+            } catch (err) {
+              console.error(err)
+              throw err
+            } finally {
+              parent.eyo.upRendering = false
+            }
+          } else {
             parent.eyo.render(optBubble)
-          } catch (err) {
-            console.error(err)
-            throw err
-          } finally {
-            parent.eyo.upRendering = false
           }
-        } else {
-          parent.eyo.render(optBubble)
         }
+        return
       }
+    }
+    if (this.renderCount === this.changeCount) {
+      // minimal rendering
+      this.layoutConnections_(block)
+      this.renderMove_(block)
+      this.updateAllPaths_(block)
       return
     }
-  }
-  if (this.renderCount === this.changeCount) {
-    // minimal rendering
-    this.layoutConnections_(block)
-    this.renderMove_(block)
-    this.updateAllPaths_(block)
-    return
-  }
-  this.renderCount = this.changeCount
-  if (this.skipRendering_) {
-    // do not render the model
-    if (!this.downRendering) {
-      this.layoutConnections_(block)
-      this.renderMove_(block)
-      this.updateAllPaths_(block)
-      this.renderDrawParent_(block, optBubble)
-      return // very important  
-    } else /* if (this.downRendering) */ {
-      this.layoutConnections_(block)
-      this.renderMove_(block)
-      this.renderDrawSuite_(block)
-      this.updateAllPaths_(block)
-      this.renderDrawNext_(block)
-      return // very important  
-    } 
-  }
-  // if (this.wrapped_ && !block.getParent()) {
-  //   console.log('wrapped block with no parent')
-  //   setTimeout(function(){block.dispose()}, 10)
-  //   block.dispose()
-  //   return
-  // }
-  this.changeWrap(
-    function () {
-      if (eYo.DelegateSvg.debugStartTrackingRender) {
-        var n = eYo.DelegateSvg.debugCount[block.id]
-        eYo.DelegateSvg.debugCount[block.id] = (n||0)+1
-        if (!eYo.DelegateSvg.debugPrefix.length) {
-          console.log('>>>>>>>>>>')
-        }
-        eYo.DelegateSvg.debugPrefix = eYo.DelegateSvg.debugPrefix + '.'
-        console.log(eYo.DelegateSvg.debugPrefix, block.type, n, block.id)
-        if (n > 1) {
-          n = n + 0
-        }
-      }
-      try {
-        Blockly.Field.startCache()
-        this.minWidth = block.width = 0
-        this.willRender_(block)
-        this.renderDraw_(block)
-        this.renderDrawNext_(block)
+    this.renderCount = this.changeCount
+    if (this.skipRendering_) {
+      // do not render the model
+      if (!this.downRendering) {
         this.layoutConnections_(block)
         this.renderMove_(block)
+        this.updateAllPaths_(block)
         this.renderDrawParent_(block, optBubble)
-        block.rendered = true
-        this.didRender_(block)
-        if (eYo.traceOutputConnection && block.outputConnection) {
-          console.log('block.outputConnection', block.outputConnection.x_, block.outputConnection.y_)
+        return // very important  
+      } else /* if (this.downRendering) */ {
+        this.layoutConnections_(block)
+        this.renderMove_(block)
+        this.renderDrawSuite_(block)
+        this.updateAllPaths_(block)
+        this.renderDrawNext_(block)
+        return // very important  
+      } 
+    }
+    // if (this.wrapped_ && !block.getParent()) {
+    //   console.log('wrapped block with no parent')
+    //   setTimeout(function(){block.dispose()}, 10)
+    //   block.dispose()
+    //   return
+    // }
+    this.changeWrap(
+      function () {
+        if (eYo.DelegateSvg.debugStartTrackingRender) {
+          var n = eYo.DelegateSvg.debugCount[block.id]
+          eYo.DelegateSvg.debugCount[block.id] = (n||0)+1
+          if (!eYo.DelegateSvg.debugPrefix.length) {
+            console.log('>>>>>>>>>>')
+          }
+          eYo.DelegateSvg.debugPrefix = eYo.DelegateSvg.debugPrefix + '.'
+          console.log(eYo.DelegateSvg.debugPrefix, block.type, n, block.id)
+          if (n > 1) {
+            n = n + 0
+          }
         }
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        Blockly.Field.stopCache()  
-        if (eYo.DelegateSvg.debugStartTrackingRender &&  eYo.DelegateSvg.debugPrefix.length) {
-          eYo.DelegateSvg.debugPrefix = eYo.DelegateSvg.debugPrefix.substring(1)
+        try {
+          Blockly.Field.startCache()
+          this.minWidth = block.width = 0
+          this.willRender_(block)
+          this.renderDraw_(block)
+          this.renderDrawNext_(block)
+          this.layoutConnections_(block)
+          this.renderMove_(block)
+          this.renderDrawParent_(block, optBubble)
+          block.rendered = true
+          this.didRender_(block)
+          if (eYo.traceOutputConnection && block.outputConnection) {
+            console.log('block.outputConnection', block.outputConnection.x_, block.outputConnection.y_)
+          }
+        } catch (err) {
+          console.error(err)
+          throw err
+        } finally {
+          Blockly.Field.stopCache()  
+          if (eYo.DelegateSvg.debugStartTrackingRender &&  eYo.DelegateSvg.debugPrefix.length) {
+            eYo.DelegateSvg.debugPrefix = eYo.DelegateSvg.debugPrefix.substring(1)
+          }
+          // goog.asserts.assert(!this.skipRendering_, 'FAILURE')
         }
-        // goog.asserts.assert(!this.skipRendering_, 'FAILURE')
       }
-    },
-    this
-  )
-  // block.workspace.logAllConnections('didRender')
-}
+    )
+    // block.workspace.logAllConnections('didRender')
+  }
+)
 
 /**
  * Whether the block is sealed to its parent.
@@ -1947,17 +1947,15 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
             var V = Vs[k]
             var B = processModel(target, V)
             if (!target && B && B.outputConnection) {
-              try {
-                B.eyo.skipRendering()
-                block.eyo.skipRendering()
-                B.outputConnection.connect(input.connection)
-              } catch (err) {
-                console.error(err)
-                throw err
-              } finally {
-                block.eyo.unskipRendering()
-                B.eyo.unskipRendering()
-              }
+              B.eyo.changeWrap(
+                function () {
+                  block.eyo.changeWrap(
+                    function () {
+                      B.outputConnection.connect(input.connection)    
+                    }
+                  )
+                }
+              )
             }
           }
         }
@@ -1995,7 +1993,7 @@ eYo.DelegateSvg.prototype.beReady = function (block) {
     return
   }
   try {
-    this.skipRendering()
+    this.changeBegin()
     block = this.block_
     block.initSvg()
     this.foreachData(function () {
@@ -2041,7 +2039,7 @@ eYo.DelegateSvg.prototype.beReady = function (block) {
     throw err
   } finally {
     this.isReady_ = true
-    this.unskipRendering()
+    this.changeEnd()
   }
 }
 
@@ -3366,7 +3364,7 @@ eYo.DelegateSvg.prototype.setConnectionsHidden = function (block, hidden) {
  */
 eYo.DelegateSvg.prototype.doAndRender = function (block, handler, group, err_handler) {
   return function (event) {
-    block.eyo.skipRendering()
+    block.eyo.changeBegin()
     group && eYo.Events.setGroup(true)
     try {
       handler.call(block.eyo, event)
@@ -3374,9 +3372,8 @@ eYo.DelegateSvg.prototype.doAndRender = function (block, handler, group, err_han
       err_handler && err_handler.call(block.eyo, err) || console.error(err)
       throw err
     } finally {
-      block.eyo.unskipRendering()
       group && eYo.Events.setGroup(false)
-      block.render()
+      block.eyo.changeEnd()
     }
   }
 }

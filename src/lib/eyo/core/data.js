@@ -668,8 +668,7 @@ eYo.Data.prototype.isIncog = function () {
 /**
  * Consolidate the value.
  * Should be overriden by the model.
- * Reentrant management here.
- * Do nothing if the receiver should wait.
+ * Reentrant management here of the model action.
  */
 eYo.Data.prototype.consolidate = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'model_consolidate', this.model.consolidate)

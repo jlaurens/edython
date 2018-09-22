@@ -98,7 +98,7 @@ eYo.Delegate.prototype.changeWrap = function () {
   var args = Array.prototype.slice.call(arguments)
   try {
     this.changeBegin()
-    args[0] && args[0].apply(args[1], args.slice(2))
+    args[0] && args[0].apply(args[1] || this, args.slice(2))
   } catch (err) {
     console.error(err)
     throw err
@@ -154,37 +154,28 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
  * - when a list creates a consolidator
  * - when an argument list changes its `ary` or `mandatory`
  * - in the changeEnd method
- * @param {!Block} block
+ * Consolidation will not occur when no change has been
+ * preformed since the last consolidation
+ * @param {?Boolean} deep
+ * @param {?Boolean} force
+ * @return {Boolean} true when consolidation occurred
  */
-eYo.Delegate.prototype.consolidate = eYo.Decorate.onChangeCount(
-  'consolidate',
-  eYo.Decorate.reentrant_method(
+eYo.Delegate.prototype.consolidate =   eYo.Decorate.reentrant_method(
+    'consolidate',
+  eYo.Decorate.onChangeCount(
     'consolidate',
     function (deep, force) {
       if (!Blockly.Events.recordUndo || !this.block_.workspace || this.changeLevel > 1 || this.initBlock_lock) {
         // do not consolidate while un(re)doing
         return
       }
+      // first the in state
+      this.consolidateData()
+      this.consolidateSlots(deep, force)
+      // then the out state
+      this.consolidateConnections()
       this.consolidateType()
       this.consolidateSubtype()
-      this.foreachData(function () {
-        this.consolidate()
-      })
-      this.foreachSlot(function () {
-        // some child blocks may be disconnected as side effect
-        this.consolidate(deep, force)
-      })
-      if (deep) {
-        // Consolidate the child blocks that are still connected
-        var e8r = this.block_.eyo.inputEnumerator()
-        var x
-        while (e8r.next()) {
-          if ((x = e8r.here.connection) && (x = x.targetBlock())) {
-            x.eyo.consolidate(deep, force)
-          }
-        }
-      }
-      this.consolidateConnections()
       return {
         return: true
       }
@@ -973,6 +964,57 @@ eYo.Delegate.prototype.setupType = function (optNewType) {
   if (!this.pythonType_) {
     console.error('Error! this.pythonType_')
   } 
+}
+
+/**
+ * Some blocks may change when their properties change.
+ * Consolidate the data.
+ * Only used by `consolidate`.
+ * Should not be called directly, but may be overriden.
+ * For edython.
+ * @param {?string} type Name of the new type.
+ */
+eYo.Delegate.prototype.consolidateData = function () {
+  this.foreachData(function () {
+    this.consolidate()
+  })
+}
+
+/**
+ * Some blocks may change when their properties change.
+ * Consolidate the slots.
+ * Only used by `consolidate`.
+ * Should not be called directly, but may be overriden.
+ * For edython.
+ * @param {?Boolean} deep
+ * @param {?Boolean} force
+ */
+eYo.Delegate.prototype.consolidateSlots = function (deep, force) {
+  this.foreachSlot(function () {
+    // some child blocks may be disconnected as side effect
+    this.consolidate(deep, force)
+  })
+}
+
+/**
+ * Some blocks may change when their properties change.
+ * Consolidate the slots.
+ * Only used by `consolidate`.
+ * Should not be called directly, but may be overriden.
+ * For edython.
+ * @param {?string} type Name of the new type.
+ */
+eYo.Delegate.prototype.consolidateInputs = function () {
+  if (deep) {
+    // Consolidate the child blocks that are still connected
+    var e8r = this.block_.eyo.inputEnumerator()
+    var x
+    while (e8r.next()) {
+      if ((x = e8r.here.connection) && (x = x.targetBlock())) {
+        x.eyo.consolidate(deep, force)
+      }
+    }
+  }
 }
 
 /**

@@ -528,7 +528,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
  * However, there might be some caveats related to undo management.
  * @param {!Boolean} deep
  * @param {!Boolean} force
- * @return {Boolean} true when consolidated, false otherwise
+ * @return {Boolean} true when consolidation occurred, false otherwise
  */
 eYo.DelegateSvg.Expr.prototype.consolidate = function (deep, force) {
   if (eYo.DelegateSvg.Expr.superClass_.consolidate.call(this, deep, force)) {
