@@ -152,7 +152,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (b
         // we assume that inputList is not void
         var c8n = list.inputList[list.inputList.length - 1].connection
         c8n.connect(B.outputConnection)
-        B.eyo.beReady(B)
+        B.eyo.beReady()
         block.eyo.render()
       } catch (err) {
         console.error(err)

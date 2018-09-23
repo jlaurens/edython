@@ -827,3 +827,6 @@ eYo.Do.someElementChild = function (element, handler, thisObject) {
     }
   })
 }
+
+eYo.Do.nothing = function () {
+}

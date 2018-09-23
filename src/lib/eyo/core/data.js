@@ -710,6 +710,7 @@ eYo.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
  */
 eYo.Data.prototype.beReady = function () {
   this.wait = 0
+  this.beReady = eYo.Do.nothing // one shot function
 }
 
 /**

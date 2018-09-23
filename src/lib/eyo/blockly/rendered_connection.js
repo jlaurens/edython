@@ -75,9 +75,10 @@ eYo.ConnectionDelegate.prototype.name_ = undefined// must change to wrapper
 eYo.ConnectionDelegate.prototype.beReady = function () {
   var target = this.connection.targetBlock()
   if (target) {
-    target.eyo.beReady(target)
-    target.eyo.parentDidChange(target, this.connection.getSourceBlock())
+    target.eyo.beReady()
+    target.eyo.parentDidChange(this.connection.getSourceBlock())
   }
+  this.beReady = eYo.Do.nothing // one shot function
 }
 
 /**

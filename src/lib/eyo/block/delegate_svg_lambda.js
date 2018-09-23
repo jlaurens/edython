@@ -340,8 +340,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
                 console.error(err)
                 throw err
               } finally {
-                B.eyo.beReady(B)
-                B.render()
+                B.eyo.beReady()
               }
             } catch (err) {
               console.error(err)

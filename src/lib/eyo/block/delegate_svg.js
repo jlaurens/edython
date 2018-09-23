@@ -313,10 +313,11 @@ eYo.DelegateSvg.prototype.contourAboveParent = true
  * @param {!Blockly.Block} block to be initialized.
  * @param {!Blockly.Block} newParent to be connected.
  */
-eYo.DelegateSvg.prototype.parentDidChange = function (block, newParent) {
+eYo.DelegateSvg.prototype.parentDidChange = function (newParent) {
   // This is the original code found in
   // `Blockly.BlockSvg.prototype.setParent`
   if (newParent) {
+    var block = this.block_
     var svgRoot = block.getSvgRoot()
     var oldXY = block.getRelativeToSurfaceXY()
     newParent.getSvgRoot().appendChild(svgRoot)
@@ -1889,7 +1890,7 @@ eYo.DelegateSvg.prototype.delayedRender = function (block) {
  */
 eYo.DelegateSvg.newBlockReady = function (workspace, model, id) {
   var B = this.newBlockComplete(workspace, model, id)
-  B && B.eyo.beReady(B)
+  B && B.eyo.beReady()
   return B
 }
 
@@ -1988,13 +1989,10 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
  * When setup is finish.
  * @param {!Block} block
  */
-eYo.DelegateSvg.prototype.beReady = function (block) {
-  if (this.isReady_) {
-    return
-  }
+eYo.DelegateSvg.prototype.beReady = function () {
   try {
     this.changeBegin()
-    block = this.block_
+    var block = this.block_
     block.initSvg()
     this.foreachData(function () {
       this.beReady()
@@ -2038,8 +2036,8 @@ eYo.DelegateSvg.prototype.beReady = function (block) {
     console.error(err)
     throw err
   } finally {
-    this.isReady_ = true
     this.changeEnd()
+    this.beReady = eYo.Do.nothing // one shot function
   }
 }
 
@@ -2986,7 +2984,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (block, model, connect
           Blockly.Events.fire(new Blockly.Events.BlockCreate(candidate))
         }
         prepare && prepare()
-        candidate.eyo.beReady(candidate)
+        candidate.eyo.beReady()
         otherC8n.connect(c8n)
         candidate.select()
       } catch (err) {

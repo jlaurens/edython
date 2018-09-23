@@ -41,6 +41,7 @@ eYo.Input.setupEyO = (function () {
         c8n.eyo.name_ = input.name // the connection remembers the name of the input such that checking is fine grained.
       }
     }
+    this.beReady = eYo.Do.nothing // one shot function
   }
 }())
 

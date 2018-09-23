@@ -92,10 +92,6 @@ eYo.Slot.prototype.targetBlock = function () {
  * Install this slot on a block.
  */
 eYo.Slot.prototype.beReady = function () {
-  if (this.svgGroup_) {
-    // Slot has already been initialized once.
-    return
-  }
   // Build the DOM.
   this.svgGroup_ = Blockly.utils.createSvgElement('g', {
     class: 'eyo-slot'
@@ -120,6 +116,7 @@ eYo.Slot.prototype.beReady = function () {
   }
   this.bindField && f.call(this, this.bindField)
   this.input && this.input.eyo.beReady()
+  this.beReady = eYo.Do.nothing // one shot function
 }
 /**
  * The DOM SVG group representing this slot.

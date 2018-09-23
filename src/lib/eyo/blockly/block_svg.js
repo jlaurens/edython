@@ -261,7 +261,7 @@ eYo.BlockSvg.prototype.setParent = function (newParent) {
   }
   this.eyo.parentWillChange(this, newParent)
   eYo.BlockSvg.superClass_.setParent.call(this, newParent)
-  this.eyo.parentDidChange(this, newParent)
+  this.eyo.parentDidChange(newParent)
   if ((this.eyo.svgPathHighlight_ &&
       this.svgGroup_ === this.eyo.svgPathHighlight_.parentElement) || (this.eyo.svgPathConnection_ &&
         this.svgGroup_ === this.eyo.svgPathConnection_.parentElement)) {
