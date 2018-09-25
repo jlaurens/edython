@@ -29,19 +29,24 @@ eYo.Input.setupEyO = (function () {
   var beReady = function () {
     var c8n = this.owner.connection
     c8n && c8n.eyo.beReady()
+    this.beReady = eYo.Do.nothing // one shot function
+  }
+  var consolidate = function () {
+    var c8n = this.owner.connection
+    c8n && c8n.eyo.consolidate(arguments)
   }
   return function (input) {
     if (!input.eyo) {
       input.eyo = {
         owner: input,
-        beReady: beReady
+        beReady: beReady,
+        consolidate: consolidate
       }
       var c8n = input.connection
       if (c8n) {
         c8n.eyo.name_ = input.name // the connection remembers the name of the input such that checking is fine grained.
       }
     }
-    this.beReady = eYo.Do.nothing // one shot function
   }
 }())
 
