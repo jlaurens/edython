@@ -385,7 +385,7 @@ eYo.DelegateSvg.prototype.getField = function (block, name) {
  * Sends a `synchronize` message to all slots.
  * May be used at the end of an initialization process.
  */
-eYo.DelegateSvg.prototype.synchronizeSlots = function (block) {
+eYo.DelegateSvg.prototype.synchronizeSlots = function () {
   this.foreachSlot(function () {
     this.synchronize()
   })
@@ -2021,6 +2021,66 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
 }
 
 /**
+ * Overriden.
+ * @param {?Boolean} deep
+ * @param {?Boolean} force
+ * @return {Boolean} true when consolidation occurred
+ */
+eYo.DelegateSvg.prototype.consolidate = function (deep, force) {
+  if (eYo.DelegateSvg.superClass_.consolidate.call(this, deep, force)) {
+    this.synchronize()
+  }
+}
+
+/**
+ * This methods is a higher state mutator.
+ * A primary data change or a primary connection change has just occurred.
+ * (Primary meaning that no other change has been performed
+ * that has caused the so called primary change).
+ * At return type, the block is in a consistent state.
+ * All the connections and components are consolidated
+ * and are in a consistent state.
+ * This method is sent from a `changeEnd` method only.
+ * Sends a `consolidate` message to each component of the block.
+ * However, there might be some caveats related to undo management,
+ * this must be investigated.
+ * This method is reentrant and `change.count` aware.
+ * This message is sent by:
+ * - an expression to its parent when consolidated
+ * - a list just before rendering
+ * - when removing items from a list
+ * - when a list creates a consolidator
+ * - when an argument list changes its `ary` or `mandatory`
+ * - in the changeEnd method
+ * Consolidation will not occur when no change has been
+ * preformed since the last consolidation
+ * @param {?Boolean} deep
+ * @param {?Boolean} force
+ * @return {Boolean} true when consolidation occurred
+ */
+eYo.DelegateSvg.prototype.synchronize = eYo.Decorate.reentrant_method(
+  'synchronize',
+  eYo.Decorate.onChangeCount(
+    'synchronize',
+    function () {
+      if (!Blockly.Events.recordUndo || !this.block_.workspace || this.change.level > 1) {
+        // do not synchronize while un(re)doing
+        return
+      }
+      this.foreachData(function () {
+        this.synchronize()
+      })
+      this.foreachSlot(function () {
+        this.synchronize()
+      })
+      return {
+        return: true
+      }
+    }
+  )
+)
+
+/**
  * When setup is finish.
  * The state has been created, some expected connections are created
  * This is the final step before the first rendering.
@@ -2028,32 +2088,28 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
  */
 eYo.DelegateSvg.prototype.beReady = function () {
   var block = this.block_
-  this.changeWrap(
-    function () {
-      block.initSvg()
-      this.foreachData(function () {
-        this.beReady()
-      })
-      // install all the fields and slots in the DOM
-      for (var k in this.fields) {
-        var field = this.fields[k]
-        if (!field.sourceBlock_) {
-          field.setSourceBlock(block)
-          field.init()
-        }
-      }
-      this.foreachSlot(function () {
-        this.beReady()
-      })
-      for (var i = 0, input; (input = block.inputList[i++]);) {
-        input.eyo.beReady()
-      }
-      this.inputSuite && this.inputSuite.eyo.beReady()
-      block.nextConnection && block.nextConnection.eyo.beReady()
+  block.initSvg()
+  this.foreachData(function () {
+    this.beReady()
+  })
+  // install all the fields and slots in the DOM
+  for (var k in this.fields) {
+    var field = this.fields[k]
+    if (!field.sourceBlock_) {
+      field.setSourceBlock(block)
+      field.init()
     }
-  )
-  this.synchronizeData(block)
-  this.synchronizeSlots(block)
+  }
+  this.foreachSlot(function () {
+    this.beReady()
+  })
+  for (var i = 0, input; (input = block.inputList[i++]);) {
+    input.eyo.beReady()
+  }
+  this.inputSuite && this.inputSuite.eyo.beReady()
+  block.nextConnection && block.nextConnection.eyo.beReady()
+  this.synchronizeData()
+  this.synchronizeSlots()
   var parent = block.outputConnection && block.outputConnection.targetBlock()
   if (parent && parent.eyo.svgContourGroup_) {
     goog.dom.insertChildAt(parent.eyo.svgContourGroup_, this.svgContourGroup_, 0)
