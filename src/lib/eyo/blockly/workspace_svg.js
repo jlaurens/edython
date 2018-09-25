@@ -362,8 +362,9 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
           //   eYo.SelectedConnection = c8n
           // }
         },
-      this
-    )
+        this
+      )
+    }
   }
   Blockly.Events.disable(true)
   try {

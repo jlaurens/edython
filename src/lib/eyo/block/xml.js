@@ -333,16 +333,18 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
  * @param {?string} id
  * @private
  */
-eYo.DelegateSvg.newBlockComplete_saved = eYo.DelegateSvg.newBlockComplete
-eYo.DelegateSvg.newBlockComplete = function (workspace, model, id, render) {
-  if (goog.isString(model) && model.startsWith('<')) {
-    var B = eYo.Xml.stringToBlock(model, workspace)
+eYo.DelegateSvg.newBlockComplete = function () {
+  var saved = eYo.DelegateSvg.newBlockComplete
+  return function (workspace, model, id, render) {
+    if (goog.isString(model) && model.startsWith('<')) {
+      var B = eYo.Xml.stringToBlock(model, workspace)
+    }
+    if (!B) {
+      B = saved.call(this, workspace, model, id)
+    }
+    return B
   }
-  if (!B) {
-    B = this.newBlockComplete_saved(workspace, model, id)
-  }
-  return B
-}
+} ()
 
 /**
  * Decode an XML block tag and create a block (and possibly sub blocks) on the
