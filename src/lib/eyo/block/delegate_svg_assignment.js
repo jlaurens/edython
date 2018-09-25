@@ -289,8 +289,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         eYo.Key.NAME,
         eYo.Key.TARGET
       ],
-      didChange: /** @suppress {globalThis} */ function (newValue) {
-        this.didChange(newValue)
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
         this.data.name.setIncog(newValue === this.TARGET)
         var slot = this.owner.slots.target
         slot.required = newValue === this.TARGET
