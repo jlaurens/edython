@@ -72,6 +72,8 @@ eYo.Delegate.prototype.incrementChangeCount = function () {
  * The change level is used to keep track of the cascading mutations.
  * When mutations imply other mutations, there is no need to perform some actions until the original mutation is done.
  * For example, rendering should not be done until all the mutations are made.
+ * Changes not only concern the data, they may concern the
+ * slot visibility too.
  * For edython.
  */
 eYo.Delegate.prototype.changeBegin = function () {
@@ -182,6 +184,7 @@ eYo.Delegate.prototype.consolidate = eYo.Decorate.reentrant_method(
       // first the in state
       this.consolidateData()
       this.consolidateSlots(deep, force)
+      this.consolidateInputs(deep, force)
       // then the out state
       this.consolidateConnections()
       this.consolidateType()
@@ -920,7 +923,7 @@ eYo.Delegate.prototype.initDataWithModel = function (block, model, noCheck) {
  * Synchronize the data to the UI.
  * Sends a `synchronize` message to all data controllers.
  */
-eYo.Delegate.prototype.synchronizeData = function (block) {
+eYo.Delegate.prototype.synchronizeData = function () {
   this.foreachData(function () {
     this.synchronize(this.get())
   })
@@ -1012,17 +1015,15 @@ eYo.Delegate.prototype.consolidateSlots = function (deep, force) {
  * Only used by `consolidate`.
  * Should not be called directly, but may be overriden.
  * For edython.
- * @param {?string} type Name of the new type.
+ * @param {?Boolean} deep
+ * @param {?Boolean} force
  */
-eYo.Delegate.prototype.consolidateInputs = function () {
+eYo.Delegate.prototype.consolidateInputs = function (deep, force) {
   if (deep) {
     // Consolidate the child blocks that are still connected
     var e8r = this.block_.eyo.inputEnumerator()
-    var x
     while (e8r.next()) {
-      if ((x = e8r.here.connection) && (x = x.targetBlock())) {
-        x.eyo.consolidate(deep, force)
-      }
+      e8r.here.eyo.consolidate(deep, force)
     }
   }
 }
