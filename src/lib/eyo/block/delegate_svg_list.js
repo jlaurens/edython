@@ -60,7 +60,7 @@ eYo.DelegateSvg.List.prototype.getInput = function (block, name, dontCreate) {
  * @param {!Block} block
  */
 eYo.DelegateSvg.List.prototype.consolidate_ = function (deep, force) {
-  if (this.consolidate_lock || this.will_connect_ || this.changeLevel) {
+  if (this.consolidate_lock || this.will_connect_ || this.change.level) {
     // reentrant flag or wait for the new connection
     // to be established before consolidating
     // reentrant is essential because the consolidation
@@ -129,23 +129,20 @@ eYo.DelegateSvg.List.prototype.removeItems = function (block) {
   var list = block.inputList
   var i = 0
   var input
-  eYo.Events.setGroup(true)
-  try {
-    while ((input = list[i++])) {
-      var c8n = input.connection
-      var target = c8n.targetBlock()
-      if (target) {
-        c8n.disconnect()
-        target.dispose()
+  eYo.Events.groupWrap(
+    function () {
+      while ((input = list[i++])) {
+        var c8n = input.connection
+        var target = c8n.targetBlock()
+        if (target) {
+          c8n.disconnect()
+          target.dispose()
+        }
       }
-    }
-    this.consolidate()
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    eYo.Events.setGroup(false)
-  }
+      this.consolidate()
+    },
+    this
+  )
 }
 
 /**

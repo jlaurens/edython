@@ -521,7 +521,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
   this.separate()
 
   menuItem = this.newMenuItem(
-    block.eyo.getPythonType(block), function (event) {
+    block.eyo.getPythonType(), function (event) {
       var xmlDom = Blockly.Xml.blockToDom(block, true)
       var xmlText = Blockly.Xml.domToText(xmlDom)
       console.log(xmlText)
@@ -531,7 +531,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
   this.addChild(menuItem, true)
 
   menuItem = this.newMenuItem(
-    block.eyo.getPythonType(block) + ' python code',
+    block.eyo.getPythonType() + ' python code',
     function (b, e) {
       console.log('Python code for', block.type)
       var p = new eYo.PythonExporter()
@@ -541,12 +541,12 @@ eYo.MenuManager.prototype.populateLast = function (block) {
   this.addChild(menuItem, true)
 
   menuItem = this.newMenuItem(
-    block.eyo.getPythonType(block) + ' python code (deep)',
+    block.eyo.getPythonType() + ' python code (deep)',
     function (b, e) {
       console.log('Python code for', block.type)
       var p = new eYo.PythonExporter()
       console.log(p.export(block, true))
-      block.eyo.runScript(block)
+      block.eyo.runScript()
     })
   menuItem.setEnabled(true)
   this.addChild(menuItem, true)

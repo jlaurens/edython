@@ -249,9 +249,9 @@ eYo.DelegateSvg.Expr.unary.getOperatorModel = function () {
  * For edython.
  */
 eYo.DelegateSvg.Expr.unary.getType = function () {
-  if (this.savedChangeCount_type !== this.changeCount) {
+  if (this.savedChangeCount_type !== this.change.count) {
     this.setupType(this.getOperatorModel().type)
-    this.savedChangeCount_type = this.changeCount
+    this.savedChangeCount_type = this.change.count
   }
   return block.type
 }

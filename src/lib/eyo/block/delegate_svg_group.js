@@ -376,7 +376,7 @@ eYo.DelegateSvg.Manager.register('last_else_part')
  */
 eYo.DelegateSvg.Stmt.else_part.prototype.getType = function () {
   var block = this.block_
-  if (this.savedChangeCount_type !== this.changeCount) {
+  if (this.savedChangeCount_type !== this.change.count) {
     var T3 = eYo.T3.Stmt
     var type = T3.else_part
     var targetConnection
@@ -398,7 +398,7 @@ eYo.DelegateSvg.Stmt.else_part.prototype.getType = function () {
       }
     }  
     this.setupType(type)
-    this.savedChangeCount_type = this.changeCount
+    this.savedChangeCount_type = this.change.count
   }
   return block.type
 }

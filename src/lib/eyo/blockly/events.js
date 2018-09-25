@@ -183,6 +183,7 @@ eYo.Data.prototype.setTrusted__ = eYo.Decorate.reentrant_method(
 eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method('trusted', eYo.Data.prototype.setTrusted__)
 
 eYo.Events.filter = Blockly.Events.filter 
+
 /**
  * Filter the queued events and merge duplicates.
  * @param {!Array.<!Blockly.Events.Abstract>} queueIn Array of events.
@@ -207,4 +208,23 @@ Blockly.Events.filter = function(queueIn, forward) {
     }
   }
   return eYo.Events.filter(queueIn, forward)
+}
+
+
+/**
+ * Filter the queued events and merge duplicates.
+ * @param {!Function} do_it
+ * @param {self} This
+ */
+eYo.Events.groupWrap = function (do_it, self) {
+  var args = Array.prototype.slice.call(arguments)
+  try {
+    eYo.Events.setGroup(true)
+    args[0] && args[0].apply(args[1], args.slice(2))
+  } catch (err) {
+    console.error(err)
+    throw err
+  } finally {
+    eYo.Events.setGroup(false)
+  }
 }

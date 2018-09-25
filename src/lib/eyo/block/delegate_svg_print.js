@@ -143,36 +143,28 @@ eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (b
       }
     }
     var insert = function (key) {
-      eYo.Events.setGroup(true)
-      try {
-        var B = eYo.DelegateSvg.newBlockComplete(block.workspace, {
-          type: eYo.T3.Expr.keyword_item,
-          data: key
-        })
-        // we assume that inputList is not void
-        var c8n = list.inputList[list.inputList.length - 1].connection
-        c8n.connect(B.outputConnection)
-        B.eyo.beReady()
-        block.eyo.render()
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        eYo.Events.setGroup(false)
-      }
+      eYo.Events.groupWrap(
+        function () {
+          var B = eYo.DelegateSvg.newBlockReady(block.workspace, {
+            type: eYo.T3.Expr.keyword_item,
+            data: key
+          })
+          // we assume that inputList is not void
+          var c8n = list.inputList[list.inputList.length - 1].connection
+          c8n.connect(B.outputConnection)
+        },
+        this
+      )
     }
     var remove = function (key) {
-      eYo.Events.setGroup(true)
-      try {
-        var B = has[key]
-        B.unplug()
-        B.dispose()
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        eYo.Events.setGroup(false)
-      }
+      eYo.Events.groupWrap(
+        function () {
+          var B = has[key]
+          B.unplug()
+          B.dispose()
+        },
+        this
+      )
     }
     var F = function (candidate) {
       var menuItem = mgr.newMenuItem(

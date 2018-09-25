@@ -475,15 +475,14 @@ eYo.Slot.prototype.setIncog = function (newValue) {
   }
   var change = this.incog !== newValue
   this.incog = newValue
-  if (this.wait) {
-    return
-  }
+  // forward to the connection
   var c8n = this.input && this.input.connection
   if (c8n && c8n.eyo.isIncog() !== newValue) {
     change = true 
     c8n.eyo.setIncog(newValue)
   }
   change && this.synchronize()
+  return change
 }
 
 /**

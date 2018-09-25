@@ -12,13 +12,14 @@
  * and the ui.
  * The data definitely belongs to the model layer.
  * When the data corresponds to some ui object, they must be synchronized,
- * at least when no change is pending.
+ * at least when no change is actually pending (see the change level).
  * The typical synchronization problem concerns the text fields.
  * We say that an object is in a consistant state when all the synchronizations
  * have been performed.
  * A change in the ui must reflect any change to the data and conversely.
  * Care must be taken to be sure that there is indeed a change,
  * to avoid infinite loops.
+ * For that purpose, reentrancy is managed with a lock.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -43,16 +44,18 @@ eYo.Data = function (owner, key, model) {
   goog.asserts.assert(owner, 'Missing owner')
   goog.asserts.assert(key, 'Missing key')
   goog.asserts.assert(model, 'Missing model')
+  // create and initialize the state
   this.owner = owner // circular reference
   this.data = owner.data // the owner's other data objects
   this.value_ = /** Object|null */ undefined
   this.key = key
-  this.model = goog.isObject(model) ? model: (model = {init: model})
   this.upperKey = key[0].toUpperCase() + key.slice(1)
-  this.name = 'eyo:' + (this.model.name || this.key).toLowerCase()
-  this.noUndo = model.noUndo
   this.incog_ = false
   this.wait = 1 // start with 1 exactly, see `synchronize`
+
+  this.model = goog.isObject(model) ? model: (model = {init: model})
+  this.name = 'eyo:' + (this.model.name || this.key).toLowerCase()
+  this.noUndo = model.noUndo
   var xml = model.xml
   if (goog.isDefAndNotNull(xml) || xml !== false) {
     this.attributeName = (xml && xml.attribute) || key
@@ -254,6 +257,7 @@ eYo.Data.prototype.toText = function () {
 
 /**
  * Returns the text representation of the data.
+ * Called during synchronization.
  * @param {?Object} newValue
  */
 eYo.Data.prototype.toField = function () {

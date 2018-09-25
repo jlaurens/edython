@@ -534,26 +534,23 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
  * @override
  */
 eYo.BlockSvg.prototype.dispose = function (healStack, animate) {
-  eYo.Events.setGroup(true)
-  try {
-    if (this === Blockly.selected) {
-      // this block was selected, select the block below or above before deletion
-      var c8n, target
-      if (((c8n = this.nextConnection) && (target = c8n.targetBlock())) || ((c8n = this.previousConnection) && (target = c8n.targetBlock()))) {
-        target.select()
-      } else if ((c8n = this.outputConnection) && (c8n = c8n.targetConnection)) {
-        target = c8n.sourceBlock_
-        target.select()
-        eYo.SelectedConnection = c8n
+  eYo.Events.groupWrap(
+    function () {
+      if (this === Blockly.selected) {
+        // this block was selected, select the block below or above before deletion
+        var c8n, target
+        if (((c8n = this.nextConnection) && (target = c8n.targetBlock())) || ((c8n = this.previousConnection) && (target = c8n.targetBlock()))) {
+          target.select()
+        } else if ((c8n = this.outputConnection) && (c8n = c8n.targetConnection)) {
+          target = c8n.sourceBlock_
+          target.select()
+          eYo.SelectedConnection = c8n
+        }
       }
-    }
-    eYo.BlockSvg.superClass_.dispose.call(this, healStack, animate)
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    eYo.Events.setGroup(false)
-  }
+      eYo.BlockSvg.superClass_.dispose.call(this, healStack, animate)
+    },
+    this
+  )
 }
 
 /**

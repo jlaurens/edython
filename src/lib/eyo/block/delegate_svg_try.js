@@ -110,13 +110,13 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
  */
 eYo.DelegateSvg.Stmt.except_part.prototype.getType = function () {
   var block = this.block_
-  if (this.savedChangeCount_type !== this.changeCount) {
+  if (this.savedChangeCount_type !== this.change.count) {
     this.setupType(
       this.data.variant.get() > 0
       ? eYo.T3.Stmt.except_part
       : eYo.T3.Stmt.void_except_part
     )
-    this.savedChangeCount_type = this.changeCount
+    this.savedChangeCount_type = this.change.count
   }
   return block.type
 }
