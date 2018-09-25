@@ -82,6 +82,14 @@ eYo.ConnectionDelegate.prototype.beReady = function () {
 }
 
 /**
+ * `consolidate` the target block.
+ */
+eYo.ConnectionDelegate.prototype.consolidate = function (deep, force) {
+  var target = this.connection.targetBlock()
+  target && target.eyo.consolidate(deep, force)
+}
+
+/**
  * Convenient method to get the source block of the receiver's connection.
  */
 eYo.ConnectionDelegate.prototype.sourceBlock = function () {
