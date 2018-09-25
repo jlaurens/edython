@@ -203,10 +203,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           this.data.definition.set(eYo.Key.NONE)
         }
       },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.data.name.synchronize()
-        this.synchronize(newValue)
-      },
       fromField: /** @suppress {globalThis} */ function (value) {
         this.fromField(value.length)
       },
