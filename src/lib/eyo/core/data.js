@@ -82,6 +82,28 @@ eYo.Data = function (owner, key, model) {
       this[k] = model[k]
     }
   }
+  Object.defineProperty(
+    this,
+    'incog_p',
+    {
+      get () {
+        return this.incog_
+      },
+      set (newValue) {
+        if (!goog.isDef(newValue)) {
+          newValue = !this.required
+        }
+        if (!this.incog_ !== !newValue) {
+          this.owner.changeWrap(
+            function () {
+              this.incog_ = !!newValue
+            },
+            this
+          )
+        }
+      }
+    }
+  )
 }
 
 /**
@@ -524,7 +546,7 @@ eYo.Data.prototype.noUndo = undefined
 /**
  * Synchronize the value of the property with the UI.
  * May be overriden by the model.
- * Do nothing if the receiver should wait.
+ * Do nothing if the owner is in the process of a deep data change.
  * When not overriden by the model, updates the field and slot state.
  * We can call `this.synchronize()` from the model.
  * `synchronize: true`, and
@@ -549,7 +571,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
       } finally {
         Blockly.Events.enable()
       }
-      field.setVisible(!this.isIncog())
+      field.setVisible(!this.incog_p)
       var element = field.textElement_
       if (element) {
         if (this.error) {
@@ -559,7 +581,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
         }
       }
     }
-    this.slot && this.slot.setIncog(this.isIncog())
+    this.slot && this.slot.setIncog(this.incog_p)
   } else {
     var f = eYo.Decorate.reentrant_method.call(this, 'model_synchronize', this.model.synchronize)
     f && f.apply(this, arguments)
@@ -642,9 +664,8 @@ eYo.Data.prototype.set = function (newValue, noRender) {
 }
 
 /**
- * Disabled data correspond to diabled input.
+ * Disabled data correspond to disabled input.
  * Changing this value will cause an UI synchronization.
- * Always synchronize, even when no value changed.
  * @param {Object} newValue  When not defined, replaced by `!this.required`
  * @return {boolean} whether changes have been made
  */
@@ -654,12 +675,11 @@ eYo.Data.prototype.setIncog = function (newValue) {
   }
   if (!this.incog_ !== !newValue) {
     this.incog_ = !!newValue
-    this.didChange(this.value_, this.value_)
-    this.synchronizeIfUI(this.value_)
     return true
   }
   return false
 }
+
 /**
  * Whether the data is incognito.
  */
@@ -673,6 +693,9 @@ eYo.Data.prototype.isIncog = function () {
  * Reentrant management here of the model action.
  */
 eYo.Data.prototype.consolidate = function () {
+  if (this.owner.change.level) {
+    return
+  }
   var f = eYo.Decorate.reentrant_method.call(this, 'model_consolidate', this.model.consolidate)
   f && f.apply(this, arguments)
 }
