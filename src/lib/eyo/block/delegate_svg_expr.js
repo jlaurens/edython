@@ -263,34 +263,37 @@ eYo.DelegateSvg.Expr.prototype.canReplaceBlock = function (block, other) {
  */
 eYo.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
   if (this.workspace && other && other.workspace) {
-    eYo.Events.setGroup(true)
-    try {
-      console.log('**** replaceBlock', block, other)
-      var c8n = other.outputConnection
-      var its_xy = other.getRelativeToSurfaceXY()
-      var my_xy = block.getRelativeToSurfaceXY()
-      block.outputConnection.disconnect()
-      if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(block.outputConnection)) {
-        // the other block has an output connection that can connect to the block's one
-        var source = c8n.sourceBlock_
-        var selected = source.eyo.hasSelect(source)
-        // next operations may unselect the block
-        var old = source.eyo.consolidating_
-        c8n.connect(block.outputConnection)
-        source.eyo.consolidating_ = old
-        if (selected) {
-          source.select()
-        }
-      } else {
-        block.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
-      }
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      other.dispose(true)
-      eYo.Events.setGroup(false)
-    }
+    eYo.Events.groupWrap(
+      function () {
+        try {
+          console.log('**** replaceBlock', block, other)
+          var c8n = other.outputConnection
+          var its_xy = other.getRelativeToSurfaceXY()
+          var my_xy = block.getRelativeToSurfaceXY()
+          block.outputConnection.disconnect()
+          if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(block.outputConnection)) {
+            // the other block has an output connection that can connect to the block's one
+            var source = c8n.sourceBlock_
+            var selected = source.eyo.hasSelect(source)
+            // next operations may unselect the block
+            var old = source.eyo.consolidating_
+            c8n.connect(block.outputConnection)
+            source.eyo.consolidating_ = old
+            if (selected) {
+              source.select()
+            }
+          } else {
+            block.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+          }
+        } catch (err) {
+          console.error(err)
+          throw err
+        } finally {
+          other.dispose(true)
+        }    
+      },
+      this
+    )
   }
 }
 
@@ -465,53 +468,49 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
   // Next connections should be connected
   var outputC8n = block.outputConnection
   if (parentInputC8n && parentInputC8n.checkType_(outputC8n)) {
-    eYo.Events.setGroup(true)
-    try {
-      if (Blockly.Events.isEnabled()) {
-        Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
-      }
-      var targetC8n = parentInputC8n.targetConnection
-      if (targetC8n/* && targetC8n.isConnected() */) {
-        console.log('input already connected, disconnect and dispose target')
-        var B = targetC8n.sourceBlock_
-        targetC8n.disconnect()
-        B.dispose(true)
-        B = undefined
-        targetC8n = undefined
-      }
-      targetC8n = outputC8n.targetConnection
-      var bumper
-      if (targetC8n) {
-        targetC8n.disconnect()
-        if (parentBlock.outputConnection && targetC8n.checkType_(parentBlock.outputConnection)) {
-          targetC8n.connect(parentBlock.outputConnection)
+    eYo.Events.groupWrap(
+      function () {
+        if (Blockly.Events.isEnabled()) {
+          Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
+        }
+        var targetC8n = parentInputC8n.targetConnection
+        if (targetC8n/* && targetC8n.isConnected() */) {
+          console.log('input already connected, disconnect and dispose target')
+          var B = targetC8n.sourceBlock_
+          targetC8n.disconnect()
+          B.dispose(true)
+          B = undefined
+          targetC8n = undefined
+        }
+        targetC8n = outputC8n.targetConnection
+        var bumper
+        if (targetC8n) {
+          targetC8n.disconnect()
+          if (parentBlock.outputConnection && targetC8n.checkType_(parentBlock.outputConnection)) {
+            targetC8n.connect(parentBlock.outputConnection)
+          } else {
+            bumper = targetC8n.sourceBlock_
+            var its_xy = bumper.getRelativeToSurfaceXY()
+            var my_xy = parentBlock.getRelativeToSurfaceXY()
+            parentBlock.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+          }
+          targetC8n = undefined
         } else {
-          bumper = targetC8n.sourceBlock_
-          var its_xy = bumper.getRelativeToSurfaceXY()
-          var my_xy = parentBlock.getRelativeToSurfaceXY()
+          its_xy = block.getRelativeToSurfaceXY()
+          my_xy = parentBlock.getRelativeToSurfaceXY()
           parentBlock.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
         }
-        targetC8n = undefined
-      } else {
-        its_xy = block.getRelativeToSurfaceXY()
-        my_xy = parentBlock.getRelativeToSurfaceXY()
-        parentBlock.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+        parentInputC8n.connect(outputC8n)
+        if (fill_holes) {
+          var holes = eYo.HoleFiller.getDeepHoles(parentBlock)
+          eYo.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
+        }
+        parentBlock.render()
+        if (bumper) {
+          bumper.bumpNeighbours_()
+        }  
       }
-      parentInputC8n.connect(outputC8n)
-      if (fill_holes) {
-        var holes = eYo.HoleFiller.getDeepHoles(parentBlock)
-        eYo.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
-      }
-      parentBlock.render()
-      if (bumper) {
-        bumper.bumpNeighbours_()
-      }
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      eYo.Events.setGroup(false)
-    }
+    )
   } else {
     parentBlock.dispose(true)
     parentBlock = undefined

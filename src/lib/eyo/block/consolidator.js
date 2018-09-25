@@ -607,7 +607,7 @@ eYo.Consolidator.List.prototype.getIO = function (block) {
  * @param {boolean} force, true if no shortcut is allowed.
  */
 eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('consolidate', function (block, force) {
-  if (block.eyo.changeLevel) {
+  if (block.eyo.change.level) {
     return
   }
   var io = this.getIO(block)

@@ -35,8 +35,10 @@ eYo.Delegate = function (block) {
   this.errors = Object.create(null) // just a hash
   this.block_ = block
   block.eyo = this
-  this.changeCount = 0
-  this.changeLevel = 0
+  this.change = {
+    count: 0,
+    level: 0
+  }
 }
 goog.inherits(eYo.Delegate, eYo.Helper)
 
@@ -51,18 +53,18 @@ eYo.Delegate.prototype.getBlock = function () {
 
 /**
  * Increment the change count.
- * The changeCount is used to compute some properties that depend
- * on the core state. Some changes induce a change in the changeCount
+ * The change.count is used to compute some properties that depend
+ * on the core state. Some changes induce a change in the change.count
  * which in turn may induce a change in properties.
  * Beware of the stability problem.
- * The changeCount is incremented whenever a data changes,
+ * The change.count is incremented whenever a data changes,
  * a child block changes or a connection changes.
  * This is used by the primary delegate's getType
  * to cache the return value.
  * For edython.
  */
 eYo.Delegate.prototype.incrementChangeCount = function () {
-  ++ this.changeCount
+  ++ this.change.count
 }
 
 /**
@@ -73,21 +75,25 @@ eYo.Delegate.prototype.incrementChangeCount = function () {
  * For edython.
  */
 eYo.Delegate.prototype.changeBegin = function () {
-  ++this.changeLevel
+  ++this.change.level
 }
 
 /**
- * Ends a mutation
+ * Ends a mutation.
+ * When a change is complete at the top level,
+ * the change count is incremented and the receiver
+ * is consolidated.
+ * This is the only place where consolidation should occur.
  * For edython.
  * @return {Number} the change level
  */
 eYo.Delegate.prototype.changeEnd = function () {
-  --this.changeLevel
-  if (this.changeLevel === 0) {
+  --this.change.level
+  if (this.change.level === 0) {
     this.incrementChangeCount()
     this.consolidate()
   }
-  return this.changeLevel
+  return this.change.level
 }
 
 /**
@@ -113,10 +119,10 @@ eYo.Delegate.prototype.changeWrap = function () {
  * `foo` is overriden by the model.
  * The model `foo` can call the builtin `foo` with `this.foo(...)`.
  * `do_it` receives all the parameters that the decorated function will receive.
- * If `do_it` return value is not an object, the changeCount is not recorded
+ * If `do_it` return value is not an object, the change.count is not recorded
  * If `do_it` return value is an object with a `return` property,
- * the `changeCount` is recorded such that `do_it` won't be executed
- * until the next `changeCount` increment.
+ * the `change.count` is recorded such that `do_it` won't be executed
+ * until the next `change.count` increment.
  * @param {!String} key, 
  * @param {!Function} do_it
  * @return {!Function}
@@ -126,12 +132,12 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
   var saved = key + '_changeCount_saved'
   var cached = key + '_cached'
   return function() {
-    if (this[saved] === this.changeCount) {
+    if (this[saved] === this.change.count) {
       return this[cached]
     }
     var did_it = do_it.apply(this, arguments)
     if (did_it) {
-      this[saved] = this.changeCount
+      this[saved] = this.change.count
       this[cached] = did_it.return  
     }
     return this[cached]
@@ -139,14 +145,18 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
 }
 
 /**
- * This methods is a state mutator.
+ * This methods is a higher state mutator.
+ * A primary data change or a primary connection change has just occurred.
+ * (Primary meaning that no other change has been performed
+ * that has caused the so called primary change).
  * At return type, the block is in a consistent state.
  * All the connections and components are consolidated
  * and are in a consistent state.
+ * This method is sent from a `changeEnd` method only.
  * Sends a `consolidate` message to each component of the block.
  * However, there might be some caveats related to undo management,
  * this must be investigated.
- * This method is reentrant and `changeCount` aware.
+ * This method is reentrant and `change.count` aware.
  * This message is sent by:
  * - an expression to its parent when consolidated
  * - a list just before rendering
@@ -160,12 +170,12 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
  * @param {?Boolean} force
  * @return {Boolean} true when consolidation occurred
  */
-eYo.Delegate.prototype.consolidate =   eYo.Decorate.reentrant_method(
+eYo.Delegate.prototype.consolidate = eYo.Decorate.reentrant_method(
     'consolidate',
   eYo.Decorate.onChangeCount(
     'consolidate',
     function (deep, force) {
-      if (!Blockly.Events.recordUndo || !this.block_.workspace || this.changeLevel > 1 || this.initBlock_lock) {
+      if (!Blockly.Events.recordUndo || !this.block_.workspace || this.change.level > 1) {
         // do not consolidate while un(re)doing
         return
       }
@@ -1276,7 +1286,7 @@ eYo.Delegate.prototype.completeWrappedInput_ = function (block, input, prototype
         goog.asserts.assert(prototypeName, 'Missing wrapping prototype name in block ' + block.type)
         goog.asserts.assert(eYo.Delegate.wrappedFireWall, 'ERROR: Maximum value reached in completeWrappedInput_ (circular)')
         --eYo.Delegate.wrappedFireWall
-        target = eYo.DelegateSvg.newBlockComplete(block.workspace, prototypeName, block.id+'.wrapped:'+input.connection.eyo.name_)
+        target = eYo.DelegateSvg.newBlockReady(block.workspace, prototypeName, block.id+'.wrapped:'+input.connection.eyo.name_)
         goog.asserts.assert(target, 'completeWrapped_ failed: ' + prototypeName)
         goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed ' + target.type)
         input.connection.connect(target.outputConnection)

@@ -238,9 +238,12 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.owner.createConsolidator()
-        this.owner.consolidator.data.ary = newValue
-        this.owner.consolidate()
+        this.owner.changeWrap(
+          function () {
+            this.createConsolidator()
+            this.consolidator.data.ary = newValue
+          }
+        )
       }
     },
     mandatory: {
@@ -250,10 +253,13 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
       undo: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.owner.createConsolidator()
-        this.owner.consolidator.data.mandatory = newValue
-        this.owner.consolidator.data.empty = !newValue
-        this.owner.consolidate()
+        this.owner.changeWrap(
+          function () {
+            this.createConsolidator()
+            this.consolidator.data.mandatory = newValue
+            this.consolidator.data.empty = !newValue    
+          }
+        )
       }
     }
   },
@@ -268,7 +274,6 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
 /**
  * Create a consolidator..
  *
- * @param {!Block} block
  * @param {boolean} force
  */
 eYo.DelegateSvg.Expr.argument_list.prototype.createConsolidator = eYo.Decorate.reentrant_method('createConsolidator', function (force) {
