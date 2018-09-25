@@ -328,24 +328,24 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
             eYo.Do.createSPAN(msg),
             eYo.Do.createSPAN(' )', 'eyo-code-disabled')
           )
-          mgr.addInsertChild(mgr.newMenuItem(content, function () {
-            eYo.Events.groupWrap(
-              function () {
-                var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)
-                try {
-                  B.eyo.data.modifier.set(modifier)
-                  B.eyo.data.variant.set(flags)
-                  c8n.connect(B.outputConnection)  
-                } catch (err) {
-                  console.error(err)
-                  throw err
-                } finally {
-                  B.eyo.beReady()
-                }
-              },
-              this
-            )
-          }))
+          mgr.addInsertChild(mgr.newMenuItem(
+            content,
+            function () {
+              var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)
+              eYo.Events.groupWrap(
+                function () {
+                  B.eyo.changeWrap(
+                    function () {
+                      this.data.modifier_p = modifier
+                      this.data.variant_p = flags
+                      c8n.connect(B.outputConnection)    
+                    }
+                  )
+                },
+                this
+              )
+            }
+          ))
         }
       }
     }
