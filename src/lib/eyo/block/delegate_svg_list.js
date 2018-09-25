@@ -85,10 +85,11 @@ eYo.DelegateSvg.List.prototype.consolidate_ = function (deep, force) {
 /**
  * Create a consolidator..
  *
- * @param {!Block} block
  * @param {boolean} force
  */
-eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_method('createConsolidator', function (force) {
+eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
+  'createConsolidator',
+  function (force) {
   if (!this.consolidator || force) {
     var block = this.block_
     var D = eYo.DelegateSvg.Manager.getModel(block.type).list
