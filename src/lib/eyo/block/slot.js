@@ -70,7 +70,22 @@ eYo.Slot = function (owner, key, model) {
     this.setInput(block.appendValueInput(key))
     f.call(this)
   }
-
+  Object.defineProperty(
+    this,
+    'incog_p',
+    {
+      get () {
+        return this.isIncog
+      },
+      set (newValue) {
+        this.owner.changeWrap(
+          this.setIncog,
+          this,
+          newValue
+        )
+      }
+    }
+  )
 }
 
 /**
@@ -464,6 +479,7 @@ eYo.Slot.prototype.targetBlock = function () {
 
 /**
  * Set the disable state.
+ * Synchronize when the incog state did change.
  * For edython.
  * @param {!boolean} newValue  When not defined, replaced by `!this.required`
  * @return {boolean} whether changes have been made
@@ -590,7 +606,8 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
 }
 
 /**
- * Set the disable state.
+ * Set the UI state.
+ * Called only by `setIncog`.
  * For edython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
@@ -622,7 +639,6 @@ eYo.Slot.prototype.synchronize = function () {
       }
     }
   }
-  this.owner.delayedRender(this.block)
 }
 
 goog.forwardDeclare('eYo.DelegateSvg.List')
