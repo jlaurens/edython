@@ -2023,59 +2023,54 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
 /**
  * When setup is finish.
  * The state has been created, some expected connections are created
- * This is the final step before rendering.
+ * This is the final step before the first rendering.
  * This is a one shot function.
  */
 eYo.DelegateSvg.prototype.beReady = function () {
-  try {
-    this.changeBegin()
-    var block = this.block_
-    block.initSvg()
-    this.foreachData(function () {
-      this.beReady()
-    })
-    // install all the fields and slots in the DOM
-    for (var k in this.fields) {
-      var field = this.fields[k]
-      if (!field.sourceBlock_) {
-        field.setSourceBlock(block)
-        field.init()
+  var block = this.block_
+  this.changeWrap(
+    function () {
+      block.initSvg()
+      this.foreachData(function () {
+        this.beReady()
+      })
+      // install all the fields and slots in the DOM
+      for (var k in this.fields) {
+        var field = this.fields[k]
+        if (!field.sourceBlock_) {
+          field.setSourceBlock(block)
+          field.init()
+        }
       }
+      this.foreachSlot(function () {
+        this.beReady()
+      })
+      for (var i = 0, input; (input = block.inputList[i++]);) {
+        input.eyo.beReady()
+      }
+      this.inputSuite && this.inputSuite.eyo.beReady()
+      block.nextConnection && block.nextConnection.eyo.beReady()
     }
-    this.foreachSlot(function () {
-      this.beReady()
-    })
-    for (var i = 0, input; (input = block.inputList[i++]);) {
-      input.eyo.beReady()
-    }
-    this.inputSuite && this.inputSuite.eyo.beReady()
-    block.nextConnection && block.nextConnection.eyo.beReady()
-    this.changeWrap()
-    this.synchronizeData(block)
-    this.synchronizeSlots(block)
-    var parent = block.outputConnection && block.outputConnection.targetBlock()
-    if (parent && parent.eyo.svgContourGroup_) {
-      goog.dom.insertChildAt(parent.eyo.svgContourGroup_, this.svgContourGroup_, 0)
-      goog.dom.classlist.add(/** @type {!Element} */(this.svgContourGroup_),
-        'eyo-inner')
-      goog.dom.appendChild(parent.eyo.svgShapeGroup_, this.svgShapeGroup_)
-      goog.dom.classlist.add(/** @type {!Element} */(this.svgShapeGroup_),
-        'eyo-inner')
-    } else {
-      goog.dom.insertChildAt(block.svgGroup_, this.svgContourGroup_, 0)
-      goog.dom.classlist.remove(/** @type {!Element} */(this.svgContourGroup_),
-        'eyo-inner')
-      goog.dom.insertSiblingBefore(this.svgShapeGroup_, this.svgContourGroup_)
-      goog.dom.classlist.remove(/** @type {!Element} */(this.svgShapeGroup_),
-        'eyo-inner')
-    }
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    this.changeEnd()
-    this.beReady = eYo.Do.nothing // one shot function
+  )
+  this.synchronizeData(block)
+  this.synchronizeSlots(block)
+  var parent = block.outputConnection && block.outputConnection.targetBlock()
+  if (parent && parent.eyo.svgContourGroup_) {
+    goog.dom.insertChildAt(parent.eyo.svgContourGroup_, this.svgContourGroup_, 0)
+    goog.dom.classlist.add(/** @type {!Element} */(this.svgContourGroup_),
+      'eyo-inner')
+    goog.dom.appendChild(parent.eyo.svgShapeGroup_, this.svgShapeGroup_)
+    goog.dom.classlist.add(/** @type {!Element} */(this.svgShapeGroup_),
+      'eyo-inner')
+  } else {
+    goog.dom.insertChildAt(block.svgGroup_, this.svgContourGroup_, 0)
+    goog.dom.classlist.remove(/** @type {!Element} */(this.svgContourGroup_),
+      'eyo-inner')
+    goog.dom.insertSiblingBefore(this.svgShapeGroup_, this.svgContourGroup_)
+    goog.dom.classlist.remove(/** @type {!Element} */(this.svgShapeGroup_),
+      'eyo-inner')
   }
+this.beReady = eYo.Do.nothing // one shot function
 }
 
 /**

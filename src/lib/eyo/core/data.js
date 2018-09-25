@@ -51,8 +51,6 @@ eYo.Data = function (owner, key, model) {
   this.key = key
   this.upperKey = key[0].toUpperCase() + key.slice(1)
   this.incog_ = false
-  this.wait = 1 // start with 1 exactly, see `synchronize`
-
   this.model = goog.isObject(model) ? model: (model = {init: model})
   this.name = 'eyo:' + (this.model.name || this.key).toLowerCase()
   this.noUndo = model.noUndo
@@ -535,7 +533,7 @@ eYo.Data.prototype.noUndo = undefined
  * @param {Object} newValue
  */
 eYo.Data.prototype.synchronize = function (newValue) {
-  if (this.wait) {
+  if (this.owner.change.level) {
     return
   }
   if (this.model_synchronize_lock || this.model.synchronize === true) {
@@ -710,31 +708,10 @@ eYo.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
 }
 
 /**
- * The receiver is now ready to eventually synchronize and consolidate.
+ * No change is made except that this is a one shot function.
  */
 eYo.Data.prototype.beReady = function () {
-  this.wait = 0
   this.beReady = eYo.Do.nothing // one shot function
-}
-
-/**
- * Set the wait status of the field.
- * Any call to `waitOn` must be balanced by a call to `waitOff`
- */
-eYo.Data.prototype.waitOn = function () {
-  return ++this.wait
-}
-
-/**
- * Set the wait status of the field.
- * Any call to `waitOn` must be balanced by a call to `waitOff`
- */
-eYo.Data.prototype.waitOff = function () {
-  goog.asserts.assert(this.wait > 0, eYo.Do.format('Too  many `waitOn` {0}/{1}',
-    this.key, this.getBlockType()))
-  if (--this.wait === 0) {
-    this.consolidate()
-  }
 }
 
 /**

@@ -90,6 +90,7 @@ eYo.Slot.prototype.targetBlock = function () {
 
 /**
  * Install this slot on a block.
+ * No data change.
  */
 eYo.Slot.prototype.beReady = function () {
   // Build the DOM.
