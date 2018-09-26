@@ -172,30 +172,34 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
  * @param {?Boolean} force
  * @return {Boolean} true when consolidation occurred
  */
+eYo.Delegate.prototype.doConsolidate = function (deep, force) {
+  if (!force && (!Blockly.Events.recordUndo || !this.block_.workspace || this.change.level > 1)) {
+    // do not consolidate while un(re)doing
+    return
+  }
+  // synchronize everything
+  this.synchronizeData()
+  this.synchronizeSlots()
+  // first the in state
+  this.consolidateData()
+  this.consolidateSlots(deep, force)
+  this.consolidateInputs(deep, force)
+  // then the out state
+  this.consolidateConnections()
+  this.consolidateType()
+  this.consolidateSubtype()
+}
+
+/**
+ * Wraps `doConsolidate`.
+ * 
+ * 
+ */
 eYo.Delegate.prototype.consolidate = eYo.Decorate.reentrant_method(
-    'consolidate',
+  'consolidate',
   eYo.Decorate.onChangeCount(
     'consolidate',
-    function (deep, force) {
-      if (!Blockly.Events.recordUndo || !this.block_.workspace || this.change.level > 1) {
-        // do not consolidate while un(re)doing
-        return
-      }
-      // synchronize everything
-      this.synchronizeData()
-      this.synchronizeSlots()
-      // first the in state
-      this.consolidateData()
-      this.consolidateSlots(deep, force)
-      this.consolidateInputs(deep, force)
-      // then the out state
-      this.consolidateConnections()
-      this.consolidateType()
-      this.consolidateSubtype()
-      return {
-        return: true
-      }
-    }
+    eYo.Delegate.prototype.doConsolidate
   )
 )
 
@@ -1724,4 +1728,20 @@ eYo.Delegate.prototype.getError = function (block, key) {
  */
 eYo.Delegate.prototype.removeError = function (block, key) {
   delete this.errors[key]
+}
+
+/**
+ * get the slot connections, mainly for debugging purposes.
+ * For edython.
+ * @return An aray of all the connections
+ */
+eYo.Delegate.prototype.getSlotConnections = function () {
+  var ra = []
+  this.foreachSlot(
+    function () {
+      var c8n = this.input && this.input.connection
+      c8n && ra.push(c8n)
+    }
+  )
+  return ra
 }

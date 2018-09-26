@@ -548,7 +548,7 @@ eYo.DelegateSvg.prototype.renderDrawParent_ = function (block, optBubble) {
 eYo.DelegateSvg.prototype.render = eYo.Decorate.reentrant_method(
   'render', function (optBubble) {
     var block = this.block_
-    if (this.isDragging_ || this.change.level || !block.workspace) {
+    if (!this.isEditing && (this.isDragging_ || this.change.level || !block.workspace)) {
       return
     }
     // rendering is very special when this is just a matter of
@@ -2050,8 +2050,7 @@ eYo.DelegateSvg.prototype.beReady = function () {
   }
   this.inputSuite && this.inputSuite.eyo.beReady()
   block.nextConnection && block.nextConnection.eyo.beReady()
-  this.synchronizeData()
-  this.synchronizeSlots()
+  this.consolidate(false, true)
   var parent = block.outputConnection && block.outputConnection.targetBlock()
   if (parent && parent.eyo.svgContourGroup_) {
     goog.dom.insertChildAt(parent.eyo.svgContourGroup_, this.svgContourGroup_, 0)

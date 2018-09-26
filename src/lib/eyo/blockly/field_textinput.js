@@ -174,7 +174,7 @@ eYo.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
   if (this.eyo.doNotEdit || block.eyo.locked_ || !block.eyo.canEdit_ || block.isInFlyout) {
     return
   }
-  this.eyo.isEditing = true
+  block.eyo.isEditing = this.eyo.isEditing = true
   this.editRect_ && goog.dom.classlist.add(this.editRect_, 'eyo-editing')
   eYo.Events.setGroup(true)
   this.eyo.grouper_ = Blockly.Events.getGroup()
@@ -263,10 +263,10 @@ eYo.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
 eYo.FieldTextInput.prototype.widgetDispose_ = function () {
   var field = this
   return function () {
-    field.eyo.isEditing = false
+    var block = field.sourceBlock_
+    block.eyo.isEditing = field.eyo.isEditing = false
     field.editRect_ && goog.dom.classlist.remove(field.editRect_, 'eyo-editing')
     field.callValidator()
-    var block = field.sourceBlock_
     block.eyo.changeWrap(
       function () {
         field.onEndEditing_ && field.onEndEditing_()

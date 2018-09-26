@@ -520,6 +520,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
 
 
 /**
+ * Do not call this method, except when overriding.
  * This methods is a state mutator.
  * At return type, the block is in a consistent state.
  * All the connections and components are consolidated.
@@ -529,12 +530,10 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
  * @param {!Boolean} force
  * @return {Boolean} true when consolidation occurred, false otherwise
  */
-eYo.DelegateSvg.Expr.prototype.consolidate = function (deep, force) {
-  if (eYo.DelegateSvg.Expr.superClass_.consolidate.call(this, deep, force)) {
-    var parent = this.block_.getParent()
-    parent && parent.eyo.consolidate()
-    return true
-  }
+eYo.DelegateSvg.Expr.prototype.doConsolidate = function (deep, force) {
+  eYo.DelegateSvg.Expr.superClass_.doConsolidate.call(this, deep, force)
+  var parent = this.block_.getParent()
+  parent && parent.eyo.consolidate()
 }
 
 /**

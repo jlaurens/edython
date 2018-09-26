@@ -53,36 +53,6 @@ eYo.DelegateSvg.List.prototype.getInput = function (block, name, dontCreate) {
 }
 
 /**
- * Consolidate the input.
- * Removes empty place holders.
- * This must not be overriden.
- *
- * @param {!Block} block
- */
-eYo.DelegateSvg.List.prototype.consolidate_ = function (deep, force) {
-  if (this.consolidate_lock || this.will_connect_ || this.change.level) {
-    // reentrant flag or wait for the new connection
-    // to be established before consolidating
-    // reentrant is essential because the consolidation
-    // may cause rerendering ad vitam eternam.
-    return
-  }
-  this.consolidate_lock = true
-  try {
-    eYo.DelegateSvg.List.superClass_.consolidate.call(this, deep, force)
-    if (this.connectionsIncog) {
-      return
-    }
-    return this.consolidator.consolidate(this.block_, deep, force)
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    delete this.consolidate_lock
-  }
-}
-
-/**
  * Create a consolidator..
  *
  * @param {boolean} force
@@ -112,11 +82,35 @@ eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_metho
  *
  * @param {!Block} block
  */
-eYo.DelegateSvg.List.prototype.consolidate = function () {
-  this.createConsolidator()
-  this.consolidate = eYo.DelegateSvg.List.prototype.consolidate_
-  return this.consolidate.apply(this, arguments)// this is not recursive
-}
+eYo.DelegateSvg.List.prototype.doConsolidate = function () {
+  // this is a closure
+  /**
+   * Consolidate the input.
+   * Removes empty place holders.
+   * This must not be overriden.
+   *
+   * @param {!Block} block
+   */
+  var doConsolidate = function (deep, force) {
+    if (this.will_connect_ || this.change.level) {
+      // reentrant flag or wait for the new connection
+      // to be established before consolidating
+      // reentrant is essential because the consolidation
+      // may cause rerendering ad vitam eternam.
+      return
+    }
+    eYo.DelegateSvg.List.superClass_.doConsolidate.call(this, deep, force)
+    if (this.connectionsIncog) {
+      return
+    }
+    return this.consolidator.consolidate(this.block_, deep, force)
+  }
+  return function (deep, force) {
+    this.createConsolidator()
+    this.doConsolidate = doConsolidate
+    return doConsolidate.apply(this, arguments)// this is not recursive
+  }
+} ()
 
 // eYo.DelegateSvg.List.prototype.consolidator = undefined
 
