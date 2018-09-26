@@ -336,8 +336,8 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
                 function () {
                   B.eyo.changeWrap(
                     function () {
-                      this.data.modifier_p = modifier
-                      this.data.variant_p = flags
+                      this.modifier_p = modifier
+                      this.variant_p = flags
                       c8n.connect(B.outputConnection)    
                     }
                   )

@@ -181,6 +181,9 @@ eYo.Delegate.prototype.consolidate = eYo.Decorate.reentrant_method(
         // do not consolidate while un(re)doing
         return
       }
+      // synchronize everything
+      this.synchronizeData()
+      this.synchronizeSlots()
       // first the in state
       this.consolidateData()
       this.consolidateSlots(deep, force)
@@ -977,6 +980,24 @@ eYo.Delegate.prototype.setupType = function (optNewType) {
   if (!this.pythonType_) {
     console.error('Error! this.pythonType_')
   } 
+}
+
+/**
+ * For edython.
+ */
+eYo.Delegate.prototype.synchronizeData = function () {
+  this.foreachData(function () {
+    this.synchronize()
+  })
+}
+
+/**
+ * For edython.
+ */
+eYo.Delegate.prototype.synchronizeSlots = function () {
+  this.foreachSlot(function () {
+    this.synchronize()
+  })
 }
 
 /**

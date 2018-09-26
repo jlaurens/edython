@@ -416,11 +416,13 @@ eYo.DelegateSvg.prototype.getMenuTarget = function (block) {
  * @param {Boolean} notUndoable
  */
 eYo.Data.prototype.change = function (newValue) {
-  this.owner.changeWrap(
-    this.set,
-    this,
-    newValue
-  )
+  if (newValue !== this.get()) {
+    this.owner.changeWrap(
+      this.set,
+      this,
+      newValue
+    )  
+  }
 }
 
 /**
@@ -1551,7 +1553,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       var eyo = c8n.eyo
       if (!eyo.disabled_) {
         var pw = eyo.s7r_ || eyo.optional_
-        ? this.carretPathDefWidth_(cursorX)
+        ? this.caretPathDefWidth_(cursorX)
         : this.placeHolderPathDefWidth_(cursorX, c8n)
         io.steps.push(pw.d)
         io.cursorX += pw.width
@@ -1650,7 +1652,7 @@ eYo.DelegateSvg.prototype.outPathDef_ = function () {
  * @param {Number} cursorX position.
  * @private
  */
-eYo.DelegateSvg.prototype.carretPathDefWidth_ = function (cursorX) {
+eYo.DelegateSvg.prototype.caretPathDefWidth_ = function (cursorX) {
   /* eslint-disable indent */
   var size = {width: eYo.Font.space, height: eYo.Font.lineHeight()}
   var p = eYo.Padding.h()
@@ -1738,7 +1740,7 @@ eYo.DelegateSvg.prototype.highlightConnectionPathDef = function (block, c8n) {
     if (c8n.isConnected()) {
       steps = this.valuePathDef_(c8n.targetBlock())
     } else if (!c8n.eyo.disabled_ && (c8n.eyo.s7r_ || c8n.eyo.optional_)) {
-      steps = this.carretPathDefWidth_(c8n.offsetInBlock_.x).d
+      steps = this.caretPathDefWidth_(c8n.offsetInBlock_.x).d
     } else {
       steps = this.placeHolderPathDefWidth_(c8n.offsetInBlock_.x, c8n).d
     }
@@ -1771,7 +1773,7 @@ eYo.DelegateSvg.prototype.highlightConnection = function (block, c8n) {
     if (c8n.isConnected()) {
       steps = this.valuePathDef_(c8n.targetBlock())
     } else if (!c8n.eyo.disabled_ && (c8n.eyo.s7r_ || c8n.eyo.optional_)) {
-      steps = this.carretPathDefWidth_(0).d
+      steps = this.caretPathDefWidth_(0).d
     } else {
       steps = this.placeHolderPathDefWidth_(0, c8n).d
     }
@@ -2019,66 +2021,6 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
   var B = processModel(null, model, id)
   return B
 }
-
-/**
- * Overriden.
- * @param {?Boolean} deep
- * @param {?Boolean} force
- * @return {Boolean} true when consolidation occurred
- */
-eYo.DelegateSvg.prototype.consolidate = function (deep, force) {
-  if (eYo.DelegateSvg.superClass_.consolidate.call(this, deep, force)) {
-    this.synchronize()
-  }
-}
-
-/**
- * This methods is a higher state mutator.
- * A primary data change or a primary connection change has just occurred.
- * (Primary meaning that no other change has been performed
- * that has caused the so called primary change).
- * At return type, the block is in a consistent state.
- * All the connections and components are consolidated
- * and are in a consistent state.
- * This method is sent from a `changeEnd` method only.
- * Sends a `consolidate` message to each component of the block.
- * However, there might be some caveats related to undo management,
- * this must be investigated.
- * This method is reentrant and `change.count` aware.
- * This message is sent by:
- * - an expression to its parent when consolidated
- * - a list just before rendering
- * - when removing items from a list
- * - when a list creates a consolidator
- * - when an argument list changes its `ary` or `mandatory`
- * - in the changeEnd method
- * Consolidation will not occur when no change has been
- * preformed since the last consolidation
- * @param {?Boolean} deep
- * @param {?Boolean} force
- * @return {Boolean} true when consolidation occurred
- */
-eYo.DelegateSvg.prototype.synchronize = eYo.Decorate.reentrant_method(
-  'synchronize',
-  eYo.Decorate.onChangeCount(
-    'synchronize',
-    function () {
-      if (!Blockly.Events.recordUndo || !this.block_.workspace || this.change.level > 1) {
-        // do not synchronize while un(re)doing
-        return
-      }
-      this.foreachData(function () {
-        this.synchronize()
-      })
-      this.foreachSlot(function () {
-        this.synchronize()
-      })
-      return {
-        return: true
-      }
-    }
-  )
-)
 
 /**
  * When setup is finish.

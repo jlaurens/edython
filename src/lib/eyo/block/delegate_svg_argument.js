@@ -236,8 +236,8 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
       validate: /** @suppress {globalThis} */ function (newValue) {
         return {validated: goog.isNumber(newValue) ? newValue : Infinity}
       },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.didChange(oldValue, newValue)
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
         this.owner.changeWrap(
           function () {
             this.createConsolidator()

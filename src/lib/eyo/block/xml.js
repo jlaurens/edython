@@ -877,9 +877,6 @@ eYo.Xml.fromDom = function (block, element) {
         delete eyo.controller_fromDom_locked
       }
     } else {
-      eyo.foreachData(function () {
-        this.waitOn()
-      })
       eYo.Xml.Data.fromDom(block, element)
       // read slot
       eyo.foreachSlot(function () {

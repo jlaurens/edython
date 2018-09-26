@@ -190,8 +190,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
         : {}
       },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.didChange(oldValue, newValue)
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
         this.required = newValue > 0
         this.setIncog()
         var holder_d = this.data.holder
@@ -459,14 +459,14 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
         return {validated: validated}
       },
-      willChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
         // First change the ary of the arguments list, then change the ary of the delegate.
         // That way undo events are recorded in the correct order.
         var input = this.owner.slots.arguments.input
         if (input && input.connection) {
           var target = input.connection.targetBlock()
           if (target) {
-            target.eyo.ary_p = newValue
+            target.eyo.data.ary.set(newValue)
           }
         }
       },
@@ -481,7 +481,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       consolidate: /** @suppress {globalThis} */ function () {
         var item = eYo.Model.functions.getItem(this.owner.name_p)
-        this.change(item && goog.isDef(item.ary) ? item.ary : Infinity)
+        this.set(item && goog.isDef(item.ary) ? item.ary : Infinity)
       }
     },
     mandatory: {
@@ -495,7 +495,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         if (input && input.connection) {
           var target = input.connection.targetBlock()
           if (target) {
-            target.eyo.mandatory_p = newValue
+            target.eyo.data.mandatory.set(newValue)
           }
         }
       },
@@ -510,7 +510,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       consolidate: /** @suppress {globalThis} */ function () {
         var item = eYo.Model.functions.getItem(this.owner.name_p)
-        this.change(item && goog.isDef(item.mandatory) ? item.mandatory : Infinity)
+        this.set(item && goog.isDef(item.mandatory) ? item.mandatory : Infinity)
       }
     }
   },

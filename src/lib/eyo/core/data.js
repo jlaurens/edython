@@ -558,7 +558,10 @@ eYo.Data.prototype.synchronize = function (newValue) {
   if (this.owner.change.level) {
     return
   }
-  if (this.model_synchronize_lock || this.model.synchronize === true) {
+  if (!goog.isDef(newValue)) {
+    newValue = this.get()
+  }
+  if (this.model_synchronize_reentrant_lock || this.model.synchronize === true) {
     goog.asserts.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.getBlockType())
     var field = this.field
     if (field) {
@@ -584,7 +587,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
     this.slot && this.slot.setIncog(this.incog_p)
   } else {
     var f = eYo.Decorate.reentrant_method.call(this, 'model_synchronize', this.model.synchronize)
-    f && f.apply(this, arguments)
+    f && f.call(this, newValue)
   }
   this.owner && this.owner.shouldRender && this.owner.shouldRender()
 }

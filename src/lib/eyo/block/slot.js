@@ -191,7 +191,6 @@ eYo.Slot.makeFields = function () {
     var result = this.callValidator(this.getValue())
     if (result !== null) {
       data.fromField(result)
-      data.synchronize(result) // would this be included in the previous method ?
     } else {
       this.setValue(data.toText())
     }
@@ -498,7 +497,6 @@ eYo.Slot.prototype.setIncog = function (newValue) {
     change = true 
     c8n.eyo.setIncog(newValue)
   }
-  change && this.synchronize()
   return change
 }
 

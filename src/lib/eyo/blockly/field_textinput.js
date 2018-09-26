@@ -267,24 +267,26 @@ eYo.FieldTextInput.prototype.widgetDispose_ = function () {
     field.editRect_ && goog.dom.classlist.remove(field.editRect_, 'eyo-editing')
     field.callValidator()
     var block = field.sourceBlock_
-    block.eyo.changeBegin()
-    field.onEndEditing_ && field.onEndEditing_()
-    field.eyo.onEndEditing_ && field.eyo.onEndEditing_.call(field)
-    var model = field.eyo.model
-    if (model) {
-      if (goog.isFunction(model.endEditing)) {
-        model.endEditing.call(field)
-      } else if (model.endEditing) {
-        field.eyo.constructor.onEndEditing.call(field)
+    block.eyo.changeWrap(
+      function () {
+        field.onEndEditing_ && field.onEndEditing_()
+        field.eyo.onEndEditing_ && field.eyo.onEndEditing_.call(field)
+        var model = field.eyo.model
+        if (model) {
+          if (goog.isFunction(model.endEditing)) {
+            model.endEditing.call(field)
+          } else if (model.endEditing) {
+            field.eyo.constructor.onEndEditing.call(field)
+          }
+        }
+        block.eyo.endEditingField && block.eyo.endEditingField(block, field)
+        if (field.eyo.grouper_) {
+          eYo.Events.setGroup(false)
+          delete field.eyo.grouper_
+        }
+        field.render_()
       }
-    }
-    block.eyo.endEditingField && block.eyo.endEditingField(block, field)
-    if (field.eyo.grouper_) {
-      eYo.Events.setGroup(false)
-      delete field.eyo.grouper_
-    }
-    field.render_()
-    block.eyo.changeEnd()
+    )
     eYo.FieldTextInput.superClass_.widgetDispose_.call(field)
     Blockly.WidgetDiv.DIV.style.fontFamily = ''
   }
@@ -329,8 +331,8 @@ eYo.FieldTextInput.prototype.resizeEditor_ = function () {
     var xy = this.getAbsoluteXY_()
     div.style.left = (xy.x - eYo.EditorOffset.x + eYo.Style.Edit.padding_h) + 'px'
     div.style.top = (xy.y - eYo.EditorOffset.y) + 'px'
-    this.sourceBlock_.eyo.changeBegin()
-    this.sourceBlock_.eyo.changeEnd()
+    this.sourceBlock_.eyo.changeWrap()
+    this.sourceBlock_.eyo.render()    
   }
 }
 
