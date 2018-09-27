@@ -147,13 +147,14 @@ goog.require('eYo.Data')
 eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method(
   'setTrusted_',
   function (newValue) {
+    var data = this
     this.error = false
     var eyo = this.owner
     var block = eyo.block_
     var oldValue = this.value_
-    eyo.changeWrap(this,
+    eyo.changeWrap(
       function () {
-        eYo.Events.groupWrap(this,
+        eYo.Events.groupWrap(data,
           function () {
             this.beforeChange(oldValue, newValue)
             try {

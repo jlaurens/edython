@@ -189,7 +189,7 @@ eYo.DelegateSvg.prototype.deinitBlock = function (block) {
  * May be called more than once.
  * @param {!Blockly.Block} block to be initialized..
  */
-eYo.DelegateSvg.prototype.preInitSvg = function (block) {
+eYo.DelegateSvg.prototype.preInitSvg = function () {
 }
 
 /**
@@ -198,10 +198,11 @@ eYo.DelegateSvg.prototype.preInitSvg = function (block) {
  * No rendering.
  * @param {!Blockly.Block} block to be initialized.
  */
-eYo.DelegateSvg.prototype.postInitSvg = function (block) {
+eYo.DelegateSvg.prototype.postInitSvg = function () {
   if (this.svgPathContour_) {
     return
   }
+  var block = this.block_
   goog.dom.removeNode(block.svgPath_)
   delete block.svgPath_
   goog.dom.removeNode(block.svgPathLight_)
@@ -395,8 +396,8 @@ eYo.DelegateSvg.prototype.getMenuTarget = function (block) {
   if (this.wrap && (wrapped = this.wrap.input.connection.targetBlock())) {
     return wrapped.eyo.getMenuTarget(wrapped)
   }
-  if (this.wrappedInputs_ && this.wrappedInputs_.length === 1 &&
-    (wrapped = this.wrappedInputs_[0][0].connection.targetBlock())) {
+  if (this.wrappedC8nDlgt_ && this.wrappedC8nDlgt_.length === 1 &&
+    (wrapped = this.wrappedC8nDlgt_[0].connection.targetBlock())) {
     // if there are more than one wrapped block,
     // then we choose none of them
     return wrapped.eyo.getMenuTarget(wrapped)
@@ -1863,8 +1864,9 @@ eYo.DelegateSvg.prototype.previousStatementCheck = undefined
  * @param {!Block} block
  * @private
  */
-eYo.DelegateSvg.prototype.makeBlockWrapped = function (block) {
-  eYo.DelegateSvg.superClass_.makeBlockWrapped.call(this, block)
+eYo.DelegateSvg.prototype.doMakeBlockWrapped = function () {
+  eYo.DelegateSvg.superClass_.doMakeBlockWrapped.call(this)
+  var block = this.block_
   goog.asserts.assert(!this.hasSelect(block), 'Deselect block before')
   block.initSvg()
   this.svgPathShape_.setAttribute('display', 'none')
@@ -1968,54 +1970,50 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
           return
         }
       }
-      block.eyo.completeWrapped_()
     }
-    if (block) {
-      block.eyo.setDataWithModel(dataModel)
-      var Vs = dataModel.slots
-      for (var k in Vs) {
-        if (eYo.Do.hasOwnProperty(Vs, k)) {
-          var input = block.eyo.getInput(block, k)
-          if (input && input.connection) {
-            var target = input.connection.targetBlock()
-            var V = Vs[k]
-            var B = processModel(target, V)
-            if (!target && B && B.outputConnection) {
-              B.eyo.changeWrap(
-                function () {
-                  block.eyo.changeWrap(
-                    function () {
-                      B.outputConnection.connect(input.connection)    
-                    }
-                  )
-                }
-              )
-            }
+    block.eyo.setDataWithModel(dataModel)
+    var Vs = dataModel.slots
+    for (var k in Vs) {
+      if (eYo.Do.hasOwnProperty(Vs, k)) {
+        var input = block.eyo.getInput(block, k)
+        if (input && input.connection) {
+          var target = input.connection.targetBlock()
+          var V = Vs[k]
+          var B = processModel(target, V)
+          if (!target && B && B.outputConnection) {
+            B.eyo.changeWrap(
+              function () {
+                block.eyo.changeWrap(
+                  function () {
+                    B.outputConnection.connect(input.connection)    
+                  }
+                )
+              }
+            )
           }
         }
       }
-      if (block.nextConnection) {
-        var nextModel = dataModel.next
-        if (nextModel) {
-          B = processModel(null, nextModel)
-          if (B && B.previousConnection) {
-            try {
-              B.previousConnection.connect(block.nextConnection)
-            } catch (err) {
-              console.error(err)
-              throw err
-            } finally {
-              // do nothing
-            }
+    }
+    if (block.nextConnection) {
+      var nextModel = dataModel.next
+      if (nextModel) {
+        B = processModel(null, nextModel)
+        if (B && B.previousConnection) {
+          try {
+            B.previousConnection.connect(block.nextConnection)
+          } catch (err) {
+            console.error(err)
+            throw err
+          } finally {
+            // do nothing
           }
         }
       }
-      block.eyo.consolidate()
     }
+    block.eyo.consolidate()
     return block
   }
-  var B = processModel(null, model, id)
-  return B
+  return processModel(null, model, id)
 }
 
 /**
@@ -2025,45 +2023,48 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
  * This is a one shot function.
  */
 eYo.DelegateSvg.prototype.beReady = function () {
-  var block = this.block_
-  block.initSvg()
-  this.foreachData(function () {
-    this.beReady()
-  })
-  // install all the fields and slots in the DOM
-  for (var k in this.fields) {
-    var field = this.fields[k]
-    if (!field.sourceBlock_) {
-      field.setSourceBlock(block)
-      field.init()
+  this.changeWrap(
+    function () {
+      this.foreachData(function () {
+        this.beReady() // this is headless
+      })
+      var block = this.block_
+      block.initSvg()
+      // install all the fields and slots in the DOM
+      for (var k in this.fields) {
+        var field = this.fields[k]
+        if (!field.sourceBlock_) {
+          field.setSourceBlock(block)
+          field.init()
+        }
+      }
+      this.foreachSlot(function () {
+        this.beReady()
+      })
+      for (var i = 0, input; (input = block.inputList[i++]);) {
+        input.eyo.beReady()
+      }
+      this.inputSuite && this.inputSuite.eyo.beReady()
+      block.nextConnection && block.nextConnection.eyo.beReady()
+      var parent = block.outputConnection && block.outputConnection.targetBlock()
+      if (parent && parent.eyo.svgContourGroup_) {
+        goog.dom.insertChildAt(parent.eyo.svgContourGroup_, this.svgContourGroup_, 0)
+        goog.dom.classlist.add(/** @type {!Element} */(this.svgContourGroup_),
+          'eyo-inner')
+        goog.dom.appendChild(parent.eyo.svgShapeGroup_, this.svgShapeGroup_)
+        goog.dom.classlist.add(/** @type {!Element} */(this.svgShapeGroup_),
+          'eyo-inner')
+      } else {
+        goog.dom.insertChildAt(block.svgGroup_, this.svgContourGroup_, 0)
+        goog.dom.classlist.remove(/** @type {!Element} */(this.svgContourGroup_),
+          'eyo-inner')
+        goog.dom.insertSiblingBefore(this.svgShapeGroup_, this.svgContourGroup_)
+        goog.dom.classlist.remove(/** @type {!Element} */(this.svgShapeGroup_),
+          'eyo-inner')
+      }
+      this.beReady = eYo.Do.nothing // one shot function  
     }
-  }
-  this.foreachSlot(function () {
-    this.beReady()
-  })
-  for (var i = 0, input; (input = block.inputList[i++]);) {
-    input.eyo.beReady()
-  }
-  this.inputSuite && this.inputSuite.eyo.beReady()
-  block.nextConnection && block.nextConnection.eyo.beReady()
-  this.consolidate(true, true)
-  var parent = block.outputConnection && block.outputConnection.targetBlock()
-  if (parent && parent.eyo.svgContourGroup_) {
-    goog.dom.insertChildAt(parent.eyo.svgContourGroup_, this.svgContourGroup_, 0)
-    goog.dom.classlist.add(/** @type {!Element} */(this.svgContourGroup_),
-      'eyo-inner')
-    goog.dom.appendChild(parent.eyo.svgShapeGroup_, this.svgShapeGroup_)
-    goog.dom.classlist.add(/** @type {!Element} */(this.svgShapeGroup_),
-      'eyo-inner')
-  } else {
-    goog.dom.insertChildAt(block.svgGroup_, this.svgContourGroup_, 0)
-    goog.dom.classlist.remove(/** @type {!Element} */(this.svgContourGroup_),
-      'eyo-inner')
-    goog.dom.insertSiblingBefore(this.svgShapeGroup_, this.svgContourGroup_)
-    goog.dom.classlist.remove(/** @type {!Element} */(this.svgShapeGroup_),
-      'eyo-inner')
-  }
-this.beReady = eYo.Do.nothing // one shot function
+  )
 }
 
 /**
@@ -2214,38 +2215,6 @@ eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
       }
     }
   )
-}
-
-/**
- * Change the wrap type of a block.
- * Undo compliant.
- * Used in menus.
- * @param {!Blockly.Block} block owner of the delegate.
- * @param {!String} key the key of the input holding the connection
- * @param {!String} newType
- * @return yorn whether a change has been made
- * the MenuItem selected within menu.
- */
-eYo.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
-  var input = block.getInput(key)
-  var returnState = false
-  if (input) {
-    var target = input.connection.targetBlock()
-    var oldType = target ? target.type : undefined
-    if (newType !== oldType) {
-      eYo.Events.groupWrap(this,
-        function () {
-          if (target) {
-            target.unplug()
-            target.dispose()
-          }
-          this.completeWrappedInput_(input, newType)
-          returnState = true
-        }
-      )
-    }
-  }
-  return returnState
 }
 
 /**

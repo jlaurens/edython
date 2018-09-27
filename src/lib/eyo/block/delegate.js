@@ -117,15 +117,15 @@ eYo.Delegate.prototype.changeEnd = function () {
  * Begin a mutation
  * For edython.
  */
-eYo.Delegate.prototype.changeWrap = function (try_f, finally_f) {
+eYo.Delegate.prototype.changeWrap = function () {
+  var args = Array.prototype.slice.call(arguments)
   try {
     this.changeBegin()
-    return try_f.call(this)
+    args[0] && args[0].apply(args[1] || this, args.slice(2))
   } catch (err) {
     console.error(err)
     throw err
   } finally {
-    finally_f && finally_f.call(this)
     this.changeEnd()
   }
 }
@@ -218,7 +218,9 @@ eYo.Delegate.prototype.consolidate = eYo.Decorate.reentrant_method(
   'consolidate',
   eYo.Decorate.onChangeCount(
     'consolidate',
-    eYo.Delegate.prototype.doConsolidate
+    function () {
+      this.doConsolidate()
+    }
   )
 )
 
@@ -1121,6 +1123,7 @@ eYo.Delegate.prototype.consolidateSubtype = function (subtype) {
  * @constructor
  */
 eYo.Delegate.prototype.consolidateConnections = function () {
+  this.completeWrapped_()
   var b = this.block_
   var t = this.getType()
   var st = this.getSubtype()
@@ -1248,17 +1251,15 @@ eYo.Delegate.prototype.appendWrapValueInput = function (name, prototypeName, opt
   goog.asserts.assert(eYo.T3.All.containsExpression(prototypeName), 'Unnown prototypeName, no block to seal ' + prototypeName)
   var block = this.block_
   var input = block.appendValueInput(name)
-  input.connection.eyo.wrapped_ = true
-  input.connection.eyo.optional_ = optional
-  input.connection.eyo.hidden_ = hidden
-  if (!this.wrappedInputs_) {
-    this.wrappedInputs_ = []
+  var eyo = input.connection.eyo
+  eyo.wrapped_ = prototypeName
+  eyo.optional_ = optional
+  eyo.hidden_ = hidden
+  if (!this.wrappedC8nDlgt_) {
+    this.wrappedC8nDlgt_ = []
   }
   if (!optional) {
-    this.wrappedInputs_.push({
-      input: input,
-      type: prototypeName
-    })
+    this.wrappedC8nDlgt_.push(eyo)
   }
   return input
 }
@@ -1266,29 +1267,27 @@ eYo.Delegate.prototype.appendWrapValueInput = function (name, prototypeName, opt
 /**
  * If the sealed connections are not connected,
  * create a node for it.
- * The default implementation connects all the blocks from the wrappedInputs_ list.
+ * The default implementation connects all the blocks from the wrappedC8nDlgt_ list.
  * Subclassers will evntually create appropriate new nodes
  * and connect it to any sealed connection.
  * @param {!Block} block
  * @private
  */
 eYo.Delegate.prototype.completeWrapped_ = function () {
-  if (this.wrappedInputs_) {
-    eYo.Delegate.wrappedFireWall = 100
-    for (var i = 0; i < this.wrappedInputs_.length; i++) {
-      var data = this.wrappedInputs_[i]
-      this.completeWrappedInput_(data.input, data.type)
+  if (this.wrappedC8nDlgt_) {
+    for (var i = 0; i < this.wrappedC8nDlgt_.length; i++) {
+      this.wrappedC8nDlgt_[i].completeWrapped()
     }
   }
 }
 
 /**
  * The default implementation does nothing.
- * Subclassers will override this but won't call it.
+ * Subclassers will override this but no one will call it.
  * @param {!Block} block
  * @private
  */
-eYo.Delegate.prototype.makeBlockWrapped = function (block) {
+eYo.Delegate.prototype.doMakeBlockWrapped = function () {
 }
 
 /**
@@ -1311,24 +1310,15 @@ eYo.Delegate.prototype.makeBlockUnwrapped = function (block) {
 
 /**
  * The wrapped blocks are special.
+ * Do not override.
  * @param {!Block} block
  * @private
  */
-eYo.Delegate.prototype.makeBlockWrapped_ = function (block) {
-  if (!block.eyo.wrapped_ && !this.noBlockWrapped(block)) {
-    block.eyo.makeBlockWrapped(block)
-    block.eyo.wrapped_ = true
+eYo.Delegate.prototype.makeBlockWrapped = function () {
+  if (!this.wrapped_) {
+    this.doMakeBlockWrapped()
+    this.wrapped_ = true
   }
-}
-
-/**
- * Some block should not be wrapped.
- * Default implementation returns false
- * @param {!Block} block
- * @return whether the block should be wrapped
- */
-eYo.Delegate.prototype.noBlockWrapped = function (block) {
-  return false
 }
 
 /**
@@ -1359,44 +1349,6 @@ eYo.Delegate.prototype.getUnwrapped = function (block) {
     }
   } while ((parent = parent.getSurroundParent()))
   return parent
-}
-
-/**
- * Complete the wrapped block.
- * When created from dom, the connections are established
- * but the nodes were not created sealed.
- * @param {!Block} block
- * @param {!Input} input
- * @param {!String} prototypeName
- * @return yorn whether a change has been made
- * @private
- */
-eYo.Delegate.prototype.completeWrappedInput_ = function (input, prototypeName) {
-  var block = this.block_
-  if (input) {
-    var c8n = input.connection
-    var source = c8n.eyo.source
-    if (c8n.isIncog && !c8n.isIncog()) {
-      var target = c8n.targetBlock()
-      if (!target) {
-        try {
-          Blockly.Events.disable()
-          goog.asserts.assert(prototypeName, 'Missing wrapping prototype name in block ' + block.type)
-          goog.asserts.assert(eYo.Delegate.wrappedFireWall, 'ERROR: Maximum value reached in completeWrappedInput_ (circular)')
-          --eYo.Delegate.wrappedFireWall
-          target = eYo.DelegateSvg.newBlockReady(block.workspace, prototypeName, block.id+'.wrapped:'+input.connection.eyo.name_)
-          goog.asserts.assert(target, 'completeWrapped_ failed: ' + prototypeName)
-          goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed ' + target.type)
-          input.connection.connect(target.outputConnection)
-        } catch (err) {
-          console.error(err)
-          throw err
-        } finally {
-          Blockly.Events.enable()
-        }
-      }
-    }
-  }
 }
 
 /**
@@ -1703,7 +1655,7 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
  * @return {boolean} whether changes have been made
  * @private
  */
-eYo.Delegate.prototype.setIncog = function (block, incog) {
+eYo.Delegate.prototype.setIncog = function (incog) {
   if (!this.incog_ === !incog) {
     return false
   }

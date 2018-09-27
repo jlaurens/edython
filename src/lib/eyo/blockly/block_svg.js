@@ -53,6 +53,7 @@ eYo.BlockSvg.prototype.init = function () {
 /**
  * Create and initialize the SVG representation of the block.
  * May be called more than once.
+ * Called by the `beReady` method.
  */
 eYo.BlockSvg.prototype.initSvg = function () {
   this.eyo.preInitSvg(this)
@@ -60,7 +61,6 @@ eYo.BlockSvg.prototype.initSvg = function () {
   for (var i = 0, input; (input = this.inputList[i]); i++) {
     input.init()
   }
-
   if (!this.getSvgRoot().parentNode) {
     this.workspace.getCanvas().appendChild(this.getSvgRoot())
   }

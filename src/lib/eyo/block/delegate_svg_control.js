@@ -91,8 +91,9 @@ eYo.DelegateSvg.Control.prototype.willRender_ = function (block) {
  * @extends {Blockly.Block}
  * @constructor
  */
-eYo.DelegateSvg.Control.prototype.postInitSvg = function (block) {
-  eYo.DelegateSvg.Control.superClass_.postInitSvg.call(this, block)
+eYo.DelegateSvg.Control.prototype.postInitSvg = function () {
+  var block = this.block_
+  eYo.DelegateSvg.Control.superClass_.postInitSvg.call(this)
   this.svgPathPlay_ = Blockly.utils.createSvgElement('path',
     {'class': 'eyo-path-play'}, block.svgGroup_)
   this.svgPathPlay_.setAttribute('d', this.playPathDef_(block, 0))

@@ -127,11 +127,51 @@ eYo.ConnectionDelegate.prototype.setIncog = function (incog) {
     }
   }
   var target = c8n.targetBlock()
-  if (target && target.eyo.setIncog(target, incog)) {
-    change = true
+  if (target) {
+    if (target.eyo.setIncog(target, incog)) {
+      change = true
+    }
+  } else if (c8n.eyo.wrapped_) {
+
   }
   return change
 }
+
+/**
+ * Complete with a wrapped block.
+ * @param {String} prototypeName
+ */
+eYo.ConnectionDelegate.prototype.completeWrapped = function () {
+  // this is a closure
+  var firewall
+  return function () {
+    if (!this.wrapped_) {
+      return
+    }
+    var c8n = this.connection
+    if (!this.isIncog || !this.isIncog()) {
+      var target = c8n.targetBlock()
+      if (!target) {
+        eYo.Events.disableWrap(this,
+          function () {
+            if (firewall > 0) {
+              --firewall
+              goog.asserts.assert(firewall, 'ERROR: Maximum value reached in completeWrapped (circular)')
+            } else {
+              firewall = 100
+            }
+            var block = c8n.sourceBlock_
+            target = eYo.DelegateSvg.newBlockReady(block.workspace, this.wrapped_, block.id + '.wrapped:' + this.name_)
+            goog.asserts.assert(target, 'completeWrapped failed: ' + this.wrapped_)
+            goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed ' + target.type)
+            c8n.connect(target.outputConnection)
+          }
+        )
+      }
+    } 
+  }
+} ()
+
 
 /**
  * Will connect.
@@ -632,7 +672,7 @@ Blockly.RenderedConnection.prototype.connect_ = function (childC8n) {
                         }
                       }
                     }
-                    child.eyo.makeBlockWrapped_(child)
+                    child.eyo.makeBlockWrapped()
                   } else {
                     // if this connection was selected, the newly connected block should be selected too
                     if (parentC8n === eYo.SelectedConnection) {

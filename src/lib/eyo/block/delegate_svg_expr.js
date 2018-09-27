@@ -159,8 +159,9 @@ eYo.DelegateSvg.Expr.prototype.checkOutputType = function (type) {
  * @extends {Blockly.Block}
  * @constructor
  */
-eYo.DelegateSvg.Expr.prototype.postInitSvg = function (block) {
-  eYo.DelegateSvg.Expr.superClass_.postInitSvg.call(this, block)
+eYo.DelegateSvg.Expr.prototype.postInitSvg = function () {
+  eYo.DelegateSvg.Expr.superClass_.postInitSvg.call(this)
+  var block = this.block_
   goog.asserts.assert(this.svgPathContour_, 'Missing svgPathContour_')
   goog.dom.classlist.add(this.svgShapeGroup_, 'eyo-expr')
   goog.dom.classlist.add(this.svgContourGroup_, 'eyo-expr')
