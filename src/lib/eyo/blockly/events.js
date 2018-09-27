@@ -56,7 +56,7 @@ Blockly.Events.Change.prototype.run = function (forward) {
     var m = XRegExp.exec(this.element, eYo.XRE.event_data)
     var data
     if (m && (data = block.eyo.data[m.key])) {
-      data.setTrusted(value) // do not validate, it may change value
+      data.set(value, false) // do not validate, it may change value
     } else {
       console.warn('Unknown change type: ' + this.element)
     }
@@ -144,33 +144,35 @@ goog.require('eYo.Data')
  * @param {Object} newValue
  * @param {Boolean} noRender
  */
-eYo.Data.prototype.setTrusted__ = eYo.Decorate.reentrant_method(
-  'setTrusted__',
-  function (newValue, noRender) {
+eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method(
+  'setTrusted_',
+  function (newValue) {
     this.error = false
     var eyo = this.owner
     var block = eyo.block_
-    eYo.Events.setGroup(true)
     var oldValue = this.value_
-    this.beforeChange(oldValue, newValue)
-    try {
-      eyo.changeBegin()
-      this.value_ = newValue
-      this.duringChange(oldValue, newValue)
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      eyo.changeEnd()
-      if (!this.noUndo && Blockly.Events.isEnabled()) {
-        Blockly.Events.fire(new Blockly.Events.BlockChange(
-          block, eYo.Const.Event.DATA + this.key, null, oldValue, newValue))
+    eYo.Events.wrapChange(this,
+      function () {
+        eYo.Events.wrapGroup(this,
+          function () {
+            this.beforeChange(oldValue, newValue)
+            try {
+              this.value_ = newValue
+              this.duringChange(oldValue, newValue)
+            } catch(err) {
+              console.error(err)
+              throw err
+            } finally {
+              if (!this.noUndo && Blockly.Events.isEnabled()) {
+                Blockly.Events.fire(new Blockly.Events.BlockChange(
+                  block, eYo.Const.Event.DATA + this.key, null, oldValue, newValue))
+              }
+              this.afterChange(oldValue, newValue)
+            }
+          }
+        )    
       }
-      this.afterChange(oldValue, newValue)
-      noRender || this.synchronizeIfUI(newValue)
-      eYo.Events.setGroup(false)
-    }
-    noRender || block.render() // render now or possibly later ?
+    )
   }
 )
 
@@ -180,7 +182,7 @@ eYo.Data.prototype.setTrusted__ = eYo.Decorate.reentrant_method(
  * @param {Object} newValue
  * @param {Boolean} noRender
  */
-eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method('trusted', eYo.Data.prototype.setTrusted__)
+eYo.Data.prototype.setTrusted = eYo.Decorate.reentrant_method('trusted', eYo.Data.prototype.setTrusted_)
 
 eYo.Events.filter = Blockly.Events.filter 
 

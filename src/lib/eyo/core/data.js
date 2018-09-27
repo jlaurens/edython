@@ -142,8 +142,8 @@ eYo.Data.prototype.get = function (type) {
  */
 eYo.Data.prototype.rawSet = function (newValue, notUndoable) {
   var oldValue = this.value_
-  this.beforeChange(oldValue, newValue)
   this.owner.changeBegin()
+  this.beforeChange(oldValue, newValue)
   try {
     this.value_ = newValue
     this.duringChange(oldValue, newValue)
@@ -151,8 +151,8 @@ eYo.Data.prototype.rawSet = function (newValue, notUndoable) {
     console.error(err)
     throw err
   } finally {
-    this.owner.changeEnd()
     this.afterChange(oldValue, newValue)
+    this.owner.changeEnd() // may render
   }
 }
 
@@ -350,7 +350,7 @@ eYo.Data.prototype.fromText = function (txt, dontValidate) {
     } else {
       this.error = false
     }
-    this.setTrusted__(v7d)
+    this.setTrusted_(v7d)
   }
 }
 
@@ -384,8 +384,8 @@ eYo.Data.prototype.fromField = function (txt, dontValidate) {
     } else {
       this.error = false
     }
-    this.setTrusted__(v7d)
-    this.error = error // *after* setTrusted__
+    this.setTrusted_(v7d)
+    this.error = error // *after* setTrusted_
   }
 }
 
@@ -529,12 +529,14 @@ eYo.Data.prototype.duringChange = function(oldValue, newValue) {
 /**
  * After change the value of the property.
  * Branch to `didChange` or `didUnchange`.
+ * `synchronize` in fine.
  * @param {Object} oldValue
  * @param {Object} newValue
  * @return undefined
  */
 eYo.Data.prototype.afterChange = function(oldValue, newValue) {
   (!Blockly.Events.recordUndo ? this.didChange : this.didUnchange).apply(this, arguments)
+  this.synchronize(newValue)
 }
 
 /**
@@ -545,8 +547,10 @@ eYo.Data.prototype.noUndo = undefined
 
 /**
  * Synchronize the value of the property with the UI.
+ * Called once when the model has been made,
+ * and called each time the value changes,
+ * whether doing, undoing or redoing.
  * May be overriden by the model.
- * Do nothing if the owner is in the process of a deep data change.
  * When not overriden by the model, updates the field and slot state.
  * We can call `this.synchronize()` from the model.
  * `synchronize: true`, and
@@ -555,9 +559,6 @@ eYo.Data.prototype.noUndo = undefined
  * @param {Object} newValue
  */
 eYo.Data.prototype.synchronize = function (newValue) {
-  if (this.owner.change.level) {
-    return
-  }
   if (!goog.isDef(newValue)) {
     newValue = this.get()
   }
@@ -565,41 +566,26 @@ eYo.Data.prototype.synchronize = function (newValue) {
     goog.asserts.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.getBlockType())
     var field = this.field
     if (field) {
-      Blockly.Events.disable()
-      try {
-        field.setValue(this.toField())
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        Blockly.Events.enable()
-      }
-      field.setVisible(!this.incog_p)
-      var element = field.textElement_
-      if (element) {
-        if (this.error) {
-          goog.dom.classlist.add(element, 'eyo-code-error')
-        } else {
-          goog.dom.classlist.remove(element, 'eyo-code-error')
+      eYo.Events.wrapDisable(this,
+        function () {
+          field.setValue(this.toField())
+          field.setVisible(!this.incog_p)
+          var element = field.textElement_
+          if (element) {
+            if (this.error) {
+              goog.dom.classlist.add(element, 'eyo-code-error')
+            } else {
+              goog.dom.classlist.remove(element, 'eyo-code-error')
+            }
+          }
         }
-      }
+      )
     }
     this.slot && this.slot.setIncog(this.incog_p)
-  } else {
+  } else if (this.model.synchronize) {
     var f = eYo.Decorate.reentrant_method.call(this, 'model_synchronize', this.model.synchronize)
     f && f.call(this, newValue)
   }
-  this.owner && this.owner.shouldRender && this.owner.shouldRender()
-}
-
-/**
- * Synchronize the value of the property with the UI only when bounded.
- * @param {Object} newValue
- */
-eYo.Data.prototype.synchronizeIfUI = function (newValue) {
-  if (this.field || this.slot || this.model.synchronize) {
-    this.synchronize(newValue)
-  }
 }
 
 /**
@@ -608,11 +594,9 @@ eYo.Data.prototype.synchronizeIfUI = function (newValue) {
  * @param {Object} newValue
  * @param {Boolean} noRender
  */
- eYo.Data.prototype.setTrusted__ = function (newValue, noRender) {
+ eYo.Data.prototype.setTrusted_ = function (newValue) {
   this.error = false
   this.internalSet(newValue)
-  noRender || (this.owner.consolidate()
-  && this.synchronizeIfUI(newValue))
 }
 
 /**
@@ -621,48 +605,46 @@ eYo.Data.prototype.synchronizeIfUI = function (newValue) {
  * @param {Object} newValue
  * @param {Boolean} noRender
  */
-eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method('trusted', eYo.Data.prototype.setTrusted__)
+eYo.Data.prototype.setTrusted = eYo.Decorate.reentrant_method('trusted', eYo.Data.prototype.setTrusted_)
 
 /**
- * set the value of the property without any validation.
+ * If the value is an uppercase string,
+ * change it to a key.
  * If the value is a number, change to the corresponding item
  * in the `getAll()` array.
  * @param {Object} newValue
- * @param {Boolean} noRender
  */
-eYo.Data.prototype.setTrusted = function (newValue, noRender) {
+eYo.Data.prototype.filter = function (newValue) {
+  // tricky argument management
+  // Used when newValue is an uppercase string
   if (goog.isString(newValue)) {
-    var x = this.model[newValue]
-    !x || (newValue = x)
-  }
-  if (goog.isNumber(newValue)) {
+    if (newValue === newValue.toUpperCase()) {
+      var x = eYo.Key[newValue]
+      !x || (newValue = x)
+    }
+  } else if (goog.isNumber(newValue)) {
     x = this.getAll()
     if (x && goog.isDefAndNotNull((x = x[newValue]))) {
       newValue = x
     }
   }
-  this.setTrusted_(newValue, noRender)
+  return newValue
 }
 
 /**
  * set the value of the property,
  * with validation, undo and synchronization.
- * Always synchronize, even when no value changed.
+ * Undo management and synchronization only occur when
+ * the old value and the new value are not the same.
  * @param {Object} newValue
  * @param {Boolean} noRender
  */
-eYo.Data.prototype.set = function (newValue, noRender) {
-  if (goog.isNumber(newValue)) {
-    var all = this.getAll()
-    if (all && goog.isDefAndNotNull(all = all[newValue])) {
-      newValue = all
-    }
-  }
-  if ((this.value_ === newValue) || !(newValue = this.validate(newValue)) || !goog.isDef(newValue = newValue.validated)) {
-    this.synchronizeIfUI(this.value_)
+eYo.Data.prototype.set = function (newValue, validate = true) {
+  newValue = this.filter(newValue)
+  if ((this.value_ === newValue) || ( validate && (!(newValue = this.validate(newValue)) || !goog.isDef(newValue = newValue.validated)))) {
     return false
   }
-  this.setTrusted_(newValue, noRender)
+  this.setTrusted(newValue)
   return true
 }
 

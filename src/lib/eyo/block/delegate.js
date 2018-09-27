@@ -967,7 +967,7 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
  */
 eYo.Delegate.prototype.synchronizeData = function () {
   this.foreachData(function () {
-    this.synchronize(this.get())
+    this.synchronize()
   })
   this.synchronizeData = eYo.Do.nothing
 }
