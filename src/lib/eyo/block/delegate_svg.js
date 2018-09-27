@@ -2187,7 +2187,7 @@ eYo.HoleFiller.getDeepHoles = function (block, holes = undefined) {
  */
 eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
   var i = 0
-  eYo.Events.wrapGroup(this,
+  eYo.Events.groupWrap(this,
     function () {
       for (; i < holes.length; ++i) {
         var c8n = holes[i]
@@ -2233,7 +2233,7 @@ eYo.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
     var target = input.connection.targetBlock()
     var oldType = target ? target.type : undefined
     if (newType !== oldType) {
-      eYo.Events.wrapGroup(this,
+      eYo.Events.groupWrap(this,
         function () {
           if (target) {
             target.unplug()
@@ -2990,7 +2990,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (block, model, connect
     }
   }
   // create a block out of the undo mechanism
-  eYo.Events.wrapDisable(this,
+  eYo.Events.disableWrap(this,
     function () {
       var candidate = eYo.DelegateSvg.newBlockReady(block.workspace, model)
       if (!candidate) {
@@ -3000,7 +3000,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (block, model, connect
       var c8n, otherC8n
       var fin = function (prepare) {
         Blockly.Events.enable()
-        eYo.Events.wrapGroup(this,
+        eYo.Events.groupWrap(this,
           function () {
             try {
               if (Blockly.Events.isEnabled()) {

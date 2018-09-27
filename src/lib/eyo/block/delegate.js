@@ -15,7 +15,7 @@ goog.provide('eYo.Delegate')
 
 goog.require('eYo.Helper')
 goog.require('eYo.Decorate')
-goog.require('eYo.Event')
+goog.require('eYo.Events')
 goog.require('Blockly.Blocks')
 
 goog.require('eYo.T3')

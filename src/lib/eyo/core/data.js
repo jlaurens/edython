@@ -326,7 +326,7 @@ eYo.Data.prototype.toField = function () {
  * @param {Object} txt
  * @param {boolean=} dontValidate
  */
-eYo.Data.prototype.fromText = function (txt, dontValidate) {
+eYo.Data.prototype.fromText = function (txt, validate = true) {
   if (!this.model_fromText_lock) {
     var f = eYo.Decorate.reentrant_method.call(this, 'model_fromText', this.model.fromText)
     if (f) {
@@ -340,8 +340,8 @@ eYo.Data.prototype.fromText = function (txt, dontValidate) {
       txt = n
     }
   }
-  if (dontValidate) {
-    this.set(txt)
+  if (!validate) {
+    this.set(txt, false)
   } else if (this.value_ !== txt) {
     var v7d = this.validate(txt)
     if (!v7d || !goog.isDef((v7d = v7d.validated))) {
@@ -566,7 +566,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
     goog.asserts.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.getBlockType())
     var field = this.field
     if (field) {
-      eYo.Events.wrapDisable(this,
+      eYo.Events.disableWrap(this,
         function () {
           field.setValue(this.toField())
           field.setVisible(!this.incog_p)
@@ -794,15 +794,15 @@ eYo.Data.prototype.load = function (element) {
     }
     if (goog.isDefAndNotNull(txt)) {
       if (required && txt === '?') {
-        this.fromText('', true)
+        this.fromText('', false)
       } else {
         if ((isText && txt === '?') || (!isText && txt === '')) {
           this.setRequiredFromDom(true)
         }
-        this.fromText(txt, true) // do not validate, there might be an error while saving, please check
+        this.fromText(txt, false) // do not validate, there might be an error while saving, please check
       }
     } else if (required) {
-      this.fromText('', true)
+      this.fromText('', false)
     }
   }
   if (xml && xml.didLoad) {
@@ -834,7 +834,7 @@ eYo.Data.prototype.isRequiredFromModel = function () {
 eYo.Data.prototype.clearRequiredFromDom = function () {
   if (this.isRequiredFromModel()) {
     this.setRequiredFromDom(false)
-    this.fromText('', true)// useful if the text was a '?'
+    this.fromText('', false)// useful if the text was a '?'
     return true
   }
 }
@@ -847,7 +847,7 @@ eYo.Data.prototype.clearRequiredFromDom = function () {
 eYo.Data.prototype.whenRequiredFromDom = function (helper) {
   if (this.isRequiredFromModel()) {
     this.setRequiredFromDom(false)
-    this.fromText('', true)// useful if the text was a '?'
+    this.fromText('', false)// useful if the text was a '?'
     if (goog.isFunction(helper)) {
       helper.call(this)
     }

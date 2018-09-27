@@ -263,7 +263,7 @@ eYo.DelegateSvg.Expr.prototype.canReplaceBlock = function (block, other) {
  */
 eYo.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
   if (this.workspace && other && other.workspace) {
-    eYo.Events.wrapGroup(this,
+    eYo.Events.groupWrap(this,
       function () {
         try {
           console.log('**** replaceBlock', block, other)
@@ -373,7 +373,7 @@ eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr)
 eYo.DelegateSvg.Expr.prototype.canInsertParent = function (block, prototypeName, subtype, parentInputName) {
   var can = false
   var B
-  eYo.Events.wrapDisable(this,
+  eYo.Events.disableWrap(this,
     function () {
       B = block.workspace.newBlock(prototypeName)
       B.eyo.data.subtype.set(subtype)
@@ -406,7 +406,7 @@ eYo.DelegateSvg.Expr.prototype.canInsertParent = function (block, prototypeName,
 eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, fill_holes) {
   var parentSlotName = model.slot || model.input
   var parentBlock
-  eYo.Events.wrapDisable(this, function () {
+  eYo.Events.disableWrap(this, function () {
     parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, model)
   })
   if (!parentBlock) {
@@ -465,7 +465,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
   // Next connections should be connected
   var outputC8n = block.outputConnection
   if (parentInputC8n && parentInputC8n.checkType_(outputC8n)) {
-    eYo.Events.wrapGroup(this,
+    eYo.Events.groupWrap(this,
       function () {
         if (Blockly.Events.isEnabled()) {
           Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))

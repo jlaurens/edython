@@ -265,7 +265,7 @@ Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function (workspac
   var x = offset.x
   var y = offset.y
   var i = 0
-  eYo.Events.wrapGroup(this,
+  eYo.Events.groupWrap(this,
     function () {
       for (; i < types.length; i++) {
         this.addElementInWorkspaceBlocks(workspaceXMLElement, types[i], x, y)
@@ -317,7 +317,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
       targetC8n = null
     }
     if (targetC8n && c8n.checkType_(targetC8n)) {
-      eYo.Events.wrapGroup(this,
+      eYo.Events.groupWrap(this,
         function () {
           if (Blockly.Events.isEnabled()) {
             Blockly.Events.fire(new Blockly.Events.BlockCreate(block))

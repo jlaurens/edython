@@ -221,7 +221,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (block, model, s
   var c8n = block.previousConnection
   if (c8n) {
     var parentBlock
-    eYo.Events.wrapDisable(this,
+    eYo.Events.disableWrap(this,
       function () {
         parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, model)
       },
@@ -229,7 +229,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (block, model, s
         if (parentBlock) {
           var parentC8n = parentBlock.nextConnection
           if (parentC8n) {
-            eYo.Events.wrapGroup(this,
+            eYo.Events.groupWrap(this,
               function () {
                 if (Blockly.Events.isEnabled()) {
                   Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
@@ -274,7 +274,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (block, model, s
  * @return the created block
  */
 eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (block, belowPrototypeName) {
-  eYo.Events.wrapGroup(this,
+  eYo.Events.groupWrap(this,
     function () {
       var blockAfter = eYo.DelegateSvg.newBlockReady(block.workspace, belowPrototypeName)
       var c8n = block.nextConnection

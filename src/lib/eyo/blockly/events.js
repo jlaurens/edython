@@ -92,7 +92,7 @@ eYo.Events.setGroup = (function () {
 /**
  * Event disabler.
  */
-eYo.Events.wrapDisable = function (self, try_f, finally_f) {
+eYo.Events.disableWrap = function (self, try_f, finally_f) {
   Blockly.Events.disable()
   try {
     return try_f.call(self)
@@ -151,9 +151,9 @@ eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method(
     var eyo = this.owner
     var block = eyo.block_
     var oldValue = this.value_
-    eYo.Events.wrapChange(this,
+    eyo.changeWrap(this,
       function () {
-        eYo.Events.wrapGroup(this,
+        eYo.Events.groupWrap(this,
           function () {
             this.beforeChange(oldValue, newValue)
             try {
@@ -218,7 +218,7 @@ Blockly.Events.filter = function(queueIn, forward) {
  * @param {!Function} do_it
  * @param {self} This
  */
-eYo.Events.wrapGroup = function (self, try_f, finally_f) {
+eYo.Events.groupWrap = function (self, try_f, finally_f) {
   try {
     eYo.Events.setGroup(true)
     return try_f.call(self)

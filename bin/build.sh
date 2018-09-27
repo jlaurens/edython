@@ -269,10 +269,10 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/do.js" \
 --js "src/lib/eyo/block/content.js" \
 --js "src/lib/eyo/core/data-test.js" \
---js "src/lib/eyo/block/delegate.js" \
 --js "src/lib/eyo/blockly/events.js" \
 --js "src/lib/eyo/core/ui.js" \
 --js "src/lib/eyo/blockly/rendered_connection.js" \
+--js "src/lib/eyo/block/delegate.js" \
 --js "src/lib/eyo/closure-library/menuitemrenderer.js" \
 --js "src/lib/eyo/closure-library/menuitem.js" \
 --js "src/lib/eyo/closure-library/menurenderer.js" \
