@@ -156,11 +156,6 @@ eYo.DelegateSvg.prototype.initBlock = eYo.Decorate.reentrant_method(
         var block = this.block_
         block.setTooltip('')
         block.setHelpUrl('')
-        // wait until the end to set the subtype because it causes rendering
-        // bind the data and the ui when relevant.
-        // We establish a bi directional bound between data, inputs and fields
-        // now it is time to intialize the data
-        this.initData(block)
       }
     )
   }
@@ -1932,7 +1927,7 @@ eYo.DelegateSvg.newBlockReady = function (workspace, model, id) {
 }
 
 /**
- * Create a new block, with svg background and wrapped blocks.
+ * Create a new block, with svg background.
  * This is the expected way to create the block.
  * There is a caveat due to proper timing in initializing the svg.
  * Whether blocks are headless or not is not clearly designed in Blockly.
@@ -1950,32 +1945,33 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
     if (!block) {
       if (eYo.DelegateSvg.Manager.get(model.type)) {
         block = workspace.newBlock(model.type, id)
-        block.eyo.initDataWithType(block, model.type)
+        block.eyo.setDataWithType(model.type)
       } else if (eYo.DelegateSvg.Manager.get(model)) {
         block = workspace.newBlock(model, id)
-        block.eyo.initDataWithType(block, model)
+        block.eyo.setDataWithType(model)
       } else {
         var type = eYo.Do.typeOfString(model)
         if (type.expr && (block = workspace.newBlock(type.expr, id))) {
-          type.expr && block.eyo.initDataWithType(block, type.expr)
-          model && block.eyo.initDataWithModel(block, model)
+          type.expr && block.eyo.setDataWithType(type.expr)
+          model && block.eyo.setDataWithModel(model)
+          console.error('MISSING consolidateData')
           dataModel = {data: model}
         } else if (type.stmt && (block = workspace.newBlock(type.stmt, id))) {
-          type.stmt && block.eyo.initDataWithType(block, type.stmt)
-          model && block.eyo.initDataWithModel(block, model)
+          type.stmt && block.eyo.setDataWithType(type.stmt)
+          model && block.eyo.setDataWithModel(model)
           dataModel = {data: model}
         } else if (goog.isNumber(model)  && (block = workspace.newBlock(eYo.T3.Expr.numberliteral, id))) {
-          block.eyo.initDataWithType(block, eYo.T3.Expr.numberliteral)
+          block.eyo.setDataWithType(eYo.T3.Expr.numberliteral)
           dataModel = {data: model.toString()}
         } else {
           console.warn('No block for model:', model)
           return
         }
       }
-      block.eyo.completeWrapped_(block)
+      block.eyo.completeWrapped_()
     }
     if (block) {
-      block.eyo.initDataWithModel(block, dataModel)
+      block.eyo.setDataWithModel(dataModel)
       var Vs = dataModel.slots
       for (var k in Vs) {
         if (eYo.Do.hasOwnProperty(Vs, k)) {
@@ -2050,7 +2046,7 @@ eYo.DelegateSvg.prototype.beReady = function () {
   }
   this.inputSuite && this.inputSuite.eyo.beReady()
   block.nextConnection && block.nextConnection.eyo.beReady()
-  this.consolidate(false, true)
+  this.consolidate(true, true)
   var parent = block.outputConnection && block.outputConnection.targetBlock()
   if (parent && parent.eyo.svgContourGroup_) {
     goog.dom.insertChildAt(parent.eyo.svgContourGroup_, this.svgContourGroup_, 0)
@@ -2191,7 +2187,7 @@ eYo.HoleFiller.getDeepHoles = function (block, holes = undefined) {
  */
 eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
   var i = 0
-  eYo.Events.groupWrap(
+  eYo.Events.wrapGroup(this,
     function () {
       for (; i < holes.length; ++i) {
         var c8n = holes[i]
@@ -2216,8 +2212,7 @@ eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
           }
         }
       }
-    },
-    this
+    }
   )
 }
 
@@ -2238,16 +2233,15 @@ eYo.DelegateSvg.prototype.useWrapType = function (block, key, newType) {
     var target = input.connection.targetBlock()
     var oldType = target ? target.type : undefined
     if (newType !== oldType) {
-      eYo.Events.groupWrap(
+      eYo.Events.wrapGroup(this,
         function () {
           if (target) {
             target.unplug()
             target.dispose()
           }
-          this.completeWrappedInput_(block, input, newType)
+          this.completeWrappedInput_(input, newType)
           returnState = true
-        },
-        this
+        }
       )
     }
   }
@@ -2996,51 +2990,135 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (block, model, connect
     }
   }
   // create a block out of the undo mechanism
-  Blockly.Events.disable()
-  try {
-    var candidate = eYo.DelegateSvg.newBlockReady(block.workspace, model)
-    if (!candidate) {
-      return
-    }
-    var c8n_N = model.input
-    var c8n, otherC8n
-    var fin = function (prepare) {
-      Blockly.Events.enable()
-      eYo.Events.groupWrap (
-        function () {
-          try {
-            if (Blockly.Events.isEnabled()) {
-              Blockly.Events.fire(new Blockly.Events.BlockCreate(candidate))
+  eYo.Events.wrapDisable(this,
+    function () {
+      var candidate = eYo.DelegateSvg.newBlockReady(block.workspace, model)
+      if (!candidate) {
+        return
+      }
+      var c8n_N = model.input
+      var c8n, otherC8n
+      var fin = function (prepare) {
+        Blockly.Events.enable()
+        eYo.Events.wrapGroup(this,
+          function () {
+            try {
+              if (Blockly.Events.isEnabled()) {
+                Blockly.Events.fire(new Blockly.Events.BlockCreate(candidate))
+              }
+              prepare && prepare()
+              otherC8n.connect(c8n)
+            } catch (err) {
+              console.error(err)
+              throw err
+            } finally {
+              candidate.eyo.render()
+              candidate.select()
+              candidate.bumpNeighbours_()
+              Blockly.Events.disable()
             }
-            prepare && prepare()
-            otherC8n.connect(c8n)
-          } catch (err) {
-            console.error(err)
-            throw err
-          } finally {
-            candidate.eyo.render()
-            candidate.select()
-            candidate.bumpNeighbours_()
-            Blockly.Events.disable()
           }
-        },
-        this
-      )
-      return candidate
-    }
-    if ((otherC8n = eYo.SelectedConnection)) {
-      var otherSource = otherC8n.getSourceBlock()
-      if (otherC8n.type === Blockly.INPUT_VALUE) {
-        if ((c8n = candidate.outputConnection) && c8n.checkType_(otherC8n)) {
+        )
+        return candidate
+      }
+      if ((otherC8n = eYo.SelectedConnection)) {
+        var otherSource = otherC8n.getSourceBlock()
+        if (otherC8n.type === Blockly.INPUT_VALUE) {
+          if ((c8n = candidate.outputConnection) && c8n.checkType_(otherC8n)) {
+            return fin()
+          }
+        } else if (otherC8n === otherSource.previousConnection) {
+          if ((c8n = candidate.nextConnection) && c8n.checkType_(otherC8n)) {
+            var targetC8n = otherC8n.targetConnection
+            if (targetC8n && candidate.previousConnection &&
+              targetC8n.checkType_(candidate.previousConnection)) {
+              return fin(function () {
+                targetC8n.connect(candidate.previousConnection)
+              })
+            } else {
+              return fin(function () {
+                var its_xy = block.getRelativeToSurfaceXY()
+                var my_xy = candidate.getRelativeToSurfaceXY()
+                var HW = candidate.getHeightWidth()
+                candidate.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y - HW.height)
+              })
+            }
+            // unreachable code
+          }
+        } else if (otherC8n.type === Blockly.NEXT_STATEMENT) {
+          if ((c8n = candidate.previousConnection) && c8n.checkType_(otherC8n)) {
+            if ((targetC8n = otherC8n.targetConnection) && candidate.nextConnection &&
+              targetC8n.checkType_(candidate.nextConnection)) {
+              return fin(function () {
+                targetC8n.connect(candidate.previousConnection)
+              })
+            } else {
+              return fin()
+            }
+          }
+        }
+      }
+      if ((c8n = candidate.outputConnection)) {
+        // try to find a free connection in a block
+        // When not undefined, the returned connection can connect to c8n.
+        var findC8n = function (block) {
+          var e8r = block.eyo.inputEnumerator()
+          var otherC8n, foundC8n, target
+          while (e8r.next()) {
+            if ((foundC8n = e8r.here.connection) && foundC8n.type === Blockly.INPUT_VALUE) {
+              if ((target = foundC8n.targetBlock())) {
+                if (!(foundC8n = findC8n(target))) {
+                  continue
+                }
+              } else if (!c8n.checkType_(foundC8n)) {
+                continue
+              } else if (foundC8n.eyo.editWidth) {
+                continue
+              }
+              if (!foundC8n.eyo.disabled_ && !foundC8n.eyo.s7r_ && (!c8n_N || foundC8n.eyo.name_ === c8n_N)) {
+                // we have found a connection
+                // which s not a separator and
+                // with the expected name
+                return foundC8n
+              }
+              // if there is no connection with the expected name,
+              // then remember this connection and continue the loop
+              // We remember the last separator connection
+              // of the first which is not a separator
+              if (!otherC8n || (!otherC8n.eyo.disabled_ && otherC8n.eyo.s7r_)) {
+                otherC8n = foundC8n
+              }
+            }
+          }
+          return otherC8n
+        }
+        if ((otherC8n = findC8n(block))) {
           return fin()
         }
-      } else if (otherC8n === otherSource.previousConnection) {
-        if ((c8n = candidate.nextConnection) && c8n.checkType_(otherC8n)) {
-          var targetC8n = otherC8n.targetConnection
-          if (targetC8n && candidate.previousConnection &&
-            targetC8n.checkType_(candidate.previousConnection)) {
+      }
+      if ((c8n = candidate.previousConnection)) {
+        if ((otherC8n = block.nextConnection) && c8n.checkType_(otherC8n)) {
+          return fin(function () {
+            if ((targetC8n = otherC8n.targetConnection)) {
+              // connected to something, beware of orphans
+              otherC8n.disconnect()
+              if (candidate.nextConnection && candidate.nextConnection.checkType_(targetC8n)) {
+                candidate.nextConnection.connect(targetC8n)
+                targetC8n = null
+              }
+            }
+            c8n.connect(otherC8n)
+            if (targetC8n) {
+              targetC8n.getSourceBlock().bumpNeighbours_()
+            }
+          })
+        }
+      }
+      if ((c8n = candidate.nextConnection)) {
+        if ((otherC8n = block.previousConnection) && c8n.checkType_(otherC8n)) {
+          if ((targetC8n = otherC8n.targetConnection) && candidate.previousConnection && candidate.previousConnection.checkType_(targetC8n)) {
             return fin(function () {
-              targetC8n.connect(candidate.previousConnection)
+              candidate.previousConnection.connect(targetC8n)
             })
           } else {
             return fin(function () {
@@ -3050,102 +3128,13 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (block, model, connect
               candidate.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y - HW.height)
             })
           }
-          // unreachable code
-        }
-      } else if (otherC8n.type === Blockly.NEXT_STATEMENT) {
-        if ((c8n = candidate.previousConnection) && c8n.checkType_(otherC8n)) {
-          if ((targetC8n = otherC8n.targetConnection) && candidate.nextConnection &&
-            targetC8n.checkType_(candidate.nextConnection)) {
-            return fin(function () {
-              targetC8n.connect(candidate.previousConnection)
-            })
-          } else {
-            return fin()
-          }
         }
       }
-    }
-    if ((c8n = candidate.outputConnection)) {
-      // try to find a free connection in a block
-      // When not undefined, the returned connection can connect to c8n.
-      var findC8n = function (block) {
-        var e8r = block.eyo.inputEnumerator()
-        var otherC8n, foundC8n, target
-        while (e8r.next()) {
-          if ((foundC8n = e8r.here.connection) && foundC8n.type === Blockly.INPUT_VALUE) {
-            if ((target = foundC8n.targetBlock())) {
-              if (!(foundC8n = findC8n(target))) {
-                continue
-              }
-            } else if (!c8n.checkType_(foundC8n)) {
-              continue
-            } else if (foundC8n.eyo.editWidth) {
-              continue
-            }
-            if (!foundC8n.eyo.disabled_ && !foundC8n.eyo.s7r_ && (!c8n_N || foundC8n.eyo.name_ === c8n_N)) {
-              // we have found a connection
-              // which s not a separator and
-              // with the expected name
-              return foundC8n
-            }
-            // if there is no connection with the expected name,
-            // then remember this connection and continue the loop
-            // We remember the last separator connection
-            // of the first which is not a separator
-            if (!otherC8n || (!otherC8n.eyo.disabled_ && otherC8n.eyo.s7r_)) {
-              otherC8n = foundC8n
-            }
-          }
-        }
-        return otherC8n
-      }
-      if ((otherC8n = findC8n(block))) {
-        return fin()
+      if (candidate) {
+        candidate.dispose(true)
       }
     }
-    if ((c8n = candidate.previousConnection)) {
-      if ((otherC8n = block.nextConnection) && c8n.checkType_(otherC8n)) {
-        return fin(function () {
-          if ((targetC8n = otherC8n.targetConnection)) {
-            // connected to something, beware of orphans
-            otherC8n.disconnect()
-            if (candidate.nextConnection && candidate.nextConnection.checkType_(targetC8n)) {
-              candidate.nextConnection.connect(targetC8n)
-              targetC8n = null
-            }
-          }
-          c8n.connect(otherC8n)
-          if (targetC8n) {
-            targetC8n.getSourceBlock().bumpNeighbours_()
-          }
-        })
-      }
-    }
-    if ((c8n = candidate.nextConnection)) {
-      if ((otherC8n = block.previousConnection) && c8n.checkType_(otherC8n)) {
-        if ((targetC8n = otherC8n.targetConnection) && candidate.previousConnection && candidate.previousConnection.checkType_(targetC8n)) {
-          return fin(function () {
-            candidate.previousConnection.connect(targetC8n)
-          })
-        } else {
-          return fin(function () {
-            var its_xy = block.getRelativeToSurfaceXY()
-            var my_xy = candidate.getRelativeToSurfaceXY()
-            var HW = candidate.getHeightWidth()
-            candidate.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y - HW.height)
-          })
-        }
-      }
-    }
-    if (candidate) {
-      candidate.dispose(true)
-    }
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    Blockly.Events.enable()
-  }
+  )
 }
 console.warn('Use eYo.vents.setGroup(...)')
 /**

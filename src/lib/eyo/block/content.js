@@ -83,7 +83,7 @@ eYo.Content.feed = function () {
       var order = content.model.order
       if (order) {
         goog.asserts.assert(!goog.isDefAndNotNull(byOrder[order]),
-        'Fields with the same order  %s = %s / %s',
+        'Contents with the same order  %s = %s / %s',
         byOrder[order] && byOrder[order].key || 'NOTHING', content.key, owner.getBlock().type)
         byOrder[order] = content
         if (order > 0) {

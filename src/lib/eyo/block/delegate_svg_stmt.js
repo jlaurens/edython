@@ -220,41 +220,46 @@ eYo.DelegateSvg.Stmt.prototype.minBlockWidth = function (block) {
 eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (block, model, subtype) {
   var c8n = block.previousConnection
   if (c8n) {
-    Blockly.Events.disable()
-    var parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, model)
-    Blockly.Events.enable()
-    if (parentBlock) {
-      var parentC8n = parentBlock.nextConnection
-      if (parentC8n) {
-        eYo.Events.groupWrap(
-          function () {
-            if (Blockly.Events.isEnabled()) {
-              Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
-            }
-            var targetC8n = c8n.targetConnection
-            if (targetC8n) {
-              targetC8n.disconnect()
-              if (parentBlock.previousConnection) {
-                targetC8n.connect(parentBlock.previousConnection)
-              }
-            } else {
-              var its_xy = block.getRelativeToSurfaceXY()
-              var my_xy = parentBlock.getRelativeToSurfaceXY()
-              parentBlock.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
-            }
-            var holes = eYo.HoleFiller.getDeepHoles(parentBlock)
-            eYo.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
-            parentBlock.render()
-            c8n.connect(parentC8n)
-            if (Blockly.selected === block) {
-              parentBlock.select()
-            }
-          },
-          this
-        )
-        return parentBlock
+    var parentBlock
+    eYo.Events.wrapDisable(this,
+      function () {
+        parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, model)
+      },
+      function () {
+        if (parentBlock) {
+          var parentC8n = parentBlock.nextConnection
+          if (parentC8n) {
+            eYo.Events.wrapGroup(this,
+              function () {
+                if (Blockly.Events.isEnabled()) {
+                  Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
+                }
+                var targetC8n = c8n.targetConnection
+                if (targetC8n) {
+                  targetC8n.disconnect()
+                  if (parentBlock.previousConnection) {
+                    targetC8n.connect(parentBlock.previousConnection)
+                  }
+                } else {
+                  var its_xy = block.getRelativeToSurfaceXY()
+                  var my_xy = parentBlock.getRelativeToSurfaceXY()
+                  parentBlock.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+                }
+                var holes = eYo.HoleFiller.getDeepHoles(parentBlock)
+                eYo.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
+                parentBlock.render()
+                c8n.connect(parentC8n)
+                if (Blockly.selected === block) {
+                  parentBlock.select()
+                }
+              },
+              this
+            )
+            return parentBlock
+          }
+        }    
       }
-    }
+    )
   }
 }
 
@@ -270,7 +275,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (block, model, s
  * @return the created block
  */
 eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (block, belowPrototypeName) {
-  eYo.Events.groupWrap(
+  eYo.Events.wrapGroup(this,
     function () {
       var blockAfter = eYo.DelegateSvg.newBlockReady(block.workspace, belowPrototypeName)
       var c8n = block.nextConnection

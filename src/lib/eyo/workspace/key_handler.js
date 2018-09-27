@@ -135,7 +135,7 @@ eYo.KeyHandler = (function () {
     if (B && !c8n) {
       var D = model.data
       var done = false
-      if (D && B.eyo.initDataWithModel(B, D)) {
+      if (D && B.eyo.setDataWithModel(D)) {
         // yes it does
         return
       }

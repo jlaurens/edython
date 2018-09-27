@@ -215,7 +215,7 @@ eYo.Data.prototype.init = function (newValue) {
  * This is usefull for variants and options.
  * @param {Object} newValue
  */
-eYo.Data.prototype.initWithType = function (type) {
+eYo.Data.prototype.setWithType = function (type) {
   var f = eYo.Decorate.reentrant_method.call(this, 'model_fromType', this.model.fromType)
   f && f.apply(this, arguments)
 }

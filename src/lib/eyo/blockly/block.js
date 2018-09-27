@@ -135,28 +135,6 @@ eYo.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
 }
 
 /**
- * Shortcut for appending a sealed value input row.
- * Add a 'true' eyo.wrapped_ attribute to the connection and register the newly created input to be filled later.
- * @param {string} name Language-neutral identifier which may used to find this
- *     input again.  Should be unique to this block.
- * @return {!Blockly.Input} The input object created.
- */
-eYo.Block.prototype.appendWrapValueInput = function (name, prototypeName, optional, hidden) {
-  goog.asserts.assert(prototypeName, 'Missing prototypeName, no block to seal')
-  goog.asserts.assert(eYo.T3.All.containsExpression(prototypeName), 'Unnown prototypeName, no block to seal ' + prototypeName)
-  var input = this.appendValueInput(name)
-  input.connection.eyo.wrapped_ = true
-  input.connection.eyo.optional_ = optional
-  if (!this.eyo.wrappedInputs_) {
-    this.eyo.wrappedInputs_ = []
-  }
-  if (!optional) {
-    this.eyo.wrappedInputs_.push([input, prototypeName])
-  }
-  return input
-}
-
-/**
  * Set whether this block returns a value.
  * No null opt_check for expression blocks
  * @param {boolean} newBoolean True if there is an output.

@@ -312,7 +312,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
   var e8r = block.eyo.inputEnumerator()
   var F = function (modifier, flags, msg) {
     var BB
-    eYo.Events.Disabler.wrap(function () {
+    eYo.Events.wrapDisable(this, function () {
       BB = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)
       BB.eyo.changeBegin()
       BB.eyo.data.modifier.set(modifier)
@@ -332,7 +332,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
             content,
             function () {
               var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)
-              eYo.Events.groupWrap(
+              eYo.Events.wrapGroup(this,
                 function () {
                   B.eyo.changeWrap(
                     function () {
@@ -341,15 +341,14 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
                       c8n.connect(B.outputConnection)    
                     }
                   )
-                },
-                this
+                }
               )
             }
           ))
         }
       }
     }
-    eYo.Events.Disabler.wrap(function () {
+    eYo.Events.wrapDisable(this, function () {
       BB.dispose(true)
     })
   }

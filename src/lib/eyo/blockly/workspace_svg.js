@@ -265,7 +265,7 @@ Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function (workspac
   var x = offset.x
   var y = offset.y
   var i = 0
-  eYo.Events.groupWrap(
+  eYo.Events.wrapGroup(this,
     function () {
       for (; i < types.length; i++) {
         this.addElementInWorkspaceBlocks(workspaceXMLElement, types[i], x, y)
@@ -282,8 +282,7 @@ Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function (workspac
         x = offset.x
         y += step.y
       }
-    },
-    this
+    }
   )
   return {x: x, y: y}
 }
@@ -318,7 +317,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
       targetC8n = null
     }
     if (targetC8n && c8n.checkType_(targetC8n)) {
-      eYo.Events.groupWrap(
+      eYo.Events.wrapGroup(this,
         function () {
           if (Blockly.Events.isEnabled()) {
             Blockly.Events.fire(new Blockly.Events.BlockCreate(block))
@@ -361,8 +360,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
           // } else if ((c8n = block.nextConnection)) {
           //   eYo.SelectedConnection = c8n
           // }
-        },
-        this
+        }
       )
     }
   }

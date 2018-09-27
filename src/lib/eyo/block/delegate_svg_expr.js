@@ -263,7 +263,7 @@ eYo.DelegateSvg.Expr.prototype.canReplaceBlock = function (block, other) {
  */
 eYo.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
   if (this.workspace && other && other.workspace) {
-    eYo.Events.groupWrap(
+    eYo.Events.wrapGroup(this,
       function () {
         try {
           console.log('**** replaceBlock', block, other)
@@ -291,8 +291,7 @@ eYo.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
         } finally {
           other.dispose(true)
         }    
-      },
-      this
+      }
     )
   }
 }
@@ -373,25 +372,23 @@ eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr)
  */
 eYo.DelegateSvg.Expr.prototype.canInsertParent = function (block, prototypeName, subtype, parentInputName) {
   var can = false
-  Blockly.Events.disable()
-  try {
-    var B = block.workspace.newBlock(prototypeName)
-    B.eyo.data.subtype.set(subtype)
-    var input = B.getInput(parentInputName)
-    goog.asserts.assert(input, 'No input named ' + parentInputName)
-    var c8n = input.connection
-    goog.asserts.assert(c8n, 'Unexpected dummy input ' + parentInputName)
-    if (block.outputConnection && c8n.checkType_(block.outputConnection)) {
-      var targetC8n = block.outputConnection.targetConnection
-      can = !targetC8n || targetC8n.checkType_(B.outputConnection)
+  var B
+  eYo.Events.wrapDisable(this,
+    function () {
+      B = block.workspace.newBlock(prototypeName)
+      B.eyo.data.subtype.set(subtype)
+      var input = B.getInput(parentInputName)
+      goog.asserts.assert(input, 'No input named ' + parentInputName)
+      var c8n = input.connection
+      goog.asserts.assert(c8n, 'Unexpected dummy input ' + parentInputName)
+      if (block.outputConnection && c8n.checkType_(block.outputConnection)) {
+        var targetC8n = block.outputConnection.targetConnection
+        can = !targetC8n || targetC8n.checkType_(B.outputConnection)
+      }
+    }, function () {
+      B.dispose()
     }
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    B.dispose()
-    Blockly.Events.ensable()
-  }
+  )
   return can
 }
 
@@ -409,7 +406,7 @@ eYo.DelegateSvg.Expr.prototype.canInsertParent = function (block, prototypeName,
 eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, fill_holes) {
   var parentSlotName = model.slot || model.input
   var parentBlock
-  eYo.Events.Disabler.wrap(function () {
+  eYo.Events.wrapDisable(this, function () {
     parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, model)
   })
   if (!parentBlock) {
@@ -468,7 +465,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
   // Next connections should be connected
   var outputC8n = block.outputConnection
   if (parentInputC8n && parentInputC8n.checkType_(outputC8n)) {
-    eYo.Events.groupWrap(
+    eYo.Events.wrapGroup(this,
       function () {
         if (Blockly.Events.isEnabled()) {
           Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))

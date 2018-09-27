@@ -64,7 +64,7 @@ eYo.Slot = function (owner, key, model) {
     eyo.bindField = this.bindField
   }
   if (model.wrap) {
-    this.setInput(block.appendWrapValueInput(key, model.wrap, model.optional, model.hidden))
+    this.setInput(owner.appendWrapValueInput(key, model.wrap, model.optional, model.hidden))
     f.call(this)
   } else if (goog.isDefAndNotNull(model.check)) {
     this.setInput(block.appendValueInput(key))
@@ -415,15 +415,15 @@ eYo.Slot.makeFields = function () {
 /**
  * Set the underlying Blockly input.
  * Some time we will not need these inputs.
+ * It must be done only once at initialization time.
  * For edython.
  * @param {!Blockly.Input} input
  */
 eYo.Slot.prototype.setInput = function (input) {
   this.input = input
-  this.inputType = this.input.type
-  this.connection = input.connection
+  this.inputType = input.type
   input.eyo.slot = this
-  var c8n = this.connection
+  var c8n = this.connection = input.connection
   if (c8n) {
     var eyo = c8n.eyo
     eyo.slot = this
@@ -436,6 +436,9 @@ eYo.Slot.prototype.setInput = function (input) {
     }
     if (this.model.optional) { // svg
       eyo.optional_ = true
+    }
+    if (this.model.hidden) { // svg
+      this.incog = eyo.hidden_ = true
     }
   }
 }
@@ -496,6 +499,10 @@ eYo.Slot.prototype.setIncog = function (newValue) {
   if (c8n && c8n.eyo.isIncog() !== newValue) {
     change = true 
     c8n.eyo.setIncog(newValue)
+  }
+  if (!newValue) {
+    // maybe there is another wrapped block to be initialized
+    this.owner.completeWrapped_()
   }
   return change
 }

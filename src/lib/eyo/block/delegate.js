@@ -15,6 +15,7 @@ goog.provide('eYo.Delegate')
 
 goog.require('eYo.Helper')
 goog.require('eYo.Decorate')
+goog.require('eYo.Event')
 goog.require('Blockly.Blocks')
 
 goog.require('eYo.T3')
@@ -36,7 +37,21 @@ eYo.Delegate = function (block) {
   this.block_ = block
   block.eyo = this
   this.change = {
+    // the count is incremented each time a change occurs,
+    // even when undoing.
+    // Some lengthy actions may be shortened when the count
+    // has not changed since the last time it was performed
     count: 0,
+    // The level indicates cascading changes
+    // Some actions that are performed when something changes
+    // should not be performed while there is a pending change.
+    // The level is incremented before the change and
+    // decremented after the change (see `changeWrap`)
+    // If we have
+    // A change (level 1) => B change (level 2) => C change (level 3)
+    // Such level aware actions are not performed when B and C
+    // have changed because the level is positive (respectivelly 1 and 2),// a contrario they are performed when the A has changed because
+    // the level is 0.
     level: 0
   }
 }
@@ -116,7 +131,7 @@ eYo.Delegate.prototype.changeWrap = function () {
 }
 
 /**
- * Decorate of change hooks.
+ * Decorate of change count hooks.
  * Returns a function with signature is `foo(whatever) → whatever`
  * `foo` is overriden by the model.
  * The model `foo` can call the builtin `foo` with `this.foo(...)`.
@@ -158,7 +173,6 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
  * Sends a `consolidate` message to each component of the block.
  * However, there might be some caveats related to undo management,
  * this must be investigated.
- * This method is reentrant and `change.count` aware.
  * This message is sent by:
  * - an expression to its parent when consolidated
  * - a list just before rendering
@@ -167,7 +181,10 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
  * - when an argument list changes its `ary` or `mandatory`
  * - in the changeEnd method
  * Consolidation will not occur when no change has been
- * preformed since the last consolidation
+ * preformed since the last consolidation.
+ * 
+ * The return value may be cached.
+ * 
  * @param {?Boolean} deep
  * @param {?Boolean} force
  * @return {Boolean} true when consolidation occurred
@@ -188,10 +205,12 @@ eYo.Delegate.prototype.doConsolidate = function (deep, force) {
   this.consolidateConnections()
   this.consolidateType()
   this.consolidateSubtype()
+  return true
 }
 
 /**
- * Wraps `doConsolidate`.
+ * Wraps `doConsolidate` into a reentrant and `change.count` aware method.
+ 
  * 
  * 
  */
@@ -204,7 +223,10 @@ eYo.Delegate.prototype.consolidate = eYo.Decorate.reentrant_method(
 )
 
 /**
- * Make the data
+ * Make the data.
+ * Called only by `initBlock`.
+ * Should be called only once.
+ * No data change, no rendering.
  * For edython.
  */
 eYo.Delegate.prototype.makeData = function () {
@@ -277,7 +299,8 @@ eYo.Delegate.prototype.makeData = function () {
 }
 
 /**
- * Make the Fields
+ * Make the Fields.
+ * No rendering.
  * For edython.
  */
 eYo.Delegate.prototype.makeFields = function () {
@@ -718,7 +741,7 @@ eYo.Delegate.Manager = (function () {
  * Model getter. Convenient shortcut.
  */
 eYo.Do.getModel = function (type) {
-  return eYo.Delegate.Manager.getModel(eYo.T3.Stmt.comment_any)
+  return eYo.Delegate.Manager.getModel(type)
 }
 
 /**
@@ -750,8 +773,7 @@ eYo.Delegate.prototype.getType = function () {
  * This should be used instead of direct block querying.
  * @return {String} The type of the receiver's block.
  */
-eYo.Delegate.prototype.getSubtype = function () {
-}
+eYo.Delegate.prototype.getSubtype = eYo.Do.nothing
 
 /**
  * getBaseType.
@@ -821,14 +843,13 @@ eYo.Delegate.prototype.foreachData = function (helper) {
 }
 
 /**
- * Initialize the data.
  * Bind data and fields.
  * We assume that if data and fields share the same name,
  * they must be bound, otherwise we would have chosen different names...
- * if the data model contains an intializer, use it,
+ * if the data model contains an initializer, use it,
  * otherwise send an init message to all the data controllers.
  */
-eYo.Delegate.prototype.initData = function () {
+eYo.Delegate.prototype.setupModel = function () {
   for (var k in this.data) {
     var data = this.data[k]
     var slot = this.slots[k]
@@ -863,37 +884,43 @@ eYo.Delegate.prototype.initData = function () {
       eyo.data = data
     }
   }
-  var init = this.getModel().initData
-  if (goog.isFunction(init)) {
-    init.call(this)
-    return
-  }
-  this.foreachData(function () {
-    this.init()
+}
+
+/**
+ * Consolidate the data by sending a `consolidate` message to
+ * all the data controllers.
+ * Called only once at
+ * 
+ */
+eYo.Delegate.prototype.consolidateData = function () {
+  this.changeWrap(function () {
+    this.foreachData(function () {
+      this.consolidate()
+    })
   })
 }
 
 /**
- * Initialize the data values from the type.
+ * Set the data values from the type.
  * One block implementation may correspond to different types,
  * For example, there is one implementation for all the primaries.
  * @param {!Blockly.Block} block to be initialized..
  * @param {!String} type
  * @return {boolean} whether the model was really used.
  */
-eYo.Delegate.prototype.initDataWithType = function (block, type) {
+eYo.Delegate.prototype.setDataWithType = function (type) {
   this.foreachData(function () {
-    this.initWithType(type)
+    this.setWithType(type)
   })
 }
 
 /**
- * Initialize the data values from the model.
- * @param {!Blockly.Block} block to be initialized..
+ * Set the data values from the model.
+ * @param {!Blockly.Block} block to be modified.
  * @param {!Object} model
  * @return {boolean} whether the model was really used.
  */
-eYo.Delegate.prototype.initDataWithModel = function (block, model, noCheck) {
+eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
   var done = false
   var data_in = model.data
   if (goog.isString(data_in)) {
@@ -915,7 +942,7 @@ eYo.Delegate.prototype.initDataWithModel = function (block, model, noCheck) {
         if (eYo.Do.hasOwnProperty(data_in, k)) {
           var D = this.data[k]
           if (!D) {
-            console.warn('Unused data:', block.type, k, data_in[k])
+            console.warn('Unused data:', this.block_.type, k, data_in[k])
           }
         }
       }
@@ -1109,21 +1136,35 @@ eYo.Delegate.prototype.consolidateConnections = function () {
 /**
  * Initialize a block.
  * Called from block's init method.
- * @param {!Blockly.Block} block to be initialized..
+ * This should be called only once.
+ * The underlying model is not expected to change while running.
+ * @param {!Blockly.Block} block to be initialized.
  * For subclassers eventually
  */
 eYo.Delegate.prototype.initBlock = function () {
   // configure the connections
-  this.changeWrap(
-    function () {
-      this.makeData()
-      this.makeContents()
-      this.makeFields()
-      this.makeSlots()
-      this.makeConnections()    
-    },
-    this
-  )
+  try {
+    this.change.level++ // will prevent any rendering
+    this.makeData()
+    this.makeContents()
+    this.makeFields()
+    this.makeSlots()
+    this.makeConnections()
+    // now make the bounds between data and fields
+    this.setupModel()
+    // initialize the data
+    this.foreachData(function () {
+      this.init()
+    })
+    // At this point the state value may not be consistent
+    this.consolidate()
+    // but now it should be
+  } catch (err) {
+    console.error(err)
+    throw err
+  } finally {
+    this.change.level--
+  }
 }
 
 /**
@@ -1196,6 +1237,33 @@ eYo.Delegate.prototype.getWrappedDescendants = function (block) {
 }
 
 /**
+ * Shortcut for appending a sealed value input row.
+ * Add a 'true' eyo.wrapped_ attribute to the connection and register the newly created input to be filled later.
+ * @param {string} name Language-neutral identifier which may used to find this
+ *     input again.  Should be unique to this block.
+ * @return {!Blockly.Input} The input object created.
+ */
+eYo.Delegate.prototype.appendWrapValueInput = function (name, prototypeName, optional, hidden) {
+  goog.asserts.assert(prototypeName, 'Missing prototypeName, no block to seal')
+  goog.asserts.assert(eYo.T3.All.containsExpression(prototypeName), 'Unnown prototypeName, no block to seal ' + prototypeName)
+  var block = this.block_
+  var input = block.appendValueInput(name)
+  input.connection.eyo.wrapped_ = true
+  input.connection.eyo.optional_ = optional
+  input.connection.eyo.hidden_ = hidden
+  if (!this.wrappedInputs_) {
+    this.wrappedInputs_ = []
+  }
+  if (!optional) {
+    this.wrappedInputs_.push({
+      input: input,
+      type: prototypeName
+    })
+  }
+  return input
+}
+
+/**
  * If the sealed connections are not connected,
  * create a node for it.
  * The default implementation connects all the blocks from the wrappedInputs_ list.
@@ -1204,12 +1272,12 @@ eYo.Delegate.prototype.getWrappedDescendants = function (block) {
  * @param {!Block} block
  * @private
  */
-eYo.Delegate.prototype.completeWrapped_ = function (block) {
+eYo.Delegate.prototype.completeWrapped_ = function () {
   if (this.wrappedInputs_) {
     eYo.Delegate.wrappedFireWall = 100
     for (var i = 0; i < this.wrappedInputs_.length; i++) {
       var data = this.wrappedInputs_[i]
-      this.completeWrappedInput_(block, data[0], data[1])
+      this.completeWrappedInput_(data.input, data.type)
     }
   }
 }
@@ -1303,24 +1371,29 @@ eYo.Delegate.prototype.getUnwrapped = function (block) {
  * @return yorn whether a change has been made
  * @private
  */
-eYo.Delegate.prototype.completeWrappedInput_ = function (block, input, prototypeName) {
+eYo.Delegate.prototype.completeWrappedInput_ = function (input, prototypeName) {
+  var block = this.block_
   if (input) {
-    var target = input.connection.targetBlock()
-    if (!target) {
-      try {
-        Blockly.Events.disable()
-        goog.asserts.assert(prototypeName, 'Missing wrapping prototype name in block ' + block.type)
-        goog.asserts.assert(eYo.Delegate.wrappedFireWall, 'ERROR: Maximum value reached in completeWrappedInput_ (circular)')
-        --eYo.Delegate.wrappedFireWall
-        target = eYo.DelegateSvg.newBlockReady(block.workspace, prototypeName, block.id+'.wrapped:'+input.connection.eyo.name_)
-        goog.asserts.assert(target, 'completeWrapped_ failed: ' + prototypeName)
-        goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed ' + target.type)
-        input.connection.connect(target.outputConnection)
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        Blockly.Events.enable()
+    var c8n = input.connection
+    var source = c8n.eyo.source
+    if (c8n.isIncog && !c8n.isIncog()) {
+      var target = c8n.targetBlock()
+      if (!target) {
+        try {
+          Blockly.Events.disable()
+          goog.asserts.assert(prototypeName, 'Missing wrapping prototype name in block ' + block.type)
+          goog.asserts.assert(eYo.Delegate.wrappedFireWall, 'ERROR: Maximum value reached in completeWrappedInput_ (circular)')
+          --eYo.Delegate.wrappedFireWall
+          target = eYo.DelegateSvg.newBlockReady(block.workspace, prototypeName, block.id+'.wrapped:'+input.connection.eyo.name_)
+          goog.asserts.assert(target, 'completeWrapped_ failed: ' + prototypeName)
+          goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed ' + target.type)
+          input.connection.connect(target.outputConnection)
+        } catch (err) {
+          console.error(err)
+          throw err
+        } finally {
+          Blockly.Events.enable()
+        }
       }
     }
   }

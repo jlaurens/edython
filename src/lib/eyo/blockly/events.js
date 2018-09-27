@@ -89,18 +89,18 @@ eYo.Events.setGroup = (function () {
   }
 }())
 
-goog.provide('eYo.Events.Disabler')
 /**
  * Event disabler.
  */
-eYo.Events.Disabler.wrap = function (f) {
+eYo.Events.wrapDisable = function (self, try_f, finally_f) {
   Blockly.Events.disable()
   try {
-    f()
+    return try_f.call(self)
   } catch (err) {
     console.error(err)
     throw err
   } finally {
+    finally_f && finally_f.call(self)
     Blockly.Events.enable()
   }
 }
@@ -216,15 +216,15 @@ Blockly.Events.filter = function(queueIn, forward) {
  * @param {!Function} do_it
  * @param {self} This
  */
-eYo.Events.groupWrap = function (do_it, self) {
-  var args = Array.prototype.slice.call(arguments)
+eYo.Events.wrapGroup = function (self, try_f, finally_f) {
   try {
     eYo.Events.setGroup(true)
-    args[0] && args[0].apply(args[1], args.slice(2))
+    return try_f.call(self)
   } catch (err) {
     console.error(err)
     throw err
   } finally {
+    finally_f && finally_f.call(self)
     eYo.Events.setGroup(false)
   }
 }

@@ -534,7 +534,7 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
  * @override
  */
 eYo.BlockSvg.prototype.dispose = function (healStack, animate) {
-  eYo.Events.groupWrap(
+  eYo.Events.wrapGroup(this,
     function () {
       if (this === Blockly.selected) {
         // this block was selected, select the block below or above before deletion
@@ -548,8 +548,7 @@ eYo.BlockSvg.prototype.dispose = function (healStack, animate) {
         }
       }
       eYo.BlockSvg.superClass_.dispose.call(this, healStack, animate)
-    },
-    this
+    }
   )
 }
 
