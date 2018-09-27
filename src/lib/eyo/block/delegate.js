@@ -117,15 +117,15 @@ eYo.Delegate.prototype.changeEnd = function () {
  * Begin a mutation
  * For edython.
  */
-eYo.Delegate.prototype.changeWrap = function () {
-  var args = Array.prototype.slice.call(arguments)
+eYo.Delegate.prototype.changeWrap = function (try_f, finally_f) {
   try {
     this.changeBegin()
-    args[0] && args[0].apply(args[1] || this, args.slice(2))
+    return try_f.call(this)
   } catch (err) {
     console.error(err)
     throw err
   } finally {
+    finally_f && finally_f.call(this)
     this.changeEnd()
   }
 }
