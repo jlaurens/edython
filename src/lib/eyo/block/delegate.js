@@ -955,12 +955,21 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
 
 /**
  * Synchronize the data to the UI.
+ * The change level and change count should not change here.
  * Sends a `synchronize` message to all data controllers.
+ * This is a one shot method only called by the `consolidate` method.
+ * The fact is that all data must be synchronized at least once
+ * at least when the model has been made. While running,
+ * the synchronization will occur each time the data changes.
+ * As a data change can not be reentrant, the synchronization can be
+ * performed just after the change, whether doing, undoing or redoing.
+ * This is why the one shot.
  */
 eYo.Delegate.prototype.synchronizeData = function () {
   this.foreachData(function () {
     this.synchronize(this.get())
   })
+  this.synchronizeData = eYo.Do.nothing
 }
 
 /**
@@ -1011,15 +1020,6 @@ eYo.Delegate.prototype.setupType = function (optNewType) {
   if (!this.pythonType_) {
     console.error('Error! this.pythonType_')
   } 
-}
-
-/**
- * For edython.
- */
-eYo.Delegate.prototype.synchronizeData = function () {
-  this.foreachData(function () {
-    this.synchronize()
-  })
 }
 
 /**

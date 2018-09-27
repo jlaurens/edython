@@ -152,8 +152,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (b
           // we assume that inputList is not void
           var c8n = list.inputList[list.inputList.length - 1].connection
           c8n.connect(B.outputConnection)
-        },
-        this
+        }
       )
     }
     var remove = function (key) {
@@ -162,8 +161,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (b
           var B = has[key]
           B.unplug()
           B.dispose()
-        },
-        this
+        }
       )
     }
     var F = function (candidate) {

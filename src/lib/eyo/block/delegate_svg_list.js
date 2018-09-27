@@ -135,8 +135,7 @@ eYo.DelegateSvg.List.prototype.removeItems = function (block) {
         }
       }
       this.consolidate()
-    },
-    this
+    }
   )
 }
 

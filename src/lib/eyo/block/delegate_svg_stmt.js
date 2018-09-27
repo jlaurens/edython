@@ -252,8 +252,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (block, model, s
                 if (Blockly.selected === block) {
                   parentBlock.select()
                 }
-              },
-              this
+              }
             )
             return parentBlock
           }
@@ -293,8 +292,7 @@ eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (block, belowPrototyp
       if (Blockly.selected === block) {
         blockAfter.select()
       }
-    },
-    this
+    }
   )
   return blockAfter
 }
