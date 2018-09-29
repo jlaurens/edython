@@ -642,7 +642,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         end: ')'
       },
       wrap: eYo.T3.Expr.argument_list_comprehensive,
-      consolidate: /** @suppress {globalThis} */ function () {
+      consolidateX: /** @suppress {globalThis} */ function () {
         var target = this.input.connection.targetBlock()
         if (target) {
           target.eyo.createConsolidator(true)

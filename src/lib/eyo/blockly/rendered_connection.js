@@ -131,7 +131,12 @@ eYo.ConnectionDelegate.prototype.setIncog = function (incog) {
     if (target.eyo.setIncog(incog)) {
       change = true
     }
-  } else if (!incog && c8n.eyo.wrapped_) {
+  } else if (!incog && this.wrapped_) {
+    this.incog_ = incog
+    if (c8n.hidden_ !== incog) {
+      c8n.setHidden(incog)
+      change = true
+    }
     // maybe there is another wrapped block to be initialized
     this.completeWrapped()
   }
