@@ -2986,9 +2986,10 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
     }
   }
   // create a block out of the undo mechanism
+  var candidate
   eYo.Events.disableWrap(this,
     function () {
-      var candidate = eYo.DelegateSvg.newBlockReady(block.workspace, model)
+      candidate = eYo.DelegateSvg.newBlockReady(block.workspace, model)
       if (!candidate) {
         return
       }
@@ -3131,6 +3132,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
       }
     }
   )
+  return candidate
 }
 console.warn('Use eYo.Events.setGroup(...)')
 /**
