@@ -589,7 +589,7 @@ eYo.DelegateSvg.prototype.render = eYo.Decorate.reentrant_method(
         }
       }
     }
-    if (!this.downRendering && block.outputConnection && !this.skipRendering_) {
+    if (!this.downRendering && block.outputConnection) {
       // always render from a line start id est
       // an orphan block or a statement block
       var parent
@@ -624,29 +624,6 @@ eYo.DelegateSvg.prototype.render = eYo.Decorate.reentrant_method(
       return
     }
     this.renderCount = this.change.count
-    if (this.skipRendering_) {
-      // do not render the model
-      if (!this.downRendering) {
-        this.layoutConnections_(block)
-        this.renderMove_(block)
-        this.updateAllPaths_(block)
-        this.renderDrawParent_(block, optBubble)
-        return // very important  
-      } else /* if (this.downRendering) */ {
-        this.layoutConnections_(block)
-        this.renderMove_(block)
-        this.renderDrawSuite_(block)
-        this.updateAllPaths_(block)
-        this.renderDrawNext_(block)
-        return // very important  
-      } 
-    }
-    // if (this.wrapped_ && !block.getParent()) {
-    //   console.log('wrapped block with no parent')
-    //   setTimeout(function(){block.dispose()}, 10)
-    //   block.dispose()
-    //   return
-    // }
     if (eYo.DelegateSvg.debugStartTrackingRender) {
       var n = eYo.DelegateSvg.debugCount[block.id]
       eYo.DelegateSvg.debugCount[block.id] = (n||0)+1
@@ -681,7 +658,6 @@ eYo.DelegateSvg.prototype.render = eYo.Decorate.reentrant_method(
       if (eYo.DelegateSvg.debugStartTrackingRender &&  eYo.DelegateSvg.debugPrefix.length) {
         eYo.DelegateSvg.debugPrefix = eYo.DelegateSvg.debugPrefix.substring(1)
       }
-      // goog.asserts.assert(!this.skipRendering_, 'FAILURE')
     }
     // this.changeWrap(
     //   function () {
@@ -719,7 +695,6 @@ eYo.DelegateSvg.prototype.render = eYo.Decorate.reentrant_method(
     //       if (eYo.DelegateSvg.debugStartTrackingRender &&  eYo.DelegateSvg.debugPrefix.length) {
     //         eYo.DelegateSvg.debugPrefix = eYo.DelegateSvg.debugPrefix.substring(1)
     //       }
-    //       // goog.asserts.assert(!this.skipRendering_, 'FAILURE')
     //     }
     //   }
     // )
@@ -742,7 +717,7 @@ eYo.DelegateSvg.prototype.wrapped_ = undefined
  * @private
  */
 eYo.DelegateSvg.prototype.willRender_ = function (block) {
-  if (block.svgGroup_ && this.skipRendering_ < 2) {
+  if (block.svgGroup_) {
     var F = this.locked_ && block.outputConnection && block.getSurroundParent()
       ? goog.dom.classlist.add
       : goog.dom.classlist.remove
@@ -2118,7 +2093,7 @@ eYo.DelegateSvg.prototype.canInsertParent = function (block, prototypeName, subt
  * @param {Object} model, for subclassers
  * @return {?Blockly.Block} the created block
  */
-eYo.DelegateSvg.prototype.insertParentWithModel = function (block, processModel) {
+eYo.DelegateSvg.prototype.insertParentWithModel = function (processModel) {
   goog.asserts.assert(false, 'Must be subclassed')
 }
 
@@ -2937,10 +2912,11 @@ Object.defineProperty(eYo, 'SelectedConnection', function () {
  * @param {Object|string} model
  * @return {?Blockly.Block} the block that was inserted
  */
-eYo.DelegateSvg.prototype.insertBlockWithModel = function (block, model, connection) {
+eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
   if (!model) {
     return null
   }
+  var block = this.block_
   // get the type:
   var type = eYo.Do.typeOfString(model)
   if (type) {
@@ -3105,7 +3081,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (block, model, connect
     }
   )
 }
-console.warn('Use eYo.vents.setGroup(...)')
+console.warn('Use eYo.Events.setGroup(...)')
 /**
  * Whether the given block can lock.
  * For edython.

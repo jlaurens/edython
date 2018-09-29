@@ -946,7 +946,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model
         var key = d.key
         var content = self.get_menuitem_content(model.type, key)
         var MI = self.newMenuItem(content, function () {
-          block.eyo.insertParentWithModel(block, model, key)
+          block.eyo.insertParentWithModel(model, key)
         })
         self.addInsertChild(MI)
         return true
@@ -957,7 +957,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model
             key = d.key || K
             content = self.get_menuitem_content(parent_type, key)
             MI = self.newMenuItem(content, function () {
-              block.eyo.insertParentWithModel(block, model, key)
+              block.eyo.insertParentWithModel(model, key)
             })
             self.addInsertChild(MI)
             return true
@@ -984,7 +984,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model
         }
         content = self.get_menuitem_content(model.type)
         MI = self.newMenuItem(content, function () {
-          block.eyo.insertParentWithModel(block, model)
+          block.eyo.insertParentWithModel(model)
         })
         self.addInsertChild(MI)
         return true

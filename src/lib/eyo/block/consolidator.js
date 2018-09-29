@@ -211,8 +211,9 @@ eYo.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
   }
   c8n.eyo.didConnect = function (c8n, otherC8n) {
     this.will_connect_ = false
-    this.connection.sourceBlock_.eyo.will_connect_ = false
-    me.consolidate(this.connection.sourceBlock_, true)
+    c8n.sourceBlock_.eyo.will_connect_ = false
+    c8n.sourceBlock_.eyo.incrementChangeCount()
+    me.consolidate(c8n.sourceBlock_, true)
   }
   var input = new Blockly.Input(Blockly.INPUT_VALUE, '!', io.block, c8n)
   eYo.Input.setupEyO(input)

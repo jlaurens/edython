@@ -500,10 +500,6 @@ eYo.Slot.prototype.setIncog = function (newValue) {
     change = true 
     c8n.eyo.setIncog(newValue)
   }
-  if (!newValue && c8n.eyo.wrapped_) {
-    // maybe there is another wrapped block to be initialized
-    c8n.eyo.completeWrapped()
-  }
   return change
 }
 

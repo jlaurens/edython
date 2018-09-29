@@ -169,8 +169,8 @@ eYo.KeyHandler = (function () {
     if (B) {
       var c8n = eYo.SelectedConnection
       var newB = model.parent
-      ? B.eyo.insertParentWithModel(B, model) || B.eyo.insertBlockWithModel(B, model, c8n)
-      : B.eyo.insertBlockWithModel(B, model, c8n) || B.eyo.insertParentWithModel(B, model)
+      ? B.eyo.insertParentWithModel(model) || B.eyo.insertBlockWithModel(model, c8n)
+      : B.eyo.insertBlockWithModel(model, c8n) || B.eyo.insertParentWithModel(model)
       if (newB) {
         if (c8n) {
           // There was a selected connection,
@@ -595,9 +595,9 @@ var Ks = {
         return
       }
       if (eYo.SelectedConnection) {
-        B.eyo.insertBlockWithModel(B, eYo.T3.Expr.not_test)
+        B.eyo.insertBlockWithModel(eYo.T3.Expr.not_test)
       } else {
-        B.eyo.insertParentWithModel(B, eYo.T3.Expr.not_test)
+        B.eyo.insertParentWithModel(eYo.T3.Expr.not_test)
       }
     }
   },
@@ -615,9 +615,9 @@ var Ks = {
         }
       }
       if (eYo.SelectedConnection) {
-        B.eyo.insertBlockWithModel(B, model)
+        B.eyo.insertBlockWithModel(model)
       } else {
-        B.eyo.insertParentWithModel(B, model)
+        B.eyo.insertParentWithModel(model)
       }
     }
   }
@@ -643,9 +643,9 @@ Ks = function () {
         }
       }
       if (eYo.SelectedConnection) {
-        B.eyo.insertBlockWithModel(B, model)
+        B.eyo.insertBlockWithModel(model)
       } else {
-        B.eyo.insertParentWithModel(B, model)
+        B.eyo.insertParentWithModel(model)
       }
     }
   }

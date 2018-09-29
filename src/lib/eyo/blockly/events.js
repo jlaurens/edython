@@ -91,17 +91,24 @@ eYo.Events.setGroup = (function () {
 
 /**
  * Event disabler.
+ * @param {?Object} self, for `this`.
+ * @param {!Function} try_f
+ * @param {?Function} finally_f
  */
 eYo.Events.disableWrap = function (self, try_f, finally_f) {
   Blockly.Events.disable()
+  var out
   try {
-    return try_f.call(self)
+    out = try_f.call(self)
   } catch (err) {
     console.error(err)
     throw err
   } finally {
-    finally_f && finally_f.call(self)
     Blockly.Events.enable()
+    // enable first to allow finally_f to eventually fire events
+    // or eventually modify `out`
+    finally_f && finally_f.call(self)
+    return out && out.return
   }
 }
 

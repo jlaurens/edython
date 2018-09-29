@@ -207,6 +207,8 @@ eYo.DelegateSvg.Stmt.prototype.minBlockWidth = function (block) {
   return eYo.Font.tabWidth
 }
 
+console.error('workspace cancel last gesture?')
+
 /**
  * Insert a block above.
  * If the block's previous connection is connected,
@@ -218,9 +220,11 @@ eYo.DelegateSvg.Stmt.prototype.minBlockWidth = function (block) {
  * @param {string} parentInputName, which parent's connection to use
  * @return the created block
  */
-eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (block, model, subtype) {
+eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
+  var block = this.block_
   var c8n = block.previousConnection
   if (c8n) {
+    var block = this.block_
     var parentBlock
     eYo.Events.disableWrap(this,
       function () {
@@ -229,7 +233,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (block, model, s
       function () {
         if (parentBlock) {
           var parentC8n = parentBlock.nextConnection
-          if (parentC8n) {
+          if (parentC8n && c8n.checkType_(parentC8n)) {
             eYo.Events.groupWrap(this,
               function () {
                 if (Blockly.Events.isEnabled()) {
@@ -255,11 +259,14 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (block, model, s
                 }
               }
             )
-            return parentBlock
+          } else {
+            parentBlock.dispose(true)
+            parentBlock = undefined
           }
         }    
       }
     )
+    return parentBlock
   }
 }
 

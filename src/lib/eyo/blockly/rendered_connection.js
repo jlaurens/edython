@@ -115,7 +115,7 @@ eYo.ConnectionDelegate.prototype.setIncog = function (incog) {
     // the last time the connections have been disabled
     return false
   }
-  incog == !!incog
+  incog = !!incog
   var change = this.incog_ !== incog
   var c8n = this.connection
   if (incog || !this.wrapped_) {
@@ -128,11 +128,12 @@ eYo.ConnectionDelegate.prototype.setIncog = function (incog) {
   }
   var target = c8n.targetBlock()
   if (target) {
-    if (target.eyo.setIncog(target, incog)) {
+    if (target.eyo.setIncog(incog)) {
       change = true
     }
-  } else if (c8n.eyo.wrapped_) {
-
+  } else if (!incog && c8n.eyo.wrapped_) {
+    // maybe there is another wrapped block to be initialized
+    this.completeWrapped()
   }
   return change
 }
@@ -714,7 +715,7 @@ Blockly.RenderedConnection.prototype.connect_ = function (childC8n) {
                   if (c8n === childC8n || c8n === parentC8n) {
                     eYo.SelectedConnection = null
                   }
-                  child.eyo.setIncog(child, parentC8n.eyo.isIncog())
+                  child.eyo.setIncog(parentC8n.eyo.isIncog())
                 } catch (err) {
                   console.error(err)
                   throw err
@@ -848,8 +849,6 @@ Blockly.Connection.uniqueConnection_ = function (block, orphanBlock) {
   return null
 }
 
-eYo.RenderedConnection.savedSetHidden = Blockly.RenderedConnection.prototype.setHidden
-
 /**
  * Set whether this connections is hidden (not tracked in a database) or not.
  * The delegate's hidden_ property takes precedence over `hidden`parameter.
@@ -857,17 +856,21 @@ eYo.RenderedConnection.savedSetHidden = Blockly.RenderedConnection.prototype.set
  * In fact we bypass the real method if the connection is not epected to show.
  * @param {boolean} hidden True if connection is hidden.
  */
-Blockly.RenderedConnection.prototype.setHidden = function (hidden) {
-  // ADDED by JL:
-  if (!hidden && this.eyo.incog_) {
-    // Incog connections must stay hidden
-    return
+Blockly.RenderedConnection.prototype.setHidden = function () {
+  // this is a closure
+  var setHidden = Blockly.RenderedConnection.prototype.setHidden
+  return function (hidden) {
+    // ADDED by JL:
+    if (!hidden && this.eyo.incog_) {
+      // Incog connections must stay hidden
+      return
+    }
+    if (goog.isDef(this.eyo.hidden_)) {
+      hidden = this.eyo.hidden_
+    }
+    // DONE
+    setHidden.call(this, hidden)
   }
-  if (goog.isDef(this.eyo.hidden_)) {
-    hidden = this.eyo.hidden_
-  }
-  // DONE
-  eYo.RenderedConnection.savedSetHidden.call(this, hidden)
 }
 
 /**

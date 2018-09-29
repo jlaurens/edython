@@ -404,7 +404,8 @@ eYo.DelegateSvg.Expr.prototype.canInsertParent = function (block, prototypeName,
  * @param {boolean} fill_holes whether holes should be filled
  * @return the created block
  */
-eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, fill_holes) {
+eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_holes) {
+  var block = this.block_
   var parentSlotName = model.slot || model.input
   var parentBlock
   eYo.Events.disableWrap(this, function () {
@@ -516,7 +517,6 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
   return parentBlock
 }
 
-
 /**
  * Do not call this method, except when overriding.
  * This methods is a state mutator.
@@ -529,9 +529,10 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (block, model, f
  * @return {Boolean} true when consolidation occurred, false otherwise
  */
 eYo.DelegateSvg.Expr.prototype.doConsolidate = function (deep, force) {
-  eYo.DelegateSvg.Expr.superClass_.doConsolidate.call(this, deep, force)
-  var parent = this.block_.getParent()
-  parent && parent.eyo.consolidate()
+  if (eYo.DelegateSvg.Expr.superClass_.doConsolidate.call(this, deep, force)) {
+    var parent = this.block_.getParent()
+    return (parent && parent.eyo.consolidate()) || true  
+  }
 }
 
 /**

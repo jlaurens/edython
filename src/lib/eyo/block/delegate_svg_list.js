@@ -99,11 +99,9 @@ eYo.DelegateSvg.List.prototype.doConsolidate = function () {
       // may cause rerendering ad vitam eternam.
       return
     }
-    eYo.DelegateSvg.List.superClass_.doConsolidate.call(this, deep, force)
-    if (this.connectionsIncog) {
-      return
+    if (eYo.DelegateSvg.List.superClass_.doConsolidate.call(this, deep, force)) {
+      return !this.connectionsIncog && this.consolidator.consolidate(this.block_, deep, force)
     }
-    return this.consolidator.consolidate(this.block_, deep, force)
   }
   return function (deep, force) {
     this.createConsolidator()
