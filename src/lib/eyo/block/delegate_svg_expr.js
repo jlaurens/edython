@@ -203,11 +203,12 @@ eYo.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
  * When connecting locked blocks, select the receiver.
  * @param {!Blockly.Block} block
  * @param {!Blockly.Connection} connection what has been connected in the block
- * @param {!Blockly.Connection} oldTargetConnection what was previously connected in the block
- * @param {!Blockly.Connection} oldConnection what was previously connected to the new targetConnection
+ * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
+ * @param {!Blockly.Connection} oldC8n what was previously connected to the new targetConnection
  */
-eYo.DelegateSvg.Expr.prototype.didConnect = function (block, connection, oldTargetConnection, oldConnection) {
-  eYo.DelegateSvg.Expr.superClass_.didConnect.call(this, block, connection, oldTargetConnection, oldConnection)
+eYo.DelegateSvg.Expr.prototype.didConnect = function (connection, oldTargetC8n, oldC8n) {
+  eYo.DelegateSvg.Expr.superClass_.didConnect.call(this, connection, oldTargetC8n, oldC8n)
+  var block = this.block_
   if (connection.type === Blockly.OUTPUT_VALUE) {
     var parent = connection.targetBlock()
     if (block === Blockly.selected && this.locked_) {
@@ -222,11 +223,12 @@ eYo.DelegateSvg.Expr.prototype.didConnect = function (block, connection, oldTarg
  * When conecting locked blocks, select the receiver.
  * @param {!Blockly.Block} block
  * @param {!Blockly.Connection} connection what has been connected in the block
- * @param {!Blockly.Connection} oldTargetConnection what was previously connected in the block
+ * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
  * @param {!Blockly.Connection} oldConnection what was previously connected to the new targetConnection
  */
-eYo.DelegateSvg.Expr.prototype.didDisconnect = function (block, connection, oldTargetConnection) {
-  eYo.DelegateSvg.Expr.superClass_.didDisconnect.call(this, block, connection, oldTargetConnection)
+eYo.DelegateSvg.Expr.prototype.didDisconnect = function (connection, oldTargetC8n) {
+  eYo.DelegateSvg.Expr.superClass_.didDisconnect.call(this, connection, oldTargetC8n)
+  var block = this.block_
   if (connection.type === Blockly.OUTPUT_VALUE) {
     goog.dom.classlist.add(block.svgGroup_, 'eyo-top')
   }

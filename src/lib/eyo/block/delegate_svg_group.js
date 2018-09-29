@@ -329,13 +329,6 @@ eYo.DelegateSvg.Group.makeSubclass('else_part', {
   },
   statement: {
     previous: {
-      // this is always a connection delegate
-      didConnect: /** @suppress {globalThis} */ function (oldTargetConnection, oldConnection) {
-        this.consolidateSource()
-      },
-      didDisconnect: /** @suppress {globalThis} */ function (oldConnection) {
-        this.consolidateSource()
-      },
       check: /** @suppress {globalThis} */ function (type) {
         return [
           type === eYo.T3.Stmt.else_part

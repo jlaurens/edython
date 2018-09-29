@@ -379,14 +379,6 @@ eYo.BlockSvg.prototype.setCollapsed = function (collapsed) {
 }
 
 /**
- * Enable or disable a block. Noop. Disabled blocks start with '#'.
- * @override
- */
-eYo.BlockSvg.prototype.updateDisabled = function () {
-  // this.render()
-}
-
-/**
  * Noop. Bypass the inherited method.
  * @override
  */

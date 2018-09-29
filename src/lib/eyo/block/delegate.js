@@ -1357,17 +1357,17 @@ eYo.Delegate.prototype.getUnwrapped = function (block) {
  * @param {!Blockly.Connection} connection
  * @param {!Blockly.Connection} childConnection
  */
-eYo.Delegate.prototype.willConnect = function (block, connection, childConnection) {
+eYo.Delegate.prototype.willConnect = function (connection, childConnection) {
 }
 
 /**
  * Did connect this block's connection to another connection.
  * @param {!Blockly.Block} block
  * @param {!Blockly.Connection} connection what has been connected in the block
- * @param {!Blockly.Connection} oldTargetConnection what was previously connected in the block
- * @param {!Blockly.Connection} oldConnection what was previously connected to the new targetConnection
+ * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
+ * @param {!Blockly.Connection} targetOldC8n what was previously connected to the new targetConnection
  */
-eYo.Delegate.prototype.didConnect = function (block, connection, oldTargetConnection, oldConnection) {
+eYo.Delegate.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
 }
 
 /**
@@ -1375,20 +1375,16 @@ eYo.Delegate.prototype.didConnect = function (block, connection, oldTargetConnec
  * @param {!Blockly.Block} block
  * @param {!Blockly.Connection} blockConnection
  */
-eYo.Delegate.prototype.willDisconnect = function (block, blockConnection) {
-  // console.log('will disconnect')
-  this.changeBegin()
+eYo.Delegate.prototype.willDisconnect = function (blockConnection) {
 }
 
 /**
  * Did disconnect this block's connection from another connection.
  * @param {!Blockly.Block} block
  * @param {!Blockly.Connection} blockConnection
- * @param {!Blockly.Connection} oldTargetConnection that was connected to blockConnection
+ * @param {!Blockly.Connection} oldTargetC8n that was connected to blockConnection
  */
-eYo.Delegate.prototype.didDisconnect = function (block, blockConnection, oldTargetConnection) {
-  // console.log('did disconnect')
-  this.changeEnd()
+eYo.Delegate.prototype.didDisconnect = function (blockConnection, oldTargetC8n) {
 }
 
 /**

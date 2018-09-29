@@ -307,7 +307,6 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
       //     topBlock.setConnectionsHidden(false);
       //   }
       // }, 1);
-      topBlock.updateDisabled();
       // Allow the scrollbars to resize and move based on the new contents.
       // TODO(@picklesrus): #387. Remove when domToBlock avoids resizing.
       workspace.resizeContents();
