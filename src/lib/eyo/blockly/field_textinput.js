@@ -118,6 +118,9 @@ eYo.FieldTextInput.prototype.init = function () {
   this.mouseDownWrapper_ =
   Blockly.bindEventWithChecks_(this.fieldGroup_, 'mousedown', this, this.onMouseDown_
   )
+  if (this.eyo.css_class) {
+    goog.dom.classlist.add(this.textElement_, this.eyo.css_class)
+  }
   // Force a render.
   this.render_()
 }
@@ -325,14 +328,16 @@ eYo.FieldTextInput.prototype.validate_ = function () {
 eYo.FieldTextInput.prototype.resizeEditor_ = function () {
   if (this.fieldGroup_) {
     var div = Blockly.WidgetDiv.DIV
-    var bBox = this.fieldGroup_.getBBox()
-    div.style.width = (bBox.width + eYo.Font.space - (this.eyo.left_space ? eYo.Font.space : 0) - eYo.Style.Edit.padding_h) * this.workspace_.scale + 'px'
-    div.style.height = bBox.height * this.workspace_.scale + 'px'
-    var xy = this.getAbsoluteXY_()
-    div.style.left = (xy.x - eYo.EditorOffset.x + eYo.Style.Edit.padding_h) + 'px'
-    div.style.top = (xy.y - eYo.EditorOffset.y) + 'px'
-    this.sourceBlock_.eyo.changeWrap()
-    this.sourceBlock_.eyo.render()    
+    if (div.style.display !== 'none') {
+      var bBox = this.fieldGroup_.getBBox()
+      div.style.width = (bBox.width + eYo.Font.space - (this.eyo.left_space ? eYo.Font.space : 0) - eYo.Style.Edit.padding_h) * this.workspace_.scale + 'px'
+      div.style.height = bBox.height * this.workspace_.scale + 'px'
+      var xy = this.getAbsoluteXY_()
+      div.style.left = (xy.x - eYo.EditorOffset.x + eYo.Style.Edit.padding_h) + 'px'
+      div.style.top = (xy.y - eYo.EditorOffset.y) + 'px'
+      this.sourceBlock_.eyo.changeWrap()
+      this.sourceBlock_.eyo.render()    
+    }
   }
 }
 
@@ -387,7 +392,7 @@ eYo.FieldInput.prototype.placeholderText = function (clear) {
     var model = this.eyo && this.eyo.model
     if (model) {
       var placeholder = model.placeholder
-      return (goog.isString(placeholder) && placeholder) || (goog.isFunction(placeholder) && placeholder.call(this))
+      return (goog.isString(placeholder) && placeholder) || (goog.isFunction(placeholder) && this.sourceBlock_ && placeholder.call(this))
     }
   }.call(this)) || eYo.Msg.Placeholder.CODE
 }

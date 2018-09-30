@@ -34,7 +34,6 @@
           return this.hasComment_
         },
         set (newValue) {
-          console.log(newValue)
           this.hasComment_ = newValue
           this.eyo.comment_variant_p = newValue ? eYo.Key.COMMENT : eYo.Key.NO_COMMENT
         }

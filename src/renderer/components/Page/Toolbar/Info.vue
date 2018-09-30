@@ -29,6 +29,9 @@
     <div v-else-if="isSelected($$.eYo.T3.Stmt.augmented_assignment_stmt)">
       <info-augmented-assignment :eyo="eyo" :slotholder="slotholder"></info-augmented-assignment>
     </div>
+    <div v-else-if="isSelected($$.eYo.T3.Stmt.any_stmt)">
+      <info-any-statement :eyo="eyo"></info-any-statement>
+    </div>
     <div v-else-if="eyo">
       <info-default :eyo="eyo" :slotholder="slotholder"></info-default>
     </div>
@@ -44,6 +47,7 @@
   import InfoPrint from './Info/Print.vue'
   import InfoUnary from './Info/Unary.vue'
   import InfoBinary from './Info/Binary.vue'
+  import InfoAnyStatement from './Info/AnyStatement.vue'
   import InfoAssignment from './Info/Assignment.vue'
   import InfoAugmentedAssignment from './Info/AugmentedAssignment.vue'
   import InfoValue from './Info/Value.vue'
@@ -64,6 +68,7 @@
       InfoPrint,
       InfoUnary,
       InfoBinary,
+      InfoAnyStatement,
       InfoAssignment,
       InfoAugmentedAssignment,
       InfoValue,

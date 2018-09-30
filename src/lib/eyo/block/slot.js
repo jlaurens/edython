@@ -86,6 +86,9 @@ eYo.Slot = function (owner, key, model) {
       }
     }
   )
+  if (key === 'comment') {
+    this.fields.bind && (this.fields.bind.eyo.isComment = true)
+  }
 }
 
 /**
@@ -408,7 +411,6 @@ eYo.Slot.makeFields = function () {
     unordered[0] && (owner.fromStartField = chain(owner.fromStartField, unordered[0]))
     owner.fromStartField && delete owner.fromStartField.eyo.eyoLast_
     owner.toEndField && delete owner.toEndField.eyo.eyoLast_
-    owner.fields.comment && (owner.fields.comment.eyo.isComment = true)
   }
 } ()
 

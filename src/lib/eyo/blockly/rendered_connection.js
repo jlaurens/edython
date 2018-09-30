@@ -167,7 +167,10 @@ eYo.ConnectionDelegate.prototype.completeWrapped = function () {
               firewall = 100
             }
             var block = c8n.sourceBlock_
-            target = eYo.DelegateSvg.newBlockReady(block.workspace, this.wrapped_, block.id + '.wrapped:' + this.name_)
+            var newBlock = block.eyo.beReady === eYo.Do.nothing
+            ? eYo.DelegateSvg.newBlockReady
+            : eYo.DelegateSvg.newBlockComplete
+            target = newBlock(block.workspace, this.wrapped_, block.id + '.wrapped:' + this.name_)
             goog.asserts.assert(target, 'completeWrapped failed: ' + this.wrapped_)
             goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed ' + target.type)
             c8n.connect(target.outputConnection)
@@ -199,6 +202,9 @@ eYo.ConnectionDelegate.prototype.willConnect = function (targetC8n) {
  */
 eYo.ConnectionDelegate.prototype.didConnect = function (oldTargetC8n, targetOldC8n) {
   var eyo =  this.connection.sourceBlock_.eyo
+  if (this.beReady === eYo.Do.nothing) {
+    this.connection.targetBlock().eyo.beReady()
+  }
   // No need to increment step for the old connections because
   // if any, they were already disconnected and
   // the step has already been incremented then.

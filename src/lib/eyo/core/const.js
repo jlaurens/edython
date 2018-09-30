@@ -202,7 +202,6 @@ eYo.Key = {
 
   CODE: 'code',
   CODE_COMMENT: 'code_comment',
-  EXPRESSION_COMMENT: 'expression_comment',
   
   YIELD: 'yield',
   YIELD_EXPRESSION: 'yield_expression',

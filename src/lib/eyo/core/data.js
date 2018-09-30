@@ -566,7 +566,8 @@ eYo.Data.prototype.synchronize = function (newValue) {
     goog.asserts.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.getBlockType())
     var field = this.field
     if (field) {
-      eYo.Events.disableWrap(this,
+      eYo.Events.disableWrap(
+        this,
         function () {
           field.setValue(this.toField())
           field.setVisible(!this.incog_p)
@@ -660,6 +661,8 @@ eYo.Data.prototype.setIncog = function (newValue) {
   }
   if (!this.incog_ !== !newValue) {
     this.incog_ = !!newValue
+    this.slot && this.slot.setIncog(this.incog_)
+    this.field && this.field.setVisible(!this.incog_)
     return true
   }
   return false

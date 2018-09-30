@@ -53,10 +53,7 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       validate: /** @suppress {globalThis} */ function (newValue) {
         return {validated: XRegExp.exec(newValue, eYo.XRE.comment).value || ''}
       },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.synchronize(newValue)
-        this.owner.fields.comment_mark.setVisible(!this.isIncog())
-      },
+      synchronize: true,
       placeholderText: eYo.Msg.Placeholder.COMMENT,
       xml: {
         load: /** @suppress {globalThis} */ function (element) {
@@ -68,16 +65,23 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       }
     }
   },
-  fields: {
-    comment_mark: {
-      value: '#',
-      css: 'reserved'
-    },
+  slots: {
     comment: {
-      validate: true,
-      endEditing: true,
-      placeholder: eYo.Msg.Placeholder.COMMENT,
-      css: 'comment'
+      order: 999999,
+      fields: {
+        label: {
+          order: 0,
+          value: '#',
+          css: 'reserved'
+        },
+        bind: {
+          order: 1,
+          validate: true,
+          endEditing: true,
+          placeholder: eYo.Msg.Placeholder.COMMENT,
+          css: 'comment'
+        }
+      }    
     }
   }
 })
@@ -504,19 +508,15 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
   data: {
     variant: {
       CODE: eYo.Key.CODE,
-      CODE_COMMENT: eYo.Key.CODE_COMMENT,
-      EXPRESSION: eYo.Key.EXPRESSION,
-      EXPRESSION_COMMENT: eYo.Key.EXPRESSION_COMMENT,
       COMMENT: eYo.Key.COMMENT,
+      CODE_COMMENT: eYo.Key.CODE_COMMENT,
       order: 10000, // initialization comes last
       all: [
         eYo.Key.CODE,
-        eYo.Key.CODE_COMMENT,
-        eYo.Key.EXPRESSION,
-        eYo.Key.EXPRESSION_COMMENT,
         eYo.Key.COMMENT,
+        eYo.Key.CODE_COMMENT,
       ],
-      init: 2,
+      init: 1,
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
@@ -524,35 +524,17 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
         data.required = newValue === this.CODE || newValue === this.CODE_COMMENT
         data.setIncog()
         data = this.data.comment
-        data.required = newValue === this.COMMENT || newValue === this.CODE_COMMENT || newValue === this.EXPRESSION_COMMENT
+        data.required = newValue === this.COMMENT || newValue === this.CODE_COMMENT
         data.setIncog()
-        var slot = this.owner.slots.expression
-        slot.required = newValue === this.EXPRESSION ||
-        newValue === this.EXPRESSION_COMMENT
-        slot.setIncog()
       },
       consolidate: /** @suppress {globalThis} */ function () {
         var withCode = !this.data.code.isIncog()
-        var withExpression = !this.owner.slots.expression.isIncog()
         var withComment = !this.data.comment.isIncog()
         if (withCode) {
           if (withComment) {
             this.set(this.CODE_COMMENT)
           } else {
-            if (withExpression) {
-              console.warn(eYo.Do.format(
-                'Block with both code and expression {0}/{1}',
-                this.key,
-                this.getBlockType()
-              ))
-            }
             this.set(this.CODE)
-          }
-        } else if (withExpression) {
-          if (withComment) {
-            this.set(this.EXPRESSION_COMMENT)
-          } else {
-            this.set(this.EXPRESSION)
           }
         } else {
           this.set(this.COMMENT)
@@ -568,9 +550,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var variant = this.data.variant
-        if (this.isIncog() && variant.get() === variant.CODE) {
-          variant.set(variant.COMMENT)
+        if (this.isIncog() && this.owner.variant_p === eYo.Key.CODE) {
+          this.owner.variant_p = eYo.Key.COMMENT
         }
       },
       xml: {
@@ -589,33 +570,27 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var variant = this.data.variant
-        if (this.isIncog() && variant.get() === variant.COMMENT) {
-          variant.set(variant.CODE)
+        if (this.isIncog() && this.owner.variant_p === eYo.Key.COMMENT) {
+          this.owner.variant_p = eYo.Key.CODE
         }
       }
     }
   },
-  fields: {
-    code: {
-      endEditing: true
-    }
-  },
   slots: {
-    expression: {
+    code: {
       order: 1,
+      fields: {
+        bind: {
+          placeholder: /** @suppress {globalThis} */ function () {
+            return eYo.Msg.Placeholder.CODE
+          },
+          endEditing: true
+        }
+      },
       check: eYo.T3.Expr.Check.expression,
       init: /** @suppress {globalThis} */ function () {
         this.init()
         this.setIncog(true)
-      },
-      xml: {
-        load: /** @suppress {globalThis} */ function (element) {
-          this.load(element)
-          this.whenRequiredFromDom(function () {
-            this.setIncog(false)
-          }) || (this.getTarget() && this.setIncog(false))
-        }
       }
     }
   }
@@ -681,17 +656,6 @@ eYo.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (bl
       'eyo-code-comment')
   )
   F(content, data.CODE_COMMENT)
-  content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    eYo.Do.createSPAN('…', 'eyo-code')
-  )
-  F(content, data.EXPRESSION)
-  content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    eYo.Do.createSPAN('…', 'eyo-code'),
-    eYo.Do.createSPAN(' # ', 'eyo-code-reserved'),
-    eYo.Do.createSPAN(short_comment_all || eYo.Msg.Placeholder.COMMENT,
-      'eyo-code-comment')
-  )
-  F(content, data.EXPRESSION_COMMENT)
   return eYo.DelegateSvg.Stmt.any_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || true
 }
 

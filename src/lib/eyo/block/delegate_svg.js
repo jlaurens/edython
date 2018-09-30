@@ -485,89 +485,6 @@ eYo.DelegateSvg.prototype.renderDrawSuite_ = function (block) {
  * @param {boolean=} optBubble If false, just render this block.
  *   If true, also render block's parent, grandparent, etc.  Defaults to true.
  */
-eYo.DelegateSvg.prototype.render_ = eYo.Decorate.reentrant_method(
-  'render', function (optBubble) {
-
-    if (!this.downRendering && block.outputConnection) {
-      // always render from a line start id est
-      // an orphan block or a statement block
-      var parent
-      if ((parent = block.getParent())) {
-        var next
-        while (parent.outputConnection && (next = parent.getParent())) {
-          parent = next
-        }
-        if (parent && !parent.eyo.downRendering) {
-          if (!parent.eyo.upRendering && block.outputConnection === eYo.Connection.connectedParentC8n || eYo.Connection.connectedParentC8n && eYo.Connection.connectedParentC8n.sourceBlock_ === block) {
-            try {
-              parent.eyo.upRendering = true
-              parent.eyo.render(optBubble)
-            } catch (err) {
-              console.error(err)
-              throw err
-            } finally {
-              parent.eyo.upRendering = false
-            }
-          } else {
-            parent.eyo.render(optBubble)
-          }
-        }
-        return
-      }
-    }
-    if (this.renderCount === this.change.count) {
-      // minimal rendering
-      this.layoutConnections_(block)
-      this.renderMove_(block)
-      this.updateAllPaths_(block)
-      return
-    }
-    this.renderCount = this.change.count
-    if (eYo.DelegateSvg.debugStartTrackingRender) {
-      var n = eYo.DelegateSvg.debugCount[block.id]
-      eYo.DelegateSvg.debugCount[block.id] = (n||0)+1
-      if (!eYo.DelegateSvg.debugPrefix.length) {
-        console.log('>>>>>>>>>>')
-      }
-      eYo.DelegateSvg.debugPrefix = eYo.DelegateSvg.debugPrefix + '.'
-      console.log(eYo.DelegateSvg.debugPrefix, block.type, n, block.id)
-      if (n > 1) {
-        n = n + 0
-      }
-    }
-    try {
-      Blockly.Field.startCache()
-      this.minWidth = block.width = 0
-      this.willRender_(block)
-      this.renderDraw_(block)
-      this.renderDrawNext_(block)
-      this.layoutConnections_(block)
-      this.renderMove_(block)
-      renderDrawParent.call(this, optBubble)
-      block.rendered = true
-      this.didRender_(block)
-      if (eYo.traceOutputConnection && block.outputConnection) {
-        console.log('block.outputConnection', block.outputConnection.x_, block.outputConnection.y_)
-      }
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      Blockly.Field.stopCache()  
-      if (eYo.DelegateSvg.debugStartTrackingRender &&  eYo.DelegateSvg.debugPrefix.length) {
-        eYo.DelegateSvg.debugPrefix = eYo.DelegateSvg.debugPrefix.substring(1)
-      }
-    }
-  }
-)
-
-/**
- * Render the block.
- * Lays out and reflows a block based on its contents and settings.
- * @param {!Block} block
- * @param {boolean=} optBubble If false, just render this block.
- *   If true, also render block's parent, grandparent, etc.  Defaults to true.
- */
 eYo.DelegateSvg.prototype.render = function () {
   // this is a closure
   /**
@@ -2011,7 +1928,7 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
               function () {
                 block.eyo.changeWrap(
                   function () {
-                    B.outputConnection.connect(input.connection)    
+                    B.outputConnection.connect(input.connection)
                   }
                 )
               }
@@ -2036,10 +1953,11 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
         }
       }
     }
-    block.eyo.consolidate()
     return block
   }
-  return processModel(null, model, id)
+  var B = processModel(null, model, id)
+  B.eyo.consolidate()
+  return B
 }
 
 /**
