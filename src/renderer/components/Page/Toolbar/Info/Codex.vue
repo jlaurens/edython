@@ -1,10 +1,13 @@
 <template>
   <b-button-toolbar>
     <div id='info-stmt-code' class="btn btn-outline-secondary">
-      <input type="checkbox" id="info-stmt-code-check" v-model="hasCode" :disabled="canCheck">
+      <span>bah</span>
+      <input type="checkbox" id="info-stmt-code-check" v-model="hasCode" :disabled="noCheck">
+      <span>OK</span>
+      <span v-if="withSlotholder_">COUCOU</span>
       <b-form-input v-model="code"
       type="text"
-      class="eyo-code" :disabled="!canCode"></b-form-input>
+      class="eyo-code" :disabled="!canCode" v-else></b-form-input>
     </div>
   </b-button-toolbar>
 </template>
@@ -15,33 +18,46 @@
     data: function () {
       return {
         code_: undefined,
-        canCode_: undefined,
-        hasCode_: undefined,
-        canCheck_: undefined
+        withSlotholder_: undefined
       }
     },
     props: {
       eyo: {
         type: Object,
         default: undefined
+      },
+      slotholder: {
+        type: Function,
+        default: function (item) {
+          return item
+        }
+      },
+      variant: {
+        type: String,
+        default: undefined
+      },
+      commentVariant: {
+        type: String,
+        required: true
       }
     },
     computed: {
-      canCheck () {
-        return this.canCheck_
+      noCheck () {
+        return this.commentVariant === this.$$.eYo.Key.NONE
       },
       canCode () {
-        return this.canCode_
+        return !!this.eyo.data.code
       },
       hasCode: {
         get () {
-          return this.hasCode_
+          return this.variant === this.$$.eYo.Key.CODE
         },
         set (newValue) {
           this.hasCode_ = newValue
           this.eyo.variant_p = newValue
-            ? eYo.Key.CODE_COMMENT
-            : eYo.Key.CODE
+            ? eYo.Key.CODE
+            : eYo.Key.NONE
+          this.$emit('synchronize')
         }
       },
       code: {
@@ -54,15 +70,8 @@
       }
     },
     created () {
-      this.canCode_ = !!this.eyo.data.code
       this.code_ = this.eyo.code_p
-      this.canCheck_ = this.eyo.variant_p === eYo.Key.CODE_COMMENT
-      this.hasCode_ = this.eyo.variant_p === eYo.Key.CODE || this.canCheck_
-      console.log(this.eyo.variant_p)
-      console.log(this.canCode_)
-      console.log(this.code_)
-      console.log(this.canCheck_)
-      console.log(this.hasCode_)
+      this.withSlotholder_ = this.eyo.slots.code.targetBlock()
     }
   }
 </script>

@@ -30,7 +30,7 @@
       <info-augmented-assignment :eyo="eyo" :slotholder="slotholder"></info-augmented-assignment>
     </div>
     <div v-else-if="isSelected($$.eYo.T3.Stmt.any_stmt)">
-      <info-any-statement :eyo="eyo"></info-any-statement>
+      <info-any-statement :eyo="eyo" :slotholder="slotholder"></info-any-statement>
     </div>
     <div v-else-if="eyo">
       <info-default :eyo="eyo" :slotholder="slotholder"></info-default>

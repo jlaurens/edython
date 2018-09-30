@@ -1,7 +1,7 @@
 <template>
   <b-button-toolbar v-if="canComment">
     <div id='info-stmt-comment' class="btn btn-outline-secondary">
-      <input type="checkbox" id="info-stmt-comment-check" v-model="hasComment">
+      <input type="checkbox" id="info-stmt-comment-check" v-model="hasComment" :disabled="mustComment">
       <label for="info-stmt-comment-check" class="eyo-code-reserved">#</label>
       <b-form-input v-model="comment"
       type="text"
@@ -16,26 +16,41 @@
     data: function () {
       return {
         comment_: undefined,
-        hasComment_: undefined
+        hasComment_: undefined,
+        myCommentVariant_: undefined
       }
     },
     props: {
       eyo: {
         type: Object,
         default: undefined
+      },
+      mustComment: {
+        type: Boolean,
+        default: false
+      },
+      commentVariant: {
+        type: String,
+        default: undefined
       }
     },
     computed: {
       canComment () {
-        return this.eyo && this.eyo.data.comment && true
+        return this.eyo && this.eyo.data.comment
+      },
+      myCommentVariant () {
+        return this.commentVariant || this.myCommentVariant_
       },
       hasComment: {
         get () {
-          return this.hasComment_
+          return this.commentVariant === eYo.Key.COMMENT
         },
         set (newValue) {
           this.hasComment_ = newValue
-          this.eyo.comment_variant_p = newValue ? eYo.Key.COMMENT : eYo.Key.NO_COMMENT
+          this.eyo.comment_variant_p = newValue
+            ? eYo.Key.COMMENT
+            : eYo.Key.NONE
+          this.$emit('synchronize')
         }
       },
       comment: {
@@ -44,12 +59,15 @@
         },
         set (newValue) {
           this.comment_ = this.eyo.comment_p = newValue
+          this.$emit('synchronize')
         }
       }
     },
     created () {
       this.comment_ = this.eyo.comment_p
-      this.hasComment_ = this.eyo.comment_variant_p === eYo.Key.COMMENT
+      if (!this.commentVariant) {
+        this.myCommentVariant_ = this.eyo.comment_variant_p
+      }
     }
   }
 </script>

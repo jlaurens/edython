@@ -336,6 +336,30 @@ controller.bus.$on('webUploadEnd', function (result) {
   eYo.App.Document.fileName_ = undefined
 })
 
+// listen to connections
+eYo.Delegate.prototype.didConnect = (function () {
+  // this is a closure
+  var didConnect = eYo.Delegate.prototype.didConnect
+  return function (connection, oldTargetC8n, targetOldC8n) {
+    didConnect.call(this, connection, oldTargetC8n, targetOldC8n)
+    Vue.nextTick(function () {
+      controller.bus.$emit('didConnect')
+    })
+  }
+})()
+
+// listen to connections
+eYo.Delegate.prototype.didDisconnect = (function () {
+  // this is a closure
+  var didDisconnect = eYo.Delegate.prototype.didDisconnect
+  return function (connection, oldTargetC8n, targetOldC8n) {
+    didDisconnect.call(this, connection, oldTargetC8n)
+    Vue.nextTick(function () {
+      controller.bus.$emit('didDisconnect')
+    })
+  }
+})()
+
 var ipcRenderer = require('electron').ipcRenderer
 if (ipcRenderer) {
   // we *are* in electron

@@ -1866,7 +1866,7 @@ eYo.DelegateSvg.prototype.delayedRender = function (block) {
  * @private
  */
 eYo.DelegateSvg.newBlockReady = function (workspace, model, id) {
-  var B = this.newBlockComplete(workspace, model, id)
+  var B = eYo.DelegateSvg.newBlockComplete(workspace, model, id)
   B && B.eyo.beReady()
   return B
 }

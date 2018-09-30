@@ -133,9 +133,7 @@ eYo.Key = {
   
   CODE: 'code', // lowercase
   COMMENT: 'comment', // lowercase
-  NO_COMMENT: 'no_comment', // lowercase
   COMMENT_MARK: 'comment_mark', // lowercase
-  COMMENT_SHOW: 'comment_show', // lowercase
   NUMBER: 'number', // lowercase
   STRING: 'string', // lowercase
   LONG_STRING: 'longString', // lowercase

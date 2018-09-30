@@ -43,7 +43,6 @@
         set (newValue) {
           this.eyo.holder_p = newValue
           this.$emit('synchronize')
-          this.eyo.render()
         }
       },
       blockDotted: {
@@ -53,7 +52,6 @@
         set (newValue) {
           this.eyo.dotted_p = newValue
           this.$emit('synchronize')
-          this.eyo.render()
         }
       },
       selectedItem: {
@@ -111,10 +109,6 @@
               // this.eyo.changeBegin()
               this.blockDotted = 1
               this.blockHolder = item.key
-              // var target = this.eyo.slots.holder.targetBlock()
-              // target && target.unplug()
-              // this.eyo.changeEnd()
-              // this.eyo.render()
             }
           }
         }

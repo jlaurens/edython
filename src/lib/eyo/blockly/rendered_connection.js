@@ -167,10 +167,10 @@ eYo.ConnectionDelegate.prototype.completeWrapped = function () {
               firewall = 100
             }
             var block = c8n.sourceBlock_
-            var newBlock = block.eyo.beReady === eYo.Do.nothing
+            var makeNewBlock = block.eyo.beReady === eYo.Do.nothing
             ? eYo.DelegateSvg.newBlockReady
             : eYo.DelegateSvg.newBlockComplete
-            target = newBlock(block.workspace, this.wrapped_, block.id + '.wrapped:' + this.name_)
+            target = makeNewBlock.call(eYo.DelegateSvg, block.workspace, this.wrapped_, block.id + '.wrapped:' + this.name_)
             goog.asserts.assert(target, 'completeWrapped failed: ' + this.wrapped_)
             goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed ' + target.type)
             c8n.connect(target.outputConnection)

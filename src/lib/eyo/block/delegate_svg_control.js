@@ -144,7 +144,7 @@ eYo.DelegateSvg.Control.prototype.disposeInternal = function () {
  * @private
  */
 eYo.DelegateSvg.Control.prototype.renderDrawSharp_ = function (io) {
-  io.cursorX += eYo.Font.space * 2
+  io.cursorX += eYo.Font.space * 4
 }
 
 /**

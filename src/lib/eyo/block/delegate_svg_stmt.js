@@ -26,22 +26,23 @@ goog.require('goog.dom');
 eYo.DelegateSvg.makeSubclass('Stmt', {
   data: {
     comment_variant: { // variant are very useful with undo/redo
-      NO_COMMENT: eYo.Key.NO_COMMENT,
+      NONE: eYo.Key.NONE,
       COMMENT: eYo.Key.COMMENT,
-      order: 1000, // initialization comes last
-      all: [eYo.Key.NO_COMMENT, eYo.Key.COMMENT],
-      init: eYo.Key.NO_COMMENT,
+      order: 1000000, // initialization comes last
+      all: [eYo.Key.NONE, eYo.Key.COMMENT],
+      init: eYo.Key.NONE,
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         this.data.comment.required = newValue === this.COMMENT
-        this.data.comment.setIncog(newValue === this.NO_COMMENT)
+        this.data.comment.setIncog(newValue === this.NONE)
       },
       consolidate: /** @suppress {globalThis} */ function () {
-        this.set(this.data.comment.isIncog() ? this.NO_COMMENT : this.COMMENT)
+        this.set(this.data.comment.isIncog() ? this.NONE : this.COMMENT)
       }
     },
     comment: {
+      order: 1000001,
       init: /** @suppress {globalThis} */ function () {
         this.setIncog(true)
         this.init('')
@@ -67,7 +68,7 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
   },
   slots: {
     comment: {
-      order: 999999,
+      order: 1000001,
       fields: {
         label: {
           order: 0,
@@ -507,38 +508,26 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
 eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
   data: {
     variant: {
+      NONE: eYo.Key.NONE,
       CODE: eYo.Key.CODE,
-      COMMENT: eYo.Key.COMMENT,
-      CODE_COMMENT: eYo.Key.CODE_COMMENT,
       order: 10000, // initialization comes last
       all: [
+        eYo.Key.NONE,
         eYo.Key.CODE,
-        eYo.Key.COMMENT,
-        eYo.Key.CODE_COMMENT,
       ],
-      init: 1,
+      init: eYo.Key.NONE,
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         var data = this.data.code
-        data.required = newValue === this.CODE || newValue === this.CODE_COMMENT
+        data.required = newValue === this.CODE
         data.setIncog()
-        data = this.data.comment
-        data.required = newValue === this.COMMENT || newValue === this.CODE_COMMENT
-        data.setIncog()
+        if (!data.required) {
+          this.owner.comment_variant_p = eYo.Key.COMMENT
+        }
       },
       consolidate: /** @suppress {globalThis} */ function () {
-        var withCode = !this.data.code.isIncog()
-        var withComment = !this.data.comment.isIncog()
-        if (withCode) {
-          if (withComment) {
-            this.set(this.CODE_COMMENT)
-          } else {
-            this.set(this.CODE)
-          }
-        } else {
-          this.set(this.COMMENT)
-        }
+        this.set(this.data.code.isIncog() ? this.NONE : this.CODE)
       }
     },
     code: {
@@ -550,8 +539,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        if (this.isIncog() && this.owner.variant_p === eYo.Key.CODE) {
-          this.owner.variant_p = eYo.Key.COMMENT
+        if (this.isIncog()) {
+          this.owner.comment_variant_p = eYo.Key.COMMENT
         }
       },
       xml: {
@@ -563,14 +552,13 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
         }
       }
     },
-    comment: {
-      init: /** @suppress {globalThis} */ function () {
-        this.init('')
-        this.setIncog(true)
-      },
+    comment_variant: {
+      init: eYo.Key.NONE,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        if (this.isIncog() && this.owner.variant_p === eYo.Key.COMMENT) {
+        this.data.comment.required = newValue === this.COMMENT
+        this.data.comment.setIncog(newValue === this.NONE)
+        if (this.data.comment.isIncog()) {
           this.owner.variant_p = eYo.Key.CODE
         }
       }

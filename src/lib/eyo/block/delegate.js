@@ -1384,7 +1384,7 @@ eYo.Delegate.prototype.willDisconnect = function (blockConnection) {
  * @param {!Blockly.Connection} blockConnection
  * @param {!Blockly.Connection} oldTargetC8n that was connected to blockConnection
  */
-eYo.Delegate.prototype.didDisconnect = function (blockConnection, oldTargetC8n) {
+eYo.Delegate.prototype.didDisconnect = function (connection, oldTargetC8n) {
 }
 
 /**
@@ -1661,7 +1661,7 @@ eYo.Delegate.prototype.setIncog = function (incog) {
       // normally no change to the block tree
       return false
     }
-  } else if (block.disabled) {
+  } else if (this.block_.disabled) {
     // enable the block before enabling its connections
     return false
   }

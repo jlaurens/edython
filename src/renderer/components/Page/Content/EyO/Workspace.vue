@@ -42,7 +42,7 @@
       window.addEventListener('resize', this.resize, false)
       var self = this
       this.$nextTick(function () {
-        this.$$.bus.$on('size-did-change', self.resize)
+        self.$$.bus.$on('size-did-change', self.resize)
         self.resize()
       })
     }
