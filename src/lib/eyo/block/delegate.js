@@ -1644,12 +1644,11 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
 }
 
 /**
- * Enable/Disable the connections of the block.
- * A disabled block cannot enable its connections.
- * @param {!Block} block
+ * Change the incog status.
+ * An incog block won't render.
+ * The connections must be explicitely hidden when the block is incog.
  * @param {!Boolean} disabled
  * @return {boolean} whether changes have been made
- * @private
  */
 eYo.Delegate.prototype.setIncog = function (incog) {
   if (!this.incog_ === !incog) {
@@ -1666,22 +1665,21 @@ eYo.Delegate.prototype.setIncog = function (incog) {
     return false
   }
   this.incog_ = incog
+  this.foreachSlot(function () {
+    this.setIncog(incog) // with incog validator
+  })
   var setupIncog = function (input) {
     var c8n = input && input.connection
-    c8n && c8n.eyo.setIncog(incog)
-  }
-  var slot = this.headSlot
-  while (slot) {
-    setupIncog(slot.input)
-    slot = slot.next
+    c8n && c8n.eyo.setIncog(incog) // without incog validator
   }
   setupIncog(this.inputSuite)
   for (var i = 0, input; (input = this.block_.inputList[i++]);) {
-    setupIncog(input)
+    // input may belong to a slot
+    if (!input.eyo.slot) (
+      setupIncog(input)
+    )
   }
-  if (!incog) { // for lists mainly
-    this.consolidate() // no deep consolidation because connected blocs were consolidated above
-  }
+  this.consolidate() // no deep consolidation because connected blocs were consolidated during slot's or connection's setIncog
   return true
 }
 

@@ -1,13 +1,16 @@
 <template>
   <b-button-toolbar>
-    <div id='info-stmt-code' class="btn btn-outline-secondary">
-      <span>bah</span>
+    <div id='info-stmt-code' class="btn btn-outline-secondary" v-if="withSlotholder_">
+      <div class="eyo-info-primary-variant2">
+        <input type="checkbox" id="info-stmt-code-check" v-model="hasCode" :disabled="noCheck">
+        <div class="eyo-info-primary-variant3" v-html="my_slot"></div>
+      </div>
+    </div>
+    <div id='info-stmt-code' class="btn btn-outline-secondary" v-else>
       <input type="checkbox" id="info-stmt-code-check" v-model="hasCode" :disabled="noCheck">
-      <span>OK</span>
-      <span v-if="withSlotholder_">COUCOU</span>
       <b-form-input v-model="code"
       type="text"
-      class="eyo-code" :disabled="!canCode" v-else></b-form-input>
+      class="eyo-code"></b-form-input>
     </div>
   </b-button-toolbar>
 </template>
@@ -67,6 +70,9 @@
         set (newValue) {
           this.code_ = this.eyo.code_p = newValue
         }
+      },
+      my_slot () {
+        return this.slotholder('eyo-info-primary-variant1')
       }
     },
     created () {

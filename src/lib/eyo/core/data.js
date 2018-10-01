@@ -76,6 +76,9 @@ eYo.Data = function (owner, key, model) {
     } else if (key === 'variant' || key === 'option' || key === 'subtype') {
       model.xml = false
     }
+    if (model.validateIncog && !goog.isFunction(model.validateIncog)) {
+      delete model.validateIncog
+    }
   }
   for (var k in model) {
     if (XRegExp.exec(k, eYo.XRE.upper)) {
@@ -90,17 +93,7 @@ eYo.Data = function (owner, key, model) {
         return this.incog_
       },
       set (newValue) {
-        if (!goog.isDef(newValue)) {
-          newValue = !this.required
-        }
-        if (!this.incog_ !== !newValue) {
-          this.owner.changeWrap(
-            function () {
-              this.incog_ = !!newValue
-            },
-            this
-          )
-        }
+        this.changeIncog(newValue)
       }
     }
   )
@@ -570,7 +563,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
         this,
         function () {
           field.setValue(this.toField())
-          field.setVisible(!this.incog_p)
+          field.setVisible(!this.incog_p && (!this.slot || !this.slot.targetBlock()))
           var element = field.textElement_
           if (element) {
             if (this.error) {
@@ -658,11 +651,49 @@ eYo.Data.prototype.set = function (newValue, validate = true) {
 eYo.Data.prototype.setIncog = function (newValue) {
   if (!goog.isDef(newValue)) {
     newValue = !this.required
+  } else {
+    newValue = !!newValue
   }
-  if (!this.incog_ !== !newValue) {
-    this.incog_ = !!newValue
-    this.slot && this.slot.setIncog(this.incog_)
-    this.field && this.field.setVisible(!this.incog_)
+  var validator = this.model.validateIncog
+  if (validator) {
+    newValue = validator.call(this, newValue)
+  }
+  if (this.incog_ !== newValue) {
+    this.incog_ = newValue
+    if (this.slot) {
+      this.slot.setIncog(newValue)
+    } else {
+      this.field && this.field.setVisible(!newValue)
+    }
+    return true
+  }
+  return false
+}
+/**
+ * Disabled data correspond to disabled input.
+ * Changing this value will cause an UI synchronization.
+ * @param {Object} newValue  When not defined, replaced by `!this.required`
+ * @return {boolean} whether changes have been made
+ */
+eYo.Data.prototype.changeIncog = function (newValue) {
+  if (!goog.isDef(newValue)) {
+    newValue = !this.required
+  } else {
+    newValue = !!newValue
+  }
+  var validator = this.model.validateIncog
+  if (validator) {
+    newValue = validator.call(this, newValue)
+  }
+  if (this.incog_ !== newValue) {
+    this.owner.changeWrap(
+      function() {
+        this.incog_ = newValue
+        this.slot && this.slot.setIncog(newValue)
+        this.field && this.field.setVisible(!newValue)    
+      },
+      this
+    )
     return true
   }
   return false

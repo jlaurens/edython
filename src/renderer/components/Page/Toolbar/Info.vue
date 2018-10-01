@@ -160,11 +160,16 @@
   stroke: rgb(100,100,100);
 }
 .eyo-info-primary-variant1 {
-    display: inline-block;
-  }
-  .eyo-info-primary-variant2 {
-    display: inline-block;
-    position: relative;
-    top: -0.45rem;
-  }
+  display: inline-block;
+}
+.eyo-info-primary-variant2 {
+  display: inline-block;
+  position: relative;
+  top: -0.45rem;
+}
+.eyo-info-primary-variant3 {
+  display: inline-block;
+  position: relative;
+  top: 0.45rem;
+}
 </style>

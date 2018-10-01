@@ -366,23 +366,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         eYo.Key.ALIASED
       ],
       init: eYo.Key.NONE,
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        var f = function (arguments_incog, slicing_incog, alias_incog) {
-          this.owner.slots.arguments.setIncog(arguments_incog)
-          this.owner.slots.slicing.setIncog(slicing_incog)
-          this.owner.slots.alias.setIncog(alias_incog)
-        }
-        if(newValue === this.CALL_EXPR) {
-          f.call(this, false, true, true)
-        } else if(newValue === this.SLICING) {
-          f.call(this, true, false, true)
-        } else if(newValue === this.ALIASED) {
-          f.call(this, true, true, false)
-        } else {
-          f.call(this, true, true, true)
-        }
-        this.synchronize(newValue)
-      },
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
         if ([this.CALL_EXPR, this.SLICING, this.ALIASED].indexOf(newValue) >= 0) {
           this.data.annotation.set(eYo.Key.NONE)
@@ -642,12 +625,12 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         end: ')'
       },
       wrap: eYo.T3.Expr.argument_list_comprehensive,
-      consolidateX: /** @suppress {globalThis} */ function () {
-        var target = this.input.connection.targetBlock()
-        if (target) {
-          target.eyo.createConsolidator(true)
-          this.consolidate.apply(this, arguments)
-        }
+      consolidate: /** @suppress {globalThis} */ function () {
+        this.setIncog(this.owner.variant_p !== eYo.Key.CALL_EXPR)
+        this.consolidate()
+      },
+      validateIncog: /** @suppress {globalThis} */ function (newValue) {
+        return this.owner.variant_p !== eYo.Key.CALL_EXPR
       }
     },
     slicing: {
@@ -656,7 +639,14 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         start: '[',
         end: ']'
       },
-      wrap: eYo.T3.Expr.slice_list
+      wrap: eYo.T3.Expr.slice_list,
+      consolidate: /** @suppress {globalThis} */ function () {
+        this.setIncog(this.owner.variant_p !== eYo.Key.SLICING)
+        this.consolidate()
+      },
+      validateIncog: /** @suppress {globalThis} */ function (newValue) {
+        return this.owner.variant_p !== eYo.Key.SLICING
+      }
     },
     alias: {
       order: 3000,
@@ -668,6 +658,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           endEditing: true,
           variable: true
         }
+      },
+      consolidate: /** @suppress {globalThis} */ function () {
+        this.setIncog(this.owner.variant_p !== eYo.Key.ALIASED)
+        this.consolidate()
+      },
+      validateIncog: /** @suppress {globalThis} */ function (newValue) {
+        return this.owner.variant_p !== eYo.Key.ALIASED
       }
     }
   },

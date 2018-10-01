@@ -50,6 +50,15 @@ eYo.Slot = function (owner, key, model) {
   goog.asserts.assert(model.order, 'Missing slot model order')
   this.owner = owner
   this.key = key
+  var setupModel = function(model) {
+    if (!model.setup_) {
+      model.setup_ = true
+      if (model.validateIncog && !goog.isFunction(model.validateIncog)) {
+        delete model.validateIncog
+      }
+    }
+  }
+  setupModel(model)
   this.model = model
   this.input = undefined
   var block = this.block = owner.block_
@@ -485,7 +494,7 @@ eYo.Slot.prototype.targetBlock = function () {
  * Set the disable state.
  * Synchronize when the incog state did change.
  * For edython.
- * @param {!boolean} newValue  When not defined, replaced by `!this.required`
+ * @param {!boolean} newValue  When not defined, replaced by `!this.required`, then validated if the model asks to.
  * @return {boolean} whether changes have been made
  */
 eYo.Slot.prototype.setIncog = function (newValue) {
@@ -494,13 +503,19 @@ eYo.Slot.prototype.setIncog = function (newValue) {
   } else {
     newValue = !!newValue
   }
+  var validator = this.model.validateIncog
+  if (validator) {
+    newValue = validator.call(this, newValue)
+  }
   var change = this.incog !== newValue
-  this.incog = newValue
-  // forward to the connection
-  var c8n = this.input && this.input.connection
-  if (c8n && c8n.eyo.isIncog() !== newValue) {
-    change = true 
-    c8n.eyo.setIncog(newValue)
+  if (change) {
+    this.incog = newValue
+    // forward to the connection
+    var c8n = this.input && this.input.connection
+    if (c8n && c8n.eyo.isIncog() !== newValue) {
+      change = true 
+      c8n.eyo.setIncog(newValue)
+    }
   }
   return change
 }
@@ -576,12 +591,12 @@ eYo.Slot.prototype.whenRequiredFromDom = function (helper) {
 /**
  * Consolidate the state.
  * For edython.
- * @param {Boolean} deep The block's workspace.
- * @param {Boolean} force The block's workspace.
+ * @param {Boolean} deep whether to consolidate connected blocks.
+ * @param {Boolean} force whether to force synchronization.
  */
 eYo.Slot.prototype.consolidate = function (deep, force) {
-  this.debug = (this.debug || 0) + 1
-  if (this.debug === 100) {
+  this.debug_consolidate = (this.debug_consolidate || 0) + 1
+  if (this.debug_consolidate === 100) {
     console.log('consolidate slot', this.key)
   }
   var f = eYo.Decorate.reentrant_method.call(this, 'consolidate', this.model.consolidate)
@@ -591,20 +606,19 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
   }
   var c8n = this.connection
   if (c8n) {
-    c8n.eyo.setIncog(this.isIncog())
-    c8n.eyo.wrapped_ && c8n.setHidden(true) // Don't ever connect any block to this
+    var eyo = c8n.eyo
+    eyo.setIncog(this.isIncog())
+    eyo.wrapped_ && c8n.setHidden(true) // Don't ever connect any block to this
     var v
     if ((v = this.model.check)) {
-      var check = v.call(c8n.eyo, c8n.sourceBlock_.type)
+      var check = v.call(eyo, c8n.sourceBlock_.type)
       c8n.setCheck(check)
       if (!this.model.wrap) {
-        c8n.eyo.hole_data = eYo.HoleFiller.getData(check, this.model.hole_value)        
+        eyo.hole_data = eYo.HoleFiller.getData(check, this.model.hole_value)        
       }
     }
-    if (deep) {
-      var target = c8n.targetBlock()
-      target && target.eyo.consolidate.apply(target.eyo, arguments)
-    }
+    var target = c8n.targetBlock()
+    target && target.eyo.consolidate.apply(target.eyo, arguments)
   }
 }
 
