@@ -35,7 +35,7 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         this.data.comment.required = newValue === this.COMMENT
-        this.data.comment.setIncog(newValue === this.NONE)
+        this.data.comment.setIncog()
       },
       consolidate: /** @suppress {globalThis} */ function () {
         this.set(this.data.comment.isIncog() ? this.NONE : this.COMMENT)
@@ -43,10 +43,6 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
     },
     comment: {
       order: 1000001,
-      init: /** @suppress {globalThis} */ function () {
-        this.setIncog(true)
-        this.init('')
-      },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         this.data.comment_variant.consolidate()
@@ -553,15 +549,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
       }
     },
     comment_variant: {
-      init: eYo.Key.NONE,
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.didChange(oldValue, newValue)
-        this.data.comment.required = newValue === this.COMMENT
-        this.data.comment.setIncog(newValue === this.NONE)
-        if (this.data.comment.isIncog()) {
-          this.owner.variant_p = eYo.Key.CODE
-        }
-      }
+      init: eYo.Key.COMMENT
     }
   },
   slots: {

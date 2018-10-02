@@ -563,7 +563,12 @@ eYo.Data.prototype.synchronize = function (newValue) {
         this,
         function () {
           field.setValue(this.toField())
-          field.setVisible(!this.incog_p && (!this.slot || !this.slot.targetBlock()))
+          if (this.slot) {
+            this.slot.setIncog(this.incog_p)
+            field.setVisible(!this.slot.targetBlock())
+          } else {
+            field.setVisible(!this.incog_p)
+          }
           var element = field.textElement_
           if (element) {
             if (this.error) {
