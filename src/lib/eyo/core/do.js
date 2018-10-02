@@ -385,6 +385,10 @@ eYo.T3.Expr.custom_dotted_name = '.custom dotted name'
 eYo.T3.Expr.custom_parent_module = '.custom parent module'
 eYo.T3.Expr.unset = '.unset'
 eYo.T3.Expr.error = '.error'
+eYo.T3.Expr.bininteger = '.bininteger'
+eYo.T3.Expr.octinteger = '.octinteger'
+eYo.T3.Expr.decinteger = '.decinteger'
+eYo.T3.Expr.hexinteger = '.hexinteger'
 
 eYo.T3.Stmt.control = '.control statement'
 
@@ -575,10 +579,18 @@ eYo.Do.typeOfString = function (candidate, module) {
     }
   }
   // is it a number ?
-  if (eYo.XRE.integer.exec(candidate)) {
+  var match = XRegExp.exec(candidate, eYo.XRE.integer)
+  if (match) {
     return {
       raw: eYo.T3.custom_literal,
-      expr: eYo.T3.Expr.integer
+      expr: eYo.T3.Expr.integer,
+      type: match.bininteger
+        ? eYo.T3.Expr.bininteger
+        : match.octinteger
+          ? eYo.T3.Expr.octinteger
+          : match.hexinteger
+            ? eYo.T3.Expr.octinteger
+            : eYo.T3.Expr.decinteger
     }
   }
   if (eYo.XRE.floatnumber.exec(candidate)) {

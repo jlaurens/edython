@@ -6,6 +6,11 @@
     <div v-else-if="isSelected([$$.eYo.T3.Expr.shortliteral, $$.eYo.T3.Expr.longliteral, $$.eYo.T3.Expr.shortbytesliteral, $$.eYo.T3.Expr.longbytesliteral, $$.eYo.T3.Expr.shortstringliteral, $$.eYo.T3.Expr.longstringliteral, $$.eYo.T3.Stmt.docstring_stmt])">
       <info-literal :eyo="eyo"></info-literal>
     </div>
+    <div v-else-if="isSelected([$$.eYo.T3.Expr.integer,
+    $$.eYo.T3.Expr.floatnumber,
+    $$.eYo.T3.Expr.imagnumber])">
+      <info-number :eyo="eyo"></info-number>
+    </div>
     <div v-else-if="isSelected([$$.eYo.T3.Expr.builtin__print_expr, $$.eYo.T3.Stmt.builtin__print_stmt])">
       <info-print :eyo="eyo"></info-print>
     </div>
@@ -16,7 +21,8 @@
       $$.eYo.T3.Expr.binary,
       $$.eYo.T3.Expr.a_expr,
       $$.eYo.T3.Expr.m_expr, $$.eYo.T3.Expr.shift_expr, $$.eYo.T3.Expr.and_expr, $$.eYo.T3.Expr.xor_expr,
-      $$.eYo.T3.Expr.or_expr
+      $$.eYo.T3.Expr.or_expr,
+      $$.eYo.T3.Expr.power
     ])">
       <info-binary :eyo="eyo" :slotholder="slotholder"></info-binary>
     </div>
@@ -44,6 +50,7 @@
 <script>
   import InfoPrimary from './Info/Primary.vue'
   import InfoLiteral from './Info/Literal.vue'
+  import InfoNumber from './Info/Number.vue'
   import InfoPrint from './Info/Print.vue'
   import InfoUnary from './Info/Unary.vue'
   import InfoBinary from './Info/Binary.vue'
@@ -65,6 +72,7 @@
     components: {
       InfoPrimary,
       InfoLiteral,
+      InfoNumber,
       InfoPrint,
       InfoUnary,
       InfoBinary,

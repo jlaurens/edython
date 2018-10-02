@@ -334,7 +334,7 @@ eYo.Data.prototype.fromText = function (txt, validate = true) {
     }
   }
   if (!validate) {
-    this.set(txt, false)
+    this.change(txt, false)
   } else if (this.value_ !== txt) {
     var v7d = this.validate(txt)
     if (!v7d || !goog.isDef((v7d = v7d.validated))) {
@@ -370,15 +370,13 @@ eYo.Data.prototype.fromField = function (txt, dontValidate) {
     this.set(txt)
   } else if (this.value_ !== txt) {
     var v7d = this.validate(txt)
-    var error = false
     if (!v7d || !goog.isDef((v7d = v7d.validated))) {
-      error = true
+      this.error = true
       v7d = txt
     } else {
       this.error = false
     }
     this.setTrusted_(v7d)
-    this.error = error // *after* setTrusted_
   }
 }
 
@@ -580,7 +578,6 @@ eYo.Data.prototype.synchronize = function (newValue) {
         }
       )
     }
-    this.slot && this.slot.setIncog(this.incog_p)
   } else if (this.model.synchronize) {
     var f = eYo.Decorate.reentrant_method.call(this, 'model_synchronize', this.model.synchronize)
     f && f.call(this, newValue)
@@ -594,7 +591,6 @@ eYo.Data.prototype.synchronize = function (newValue) {
  * @param {Boolean} noRender
  */
  eYo.Data.prototype.setTrusted_ = function (newValue) {
-  this.error = false
   this.internalSet(newValue)
 }
 
@@ -643,6 +639,7 @@ eYo.Data.prototype.set = function (newValue, validate = true) {
   if ((this.value_ === newValue) || ( validate && (!(newValue = this.validate(newValue)) || !goog.isDef(newValue = newValue.validated)))) {
     return false
   }
+  this.error = false
   this.setTrusted(newValue)
   return true
 }

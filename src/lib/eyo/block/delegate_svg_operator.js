@@ -96,15 +96,6 @@ for (var _ = 0, t;(t = [
 }
 
 /**
- * Consolidate the type of the block.
- * Unstable state.
- * For edython.
- */
-eYo.DelegateSvg.Expr.binary.prototype.consolidateType = function (type) {
-  eYo.DelegateSvg.Expr.binary.superClass_.consolidateType.call(this, type || eYo.DelegateSvg.Expr.binary.getTypeForOperator(this.data.operator.get()))
-}
-
-/**
  * Get the operator model.
  * For edython.
  * @return a dictionary
@@ -202,6 +193,15 @@ eYo.DelegateSvg.Expr.binary.getTypeForOperator = function (op) {
 }
 
 /**
+ * Consolidate the type of the block.
+ * Unstable state.
+ * For edython.
+ */
+eYo.DelegateSvg.Expr.binary.prototype.getBaseType = function () {
+  return this.constructor.getTypeForOperator(this.operator_p)
+}
+
+/**
  * Class for a DelegateSvg, unary op ... block.
  * u_expr.
  * For edython.
@@ -248,12 +248,8 @@ eYo.DelegateSvg.Expr.unary.getOperatorModel = function () {
  * Unstable state.
  * For edython.
  */
-eYo.DelegateSvg.Expr.unary.getType = function () {
-  if (this.savedChangeCount_type !== this.change.count) {
-    this.setupType(this.getOperatorModel().type)
-    this.savedChangeCount_type = this.change.count
-  }
-  return block.type
+eYo.DelegateSvg.Expr.unary.prototype.getBaseType = function () {
+  return this.constructor.getOperatorModel().type
 }
 
 /**

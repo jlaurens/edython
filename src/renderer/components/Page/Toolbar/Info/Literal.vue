@@ -77,6 +77,10 @@
       },
       prefix: {
         get () {
+          var id = this.$store.state.UI.selectedBlockId
+          if (id) {
+            this.synchronize()
+          }
           return this.prefix_
         },
         set (newValue) {
@@ -154,12 +158,6 @@
         }
       }
     },
-    whatch: {
-      indeterminate (oldValue, newValue) {
-        var el = document.getElementById('info-literal-checkbox-bytes')
-        el.indeterminate = newValue
-      }
-    },
     methods: {
       doOtherQuote () {
         this.delimiter = this.long_
@@ -188,7 +186,6 @@
         }[this.prefix]
       },
       do_f () {
-        console.log('this.prefix', this.prefix)
         this.prefix = {
           '': 'f',
           'f': '',
@@ -196,13 +193,19 @@
           'rf': 'r',
           'fr': 'r'
         }[this.prefix]
+      },
+      synchronize () {
+        this.prefix_ = this.eyo.prefix_p.toLowerCase()
+        this.delimiter_ = this.eyo.delimiter_p
+        this.long_ = this.delimiter_.length === 3
+        this.content_ = this.eyo.content_p
       }
     },
     created () {
-      this.prefix_ = this.eyo.prefix_p.toLowerCase()
-      this.delimiter_ = this.eyo.delimiter_p
-      this.long_ = this.delimiter_.length === 3
-      this.content_ = this.eyo.content_p
+      this.synchronize()
+    },
+    updated () {
+      this.synchronize()
     }
   }
 </script>

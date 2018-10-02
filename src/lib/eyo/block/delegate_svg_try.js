@@ -108,18 +108,18 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.except_part.prototype.getType = function () {
-  var block = this.block_
-  if (this.savedChangeCount_type !== this.changeCount) {
+eYo.DelegateSvg.Stmt.except_part.prototype.getType = eYo.Decorate.onChangeCount(
+  'getType',
+  function () {
+    var block = this.block_
     this.setupType(
       this.data.variant.get() > 0
       ? eYo.T3.Stmt.except_part
       : eYo.T3.Stmt.void_except_part
     )
-    this.savedChangeCount_type = this.changeCount
+    return block.type
   }
-  return block.type
-}
+)
 
 /**
  * Populate the context menu for the given block.

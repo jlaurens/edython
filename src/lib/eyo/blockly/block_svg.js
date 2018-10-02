@@ -629,8 +629,12 @@ eYo.BlockSvg.prototype.bringToFront = function() {
   try {
     do {
       var root = block.getSvgRoot();
-      goog.dom.appendChild(root.parentNode, root)
-      block = block.getParent();
+      if (root.parentNode) {
+        goog.dom.appendChild(root.parentNode, root)
+        block = block.getParent();
+      } else {
+        break
+      }
     } while (block);
   } catch (err) {
     console.error(err)

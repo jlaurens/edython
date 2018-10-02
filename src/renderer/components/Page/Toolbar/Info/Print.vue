@@ -116,30 +116,30 @@
     },
     methods: {
       do (key) {
-        eYo.Events.setGroup(true)
-        try {
-          var B = this.has[key]
-          if (B) {
-            B.unplug()
-            B.dispose()
-            return
+        eYo.Events.groupWrap(
+          this,
+          function () {
+            var B = this.has[key]
+            if (B) {
+              B.unplug()
+              B.dispose()
+              return
+            }
+            this.eyo.changeWrap(
+              function () {
+                var block = this.eyo.block_
+                B = eYo.DelegateSvg.newBlockReady(block.workspace, {
+                  type: eYo.T3.Expr.keyword_item,
+                  data: key
+                })
+                var list = this.list
+                var c8n = list.inputList[list.inputList.length - 1].connection
+                c8n.connect(B.outputConnection)
+              },
+              this
+            )
           }
-          var block = this.eyo.block_
-          B = eYo.DelegateSvg.newBlockComplete(block.workspace, {
-            type: eYo.T3.Expr.keyword_item,
-            data: key
-          })
-          var list = this.list
-          var c8n = list.inputList[list.inputList.length - 1].connection
-          c8n.connect(B.outputConnection)
-          B.eyo.beReady(B)
-          block.eyo.render(block)
-        } catch (err) {
-          console.error(err)
-          throw err
-        } finally {
-          eYo.Events.setGroup(false)
-        }
+        )
       },
       do_sep () {
         this.do('sep')

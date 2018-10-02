@@ -586,17 +586,26 @@ eYo.Xml.Data.toDom = function (block, element) {
  * @this a block delegate
  */
 eYo.Xml.Data.fromDom = function (block, element) {
+  console.log(block.eyo.change.count)
   var hasText
-  block.eyo.foreachData(function () {
-    this.load(element)
-    // Consistency section, to be removed
-    var xml = this.model.xml
-    if (hasText && xml && xml.text) {
-      console.log(eYo.Do.format('Only one text node {0}/{1}',
-        this.key, block.type))
+  var eyo = block.eyo
+  eyo.changeWrap(
+    function () {
+      this.foreachData(function () {
+        this.load(element)
+        // Consistency section, to be removed
+        var xml = this.model.xml
+        if (hasText && xml && xml.text) {
+          console.log(eYo.Do.format('Only one text node {0}/{1}',
+            this.key, block.type))
+        }
+        hasText = hasText || (xml && xml.text)
+      })
     }
-    hasText = hasText || (xml && xml.text)
-  })
+  )
+  eyo.incrementChangeCount() // force new type
+  eyo.consolidateType()
+  eyo.consolidateConnections()
 }
 
 /**

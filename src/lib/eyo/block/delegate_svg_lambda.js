@@ -390,11 +390,46 @@ eYo.DelegateSvg.Expr.makeSubclass('lambda', {
       fields: {
         label: ':'
       },
+      check: /** @suppress {globalThis} */ function (type) {
+        var block = this.connection.sourceBlock_
+        var c8nOut = block.outputConnection
+        var targetC8n = c8nOut.targetConnection
+        if (targetC8n) {
+          // does the target accept general expression in lambda
+          if (targetC8n.check_ && targetC8n.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0) {
+            return eYo.T3.Expr.Check.expression_nocond
+          } 
+        }
+        return eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond)     
+      },
       check: eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond)
     }
   },
   output: {
-    check: [eYo.T3.Expr.lambda_expr, eYo.T3.Expr.lambda_expr_nocond]
+    check: /** @suppress {globalThis} */ function (type) {
+      var block = this.connection.sourceBlock_
+      var c8nIn = block.eyo.slots.expression.connection
+      var cond_in = true // cond are accepted by default
+      var nocond_in = true // nocond not accepted by default
+      var targetC8n = c8nIn.targetConnection
+      if (targetC8n) {
+        cond_in = false
+        for (var i = 0, t; (t = eYo.T3.Expr.Check.expression[++i]);) {
+          if (!targetC8n.check_ || targetC8n.check_.indexOf(t) >= 0) {
+            cond_in = true
+            break
+          }
+        }
+        nocond_in = false
+        for (i = 0; (t = eYo.T3.Expr.Check.expression_nocond[++i]);) {
+          if (!targetC8n.check_ || targetC8n.check_.indexOf(t) >= 0) {
+            nocond_in = true
+            break
+          }
+        }
+      }
+      return (cond_in ? [eYo.T3.Expr.lambda_expr] : []).concat(nocond_in ? [eYo.T3.Expr.lambda_expr_nocond] : [])
+    }
   }
 })
 
@@ -404,8 +439,8 @@ eYo.DelegateSvg.Expr.makeSubclass('lambda', {
  * @param {!String} type
  */
 eYo.ConnectionDelegate.prototype.consolidateType = function (type) {
-  var block = this.connection.sourceBlock_
   eYo.ConnectionDelegate.superClass_.consolidateType.call(this, type)
+  var block = this.connection.sourceBlock_
   var c8nOut = block.outputConnection
   var input = block.getInput(eYo.Key.EXPRESSION)
   var c8nIn = input.connection

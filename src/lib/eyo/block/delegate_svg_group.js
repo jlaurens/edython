@@ -367,9 +367,10 @@ eYo.DelegateSvg.Manager.register('last_else_part')
  *     type-specific functions for this block.
  * @constructor
  */
-eYo.DelegateSvg.Stmt.else_part.prototype.getType = function () {
-  var block = this.block_
-  if (this.savedChangeCount_type !== this.change.count) {
+eYo.DelegateSvg.Stmt.else_part.prototype.getType = eYo.Decorate.onChangeCount(
+  'getType',
+  function () {
+    var block = this.block_
     var T3 = eYo.T3.Stmt
     var type = T3.else_part
     var targetConnection
@@ -390,11 +391,10 @@ eYo.DelegateSvg.Stmt.else_part.prototype.getType = function () {
         type = T3.last_else_part
       }
     }  
-    this.setupType(type)
-    this.savedChangeCount_type = this.change.count
+    this.setupType(type) // bad smell, the code has changed
+    return block.type
   }
-  return block.type
-}
+)
 
 /**
  * Class for a DelegateSvg, while_part block.

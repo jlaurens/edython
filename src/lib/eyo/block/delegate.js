@@ -197,14 +197,15 @@ eYo.Delegate.prototype.doConsolidate = function (deep, force) {
   // synchronize everything
   this.synchronizeData()
   this.synchronizeSlots()
+  // first the type
+  this.consolidateType()
+  this.consolidateSubtype()
   // first the in state
   this.consolidateData()
   this.consolidateSlots(deep, force)
   this.consolidateInputs(deep, force)
   // then the out state
   this.consolidateConnections()
-  this.consolidateType()
-  this.consolidateSubtype()
   return true
 }
 
@@ -1130,6 +1131,11 @@ eYo.Delegate.prototype.consolidateConnections = function () {
   var f = function (c8n) {
     c8n && c8n.eyo.updateCheck(t, st)
   }
+  this.foreachSlot(
+    function () {
+      f(this.connection)
+    }
+  )
   f(b.outputConnection)
   f(b.previousConnection)
   f(b.nextConnection)

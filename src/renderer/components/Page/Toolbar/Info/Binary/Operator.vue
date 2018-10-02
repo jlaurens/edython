@@ -63,8 +63,16 @@
         return this.slotholder('eyo-info-primary-variant1')
       }
     },
+    methods: {
+      synchronize () {
+        this.operator_ = this.eyo.operator_p
+      }
+    },
     created () {
-      this.operator_ = this.eyo.operator_p
+      this.synchronize()
+    },
+    updated () {
+      this.synchronize()
     }
   }
 </script>

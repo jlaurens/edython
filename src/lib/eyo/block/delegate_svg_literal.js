@@ -51,7 +51,11 @@ eYo.DelegateSvg.Literal.prototype.xmlType = function (block) {
 eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
   data: {
     type: {
-      all: [eYo.T3.Expr.integer, eYo.T3.Expr.floatnumber, eYo.T3.Expr.imagnumber],
+      all: [
+        eYo.T3.Expr.integer,
+        eYo.T3.Expr.floatnumber,
+        eYo.T3.Expr.imagnumber
+      ],
       noUndo: true,
       xml: false
     },
@@ -65,7 +69,9 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var type = newValue ? eYo.Do.typeOfString(newValue).expr : eYo.T3.Expr.integer
+        var type = newValue 
+          ? eYo.Do.typeOfString(newValue).expr 
+          : eYo.T3.Expr.integer
         this.owner.type_p = type
       },
       synchronize: true,
@@ -81,7 +87,9 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
     }
   },
   output: {
-    check: eYo.T3.Expr.integer
+    check: /** @suppress {globalThis} */ function (type) {
+      return type
+    }
   }
 })
 
@@ -106,8 +114,8 @@ eYo.DelegateSvg.Expr.numberliteral.prototype.showEditor = function (block) {
  *     type-specific functions for this block.
  * @constructor
  */
-eYo.DelegateSvg.Expr.numberliteral.prototype.consolidateType = function (type) {
-  eYo.DelegateSvg.Expr.numberliteral.superClass_.consolidateType.call(this, type || this.data.type.get())
+eYo.DelegateSvg.Expr.numberliteral.prototype.getBaseType = function () {
+  return this.data.type.get()
 }
 
 goog.provide('eYo.DelegateSvg.Expr.shortliteral')

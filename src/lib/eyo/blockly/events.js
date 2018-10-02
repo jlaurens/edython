@@ -155,7 +155,6 @@ eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method(
   'setTrusted_',
   function (newValue) {
     var data = this
-    this.error = false
     var eyo = this.owner
     var block = eyo.block_
     var oldValue = this.value_
