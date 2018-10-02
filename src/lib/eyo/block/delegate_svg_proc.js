@@ -148,8 +148,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
-eYo.DelegateSvg.Stmt.decorator.prototype.isWhite = function (block) {
-  return block.nextConnection.isConnected()
+eYo.DelegateSvg.Stmt.decorator.prototype.isWhite = function () {
+  return this.block_.nextConnection.isConnected()
 }
 
 /**

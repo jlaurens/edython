@@ -1492,8 +1492,8 @@ eYo.Delegate.prototype.getStatementCount = function () {
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
-eYo.Delegate.prototype.isWhite = function (block) {
-  return block.disabled
+eYo.Delegate.prototype.isWhite = function () {
+  return this.block_.disabled
 }
 
 /**

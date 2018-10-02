@@ -449,7 +449,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('docstring_stmt', {
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
-eYo.DelegateSvg.Stmt.docstring_stmt.prototype.isWhite = function (block) {
+eYo.DelegateSvg.Stmt.docstring_stmt.prototype.isWhite = function () {
   return true
 }
 
