@@ -491,13 +491,16 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       },
       check: eYo.T3.Expr.Check.augtarget
     },
-    expressions: {
+    operator: {
       order: 2,
       fields: {
-        operator: {// only one `operator` field
+        bind: {// only one `operator` field
           value: ''
         }
-      },
+      }
+    },
+    expressions: {
+      order: 3,
       wrap: eYo.T3.Expr.augassigned_list
     }
   }

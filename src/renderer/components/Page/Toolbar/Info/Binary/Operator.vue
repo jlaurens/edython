@@ -42,11 +42,12 @@
     computed: {
       operator: {
         get () {
-          return this.operator_
+          return this.operator_ === this.eyo.operator_p
+            ? this.operator_
+            : (this.operator_ = this.eyo.operator_p)
         },
         set (newValue) {
-          this.operator_ = newValue
-          this.eyo.operator_p = newValue
+          this.operator_ = this.eyo.operator_p = newValue
         }
       },
       operatorsA () {
@@ -63,16 +64,8 @@
         return this.slotholder('eyo-info-primary-variant1')
       }
     },
-    methods: {
-      synchronize () {
-        this.operator_ = this.eyo.operator_p
-      }
-    },
     created () {
-      this.synchronize()
-    },
-    updated () {
-      this.synchronize()
+      this.operator_ = this.eyo.operator_p
     }
   }
 </script>

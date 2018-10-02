@@ -33,11 +33,12 @@
     computed: {
       operator: {
         get () {
-          return this.operator_
+          return this.operator_ === this.eyo.operator_p
+            ? this.operator_
+            : (this.operator_ = this.eyo.operator_p)
         },
         set (newValue) {
-          this.operator_ = newValue
-          this.eyo.operator_p = newValue
+          this.operator_ = this.eyo.operator_p = newValue
         }
       },
       operatorsA () {
