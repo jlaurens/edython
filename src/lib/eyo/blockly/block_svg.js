@@ -76,7 +76,7 @@ eYo.BlockSvg.prototype.initSvg = function () {
  * @return {Blockly.Field} Named field, or null if field does not exist.
  */
 eYo.BlockSvg.prototype.getField = function (name) {
-  return eYo.BlockSvg.superClass_.getField.call(this, name) || this.eyo.getField(this, name)
+  return eYo.BlockSvg.superClass_.getField.call(this, name) || this.eyo.getField(name)
 }
 
 eYo.BlockSvg.CORNER_RADIUS = 3
@@ -99,7 +99,7 @@ eYo.BlockSvg.prototype.render = function (optBubble) {
  * @return {Blockly.Input} The input object, or null if input does not exist.
  */
 eYo.BlockSvg.prototype.getInput = function (name) {
-  var input = this.eyo.getInput(this, name)
+  var input = this.eyo.getInput(name)
   if (!input) {
     input = eYo.BlockSvg.superClass_.getInput.call(this, name)
   }
@@ -259,7 +259,7 @@ eYo.BlockSvg.prototype.setParent = function (newParent) {
   if (newParent === this.parentBlock_) {
     return
   }
-  this.eyo.parentWillChange(this, newParent)
+  this.eyo.parentWillChange(newParent)
   eYo.BlockSvg.superClass_.setParent.call(this, newParent)
   this.eyo.parentDidChange(newParent)
   if ((this.eyo.svgPathHighlight_ &&
@@ -448,7 +448,7 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
     }
   }
   // unfortunately, the mouse events do not find there way to the proper block
-  var c8n = this.eyo.getConnectionForEvent(this, e)
+  var c8n = this.eyo.getConnectionForEvent(e)
   var target = c8n ? c8n.targetBlock() || c8n.sourceBlock_ : this
   while (target && (target.eyo.wrapped_ || target.eyo.locked_)) {
     target = target.getParent()
@@ -478,7 +478,7 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
  * but the shape of the connection as it shows when blocks are moved close enough.
  */
 eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
-  var c8n = this.eyo.getConnectionForEvent(this, e)
+  var c8n = this.eyo.getConnectionForEvent(e)
   var target = c8n ? c8n.targetBlock() || c8n.sourceBlock_ : this
   while (target && (target.eyo.wrapped_ || target.eyo.locked_)) {
     target = target.getParent()
@@ -570,7 +570,7 @@ eYo.BlockSvg.prototype.bringToFront = function () {
  * @package
  */
 eYo.BlockSvg.prototype.moveDuringDrag = function(newLoc) {
-  var d = this.eyo.getDistanceFromVisible(this, newLoc)
+  var d = this.eyo.getDistanceFromVisible(newLoc)
   if (d) {
     newLoc.x -= d.x
     newLoc.y -= d.y

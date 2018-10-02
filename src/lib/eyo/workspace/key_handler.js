@@ -513,7 +513,7 @@ eYo.KeyHandler = (function () {
           event.preventDefault()
           event.stopPropagation()
           f.call(B.eyo, B)
-          if (!B.eyo.inVisibleArea(B)) {
+          if (!B.eyo.inVisibleArea()) {
             B.workspace.centerOnBlock(B.id)
           }
         }
@@ -532,7 +532,7 @@ eYo.KeyHandler = (function () {
         var block = eYo.DelegateSvg.getBestBlock(eYo.Session.workspace, f)
         if (block) {
           block.select()
-          if (!block.eyo.inVisibleArea(block)) {
+          if (!block.eyo.inVisibleArea()) {
             block.workspace.centerOnBlock(block.id)
           }
         }
@@ -591,7 +591,7 @@ var Ks = {
     if (B) {
       var parent = B.getSurroundParent()
       if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.not_test)) {
-        B.eyo.replaceBlock(B, parent)
+        B.eyo.replaceBlock(parent)
         return
       }
       if (eYo.SelectedConnection) {
@@ -633,7 +633,7 @@ Ks = function () {
     if (B) {
       var parent = B.getSurroundParent()
       if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.data.main.get() === op) {
-        B.eyo.replaceBlock(B, parent)
+        B.eyo.replaceBlock(parent)
         return
       }
       var model = {

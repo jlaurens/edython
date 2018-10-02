@@ -167,7 +167,7 @@ eYo.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
       text.appendChild(document.createTextNode('#'))
       length = 1
     }
-    var expected = io.block.eyo.getStatementCount(io.block)
+    var expected = io.block.eyo.getStatementCount()
     while (length < expected) {
       y = eYo.Font.totalAscent + length * eYo.Font.lineHeight()
       text = Blockly.utils.createSvgElement('text',
@@ -315,7 +315,7 @@ eYo.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (block, mgr
   var show = !this.data.comment.isIncog()
   var content =
   eYo.Do.createSPAN(show ? eYo.Msg.Placeholder.REMOVE_COMMENT : eYo.Msg.Placeholder.ADD_COMMENT, null)
-  var menuItem = mgr.newMenuItem(content, block.eyo.doAndRender(block, function () {
+  var menuItem = mgr.newMenuItem(content, block.eyo.doAndRender( function () {
     this.data.comment.setIncog(show)
   }))
   mgr.addChild(menuItem, true)
@@ -411,7 +411,8 @@ eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.tagName = function (block) {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   var M = this.data.variant.model
   var current = block.eyo.data.variant.get()
   var variants = block.eyo.data.variant.getAll()
@@ -589,7 +590,8 @@ eYo.DelegateSvg.Stmt.any_stmt.prototype.isWhite = function (block) {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   var data = this.data.variant
   var current = data.get()
   var comment = this.data.comment.toText()

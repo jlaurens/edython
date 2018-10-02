@@ -96,7 +96,7 @@ eYo.FieldLabel.prototype.setValue = function (newValue) {
   if (this.name) {
     var block = this.sourceBlock_
     if (block && block.eyo.fieldValueDidChange) {
-      block.eyo.fieldValueDidChange(block, this.name, oldValue)
+      block.eyo.fieldValueDidChange(this.name, oldValue)
     }
   }
 }

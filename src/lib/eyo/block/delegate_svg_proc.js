@@ -158,7 +158,8 @@ eYo.DelegateSvg.Stmt.decorator.prototype.isWhite = function (block) {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-eYo.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   var dotted_name = this.data.dotted_name.get()
   var builtin = this.data.builtin.get()
   var builtins = this.data.builtin.getAll()
@@ -267,7 +268,8 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   var variants = this.data.variant.getAll()
   var variant = block.eyo.data.variant.get()
   var F = function (content, key) {
@@ -362,7 +364,8 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   var variants = this.data.variant.getAll()
   var variant = block.eyo.data.variant.get()
   var F = function (content, key) {

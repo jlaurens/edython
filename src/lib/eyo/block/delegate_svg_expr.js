@@ -242,14 +242,14 @@ eYo.DelegateSvg.Expr.prototype.didDisconnect = function (connection, oldTargetC8
  * @param {!Block} block
 * @param {!Block} other the block to be replaced
   */
-eYo.DelegateSvg.Expr.prototype.canReplaceBlock = function (block, other) {
+eYo.DelegateSvg.Expr.prototype.canReplaceBlock = function (other) {
   if (other) {
     var c8n = other.outputConnection
     if (!c8n) {
       return true
     }
     c8n = c8n.targetConnection
-    if (!c8n || c8n.checkType_(block.outputConnection)) {
+    if (!c8n || c8n.checkType_(this.block_.outputConnection)) {
       // the parent block has an output connection that can connect to the block's one
       return true
     }
@@ -262,13 +262,14 @@ eYo.DelegateSvg.Expr.prototype.canReplaceBlock = function (block, other) {
  * If the parent's output connection is connected,
  * connects the block's output connection to it.
  * The connection cannot always establish.
- * @param {!Block} block
+ * @param {!Blockly.Block} other
  */
-eYo.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
+eYo.DelegateSvg.Expr.prototype.replaceBlock = function (other) {
   if (this.workspace && other && other.workspace) {
     eYo.Events.groupWrap(this,
       function () {
         try {
+          var block = this.block_
           console.log('**** replaceBlock', block, other)
           var c8n = other.outputConnection
           var its_xy = other.getRelativeToSurfaceXY()
@@ -305,8 +306,8 @@ eYo.DelegateSvg.Expr.prototype.replaceBlock = function (block, other) {
  * @param {!Block} block
  * @private
  */
-eYo.DelegateSvg.Expr.prototype.willRender_ = function (block) {
-  eYo.DelegateSvg.Expr.superClass_.willRender_.call(this, block)
+eYo.DelegateSvg.Expr.prototype.willRender_ = function () {
+  eYo.DelegateSvg.Expr.superClass_.willRender_.call(this)
   var field = this.fields.await
   if (field) {
     field.setVisible(this.await_)
@@ -342,9 +343,10 @@ eYo.DelegateSvg.Expr.prototype.awaitable = function (block) {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   var yorn = eYo.DelegateSvg.Expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
-  if (this.await_ || (this.awaitable && this.awaitable(block))) {
+  if (this.await_ || (this.awaitable && this.awaitable())) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('await', 'eyo-code-reserved'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
@@ -422,7 +424,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
     goog.asserts.assert(parentInput, 'No input named ' + model.slot)
     var parentInputC8n = parentInput.connection
     goog.asserts.assert(parentInputC8n, 'Unexpected dummy input ' + model.slot+ ' in ' + parentBlock.type)
-  } else if ((parentInput = parentBlock.eyo.getInput(parentBlock, eYo.Key.LIST, true))) {
+  } else if ((parentInput = parentBlock.eyo.getInput(eYo.Key.LIST, true))) {
     var list = parentInput.connection.targetBlock()
     goog.asserts.assert(list, 'Missing list block inside ' + block.type)
     // the list has many potential inputs,
@@ -644,7 +646,8 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__object', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Expr.builtin__object.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Expr.builtin__object.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   mgr.populateProperties(block, 'value')
   mgr.shouldSeparateInsert()
   eYo.DelegateSvg.Expr.builtin__object.superClass_.populateContextMenuFirst_.call(this, block, mgr)

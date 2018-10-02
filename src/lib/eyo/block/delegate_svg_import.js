@@ -193,8 +193,8 @@ console.log('When read from dom, if the read data is not valid, what to do?')
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-eYo.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function (block) {
-  return block
+eYo.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function () {
+  return this.block_
 }
 
 /**
@@ -203,7 +203,8 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function (block) {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   var current = block.eyo.data.variant.get()
   var F = function (content, variant) {
     if (variant !== current) {

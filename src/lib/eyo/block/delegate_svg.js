@@ -267,7 +267,8 @@ eYo.DelegateSvg.prototype.postInitSvg = function () {
  * @param {!Blockly.Block} block to be modified.
  * @param {!Blockly.Block} newParent to be connected.
  */
-eYo.DelegateSvg.prototype.parentWillChange = function (block, newParent) {
+eYo.DelegateSvg.prototype.parentWillChange = function (newParent) {
+  var block = this.block_
   if (block.parentBlock_) {
     // this block was connected, so its paths were located in the parents
     // groups.
@@ -353,7 +354,7 @@ eYo.DelegateSvg.prototype.svgInsertHeadSlot = function () {
  * @param {string} name The name of the field.
  * @return {Blockly.Field} Named field, or null if field does not exist.
  */
-eYo.DelegateSvg.prototype.getField = function (block, name) {
+eYo.DelegateSvg.prototype.getField = function (name) {
   var fields = this.fields
   for (var key in fields) {
     var field = fields[key]
@@ -391,18 +392,18 @@ eYo.DelegateSvg.prototype.synchronizeSlots = function () {
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-eYo.DelegateSvg.prototype.getMenuTarget = function (block) {
+eYo.DelegateSvg.prototype.getMenuTarget = function () {
   var wrapped
   if (this.wrap && (wrapped = this.wrap.input.connection.targetBlock())) {
-    return wrapped.eyo.getMenuTarget(wrapped)
+    return wrapped.eyo.getMenuTarget()
   }
   if (this.wrappedC8nDlgt_ && this.wrappedC8nDlgt_.length === 1 &&
     (wrapped = this.wrappedC8nDlgt_[0].connection.targetBlock())) {
     // if there are more than one wrapped block,
     // then we choose none of them
-    return wrapped.eyo.getMenuTarget(wrapped)
+    return wrapped.eyo.getMenuTarget()
   }
-  return block
+  return this.block_
 }
 
 /**
@@ -423,11 +424,10 @@ eYo.Data.prototype.change = function (newValue) {
 
 /**
  * Render the given connection, if relevant.
- * @param {!Block} block
- * @param {!Blockly.Connection} block
+ * @param {!Blockly.Connection} c8n
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
-eYo.DelegateSvg.prototype.renderDrawC8n_ = function (block, c8n) {
+eYo.DelegateSvg.prototype.renderDrawC8n_ = function (c8n) {
   if (!c8n) {
     return
   }
@@ -459,14 +459,13 @@ eYo.DelegateSvg.debugCount = {}
 
 /**
  * Render the next block, if relevant.
- * @param {!Block} block
  * @return {boolean=} true if an rendering message was sent, false othrwise.
  */
-eYo.DelegateSvg.prototype.renderDrawNext_ = function (block) {
-  if (block.nextConnection && eYo.DelegateSvg.debugStartTrackingRender) {
+eYo.DelegateSvg.prototype.renderDrawNext_ = function () {
+  if (this.block_.nextConnection && eYo.DelegateSvg.debugStartTrackingRender) {
     console.log(eYo.DelegateSvg.debugPrefix, 'NEXT')
   }
-  return this.renderDrawC8n_(block, block.nextConnection)
+  return this.renderDrawC8n_(this.block_.nextConnection)
 }
 
 /**
@@ -563,14 +562,15 @@ eYo.DelegateSvg.prototype.render = function () {
         Blockly.Field.startCache()
         var block = this.block_
         this.minWidth = block.width = 0
-        this.willRender_(block)
-        this.renderDraw_(block)
-        this.renderDrawNext_(block)
-        this.layoutConnections_(block)
-        this.renderMove_(block)
+        this.consolidate()
+        this.willRender_()
+        this.renderDraw_()
+        this.renderDrawNext_()
+        this.layoutConnections_()
+        this.renderMove_()
         renderDrawParent.call(this, optBubble)
         block.rendered = true
-        this.didRender_(block)
+        this.didRender_()
         if (eYo.traceOutputConnection && block.outputConnection) {
           console.log('block.outputConnection', block.outputConnection.x_, block.outputConnection.y_)
         }
@@ -595,8 +595,8 @@ eYo.DelegateSvg.prototype.render = function () {
     if (block.rendered) {
       if (eYo.Connection.disconnectedChildC8n && block.previousConnection === eYo.Connection.disconnectedChildC8n) {
         // this block is the top one
-        this.layoutConnections_(block)
-        this.renderMove_(block)
+        this.layoutConnections_()
+        this.renderMove_()
         this.updateAllPaths_(block)
         this.alignRightEdges_(block)
         this.renderCount = this.change.count
@@ -604,8 +604,8 @@ eYo.DelegateSvg.prototype.render = function () {
       } else if (eYo.Connection.disconnectedParentC8n && block.nextConnection === eYo.Connection.disconnectedParentC8n) {
         // this block is the bottom one
         // but it may belong to a suite
-        this.layoutConnections_(block)
-        this.renderMove_(block)
+        this.layoutConnections_()
+        this.renderMove_()
         this.updateAllPaths_(block)
         renderDrawParent.call(this, optBubble)
         this.renderCount = this.change.count
@@ -615,15 +615,15 @@ eYo.DelegateSvg.prototype.render = function () {
           // this is not a statement connection
           // no shortcut
         } else if (block.previousConnection && eYo.Connection.connectedParentC8n == block.previousConnection.targetConnection) {
-          this.layoutConnections_(block)
-          this.renderMove_(block)
+          this.layoutConnections_()
+          this.renderMove_()
           this.updateAllPaths_(block)
           renderDrawParent.call(this, optBubble)
           this.renderCount = this.change.count
           return
         } else if (block.nextConnection && eYo.Connection.connectedParentC8n == block.nextConnection) {
-          this.layoutConnections_(block)
-          this.renderMove_(block)
+          this.layoutConnections_()
+          this.renderMove_()
           this.updateAllPaths_(block)
           var root = block.getRootBlock()
           root.eyo.alignRightEdges_(root)
@@ -661,8 +661,8 @@ eYo.DelegateSvg.prototype.render = function () {
     }
     if (this.renderCount === this.change.count) {
       // minimal rendering
-      this.layoutConnections_(block)
-      this.renderMove_(block)
+      this.layoutConnections_()
+      this.renderMove_()
       this.updateAllPaths_(block)
       return
     }  
@@ -681,10 +681,10 @@ eYo.DelegateSvg.prototype.wrapped_ = undefined
 /**
  * Will draw the block. Default implementation does nothing.
  * The print statement needs some preparation before drawing.
- * @param {!Block} block
  * @private
  */
-eYo.DelegateSvg.prototype.willRender_ = function (block) {
+eYo.DelegateSvg.prototype.willRender_ = function () {
+  var block = this.block_
   if (block.svgGroup_) {
     var F = this.locked_ && block.outputConnection && block.getSurroundParent()
       ? goog.dom.classlist.add
@@ -713,18 +713,17 @@ eYo.DelegateSvg.prototype.willRender_ = function (block) {
 /**
  * Did draw the block. Default implementation does nothing.
  * The print statement needs some preparation before drawing.
- * @param {!Block} block
  * @private
  */
-eYo.DelegateSvg.prototype.didRender_ = function (block) {
+eYo.DelegateSvg.prototype.didRender_ = function () {
 }
 
 /**
  * Layout previous, next and output block connections.
- * @param {!Block} block
  * @private
  */
-eYo.DelegateSvg.prototype.renderMove_ = function (block) {
+eYo.DelegateSvg.prototype.renderMove_ = function () {
+  var block = this.block_
   block.renderMoveConnections_()
   var blockTL = block.getRelativeToSurfaceXY()
   this.foreachSlot(function () {
@@ -743,10 +742,10 @@ eYo.DelegateSvg.prototype.renderMove_ = function (block) {
 
 /**
  * Layout previous, next and output block connections.
- * @param {!Block} block
  * @private
  */
-eYo.DelegateSvg.prototype.layoutConnections_ = function (block) {
+eYo.DelegateSvg.prototype.layoutConnections_ = function () {
+  var block = this.block_
   if (block.outputConnection) {
     block.outputConnection.setOffsetInBlock(0, 0)
   } else {
@@ -815,16 +814,17 @@ eYo.DelegateSvg.prototype.collapsedPathDef_ = function () {
  * @param {!eYo.Block} block
  * @private
  */
-eYo.DelegateSvg.prototype.renderDraw_ = function (block) {
+eYo.DelegateSvg.prototype.renderDraw_ = function () {
   if (this.svgPathInner_) {
     // if the above path does not exist
     // the block is not yet ready for rendering
+    var block = this.block_
     block.height = eYo.Font.lineHeight()
     var d, unlocker
     try {
       // chain the tiles to properly manage spaces between tiles
-      unlocker = this.chainTiles(block)
-      d = this.renderDrawModel_(block)
+      unlocker = this.chainTiles()
+      d = this.renderDrawModel_()
       this.svgPathInner_.setAttribute('d', d)
     } catch (err) {
       console.error (err)
@@ -1026,7 +1026,7 @@ eYo.DelegateSvg.prototype.unlockChainTiles = function (block) {
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.prototype.chainTiles = function () {
+eYo.DelegateSvg.prototype.chainTiles = (function () {
   // this is a closure
   /**
    * Chain the fields.
@@ -1147,7 +1147,7 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
       }
     } 
   }
-  return function (block) {
+  return function () {
     // if there is already a tileHead,
     // the tile chain has already been computed
     // and no change was made in the block (and children)
@@ -1155,6 +1155,7 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
       return
     }
     this.chainTiles_locked = true
+    var block = this.block_
     this.tileHead = this.tileTail = null
     // chain
     chainFields(this.fromStartField)
@@ -1182,15 +1183,15 @@ eYo.DelegateSvg.prototype.chainTiles = function () {
     this.tileHead && (this.tileHead.eyo.chainBlock = block)
     return block
   }
-} ()
+}) ()
 
 /**
  * Render the inputs, the fields and the slots of the block.
- * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.prototype.renderDrawModel_ = function (block) {
+eYo.DelegateSvg.prototype.renderDrawModel_ = function () {
   /* eslint-disable indent */
+  var block = this.block_
   var io = {
     block: block,
     steps: [],
@@ -1706,7 +1707,8 @@ eYo.DelegateSvg.prototype.highlightConnectionPathDef = function (block, c8n) {
 /**
  * @param {!Blockly.Connection} c8n The connection to highlight.
  */
-eYo.DelegateSvg.prototype.highlightConnection = function (block, c8n) {
+eYo.DelegateSvg.prototype.highlightConnection = function (c8n) {
+  var block = this.block_
   var steps
   if (c8n.type === Blockly.INPUT_VALUE) {
     if (c8n.isConnected()) {
@@ -1742,7 +1744,7 @@ eYo.DelegateSvg.prototype.highlightConnection = function (block, c8n) {
  * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly. Ignored.
  * @return {Blockly.Input} The input object, or null if input does not exist. Input that are disabled are skipped.
  */
-eYo.DelegateSvg.prototype.getInput = function (block, name, dontCreate) {
+eYo.DelegateSvg.prototype.getInput = function (name, dontCreate) {
   var e8r = this.inputEnumerator()
   while (e8r.next()) {
     if (e8r.here.name === name) {
@@ -1918,7 +1920,7 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
     var Vs = dataModel.slots
     for (var k in Vs) {
       if (eYo.Do.hasOwnProperty(Vs, k)) {
-        var input = block.eyo.getInput(block, k)
+        var input = block.eyo.getInput(k)
         if (input && input.connection) {
           var target = input.connection.targetBlock()
           var V = Vs[k]
@@ -2237,7 +2239,8 @@ eYo.DelegateSvg.getBestBlock = function (workspace, weight) {
  * @param {function(point, point): number} distance is a function.
  * @return None
  */
-eYo.DelegateSvg.prototype.getBestBlock = function (block, distance) {
+eYo.DelegateSvg.prototype.getBestBlock = function (distance) {
+  var block = this.block_
   const a = this.getBoundingBox(block)
   var smallest = {}
   var best
@@ -2395,7 +2398,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function (block) {
   do {
     parent = target
   } while ((target = parent.getSurroundParent()))
-  target = parent.eyo.getBestBlock(parent, function (a, b) {
+  target = parent.eyo.getBestBlock(function (a, b) {
     if (a.left <= b.left) {
       return {}
     }
@@ -2555,7 +2558,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function (block) {
   do {
     parent = target
   } while ((target = parent.getSurroundParent()))
-  target = parent.eyo.getBestBlock(parent, function (a, b) {
+  target = parent.eyo.getBestBlock(function (a, b) {
     if (a.right >= b.right) {
       return {}
     }
@@ -2622,7 +2625,7 @@ eYo.DelegateSvg.prototype.selectBlockAbove = function (block) {
       return
     }
   } while ((target = parent.getParent()))
-  target = parent.eyo.getBestBlock(parent, function (a, b) {
+  target = parent.eyo.getBestBlock(function (a, b) {
     if (a.top <= b.top) {
       return {}
     }
@@ -2686,7 +2689,7 @@ eYo.DelegateSvg.prototype.selectBlockBelow = function (block) {
     }
   } while ((target = parent.getSurroundParent()))
 
-  target = parent.eyo.getBestBlock(parent, function (a, b) {
+  target = parent.eyo.getBestBlock(function (a, b) {
     if (a.bottom >= b.bottom) {
       return {}
     }
@@ -2716,7 +2719,8 @@ eYo.DelegateSvg.prototype.selectBlockBelow = function (block) {
  * @param {Object} e in general a mouse down event
  * @return {Object|undefined|null}
  */
-eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
+eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
+  var block = this.block_
   var where = Blockly.utils.mouseToSvg(e, block.workspace.getParentSvg(),
   block.workspace.getInverseScreenCTM());
   where = goog.math.Coordinate.difference(where, block.workspace.getOriginOffsetInPixels())
@@ -2730,7 +2734,7 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (block, e) {
       if (c8n.type === Blockly.INPUT_VALUE) {
         var target = c8n.targetBlock()
         if (target) {
-          var targetC8n = target.eyo.getConnectionForEvent(target, e)
+          var targetC8n = target.eyo.getConnectionForEvent(e)
           if (targetC8n) {
             return targetC8n
           }
@@ -3110,7 +3114,7 @@ eYo.DelegateSvg.prototype.canUnlock = function (block) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return {number} the number of blocks locked
  */
-eYo.DelegateSvg.prototype.lock = function (block) {
+eYo.DelegateSvg.prototype.lock = function () {
   var ans = 0
   if (this.locked_ || !block.eyo.canLock(block)) {
     return ans
@@ -3133,7 +3137,7 @@ eYo.DelegateSvg.prototype.lock = function (block) {
   while (e8r.next()) {
     if ((c8n = e8r.here.connection)) {
       if ((target = c8n.targetBlock())) {
-        ans += target.eyo.lock(target)
+        ans += target.eyo.lock()
       }
       if (c8n.type === Blockly.INPUT_VALUE) {
         c8n.setHidden(true)
@@ -3143,7 +3147,7 @@ eYo.DelegateSvg.prototype.lock = function (block) {
   this.foreachSlot(function () {
     if (this.input && (c8n = this.input.connection)) {
       if ((target = c8n.targetBlock())) {
-        ans += target.eyo.lock(target)
+        ans += target.eyo.lock()
       }
       if (c8n.type === Blockly.INPUT_VALUE) {
         c8n.setHidden(true)
@@ -3152,7 +3156,7 @@ eYo.DelegateSvg.prototype.lock = function (block) {
   })
   if ((c8n = block.nextConnection)) {
     if ((target = c8n.targetBlock())) {
-      ans += target.eyo.lock(target)
+      ans += target.eyo.lock()
     }
   }
   if (block === Blockly.selected) {
@@ -3174,7 +3178,8 @@ eYo.DelegateSvg.prototype.lock = function (block) {
  * @param {boolean} deep Whether to unlock statements too.
  * @return {number} the number of blocks unlocked
  */
-eYo.DelegateSvg.prototype.unlock = function (block, shallow) {
+eYo.DelegateSvg.prototype.unlock = function (shallow) {
+  var block = this.block_
   var ans = 0
   if (Blockly.Events.isEnabled()) {
     Blockly.Events.fire(new Blockly.Events.BlockChange(
@@ -3187,14 +3192,14 @@ eYo.DelegateSvg.prototype.unlock = function (block, shallow) {
   while (e8r.next()) {
     if ((c8n = e8r.here.connection)) {
       if ((!shallow || c8n.type === Blockly.INPUT_VALUE) && (target = c8n.targetBlock())) {
-        ans += target.eyo.unlock(target, shallow)
+        ans += target.eyo.unlock(shallow)
       }
       c8n.setHidden(false)
     }
   }
   if (!shallow && (c8n = block.nextConnection)) {
     if ((target = c8n.targetBlock())) {
-      ans += target.eyo.unlock(target)
+      ans += target.eyo.unlock()
     }
   }
   (block.getSurroundParent() || block).render()
@@ -3206,8 +3211,8 @@ eYo.DelegateSvg.prototype.unlock = function (block, shallow) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return {boolean}
  */
-eYo.DelegateSvg.prototype.inVisibleArea = function (block) {
-  var area = this.getDistanceFromVisible(block)
+eYo.DelegateSvg.prototype.inVisibleArea = function () {
+  var area = this.getDistanceFromVisible()
   return area && !area.x && !area.y
 }
 
@@ -3226,7 +3231,8 @@ eYo.DelegateSvg.prototype.inVisibleArea = function (block) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return {{x: number, y: number}|undefined}
  */
-eYo.DelegateSvg.prototype.getDistanceFromVisible = function (block, newLoc) {
+eYo.DelegateSvg.prototype.getDistanceFromVisible = function (newLoc) {
+  var block = this.block_
   var workspace = block.workspace
   if (!workspace) {
     return undefined
@@ -3253,9 +3259,9 @@ eYo.DelegateSvg.prototype.getDistanceFromVisible = function (block, newLoc) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return {boolean}
  */
-eYo.DelegateSvg.prototype.setOffset = function (block, dx, dy) {
+eYo.DelegateSvg.prototype.setOffset = function (dx, dy) {
   // Workspace coordinates.
-  block = block || this.block_
+  var block = this.block_
   if (!this.svgShapeGroup_) {
     throw 'block is not inited '+block.type
   }
@@ -3272,7 +3278,8 @@ eYo.DelegateSvg.prototype.setOffset = function (block, dx, dy) {
  * @param {!Blockly.Block} block
  * @param {boolean} hidden True to hide connections.
  */
-eYo.DelegateSvg.prototype.setConnectionsHidden = function (block, hidden) {
+eYo.DelegateSvg.prototype.setConnectionsHidden = function (hidden) {
+  var block = this.block_
   if (this.connectionsHidden_ === hidden) {
     return
   }
@@ -3295,7 +3302,8 @@ eYo.DelegateSvg.prototype.setConnectionsHidden = function (block, hidden) {
  * @param {!Function} handler `this` is the receiver.
  * @param {!Function} err_handler `this` is the receiver, one argument: the error catched.
  */
-eYo.DelegateSvg.prototype.doAndRender = function (block, handler, group, err_handler) {
+eYo.DelegateSvg.prototype.doAndRender = function (handler, group, err_handler) {
+  var block = this.block_
   return function (event) {
     block.eyo.changeBegin()
     group && eYo.Events.setGroup(true)

@@ -269,17 +269,17 @@ eYo.MenuManager.prototype.showMenu = function (block, e) {
       }
     }
   }
-  var target = block.eyo.getMenuTarget(block)
+  var target = block.eyo.getMenuTarget()
   this.init(target, e)
   var me = this
   me.alreadyListened = false
   var parent, sep
   parent = target
   this.populate_before_after(block)
-  sep = parent.eyo.populateContextMenuFirst_(parent, this)
+  sep = parent.eyo.populateContextMenuFirst_(this)
   while (parent !== block) {
     parent = parent.getParent()
-    sep = parent.eyo.populateContextMenuFirst_(parent, this) || sep
+    sep = parent.eyo.populateContextMenuFirst_(this) || sep
   }
   this.shouldSeparate(sep) // this algorithm needs more thinking
   if (this.insertSubmenu.getItemCount()) {
@@ -350,9 +350,9 @@ eYo.ID.HELP = 'HELP'
  * @param {!eYo.MenuManager} mgr The context menu manager.
  * @private
  */
-eYo.Delegate.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.Delegate.prototype.populateContextMenuFirst_ = function (mgr) {
   mgr.shouldSeparate()
-  mgr.populate_movable_parent(block)
+  mgr.populate_movable_parent(this.block_)
 }
 
 /**
@@ -401,7 +401,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
         function (event) {
           eYo.Events.setGroup(true)
           try {
-            block.eyo.unlock(block)
+            block.eyo.unlock()
           } catch (err) {
             console.error(err)
             throw err
@@ -417,7 +417,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
         function (event) {
           eYo.Events.setGroup(true)
           try {
-            block.eyo.lock(block)
+            block.eyo.lock()
           } catch (err) {
             console.error(err)
             throw err
@@ -469,7 +469,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
         eYo.Msg.COLLAPSE_BLOCK,
         {action: eYo.ID.COLLAPSE_BLOCK,
           target: block})
-      menuItem.setEnabled(block.eyo.getStatementCount(block) > 2)
+      menuItem.setEnabled(block.eyo.getStatementCount() > 2)
     }
     this.addChild(menuItem, true)
   }
@@ -1037,16 +1037,16 @@ eYo.MenuManager.prototype.populate_replace_parent = function (block, model) {
   var parent = block.getParent()
   if (parent && parent.type === model.type) {
     var eyo = block.eyo
-    var input = eyo.getParentInput(block)
+    var input = eyo.getParentInput()
     if (model.input && input.name !== model.input) {
       return false
     }
-    if (!eyo.wrapped_ || eyo.canUnwrap(block)) {
-      if (eyo.canReplaceBlock(block, parent)) {
+    if (!eyo.wrapped_ || eyo.canUnwrap()) {
+      if (eyo.canReplaceBlock(parent)) {
         var content = this.get_menuitem_content(model.type, input && input.name)
         if (content) {
           var MI = this.newMenuItem(content, function () {
-            eyo.replaceBlock(block, parent)
+            eyo.replaceBlock(parent)
           })
           this.addRemoveChild(MI)
           console.log(block.type, ' replace ', parent.type)
@@ -1093,7 +1093,7 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
       // create a closure that catches the value of the loop variable
       var T = type
       return function () {
-        action(block, T)
+        action(T)
       }
     }())
   }

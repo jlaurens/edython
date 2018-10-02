@@ -79,7 +79,7 @@ eYo.Block.prototype.appendInput_ = function (type, name) {
  */
 eYo.Block.prototype.setConnectionsHidden = function (hidden) {
   eYo.Block.superClass_.setConnectionsHidden.call(this, hidden)
-  this.eyo.setConnectionsHidden(this, hidden)
+  this.eyo.setConnectionsHidden(hidden)
 }
 
 /**

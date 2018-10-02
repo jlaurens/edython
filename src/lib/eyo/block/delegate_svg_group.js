@@ -166,7 +166,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuiteInput_ = function (io) {
         }
       }
     }
-    io.block.height = eYo.Font.lineHeight() * io.block.eyo.getStatementCount(io.block)
+    io.block.height = eYo.Font.lineHeight() * io.block.eyo.getStatementCount()
   }
   return true
 } /* eslint-enable indent */
@@ -204,7 +204,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuite_ = function (block) {
         }
       }
     }
-    block.height = eYo.Font.lineHeight() * this.getStatementCount(block)
+    block.height = eYo.Font.lineHeight() * this.getStatementCount()
     return true
   }
 }
@@ -223,12 +223,12 @@ eYo.DelegateSvg.Group.prototype.renderDrawInput_ = function (io) {
 /**
  * @param {!Blockly.Connection} c8n The connection to highlight.
  */
-eYo.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
+eYo.DelegateSvg.Group.prototype.highlightConnection = function (c8n) {
+  var steps
+  var block = c8n.sourceBlock_
   if (!block.workspace) {
     return
   }
-  var steps
-  block = c8n.sourceBlock_
   if (c8n.type === Blockly.INPUT_VALUE) {
     if (c8n.isConnected()) {
       steps = this.valuePathDef_(c8n.targetBlock())
@@ -423,8 +423,8 @@ eYo.DelegateSvg.Group.makeSubclass('while_part', {
  * @param {!Block} block
  * @private
  */
-eYo.DelegateSvg.Group.prototype.willRender_ = function (block) {
-  eYo.DelegateSvg.Group.superClass_.willRender_.call(this, block)
+eYo.DelegateSvg.Group.prototype.willRender_ = function () {
+  eYo.DelegateSvg.Group.superClass_.willRender_.call(this)
   var field = this.fields.async
   if (field) {
     field.setVisible(this.async_)
@@ -437,7 +437,8 @@ eYo.DelegateSvg.Group.prototype.willRender_ = function (block) {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   if (block.eyo.fields.async) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('async', 'eyo-code-reserved'),

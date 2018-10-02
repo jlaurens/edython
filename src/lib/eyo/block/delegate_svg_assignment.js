@@ -351,7 +351,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   var name = this.data.name.get()
   var variant_d = this.data.variant
   var variant = variant_d.get()
@@ -512,7 +513,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   var variant = this.data.variant
   const current = variant.get()
   var withTarget = current === variant.TARGET_EXPRESSIONS

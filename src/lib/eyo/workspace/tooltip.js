@@ -77,10 +77,11 @@ eYo.Tooltip.hideAll = function (el) {
 
 /**
  * Add tooltip to a block
- * @param {!Blockly.Block} block Block target of the tooltip.
+ * @param {!String} key
  */
-eYo.DelegateSvg.prototype.addTooltip = function (block, key) {
+eYo.DelegateSvg.prototype.addTooltip = function (key) {
   var options = eYo.Tooltip.options
+  var block = this.block_
   goog.mixin(options, {
     onShow(instance) {
       block.svgGroup_ && block.svgGroup_.parentNode && eYo.Tooltip.hideAll(block.svgGroup_.parentNode)

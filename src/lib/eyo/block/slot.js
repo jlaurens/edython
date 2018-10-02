@@ -614,7 +614,11 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
       }
     }
     var target = c8n.targetBlock()
-    target && target.eyo.consolidate.apply(target.eyo, arguments)
+    if (target) {
+      var eyo = target.eyo
+      eyo.setIncog(this.isIncog())
+      eyo.consolidate.apply(eyo, arguments)
+    }
   }
 }
 

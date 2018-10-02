@@ -586,7 +586,7 @@ eYo.Consolidator.List.prototype.doFinalize = function (io) {
  * @param {Object} io, parameters....
  */
 eYo.Consolidator.List.prototype.getIO = function (block) {
-  var unwrapped = block.eyo.getUnwrapped(block)
+  var unwrapped = block.eyo.getUnwrapped()
   var io = {
     block: block,
     noLeftSeparator: block.workspace && (block.workspace.eyo.options.noLeftSeparator ||

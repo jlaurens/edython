@@ -47,9 +47,9 @@ Blockly.Events.Change.prototype.run = function (forward) {
   switch (this.element) {
   case eYo.Const.Event.locked:
     if (value) {
-      block.eyo.lock(block)
+      block.eyo.lock()
     } else {
-      block.eyo.unlock(block)
+      block.eyo.unlock()
     }
     break
   default:

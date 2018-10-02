@@ -115,8 +115,8 @@ eYo.DelegateSvg.Expr.argument_list_comprehensive.makeSubclass('print_argument_li
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-eYo.DelegateSvg.Expr.builtin__print_expr.prototype.getMenuTarget = function (block) {
-  return block
+eYo.DelegateSvg.Expr.builtin__print_expr.prototype.getMenuTarget = function () {
+  return this.block_
 }
 
 /**
@@ -125,7 +125,8 @@ eYo.DelegateSvg.Expr.builtin__print_expr.prototype.getMenuTarget = function (blo
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   var list = block.getInput(eYo.Key.ARGUMENTS).connection.targetBlock()
   var c10r = list.eyo.consolidator
   var yorn = false
@@ -194,8 +195,9 @@ eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (b
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-eYo.DelegateSvg.Expr.builtin__print_expr.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var yorn = eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_(block, mgr)
+eYo.DelegateSvg.Expr.builtin__print_expr.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
+  var yorn = eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_(mgr)
   return eYo.DelegateSvg.Expr.builtin__print_expr.superClass_.populateContextMenuFirst_.apply(this, arguments) || yorn
 }
 
@@ -215,8 +217,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('builtin__print_stmt', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-eYo.DelegateSvg.Stmt.builtin__print_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var yorn = eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_(block, mgr)
+eYo.DelegateSvg.Stmt.builtin__print_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
+  var yorn = eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_(mgr)
   return eYo.DelegateSvg.Stmt.builtin__print_stmt.superClass_.populateContextMenuFirst_.apply(this, arguments) || yorn
 }
 

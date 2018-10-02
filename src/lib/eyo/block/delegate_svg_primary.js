@@ -367,9 +367,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       ],
       init: eYo.Key.NONE,
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        if ([this.CALL_EXPR, this.SLICING, this.ALIASED].indexOf(newValue) >= 0) {
-          this.data.annotation.set(eYo.Key.NONE)
-          this.data.definition.set(eYo.Key.NONE)
+        if (newValue !== this.NONE) {
+          this.owner.annotation_p = eYo.Key.NONE
+          this.owner.definition_p = eYo.Key.NONE
         }
         this.isChanging(oldValue, newValue)
       },
@@ -383,6 +383,11 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         } else {
           this.set(this.NONE)
         }
+      },
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
+        this.nameType_ = eYo.Do.typeOfString(newValue)
+        this.data.subtype.set(this.nameType_.raw)
       },
       xml: false
     },
@@ -1036,7 +1041,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function (profile) {
  */
 eYo.DelegateSvg.Expr.primary.prototype.getSubtype = function () {
   this.getType()
-  return this.data.subtype.get()
+  return this.subtype_p
 }
 
 /**
@@ -1047,8 +1052,8 @@ eYo.DelegateSvg.Expr.primary.prototype.getSubtype = function () {
  * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
  * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
  */
-eYo.DelegateSvg.Expr.primary.prototype.getInput = function (block, name) {
-  var input = eYo.DelegateSvg.Expr.primary.superClass_.getInput.call(this, block, name)
+eYo.DelegateSvg.Expr.primary.prototype.getInput = function (name) {
+  var input = eYo.DelegateSvg.Expr.primary.superClass_.getInput.call(this, name)
   if (!input) {
     // we suppose that ary is set
     var f = function (slot) {
@@ -1091,140 +1096,6 @@ eYo.DelegateSvg.Stmt.pre_call_stmt.makeSubclass('call_stmt', {
     }
   }
 }, eYo.DelegateSvg.Stmt)
-
-/**
- * Class for a DelegateSvg, base call block.
- * As call is already a reserved message in javascript,
- * we use call_expr instead.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Expr.makeSubclass('base_call_expr', {
-  data: {
-    callerFlag: {
-      order: 100,
-      init: false, // true iff `foo` is expected instead of `foo(…)`
-      xml: {
-        save: /** @suppress {globalThis} */ function (element) {
-          if (this.get()) {
-            element.setAttribute('caller', 'true')
-          }
-        },
-        load: /** @suppress {globalThis} */ function (element) {
-          var attr = element.getAttribute('caller')
-          this.set(attr && attr === 'true')
-        }
-      },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.synchronize(newValue)
-        this.owner.slots.arguments.setIncog(newValue)
-      },
-    },
-    ary: {
-      order: 200,
-      init: Infinity,
-      validate: /** @suppress {globalThis} */ function (newValue) {
-        var validated
-        if (goog.isString(newValue)) {
-          if (newValue.length) {
-            validated = Math.max(0, Math.floor(Number(newValue)))
-          } else {
-            validated = Infinity
-          }
-        } else {
-          validated = Math.max(0, Math.floor(newValue))
-        }
-        return {validated: validated}
-      },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.synchronize(newValue)
-        var callerFlag_d = this.data.callerFlag
-        var caller = callerFlag_d && callerFlag_d.get()
-        this.owner.slots.arguments.setIncog(caller)
-      },
-      willChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        // First change the ary of the arguments list, then change the ary of the delegate.
-        // That way undo events are recorded in the correct order.
-        var input = this.owner.slots.arguments.input
-        if (input && input.connection) {
-          var target = input.connection.targetBlock()
-          if (target) {
-            target.eyo.data.ary.set(newValue)
-          }
-        }
-      },
-      xml: {
-        save: /** @suppress {globalThis} */ function (element) {
-          var ary = this.get()
-          if (ary < Infinity) {
-            element.setAttribute('ary', ary)
-          }
-        }
-      }
-    },
-    parent: {
-      order: 50,
-      validate: /** @suppress {globalThis} */ function (newValue) {
-        var type = eYo.Do.typeOfString(newValue)
-        return type.raw === eYo.T3.Expr.builtin__name
-        || type.expr === eYo.T3.Expr.identifier
-        || type.expr === eYo.T3.Expr.dotted_name
-        ? {validated: newValue} : null
-        // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
-      },
-      consolidate: /** @suppress {globalThis} */ function () {
-        this.didChange(undefined, this.get())
-      },
-      synchronize: true
-    },
-    mandatory: {
-      order: 200,
-      noUndo: true,
-      xml: false,
-      validate: /** @suppress {globalThis} */ function (newValue) {
-        return goog.isNumber(newValue) && newValue > 0 ? {validated: Math.floor(newValue)} : null
-      },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.synchronize(newValue)
-        var slot = this.owner.slots.unary
-        slot && (slot.input.connection.eyo.variantal_ = this.get())
-      },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.didChange(oldValue, newValue)
-        var input = this.owner.slots.arguments.input
-        if (input && input.connection) {
-          var target = input.connection.targetBlock()
-          if (target) {
-            target.eyo.data.mandatory.set(newValue)
-          }
-        }
-      }
-    }
-  },
-  slots: {
-    parent: {
-      order: 50,
-      fields: {
-        bind: {
-          validate: true,
-          endEditing: true,
-          placeholder: eYo.Msg.Placeholder.IDENTIFIER
-        }
-      }
-    },
-    arguments: {
-      order: 1000,
-      fields: {
-        start: '(',
-        end: ')'
-      },
-      wrap: eYo.T3.Expr.argument_list
-    }
-  },
-  output: {
-    check: [eYo.T3.Expr.call_expr]
-  }
-})
 
 /**
  * Class for a DelegateSvg, call statement block.

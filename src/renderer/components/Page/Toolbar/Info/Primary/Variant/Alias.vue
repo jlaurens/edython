@@ -7,7 +7,6 @@
     name: 'info-primary-variant-alias',
     data () {
       return {
-        dataKey: 'variant-alias',
         alias_: undefined
       }
     },
@@ -19,31 +18,21 @@
     },
     computed: {
       id () {
-        return 'eyo-info-' + this.dataKey
+        return 'eyo-info-variant-alias'
       },
       alias: {
         get () {
-          console.warn('GET:', this.alias_)
-          if (!this.alias_) {
-            this.alias_ = this.blockAlias
-          }
-          return this.alias_
+          return this.alias_ === this.eyo.alias_p
+            ? this.alias_
+            : (this.alias_ = this.eyo.alias_p)
         },
         set (newValue) {
-          console.warn('SET:', newValue)
-          this.blockAlias = newValue
-          this.alias_ = newValue
-        }
-      },
-      blockAlias: {
-        get () {
-          return this.eyo.data.alias.value_
-        },
-        set (newValue) {
-          this.eyo.data.alias.change(newValue)
-          this.render()
+          this.alias_ = this.eyo.alias_p = newValue
         }
       }
+    },
+    created () {
+      this.alias_ = this.eyo.alias_p
     }
   }
 </script>

@@ -191,7 +191,7 @@ eYo.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
       this.eyo.constructor.onStartEditing.call(this)
     }
   }
-  block.eyo.startEditingField && block.eyo.startEditingField(block, this)
+  block.eyo.startEditingField && block.eyo.startEditingField(this)
   this.render_()
   block.render()
   this.workspace_ = block.workspace
@@ -282,7 +282,7 @@ eYo.FieldTextInput.prototype.widgetDispose_ = function () {
             field.eyo.constructor.onEndEditing.call(field)
           }
         }
-        block.eyo.endEditingField && block.eyo.endEditingField(block, field)
+        block.eyo.endEditingField && block.eyo.endEditingField(field)
         if (field.eyo.grouper_) {
           eYo.Events.setGroup(false)
           delete field.eyo.grouper_

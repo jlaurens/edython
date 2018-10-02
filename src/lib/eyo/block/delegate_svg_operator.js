@@ -288,8 +288,8 @@ eYo.DelegateSvg.Operator.prototype.makeTitle = /* function (block, op) {
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-eYo.DelegateSvg.Operator.prototype.getMenuTarget = function (block) {
-  return block
+eYo.DelegateSvg.Operator.prototype.getMenuTarget = function () {
+  return this.block_
 }
 
 /**
@@ -298,7 +298,8 @@ eYo.DelegateSvg.Operator.prototype.getMenuTarget = function (block) {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   var yorn = mgr.populateProperties(block, 'operator')
   return eYo.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
 }

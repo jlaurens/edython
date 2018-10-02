@@ -80,9 +80,9 @@ eYo.DelegateSvg.Control.prototype.shapePathDef_ =
     eYo.DelegateSvg.Control.prototype.highlightPathDef_ =
       eYo.DelegateSvg.Control.prototype.controlPathDef_
 
-eYo.DelegateSvg.Control.prototype.willRender_ = function (block) {
-  eYo.DelegateSvg.Control.superClass_.willRender_.call(this, block)
-  block.width = Math.max(block.width, 2 * eYo.Font.tabWidth)
+eYo.DelegateSvg.Control.prototype.willRender_ = function () {
+  eYo.DelegateSvg.Control.superClass_.willRender_.call(this, )
+  this.block_.width = Math.max(this.block_.width, 2 * eYo.Font.tabWidth)
 }
 
 /**

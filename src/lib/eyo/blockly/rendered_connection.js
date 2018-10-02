@@ -320,12 +320,12 @@ eYo.ConnectionDelegate.prototype.getConnectionBelow = function () {
  * and so on.
  * If the connection is named, returns the connection, whatever its source block
  * status may be.
- * @param F optional function defaults to !argument.eyo.isWhite(argument)
+ * @param F optional function defaults to !argument.eyo.isWhite()
  * @return a connection, possibly undefined
  */
 eYo.ConnectionDelegate.prototype.getBlackConnection = function (F) {
   F = F || function (block) {
-    return !block.eyo.isWhite(block)
+    return !block.eyo.isWhite()
   }
   var c8n = this.connection
   var block = c8n.getSourceBlock()
@@ -361,7 +361,7 @@ eYo.ConnectionDelegate.prototype.getBlackTargetConnection = function () {
     return undefined
   }
   var block = c8n.getSourceBlock()
-  if (!block.eyo.isWhite(block)) {
+  if (!block.eyo.isWhite()) {
     return c8n
   }
   if (c8n.eyo.isPrevious()) {
@@ -381,7 +381,7 @@ eYo.ConnectionDelegate.prototype.getBlackTargetConnection = function () {
     !(block = c8n.getSourceBlock())) {
       return undefined
     }
-    if (!block.eyo.isWhite(block)) {
+    if (!block.eyo.isWhite()) {
       return c8n
     }
   } while (true)
@@ -415,7 +415,7 @@ eYo.Connection.prototype.eyo = undefined
 Blockly.RenderedConnection.prototype.highlight = function () {
   var block = this.getSourceBlock()
   if (block && block.eyo) {
-    block.eyo.highlightConnection(block, this)
+    block.eyo.highlightConnection(this)
     return
   }
   Blockly.RenderedConnection.superClass_.highlight.call(this)
@@ -1066,6 +1066,6 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
   var dy = this.targetConnection.y_ - this.y_;
   if (dx != 0 || dy != 0) {
     var block = this.targetBlock();
-    block.eyo.setOffset(block, -dx, -dy);
+    block.eyo.setOffset(-dx, -dy);
   }
 };

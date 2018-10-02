@@ -893,7 +893,7 @@ eYo.Xml.fromDom = function (block, element) {
       if (eyo instanceof eYo.DelegateSvg.List) {
         eYo.Do.forEachElementChild(element, function (child) {
           var name = child.getAttribute(eYo.XmlKey.SLOT)
-          var input = eyo.getInput(block, name)
+          var input = eyo.getInput(name)
           if (input) {
             if (input.connection) {
               var target = input.connection.targetBlock()
@@ -936,7 +936,7 @@ eYo.Xml.fromDom = function (block, element) {
     }
     var state = xmlBlock.getAttribute(eYo.Xml.STATE)
     if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
-      eyo.lock(block)
+      eyo.lock()
     }
     // this block have been created from untrusted data
     // We might need to fix some stuff before returning

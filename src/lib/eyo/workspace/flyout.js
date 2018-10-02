@@ -235,7 +235,7 @@ eYo.Flyout.prototype.show = function(model) {
         var block = eYo.DelegateSvg.newBlockReady(this.workspace_, xml)
         contents.push({type: 'block', block: block})
         block.render()
-        block.eyo.addTooltip(block, xml.title || (xml.data && xml.data.main) || xml.data)
+        block.eyo.addTooltip(xml.title || (xml.data && xml.data.main) || xml.data)
         gaps.push(default_gap)
       } catch (err) {
         console.error(xml, err)

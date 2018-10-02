@@ -346,7 +346,8 @@ eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr)
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_.call(this, block, mgr)
   eYo.DelegateSvg.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this, block, mgr)
   return true

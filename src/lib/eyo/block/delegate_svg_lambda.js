@@ -308,7 +308,8 @@ eYo.DelegateSvg.List.makeSubclass('parameter_list', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   var e8r = block.eyo.inputEnumerator()
   var F = function (modifier, flags, msg) {
     var BB

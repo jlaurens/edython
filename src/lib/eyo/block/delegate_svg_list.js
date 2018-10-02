@@ -27,27 +27,16 @@ eYo.DelegateSvg.Expr.makeSubclass('List', {
 }, eYo.DelegateSvg)
 
 /**
- * Will render the block.
- * @param {!Block} block
- * @private
- */
-eYo.DelegateSvg.List.prototype.willRender_ = function (block) {
-  eYo.DelegateSvg.List.superClass_.willRender_.call(this, block)
-  this.consolidate()
-}
-
-/**
  * Fetches the named input object, getInput.
- * @param {!Block} block
  * @param {String} name The name of the input.
  * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
  * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
  */
-eYo.DelegateSvg.List.prototype.getInput = function (block, name, dontCreate) {
-  var input = eYo.DelegateSvg.List.superClass_.getInput.call(this, block, name)
+eYo.DelegateSvg.List.prototype.getInput = function (name, dontCreate) {
+  var input = eYo.DelegateSvg.List.superClass_.getInput.call(this, name)
   if (!input) {
     this.createConsolidator()
-    input = this.consolidator.getInput(block, name, dontCreate)
+    input = this.consolidator.getInput(this.block_, name, dontCreate)
   }
   return input
 }

@@ -127,7 +127,8 @@ eYo.DelegateSvg.Stmt.except_part.prototype.getType = eYo.Decorate.onChangeCount(
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   var M = this.data.variant.model
   var current = block.eyo.data.variant.get()
   var F = function (content, k) {
@@ -234,7 +235,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   var M = this.data.variant.model
   var current = this.data.variant.get()
   var F = function (content, k) {
@@ -317,7 +319,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   var current = block.eyo.data.variant.get()
   var F = function (content, key) {
     var menuItem = mgr.newMenuItem(content, function () {

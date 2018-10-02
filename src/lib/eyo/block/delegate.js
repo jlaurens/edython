@@ -1209,7 +1209,7 @@ eYo.Delegate.prototype.hasNextStatement_ = function (block) {
  * @param {!Blockly.Block} block
  * @param {boolean} hidden True if connections are hidden.
  */
-eYo.Delegate.prototype.setConnectionsHidden = function (block, hidden) {
+eYo.Delegate.prototype.setConnectionsHidden = function (hidden) {
 }
 
 /**
@@ -1299,9 +1299,8 @@ eYo.Delegate.prototype.doMakeBlockWrapped = function () {
 /**
  * The default implementation is false.
  * Subclassers will override this but won't call it.
- * @param {!Block} block
  */
-eYo.Delegate.prototype.canUnwrap = function (block) {
+eYo.Delegate.prototype.canUnwrap = function () {
   return false
 }
 
@@ -1347,8 +1346,8 @@ eYo.Delegate.prototype.makeBlockUnwrapped_ = function (block) {
  * @return yorn whether a change has been made
  * @private
  */
-eYo.Delegate.prototype.getUnwrapped = function (block) {
-  var parent = block
+eYo.Delegate.prototype.getUnwrapped = function () {
+  var parent = this.block_
   do {
     if (!parent.eyo.wrapped_) {
       break
@@ -1410,7 +1409,7 @@ eYo.Delegate.prototype.plugged_ = undefined
  * @param {!Block} block
  * @param {!Block} other the block to be replaced
  */
-eYo.Delegate.prototype.canReplaceBlock = function (block, other) {
+eYo.Delegate.prototype.canReplaceBlock = function (other) {
   return false
 }
 
@@ -1444,8 +1443,8 @@ eYo.Delegate.prototype.removeInput = function (block, input, opt_quiet) {
  * @param {!Blockly.Block} block The owner of the delegate.
  * @return an input.
  */
-eYo.Delegate.prototype.getParentInput = function (block) {
-  var c8n = block.outputConnection
+eYo.Delegate.prototype.getParentInput = function () {
+  var c8n = this.block_.outputConnection
   if (c8n && (c8n = c8n.targetConnection)) {
     var list = c8n.sourceBlock_.inputList
     for (var i = 0, input; (input = list[i++]);) {
@@ -1463,7 +1462,7 @@ eYo.Delegate.prototype.getParentInput = function (block) {
  * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
  * @return {Number}.
  */
-eYo.Delegate.prototype.getStatementCount = function (block) {
+eYo.Delegate.prototype.getStatementCount = function () {
   var n = 1
   var hasActive = false
   var hasNext = false
@@ -1474,8 +1473,8 @@ eYo.Delegate.prototype.getStatementCount = function (block) {
       if (c8n.isConnected()) {
         var target = c8n.targetBlock()
         do {
-          hasActive = hasActive || (!target.disabled && !target.eyo.isWhite(target))
-          n += target.eyo.getStatementCount(target)
+          hasActive = hasActive || (!target.disabled && !target.eyo.isWhite())
+          n += target.eyo.getStatementCount()
         } while ((target = target.getNextBlock()))
       }
     }
@@ -1506,7 +1505,7 @@ eYo.Delegate.prototype.isWhite = function (block) {
  * @return None
  */
 eYo.Delegate.prototype.getNextConnection = function (block) {
-  while (block.eyo.isWhite(block)) {
+  while (block.eyo.isWhite()) {
     var c8n
     if (!(c8n = block.previousConnection) || !(block = c8n.targetBlock())) {
       return undefined
@@ -1523,7 +1522,7 @@ eYo.Delegate.prototype.getNextConnection = function (block) {
  * @return None
  */
 eYo.Delegate.prototype.getPreviousConnection = function (block) {
-  while (block.eyo.isWhite(block)) {
+  while (block.eyo.isWhite()) {
     var c8n
     if (!(c8n = block.nextConnection) || !(block = c8n.targetBlock())) {
       return undefined
@@ -1590,7 +1589,7 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
                   break
                 }
               }
-            } else if (!target.eyo.isWhite(target)) {
+            } else if (!target.eyo.isWhite()) {
               // the black connection is reached, no need to go further
               // but the next may have change and the checkType_ must
               // be computed once again
@@ -1625,7 +1624,7 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
                   break
                 }
               }
-            } else if (!target.eyo.isWhite(target)) {
+            } else if (!target.eyo.isWhite()) {
               // the black connection is reached, no need to go further
               // but the next may have change and the checkType_ must
               // be computed once again
