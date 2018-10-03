@@ -154,7 +154,7 @@ eYo.FlyoutCategory = {
     {
       type: eYo.T3.Expr.identifier,
       data: {
-        variant: eYo.Key.NAME_ALIAS
+        variant: eYo.Key.ALIASED
       }
     },
     eYo.T3.Stmt.docstring_stmt,
@@ -548,7 +548,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.identifier,
       data: {
         name: 'sep',
-        variant: eYo.Key.NAME_DEFINITION
+        definition: eYo.Key.DEFINED
       },
       slots: {
         definition: 'None'
@@ -559,7 +559,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.identifier,
       data: {
         name: 'maxsplit',
-        variant: eYo.Key.NAME_DEFINITION
+        definition: eYo.Key.DEFINED
       },
       slots: {
         definition: -1

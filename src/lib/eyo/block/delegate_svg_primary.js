@@ -296,13 +296,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           this.owner.dotted_p = 0
           this.owner.variant_p = eYo.Key.NONE
         }
-      },
-      synchronize: function (newValue) {
-        var slot = this.owner.slots.annotation
-        if (slot) {
-          slot.required = newValue !== this.NONE
-          slot.setIncog()
-        }
+        var slot = this.slot
+        slot.required = newValue !== this.NONE
+        slot.setIncog()
       },
       xml: {
         save: function (el) {
@@ -337,13 +333,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           this.owner.dotted_p = 0
           this.owner.variant_p = this.NONE
         }
-      },
-      synchronize: function (newValue) {
-        var slot = this.owner.slots.definition
-        if (slot) {
-          slot.required = newValue !== this.NONE
-          slot.setIncog()
-        }
+        var slot = this.slot
+        slot.required = newValue !== this.NONE
+        slot.setIncog()
       },
       xml: {
         save: function (el) {
@@ -388,12 +380,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.didChange(oldValue, newValue)
         this.nameType_ = eYo.Do.typeOfString(newValue)
         this.data.subtype.set(this.nameType_.raw)
-      },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.synchronize(newValue)
         this.owner.slots.arguments.setIncog(newValue !== this.CALL_EXPR)
         this.owner.slots.slicing.setIncog(newValue !== this.SLICING)
         this.owner.slots.alias.setIncog(newValue !== this.ALIASED)
+        if (newValue !== this.NONE) {
+          this.data.definition.setIncog(true)
+          this.data.annotation.setIncog(true)
+        }
       },
       xml: false
     },

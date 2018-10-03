@@ -134,7 +134,7 @@
             key: 'ANNOTATED_DEFINED',
             action (eyo) {
               eyo.annotation_p = eYo.Key.ANNOTATED
-              eyo.definition_p = eYo.Key.ANNOTATED_DEFINED
+              eyo.definition_p = eYo.Key.DEFINED
             }
           }
         }

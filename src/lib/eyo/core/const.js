@@ -150,18 +150,12 @@ eYo.Key = {
   // model variants keys
   NAME: 'name',
   DOTTED_NAME: 'dotted_name',
-  NAME_DEFINITION: 'name_definition',
-  NAME_ALIAS: 'name_alias',
   STAR: 'star',
   STAR_NAME: 'star_name',
   STAR_STAR_NAME: 'star_star_name',
-  NAME_ANNOTATION: 'name_annotation',
-  STAR_NAME_ANNOTATION: 'star_name_annotation',
-  NAME_ANNOTATION_DEFINITION: 'name_annotation_definition',
   ALIASED: 'as_alias',
   ANNOTATED: 'annotated',
   DEFINED: 'defined',
-  ANNOTATED_DEFINED: 'annotated_defined',
   
   BUILTIN: 'builtin',
   EXPRESSION: 'expression',
