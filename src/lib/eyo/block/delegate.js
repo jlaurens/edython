@@ -925,34 +925,38 @@ eYo.Delegate.prototype.setDataWithType = function (type) {
  */
 eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
   var done = false
-  var data_in = model.data
-  if (goog.isString(data_in)) {
-    var d = this.data.main || this.headData
-    if (d && d.validate(data_in)) {
-      d.set(data_in)
-      done = true
-    }
-  } else if (goog.isDef(data_in)) {
-    this.foreachData(function () {
-      var k = this.key
-      if (eYo.Do.hasOwnProperty(data_in, k)) {
-        this.set(data_in[k])
-        done = true
-      }
-    })
-    if (!noCheck) {
-      for (var k in data_in) {
-        if (eYo.Do.hasOwnProperty(data_in, k)) {
-          var D = this.data[k]
-          if (!D) {
-            console.warn('Unused data:', this.block_.type, k, data_in[k])
+  this.changeWrap(
+    function () {
+      var data_in = model.data
+      if (goog.isString(data_in)) {
+        var d = this.data.main || this.headData
+        if (d && d.validate(data_in)) {
+          d.set(data_in)
+          done = true
+        }
+      } else if (goog.isDef(data_in)) {
+        this.foreachData(function () {
+          var k = this.key
+          if (eYo.Do.hasOwnProperty(data_in, k)) {
+            this.set(data_in[k])
+            done = true
+          }
+        })
+        if (!noCheck) {
+          for (var k in data_in) {
+            if (eYo.Do.hasOwnProperty(data_in, k)) {
+              var D = this.data[k]
+              if (!D) {
+                console.warn('Unused data:', this.block_.type, k, data_in[k])
+              }
+            }
           }
         }
-      }
+      } else {
+        done = true
+      }    
     }
-  } else {
-    done = true
-  }
+  )
   return done
 }
 

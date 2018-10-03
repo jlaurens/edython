@@ -384,10 +384,16 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           this.set(this.NONE)
         }
       },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.synchronize(newValue)
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         this.nameType_ = eYo.Do.typeOfString(newValue)
         this.data.subtype.set(this.nameType_.raw)
+      },
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
+        this.owner.slots.arguments.setIncog(newValue !== this.CALL_EXPR)
+        this.owner.slots.slicing.setIncog(newValue !== this.SLICING)
+        this.owner.slots.alias.setIncog(newValue !== this.ALIASED)
       },
       xml: false
     },
@@ -447,14 +453,15 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
         return {validated: validated}
       },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         // First change the ary of the arguments list, then change the ary of the delegate.
         // That way undo events are recorded in the correct order.
+        this.didChange(oldValue, newValue)
         var input = this.owner.slots.arguments.input
         if (input && input.connection) {
           var target = input.connection.targetBlock()
           if (target) {
-            target.eyo.data.ary.set(newValue)
+            target.eyo.ary_p = newValue
           }
         }
       },
@@ -478,12 +485,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       validate: /** @suppress {globalThis} */ function (newValue) {
         return goog.isNumber(newValue) && newValue > 0 ? {validated: Math.floor(newValue)} : null
       },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         var input = this.owner.slots.arguments.input
         if (input && input.connection) {
           var target = input.connection.targetBlock()
           if (target) {
-            target.eyo.data.mandatory.set(newValue)
+            target.eyo.mandatory_p = newValue
           }
         }
       },
@@ -630,10 +638,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         end: ')'
       },
       wrap: eYo.T3.Expr.argument_list_comprehensive,
-      consolidate: /** @suppress {globalThis} */ function () {
-        this.setIncog(this.owner.variant_p !== eYo.Key.CALL_EXPR)
-        this.consolidate()
-      },
       validateIncog: /** @suppress {globalThis} */ function (newValue) {
         return this.owner.variant_p !== eYo.Key.CALL_EXPR
       }
@@ -645,10 +649,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         end: ']'
       },
       wrap: eYo.T3.Expr.slice_list,
-      consolidate: /** @suppress {globalThis} */ function () {
-        this.setIncog(this.owner.variant_p !== eYo.Key.SLICING)
-        this.consolidate()
-      },
       validateIncog: /** @suppress {globalThis} */ function (newValue) {
         return this.owner.variant_p !== eYo.Key.SLICING
       }
@@ -663,10 +663,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           endEditing: true,
           variable: true
         }
-      },
-      consolidate: /** @suppress {globalThis} */ function () {
-        this.setIncog(this.owner.variant_p !== eYo.Key.ALIASED)
-        this.consolidate()
       },
       validateIncog: /** @suppress {globalThis} */ function (newValue) {
         return this.owner.variant_p !== eYo.Key.ALIASED

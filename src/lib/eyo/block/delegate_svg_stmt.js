@@ -580,7 +580,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
-eYo.DelegateSvg.Stmt.any_stmt.prototype.isWhite = function (block) {
+eYo.DelegateSvg.Stmt.any_stmt.prototype.isWhite = function () {
   return this.data.variant.get() === this.data.variant.model.COMMENT
 }
 
