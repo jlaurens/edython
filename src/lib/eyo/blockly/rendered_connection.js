@@ -241,8 +241,6 @@ eYo.ConnectionDelegate.prototype.didDisconnect = function (oldTargetC8n) {
 /**
  * Set the receiver's connection's check_ array according to the given type.
  * The defaults implements asks the model then sets the check_ property.
- * @param {!String} type
- * @param {?String} subtype
  */
 eYo.ConnectionDelegate.prototype.updateCheck = function () {
   if (this.model.check) {

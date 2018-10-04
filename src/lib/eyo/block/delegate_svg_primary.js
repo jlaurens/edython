@@ -202,8 +202,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           this.data.annotation.change(eYo.Key.NONE)
           this.data.definition.change(eYo.Key.NONE)
         }
-        var p = this.owner.getProfile()
-        this.data.subtype.set(p.tos && p.tos.raw)
+        this.owner.updateProfile()
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Expr.attributeref) {
@@ -246,8 +245,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var p = this.owner.getProfile()
-        this.data.subtype.set(p.tos && p.tos.raw)
+        this.owner.updateProfile()
       },
       synchronize: true,
       xml: {
@@ -387,8 +385,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var p = this.owner.getProfile()
-        this.data.subtype.set(p.tos && p.tos.raw)
+        this.owner.updateProfile()
         this.owner.arguments_s.setIncog(newValue !== this.CALL_EXPR)
         this.owner.slicing_s.setIncog(newValue !== this.SLICING)
         this.owner.alias_s.setIncog(newValue !== this.ALIASED)
@@ -413,8 +410,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var p = this.owner.getProfile()
-        this.data.subtype.set(p.tos && p.tos.raw)
+        this.owner.updateProfile()
+        var p = this.owner.profile_p
         if (p.tos && p.tos.model) {
           this.owner.ary_p = -1 // will be validated below
           this.owner.mandatory_p = -1 // will be validated below
@@ -438,8 +435,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         eYo.T3.Expr.custom_dotted_name,
         eYo.T3.Expr.custom_parent_module
       ],
-      noUndo: true,
-      xml: false
+      noUndo: true
     },
     ary: {
       order: 20001,
@@ -447,7 +443,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       validate: /** @suppress {globalThis} */ function (newValue) {
         // returns a `Number` or `Infinity`
         var validated
-        var p = this.owner.getProfile()
+        this.owner.updateProfile()
+        var p = this.owner.profile_p
         var model = p.tos && p.tos.model
         if (model) {
           validated = goog.isDef(model.ary) ? model.ary : Infinity
@@ -491,7 +488,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       validate: /** @suppress {globalThis} */ function (newValue) {
         // returns a `Number` or `Infinity`
         var validated
-        var p = this.owner.getProfile()
+        var p = this.owner.profile_p
         var model = p.tos && p.tos.model
         if (model) {
           if (goog.isDef(model.mandatory)) {
@@ -547,14 +544,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       check: eYo.T3.Expr.Check.primary,
       didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
-        var eyo = this.sourceBlock_.eyo
-        var p = eyo.getProfile()
-        eyo.data.subtype.set(p.tos && p.tos.raw)
+        this.sourceBlock_.eyo.owner.updateProfile()
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
-        var eyo = this.sourceBlock_.eyo
-        var p = eyo.getProfile()
-        eyo.data.subtype.set(p.tos && p.tos.raw)
+        this.sourceBlock_.eyo.owner.updateProfile()
       },
       hole_value: eYo.Msg.Placeholder.PRIMARY,
       xml: {
@@ -587,7 +580,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           || variant === variant_d.SLICING) {
           return eYo.T3.Expr.Check.primary
         }
-        var profile = eyo.getProfile()
+        var profile = eyo.profile_p
         return profile.annotated
         ? eYo.T3.Expr.Check.expression
         : [
@@ -604,14 +597,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         ]
       },
       didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
-        var eyo = this.sourceBlock_.eyo
-        var p = eyo.getProfile()
-        eyo.data.subtype.set(p.tos && p.tos.raw)
+        this.sourceBlock_.eyo.owner.updateProfile()
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
-        var eyo = this.sourceBlock_.eyo
-        var p = eyo.getProfile()
-        eyo.data.subtype.set(p.tos && p.tos.raw)
+        this.sourceBlock_.eyo.owner.updateProfile()
       },
       plugged: eYo.T3.Expr.primary,
       hole_value: 'expression',
@@ -720,11 +709,11 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       // there is no validation here
       // simple cases first, variant based
       var eyo = this.connection.sourceBlock_.eyo
-      var profile = eyo.getProfile()
+      var profile = eyo.profile_p
       if (!profile) {
         console.warn('NO PROFILE, is it normal?')
         eyo.incrementChangeCount()
-        profile = eyo.getProfile()
+        profile = eyo.profile_p
         if (!profile) {
           console.error('NO PROFILE')
         }
@@ -771,13 +760,23 @@ eYo.DelegateSvg.Expr.primary.prototype.initBlock = function () {
     'profile_p',
     {
       get () {
-        return this.profile_
+        return this.profile_ === this.getProfile()
+          ? this.profile_
+          : (this.profile_ = this.getProfile()) // this should never happen
       },
       set (newValue) {
         this.profile_ = newValue
       }
     }
   )
+}
+
+/**
+ * updateProfile.
+ */
+eYo.DelegateSvg.Expr.primary.prototype.updateProfile = function () {
+  this.profile_p = this.getProfile()
+  this.data.subtype.set(this.profile_p.tos && this.profile_p.tos.raw)
 }
 
 /**
@@ -824,8 +823,8 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
           slot: type,
           target: target
         }
-        if (eyo.getProfile) {
-          var p = eyo.getProfile()
+        var p = eyo.profile_p
+        if (p) {
           ans.identifier = p.identifier
           ans.module = p.module
         }
@@ -862,8 +861,8 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
             slot: type,
             target: target
           }
-          if (eyo.getProfile) {
-            p = eyo.getProfile()
+          p = eyo.profile_p
+          if (p) {
             var base = p.module
               ? p.module + '.' + p.identifier
               : p.identifier
@@ -912,15 +911,14 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
  * As side effect, the subtype is set.
  */
 eYo.DelegateSvg.Expr.primary.prototype.getBaseType = function () {
-  var profile = this.getProfile()
-  var check = this.getOutCheck(profile)
+  var check = this.getOutCheck(this.profile_p)
   return check[0]
 }
 
 /**
  * getOutCheck.
  * The check_ array of the output connection.
- * @param {!Object} getProfile
+ * @param {!Object} profile
  */
 eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function (profile) {
   // there is no validation here

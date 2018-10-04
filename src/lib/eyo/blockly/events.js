@@ -129,14 +129,14 @@ goog.require('eYo.Data')
  * NB the changeEnd method may disconnect
  *  1) normal flow
  *    a - the user asks for a data change
- *    b - the type and subtype change
+ *    b - the type change
  *    c - the connection check change triggering a disconnect block event
  *    d - the data change undo event is trigerred
  *    undo/redo stacks : [..., reconnect block, data undo change]/[]
  *  2) when undoing
  *    a - the user asks for an undo
  *    b - the data undo change is performed first
- *    c - the type and subtype change
+ *    c - the type change
  *    d - the connection check change but no undo event is recorded
  *        because no block has been connected nor disconnected meanwhile
  *    e - the data rechange is pushed to the redo stack
@@ -144,7 +144,7 @@ goog.require('eYo.Data')
  *    undo/redo stacks : [...]/[disconnect block, data rechange]
  *  3 ) when redoing
  *    a - blocks are disconnected and the reconnect event is pushed to the undo stack
- *    b - the data is rechanged, with type, subtype and connection checks.
+ *    b - the data is rechanged, with type and connection checks.
  *        No block is disconnected, no other move event is recorded.
  *    undo/redo stacks : [..., reconnect block, data undo change]/[]
  * This is the reason why we consolidate the type before the undo change is recorded.
