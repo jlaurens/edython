@@ -68,9 +68,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
       ],
       init: '',
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var subtypes = this.getAll()
-        var subtype = eYo.Do.typeOfString(newValue, null).expr
-        return ((subtypes.indexOf(subtype) >= 0) && {validated: newValue}) || null
+        var tos = eYo.Do.typeOfString(newValue, null)
+        return ((this.getAll().indexOf(tos.expr) >= 0) && {validated: newValue}) || null
       },
       synchronize: true
     }

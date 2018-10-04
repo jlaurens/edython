@@ -204,7 +204,6 @@ eYo.Delegate.prototype.doConsolidate = function (deep, force) {
   this.synchronizeSlots()
   // first the type
   this.consolidateType()
-  this.consolidateSubtype()
   // first the in state
   this.consolidateData()
   this.consolidateSlots(deep, force)
@@ -1114,27 +1113,6 @@ eYo.Delegate.prototype.consolidateInputs = function (deep, force) {
  */
 eYo.Delegate.prototype.consolidateType = function (type) {
   this.setupType(type || this.getType())
-}
-
-/**
- * Set the subtype of the delegate.
- * Default implementation does nothing
- * and should be overriden by subclassers.
- * @param {?string} optNewSubtype, 
- * @constructor
- */
-eYo.Delegate.prototype.setupSubtype = function (optNewSubtype) {
-  return
-}
-
-/**
- * Some blocks may change when their properties change.
- * For edython.
- * @param {?string} subtype Name of the new subtype
- *     type-specific functions for this block.
- */
-eYo.Delegate.prototype.consolidateSubtype = function (subtype) {
-  this.setupSubtype(subtype || this.getSubtype())
 }
 
 /**
