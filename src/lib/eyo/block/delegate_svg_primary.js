@@ -186,7 +186,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       validate: /** @suppress {globalThis} */ function (newValue) {
         return goog.isNumber(newValue)
         ? {
-          validated: newValue
+          validated: Math.floor(newValue)
         }
         : {}
       },
@@ -202,6 +202,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           this.data.annotation.change(eYo.Key.NONE)
           this.data.definition.change(eYo.Key.NONE)
         }
+        var p = this.owner.getProfile()
+        this.data.subtype.set(p.tos && p.tos.raw)
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Expr.attributeref) {
@@ -224,29 +226,28 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
             this.save(element)
           }
         }
-      }
+      },
+      synchronize: true
     },
     holder: {
       order: 201,
       init: '', // will be saved only when not built in
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var type = eYo.Do.typeOfString(newValue)
+        var tos = eYo.Do.typeOfString(newValue, null)
         return !newValue
-        || type.expr === eYo.T3.Expr.unset
-        || type.expr === eYo.T3.Expr.identifier
-        || type.expr === eYo.T3.Expr.builtin__name
-        || type.expr === eYo.T3.Expr.dotted_name
-        || type.expr === eYo.T3.Expr.attributeref
-        || type.expr === eYo.T3.Expr.parent_module
+        || tos.expr === eYo.T3.Expr.unset
+        || tos.expr === eYo.T3.Expr.identifier
+        || tos.expr === eYo.T3.Expr.builtin__name
+        || tos.expr === eYo.T3.Expr.dotted_name
+        || tos.expr === eYo.T3.Expr.attributeref
+        || tos.expr === eYo.T3.Expr.parent_module
         ? {validated: newValue} : null
         // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.holderType_ = eYo.Do.typeOfString(newValue)
-        var module = this.owner.dotted_p === 1 && newValue
-        this.nameType_ = eYo.Do.typeOfString(newValue, module)
-        this.data.subtype.set(this.nameType_.raw)
+        var p = this.owner.getProfile()
+        this.data.subtype.set(p.tos && p.tos.raw)
       },
       synchronize: true,
       xml: {
@@ -386,9 +387,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var module = this.owner.dotted_p === 1 && this.owner.holder_p
-        this.nameType_ = eYo.Do.typeOfString(newValue, module)
-        this.data.subtype.set(this.nameType_.raw)
+        var p = this.owner.getProfile()
+        this.data.subtype.set(p.tos && p.tos.raw)
         this.owner.arguments_s.setIncog(newValue !== this.CALL_EXPR)
         this.owner.slicing_s.setIncog(newValue !== this.SLICING)
         this.owner.alias_s.setIncog(newValue !== this.ALIASED)
@@ -413,21 +413,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var module
-        if (this.owner.dotted_p === 1) {
-          var target = this.owner.holder_s.targetBlock()
-          if (target) {
-            if (target.type === eYo.T3.Expr.identifier) {
-              module = target.eyo.name_p
-            }  
-          } else {
-            module = this.owner.holder_p
-          }
-        }
-        this.nameType_ = eYo.Do.typeOfString(newValue)
-        var subtype = this.nameType_.raw
-        this.data.subtype.set(subtype)
-        if (this.nameType_ && this.nameType_.model) {
+        var p = this.owner.getProfile()
+        this.data.subtype.set(p.tos && p.tos.raw)
+        if (p.tos && p.tos.model) {
           this.owner.ary_p = -1 // will be validated below
           this.owner.mandatory_p = -1 // will be validated below
         }
@@ -459,8 +447,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       validate: /** @suppress {globalThis} */ function (newValue) {
         // returns a `Number` or `Infinity`
         var validated
-        var nameType = this.data.name.nameType_
-        var model = nameType && nameType.model
+        var p = this.owner.getProfile()
+        var model = p.tos && p.tos.model
         if (model) {
           validated = goog.isDef(model.ary) ? model.ary : Infinity
         } else if (goog.isString(newValue)) {
@@ -503,8 +491,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       validate: /** @suppress {globalThis} */ function (newValue) {
         // returns a `Number` or `Infinity`
         var validated
-        var nameType = this.data.name.nameType_
-        var model = nameType && nameType.model
+        var p = this.owner.getProfile()
+        var model = p.tos && p.tos.model
         if (model) {
           if (goog.isDef(model.mandatory)) {
             validated = model.mandatory
@@ -560,22 +548,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       check: eYo.T3.Expr.Check.primary,
       didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
         var eyo = this.sourceBlock_.eyo
-        var module = eyo.dotted_p === 1 && eyo.holder_p
-        this.nameType_ = eYo.Do.typeOfString(
-          this.sourceBlock_.eyo.getIdentifier(),
-          module
-        )
-        eyo.data.subtype.set(this.nameType_.raw)
+        var p = eyo.getProfile()
+        eyo.data.subtype.set(p.tos && p.tos.raw)
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
-        var target = this.targetBlock()
-        if (target && target.type === this.$$.eYo.T3.Expr.identifier) {
-          this.nameType_ = eYo.Do.typeOfString(
-            this.sourceBlock_.eyo.getIdentifier(),
-            target.eyo.getIdentifier()
-          )
-          eyo.data.subtype.set(this.nameType_.raw)
-        }
+        var eyo = this.sourceBlock_.eyo
+        var p = eyo.getProfile()
+        eyo.data.subtype.set(p.tos && p.tos.raw)
       },
       hole_value: eYo.Msg.Placeholder.PRIMARY,
       xml: {
@@ -587,9 +566,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     dotted: {
       order: 75,
       fields: {
-        separator: {
+        bind: {
           value: '.',
-          css_class: 'eyo-code-reserved'
+          css_class: 'eyo-code-reserved',
+          separator: true
         }
       }
     },
@@ -625,22 +605,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
         var eyo = this.sourceBlock_.eyo
-        var module = eyo.dotted_p === 1 && eyo.holder_p
-        this.nameType_ = eYo.Do.typeOfString(
-          this.sourceBlock_.eyo.getIdentifier(),
-          module
-        )
-        eyo.data.subtype.set(this.nameType_.raw)
+        var p = eyo.getProfile()
+        eyo.data.subtype.set(p.tos && p.tos.raw)
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
-        var target = this.targetBlock()
-        if (target && target.type === this.$$.eYo.T3.Expr.identifier) {
-          this.nameType_ = eYo.Do.typeOfString(
-            this.sourceBlock_.eyo.getIdentifier(),
-            target.eyo.getIdentifier()
-          )
-          eyo.data.subtype.set(this.nameType_.raw)
-        }
+        var eyo = this.sourceBlock_.eyo
+        var p = eyo.getProfile()
+        eyo.data.subtype.set(p.tos && p.tos.raw)
       },
       plugged: eYo.T3.Expr.primary,
       hole_value: 'expression',
@@ -785,17 +756,29 @@ for (var _ = 0, k;(k = [
 }
 
 /**
- * getIdentifier.
- * @return {?String}.
+ * Initialize a block.
+ * Called from block's init method.
+ * This should be called only once.
+ * The underlying model is not expected to change while running.
+ * @param {!Blockly.Block} block to be initialized.
+ * For subclassers eventually
  */
-eYo.DelegateSvg.Expr.primary.prototype.nameType = eYo.Decorate.onChangeCount(
-  'nameType',
-  function () {
-    this.holderType_ = eYo.Do.typeOfString(newValue)
-    var module = this.owner.dotted_p === 1 && newValue
-    this.nameType_ = eYo.Do.typeOfString(newValue, module)
-  }
-)
+eYo.DelegateSvg.Expr.primary.prototype.initBlock = function () {
+  eYo.DelegateSvg.Expr.primary.superClass_.initBlock.call(this)
+  this.profile_ = undefined
+  Object.defineProperty(
+    this,
+    'profile_p',
+    {
+      get () {
+        return this.profile_
+      },
+      set (newValue) {
+        this.profile_ = newValue
+      }
+    }
+  )
+}
 
 /**
  * getProfile.
@@ -809,15 +792,16 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
       // this may be called very very early when
       // neither `data` nor `slots` may exist yet
     if (this.data && this.slots) {
-      var profile = {
+      var ans = {
         dotted: this.dotted_p,
         variant: this.variant_p,
         defined: !this.data.definition.isNone(),
         annotated: !this.data.annotation.isNone()
       }
+      var target, eyo, candidate
       var type
-      var target = this.name_s.targetBlock()
-      if (target) {
+      if ((target = this.name_s.targetBlock())) {
+        eyo = target.eyo
         if (eyo.checkOutputType(eYo.T3.Expr.identifier)) {
           type = eYo.T3.Expr.identifier
         } else if (eyo.checkOutputType(eYo.T3.Expr.dotted_name)) {
@@ -835,30 +819,28 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
         } else {
           type = eYo.T3.Expr.error // this block should not be connected
         }
-        profile.name = {
+        ans.name = {
           type: type,
           slot: type,
           target: target
         }
-        var eyo = target.eyo
         if (eyo.getProfile) {
-          var target_profile = eyo.getProfile()
-          profile.identifier = target_profile.identifier
-          profile.module = target_profile.module
-          profile.name.profile = target_profile
+          var p = eyo.getProfile()
+          ans.identifier = p.identifier
+          ans.module = p.module
         }
-        // a block with no profile... bad luck
+        // a target block with no profile... bad luck
       } else {
-        var tos = eYo.Do.typeOfString(this.name_p)
+        var tos = eYo.Do.typeOfString(this.name_p, null)
         type = tos.expr
-        profile.name = {
+        ans.name = {
           type: type,
           field: type
         }
-        profile.identifier = tos.identifier
-        profile.module = tos.module
+        ans.identifier = tos.name
+        ans.module = tos.holder
       }
-      if (profile.dotted === 1) {
+      if (ans.dotted === 1) {
         target = this.holder_s.targetBlock()
         if (target) {
           eyo = target.eyo
@@ -875,43 +857,44 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
           } else {
             type = eYo.T3.Expr.error // this block should not be connected
           }
-          profile.holder = {
+          ans.holder = {
             type: type,
             slot: type,
             target: target
           }
           if (eyo.getProfile) {
-            var target_profile = eyo.getProfile()
-            var base = target_profile.module
-              ? target_profile.module + '.' + target_profile.identifier
-              : target_profile.identifier
+            p = eyo.getProfile()
+            var base = p.module
+              ? p.module + '.' + p.identifier
+              : p.identifier
             base && (
-              profile.module = profile.module
-                ? base + '.' + profile.module
+              ans.module = ans.module
+                ? base + '.' + ans.module
                 : base
             )
-            profile.holder.profile = target_profile
+            ans.holder.profile = p
           }
         } else {
           tos = eYo.Do.typeOfString(this.holder_p)
           type = tos.expr
-          profile.holder = {
+          ans.holder = {
             type: type,
             field: type
           }
           base = this.holder_p
           base && (
-            profile.module = profile.module
-              ? base + '.' + profile.module
+            ans.module = ans.module
+              ? base + '.' + ans.module
               : base
           )
         }
       } else {
-        profile.holder = {
+        ans.holder = {
         }
       }
+      ans.identifier && (ans.tos = eYo.Do.typeOfString(ans.identifier, ans.module))
       return {
-        ans: profile
+        ans: ans
       }
     }
     return {

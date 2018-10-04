@@ -339,7 +339,7 @@ eYo.XRE = {
         \\k<del>{1,2}(?=\\k<delimiter>$))*?
     )
     \\k<delimiter>$`, 'x'),
-    bytes: XRegExp(`^(?:[\\x20-\\x5B\\x5D-\\xFF]|
+  bytes: XRegExp(`^(?:[\\x20-\\x5B\\x5D-\\xFF]|
         \\\\[\\x0A\\x0D\\x20-\\xFF])*$`, 'x'),
   letter: XRegExp(`(?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo})`),
   id_start: XRegExp(`(?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl})`),
@@ -348,6 +348,32 @@ eYo.XRE = {
     (?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl})
     (?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl}|\\p{Mn}|\\p{Mc}|\\p{Nd}|\\p{Pc})*
   )$`, 'x'),
+  dotted_name: XRegExp(`^(?:
+    (?<dots>\\.*)
+    (?:
+      (?<holder>
+        (?:
+          (?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl})
+          (?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl}|\\p{Mn}|\\p{Mc}|\\p{Nd}|\\p{Pc}
+          )*
+        )
+        (?:
+          \\.
+          (?:
+            (?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl})
+            (?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl}|\\p{Mn}|\\p{Mc}|\\p{Nd}|\\p{Pc}
+            )*
+          )?
+        )*
+      )
+      \\.
+    )?
+  )
+  (?<name>
+    (?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl})
+    (?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl}|\\p{Mn}|\\p{Mc}|\\p{Nd}|\\p{Pc}
+    )*
+  )?$`, 'x'),
   id_wrapped: XRegExp(`^(?<id>.*?)\\.wrapped:(?<name>[a-zA-Z_][a-zA-Z_0-9]*)$`, 'x'),
   s3d: XRegExp(`^(?:eyo:)?(?<core>.*?)$`),
   event_data: XRegExp(`^eyo:data:(?<key>.*?)$`),

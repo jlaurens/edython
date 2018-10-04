@@ -111,8 +111,8 @@
           this.annotation_ = eyo.annotation_p
           this.definition_ = eyo.definition_p
           this.alias_ = eyo.alias_p
-          var nameType = this.eyo.data.name.nameType_
-          this.can_ry_ = !nameType || !nameType.model
+          var tos = this.eyo.prolile_p.tos
+          this.can_ry_ = !tos || !tos.model
           this.ary_ = eyo.ary_p
           this.mandatory_ = eyo.mandatory_p
         }

@@ -64,13 +64,13 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
       init: '0',
       validate: /** @suppress {globalThis} */ function (newValue) {
         var types = this.data.type.getAll()
-        var type = eYo.Do.typeOfString(newValue).expr
+        var type = eYo.Do.typeOfString(newValue, null).expr
         return ((types.indexOf(type) >= 0) && {validated: newValue}) || null
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         var type = newValue 
-          ? eYo.Do.typeOfString(newValue).expr 
+          ? eYo.Do.typeOfString(newValue, null).expr 
           : eYo.T3.Expr.integer
         this.owner.type_p = type
       },

@@ -157,7 +157,7 @@ eYo.PythonExporter.prototype.exportField_ = function (field) {
     var text = (field.getPythonText_ && field.getPythonText_()) || field.getText()
     var eyo = field.eyo
     if (text.length) {
-      this.isSeparatorField = field.name === 'separator'
+      this.isSeparatorField = field.name === 'separator' || eyo.model.separator
       // if the text is void, it can not change whether
       // the last character was a letter or not
       if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol && (eYo.XRE.operator.test(text[0]) || text[0] === '.' || eYo.XRE.id_continue.test(text[0]) || eyo.isEditing)) {

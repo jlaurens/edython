@@ -429,10 +429,15 @@ eYo.Do.typeOfString = function (candidate, module) {
           model: item
         }
       }
-    }    
+    }
   }
-  if (module !== null) {
-    var ans = (module && f(module)) || f('functions') || f('stdtypes')
+  if (module) {
+    var ans = f(module)
+    if (ans) {
+      return ans
+    }
+  } else {
+    ans = f('functions') || f('stdtypes')
     if (ans) {
       return ans
     }
@@ -618,70 +623,49 @@ eYo.Do.typeOfString = function (candidate, module) {
       stmt: eYo.T3.Stmt.start_stmt
     }
   }
+  var m = XRegExp.exec(candidate, eYo.XRE.dotted_name)
+  if (m) {
+    var first = m.dots ? m.dots.length : 0
+    var base
+    if (m.holder) {
+      base = eYo.T3.Expr.dotted_name
+    } else if (m.name) {
+      base = eYo.T3.Expr.identifier
+    } else {
+      base = eYo.T3.Expr.unset
+    }
+    candidate = m.identifier
+    var holder = module
+      ? m.holder
+        ? module + '.' + m.holder
+        : module
+      : null
+    if (holder) {
+      var ans = f(holder)
+    } else {
+      ans = f('functions') || f('stdtypes')
+    }
+    return {
+      raw: m.dots || m.holder
+        ? eYo.T3.Expr.custom_parent_module
+        : eYo.T3.Expr.custom_identifier,
+      expr: m.dots || m.holder
+        ? eYo.T3.Expr.parent_module
+        : eYo.T3.Expr.identifier,
+      prefixDots: first,
+      base: base,
+      name: candidate,
+      holder: holder,
+      model: ans && ans.model
+    }
+  }
   var components = candidate.split('.')
-  if (components.length > 1) {
-    var dotted_name = true
-    var first
-    // skip the void components
-    for (var i = 0; i < components.length;) {
-      var c = components[i]
-      if (c.length) {
-        first = i
-        break
-      }
-      i++
-    }
-    for (; i < components.length; i++) {
-      c = components[i]
-      if (!eYo.XRE.identifier.exec(c)) {
-        dotted_name = false
-        break
-      }
-    }
-    if (dotted_name) {
-      var otherDots = components.length - 1 - first
-      if (otherDots) {
-        base = eYo.T3.Expr.dotted_name
-      } else if (components[components.length - 1].length) {
-        base = eYo.T3.Expr.identifier
-      } else {
-        base = eYo.T3.Expr.unset
-      }
-      // get the identifier and the module
-      var identifier, name_module
-      i = components.length
-      while (i--) {
-        c = components[i]
-        if (c.length) {
-          identifier = c
-          if (i--) {
-            name_module = c
-            while (i--) {
-              name_module = components[i] + '.' + name_module
-            }
-          }
-        }
-      }
-      candidate = identifier
-      module && (name_module = module + '.' + name_module)
-      ans = (name_module && f(name_module)) || f('functions') || f('stdtypes')  
-      return {
-        raw: eYo.T3.Expr.custom_parent_module,
-        expr: eYo.T3.Expr.parent_module,
-        prefixDots: first,
-        otherDots: otherDots,
-        base: base,
-        identifier: identifier,
-        module: ans && ans.module,
-        model: ans && ans.model
-      }
-    }
-  } else if (eYo.XRE.identifier.exec(candidate)) {
+  if (eYo.XRE.identifier.exec(candidate)) {
     return {
       raw: eYo.T3.Expr.custom_identifier,
       expr: eYo.T3.Expr.identifier,
-      identifier: candidate,
-      module: module
+      name: candidate,
+      holder: module
     }
   }
   if (eYo.XRE.shortstringliteralSingle.exec(candidate) || eYo.XRE.shortstringliteralDouble.exec(candidate)) {
@@ -718,7 +702,7 @@ eYo.Do.typeOfString = function (candidate, module) {
  * @return {string}
  */
 eYo.Do.cssClassForText = function (txt) {
-  switch (eYo.Do.typeOfString(txt).raw) {
+  switch (eYo.Do.typeOfString(txt, null).raw) {
   case eYo.T3.Expr.reserved_identifier:
   case eYo.T3.Expr.reserved_keyword:
     return 'eyo-code-reserved'

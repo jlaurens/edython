@@ -531,7 +531,7 @@ eYo.Xml.Literal.domToBlock = function (element, workspace) {
   eYo.Do.someChild(element, function (child) {
     if (child.nodeType === Node.TEXT_NODE) {
       var text = child.nodeValue
-      var type = eYo.Do.typeOfString(text).expr
+      var type = eYo.Do.typeOfString(text, null).expr
       switch (type) {
       case eYo.T3.Expr.integer:
       case eYo.T3.Expr.floatnumber:

@@ -61,11 +61,15 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
       }
     },
     dotted_name: {
-      all: [eYo.T3.Expr.dotted_name, eYo.T3.Expr.identifier],
+      all: [
+        eYo.T3.Expr.dotted_name,
+        eYo.T3.Expr.identifier,
+        eYo.T3.Expr.unset
+      ],
       init: '',
       validate: /** @suppress {globalThis} */ function (newValue) {
         var subtypes = this.getAll()
-        var subtype = eYo.Do.typeOfString(newValue).expr
+        var subtype = eYo.Do.typeOfString(newValue, null).expr
         return ((subtypes.indexOf(subtype) >= 0) && {validated: newValue}) || null
       },
       synchronize: true
@@ -226,11 +230,11 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
     name: {
       init: '',
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var type = eYo.Do.typeOfString(newValue)
-        return type.expr === eYo.T3.Expr.identifier 
-        || type.expr === eYo.T3.Expr.identifier
-        ? {validated: newValue}
-        : null
+        var tos = eYo.Do.typeOfString(newValue, null)
+        return tos.expr === eYo.T3.Expr.identifier 
+          || tos.expr === eYo.T3.Expr.unset
+          ? {validated: newValue}
+          : null
       },
       synchronize: true
     }
@@ -316,10 +320,11 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
     name: {
       init: '',
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var type = eYo.Do.typeOfString(newValue)
-        return type.expr === eYo.T3.Expr.identifier
-        ? {validated: newValue}
-        : null
+        var tos = eYo.Do.typeOfString(newValue, null)
+        return tos.expr === eYo.T3.Expr.identifier
+          || tos.expr === eYo.T3.Expr.unset
+          ? {validated: newValue}
+          : null
       },
       synchronize: true
     }

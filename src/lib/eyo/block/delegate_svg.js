@@ -1356,7 +1356,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
       var eyo = io.field.eyo
       var here = io.cursorX
       if (text.length) {
-        io.isSeparatorField = io.field.name === 'separator'
+        io.isSeparatorField = io.field.name === 'separator' || eyo.model.separator
         // if the text is void, it can not change whether
         // the last character was a letter or not
         if (!io.isSeparatorField && !io.wasSeparatorField && io.shouldSeparateField && !io.starSymbol && (eYo.XRE.operator.test(text[0]) || text[0] === '.' || eYo.XRE.id_continue.test(text[0]) || eyo.isEditing) && eyo.tilePrevious) {
@@ -1897,7 +1897,7 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
         block = workspace.newBlock(model, id)
         block.eyo.setDataWithType(model)
       } else {
-        var type = eYo.Do.typeOfString(model)
+        var type = eYo.Do.typeOfString(model, null)
         if (type.expr && (block = workspace.newBlock(type.expr, id))) {
           type.expr && block.eyo.setDataWithType(type.expr)
           model && block.eyo.setDataWithModel(model)
@@ -2891,7 +2891,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
   }
   var block = this.block_
   // get the type:
-  var type = eYo.Do.typeOfString(model)
+  var type = eYo.Do.typeOfString(model, null)
   if (type) {
     if (connection) {
       if (connection.type === Blockly.NEXT_STATEMENT || connection.type === Blockly.PREVIOUS_STATEMENT) {

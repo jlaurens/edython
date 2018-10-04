@@ -96,14 +96,13 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
     },
     from: {
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var type = eYo.Do.typeOfString(newValue)
+        var tos = eYo.Do.typeOfString(newValue, null)
         var data = this.data.variant
         var variant = data.get()
-        var M = data.model
-        return type.expr === eYo.T3.Expr.identifier
-        || type.expr === eYo.T3.Expr.dotted_name
+        return tos.expr === eYo.T3.Expr.identifier
+        || tos.expr === eYo.T3.Expr.dotted_name
         || ((variant === data.FROM_MODULE_IMPORT)
-          && (type.expr === eYo.T3.Expr.parent_module))
+          && (tos.expr === eYo.T3.Expr.parent_module))
             ? {validated: newValue} : null
       },
       synchronize: true
