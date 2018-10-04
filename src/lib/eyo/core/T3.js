@@ -1463,7 +1463,7 @@ eYo.T3.Xml.fromDom = { // count 35
     augmented_assignment: eYo.T3.Stmt.augmented_assignment_stmt,
     elif: eYo.T3.Stmt.elif_part,
     except: eYo.T3.Stmt.except_part,
-    return: eYo.T3.Stmt.return_stmt,
+    ans: eYo.T3.Stmt.return_stmt,
     pass: eYo.T3.Stmt.pass_stmt,
     else: [eYo.T3.Stmt.else_part, eYo.T3.Stmt.last_else_part, eYo.T3.Stmt.try_else_part],
     assignment: eYo.T3.Stmt.assignment_stmt,

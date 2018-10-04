@@ -245,7 +245,7 @@ eYo.Data.prototype.isNone = function () {
 eYo.Data.prototype.validate = function (newValue) {
   var f = eYo.Decorate.reentrant_method.call(this, 'model_validate', this.model.validate)
   if (f) {
-    return f.apply(this, arguments).return
+    return f.apply(this, arguments).ans
   }
   var all = this.getAll()
   return ((this.model.validate === false || !all || all.indexOf(newValue) >= 0)
@@ -260,7 +260,7 @@ eYo.Data.prototype.toText = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'toText', this.model.toText)
   var result = this.get()
   if (f) {
-    return f.call(this, result).return
+    return f.call(this, result).ans
   }
   if (goog.isNumber(result)) {
     result = result.toString()
@@ -277,7 +277,7 @@ eYo.Data.prototype.toField = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'toField', this.model.toField || this.model.toText)
   var result = this.get()
   if (f) {
-    return f.call(this, result).return
+    return f.call(this, result).ans
   }
   if (goog.isNumber(result)) {
     result = result.toString()

@@ -91,7 +91,7 @@ eYo.DelegateSvg.Expr.prototype.getType = eYo.Decorate.onChangeCount(
     var modifier = this.data.modifier.get()
     if (!modifier) {
       return {
-        return: t
+        ans: t
       }
     }
     var types = []
@@ -119,12 +119,12 @@ eYo.DelegateSvg.Expr.prototype.getType = eYo.Decorate.onChangeCount(
       types.push(eYo.T3.Expr.expression_star)
     } else {
       return {
-        return: t
+        ans: t
       }
     }
     this.types = types
     return {
-      return: types[0]
+      ans: types[0]
     }
   }
 )

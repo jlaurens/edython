@@ -108,7 +108,7 @@ eYo.Events.disableWrap = function (self, try_f, finally_f) {
     // enable first to allow finally_f to eventually fire events
     // or eventually modify `out`
     finally_f && finally_f.call(self)
-    return out && out.return
+    return out && out.ans
   }
 }
 

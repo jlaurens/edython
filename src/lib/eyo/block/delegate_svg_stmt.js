@@ -475,7 +475,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('del_stmt', {
  */
 eYo.DelegateSvg.Stmt.makeSubclass('return_stmt', {
   slots: {
-    return: {
+    ans: {
       order: 1,
       fields: {
         label: 'return'

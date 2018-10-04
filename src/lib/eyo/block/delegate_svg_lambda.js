@@ -409,7 +409,7 @@ eYo.DelegateSvg.Expr.makeSubclass('lambda', {
   output: {
     check: /** @suppress {globalThis} */ function (type) {
       var block = this.connection.sourceBlock_
-      var c8nIn = block.eyo.slots.expression.connection
+      var c8nIn = block.eyo.expression_s.connection
       var cond_in = true // cond are accepted by default
       var nocond_in = true // nocond not accepted by default
       var targetC8n = c8nIn.targetConnection

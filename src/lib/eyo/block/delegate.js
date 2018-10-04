@@ -160,7 +160,7 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
     var did_it = do_it.apply(this, arguments)
     if (did_it) {
       this[saved] = this.change.count
-      this[cached] = did_it.return  
+      this[cached] = did_it.ans  
     }
     return this[cached]
   }
@@ -370,6 +370,20 @@ eYo.Delegate.prototype.makeConnections = function () {
 eYo.Delegate.prototype.feedSlots = function (slotsModel) {
   var slots = this.slots
   var ordered = []
+  var defineProperty = function (k) {
+    // make a closure to catch the value of k
+    return function () {
+      Object.defineProperty(
+        this,
+        k + '_s',
+        {
+          get: function () {
+            return slots[k]
+          }
+        }
+      )
+    }
+  }
   for (var k in slotsModel) {
     var model = slotsModel[k]
     if (!model) {
@@ -398,6 +412,7 @@ eYo.Delegate.prototype.feedSlots = function (slotsModel) {
       goog.asserts.assert(!goog.isDef(slots[k]),
         eYo.Do.format('Duplicate slot key {0}/{1}', k, this.block_.type))
       slots[k] = slot
+      defineProperty(k).call(this)
     } else {
       continue
     }

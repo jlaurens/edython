@@ -42,7 +42,6 @@
         },
         set (newValue) {
           this.eyo.holder_p = newValue
-          this.$emit('synchronize')
         }
       },
       blockDotted: {
@@ -51,7 +50,6 @@
         },
         set (newValue) {
           this.eyo.dotted_p = newValue
-          this.$emit('synchronize')
         }
       },
       selectedItem: {

@@ -37,10 +37,10 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
       ],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var slot = this.owner.slots.expression
+        var slot = this.owner.expression_s
         slot.required = (newValue === this.YIELD_EXPRESSION)
         slot.setIncog()
-        slot = this.owner.slots.from
+        slot = this.owner.from_s
         slot.required = (newValue === this.YIELD_FROM)
         slot.setIncog()
       }

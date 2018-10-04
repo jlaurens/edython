@@ -418,24 +418,24 @@ eYo.Do.typeOfString = function (candidate, module) {
     }
   }
   var f = function (module) {
-    if (module) {
-      var M = eYo.Model[module]
-      if (M) {
-        var item = M.getItem && M.getItem(candidate)
-        if (item) {
-          return {
-            raw: eYo.T3.Expr.known_identifier,
-            expr: eYo.T3.Expr.identifier,
-            module: module,
-            model: item
-          }
+    var M = eYo.Model[module]
+    if (M) {
+      var item = M.getItem && M.getItem(candidate)
+      if (item) {
+        return {
+          raw: eYo.T3.Expr.known_identifier,
+          expr: eYo.T3.Expr.identifier,
+          module: module,
+          model: item
         }
-      }    
-    }
+      }
+    }    
   }
-  var ans = f(module) || f('functions') || f('stdtypes')
-  if (ans) {
-    return ans
+  if (module !== null) {
+    var ans = (module && f(module)) || f('functions') || f('stdtypes')
+    if (ans) {
+      return ans
+    }
   }
   if (['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'].indexOf(candidate) >= 0) {
     return {
@@ -457,7 +457,7 @@ eYo.Do.typeOfString = function (candidate, module) {
       raw: eYo.T3.Expr.reserved_keyword,
       expr: eYo.T3.Expr.object_comparison
     },
-    return: {
+    ans: {
       raw: eYo.T3.Expr.reserved_keyword,
       stmt: eYo.T3.Stmt.return_stmt
     },
@@ -647,18 +647,41 @@ eYo.Do.typeOfString = function (candidate, module) {
       } else {
         base = eYo.T3.Expr.unset
       }
+      // get the identifier and the module
+      var identifier, name_module
+      i = components.length
+      while (i--) {
+        c = components[i]
+        if (c.length) {
+          identifier = c
+          if (i--) {
+            name_module = c
+            while (i--) {
+              name_module = components[i] + '.' + name_module
+            }
+          }
+        }
+      }
+      candidate = identifier
+      module && (name_module = module + '.' + name_module)
+      ans = (name_module && f(name_module)) || f('functions') || f('stdtypes')  
       return {
         raw: eYo.T3.Expr.custom_parent_module,
         expr: eYo.T3.Expr.parent_module,
         prefixDots: first,
         otherDots: otherDots,
-        base: base
+        base: base,
+        identifier: identifier,
+        module: ans && ans.module,
+        model: ans && ans.model
       }
     }
   } else if (eYo.XRE.identifier.exec(candidate)) {
     return {
       raw: eYo.T3.Expr.custom_identifier,
-      expr: eYo.T3.Expr.identifier
+      expr: eYo.T3.Expr.identifier,
+      identifier: candidate,
+      module: module
     }
   }
   if (eYo.XRE.shortstringliteralSingle.exec(candidate) || eYo.XRE.shortstringliteralDouble.exec(candidate)) {

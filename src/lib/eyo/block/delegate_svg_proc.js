@@ -56,7 +56,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
         this.data.dotted_name.setIncog(newValue === this.BUILTIN) // disable the data not the slot
         this.data.builtin.setIncog(newValue !== this.BUILTIN)
         this.data.property.setIncog(newValue !== this.PROPERTY)
-        var slot = this.owner.slots.arguments
+        var slot = this.owner.arguments_s
         slot.setIncog(newValue !== this.ARGUMENTS)
       }
     },
@@ -218,7 +218,7 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
       all: [null, eYo.Key.TYPE],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var slot = this.owner.slots.type
+        var slot = this.owner.type_s
         slot.required = newValue === this.TYPE
         slot.setIncog()
       }
@@ -308,7 +308,7 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
       all: [null, eYo.Key.ARGUMENTS],
       synchronize: /** @suppress {globalThis} */ function (newValue){
         this.synchronize(newValue)
-        var slot = this.owner.slots.arguments
+        var slot = this.owner.arguments_s
         slot.required = newValue === this.ARGUMENTS
         slot.setIncog()
       }

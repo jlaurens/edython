@@ -1,10 +1,10 @@
 <template>
   <b-button-toolbar id="info-primary" key-nav  aria-label="Info toolbar primary" justify>
     <b-button-toolbar>
-      <dotted :eyo="eyo" :slotholder="slotholder" :holder="holder" :dotted="dotted" v-on:synchronize="synchronize"></dotted>
+      <dotted :eyo="eyo" :slotholder="slotholder" :holder="holder" :dotted="dotted"></dotted>
       <name :eyo="eyo" :name="name"></name>
-      <variant :eyo="eyo" :slotholder="slotholder" :variant="variant" :annotation="annotation" :definition="definition" :alias="alias" :can_ry="can_ry" :ary="ary" :mandatory="mandatory"></variant>
-      <ry :eyo="eyo" :can_ry="can_ry" :ary="ary" :mandatory="mandatory" v-on:synchronize="synchronize" v-if="variant === $$.eYo.Key.CALL_EXPR"></ry>
+      <variant :eyo="eyo" :slotholder="slotholder" :variant="variant" :annotation="annotation" :definition="definition" :alias="alias"></variant>
+      <ry :eyo="eyo" :can_ry="can_ry" :ary="ary" :mandatory="mandatory" v-if="variant === $$.eYo.Key.CALL_EXPR"></ry>
       <span>{{eyo.change.step}}</span>
     </b-button-toolbar>
     <common :eyo="eyo"></common>
