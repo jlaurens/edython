@@ -42,6 +42,8 @@ eYo.Delegate = function (block) {
     // Some lengthy actions may be shortened when the count
     // has not changed since the last time it was performed
     count: 0,
+    // the step is the count, except that it is freezed while editing
+    step: 0,
     // The level indicates cascading changes
     // Some actions that are performed when something changes
     // should not be performed while there is a pending change.
@@ -80,6 +82,9 @@ eYo.Delegate.prototype.getBlock = function () {
  */
 eYo.Delegate.prototype.incrementChangeCount = function () {
   ++ this.change.count
+  if (!this.isEditing) {
+    this.change.step = this.change.count
+  }
 }
 
 /**

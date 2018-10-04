@@ -349,7 +349,7 @@ eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr)
 eYo.DelegateSvg.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
   eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_.call(this, block, mgr)
-  eYo.DelegateSvg.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  eYo.DelegateSvg.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this, mgr)
   return true
 }
 

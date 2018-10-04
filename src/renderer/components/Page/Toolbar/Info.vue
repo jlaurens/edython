@@ -35,6 +35,9 @@
     <div v-else-if="isSelected($$.eYo.T3.Stmt.augmented_assignment_stmt)">
       <info-augmented-assignment :eyo="eyo" :slotholder="slotholder"></info-augmented-assignment>
     </div>
+    <div v-else-if="isSelected($$.eYo.T3.Expr.any)">
+      <info-any-expression :eyo="eyo" :slotholder="slotholder"></info-any-expression>
+    </div>
     <div v-else-if="isSelected($$.eYo.T3.Stmt.any_stmt)">
       <info-any-statement :eyo="eyo" :slotholder="slotholder"></info-any-statement>
     </div>
@@ -54,6 +57,7 @@
   import InfoPrint from './Info/Print.vue'
   import InfoUnary from './Info/Unary.vue'
   import InfoBinary from './Info/Binary.vue'
+  import InfoAnyExpression from './Info/AnyExpression.vue'
   import InfoAnyStatement from './Info/AnyStatement.vue'
   import InfoAssignment from './Info/Assignment.vue'
   import InfoAugmentedAssignment from './Info/AugmentedAssignment.vue'
@@ -76,6 +80,7 @@
       InfoPrint,
       InfoUnary,
       InfoBinary,
+      InfoAnyExpression,
       InfoAnyStatement,
       InfoAssignment,
       InfoAugmentedAssignment,
@@ -179,5 +184,16 @@
   display: inline-block;
   position: relative;
   top: 0.45rem;
+}
+.eyo-form-input-text {
+  text-align: left;
+  width: 8rem;
+}
+.btn-outline-secondary.eyo-form-input-text:hover {
+  background: white;
+  color: black;
+}
+.eyo-button-group {
+  padding-right: 0.25rem;
 }
 </style>

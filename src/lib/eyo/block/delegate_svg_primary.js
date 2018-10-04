@@ -190,8 +190,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
         : {}
       },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.synchronize(newValue)
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         this.required = newValue > 0
         this.setIncog()
         var holder_d = this.data.holder
@@ -199,8 +199,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         holder_d.setIncog()
         if (newValue !== 0) {
           // this is a dotted expression
-          this.data.annotation.set(eYo.Key.NONE)
-          this.data.definition.set(eYo.Key.NONE)
+          this.data.annotation.change(eYo.Key.NONE)
+          this.data.definition.change(eYo.Key.NONE)
+        }
+      },
+      fromType: /** @suppress {globalThis} */ function (type) {
+        if (type === eYo.T3.Expr.attributeref) {
+          this.change(1)
         }
       },
       fromField: /** @suppress {globalThis} */ function (value) {
@@ -231,6 +236,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         || type.expr === eYo.T3.Expr.identifier
         || type.expr === eYo.T3.Expr.builtin__name
         || type.expr === eYo.T3.Expr.dotted_name
+        || type.expr === eYo.T3.Expr.attributeref
         || type.expr === eYo.T3.Expr.parent_module
         ? {validated: newValue} : null
         // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
@@ -405,10 +411,12 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         this.nameType_ = eYo.Do.typeOfString(newValue)
-        this.data.subtype.set(this.nameType_.raw)
-      },
-      consolidate: /** @suppress {globalThis} */ function () {
-        this.didChange(undefined, this.get())
+        var subtype = this.nameType_.raw
+        this.data.subtype.set(subtype)
+        if (this.nameType_ && this.nameType_.model) {
+          this.owner.ary_p = -1 // will be validated below
+          this.owner.mandatory_p = -1 // will be validated below
+        }
       },
       synchronize: true,
       xml: {
@@ -433,15 +441,21 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     },
     ary: {
       order: 20001,
+      init: Infinity,
       validate: /** @suppress {globalThis} */ function (newValue) {
+        // returns a `Number` or `Infinity`
         var validated
-        if (goog.isString(newValue)) {
+        var nameType = this.data.name.nameType_
+        var model = nameType && nameType.model
+        if (model) {
+          validated = goog.isDef(model.ary) ? model.ary : Infinity
+        } else if (goog.isString(newValue)) {
           if (newValue.length) {
             validated = Math.max(0, Math.floor(Number(newValue)))
           } else {
             validated = Infinity
           }
-        } else {
+        } else if (goog.isNumber(newValue)) {
           validated = Math.max(0, Math.floor(newValue))
         }
         return {validated: validated}
@@ -457,6 +471,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
             target.eyo.ary_p = newValue
           }
         }
+        (newValue < this.owner.mandatory_p) && (this.owner.mandatory_p = newValue)
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
@@ -466,17 +481,35 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
             this.save(element)
           }
         }
-      },
-      consolidate: /** @suppress {globalThis} */ function () {
-        var item = eYo.Model.functions.getItem(this.owner.name_p)
-        this.set(item && goog.isDef(item.ary) ? item.ary : Infinity)
       }
     },
     mandatory: {
       order: 20002,
-      noUndo: true,
+      init: 0,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        return goog.isNumber(newValue) && newValue > 0 ? {validated: Math.floor(newValue)} : null
+        // returns a `Number` or `Infinity`
+        var validated
+        var nameType = this.data.name.nameType_
+        var model = nameType && nameType.model
+        if (model) {
+          if (goog.isDef(model.mandatory)) {
+            validated = model.mandatory
+          } else if (goog.isDef(model.ary)) {
+            // when `model.mandatory` is not defined, `mandatory` is `ary`
+            validated = model.ary
+          } else {
+            validated = 0
+          }
+        } else if (goog.isString(newValue)) {
+          if (newValue.length) {
+            validated = Math.max(0, Math.floor(Number(newValue)))
+          } else {
+            validated = 0
+          }
+        } else if (goog.isNumber(newValue)) {
+          validated = Math.max(0, Math.floor(newValue))
+        }
+        return {validated: validated}
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
@@ -487,6 +520,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
             target.eyo.mandatory_p = newValue
           }
         }
+        (newValue > this.owner.ary_p) && (this.owner.ary_p = newValue)
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
@@ -496,10 +530,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
             this.save(element)
           }
         }
-      },
-      consolidate: /** @suppress {globalThis} */ function () {
-        var item = eYo.Model.functions.getItem(this.owner.name_p)
-        this.set(item && goog.isDef(item.mandatory) ? item.mandatory : Infinity)
       }
     }
   },

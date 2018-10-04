@@ -301,7 +301,7 @@ eYo.DelegateSvg.Operator.prototype.getMenuTarget = function () {
 eYo.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
   var yorn = mgr.populateProperties(block, 'operator')
-  return eYo.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
+  return eYo.DelegateSvg.Operator.superClass_.populateContextMenuFirst_.call(this, mgr) || yorn
 }
 
 /// ///////////////////  u_expr  /////////////////////////

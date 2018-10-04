@@ -379,7 +379,7 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
     mgr.addChild(menuItem, true)
     mgr.shouldSeparate()
   }
-  eYo.DelegateSvg.Stmt.assignment_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  eYo.DelegateSvg.Stmt.assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
   return true
 }
 
@@ -575,7 +575,7 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
   }(this))
   mgr.addChild(menuItem, true)
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.augmented_assignment_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return eYo.DelegateSvg.Stmt.augmented_assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 eYo.DelegateSvg.Assignment.T3s = [

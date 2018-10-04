@@ -1,10 +1,10 @@
 <template>
-  <b-button-group class="mx-1">
+  <b-button-group class="mx-1 eyo-button-group">
     <b-dropdown :id="id" class="eyo-dropdown" v-if="variants && variants.length" variant="outline-secondary">
       <template slot="button-content"><div class="eyo-info-primary-variant eyo-code eyo-content" v-html="selected.content"></div></template>
       <b-dropdown-item-button v-for="variant in variants" v-on:click="selected = variant" :key="variant.key" class="eyo-info-primary-variant eyo-code" v-html="variant.content"></b-dropdown-item-button>
     </b-dropdown>
-    <b-form-input v-model="blockAlias" type="text" size="10" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="selected.key === 'ALIASED'"></b-form-input>
+    <b-form-input v-model="blockAlias" type="text" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="selected.key === 'ALIASED'"></b-form-input>
   </b-button-group>
 </template>
 
@@ -165,9 +165,6 @@
 <style>
   .btn .eyo-info-primary-variant {
     padding-right: 0.75rem;
-  }
-  .dropdown-item.eyo-info-primary-variant {
-    padding-right: 0.5rem;
   }
 </style>
   

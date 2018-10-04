@@ -6,6 +6,8 @@
         <label for="info-print-sep" class="eyo-code">sep=…</label>
         <input type="checkbox" id="info-print-end" v-model="end">
         <label for="info-print-end" class="eyo-code">end=…</label>
+        <input type="checkbox" id="info-print-flush" v-model="flush">
+        <label for="info-print-flush" class="eyo-code">flush=…</label>
         <input type="checkbox" id="info-print-file" v-model="file" :disabled="!can_file">
         <label for="info-print-file" class="eyo-code" :disabled="!can_file">file=…</label>
       </div>
@@ -92,6 +94,14 @@
           this.do('file')
         }
       },
+      flush: {
+        get () {
+          return !!this.has['flush']
+        },
+        set (newValue) {
+          this.do('flush')
+        }
+      },
       can_file () {
         return false
       },
@@ -112,6 +122,12 @@
       },
       title_end () {
         return 'Séparateur de fin de ligne (End of line)'
+      },
+      content_flush () {
+        return 'flush=…'
+      },
+      title_flush () {
+        return 'Affichage immédiat (y compris ce qui est en attente)'
       }
     },
     methods: {
@@ -149,6 +165,9 @@
       },
       do_end () {
         this.do('end')
+      },
+      do_flush () {
+        this.do('flush')
       }
     }
   }

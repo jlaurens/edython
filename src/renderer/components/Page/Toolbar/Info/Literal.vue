@@ -11,7 +11,7 @@
       </div>
       <span class="eyo-code-reserved" d>{{delimiter}}</span>
       <b-button-group class="mx-1">
-        <b-form-input v-model="content" type="text" size="30" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-form-input>
+        <b-form-input v-model="content" type="text" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-form-input>
       </b-button-group>
       <span class="eyo-code-reserved" d>{{delimiter}}</span>
       <b-button-group class="mx-1">

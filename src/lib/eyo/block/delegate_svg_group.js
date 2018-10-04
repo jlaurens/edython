@@ -456,7 +456,7 @@ eYo.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (mgr) {
       mgr.shouldSeparateInsert()
     }
   }
-  return eYo.DelegateSvg.Group.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return eYo.DelegateSvg.Group.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /**

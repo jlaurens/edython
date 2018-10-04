@@ -122,8 +122,8 @@ eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (mgr)
  */
 eYo.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
-  var yorn = eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_.call(this, block, mgr)
-  return eYo.DelegateSvg.Expr.yield_expression.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
+  var yorn = eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_.call(this, mgr)
+  return eYo.DelegateSvg.Expr.yield_expression.superClass_.populateContextMenuFirst_.call(this, mgr) || yorn
 }
 
 /**
@@ -172,8 +172,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('yield_stmt', {
  */
 eYo.DelegateSvg.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
-  eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_.call(this, block, mgr)
-  return eYo.DelegateSvg.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_.call(this, mgr)
+  return eYo.DelegateSvg.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 eYo.DelegateSvg.Yield.T3s = [

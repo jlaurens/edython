@@ -15,6 +15,7 @@ goog.provide('eYo.Do')
 
 goog.require('eYo.Const')
 goog.require('eYo.Model')
+goog.require('eYo.Model')
 
 goog.require('goog.dom')
 
@@ -380,6 +381,7 @@ eYo.T3.Expr.reserved_identifier = '.reserved identifier'
 eYo.T3.Expr.reserved_keyword = '.reserved keyword'
 eYo.T3.Expr.builtin__name = '.builtin name'
 eYo.T3.Expr.custom_literal = '.custom literal'
+eYo.T3.Expr.known_identifier = '.known identifier'
 eYo.T3.Expr.custom_identifier = '.custom identifier'
 eYo.T3.Expr.custom_dotted_name = '.custom dotted name'
 eYo.T3.Expr.custom_parent_module = '.custom parent module'
@@ -415,20 +417,25 @@ eYo.Do.typeOfString = function (candidate, module) {
       expr: eYo.T3.Expr.identifier
     }
   }
-  if (module === eYo.Key.BUILTIN) {
-
-  } else if (module) {
-    var model
-    var M = eYo.Model[module]
-    if (M) {
-      var item = M.getItem && M.getItem (candidate)
-      if (item) {
-        return {
-          raw: eYo.T3.Expr.identifier,
-          expr: eYo.T3.Expr.call_expr
+  var f = function (module) {
+    if (module) {
+      var M = eYo.Model[module]
+      if (M) {
+        var item = M.getItem && M.getItem(candidate)
+        if (item) {
+          return {
+            raw: eYo.T3.Expr.known_identifier,
+            expr: eYo.T3.Expr.identifier,
+            module: module,
+            model: item
+          }
         }
-      }
+      }    
     }
+  }
+  var ans = f(module) || f('functions') || f('stdtypes')
+  if (ans) {
+    return ans
   }
   if (['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'].indexOf(candidate) >= 0) {
     return {

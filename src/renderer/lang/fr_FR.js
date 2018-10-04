@@ -59,5 +59,6 @@ export default {
   prefix_b_for_byte: 'préfixe b pour bytes (ie octets)',
   bytes: 'octets',
   use_single_quotes_in_long_literal: 'Utiliser des guillemets droits simples',
-  use_double_quotes_in_long_literal: 'Utiliser des guillemets droits doubles'
+  use_double_quotes_in_long_literal: 'Utiliser des guillemets droits doubles',
+  enter_any_valid_expression: 'Saisir une expression valide'
 }

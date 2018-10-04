@@ -204,7 +204,7 @@ eYo.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (m
     goog.dom.createTextNode('(…)')
   ), M.ARGUMENTS)
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.decorator.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return eYo.DelegateSvg.Stmt.decorator.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /**
@@ -290,7 +290,7 @@ eYo.DelegateSvg.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function
     goog.dom.createTextNode('(…) -> …')
   ), variants[1])
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.funcdef_part.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return eYo.DelegateSvg.Stmt.funcdef_part.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /*
@@ -385,7 +385,7 @@ eYo.DelegateSvg.Stmt.classdef_part.prototype.populateContextMenuFirst_ = functio
     goog.dom.createTextNode('(…)')
   ), variants[1])
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.classdef_part.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return eYo.DelegateSvg.Stmt.classdef_part.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 eYo.DelegateSvg.Proc.T3s = [

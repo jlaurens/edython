@@ -176,7 +176,7 @@ class Item:
                 self.arguments.append(argument)
             else:
                 argument = self.keyword_arguments[name]
-            argument.optional = True
+                argument.optional = True
             if default is not None:
                 # record the default, just in case
                 # convert to number if possible

@@ -183,6 +183,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (m
     F('sep')
     F('end')
     F('file')
+    F('flush')
     yorn = true
   }
   return yorn
@@ -196,8 +197,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (m
  * @override
  */
 eYo.DelegateSvg.Expr.builtin__print_expr.prototype.populateContextMenuFirst_ = function (mgr) {
-  var block = this.block_
-  var yorn = eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_(mgr)
+  var yorn = eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_.apply(this, arguments)
   return eYo.DelegateSvg.Expr.builtin__print_expr.superClass_.populateContextMenuFirst_.apply(this, arguments) || yorn
 }
 

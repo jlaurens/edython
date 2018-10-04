@@ -345,7 +345,7 @@ eYo.DelegateSvg.Expr.prototype.awaitable = function (block) {
  */
 eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
-  var yorn = eYo.DelegateSvg.Expr.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  var yorn = eYo.DelegateSvg.Expr.superClass_.populateContextMenuFirst_.call(this, mgr)
   if (this.await_ || (this.awaitable && this.awaitable())) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('await', 'eyo-code-reserved'),
@@ -650,7 +650,7 @@ eYo.DelegateSvg.Expr.builtin__object.prototype.populateContextMenuFirst_ = funct
   var block = this.block_
   mgr.populateProperties(block, 'value')
   mgr.shouldSeparateInsert()
-  eYo.DelegateSvg.Expr.builtin__object.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  eYo.DelegateSvg.Expr.builtin__object.superClass_.populateContextMenuFirst_.call(this, mgr)
   return true
 }
 
@@ -670,13 +670,13 @@ eYo.DelegateSvg.Expr.builtin__object.prototype.makeTitle = function (block, op) 
  */
 eYo.DelegateSvg.Expr.makeSubclass('any', {
   data: {
-    code: {
+    expression: {
       init: '',
       synchronize: true
     }
   },
   fields: {
-    code: {
+    expression: {
       endEditing: true,
       placeholder: eYo.Msg.Placeholder.EXPRESSION
     }

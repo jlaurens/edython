@@ -256,7 +256,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/msg/js/base.js" \
 --js "src/lib/eyo/core/T3.js" \
 --js "src/lib/eyo/core/font.js" \
---js "src/lib/eyo/workspace/flyout-category.js" \
 --js "src/lib/eyo/block/helper.js" \
 --js "src/lib/eyo/core/cmath_model.js" \
 --js "src/lib/eyo/core/functions_model.js" \
@@ -299,11 +298,12 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate_svg_literal.js" \
 --js "src/lib/eyo/block/delegate_svg_list.js" \
 --js "src/lib/eyo/block/delegate_svg_operator.js" \
---js "src/lib/eyo/workspace/flyout.js" \
+--js "src/lib/eyo/workspace/flyout-category.js" \
 --js "src/lib/eyo/workspace/menu_manager.js" \
 --js "src/lib/eyo/block/delegate_svg_argument.js" \
 --js "src/lib/eyo/block/delegate_svg_comp.js" \
 --js "src/lib/eyo/block/delegate_svg_stmt.js" \
+--js "src/lib/eyo/workspace/flyout.js" \
 --js "src/lib/eyo/block/delegate_svg_control.js" \
 --js "src/lib/eyo/block/delegate_svg_group.js" \
 --js "src/lib/eyo/block/delegate_svg_import.js" \

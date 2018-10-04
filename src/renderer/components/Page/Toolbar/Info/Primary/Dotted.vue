@@ -1,6 +1,6 @@
 <template>
   <b-button-group class="mx-1">
-    <b-form-input id="eyo-info-primary-holder" v-model="blockHolder" type="text" size="10" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="canHolder"></b-form-input>
+    <b-form-input id="eyo-info-primary-holder" v-model="blockHolder" type="text" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="canHolder"></b-form-input>
     <b-dropdown id="info-primary-dotted" class="eyo-dropdown" variant="outline-secondary">
     <template slot="button-content"><div class="eyo-info-primary-dotted eyo-code eyo-content" v-html="selectedItem.title"></div></template>
     <b-dropdown-item-button v-for="item in dottedItems" v-on:click="selectedItem = item" :key="item.key" class="eyo-info-primary-dotted eyo-code" v-html="item.content"></b-dropdown-item-button>

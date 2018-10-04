@@ -2,7 +2,7 @@
   <b-button-toolbar id="info-number" key-nav  aria-label="Info toolbar number" justify>
     <b-button-toolbar>
       <b-button-group class="mx-1">
-        <b-form-input v-model="content" type="text" size="30" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-form-input>
+        <b-form-input v-model="content" type="text" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-form-input>
       </b-button-group>
       <div id='info-number-keyword' class="btn btn-outline-secondary" :disabled="!can_imag">
         <input type="checkbox" id="info-imag" v-model="imag" :disabled="!can_imag">

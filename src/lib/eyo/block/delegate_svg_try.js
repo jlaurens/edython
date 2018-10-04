@@ -155,7 +155,7 @@ eYo.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function 
   ), M.EXCEPT_AS
   )
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.except_part.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return eYo.DelegateSvg.Stmt.except_part.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /**
@@ -263,7 +263,7 @@ eYo.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (
   ), M.RAISE_FROM
   )
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.raise_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return eYo.DelegateSvg.Stmt.raise_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /**
@@ -340,7 +340,7 @@ eYo.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function 
   ), eYo.Key.BINARY
   )
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return eYo.DelegateSvg.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 eYo.DelegateSvg.Try.T3s = [

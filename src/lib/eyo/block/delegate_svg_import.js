@@ -239,7 +239,7 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
     eYo.Do.createSPAN('import *', 'eyo-code-reserved')
   ), eYo.Key.FROM_MODULE_IMPORT_STAR)
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.import_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return eYo.DelegateSvg.Stmt.import_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /// //////// future

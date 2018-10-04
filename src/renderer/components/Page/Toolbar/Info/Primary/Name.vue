@@ -1,6 +1,6 @@
 <template>
-  <b-button-group class="mx-1">
-    <b-form-input v-model="name" type="text" size="10" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-form-input>
+  <b-button-group :id="id" class="mx-1">
+    <b-form-input v-model="myName" type="text" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-form-input>
   </b-button-group>
 </template>
 
@@ -9,31 +9,31 @@
     name: 'info-primary-variant',
     data () {
       return {
-        dataKey: 'name',
-        name_: undefined
+        myName_: undefined
       }
     },
     props: {
       eyo: {
         type: Object,
         default: undefined
+      },
+      name: {
+        type: String,
+        default: undefined
       }
     },
     computed: {
       id () {
-        return 'eyo-info-' + this.dataKey
+        return 'eyo-info-name'
       },
-      name: {
+      myName: {
         get () {
-          return this.name_
+          return this.name
         },
         set (newValue) {
-          this.name_ = this.eyo.name_p = newValue
+          this.eyo.name_p = newValue
         }
       }
-    },
-    created () {
-      this.name_ = this.eyo.name_p
     }
   }
 </script>

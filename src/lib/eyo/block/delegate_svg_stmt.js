@@ -431,7 +431,7 @@ eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = 
   F(M.GLOBAL)
   F(M.NONLOCAL)
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return eYo.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /**
@@ -634,7 +634,7 @@ eYo.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (mg
       'eyo-code-comment')
   )
   F(content, data.CODE_COMMENT)
-  return eYo.DelegateSvg.Stmt.any_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr) || true
+  return eYo.DelegateSvg.Stmt.any_stmt.superClass_.populateContextMenuFirst_.call(this, mgr) || true
 }
 
 eYo.DelegateSvg.Stmt.T3s = [

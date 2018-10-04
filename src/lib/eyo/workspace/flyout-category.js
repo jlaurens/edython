@@ -15,6 +15,7 @@ goog.provide('eYo.FlyoutCategory')
 
 goog.require('eYo.T3')
 goog.require('eYo.Const')
+goog.require('eYo.Tooltip')
 
 /**
  * Flyout list of node models by category.
@@ -143,13 +144,13 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.set_display,
     eYo.T3.Expr.dict_display,
     eYo.T3.Expr.builtin__object,
-    eYo.T3.Stmt.augmented_assignment_stmt,
     eYo.T3.Stmt.import_stmt,
     {
       type: eYo.T3.Stmt.import_stmt,
       data: {
         variant: eYo.Key.FROM_MODULE_IMPORT
-      }
+      },
+      title: eYo.Tooltip.Title.import_stmt
     },
     {
       type: eYo.T3.Expr.identifier,
@@ -160,16 +161,17 @@ eYo.FlyoutCategory = {
     eYo.T3.Stmt.docstring_stmt,
     eYo.T3.Expr.longliteral,
     eYo.T3.Expr.attributeref,
-    eYo.T3.Expr.proper_slice,
     eYo.T3.Expr.slicing,
+    eYo.T3.Expr.proper_slice,
   ],
   'advanced': [
-    eYo.T3.Expr.any,
-    eYo.T3.Stmt.expression_stmt,
+    eYo.T3.Stmt.augmented_assignment_stmt,
     eYo.T3.Expr.shift_expr,
     eYo.T3.Expr.and_expr,
     eYo.T3.Expr.xor_expr,
     eYo.T3.Expr.or_expr,
+    eYo.T3.Expr.any,
+    eYo.T3.Stmt.expression_stmt,
     eYo.T3.Expr.star_expr,
     eYo.T3.Stmt.del_stmt
   ],

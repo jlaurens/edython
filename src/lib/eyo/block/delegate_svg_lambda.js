@@ -360,7 +360,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
   F('*', 0, '*…')
   F('**', 0, '**…')
   mgr.shouldSeparateInsert()
-  eYo.DelegateSvg.Expr.parameter_list.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  eYo.DelegateSvg.Expr.parameter_list.superClass_.populateContextMenuFirst_.call(this, mgr)
   return true
 }
 
