@@ -776,7 +776,6 @@ eYo.Slot.prototype.load = function (element) {
   // find the xml child with the proper slot attribute
     var children = Array.prototype.slice.call(element.childNodes)
     var i = 0
-    var tag = this.getTag()
     while (i < children.length) {
       var child = children[i++]
       if (child.nodeType === Node.ELEMENT_NODE) {
@@ -785,7 +784,7 @@ eYo.Slot.prototype.load = function (element) {
         } else if (this.inputType === Blockly.NEXT_STATEMENT) {
           attribute = child.getAttribute(eYo.Xml.FLOW)
         }
-        if (attribute === tag) {
+        if (attribute === this.key) {
           if (child.getAttribute('eyo') === 'placeholder') {
             this.setRequiredFromDom(true)
             out = true

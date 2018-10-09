@@ -292,9 +292,6 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
  * For edython.
  */
 eYo.DelegateSvg.Group.makeSubclass('elif_part', {
-  xml: {
-    tag: 'elif',
-  },
   fields: {
     label: 'elif'
   },
@@ -321,9 +318,6 @@ eYo.DelegateSvg.Group.makeSubclass('elif_part', {
  * For edython.
  */
 eYo.DelegateSvg.Group.makeSubclass('else_part', {
-  xml: {
-    tag: 'else',
-  },
   fields: {
     label: 'else'
   },

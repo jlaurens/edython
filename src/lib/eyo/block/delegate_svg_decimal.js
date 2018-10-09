@@ -201,55 +201,53 @@ eYo.FlyoutCategory.basic_decimal__module = [
   </s>
   */
   {
-    type: eYo.T3.Stmt.assignment_stmt,
-    
-  },
-  {
-    type: eYo.T3.Expr.attributeref,
-    data: {
-      name: 'real',
-      dotted: 1
-    }
-  },
-  {
-    type: eYo.T3.Expr.attributeref,
-    data: {
-      name: 'imag',
-      dotted: 1
-    }
-  },
-  {
-    type: eYo.T3.Expr.call_expr,
-    data: {
-      name: 'conjugate',
-      ary: 0,
-      dotted: 1
-    }
-  },
-  {
     type: eYo.T3.Stmt.import_stmt,
     data: {
       variant: eYo.Key.FROM_MODULE_IMPORT_STAR,
       from: 'decimal'
     }
   },
+  {
+    type: eYo.T3.Stmt.assignment_stmt,
+    slots: {
+      assigned: {
+        slots: {
+          O: {
+            type: eYo.T3.Expr.call_expr,
+            data: {
+              holder: 'decimal',
+              name: 'Decimal',
+              dotted: 0
+            }
+          },
+        },
+      },
+    },
+  },
+  /*
+  <s eyo="assignment" xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0"><x eyo="primary" dotted="1" slot="name"><x eyo="call" id="{-(QK=oqzX%N16Y$yr~," dotted="1" holder="decimal" name="getcontext" slot="holder"></x><x eyo="identifier" name="prec" slot="name"></x></x></s>
+  */
+  {
+    type: eYo.T3.Stmt.assignment_stmt,
+    slots: {
+      name: {
 
-  F('phase', ''),
-  F('polar', ''),
-  F('rect', ''),
-
-  F('sqrt', 'Racine carrée (square root)'),
-  F('exp', 'Fonction exponentielle'),
-  F('log', 'Fonction logarithme népérien, donner un deuxième argument pour changer de base'),
-  F('log10', 'Fonction logarithme de base 10 avec une meilleure précision que log(x, 10)'),
-  F('cos', 'Fonction cosinus'),
-  F('sin', 'Fonction sinus'),
-  F('tan', 'Fonction tangente'),
- 
-  F('isclose', 'Teste si deux valeurs sont proches'),
-
-  F_k('pi', '≅ π'),
-  F_k('e', 'Constante d\'Euler (≅)'),
+      },
+      assigned: {
+        slots: {
+          O: {
+            type: eYo.T3.Expr.call_expr,
+            data: {
+              holder: 'decimal',
+              name: 'Decimal',
+              dotted: 0
+            }
+          },
+        },
+      },
+    },
+  },
+  F('getcontext', 'Le contexte de calcul'),
   F_k('tau', 'τ (≅ 2π)'),
 ]
 

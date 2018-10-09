@@ -616,9 +616,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           endEditing: true,
           variable: true
         }
-      },
-      xml: {
-        tag: 'expression'
       }
     },
     annotation: {
