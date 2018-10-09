@@ -34,7 +34,7 @@ eYo.App = Object.create(null)
 eYo.App.doCopy = function(optNoNext) {
   var block = Blockly.selected
   if (block) {
-    var xmlBlock = eYo.Xml.blockToDom(block, false, optNoNext);
+    var xmlBlock = eYo.Xml.blockToDom(block, true, optNoNext);
     // Encode start position in XML.
     var xy = block.getRelativeToSurfaceXY();
     xmlBlock.setAttribute('x', block.RTL ? -xy.x : xy.x);

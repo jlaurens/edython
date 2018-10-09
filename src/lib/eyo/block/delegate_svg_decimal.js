@@ -225,7 +225,7 @@ eYo.FlyoutCategory.basic_decimal__module = [
     },
   },
   /*
-  <s eyo="assignment" xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0"><x eyo="primary" dotted="1" slot="name"><x eyo="call" id="{-(QK=oqzX%N16Y$yr~," dotted="1" holder="decimal" name="getcontext" slot="holder"></x><x eyo="identifier" name="prec" slot="name"></x></x></s>
+  <x eyo="primary" dotted="1" xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0"><x eyo="call" dotted="1" holder="decimal" name="getcontext" slot="holder"></x><x eyo="identifier" name="prec" slot="name"></x></x>
   */
   {
     type: eYo.T3.Stmt.assignment_stmt,

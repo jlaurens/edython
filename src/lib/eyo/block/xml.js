@@ -1103,7 +1103,7 @@ eYo.Xml.Call.domToBlock = function (element, workspace) {
  * @return an enumerator
  */
 eYo.Xml.compareBlocks = function (lhs, rhs) {
-  var xmlL = goog.dom.xml.serialize(eYo.Xml.blockToDom(lhs, false))
-  var xmlR = goog.dom.xml.serialize(eYo.Xml.blockToDom(rhs, false))
+  var xmlL = goog.dom.xml.serialize(eYo.Xml.blockToDom(lhs, true))
+  var xmlR = goog.dom.xml.serialize(eYo.Xml.blockToDom(rhs, true))
   return xmlL < xmlR ? -1 : (xmlL < xmlR ? 1 : 0)
 }

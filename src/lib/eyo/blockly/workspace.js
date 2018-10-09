@@ -421,7 +421,7 @@ eYo.deleteBlock = function (block, deep) {
  * @private
  */
 eYo.copyBlock = function(block, deep) {
-  var xmlBlock = eYo.Xml.blockToDom(block, false, !deep);
+  var xmlBlock = eYo.Xml.blockToDom(block, true, !deep);
   // Copy only the selected block and internal blocks.
   // Encode start position in XML.
   var xy = block.getRelativeToSurfaceXY();
