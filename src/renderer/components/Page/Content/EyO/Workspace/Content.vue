@@ -16,6 +16,13 @@
       </b-button-group>
       <div id="eyo-flyout-toolbar-label">
         {{label}}
+        <b-form-checkbox id="eyo-flyout-toolbar-label-check"
+                        v-model="isBasic"
+                        value="basic"
+                        unchecked-value=""
+                        v-if="canBasic">
+          basic
+        </b-form-checkbox>
       </div>
     </div>
   </div>
@@ -27,7 +34,7 @@
   import IconBug from '@@/Icon/IconBug.vue'
 
   export default {
-    name: 'eyo-workspace-content',
+    key: 'eyo-workspace-content',
     components: {
       IconBase,
       IconTriangle,
@@ -38,12 +45,14 @@
         items: {},
         workspace: null,
         flyout: null,
-        label: '...'
+        label: '...',
+        isBasic: true,
+        selectedCategory: undefined
       }
       var Msg = this.$$.eYo.Msg
       var F = function (name) {
         model.items[name] = {
-          name: name,
+          key: name,
           content: Msg[name.toUpperCase()],
           in_category: true,
           label: 'Blocs ' + Msg[name.toUpperCase()]
@@ -59,22 +68,29 @@
       F('branching')
       F('looping')
       F('function')
-      var moduleF = function (name, content) {
-        model.items[name + '__module'] = {
-          name: name + '__module',
-          content: content || name,
+      var moduleF = function (name) {
+        var content = 'basic_' + name
+        var basic_module = content + '__module'
+        model.items[basic_module] = {
+          key: basic_module,
+          content: content,
           in_module: true,
-          label: 'Module ' + (content || name)
+          label: 'Module ' + name
         }
+        var module = name + '__module'
+        model.items[module] = {
+          key: module,
+          content: name,
+          in_module: true,
+          label: 'Module ' + name,
+          basic: model.items[basic_module]
+        }
+        model.items[basic_module].full = model.items[module]
       }
-      moduleF('basic_math', 'math (basic)')
-      moduleF('math')
-      moduleF('basic_random', 'random (basic)')
-      moduleF('random')
-      moduleF('basic_turtle', 'turtle (basic)')
       moduleF('turtle')
+      moduleF('math')
+      moduleF('random')
       moduleF('cmath')
-      model.selectedCategory = undefined
       model.levels = [
         model.items.basic,
         model.items.intermediate,
@@ -90,11 +106,8 @@
         model.items.function
       ]
       model.modules = [
-        model.items.basic_math__module,
         model.items.math__module,
-        model.items.basic_random__module,
         model.items.random__module,
-        model.items.basic_turtle__module,
         model.items.turtle__module,
         model.items.cmath__module
       ]
@@ -106,6 +119,9 @@
       },
       flyoutCategory: function () {
         return this.$store.state.UI.flyoutCategory
+      },
+      canBasic () {
+        return this.selectedCategory && this.selectedCategory.in_module
       }
     },
     watch: {
@@ -113,20 +129,30 @@
         this.flyout && this.flyout.eyo.doSlide(newValue)
       },
       flyoutCategory: function (newValue, oldValue) {
+        console.log(newValue, oldValue)
         var item = this.items[newValue]
         if (this.workspace && this.flyout && item) { // this.workspace is necessary
           var list = this.flyout.eyo.getList(newValue)
           if (list && list.length) {
             this.flyout.show(list)
-            this.selectedCategory = item
+            this.selectedCategory = (this.isBasic && item.basic) || item
           }
         }
       },
       // whenever `selectedCategory` changes, this function will run
       selectedCategory: function (newValue, oldValue) {
         if (newValue) {
-          this.$store.commit('UI_SET_FLYOUT_CATEGORY', newValue.name)
+          this.$store.commit('UI_SET_FLYOUT_CATEGORY', newValue.key)
           this.label = newValue.label
+        }
+      },
+      // whenever `selectedCategory` changes, this function will run
+      isBasic: function (newValue, oldValue) {
+        var item = this.selectedCategory
+        if (newValue && item.basic) {
+          this.selectedCategory = item.basic
+        } else if (!newValue && item.full) {
+          this.selectedCategory = item.full
         }
       }
     },

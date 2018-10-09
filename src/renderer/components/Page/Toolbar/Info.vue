@@ -3,6 +3,9 @@
     <div v-if="isSelected($$.eYo.DelegateSvg.Expr.primary.eyo.getModel().xml.types)">
       <info-primary :eyo="eyo" :slotholder="slotholder"></info-primary>
     </div>
+    <div v-else-if="isSelected([$$.eYo.T3.Stmt.call_stmt])">
+        <info-primary :eyo="eyo" :slotholder="slotholder"></info-primary>
+    </div>
     <div v-else-if="isSelected([$$.eYo.T3.Expr.shortliteral, $$.eYo.T3.Expr.longliteral, $$.eYo.T3.Expr.shortbytesliteral, $$.eYo.T3.Expr.longbytesliteral, $$.eYo.T3.Expr.shortstringliteral, $$.eYo.T3.Expr.longstringliteral, $$.eYo.T3.Stmt.docstring_stmt])">
       <info-literal :eyo="eyo"></info-literal>
     </div>

@@ -76,7 +76,9 @@ eYo.Xml = {
   
   WORKSPACE: 'workspace', // tag name
   CONTENT: 'content', // tag name
-  EDYTHON: 'edython' // tag name
+  EDYTHON: 'edython', // tag name
+
+  PLACEHOLDER: 'placeholder'
 }
 
 console.warn('No eYo.Xml.CALL !!!!')
@@ -431,7 +433,7 @@ eYo.Xml.blockToDom = (function () {
       goog.isFunction(controller.blockToDom))) {
       var element = controller.blockToDom.call(eyo, block, optNoId, optNoNext)
     } else {
-      var tag = block.eyo.tagName(block)
+      var tag = block.eyo.tagName()
       element = goog.dom.createDom(block.eyo instanceof eYo.DelegateSvg.Expr? eYo.Xml.EXPR: eYo.Xml.STMT)
       element.setAttribute('eyo', tag.substring(4))
       !optNoId && element.setAttribute('id', block.id)
@@ -457,12 +459,11 @@ goog.require('eYo.DelegateSvg.Expr')
 /**
  * The xml tag name of this block, as it should appear in the saved data.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise
  */
-eYo.Delegate.prototype.tagName = function (block) {
+eYo.Delegate.prototype.tagName = function () {
   var tag = this.constructor.eyo.tagName || (this instanceof eYo.DelegateSvg.Expr ? eYo.T3.Xml.toDom.Expr : eYo.T3.Xml.toDom.Stmt)[this.constructor.eyo.key]
-  return (tag && 'eyo:' + tag) || block.type
+  return (tag && 'eyo:' + tag) || this.block_.type || ('eyo:' + eYo.XML.PLACEHOLDER)
 }
 
 goog.require('eYo.DelegateSvg.Group')
@@ -473,11 +474,10 @@ goog.require('eYo.DelegateSvg.List')
  * The xml tag name of this block, as it should appear in the saved data.
  * Default implementation just returns the block type.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise
  */
-eYo.DelegateSvg.List.prototype.tagName = function (block) {
-  return block.eyo.wrapped_ ? 'eyo:' + eYo.Xml.LIST : eYo.DelegateSvg.List.superClass_.tagName.call(this, block)
+eYo.DelegateSvg.List.prototype.tagName = function () {
+  return this.block_.eyo.wrapped_ ? 'eyo:' + eYo.Xml.LIST : eYo.DelegateSvg.List.superClass_.tagName.call(this)
 }
 
 goog.provide('eYo.Xml.Text')
@@ -892,7 +892,7 @@ eYo.Xml.fromDom = function (block, element) {
       })
       if (eyo instanceof eYo.DelegateSvg.List) {
         eYo.Do.forEachElementChild(element, function (child) {
-          var name = child.getAttribute(eYo.XmlKey.SLOT)
+          var name = child.getAttribute(eYo.Xml.SLOT)
           var input = eyo.getInput(name)
           if (input) {
             if (input.connection) {
@@ -930,8 +930,8 @@ eYo.Xml.fromDom = function (block, element) {
           })
         }
       }
-      var out = statement(block.nextConnection, eYo.XmlKey.NEXT)
-      out = statement(eyo.inputSuite && eyo.inputSuite.connection, eYo.XmlKey.SUITE) || out
+      var out = statement(block.nextConnection, eYo.Xml.NEXT)
+      out = statement(eyo.inputSuite && eyo.inputSuite.connection, eYo.Xml.SUITE) || out
       return out
     }
     var state = xmlBlock.getAttribute(eYo.Xml.STATE)
@@ -982,29 +982,29 @@ eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element) {
 /**
  * The xml tag name of this block, as it should appear in the saved data.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise
  */
-eYo.DelegateSvg.Expr.primary.prototype.tagName = function (block) {
+eYo.DelegateSvg.Expr.primary.prototype.tagName = function () {
+  var type = this.block_.type
   if ([
     eYo.T3.Expr.parent_module,
     eYo.T3.Expr.identifier_defined,
     eYo.T3.Expr.dotted_name,
     eYo.T3.Expr.dotted_name_as,
     eYo.T3.Expr.attributeref
-  ].indexOf(block.type) >= 0) {
+  ].indexOf(type) >= 0) {
     return eYo.T3.Expr.primary
   }
-  if (block.type === eYo.T3.Expr.call_expr) {
+  if (type === eYo.T3.Expr.call_expr) {
     return 'eyo:' + eYo.Key.CALL
   }
-  if (block.type === eYo.T3.Expr.named_call_expr) {
+  if (type === eYo.T3.Expr.named_call_expr) {
     return 'eyo:' + eYo.Key.CALL
   }
-  if (block.type === eYo.T3.Expr.named_slicing) {
+  if (type === eYo.T3.Expr.named_slicing) {
     return eYo.T3.Expr.slicing
   }
-  if (block.type === eYo.T3.Expr.named_subscription) {
+  if (type === eYo.T3.Expr.named_subscription) {
     return eYo.T3.Expr.subscription
   }
   if ([
@@ -1012,10 +1012,10 @@ eYo.DelegateSvg.Expr.primary.prototype.tagName = function (block) {
     eYo.T3.Expr.identifier_annotated,
     eYo.T3.Expr.identifier_annotated_defined,
     eYo.T3.Expr.identifier_defined
-  ].indexOf(block.type) >= 0) {
+  ].indexOf(type) >= 0) {
     return eYo.T3.Expr.identifier
   }
-  return block.type
+  return type
 }
 
 goog.provide('eYo.Xml.Comparison')

@@ -121,8 +121,8 @@ var F_expr = function (name, title) {
     type: eYo.T3.Expr.call_expr,
     data: {
       name: name,
-      parent: 'turtle',
-      variant: eYo.Key.NAME
+      holder: 'turtle',
+      dotted: 0
     },
     title: key
   }
@@ -134,8 +134,8 @@ var F_stmt = function (name, title) {
     type: eYo.T3.Stmt.call_stmt,
     data: {
       name: name,
-      parent: 'turtle',
-      variant: eYo.Key.NAME
+      holder: 'turtle',
+      dotted: 0
     },
     title: key
   }
@@ -192,8 +192,8 @@ var F_expr = function (name, title) {
     type: eYo.T3.Expr.call_expr,
     data: {
       name: name,
-      parent: '',
-      variant: eYo.Key.PARENT_NAME
+      holder: 'turtle',
+      dotted: 1
     },
     title: key
   }
@@ -205,8 +205,8 @@ var F_stmt = function (name, title) {
     type: eYo.T3.Stmt.call_stmt,
     data: {
       name: name,
-      parent: '',
-      variant: eYo.Key.PARENT_NAME
+      holder: 'turtle',
+      dotted: 1
     },
     title: key
   }
@@ -237,9 +237,9 @@ eYo.FlyoutCategory.turtle__module = [
           O: {
             type: eYo.T3.Expr.call_expr,
             data: {
-              parent: 'turtle',
+              holder: 'turtle',
               name: 'Turtle',
-              variant: eYo.Key.PARENT_NAME
+              dotted: 1
             }
           },
         },
@@ -277,8 +277,8 @@ eYo.FlyoutCategory.turtle__module = [
             type: eYo.T3.Expr.call_expr,
             data: {
               name: 'stamp',
-              parent: '',
-              variant: eYo.Key.PARENT_NAME
+              holder: 'turtle',
+              dotted: 1
             }
           },
         },

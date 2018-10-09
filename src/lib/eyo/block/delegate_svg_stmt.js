@@ -396,10 +396,9 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_nonlocal_stmt, {
  * Default implementation just returns 'eyo:list' when this block is embedded
  * and the inherited value otherwise.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise
  */
-eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.tagName = function (block) {
+eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.tagName = function () {
   var M = this.data.variant.model
   var current = this.data.variant.get()
   return current === M.GLOBAL ? 'eyo:global' : 'eyo:nonlocal'

@@ -130,9 +130,8 @@ var F = function (name, title) {
     type: eYo.T3.Expr.call_expr,
     data: {
       name: name,
-      parent: 'math',
-      variant: eYo.Key.NAME,
-      option: eYo.Key.CALL_EXPR
+      holder: 'math',
+      dotted: 0
     },
     title: key
   }
@@ -144,9 +143,8 @@ var F_k = function (name, title) {
     type: eYo.T3.Expr.attributeref,
     data: {
       name: name,
-      parent: 'math',
-      variant: eYo.Key.NAME,
-      option: eYo.Key.NONE
+      holder: 'math',
+      dotted: 0
     },
     title: key
   }
@@ -216,8 +214,8 @@ var F = function (name, title) {
     type: eYo.T3.Expr.call_expr,
     data: {
       name: name,
-      parent: 'math',
-      variant: eYo.Key.PARENT_NAME,
+      holder: 'math',
+      dotted: 1
     },
     title: key
   }
@@ -229,9 +227,8 @@ var F_k = function (name, title) {
     type: eYo.T3.Expr.attributeref,
     data: {
       name: name,
-      parent: 'math',
-      variant: eYo.Key.PARENT_NAME,
-      option: eYo.Key.NONE
+      holder: 'math',
+      dotted: 1
     },
     title: key
   }

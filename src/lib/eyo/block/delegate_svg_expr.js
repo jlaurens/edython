@@ -29,6 +29,7 @@ eYo.DelegateSvg.makeSubclass('Expr', {
     modifier: {
       order: 99,
       all: ['', '*', '**'],
+      init: '',
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         this.setIncog(!newValue || !newValue.length)
@@ -303,7 +304,6 @@ eYo.DelegateSvg.Expr.prototype.replaceBlock = function (other) {
 /**
  * Will draw the block. Default implementation does nothing.
  * The print statement needs some preparation before drawing.
- * @param {!Block} block
  * @private
  */
 eYo.DelegateSvg.Expr.prototype.willRender_ = function () {
@@ -321,11 +321,11 @@ eYo.DelegateSvg.Expr.prototype.willRender_ = function () {
  * @param {!Blockly.Block} block The block owning the receiver.
  * @return yes or no
  */
-eYo.DelegateSvg.Expr.prototype.awaitable = function (block) {
+eYo.DelegateSvg.Expr.prototype.awaitable = function () {
   if (!this.fields.await) {
     return false
   }
-  var parent = block.getParent()
+  var parent = this.block_.getParent()
   if (!parent) {
     return true
   }

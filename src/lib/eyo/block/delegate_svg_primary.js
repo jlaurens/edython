@@ -375,6 +375,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Expr.call_expr) {
           this.set(this.CALL_EXPR)
+        } else if (type === eYo.T3.Stmt.call_stmt) {
+          this.set(this.CALL_EXPR)
         } else if (type === eYo.T3.Expr.slicing) {
           this.set(this.SLICING)
         } else if (type === eYo.T3.Expr.dotted_name_as || type === eYo.T3.Expr.identifier_as || type === eYo.T3.Expr.expression_as) {
@@ -435,7 +437,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         eYo.T3.Expr.custom_dotted_name,
         eYo.T3.Expr.custom_parent_module
       ],
-      noUndo: true
+      noUndo: true,
+      xml: false
     },
     ary: {
       order: 20001,
@@ -544,10 +547,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       check: eYo.T3.Expr.Check.primary,
       didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
-        this.sourceBlock_.eyo.owner.updateProfile()
+        this.connection.sourceBlock_.eyo.updateProfile()
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
-        this.sourceBlock_.eyo.owner.updateProfile()
+        this.connection.sourceBlock_.eyo.updateProfile()
       },
       hole_value: eYo.Msg.Placeholder.PRIMARY,
       xml: {
@@ -597,10 +600,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         ]
       },
       didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
-        this.sourceBlock_.eyo.owner.updateProfile()
+        this.connection.sourceBlock_.eyo.updateProfile()
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
-        this.sourceBlock_.eyo.owner.updateProfile()
+        this.connection.sourceBlock_.eyo.updateProfile()
       },
       plugged: eYo.T3.Expr.primary,
       hole_value: 'expression',
@@ -775,6 +778,7 @@ eYo.DelegateSvg.Expr.primary.prototype.initBlock = function () {
  * updateProfile.
  */
 eYo.DelegateSvg.Expr.primary.prototype.updateProfile = function () {
+  ++this.change.count
   this.profile_p = this.getProfile()
   this.data.subtype.set(this.profile_p.tos && this.profile_p.tos.raw)
 }
@@ -839,57 +843,52 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
         ans.identifier = tos.name
         ans.module = tos.holder
       }
-      if (ans.dotted === 1) {
-        target = this.holder_s.targetBlock()
-        if (target) {
-          eyo = target.eyo
-          if (eyo.checkOutputType(eYo.T3.Expr.identifier)) {
-            type = eYo.T3.Expr.identifier
-          } else if (eyo.checkOutputType(eYo.T3.Expr.dotted_name)) {
-            type = eYo.T3.Expr.dotted_name
-          } else if (eyo.checkOutputType(eYo.T3.Expr.parent_module)) {
-            type = eYo.T3.Expr.parent_module
-          } else if (eyo.checkOutputType(eYo.T3.Expr.Check.named_primary)) {
-            type = eYo.T3.Expr.named_primary
-          } else if (eyo.checkOutputType(eYo.T3.Expr.Check.primary)) {
-            type = eYo.T3.Expr.primary
-          } else {
-            type = eYo.T3.Expr.error // this block should not be connected
-          }
-          ans.holder = {
-            type: type,
-            slot: type,
-            target: target
-          }
-          p = eyo.profile_p
-          if (p) {
-            var base = p.module
-              ? p.module + '.' + p.identifier
-              : p.identifier
-            base && (
-              ans.module = ans.module
-                ? base + '.' + ans.module
-                : base
-            )
-            ans.holder.profile = p
-          }
+      target = this.holder_s.targetBlock()
+      if (ans.dotted < 2 && target) {
+        eyo = target.eyo
+        if (eyo.checkOutputType(eYo.T3.Expr.identifier)) {
+          type = eYo.T3.Expr.identifier
+        } else if (eyo.checkOutputType(eYo.T3.Expr.dotted_name)) {
+          type = eYo.T3.Expr.dotted_name
+        } else if (eyo.checkOutputType(eYo.T3.Expr.parent_module)) {
+          type = eYo.T3.Expr.parent_module
+        } else if (eyo.checkOutputType(eYo.T3.Expr.Check.named_primary)) {
+          type = eYo.T3.Expr.named_primary
+        } else if (eyo.checkOutputType(eYo.T3.Expr.Check.primary)) {
+          type = eYo.T3.Expr.primary
         } else {
-          tos = eYo.Do.typeOfString(this.holder_p)
-          type = tos.expr
-          ans.holder = {
-            type: type,
-            field: type
-          }
-          base = this.holder_p
+          type = eYo.T3.Expr.error // this block should not be connected
+        }
+        ans.holder = {
+          type: type,
+          slot: type,
+          target: target
+        }
+        p = eyo.profile_p
+        if (p) {
+          var base = p.module
+            ? p.module + '.' + p.identifier
+            : p.identifier
           base && (
             ans.module = ans.module
               ? base + '.' + ans.module
               : base
           )
+          ans.holder.profile = p
         }
       } else {
+        tos = eYo.Do.typeOfString(this.holder_p)
+        type = tos.expr
         ans.holder = {
+          type: type,
+          field: type
         }
+        base = this.holder_p
+        base && (
+          ans.module = ans.module
+            ? base + '.' + ans.module
+            : base
+        )
       }
       ans.identifier && (ans.tos = eYo.Do.typeOfString(ans.identifier, ans.module))
       return {
@@ -1203,6 +1202,38 @@ eYo.DelegateSvg.Stmt.makeSubclass('base_call_stmt', {
 }, eYo.DelegateSvg.Stmt)
 
 eYo.DelegateSvg.Stmt.base_call_stmt.prototype.getType = eYo.DelegateSvg.Expr.primary.prototype.getType
+
+eYo.DelegateSvg.Stmt.base_call_stmt.prototype.updateProfile = eYo.DelegateSvg.Expr.primary.prototype.updateProfile
+
+eYo.DelegateSvg.Stmt.base_call_stmt.prototype.getProfile = eYo.DelegateSvg.Expr.primary.prototype.getProfile
+
+
+/**
+ * Initialize a block.
+ * Called from block's init method.
+ * This should be called only once.
+ * The underlying model is not expected to change while running.
+ * @param {!Blockly.Block} block to be initialized.
+ * For subclassers eventually
+ */
+eYo.DelegateSvg.Stmt.base_call_stmt.prototype.initBlock = function () {
+  eYo.DelegateSvg.Stmt.base_call_stmt.superClass_.initBlock.call(this)
+  this.profile_ = undefined
+  Object.defineProperty(
+    this,
+    'profile_p',
+    {
+      get () {
+        return this.profile_ === this.getProfile()
+          ? this.profile_
+          : (this.profile_ = this.getProfile()) // this should never happen
+      },
+      set (newValue) {
+        this.profile_ = newValue
+      }
+    }
+  )
+}
 
 /**
  * Class for a DelegateSvg, call statement block.

@@ -28,14 +28,14 @@ goog.require('eYo.FlyoutCategory')
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-// eYo.DelegateSvg.Expr.cmath__call_expr.populateMenu = function (block, mgr) {
+// eYo.DelegateSvg.Expr.decimal__call_expr.populateMenu = function (block, mgr) {
 //   var eyo = block.eyo
 //   // populate the menu with the functions in the same category
 //   var name_get = eyo.data.name.get()
-//   var model = eYo.Model.cmath__module
+//   var model = eYo.Model.decimal__module
 //   var item_get = model.getItem(name_get)
 //   var items = model.getItemsInCategory(item_get.category)
-//   var module = eyo.data.fromFlag.get() ? '' : 'cmath.'
+//   var module = eyo.data.fromFlag.get() ? '' : 'decimal.'
 //   var F = function (i) {
 //     var item = model.getItem(items[i])
 //     var type = model.data.types[item.type]
@@ -69,8 +69,8 @@ goog.require('eYo.FlyoutCategory')
 //     var category = categories[i]
 //     if (i !== item_get.category) {
 //       var menuItem = mgr.newMenuItem(contents[category] || category, function () {
-//         var items = eYo.Model.cmath__module.getItemsInCategory(i)
-//         var item = eYo.Model.cmath__module.getItem(items[0])
+//         var items = eYo.Model.decimal__module.getItemsInCategory(i)
+//         var item = eYo.Model.decimal__module.getItem(items[0])
 //         eyo.data.name.set(item.names[0])
 //       })
 //       mgr.addChild(menuItem, true)
@@ -84,13 +84,13 @@ goog.require('eYo.FlyoutCategory')
 // }
 
 // /**
-//  * Class for a DelegateSvg, cmath constant block.
+//  * Class for a DelegateSvg, decimal constant block.
 //  * As call is already a reserved message in javascript,
 //  * we use call_expr instead.
 //  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
 //  * For edython.
 //  */
-// eYo.DelegateSvg.Expr.cmath__call_expr.makeSubclass('cmath__const', {
+// eYo.DelegateSvg.Expr.decimal__call_expr.makeSubclass('decimal__const', {
 //   data: {
 //     callerFlag: {
 //       init: true, // true when `foo` is expected instead of `foo(…)`
@@ -118,44 +118,91 @@ goog.require('eYo.FlyoutCategory')
 //     pentary: null,
 //   },
 //   output: {
-//     check: [eYo.T3.Expr.cmath__const, eYo.T3.Expr.builtin__object]
+//     check: [eYo.T3.Expr.decimal__const, eYo.T3.Expr.builtin__object]
 //   }
 // })
 
 var F = function (name, title) {
-  var key = 'cmath__'+name
+  var key = 'decimal__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
     type: eYo.T3.Expr.call_expr,
     data: {
       name: name,
-      module: 'cmath',
+      module: 'decimal',
       dotted: 0
     },
     title: key
   }
 }
 var F_k = function (name, title) {
-  var key = 'cmath__'+name
+  var key = 'decimal__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
     type: eYo.T3.Expr.call_expr,
     data: {
       name: name,
-      module: 'cmath',
+      module: 'decimal',
       dotted: 0
     },
     title: key
   }
 }
-
-eYo.FlyoutCategory.basic_cmath__module = [
+/*
+    'Decimal': 0,
+    'getcontext': 1,
+    'setcontext': 2,
+    'localcontext': 3,
+    'BasicContext': 4,
+    'ExtendedContext': 5,
+    'DefaultContext': 6,
+    'Context': 7,
+    'MAX_PREC': 8,
+    'MAX_EMAX': 9,
+    'MIN_EMIN': 10,
+    'MIN_ETINY': 11,
+    'HAVE_THREADS': 12,
+    'ROUND_CEILING': 13,
+    'ROUND_DOWN': 14,
+    'ROUND_FLOOR': 15,
+    'ROUND_HALF_DOWN': 16,
+    'ROUND_HALF_EVEN': 17,
+    'ROUND_HALF_UP': 18,
+    'ROUND_UP': 19,
+    'ROUND_05UP': 20,
+    'Clamped': 21,
+    'DecimalException': 22,
+    'DivisionByZero': 23,
+    'Inexact': 24,
+    'InvalidOperation': 25,
+    'Overflow': 26,
+    'Rounded': 27,
+    'Subnormal': 28,
+    'Underflow': 29,
+    'FloatOperation': 30
+ 
+    */
+eYo.FlyoutCategory.basic_decimal__module = [
   {
     type: eYo.T3.Expr.call_expr,
     data: {
-      name: 'complex',
+      name: 'decimal',
       dotted: 0
     }
+  },
+  /*
+  <s eyo="assignment" variant="name">
+  <x eyo="primary" dotted="1" name="prec" slot="name">
+  <x eyo="call" dotted="1" holder="decimal" name="getcontext" slot="holder"></x>
+  </x>
+  <x eyo="list" slot="assigned">
+  <x eyo="literal" slot="O">28</x>
+  </x>
+  </s>
+  */
+  {
+    type: eYo.T3.Stmt.assignment_stmt,
+    
   },
   {
     type: eYo.T3.Expr.attributeref,
@@ -183,7 +230,7 @@ eYo.FlyoutCategory.basic_cmath__module = [
     type: eYo.T3.Stmt.import_stmt,
     data: {
       variant: eYo.Key.FROM_MODULE_IMPORT_STAR,
-      from: 'cmath'
+      from: 'decimal'
     }
   },
 
@@ -207,33 +254,33 @@ eYo.FlyoutCategory.basic_cmath__module = [
 ]
 
 var F = function (name, title) {
-  var key = 'cmath__'+name
+  var key = 'decimal__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
     type: eYo.T3.Expr.call_expr,
     data: {
       name: name,
-      holder: 'cmath',
+      holder: 'decimal',
       dotted: 1
     },
     title: key
   }
 }
 var F_k = function (name, title) {
-  var key = 'cmath__'+name
+  var key = 'decimal__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
     type: eYo.T3.Expr.attributeref,
     data: {
       name: name,
-      holder: 'cmath',
+      holder: 'decimal',
       dotted: 1
     },
     title: key
   }
 }
 
-eYo.FlyoutCategory.cmath__module = [
+eYo.FlyoutCategory.decimal__module = [
   {
     type: eYo.T3.Expr.call_expr,
     data: {
@@ -273,7 +320,7 @@ eYo.FlyoutCategory.cmath__module = [
         slots: {
           O: {
             type: eYo.T3.Expr.identifier,
-            data: 'cmath',
+            data: 'decimal',
           },
         },
       }
@@ -317,9 +364,9 @@ eYo.FlyoutCategory.cmath__module = [
 ]
 
 goog.mixin(eYo.Tooltip.Title, {
-  cmath__import_stmt: 'Importer le module cmath',
+  decimal__import_stmt: 'Importer le module decimal',
 })
 
 eYo.DelegateSvg.CMath.T3s = [
-  eYo.T3.Expr.cmath__const
+  eYo.T3.Expr.decimal__const
 ]

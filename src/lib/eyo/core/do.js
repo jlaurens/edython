@@ -432,7 +432,7 @@ eYo.Do.typeOfString = function (candidate, module) {
     }
   }
   if (module) {
-    var ans = f(module)
+    var ans = f(module + '__module')
     if (ans) {
       return ans
     }
@@ -634,7 +634,7 @@ eYo.Do.typeOfString = function (candidate, module) {
     } else {
       base = eYo.T3.Expr.unset
     }
-    candidate = m.identifier
+    candidate = m.name
     var holder = module
       ? m.holder
         ? module + '.' + m.holder
@@ -659,7 +659,6 @@ eYo.Do.typeOfString = function (candidate, module) {
       model: ans && ans.model
     }
   }
-  var components = candidate.split('.')
   if (eYo.XRE.identifier.exec(candidate)) {
     return {
       raw: eYo.T3.Expr.custom_identifier,

@@ -454,11 +454,3 @@ eYo.Const.Event = {
   asynced: 'eyo:asynced'
 }
 
-eYo.XmlKey = {
-  // EXPR: 'x', // tag name
-  SLOT: 'slot', // attribute name
-  LIST: 'list', // attribute name
-  FLOW: 'flow', // attribute name
-  SUITE: 'suite',
-  NEXT: 'next'
-}

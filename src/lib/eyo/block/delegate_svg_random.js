@@ -45,9 +45,9 @@ goog.require('eYo.FlyoutCategory')
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.call_expr.makeSubclass('random__randrange', {
+eYo.DelegateSvg.Expr.primary.makeSubclass('random__randrange', {
   data: {
-    parent: {
+    holder: {
       init: 'random',
     },
     name: {
@@ -56,9 +56,6 @@ eYo.DelegateSvg.Expr.call_expr.makeSubclass('random__randrange', {
       xml: false
     },
     variant: {
-      init: eYo.Key.PARENT_NAME,
-    },
-    option: {
       init: eYo.Key.CALL_EXPR,
       all: [
         eYo.Key.NONE,
@@ -67,11 +64,10 @@ eYo.DelegateSvg.Expr.call_expr.makeSubclass('random__randrange', {
     }
   },
   slots: {
-    parent: {
+    holder: {
       order: 10,
       fields: {
-        label: '',
-        bind: null
+        bind: ''
       }
     }
   },
@@ -87,8 +83,8 @@ var F = function (name, title) {
     type: eYo.T3.Expr.call_expr,
     data: {
       name: name,
-      parent: 'random',
-      variant: eYo.Key.NAME
+      holder: 'random',
+      dotted: 0
     },
     title: key
   }
@@ -101,7 +97,7 @@ var F_s = function (name, title) {
     data: {
       name: name,
       parent: 'random',
-      variant: eYo.Key.NAME
+      dotted: 0
     },
     title: key
   }
@@ -118,8 +114,7 @@ eYo.FlyoutCategory.basic_random__module = [
     type: eYo.T3.Expr.call_expr,
     data: {
       name: 'randint',
-      parent: 'random',
-      variant: eYo.Key.NAME
+      holder: 'random'
     },
     slots: {
       binary: { // implement 'main' instead of 'binary'
@@ -138,8 +133,7 @@ eYo.FlyoutCategory.basic_random__module = [
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'choice',
-        parent: 'random',
-        variant: eYo.Key.NAME
+        holder: 'random'
       },
       slots: {
         unary: {
@@ -187,8 +181,7 @@ eYo.FlyoutCategory.basic_random__module = [
     type: eYo.T3.Stmt.call_stmt,
     data: {
       name: 'setstate',
-      parent: 'random',
-      variant: eYo.Key.NAME
+      holder: 'random'
     }
   }
 ]
@@ -200,8 +193,8 @@ F = function (name, title) {
     type: eYo.T3.Expr.call_expr,
     data: {
       name: name,
-      parent: 'random',
-      variant: eYo.Key.PARENT_NAME
+      holder: 'random',
+      dotted: 1
     },
     title: key
   }
@@ -213,8 +206,8 @@ F_s = function (name, title) {
     type: eYo.T3.Stmt.call_stmt,
     data: {
       name: name,
-      parent: 'random',
-      variant: eYo.Key.PARENT_NAME
+      holder: 'random',
+      dotted: 1
     },
     title: key
   }
@@ -240,8 +233,7 @@ eYo.FlyoutCategory.random__module = [
     type: eYo.T3.Expr.call_expr,
     data: {
       name: 'randint',
-      parent: 'random',
-      variant: eYo.Key.PARENT_NAME
+      holder: 'random'
     },
     slots: {
       binary: { // implement 'main' instead of 'binary'

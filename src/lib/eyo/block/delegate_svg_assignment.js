@@ -296,6 +296,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         slot.required = newValue === this.TARGET
         slot.setIncog(!slot.required)
       },
+      xml: false
     },
     name: {
       init: '',
@@ -326,11 +327,25 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
           variable: true
         }
       },
-      check: eYo.T3.Expr.Check.target
+      check: eYo.T3.Expr.Check.target,
+      xml: {
+        didLoad: /** @suppress {globalThis} */ function () {
+          if (this.isRequiredFromModel()) {
+            this.owner.variant_p = eYo.Key.NAME
+          }
+        }
+      }
     },
     target: {
       order: 2,
-      wrap: eYo.T3.Expr.target_list
+      wrap: eYo.T3.Expr.target_list,
+      xml: {
+        didLoad: /** @suppress {globalThis} */ function () {
+          if (this.isRequiredFromModel()) {
+            this.owner.variant_p = eYo.Key.TARGET
+          }
+        }
+      }
     },
     assigned: {
       order: 4,

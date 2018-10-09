@@ -709,9 +709,9 @@ eYo.Slot.prototype.save = function (element, optNoId) {
         if (child.firstElementChild || child.hasAttributes()) {
           if (!xml || !xml.noInputName) {
             if (this.inputType === Blockly.INPUT_VALUE) {
-              child.setAttribute(eYo.XmlKey.SLOT, this.key)
+              child.setAttribute(eYo.Xml.SLOT, this.key)
             } else if (this.inputType === Blockly.NEXT_STATEMENT) {
-              child.setAttribute(eYo.XmlKey.FLOW, this.key)
+              child.setAttribute(eYo.Xml.FLOW, this.key)
             }
           }
           goog.dom.appendChild(element, child)
@@ -721,9 +721,9 @@ eYo.Slot.prototype.save = function (element, optNoId) {
     }
   }.call(this))
   if (!out && this.isRequiredToDom()) {
-    var child = goog.dom.createDom(eYo.XmlKey.EXPR)
+    var child = goog.dom.createDom(eYo.Xml.EXPR)
     child.setAttribute('eyo', 'placeholder')
-    child.setAttribute(eYo.XmlKey.SLOT, this.key)
+    child.setAttribute(eYo.Xml.SLOT, this.key)
     goog.dom.appendChild(element, child)
   }
 }
@@ -796,7 +796,7 @@ eYo.Slot.prototype.load = function (element) {
               while (ii < grandChildren.length) {
                 var grandChild = grandChildren[ii++]
                 if (grandChild.nodeType === Node.ELEMENT_NODE) {
-                  var name = grandChild.getAttribute(eYo.XmlKey.SLOT)
+                  var name = grandChild.getAttribute(eYo.Xml.SLOT)
                   var input = target.getInput(name)
                   if (input) {
                     if (input.connection) {

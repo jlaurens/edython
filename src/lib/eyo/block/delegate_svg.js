@@ -1356,7 +1356,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
       var eyo = io.field.eyo
       var here = io.cursorX
       if (text.length) {
-        io.isSeparatorField = io.field.name === 'separator' || eyo.model.separator
+        io.isSeparatorField = io.field.name === 'separator' || (eyo.model && eyo.model.separator)
         // if the text is void, it can not change whether
         // the last character was a letter or not
         if (!io.isSeparatorField && !io.wasSeparatorField && io.shouldSeparateField && !io.starSymbol && (eYo.XRE.operator.test(text[0]) || text[0] === '.' || eYo.XRE.id_continue.test(text[0]) || eyo.isEditing) && eyo.tilePrevious) {

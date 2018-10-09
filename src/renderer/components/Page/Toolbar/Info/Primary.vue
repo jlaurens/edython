@@ -5,7 +5,7 @@
       <name :eyo="eyo" :name="name"></name>
       <variant :eyo="eyo" :slotholder="slotholder" :variant="variant" :annotation="annotation" :definition="definition" :alias="alias"></variant>
       <ry :eyo="eyo" :can_ry="can_ry" :ary="ary" :mandatory="mandatory" v-if="variant === $$.eYo.Key.CALL_EXPR"></ry>
-      <span>{{eyo.change.step}}</span>
+      <comment :eyo="eyo"></comment>
     </b-button-toolbar>
     <common :eyo="eyo"></common>
   </b-button-toolbar>
@@ -16,6 +16,7 @@
   import Name from './Primary/Name.vue'
   import Variant from './Primary/Variant.vue'
   import Ry from './Primary/Ry.vue'
+  import Comment from './Comment.vue'
   import Common from './Common.vue'
 
   export default {
@@ -40,6 +41,7 @@
       Name,
       Variant,
       Ry,
+      Comment,
       Common
     },
     props: {
@@ -111,7 +113,7 @@
           this.annotation_ = eyo.annotation_p
           this.definition_ = eyo.definition_p
           this.alias_ = eyo.alias_p
-          var tos = this.eyo.prolile_p.tos
+          var tos = eyo.profile_p.tos
           this.can_ry_ = !tos || !tos.model
           this.ary_ = eyo.ary_p
           this.mandatory_ = eyo.mandatory_p
