@@ -220,9 +220,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         return txt
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
           if (this.get()) {
-            this.save(element)
+            this.save(element, optNoId, optNoNext)
           }
         }
       },
@@ -249,11 +249,11 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
           var target = this.owner.holder_s.input.connection.targetBlock()
           if (!target) {
             if (this.get()) {
-              this.save(element)
+              this.save(element, optNoId, optNoNext)
             }
           }
         }
@@ -272,10 +272,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         : null
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
           var d = this.data.variant
           this.required = d.get() === d.ALIASED
-          this.save(element)
+          this.save(element, optNoId, optNoNext)
         }
       }
     }, // new
@@ -308,9 +308,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         slot.setIncog()
       },
       xml: {
-        save: function (el) {
+        save: function (el, optNoId, optNoNext) {
           if (this.get() !== this.NONE) {
-            this.save(el)
+            this.save(el, optNoId, optNoNext)
           }
         }
       }
@@ -345,9 +345,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         slot.setIncog()
       },
       xml: {
-        save: function (el) {
+        save: function (el, optNoId, optNoNext) {
           if (this.get() !== this.NONE) {
-            this.save(el)
+            this.save(el, optNoId, optNoNext)
           }
         }
       }
@@ -421,10 +421,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
           var target = this.owner.name_s.input.connection.targetBlock()
           if (!target) {
-            this.save(element)
+            this.save(element, optNoId, optNoNext)
           }
         }
       }
@@ -476,11 +476,11 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         (newValue < this.owner.mandatory_p) && (this.owner.mandatory_p = newValue)
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
           var variant_d = this.owner.data.variant
           var variant = variant_d.get()
           if (variant === variant_d.CALL_EXPR && this.get() !== Infinity) {
-            this.save(element)
+            this.save(element, optNoId, optNoNext)
           }
         }
       }
@@ -525,11 +525,11 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         (newValue > this.owner.ary_p) && (this.owner.ary_p = newValue)
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
           var variant_d = this.owner.data.variant
           var variant = variant_d.get()
           if (variant === variant_d.CALL_EXPR && this.get()) {
-            this.save(element)
+            this.save(element, optNoId, optNoNext)
           }
         }
       }
@@ -553,11 +553,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.connection.sourceBlock_.eyo.updateProfile()
       },
       hole_value: eYo.Msg.Placeholder.PRIMARY,
-      xml: {
-        save: /** @suppress {globalThis} */ function (element) {
-          this.save(element)
-        }
-      }
+      xml: true
     },
     dotted: {
       order: 75,
