@@ -639,7 +639,7 @@ Blockly.RenderedConnection.prototype.connect_ = function(childConnection) {
  * @private
  * @suppress {accessControls}
  */
-Blockly.RenderedConnection.prototype.connect_ = function () {
+Blockly.RenderedConnection.prototype.connect_ = (function () {
   // this is a closure
   var connect_ = Blockly.RenderedConnection.prototype.connect_
   return function (childC8n) {
@@ -749,7 +749,7 @@ Blockly.RenderedConnection.prototype.connect_ = function () {
       }
     )
   }
-} ()
+}) ()
 
 /**
  * Disconnect two blocks that are connected by this connection.
