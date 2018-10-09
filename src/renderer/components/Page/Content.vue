@@ -32,18 +32,18 @@
       'content-panels': ContentPanels
     },
     computed: {
-      toolbarInfoVisible () {
-        return this.$store.state.UI.toolbarInfoVisible
+      toolbarEditVisible () {
+        return this.$store.state.UI.toolbarEditVisible
       },
       style () {
         return ['top: ', 3.25 + this.step, 'rem;height: calc(100% - ', 3.5 + this.step, 'rem)'].join('')
       }
     },
     mounted () {
-      this.step = this.$store.state.UI.toolbarInfoVisible ? 2 : 0
+      this.step = this.$store.state.UI.toolbarEditVisible ? 2 : 0
     },
     watch: {
-      toolbarInfoVisible (newValue, oldValue) {
+      toolbarEditVisible (newValue, oldValue) {
         this.step = newValue ? 0 : 2
         this.$$.TweenLite.to(this, 1, {step: 2 - this.step})
       }

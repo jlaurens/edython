@@ -28,99 +28,6 @@ goog.require('eYo.FlyoutCategory')
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-// eYo.DelegateSvg.Expr.decimal__call_expr.populateMenu = function (block, mgr) {
-//   var eyo = block.eyo
-//   // populate the menu with the functions in the same category
-//   var name_get = eyo.data.name.get()
-//   var model = eYo.Model.decimal__module
-//   var item_get = model.getItem(name_get)
-//   var items = model.getItemsInCategory(item_get.category)
-//   var module = eyo.data.fromFlag.get() ? '' : 'decimal.'
-//   var F = function (i) {
-//     var item = model.getItem(items[i])
-//     var type = model.data.types[item.type]
-//     var args = type === 'data' ? '' : '(...)'
-//     if (item !== item_get) {
-//       var content =
-//       goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-//         module,
-//         item.names[0],
-//         args
-//       )
-//       var menuItem = mgr.newMenuItem(content, function () {
-//         eyo.data.name.set(item.names[0])
-//       })
-//       mgr.addChild(menuItem, true)
-//     }
-//   }
-//   for (var i = 0; i < items.length; i++) {
-//     F(i)
-//   }
-//   mgr.shouldSeparate()
-//   var contents = {
-//     'conversions-to-and-from-polar-coordinates': 'conversion',
-//     'power-and-logarithmic-functions': 'power',
-//     'trigonometric-functions': 'trigo',
-//     'hyperbolic-functions': 'hyper',
-//     'classification-functions': 'classification',
-//     'constants': 'pi, e, tau, inf(j), nan(j)'
-//   }
-//   F = function (i) {
-//     var category = categories[i]
-//     if (i !== item_get.category) {
-//       var menuItem = mgr.newMenuItem(contents[category] || category, function () {
-//         var items = eYo.Model.decimal__module.getItemsInCategory(i)
-//         var item = eYo.Model.decimal__module.getItem(items[0])
-//         eyo.data.name.set(item.names[0])
-//       })
-//       mgr.addChild(menuItem, true)
-//     }
-//   }
-//   var categories = model.data.categories
-//   for (var i = 0; i < categories.length - 1; i++) {
-//     F(i)
-//   }
-//   mgr.shouldSeparate()
-// }
-
-// /**
-//  * Class for a DelegateSvg, decimal constant block.
-//  * As call is already a reserved message in javascript,
-//  * we use call_expr instead.
-//  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
-//  * For edython.
-//  */
-// eYo.DelegateSvg.Expr.decimal__call_expr.makeSubclass('decimal__const', {
-//   data: {
-//     callerFlag: {
-//       init: true, // true when `foo` is expected instead of `foo(…)`
-//       xml: false,
-//       synchronize: false
-//     },
-//     ary: null,
-//     isOptionalUnary: null,
-//     mandatory: null,
-//     name: {
-//       all: ['pi', 'e', 'tau', 'inf', 'nan', 'infj', 'nanj'],
-//       init: 'pi',
-//       synchronize: true,
-//       validate: true,
-//       didChange: false, // do not heritate
-//     }
-//   },
-//   slots: {
-//     n_ary: null,
-//     z_ary: null,
-//     unary: null,
-//     binary: null,
-//     ternary: null,
-//     quadary: null,
-//     pentary: null,
-//   },
-//   output: {
-//     check: [eYo.T3.Expr.decimal__const, eYo.T3.Expr.builtin__object]
-//   }
-// })
 
 var F = function (name, title) {
   var key = 'decimal__'+name
@@ -192,7 +99,7 @@ eYo.FlyoutCategory.basic_decimal__module = [
   },
   /*
   <s eyo="assignment" variant="name">
-  <x eyo="primary" dotted="1" name="prec" slot="name">
+  <x eyo="primary" dotted="1"><x eyo="call" dotted="1" holder="decimal" name="getcontext" slot="holder"></x><x eyo="identifier" name="prec" slot="name"></x></x>
   <x eyo="call" dotted="1" holder="decimal" name="getcontext" slot="holder"></x>
   </x>
   <x eyo="list" slot="assigned">

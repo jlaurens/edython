@@ -12,7 +12,7 @@ const state = {
   selectedPanel: 'console',
   flyoutClosed: false,
   flyoutCategory: undefined,
-  toolbarInfoVisible: true,
+  toolbarEditVisible: true,
   toolbarInfoDebug: false
 }
 
@@ -78,7 +78,7 @@ const mutations = {
     state.flyoutClosed = !!yorn
   },
   [types.mutations.SET_TOOLBAR_INFO_VISIBLE] (state, yorn) {
-    state.toolbarInfoVisible = !!yorn
+    state.toolbarEditVisible = !!yorn
   },
   [types.mutations.SET_TOOLBAR_INFO_DEBUG] (state, yorn) {
     state.toolbarInfoDebug = !!yorn

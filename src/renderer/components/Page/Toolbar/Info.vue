@@ -93,7 +93,7 @@
       InfoNone
     },
     mounted () {
-      this.step = this.$store.state.UI.toolbarInfoVisible ? 1 : 0
+      this.step = this.$store.state.UI.toolbarEditVisible ? 1 : 0
     },
     computed: {
       slotholder () {
@@ -115,15 +115,15 @@
         var type = this.$store.state.UI.selectedBlockType
         return type ? type.substring(4) : null
       },
-      toolbarInfoVisible () {
-        return this.$store.state.UI.toolbarInfoVisible
+      toolbarEditVisible () {
+        return this.$store.state.UI.toolbarEditVisible
       },
       style () {
         return ['width: ', 100 * this.step, '%;'].join('')
       }
     },
     watch: {
-      toolbarInfoVisible (newValue, oldValue) {
+      toolbarEditVisible (newValue, oldValue) {
         this.step = newValue ? 0 : 1
         this.$$.TweenLite.to(this, 1, {step: 1 - this.step})
       }

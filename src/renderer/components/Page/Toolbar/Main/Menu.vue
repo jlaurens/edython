@@ -4,7 +4,7 @@
       <icon-base :width="32" :height="32" icon-name="menu"><icon-menu /></icon-base>
     </template>
     <b-dropdown-item-button v-on:click="doToggleToolbarInfoVisible()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleToolbarInfoVisible" v-tippy><check-mark></check-mark>{{contentToolbarInfoVisible}}</b-dropdown-item-button>
-    <b-dropdown-item-button v-if="toolbarInfoVisible" v-on:click="doToggleToolbarInfoDebug()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleToolbarInfoDebug" v-tippy><check-mark :checked="toolbarInfoDebug" />{{contentToolbarInfoDebug}}</b-dropdown-item-button>    <b-dropdown-item-button v-on:click="doToggleEcoSave()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleEcoSave" v-tippy><check-mark :checked="ecoSave" />{{contentEcoSave}}</b-dropdown-item-button>
+    <b-dropdown-item-button v-if="toolbarEditVisible" v-on:click="doToggleToolbarInfoDebug()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleToolbarInfoDebug" v-tippy><check-mark :checked="toolbarInfoDebug" />{{contentToolbarInfoDebug}}</b-dropdown-item-button>    <b-dropdown-item-button v-on:click="doToggleEcoSave()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleEcoSave" v-tippy><check-mark :checked="ecoSave" />{{contentEcoSave}}</b-dropdown-item-button>
     <b-dropdown-item-button v-on:click="doToggleDisabledTips()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleDisabledTips" v-tippy><check-mark :checked="false" />{{contentDisabledTips}}</b-dropdown-item-button>
   </b-dropdown>
 </template>
@@ -41,10 +41,10 @@
         return this.disabledTips ? 'Activer les bulles d\'aide' : 'Désactiver les bulles d\'aide'
       },
       titleToolbarInfoVisible () {
-        return this.toolbarInfoVisible ? 'Cacher la barre d\'informations' : 'Afficher la barre d\'informations et de réglage du bloc sélectionné'
+        return this.toolbarEditVisible ? 'Cacher la barre d\'édition' : 'Afficher la barre d\'édition et de réglage du bloc sélectionné'
       },
       contentToolbarInfoVisible () {
-        return this.toolbarInfoVisible ? 'Cacher la barre d\'informations' : 'Afficher la barre d\'informations'
+        return this.toolbarEditVisible ? 'Cacher la barre d\'édition' : 'Afficher la barre d\'édition'
       },
       titleToolbarInfoDebug () {
         return this.toolbarInfoDebug ? 'Cacher les informations de débogage' : 'Afficher les informations de débogage'
@@ -58,7 +58,7 @@
       ...mapState({
         ecoSave: state => state.Document.ecoSave,
         disabledTips: state => state.Document.disabledTips,
-        toolbarInfoVisible: state => state.UI.toolbarInfoVisible,
+        toolbarEditVisible: state => state.UI.toolbarEditVisible,
         toolbarInfoDebug: state => state.UI.toolbarInfoDebug
       })
     },
@@ -67,7 +67,7 @@
         setToolbarInfoVisible: 'UI_SET_TOOLBAR_INFO_VISIBLE' // map `this.add()` to `this.$store.commit('increment')`
       }),
       doToggleToolbarInfoVisible () {
-        this.setToolbarInfoVisible(!this.toolbarInfoVisible)
+        this.setToolbarInfoVisible(!this.toolbarEditVisible)
       },
       doToggleToolbarInfoDebug () {
         this.$store.commit('UI_SET_TOOLBAR_INFO_DEBUG', !this.$store.state.UI.toolbarInfoDebug)
