@@ -86,23 +86,6 @@ goog.require('eYo.FlyoutCategory')
 //   }
 // })
 
-// /**
-//  * Populate the context menu for the given block.
-//  * @param {!Blockly.Block} block The block.
-//  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
-//  * @private
-//  */
-// eYo.DelegateSvg.Expr.turtle__call_expr.prototype.contentForCategory = eYo.DelegateSvg.Stmt.turtle__call_stmt.prototype.contentForCategory = function (block, category) {
-//   var contents = {
-//     "bookkeeping-functions" : 'getstate, getrandbits',
-//     "functions-for-integers" : 'randrange, randint',
-//     "functions-for-sequences" : 'choice, choices, sample',
-//     "real-valued-distributions" : 'random, uniform, ...',
-//     "alternative-generator" : ''
-//   }
-//   return contents[category] || category
-// }
-
 /**
  * Class for a DelegateSvg, turtle setup statement block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.

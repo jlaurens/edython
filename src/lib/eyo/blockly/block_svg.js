@@ -85,11 +85,12 @@ eYo.BlockSvg.CORNER_RADIUS = 3
  * Render the block.
  * Lays out and reflows a block based on its contents and settings.
  * @param {boolean=} optBubble If false, just render this block.
+ * @param {?Object} io  rendering state recorder.
  *   If true, also render block's parent, grandparent, etc.  Defaults to true.
  */
-eYo.BlockSvg.prototype.render = function (optBubble) {
+eYo.BlockSvg.prototype.render = function (optBubble, io) {
   if (this.workspace) {
-    this.eyo.render(optBubble)
+    this.eyo.render(optBubble, io)
   }
 }
 

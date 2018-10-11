@@ -367,37 +367,6 @@ eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (mgr) {
 }
 
 /**
- * Can insert a block above?
- * If the block's output connection is connected,
- * can connect the parent's output to it?
- * The connection cannot always establish.
- * @param {!Block} block
- * @param {string} prototypeName
- * @param {string} parentInputName, which parent's connection to use
- */
-eYo.DelegateSvg.Expr.prototype.canInsertParent = function (block, prototypeName, subtype, parentInputName) {
-  var can = false
-  var B
-  eYo.Events.disableWrap(this,
-    function () {
-      B = block.workspace.newBlock(prototypeName)
-      B.eyo.data.subtype.set(subtype)
-      var input = B.getInput(parentInputName)
-      goog.asserts.assert(input, 'No input named ' + parentInputName)
-      var c8n = input.connection
-      goog.asserts.assert(c8n, 'Unexpected dummy input ' + parentInputName)
-      if (block.outputConnection && c8n.checkType_(block.outputConnection)) {
-        var targetC8n = block.outputConnection.targetConnection
-        can = !targetC8n || targetC8n.checkType_(B.outputConnection)
-      }
-    }, function () {
-      B.dispose()
-    }
-  )
-  return can
-}
-
-/**
  * Insert a parent.
  * If the block's output connection is connected,
  * connects the parent's output to it.
@@ -660,7 +629,7 @@ eYo.DelegateSvg.Expr.builtin__object.prototype.populateContextMenuFirst_ = funct
  * @param {string} op op is the operator
  * @private
  */
-eYo.DelegateSvg.Expr.builtin__object.prototype.makeTitle = function (block, op) {
+eYo.DelegateSvg.Expr.builtin__object.prototype.makeTitle = function (op) {
   return eYo.Do.createSPAN(op, 'eyo-code-reserved')
 }
 

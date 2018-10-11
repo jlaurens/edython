@@ -949,11 +949,18 @@ goog.require('eYo.DelegateSvg.Primary')
 
 /**
  * Set the option from the `eyo` attribute.
+ * The block argument is expected
  * @param {!Blockly.Block} block
  * @param {!Element} element dom element to be completed.
  * @override
  */
 eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element) {
+  // trick to call this function without the first argument
+  // just like all other delegate methods
+  if (block !== this.block_) {
+    element = block
+    block = this.block_
+  }
   eYo.Xml.fromDom(block, element)
   var type = element.getAttribute('eyo')
   var d = this.data.variant

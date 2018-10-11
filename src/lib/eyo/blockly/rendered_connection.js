@@ -322,8 +322,8 @@ eYo.ConnectionDelegate.prototype.getConnectionBelow = function () {
  * @return a connection, possibly undefined
  */
 eYo.ConnectionDelegate.prototype.getBlackConnection = function (F) {
-  F = F || function (block) {
-    return !block.eyo.isWhite()
+  F = F || function (B) {
+    return !B.eyo.isWhite()
   }
   var c8n = this.connection
   var block = c8n.getSourceBlock()
@@ -331,12 +331,12 @@ eYo.ConnectionDelegate.prototype.getBlackConnection = function (F) {
     return c8n
   }
   if (this.isPrevious()) {
-    var otherConnection = function (block) {
-      return block.nextConnection
+    var otherConnection = function (B) {
+      return B.nextConnection
     }
   } else if (this.isNext()) {
-    otherConnection = function (block) {
-      return block.previousConnection
+    otherConnection = function (B) {
+      return B.previousConnection
     }
   } else {
     // this is a 'do' statement input connection
@@ -363,12 +363,13 @@ eYo.ConnectionDelegate.prototype.getBlackTargetConnection = function () {
     return c8n
   }
   if (c8n.eyo.isPrevious()) {
-    var F = function (block) {
+    var F = B
+  ) {
       return block.nextConnection
     }
   } else if (c8n.eyo.isNext()) {
-    F = function (block) {
-      return block.previousConnection
+    F = function (B) {
+      return B.previousConnection
     }
   } else {
     return undefined

@@ -28,7 +28,8 @@ goog.require('eYo.FlyoutCategory')
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-// eYo.DelegateSvg.Expr.math__call_expr.populateMenu = function (block, mgr) {
+// eYo.DelegateSvg.Expr.math__call_expr.populateMenu = function (mgr) {
+//   var block = this.block_
 //   var eyo = block.eyo
 //   // populate the menu with the functions in the same category
 //   var name_get = eyo.data.name.get()

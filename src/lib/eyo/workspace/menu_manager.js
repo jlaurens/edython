@@ -291,7 +291,7 @@ eYo.MenuManager.prototype.showMenu = function (block, e) {
     sep = true
   }
   this.shouldSeparate(sep)
-  sep = block.eyo.populateContextMenuComment && block.eyo.populateContextMenuComment(block, this)
+  sep = block.eyo.populateContextMenuComment && block.eyo.populateContextMenuComment(this)
   if (this.insertAfterSubmenu.getItemCount()) {
     this.addChild(this.insertAfterSubmenu, true)
     sep = true
@@ -634,7 +634,7 @@ eYo.MenuManager.prototype.handleActionLast = function (block, event) {
     target.setCollapsed(true)
     return true
   case eYo.ID.TOGGLE_ENABLE_BLOCK:
-    target.eyo.setDisabled(target, !target.disabled)
+    target.eyo.setDisabled(!target.disabled)
     return true
   case eYo.ID.DELETE_BLOCK:
     var unwrapped = target
@@ -1226,7 +1226,7 @@ eYo.MenuManager.prototype.populateProperties = function (block, key) {
   if (properties && properties.length > 1) {
     var current = data.get()
     var F = function (property) {
-      var menuItem = this.newMenuItem(eyo.makeTitle(block, property, key), function () {
+      var menuItem = this.newMenuItem(eyo.makeTitle(property, key), function () {
         data.set(property)
       })
       menuItem.setEnabled(current !== property)

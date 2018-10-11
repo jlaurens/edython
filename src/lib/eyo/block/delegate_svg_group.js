@@ -37,8 +37,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('Group', {
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function (block) {
+eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function () {
   /* eslint-disable indent */
+  var block = this.block_
   var w = block.width
   var line = eYo.Font.lineHeight()
   var h = block.isCollapsed() ? 2 * line : block.height
@@ -72,8 +73,9 @@ eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function (block) {
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.Group.prototype.groupContourPathDef_ = function (block) {
+eYo.DelegateSvg.Group.prototype.groupContourPathDef_ = function () {
   /* eslint-disable indent */
+  var block = this.block_
   var w = block.width
   var line = eYo.Font.lineHeight()
   var h = block.isCollapsed() ? 2 * line : block.height
@@ -115,8 +117,9 @@ eYo.DelegateSvg.Group.prototype.groupContourPathDef_ = function (block) {
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.Group.prototype.collapsedPathDef_ = function (block) {
+eYo.DelegateSvg.Group.prototype.collapsedPathDef_ = function () {
   /* eslint-disable indent */
+  var block = this.block_
   if (block.isCollapsed()) {
     var line = eYo.Font.lineHeight()
     var t = eYo.Font.tabWidth
@@ -126,7 +129,7 @@ eYo.DelegateSvg.Group.prototype.collapsedPathDef_ = function (block) {
     ' M ' + (t + r) + ',' + (2 * line) + ' H ' + block.width + ' v ' + (r - line) / 2 +
     ' m -' + r + ',' + r / 2 + ' l ' + 2 * r + ',' + (-r)
   }
-  return eYo.DelegateSvg.Group.superClass_.collapsedPathDef_.call(this, block)
+  return eYo.DelegateSvg.Group.superClass_.collapsedPathDef_.call(this)
 } /* eslint-enable indent */
 
 eYo.DelegateSvg.Group.prototype.shapePathDef_ =
@@ -157,7 +160,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuiteInput_ = function (io) {
         c8n.tighten_()
         try {
           target.eyo.downRendering = true
-          target.render()
+          target.eyo.render(false, io)
         } catch (err) {
           console.error(err)
           throw err
@@ -194,7 +197,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuite_ = function (block) {
         if (!target.rendered || !target.eyo.upRendering) {
           try {
             target.eyo.downRendering = true
-            target.render()
+            target.eyo.render()
           } catch (err) {
             console.error(err)
             throw err
@@ -231,7 +234,7 @@ eYo.DelegateSvg.Group.prototype.highlightConnection = function (c8n) {
   }
   if (c8n.type === Blockly.INPUT_VALUE) {
     if (c8n.isConnected()) {
-      steps = this.valuePathDef_(c8n.targetBlock())
+      steps = c8n.targetBlock().eyo.valuePathDef_()
     } else {
       steps = this.placeHolderPathDefWidth_(0, c8n).d
     }

@@ -484,7 +484,7 @@ eYo.DelegateSvg.prototype.renderDrawSuite_ = function (block) {
  * @param {boolean=} optBubble If false, just render this block.
  *   If true, also render block's parent, grandparent, etc.  Defaults to true.
  */
-eYo.DelegateSvg.prototype.render = function () {
+eYo.DelegateSvg.prototype.render = (function () {
   // this is a closure
   /**
    * Render the parent block, if relevant.
@@ -641,6 +641,8 @@ eYo.DelegateSvg.prototype.render = function () {
         while (parent.outputConnection && (next = parent.getParent())) {
           parent = next
         }
+        // parent has no output connection
+        // which means that it is an expression block.
         if (parent && !parent.eyo.downRendering) {
           if (!parent.eyo.upRendering && block.outputConnection === eYo.Connection.connectedParentC8n || eYo.Connection.connectedParentC8n && eYo.Connection.connectedParentC8n.sourceBlock_ === block) {
             try {
@@ -668,7 +670,7 @@ eYo.DelegateSvg.prototype.render = function () {
     }  
     longRender.call(this, optBubble)
   }
-} ()
+}) ()
 
 /**
  * Whether the block is sealed to its parent.
@@ -768,20 +770,18 @@ eYo.DelegateSvg.prototype.layoutConnections_ = function () {
  * @param {!eYo.Block} block
  * @private
  */
-eYo.DelegateSvg.prototype.shapePathDef_ = function (block) {
+eYo.DelegateSvg.prototype.shapePathDef_ = function () {
   goog.asserts.assert(false, 'shapePathDef_ must be overriden by ' + this)
 }
 
 /**
  * Block outline. Default implementation forwards to shapePathDef_.
- * @param {!eYo.Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.contourPathDef_ = eYo.DelegateSvg.prototype.shapePathDef_
 
 /**
  * Highlighted block outline. Default implementation forwards to shapePathDef_.
- * @param {!eYo.Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.highlightPathDef_ = eYo.DelegateSvg.prototype.shapePathDef_
@@ -794,9 +794,9 @@ eYo.DelegateSvg.prototype.highlightPathDef_ = eYo.DelegateSvg.prototype.shapePat
  * @param {!eYo.Block} block
  * @private
  */
-eYo.DelegateSvg.prototype.connectionPathDef_ = function (block) {
+eYo.DelegateSvg.prototype.connectionPathDef_ = function () {
   return this.selectedConnection
-    ? this.highlightConnectionPathDef(block, this.selectedConnection)
+    ? this.highlightConnectionPathDef(this.block_, this.selectedConnection)
     : ''
 }
 
@@ -878,13 +878,13 @@ eYo.DelegateSvg.prototype.alignRightEdges_ = function (block) {
  * @param {!eYo.Block} block
  * @private
  */
-eYo.DelegateSvg.prototype.updatePath_ = function (block, path, def) {
+eYo.DelegateSvg.prototype.updatePath_ = function (path, def) {
   if (path) {
     if (def) {
       try {
         var d = def.call(this, block)
         if (d.indexOf('NaN') >= 0) {
-          d = def.call(this, block)
+          d = def.call(this)
           console.log('d', d)
         }
         path.setAttribute('d', d)
@@ -905,17 +905,17 @@ eYo.DelegateSvg.prototype.updatePath_ = function (block, path, def) {
  */
 eYo.DelegateSvg.prototype.updateAllPaths_ = function (block) {
   if (this.wrapped_) {
-    this.updatePath_(block, this.svgPathContour_)
-    this.updatePath_(block, this.svgPathShape_)
-    this.updatePath_(block, this.svgPathHighlight_)
-    this.updatePath_(block, this.svgPathConnection_, this.connectionPathDef_)
-    this.updatePath_(block, this.svgPathCollapsed_)
+    this.updatePath_(this.svgPathContour_)
+    this.updatePath_(this.svgPathShape_)
+    this.updatePath_(this.svgPathHighlight_)
+    this.updatePath_(this.svgPathConnection_, this.connectionPathDef_)
+    this.updatePath_(this.svgPathCollapsed_)
   } else {
-    this.updatePath_(block, this.svgPathContour_, this.contourPathDef_)
-    this.updatePath_(block, this.svgPathShape_, this.shapePathDef_)
-    this.updatePath_(block, this.svgPathHighlight_, this.highlightPathDef_)
-    this.updatePath_(block, this.svgPathConnection_, this.connectionPathDef_)
-    this.updatePath_(block, this.svgPathCollapsed_, this.collapsedPathDef_)
+    this.updatePath_(this.svgPathContour_, this.contourPathDef_)
+    this.updatePath_(this.svgPathShape_, this.shapePathDef_)
+    this.updatePath_(this.svgPathHighlight_, this.highlightPathDef_)
+    this.updatePath_(this.svgPathConnection_, this.connectionPathDef_)
+    this.updatePath_(this.svgPathCollapsed_, this.collapsedPathDef_)
   }
 }
 
@@ -1516,7 +1516,8 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.prototype.valuePathDef_ = function (block) {
+eYo.DelegateSvg.prototype.valuePathDef_ = function () {
+  var block = this.block_
   var w = block.width
   var h = block.height
   var p = eYo.Padding.h()
@@ -1673,19 +1674,19 @@ eYo.DelegateSvg.prototype.placeHolderPathDefWidth_ = function (cursorX, connecti
  * @param {!Blockly.Block} block The owner of the delegate.
  * @param {!Blockly.Connection} c8n The connection to highlight.
  */
-eYo.DelegateSvg.prototype.highlightConnectionPathDef = function (block, c8n) {
+eYo.DelegateSvg.prototype.highlightConnectionPathDef = function (c8n) {
   var steps = ''
-  block = c8n.sourceBlock_
+  var block = c8n.sourceBlock_
   if (c8n.type === Blockly.INPUT_VALUE) {
     if (c8n.isConnected()) {
-      steps = this.valuePathDef_(c8n.targetBlock())
+      steps = c8n.targetBlock().eyo.valuePathDef_()
     } else if (!c8n.eyo.disabled_ && (c8n.eyo.s7r_ || c8n.eyo.optional_)) {
       steps = this.caretPathDefWidth_(c8n.offsetInBlock_.x).d
     } else {
       steps = this.placeHolderPathDefWidth_(c8n.offsetInBlock_.x, c8n).d
     }
   } else if (c8n.type === Blockly.OUTPUT_VALUE) {
-    steps = this.valuePathDef_(block)
+    steps = block.eyo.valuePathDef_()
   } else {
     var r = eYo.Style.Path.Selected.width / 2
     var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
@@ -1712,14 +1713,14 @@ eYo.DelegateSvg.prototype.highlightConnection = function (c8n) {
   var steps
   if (c8n.type === Blockly.INPUT_VALUE) {
     if (c8n.isConnected()) {
-      steps = this.valuePathDef_(c8n.targetBlock())
+      steps = c8n.targetBlock().eyo.valuePathDef_()
     } else if (!c8n.eyo.disabled_ && (c8n.eyo.s7r_ || c8n.eyo.optional_)) {
       steps = this.caretPathDefWidth_(0).d
     } else {
       steps = this.placeHolderPathDefWidth_(0, c8n).d
     }
   } else if (c8n.type === Blockly.OUTPUT_VALUE) {
-    steps = this.valuePathDef_(block)
+    steps = this.valuePathDef_()
   } else {
     var w = block.width
     var r = eYo.Style.Path.Selected.width / 2
@@ -1840,22 +1841,6 @@ eYo.DelegateSvg.prototype.makeBlockUnwrapped = function (block) {
  */
 eYo.DelegateSvg.prototype.hasSelect = function (block) {
   return goog.dom.classlist.contains(block.svgGroup_, 'eyo-select')
-}
-
-/**
- * Set the enable/disable status of the given block.
- * @param {!Block} block
- * @private
- */
-eYo.DelegateSvg.prototype.delayedRender = function (block) {
-  if (!goog.isDef(this.delayedRender)) {
-    this.delayedRender = setTimeout(function () {
-      delete block.eyo.delayedRender
-      if (block.workspace) {
-        block.render()
-      }
-    }, 10)
-  }
 }
 
 /**
@@ -2014,20 +1999,6 @@ eYo.DelegateSvg.prototype.beReady = function () {
 }
 
 /**
- * Prepare the block to be displayed in the given workspace.
- * Nothing implemented yet
- * @param {!Block} block
- * @param {!WorkspaceSvg} workspace
- * @param {!Number} x
- * @param {!Number} y
- * @param {!String} variant
- * @private
- */
-eYo.DelegateSvg.prototype.prepareForWorkspace = function (block, workspace, x, y, variant) {
-
-}
-
-/**
  * Returns the python type of the block.
  * This information may be displayed as the last item in the contextual menu.
  * Wrapped blocks will return the parent's answer.
@@ -2038,20 +2009,6 @@ eYo.DelegateSvg.prototype.getPythonType = function () {
     return parent.eyo.getPythonType()
   }
   return this.pythonType_
-}
-
-/**
- * Can insert a block above?
- * If the block's output connection is connected,
- * can connect the parent's output to it?
- * The connection cannot always establish.
- * @param {!Block} block
- * @param {string} prototypeName
- * @param {string} surroundInputName, which parent's connection to use
- */
-eYo.DelegateSvg.prototype.canInsertParent = function (block, prototypeName, subtype, surroundInputName) {
-  var can = false
-  return can
 }
 
 /**

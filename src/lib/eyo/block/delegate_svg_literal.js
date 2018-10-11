@@ -34,17 +34,6 @@ eYo.DelegateSvg.Expr.makeSubclass('Literal', {
 }, eYo.DelegateSvg)
 
 /**
- * The xml type of this block, as it should appear in the saved data.
- * Numbers have no xml type.
- * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return true if the given value is accepted, false otherwise
- */
-eYo.DelegateSvg.Literal.prototype.xmlType = function (block) {
-  return null
-}
-
-/**
  * Class for a DelegateSvg, number: integer, floatnumber or imagnumber.
  * For edython.
  */
@@ -216,9 +205,9 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         F(eYo.XRE.shortstringliteralDouble, eYo.T3.Expr.shortstringliteral) ||
         F(eYo.XRE.shortbytesliteralSingle, eYo.T3.Expr.shortbytesliteral) ||
         F(eYo.XRE.shortbytesliteralDouble, eYo.T3.Expr.shortbytesliteral)) {
-          this.owner.removeError(this.owner.block_, eYo.Key.VALUE)
+          this.owner.removeError(eYo.Key.VALUE)
         } else if (newValue && newValue.length) {
-          this.owner.setError(this.owner.block_, eYo.Key.VALUE, 'Bad string|bytes literal: ' +
+          this.owner.setError(eYo.Key.VALUE, 'Bad string|bytes literal: ' +
           (newValue.length > 11 ? newValue.substr(0, 10) + '…' : newValue))
         }
       },
@@ -282,7 +271,7 @@ eYo.DelegateSvg.Manager.register('shortbytesliteral')
  * @param {string} op op is the operator
  * @private
  */
-eYo.DelegateSvg.Expr.shortliteral.prototype.makeTitle = function (block, variant) {
+eYo.DelegateSvg.Expr.shortliteral.prototype.makeTitle = function (variant) {
   return eYo.Do.createSPAN(variant + '…' + variant, 'eyo-code')
 }
 
@@ -396,9 +385,9 @@ eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
         F(eYo.XRE.longstringliteralDouble, eYo.T3.Expr.longstringliteral) ||
         F(eYo.XRE.longbytesliteralSingle, eYo.T3.Expr.longbytesliteral) ||
         F(eYo.XRE.longbytesliteralDouble, eYo.T3.Expr.longbytesliteral)) {
-          this.owner.removeError(this.owner.block_, eYo.Key.VALUE)
+          this.owner.removeError(eYo.Key.VALUE)
         } else if (newValue && newValue.length) {
-          this.owner.setError(this.owner.block_, eYo.Key.VALUE, 'Bad string|bytes literal: ' +
+          this.owner.setError(eYo.Key.VALUE, 'Bad string|bytes literal: ' +
           (newValue.length > 11 ? newValue.substr(0, 10) + '…' : newValue))
         }
       }

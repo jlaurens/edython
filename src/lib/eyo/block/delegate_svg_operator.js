@@ -281,7 +281,7 @@ eYo.DelegateSvg.Expr.makeSubclass('Operator', {
  * @param {string} op op is the label
  * @private
  */
-eYo.DelegateSvg.Operator.prototype.makeTitle = /* function (block, op) {
+eYo.DelegateSvg.Operator.prototype.makeTitle = /* function (op) {
 } */ undefined
 
 /**
@@ -331,7 +331,7 @@ eYo.DelegateSvg.Operator.makeSubclass('u_expr', {
  * @param {string} op op is the operator
  * @private
  */
-eYo.DelegateSvg.Expr.u_expr.prototype.makeTitle = function (block, op) {
+eYo.DelegateSvg.Expr.u_expr.prototype.makeTitle = function (op) {
   return op + ' …'
 }
 
@@ -355,7 +355,7 @@ eYo.DelegateSvg.Expr.u_expr.prototype.makeTitle = function (block, op) {
 //  * @param {string} op op is the operator
 //  * @private
 //  */
-// eYo.DelegateSvg.Binary.prototype.makeTitle = function (block, op) {
+// eYo.DelegateSvg.Binary.prototype.makeTitle = function (op) {
 //   return '… ' + op + ' …'
 // }
 
@@ -521,7 +521,7 @@ eYo.DelegateSvg.Expr.u_expr.prototype.makeTitle = function (block, op) {
 //  * @param {string} op op is the operator
 //  * @private
 //  */
-// eYo.DelegateSvg.Expr.object_comparison.prototype.makeTitle = function (block, op) {
+// eYo.DelegateSvg.Expr.object_comparison.prototype.makeTitle = function (op) {
 //   return eYo.Do.createSPAN(op, 'eyo-code-reserved')
 // }
 

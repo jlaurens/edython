@@ -120,8 +120,9 @@ eYo.DelegateSvg.Stmt.prototype.disposeInternal = function () {
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.Stmt.prototype.statementPathDef_ = function (block) {
+eYo.DelegateSvg.Stmt.prototype.statementPathDef_ = function () {
   /* eslint-disable indent */
+  var block = this.block_
   var w = block.width
   var h = block.height
   var steps = ['m ' + w + ',0 v ' + h]
@@ -281,9 +282,10 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
  * @param {string} parentInputName, which parent's connection to use
  * @return the created block
  */
-eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (block, belowPrototypeName) {
+eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) {
   eYo.Events.groupWrap(this,
     function () {
+      var block = this.block_
       var blockAfter = eYo.DelegateSvg.newBlockReady(block.workspace, belowPrototypeName)
       var c8n = block.nextConnection
       var targetC8n = c8n.targetConnection
@@ -311,7 +313,8 @@ eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (block, belowPrototyp
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (block, mgr) {
+eYo.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (mgr) {
+  var block = this.block_
   var show = !this.data.comment.isIncog()
   var content =
   eYo.Do.createSPAN(show ? eYo.Msg.Placeholder.REMOVE_COMMENT : eYo.Msg.Placeholder.ADD_COMMENT, null)

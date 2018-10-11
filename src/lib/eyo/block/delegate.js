@@ -1042,7 +1042,6 @@ eYo.Delegate.prototype.setupType = function (optNewType) {
   var m = /^eyo:((?:fake_)?((.*?)(?:)?))$/.exec(block.type)
   this.pythonType_ = m ? m[1] : block.type
   this.type_ = m ? 'eyo:' + m[2] : block.type
-  this.xmlType_ = m ? m[3] : block.type
   if (!this.pythonType_) {
     console.error('Error! this.pythonType_')
   } 
@@ -1423,7 +1422,8 @@ eYo.Delegate.prototype.canReplaceBlock = function (other) {
  * @throws {goog.asserts.AssertionError} if the input is not present and
  *     opt_quiet is not true.
  */
-eYo.Delegate.prototype.removeInput = function (block, input, opt_quiet) {
+eYo.Delegate.prototype.removeInput = function (input, opt_quiet) {
+  var block = this.block_
   if (input.block === block) {
     if (input.connection && input.connection.isConnected()) {
       input.connection.setShadowDom(null)
@@ -1543,7 +1543,8 @@ eYo.Delegate.prototype.getPreviousConnection = function (block) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return None
  */
-eYo.Delegate.prototype.setDisabled = function (block, yorn) {
+eYo.Delegate.prototype.setDisabled = function (yorn) {
+  var block = this.block_
   if (!!block.disabled === !!yorn) {
     // nothing to do the block is already in the good state
     return
@@ -1699,16 +1700,6 @@ eYo.Delegate.prototype.isIncog = function () {
 }
 
 /**
- * The xml type of this block, as it should appear in the saved data.
- * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return true if the given value is accepted, false otherwise
- */
-eYo.Delegate.prototype.xmlType = function (block) {
-  return this.xmlType_
-}
-
-/**
  * Input enumerator
  * For edython.
  * @param {!Blockly.Block} block The owner of the receiver.
@@ -1728,7 +1719,7 @@ eYo.Delegate.prototype.inputEnumerator = function (all) {
  * @param {!string} msg
  * @return true if the given value is accepted, false otherwise
  */
-eYo.Delegate.prototype.setError = function (block, key, msg) {
+eYo.Delegate.prototype.setError = function (key, msg) {
   this.errors[key] = {
     message: msg
   }
@@ -1741,7 +1732,7 @@ eYo.Delegate.prototype.setError = function (block, key, msg) {
  * @param {!string} key
  * @return true if the given value is accepted, false otherwise
  */
-eYo.Delegate.prototype.getError = function (block, key) {
+eYo.Delegate.prototype.getError = function (key) {
   return this.errors[key]
 }
 
@@ -1752,7 +1743,7 @@ eYo.Delegate.prototype.getError = function (block, key) {
  * @param {!string} key
  * @return true if the given value is accepted, false otherwise
  */
-eYo.Delegate.prototype.removeError = function (block, key) {
+eYo.Delegate.prototype.removeError = function (key) {
   delete this.errors[key]
 }
 

@@ -30,7 +30,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('Control', null, eYo.DelegateSvg)
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.Control.prototype.playPathDef_ = function (block, cursorX) {
+eYo.DelegateSvg.Control.prototype.playPathDef_ = function (cursorX) {
   /* eslint-disable indent */
   var lh = eYo.Font.lineHeight() / 2
   var ratio = 1.5
@@ -48,7 +48,8 @@ eYo.DelegateSvg.Control.prototype.playPathDef_ = function (block, cursorX) {
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.Control.prototype.controlPathDef_ = function (block) {
+eYo.DelegateSvg.Control.prototype.controlPathDef_ = function () {
+  var block = this.block_
   /* eslint-disable indent */
   var w = block.width - eYo.Font.space + eYo.Padding.l()
   var h = block.height
@@ -96,7 +97,7 @@ eYo.DelegateSvg.Control.prototype.postInitSvg = function () {
   eYo.DelegateSvg.Control.superClass_.postInitSvg.call(this)
   this.svgPathPlay_ = Blockly.utils.createSvgElement('path',
     {'class': 'eyo-path-play'}, block.svgGroup_)
-  this.svgPathPlay_.setAttribute('d', this.playPathDef_(block, 0))
+  this.svgPathPlay_.setAttribute('d', this.playPathDef_(0))
   this.mouseDownWrapper_ =
     Blockly.bindEventWithChecks_(this.svgPathPlay_, 'mousedown', this,
       function (event) {
