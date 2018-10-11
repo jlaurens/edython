@@ -16,40 +16,6 @@ goog.provide('eYo.Input')
 goog.require('eYo')
 goog.require('Blockly.Input')
 
-/**
- * Add an eyo object to an input to store extra information.
- * All this extra information is gathered under a dedicated namespace
- * to avoid name collisions.
- * This is not a delegate because there are few informations or actions needed.
- * Subclassing would not fit here.
- * For edython.
- * @param {!Blockly.Input} workspace The block's workspace.
- */
-eYo.Input.setupEyO = (function () {
-  var beReady = function () {
-    var c8n = this.owner.connection
-    c8n && c8n.eyo.beReady()
-    this.beReady = eYo.Do.nothing // one shot function
-  }
-  var consolidate = function () {
-    var c8n = this.owner.connection
-    c8n && c8n.eyo.consolidate(arguments)
-  }
-  return function (input) {
-    if (!input.eyo) {
-      input.eyo = {
-        owner: input,
-        beReady: beReady,
-        consolidate: consolidate
-      }
-      var c8n = input.connection
-      if (c8n) {
-        c8n.eyo.name_ = input.name // the connection remembers the name of the input such that checking is fine grained.
-      }
-    }
-  }
-}())
-
 Blockly.Input.prototype.eyo = undefined
 
 /**
@@ -103,4 +69,70 @@ Blockly.Input.prototype.setVisible = function (visible) {
     }
   }
   return renderList
+}
+
+/**
+ * Add an eyo object to an input to store extra information.
+ * All this extra information is gathered under a dedicated namespace
+ * to avoid name collisions.
+ * This is not a delegate because there are few informations or actions needed.
+ * Subclassing would not fit here.
+ * For edython.
+ * @param {!Blockly.Input} input  The delegate's owner.
+ */
+eYo.Input.setupEyO = function (input) {
+  if (!input.eyo) {
+    input.eyo = new eYo.InputDelegate(input)
+  }
+}
+
+/**
+ * @param {!Blockly.Input} input  An input instance.
+ * @constructor
+ */
+eYo.InputDelegate = function (input) {
+  this.owner = input
+  var c8n = input.connection
+  if (c8n) {
+    Object.defineProperty(
+      this,
+      'connection',
+      {
+        get () {
+          return c8n
+        }
+      }
+    )
+    c8n.eyo.name_ = input.name // the connection remembers the name of the input such that checking is fine grained.
+  }
+  input.eyo = this
+  Object.defineProperty(
+    this,
+    'tile',
+    {
+      get () {
+        if (!this.tile_) {
+          this.updateTile()
+        }
+        return this.tile_
+      }
+    }
+  )
+}
+
+/**
+ * be ready the delegate.
+ */
+eYo.InputDelegate.prototype.beReady = function () {
+  var c8n = this.owner.connection
+  c8n && c8n.eyo.beReady()
+  this.beReady = eYo.Do.nothing // one shot function
+}
+
+/**
+ * consolidate the delegate.
+ */
+eYo.InputDelegate.prototype.consolidate = function () {
+  var c8n = this.owner.connection
+  c8n && c8n.eyo.consolidate(arguments)
 }

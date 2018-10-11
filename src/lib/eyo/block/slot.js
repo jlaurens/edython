@@ -81,6 +81,15 @@ eYo.Slot = function (owner, key, model) {
   }
   Object.defineProperty(
     this,
+    'sourceBlock_',
+    {
+      get () {
+        return this.owner.block_
+      }
+    }
+  )
+  Object.defineProperty(
+    this,
     'incog_p',
     {
       get () {
