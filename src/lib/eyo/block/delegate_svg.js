@@ -427,7 +427,7 @@ eYo.Data.prototype.change = function (newValue) {
  * @param {!Blockly.Connection} c8n
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
-eYo.DelegateSvg.prototype.renderDrawC8n_ = function (c8n) {
+eYo.DelegateSvg.prototype.renderDrawC8n_ = function (recorder, c8n) {
   if (!c8n) {
     return
   }
@@ -461,11 +461,11 @@ eYo.DelegateSvg.debugCount = {}
  * Render the next block, if relevant.
  * @return {boolean=} true if an rendering message was sent, false othrwise.
  */
-eYo.DelegateSvg.prototype.renderDrawNext_ = function () {
+eYo.DelegateSvg.prototype.renderDrawNext_ = function (recorder) {
   if (this.block_.nextConnection && eYo.DelegateSvg.debugStartTrackingRender) {
     console.log(eYo.DelegateSvg.debugPrefix, 'NEXT')
   }
-  return this.renderDrawC8n_(this.block_.nextConnection)
+  return this.renderDrawC8n_(recorder, this.block_.nextConnection)
 }
 
 /**
@@ -685,7 +685,7 @@ eYo.DelegateSvg.prototype.wrapped_ = undefined
  * The print statement needs some preparation before drawing.
  * @private
  */
-eYo.DelegateSvg.prototype.willRender_ = function () {
+eYo.DelegateSvg.prototype.willRender_ = function (recorder) {
   var block = this.block_
   if (block.svgGroup_) {
     var F = this.locked_ && block.outputConnection && block.getSurroundParent()
@@ -714,17 +714,16 @@ eYo.DelegateSvg.prototype.willRender_ = function () {
 
 /**
  * Did draw the block. Default implementation does nothing.
- * The print statement needs some preparation before drawing.
  * @private
  */
-eYo.DelegateSvg.prototype.didRender_ = function () {
+eYo.DelegateSvg.prototype.didRender_ = function (recorder) {
 }
 
 /**
  * Layout previous, next and output block connections.
  * @private
  */
-eYo.DelegateSvg.prototype.renderMove_ = function () {
+eYo.DelegateSvg.prototype.renderMove_ = function (recorder) {
   var block = this.block_
   block.renderMoveConnections_()
   var blockTL = block.getRelativeToSurfaceXY()
@@ -746,7 +745,7 @@ eYo.DelegateSvg.prototype.renderMove_ = function () {
  * Layout previous, next and output block connections.
  * @private
  */
-eYo.DelegateSvg.prototype.layoutConnections_ = function () {
+eYo.DelegateSvg.prototype.layoutConnections_ = function (recorder) {
   var block = this.block_
   if (block.outputConnection) {
     block.outputConnection.setOffsetInBlock(0, 0)
@@ -1183,7 +1182,7 @@ eYo.DelegateSvg.prototype.chainTiles = (function () {
  * Render the inputs, the fields and the slots of the block.
  * @private
  */
-eYo.DelegateSvg.prototype.renderDrawModel_ = function () {
+eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
   /* eslint-disable indent */
   var block = this.block_
   var io = {
@@ -1192,13 +1191,12 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function () {
     canDummy: true,
     canValue: true,
     canStatement: true,
-    canList: true,
-    canForif: true,
     i: 0, // input index
     i_max: block.inputList.length,
     f: 0, // field index
     /** ?Object */ field: undefined,
-    /** boolean */ canStarSymbol: true
+    /** boolean */ canStarSymbol: true,
+    recorder: recorder
   }
   io.cursorX = this.getPaddingLeft(block)
   io.offsetX = 0

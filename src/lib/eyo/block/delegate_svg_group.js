@@ -420,8 +420,8 @@ eYo.DelegateSvg.Group.makeSubclass('while_part', {
  * @param {!Block} block
  * @private
  */
-eYo.DelegateSvg.Group.prototype.willRender_ = function () {
-  eYo.DelegateSvg.Group.superClass_.willRender_.call(this)
+eYo.DelegateSvg.Group.prototype.willRender_ = function (recorder) {
+  eYo.DelegateSvg.Group.superClass_.willRender_.call(this, recorder)
   var field = this.fields.async
   if (field) {
     field.setVisible(this.async_)

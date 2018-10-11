@@ -306,8 +306,8 @@ eYo.DelegateSvg.Expr.prototype.replaceBlock = function (other) {
  * The print statement needs some preparation before drawing.
  * @private
  */
-eYo.DelegateSvg.Expr.prototype.willRender_ = function () {
-  eYo.DelegateSvg.Expr.superClass_.willRender_.call(this)
+eYo.DelegateSvg.Expr.prototype.willRender_ = function (recorder) {
+  eYo.DelegateSvg.Expr.superClass_.willRender_.call(this, recorder)
   var field = this.fields.await
   if (field) {
     field.setVisible(this.await_)
